@@ -1,0 +1,67 @@
+
+<!--<div class="tg-docinfo tg-haslayout" >
+	<div class="col-md-3 col-lg-3 pull-right">
+		<img ng-src="{{data.sender_profile_pic_url}}" style="width: 80px; height: 80px">
+	</div>
+	<div class="col-md-9 col-lg-9">
+		<h5 style="text-align: center; border-bottom: 1px solid rgba(0,0,0,0.4)">{{data.sender_firstname}} {{data.sender_lastname}} <span style="display:block; text-align: center;font-size: 12px; color: #000"> Patient </span></h5>
+		<p style="line-height: 25px">Dear Dr. {{docName}},<br/>
+		   {{data.sender_firstname}} {{data.sender_lastname}} request for your consultation on {{data.date | date: "medium"}}. Brief explanation of his illness was <span style="font-style: italic;color: rgba(0,0,0,0.6">"{{data.sender_message}}"</span>. Consultation fee do apply if you grant this request.		   
+		</p>
+	</div>
+	<div class="tg-bottominfo tg-haslayout" style="margin-top: 30px">
+			<div class="tg-regardsleft">
+				<em>Regards,</em>
+				<strong>DocDirect Management.</strong>
+			</div>
+			<div class="tg-regardsright">
+				<strong class="logo">
+					<img src="/assets/images/dashboard/logo.jpg" alt="image description">
+				</strong>
+			</div>
+		</div>
+		<div  class="tg-bottominfo tg-haslayout" style="margin-top: 30px">
+			<button ng-click="accept()">accept</button>
+			<button>decline</button>
+			<button>refer to a specialist</button>
+		</div>
+</div>-->
+
+<div class="container">
+<div class="card p-2">
+
+<div class="card" style="padding:20px;">
+    <div class="row">
+    <div class="col-md-2 col-sm-2">
+        <img ng-src="{{data.sender_profile_pic_url}}" class="img-responsive" width="150" height="150">
+    </div>
+    <div class="col-md-10 col-sm-10 col-xs-10">
+        
+<h6>
+	<b class="font-1_4">{{data.sender_firstname}} {{data.sender_lastname}}</b>
+	<span class="font-1_1" style="display:block;"> Patient </span>
+</h6>
+<hr>
+Dear Dr. {{docName}},
+{{data.sender_firstname}} {{data.sender_lastname}} request for your consultation on {{data.date | date: "medium"}}. Brief explanation of his illness was <span style="font-style: italic;color: rgba(0,0,0,0.6);font-size:18px;display:block;text-indent: 30px;padding:20px">"{{data.sender_message}} </span>Consultation fee do apply if you grant this request.		   
+
+<br><br>
+Regards, <span style="display:block"><b>Applinic Management</b></span> <img src="">
+
+<div class="mt-1">
+<button class="btn btn-success" ng-click="accept()">Accept</button>
+<button class="btn btn-danger">Decline</button>
+<button class="btn btn-info">Refer to a specialist</button>
+</div></div>
+    </div>
+</div>
+<div class="clearfix"></div>
+
+
+
+
+
+
+
+
+

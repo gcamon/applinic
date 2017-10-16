@@ -1,0 +1,61 @@
+<!--	<h3>Find Pharmacy</h3>
+	<p><strong>Tips: </strong> You can filter the result by "name" and click on the highlighted field <br>or complete the text box and click "find" to search based on the entered creteria.</p>
+	<form>
+		<input type="text" placeholder="City/Town" ng-model = "pharmacy.city" style="width: 30%; border: 1px solid rgba(0,0,0,0.2);margin-right: 10px"/>
+		<input type="text" placeholder="Name" ng-model = "pharmacy.name" style="width: 30%; border: 1px solid rgba(0,0,0,0.2);margin-right: 10px"/>		
+		<input type="button" value="FIND" ng-click = "findPharmacy()" style="width: 10%; padding: 10px 10px; background-color: green; color:#fff"/>
+	</form>
+	<div class= "row look-up-phamarcy" ng-repeat = "result in pharmacyData | filter: pharmacy.name || pharmacy.city | orderBy: 'name'" style="cursor:pointer; margin-top: 10px; width: 90%; margin-left: 2px" ng-click="forwardPrescriptionTo(result.user_id)">	
+		<div class="col-sm-12 col-md-4 col-lg-4">
+			<img ng-src="{{result.profile_pic_url}}" alt="profile pic"/>
+		</div>
+		<div class="col-sm-12 col-md-12 col-lg-12" >
+			<h3>{{result.name}}</h3>
+			<address>{{result.address}} <span>{{result.city}}, <strong>{{result.country}}</strong></span></address>			
+		</div>
+	</div>
+</div>-->
+
+
+<div class="container">
+<div class="card p-2">
+	<h3 class="font-1_7">Forwarding prescription
+	<strong style ="display:block;padding: 10px;font-size: 16px"><span ng-repeat="drug in unavailableDrugArr"> @{{drug.drug_name}} &nbsp;&nbsp;</span> </strong>
+	</h3>
+
+	<form class="row">
+		<div class="col-md-8"> 
+			<!--<input type="text" class="form-control" placeholder="City/Town" ng-model = "pharmacy.city" style="width:70%;display: inline-block;padding: 15px"/>-->
+
+			 <input type="text" class="form-control"  type="text" placeholder="Enter city/town" ng-model="pharmacy.city" uib-typeahead="city for city in cities | filter:$viewValue | limitTo:20" style="width:70%;display: inline-block;padding: 15px">
+			<button style="margin-left:6px;" type="button" class="btn btn-success pl-1 pr-1" value="FIND" ng-click = "findPharmacy()">Find</button>
+			<p style="font-style: italic;padding:10px" class="font-1-7"><i class="fa fa-info"> &nbsp;By default search result shows the centers within your city/town. You can search based on your desired city/town.</i></p>
+		</div>
+	</form>
+	<div class="shadow space row">
+		<div class="col-sm-12 col-md-6 col-md-6"> 
+				<input type="text" class="form-control"  placeholder="Filter by name of center" ng-model = "pharmacy.name" style="border:none;border-bottom: 1px solid rgba(0,0,0,0.2);width:70%"/>
+		</div>	
+		<div class= "look-up-phamarcy row" ng-repeat = "result in pharmacyData | filter: pharmacy.name || pharmacy.city | orderBy: 'name'" style="position: relative; margin-top: 10px">	
+			<div class="col-sm-12 col-md-8 col-md-8">
+				<h3 class="font-1_4 mb-0" style="padding-bottom: 10px">{{result.name}}</h3>
+				<address class="font-1_1" style="padding-left:20px">{{result.address}} <span>{{result.city}}, <strong>{{result.country}}</strong></span>
+				<i class="fa fa-phone font-1_1" style="display: block;padding: 10px 0"> &nbsp;+234 {{result.phone}} </i>
+				</address>
+				 
+				
+				<div style="margin-left: 20px;margin-top: -15px;border-bottom:1px solid rgba(0,0,0,0.2)"><div class="star-rating">
+			        <span  ng-cloak > 
+			        <div class="star-rating"  star-rating rating-value="result.rating.current" max="result.rating.max"></div>
+			        </span>
+			        </div>
+			    </div>
+			      		
+			</div>
+			<a style="text-decoration: none;color: grey;position: absolute; bottom: 10px;right:30px"><i class="fa fa-share btn btn-simple text-success"  title="Forward to {{result.name}}" ng-click="forwardPrescriptionTo(result.user_id)"></i></a>
+			
+		</div>
+	</div>
+</div>
+</div>
+

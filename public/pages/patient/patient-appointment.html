@@ -1,0 +1,41 @@
+<!--<div style="line-height: 30px" ng-if="notDeleted === true">
+	<h4>My appointment</h4>
+	
+	<span><strong>Doctors name: </strong> {{appointment.title}} {{appointment.firstname}} {{appointment.lastname}} </span>
+
+	<h6>Appointment description</h6>
+	<div>
+		<span><strong>Date of appointment </strong> | {{appointment.date | date : "mediumDate"}}</span>
+	</div>
+	<div>
+		<span><strong>Time of appointment </strong> | {{appointment.time | date : "mediumTime"}}</span>
+	</div>
+	<div>
+		<span><strong>Vanue of appointment </strong> | {{appointment.address}}</span>
+	</div>
+</div>
+<div style="text-align: center; margin-top: 30px">
+	<button ng-click="deleteApp()" style="color:#fff" ng-if="notDeleted === true">{{delbtn}}</button>
+</div>-->
+
+<div class="container" style="line-height: 30px" ng-if="notDeleted === true">
+    <div class=" card p-2">
+	<h4 class="font-1_7 mt-0">My appointment</h4> <hr>
+	
+	<span class="font-1_4"><strong>Doctors name: </strong> {{appointment.title}} {{appointment.firstname}} {{appointment.lastname}} </span>
+
+	<h6 class="text-muted mt-1">Appointment description</h6>
+	<div>
+		<span><strong>Date of appointment </strong> : {{appointment.date | date : "mediumDate"}}</span>
+	</div>
+	<div>
+		<span><strong>Time of appointment </strong> : {{appointment.time | date : "mediumTime"}}</span>
+	</div>
+	<div>
+		<span><strong>Vanue of appointment </strong> : {{appointment.address}}</span>
+	</div>
+
+<div class="mt-3">
+	<button ng-click="deleteApp()" class="btn btn-danger" style="color:#fff" ng-if="notDeleted === true">{{delbtn}}</button>
+</div>
+</div></div>

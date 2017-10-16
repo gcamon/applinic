@@ -1,0 +1,176 @@
+
+<!doctype html>
+<!--[if lt IE 7]>       <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang=""> <![endif]-->
+<!--[if IE 7]>          <html class="no-js lt-ie9 lt-ie8" lang=""> <![endif]-->
+<!--[if IE 8]>          <html class="no-js lt-ie9" lang=""> <![endif]-->
+<!--[if gt IE 8]><!-->  <html class="no-js" lang=""> <!--<![endif]-->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Doctor Directory</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+    <link rel="stylesheet" href="/assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/assets/css/normalize.css">
+    <link rel="stylesheet" href="/assets/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/assets/css/icomoon.css">
+    <link rel="stylesheet" href="/assets/css/owl.theme.css">
+    <link rel="stylesheet" href="/assets/css/owl.carousel.css">
+    <link rel="stylesheet" href="/assets/css/prettyPhoto.css">
+    <link rel="stylesheet" href="/assets/css/main.css">
+    <link rel="stylesheet" href="/assets/css/transitions.css">
+    <link rel="stylesheet" href="/assets/css/color.css">
+    <link rel="stylesheet" href="/assets/css/responsive.css">
+    <link rel="stylesheet" href="/assets/css/angular-carousel.css">   
+
+
+    <!--<script src="/assets/js/vendor/modernizr-2.8.3-respond-1.4.2.min.js"></script>-->
+</head>
+<body ng-app = "myApp" style="font-size:18px">
+        <!--[if lt IE 8]>
+                <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+        <![endif]-->
+        <main ng-controller="secrController">
+            
+            <section class="container">
+                <header>
+                    <h5>Service Notification</h5>
+                </header>
+                <div class='row'>
+                    <div class="col-sm-12 col-md-5 col-lg-5 pull-right">
+                        <div style="max-height: 500px;overflow-y: auto;">
+                            <input type="text" placeholder=" enter user id" ng-model="service.id" style="width: 60%;">
+                            <button ng-click="viewService()" style="color:#fff" class="btn btn-primary"> User Id </button>
+                            <ul>
+                                <li ng-repeat="j in servicelist" style="position:relative;border-bottom: 1px solid rgba(0,0,0,0.3)">{{j.message}}<span style="text-decoration:underline;color:red;font-size:18px;display:inline-block;position: absolute; right:5px" ng-click="viewService(j.centerId)">view</span></li>
+                            </ul>
+                        </div>                        
+                    </div>
+                    <div class="col-sm-12 col-md-7 col-lg-7">
+                        <div style="max-height: 400px;overflow-y: auto;">
+                            <div>
+                                <article>
+                                    <h5 style="color:red">{{sList.center_name}}</h5>
+                                    <address>
+                                        <span>{{sList.center_address}}</span>
+                                        <span>{{sList.center_city}}</span>
+                                        <span>{{sList.center_country}}</span>
+                                        <div>
+                                            <i class="fa fa-phone" ng-if="sList.center_name"> &nbsp; {{sList.center_phone}}</i>
+                                        </div>
+                                    <ul style="margin-top: 20px">
+                                        <li style="color: green;text-decoration:underline" ng-if="sList.center_name">Unavailable services</li>
+                                        <li ng-repeat="service in sList.unavailable_services"> @ {{service.name}}</li>
+                                    </ul>
+                                </article>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div style="border-bottom: 1px solid #000;margin-top: 30px"></div>
+                <div class="row">
+                    <div style="border:bottom: 1px solid rgba(0,0,0,0.4);padding:20px;position:relative;border-bottom: 1px solid rgba(0,0,0,0.3);width:80%;margin:0 auto" ng-repeat = "m in mList">
+                        <h6>{{m.name}}</h6>
+                        <button class="btn btn-primary" ng-click="pay(m.user_id,m.name)" style="position:absolute;right:80px;bottom:20px">Pay</button>
+                        <div>
+                            <strong>{{m.ewallet.available_amount}}</strong>                            
+                        </div>
+
+                        <div>
+                            <span>{{m.firstname}} {{m.lastname}}</span>
+                        </div>
+                         <div>
+                            <i class="fa fa-phone"> </i> <span> {{m.phone}}</span>
+                        </div>
+                    </div>
+                </div>
+                
+            </section>
+        </main>
+        <div ng-controller="createRoomSecr">
+            <div>
+                <button class="btn btn-primary" ng-click="check()">Check</button>
+            </div>
+        </div>
+        <!--************************************
+                Footer Start
+        *************************************-->
+        
+        <!--************************************
+                Footer End
+        *************************************-->
+    </div>
+    <!--************************************
+            Wrapper End
+    *************************************-->
+    <!--************************************
+        Sign In Sign Up Light Box Start
+    *************************************-->
+        
+    
+
+    <!--************************************
+        Sign In Sign Up Light Box End
+    *************************************-->
+    <script type="text/ng-template" id='bank-info.html'>
+         <div class="modal fade">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header" style="text-align:right">
+                <i class="fa fa-times" style="font-size:18px;padding;20px" data-dismiss="modal"></i>
+              </div>              
+              <div class="modal-body"> 
+                <h4 style="text-align:center">{{name}}</h4>
+                  <input type="text" placeholder="bank name" ng-model="account.bank">
+                  <input type="text" placeholder="acc no" ng-model="account.number">
+                  <div style="text-align:center">
+                    <button class="btn btn-primary" ng-click="cashout()">SEND</button>
+                  </div>
+              </div>
+              <div class="modal-footer">
+                
+                        
+              </div>
+            </div>
+          </div>
+        </div>
+     </script>
+
+        
+        <script src="/assets/js/vendor/jquery-library.js"></script>        
+        <script src="/assets/js/vendor/bootstrap.min.js"></script>
+        <script src="/socket.io/socket.io.js"></script>         
+        <script type="text/javascript" src="/assets/js/source.js"></script>
+        <script type="text/javascript" src="/assets/js/angularclient.js"></script>
+        <script type="text/javascript" src="/assets/js/ngroute.js"></script>
+        <script src="/assets/js/angular-clipboard.js"></script>
+        <script src="/assets/js/ngresource.js"></script>        
+        <script src="/assets/js/socket.min.js"></script>        
+        <script src="/assets/js/jquery-ui.js"></script>
+        <script src="/assets/js/map/jquery.gomap.js"></script>
+        <script src="/assets/js/map/markerclusterer.min.js"></script>
+        <script src="/assets/js/countdown.js"></script>
+        <script src="/assets/js/jquery.nicescroll.js"></script>
+        <script src="/assets/js/parallax.js"></script>
+        <script src="/assets/js/owl.carousel.js"></script>
+        <script src="/assets/js/prettyPhoto.js"></script>
+        <script src="/assets/js/appear.js"></script>
+        <script src="/assets/js/countTo.js"></script>
+        <script src="/assets/js/map/map.js"></script>
+        <script src="/assets/js/angularAnimate.js"></script>
+        <script src="/assets/js/modalService.js"></script>
+        <script src="/assets/js/main.js"></script>
+        <script src="/assets/js/angular-touch.min.js"></script>
+        <script src="/assets/js/angular-carousel.js"></script>
+        <script src="/assets/js/moment.min.js"></script>
+        <script src="/assets/js/angular-moment.min.js"></script>
+        <script src="/assets/js/ui-bootstrap-tpls.js"></script>
+        <script src="/assets/js/secr-con.js"></script> 
+         <script src="/assets/js/ngPrint.js"></script>
+
+   <!--<script src="http://angular-ui.github.com/bootstrap/ui-bootstrap-tpls-0.2.0.js"></script>-->
+
+       <!--<link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.min.css" rel="stylesheet">-->
+</body>
+</html>

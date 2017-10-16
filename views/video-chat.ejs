@@ -1,0 +1,767 @@
+
+<!doctype html>
+<!--[if lt IE 7]>		<html class="no-js lt-ie9 lt-ie8 lt-ie7" lang=""> <![endif]-->
+<!--[if IE 7]>			<html class="no-js lt-ie9 lt-ie8" lang=""> <![endif]-->
+<!--[if IE 8]>			<html class="no-js lt-ie9" lang=""> <![endif]-->
+<!--[if gt IE 8]><!-->	<html class="no-js" lang=""> <!--<![endif]-->
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>Doctor Directory</title>
+	<meta name="description" content="">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="apple-touch-icon" href="apple-touch-icon.png">
+	<link rel="stylesheet" href="/assets/css/bootstrap.min.css">
+	<link rel="stylesheet" href="/assets/css/normalize.css">
+	<link rel="stylesheet" href="/assets/css/font-awesome.min.css">
+	<link rel="stylesheet" href="/assets/css/icomoon.css">
+	<link rel="stylesheet" href="/assets/css/owl.theme.css">
+	<link rel="stylesheet" href="/assets/css/owl.carousel.css">
+	<link rel="stylesheet" href="/assets/css/prettyPhoto.css">
+	<link rel="stylesheet" href="/assets/css/main.css">
+	<link rel="stylesheet" href="/assets/css/transitions.css">
+	<link rel="stylesheet" href="/assets/css/color.css">
+	<link rel="stylesheet" href="/assets/css/responsive.css">
+	<script src="/assets/js/vendor/modernizr-2.8.3-respond-1.4.2.min.js"></script>
+</head>
+<body ng-app = "myApp" style="background-color:#eee">
+        <!--[if lt IE 8]>
+                <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+        <![endif]-->
+        <!--************************************
+                        Wrapper Start
+        *************************************-->
+        
+            <!--***********************************
+
+                            Header Start
+            *************************************-->
+            <header id="header" class="tg-haslayout top-header"  ng-controller="topHeaderController">
+                <div  class="navbar-header top-navbar top-navbar-dashboard">
+                    <div style="width: 70%; padding-right: 30px;display:inline-block">
+                        <span data-toggle="modal" data-target=".tg-user-modal" title="login/signup" ng-if="!checkLogIn">Log in / Sign up</span>
+                        <span class="fa fa-sign-out" aria-hidden="true" ng-if="checkLogIn" ng-click="logout()"> Log out</span>
+                        <!--<i class="fa fa-ellipsis-v" aria-hidden="true" style="color:#fff;font-size:23px;font-weight:100; cursor:pointer" title="Menu" ng-click="isClicked()"></i>-->
+                    </div>
+                    <!--<ul ng-if="drop === true" class="drp-list">
+                        <li><a href="/user/find-specialist">Find A Doctor</a></li>
+                        <li><a href="/user/find-drug">Find Drug</a></li>
+                        <li><a href="/user/find-scan-test">Find Scan</a></li>
+                        <li><a href="/user/find-lab-test">Find Test</a></li>
+                        <li><a href="#">Find Special Center</a></li>                        
+                    </ul>-->
+
+                </div>
+                <!--<div class="container">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <strong class="logo">
+                                <a href="/"><img src="/assets/images/logo.png" alt="image description"></a>
+                            </strong>
+                            <nav id="tg-nav" class="tg-nav">
+                                <div class="navbar-header">
+                                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#tg-navigation" aria-expanded="false">
+                                        <span class="sr-only">Toggle navigation</span>
+                                        <span class="icon-bar"></span>
+                                        <span class="icon-bar"></span>
+                                        <span class="icon-bar"></span>
+                                    </button>
+                                </div>
+                                <div class="collapse navbar-collapse top-nav" id="tg-navigation">
+                                    <ul>
+                                        <li>
+                                            <a href="/">Home</a>                                           
+                                        </li>
+                                        <li><a href="/how-it-works">How it works</a></li>
+                                        <li>
+                                            <a href="#">Top Ranking</a>
+                                            <ul> 
+                                                <li><a href="/topview/doctors">Doctors</a></li>                                                     
+                                                <li><a href="/topview/hospitals">Hospitals</a></li>
+                                                <li><a href="/topview/clinics">Clinics</a></li>
+                                                <li><a href="/topview/pharmacy">Pharmacy</a></li>
+                                                <li><a href="/topview/laboratories">Laboratory Centers</a></li>
+                                                <li><a href="/topview/radiology">Radiology Centers</a></li>
+                                                <li><a href="/topview/fitness">fitness Centers</a></li>                                                                           
+                                                <li><a href="doctor-detail2.html">Doctor Detail 2</a></li>
+                                            </ul>
+                                        </li>
+                                        <li>
+                                            <a href="#">Blog</a>
+                                            
+                                        </li>
+                                        <li><a href="packages.html">packages</a></li>
+                                        <li><a href="contactus.html">Contact</a></li>                                        
+                                        <li>                                            
+                                            <a href="#" data-toggle="modal" data-target=".tg-user-modal" title="login/signup"><i class="fa fa-user-plus"></i></a>
+                                            <span><a href="#" data-toggle="modal" data-target=".tg-user-modal">login/signup</a></span>
+                                        </li>                                                                                                                
+                                    </ul>
+                                </div>                                
+                            </nav>
+                        </div>
+                    </div>
+                </div>-->
+                <div class="arrow-dashboard" ng-if="checkLogIn" >
+                    <a ng-href="{{back}}" class="fa fa-long-arrow-right" title="Back to dashboard"></a>
+                <div>
+            </header>
+		<!--************************************
+				Header End
+		*************************************-->
+		<!--************************************
+				Home Slider Start
+		*************************************-->
+		<!--<div id="tg-innerbanner" class="tg-innerbanner tg-bglight tg-haslayout" >
+			
+			<div class="tg-pagebar tg-haslayout" ng-controller="doctorBarNotificationController">
+				<div class="container">
+					<div class="row">
+						<div class="col-xs-4 col-md-8">
+							<h1>Video Call</h1>
+							<ol class="tg-breadcrumb">
+								<li><a href="/">Home</a></li>
+								<li class="active">dashboard</li>
+								<li style="position:relative">
+									<img src="/assets/images/icons/ring.png">
+									<ul style="position:absolute;top:0;left:0">
+										<li></li>
+									</ul>
+								</li>
+							</ol>
+						</div>
+                        <div class="col-xs-8 col-md-4">                            
+                            <ul class="notify">
+                                <li class="noti note notify-icon">
+                                    <i class="fa fa-bell-o" style="font-size:24px;color:rgba(0,180,0,0.8);position:relative"><span style="display:inline-block;width:24px;height:24px;background-color:#fff;left: 15px; top:-23px; border-radius: 15px;
+                                        position:absolute;text-align:center;color:#000;" ng-if="<%= person.doctor_notification.length %> > 0 "><%= person.doctor_notification.length %></span></i>
+                                    <ul class="all-notify">
+                                        <li> <h6 style="text-align: center">Notification(s)</h6> </li>
+                                        <% for(var i = person.doctor_notification.length -1; i >= 0; i--) { %>
+                                            <li class="note-field" ng-click="viewNote('<%= person.doctor_notification[i].doctor_id %>')">                                                
+                                                <img src="<%= person.doctor_notification[i].doctor_profile_pic_url %>" style="width: 50px; height: 50px">
+                                                <div>{{getData("<%= person.doctor_notification[i].doctor_firstname%>","<%= person.doctor_notification[i].doctor_lastname %>","<%= person.doctor_notification[i].date %>","<%= person.doctor_notification[i].doctor_profile_pic_url %>","<%= person.doctor_notification[i].consultation_fee %>","<%= person.firstname %>","<%= person.ewallet.available_amount %>","<%= person.doctor_notification[i].doctor_id %>","<%= person.doctor_notification[i].service_access %>","<%= person.doctor_notification[i].doctor_specialty %>")}}</div>
+                                                <span>{{convertDate('<%= person.doctor_notification[i].date %>')}}</span>    
+
+                                                <span> From Dr. <%= person.doctor_notification[i].doctor_firstname %> <%= person.doctor_notification[i].doctor_lastname %></span>
+                                                <span style="display:block">{{realDate | date: "medium"}}</span>
+                                            </li>
+                                        <% } %>
+
+                                    </ul>
+                                </li>
+                                <li class="noti chat notify-icon">
+                                    <i class="fa fa-commenting-o" style="font-size:24px;color:rgba(0,180,0,0.8)"></i>
+                                    <ul class="all-notify">
+                                        <li>hello</li>
+                                        <li>hello</li>
+                                        <li>hello</li>
+                                        <li>hello</li>
+                                        <li>hello</li>
+                                    </ul>
+                                </li>
+                                <li class="noti video notify-icon">
+                                    <i class="fa fa-phone" style="font-size:24px;color:rgba(0,180,0,0.8)"></i>
+                                    <ul class="all-notify">
+                                        <li>hello</li>
+                                        <li>hello</li>
+                                        <li>hello</li>
+                                        <li>hello</li>
+                                        <li>hello</li>
+                                    </ul>
+                                </li>
+                                <li class="noti chat">
+                                    <img src="<%= person.profile_pic_url %>" style= "width:35px;height:35px;border-radius: 20px">
+                                    <p style="color:rgba(255,255,255,0.8);
+                                    padding-left: 20px"><%= person.firstname %> <%=person.lastname %></p>
+                                    <ul class="all-notify">
+                                        <li style="text-align:center; cursor:pointer" ng-click="logout()">SIGNOUT</a></li>                                     
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+					</div>
+				</div>
+			</div>
+		</div>-->
+		<!--************************************
+				Home Slider End
+		*************************************-->
+		<!--************************************
+				Main Start
+		*************************************-->
+        
+        <main id="main" class="tg-main-section tg-haslayout" ng-controller="videoCommunicationDoctorController" style="padding-top:0">      
+          
+			<div class="container-fluid" style="padding:0;margin:0;overflow-x: hidden">                
+				<div class="row">
+					
+                    <div class="col-lg-12 col-md-12">
+                        <div style="padding:10px;box-shadow:10px 5px 3px rgba(0,0,0,0.4);background-color:rgba(0,0,0,0.9)">
+                            <div class="row">
+                                <div class="col-lg-5 col-md-5 pull-right" ng-controller="VideoDiagnosisController">
+
+                                    <form style="background-color: #eee;padding:10px; height: 800px; overflow-x: auto;box-shadow:3px 2px 3px rgba(0,0,0,0.5)"> 
+                                            <div id="accordion">
+                                                <h6 style="color: #fff; font-size: 14px;padding:5px">
+                                                    <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="/#collapseTen" aria-expanded="false" aria-controls="collapseTen" style="color:#e97147; font-size: 18px;text-decoration:underline">Presenting complain</a>
+                                                </h6>                 
+                                                <div style="list-style:none" id="collapseTen" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTen">
+                                                    <textarea placeholder="write..." ng-model="treatment.complain" required></textarea>
+                                                </div>
+                                            </div>
+
+                                            <div id="accordion">
+                                                <h6 style="color: #fff; font-size: 14px;padding:5px">
+                                                    <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="/#collapseNine" aria-expanded="false" aria-controls="collapseNine" style="color:#e97147; font-size: 18px;text-decoration:underline">History of presenting complain</a>
+                                                </h6>                 
+                                                <div style="list-style:none" id="collapseNine" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingNine">
+                                                    <textarea placeholder="write..." ng-model="treatment.historyOfComplain" required></textarea>
+                                                </div>
+                                            </div>
+
+                                            <div id="accordion">
+                                                <h6 style="color: #fff; font-size: 14px;padding:5px">
+                                                    <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="/#collapseEight" aria-expanded="false" aria-controls="collapseEight" style="color:#e97147; font-size: 18px;text-decoration:underline">Past medical history</a>
+                                                </h6>                 
+                                                <div style="list-style:none" id="collapseEight" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingEight">
+                                                     <textarea placeholder="write..." ng-model="treatment.pastMedicalHistory"></textarea>
+                                                </div>
+                                            </div>
+                                            
+                                            <div id="accordion">
+                                                <h6 style="color: #fff; font-size: 14px;padding:5px">
+                                                    <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="/#collapseSeven" aria-expanded="false" aria-controls="collapseSeven" style="color:#e97147; font-size: 18px;text-decoration:underline">Family history</a>
+                                                </h6>                 
+                                                <div style="list-style:none" id="collapseSeven" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingSeven">
+                                                     <textarea placeholder="write..." ng-model="treatment.familyHistory"></textarea>
+                                                </div>
+                                            </div>
+
+                                            <div id="accordion">
+                                                <h6 style="color: #fff; font-size: 14px;padding:5px">
+                                                    <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="/#collapseSix" aria-expanded="false" aria-controls="collapseSix" style="color:#e97147; font-size: 18px;text-decoration:underline">Social history</a>
+                                                </h6>                 
+                                                <div style="list-style:none" id="collapseSix" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingSix">
+                                                     <textarea placeholder="write..." ng-model="treatment.socialHistory"></textarea>
+                                                </div>
+                                            </div>
+
+                                            <div id="accordion">
+                                                <h6 style="color: #fff; font-size: 14px;padding:5px">
+                                                    <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="/#collapseFive" aria-expanded="false" aria-controls="collapseFive" style="color:#e97147; font-size: 18px;text-decoration:underline">Drug history</a>
+                                                </h6>                 
+                                                <div style="list-style:none" id="collapseFive" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFive">
+                                                      <textarea placeholder="write..." ng-model="treatment.drugHistory"></textarea>
+                                                </div>
+                                            </div>
+                                            
+                                            <div id="accordion">
+                                                <h6 style="color: #fff; font-size: 14px;padding:5px">
+                                                    <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="/#collapseFour" aria-expanded="false" aria-controls="collapseFour" style="color:#e97147; font-size: 18px;text-decoration:underline">Summary</a>
+                                                </h6>                 
+                                                <div style="list-style:none" id="collapseFour" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFour">
+                                                      <textarea placeholder="write..." ng-model="treatment.summary" required></textarea>
+                                                </div>
+                                            </div>
+                                           
+                                            <div id="accordion" style="border-bottom: 1px solid grey">
+                                                <h6 style="color: #fff; font-size: 14px;padding:5px">
+                                                    <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="/#collapseThree" aria-expanded="false" aria-controls="collapseThree" style="color:#e97147; font-size: 18px;text-decoration:underline">Provisional diagnosis</a>
+                                                </h6>                 
+                                                <div style="list-style:none" id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+                                                      <textarea placeholder="write..." ng-model="treatment.provisionalDiagnosis" required></textarea>
+                                                </div>
+                                            </div>                                          
+                                                                                              
+                                           
+                                            <div style="margin-top: 10px;">
+                                                <h6 style="padding: 10px; cursor:pointer;background-color:#1d7e5f;color:#fff;text-align:center">Treatment</h6>
+
+
+                                                <div id="accordion">
+                                                <h6 style="color: #fff; font-size: 14px;padding:5px">
+                                                    <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="/#collapseTwo" aria-expanded="false" aria-controls="collapseTwo" style="color:#306756; font-size: 18px;text-decoration:underline"><i class="icon-Pills"></i> Pharmaceutical</a>
+                                                </h6>                 
+                                                <div style="list-style:none" id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+                                                       <table>
+                                                        <tr>
+                                                            <thead>
+                                                                <th>S/N</th>
+                                                                <th>Drug name</th>
+                                                                <th>Dosage</th>
+                                                                <th>Frequency</th>
+                                                                <th>Duration</th>
+                                                            </thead>
+                                                        </tr>
+                                                        <tr>
+                                                            <tbody ng-repeat="prescription in drugList">                                                                           
+                                                                <td>{{prescription.sn}}</td>
+                                                                <td><input name="states" id="states" type="text" placeholder="Enter drug name" ng-model="drug.name" uib-typeahead="drug.name for drug in drugs | filter:$viewValue | limitTo:15" class="form-control" style="width: 95%">
+                                                                    {{getDrug(drug.name)}} </td>
+                                                                <td><input type="text" ng-model="prescription.dosage" style="padding: 18px 2px"></td>
+                                                                <td><input type="text" ng-model="prescription.frequency" style="padding: 18px 2px"></td>
+                                                                <td><input type="text" ng-model="prescription.duration" style="padding: 18px 2px"></td>
+                                                            </tbody>
+                                                        </tr>                       
+                                                    </table>
+                                                    <div style="text-align: right">
+                                                        <i class="fa fa-plus" style="font-size:16px;color:green;padding: 10px; cursor:pointer; margin-right: 5px" title="Add field" ng-click="addDrug()"></i>
+                                                            <i class="fa fa-minus" style="font-size:16px;color:green;padding: 10px; cursor:pointer; margin-right: 5px" title="Remove last field" ng-click="removeDrug()"></i>
+                                                    </div>
+                                                    <div> 
+                                                        <button ng-click="toPatient()">Send to patient</button>
+                                                        <button ng-click="toPharmacy()">Send to a Phamarcy</button>
+                                                    </div>
+                                                    <div class="view-animate-container" style="height:auto">
+                                                        <div class="view-animate" ng-view >
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
+                                            </div>                         
+
+                                            <div style="margin-top: 10px;">
+                                                <h6 style="color: #fff; font-size: 14px;padding:5px">
+                                                    <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="/#collapseOne" aria-expanded="false" aria-controls="collapseOne" style="color:#306756; font-size: 18px;text-decoration:underline"><i class="fa fa-calendar"></i> Physical Examination</a>
+                                                </h6>                 
+                                                <div style="list-style:none" id="collapseOne" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+                                                    <p>Enter date and time of the appointment below</p>
+                                                    <input type="date" ng-model="treatment.appointment.date" style="margin-bottom: 10px">
+                                                    <input type="time" ng-model="treatment.appointment.time" style="margin-bottom: 10px">                              
+                                                    <input type="text" placeholder="Enter address" ng-model="treatment.appointment.address"/>
+                                                    <p>Tips: Enter address of the place of appointment, if none is specified, the place of appointment defaults to the address in your profile.</p>
+                                                    <input type="button" value="Send" ng-click="bookAppointment()" class="btn btn-primary"/>
+                                                </div>
+                                            </div>                         
+                                            
+                                        </div>
+
+                                    </form>
+                                                                        
+                                </div>
+
+                              
+                                
+                                <div class="col-lg-7 col-md-7">
+                                    <div class="row">
+                                        <div class="col-sm-12 col-md-12 col-lg-12">                                         
+                                            <span style="display:inline-block;padding:10px;color:#eee;font-size:16px">{{inCallStatus}} {{getinfo.firstname}} {{getinfo.lastname}}</spa>                           
+                                        </div>                      
+                                    </div>                        
+                                    <div class="pure-u-2-3" id="video-container">
+                                        <div style="position:relative">
+                                            <video id="their-video" autoplay style="width: 100%; height: 100%; background-color: #000"></video>
+                                            <video id="my-video" muted="true" autoplay style="width: 140px; height:140px; position: absolute; right:1px;top:-14px"></video>
+                                        </div>
+                                      <div id="step1">
+                                          
+                                          <div id="step1-error">                                           
+                                            <a href="#" class="pure-button pure-button-error" id="step1-retry">Try again</a>
+                                           </div>
+                                       </div>
+
+                                        <!-- Make calls to others -->
+                                        <div id="step2">
+                                            <button class="pure-button pure-button-success" id="make-call" style="background-color:#7dbb00;color:#fff;padding:10px 30px; font-size: 18px">
+                                                <i class="fa fa-phone" style="color:#fff;padding-right: 8px"></i>Call</button>
+                                          <p>Your id: <span id="my-id">...</span></p>
+                                          <p>Share this id with others so they can call you.</p>
+                                          <h3>Make a call</h3>
+                                          <div class="pure-form">
+                                            <input type="text" placeholder="Call user id..." id="callto-id">
+                                            
+                                          </div>
+                                        </div>
+
+                                        <!-- Call in progress -->
+                                        <div id="step3">
+                                          <p>Currently in call with <span id="their-id">...</span></p>
+                                          <p style="width: 130px"><button  class="pure-button pure-button-error" id="end-call" style="background-color:red;color:#fff;padding:10px 30px; font-size: 18px;display:block; height:100%; width:100%;text-decoration:none">End call</button></p>
+                                        </div>                            
+                                      </div>
+                                        <div style="color: #000; height: 600px; overflow-x: auto" id="online-patient">
+                                        <h6 style="text-align:center">Online Patients</h6>        
+                                        <ul style="padding:5px 5px">
+                                            <li ng-repeat = "patient in callWaitingList" style="color:#fff;padding:10px;border-bottom:1px dashed #eee;" ng-click="callAnother(patient.id,patient.firstname,patient.lastname,patient.profile_pic_url)">
+                                                <img ng-src=""/>
+                                                <strong>{{patient.firstname}}</strong>
+                                                <strong>{{patient.lastname}}</strong>
+                                            </li>
+                                        </ul>
+                                    </div>      
+                                      <div style="width: 220px; margin: 0 auto">
+                                        <a href="/doctor/dashboard" style="display:inline-block; padding: 20px; font-size: 16px; border: 1px solid rgba(0,255,0,0.6);box-shadow: 0px 2px 5px rbga(0,200,0,0.6);color:green; text-align: center;">
+                                            End this Session
+                                        </a>             
+                                    </div>                                              
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    
+					
+                   
+                                 
+				</div>
+			</div>
+		</main>
+		<!--************************************
+				Main End
+		*************************************-->
+		<!--************************************
+				Footer Start
+		*************************************-->
+		<footer id="footer" class="tg-haslayout">
+			<!--<div class="tg-threecolumn">
+				<div class="container">
+					<div class="row">
+						<div class="col-sm-4">
+							<div class="tg-footercol">
+								<strong class="logo">
+									<a href="#">
+										<img src="/assets/images/logo2.png" alt="image description">
+									</a>
+								</strong>
+								<div class="tg-description">
+									<p>We specialize in offering help to find your best medical solution.</p>
+								</div>
+								<ul class="tg-info">
+									<li>
+										<i class="fa fa-home"></i>
+										<address>1 Nwodo street GRA Enugu, Enugu State</address>
+									</li>
+									<li>
+										<i class="fa fa-envelope"></i>
+										<em><a href="#">info@domain.com</a></em>
+									</li>
+									<li>
+										<i class="fa fa-phone"></i>
+										<em><a href="#">+234 8064245256</a></em>
+									</li>
+								</ul>
+							</div>
+						</div>
+						<div class="col-sm-4">
+							<div class="tg-footercol">
+								<div class="tg-heading-border tg-small">
+									<h4>featured doctors</h4>
+								</div>
+								<div class="tg-widget tg-featured-doctore">
+									<ul>
+										<li>
+											<figure class="tg-imgdoc">
+												<img src="/assets/images/img-02.jpg" alt="image description">
+												<div class="tg-img-hover">
+													<a href="#"><i class="icon-zoom"></i></a>
+												</div>
+											</figure>
+											<div class="tg-docinfo">
+												<span class="tg-docname"><a href="#">Dr. Jennifer Bada-Ellzey, MD, MPH</a></span>
+												<span class="tg-stars">
+													<em>Ranking:</em>
+													<i class="fa fa-star"></i>
+													<i class="fa fa-star"></i>
+													<i class="fa fa-star"></i>
+													<i class="fa fa-star"></i>
+													<i class="fa fa-star"></i>
+												</span>
+												<div class="tg-designation">
+													<p><a href="#">Family &amp; Community Medicine</a></p>
+												</div>
+											</div>
+										</li>
+										<li>
+											<figure class="tg-imgdoc">
+												<img src="/assets/images/img-03.jpg" alt="image description">
+												<div class="tg-img-hover">
+													<a href="#"><i class="icon-zoom"></i></a>
+												</div>
+											</figure>
+											<div class="tg-docinfo">
+												<span class="tg-docname"><a href="#">Dr. Curtis O. Ballard, MD</a></span>
+												<span class="tg-stars">
+													<em>Ranking:</em>
+													<i class="fa fa-star"></i>
+													<i class="fa fa-star"></i>
+													<i class="fa fa-star"></i>
+													<i class="fa fa-star-o"></i>
+													<i class="fa fa-star-o"></i>
+												</span>
+												<div class="tg-designation">
+													<p><a href="#">Orthopaedic Surgery &amp; Sports Medicine</a></p>
+												</div>
+											</div>
+										</li>
+									</ul>
+								</div>
+							</div>
+						</div>
+						<div class="col-sm-4">
+							<div class="tg-footercol">
+								<div class="tg-heading-border tg-small">
+									<h4>Useful links</h4>
+								</div>
+								<div class="tg-widget tg-usefullinks">
+									<ul>
+										<li><a href="#">About Us</a></li>
+										<li><a href="#">Latest Blog</a></li>
+										<li><a href="#">Terms and Conditions</a></li>
+										<li><a href="#">Privacy Policy</a></li>
+										<li><a href="#">Contact Us</a></li>
+									</ul>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>-->
+			<div class="tg-footerbar tg-haslayout">
+				<div class="tg-copyrights">
+					<p>2015 All Rights Reserved © DocDirect</p>
+				</div>
+			</div>
+		</footer>
+		<!--************************************
+				Footer End
+		*************************************-->
+	</div>
+	<!--************************************
+			Wrapper End
+	*************************************-->
+	<!--************************************
+		Sign In Sign Up Light Box Start
+	*************************************-->
+		<div class="modal fade tg-user-modal" tabindex="-1" role="dialog">
+		<div class="tg-modal-content">
+			<ul class="tg-modaltabs-nav" role="tablist">
+				<li role="presentation" class="active"><a href="#tg-signin-formarea" aria-controls="tg-signin-formarea" role="tab" data-toggle="tab">sign in</a></li>
+				<li role="presentation"><a href="#tg-signup-formarea" aria-controls="tg-signup-formarea" role="tab" data-toggle="tab">sign up</a></li>
+			</ul>
+			<div class="tab-content tg-haslayout">
+				<div role="tabpanel" class="tab-pane tg-haslayout active" id="tg-signin-formarea">
+					<form class="tg-form-modal tg-form-signin">
+						<fieldset>
+							<div class="form-group">
+								<input type="email" class="form-control" placeholder="Email Address">
+							</div>
+							<div class="form-group">
+								<input type="password" class="form-control" placeholder="Password">
+							</div>
+							<div class="form-group tg-checkbox">
+								<label>
+									<input type="checkbox" class="form-control">
+									Remember Me
+								</label>
+								<a class="tg-forgot-password" href="#">
+									<i>Forgot Password</i>
+									<i class="fa fa-question-circle"></i>
+								</a>
+							</div>
+							<button class="tg-btn tg-btn-lg">LOGIN now</button>
+						</fieldset>
+					</form>
+				</div>
+				<div role="tabpanel" class="tab-pane tg-haslayout" id="tg-signup-formarea">
+					<form class="tg-form-modal tg-form-signup">
+						<fieldset>
+							<div class="form-group">
+								<span class="select">
+									<select>
+										<option>Doctor one</option>
+										<option>Doctor two</option>
+										<option>Doctor three</option>
+									</select>
+								</span>
+							</div>
+							<div class="form-group">
+								<span class="select">
+									<select>
+										<option>Specialty*</option>
+										<option>Specialty two</option>
+										<option>Specialty three</option>
+									</select>
+								</span>
+							</div>
+							<div class="form-group">
+								<input type="text" class="form-control" placeholder="First Name">
+							</div>
+							<div class="form-group">
+								<input type="text" class="form-control" placeholder="last Name">
+							</div>
+							<div class="form-group">
+								<input type="text" class="form-control" placeholder="Phone Number">
+							</div>
+							<div class="form-group">
+								<input type="email" class="form-control" placeholder="Email">
+							</div>
+							<div class="form-group">
+								<input type="text" class="form-control" placeholder="ZIP Code">
+							</div>
+							<div class="form-group tg-checkbox">
+								<label>
+									<input type="checkbox" class="form-control">
+									I agree with the terms and conditions
+								</label>
+							</div>
+							<button class="tg-btn tg-btn-lg">Create an Account</button>
+						</fieldset>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!--************************************
+		Sign In Sign Up Light Box End
+	*************************************-->
+		<script src="/assets/js/vendor/jquery-library.js"></script>
+        <script src="/assets/js/vendor/bootstrap.min.js"></script>
+        <script type="text/javascript" src="/assets/js/source.js"></script>
+        <script type="text/javascript" src="/assets/js/angularclient.js"></script>
+        <script type="text/javascript" src="/assets/js/ngroute.js"></script>
+        <script src="/socket.io/socket.io.js"></script>   
+        <script src="/assets/js/socket.min.js"></script>
+        <script src="/assets/js/jquery-ui.js"></script>
+        <!--<script src="http://maps.google.com/maps/api/js?sensor=false"></script>
+        <script src="/assets/js/map/jquery.gomap.js"></script>-->
+        <script src="/assets/js/map/markerclusterer.min.js"></script>
+        <script src="/assets/js/countdown.js"></script>
+        <script src="/assets/js/jquery.nicescroll.js"></script>
+        <script src="http://cdn.peerjs.com/0.3/peer.js"></script>
+        <script type="text/javascript">
+            
+        </script>
+        <script src="/assets/js/jquery.nicescroll.js"></script>
+        <script src="/assets/js/parallax.js"></script>
+        <script src="/assets/js/owl.carousel.js"></script>
+        <script src="/assets/js/prettyPhoto.js"></script>
+        <script src="/assets/js/appear.js"></script>
+        <script src="/assets/js/countTo.js"></script>
+        <script src="/assets/js/map/map.js"></script>
+        <script src="/assets/js/angularAnimate.js"></script>
+        <script src="/assets/js/modalService.js"></script>
+        <script src="/assets/js/main.js"></script>
+        <script src="/assets/js/angular-touch.min.js"></script>
+        <script src="/assets/js/angular-carousel.js"></script>
+        <script src="/assets/js/moment.min.js"></script>
+        <script src="/assets/js/angular-moment.min.js"></script>
+        <script src="/assets/js/angucomplete-alt.min.js"></script> 
+        <script src="/assets/js/ui-bootstrap-tpls.js"></script>
+        <script src="/assets/js/angular-clipboard.js"></script>
+        <script src="/assets/js/ngresource.js"></script>       
+        
+        <script type="text/javascript">    
+        
+   navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
+   var receiverRaw = localStorage.getItem("receiver");
+   var callerRaw = localStorage.getItem("caller");
+   var receiver = JSON.parse(receiverRaw);
+   var caller = JSON.parse(callerRaw);
+   console.log(receiver);
+   console.log(caller);
+
+    // PeerJS object
+    console.log("port: " + window.location.port);
+    console.log("host: " + window.location.hostname);
+    //var peer = new Peer(caller,{key: "pciwsjsoykb21emi"});
+    var host = window.location.hostname || "127.0.0.1";
+    var port = window.location.port || (window.location.protocol === 'https:' ? 443 : 8080)
+    var peer = new Peer(caller,{
+    host: host,
+    port:"",
+    path: '/call',    
+    debug: 3
+    });
+
+
+    ///
+    
+    peer.on('open', function(){
+        console.log(peer)
+      $('#my-id').text(peer.id);
+    });
+
+    // Receiving a call
+    peer.on('call', function(call){
+      // Answer the call automatically (instead of prompting user) for demo purposes
+      audio();
+      $('#answer-btn').click(function(){
+        call.answer(window.localStream);
+      });   
+      step3(call);
+    });
+
+    peer.on('error', function(err){
+      alert(err.message);
+      // Return to step 2 if error occurs
+      step2();
+    });
+
+    // Click handlers setup
+    window.addEventListener('load',function(){
+        console.log("calling")
+      $('#make-call').click(function(){
+        // Initiate a call!
+        var call = peer.call(receiver, window.localStream);
+        step3(call);
+      });
+      $('#end-call').click(function(){
+        window.existingCall.close();
+        step2();
+      });
+      // Retry if getUserMedia fails
+      $('#step1-retry').click(function(){
+        $('#step1-error').hide();
+        step1();
+      });
+      // Get things started
+         step1();
+     
+    });
+    function step1 () {
+      // Get audio/video stream
+      navigator.getUserMedia({audio: true, video: true}, function(stream){
+        // Set your video displays
+        $('#my-video').prop('src', URL.createObjectURL(stream));
+        window.localStream = stream;
+        step2();
+      }, function(){ $('#step1-error').show(); });
+    }
+    function step2 () {
+      $('#step1, #step3').hide();
+      $('#step2').show();
+    }
+    function step3 (call) {
+      // Hang up on an existing call if present
+      if (window.existingCall) {
+        window.existingCall.close();
+      }
+      // Wait for stream on the call, then set peer video display
+      call.on('stream', function(stream){
+        $('#their-video').prop('src', URL.createObjectURL(stream));
+      });
+      // UI stuff
+      window.existingCall = call;
+      $('#their-id').text(call.peer);
+      call.on('close', step2);
+      $('#step1, #step2').hide();
+      $('#step3').show();
+    }
+    
+    
+    var audio = function(){
+        var audio = new Audio('/assets/audio/gets-in-the-way.mp3');
+        audio.play();
+        $('#answer-btn').show();
+    }
+
+        </script>
+
+	  
+    
+	
+    
+         
+</body>
+</html>

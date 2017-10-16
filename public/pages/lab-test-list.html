@@ -1,0 +1,145 @@
+
+<!--<div class="col-sm-12 col-md-12 col-lg-12">
+  <p class="lab-test">
+    <button ng-click="chemical()" ng-class="{'btn-primary':isChemical === true}">Listing of Chemical Pathology </button>
+    <button ng-click="blood()" g-class="{'btn-primary':isBlood === true}">Listing of Hematology/Blood Bank </button>
+    <button ng-click="cytology()" g-class="{'btn-primary':isCytology === true}">Listing of Histology/Cytology</button>
+    <button ng-click="hormone()" g-class="{'btn-primary':isHormone === true}">Listing of Hormone </span>
+    <button ng-click="parasitology()" g-class="{'btn-primary':isParasitology === true}">Listing of Microbiology/Parasitology</button>
+    <button ng-click="toxicology()" g-class="{'btn-primary':isToxicology === true}">Listing of Toxicology</button>
+    <button ng-click="molecular()" g-class="{'btn-primary':isMolecular === true}">Listing of Molecular Biology</button>
+  </p>
+  <section class="lab-tests-section">    
+    <p style="margin-top: 20px;text-align: right"><button ng-click="preview()">Preview selected test</button></p>
+    <label>Filter list by test name</label>     
+    <input type="test" ng-model="lab.name">     
+    <div ng-if="isChemical">
+       
+      <ul>
+        <li ng-repeat="j in list | filter: lab.name "><input type="checkbox" ng-model="j.select">{{j.name}}</li>
+      </ul>      
+    </div>
+    <div ng-if="isBlood">
+
+      <ul>
+        <li ng-repeat="j in list | filter: lab.name "><input type="checkbox" ng-model="j.select">{{j.name}}</li>
+      </ul>      
+    </div>
+    <div ng-if="isCytology">
+      <ul>
+        <li ng-repeat="j in list | filter: lab.name "><input type="checkbox" ng-model="j.select">{{j.name}}</li>
+      </ul>     
+    </div>
+    <div ng-if="isHormone">
+      <ul>
+        <li ng-repeat="j in list | filter: lab.name "><input type="checkbox" ng-model="j.select">{{j.name}}</li>
+      </ul>     
+    </div>
+    <div ng-if="isParasitology">
+      <ul>
+        <li ng-repeat="j in list | filter: lab.name "><input type="checkbox" ng-model="j.select">{{j.name}}</li>
+      </ul>     
+    </div>
+    <div ng-if="isToxicology">
+      <ul>
+        <li ng-repeat="j in list | filter: lab.name "><input type="checkbox" ng-model="j.select">{{j.name}}</li>
+      </ul>     
+    </div>
+    <div ng-if="isMolecular">
+      <ul>
+        <li ng-repeat="j in list | filter: lab.name "><input type="checkbox" ng-model="j.select">{{j.name}}</li>
+      </ul>    
+    </div>
+    <p style="margin-top: 20px"><button ng-click="preview()">Preview selected test</button></p>
+  </section>  
+<div>-->
+
+
+
+<div class="col-sm-12 col-md-12 col-lg-12">
+  <p class="lab-test">
+    <button class="btn btn-neutral" ng-click="chemical()" ng-class="{'btn-primary':isChemical === true}">Listing of Chemical Pathology </button>
+    <button class="btn btn-neutral" ng-click="blood()" g-class="{'btn-primary':isBlood === true}">Listing of Hematology/Blood Bank </button>
+    <button class="btn btn-neutral" ng-click="cytology()" g-class="{'btn-primary':isCytology === true}">Listing of Histology/Cytology</button>
+    <button class="btn btn-neutral" ng-click="hormone()" g-class="{'btn-primary':isHormone === true}">Listing of Hormone </span>
+    <button class="btn btn-neutral" ng-click="parasitology()" g-class="{'btn-primary':isParasitology === true}">Listing of Microbiology/Parasitology</button>
+    <button class="btn btn-neutral" ng-click="toxicology()" g-class="{'btn-primary':isToxicology === true}">Listing of Toxicology</button>
+    <button class="btn btn-neutral" ng-click="molecular()" g-class="{'btn-primary':isMolecular === true}">Listing of Molecular Biology</button>
+  </p>
+  <section class="lab-tests-section">    
+    <p class="mt-1" style="text-align: right">
+    <button class="btn btn-simple" ng-click="preview()">Preview selected test</button></p>
+    <div class="col-md-6 form-inline">
+    <label>Filter list by test name</label>     
+    <input class="form-control" type="test" ng-model="lab.name">  
+    </div>
+    <div class="clearfix"></div>   
+    <div class="col-md-12" ng-if="isChemical">
+       
+     
+<label ng-repeat="j in list | filter: lab.name " class="custom-control custom-checkbox">
+  <input  ng-model="j.select" type="checkbox" class="custom-control-input" >
+  <span class="custom-control-indicator"></span>
+  <span class="custom-control-description">{{j.name}}</span>
+</label>   
+    </div>
+
+    <div class="col-md-12" ng-if="isBlood">
+<label ng-repeat="j in list | filter: lab.name " class="custom-control custom-checkbox">
+  <input  ng-model="j.select" type="checkbox" class="custom-control-input" >
+  <span class="custom-control-indicator"></span>
+  <span class="custom-control-description">{{j.name}}</span>
+</label>     
+    </div>
+
+    <div class="col-md-12" ng-if="isCytology">  
+<label ng-repeat="j in list | filter: lab.name " class="custom-control custom-checkbox">
+  <input  ng-model="j.select" type="checkbox" class="custom-control-input" >
+  <span class="custom-control-indicator"></span>
+  <span class="custom-control-description">{{j.name}}</span>
+</label>    
+    </div>
+
+    <div class="col-md-12" ng-if="isHormone">
+<label ng-repeat="j in list | filter: lab.name " class="custom-control custom-checkbox">
+  <input  ng-model="j.select" type="checkbox" class="custom-control-input" >
+  <span class="custom-control-indicator"></span>
+  <span class="custom-control-description">{{j.name}}</span>
+</label>   
+    </div>
+    <div class="col-md-12" ng-if="isParasitology">
+      
+<label ng-repeat="j in list | filter: lab.name " class="custom-control custom-checkbox">
+  <input  ng-model="j.select" type="checkbox" class="custom-control-input" >
+  <span class="custom-control-indicator"></span>
+  <span class="custom-control-description">{{j.name}}</span>
+</label>     
+    </div>
+
+    <div class="col-md-12" ng-if="isToxicology">
+      
+<label ng-repeat="j in list | filter: lab.name " class="custom-control custom-checkbox">
+  <input  ng-model="j.select" type="checkbox" class="custom-control-input" >
+  <span class="custom-control-indicator"></span>
+  <span class="custom-control-description">{{j.name}}</span>
+</label>  
+    </div>
+
+    <div class="col-md-12" ng-if="isMolecular">
+     
+<label ng-repeat="j in list | filter: lab.name " class="custom-control custom-checkbox">
+  <input  ng-model="j.select" type="checkbox" class="custom-control-input" >
+  <span class="custom-control-indicator"></span>
+  <span class="custom-control-description">{{j.name}}</span>
+</label>  
+    </div>
+    <p class="mt-1"><button class="btn btn-info" ng-click="preview()">Preview selected test</button></p>
+  </section>  
+<div>
+
+
+ 
+
+
+
+  

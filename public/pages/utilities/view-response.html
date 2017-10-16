@@ -1,0 +1,86 @@
+<!--<div>
+	<section class="patient-view-complain">
+		<div>
+			<span>Ref | </span>
+			<span>{{responders.complaint_id}}</span>
+		</div>
+		<div>
+			<span>Response | </span>
+			<span> {{responders.response.length}} doctor(s)</span>
+		</div>
+		<div>
+			<span>Sent date | </span>
+			<span>{{responders.sent_date | date : 'mediumDate'}}</span>
+		</div>
+	</section>
+	<ul class="view-response-symptoms">
+		<li ng-repeat = "symptom in responders.symptoms">{{symptom}}</li>
+	</ul>
+	<h6>Ref Complain</h6>
+	<p><sup>"</sup>{{responders.description}}<sup>"</sup></p>
+	<hr/>
+	<main class="responded-doctors">
+		<h6>Response</h6>
+		<section ng-repeat = "doc in responders.response">
+			<img ng-src="{{doc.doctor_profile_pic_url}}" style="width:32px; height: 32px">
+			<div>
+				<header>
+					<h6>{{doc.doctor_name}} {{doc.doctor_lastname}}</h6>
+					<p>{{doc.doctor_specialty}}</p>
+				</header>
+				<div>
+					<button ng-click="viewDocProfile(doc.doctor_user_id,doc.introductory,doc.fee)">View profile</button>
+					<button ng-click="acceptDoc(doc.doctor_user_id)">Accept</button>
+					<button ng-click="declineDoc(doc.doctor_user_id)">Decline</button>
+				</div>
+			</div>
+		</section>
+	</main>
+</div>-->
+
+
+
+<div class="container">
+    <div class="card p-2">
+	<section class="patient-view-complain">
+		<div>
+			<span>Ref: </span>
+			<span>{{responders.complaint_id}}</span>
+		</div>
+		<div>
+			<span>Response: </span>
+			<span> {{responders.response.length}} doctor(s)</span>
+		</div>
+		<div>
+			<span>Sent date: </span>
+			<span>{{responders.sent_date | date : 'mediumDate'}}</span>
+		</div>
+	</section>
+	<ul class="nav mb-1">
+		<li ng-repeat = "symptom in responders.symptoms">{{symptom}}</li>
+	</ul>
+	<h6  class="text-muted">Ref Complain</h6>
+	<p><sup>"</sup>{{responders.description}}<sup>"</sup></p>
+	<hr/>
+	<main class="responded-doctors">
+		<h6 class="text-muted">Response</h6>
+		<section ng-repeat = "doc in responders.response">
+			<img ng-src="{{doc.doctor_profile_pic_url}}" style="width:32px; height: 32px">
+			<div>
+				<div class="mb-1">
+					<div class="font-1_4 mb-0">{{doc.doctor_name}} {{doc.doctor_lastname}}</div>
+					<sub class="text-muted">{{doc.doctor_specialty}}</sub>
+				</div>
+				<div>
+					<button ng-click="viewDocProfile(doc.doctor_user_id,doc.introductory,doc.fee)" class="btn btn-simple">View profile</button>
+					<button ng-click="acceptDoc(doc.doctor_user_id)" class="btn btn-success">Accept</button>
+					<button ng-click="declineDoc(doc.doctor_user_id)" class="btn btn-danger">Decline</button>
+				</div>
+			</div>
+		</section>
+	</main>
+</div>
+</div>
+
+
+

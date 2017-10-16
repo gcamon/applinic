@@ -1,0 +1,187 @@
+<div class="row">
+	
+	<div class="col-sm-12 col-md-12 col-lg-12 shadow">
+		<ul class="prescription-options">			
+			<li ng-click="recent()" ng-class="{highlight: isRecent === true}">most recent</li>
+			<li ng-click="three()" ng-class="{highlight: isThree === true}">last three months</li>
+			<li ng-click="six()" ng-class="{highlight: isSix === true}">last six months</li>
+			<li ng-click="all()" ng-class="{highlight: isAll === true}">all</li>
+		</ul>
+	</div>
+</div>
+<div style="padding: 30px;" class="row shadow"  ng-repeat="docInfo in prescriptionRecordsResult" id="{{docInfo.prescriptionId}}">	
+    <div class="col-sm-12 col-md-4 col-lg-4">
+  
+    	
+   		 <!--<img alt="image description" ng-src="{{docInfo.Doctor_profile_pic_url}}" style="max-width: 200px; max-height:200px" class="shadow">-->
+        <div class="tg-widget tg-widget-doctor" style="padding: 10px 0px">
+
+           <h6 style="padding: 10px 0px 0;text-decoration: underline;">Prescription by</h6>
+
+           <strong style="font-weight: bold;padding: 15px 0px 5px;line-height: 35px" ><i class="fa fa-user-md"></i> <em>{{docInfo.title}}  {{docInfo.doctor_firstname}} {{docInfo.doctor_lastname}}</em><span style="display: block;text-indent: 14px;font-weight: normal;font-style: italic;" ng-if="docInfo.doctor_specialty" >{{docInfo.doctor_specialty}} </span></strong>
+           <p ng-if="docInfo.doctor_work_place"><i class="fa fa-globe"></i> Works at {{docInfo.doctor_work_place}} {{docInfo.doctor_address}} {{docInfo.doctor_city}} {{docInfo.doctor_country}}.</p>
+           <p ng-if="!docInfo.doctor_work_place"><i class="fa fa-globe"></i> Address: {{docInfo.doctor_address}} {{docInfo.doctor_city}} {{docInfo.doctor_country}}.</p>
+           <a href="{{docInfo.doctor_profile_url}}" title="view profile" ng-if="docInfo.doctor_work_place">View profile</a>
+           <p style="color:red;padding: 10px 20px 0 0" ng-if="!docInfo.doctor_work_place"><i class="fa fa-warning"></i> This prescription may have been written by non-professional.</p>
+        </div>
+    </div>
+    <div class="col-sm-12 col-md-8 col-lg-8" style="padding: 10px 10px 0;">      
+               	
+		    <!--<h6 style="">Prescription by:  <span style="font-weight: 100; color:black"><em>{{docInfo.title}} {{docInfo.doctor_firstname}} {{docInfo.doctor_lastname}}</em></span></h6>
+		    <h6 style="border-bottom: 1px solid rgba(0,0,0,0.3);  text-align:center"></h6>
+		    <h6>Specialty: <span style="font-weight: 200; color:black">{{docInfo.doctor_specialty}}</span></h6>
+		    <h6>Sub-Specialty: <span style="font-weight: 200; color:black">{{docInfo.doctor_sub_specialty}}</span></h6>
+		    <h6>Phone: <span style="font-weight: 200; color:black">{{docInfo.doctor_phone}}</span></h6>
+		    <h6>Address: <span style="font-weight: 200; color:black;font-size: 12px">{{docInfo.doctor_work_place}}</span> | <span style="font-style:italic; color:black;font-size:12px">{{docInfo.doctor_address}}</span></h6>
+		    <h6>City: <span style="font-weight: 200; color:black">{{docInfo.doctor_city}}</span></h6>        
+		    <h6>Experience: <span style="color:black">{{docInfo.doctor_experience + " years"}}</span></h6>-->        
+		   		<h6 style="text-decoration: underline;">Prescription details</h6>		    	
+		    	<div class="row">
+		    		<div class="col-sm-12 col-md-6 col-lg-6"> 
+		    			<p><strong>Date</strong> : <span>{{docInfo.date | date: "mediumDate"}}</span></p>
+		    		</div>
+		    		<div class="col-sm-12 col-md-6 col-lg-6"> 
+		    			<p style="padding-right:10px;word-wrap: break-word;"><strong>Diagnosis</strong> : <span>{{docInfo.provisional_diagnosis}}</span></p>
+		    		</div>		    		
+		    	</div>
+		    	<!--<div class="row">
+		    		<div class="col-sm-12 col-md-6 col-lg-6">
+		    			<p style="padding-right:10px;word-wrap: break-word;"><strong>Lab</strong> : <span>{{docInfo.lab_analysis}}</span></p/>
+		    		</div>
+		    		<div class="col-sm-12 col-md-6 col-lg-6">
+		    			
+		    			<p style="padding-right:10px;word-wrap: break-word;"><strong>Radio</strong> : <span>{{docInfo.scan_analysis}}</span></p>
+		    		</div>
+		    	</div>-->
+		    	<div class="row">
+		    		<div class="col-sm-12 col-md-12 col-lg-12" style="padding: 10px 15px 0;">
+		    			<strong>Prescription ID :</strong> <span>{{docInfo.prescriptionId}}</span>
+						<button clipboard supported="supported" text="docInfo.prescriptionId" on-copied="success(docInfo.prescriptionId)" on-error="fail(err)" title="{{copy}}" class="btn btn-info fa fa-copy" style="padding: 5px"> Copy</button>		    			
+		    		</div>
+		    	</div>
+		    	
+		    	<div class="row">
+		    		<div class="col-sm-12 col-md-12 col-lg-12" style="padding: 10px 15px 0;">
+		    			<table class="table table-striped table-responsive">
+		    				<tr>
+		    					<thead>
+		    						<th>S/N</th>
+		    						<th>Drug Name</th>
+		    						<th>Dosage</th>
+		    						<th>Frequency</th>
+		    						<th>Duration</th>		    						
+		    					</thead>        					
+		    				</tr>
+		    				<tr>
+		    					<tbody ng-repeat="prescription in docInfo.prescription_body">		    						
+		    						<td>{{prescription.sn}}</td>
+		    						<td>{{prescription.drug_name}}</td>
+		    						<td>{{prescription.dosage}}</td>
+		    						<td>{{prescription.frequency}}</td>
+		    						<td>{{prescription.duration}}</td>		    							    						
+		    					</tbody>
+		    				</tr>
+		    			</table>
+		    		</div>
+		    	</div>
+    			<div class="row">
+    				<div class="col-sm-12 col-md-12 col-lg-12" style="padding: 10px 15px 0;position: relative;">
+    					<div>
+    						<i class="fa fa-motorcycle btn btn-simple" aria-hidden="true" style="color:green;font-size: 18px;margin-right:15px;cursor:pointer;padding: 5px 15px" ng-click="courier(docInfo)" title="Use our courier service"></i>
+		    				
+		    				<i ng-print  print-element-id="{{docInfo.prescriptionId}}" class="fa fa-print btn btn-simple" aria-hidden="true" style="color:green;font-size: 18px;margin-right:15px;cursor:pointer;padding: 5px 15px" title="Print this prescription"></i>
+		    				<i class="fa fa-share btn btn-simple" aria-hidden="true" style="color:green;font-size:18px;margin-right:20px;cursor:pointer;padding: 5px 15px" title="Forward this prescription to a Phamarcy" ng-click="forwardPrescription(docInfo)"></i>
+		    				<!--<span ng-click="deletePrescription(docInfo.prescriptionId)"><i class="fa fa-remove" style="color:green;font-size: 18px;margin-right:20px;cursor:pointer" title="Delete this prescription" ></i></span>-->
+		    				
+	    				</div>
+    				</div>
+    				 <div>
+    				 	<a href="" class="btn btn-simple" style="cursor:pointer;color:green;position: absolute; bottom: 0px; right: 0;padding: 5px 5px" ng-click="trackedPrescription(docInfo.prescriptionId,docInfo)" title="Look up where this prescription has been sent to">Track record</a>
+    				 </div>			
+    			</div>
+    		</div>
+    	</div>
+
+
+   <!-- <div class="container">
+        <div class="row">
+<div class="card p-2" style="border:1p solid rgba(0,0,0,0.2);" class="clearfix">	
+    <div class="col-md-3 col-sm-12" style="padding-right: 0px;">
+            <img alt="image description" class="card" src="assets/img/avatar.jpg" ng-src="{{presInfo.Doctor_profile_pic_url}}" style="width: 190px; height:190px">              
+              
+              <div class="col-sm-12 mb-1 pt-1">
+                <span class="badge badge-success pl-2 pr-2" style="width:100%;">online</span>                                                    
+                </div>                    
+    </div>
+
+    <div class="col-md-9 col-sm-12">                    	
+		    <div class="font-1_4">Prescription by:  <span>Dr. {{presInfo.doctor_firstname}} {{presInfo.doctor_lastname}}</span></div>
+		    <div class="pb-1 mb-1" style="border-bottom: 1px solid rgba(0,0,0,0.3);  text-align:center"></div>
+		    <div  class="font-1_1 mb-0">Specialty:{{presInfo.doctor_specialty}}</div>
+		    <div  class="font-1_1">Sub-Specialty: {{presInfo.doctor_sub_specialty}}</div>
+		    <div  class="font-1_1">Phone: {{presInfo.doctor_phone}}</div>
+		    <div  class="font-1_1">Address: {{presInfo.doctor_work_place}} | <span style="font-style:italic;">{{presInfo.doctor_address}}</span></div>
+		    <div  class="font-1_1">City: {{presInfo.doctor_city}}</div>        
+		    <div  class="font-1_1 mb-1">Experience: {{presInfo.doctor_experience + " years"}}</div>        
+		   
+            <b class="mb-0 font-1_4">Prescription Details:</b>		    	
+		    	<div class="row">
+		    		<div class="col-md-5 col-sm-12 "> 
+		    			<p><strong>Date</strong> : <span>{{presInfo.date| date: "medium"}}</span></p>
+		    		</div>
+		    		<div class="col-md-7 col-sm-12"> 
+		    			<p><strong>Diagnosis</strong> : <span>{{presInfo.provisional_diagnosis}}</span></p/>
+		    		</div>		    		
+		    	</div>
+		    	<div class="row">
+		    		<div class="col-md-6 col-sm-12">
+		    			<p><strong>Lab result</strong> : <span>{{presInfo.lab_analysis}}</span></p/>
+		    		</div>
+		    		<div class="col-md-6 col-sm-12">
+		    			<p><strong>Scan</strong> : <span>{{presInfo.scan_analysis}}</span></p>
+		    		</div>
+		    	</div>		    	
+		    	<div class="row">
+		    		<div class="col-sm-12 col-md-12 col-lg-12">
+		    			<table class="table table-striped table-responsive">
+		    				<tr>
+		    					<thead>
+		    						<th>S/N</th>
+		    						<th>Drug Name</th>
+		    						<th>Dosage</th>
+		    						<th>Frequency</th>
+		    						<th>Duration</th>		    						
+		    					</thead>        					
+		    				</tr>
+		    				<tr>
+		    					<tbody ng-repeat="prescription in presInfo.prescription_body">		    						
+		    						<td>{{prescription.sn}}</td>
+		    						<td>{{prescription.drug_name}}</td>
+		    						<td>{{prescription.dosage}}</td>
+		    						<td>{{prescription.frequency}}</td>
+		    						<td>{{prescription.duration}}</td>		    							    						
+		    					</tbody>
+		    				</tr>
+		    			</table>
+		    			<div class="pull-right">
+		    				<span class="fa fa-download" aria-hidden="true" class="text-success mr-1" style="display:inline-block; margin-right:5px; cursor:pointer" title="Download this prescription" ng-click="downloadPrescription(presInfo)"></span>
+		    				<span class="fa fa-arrow-right" aria-hidden="true" class="text-success mr-1" style="display:inline-block; cursor:pointer" title="Forward this prescription to a Phamarcy" ng-click="forwardPrescription(presInfo)"></span>				    	
+						</div>		    			
+    					<div>
+    						<p class="mt-1 font-1_4">Track Record:</p>
+    						<ol class="nav">
+    							<li ng-repeat = "go in trackedPrescription">
+    								<p>Sent to: {{go.center_name}} date | {{go.date | date : "mediumDate"}} Time | {{go.date | date : "mediumTime"}}</p>
+    								<address>Address: {{go.address}}, {{go.city}},{{go.country}}</address>
+    								<p>Ref No: {{go.ref_id}}</p>
+    							</li>
+    						</ol>
+    						<p class="text-danger" style="text-align: center;" ng-if="trackedPrescription.length < 1">This prescription has not been sent to any Pharmacy</p>
+    					</div>		    				
+		    		</div>
+		    	</div>
+        </div>
+    </div>
+
+</div>
+</div>-->

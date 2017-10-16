@@ -1,0 +1,28 @@
+<!--<div>
+	<h2>Search for Skills and Procedure</h2>
+	<form>
+		<div class="col-md-5 form-group">        
+        <input type="text" class="form-control" placeholder="Skill or Procedure"   uib-typeahead="skill for skill in skills | filter:$viewValue | limitTo:15" ng-model="user.skill">
+      	</div>
+		<button class="btn btn-info" ng-click = "find('skill')">Find</button>
+	</form>
+</div>-->
+
+
+ 
+
+<div class="container">
+	<div class="card p-2">
+		<h2 class="font-1_4">Search for Skills and Procedures</h2>
+		<form>
+			<div class="col-md-11 form-group">        
+	        <input type="text" class="form-control" placeholder="Skill or Procedure"   uib-typeahead="skill.procedure_description for skill in skills | filter:$viewValue | limitTo:15" ng-model="user.skill">
+	      	</div>
+	      	<div>
+				<button class="btn btn-info" ng-click = "find('skill')">Find</button>
+			</div>
+		</form>
+	</div>
+</div>
+
+

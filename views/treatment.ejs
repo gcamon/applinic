@@ -1,0 +1,564 @@
+<!doctype html>
+<html class="no-js" lang="en">
+
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title> Applinic</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="apple-touch-icon" href="apple-touch-icon.png">
+        <!-- Place favicon.ico in the root directory -->
+         <link rel="stylesheet" href="/assets/css/vendor.css">
+        <link rel="stylesheet" href="/assets/css/app.css">
+        <link rel="stylesheet" href="/assets/css/my-edit.css">
+        <link rel="stylesheet" href="/assets/css/now-ui-kit2.css">
+        <link rel="stylesheet" href="/assets/css/icomoon.css">
+          <link rel="stylesheet" href="/assets/css/chat.css">
+        <script src="/assets/js/vendor2.js"></script>
+        <script type="text/javascript" src="/assets/js/source.js"></script>
+          <style>
+              .title{
+                  font-weight: 300;
+              }
+
+              .inc-height {
+                height: 120px;
+              }
+          </style>
+    </head>
+
+    <body ng-app = "myApp">
+      <header id="header"   ng-controller="topHeaderController" style="background-color:#d7dde4">
+              
+        <nav class="header" style="height:70px; margin-top:-.5em; z-index:1000;">
+             <div class="header-block header-block-nav">
+                <ul  style="display:inline-block;width:100%">
+                    
+                    <li style="float:left;margin:20px 10px">
+                        <a ng-href="{{back}}" class="nav-link" >
+                          <b style="font-size:16px; font-weight:bold;"> &larr; Back to dashbaord</b>
+                        </a>
+                    </li>
+                     
+                                         
+
+                    <li style="float:right;list-style-type:none;margin:20px 10px">
+                        <a class="nav-link" href="" ng-click="logout()">
+                           
+                            <span class="name">
+             <i class="fa fa-power-off icon"></i>
+              Logout
+            </span> </a></li> </ul>
+            </div>
+        </nav>
+</header>
+
+
+
+
+
+<div class="container p-0" style="box-shadow: 0px 5px 25px 0px rgba(0, 0, 0, 0.2);margin-top:100px" ng-controller="inTreatmentController">
+ 
+<div class="col-md-12  col-sm-12 col-xs-12 card p-1 mb-3">
+  <div class="col-md-3 col-sm-12 text-center" style="text-align:center;" >
+  <img src="{{sessionData.profilePic}}" class="img-rounded mb-1" style="max-height: 200px" >
+  <br> 
+  <!--<span class="pt-3" style="font-size:1.4em; font-weight:300;" ng-cloak ng-if="sessionData.patientInfo">{{sessionData.patientInfo.firstname}} {{sessionData.patientInfo.lastname}}</span>-->
+
+  <span class="pt-3" style="font-size:1.4em; font-weight:300;" ng-cloak>{{sessionData.patient_firstname}} {{sessionData.patient_lastname}}</span><span style="display:block">( Patient )</span>
+  </div>
+
+
+<div class="col-md-5 col-sm-12" ng-cloak><em style="font-size:1.2em; font-weight:300;">This session was intiated on {{sessionData.date | date : "mediumDate"}}, <br> Through <b>{{sessionData.typeOfSession}}</b></em>
+  <div style="padding-top: 30px"><b>Last modified:</b> <span>{{sessionData.last_modified | date : "mediumDate"}}</span>
+  </div>
+</div>
+
+
+<div class="col-md-4 col-sm-12 pt-3"><button style="float:right;" class="btn btn-info" ng-click="bookAppointment()">Book Appointment</button></div>
+<div class="col-md-4 col-sm-12 pt-3">
+    <label>Related sessions:</label>
+    <select ng-model="sessions" class="form-control" placeholder="Other sessions">
+      <options value="" selected>View related sessions</option>
+      <options>a</option>
+      
+    </select>
+</div>
+</div>
+
+
+
+
+
+<form  class="pb-5 mb-5">
+ <div class="row p-2 igwe-text">
+  
+  <div class="col-md-6  col-sm-12 col-xs-12 form-group">
+    <label class="col-md-12 p-0" style="display:block;" for="firstname"><div class="col-sm-9 p-0 pull-left"  style="font-size:1.2em; font-weight:500;">Complaint </div> 
+
+    <div class="col-sm-3 text-right"><button class="btn btn-simple btn-sm  pull-right fa fa-pencil" type="button" data-toggle="collapse" 
+    data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+  </button></div></label>
+
+   <div class="card-block p-0 mb-0 " id='complain' ng-cloak>
+  
+  </div>
+   <div class="collapse" id="collapseExample">
+      <textarea class="form-control inc-height" placeholder="{{sessionData.diagnosis.presenting_complain || 'Complaint'}}" ng-model="edit.presenting_complain"></textarea>
+  </div>
+  </div>
+
+  <div class="col-md-6 col-sm-12 col-xs-12 form-group mb-3" style="display:inline-block !important;">
+    <label class="col-md-12 p-0" style="display:block;" for="firstname">
+        <div class="col-sm-9 p-0 pull-left"  style="font-size:1.2em; font-weight:500;">History of the Complaint </div> 
+
+    <div class="col-sm-3 text-right"><button class="btn btn-simple btn-sm  pull-right fa fa-pencil" type="button" data-toggle="collapse" 
+    data-target="#historu" aria-expanded="false" aria-controls="collapseExample" ng-click = "setHistory()">
+  </button></div></label>
+
+   <div class="card-block p-0 mb-0" ng-cloak>
+   <!--{{sessionData.diagnosis.history_of_presenting_complain}}-->
+  </div>
+   <div class="collapse" id="historu">
+      <textarea class="form-control inc-height" placeholder="{{sessionData.diagnosis.history_of_presenting_complain || 'N/A'}}" ng-model="sessionData.diagnosis.history_of_presenting_complain"></textarea>
+  </div>
+  </div>
+
+ 
+  <div class="col-md-6 col-sm-12 col-xs-12 form-group mb-3">
+    <label class="col-md-12 p-0" style="display:block;" for="firstname">
+        <div class="col-sm-9 p-0 pull-left"  style="font-size:1.2em; font-weight:500;">Past Medical History </div> 
+
+    <div class="col-sm-3 text-right"><button class="btn btn-simple btn-sm  pull-right fa fa-pencil" type="button" data-toggle="collapse" 
+    data-target="#past" aria-expanded="false" aria-controls="collapseExample">
+  </button></div></label>
+
+   <div class="card-block p-0 mb-0" ng-cloak>
+  
+  </div>
+   <div class="collapse" id="past">
+        <textarea class="form-control inc-height" placeholder="{{sessionData.diagnosis.past_medical_history ||'Write'}}" ng-model="edit.past_medical_history"></textarea>
+  </div>
+  </div>
+
+ 
+  <div class="col-md-6 col-sm-12 col-xs-12 form-group mb-3">
+    <label class="col-md-12 p-0" style="display:block;" for="firstname">
+        <div class="col-sm-9 p-0 pull-left"  style="font-size:1.2em; font-weight:500;">Social History </div> 
+
+    <div class="col-sm-3 text-right"><button class="btn btn-simple btn-sm  pull-right fa fa-pencil" type="button" data-toggle="collapse" 
+    data-target="#social" aria-expanded="false" aria-controls="collapseExample">
+  </button></div></label>
+
+   <div class="card-block p-0 mb-0" ng-cloak>
+  
+  </div>
+   <div class="collapse" id="social">
+        <textarea class="form-control inc-height" placeholder="{{sessionData.diagnosis.social_history || 'Write'}}" ng-model="edit.social_history"></textarea>
+  </div>
+  </div>
+
+ 
+  <div class="col-md-6 col-sm-12 col-xs-12 form-group mb-3">
+    <label class="col-md-12 p-0" style="display:block;" for="firstname">
+        <div class="col-sm-9 p-0 pull-left"  style="font-size:1.2em; font-weight:500;">Family History </div> 
+
+    <div class="col-sm-3 text-right"><button class="btn btn-simple btn-sm  pull-right fa fa-pencil" type="button" data-toggle="collapse" 
+    data-target="#family" aria-expanded="false" aria-controls="collapseExample">
+  </button></div></label>
+
+   <div class="card-block p-0 mb-0" ng-cloak>
+  
+  </div>
+   <div class="collapse" id="family">
+        <textarea class="form-control inc-height" placeholder="{{sessionData.diagnosis.family_history || 'Write'}}" ng-model="edit.family_history"></textarea>
+  </div>
+  </div>
+
+ 
+  
+
+  
+  <div class="col-md-6 col-sm-12 col-xs-12 form-group mb-3">
+    <label class="col-md-12 p-0" style="display:block;" for="firstname">
+        <div class="col-sm-9 p-0 pull-left"  style="font-size:1.2em; font-weight:500;">Summary </div> 
+
+    <div class="col-sm-3 text-right"><button class="btn btn-simple btn-sm  pull-right fa fa-pencil" type="button" data-toggle="collapse" 
+    data-target="#summary" aria-expanded="false" aria-controls="collapseExample">
+  </button></div></label>
+
+   <div class="card-block p-0 mb-0" ng-cloak>
+   
+  </div>
+   <div class="collapse" id="summary">
+        <textarea class="form-control inc-height" placeholder="{{sessionData.diagnosis.summary || 'Write'}}" ng-model="edit.summary"></textarea>
+  </div>
+  </div>
+
+   
+  <div class="col-md-6 col-sm-12 col-xs-12 form-group mb-3">
+    <label class="col-md-12 p-0" style="display:block;" for="firstname">
+        <div class="col-sm-9 p-0 pull-left"  style="font-size:1.2em; font-weight:500;">Provisional Diagnosis </div> 
+
+    <div class="col-sm-3 text-right"><button class="btn btn-simple btn-sm  pull-right fa fa-pencil" type="button" data-toggle="collapse" 
+    data-target="#provisional" aria-expanded="false" aria-controls="collapseExample">
+  </button></div></label>
+
+   <div class="card-block p-0 mb-0" ng-cloak>
+  
+  </div>
+   <div class="collapse" id="provisional">
+        <textarea class="form-control inc-height" placeholder="{{sessionData.diagnosis.provisional_diagnosis || 'Write'}}" ng-model="edit.provisional_diagnosis"></textarea>
+  </div>
+  </div>
+ </div>
+
+<hr class="bg-warning">
+
+<!--physical examination-->
+   <div class="pl-2" style="font-size:2em; font-weight:300;">Physical Examination</div>
+  <hr>
+  <div class="col-md-6  col-sm-12 col-xs-12 form-group">
+    <label for="firstname"> General Examination</label>
+  <textarea class="form-control" placeholder="{{sessionData.diagnosis.general_examination}}" ng-model="edit.general_examination"></textarea>
+  </div>
+
+  <div class="col-md-6  col-sm-12 col-xs-12 form-group">
+    <label for="firstname"> Systemic Examination</label>
+    <textarea class="form-control" placeholder="{{sessionData.diagnosis.systemic_examination}}" ng-model="edit.systemic_examination"></textarea>
+  </div>
+
+   <div class="col-md-12  col-sm-12 col-xs-12 form-group">
+    <label for="firstname">Final Diagnosis</label>
+    <textarea class="form-control" placeholder="{{sessionData.diagnosis.final_diagnosis}}" ng-model="edit.final_diagnosis"></textarea>
+  </div>
+
+  <div style="text-align: right; margin: 20px 20px 0 0;">
+    <button ng-click="saveChanges()" ng-if="isChanges" class="btn btn-primary">Save Changes</button>
+  </div>
+  
+  <div class="clearfix"></div>
+<hr class="bg-info">
+  <div class="clearfix"></div>
+
+
+  <div class="col-md-12  col-sm-12 col-xs-12">
+<div class="pl-2" style="font-size:2em; font-weight:300;">Investigation</div>
+<hr>
+<div class="btn-inline  p-2">
+<a href="" class="btn btn-primary" ng-click="laboratory()">Laboratory</a>
+<a href="" class="btn btn-primary" ng-click="radiology()">Radiology</a>
+<a href="" class="btn btn-primary">ECG</a>
+<a href="" class="btn btn-primary">Other</a>
+</div></div>
+
+<div class="p-2" ng-if="isLab">
+<table class="table table-responsive table-hover mt-2">
+  <thead>
+    <tr>
+      <th>Date sent</th>
+      <th>Type</th>
+      <th>Test Ran</th>
+      <th>Report</th>
+      <th>Conclusion</th>
+      <th>Date received</th>
+    </tr>
+  </thead>
+  <tbody ng-repeat="test in testResult">
+    <tr>
+     <td>{{test.sent_date | date : "mediumDate"}} <br> {{test.sent_date | date : "mediumTime"}}</td>
+      <td>Laboratory</td>
+      <td><ol style="text-align:left"><li ng-repeat="rantest in test.ranTest">{{rantest.name}}</li></ol></td>
+      <td><ul style="text-align:left"><li ng-repeat = "result in test.report" style="list-style: none"><strong>{{result.test}} :</strong> {{result.report}}</li></ul></td>
+      <td>{{test.conclusion}}</td>
+      <td>{{test.receive_date | date : "mediumDate"}} <br>{{test.receive_date | date : "mediumTime"}}</td>
+    </tr>
+  </tbody>
+</table>
+
+
+<p ng-if="test.conclusion">Patient test results ran by {{}}</p>
+<button class="btn btn-info" ng-if="isLab" ng-click="newLab()">New lab test</button>&nbsp;&nbsp;&nbsp;&nbsp;
+ <button class="btn btn-info" ng-click="other()" ng-if="isLab">Request for a other test </button>
+</div>
+
+ <!-- for radiology -->
+
+ <div class="p-2" ng-if="isScan">
+<table class="table table-responsive table-hover mt-2">
+  <thead>
+    <tr>
+      <th>Date sent</th>
+      <th>Type</th>
+      <th>Test Ran</th>
+      <th>Report</th>
+      <th>Conclusion</th>
+      <th>Date received</th>
+    </tr>
+  </thead>
+  <tbody ng-repeat="test in testResult">
+    <tr>
+      <td>{{test.sent_date | date : "mediumDate"}} <br> {{test.sent_date | date : "mediumTime"}}</td>
+      <td>Radiography</td>
+      <td><ol style="text-align:left"><li ng-repeat="rantest in test.ranTest">{{rantest.name}}</li></ol></td>
+      <td><ul style="text-align:left"><li ng-repeat = "result in test.report" style="list-style: none"><strong>{{result.test}} :</strong> {{result.report}}</li></ul></td>
+      <td>{{test.conclusion}}</td>
+      <td>{{test.receive_date | date : "mediumDate"}} <br>{{test.receive_date | date : "mediumTime"}}</td>
+    </tr>
+  </tbody>
+</table>
+
+<p ng-if="test.conclusion">Patient test results ran by {{}}</p>
+<button class="btn btn-info" ng-if="isScan" ng-click="newScan()">New lab test</button>&nbsp;&nbsp;&nbsp;&nbsp;
+ <button class="btn btn-info" ng-click="other()" ng-click="ECG()">Request for a other test </button>
+</div>
+
+
+
+<secton>
+  <div class="view-animate-container row">
+    <div class="col-m-12 col-md-12 col-lg-12 view-animate" ng-view>
+    </div>
+  </div>
+</section>
+
+
+<!--<div class="container p-0 mt-2">
+<div class="col-md-12  col-sm-12 col-xs-12 p-2">
+    <div class="col-md-9 pull-left">
+<div>
+        <button class="btn btn-neutral btn-sm" href="#">Listing of Chemical Pathology</button>
+      <button class="btn btn-neutral btn-sm" href="#"> Listing of Hematology/Blood Bank</button>
+      <a class="btn btn-neutral btn-sm" href="#">Listing of Histology/Cytology</a>
+      <a class="btn btn-neutral btn-sm" href="#">Listing of Hormone</a>
+      <a class="btn btn-neutral btn-sm" href="#">Listing of Microbiology/Parasitology</a>
+      <a class="btn btn-neutral btn-sm" href="#">Listing of Toxicology </a>
+      <a class="btn btn-neutral btn-sm" href="#">Listing of Molecular Biology</a>
+</div>
+    </div>
+
+    <div class="col-md-3 pull-right">
+        <button class="btn btn-info pull-right">Preview selected test</button>
+    </div>
+   
+<div class="col-md-12  col-sm-12 col-xs-12 mt-1">
+<div class="form-inline">
+  <div class="form-group">
+    <label for="filtertest">Filter list by test name</label>
+    <input type="text" id="filtertest" class="form-control mx-sm-3" aria-describedby="passwordHelpInline">
+  </div>
+</div>
+<div class="mt-1">
+<label class="custom-control custom-checkbox">
+  <input type="checkbox" class="custom-control-input">
+  <span class="custom-control-indicator"></span>
+  <span class="custom-control-description">Check this checkbox</span>
+</label>
+</div>
+</div>
+checkboxes-->
+
+
+<div class="clearfix"></div>
+<hr class="bg-warning">
+  <div class="clearfix"></div>
+
+
+<!--treatment-->
+<div class="col-md-12  col-sm-12 col-xs-12 pb-5 mb-5">
+<h5 style="font-size:2em; font-weight:300;"> Treatment</h5>
+</div>
+<!--treatment end-->
+
+<!--treatment area-->
+<!-- Nav tabs -->
+<ul class="nav nav-tabs" role="tablist">
+  <li class="nav-item">
+    <a class="nav-link active" data-toggle="tab" href="" ng-click="pharmacy()" role="tab">Pharmaceutical</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" data-toggle="tab" href="" role="tab" ng-click="surgery()">Surgery</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" data-toggle="tab" href="" role="tab" ng-click="physiotherapy()">Physiotherapy</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" data-toggle="tab" href="" role="tab" ng-click="other()">Others</a>
+  </li>
+</ul>
+
+<!-- Tab panes -->
+<div class="tab-content pb-5 mb-5">
+   <div ng-if="isPharmacy">
+        <h3 style="text-align: center; border-bottom: 1px solid green">Treatment by pharmaceutical</h3>
+        <diV style="text-align: center">
+            <button ng-click="viewOld()">View Previous prescriptions</button>&nbsp;&nbsp;&nbsp;&nbsp;
+            <button ng-click="writeNew()">Write new prescrptions</button>
+        </div> 
+        <div ng-if="isNewPrescription">
+            {{drugList}}            
+            <table>
+                <tr>
+                    <thead>
+                        <th><strong>S/N</strong></th>
+                        <th><strong>Drug name</strong></th>
+                        <th><strong>Dosage</strong></th>
+                        <th><strong>Frequency</strong></th>
+                        <th><strong>Duration</strong></th>
+                    </thead>
+                </tr>
+                <tr>
+                    <tbody ng-repeat="prescription in drugList">                                
+                        <td>{{prescription.sn}}</td>
+                        <!--<td><textarea ng-model="prescription.drug_name" style="max-width: 200px;max-height: 80px"></textarea></td>-->
+                        <td><input name="states" id="states" type="text" placeholder="Enter drug name" ng-model="drug.name" uib-typeahead="drug.name for drug in drugs | filter:$viewValue | limitTo:15" class="form-control" style="width: 95%">
+                        {{getDrug(drug.name)}} </td>
+                        <td><input type="text" ng-model="prescription.dosage"></td>
+                        <td><input type="text" ng-model="prescription.frequency"></td>
+                        <td><input type="text" ng-model="prescription.duration"></td>
+                    </tbody>
+                </tr>                       
+            </table>
+            <div style="text-align: right">
+                    <i class="fa fa-plus" style="font-size:16px;color:green;padding: 10px; cursor:pointer; margin-right: 5px" title="Add field" ng-click="addDrug()"></i>
+                        <i class="fa fa-minus" style="font-size:16px;color:green;padding: 10px; cursor:pointer; margin-right: 5px" title="Remove last field" ng-click="removeDrug()"></i>
+                </div>
+            <div> 
+                <button ng-click="toPatient()">Forward prescription to patient</button>
+                <button ng-click="toPharmacy()">Forward prescription to a Phamarcy</button>
+            </div>                          
+        </div>
+        <div ng-if="isOldPrescription">
+            <h3>List of previous prescriptions<h3>
+            <table ng-repeat="prescription in wroteByThisDoctor" style="font-size: 14px">
+                <caption style="border-bottom: 1px dashed rgba(0,0,0,0.3)"></caption>
+                <caption><strong>Date</strong>| {{prescription.date | date: "mediumDate"}}</caption>
+                <caption><strong>Time</strong>| {{prescription.date| date: "mediumTime"}}</caption>
+                <tr>
+                    <thead>
+                        <th><strong>S/N</strong></th>
+                        <th><strong>Drug name</strong></th>
+                        <th><strong>Dosage</strong></th>
+                        <th><strong>Frequency</strong></th>
+                        <th><strong>Duration</strong></th>
+                    </thead>
+                </tr>
+                <tr>
+                    <tbody ng-repeat= "drug in prescription.prescription_body">                             
+                        <td>{{drug.sn}}</td>
+                        <td>{{drug.drug_name}}</td>
+                        <td>{{drug.dosage}}</td>
+                        <td>{{drug.frequency}}</td>
+                        <td>{{drug.duration}}</td>
+                    </tbody>
+                </tr>
+                                        
+            </table>                    
+        </div>
+    </div>
+</div>
+
+  </div>
+ <div ng-if="isSurgery">
+    <h1>Surgery</h1>
+</div>
+<div ng-if="isPhysiotherapy">
+    <h1>physio</h1>
+</div>
+<div ng-if="isOther">
+    <h1>Other</h1>
+</div>
+</div>
+<!--end-->
+           
+</div>
+
+</div>
+</form>
+</div>  
+
+
+      <script type="text/ng-template" id="calender-template.html">
+        <div class="modal fade">
+          <div class="modal-dialog">
+            <div class="modal-content">
+            <div class="modal-header" style="border-bottom:1px solid #eee;">
+              <div class="row">
+                <div class="col-sm-12 col-md-12 col-lg-12">
+                <div>
+                <b>Book an Appointment</b>
+                <button type="button"  ng-click="close('Cancel')" data-dismiss="modal" aria-hidden="true" style="color:red;font-size: 32px; margin-top:-9px;float:right; top:5px;border:none">&times;</button>
+                </div>  
+                    
+                </div> </div>                                    
+              </div>
+            
+                    <div class="modal-body">
+                    <div class="row">
+                <div class="col-sm-12 col-md-12 col-lg-12">
+                                              
+                        <div class="calender-header bg-primary">
+                            <i class="fa fa-angle-left" ng-click="previous()"></i>
+                            <span>{{month.format("MMMM, YYYY")}}</span>
+                            <i class="fa fa-angle-right" ng-click="next()"></i>
+                        </div>
+                        <div class="week">
+                            <span class="day">Sun</span>
+                            <span class="day">Mon</span>
+                            <span class="day">Tue</span>
+                            <span class="day">Wed</span>
+                            <span class="day">Thu</span>
+                            <span class="day">Fri</span>
+                            <span class="day">Sat</span>
+                        </div>
+                        
+                        <div ng-repeat="week in weeks" class="indays">
+                            <span class="dates" ng-class="{ today: day.isToday, 'different-month': !day.isCurrentMonth, selected: day.date.isSame(selected) }" ng-click="select(day)" style="cursor:pointer" ng-repeat="day in week.days">{{day.number}}</span>
+                        </div>                        
+                        <p class="bg-default" style="font-size:1em; padding:15px;">Picked Date: <em>{{dd.format('dddd, MMMM Do YYYY')}}</em><span style="display:block">Picked time: <em>{{treatment.appointment.time | date: "mediumTime"}} </em></span>
+                            <span>Picked Venue: <em>{{treatment.appointment.address}} </em></span>
+                        </p>
+
+                        <div>
+                        <b style="font-size:1.4em; font-weight:bold;">Time of appointment: <br><input type="time" class="form-control" placeholder="Enter time" ng-model="treatment.appointment.time" style="font-size:.5em;"/></b>
+                        <div style="font-size:1.3em;"><b>Venue</b> <sub>(If none,defaults to the address in your profile)</sub>: <br><input class="form-control" type="address" placeholder="Enter address" ng-model="treatment.appointment.address"></div>
+  </div>  </div> 
+                        <div class="clearfix"></div>
+                       
+                </div>
+
+                <div class="modal-footer ok">
+                            <button class="btn bg-primary" style="font-size:1.4em; font-weight:300; width:50%;" ng-click="book()" class="btn btn-success">Book</button>
+                        </div>
+              </div>          
+            </div>
+          </div>
+        </div>
+     </script>
+       
+
+       <script src="/assets/js/app.js"></script>
+        
+        
+        <script type="text/javascript" src="/assets/js/angularclient.js"></script>
+        <script type="text/javascript" src="/assets/js/ngroute.js"></script>
+        <script src="/socket.io/socket.io.js"></script>   
+        <script src="/assets/js/socket.min.js"></script>
+        
+      
+        
+        
+        <script src="/assets/js/angularAnimate.js"></script>
+        <script src="/assets/js/modalService.js"></script>
+        <script src="/assets/js/angular-touch.min.js"></script>
+        <!--<script src="/assets/js/angular-carousel.js"></script>-->
+        <script src="/assets/js/moment.min.js"></script>
+        <script src="/assets/js/angular-moment.min.js"></script>
+        <script src="/assets/js/ui-bootstrap-tpls.js"></script>
+        <script src="/assets/js/angular-clipboard.js"></script>
+        <script src="/assets/js/ngresource.js"></script>
+         <script src="/assets/js/ngPrint.js"></script>
+    </body>
+
+</html>

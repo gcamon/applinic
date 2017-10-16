@@ -1,0 +1,98 @@
+<!--<div>
+	<a ng-href="{{back}}" style="font-size: 22px; font-weight: 100; color: #000"><i class="fa fa-arrow-left"> &nbsp;Back</i></a>
+</div>
+<div style="text-align: center;line-height: 50px; font-size: 22px" ng-if="isContent">	
+	<span>{{data.str}}</span>
+	<div>
+		<span>TO</span>
+	</div>
+	<div>
+		<strong>{{data.name}}</strong>
+	</div>
+	<address>
+		<span>{{data.address}}</span>
+		<span>{{data.city}}</span>
+		<span>{{data.country}}</span>
+	</address>
+	<div>
+		<button style="font-size: 16px;color:#fff;line-height:25px" ng-class="{dismiss: user.someone}" ng-click="send('inperson')">Forward on my behalf</button>&nbsp;&nbsp;&nbsp;&nbsp;
+		<button style="font-size: 16px;color:#fff;line-height:25px"  ng-click="someone()">Forward on behalf of someone else</button>
+	</div>
+	<div ng-if="isToSomeOne">
+		<form>
+			<small>Tips: The phone number must be the number the person used for registeration</small>
+			<input type="text" Placeholder="Enter the person phone number" ng-model="data.phone" class="btn" style="cursor:normal">
+			<input type="button" value="cancel" ng-click="cancel()" class="btn btn-primary">
+			<input type="button" value="Send" ng-click="send('someone')" class="btn btn-primary">&nbsp;
+			<input type="button" value="new person form" ng-click="emp()" class="btn btn-primary" ng-if="isEMP">
+		</form>
+	</div>
+</div>
+<div ng-if="isSent" style="text-align:center">
+	<h5>Drug(s) sent successfully!!!</h5>
+	<strong> Pharmacy name: </strong> <em>{{data.name}}</em>
+	<strong> Ref No: </strong> <em>{{result}}</em>
+	<small>Plesae take note of the center name and reference number above because it will be used to easy location and identification respectively</small>
+</div>-->
+
+
+<div>
+	<a href="{{back}}" class="btn btn-simple" style="font-size: 1em;"><i class="fa fa-arrow-left"> &nbsp;Back</i></a>
+</div>
+
+<div ng-if="isContent" class="card p-1" style="padding: 20px">
+	<p style="background-color: grey; padding: 20px 5px;color:#fff">	
+	<span>Forwarding:</span>
+		<span class="font-1_1 mb-0">{{data.str}}</span>
+	</p>
+	<div>
+		<b>TO</b>
+	</div>
+	<div class="font-1_1">
+		<b>{{data.name}}</b>
+	</div>
+	<address class="font-1_1" style="padding: 15px">
+		<span>{{data.address}}</span>
+		<span>{{data.city}}</span>
+		<span>{{data.country}}</span>
+	</address>
+	<div>
+		<button class="btn btn-info" ng-class="{'dismiss': user.someone}" ng-click="send('inperson')" ng-if="checkLogIn.typeOfUser == 'Patient'">Forward on my behalf</button>&nbsp;&nbsp;&nbsp;&nbsp;
+		<button class="btn btn-info"  ng-click="someone()">Forward on behalf of someone else</button>
+	</div>
+	<div ng-if="isToSomeOne">
+		<form>
+			<p>Tips: The phone number must be the number the person used for registration</p>
+			<div class="row">
+                <div class="col-md-5 col-sm-12">
+           		 <input type="number" Placeholder="Enter the person phone number" ng-model="data.phone" class="form-control" style="cursor:normal">
+				</div>
+	            <div class="col-md-5 col-sm-12 pr-1 font-1">
+		            <input type="button" value="Cancel" ng-click="cancel()" class="btn btn-danger">
+					
+		            <button type="button" ng-click="send('someone')" class="btn btn-success" ng-if="data.phone && data.phone !== ''">Send</button>
+					
+		            <!--<input type="button" value="New Person Form" ng-click="emp()" class="btn btn-simple" ng-if="isEMP">-->
+				</div>
+			</div>
+        </form>
+	</div>
+</div>
+
+
+
+<div ng-if="isSent" class="card p-1">
+	<h5 class=" text-success"  style="text-align:center"> Sent successfully!!!</h5>
+	<div class="m-0"><span class="font-1-1"> center name: </span><em>{{data.name}}</em> </div> 
+	<div class="m-0"><span class="font-1-1"> center location: </span><em>{{data.address}}, {{data.city}}, {{data.country}}</em> </div> 
+    <div class="mb-1"><span class="font-1-2" style="color:red"> Ref No:  </span><em>{{result}}</em> </div> 
+	<div class="font-1-1">Plesae take note of the center name and 
+        reference number above because it will be used to easy 
+        location and identification respectively
+ 	</div>
+</div>
+
+
+
+
+

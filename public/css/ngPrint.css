@@ -1,0 +1,67 @@
+@media screen {
+    #printSection {
+        display: none;
+    }
+}
+
+@media print {
+    body * {
+        display:none;
+    }
+
+    #printSection, #printSection * {
+        display: inline-block;
+        font-size: 16px
+    }
+
+  
+
+
+    #printSection table > tbody{
+       display: block;
+       border:none;
+    }
+
+    #printSection th {       
+        width: 120px;       
+    }
+
+    #printSection p {
+        display: block;
+    }
+
+    #printSection strong {
+        padding: 10px 10px;
+    }
+
+    #printSection td {
+        padding-left: 10px;
+        border-top: none;
+        width: 120px;
+        word-wrap: break-word;
+    }
+
+    #printSection h6 {
+        display: block;
+        margin-top: 45px
+    }
+
+    #printSection section {
+        display: block;
+        border-bottom: 1px solid rgba(0,0,0,0.4);
+    }
+
+     #printSection i,#printSection a,#printSection button {
+       display: none;
+    }
+
+    #printSection {
+        position:absolute;
+        left:0;
+        top:0;
+    }
+
+    #printSection a {
+        display: none;
+    }
+}

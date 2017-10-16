@@ -1,0 +1,77 @@
+<div>
+	<h5>Do you have a diagnostic center?</h5>
+	<p>Please the form below. Do note that your center, email and phone number will be verified.</p>
+	 <form class="signup-form-style">                            
+        <fieldset>
+            <div class="form-group">
+                <span class="select">
+                    <label>Select type of center * : </label>                                
+                    <select id="select-type"  ng-model="user.typeOfUser" required>
+                        <option value=""> _Please select </option>                                           
+                        <option>Clinic</option>
+                        <option>Radiology</option>
+                        <option>Laboratory</option>
+                        <option>Fitness</option>
+                    </select>
+                </span>
+            </div>        
+            
+            <div class="form-group">
+            	<label>Center name * : </label> 
+                <input type="text" class="form-control placeholder-color" id="name" ng-model="user.name" required>
+            </div>
+            
+            <div class="form-group">
+            	<label>Address * : </label> 
+                <input type="text" class="form-control placeholder-color" ng-model="user.address" required>
+            </div>
+            <div class="form-group">
+            	<label>City/Town * : </label> 
+                <input type="text" class="form-control placeholder-color" id="firstname" ng-model="user.city" required>
+            </div>
+            <div class="form-group">
+            	<label>Country * : </label> 
+                <input type="text" class="form-control placeholder-color" id="nationality" ng-model="user.country" required>
+            </div>
+            <div class="form-group">
+                <p style="color:red;text-align:center">{{showErr}}</p>
+            	<label>Phone number * : </label> 
+                <input type="number" class="form-control placeholder-color" placeholder="Phone Number (080****)" id="phone" ng-model="user.phone" required>
+            </div>
+            <div class="form-group">
+            	<label>Website url * : </label> 
+                <input type="text" class="form-control placeholder-color" id="website" ng-model="user.website">
+            </div>
+
+            <hr style="padding-bottom: 10px"/>
+            <div class="form-group">
+                <p style="color:red;">{{usernameError}}</p>                
+                <label>Username * : </label> 
+                <input type="text" class="form-control placeholder-color" id="username" ng-model="user.username">
+                <p style="color: green">{{info}}</p>
+            </div>
+            <div class="form-group">
+            	<label>Email * : </label> 
+                <input type="email" class="form-control placeholder-color" id="email" ng-model="user.email" required>
+            </div>
+            <div class="form-group">
+            	<label>Password * : </label> 
+                <input type="password" class="form-control" ng-model="user.password" required>
+            </div>
+            <div class="form-group">
+            	<label>Confirm password * : </label> 
+                <input type="password" class="form-control" ng-model="user.password2" required>
+            </div>                                                 
+            
+            <div class="form-group tg-checkbox">
+                <label>
+                    <input type="checkbox" class="form-control" ng-model="user.agree">
+                    I agree with the terms and conditions
+                </label>
+            </div>
+            <div style="text-align:center">                                
+            	<button class="tg-btn" ng-click="submit(user.typeOfUser,'normal')">Create an Account</button>
+            </div>
+        </fieldset>
+    </form>
+</div>

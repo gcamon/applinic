@@ -1,0 +1,27 @@
+<div>
+
+	<button>Connect with doctor</button>
+	<h1>Getting Started with Twilio Video</h1>
+ 
+    <!-- Begin by specifying a name for your endpoint -->
+    <div id="startDiv">
+        <p>Enter Your Name Here:</p>
+        <input placeholder="your name" ng-model="user.my_email"/>
+        <button ng-click="getToken()">Let's Do This!</button>
+        
+        
+
+    </div>
+ 
+    <!-- Here's the call UI -->
+   	<p>{{error}}</p>
+    <div id="callDiv" style="display:none;" ng-show="makeCall">
+        <div id="me" ng-bind="me"></div>
+        <div id="you" ng-bind="you"></div>
+        <div>
+            <input  placeholder="other person's name" ng-model="your_email"/>
+            <button id="call">Video Call This Person</button>
+        </div>
+    </div>
+ 
+</div>

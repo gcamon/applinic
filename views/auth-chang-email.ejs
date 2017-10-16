@@ -1,0 +1,161 @@
+
+<!doctype html>
+<!--[if lt IE 7]>       <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang=""> <![endif]-->
+<!--[if IE 7]>          <html class="no-js lt-ie9 lt-ie8" lang=""> <![endif]-->
+<!--[if IE 8]>          <html class="no-js lt-ie9" lang=""> <![endif]-->
+<!--[if gt IE 8]><!-->  <html class="no-js" lang=""> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Applinic</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="apple-touch-icon" href="apple-touch-icon.png">
+        <link rel="stylesheet" href="/assets/css/bootstrap.min.css">
+        <link rel="stylesheet" href="/assets/css/normalize.css">
+        <link rel="stylesheet" href="/assets/css/font-awesome.min.css">
+        <link rel="stylesheet" href="assets/css/app.css">
+        <link rel="stylesheet" href="/assets/css/main.css">
+        <link rel="stylesheet" href="/assets/css/now-ui-kit2.css">
+        <link href="http://code.jquery.com/ui/1.10.4/themes/ui-lightness/jquery-ui.css" rel="stylesheet">
+        <link rel="stylesheet" href="/assets/css/angular-carousel.css">  
+        <script src="/assets/js/vendor/modernizr-2.8.3-respond-1.4.2.min.js"></script>
+        <link href="https://fonts.googleapis.com/css?family=Ubuntu+Condensed" rel="stylesheet">
+        <script src="/assets/js/vendor/jquery-library.js"></script>
+         <script type="text/javascript" src="/assets/js/source.js"></script>
+        <script type="text/javascript" src="/assets/js/jquery.nicescroll.js"></script>
+         <script type="text/javascript">
+            $(document).ready(function(){
+                $("html").niceScroll({cursorcolor:"#ccc",cursorwidth:"10px"});
+                $("#main").niceScroll("#complaint",{cursorcolor:"#ccc"});
+                $("#complain-in-view").niceScroll({cursorcolor:"#ccc",cursorwidth:"10px"});
+            })
+        </script>
+
+        
+    </head>
+    <body ng-app= "myApp">
+        <!--[if lt IE 8]>
+                <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+        <![endif]-->
+        <!--************************************
+                        Wrapper Start
+        *************************************-->
+        
+            <!--************************************
+                            Header Start
+            *************************************-->
+             <header id="header"   ng-controller="topHeaderController" style="background-color:#d7dde4">
+              
+                <nav class="header" style="height:70px; margin-top:-.5em; z-index:1000;">
+                     <div class="header-block header-block-nav">
+                        <ul  style="display:inline-block;width:100%">
+                            
+                            <li style="float:left;margin:20px 10px">
+                                <a ng-href="{{back}}" class="nav-link" >
+                                  <b style="font-size:16px; font-weight:bold;"> &larr; Back to dashbaord</b>
+                                </a>
+                            </li>
+                             
+                                                 
+
+                            <li style="float:right;list-style-type:none;margin:20px 10px">
+                                <a class="nav-link" href="" ng-click="logout()">
+                                   
+                                    <span class="name">
+                     <i class="fa fa-power-off icon"></i>
+                      Logout
+                    </span> </a></li> </ul>
+                    </div>
+                </nav>
+            </header>
+            <!--************************************
+                            Header End
+            *************************************-->
+            
+            <!--************************************
+                            Main Start
+            *************************************-->
+            <main id="main" class="tg-haslayout" ng-controller="authChangeController" style="max-height:800px;margin:100px 0" id="main">
+                <section class="container">
+                    <div class="row">
+                        <div class="col-sm-12 col-md-12 col-lg-12">                           
+                           <h2>Update Email Address</h2> 
+                            <p>User verification pin has been sent to {{phone}} via SMS</p>
+                            <form>
+                                <div>
+                                    <label>Enter verification pin (get from your phone) </label>
+                                    <input type="text" ng-model="user.pin" placeholder="enter pin" class="form-control">
+                                </div>
+                                 <div>
+                                    <label>New email address</label>
+                                    <input type="text" ng-model="user.email" placeholder="enter new number" class="form-control">
+                                </div>
+                                 <div>
+                                    <button class="btn btn-success pull-right" ng-click="update()">Submit</button>
+                                </div>
+                            </form>
+                            <p>Having problem with the authentication process? <a href="/contact" style="text-decoration:none;color:green">Contact us for help</a></p>
+                        </div>                                        
+                    </div>
+                </section>
+            </main>
+            <!--************************************
+                            Main End
+            *************************************-->
+            <!--************************************
+                            Footer Start
+            *************************************-->
+            <footer id="footer" class="tg-haslayout">
+          
+            <div class="tg-footerbar tg-haslayout">
+                <div class="tg-copyrights">
+                    <p>2017 All Rights Reserved © Applinic</p>
+                </div>
+            </div>
+        </footer>
+            <!--************************************
+                            Footer End
+            *************************************-->
+        </div>
+        <!--************************************
+                        Wrapper End
+        *************************************-->
+        <!--************************************
+                Sign In Sign Up Light Box Start
+        *************************************-->
+
+       
+        
+        
+        <!--************************************
+                Sign In Sign Up Light Box End
+        *************************************-->
+        
+        <script src="/assets/js/vendor/jquery-library.js"></script>
+        <script src="/assets/js/vendor/bootstrap.min.js"></script>
+       
+        <script type="text/javascript" src="/assets/js/angularclient.js"></script>
+        <script type="text/javascript" src="/assets/js/ngroute.js"></script>
+        <script src="/socket.io/socket.io.js"></script>   
+        <script src="/assets/js/socket.min.js"></script>
+        <script src="/assets/js/jquery-ui.js"></script>
+        <!--<script src="http://maps.google.com/maps/api/js?sensor=false"></script>
+        <script src="/assets/js/map/jquery.gomap.js"></script>-->
+        
+        <script src="/assets/js/jquery.nicescroll.js"></script>
+       
+        
+        <script src="/assets/js/angularAnimate.js"></script>
+        <script src="/assets/js/modalService.js"></script>
+        
+        <script src="/assets/js/moment.min.js"></script>
+        <script src="/assets/js/angular-touch.min.js"></script>
+        <script src="/assets/js/angular-moment.min.js"></script>
+        <script src="/assets/js/angucomplete-alt.min.js"></script> 
+        <script src="/assets/js/ui-bootstrap-tpls.js"></script>
+        <script src="/assets/js/angular-clipboard.js"></script>
+        <script src="/assets/js/ngresource.js"></script>     
+        </script>
+    </body>
+</html>

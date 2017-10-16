@@ -1,0 +1,324 @@
+<div class="container">
+  <div class="row">
+    <div class="col-sm-12 col-md-3 col-lg-3">
+      <div>
+        <ul class="doc-edit">
+          <li ng-click="view('personal')" ng-class="{'selected-edit': type === 'personal'}">Personal Information</li>
+          <li ng-click="view('intro')" ng-class="{'selected-edit': type === 'intro'}">Introductory Note</li>
+          <li ng-click="view('years')" ng-class="{'selected-edit': type === 'years'}">Years Of Experience</li>
+          <li ng-click="view('edu')"  ng-class="{'selected-edit': type === 'edu'}">Education</li>
+          <li ng-click="view('speciaty')" ng-class="{'selected-edit': type === 'speciaty'}">Sub-speciaty</li>
+          <li ng-click="view('skill')" ng-class="{'selected-edit': type === 'skill'}">Skill &amp; Procedure</li>
+          <li ng-click="view('honor')" ng-class="{'selected-edit': type === 'honor'}">Honors &amp; Awards</li>
+          <li ng-click="view('office')" ng-class="{'selected-edit': type === 'office'}">Office Hours</li>
+        </ul>
+        <footer>
+          <div style="margin-top:20px">
+            <a href="/user/change-number"> Change registered applinic phone number </a>
+          </div>
+           <!--<div style="margin-top:20px">
+            <a href="/user/change-email">Change email </a>
+          </div>-->
+        </footer>
+      </div>
+    </div>
+    <div class="col-sm-6 col-md-6 col-lg-6">
+      <div ng-if="type === 'personal'">
+        <h3>Personal Infomation</h3>
+        <hr>
+        <div class="col-md-6 form-group">
+            <label for="firstname">First Name</label>
+            <input type="text" class="form-control"  placeholder="{{docInfo.firstname}}" ng-model="user.firstname">
+          </div>
+          <div class="col-md-6 form-group">
+            <label for="lastname">Last Name</label>
+            <input type="text" class="form-control" placeholder="{{docInfo.lastname}}" ng-model="user.lastname">
+          </div>
+
+          <!--<div class="col-md-6 form-group">
+            <label for="lastname">Email Address</label>
+            <input type="text" class="form-control" placeholder="{{docInfo.email}}" ng-model="user.email">
+          </div>
+          <div class="col-md-6 form-group">
+            <label for="lastname">Phone Number</label>
+            <input type="text" class="form-control" placeholder="+234 {{docInfo.phone}}" ng-model="user.phone">
+          </div>-->
+
+          <div class="col-md-6 form-group">
+            <label for="lastname">Place Of Work</label>
+            <input type="text" class="form-control" placeholder="{{docInfo.work_place}}" ng-model="user.work_place">
+          </div>
+
+          <div class="col-md-6 form-group">
+            <label for="lastname">Place of work Address</label>
+            <input type="text" class="form-control" placeholder="{{docInfo.address}}" ng-model="user.address">
+          </div>
+          <div class="col-md-6 form-group">
+            <label for="lastname">City/Town</label>
+            <input type="text" class="form-control" placeholder="{{docInfo.city}}" ng-model="user.city">
+          </div>
+          <div class="col-md-6 form-group">
+            <label for="lastname">Country</label>
+            <input type="text" class="form-control" placeholder="{{docInfo.country}}" ng-model="user.country">
+          </div>
+          <div class="col-md-6 form-group">
+           &nbsp;
+          </div>
+          <div>
+            <button class="btn btn-success " ng-click="update()">Save</button>
+          </div>
+      </div>
+      <div ng-if="type === 'intro' ">
+        <h3>Introductory Note</h3>
+        <div class="form-group igwe-text">
+          <label for="lastname">Introduce yourself</label>
+          <textarea class="form-control" placeholder="Brief Introduction about me" ng-model="user.introductory" ></textarea>
+        </div>
+        <div>
+          <button class="btn btn-success pull-right" ng-click="update()">Save</button>
+        </div>
+      </div>
+
+      <div ng-if="type === 'speciaty'">
+        <h3>Speciaties</h3>
+        <div ng-repeat="item in user.subSpecialty">
+           <!--<input type="text" class="form-control mb-1" placeholder="Sub specialty" ng-model="item.sub_specialty">-->
+           <select class="form-control mb-1" placeholder="Sub specialty" ng-model="item.sub_specialty">
+            <option value="" selected> Select speciaty</option>
+             <option>Cardiology</option>
+             <option>Dermatology</option>
+           </select>
+        </div>
+        <div>
+          <button class="btn btn-simple pull-right mr-1" ng-click="addNewField(user.subSpecialty)" style="color:blue;position:absolute;bottom:0;right:0"><b>+</b> Add Field</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          <button class="btn btn-simple pull-right mr-1" ng-click="removeNewField(user.subSpecialty)" ng-if="sp" style="color:red;position:absolute;bottom:0;right:130px"><b>-</b> remove last field</button>     
+        </div>
+        <div>
+            <button class="btn btn-success" ng-click="update()">Save</button>
+        </div>
+      </div>
+
+       
+
+      <div ng-if="type === 'years'">
+        <h3>Years of Experience</h3>
+        <div class="col-md-12 form-group p-1">
+           <label for="lastname">Years Of Experience</label>
+           <input type="number" class="form-control" placeholder="Years of Experience" ng-model="user.experience">
+        </div>
+        <div>
+            <button class="btn btn-success pull-right" ng-click="update()">Save</button>
+        </div>
+      </div>
+
+      <div ng-if="type === 'edu'">
+        <h3>Education</h3> 
+        <div ng-repeat="item in user.education">        
+            <div class="col-md-12 col-lg-12 col-sm-12 form-group">
+              <label for="lastname">School Attended</label>
+              <input type="text" class="form-control" name="school" placeholder="School Attended" ng-model="item.school">
+            </div>         
+
+
+           <div class="col-md-6 col-lg-6 form-group">
+              <label for="from">From</label>
+              <input type="date" class="form-control"  placeholder="From" ng-model="item.start_year">
+            </div>
+
+
+           <div class="col-md-6 col-lg-6 form-group">
+              <label for="to">To</label>
+              <input type="date" class="form-control"  placeholder="To" ng-model="item.end_year">
+            </div>
+
+
+           <div class="col-md-12 col-lg-12 col-sm-12 form-group" style="border-bottom: 1px solname grey">
+              <label for="CertificateObtained">Certificate Obtained</label>
+              <input type="text" class="form-control" name="CertificateObtained" placeholder="Certificate Obtained" ng-model="item.certificate">
+            </div>
+            
+        </div>
+        <div>
+           <button class="btn btn-simple pull-right mr-1" ng-click="addNewField(user.education)" style="color:blue;position:absolute;bottom:0;right:0"><b>+</b> Add Field</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          <button class="btn btn-simple pull-right mr-1" ng-click="removeNewField(user.education)" ng-if="edu" style="color:red;position:absolute;bottom:0;right:130px"><b>-</b> remove last field</button>     
+        </div>
+        <div>
+          <button class="btn btn-success" ng-click="update()">Save</button>
+        </div>
+      </div>
+
+      <div ng-if="type === 'skill' ">
+
+        <h3>Skills &amp; Procedure </h3>
+        <form>
+          <div class="col-md-12 col-sm-12 col-lg-12 form-group">
+            <label for="lastname">Disease Name</label>
+            <input type="text" class="form-control" name="school" placeholder="Enter disease name" ng-model="item.disease" required>
+          </div>
+
+          <div class="col-md-12 col-sm-12 col-lg-12 form-group">
+            <label for="from">Skill</label>
+            <input type="text" class="form-control" placeholder="Enter skill/procedure" ng-model="item.procedure_skill" required>
+          </div>
+
+          <div class="col-md-12 form-group">
+            <label for="from">Briefly Describe Your Approach</label>
+            <textarea class="form-control" placeholder="Briefly Describe Your Approach" ng-model="item.procedure_description" required></textarea>
+          </div>
+
+          <div class="col-md-12 col-sm-12 col-lg-12 form-group" style="border-bottom:1px dashed grey;padding-bottom:20px">
+            <label>Attach files (If any) </label>
+            <input type="file"  id="file" file-model = "files" multiple="multiple" class="form-control"/>
+           <!--<i class="fa fa-warning">&nbsp; <small style="font-size: 14px;">
+            You can attach vnameeo or image file(s) associated with this skill or procedure (if any). File size must be less than 20mb.Type jpeg,jpg,mp3,mp4</small></i>
+            <button class="btn btn-success">Add Photo/Vnameeo</button>-->
+          </div>          
+        </form>         
+        <!--<div>
+           <button class="btn btn-simple pull-right mr-1" ng-click="addNewField(user.procedure)" style="color:blue;"><b>+</b> Add Field</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      <button class="btn btn-simple pull-right mr-1" ng-click="removeNewField(user.procedure)" ng-if="pro" style="color:red;"><b>-</b> remove last field</button>     
+        </div>-->
+
+        <div>
+          <button class="btn btn-success" ng-click="update('procedure')">Save</button>
+        </div>
+      </div>
+
+
+      <div ng-if="type === 'honor'" style="position:relative;">
+        <h3>Awards  &amp; Honors</h3>
+        <div ng-repeat="item in user.award">
+          <div class="col-md-12 col-lg-12 col-sm-12 form-group">
+            <label for="Name">Award</label>
+            <input type="text" class="form-control"  placeholder="Name of Award" ng-model="item.type_of_Award">
+          </div>
+
+          <div class="col-md-12 col-lg-12 col-sm-12 form-group">
+            <label for="Name">Date awarded</label>
+            <input type="date" class="form-control"  placeholder="" ng-model="item.date">
+          </div>
+
+          <div class="col-md-12 col-md-12 col-md-12 form-group" style="border-bottom:1px dashed grey;padding-bottom:20px">
+            <label for="from">Award Description</label>
+            <textarea class="form-control"  placeholder="Award Description" ng-model="item.description"></textarea>
+          </div>         
+        </div> 
+        <div >
+             <button class="btn btn-simple mr-1" ng-click="addNewField(user.award)" style="color:blue;position:absolute;bottom:0;right:0"><b>+</b> Add Field</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          <button class="btn btn-simple pull-right mr-1" ng-click="removeNewField(user.award)" ng-if="ha" style="color:red;position:absolute;bottom:0;right:130px"><b>-</b> remove last field</button>     
+        </div>
+         <div>
+          <button class="btn btn-success" ng-click="update()">Save</button>
+        </div>
+      </div>
+
+
+      <div ng-if="type === 'office'">
+        <h3>OfFice hours</h3>
+        <div ng-repeat="item in user.office" >
+          <div class="col-md-12 col-sm-12 col-lg-12 form-group">
+              <label for="lastname">Day</label>
+              <select class="custom-select form-control"  ng-model="item.day">
+                <option>Monday</option>
+                <option>Tuesday</option>
+                <option>Wednesday</option>
+                <option>Thursday</option>
+                <option>Frnameay</option>
+                <option>Saturday</option>
+                <option>Sunday</option>
+              </select>
+          </div>
+          <div class="col-md-12 col-sm-12 col-lg-12 form-group">
+            <label for="from">From</label>
+            <input type="time" class="form-control"  placeholder="what time?" ng-model="item.from">
+          </div>
+          <div class="col-md-12 col-sm-12 col-lg-12 form-group" style="border-bottom:1px dashed grey;padding-bottom:20px">
+            <label for="to">To</label>
+            <input type="time" class="form-control"  ng-model="item.to">           
+          </div>          
+        </div>
+
+           <div>
+              <button class="btn btn-simple pull-right mr-1" ng-click="addNewField(user.office)" style="color:blue;position:absolute;bottom:0;right:0"><b>+</b> Add Field</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <button class="btn btn-simple pull-right mr-1" ng-click="removeNewField(user.office)" ng-if="of" style="color:red;position:absolute;bottom:0;right:130px"><b>-</b> remove last field</button>     
+          </div> 
+          <div>
+            <button class="btn btn-success" ng-click="update()">Save</button>
+          </div>        
+        </div>
+    </div>
+
+    <div class="col-sm-12 col-md-3 col-lg-3">
+      <h6 style="border-bottom:1px solid rgba(0,0,0,0.4);padding:20px 0">Records</h6>
+      <div ng-if="type === 'personal'" class="rec">        
+          <div>Names : {{docInfo.firstname}} {{docInfo.lastname}}</div>
+          <div>Email : {{docInfo.email}} </div>
+          <div>Phone : +234 {{docInfo.phone}}</div>
+          <div>Place of work : {{docInfo.work_place}}</div>
+          <div>Work address : {{docInfo.address}}</div>
+          <div>City/Town : {{docInfo.city}}</div>
+          <div>Country : {{docInfo.country}}</div>     
+      </div>
+
+      <div ng-if="type === 'skill' "> 
+        <div ng-repeat="j in docInfo.skills">       
+          <p style="max-height:200px;overflow-y:hidden">{{j.procedure_description}}</p>
+          <div ng-if="j.files.length > 0">
+            <a href="" style="color:green">{{j.files.length}} files </a>
+          </div>
+          <p style="color:red;text-decoration:underline;cursor:pointer;text-align:right"><small  ng-click="deleteRecord(j._id,'skills')">Delete</small></p>
+        </div>
+      </div>
+
+      <div ng-if="type === 'intro' ">
+        <p>{{docInfo.introductory}} &nbsp;&nbsp;<span style="color:red;text-decoration:underline;cursor:pointer;float:right" ng-click="deleteRecord('intro')"><i class="fa fa-pencil" aria-hidden="true"></i></span></p>
+      </div>
+
+      <div ng-if="type === 'years' ">
+        <p>Years of experience : {{docInfo.experience + " years" || "months"}} &nbsp;&nbsp;<span style="color:red;text-decoration:underline;cursor:pointer;float:right" ng-click="deleteRecord('years')"><i class="fa fa-pencil" aria-hidden="true"></i></span></p>
+      </div>      
+
+      <div ng-if="type === 'edu' ">
+        <div ng-repeat="k in docInfo.education">
+          <p><strong>{{k.certificate}}</strong>&nbsp;&nbsp;<em>{{k.school}},</em>
+            <span style="display:block">{{k.start-year | date: "mediumDate"}} - {{k.end_year | date: "mediumDate"}}.</span>
+            <small style="color:red;text-decoration:underline;cursor:pointer;float:right" ng-click="deleteRecord(k._id,'education')">Delete</small>
+          </p>
+        </div>
+      </div>
+
+      <div ng-if="type === 'honor'">
+        <div ng-repeat="k in docInfo.awards">
+          <p><strong>{{k.type_of_Award}}</strong>&nbsp;&nbsp;<em>{{k.description}},</em>
+            <span style="display:block">{{k.date | date: "mediumDate"}}</span>
+            <small style="color:red;text-decoration:underline;cursor:pointer;float:right" ng-click="deleteRecord(k._id,'awards')">Delete</small>
+          </p>
+        </div>
+      </div>
+
+      <div ng-if="type === 'office' ">
+        <div ng-repeat="j in docInfo.office_hour">
+          <p><strong>{{j.day}}:</strong>&nbsp;<em>{{j.from | date: "shortTime"}} - {{j.to | date: "shortTime"}}</em>            
+            <small style="color:red;text-decoration:underline;cursor:pointer;float:right" ng-click="deleteRecord(j._id,'office_hour')">Delete</small>
+          </p>
+        </div>
+      </div>
+
+       <div ng-if="type === 'speciaty' ">
+        <p><strong>Sub specialties: </strong></p>
+        <div ng-repeat="j in docInfo.sub_specialty">
+          <p><em>{{j.sub_specialty}}</em>            
+            <small style="color:red;text-decoration:underline;cursor:pointer;float:right" ng-click="deleteRecord(j._id,'sub_specialty')">Delete</small>
+          </p>
+        </div>
+      </div>
+
+    </div>   
+  </div>
+</div>
+
+
+    
+
+
+

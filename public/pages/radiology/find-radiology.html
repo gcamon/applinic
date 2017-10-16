@@ -1,0 +1,79 @@
+<!--<div>
+	<h3>Choose a laboratory</h3>
+	<p>Found radiology center(s): <span>{{labCenters.length}}</span></p>
+	<small><stong>Tips:</strong> The search criteria defaults to your location. You can modify the criteria to search for desired location</small>
+	<form class="search-lab">
+		<label>City : </label>
+		<input type="text" placeholder="{{labCenters[0].city}}" ng-model="radiology.city">
+		<label>Country : </label>
+		<input type="text" placeholder="{{labCenters[0].country}}" ng-model = "laboratory.country">
+		<button ng-click="search()"  class="btn btn-primary">Search</button>
+	</form>
+	<p style="text-align: right">
+		<label><strong>Filter: </strong></label>
+		<input type="text" ng-model="lab.name" placeholder="by name or address" style="width: 20%; border: 1px solid rgba(0,0,0,0.4);border-radius: 3px">
+	</p>
+	<div ng-if="isFound" class="a-lab">
+		<div ng-repeat= "labCenter in labCenters | filter : lab.name || lab.address" ng-click="getRadio(labCenter.user_id)" style="cursor:pointer">
+			<h3>{{labCenter.name}}</h3>
+			<address><strong>{{labCenter.address}} <span>{{labCenter.city}}, {{labCenter.country}}</strong></span></address>
+		</div>
+	</div>
+	<div ng-if="isError">
+		<p style="text-align: center; font-size: 18px;width: 60%;margin: 30px auto">{{message}}</p>
+	</div>
+</div>-->
+
+
+  <div class="container">
+<div class="card p-2">
+	<h3 class="font-1_7 mb-0">Choose a laboratory</h3><hr>
+	<p class="font-1_1">Found radiology center(s): <span>{{labCenters.length}}</span></p>
+	<small><stong>Tips:</strong> The search criteria defaults to your location. You can modify the criteria to search for desired location</small>
+	<form class="search-lab">
+
+  <div class="form-inline">
+  <div class="form-group">
+    <label class="sr-only">City:</label>
+    <p class="form-control-static pt-2">City:</p>
+  </div>
+  <div class=" mx-sm-3 form-group">
+    <label for="inputPassword2" class="sr-only">City</label>
+     <input type="text" class="form-control" placeholder="{{labCenters[0].city}}" ng-model="radiology.city">
+  </div>
+
+   <div class="form-group">
+    <label class="sr-only">Country:</label>
+    <p class="form-control-static pt-2">Country:</p>
+  </div>
+  <div class=" mx-sm-3 form-group">
+    <label for="inputPassword2" class="sr-only">Country</label>
+     <input type="text" class="form-control"  placeholder="{{labCenters[0].country}}" ng-model = "laboratory.country">
+  </div>
+  <button type="submit" class="btn btn-success">Search</button>
+</div>
+
+	</form>
+    <div class="clearfix"></div>
+	<div class="form-inline">
+         <div class="form-group">
+    <label class="sr-only">Filter:</label>
+    <p class="form-control-static pt-2">Filter:</p>
+  </div>
+        <div class=" mx-sm-3 form-group">
+    <label for="inputPassword2" class="sr-only">Filter</label>
+  <input type="text" class="form-control" ng-model="lab.name" placeholder="by name or address">
+  </div>
+	</div>
+	<div ng-if="isFound" class="a-lab">
+		<div ng-repeat= "labCenter in labCenters | filter : lab.name || lab.address" ng-click="getRadio(labCenter.user_id)" style="cursor:pointer">
+			<h3 class="font-1_4 mb-0">{{labCenter.name}}</h3>
+			<address><strong>{{labCenter.address}} <span>{{labCenter.city}}, {{labCenter.country}}</strong></span></address>
+		</div>
+	</div>
+	<div ng-if="isError">
+		<p class="text-danger font-1_4" style="text-align: center;">{{message}}</p>
+	</div>
+</div>
+
+</div>

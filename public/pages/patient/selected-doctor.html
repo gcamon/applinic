@@ -1,0 +1,41 @@
+<!--<div class="col-sm-12 col-md-12 col-lg-12">
+	<p>Test result(s):</p>
+	<ul>
+		<li ng-repeat="i in test.test_to_run"><strong>{{i.name}}</strong> : {{i.data}}</li>
+		<li><strong>Conclusion :</strong> {{test.conclusion}}</li>
+	</ul>
+	<form>
+	<em style="font-size: 18px">{{test.files.length}} x-ray file(s) associated with this test result</em>	
+	</form
+	<p>The above test(s) will be send to:</p>
+	<img ng-src="{{doctor.doctor_profile_pic_url}}" style="width: 100px; height:100px"> 
+	<span> Dr. {{doctor.doctor_firstname}} {{doctor.doctor_lastname}} ({{doctor.doctor_specialty}})</span>
+	<div>
+		<button ng-click="noSend()">No, go back</button>&nbsp;&nbsp;&nbsp;
+		<button ng-click="send()">Yes, send</button>
+	</div>
+</div>-->
+
+
+<div class="col-sm-12 col-md-12 col-lg-12">
+    <div class="card p-1">
+	<div class="font-1_7">Test result(s):</div>
+    <hr>
+	<ul class="nav">
+		<li class="font-1_1" ng-repeat="i in test.test_to_run"><strong>{{i.name}}</strong> : {{i.data}}</li>
+		<li class="font-1_1"><strong>Conclusion :</strong> {{test.conclusion}}</li>
+	</ul>
+	<form class="mb-1">
+	<em class="font-1_4">{{test.files.length}} x-ray file(s) associated with this test result</em>	
+	</form>
+	<p>The above test(s) will be send to:</p>
+	<img ng-src="{{doctor.doctor_profile_pic_url}}" style="width: 100px; height:100px"> 
+	<span class="font-1_4"> Dr. {{doctor.doctor_firstname}} {{doctor.doctor_lastname}} ({{doctor.doctor_specialty}})</span>
+	<div class="mt-1">
+		<button class="btn btn-info" ng-click="noSend()">No, go back</button>&nbsp;&nbsp;&nbsp;
+		<button class="btn btn-success" ng-click="send()">Yes, send</button>
+	</div>
+    </div>
+</div>
+
+

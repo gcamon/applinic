@@ -1,0 +1,81 @@
+
+<!--<a href="#/drug" style="font-size: 22px; font-weight: 100; color: #000"><i class="fa fa-arrow-left"> &nbsp;Back</i></a>
+<div class="drug-search-result">
+	<p style="font-size: 18px">
+		<strong>Search result for:</strong>
+		<span ng-repeat="drug in criteria" style="display:inline-block; padding:10px">{{drug.name}}</span> 
+		
+		<input type="text" placeholder="Filter NAME or ADDRESS" ng-model="drugFilter.name">
+
+	</p>
+	<div ng-repeat ="center in drugResult.full | filter : drugFilter.name || drugFilter.address" style="padding: 10px;margin-bottom: 1px solid grey;box-shadow: 0px 3px 5px grey">
+		<span>{{getStr(center.str)}}</span>
+		<h5>{{center.name}}</h5>
+		<span>{{center.address}}</span>
+		<span>{{center.city}}</span>
+		<span>{{center.country}}</span>
+		<p style="text-align:right"><i class="fa fa-arrow-right" style="cursor:pointer;color:green" title="Forward to {{center.name}}" ng-click="toForward(center)"></i></p> 
+	</div>
+	<div ng-repeat="center in drugResult.less | filter : drugFilter.name || drugFilter.address" style="padding: 10px;margin-bottom: 1px solid grey;box-shadow: 0px 3px 5px grey">
+		<div><span>{{getStr(center.str)}}<span> 
+		<span style="text-decoration:line-through">{{notStr(center.notFound)}}</span>
+		</div>
+		<h5>{{center.name}}</h5>
+		<span>{{center.address}}</span>
+		<span>{{center.city}}</span>
+		<span>{{center.country}}</span>
+		<p style="text-align:right"><i class="fa fa-share" style="cursor:pointer;color:green" title="Forward to {{center.name}}" ng-click="toForward(center)"></i></p>  
+	</div>
+</div>-->
+
+
+
+<div class="container">
+<div class="card p-2">
+<a href="#/drug"><i class="fa fa-arrow-left btn btn-simple"> &nbsp;Back</i></a>
+<div class="drug-search-result">
+	<!--<div class="font-1_4 col-md-6 col-sm-12 pl-0">
+		<strong>Search result for:</strong>
+		<div ng-repeat="drug in criteria" class="pt-1 font-1_1">{{drug.name}}</div> 
+		<input type="text" class="form-control" placeholder="Filter NAME or ADDRESS" ng-model="drugFilter.name">
+
+	</div>-->
+
+	<p class="form-inline">
+		<strong class="font-1_4">Search result for:</strong>
+		<span ng-repeat="drug in criteria" style="display:inline-block; padding:10px">{{drug.name}}</span> 
+		<label style="display:block">
+			<input type="text" class="form-control" placeholder="Filter NAME or ADDRESS" ng-model="drugFilter.name">	
+		</label>
+	</p>
+	<div  class="card p-1" style="border-bottom:1px solid #f2f2f2;"  ng-repeat ="center in drugResult.full | filter : drugFilter.name || drugFilter.address">
+		<div style="width: 95%; box-shadow: 0 5px 25px 0 rgba(0,0,0,.2);">
+			<p><small>{{getStr(center.str)}}</small></p>
+			<h5>{{center.name}}</h5>
+			<address style="margin-bottom: 5px">{{center.address}}
+				<span>{{center.city}}</span>
+				<span>{{center.country}}</span>
+			</address>		
+			<i class="fa fa-phone" style="display: block;"> +234 {{center.phone}}</i>
+			
+			<p style="text-align:right"><i class="fa fa-user btn btn-simple text-success" style="cursor:pointer;" title="View {{center.name}} profile" ng-click="toViewProfile(center.id)"></i> &nbsp;&nbsp;&nbsp;<i class="fa fa-share btn btn-simple text-success" style="cursor:pointer;" title="Forward to {{center.name}}" ng-click="toForward(center)"></i></p> 
+		</div>
+	</div>
+	<div  class="p-1 card" style="border-bottom:1px solid #f2f2f2;" ng-repeat="center in drugResult.less | filter : drugFilter.name || drugFilter.address">
+		<div style="width: 95%; box-shadow: 0 5px 25px 0 rgba(0,0,0,.2);">
+			<p><small>{{getStr(center.str)}}</small> <small style="text-decoration:line-through">{{notStr(center.notFound)}}</small></p>
+			<h5>{{center.name}}</h5>
+			<address style="margin-bottom: 2px">{{center.address}}
+				<span>{{center.city}}</span>
+				<span>{{center.country}}</span>
+			</address>
+			
+			<i class="fa fa-phone" style="display: block;"> +234 {{center.phone}}</i>
+		
+			<p style="text-align:right"><i class="fa fa-user btn btn-simple text-success" style="cursor:pointer;" title="View {{center.name}} profile" ng-click="toViewProfile(center.id)"></i> &nbsp;&nbsp;&nbsp;<i class="fa fa-share btn btn-simple text-success" style="cursor:pointer;" title="Forward to {{center.name}}" ng-click="toForward(center)"></i></p> 
+		</div>
+	</div>
+</div>
+
+</div>
+</div>

@@ -1,0 +1,51 @@
+
+<div class="col-sm-12 col-md-12 col-lg-12">
+  <p class="lab-test">
+    <button ng-click="xray()" ng-class="{'btn-primary':isChemical === true}"> Listing of X-Ray Investigation </button>
+    <button ng-click="ultra()" g-class="{'btn-primary':isBlood === true}"> Listing of Ultrasonography </button>
+    <button ng-click="ct()" g-class="{'btn-primary':isBlood === true}"> Listing of Computerized Tomography Scan (C.T. SCAN) </button>
+    <button ng-click="ecg()" g-class="{'btn-primary':isCytology === true}"> Listing of ECG</button>
+    <button ng-click="mri()" g-class="{'btn-primary':isHormone === true}"> Listing of MRI </span>
+    <button ng-click="mammo()" g-class="{'btn-primary':isParasitology === true}"> Listing of MAMMOGRAM </button>    
+  </p>
+  <section class="lab-tests-section">    
+    <p style="margin-top: 20px;text-align: right"><button ng-click="preview()">Preview selected test</button></p>
+    <label>Filter list by test name</label>     
+    <input type="test" ng-model="lab.name">     
+    <div ng-if="isXRay">       
+      <ul>
+        <li ng-repeat="j in list | filter: lab.name"><input type="checkbox" ng-model="j.select">{{j.name}}</li>
+      </ul>      
+    </div>
+    <div ng-if="isUltra">       
+      <ul>
+        <li ng-repeat="j in list | filter: lab.name "><input type="checkbox" ng-model="j.select">{{j.name}}</li>
+      </ul>      
+    </div>
+    <div ng-if="isCT">
+      <ul>
+        <li ng-repeat="j in list | filter: lab.name "><input type="checkbox" ng-model="j.select">{{j.name}}</li>
+      </ul>      
+    </div>
+    <div ng-if="isECG">
+      <ul>
+        <li ng-repeat="j in list | filter: lab.name "><input type="checkbox" ng-model="j.select">{{j.name}}</li>
+      </ul>     
+    </div>
+    <div ng-if="isMRI">
+      <ul>
+        <li ng-repeat="j in list | filter: lab.name "><input type="checkbox" ng-model="j.select">{{j.name}}</li>
+      </ul>     
+    </div>
+    <div ng-if="isMammo">
+      <ul>
+        <li ng-repeat="j in list | filter: lab.name "><input type="checkbox" ng-model="j.select">{{j.name}}</li>
+      </ul>     
+    </div>   
+    <p style="margin-top: 20px"><button ng-click="preview()">Preview selected test</button></p>
+  </section>  
+<div>
+
+
+
+  

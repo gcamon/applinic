@@ -1,0 +1,233 @@
+
+<!doctype html>
+<!--[if lt IE 7]>       <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang=""> <![endif]-->
+<!--[if IE 7]>          <html class="no-js lt-ie9 lt-ie8" lang=""> <![endif]-->
+<!--[if IE 8]>          <html class="no-js lt-ie9" lang=""> <![endif]-->
+<!--[if gt IE 8]><!-->  <html class="no-js" lang=""> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Applinic</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="apple-touch-icon" href="apple-touch-icon.png">
+        <link rel="stylesheet" href="/assets/css/bootstrap.min.css">
+        <link rel="stylesheet" href="/assets/css/normalize.css">
+        <link rel="stylesheet" href="/assets/css/font-awesome.min.css">
+        <link rel="stylesheet" href="assets/css/app.css">
+        <link rel="stylesheet" href="/assets/css/main.css">
+        <link rel="stylesheet" href="/assets/css/now-ui-kit2.css">
+        <link href="http://code.jquery.com/ui/1.10.4/themes/ui-lightness/jquery-ui.css" rel="stylesheet">
+        <link rel="stylesheet" href="/assets/css/angular-carousel.css">  
+        <script src="/assets/js/vendor/modernizr-2.8.3-respond-1.4.2.min.js"></script>
+        <link href="https://fonts.googleapis.com/css?family=Ubuntu+Condensed" rel="stylesheet">
+        <script src="/assets/js/vendor/jquery-library.js"></script>
+         <script type="text/javascript" src="/assets/js/source.js"></script>
+        <script type="text/javascript" src="/assets/js/jquery.nicescroll.js"></script>
+         <script type="text/javascript">
+            $(document).ready(function(){
+                $("html").niceScroll({cursorcolor:"#ccc",cursorwidth:"10px"});
+                $("#main").niceScroll("#complaint",{cursorcolor:"#ccc"});
+                $("#complain-in-view").niceScroll({cursorcolor:"#ccc",cursorwidth:"10px"});
+            })
+        </script>
+
+        
+    </head>
+    <body ng-app= "myApp">
+        <!--[if lt IE 8]>
+                <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+        <![endif]-->
+        <!--************************************
+                        Wrapper Start
+        *************************************-->
+        
+            <!--************************************
+                            Header Start
+            *************************************-->
+             <header id="header"   ng-controller="topHeaderController" style="background-color:#d7dde4">
+              
+                <nav class="header" style="height:70px; margin-top:-.5em; z-index:1000;">
+                     <div class="header-block header-block-nav">
+                        <ul  style="display:inline-block;width:100%">
+                            
+                            <li style="float:left;margin:20px 10px">
+                                <a ng-href="{{back}}" class="nav-link" >
+                                  <b style="font-size:16px; font-weight:bold;"> &larr; Back to dashbaord</b>
+                                </a>
+                            </li>
+                             
+                                                 
+
+                            <li style="float:right;list-style-type:none;margin:20px 10px">
+                                <a class="nav-link" href="" ng-click="logout()">
+                                   
+                                    <span class="name">
+                     <i class="fa fa-power-off icon"></i>
+                      Logout
+                    </span> </a></li> </ul>
+                    </div>
+                </nav>
+            </header>
+            <!--************************************
+                            Header End
+            *************************************-->
+            
+            <!--************************************
+                            Main Start
+            *************************************-->
+            <main id="main" class="tg-haslayout" ng-controller="patientWaitingRoomController" style="max-height:1300px;overflow-y:scroll;margin-bottom:30px" id="main">
+                <section class="container">
+                    <div class="row">
+                        <div class="col-sm-12 col-md-12 col-lg-12">                           
+                            <div class="waiting-room">
+                                <div class="complain-list" id="complaint">
+                                    <ul>
+                                        <li><a href="#/1" ng-class="{'btn-primary':batch==='1'}" ng-click="getBatch('1')">1</a></li>
+                                        <li><a href="#/2" ng-class="{'btn-primary':batch==='2'}" ng-click="getBatch('2')">2</a></li>
+                                        <li><a href="#/3" ng-class="{'btn-primary':batch==='3'}" ng-click="getBatch('3')">3</a></li>
+                                        <li><a href="#/4" ng-class="{'btn-primary':batch==='4'}" ng-click="getBatch('4')">4</a></li>
+                                        <li><a href="#/5" ng-class="{'btn-primary':batch==='5'}" ng-click="getBatch('5')">5</a></li>
+                                        <li><a href="#/6" ng-class="{'btn-primary':batch==='6'}" ng-click="getBatch('6')">6</a></li>
+                                        <li><a href="#/7" ng-class="{'btn-primary':batch==='7'}" ng-click="getBatch('7')">7</a></li>
+                                        <li><a href="#/8" ng-class="{'btn-primary':batch==='8'}" ng-click="getBatch('8')">8</a></li>
+                                        <li><a href="#/9" ng-class="{'btn-primary':batch==='9'}" ng-click="getBatch('9')">9</a></li>
+                                        <li><a href="#/10" ng-class="{'btn-primary':batch==='10'}" ng-click="getBatch('10')">10</a></li>
+                                    </ul>
+                                    <section class="patient-complain">
+                                        <article ng-repeat="i in complaints">
+                                            <i class="fa fa-user"> &nbsp; Patient</i>
+                                            <span ng-cloak>{{i.age}}</span>
+                                            <span ng-cloak>{{i.gender}}</span>
+                                            <span style="color:green" ng-cloak>{{i.complaint_id}}</span>
+                                            <span ng-cloak>{{i.sent_date| date: "mediumDate"}}</span>
+                                            <ul class="patient-symptoms" >
+                                                <li><strong>Symptoms | &nbsp;</strong></li>
+                                                <li ng-repeat="symptom in i.symptoms" class="description" ng-cloak>{{symptom}}</li>
+                                            </ul>
+                                            <p ng-cloak>"{{i.description}}" &nbsp; <span style="color:red;cursor:pointer;text-decoration:underline" ng-click="veiwDatail(i.complaint_id)">Respond!</span></p>
+                                        </article>
+                                    </section>
+                                </div>
+                                <div  class="complain-in-view" ng-class="{'no-view':isViewPatient !== true}" id="complain-in-view">
+                                    <p class="complaint-view-head">
+                                        <i class="fa fa-user complaint-user" ng-cloak> &nbsp; Patient ({{patient.complaint_id}})</i>
+                                        <i class="fa fa-times complaint-times"  ng-click="close()" ng-if="isViewPatient === true"></i>                                     
+                                    </p>
+                                    <article style="padding:10px">                                        
+                                        <aside>
+                                            <span><strong>Age</strong ng-cloak> | {{patient.age}}</span>
+                                            <span><strong>Gender </strong ng-cloak> | {{patient.gender}}</span>
+
+                                        </aside>
+                                        <aside>
+                                           <p style="color:red;font-size:18px;padding: 10px 0;border:1px dashed rgba(0,0,0,0.8);text-align:center;border-radius: 12px;margin: 15px 0" ng-cloak>Patient resides in {{patient.preferred_city}}</p>
+                                        </aside>
+                                        <h6>History</h6>
+                                        <ul class="patient-symptoms">                                            
+                                            <li ng-repeat="symptom in patient.symptoms" class="description"><strong ng-cloak>{{symptom}}</strong></li>
+                                        </ul>
+                                        <p ng-cloak>"{{patient.description}}"</p>
+                                        <h6>Attached file(s)<h6>
+                                        <div ng-if="patient.files.length > 0" ng-repeat="file in patient.files" >
+                                            <div  ng-if="file.type === 'image'" style="width: 480px;height:auto;margin:5px auto">
+                                            <img ng-src="{{file.url}}"  ng-click="viewFile()"  style="width: 100%;height:100%;margin-right:10px" class="img-responsive">
+                                            </div>
+                                            
+                                            <video style="width:100%" controls
+                                              poster="https://archive.org/download/WebmVp8Vorbis/webmvp8.gif" ng-if="file.type === 'video'"  class="img-responsive>  
+                                              <source
+                                                ng-src="{{file.url}}"
+                                                type="video/mp4">                                              
+                                              Your browser doesn't support HTML5 video tag.
+                                            </video>
+                                        </div>
+                                    </article>
+                                    <section style="padding:10px">
+                                        <!--<h6>{{patient.response.length}} doctor(s) has responded so far.</h6>-->
+                                        <h6 style="text-align:center;font-weight:bold">Your Response</h6>
+                                        <form class="complaint-view-charge">
+                                            <h6>Briefly introduce yourself</h6>
+                                            <textarea style="height:100px;" ng-model="user.introductory">
+                                            </textarea>
+                                            <div>
+                                                <h6>Consultation Fee</h6>
+                                                <span>Service charge = N1,000</span>
+                                            </div>
+                                            <div>
+                                                <span>Your charge = </span> <input type="number" placeholder="Enter amount" ng-model="user.amount">         
+                                            </div>
+                                            <p>
+                                                <span ng-cloak>Total billed for patient = {{str}}</span>
+                                            </p>
+                                            <p style="text-align:center">
+                                                <input type="button" value="Submit" ng-click="sendRequest()" class="btn btn-primary">
+                                            </p>
+                                        </form>
+                                    </section>
+                                </div>
+                            </div>
+                        </div>                                        
+                    </div>
+                </section>
+            </main>
+            <!--************************************
+                            Main End
+            *************************************-->
+            <!--************************************
+                            Footer Start
+            *************************************-->
+            <footer id="footer" class="tg-haslayout">
+          
+            <div class="tg-footerbar tg-haslayout">
+                <div class="tg-copyrights">
+                    <p>2017 All Rights Reserved © Applinic</p>
+                </div>
+            </div>
+        </footer>
+            <!--************************************
+                            Footer End
+            *************************************-->
+        </div>
+        <!--************************************
+                        Wrapper End
+        *************************************-->
+        <!--************************************
+                Sign In Sign Up Light Box Start
+        *************************************-->
+
+       
+        
+        
+        <!--************************************
+                Sign In Sign Up Light Box End
+        *************************************-->
+        
+        <script src="/assets/js/vendor/jquery-library.js"></script>
+        <script src="/assets/js/vendor/bootstrap.min.js"></script>
+       
+        <script type="text/javascript" src="/assets/js/angularclient.js"></script>
+        <script type="text/javascript" src="/assets/js/ngroute.js"></script>
+        <script src="/socket.io/socket.io.js"></script>   
+        <script src="/assets/js/socket.min.js"></script>
+        <script src="/assets/js/jquery-ui.js"></script>
+        <!--<script src="http://maps.google.com/maps/api/js?sensor=false"></script>
+        <script src="/assets/js/map/jquery.gomap.js"></script>-->
+        
+        <script src="/assets/js/jquery.nicescroll.js"></script>
+       
+        
+        <script src="/assets/js/angularAnimate.js"></script>
+        <script src="/assets/js/modalService.js"></script>
+        
+        <script src="/assets/js/moment.min.js"></script>
+        <script src="/assets/js/angular-touch.min.js"></script>
+        <script src="/assets/js/angular-moment.min.js"></script>
+        <script src="/assets/js/angucomplete-alt.min.js"></script> 
+        <script src="/assets/js/ui-bootstrap-tpls.js"></script>
+        <script src="/assets/js/angular-clipboard.js"></script>
+        <script src="/assets/js/ngresource.js"></script> 
+         <script src="/assets/js/ngPrint.js"></script>    
+        </script>
+    </body>
+</html>

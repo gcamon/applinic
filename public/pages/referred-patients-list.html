@@ -1,0 +1,65 @@
+<!--<div class="col-sm-12 col-md-12 col-lg-12">
+	<div class="row">		
+		<div class="col-sm-6 col-md-4 col-lg-4 pull-right">
+			<p style="cursor: pointer; text-decoration: underline; margin-top: 20px" ng-click="showOption()">Search option</p>	
+		</div>
+		<div class="col-sm-6 col-md-8 col-lg-8">
+			<h3>All Referrals</h3>
+		</div>
+	</div>	
+	<form ng-if="isNotOption">			
+		<input type="text" placeholder="Enter referrence number" style="border:1px solid #000; width:50%" ng-model="patient.ref_id" />
+		<input type="button" value="Find patient Prescription" ng-click="findPrescription()" style="padding: 20px; background-color:green;color:#fff;border-radius: 2px;box-shadow: 0px 2px 3px rgba(0,0,0,0.6)"/>
+	</form>
+
+	<form ng-if="isOption">
+		<input type="text" placeholder="Enter patient phone number" style="border:1px solid #000; width:50%" ng-model="patient.phone" />
+		<input type="button" value="Find patient Prescription" ng-click="findPrescription()" style="padding: 20px; background-color:green;color:#fff;border-radius: 2px;box-shadow: 0px 2px 3px rgba(0,0,0,0.6)"/>
+	</form>
+
+	<div ng-click="viewPatientPrescription(foundData.ref_id)" style="padding: 20px; cursor:pointer">
+		<img ng-src="{{foundData.pharmacy.patient_profile_pic_url}}" style="width:100px; height: 100px">
+		<span>{{foundData.pharmacy.patient_firstname}} {{foundData.pharmacy.patient_lastname}}</span>
+		<span>{{foundData.ref_id}}</span>
+	</div>
+	<p style="text-align: center; font-size: 22px">{{error}}</p>
+</div>-->
+
+<div class="container">
+<div class="card p-2">
+<div class="col-md-12 col-lg-12 col-sm-12">
+	<div class="row">		
+		<div class="col-md-4 col-lg-4 col-sm-6">			
+			<h3 class="font-1_7" style="padding: 15px">All Referrals</h3>	
+		</div>
+		<div class="col-md-8 col-lg-8 col-sm-6" style="text-align: right;">
+			<button class="btn btn-simple" style="cursor: pointer;" ng-click="showOption()">Change search option</button>
+		</div>
+	</div>	
+    <div class="row">
+	<form class="col-md-8 col-lg-8 col-sm-8" ng-if="isNotOption">			
+		<input type="text" class="form-control" placeholder="Enter referrence number" ng-model="patient.ref_id" style="width:60%;display: inline-block;padding: 20px 10px"/>
+		<input type="button" class="btn btn-success" value="Find patient Prescription" ng-click="findPrescription()" style=""/>
+	</form>
+
+	<form class="col-md-8 col-lg-8 col-sm-8" ng-if="isOption">
+		<input type="text" class="form-control" placeholder="Enter patient phone number" ng-model="patient.phone" style="width:60%;display: inline-block;padding:20px 10px"/>
+		<input type="button" class="btn btn-success" value="Find patient Prescription" ng-click="findPrescription()" style=""/>
+	</form>
+    </div>
+	<div ng-click="viewPatientPrescription(foundData.ref_id)" style="cursor:pointer" ng-if="foundData.ref_id">
+		<div class="row mt-1">
+        <div class="col-md-2"><img  ng-src="{{foundData.pharmacy.patient_profile_pic_url}}" style="width:150px; height: 150px"></div>
+		<div class="col-md-9 pt-2"> <span class="font-1_4">{{foundData.pharmacy.patient_firstname}} {{foundData.pharmacy.patient_lastname}}</span><br>
+		<span class="font-1_1">{{foundData.ref_id}}</span></div>
+        </div>
+	</div>
+	<p class="font-1_4" style="text-align: center;">{{error}}</p>
+</div>
+
+</div>
+</div>
+
+
+
+

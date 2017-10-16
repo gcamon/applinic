@@ -1,0 +1,19 @@
+<!--<div class="col-sm-12 col-md-12 col-lg-12">
+	<h3>Choose a doctor</h3>
+	<span>Filter:</span><input type="text" ng-model="doc.firstname" placeholder="filter list by surname or specialty">
+	<div ng-repeat="person in doctors | filter: doc.firstname || doc.specialty" ng-click="selectedDoctor(person)" style="cursor:pointer;padding: 15px">
+		<img ng-src="{{person.doctor_profile_pic_url}}" style="width: 100px;height:100px">&nbsp;&nbsp;&nbsp;
+		<span style="font-size: 22px">Dr. {{person.doctor_firstname}} {{person.doctor_lastname}}<span>
+		<span>({{person.doctor_specialty}})</span>
+	</div>
+</div>-->
+
+<div class="col-sm-12 col-md-12 col-lg-12">
+	<h3 class="font-1_7">Choose a Doctor</h3>
+	<div class="form-inline">Filter: <input type="text" class="form-control" ng-model="doc.firstname" placeholder="filter list by surname or specialty"></div>
+	<div ng-repeat="person in doctors | filter: doc.firstname || doc.specialty" ng-click="selectedDoctor(person)" style="cursor:pointer;">
+		<img ng-src="{{person.doctor_profile_pic_url}}" style="width: 100px;height:100px">
+		<span class="font-1_4">Dr. {{person.doctor_firstname}} {{person.doctor_lastname}} EDE Obinna<span><br>
+		<span class="font-1_1">({{person.doctor_specialty}})CARDIOLOGIST</span>
+	</div>
+</div>

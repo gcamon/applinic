@@ -1,0 +1,73 @@
+<!--<div class="col-sm-12 col-md-12 col-lg-12">
+	<div class="row">		
+		<div class="col-sm-6 col-md-4 col-lg-4 pull-right">
+			<p style="cursor: pointer; text-decoration: underline; margin-top: 20px" ng-click="showOption()">Search option</p>	
+		</div>
+		<div class="col-sm-6 col-md-8 col-lg-8">
+			<h3>All Referrals</h3>
+		</div>
+	</div>	
+	<form ng-if="isNotOption">			
+		<input type="text" placeholder="Enter referrence number" style="border:1px solid #000; width:50%" ng-model="patient.ref_id" />
+		<input type="button" value="Find patient test" ng-click="findTest()" style="padding: 20px; background-color:green;color:#fff;border-radius: 2px;box-shadow: 0px 2px 3px rgba(0,0,0,0.6)"/>
+	</form>
+
+	<form ng-if="isOption">
+		<input type="text" placeholder="Enter patient phone number" style="border:1px solid #000; width:50%" ng-model="patient.phone" />
+		<input type="button" value="Find patient test" ng-click="findTest()" style="padding: 20px; background-color:green;color:#fff;border-radius: 2px;box-shadow: 0px 2px 3px rgba(0,0,0,0.6)"/>
+	</form>
+
+	<div ng-click="viewScanTest(test.ref_id)" style="padding: 20px; cursor:pointer">
+		<img ng-src="{{test.radiology.patient_profile_pic_url}}" style="width:100px; height: 100px">
+		<span>{{test.radiology.patient_firstname}} {{test.radiology.patient_lastname}}</span>
+		<span>{{test.ref_id}}</span>
+	</div>
+	<p style="text-align: center; font-size: 22px;margin-top: 50px">{{error}}</p>
+</div>-->
+
+
+<div class="container">
+    <div class="card p-2">
+<div class="col-sm-12 col-md-12 col-lg-12">
+	<div class="row">		
+		<div class="col-sm-6 col-md-4 col-lg-4 pull-right">
+			<button class="pl-1 btn btn-info" style="margin-top: 20px;background-color: orange" ng-click="showOption()">Change search criteria</button>	
+		</div>
+		<div class="col-sm-6 col-md-8 col-lg-8">
+			<h3>All Referrals</h3>
+		</div>
+	</div>	
+	<form ng-if="isNotOption">
+        <div class="form-group">
+            <div class="col-md-6">
+                <label style="padding: 20px 5px">Test referrence Number</label>	
+		<input type="text" class="form-control" placeholder="Enter referrence number" ng-model="patient.ref_id" />
+		<p style="padding: 20px 5px">
+		<button type="submit" class="pl-1 btn btn-info" ng-click="findTest()">Find Patient Test</button>
+		</p>
+        </div>
+        </div>
+	</form>
+
+	<form ng-if="isOption">
+         <div class="form-group">
+            <div class="col-md-6">
+                <label style="padding: 20px 5px">Patient phone number</label>
+		<input type="text"  class="form-control" placeholder="Enter patient phone number" ng-model="patient.phone" />
+		<p style="text-align: cente;padding: 20px 5px">
+		<button type="submit" class="pl-1 btn btn-info" ng-click="findTest()">Find Patient Test</button>
+		</p>
+</div>
+        </div>
+</form>
+
+	<div ng-repeat="test in searchResult" ng-click="viewScanTest(test.ref_id)" class="col-sm-12 pl-0 pt-1" style="cursor:pointer" ng-if="test.ref_id">
+		<img ng-src="{{test.radiology.patient_profile_pic_url}}" style="width:82px; height: 82px">
+		<span class="font-1_1">{{test.radiology.patient_firstname}} {{test.radiology.patient_lastname}}</span></br>
+		<span>{{test.ref_id}}</span>
+	</div>
+    <div class="clearfix"></div>
+	<div class="alert alert-danger mt-1">{{error}}</div>
+</div>
+    </div>
+</div>

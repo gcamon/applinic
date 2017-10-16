@@ -1,0 +1,1528 @@
+<!doctype html>
+<html class="no-js" lang="en">
+
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title> Applinic</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="apple-touch-icon" href="apple-touch-icon.png">
+        <!-- Place favicon.ico in the root directory -->
+
+       <!--<link rel="stylesheet" href="/assets/css/main.cs">-->
+        <link rel="stylesheet" href="/assets/css/vendor.css">
+         <link rel="stylesheet" href="/assets/css/app.css">
+         
+          <link rel="stylesheet" href="/assets/css/now-ui-kit2.css">
+          <link rel="stylesheet" href="/assets/css/icomoon.css">
+          <link rel="stylesheet" href="/assets/css/chat.css">
+           <link rel="stylesheet" href="/assets/css/my-edit.css">
+          
+        
+          <script src="/assets/js/vendor2.js"></script>
+          <script type="text/javascript" src="/assets/js/source.js"></script>
+          
+          <style>
+              .title{
+                  font-weight: 300;
+              }
+
+              .noti-style {
+                    max-height: 300px;
+                    overflow-y:auto;
+                    border-left: 1px solid rgba(0,0,0,0.2);
+                    border-right: 1px solid rgba(0,0,0,0.2);
+                    border-bottom: 1px solid rgba(0,0,0,0.2);
+                }
+
+                .text-center a {
+                    margin-left: 50px;
+                }
+
+                @media screen and (max-width: 720px) {
+                    .text-center a {
+                        margin-left: 20px;
+                    }
+                }
+          </style>
+
+           
+    </head>
+
+    <body ng-app="myApp">
+                    <nav class="header" style="height:70px; margin-top:-.5em; z-index:1000;" ng-controller="docNotificationController">
+                           <a class="brand" href="/" style="margin-left:3em;display: block;">
+                                <div class="logo"> <span class="l l1"></span> <span class="l l2"></span> <span class="l l3"></span> <span class="l l4"></span> <span class="l l5"></span> </div> Applinic </a>
+                    <div class="header-block header-block-collapse hidden-lg-up"> <button class="collapse-btn" id="sidebar-collapse-btn">
+                <i class="fa fa-bars"></i>
+            </button>
+                         </div>
+                             <div class="header-block header-block-search hidden-sm-down">
+                        
+                        <!--<form role="search">
+                            <div class="input-container"> <i class="fa fa-search"></i> <input type="search" placeholder="Search">
+                                <div class="underline"></div>
+                            </div>
+                        </form>-->
+                    </div>
+                   
+                    <div class="header-block header-block-nav">
+                        <ul class="nav-profile">
+                            <li class="notifications new"> <a href="" data-toggle="dropdown">
+                    <i class="fa fa-bell-o"></i>
+                    <sup>
+                      <span class="counter" ng-if="<%= person.doctor_notification.length %> > 0 " ng-cloak>{{getLen(<%= person.doctor_notification.length %>)}}</span>
+                    </sup>
+                  </a>
+                                <div class="dropdown-menu notifications-dropdown-menu">
+                                    <ul class="notifications-container noti-style">
+                                         <li> <h6 style="text-align: center">Notification(s)</h6> </li>
+                                        <li ng-repeat = "note in allNote">
+                                            <a href="" class="notification-item">
+                                                <div class="img-col">                                                    
+                                                    <div class="img" style="background-image: url({{note.doctor_profile_pic_url}})"></div>
+                                                </div>
+                                                <div class="body-col">                                                    
+                                                    <p> <span class="accent">{{note.message}}</span>&nbsp;&nbsp;<small> {{note.date | date: "mediumDate"}} &nbsp;&nbsp;{{note.date | date : "mediumTime"}}</small></p>
+                                                </div>
+                                            </a>
+                                        </li>                                        
+                                    </ul>
+                                    <footer>
+                                        <ul>
+                                            <li> <a href="">
+                            <!--View All-->
+                          </a> </li>
+                                        </ul>
+                                    </footer>
+                                </div>
+                            </li>
+
+                               <li class="notifications new"> <a href="" data-toggle="dropdown">
+                    <i class="fa fa-envelope-o"></i>
+                    <sup>
+                      <span class="counter" ng-if="<%= person.doctor_notification.length %> > 0 " ng-cloak>{{consultationLen}}</span>
+                    </sup>
+                  </a>
+                                <div class="dropdown-menu notifications-dropdown-menu">
+                                    <ul class="notifications-container noti-style">
+                                        <li> <h6 style="text-align: center">Consultation Request(s)</h6> </li>
+                                        <li ng-repeat = "patient in consultation" ng-click= "view(patient)">
+                                            <a href="" class="notification-item">
+                                                <div class="img-col">
+                                                    <div class="img" style="background-image: url({{patient.sender_profile_pic_url}})"></div>
+                                                </div>
+                                                <div class="body-col">
+                                                    <p>
+                                                        {{patient.date | date : "mediumDate"}} &nbsp;&nbsp;{{patient.date | date: "shortTime"}}
+                                                        <span class="accent" style="display:block">{{patient.title}} {{patient.sender_firstname}} {{patient.sender_lastname}}</span>
+                                                        <span class="accent" style="display:block">{{patient.message}}</span>. 
+                                                    </p>                                                  
+                                                </div>
+                                            </a>
+                                        </li>
+                                        
+                                    </ul>
+                                    <footer>
+                                        <ul>
+                                            <li> <a href="">
+                            
+                          </a> </li>
+                                        </ul>
+                                    </footer>
+                                </div>
+                            </li>
+
+                              <li class="notifications new"> <a href="" data-toggle="dropdown">
+                    <i class="icon-Pills"></i>
+                    <sup>
+                      <span class="counter" ng-if="isNew" ng-cloak>{{len}}</span>
+                    </sup>
+                  </a>
+                                <div class="dropdown-menu notifications-dropdown-menu">
+                                    <ul class="notifications-container">
+                                        <li> <h6 style="text-align: center">Prescription Request(s)</h6> </li>
+                                        <li ng-repeat="request in allRequest">
+                                            <a href="" class="notification-item" ng-click="viewPatient(request.sender_id)">
+                                                <div class="img-col">
+                                                    <div class="img" style="background-image: url({{request.sender_profile_pic_url}})"></div>
+                                                </div>
+                                                <div class="body-col">
+                                                    <p> <span class="accent">{{request.sender_firstname}} {{request.sender_lastname}}</span> 
+                                                        &nbsp;&nbsp;Request for prescription
+                                                        <small>{{request.date_sent | date : "mediumDate"}}</small>
+                                                        <small>{{request.date_sent | date : "mediumTime"}}</small>
+                                                    </p>
+                                                </div>
+                                            </a>
+                                        </li>                                       
+                                    </ul>
+                                    <footer>
+                                        <ul>
+                                            <li> <a href="">
+                          
+                          </a> </li>
+                                        </ul>
+                                    </footer>
+                                </div>
+                            </li>
+
+                               <li class="notifications new"> <a href="" data-toggle="dropdown">
+                    <i class="fa fa-calendar"></i>
+                    <sup>
+                      <span class="counter" ng-if="inPersonRequestLen > 0 " ng-cloak>{{inPersonRequestLen}}</span>
+                    </sup>
+                  </a>
+                                <div class="dropdown-menu notifications-dropdown-menu">
+                                    <ul class="notifications-container">
+                                        <li> <h6 style="text-align: center">In-Person Appointment Request</h6> </li>
+                                        <li ng-repeat = "patient in inPersonRequest">
+                                            <a href="" class="notification-item" ng-click= "viewAppointment(app.session_id)">
+                                                <div class="img-col">
+                                                    <div class="img" style="background-image: url({{app.profilePic}})"></div>
+                                                </div>
+                                                <div class="body-col">
+                                                    <p> <span class="accent">{{app.title}} {{app.firstname}} {{app.lastname}}</span> 
+                                                        <span style="display:block">Hi, wants to {{patient.type}} with you</span>
+                                                        <button ng-click="viewApp(patient.from,patient.firstname,patient.lastname,patient.profile_pic_url)" style="font-size: 12px;margin-top: 2px;float:right;color:#fff">Respond</button>. 
+                                                    </p>
+                                                </div>
+                                            </a>
+                                        </li>                                        
+                                    </ul>
+                                    <footer>
+                                        <ul>
+                                            <li> <a href="">
+                            
+                          </a> </li>
+                                        </ul>
+                                    </footer>
+                                </div>
+                            </li>
+
+                               <li class="notifications new"> <a href="" data-toggle="dropdown">
+                    <i class="fa fa-phone"></i>
+                    <sup>
+                      <span class="counter" ng-if="audioRequestLen > 0 " ng-cloak>{{audioRequestLen}}</span>
+                    </sup>
+                  </a>
+                                <div class="dropdown-menu notifications-dropdown-menu">
+                                    <ul class="notifications-container">
+                                        <li> <h6 style="text-align: center">Audio Call Request(s)</h6> </li>
+                                        <li ng-repeat = "patient in audioRequest">
+                                            <a href="" class="notification-item">
+                                                <div class="img-col">
+                                                    <div class="img" style="background-image: url({patient.sender_profile_pic_url}})"></div>
+                                                </div>
+                                                <div class="body-col">
+                                                    <p> <span class="accent">{{patient.title}} {{patient.sender_firstname}} {{patient.sender_lastname}}</span> Hi doc, I want to have <strong>{{patient.type}}</strong> with you 
+                                                        <span class="accent" style="display:block">{{patient.bookedTime}}</span>
+                                                        <span style="display:block">{{patient.date | date : "mediumDate"}} &nbsp;&nbsp;{{patient.date | date: "shortTime"}}</span>&nbsp; <button ng-click= "viewRequest(patient.from,patient.type,patient.sender_firstname,patient.sender_lastname,patient.sender_profile_pic_url)" style="font-size: 12px;margin-top: 2px;float:right;color:#fff">respond</button>         
+                                                    </p>
+                                                </div>
+                                            </a>
+                                        </li>  
+                                        
+                                    </ul>
+                                    <footer>
+                                        <ul>
+                                            <li> <a href="">
+                        
+                          </a> </li>
+                                        </ul>
+                                    </footer>
+                                </div>
+                            </li>
+
+                               <li class="notifications new"> 
+                                    <a href="" data-toggle="dropdown">
+                                    <i class="fa fa-video-camera"></i>
+                                <sup>
+                                  <span class="counter" ng-if="videoRequestLen > 0 " ng-cloak>{{videoRequestLen}}</span>
+                                </sup>
+                              </a>
+                                <div class="dropdown-menu notifications-dropdown-menu">
+                                    <ul class="notifications-container">
+                                        <li> <h6 style="text-align: center">Video Call Request(s)</h6> </li>
+                                        <li ng-repeat = "patient in videoRequest">
+                                            <a href="" class="notification-item">
+                                                <div class="img-col">
+                                                    <div class="img" style="background-image: url({{patient.sender_profile_pic_url}})"></div>
+                                                </div>
+                                                <div class="body-col">
+                                                   <p> <span class="accent">{{patient.title}} {{patient.sender_firstname}} {{patient.sender_lastname}}</span> Hi doc, I want to have <strong>{{patient.type}}</strong> with you 
+                                                        <span class="accent" style="display:block">{{patient.bookedTime}}</span>
+                                                        <span style="display:block">{{patient.date | date : "mediumDate"}} &nbsp;&nbsp;{{patient.date | date: "shortTime"}}</span>&nbsp; <button ng-click= "viewRequest(patient.from,patient.type,patient.sender_firstname,patient.sender_lastname,patient.sender_profile_pic_url)" style="font-size: 12px;margin-top: 2px;float:right;color:#fff">respond</button>         
+                                                    </p>
+                                                </div>
+                                            </a>
+                                        </li>
+                                       
+                                    </ul>
+                                    <footer>
+                                        <ul>
+                                            <li> <a href="">
+                        
+                          </a> </li>
+                                        </ul>
+                                    </footer>
+                                </div>
+                            </li>
+
+
+                             <li class="profile dropdown" ng-controller="topHeaderController">
+                                <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="" role="button" aria-haspopup="true" aria-expanded="false">
+                                    <div class="img" style="background-image: url('<%= person.profile_pic_url %>')"> </div> 
+                                    <span class="name">
+                      <%= person.firstname %> !
+                    </span> </a>
+                    <div class="dropdown-menu profile-dropdown-menu" aria-labelledby="dropdownMenu1"> 
+                    <a class="dropdown-item" href="">
+                      <i class="fa fa-user icon"></i>
+                      ID <%= person.user_id %>
+                    </a>
+                    <a class="dropdown-item" href="<%= person.profile_url %>">
+                      <i class="fa fa-user icon"></i>
+                      View profile
+                    </a>
+                   
+                    <a class="dropdown-item" href="#/edit-picture">
+                      <i class="fa fa-user"></i>
+                      Change Profile Picture
+                    </a>
+                     <a class="dropdown-item" href="#/doc-edit-profile" >
+                      <i class="fa fa-gear icon"></i>
+                      Edit Profile
+                    </a>
+                                    <div class="dropdown-divider"></div> <a class="dropdown-item" href="" ng-click="logout()">
+                      <i class="fa fa-power-off icon"></i>
+                      Logout
+                    </a> </div>
+                            </li>
+
+                             <li class="dropdown">
+                                <a href="" class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown">
+                                    <i class="fa fa-search" aria-hidden="true"></i> Searches
+                                </a>
+                                <div class="okd dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
+                                    <a class="dropdown-item" href="#/find-specialist">Find a Doctor</a>
+                                    <a class="dropdown-item" href="#/drug">Find Drug</a>
+                                    <a class="dropdown-item" href="#/scan-search">Find Scan</a>
+                                    <a class="dropdown-item" href="#/search-test">Find Test</a>
+                                    <a class="dropdown-item" href="#/procedure">Find Skills & Procedures</a>
+                                   </div>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+                <div class="clearfix"></div>
+        <div class="main-wrapper">
+             <div class="clearfix"></div>
+              <!-- Navbar -->
+    <nav class="navbar navbar-toggleable-md" style="margin:-9px 0;" ng-controller = "createRoomController">
+       
+    </nav>
+    <!-- End Navbar -->
+     <div class="clearfix"></div>
+            <div class="app" id="app" >
+                <header class="container text-center" style="background:#fff; border-left:1px solid #f2f2f2; min-height:70px; line-height:70px; padding:5px;" ng-controller="presenceSocketController">
+                            <div class="col-md-12 col-sm-12 col-xs-12" >
+                               
+                                  <div class="col-md-12"> 
+                                  <label class="custom-control custom-radio">
+                      <input id="radio2" name="radio" type="radio" value="online" ng-model="user.presence" class="custom-control-input" ng-class="{'doc-presense':isOnline === true}" class="doc-presence-normal">
+                      <div class="custom-control-indicator"></div>
+                      <div class="custom-control-description" style="margin-top:-20px; display:block;">Online</div>
+                    </label>
+
+
+                    <label class="custom-control custom-radio">
+                      <input id="radio2" name="radio" type="radio" value="offline" ng-model="user.presence" class="custom-control-input" ng-class="{'doc-presense2':isOnline === false}" class="doc-presence-normal">
+                      <div class="custom-control-indicator"></div>
+                      <div class="custom-control-description" style="margin-top:-20px; display:block;">Busy</div>
+                    </label>
+                                                          
+                        <a class="nav-link" href="/user/patients/waiting-room" ><i class="fa fa-user"></i>
+                                    <span>   Patients Waiting Room</span></a>
+                     
+                        <!--<a class="nav-link"  href=""  class="btn btn-primary" data-toggle="modal" data-target="#exampleModalLong">-->
+                        
+                        <a class="nav-link"  href=""  class="btn btn-primary" ng-click="newPatient()">
+                        <i class="fa fa-user-plus" ></i>
+                                    <span> Add new patient</span></a>
+                      
+                        <a ng-controller="balanceController" href="#/transactions" class="btn btn-info btn-sm header-btn" style="float-right"><i class="fa fa-money"></i>
+                            <span ng-cloak>Available Balance |  {{balance}}</span>
+                        </a>  
+                     </div>
+                </header>
+
+                     <div class="clearfix"></div>
+
+                <aside class="sidebar" style="top:.4em;">
+                    <div class="sidebar-container">
+                        <div class="sidebar-header">
+                           <!-- <div class="brand">
+                                <div class="logo"> <span class="l l1"></span> <span class="l l2"></span> <span class="l l3"></span> <span class="l l4"></span> <span class="l l5"></span> </div> Applinic </div>-->
+                        </div>
+                        <nav class="menu" ng-controller="checkingOutDoctorController">
+                            <ul class="nav metismenu" id="sidebar-menu">
+
+                                 <li class="no-show"> <a href="">
+                        
+                                    <div class="img" style="background-image: url(<%= person.profile_pic_url %>)"> </div> 
+                                    <span class="name">
+                      <%= person.firstname %> <%= person.lastname %>
+                    </span>
+                            <i class="fa arrow"></i>
+                        </a>
+                                    <ul>                                  
+                                        <li> <a href="<%= person.profile_url %>"> <i class="fa fa-user icon"></i> View profile</a> </li>
+
+                                  <li><a > <i class="fa fa-user icon"></i> ID <%= person.user_id %> </a> </li>
+
+                                  <li>
+                                     <a href="#/doc-edit-profile"><i class="fa fa-gear icon"></i> Edit profile</a> 
+                                 </li>
+
+                                 <li>
+                                     <a href="#/edit-picture"><i class="fa fa-gear icon"></i> Change Profile Picture</a> 
+                                 </li>
+
+ <li><a href="" ng-click="logout()"><i class="fa fa-power-off icon"></i> Logout </a>
+                             </li>
+                              </ul>
+                            </li>
+
+                             <li class="no-show"> <a href="">
+                            <i class="fa fa-search" aria-hidden="true"></i> Searches
+                            <i class="fa arrow"></i>
+                        </a>
+                                    <ul>
+                                        <li> <a href="#/find-specialist">Find a doctor</a>
+                                </a> </li>
+
+                                 <li> <a href="#/drug">Find Drug
+                                </a> </li>
+
+                                 <li> <a href="#/scan-search">Find Scan
+                                </a> </li>
+
+                                <li><a href="#/search-test">Find Test
+                                </a> </li>
+                                       
+
+                                <li><a href="#/procedure">Find Skills & Procedure
+                                </a> </li>
+                                    </ul>
+                                </li>                    
+
+                                
+                                <li class="active"> <a href="#/welcome">
+                            <i class="fa fa-home"></i>Doctor's Dashboard
+                        </a> </li>                       
+
+                            
+                                <li> <a href="">
+                            <i class="fa fa-user-md"></i> My Patients
+                            <i class="fa arrow"></i>
+                        </a>
+                                    <ul>
+                                        <li class="bg-white" style="height:40px;"> 
+                                            <form role="search" style="height:40px;">
+                                                <div class="input-container"> <i class="fa fa-search"></i> <input type="search" placeholder="Filter Patients" style="border:0; width:90%; height:40px;" ng-model="patient.firstname">
+                                                    <div class="underline"></div>
+                                                </div>
+                                            </form>
+                                        </li>
+
+                                        <li ng-repeat="patient in patientList | filter : patient.firstname || patient.lastname">
+                                            <div class="img" style='background-image:url({{patient.patient_profile_pic_url }})'>
+                                            <a href="" ng-click="userPatient(patient.patient_id)">
+                                                {{patient.patient_firstname}} {{patient.patient_lastname}} 
+                                                <span class="online" ng-if="patient.presence === true"></span>
+                                                <span class="offline" ng-if="patient.presence !== true"></span>
+                                            </a>  
+                                        </li>                                     
+                                    </ul>
+                                </li>
+                                <li ng-controller="docAppointmentController"> 
+                                    <a href="">
+                                        <i class="fa fa-bar-chart">
+                                        </i>
+                                        Appointment (<%= person.appointment.length %>)
+                                        <i class="fa arrow">
+                                        </i>
+                                    </a>
+                                    <ul>
+                                        <% for(var k = 0; k < person.appointment.length; k++) { %>
+                                        <li> 
+                                            <a href=""  ng-click="viewAppointment(<%= person.appointment[k].session_id %>)">
+                                            <p><%= person.appointment[k].firstname %> <%= person.appointment[k].lastname %>
+                                            <span style="display:block">{{"<%=person.appointment[k].date %>" | date : "mediumDate"}}</span> <span style="display:block">{{ "<%= person.appointment[k].time %>" | date: "mediumTime" }}</span> 
+                                            </p>
+                                            </a> 
+                                        </li>
+                                         <% } %>
+                                    </ul>
+                                </li>
+                                <li> 
+                                    <a href="">
+                            <i class="fa fa-file-text-o"></i> Payment & Wallet
+                            <i class="fa arrow"></i>
+                                    </a>
+                                    <ul>
+                                        <li> <a href="#/wallet">
+                                    Fund Wallet
+                                </a> </li>
+
+                                 <li> <a href="#/transfer">
+                                    Transfer funds
+                                </a> </li>
+
+                                 <li> <a href="#/cash-out">
+                                    Cash out
+                                </a> </li>
+
+                                <li> <a href="#/transactions">
+                                    View Transactions
+                                </a> </li>
+                                       
+                                    </ul>
+                                </li>                               
+                            </ul>
+                        </nav>
+                    </div>
+                 </aside>
+                <div class="sidebar-overlay" id="sidebar-overlay"></div>
+              <div class="col-md-12" style="padding-bottom:50px;">
+<!-- Nav tabs -->
+
+
+<!-- Tab panes -->
+<div class="tab-content" ng-controller="inDoctorDashboardController">
+  <div class="tab-pane active" id="home" role="tabpanel">
+      <div class="container">
+    <div class="row">
+
+        <div class="col-sm-12 col-md-12 col-lg-12">                                
+            <div class="view-animate-container row" >  
+                <div class="view-animate" ng-view >
+                </div>
+            </div>
+        </div>
+    
+    </div>
+</div>
+  </div>
+  <div class="tab-pane" id="profile" role="tabpanel">
+      <div class="container">
+          <div style="font-weight:300; font-size:2em;">How may we help you?</div><br>
+          <label>Briefly describe what you need *(e.g I am looking for a center for dialysis.Please I need your help.)</label>
+          <textarea class="form-control formm" placeholder="Briefly describe what you need *(e.g I am looking for a center for dialysis.Please I need your help.)"></textarea>
+      <button class="btn btn-success">Request Help</button></div>
+  </div>
+  <div class="tab-pane" id="messages" role="tabpanel">...</div>
+ 
+</div>
+
+
+
+                  </div>
+                <footer class="footer bg-white text-muted">
+                    <div class="footer-block buttons">
+                        <div class="footer-block author">
+                        <ul>
+                            <li>Applinic</a> </li>
+                            <li> <a href="#">Contact Us</a> </li>
+                        </ul>
+                    </div>
+                </footer>
+            
+
+
+                <div class="modal fade" id="modal-media">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header"> <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        <span class="sr-only">Close</span>
+                    </button>
+                                <h4 class="modal-title">Media Library</h4>
+                            </div>
+                            <div class="modal-body modal-tab-container">
+                                <ul class="nav nav-tabs modal-tabs" role="tablist">
+                                    <li class="nav-item"> <a class="nav-link" href="#gallery" data-toggle="tab" role="tab">Gallery</a> </li>
+                                    <li class="nav-item"> <a class="nav-link active" href="#upload" data-toggle="tab" role="tab">Upload</a> </li>
+                                </ul>
+                                <div class="tab-content modal-tab-content">
+                                    <div class="tab-pane fade" id="gallery" role="tabpanel">
+                                        <div class="images-container">
+                                            <div class="row"> </div>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane fade active in" id="upload" role="tabpanel">
+                                        <div class="upload-container">
+                                            <div id="dropzone">
+                                                <form action="/" method="POST" enctype="multipart/form-data" class="dropzone needsclick dz-clickable" id="demo-upload">
+                                                    <div class="dz-message-block">
+                                                        <div class="dz-message needsclick"> Drop files here or click to upload. </div>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer"> <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> <button type="button" class="btn btn-primary">Insert Selected</button> </div>
+                        </div>
+                        <!-- /.modal-content -->
+                    </div>
+                    <!-- /.modal-dialog -->
+                </div>
+                <!-- /.modal -->
+                <div class="modal fade" id="confirm-modal">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header"> <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                                <h4 class="modal-title"><i class="fa fa-warning"></i> Alert</h4>
+                            </div>
+                            <div class="modal-body">
+                                <p>Are you sure want to do this?</p>
+                            </div>
+                            <div class="modal-footer"> <button type="button" class="btn btn-primary" data-dismiss="modal">Yes</button> <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button> </div>
+                        </div>
+                        <!-- /.modal-content -->
+                    </div>
+                    <!-- /.modal-dialog -->
+                </div>
+                <!-- /.modal -->
+            </div>
+        </div>
+         <script type="text/ng-template" id="quickFillComplaint.html">
+        
+
+         <div class="modal fade">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+              <div class="title">Complete the fields below</div>
+                
+                    <button type="button" class="close" ng-click="close('Cancel')" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                                  
+              </div>
+
+              
+              <div class="modal-body">                                                   
+                    <form class="tg-form-modal tg-form-signin">                        
+                        <fieldset>
+                           
+                            <div class="form-group">
+                                <label>Complaint: </label>
+                                <textarea class="form-control"  placeholder="write.." ng-model="patient.complain" ></textarea>
+                            </div>
+
+                            <div class="form-group">
+                                <label>History of the complain: </label>
+                                <textarea class="form-control" placeholder="write.." ng-model="patient.historyOfComplain"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label>Past medical history: </label>
+                                <textarea class="form-control" placeholder="write.." ng-model="patient.pastMedicalHistory"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label>Social history: </label>
+                                <textarea class="form-control" placeholder="write.." ng-model="patient.socialHistory"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label>Family history: </label>
+                                <textarea class="form-control" placeholder="write.." ng-model="patient.familyHistory"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label>Drug history: </label>
+                                <textarea class="form-control" placeholder="write.." ng-model="patient.drugHistory"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label>Summary: </label>
+                                <textarea class="form-control" placeholder="write.." ng-model="patient.summary"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label>Provisional Diagnosis: </label>
+                                <textarea class="form-control" placeholder="write.." ng-model="patient.provisionalDiagnosis"></textarea>
+                            </div>
+                        </fieldset>
+                    </form>
+                    <div style="text-align:right">
+                      <button class="btn btn-success" ng-click="createSession()">Proceed to treatment</button>
+                    </div>                        
+              </div>
+              
+            
+          </div>
+        </div>
+     </script>
+
+      <!--<div class="modal fade">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+              <div class="row">
+                <div class="col-sm-12 col-md-12 col-lg-12">
+                    <button type="button" class="close" ng-click="close('Cancel')" data-dismiss="modal" aria-hidden="true">&times;</button>
+                </div>                                     
+              </div>
+              
+              <div class="modal-body">                                                   
+                    <form class="tg-form-modal tg-form-signin">                        
+                        <fieldset>
+                            <h6 style="text-align: center">Complete the fields below</h6>
+                            <div>
+                                <label>Complaint: </label>
+                                <textarea  placeholder="write.." ng-model="patient.complain" ></textarea>
+                            </div>
+                            <div>
+                                <label>History of the complain: </label>
+                                <textarea placeholder="write.." ng-model="patient.historyOfComplain"></textarea>
+                            </div>
+                            <div>
+                                <label>Past medical history: </label>
+                                <textarea placeholder="write.." ng-model="patient.pastMedicalHistory"></textarea>
+                            </div>
+                            <div>
+                                <label>Social history: </label>
+                                <textarea placeholder="write.." ng-model="patient.socialHistory"></textarea>
+                            </div>
+                            <div>
+                                <label>Family history: </label>
+                                <textarea placeholder="write.." ng-model="patient.familyHistory"></textarea>
+                            </div>
+                            <div>
+                                <label>Drug history: </label>
+                                <textarea placeholder="write.." ng-model="patient.drugHistory"></textarea>
+                            </div>
+                            <div>
+                                <label>Summary: </label>
+                                <textarea placeholder="write.." ng-model="patient.summary"></textarea>
+                            </div>
+                            <div>
+                                <label>Provisional Diagnosis: </label>
+                                <textarea placeholder="write.." ng-model="patient.provisionalDiagnosis"></textarea>
+                            </div>
+                        </fieldset>
+                    </form>
+                    <div style="text-align:right">
+                      <button style="color:#fff;padding:10px 20px;background-color:green" ng-click="createSession()">Proceed to treatment</button>
+                    </div>                        
+              </div>
+              
+            </div>
+          </div>
+        </div>-->
+
+      <script type="text/ng-template" id="selected-doc.html">   
+
+    <div class="modal fade">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+        <div class="title">{{message}}</div>
+                <button type="button" class="close" ng-click="close('Cancel')" data-dismiss="modal" aria-hidden="true" style="color:red;font-size: 32px">&times;</button>                                
+          </div>
+          <div class="row">
+            <div class="col-sm-12 col-md-12 col-lg-12">
+                <div class="modal-body">
+                                        
+                    <div class="clearfix" ng-if="isViewDoc">
+                        <div class=" col-md-3 col-sm-12 pull-right" style="padding-right: 0px;">
+                                <img src="assets/img/avatar.jpg" alt="image description" height="120" ng-src="{{docInfo.profile_pic_url}}">                                  
+                                    <div><span class="">online</span></div>                                                    
+                                    </div>
+                        <div class="col-md-9 col-sm-12 pl-1 pr-0">
+                            <h5 class="font-1_4">Dr. {{docInfo.firstname}} {{docInfo.lastname}}</h5>
+                             <h6 class="text-muted pb-1">{{docInfo.specialty}}</h6>
+                        </div>
+                        <div class="col-md-12">
+                            <div>Address: <span class="font-1_1">{{docInfo.work_place}}</span> | <span style="font-style:italic; color:black;font-size:12px">{{docInfo.address}}</span></div>
+                            <div>Availability: <span class="font-1_1">avalible at this time<span></div>
+                            <div>Experience: <span class="font-1_1">{{docInfo.experience + " years"}}</span></div>
+                            <div>Office hours</div>       
+                            <ul class="nav">        
+                                <li ng-repeat = "i in docInfo.office_hour "><span>{{i.day}}</span>, <span>from {{i.from}}</span> <span>to {{i.to}}</span></li> 
+                            </ul>
+                            <p class="mt-1"><a ng-href= "{{docInfo.profile_url}}" style="color:rgba(0,0,0,0.6)">view doctors detail</a></p>
+                            <div class="in-patient-com">
+                                <article>You can &nbsp; <b>CHAT</b>&nbsp; <b>MAKE VIDEO CALL 
+                                </b>&nbsp; <b>MAKE AUDIO CALL</b> &nbsp;or &nbsp;<b>SHARE FILES</b> with  Dr. {{docInfo.firstname}} {{docInfo.lastname}} if Your request is granted by the doctor. 
+                                </article>
+                                <button class="btn btn-info" ng-click="request()">SEND CONSULTATION REQUEST</button>     
+                                                
+                                
+                    </div>
+                        </div>
+                     
+
+                    <div class="col-md-12" ng-if="isToConfirm" >
+                           <hr>
+                        <h4>You want to send Consultation request to
+                        </h4>                                                                              
+                        <form class="">                        
+                        <div class="row mt-1">
+                            <div class="col-md-3">
+                                <img ng-src="{{docInfo.profile_pic_url}}" style="height:120px;max-width: 120px;"/>
+                            </div>
+                            <div class="col-lg-9">
+                                <div>Dr. {{docInfo.firstname}} {{docInfo.lastname}}</div>
+                                <span style="display:block;">{{docInfo.specialty}}</span>
+                            </div>
+                        <p>Note: consultation fees will apply if your request is granted. </p>                                 
+                        <button class="btn btn-success pull-right" ng-click="sendRequest()">Continue</button>
+                        </div>
+                        </form>
+                    </div>
+                </div> 
+            </div>
+          </div>         
+        </div>
+      </div>
+    </div>
+    </script>
+
+
+    <!--<div class="modal fade">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+          <div class="row">
+            <div class="col-sm-12 col-md-12 col-lg-12">
+                <button type="button" class="close" ng-click="close('Cancel')" data-dismiss="modal" aria-hidden="true" style="color:red;font-size: 32px">&times;</button>
+            </div>                                     
+          </div>
+          <div class="row">
+            <div class="col-sm-12 col-md-12 col-lg-12">
+                <div class="modal-body">
+                    <h6 style="text-align:center">{{message}}</h6>                      
+                    <div style="padding: 30px;" class="clearfix" ng-if="isViewDoc">
+                        <div class="col-sm-12 col-md-3 col-lg-3 pull-right" style="padding-right: 0px;">
+                            <div class="tg-widget tg-widget-doctor">
+                                <figure class="tg-docprofile-img">
+                                    <figcaption>
+                                    <span>online</span>                                                    
+                                    </figcaption>
+                                    <span class="tg-featuredicon"><em class="fa fa-bolt"></em></span>
+                                    <img alt="image description" ng-src="{{docInfo.profile_pic_url}}">                                  
+                                </figure>
+                            </div>
+                        </div>
+                        <div class="col-sm-12 col-md-9 col-lg-9">
+                            <h4 style="text-align:center">Dr. {{docInfo.firstname}} {{docInfo.lastname}}</h4>
+                             <h6 style="border-bottom: 1px solid rgba(0,0,0,0.3);  text-align:center">{{docInfo.specialty}}</h6>
+                            <hr/>
+                            <h6>Address: <span style="font-weight: 200; color:black">{{docInfo.work_place}}</span> | <span style="font-style:italic; color:black;font-size:12px">{{docInfo.address}}</span></h6>
+                            <h6>Availability: <span style="color:rgba(0,0,0,0.7); font-size: 12px">avalible at this time<span></h6>
+                            <h6>Experience: <span style="color:black">{{docInfo.experience + " years"}}</span></h6>
+                            <h6>Office hours</h6>       
+                            <ul>        
+                                <li ng-repeat = "i in docInfo.office_hour "><span>{{i.day}}</span>, <span>from {{i.from}}</span> <span>to {{i.to}}</span></li> 
+                            </ul>
+                            <p style="margin-top: 10px"><a ng-href= "{{docInfo.profile_url}}" style="color:rgba(0,0,0,0.6)">view doctors detail</a></p>
+                            <div class="in-patient-com" style="text-align:center">
+                                <article>You can &nbsp; <strong>CHAT</strong>&nbsp; <strong>MAKE VIDEO CALL 
+                                </strong>&nbsp; <strong>MAKE AUDIO CALL</strong> &nbsp;or &nbsp;<strong>SHARE FILES</strong> with  Dr. {{docInfo.firstname}} {{docInfo.lastname}} if Your request is granted by the doctor. 
+                                </article>
+                                <button ng-click="request()">SEND CONSULTATION REQUEST</button>     
+                                                
+                            </div>      
+                        </div>    
+                    </div>
+
+                    <div ng-if="isToConfirm" >
+                        <h6 style="text-align: center">You want to send Consultation request 
+                        <span style="display:block;margin-top: 20px">To</span> 
+                        </h6>                                                                              
+                        <form class="tg-form-modal tg-form-signin" style="text-align: center">                        
+                        <fieldset>
+                        <img ng-src="{{docInfo.profile_pic_url}}" style="width:150px; height:150px;margin-bottom: 20px;margin-top:-10px"/>
+                        <h6>Dr. {{docInfo.firstname}} {{docInfo.lastname}}</h6>
+                        <span style="display:block;margin-top: -10px; margin-bottom:20px">{{docInfo.specialty}}</span>
+                        <p>Note: consultation fees will apply if your request is granted. </p>                                 
+                        <button class="tg-btn tg-btn-lg" ng-click="sendRequest()">Continue</button>
+                        </fieldset>
+                        </form>
+                    </div>
+                </div> 
+            </div>
+          </div>         
+        </div>
+      </div>
+    </div>-->
+    
+     <script type="text/ng-template" id="X-ray-view.html">
+        
+
+         <div class="modal fade">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+          <div class="title">Report</div>
+                    <button type="button" class="close" ng-click="close('Cancel')" data-dismiss="modal" aria-hidden="true" style="color:red;font-size: 32px">&times;</button>
+                                                 
+              </div>
+              
+              <div class="modal-body">
+                    <div class="mb-1">
+                      <b>{{detail.name}}:</b> {{detail.data}}
+                     </div>                                               
+                    <div style="text-align:center;">                      
+                      <img ng-src="{{image}}"   alt="x-ray image">
+                    </div>
+                    <div class="mt-1" style="text-align:center;">
+                      <i class="fa fa-arrow-left btn btn-simple" aria-hidden="true" style="cursor:pointer" ng-click="previous()" title="Previous" ng-if="finishPre"></i>
+                      &nbsp;&nbsp;
+                      <i class="fa fa-arrow-right btn btn-simple" aria-hidden="true" style="cursor:pointer" ng-click="next()" title="Next" ng-if="finishNex"></i>
+                    </div>                        
+              </div>
+              
+            </div>
+    
+        </div>
+     </script>
+
+      <!--<div class="modal fade">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+              <div class="row">
+                <div class="col-sm-12 col-md-12 col-lg-12">
+                    <button type="button" class="close" ng-click="close('Cancel')" data-dismiss="modal" aria-hidden="true" style="color:red;font-size: 32px">&times;</button>
+                </div>                                     
+              </div>
+              
+              <div class="modal-body" style="text-align:center">
+                    <div>
+                      <h6>Report</h6>
+                      <ul style="margin-bottom: 30px;">
+                        <ol ng-repeat="detail in report"><strong>{{detail.name}}:</strong> {{detail.data}}</ol>
+                      </ul>
+                    </div>                                               
+                    <div>                      
+                      <img ng-src="{{image}}" alt="x-ray image">
+                    </div>
+                    <div style="margin-top: 30px">
+                      <i class="fa fa-arrow-left" aria-hidden="true" style="color:#fff;padding:10px 20px;background-color:green;cursor:pointer" ng-click="previous()" title="Previous" ng-if="finishPre"></i>
+                      &nbsp;&nbsp;
+                      <i class="fa fa-arrow-right" aria-hidden="true" style="color:#fff;padding:10px 20px;background-color:green;cursor:pointer" ng-click="next()" title="Next" ng-if="finishNex"></i>
+                    </div>                        
+              </div>
+              
+            </div>
+          </div>
+        </div>-->
+
+
+    <script type="text/ng-template" id="write-prescription-modal.html">
+        <div class="">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+              <div class="title">Test Result </div>
+                
+                    <button type="button" class="close" ng-click="close('Cancel')" data-dismiss="modal" aria-hidden="true" style="color:red;font-size: 32px">&times;</button>
+                </div>                                     
+             
+              
+              <div class="modal-body">
+                    <div ng-if="isToPrescribe">
+                      
+                      <ul class="nav">
+                        <li ng-repeat="test in testObj.test_result"><strong>{{test.name}} :</strong> {{test.data}}</li>
+                      </ul>
+                      <p><strong>Conclusion :</strong> {{testObj.conclusion}}</p>
+                      <div class="form-inline">
+                        <label>Write provisional diagnosis</label>
+                        <input type="text" class="form-control" placeholder="What is wrong with this patient?" ng-model="patient.provisional_diagnosis">
+                      </div> 
+                      <div>
+                      {{drugList}}
+                        <table class="table table-bordered table-responsive">
+                          <tr>
+                            <thead>
+                              <th><strong>S/N</strong></th>
+                              <th><strong>Drug name</strong></th>
+                              <th><strong>Dosage</strong></th>
+                              <th><strong>Frequency</strong></th>
+                              <th><strong>Duration</strong></th>
+                            </thead>
+                          </tr>
+                          <tr>
+                            <tbody ng-repeat="prescription in drugList">                
+                              <td>{{prescription.sn}}</td>
+                              <td><input name="states" id="states" type="text" placeholder="Enter drug name" ng-model="drug.name" uib-typeahead="drug.name for drug in drugs | filter:$viewValue | limitTo:15" class="form-control" style="width: 95%">
+                                {{getDrug(drug.name)}} </td>
+                              <td><input type="text" class="form-control" ng-model="prescription.dosage"></td>
+                              <td><input type="text" class="form-control" ng-model="prescription.frequency"></td>
+                              <td><input type="text" class="form-control" ng-model="prescription.duration"></td>
+                            </tbody>
+                          </tr>           
+                        </table>
+                      </div>
+                      <div style="text-align: right">
+                        <i class="fa fa-plus text-muted" style="font-size:16px;padding: 10px; cursor:pointer; margin-right: 5px" title="Add field" ng-click="addDrug()"></i>
+                          <i class="fa fa-minus text-muted" style="font-size:16px; padding: 10px; cursor:pointer; margin-right: 5px" title="Remove last field" ng-click="removeDrug()"></i>
+                      </div>
+                    <div> 
+                      <button class="btn btn-info" ng-click="toPatient()">Forward prescription to patient</button>
+                      <button class="btn btn-info" ng-click="toPharmacy()" data-dismiss="modal" aria-hidden="true">Forward prescription to a Pharmacy<button>
+                    </div>
+
+                  </div>
+
+                  <div ng-if="isFindPharmacy" style="max-height: 900px;overflow-y: auto; overflow-x:hidden;">
+                    <button class="btn btn-simple" ng-click="back('find')">Back</button>
+                    <h3>Find Pharmacy</h3>
+                    <p><strong>Tips: </strong> You can filter the result by "name"  <br>or complete the text box and click "find" to search based on the entered criteria.</p>
+                    <form>
+                        <div class="row">
+                            <div class="col-md-6 form-group">
+                                <label>Pharmacy City/Town</label>        
+                      <input class="form-control" type="text" placeholder="City/Town" ng-model = "pharmacy.city"/>
+                            </div><div class="col-md-6 form-group">
+                                <label>Pharmacy Name</label>
+                      <input class="form-control"  type="text" placeholder="Name" ng-model = "pharmacy.name"/> 
+                      </div>  
+                      <input class="btn btn-info" type="button" value="FIND" ng-click = "findPharmacy()"/>
+                    </div>
+                    </form>
+                    <div class= "row look-up-phamarcy" ng-repeat = "result in pharmacyData | filter: pharmacy.name || pharmacy.city | orderBy: 'name'" style="cursor:pointer;" ng-click="forwardPrescriptionTo(result.user_id)"> 
+                      <div class="row">
+                      <div class="col-md-4 col-sm-12">
+                        <img ng-src="{{result.profile_pic_url}}" src="assets/img/avatar.jpg" alt="profile pic"/>
+                      </div>
+                      <div class="col-md-8 col-sm-12 " >
+                        <h3>{{result.name}}</h3>
+                        <address>{{result.address}} <span>{{result.city}}, <strong>{{result.country}}</strong></span></address>     
+                      </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div ng-if="isCenter">                  
+                            
+                            <div class="row" ng-if="placeHolder">
+                            <button class="btn btn-simple ml-1 mt-1" ng-click="back('center')">Back</button>
+                            
+                              <div class="col-sm-12 col-md-12 col-lg-12">
+                                    <h4 class="mb-1">Forwarding Prescription</h3>
+                              <div style="color: red">{{message}}</div> 
+                              <hr> 
+                                <h4>{{centerInfo.name}} <span class="text-muted" style="display:block; font-size: 12px">{{centerInfo.type}}</span></h4>
+                                <div class="col-sm-12 col-md-3 col-lg-3 pull-right">
+                                  <img ng-src="{{centerInfo.profile_pic_url}}" alt="profile pic"/>
+                                </div>
+                                <div class="col-sm-12 col-md-9 col-lg-9">     
+                                  <div><strong>Address: </strong>{{centerInfo.address}}</div>
+                                  <div><strong>City: </strong>{{centerInfo.city}}</div>
+                                  <div><strong>Country: </strong>{{centerInfo.country}}</div>
+                                </div>
+                              </div> 
+                              <div class="row">
+                                <div class="col-sm-12 col-md-12 col-lg-12">
+                                  <p style="padding: 15px">Do you wish to contact <strong>{{centerInfo.name}}</strong> for inquires before sending prescription? <span style="cursor:pointer; color: green" ng-click="isEnquiry()"> &nbsp;YES</span></p>
+                                  <div ng-if="isContactFirst">
+                                    <span style="font-size: 24px; font-weight: 100">Contact Through: </span>
+                                    <i class="fa fa-phone btn btn-simple text-success" style="font-size:1em"></i>
+                                    <i class="fa fa-commenting-o btn btn-simple text-success" style="font-size:1em"></i>       
+                                  </div>      
+                                </div>    
+                              </div>
+                              
+                                <div class="col-sm-12 col-md-12 col-lg-12">
+                                 <button class="btn btn-success btn-block" style="cursor:pointer;" ng-click="sendReferral(centerInfo.user_id,centerInfo.type)">I have confirmed, send prescription</button>
+                                   </div>
+                              
+                            </div>
+                            <div class="mt-2" ng-if="success">
+                             
+                                <h5>{{message.info}} <span>To</span> <span>{{centerInfo.name}}</span></h5>
+                                <address>{{centerInfo.address}}, <span style="display:block">{{centerInfo.city}}, {{centerInfo.country}}<span></address>
+                                <p> Ref No: {{message.ref}}</p>
+                                <p><strong>Make note of the <em style="font-weight: normal">Address</em> and <em style="font-weight: normal">reference number</em> above for easy location and identification respectively.</strong></p>
+                              
+                            </div>
+                    
+                  </div>            
+                </div>
+              
+            </div>
+          </div>
+        </div>
+     </script>
+
+
+     <script type="text/ng-template" id="patient-emergency-form.html">
+         <div class="modal fade">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+              <div class="row">
+                <div class="col-sm-12 col-md-12 col-lg-12">
+                    <button type="button" class="close" ng-click="close('Cancel')" data-dismiss="modal" aria-hidden="true" style="color:red;font-size: 32px">&times;</button>
+                </div>                                     
+              </div>
+              
+              <div class="modal-body" style="text-align:center">
+                    
+                    <form ng-if="isForm" class ="form-group">
+                        <h6 style="text-align: center; color: red">{{error}}</h6>
+                        <h5>Fill this form for the new Patient</h5>
+                        <div>
+                            <input type="text" placeholder="Firstname *" ng-model="patient.firstname" required/>
+                        </div>
+                        <div>
+                            <input type="text" placeholder="Lastname *" ng-model="patient.lastname" required/>
+                        </div>
+                        <div>
+                            <input type="number" placeholder="Age *" ng-model="patient.age" required/>
+                        </div>
+                        <div>
+                            <input type="text" placeholder="Gender *" ng-model="patient.gender" required/>
+                        </div>
+                        <div>
+                            <input type="number" placeholder="Phone number *" ng-model="patient.phone" required/>
+                        </div>
+                        <div>
+                            <input type="text" placeholder="Email" ng-model="patient.email" required/>
+                        </div>
+                        
+                        <div>
+                            <input type="button"  value="Submit" class="btn btn-primary" ng-click="sendForm('doctor')"/>
+                        </div>
+                    </form>
+                    <div ng-if="isCreated" style="width: 95%; margin auto auto">
+                        <h4>Patient emergency profile created successfully!</h4>
+                    </div>
+
+              </div>
+              
+            </div>
+          </div>
+        </div>
+     </script>
+
+    
+     <script type="text/ng-template" id="question.html" ng-controller="connectController">
+         <div class="modal fade">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+              <div class="row">
+                <button type="button" class="close" ng-click="close('Cancel')" data-dismiss="modal" aria-hidden="true">&times;</button>
+                     <h6 style="color: #000; font-size: 12px;text-align: center">{{message}}</h6> 
+                    <div class="col-md-9 col-lg-9">
+                    <h6 style="margin-top: 50px;text-align:center"></h6>
+                    </div>
+                    <div class="col-md-3 col-lg-3">
+                    
+                    <img ng-src="{{docInfo.profile_pic_url}}" style="width:100px; height:100px"/>
+                    </div>
+                </div>
+                </h6>               
+              </div>
+              <div class="modal-body">                                                   
+                    <form>                        
+                            <fieldset>
+
+                                <caption>Your question?</caption>
+
+                                <div>
+                                    <textarea style="height: 300px; color: black" placeholder="write.." ng-model="patient.message"></textarea>
+                                </div>
+                        <button class="btn btn-primary" ng-click="getAnswer()">Get answer</button>
+                            </fieldset>
+                        </form>
+              </div>
+              <div class="modal-footer">
+                <!--<button type="button" ng-click="close('No')" class="btn btn-default" data-dismiss="modal">No</button>
+                <button type="button" ng-click="close('Yes')" class="btn btn-primary" data-dismiss="modal">Yes</button>-->
+              </div>
+            </div>
+          </div>
+        </div>
+     </script>
+
+
+      <script type="text/ng-template" id="set-conversation-time.html">
+         <div class="modal fade">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+              <div class="row">
+                <div class="col-sm-12 col-md-12 col-lg-12">
+                    <button type="button" class="close" ng-click="close('Cancel')" data-dismiss="modal" aria-hidden="true" style="color:red;font-size: 32px">&times;</button>
+                </div>                                     
+              </div>
+              
+              <div class="modal-body" style="">                    
+                    <p>{{patient.title}} {{patient.firstname}} {{patient.lastname}} request for {{patient.type}} appointment with you.</p>
+                    <p>Please selected an approipriate time slot for this appointment.<em>Note; that you will be redirected to the {{patient.type}} page when is due time of the selected time slot.</em>
+                    </p>
+                    <h6>Pick a Time Slot</h6>
+                    <div>
+                        <span class="btn" ng-click="pickedTime(0)"  ng-class="{'btn-primary': isPicked === 0}">NOW</span>
+                        <span class="btn" ng-click="pickedTime(5)"  ng-class="{'btn-primary': isPicked === 5,'hide': isBooked === 5}">5 MUNITES LATER</span>
+                        <span class="btn" ng-click="pickedTime(15)" ng-class="{'btn-primary': isPicked === 15,'hide': isBooked === 15}">15 MUNITES LATER</span>
+                        <span class="btn" ng-click="pickedTime(30)" ng-class="{'btn-primary': isPicked === 30,'hide': isBooked === 30}">30 MUNITES LATER</span>
+                        <span class="btn" ng-click="pickedTime(45)" ng-class="{'btn-primary': isPicked === 45,'hide': isBooked === 45}">45 MUNITES LATER</span>
+                        <span class="btn" ng-click="pickedTime(60)" ng-class="{'btn-primary': isPicked === 60,'hide': isBooked === 60}">1HR LATER</span>
+                        <!--<span class="btn" ng-click="pickedTime(300)" ng-class="{'btn-primary': isPicked === 300}">other</span>
+                        <div ng-if="isPicked === 300"> 
+                        Enter your preferred time: <input type="time" ng-model="">
+                        </div>-->
+                    </div>                    
+              </div>
+              <div style="text-align:right">
+                <button data-dismiss="modal" class="btn btn-primary" ng-click="selectedTime('single')">OK, send to just this patient</button>
+                <button data-dismiss="modal" class="btn btn-primary" ng-click="selectedTime('many')">OK,send to patients in the request list</button>
+                <button data-dismiss="modal" class="btn btn-primary">Cancel</button>
+              </div>
+            </div>
+          </div>
+        </div>
+     </script>
+
+
+
+
+
+
+     
+      <script type="text/ng-template" id="calender-template.html">
+        <div class="modal fade">
+          <div class="modal-dialog">
+            <div class="modal-content">
+            <div class="modal-header" style="border-bottom:1px solid #eee;">
+              <div class="row">
+                <div class="col-sm-12 col-md-12 col-lg-12">
+                <div>
+                <b>Book an Appointment</b>
+                <button type="button"  ng-click="close('Cancel')" data-dismiss="modal" aria-hidden="true" style="color:red;font-size: 32px; margin-top:-9px;float:right; top:5px;border:none">&times;</button>
+                </div>  
+                    
+                </div> </div>                                    
+              </div>
+            
+                    <div class="modal-body">
+                    <div class="row">
+                <div class="col-sm-12 col-md-12 col-lg-12">
+                                              
+                        <div class="calender-header bg-primary">
+                            <i class="fa fa-angle-left" ng-click="previous()"></i>
+                            <span>{{month.format("MMMM, YYYY")}}</span>
+                            <i class="fa fa-angle-right" ng-click="next()"></i>
+                        </div>
+                        <div class="week">
+                            <span class="day">Sun</span>
+                            <span class="day">Mon</span>
+                            <span class="day">Tue</span>
+                            <span class="day">Wed</span>
+                            <span class="day">Thu</span>
+                            <span class="day">Fri</span>
+                            <span class="day">Sat</span>
+                        </div>
+                        
+                        <div ng-repeat="week in weeks" class="indays">
+                            <span class="dates" ng-class="{ today: day.isToday, 'different-month': !day.isCurrentMonth, selected: day.date.isSame(selected) }" ng-click="select(day)" style="cursor:pointer" ng-repeat="day in week.days">{{day.number}}</span>
+                        </div>                        
+                        <p class="bg-default" style="font-size:1em; padding:15px;">Picked Date: <em>{{dd.format('dddd, MMMM Do YYYY')}}</em><span style="display:block">Picked time: <em>{{treatment.appointment.time | date: "mediumTime"}} </em></span>
+                            <span>Picked Venue: <em>{{treatment.appointment.address}} </em></span>
+                        </p>
+
+                        <div>
+                        <b style="font-size:1.4em; font-weight:bold;">Time of appointment: <br><input type="time" class="form-control" placeholder="Enter time" ng-model="treatment.appointment.time" style="font-size:.5em;"/></b>
+                        <div style="font-size:1.3em;"><b>Venue</b> <sub>(If none,defaults to the address in your profile)</sub>: <br><input class="form-control" type="address" placeholder="Enter address" ng-model="treatment.appointment.address"></div>
+  </div>  </div> 
+                        <div class="clearfix"></div>
+                       
+                </div>
+
+                <div class="modal-footer ok">
+                            <button class="btn bg-primary" style="font-size:1.4em; font-weight:300; width:50%;" ng-click="book()" class="btn btn-success">Book</button>
+                        </div>
+              </div>          
+            </div>
+          </div>
+        </div>
+     </script>
+      <script type="text/ng-template" id="granted-request.html">
+         <div class="modal fade">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h4 style="text-align: center; border-bottom: 1px solid rgba(0,0,0,0.3)">Acceptance from Dr. {{docName}}</h4>
+              </div>
+              <p style="color:red; text-align: center">{{message}}</p>
+              <div class="modal-body">
+                <h6 style="text-align:center">You wish to send acceptance notification</h6>
+                <h5 style="text-align: center">To</h5>
+                <h5 style="text-align: center">{{data.sender_firstname}} {{data.sender_lastname}} (patient)</h5>
+                <p style="text-align: center">{{data.firstname}} {{data.lastname}}</p>
+                <form>
+                <span>Your consultation fee(amount) below</span><input type="number" placeholder="$ enter your consultation fee amount.*" ng-model="user.fee" required>
+                <span>Total bill to patient including service charge:</a> {{total}}</span>
+                <span style="font-size: 12px; color: rgba(0,0,0,0.7);display:block;padding:5px 0px"> Note: total bill is what the patient will see <a href="#" style="color: rgba(0,200,0,0.6)">learn more</a></span>
+                <button class="tg-btn tg-btn-lg" ng-click="sendAcceptance()">Continue</button>
+                </form>
+              </div>
+              <div class="modal-footer">
+                <button type="button" ng-click="close('No')" class="btn btn-default" data-dismiss="modal">No</button>                
+              </div>
+            </div>
+          </div>
+        </div>
+     </script>
+
+      <script type="text/ng-template" id="search-result.html">
+         <div class="modal fade">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+               <button type="button" class="close" ng-click="close('Cancel')" data-dismiss="modal" aria-hidden="true" style="color:red;font-size: 32px;z-index: 3">&times;</button>
+              </div>          
+             
+              <div class="modal-body">
+              
+<div ng-if="isContent" class="card p-1" style="padding: 20px">
+    <p style="background-color: grey; padding: 20px 5px;color:#fff">    
+    <span>Forwarding:</span>
+        <span class="font-1_1 mb-0">{{data.str}}</span>
+    </p>
+    <div>
+        <b>TO</b>
+    </div>
+    <div class="font-1_1">
+        <b>{{data.name}}</b>
+    </div>
+    <address class="font-1_1" style="padding: 5px">
+        <span>{{data.address}}</span>
+        <span>{{data.city}}</span>
+        <span>{{data.country}}</span>
+    </address>
+    <!--<div style="margin-left: 20px;margin-top: -15px;border-bottom:1px solid rgba(0,0,0,0.2)"><div class="star-rating">
+        <span  ng-cloak > 
+        <div class="star-rating"  star-rating rating-value="data.rating.current" max="data.rating.max"></div>
+        </span>
+        </div>
+    </div>-->
+    <div>
+        <button class="btn btn-info" ng-class="{'dismiss': user.someone}" ng-click="send('inperson')" ng-if="checkLogIn.typeOfUser == 'Patient'">Forward on my behalf</button>&nbsp;&nbsp;&nbsp;&nbsp;
+        <button class="btn btn-info"  ng-click="someone()">Forward on behalf of someone else</button>
+    </div>
+    <div ng-if="isToSomeOne">
+        <form>
+            <p>Tips: The phone number must be the number the person used for registration</p>
+            <div class="row">
+                <div class="col-md-5 col-sm-12">
+                 <input type="number" Placeholder="Enter the person phone number" ng-model="data.phone" class="form-control" style="cursor:normal">
+                </div>
+                <div class="col-md-5 col-sm-12 pr-1 font-1">
+                    <input type="button" value="Cancel" ng-click="cancel()" class="btn btn-danger">
+                    
+                    <button type="button" ng-click="send('someone')" class="btn btn-success" ng-if="data.phone && data.phone !== ''">Send</button>
+                    
+                    <!--<input type="button" value="New Person Form" ng-click="emp()" class="btn btn-simple" ng-if="isEMP">-->
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div ng-if="isSent" class="card p-1">
+    <h5 class=" text-success"  style="text-align:center"> Sent successfully!!!</h5>
+    <div class="m-0"><span class="font-1-1"> center name: </span><em>{{data.name}}</em> </div> 
+    <div class="m-0"><span class="font-1-1"> center location: </span><em>{{data.address}}, {{data.city}}, {{data.country}}</em> </div> 
+    <div class="mb-1"><span class="font-1-2" style="color:red"> Ref No:  </span><em>{{result}}</em> </div> 
+    <div class="font-1-1">Plesae take note of the center name and 
+        reference number above because it will be used to easy 
+        location and identification respectively
+    </div>
+</div>
+  
+              </div>
+              
+            </div>
+          </div>
+        </div>
+    </script>
+
+    <script type="text/ng-template" id='view-center-profile.html'>
+         
+        <div  class="modal fade">
+          <div class="modal-dialog">
+            <div class="modal-content">
+             <div class="modal-header">           
+                <button type="button" class="close" ng-click="close('Cancel')" data-dismiss="modal" aria-hidden="true">&times;</button>
+              </div>              
+              <div class="modal-body container-fluid" style="margin-top: 10px"> 
+                 <div class="row">
+                    <div class="col-sm-12 col-md-3 col-lg-3 pull-right">
+                        <img src="{{center.profile_pic_url}}" style="max-width: 120px; max-height: 120px">
+                    </div>
+                     <div class="col-sm-12 col-md-9 col-lg-9">
+                      <div style="margin-left: 20px;border-bottom:1px solid rgba(0,0,0,0.2)"  class="star-rating">Center information</div>
+                        <ul style="line-height: 35px;list-style: none;">
+                            <li><strong>Center name : </strong> {{center.name}}</li>
+                            <li><strong>Address : </strong> {{center.address}}</li>
+                            <li><strong>City : </strong> {{center.city}}</li>
+                            <li><strong>country : </strong> {{center.country}}</li>
+                            <li><strong>Office hours : </strong> 
+                                <ul>
+                                     <li ng-repeat="office in center.office_hour"  style="list-style-type: none;font-size: 16px"> 
+                                    <strong>{{office.day}}</strong> &nbsp;<span>{{office.from | date: "shortTime"}} - {{office.to | date: "shortTime"}}</span>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li><strong>Office line : </strong> +234 {{center.phone}}</li>
+
+                        </ul>
+
+                        <div style="margin-left: 20px;margin-top: 10px"><div class="star-rating">
+                            <span  ng-cloak > <span>Rating  </span>
+                            <div class="star-rating"  star-rating rating-value="center.rating.current" max="center.rating.max"></div>
+                            </span>
+                            </div>
+                        </div>
+                    </div>
+                 </div>
+              </div>              
+            </div>
+          </div>
+        </div>
+     </script>
+
+     <script type="text/ng-template" id="skill-modal.html">
+       <div class="modal fade">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+            <div class="row">
+              <button type="button" class="close" ng-click="close('Yes')" data-dismiss="modal">&times;</button>
+               <img ng-src="{{docInfo.profile_pic_url}}" style="max-width:3em; max-height:3em"/>
+               <span style="display:inline-block;padding: 10px">{{docInfo.title}} {{docInfo.firstname}} {{docInfo.lastname}}  <span style="display: block;font-size: 0.7em">{{docInfo.specialty}}</span></span> 
+                          
+            </div>
+            <div class="modal-body" style="max-height: 800px;overflow-y: auto;">  
+              <h2 style="text-align:center;text-decoration: underline;">{{docInfo.skill.skill}}</h2>
+              <section>
+                <p>{{docInfo.skill.procedure_description}}</p>
+                <div ng-repeat = "file in docInfo.skill.files">
+                  <div style="text-decoration: underline;" ng-if="file.type === 'video/mp4'">
+                     <h6>Video</h6>
+                     <video  style="width: 100%;height:480px" controls
+                        poster="https://archive.org/download/WebmVp8Vorbis/webmvp8.gif"  class="img-responsive">  
+                        <source
+                          ng-src="{{file.path}}"
+                          type="video/mp4">                                              
+                        Your browser doesn't support HTML5 video tag.
+                      </video>
+                  </div>
+                  <div style="text-decoration: underline;" ng-if="file.type === 'image/jpg' || file.type === 'image/jpeg' || file.type === 'image/png'">
+                    <h6>Image</h6>
+                    <img src="{{file.path}}" class="img-responsive" alt="Sample image" style="max-height:650px;width:100%">
+                  </div>
+                </div>                
+              </section>                                                 
+                 
+            </div>
+            <div class="modal-footer">
+              <!--<button type="button" ng-click="close('No')" class="btn btn-default" data-dismiss="modal">No</button>
+              <button type="button" ng-click="close('Yes')" class="btn btn-primary" data-dismiss="modal">Yes</button>-->
+            </div>
+          </div>
+        </div>
+      </div>
+   </script>
+   <script type="text/ng-template" id="doctor-refer-to-me.html">
+       <div class="modal fade">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+            <div class="row">
+              <button type="button" class="close" ng-click="close('Yes')" data-dismiss="modal">&times;</button>
+               <img ng-src="{{docInfo.profile_pic_url}}" style="max-width:3em; max-height:3em"/>
+               <span style="display:inline-block;padding: 10px">{{docInfo.title}} {{docInfo.firstname}} {{docInfo.lastname}}  <span style="display: block;font-size: 0.7em">{{docInfo.specialty}}</span></span> 
+                          
+            </div>
+            <div class="modal-body shadow" style="padding: 20px;margin-bottom: 20px">
+                <div ng-if="result">
+                    <p style="color:green;text-align: center;">{{result}}</p>
+                </div>  
+                <h5 ng-cloak><i class="fa fa-hand-o-right" aria-hidden="true"></i> Refer patient to {{doc.title}} {{doc.firstname}} {{doc.lastname}}</h5>
+                <form class="form-group">
+                    <div>
+                        <label>What is your complain?</label>
+                        <textarea class="form-control" ng-model="patient.history" style="height:  100px" required></textarea>
+                    </div>
+
+                    <div class="space" ng-if="checkLogIn.typeOfUser !== 'Patient'">
+                        <label>Patient phone number</label>
+                        <small style="display: block;"><strong>Tip: </strong><span>Phone number is the number patient used to register on Applinic.com</span></small>
+                        <input type="number" name="number" class="form-control" ng-model="patient.phone" required>
+                    </div>
+                  
+                    <div class="space">
+                        <button ng-click="send()" class="btn btn-success" style="position: static">Refer patient</button>
+                        <button ng-if="checkLogIn.typeOfUser === 'Patient'" class="btn btn-success" ng-click="send()" style="position: static">Refer yourself</button>
+                    </div>
+                </form>
+                
+             
+            </div>
+            
+          </div>
+        </div>
+      </div>
+   </script>
+
+
+        <!-- Reference block for JS -->
+
+       
+      
+        
+        <script src="/assets/js/app.js"></script>
+        <script src="/assets/js/now-ui-kit.js"></script>
+
+
+       
+        
+        <script type="text/javascript" src="/assets/js/angularclient.js"></script>
+        <script type="text/javascript" src="/assets/js/ngroute.js"></script>
+        <script src="/socket.io/socket.io.js"></script>   
+        <script src="/assets/js/socket.min.js"></script>
+        <script src="/assets/js/jquery-ui.js"></script>
+
+       
+       
+      
+      
+        
+        
+        <!--<script src="/assets/js/main.js"></script>-->
+        <script src="/assets/js/angular-touch.min.js"></script>
+        <script src="/assets/js/angularAnimate.js"></script>
+
+       <script src="/assets/js/modalService.js"></script>
+        <script src="/assets/js/moment.min.js"></script>     
+        <script src="/assets/js/angular-moment.min.js"></script>
+        <script src="/assets/js/angucomplete-alt.min.js"></script> 
+
+        <script src="/assets/js/ui-bootstrap-tpls.js"></script>
+        <script src="/assets/js/angular-clipboard.js"></script>
+        <script src="/assets/js/ngresource.js"></script>
+         <script src="/assets/js/ngPrint.js"></script>
+
+
+
+    </body>
+
+</html>

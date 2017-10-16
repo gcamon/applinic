@@ -1,0 +1,48 @@
+<!--<div class="col-sm-12 col-md-12 col-lg-13">
+	<h3 style="text-align: center">{{type}}</h3>
+  <ul ng-repeat="test in pendingTest" style="margin-bottom: 30px; padding: 10px; box-shadow: 2px 2px 2px #ccc; border-bottom:1px solid #ccc" class="pending">
+    <li style="text-align: right; list-style-type:none"><strong>Ref NO:</strong> <em style="font-size: 18px">{{test.ref_id}}</em></li>
+    <li><strong>Date sent: </strong> &nbsp;{{test.sent_date | date : "mediumDate"}}&nbsp; {{test.sent_date | date : "mediumTime"}}</li>
+    <li><strong>Status :</strong> {{test.conclusion}}</li>
+    <li><strong>Test to run : </strong><ol style="list-style: inherit"><li ng-repeat="rantest in test.test_to_run" style="margin-left: 150px;list-style-type: lower-roman">{{rantest.name}}</li></ol></li>
+    <li style="margin-top: 20px"><strong>Center name : </strong> {{test.center_name}}</li>
+    <li><strong>Address :</strong> <span>{{test.center_address}}, {{test.center_city}}, {{test.center_country}}<span></li>
+    <li>
+      <span style="font-size: 24px; font-weight: 100">Contact Through: </span>            
+          <i class="fa fa-desktop" style="font-size:22px;color:grey;padding: 20px; cursor:pointer; margin-right: 10px" title="Video chat with {{test.center_name}}" ng-click="makeVideoCall(test.center_id,test.center_name,test.patient_id)"></i>  
+          <i class="fa fa-comments" style="font-size:22px;color:grey;padding: 20px; cursor:pointer" title="Chat with {{test.center_name}}" ng-click="liveChat(test.center_id,test.center_name,test.patient_id)"></i>
+          <i class="fa fa-phone" style="font-size:22px;color:grey;padding: 20px;margin-right: 10px" title="Make an audio call to {{test.center_name}}"> &nbsp;{{test.center_phone}}  </i>      
+    </li>
+  </ul>
+
+</div>-->
+
+
+
+<div class="container">
+<div class="card p-2">
+<div class="col-sm-12 col-md-12 col-lg-13">
+  <h3 style="text-align:center; font-1_7">{{type}}</h3>
+  <ul ng-repeat="test in pendingTest" class="card nav">
+    <li style="text-align: right; ">
+        <b>Ref No:</b> <em>{{test.ref_id}}</em></li>
+    <li><b>Date sent: </b> &nbsp;{{test.sent_date | date : "mediumDate"}}&nbsp; {{test.sent_date | date : "mediumTime"}}</li>
+    <li><b>Status :</b> {{test.conclusion}}</li>
+    <li><b>Test to run : </b><span ng-repeat="rantest in test.test_to_run" style="list-style-type: lower-roman">{{rantest.name}}</span></li>
+    <li class="mt-1"><b>Center name : </b> {{test.center_name}}</li>
+    <li><b>Address :</b> <span>{{test.center_address}}, {{test.center_city}}, {{test.center_country}}<span></li>
+    </ul>
+    <div class="col-md-5 col-sm-12 p-1"  style="background:#f2f2f2;">
+      <span class="font-1_1">Contact Through: </span>            
+          <i class="fa fa-desktop text-muted font-1_1 mr-1" style="cursor:pointer;" title="Video chat with {{test.center_name}}" ng-click="makeVideoCall(test.center_id,test.center_name,test.patient_id)"></i>  
+          <i class="fa fa-comments text-muted font-1_1 mr-1" style="cursor:pointer;" title="Chat with {{test.center_name}}" ng-click="liveChat(test.center_id,test.center_name,test.patient_id)"></i>
+          <i class="fa fa-phone text-muted font-1_1 mr-1" style="cursor:pointer;" title="Make an audio call to {{test.center_name}}"> &nbsp;{{test.center_phone}}  </i>      
+    </div>
+  
+
+</div>
+
+</div>
+</div>
+
+

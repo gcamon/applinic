@@ -1,0 +1,71 @@
+ 
+
+<div class="container">
+    <div class="card p-2">
+        <div class="col-md-12">
+<div>
+    <b class="font-1_7">Find drug</b>
+</div>
+<!--<div>
+<label>Use: 
+<select class="custom-select form-control" value="search.category" ng-model="search.category">
+  <option>Drug Name</option>
+  <option>Prescription ID</option>
+</select>
+</label>
+</div>-->
+
+
+<form class="pl-0 col-md-9 form-inline" style="display:inline-block">
+
+         <div class="col-md-7 form-inline">
+    <label for="lastname">Enter criteria below</label>
+    <select class="custom-select form-control" value="search.category" ng-model="search.category">
+  <option>Drug Name</option>
+  <option>Prescription ID</option>
+</select>
+  </div>
+    </form>
+
+</div>
+        
+
+<div class="row">
+  <div class="col-md-12 form-group">
+    <label for="City">City</label>
+   <input type="text" class="form-control"  name="states" id="states" type="text" placeholder="Enter city name" ng-model="city" uib-typeahead="city for city in cities | filter:$viewValue | limitTo:15">
+   {{getCity(city)}}
+  </div>
+
+ </div>
+
+ <div class="row">
+   <div class="col-md-6 form-group" ng-repeat="i in drugList" ng-if="notRef">
+        <label>Drug Name</label>
+    <input type="text" class="form-control" id="age"  type="text" placeholder="Enter drug name" ng-model="drug.name" uib-typeahead="drug.name for drug in drugs | filter:$viewValue | limitTo:15">
+     {{getDrug(drug.name)}} 
+    <i class="fa fa-times text-muted" style="cursor: pointer;" ng-click="remove(i.sn)" ng-if="i.sn !== 'a'"></i>
+  </div>
+
+   <div  class="col-md-6 form-group" ng-if="isRef">
+       <label>Prescription ID</label>
+    <input placeholder="Enter Prescription ID" ng-model="user.refId" class="form-control">
+  </div>
+ <div class="clearfix"></div>
+  <div ng-if="notRef">
+    <i class="fa fa-plus btn btn-simple pull-right" style="cursor: pointer" ng-click="add(drug.name)">&nbsp;Add drug</i> 
+ </div>
+
+ <div class="clearfix"></div>
+<div class="col-md-1 form-group" ng-if="notRef">
+  <button class="btn btn-info pull-right" ng-click="findDrug(drug.name)">Find</button>
+  </div>
+
+<div class="col-md-1"  ng-if="isRef">
+  <button class="btn btn-info  pull-right mr-1" ng-click="findWithRef(user.refId)">Find</button>
+  </div>
+ </div>
+
+ </div>
+  </div>
+

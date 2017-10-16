@@ -1,0 +1,47 @@
+
+<!--<a href="#/drug" style="font-size: 22px; font-weight: 100; color: #000"><i class="fa fa-arrow-left"> &nbsp;Back</i></a>
+<div style="margin-top: 30px">
+	<h4>Enter criteria below</h4>
+	<form>
+		<input type="text" placeholder="city" ng-model="center.city">
+		<input name="states" id="states" type="text" placeholder="Enter test name" ng-model="test.name" uib-typeahead="test.name for test in tests | filter:$viewValue | limitTo:50" class="form-control">
+		<input type="button" value="Find" ng-click="labTest(test.name)" class="btn btn-lg">
+	</form>
+	<div ng-repeat = "center in listOfCenter" style="cursor:pointer" ng-click="choseCenter(center.user_id)">
+		<p>{{center.name}} {{center.type}}</p>
+		<span>{{center.address}}</span> <span>{{center.city}}</span> <span>{{center.country}}</span>
+	</div>
+</div>-->
+
+ 
+
+<div class="container">
+<div class="card p-2">
+<a href="#/drug"><i class="fa fa-arrow-left btn btn-simple"> &nbsp;Back</i></a>
+<div>
+	<h4 class="font-1_4">Enter criteria below</h4>
+	<form>
+        <div class="row">
+        <div class="col-md-6">
+        <label>City</label>
+		<input type="text" class="form-control" placeholder="city" ng-model="center.city">
+        </div>
+        <div class="col-md-6">
+        <label>Test name</label>
+		<input name="states" id="states" type="text" placeholder="Enter test name" ng-model="test.name" uib-typeahead="test.name for test in tests | filter:$viewValue | limitTo:50" class="form-control">
+        </div>
+        </div>
+        
+		<input type="button" value="Find" ng-click="labTest(test.name)" class="btn btn-success pull-right">
+
+	</form>
+    <div class="clearfix"></div>
+	<div ng-repeat = "center in listOfCenter" style="cursor:pointer" ng-click="choseCenter(center.user_id)">
+		<p class="font-1_4">{{center.name}} {{center.type}}</p>
+		<span class="font-1_1">{{center.address}}</span> <span class="font-1_1">{{center.city}}</span> <span class="font-1_1">{{center.country}}</span>
+	</div>
+</div>
+
+</div>
+</div>
+

@@ -1,0 +1,20 @@
+<!--<div>
+	<h6>Selected Test</h6>
+	<ol>
+		<li ng-repeat = "i in labTest">{{i.name}} &nbsp;&nbsp;&nbsp;&nbsp; {{i.price | currency }} &nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-times" style="cursor: pointer" ng-click="del(i.sn)"></i></li>
+		<li style="list-style: none"><strong>TOTAL: </strong>{{cost}}</li>
+	</ol>
+	<button ng-click="sendTolab()">Send test to a lab</button>
+</div>-->
+
+
+<div class="container">
+    <div class="card p-2">
+	<div class="font-1_7">Selected Test</div> <hr class="mt-1">
+	<ul class="nav">
+		<li ng-repeat = "i in labTest">{{i.name}} &nbsp;&nbsp;&nbsp;&nbsp; {{i.price | currency }} &nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-times" style="cursor: pointer" ng-click="del(i.sn)"></i></li>
+		<li class="pb-1" style="list-style: none"><strong>TOTAL: </strong>{{cost}}</li>
+	</ul>
+	<button class="btn btn-success" ng-click="sendTolab()">Send test to a lab</button>
+</div>
+</div>

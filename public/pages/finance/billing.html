@@ -1,0 +1,53 @@
+<!--<div style="text-align:center" ng-if="!isPaid">
+	<h3>Billing confirmation</h3>
+	<div>
+		<div>
+			<img ng-src="{{refData.pharmacy.patient_profile_pic_url}}" style="width:200px; height:200px">
+		</div>
+		<article style="padding:10px">
+			<p><strong>{{refData.pharmacy.patient_firstname}} {{refData.pharmacy.patient_lastname}}</strong></p>
+			<p>(Patient)</p>
+			<p><strong>Amount billed: </strong> {{refData.amount}}</p>
+			<p>Get OTP from this patient to confirm payment. Note OTP expires in <strong>5 minutes</strong></p>
+		</article>
+	</div>
+	<p style="text-align: right; text-decoration:underline;color:blue;cursor:pointer"><button ng-click="sendBill(resendPatientId,resend)">Resend OTP</button></p>
+	<input type="text" placeholder="Enter OTP" ng-model="pay.otp" style="border-top:none;border:none;border-bottom: 1px solid #000;width:60%">
+	<p><small>Otp will auto submit when the six digits are completed</small></p>
+	<p>If you have difficulty sending OTP please <a href="/contact">contact us</a></p>
+</div>-->
+
+
+
+  <div  class="container">
+
+<div class="card p-2">
+<div ng-if="!isPaid">
+	<h3 class="mb-0 font-1_7">Billing confirmation</h3><hr>
+	<div class="row">
+		<div class="col-md-2 col-sm-12">
+			<img ng-src="{{refData.pharmacy.patient_profile_pic_url}}" style="width:150px; height:150px">
+		</div>
+		<article class="col-md-9 col-sm-12">
+			<p><strong>{{refData.pharmacy.patient_firstname}} {{refData.pharmacy.patient_lastname}}</strong></p>
+			<p>(Patient)</p>
+			<p><strong>Amount billed: </strong> {{refData.amount}}</p>
+			<p>Get OTP from this patient to confirm payment. Note OTP expires in <strong>5 minutes</strong></p>
+		</article>
+	</div>
+	<p style="color:blue;cursor:pointer">
+        <button class="btn btn-info ml-5 mt-2" ng-click="sendBill(resendPatientId,resend)">Resend OTP</button></p>
+	<div class="col-md-5 p-0">
+    <input type="text" class="form-control" placeholder="Enter OTP" ng-model="pay.otp">
+    </div>
+	<p class="pt-1 pl-1"><small class="ml-1"> &nbsp;Otp will auto submit when the six digits are completed</small></p>
+    <div class="clearfix"></div>
+	<div>If you have difficulty sending OTP please <a href="/contact">contact us</a></div>
+</div>
+
+</div>
+    
+    </div>
+
+        
+   

@@ -1,0 +1,51 @@
+<div class="col-sm-12 col-md-12 col-lg-12">
+	
+	<section ng-repeat="test in labTest">
+		<div class="row">
+			<div class="col-sm-12 col-lg-3 col-md-3 pull-right">
+				<img ng-src="{{}}"/>
+
+			</div>
+			<div class="col-sm-12 col-lg-9 col-md-9">
+				<h4 style="text-align: center; border-bottom: 1px solid grey">{{test.center_name}}<span style="display:block;font-size: 14px"></span></h4>
+				<address style="text-align: center"> {{test.center_address}} {{test.center_city}} {{test.center_country}}</address>
+			</div>
+		</div>
+		<div class="row">
+			<h4>Test details</h4>
+			<ul>
+				<li><strong>Ref No: </strong> {{test.ref_id}} <button clipboard supported="supported" text="test.ref_id" on-copied="success(test.ref_id)" on-error="fail(err)" title="{{copy}}">Copy</button>	</li>
+				<li ng-if="test.report === 'Pending'"><strong>Status: </strong> <span style="color: red">Awaiting test result</span></li>
+				<li><strong>Date sent: </strong>{{test.sent_date | date : "mediumDate"}} &nbsp; <strong>Time: </strong>{{test.sent_date | date : "mediumTime"}}</li>
+				<li><strong>Date received: </strong>{{test.receive_date | date: "mediumDate"}}</li>
+				<li>Test to run: 
+					<ol>
+						<li ng-repeat="ranTest in test.test_to_run">{{ranTest.name}}</li>
+					</ol>
+				</li>
+			</ul>
+			<ul ng-if="test.report !== 'Pending'">
+				<li><h4>Test Result</h4></li>
+				<li>
+					<ol>
+						<li ng-repeat = "testRan in test.test_to_run"><strong>{{testRan.name}} : </strong> <em>{{testRan.data}}</em></li>
+					</ol>
+				</li>
+				<li><strong>Conclusion : </strong> <em>{{test.conclusion}}</em></li>
+			</ul>
+			<div ng-if="test.report === 'Pending'">
+				<span style="font-size: 24px; font-weight: 100">Contact Through: </span>            
+          <i class="fa fa-video-camera" style="font-size:22px;color:grey;padding: 20px; cursor:pointer; margin-right: 10px" title="Video chat with {{test.center_name}}" ng-click="makeVideoCall(test.center_id,test.center_name,test.patient_id)"></i>  
+          <i class="fa fa-comments" style="font-size:22px;color:grey;padding: 20px; cursor:pointer" title="Chat with {{test.center_name}}" ng-click="liveChat(test.center_id,test.center_name,test.patient_id)"></i>
+          <i class="fa fa-phone" style="font-size:22px;color:grey;padding: 20px;margin-right: 10px"> &nbsp;{{test.center_phone}}</i>   
+			</div>
+			<div class="pull-right">
+				<!--<i class="fa fa-user-md" aria-hidden="true" style="color:green;font-size: 18px;margin-right:20px;cursor:pointer;font-weight:bold" title="send test result to your doctor(s)" ng-click="sendDocTest(test)" ng-if="test.report !== 'Pending'"></i>-->
+				<i class="fa fa-user-md" aria-hidden="true" style="color:#ccc;font-size: 18px;margin-right:20px;cursor:pointer;font-weight:bold" title="send test result to your doctor(s)"  ng-if="test.report === 'Pending'"></i>
+				<i class="fa fa-download" aria-hidden="true" style="color:green;font-size: 18px;margin-right:20px;cursor:pointer" title="Download this test" ng-click="downloadTest(test)"></i>
+				<!--<i class="fa fa-arrow-right" aria-hidden="true" style="color:green;font-size:18px;margin-right:20px;cursor:pointer" title="Forward this test to a Laboratory center" ng-click="forwardTest(test)"></i>-->
+				<i class="fa fa-times" aria-hidden="true" style="color:green;font-size:18px;margin-right:20px;cursor:pointer" title="Forward this test to a Laboratory center" ng-click="deleteTest(test.ref_id)" ng-if="test.report !== 'Pending'"></i>					    	
+			</div>		    	
+		</div>
+	</section>
+</div>

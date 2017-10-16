@@ -1,0 +1,66 @@
+
+<!--<div style="text-align: right">
+	<a href="#/pharmacy/off-service" style="color:#000">Drugs not in store</a>
+</div>
+<div class="all-test-check">
+	<h4>Please unmark any drug you don't have in stock below<h4>
+
+	<h6 style="text-align: center;cursor:pointer">
+		<a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="/#collapseSix" aria-expanded="false" aria-controls="collapseSix" style="color:rgba(0,180,0,0.6); font-size: 18px;">List of all drugs</a></h6>
+	<div id="collapseSix" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingSix">
+		<div ng-repeat="drug in allDrugs">
+			<input type="checkbox" ng-model="drug.val"><span>{{drug.name}}</span>
+		</div>
+	</div>
+
+	
+	<div style="text-align:center">
+		<button ng-click="saveSelection()">SAVE</button>
+	</div>
+</div>-->
+
+
+<div class="container">
+<div class="card p-2">
+<h3>Update service</h3>
+<div  style="text-align: right">
+	<a class="" href="#/pharmacy/off-service" style="color:#000">Drugs not in store</a>
+</div>
+<p>Please unmark any drug you don't have in stock below</p>
+<hr>
+<div class="all-test-check">
+
+	<div class="mt-0 mb-0" style="cursor:pointer;box-shadow: 0 5px 25px 0 rgba(0,0,0,.2);font-size: 22px;padding: 10px 20px;color:orange; ">
+		List of all drugs
+	</div>
+
+	<div>
+		<div ng-repeat="drug in allDrugs">
+			<!--<input type="checkbox" ng-model="drug.val"><span></span>-->
+			<label class="custom-control custom-checkbox">   <input type="checkbox" class="custom-control-input" ng-model="drug.val">   <span class="custom-control-indicator"></span>   <span class="custom-control-description font-1_1">{{drug.name}}</span> </label>
+		  </div>
+		</div>
+		<div>
+			<button class="btn btn-success pull-right" ng-click="saveSelection()">Save</button>
+		</div>
+	</div>
+
+	</div>
+	<div class="mt-0 mb-0" style="cursor:pointer;box-shadow: 0 5px 25px 0 rgba(0,0,0,.2);font-size: 22px;padding: 10px 20px;color:orange; ">
+		Others..
+	</div>
+
+	<div>
+		<div ng-repeat="drug in allDrugs2">
+			<!--<input type="checkbox" ng-model="drug.val"><span></span>-->
+			<label class="custom-control custom-checkbox">   <input type="checkbox" class="custom-control-input" ng-model="drug.val">   <span class="custom-control-indicator"></span>   <span class="custom-control-description font-1_1">{{drug.name}}</span> </label>
+		  </div>
+		</div>
+		<div>
+			<button class="btn btn-success pull-right" ng-click="saveSelection()">Save</button>
+		</div>
+	</div>
+</div>
+
+
+</div>

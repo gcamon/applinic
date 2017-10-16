@@ -1,0 +1,25 @@
+<!--<div>
+	<h5>Test(s) not available in your center</h5>
+	<a href="#/lab/test-service/update">Back</a>
+	<p>Please tick if a test service is currently available in your center</p>
+</div>
+<div class="all-test-check">
+	<ol>
+		<li ng-repeat="test in notService"><input type="checkbox" ng-model="test.val"> {{test.name}}</li>
+	</ol>
+	<button ng-click="saveTests()" ng-if="isToSave">Save</button>
+</div>-->
+
+<div class="pl-2  pt-2">
+    <a class="btn btn-simple" href="#/lab/test-service/update">Back</a>
+	<<h5 class="font-1_4" >Test(s) not available in your center ( {{ notService.length }} )</h5><hr>
+	<p class="font-1_1" ng-if="notService.length > 0">Please tick if a test is currently available in your center</p>
+</div>
+<div class="all-test-check pl-2 card">
+<label class="custom-control custom-checkbox" ng-repeat="test in notService" style="display:block;">
+  <input type="checkbox" class="custom-control-input" ng-model="test.val">
+  <span class="custom-control-indicator"></span>
+  <span class="custom-control-description">{{test.name}}</span>
+</label> <br>
+	<button class="btn btn-success" ng-click="saveTests()" ng-if="isToSave">Save</button>
+</div>

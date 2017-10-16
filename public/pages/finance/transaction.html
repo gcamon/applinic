@@ -1,0 +1,109 @@
+<!--<div class="ml-1"><b style="font-size:2em; font-weight:300;">Cash out</b></div>
+<br>
+
+
+<div class="col-md-9 row">
+ <div class="col-md-6 form-group">
+    <label for="bank">From</label>
+   <input type="date"  class="form-control" id="bank" placeholder=" 01/01/017" ng-model="period.from">
+  </div>
+
+   <div class="col-md-5 form-group">
+    <label for="bnk_acc">To</label>
+   <input type="date"  ng-model="period.to" class="form-control" id="bnk_acc" placeholder="01/01/017"> 
+  </div>
+ <div class="col-md-1 form-group" style="margin-top:1.9em;">
+	<button class="btn btn-info"  ng-click="transactHistory()">Submit</button>
+</div>
+</div>
+<div>
+  <button ng-click="submit()">print tokens</button>
+</div>
+
+<div class="col-sm-9">
+<table class="table">
+	<caption><strong>{{period.from | date: "mediumDate"}}&nbsp; - &nbsp;{{period.to | date: "mediumDate"}}<strong></caption>
+  <thead class="thead-default">
+    <tr>			
+      	<th>Date/time</th>
+		<th>Action</th>
+		<th>Amount</th>
+		<th>Source</th>
+		<th>Beneficiary</th>
+		<th>Activity</th>
+    </tr>
+  </thead>
+
+  <tbody ng-repeat="transact in transacts">
+    <tr>
+      <td>{{transact.date | date: "mediumDate"}} &nbsp;&nbsp;{{transact.date | date: "mediumTime"}}</td>
+      <td>{{transact.activity}}</td>
+      <td>{{transact.body.amount}}</td>
+      <td>{{transact.source}}</td>
+      <td>{{transact.body.beneficiary}}</td>
+      <td>{{transact.message}}</td>
+    </tr>
+   
+  </tbody>
+  
+</table>
+    </div>-->
+
+
+<div class="container">
+<div class="card p-2">
+<div class="col-md-12 row">
+ <div class="col-md-6 form-group">
+    <label for="bank">From</label>
+   <input type="date"  class="form-control" id="bank" placeholder=" 01/01/017" ng-model="period.from">
+  </div>
+
+   <div class="col-md-5 form-group">
+    <label for="bnk_acc">To</label>
+   <input type="date"  ng-model="period.to" class="form-control" id="bnk_acc" placeholder="01/01/017"> 
+  </div>
+ <div class="col-md-1 form-group" style="margin-top:1.9em;">
+  <button class="btn btn-success"  ng-click="transactHistory()">Submit</button>
+</div>
+</div>
+<!--<div class="col-md-12 pl-2 mb-1">
+  <button class="btn btn-info" ng-click="submit()">print tokens</button>
+</div>-->
+
+<div class="col-sm-12">
+<table class="table table-bordered table-responsive">
+  <caption><b class="font-1_1 pl-2">{{period.from | date: "mediumDate"}}&nbsp; - &nbsp;{{period.to | date: "mediumDate"}}<b></caption>
+  <thead class="thead-default">
+    <tr>      
+        <th>Date/time</th>
+    <th>Action</th>
+    <th>Amount</th>
+    <th>Source</th>
+    <th>Beneficiary</th>
+    <th>Activity</th>
+    </tr>
+  </thead>
+
+  <tbody ng-repeat="transact in transacts">
+    <tr>
+      <td>{{transact.date | date: "mediumDate"}} &nbsp;&nbsp;{{transact.date | date: "mediumTime"}}</td>
+      <td>{{transact.activity}}</td>
+      <td>{{transact.body.amount}}</td>
+      <td>{{transact.source}}</td>
+      <td>{{transact.body.beneficiary}}</td>
+      <td>{{transact.message}}</td>
+    </tr>
+   
+  </tbody>
+  
+</table>
+    </div>
+
+
+</div>
+
+
+</div>
+
+        
+  

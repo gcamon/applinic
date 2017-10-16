@@ -1,0 +1,27 @@
+<div class="tg-widget tg-widget-doctor" ng-controller="patientProfileEditController" class="container-fluid" >
+    
+    <div class="row">        
+        <div class="col-sm-12 col-md-12 col-lg-12">
+            <h5 style="font-weight: 100;padding: 10px 5px; margin-top: 30px;width: 30%;border-bottom: 1px solid rgba(0,0,0,0.3)"> Edit personal details </h5>
+            <form class="patient-update-input">
+                <div>
+                    <input type="text" placeholder="{{userData.firstname || 'Whats your firstname'}}" ng-model="user.firstname"/>
+                    <input type="text" placeholder="{{userData.lastname || 'Whats your lastname'}}" ng-model="user.lastname"/>
+                    <input type="number" placeholder="{{userData.age || 'How old are you?'}}" ng-model="user.age"/>
+                    <input type="text" placeholder="{{userData.gender || 'what is your gender?'}}" ng-model="user.gender"/>
+                    <input type="text" placeholder="{{userData.marital_status || 'Are you single or married?'}}" ng-model="user.marital_status"/>
+                    <input type="text" placeholder="{{userData.address || 'Enter your address here'}}" ng-model="user.address"/>
+                    <input type="text" placeholder="{{userData.state || 'What is your state name?'}}" ng-model="user.state"/>
+                    <input type="text" placeholder="{{userData.city || 'Enter city/town name'}}" ng-model="user.city"/>
+                    <input type="text" placeholder="{{userData.country || 'what is the name of your country?'}}" ng-model="user.country"/>
+                </div>                
+                <button ng-click="updateDetails()">Update</button>
+            </form>
+        </div>
+    </div>
+                             
+</div>
+
+<div class="testing">
+    
+</div>

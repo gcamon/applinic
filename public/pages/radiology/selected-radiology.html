@@ -1,0 +1,40 @@
+
+<div class="row" ng-if="placeHolder">
+	<h5 style="text-align: center; color: red">{{message}}</h5>	
+	<div class="col-sm-12 col-md-12 col-lg-12" style="padding:30px">
+		<h4 style="text-align:center; border-bottom: 1px solid rgba(0,0,0,0.3)">{{labCenter.name}} <span style="display:block; color:black;font-size: 12px">{{labCenter.type}}</span></h4>
+		<div class="col-sm-12 col-md-3 col-lg-3 pull-right">
+			<img ng-src="{{labCenter.profile_pic_url}}" alt="profile pic"/>
+		</div>
+		<div class="col-sm-12 col-md-9 col-lg-9">			
+			<address><strong>Address: </strong>{{labCenter.address}}</address>
+			<address><strong>City: </strong>{{labCenter.city}}</address>
+			<address><strong>Country: </strong>{{labCenter.country}}</address>
+		</div>
+	</div> 
+	<div class="row">
+		<div class="col-sm-12 col-md-12 col-lg-12">
+			<p style="padding: 15px">Do you wish to contact <strong>{{labCenter.name}}</strong> for inquires before sending test request? <span style="cursor:pointer; color: green" ng-click="isEnquiry()"> &nbsp;YES</span></p>
+			<div ng-if="isContactFirst" style="margin: 20px auto; width: 60%">
+				<span style="font-size: 24px; font-weight: 100">Contact Through: </span>
+				<i class="fa fa-phone" style="font-size:32px;color:green;padding: 20px; cursor:pointer; margin-right: 10px"></i>
+				<i class="fa fa-commenting-o" style="font-size:32px;color:green;padding: 20px; cursor:pointer"></i>				
+			</div>			
+		</div>		
+	</div>
+	<div class="row">
+		<div class="col-sm-12 col-md-12 col-lg-12">
+			<div style="margin: 20px auto; width: 80%; border-bottom: 1px solid rgba(0,0,0,0.3);box-shadow: 0px 2px 5px rgba(0,0,0,0.4)">
+				<p style="background-color: rgba(0,180,0,0.8); color: #fff; padding: 15px; cursor:pointer;border:radius: 2px;box-shadow: 0px 2px 4px rgba(0,10,0,0.4);text-align: center;font-size: 18px;" ng-click="sendTest()">I have confirmed, send scan test</p>
+			</div>
+		</div>
+	</div>
+</div>
+<div ng-if="success">
+	<div style="width: 80%; margin: 150px auto">
+		<h5 style="text-align: center">{{message}} <span style="display:block; text-align:center;font-size: 12;color:#000">To</span><span style="display:block; text-align:center;color:#000">{{labCenter.name}}</span></h5>
+		<address style="text-align:center">{{labCenter.address}}, <span style="display:block">{{labCenter.city}}, {{labCenter.country}}<span></address>
+		<p> Ref No: {{ref_number}}</p>
+		<p><strong>Make note of the <em style="font-weight: normal">Address</em> and <em style="font-weight: normal">reference number</em> above for easy location and identification respectively.</strong></p>
+	</div>
+</div>

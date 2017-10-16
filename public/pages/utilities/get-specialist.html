@@ -1,0 +1,86 @@
+<!--<p style="text-align: center;font-size: 20px;">Please fill the form bellow we will place you with the right specilist.</p>
+
+<div>
+	<input name="states" id="states" type="text" placeholder="Enter city name" ng-model="city" uib-typeahead="city for city in cities | filter:$viewValue | limitTo:15" class="form-control" style="width: 95%">		
+		{{getCity(city)}} 
+	</div>
+</div>
+<div ng-repeat="i in symptomsList">				
+	<input name="states" id="states" type="text" placeholder="Enter symptom" ng-model="name" uib-typeahead="name for name in symptoms | filter:$viewValue | limitTo:15" class="form-control" style="width: 95%">
+	{{getSymptom(name)}} 
+	<i class="fa fa-times" style="cursor: pointer;font-weight: 100; font-size: 16px;color:grey" ng-click="remove(i.sn)" ng-if="i.sn !== 'a'"></i>
+</div>
+<div style="text-align:right;padding: 20px">
+	<i class="fa fa-plus btn btn-primary" style="cursor: pointer;background-color: #7dbb00" ng-click="add()">&nbsp;Add symptom</i> 
+</div>
+<div>
+	<label>Briefly describe how you feel right now *<small>(e.g I am having body pain,can't eat,i feel so weak, i vomit sometimes but not regular.)</small></label>
+	<textarea placeholder="Write..." ng-model="user.description" style="height: 200px"></textarea>
+</div>
+
+<div>
+	<label>You can attach video or image file(s) associated with this illness(if any)</label>
+   <input type="file"  id="file" file-model = "files" multiple="multiple"/>
+   <i class="fa fa-warning">&nbsp; <strong style="font-size: 14px;">Not more than 5 files is allowed.File size must be less than 8mb.Type jpeg,jpg,mp3,mp4</strong></i>
+</div>
+
+<div style="margin-top: 20px">		
+	<input type="button" value="submit" class="btn btn-primary" style="background-color: #7dbb00" ng-click="getDoctor()">
+</div>-->
+
+ 
+
+<div class="container">
+    <div class="card p-2">
+ <p class="font-1_4">Please fill the form bellow we will place you with the right specilist.</p>
+
+<div class="row">
+<div class="col-md-12 col-sm-12">
+	<input name="states" id="states" type="text" placeholder="Enter city name" ng-model="city" uib-typeahead="city for city in cities | filter:$viewValue | limitTo:15" class="form-control">		
+		{{getCity(city)}} 
+	</div>
+
+<div  class="col-md-12 col-sm-12" ng-repeat="i in symptomsList">				
+	<input name="states" id="states" type="text" placeholder="Enter symptom" ng-model="name" uib-typeahead="name for name in symptoms | filter:$viewValue | limitTo:15" class="form-control">
+	<div>{{getSymptom(name)}} 
+	<i class="fa fa-times text-muted" style="cursor: pointer;" ng-click="remove(i.sn)" ng-if="i.sn !== 'a'"></i></div>
+</div>
+<div class="clearfix"></div>
+<div class="col-md-12">
+	<button class="fa fa-plus btn btn-simple pull-right" ng-click="add()">&nbsp;Add symptom</button> 
+</div>
+
+<div class="clearfix"></div>
+<div class="col-md-6 col-sm-12">
+	<label>Briefly describe how you feel right now *<br><small>(e.g I am having body pain,can't eat,i feel so weak, i vomit sometimes but not regular.)</small></label>
+	<textarea placeholder="Write..." ng-model="user.description" class="form-control pl-1" style="height: 100px"></textarea>
+</div>
+
+<div  class="col-md-6 col-sm-12">
+	<label>You can attach video or image file(s) associated with this illness(if any)</label>
+<label class="custom-file">
+  <input type="file" id="file" class="custom-file-input"  file-model = "files" multiple="multiple">
+  <span class="custom-file-control"></span>
+</label>
+<br> <i class="fa fa-warning">&nbsp;</i> <span class="text-muted" style="font-size:.85em;">Not more than 5 files is allowed.File size must be less than 8mb.Type jpeg,jpg,mp3,mp4</span>
+
+
+
+ <div class="progress-container progress-primary">
+<div class="progress">
+    <div class="progress-bar progress-bar-warning" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%;">
+        <span class="progress-value">60%</span>
+    </div>
+</div>
+</div>
+
+</div>
+
+<div class="clearfix"></div>
+<div style="margin-top: 20px">		
+	<input type="button" value="submit" class="btn btn-success pull-right" style="background-color: #7dbb00" ng-click="getDoctor()">
+</div>
+
+</div></div>
+    </div>
+

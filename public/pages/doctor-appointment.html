@@ -1,0 +1,49 @@
+<!--<div class="row">
+	<div class="col-sm-12 col-md-3 col-lg-3 pull-right">
+		<img ng-src="{{sessionInfo.profilePic}}">
+	</div>
+	<div class="col-sm-12 col-md-9 col-lg-9">
+		<h6 style="text-align: center; border-bottom: underline">{{sessionInfo.firstname}} {{sessionInfo.lastname}}</h6>
+		<p>This appointment was booked on {{sessionInfo.last_meeting | date : "mediumDate"}} by {{sessionInfo.last_meeting | date : "mediumTime"}}</p>
+		<p>Type of conversation held was {{sessionInfo.typeOfSession}}</p>
+
+		<p><span style="padding-right: 20px"><strong>Date of meeting</strong> | {{sessionInfo.date | date : "mediumDate"}}</span> <span><strong>Time of meeting</strong> | {{sessionInfo.time | date : "mediumTime"}}</span></p>
+	</div>	
+</div>
+<div class="row">
+	<div class="col-md-12 col-lg-12">
+		<p style="text-align: center">
+			<button ng-click="getTreatment()">Continue treatment with {{sessionInfo.firstname}} {{sessionInfo.lastname}}</button>
+		</p>
+	</div>
+</div>	-->
+
+
+
+<div class="container">
+    <div class="card p-2">
+<div class="row">
+	<div class="col-sm-12 col-md-3 col-lg-3 pull-right">
+		<img src="assets/img/avatar.jpg" ng-src="{{sessionInfo.profilePic}}">
+	</div>
+	<div class="col-sm-12 col-md-9 col-lg-9">
+		<div class="font-1_4">{{sessionInfo.firstname}} {{sessionInfo.lastname}}</div>
+		<p>This appointment was booked on {{sessionInfo.last_meeting | date : "mediumDate"}} by {{sessionInfo.last_meeting | date : "mediumTime"}}</p>
+		<p>Type of conversation held was {{sessionInfo.typeOfSession}}</p>
+
+		<p><span class="pt-2 pb-2"><b>Date of meeting</b> | {{sessionInfo.date | date : "mediumDate"}}</span> 
+        <span><b>Time of meeting</b> | {{sessionInfo.time | date : "mediumTime"}}</span></p>
+
+        	<div class="col-md-12 col-lg-12 p-0" style="text-align: center">
+			<button class="btn btn-simple" ng-click="getTreatment()">Continue treatment with {{sessionInfo.firstname}} {{sessionInfo.lastname}}</button>
+</div>
+	</div>	
+</div>
+
+	
+
+</div>
+</div>
+
+
+

@@ -1,0 +1,193 @@
+<!--<div style="border:1p solid rgba(0,0,0,0.4); padding: 30px;" class="clearfix">
+
+    <div class="row">
+        <div class="col-sm-12 col-lg-3 col-md-3 pull-right">
+            <div class="tg-widget tg-widget-doctor">
+                <figure class="tg-docprofile-img">
+                    <figcaption>
+                    <span ng-if="dispalyPresence === true">online</span>
+                    <span ng-if="dispalyPresence === false">Offline</span>                                                    
+                    </figcaption>
+                    <span class="tg-featuredicon"><em class="fa fa-bolt"></em></span>
+                    <img alt="image description" ng-src="{{docInfo.profile_pic_url}}">                                  
+                </figure>
+            </div>
+            <div>
+                <header style="text-align:center;font-size:18px">
+                    <div>
+                        <strong>Dr. {{docInfo.firstname}} {{docInfo.lastname}}</strong>
+                    </div>
+                    <div style="padding:5px">
+                        <em >{{docInfo.specialty}}</em>
+                    </div>
+                    <ul style="list-style:none;font-size:14px;text-align:left;margin-top:10px">
+                        <li><strong>Place of work: </strong> <em style="display:inline-block;max-width: 300px;padding:3px">{{docInfo.work_place}}</em></li>
+                        <li><strong>Address: </strong> <em style="display:inline-block;max-width: 300px;padding:3px">{{docInfo.address}}</em></li>
+                        <li ng-if="docInfo.city"><strong>Residence: </strong> <em style="display:inline-block;max-width: 300px;padding:3px">{{docInfo.city}} {{docInfo.country}}</em></li>
+                        <li><strong>Experience: </strong> <em style="display:inline-block;max-width: 300px;padding:3px">{{docInfo.experience + " years"}}</em></li>
+                        "<li><strong>Office hours: </strong> <em ng-repeat = "i in docInfo.office_hour" style="display:inline-block;float:right;max-width: 300px;padding:3px"><span>{{i.day}}</span>, <span>from {{i.from}}</span> <span>to {{i.to}}</span></em></li>"
+                    </ul>
+                    
+                    <a ng-href= "{{docInfo.profile_url}}" style="color:rgba(0,0,0,0.6);text-decoration:underline;cursor:pointer">view doctor's profile</a>
+                    
+                </header>
+            </div>
+        </div>
+        <div class="col-sm-12 col-lg-9 col-md-9">
+            <header style="padding:2px;border-bottom: 1px solid rgba(0,0,0,0.2);font-size:18px">
+                <div style="width: 40%;display:inline-block;font-size:14px">
+                    <strong> Dr. {{docInfo.firstname}} {{docInfo.lastname}} <em ng-if="typing">is {{typing}}</em></strong>
+                </div>
+                <div style="width: 58%;display:inline-block;text-align:right;font-size:22px">
+                    <i ng-click="inPersonRequest('Meet In-Person',docInfo)" class="fa fa-user" style="padding:1px 10px 0;margin-right:20px" title="Meet in-person request"> </i>          
+                    <i ng-click="audioRequest('Audio Call',docInfo)" style="padding:1px 10px 0;margin-right:20px"class="fa fa-phone" title="Audio call request"> </i>
+                    <i ng-click="videoRequest('Video Call',docInfo)" style="padding:1px 10px 0;margin-right:20px" class="fa fa-video-camera" title="Video call request"></i>
+                    <i class="fa fa-trash-o" aria-hidden="true" style="padding:1px 0 0 10px;"  ng-click="deleteChat()" title="Delete chat"></i>         
+                </div>
+                <div class="chat-area" style="padding:none">
+                <div class="some-class">
+                    <div class="chat-body" >
+                        <ul style='list-style:none;margin-top: 40px'>
+                            <li ng-repeat="u in message1">
+                                <div ng-if="u.sent" ng-class="{'isYou' : u.sent}">
+                                    ""<p style="text-align:center"> &nbsp;{{u.time | date: "shortTime"}} &nbsp;{{u.time | date: "mediumDate"}}</p>""
+                                    <article style="text-align:right;background-color:#d2ed88" class="chat">
+                                        <span>{{u.sent}}</span>
+                                        <small style="font-size:9px;font-style:italic"> &nbsp;{{u.time | date: "shortTime"}}</small>
+                                        <i class="fa fa-check" style="font-size:10px" ng-class="{'msg-received': u.isReceived === true}"></i>
+                                        <i class="fa fa-check" style="font-size:10px;margin-left:-10px;margin-top:8px" ng-class="{'msg-received': u.isReceived === true}" ng-if="u.isSent === true"></i>    
+                                    </article>
+                                </div>
+                                <div ng-if="u.received" class="chatPallet">                                                         
+                                    <article class="chat" style="background-color:#eee">
+                                        <span>{{u.received}}</span>
+                                        <small style="font-size:9px;font-style:italic"> &nbsp;{{u.time | date: "shortTime"}}</small>    
+                                    </article>                                               
+                                </div>                                  
+                            </li>
+                            <li><article style="margin-left: 18px;margin-top:5px;color:rgba(0,0,0,0.4);font-style:italic;box-shadow: 0px 1px 2px rgba(0,0,0,0.5);background-color:#eee" ng-if="typing" class="chat">{{typing}}</article></li>
+                                                      
+                        </ul>                     
+                    </div>
+                    <div class="input-box-wrapper">
+                        <form class="chat-form" ng-submit="sendChat1()">
+                            <article style="color:#000;margin-left: 18px;margin-top:10px;color:#eee;font-style:italic" ng-if="typing" class="chat"></article>                          
+                            <input type="text" placeholder="Type a message" ng-model="user.text1">
+                            <input type="submit" value="Send"  class="btn btn-primary">
+
+                        </form>
+
+                    </div>
+
+                </div>
+            </div>
+            </header>
+
+        </div>
+    </div>
+</div>-->
+
+
+
+
+
+
+
+<div class="container">
+<div class="card p-2">
+
+    <div class="row">
+        <div class="col-sm-12 col-lg-3 col-md-3 pull-right">
+            <div class="tg-widget tg-widget-doctor">
+                <figure class="tg-docprofile-img">
+                    <figcaption>
+                    <span ng-if="dispalyPresence === true">online</span>
+                    <span ng-if="dispalyPresence === false">Offline</span>                                                    
+                    </figcaption>
+                    <span class="tg-featuredicon"><em class="fa fa-bolt"></em></span>
+                    <img alt="image description" class="img-rounded card" src="assets/img/avatar.jpg" style="width:150px; height:150px;" ng-src="{{docInfo.profile_pic_url}}">                                  
+                </figure>
+            </div>
+
+            <div>
+                <header style="text-align:center;font-size:18px">
+                    <div>
+                        <b class="font-1_4">Dr. {{docInfo.firstname}} {{docInfo.lastname}}</b>
+                    </div>
+                    <div style="padding:5px">
+                        <em >{{docInfo.specialty}}</em>
+                    </div>
+                    <ul style="list-style:none;font-size:14px;text-align:left;margin-top:10px">
+                        <li><b>Place of work: </b> <em style="display:inline-block;max-width: 300px;padding:3px">{{docInfo.work_place}}</em></li>
+                        <li><b>Address: </b> <em style="display:inline-block;max-width: 300px;padding:3px">{{docInfo.address}}</em></li>
+                        <li ng-if="docInfo.city"><b>Residence: </b> <em style="display:inline-block;max-width: 300px;padding:3px">{{docInfo.city}} {{docInfo.country}}</em></li>
+                        <li><b>Experience: </b> <em style="display:inline-block;max-width: 300px;padding:3px">{{docInfo.experience + " years"}}</em></li>
+                        <!--<li><b>Office hours: </b> <em ng-repeat = "i in docInfo.office_hour" style="display:inline-block;float:right;max-width: 300px;padding:3px"><span>{{i.day}}</span>, <span>from {{i.from}}</span> <span>to {{i.to}}</span></em></li>-->
+                    </ul>
+                    
+                    <a ng-href= "{{docInfo.profile_url}}" style="color:rgba(0,0,0,0.6);text-decoration:underline;cursor:pointer">view doctor's profile</a>
+                    
+                </header>
+            </div>
+        </div>
+        <div class="col-sm-12 col-lg-9 col-md-9">
+            <header style="padding:2px;border-bottom: 1px solid rgba(0,0,0,0.2);font-size:18px">
+                <div style="width: 40%;display:inline-block;font-size:14px">
+                    <b> Dr. {{docInfo.firstname}} {{docInfo.lastname}} <em ng-if="typing">is {{typing}}</em></b>
+                </div>
+                <div style="width: 58%;display:inline-block;text-align:right;font-size:22px">
+                    <i ng-click="inPersonRequest('Meet In-Person',docInfo)" class="fa fa-user" style="padding:1px 10px 0;margin-right:20px" title="Meet in-person request"> </i>          
+                    <i ng-click="audioRequest('Audio Call',docInfo)" style="padding:1px 10px 0;margin-right:20px"class="fa fa-phone" title="Audio call request"> </i>
+                    <i ng-click="videoRequest('Video Call',docInfo)" style="padding:1px 10px 0;margin-right:20px" class="fa fa-video-camera" title="Video call request"></i>
+                    <i class="fa fa-trash-o" aria-hidden="true" style="padding:1px 0 0 10px;"  ng-click="deleteChat()" title="Delete chat"></i>         
+                </div>
+                <div class="chat-area" style="padding:none">
+                <div class="some-class">
+                    <div class="chat-body" >
+                        <ul style='list-style:none;margin-top: 40px'>
+                            <li ng-repeat="u in message1">
+                                <div ng-if="u.sent" ng-class="{'isYou' : u.sent}">
+                                    <!--<p style="text-align:center"> &nbsp;{{u.time | date: "shortTime"}} &nbsp;{{u.time | date: "mediumDate"}}</p>-->  
+                                    <article style="text-align:right;background-color:#d2ed88" class="chat">
+                                        <span>{{u.sent}}</span>
+                                        <small style="font-size:9px;font-style:italic"> &nbsp;{{u.time | date: "shortTime"}}</small>
+                                        <i class="fa fa-check" style="font-size:10px" ng-class="{'msg-received': u.isReceived === true}"></i>
+                                        <i class="fa fa-check" style="font-size:10px;margin-left:-10px;margin-top:8px" ng-class="{'msg-received': u.isReceived === true}" ng-if="u.isSent === true"></i>    
+                                    </article>
+                                </div>
+                                <div ng-if="u.received" class="chatPallet">                                                         
+                                    <article class="chat" style="background-color:#eee">
+                                        <span>{{u.received}}</span>
+                                        <small style="font-size:9px;font-style:italic"> &nbsp;{{u.time | date: "shortTime"}}</small>    
+                                    </article>                                               
+                                </div>                                  
+                            </li>
+                            <li><article style="margin-left: 18px;margin-top:5px;color:rgba(0,0,0,0.4);font-style:italic;box-shadow: 0px 1px 2px rgba(0,0,0,0.5);background-color:#eee" ng-if="typing" class="chat">{{typing}}</article></li>
+                                                      
+                        </ul>                     
+                    </div>
+                    <div class="input-box-wrapper">
+                        <form class="chat-form" ng-submit="sendChat1()">
+                            <article style="color:#000;margin-left: 18px;margin-top:10px;color:#eee;font-style:italic" ng-if="typing" class="chat"></article>                          
+                            <input type="text" placeholder="Type a message" ng-model="user.text1">
+                            <input type="submit" value="Send"  class="btn btn-primary">
+
+                        </form>
+
+                    </div>
+
+                </div>
+            </div>
+            </header>
+
+        </div>
+    </div>
+</div>
+
+</div>
+
+
+
+
+
+

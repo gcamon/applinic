@@ -1,0 +1,254 @@
+
+<!--<div style="text-align: right">
+	<a href="#/radio/off-service" style="color:#000">Tests not ran by me</a>
+</div>
+<div class="all-test-check">
+	<h4>Please unmark any test not run by your center below<h4>
+
+	<h6 style="text-align: center;cursor:pointer">
+		<a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="/#collapseSix" aria-expanded="false" aria-controls="collapseSix" style="color:rgba(0,180,0,0.6); font-size: 18px;">Listing of X-Ray Investigation</a></h6>
+	<div id="collapseSix" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingSix">
+		<div ng-repeat="test in tests1">
+			<input type="checkbox" ng-model="test.val"><span>{{test.name}}</span>
+		</div>
+	</div>
+
+	<h6 style="text-align: center;cursor:pointer"><a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="/#collapseTwo" aria-expanded="false" aria-controls="collapseSix" style="color:rgba(0,180,0,0.6); font-size: 18px;">Listing of Ultrasonography</a></h6>
+	<div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+		<div ng-repeat="test in tests2">	
+			<input type="checkbox" ng-model="test.val"><span>{{test.name}}</span>
+		</div>
+	</div>
+
+	<h6 style="text-align: center;cursor:pointer"><a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="/#collapseThree" aria-expanded="false" aria-controls="collapseThree" style="color:rgba(0,180,0,0.6); font-size: 18px;">Listing of Computerized Tomography Scan (C.T. SCAN)</a></h6>
+	<div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+		<div ng-repeat="test in tests3">
+			<input type="checkbox" ng-model="test.val"><span>{{test.name}}</span>
+		</div>
+	</div>
+
+	<h6 style="text-align: center;cursor:pointer"><a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="/#collapseFour" aria-expanded="false" aria-controls="collapseFour" style="color:rgba(0,180,0,0.6); font-size: 18px;">Listing of ECG</a></h6>
+	<div id="collapseFour" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFour">
+		<div ng-repeat="test in tests4">	
+			<input type="checkbox" ng-model="test.val"><span>{{test.name}}</span>
+		</div>
+	</div>
+
+	<h6 style="text-align: center;cursor:pointer"><a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="/#collapseFive" aria-expanded="false" aria-controls="collapseFive" style="color:rgba(0,180,0,0.6); font-size: 18px;">Listing of MRI</a></h6>
+	<div id="collapseFive" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFive">
+		<div ng-repeat="test in tests5">	
+			<input type="checkbox" ng-model="test.val"><span>{{test.name}}</span>
+		</div>
+	</div>
+
+	<h6 style="text-align: center;cursor:pointer"><a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="/#collapseOne" aria-expanded="false" aria-controls="collapseOne" style="color:rgba(0,180,0,0.6); font-size: 18px;">Listing of MAMMOGRAM</a></h6>
+	<div id="collapseOne" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
+		<div ng-repeat="test in tests6">
+			<input type="checkbox" ng-model="test.val"><span>{{test.name}}</span>
+		</div>
+	</div>
+
+	<h6 style="text-align: center;cursor:pointer"><a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="/#collapseSeven" aria-expanded="false" aria-controls="collapseSeven" style="color:rgba(0,180,0,0.6); font-size: 18px;"></a></h6>
+	<div id="collapseSeven" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingSeven">
+		<div ng-repeat="test in tests7">
+			<input type="checkbox" ng-model="test.val"><span>{{test.name}}</span>
+		</div>
+	</div>
+
+	<div style="text-align:center">
+		<button ng-click="saveSelection()">SAVE</button>
+	</div>
+</div>-->
+
+
+<div class="container">
+    <div>
+
+<div class="row">
+  <div class="col-sm-12 col-md-9 col-lg-9">
+    <h4 style="padding-left: 30px">Update services</h4>
+    <p style="padding-left: 30px">Please unmark any test not run by your center below.</p>
+  </div>
+  <div class="col-sm-12 col-md-3 col-lg-3" style="padding-top:30px">
+	 <a href="#/radio/off-service" style="background-color: orane;padding:15px">Tests not ran by me</a>
+  </div>
+</div>
+
+<div id="accordion" class="p-2" role="tablist" aria-multiselectable="true">
+
+   <div class="card mmine">
+    <div class="card-header">
+        <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="" aria-expanded="false" aria-controls="collapseThree">
+         Listing of X-Ray Investigation
+        </a>
+    </div>
+    <div>
+      <div ng-repeat="test in tests1">
+			<label class="custom-control custom-checkbox">   <input type="checkbox" class="custom-control-input" ng-model="test.val">   <span class="custom-control-indicator"></span>   <span class="custom-control-description font-1_1">{{test.name}}</span> </label>
+		  </div>
+    </div>
+      <div style="text-align:right;">
+      <button class="btn btn-success" ng-click="saveSelection()">SAVE</button>
+    </div>
+	</div>
+
+
+	 <div class="card mmine">
+    <div class="card-header">
+        <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="" aria-expanded="false" aria-controls="collapseThree">
+         Listing of Ultrasonography
+        </a>
+    </div>
+    <div>
+      <div ng-repeat="test in tests2">
+			<label class="custom-control custom-checkbox">   <input type="checkbox" class="custom-control-input" ng-model="test.val">   <span class="custom-control-indicator"></span>   <span class="custom-control-description font-1_1">{{test.name}}</span> </label>
+		  </div>
+    </div>
+      <div style="text-align:right;">
+      <button class="btn btn-success" ng-click="saveSelection()">SAVE</button>
+    </div>
+	</div>
+
+	 <div class="card mmine">
+    <div class="card-header">
+        <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="" aria-expanded="false" aria-controls="collapseThree">
+         Listing of Computerized Tomography Scan (C.T. SCAN)
+        </a>
+    </div>
+    <div>
+      <div ng-repeat="test in tests4">
+			<label class="custom-control custom-checkbox">   <input type="checkbox" class="custom-control-input" ng-model="test.val">   <span class="custom-control-indicator"></span>   <span class="custom-control-description font-1_1">{{test.name}}</span> </label>
+		  </div>
+    </div>
+      <div style="text-align:right;">
+      <button class="btn btn-success" ng-click="saveSelection()">SAVE</button>
+    </div>
+	</div>
+
+
+	 <div class="card mmine">
+    <div class="card-header">
+        <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="" aria-expanded="false" aria-controls="collapseThree">
+        Listing of MRI
+        </a>
+    </div>
+    <div>
+      <div ng-repeat="test in tests5">
+			<label class="custom-control custom-checkbox">   <input type="checkbox" class="custom-control-input" ng-model="test.val">   <span class="custom-control-indicator"></span>   <span class="custom-control-description font-1_1">{{test.name}}</span> </label>
+		  </div>
+    </div>
+      <div style="text-align:right;">
+      <button class="btn btn-success" ng-click="saveSelection()">SAVE</button>
+    </div>
+	</div>
+
+
+	 <div class="card mmine">
+    <div class="card-header">
+        <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="" aria-expanded="false" aria-controls="collapseThree">
+        Listing of MAMMOGRAM
+        </a>
+    </div>
+    <div>
+      <div ng-repeat="test in tests6">
+			<label class="custom-control custom-checkbox">   <input type="checkbox" class="custom-control-input" ng-model="test.val">   <span class="custom-control-indicator"></span>   <span class="custom-control-description font-1_1">{{test.name}}</span> </label>
+		  </div>
+    </div>
+      <div style="text-align:right;">
+      <button class="btn btn-success" ng-click="saveSelection()">SAVE</button>
+    </div>
+	</div>
+
+
+	 <div class="card mmine">
+    <div class="card-header">
+        <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="" aria-expanded="false" aria-controls="collapseThree">
+        Others...
+        </a>
+    </div>
+    <div>
+      <div ng-repeat="test in tests7">
+			<label class="custom-control custom-checkbox">   <input type="checkbox" class="custom-control-input" ng-model="test.val">   <span class="custom-control-indicator"></span>   <span class="custom-control-description font-1_1">{{test.name}}</span> </label>
+		  </div>
+    </div>
+      <div style="text-align:right;">
+      <button class="btn btn-success" ng-click="saveSelection()">SAVE</button>
+    </div>
+	</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   <!--<div class="card mmine">
+    <div class="card-header" role="tab" id="headingThree">
+        <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="" aria-expanded="false" aria-controls="collapseThree">
+         Listing of Ultrasonography
+        </a>
+    </div>
+    <div id="Ultrasonography" class="collapse" role="tabpanel" aria-labelledby="headingThree">
+       <div ng-repeat="test in tests2">	
+			<label class="custom-control custom-checkbox">   <input type="checkbox" class="custom-control-input">   <span class="custom-control-indicator"></span>   <span class="custom-control-description font-1_1">{{test.name}}</span> </label> 		
+      </div>
+    </div>
+  </div>
+
+    <div class="card mmine">
+    <div class="card-header" role="tab" id="headingThree">
+        <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="" aria-expanded="false" aria-controls="collapseThree">
+         Listing of Computerized Tomography Scan (C.T. SCAN)
+        </a>
+    </div>
+    <div id="Tomography" class="collapse" role="tabpanel" aria-labelledby="headingThree">
+       <div ng-repeat="test in tests4">	
+			<label class="custom-control custom-checkbox">   <input type="checkbox" class="custom-control-input">   <span class="custom-control-indicator"></span>   <span class="custom-control-description font-1_1">{{test.name}}</span> </label> 		
+      </div>
+    </div>
+  </div>
+
+   <div class="card mmine">
+    <div class="card-header" role="tab" id="headingThree">
+        <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="" aria-expanded="false" aria-controls="collapseThree">
+         Listing of MRI
+        </a>
+    </div>
+    <div id="MRI" class="collapse" role="tabpanel" aria-labelledby="headingThree">
+       	<div ng-repeat="test in tests5">	
+			<label class="custom-control custom-checkbox">   <input type="checkbox" class="custom-control-input">   <span class="custom-control-indicator"></span>   <span class="custom-control-description font-1_1">{{test.name}}</span> </label> 		
+      </div>
+    </div>
+  </div>
+
+  <div class="card mmine">
+    <div class="card-header" role="tab" id="headingThree">
+        <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="" aria-expanded="false" aria-controls="collapseThree">
+         Listing of MAMMOGRAM
+        </a>
+    </div>
+    <div id="MAMMOGRAM" class="collapse" role="tabpanel" aria-labelledby="headingThree">
+       	<div ng-repeat="test in tests6">
+			<label class="custom-control custom-checkbox">   <input type="checkbox" class="custom-control-input">   <span class="custom-control-indicator"></span>   <span class="custom-control-description font-1_1">{{test.name}}</span> </label> 		
+      </div>
+    </div>
+  </div>
+   
+</div>
+
+
+	<div style="text-align:center">
+		<button class="btn btn-success pull-right" ng-click="saveSelection()">SAVE</button>
+	</div>-->
+</div>
+
+    </div>

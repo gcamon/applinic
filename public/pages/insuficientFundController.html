@@ -1,0 +1,10 @@
+<div ng-controller="insuficientFundController">
+	<h4>Sorry! we could not continue with your booking</h4>
+	<h5 style="font-size: 18px; font-weight: 100; color: #000">Reason:</5>
+	<p><em>You do not have enough fund in your wallet to for the doctor's consultation fee</em></p>
+	<h5 style="font-size: 18px; font-weight: 100; color: #000">Details:</5>
+	<p>Your wallet avvailable amount: <strong>{{consultationFee}}</strong></p>
+	<p>Consultation fee billed to pay: <strong>{{walletAmount}}</strong></p>
+
+	<a href="#/wallet" style="color: blue; font-size: 18px;">Fund wallet now!</a>
+</div>

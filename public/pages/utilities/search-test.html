@@ -1,0 +1,92 @@
+<!--<div style="margin-top: 30px">
+	<h4>Enter criteria below</h4> 
+	<div style="text-align: right;padding: 0px 37px 10px">
+		<form style="width: 200px;display:inline-block">
+		<span><em>Use: {{search.category}}</em></span>
+		<select style="height:2px;border:none" value="search.category" ng-model="search.category">
+			<option>Test Name</option>
+			<option>Reference number</option>
+		</select>
+		</form>
+	</div>
+	<form class="row" >
+		<div class="col-sm-12 col-md-12 col-lg-12">
+			<div style="margin-bottom: 30px">
+			<input name="states" id="states" type="text" placeholder="Enter city name" ng-model="city" uib-typeahead="city for city in cities | filter:$viewValue | limitTo:15" class="form-control" style="width: 95%">		
+				{{getCity(city)}} 
+			</div>
+			
+			<div ng-repeat="i in testList" ng-if="notRef">				
+				<input name="states" id="states" type="text" placeholder="Enter test name" ng-model="test.name" uib-typeahead="test.name for test in tests | filter:$viewValue | limitTo:15" class="form-control" style="width: 95%">
+				{{getTest(test.name)}} 
+				<i class="fa fa-times" style="cursor: pointer;font-weight: 100; font-size: 16px;color:grey" ng-click="remove(i.sn)" ng-if="i.sn !== 'a'"></i>				
+			</div>
+			<div ng-if="isRef">
+				<input placeholder="Enter Ref NO" ng-model="user.refId" class="form-control"  style="width: 95%">
+			</div>
+		</div>
+		<div style="text-align:right;padding: 20px" ng-if="notRef">
+			<i class="fa fa-plus btn" style="cursor: pointer" ng-click="add(test.name)">&nbsp;Add</i> 
+		</div>
+		<div style="padding-left: 20px" ng-if="notRef">
+			<input type="button" value="Find" ng-click="findTest(test.name)" class="btn btn-primary" >
+		</div>
+		<div style="padding-left: 20px;margin-top:50px" ng-if="isRef">
+			<input type="button" value="Find" ng-click="findWithRef(user.refId)" class="btn btn-primary" >
+		</div>		
+	</form>
+</div>-->
+
+
+
+ 
+
+
+<div class="container">
+<div class="card p-2">
+	<h4 class="font-1_7">Find test</h4> 
+	
+		<form class="pl-0 col-md-9 form-inline" style="display:inline-block">
+
+         <div class="col-md-7 form-inline">
+    <label for="lastname">Enter criteria below</label>
+    <select class="custom-select form-control" value="search.category" ng-model="search.category">
+  <option selected>{{search.category}}</option>
+  <option>Test Name</option>
+  <option>Reference number</option>
+</select>
+  </div>
+		</form>
+
+
+	<form class="row" >
+		<div class="col-sm-12 col-md-12 col-lg-12 p-0">
+			<div class="col-md-12  col-sm-12 pr-0" >
+			<input name="states" id="states" type="text" placeholder="Enter city name" ng-model="city" uib-typeahead="city for city in cities | filter:$viewValue | limitTo:15" class="form-control" style="width: 95%">		
+				{{getCity(city)}} 
+			</div>
+			
+			<div class="col-md-6 col-sm-12" ng-repeat="i in testList" ng-if="notRef">				
+				<input   type="text" placeholder="Enter test name" ng-model="test.name" uib-typeahead="test.name for test in tests | filter:$viewValue | limitTo:15" class="form-control" style="width: 95%">
+				{{getTest(test.name)}} 
+				<i class="fa fa-times" style="cursor: pointer;font-weight: 100; font-size: 16px;color:grey" ng-click="remove(i.sn)" ng-if="i.sn !== 'a'"></i>				
+			</div>
+			<div class="col-md-6 col-sm-12 pr-0" ng-if="isRef">
+				<input placeholder="Enter Ref NO" ng-model="user.refId" class="form-control"  style="width: 95%">
+			</div>
+		</div>
+		<div style="text-align:right;padding: 20px" ng-if="notRef">
+			<i class="fa fa-plus btn btn-simple" style="cursor: pointer" ng-click="add(test.name)">&nbsp;Add</i> 
+		</div>
+        <div class="clearfix"></div>
+		<span ng-if="notRef">
+			<input type="button" value="Find" ng-click="findTest(test.name)" class="btn btn-info" >
+		</span>
+		<span ng-if="isRef">
+			<input type="button" value="Find" ng-click="findWithRef(user.refId)" class="btn btn-info mr-1" >
+		</span>		
+	</form>
+</div>
+</div>
+
+

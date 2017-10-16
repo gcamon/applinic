@@ -1,0 +1,114 @@
+<div>
+	<h5>Patient signup</h5>
+	<p>Please the complete the form below. Make sure your email and phone number is currently active.</p>
+	<form class="signup-form-style">        
+        <fieldset>                      
+            <div class="">
+            	<label>Firstname *: </label>
+                <input type="text" class="placeholder-color"  id="firstname" ng-model="user.firstname" >
+            </div>                                
+            <div class="form-group">
+            	<label>Lastname *: </label>
+                <input type="text" class="form-control placeholder-color" id="lastname" ng-model="user.lastname">
+            </div>
+            <div class="form-group">
+                <span class="select">
+                    <label>Select title * :</label>                                
+                    <select id="title"  ng-model="user.title">
+                        <option value="">Please select</option>                                            
+                        <option>Dr</option>
+                        <option>Mr</option>
+                        <option>Mrs</option>
+                        <option>Miss</option>
+                        <option>Master</option>
+                        <option>Chief</option>
+                        <option>Surgeon</option>
+                        <option>MD</option>
+                        <option>CMD</option>
+                        <option>Rev</option>
+                        <option>Pastor</option>
+                        <option>Engr</option>
+                        <option>Barr</option>
+                        <option>Surv</option>
+                        <option>Hon</option>
+                        <option>Ven</option>
+                        <option>HRH</option>
+                        <option>Prof</option>
+                        <option>Justice</option>
+                    </select>
+                </span>
+            </div>
+             <div class="form-group">
+                <label>Select age category * : </label>  
+                <select class="form-control placeholder-color" placeholder="Age*"  ng-model="user.age">
+                    <option value="">Please select</option>
+                    <option>0 - 28 days (newborn)</option>
+                    <option>29 days - 1 year (infant)</option>
+                    <option>1 - 5 years (younger child)</option>
+                    <option>6 - 12 years (older child)</option>
+                    <option>13 - 16 years (adolescent)</option>
+                    <option>17 - 29 years (young adult)</option>
+                    <option>30 - 39 years (adult)</option>
+                    <option>40 - 49 years (adult)</option>
+                    <option>50 - 64 years (adult)</option>
+                    <option>65 years - over (senior)</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Sex * : </label>  
+                <select class="form-control placeholder-color" placeholder="Gender*" ng-model="user.gender">
+                    <option value="">Male</option>
+                    <option>Female</option>                                        
+                </select>
+            </div>
+            <div class="form-group">
+            	<label>Address * : </label>  
+                <input type="text" class="form-control placeholder-color" ng-model="user.address">
+            </div>
+            <div class="form-group">
+            	<label>City/Town * : </label>  
+                <input type="text" class="form-control placeholder-color" id="firstname" ng-model="user.city" required>
+            </div>
+            <div class="form-group">
+                <p style="color:red;text-align:center">{{showErr}}</p>
+            	<label>Phone number * : </label>  
+                <input type="number" class="form-control placeholder-color" placeholder="(080*****)" id="phone" ng-model="user.phone">
+            </div>
+            <div class="form-group">
+            	<label>Country * : </label>  
+                <input type="text" class="form-control placeholder-color" ng-model="user.country" required>
+            </div>
+
+            <hr style="padding-bottom: 10px"/>
+            <div class="form-group">
+                <p style="color:red;">{{usernameError}}</p>                
+                <label>Username * : </label> 
+                <input type="text" class="form-control placeholder-color" id="username" ng-model="user.username">
+                <p style="color: green">{{info}}</p>
+            </div>
+            
+            <div class="form-group">
+            	<label>Email * : </label>  
+                <input type="email" class="form-control placeholder-color" id="firstname" ng-model="user.email" required>
+            </div>
+            <div class="form-group">
+            	<label>Password * : </label>  
+                <input type="password" class="form-control" ng-model="user.password">
+            </div>
+            <div class="form-group">
+            	<label>Comfirm password : </label>  
+                <input type="password" class="form-control" ng-model="user.password2" ng-class="{'password2':misMatch === true}">
+            </div>                                                      
+           
+            <div class="form-group tg-checkbox">
+                <label>
+                    <input type="checkbox" class="form-control" ng-model="user.agree">
+                    I agree with the terms and conditions
+                </label>
+            </div>
+            <div style="text-align:center">                                
+            	<button class="tg-btn" ng-click="submit('Patient')">Create an Account</button>
+        	</div>
+        </fieldset>
+    </form>            
+</div>

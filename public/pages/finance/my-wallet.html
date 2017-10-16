@@ -1,0 +1,206 @@
+<!--<div  style="text-align: left">
+	<h2 style="padding: 10px 1px; margin: 10px 0px">Fund wallet</h2>
+	{{date | date : "mediumDate"}}
+	<div>
+		<label>Payment option: </label>
+		<select ng-model="pay.mode" style="width: 300px; display:inline-block;border:none;border-bottom: 1px solid #000">
+			<option value="">_Please select</option>
+			<option>Pay with ATM card/Interswitch</option>
+			<option>Pay with USSD</option>
+			<option>Pay through Bank Deposit</option>
+			<option>Voucher</option>
+		</select>
+	</div>
+	<form ng-if="isATM" >
+		<div style="text-align:center;margin-top: 40px">
+			<h6>{{pay.mode}}</h6>
+			<form>
+				<div>
+					<input type="number" ng-model="pay.amount" style="width: 300px" placeholder="Enter amount">
+				</div>
+				<p style="color:red">{{errorMsg}}</p>
+				<div style="margin: 20px 0">
+					<strong style="font-size: 22px">Depositing: <em>{{str}}</em></strong>
+				</div>
+				<div>
+					<input type="button" value="Confirm" ng-click="interswitch()" class="btn btn-primary">
+				</div>
+			</form>
+
+		</div>		
+	</form>
+	<div ng-if = "isBank">
+		<div style="text-align:center;margin-top: 40px">
+			<h6>{{pay.mode}}</h6>
+			<button ng-click="invoice()">Generate invoice</button>
+		</div>
+		<div ng-if="viewInvoice" style="margin-top: 30px">
+			<h6 style="text-align:center;color:#000"><strong>Please use the details below to pay in any of these Banks</strong></h6>
+ 			<ul style="float:left; margin-right: 40px;margin-top: 30px">
+				<li><strong>Bank name :</strong> UBA</li>
+				<li><strong>Account NO:</strong> 0025736464</li>
+				<li><strong>Depositor's name:</strong> {{name}}</li>
+				<li><strong>depositor's phone number:</strong> (+234) {{phone}}</li>
+			</ul>
+			<ul style="float:left;margin-right: 10px;margin-top: 30px">
+				<li><strong>Bank name :</strong> Zenith Bank</li>
+				<li><strong>Account NO:</strong> 0025736464</li>
+				<li><strong>Depositor's name:</strong> {{name}}</li>
+				<li><strong>depositor's phone number:</strong> (+234) {{phone}}</li>
+			</ul>
+			<ul style="float:left;margin-top: 30px">
+				<li><strong>Bank name :</strong> Diamond Bank</li>
+				<li><strong>Account NO:</strong> 0025736464</li>
+				<li><strong>Depositor's name:</strong> {{name}}</li>
+				<li><strong>depositor's phone number:</strong> (+234) {{phone}}</li>
+			</ul>
+			<i class="fa fa-warning" style="clear:both;margin-top:30px; color:green"> &nbsp;Please ensure use entered the above payment details correctly because it will be use to confirm your payment.Your account will be credited as soon as we confirm payment</i>
+		</div>			
+	</div>
+	<div ng-if="isUSSD">
+		<h6 style="text-align:center">{{pay.mode}}</h6>
+		<p>Please use the following USSD code to purchase a voucher pin</p>
+		<ul>
+			<li>UBA - *229*2*35# </li>
+			<li>Zenith - *229*2*34# </li>
+			<li>Diamond Bank - *229*2*45#</li>
+		</ul>
+		<div>
+			<h6 style="text-align:center"><strong>Enter the voucher pin below</strong></h6>	
+			<form>
+				<input type="text" placeholder="Enter 16 digits pin " ng-model="pay.pin">
+				<small style="display:block;padding:20px 0">System will auto submit when the 16 digits pin is completed</small>
+				<input type="button" value="top up" class="btn btn-primary" ng-click="credit()">
+			</form>
+		</div>
+	</div>
+	<div ng-if="isVoucher">
+		<h6 style="text-align:center">{{pay.mode}}</h6>
+		<h6 style="text-align:center"><strong>Enter the voucher pin below</strong></h6>		
+		<div>			
+			<form>
+				<input type="text" placeholder="Enter 16 digits pin " ng-model="pay.pin">
+				<small style="display:block;padding:20px 0">System will auto submit when the 16 digits pin is completed</small>
+				<input type="button" value="top up" class="btn btn-primary" ng-click="credit()">
+			</form>
+		</div>
+	</div>		
+	
+</div>-->
+
+
+
+
+
+<div class="card p-2">
+	<h3 class="font-1_4 mb-1">Fund wallet</h3><hr>
+	{{date | date : "mediumDate"}}
+	<div>
+		<label class="font-1-4">Payment option: </label>
+		<select ng-model="pay.mode" class="col-sm-6 custom-select form-control">
+			<option value="">_Please select</option>
+			<option>Pay with ATM card/Interswitch</option>
+			<option>Pay with USSD</option>
+			<option>Pay through Bank Deposit</option>
+			<option>Voucher</option>
+		</select>
+	</div>
+	<form ng-if="isATM" >
+		<div>
+			<h5  class="font-1_1">{{pay.mode}}</h5>
+			<form>
+				<div>
+					<input type="number" ng-model="pay.amount" class="form-control"  placeholder="Enter amount">
+				</div>
+				<p style="color:red">{{errorMsg}}</p>
+				<div style="margin: 20px 0">
+					<strong  class="font_1-7">Depositing: <em>{{str}}</em></strong>
+				</div>
+				<div>
+					<input type="button" value="Confirm" ng-click="interswitch()" class="btn btn-success">
+				</div>
+			</form>
+
+		</div>		
+	</form>
+	<div ng-if = "isBank">
+		<div class="mt-2 col-md-4 col-sm-12 offset-md-4 offset-sm-0">
+			<h6>{{pay.mode}}</h6>
+			<button class="btn btn-info btn-block" ng-click="invoice()">Generate invoice</button>
+		</div><div class="clearfix"></div>
+
+		<div ng-if="viewInvoice" class="m-2">
+			<h6 class="font_1-7" style="text-align:center;"><strong>Please use the details below to pay in any of these Banks</strong></h6>
+ 			<div class="row">
+	                 <div class="col-md-4 col-sm-12">
+	             <ul class="nav" style="float:left; margin-right: 40px;margin-top: 30px">
+					<li><strong>Bank name :</strong> UBA</li>
+					<li><strong>Account NO:</strong> 0025736464</li>
+					<li><strong>Depositor's name:</strong> {{name}}</li>
+					<li><strong>depositor's phone number:</strong> (+234) {{phone}}</li>
+				</ul>
+	            </div><div class="col-md-4 col-sm-12">
+				<ul class="nav" style="float:left;margin-right: 10px;margin-top: 30px">
+					<li><strong>Bank name :</strong> Zenith Bank</li>
+					<li><strong>Account NO:</strong> 0025736464</li>
+					<li><strong>Depositor's name:</strong> {{name}}</li>
+					<li><strong>depositor's phone number:</strong> (+234) {{phone}}</li>
+				</ul>
+	            </div><div class="col-md-4 col-sm-12">
+				<ul class="nav" style="float:left;margin-top: 30px">
+					<li><strong>Bank name :</strong> Diamond Bank</li>
+					<li><strong>Account NO:</strong> 0025736464</li>
+					<li><strong>Depositor's name:</strong> {{name}}</li>
+					<li><strong>depositor's phone number:</strong> (+234) {{phone}}</li>
+				</ul>
+	            </div>
+				<i class="fa fa-warning text-success" style="clear:both;"> &nbsp;Please ensure use entered the above payment details correctly because it will be use to confirm your payment.Your account will be credited as soon as we confirm payment</i>
+			</div>
+		</div>			
+	</div>
+
+	<div ng-if="isUSSD">
+		<h6 class="mt-1">{{pay.mode}}</h6>
+		<p>Please use the following USSD code to purchase a voucher pin</p>
+		<ul>
+			<li>UBA - *229*2*35# </li>
+			<li>Zenith - *229*2*34# </li>
+			<li>Diamond Bank - *229*2*45#</li>
+		</ul>
+		<div>
+			<h6><strong>Enter the voucher pin below</strong></h6>	
+			<form>
+				<input type="text" class="form-control" placeholder="Enter 16 digits pin " ng-model="pay.pin">
+				<small style="display:block;">System will auto submit when the 16 digits pin is completed</small>
+				
+			</form>
+		</div>
+	</div>
+	<div class="mt-2" ng-if="isVoucher">
+		<!--<h6>{{pay.mode}}</h6>-->
+		<h6><strong>Enter the voucher pin below</strong></h6>		
+		<div>			
+			<form>
+				<input type="text" class="form-control" placeholder="Enter 16 digits pin " ng-model="pay.pin">
+				<small style="display:block;">System will auto submit when the 16 digits pin is completed</small>
+				
+			</form>
+		</div>
+	</div>		
+</div>
+
+</div>
+
+
+
+
+
+
+
+    
+    
+
+
+
+
+        

@@ -1,0 +1,321 @@
+<div style="height:5px"></div>
+                
+<div class="container target">
+    
+    <div class="row">
+        
+        
+        <div class="col-sm-3">
+                <div class="col-sm-12"  style="background:rgba(255,255,255, .8)">
+             <div class=" text-center userpe"><a href="">
+            <img title="profile image" class="img-responsive" src="{{patientInfo.profile_pic_url}}" style="max-width:200px;max-height:250px"></a>
+        </div><br>
+             <div><div class="title">{{patientInfo.title}} {{patientInfo.firstname}} {{patientInfo.lastname}}</div>
+         <sub class="text-muted" style="margin-top:-3px; font-size:1em;">Patient</sub><br><br>
+             </div><br>
+<div class="clearfix"></div>
+<div id="accordion" role="tablist" aria-multiselectable="true">
+  
+  <div class="card">
+    <div class="card-header bg-success" role="tab" id="headingTwo">
+      <h5 class="mb-0" style=" padding-left:0px;">
+        <a class="collapsed p-1" data-toggle="collapse" data-parent="#accordion" href="/#collapseTen" aria-expanded="false" aria-controls="collapseTen" style="color:#fff; padding-left:10px !important;">
+         BIOGRAPHY
+        </a>
+      </h5>
+    </div>
+    <div id="collapseTen" class="collapse" role="tabpanel" aria-labelledby="headingTen">
+      <div class="card-block">
+        <ul style="list-style:none" id="collapseTen" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTen">
+            <li style="font-weight:bold;padding:5px;position:relative">Age: <span style="font-weight:normal;display:inline-block;position:absolute;right: 20px;font-size: 18px">{{patientInfo.age || "N/A"}} years</span></li>
+            <li style="font-weight:bold;padding:5px">Gender: <span style="font-weight:normal;display:inline-block;position:absolute;font-size: 18px;right: 20px;">{{patientInfo.gender || "N/A"}}</span></li>
+            <li style="font-weight:bold;padding:5px">Body  weight: <span style="font-weight:normal;display:inline-block;position:absolute;font-size: 18px;right: 20px">{{patientInfo.body_weight || "N/A"}}</span></li>
+            <li style="font-weight:bold;padding:5px">Address: <span style="font-weight:normal;display:inline-block;position:absolute;font-size: 18px;right: 20px">{{patientInfo.address || "N/A"}}</span></li>
+            <li style="font-weight:bold;padding:5px">city: <span style="font-weight:normal;display:inline-block;position:absolute;font-size: 18px;right: 20px">{{patientInfo.city || "N/A"}}</span></li>
+            <li style="font-weight:bold;padding:5px">country: <span style="font-weight:normal;display:inline-block;position:absolute;font-size: 18px;right: 20px">{{patientInfo.country || "N/A"}}</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+            <!--left col-->
+             <a href="" class="bg-info grayish"> <span>MEDICAL HISTORY</span> </a>
+             <a href="" class="grayish"  ng-click="viewMedicalHistory()"><i class="fa fa-medkit text-primary"></i> <span>Medical Records</span> </a>
+<a href="" class="grayish" ng-click="viewSession()"><i class="fa fa-folder-open text-info"></i> Treatment Sessions</a>
+
+<a href="" class="grayish" ng-click="writePrescription()"><i class="icon-pill text-primary"></i> Write Prescription</a>
+
+<a href="" class="grayish" ng-click="viewLabPrescriptionRequest()">
+	<i class="fa fa-flask text-info"  style="position:relative">
+		<strong style="display:inline-block;left: -3px; top:-5px;color:red;position:absolute;font-size:14px" ng-if="labLen > 0">{{labLen}}</strong>
+	</i> Prescribe By lab result
+</a>
+
+
+<a href="" class="grayish" ng-click="viewRadioPrescriptionRequest()">
+	<i class="fa fa-flask text-warning" style="position:relative" title="Patient recent radiology test for your prescription">
+    	<strong style="display:inline-block;left: -3px; top:-5px;color:red;position:absolute;font-size:14px" ng-if="radioLen > 0">{{radioLen}}</strong>
+    </i> Prescribe by radio result
+</a>
+          
+        </div></div>
+        <!--/col-3-->
+        <div class="col-sm-9" contenteditable="false">
+                       <div class="row">
+                          <div class="col-xs-12 col-md-12">
+        	<div class="panel panel-default">
+                <div class="top-bar" style="border-bottom:1px solid rgba(0,0,0,0.2);box-shadow:0px 5px 5px #ccc">
+                    <div class="col-md-7 col-sm-6 col-xs-7">
+                      <button class="btn btn-neutral" style="font-size: 16px" ng-click="chatLive()">Live Chat</button> 
+                        <span class="badge badge-success" style="display:inline-block;" ng-cloak style="font-size: 16px">{{patientInfo.title}} {{patientInfo.firstname}} is <em ng-if="typing">{{typing}}</em> 
+                            <em ng-if="patientAvailability && !typing" ng-cloak>Online</em>
+                            <em ng-if="!patientAvailability" ng-cloak style="color:red">Offline</em>
+                        </span>
+                    </div>
+                    <div class="col-md-5 col-sm-6 col-xs-5 row " style="text-align: right;">
+                    	 <a class="ick pull-right" href="" style="padding-right:15px" title="Delete all chats"  ng-click="deleteChat()"><span class="fa fa-trash-o"></span></a>
+                        <a class="ick pull-right" href="" style="padding-right:15px" title="Video chat with {{patientInfo.firstname}}" ng-click="makeCall('video')"><span class="fa fa-video-camera"></span></a>
+                        <a  class="ick pull-right" href="" style="padding-right:15px" title="Make an audio call to {{patientInfo.firstname}}" ng-click="makeCall('audio')"><span class="fa fa-phone"></span></a>
+                         <a class="ick pull-right" href="" style="padding-right:15px" title="Book appointment with {{patientInfo.firstname}}"  ng-click="appointment(patientInfo)"><span class="fa fa-calendar"></span></a>
+
+                    </div>
+                </div>
+
+
+		<!-- removable div-->
+            <div ng-if="isChat || isChat === undefined">
+                <div class="panel-body msg_container_base bg-default">
+                	<div ng-repeat="u in message1">
+                         <div class="talk-bubble tri-right left-top" ng-if="u.received">
+						  <div class="talktext">
+						   <div>                      
+                                <p>{{u.received}}</p>
+                                <!--<time datetime="{{u.time}}">{{u.time | date: "shortTime"}}</time>-->
+                            </div>
+                                <time datetime="2009-11-13T20:00">&nbsp;{{u.time | date: "shortTime"}}</time>	                             
+	                        </div>
+                            </div>
+
+
+
+
+                    <div class="row msg_container base_sent" ng-if="u.sent">
+                      <div class="talk-bubble tri-right right-top bg-info">
+    				  <div class="talktext">
+    				      <div ng-class="{'msg_sent' : u.sent}">
+    				    <p>{{u.sent}}
+                          </p>
+        				<!--<time datetime="{{u.time}}">{{u.time | date: "shortTime"}}</time>-->
+    				</div>
+			      <time datetime="2009-11-13T20:00">&nbsp;{{u.time | date: "shortTime"}}</time>
+			     
+    			     <i class="fa fa-check" style="font-size:10px" ng-class="{'msg-received': u.isReceived === true}"></i>
+    			      <i class="fa fa-check" style="font-size:10px;margin-left:-10px;margin-top:8px" ng-class="{'msg-received': u.isReceived === true}" ng-if="u.isSent === true"></i>    
+  				  </div>
+                </div>  
+            </div>
+
+
+	                    
+                	</div>
+                	<div>
+                    	<div class="messages" ng-if="typing" style="max-width: 20%;">  
+                            <p> {{typing}} </p>                                
+                        </div>
+                    </div>
+                     
+                </div>
+
+                
+                <form class="panel-footer" ng-submit="sendChat2()">
+<textarea contenteditable="true"  ng-model="user.text2"  ng-keypress="getkeys($event)" placeholder="Type a message..."> <span class="textout" >{{typeMessage}}</span> </textarea>
+                <button type="submit" class="btn btn-neutral btn-sm fa fa-send"></button>
+                </form>
+
+             
+</div>
+
+ <!-- view session-->
+<section ng-if="isToViewSession" ng-class="{'transition-background':isTrans}">
+    <div class="medical-record-Area"  style="border-top: 1px solid rgba(0,0,0,0.4)">
+    <h3 style="text-align: center">Treatment sessions</h3>
+    <aside style="text-align: right">
+        <button ng-click="createNewSession()" style="box-shadow:1px 2px 3px grey">
+            Create new
+        </button>
+    </aside>
+
+    <h5>Most recent</h5>
+    <article ng-click="viewTreatmentSession(recentSession)" style='padding: 10px; cursor:pointer;margin-bottom: 10px;box-shadow: 1px 5px 5px rgba(0,0,0,0.5);color:green'>
+        <span>{{recentSession.date | date : "mediumDate" }}</span> <span style="padding-left: 20px">{{recentSession.diagnosis.presenting_complain || recentSession.diagnosis.diagnosis || "( Empty )"}}</span> <small style="float:right">Last modified: {{recentSession.last_modified | date : "mediumDate"}}</small>
+    </article>
+    <h5>others</h5>
+        
+    <article ng-repeat = "session in sessionData" ng-click="viewTreatmentSession(session)" style='padding: 10px; cursor:pointer;margin-bottom: 10px;box-shadow: 1px 5px 5px rgba(0,0,0,0.5);color:green'>
+        <span>{{session.date | date : "mediumDate" }}</span> <span style="padding-left: 20px">{{session.diagnosis.presenting_complain || session.diagnosis.diagnosis ||"( Empty )"}}</span> <small style="float:right">Last modified: {{session.last_modified | date : "mediumDate"}}</small>
+    </article>
+</div>
+</section>
+
+<!-- view medical record-->
+<section>
+    <div class="medical-record-Area" ng-if="isToSeeRecord" style="border-top: 1px solid rgba(0,0,0,0.4)">
+    <h3>Hey iam record</h3>
+                    
+</div>
+</section>
+
+
+<!-- prescribe -->
+
+<section  ng-if="isToPrescribe">
+    <div class="prescriptionArea" style="max-height:600px;min-height:600px">
+    <h6 style="cursor:pointer;text-decoration:underline" ng-click="writeNew()">Write new prescription</h6>
+    <div ng-if="isNewPrescription">             
+        <table>
+            <tr>
+                <thead>
+                    <th><strong>S/N</strong></th>
+                    <th><strong>Drug name</strong></th>
+                    <th><strong>Dosage</strong></th>
+                    <th><strong>Frequency</strong></th>
+                    <th><strong>Duration</strong></th>
+                </thead>
+            </tr>
+            <tr>
+                <tbody ng-repeat="prescription in drugList">                                
+                    <td>{{prescription.sn}}</td>
+                    <!--<td><textarea ng-model="prescription.drug_name" style="max-width: 200px;max-height: 80px"></textarea></td>-->
+                    <td><input name="states" id="states" type="text" placeholder="Enter drug name" ng-model="drug.name" uib-typeahead="drug.name for drug in drugs | filter:$viewValue | limitTo:15" class="form-control" style="width: 95%">
+                    {{getDrug(drug.name)}} </td>
+                    <td><input type="text" ng-model="prescription.dosage"></td>
+                    <td><input type="text" ng-model="prescription.frequency"></td>
+                    <td><input type="text" ng-model="prescription.duration"></td>
+                </tbody>
+            </tr>                       
+        </table>
+        <div style="text-align: right">
+                <i class="fa fa-plus" style="font-size:16px;color:green;padding: 10px; cursor:pointer; margin-right: 5px" title="Add field" ng-click="addDrug()"></i>
+                    <i class="fa fa-minus" style="font-size:16px;color:green;padding: 10px; cursor:pointer; margin-right: 5px" title="Remove last field" ng-click="removeDrug()"></i>
+            </div>
+        <div> 
+            <button ng-click="toPatient()">Forward prescription to patient</button>
+            <button ng-click="toPharmacy()">Forward prescription to a Phamarcy</button>
+        </div>                          
+    </div>
+    <h6 style="cursor:pointer;text-decoration:underline;margin-top: 30px" ng-click="viewPreviousPrescription()">View prescription history</h6>
+    <div ng-if="isToViewOldPrescription">                   
+        <table ng-repeat="prescription in wroteByThisDoctor">
+            <caption style="border-bottom: 1px dashed rgba(0,0,0,0.3)"></caption>
+            <caption><strong>Date</strong>| {{prescription.date | date: "mediumDate"}}</caption>
+            <caption><strong>Provisional diagnosis</strong>| {{prescription.allergy || "pulmonary mal-function"}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>Time</strong>| {{prescription.date| date: "mediumTime"}}</caption>
+            <tr>
+                <thead>
+                    <th><strong>S/N</strong></th>
+                    <th><strong>Drug name</strong></th>
+                    <th><strong>Dosage</strong></th>
+                    <th><strong>Frequency</strong></th>
+                    <th><strong>Duration</strong></th>
+                </thead>
+            </tr>
+            <tr>
+                <tbody ng-repeat= "drug in prescription.prescription_body">                             
+                    <td>{{drug.sn}}</td>
+                    <td>{{drug.drug_name}}</td>
+                    <td>{{drug.dosage}}</td>
+                    <td>{{drug.frequency}}</td>
+                    <td>{{drug.duration}}</td>
+                </tbody style="box-shadow: 0px 2px 5px rgba(0,0,0,0.7)">
+            </tr>
+                                    
+        </table>                    
+    </div>
+</div>
+</section>
+
+
+<!-- prescribe based on lab result -->
+
+<section ng-if="isToViewLabPrescriptionReq">
+    <div class="medical-record-Area"  style="border-top: 1px solid rgba(0,0,0,0.4)">
+    <section ng-repeat="test in labPrescriptionReq" style="border-bottom: 1px solid #000; margin-bottom: 10px">
+        <span ng-if="test.attended || theAttended.length > 0"  class="sentto">
+            Sent to ?
+            <ul style="color: green">                           
+                <li ng-repeat="i in test.attended || theAttended"><small>{{i.name}} {{i.address}} {{i.city}} {{i.country}} &nbsp; {{i.date_sent| date: "mediumDate"}}</small></li>
+            </ul>
+        </span>
+        <h5 style="text-align:center">{{test.center_name}} 
+        <span style="display:block;color:#000;font-size:12px">{{test.center_address}} {{test.cente_city}} {{test.center_country}}</span></h5>
+        <div style="text-align:right">
+            <small>Date sent: {{test.date_sent | date: "mediumDate"}} | Time: {{test.date_sent | date: "mediumTime"}}</small>
+        </div>
+
+        <h6>Test Result</h6>                    
+        <ul>                        
+            <li ng-repeat="report in test.test_result"><strong>{{report.name}} :</strong>  {{report.data}}</li>
+        </ul>
+        <article><strong>Conclusion :</strong> {{test.conclusion}}</article>
+        <div style="text-align: right">
+            <i class="fa fa-file-image-o" title="View X-Ray files associated with this test result" ng-if="test.files.length > 0"
+            style="font-size:24px;color:rgba(0,150,0,0.9); cursor:pointer;margin:20px 10px" ng-click="viewFile()"></i>
+            <i class="icon-Pills icon-style" title="Write prescription based on this test result" style="cursor:pointer" ng-click="prescribe(test)"></i>
+            <i class="fa fa-times" title="Delete this request" style="cursor:pointer" ng-click="delete(test)"></i>
+        </div>
+    </section>
+</div>
+</section>
+
+
+ <!-- prescribe based on lab result -->
+
+<section ng-if="isToViewRadPrescriptionReq">
+    <div class="medical-record-Area" style="border-top: 1px solid rgba(0,0,0,0.4)">
+    <section ng-repeat="test in radioPrescriptionReq" style="border-bottom: 1px solid #000; margin-bottom: 10px">
+        <span ng-if="test.attended"  class="sentto">
+            Sent to ?
+            <ul style="color: green">
+                <li ng-repeat="i in test.attended || theAttended"><small>{{i.name}} {{i.address}} {{i.city}} {{i.country}} {{i.patient}}&nbsp; {{i.date_sent| date: "mediumDate"}}</small></li>
+            </ul>
+        </span>
+        <h5 style="text-align:center">{{test.center_name}} 
+        <span style="display:block;color:#000;font-size:12px">{{test.center_address}} {{test.cente_city}} {{test.center_country}}</span></h5>
+        <div style="text-align:right">
+            <small>Date sent: {{test.date_sent | date: "mediumDate"}} | Time: {{test.date_sent | date: "mediumTime"}}</small>
+        </div>
+
+        <h6>Test Result</h6>                    
+        <ul>                        
+            <li ng-repeat="report in test.test_result"><strong>{{report.name}} :</strong>  {{report.data}}</li>
+        </ul>
+        <article><strong>Conclusion :</strong> {{test.conclusion}}</article>
+        <div style="text-align: right">
+            <i class="fa fa-file-image-o" title="View files associated with this test result" ng-if="test.files.length > 0"
+            style="font-size:24px;color:rgba(0,150,0,0.9); cursor:pointer;margin:20px 10px" ng-click="viewFile(test.files,test.test_result)"></i>
+            <i class="icon-Pills icon-style" title="Write prescription based on this test result" style="cursor:pointer" ng-click="prescribe(test)"></i>
+            <i class="fa fa-times" title="Delete this request" style="cursor:pointer" ng-click="delete(test)"></i>
+        </div>
+    </section>
+</div>
+</section>
+
+
+
+
+
+
+
+
+                <!--removable div-->
+    		</div>
+        </div>
+    </div>
+    
+ 
+</div>
+                         
+                        </div>  
+    </div>
+        
+        
+</div>

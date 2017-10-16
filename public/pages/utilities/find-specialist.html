@@ -1,0 +1,230 @@
+<!--<div class="display-4">Find a Doctor</div><br>
+<div class="row">
+  <div class="col-md-12 form-group">
+    <label for="lastname">Choose a Search Criteria</label>
+    <select class="custom-select form-control" ng-model="user.creteria">
+      <option selected value="doctorname">Find by Name</option>
+      <option value="specialty">City &amp; Doctor's Specialty</option>
+      <option value="doctorId">Find by Doctor's id</option>
+      <option value="procedure">Find by Skills &amp; Procedure</option>
+    </select>
+  </div>
+
+ </div>
+
+ <div class="row">
+      <div class="col-md-6 form-group">
+        <input type="text" class="form-control" placeholder="e.g Dr Ede Obinna or Dr Ede" ng-model="user.name" ng-if="isName === true">
+      </div>
+
+       <div class="col-md-5 form-group">
+        <input type="text" class="form-control" placeholder="Enter city name" name="states" id="states"  uib-typeahead="city for city in cities | filter:$viewValue | limitTo:15" ng-model="user.city" ng-if="isSpecialty === true">
+        {{getCity(city)}} 
+      </div>
+
+      <div class="col-md-5 form-group">
+        <select id="group1" ng-model="user.specialty" ng-if="isSpecialty === true">
+        <option value="">_select specialty</option>
+        <option>Acupunture</option>
+        <option>Addiction Medicine</option>
+        <option>Adolescent Medicine</option>
+        <option>Aerospace Medicine</option>
+        <option>Allergy</option>
+        <option>Allergy/Immunology</option>
+        <option>Anesthesiology</option>
+        <option>Audiologist</option>
+        <option>Bariatrician</option>
+        <option>Cardiac Electrophysiology</option>
+        <option>Cardiology</option>
+        <option>Chiropractic</option>
+        <option>Clinical Laboratory Immunology</option>
+        <option>Clinical Pathology</option>
+        <option>Colon/Rectal Surgery</option>
+        <option>Critical Care</option>
+        <option>Cythopathology</option>
+        <option>Dermatology</option>
+        <option>Dermatopathology</option>
+        <option>Diabetes</option>
+        <option>Diagnostic</option>
+        <option>Emergency Medical Tech</option>
+        <option>Emergency Medicine</option>
+        <option>Endocrinology</option>
+        <option>Endovascular Surgical Neuroradiology</option>
+        <option>Family Practice</option>
+        <option>Gastroenterology</option>
+        <option>General Practice</option>
+        <option>General Surgery</option>
+        <option>Genetics</option>
+        <option>Geriatrics</option>
+        <option>Gynecology</option>
+        <option>Gynecology Oncology</option>
+        <option>Hand Surgery</option>
+        <option>Hand and Neck Surgery</option>
+        <option>Hematology</option>
+        <option>Hematology/Oncology</option>
+        <option>Hepatology</option>
+        <option>Holistic Medicine</option>
+        <option>Hospitalist</option>
+        <option>Immunology</option>
+        <option>Infectious Disease</option>
+        <option>Internal Medicine</option>
+        <option>Interventional Cardiology</option>
+        <option>Legal Medicine</option>
+        <option>Medical Oncology</option>
+        <option>Medical Toxicology</option>
+        <option>Neonatology</option>
+        <option>Nephrology</option>
+        <option>Neurology</option>
+        <option>Neuroradiology</option>
+        <option>Nuclear Cardiology</option>
+        <option>Nuclear Medicine</option>
+        <option>Nutrition</option>
+        <option>Obstetrics/Gynecology</option>
+        <option>Occupational Medicine</option>
+        <option>Oncology</option>
+        <option>Opthalmology</option>
+        <option>Optometry</option>
+        <option>Orthopedic Foot & Ankle</option>
+        <option>Orthopedic Reconstructive Surgery</option>
+        <option>Orthopedic Spine Surgery</option>
+        <option>Orthopedic Surgery</option>
+        <option>Osteopathy</option>
+        <option>Otorhinolaryngology</option>
+        <option>Pain Management</option>
+        <option>Pathology</option>
+        <option>PPediatric Allergy</option>
+        <option>Pediatric Cardiology</option>
+        <option>Pediatric Critical Care</option>
+        <option>Padiatric Emergency Medicine</option>
+        <option>Other</option>  
+        </select>
+      </div>
+
+      <div class="col-md-5 form-group">
+        <input type="text" class="form-control"  placeholder="Enter Doctor's ID" ng-model="user.doctorId" ng-if="isDoctorId === true">
+      </div>
+      
+      <div class="col-md-1 form-group">
+        <button class="btn btn-info" ng-click = "find()">Find</button>
+      </div>
+ </div>
+ <hr> -->
+
+
+ <div class="card">
+     <h3 class="font-1_7" style="padding:20px">Find a Doctor</h3><br>
+     <div class="col-md-12 form-group">
+        <label for="lastname">Choose a Search Criteria</label>
+        <select class="custom-select form-control" ng-model="user.creteria">
+          <option selected value="doctorname">Find by Name</option>
+          <option value="specialty">City &amp; Doctor's Specialty</option>
+          <option value="doctorId">Find by Doctor's id</option>
+        </select>
+     </div>
+
+     <div class="col-md-6 col-sm-12 form-group" ng-if="isName === true">
+          <label for="lastname">Doctor's Name</label>
+        <input type="text" class="form-control" placeholder="e.g Dr Ede Obinna or Dr Ede" ng-model="user.name" >
+      </div>
+
+       <div class="col-md-6 col-sm-12 form-group" ng-if="isSpecialty === true">
+           <label for="lastname">City</label>
+        <input type="text" class="form-control" placeholder="Enter city name" name="states" id="states"  uib-typeahead="city for city in cities | filter:$viewValue | limitTo:15" ng-model="user.city">
+        {{getCity(city)}} 
+      </div>
+
+
+
+
+      <div class="col-md-6 form-group" ng-if="isSpecialty === true">
+          <label for="specialty">Specialty</label>
+        <select id="group1" id="specialty" class="custom-select form-control" ng-model="user.specialty" >
+        <option selected="">_select specialty</option>
+        <option>Acupunture</option>
+        <option>Addiction Medicine</option>
+        <option>Adolescent Medicine</option>
+        <option>Aerospace Medicine</option>
+        <option>Allergy</option>
+        <option>Allergy/Immunology</option>
+        <option>Anesthesiology</option>
+        <option>Audiologist</option>
+        <option>Bariatrician</option>
+        <option>Cardiac Electrophysiology</option>
+        <option>Cardiology</option>
+        <option>Chiropractic</option>
+        <option>Clinical Laboratory Immunology</option>
+        <option>Clinical Pathology</option>
+        <option>Colon/Rectal Surgery</option>
+        <option>Critical Care</option>
+        <option>Cythopathology</option>
+        <option>Dermatology</option>
+        <option>Dermatopathology</option>
+        <option>Diabetes</option>
+        <option>Diagnostic</option>
+        <option>Emergency Medical Tech</option>
+        <option>Emergency Medicine</option>
+        <option>Endocrinology</option>
+        <option>Endovascular Surgical Neuroradiology</option>
+        <option>Family Practice</option>
+        <option>Gastroenterology</option>
+        <option>General Practice</option>
+        <option>General Surgery</option>
+        <option>Genetics</option>
+        <option>Geriatrics</option>
+        <option>Gynecology</option>
+        <option>Gynecology Oncology</option>
+        <option>Hand Surgery</option>
+        <option>Hand and Neck Surgery</option>
+        <option>Hematology</option>
+        <option>Hematology/Oncology</option>
+        <option>Hepatology</option>
+        <option>Holistic Medicine</option>
+        <option>Hospitalist</option>
+        <option>Immunology</option>
+        <option>Infectious Disease</option>
+        <option>Internal Medicine</option>
+        <option>Interventional Cardiology</option>
+        <option>Legal Medicine</option>
+        <option>Medical Oncology</option>
+        <option>Medical Toxicology</option>
+        <option>Neonatology</option>
+        <option>Nephrology</option>
+        <option>Neurology</option>
+        <option>Neuroradiology</option>
+        <option>Nuclear Cardiology</option>
+        <option>Nuclear Medicine</option>
+        <option>Nutrition</option>
+        <option>Obstetrics/Gynecology</option>
+        <option>Occupational Medicine</option>
+        <option>Oncology</option>
+        <option>Opthalmology</option>
+        <option>Optometry</option>
+        <option>Orthopedic Foot & Ankle</option>
+        <option>Orthopedic Reconstructive Surgery</option>
+        <option>Orthopedic Spine Surgery</option>
+        <option>Orthopedic Surgery</option>
+        <option>Osteopathy</option>
+        <option>Otorhinolaryngology</option>
+        <option>Pain Management</option>
+        <option>Pathology</option>
+        <option>Pediatric Allergy</option>
+        <option>Pediatric Cardiology</option>
+        <option>Pediatric Critical Care</option>
+        <option>Pediatric Emergency Medicine</option>
+        <option>Other</option>  
+        </select>
+      </div>
+
+      <div class="col-md-6 col-sm-12 form-group" ng-if="isDoctorId === true">
+          <label for="doctorId">Doctor's ID</label>
+        <input type="text" class="form-control"  placeholder="Enter Doctor's ID" ng-model="user.doctorId" >
+      </div>
+      
+      <div class="col-md-12 form-group">
+        <button class="btn btn-info" ng-click = "find()">Find</button>
+      </div>
+
+ </div>
+ 
+
+ 

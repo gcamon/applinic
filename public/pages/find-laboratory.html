@@ -1,0 +1,74 @@
+<!--<div>
+	<h3>Choose a laboratory</h3>
+	<p>Found laboratory center(s): <span>{{labCenters.length}}</span></p>
+	<small><stong>Tips:</strong> The search criteria defaults to your location. You can modify the criteria to search for desired location</small>
+	<form class="search-lab">
+		<label>City : </label>
+		<input type="text" placeholder="{{labCenters[0].city}}" ng-model="laboratory.city">
+		<label>Country : </label>
+		<input type="text" placeholder="{{labCenters[0].country}}" ng-model = "laboratory.country">
+		<button ng-click="search()"  class="btn btn-primary">Search</button>
+	</form>
+	<p style="text-align: right">
+		<label><strong>Filter: </strong></label>
+		<input type="text" ng-model="lab.name" placeholder="by name or address" style="width: 20%; border: 1px solid rgba(0,0,0,0.4);border-radius: 3px">
+	</p>
+	<div ng-if="isFound" class="a-lab">
+		<div ng-repeat= "labCenter in labCenters | filter : lab.name || lab.address" ng-click="getLab(labCenter.user_id)" style="cursor:pointer">
+			<h3>{{labCenter.name}}</h3>
+			<address><strong>{{labCenter.address}} <span>{{labCenter.city}}, {{labCenter.country}}</strong></span></address>
+		</div>
+	</div>
+	<div ng-if="isError">
+		<p style="text-align: center; font-size: 18px;width: 60%;margin: 30px auto">{{message}}</p>
+	</div>
+</div>-->
+
+
+
+ 
+
+
+<div class="container">
+<div class="card p-2">
+
+    <div>
+	<h3 class="font-1_7">Choose a laboratory</h3><hr>
+	<p class="font-1_1">Found laboratory center(s): <span>{{labCenters.length}}</span></p>
+	<small><stong>Tips:</strong> The search criteria defaults to your location. You can modify the criteria to search for desired location</small>
+	<form class="search-lab">
+        <div class="row">
+            <div class="col-md-6">
+		<label>City </label>
+		<input type="text" class="form-control" placeholder="{{labCenters[0].city}}" ng-model="laboratory.city">
+            </div>
+        <div class="col-md-6">
+        <label>Country </label>
+		<input type="text" class="form-control" placeholder="{{labCenters[0].country}}" ng-model = "laboratory.country">
+		</div>
+        <div class="clearfix"></div>
+        <div class="col-md-12"> <button ng-click="search()"  class="btn btn-info pull-right">Search</button></div>
+	</form>
+
+	<div class="col-md-6">
+		<label class="mb-0">Filter</label>
+		<input type="text" ng-model="lab.name" class="form-control" placeholder="by name or address">
+	</div>
+
+    <div class="clearfix"></div>
+	<div ng-if="isFound" class="a-lab">
+		<div class="p-2" ng-repeat= "labCenter in labCenters | filter : lab.name || lab.address" ng-click="getLab(labCenter.user_id)" style="cursor:pointer">
+			<div class="font-1_4">{{labCenter.name}}</div>
+			<address class="font-1_4">{{labCenter.address}} 
+            <span>{{labCenter.city}}, {{labCenter.country}}</span></address>
+		</div>
+	</div>
+	<div ng-if="isError">
+		<p class="font-1_4" style="text-align: center;">{{message}}</p>
+	</div>
+</div>
+
+</div>
+</div>
+
+    

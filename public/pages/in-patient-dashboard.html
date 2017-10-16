@@ -1,0 +1,35 @@
+
+<div style="border:1p solid rgba(0,0,0,0.4); padding: 30px; box-shadow: 3px 4px 6px rgba(0,0,0,0.6)" class="clearfix">
+	<div class="col-sm-12 col-md-3 col-lg-3 pull-right" style="padding-right: 0px;">
+		<div class="tg-widget tg-widget-doctor">
+		    <figure class="tg-docprofile-img">
+		        <figcaption>
+		        <span>online</span>		                                               
+		        </figcaption>
+		        <span class="tg-featuredicon"><em class="fa fa-bolt"></em></span>
+		        <img alt="image description" ng-src="{{docInfo.profile_pic_url}}">                                  
+		    </figure>
+		</div>
+	</div>
+	<div class="col-sm-12 col-md-9 col-lg-9">
+		<h4 style="text-align:center">Dr. {{docInfo.firstname}} {{docInfo.lastname}}</h4>
+		 <h6 style="border-bottom: 1px solid rgba(0,0,0,0.3);  text-align:center">{{docInfo.specialty}}</h6>
+		<hr/>
+		<h6>Address: <span style="font-weight: 200; color:black">{{docInfo.work_place}}</span> | <span style="font-style:italic; color:black;font-size:12px">{{docInfo.address}}</span></h6>
+		<h6>Availability: <span style="color:rgba(0,0,0,0.7); font-size: 12px">avalible at this time<span></h6>
+		<h6>Experience: <span style="color:black">{{docInfo.experience + " years"}}</span></h6>
+		<h6>Office hours</h6>		
+		<ul>		
+			<li ng-repeat = "i in docInfo.office_hour "><span>{{i.day}}</span>, <span>from {{i.from}}</span> <span>to {{i.to}}</span></li> 
+		</ul>
+		<p style="margin-top: 10px"><a ng-href= "{{docInfo.profile_url}}" style="color:rgba(0,0,0,0.6)">view doctor's detail</a></p>
+		<div class="in-patient-com">
+			<p style="font-size: 22px; font-weight: 100; margin-top: 50px">ALL Request:</p> 
+			<button ng-click="request()">video/Audio call</button>			
+			<button ng-click="request()">Live Chat</button>
+			<div></div>
+			<button ng-click="question()">Ask question</button>
+			<button ng-click="request()">Meet in-person</button>						
+		</div>	 	
+	</div>
+</div>
