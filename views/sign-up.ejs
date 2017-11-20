@@ -10,10 +10,11 @@
     <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no' name='viewport' />
     <!--     Fonts and icons     -->
     <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700,200" rel="stylesheet" />
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" />
+    <!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" />-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <!-- CSS Files -->
-    <link href="assets/css/bootstrap.min.css" rel="stylesheet" />
-    <link href="assets/css/now-ui-kit.css" rel="stylesheet" />
+    <link href="/assets/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="/assets/css/now-ui-kit.css" rel="stylesheet" />
      <link href="/assets/css/my-edit.css" rel="stylesheet" />
     <!-- CSS Just for demo purpose, don't include it in your project -->
     <link href="assets/css/demo.css" rel="stylesheet" />
@@ -133,35 +134,38 @@
   </li>
   <li class="nav-item">
     <a class="nav-link" data-toggle="tab" href="#doctor" role="tab">Doctor</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" data-toggle="tab" href="#diagnostic" role="tab">Diagnostic center</a>
-  </li>
+  </li> 
   <li class="nav-item">
     <a class="nav-link" data-toggle="tab" href="#pharmacy" role="tab">Pharmaceutical Center</a>
   </li>
+   <li class="nav-item">
+    <a class="nav-link" data-toggle="tab" href="#diagnostic" role="tab">Diagnostic center</a>
+  </li>
+   <!--<li class="nav-item">
+    <a class="nav-link" data-toggle="tab" href="#special-center" role="tab">Special center</a>
+  </li>-->
 </ul>
 
 <!-- Tab panes -->
 <div class="container">
 <div class="tab-content p-1" style="min-height:540px;" ng-if="!isPhoneVerify">
     <!--patient sign up starts here-->
-  <div class="tab-pane active" id="patient" role="tabpanel">
+  <div class="tab-pane active" id="patient" role="tabpanel" ng-cloak>
       <div class="alert alert-info"><strong>Patient Signup : </strong>Please the complete the form below. Make sure your email and phone number is currently active.</div>
       <form ng-if="!isPhoneVerify">
       <div class="row">
   <div class="col-6">   
-    <input type="text" class="form-control" placeholder="First Name" id="firstname" ng-model="user.firstname" required>
+    <input type="text" class="form-control" placeholder="First Name"  ng-model="user.firstname" required>
   </div>
   <div class="col-6">    
-    <input type="text" class="form-control" placeholder="Last Name" id="lastname" ng-model="user.lastname" required>
+    <input type="text" class="form-control" placeholder="Last Name"  ng-model="user.lastname" required>
   </div>
 </div>
 
 
    <div class="row">
   <div class="col-12">
-      <select class="custom-select col-md-12" ng-model="user.title" required>
+      <select class="custom-select form-control col-md-12" ng-model="user.title" required>
   <option value="" disabled selected>Select Title</option>                                           
     <option>Dr</option>
     <option>Mr</option>
@@ -190,8 +194,8 @@
    <div class="row">
 
        <div class="col-6">
-      <select class="custom-select col-md-12" ng-model="user.age" required>
-  <option value="" disabled selected>Select Age category</option>                                           
+      <select class="custom-select form-control col-md-12" ng-model="user.age" required>
+  <option value="" disabled selected>Age category</option>                                           
 	<option>0 - 28 days (newborn)</option>
 	<option>29 days - 1 year (infant)</option>
 	<option>1 - 5 years (younger child)</option>
@@ -207,7 +211,7 @@
 
 
   <div class="col-6">
-      <select class="custom-select col-md-12" ng-model="user.gender" required>
+      <select class="custom-select form-control col-md-12" ng-model="user.gender" required>
   <option value="" disabled selected>Sex</option>                                           
     <option>Male</option>
     <option>Female</option>
@@ -217,31 +221,60 @@
 
     <div class="row">
   <div class="col-6">
-    <input type="text" class="form-control" placeholder="Address" ng-model="user.address" required>
+    <!--<input type="text" class="form-control" placeholder="Country" ng-model="user.country" required>-->
+    <select class="custom-select form-control col-md-12" ng-model="user.country"  required>
+      <option value="" selected disabled >{{status}}</option>
+      <option ng-repeat="country in countries" value="{{country.geonameId}} {{country.countryCode}}">{{country.countryName}}</option>
+    </select>
   </div>
-  <div class="col-6">
-    <input type="text" class="form-control" placeholder="City/ Town" ng-model="user.city" required>
+  <div class="col-6" style="position: relative;">
+   <!-- <input type="text" class="form-control" placeholder="City/Town" ng-model="user.city" required>-->
+    <small class='fa fa-arrow-right' style="font-size:10px;color:red;padding-left: 10px;position: absolute; left: 0;top:10px" ng-if="isNext1"></small>
+   <select class="custom-select form-control col-md-12" ng-model="user.state"  required>
+      <option value="" selected disabled >{{status1}}</option>
+      <option ng-repeat="state in states" value="{{state.geonameId}} {{state.name}}">{{state.name}}</option>
+    </select>
+  </div>
+</div>
+<div class="row">
+  <div class="col-6" style="position: relative;">
+   <small class='fa fa-arrow-right' style="font-size:10px;color:red;padding-left: 10px;position: absolute; left: 0;top:10px" ng-if="isNext2"></small>
+      <select class="custom-select form-control col-md-12" ng-model="user.region"  required>
+      <option value="" selected disabled >{{status3}}</option>
+      <option ng-repeat="region in regions" value="{{region.geonameId}} {{region.name}}">{{region.name}}</option>
+    </select>
+  </div>
+  <div class="col-6" style="position: relative;">
+   <small class='fa fa-arrow-right' style="font-size:10px;color:red;padding-left: 10px;position: absolute; left: 0;top:10px" ng-if="isNext3"></small>
+    <input type="text" class="form-control" placeholder="Enter City or Town name" ng-model="user.city" ng-if="isEdit === true" ng-cloak required>
+    <select class="custom-select form-control col-md-12" ng-model="user.city"  ng-cloak ng-if="isEdit === false" required>
+      <option value="" selected disabled >{{status2}}</option>
+      <option ng-repeat="city in cities" value="{{city.name}}">{{city.name}}</option>
+      <option value="edit">_Other</option>
+    </select>
   </div>
 </div>
 
-    <div class="row">
-  <div class="col-6">
-  	<p style="color:red;" ng-cloak>{{showErr}}</p>
-    <input type="number" class="form-control" placeholder="Phone Number" ng-model="user.phone" required>
+  <div class="row">
+  <div class="col-6" style="position: relative;">  
+    <input type="text"  class="form-control" placeholder="code" value="{{callingCode}}" style="width: 20%;position: absolute;display: inline-block;left:10px;top:5px;background-color: inherit;border-right:none;font-size: 14px">
+    <input type="number" string-to-number class="form-control" placeholder="Mobile number" style="width: 80%;margin-left: 80px;font-size: 14px" ng-model="user.phone" required>
+      <small style="font-size:12px;color:green;padding-left: 20px;display: inline-block;" ng-cloak ng-if="numberError"><i class="fa fa-info"></i> {{numberError}}</small>
   </div>
   <div class="col-6">
-    <input type="text" class="form-control" placeholder="Country" ng-model="user.country" required>
+   <input type="text" class="form-control" placeholder="Address" ng-model="user.address" required>    
   </div>
 </div>
 <hr>
 
     <div class="row">
   <div class="col-6">
-  	<p style="color:red;"ng-cloak>{{usernameError}}</p> 
+  <small style="font-size:12px;color:green;padding-left: 20px;display: inline-block;" ng-cloak ng-if="usernameInfo">{{usernameInfo}}</small> 
+  	<small style="font-size:12px;color:red;padding-left: 20px;display: inline-block;" ng-cloak ng-if="usernameError"><i class="fa fa-info"></i> {{usernameError}}</small> 
     <input type="text" class="form-control" placeholder="User Name" ng-model="user.username" required>
   </div>
   <div class="col-6">
-    <input type="text" class="form-control" placeholder="Email" ng-model="user.email" required>
+    <input type="email" class="form-control" placeholder="Email" ng-model="user.email" required>
   </div>
 </div>
 
@@ -259,7 +292,8 @@
   <span class="custom-control-description" style="font-size: 14px;display:inline-block;padding-left:10px"> I agree with the terms of service</span>
 </label>
 <br><br>
-<button class="btn btn-simple btn-lg" ng-click="submit('Patient')">Create Account</button>
+<button class="btn btn-simple" ng-click="submit('Patient')"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:red" ng-if="loading"></i>
+<span class="sr-only">Loading...</span> Create Account</button>
 </form>
 </div>
 
@@ -376,25 +410,61 @@
   </div>
 </div>
 
-<div class="row">
+ <div class="row">
   <div class="col-6">
-    <input type="text" class="form-control" placeholder="City/Town" ng-model="user.city" required required>
+    <!--<input type="text" class="form-control" placeholder="Country" ng-model="user.country" required>-->
+    <select class="custom-select form-control col-md-12" ng-model="user.country"  required>
+      <option value="" selected disabled >{{status}}</option>
+      <option ng-repeat="country in countries" value="{{country.geonameId}}">{{country.countryName}}</option>
+    </select>
   </div>
-  <div class="col-6">
-        <input type="text" class="form-control" placeholder="Nationality" ng-model="user.country" required>
+  <div class="col-6" style="position: relative;">
+   <!-- <input type="text" class="form-control" placeholder="City/Town" ng-model="user.city" required>-->
+    <small class='fa fa-arrow-right' style="font-size:10px;color:red;padding-left: 10px;position: absolute; left: 0;top:10px" ng-if="isNext1"></small>
+   <select class="custom-select form-control col-md-12" ng-model="user.state"  required>
+      <option value="" selected disabled >{{status1}}</option>
+      <option ng-repeat="state in states" value="{{state.geonameId}} {{state.name}}">{{state.name}}</option>
+    </select>
   </div>
 </div>
-<p style="color:red;text-align:center" ng-cloak>{{showErr}}</p>
-<input type="number" class="form-control" placeholder="Phone Number" ng-model="user.phone" required>
+<div class="row">
+  <div class="col-6" style="position: relative;">
+   <small class='fa fa-arrow-right' style="font-size:10px;color:red;padding-left: 10px;position: absolute; left: 0;top:10px" ng-if="isNext2"></small>
+      <select class="custom-select form-control col-md-12" ng-model="user.region"  required>
+      <option value="" selected disabled >{{status3}}</option>
+      <option ng-repeat="region in regions" value="{{region.geonameId}} {{region.name}}">{{region.name}}</option>
+    </select>
+  </div>
+  <div class="col-6" style="position: relative;">
+   <small class='fa fa-arrow-right' style="font-size:10px;color:red;padding-left: 10px;position: absolute; left: 0;top:10px" ng-if="isNext3"></small>
+    <input type="text" class="form-control" placeholder="Enter City or Town name" ng-model="user.city" ng-if="isEdit === true" ng-cloak required>
+    <select class="custom-select form-control col-md-12" ng-model="user.city"  ng-cloak ng-if="isEdit === false" required>
+      <option value="" selected disabled >{{status2}}</option>
+      <option ng-repeat="city in cities" value="{{city.name}}">{{city.name}}</option>
+      <option value="edit">_Other</option>
+    </select>
+  </div>
+</div>
+<div class="row">
+  <div class="col-6">
+    <input type="text"  class="form-control" placeholder="code" value="{{callingCode}}" style="width: 20%;position: absolute;display: inline-block;left:10px;top:5px;background-color: inherit;border-right:none;font-size: 14px">
+    <input type="number" string-to-number class="form-control" placeholder="Mobile number" style="width: 80%;margin-left: 80px;font-size: 14px" ng-model="user.phone" required>
+      <small style="font-size:12px;color:green;padding-left: 20px;display: inline-block;" ng-cloak ng-if="numberError"><i class="fa fa-info"></i> {{numberError}}</small>
+  </div>
+   <div class="col-6">
+      <input type="email" class="form-control" placeholder="Email" ng-model="user.email" required>
+  </div>
+</div>
+
 <hr>
 
 <div class="row">
   <div class="col-12">
+   <small style="font-size:12px;color:green;padding-left: 20px;display: inline-block;" ng-cloak ng-if="usernameInfo">{{usernameInfo}}</small> 
+    <small style="font-size:12px;color:red;padding-left: 20px;display: inline-block;" ng-cloak ng-if="usernameError"><i class="fa fa-info"></i>{{usernameError}}</small> 
     <input type="text" class="form-control" placeholder="User Name" ng-model="user.username" required>
   </div>
-  <div class="col-12">
-        <input type="text" class="form-control" placeholder="Email" ng-model="user.email" required>
-  </div>
+ 
 </div>
 
 <div class="row">
@@ -411,7 +481,8 @@
   <span class="custom-control-description" style="font-size: 14px;display:inline-block;padding-left:10px"> I agree with the terms of service</span>
 </label>
 <br><br>
-<button class="btn btn-simple btn-lg" ng-click="submit('Doctor')">Create Account</button>
+<button class="btn btn-simple btn-lg" ng-click="submit('Doctor')"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:red" ng-if="loading"></i>
+<span class="sr-only">Loading...</span> Create Account</button>
 </form>
   </div>
 
@@ -424,37 +495,66 @@
   <div class="col-6">
     <select  class="custom-select col-md-12" ng-model="user.typeOfUser" required>
         <option  value="" disabled selected> _Please select type</option>                                           
-        <option>Clinic</option>
+        <!--<option>Clinic</option>-->
         <option>Radiology</option>
         <option>Laboratory</option>
-        <option>Fitness</option>
+        <!--<option>Fitness</option>-->
     </select>
   </div>
   <div class="col-6">
  <input type="text" class="form-control" placeholder="Center Name" ng-model="user.name" required>
   </div>
 </div>
-
-
   <div class="row">
-  <div class="col-6">
+  <div class="col-12">
  <input type="text" class="form-control" placeholder="Address" ng-model="user.address" required>
   </div>
-  <div class="col-6">
- <input type="text" class="form-control" placeholder="City/Town" ng-model="user.city" required>
+</div>
+<div class="row">
+  <div class="col-6" style="position: relative;">
+  <small class='fa fa-warning' style="font-size:12px;color:green;padding-left: 10px;position: absolute; left: 10px;top:0px" ng-if="isNext1 == false"> Select country where your center is located</small>
+    <!--<input type="text" class="form-control" placeholder="Country" ng-model="user.country" required>-->
+    <select class="custom-select form-control col-md-12" ng-model="user.country"  required>
+      <option value="" selected disabled >{{status}}</option>
+      <option ng-repeat="country in countries" value="{{country.geonameId}}">{{country.countryName}}</option>
+    </select>
+  </div>
+  <div class="col-6" style="position: relative;">
+   <!-- <input type="text" class="form-control" placeholder="City/Town" ng-model="user.city" required>-->
+    <small class='fa fa-arrow-right' style="font-size:10px;color:red;padding-left: 10px;position: absolute; left: 0;top:10px" ng-if="isNext1"></small>
+   <select class="custom-select form-control col-md-12" ng-model="user.state"  required>
+      <option value="" selected disabled >{{status1}}</option>
+      <option ng-repeat="state in states" value="{{state.geonameId}} {{state.name}}">{{state.name}}</option>
+    </select>
   </div>
 </div>
 <div class="row">
-  <div class="col-12">
-	<input type="text" class="form-control placeholder-color" id="nationality" Placeholder="Country" ng-model="user.country" required>
-  </div> 
+  <div class="col-6" style="position: relative;">
+   <small class='fa fa-arrow-right' style="font-size:10px;color:red;padding-left: 10px;position: absolute; left: 0;top:10px" ng-if="isNext2"></small>
+      <select class="custom-select form-control col-md-12" ng-model="user.region"  required>
+      <option value="" selected disabled >{{status3}}</option>
+      <option ng-repeat="region in regions" value="{{region.geonameId}} {{region.name}}">{{region.name}}</option>
+    </select>
+  </div>
+  <div class="col-6" style="position: relative;">
+   <small class='fa fa-arrow-right' style="font-size:10px;color:red;padding-left: 10px;position: absolute; left: 0;top:10px" ng-if="isNext3"></small>
+    <input type="text" class="form-control" placeholder="Enter City or Town name" ng-model="user.city" ng-if="isEdit === true" ng-cloak required>
+    <select class="custom-select form-control col-md-12" ng-model="user.city"  ng-cloak ng-if="isEdit === false" required>
+      <option value="" selected disabled >{{status2}}</option>
+      <option ng-repeat="city in cities" value="{{city.name}}">{{city.name}}</option>
+      <option value="edit">_Other</option>
+    </select>
+  </div>
 </div>
+
 <div class="row">
   <div class="col-6">
- <input type="number" class="form-control" placeholder="Phone Number format (080****)" id="phone" ng-model="user.phone" required>
+  <input type="text"  class="form-control" placeholder="code" value="{{callingCode}}" style="width: 20%;position: absolute;display: inline-block;left:10px;top:5px;background-color: inherit;border-right:none;font-size: 14px">
+    <input type="number" string-to-number class="form-control" placeholder="Mobile number" style="width: 80%;margin-left: 80px;font-size: 14px" ng-model="user.phone" required>
+      <small style="font-size:12px;color:green;padding-left: 20px;display: inline-block;" ng-cloak ng-if="numberError"><i class="fa fa-info"></i> {{numberError}}</small>
   </div>
   <div class="col-6">
- <input type="text" class="form-control" placeholder="Email Address" ng-model="user.email" required>
+ <input type="email" class="form-control" placeholder="Email Address" ng-model="user.email" required>
   </div>
 </div>
 
@@ -462,6 +562,8 @@
 
 <div class="row">
   <div class="col-12">
+   <small style="font-size:12px;color:green;padding-left: 20px;display: inline-block;" ng-cloak ng-if="usernameInfo">{{usernameInfo}}</small> 
+  <small style="font-size:12px;color:red;padding-left: 20px;display: inline-block;" ng-cloak ng-if="usernameError"><i class="fa fa-info"></i>{{usernameError}}</small> 
  <input type="text" class="form-control" placeholder="Username" ng-model="user.username">
   </div> 
 </div>
@@ -480,7 +582,8 @@
   <span class="custom-control-description" style="font-size: 14px;display:inline-block;padding-left:10px"> I agree with the terms of service</span>
 </label>
 <br><br>
-<button class="btn btn-simple btn-lg" ng-click="submit(user.typeOfUser,'normal')">Create Account</button>
+<button class="btn btn-simple btn-lg" ng-click="submit(user.typeOfUser,'normal')"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:red" ng-if="loading"></i>
+<span class="sr-only">Loading...</span> Create Account</button>
 </form>
 
 
@@ -488,16 +591,203 @@
   </div>
   <!--diagnostic signup ends here-->
 
+<!-- special center signup starts here -->
+<div class="tab-pane" id="doctor" role="tabpanel">
+<div class="alert alert-info"><strong>Doctor signup :</strong> Please complete the form below. Do note that your certification, email and phone number will be verified.</div>
+<form>
+      <div class="row">
+  <div class="col-6">
+    <select class="custom-select col-md-12" ng-model="user.title" required>
+  <option  value="" disabled selected>Select Title</option>
+  <option>DR</option>
+  <option value="2">Surgeon</option>
+  <option value="3">MD</option>
+</select>
+  </div>
+  <div class="col-6">
+    <select class="custom-select col-md-12"  ng-model="user.specialty" required>
+  <option value="" disabled selected>Select Speciality</option>
+  <option>Acupunture</option>
+      <option>Addiction Medicine</option>
+      <option>Adolescent Medicine</option>
+      <option>Aerospace Medicine</option>
+      <option>Allergy</option>
+      <option>Allergy/Immunology</option>
+      <option>Anesthesiology</option>
+      <option>Audiologist</option>
+      <option>Bariatrician</option>
+      <option>Cardiac Electrophysiology</option>
+      <option>Cardiology</option>
+      <option>Chiropractic</option>
+      <option>Clinical Laboratory Immunology</option>
+      <option>Clinical Pathology</option>
+      <option>Colon/Rectal Surgery</option>
+      <option>Critical Care</option>
+      <option>Cythopathology</option>
+      <option>Dermatology</option>
+      <option>Dermatopathology</option>
+      <option>Diabetes</option>
+      <option>Diagnostic</option>
+      <option>Emergency Medical Tech</option>
+      <option>Emergency Medicine</option>
+      <option>Endocrinology</option>
+      <option>Endovascular Surgical Neuroradiology</option>
+      <option>Family Practice</option>
+      <option>Gastroenterology</option>
+      <option>General Practice</option>
+      <option>General Surgery</option>
+      <option>Genetics</option>
+      <option>Geriatrics</option>
+      <option>Gynecology</option>
+      <option>Gynecology Oncology</option>
+      <option>Hand Surgery</option>
+      <option>Hand and Neck Surgery</option>
+      <option>Hematology</option>
+      <option>Hematology/Oncology</option>
+      <option>Hepatology</option>
+      <option>Holistic Medicine</option>
+      <option>Hospitalist</option>
+      <option>Immunology</option>
+      <option>Infectious Disease</option>
+      <option>Internal Medicine</option>
+      <option>Interventional Cardiology</option>
+      <option>Legal Medicine</option>
+      <option>Medical Oncology</option>
+      <option>Medical Toxicology</option>
+      <option>Neonatology</option>
+      <option>Nephrology</option>
+      <option>Neurology</option>
+      <option>Neuroradiology</option>
+      <option>Nuclear Cardiology</option>
+      <option>Nuclear Medicine</option>
+      <option>Nutrition</option>
+      <option>Obstetrics/Gynecology</option>
+      <option>Occupational Medicine</option>
+      <option>Oncology</option>
+      <option>Opthalmology</option>
+      <option>Optometry</option>
+      <option>Orthopedic Foot & Ankle</option>
+      <option>Orthopedic Reconstructive Surgery</option>
+      <option>Orthopedic Spine Surgery</option>
+      <option>Orthopedic Surgery</option>
+      <option>Osteopathy</option>
+      <option>Otorhinolaryngology</option>
+      <option>Pain Management</option>
+      <option>Pathology</option>
+      <option>Pediatric Allergy</option>
+      <option>Pediatric Cardiology</option>
+      <option>Pediatric Critical Care</option>
+      <option>Padiatric Emergency Medicine</option>
+      <option>Other</option>
+</select>
+  </div>
+</div>
+
+
+<div class="row">
+  <div class="col-6">
+    <input type="text" class="form-control" placeholder="First Name" ng-model="user.firstname" required>
+  </div>
+  <div class="col-6">
+        <input type="text" class="form-control" placeholder="Last Name" ng-model="user.lastname" required>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-6">
+    <input type="text" class="form-control" placeholder="Place Of work" ng-model="user.work_place">
+  </div>
+  <div class="col-6">
+        <input type="text" class="form-control" placeholder="Work Address" ng-model="user.address" required>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-6" style="position: relative;">
+  <small class='fa fa-warning' style="font-size:12px;color:green;padding-left: 10px;position: absolute; left: 10px;top:0px" ng-if="isNext1 == false"> Select country where your center is located</small>
+    <!--<input type="text" class="form-control" placeholder="Country" ng-model="user.country" required>-->
+    <select class="custom-select form-control col-md-12" ng-model="user.country"  required>
+      <option value="" selected disabled >{{status}}</option>
+      <option ng-repeat="country in countries" value="{{country.geonameId}}">{{country.countryName}}</option>
+    </select>
+  </div>
+  <div class="col-6" style="position: relative;">
+   <!-- <input type="text" class="form-control" placeholder="City/Town" ng-model="user.city" required>-->
+    <small class='fa fa-arrow-right' style="font-size:10px;color:red;padding-left: 10px;position: absolute; left: 0;top:10px" ng-if="isNext1"></small>
+   <select class="custom-select form-control col-md-12" ng-model="user.state"  required>
+      <option value="" selected disabled >{{status1}}</option>
+      <option ng-repeat="state in states" value="{{state.geonameId}} {{state.name}}">{{state.name}}</option>
+    </select>
+  </div>
+</div>
+<div class="row">
+  <div class="col-6" style="position: relative;">
+   <small class='fa fa-arrow-right' style="font-size:10px;color:red;padding-left: 10px;position: absolute; left: 0;top:10px" ng-if="isNext2"></small>
+      <select class="custom-select form-control col-md-12" ng-model="user.region"  required>
+      <option value="" selected disabled >{{status3}}</option>
+      <option ng-repeat="region in regions" value="{{region.geonameId}} {{region.name}}">{{region.name}}</option>
+    </select>
+  </div>
+  <div class="col-6" style="position: relative;">
+   <small class='fa fa-arrow-right' style="font-size:10px;color:red;padding-left: 10px;position: absolute; left: 0;top:10px" ng-if="isNext3"></small>
+    <input type="text" class="form-control" placeholder="Enter City or Town name" ng-model="user.city" ng-if="isEdit === true" ng-cloak required>
+    <select class="custom-select form-control col-md-12" ng-model="user.city"  ng-cloak ng-if="isEdit === false" required>
+      <option value="" selected disabled >{{status2}}</option>
+      <option ng-repeat="city in cities" value="{{city.name}}">{{city.name}}</option>
+      <option value="edit">_Other</option>
+    </select>
+  </div>
+</div>
+<div class="row">
+  <div class="col-6">
+    <input type="text"  class="form-control" placeholder="code" value="{{callingCode}}" style="width: 20%;position: absolute;display: inline-block;left:10px;top:5px;background-color: inherit;border-right:none;font-size: 14px">
+    <input type="number" string-to-number class="form-control" placeholder="Mobile number" style="width: 80%;margin-left: 80px;font-size: 14px" ng-model="user.phone" required>
+      <small style="font-size:12px;color:green;padding-left: 20px;display: inline-block;" ng-cloak ng-if="numberError"><i class="fa fa-info"></i> {{numberError}}</small>
+  </div>
+   <div class="col-6">
+      <input type="email" class="form-control" placeholder="Email" ng-model="user.email" required>
+  </div>
+</div>
+
+<hr>
+
+<div class="row">
+  <div class="col-12">
+   <small style="font-size:12px;color:green;padding-left: 20px;display: inline-block;" ng-cloak ng-if="usernameInfo">{{usernameInfo}}</small> 
+    <small style="font-size:12px;color:red;padding-left: 20px;display: inline-block;" ng-cloak ng-if="usernameError"><i class="fa fa-info"></i>{{usernameError}}</small> 
+    <input type="text" class="form-control" placeholder="User Name" ng-model="user.username" required>
+  </div>
+ 
+</div>
+
+<div class="row">
+  <div class="col-6">
+    <input type="password" class="form-control" placeholder="Password" ng-model="user.password" required>
+  </div>
+  <div class="col-6">
+        <input type="password" class="form-control" placeholder="Confirm Password" ng-model="user.password2" required>
+  </div>
+</div>
+
+<label class="custom-control custom-checkbox" style="margin-top:20px">
+  <input type="checkbox"  ng-model="user.agree" required style="width:22px;height:22px">
+  <span class="custom-control-description" style="font-size: 14px;display:inline-block;padding-left:10px"> I agree with the terms of service</span>
+</label>
+<br><br>
+<button class="btn btn-simple btn-lg" ng-click="submit('Doctor')"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:red" ng-if="loading"></i>
+<span class="sr-only">Loading...</span> Create Account</button>
+</form>
+  </div>
+  <!-- special signup ends here -->
 
 <!--pharmacy signup starts here-->
-  <div class="tab-pane" id="pharmacy" role="tabpanel">
+<div class="tab-pane" id="pharmacy" role="tabpanel">
   	<div class="alert alert-info"><strong>Pharmacy Signup : </strong>Please the complete the form below.  Do note that your center, email and phone number will be verified.</div>
       <form>
 <div class="row">
   <div class="col-12">
   <select class="custom-select col-md-12"  ng-model="user.typeOfUser" required>
-  <option value="Pharmacy" selected>Pharmacy
-  </option>
+  <option value="" selected>Pharmacy</option>
 </select>
   </div>
 </div>
@@ -512,17 +802,47 @@
 </div>
 
 <div class="row">
-  <div class="col-6">
-  <input type="text" class="form-control" placeholder="City/ Town" ng-model="user.city" required>
+  <div class="col-6" style="position: relative;">
+  <small class='fa fa-warning' style="font-size:12px;color:green;padding-left: 10px;position: absolute; left: 10px;top:0px" ng-if="isNext1 == false"> Select country where your center is located</small>
+    <!--<input type="text" class="form-control" placeholder="Country" ng-model="user.country" required>-->
+    <select class="custom-select form-control col-md-12" ng-model="user.country"  required>
+      <option value="" selected disabled >{{status}}</option>
+      <option ng-repeat="country in countries" value="{{country.geonameId}}">{{country.countryName}}</option>
+    </select>
   </div>
-  <div class="col-6">
- <input type="text" class="form-control" placeholder="Country" ng-model="user.country" required>
+  <div class="col-6" style="position: relative;">
+   <!-- <input type="text" class="form-control" placeholder="City/Town" ng-model="user.city" required>-->
+    <small class='fa fa-arrow-right' style="font-size:10px;color:red;padding-left: 10px;position: absolute; left: 0;top:10px" ng-if="isNext1"></small>
+   <select class="custom-select form-control col-md-12" ng-model="user.state"  required>
+      <option value="" selected disabled >{{status1}}</option>
+      <option ng-repeat="state in states" value="{{state.geonameId}} {{state.name}}">{{state.name}}</option>
+    </select>
+  </div>
+</div>
+<div class="row">
+  <div class="col-6" style="position: relative;">
+   <small class='fa fa-arrow-right' style="font-size:10px;color:red;padding-left: 10px;position: absolute; left: 0;top:10px" ng-if="isNext2"></small>
+      <select class="custom-select form-control col-md-12" ng-model="user.region"  required>
+      <option value="" selected disabled >{{status3}}</option>
+      <option ng-repeat="region in regions" value="{{region.geonameId}} {{region.name}}">{{region.name}}</option>
+    </select>
+  </div>
+  <div class="col-6" style="position: relative;">
+   <small class='fa fa-arrow-right' style="font-size:10px;color:red;padding-left: 10px;position: absolute; left: 0;top:10px" ng-if="isNext3"></small>
+    <input type="text" class="form-control" placeholder="Enter City or Town name" ng-model="user.city" ng-if="isEdit === true" ng-cloak required>
+    <select class="custom-select form-control col-md-12" ng-model="user.city"  ng-cloak ng-if="isEdit === false" required>
+      <option value="" selected disabled >{{status2}}</option>
+      <option ng-repeat="city in cities" value="{{city.name}}">{{city.name}}</option>
+      <option value="edit">_Other</option>
+    </select>
   </div>
 </div>
 
 <div class="row">
   <div class="col-6">
-  <input type="text" class="form-control" placeholder="Phone Number format (080*****" ) id="phone" ng-model="user.phone" required >
+ <input type="text"  class="form-control" placeholder="code" value="{{callingCode}}" style="width: 20%;position: absolute;display: inline-block;left:10px;top:5px;background-color: inherit;border-right:none;font-size: 14px">
+    <input type="number" string-to-number class="form-control" placeholder="Mobile number" style="width: 80%;margin-left: 80px;font-size: 14px" ng-model="user.phone" required>
+      <small style="font-size:12px;color:green;padding-left: 20px;display: inline-block;" ng-cloak ng-if="numberError"><i class="fa fa-info"></i> {{numberError}}</small>
   </div>
   <div class="col-6">
  <input type="text" class="form-control" placeholder="Website Url(if any)" ng-model="user.website">
@@ -531,10 +851,12 @@
 <hr>
 <div class="row">
   <div class="col-6">
+   <small style="font-size:12px;color:green;padding-left: 20px;display: inline-block;" ng-cloak ng-if="usernameInfo">{{usernameInfo}}</small> 
+  <small style="font-size:12px;color:red;padding-left: 20px;display: inline-block;" ng-cloak ng-if="usernameError"><i class="fa fa-info"></i>{{usernameError}}</small> 
   <input type="text" class="form-control" placeholder="User Name" ng-model="user.username">
   </div>
   <div class="col-6">
- <input type="text" class="form-control" placeholder="Email" ng-model="user.email" required>
+ <input type="email" class="form-control" placeholder="Email" ng-model="user.email" required>
   </div>
 </div>
       
@@ -549,25 +871,29 @@
 
  
 <label class="custom-control custom-checkbox" style="margin-top:20px">
+<small style="font-size:12px;color:green;padding-left: 20px;display: inline-block;" ng-cloak ng-if="usernameInfo">{{agreeInfo}}</small>
   <input type="checkbox"  ng-model="user.agree" required style="width:22px;height:22px">
   <span class="custom-control-description" style="font-size: 14px;display:inline-block;padding-left:10px"> I agree with the terms of service</span>
 </label>
 <br><br>
-<button class="btn btn-simple btn-lg" ng-click="submit(user.typeOfUser,'normal')">Create Account</button>
+<button class="btn btn-simple btn-lg" ng-click="submit(user.typeOfUser,'normal')"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:red" ng-if="loading"></i>
+<span class="sr-only">Loading...</span> Create Account</button>
 </form>
   </div>
 
   <!--pharmacy sign up ends here-->
 </div>
 
-</div>
-		<section class="phone-verify" ng-controller="verifyPhoneController" ng-if="isPhoneVerify">
-			<div style="width:80%;height:530px;;text-align:center;margin-top: 50px">
-				<p >Enter the pin sent to {{formData.phone}} below</p>
+</div >
+		<section class="phone-verify" ng-controller="verifyPhoneController" ng-if="isPhoneVerify" ng-cloak>
+			<div style="width:80%;height:530px;text-align:center;margin: 50px auto">
+				<!--<p >Enter the pin sent to {{formData.phone}} below</p>-->
+        <p style="font-size: 14px">{{verifyInfo}}</p>
 				<div style="color:red; font-size: 16px">{{error}}</div>
 				<input type="text" placeholder="Enter verification pin" ng-model="verify.pin" style="padding:20px">
 				<div style="padding: 30px">
-				<button class="btn btn-primary" ng-click="sendForm()">Continue</button>
+				<button class="btn btn-primary" ng-click="sendForm()"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:red" ng-if="loading"></i>
+        <span class="sr-only">Loading...</span> Continue</button>
 				</div>
 			</div>
 		</section>
@@ -659,6 +985,7 @@
 <script src="/assets/js/ui-bootstrap-tpls.js"></script>
 <script src="/assets/js/angular-clipboard.js"></script>
 <script src="/assets/js/ngresource.js"></script>
- <script src="/assets/js/ngPrint.js"></script>    
+ <script src="/assets/js/ngPrint.js"></script>
+ <script type="text/javascript" src="/assets/js/angular-paystack/dist/angular-paystack.min.js"></script>    
 
 </html>

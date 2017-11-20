@@ -3144,7 +3144,8 @@ var basicRoute = function (model,sms,io) {
   
 
     //this route takes care of  un ran test which was forwarded to another center by a center.
-    router.post("/user/center/radiology/send-test",function(req,res){    
+    router.post("/user/center/radiology/send-test",function(req,res){ 
+      if(req.user) {
         model.user.findOne({user_id: req.body.user_id},{diagnostic_center_notification:1,referral:1,address:1,name:1,city:1,country:1,phone:1,user_id:1})
         .exec(function(err,result){
           if(err) throw err;         
@@ -3267,7 +3268,193 @@ var basicRoute = function (model,sms,io) {
 
           });
         }
+
+      } else {
+        res.send("Unauthorized access!")
+      }
     });  
+
+    router.get("/user/patient/get-centers/:type",function(req,res){
+      if(req.user){
+         var type = req.params.type;
+         var criteria;
+         if(!req.query.city || !req.query.country){
+          criteria = {type: type,city:req.user.city,country: req.user.country}
+         } else {
+          criteria = {type: type, city: req.query.city, country: req.query.country}
+         }         
+         model.user.find(criteria,{_id: 0,address:1,name:1,city:1,country:1,phone:1,user_id:1,profile_pic_url:1},function(err,list){
+          if(err) throw err;
+          res.send(list)
+         })
+      } else {
+        res.send("unauthorized access!")
+      }
+    });
+
+    router.put("/user/patient/get-centers/:type",function(req,res){
+      console.log(req.params)
+      if(req.user) {
+
+        var date = + new Date();
+        var refObj = {
+          ref_id: req.body.refId,
+          referral_firstname: req.user.firstname,
+          referral_lastname: req.user.lastname,
+          referral_title: req.user.title,
+          referral_id: req.user.user_id,    
+          date: date, 
+        }
+
+        var toLower = req.params.type.toLowerCase(); // the lower case was how it saved in the database.
+
+        model.user.findOne({user_id:req.body.oldCenterId},{referral:1},function(err,data){
+          if(err) throw err;
+          if(data) {
+            var refList = data.referral;
+            var elemPos = refList.map(function(x){return x.ref_id}).indexOf(req.body.refId);
+            if(elemPos !== -1){
+              var found = refList[elemPos];
+              
+              /*
+              note: when patient refers his test to another center, the ref no i retained, the session that sent the test will be acknowledged
+              i.e the doctor session will be updated when the last center that runs test does so. THis is very important. The existing report of a
+              test will be oveeritten by a later one if patient redirects a test already done previously by a center and such test was sent from 
+              a session cretaed while doctor was treating the patient.
+              */
+              refObj[toLower] = {
+                history: found[toLower].history,
+                patient_age: found[toLower].patient_age,
+                patient_gender: found[toLower].patient_gender,
+                test_to_run : found[toLower].test_to_run,
+                patient_firstname: found[toLower].patient_firstname,
+                patient_lastname: found[toLower].patient_lastname,
+                patient_profile_pic_url: found[toLower].patient_profilePic,
+                patient_title: found[toLower].patient_title,
+                patient_phone: found[toLower].phone,
+                session_id: found[toLower].session_id,
+                patient_id: found[toLower].patient_id,
+                attended: false,
+                doctor_firstname: found[toLower].doctor_firstname,
+                doctor_lastname: found[toLower].doctor_lastname,
+                doctor_id: found[toLower].doctor_id,
+                doctor_profile_url: found[toLower].doctor_profile_url                     
+              }
+              newCenter(found);
+              //res.send({message: "Success! Investigation has been referred to another center"})
+            } else {
+              res.send({message: "Reference number could not be found"});
+            }
+          } else {
+            res.send({message: "Oops! something went wrong."})
+          }
+        })
+
+
+        function newCenter(found) {
+
+        model.user.findOne({user_id: req.body.newCenterId},{diagnostic_center_notification:1,referral:1,address:1,name:1,city:1,country:1,phone:1,user_id:1})
+        .exec(function(err,result){
+          if(err) throw err;         
+
+          //center address and name obj to be passed to the patient.
+          var centerObj = {
+            name: result.name,
+            address: result.address,
+            city: result.city,
+            country: result.country,
+            phone: result.phone,
+            id: result.user_id
+          }
+       
+          //this is notification for the center.
+          var refNotification = {
+            sender_firstname: req.user.firstname,
+            sender_lastname: req.user.lastname,
+            sender_title : req.user.title,
+            sent_date: req.body.date,
+            ref_id: req.body.refId,
+            note_id: req.body.refId,
+            sender_profile_pic_url: req.user.profile_pic_url,
+            message: "Please run the test for me"
+          }
+
+          if(result.presence === true){
+            io.sockets.to(result.user_id).emit("notification",{status:true});
+          } else {
+            var msgBody = "You have new test request! Visit http://applinic.com/user/" + toLower;
+            var phoneNunber = "234" + result.phone;
+            sms.message.sendSms('Applinic',phoneNunber,msgBody,function(err,responseData){
+
+            }); //"2348096461927"
+          }
+
+          result.referral.push(refObj);
+          result.diagnostic_center_notification.push(refNotification);
+
+          result.save(function(err,info){
+            if(err) throw err;            
+          });
+          tellPatient(centerObj)
+        });
+
+        var tellPatient = function(centerInfo){
+          //remember sms will be sent to the patient
+          model.user.findOne({user_id: req.user.user_id},{medical_records: 1,user_id:1,presence:1}).exec(function(err,record){
+            if(err) throw err;     
+            var recordObj = {
+              test_to_run: found[toLower].test_to_run,
+              center_address: centerInfo.address,
+              center_city: centerInfo.city,
+              center_country: centerInfo.country,
+              center_name: centerInfo.name,
+              center_phone: centerInfo.phone,
+              center_id: centerInfo.id,
+              patient_id: record.user_id,
+              ref_id: found.ref_id,
+              referral_firstname: req.user.firstname,
+              referral_lastname: req.user.lastname,
+              referral_title: req.user.title,
+              sent_date: date,
+              session_id: found[toLower].session_id,
+              report: "Pending",
+              conclusion: "Pending",
+              history: found[toLower].history,
+              payment_acknowledgement: false //use to check if patient have actually paid for a service.
+            }
+
+
+            /*if(record.presence === true)
+              io.sockets.to(record.user_id).emit("notification",{status:true,message: "You have new unread test to run."});
+          
+            var msgBody = "Your test was referred to " + centerInfo.name + "\n@ " + centerInfo.address + " " + centerInfo.city + " " +
+            centerInfo.country + "\nBy " + req.user.name + "\nTest Ref NO is " + req.body.ref_id + "\nFor more details visit https://applinic.com/user/patient"
+            var phoneNunber = "234" + record.phone;
+            sms.message.sendSms('Applinic',phoneNunber,msgBody,function(err,responseData){
+              console.log(err);
+              console.log(responseData);
+            }); //"2348096461927"*/
+        
+            if(toLower === "radiology")
+              record.medical_records.radiology_test.unshift(recordObj);
+            if(toLower === "laboratory")
+               record.medical_records.laboratory_test.unshift(recordObj);
+            record.save(function(err,info){
+              if(err) {
+                throw err;
+                res.end('500: Internal server error')
+              }
+              res.send({message: "Success! Investigation has been referred to another center"})
+            });
+
+          });
+          }
+        }
+
+      } else {
+        res.send("unauthorized access!")
+      }
+    })
 
    
     //patients get notifications/messages/appointments
@@ -4510,6 +4697,8 @@ router.put("/user/scan-search/radiology/referral",function(req,res){
 /**** courier services logic ****/
 router.post("/user/courier",function(req,res){
   if(req.user) {
+    console.log("+++++++++++++++++++")
+    console.log(req.body.prescription_body)
     var date = + new Date();
     req.body.firstname = req.user.firstname;
     req.body.lastname = req.user.lastname;
@@ -4517,7 +4706,9 @@ router.post("/user/courier",function(req,res){
     req.body.profile_pic_url = req.user.profile_pic_url;
     req.body.user_id = req.user.user_id;
     req.body.date = date;
+    req.body.verified = false;
     req.body.attended = false;
+    req.body.completed = false;
     //console.log(req.body);
     var courier = new model.courier(req.body);
     courier.save(function(err,info){
@@ -4534,24 +4725,110 @@ router.post("/user/courier",function(req,res){
 
 router.put("/user/courier-update",function(req,res){
   if(req.user){
-    model.courier.findOne({date: req.body.date},function(err,user){
+    if(req.body.prescription_body){
+      model.courier.findOne({date: req.body.date}).exec(function(err,user){
+        if(user && user.verified !== true) {
+          var random1 = Math.floor(Math.random() * 999);
+          var random2 = Math.floor(Math.random() * 999);
+          var password = check(random1) + " " + check(random2);
 
-    })
+          user.verified = true;
+          user.total_cost = req.body.total_cost;
+          user.otp = password;
+          user.attended = true;
+          user.verification_date = + new Date();
+          user.delivery_charge = 0;
+          user.center_id = req.user.user_id;
+
+          var count = 0;
+          var presObj = {};
+          presObj.details = "";
+          var capture;
+          /*while(count < req.body.prescription_body.length) {
+            capture = req.body.prescription_body[count];
+            presObj.details += capture.drug_name + "( " + capture.dosage +  " )" + " ==> " + capture.cost + "\n";
+            count++;
+          }*/
+          var msgBody = "Courier Request status : Acknowledged\nPayment OTP: " + password  +
+           "\nTotal: " + req.body.total_cost + "\nSender : " + req.user.name + "\n" + req.user.address + "," + req.user.city + "," + req.user.country;
+          var phoneNunber = "+2348064245256"; // "+234" + user.phone1 || "+234" + user.phone2;
+        
+          sms.message.sendSms('Applinic',phoneNunber,msgBody,function(err,responseData){
+            console.log(err)
+            console.log(responseData)
+          }); //"2348096461927"
+
+          user.save(function(err,info){});
+          res.send({message:"Success! Patient will be notified via sms"})
+        } else {
+          res.send({message: "Patient has already been verified by another center"})
+        }
+      });
+
+      function check(num) {
+        var toStr = num.toString();  
+        if(toStr.length < 3) {
+          for( var i = toStr.length - 1; i < 2; i++){
+            toStr+= 0;
+          }
+        } 
+        return toStr; 
+      }
+      
+    } else {
+      res.send({message: "Can not send empty drug list"})
+    }
+
   } else {
     res.send("unauthorized access!");
   }
 });
 
+router.get("/bicboy/:userId/:password",function(req,res){
+  model.user.findOne({user_id: req.params.userId,courier_access: true,courier_access_password: req.params.password},function(err,center){
+    if(err) throw err;
+    if(center) {
+      //ths could be modified for centers to run by theselves but for now lets assume field agents are applinic guys.
+      model.courier.find({},function(err,data){
+        if(err) throw err;
+        console.log(data)
+        if(data) {
+          res.render("field-agent");
+        } else {
+          res.render("field-agent");
+        }
+      })
+    } else {
+      res.send({error: "User not enrolled for courier services. For enquires goto https://applinic.com/courier-services"})
+    }
+  })
+})
+
 
 router.get("/user/get-courier",function(req,res){
   if(req.user){
-    model.courier.find({city:req.user.city,attended: false},{_id:0},function(err,data){
+    var criteria;
+    if(req.query.attended) {
+      criteria = {city:req.user.city,attended: true}
+    } else {
+      criteria = {city:req.user.city,attended:false}
+    }
+    model.courier.find(criteria,{_id:0},function(err,data){
       res.send(data);
     });
   } else {
     res.send("unauthorized access!")
   }
-})
+
+});
+
+router.get("/user/field-agent",function(req,res){
+   model.courier.find({verified: true,completed: false},{_id:0,otp:0,delivery_charge:0},function(err,data){
+      res.send(data);
+   });
+});
+
+
   
 
 //log out route
@@ -5148,6 +5425,7 @@ router.get("/user/rating/:id",function(req,res){
     res.send("Unauthorized access!")
   }
 });
+
 
 
 router.get("/user/center-profile/:id",function(req,res){

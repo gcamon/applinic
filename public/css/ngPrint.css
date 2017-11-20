@@ -55,6 +55,15 @@
        display: none;
     }
 
+    #printSection ol {
+        list-style: lower-alpha;
+        display: block;
+    }
+    #printSection li {
+        font-weight: bold;
+        padding: 10px;
+    }
+
     #printSection {
         position:absolute;
         left:0;

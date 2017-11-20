@@ -10,7 +10,8 @@ var express = require('express'),
   io = require('socket.io')(http),
   model = db(),
   payments = require("./finance"),
-  Nexmo = require("nexmo"),    
+  Nexmo = require("nexmo"), 
+  paystack = require('paystack')(process.env.PAYSTACK_SECRET_KEY),   
   sms = new Nexmo({
   	apiKey: process.env.NEXMO_API_KEY || "1c9ae030",
 		apiSecret: process.env.NEXMO_API_SECRET || "ddb306aa9194c137"
@@ -20,8 +21,39 @@ var express = require('express'),
   port = process.env.PORT || 3000;
 
   var ExpressPeerServer = require('peer').ExpressPeerServer;
+  var Geonames = require("geonames.js");
+  var geonames = new Geonames({username: 'gcamon29', lan: 'en', encoding: 'JSON'});
 
-    
+ 
+ // add geonames to the database once.
+  model.geonames.find({},function(err,data){
+    if(err) throw err;
+    if(data.length === 0){ 
+      addCountriesToDatabase();
+    } else {
+      console.log("Countries name already added to the database!")
+    }
+  });
+
+  function addCountriesToDatabase() {
+   geonames.countryInfo({})
+    .then(function(countries){
+      var name;
+      for(var i in countries.geonames){
+        if(countries.geonames.hasOwnProperty(i)) {
+          name = new model.geonames(countries.geonames[i]);
+        }
+
+        name.save(function(err,info){
+          if(err) throw err;
+          console.log("Geonames saved")
+        })
+      }
+      //console.log(countries.geonames)
+    })
+  }
+
+ 
 var options = {
   debug: true
 }
@@ -30,18 +62,35 @@ app.use('/call',ExpressPeerServer(http,options));
 
 
 http.listen(port,function(){
-    console.log('listening on *:8080');
+    console.log('listening on *:3000');
 });
 
 
 config.configuration(app,model);
-signupRoute(model,sms);
+signupRoute(model,sms,geonames,paystack);
 loginRoute(model);
 route(model,sms,io); 
 payments(model,sms,io);
 placement(model,sms);
 mySocket(model,io);
-
+  
+/*paystack.customer.create({
+  first_name: "Obinna",
+  last_name: "Ede",
+  email: "bobby@gmail.com",
+  phone: "23445673563",
+  metadata: {
+    user_id: "hdjijjfjffd",
+    createdAt: new Date()
+  }
+})*/
+/*paystack.customer.list()
+  .then(function(body) {
+      console.log(body);
+  })
+  .catch(function(error) {
+    console.log(error);
+  });*/
 
 /*
  //checking to see if ref_id already exist.

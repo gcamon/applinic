@@ -1,9 +1,6 @@
-<!--<div class="col-sm-12 col-md-12 col-lg-12">
 	<div class="row">
-		<div class="col-sm-12 col-md-3 col-lg-3">
-		</div>
-		<div class="col-sm-12 col-md-9 col-lg-9">
-			<ul class="prescription-options" ng-if="labTest.length > 0">			
+		<div class="col-sm-12 col-md-12 col-lg-12 shadow">
+			<ul class="prescription-options">			
 				<li ng-click="recent()" ng-class="{highlight: isRecent === true}">most recent</li>
 				<li ng-click="three()" ng-class="{highlight: isThree === true}">last three months</li>
 				<li ng-click="six()" ng-class="{highlight: isSix === true}">last six months</li>
@@ -11,7 +8,211 @@
 			</ul>
 		</div>
 	</div>
-	<section ng-repeat="test in labTest">
+	<section style="padding: 30px;" class="row shadow" ng-repeat="test in labTest" id="{{test.ref_id}}">		
+			<div class="col-sm-12 col-md-3 col-lg-3">
+				<div class="tg-widget tg-widget-doctor" style="padding: 10px 0px">
+					<h6 style="text-decoration: underline;">Investigation by</h6>
+					<img src="{{center_profile_pic}}" style="width:42px; height:42px"> <em>{{test.center_name}} </em>
+		            <p style="padding: 5px 0"><i class="fa fa-globe"></i>{{test.center_address}} {{test.center_city}} {{test.center_country}}</p>		<p> <i class="fa fa-phone"></i> (+234) {{test.center_phone}} </p>         
+		            <a href="{{test.center_profile_url}}" title="view profile" ng-if="test.center_profile_url">View profile</a>
+				</div>
+			</div>
+
+
+			<div class="col-sm-12 col-md-9 col-lg-9" style="padding: 10px 10px 0;"> 				
+				<div class="row">
+		    		<div class="col-sm-12 col-md-5 col-lg-5"> 
+		    		<h6 style="text-decoration: underline;">Investigation details</h6>
+		    		<p><strong>Reference Number:</strong> : <span>{{test.ref_id}}</span> <button clipboard supported="supported" text="test.ref_id" on-copied="success(test.ref_id)" on-error="fail(err)" title="{{copy}}" class="btn btn-info fa fa-copy" style="padding: 5px"> Copy</button></p>
+		    			<p><strong>Date sent:</strong> : <span>{{test.sent_date | date : "mediumDate"}}</span></p>
+		    			<p ng-if="test.report === 'Pending'"><strong>Status: </strong> <span style="color: red">Awaiting test result</span></p>
+						<!--<p><strong>Date sent: </strong>{{test.sent_date | date : "mediumDate"}} &nbsp; <strong>Time: </strong>{{test.sent_date | date : "shortTime"}}</p>-->
+						<p><strong>Date received: </strong>{{test.receive_date | date: "mediumDate" || "Pending"}}</p>
+						<div><strong>Test to run:</strong> 
+							<ol style="background-color: #d7dde4;line-height: 25px">
+								<li ng-repeat="ranTest in test.test_to_run">{{ranTest.name}},</li>
+							</ol>
+						</div>
+		    		</div>
+
+		    		<div class="col-sm-12 col-md-7 col-lg-7" style="">
+		    			<h6 style="text-decoration: underline;">Investigation Report</h6>
+		    			<div ng-if="test.report !== 'Pending'" class="patient-tests">
+		    				<article ng-repeat = "testRan in test.test_to_run">
+		    					<div><strong>{{testRan.name}}:</strong></div>
+		    					<p><em>{{testRan.data}}</em></p>		    					
+		    				</article>
+		    				<div><strong>Conclusion:</strong></div>
+		    				<p><em>{{test.conclusion}}</em></p>		    				
+		    			</div>
+		    			<!--<ul ng-i="test.report !== 'Pending'" style="list-style: none;">							
+							<li>								
+								<li ng-repeat = "testRan in test.test_to_run"><strong>{{testRan.name}} : ccvvcvcvc</strong> <em>{{testRan.data}}</em></li>								
+							</li>
+							<li><strong>Conclusion : </strong> <em>{{test.conclusion}}dffdfddffdfdfdfddffdfd</em></li>
+						</ul>-->
+						<p ng-if="test.report == 'Pending'" style="text-align: center;font-size: 12px;padding: 40px"> No report received a this time</p>
+
+
+						<div class="row">
+		    				<div class="col-sm-12 col-md-12 col-lg-12" style="padding: 10px 15px 0;position: relative;text-align: right;">
+		    					<div>  
+		    						<i class="fa fa-user-md btn btn-simple" aria-hidden="true" style="color:green;font-size: 18px;margin-right:15px;cursor:pointer;padding: 5px 15px" title="send test result to your doctor(s)" ng-click="sendDocTest(test)" ng-if="test.report !== 'Pending'"></i>
+									<i class="fa fa-user-md btn btn-simple" aria-hidden="true" style="color:#ccc;font-size: 18px;margin-right:15px;cursor:pointer;padding: 5px 15px" title="send test result to your doctor(s)"  ng-if="test.report === 'Pending'"></i>  						
+				    				<i ng-print  print-element-id="{{test.ref_id}}" class="fa fa-print btn btn-simple" aria-hidden="true" style="color:green;font-size: 18px;margin-right:15px;cursor:pointer;padding: 5px 15px" title="Print this lab investigation"></i>
+				    				<i class="fa fa-share btn btn-simple" aria-hidden="true" style="color:green;font-size:18px;margin-right:20px;cursor:pointer;padding: 5px 15px" title="Forward this investigation to another center" ng-click="forwardTest(test,'Laboratory')"></i>
+				    				
+			    				</div>
+		    				</div>
+		    						
+		    			</div>
+		    		</div>  		
+		    	</div>
+			</div>
+	
+		
+		<!--<div class="row">
+			<h4>Test details</h4>
+			<ul>
+				<li><strong>Ref No: </strong> {{test.ref_id}} <button clipboard supported="supported" text="test.ref_id" on-copied="success(test.ref_id)" on-error="fail(err)" title="{{copy}}">Copy</button>	</li>
+				<li ng-if="test.report === 'Pending'"><strong>Status: </strong> <span style="color: red">Awaiting test result</span></li>
+				<li><strong>Date sent: </strong>{{test.sent_date | date : "mediumDate"}} &nbsp; <strong>Time: </strong>{{test.sent_date | date : "mediumTime"}}</li>
+				<li><strong>Date received: </strong>{{test.receive_date}}</li>
+				<li>Test to run: 
+					<ol>
+						<li ng-repeat="ranTest in test.test_to_run">{{ranTest.name}}</li>
+					</ol>
+				</li>
+			</ul>
+			<ul ng-if="test.report !== 'Pending'">
+				<li><h4>Test Result</h4></li>
+				<li>
+					<ol>
+						<li ng-repeat = "testRan in test.test_to_run"><strong>{{testRan.name}} : </strong> <em>{{testRan.data}}</em></li>
+					</ol>
+				</li>
+				<li><strong>Conclusion : </strong> <em>{{test.conclusion}}</em></li>
+			</ul>
+			<div ng-if="test.report === 'Pending'">
+				<span style="font-size: 24px; font-weight: 100">Contact Through: </span>            
+          <i class="fa fa-video-camera" style="font-size:22px;color:grey;padding: 20px; cursor:pointer; margin-right: 10px" title="Video chat with {{test.center_name}}" ng-click="makeVideoCall(test.center_id,test.center_name,test.patient_id)"></i>  
+          <i class="fa fa-comments" style="font-size:22px;color:grey;padding: 20px; cursor:pointer" title="Chat with {{test.center_name}}" ng-click="liveChat(test.center_id,test.center_name,test.patient_id)"></i>
+          <i class="fa fa-phone" style="font-size:22px;color:grey;padding: 20px;margin-right: 10px"> &nbsp;{{test.center_phone}}</i>   
+			</div>
+			<div class="pull-right">
+				<i class="fa fa-user-md" aria-hidden="true" style="color:green;font-size: 18px;margin-right:20px;cursor:pointer;font-weight:bold" title="send test result to your doctor(s)" ng-click="sendDocTest(test)" ng-if="test.report !== 'Pending'"></i>
+				<i class="fa fa-user-md" aria-hidden="true" style="color:#ccc;font-size: 18px;margin-right:20px;cursor:pointer;font-weight:bold" title="send test result to your doctor(s)"  ng-if="test.report === 'Pending'"></i>
+				<i class="fa fa-download" aria-hidden="true" style="color:green;font-size: 18px;margin-right:20px;cursor:pointer" title="Download this test" ng-click="downloadTest(test)"></i>
+				<i class="fa fa-share" aria-hidden="true" style="color:green;font-size:18px;margin-right:20px;cursor:pointer" title="Forward this test to a Laboratory center" ng-click="forwardTest(test)"></i>
+				<i class="fa fa-times" aria-hidden="true" style="color:green;font-size:18px;margin-right:20px;cursor:pointer" title="Forward this test to a Laboratory center" ng-click="deleteTest(test.ref_id)" ng-if="test.report !== 'Pending'"></i>					    	
+			</div>		    	
+		</div>-->
+	</section>
+
+<!--
+<div class="row">
+	
+	<div class="col-sm-12 col-md-12 col-lg-12 shadow">
+		<ul class="prescription-options">			
+			<li ng-click="recent()" ng-class="{highlight: isRecent === true}">most recent</li>
+			<li ng-click="three()" ng-class="{highlight: isThree === true}">last three months</li>
+			<li ng-click="six()" ng-class="{highlight: isSix === true}">last six months</li>
+			<li ng-click="all()" ng-class="{highlight: isAll === true}">all</li>
+		</ul>
+	</div>
+</div>
+<div style="padding: 30px;" class="row shadow"  ng-repeat="test in labTest" id="{{docInfo.prescriptionId}}">	
+    <div class="col-sm-12 col-md-4 col-lg-4">
+  
+    	
+   		
+        <div class="tg-widget tg-widget-doctor" style="padding: 10px 0px">
+
+           <h6 style="padding: 10px 0px 0;text-decoration: underline;">Prescription by</h6>
+
+           <strong style="font-weight: bold;padding: 15px 0px 5px;line-height: 35px" ><i class="fa fa-user-md"></i> <em>{{docInfo.title}}  {{docInfo.doctor_firstname}} {{docInfo.doctor_lastname}}</em><span style="display: block;text-indent: 14px;font-weight: normal;font-style: italic;" ng-if="docInfo.doctor_specialty" >{{docInfo.doctor_specialty}} </span></strong>
+           <p ng-if="docInfo.doctor_work_place"><i class="fa fa-globe"></i> Works at {{docInfo.doctor_work_place}} {{docInfo.doctor_address}} {{docInfo.doctor_city}} {{docInfo.doctor_country}}.</p>
+           <p ng-if="!docInfo.doctor_work_place"><i class="fa fa-globe"></i> Address: {{docInfo.doctor_address}} {{docInfo.doctor_city}} {{docInfo.doctor_country}}.</p>
+           <a href="{{docInfo.doctor_profile_url}}" title="view profile" ng-if="docInfo.doctor_work_place">View profile</a>
+           <p style="color:red;padding: 10px 20px 0 0" ng-if="!docInfo.doctor_work_place"><i class="fa fa-warning"></i> This prescription may have been written by non-professional.</p>
+        </div>
+    </div>
+    <div class="col-sm-12 col-md-8 col-lg-8" style="padding: 10px 10px 0;">      
+               	
+		   
+		   		<h6 style="text-decoration: underline;">Prescription details</h6>		    	
+		    	<div class="row">
+		    		<div class="col-sm-12 col-md-6 col-lg-6"> 
+		    			<p><strong>Date</strong> : <span>{{docInfo.date | date: "mediumDate"}}</span></p>
+		    		</div>
+		    		<div class="col-sm-12 col-md-6 col-lg-6"> 
+		    			<p style="padding-right:10px;word-wrap: break-word;"><strong>Diagnosis</strong> : <span>{{docInfo.provisional_diagnosis}}</span></p>
+		    		</div>		    		
+		    	</div>
+		   
+		    	<div class="row">
+		    		<div class="col-sm-12 col-md-12 col-lg-12" style="padding: 10px 15px 0;">
+		    			<strong>Prescription ID :</strong> <span>{{docInfo.prescriptionId}}</span>
+						<button clipboard supported="supported" text="docInfo.prescriptionId" on-copied="success(docInfo.prescriptionId)" on-error="fail(err)" title="{{copy}}" class="btn btn-info fa fa-copy" style="padding: 5px"> Copy</button>		    			
+		    		</div>
+		    	</div>
+		    	
+		    	<div class="row">
+		    		<div class="col-sm-12 col-md-12 col-lg-12" style="padding: 10px 15px 0;">
+		    			<table class="table table-striped table-responsive">
+		    				<tr>
+		    					<thead>
+		    						<th>S/N</th>
+		    						<th>Drug Name</th>
+		    						<th>Dosage</th>
+		    						<th>Frequency</th>
+		    						<th>Duration</th>		    						
+		    					</thead>        					
+		    				</tr>
+		    				<tr>
+		    					<tbody ng-repeat="prescription in docInfo.prescription_body">		    						
+		    						<td>{{prescription.sn}}</td>
+		    						<td>{{prescription.drug_name}}</td>
+		    						<td>{{prescription.dosage}}</td>
+		    						<td>{{prescription.frequency}}</td>
+		    						<td>{{prescription.duration}}</td>		    							    						
+		    					</tbody>
+		    				</tr>
+		    			</table>
+		    		</div>
+		    	</div>
+    			<div class="row">
+    				<div class="col-sm-12 col-md-12 col-lg-12" style="padding: 10px 15px 0;position: relative;">
+    					<div>
+    						<i class="fa fa-motorcycle btn btn-simple" aria-hidden="true" style="color:green;font-size: 18px;margin-right:15px;cursor:pointer;padding: 5px 15px" ng-click="courier(docInfo)" title="Use our courier service"></i>
+		    				
+		    				<i ng-print  print-element-id="{{docInfo.prescriptionId}}" class="fa fa-print btn btn-simple" aria-hidden="true" style="color:green;font-size: 18px;margin-right:15px;cursor:pointer;padding: 5px 15px" title="Print this prescription"></i>
+		    				<i class="fa fa-share btn btn-simple" aria-hidden="true" style="color:green;font-size:18px;margin-right:20px;cursor:pointer;padding: 5px 15px" title="Forward this prescription to a Phamarcy" ng-click="forwardPrescription(docInfo)"></i>
+		    				
+		    				
+	    				</div>
+    				</div>
+    				 <div>
+    				 	<a href="" class="btn btn-simple" style="cursor:pointer;color:green;position: absolute; bottom: 0px; right: 0;padding: 5px 5px" ng-click="trackedPrescription(docInfo.prescriptionId,docInfo)" title="Look up where this prescription has been sent to">Track record</a>
+    				 </div>			
+    			</div>
+    		</div>
+    	</div>
+
+-->
+
+<!--
+	<div class="row">
+		<div class="col-sm-12 col-md-12 col-lg-12 shadow">
+			<ul class="prescription-options">			
+				<li ng-click="recent()" ng-class="{highlight: isRecent === true}">most recent</li>
+				<li ng-click="three()" ng-class="{highlight: isThree === true}">last three months</li>
+				<li ng-click="six()" ng-class="{highlight: isSix === true}">last six months</li>
+				<li ng-click="all()" ng-class="{highlight: isAll === true}">all</li>
+			</ul>
+		</div>
+	</div>
+	<section style="padding: 30px;" class="row shadow" ng-repeat="test in labTest">
 		<div class="row">
 			<div class="col-sm-12 col-lg-3 col-md-3 pull-right">
 				<img ng-src="{{}}"/>
@@ -22,6 +223,8 @@
 				<address style="text-align: center"> {{test.center_address}} {{test.center_city}} {{test.center_country}}</address>
 			</div>
 		</div>
+
+	
 		<div class="row">
 			<h4>Test details</h4>
 			<ul>
@@ -59,99 +262,4 @@
 			</div>		    	
 		</div>
 	</section>
-</div>-->
-
-<div style="height:70px;"></div>
-<div class="pt-2" style="background:#f2f2f2;">
-<div class="row">
-
-	<div class="col-md-3 col-sm-12 pl-3">
-	<!-- Nav tabs -->
-
-	
-<ul class="nav flex-column btn-group" role="tablist" style="font-size:1.5em;">
-  <li class="nav-item">
-    <a class="nav-link active btn btn-success" data-toggle="tab" href="#home" role="tab" ng-click="recent()">Most Recent</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link btn btn-success" data-toggle="tab" href="#profile" role="tab" ng-click="three()">Last Three Months</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link btn btn-success" data-toggle="tab" href="#messages" role="tab" ng-click="six()">Last Six Months</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link btn btn-success" data-toggle="tab" href="#settings" role="tab" ng-click="all()">All</a>
-  </li>
-</ul>
-</div>
-
-<div class="col-md-9 col-sm-12">
-
-<!-- Tab panes -->
-<div class="tab-content ">
-
-	<div class="row card pt-1 pb-1">
-			<div class="text-center pl-0 col-md-3 col-sm-3" style="text-align:center;">
-				<img ng-src="{{}}" class="img-rounded pl-0 mt-1" src="assets/img/avatar.jpg" height="150px" width="150px"/>
-
-			</div>
-			<div class="col-md-9">
-				<h4 class="pb-1 pt-1 mt-1" style=" border-bottom: 1px solid #ccc; font-size:1.5em; font-weight:300;">{{test.center_name}}<span style="display:block;font-size: 14px"></span></h4>
-				<address  style="font-size:1em; font-weight:300;"> {{test.center_address}}<br> {{test.center_city}}<br> {{test.center_country}}hjhjadshjdsaahjas</address>
-			</div>
-		</div>
-  <div class="tab-pane active" id="home" role="tabpanel">
-
-	  
-	<section>
-		
-
-		<div class="row card pl-2 pr-2 pb-2">
-			<h4 style="font-size:1.5em; font-weight:300;">Test details</h4>
-			<div class="row">
-				<div class="col-md-3"><b>Ref No: </b> {{test.ref_id}} <button class="btn btn-info fa fa-copy btn-sm" clipboard supported="supported" text="test.ref_id" on-copied="success(test.ref_id)" on-error="fail(err)" title="{{copy}}"></button></div>
-				<div class="col-md-3"><b>Status: </b> <span class="text-danger">Awaiting test result</span></div>
-				<div class="col-md-3"><b>Date sent: </b>{{test.sent_date | date : "mediumDate"}} &nbsp; <b>Time: </b>{{test.sent_date | date : "mediumTime"}}</div>
-				<div class="col-md-3"><b>Date received: </b>{{test.receive_date}} date here</div> 
-				<div class="clearfix"></div>
-				<hr class="bg-info">
-				<div class="col-md-12">
-					<span style="font-size:1.2em; font-weight:300;">Test to run: </span>
-					{{ranTest.name}} mALARIA TEST
-									</div>
-			</div>
-			
-			
-			<span style="font-size:1.2em; font-weight:300;">Test Result
-			<b>{{testRan.name}} : </b> <em>{{testRan.data}}HJHYJHDSGHDSHGDS</em></span>
-			<div><span style="font-size:1.2em; font-weight:300;">Conclusion : <em>{{test.conclusion}}GHSADTDHGDSGHDS</em></span></div>
-		
-			<div>
-				<span style="font-size:1.3em; font-weight: 300">Contact Through: </span>            
-          <a class="fa fa-video-camera p-1" style="font-size:22px; cursor:pointer;" title="Video chat with {{test.center_name}}" ng-click="makeVideoCall(test.center_id,test.center_name,test.patient_id)"></a>  
-          <a class="fa fa-comments p-1" style="font-size:22px; cursor:pointer" title="Chat with {{test.center_name}}" ng-click="liveChat(test.center_id,test.center_name,test.patient_id)"></a>
-          <a class="fa fa-phone p-1" style="font-size:22px; cursor:pointer"> &nbsp;{{test.center_phone}}JHGHSAGHSA</a>   
-			</div>
-			<div class="pull-right pl-2 pr-2" style="background:#f2f2f2;">
-				<i class="fa fa-user-md text-success" aria-hidden="true" style="font-size: 18px; cursor:pointer;" title="send test result to your doctor(s)" ng-click="sendDocTest(test)"></i>
-				<i class="fa fa-user-md p-1" aria-hidden="true" style="color:#ccc;font-size: 18px;cursor:pointer;" title="send test result to your doctor(s)"></i>
-				<i class="fa fa-download  text-success p-1" aria-hidden="true" style="font-size: 18px; cursor:pointer" title="Download this test" ng-click="downloadTest(test)"></i>
-				<i class="fa fa-share  text-success p-1" aria-hidden="true" style="font-size:18px; cursor:pointer" title="Forward this test to a Laboratory center" ng-click="forwardTest(test)"></i>
-				<i class="fa fa-times  text-success p-1" aria-hidden="true" style="font-size:18px; cursor:pointer" title="Forward this test to a Laboratory center" ng-click="deleteTest(test.ref_id)"></i>					    	
-			</div>		    	
-		</div>
-	</section>
-
-
-  </div>
-  <div class="tab-pane" id="profile" role="tabpanel">Ok</div>
-  <div class="tab-pane" id="messages" role="tabpanel">Ok</div>
-  <div class="tab-pane" id="settings" role="tabpanel">...</div>
-</div>
-
-
-</div>
-
-</div>
-
-</div>
+-->

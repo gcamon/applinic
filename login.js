@@ -65,6 +65,7 @@ router.get('/user/dashboard',function(req,res){
     function normalUser() {          
       res.json({
         isLoggedIn: true,
+        name: req.user.name,
         typeOfUser: req.user.type,
         firstname: req.user.firstname,
         lastname:req.user.lastname,
@@ -78,7 +79,8 @@ router.get('/user/dashboard',function(req,res){
         work_place: req.user.work_place,
         address:req.user.address,
         experience: req.user.experience,
-        courier_access: req.user.courier_access
+        courier_access: req.user.courier_access,
+        courier_access_password: req.user.courier_access_password
       });
     }
   } else {

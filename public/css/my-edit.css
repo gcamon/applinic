@@ -36,6 +36,19 @@
   padding:10px;
 }
 
+.patient-tests p{
+  font-size: 12px;
+  text-indent: 15px;
+  line-height: 22px;
+  word-break: break-all;
+}
+
+.patient-tests strong {
+  font-size: 12px;
+  padding-left: 5px;
+  text-transform: uppercase;
+}
+
 .view-animate.ng-enter {
   left:100%;
 }
@@ -339,6 +352,40 @@
     border-bottom: 3px solid orange;
     border:none;
     box-shadow: 1px 2px 3px rgba(0,0,0,0.4);
+  }
+
+  .courier-cost{
+    padding: 20px;
+  }
+
+  .btn-courier {
+    color:#000!important;
+    border:1px solid grey!important;
+    font-size: .8571em;
+    line-height: 1.35em;
+    border: none;
+    border-radius: .1875rem;
+    padding: 10px;
+    background-color: inherit;
+  }
+
+  .btn-primary {
+    color:#fff!important;
+    border:1px solid grey!important;
+  }
+
+  .orange-bg {
+    background-color: orange;
+    color: #fff!important;
+  }
+
+  .orange-bg:active {
+    background-color: orange;
+    color: #fff!important;
+  }
+
+  .text-success {
+    color: grey!important
   }
 
 @media screen and (min-height: 960px) {

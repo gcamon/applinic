@@ -24,8 +24,8 @@ var configuration = function (app,model) {
   });
 
  	store.on('error', function(error) {
-	  //assert.ifError(error);
-	  //assert.ok(false);
+	  assert.ifError(error);
+	  assert.ok(false);
 	});
 
 	app.use('/assets',express.static(__dirname + '/public'));
@@ -54,7 +54,7 @@ var configuration = function (app,model) {
 		if(req.headers['x-forwarded-proto'] && req.headers['x-forwarded-proto'] === "http") {
 		  res.redirect("https://" + req.headers.host + req.url);
 		} else {
-			next();
+		  next();
 		}		
 	});
 

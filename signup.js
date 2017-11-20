@@ -10,7 +10,7 @@ var http = require("http");
 
 
 
-var signupRoute = function(model,sms) {
+var signupRoute = function(model,sms,geonames,paystack) {
 	passport.use('signup', new LocalStrategy({
 		usernameField : 'username',
 	    passwordField : 'password',
@@ -55,6 +55,9 @@ var signupRoute = function(model,sms) {
 						gender: req.body.gender,
 						title: req.body.title,
 						age: req.body.age,
+						state: req.body.state,
+						region: req.body.region,
+						currencyCode: req.body.currencyCode,
 						profile_pic: {
 							filename:""
 						},
@@ -73,9 +76,37 @@ var signupRoute = function(model,sms) {
 						ref_link: referrral_link					
 					});
 
+						/****create user paystack account****/
+						paystack.customer.create({
+						  first_name: req.body.firstname,
+						  last_name: req.body.lastname,
+						  email: req.body.email,
+						  phone: req.body.phone,
+						  metadata: {
+						    user_id: uid,
+						    createdAt: new Date()
+						  }
+						});
+
 						User.ewallet = {
 							available_amount: 0,
 							transaction: []
+						}
+
+						if(req.body.typeOfUser !== "Patient") {
+							var criteria = {countryName: req.body.country,"cities.city": req.body.city}
+							model.geonames.findOne(criteria,{cities:1}).exec(function(err,data){
+								if(err) throw err;
+								if(!data){
+									var geoObj = {
+										state: req.body.state,
+										city: req.body.city
+									}
+									data.cities.push(geoObj);
+								}
+
+								data.save(function(){});
+							})
 						}
 
 						if(req.body.typeOfUser === "Doctor"){
@@ -159,13 +190,13 @@ var signupRoute = function(model,sms) {
 
 		testPhone.save(function(err,info){});
 
-		var msgBody = "Your SMS verification Pin is " + genPin + "\nUse to complete your registeration."
+		var msgBody = "Your sms verification Pin is " + genPin + "\nUse to complete your registeration."
 		var phoneNunber = "234" + req.body.phone;
 		sms.message.sendSms('Appclinic',phoneNunber,msgBody,callBack); //"2348096461927" "2349092469137"
-
+		//remember to change "234" to empty string
 		function callBack(err,response){
 			if(!err) {
-				res.send({message:"Phone verification pin sent to your phone"});
+				res.send({message:"Phone verification pin sent to your phone. You can use the pin here for now to continue:  " + genPin});
 			} else {
 				res.send({message:"Error Occur please try again",error: true});
 			}
@@ -552,7 +583,6 @@ var signupRoute = function(model,sms) {
       }//end of tellpatient function
 		} //end of tellcenter function
 		
-	 
 	  function genId() {
 		var text = "";
 		var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz01234567899966600555777222";
@@ -560,8 +590,43 @@ var signupRoute = function(model,sms) {
 	    for( var i=0; i < 12; i++ )
 	        text += possible.charAt(Math.floor(Math.random() * possible.length));
 	    return text;
-		}
+	 }
 	  
+	});
+
+	router.get("/user/getCountries",function(req,res){
+	  model.geonames.find({},{_id:0,_v:0},function(err,countries){
+	    if(err) throw err;
+	    console.log(countries)
+	    res.send(countries);
+	  }).sort({countryName:1})
+	});
+
+	router.get("/user/remote/geo-data",function(req,res){
+	  geonames.countryInfo({}) 
+	  .then(function(countries){
+	    return geonames.children({geonameId: req.query.geonameId})
+	  })
+	  .then(function(states){
+	  	if(!req.query.stateGeonameId) {
+	  		res.send(states.geonames);
+	  	} else {
+	  		return geonames.children({geonameId: req.query.stateGeonameId});
+	  	}
+	  })
+	  .then(function(regions){
+	  	if(!req.query.regionGeonameId) {
+	  		console.log("did")
+	  		res.send(regions.geonames)
+	  	} else {
+	    	return geonames.children({geonameId: req.query.regionGeonameId});
+	  	}
+	  })
+	  .then(function(cities){		  		
+	  	res.send(cities.geonames);
+	  })
+	  .catch(function(err){
+	  })
 	});
 
 	

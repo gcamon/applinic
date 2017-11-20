@@ -97,7 +97,8 @@ var myModel = function () {
 		dosage: String,
 		frequency: String,
 		drug_name: String,
-		duration: String
+		duration: String,
+		cost: Number
 	});
 
 	var statusSchema = Schema({
@@ -403,7 +404,9 @@ var myModel = function () {
 		email: String,
 		gender: String,
 		address: String,
+		currencyCode: String,
 		state: String,
+		region: String,
 		city: String,
 		title: String,
 		marital_status: String,
@@ -474,7 +477,8 @@ var myModel = function () {
 		city_grade: Number,
 		watch_list: Array,
 		barred: Boolean,
-		courier_access:Boolean
+		courier_access:Boolean,
+		courier_access_password: String,//ue to authenticate field aagents for courier deleivery
 	},{
 		collections: "userinfos"
 	})
@@ -598,6 +602,7 @@ var myModel = function () {
 		total_cost: String,
 		firstname: String,
 		address: String,
+		prescription_body: [prescriptionBodySchema],
 		city: String,
 		phone1: Number,
 		phone2: Number,
@@ -606,11 +611,48 @@ var myModel = function () {
 		attended: Boolean,
 		profile_pic_url: String,
 		user_id: String,
-		date: Number, //use date to find
-		otp: String
+		center_id: String,
+		date: Number, //use date to find refers to date the request was made or initaiated
+		otp: String,
+		receipt_date: Number,
+		verification_date: Number,
+		completed: Boolean,
+		delivery_charge: Number
 	},{
 		collections: "courierinfos"
 	});
+
+	var geonameSchema = Schema({
+	   continent: String,
+     capital: String,
+     languages: String,
+     geonameId: Number,
+     south: Number,
+     isoAlpha3: String,
+     north: Number,
+     fipsCode: String,
+     population: String,
+     east: Number,
+     isoNumeric: String,
+     areaInSqKm: String,
+     countryCode: String,
+     west: Number,
+     countryName: String,
+     continentName: String,
+     currencyCode: String,
+     cities: Array
+	},{
+		collections: "geonamesinfo"
+	});
+
+	/*var callingSchema = Schema({
+		calling_code: {
+			countryCode: String
+		}
+	},{
+		collections: "callingcodeinfos"
+	})*/
+
 
 
 	/*var callRequestSchema = Schema({
@@ -638,6 +680,9 @@ var myModel = function () {
 	models.cashout = mongoose.model("cashoutinfos",cashOutSchema);
 	models.dynaService = mongoose.model("dynamictestinfos",dynaTestSchema);
 	models.courier = mongoose.model("courierinfos",courierSchema);
+	models.geonames = mongoose.model("geonamesinfo",geonameSchema);
+	//models.calling_code = mongoose.model("callingcodeinfos",callingSchema)
+	
 	//models.requests = mongoose.model("requestinfos",chatSchema);
 	/*models.award = mongoose.model('awardinfo', AwardSchema);
 	models.education = mongoose.model('educationinfo', EducationSchema);

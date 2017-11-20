@@ -31,7 +31,7 @@
 			</div>-->
 			<div class="col-sm-12 col-md-12 col-lg-12" ng-if="hasSent">
 				
-				<div class="col-sm-12 card" style="padding:20px">
+				<div class="col-sm-12 card" style="padding:20px" ng-if="!isPreview">
 					 <h4 class="mb-0 mt-0 pl-0 font-1_4" >History :</h4>
 					<p class="pt-1 pb-1" style="font-size:1em;text-indent: 15px;margin-bottom: 30px" ng-if="refInfo.history">
 						<em>{{refInfo.history}}
@@ -39,7 +39,7 @@
 					</p>
 				</div>				
 				
-				<div class="col-sm-12 card" style="padding:20px">					
+				<div class="col-sm-12 card" style="padding:20px" ng-if="!isPreview">					
 					<h4 class="mb-0 mt-0 pl-0 font-1_4">Tests to run :</h4>
     				<div class="mt-1"  ng-repeat = "test in refInfo.radiology.test_to_run" >
 						<label class="custom-control custom-checkbox">
@@ -52,7 +52,7 @@
 					
 		
 			
-				<p class="card" style="padding:30px">If <strong>None</strong> of the above test(s) is run by your center please <a href="" style="color:red;font-size:16px" ng-click="redirectTest()"> refer patient to another center.</a>
+				<p class="card" style="padding:30px" ng-if="!isPreview">If <strong>None</strong> of the above test(s) is run by your center please <a href="" style="color:red;font-size:16px" ng-click="redirectTest()"> refer patient to another center.</a>
 				If <strong> one </strong> or <strong> more </strong> of the tests is not done in your center <strong>unmark</strong> the particular test.</p>
 				
 
@@ -67,7 +67,7 @@
                      <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="/#collapseSix" aria-expanded="false" aria-controls="collapseSix" style="background-color:#e97147; font-size: 14px;color:#fff;border-radius:10px;padding:10px" ng-click="result(refInfo)"ng-if="!isPreview">Enter test result</a>
                 </h6>                 
                 <div style="list-style:none;font-size:16px" id="collapseSeven" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingSeven"> -->
-                <div style="padding: 20px" class="card">
+                <div style="padding: 20px" class="card" ng-if="!isPreview">
                 	<h4 class="mb-0 mt-0 pl-0 font-1_4">Compute cost</h4> 
                 	 <p class="danger-mine" ng-if="compute && compute !== '' ">{{compute}}</p>                            
                      <table class="table table-responsive">
@@ -99,24 +99,33 @@
                	<!--<p style="text-align:center; text-decoration: underline" ng-if="hasPreviewed"><button ng-click="result(refInfo)">Enter test result</button></p>-->
 				
 				<!-- for accordion <div ng-if="isResult" id="collapseSix" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingSix">-->
+				<!--<div style="padding:20px" class="card" ng-if="!isPreview">
+					<h4 class="mb-0 mt-0 pl-0 font-1_4">Specimen collected: </h4>
+					<ul style="list-style: none;">
+						<li ng-repeat="item in specimen" style="display: inline-block;padding: 20px;float: left">
+							<input type="checkbox" name="" ng-model="item.status">
+							<span>{{item.name}}</span>
+						</li>
+					</ul>
+				</div>-->
 
 				<div ng-if="isResult"  style="padding: 20px" class="card">
 					
 					<p style="text-align:right; text-decoration: underline" ng-if="isRefresh"><button ng-click="refresh()" class="fa fa-refresh"> Refresh</button></p>
 					
 						
-					<div>
+					<div ng-if="!isPreview">
 					<h4 class="mb-0 mt-0 pl-0 font-1_4">Report entry </h4>
 					<form>
 						<div class="row">
 						<p class="danger-mine pl-1" ng-if=" incomplete && incomplete !== ''">{{incomplete}}</p>
 						<div class="form-group col-md-6 col-sm-12" ng-repeat="report in testReport">
 							<label class="font-1_1">{{report.name}} Test Report:</label>
-							<textarea placeholder="Write..."  class="form-control"  ng-model="report.data" required= "required"></textarea>						
+							<textarea placeholder="Write..."  class="form-control"  ng-model="report.data" required= "required" style="height: 350px"></textarea>						
 						</div>
 						<div class="form-group col-md-6 col-sm-12">
 						<label class="font-1_1">Conclusion:</label>
-						<textarea  class="form-control" placeholder="Write..." required ng-model="lab.conclusion"></textarea>
+						<textarea  class="form-control" placeholder="Write..." required ng-model="lab.conclusion" style="height: 200px"></textarea>
 						</div>
 						
 						</div>							
@@ -124,7 +133,7 @@
 					</form>			
 					</div>
 
-					<div >	
+					<div ng-if="!isPreview" >	
 						<h4 class="font-1_1">Uploads files associated with the test report (If any)</h4>
 						<form enctype="multipart/form-data">
 							<input type="file" name="file" id="file" file-model = "radio.scanImage" multiple="multiple">
@@ -150,12 +159,37 @@
 				
 				<div ng-if="isPreview">
 					<div class="card pb-2">
-					<div ng-if="!otpMsg">
-						<h5 class="p-1" style="font-weight:200; border-bottom:1px solid #ccc;">Preview of the result of above test ran based on your entry</h5>
-						<div class="row p-1">
-							<div class="text-success pl-1 font-1_1 m-0" ng-repeat="picked in preTest"><b>{{picked.name}}: </b> {{picked.data}}</div>
-							<div class="text-success pl-1 font-1_1"><b>Conclusion: </b> {{lab.conclusion}}</div>
+					<div ng-if="!otpMsg" style="padding: 10px">
+						<!--<h5 class="p-1" style="font-weight:200; border-bottom:1px solid #ccc;">Preview</h5>-->
+						<div class="row p-1" id="print-section">
+							<div>
+								<img src="{{checkLogIn.profile_pic_url}}" style="width:72px;height:72px; float:left">
+								<div style="display: inline-block;">
+									<strong style="font-size: 22px">{{checkLogIn.name}}</strong>
+									<article>{{checkLogIn.address}}</article>
+								</div>
+							
+							</div>
+							<hr class="bg-warning">
+							<h6>History:</h6>
+							<p style="padding:10px 20px">{{refInfo.history}}</p>
+							<hr class="bg-warning">
+							<h6>Investigation:</h6>
+							<ul>
+								<li ng-repeat = "test in refInfo.radiology.test_to_run"">{{test.name}}</li>
+							</ul>
+							<!--<hr class="bg-warning">
+							<h6>Specimen collected:</h6>
+							<ul>
+								<li ng-repeat="sample in specimen" ng-if="sample.status == true">{{sample.name}}</li>
+							</ul>-->
+							<hr class="bg-warning">
+							<h6>Findings: </h6>
+							
+							<div class="text-success pl-1 font-1_1 m-0" ng-repeat="picked in preTest"><b>{{picked.name}}: </b> <span style="display: block;padding: 20px;word-break: break-all;">{{picked.data}}</span></div>
+							<div class="text-success pl-1 font-1_1"><b>Conclusion: </b> <span style="display: block;padding: 20px;word-break: break-all;">{{lab.conclusion}}</span></div>
 							<div ng-if="">{{}} files attached</div>
+							<hr class="bg-warning">
 							<div class="text-danger pt-1 pl-1 pb-0" style="text-transform:uppercase;"><b>Total cost of service(s): </b> {{str}}</div>
 						</div>
 
@@ -163,7 +197,8 @@
                         <i class="fa fa-warning"></i> Please confirm total cost of service before sending OTP</small>
                         </div>
 						<button class="btn btn-simple mr-1 ml-1" ng-click="edit()"> Edit </button>
-							<button class="btn btn-warning" ng-click="sendBill(refInfo.radiology.patient_id,resend)" ng-if="grabRawAmount > 0"> Ok,continue </button>
+						<i class="btn btn-simple mr-1 ml-1 fa fa-print" ng-print  print-element-id="print-section"></i>
+						<button class="btn btn-warning" ng-click="sendBill(refInfo.radiology.patient_id,resend)" ng-if="grabRawAmount > 0"> Ok,continue </button>
 						
 					</div>
 					 <hr class="bg-warning">

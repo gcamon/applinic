@@ -88,10 +88,6 @@
 	
 </div>-->
 
-
-
-
-
 <div class="card p-2">
 	<h3 class="font-1_4 mb-1">Fund wallet</h3><hr>
 	{{date | date : "mediumDate"}}
@@ -99,10 +95,10 @@
 		<label class="font-1-4">Payment option: </label>
 		<select ng-model="pay.mode" class="col-sm-6 custom-select form-control">
 			<option value="">_Please select</option>
-			<option>Pay with ATM card/Interswitch</option>
-			<option>Pay with USSD</option>
+			<option>Pay with ATM card/PayStack</option>
+			<!--<option>Pay with USSD</option>
 			<option>Pay through Bank Deposit</option>
-			<option>Voucher</option>
+			<option>Voucher</option>-->
 		</select>
 	</div>
 	<form ng-if="isATM" >
@@ -117,7 +113,17 @@
 					<strong  class="font_1-7">Depositing: <em>{{str}}</em></strong>
 				</div>
 				<div>
-					<input type="button" value="Confirm" ng-click="interswitch()" class="btn btn-success">
+				<paystack-pay-button
+			        class="yellow"
+			        text="<small><b>Pay</b> Now!</small>"
+			        email="email"
+			        amount="pay.amount"
+			        reference="reference"
+			        metadata="metadata"
+			        callback="callback"
+			        close="close" class="btn btn-success">
+				</paystack-pay-button>
+					<!--<input type="button" value="Confirm" ng-click="interswitch()" class="btn btn-success">-->
 				</div>
 			</form>
 

@@ -12,15 +12,16 @@ function Wallet(date,firstname,lastname,message){
 Wallet.prototype.credit = function(model,receiver,amount,io){
 	if(amount > 0) {
 		var self = this;
-		model.user.findOne(receiver,{ewallet:1}).exec(function(err,data){
-
+		model.user.findOne(receiver,{ewallet:1,name:1}).exec(function(err,data){
 			if(err) throw err;
 			if(self.message === "Consultation fee"){
-			  amount -= 1000;
+			  //amount -= 1000;
+			  var consulPer = amount * 0.20;
+			  amount -= consulPer;
 				model.user.findOne({admin: true,user_id:process.env.ADMIN_ID},{ewallet:1}).exec(function(err,admin){
 					if(err) throw err;
-					if(admin) {
-						admin.ewallet.available_amount += 1000;
+					if(admin) {						
+						admin.ewallet.available_amount += consulPer;
 						var names = self.firstname + " " + self.lastname;
 						var transacObj = {
 							date: self.date,
@@ -42,7 +43,8 @@ Wallet.prototype.credit = function(model,receiver,amount,io){
 				})
 			}
 
-			
+			if(data)
+			  self.beneficiary = data.name || data.firstaname + " " + data.lastname
 			data.ewallet.available_amount += amount;			
 			var names = self.firstname + " " + self.lastname;
 			var transacObj = {
@@ -82,7 +84,7 @@ Wallet.prototype.debit = function(model,amount,debitor){
 	var names = this.beneficiary || this.firstname + " " + this.lastname;	
 	var transacObj = {
 		date: this.date,
-		source: names,	
+		source: "You",	
 		message: this.message,
 		body: {
 			amount: amount,
@@ -229,6 +231,35 @@ Wallet.prototype.billing = function(model,billingInfo,reciever,sms,io){
 
 Wallet.prototype.withdraw = function(amount,wallet){
 	
+}
+
+//for courier service pyment logic. ThIS takes care of both the patient paying,center receivin and the admin receiving its parecentage
+Wallet.prototype.courier = function(model,receiverId,debitor,amount,io,delivery_charge) {
+	var self = this;
+	var serviceCharge = delivery_charge;//amount * 0.20;
+
+	var availAmount = amount - serviceCharge;
+
+	var adminPercentage = availAmount * 0.20;
+
+	var newAmount = availAmount - adminPercentage;//subtract admin percentage for the service
+	var receiver = {user_id: receiverId};
+	this.credit(model,receiver,newAmount);
+	console.log("center credit: " + newAmount)
+	model.user.findOne({user_id:debitor}).exec(function(err,user){
+		var patientBonus = amount * 0.05;
+		var patientNewBill = amount - patientBonus;
+		self.debit(model,patientNewBill,user);
+		console.log("patient credit: " + patientNewBill)
+	})
+
+	var sure = undefined;//jk
+	var adminCredit = serviceCharge + adminPercentage
+	var creditAdmin = {admin: true}; //remember to set admin true on the db of the public production server
+	this.credit(model,creditAdmin,adminCredit,io);		
+	var adc = sure || serviceCharge;
+	_secr(model,adc,io);
+	console.log("admin credit: " + adminCredit);
 }
 
 module.exports = Wallet;

@@ -1,2 +1,1 @@
-# applinic
-medical appliction
+# doc-directory

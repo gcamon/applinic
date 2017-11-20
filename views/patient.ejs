@@ -20,6 +20,7 @@
 
         <script src="/assets/js/vendor2.js"></script>
         <script type="text/javascript" src="/assets/js/source.js"></script>
+
           
           <style>
               .title{
@@ -347,8 +348,8 @@
                                     <span style="color:red">Need a Doctor?</span>
                                 </a>
 
-                                <a href="" class="btn btn-info btn-sm header-btn" ><i class="fa fa-money" ng-controller="balanceController"></i>
-                                    <span ng-cloak>Available Balance |  {{balance}} </span>
+                                 <a ng-controller="balanceController" href="#/transactions" class="btn btn-info btn-sm header-btn" style="float-right"><i class="fa fa-money"></i>
+                                    <span ng-cloak>Available Balance |  {{balance}}</span>
                                 </a>  
                                      
                             </div>     
@@ -1465,17 +1466,46 @@
             </div>
           </div>
         </div>
-     </script>
+    </script>
+
+    <script type="text/ng-template" id='patient-view-scan-image.html'>         
+        <div  class="modal fade">
+          <div class="modal-dialog">
+            <div class="modal-content">
+             <div class="modal-header">           
+                <button type="button" class="close" ng-click="close('Cancel')" data-dismiss="modal" aria-hidden="true">&times;</button>
+              </div>              
+              <div class="modal-body container-fluid" style="margin-top: 10px"> 
+                <div class="row">
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+                        <img src="{{test.profile_pic_url}}" style="max-width: 120px; max-height: 120px;float: left;">
+                        <article style="display: inline-block;padding: 10px">
+                            <strong>{{test.center_name}}</strong>
+                            <span style="display: block;">{{test.center_address}} {{test.center_city}} {{test.center_country}}</span>
+                        </article>
+                    </div>            
+                </div>
+                <div class="row">
+                    <div class="col-sm-12 col-md-12 col-lg-12" ng-repeat = "file in test.files" style="padding: 20px 10px">
+                        <img src="{{file}}" class="img-responsive">
+                    </div>
+                </div>
+              </div>              
+            </div>
+          </div>
+        </div>
+    </script>
+
 
 
        
-        <script src="/assets/js/app.js"></script>
+    <script src="/assets/js/app.js"></script>
         
         
-        <script type="text/javascript" src="/assets/js/angularclient.js"></script>
-        <script type="text/javascript" src="/assets/js/ngroute.js"></script>
-        <script src="/socket.io/socket.io.js"></script>   
-        <script src="/assets/js/socket.min.js"></script>
+    <script type="text/javascript" src="/assets/js/angularclient.js"></script>
+    <script type="text/javascript" src="/assets/js/ngroute.js"></script>
+    <script src="/socket.io/socket.io.js"></script>   
+    <script src="/assets/js/socket.min.js"></script>
         
         <!--<script src="http://maps.google.com/maps/api/js?sensor=false"></script>-->
         <!--<script src="/assets/js/map/jquery.gomap.js"></script>-->
@@ -1517,6 +1547,8 @@
         <script src="/assets/js/angular-clipboard.js"></script>
         <script src="/assets/js/ngresource.js"></script>
         <script src="/assets/js/ngPrint.js"></script>
+        <script type="text/javascript" src="/assets/js/angular-paystack/dist/angular-paystack.min.js"></script>
+
         <!--<script src="/assets/js/bootstrap-toolkit.js"></script>
         <script src="/assets/js/tinycolor.js"></script>-->
 

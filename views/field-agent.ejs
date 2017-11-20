@@ -1,0 +1,130 @@
+<!doctype html>
+<html class="no-js" lang="en">
+
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title> Applinic</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="apple-touch-icon" href="apple-touch-icon.png">
+        <!-- Place favicon.ico in the root directory -->
+       
+        <!--<link rel="stylesheet" href="/assets/css/bootstrap.css">-->
+        <link rel="stylesheet" href="/assets/css/vendor.css">
+         <link rel="stylesheet" href="/assets/css/app.css">
+          <link rel="stylesheet" href="/assets/css/now-ui-kit2.css">
+          <link rel="stylesheet" href="/assets/css/font-awesome.min.css">
+          
+           <link rel="stylesheet" href="/assets/css/my-edit.css">
+          <style>
+              .title{
+                  font-weight: 300;
+              }
+          </style>
+          <script src="/assets/js/vendor2.js"></script>
+          <script type="text/javascript" src="/assets/js/source.js"></script>
+    </head>
+
+    <body ng-app="myApp">
+                    
+        <div class="container" ng-controller="filedAgentController">
+            <h4>Applinic field agent</h4>
+          
+
+                   <div class="shadow row" style="padding: 20px 0" ng-repeat="patient in courierList" ng-i="!patient.receipt_date">
+                    <div class="col-sm-12 col-md-3 col-lg-3">
+                        <h6 style="text-decoration: underline;padding: 10px 0">Patient detail</h6>
+                        <img src='{{patient.profile_pic_url}}' style="max-width:200px;max-height:200px">
+                        <div><strong>Name :</strong> {{patient.title}} {{patient.firstname}} {{patient.lastname}}</div>
+                        <div><strong>Address : </strong> {{patient.address}} ( {{patient.city}} )</div>
+                        <div><strong>Cost : </strong> {{patient.total_cost }}</div>
+                    </div>
+                    
+                    <div class="col-sm-12 col-md-5 col-lg-5" >
+                        <h6 style="text-decoration: underline;padding: 10px 0">Prescription detail</h6>
+                         
+                         
+                            <table class="table table-striped table-responsive">
+                                <tr>
+                                    <thead>
+                                        <th>S/N</th>
+                                        <th>Drug Name</th>
+                                        <th>Cost</th>
+                                        <th>Dosage</th>
+                                        <th>Frequency</th>
+                                        <th>Duration</th>                                   
+                                    </thead>                            
+                                </tr>
+                                <tr>
+                               
+                                    <tbody ng-repeat="pres in patient.prescription_body">                                   
+                                        <td>{{pres.sn }}</td>
+                                        <td>{{pres.drug_name}}</td>
+                                        <td>{{pres.cost}}</td>
+                                        <td>{{pres.dosage}}</td>
+                                        <td>{{pres.frequency}}</td>
+                                        <td>{{pres.duration }}</td>                                              
+                                    </tbody>
+                            
+                                </tr>
+                            </table>
+                        
+                        
+                    </div>
+                    <div class="col-sm-12 col-md-4 col-lg-4" style="padding:10px;line-height: 30px">
+                        <h6 style="text-decoration: underline;padding: 10px 0">Verification/payment</h6>
+                        <div ng-cloak><strong>Date received : </strong> {{patient.receipt_date | date: "mediumDate"}} | {{patient.receipt_date | date: "mediumTime"}}</div>
+                        <div><strong>Verify OTP :</strong> <input type="text" ng-model="patient.otp" placeholder=" Enter otp"> <i class="fa fa-check" aria-hidden="true" style="font-size: 25px;padding: 0 10px;color:green" ng-if="patient.receipt_date"></i> <span style="display: block;" class="text-danger" ng-if="!patient.receipt_date">{{patient.message}}</span> <span style="display: block;color:green" ng-if="patient.receipt_date">{{patient.message}}</span></div> 
+                        <div style="margin-top: 20px">
+                                <button class="btn btn-success" ng-click="confirmPay(patient)" ng-hide="patient.receipt_date">Verify</button>
+                        </div>
+                    </div>
+                   </div>
+                                                              
+        </div>
+    
+
+
+
+
+
+
+
+
+
+
+    <script src="/assets/js/app.js"></script>
+    <script src="/assets/js/now-ui-kit.js"></script>
+
+
+   
+    
+    <script type="text/javascript" src="/assets/js/angularclient.js"></script>
+    <script type="text/javascript" src="/assets/js/ngroute.js"></script>
+    <script src="/socket.io/socket.io.js"></script>   
+    <script src="/assets/js/socket.min.js"></script>
+    <script src="/assets/js/jquery-ui.js"></script>
+
+   
+   
+  
+  
+    
+    
+    <!--<script src="/assets/js/main.js"></script>-->
+    <script src="/assets/js/angular-touch.min.js"></script>
+    <script src="/assets/js/angularAnimate.js"></script>
+
+    <script src="/assets/js/modalService.js"></script>
+    <script src="/assets/js/moment.min.js"></script>     
+    <script src="/assets/js/angular-moment.min.js"></script>
+    <script src="/assets/js/angucomplete-alt.min.js"></script> 
+
+    <script src="/assets/js/ui-bootstrap-tpls.js"></script>
+    <script src="/assets/js/angular-clipboard.js"></script>
+    <script src="/assets/js/ngresource.js"></script>
+     <script src="/assets/js/ngPrint.js"></script>
+    </body>
+
+</html>
