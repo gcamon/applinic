@@ -9,7 +9,7 @@ function Wallet(date,firstname,lastname,message){
 	this.result = false;
 }
 
-Wallet.prototype.credit = function(model,receiver,amount,io){
+Wallet.prototype.credit = function(model,receiver,amount,io,cb){
 	if(amount > 0) {
 		var self = this;
 		model.user.findOne(receiver,{ewallet:1,name:1}).exec(function(err,data){
@@ -57,6 +57,8 @@ Wallet.prototype.credit = function(model,receiver,amount,io){
 					beneficiary: "You"
 				}
 			}
+
+			cb(data.ewallet.available_amount)
 
 			
 			data.ewallet.transaction.push(transacObj);

@@ -7,7 +7,7 @@ var path = require("path");
 var Wallet = require("./wallet");
 
 
-var basicPaymentRoute = function(model,sms,io){
+var basicPaymentRoute = function(model,sms,io,paystack){
 
 	//this route creates the token for use ie creating vouchers
 	router.post("/user/token",function(req,res){
@@ -209,6 +209,41 @@ var basicPaymentRoute = function(model,sms,io){
 		}
 	});
 
+	/** this route takes care for crediting user when paid through payment gate way for paystack ***/
+	router.post("/user/paystack/payment-verify",function(req,res){
+		console.log(req.body);
+
+		if(req.user){
+
+			paystack.transaction.verify(req.body.reference, function(err, body) {
+				console.log(body);
+				if(body) {
+				  creditUser(body.data.amount)
+				} else {
+				 res.send({error:true, message: "Oops! Something went wrong while updating you wallet. Please contact admin of this site."})
+				}
+			});
+
+			function creditUser(amount) {
+				model.user.findOne({user_id:req.user.user_id},{firstname:1,lastname:1,user_id:1},function(err,data){				
+					if(err){
+						res.send("Error occured! account not credited!");
+					} else {
+						var date = + new Date();
+						var reciever = {user_id: data.user_id};
+						var pay = new Wallet(date,data.firstname,data.lastname,"Account top-up (Paystack)");
+						pay.credit(model,reciever,amount,io,function(currBalnce){
+							res.send({message:"You wallet has been credited successfully!",balance:currBalnce});
+						});				
+						
+						
+					}				
+				});	
+			}	
+		} else {
+			res.end("unathorized access!");
+		}
+	});
 
 	router.get("/user/verify",function(req,res){
 		if(req.user && req.query.phone || req.query.userId){
@@ -1150,11 +1185,6 @@ console.log(req.body)
    });
 })
 
-router.post("/user/paystack-verify",function(req,res){
-	console.log("paystack called back!!")
-	console.log(res);
-
-})
 
 }
 

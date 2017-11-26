@@ -183,7 +183,6 @@ var signupRoute = function(model,sms,geonames,paystack) {
 			pin: genPin
 		});
 
-		console.log(testPhone);
 		var date = new Date()
 		testPhone.expirationDate = new Date(date.getTime() + 300000);
 		testPhone.expirationDate.expires  = 60 * 60;

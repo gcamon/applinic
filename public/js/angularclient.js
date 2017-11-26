@@ -5323,7 +5323,6 @@ app.service("walletService",["$resource",function($resource){
 }]);
 
 
-
 app.controller("walletController",["$scope","$http","$rootScope","$location","ModalService","requestManager","templateService","localManager","$resource","walletService",
   function($scope,$http,$rootScope,$location,ModalService,requestManager,templateService,localManager,$resource,walletService){
   $scope.viewInvoice = false;
@@ -5441,20 +5440,32 @@ app.controller("walletController",["$scope","$http","$rootScope","$location","Mo
         $scope.reference = genRef();
       });      
       if(response) {
-        var verifUrl = "https://api.paystack.co/transaction/verify/" + response.reference;
-        verifyTransaction(response)        
+        verifyTransaction(response);        
       }
   };
   
   //Javascript function that is called if the customer closes the payment window 
   $scope.close = function () {
-    console.log("Payment closed");
+    alert("Paystack closed")
   };
 
-  function verifyTransaction(url) {
-    $.getJSON(url, function(result){
-      alert("transaction verification result");
-      console.log(result);
+  function verifyTransaction(data) {
+   $http({
+      method  : 'POST',
+      url     : "/user/paystack/payment-verify",
+      data    : data,
+      headers : {'Content-Type': 'application/json'} 
+      })
+    .success(function(data) {
+      console.log(data)
+      if(!data.error) {
+        var whole = Math.round(data.balance);
+        var format = "N" + whole.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        $rootScope.balance = format;
+        $rootScope.alertService(1,data.message);   
+      } else {
+         alert(data.message)               
+      }
     });
   }
 
@@ -5462,14 +5473,13 @@ app.controller("walletController",["$scope","$http","$rootScope","$location","Mo
 
   function genRef() {
     var text = "";
-    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz01234567899966600555777222";
-      for( var i=0; i < 16; i++ )
+    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz012345678999666005557772229999";
+      for( var i=0; i < 22; i++ )
         text += possible.charAt(Math.floor(Math.random() * possible.length));
       return text;
   }
 
 /***** end of paystack *******/
-
  /** transfer fund logic ***/
 
   $scope.$watch("pay.amount",function(newVal,oldVal){
@@ -12927,12 +12937,27 @@ app.controller("emScanTestController",["$scope","$location","$http","$window","t
 
 }]);
 
-app.controller("topHeaderController",["$scope","$rootScope","$window","$location","$resource","localManager","mySocket",
-  function($scope,$rootScope,$window,$location,$resource,localManager,mySocket){
+app.controller("topHeaderController",["$scope","$rootScope","$window","$location","$resource","localManager","mySocket","templateService",
+  function($scope,$rootScope,$window,$location,$resource,localManager,mySocket,templateService){
 
   if(!localManager.getValue("resolveUser")) {
     $window.location.href = "/login"
   } 
+
+  //user this service within controllers to alert on every event status.
+  $rootScope.alertService = function (val,msg) {
+    if (val) { 
+      templateService.playAudio(3);
+      $rootScope.alert = true;
+      $rootScope.message = msg;
+      setTimeout(function(){
+        $scope.$apply(function(){
+          $rootScope.alert = false;
+          $rootScope.message = msg;
+        })
+      },6000)
+    } 
+  }
 
 
   $scope.isMenu = false;

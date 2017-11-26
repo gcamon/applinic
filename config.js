@@ -37,7 +37,7 @@ var configuration = function (app,model) {
 	  saveUninitialized: true,
 	  cookie: {
 	  	httpOnly: true, 
-	  	maxAge: 3600000 * 48,
+	  	maxAge: 3600000 * 24,
 	  	path: "/user"
 	  } //secure: true will be set on the cookie when i this site is on https
 	}));

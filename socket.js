@@ -6,7 +6,6 @@ module.exports = function(model,io) {
 	    var user = {};
 	    socket.on('join', function (data) {
 	    	user.isPresent = true; //use to check presence of user without hitting the database.
-	    	console.log(data)
 	      socket.join(data.userId);      
 	      console.log("room created");
 	    });

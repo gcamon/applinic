@@ -70,7 +70,7 @@ config.configuration(app,model);
 signupRoute(model,sms,geonames,paystack);
 loginRoute(model);
 route(model,sms,io); 
-payments(model,sms,io);
+payments(model,sms,io,paystack);
 placement(model,sms);
 mySocket(model,io);
   

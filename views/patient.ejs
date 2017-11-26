@@ -330,9 +330,10 @@
         <div class="main-wrapper">
              <div class="clearfix"></div>
               <!-- Navbar -->
-    <nav class="navbar navbar-toggleable-md" style="margin:-9px 0;" ng-controller="presenceSocketController">
+    <nav class="navbar navbar-toggleable-md" style="margin:-9px 0;position:" ng-controller="presenceSocketController">
       
     </nav>
+   
     <!-- End Navbar -->
      <div class="clearfix"></div>
             <div class="app" id="app">
@@ -355,6 +356,9 @@
                             </div>     
                             
                 </header>
+                 <div class="custom-alert-box" ng-class="{'toogle-custom-alert': alert === true}"  ng-cloak>
+                  <span>{{message}}</span>
+                </div>
 
                 <div class="clearfix"></div>
 
