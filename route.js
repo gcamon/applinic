@@ -15,7 +15,7 @@ var basicRoute = function (model,sms,io) {
 
   router.get("/",function(req,res){
     res.render('index',{"message":""});
-  })
+  });
 
   router.get("/user",function (req,res) {
     if(req.user){
