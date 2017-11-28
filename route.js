@@ -67,10 +67,8 @@ var basicRoute = function (model,sms,io) {
 
   });
 
-
   router.get("/user/doctor",function(req,res){    
     if(req.user){
-      //getSocketInstance(req)     
       res.render("profile",{"person":req.user});
     } else {
       res.redirect("/login");
