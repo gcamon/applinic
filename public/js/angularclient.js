@@ -1704,6 +1704,7 @@ app.controller('signupController',["$scope","$http","$location","$window","templ
   }
 
   $scope.isEdit = false;
+  $scope.isSpeciaty = false;
   $scope.$watch("user.city",function(newVal,oldVal){
     if($scope.user.city === "edit") {
       $scope.isEdit = true;
@@ -1711,10 +1712,15 @@ app.controller('signupController',["$scope","$http","$location","$window","templ
     }
   });
 
-
+  $scope.$watch("user.specialty",function(newVal,oldVal){
+    if($scope.user.specialty === "edit-specialty") {
+      $scope.isSpeciaty = true;
+      $scope.user.specialty = "";
+    }
+  });
 
   var toStr;
- var count=0;
+  var count=0;
   var msg = "Wrong format! Select country above to auto fill the calling code field."
   $scope.$watch("user.phone",function(newVal,oldVal){
     
@@ -5446,7 +5452,7 @@ app.controller("walletController",["$scope","$http","$rootScope","$location","Mo
   
   //Javascript function that is called if the customer closes the payment window 
   $scope.close = function () {
-    alert("Paystack closed")
+    //alert("Paystack closed")
   };
 
   function verifyTransaction(data) {

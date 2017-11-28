@@ -124,7 +124,6 @@ var signupRoute = function(model,sms,geonames,paystack) {
 							
 						}				
 
-
 						User.save(function(err){
 							console.log("user saved");
 							if(err) throw err;					

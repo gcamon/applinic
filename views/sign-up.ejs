@@ -68,7 +68,7 @@
                     <span class="navbar-toggler-bar bar3"></span>
                 </button>
                 <a class="navbar-brand" href="/">
-                    Applinic
+                    <img src="/assets/images/applinic1.svg" alt="Applinic" width="250" height="40">
                 </a>
             </div>
             <div class="collapse navbar-collapse justify-content-end" id="navigation" data-nav-image="assets/img/blurred-image-1.jpg">
@@ -104,11 +104,11 @@
                         </a>
                     </li>
                   </ul>
-                         <a href="/login" class="get-user" style="color:#f96332;background-color:#fff">
+                         <a href="/login" class="get-user" style="color:#f96332;background-color:#fff;text-decoration: none;">
                            Login
                         </a>
                 
-                        <a href="/signup" class="get-user" style="background-color:#f96332">
+                        <a href="/signup" class="get-user" style="background-color:#f96332;text-decoration: none;">
                            Sign up
                         </a>
                      </div>
@@ -313,8 +313,9 @@
 </select>
   </div>
   <div class="col-6">
-    <select class="custom-select col-md-12"  ng-model="user.specialty" required>
-  <option value="" disabled selected>Select Speciality</option>
+   <input type="text" class="form-control" placeholder="Enter specialty" ng-model="user.specialty" ng-if="isSpeciaty === true" ng-cloak required>
+   <select class="custom-select col-md-12"  ng-model="user.specialty" ng-if="isSpeciaty === false" required>
+  <option value="" disabled selected>Select Specialty</option>
   <option>Acupunture</option>
       <option>Addiction Medicine</option>
       <option>Adolescent Medicine</option>
@@ -367,7 +368,8 @@
       <option>Neurology</option>
       <option>Neuroradiology</option>
       <option>Nuclear Cardiology</option>
-      <option>Nuclear Medicine</option>
+      <option>Nuclear Cardiology</option>
+      <option>Neurosurgeon</option>
       <option>Nutrition</option>
       <option>Obstetrics/Gynecology</option>
       <option>Occupational Medicine</option>
@@ -386,7 +388,7 @@
       <option>Pediatric Cardiology</option>
       <option>Pediatric Critical Care</option>
       <option>Padiatric Emergency Medicine</option>
-      <option>Other</option>
+      <option value="edit-specialty">Other</option>
 </select>
   </div>
 </div>

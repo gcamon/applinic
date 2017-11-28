@@ -51,7 +51,11 @@ var basicRoute = function (model,sms,io) {
   });
 
   router.get("/how-it-works",function(req,res){
-    res.render("how-it-work")
+    res.render("how-it-work");
+  });
+
+  router.get("/contact",function(req,res){
+    res.render("contact-us");
   });
 
   router.get("/user/patient",function(req,res){ 
