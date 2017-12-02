@@ -12,16 +12,16 @@ var http = require("http");
 
 var signupRoute = function(model,sms,geonames,paystack) {
 	passport.use('signup', new LocalStrategy({
-		usernameField : 'username',
+		usernameField : 'email',
 	    passwordField : 'password',
 	    passReqToCallback : true 
 	},
-	function(req,username,password,done){
+	function(req,email,password,done){
 		process.nextTick(function(){	
-			model.user.findOne({username:username},function(err,user){
+			model.user.findOne({email:email},function(err,user){
 			if(err) return done(err);
 			if(user){
-				return done(null, false, req.flash('signupMessage', 'That username has already been use please find another one'));	
+				return done(null, false, req.flash('signupMessage', 'Email has already been use please find another one'));	
 			} else {
 				var userphone = {}
 				model.verifyPhone.findOne({phone:req.body.phone,pin:req.body.v_pin},function(err,data){
@@ -46,11 +46,12 @@ var signupRoute = function(model,sms,geonames,paystack) {
 	          password: salt.createHash(password),
 	          phone: req.body.phone,
 	          admin: false,
+	          country: req.body.countryName,
 	          type: req.body.typeOfUser,
 	          city: req.body.city,
 	          firstname: req.body.firstname,
 	          lastname: req.body.lastname,
-	          username: username,
+	          username: req.body.username,
 						address: req.body.address,
 						gender: req.body.gender,
 						title: req.body.title,
@@ -65,7 +66,6 @@ var signupRoute = function(model,sms,geonames,paystack) {
 						profile_url: "/user/ranking/views/" + uid,
 						profile_pic_url: "/download/profile_pic/nopic",
 						work_place: req.body.work_place,
-						country: req.body.country,
 						name: req.body.name,
 						verified: false,
 						rating: {
@@ -93,8 +93,11 @@ var signupRoute = function(model,sms,geonames,paystack) {
 							transaction: []
 						}
 
+
+						/*cities are capture for record purposes.Note country of the user if is saved for the user form 
+						the data optained from quering the geooname.*/
 						if(req.body.typeOfUser !== "Patient") {
-							var criteria = {countryName: req.body.country,"cities.city": req.body.city}
+							var criteria = {geonameId: req.body.geonameId,"cities.city": req.body.city}
 							model.geonames.findOne(criteria,{cities:1}).exec(function(err,data){
 								if(err) throw err;
 								if(!data){
@@ -104,7 +107,6 @@ var signupRoute = function(model,sms,geonames,paystack) {
 									}
 									data.cities.push(geoObj);
 								}
-
 								data.save(function(){});
 							})
 						}
@@ -119,19 +121,24 @@ var signupRoute = function(model,sms,geonames,paystack) {
 								User.city_grade = 20
 							} else {
 								User.city_grade = 15
-							}
+							}							
+						}		
 
-							
-						}				
+						console.log(User);	
 
 						User.save(function(err){
 							console.log("user saved");
 							if(err) throw err;					
 							return done(null,User);
-						});					
+						});	
+
+
+						console.log("pppppppppppppppppppppppppppp");
+						console.log(req.body)
+				
 
 						} else {
-							return done(null, false, req.flash('signupMessage', 'Please you have to agree to our terms and conditions'))
+							res.send({error: "Email already in use. Please find another one"})
 						}
 					}
 				}//end of function creatuser
@@ -148,6 +155,17 @@ var signupRoute = function(model,sms,geonames,paystack) {
 			})			
 		})
 	}));
+
+	router.put('/user/signup',function(req,res){
+		model.user.findOne({email:req.body.email},function(err,data){
+			if(err) throw err;
+			if(!data){
+				res.send({success: true});
+			} else {
+				res.send({success: false});
+			}
+		})
+	})
 	
 
 	router.post('/user/signup', function(req, res, next) {	
@@ -160,7 +178,7 @@ var signupRoute = function(model,sms,geonames,paystack) {
 	      	res.send({error:true,message: "User phone number not active or wrong verification pin!"});
 	    } else {	    	
     		var msgBody = "Your Applinic login details" + " \nUsername: " + req.body.username + " \nPassword: " + req.body.password;
-				var phoneNunber = "234" + req.body.phone || "2348096461927";
+				var phoneNunber = req.body.phone || "2348096461927";
 				console.log(phoneNunber);
 
 				function callBack(err,info){
@@ -189,12 +207,12 @@ var signupRoute = function(model,sms,geonames,paystack) {
 		testPhone.save(function(err,info){});
 
 		var msgBody = "Your sms verification Pin is " + genPin + "\nUse to complete your registeration."
-		var phoneNunber = "234" + req.body.phone;
+		var phoneNunber = req.body.phone;
 		sms.message.sendSms('Appclinic',phoneNunber,msgBody,callBack); //"2348096461927" "2349092469137"
 		//remember to change "234" to empty string
 		function callBack(err,response){
 			if(!err) {
-				res.send({message:"Phone verification pin sent to your phone. You can use the pin here for now to continue:  " + genPin});
+				res.send({message:"Phone verification pin sent to " + req.body.phone + ". You can use the pin here for now to continue:  " + genPin});
 			} else {
 				res.send({message:"Error Occur please try again",error: true});
 			}

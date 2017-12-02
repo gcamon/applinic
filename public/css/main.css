@@ -135,21 +135,6 @@ button {
 button { border: none; }
 select,
 .form-control,
-textarea,
-input[type="text"],
-input[type="password"],
-input[type="datetime"],
-input[type="datetime-local"],
-input[type="date"],
-input[type="month"],
-input[type="time"],
-input[type="week"],
-input[type="number"],
-input[type="email"],
-input[type="url"],
-input[type="search"],
-input[type="tel"],
-input[type="color"],
 .uneditable-input {
 	color: #999;
 	width: 100%;
@@ -172,7 +157,7 @@ input[type="color"],
 .form-control::-moz-placeholder{text-transform: capitalize;}
 input:focus{box-shadow:none !important;}
 textarea.form-control:focus,
-input.form-control:focus {border-color: #5d5955;}
+input.form-control:focus {border-color:inherit;}
 .form-control:focus::-moz-placeholder{color: #5d5955;}
 form fieldset{
 	border: 0;
@@ -1283,7 +1268,6 @@ span.dates {
 
 .waiting-room div {
 	display:inline-block;	
-	box-shadow: 1px 2px 1px rgba(0,0,0,0.3);
 	margin-top: 30px;
 }
 
@@ -1313,12 +1297,17 @@ span.dates {
 .complain-list li a {
 	width: 100%;
 	display: block;
-	color: green;
+	color: #333;
 	font-size: 18px;
-	box-shadow: 1px 2px 2px #000;
-	padding: 10px;
+	height: 39px;
+	  border-radius: 2px;
+	  border:1px solid #eee;
+	  background:#fff;
+	padding: 8px;
 }
-
+.complain-list li a:hover{
+	box-shadow: 0px 5px 25px 0px rgba(0, 0, 0, 0.2);
+}
 .nav-link a span {
 	color: red!important;
 }
@@ -1499,14 +1488,15 @@ move later
 
 
 
-.patient-complain {
-	margin-top: 30px;
+.patient-complain div{
+	margin-top: 0px;
 	font-size: 15px;
-}
-
-.patient-complain article {
-	border-bottom: 1px solid rgba(0,0,0,0.4);
-	padding: 20px;
+    box-shadow: none;
+    color: #fff;
+	padding: 5px;
+	min-height:50px;
+	line-height: 30px;
+	border-radius: 4px !important;
 }
 
 .patient-complain i {
@@ -1517,13 +1507,14 @@ move later
 	font-size: 14px;
 	font-weight: bold;
 	font-style: italic;
+	color: #fff;
 	padding: 0 20px;
 }
 
 .patient-symptoms {
 	font-style: italic;
-	margin-top: 10px;
 	display: inline-block;
+	color: #fff !important;
 }
 
 .description {

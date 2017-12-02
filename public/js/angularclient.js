@@ -1377,15 +1377,15 @@ app.controller('signupController',["$scope","$http","$location","$window","templ
   function($scope,$http,$location,$window,templateService,$resource,$rootScope,localManager) {
   $scope.user = {};
   $scope.user.typeOfUser = "";
-  var signUp = $resource('/user/signup',null,{userSignup:{method:"POST"}});
+  var signUp = $resource('/user/signup',null,{userSignup:{method:"POST"},emailCheck:{method:"PUT"}});
 
   var doctor = ["title","specialty","firstname","lastname","work_place","address","city","country","phone",
-  "email","password","password2","agree","state","region"];
+  "email","password","password2","agree","state","region","username"];
   var patient = ["title","firstname","lastname","address","city","country","phone","email",
-  "password","password2","agree","age","gender","state","region"];
+  "password","password2","agree","age","gender","state","region","username"];
   var hospital = ["name","address","city","country","phone","email","password",
-  "password2","agree","website","category_of_type","state","region"];
-  var center = ["name","address","city","country","phone","email","password","password2","agree","website","state","region"];
+  "password2","agree","website","category_of_type","state","region","username"];
+  var center = ["name","address","city","country","phone","email","password","password2","agree","website","state","region","username"];
   $scope.$watch("user.typeOfUser",function(newVal,oldVal){
     if(newVal) {
       $scope.isClicked = true;      
@@ -1480,109 +1480,130 @@ app.controller('signupController',["$scope","$http","$location","$window","templ
 
   if(templateService.singleForm)
     templateService.singleForm = false;
-    var objLen = Object.keys($scope.user).length;
-    var msg = "Please fill out empty field";        
-      switch(type) {
-        case "Doctor":
-          if(objLen < doctor.length){
-            alert(msg);
-            break;
-          } else {
-            validate($scope.user);
-          }
-        break;
-        case 'Patient':
-          if(objLen < patient.length){
-            alert(msg);
-            break;
-          } else {
-            validate($scope.user);
-          }
-        break;
-        case 'Hospital':
-          if(objLen < hospital.length){
-            alert(msg);
-            return;
-          } else {
-            validate($scope.user);
-          }
-        break;
-        case 'Clinic':
-          if(objLen < hospital.length){
-            alert(msg);
-            return;
-          } else {
-            validate($scope.user);
-          }
-        break;
-        default:
-          if(objLen < center.length){
-            alert(msg);
-            return;
-          } else {
-            validate($scope.user);
-          }
-        break;
-      }
-        
 
-  }
+    var objLen = Object.keys($scope.user).length;
+    var msg = "Please fill out empty field"; 
+
+  if($scope.user.email) {
+    signUp.emailCheck({email: $scope.user.email},function(response){
+      if(response.success === true){
+        validate($scope.user); 
+      } else {
+        $scope.emailMessage = "User with " + $scope.user.email + " already exist!";
+        return;
+      }
+    })
+  }   
+
+ }
 
   $scope.close = function(result) {
     close(result,500);
   }
 
   function validate(data){
-    console.log(data)
-    for(var i in data) {
-      if(data.hasOwnProperty(i) && data[i] === undefined || data[i] === ""){
-        var msg = "Please enter value for " + i + " below"
-        alert(msg);
-        break;
+      console.log(data)
+
+      if(data.typeOfUser !== "Patient" && data.typeOfUser !== "Doctor") {
+        if(data.name === undefined || data.name === "") {
+          $scope.nameError = "Enter value for your center name";
+          return;
+        }
+        
+      } 
+
+      if(data.password) {
+        if(data.password.length <= 6) {
+          $scope.passwordMessage = "Incomplete number of characters for password!";
+          return;
+        }
       }
-    }
 
-    if(data.username.length < 6){
-      alert("username not more than six letters in length");
-      return;
-    } ;
+      if( data.typeOfUser === "Patient" && data.firstname === undefined || data.firstname === "") {
+        $scope.FirstNameMessage = "Enter value for first name";
+        return;
+      } else if(data.typeOfUser === "Patient" && data.lastname === undefined || data.lastname === "") {
+        $scope.lastNameMessage = "Enter value for last name";
+        return;
+      } else if(data.city === undefined || data.city === "") {
+        $scope.cityMessage = "Enter your city";
+        return;
+      } else if(data.phone === undefined || data.phone === "") {
+        $scope.phoneMessage = "Enter your mobile phone number";
+        return;
+      } else if(data.password !== data.password2) {
+        $scope.passwordError = "Passwords does not match!";
+        return;
+      } else if(data.agree !== true) {
+        $scope.termMessage = "You have to agree to our terms and conditions";
+      } else if(data.phone === undefined || data.email === ""){
+        $scope.emailMessage = "Enter value for email";
+        return;
+      } else if(data.country === undefined || data.country === "") {
+        $scope.countryMessage = "Select your country of residence";
+        return;
+      } else if(data.typeOfUser === "Patient" && data.age === undefined || data.age === "") {
+        $scope.ageMessage = "Select your age category";
+        return;
+      } else if(data.typeOfUser === "Patient" && data.gender === undefined || data.gender === "") {
+        $scope.genderMessage = "Select your gender";
+        return;
+      } else if(data.username === undefined || data.username === "") {
+        $scope.usernameMessage = "Enter value for your user name";
+        return;
+      } else if(data.typeOfUser === "Doctor" && data.work_place === undefined || data.work_place === "") {
+        $scope.workMessage = "Enter your place of work";
+        return;
+      } else if(data.address === undefined || data.address === "") {
+        $scope.addressMessage = "Enter your place of work address";
+        return;
+      } else if(data.typeOfUser === "Doctor" && data.title === undefined || data.title === "") {
+        $scope.titleMessage = "Select title";
+        return;
+      } else if(data.typeOfUser === "Doctor" && data.specialty === undefined || data.specialty === "") {
+        $scope.specialtyMessage = "Select your specialty";
+        return;
+      } else if(data.password === undefined || data.password === ""){
+        $scope.passwordMessage = "Enter value for password";
+        return;
+      } else if(data.typeOfUser === undefined || data.typeOfUser === "" ) {
+        $scope.typeMessage = "Select type of user your are";
+        return;
+      } else {
+        finalValidation();
+      }
 
-    if($scope.usernameError !== "") {
-      alert("Username already taken by another user.");
-      return;
-    }
-
-    if(data.password !== data.password2){
-      alert("Passwords does not match!");
-      $scope.misMatch = true;
-      return;
-    } else {
+    function finalValidation() {
       if(data.agree === true) {
         $rootScope.formData = data;
         if($scope.callingCode){
           $scope.user.phone = $scope.callingCode + "" + $scope.user.phone;
           sendDetail();
         } else {
-          $scope.numberError = msg;
+          $scope.numberError = "Invalid number format";
         }
+
         function sendDetail() {
+          alert("finally sent")
           $scope.loading = true;
           var sendPin = $resource("/user/verify-phone-number",null,{go:{method:"PUT"}});
           var send = sendPin.go({phone:$scope.user.phone},function(data){
-            $scope.verifyInfo = data.message; 
-            $scope.loading = false;
-            $scope.isPhoneVerify = true;
-            //$location.path("/phone-verification");
+            if(data.error) {
+              $scope.phoneMessage = data.error;
+            } else {
+              $scope.verifyInfo = data.message; 
+              $scope.loading = false;
+              $scope.isPhoneVerify = true;
+              //$location.path("/phone-verification");
+            }
           });   
         }     
         
       } else {
-        alert("You have to agree to our terms and conditions");
-        return;
-      }
+        $scope.termMessage = "You have to agree to our terms and conditions";
         
-    }
-    
+      }
+    } 
   }
 
   var reqObj;
@@ -1601,10 +1622,12 @@ app.controller('signupController',["$scope","$http","$location","$window","templ
   $scope.$watch("user.country",function(newVal,oldVal){
     if($scope.user.country !== undefined) {
       $scope.status1 = "Loading...";
-      var arr = $scope.user.country.split(" ");
+      var arr = $scope.user.country.split(";");
       var getId = arr[0];
       var toNum = parseInt(getId);
       var countryCode = arr[1];
+      $scope.user.countryName = arr[arr.length-1];
+      $scope.user.geonameId = toNum;
       reqObj = $resource("/user/remote/geo-data",{geonameId:toNum,countryCode:countryCode});
       reqObj.query(function(data){
         console.log(data);
@@ -1727,24 +1750,15 @@ app.controller('signupController',["$scope","$http","$location","$window","templ
     if(newVal && !$scope.callingCode) {
       $scope.numberError = msg;
     }
-
-    
     
   });
 
-  $scope.$watch("user.username",function(newVal,oldVal){
-    str = "" + newVal
+  $scope.$watch("user.password",function(newVal,oldVal){
+    str = "" + newVal;
     if(newVal)
-      $scope.usernameInfo = "Username must be more than six letters. Must be something you can remember."
-    if(str.length >= 6){
-      $scope.usernameInfo = "";
-      signUp.get({username:$scope.user.username},function(res){
-        if(res.error === true){
-          $scope.usernameError = res.errorMsg;
-        } else {
-          $scope.usernameError = "";
-        }
-      })
+      $scope.passwordMessage = "Password must be more than six characters. Make sure you used conbinations of letters and numbers for security purposes."
+    if(str.length > 6){
+      $scope.passwordMessage = "";
     }
   });
   //password must be checked lastly. Very important.

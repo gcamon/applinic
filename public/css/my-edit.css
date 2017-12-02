@@ -13,7 +13,8 @@
 .view-animate-container {
   position:relative;  
   background:white;  
-  max-height:1000px;
+  /*max-height:1000px;*/
+     background: transparent !important;
   overflow-y: auto;
  overflow-x: hidden;
 
@@ -371,7 +372,7 @@
 
   .btn-primary {
     color:#fff!important;
-    border:1px solid grey!important;
+   
   }
 
   .orange-bg {
@@ -416,6 +417,8 @@
 
 @media screen and (min-height: 960px) {
   .view-animate-container {
-    max-height: 800px
+
+    max-height: 800px;
+    background: transparent !important;
   }
 }

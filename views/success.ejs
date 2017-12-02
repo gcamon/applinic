@@ -97,13 +97,13 @@
                             <p>Contact</p>
                         </a>
                     </li>             </ul>
-                        <a href="/login" class="get-user" style="color:#f96332;background-color:#fff">
+                       <!--  <a href="/login" class="get-user" style="color:#f96332;background-color:#fff">
                            Login
                         </a>
                 
                         <a href="/signup" class="get-user" style="background-color:#f96332">
                            Sign up
-                        </a>
+                        </a> -->
                      </div>
         </div>
     </nav>
@@ -114,24 +114,28 @@
 <div class="wrapper" style="height:60px;"></div>
 
 <div class="page-header content-center" filter-color="purple" ng-controller = "loginController">
-        <div class="page-header-image" style="background-image:url(/assets/img/bg3.jpg)"></div>
+        <div class="page-header-image"></div>
 
            <div class="container" style="padding-top:5em;">
    
-               <div class="card col-md-4" style="padding:3em;">
-                               <p class="text-muted display-5">Login</p>
-                   <form class="input-lg">
-                       <div class="form-group input-lg">
+               <div class="card col-md-5 p-4">
+                               <p class="text-muted display-5"><b>Welcome Back!</b> <br/><sub>LOGIN TO YOUR ACCOUNT</sub></p>
+                   <form class="form-group p-2">
+                       <div class="form-group col-md-12 pl-0">
                               <span  style="color: red;display:block;text-align: center; font-size:16px;padding:10px 10px" ng-cloak>{{error}}</span>  
                                 <input type="text" class="form-control" placeholder="Email" ng-model = "login.username">
                             </div>
                    
-                      <div class="form-group input-lg">
+                      <div class="form-group col-md-12 pl-0">
                                 <input type="password" class="form-control" placeholder="Password" ng-model = "login.password">
-                                  <button type="submit" href="#" class="btn btn-info btn-block btn-lg" ng-click="send()"> Login</button>
+                                
                             </div>
-                            <div class="text-bold text-center text-muted"><i>Or</i></div><br>
-                            <a href="/signup" class="btn btn-simple  text-lg btn-block" style="font-size:15px;">Create an Account</a>
+                              
+                           
+                             <div class="form-group col-md-12 pl-2 pr-1" >
+                             <button type="submit" href="#" class="btn btn-info btn-block" ng-click="send()"> Login</button><br>
+ <div class="text-bold text-center text-muted"><i>Or</i></div><br>
+                             <a href="/signup" class="btn btn-simple  text-lg btn-block" style="font-size:15px;">Create an Account</a></div>
                    
                      </form>
                </div>
@@ -156,7 +160,7 @@
                                 APPPLINIC
                             </a>
                         </li>
-                        <li>
+                        <!--<li>
                             <a href="#">
                                 About Us
                             </a>
@@ -165,7 +169,7 @@
                             <a href="#">
                                 Blog
                             </a>
-                        </li>
+                        </li>->
                        </ul>
                 </nav>
                 <div class="copyright">

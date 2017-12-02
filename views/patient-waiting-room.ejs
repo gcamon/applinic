@@ -53,7 +53,7 @@
                             
                             <li style="float:left;margin:20px 10px">
                                 <a ng-href="{{back}}" class="nav-link" >
-                                  <b style="font-size:16px; font-weight:bold;"> &larr; Back to dashbaord</b>
+                                  <b style="font-size:16px; font-weight:bold;"> &larr; Back to dashboard</b>
                                 </a>
                             </li>
                              
@@ -94,8 +94,8 @@
                                         <li><a href="#/9" ng-class="{'btn-primary':batch==='9'}" ng-click="getBatch('9')">9</a></li>
                                         <li><a href="#/10" ng-class="{'btn-primary':batch==='10'}" ng-click="getBatch('10')">10</a></li>
                                     </ul>
-                                    <section class="patient-complain">
-                                        <article ng-repeat="i in complaints">
+                                    <section class="patient-complain mt-3 bg-primary">
+                                        <div class="title" ng-repeat="i in complaints">
                                             <i class="fa fa-user"> &nbsp; Patient</i>
                                             <span ng-cloak>{{i.age}}</span>
                                             <span ng-cloak>{{i.gender}}</span>
@@ -106,7 +106,7 @@
                                                 <li ng-repeat="symptom in i.symptoms" class="description" ng-cloak>{{symptom}}</li>
                                             </ul>
                                             <p ng-cloak>"{{i.description}}" &nbsp; <span style="color:red;cursor:pointer;text-decoration:underline" ng-click="veiwDatail(i.complaint_id)">Respond!</span></p>
-                                        </article>
+                                        </div>
                                     </section>
                                 </div>
                                 <div  class="complain-in-view" ng-class="{'no-view':isViewPatient !== true}" id="complain-in-view">
@@ -123,13 +123,13 @@
                                         <aside>
                                            <p style="color:red;font-size:18px;padding: 10px 0;border:1px dashed rgba(0,0,0,0.8);text-align:center;border-radius: 12px;margin: 15px 0" ng-cloak>Patient resides in {{patient.preferred_city}}</p>
                                         </aside>
-                                        <h6>History</h6>
+                                        <h6 style="font-weight:bold">History</h6><hr/>
                                         <ul class="patient-symptoms">                                            
                                             <li ng-repeat="symptom in patient.symptoms" class="description"><strong ng-cloak>{{symptom}}</strong></li>
                                         </ul>
                                         <p ng-cloak>"{{patient.description}}"</p>
-                                        <h6>Attached file(s)<h6>
-                                        <div ng-if="patient.files.length > 0" ng-repeat="file in patient.files" >
+                                        <h6 style="font-weight:bold">Attached file(s)</h6><hr/>
+                                        <div class="card" ng-if="patient.files.length > 0" ng-repeat="file in patient.files" >
                                             <div  ng-if="file.type === 'image'" style="width: 480px;height:auto;margin:5px auto">
                                             <img ng-src="{{file.url}}"  ng-click="viewFile()"  style="width: 100%;height:100%;margin-right:10px" class="img-responsive">
                                             </div>
@@ -143,26 +143,27 @@
                                             </video>
                                         </div>
                                     </article>
-                                    <section style="padding:10px">
+                                    <section class="pb-5 pl-4 pr-4">
                                         <!--<h6>{{patient.response.length}} doctor(s) has responded so far.</h6>-->
-                                        <h6 style="text-align:center;font-weight:bold">Your Response</h6>
+                                        <h6 style="font-weight:bold">Your Response</h6>
+                                        <hr>
                                         <form class="complaint-view-charge">
-                                            <h6>Briefly introduce yourself</h6>
-                                            <textarea style="height:100px;" ng-model="user.introductory">
-                                            </textarea>
+                                            <div class="text-capitalize">Please briefly respond to this request </div>
+                                            <textarea class="form-control" cols="6" ng-model="user.introductory"></textarea>
                                             <div>
-                                                <h6>Consultation Fee</h6>
-                                                <span>Service charge = N1,000</span>
+                                                <h6 style="font-weight:bold">Consultation Fee</h6>
+                                                <span>Service charge = 20% of fees</span>
+                                            </div>
+                                            <div class="form-inline">
+                                                <span>Your charge = </span>
+                                                <input type="number" class="form-control input-lg" placeholder="Enter amount" ng-model="user.amount">         
                                             </div>
                                             <div>
-                                                <span>Your charge = </span> <input type="number" placeholder="Enter amount" ng-model="user.amount">         
-                                            </div>
-                                            <p>
                                                 <span ng-cloak>Total billed for patient = {{str}}</span>
-                                            </p>
-                                            <p style="text-align:center">
+                                            </div>
+                                            <div class="pb-5">
                                                 <input type="button" value="Submit" ng-click="sendRequest()" class="btn btn-primary">
-                                            </p>
+                                            </div>
                                         </form>
                                     </section>
                                 </div>
