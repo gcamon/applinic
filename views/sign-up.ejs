@@ -79,7 +79,7 @@
                     <img src="/assets/images/applinic1.svg" alt="Applinic" width="250" height="40">
                 </a>
             </div>
-            <div class="collapse navbar-collapse justify-content-end" id="navigation" data-nav-image="assets/img/blurred-image-1.jpg">
+            <div class="collapse navbar-collapse justify-content-end" id="navigation" data-nav-image="assets/img/blurblue-image-1.jpg">
                 <ul class="navbar-nav">
                     <li class="nav-item">
                         <a class="nav-link" href="/">
@@ -229,7 +229,7 @@
   </div>
   <div class="col-md-6 col-sm-12" style="position: relative;">
    <!-- <input type="text" class="form-control" placeholder="City/Town" ng-model="user.city" >-->
-    <small class='fa fa-arrow-right' style="font-size:10px;color:red;padding-left: 10px;position: absolute; left: 0;top:10px" ng-if="isNext1"></small>
+    <small class='fa fa-arrow-right' style="font-size:10px;color:blue;padding-left: 10px;position: absolute; left: 0;top:10px" ng-if="isNext1"></small>
    <select class="custom-select form-control col-md-12" ng-model="user.state"  >
       <option value="" selected disabled >{{status1}}</option>
       <option ng-repeat="state in states" value="{{state.geonameId}} {{state.name}}">{{state.name}}</option>
@@ -238,14 +238,14 @@
 
 
   <div class="col-md-6 col-sm-12" style="position: relative;">
-   <small class='fa fa-arrow-right' style="font-size:10px;color:red;padding-left: 10px;position: absolute; left: 0;top:10px" ng-if="isNext2"></small>
+   <small class='fa fa-arrow-right' style="font-size:10px;color:blue;padding-left: 10px;position: absolute; left: 0;top:10px" ng-if="isNext2"></small>
       <select class="custom-select form-control col-md-12" ng-model="user.region"/>
       <option value="" selected disabled >{{status3}}</option>
       <option ng-repeat="region in regions" value="{{region.geonameId}} {{region.name}}">{{region.name}}</option>
     </select>
   </div>
   <div class="col-md-6 col-sm-12" style="position: relative;">
-   <small class='fa fa-arrow-right' style="font-size:10px;color:red;padding-left: 10px;position: absolute; left: 0;top:10px" ng-if="isNext3"></small>
+   <small class='fa fa-arrow-right' style="font-size:10px;color:blue;padding-left: 10px;position: absolute; left: 0;top:10px" ng-if="isNext3"></small>
     <input type="text" class="form-control" placeholder="Enter City or Town name" ng-model="user.city" ng-if="isEdit === true" ng-cloak >
     <select class="custom-select form-control col-md-12" ng-model="user.city"  ng-cloak ng-if="isEdit === false" >
       <option value="" selected disabled >{{status2}}</option>
@@ -260,7 +260,7 @@
  
  <div  class="col-md-6 col-sm-12" style="position: relative;">
   
-      <input type="number" style="position:absolute; top:19px; background:transparent;  left:35px; border: none; width: 55px; outline:0;"  placeholder="{{user.callingCode || 'Code'}}" ng-model= "user.callingCode"/>
+      <input type="number" name="callingcode" style="position:absolute; top:19px; background:transparent;  left:35px; border: none; width: 55px; outline:0;"  placeholder="{{user.callingCode || 'Code'}}" ng-model= "user.callingCode"/>
       <input type="number" class="form-control" noBorder" placeholder="Mobile number" ng-model="user.phone" style="padding-left: 80px"/>  
     <span class="text-danger" style="font-size: 10px;display: inline-block;margin:-60px 0 0 10px;float: left;">{{phoneMessage}}</span>
     <span class="text-danger" style="font-size: 10px;display: inline-block;margin:-60px 0 0 10px;float: left;">{{numberError}}</span>  
@@ -268,7 +268,7 @@
 
 
  <div  class="col-md-6 col-sm-12">
-      <input type="text" class="form-control" placeholder="Address" ng-model="user.address" />
+      <input type="text" name="address" class="form-control" placeholder="Address" ng-model="user.address" />
       <span class="text-danger" style="font-size: 10px;display: inline-block;margin:-60px 0 0 10px;float: left;">{{addressMessage}}</span>   
  </div>
  
@@ -285,7 +285,7 @@
     </div>
   </div>
 
-  <div class="col-md-6 col-sm-12" style="border: 1px solid red">
+  <div class="col-md-6 col-sm-12" style="border: 1px solid blue">
    <input type="text" class="form-control" placeholder="Address" ng-model="user.address" style="margin-left: 10px">    
   </div>
 </div>
@@ -300,11 +300,11 @@
 
   <div class="col-md-6 col-sm-12">
   
-    <input type="text" class="form-control" placeholder="User Name" ng-model="user.username" >
+    <input type="text" name="username" class="form-control" placeholder="User Name" ng-model="user.username" >
     <span class="text-danger" style="font-size: 10px;display: inline-block;margin:-60px 0 0 10px;float: left;">{{usernameMessage}}</span> 
   </div>
   <div class="col-md-6 col-sm-12">
-    <input type="email" class="form-control" placeholder="Email" ng-model="user.email" >
+    <input type="email" name= "email" class="form-control" placeholder="Email" ng-model="user.email" >
     <span class="text-danger" style="font-size: 10px;display: inline-block;margin:-60px 0 0 10px;float: left;">{{emailMessage}}</span> 
   </div>
 
@@ -327,7 +327,7 @@
 </div>
 <div class="clearfix"></div>
 <br><br>
-<button class="btn btn-simple" ng-click="submit('Patient')"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:red" ng-if="loading"></i>
+<button class="btn btn-simple" ng-click="submit('Patient')"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:blue" ng-if="loading"></i>
 <span class="sr-only">Loading...</span> Create Account</button>
 </form>
 </div>
@@ -456,7 +456,7 @@
   </div>
   <div class="col-md-6 col-sm-12" style="position: relative;">
    <!-- <input type="text" class="form-control" placeholder="City/Town" ng-model="user.city" >-->
-    <small class='fa fa-arrow-right' style="font-size:10px;color:red;padding-left: 10px;position: absolute; left: 0;top:10px" ng-if="isNext1"></small>
+    <small class='fa fa-arrow-right' style="font-size:10px;color:blue;padding-left: 10px;position: absolute; left: 0;top:10px" ng-if="isNext1"></small>
    <select class="custom-select form-control col-md-12" ng-model="user.state"  >
       <option value="" selected disabled >{{status1}}</option>
       <option ng-repeat="state in states" value="{{state.geonameId}} {{state.name}}">{{state.name}}</option>
@@ -464,14 +464,14 @@
   </div>
 
   <div class="col-md-6 col-sm-12" style="position: relative;">
-   <small class='fa fa-arrow-right' style="font-size:10px;color:red;padding-left: 10px;position: absolute; left: 0;top:10px" ng-if="isNext2"></small>
+   <small class='fa fa-arrow-right' style="font-size:10px;color:blue;padding-left: 10px;position: absolute; left: 0;top:10px" ng-if="isNext2"></small>
       <select class="custom-select form-control col-md-12" ng-model="user.region"  >
       <option value="" selected disabled >{{status3}}</option>
       <option ng-repeat="region in regions" value="{{region.geonameId}} {{region.name}}">{{region.name}}</option>
     </select>
   </div>
   <div class="col-md-6 col-sm-12" style="position: relative;">
-   <small class='fa fa-arrow-right' style="font-size:10px;color:red;padding-left: 10px;position: absolute; left: 0;top:10px" ng-if="isNext3"></small>
+   <small class='fa fa-arrow-right' style="font-size:10px;color:blue;padding-left: 10px;position: absolute; left: 0;top:10px" ng-if="isNext3"></small>
     <input type="text" class="form-control" placeholder="Enter City or Town name" ng-model="user.city" ng-if="isEdit === true" ng-cloak >
     <select class="custom-select form-control col-md-12" ng-model="user.city"  ng-cloak ng-if="isEdit === false" >
       <option value="" selected disabled >{{status2}}</option>
@@ -530,7 +530,7 @@
 </div>
 <br><br>
 <div class="clearfix"></div>
-<button class="btn btn-simple btn-lg" ng-click="submit('Doctor')"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:red" ng-if="loading"></i>
+<button class="btn btn-simple btn-lg" ng-click="submit('Doctor')"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:blue" ng-if="loading"></i>
 <span class="sr-only">Loading...</span> Create Account</button>
 </form>
   </div>
@@ -573,7 +573,7 @@
   </div>
   <div class="col-md-6 col-sm-12" style="position: relative;">
    <!-- <input type="text" class="form-control" placeholder="City/Town" ng-model="user.city" >-->
-    <small class='fa fa-arrow-right' style="font-size:10px;color:red;padding-left: 10px;position: absolute; left: 0;top:10px" ng-if="isNext1"></small>
+    <small class='fa fa-arrow-right' style="font-size:10px;color:blue;padding-left: 10px;position: absolute; left: 0;top:10px" ng-if="isNext1"></small>
    <select class="custom-select form-control col-md-12" ng-model="user.state"  >
       <option value="" selected disabled >{{status1}}</option>
       <option ng-repeat="state in states" value="{{state.geonameId}} {{state.name}}">{{state.name}}</option>
@@ -581,14 +581,14 @@
   </div>
 
   <div class="col-md-6 col-sm-12" style="position: relative;">
-   <small class='fa fa-arrow-right' style="font-size:10px;color:red;padding-left: 10px;position: absolute; left: 0;top:10px" ng-if="isNext2"></small>
+   <small class='fa fa-arrow-right' style="font-size:10px;color:blue;padding-left: 10px;position: absolute; left: 0;top:10px" ng-if="isNext2"></small>
       <select class="custom-select form-control col-md-12" ng-model="user.region"  >
       <option value="" selected disabled >{{status3}}</option>
       <option ng-repeat="region in regions" value="{{region.geonameId}} {{region.name}}">{{region.name}}</option>
     </select>
   </div>
   <div class="col-md-6 col-sm-12" style="position: relative;">
-   <small class='fa fa-arrow-right' style="font-size:10px;color:red;padding-left: 10px;position: absolute; left: 0;top:10px" ng-if="isNext3"></small>
+   <small class='fa fa-arrow-right' style="font-size:10px;color:blue;padding-left: 10px;position: absolute; left: 0;top:10px" ng-if="isNext3"></small>
     <input type="text" class="form-control" placeholder="Enter City or Town name" ng-model="user.city" ng-if="isEdit === true" ng-cloak >
     <select class="custom-select form-control col-md-12" ng-model="user.city"  ng-cloak ng-if="isEdit === false" >
       <option value="" selected disabled >{{status2}}</option>
@@ -641,7 +641,7 @@
 <br><br>
 
 <div class="col-md-12">
-<button class="btn btn-simple btn-lg" ng-click="submit(user.typeOfUser,'normal')"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:red" ng-if="loading"></i>
+<button class="btn btn-simple btn-lg" ng-click="submit(user.typeOfUser,'normal')"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:blue" ng-if="loading"></i>
 <span class="sr-only">Loading...</span> Create Account</button></div>
 </form>
 
@@ -686,7 +686,7 @@
   </div>
   <div class="col-md-6 col-sm-12" style="position: relative;">
    <!-- <input type="text" class="form-control" placeholder="City/Town" ng-model="user.city" >-->
-    <small class='fa fa-arrow-right' style="font-size:10px;color:red;padding-left: 10px;position: absolute; left: 0;top:10px" ng-if="isNext1"></small>
+    <small class='fa fa-arrow-right' style="font-size:10px;color:blue;padding-left: 10px;position: absolute; left: 0;top:10px" ng-if="isNext1"></small>
    <select class="custom-select form-control col-md-12" ng-model="user.state"  >
       <option value="" selected disabled >{{status1}}</option>
       <option ng-repeat="state in states" value="{{state.geonameId}} {{state.name}}">{{state.name}}</option>
@@ -695,14 +695,14 @@
 
 
   <div class="col-md-6 col-sm-12" style="position: relative;">
-   <small class='fa fa-arrow-right' style="font-size:10px;color:red;padding-left: 10px;position: absolute; left: 0;top:10px" ng-if="isNext2"></small>
+   <small class='fa fa-arrow-right' style="font-size:10px;color:blue;padding-left: 10px;position: absolute; left: 0;top:10px" ng-if="isNext2"></small>
       <select class="custom-select form-control col-md-12" ng-model="user.region"  >
       <option value="" selected disabled >{{status3}}</option>
       <option ng-repeat="region in regions" value="{{region.geonameId}} {{region.name}}">{{region.name}}</option>
     </select>
   </div>
   <div class="col-md-6 col-sm-12" style="position: relative;">
-   <small class='fa fa-arrow-right' style="font-size:10px;color:red;padding-left: 10px;position: absolute; left: 0;top:10px" ng-if="isNext3"></small>
+   <small class='fa fa-arrow-right' style="font-size:10px;color:blue;padding-left: 10px;position: absolute; left: 0;top:10px" ng-if="isNext3"></small>
     <input type="text" class="form-control" placeholder="Enter City or Town name" ng-model="user.city" ng-if="isEdit === true" ng-cloak >
     <select class="custom-select form-control col-md-12" ng-model="user.city"  ng-cloak ng-if="isEdit === false" >
       <option value="" selected disabled >{{status2}}</option>
@@ -763,7 +763,7 @@
 </label></div>
 <br><br>
 <div class="col-md-12">
-<button class="btn btn-simple btn-lg" ng-click="submit('Pharmacy','normal')"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:red" ng-if="loading"></i>
+<button class="btn btn-simple btn-lg" ng-click="submit('Pharmacy','normal')"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:blue" ng-if="loading"></i>
 <span class="sr-only">Loading...</span> Create Account</button></div>
 </form>
   </div>
@@ -776,7 +776,7 @@
 			<div class="container">
 				<!--<p >Enter the pin sent to {{formData.phone}} below</p>-->
         <p style="font-size: 14px">{{verifyInfo}}</p>
-				<div style="color:red; font-size: 16px">{{error}}</div>
+				<div style="color:blue; font-size: 16px">{{error}}</div>
                 <div class="form-group col-md-6 col-sm-12">
 				<input type="text" placeholder="Enter verification pin" ng-model="verify.pin" class="form-control">
                 </div>

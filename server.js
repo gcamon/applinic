@@ -73,6 +73,10 @@ route(model,sms,io);
 payments(model,sms,io,paystack);
 placement(model,sms);
 mySocket(model,io);
+
+
+var a = "ede obinna".replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()});
+console.log(a)
   
 /*paystack.customer.create({
   first_name: "Obinna",

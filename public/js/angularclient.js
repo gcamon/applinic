@@ -1476,9 +1476,9 @@ app.controller('signupController',["$scope","$http","$location","$window","templ
   $scope.user.state = currency.state;
   $scope.user.region = currency.region;
 
-
+  //capitalize the first letter in words like two words city names.
   if($scope.user.city && $scope.user.city !== "") {
-    var capitalize = $scope.user.city.charAt(0).toUpperCase() + $scope.user.city.slice(1); //capitalize the letter that starts a sentence
+    var capitalize = $scope.user.city.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()});
     $scope.user.city = capitalize;
   }
 
