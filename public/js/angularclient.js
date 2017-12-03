@@ -1601,7 +1601,6 @@ app.controller('signupController',["$scope","$http","$location","$window","templ
         }
 
         function sendDetail() {
-          alert("finally sent")
           $scope.loading = true;
           var sendPin = $resource("/user/verify-phone-number",null,{go:{method:"PUT"}});
           var send = sendPin.go({phone:$scope.user.phone},function(data){
