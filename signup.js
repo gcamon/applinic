@@ -26,7 +26,6 @@ var signupRoute = function(model,sms,geonames,paystack) {
 				var userphone = {}
 				model.verifyPhone.findOne({phone:req.body.phone,pin:req.body.v_pin},function(err,data){
 					if(err) throw err;
-					console.log(data);
 					if(data){
 						userphone.testuserPhone = true;
 						//model.verifyPhone.remove({phone:req.body.phone,pin:req.body.v_pin},function(err,a){});
@@ -130,12 +129,7 @@ var signupRoute = function(model,sms,geonames,paystack) {
 							console.log("user saved");
 							if(err) throw err;					
 							return done(null,User);
-						});	
-
-
-						console.log("pppppppppppppppppppppppppppp");
-						console.log(req.body)
-				
+						});				
 
 						} else {
 							res.send({error: "Email already in use. Please find another one"})
@@ -147,7 +141,7 @@ var signupRoute = function(model,sms,geonames,paystack) {
 					var getFirstLetter;
 					var toStr;
 					if(username) {
-						var getRandomNumber = Math.floor(Math.random() * 9999);
+						var getRandomNumber = Math.floor(Math.random() * 999999);
 						toStr = username + getRandomNumber;
 					}				
 					return toStr;					
@@ -199,7 +193,7 @@ var signupRoute = function(model,sms,geonames,paystack) {
 			phone: req.body.phone,
 			pin: genPin
 		});
-
+		console.log(req.body);
 		var date = new Date()
 		testPhone.expirationDate = new Date(date.getTime() + 300000);
 		testPhone.expirationDate.expires  = 60 * 60;
@@ -470,7 +464,7 @@ var signupRoute = function(model,sms,geonames,paystack) {
 			}
 			console.log(profileUrl)
 			var msgBody = "Your emergency profile link is \n" + profileUrl;
-			var phoneNunber = "234" + mobile;
+			var phoneNunber =  mobile;
 			sms.message.sendSms('Appclinic',phoneNunber,msgBody,callBack); //"2348096461927"
 			
 		}

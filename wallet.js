@@ -176,7 +176,7 @@ Wallet.prototype.billing = function(model,billingInfo,reciever,sms,io){
 		}
 		var msgBody = "Your Applinic account credited" + "\nAmount: " + docPercentage + "\nActivity: Commission for prescription written\n Source: " +
 		billingInfo.patient_firstname + " " + billingInfo.patient_lastname + ". Date: " + Date.now;
-		var phoneNunber = "234" + billingInfo.doctorPhone;
+		var phoneNunber =  billingInfo.doctorPhone;
 		sms.message.sendSms('Applinic',phoneNunber,msgBody,callBack); //"2348096461927"
 
 		//crediting addmin
@@ -202,7 +202,7 @@ Wallet.prototype.billing = function(model,billingInfo,reciever,sms,io){
 				}
 				var msgBody = "Your Applinic account debited" + "\nAmount: " + "N" + amount + 
 				"\nActivity: Payment for billing\nPlus 5% discount applied for all billing paid through this app." + ". Date: " + Date.now;
-				var phoneNunber = "234" + debitor.phone;
+				var phoneNunber =  debitor.phone;
 				sms.message.sendSms('Applinic',phoneNunber,msgBody,callBack); //"2348096461927" 
 				self.debit(model,amount,debitor);
 			});	
@@ -219,7 +219,7 @@ Wallet.prototype.billing = function(model,billingInfo,reciever,sms,io){
 				
 				var msgBody = "Your Applinic account debited" + "\nAmount: " + "N" + amount + 
 				"\nActivity: Payment for billing\nPlus 5% discount applied for all billing paid through this app." + ". Date: " + Date.now;
-				var phoneNunber = "234" + debitor.phone;
+				var phoneNunber =  debitor.phone;
 				sms.message.sendSms('Applinic',phoneNunber,msgBody,callBack); //"2348096461927" 
 				self.debit(model,amount,debitor);
 			});	

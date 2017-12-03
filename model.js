@@ -444,7 +444,7 @@ var myModel = function () {
 		education: [EducationSchema],
 		specialty: String,
 		work_place: String,
-		phone: Number,
+		phone: String,
 		experience: Number,
 		country: String,
 		doctor_notification:[noteSchema],

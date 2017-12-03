@@ -443,7 +443,7 @@ var basicRoute = function (model,sms,io) {
 
 
               var msgBody = "Your SMS verification Pin is " + genPin + "\nUse to complete your registeration."
-              var phoneNunber = "234" + req.body.phone;
+              var phoneNunber =  req.body.phone;
               sms.message.sendSms('Appclinic',phoneNunber,msgBody,callBack); //"2348096461927" "2349092469137"
             } else {
               res.send({status:"failed",message:"Oops! Seems you entered incorrect verification pin or has been used."})
@@ -507,7 +507,7 @@ var basicRoute = function (model,sms,io) {
     testPhone.save(function(err,info){});
 
     var msgBody = "Your SMS verification Pin is " + genPin + "\nUse to complete your registeration."
-    var phoneNunber = "234" + req.body.phone;
+    var phoneNunber =  req.body.phone;
     sms.message.sendSms('Appclinic',phoneNunber,msgBody,callBack); //"2348096461927" "2349092469137"
 
     function callBack(err,response){
@@ -995,7 +995,7 @@ var basicRoute = function (model,sms,io) {
 
           } else if(req.body.type === "consultation" && data.set_presence.general === false || data.presence === false) {
             var msgBody = req.user.title + " " + req.user.firstname + " " + req.user.lastname + " sends consultation request! Visit http://applinic.com/user/doctor";
-            var phoneNunber = "234" + data.phone;
+            var phoneNunber =  data.phone;
             sms.message.sendSms('Applinic',phoneNunber,msgBody,function(err,responseData){});
 
           } else if(data.presence === true && data.set_presence.general === true && req.body.type === "question"){
@@ -1040,7 +1040,7 @@ var basicRoute = function (model,sms,io) {
 
               } else if(req.body.type === "consultation" && data.set_presence.general === false || data.presence === false) {
                 var msgBody = req.user.title + " " + req.user.firstname + " " + req.user.lastname + " sends consultation request! Visit http://applinic.com/login";
-                var phoneNunber = "234" + data.phone;
+                var phoneNunber =  data.phone;
                 sms.message.sendSms('Applinic',phoneNunber,msgBody,function(err,responseData){});
 
               } else if(data.presence === true && data.set_presence.general === true && req.body.type === "question"){
@@ -1123,7 +1123,7 @@ var basicRoute = function (model,sms,io) {
                       io.sockets.to(result.user_id).emit("message notification",{status:true})
                     } else {
                       var msgBody = req.user.title + " " + req.user.firstname + " " + req.user.lastname + " accepted your consultation request! Visit http://applinic.com/login";
-                      var phoneNunber = "234" + result.phone;
+                      var phoneNunber =  result.phone;
                       sms.message.sendSms('Applinic',phoneNunber,msgBody,function(err,responseData){
 
                       }); //"2348096461927"
@@ -1787,7 +1787,7 @@ var basicRoute = function (model,sms,io) {
               io.sockets.to(data.user_id).emit("notification",{status:true})
           } else {
             var msgBody = "You have new unread prescription! Visit http://applinic.com/login"
-            var phoneNunber = "234" + data.phone;
+            var phoneNunber =  data.phone;
             sms.message.sendSms('Applinic',phoneNunber,msgBody,function(err,responseData){
               
             }); //"2348096461927"
@@ -1828,7 +1828,7 @@ var basicRoute = function (model,sms,io) {
 
           } else {
             var msgBody = "You have new  prescription request from " + req.user.firstname + " " + req.user.lastname + " Visit http://applinic.com/login"
-            var phoneNunber = "234" + data.phone;
+            var phoneNunber =  data.phone;
             sms.message.sendSms('Applinic',phoneNunber,msgBody,function(err,responseData){
               
             }); //"2348096461927"
@@ -2675,7 +2675,7 @@ var basicRoute = function (model,sms,io) {
             io.sockets.to(result.user_id).emit("notification",{status:true})
           } else {
             var msgBody = "You have new test request! Visit http://applinic.com/login"
-            var phoneNunber = "234" + result.phone;
+            var phoneNunber =  result.phone;
             sms.message.sendSms('Applinic',phoneNunber,msgBody,function(err,responseData){
 
             }); //"2348096461927"
@@ -2729,7 +2729,7 @@ var basicRoute = function (model,sms,io) {
           
             var msgBody = "Your test was referred to " + centerInfo.name + "\n@ " + centerInfo.address + " " + centerInfo.city + " " +
             centerInfo.country + "\nBy " + req.user.name + "\nTest Ref NO is " + req.body.ref_id + "\nFor more details visit https://applinic.com/user/patient"
-            var phoneNunber = "234" + record.phone;
+            var phoneNunber =  record.phone;
             sms.message.sendSms('Applinic',phoneNunber,msgBody,function(err,responseData){
               console.log(err);
               console.log(responseData);
@@ -2839,7 +2839,7 @@ var basicRoute = function (model,sms,io) {
             io.sockets.to(result.user_id).emit("notification",{status:true})
           } else {
             var msgBody = "You have new test request! Visit http://applinic.com/login"
-            var phoneNunber = "234" + result.phone;
+            var phoneNunber =  result.phone;
             sms.message.sendSms('Applinic',phoneNunber,msgBody,function(err,responseData){
 
             }); //"2348096461927"
@@ -2882,7 +2882,7 @@ var basicRoute = function (model,sms,io) {
           
             var msgBody = "Your test was referred to " + centerInfo.name + "\n@ " + centerInfo.address + " " + centerInfo.city + " " +
             centerInfo.country + "\nBy " + req.user.name + "\nTest Ref NO is " + req.body.ref_id + "\nFor more details visit https://applinic.com/user/patient"
-            var phoneNunber = "234" + record.phone;
+            var phoneNunber =  record.phone;
             sms.message.sendSms('Applinic',phoneNunber,msgBody,function(err,responseData){
               console.log(err);
               console.log(responseData);
@@ -3041,7 +3041,7 @@ var basicRoute = function (model,sms,io) {
             io.sockets.to(result.user_id).emit("notification",{status:true})
           } else {
             var msgBody = "You have new test request! Visit http://applinic.com/login"
-            var phoneNunber = "234" + result.phone;
+            var phoneNunber =  result.phone;
             sms.message.sendSms('Applinic',phoneNunber,msgBody,function(err,responseData){
 
             }); //"2348096461927"
@@ -3095,7 +3095,7 @@ var basicRoute = function (model,sms,io) {
           
             var msgBody = "Your test was referred to " + centerInfo.name + "\n@ " + centerInfo.address + " " + centerInfo.city + " " +
             centerInfo.country + "\nBy " + req.user.name + "\nTest Ref NO is " + req.body.ref_id + "\nFor more details visit https://applinic.com/user/patient"
-            var phoneNunber = "234" + record.phone;
+            var phoneNunber =  record.phone;
             sms.message.sendSms('Applinic',phoneNunber,msgBody,function(err,responseData){
               console.log(err);
               console.log(responseData);
@@ -3207,7 +3207,7 @@ var basicRoute = function (model,sms,io) {
             io.sockets.to(result.user_id).emit("notification",{status:true});
           } else {
             var msgBody = "You have new test request! Visit http://applinic.com/user/radiology"
-            var phoneNunber = "234" + result.phone;
+            var phoneNunber =  result.phone;
             sms.message.sendSms('Applinic',phoneNunber,msgBody,function(err,responseData){
 
             }); //"2348096461927"
@@ -3251,7 +3251,7 @@ var basicRoute = function (model,sms,io) {
           
             var msgBody = "Your test was referred to " + centerInfo.name + "\n@ " + centerInfo.address + " " + centerInfo.city + " " +
             centerInfo.country + "\nBy " + req.user.name + "\nTest Ref NO is " + req.body.ref_id + "\nFor more details visit https://applinic.com/user/patient"
-            var phoneNunber = "234" + record.phone;
+            var phoneNunber =  record.phone;
             sms.message.sendSms('Applinic',phoneNunber,msgBody,function(err,responseData){
               console.log(err);
               console.log(responseData);
@@ -3384,7 +3384,7 @@ var basicRoute = function (model,sms,io) {
             io.sockets.to(result.user_id).emit("notification",{status:true});
           } else {
             var msgBody = "You have new test request! Visit http://applinic.com/user/" + toLower;
-            var phoneNunber = "234" + result.phone;
+            var phoneNunber =  result.phone;
             sms.message.sendSms('Applinic',phoneNunber,msgBody,function(err,responseData){
 
             }); //"2348096461927"
@@ -3430,7 +3430,7 @@ var basicRoute = function (model,sms,io) {
           
             var msgBody = "Your test was referred to " + centerInfo.name + "\n@ " + centerInfo.address + " " + centerInfo.city + " " +
             centerInfo.country + "\nBy " + req.user.name + "\nTest Ref NO is " + req.body.ref_id + "\nFor more details visit https://applinic.com/user/patient"
-            var phoneNunber = "234" + record.phone;
+            var phoneNunber =  record.phone;
             sms.message.sendSms('Applinic',phoneNunber,msgBody,function(err,responseData){
               console.log(err);
               console.log(responseData);
@@ -4172,7 +4172,7 @@ var basicRoute = function (model,sms,io) {
             io.sockets.to(pharmacy.user_id).emit("notification",{status:true})
           } else {
             var msgBody = "Someone needs your services! Visit http://applinic.com/user/pharmacy"
-            var phoneNunber = "234" + pharmacy.phone;
+            var phoneNunber =  pharmacy.phone;
             sms.message.sendSms('Applinic',phoneNunber,msgBody,function(err,responseData){
               console.log(responseData);
             }); //"2348096461927"
@@ -4227,7 +4227,7 @@ var basicRoute = function (model,sms,io) {
           var msgBody = "Hi, prescriptions written on your behalf was sent to " +  "\n" + pharmacy.name + "\n" + pharmacy.address +
           ", " + pharmacy.city + ", " + pharmacy.country + "\nPrescription reference number is " +
           " " + ref_id + "\nfor more details Visit https://applinic.com/user/patient";
-          var phoneNunber = "234" + user.phone;
+          var phoneNunber =  user.phone;
           sms.message.sendSms('Applinic',phoneNunber,msgBody,function(err,responseData){
             if(err) console.log(err);
             console.log(responseData)
@@ -4407,7 +4407,7 @@ router.put("/user/test-search/laboratory/referral",function(req,res){
           io.sockets.to(result.user_id).emit("notification",{status:true})
         } else {
           var msgBody = "You have new test request! Visit http://applinic.com/login"
-          var phoneNunber = "234" + result.phone;
+          var phoneNunber =  result.phone;
           sms.message.sendSms('Applinic',phoneNunber,msgBody,function(err,responseData){
 
           }); //"2348096461927"
@@ -4626,7 +4626,7 @@ router.put("/user/scan-search/radiology/referral",function(req,res){
           io.sockets.to(result.user_id).emit("notification",{status:true})
         } else {
           var msgBody = "You have new test request! Visit http://applinic.com/login"
-          var phoneNunber = "234" + result.phone;
+          var phoneNunber =  result.phone;
           sms.message.sendSms('Applinic',phoneNunber,msgBody,function(err,responseData){
 
           }); //"2348096461927"
@@ -5037,7 +5037,7 @@ router.post("/user/response/patients-histories",function(req,res){
                 io.sockets.to(patient.user_id).emit("message notification",{status:true})
               } else {
                 var msgBody = "A Doctor responded to your history! Visit http://applinic.com/login"
-                var phoneNunber = "234" + patient.phone;
+                var phoneNunber =  patient.phone;
                 sms.message.sendSms('Applinic',phoneNunber,msgBody,function(err,responseData){
 
                 }); //"2348096461927"

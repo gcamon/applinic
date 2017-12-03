@@ -1465,11 +1465,17 @@ app.controller('signupController',["$scope","$http","$location","$window","templ
 
   var currency = {};
 
+  $scope.userType = function(type) {
+    $scope.user.typeOfUser = type; 
+  }
+
+  $scope.userType("Patient") // sets type of user as patient as default as patient is the landing form .
+  
   $scope.submit = function(type){
   $scope.user.currencyCode = currency.code;
   $scope.user.state = currency.state;
   $scope.user.region = currency.region;
-  $scope.user.typeOfUser = type || $scope.user.typeOfUser;
+
 
   if($scope.user.city && $scope.user.city !== "") {
     var capitalize = $scope.user.city.charAt(0).toUpperCase() + $scope.user.city.slice(1); //capitalize the letter that starts a sentence
@@ -1483,7 +1489,6 @@ app.controller('signupController',["$scope","$http","$location","$window","templ
 
     var objLen = Object.keys($scope.user).length;
     var msg = "Please fill out empty field"; 
-
   if($scope.user.email) {
     signUp.emailCheck({email: $scope.user.email},function(response){
       if(response.success === true){
@@ -1493,9 +1498,19 @@ app.controller('signupController',["$scope","$http","$location","$window","templ
         return;
       }
     })
+  } else {
+    validate($scope.user); 
   }   
 
  }
+ // this will be to get the type of diagnostic center a user slected as the type of user
+ $scope.center = {}
+
+ $scope.$watch("center.type",function(newVal,oldVal){
+  if(newVal) {
+    $scope.userType(newVal);//sets the type of diagnostic center a user selected.
+  }
+ })
 
   $scope.close = function(result) {
     close(result,500);
@@ -1506,7 +1521,7 @@ app.controller('signupController',["$scope","$http","$location","$window","templ
 
       if(data.typeOfUser !== "Patient" && data.typeOfUser !== "Doctor") {
         if(data.name === undefined || data.name === "") {
-          $scope.nameError = "Enter value for your center name";
+          $scope.typeMessage = "Enter value for your center name";
           return;
         }
         
@@ -1519,11 +1534,17 @@ app.controller('signupController',["$scope","$http","$location","$window","templ
         }
       }
 
-      if( data.typeOfUser === "Patient" && data.firstname === undefined || data.firstname === "") {
+      if(data.typeOfUser === "Patient" && data.firstname === undefined || data.firstname === "") {
         $scope.FirstNameMessage = "Enter value for first name";
         return;
       } else if(data.typeOfUser === "Patient" && data.lastname === undefined || data.lastname === "") {
         $scope.lastNameMessage = "Enter value for last name";
+        return;
+      } else if(data.typeOfUser === undefined || data.typeOfUser === "" ) {
+        $scope.typeMessage = "Select type of user your are";
+        return;
+      } else if(data.country === undefined || data.country === "") {
+        $scope.countryMessage = "Select your country of residence";
         return;
       } else if(data.city === undefined || data.city === "") {
         $scope.cityMessage = "Enter your city";
@@ -1536,11 +1557,9 @@ app.controller('signupController',["$scope","$http","$location","$window","templ
         return;
       } else if(data.agree !== true) {
         $scope.termMessage = "You have to agree to our terms and conditions";
-      } else if(data.phone === undefined || data.email === ""){
-        $scope.emailMessage = "Enter value for email";
         return;
-      } else if(data.country === undefined || data.country === "") {
-        $scope.countryMessage = "Select your country of residence";
+      } else if(data.email === undefined || data.email === ""){
+        $scope.emailMessage = "Enter value for email";
         return;
       } else if(data.typeOfUser === "Patient" && data.age === undefined || data.age === "") {
         $scope.ageMessage = "Select your age category";
@@ -1566,18 +1585,16 @@ app.controller('signupController',["$scope","$http","$location","$window","templ
       } else if(data.password === undefined || data.password === ""){
         $scope.passwordMessage = "Enter value for password";
         return;
-      } else if(data.typeOfUser === undefined || data.typeOfUser === "" ) {
-        $scope.typeMessage = "Select type of user your are";
-        return;
       } else {
         finalValidation();
       }
 
     function finalValidation() {
+
       if(data.agree === true) {
         $rootScope.formData = data;
-        if($scope.callingCode){
-          $scope.user.phone = $scope.callingCode + "" + $scope.user.phone;
+        if($scope.user.callingCode){        
+          $scope.user.phone = $scope.user.callingCode.toString() + $scope.user.phone.toString();
           sendDetail();
         } else {
           $scope.numberError = "Invalid number format";
@@ -1640,9 +1657,9 @@ app.controller('signupController',["$scope","$http","$location","$window","templ
 
       $.getJSON("/assets/calling_code.json", function(result){
         //alert('Country: ' + result.country_name + '\n' + 'Code: ' + result.country_code);
-        //$('#newURL').attr('href','https://www.google.com&jobid='+result.country_code);
+        //$('#newURL').attr('href','https://www.google.com&jobid=' + result.country_code);
         console.log(result);
-        $scope.callingCode = result[countryCode];
+        $scope.user.callingCode = result[countryCode];
         $scope.numberError = "";
       });
       
@@ -1744,12 +1761,13 @@ app.controller('signupController',["$scope","$http","$location","$window","templ
 
   var toStr;
   var count=0;
-  var msg = "Wrong format! Select country above to auto fill the calling code field."
+  var msg = "Wrong format! Select country above to auto fill the calling code field.";
+
+
   $scope.$watch("user.phone",function(newVal,oldVal){
-    
-    if(newVal && !$scope.callingCode) {
+    if(newVal && !$scope.user.callingCode) {
       $scope.numberError = msg;
-    }
+    } 
     
   });
 

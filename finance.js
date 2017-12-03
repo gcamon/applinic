@@ -333,7 +333,7 @@ var basicPaymentRoute = function(model,sms,io,paystack){
 						}
 
 						var msgBody = "Your payment OTP is " + password + " \nPlease disclose only to the right user."
-						var phoneNunber = "234" + user.phone;
+						var phoneNunber = user.phone;
 						sms.message.sendSms('Appclinic',phoneNunber,msgBody,callBack); //"2348096461927"
 
 						res.send({message:"One time pin number has been sent. The pin is needed for payment confirmation",success:true,time_stamp:req.body.time}) 
@@ -575,7 +575,7 @@ var basicPaymentRoute = function(model,sms,io,paystack){
 					                  io.sockets.to(data.user_id).emit("acceptance notification",{status:true})
 					                } else {
 					                  var msgBody = "Success! " +  result.firstname + " " + result.lastname + " is now your patient. Visit http://applinic.com/login"
-					                  var phoneNunber = "234" + data.phone;
+					                  var phoneNunber =  data.phone;
 					                  sms.message.sendSms('Applinic',phoneNunber,msgBody,function(err,responseData){
 
 					                  }); //"2348096461927"
@@ -729,7 +729,7 @@ var basicPaymentRoute = function(model,sms,io,paystack){
             io.sockets.to(data.user_id).emit("notification",{status:true})
           } else {
             var msgBody = "Your laboratory test result is ready! Visit http://applinic.com/login"
-            var phoneNunber = "234" + data.phone;
+            var phoneNunber =  data.phone;
             sms.message.sendSms('Applinic',phoneNunber,msgBody,function(err,responseData){
 
             }); //"2348096461927"
@@ -817,7 +817,7 @@ var basicPaymentRoute = function(model,sms,io,paystack){
             io.sockets.to(data.user_id).emit("notification",{status:true});
           } else {
             var msgBody = "Your laboratory test result is ready! Visit http://applinic.com/login"
-            var phoneNunber = "234" + data.phone;
+            var phoneNunber =  data.phone;
             sms.message.sendSms('Applinic',phoneNunber,msgBody,function(err,responseData){
 
             }); //"2348096461927"
@@ -931,7 +931,7 @@ var basicPaymentRoute = function(model,sms,io,paystack){
             io.sockets.to(data.user_id).emit("notification",{status:true})
           } else {
             var msgBody = "Your radiology test result is ready! Visit http://applinic.com/login"
-            var phoneNunber = "234" + data.phone;
+            var phoneNunber =  data.phone;
             sms.message.sendSms('Applinic',phoneNunber,msgBody,function(err,responseData){
 
             }); //"2348096461927"
@@ -1016,7 +1016,7 @@ var basicPaymentRoute = function(model,sms,io,paystack){
 		          io.sockets.to(data.user_id).emit("notification",{status:true})
 		        } else {
 		          var msgBody = "Your radiology test result is ready! Visit http://applinic.com/login";
-		          var phoneNunber = "234" + data.phone;
+		          var phoneNunber =  data.phone;
 		          sms.message.sendSms('Applinic',phoneNunber,msgBody,function(err,responseData){
 
 		          }); //"2348096461927"
