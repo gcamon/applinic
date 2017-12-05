@@ -9,7 +9,10 @@
 
 /* my ng animate style */
 
-
+.logo {
+  max-width: 35%;
+  max-height:auto;
+}
 .view-animate-container {
   position:relative;  
   background:white;  
@@ -417,7 +420,6 @@
 
 @media screen and (min-height: 960px) {
   .view-animate-container {
-
     max-height: 800px;
     background: transparent !important;
   }

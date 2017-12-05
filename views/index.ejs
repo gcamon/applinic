@@ -135,6 +135,11 @@
                 height:400px;
             }
 
+            .display-4 {
+                margin-top: 20px;
+                font-size:22px;
+            }
+
         }
 .title{font-size:1.2em;
 font-weight:600;}
@@ -157,7 +162,7 @@ font-weight:600;}
 
 <body class="template-page" style="overflow-x:hidden">
     <!-- Navbar -->
-    <nav class="navbar navbar-toggleable-md bg-primary fixed-top  navbar-transparent" color-on-scroll="500">
+    <!--<nav class="navbar navbar-toggleable-md bg-primary fixed-top  navbar-transparent" color-on-scroll="500">
         <div class="container">
             <div class="navbar-translate">
                 <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navigation" aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation">
@@ -166,7 +171,7 @@ font-weight:600;}
                     <span class="navbar-toggler-bar bar3"></span>
                 </button>
                 <a class="navbar-brand" href="/">
-                    <img src="/assets/images/applinic1.svg" alt="Applinic" width="250" height="40">
+                    <img src="/assets/images/applinic1.png" alt="Applinic" style="width: 40%;height:40px">
                 </a>
             </div>
             <div class="collapse navbar-collapse justify-content-end" id="navigation" data-nav-image="assets/img/blurred-image-1.jpg">
@@ -199,7 +204,8 @@ font-weight:600;}
                 </div>
             </div>
         </div>
-    </nav>
+    </nav>-->
+    <% include ./inner/nav %>
     <!-- End Navbar -->
 
     <div id="carouselExampleIndicators" class="carousel slide carousel-fade bg-default" data-ride="carousel">
@@ -215,6 +221,7 @@ font-weight:600;}
       <img class="d-block img-fluid make-up-bg" src="/assets/images/bg5.jpg" alt="First slide" >
       <div class="carousel-caption d-none d-md-block text-left" style="font-size:-1.7em; background:rgba(0,0,0,0.4); padding:2em;">
           <div class="display-4">Doctor</div>
+          <div class="separator01 separator-primary"></div>
 <br>
 •   Over 1,000 registered and verified doctors and consultants<br>
 •   Find the right doctor or specialist for your case<br>
@@ -236,6 +243,7 @@ font-weight:600;}
           
 
      <div class="display-4">Pharmacy</div>
+     <div class="separator01 separator-primary"></div>
 <br>
 •    Over 500 registered and verified pharmacy stores <br>
 •   Find the drug you are searching for in any city <br>
@@ -253,6 +261,7 @@ font-weight:600;}
         <div class="carousel-caption d-none d-md-block text-left" style="font-size:-1.7em; background:rgba(0,0,0,0.4); padding:2em;">
     
      <div class="display-4">Radiology</div>
+     <div class="separator01 separator-primary"></div>
 <br>
 • Over 500 registered and verified radiology centers<br>
 •  24 hours Live chat/audio/video call with radiologists and radiographers <br>
@@ -269,6 +278,7 @@ font-weight:600;}
       <img class="d-block img-fluid make-up-bg" src="assets/images/bg3.jpg" alt="Second slide">
         <div class="carousel-caption d-none d-md-block text-left" style="font-size:-1.7em; background:rgba(0,0,0,0.4); padding:2em;">
   <div class="display-4">Laboratories</div>
+  <div class="separator01 separator-primary"></div>
 <br>
 •  Over 500 registered and verified laboratory centers and scientists<br>
 •   24 hours Live chat/audio/video call with laboratory scientists <br>
@@ -301,9 +311,6 @@ font-weight:600;}
         interaction with diagnostic centers and pharmacies and keeps a secure free
         online record of each patient’s medical management history.
         In just a few clicks, you can receive answers to all your medical needs.</p>
-
-
-
     <div class="row">
 <div class="col-md-4 col-sm-6 col-xs-12">
     <div class="card"> 
@@ -517,108 +524,10 @@ with just few clicks without having to ask around or wonder where to find your n
 </div>
 </div>
 
-<div class="col-md-12 col-sm-12 col-xs-12 bg-default pt-4" style="min-height:20em;">
-
-<div class="row"  style="min-height:15em;">
-<div class="col-md-4 col-sm-12" style="float:left;">
-    
- <img src="/assets/images/applinic1.svg" alt="Applinic" width="250" height="40">
-
-
-
- <div class="list-group" style="background:transparent; border:0;">
-  <a href="" class="list-group-item list-group-item-action">
-   We specialize in offering help to find your best medical solution.
-  </a>
-  <a href="#" class="list-group-item list-group-item-action">1 Nwodo street GRA Enugu, Enugu State, Nigeria</a>
-  <a href="#" class="list-group-item list-group-item-action">info@applinic.com</a>
-  <a href="#" class="list-group-item list-group-item-action">+234 8064245256</a> 
-  <a href="#" class="list-group-item list-group-item-action">+234 8086675053</a>
-  
-</div>
-
-
-
-</div>
-<div class="col-md-4 col-sm-12 " style="float:left;">
-    <div class="title text-uppercase pl-0">Featured Doctors</div>
-
- <div class="col-md-12 col-sm-12 col-xs-12" style="min-height:120px;">
-      <div class="row">
-<div class="col-md-4  col-sm-3" style="height:100%; width:150px; top:1em;">
-    <img src="assets/images/ogboo.jpg"  class="img-responsive card"></div>
-     <div class="col-md-7 col-sm-7 col-xs-6" style="padding:1em; float:right;">
-    <div class="clearfix"></div>
-    <div class="col-md-12 pull-left text-capitalize  p-0">Dr. Jennifer Peters, MD 
-   </div><br> <sub class="text-muted text-bold m-0">Pediatrics Medicine</sub>
-    
-    </div></div>
-</div>
+<% include ./inner/footer-links %>
 
 <div class="clearfix"></div>
-<div class="dropdown-divider m-0"></div>
-
- <div class="col-md-12 col-sm-12 col-xs-12" style="min-height:120px;">
-      <div class="row">
-<div class="col-md-4  col-sm-3" style="height:100%; width:150px; top:1em;">
-    <img src="assets/images/ogboo.jpg"  class="img-responsive card"></div>
-     <div class="col-md-7 col-sm-7 col-xs-6" style="padding:1em; float:right;">
-    <div class="clearfix"></div>
- <div class="col-md-12 pull-left text-capitalize  p-0">Dr. Emeka Okafor, MD
-   </div><br> <sub class="text-muted text-bold m-0">Consultant Nephrologist</sub>
-
-</div></div>
-</div>
-
-</div>
-
-<div class="clearfix"></div>
-    <div class="col-md-4 col-sm-12 col-xs-12" style="float:left;">
-         <div class="title text-uppercase p-0">Useful links</div>
-
-         <div class="list-group ">
-  <!--<a href="" class="list-group-item list-group-item-action">About</a>-->
-  <!--<a href="#" class="list-group-item list-group-item-action">Lastest Blog</a>-->
-  <!--<a href="" class="list-group-item list-group-item-action">Terms and Conditions</a>-->
-  <!--<a href="#" class="list-group-item list-group-item-action">Privacy policy</a>-->
-    <a href="/contact" class="list-group-item list-group-item-action">Contact Us</a>
-</div>
-    </div>
-
-</div>
-</div>
-
-
-<div class="clearfix"></div>
-        <footer class="footer">
-            <div class="container">
-                <nav>
-                    <ul>
-                        <li>
-                            <a href="#">
-                                APPPLINIC
-                            </a>
-                        </li>
-                        <!--<li>
-                            <a href="#">
-                                About Us
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#">
-                                Blog
-                            </a>
-                        </li>-->
-                       </ul>
-                </nav>
-                <div class="copyright">
-                    &copy;
-                    <script>
-                        document.write(new Date().getFullYear())
-                    </script>, Applinic
-                </div>
-            </div>
-        </footer>
+       <% include ./inner/footer %>
     </div>
 
         <!--************************************
