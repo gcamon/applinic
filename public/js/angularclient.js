@@ -699,13 +699,16 @@ app.service('templateService',[function(){
         audio('/assets/audio/demonstrative.mp3');
       break;
       case 2:
-        audio('/assets/audio/tweet.mp3');
+        audio('/assets/audio/whatsappweb.mp3');
       break;
       case 3:
         audio('/assets/audio/gets-in-the-way.mp3');
       break;
+      case 4:
+        audio('/assets/audio/cute.mp3');
+      break;
       default:
-        audio('/assets/audio/solemn.mp3');
+        audio('/assets/audio/tweet.mp3');
       break
     }
     
@@ -6987,8 +6990,8 @@ function($scope,$location,$rootScope,$http,$interval,templateService,localManage
 }]);
 
 //controls online presence icon to show who is online or offline. Note for doctors only ppatients that are online are displayed.
-app.controller("presenceSocketController",["$rootScope","$scope","$window","mySocket","localManager","ModalService",
-  function($rootScope,$scope,$window,mySocket,localManager,ModalService){
+app.controller("presenceSocketController",["$rootScope","$scope","$window","mySocket","localManager","ModalService","templateService",
+  function($rootScope,$scope,$window,mySocket,localManager,ModalService,templateService){
    
    var person = localManager.getValue("resolveUser");
 
@@ -7083,11 +7086,11 @@ app.controller("presenceSocketController",["$rootScope","$scope","$window","mySo
   /***** Video Call Logic ********/
   //takes care of receiver accepting the video call 
   mySocket.on("receive request",function(data){
+    templateService.playAudio(1);
     var decide = confirm(data.message);
     if(decide) {
       //time will be include to enable user decide when t have conversation
       mySocket.emit("conversation acceptance",{status:true,time: "now",to:data.from,title:person.title,name: person.firstname},function(data){
-        $window.location.target = "_blank";
         $window.location.href = data.controlUrl;
       });
     } else {
@@ -7102,6 +7105,7 @@ app.controller("presenceSocketController",["$rootScope","$scope","$window","mySo
 
   //takes care of redirecting to video call page for the call requester After the received had accepted and redirected to its on page.
   mySocket.on("video call able",function(response){
+      templateService.playAudio(4);
       var decide = confirm(response.message);
       if(decide){
         $window.location.href = response.controlUrl;
