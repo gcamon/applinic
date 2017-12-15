@@ -7095,7 +7095,7 @@ app.controller("presenceSocketController",["$rootScope","$scope","$window","mySo
       });
     } else {
       //when call is rejected by the receiver
-      mySocket.emit("call reject",{to: data.from,message: user.title + " " + user.firstname + " rejected your video call request."})
+      mySocket.emit("call reject",{to: data.from,message: person.title + " " + person.firstname + " rejected your video call request."})
     }
   });
 
