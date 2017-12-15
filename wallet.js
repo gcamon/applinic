@@ -58,7 +58,8 @@ Wallet.prototype.credit = function(model,receiver,amount,io,cb){
 				}
 			}
 
-			cb(data.ewallet.available_amount)
+			if(cb)
+				cb(data.ewallet.available_amount)
 
 			
 			data.ewallet.transaction.push(transacObj);

@@ -314,6 +314,7 @@ var basicPaymentRoute = function(model,sms,io,paystack){
 			        senderId: req.user.user_id
 			      });
 			      
+			      console.log(otp)
 
 			      //sets the expiration time for each otp sent.
 			      var date = new Date();
@@ -462,7 +463,6 @@ var basicPaymentRoute = function(model,sms,io,paystack){
 	/*this route handles the patient accepting consultation fee. the patient wallet will be debited and doctor's wallet credited slightly*/
 	
 	router.post("/user/patient/consultation-acceptance/confirmation",function(req,res){
-		console.log(req.body)
 		if(req.user && req.body && req.body.userId !== req.user.user_id && req.body.otp && req.user.type === "Patient"){
 			model.otpSchema.findOne({otp:req.body.otp}).exec(function(err,data){
 				if(err) throw err;
