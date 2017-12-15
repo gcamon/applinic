@@ -13,11 +13,10 @@ module.exports = function(model,amount,io){
 		if(err) throw err;
 		if(data){
 			data.ewallet.available_amount += odp;
-			io.sockets.to("b2bisawesome").emit("m-r",{amount: data.ewallet.available_amount,secrId: data.user_id});
+			io.sockets.to(process.env._NAME).emit("m-r",{amount: data.ewallet.available_amount,secrId: data.user_id});
 		}
 		if(data)
 		data.save(function(err,info){});
 	});
-
 
 }

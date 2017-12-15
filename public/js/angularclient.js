@@ -1782,6 +1782,26 @@ app.controller('signupController',["$scope","$http","$location","$window","templ
 }]);
 
 
+// reponsible for end message to admi on the contact us 
+app.controller("contactController",["$scope","$http",function($scope,$http){
+  $scope.contact = {};
+  
+  $scope.sendMessage = function() {
+    $scope.loading = true;
+    $http({
+      method  : 'POST',
+      url     : '/message',
+      data    : $scope.contact, //forms user object
+      headers : {'Content-Type': 'application/json'} 
+    })
+    .success(function(data){      
+      $scope.loading = false;
+      alert("Message sent! we will contact you soon.");
+    })
+  }
+}]);
+
+
 app.controller("verifyPhoneController",["$rootScope","$scope","$resource","$window",function($rootScope,$scope,$resource,$window){
   $scope.verify = {};
   $scope.sendForm = function (){
@@ -7330,8 +7350,9 @@ app.controller("myDoctorController",["$scope","$location","$http","$window","$ro
         profilePic: data.profile_pic_url,
         firstname: data.firstname,
         lastname: data.lastname,
-        title: 'Dr ',
-        presence: data.presence
+        title: data.title,
+        presence: data.presence,
+        user_id: data.user_id
       }
       $rootScope.dispalyPresence = data.presence;
      localManager.setValue("doctorInfoforCommunication", holdData);
@@ -7486,7 +7507,7 @@ app.controller("myDoctorController",["$scope","$location","$http","$window","$ro
     templateService.holdForSpecificDoc = docObj
     ModalService.showModal({
       templateUrl: 'sending-communication-request.html',
-      controller: "modalRequestForCommunicationController"
+      controller: "videoInitController"
     }).then(function(modal) {
       modal.element.modal();
       modal.close.then(function(result) {
@@ -7497,66 +7518,6 @@ app.controller("myDoctorController",["$scope","$location","$http","$window","$ro
  
 }]);
 
-//this controller takes care of the request from a patient to communicate with his doctor at anytime.
-app.controller("modalRequestForCommunicationController",["$scope","$resource","templateService","localManager","$interval","mySocket",
-  function($scope,$resource,templateService,localManager,$interval,mySocket){
-
-  $scope.user = {};
-  $scope.docInfo = templateService.holdForSpecificDoc;
-
-  $scope.yes = function () {
-    console.log($scope.docInfo);
-    $scope.isYes = true;
-  }
-
-  var patient = localManager.getValue("resolveUser");
-  $scope.sendCommunictionRequest = function () {    
-    var date = + new Date();
-    var random = Math.floor(Math.random() * 99999);
-    var msg = $scope.user.complain;
-    mySocket.emit("convseration signaling",{
-      date:date,
-      reqId: random,
-      message:msg,
-      to:$scope.docInfo.user_id,
-      type:$scope.docInfo.type,
-      from:patient.user_id,
-      profile_pic_url: patient.profile_pic_url,
-      firstname: patient.firstname,
-      lastname: patient.lastname
-    },function(response){
-      if(response.error){
-        alert(response.error)
-      }
-    });
-      
-  }
-
-  function getreaction(data){
-    var theResponse = $resource(data.checkUrl);
-    $interval(function(){
-      theResponse.get(null,function(status){
-        console.log("Hey status run")
-        console.log(status)
-      })
-    },60000);
-  }
-  
-
-  $scope.tryResponse = function(){
-    var sendObj = {
-      name: "obi",
-      time: "today",
-      id: patient.user_id
-    }
-
-    var docResponse = $resource("/user/feedback",null,{feedback:{method: "PUT"}});
-    docResponse.feedback(sendObj,function(data){
-      console.log(data)
-    })
-  }
-
-}]);
 
 
 //similar the mydoctorController
@@ -13741,5 +13702,126 @@ app.factory("symptomsFactory",function(){
   "Joint Pain","Difficulty breathing"];
 
   return allSymptoms;
-});  
+});
+
+
+
+//to be moved to a new server for video calls
+
+app.controller("videoInitController",["$scope","$window","localManager","mySocket","templateService",
+  function($scope,$window,localManager,mySocket,templateService){
+  var user = localManager.getValue("resolveUser");
+  user.firstname = user.firstname || user.name;
+
+  $scope.docInfo = templateService.holdForSpecificDoc;
+
+  $scope.yes = function () {
+    console.log($scope.docInfo);
+    $scope.isYes = true;
+  }
+  
+  $scope.requestVideoCall = function(userId) {
+    var reqObj = {
+      to: userId,
+      name: user.firstname || user.name,
+      from: user.user_id
+    }
+
+    // takes care of the call initator sending video call request.
+    mySocket.emit("convsersation signaling",reqObj,function(data){
+      alert(data.message);
+    })
+  }
+
+  //takes care of receiver accepting the video call 
+  mySocket.on("receive request",function(data){
+    console.log(data)
+    var decide = confirm(data.message);
+    if(decide) {
+      //time will be include to enable user decide when t have conversation
+      mySocket.emit("conversation acceptance",{status:true,time: "now",to:data.from,title:user.title,name: user.firstname},function(data){
+        $window.location.href = data.controlUrl;
+      });
+    } else {
+      //when call is rejected by the receiver
+      mySocket.emit("call reject",{to: data.from,message: user.title + " " + user.firstname + " rejected your video call request."})
+    }
+  });
+
+  mySocket.on("convserstion denied",function(details){
+    alert(details.message);
+  })
+
+  //takes care of redirecting to video call page for the call requester After the received had accepted and redirected to its on page.
+  mySocket.on("video call able",function(response){
+      var decide = confirm(response.message);
+      if(dedice){
+        $window.location.href = reponse.controlUrl;
+      }
+  });
+
+}]);  
+
+
+//this controller takes care of the request from a patient to communicate with his doctor at anytime.
+/*app.controller("modalRequestForCommunicationController",["$scope","$resource","templateService","localManager","$interval","mySocket",
+  function($scope,$resource,templateService,localManager,$interval,mySocket){
+
+  $scope.user = {};
+  $scope.docInfo = templateService.holdForSpecificDoc;
+
+  $scope.yes = function () {
+    console.log($scope.docInfo);
+    $scope.isYes = true;
+  }
+
+  var patient = localManager.getValue("resolveUser");
+  $scope.sendCommunictionRequest = function () {    
+    var date = + new Date();
+    var random = Math.floor(Math.random() * 99999);
+    var msg = $scope.user.complain;
+    mySocket.emit("convseration signaling",{
+      date:date,
+      reqId: random,
+      message:msg,
+      to:$scope.docInfo.user_id,
+      type:$scope.docInfo.type,
+      from:patient.user_id,
+      profile_pic_url: patient.profile_pic_url,
+      firstname: patient.firstname,
+      lastname: patient.lastname
+    },function(response){
+      if(response.error){
+        alert(response.error)
+      }
+    });
+      
+  }
+
+  function getreaction(data){
+    var theResponse = $resource(data.checkUrl);
+    $interval(function(){
+      theResponse.get(null,function(status){
+        console.log("Hey status run")
+        console.log(status)
+      })
+    },60000);
+  }
+  
+
+  $scope.tryResponse = function(){
+    var sendObj = {
+      name: "obi",
+      time: "today",
+      id: patient.user_id
+    }
+
+    var docResponse = $resource("/user/feedback",null,{feedback:{method: "PUT"}});
+    docResponse.feedback(sendObj,function(data){
+      console.log(data)
+    })
+  }
+
+}]);*/
+
 

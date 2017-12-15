@@ -196,7 +196,7 @@ var signupRoute = function(model,sms,geonames,paystack) {
 		console.log(req.body);
 		var date = new Date()
 		testPhone.expirationDate = new Date(date.getTime() + 300000);
-		testPhone.expirationDate.expires  = 60 * 60;
+		testPhone.expirationDate.expires  = 60 * 60; // 1 hour before deleted from database.
 
 		testPhone.save(function(err,info){});
 

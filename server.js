@@ -18,6 +18,8 @@ var express = require('express'),
   }), 
   placement = require("./placement"),
   mySocket = require("./socket"),
+  streams = require("./streams"),//this will be moved to another server later
+
   port = process.env.PORT || 3000;
 
   var ExpressPeerServer = require('peer').ExpressPeerServer;
@@ -72,11 +74,16 @@ loginRoute(model);
 route(model,sms,io); 
 payments(model,sms,io,paystack);
 placement(model,sms);
-mySocket(model,io);
+mySocket(model,io,streams);
+
+
 
 
 var a = "ede obinna".replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()});
 console.log(a)
+
+var date = new Date();
+console.log(date.getTime() + 300000)
   
 /*paystack.customer.create({
   first_name: "Obinna",

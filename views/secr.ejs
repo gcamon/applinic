@@ -5,24 +5,26 @@
 <!--[if IE 8]>          <html class="no-js lt-ie9" lang=""> <![endif]-->
 <!--[if gt IE 8]><!-->  <html class="no-js" lang=""> <!--<![endif]-->
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Doctor Directory</title>
-    <meta name="description" content="">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="apple-touch-icon" href="apple-touch-icon.png">
-    <link rel="stylesheet" href="/assets/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/assets/css/normalize.css">
-    <link rel="stylesheet" href="/assets/css/font-awesome.min.css">
-    <link rel="stylesheet" href="/assets/css/icomoon.css">
-    <link rel="stylesheet" href="/assets/css/owl.theme.css">
-    <link rel="stylesheet" href="/assets/css/owl.carousel.css">
-    <link rel="stylesheet" href="/assets/css/prettyPhoto.css">
-    <link rel="stylesheet" href="/assets/css/main.css">
-    <link rel="stylesheet" href="/assets/css/transitions.css">
-    <link rel="stylesheet" href="/assets/css/color.css">
-    <link rel="stylesheet" href="/assets/css/responsive.css">
-    <link rel="stylesheet" href="/assets/css/angular-carousel.css">   
+     <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title> Applinic</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="apple-touch-icon" href="apple-touch-icon.png">
+        <!-- Place favicon.ico in the root directory -->
+
+       <!--<link rel="stylesheet" href="/assets/css/main.cs">-->
+        <link rel="stylesheet" href="/assets/css/vendor.css">
+         <link rel="stylesheet" href="/assets/css/app.css">
+         
+          <link rel="stylesheet" href="/assets/css/now-ui-kit2.css">
+          <link rel="stylesheet" href="/assets/css/icomoon.css">
+          <link rel="stylesheet" href="/assets/css/chat.css">
+           <link rel="stylesheet" href="/assets/css/my-edit.css">
+          
+        
+          <script src="/assets/js/vendor2.js"></script>
+          <script type="text/javascript" src="/assets/js/source.js"></script>
 
 
     <!--<script src="/assets/js/vendor/modernizr-2.8.3-respond-1.4.2.min.js"></script>-->
@@ -33,7 +35,7 @@
         <![endif]-->
         <main ng-controller="secrController">
             
-            <section class="container">
+            <section class="container" ng-cloak>
                 <header>
                     <h5>Service Notification</h5>
                 </header>
@@ -82,6 +84,9 @@
                         </div>
                          <div>
                             <i class="fa fa-phone"> </i> <span> {{m.phone}}</span>
+                        </div>
+                        <div>
+                            <i class="fa fa-envelope"> </i> <span> {{m.email}}</span>
                         </div>
                     </div>
                 </div>
@@ -137,38 +142,41 @@
         </div>
      </script>
 
+       <script src="/assets/js/app.js"></script>
+        <script src="/assets/js/now-ui-kit.js"></script>
+
+
+       
         
-        <script src="/assets/js/vendor/jquery-library.js"></script>        
-        <script src="/assets/js/vendor/bootstrap.min.js"></script>
-        <script src="/socket.io/socket.io.js"></script>         
-        <script type="text/javascript" src="/assets/js/source.js"></script>
         <script type="text/javascript" src="/assets/js/angularclient.js"></script>
         <script type="text/javascript" src="/assets/js/ngroute.js"></script>
-        <script src="/assets/js/angular-clipboard.js"></script>
-        <script src="/assets/js/ngresource.js"></script>        
-        <script src="/assets/js/socket.min.js"></script>        
+        <script src="/socket.io/socket.io.js"></script>   
+        <script src="/assets/js/socket.min.js"></script>
         <script src="/assets/js/jquery-ui.js"></script>
-        <script src="/assets/js/map/jquery.gomap.js"></script>
-        <script src="/assets/js/map/markerclusterer.min.js"></script>
-        <script src="/assets/js/countdown.js"></script>
-        <script src="/assets/js/jquery.nicescroll.js"></script>
-        <script src="/assets/js/parallax.js"></script>
-        <script src="/assets/js/owl.carousel.js"></script>
-        <script src="/assets/js/prettyPhoto.js"></script>
-        <script src="/assets/js/appear.js"></script>
-        <script src="/assets/js/countTo.js"></script>
-        <script src="/assets/js/map/map.js"></script>
-        <script src="/assets/js/angularAnimate.js"></script>
-        <script src="/assets/js/modalService.js"></script>
-        <script src="/assets/js/main.js"></script>
+
+       
+       
+      
+      
+        
+        
+        <!--<script src="/assets/js/main.js"></script>-->
         <script src="/assets/js/angular-touch.min.js"></script>
-        <script src="/assets/js/angular-carousel.js"></script>
-        <script src="/assets/js/moment.min.js"></script>
+        <script src="/assets/js/angularAnimate.js"></script>
+
+        <script src="/assets/js/modalService.js"></script>
+        <script src="/assets/js/moment.min.js"></script>     
         <script src="/assets/js/angular-moment.min.js"></script>
+        <script src="/assets/js/angucomplete-alt.min.js"></script> 
+
         <script src="/assets/js/ui-bootstrap-tpls.js"></script>
-        <script src="/assets/js/secr-con.js"></script> 
+        <script src="/assets/js/angular-clipboard.js"></script>
+        <script src="/assets/js/ngresource.js"></script>
+         <script src="/assets/js/secr-con.js"></script>
          <script src="/assets/js/ngPrint.js"></script>
-         <script type="text/javascript" src="/assets/js/angular-paystack/dist/angular-paystack.min.js"></script>
+        <script type="text/javascript" src="/assets/js/angular-paystack/dist/angular-paystack.min.js"></script>
+
+
 
    <!--<script src="http://angular-ui.github.com/bootstrap/ui-bootstrap-tpls-0.2.0.js"></script>-->
 

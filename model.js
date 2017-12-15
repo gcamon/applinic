@@ -484,7 +484,7 @@ var myModel = function () {
 	})
 	
 
-	
+	//for patient waiting room
 	var helpSchema = Schema({
 		helpType: String,
 		description: String,
@@ -645,6 +645,34 @@ var myModel = function () {
 		collections: "geonamesinfo"
 	});
 
+	var messageSchema = Schema({
+		date: String,
+		names: String,
+		ticket: String,
+		email: String,
+		phone: String,
+		message: String,
+		answers: Array,
+	},{
+		collections: "messageinfos"
+	});
+
+//to be moved to another server
+	var controlSchema = Schema({
+		expirationDate: {
+			type: Date,
+			expires: 3600
+		},		
+		createdAt: {
+			type: Date,
+			expires: Number
+		},		
+		controlUrl: String,
+		streams: Array
+	},{
+		collections: "controlinfos"
+	});
+
 	/*var callingSchema = Schema({
 		calling_code: {
 			countryCode: String
@@ -681,15 +709,11 @@ var myModel = function () {
 	models.dynaService = mongoose.model("dynamictestinfos",dynaTestSchema);
 	models.courier = mongoose.model("courierinfos",courierSchema);
 	models.geonames = mongoose.model("geonamesinfo",geonameSchema);
+	models.messages = mongoose.model("messageinfo",messageSchema);
+	models.control = mongoose.model("controlinfos",controlSchema);//to be moved to another server
 	//models.calling_code = mongoose.model("callingcodeinfos",callingSchema)
 	
-	//models.requests = mongoose.model("requestinfos",chatSchema);
-	/*models.award = mongoose.model('awardinfo', AwardSchema);
-	models.education = mongoose.model('educationinfo', EducationSchema);
-	models.prescribtion = mongoose.model("prescribtioninfo", prescribtionSchema);
-	models.transaction = mongoose.model("transactioninfo",transactionSchema);
-	models.procedure = mongoose.model("procedureinfo",procedureSchema);
-	models.subSpecialty = mongoose.model("subspecialtyinfo",subspecialtySchema);*/
+	
 	return models		
 }
 

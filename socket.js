@@ -1,6 +1,8 @@
 "use strict";
 
-module.exports = function(model,io) {    
+var uuid = require("node-uuid");
+
+module.exports = function(model,io,streams) {    
   io.sockets.on('connection', function(socket){  	   
 	    console.log('a user connected');
 	    var user = {};
@@ -17,12 +19,13 @@ module.exports = function(model,io) {
 
 	    /**secr****/
 	    socket.on('join_secr',function(data){
-	    	socket.join(data.userId);  
-	    	var list = [process.env.ODP_DOCTOR,process.env.ODP_PHARMACY,process.env.ODP_RADIOLOGY,process.env.ODP_LABORATORY];
+	    	var roomId = process.env._NAME || data.user_id;
+	    	socket.join(roomId);  
+	    	/*var list = [process.env.ODP_DOCTOR,process.env.ODP_PHARMACY,process.env.ODP_RADIOLOGY,process.env.ODP_LABORATORY];
 	    	for(var i = 0; i < list.length; i++){
 	    		console.log("room created " + i);
 	    		socket.join(list[i]);
-	    	}
+	    	}*/
 	    })
 
   		socket.on("init chat",function(data,cb){
@@ -241,8 +244,64 @@ module.exports = function(model,io) {
 				io.sockets.to(data.to).emit("user rejected calls",{status:"Call rejected!"})
 			});
 
-	
+			///////
+
+			//video logic this will be moved to a new server
+			//sending video or audio request
+			socket.on("convsersation signaling",function(req,cb){
+				model.user.findOne({user_id:req.to},{set_presence:1,firstname:1,title:1},function(err,user){
+					if(err) throw err;
+					if(user.set_presence.general === true) {
+						//{type:req.type,message:req.message,time:req.time}
+						console.log("uuuuuuuuuuu")
+						console.log(req)
+						io.sockets.to(req.to).emit("receive request",{message: user.title + " " + 
+							user.firstname + " requests for video call with you!",from: req.from});
+						cb({message:"Video call request has been sent to " + user.title + " " + user.firstname})
+					} else {
+						var msg = user.title + " " + user.firstname + " is currently not available.Your request has been qeued for attendance."
+		    			cb({message: msg});
+					}
+				});			
+			});
+
+			socket.on("conversation acceptance",function(details,cb){
+				//will be modified to accomadate other chosen time
+			
+				switch(details.time){
+					case "now":
+						var createUrl = "/cam/" + genRemoteId();
+						saveControlControl(createUrl);
+						cb({controlUrl: createUrl});
+						io.sockets.to(details.to).emit("video call able",{controlUrl: createUrl,message: details.title +
+						 " " + details.name + " is waiting to have video conference with you!"});
+					break;
+					default:
+					break;
+				}
+			})
+
+			function genRemoteId() {
+				return uuid.v1();
+			}
+
+			function saveControlControl(controlUrl) {
+				var control = new model.control({
+					controlUrl: controlUrl,
+					streams: [{id: socket.id}]
+				});
+
+				var date = new Date();
+	      control.expirationDate = new Date(date.getTime() + 300000);
+	      control.expirationDate.expires = 36000; //10 hours before the data is deleted.
+				control.save(function(){});
+			}
+
+			socket.on("call reject",function(details){
+				io.sockets.to(datails.to).emit("convserstion denied",details)
+			})
 
   });
+
   
  }

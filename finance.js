@@ -319,7 +319,7 @@ var basicPaymentRoute = function(model,sms,io,paystack){
 			      var date = new Date();
 			      otp.expirationDate = new Date(date.getTime() + 300000);
 			      otp.expirationDate.expires = 300;
-			      console.log(otp);
+			     
 
 			      otp.save(function(err,info){
 			        if(err) throw err;

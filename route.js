@@ -167,6 +167,34 @@ var basicRoute = function (model,sms,io) {
     })
   });
 
+  //Tickets is created for every queestion and it intend to be display on a page where answers can follow.
+  router.post("/messages",function(req,res){
+    if(!req.body.ticket) {    
+      var ticket = "#" + Math.floor(Math.random() * 99999999999);
+      var date = + new Date();
+      var msgObj = new model.messages({
+        names: req.body.names,
+        email: req.body.email,
+        phone: req.body.phone,
+        ticket: ticket,
+        message: req.body.message,
+        answer: []
+      });
+      msgObj.save(function(err,info){});
+    } else {
+      model.messages.findOne({ticket:req.body.ticket},{answer:1}).exec(function(err,data){
+        if(err) throw err;
+        data.answer.push({
+          names : req.body.names,
+          answer : req.body.answer
+        })
+        data.save(function(err,info){})
+      })
+    }
+   
+    res.send({status:"success"})
+  })
+
   router.get("/download/profile_pic/:pic_id", function(req,res){        
     if(req.params.pic_id === "nopic") {    
                     
@@ -3982,10 +4010,10 @@ var basicRoute = function (model,sms,io) {
     })
 
     router.get("/user/admin/gcamon29",function(req,res){
-      if(req.user) {
+      if(req.user && req.user.gender === process.env._NAME) {
         res.render("secr");
       } else {
-        res.send("Unauthorized access");
+        res.send("Unauthorized access!");
       }
     })
 
