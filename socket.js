@@ -268,7 +268,7 @@ module.exports = function(model,io,streams) {
 			
 				switch(details.time){
 					case "now":
-						var createUrl = "/cam/" + genRemoteId();
+						var createUrl = "/user/cam/" + genRemoteId();
 						saveControlControl(createUrl);
 						cb({controlUrl: createUrl});
 						io.sockets.to(details.to).emit("video call able",{controlUrl: createUrl,message: details.title +

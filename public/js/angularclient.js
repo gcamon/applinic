@@ -6987,8 +6987,8 @@ function($scope,$location,$rootScope,$http,$interval,templateService,localManage
 }]);
 
 //controls online presence icon to show who is online or offline. Note for doctors only ppatients that are online are displayed.
-app.controller("presenceSocketController",["$rootScope","$scope","mySocket","localManager","ModalService",
-  function($rootScope,$scope,mySocket,localManager,ModalService){
+app.controller("presenceSocketController",["$rootScope","$scope","$window","mySocket","localManager","ModalService",
+  function($rootScope,$scope,$window,mySocket,localManager,ModalService){
    
    var person = localManager.getValue("resolveUser");
 
@@ -7102,8 +7102,8 @@ app.controller("presenceSocketController",["$rootScope","$scope","mySocket","loc
   //takes care of redirecting to video call page for the call requester After the received had accepted and redirected to its on page.
   mySocket.on("video call able",function(response){
       var decide = confirm(response.message);
-      if(dedice){
-        $window.location.href = reponse.controlUrl;
+      if(decide){
+        $window.location.href = response.controlUrl;
       }
   });
 
@@ -7126,7 +7126,7 @@ app.controller("videoInitController",["$scope","$window","localManager","mySocke
   $scope.requestVideoCall = function(userId) {
     var reqObj = {
       to: userId,
-      name: user.firstname || user.name,
+      name: user.firstname,
       title: user.title,
       from: user.user_id
     }

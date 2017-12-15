@@ -220,6 +220,19 @@ var basicRoute = function (model,sms,io) {
   router.get("/download/skills/:filename",function(req,res){
     var file = __dirname + "/uploads/" + req.params.filename;
     res.download(file); // Set disposition and send it.
+  });
+
+  router.get("/user/cam/controlId",function(req,res){
+    if(req.user){
+      if(req.user.type === "Doctor"){
+        res.render("video-chat")
+      } else {
+        res.render("video-chat2")
+      }
+      
+    } else {
+      res.redirect("/login")
+    }
   })
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
