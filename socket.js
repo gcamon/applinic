@@ -253,10 +253,8 @@ module.exports = function(model,io,streams) {
 					if(err) throw err;
 					if(user.set_presence.general === true) {
 						//{type:req.type,message:req.message,time:req.time}
-						console.log("uuuuuuuuuuu")
-						console.log(req)
-						io.sockets.to(req.to).emit("receive request",{message: user.title + " " + 
-							user.firstname + " requests for video call with you!",from: req.from});
+						io.sockets.to(req.to).emit("receive request",{message: req.title + " " + 
+							req.name + " requests for video call with you!",from: req.from});
 						cb({message:"Video call request has been sent to " + user.title + " " + user.firstname})
 					} else {
 						var msg = user.title + " " + user.firstname + " is currently not available.Your request has been qeued for attendance."

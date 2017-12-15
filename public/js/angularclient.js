@@ -7127,6 +7127,7 @@ app.controller("videoInitController",["$scope","$window","localManager","mySocke
     var reqObj = {
       to: userId,
       name: user.firstname || user.name,
+      title: user.title,
       from: user.user_id
     }
 
