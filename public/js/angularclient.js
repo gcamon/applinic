@@ -13745,6 +13745,7 @@ app.controller("videoInitController",["$scope","$window","localManager","mySocke
       //when call is rejected by the receiver
       mySocket.emit("call reject",{to: data.from,message: user.title + " " + user.firstname + " rejected your video call request."})
     }
+    alert("received request")
   });
 
   mySocket.on("convserstion denied",function(details){
