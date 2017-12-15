@@ -39,7 +39,7 @@
     <main class="container-fluid" style="padding: 0;margin: 0">
         <header style="background-color: #d9edf7" ng-controller="LocalStreamController as localStream" class="row">
             <div class="col-sm-12 col-md-8 col-lg-8" style="text-align: center;padding: 30px 0 0px 100px">                
-                <span ng-cloak>{{localStream.getControlId('<%= details[0].control_id %>')}} Appear as: </span>
+                
                 <input ng-model="localStream.name" class="form-control" style="width: 50%;display: inline-block;"/>
                 <a href ng-click="localStream.toggleCam()" class="btn btn-primary">{{ localStream.cameraIsOn ? 'Streaming... ( stop )' : 'Start' }}</a>                
             </div>
