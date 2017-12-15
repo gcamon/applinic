@@ -2279,7 +2279,7 @@ app.controller('resultController',["$scope","$rootScope","$http","$location","$r
     theCity = city;
   }
 
-  var checkLogIn = localManager.getValue("resolveUser");
+
 
   $scope.cities = cities;
   templateUrlFactory.setUrl();
@@ -7025,9 +7025,9 @@ app.controller("presenceSocketController",["$rootScope","$scope","mySocket","loc
      });
     }
 
-   mySocket.on("receive request",function(data){    
+   /*mySocket.on("receive request",function(data){    
     alert("responsone says");
-   })
+   })*/
 
   
   $scope.user = {};
@@ -13735,7 +13735,6 @@ app.controller("videoInitController",["$scope","$window","localManager","mySocke
 
   //takes care of receiver accepting the video call 
   mySocket.on("receive request",function(data){
-    console.log(data)
     var decide = confirm(data.message);
     if(decide) {
       //time will be include to enable user decide when t have conversation
