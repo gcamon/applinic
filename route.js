@@ -222,7 +222,7 @@ var basicRoute = function (model,sms,io) {
     res.download(file); // Set disposition and send it.
   });
 
-  router.get("/user/cam/controlId",function(req,res){
+  router.get("/user/cam/:controlId",function(req,res){
     if(req.user){
       if(req.user.type === "Doctor"){
         res.render("video-chat")
