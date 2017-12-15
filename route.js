@@ -225,9 +225,9 @@ var basicRoute = function (model,sms,io) {
   router.get("/user/cam/:controlId",function(req,res){
     if(req.user){
       if(req.user.type === "Doctor"){
-        res.render("video-chat")
+        res.render("video-chat",{"person":req.user});
       } else {
-        res.render("video-chat2")
+        res.render("video-chat2",{"person":req.user});
       }
       
     } else {
