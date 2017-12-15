@@ -7087,15 +7087,21 @@ app.controller("presenceSocketController",["$rootScope","$scope","$window","mySo
   //takes care of receiver accepting the video call 
   mySocket.on("receive request",function(data){
     templateService.playAudio(1);
-    var decide = confirm(data.message);
-    if(decide) {
-      //time will be include to enable user decide when t have conversation
-      mySocket.emit("conversation acceptance",{status:true,time: "now",to:data.from,title:person.title,name: person.firstname},function(data){
-        $window.location.href = data.controlUrl;
-      });
-    } else {
-      //when call is rejected by the receiver
-      mySocket.emit("call reject",{to: data.from,message: person.title + " " + person.firstname + " rejected your video call request."})
+    setTimeout(function(){
+      display()
+    },3000);
+
+    function display() {
+      var decide = confirm(data.message);
+      if(decide) {
+        //time will be include to enable user decide when t have conversation
+        mySocket.emit("conversation acceptance",{status:true,time: "now",to:data.from,title:person.title,name: person.firstname},function(data){
+          $window.location.href = data.controlUrl;
+        });
+      } else {
+        //when call is rejected by the receiver
+        mySocket.emit("call reject",{to: data.from,message: person.title + " " + person.firstname + " rejected your video call request."})
+      }
     }
   });
 
@@ -7106,9 +7112,15 @@ app.controller("presenceSocketController",["$rootScope","$scope","$window","mySo
   //takes care of redirecting to video call page for the call requester After the received had accepted and redirected to its on page.
   mySocket.on("video call able",function(response){
       templateService.playAudio(4);
-      var decide = confirm(response.message);
-      if(decide){
-        $window.location.href = response.controlUrl;
+      setTimeout(function(){
+        display();
+      },3000);
+
+      function display() {
+        var decide = confirm(response.message);
+        if(decide){
+          $window.location.href = response.controlUrl;
+        }
       }
   });
 
