@@ -7080,7 +7080,63 @@ app.controller("presenceSocketController",["$rootScope","$scope","mySocket","loc
     });
   }
 
-}])
+  /***** Video Call Logic ********/
+  //takes care of receiver accepting the video call 
+  mySocket.on("receive request",function(data){
+    var decide = confirm(data.message);
+    if(decide) {
+      //time will be include to enable user decide when t have conversation
+      mySocket.emit("conversation acceptance",{status:true,time: "now",to:data.from,title:user.title,name: user.firstname},function(data){
+        $window.location.href = data.controlUrl;
+      });
+    } else {
+      //when call is rejected by the receiver
+      mySocket.emit("call reject",{to: data.from,message: user.title + " " + user.firstname + " rejected your video call request."})
+    }
+  });
+
+  mySocket.on("convserstion denied",function(details){
+    alert(details.message);
+  })
+
+  //takes care of redirecting to video call page for the call requester After the received had accepted and redirected to its on page.
+  mySocket.on("video call able",function(response){
+      var decide = confirm(response.message);
+      if(dedice){
+        $window.location.href = reponse.controlUrl;
+      }
+  });
+
+}]);
+
+
+app.controller("videoInitController",["$scope","$window","localManager","mySocket","templateService",
+  function($scope,$window,localManager,mySocket,templateService){
+    /******** Video call Logic *******/
+  var user = localManager.getValue("resolveUser");
+  user.firstname = user.firstname || user.name;
+
+  $scope.docInfo = templateService.holdForSpecificDoc;
+
+  $scope.yes = function () {
+    console.log($scope.docInfo);
+    $scope.isYes = true;
+  }
+  
+  $scope.requestVideoCall = function(userId) {
+    var reqObj = {
+      to: userId,
+      name: user.firstname || user.name,
+      from: user.user_id
+    }
+
+    // takes care of the call initator sending video call request.
+    mySocket.emit("convsersation signaling",reqObj,function(data){
+      alert(data.message);
+    })
+  }
+
+}]);  
 
 app.controller("createRoomController",["$scope","localManager","mySocket","$rootScope","templateService","$location",
   function($scope,localManager,mySocket,$rootScope,templateService,$location){
@@ -13706,61 +13762,9 @@ app.factory("symptomsFactory",function(){
 
 
 
-//to be moved to a new server for video calls
 
-app.controller("videoInitController",["$scope","$window","localManager","mySocket","templateService",
-  function($scope,$window,localManager,mySocket,templateService){
-  var user = localManager.getValue("resolveUser");
-  user.firstname = user.firstname || user.name;
 
-  $scope.docInfo = templateService.holdForSpecificDoc;
 
-  $scope.yes = function () {
-    console.log($scope.docInfo);
-    $scope.isYes = true;
-  }
-  
-  $scope.requestVideoCall = function(userId) {
-    var reqObj = {
-      to: userId,
-      name: user.firstname || user.name,
-      from: user.user_id
-    }
-
-    // takes care of the call initator sending video call request.
-    mySocket.emit("convsersation signaling",reqObj,function(data){
-      alert(data.message);
-    })
-  }
-
-  //takes care of receiver accepting the video call 
-  mySocket.on("receive request",function(data){
-    var decide = confirm(data.message);
-    if(decide) {
-      //time will be include to enable user decide when t have conversation
-      mySocket.emit("conversation acceptance",{status:true,time: "now",to:data.from,title:user.title,name: user.firstname},function(data){
-        $window.location.href = data.controlUrl;
-      });
-    } else {
-      //when call is rejected by the receiver
-      mySocket.emit("call reject",{to: data.from,message: user.title + " " + user.firstname + " rejected your video call request."})
-    }
-    alert("received request")
-  });
-
-  mySocket.on("convserstion denied",function(details){
-    alert(details.message);
-  })
-
-  //takes care of redirecting to video call page for the call requester After the received had accepted and redirected to its on page.
-  mySocket.on("video call able",function(response){
-      var decide = confirm(response.message);
-      if(dedice){
-        $window.location.href = reponse.controlUrl;
-      }
-  });
-
-}]);  
 
 
 //this controller takes care of the request from a patient to communicate with his doctor at anytime.
