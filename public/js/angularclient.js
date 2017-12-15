@@ -7086,7 +7086,7 @@ app.controller("presenceSocketController",["$rootScope","$scope","mySocket","loc
     var decide = confirm(data.message);
     if(decide) {
       //time will be include to enable user decide when t have conversation
-      mySocket.emit("conversation acceptance",{status:true,time: "now",to:data.from,title:user.title,name: user.firstname},function(data){
+      mySocket.emit("conversation acceptance",{status:true,time: "now",to:data.from,title:person.title,name: person.firstname},function(data){
         $window.location.href = data.controlUrl;
       });
     } else {
