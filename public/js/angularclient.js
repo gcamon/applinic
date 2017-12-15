@@ -2279,7 +2279,7 @@ app.controller('resultController',["$scope","$rootScope","$http","$location","$r
     theCity = city;
   }
 
-  var checkLogIn = localManager.getValue(resolveUser);
+  var checkLogIn = localManager.getValue("resolveUser");
 
   $scope.cities = cities;
   templateUrlFactory.setUrl();
