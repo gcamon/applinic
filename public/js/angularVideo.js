@@ -206,7 +206,7 @@
 			// get list of streams from the server		
 			
 			var path = window.location.pathname;
-			var getControlId = path.split(":");
+			var getControlId = path.split("/");
 			var controlId = getControlId[getControlId.length - 1];
 		
 			var url = '/user/streams.json/' + controlId;
