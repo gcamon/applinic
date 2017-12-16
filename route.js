@@ -239,9 +239,9 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
 
 
   //to be moved to video server
-   router.get('/user/streams.json',function(req,res){
+   router.get('/user/streams.json/:controlId',function(req,res){
      if(req.user) {
-      streams.getStreamToControl(req.user.control_id,model,function(streamList){
+      streams.getStreamToControl(req.params.controlId,model,function(streamList){
         var data = (JSON.parse(JSON.stringify(streamList)));    
         res.status(200).json(data);
       });//streams.getStreams();     
