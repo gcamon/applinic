@@ -288,7 +288,7 @@ module.exports = function(model,io,streams) {
 				var control = new model.control({
 					controlId: controlId,
 					controlUrl: controlUrl,
-					streams: [{id: socket.id}]
+					streams: []
 				});
 
 				var date = new Date();

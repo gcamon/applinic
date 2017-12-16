@@ -118,6 +118,7 @@
 		    	var stream = getStreamById(streams[i].id);
 		    	streams[i].isPlaying = (!!stream) ? stream.isPLaying : false;
 		    	console.log(streams)
+		    	rtc.view(streams[i]);
 		    	/*if(!stream) {
 		    		streams.splice(i,1);
 		    	}*/
@@ -169,9 +170,9 @@
 
 		//initial load
 		rtc.loadData();
-    	if($location.url() != '/'){
+    	/*if($location.url() != '/'){
       		rtc.call($location.url().slice(1));
-    	};
+    	};*/
 
     
 
@@ -210,8 +211,7 @@
 			var controlId = getControlId[getControlId.length - 1];
 		
 			var url = '/user/streams.json/' + controlId;
-			console.log("++++++++++")
-			console.log(url)
+			
 			$http.get(url).success(function(data){
 				// filter own stream
 				console.log(data)
@@ -222,7 +222,6 @@
 			    for(var i=0; i<streams.length;i++) {
 			    	var stream = getStreamById(streams[i].id);
 			    	streams[i].isPlaying = (!!stream) ? stream.isPLaying : false;
-			    	rtc.view(streams[i]);
 			    }
 			    // save new streams
 			    console.log(streams)
@@ -270,9 +269,9 @@
 
 		//initial load
 		rtc.loadData();
-    	/*if($location.url() != '/'){
+    	if($location.url() != '/'){
       		rtc.call($location.url().slice(1));
-    	};*/
+    	};
 
 
     /*client.reloadFn(function () {
