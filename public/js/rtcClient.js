@@ -178,8 +178,8 @@ var PeerManager = (function (name) {
       });
     },
 
-    controlJoin: function(controlId) {
-      socket.emit("control join",{control:controlId},function(data){
+    controlJoin: function(controlId,name) {
+      socket.emit("control join",{control:controlId,name:name},function(data){
         console.log(data.control + " created a room!")
       })
     },

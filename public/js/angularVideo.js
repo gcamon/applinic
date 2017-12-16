@@ -22,6 +22,9 @@
 
     */
 
+    var storage = $window.localStorage.getItem("resolveUser");
+		var user = JSON.parse(storage)
+
     app.factory("localManager",["$window",function($window){
 		  return {
 		    setValue: function(key, value) {
@@ -123,13 +126,14 @@
 		    	var stream = getStreamById(streams[i].id);
 		    	streams[i].isPlaying = (!!stream) ? stream.isPLaying : false;
 		    	console.log(streams)
+		    	rtc.view(streams[i]);
 		    	//rtc.view(streams[i]);
 		    	/*if(!stream) {
 		    		streams.splice(i,1);
 		    	}*/
 		    }
 
-		    rtc.view(streams[0]);
+		    
 		    console.log("aaaaaaaaaaaaaaaa");
 		    console.log(streams[0]);
 		    console.log(client.getId());
@@ -196,7 +200,7 @@
 	app.controller('RemoteStreamsController', ["$scope",'camera', '$location', '$http','$window', function($scope,camera, $location, $http, $window){
 		var rtc = this;
 		rtc.remoteStreams = [];
-
+		var name = user.title + " " + user.firstname; //gets name of doctor in this case
 		function getStreamById(id) {
 		    for(var i=0; i<rtc.remoteStreams.length;i++) {
 		    	if (rtc.remoteStreams[i].id === id) {return rtc.remoteStreams[i];}
@@ -208,13 +212,12 @@
 			console.log(controlId)
 			control.controlId = controlId;
 				//join a room
-    	client.controlJoin(controlId);
+    	client.controlJoin(controlId,name); 
 			return $window.location.host + "/user/cam/" + controlId;
 		}
 
 		rtc.loadData = function () {
-			// get list of streams from the server		
-			
+			// get list of streams from the server
 			
 		
 			var url = '/user/streams.json/' + control.controlId;
@@ -307,8 +310,7 @@
 
 	app.controller('LocalStreamController',['camera', '$scope', 'localManager','$window','$location', function(camera, $scope, localManager,$window, $location){
 		var localStream = this;
-		var storage = $window.localStorage.getItem("resolveUser");
-		var user = JSON.parse(storage)
+		
 		localStream.name = user.title + " " + user.firstname + " " + user.lastname  || 'Guest';
 		localStream.link = '';
 		localStream.cameraIsOn = false;
