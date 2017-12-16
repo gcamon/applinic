@@ -128,6 +128,11 @@
 		    		streams.splice(i,1);
 		    	}*/
 		    }
+
+		    rtc.view(streams[0])
+		    console.log("aaaaaaaaaaaaaaaa")
+		    console.log(streams[0])
+		    console.log(client.getId())
 		    // save new streams
 		    rtc.remoteStreams = streams;
 			});
@@ -226,9 +231,9 @@
 			    	var stream = getStreamById(streams[i].id);
 			    	streams[i].isPlaying = (!!stream) ? stream.isPLaying : false;
 			    	alert(streams[i].id)
-			    	
+			    	rtc.view(streams[i])
 			    }
-			    rtc.view(streams[0])
+			    
 			    // save new streams
 			    console.log(data)
 			    rtc.remoteStreams = streams;
