@@ -204,8 +204,7 @@ var Peer = function (pcConfig, pcConstraints,name) {
   this.captionElement = document.createElement('p');
   this.captionElement.style.backgroundColor  = "#d9edf7";
   this.captionElement.style.color = "orange";
-  this.captionElement.style.padding = "4";
-  this.captionElement.style.fontSize = "12px";
+  this.captionElement.style.padding = "4px";
   this.captionElement.style.textAlign = "center";
   this.captionElement.innerHTML += "Live: " + this.name;
 }

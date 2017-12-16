@@ -287,8 +287,16 @@
 		var controllerSocket = client.getSocketForController();
 
     controllerSocket.on("reload streams",function(data){
-    	alert("reloading")
-    	rtc.loadData();
+    	
+    	var message = data.name ? data.name + " stream is availble." : "Partner stream is now available."
+    	var decide = confirm(message);
+    	if(decide) {
+    		rtc.loadData();
+    	} else {
+    		alert("Video call aborted!");
+    		//send emit to stop video to the other peer.
+    	}
+    	
     })
 	}]);
 
