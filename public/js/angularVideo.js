@@ -22,7 +22,7 @@
 
     */
 
-    var storage = $window.localStorage.getItem("resolveUser");
+    var storage = window.localStorage.getItem("resolveUser");
 		var user = JSON.parse(storage)
 
     app.factory("localManager",["$window",function($window){
