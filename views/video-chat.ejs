@@ -65,7 +65,7 @@
                 <div  style="width: 70%;margin: 0 auto">
                     <div style="display: inline-block;padding: 8px 8px 0 8px;border:2px solid #d9edf7">
                         <p style="text-align: center;padding: 4px;color: orange;background-color: #d9edf7">Your Cam</p>
-                        <video id="localVideo" muted="muted" autoplay="true" style="width:auto;height:280px;margin-top: -10px"></video>
+                        <video id="localVideo"  autoplay="true" style="width:auto;height:230px;margin-top: -4px"></video>
                     </div>                   
                     <div id="remoteVideosContainer" style="display: inline-block;padding: 8px 8px 0 8px;border:2px solid #d9edf7">
                         
@@ -75,11 +75,11 @@
 
 
 
-            <div ng-repeat="stream in rtc.remoteStreams" ng-class="{'selected' : stream.isPlaying}" >
+            <!--<div ng-repeat="stream in rtc.remoteStreams" ng-class="{'selected' : stream.isPlaying}" >
                         <h5>{{stream.name}}</h5>
                         <button ng-click="rtc.view(stream)" class="btn btn-success">View</button>
                         <button ng-click="rtc.call(stream)"><a>Call</a></button>
-                    </div>
+                    </div>-->
 
 
 
