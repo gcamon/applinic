@@ -173,7 +173,7 @@
 		};
 
 		//initial load
-		rtc.loadData();
+		//rtc.loadData();
     	/*if($location.url() != '/'){
       		rtc.call($location.url().slice(1));
     	};*/
@@ -226,8 +226,9 @@
 			    	var stream = getStreamById(streams[i].id);
 			    	streams[i].isPlaying = (!!stream) ? stream.isPLaying : false;
 			    	alert(streams[i].id)
-			    	rtc.view(streams[i])
+			    	
 			    }
+			    rtc.view(streams[0])
 			    // save new streams
 			    console.log(data)
 			    rtc.remoteStreams = streams;
