@@ -123,12 +123,13 @@
 		    	var stream = getStreamById(streams[i].id);
 		    	streams[i].isPlaying = (!!stream) ? stream.isPLaying : false;
 		    	console.log(streams)
-		    	rtc.view(streams[i]);
+		    	//rtc.view(streams[i]);
 		    	/*if(!stream) {
 		    		streams.splice(i,1);
 		    	}*/
 		    }
 		    // save new streams
+		    console.log(client.getId())
 		    console.log(streams);
 		    rtc.remoteStreams = streams;
 			});

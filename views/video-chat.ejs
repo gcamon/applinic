@@ -52,12 +52,12 @@
     <main class="container-fluid" ng-controller='RemoteStreamsController as rtc' style="margin: 0;padding: 0">        
         <header style="margin-bottom: 3px;background-color: #d9edf7;padding: 10px" class="row">
             <div class="col-sm-12 col-md-6 col-lg-6">
-                 <a href="{{}}">Back to dashboard</a>&nbsp;&nbsp;&nbsp;
-                 <strong>video connection channel : &nbsp;{{rtc.siteLink('<%= person.controlId %>')}}</strong>
+                 <a href="{{}}">Back to dashboard</a>&nbsp;&nbsp;&nbsp;                 
             </div>
             <div class="col-sm-12 col-md-6 col-lg-6">
                 <a href=""><i class="fa fa-camera" ng-click="streamControl()"> videos</i></a>&nbsp;&nbsp;
                 <a href=""><i class="fa fa-user" ng-click="invite()"> invite</i> </a>&nbsp;&nbsp;
+                <span>video connection channel : &nbsp;{{rtc.siteLink('<%= person.controlId %>')}}</span>
             </div>          
         </header>        
         <section class="row">
@@ -65,7 +65,7 @@
                 <div  style="width: 70%;margin: 0 auto">
                     <div style="display: inline-block;padding: 8px 8px 0 8px;border:2px solid #d9edf7">
                         <p style="text-align: center;padding: 4px;color: orange;background-color: #d9edf7">Your Cam</p>
-                        <video id="localVideo"  autoplay="true" style="width:auto;height:230px;margin-top: -4px"></video>
+                        <video id="localVideo" muted="muted" autoplay="true" style="width:auto;height:230px;margin-top: -4px"></video>
                     </div>                   
                     <div id="remoteVideosContainer" style="display: inline-block;padding: 8px 8px 0 8px;border:2px solid #d9edf7">
                         
