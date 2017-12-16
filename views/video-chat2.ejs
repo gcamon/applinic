@@ -41,7 +41,7 @@
         <header style="margin-bottom: 3px;background-color: #d9edf7;padding: 10px" ng-controller="LocalStreamController as localStream" class="row">
             <div class="col-sm-12 col-md-8 col-lg-8">                
                 <a href="{{}}">Back to dashboard</a>
-
+                <span ng-cloak>{{localStream.getControlId('<%= person.controlId %>')}}</span>
                 Appear as: <input ng-model="localStream.name" class="form-control" style="width: 50%;display: inline-block;"/>
                 <a href ng-click="localStream.toggleCam()" class="btn btn-primary" style="color:#fff">{{ (localStream.cameraIsOn === true) ? 'Streaming... ( stop )' : 'Connect' }}</a>                
             </div>
