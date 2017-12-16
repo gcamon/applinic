@@ -225,7 +225,7 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
   router.get("/user/cam/:controlId",function(req,res){
     if(req.user){ //check to see if the param exist in database
       if(req.user.type === "Doctor"){
-        res.render("video-chat2",{"person":req.user});
+        res.render("video-chat",{"person":req.user});
       } else {
         res.render("video-chat2",{"person":req.user});
       }
