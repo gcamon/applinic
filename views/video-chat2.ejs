@@ -43,7 +43,8 @@
                 <a href="{{}}">Back to dashboard</a>
                 <span ng-cloak>{{localStream.getControlId('<%= person.controlId %>')}}</span>
                 Appear as: <input ng-model="localStream.name" class="form-control" style="width: 50%;display: inline-block;"/>
-                <a href ng-click="localStream.toggleCam()" class="btn btn-primary" style="color:#fff">{{ (localStream.cameraIsOn === true) ? 'Streaming... ( stop )' : 'Connect' }}</a>                
+                <a href ng-click="localStream.toggleCam()" class="btn btn-primary" style="color:#fff">{{ (localStream.cameraIsOn === true) ? 'Streaming... ( stop )' : 'Connect' }}</a> 
+                <span>{{rtc.siteLink('<%= person.controlId %>')}}</span>               
             </div>
             <div  class="col-sm-12 col-md-4 col-lg-4">
                 <!--<div class="row">

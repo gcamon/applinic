@@ -275,9 +275,9 @@
 
 		//initial load
 		rtc.loadData();
-    	if($location.url() != '/'){
+    	/*if($location.url() != '/'){
       		rtc.call($location.url().slice(1));
-    	};
+    	};*/
 
 
     /*client.reloadFn(function () {
@@ -288,6 +288,7 @@
     controllerSocket.on("reload streams",function(data){
     	
     	var message = data.name ? data.name + " stream is availble." : "Partner stream is now available."
+    	console.log(data)
     	var decide = confirm(message);
     	if(decide) {
     		rtc.loadData();
