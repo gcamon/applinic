@@ -41,6 +41,7 @@
         <header style="margin-bottom: 3px;background-color: #d9edf7;padding: 10px" ng-controller="LocalStreamController as localStream" class="row">
             <div class="col-sm-12 col-md-8 col-lg-8">                
                 <a href="{{}}">Back to dashboard</a>
+                <span>{{rtc.siteLink('<%= person.controlId %>')}}</span>
                 <span ng-cloak>{{localStream.getControlId('<%= person.controlId %>')}}</span>
                 Appear as: <input ng-model="localStream.name" class="form-control" style="width: 50%;display: inline-block;"/>
                 <a href ng-click="localStream.toggleCam()" class="btn btn-primary" style="color:#fff">{{ (localStream.cameraIsOn === true) ? 'Streaming... ( stop )' : 'Connect' }}</a>                
@@ -57,7 +58,7 @@
             </div>
         </header>
        
-        <section class="row" ng-controller='siteRemoteStreamsController as rtc'> <!--ng-controller='siteRemoteStreamsController as rtc' -->      
+        <section class="row" ng-controller='RemoteStreamsController as rtc'> <!--ng-controller='siteRemoteStreamsController as rtc' -->      
             <div class="col-sm-12 col-md-12 col-lg-12" style="margin-top:10px;padding: 0">
                 <div  style="width: 70%;margin: 0 auto">
                     <div style="display: inline-block;padding: 8px 8px 0 8px;border:2px solid #d9edf7">
