@@ -284,11 +284,11 @@ module.exports = function(model,io,streams) {
 				return uuid.v1();
 			}
 
-			function saveControlControl(controlUrl,controlId) {
+			function saveControlControl(controlUrl,controlId,details) {
 				var control = new model.control({
 					controlId: controlId,
 					controlUrl: controlUrl,
-					streams: [{id: socket.id,name:details.title + " " + details.names}]
+					streams: [{id: socket.id,name:details.title + " " + details.name}]
 				});
 
 				var date = new Date();

@@ -32,12 +32,15 @@ module.exports = function() {
       model.control.findOne({controlId: controlId}).exec(function(err,control){
         if(err) throw err;
         if(control){
+          
           control.streams.push(stream);
+
+          control.save(function(err,info){
+          console.log("streams save!")
+          })
         }
 
-        control.save(function(err,info){
-          console.log("streams save!")
-        })
+
       });
       /*if(controls[controlId]) {
         controls[controlId].push(stream);
