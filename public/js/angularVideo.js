@@ -95,7 +95,7 @@
 		var path = $location.path();
 		var toArr = path.split("/");
 		console.log(toArr)
-		var controlId = toArr[toArr.length - 2]; //user to get control id which is second to the last in the array
+		var controlId = toArr[toArr.length - 1]; //user to get control id which is second to the last in the array
 		
 
 		function getStreamById(id) {
@@ -129,8 +129,6 @@
 		    	}*/
 		    }
 		    // save new streams
-		    console.log(client.getId())
-		    console.log(streams);
 		    rtc.remoteStreams = streams;
 			});
 		};
@@ -226,7 +224,7 @@
 			    });
 			    // get former state
 			    //starts from one for remote streams
-			    for(var i=1; i<streams.length;i++) {
+			    for(var i=0; i<streams.length;i++) {
 			    	var stream = getStreamById(streams[i].id);
 			    	streams[i].isPlaying = (!!stream) ? stream.isPLaying : false;
 			    	rtc.view(streams[i])
