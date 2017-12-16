@@ -18,7 +18,7 @@ var express = require('express'),
   }), 
   placement = require("./placement"),
   mySocket = require("./socket"),
-  streams = require("./streams"),//this will be moved to another server later
+  streams = require("./streams")(),//this will be moved to another server later
 
   port = process.env.PORT || 3000;
 
@@ -71,7 +71,7 @@ http.listen(port,function(){
 config.configuration(app,model);
 signupRoute(model,sms,geonames,paystack);
 loginRoute(model);
-route(model,sms,io); 
+route(model,sms,io,streams); 
 payments(model,sms,io,paystack);
 placement(model,sms);
 mySocket(model,io,streams);

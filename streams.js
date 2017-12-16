@@ -25,13 +25,21 @@ module.exports = function() {
       streamList.push(stream);
     },*/
 
-    addStream : function(id, name, controlId) {
-      var stream = new Stream(id, name, controlId);
-      if(controls[controlId]) {
+    addStream : function(id, name, controlId,model) {
+      var stream = new Stream(id, name, controlId);      
+      //controlwill be deleted after 10 hour as ttl was set for every instance of control that was initiated on socket.js
+
+      model.control.findOne({controlId: controlId}).exec(function(err,control){
+        if(err) throw err;
+        if(control){
+          control.streams.push(stream);
+        }
+      });
+      /*if(controls[controlId]) {
         controls[controlId].push(stream);
       } else {
         this.addControl(controlId)
-      }
+      }*/
     },
 
     removeStream : function(id) {
@@ -62,11 +70,16 @@ module.exports = function() {
       
     },
 
-    getStreamToControl: function(controlId) { 
-      var controlStreamList = (controls.hasOwnProperty(controlId)) ? controls[controlId] : addControl(controlId);
+    getStreamToControl: function(controlId,model,cb) { 
+      model.control.findOne({controlId: controlId},{streams:1},function(err,data){
+        if(err) throw err;
+        //var list = data.streams || [];
+        cb([{id:"hjdhhjdshjsjhdjsjhds"}]); //use data.streams
+      })
+      /*var controlStreamList = (controls.hasOwnProperty(controlId)) ? controls[controlId] : addControl(controlId);
       if(controlStreamList) {
         return controlStreamList;
-      }
+      }*/
     },
 
   }

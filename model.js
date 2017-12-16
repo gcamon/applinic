@@ -661,12 +661,13 @@ var myModel = function () {
 	var controlSchema = Schema({
 		expirationDate: {
 			type: Date,
-			expires: 3600
+			expires: Number
 		},		
 		createdAt: {
 			type: Date,
 			expires: Number
-		},		
+		},
+		controlId: String,		
 		controlUrl: String,
 		streams: Array
 	},{

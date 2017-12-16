@@ -195,19 +195,16 @@ var Peer = function (pcConfig, pcConstraints,name) {
   this.name = name //refers to the remote user name
   this.pc = new RTCPeerConnection(pcConfig, pcConstraints);
   this.remoteVideoEl = document.createElement('video');
-  this.remoteVideoEl.style.display = "inline-block";
-  this.remoteVideoEl.style.width = "350px";
+  this.remoteVideoEl.style.width = "auto";
   this.remoteVideoEl.style.height = "280px";
-  this.remoteVideoEl.style.padding = "2px 10px"
+  
   this.remoteVideoEl.controls = true;
   this.remoteVideoEl.autoplay = true;
-  this.captionElement = document.createElement('h6');
-  this.captionElement.style.position = "relative";
-  this.captionElement.style.background  = "rgba(0,0,0,0.4)";
-  this.captionElement.style.color = "#fff";
-  this.captionElement.style.padding = "10px 10px 5px";
+  this.captionElement = document.createElement('p');
+  this.captionElement.style.backgroundColor  = "#d9edf7";
+  this.captionElement.style.color = "orange";
+  this.captionElement.style.padding = "4";
   this.captionElement.style.fontSize = "12px";
-  this.captionElement.style.margin = "0px -90px 10px 5px"
+  this.captionElement.style.textAlign = "center";
   this.captionElement.innerHTML += "Live: " + this.name;
-
 }

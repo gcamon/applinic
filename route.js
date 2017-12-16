@@ -11,7 +11,7 @@ var emitter = new EventEmmiter();
 //var token = require("./twilio");
 //var randomUserName = require("./randos");
 
-var basicRoute = function (model,sms,io) {
+var basicRoute = function (model,sms,io,streams) { //remember streams arg will be removed atfer test
 
   router.get("/",function(req,res){
     res.render('index',{"message":""});
@@ -223,9 +223,9 @@ var basicRoute = function (model,sms,io) {
   });
 
   router.get("/user/cam/:controlId",function(req,res){
-    if(req.user){
+    if(req.user){ //check to see if the param exist in database
       if(req.user.type === "Doctor"){
-        res.render("video-chat",{"person":req.user});
+        res.render("video-chat2",{"person":req.user});
       } else {
         res.render("video-chat2",{"person":req.user});
       }
@@ -234,6 +234,21 @@ var basicRoute = function (model,sms,io) {
       res.redirect("/login")
     }
   })
+
+
+
+
+  //to be moved to video server
+   router.get('/user/streams.json',function(req,res){
+     if(req.user) {
+      streams.getStreamToControl(req.user.control_id,model,function(streamList){
+        var data = (JSON.parse(JSON.stringify(streamList)));    
+        res.status(200).json(data);
+      });//streams.getStreams();     
+     } else {
+      res.end("Please login before you can access streams.")
+     }
+  });
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   //handles all change picture 

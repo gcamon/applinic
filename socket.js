@@ -268,8 +268,9 @@ module.exports = function(model,io,streams) {
 			
 				switch(details.time){
 					case "now":
-						var createUrl = "/user/cam/" + genRemoteId();
-						saveControlControl(createUrl);
+					  var controlId = genRemoteId();
+						var createUrl = "/user/cam/" + controlId;
+						saveControlControl(createUrl,controlId);
 						cb({controlUrl: createUrl});
 						io.sockets.to(details.to).emit("video call able",{controlUrl: createUrl,message: details.title +
 						 " " + details.name + " is waiting to have video conference with you!"});
@@ -283,8 +284,9 @@ module.exports = function(model,io,streams) {
 				return uuid.v1();
 			}
 
-			function saveControlControl(controlUrl) {
+			function saveControlControl(controlUrl,controlId) {
 				var control = new model.control({
+					controlId: controlId,
 					controlUrl: controlUrl,
 					streams: [{id: socket.id}]
 				});
@@ -298,6 +300,72 @@ module.exports = function(model,io,streams) {
 			socket.on("call reject",function(details){
 				io.sockets.to(datails.to).emit("convserstion denied",details)
 			})
+
+
+
+
+
+
+
+
+
+			/////////////////////
+
+		// to be moved to another server for video
+		console.log('-- ' + socket.id + ' joined --');
+    socket.emit('id', socket.id);
+
+    socket.on('message', function (details) {
+      var othersocket = io.sockets.connected[details.to];
+      
+      if (!othersocket) {
+        return;
+      }
+        delete details.to;
+        details.from = socket.id;
+        othersocket.emit('message', details);
+    });
+      
+    /*socket.on('readyToStream', function(options) {
+      console.log('-- ' + socket.id + ' is ready to stream --');      
+      streams.addStream(socket.id, options.name); 
+    });*/
+
+    // gets te control to join a room
+    socket.on("control join",function(control,cb){
+    	console.log("checking----------")
+    	console.log(control)
+    	socket.join(control.control);//control.joins a roo
+    	cb(control);
+    })
+
+    socket.on('readyToStream', function(options,cb) {
+      console.log('-- ' + socket.id + ' is ready to stream --');
+      //search database to see which control this socket belong to.
+      streams.addStream(socket.id, options.name, options.controlId,model);
+      socket.join(options.controlId); //create a room for common sites using one control.
+      //io.sockets.to(options.controlId).emit("new stream added",{message:"new stream",controlId:options.controlId});
+      cb({controlId:options.controlId})
+    });
+
+    socket.on("init reload",function(data){
+    	console.log("reloadiiiiiiiiiiiiiiiiii")
+    	console.log(data)
+    	console.log(data.message)
+    	io.sockets.to(data.controlId).emit("reload streams",{status:true})
+    })
+    
+    socket.on('update', function(options) {
+      streams.update(socket.id, options.name);
+    });
+
+    function leave() {
+      console.log('-- ' + socket.id + ' left --');
+      streams.removeStream(socket.id);
+    }
+
+    socket.on('disconnect', leave);
+    socket.on('leave', leave);
 
   });
 

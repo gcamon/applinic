@@ -1,28 +1,39 @@
 (function(){
-	var app = angular.module('rtcSurveillance', [],
+	var app = angular.module('rtcVideo', [],
 		function($locationProvider){$locationProvider.html5Mode(true);}
     );
 		var client = new PeerManager(name);
 		var mediaConfig = {
         audio:true,
         video: {
-			mandatory: {},
-			optional: []
+					mandatory: {},
+					optional: []
         }
     };
 
+    /*
+    var mediaConfig = {
+        audio:true,
+        video: {
+        	width: {max: 500},
+        	height: {max: 500}
+        }
+    };
+
+    */
+
     app.factory("localManager",["$window",function($window){
-	  return {
-	    setValue: function(key, value) {
-	      $window.localStorage.setItem(key, JSON.stringify(value));
-	    },
-	    getValue: function(key) {       
-	      return JSON.parse($window.localStorage.getItem(key)); 
-	    },
-	    removeItem: function(key) {
-	      $window.localStorage.removeItem(key);
-	    }
-	  };
+		  return {
+		    setValue: function(key, value) {
+		      $window.localStorage.setItem(key, JSON.stringify(value));
+		    },
+		    getValue: function(key) {       
+		      return JSON.parse($window.localStorage.getItem(key)); 
+		    },
+		    removeItem: function(key) {
+		      $window.localStorage.removeItem(key);
+		    }
+		  };
 		}]);
 
     app.factory('camera', ['$rootScope', '$window', function($rootScope, $window){
@@ -192,11 +203,11 @@
 		}
 
 		rtc.loadData = function () {
-			// get list of streams from the server
-		
+			// get list of streams from the server		
 
-			$http.get('/streams.json').success(function(data){
+			$http.get('/user/streams.json').success(function(data){
 				// filter own stream
+				console.log(data)
 				var streams = data.filter(function(stream) {
 			      	return stream.id != client.getId();
 			    });
@@ -204,6 +215,7 @@
 			    for(var i=0; i<streams.length;i++) {
 			    	var stream = getStreamById(streams[i].id);
 			    	streams[i].isPlaying = (!!stream) ? stream.isPLaying : false;
+			    	rtc.view(streams[i]);
 			    }
 			    // save new streams
 			    console.log(streams)
@@ -251,9 +263,9 @@
 
 		//initial load
 		rtc.loadData();
-    	if($location.url() != '/'){
+    	/*if($location.url() != '/'){
       		rtc.call($location.url().slice(1));
-    	};
+    	};*/
 
 
     /*client.reloadFn(function () {
@@ -269,7 +281,9 @@
 
 	app.controller('LocalStreamController',['camera', '$scope', 'localManager','$window','$location', function(camera, $scope, localManager,$window, $location){
 		var localStream = this;
-		localStream.name = localManager.getValue("username") || 'Guest';
+		var storage = $window.localStorage.getItem("resolveUser");
+		var user = JSON.parse(storage)
+		localStream.name = user.title + " " + user.firstname + " " + user.lastname  || 'Guest';
 		localStream.link = '';
 		localStream.cameraIsOn = false;
 

@@ -2,7 +2,7 @@
 <!--[if lt IE 7]>       <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang=""> <![endif]-->
 <!--[if IE 7]>          <html class="no-js lt-ie9 lt-ie8" lang=""> <![endif]-->
 <!--[if IE 8]>          <html class="no-js lt-ie9" lang=""> <![endif]-->
-<!--[if gt IE 8]><!-->  <html class="no-js" lang=""  ng-app = "myApp"> <!--<![endif]-->
+<!--[if gt IE 8]><!-->  <html class="no-js" lang=""  ng-app = "rtcVideo"> <!--<![endif]-->
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -24,6 +24,7 @@
     <link rel="stylesheet" href="/assets/css/responsive.css">
     <script src="/assets/js/vendor/modernizr-2.8.3-respond-1.4.2.min.js"></script>
       <script src="/assets/js/vendor2.js"></script>-->
+      <link rel="stylesheet" href="/assets/css/bootstrap.min.css">
     <link type="style/css" rel="stylesheet" href="/assets/css/video.css">
     <!--<script type="text/javascript" src="/assets/js/source.js"></script>-->
     <script type="text/javascript" src="/socket.io/socket.io.js"></script>
@@ -37,27 +38,64 @@
 </head>
 <body style="overflow-x: hidden;">
     <main class="container-fluid" style="padding: 0;margin: 0">
-        <header style="background-color: #d9edf7" ng-controller="LocalStreamController as localStream" class="row">
-            <div class="col-sm-12 col-md-8 col-lg-8" style="text-align: center;padding: 30px 0 0px 100px">                
-                
-                <input ng-model="localStream.name" class="form-control" style="width: 50%;display: inline-block;"/>
-                <a href ng-click="localStream.toggleCam()" class="btn btn-primary">{{ localStream.cameraIsOn ? 'Streaming... ( stop )' : 'Start' }}</a>                
+        <header style="margin-bottom: 3px;background-color: #d9edf7;padding: 10px" ng-controller="LocalStreamController as localStream" class="row">
+            <div class="col-sm-12 col-md-8 col-lg-8">                
+                <a href="{{}}">Back to dashboard</a>
+
+                Appear as: <input ng-model="localStream.name" class="form-control" style="width: 50%;display: inline-block;"/>
+                <a href ng-click="localStream.toggleCam()" class="btn btn-primary" style="color:#fff">{{ (localStream.cameraIsOn === true) ? 'Streaming... ( stop )' : 'Connect' }}</a>                
             </div>
             <div  class="col-sm-12 col-md-4 col-lg-4">
-                <div class="row">
+                <!--<div class="row">
                     <div class="col-sm-12 col-md-7 col-lg-7">
                         <video id="localVideo" muted="muted" autoplay="true" style="width: 100px;height:100px;"></video>
                     </div>
                     <div class="col-sm-12 col-md-5 col-lg-5" style="text-align: center;padding:30px 30px 0 0">
                         <button ng-click="allLocalStreams()" class="btn btn-primary">View remote streams</button>
                     </div>
-                </div>                
+                </div>-->                
             </div>
         </header>
        
-        <section class="row">        
-            
+        <section class="row" ng-controller='RemoteStreamsController as rtc'>        
+            <div class="col-sm-12 col-md-12 col-lg-12" style="margin-top:10px;padding: 0">
+                <div  style="width: 70%;margin: 0 auto">
+                    <div style="display: inline-block;padding: 8px 8px 0 8px;border:2px solid #d9edf7">
+                        <p style="text-align: center;padding: 4px;color: orange;background-color: #d9edf7">Your Cam</p>
+                        <video id="localVideo" muted="muted" autoplay="true" style="width:375px;height:280px;margin-top: -10px"></video>
+                    </div>                   
+                    <div id="remoteVideosContainer" style="display: inline-block;padding: 8px 8px 0 8px;border:2px solid #d9edf7">
+                        
+                    </div>                    
+                </div>                
+            </div>
         </section>
     </main>                     
 </body>
 </html>
+
+
+<!---
+
+    <header style="margin-bottom: 3px;background-color: #d9edf7;padding: 10px" class="row">
+            <div class="col-sm-12 col-md-6 col-lg-6">
+                 <a href="{{}}">Back to dashboard</a>
+            </div>
+            <div class="col-sm-12 col-md-6 col-lg-6">
+                <a href=""><i class="fa fa-camera" ng-click="streamControl()"> videos</i></a>&nbsp;&nbsp;
+                <a href=""><i class="fa fa-user" ng-click="invite()"> invite</i> </a>&nbsp;&nbsp;
+            </div>          
+        </header>        
+        <section class="row">
+           <div class="col-sm-12 col-md-9 col-lg-9" style="margin-top:10px;padding: 0">
+                <div  style="width: 70%;margin: 0 auto">
+                    <div style="display: inline-block;padding: 8px 8px 0 8px;border:2px solid #d9edf7">
+                        <p style="text-align: center;padding: 4px;color: orange;background-color: #d9edf7">Your Cam</p>
+                        <video id="localVideo" muted="muted" autoplay="true" style="width:auto;height:280px;margin-top: -10px"></video>
+                    </div>                   
+                    <div id="remoteVideosContainer" style="display: inline-block;padding: 8px 8px 0 8px;border:2px solid #d9edf7">
+                        
+                    </div>                    
+                </div>                
+            </div>
+-->
