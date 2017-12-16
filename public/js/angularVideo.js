@@ -129,10 +129,10 @@
 		    	}*/
 		    }
 
-		    rtc.view(streams[0])
-		    console.log("aaaaaaaaaaaaaaaa")
-		    console.log(streams[0])
-		    console.log(client.getId())
+		    rtc.view(streams[0]);
+		    console.log("aaaaaaaaaaaaaaaa");
+		    console.log(streams[0]);
+		    console.log(client.getId());
 		    // save new streams
 		    rtc.remoteStreams = streams;
 			});

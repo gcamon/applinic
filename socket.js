@@ -288,7 +288,7 @@ module.exports = function(model,io,streams) {
 				var control = new model.control({
 					controlId: controlId,
 					controlUrl: controlUrl,
-					streams: [{id: socket.id,name:details.title + " " + details.name}]
+					streams: []
 				});
 
 				var date = new Date();
@@ -337,6 +337,7 @@ module.exports = function(model,io,streams) {
     	console.log(control)
     	socket.join(control.control);//control.joins a roo
     	cb(control);
+    	streams.addStream(socket.id,null,control.control,model)
     })
 
     socket.on('readyToStream', function(options,cb) {
