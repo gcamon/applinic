@@ -204,11 +204,14 @@
 
 		rtc.loadData = function () {
 			// get list of streams from the server		
-			console.log(window.location.pathname);
+			
 			var path = window.location.pathname;
 			var getControlId = path.split(":");
 			var controlId = getControlId[getControlId.length - 1];
+		
 			var url = '/user/streams.json/' + controlId;
+			console.log("++++++++++")
+			console.log(url)
 			$http.get(url).success(function(data){
 				// filter own stream
 				console.log(data)
