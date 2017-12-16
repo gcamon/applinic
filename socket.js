@@ -352,7 +352,7 @@ module.exports = function(model,io,streams) {
     	console.log("reloadiiiiiiiiiiiiiiiiii")
     	console.log(data)
     	console.log(data.message)
-    	io.sockets.to(data.controlId).emit("reload streams",{status:true,name:data.name})
+    	io.sockets.to(data.controlId).emit("reload streams",{status:true,name:data.names})
     })
     
     socket.on('update', function(options) {

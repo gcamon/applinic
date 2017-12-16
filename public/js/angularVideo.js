@@ -210,11 +210,9 @@
 		rtc.loadData = function () {
 			// get list of streams from the server		
 			
-			var path = window.location.pathname;
-			var getControlId = path.split("/");
-			var controlId = getControlId[getControlId.length - 1];
+			
 		
-			var url = '/user/streams.json/' + controlId;
+			var url = '/user/streams.json/' + control.controlId;
 			
 			$http.get(url).success(function(data){
 				// filter own stream
@@ -227,6 +225,7 @@
 			    for(var i=0; i<streams.length;i++) {
 			    	var stream = getStreamById(streams[i].id);
 			    	streams[i].isPlaying = (!!stream) ? stream.isPLaying : false;
+			    	alert(streams[i].id)
 			    	rtc.view(streams[i])
 			    }
 			    // save new streams
@@ -275,9 +274,9 @@
 
 		//initial load
 		rtc.loadData();
-    	/*if($location.url() != '/'){
+    	if($location.url() != '/'){
       		rtc.call($location.url().slice(1));
-    	};*/
+    	};
 
 
     /*client.reloadFn(function () {
