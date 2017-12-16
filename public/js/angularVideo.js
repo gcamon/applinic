@@ -205,7 +205,7 @@
 			control.controlId = controlId;
 				//join a room
     	client.controlJoin(controlId);
-			return $window.location.host + "/cam/" + controlId;
+			return $window.location.host + "/user/cam/" + controlId;
 		}
 
 		rtc.loadData = function () {
@@ -224,11 +224,11 @@
 			      	return stream.id != client.getId();
 			    });
 			    // get former state
-			    
-			    for(var i=0; i<streams.length;i++) {
+			    //starts from one for remote streams
+			    for(var i=1; i<streams.length;i++) {
 			    	var stream = getStreamById(streams[i].id);
 			    	streams[i].isPlaying = (!!stream) ? stream.isPLaying : false;
-			    	//rtc.view(streams[i])
+			    	rtc.view(streams[i])
 			    }
 			    // save new streams
 			    console.log(data)

@@ -52,7 +52,8 @@
     <main class="container-fluid" ng-controller='RemoteStreamsController as rtc' style="margin: 0;padding: 0">        
         <header style="margin-bottom: 3px;background-color: #d9edf7;padding: 10px" class="row">
             <div class="col-sm-12 col-md-6 col-lg-6">
-                 <a href="{{}}">Back to dashboard</a>
+                 <a href="{{}}">Back to dashboard</a>&nbsp;&nbsp;&nbsp;
+                 <strong>video connection channel : &nbsp;{{rtc.siteLink('<%= person.controlId %>')}}</strong>
             </div>
             <div class="col-sm-12 col-md-6 col-lg-6">
                 <a href=""><i class="fa fa-camera" ng-click="streamControl()"> videos</i></a>&nbsp;&nbsp;
@@ -80,7 +81,7 @@
                         <button ng-click="rtc.call(stream)"><a>Call</a></button>
                     </div>
 
-                    
+
 
             <div style="border-left:2px solid #d9edf7;padding-left: 10px;max-height: 800px;overflow-y: auto" class="col-sm-12 col-md-3 col-lg-3">
                 <!-- ng-controller="VideoDiagnosisController" -->
