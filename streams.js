@@ -74,7 +74,7 @@ module.exports = function() {
       model.control.findOne({controlId: controlId},{streams:1},function(err,data){
         if(err) throw err;
         //var list = data.streams || [];
-        cb([{id:"hjdhhjdshjsjhdjsjhds"}]); //use data.streams
+        cb(data.streams); //use data.streams
       })
       /*var controlStreamList = (controls.hasOwnProperty(controlId)) ? controls[controlId] : addControl(controlId);
       if(controlStreamList) {
