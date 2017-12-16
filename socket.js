@@ -270,7 +270,7 @@ module.exports = function(model,io,streams) {
 					case "now":
 					  var controlId = genRemoteId();
 						var createUrl = "/user/cam/" + controlId;
-						saveControlControl(createUrl,controlId);
+						saveControlControl(createUrl,controlId,details);
 						cb({controlUrl: createUrl});
 						io.sockets.to(details.to).emit("video call able",{controlUrl: createUrl,message: details.title +
 						 " " + details.name + " is waiting to have video conference with you!"});
@@ -288,7 +288,7 @@ module.exports = function(model,io,streams) {
 				var control = new model.control({
 					controlId: controlId,
 					controlUrl: controlUrl,
-					streams: []
+					streams: [{id: socket.id,name:details.title + " " + details.names}]
 				});
 
 				var date = new Date();

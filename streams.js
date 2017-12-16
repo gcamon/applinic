@@ -34,6 +34,10 @@ module.exports = function() {
         if(control){
           control.streams.push(stream);
         }
+
+        control.save(function(err,info){
+          console.log("streams save!")
+        })
       });
       /*if(controls[controlId]) {
         controls[controlId].push(stream);
