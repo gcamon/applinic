@@ -312,7 +312,7 @@
 		localStream.link = '';
 		localStream.cameraIsOn = false;
 
-		//localStream.connections = $rootScope.connections;
+		localStream.connections = $rootScope.connections;
 
 		
 		var saveControlId = {};
