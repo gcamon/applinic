@@ -53,32 +53,36 @@
         <header style="margin-bottom: 3px;background-color: #d9edf7;padding: 10px" ng-controller="LocalStreamController as localStream" class="row">
             <div class="col-sm-12 col-md-6 col-lg-6">
                  <a href="{{}}">Back to dashboard</a>&nbsp;&nbsp;&nbsp;
-                 <span ng-cloak>{{localStream.getControlId('<%= person.controlId %>')}}</span>
-                Appear as: <input ng-model="localStream.name" class="form-control" style="width: 50%;display: inline-block;"/>
-                <a href ng-click="localStream.toggleCam()" class="btn btn-primary" style="color:#fff">{{ (localStream.cameraIsOn === true) ? 'Streaming... ( stop )' : 'Connect' }}</a>                           
+                 <span ng-cloak style="font-size: 10px">{{localStream.getControlId('<%= person.controlId %>')}}</span>
+                <!--Appear as: <input ng-model="localStream.name" class="form-control" style="width: 50%;display: inline-block;"/>-->
+                <a href ng-click="localStream.toggleCam()" class="btn btn-primary" style="color:#fff">{{ (localStream.cameraIsOn === true) ? 'Streaming... ( disconnect )' : 'Connect' }}</a>                           
             </div>
-            <div class="col-sm-12 col-md-6 col-lg-6" ng-controller='RemoteStreamsController as rtc'>
+            <div class="col-sm-12 col-md-6 col-lg-6">
                 <a href=""><i class="fa fa-camera" ng-click="streamControl()"> videos</i></a>&nbsp;&nbsp;
-                <a href=""><i class="fa fa-user" ng-click="invite()"> invite</i> </a>&nbsp;&nbsp;
-                <span>video connection channel : &nbsp;{{rtc.siteLink('<%= person.controlId %>')}}</span>
-                <div ng-repeat="stream in rtc.remoteStreams" ng-class="{'selected' : stream.isPlaying}" >
-                        <h5>{{stream.name}}</h5>
-                        <button ng-click="rtc.view(stream)" class="btn btn-success">View</button>
-                        <!--<button ng-click="rtc.call(stream)"><a>Call</a></button>-->
+                <a href=""><i class="fa fa-user" ng-click="invite()"> invite</i> </a>&nbsp;&nbsp;                
+               
             </div>          
         </header>        
-        <section class="row" >
-           <div class="col-sm-12 col-md-9 col-lg-9" style="margin-top:10px;padding: 0">
+        <section class="row" ng-controller='RemoteStreamsController as rtc'>
+           <div class="col-sm-12 col-md-9 col-lg-9" style="margin-top:10px;padding: 0">           
                 <div  style="width: 70%;margin: 0 auto">
                     <div style="display: inline-block;padding: 8px 8px 0 8px;border:2px solid #d9edf7">
                         <p style="text-align: center;padding: 4px;color: orange;background-color: #d9edf7">Your Cam</p>
-                        <video id="localVideo" muted="muted" autoplay="true" style="width:auto;height:230px;margin-top: -4px"></video>
+                        <video id="localVideo" muted="muted" autoplay="true" style="width:auto;height:250px;margin-top: -4px"></video>
                     </div>                   
                     <div id="remoteVideosContainer" style="display: inline-block;padding: 8px 8px 0 8px;border:2px solid #d9edf7">
                         
                     </div>                    
+                </div>
+                <div>
+                    <span style="visibility: hidden;">video connection channel : &nbsp;{{rtc.siteLink('<%= person.controlId %>')}}</span>
                 </div>                
             </div>
+             <div ng-repeat="stream in rtc.remoteStreams" ng-class="{'selected' : stream.isPlaying}" >
+            <h5>{{stream.name}}</h5>
+            <button ng-click="rtc.view(stream)" class="btn btn-success">View</button>
+            </div>
+            <!--<button ng-click="rtc.call(stream)"><a>Call</a></button>-->
 
 
 

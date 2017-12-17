@@ -11,7 +11,7 @@
         }
     };
 
-    /*
+        /*
     var mediaConfig = {
         audio:true,
         video: {
@@ -70,7 +70,6 @@
     		})
     		.then(function(result){
     			$rootScope.$broadcast('cameraIsOn',false);
-    			camera.stream = null;
     		});	
 		};
 		return camera;
@@ -93,7 +92,7 @@
 			  })
 		 });*/
 
-    app.controller("siteRemoteStreamsController",["$scope","camera","$location","$http","$window",function($scope,camera,$location,$http,$window){
+    app.controller("siteRemoteStreamsController",["$scope",'$rootScope',"camera","$location","$http","$window",function($scope,$rootScope,camera,$location,$http,$window){
     	var rtc = this;
 		rtc.remoteStreams = [];
 		var path = $location.path();
@@ -133,18 +132,14 @@
 		    	}*/
 		    }
 
-		    
+		    $rootScope.connections = streams;
 		    rtc.remoteStreams = streams;
 			});
 		};
 
 		rtc.view = function(stream){
-			if(camera.stream) {
-				client.peerInit(stream.id,stream.name);
-				stream.isPlaying = !stream.isPlaying;
-			} else{
-				alert("You have to connect first before you can view your partner stream")
-			}
+			client.peerInit(stream.id,stream.name);
+			stream.isPlaying = !stream.isPlaying;
 		};
 
 		rtc.call = function(stream){
@@ -182,7 +177,7 @@
 		};
 
 		//initial load
-		//rtc.loadData();
+		rtc.loadData();
     	/*if($location.url() != '/'){
       		rtc.call($location.url().slice(1));
     	};*/
@@ -197,7 +192,8 @@
     })
   }]);
 
-	app.controller('RemoteStreamsController', ["$scope",'camera', '$location', '$http','$window', function($scope,camera, $location, $http, $window){
+	app.controller('RemoteStreamsController', ["$scope","$rootScope",'camera', '$location', '$http','$window',
+	 function($scope,$rootScope,camera, $location, $http, $window){
 		var rtc = this;
 		rtc.remoteStreams = [];
 		var name = user.title + " " + user.firstname; //gets name of doctor in this case
@@ -238,6 +234,7 @@
 			    
 			    // save new streams
 			    console.log(data)
+			    $rootScope.connections = streams;
 			    rtc.remoteStreams = streams;
 			});
 		};
@@ -307,13 +304,17 @@
     })
 	}]);
 
-	app.controller('LocalStreamController',['camera', '$scope', 'localManager','$window','$location', function(camera, $scope, localManager,$window, $location){
+	app.controller('LocalStreamController',['camera','$rootScope', '$scope', 'localManager','$window','$location',
+	 function(camera,$rootScope, $scope, localManager,$window, $location){
 		var localStream = this;
 		
 		localStream.name = user.title + " " + user.firstname + " " + user.lastname  || 'Guest';
 		localStream.link = '';
 		localStream.cameraIsOn = false;
 
+		//localStream.connections = $rootScope.connections;
+
+		
 		var saveControlId = {};
 		var path = $location.path();
 		var newPath = path + "/local-streams";
@@ -347,9 +348,9 @@
 				camera.start()
 				.then(function(result) {
 					localStream.link = $window.location.host + '/' + client.getId();
-					/*if(localManager.getValue("username") !== "Guest" || localManager.getValue("username") !== ""){
+					if(localManager.getValue("username") !== "Guest" || localManager.getValue("username") !== ""){
 						localManager.setValue("username",localStream.name);
-					}	*/			
+					}				
 					client.send('readyToStream', { name: localStream.name,controlId: saveControlId.id });
 				})
 				.catch(function(err) {
