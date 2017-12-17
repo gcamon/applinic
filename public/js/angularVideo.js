@@ -125,15 +125,14 @@
 		    for(var i=0; i<streams.length;i++) {
 		    	var stream = getStreamById(streams[i].id);
 		    	streams[i].isPlaying = (!!stream) ? stream.isPLaying : false;
-		    	console.log(streams)
-		    	rtc.view(streams[i]);
+		    	
 		    	//rtc.view(streams[i]);
 		    	/*if(!stream) {
 		    		streams.splice(i,1);
 		    	}*/
 		    }
 
-		    
+		    rtc.view(streams[0]);
 		    console.log("aaaaaaaaaaaaaaaa");
 		    console.log(streams[0]);
 		    console.log(client.getId());

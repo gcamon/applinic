@@ -26,17 +26,19 @@ module.exports = function() {
     },*/
 
     addStream : function(id, name, controlId,model) {
-      var stream = new Stream(id, name, controlId);      
+            
       //controlwill be deleted after 10 hour as ttl was set for every instance of control that was initiated on socket.js
-      console.log(controlId);
       model.control.findOne({controlId: controlId}).exec(function(err,control){
-        console.log(control)
+        console.log(control);
+        var stream = new Stream(id, name, controlId);
         if(err) throw err;
-        if(control){          
-          control.streams.push(stream);
+        if(control){ 
+          var elemPos = control.map(function(x){return x.id}).indexof(id);
+          if(elemPos === -1)         
+            control.streams.push(stream);
 
           control.save(function(err,info){
-          console.log("streams save!")
+            console.log("streams save!")
           })
         }
 
