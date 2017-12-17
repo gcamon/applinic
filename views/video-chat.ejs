@@ -61,6 +61,10 @@
                 <a href=""><i class="fa fa-camera" ng-click="streamControl()"> videos</i></a>&nbsp;&nbsp;
                 <a href=""><i class="fa fa-user" ng-click="invite()"> invite</i> </a>&nbsp;&nbsp;
                 <span>video connection channel : &nbsp;{{rtc.siteLink('<%= person.controlId %>')}}</span>
+                <div ng-repeat="stream in rtc.remoteStreams" ng-class="{'selected' : stream.isPlaying}" >
+                        <h5>{{stream.name}}</h5>
+                        <button ng-click="rtc.view(stream)" class="btn btn-success">View</button>
+                        <button ng-click="rtc.call(stream)"><a>Call</a></button>
             </div>          
         </header>        
         <section class="row" >

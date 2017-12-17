@@ -228,7 +228,7 @@
 			    for(var i=0; i<streams.length;i++) {
 			    	var stream = getStreamById(streams[i].id);
 			    	streams[i].isPlaying = (!!stream) ? stream.isPLaying : false;
-			    	rtc.view(streams[i])
+			    	//rtc.view(streams[i])
 			    }
 			    
 			    // save new streams
