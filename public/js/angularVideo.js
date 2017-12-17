@@ -293,6 +293,9 @@
     	console.log(data)
     	var decide = confirm(message);
     	if(decide) {
+    		if(camera.stream) {
+    			camera.start();
+    		}    		
     		rtc.loadData();
     	} else {
     		alert("Video call aborted!");
