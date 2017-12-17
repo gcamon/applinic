@@ -7097,6 +7097,8 @@ app.controller("presenceSocketController",["$rootScope","$scope","$window","mySo
         //time will be include to enable user decide when t have conversation
         mySocket.emit("conversation acceptance",{status:true,time: "now",to:data.from,title:person.title,name: person.firstname},function(data){
           $window.location.href = data.controlUrl;
+          var dashboardUrl = window.location.href;//save the dashboard url in case user wants to navigate back to dashbaord from video page
+          localManager.setValue("dashboard",dashboardUrl);
         });
       } else {
         //when call is rejected by the receiver
@@ -13129,6 +13131,7 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
     localManager.removeItem('currPageForLaboratory');
     localManager.removeItem('currPageForRadiology');
     localManager.removeItem('prescriptionRequestData'); 
+    localManager.removeItem("dashboard");
 
   }
  

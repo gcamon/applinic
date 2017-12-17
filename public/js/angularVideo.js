@@ -314,7 +314,10 @@
 
 		localStream.connections = $rootScope.connections;
 
-		
+		$scope.goToDashbaord = function(){
+			return window.localStorage.getItem("dashboard");//gets the stroage dashboar url during the video call init
+		}
+
 		var saveControlId = {};
 		var path = $location.path();
 		var newPath = path + "/local-streams";
