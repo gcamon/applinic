@@ -314,8 +314,7 @@
 
 		localStream.connections = $rootScope.connections;
 
-		$scope.goToDashbaord = function(){
-			var url =  window.localStorage.getItem("dashboard");
+		$scope.goToDashbaord = function(){			
 			window.location.href = "/user";//gets the stroage dashboar url during the video call init
 		}
 

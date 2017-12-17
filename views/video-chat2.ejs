@@ -40,7 +40,7 @@
     <main class="container-fluid" style="padding: 0;margin: 0">
         <header style="margin-bottom: 3px;background-color: #d9edf7;padding: 10px 30px" ng-controller="LocalStreamController as localStream" class="row">
             <div class="col-sm-12 col-md-6 col-lg-6">                
-                <a href="" ng-click="goToDashbaord()" class="btn btn-primary" style="color:#fff">Back to dashboard</a>
+                <a  href="" ng-click="goToDashbaord()" class="btn btn-primary" style="color:#fff">Back to dashboard</a>
                 <span ng-cloak>{{localStream.getControlId('<%= person.controlId %>')}}</span>
                 <!--Appear as: <input ng-model="localStream.name" class="form-control" style="width: 50%;display: inline-block;"/>-->
                 <a href ng-click="localStream.toggleCam()" class="btn btn-primary" style="color:#fff;float: right;background-color: orange">{{ (localStream.cameraIsOn === true) ? 'Streaming... ( disconnect )' : 'Connect ' }}</a>                

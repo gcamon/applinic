@@ -7083,9 +7083,6 @@ app.controller("presenceSocketController",["$rootScope","$scope","$window","mySo
     });
   }
 
-  var dashboardUrl = window.location.href;//save the dashboard url in case user wants to navigate back to dashbaord from video page
-  localManager.setValue("dashboard",dashboardUrl);
-
   /***** Video Call Logic ********/
   //takes care of receiver accepting the video call 
   mySocket.on("receive request",function(data){
@@ -7099,7 +7096,7 @@ app.controller("presenceSocketController",["$rootScope","$scope","$window","mySo
       if(decide) {
         //time will be include to enable user decide when t have conversation
         mySocket.emit("conversation acceptance",{status:true,time: "now",to:data.from,title:person.title,name: person.firstname},function(data){
-          $window.location.href = data.controlUrl;          
+          $window.location.href = data.controlUrl;
         });
       } else {
         //when call is rejected by the receiver
@@ -13073,7 +13070,7 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
       break;
     }
   }
-
+    
   $scope.print = function(){
     var sendObj = {
       grade: 10000,
@@ -13132,7 +13129,6 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
     localManager.removeItem('currPageForLaboratory');
     localManager.removeItem('currPageForRadiology');
     localManager.removeItem('prescriptionRequestData'); 
-    localManager.removeItem("dashboard");
 
   }
  
