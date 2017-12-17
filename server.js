@@ -83,7 +83,11 @@ var a = "ede obinna".replace(/\w\S*/g, function(txt){return txt.charAt(0).toUppe
 console.log(a)
 
 var date = new Date();
-console.log(date.getTime() + 300000)
+console.log(date.getTime() + 300000);
+
+
+var a = [];
+var elemPos = a.map(function(x){return x.id}).indexOf("h");
   
 /*paystack.customer.create({
   first_name: "Obinna",

@@ -33,7 +33,7 @@ module.exports = function() {
         var stream = new Stream(id, name, controlId);
         if(err) throw err;
         if(control){ 
-          var elemPos = control.streams.map(function(x){return x.id}).indexof(id);
+          var elemPos = control.streams.map(function(x){return x.id}).indexOf(id);
           if(elemPos === -1)         
             control.streams.push(stream);
 
