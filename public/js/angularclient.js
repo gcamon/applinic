@@ -7083,6 +7083,9 @@ app.controller("presenceSocketController",["$rootScope","$scope","$window","mySo
     });
   }
 
+  var dashboardUrl = window.location.href;//save the dashboard url in case user wants to navigate back to dashbaord from video page
+  localManager.setValue("dashboard",dashboardUrl);
+
   /***** Video Call Logic ********/
   //takes care of receiver accepting the video call 
   mySocket.on("receive request",function(data){
@@ -7096,9 +7099,7 @@ app.controller("presenceSocketController",["$rootScope","$scope","$window","mySo
       if(decide) {
         //time will be include to enable user decide when t have conversation
         mySocket.emit("conversation acceptance",{status:true,time: "now",to:data.from,title:person.title,name: person.firstname},function(data){
-          $window.location.href = data.controlUrl;
-          var dashboardUrl = window.location.href;//save the dashboard url in case user wants to navigate back to dashbaord from video page
-          localManager.setValue("dashboard",dashboardUrl);
+          $window.location.href = data.controlUrl;          
         });
       } else {
         //when call is rejected by the receiver

@@ -316,8 +316,7 @@
 
 		$scope.goToDashbaord = function(){
 			var url =  window.localStorage.getItem("dashboard");
-			alert(url)
-			window.location.href = url  || "/user";//gets the stroage dashboar url during the video call init
+			window.location.href = "/user";//gets the stroage dashboar url during the video call init
 		}
 
 		var saveControlId = {};
