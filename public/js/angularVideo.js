@@ -70,6 +70,7 @@
     		})
     		.then(function(result){
     			$rootScope.$broadcast('cameraIsOn',false);
+    			camera.stream = null;
     		});	
 		};
 		return camera;
@@ -138,8 +139,12 @@
 		};
 
 		rtc.view = function(stream){
-			client.peerInit(stream.id,stream.name);
-			stream.isPlaying = !stream.isPlaying;
+			if(camera.stream) {
+				client.peerInit(stream.id,stream.name);
+				stream.isPlaying = !stream.isPlaying;
+			} else{
+				alert("You have to connect first before you can view your partner stream")
+			}
 		};
 
 		rtc.call = function(stream){
