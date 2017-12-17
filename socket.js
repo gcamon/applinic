@@ -334,7 +334,7 @@ module.exports = function(model,io,streams) {
     // gets te control to join a room
     socket.on("control join",function(control,cb){
     	console.log("checking----------")
-    	console.log(control)
+    	console.log(control);
     	socket.join(control.control);//control.joins a roo
     	cb(control);
     	streams.addStream(socket.id,control.name,control.control,model)
