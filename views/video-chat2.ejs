@@ -38,14 +38,14 @@
 </head>
 <body style="overflow-x: hidden;">
     <main class="container-fluid" style="padding: 0;margin: 0">
-        <header style="margin-bottom: 3px;background-color: #d9edf7;padding: 10px" ng-controller="LocalStreamController as localStream" class="row">
-            <div class="col-sm-12 col-md-8 col-lg-8">                
-                <a href="{{}}">Back to dashboard</a>
+        <header style="margin-bottom: 3px;background-color: #d9edf7;padding: 10px 30px" ng-controller="LocalStreamController as localStream" class="row">
+            <div class="col-sm-12 col-md-6 col-lg-6">                
+                <a href="{{}}" class="btn btn-primary" style="color:#fff">Back to dashboard</a>
                 <span ng-cloak>{{localStream.getControlId('<%= person.controlId %>')}}</span>
                 <!--Appear as: <input ng-model="localStream.name" class="form-control" style="width: 50%;display: inline-block;"/>-->
-                <a href ng-click="localStream.toggleCam()" class="btn btn-primary" style="color:#fff">{{ (localStream.cameraIsOn === true) ? 'Streaming... ( disconnect )' : 'Connect ' }}</a>                
+                <a href ng-click="localStream.toggleCam()" class="btn btn-primary" style="color:#fff;float: right;background-color: orange">{{ (localStream.cameraIsOn === true) ? 'Streaming... ( disconnect )' : 'Connect ' }}</a>                
             </div>
-            <div  class="col-sm-12 col-md-4 col-lg-4">
+            <div  class="col-sm-12 col-md-6 col-lg-6">
             <a href=""><i class="fa fa-camera" ng-click="streamControl()"> videos</i></a>&nbsp;&nbsp;
                 <a href=""><i class="fa fa-user" ng-click="invite()"> invite</i> </a>&nbsp;&nbsp;  
                 <!--<div class="row">
