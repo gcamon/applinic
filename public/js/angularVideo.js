@@ -293,9 +293,6 @@
     	console.log(data)
     	var decide = confirm(message);
     	if(decide) {
-    		if(camera.stream) {
-    			camera.start();
-    		}    		
     		rtc.loadData();
     	} else {
     		alert("Video call aborted!");
@@ -345,9 +342,9 @@
 				camera.start()
 				.then(function(result) {
 					localStream.link = $window.location.host + '/' + client.getId();
-					if(localManager.getValue("username") !== "Guest" || localManager.getValue("username") !== ""){
+					/*if(localManager.getValue("username") !== "Guest" || localManager.getValue("username") !== ""){
 						localManager.setValue("username",localStream.name);
-					}				
+					}	*/			
 					client.send('readyToStream', { name: localStream.name,controlId: saveControlId.id });
 				})
 				.catch(function(err) {
@@ -355,6 +352,8 @@
 				});
 			}
 		};
+
+		localStream.toggleCam();
 
 	}]);
 })();
