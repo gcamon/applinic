@@ -315,7 +315,9 @@
 		localStream.connections = $rootScope.connections;
 
 		$scope.goToDashbaord = function(){
-			return window.localStorage.getItem("dashboard");//gets the stroage dashboar url during the video call init
+			var url =  window.localStorage.getItem("dashboard");
+			alert(url)
+			window.location.href = url  || "/user";//gets the stroage dashboar url during the video call init
 		}
 
 		var saveControlId = {};
