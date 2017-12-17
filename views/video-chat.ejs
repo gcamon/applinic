@@ -49,18 +49,21 @@
         
 </head>
 <body style="overflow-x: hidden;">
-    <main class="container-fluid" ng-controller='RemoteStreamsController as rtc' style="margin: 0;padding: 0">        
-        <header style="margin-bottom: 3px;background-color: #d9edf7;padding: 10px" class="row">
+    <main class="container-fluid"  style="margin: 0;padding: 0">        
+        <header style="margin-bottom: 3px;background-color: #d9edf7;padding: 10px" ng-controller="LocalStreamController as localStream" class="row">
             <div class="col-sm-12 col-md-6 col-lg-6">
-                 <a href="{{}}">Back to dashboard</a>&nbsp;&nbsp;&nbsp;                 
+                 <a href="{{}}">Back to dashboard</a>&nbsp;&nbsp;&nbsp;
+                 <span ng-cloak>{{localStream.getControlId('<%= person.controlId %>')}}</span>
+                Appear as: <input ng-model="localStream.name" class="form-control" style="width: 50%;display: inline-block;"/>
+                <a href ng-click="localStream.toggleCam()" class="btn btn-primary" style="color:#fff">{{ (localStream.cameraIsOn === true) ? 'Streaming... ( stop )' : 'Connect' }}</a>                           
             </div>
-            <div class="col-sm-12 col-md-6 col-lg-6">
+            <div class="col-sm-12 col-md-6 col-lg-6" ng-controller='RemoteStreamsController as rtc'>
                 <a href=""><i class="fa fa-camera" ng-click="streamControl()"> videos</i></a>&nbsp;&nbsp;
                 <a href=""><i class="fa fa-user" ng-click="invite()"> invite</i> </a>&nbsp;&nbsp;
                 <span>video connection channel : &nbsp;{{rtc.siteLink('<%= person.controlId %>')}}</span>
             </div>          
         </header>        
-        <section class="row">
+        <section class="row" >
            <div class="col-sm-12 col-md-9 col-lg-9" style="margin-top:10px;padding: 0">
                 <div  style="width: 70%;margin: 0 auto">
                     <div style="display: inline-block;padding: 8px 8px 0 8px;border:2px solid #d9edf7">
