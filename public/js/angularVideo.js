@@ -326,13 +326,13 @@
 							window.location.href = "/user/pharmacy";
 					break;
 					case "Laboratory":
-							window.location.href = "/user/Laboratory";
+							window.location.href = "/user/laboratory";
 					break;
 					case "Radiology":
 							window.location.href = "/user/radiology";
 					break;
 				}		
-			window.location.href = "/user";//gets the stroage dashboar url during the video call init
+		
 		}
 
 		var saveControlId = {};
