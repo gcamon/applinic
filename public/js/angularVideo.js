@@ -314,7 +314,24 @@
 
 		localStream.connections = $rootScope.connections;
 
-		$scope.goToDashbaord = function(){			
+		$scope.goToDashbaord = function(){	//remember to change the for the videoserver to point to applinic main
+				switch(user.typeOfUser) {
+					case "Doctor":
+							window.location.href = "/user/doctor";
+					break;
+					case "Patient":
+							window.location.href = "/user/patient";
+					break;
+					case "Pharmacy":
+							window.location.href = "/user/pharmacy";
+					break;
+					case "Laboratory":
+							window.location.href = "/user/Laboratory";
+					break;
+					case "Radiology":
+							window.location.href = "/user/radiology";
+					break;
+				}		
 			window.location.href = "/user";//gets the stroage dashboar url during the video call init
 		}
 
