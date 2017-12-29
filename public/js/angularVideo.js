@@ -315,23 +315,23 @@
 		localStream.connections = $rootScope.connections;
 
 		$scope.goToDashbaord = function(){	//remember to change the for the videoserver to point to applinic main
-				switch(user.typeOfUser) {
-					case "Doctor":
-							window.location.href = "/user/doctor";
-					break;
-					case "Patient":
-							window.location.href = "/user/patient";
-					break;
-					case "Pharmacy":
-							window.location.href = "/user/pharmacy";
-					break;
-					case "Laboratory":
-							window.location.href = "/user/laboratory";
-					break;
-					case "Radiology":
-							window.location.href = "/user/radiology";
-					break;
-				}		
+			switch(user.typeOfUser) {
+				case "Doctor":
+						window.location.href = "/user/doctor";
+				break;
+				case "Patient":
+						window.location.href = "/user/patient";
+				break;
+				case "Pharmacy":
+						window.location.href = "/user/pharmacy";
+				break;
+				case "Laboratory":
+						window.location.href = "/user/laboratory";
+				break;
+				case "Radiology":
+						window.location.href = "/user/radiology";
+				break;
+			}		
 		
 		}
 
