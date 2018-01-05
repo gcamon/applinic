@@ -7098,7 +7098,8 @@ app.controller("presenceSocketController",["$rootScope","$scope","$window","mySo
         //time will be include to enable user decide when t have conversation
         mySocket.emit("conversation acceptance",{status:true,time: "now",to:data.from,title:person.title,
           name: person.firstname,type:person.typeOfUser},function(data){
-          $window.location.href = data.controlUrl + "/" + person.user_id + "/" + person.typeOfUser; // replace with person.typeofuser
+          $window.location.href = data.controlUrl + "/" + person.user_id + "/" + person.typeOfUser + "/" +
+           person.firstname + "/" + person.title + "/" + person.name;
         });
       } else {
         //when call is rejected by the receiver
@@ -7120,7 +7121,8 @@ app.controller("presenceSocketController",["$rootScope","$scope","$window","mySo
       function display() {
         var decide = confirm(response.message);
         if(decide){
-          $window.location.href = response.controlUrl + "/" + person.user_id + "/" + person.typeOfUser;
+          $window.location.href = response.controlUrl + "/" + person.user_id + "/" +
+           person.typeOfUser + "/" + person.firstname + "/" + person.title + "/" + person.name;
         }
       }
   });
