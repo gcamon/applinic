@@ -6994,6 +6994,7 @@ app.controller("presenceSocketController",["$rootScope","$scope","$window","mySo
   function($rootScope,$scope,$window,mySocket,localManager,ModalService,templateService){
    
    var person = localManager.getValue("resolveUser");
+   JSON.stringify(window.localStorage.setItem("user",person));// just to save person to local storage;
 
    if(person.typeOfUser === "Patient"){
      //patients  see doctors as the log in
@@ -7089,14 +7090,15 @@ app.controller("presenceSocketController",["$rootScope","$scope","$window","mySo
     templateService.playAudio(1);
     setTimeout(function(){
       display()
-    },3000);
+    },2000);
 
     function display() {
       var decide = confirm(data.message);
       if(decide) {
         //time will be include to enable user decide when t have conversation
-        mySocket.emit("conversation acceptance",{status:true,time: "now",to:data.from,title:person.title,name: person.firstname},function(data){
-          $window.location.href = data.controlUrl;
+        mySocket.emit("conversation acceptance",{status:true,time: "now",to:data.from,title:person.title,
+          name: person.firstname,type:person.typeOfUser},function(data){
+          $window.location.href = data.controlUrl + "/" + person.user_id + "/" + person.typeOfUser; // replace with person.typeofuser
         });
       } else {
         //when call is rejected by the receiver
@@ -7115,17 +7117,15 @@ app.controller("presenceSocketController",["$rootScope","$scope","$window","mySo
       setTimeout(function(){
         display();
       },3000);
-
       function display() {
         var decide = confirm(response.message);
         if(decide){
-          $window.location.href = response.controlUrl;
+          $window.location.href = response.controlUrl + "/" + person.user_id + "/" + person.typeOfUser;
         }
       }
   });
 
 }]);
-
 
 app.controller("videoInitController",["$scope","$window","localManager","mySocket","templateService",
   function($scope,$window,localManager,mySocket,templateService){
@@ -8741,7 +8741,7 @@ app.controller("videoCommunicationPatientController",["$scope","localManager","m
 
 
 
-app.controller("VideoDiagnosisController",["$scope","$location","$window","$http","localManager","templateService","Drugs","$resource",
+/*app.controller("VideoDiagnosisController",["$scope","$location","$window","$http","localManager","templateService","Drugs","$resource",
   function($scope,$location,$window,$http,localManager,templateService,Drugs,$resource){
   $scope.treatment = {};
   var patient = {};  
@@ -8879,10 +8879,7 @@ app.controller("VideoDiagnosisController",["$scope","$location","$window","$http
         $scope.isAppointment = false;
       }
     }
-
-
-  
-}]);
+}]);*/
 
 app.controller("callController",["$scope",function($scope){
 

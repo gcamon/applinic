@@ -222,7 +222,7 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
     res.download(file); // Set disposition and send it.
   });
 
-  router.get("/user/cam/:controlId",function(req,res){
+  /*router.get("/user/cam/:controlId",function(req,res){
     if(req.user){ //check to see if the param exist in database
       if(req.user.type === "Doctor"){
         res.render("video-chat",{"person":{controlId: req.params.controlId}});
@@ -233,22 +233,8 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
     } else {
       res.redirect("/login");
     }
-  })
+  })*/
 
-
-
-
-  //to be moved to video server
-   router.get('/user/streams.json/:controlId',function(req,res){
-     if(req.user) {
-      streams.getStreamToControl(req.params.controlId,model,function(streamList){
-        var data = (JSON.parse(JSON.stringify(streamList)));    
-        res.status(200).json(data);
-      });//streams.getStreams();     
-     } else {
-      res.end("Please login before you can access streams.")
-     }
-  });
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   //handles all change picture 

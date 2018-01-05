@@ -264,12 +264,11 @@ module.exports = function(model,io,streams) {
 			});
 
 			socket.on("conversation acceptance",function(details,cb){
-				//will be modified to accomadate other chosen time
-			
+				//will be modified to accomadate other chosen time			
 				switch(details.time){
 					case "now":
 					  var controlId = genRemoteId();
-						var createUrl = "/user/cam/" + controlId;
+						var createUrl = "https://video.applinic.com/user/cam/" + controlId;
 						saveControlControl(createUrl,controlId,details);
 						cb({controlUrl: createUrl});
 						io.sockets.to(details.to).emit("video call able",{controlUrl: createUrl,message: details.title +

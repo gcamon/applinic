@@ -657,7 +657,7 @@ var myModel = function () {
 		collections: "messageinfos"
 	});
 
-//to be moved to another server
+
 	var controlSchema = Schema({
 		expirationDate: {
 			type: Date,
