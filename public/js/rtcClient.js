@@ -4,7 +4,11 @@ var PeerManager = (function (name) {
       config = {
         peerConnectionConfig: {
           iceServers: [
-            {"url": "turn:45.55.203.165:8443?transport=udp"}  
+            {
+              "url": "turn:45.55.203.165:8443?transport=udp",
+              "credential:": "zajawekihascome",
+              "username": "applinicvideo"
+            }  
           ]
         },
         peerConnectionConstraints: {
@@ -22,7 +26,6 @@ var PeerManager = (function (name) {
   socket.on('id', function(id) {
     localId = id;
   });
-  
 
   //if peer does not exist yet, this function will create peer below otherwise peer will be retreived fron 'peerDatabase' where existin
   //peer are kept. The remark where this happened in "jj".
