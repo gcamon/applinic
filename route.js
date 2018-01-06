@@ -235,6 +235,18 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
     }
   });
 
+   router.get('/user/streams.json/:controlId',function(req,res){
+    if(req.user) {
+      streams.getStreamToControl(req.params.controlId,model,function(streamList){
+        var data = (JSON.parse(JSON.stringify(streamList)));   
+        res.status(200).json(data);
+      });//streams.getStreams(); 
+    } else {
+      res.end({error: "Must login to access streams"})
+    }    
+     
+  });
+
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   //handles all change picture 

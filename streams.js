@@ -26,7 +26,6 @@ module.exports = function() {
     },*/
 
     addStream : function(id, name, controlId,model) {
-      var self = this;
             
       //controlwill be deleted after 10 hour as ttl was set for every instance of control that was initiated on socket.js
       model.control.findOne({controlId: controlId}).exec(function(err,control){
@@ -41,10 +40,7 @@ module.exports = function() {
           control.save(function(err,info){
             console.log("streams save!")
           })
-        } else {
-          this.addControl(controlId,stream);
         }
-
 
       });
       /*if(controls[controlId]) {
