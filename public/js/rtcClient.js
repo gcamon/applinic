@@ -5,9 +5,9 @@ var PeerManager = (function (name) {
         peerConnectionConfig: {
           iceServers: [
             {
-              "url": "turn:45.55.203.165:8443?transport=udp",
-              "credential:": "zajawekihascome",
-              "username": "applinicvideo"
+              urls: "turn:45.55.203.165:8443?transport=udp",
+              credential: "zajawekihascome",
+              username: "applinicvideo"
             }  
           ]
         },
