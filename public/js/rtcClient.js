@@ -4,7 +4,7 @@ var PeerManager = (function (name) {
       config = {
         peerConnectionConfig: {
           iceServers: [
-            {"url": "turn:45.55.203.16:8443?transport=udp"}  
+            {"url": "turn:45.55.203.165:8443?transport=udp"}  
           ]
         },
         peerConnectionConstraints: {
