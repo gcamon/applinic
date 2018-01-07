@@ -55,13 +55,13 @@
                  <a href="" ng-click="goToDashbaord()" class="btn btn-primary" style="color:#fff">Back to dashboard</a>&nbsp;&nbsp;&nbsp;
                  <span ng-cloak style="font-size: 10px">{{localStream.getControlId('<%= person.controlId %>')}}</span>
                 <!--Appear as: <input ng-model="localStream.name" class="form-control" style="width: 50%;display: inline-block;"/>-->
-                <a href ng-click="localStream.toggleCam()" class="btn btn-primary" style="color:#fff;float: right;background-color: orange">{{ (localStream.cameraIsOn === true) ? 'Streaming... ( disconnect )' : 'Connect' }}</a>                           
+                <a href ng-click="localStream.toggleCam()" class="btn btn-danger" style="color:#fff;float: right;">{{ (localStream.cameraIsOn === true) ? 'Streaming... ( disconnect )' : 'Connect' }}</a>                           
             </div>
             <div  class="col-sm-12 col-md-6 col-lg-6">
                 <div style="">
                     <!--<a href=""><i class="fa fa-camera" ng-click="streamControl()"> videos</i></a>&nbsp;&nbsp;-->
                     <a href="" class="btn btn-success" ng-click="invite()"><i class="fa fa-user"></i> invite</a>&nbsp;&nbsp;  
-                    <p class="text-danger" ng-if="connectionStatus !== ''" style="display: inline-block;text-align: center;padding: 10px;float: right;">{{(connectionStatus === true) ? message : "Connecting..."}}</p>
+                    <p class="text-danger" style="display: inline-block;float: right;">{{(connectionStatus === true) ? message : "connecting..."}}</p>
                 </div>                
             </div> 
         </header>        
