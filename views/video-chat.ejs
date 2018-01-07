@@ -68,9 +68,9 @@
         <section class="row" ng-controller='RemoteStreamsController as rtc'>
              <div class="col-sm-12 col-md-2 col-lg-2 pull-left" style="text-align: center;">
                     <h4 style="padding: 10px;text-align: center;background-color: #1d7e5f;color:#fff">Available streams</h4>
-                <div ng-repeat="stream in rtc.remoteStreams" ng-class="{'selected' : stream.isPlaying}" >
-                    <h5 style="display: inline-block;">{{stream.name}}</h5>
-                    <button ng-click="rtc.view(stream)" class="btn btn-success">View</button>
+                <div ng-repeat="stream in rtc.remoteStreams" ng-class="{'selected' : stream.isPlaying}" >                    
+                    <span>{{stream.name}}</span> &nbsp;&nbsp;
+                    <button ng-click="rtc.view(stream)" class="btn btn-success" style="padding: 5px 10px;font-size: 12px">view</button>
                 </div>
                 <span style="visibility: hidden;">video connection channel : &nbsp;{{rtc.siteLink('<%= person.controlId %>')}}</span>
             </div> 
