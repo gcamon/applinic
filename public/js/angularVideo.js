@@ -187,20 +187,23 @@
     /*client.reloadFn(function () {
     	rtc.loadData(); //automaticall call the refresh
     });*/
+
+    $rootScope.$on("stream available",function(data){
+    	$rootScope.connectionStatus = data;
+    })
+    
 		var controllerSocket = client.getSocketForController();
-
+		 // use to check when stream is available
     controllerSocket.on("reload streams",function(data){
-    	console.log(data)
-    	$rootScope.message = data.name ? data.name + " stream is availble." : "Partner stream is now available.";
+    	$rootScope.message = data.name ? data.name + " stream is availble." : "Partner stream is available.";
 
-    	
-    	$rootScope.connectionStatus = data.status;
+    	$rootScope.$broadcast("stream available",data.status);
 
-    	/*setTimeout(function(){
+    	setTimeout(function(){
     		$scope.$apply(function(){
-    			message = "";
+    			$rootScope.message = "";
     		})
-    	},3000);*/
+    	},4000);
 
     	//var decide = confirm($rootScope.message);
     	if(data.status) {
@@ -211,6 +214,8 @@
     	}
     	
     })
+
+    rtc.loadData();
 	}]);
 
 	app.controller('LocalStreamController',['camera','$rootScope', '$scope', 'localManager','$window','$location',
