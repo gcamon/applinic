@@ -25,7 +25,9 @@
     <script src="/assets/js/vendor/modernizr-2.8.3-respond-1.4.2.min.js"></script>
       <script src="/assets/js/vendor2.js"></script>-->
       <link rel="stylesheet" href="/assets/css/bootstrap.min.css">
-    <link type="style/css" rel="stylesheet" href="/assets/css/video.css">
+   
+    <link rel="stylesheet" href="/assets/css/font-awesome.min.css">
+     <link type="style/css" rel="stylesheet" href="/assets/css/video.css">
     <!--<script type="text/javascript" src="/assets/js/source.js"></script>-->
     <script type="text/javascript" src="/socket.io/socket.io.js"></script>
     <script type="text/javascript" src="/assets/js/adapter.js"></script>
@@ -39,23 +41,20 @@
 <body style="overflow-x: hidden;">
     <main class="container-fluid" style="padding: 0;margin: 0">
         <header style="margin-bottom: 3px;background-color: #d9edf7;padding: 10px 30px" ng-controller="LocalStreamController as localStream" class="row">
-            <div class="col-sm-12 col-md-6 col-lg-6">                
-                <a  href="" ng-click="goToDashbaord()" class="btn btn-primary" style="color:#fff">Back to dashboard</a>
-                <span ng-cloak>{{localStream.getControlId('<%= person.controlId %>')}}</span>
-                <!--Appear as: <input ng-model="localStream.name" class="form-control" style="width: 50%;display: inline-block;"/>-->
-                <a href ng-click="localStream.toggleCam()" class="btn btn-primary" style="color:#fff;float: right;background-color: orange">{{ (localStream.cameraIsOn === true) ? 'Streaming... ( disconnect )' : 'Connect ' }}</a>                
+            <div class="col-sm-12 col-md-6 col-lg-6"> 
+                <div style="text-align: center;">               
+                    <a  href="" ng-click="goToDashbaord()" class="btn btn-primary" style="color:#fff"> <i class="fa fa-arrow-left"></i> Back to dashboard</a>
+                    <span ng-cloak>{{localStream.getControlId('<%= person.controlId %>')}}</span>
+                    <!--Appear as: <input ng-model="localStream.name" class="form-control" style="width: 50%;display: inline-block;"/>-->
+                    <a href ng-click="localStream.toggleCam()" class="btn btn-danger" style="color:#fff;float: right">{{ (localStream.cameraIsOn === true) ? 'Streaming... ( stop / disconnect )' : 'Connect ' }}</a>  
+                </div>              
             </div>
             <div  class="col-sm-12 col-md-6 col-lg-6">
-            <a href=""><i class="fa fa-camera" ng-click="streamControl()"> videos</i></a>&nbsp;&nbsp;
-                <a href=""><i class="fa fa-user" ng-click="invite()"> invite</i> </a>&nbsp;&nbsp;  
-                <!--<div class="row">
-                    <div class="col-sm-12 col-md-7 col-lg-7">
-                        <video id="localVideo" muted="muted" autoplay="true" style="width: 100px;height:100px;"></video>
-                    </div>
-                    <div class="col-sm-12 col-md-5 col-lg-5" style="text-align: center;padding:30px 30px 0 0">
-                        <button ng-click="allLocalStreams()" class="btn btn-primary">View remote streams</button>
-                    </div>
-                </div>-->                
+                <div style="">
+                    <!--<a href=""><i class="fa fa-camera" ng-click="streamControl()"> videos</i></a>&nbsp;&nbsp;-->
+                    <a href="" class="btn btn-success" ng-click="invite()"><i class="fa fa-user"></i> invite</a>&nbsp;&nbsp;  
+                    <p class="text-danger" ng-if="connectionStatus !== ''" style="display: inline-block;text-align: center;padding: 10px;float: right;">{{(connectionStatus === true) ? message : "Waiting for partner's stream..."}}</p>
+                </div>                
             </div>
         </header>
 
@@ -85,7 +84,8 @@
             </div>
              
         </section>
-    </main>                     
+    </main>
+
 </body>
 </html>
 

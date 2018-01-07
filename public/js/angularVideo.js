@@ -91,7 +91,7 @@
 			  	//controller: "siteRemoteStreamsController"
 			  })
 		 });*/
-		 
+
 	app.controller('RemoteStreamsController', ["$scope","$rootScope",'camera', '$location', '$http','$window',
 	 function($scope,$rootScope,camera, $location, $http, $window){
 		var rtc = this;
@@ -190,11 +190,20 @@
 		var controllerSocket = client.getSocketForController();
 
     controllerSocket.on("reload streams",function(data){
-    	
-    	var message = data.name ? data.name + " stream is availble." : "Partner stream is now available."
     	console.log(data)
-    	var decide = confirm(message);
-    	if(decide) {
+    	$rootScope.message = data.name ? data.name + " stream is availble." : "Partner stream is now available.";
+
+    	
+    	$rootScope.connectionStatus = data.status;
+
+    	/*setTimeout(function(){
+    		$scope.$apply(function(){
+    			message = "";
+    		})
+    	},3000);*/
+
+    	//var decide = confirm($rootScope.message);
+    	if(data.status) {
     		rtc.loadData();
     	} else {
     		alert("Video call aborted!");

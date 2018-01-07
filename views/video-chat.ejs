@@ -57,11 +57,13 @@
                 <!--Appear as: <input ng-model="localStream.name" class="form-control" style="width: 50%;display: inline-block;"/>-->
                 <a href ng-click="localStream.toggleCam()" class="btn btn-primary" style="color:#fff;float: right;background-color: orange">{{ (localStream.cameraIsOn === true) ? 'Streaming... ( disconnect )' : 'Connect' }}</a>                           
             </div>
-            <div class="col-sm-12 col-md-6 col-lg-6">
-                <a href=""><i class="fa fa-camera" ng-click="streamControl()"> videos</i></a>&nbsp;&nbsp;
-                <a href=""><i class="fa fa-user" ng-click="invite()"> invite</i> </a>&nbsp;&nbsp;                
-               
-            </div>          
+            <div  class="col-sm-12 col-md-6 col-lg-6">
+                <div style="">
+                    <!--<a href=""><i class="fa fa-camera" ng-click="streamControl()"> videos</i></a>&nbsp;&nbsp;-->
+                    <a href="" class="btn btn-success" ng-click="invite()"><i class="fa fa-user"></i> invite</a>&nbsp;&nbsp;  
+                    <p class="text-danger" ng-if="connectionStatus !== ''" style="display: inline-block;text-align: center;padding: 10px;float: right;">{{(connectionStatus === true) ? message : "Waiting for partner's stream..."}}</p>
+                </div>                
+            </div> 
         </header>        
         <section class="row" ng-controller='RemoteStreamsController as rtc'>
              <div class="col-sm-12 col-md-2 col-lg-2 pull-left" style="text-align: center;">
@@ -245,6 +247,7 @@
             </div>
         </section>        
     </main>  
+       
 </body>
 </html>
 

@@ -7098,7 +7098,17 @@ app.controller("presenceSocketController",["$rootScope","$scope","$window","mySo
         //time will be include to enable user decide when t have conversation
         mySocket.emit("conversation acceptance",{status:true,time: "now",to:data.from,title:person.title,
           name: person.firstname,type:person.typeOfUser},function(data){
-          $window.location.href = data.controlUrl;
+            $rootScope.controlUrl = data.controlUrl;
+
+            ModalService.showModal({
+              templateUrl: 'redirect-modal.html',
+                  controller: 'redirectModal'
+              }).then(function(modal) {
+                  modal.element.modal();
+                  modal.close.then(function(result) {
+                     
+              });
+            });
         });
       } else {
         //when call is rejected by the receiver
@@ -7113,19 +7123,31 @@ app.controller("presenceSocketController",["$rootScope","$scope","$window","mySo
 
   //takes care of redirecting to video call page for the call requester After the received had accepted and redirected to its on page.
   mySocket.on("video call able",function(response){
-      templateService.playAudio(4);
-      setTimeout(function(){
-        display();
-      },3000);
-      function display() {
-        var decide = confirm(response.message);
-        if(decide){
-          $window.location.href = response.controlUrl
-        }
+    templateService.playAudio(4);
+    setTimeout(function(){
+      display();
+    },3000);
+    function display() {
+      var decide = confirm(response.message);
+      if(decide){
+         $rootScope.controlUrl = response.controlUrl;
+         ModalService.showModal({
+          templateUrl: 'redirect-modal.html',
+              controller: 'redirectModal'
+          }).then(function(modal) {
+              modal.element.modal();
+              modal.close.then(function(result) {                 
+          });
+        });
       }
+    }
   });
 
 }]);
+
+app.controller("redirectModal",["$rootScope","$window",function($rootScope,$window){
+  $window.location.href = $rootScope.controlUrl //redirects to video call page
+}])
 
 app.controller("videoInitController",["$scope","$window","localManager","mySocket","templateService",
   function($scope,$window,localManager,mySocket,templateService){
