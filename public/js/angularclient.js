@@ -6989,6 +6989,47 @@ function($scope,$location,$rootScope,$http,$interval,templateService,localManage
 
 }]);
 
+
+app.controller("createRoomController",["$scope","localManager","mySocket","$rootScope","templateService","$location",
+  function($scope,localManager,mySocket,$rootScope,templateService,$location){
+  var user = localManager.getValue("resolveUser");
+  $rootScope.chatStatus = localManager.getValue("hasChat");
+  var getCurrentPage = localManager.getValue("currentPageForPatients") || localManager.getValue("currentPage");
+  var getHandlerPage = localManager.getValue("holdPageForHandler")
+  if(!$rootScope.chatStatus || getCurrentPage !== getHandlerPage){ 
+    mySocket.emit('join',{userId: user.user_id});  
+    //when user is cuurently not in chat but messages can come and be stored in array
+    mySocket.on("new_msg", function(data) {
+      var date = + new Date();
+      var msg = {};
+      msg.time = date;
+      msg.received = data.message;    
+      if(user.typeOfUser === "Patient"){
+        var elemPos = $rootScope.patientsDoctorList.map(function(x){return x.doctor_id}).indexOf(data.from);
+        var found = $rootScope.patientsDoctorList[elemPos];
+      } else if(user.typeOfUser === "Doctor"){
+        var elemPos = $rootScope.patientList.map(function(x){return x.patient_id}).indexOf(data.from);
+        var found = $rootScope.patientList[elemPos];
+      }
+
+      if(!found.queueLen) {
+        found.queueLen = 1;
+      } else {
+        found.queueLen++;
+      }
+
+      templateService.playAudio(2);
+      msg.userId = data.to;
+      msg.partnerId = data.from;
+      mySocket.emit("save message",msg);
+      //mySocket.emit("msg received",{to: data.from});    
+      //then push the message to the list of patients so that user can view later.
+    });
+  }
+
+}]);
+
+
 //controls online presence icon to show who is online or offline. Note for doctors only ppatients that are online are displayed.
 app.controller("presenceSocketController",["$rootScope","$scope","$window","mySocket","localManager","ModalService","templateService",
   function($rootScope,$scope,$window,mySocket,localManager,ModalService,templateService){
@@ -7097,9 +7138,9 @@ app.controller("presenceSocketController",["$rootScope","$scope","$window","mySo
       if(decide) {
         //time will be include to enable user decide when t have conversation
         mySocket.emit("conversation acceptance",{status:true,time: "now",to:data.from,title:person.title,
-          name: person.firstname,type:person.typeOfUser},function(data){
-            $rootScope.controlUrl = data.controlUrl;
-
+          name: person.firstname,type:person.typeOfUser},function(response){
+            localManager.setValue("userId",data.from);
+            $rootScope.controlUrl = response.controlUrl;
             ModalService.showModal({
               templateUrl: 'redirect-modal.html',
                   controller: 'redirectModal'
@@ -7155,7 +7196,7 @@ app.controller("videoInitController",["$scope","$window","localManager","mySocke
   var user = localManager.getValue("resolveUser");
   user.firstname = user.firstname || user.name;
 
-  $scope.docInfo = templateService.holdForSpecificDoc;
+  $scope.docInfo = templateService.holdForSpecificDoc
 
   $scope.yes = function () {
     console.log($scope.docInfo);
@@ -7178,44 +7219,6 @@ app.controller("videoInitController",["$scope","$window","localManager","mySocke
 
 }]);  
 
-app.controller("createRoomController",["$scope","localManager","mySocket","$rootScope","templateService","$location",
-  function($scope,localManager,mySocket,$rootScope,templateService,$location){
-  var user = localManager.getValue("resolveUser");
-  $rootScope.chatStatus = localManager.getValue("hasChat");
-  var getCurrentPage = localManager.getValue("currentPageForPatients") || localManager.getValue("currentPage");
-  var getHandlerPage = localManager.getValue("holdPageForHandler")
-  if(!$rootScope.chatStatus || getCurrentPage !== getHandlerPage){ 
-    mySocket.emit('join',{userId: user.user_id});  
-    //when user is cuurently not in chat but messages can come and be stored in array
-    mySocket.on("new_msg", function(data) {
-      var date = + new Date();
-      var msg = {};
-      msg.time = date;
-      msg.received = data.message;    
-      if(user.typeOfUser === "Patient"){
-        var elemPos = $rootScope.patientsDoctorList.map(function(x){return x.doctor_id}).indexOf(data.from);
-        var found = $rootScope.patientsDoctorList[elemPos];
-      } else if(user.typeOfUser === "Doctor"){
-        var elemPos = $rootScope.patientList.map(function(x){return x.patient_id}).indexOf(data.from);
-        var found = $rootScope.patientList[elemPos];
-      }
-
-      if(!found.queueLen) {
-        found.queueLen = 1;
-      } else {
-        found.queueLen++;
-      }
-
-      templateService.playAudio(2);
-      msg.userId = data.to;
-      msg.partnerId = data.from;
-      mySocket.emit("save message",msg);
-      //mySocket.emit("msg received",{to: data.from});    
-      //then push the message to the list of patients so that user can view later.
-    });
-  }
-
-}]);
 
 app.controller("adminCreateRoomController",["$scope","localManager","mySocket","$rootScope","templateService","$location","$resource","ModalService",
   function($scope,localManager,mySocket,$rootScope,templateService,$location,$resource,ModalService){
@@ -8632,7 +8635,7 @@ app.controller("prescriptionModalController",["$scope","$http","$window","localM
 
 }]);
 
-app.controller("videoCommunicationDoctorController",["$scope","$resource","$window","localManager","mySocket",
+/*app.controller("videoCommunicationDoctorController",["$scope","$resource","$window","localManager","mySocket",
   function($scope,$resource,$window,localManager,mySocket){
 
   $scope.getinfo = localManager.getValue("patientInfoForCommunication");
@@ -8648,7 +8651,7 @@ app.controller("videoCommunicationDoctorController",["$scope","$resource","$wind
   }
   presence.sendRequest(sendObj,function(data){
     console.log(data)
-  });*/
+  });""
 
 
   
@@ -8698,9 +8701,9 @@ app.controller("videoCommunicationDoctorController",["$scope","$resource","$wind
     return text;
   }
   
-}]);
+}]);*/
 
-app.controller("audioCommunicationDoctorController",["$scope","$resource","$window","localManager","mySocket",
+/*app.controller("audioCommunicationDoctorController",["$scope","$resource","$window","localManager","mySocket",
   function($scope,$resource,$window,localManager,mySocket){
   $scope.getinfo = localManager.getValue("patientInfoForCommunication");
   $scope.callWaitingList = localManager.getValue("audioCallerList");  //sets the list of requested patients for the call page.
@@ -8752,14 +8755,14 @@ app.controller("audioCommunicationDoctorController",["$scope","$resource","$wind
     return text;
   }
   
-}]);
+}]);*/
 
-app.controller("videoCommunicationPatientController",["$scope","localManager","mySocket",function($scope,localManager,mySocket){
+/*app.controller("videoCommunicationPatientController",["$scope","localManager","mySocket",function($scope,localManager,mySocket){
   $scope.getinfo = localManager.getValue('doctorInfoforCommunication'); 
   var user = localManager.getValue("resolveUser");
   mySocket.emit("in call connected",{to:$scope.getinfo.userId});
 
-}]);
+}]);*/
 
 
 
@@ -8937,11 +8940,6 @@ app.controller("pharmacyCenterNotificationController",["$scope","$location","$re
     $rootScope.allNote.unshift(data);
     $rootScope.noteLen++;
   });
-
-
-  
-
-  
 
   $rootScope.viewNote = function(id){
     templateService.holdId = id;
@@ -13034,7 +13032,7 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
   if(!localManager.getValue("resolveUser")) {
     $window.location.href = "/login"
   } 
-
+  localManager.setValue("userId","bobosky2636");
   //user this service within controllers to alert on every event status.
   $rootScope.alertService = function (val,msg) {
     if (val) { 
