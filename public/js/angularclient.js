@@ -7734,7 +7734,6 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
         });
         mySocket.emit("save message",msg);
         mySocket.on("isReceived",function(status){
-          alert(status)
           $rootScope.message1[getIndex].isReceived = status;
           mySocket.emit("save message",msg);
         });
