@@ -348,6 +348,7 @@ var myModel = function () {
 		family_history: String,
 		drug_history: String,
 		summary: String,
+		notes: String,
 		provisional_diagnosis: String,
 		general_examination: String,
 		systemic_examination: String,
