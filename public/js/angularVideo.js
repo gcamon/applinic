@@ -11,6 +11,9 @@
         }
     };
 
+    var control = {}
+
+    var controllerSocket = client.getSocketForController();
         /*
     var mediaConfig = {
         audio:true,
@@ -60,6 +63,12 @@
 		    }
 		    
 		  }
+
+		  var audio = function(trackurl){
+		    var audio = new Audio(trackurl);
+		    audio.play();
+		  }
+
 		}]);
 
     app.factory('camera', ['$rootScope', '$window', function($rootScope, $window){
@@ -125,10 +134,10 @@
 		    	if (rtc.remoteStreams[i].id === id) {return rtc.remoteStreams[i];}
 		    }
 		}
-		var control = {}
+		
 
 		rtc.siteLink = function(controlId){
-			console.log(controlId)
+			
 			control.controlId = controlId;
 				//join a room
     	client.controlJoin(controlId,name); 
@@ -210,7 +219,7 @@
     /*client.reloadFn(function () {
     	rtc.loadData(); //automaticall call the refresh
     });*/
-		var controllerSocket = client.getSocketForController();
+		
 
 
 
@@ -237,12 +246,45 @@
     	
     })
 
-    if(user.typeOfUser === "Patient")
-	    controllerSocket.on('new treament',function(info){
-	    	templateService.playAudio(2);
-	  		alert(info.message);  		
-	  		console.log(info)
-	  	})
+  	rtc.investigations = [];
+  	rtc.prescriptions = [];
+    controllerSocket.on('new investigation',function(info){
+    	templateService.playAudio(2);
+    	$scope.$apply(function(){
+    		rtc.investigations.unshift(info);
+    		$rootScope.message = "New test receive...";
+
+    	});
+
+    	
+    	setTimeout(function(){
+    		$scope.$apply(function(){
+    			$rootScope.message = "";
+    		})
+    	},3000);
+    	
+  		//alert(info.message);  		
+  		console.log(info)
+  	});
+
+  	controllerSocket.on('new prescription',function(info){
+    	templateService.playAudio(2);
+    	$scope.$apply(function(){
+    		rtc.prescriptions.unshift(info);
+    		$rootScope.message = "New test receive...";
+    	})    	
+  		//alert(info.message);  
+  		
+
+    	setTimeout(function(){
+    		$scope.$apply(function(){
+    			$rootScope.message = "";
+    		})
+    	},3000);		
+  		console.log(info);
+  	});
+	  
+
 	}]);
 
 	app.controller('LocalStreamController',['camera','$rootScope', '$scope', 'localManager','$window','$location',
@@ -336,14 +378,14 @@
 
   $rootScope.session = Math.floor(Math.random() * 999999999999999999999);
 
-  patient.id = localManager.getValue("userId") || "bobosky2636"; // Refers to user id of the patient to be treated 
+  patient.id = localManager.getValue("userId"); // Refers to user id of the patient to be treated 
 
-  
+  controllerSocket.emit("join",{userId: user.user_id});
 
   var getPatientData = $resource("/user/doctor/specific-patient");
 
   getPatientData.get(patient,function(data){
-    console.log(data)
+  	console.log(data)
     $scope.patientInfo = data;
     patient.prescriptionId = random;
     patient.patient_id = patient.id;    
@@ -361,13 +403,16 @@
     patient.title = $scope.patientInfo.title;
     patient.phone = data.phone;
     patient.sender = "doctor";
-
     $rootScope.holdPatientData = patient;
   });
    
 
   $scope.investigation = function(){
-  	 ModalService.showModal({
+  	if($scope.patientInfo.error) { // check to see if patient is for the doctor.
+  		alert("Not allowed: Not your patient.");
+  		return;
+  	}
+  	ModalService.showModal({
         templateUrl: 'investigation.html',
         controller: "investigationController"
     }).then(function(modal) {
@@ -380,6 +425,10 @@
 
 
   $scope.treamentPlan = function() {
+  	if($scope.patientInfo.error) { //check to see if patient if for the doctor
+  		alert("Not allowed: Not your patient.");
+  		return;
+  	}
   	ModalService.showModal({
       templateUrl: 'treatment-plan.html',
       controller: "treatmentPlanController"
@@ -391,7 +440,11 @@
     });
   }
 
-  $scope.treamentPlan = function() {
+  $scope.prescription = function() {
+  	if($scope.patientInfo.error) {
+  		alert("Not allowed: Not your patient.");
+  		return;
+  	}
   	ModalService.showModal({
       templateUrl: 'prescription.html',
       controller: "prescriptionController"
@@ -404,6 +457,10 @@
   }
 
   $scope.appointment = function() {
+  	if($scope.patientInfo.error) {
+  		alert("Not allowed: Not your patient.");
+  		return;
+  	}
   	ModalService.showModal({
         templateUrl: 'calender-template.html',
         controller: 'appointmentModalController'
@@ -416,7 +473,7 @@
   }
 
     //creates drug object for the ng-repeat on the view.
-    $scope.drugs = Drugs;
+    /*$scope.drugs = Drugs;
     var drug_name;
     var index;
     $scope.getDrug = function(drugName){
@@ -455,7 +512,7 @@
     $scope.$watch("drugList",function(newVal,oldVal){
       patient.prescriptionBody = newVal;// adds prescription body to the prescription object as the doctor 
     //prepares to send it to the back end.
-    },true);  
+    },true);  */
 
 
     $scope.toPatient = function(){
@@ -494,54 +551,43 @@
       $location.path("/search/pharmacy");
     }
 
-    $scope.isAppointment = false;
-    $scope.submitSession = function(){
-      if($scope.isAppointment === false){
-        $scope.isAppointment = true;
-        viewed = true;
-        var date = new Date();
-        $scope.treatment.date = date;      
-        $scope.treatment.patient_id = patient.id;
-        $scope.treatment.typeOfSession = "video chat";      
-        $scope.treatment.appointment = {};
-        $scope.bookAppointment = function(){          
-          $scope.treatment.appointment.firstname = patient.firstname;
-          $scope.treatment.appointment.lastname = patient.lastname;
-          $scope.treatment.appointment.title = patient.title;
-          $scope.treatment.appointment.profilePic = patient.patient_profile_pic_url;
-          $http({
-            method  : 'POST',
-            url     : "/user/doctor/patient-session",
-            data    : $scope.treatment,
-            headers : {'Content-Type': 'application/json'} 
-            })
-          .success(function(data) {
-            if(data)   
-              alert("session created!!");
-          });
-        }
-      } else {
-        $scope.isAppointment = false;
-      }
+    
+    $scope.submitSession = function(){ 
+    	if($rootScope.treatment.complain && $rootScope.treatment.provisionalDiagnosis) {  
+	      var date = new Date();
+	      $rootScope.treatment.date = date;      
+	      $rootScope.treatment.patient_id = patient.id;
+	      $rootScope.treatment.session_id = $rootScope.session;
+	      $rootScope.treatment.typeOfSession = "video chat";      
+	      $http({
+	        method  : 'POST',
+	        url     : "/user/doctor/patient-session",
+	        data    : $rootScope.treatment,
+	        headers : {'Content-Type': 'application/json'} 
+	        })
+	      .success(function(data) {
+	        if(data)   
+	          alert("Entry saved successfully!!!");
+	      });
+    	} else {
+    		alert("Error: Presenting Complain and Provisional Diagnosis fields cannot be empty!")
+    	}
     }
+
 }]);
 
 app.controller("investigationController",["$scope","$http","labTests","scanTests","$rootScope","$resource",
   function($scope,$http,labTests,scanTests,$rootScope,$resource){
 
   	var patient = $rootScope.holdPatientData;
-
   	$scope.isLab = false;
   	$scope.isRadio = false;
   	$scope.isInitial = true;
    	$scope.isSearchToSend = false;
 
-
   	$scope.lab = function() {
-
-
   		$scope.isLab = true;
-  		$scope.isRadio = false;  	
+  		$scope.isRadio = false;	
 
   		var test_name;
   		var index;
@@ -601,6 +647,7 @@ app.controller("investigationController",["$scope","$http","labTests","scanTests
 
   		$scope.sendToPatient = function () {
   			console.log($scope.TestList)
+  			toPatient()
   		}
 
   		$scope.changeOption = function() {
@@ -662,37 +709,52 @@ app.controller("investigationController",["$scope","$http","labTests","scanTests
 	    }
 
 	    $scope.sendTest = function () {
-	     patient.laboratory = {};
-	     patient.laboratory.patient_gender = patient.gender;
-	     patient.history = $scope.treatment.history;
-	     patient.laboratory.patient_age = patient.age;
-	     patient.patient_firstname = patient.firstname;
-	     patient.patient_lastname = patient.lastname;
-	     patient.patient_profilePic = patient.patient_profile_pic_url;
-	     patient.patient_title = patient.title;
-	     patient.session_id = $rootScope.session;
-	     patient.patient_id = patient.id;
-	     patient.date = + new Date(); 
-	     patient.noUpdate = true,
-	     patient.typeOfSession = "Video chat"
-	     patient.treatment = $rootScope.treatment
-	    	
-          
-	    	console.log(patient)
-
-	    	$http({
-        method  : 'POST',
-        url     : "/user/doctor/send-test",
-        data    : patient,
-        headers : {'Content-Type': 'application/json'} 
-        })
-      .success(function(data) {
-        if(data)   
-          alert("session created!!");
-      });
+		     patient.laboratory = {};
+		     patient.laboratory.patient_gender = patient.gender;
+		     patient.history = $scope.treatment.history;
+		     patient.laboratory.patient_age = patient.age;
+		     patient.patient_firstname = patient.firstname;
+		     patient.patient_lastname = patient.lastname;
+		     patient.patient_profilePic = patient.patient_profile_pic_url;
+		     patient.patient_title = patient.title;
+		     patient.session_id = $rootScope.session;
+		     patient.patient_id = patient.id;
+		     patient.date = + new Date(); 
+		     patient.noUpdate = true,
+		     patient.typeOfSession = "Video chat"
+		     patient.treatment = $rootScope.treatment
+		    	
+	          
+		    	$http({
+	        method  : 'POST',
+	        url     : "/user/doctor/send-test",
+	        data    : patient,
+	        headers : {'Content-Type': 'application/json'} 
+	        })
+	      .success(function(data) {
+	        if(data) {   
+	          $scope.message = "Investigations sent!" 
+		        controllerSocket.emit("new test",{
+		        	center:$scope.pickedCenter,
+		        	testList:patient.lab_test_list,
+		        	ref_id: data.ref_no,
+		        	to:patient.id,
+		        	controlId: control.controlId,
+		        	by: data.by,
+		        	type: "Laboratory Test"
+		        });
+		      } else {
+		      	alert("Error: Investigation not sent!")
+		      }
+	      });
 	    }
 
+	    function toPatient() {
+	    	patient.provisional_diagnosis = $rootScope.treatment.provisionalDiagnosis;
+	    	pattient.prescriptionBody = testList
+	    }
 
+	    
   	};
 
  
@@ -834,9 +896,6 @@ app.controller("investigationController",["$scope","$http","labTests","scanTests
 		     patient.typeOfSession = "Video chat"
 		     patient.treatment = $rootScope.treatment
 		    	
-	          
-		    console.log(patient)
-
 		    $http({
 	        method  : 'POST',
 	        url     : "/user/doctor/radiology/send-test",
@@ -844,8 +903,21 @@ app.controller("investigationController",["$scope","$http","labTests","scanTests
 	        headers : {'Content-Type': 'application/json'} 
 	        })
 	      .success(function(data) {
-	        if(data)   
-	          alert("session created!!");
+	        if(data) { 
+	        	$scope.message = "Investigations sent!"  
+		        controllerSocket.emit("new test",{
+		        	center:$scope.pickedCenter,
+		        	testList:patient.lab_test_list,
+		        	ref_id: data.ref_no,
+		        	to:patient.id,
+		        	controlId: control.controlId,
+		        	by: data.by,
+		        	type: "Radiology Test"
+		        });
+		      } else {
+		      	alert("Error: Investigation not sent!")
+		      }
+
 	      });
 	    }
   	}
@@ -909,7 +981,10 @@ app.controller("prescriptionController",["$rootScope","$scope","$window","$http"
     $scope.toPatient = function(){
       //doctor creates the prescription object and sends it the the back end. url is "patient/forwarded-prescription", other informations that
       //comes with the prescription object added to the prescription object in the backend.
-      $rootScope.holdPrescriptionToBeForwarded = patient;
+      patient.treatment = $rootScope.treatment;
+      patient.session_id = $rootScope.session;
+      patient.ref_id = Math.floor(Math.random() * 9999999);
+	   
       $http({
         method  : 'PUT',
         url     : "/user/patient/forwarded-prescription",
@@ -917,15 +992,14 @@ app.controller("prescriptionController",["$rootScope","$scope","$window","$http"
         headers : {'Content-Type': 'application/json'} 
         })
       .success(function(data) {      
-        console.log(data);
-        alert(data);
+        alert(data.message);
       });
       
     }
 
     /*
- 			enter the drugs to buy if to send to pharmacy list of pharmacy within the patient's location will be pulled by defult
- 			doctoc slectects the center of choice the selection info div will be updated, indication the stock info of the written drugs
+ 			enter the drugs to buy if to send to pharmacy. List of pharmacy within the patient's location will be pulled by defult
+ 			doctoc selects the center of choice, the selection info div will be updated, indication the stock info of the written drugs
  			if any drug is if found in the list of unavailabe dtrugs for that center puled from the backend, it will be indicated with line through
  			stock info will say "updated or not update" depends on if the center have updated their stock.
     */
@@ -933,21 +1007,8 @@ app.controller("prescriptionController",["$rootScope","$scope","$window","$http"
     $scope.isInitial = true;
     
     patient.typeOfSession = "video chat";
-    $scope.toPharmacy = function(){     
-       
-     
-       /*$http({
-        method  : 'POST',
-        url     : "/user/doctor/patient-session",
-        data    : $scope.treatment,
-        headers : {'Content-Type': 'application/json'} 
-        })
-      .success(function(data) {
-        if(data)   
-          alert("session created!!");
-        console.log(data)
-      });*/
 
+    $scope.toPharmacy = function(){  
       $scope.isInitial = false;
       $scope.isSearchToSend = true;
       getPharmacy()
@@ -1008,7 +1069,7 @@ app.controller("prescriptionController",["$rootScope","$scope","$window","$http"
     $scope.sendDrug = function() {
     	console.log($scope.treatment)
     	console.log(patient);
-
+    	patient.treatment = $rootScope.treatment;
     	$http({
         method  : 'PUT',
         url     : "/user/patient/pharmacy/referral",
@@ -1019,6 +1080,16 @@ app.controller("prescriptionController",["$rootScope","$scope","$window","$http"
         if(data.success)   
           $scope.message = "Prescriptions sent !!"
         //alert($scope.message);
+
+        controllerSocket.emit("new drugs",{
+        	center:$scope.pickedCenter,
+        	drugList:$scope.drugList,
+        	ref_id: data.ref_id,
+        	to:patient.id,
+        	controlId: control.controlId,
+        	by: data.by,
+        	type: "Prescriptions"
+        });		     
        
       });
     }
@@ -1099,54 +1170,26 @@ app.controller("appointmentModalController",["$scope","$http","$rootScope","mome
         return days;
     }
 
- $scope.treatment= {};
- $scope.treatment.appointment = {};
+		 $scope.treatment = $rootScope.treatment;
+		 $scope.treatment.appointment = {};
+		 var data = $rootScope.holdPatientData;
 
-    $scope.book = function(){
-      var data = $rootScope.holdBriefForSpecificPatient || $rootScope.holdForSpecificPatient;
-      
+    $scope.book = function(){        
       var date = + new Date();
       $scope.treatment.date = date;
       $scope.treatment.patient_id = data.patient_id || data.user_id;
-      $scope.treatment.typeOfSession = "In-person meeting";
-      $scope.treatment.appointment.title = "";
+      $scope.treatment.typeOfSession = "Video chat";
       $scope.treatment.appointment.date = $scope.dd._d;
+      $scope.treatment.appointment.firstname = data.firstname;
+      $scope.treatment.appointment.lastname = data.lastname;
+      $scope.treatment.session_id = $rootScope.session;
+      $scope.treatment.appointment.profilePic = data.patient_profile_pic_url;
 
-      //this will take care of differrent object populating the data variable.
-      if(data.hasOwnProperty("patientInfo")) {
-       
-        $scope.treatment.appointment.firstname = data.patientInfo.firstname 
-        $scope.treatment.appointment.lastname = data.patientInfo.lastname 
-        $scope.treatment.appointment.profilePic = data.patientInfo.profilePic 
-        $scope.treatment.session_id = data.session_id;
-
-        $scope.treatment.general_examination = data.diagnosis.general_examination;
-        $scope.treatment.systemic_examination = data.diagnosis.systemic_examination;
-        $scope.treatment.final_diagnosis = data.diagnosis.final_diagnosis;
-        $scope.treatment.presenting_complain = data.diagnosis.presenting_complain;
-        $scope.treatment.history_of_presenting_complain = data.diagnosis.history_of_presenting_complain;
-        $scope.treatment.past_medical_history  = data.past_medical_history;
-
-        $scope.treatment.social_history = data.diagnosis.social_history;
-        $scope.treatment.family_history = data.diagnosis.family_history;
-        $scope.treatment.drug_history = data.diagnosis.drug_history;
-        $scope.treatment.summary = data.diagnosis.summary;
-
-        $scope.treatment.provisional_diagnosis = data.diagnosis.provisional_diagnosis;
-        sendData($scope.treatment,"/user/doctor/session-update/save-changes","PUT");
-
-      } else {
-
-        $rootScope.holdBriefForSpecificPatient = null;
-        $scope.treatment.appointment.firstname = data.firstname || data.patient_firstname; 
-        $scope.treatment.appointment.lastname = data.lastname || data.patient_lastname;       
-        $scope.treatment.appointment.profilePic = data.profile_pic_url || data.profilePic;
-        sendData($scope.treatment,"/user/doctor/patient-session","POST");
-      }
-      
-      console.log($scope.treatment);
+     	sendData($scope.treatment,"/user/doctor/patient-session","POST");  
+     	console.log($scope.treatment)   
     }
-
+    //sendData($scope.treatment,"/user/doctor/session-update/save-changes","PUT");
+    //sendData($scope.treatment,"/user/doctor/patient-session","POST");
     function sendData(data,url,method) {
       $http({
         method  : method,
@@ -1156,9 +1199,9 @@ app.controller("appointmentModalController",["$scope","$http","$rootScope","mome
         })
       .success(function(response) {   
         if(response) {
-          console.log(response)
-          alert("Appointment booked, patient will be notified.")
-          mySocket.emit("realtime appointment notification",{to:data.patient_id})
+          $scope.message = "Appointment booked!!";
+          //alert("Appointment booked, patient will be notified.");
+          //mySocket.emit("realtime appointment notification",{to:data.patient_id});
         }  
       });
     }

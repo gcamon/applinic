@@ -44,7 +44,7 @@
         
 </head>
 <body style="overflow-x: hidden;">
-    <main class="container-fluid" style="padding: 0;margin: 0">
+    <main class="container-fluid" style="padding: 0;margin: 0" ng-cloak>
         <header style="margin-bottom: 3px;background-color: #d9edf7;padding: 10px 30px" ng-controller="LocalStreamController as localStream" class="row">
             <div class="col-sm-12 col-md-6 col-lg-6"> 
                 <div style="text-align: center;">               
@@ -87,6 +87,53 @@
                     <span>{{stream.name}}</span>
                     <!--<button ng-click="rtc.call(stream)"><a>Call</a></button>-->
                 </div>
+                <h5 style="padding: 10px 0;color:green">Treatments</h5>
+                <div ng-repeat="j in rtc.prescriptions" style="max-height: 300px;overflow-y: auto;border-bottom: 1px solid #000">
+                       <b style="display: inline-block;padding-top: 10px">{{j.type}}</b>
+                       <b>Written by: <em>{{test.by}}</em></b>
+                       <table class="table">
+                           <thead>
+                               <th><small></small></th>
+                               <th><small>Name</small></th>
+                               <th><small>Dosage</small></th>
+                               <th><small>Frequency</small></th>
+                               <th><small>Duration</small></th>
+                           </thead>
+                           <tbody ng-repeat="drug in j.drugList">
+                               <td>{{drug.sn}}</td>
+                               <td>{{drug.drug_name}}</td>
+                               <td>{{drug.dosage}}</td>
+                               <td>{{drug.frequency}}</td>
+                               <td>{{drug.duration}}</td>
+                           </tbody>
+                       </table>
+                       <div>
+                            <b>{{j.center.name}}</b>                            
+                            <address><span>{{j.center.address}}</span> <span>{{j.center.city}} </span> 
+                            <span>{{j.center.country}}</span>
+                            <span style="display: block;">{{j.center.phone}}</span>
+                            </address>
+                            <b>Reference Number: <em>{{test.ref_id}}</em></b>
+                        </div>
+                    </div>
+                    <div ng-repeat="test in rtc.investigations" style="max-height: 300px;overflow-y: auto;border-bottom: 1px solid #000">
+                        <b style="display: inline-block;padding-top: 10px">{{test.type}}</b>
+                        <b>Written by: <em>{{test.by}}</em></b>
+                        <ol>
+                            <li ng-repeat="item in test.testList">
+                                {{item.name}} 
+                            </li>
+                        </ol>
+                        <div>
+                            <b>{{test.center.name}}</b>
+                            <address><span>{{test.center.address}}</span> <span>{{test.center.city}} </span> 
+                            <span>{{test.center.country}}</span>
+                            <span style="display: block;">{{test.center.phone}}</span>
+                            </address>
+                            <b>Reference Number: <em>{{test.ref_id}}</em></b>
+                           
+                        </div>
+                    </div>
             </div>
              
         </section>

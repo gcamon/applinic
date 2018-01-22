@@ -7164,10 +7164,12 @@ app.controller("presenceSocketController",["$rootScope","$scope","$window","mySo
 
   //takes care of redirecting to video call page for the call requester After the received had accepted and redirected to its on page.
   mySocket.on("video call able",function(response){
+    //localManager.setValue("socket",mySocket);
     templateService.playAudio(4);
     setTimeout(function(){
       display();
     },3000);
+    
     function display() {
       var decide = confirm(response.message);
       if(decide){
@@ -13145,6 +13147,7 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
     localManager.removeItem('currPageForLaboratory');
     localManager.removeItem('currPageForRadiology');
     localManager.removeItem('prescriptionRequestData'); 
+    localManager.removeItem("userId");
 
   }
  

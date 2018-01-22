@@ -1311,9 +1311,9 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
 
     //this route gets a notifications for the fn getAllNotification for pharmacy on the client.
     
-    //11/4/2016
     router.get("/user/doctor/specific-patient",function(req,res){
-      if(req.user){
+      var patientId = req.query.id || null;
+      if(req.user){        
         var projection = {
             firstname: 1,
             lastname: 1,
@@ -1330,9 +1330,15 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
             presence:1
 
         }
-        model.user.findOne({ user_id: req.query.id},projection,function(err,data){
+
+        model.user.findOne({ user_id: patientId},projection,function(err,data){
             if(err) throw err;
-            res.send(data);
+            if(data) {
+              res.send(data);
+            } else {
+              res.send({error:"patient Not found"});
+            }
+            
         });
 
       } else {
@@ -1619,9 +1625,9 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
               ref_id = Math.floor(Math.random() * 9999999);
             }
             
-
+            console.log(req.body);
             var preObj = {              
-              provisional_diagnosis: req.body.provisional_diagnosis,
+              provisional_diagnosis: req.body.provisional_diagnosis || req.body.treatment.provisionalDiagnosis,
               date: date,
               prescriptionId: req.body.prescriptionId,
               title: req.user.title,
@@ -1722,18 +1728,6 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
                 message: "You have new unread prescription"
               })
 
-              io.sockets.to(req.body.patient_id).emit('new treament',{
-                message: req.user.title + " " + req.user.firstname + " sent new prescription!",
-                drugList: req.body.prescriptionBody,
-                center: {
-                  name: pharmacy.name,
-                  address: pharmacy.address,
-                  city: pharmacy.city,
-                  country: pharmacy.country,
-                  ref_id: ref_id
-                }
-              });
-
               var track_record = {
                 date: date,
                 center_name: pharmacy.name,
@@ -1753,7 +1747,33 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
               });
             });           
 
-            res.json({success:true,ref_id: ref_id,name:pharmacy.name,address:pharmacy.address,city:pharmacy.city,country:pharmacy.country}); 
+            var by = req.user.title + " " + req.user.firstname + " " + req.user.lastname;
+            res.json({
+              success:true,
+              ref_id: ref_id,
+              name:pharmacy.name,
+              address:pharmacy.address,
+              city:pharmacy.city,
+              country:pharmacy.country,
+              by: by
+            }); 
+          }
+
+          if(req.body.typeOfSession === "video chat" && req.body.treatment.complain || req.body.treatment.provisionalDiagnosis) {
+            model.user.findOne({user_id: req.user.user_id},{doctor_patient_session:1}).exec(function(err,record){
+              if(err) throw err;
+              var elemPos = record.doctor_patient_session.map(function(x){return x.session_id}).indexOf(req.body.session_id);
+              if(elemPos === -1) {
+                req.body.patient_firstname = req.body.firstname;
+                req.body.patient_lastname = req.body.lastname;
+                req.body.patient_username = req.body.username;
+                req.body.date = + new Date();
+                record.doctor_patient_session.unshift(req.body);
+                record.doctor_patient_session[0].diagnosis = req.body.treatment;
+              }
+
+              record.save(function(err,info){});
+            });
           }     
      
       } else {
@@ -1792,8 +1812,9 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
       
     });    
 
-    //prescription foewarded by the doctor to a patient inbox
+    //prescription fowarded by the doctor to a patient inbox
     router.put("/user/patient/forwarded-prescription",function(req,res){   
+      console.log(req.body);
       if(req.user){  
         model.user.findOne(
           {
@@ -1805,7 +1826,7 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
             if(err) throw err;            
             var date = + new Date(); 
             var preObj = {              
-              provisional_diagnosis: req.body.provisional_diagnosis,
+              provisional_diagnosis: req.body.provisional_diagnosis || req.body.treatment.provisionalDiagnosis,
               date: date,
               prescriptionId: req.body.prescriptionId,
               title: req.user.title,
@@ -1877,7 +1898,26 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
             );                 
           });
         });
+
+        if(req.body.typeOfSession === "video chat" && req.body.treatment.complain || req.body.treatment.provisionalDiagnosis) {
+          model.user.findOne({user_id: req.user.user_id},{doctor_patient_session:1}).exec(function(err,record){
+            if(err) throw err;
+            var elemPos = record.doctor_patient_session.map(function(x){return x.session_id}).indexOf(req.body.session_id);
+            if(elemPos === -1) {
+              req.body.patient_firstname = req.body.firstname;
+              req.body.patient_lastname = req.body.lastname;
+              req.body.patient_username = req.body.username;
+              req.body.date = + new Date();
+              record.doctor_patient_session.unshift(req.body);
+              record.doctor_patient_session[0].diagnosis = req.body.treatment;
+            }
+
+            record.save(function(err,info){});
+          })
+        }
                      
+      } else {
+        res.end("unauthorzed")
       }
     });
 
@@ -2238,12 +2278,11 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
           family_history: req.body.familyHistory,
           drug_history: req.body.drugHistory,
           summary: req.body.summary,
+          notes: req.body.notes,
           provisional_diagnosis: req.body.provisionalDiagnosis,
         }
 
-        var getPatientInfo = {}
-
-         
+        var getPatientInfo = {}         
 
         /****************Note text messages or email will be sent to notify patients of the appointment ***********/
 
@@ -2261,7 +2300,7 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
           req.body.appointment.firstname = req.user.firstname;
           req.body.appointment.lastname = req.user.lastname;
           req.body.appointment.address = req.body.appointment.address || createAddress;
-          req.body.appointment.title = "Dr";
+          req.body.appointment.title = req.user.title;
           req.body.appointment.profilePic = req.user.profile_pic_url;   
           model.user.findOne({user_id:req.body.patient_id},{appointment:1,profile_pic_url:1,firstname:1,lastname:1,name:1}).exec(function(err,result){            
             if(err) throw err;
@@ -2278,9 +2317,8 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
           });
         }
 
-        var tellDoctor = function(names){ 
-         
-          req.body.appointment.session_id = session_id;                          
+        var tellDoctor = function(names){
+          req.body.appointment.session_id = req.body.session_id || session_id;                          
           req.body.appointment.last_meeting = req.body.date;
           req.body.appointment.firstname = names.firstname;
           req.body.appointment.lastname = names.lastname;         
@@ -2303,30 +2341,35 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
           getPatientInfo.profilePic = result.profile_pic_url;
           getPatientInfo.patient_username = result.name;
 
-          //create session
-          newSession();
+          //create session Note; video chat initiation of sessions comes with session id from the client
+          if(!req.body.session_id){
+            newSession();
+          } else {
+            updateSession()
+          }         
          
         });
 
+         //save the newly created session to he database.
+        var queryObj = (req.body.user_id) ? {user_id:req.body.user_id} : {user_id:req.user.user_id};
+
         function newSession(){
-          //save the newly created session to he database.
-          var queryObj;
-          if(req.body.complaint){
+         
+          /*if(req.body.complaint){
             queryObj = {user_id:req.body.user_id}
           } else {
             queryObj = {user_id:req.user.user_id};
-          }
+          }*/
           model.user.findOne(queryObj,{doctor_patient_session:1}).exec(function(err,result){
-            if(err) throw err;              
-               
-           req.body.session_id = session_id; 
+           if(err) throw err;             
+           req.body.session_id = session_id;
            result.doctor_patient_session.unshift(req.body);
            result.doctor_patient_session[0].diagnosis = connectObj;
            result.doctor_patient_session[0].patient_firstname = getPatientInfo.firstname;
            result.doctor_patient_session[0].patient_lastname = getPatientInfo.lastname;
            result.doctor_patient_session[0].patient_username = getPatientInfo.username;
            result.doctor_patient_session[0].profilePic = getPatientInfo.profilePic;
-
+           
             result.save(function(err,info){
               if(err) throw err;
               if(req.body.typeOfSession === "In-person meeting") {
@@ -2342,13 +2385,49 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
             });
           });
         }
+
+        function updateSession() {
+          model.user.findOne(queryObj,{doctor_patient_session:1}).exec(function(err,record){
+            if(err) throw err;
+            var elementPos = record.doctor_patient_session.map(function(x){return x.session_id}).indexOf(req.body.session_id)              
+            if(elementPos !== -1) {
+              var objFound = record.doctor_patient_session[elementPos];    
+              objFound.last_modified = + new Date();
+              objFound.diagnosis.presenting_complain = req.body.complain;
+              objFound.diagnosis.history_of_presenting_complain = req.body.historyOfComplain;
+              objFound.diagnosis.past_medical_history = req.body.pastMedicalHistory;
+              objFound.diagnosis.social_history = req.body.socialHistory;
+              objFound.diagnosis.family_history = req.body.familyHistory;
+              objFound.diagnosis.drug_history = req.body.drugHistory;
+              objFound.diagnosis.notes = req.body.notes;
+              objFound.diagnosis.summary = req.body.summary;
+              objFound.diagnosis.provisional_diagnosis = req.body.provisionalDiagnosis;
+
+            } else {
+             
+              record.doctor_patient_session.unshift(req.body);
+              record.doctor_patient_session[0].diagnosis = connectObj;
+              record.doctor_patient_session[0].patient_firstname = getPatientInfo.firstname;
+              record.doctor_patient_session[0].patient_lastname = getPatientInfo.lastname;
+              record.doctor_patient_session[0].patient_username = getPatientInfo.username;
+              record.doctor_patient_session[0].profilePic = getPatientInfo.profilePic;
+             
+            }
+            console.log(record.doctor_patient_session[0]);
+            record.save(function(err,info){
+              if(err) throw err;
+              console.log("appointment saved!"); 
+              res.send({status:"success"});
+            }) 
+           
+          });
+        }
       } else {
         res.end("Unauthorized access!");
       }
     });
 
 
-    
     router.put("/user/doctor/appointment/view",function(req,res){
       if(req.user){
         model.user.findOne({"appointment.session_id": req.body.id},{appointment:1,_id:0},function(err,data){     
@@ -2813,9 +2892,9 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
                 throw err;
                 res.end('500: Internal server error')
               }
-              
+              var doc = req.user.title + " " + req.user.firstname + " " + req.user.lastname;
               updateSession(req.body.session_id);
-              res.json({success:true,ref_no:random});
+              res.json({success:true,ref_no:random,by: doc});
             });
 
           });

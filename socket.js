@@ -21,12 +21,7 @@ module.exports = function(model,io,streams) {
 	    socket.on('join_secr',function(data){
 	    	var roomId = process.env._NAME || data.user_id;
 	    	socket.join(roomId);  
-	    	/*var list = [process.env.ODP_DOCTOR,process.env.ODP_PHARMACY,process.env.ODP_RADIOLOGY,process.env.ODP_LABORATORY];
-	    	for(var i = 0; i < list.length; i++){
-	    		console.log("room created " + i);
-	    		socket.join(list[i]);
-	    	}*/
-	    })
+	    });
 
   		socket.on("init chat",function(data,cb){
 
@@ -269,10 +264,10 @@ module.exports = function(model,io,streams) {
 					case "now":
 					  var controlId = genRemoteId();
 						var createUrl = "/user/cam/" + controlId;
-						saveControlControl(createUrl,controlId,details);
-						cb({controlUrl: createUrl});
+						saveControlControl(createUrl,controlId,details);						
 						io.sockets.to(details.to).emit("video call able",{controlUrl: createUrl,message: details.title +
 						 " " + details.name + " is waiting to have video conference with you!"});
+						cb({controlUrl: createUrl});
 					break;
 					default:
 					break;
@@ -359,10 +354,21 @@ module.exports = function(model,io,streams) {
       streams.update(socket.id, options.name);
     });
 
+    //doc sent new investigation to the room during video chat where all members in the room will see it and ask questions if need be
+    socket.on("new test",function(data){
+    	io.sockets.to(data.controlId).emit("new investigation",data);
+    });
+
+    //doc sent new prescriptions to the room during video chat where all members in the room will see it and ask questions if need be
+    socket.on("new drugs",function(data){
+    	io.sockets.to(data.controlId).emit("new prescription",data);
+    });
+
+
     function leave() {
       console.log('-- ' + socket.id + ' left --');
       streams.removeStream(socket.id);
-    }
+    }	
 
     socket.on('disconnect', leave);
     socket.on('leave', leave);
