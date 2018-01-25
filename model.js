@@ -358,7 +358,8 @@ var myModel = function () {
 		ecg_test_result: [testResultSchema],
 		others: [testResultSchema],
 		final_diagnosis: String,
-		files: Array
+		files: Array,
+		treatment_plan: String
 	});
 
 	var sessionSchema = Schema({

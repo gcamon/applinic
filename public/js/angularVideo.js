@@ -223,19 +223,22 @@
 
 
 
-		$rootScope.connectionStatus = false; // use to check when stream is available
+		$rootScope.connectionStatus = false; // use to check when stream is available;
+		
     controllerSocket.on("reload streams",function(data){
     	console.log(data)
-    	$rootScope.message = data.name ? data.name + " stream is availble." : "Partner stream is now available.";
+    	if(data.userId !== user.user_id) {
+    		$rootScope.message = (data.name) ? data.name + " stream is availble now! Click view button." : "Partner stream is now available.";
+
+    		$rootScope.connectionStatus = data.status;
+
+    		setTimeout(function(){
+	    		$scope.$apply(function(){
+	    			$rootScope.message = "";
+	    		})
+    		},3500);
+    	}
     	
-    	$rootScope.connectionStatus = data.status;
-
-    	setTimeout(function(){
-    		$scope.$apply(function(){
-    			$rootScope.message = "";
-    		})
-    	},3000);
-
    		//var decide = confirm($rootScope.message);
     	if(data.status) {
     		rtc.loadData();
@@ -294,6 +297,7 @@
 		localStream.name = user.title + " " + user.firstname + " " + user.lastname  || 'Guest';
 		localStream.link = '';
 		localStream.cameraIsOn = false;
+		localStream.cameraStatus = "Loading...";
 
 		localStream.connections = $rootScope.connections;
 
@@ -328,6 +332,7 @@
 		$scope.$on('cameraIsOn', function(event,data) {
   		$scope.$apply(function() {
 	    	localStream.cameraIsOn = data;
+	    	localStream.cameraStatus = "Connect";
 	    });
 		});
 
@@ -408,68 +413,84 @@
    
 
   $scope.investigation = function(){
-  	if($scope.patientInfo.error) { // check to see if patient is for the doctor.
-  		alert("Not allowed: Not your patient.");
-  		return;
+  	if($rootScope.treatment.complain && $rootScope.treatment.provisionalDiagnosis) {  
+	  	if($scope.patientInfo.error) { // check to see if patient is for the doctor.
+	  		alert("Not allowed: Not your patient.");
+	  		return;
+	  	}
+	  	ModalService.showModal({
+	        templateUrl: 'investigation.html',
+	        controller: "investigationController"
+	    }).then(function(modal) {
+	        modal.element.modal();
+	        modal.close.then(function(result) {
+	        	          
+	        });
+	    });
+  	} else {
+  		alert("Error: Presenting Complain and Provisional Diagnosis fields cannot be empty!")
   	}
-  	ModalService.showModal({
-        templateUrl: 'investigation.html',
-        controller: "investigationController"
-    }).then(function(modal) {
-        modal.element.modal();
-        modal.close.then(function(result) {
-        	          
-        });
-    });
   }
 
 
   $scope.treamentPlan = function() {
-  	if($scope.patientInfo.error) { //check to see if patient if for the doctor
-  		alert("Not allowed: Not your patient.");
-  		return;
-  	}
-  	ModalService.showModal({
-      templateUrl: 'treatment-plan.html',
-      controller: "treatmentPlanController"
-    }).then(function(modal) {
-      modal.element.modal();
-      modal.close.then(function(result) { 
-      	             
-      });
-    });
+  	if($rootScope.treatment.complain && $rootScope.treatment.provisionalDiagnosis) {  
+	  	if($scope.patientInfo.error) { //check to see if patient if for the doctor
+	  		alert("Not allowed: Not your patient.");
+	  		return;
+	  	}
+	  	ModalService.showModal({
+	      templateUrl: 'treatment-plan.html',
+	      controller: "treatmentPlanController"
+	    }).then(function(modal) {
+	      modal.element.modal();
+	      modal.close.then(function(result) { 
+	      	             
+	      });
+	    });
+    } else {
+    	alert("Error: Presenting Complain and Provisional Diagnosis fields cannot be empty!")
+    }
   }
 
   $scope.prescription = function() {
-  	if($scope.patientInfo.error) {
-  		alert("Not allowed: Not your patient.");
-  		return;
-  	}
-  	ModalService.showModal({
-      templateUrl: 'prescription.html',
-      controller: "prescriptionController"
-    }).then(function(modal) {
-      modal.element.modal();
-      modal.close.then(function(result) { 
-      	             
-      });
-    });
+  	if($rootScope.treatment.complain && $rootScope.treatment.provisionalDiagnosis) {  
+	  	if($scope.patientInfo.error) {
+	  		alert("Not allowed: Not your patient.");
+	  		return;
+	  	}
+	  	ModalService.showModal({
+	      templateUrl: 'prescription.html',
+	      controller: "prescriptionController"
+	    }).then(function(modal) {
+	      modal.element.modal();
+	      modal.close.then(function(result) { 
+	      	             
+	      });
+	    });
+    } else {
+    	alert("Error: Presenting Complain and Provisional Diagnosis fields cannot be empty!")
+    }
   }
 
   $scope.appointment = function() {
-  	if($scope.patientInfo.error) {
-  		alert("Not allowed: Not your patient.");
-  		return;
-  	}
-  	ModalService.showModal({
-        templateUrl: 'calender-template.html',
-        controller: 'appointmentModalController'
-    }).then(function(modal) {
-        modal.element.modal();
-        modal.close.then(function(result) { 
-             
-        });
-    });
+  	if($rootScope.treatment.complain && $rootScope.treatment.provisionalDiagnosis) {  
+	  	if($scope.patientInfo.error) {
+	  		alert("Not allowed: Not your patient.");
+	  		return;
+	  	}
+	  	ModalService.showModal({
+	        templateUrl: 'calender-template.html',
+	        controller: 'appointmentModalController'
+	    }).then(function(modal) {
+	        modal.element.modal();
+	        modal.close.then(function(result) { 
+	             
+	        });
+	    });
+    } else {
+    	alert("Error: Presenting Complain and Provisional Diagnosis fields cannot be empty!")
+    }
   }
 
     //creates drug object for the ng-repeat on the view.
@@ -569,7 +590,7 @@
 	        if(data)   
 	          alert("Entry saved successfully!!!");
 	      });
-    	} else {
+    	} else {    		
     		alert("Error: Presenting Complain and Provisional Diagnosis fields cannot be empty!")
     	}
     }
@@ -587,7 +608,8 @@ app.controller("investigationController",["$scope","$http","labTests","scanTests
 
   	$scope.lab = function() {
   		$scope.isLab = true;
-  		$scope.isRadio = false;	
+  		$scope.isRadio = false;
+  		$scope.isHistory = false;	
 
   		var test_name;
   		var index;
@@ -602,7 +624,6 @@ app.controller("investigationController",["$scope","$http","labTests","scanTests
 
   	
   		$scope.tests = labTests.listInfo.concat(labTests.listInfo2,labTests.listInfo3,labTests.listInfo4,labTests.listInfo5,labTests.listInfo6,labTests.listInfo7);
-
 
   		$http({
 	      method  : "GET",
@@ -638,15 +659,13 @@ app.controller("investigationController",["$scope","$http","labTests","scanTests
 	      }
   		}
 
-  		$scope.sendToLab = function () {
-  			
+  		$scope.sendToLab = function () {  			
   			$scope.isInitial = false;
       	$scope.isSearchToSend = true;
   			getLaboratories();
   		}
 
   		$scope.sendToPatient = function () {
-  			console.log($scope.TestList)
   			toPatient()
   		}
 
@@ -674,7 +693,8 @@ app.controller("investigationController",["$scope","$http","labTests","scanTests
 	    	if($scope.message) 
 	    		$scope.message = null;
 
-	    	var source = $resource("/user/laboratory/not-ran-services")
+	    	var source = $resource("/user/laboratory/not-ran-services");
+
 	    	source.query({centerId: center.user_id},function(data) { 
 	    		if(data.error){
 	    			$sccope.status = "Not Updated!";
@@ -692,9 +712,7 @@ app.controller("investigationController",["$scope","$http","labTests","scanTests
 	    		}
 
 	    		patient.user_id = center.user_id // id is the id of the laboratory
-	    		console.log(data)
-	    		console.log($scope.TestList);
-	    	})
+	    	});
 	    }
 
 	    $rootScope.treatment.city = patient.city;
@@ -705,7 +723,7 @@ app.controller("investigationController",["$scope","$http","labTests","scanTests
 	    	source.query({city:$scope.treatment.city,country:$scope.treatment.country},function(list){
 	    		console.log(list)
 	    		$scope.searchResult = list;
-	    	})
+	    	});
 	    }
 
 	    $scope.sendTest = function () {
@@ -721,16 +739,15 @@ app.controller("investigationController",["$scope","$http","labTests","scanTests
 		     patient.patient_id = patient.id;
 		     patient.date = + new Date(); 
 		     patient.noUpdate = true,
-		     patient.typeOfSession = "Video chat"
-		     patient.treatment = $rootScope.treatment
+		     patient.typeOfSession = "Video chat";
+		     patient.treatment = $rootScope.treatment;
 		    	
-	          
-		    	$http({
-	        method  : 'POST',
-	        url     : "/user/doctor/send-test",
-	        data    : patient,
-	        headers : {'Content-Type': 'application/json'} 
-	        })
+	    	$http({
+        method  : 'POST',
+        url     : "/user/doctor/send-test",
+        data    : patient,
+        headers : {'Content-Type': 'application/json'} 
+        })
 	      .success(function(data) {
 	        if(data) {   
 	          $scope.message = "Investigations sent!" 
@@ -744,7 +761,7 @@ app.controller("investigationController",["$scope","$http","labTests","scanTests
 		        	type: "Laboratory Test"
 		        });
 		      } else {
-		      	alert("Error: Investigation not sent!")
+		      	alert("Error: Investigation not sent!");
 		      }
 	      });
 	    }
@@ -753,15 +770,13 @@ app.controller("investigationController",["$scope","$http","labTests","scanTests
 	    	patient.provisional_diagnosis = $rootScope.treatment.provisionalDiagnosis;
 	    	pattient.prescriptionBody = testList
 	    }
-
 	    
   	};
 
- 
-		
   	$scope.radio = function() {
   		$scope.isLab = false;
-  		$scope.isRadio = true;  	
+  		$scope.isRadio = true;
+  		$scope.isHistory = false;  	
   		
 
   		var test_name;
@@ -922,12 +937,39 @@ app.controller("investigationController",["$scope","$http","labTests","scanTests
 	    }
   	}
 
+  	$scope.isHistory = false;
+  	$scope.getHistory = function(arg) {
+  		//var type = (arg === "Lab") ? {type: "laboratory"} : {type: "radiology"};
+  		$scope.arg = arg;
+  		switch(arg) {
+				case "Lab":
+						$scope.isLab = false;
+						$scope.isHistory = true;  	
+				break;
+				case "Radio":
+					$scope.isRadio = false;  
+					$scope.isHistory = true;
+				break;
+				default:
+				break;
+  		}
+
+  		if(!$scope.patientMedicalRecord) {
+	  		var source = $resource("/user/get-medical-record");
+	  		source.get({patientId: patient.id},function(data){
+  				console.log(data);
+  				$scope.patientMedicalRecord = data;
+	  		});
+  		}
+  	}
+
 }]);
 
 app.controller("prescriptionController",["$rootScope","$scope","$window","$http","localManager","Drugs","$resource","ModalService","$resource",
   function($rootScope,$scope,$window,$http,localManager,Drugs,$resource,ModalService,$resource) {
  		
   	var patient = $rootScope.holdPatientData;
+  	$scope.isHistory = false;
   	 //creates drug object for the ng-repeat on the view.
   	$http({
       method  : "GET",
@@ -1094,11 +1136,51 @@ app.controller("prescriptionController",["$rootScope","$scope","$window","$http"
       });
     }
 
+    $scope.isHistory = false;
+  	$scope.getHistory = function() {
+  		if($scope.isHistory === false) {
+	  		$scope.isInitial  = false;
+	  		$scope.isSearchToSend = false;
+				$scope.isHistory = true; 
+
+	  		if(!$scope.patientMedicalRecord) {
+		  		var source = $resource("/user/get-medical-record");
+		  		source.get({patientId: patient.id},function(data){
+	  				$scope.patientMedicalRecord = data.prescriptions;
+		  		});
+	  		}
+
+  	 } else {
+  	 		$scope.isInitial  = true;	  		
+				$scope.isHistory = false; 
+  	 }
+  	}
+
+  
+
 }]);
 
+app.controller("treatmentPlanController",["$scope","$http","$rootScope",
+  function($scope,$http,$rootScope){
 
-app.controller("treatmentPlanController",["$scope","$http",
-  function($scope,$http){
+		$scope.submitPlan = function() {
+			$rootScope.treatment.patient = $rootScope.holdPatientData;
+			$rootScope.treatment.session_id = $rootScope.session;
+			$rootScope.treatment.typeOfSession = "video chat";
+			$rootScope.treatment.date = + new Date();
+
+			$http({
+        method  : 'PUT',
+        url     : "/user/doctor/treatment-plan",
+        data    : $rootScope.treatment,
+        headers : {'Content-Type': 'application/json'} 
+        })
+      .success(function(data) {
+        if(data.success)   
+          $scope.message = "Treatment Plan saved !!";       
+      });
+		}
+
 
 }]);
 

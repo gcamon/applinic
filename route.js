@@ -898,9 +898,7 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
                 }
               }
               
-              console.log("+++++++++")
-              console.log(req.query.skill)
-              console.log(str)
+             
               count++;
             }
 
@@ -1213,9 +1211,10 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
     //this router gets all the patient medical records and prescriptions and send it to the front end as soon as the patient logs in. 
     //the data is sent as json and the controller that receives it on the front end is "patientPanelController" .
     router.get("/user/get-medical-record",function(req,res){
-      
       if(req.user) {
-        model.user.findOne({user_id: req.user.user_id},{medical_records: 1,medications:1},function(err,data){
+        var criteria = (req.query.patientId) ? {user_id: req.query.patientId} : {user_id: req.user.user_id};
+
+        model.user.findOne(criteria,{medical_records: 1,medications:1},function(err,data){
           if(err) throw err;          
           res.json({medical_records: data.medical_records,prescriptions: data.medications})
           //Note from model, medications holds all prescriptions while medical_records holds all laboratory and radiology tests
@@ -1403,35 +1402,35 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
               presence:1
           }
           model.user.findOne({ user_id: req.body.id},projection,function(err,data){
-              if(err) throw err;
-              res.send(data);
+            if(err) throw err;
+            res.send(data);
           })
         }
     });
 
     //patient searching for a pharmacy to forward his prescription route handlers.
     router.get("/user/patient/getAllPharmacy",function(req,res){
-        //gets all pharmacy in the database based on patient's location.
-        if(req.user){
-          var creteria = (req.query.city) ? {type:"Pharmacy",city:req.query.city,country:req.query.country} : {type:"Pharmacy",city:req.user.city};
-          var projection = {
-              name: 1,
-              address: 1,
-              city: 1,
-              country: 1,
-              rating: 1,
-              profile_pic_url: 1,
-              user_id: 1,
-              type:1,
-              phone:1,
-          }
-          model.user.find(creteria,projection,function(err,data){ //remenber to replace "Enugu" with req.user.city
-              if(err) throw err;
-              res.send(data);
-          });
-        } else {
-          res.end("Unauthorized access!");
+      //gets all pharmacy in the database based on patient's location.
+      if(req.user){
+        var creteria = (req.query.city) ? {type:"Pharmacy",city:req.query.city,country:req.query.country} : {type:"Pharmacy",city:req.user.city};
+        var projection = {
+            name: 1,
+            address: 1,
+            city: 1,
+            country: 1,
+            rating: 1,
+            profile_pic_url: 1,
+            user_id: 1,
+            type:1,
+            phone:1,
         }
+        model.user.find(creteria,projection,function(err,data){ //remenber to replace "Enugu" with req.user.city
+          if(err) throw err;
+          res.send(data);
+        });
+      } else {
+        res.end("Unauthorized access!");
+      }
     });
 
     router.put("/user/patient/pharmacy/refined-search",function(req,res){
@@ -1860,12 +1859,8 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
         });
 
         model.user.findOne({user_id: req.body.id},{patient_notification:1,firstname:1,lastname:1,presence:1,user_id:1,phone:1}).exec(function(err,data){
-          if(err) throw err;
-           
-
+          if(err) throw err;      
           var date = + new Date();
-
-             
           data.patient_notification.unshift({
             type:"pharmacy",
             date: date,
@@ -2049,53 +2044,7 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
     });
 
 
-    /*
-     //this route gets the individual prescription for a patient 
-    router.get("/user/pharmacy/get-referral/:refId",function(req,res){
-      if(req.user){
-        var toNum = parseInt(req.params.refId)
-        model.user.findOne({user_id:req.user.user_id},{referral:1,_id:0},function(err,data){
-          if(err) throw err;          
-          var elemPos = data.referral.map(function(x){return x.ref_id}).indexOf(toNum);
-          var found = data.referral[elemPos]
-          res.send(found);
-          console.log(found)
-        });
-      } else {
-        res.redirect("/login")
-      }
-    })
-    //this route gets all referral for a pharmacy.
-    router.put("/user/pharmacy/get-referral",function(req,res){
-      if(req.user){
-        model.user.findOne({user_id:req.user.user_id},{referral:1,_id:0},function(err,data){
-          if(err) throw err;
-          if(data) {
-            var list = [];
-            var filter = {};
-            var toStr;
-            for(var i = 0; i < req.body.length; i++){
-              toStr = req.body[i].ref_id.toString();
-              if(!filter.hasOwnProperty(toStr)){
-                var elemPos = data.referral.map(function(x){return x.ref_id}).indexOf(req.body[i].ref_id);
-                var found = data.referral[elemPos];
-                list.push(found);
-                filter[toStr] = "";
-              }
-            }
-
-            res.send({prescriptions:list});
-          } else {
-            res.send({});
-          }
-        });        
-      } else {
-        res.end("Unauthorized access!! Please log in")
-      }
-    });
-
-    */
-
+  
     router.get("/user/laboratory/get-referral/:refId",function(req,res){
       if(req.user){
         var toNum = parseInt(req.params.refId)
@@ -2353,8 +2302,7 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
          //save the newly created session to he database.
         var queryObj = (req.body.user_id) ? {user_id:req.body.user_id} : {user_id:req.user.user_id};
 
-        function newSession(){
-         
+        function newSession(){         
           /*if(req.body.complaint){
             queryObj = {user_id:req.body.user_id}
           } else {
@@ -2453,6 +2401,7 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
       }
     });
 
+    // will be modified later
     router.post("/user/doctor/get-session",function(req,res){
       if(req.user){
         model.user.findOne({"doctor_patient_session.session_id": req.body.sessionId},{doctor_patient_session:1},function(err,data){
@@ -2541,9 +2490,6 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
 
           var date = + new Date();
           objectFound.last_modified = date;
-
-          
-
 
           data.save(function(err,info){
             if(err) {
@@ -2959,7 +2905,7 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
         model.user.findOne({user_id: req.body.user_id},{
           diagnostic_center_notification:1,referral:1,address:1,name:1,city:1,country:1,phone:1,user_id:1,presence:1})
         .exec(function(err,result){
-          if(err) throw err;         
+          if(err) throw err;      
 
           //center address and name obj to be passed to the patient.
           var centerObj = {
@@ -3331,8 +3277,6 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
               var record = data.doctor_patient_session[0];
               record.diagnosis =  complainObj;
               record.diagnosis.radiology_test_results.unshift(testResult);
-              console.log("====================")
-              console.log(data.doctor_patient_session[0].diagnosis);
             }
 
             data.save(function(err,info){
@@ -3346,58 +3290,7 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
       }
     });
   
-  /*
-  var updateSession = function(session_id) {//////////////////////////////////////////////////////////////////////////
 
-          var testResult = {
-            test_to_run: req.body.lab_test_list,
-            receive_date: "Pending",
-            sent_date: req.body.date,
-            report: "Pending",
-            test_id: testId,
-            conclusion: "Pending"
-          }  
-
-          model.user.findOne({user_id: req.user.user_id},{doctor_patient_session:1}).exec(function(err,data){
-
-            if(err) throw err;           
-            var elementPos = data.doctor_patient_session.map(function(x) {return x.session_id; }).indexOf(session_id);
-            if(elementPos !== -1) {
-              var objFound = data.doctor_patient_session[elementPos];        
-
-              objFound.diagnosis.laboratory_test_results.unshift(testResult); 
-            } else {
-
-              var complainObj = {
-                presenting_complain: req.body.treatment.complain,
-                history_of_presenting_complain: req.body.treatment.historyOfComplain,
-                past_medical_history: req.body.treatment.pastMedicalHistory,
-                social_history: req.body.treatment.socialHistory,
-                family_history: req.body.treatment.familyHistory,
-                drug_history: req.body.treatment.drugHistory,
-                summary: req.body.treatment.summary,
-                provisional_diagnosis: req.body.treatment.provisionalDiagnosis,
-              }
-
-              req.body.profilePic = req.body.patient_profilePic;
-              req.body.last_modified = req.body.date;
-              req.body.prescription_id = req.body.prescriptionId;
-              data.doctor_patient_session.unshift(req.body);
-              var record = data.doctor_patient_session[0];
-              record.diagnosis =  complainObj;
-              record.diagnosis.laboratory_test_results.unshift(testResult);
-              console.log("====================")
-              console.log(data.doctor_patient_session[0].diagnosis);
-            }
-
-            data.save(function(err,info){
-              if(err) throw err;
-              console.log("video caht saved")
-            });
-          });
-        }
-
-  */
 
     //this route takes care of  un ran test which was forwarded to another center by a center.
     router.post("/user/center/radiology/send-test",function(req,res){ 
@@ -3526,9 +3419,56 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
         }
 
       } else {
-        res.send("Unauthorized access!")
+        res.end("Unauthorized access!")
       }
     });  
+
+    router.put("/user/doctor/treatment-plan",function(req,res){
+      if(req.user) {
+        console.log(req.body);
+        model.user.findOne({user_id: req.user.user_id},{doctor_patient_session:1}).exec(function(err,data){
+            if(err) throw err; 
+
+            var elementPos = data.doctor_patient_session.map(function(x) {return x.session_id; }).indexOf(req.body.session_id);
+            if(elementPos !== -1) {
+              var objFound = data.doctor_patient_session[elementPos];                      
+              objFound.diagnosis.treatment_plan = req.body.treatmentPlan;
+            } else {
+              var complainObj = {
+                presenting_complain: req.body.complain,
+                history_of_presenting_complain: req.body.historyOfComplain,
+                past_medical_history: req.body.pastMedicalHistory,
+                social_history: req.body.socialHistory,
+                family_history: req.body.familyHistory,
+                drug_history: req.body.drugHistory,
+                summary: req.body.summary,
+                notes: req.body.notes,
+                provisional_diagnosis: req.body.provisionalDiagnosis,
+                treatment_plan: req.body.treatmentPlan
+              }
+
+
+              req.body.profilePic = req.body.patient.patient_profile_pic_url;
+              req.body.last_modified = req.body.date;
+              req.body.patient_firstname = req.body.patient.firstname;
+              req.body.patient_lastname = req.body.patient.lastname;
+              req.body.patient_username = req.body.patient.username;
+              data.doctor_patient_session.unshift(req.body);
+              var record = data.doctor_patient_session[0];
+              record.diagnosis =  complainObj;
+            }
+
+            data.save(function(err,info){
+              if(err) throw err;
+              console.log("OK!")
+            });
+
+            res.json({success: true});
+          });
+      } else {
+        res.end("unauthorized access!");
+      }
+    })
 
     router.get("/user/patient/get-centers/:type",function(req,res){
       if(req.user){
@@ -4819,9 +4759,7 @@ router.put("/user/radiology/search/find-tests",function(req,res){
         sub['less'].push(filter[k])
       }
     }
-
-    res.send(sub)
-
+    res.send(sub);
   });
 
 });
@@ -4954,8 +4892,6 @@ router.put("/user/scan-search/radiology/referral",function(req,res){
 /**** courier services logic ****/
 router.post("/user/courier",function(req,res){
   if(req.user) {
-    console.log("+++++++++++++++++++")
-    console.log(req.body.prescription_body)
     var date = + new Date();
     req.body.firstname = req.user.firstname;
     req.body.lastname = req.user.lastname;

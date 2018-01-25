@@ -51,14 +51,14 @@
                     <a  href="" ng-click="goToDashbaord()" class="btn text-danger"> <i class="fa fa-arrow-left"></i> Back to dashboard</a>
                     <span ng-cloak>{{localStream.getControlId('<%= person.controlId %>')}}</span>
                     <!--Appear as: <input ng-model="localStream.name" class="form-control" style="width: 50%;display: inline-block;"/>-->
-                    <a href ng-click="localStream.toggleCam()" class="btn btn-danger" style="color:#fff;float: right">{{ (localStream.cameraIsOn === true) ? 'Streaming... ( stop / disconnect )' : 'Connect ' }}</a>  
+                    <a href ng-click="localStream.toggleCam()" class="btn btn-danger" style="color:#fff;float: right">{{ (localStream.cameraIsOn === true) ? 'Streaming... ( stop / disconnect )' : localStream.cameraStatus }}</a>  
                 </div>              
             </div>
             <div  class="col-sm-12 col-md-6 col-lg-6">
                 <div style="">
                     <!--<a href=""><i class="fa fa-camera" ng-click="streamControl()"> videos</i></a>&nbsp;&nbsp;-->
                     <!--<a href="" class="btn btn-success" ng-click="invite()"><i class="fa fa-user"></i> invite</a>&nbsp;&nbsp;--> 
-                    <p class="text-danger" style="display: inline-block;float: right;">{{(connectionStatus === true) ? message : "connecting..."}}</p>
+                    <p class="text-danger" style="display: inline-block;float: right;font-weight: bold;">{{(connectionStatus === true) ? message : "Waiting for partner..."}}</p>
                 </div>                
             </div>
         </header>
@@ -90,7 +90,7 @@
                 <h5 style="padding: 10px 0;color:green">Treatments</h5>
                 <div ng-repeat="j in rtc.prescriptions" style="max-height: 300px;overflow-y: auto;border-bottom: 1px solid #000">
                        <b style="display: inline-block;padding-top: 10px">{{j.type}}</b>
-                       <b>Written by: <em>{{test.by}}</em></b>
+                       <b>Written by: <em>{{j.by}}</em></b>
                        <table class="table">
                            <thead>
                                <th><small></small></th>
@@ -113,7 +113,7 @@
                             <span>{{j.center.country}}</span>
                             <span style="display: block;">{{j.center.phone}}</span>
                             </address>
-                            <b>Reference Number: <em>{{test.ref_id}}</em></b>
+                            <b>Reference Number: <em>{{j.ref_id}}</em></b>
                         </div>
                     </div>
                     <div ng-repeat="test in rtc.investigations" style="max-height: 300px;overflow-y: auto;border-bottom: 1px solid #000">

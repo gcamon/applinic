@@ -113,6 +113,11 @@ span.dates {
     float: right;
 }
 
+.moved {
+  transform: translate(10px); /* Equal to translateX(10px) */
+  background-color: pink;
+}
+
 
  </style>
 
@@ -140,13 +145,14 @@ span.dates {
                  <a href="" ng-click="goToDashbaord()" class="btn text-danger"><i class="fa fa-arrow-left"></i> Back to dashboard</a>&nbsp;&nbsp;&nbsp;
                  <span ng-cloak style="font-size: 10px">{{localStream.getControlId('<%= person.controlId %>')}}</span>
                 <!--Appear as: <input ng-model="localStream.name" class="form-control" style="width: 50%;display: inline-block;"/>-->
-                <a href ng-click="localStream.toggleCam()" class="btn btn-danger" style="color:#fff;float: right;">{{ (localStream.cameraIsOn === true) ? 'Streaming... ( stop / disconnect )' : 'Connect' }}</a>                           
+                <a href ng-click="localStream.toggleCam()" class="btn btn-danger" style="color:#fff;float: right;">{{ (localStream.cameraIsOn === true) ? 'Streaming... ( stop / disconnect )' : localStream.cameraStatus }}</a>
+
             </div>
             <div  class="col-sm-12 col-md-6 col-lg-6">
                 <div style="">
                     <!--<a href=""><i class="fa fa-camera" ng-click="streamControl()"> videos</i></a>&nbsp;&nbsp;-->
                     <!--<a href="" class="btn" ng-click="invite()"><i class="fa fa-user"></i> invite</a>&nbsp;&nbsp; --> 
-                    <p class="text-danger" style="display: inline-block;float: right;">{{(connectionStatus === true) ? message : "connecting..."}}</p>
+                    <p class="text-danger" style="display: inline-block;float: right;font-weight: bold;">{{(connectionStatus === true) ? message : "Waiting for partner..."}}</p>
                 </div>                
             </div> 
         </header>        
@@ -318,7 +324,7 @@ span.dates {
                             </div>
                         </div> 
                         <div style="text-align: right;padding: 20px;">
-                            <button class="btn btn-danger" ng-click="submitSession()">Save Changes</button>
+                            <button class="btn btn-simple" ng-class="{'btn-danger': treatment.complain}" ng-click="submitSession()">Save Changes</button>
                         </div>                                                           
                                                                           
                        
@@ -387,10 +393,10 @@ span.dates {
                 </form>
                 <h4 style="text-align: center;color:orange">Management</h4>
                 <div style="word-spacing: 20px">
-                    <button class="btn btn-primary" style="margin-top: 10px"  ng-click="investigation()">Investigation</button>
-                    <button class="btn btn-success" style="margin-top: 10px" ng-click="prescription()">Prescription</button>
-                    <button class="btn btn-danger" style="margin-top: 10px" ng-click="appointment()">Appointment</button>
-                    <button class="btn btn-simple" style="margin-top: 10px" ng-click="treamentPlan()">Treatment Plan</button>
+                    <button class="btn btn-simple" style="margin-top: 10px" ng-class="{'btn-primary': treatment.complain}" ng-click="investigation()">Investigation</button>
+                    <button class="btn btn-simple" style="margin-top: 10px" ng-class="{'btn-success': treatment.complain}" ng-click="prescription()">Prescription</button>
+                    <button class="btn btn-simple" style="margin-top: 10px" ng-class="{'btn-danger': treatment.complain}" ng-click="appointment()">Appointment</button>
+                    <button class="btn btn-simple" style="margin-top: 10px" ng-class="{'btn-primary': treatment.complain}" ng-click="treamentPlan()">Treatment Plan</button>
                 </div>
                                              
                         
@@ -406,15 +412,15 @@ span.dates {
                      <h4>Investigation</h4>
                      <i class="fa fa-times" data-dismiss="modal" style="font-size: 18px;position: absolute;top:10px;right: 10px;padding: 10px">close</i>    
                      <div style="text-align:center;padding:20px" ng-if="isInitial === true">
-                        <button class="btn btn-primary" ng-click="lab()">Laboratory</button>
-                        <button class="btn btn-danger" ng-click="radio()">Radiology</button>  
+                        <button class="btn btn-primary" ng-click="lab()">New Laboratory</button>
+                        <button class="btn btn-danger" ng-click="radio()">New Radiology</button>  
                      </div>                    
                 </div>
             
                 <div class="modal-body">
                     <div ng-if="isInitial === true">
                         <div ng-if="isLab">
-                             <h4>Lab Investigations</h4>
+                             <h4>Lab Investigation <button style="float:right;background-color:orange;color: #fff" class="btn btn-simple" ng-click="getHistory('Lab')">View Lab History</button></h4>
                               <table>
                                 <tr>
                                     <thead>
@@ -436,13 +442,13 @@ span.dates {
                                     <i class="fa fa-minus" style="font-size:16px;color:green;padding: 10px; cursor:pointer; margin-right: 5px" title="Remove last field" ng-click="removeTest()"> remove</i>
                             </div>
                             <div>
-                                <button class="btn btn-success" bg-click="sendToPatient()">to Patient</button>
-                                <button class="btn btn-success" ng-click="sendToLab()">to Laboratory</button>
+                                <!--<button class="btn btn-success" bg-click="sendToPatient()">to Patient</button>-->
+                                <button class="btn btn-success" ng-click="sendToLab()">To Laboratory Center</button>
                             </div>
                          </div> 
 
                          <div ng-if="isRadio">
-                             <h4>Radio Investigations</h4>
+                             <h4>Radio Investigation <button style="float:right;background-color:orange;color: #fff" class="btn btn-simple" ng-click="getHistory('Radio')">View Radio History</button></h4>
                              <table>
                                 <tr>
                                     <thead>
@@ -464,8 +470,74 @@ span.dates {
                                     <i class="fa fa-minus" style="font-size:16px;color:green;padding: 10px; cursor:pointer; margin-right: 5px" title="Remove last field" ng-click="removeTest()"> remove</i>
                             </div>
                             <div>
-                                <button class="btn btn-success" bg-click="sendToPatient()">to Patient</button>
-                                <button class="btn btn-success" ng-click="sendToRad()">to Radiology Center</button>
+                               <!-- <button class="btn btn-success" bg-click="sendToPatient()">to Patient</button>-->
+                                <button class="btn btn-success" ng-click="sendToRad()">To Radiology Center</button>
+                            </div>                            
+                        </div>
+
+                        <div ng-if="isHistory">
+                            <h4>{{arg}} History</h4>
+                            <div ng-if="arg === 'Lab'">
+                                <div ng-repeat="item in patientMedicalRecord.medical_records.laboratory_test">                                  
+                                  <table class="table">                                                                     
+                                      <thead style="background-color: orange; color:#fff">
+                                          <th>Test name</th>
+                                          <th>{{item.sent_date | date: "mediumDate"}}</th>
+                                      </thead>
+                                      <tbody>
+                                          <td style="width:40%">
+                                              <ol>
+                                                  <li ng-repeat="test in item.test_to_run">{{test.name}}</li>
+                                              </ol>
+                                          </td>
+                                          <td style="width:60%">
+                                              <div>
+                                                  <label><b>Reports: </b> </label> <span ng-class="{'text-danger': item.report === 'Pending'}">{{item.report}}</span>
+                                              </div>
+                                              <div>
+                                                  <label><b>Conclusion: </b> </label> <span <span ng-class="{'text-danger': item.report === 'Pending'}">{{item.conclusion}}</span>
+                                              </div>
+                                              <footer>
+                                                  <header><small>{{item.center_name}}</small></header>
+                                                  <address><small>{{item.center_address}} {{item.center_city}} {{item.center_country}}</small></address>
+                                              </footer>                                      
+                                              
+                                          </td>
+                                      </tbody>
+                                  </table>
+                                </div>
+                                <p ng-if="patientMedicalRecord.medical_records.laboratory_test.length === 0" style="text-align:center">No Record Found!</p>                               
+                            </div>
+                            <div ng-if="arg === 'Radio'">
+                                <div ng-repeat="item in patientMedicalRecord.medical_records.radiology_test">                                  
+                                  <table class="table">                                                                     
+                                      <thead style="background-color: orange; color:#fff">
+                                          <th>Test name</th>
+                                          <th>{{item.sent_date | date: "mediumDate"}}</th>
+                                      </thead>
+                                      <tbody>
+                                          <td style="width:40%">
+                                              <ol>
+                                                  <li ng-repeat="test in item.test_to_run">{{test.name}}</li>
+                                              </ol>
+                                          </td>
+                                          <td style="width:60%">
+                                              <div>
+                                                  <label><b>Reports: </b> </label> <span ng-class="{'text-danger': item.report === 'Pending'}">{{item.report}}</span>
+                                              </div>
+                                              <div>
+                                                  <label><b>Conclusion: </b> </label> <span <span ng-class="{'text-danger': item.report === 'Pending'}">{{item.conclusion}}</span>
+                                              </div>
+                                              <footer>
+                                                  <header><small>{{item.center_name}}</small></header>
+                                                  <address><small>{{item.center_address}} {{item.center_city}} {{item.center_country}}</small></address>
+                                              </footer>                                      
+                                              
+                                          </td>
+                                      </tbody>
+                                  </table>
+                                </div>
+                                <p ng-if="patientMedicalRecord.medical_records.laboratory_test.length === 0" style="text-align:center">No Record Found!</p>                      
                             </div>
                         </div>
                      </div>
@@ -521,11 +593,19 @@ span.dates {
           <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header" style="border-bottom:1px solid #eee;">
-                                         
+                     <h4>Treatment Plan</h4>
+                     <i class="fa fa-times" data-dismiss="modal" style="font-size: 18px;position: absolute;top:10px;right: 10px;padding: 10px">close</i>                       
                 </div>
             
                 <div class="modal-body">
-                   
+                    <form>
+                        <div>
+                            <textarea class="form-control" placeholder="Write" ng-model="treatment.treatmentPlan" style="height: 400px"></textarea>
+                        </div>
+                        <div style="padding-top: 20px" ng-if="treatment.treatmentPlan">
+                            <button class="btn btn-primary" ng-click="submitPlan()">{{(message) ? message : "Save"}}</button>
+                        </div>
+                    </form>                   
                 </div>          
             </div>
           </div>
@@ -536,12 +616,12 @@ span.dates {
           <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header" style="border-bottom:1px solid #eee;position: relative;">
-                      <h4> Pharmaceutical</h4>
+                      <h4> Pharmaceutical <button style="float:right;margin-top: 30px" class="btn btn-danger" ng-click="getHistory()">{{(isHistory === true) ? 'Write New' : 'View History'}}</button></h4>
                       <i class="fa fa-times" data-dismiss="modal" style="font-size: 18px;position: absolute;top:10px;right: 10px;padding: 10px">close</i>             
                 </div>
             
                 <div class="modal-body">
-                   <div ng-if="isInitial === true">
+                   <div ng-if="isInitial === true">                                                       
                            <table>
                             <tr>
                                 <thead>
@@ -572,6 +652,41 @@ span.dates {
                             <button ng-click="toPharmacy()" class="btn btn-success">Send to a Phamarcy</button>
                         </div>
                         
+                    </div>
+                    <div ng-if="isHistory === true">
+                        <!--<div>
+                            <button style="float:right;background-color:orange;color: #fff" class="btn btn-simple" ng-click="newPrescription()">New Prescription</button>
+                        </div>-->
+                        <div ng-repeat="item in patientMedicalRecord" style="margin-bottom: : 40px,border-bottom:2px solid grey">
+                        <div>
+                            <label><b>Date: </b> </label> <span>{{item.date | date: "mediumDate"}}</span>&nbsp;&nbsp;&nbsp;
+                            <label><b>Provisoinal Daignosis: </b> </label> <span>{{item.provisonal_diagnosis}}</span>
+                        </div>                                  
+                          <table class="table">                                                                     
+                              <thead style="">
+                                  <th>sn</th>
+                                  <th>drug</th>
+                                  <th>dosage</th>
+                                  <th>frequency</th>
+                                  <th>duration</th>
+                              </thead>
+                              <tbody ng-repeat="drug in item.prescription_body">
+                                  <td>{{drug.sn}}</td>
+                                  <td>{{drug.drug_name}}</td>
+                                  <td>{{drug.dosage}}</td> 
+                                  <td>{{drug.frequency}}</td> 
+                                  <td>{{drug.duration}}</td>  
+                              </tbody>
+                          </table>
+                          <div style="text-align: right;border-bottom: 2px solid grey;
+                          padding-bottom: 20px;margin-bottom: 20px">
+                              <small>{{item.title}} {{item.doctor_firstname}} {{item.doctor_lastname}} 
+                              <span style="display: block;">{{item.doctor_specialty}}</span>
+                              <span style="display: block;">{{item.doctor_work_place}} {{item.doctor_city}} {{item.doctor_country}}</span>                                    
+                              </small>
+                          </div>
+                        </div>
+                        <p ng-if="patientMedicalRecord.medical_records.laboratory_test.length === 0" style="text-align:center">No Record Found!</p>                      
                     </div>
 
                     <div ng-if="isSearchToSend === true">

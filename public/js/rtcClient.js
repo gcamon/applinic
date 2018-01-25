@@ -21,6 +21,9 @@ var PeerManager = (function (name) {
       localStream,
       remoteVideoContainer = document.getElementById('remoteVideosContainer'),
       socket = io();
+
+      var storage = window.localStorage.getItem("resolveUser");
+      var user = JSON.parse(storage);
       
   socket.on('message', handleMessage);
   socket.on('id', function(id) {
@@ -176,7 +179,9 @@ var PeerManager = (function (name) {
 
     send: function(type, payload) {
       socket.emit(type, payload,function(data){
-        socket.emit("init reload",{controlId:data.controlId,message:"from site init"});
+        console.log(data);
+        var names = user.title + " " + user.firstname;
+        socket.emit("init reload",{controlId:data.controlId,message:"from site init",userId: user.user_id,names: names});
       });
     },
 
