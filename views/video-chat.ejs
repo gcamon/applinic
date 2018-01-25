@@ -1,5 +1,4 @@
-<!doctype html>
-
+<!DOCTYPE html>
 <html class="no-js" lang="en" ng-app = "rtcVideo">
 <head>
     <meta charset="utf-8">
@@ -8,22 +7,13 @@
     <meta name="description" content="">
     <base href="/" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="apple-touch-icon" href="apple-touch-icon.png">
-    <!--<link rel="stylesheet" href="/assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css">
+    <!--<link rel="stylesheet" href="/assets/css/font-awesome.min.css">-->
+    <link type="style/css" rel="stylesheet" href="/assets/css/video.css">
     <link rel="stylesheet" href="/assets/css/normalize.css">
-    <link rel="stylesheet" href="/assets/css/font-awesome.min.css">
-    <link rel="stylesheet" href="/assets/css/icomoon.css">
-    <link rel="stylesheet" href="/assets/css/owl.theme.css">
-    <link rel="stylesheet" href="/assets/css/owl.carousel.css">
-    <link rel="stylesheet" href="/assets/css/prettyPhoto.css">
-    <link rel="stylesheet" href="/assets/css/main.css">
-    <link rel="stylesheet" href="/assets/css/transitions.css">
-    <link rel="stylesheet" href="/assets/css/color.css">
-    <link rel="stylesheet" href="/assets/css/responsive.css">
-    <script src="/assets/js/vendor/modernizr-2.8.3-respond-1.4.2.min.js"></script>
-      <script src="/assets/js/vendor2.js"></script>-->
+    <link rel="stylesheet" href="/assets/css/my-edit.css">
+    <!--<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">-->
 
-   
    
     <!-- Latest compiled and minified CSS -->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
@@ -31,10 +21,6 @@
 <!-- Optional theme -->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
 
- <link rel="stylesheet" href="/assets/css/font-awesome.min.css">
-<link type="style/css" rel="stylesheet" href="/assets/css/video.css">
- <link rel="stylesheet" href="/assets/css/normalize.css">
- <link href="/assets/css/my-edit.css">
 
  <style type="text/css">
      .calender-header {
@@ -89,6 +75,8 @@ span.dates {
     font-weight: normal!important;
 }
 
+
+
 .today {
     background:#ccc;
     color:#fff;
@@ -132,7 +120,7 @@ span.dates {
     </script>
     <!--<script type="text/javascript" src="/assets/js/angular-source.js"></script>-->
     <script src="/assets/js/ngresource.js"></script>
-    <script src="/assets/js/modalService.js"></script>
+    
      <script src="/assets/js/moment.min.js"></script>  
     <script src="/assets/js/angular-moment.min.js"></script>
     <script type="text/javascript" src="/assets/js/angularVideo.js"></script>
@@ -410,7 +398,7 @@ span.dates {
             <div class="modal-content">
                 <div class="modal-header" style="border-bottom:1px solid #eee;">
                      <h4>Investigation</h4>
-                     <i class="fa fa-times" data-dismiss="modal" style="font-size: 18px;position: absolute;top:10px;right: 10px;padding: 10px">close</i>    
+                     <i class="fa fa-times" data-dismiss="modal" style="font-size: 18px;position: absolute;top:10px;right: 10px;padding: 10px"></i>    
                      <div style="text-align:center;padding:20px" ng-if="isInitial === true">
                         <button class="btn btn-primary" ng-click="lab()">New Laboratory</button>
                         <button class="btn btn-danger" ng-click="radio()">New Radiology</button>  
@@ -439,7 +427,7 @@ span.dates {
                             </table>
                             <div style="text-align: right">
                                 <i class="fa fa-plus" style="font-size:16px;color:green;padding: 10px; cursor:pointer; margin-right: 5px" title="Add field" ng-click="addTest()"> Add</i>
-                                    <i class="fa fa-minus" style="font-size:16px;color:green;padding: 10px; cursor:pointer; margin-right: 5px" title="Remove last field" ng-click="removeTest()"> remove</i>
+                                    <i class="fa fa-minus" style="font-size:16px;color:green;padding: 10px; cursor:pointer; margin-right: 5px" title="Remove last field" ng-click="removeTest()"> Remove</i>
                             </div>
                             <div>
                                 <!--<button class="btn btn-success" bg-click="sendToPatient()">to Patient</button>-->
@@ -467,7 +455,7 @@ span.dates {
                             </table>
                             <div style="text-align: right">
                                 <i class="fa fa-plus" style="font-size:16px;color:green;padding: 10px; cursor:pointer; margin-right: 5px" title="Add field" ng-click="addTest()"> Add</i>
-                                    <i class="fa fa-minus" style="font-size:16px;color:green;padding: 10px; cursor:pointer; margin-right: 5px" title="Remove last field" ng-click="removeTest()"> remove</i>
+                                    <i class="fa fa-minus" style="font-size:16px;color:green;padding: 10px; cursor:pointer; margin-right: 5px" title="Remove last field" ng-click="removeTest()"> Remove</i>
                             </div>
                             <div>
                                <!-- <button class="btn btn-success" bg-click="sendToPatient()">to Patient</button>-->
@@ -594,7 +582,7 @@ span.dates {
             <div class="modal-content">
                 <div class="modal-header" style="border-bottom:1px solid #eee;">
                      <h4>Treatment Plan</h4>
-                     <i class="fa fa-times" data-dismiss="modal" style="font-size: 18px;position: absolute;top:10px;right: 10px;padding: 10px">close</i>                       
+                     <i class="fa fa-times" data-dismiss="modal" style="font-size: 18px;position: absolute;top:10px;right: 10px;padding: 10px"></i>                       
                 </div>
             
                 <div class="modal-body">
@@ -617,7 +605,7 @@ span.dates {
             <div class="modal-content">
                 <div class="modal-header" style="border-bottom:1px solid #eee;position: relative;">
                       <h4> Pharmaceutical <button style="float:right;margin-top: 30px" class="btn btn-danger" ng-click="getHistory()">{{(isHistory === true) ? 'Write New' : 'View History'}}</button></h4>
-                      <i class="fa fa-times" data-dismiss="modal" style="font-size: 18px;position: absolute;top:10px;right: 10px;padding: 10px">close</i>             
+                      <i class="fa fa-times" data-dismiss="modal" style="font-size: 18px;position: absolute;top:10px;right: 10px;padding: 10px"></i>             
                 </div>
             
                 <div class="modal-body">
@@ -645,7 +633,7 @@ span.dates {
                         </table>
                         <div style="text-align: right">
                             <i class="fa fa-plus" style="font-size:16px;color:green;padding: 10px; cursor:pointer; margin-right: 5px" title="Add field" ng-click="addDrug()"> Add</i>
-                                <i class="fa fa-minus" style="font-size:16px;color:green;padding: 10px; cursor:pointer; margin-right: 5px" title="Remove last field" ng-click="removeDrug()"> remove</i>
+                                <i class="fa fa-minus" style="font-size:16px;color:green;padding: 10px; cursor:pointer; margin-right: 5px" title="Remove last field" ng-click="removeDrug()"> Remove</i>
                         </div>
                         <div> 
                             <button ng-click="toPatient()" class="btn btn-success">Send to patient</button>
@@ -745,7 +733,8 @@ span.dates {
                 <div class="col-sm-12 col-md-12 col-lg-12">
                 <div>
                 <b>Book an Appointment</b>
-                <button type="button"  ng-click="close('Cancel')" data-dismiss="modal" aria-hidden="true" style="color:red;font-size: 32px; margin-top:-9px;float:right; top:5px;border:none">&times;</button>
+                <!--<button type="button"  ng-click="close('Cancel')" data-dismiss="modal" aria-hidden="true" style="color:red;font-size: 32px; margin-top:-9px;float:right; top:5px;border:none">&times;</button>-->
+                <i class="fa fa-times" data-dismiss="modal" style="color:red;font-size: 22px; margin-top:-9px;float:right; top:5px;border:none"></i>
                 </div>  
                     
                 </div> </div>                                    
@@ -794,7 +783,7 @@ span.dates {
         </div>
      </script>    
     <script src="/assets/js/ui-bootstrap-tpls.js"></script>
-    
+    <script src="/assets/js/modalService.js"></script>
 </body>
 </html>
 

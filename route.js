@@ -46,6 +46,8 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
     }
   });
 
+
+
   router.get("/home",function (req,res) {    
     res.render('index',{"message":""});
   });
@@ -616,11 +618,12 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
       }
   });
 
-  router.get("/assets", function (req,res) {
+  /*router.get("/assets", function (req,res,next) {
       res.send('css');
       res.send('js');
       res.send('images');
-  });
+      next();
+  });*/
   // fetch data for patient profile update inner page
   router.get("/user/profile/getDetails",function(req,res){
       if(req.user) {
