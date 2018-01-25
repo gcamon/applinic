@@ -150,7 +150,7 @@ span.dates {
                         <h4 style="padding: 10px 0;text-align: center;background-color: #1d7e5f;color:#fff">Available streams</h4>
                         <div ng-repeat="stream in rtc.remoteStreams" ng-class="{'selected' : stream.isPlaying}" style="padding-bottom: 5px">                    
                             <span>{{stream.name}}</span> &nbsp;&nbsp;
-                            <button ng-click="rtc.view(stream)" class="btn btn-success" style="padding: 5px 10px;font-size: 12px">view</button>
+                            <button ng-click="rtc.view(stream)" class="btn btn-success" style="padding: 5px 10px;font-size: 12px">{{(stream.isPlaying === false) ? 'view' : 'hide'}}</button>
                         </div>
                     </div>
                     <h4 style="padding: 10px 0;text-align: center;background-color: #1d7e5f;color:#fff">Managment details</h4>
