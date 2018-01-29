@@ -6911,7 +6911,7 @@ app.controller("selectedCenterController",["$scope","$location","$http","templat
 
 //this controller handles patient's doctors on the right corner of the patient profile page. it locates each doctors details when clicked.
 //note this controller is used both by doctors dashboard and patient dashboard.
-app.controller("checkingOutDoctorController",["$scope","$location","$rootScope","$http","$interval","templateService","localManager","mySocket",
+app.controller("checkingOutDoctorPatientController",["$scope","$location","$rootScope","$http","$interval","templateService","localManager","mySocket",
 function($scope,$location,$rootScope,$http,$interval,templateService,localManager,mySocket){
   function getList(url,type) {
      $http({
@@ -6931,6 +6931,8 @@ function($scope,$location,$rootScope,$http,$interval,templateService,localManage
   }
   $scope.filter = {}
 
+  //localManager.setValue("hasChat",true);
+
   var user = localManager.getValue("resolveUser");
 
   if(user.typeOfUser === "Patient") {
@@ -6940,8 +6942,7 @@ function($scope,$location,$rootScope,$http,$interval,templateService,localManage
       var callerId = templateService.holdPatientIdForCommunication;
       localManager.setValue("receiver",id);
       localManager.setValue('caller',callerId); 
-      templateService.holdIdForSpecificDoc = id;
-      localManager.setValue("hasChat",true);
+      templateService.holdIdForSpecificDoc = id;      
       var page = "/patient-doctor/treatment/" + id;
       localManager.setValue("holdPageForHandler",page);
       localManager.setValue("currentPageForPatients",page);
@@ -6964,7 +6965,6 @@ function($scope,$location,$rootScope,$http,$interval,templateService,localManage
       templateService.holdIdForSpecificPatient = id;
       var page = "/doctor-patient/treatment/" + id;
       localManager.setValue("holdPageForHandler",page);
-      localManager.setValue("hasChat",true);
       localManager.setValue("currentPage",page);
       $location.path(page);
       mySocket.removeAllListeners("new_msg");
@@ -6993,17 +6993,22 @@ function($scope,$location,$rootScope,$http,$interval,templateService,localManage
 app.controller("createRoomController",["$scope","localManager","mySocket","$rootScope","templateService","$location",
   function($scope,localManager,mySocket,$rootScope,templateService,$location){
   var user = localManager.getValue("resolveUser");
+
   $rootScope.chatStatus = localManager.getValue("hasChat");
+
   var getCurrentPage = localManager.getValue("currentPageForPatients") || localManager.getValue("currentPage");
-  var getHandlerPage = localManager.getValue("holdPageForHandler")
+  var getHandlerPage = localManager.getValue("holdPageForHandler");
+
   if(!$rootScope.chatStatus || getCurrentPage !== getHandlerPage){ 
     mySocket.emit('join',{userId: user.user_id});  
-    //when user is cuurently not in chat but messages can come and be stored in array
+    //when user is currently not in chat but messages can come and be stored in array
     mySocket.on("new_msg", function(data) {
+
       var date = + new Date();
       var msg = {};
       msg.time = date;
-      msg.received = data.message;    
+      msg.received = data.message;
+
       if(user.typeOfUser === "Patient"){
         var elemPos = $rootScope.patientsDoctorList.map(function(x){return x.doctor_id}).indexOf(data.from);
         var found = $rootScope.patientsDoctorList[elemPos];
@@ -7169,7 +7174,7 @@ app.controller("presenceSocketController",["$rootScope","$scope","$window","mySo
     setTimeout(function(){
       display();
     },3000);
-    
+
     function display() {
       var decide = confirm(response.message);
       if(decide){
@@ -7477,7 +7482,7 @@ app.controller("myDoctorController",["$scope","$location","$http","$window","$ro
       reqModal(docObj);
     }
 
-    $scope.chatRequest = function(type,docObj){
+    /*$scope.chatRequest = function(type,docObj){
       //$window.location.href = "/patient/call";
       //Before a patient can communicate with his doctor a request for communication will be sent
       //if  the doctor grants such request the communication route will be established
@@ -7486,7 +7491,7 @@ app.controller("myDoctorController",["$scope","$location","$http","$window","$ro
 
       
 
-    }
+    }*/
 
     $scope.deleteChat = function(){
       var check = confirm("All chats will be deleted. Do you wish to continue?");
@@ -7519,11 +7524,23 @@ app.controller("myDoctorController",["$scope","$location","$http","$window","$ro
   
   $scope.user = {};
 
-  if($rootScope.chatStatus === true)
+  if($rootScope.chatStatus !== true)
     mySocket.emit('join',{userId: user.user_id}); 
 
   mySocket.emit('init chat',{userId: user.user_id,partnerId: doctor.id},function(messages){
     $rootScope.message1 = messages || [];
+  });
+
+  $scope.getkeys = function (event) {
+    //$scope.keyval = event.keyCode;
+    if(event.keyCode === 13) 
+      $scope.sendChat2();
+  }
+
+  mySocket.on("isReceived",function(status){
+    var getIndex = $rootScope.message1.length - 1; //gets the index of the currently send text from the array
+    $rootScope.message1[getIndex].isReceived = status;
+    mySocket.emit("save message",msg);//this saves the message as received (ie blue) mark
   });
 
   
@@ -7536,26 +7553,19 @@ app.controller("myDoctorController",["$scope","$location","$http","$window","$ro
       msg.sent = data.message;
       msg.isSent = false;
       msg.isReceived = false;
-      $rootScope.message1.push(msg);
-      var getIndex = $rootScope.message1.length - 1; //gets the index of the currently send text from the array
+      $rootScope.message1.push(msg);      
       msg.userId = user.user_id;
       msg.partnerId = doctor.id;     
       mySocket.emit("isSent",msg,function(status){
+        var getIndex = $rootScope.message1.length - 1; //gets the index of the currently send text from the array
         $rootScope.message1[getIndex].isSent = status;
         mySocket.emit("save message",msg);//this saves the message as double mark
       });
       mySocket.emit("save message",msg);//this saves the message as one mark
-      mySocket.on("isReceived",function(status){
-        $rootScope.message1[getIndex].isReceived = status;
-        mySocket.emit("save message",msg);//this saves the message as received (ie blue) mark
-      });
+      
     });
     $scope.user.text1 = "";
   }
-
-  
-  
-  //var ChatUrl = "/" + arr[1] + "/" + arr[2] ///patient-doctor/treatment/23637836
 
   mySocket.on("new_msg", function(data) {
     var date = + new Date();
@@ -7563,14 +7573,14 @@ app.controller("myDoctorController",["$scope","$location","$http","$window","$ro
     msg.time = date;
     msg.received = data.message;
     if(data.from === doctor.id) {
+
       $rootScope.message1.push(msg);
+
       msg.userId = user.user_id;
       msg.partnerId = doctor.id;
       mySocket.emit("save message",msg);        
       templateService.playAudio(3); // note all sounds can be turned of through settings.
     } else {
-
-      alert("You have new message");
       var elemPos = $rootScope.patientsDoctorList.map(function(x){return x.doctor_id}).indexOf(data.from);
       var found = $rootScope.patientsDoctorList[elemPos];
       if(!found.queueLen) {
@@ -7580,29 +7590,25 @@ app.controller("myDoctorController",["$scope","$location","$http","$window","$ro
       }
       msg.userId = data.to;
       msg.partnerId = data.from;
-      mySocket.emit("save message",msg);      
+      mySocket.emit("save message",msg); //then push the message to the list of patients so that user can view later.     
       templateService.playAudio(2);    
-      //then push the message to the list of patients so that user can view later.
+      
     }
-
     mySocket.emit("msg received",{to: data.from});
   });
 
 
   $scope.$watch("user.text1",function(newVal,oldVal){
     if(newVal !== "" && newVal !== undefined){      
-      mySocket.emit("user typing",{to: doctor.id,message:"Typing..."})
+      mySocket.emit("user typing",{to: doctor.id,message:"Typing..."});
     } else {
-      mySocket.emit("user typing",{to: doctor.id,message:""})
+      mySocket.emit("user typing",{to: doctor.id,message:""});
     }
   });
 
   mySocket.on("typing", function(data) {
-    console.log(data)
     $scope.typing = data;
   });
-
-  
 
   function reqModal(docObj) {
     templateService.holdForSpecificDoc = docObj
@@ -7703,7 +7709,7 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
 
   //$rootScope.message1 = [];
   // checks to see if a user is already in chat
-  if($rootScope.chatStatus === true)
+  if($rootScope.chatStatus !== true)
     mySocket.emit('join',{userId: user.user_id}); 
 
   mySocket.emit('init chat',{userId: user.user_id,partnerId: patient.id},function(messages){
@@ -7716,6 +7722,13 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
       $scope.sendChat2();
   }
 
+ 
+  mySocket.on("isReceived",function(status){
+    var getIndex = $rootScope.message1.length - 1;
+    $rootScope.message1[getIndex].isReceived = status;
+    mySocket.emit("save message",msg);
+  });
+
   $scope.sendChat2 = function(){ 
     $scope.user.isSent = true;
     if($scope.user.text2 !== "" || $scope.user.text2 !== undefined) {   
@@ -7727,24 +7740,25 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
         msg.isSent = false;
         msg.isReceived = false;
         $rootScope.message1.push(msg);
-        var getIndex = $rootScope.message1.length - 1;
+
+        
         msg.userId = user.user_id;
-        msg.partnerId = patient.id;     
+        msg.partnerId = patient.id;
+
         mySocket.emit("isSent",msg,function(status){
+          var getIndex = $rootScope.message1.length - 1;
           $rootScope.message1[getIndex].isSent = status;
           mySocket.emit("save message",msg);
         });
         mySocket.emit("save message",msg);
-        mySocket.on("isReceived",function(status){
-          $rootScope.message1[getIndex].isReceived = status;
-          mySocket.emit("save message",msg);
-        });
+        
       });
       $scope.user.text2 = "";
     }
   }
 
   mySocket.on("new_msg", function(data) {
+    alert()
     var date = + new Date();
     var msg = {};
     msg.time = date;
@@ -7758,8 +7772,6 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
     } else {
       //alert("You have new message");
       var elemPos = $rootScope.patientList.map(function(x){return x.patient_id}).indexOf(data.from);
-      console.log($rootScope.patientList)
-      console.log(data.from)
       var found = $rootScope.patientList[elemPos];
       if(!found.queueLen) {
         found.queueLen = 1;

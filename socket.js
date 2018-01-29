@@ -6,6 +6,7 @@ module.exports = function(model,io,streams) {
   io.sockets.on('connection', function(socket){  	   
 	    console.log('a user connected');
 	    var user = {};
+	    
 	    socket.on('join', function (data) {
 	    	user.isPresent = true; //use to check presence of user without hitting the database.
 	      socket.join(data.userId);      
@@ -30,7 +31,7 @@ module.exports = function(model,io,streams) {
 	      model.chats.findOne({chat_id:chatId},function(err,chat){
 	      	if(err) throw err;
 	      	if(!chat){
-	      		var date= + new Date();    		
+	      		var date = + new Date();    		
 	      		var newChat = new model.chats({
 	      			date_created: date,
 	      			chat_id: chatId,

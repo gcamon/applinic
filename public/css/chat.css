@@ -64,12 +64,12 @@ a{
     margin-left:0;
 }
 .msg_sent{
-    padding-bottom:20px !important;
+    padding-bottom:10px !important;
     margin-right:0;
 }
 
 .msg_received {
-  color:orange!important;
+  color:#fff!important;
 }
 
 .messages {
