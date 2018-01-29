@@ -7534,7 +7534,7 @@ app.controller("myDoctorController",["$scope","$location","$http","$window","$ro
   $scope.getkeys = function (event) {
     //$scope.keyval = event.keyCode;
     if(event.keyCode === 13) 
-      $scope.sendChat2();
+      $scope.sendChat1();
   }
 
   mySocket.on("isReceived",function(status){
