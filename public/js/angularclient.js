@@ -807,7 +807,9 @@ app.factory("requestManager",[function(){
 }]);
 
 app.factory('mySocket', function (socketFactory) {
-  return socketFactory();
+  var socket = socketFactory();
+  window.localStorage.setItem('saveSocket',socket);
+  return socket;
 });
 
 app.factory("userData",function(){
@@ -1298,7 +1300,7 @@ app.controller('loginController',["$scope","$http","$location","$window","$resou
     
     //$rootScope.balance = data.balance;             
     if (data.isLoggedIn) {
-        localManager.setValue("resolveUser",data);
+        localManager.setValue("resolveUser",data);        
        //user joins a room in socket.io and intantiayes his own socket
         switch(data.typeOfUser) {
           case "Patient":
@@ -4376,17 +4378,17 @@ app.controller("joinRoomController2",["$scope","mySocket","localManager","$rootS
 
   //var user = localManager.getValue("resolveUser");
 
-  mySocket.emit('join',{userId: "135920854"});
+  mySocket.emit('join',{userId: "bobosky2636"});
   //"135920854"
 
-  mySocket.emit('init chat',{userId: "135920854",partnerId: "161792665"},function(messages){
+  mySocket.emit('init chat',{userId: "bobosky2636",partnerId: "emyakatras3778"},function(messages){
     $rootScope.message1 = messages || [];
   });
 
   
   $scope.sendChat2 = function(){ 
     $scope.user.isSent = true;   
-    mySocket.emit("send message",{to: "161792665",message:$scope.user.text2,from:"135920854"},function(data){ //replace to with doctor.id  later and
+    mySocket.emit("send message",{to: "emyakatras3778",message:$scope.user.text2,from:"bobosky2636"},function(data){ //replace to with doctor.id  later and
       //from = user.user_id.
       var date = + new Date();
       var msg = {};
@@ -4396,8 +4398,8 @@ app.controller("joinRoomController2",["$scope","mySocket","localManager","$rootS
       msg.isSent = false;
       $rootScope.message1.push(msg);
       var getIndex = $rootScope.message1.length -1 ;
-      msg.userId = "135920854";
-      msg.partnerId = "161792665";      
+      msg.userId = "bobosky2636";
+      msg.partnerId = "emyakatras3778";      
       mySocket.emit("isSent",msg,function(status){
         $rootScope.message1[getIndex].isSent = status;
         mySocket.emit("save message",msg);
@@ -4418,24 +4420,24 @@ app.controller("joinRoomController2",["$scope","mySocket","localManager","$rootS
       msg.time = date;
       //alert("it happend")
       msg.received = data.message;
-      if(data.from === "161792665") {
+      if(data.from === "emyakatras3778") {
         $rootScope.message1.push(msg);
-        msg.userId = "135920854";
-        msg.partnerId = "161792665";
+        msg.userId = "bobosky2636";
+        msg.partnerId = "emyakatras3778";
         mySocket.emit("save message",msg);
       } else {
         
         //then push the message to the list of patients so that user can view later.
       }
 
-      mySocket.emit("msg received",{to: "161792665"}); 
+      mySocket.emit("msg received",{to: "emyakatras3778"}); 
   });
 
   $scope.$watch("user.text2",function(newVal,oldVal){
     if(newVal !== "" && newVal !== undefined){
-      mySocket.emit("user typing",{to: "161792665",message:"Typing..."})
+      mySocket.emit("user typing",{to: "emyakatras3778",message:"Typing..."})
     } else {
-      mySocket.emit("user typing",{to: "161792665",message:""})
+      mySocket.emit("user typing",{to: "emyakatras3778",message:""})
     }
   });
 
@@ -6931,7 +6933,7 @@ function($scope,$location,$rootScope,$http,$interval,templateService,localManage
   }
   $scope.filter = {}
 
-  //localManager.setValue("hasChat",true);
+  localManager.setValue("hasChat",true);
 
   var user = localManager.getValue("resolveUser");
 
@@ -6998,12 +7000,13 @@ app.controller("createRoomController",["$scope","localManager","mySocket","$root
 
   var getCurrentPage = localManager.getValue("currentPageForPatients") || localManager.getValue("currentPage");
   var getHandlerPage = localManager.getValue("holdPageForHandler");
+  mySocket.emit('join',{userId: user.user_id});
 
-  if(!$rootScope.chatStatus || getCurrentPage !== getHandlerPage){ 
+  /*if(!$rootScope.chatStatus || getCurrentPage !== getHandlerPage){ 
     mySocket.emit('join',{userId: user.user_id});  
     //when user is currently not in chat but messages can come and be stored in array
     mySocket.on("new_msg", function(data) {
-
+      alert("djhfjjhfjhjhdf")
       var date = + new Date();
       var msg = {};
       msg.time = date;
@@ -7030,7 +7033,7 @@ app.controller("createRoomController",["$scope","localManager","mySocket","$root
       //mySocket.emit("msg received",{to: data.from});    
       //then push the message to the list of patients so that user can view later.
     });
-  }
+  }*/
 
 }]);
 
@@ -7335,102 +7338,6 @@ app.controller("cashOutController",["$scope","$rootScope","$resource",function($
 }]);
 
 
-/*app.controller("joinRoomController3",["$scope","mySocket","localManager","$rootScope","$timeout","templateService",
-  function($scope,mySocket,localManager,$rootScope,$timeout,templateService){
-  $rootScope.message1 = []; 
-  $scope.user = {}
-
-  mySocket.emit('join',{userId: "23637836"});
-
-  mySocket.emit('init chat',{userId: "23637836",partnerId: "135920854"},function(messages){
-    console.log(messages)
-    $rootScope.message1 = messages || [];
-  })
-
- $scope.sendChat3 = function(){
-    mySocket.emit("send message",{to: "135920854",message:$scope.user.text3,from:"23637836"},function(data){
-     var date = + new Date();
-      var msg = {};
-      msg.time = date;
-      msg.sent = data.message;
-      $rootScope.message1.push(msg);
-      msg.userId = "23637836";
-      msg.partnerId = "135920854";
-      mySocket.emit("save message",msg)
-    });
-    $scope.user.text3 = "";
-  }
-
-  mySocket.on("new_msg", function(data) {
-      var date = + new Date();
-      var msg = {};
-      msg.time = date;
-      msg.received = data.message;
-      if(data.from === "135920854") {
-        $rootScope.message1.push(msg);
-        msg.userId = "23637836";
-        msg.partnerId = "135920854";
-        mySocket.emit("save message",msg);
-      } else {
-        alert("new message from another patient");
-        //then push the message to the list of patients so that user can view later.
-      }
-      mySocket.emit("msg received",{to: data.from});
-  });
-
-  $scope.$watch("user.text3",function(newVal,oldVal){
-    if(newVal !== "" && newVal !== undefined){
-      mySocket.emit("user typing",{to: "135920854",message:"Typing..."})
-    } else {
-      mySocket.emit("user typing",{to: "135920854",message:""});
-    }
-  });
-
-  mySocket.on("typing", function(data) {
-    console.log(data)
-    $scope.typing = data;
-  });
-
-  $scope.online = function(){
-    mySocket.emit("set presence",{status:"online",userId:"23637836"},function(response){
-      if(response.status === true){
-        mySocket.emit("doctor connect",{userId:"23637836"})
-      }
-    });
-  }
-
-  $scope.offline = function(){
-    mySocket.emit("set presence",{status:"offline",userId:"23637836"},function(response){
-      if(response.status === false){
-        mySocket.emit("doctor disconnect",{userId:"23637836"})
-      }
-    });
-  }
-//alerting for quest
-  mySocket.on("receive signal",function(data){
-    alert("i received " + data.type + " request");    
-    templateService.playAudio(1);
-    $rootScope.sender = data;
-    $scope.isReceivedRequest = true;
-    $timeout(function(){
-      $scope.isReceivedRequest = false;
-    },10000);
-  });
-
-  $scope.doctorResponse = function(){
-    var sendObject = {
-      to: "135920854",
-      time: 30000,
-      status: "accepted",
-      type: "Video Call",
-      firstname: "obinna",
-      profile_pic_url:""
-    }
-    mySocket.emit("signal response",sendObject);
-  }
-
-
-}]);*/
 
 app.directive('anItem', function(){
   return {
@@ -7523,10 +7430,9 @@ app.controller("myDoctorController",["$scope","$location","$http","$window","$ro
         headers : {'Content-Type': 'application/json'} 
         })
         .success(function(data) {
-          if(data === "deleted"){
+          if(data === "deleted" && $rootScope.message1){
             $rootScope.message1.splice(0);
           }
-          console.log("Chats " + data)
         });
       }
     }
@@ -7539,8 +7445,8 @@ app.controller("myDoctorController",["$scope","$location","$http","$window","$ro
   
   $scope.user = {};
 
-  if($rootScope.chatStatus !== true)
-    mySocket.emit('join',{userId: user.user_id}); 
+  /*if($rootScope.chatStatus !== true)
+    mySocket.emit('join',{userId: user.user_id}); */
 
   mySocket.emit('init chat',{userId: user.user_id,partnerId: doctor.id},function(messages){
     //$rootScope.message1 = messages || [];
@@ -7567,9 +7473,6 @@ app.controller("myDoctorController",["$scope","$location","$http","$window","$ro
       //mySocket.emit("save message",msg);//this saves the message as double mark
     }
   });
-
-
-
   
   $scope.sendChat1 = function(){ 
     $scope.user.isSent = true;   
@@ -7583,7 +7486,7 @@ app.controller("myDoctorController",["$scope","$location","$http","$window","$ro
       //$rootScope.message1.push(msg);      
       msg.userId = user.user_id;
       msg.partnerId = doctor.id; 
-      msg.id = genId()
+      msg.id = genId();
 
       chats(msg);
       
@@ -7770,7 +7673,7 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
         headers : {'Content-Type': 'application/json'} 
         })
         .success(function(data) {
-          if(data === "deleted"){
+          if(data === "deleted" && $rootScope.message1){
             $rootScope.message1.splice(0);
           }
           console.log("Chats " + data)
@@ -7782,139 +7685,9 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
 
   //$rootScope.message1 = [];
   // checks to see if a user is already in chat
-/*
- mySocket.emit('init chat',{userId: user.user_id,partnerId: doctor.id},function(messages){
-    //$rootScope.message1 = messages || [];
-    
-    for(var i = 0; i < messages.length; i++) {        
-        chats(messages[i])
-    }
-  });
 
-  $scope.getkeys = function (event) {
-    //$scope.keyval = event.keyCode;
-    if(event.keyCode === 13) 
-      $scope.sendChat1();
-  }
-
-  mySocket.on("isReceived",function(response){
-    //var getIndex = $rootScope.message1.length - 1; //gets the index of the currently send text from the array
-    //$rootScope.message1[getIndex].isReceived = response.isReceived;
-    //mySocket.emit("save message",msg);//this saves the message as received (ie blue) mark
-    if(response.isReceived && response.received) {
-      var elem = document.getElementById(response.id);
-      elem.innerHTML += "";
-      elem.innerHTML += " &nbsp;&nbsp;&nbsp;SEEN! ";
-      //mySocket.emit("save message",msg);//this saves the message as double mark
-    }
-  });
-
-
-
-  
-  $scope.sendChat1 = function(){ 
-    $scope.user.isSent = true;   
-    mySocket.emit("send message",{to: doctor.id,message:$scope.user.text1,from: user.user_id},function(data){ 
-      var date = + new Date();
-      var msg = {};
-      msg.time = date;
-      msg.sent = data.message;
-      msg.isSent = false;
-      msg.isReceived = false;
-      //$rootScope.message1.push(msg);      
-      msg.userId = user.user_id;
-      msg.partnerId = doctor.id; 
-      msg.id = genId()
-
-      chats(msg);
-      
-      mySocket.emit("isSent",msg,function(status){
-        //var getIndex = $rootScope.message1.length - 1; //gets the index of the currently send text from the array
-        //$rootScope.message1[getIndex].isSent = status;
-        if(status) {
-          var elem = document.getElementById(msg.id);
-          elem.innerHTML += " &nbsp;&nbsp;&nbsp;sent! ";
-          mySocket.emit("save message",msg);//this saves the message as double mark
-        }
-      });
-      //mySocket.emit("save message",msg);//this saves the message as one mark
-    });
-    $scope.user.text1 = "";
-  }
-
-  function genId() {
-    var text = "";
-    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz01234567899966600555777222";
-
-      for( var i=0; i < 12; i++ )
-          text += possible.charAt(Math.floor(Math.random() * possible.length));
-      return text;
-   }
-
-  function chats(data) {
-    var base = document.getElementById('base'); 
-    var container = angular.element(document.getElementById('sentmessage'));      
-    var item = angular.element(document.createElement('an-item'));
-    var breaker = document.createElement('div');
-    var p = document.createElement('p');
-    var small = document.createElement('small');
-    p.style.display = "block";      
-    small.style.display = "block";
-    small.style.marginTop = "10px";
-    p.innerHTML += (data.sent) ? data.sent : data.received; 
-    console.log(data);
-    small.id = data.id 
-    small.innerHTML += (data.sent) ? $filter('date')(data.time, "shortTime") : $filter('date')(new Date(), "shortTime");
-    small.innerHTML += (data.sent) ? "&nbsp;&nbsp;" + $filter('date')(data.time, "mediumDate") : "&nbsp;&nbsp;" + $filter('date')(new Date(), "mediumDate");     
-    
-    breaker.style.display = "block";
-    breaker.style.textAlign = (data.sent) ? "right" : "Left";
-    
-    item[0].append(p);
-    item[0].append(small)
-    breaker.append(item[0]);
-    
-    //item[0]. += data.message;
-    item[0].style.display = "inline-block";
-    item[0].style.maxWidth = "45%";
-    item[0].className = (data.sent) ? "talk-bubble tri-right right-top talktext msg_sent bg-info" : "talk-bubble tri-right left-top talktext";
-    container.append(breaker);
-    base.scrollTop = sentmessage.scrollHeight;
-  }
-
-  
-  mySocket.on("new_msg", function(data) {
-    var date = + new Date();
-    var msg = {};
-    msg.time = date;
-    msg.received = data.message;
-    if(data.from === doctor.id) {
-      //$rootScope.message1.push(msg);
-      msg.userId = user.user_id;
-      msg.partnerId = doctor.id;
-      mySocket.emit("save message",msg);        
-      templateService.playAudio(3); // note all sounds can be turned of through settings.
-      chats(msg)
-    } else {
-      var elemPos = $rootScope.patientsDoctorList.map(function(x){return x.doctor_id}).indexOf(data.from);
-      var found = $rootScope.patientsDoctorList[elemPos];
-      if(!found.queueLen) {
-        found.queueLen = 1;
-      } else {
-        found.queueLen++;
-      }
-      msg.userId = data.to;
-      msg.partnerId = data.from;
-      mySocket.emit("save message",msg); //then push the message to the list of patients so that user can view later.     
-      templateService.playAudio(2);   
-    }
-    mySocket.emit("msg received",{to: data.from});
-  });
-
-*/
-
-  if($rootScope.chatStatus !== true)
-    mySocket.emit('join',{userId: user.user_id}); 
+ /* if($rootScope.chatStatus !== true)
+    mySocket.emit('join',{userId: user.user_id}); */
 
   mySocket.emit('init chat',{userId: user.user_id,partnerId: patient.id},function(messages){
     //$rootScope.message1 = messages || [];
@@ -7941,6 +7714,8 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
       //mySocket.emit("save message",msg);//this saves the message as double mark
     }
   });
+
+ 
 
   $scope.sendChat2 = function(){ 
     $scope.user.isSent = true;
@@ -13293,7 +13068,7 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
   if(!localManager.getValue("resolveUser")) {
     $window.location.href = "/login"
   } 
-  localManager.setValue("userId","bobosky2636");
+  
   //user this service within controllers to alert on every event status.
   $rootScope.alertService = function (val,msg) {
     if (val) { 
@@ -13326,6 +13101,8 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
   console.log(localManager.getValue("resolveUser"))
   
   $rootScope.checkLogIn = localManager.getValue("resolveUser");
+
+  localManager.setValue("userId",$rootScope.checkLogIn.user_id);
 
   if($scope.checkLogIn){
     switch($scope.checkLogIn.typeOfUser) {
@@ -13408,6 +13185,7 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
     localManager.removeItem('currPageForRadiology');
     localManager.removeItem('prescriptionRequestData'); 
     localManager.removeItem("userId");
+    localManager.removeItem('saveSocket');
 
   }
  

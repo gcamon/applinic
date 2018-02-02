@@ -9,7 +9,8 @@ module.exports = function(model,io,streams) {
 
 	    socket.on('join', function (data) {
 	    	user.isPresent = true; //use to check presence of user without hitting the database.
-	      socket.join(data.userId);      
+	      socket.join(data.userId);  
+	      console.log(socket.rooms)    
 	      console.log("room created");
 	    });
 
@@ -43,7 +44,7 @@ module.exports = function(model,io,streams) {
 	      		cb(chat.messages);
 	      	}
 	      });
-  		})
+  		});
 
 	    socket.on("send message",function(data,cb){
 	      cb(data);
@@ -206,7 +207,7 @@ module.exports = function(model,io,streams) {
 	    
 
 			//sending video or audio request
-			socket.on("convseration signaling",function(req,cb){
+			/*socket.on("convseration signaling",function(req,cb){
 				model.user.findOne({user_id:req.to},{set_presence:1,firstname:1,title:1},function(err,doc){
 					if(err) throw err;
 					if(doc.set_presence.general === true) {
@@ -238,7 +239,7 @@ module.exports = function(model,io,streams) {
 
 			socket.on("call rejected",function(data){
 				io.sockets.to(data.to).emit("user rejected calls",{status:"Call rejected!"})
-			});
+			});*/
 
 			///////
 
@@ -321,10 +322,7 @@ module.exports = function(model,io,streams) {
         othersocket.emit('message', details);
     });
       
-    /*socket.on('readyToStream', function(options) {
-      console.log('-- ' + socket.id + ' is ready to stream --');      
-      streams.addStream(socket.id, options.name); 
-    });*/
+   
 
     // gets te control to join a room
     socket.on("control join",function(control,cb){

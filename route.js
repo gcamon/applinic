@@ -249,6 +249,10 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
      
   });
 
+   /*router.get("/user/chat-test",function(req,res){
+     res.render('chat2');
+   })*/
+
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   //handles all change picture 
