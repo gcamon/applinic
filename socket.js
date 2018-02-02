@@ -6,7 +6,7 @@ module.exports = function(model,io,streams) {
   io.sockets.on('connection', function(socket){  	   
 	    console.log('a user connected');
 	    var user = {};
-	    
+
 	    socket.on('join', function (data) {
 	    	user.isPresent = true; //use to check presence of user without hitting the database.
 	      socket.join(data.userId);      
@@ -69,7 +69,7 @@ module.exports = function(model,io,streams) {
 
 	    socket.on("msg received",function(data){
 	    	data.isReceived = true;
-	    	io.sockets.to(data.to).emit("isReceived",data.isReceived)
+	    	io.sockets.to(data.to).emit("isReceived",data)
 	    })
 
 	    socket.on("user typing",function(data){
@@ -85,10 +85,10 @@ module.exports = function(model,io,streams) {
 	    		chats.messages.push(data);
 	    		chats.save(function(err,info){
 	    			if(err) throw err;
-	    			console.log("chat saved!!!")
-	    		})
-	    	})
-	    })
+	    			console.log("chat saved!!!");
+	    		});
+	    	});
+	    });
 
 	    //for blocking a user
 	    socket.on("block user",function(data){

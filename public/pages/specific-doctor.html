@@ -155,13 +155,13 @@
 
                 </div>        
             
-                <div class="panel-body msg_container_base bg-default">
+                <!--<div class="panel-body msg_container_base bg-default">
                     <div ng-repeat="u in message1">
                         <div class="talk-bubble tri-right left-top" ng-if="u.received">
                             <div class="talktext">
                                 <div>                      
                                     <p>{{u.received}}</p>
-                            <!--<time datetime="{{u.time}}">{{u.time | date: "shortTime"}}</time>-->
+                           
                                 </div>
                                 <time datetime="2009-11-13T20:00">&nbsp;{{u.time | date: "shortTime"}}</time>                                
                             </div>
@@ -172,7 +172,7 @@
                                     <div ng-class="{'msg_sent' : u.sent}">
                                         <p>{{u.sent}}
                                         </p>
-                            <!--<time datetime="{{u.time}}">{{u.time | date: "shortTime"}}</time>-->
+                           
                                     </div>
                                     <time datetime="2009-11-13T20:00">&nbsp;{{u.time | date: "shortTime"}}</time>
              
@@ -182,24 +182,29 @@
                             </div>  
                         </div>                        
                     </div>
-
-                     <div class="talk-bubble tri-right left-top" >
-                          <div class="talktext">
-                          hello
-                          </div>                              
-                     </div>
+                  
                     <div>
                         <div class="messages" ng-if="typing" style="max-width: 20%;">  
                             <p> {{typing}} </p>                                
                         </div>
                     </div>
                      
+                </div>-->
+                <div class="panel-body msg_container_base bg-default" id="base" style="height: 360px">
+
+                    <div id="sentmessage">
+                        
+                    </div>
+                    
                 </div>
+
+
+
 
                 
                 <form class="panel-footer" ng-submit="sendChat1()">
                         <textarea contenteditable="true"  ng-model="user.text1"  ng-keypress="getkeys($event)" placeholder="Type a message..."> <span class="textout" >{{typeMessage}}</span> </textarea>
-                        <button type="submit" class="btn btn-neutral btn-sm fa fa-send"></button>
+                        <button type="submit" class="btn btn-neutral btn-sm fa fa-send" style="font-size: 82px"></button>
                 </form>
 
             </div>

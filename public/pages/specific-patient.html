@@ -84,13 +84,13 @@
 
 		<!-- removable div-->
             <div ng-if="isChat || isChat === undefined">
-                <div class="panel-body msg_container_base bg-default">
+                <!--<div class="panel-body msg_container_base bg-default">
                 	<div ng-repeat="u in message1">
                          <div class="talk-bubble tri-right left-top" ng-if="u.received">
 						  <div class="talktext">
 						   <div>                      
                                 <p>{{u.received}}</p>
-                                <!--<time datetime="{{u.time}}">{{u.time | date: "shortTime"}}</time>-->
+                               
                             </div>
                                 <time datetime="2009-11-13T20:00">&nbsp;{{u.time | date: "shortTime"}}</time>	                             
 	                        </div>
@@ -105,7 +105,7 @@
     				      <div ng-class="{'msg_sent' : u.sent}">
     				    <p>{{u.sent}}
                           </p>
-        				<!--<time datetime="{{u.time}}">{{u.time | date: "shortTime"}}</time>-->
+        				
     				</div>
 			      <time datetime="2009-11-13T20:00">&nbsp;{{u.time | date: "shortTime"}}</time>
 			     
@@ -124,6 +124,13 @@
                         </div>
                     </div>
                      
+                </div>-->
+                <div class="panel-body msg_container_base bg-default" id="base" style="height: 360px">
+
+                    <div id="sentmessage">
+                        
+                    </div>
+                    
                 </div>
 
                 
