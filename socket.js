@@ -26,20 +26,25 @@ module.exports = function(model,io,streams) {
 	    });
 
   		socket.on("init chat",function(data,cb){
-
   			var chatId = data.userId + "/" + data.partnerId; //creates chat id for the user and a partner to be saved in the database.
-
 	      model.chats.findOne({chat_id:chatId},function(err,chat){
 	      	if(err) throw err;
 	      	if(!chat){
 	      		var date = + new Date();    		
 	      		var newChat = new model.chats({
+	      			status: false,
 	      			date_created: date,
 	      			chat_id: chatId,
 	      			type:"chat",
 	      		});
-	      		newChat.save(function(err,info){
+	      		model.user.findOne({user_id: data.userId},function(err,user){
+	      			if(err) throw err;
+	      			newChat.userId = user.user_id;
+	      			newChat.name = user.title + " " + user.firstname || user.name;
+	      			newChat.profilePic = user.profile_pic_url
+	      			newChat.save(function(err,info){});
 	      		});
+	      		cb([])	      		
 	      	} else {
 	      		cb(chat.messages);
 	      	}
@@ -47,26 +52,76 @@ module.exports = function(model,io,streams) {
   		});
 
 	    socket.on("send message",function(data,cb){
+	    	console.log(data)
+	    	var date = + new Date();
+	    	data.date = date.toString();
+	    	data.id = data.date
 	      cb(data);
-	      //if(Object.keys(socket.rooms).indexOf(data.to) !== -1)
 	       model.user.findOne({user_id: data.to},{set_presence:1},function(err,Obj){
 	       	if(err) throw err;
-
 	       	var checkBlocked = Obj.set_presence.particular.indexOf(data.from);	       	
 	       	if(checkBlocked === -1){	       		
 	       		if(Obj.set_presence.general === true) {		       			          			
 	       			io.sockets.to(data.to).emit('new_msg',data);
 	       		}
-	       	}
-	       	
+	       	}	       	
 	       });
-	       
-	       socket.on("isSent",function(data,cb){
-	       	data.isSent = true;
-	       	cb(data.isSent);
-	       });
+	      //save chats
+	      var chatId = data.from + "/" + data.to;
+	    	var otherId = data.to + "/" + data.from;
+	    	model.chats.findOne({chat_id: chatId},{messages:1}).exec(function(err,chats){
+	    		if(err) throw err;
+	    		if(chats) {
+		    		var msg = {}	  
+		    		msg.sent = data.message;
+		    		msg.time = data.date;
+		    		msg.isSent = false;
+	      		msg.isReceived = false;
+	      		msg.id = data.date;	
+		    		chats.messages.push(msg);
+		    		chats.save(function(err,info){
+		    			if(err) throw err;
+		    		
+		    		});
+	    		}
+	    	});
+
+	    	model.chats.findOne({chat_id: otherId},{messages:1}).exec(function(err,chats){
+	    		if(err) throw err;
+	    		var msg = {}	  
+	    		msg.received = data.message;
+	    		msg.time = data.date;
+      		msg.id = data.date;	
+	    		if(chats) {		    		
+		    		chats.messages.push(msg);
+		    		chats.save(function(err,info){
+		    			if(err) throw err;		    			
+		    		});
+	    		} else {
+	    			var date = + new Date();    		
+	      		var newChat = new model.chats({
+	      			status: false,
+	      			date_created: date,
+	      			chat_id: otherId,
+	      			type:"chat",
+	      		});
+	      		model.user.findOne({user_id: data.to},function(err,user){
+	      			if(err) throw err;
+	      			newChat.userId = user.user_id;
+	      			newChat.name = user.title + " " + user.firstname || user.name;
+	      			newChat.profilePic = user.profile_pic_url
+	      			newChat.messages.push(msg)
+	      			newChat.save(function(err,info){});
+	      		});	      		
+	    		}
+	    	});
 
 	    });
+
+	    socket.on("isSent",function(data,cb){
+       	data.isSent = true;
+       	cb(data.isSent);
+      });
 
 	    socket.on("msg received",function(data){
 	    	data.isReceived = true;
@@ -80,6 +135,7 @@ module.exports = function(model,io,streams) {
 
 	    socket.on("save message",function(data){
 	    	var chatId = data.userId + "/" + data.partnerId;
+	    	var otherId = data.partnerId + "/" + data.userId;
 	    	model.chats.findOne({chat_id: chatId},{messages:1}).exec(function(err,chats){
 	    		if(data.hasOwnProperty('$$hashKey'))
 	    			delete data['$$hashKey'];
@@ -89,8 +145,18 @@ module.exports = function(model,io,streams) {
 	    			console.log("chat saved!!!");
 	    		});
 	    	});
-	    });
 
+	    	model.chats.findOne({chat_id: otherId},{messages:1}).exec(function(err,chat){
+	    		if(err) throw err;
+
+	    	})
+	    });
+	    /*
+	 var date = + new Date();
+    var msg = {};
+    msg.time = date;
+    msg.received = data.message;
+	    */
 	    //for blocking a user
 	    socket.on("block user",function(data){
 	    	model.user.findOne({user_id:data.userId},{set_presence:1}).exec(function(err,user){
@@ -326,8 +392,6 @@ module.exports = function(model,io,streams) {
 
     // gets te control to join a room
     socket.on("control join",function(control,cb){
-    	console.log("checking----------")
-    	console.log(control);
     	socket.join(control.control);//control.joins a roo
     	cb(control);
     	//streams.addStream(socket.id,control.name,control.control,model)
@@ -343,9 +407,6 @@ module.exports = function(model,io,streams) {
     });
 
     socket.on("init reload",function(data){
-    	console.log("reloadiiiiiiiiiiiiiiiiii")
-    	console.log(data)
-    	console.log(data.message)
     	io.sockets.to(data.controlId).emit("reload streams",{status:true,name:data.names,userId:data.userId})
     })
     

@@ -249,9 +249,9 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
      
   });
 
-   /*router.get("/user/chat-test",function(req,res){
+   router.get("/user/chat-test",function(req,res){
      res.render('chat2');
-   })*/
+   })
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -5314,10 +5314,9 @@ router.get("/user/patient/get-my-doctors",function(req,res){
             //the doctor in his dashboard.
             if(data[count].presence === true){             
               list.accepted_doctors[elementPos].presence = true;
-              sendList.push(list.accepted_doctors[elementPos]);
-            } else {
-              sendList.push(list.accepted_doctors[elementPos]);
-            }
+            } 
+
+            sendList.push(list.accepted_doctors[elementPos]);
           
           count++
         }       
@@ -5343,9 +5342,10 @@ router.get("/user/patient/get-my-doctors",function(req,res){
             var elementPos = list.doctor_patients_list.map(function(x){return x.patient_id}).indexOf(data[count].user_id)
               
               if(data[count].presence === true){             
-                list.doctor_patients_list[elementPos].presence = true;
-                sendList.push(list.doctor_patients_list[elementPos]);
-              } 
+                list.doctor_patients_list[elementPos].presence = true;                
+              }
+
+              sendList.push(list.doctor_patients_list[elementPos]);
             
             count++
           } 
@@ -5719,6 +5719,17 @@ router.get("/user/getSpecialTestsRadio",function(req,res){
     });
   } else {
     res.end();
+  }
+});
+
+router.get("/user/get-chats",function(req,res){
+  if(req.user){
+    model.chats.find({userId: req.user.user_id},{_id:0},function(err,chats){
+      if(err) throw err;
+      res.json(chats);
+    })
+  } else {
+    res.end("unautorized access!")
   }
 });
 

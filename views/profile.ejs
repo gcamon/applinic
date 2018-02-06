@@ -201,7 +201,7 @@
                                 </div>
                             </li>
 
-                               <li class="notifications new"> <a href="" data-toggle="dropdown">
+                               <!--<li class="notifications new"> <a href="" data-toggle="dropdown">
                     <i class="fa fa-phone"></i>
                     <sup>
                       <span class="counter" ng-if="audioRequestLen > 0 " ng-cloak>{{audioRequestLen}}</span>
@@ -233,9 +233,40 @@
                                         </ul>
                                     </footer>
                                 </div>
+                            </li>-->
+                             <li class="notifications new"> <a href="" ng-click = "viewChatsHistory()" data-toggle="dropdown">
+                    <i class="fa fa-comment" ></i>
+                    <sup>
+                      <span class="counter btn-danger" ng-if="showIndicator !== false" style="border-radius: 10px;width: 8px;height: 8px;display: inline-block;"  ng-cloak></span>
+                    </sup>
+                  </a>
+                                <div class="dropdown-menu notifications-dropdown-menu" >
+                                    <ul class="notifications-container noti-style">
+                                        <li> <h6 style="text-align: center">Chats</h6> </li>
+                                        <li ng-repeat = "chat in chatsList" ng-click= "viewChat(chat.chat_id)" style="height: 80px;overflow:hidden">
+                                            <a href="" class="notification-item">
+                                                <div class="img-col">
+                                                    <div class="img" style="background-image: url({{chat.profilePic}})"></div>
+                                                </div>
+                                                <div class="body-col">
+                                                    <p style=""> <span class="accent" ng-cloak>{{chat.name}}</span>
+                                                        <span style="display:block">{{chat.messages[chat.messages.length - 1].received || chat.messages[chat.messages.length - 1].sent}} <small style="display:block" ng-cloak>{{chat.messages[chat.messages.length - 1].time | date: "shortTime" || chat.messages[chat.messages.length - 1].received | date: "shortTime"}} &nbsp;&nbsp;{{chat.messages[chat.messages.length - 1].time | date: "mediumDate" || chat.messages[chat.messages.length - 1].received | date: "mediumDate"}}</small>.</span> 
+                                                    </p>
+                                                </div>
+                                            </a>
+                                        </li>                                       
+                                    </ul>
+                                    <footer>
+                                        <ul>
+                                            <li> <a href="">
+                            <!--View All -->
+                          </a> </li>
+                                        </ul>
+                                    </footer>
+                                </div>
                             </li>
 
-                               <li class="notifications new"> 
+                               <!--<li class="notifications new"> 
                                     <a href="" data-toggle="dropdown">
                                     <i class="fa fa-video-camera"></i>
                                 <sup>
@@ -268,7 +299,7 @@
                                         </ul>
                                     </footer>
                                 </div>
-                            </li>
+                            </li>-->
 
 
                              <li class="profile dropdown" ng-controller="topHeaderController">
