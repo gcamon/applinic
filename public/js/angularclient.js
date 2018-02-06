@@ -7080,7 +7080,8 @@ app.controller("presenceSocketController",["$rootScope","$scope","$window","mySo
       var elemPos = $rootScope.patientsDoctorList.map(function(x){return x.doctor_id}).indexOf(data.doctor_id);
       var found = $rootScope.patientsDoctorList[elemPos];
       found.presence = data.presence;
-      $rootScope.dispalyPresence = data.presence;      
+      $rootScope.dispalyPresence = data.presence; 
+      $rootScope.patientAvailability = data.presence;     
      });
    } else if(person.typeOfUser === "Doctor") {
    //doctors see patients the log in. doctors can only see logged in patients but not all the patients at once.
@@ -7493,13 +7494,12 @@ app.controller("myDoctorController",["$scope","$location","$http","$window","$ro
   mySocket.on("isReceived",function(response){
     //var getIndex = $rootScope.message1.length - 1; //gets the index of the currently send text from the array
     //$rootScope.message1[getIndex].isReceived = response.isReceived;
-    //mySocket.emit("save message",msg);//this saves the message as received (ie blue) mark
-    if(response.isReceived && response.sent) {
-      var elem = document.getElementById(response.id);
-      elem.innerHTML += "";
-      elem.innerHTML += " &nbsp;&nbsp;&nbsp;SEEN! ";
+    //mySocket.emit("save message",msg);//this saves the message as received (ie blue) mark    
+    var elem = document.getElementById(response.id);
+    elem.innerHTML += "";
+    elem.innerHTML += " &nbsp;&nbsp;&nbsp;SEEN! ";
       //mySocket.emit("save message",msg);//this saves the message as double mark
-    }
+    
   });
   
   $scope.sendChat1 = function(){ 
@@ -7600,7 +7600,7 @@ app.controller("myDoctorController",["$scope","$location","$http","$window","$ro
       $rootScope.$broadcast("unattendedMsg",true);   
       templateService.playAudio(2);   
     }
-    mySocket.emit("msg received",{to: data.from,id:data.id});
+    mySocket.emit("msg received",{to: data.from,id:data.date});
   });
 
 
@@ -7835,7 +7835,7 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
       templateService.playAudio(2);    
       //then push the message to the list of patients so that user can view later.
     }
-    mySocket.emit("msg received",{to: data.from,id:data.id});
+    mySocket.emit("msg received",{to: data.from,id:data.date});
 
   });
 
