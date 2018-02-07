@@ -7496,6 +7496,7 @@ app.controller("myDoctorController",["$scope","$location","$http","$window","$ro
     //$rootScope.message1[getIndex].isReceived = response.isReceived;
     //mySocket.emit("save message",msg);//this saves the message as received (ie blue) mark    
     var elem = document.getElementById(response.id);
+    alert(response.id)
     elem.innerHTML += "";
     elem.innerHTML += " &nbsp;&nbsp;&nbsp;SEEN! ";
       //mySocket.emit("save message",msg);//this saves the message as double mark
@@ -7552,8 +7553,8 @@ app.controller("myDoctorController",["$scope","$location","$http","$window","$ro
     small.style.display = "block";
     small.style.marginTop = "10px";
     p.innerHTML += (data.sent) ? data.sent : data.received; 
-    console.log(data);
-    small.id = data.id 
+   
+    small.id = data.id;
     small.innerHTML += (data.sent) ? $filter('date')(data.time, "shortTime") : $filter('date')(data.time, "shortTime");
     small.innerHTML += (data.sent) ? "&nbsp;&nbsp;" + $filter('date')(data.time, "mediumDate") : "&nbsp;&nbsp;" + $filter('date')(data.time, "mediumDate");     
     
