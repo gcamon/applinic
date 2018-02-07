@@ -7080,8 +7080,7 @@ app.controller("presenceSocketController",["$rootScope","$scope","$window","mySo
       var elemPos = $rootScope.patientsDoctorList.map(function(x){return x.doctor_id}).indexOf(data.doctor_id);
       var found = $rootScope.patientsDoctorList[elemPos];
       found.presence = data.presence;
-      $rootScope.dispalyPresence = data.presence; 
-      $rootScope.patientAvailability = data.presence;     
+      $rootScope.dispalyPresence = data.presence;          
      });
    } else if(person.typeOfUser === "Doctor") {
    //doctors see patients the log in. doctors can only see logged in patients but not all the patients at once.
@@ -7496,8 +7495,7 @@ app.controller("myDoctorController",["$scope","$location","$http","$window","$ro
     //$rootScope.message1[getIndex].isReceived = response.isReceived;
     //mySocket.emit("save message",msg);//this saves the message as received (ie blue) mark    
     var elem = document.getElementById(response.id);
-    alert(response.id)
-    elem.innerHTML += "";
+    elem.innerHTML = "";
     elem.innerHTML += " &nbsp;&nbsp;&nbsp;SEEN! ";
       //mySocket.emit("save message",msg);//this saves the message as double mark
     
@@ -7739,7 +7737,7 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
    // $rootScope.message1[getIndex].isReceived = status;
    // mySocket.emit("save message",msg);   
     var elem = document.getElementById(response.id);
-    elem.innerHTML += "";
+    elem.innerHTML = "";
     elem.innerHTML += " &nbsp;&nbsp;&nbsp;SEEN! ";
     //mySocket.emit("save message",msg);//this saves the message as double mark
     

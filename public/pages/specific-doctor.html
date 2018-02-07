@@ -140,8 +140,8 @@
                         <div class="col-md-7 col-sm-12 col-xs-12">
                           <button class="btn btn-neutral" style="font-size: 16px" ng-click="chatLive()">Live Chat</button> 
                             <span class="badge badge-success" style="display:inline-block;" ng-cloak style="font-size: 16px">{{docInfo.title}} {{docInfo.firstname}} is <em ng-if="typing">{{typing}}</em> 
-                                <em ng-if="patientAvailability && !typing" ng-cloak>Online</em>
-                                <em ng-if="!patientAvailability" ng-cloak style="color:red">Offline</em>
+                                <em ng-if="dispalyPresence && !typing" ng-cloak>Online</em>
+                                <em ng-if="!dispalyPresence" ng-cloak style="color:red">Offline</em>
                             </span>
                         </div>
                         <div class="col-md-5 col-sm-12 col-xs-12 row " style="text-align: right;">
