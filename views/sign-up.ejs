@@ -109,16 +109,8 @@
   <div class="tab-pane active" id="patient" role="tabpanel" ng-cloak>
       <div class="alert alert-info"><strong>Patient Signup : </strong>Please complete the form below. Ensure your phone number is active.</div>
   <form class="row">
-  <div class="col-md-6 col-sm-12">     
-    <input type="text" class="form-control" placeholder="First Name"  ng-model="user.firstname" >
-    <span class="text-danger" style="font-size: 10px;display: inline-block;margin:-60px 0 0 10px;float: left;">{{FirstNameMessage}}</span>  
-  </div>
-  <div class="col-md-6 col-sm-12">    
-    <input type="text" class="form-control" placeholder="Last Name"  ng-model="user.lastname" >
-    <span class="text-danger" style="font-size: 10px;display: inline-block;margin:-60px 0 0 10px;float: left;">{{lastNameMessage}}</span> 
-  </div>
 
-  <div class="col-md-12">
+    <div class="col-md-12">
     <select class="custom-select form-control col-md-12" ng-model="user.title" >
         <option value="" disabled selected>Select Title</option>                                           
         <option>Dr</option>
@@ -139,6 +131,18 @@
         <option>Justice</option>
     </select>
   </div>  
+
+
+  <div class="col-md-6 col-sm-12">     
+    <input type="text" class="form-control" placeholder="First Name"  ng-model="user.firstname" >
+    <span class="text-danger" style="font-size: 10px;display: inline-block;margin:-60px 0 0 10px;float: left;">{{FirstNameMessage}}</span>  
+  </div>
+  <div class="col-md-6 col-sm-12">    
+    <input type="text" class="form-control" placeholder="Last Name"  ng-model="user.lastname" >
+    <span class="text-danger" style="font-size: 10px;display: inline-block;margin:-60px 0 0 10px;float: left;">{{lastNameMessage}}</span> 
+  </div>
+
+  
   <div class="col-md-6 col-sm-12">
   <select class="custom-select form-control col-md-12" ng-model="user.age" >
   <option value="" disabled selected>Age category</option>                                           
@@ -164,7 +168,9 @@
     <span class="text-danger" style="font-size: 10px;display: inline-block;margin:-60px 0 0 10px;float: left;">{{genderMessage}}</span> 
   </div>
 
-
+  <div class="col-md-12">
+  <hr>
+  </div>
   <div class="col-md-6 col-sm-12">
     <!--<input type="text" class="form-control" placeholder="Country" ng-model="user.country" >-->
     <select class="custom-select form-control col-md-12" ng-model="user.country">
@@ -173,8 +179,8 @@
     </select>
     <span class="text-danger" style="font-size: 10px;display: inline-block;margin:-60px 0 0 10px;float: left;">{{countryMessage}}</span> 
   </div>
-  <div class="col-md-6 col-sm-12" style="position: relative;">
-   <!-- <input type="text" class="form-control" placeholder="City/Town" ng-model="user.city" >-->
+ <!-- <div class="col-md-6 col-sm-12" style="position: relative;">
+   
     <small class='fa fa-arrow-right' style="font-size:10px;color:blue;padding-left: 10px;position: absolute; left: 0;top:10px" ng-if="isNext1"></small>
    <select class="custom-select form-control col-md-12" ng-model="user.state"  >
       <option value="" selected disabled >{{status1}}</option>
@@ -189,15 +195,15 @@
       <option value="" selected disabled >{{status3}}</option>
       <option ng-repeat="region in regions" value="{{region.geonameId}} {{region.name}}">{{region.name}}</option>
     </select>
-  </div>
+  </div>-->
   <div class="col-md-6 col-sm-12" style="position: relative;">
-   <small class='fa fa-arrow-right' style="font-size:10px;color:blue;padding-left: 10px;position: absolute; left: 0;top:10px" ng-if="isNext3"></small>
-    <input type="text" class="form-control" placeholder="Enter City or Town name" ng-model="user.city" ng-if="isEdit === true" ng-cloak >
-    <select class="custom-select form-control col-md-12" ng-model="user.city"  ng-cloak ng-if="isEdit === false" >
+   <!--<small class='fa fa-arrow-right' style="font-size:10px;color:blue;padding-left: 10px;position: absolute; left: 0;top:10px" ng-if="isNext3"></small>-->
+    <input type="text" class="form-control" placeholder="Enter City or Town name" ng-model="user.city"  ng-cloak >
+    <!--<select class="custom-select form-control col-md-12" ng-model="user.city"  ng-cloak ng-if="isEdit === false" >
       <option value="" selected disabled >{{status2}}</option>
       <option ng-repeat="city in cities" value="{{city.name}}">{{city.name}}</option>
       <option value="edit">_Other</option>
-    </select>
+    </select>-->
     <span class="text-danger" style="font-size: 10px;display: inline-block;margin:-60px 0 0 10px;float: left;">{{cityMessage}}</span> 
   </div>
 
@@ -206,7 +212,7 @@
  
  <div  class="col-md-6 col-sm-12" style="position: relative;">
   
-      <input type="number" name="callingcode" style="position:absolute; top:19px; background:transparent;  left:35px; border: none; width: 55px; outline:0;"  placeholder="{{user.callingCode || 'Code'}}" ng-model= "user.callingCode"/>
+      <input type="number" name="callingcode" style="position:absolute; top:19px; background:transparent;  left:35px; border: none; width: 55px; outline:0;"  placeholder="{{(user.callingCode) ? user.callingCode : 'Code'}}" ng-model= "user.callingCode"/>
       <input type="number" class="form-control" noBorder" placeholder="Mobile number" ng-model="user.phone" style="padding-left: 80px"/>  
     <span class="text-danger" style="font-size: 10px;display: inline-block;margin:-60px 0 0 10px;float: left;">{{phoneMessage}}</span>
     <span class="text-danger" style="font-size: 10px;display: inline-block;margin:-60px 0 0 10px;float: left;">{{numberError}}</span>  
@@ -382,13 +388,15 @@
         <input type="text" class="form-control" placeholder="Last Name" ng-model="user.lastname" >
         <span class="text-danger" style="font-size: 10px;display: inline-block;margin:-60px 0 0 10px;float: left;">{{lastNameMessage}}</span>
   </div>
-
+ <div class="col-md-12">
+  <hr>
+  </div>
   <div class="col-md-6 col-sm-12">
-    <input type="text" class="form-control" placeholder="Place Of work" ng-model="user.work_place">
+    <input type="text" class="form-control" placeholder="Place of Work" ng-model="user.work_place">
     <span class="text-danger" style="font-size: 10px;display: inline-block;margin:-60px 0 0 10px;float: left;">{{workMessage}}</span>
   </div>
   <div class="col-md-6 col-sm-12">
-        <input type="text" class="form-control" placeholder="Work Address" ng-model="user.address" >
+        <input type="text" class="form-control" placeholder="Address of Place of Work" ng-model="user.address" >
         <span class="text-danger" style="font-size: 10px;display: inline-block;margin:-60px 0 0 10px;float: left;">{{addressMessage}}</span>
   </div>
 
@@ -400,8 +408,8 @@
     </select>
     <span class="text-danger" style="font-size: 10px;display: inline-block;margin:-60px 0 0 10px;float: left;">{{countryMessage}}</span>
   </div>
-  <div class="col-md-6 col-sm-12" style="position: relative;">
-   <!-- <input type="text" class="form-control" placeholder="City/Town" ng-model="user.city" >-->
+ <!-- <div class="col-md-6 col-sm-12" style="position: relative;">
+   
     <small class='fa fa-arrow-right' style="font-size:10px;color:blue;padding-left: 10px;position: absolute; left: 0;top:10px" ng-if="isNext1"></small>
    <select class="custom-select form-control col-md-12" ng-model="user.state"  >
       <option value="" selected disabled >{{status1}}</option>
@@ -409,22 +417,23 @@
     </select>
   </div>
 
+
   <div class="col-md-6 col-sm-12" style="position: relative;">
    <small class='fa fa-arrow-right' style="font-size:10px;color:blue;padding-left: 10px;position: absolute; left: 0;top:10px" ng-if="isNext2"></small>
-      <select class="custom-select form-control col-md-12" ng-model="user.region"  >
+      <select class="custom-select form-control col-md-12" ng-model="user.region"/>
       <option value="" selected disabled >{{status3}}</option>
       <option ng-repeat="region in regions" value="{{region.geonameId}} {{region.name}}">{{region.name}}</option>
     </select>
-  </div>
+  </div>-->
   <div class="col-md-6 col-sm-12" style="position: relative;">
-   <small class='fa fa-arrow-right' style="font-size:10px;color:blue;padding-left: 10px;position: absolute; left: 0;top:10px" ng-if="isNext3"></small>
-    <input type="text" class="form-control" placeholder="Enter City or Town name" ng-model="user.city" ng-if="isEdit === true" ng-cloak >
-    <select class="custom-select form-control col-md-12" ng-model="user.city"  ng-cloak ng-if="isEdit === false" >
+   <!--<small class='fa fa-arrow-right' style="font-size:10px;color:blue;padding-left: 10px;position: absolute; left: 0;top:10px" ng-if="isNext3"></small>-->
+    <input type="text" class="form-control" placeholder="Enter City or Town name" ng-model="user.city"  ng-cloak >
+    <!--<select class="custom-select form-control col-md-12" ng-model="user.city"  ng-cloak ng-if="isEdit === false" >
       <option value="" selected disabled >{{status2}}</option>
       <option ng-repeat="city in cities" value="{{city.name}}">{{city.name}}</option>
       <option value="edit">_Other</option>
-    </select>
-    <span class="text-danger" style="font-size: 10px;display: inline-block;margin:-60px 0 0 10px;float: left;">{{cityMessage}}</span>
+    </select>-->
+    <span class="text-danger" style="font-size: 10px;display: inline-block;margin:-60px 0 0 10px;float: left;">{{cityMessage}}</span> 
   </div>
 
 
@@ -503,7 +512,9 @@
  <span class="text-danger" style="font-size: 10px;display: inline-block;margin:-60px 0 0 10px;float: left;">{{nameError}}</span>
   </div>
 
- 
+  <div class="col-md-12">
+  <hr>
+  </div>
   <div class="col-md-6">
  <input type="text" class="form-control" placeholder="Address" ng-model="user.address" >
  <span class="text-danger" style="font-size: 10px;display: inline-block;margin:-60px 0 0 10px;float: left;">{{addressMessage}}</span>
@@ -517,8 +528,8 @@
     </select>
     <span class="text-danger" style="font-size: 10px;display: inline-block;margin:-60px 0 0 10px;float: left;">{{countryMessage}}</span>
   </div>
-  <div class="col-md-6 col-sm-12" style="position: relative;">
-   <!-- <input type="text" class="form-control" placeholder="City/Town" ng-model="user.city" >-->
+  <!-- <div class="col-md-6 col-sm-12" style="position: relative;">
+   
     <small class='fa fa-arrow-right' style="font-size:10px;color:blue;padding-left: 10px;position: absolute; left: 0;top:10px" ng-if="isNext1"></small>
    <select class="custom-select form-control col-md-12" ng-model="user.state"  >
       <option value="" selected disabled >{{status1}}</option>
@@ -526,22 +537,23 @@
     </select>
   </div>
 
+
   <div class="col-md-6 col-sm-12" style="position: relative;">
    <small class='fa fa-arrow-right' style="font-size:10px;color:blue;padding-left: 10px;position: absolute; left: 0;top:10px" ng-if="isNext2"></small>
-      <select class="custom-select form-control col-md-12" ng-model="user.region"  >
+      <select class="custom-select form-control col-md-12" ng-model="user.region"/>
       <option value="" selected disabled >{{status3}}</option>
       <option ng-repeat="region in regions" value="{{region.geonameId}} {{region.name}}">{{region.name}}</option>
     </select>
-  </div>
+  </div>-->
   <div class="col-md-6 col-sm-12" style="position: relative;">
-   <small class='fa fa-arrow-right' style="font-size:10px;color:blue;padding-left: 10px;position: absolute; left: 0;top:10px" ng-if="isNext3"></small>
-    <input type="text" class="form-control" placeholder="Enter City or Town name" ng-model="user.city" ng-if="isEdit === true" ng-cloak >
-    <select class="custom-select form-control col-md-12" ng-model="user.city"  ng-cloak ng-if="isEdit === false" >
+   <!--<small class='fa fa-arrow-right' style="font-size:10px;color:blue;padding-left: 10px;position: absolute; left: 0;top:10px" ng-if="isNext3"></small>-->
+    <input type="text" class="form-control" placeholder="Enter City or Town name" ng-model="user.city"  ng-cloak >
+    <!--<select class="custom-select form-control col-md-12" ng-model="user.city"  ng-cloak ng-if="isEdit === false" >
       <option value="" selected disabled >{{status2}}</option>
       <option ng-repeat="city in cities" value="{{city.name}}">{{city.name}}</option>
       <option value="edit">_Other</option>
-    </select>
-    <span class="text-danger" style="font-size: 10px;display: inline-block;margin:-60px 0 0 10px;float: left;">{{cityMessage}}</span>
+    </select>-->
+    <span class="text-danger" style="font-size: 10px;display: inline-block;margin:-60px 0 0 10px;float: left;">{{cityMessage}}</span> 
   </div>
 
  <div  class="col-md-6 col-sm-12" style="position: relative;">
@@ -554,16 +566,14 @@
 
 
  
-  <div class="col-md-12 col-sm-12">
+  <div class="col-md-6 col-sm-12">
  <input type="email" class="form-control" placeholder="Email Address" ng-model="user.email" >
  <span class="text-danger" style="font-size: 10px;display: inline-block;margin:-60px 0 0 10px;float: left;">{{emailMessage}}</span>
   </div>
 
-<div class="col-md-12">
-<hr>
-</div>
 
-  <div class="col-md-12">
+
+  <div class="col-md-6">
  <input type="text" class="form-control" placeholder="Username" ng-model="user.username">
  <span class="text-danger" style="font-size: 10px;display: inline-block;margin:-60px 0 0 10px;float: left;">{{usernameMessage}}</span>
   </div> 
@@ -605,17 +615,14 @@
   	<div class="alert alert-info"><strong>Pharmacy Signup : </strong>Please complete the form below. Ensure your phone number is active.</div>
       <form class="row">
 
-  <div class="col-md-6">
-  <select class="custom-select col-md-12"  ng-model="user.typeOfUser">
-   <option value="" selected>Pharmacy</option>
-  </select>
-  <span class="text-danger" style="font-size: 10px;display: inline-block;margin:-60px 0 0 10px;float: left;">{{typeMessage}}</span>
-  </div>
+  
 
-  <div class="col-md-6 col-sm-12">
+  <div class="col-md-12 col-sm-12">
   <input type="text" class="form-control" placeholder="Center Name" ng-model="user.name" >
   <span class="text-danger" style="font-size: 10px;display: inline-block;margin:-60px 0 0 10px;float: left;">{{nameError}}</span>
   </div>
+
+ 
   <div class="col-md-6 col-sm-12">
  <input type="text" class="form-control" placeholder="Address" ng-model="user.address">
  <span class="text-danger" style="font-size: 10px;display: inline-block;margin:-60px 0 0 10px;float: left;">{{addressMessage}}</span>
@@ -630,8 +637,8 @@
     </select>
     <span class="text-danger" style="font-size: 10px;display: inline-block;margin:-60px 0 0 10px;float: left;">{{countryMessage}}</span>
   </div>
-  <div class="col-md-6 col-sm-12" style="position: relative;">
-   <!-- <input type="text" class="form-control" placeholder="City/Town" ng-model="user.city" >-->
+  <!-- <div class="col-md-6 col-sm-12" style="position: relative;">
+   
     <small class='fa fa-arrow-right' style="font-size:10px;color:blue;padding-left: 10px;position: absolute; left: 0;top:10px" ng-if="isNext1"></small>
    <select class="custom-select form-control col-md-12" ng-model="user.state"  >
       <option value="" selected disabled >{{status1}}</option>
@@ -642,20 +649,20 @@
 
   <div class="col-md-6 col-sm-12" style="position: relative;">
    <small class='fa fa-arrow-right' style="font-size:10px;color:blue;padding-left: 10px;position: absolute; left: 0;top:10px" ng-if="isNext2"></small>
-      <select class="custom-select form-control col-md-12" ng-model="user.region"  >
+      <select class="custom-select form-control col-md-12" ng-model="user.region"/>
       <option value="" selected disabled >{{status3}}</option>
       <option ng-repeat="region in regions" value="{{region.geonameId}} {{region.name}}">{{region.name}}</option>
     </select>
-  </div>
+  </div>-->
   <div class="col-md-6 col-sm-12" style="position: relative;">
-   <small class='fa fa-arrow-right' style="font-size:10px;color:blue;padding-left: 10px;position: absolute; left: 0;top:10px" ng-if="isNext3"></small>
-    <input type="text" class="form-control" placeholder="Enter City or Town name" ng-model="user.city" ng-if="isEdit === true" ng-cloak >
-    <select class="custom-select form-control col-md-12" ng-model="user.city"  ng-cloak ng-if="isEdit === false" >
+   <!--<small class='fa fa-arrow-right' style="font-size:10px;color:blue;padding-left: 10px;position: absolute; left: 0;top:10px" ng-if="isNext3"></small>-->
+    <input type="text" class="form-control" placeholder="Enter City or Town name" ng-model="user.city"  ng-cloak >
+    <!--<select class="custom-select form-control col-md-12" ng-model="user.city"  ng-cloak ng-if="isEdit === false" >
       <option value="" selected disabled >{{status2}}</option>
       <option ng-repeat="city in cities" value="{{city.name}}">{{city.name}}</option>
       <option value="edit">_Other</option>
-    </select>
-    <span class="text-danger" style="font-size: 10px;display: inline-block;margin:-60px 0 0 10px;float: left;">{{cityMessage}}</span>
+    </select>-->
+    <span class="text-danger" style="font-size: 10px;display: inline-block;margin:-60px 0 0 10px;float: left;">{{cityMessage}}</span> 
   </div>
 
   <div  class="col-md-6 col-sm-12" style="position: relative;">
@@ -718,16 +725,19 @@
 </div>
 
 </div >
-		<section class="phone-verify" ng-controller="verifyPhoneController" ng-if="isPhoneVerify" ng-cloak>
+		<section class="phone-verify" ng-controller="verifyPhoneController" ng-if="isPhoneVerify" style="height: 540px" ng-cloak>
 			<div class="container">
 				<!--<p >Enter the pin sent to {{formData.phone}} below</p>-->
+        <div class="col-md-12 pl-4">
         <p style="font-size: 14px">{{verifyInfo}}</p>
-				<div style="color:blue; font-size: 16px">{{error}}</div>
-                <div class="form-group col-md-6 col-sm-12">
+        <div style="color:blue; font-size: 16px">{{error}}</div>
+        </div>
+				
+        <div class="form-group col-md-6 col-sm-12">
 				<input type="text" placeholder="Enter verification pin" ng-model="verify.pin" class="form-control">
-                </div>
+        </div>
 				<div class="col-md-12 pl-4">
-				<button class="btn btn-primary" ng-click="sendForm()"><i class="fa fa-spinner fa-pulse fa-1x fa-fw text-danger" ng-if="loading"></i>
+				<button class="btn btn-danger" ng-click="sendForm()"><i class="fa fa-spinner fa-pulse fa-1x fa-fw text-danger" ng-if="loading"></i>
                 <span class="sr-only">Loading...</span> Continue</button>
 				</div>
 			</div>

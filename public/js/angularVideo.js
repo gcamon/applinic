@@ -1080,7 +1080,7 @@ app.controller("prescriptionController",["$rootScope","$scope","$window","$http"
     	var source = $resource("/user/pharmacy/not-ran-services")
     	source.query({centerId: center.user_id},function(data) { 
     		if(data.error){
-    			$sccope.status = "Not Updated!";
+    			$scope.status = "Not Updated!";
     			return;
     		}
 
@@ -1095,22 +1095,17 @@ app.controller("prescriptionController",["$rootScope","$scope","$window","$http"
     		}
 
     		patient.user_id = center.user_id // id is the id of the pharmacy
-    		console.log(data)
-    		console.log($scope.drugList);
     	})
     }
 
     function getPharmacy() {
     	var source = $resource("/user/patient/getAllPharmacy")
     	source.query({city:$scope.treatment.city,country:$scope.treatment.country},function(list){
-    		console.log(list)
     		$scope.searchResult = list;
     	})
     }
 
     $scope.sendDrug = function() {
-    	console.log($scope.treatment)
-    	console.log(patient);
     	patient.treatment = $rootScope.treatment;
     	$http({
         method  : 'PUT',

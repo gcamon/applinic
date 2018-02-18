@@ -217,7 +217,7 @@
 <hr class="bg-warning">
 
 <!--physical examination-->
-   <div class="pl-2" style="font-size:2em; font-weight:300;">Physical Examination</div>
+   <div class="pl-2" style="font-size:2em; font-weight:300;">Physical Examination Entry</div>
   <hr>
   <div class="col-md-6  col-sm-12 col-xs-12 form-group">
     <label for="firstname"> General Examination</label>
@@ -280,7 +280,7 @@
 
 <p ng-if="test.conclusion">Patient test results ran by {{}}</p>
 <button class="btn btn-info" ng-if="isLab" ng-click="newLab()">New lab test</button>&nbsp;&nbsp;&nbsp;&nbsp;
- <button class="btn btn-info" ng-click="other()" ng-if="isLab">Request for a other test </button>
+ <!--<button class="btn btn-info" ng-click="other()" ng-if="isLab">Request for a other test </button>-->
 </div>
 
  <!-- for radiology -->
@@ -324,40 +324,7 @@
 </section>
 
 
-<!--<div class="container p-0 mt-2">
-<div class="col-md-12  col-sm-12 col-xs-12 p-2">
-    <div class="col-md-9 pull-left">
-<div>
-        <button class="btn btn-neutral btn-sm" href="#">Listing of Chemical Pathology</button>
-      <button class="btn btn-neutral btn-sm" href="#"> Listing of Hematology/Blood Bank</button>
-      <a class="btn btn-neutral btn-sm" href="#">Listing of Histology/Cytology</a>
-      <a class="btn btn-neutral btn-sm" href="#">Listing of Hormone</a>
-      <a class="btn btn-neutral btn-sm" href="#">Listing of Microbiology/Parasitology</a>
-      <a class="btn btn-neutral btn-sm" href="#">Listing of Toxicology </a>
-      <a class="btn btn-neutral btn-sm" href="#">Listing of Molecular Biology</a>
-</div>
-    </div>
 
-    <div class="col-md-3 pull-right">
-        <button class="btn btn-info pull-right">Preview selected test</button>
-    </div>
-   
-<div class="col-md-12  col-sm-12 col-xs-12 mt-1">
-<div class="form-inline">
-  <div class="form-group">
-    <label for="filtertest">Filter list by test name</label>
-    <input type="text" id="filtertest" class="form-control mx-sm-3" aria-describedby="passwordHelpInline">
-  </div>
-</div>
-<div class="mt-1">
-<label class="custom-control custom-checkbox">
-  <input type="checkbox" class="custom-control-input">
-  <span class="custom-control-indicator"></span>
-  <span class="custom-control-description">Check this checkbox</span>
-</label>
-</div>
-</div>
-checkboxes-->
 
 
 <div class="clearfix"></div>

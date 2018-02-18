@@ -22,7 +22,7 @@
         
           <script src="/assets/js/vendor2.js"></script>
           <script type="text/javascript" src="/assets/js/source.js"></script>
-          
+         
           <style>
               .title{
                   font-weight: 300;
@@ -38,6 +38,22 @@
 
                 .text-center a {
                     margin-left: 50px;
+                }
+
+                .notAvail {
+                    text-decoration: line-through;
+                    color:red;
+                }
+
+                .updateInfo {
+                    color: orange!important;
+                    float: right!important;
+                    font-size: 14px;
+                }
+
+                .box-animate {
+                    transition: all 2s linear;
+                    display: block;
                 }
 
                 @media screen and (max-width: 720px) {
@@ -1531,7 +1547,70 @@
               </div>
           </div>
         </div>
-     </script>                      
+     </script>
+      <script type="text/ng-template" id="selected-center.html">
+         <div class="modal fade">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+               <button type="button" class="close" ng-click="close('Cancel')" data-dismiss="modal" aria-hidden="true" >&times;</button>
+              </div>          
+             
+              <div class="modal-body">
+                    <div class="container">
+<div class="card p-2">
+<h4 class="font-1_7 mt-0">Forwarding Prescription</h4><hr>
+<div class="row" ng-if="placeHolder">
+    <h5 class="text-danger pl-2">{{message}}</h5>   
+    <div class="col-sm-12 col-md-12">
+        <h4 class="font-1_4 pb-1" style="border-bottom: 1px solid rgba(0,0,0,0.2)">{{centerInfo.name}} 
+            <span style="display:block; font-size:.9em; font-weight:300;">{{centerInfo.type}}</span></h4>
+        <div>
+        <div class="col-md-2 col-sm-12 pull-right">
+            <img  class="img-rounded" style="min-width:120px; min-height:120px;" src="{{centerInfo.profile_pic_url}}" alt="profile pic"/>
+        </div>
+        <div class="col-md-10 col-sm-12 pt-2">          
+            <div><b class="font-1_1">Address: </b>{{centerInfo.address}}</div>
+            <div><b class="font-1_1">City: </b>{{centerInfo.city}}</div>
+            <address><b class="font-1_1">Country: </b>{{centerInfo.country}}</address>
+        </div>
+    </div> 
+    <div class="row">
+        <div class="card p-2">
+        <div class="col-sm-12 col-md-12 pb-0">
+            <p>Do you wish to contact <b class="font-1_4">{{centerInfo.name}}</b> for inquires before sending prescription? <span class="text-success btn btn-simple btn-sm" style="cursor:pointer;" ng-click="isEnquiry()"> &nbsp;Yes</span></p>
+                <div ng-if="isContactFirst">
+                <span class="font-1_4">Contact Through:</span>
+                <i class="fa fa-phone font-1_4 text-success mr-1 btn btn-simple btn-sm" style="cursor:pointer;"> +234 {{centerInfo.phone}}</i>
+                <!--<i class="fa fa-commenting-o font-1_4 text-success btn btn-simple btn-sm" style="cursor:pointer"></i>  -->             
+            </div>      
+        </div>  
+        </div>      
+    </div>
+    <div class="col-sm-12 col-md-12 p-0">
+        <div class=" pl-1 pr-1">
+                <button class="btn btn-success btn-lg btn-block" style="cursor:pointer; box-shadow: 0px 5px 25px 0px rgba(0, 0, 0, 0.2); text-align: center;" ng-click="sendReferral(centerInfo.user_id,centerInfo.type)">I have confirmed, send prescription</button>
+        </div>
+    </div>
+</div>
+<div ng-if="success" class="mt-2 p-2 col-md-8 col-sm-12 offset-md-2 offset-sm-0 text-center" style=" box-shadow: 0px 5px 25px 0px rgba(0, 0, 0, 0.2);">
+        <h5 class="font-1_4">{{message.info}} 
+        <span style="display:block; font-size:15px;">To</span>
+        <span style="display:block;">{{centerInfo.name}}</span></h5>
+        <address class="font-1_1">{{centerInfo.address}}, <span style="display:block">{{centerInfo.city}}, {{centerInfo.country}}<span></address>
+        <p class="font-1_1"> Ref No: {{message.ref}}</p>
+        <p><b>Make note of the <em style="font-weight: normal">Address</em> and <em style="font-weight: normal">reference number</em> above for easy location and identification respectively.</b></p>
+</div>
+
+</div>
+</div>
+
+              </div>
+              
+            </div>
+          </div>
+        </div>
+    </script>                      
 
         <!-- Reference block for JS -->
 
@@ -1550,7 +1629,7 @@
         <script src="/assets/js/socket.min.js"></script>
         <script src="/assets/js/jquery-ui.js"></script>
 
-       
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
        
       
       

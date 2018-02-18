@@ -1631,7 +1631,6 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
               ref_id = Math.floor(Math.random() * 9999999);
             }
             
-            console.log(req.body);
             var preObj = {              
               provisional_diagnosis: req.body.provisional_diagnosis || req.body.treatment.provisionalDiagnosis,
               date: date,
@@ -1664,7 +1663,7 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
               eligible: true
             }
 
-            var title = (req.user.type === "Doctor") ? 'Dr.': ""; 
+            var title = (req.user.type === "Doctor") ? req.user.title : ""; 
             var verifyId;
             
 
@@ -1744,7 +1743,7 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
                 prescriptionId: req.body.prescriptionId
               };
 
-              data.medications.push(preObj);
+              data.medications.unshift(preObj);
               data.prescription_tracking.unshift(track_record);
 
               data.save(function(err,info){
@@ -1821,6 +1820,8 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
     //prescription fowarded by the doctor to a patient inbox
     router.put("/user/patient/forwarded-prescription",function(req,res){   
       console.log(req.body);
+      var provisionalDiagnosis = (req.body.treatment) ? req.body.treatment.provisionalDiagnosis : null;
+      var complain = (req.body.treatment) ? req.body.treatment.complain : null;
       if(req.user){  
         model.user.findOne(
           {
@@ -1832,7 +1833,7 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
             if(err) throw err;            
             var date = + new Date(); 
             var preObj = {              
-              provisional_diagnosis: req.body.provisional_diagnosis || req.body.treatment.provisionalDiagnosis,
+              provisional_diagnosis: (req.body.treatment) ? provisionalDiagnosis : req.body.provisional_diagnosis,
               date: date,
               prescriptionId: req.body.prescriptionId,
               title: req.user.title,
@@ -1901,7 +1902,7 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
           });
         });
 
-        if(req.body.typeOfSession === "video chat" && req.body.treatment.complain || req.body.treatment.provisionalDiagnosis) {
+        if(req.body.typeOfSession === "video chat" && complain || provisionalDiagnosis) {
           model.user.findOne({user_id: req.user.user_id},{doctor_patient_session:1}).exec(function(err,record){
             if(err) throw err;
             var elemPos = record.doctor_patient_session.map(function(x){return x.session_id}).indexOf(req.body.session_id);
@@ -2223,7 +2224,8 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
 
     //doctor creates session with a patient
     router.post("/user/doctor/patient-session",function(req,res){
-      if(req.user){        
+      if(req.user){ 
+             
         var session_id = Math.floor(Math.random() * 99999999999999922888);
         
         var connectObj = {

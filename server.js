@@ -9,13 +9,16 @@ var express = require('express'),
   http = require('http').Server(app),
   io = require('socket.io')(http),
   model = db(),
-  payments = require("./finance"),
-  Nexmo = require("nexmo"), 
+  payments = require("./finance"),  
   paystack = require('paystack')(process.env.PAYSTACK_SECRET_KEY),   
+  
+  /*Nexmo = require("nexmo"), 
   sms = new Nexmo({
   	apiKey: process.env.NEXMO_API_KEY || "1c9ae030",
 		apiSecret: process.env.NEXMO_API_SECRET || "ddb306aa9194c137"
-  }), 
+  }),*/
+  sms = require('twilio')(process.env.TWILIO_ACCOUNT_SID,process.env.TWILIO_AUTH_TOKEN),
+
   placement = require("./placement"),
   mySocket = require("./socket"),
   streams = require("./streams")(),//this will be moved to another server later
@@ -67,6 +70,19 @@ http.listen(port,function(){
     console.log('listening on *:3000');
 });
 
+/*sms.messages.create(
+  {
+    to: '+2348096461',
+    from: '67985692',
+    body: 'Applinic Oluchi my baby i love you!! from Obinna.',
+  },
+  function(err,msg) {
+    console.log(err)
+    console.log(msg)
+  }
+)*/
+
+
 
 config.configuration(app,model);
 signupRoute(model,sms,geonames,paystack);
@@ -80,67 +96,26 @@ mySocket(model,io,streams);
 
 
 var a = "ede obinna".replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()});
-console.log(a)
+console.log(a.substr(-2))
 
+/*const accountSid = 'AC79f290154f4c4236a3811054e2c5e2b7';
+const authToken = 'your_auth_token';
 
+// require the Twilio module and create a REST client
+const client = require('twilio')(accountSid, authToken);
 
-
-  
-/*paystack.customer.create({
-  first_name: "Obinna",
-  last_name: "Ede",
-  email: "bobby@gmail.com",
-  phone: "23445673563",
-  metadata: {
-    user_id: "hdjijjfjffd",
-    createdAt: new Date()
+client.messages.create(
+  {
+    to: '+15558675310',
+    from: '+15017122661',
+    body: 'This is the ship that made the Kessel Run in fourteen parsecs?',
+  },
+  (err, message) => {
+    console.log(message.sid);
   }
-})*/
-/*paystack.customer.list()
-  .then(function(body) {
-      console.log(body);
-  })
-  .catch(function(error) {
-    console.log(error);
-  });*/
-
-/*
- //checking to see if ref_id already exist.
-      var random1 = Math.floor(Math.random() * 999);
-      var random2 = Math.floor(Math.random() * 999);
-      var ref = check(random1) + "" + check(random2);
-      var num = parseInt(ref);
-      var ref_id;
-      var available;
-      var count = 0;
-      while(!available) {
-        var elementPos = pharmacy.referral.map(function(x){return x.ref_id}).indexOf(num);
-        if(elementPos === -1) {
-          available = true;
-          ref_id = num;
-        }
-        count++;
-
-        if(count > 1000) {
-          res.send("ref id could not be genenrated.Count is " + count + " Which means ref ids ran out of stock! Please redefine logic")
-          break;
-        }
-      }
-    }
+);*/
 
 
-    function check(num) {
-    var toStr = num.toString();  
-    if(toStr.length < 3) {
-      for( var i = toStr.length - 1; i < 2; i++){
-        toStr+= 0;
-      }
-    } 
-    return toStr; 
-    }
-
-
-*/
 
 
 

@@ -530,9 +530,9 @@ span.dates {
                         </div>
                      </div>
 
-                      <div ng-if="isSearchToSend === true">
-                       <a href="" ng-click="goBack()"><i class="fa fa-arrow-left"></i> Back</a> 
-                       <div>
+                    <div ng-if="isSearchToSend === true">
+                        <a href="" ng-click="goBack()"><i class="fa fa-arrow-left"></i> Back</a> 
+                        <div>
                            <form>
                                <label>Criteria: </label>
                                <input type="text" name="city" ng-model="treatment.city">
@@ -565,10 +565,8 @@ span.dates {
                                 <div style="padding: 20px;text-align: center;">
                                     <button class="btn btn-success form-control" ng-click="sendTest()" ng-if="pickedCenter">{{(message) ? message : 'send'}}</button>
                                 </div>
-                            </div>
-                               
-                           </div>
-                           
+                            </div>                               
+                           </div>                           
                        </div>
                     </div>                     
                 </div>          

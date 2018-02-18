@@ -123,13 +123,11 @@ var signupRoute = function(model,sms,geonames,paystack) {
 							}							
 						}		
 
-						console.log(User);	
-
 						User.save(function(err){
 							console.log("user saved");
 							if(err) throw err;					
 							return done(null,User);
-						});				
+						});			
 
 						} else {
 							res.send({error: "Email already in use. Please find another one"})
@@ -159,7 +157,7 @@ var signupRoute = function(model,sms,geonames,paystack) {
 				res.send({success: false});
 			}
 		})
-	})
+	});
 	
 
 	router.post('/user/signup', function(req, res, next) {	
@@ -170,18 +168,26 @@ var signupRoute = function(model,sms,geonames,paystack) {
 	    // Generate a JSON response reflecting signup
 	    if (!user) {	
 	      	res.send({error:true,message: "User phone number not active or wrong verification pin!"});
-	    } else {	    	
-    		var msgBody = "Your Applinic login details" + " \nUsername: " + req.body.username + " \nPassword: " + req.body.password;
-				var phoneNunber = req.body.phone || "2348096461927";
-				console.log(phoneNunber);
-
+	    } else {
+	    	    	
+    		var msgBody = "Your Applinic login details" + " \nEmail: " + req.body.email + " \nPassword: " + req.body.password;
+				var phoneNunber = (req.body.phone[0] !== "+") ? "+" + req.body.phone : req.body.phone;
+			
 				function callBack(err,info){
 					console.log(err)
 					console.log(info)
 				}
 
-				sms.message.sendSms('Appclinic',phoneNunber,msgBody,callBack); //"2348096461927"	    	
-    		res.send({error: false,message: "Success! Account created. Login credentials sent to your phone via sms."});	    	
+				//sms.message.sendSms('Appclinic',phoneNunber,msgBody,callBack); //"2348096461927"	    	
+    		
+    		sms.messages.create(
+				  {
+				    to: phoneNunber,
+				    from: '+16467985692',
+				    body: msgBody,
+				  }
+				) 
+				res.send({error: false,message: "Success! Account created. Login credentials sent to your phone via sms."}); 	
 	    }
 	  })(req, res, next);
 	});
@@ -193,28 +199,33 @@ var signupRoute = function(model,sms,geonames,paystack) {
 			phone: req.body.phone,
 			pin: genPin
 		});
-		console.log(req.body);
+		
 		var date = new Date()
 		testPhone.expirationDate = new Date(date.getTime() + 300000);
 		testPhone.expirationDate.expires  = 60 * 60; // 1 hour before deleted from database.
 
 		testPhone.save(function(err,info){});
 
-		var msgBody = "Your sms verification Pin is " + genPin + "\nUse to complete your registeration."
-		var phoneNunber = req.body.phone;
-		sms.message.sendSms('Appclinic',phoneNunber,msgBody,callBack); //"2348096461927" "2349092469137"
-		//remember to change "234" to empty string
+		var msgBody = "Your Phone Verification Pin for applinic.com is: " + genPin + "\nUse to complete your registeration."
+		var phoneNunber = (req.body.phone[0] !== "+") ? "+" + req.body.phone : req.body.phone;
+		//sms.message.sendSms('Appclinic',phoneNunber,msgBody,callBack); //"2348096461927" "2349092469137"
+		sms.messages.create(
+		  {
+		    to: phoneNunber,
+		    from: '+16467985692',
+		    body: msgBody,
+		  },
+		  callBack
+		)	   	
+		
 		function callBack(err,response){
 			if(!err) {
-				res.send({message:"Phone verification pin sent to " + req.body.phone + ". You can use the pin here for now to continue:  " + genPin});
+				res.send({message:"Phone Verification Pin sent to " + req.body.phone});
 			} else {
-				res.send({message:"Error Occur please try again",error: true});
+				res.send({message:err.message,error: true});
+				console.log(err)
 			}
-			console.log(response);
-		}		
-
-		
-		
+		}			
 	})
 
 	//check to see if a user with a phone number already exist
@@ -231,7 +242,7 @@ var signupRoute = function(model,sms,geonames,paystack) {
 		} else if(req.query.username){
 			model.user.findOne({username:req.query.username},function(err,username){
 				if(err) throw err;
-				console.log(username);
+				
 				if(!username){	
 					res.send({error: false,errorMsg: ""});
 				} else {
@@ -339,7 +350,7 @@ var signupRoute = function(model,sms,geonames,paystack) {
 	        });
 				});   
 
-				console.log(data.medical_records)
+			
 				data.save(function(err,info){});
 
 				res.send({patient: sendObj});
@@ -375,7 +386,7 @@ var signupRoute = function(model,sms,geonames,paystack) {
 					data.ewallet.transaction.push(transacObj);
 	    		data.save(function(err,info){
 	    			if(err) throw err;
- 	    			console.log("referral commission given");
+ 	    		
 	    		});
 	    	})	    	
 	    	res.send({error: false});
@@ -385,7 +396,7 @@ var signupRoute = function(model,sms,geonames,paystack) {
 	});
 
 	router.post("/user/emergency-signup",function(req, res, next) {
-		console.log(req.body)
+	
 		model.user.findOne({phone:req.body.phone},function(err,user){			
 			if(err) throw err;
 			if(user){
@@ -449,7 +460,7 @@ var signupRoute = function(model,sms,geonames,paystack) {
 			  		break;
 			  	}
 
-			  	console.log(patient)
+			  
 			  	
 			  })
 
@@ -462,7 +473,7 @@ var signupRoute = function(model,sms,geonames,paystack) {
 			function callBack(err,response){
 				console.log(err);
 			}
-			console.log(profileUrl)
+		
 			var msgBody = "Your emergency profile link is \n" + profileUrl;
 			var phoneNunber =  mobile;
 			sms.message.sendSms('Appclinic',phoneNunber,msgBody,callBack); //"2348096461927"

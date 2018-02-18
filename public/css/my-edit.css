@@ -214,11 +214,11 @@
 .dropdown-menu>.active>a:hover { 
   box-shadow: 0 5px 25px 0 rgba(0,0,0,.2);
   color:grey;
- /* padding: 20px 10px 20px 20px;*/
+  padding: 10px
 }
 
 .dropdown-menu > li {
-  padding: 10px;
+  padding: 5px;
 }
 
 .dropdown-menu>li>a { 
@@ -229,9 +229,10 @@
 }
 
 .dropdown-menu {
-  max-height: 600px;
+  max-height: 800px;
   overflow-y: auto; 
-  width: 400px
+  width: 400px;
+  z-index: 999;
 }
 
 .p-1 div {
@@ -291,8 +292,8 @@
 
   .star-rating .fa-star{color: yellow;-webkit-transition: height 0.2s;-moz-transition: height 0.2s; transition: height 0.2s;}
   .target {
-    border:2px solid rgba(0,0,0,0.1);
-    box-shadow: 5px 5px 5px rgba(0,0,0,0.5);
+   /* border:2px solid rgba(0,0,0,0.1);
+    box-shadow: 5px 5px 5px rgba(0,0,0,0.5);*/
   }
 
   .skill-sects {
@@ -417,6 +418,8 @@
     transition: width 500ms ease-out 1s;
     visibility: visible;
   }
+
+  
 
 @media screen and (min-height: 960px) {
   .view-animate-container {

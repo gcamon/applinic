@@ -13,7 +13,7 @@
         <link rel="apple-touch-icon" href="apple-touch-icon.png">
         <link rel="stylesheet" href="/assets/css/bootstrap.min.css">
         <link rel="stylesheet" href="/assets/css/normalize.css">
-        <link rel="stylesheet" href="/assets/css/font-awesome.min.css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
         <link rel="stylesheet" href="assets/css/app.css">
         <link rel="stylesheet" href="/assets/css/main.css">
         <link rel="stylesheet" href="/assets/css/now-ui-kit2.css">
@@ -94,13 +94,13 @@
                                         <li><a href="#/9" ng-class="{'btn-primary':batch==='9'}" ng-click="getBatch('9')">9</a></li>
                                         <li><a href="#/10" ng-class="{'btn-primary':batch==='10'}" ng-click="getBatch('10')">10</a></li>
                                     </ul>
-                                    <section class="patient-complain mt-3 bg-primary">
-                                        <div class="title" ng-repeat="i in complaints">
+                                    <section class="patient-complain card mt-3">
+                                        <div ng-repeat="i in complaints" style="color: rgba(0,0,0,0.8);padding: 15px;font-size: 14px">
                                             <i class="fa fa-user"> &nbsp; Patient</i>
-                                            <span ng-cloak>{{i.age}}</span>
-                                            <span ng-cloak>{{i.gender}}</span>
+                                            <span style="color:green" ng-cloak>{{i.age}}</span>
+                                            <span style="color:green" ng-cloak>{{i.gender}}</span>
                                             <span style="color:green" ng-cloak>{{i.complaint_id}}</span>
-                                            <span ng-cloak>{{i.sent_date| date: "mediumDate"}}</span>
+                                            <span style="color:green" ng-cloak>{{i.sent_date| date: "mediumDate"}}</span>
                                             <ul class="patient-symptoms" >
                                                 <li><strong>Symptoms | &nbsp;</strong></li>
                                                 <li ng-repeat="symptom in i.symptoms" class="description" ng-cloak>{{symptom}}</li>
@@ -149,7 +149,7 @@
                                         <hr>
                                         <form class="complaint-view-charge">
                                             <div class="text-capitalize">Please briefly respond to this request </div>
-                                            <textarea class="form-control" cols="6" ng-model="user.introductory"></textarea>
+                                            <textarea class="form-control" style="padding: 10px" cols="6" ng-model="user.introductory"></textarea>
                                             <div>
                                                 <h6 style="font-weight:bold">Consultation Fee</h6>
                                                 <span>Service charge = 20% of fees</span>
@@ -161,7 +161,7 @@
                                             <div>
                                                 <span ng-cloak>Total billed for patient = {{str}}</span>
                                             </div>
-                                            <div class="pb-5">
+                                            <div class="pb-5" style="display: block;">
                                                 <input type="button" value="Submit" ng-click="sendRequest()" class="btn btn-primary">
                                             </div>
                                         </form>
@@ -228,7 +228,7 @@
         <script src="/assets/js/ui-bootstrap-tpls.js"></script>
         <script src="/assets/js/angular-clipboard.js"></script>
         <script src="/assets/js/ngresource.js"></script> 
-         <script src="/assets/js/ngPrint.js"></script>    
-        </script>
+          <script src="/assets/js/ngPrint.js"></script>
+        <script type="text/javascript" src="/assets/js/angular-paystack/dist/angular-paystack.min.js"></script>
     </body>
 </html>
