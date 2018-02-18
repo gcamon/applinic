@@ -532,7 +532,7 @@ var myModel = function () {
 			type: Date,
 			expires: Number
 		},		
-		phone: Number,
+		phone: String,
 		pin: String
 	},{
 		collections: "phoneVerify"

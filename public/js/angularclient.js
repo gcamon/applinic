@@ -1529,10 +1529,11 @@ app.controller('signupController',["$scope","$http","$location","$window","templ
 
     function finalValidation() {
 
-      if(data.agree === true) {
-        $rootScope.formData = data;
+      if(data.agree === true) {        
         if($scope.user.callingCode){        
           var phoneNumber = "+" + $scope.user.callingCode.toString() + $scope.user.phone.toString();
+          data.phone = phoneNumber;
+          $rootScope.formData = data;
           sendDetail();
         } else {
           $scope.numberError = "Invalid number format";

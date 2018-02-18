@@ -24,11 +24,10 @@ var signupRoute = function(model,sms,geonames,paystack) {
 				return done(null, false, req.flash('signupMessage', 'Email has already been use please find another one'));	
 			} else {
 				var userphone = {}
-				model.verifyPhone.findOne({phone:req.body.phone,pin:req.body.v_pin},function(err,data){
+				model.verifyPhone.findOne({phone:req.body.phone,pin:req.body.v_pin},function(err,data){					
 					if(err) throw err;
 					if(data){
 						userphone.testuserPhone = true;
-						//model.verifyPhone.remove({phone:req.body.phone,pin:req.body.v_pin},function(err,a){});
 						createUser();
 					} else {
 						return done(null, false, req.flash('signupMessage', 'Please you have to agree to our terms and conditions'));
@@ -95,7 +94,7 @@ var signupRoute = function(model,sms,geonames,paystack) {
 
 						/*cities are capture for record purposes.Note country of the user if is saved for the user form 
 						the data optained from quering the geooname.*/
-						if(req.body.typeOfUser !== "Patient") {
+						/*if(req.body.typeOfUser !== "Patient") {
 							var criteria = {geonameId: req.body.geonameId,"cities.city": req.body.city}
 							model.geonames.findOne(criteria,{cities:1}).exec(function(err,data){
 								if(err) throw err;
@@ -108,7 +107,7 @@ var signupRoute = function(model,sms,geonames,paystack) {
 								}
 								data.save(function(){});
 							})
-						}
+						}*/
 
 						if(req.body.typeOfUser === "Doctor"){
 							User.name = "Dr " + req.body.firstname + " " + req.body.lastname.slice(0,1).toUpperCase();
@@ -144,6 +143,8 @@ var signupRoute = function(model,sms,geonames,paystack) {
 					}				
 					return toStr;					
 				}
+
+				model.verifyPhone.remove({phone:req.body.phone,pin:req.body.v_pin},function(err,a){});
 			})			
 		})
 	}));
@@ -169,7 +170,7 @@ var signupRoute = function(model,sms,geonames,paystack) {
 	    if (!user) {	
 	      	res.send({error:true,message: "User phone number not active or wrong verification pin!"});
 	    } else {
-	    	    	
+
     		var msgBody = "Your Applinic login details" + " \nEmail: " + req.body.email + " \nPassword: " + req.body.password;
 				var phoneNunber = (req.body.phone[0] !== "+") ? "+" + req.body.phone : req.body.phone;
 			
