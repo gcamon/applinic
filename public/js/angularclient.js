@@ -1744,6 +1744,7 @@ app.controller("verifyPhoneController",["$rootScope","$scope","$resource","$wind
     signUp.userSignup($rootScope.formData,function(response){
       $scope.loading = false;
       alert(response.message);
+      console.log(response);
       $scope.success = response.message;
       if(response.error === false) {              
         $window.location.href = '/login';                           

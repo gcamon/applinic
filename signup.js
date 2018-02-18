@@ -144,7 +144,7 @@ var signupRoute = function(model,sms,geonames,paystack) {
 					return toStr;					
 				}
 
-				model.verifyPhone.remove({phone:req.body.phone,pin:req.body.v_pin},function(err,a){});
+				//model.verifyPhone.remove({phone:req.body.phone,pin:req.body.v_pin},function(err,a){});
 			})			
 		})
 	}));
@@ -168,7 +168,7 @@ var signupRoute = function(model,sms,geonames,paystack) {
 	    }
 	    // Generate a JSON response reflecting signup
 	    if (!user) {	
-	      	res.send({error:true,message: "User phone number not active or wrong verification pin!"});
+	      	res.send({error:true,message: "User phone number not active or wrong verification pin!",user:user,req:req.body});
 	    } else {
 
     		var msgBody = "Your Applinic login details" + " \nEmail: " + req.body.email + " \nPassword: " + req.body.password;
