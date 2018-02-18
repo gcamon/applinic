@@ -171,14 +171,17 @@ Wallet.prototype.billing = function(model,billingInfo,reciever,sms,io){
 		} else {
 			var newCut = 0.75;
 		}		
-		//send sms to doctor
-		function callBack(err,res){
-			console.log(err);
-		}
+		
 		var msgBody = "Your Applinic account credited" + "\nAmount: " + docPercentage + "\nActivity: Commission for prescription written\n Source: " +
-		billingInfo.patient_firstname + " " + billingInfo.patient_lastname + ". Date: " + Date.now;
+		billingInfo.patient_firstname + " " + billingInfo.patient_lastname + ". Date: " + Date.now();
 		var phoneNunber =  billingInfo.doctorPhone;
-		sms.message.sendSms('Applinic',phoneNunber,msgBody,callBack); //"2348096461927"
+		sms.messages.create(
+      {
+        to: phoneNunber,
+        from: '+16467985692',
+        body: msgBody,
+      }
+    ) 
 
 		//crediting addmin
 		var adminCut = newCut || 0.5;
@@ -201,10 +204,16 @@ Wallet.prototype.billing = function(model,billingInfo,reciever,sms,io){
 				if(elemPos !== -1){
 					drugList[elemPos].payment_acknowledgement = true;
 				}
-				var msgBody = "Your Applinic account debited" + "\nAmount: " + "N" + amount + 
-				"\nActivity: Payment for billing\nPlus 5% discount applied for all billing paid through this app." + ". Date: " + Date.now;
+				var msgBody = "Your Applinic account debited" + "\nAmount: "  + amount + 
+				"\nActivity: Payment for billing\nPlus 5% discount applied for all billing paid through this app." + ". Date: " + Date.now();
 				var phoneNunber =  debitor.phone;
-				sms.message.sendSms('Applinic',phoneNunber,msgBody,callBack); //"2348096461927" 
+				sms.messages.create(
+          {
+            to: phoneNunber,
+            from: '+16467985692',
+            body: msgBody,
+          }
+        ) 
 				self.debit(model,amount,debitor);
 			});	
 		} else if(billingInfo.type === "Laboratory" || billingInfo.type === "Radiology") {
@@ -218,15 +227,21 @@ Wallet.prototype.billing = function(model,billingInfo,reciever,sms,io){
 				if(elemPos !== -1)
 					record[elemPos].payment_acknowledgement = true;
 				
-				var msgBody = "Your Applinic account debited" + "\nAmount: " + "N" + amount + 
-				"\nActivity: Payment for billing\nPlus 5% discount applied for all billing paid through this app." + ". Date: " + Date.now;
+				var msgBody = "Your Applinic account debited" + "\nAmount: "  + amount + 
+				"\nActivity: Payment for billing\nPlus 5% discount applied for all billing paid through this app." + ". Date: " + Date.now();
 				var phoneNunber =  debitor.phone;
-				sms.message.sendSms('Applinic',phoneNunber,msgBody,callBack); //"2348096461927" 
+				sms.messages.create(
+          {
+            to: phoneNunber,
+            from: '+16467985692',
+            body: msgBody,
+          }
+        )  
 				self.debit(model,amount,debitor);
 			});	
 		} 
 		
-		console.log(totalBilling)
+		
 	}
 
 
@@ -248,12 +263,12 @@ Wallet.prototype.courier = function(model,receiverId,debitor,amount,io,delivery_
 	var newAmount = availAmount - adminPercentage;//subtract admin percentage for the service
 	var receiver = {user_id: receiverId};
 	this.credit(model,receiver,newAmount);
-	console.log("center credit: " + newAmount)
+
 	model.user.findOne({user_id:debitor}).exec(function(err,user){
 		var patientBonus = amount * 0.05;
 		var patientNewBill = amount - patientBonus;
 		self.debit(model,patientNewBill,user);
-		console.log("patient credit: " + patientNewBill)
+		
 	})
 
 	var sure = undefined;//jk

@@ -96,6 +96,7 @@ mySocket(model,io,streams);
 
 
 var a = "ede obinna".replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()});
+console.log(Date.now())
 
 /*const accountSid = 'AC79f290154f4c4236a3811054e2c5e2b7';
 const authToken = 'your_auth_token';
@@ -113,6 +114,11 @@ client.messages.create(
     console.log(message.sid);
   }
 );*/
+
+//sms.message.sendSms('Appclinic',phoneNunber,msgBody,callBack); //"2348096461927" "2349092469137"
+
+
+              //sms.message.sendSms('Appclinic',phoneNunber,msgBody,callBack); //"2348096461927"        
 
 
 

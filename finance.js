@@ -333,9 +333,15 @@ var basicPaymentRoute = function(model,sms,io,paystack){
 							console.log(responseData);
 						}
 
-						var msgBody = "Your payment OTP is " + password + " \nPlease disclose only to the right user."
+						var msgBody = "Your payment OTP for applinic.com is " + password + " \nPlease disclose only to the right user."
 						var phoneNunber = user.phone;
-						sms.message.sendSms('Appclinic',phoneNunber,msgBody,callBack); //"2348096461927"
+						 sms.messages.create(
+              {
+                to: phoneNunber,
+                from: '+16467985692',
+                body: msgBody,
+              }
+            ) 
 
 						res.send({message:"One time pin number has been sent. The pin is needed for payment confirmation",success:true,time_stamp:req.body.time}) 
 
@@ -576,9 +582,13 @@ var basicPaymentRoute = function(model,sms,io,paystack){
 					                } else {
 					                  var msgBody = "Success! " +  result.firstname + " " + result.lastname + " is now your patient. Visit http://applinic.com/login"
 					                  var phoneNunber =  data.phone;
-					                  sms.message.sendSms('Applinic',phoneNunber,msgBody,function(err,responseData){
-
-					                  }); //"2348096461927"
+				                    sms.messages.create(
+								              {
+								                to: phoneNunber,
+								                from: '+16467985692',
+								                body: msgBody,
+								              }
+								            ) 
 					                }
 
 	                        msgInfo = "Transaction successful! Your account is debited. " + data.firstname + " " + data.lastname + " is now your doctor." 
@@ -730,9 +740,13 @@ var basicPaymentRoute = function(model,sms,io,paystack){
           } else {
             var msgBody = "Your laboratory test result is ready! Visit http://applinic.com/login"
             var phoneNunber =  data.phone;
-            sms.message.sendSms('Applinic',phoneNunber,msgBody,function(err,responseData){
-
-            }); //"2348096461927"
+             sms.messages.create(
+              {
+                to: phoneNunber,
+                from: '+16467985692',
+                body: msgBody,
+              }
+            ) 
           }
 
           data.save(function(err,info){
@@ -818,9 +832,13 @@ var basicPaymentRoute = function(model,sms,io,paystack){
           } else {
             var msgBody = "Your laboratory test result is ready! Visit http://applinic.com/login"
             var phoneNunber =  data.phone;
-            sms.message.sendSms('Applinic',phoneNunber,msgBody,function(err,responseData){
-
-            }); //"2348096461927"
+            sms.messages.create(
+              {
+                to: phoneNunber,
+                from: '+16467985692',
+                body: msgBody,
+              }
+            ) 
           }
 
           data.save(function(err,info){
@@ -932,9 +950,13 @@ var basicPaymentRoute = function(model,sms,io,paystack){
           } else {
             var msgBody = "Your radiology test result is ready! Visit http://applinic.com/login"
             var phoneNunber =  data.phone;
-            sms.message.sendSms('Applinic',phoneNunber,msgBody,function(err,responseData){
-
-            }); //"2348096461927"
+            sms.messages.create(
+              {
+                to: phoneNunber,
+                from: '+16467985692',
+                body: msgBody,
+              }
+            ) 
           }
 
           data.save(function(err,info){
@@ -1017,9 +1039,13 @@ var basicPaymentRoute = function(model,sms,io,paystack){
 		        } else {
 		          var msgBody = "Your radiology test result is ready! Visit http://applinic.com/login";
 		          var phoneNunber =  data.phone;
-		          sms.message.sendSms('Applinic',phoneNunber,msgBody,function(err,responseData){
-
-		          }); //"2348096461927"
+		          sms.messages.create(
+	              {
+	                to: phoneNunber,
+	                from: '+16467985692',
+	                body: msgBody,
+	              }
+            	) 
 		        }
 
 		        data.save(function(err,info){
