@@ -3361,9 +3361,6 @@ app.controller("selectedAppointmentController",["$scope","$location","$http","$w
         })
       .success(function(data) {
         if(data){
-          console.log("checkinh appointment data line 2841")
-          console.log(data)
-          console.log(templateService.holdAppointmentData)
         data.patientInfo = templateService.holdAppointmentData;        
         localManager.setValue("heldSessionData",data);
           $window.location.href = "/user/treatment";
@@ -3379,31 +3376,31 @@ app.controller("selectedAppointmentController",["$scope","$location","$http","$w
 app.controller("inTreatmentController",["$scope","$http","localManager","$location","$rootScope",
   "templateService","$document","ModalService","Drugs","$filter",
   function($scope,$http,localManager,$location,$rootScope,templateService,$document,ModalService,Drugs,$filter){
+
   $scope.sessionData = localManager.getValue("heldSessionData");
 
   templateService.holdForSpecificPatient = $scope.sessionData;
-  
    $scope.isLab = false;
    $scope.isScan = false;
    $scope.isNewLab = false;
    $scope.isNewRadio = false;
 
    $scope.laboratory = function(){
-      if($scope.testResult) {
-        $scope.testResult = [];        
-      }
-      investigation("/user/doctor/get-test-result");      
-      $scope.isLab = true;
-      $scope.isScan = false;
+    if($scope.testResult) {
+      $scope.testResult = [];        
+    }
+    investigation("/user/doctor/get-test-result");      
+    $scope.isLab = true;
+    $scope.isScan = false;
    } 
 
    $scope.newLab = function() {
-      //$location.path('/lab');
-      $scope.isLab = false;
-      $scope.isScan = false;
-      $scope.isNewRadio = false;
-      $scope.isNewLab = true; 
-      $rootScope.flag = 'lab';     
+    //$location.path('/lab');
+    $scope.isLab = false;
+    $scope.isScan = false;
+    $scope.isNewRadio = false;
+    $scope.isNewLab = true; 
+    $rootScope.flag = 'lab';     
    }
 
    //for radiology
@@ -3426,7 +3423,7 @@ app.controller("inTreatmentController",["$scope","$http","localManager","$locati
   }
   
  function investigation(url)  {
-  var session = {}
+  var session = {};
   session.id = $scope.sessionData.session_id; 
   $http({
       method  : 'PUT',
@@ -3567,7 +3564,6 @@ app.controller("inTreatmentController",["$scope","$http","localManager","$locati
       headers : {'Content-Type': 'application/json'} 
       })
     .success(function(data) {
-      console.log(data)      
       var myFoundPrescriptions = [];
       for(var i = data.medications.length-1; i >= 0; i--){
         if(data.medications[i].doctor_id === data.user) {
@@ -3579,7 +3575,7 @@ app.controller("inTreatmentController",["$scope","$http","localManager","$locati
     $scope.isOldPrescription = true;
   }
 
-  $scope.drugs = Drugs;
+    $scope.drugs = Drugs;
     var drug_name;
     var index;
     $scope.getDrug = function(drugName){
@@ -3602,8 +3598,7 @@ app.controller("inTreatmentController",["$scope","$http","localManager","$locati
       newDrug.sn = count.num;
       $scope.drugList.push(newDrug);
       index = $scope.drugList.length - 1;     
-      console.log("static")
-      console.log($scope.drugList);
+      
       
     }
 
@@ -3648,8 +3643,8 @@ app.controller("inTreatmentController",["$scope","$http","localManager","$locati
     edit.newlyEdit = true;// use to control inserting time per edit
     $scope.edit = {};
    
-    console.log($scope.sessionData.diagnosis.presenting_complain);
-      var dt = + new Date();
+    
+    var dt = + new Date();
     edit.date = $filter('date')(dt, 'EEE, MMM d, y')
     
     $scope.$watch("edit.presenting_complain",function(newVal,oldVal){
@@ -3678,14 +3673,14 @@ app.controller("inTreatmentController",["$scope","$http","localManager","$locati
     
     $scope.setHistory = function() {
       if($scope.edit.presenting_complain) {
-         $scope.sessionData.diagnosis.history_of_presenting_complain = "# ";
+        $scope.sessionData.diagnosis.history_of_presenting_complain = "# ";
         $scope.sessionData.diagnosis.history_of_presenting_complain +=  
         $scope.edit.presenting_complain + " ( " + edit.date + " ) has been ________ ;"
         //$scope.sessionData.diagnosis.history_of_presenting_complain += $scope.history;
       }
     }
 
-    var check = 0;// scope watch count to show save changes button on ui this is bcos newVal is set when the controller is initialized.
+  var check = 0;// scope watch count to show save changes button on ui this is bcos newVal is set when the controller is initialized.
   //when count is 2 the watch should display the save changes button on the ui.
   
   $scope.$watch("edit",function(newVal,oldVal){
@@ -3724,7 +3719,6 @@ app.controller("inTreatmentController",["$scope","$http","localManager","$locati
       headers : {'Content-Type': 'application/json'} 
       })
     .success(function(data) {
-      console.log(data);
       if(data.success)
         alert("Changes saved successfully!!!");
       if(data.error)
@@ -3739,11 +3733,10 @@ app.controller("inTreatmentController",["$scope","$http","localManager","$locati
 app.controller("investigationController",["$scope","$http","labTests","scanTests","$rootScope","$resource","templateService",
   function($scope,$http,labTests,scanTests,$rootScope,$resource,templateService){
 
-    var sessionInfo = templateService.holdForSpecificPatient || $rootScope.holdPatientData;
+    var sessionInfo = templateService.holdForSpecificPatient || localManager.getValue("heldSessionData");
     var patient = $rootScope.patientInfo;
     $rootScope.session = sessionInfo.session_id;
     $rootScope.treatment = ($rootScope.treatment) ? $rootScope.treatment : {};
-    console.log(patient);
     $scope.isSearchToSend = false;
 
     $scope.lab = function() {
@@ -3808,6 +3801,8 @@ app.controller("investigationController",["$scope","$http","labTests","scanTests
       $scope.sendToLab = function () {        
           $scope.isNewLab = false;
           $scope.isSearchToSend = true;
+          $rootScope.treatment.city = patient.city;
+          $rootScope.treatment.country = patient.country;
           getLaboratories();
         
 
@@ -3824,8 +3819,9 @@ app.controller("investigationController",["$scope","$http","labTests","scanTests
        
         $scope.pickedCenter = null;
         $rootScope.treatment.session_id = $rootScope.session; // id to identify prescription in a session if one is written.
-        $rootScope.treatment.patient_id = patient.id;
-        $rootScope.treatment.typeOfSession = "video chat";
+        $rootScope.treatment.patient_id = patient.patient_id || patient.user_id;
+        patient.patient_id = patient.patient_id || patient.user_id;
+        $rootScope.treatment.typeOfSession = "";
 
         $scope.selected = function(center) {
           $scope.pickedCenter = center;
@@ -3854,9 +3850,7 @@ app.controller("investigationController",["$scope","$http","labTests","scanTests
           });
         }
 
-
-        $rootScope.treatment.city = patient.city;
-        $rootScope.treatment.country = patient.country;
+        
 
         function getLaboratories() {
           var source = $resource("/user/getAllLaboratory")
@@ -3864,23 +3858,23 @@ app.controller("investigationController",["$scope","$http","labTests","scanTests
             $scope.searchResult = list;
           });
         }
-
+       
         $scope.sendTest = function () {
            patient.laboratory = {};
            patient.laboratory.patient_gender = patient.gender;
-           patient.history = $scope.treatment.history;
+           patient.history = $rootScope.treatment.history;
            patient.laboratory.patient_age = patient.age;
            patient.patient_firstname = patient.firstname;
            patient.patient_lastname = patient.lastname;
-           patient.patient_profilePic = patient.patient_profile_pic_url;
+           patient.patient_profilePic = patient.profile_pic_url;
            patient.patient_title = patient.title;
            patient.session_id = $rootScope.session;
-           patient.patient_id = patient.id;
            patient.date = + new Date(); 
            patient.noUpdate = true,
            patient.typeOfSession = "";
            patient.treatment = $rootScope.treatment;
-            
+          
+          
           $http({
           method  : 'POST',
           url     : "/user/doctor/send-test",
@@ -3955,6 +3949,9 @@ app.controller("investigationController",["$scope","$http","labTests","scanTests
       $scope.sendToRad = function () {        
         $scope.isNewRadio = false;
         $scope.isSearchToSend = true;
+        $rootScope.treatment.city = patient.city;
+        $rootScope.treatment.country = patient.country;
+
         getRadiologies();
       }
 
@@ -3974,7 +3971,8 @@ app.controller("investigationController",["$scope","$http","labTests","scanTests
 
       $scope.pickedCenter = null;
       $rootScope.treatment.session_id = $rootScope.session; // id to identify prescription in a session if one is written.
-      $rootScope.treatment.patient_id = patient.id;
+      $rootScope.treatment.patient_id = patient.patient_id || patient.user_id;
+      patient.patient_id = patient.patient_id || patient.user_id;
       $rootScope.treatment.typeOfSession = "";
 
       $scope.selected = function(center) {
@@ -4003,9 +4001,7 @@ app.controller("investigationController",["$scope","$http","labTests","scanTests
         })
       }
 
-      $rootScope.treatment.city = patient.city;
-      $rootScope.treatment.country = patient.country;
-
+     
       function getRadiologies() {
         var source = $resource("/user/getAllRadiology")
         source.query({city:$rootScope.treatment.city,country:$rootScope.treatment.country},function(list){
@@ -4024,11 +4020,10 @@ app.controller("investigationController",["$scope","$http","labTests","scanTests
          patient.patient_profilePic = patient.patient_profile_pic_url;
          patient.patient_title = patient.title;
          patient.session_id = $rootScope.session;
-         patient.patient_id = patient.id;
          patient.date = + new Date(); 
-         patient.noUpdate = true,
-         patient.typeOfSession = "Video chat"
-         patient.treatment = $rootScope.treatment
+         patient.noUpdate = true;
+         patient.typeOfSession = "";
+         patient.treatment = $rootScope.treatment;
           
         $http({
           method  : 'POST',
@@ -4039,15 +4034,6 @@ app.controller("investigationController",["$scope","$http","labTests","scanTests
         .success(function(data) {
           if(data) { 
             $scope.message = "Investigations sent!"  
-            controllerSocket.emit("new test",{
-              center:$scope.pickedCenter,
-              testList:patient.lab_test_list,
-              ref_id: data.ref_no,
-              to:patient.id,
-              controlId: control.controlId,
-              by: data.by,
-              type: "Radiology Test"
-            });
           } else {
             alert("Error: Investigation not sent!")
           }
@@ -8114,9 +8100,9 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
 
      
 
-    var viewed = false;
+  var viewed = false;
 
-    $scope.makeCall = function(type){
+  $scope.makeCall = function(type){
       var caller = genId();
       var receiver = genId();
       localManager.setValue("personToCall",patient.id);
@@ -8127,16 +8113,16 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
       } else if(type === "audio"){
         $window.location.href = "/user/doctor/audio/call";
       }
-    }
+  }
 
-    $scope.writePrescription =function(){     
-      $scope.isToPrescribe = true;
-      $scope.isToSeeRecord = false;
-       $scope.isToViewLabPrescriptionReq = false;
-      $scope.isToViewRadPrescriptionReq = false;
-      $scope.isToViewSession = false;
-       $scope.isChat = false;
-    }
+  $scope.writePrescription =function(){     
+    $scope.isToPrescribe = true;
+    $scope.isToSeeRecord = false;
+     $scope.isToViewLabPrescriptionReq = false;
+    $scope.isToViewRadPrescriptionReq = false;
+    $scope.isToViewSession = false;
+     $scope.isChat = false;
+  }
 
     $scope.appointment = function(patientObj){
       templateService.holdId = patientObj.user_id; //sets id of the patient for the appointmentModal controller to use.
@@ -8391,8 +8377,6 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
 
     $scope.sendDrug = function() {
       patient.treatment = $scope.treatment;
-      //patient.provisional_diagnosis = $scope.treatment.provisionalDiagnosis
-      console.log(patient);
       $http({
         method  : 'PUT',
         url     : "/user/patient/pharmacy/referral",
@@ -8406,8 +8390,7 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
     }
 
     //other activities
-    $scope.viewSession = function () {      
-      
+    $scope.viewSession = function () {     
       loadSession();
       $scope.isToSeeRecord = false;
       $scope.isToPrescribe = false;
@@ -8418,7 +8401,7 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
     }
 
     $scope.viewTreatmentSession = function (session) {
-      //localManager.setValue("heldSessionData",session);        
+      localManager.setValue("heldSessionData",session);        
       //$window.location.href = "/user/treatment";
       $scope.isToViewSession = false;
       $scope.isTreatmentSession = true;

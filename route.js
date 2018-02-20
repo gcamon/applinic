@@ -1331,7 +1331,9 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
             medical_records: 1,
             user_id: 1,
             type: 1,
-            presence:1
+            presence:1,
+            title:1,
+            phone:1
 
         }
 
@@ -2724,6 +2726,7 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
     
     //this route takes care doctor sending new test to a laboratory.
     router.post("/user/doctor/send-test",function(req,res){
+      console.log(req.body)
         if(req.user) {  
         var random = Math.floor(Math.random() * 9999999);
         var testId = Math.floor(Math.random() * 9999999999999999);       
@@ -2793,8 +2796,7 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
                 to: phoneNunber,
                 from: '+16467985692',
                 body: msgBody,
-              },
-              callBack
+              }
             ) 
           }
 
@@ -2841,20 +2843,20 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
               message: "You have unread pending lab test"
             }
 
-            if(record.presence === true)
+            if(record.presence === true) {
               io.sockets.to(record.user_id).emit("notification",{status:true,message: "You have new unread test to run."});
-          
-            var msgBody = "Your test was referred to " + centerInfo.name + "\n@ " + centerInfo.address + " " + centerInfo.city + " " +
-            centerInfo.country + "\nBy " + req.user.name + "\nTest Ref NO is " + req.body.ref_id + "\nFor more details visit https://applinic.com/user/patient"
-            var phoneNunber =  record.phone;
-           
-            sms.messages.create(
-              {
-                to: phoneNunber,
-                from: '+16467985692',
-                body: msgBody,
-              }
-            ) 
+            } else {          
+              var msgBody = "Your test was referred to " + centerInfo.name + "\n@ " + centerInfo.address + " " + centerInfo.city + " " +
+              centerInfo.country + "\nBy " + req.user.name + "\nTest Ref NO is " + req.body.ref_id + "\nFor more details visit https://applinic.com/user/patient"
+              var phoneNunber =  record.phone;             
+              sms.messages.create(
+                {
+                  to: phoneNunber,
+                  from: '+16467985692',
+                  body: msgBody,
+                }
+              ) 
+            }
 
             record.patient_notification.unshift(noteObj);
             record.medical_records.laboratory_test.unshift(recordObj);
@@ -2916,7 +2918,6 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
 
             data.save(function(err,info){
               if(err) throw err;
-              console.log("video caht saved")
             });
           });
         }
@@ -3133,6 +3134,7 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
     
     //this route takes care doctor sending new test to a radiology.
     router.post("/user/doctor/radiology/send-test",function(req,res){  
+      console.log(req.body)
         if(req.user) { 
         var random = Math.floor(Math.random() * 9999999);
         var testId = Math.floor(Math.random() * 9999999999999999);       

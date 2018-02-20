@@ -390,7 +390,6 @@
   var getPatientData = $resource("/user/doctor/specific-patient");
 
   getPatientData.get(patient,function(data){
-  	console.log(data)
     $scope.patientInfo = data;
     patient.prescriptionId = random;
     patient.patient_id = patient.id;    
@@ -733,7 +732,7 @@ app.controller("investigationController",["$scope","$http","labTests","scanTests
 		     patient.laboratory.patient_age = patient.age;
 		     patient.patient_firstname = patient.firstname;
 		     patient.patient_lastname = patient.lastname;
-		     patient.patient_profilePic = patient.patient_profile_pic_url;
+		     patient.patient_profilePic = patient.patient_profile_pic_url || patient.profile_pic_url;
 		     patient.patient_title = patient.title;
 		     patient.session_id = $rootScope.session;
 		     patient.patient_id = patient.id;
@@ -902,7 +901,7 @@ app.controller("investigationController",["$scope","$http","labTests","scanTests
 		     patient.radiology.patient_age = patient.age;
 		     patient.patient_firstname = patient.firstname;
 		     patient.patient_lastname = patient.lastname;
-		     patient.patient_profilePic = patient.patient_profile_pic_url;
+		     patient.patient_profilePic = patient.patient_profile_pic_url || patient.profile_pic_url;
 		     patient.patient_title = patient.title;
 		     patient.session_id = $rootScope.session;
 		     patient.patient_id = patient.id;
