@@ -3980,7 +3980,7 @@ app.controller("investigationController",["$scope","$http","labTests","scanTests
         if($scope.message) 
           $scope.message = null;
 
-        var source = $resource("/user/radiology/not-ran-services")
+        var source = $resource("/user/radiology/not-ran-services");
         source.query({centerId: center.user_id},function(data) { 
           if(data.error){
             $sccope.status = "Not Updated!";

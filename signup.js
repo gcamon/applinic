@@ -170,8 +170,7 @@ var signupRoute = function(model,sms,geonames,paystack) {
 	    if (!user) {	
 	      	res.send({error:true,message: "User phone number not active or wrong verification pin!"});
 	    } else {
-
-    		var msgBody = "Your applinic.com login details" + " \nEmail: " + req.body.email + " \nPassword: " + req.body.password;
+    		var msgBody = "Your applinic.com login details\nEmail: " + req.body.email + " \nPassword: " + req.body.password;
 				var phoneNunber = (req.body.phone[0] !== "+") ? "+" + req.body.phone : req.body.phone;
 			
 				function callBack(err,info){
@@ -185,7 +184,7 @@ var signupRoute = function(model,sms,geonames,paystack) {
 				  {
 				    to: phoneNunber,
 				    from: '+16467985692',
-				    body: msgBody,
+				    body: msgBody
 				  }
 				) 
 				res.send({error: false,message: "Success! Account created. Login credentials sent to your phone via sms."}); 	
