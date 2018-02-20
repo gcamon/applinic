@@ -1293,13 +1293,12 @@ app.controller('loginController',["$scope","$http","$location","$window","$resou
   $scope.login = {};
   $scope.error = "";  
   
-  $scope.send = function(){        
+  $scope.send = function(){ 
+    $scope.loading = true; 
     var login = $resource('/user/login',null,{logPerson:{method:"POST"}});
-    login.logPerson($scope.login,function(data){
-    console.log(data);
-    
-    //$rootScope.balance = data.balance;             
+    login.logPerson($scope.login,function(data){   
     if (data.isLoggedIn) {
+       
         localManager.setValue("resolveUser",data);        
        //user joins a room in socket.io and intantiayes his own socket
         switch(data.typeOfUser) {
@@ -1329,7 +1328,8 @@ app.controller('loginController',["$scope","$http","$location","$window","$resou
         }
         
       } else {       
-        $scope.error = "Email or Password incorrect!";            
+        $scope.error = "Email or Password incorrect!";  
+         $scope.loading = false;          
       }
     });
   }
@@ -1383,9 +1383,6 @@ app.controller('signupController',["$scope","$http","$location","$window","templ
   $scope.user = {};
   $scope.user.typeOfUser = "";
   var signUp = $resource('/user/signup',null,{userSignup:{method:"POST"},emailCheck:{method:"PUT"}});
-
- 
-
   $scope.countries = localManager.getValue("countries") || getCountries();
   $scope.status = "Country";
   $scope.status1 = "State/Province";
