@@ -13,28 +13,10 @@
              <div><div class="title">{{patientInfo.title}} {{patientInfo.firstname}} {{patientInfo.lastname}}</div>
          <sub class="text-muted" style="margin-top:-3px; font-size:1em;">Patient</sub><br><br>
              </div>
-<div id="accordion" role="tablist" aria-multiselectable="true">
+
   
-  <div>
-    
-    <a class="grayish bg-success" data-toggle="collapse" data-parent="#accordion" href="/#collapseTen" aria-expanded="false" aria-controls="collapseTen" style="">
-     BIOGRAPHY
-    </a>
-    
-    <div id="collapseTen" class="collapse" role="tabpanel" aria-labelledby="headingTen">
-      
-        <ul style="list-style:none;line-height: 32px">
-            <li style=""><b>Age</b>: &nbsp;<span style="">{{patientInfo.age || "N/A"}} </span></li>
-            <li style=""><b>Gender</b>: &nbsp;<span style="">{{patientInfo.gender || "N/A"}}</span></li>
-            <li style=""><b>Body  weight</b>: &nbsp;<span style="">{{patientInfo.body_weight || "N/A"}}</span></li>
-            <li style=""><b>Address</b>: &nbsp;<span style="">{{patientInfo.address || "N/A"}}</span></li>
-            <li style=""><b>City</b>: &nbsp;<span style="">{{patientInfo.city || "N/A"}}</span></li>
-            <li style=""><b>Country</b>: &nbsp;<span style="">{{patientInfo.country || "N/A"}}</span></li>
-        </ul>
-     
-    </div>
-  </div>
-</div>
+ 
+
             <!--left col-->
              <a href="" class="bg-info grayish"> <span>MANAGEMENT</span> </a>
              <a href="" class="grayish"  ng-click="viewMedicalHistory()"><i class="fa fa-medkit text-primary"></i> <span>Medical Record</span> </a>
@@ -54,6 +36,25 @@
     	<strong style="display:inline-block;left: -3px; top:-5px;color:red;position:absolute;font-size:14px" ng-if="radioLen > 0">{{radioLen}}</strong>
     </i> Prescribe by radio result
 </a>
+ <div>
+    
+    <a class="grayish bg-success" data-toggle="collapse" data-parent="#accordion" href="/#collapseTen" aria-expanded="false" aria-controls="collapseTen" style="">
+     BIOGRAPHY
+    </a>
+    
+    
+      
+    <aside style="list-style:none;line-height: 32px">
+        <div style="font-size: 14px"><b>Age</b>: &nbsp;<span style="">{{patientInfo.age || "N/A"}} </span></div>
+        <div style="font-size: 14px"><b>Gender</b>: &nbsp;<span style="">{{patientInfo.gender || "N/A"}}</span></div>
+        <div style="font-size: 14px"><b>Body  weight</b>: &nbsp;<span style="">{{patientInfo.body_weight || "N/A"}}</span></div>
+        <div style="font-size: 14px"><b>Address</b>: &nbsp;<span style="">{{patientInfo.address || "N/A"}}</span></div>
+        <div style="font-size: 14px"><b>City</b>: &nbsp;<span style="">{{patientInfo.city || "N/A"}}</span></div>
+        <div style="font-size: 14px"><b>Country</b>: &nbsp;<span style="">{{patientInfo.country || "N/A"}}</span></div>
+    </aside>
+     
+    
+  </div>
           
         </div></div>
         <!--/col-3-->
