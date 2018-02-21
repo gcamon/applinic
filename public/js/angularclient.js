@@ -3723,7 +3723,7 @@ app.controller("inTreatmentController",["$scope","$http","localManager","$locati
     });         
   }
 
-}]);
+}]); 
 
 /****************** lab and radio controller inside in-treatment view *********************/
 
@@ -3731,7 +3731,7 @@ app.controller("investigationController",["$scope","$http","labTests","scanTests
   function($scope,$http,labTests,scanTests,$rootScope,$resource,templateService){
 
     var sessionInfo = templateService.holdForSpecificPatient || localManager.getValue("heldSessionData");
-    var patient = $rootScope.patientInfo;
+    var patient = $rootScope.patientInfo || {};
     $rootScope.session = sessionInfo.session_id;
     $rootScope.treatment = ($rootScope.treatment) ? $rootScope.treatment : {};
     $scope.isSearchToSend = false;
@@ -3851,6 +3851,8 @@ app.controller("investigationController",["$scope","$http","labTests","scanTests
         function getLaboratories() {
           $scope.loading = true;
           var source = $resource("/user/getAllLaboratory")
+          console.log($rootScope.treatment)
+          console.log(patient)
           source.query({city:$rootScope.treatment.city,country:$rootScope.treatment.country},function(list){
             console.log(list)
             $scope.loading = false;
