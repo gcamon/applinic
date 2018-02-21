@@ -152,7 +152,7 @@
     </div>
     <div>
     <h6>Most recent</h6>
-        <article ng-click="viewTreatmentSession(recentSession)" style='padding: 10px; cursor:pointer;margin-bottom: 10px;box-shadow: 1px 5px 5px rgba(0,0,0,0.5);color:#fff' class="bg-warning" ng-if="recentSession">
+        <article ng-click="viewTreatmentSession(recentSession)" style='padding: 10px; cursor:pointer;margin-bottom: 10px;box-shadow: 1px 5px 5px rgba(0,0,0,0.5);color:#fff' class="bg-warning" ng-if="recentSession.diagnosis || recentSession.date">
             <span>{{recentSession.date | date : "mediumDate" }}</span> <span style="padding-left: 20px">{{recentSession.diagnosis.presenting_complain || recentSession.diagnosis.diagnosis || "( Empty )"}}</span> <small style="float:right">Last modified: {{recentSession.last_modified | date : "mediumDate"}}</small>
         </article>
        
@@ -161,7 +161,7 @@
             <span>{{session.date | date : "mediumDate" }}</span> <span style="padding-left: 20px">{{session.diagnosis.presenting_complain || session.diagnosis.diagnosis ||"( Empty )"}}</span> <small style="float:right">Last modified: {{session.last_modified | date : "mediumDate"}}</small>
         </article>
     </div>
-    <div style="height: auto;position:absolute;top:300px;left: 100px;text-align: center" ng-if="loading">
+    <div style="height: auto;position:absolute;top:150px;left: 300px;text-align: center" ng-if="loading">
         <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange;font-size: 24px"></i>
     </div>
 </div>
