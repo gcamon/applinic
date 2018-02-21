@@ -8462,9 +8462,9 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
             break;
           sessionList.push(data[i]);
         }
-        $scope.recentSession = data[0];
-        $scope.sessionData = sessionList;
-        if(data.length > 0);
+        $rootScope.recentSession = data[0];
+        $rootScope.sessionData = sessionList;
+        if(data.length > 0)
           templateService.holdId = data[0].patient_id;
       })
       
@@ -8502,9 +8502,6 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
         }
       }
     }
-
-     
-    console.log(templateService.labPrescriptionReq)
 
     $scope.labPrescriptionReq = templateService.labPrescriptionReq;
     $scope.radioPrescriptionReq = templateService.radioPrescriptionReq;
@@ -8751,8 +8748,8 @@ app.controller("appointmentModalController",["$scope","$http","moment","template
 
 
 //this controller controls the form filled by the doctor when creating new session for a selected patient above.
-app.controller("fromModalSessionController",["$scope","$http","$window","localManager","templateService","$rootScope",
-  function($scope,$http,$window,localManager,templateService,$rootScope){
+app.controller("fromModalSessionController",["$scope","$http","$window","localManager","templateService","$rootScope","$resource",
+  function($scope,$http,$window,localManager,templateService,$rootScope,$resource){
   $scope.patient = {};
   var date = new Date();
   $scope.patient.date = date;      
@@ -8775,11 +8772,32 @@ app.controller("fromModalSessionController",["$scope","$http","$window","localMa
         $scope.patient.patient_lastname = data.patient_lastname;
         $scope.patient.profilePic = data.profilePic;
         localManager.setValue("heldSessionData",$scope.patient);
-        $window.location.href = "/user/treatment";
+        //$window.location.href = "/user/treatment";
+        loadSession();
       } else {
         alert("Error occured while creating this treatment session")
       }
     });
+
+
+    function loadSession() {
+      $scope.loading = true;
+      var sessionList = [];
+      var getSession = $resource("/user/doctor/get-patient-sessions");     
+      getSession.query($scope.patient,function(data){
+        $scope.loading = false;
+        for(var i = 1; i < data.length; i++) {          
+          if(sessionList.length >= 10)
+            break;
+          sessionList.push(data[i]);
+        }
+        $rootScope.recentSession = data[0];
+        $rootScope.sessionData = sessionList;
+        if(data.length > 0)
+          templateService.holdId = data[0].patient_id;
+      })
+      
+    }
 
 
     var connectObj = {
