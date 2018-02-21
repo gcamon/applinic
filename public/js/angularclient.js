@@ -3847,11 +3847,13 @@ app.controller("investigationController",["$scope","$http","labTests","scanTests
           });
         }
 
-        
-
+      
         function getLaboratories() {
+          $scope.loading = true;
           var source = $resource("/user/getAllLaboratory")
           source.query({city:$rootScope.treatment.city,country:$rootScope.treatment.country},function(list){
+            console.log(list)
+            $scope.loading = false;
             $scope.searchResult = list;
           });
         }
@@ -4001,8 +4003,10 @@ app.controller("investigationController",["$scope","$http","labTests","scanTests
      
       function getRadiologies() {
         var source = $resource("/user/getAllRadiology")
+        $scope.loading = true;
         source.query({city:$rootScope.treatment.city,country:$rootScope.treatment.country},function(list){
           console.log(list)
+          $scope.loading = false;
           $scope.searchResult = list;
         })
       }

@@ -729,9 +729,9 @@
                     <a href="" ng-click="goBack()"><i class="fa fa-arrow-left"></i> Back</a> 
                     <div>
                        <form>
-                           <label>Criteria: </label>
-                           <input type="text" name="city" ng-model="treatment.city">
-                           <input type="text" name="country" ng-model="treatment.country">
+                           <label>Search: </label>
+                           <input type="text" name="city" ng-model="treatment.city" placeholder="City/Town">
+                           <input type="text" name="country" ng-model="treatment.country" placeholder="Country">
                            <input type="button" ng-click="changeOption()" class="btn btn-primary" value="search">
                        </form>
                        <hr>
@@ -741,6 +741,8 @@
                                     <input type="text" name="" ng-model="filterResult" placeholder="Filter centers" class="form-control">
                                </div>
                                <div style="overflow-y: auto; height: 400px">
+                                   <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange;font-size: 24px;margin-top: 35px" ng-if="loading"></i>
+
                                    <div ng-repeat="center in searchResult | filter: filterResult" style="padding:10px">
                                        <a href="" ng-click="selected(center)">{{center.name}}<span style="display: block">{{center.address}},{{center.city}},{{center.country}}</span></a>
                                    </div>                               
@@ -801,9 +803,9 @@
                     <a href="" ng-click="goBack()"><i class="fa fa-arrow-left"></i> Back</a> 
                     <div>
                        <form>
-                           <label>Criteria: </label>
-                           <input type="text" name="city" ng-model="treatment.city">
-                           <input type="text" name="country" ng-model="treatment.country">
+                           <label>Search: </label>
+                           <input type="text" name="city" ng-model="treatment.city" placeholder="City/Town">
+                           <input type="text" name="country" ng-model="treatment.country" placeholder="Country">
                            <input type="button" ng-click="changeOption()" class="btn btn-primary" value="search">
                        </form>
                        <hr>
@@ -814,6 +816,7 @@
                                </div>
                                <div style="overflow-y: auto; height: 400px">
                                    <div ng-repeat="center in searchResult | filter: filterResult" style="padding:10px">
+                                    <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange;font-size: 24px;margin-top: 35px" ng-if="loading"></i>
                                        <a href="" ng-click="selected(center)">{{center.name}}<span style="display: block">{{center.address}},{{center.city}},{{center.country}}</span></a>
                                    </div>                               
                                 </div>
