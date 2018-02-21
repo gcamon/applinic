@@ -1294,7 +1294,8 @@ app.controller('loginController',["$scope","$http","$location","$window","$resou
   $scope.error = "";  
   
   $scope.send = function(){ 
-    $scope.loading = true; 
+    $scope.loading = true;
+    $scope.error = ""; 
     var login = $resource('/user/login',null,{logPerson:{method:"POST"}});
     login.logPerson($scope.login,function(data){   
     if (data.isLoggedIn) {
