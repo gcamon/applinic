@@ -3736,6 +3736,8 @@ app.controller("investigationController",["$scope","$http","labTests","scanTests
     $rootScope.treatment = ($rootScope.treatment) ? $rootScope.treatment : {};
     $scope.isSearchToSend = false;
 
+    $rootScope.treatment.city = patient.city;
+    $rootScope.treatment.country = patient.country;
     $scope.lab = function() {
       $scope.isNewLab = true;
       $scope.isNewRadio = false;
@@ -3798,8 +3800,7 @@ app.controller("investigationController",["$scope","$http","labTests","scanTests
       $scope.sendToLab = function () {        
           $scope.isNewLab = false;
           $scope.isSearchToSend = true;
-          $rootScope.treatment.city = patient.city;
-          $rootScope.treatment.country = patient.country;
+          
           getLaboratories();
         
 
@@ -3950,8 +3951,8 @@ app.controller("investigationController",["$scope","$http","labTests","scanTests
       $scope.sendToRad = function () {        
         $scope.isNewRadio = false;
         $scope.isSearchToSend = true;
-        $rootScope.treatment.city = patient.city;
-        $rootScope.treatment.country = patient.country;
+       // $rootScope.treatment.city = patient.city;
+        //$rootScope.treatment.country = patient.country;
 
         getRadiologies();
       }
