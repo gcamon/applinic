@@ -140,7 +140,7 @@
 </div>
 
  <!-- view session-->
-<section ng-if="isToViewSession" ng-class="{'transition-background':isTrans}">
+<section ng-if="isToViewSession" ng-class="{'transition-background':isTrans}" style="position: relative;">
     <div class="medical-record-Area card p-1"  style="border-top: 1px solid rgba(0,0,0,0.4)">
     <div>
         <h5 style="">Treatment sessions</h5>
@@ -160,6 +160,9 @@
         <article ng-repeat = "session in sessionData" ng-click="viewTreatmentSession(session)" style='padding: 10px; cursor:pointer;margin-bottom: 10px;box-shadow: 1px 5px 5px rgba(0,0,0,0.5);color:#fff' class="bg-warning">
             <span>{{session.date | date : "mediumDate" }}</span> <span style="padding-left: 20px">{{session.diagnosis.presenting_complain || session.diagnosis.diagnosis ||"( Empty )"}}</span> <small style="float:right">Last modified: {{session.last_modified | date : "mediumDate"}}</small>
         </article>
+    </div>
+    <div style="height: auto;position:absolute;top:0;left: 0;text-align: center;width: auto;background-color: rgba(0,0,0,0.4)">
+        <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff;font-size: 24px" ng-if="loading"></i>
     </div>
 </div>
 </section>

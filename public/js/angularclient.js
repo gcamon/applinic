@@ -1298,8 +1298,7 @@ app.controller('loginController',["$scope","$http","$location","$window","$resou
     $scope.error = ""; 
     var login = $resource('/user/login',null,{logPerson:{method:"POST"}});
     login.logPerson($scope.login,function(data){   
-    if (data.isLoggedIn) {
-       
+    if (data.isLoggedIn) {       
         localManager.setValue("resolveUser",data);        
        //user joins a room in socket.io and intantiayes his own socket
         switch(data.typeOfUser) {
@@ -1328,9 +1327,9 @@ app.controller('loginController',["$scope","$http","$location","$window","$resou
           break; 
         }
         
-      } else {       
-        $scope.error = "Email or Password incorrect!";  
-         $scope.loading = false;          
+      } else {   
+        $scope.loading = false;      
+        $scope.error = "Email or Password incorrect!"; 
       }
     });
   }
@@ -8446,9 +8445,11 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
     var sessionList = [];
 
     function loadSession() {
+      $scope.loading = true;
       var getSession = $resource("/user/doctor/get-patient-sessions");
       var sendObj = {patient_id:patient.id}
       getSession.query(sendObj,function(data){
+        $scope.loading = false;
         for(var i = 1; i < data.length; i++) {          
           if(sessionList.length >= 10)
             break;
