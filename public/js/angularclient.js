@@ -3736,8 +3736,8 @@ app.controller("investigationController",["$scope","$http","labTests","scanTests
     $rootScope.treatment = ($rootScope.treatment) ? $rootScope.treatment : {};
     $scope.isSearchToSend = false;
 
-    $rootScope.treatment.city = patient.city;
-    $rootScope.treatment.country = patient.country;
+    $scope.treatment.city = patient.city;
+    $scope.treatment.country = patient.country;
     $scope.lab = function() {
       $scope.isNewLab = true;
       $scope.isNewRadio = false;
@@ -3854,7 +3854,7 @@ app.controller("investigationController",["$scope","$http","labTests","scanTests
           var source = $resource("/user/getAllLaboratory")
           console.log($rootScope.treatment)
           console.log(patient)
-          source.query({city:$rootScope.treatment.city,country:$rootScope.treatment.country},function(list){
+          source.query({city:$scope.treatment.city,country:$scope.treatment.country},function(list){
             console.log(list)
             $scope.loading = false;
             $scope.searchResult = list;
@@ -4007,7 +4007,7 @@ app.controller("investigationController",["$scope","$http","labTests","scanTests
       function getRadiologies() {
         var source = $resource("/user/getAllRadiology")
         $scope.loading = true;
-        source.query({city:$rootScope.treatment.city,country:$rootScope.treatment.country},function(list){
+        source.query({city:$scope.treatment.city,country:$scope.treatment.country},function(list){
           console.log(list)
           $scope.loading = false;
           $scope.searchResult = list;
