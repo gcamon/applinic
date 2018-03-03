@@ -1,128 +1,57 @@
-    
-    <!--<a ng-href="{{back}}" style="font-size: 22px; font-weight: 100; color: #000"><i class="fa fa-arrow-left"> &nbsp;Back</i></a>
-    <input type="text" placeholder="Filter by hostipal name or doctor's name or specialty" ng-model="list.work_place" class="form-control" style="width: 80%;margin-left:20px">
-    <div class="tg-view tg-list-view" >        
-        <div class="row">            
-            <article class="tg-doctor-profile" ng-repeat="i in searchResult | filter: list.work_place || list.firstname || list.specialty" style="width:100%;margin-right:20px">
-                <div class="tg-box" style="box-shadow: 5px 5px 10px rgba(0,0,0,0.8)">
-                    <a href="{{i.profile_url}}" title="View {{i.firstname}} profile"><span class="tg-show"><em class="fa fa-plus"></em></span></a>
-                    <figure class="tg-docprofile-img">
-                        <span class="tg-featuredicon"><em class="fa fa-bolt"></em></span>
-                        <a ng-href="{{i.profile_url}}"><img ng-src="{{i.profile_pic_url}}" class="pp" alt="image description"></a>
-                                               
-                    </figure>												
-                    <div class="tg-docprofile-content">
-                        <div class="tg-heading-border tg-small">
-                            <h5><a ng-href="{{i.profile_url}}">Dr {{i.firstname}} {{i.lastname}}</a></h5>
-                            <h6>{{i.specialty}} Specialist</h6>
-                        </div>
-                        <ul class="tg-doccontactinfo">
-                            <li>
-                                <i class="fa fa-map-marker"></i>
-                                <span style="font-weight: bold">{{i.work_place}}:</span>
-                                <address>{{i.address}}</address>
-                            </li>
-                            <li>
-                                <i class="fa fa-phone"></i>
-                                <span>(+234) {{i.phone}}</span>
-                            </li>
-                            <li>
-                                <i class="fa fa-envelope-o"></i>
-                                <a href="obinna@fareland.com">jhon@company.com</a>
-                            </li>
-                            <li>                                                        
-                                <span style="font-weight: bold">Residence: </span>
-                                <span>{{i.city}}, {{i.country || "N/A"}}</span>
-                            </li>
-                           
-                            <li ng-controller="bookController">
-                                <div class="communication-btn">                                                
-                                    <button class="ng-show" ng-click="book(i.user_id)">BOOK NOW</button>
-                                    <button class="ng-show" ng-click="ask(i.user_id)">ASK QUESTION</button>                                   
-                                </div>
-                            </li>
-                        </ul>                                                               
-                    </div>
-                         
-                </div>
-            </article>							
-        </div>
-    
-    
-        <div class="tg-btnarea">
-            
-            <div class="info-div" ng-show="isNotFound" style="width: 400px;height: 100px; margin:0 auto; border: 1px solid rgba(0,255,0,0.8);padding: 20px 20px;">
-                <p style="text-align: center; color: green">Oops! No match found based on your search criteria.<br>
-                Try again..</p>           
-            </div>
-        </div>
-    </div>-->
-
-
-  
-      
-      
-      
-      <div class="container">
-          <div class="card p-2">
+<div class="container">
+  <div class="card p-2">
     <a ng-href="{{back}}"><i class="fa fa-arrow-left btn btn-simple"> &nbsp;Back</i></a>
-    <input type="text" placeholder="Filter by hostipal name or doctor's name or specialty" ng-model="list.work_place" class="form-control">
+    <input type="text" placeholder="Filter by place of work or doctor's name or specialty" ng-model="list.work_place" class="form-control">
     <div class="tg-view tg-list-view" >        
         <div class="row">            
             <article class="tg-doctor-profile" ng-repeat="i in searchResult | filter: list.work_place || list.firstname || list.specialty">
                 <div class="card p-1">
-                    <div class="row p-1">
+                    <div class="row">
                         <div class="col-md-3">                       
-                    <div class="tg-docprofile-img">
-                      <a ng-href="{{i.profile_url}}"><img ng-src="{{i.profile_pic_url}}"   class="img-rounded" alt="image description" height="205"></a>
-                                                
-                     <a href="{{i.profile_url}}" class="mt-1 btn btn-simple btn-block" title="View {{i.firstname}} profile"> View Profile</a>
-                    </div>
-                     </div>                                             
-                    <div class="col-md-8">
-                        <div class="tg-heading-border tg-small">
-                            <h5 class="mb-0"><a class="font-1_4" ng-href="{{i.profile_url}}">Dr {{i.firstname}} {{i.lastname}}</a></h5>
-                            <h6 class="font-1_1 mt-0 text-muted">{{i.specialty}} Specialist</h6>
-                        </div>
-
-                        <ul class="nav">
-                            <li>
+                            <div class="tg-docprofile-img">
+                              <a ng-href="{{i.profile_url}}"><img ng-src="{{i.profile_pic_url}}" class="img-rounded img-responsive" style="max-width: 200px" alt="image description"></a>
+                                                        
+                             <a href="{{i.profile_url}}" class="mt-1 btn btn-neutral text-success" title="View {{i.firstname}} profile">View Profile</a>
+                            </div>
+                        </div>                                             
+                    <div class="col-md-9">
+                        <div class="tg-small">
+                            <div>
+                                <b class="">{{i.title}} {{i.firstname}} {{i.lastname}}</b>
+                                <span style="display:block">{{i.specialty}} Specialist</span>
+                            </div>
+                            <div>
                                 <i class="fa fa-map-marker"></i>
-                                <span class=" font-1_1" style="font-weight: bold">{{i.work_place}}:</span>
-                                <address class="mb-0 font-1_1">{{i.address}}</address>
-                            </li>
-                            <li>
+                                <span class=" font-1_1" style="font-weight: bold">{{i.work_place}} </span>
+                                <span class="mb-0 font-1_1"> {{i.address}}</span>
+                            </div>
+                            <div>
                                 <i class="fa fa-phone"></i>
-                                <span class=" font-1_1">(+234) {{i.phone}}</span>
-                            </li>
-                            <li class="fa fa-envelope-o">
-                                <a href="obinna@fareland.com" style="display:inline-block; text-decoration:none; color:#555;"> jhon@company.com</a>
-                            </li>
-                            <li>                                                        
-                                <span class=" font-1_1" style="font-weight: bold">Residence: </span>
-                                <span class=" font-1_1">{{i.city}}, {{i.country || "N/A"}}</span>
-                            </li>
-                            <!--<li>
-                                <span style="font-weight: bold">Experience: </span>
-                                <span>{{i.experience || "N/A" }} years</span>
-                            </li>
-                            <li>
-                                <span style="font-weight: bold">Degree(s): </span>                                
-                                <span ng-repeat = "j in i.education">{{j.certificate}},</span>
-                                                                                        
-                            </li>-->
-                            <li ng-controller="bookController">
+                                <span class=" font-1_1" style="font-weight: bold"></span>
+                                <span class=" font-1_1"> {{i.phone}}</span>
+                            </div>
+                            <!--<div>
+                                 <a href="info@applinic.com" style="display:inline-block; text-decoration:none; color:#555;"> jhon@company.com</a>
+                            </div>-->           
+                            <div>
+                                 <i class="fa fa-globe" font-1_1" style=""></i>
+                                <span class=" font-1_1"> {{i.city}}, {{i.country || "N/A"}}</span>
+                            </div> 
+                            <div ng-controller="bookController">
                                 <div class="communication-btn">                                                
                                     <button class="ng-show btn btn-info" ng-click="book(i.user_id)" ng-if="checkLogIn.typeOfUser === 'Patient'">BOOK NOW</button>
                                     <!--<button class="ng-show btn btn-success" ng-click="ask(i.user_id)">ASK QUESTION</button>-->                                   
                                 </div>
-                            </li>
-                        </ul>                                                               
+                            </div>                                      
+                        </div>
+
+                                                                 
                     </div>
 
                     </div> 
                 </div>
-            </article>                          
+            </article>   
+
         </div>
     
     

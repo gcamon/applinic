@@ -604,6 +604,7 @@ app.controller("investigationController",["$scope","$http","labTests","scanTests
   	$scope.isRadio = false;
   	$scope.isInitial = true;
    	$scope.isSearchToSend = false;
+   	$rootScope.treatment = ($rootScope.treatment) ? $rootScope.treatment : {};
 
   	$scope.lab = function() {
   		$scope.isLab = true;
@@ -730,6 +731,7 @@ app.controller("investigationController",["$scope","$http","labTests","scanTests
 		     patient.laboratory.patient_gender = patient.gender;
 		     patient.history = $scope.treatment.history;
 		     patient.laboratory.patient_age = patient.age;
+		     patient.patient_address = patient.address;
 		     patient.patient_firstname = patient.firstname;
 		     patient.patient_lastname = patient.lastname;
 		     patient.patient_profilePic = patient.patient_profile_pic_url || patient.profile_pic_url;

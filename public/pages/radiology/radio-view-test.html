@@ -1,10 +1,8 @@
-
-
-<div class="col-sm-12 col-md-12 col-lg-12" style="max-height: 1000px">
-<header style="padding: 10px; font-size: 18px;font-weight: bold;"><i class="fa fa-arrow-left" style="cursor: pointer" ng-click="refresh()" ng-if="refInfo.radiology.test_to_run.length > 0"> &nbsp;Back</i></header>
+<div class="col-sm-12 col-md-12 col-lg-12">
+<!--<header style="padding: 0 10px 10px; font-size: 18px;font-weight: bold;"><i class="fa fa-arrow-left" style="cursor: pointer" ng-click="refresh()" ng-if="refInfo.radiology.test_to_run.length > 0"> &nbsp;Back</i></header>-->
 	<div class="row">
 		
-	<header  class="col-sm-12 col-md-3 clo-lg-3" ng-if="!reportSuccess">
+	<header  class="col-sm-12 col-md-3 col-lg-3" ng-if="!reportSuccess">
 		<div class="card"  style="text-align: center">
 			<img src="{{refInfo.radiology.patient_profile_pic_url}}" style="max-width: 100%; max-height: auto;">
 			<div>
@@ -13,8 +11,12 @@
 			</div>
 			<hr>
 			<div style="padding: 5px;text-align: left;">
-				<strong>Age | </strong> &nbsp;{{refInfo.radiology.age}} 
-				<strong style="display:block;padding-top: 20px">Sex |</strong> &nbsp;{{refInfo.radiology.gender}}
+				<span>{{refInfo.radiology.patient_address}}</span>
+			</div>	
+			<hr>
+			<div style="padding: 5px;text-align: left;">
+				<span> Age | &nbsp;{{refInfo.radiology.patient_age}}</span>  
+				<span style="display:block;padding-top: 20px">Sex | &nbsp;{{refInfo.radiology.patient_gender}}</span> 
 			</div>	
 		</div>
 	</header>
@@ -29,18 +31,58 @@
 				<div style="text-align: center; padding: 10px; border-bottom: 1px solid green"><strong>{{refInfo.radiology.patient_title}} {{refInfo.radiology.patient_firstname}} {{refInfo.radiology.patient_lastname}}</strong><span style="display:block;">Patient</span></div>
 							
 			</div>-->
-			<div class="col-sm-12 col-md-12 col-lg-12" ng-if="hasSent">
+			<div class="col-sm-12 col-md-12 col-lg-12 card" ng-if="hasSent && !isPreview">
+			<h4 class="mb-0 mt-0 p-2 font-1_4">Investigation Details</h4> 				
 				
-				<div class="col-sm-12 card" style="padding:20px" ng-if="!isPreview">
-					 <h4 class="mb-0 mt-0 pl-0 font-1_4" >History :</h4>
-					<p class="pt-1 pb-1" style="font-size:1em;text-indent: 15px;margin-bottom: 30px" ng-if="refInfo.history">
-						<em>{{refInfo.history}}
+				<div class="col-sm-12 " style="padding:20px" ng-if="!isPreview">
+					 <div class="mb-0 mt-0 pl-0 font-1_2" ><b>Clinical Summary: </b></div>
+					<p class="pt-1 pb-1" style="font-size:1em;text-indent: 15px;margin-bottom: 10px" ng-if="refInfo.radiology.clinical_summary">
+						<em>{{refInfo.radiology.clinical_summary}}
 						</em>
 					</p>
 				</div>				
-				
-				<div class="col-sm-12 card" style="padding:20px" ng-if="!isPreview">					
-					<h4 class="mb-0 mt-0 pl-0 font-1_4">Tests to run :</h4>
+
+				<div class="col-sm-12 " style="padding:20px" ng-if="!isPreview">
+					 <div class="mb-0 mt-0 pl-0 font-1_2" ><b>Indication :</b></div>
+					<p class="pt-1 pb-1" style="font-size:1em;text-indent: 15px;margin-bottom: 10px" ng-if="refInfo.radiology.indication">
+						<em>{{refInfo.radiology.indication}}
+						</em>
+					</p>
+				</div>
+
+				<div class="col-sm-12 " style="padding:20px" ng-if="!isPreview && refInfo.radiology.patient_gender === 'female'">
+					 <div class="mb-0 mt-0 pl-0 font-1_2" ><b>Parity :</b></div>
+					<p class="pt-1 pb-1" style="font-size:1em;text-indent: 15px;margin-bottom: 10px" ng-if="refInfo.radiology.parity">
+						<em>{{refInfo.radiology.parity}}
+						</em>
+					</p>
+				</div>
+
+				<div class="col-sm-12 " style="padding:20px" ng-if="!isPreview && refInfo.radiology.patient_gender === 'female'">
+					 <div class="mb-0 mt-0 pl-0 font-1_2" ><b>LMP :</b></div>
+					<p class="pt-1 pb-1" style="font-size:1em;text-indent: 15px;margin-bottom: 10px" ng-if="refInfo.radiology.lmp">
+						<em>{{refInfo.radiology.lmp}}
+						</em>
+					</p>
+				</div>
+
+
+
+
+				<div class="col-sm-12 " style="padding:20px" ng-if="!isPreview">
+					 <div class="mb-0 mt-0 pl-0 font-1_2" ><b>Referring Physician :</b></div>
+					<p class="pt-1 pb-1" style="font-size:1em;text-indent: 15px;margin-bottom: 10px">
+						{{refInfo.referral_title}} {{refInfo.referral_firstname}} {{refInfo.referral_lastname}}
+					</p>
+				</div>						
+					
+		
+			
+				<p class="" style="padding:20px" ng-if="!isPreview">If <strong>None</strong> of the below test(s) is run by your center please <a href="" style="color:red;font-size:16px" ng-click="redirectTest()"> refer patient to another center.</a>
+				If <strong> one </strong> or <strong> more </strong> of the tests is not done in your center <strong>unmark</strong> the particular test.</p>
+
+				<div class="col-sm-12" style="padding:20px" ng-if="!isPreview">					
+					<div class="mb-0 mt-0 pl-0 font-1_2"><b>Tests to run :</b></div>
     				<div class="mt-1"  ng-repeat = "test in refInfo.radiology.test_to_run" >
 						<label class="custom-control custom-checkbox">
 		    				<input type="checkbox" ng-model="test.select"  class="custom-control-input">
@@ -48,12 +90,9 @@
 		    				<span class="custom-control-description">{{test.name}}</span>
     					</label>
     				</div>
-				</div>	
-					
-		
-			
-				<p class="card" style="padding:30px" ng-if="!isPreview">If <strong>None</strong> of the above test(s) is run by your center please <a href="" style="color:red;font-size:16px" ng-click="redirectTest()"> refer patient to another center.</a>
-				If <strong> one </strong> or <strong> more </strong> of the tests is not done in your center <strong>unmark</strong> the particular test.</p>
+				</div>
+
+
 				
 
 		</div>
@@ -68,29 +107,60 @@
                 </h6>                 
                 <div style="list-style:none;font-size:16px" id="collapseSeven" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingSeven"> -->
                 <div style="padding: 20px" class="card" ng-if="!isPreview">
-                	<h4 class="mb-0 mt-0 pl-0 font-1_4">Compute cost</h4> 
-                	 <p class="danger-mine" ng-if="compute && compute !== '' ">{{compute}}</p>                            
-                     <table class="table table-responsive">
-                    
-                     	<tr>
-                     		<thead>
-                     			<th>Test name</th>
-                     			<th>Cost</th>
-                     		</thead>
-                     	</tr>
-                     	<tr>
-                     		<tbody ng-repeat = "j in testsForSurchage">
-                     			<td style="width: 55%;padding:10px;color:#000">{{j.name}}</td>
-                     			<td style="width: 45%"><input type="number" ng-model="j.amount" style="padding:10px"></td>
-                     		</tbody>
-                     	</tr>
-                     </table>
-                     <div>
-                     	<strong>Total : <em>{{str}}</em></strong>
-                     </div>
-                     <!--<div style="text-align:center;margin-top:20px" ng-if="isFilled === true">
-                     	<button style="background-color:#996b88;color:#fff;font-size:14px;border-radius:20px" ng-click="sendBill(refData.laboratory.patient_id)">Send billing to patient</button>
-                     </div>-->
+                	<article ng-if="!otpMsg && !paymentStatus">
+	                	<h4 class="mb-0 mt-0 p-2 font-1_4">Compute Cost</h4> 
+	                	 <p class="danger-mine p-2" ng-if="compute && compute !== '' ">{{compute}}</p>                            
+	                     <table class="table table-responsive p-2">
+	                    
+	                     	<tr>
+	                     		<thead>
+	                     			<th>Test name</th>
+	                     			<th>Cost</th>
+	                     		</thead>
+	                     	</tr>
+	                     	<tr>
+	                     		<tbody ng-repeat = "j in testsForSurchage">
+	                     			<td style="width: 55%;padding:10px;color:#000">{{j.name}}</td>
+	                     			<td style="width: 45%"><input type="number" ng-model="j.amount" style="padding:10px"></td>
+	                     		</tbody>
+	                     	</tr>
+	                     </table>
+	                     <div class="p-2">
+	                     	<strong>Total : <em>{{str}}</em></strong>
+	                     	<!--<a href="" class="btn btn-danger" style="float: right;" ng-click="sendBill()"></a>-->
+	                     	<button class="btn btn-danger" style="float: right;" ng-click="sendBill(refInfo.radiology.patient_id,resend)" ng-if="grabRawAmount > 0"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i> Request Payment </button>
+	                     </div>
+                     </article>
+                     <article ng-if="otpMsg">
+                     	<div  class="p-2 col-md-8" class="text-center text-success font-1">
+                     		<p class="bg-warning p-1 text-white" ng-if="otpError">{{otpError}}</p>
+							<p class="">{{otpMsg}} </p>
+							<input type="text" class="form-control" placeholder="Enter OTP you sent to this patient" ng-model="lab.otp" ng-if="grabRawAmount > 0">
+							<div style="padding-left: 5px">
+								<button class="btn btn-success" ng-click="verifyPay(refInfo)"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i>  Confirm</button>
+							</div>
+							
+							<p ng-if="grabRawAmount <= 0"><span class="text-danger">Report will not be sent, patient is not billed for the service(s)</span>
+							</p>							
+						</div>
+						<div class="p-2 col-md-3">
+							<p class="text-success">Amount: {{str}}</p>
+							
+							<div>
+								<a href="" ng-click="sendBill(refInfo.radiology.patient_id,resend)"><i class="fa fa-refresh"></i> Resend OTP</a>
+							</div>
+						</div>
+                     </article>
+
+                     <article ng-if="refInfo.radiology.is_paid || paymentStatus">
+                     	<div class="p-2" style="font-size: 18px">
+                     		<i class="fa fa-check-circle" style="font-size: 42px;color: #85CE36;float: left;"></i>
+                     		<aside style="padding: 20px;display: inline-block;margin-top: -20px">
+	                     		<span style="">Payment has been made for this service successfully!
+	                     		<span style="display: block;">Paid: {{paymentDetail.amount}}</span> <span>Date: {{paymentDetail.date | date: "mediumDate"}} Time: {{paymentDetail.date | date: "shortTime"}}</span>
+                     		</aside>
+                     	</div>
+                     </article>
                      <div>&nbsp;</div>
                 </div>
 
@@ -109,13 +179,13 @@
 					</ul>
 				</div>-->
 
-				<div ng-if="isResult"  style="padding: 20px" class="card">
+				<div ng-if="isResult && refInfo.radiology.is_paid || paymentStatus"  style="padding: 20px" class="card">
 					
 					<p style="text-align:right; text-decoration: underline" ng-if="isRefresh"><button ng-click="refresh()" class="fa fa-refresh"> Refresh</button></p>
 					
 						
 					<div ng-if="!isPreview">
-					<h4 class="mb-0 mt-0 pl-0 font-1_4">Report entry </h4>
+					<h4 class="mb-0 mt-0 p-2 font-1_4">Report entry </h4>
 					<form>
 						<div class="row">
 						<p class="danger-mine pl-1" ng-if=" incomplete && incomplete !== ''">{{incomplete}}</p>
@@ -134,24 +204,52 @@
 					</div>
 
 					<div ng-if="!isPreview" >	
-						<h4 class="font-1_1">Uploads files associated with the test report (If any)</h4>
-						<form enctype="multipart/form-data">
-							<input type="file" name="file" id="file" file-model = "radio.scanImage" multiple="multiple">
-							<!--<button class="btn btn-simple" ng-click="upload()">Upload image</button>-->
-							<div style="display: inline-block;" ng-if ="progressVisible == true">
-						        <div class="percent">{{progress || '100'}}%</div>
-					            <div class="progress-bar">
-					                <div class="uploaded" ng-style="{'width': progress+'%'}"></div>
-					            </div>
-						    </div>
-						  	<p ng-if="progress && progress !== 100" class="danger-mine">{{uploadStatus}}</p>
+						<h4 class="mb-0 mt-0 p-2 font-1_4">Add Radiology Imagery</h4>
+						<div class="col-sm-12 col-md-12 col-lg-12">	
+							<div>						
+								
+								<label class="custom-control custom-radio">
+				    				<input type="radio" value="jpeg" ng-model="radio.type" class="custom-control-input">
+				    				<span class="custom-control-indicator"></span>
+				    				<span class="custom-control-description font-1_1"><b> Upload JPEG, PNG, etc images</b> ( Not standard for radiology viewing and reporting ) </span>
+		    					</label>
+		    					<div></div>
+		    					<label class="custom-control custom-radio">
+				    				<input type="radio" value="dicom" ng-model="radio.type" class="custom-control-input">
+				    				<span class="custom-control-indicator"></span>
+				    				<span class="custom-control-description font-1_1"> <b>Upload Standard DICOM Images to Applinic cloud services</b>( Standard for Radiology Viewing and Reporting ) </span>
+		    					</label>
+								<hr>
+							</div>						
+							<form enctype="multipart/form-data" ng-if="radio.type === 'jpeg'">
+								<input type="file" name="file" id="file" file-model = "radio.scanImage" multiple="multiple">
+								<!--<button class="btn btn-simple" ng-click="upload()">Upload image</button>-->
+								<div style="display: inline-block;" ng-if ="progressVisible == true">
+							        <div class="percent">{{progress || '100'}}%</div>
+						            <div class="progress-bar">
+						                <div class="uploaded" ng-style="{'width': progress+'%'}"></div>
+						            </div>
+							    </div>
+							  	<p ng-if="progress && progress !== 100" class="danger-mine">{{uploadStatus}}</p>
+								
+							</form>
+							<div ng-if="radio.type === 'dicom'">							
+								<p> From Network Settings on MODALITY or DICOM VIEWER, Enter the following under <b>PACS Destinations:</b> <em style="display: block;">AE Title = APPLINIC</em> <em style="display:block"> IP address = 192.234.646.78</em>						
+								and save settings. Then select study from Worklist and send to APPLINIC cloud services. Viewing by your radiologist, physician and other third party require OTP.
+
+								<em style="display:block;padding-top: 20px">Set <b>Accession Number</b> for these investigations to <b>{{dicomPath}}</b> before sending to APPLINIC cloud services.</em>
+								</p>
+							</div>
 							
-						</form>
+						</div>
+						
+						<div class="clearfix"></div>
+						<div class="form-group col-md-12 col-sm-12" ng-if="isFilled === true" style="margin-top:30px">
+	                 		<button class="btn btn-info" style="float: right;" ng-click="previewTestResult(refInfo)">Preview</button>
+	                 	</div>		
 					</div>
 
-					<div class="form-group col-md-12 col-sm-12" ng-if="isFilled === true" style="margin-top:30px">
-                 	<button class="btn btn-success" ng-click="previewTestResult(refInfo)">Ok, continue</button>
-                 	</div>		
+					
 				</div>
             </div>
 
@@ -162,18 +260,28 @@
 					<div ng-if="!otpMsg" style="padding: 10px">
 						<!--<h5 class="p-1" style="font-weight:200; border-bottom:1px solid #ccc;">Preview</h5>-->
 						<div class="row p-1" id="print-section">
-							<div>
-								<img src="{{checkLogIn.profile_pic_url}}" style="width:72px;height:72px; float:left">
-								<div style="display: inline-block;">
+							<div class="col-sm-12 col-md-7 col-lg-7">
+								<img src="{{checkLogIn.profile_pic_url}}" style="width:82px;height:82px; float:left">
+								<div style="display: inline-block;margin-top: -10px">
 									<strong style="font-size: 22px">{{checkLogIn.name}}</strong>
-									<article>{{checkLogIn.address}}</article>
-								</div>
-							
+									<article>{{checkLogIn.address}} {{checkLogIn.city}} {{checkLogIn.country}}</article>
+									<article>{{checkLogIn.email}}</article>
+									<article>{{checkLogIn.phone}}</article>											
+								</div>							
 							</div>
-							<hr class="bg-warning">
-							<h6>History:</h6>
-							<p style="padding:10px 20px">{{refInfo.history}}</p>
-							<hr class="bg-warning">
+							<aside class="col-sm-12 col-md-5 col-lg-5" style="">	
+								<div>
+									<b>Date: </b>{{reportDate | date: "mediumDate"}}<br>
+									<b>Applinic.com Reference Numeber:</b> {{refInfo.ref_id}}
+								</div>
+							</aside>
+							<div class="clearfix"></div>				
+							<hr class="bg-simple">
+							<h6>Clinical Summary</h6>
+							<p style="padding:10px 20px">{{refInfo.radiology.clinical_summary}}</p>
+							<h6>Indication</h6>
+							<p style="padding:10px 20px">{{refInfo.radiology.indication}}</p>
+							<hr class="bg-simple">
 							<h6>Investigation:</h6>
 							<ul>
 								<li ng-repeat = "test in refInfo.radiology.test_to_run"">{{test.name}}</li>
@@ -183,36 +291,37 @@
 							<ul>
 								<li ng-repeat="sample in specimen" ng-if="sample.status == true">{{sample.name}}</li>
 							</ul>-->
-							<hr class="bg-warning">
+							<hr class="bg-simple">
 							<h6>Findings: </h6>
 							
 							<div class="text-success pl-1 font-1_1 m-0" ng-repeat="picked in preTest"><b>{{picked.name}}: </b> <span style="display: block;padding: 20px;word-break: break-all;">{{picked.data}}</span></div>
 							<div class="text-success pl-1 font-1_1"><b>Conclusion: </b> <span style="display: block;padding: 20px;word-break: break-all;">{{lab.conclusion}}</span></div>
 							<div ng-if="">{{}} files attached</div>
-							<hr class="bg-warning">
-							<div class="text-danger pt-1 pl-1 pb-0" style="text-transform:uppercase;"><b>Total cost of service(s): </b> {{str}}</div>
+							<hr class="bg-simple">
+							<div class="text-danger pt-1 pl-1 pb-0" style="text-transform:uppercase;"><b>Total cost of service(s): </b> {{paymentDetail.amount || str}}</div>
 						</div>
 
-						<div class="pl-1 pb-1"><small class="text-muted" ng-if="grabRawAmount > 0">
-                        <i class="fa fa-warning"></i> Please confirm total cost of service before sending OTP</small>
+						<div class="pl-1 pb-1">
+						<!--<small class="text-muted" ng-if="grabRawAmount > 0">
+                        <i class="fa fa-warning"></i> Please confirm total cost of service before sending OTP</small>-->
                         </div>
-						<button class="btn btn-simple mr-1 ml-1" ng-click="edit()"> Edit </button>
-						<i class="btn btn-simple mr-1 ml-1 fa fa-print" ng-print  print-element-id="print-section"></i>
-						<button class="btn btn-warning" ng-click="sendBill(refInfo.radiology.patient_id,resend)" ng-if="grabRawAmount > 0"> Ok,continue </button>
+						<button class="btn btn-neutral mr-1 ml-1" ng-click="edit()"> Edit </button>
+						<i class="btn btn-warning mr-1 ml-1 fa fa-print" ng-print  print-element-id="print-section"></i>
+						<button class="btn btn-primary" ng-click="sendTestResult(refInfo)"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i>{{(loading) ? "" : 'Ok,send' }}</button>
 						
 					</div>
 					 <hr class="bg-warning">
 					 <div class="row">
-					<div  class="p-2 col-md-8" ng-if="otpMsg" class="text-center text-success font-1">
+					<!--<div  class="p-2 col-md-8" ng-if="otpMsg" class="text-center text-success font-1">
 						<p>{{otpMsg}}</p>
 						<input type="text" class="form-control" placeholder="Enter OTP you sent to this patient" ng-model="lab.otp" ng-if="grabRawAmount > 0">
 						<p ng-if="grabRawAmount <= 0"><span class="text-danger">Report will not be sent, patient is not billed for the service(s)</span></p>						
 						
 					</div>
-					<div class="p-2 col-md-4 pt-4" ng-if="otpMsg"><br><br>
-						<a href="#"  class="btn btn-danger">Cancel</a>	 					
+					<div class="p-2 col-md-4 pt-4" ng-if="!otpMsg"><br><br>
+						<a href=""  class="btn btn-danger">Cancel</a>	 					
 						<input type="button" value="Send report" ng-click="sendTestResult(refInfo)" class="btn btn-success" style="margin-left:10px">
-					</div>	
+					</div>	-->
 					 </div>
 							
 					<p class="pl-2">{{message}}</p>	
@@ -327,6 +436,10 @@
 </div>
 <div ng-if="reportSuccess">
 	<p style="text-align:center;font-size:18px;color:green;margin-top:30px" class="card">Test report sent succesfully!</p>
+</div>
+
+<div style="height: 100px">
+	
 </div>
 
 

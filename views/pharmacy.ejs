@@ -13,6 +13,7 @@
         <!--<link rel="stylesheet" href="/assets/css/bootstrap.css">-->
         <link rel="stylesheet" href="/assets/css/vendor.css">
          <link rel="stylesheet" href="/assets/css/app.css">
+          <link rel="stylesheet" href="/assets/css/chat.css">
           <link rel="stylesheet" href="/assets/css/now-ui-kit2.css">
           <link rel="stylesheet" href="/assets/css/font-awesome.min.css">
           
@@ -21,6 +22,18 @@
               .title{
                   font-weight: 300;
               }
+              .view-animate-container {
+                    position:relative;  
+                    background:white;  
+                /*max-height:1000px;*/
+                background: transparent !important;
+                   /*overflow-y: auto;
+                  overflow-x: hidden;*/
+                  width: auto;
+                      margin-left: 100px
+
+                  }
+
           </style>
           <script src="/assets/js/vendor2.js"></script>
           <script type="text/javascript" src="/assets/js/source.js"></script>
@@ -82,6 +95,38 @@
                                     </footer>
                                 </div>
                             </li>
+                             <li class="notifications new"> <a href="" ng-click = "loadChats()" data-toggle="dropdown">
+                              <i class="fa fa-comment" ></i>
+                              <sup>
+                                <span class="counter btn-danger" ng-if="showIndicator !== false" style="border-radius: 10px;width: 8px;height: 8px;display: inline-block;"  ng-cloak></span>
+                              </sup>
+                            </a>
+                                <div class="dropdown-menu notifications-dropdown-menu" style="max-height: 400px;overflow-y: auto;">
+                                    <ul class="notifications-container noti-style">
+                                        <li> <h6 style="text-align: center">Chats</h6> </li>
+                                        <li ng-repeat = "chat in chatsList | orderBy : '-realTime'" ng-click= "viewChat(chat.partnerId)" style="height: 80px;overflow:hidden">
+                                            <a href="" class="notification-item">
+                                                <div class="img-col">
+                                                    <div class="img" style="background-image: url({{chat.profilePic}})"></div>
+                                                </div>
+                                                <div class="body-col">                                                
+                                                    <p style=""> <span class="accent" ng-cloak>{{chat.name}}</span>
+                                                        <span style="display:block" class="ellipsis">{{chat.messages[chat.messages.length - 1].received || chat.messages[chat.messages.length - 1].sent}} <small style="display:block" ng-cloak>{{chat.messages[chat.messages.length - 1].time | date: "shortTime" || chat.messages[chat.messages.length - 1].received | date: "shortTime"}} &nbsp;&nbsp;{{chat.messages[chat.messages.length - 1].time | date: "mediumDate" || chat.messages[chat.messages.length - 1].received | date: "mediumDate"}}</small>.</span> 
+                                                    </p>
+                                                </div>
+                                            </a>
+                                        </li>
+                                        <li ng-if="loading" style="text-align: center;height: 120px;padding-top: 50px"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange" ng-if="loading"></i></li>                                       
+                                    </ul>
+                                    <footer>
+                                        <ul>
+                                            <li> <a href="">
+                            <!--View All -->
+                             </a> </li>
+                                        </ul>
+                                    </footer>
+                                </div>
+                            </li>                                                
 
                                                  
 
@@ -443,6 +488,39 @@
           </div>
         </div>
      </script>
+
+
+       <script type="text/ng-template" id='quick-chat.html'>
+       <div class="modal fade">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="p-2">
+            <div>
+                <b class="font-1_3">Send Chat Message</b>
+                <button type="button" class="close" ng-click="close('Yes')" data-dismiss="modal">&times;</button>      
+            </div>
+            <hr>
+           
+            <div class="modal-body">
+               <header>
+                   <b>{{center.name}}</b>
+                   <span style="display: block;">{{center.address}} {{center.city}} {{center.country}}</span>
+               </header>
+              
+                <div>
+                    <textarea class="form-control p-1" ng-model="messageBody" style="height: 120px">
+                    </textarea>
+                </div>
+                <div>
+                    <button ng-click="sendChatSingle(center.id)" class="btn btn-danger" style="position: static;margin-left: 2px"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i> {{(isSent) ? "Message sent!" : 'Send'}}</button>
+                </div>
+               
+            </div>
+            
+          </div>
+        </div>
+      </div>
+   </script>
 
      <script type="text/ng-template" id='selected-drug-not-have.html'>
          

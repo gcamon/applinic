@@ -40,7 +40,7 @@
 	<form ng-if="isNotOption">
         <div class="form-group">
             <div class="col-md-6">
-                <label style="padding: 20px 5px">Test referrence Number</label>	
+                <label style="padding: 20px 5px">Test reference Number</label>	
 		<input type="text" class="form-control" placeholder="Enter referrence number" ng-model="patient.ref_id" />
 		<p style="padding: 20px 5px">
 		<button type="submit" class="pl-1 btn btn-info" ng-click="findTest()">Find Patient Test</button>
@@ -67,7 +67,7 @@
 		<span>{{test.ref_id}}</span>
 	</div>
     <div class="clearfix"></div>
-	<div class="alert alert-danger mt-1">{{error}}</div>
+	<div class="alert alert-danger mt-1 text-white" ng-if="error">{{error}}</div>
 </div>
     </div>
 </div>

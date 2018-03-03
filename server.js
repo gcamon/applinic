@@ -96,7 +96,8 @@ mySocket(model,io,streams);
 
 
 var a = "ede obinna".replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()});
-console.log(Date.now())
+var a = "djdshj"
+console.log(a[0])
 
 /*const accountSid = 'AC79f290154f4c4236a3811054e2c5e2b7';
 const authToken = 'your_auth_token';

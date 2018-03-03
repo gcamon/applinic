@@ -106,7 +106,7 @@
                                   <span class="counter" ng-if="noteLen > 0 " ng-cloak>{{noteLen}}</span>
                                 </sup>
                               </a>
-                                <div class="dropdown-menu notifications-dropdown-menu" >
+                                <div class="dropdown-menu notifications-dropdown-menu" style="max-height: 400px;overflow-y: auto;">
                                     <ul class="notifications-container noti-style">
                                         <li><h6 style="text-align: center">Notification(s)</h6></li>
                                         <li ng-repeat = "note in allNote">
@@ -155,7 +155,7 @@
                       <span class="counter" ng-if=" msgLen > 0 " ng-cloak>{{msgLen}}</span>
                     </sup>
                   </a>
-                                <div class="dropdown-menu notifications-dropdown-menu">
+                                <div class="dropdown-menu notifications-dropdown-menu" style="max-height: 400px;overflow-y: auto;">
                                     <ul class="notifications-container noti-style">
                                         <li> <h6 style="text-align: center">Message(s)</h6> </li>
                                         <li ng-repeat = "msg in allMsg" ng-click= "viewMessage(msg.user_id,msg.message_id)" ng-if="msg.category !== 'need_doctor'">
@@ -200,7 +200,7 @@
                       <span class="counter" ng-if="appLen > 0 " ng-cloak>{{appLen}}</span>
                     </sup>
                   </a>
-                                <div class="dropdown-menu notifications-dropdown-menu" ng-controller = "createRoomController">
+                                <div class="dropdown-menu notifications-dropdown-menu" style="max-height: 400px;overflow-y: auto;" ng-controller = "createRoomController">
                                     <ul class="notifications-container noti-style">
                                         <li> <h6 style="text-align: center">Appointment(s)</h6> </li>
                                         <li ng-repeat = "app in allApp" class="msg-drp-list" ng-click= "viewAppointment(app.session_id)">
@@ -230,7 +230,7 @@
                       <span class="counter btn-danger" ng-if="showIndicator !== false" style="border-radius: 10px;width: 8px;height: 8px;display: inline-block;"  ng-cloak></span>
                     </sup>
                   </a>
-                                <div class="dropdown-menu notifications-dropdown-menu" >
+                                <div class="dropdown-menu notifications-dropdown-menu" style="max-height: 400px;overflow-y: auto;">
                                     <ul class="notifications-container noti-style">
                                         <li> <h6 style="text-align: center">Chats</h6> </li>
                                         <li ng-repeat = "chat in chatsList" ng-click= "viewChat(chat.chat_id)" style="height: 80px;overflow:hidden">
@@ -472,7 +472,7 @@
                                         <li style="text-align: center;"><input type="" ng-model="filter.doctor_firstname" class="form-contro" placeholder="Filter by name or specialty" style="width: 85%;border: none;padding: 5px 10px;background-color: grey;"></li>
                                         <li ng-repeat= " i in patientsDoctorList | filter: filter.doctor_firstname || filter: filter.doctor_lastname || filter: filter.doctor_specialty || filter: filter.title"  ng-click="userDoctor(i.doctor_id)" style="margin-left: -15px">
                                            <a href="" style="position: relative;" ng-cloak> 
-                                                <img ng-src="{{i.doctor_profile_pic_url}}" class="img-responsive" style="width:32px;height:32px;margin-right: 5px" alt="image description"> 
+                                                <img ng-src="{{i.doctor_profile_pic_url}}" class="img-responsive" style="width:32px;height:32px;margin-right: 5px;display: inline-block;" alt="image description"> 
                                                 {{i.title || 'Dr'}} {{i.doctor_firstname}} {{i.doctor_lastnam}}<span ng-if="i.presence === true" class="online" style="margin-right: 15px"></span><span ng-if="i.presence !== true" class="online" style="background-color: grey;margin-right: 15px"></span>
                                                 <span style="font-size: 10px;position: absolute;bottom: 6px;left: 90px">{{i.doctor_specialty}}</span>
 
@@ -1002,7 +1002,7 @@
           <div class="modal-header">
           <div class="row">
             <div  style="text-align:right">
-                <i class="fa fa-times"  data-dismiss="modal" aria-hidden="true"style="font-size: 22px;padding-right: 30px"></i>                
+                <i class="fa fa-times"  data-dismiss="modal" aria-hidden="true" style="font-size: 22px;padding-right: 30px"></i>                
               </div>                               
           </div>
           <div class="row">
@@ -1152,6 +1152,39 @@
                 </form>
                 
              
+            </div>
+            
+          </div>
+        </div>
+      </div>
+   </script>
+
+   <!-- quick chat modal -->
+   <script type="text/ng-template" id='quick-chat.html'>
+       <div class="modal fade">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="p-2">
+            <div>
+                <b class="font-1_3">Send Chat Message</b>
+                <button type="button" class="close" ng-click="close('Yes')" data-dismiss="modal">&times;</button>      
+            </div>
+            <hr>
+           
+            <div class="modal-body">
+               <header>
+                   <b>{{center.name}}</b>
+                   <span style="display: block;">{{center.address}} {{center.city}} {{center.country}}</span>
+               </header>
+              
+                <div>
+                    <textarea class="form-control p-1" ng-model="messageBody" style="height: 120px">
+                    </textarea>
+                </div>
+                <div>
+                    <button ng-click="sendChatSingle(center.id)" class="btn btn-danger" style="position: static;margin-left: 2px"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i> {{(isSent) ? "Message sent!" : 'Send'}}</button>
+                </div>
+               
             </div>
             
           </div>

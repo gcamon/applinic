@@ -86,7 +86,7 @@
                       <span class="counter" ng-if="<%= person.doctor_notification.length %> > 0 " ng-cloak>{{getLen(<%= person.doctor_notification.length %>)}}</span>
                     </sup>
                   </a>
-                                <div class="dropdown-menu notifications-dropdown-menu">
+                                <div class="dropdown-menu notifications-dropdown-menu" style="max-height: 400px;overflow-y: auto;">
                                     <ul class="notifications-container noti-style">
                                          <li> <h6 style="text-align: center">Notification(s)</h6> </li>
                                         <li ng-repeat = "note in allNote">
@@ -116,7 +116,7 @@
                       <span class="counter" ng-if="<%= person.doctor_notification.length %> > 0 " ng-cloak>{{consultationLen}}</span>
                     </sup>
                   </a>
-                                <div class="dropdown-menu notifications-dropdown-menu">
+                                <div class="dropdown-menu notifications-dropdown-menu" style="max-height: 400px;overflow-y: auto;">
                                     <ul class="notifications-container noti-style">
                                         <li> <h6 style="text-align: center">Consultation Request(s)</h6> </li>
                                         <li ng-repeat = "patient in consultation" ng-click= "view(patient)">
@@ -151,7 +151,7 @@
                       <span class="counter" ng-if="isNew" ng-cloak>{{len}}</span>
                     </sup>
                   </a>
-                                <div class="dropdown-menu notifications-dropdown-menu">
+                                <div class="dropdown-menu notifications-dropdown-menu" style="max-height: 400px;overflow-y: auto;">
                                     <ul class="notifications-container">
                                         <li> <h6 style="text-align: center">Prescription Request(s)</h6> </li>
                                         <li ng-repeat="request in allRequest">
@@ -185,7 +185,7 @@
                       <span class="counter" ng-if="inPersonRequestLen > 0 " ng-cloak>{{inPersonRequestLen}}</span>
                     </sup>
                   </a>
-                                <div class="dropdown-menu notifications-dropdown-menu">
+                                <div class="dropdown-menu notifications-dropdown-menu" style="max-height: 400px;overflow-y: auto;">
                                     <ul class="notifications-container">
                                         <li> <h6 style="text-align: center">In-Person Appointment Request</h6> </li>
                                         <li ng-repeat = "patient in inPersonRequest">
@@ -251,7 +251,7 @@
                       <span class="counter btn-danger" ng-if="showIndicator !== false" style="border-radius: 10px;width: 8px;height: 8px;display: inline-block;"  ng-cloak></span>
                     </sup>
                   </a>
-                                <div class="dropdown-menu notifications-dropdown-menu" >
+                                <div class="dropdown-menu notifications-dropdown-menu" style="max-height: 400px;overflow-y: auto;">
                                     <ul class="notifications-container noti-style">
                                         <li> <h6 style="text-align: center">Chats</h6> </li>
                                         <li ng-repeat = "chat in chatsList" ng-click= "viewChat(chat.chat_id)" style="height: 80px;overflow:hidden">
@@ -470,23 +470,37 @@
                             <i class="fa fa-user-md"></i> My Patients
                             <i class="fa arrow"></i>
                         </a>
-                                    <ul>
-                                        <li class="bg-white" style="height:40px;"> 
+                                    <ul style="max-height:300px;overflow-y:auto">
+                                        <!--<li class="bg-white" style="height:40px;"> 
                                             <form role="search" style="height:40px;">
                                                 <div class="input-container pl-2"> <i class="fa fa-search"></i> <input type="search" placeholder="Filter Patients" style="border:0; width:90%; height:40px;" ng-model="patient.firstname">
                                                     <div class="underline"></div>
                                                 </div>
                                             </form>
-                                        </li>
+                                        </li>-->
+                                        <li style="text-align: center;"><input type="" ng-model="patient.firstname" class="form-contro" placeholder="Filter Patients" style="width: 85%;border: none;padding: 5px 10px;background-color: grey;"></li>
+                                        <li ng-repeat="patient in patientList | filter : patient.firstname || patient.lastname" style="margin-left: -15px">
+                                           <a href="" style="position: relative;" ng-click="userPatient(patient.patient_id)" ng-cloak> 
+                                                <img ng-src="{{patient.patient_profile_pic_url}}" class="img-responsive" style="width:32px;height:32px;margin-right: 5px;display: inline-block;" alt="image description"> <small>
+                                                 {{patient.title}} {{patient.patient_firstname}}</small><small ng-if="patient.presence === true" class="online" style="margin-right: 15px"></small><small ng-if="patient.presence !== true" class="online" style="background-color: grey;margin-right: 15px"></small>
+                                                
+                                                <!--<i class="fa fa-comment" style="top:25px;display:inline-block;position:absolute;left: 25px;color:#d2ed88;text-shadow:0px 2px 1px rgba(79,98,35,0.7);font-size: 10px" ng-if="i.queueLen > 0"></i>
+                                                <strong ng-if="i.queueLen > 0" style="top:10px;display:inline-block;position:absolute;left: 25px;font-size: 10px;color:#d16d1c;border-radius:5px;padding:1px 7px;text-align:center" ng-cloak>{{i.queueLen}}</strong>-->  
+                                            </a>
+                                            <!--<img src="/assets/images/icons/online.png" ng-if="i.presence === true" style="float:right;margin-top:5px">
+                                            <img src="/assets/images/icons/offline2.png" ng-if="i.presence !== true" style="float:right;margin-top:5px">-->
+                                            
+                                        </li>                    
 
-                                        <li ng-repeat="patient in patientList | filter : patient.firstname || patient.lastname">
+
+                                        <!--<li ng-repeat="patient in patientList | filter : patient.firstname || patient.lastname">
                                             <div class="img" style='background-image:url({{patient.patient_profile_pic_url }})'>
                                             <a href="" ng-click="userPatient(patient.patient_id)">
                                                 {{patient.patient_firstname}} {{patient.patient_lastname}} 
                                                 <span class="online" ng-if="patient.presence === true"></span>
                                                 <span class="offline" ng-if="patient.presence !== true"></span>
                                             </a>  
-                                        </li>                                     
+                                        </li>-->                                     
                                     </ul>
                                 </li>
                                 <li ng-controller="docAppointmentController"> 
@@ -1447,6 +1461,38 @@
           </div>
         </div>
      </script>
+
+       <script type="text/ng-template" id='quick-chat.html'>
+       <div class="modal fade">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="p-2">
+            <div>
+                <b class="font-1_3">Send Chat Message</b>
+                <button type="button" class="close" ng-click="close('Yes')" data-dismiss="modal">&times;</button>      
+            </div>
+            <hr>
+           
+            <div class="modal-body">
+               <header>
+                   <b>{{center.name}}</b>
+                   <span style="display: block;">{{center.address}} {{center.city}} {{center.country}}</span>
+               </header>
+              
+                <div>
+                    <textarea class="form-control p-1" ng-model="messageBody" style="height: 120px">
+                    </textarea>
+                </div>
+                <div>
+                    <button ng-click="sendChatSingle(center.id)" class="btn btn-danger" style="position: static;margin-left: 2px"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i> {{(isSent) ? "Message sent!" : 'Send'}}</button>
+                </div>
+               
+            </div>
+            
+          </div>
+        </div>
+      </div>
+   </script>
 
      <script type="text/ng-template" id="skill-modal.html">
        <div class="modal fade">

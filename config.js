@@ -50,13 +50,13 @@ var configuration = function (app,model) {
 	app.use(multer({dest: './uploads'}).any());
 	
 	
-	/*app.use(function(req,res,next){
-		if(req.headers['x-forwarded-proto'] && req.headers['x-forwarded-proto'] === "http") {
-		  res.redirect("https://" + req.headers.host + req.url);
-		} else {
+	app.use(function(req,res,next){
+		
+		  console.log("https://" + req.headers.host + req.url)
+		
 		  next();
-		}		
-	});*/
+		
+	});
 
 	passport.serializeUser(function(user, done) {    
     	done(null, user._id);

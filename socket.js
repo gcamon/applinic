@@ -1,7 +1,7 @@
 "use strict";
 
 var uuid = require("node-uuid");
-
+var connects = {}
 module.exports = function(model,io,streams) {    
   io.sockets.on('connection', function(socket){  	   
 	    console.log('a user connected');
@@ -9,9 +9,11 @@ module.exports = function(model,io,streams) {
 
 	    socket.on('join', function (data) {
 	    	user.isPresent = true; //use to check presence of user without hitting the database.
-	      socket.join(data.userId);  
-	      console.log(socket.rooms)    
-	      console.log("room created");
+	      socket.join(data.userId);
+	     	console.log("someone joined!");;
+	     	connects[socket.id] = data.userId;
+	     	//this will be reviewd later in terms of performance on the client.
+	     	console.log(connects);
 	    });
 
 	    socket.on('courier join', function (data) {
@@ -25,7 +27,10 @@ module.exports = function(model,io,streams) {
 	    	socket.join(roomId);  
 	    });
 
+	  
+	    //creat chat enable process for the user and the receiver
   		socket.on("init chat",function(data,cb){
+  			console.log(data)
   			var chatId = data.userId + "/" + data.partnerId; //creates chat id for the user and a partner to be saved in the database.
 	      model.chats.findOne({chat_id:chatId},function(err,chat){
 	      	if(err) throw err;
@@ -35,24 +40,57 @@ module.exports = function(model,io,streams) {
 	      			status: false,
 	      			date_created: date,
 	      			chat_id: chatId,
+	      			realTime: date,
 	      			type:"chat",
 	      		});
-	      		model.user.findOne({user_id: data.userId},function(err,user){
+	      		model.user.findOne({user_id: data.partnerId},function(err,partner){
 	      			if(err) throw err;
-	      			newChat.userId = user.user_id;
-	      			newChat.name = user.title + " " + user.firstname || user.name;
-	      			newChat.profilePic = user.profile_pic_url
+	      			newChat.userId = data.userId; //user.user_id;
+	      			newChat.partnerId = data.partnerId;
+	      			newChat.name = partner.name || partner.firstname; // this refers the the parner name not the owner  of this chat
+	      			newChat.profilePic = partner.profile_pic_url
 	      			newChat.save(function(err,info){});
 	      		});
-	      		cb([])	      		
+	      		cb([]);	      		
 	      	} else {
-	      		cb(chat.messages);
+	      		cb(chat);
 	      	}
 	      });
   		});
 
+  		socket.on('init chat single',function(data,cb){
+  			console.log(data)
+  			var chatId = data.userId + "/" + data.partnerId;
+  			model.chats.findOne({chat_id:chatId},function(err,chat){
+	      	if(err) throw err;
+	      	if(!chat){
+	      		var date = + new Date();    		
+	      		var newChat = new model.chats({
+	      			status: false,
+	      			date_created: date,
+	      			chat_id: chatId,
+	      			realTime: date,
+	      			type:"chat",
+	      		});
+	      		model.user.findOne({user_id: data.partnerId},function(err,partner){
+	      			if(err) throw err;
+	      			newChat.userId = data.userId; //user.user_id;
+	      			newChat.partnerId = data.partnerId;
+	      			newChat.name = partner.name || partner.firstname; // this refers the the parner name not the owner  of this chat
+	      			newChat.profilePic = partner.profile_pic_url;
+	      			newChat.save(function(err,info){});
+	      		});
+	      		cb({status: true});	      		
+	      	} else {
+	      		cb({status: true});
+	      	}
+	      });
+  		})
+
+  	
+
+
 	    socket.on("send message",function(data,cb){
-	    	console.log(data)
 	    	var date = + new Date();
 	    	data.date = date.toString();
 	    	data.id = data.date
@@ -69,7 +107,7 @@ module.exports = function(model,io,streams) {
 	      //save chats
 	      var chatId = data.from + "/" + data.to;
 	    	var otherId = data.to + "/" + data.from;
-	    	model.chats.findOne({chat_id: chatId},{messages:1}).exec(function(err,chats){
+	    	model.chats.findOne({chat_id: chatId},{messages:1,realTime:1}).exec(function(err,chats){
 	    		if(err) throw err;
 	    		if(chats) {
 		    		var msg = {}	  
@@ -78,6 +116,7 @@ module.exports = function(model,io,streams) {
 		    		msg.isSent = false;
 	      		msg.isReceived = false;
 	      		msg.id = data.date;	
+	      		chats.realTime = + new Date();
 		    		chats.messages.push(msg);
 		    		chats.save(function(err,info){
 		    			if(err) throw err;
@@ -105,11 +144,13 @@ module.exports = function(model,io,streams) {
 	      			chat_id: otherId,
 	      			type:"chat",
 	      		});
-	      		model.user.findOne({user_id: data.to},function(err,user){
+	      		model.user.findOne({user_id: data.from},function(err,user){
 	      			if(err) throw err;
-	      			newChat.userId = user.user_id;
-	      			newChat.name = user.title + " " + user.firstname || user.name;
-	      			newChat.profilePic = user.profile_pic_url
+	      			newChat.userId = data.to;
+	      			newChat.partnerId = user.user_id;
+	      			newChat.realTime = date;
+	      			newChat.name = user.name || user.title + " " + user.firstname; // refers tp parner name
+	      			newChat.profilePic = user.profile_pic_url;
 	      			newChat.messages.push(msg)
 	      			newChat.save(function(err,info){});
 	      		});	      		
@@ -117,6 +158,73 @@ module.exports = function(model,io,streams) {
 	    	});
 
 	    });
+
+
+	     socket.on("send message general",function(data,cb){
+	     	
+	    	var date = + new Date();
+	    	data.date = date.toString();
+	    	data.id = data.date;
+	      cb(data);
+
+	      io.sockets.to(data.to).emit('new_msg',data);	       	
+	       
+	      //save chats
+	      var chatId = data.from + "/" + data.to;
+	    	var otherId = data.to + "/" + data.from;
+	    	model.chats.findOne({chat_id: chatId},{messages:1,realTime:1}).exec(function(err,chats){
+	    		if(err) throw err;
+	    		if(chats) {
+		    		var msg = {}	  
+		    		msg.sent = data.message;
+		    		msg.time = data.date;
+		    		msg.isSent = false;
+	      		msg.isReceived = false;
+	      		msg.id = data.date;	
+	      		chats.realTime = + new Date();
+		    		chats.messages.push(msg);
+		    		chats.save(function(err,info){
+		    			if(err) throw err;
+		    		
+		    		});
+	    		}
+	    	});
+
+	    	model.chats.findOne({chat_id: otherId},{messages:1,realTime:1}).exec(function(err,chats){
+	    		if(err) throw err;
+	    		var msg = {}	  
+	    		msg.received = data.message;
+	    		msg.time = data.date;
+      		msg.id = data.date;	
+	    		if(chats) {	
+	    			chats.realTime = + new Date();	    		
+		    		chats.messages.push(msg);
+		    		chats.save(function(err,info){
+		    			if(err) throw err;		    			
+		    		});
+	    		} else {
+	    			var date = + new Date();    		
+	      		var newChat = new model.chats({
+	      			status: false,
+	      			date_created: date,
+	      			chat_id: otherId,
+	      			type:"chat",
+	      		});
+	      		model.user.findOne({user_id: data.from},function(err,user){
+	      			if(err) throw err;
+	      			newChat.userId = data.to;
+	      			newChat.partnerId = user.user_id;
+	      			newChat.realTime = date;
+	      			newChat.name = user.name || user.title + " " + user.firstname;
+	      			newChat.profilePic = user.profile_pic_url;
+	      			newChat.messages.push(msg)
+	      			newChat.save(function(err,info){});
+	      		});	      		
+	    		}
+	    	});
+
+	    });
+
 
 	    socket.on("isSent",function(data,cb){
        	data.isSent = true;
@@ -243,72 +351,7 @@ module.exports = function(model,io,streams) {
 	    	})
 	    });
 
-	    //patients sends notification in real time to update doctor about the prescription request sent
-	   	 /*socket.on("i sent test",function(data,cb){	    	
-	    	model.user.findOne({user_id: data.doctorId},{set_presence:1,presence:1,firstname:1,title:1},function(err,doc){
-	    		if(err) throw err;
-	    		if(doc.set_presence.general === true && doc.presence === true) {
-	    			console.log("did it happen bro !!!!")
-	    			io.sockets.to(data.doctorId).emit("receive prescription request",{status: "success"})
-	    		} else {
-	    			var msg = doc.title + " " + doc.firstname + " is currently not available. Try later."
-	    			cb({error: msg});
-	    		}
-	    	});
-	    });*/
-
-	    //patients sends notification in real time to update doctor about the  request sent
-	    /*socket.on("i sent consultation",function(data,cb){
-	    	model.user.findOne({user_id: data.doctorId},{set_presence:1,presence:1,firstname:1,title:1},function(err,doc){
-	    		if(err) throw err;
-	    		if(doc.set_presence.general === true && doc.presence === true) {
-	    			console.log("did it happen bro !!!!");
-	    			io.sockets.to(data.doctorId).emit("receive consultation request",{status: "success"})
-	    		} else {
-	    			var msg = doc.title + " " + doc.firstname + " is currently not available. Try later."
-	    			cb({error: msg});
-	    		}
-	    	});	    	
-	    });*/
-	    
-
-			//sending video or audio request
-			/*socket.on("convseration signaling",function(req,cb){
-				model.user.findOne({user_id:req.to},{set_presence:1,firstname:1,title:1},function(err,doc){
-					if(err) throw err;
-					if(doc.set_presence.general === true) {
-						//{type:req.type,message:req.message,time:req.time}
-						io.sockets.to(req.to).emit("receive signal",req);
-					} else {
-						var msg = doc.title + " " + doc.firstname + " is currently not available. Try later."
-		    		cb({error: msg});
-					}
-				});			
-			});
-
-			//response to the video or audio reqquest.
-			socket.on("signal response",function(data){
-				data.message_id = Math.floor(Math.random() * 999999);
-				io.sockets.to(data.to).emit("conversation status",data);
-			});
-
-
-			//in call directed to patients when doc enters call page emited from the front end.
-			socket.on("in call",function(data){
-				io.sockets.to(data.to).emit("calling",data);
-			});
-
-			//when patient is inside a call page the doctor is notified
-			socket.on("in call connected",function(data){
-				io.sockets.to(data.to).emit("patient in call connected",{status: true})
-			});
-
-			socket.on("call rejected",function(data){
-				io.sockets.to(data.to).emit("user rejected calls",{status:"Call rejected!"})
-			});*/
-
-			///////
-
+	    //
 			//video logic this will be moved to a new server
 			//sending video or audio request
 			socket.on("convsersation signaling",function(req,cb){
@@ -425,8 +468,18 @@ module.exports = function(model,io,streams) {
     });
 
 
+
+    socket.on("check presence",function(data,cb){
+    	cb(connects);
+    })
+
+
     function leave() {
       console.log('-- ' + socket.id + ' left --');
+      delete connects[socket.id];
+      io.sockets.emit("real time presence",connects);
+      console.log(connects)
+      //io.sockets.emit("real time presence",{socketId: socket.id,status: false})
       streams.removeStream(socket.id);
     }	
 
@@ -437,3 +490,69 @@ module.exports = function(model,io,streams) {
 
   
  }
+
+ //patients sends notification in real time to update doctor about the prescription request sent
+	   	 /*socket.on("i sent test",function(data,cb){	    	
+	    	model.user.findOne({user_id: data.doctorId},{set_presence:1,presence:1,firstname:1,title:1},function(err,doc){
+	    		if(err) throw err;
+	    		if(doc.set_presence.general === true && doc.presence === true) {
+	    			console.log("did it happen bro !!!!")
+	    			io.sockets.to(data.doctorId).emit("receive prescription request",{status: "success"})
+	    		} else {
+	    			var msg = doc.title + " " + doc.firstname + " is currently not available. Try later."
+	    			cb({error: msg});
+	    		}
+	    	});
+	    });*/
+
+	    //patients sends notification in real time to update doctor about the  request sent
+	    /*socket.on("i sent consultation",function(data,cb){
+	    	model.user.findOne({user_id: data.doctorId},{set_presence:1,presence:1,firstname:1,title:1},function(err,doc){
+	    		if(err) throw err;
+	    		if(doc.set_presence.general === true && doc.presence === true) {
+	    			console.log("did it happen bro !!!!");
+	    			io.sockets.to(data.doctorId).emit("receive consultation request",{status: "success"})
+	    		} else {
+	    			var msg = doc.title + " " + doc.firstname + " is currently not available. Try later."
+	    			cb({error: msg});
+	    		}
+	    	});	    	
+	    });*/
+	    
+
+			//sending video or audio request
+			/*socket.on("convseration signaling",function(req,cb){
+				model.user.findOne({user_id:req.to},{set_presence:1,firstname:1,title:1},function(err,doc){
+					if(err) throw err;
+					if(doc.set_presence.general === true) {
+						//{type:req.type,message:req.message,time:req.time}
+						io.sockets.to(req.to).emit("receive signal",req);
+					} else {
+						var msg = doc.title + " " + doc.firstname + " is currently not available. Try later."
+		    		cb({error: msg});
+					}
+				});			
+			});
+
+			//response to the video or audio reqquest.
+			socket.on("signal response",function(data){
+				data.message_id = Math.floor(Math.random() * 999999);
+				io.sockets.to(data.to).emit("conversation status",data);
+			});
+
+
+			//in call directed to patients when doc enters call page emited from the front end.
+			socket.on("in call",function(data){
+				io.sockets.to(data.to).emit("calling",data);
+			});
+
+			//when patient is inside a call page the doctor is notified
+			socket.on("in call connected",function(data){
+				io.sockets.to(data.to).emit("patient in call connected",{status: true})
+			});
+
+			socket.on("call rejected",function(data){
+				io.sockets.to(data.to).emit("user rejected calls",{status:"Call rejected!"})
+			});*/
+
+			///////

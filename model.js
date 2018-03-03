@@ -270,12 +270,22 @@ var myModel = function () {
 		session_id: Number,
 		patient_id: String,
 		test_id: Number,
+		patient_address: String,
+    indication: String,
+    clinical_summary: String,
+    lmp: String,
+    parity: String,
 		attended: Boolean,
 		title: String,
 		doctor_firstname: String,
 		doctor_lastname: String,
 		doctor_id: String,
-		doctor_phone: Number
+		doctor_phone: Number,
+		is_paid: Boolean,
+		detail: {
+			amount: String,
+			date: String
+		}
 	});
 
 	var drug_refSchema = Schema({
@@ -321,7 +331,8 @@ var myModel = function () {
 		ref_id: Number,
 		note_id: Number,
 		sender_profile_pic_url: String,
-		message: String
+		message: String,
+		viewed: Boolean 
 	});
 //for session
 	var conversationSchema = Schema({
@@ -574,7 +585,9 @@ var myModel = function () {
 		profilePic: String,
 		status: Boolean,
 		chat_id: String,
+		partnerId: String,
 		type: String,
+		realTime: String,
 		messages: Array,
 		date_created: String
 	},{

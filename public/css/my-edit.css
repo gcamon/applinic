@@ -17,21 +17,34 @@
   position:relative;  
   background:white;  
   /*max-height:1000px;*/
-     background: transparent !important;
-  overflow-y: auto;
- overflow-x: hidden;
+  background: transparent !important;
+  /*overflow-y: auto;
+ overflow-x: hidden;*/
 
+ /* wiil be checked later
+ /width: auto;
+ margin-left: 100px
+ */
+
+}
+
+.ellipsis {
+  text-overflow: ellipsis;
+
+  /* Required for text-overflow to do anything */
+  white-space: nowrap;
+  overflow: hidden;
 }
 
 .view-animate {
   padding:10px;
-  height: 600px;/*to view removed later*/
+  /*height: 600px;to view removed later*/
 }
 
 .view-animate.ng-enter, .view-animate.ng-leave {
   transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.8s;
   display:block;
-  width:100%;
+  width:80%;
   position:absolute;
   top:0;
   left:0;

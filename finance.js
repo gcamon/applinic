@@ -329,24 +329,31 @@ var basicPaymentRoute = function(model,sms,io,paystack){
 
 
 			      var callBack = function(err,responseData){
-							if(err) console.log(err);
-							console.log(responseData);
+							if(err) {
+								console.log(err);
+								res.send({message:"Oops! Error occured while sending OTP.Please resend",success:true,time_stamp:req.body.time}) 
+							} else {
+								console.log(responseData);
+								res.send({message:"One time pin has been sent this patient vis SMS. The pin is needed for payment confirmation",success:true,time_stamp:req.body.time}) 
+							}
+							
 						}
 
-						var msgBody = "Your payment OTP for applinic.com is " + password + " \nPlease disclose only to the right user."
+						var msgBody = "Your payment OTP for applinic.com is " + password + " \nThe amount billed is " + "N" + req.body.amount;
 						var phoneNunber = user.phone;
-						 sms.messages.create(
+						sms.messages.create(
               {
                 to: phoneNunber,
                 from: '+16467985692',
                 body: msgBody,
-              }
-            ) 
+              },
+              callBack
+            )
 
-						res.send({message:"One time pin number has been sent. The pin is needed for payment confirmation",success:true,time_stamp:req.body.time}) 
+						//res.send({message:"One time pin has been sent this patient vis SMS. The pin is needed for payment confirmation",success:true,time_stamp:req.body.time}) 
 
 					} else {
-						res.send({message: 'Transaction failed! Reason: The person to debit has insufficient fund for the service!'});
+						res.send({message: 'Transaction failed! Reason: The person to debit has insufficient fund for the service!',success:false});
 					}   
 
 					function check(num) {
@@ -868,23 +875,82 @@ var basicPaymentRoute = function(model,sms,io,paystack){
 
   });
 
+  router.get("/user/center/billing-verification",function(req,res){
+  	console.log(req.query)
+  	if(req.user){
+  		model.user.findOne({user_id:req.user.user_id},{referral:1},function(err,center){
+  			if(err) {
+  				res.end("error occured!")
+  			} else {
+  				var elementPos = center.referral.map(function(x){return x.ref_id}).indexOf(parseInt(req.query.refId))
+          var objectFound = center.referral[elementPos];
+          console.log(objectFound)
+          if(objectFound) {
+          	if(req.user.type === "Radiology") {
+          		res.send({payment: objectFound.radiology.is_paid,detail:objectFound.radiology.detail})
+          	} else if(req.user.type === "Laboratory"){
+          		res.send({payment: objectFound.laboratory.is_paid,detail:objectFound.laboratory.detail})
+          	}
+          } else {
+          	res.send({payment: false})
+          }
+  			}
+  		})
+  	} else {
+  		res.end("Unauthorized access")
+  	}
+  })
 
-
-	//updating radiology result in doctor's treatment page with patient.
-  router.put("/user/radiology/test-result/session-update",function(req,res){      
-    if(req.user) {  	
-  
-      console.log(req.body);
-      //checks otp before test will be updated.
-      if(req.body.radiology.v_pin) {
-        model.otpSchema.findOne({otp:req.body.radiology.v_pin},function(err,data){
+  router.put("/user/center/billing-verification",function(req,res){
+  	console.log(req.body)
+  	if(req.user){
+  		var type = (req.user.type === "Radiology") ? req.body.radiology : req.body.laboratory;
+  		if(type) {
+        model.otpSchema.findOne({otp:type.v_pin},function(err,data){
           if(err) throw err;
 
           if(!data) {
             res.send({message: "Error! Wrong OTP or OTP does not exist!"});
           } else {                          
-            if(data.user_id === req.body.radiology.patient_id && data.senderId === req.user.user_id) {         
-              updateSession();
+            if(data.user_id === type.patient_id && data.senderId === req.user.user_id) {         
+              //updateSession();
+              model.user.findOne({user_id: req.user.user_id},{referral:1,ewallet:1,user_id:1,city_grade:1,type:1,email:1}).exec(function(err,center){
+              	if(err) {
+              		res.send({message: "Error occured"})
+              	} else {
+              		var elementPos = center.referral.map(function(x){return x.ref_id}).indexOf(req.body.ref_id)
+              		var objectFound = center.referral[elementPos];
+				          //objectFound.radiology.attended = true; // this makes a lab that has been sent to a doctor and no longer on the pending list of front end
+				          
+				          if(objectFound) {
+					          if(req.user.type === "Radiology") {
+					          	objectFound.radiology.is_paid = true;
+					          	objectFound.radiology.detail.amount = type.strAmount;
+					          	objectFound.radiology.detail.date = + new Date();
+
+					          } else if(req.user.type === "Laboratory") {
+					          	objectFound.laboratory.is_paid = true;
+					          	objectFound.laboratory.detail.amount = type.strAmount;
+					          	objectFound.laboratory.detail.date = + new Date();
+					          }
+					         
+					          var pay = new Wallet(req.body.date,type.patient_firstname,type.patient_lastname,"billing");
+					          pay.billing(model,req.body.payObj,center,sms,io);
+					          model.otpSchema.remove({otp:type.v_pin},function(err,info){});              
+	              		center.save(function(err,info){
+	              			if(err) {
+	              				res.send({message: "Transaction Incomplete",status: false})
+	              			} else {
+	              				var detail = (req.user.type === 'Radiology') ? objectFound.radiology.detail : objectFound.laboratory.detail;
+	              				res.send({message: "Transaction successful! Your account is credited.",balance:center.ewallet.available_amount,status: "success",payment:true,detail:detail});
+	              			}
+
+	              		})
+	              	} else {
+	              		res.end("unexpected error occured!");
+	              	}
+              	}
+              })
             }
           }
 
@@ -892,33 +958,49 @@ var basicPaymentRoute = function(model,sms,io,paystack){
       } else {
         res.send({message: "Payment verification failed"});
       }
+  	} else {
+  		res.send({message: "Unauthorized access"})
+  	}
+  })
+
+
+
+	//updating radiology result in doctor's treatment page with patient.
+  router.put("/user/radiology/test-result/session-update",function(req,res){      
+    if(req.user) {  	
+      
+      updateSession();
 
       function updateSession() { 
         model.user.findOne({"doctor_patient_session.session_id": req.body.radiology.session_id},{doctor_patient_session:1}).exec(function(err,data){
           if(err) throw err;
-          var elementPos = data.doctor_patient_session.map(function(x) {return x.session_id; }).indexOf(req.body.radiology.session_id);
-          var objectFound = data.doctor_patient_session[elementPos];     
+          if(data) {
+	          var elementPos = data.doctor_patient_session.map(function(x) {return x.session_id; }).indexOf(req.body.radiology.session_id);
+	          var objectFound = data.doctor_patient_session[elementPos];     
 
-          //the doctors session for a patient is updated, and patient dashboard is called for update.
-          var pos = objectFound.diagnosis.radiology_test_results.map(function(x) { return x.test_id;}).indexOf(req.body.radiology.test_id)
-          var theObj = objectFound.diagnosis.radiology_test_results[pos];         
-          theObj.receive_date = req.body.radiology.date;
-          theObj.test_to_run = req.body.radiology.test_to_run;
-          theObj.report = req.body.radiology.report;
-          theObj.conclusion = req.body.radiology.conclusion;
-          theObj.sent_date = req.body.date;
-          theObj.test_ran_by = req.user.name;
-          theObj.files = req.body.radiology.filesUrl;
+	          //the doctors session for a patient is updated, and patient dashboard is called for update.
+	          var pos = objectFound.diagnosis.radiology_test_results.map(function(x) { return x.test_id;}).indexOf(req.body.radiology.test_id)
+	          var theObj = objectFound.diagnosis.radiology_test_results[pos];         
+	          theObj.receive_date = req.body.radiology.date;
+	          theObj.test_to_run = req.body.radiology.test_to_run;
+	          theObj.report = req.body.radiology.report;
+	          theObj.conclusion = req.body.radiology.conclusion;
+	          theObj.sent_date = req.body.date;
+	          theObj.test_ran_by = req.user.name;
+	          theObj.files = req.body.radiology.filesUrl;
 
 
-          data.save(function(err,info){
-            if(err) res.send({status: "error"});         
-            updatePatient();
-            updateTheCenter();
-          });        
+	          data.save(function(err,info){
+	            if(err) res.send({status: "error"});         
+	            updatePatient();
+	            //updateTheCenter();
+	          });
 
+      	   } else {
+      	   	 res.send({status:"error"})
+      	   }
         });
-			}
+	  }
 
       function updatePatient() {         
         //here patient test result is updated.
@@ -948,7 +1030,7 @@ var basicPaymentRoute = function(model,sms,io,paystack){
           if(data.presence === true){
             io.sockets.to(data.user_id).emit("notification",{status:true})
           } else {
-            var msgBody = "Your radiology test result is ready! Visit http://applinic.com/login"
+            var msgBody = "New radiology test result received! Visit http://applinic.com/login"
             var phoneNunber =  data.phone;
             sms.messages.create(
               {
@@ -961,12 +1043,12 @@ var basicPaymentRoute = function(model,sms,io,paystack){
 
           data.save(function(err,info){
             if(err) res.send({status: "error"});           
-            //res.send({status: "success"});
+            res.send({status: "success"});
           });
         });
       }
 
-      function updateTheCenter() {
+      /*function updateTheCenter() {
         model.user.findOne({user_id: req.user.user_id},{referral:1,ewallet:1,user_id:1,city_grade:1,type:1,email:1}).exec(function(err,center){
           if(err) throw err;            
           var elementPos = center.referral.map(function(x) {          	
@@ -982,7 +1064,7 @@ var basicPaymentRoute = function(model,sms,io,paystack){
           res.send({message: "Transaction successful! Your account is credited.",balance:center.ewallet.available_amount,status: "success"});
           center.save(function(err,info){})
         });
-      }
+      }*/
 
     } else {
       res.end("Unauthorized access");
@@ -993,23 +1075,10 @@ var basicPaymentRoute = function(model,sms,io,paystack){
     //this route is like above only it only updates the patient scan test on the patient dashboard. this is used for patient on em profile and 
     //patient who requested test without doctors approval.
     router.put("/user/radiology/test-result/patient-scan-update",function(req,res){
-
+    	console.log(req.body);
 	    if(req.user) {
-	    	if(req.body.radiology.v_pin) {
-	        model.otpSchema.findOne({otp:req.body.radiology.v_pin},function(err,data){
-	          if(err) throw err;
 
-	          if(!data) {
-	            res.send({message: "Error! Wrong OTP or OTP does not exist!"});
-	          } else {                          
-	            if(data.user_id === req.body.radiology.patient_id && data.senderId === req.user.user_id) {         
-	              updatePatient();
-	            }
-	          }
-	        });
-	      } else {
-	        res.send({message: "Payment verification failed"});
-	      }
+	      updatePatient();
 
 	      function updatePatient() {
 		      model.user.findOne({user_id: req.body.radiology.patient_id},{medical_records: 1,patient_notification:1,user_id:1,presence:1,phone:1}).exec(function(err,data){
@@ -1024,7 +1093,7 @@ var basicPaymentRoute = function(model,sms,io,paystack){
 		        objectFound.payment_acknowledgement = true;
 		        objectFound.files = req.body.radiology.filesUrl;
 
-		        var random = Math.floor(Math.random() * 999999);
+		        var random = Math.floor(Math.random() * 9999999);
 		        data.patient_notification.unshift({
 		          type:"radiology",
 		          date: req.body.radiology.date,
@@ -1037,7 +1106,7 @@ var basicPaymentRoute = function(model,sms,io,paystack){
 		        if(data.presence === true){
 		          io.sockets.to(data.user_id).emit("notification",{status:true})
 		        } else {
-		          var msgBody = "Your radiology test result is ready! Visit http://applinic.com/login";
+		          var msgBody = "Your radiology test result received! Visit http://applinic.com/login";
 		          var phoneNunber =  data.phone;
 		          sms.messages.create(
 	              {
@@ -1045,28 +1114,16 @@ var basicPaymentRoute = function(model,sms,io,paystack){
 	                from: '+16467985692',
 	                body: msgBody,
 	              }
-            	) 
+            	  ) 
 		        }
 
 		        data.save(function(err,info){
 		          if(err) res.send({status: "error"});           
-		          transact();
+		          res.send({status: "success"});
 		        });
 
 		      });
-				}
-
-				function transact() {
-	        model.user.findOne({user_id:req.user.user_id},{ewallet:1,user_id:1,city_grade:1,type:1,email:1}).exec(function(err,center){
-	        	console.log(req.body);       
-	          if(err) throw err;
-	          var pay = new Wallet(req.body.date,req.body.radiology.patient_firstname,req.body.radiology.patient_lastname,"billing");
-	          pay.billing(model,req.body.payObj,center,sms,io);
-	          model.otpSchema.remove({otp:req.body.otp},function(err,info){});              
-	          res.send({message: "Transaction successful! Your account is credited.",balance:center.ewallet.available_amount,status: "success"});
-	          center.save(function(err,info){})             
-	        });
-      	}
+		   }
 
 			} else {
 				res.redirect("/login");

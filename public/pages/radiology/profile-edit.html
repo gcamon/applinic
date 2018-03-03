@@ -1,5 +1,5 @@
-<div class="tg-widget tg-widget-doctor" ng-controller="patientProfileEditController" class="container-fluid" >
-    <h5 style="border-bottom: 1px solid rgba(0,0,0,0.3); width: 35%">Edit Profile Picture </h5>
+<div class="tg-widget p-2 card tg-widget-doctor" ng-controller="patientProfileEditController">
+    <!--<h5 style="border-bottom: 1px solid rgba(0,0,0,0.3); width: 35%">Edit Profile Picture </h5>
     <div class="row">
         <div class="col-sm-12 col-md-4 col-lg-4">          
             <img alt="image description" ng-src="{{userData.profile_pic_url}}" style="width: 200px;height: 200px">
@@ -23,23 +23,27 @@
            </div>
 
         </div>
-    </div>
+    </div>-->
     <div class="row">        
         <div class="col-sm-12 col-md-12 col-lg-12">
-            <h5 style="font-weight: 100;padding: 10px 5px; margin-top: 30px;width: 30%;border-bottom: 1px solid rgba(0,0,0,0.3)"> Edit personal details </h5>
-            <form class="patient-update-input">
-                <div>
-                    <input type="text" placeholder="{{userData.firstname || 'Whats your firstname'}}" ng-model="user.firstname"/>
-                    <input type="text" placeholder="{{userData.lastname || 'Whats your lastname'}}" ng-model="user.lastname"/>
-                    <input type="number" placeholder="{{userData.age || 'How old are you?'}}" ng-model="user.age"/>
-                    <input type="text" placeholder="{{userData.gender || 'what is your gender?'}}" ng-model="user.gender"/>
-                    <input type="text" placeholder="{{userData.marital_status || 'Are you single or married?'}}" ng-model="user.marital_status"/>
-                    <input type="text" placeholder="{{userData.address || 'Enter your address here'}}" ng-model="user.address"/>
-                    <input type="text" placeholder="{{userData.state || 'What is your state name?'}}" ng-model="user.state"/>
-                    <input type="text" placeholder="{{userData.city || 'Enter city/town name'}}" ng-model="user.city"/>
-                    <input type="text" placeholder="{{userData.country || 'what is the name of your country?'}}" ng-model="user.country"/>
-                </div>                
-                <button ng-click="updateDetails()">Update</button>
+            <h5 style="font-weight: 100;padding: 10px 5px;width: 30%;border-bottom: 1px solid rgba(0,0,0,0.3)"> Edit Profile </h5>
+            <form class="form-group" ng-submit="sendUpdate()" style="width: 60%">
+                <div  class="p-1">
+                    <input type="text" placeholder="Center Name" class="form-control" name="" ng-model="centerInfo.name">                    
+                </div>
+                 <div  class="p-1">
+                    <input type="text" placeholder="Center Address" class="form-control" name="" ng-model="centerInfo.address">                    
+                </div>
+                <div  class="p-1">
+                    <input type="text" placeholder="Center City" class="form-control" name="" ng-model="centerInfo.city">                    
+                </div>
+                <div  class="p-1">
+                    <input type="text" placeholder="Center Country" class="form-control" name="" ng-model="centerInfo.country">                    
+                </div>
+
+                <div  class="p-1">
+                    <button  class="btn btn-danger"> <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i> {{(status) ? "Updated successfully!" : 'Submit' }}</button>                    
+                </div>
             </form>
         </div>
     </div>

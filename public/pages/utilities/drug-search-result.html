@@ -56,9 +56,9 @@
 				<span>{{center.city}}</span>
 				<span>{{center.country}}</span>
 			</address>		
-			<i class="fa fa-phone" style="display: block;"> +234 {{center.phone}}</i>
+			<i class="fa fa-phone" style="display: block;">  {{center.phone}}</i>
 			
-			<p style="text-align:right"><i class="fa fa-user btn btn-simple text-success" style="cursor:pointer;" title="View {{center.name}} profile" ng-click="toViewProfile(center.id)"></i> &nbsp;&nbsp;&nbsp;<i class="fa fa-share btn btn-simple text-success" style="cursor:pointer;" title="Forward to {{center.name}}" ng-click="toForward(center)"></i></p> 
+			<p style="text-align:right"><i class="fa fa-user btn btn-simple text-success" style="cursor:pointer;" title="View {{center.name}} profile" ng-click="toViewProfile(center.id)"></i> &nbsp;&nbsp;&nbsp;<i class="fa fa-comment btn btn-simple text-success" style="cursor:pointer;" title="Send chat message to {{center.name}} " ng-click="sendChat(center)"></i>&nbsp;&nbsp;&nbsp;<i class="fa fa-share btn btn-simple text-success" style="cursor:pointer;" title="Forward to {{center.name}}" ng-click="toForward(center)"></i></p> 
 		</div>
 	</div>
 	<div  class="p-1 card" style="border-bottom:1px solid #f2f2f2;" ng-repeat="center in drugResult.less | filter : drugFilter.name || drugFilter.address">
@@ -70,9 +70,9 @@
 				<span>{{center.country}}</span>
 			</address>
 			
-			<i class="fa fa-phone" style="display: block;"> +234 {{center.phone}}</i>
+			<i class="fa fa-phone" style="display: block;"> {{center.phone}}</i>
 		
-			<p style="text-align:right"><i class="fa fa-user btn btn-simple text-success" style="cursor:pointer;" title="View {{center.name}} profile" ng-click="toViewProfile(center.id)"></i> &nbsp;&nbsp;&nbsp;<i class="fa fa-share btn btn-simple text-success" style="cursor:pointer;" title="Forward to {{center.name}}" ng-click="toForward(center)"></i></p> 
+			<p style="text-align:right"><i class="fa fa-user btn btn-simple text-success" style="cursor:pointer;" title="View {{center.name}} profile" ng-click="toViewProfile(center.id)"></i> &nbsp;&nbsp;&nbsp;<i class="fa fa-comment btn btn-simple text-success" style="cursor:pointer;" title="Send chat message to {{center.name}} " ng-click="sendChat(center)"></i>&nbsp;&nbsp;&nbsp;<i class="fa fa-share btn btn-simple text-success" style="cursor:pointer;" title="Forward to {{center.name}}" ng-click="toForward(center)"></i></p> 
 		</div>
 	</div>
 </div>

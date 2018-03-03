@@ -170,7 +170,7 @@ var signupRoute = function(model,sms,geonames,paystack) {
 	    if (!user) {	
 	      	res.send({error:true,message: "User phone number not active or wrong verification pin!"});
 	    } else {
-    		var msgBody = "Your Applinic login details\nEmail: " + req.body.email + " \nPassword: " + req.body.password;
+    		var msgBody = "Applinic login details Email: " + req.body.email + " Password: " + req.body.password;
 				var phoneNunber = (req.body.phone[0] !== "+") ? "+" + req.body.phone : req.body.phone;
 			
 				function callBack(err,info){
@@ -179,7 +179,7 @@ var signupRoute = function(model,sms,geonames,paystack) {
 				}
 
 				//sms.message.sendSms('Appclinic',phoneNunber,msgBody,callBack); //"2348096461927"	    	
-    		
+    		console.log(msgBody)
     		sms.messages.create(
 				  {
 				    to: phoneNunber,
@@ -206,7 +206,7 @@ var signupRoute = function(model,sms,geonames,paystack) {
 
 		testPhone.save(function(err,info){});
 
-		var msgBody = "Your Phone Verification Pin for applinic.com is: " + genPin + "\nUse to complete your registration."
+		var msgBody = "Your Phone Verification Pin for Applinic is: " + genPin;
 		var phoneNunber = (req.body.phone[0] !== "+") ? "+" + req.body.phone : req.body.phone;
 		//sms.message.sendSms('Appclinic',phoneNunber,msgBody,callBack); //"2348096461927" "2349092469137"
 		sms.messages.create(
@@ -223,7 +223,6 @@ var signupRoute = function(model,sms,geonames,paystack) {
 				res.send({message:"Phone Verification Pin sent to " + req.body.phone});
 			} else {
 				res.send({message:err.message,error: true});
-				console.log(err)
 			}
 		}			
 	})

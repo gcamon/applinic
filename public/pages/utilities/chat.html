@@ -1,0 +1,63 @@
+<div class="container">
+	<div class="card pl-2">
+		<div class="row">
+			<div class="col-sm-12 col-md-4 col-lg-4 p-1" >
+				<h6>Chats</h6>
+				<hr>
+				<div class="pl-0 ellipsis" style="max-height: 600px; overflow-y: auto">
+					<div ng-repeat="chat in chatsList | orderBy : '-realTime'" ng-click="viewChat(chat)" class="pl-0">
+						<img src="{{chat.profilePic}}" style="float: left;height: 62px;width:62px">			
+						<a href=""  style="text-decoration: none;font-size: 14px;padding-left: 10px">
+							<strong >{{chat.name}}</strong>
+							 <span style="display:block;padding-left: 10px" class="ellipsis">{{chat.messages[chat.messages.length - 1].received || chat.messages[chat.messages.length - 1].sent}} <small style="display:block;" ng-cloak>{{chat.messages[chat.messages.length - 1].time | date: "shortTime" || chat.messages[chat.messages.length - 1].received | date: "shortTime"}} &nbsp;&nbsp;{{chat.messages[chat.messages.length - 1].time | date: "mediumDate" || chat.messages[chat.messages.length - 1].received | date: "mediumDate"}} <span ng-if="chat.status" class="online" style="margin-right: 15px;background-color: #85CE36"></span><span ng-if="!chat.status" class="online" style="background-color: #ccc;margin-right: 15px"></span></small>.</span> 
+						</a>
+					</div>
+				</div>
+			</div>
+			<div class="col-sm-12 col-md-8 col-lg-8">
+				<div class="panel panel-default">
+	                <div class="top-bar" style="border-bottom:1px solid rgba(0,0,0,0.2);box-shadow:0px 5px 5px #ccc">
+	                    <div class="col-md-7 col-sm-12 col-xs-12">
+	                    	<img src="{{partner.profilePic}}" style="float: left;height: 42px;width:42px">	
+	                      <!--<button class="btn btn-simple text-danger" style="font-size: 16px" ng-click="chatLive()">Chat</button> &nbsp;&nbsp;-->
+	                        <span class="ellipsis" style="display:inline-block;font-size: 12px;padding: 3px 10px" ng-cloak><b>{{partner.name}}</b><em style="display: block" ng-if="!typing"><small>{{typing}}</small></em> 
+	                            <em ng-if="partner.status && !typing" style="font-size: 12px;color: green" ng-cloak>Online</em>
+	                            <em ng-if="!partner.status" ng-cloak style="color:red;font-size: 12px">Offline</em>
+	                        </span>
+	                    </div>
+	                    <div class="col-md-5 col-sm-12 col-xs-12 " style="text-align: right;">
+	                    	
+	                    </div>
+	                </div>
+
+
+			<!-- removable div-->
+		            <div ng-if="isChat || isChat === undefined">
+		               
+		                <div class="panel-body msg_container_base bg-default" id="base" style="height: 360px">
+
+		                    <div id="sentmessage">
+		                        
+		                    </div>
+		                    <div style="position: absolute;top:170px;left:250px" ng-if="loading">
+		                    	<i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff;font-size: 32px" ></i>
+		                    </div>
+		                </div>
+
+		                
+		                <form class="panel-footer" ng-submit="sendChat1()">
+		                <textarea contenteditable="true" style="padding-top: 30px" ng-model="user.text1"  ng-keypress="getkeys($event)" placeholder="Type a message..."> <span class="textout" >{{typeMessage}}</span> </textarea>
+		                <button type="submit" class="btn btn-neutral btn-sm fa fa-send" style="font-size: 25px"></button>
+		                </form>
+
+		             
+		            </div>
+	    		</div>
+				
+			</div>
+		</div>		
+	</div>
+	<div style="height: 300px">
+		
+	</div>
+</div>

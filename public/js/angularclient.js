@@ -218,7 +218,7 @@ app.config(['$paystackProvider','$routeProvider',function($paystackProvider,$rou
 
  .when("/radiology-edit-profile",{
   templateUrl: "/assets/pages/radiology/profile-edit.html",
-  controller: "radioProfileEdit"
+  controller: 'radioProfileEdit'
  })
 
  .when("/radio/test-service/update",{
@@ -517,6 +517,13 @@ app.config(['$paystackProvider','$routeProvider',function($paystackProvider,$rou
   controller: "centerCourierController"
  })
 
+ //for general chats
+
+ .when("/general-chat",{
+  templateUrl: "/assets/pages/utilities/chat.html",
+  controller: 'generalChatController'
+ })
+
 
 }]);
 
@@ -724,6 +731,23 @@ app.service('templateService',[function(){
   this.singleView;
 
 }]);
+
+/*General chat implementations for centers and patients */
+
+app.service("chatService",["$resource",function($resource){
+
+  var source = $resource("/user/chats",null,{updateChat:{method: "PUT"}});
+
+  this.chats = function() {
+    return source.query();
+  }
+
+ this.updateChat = function(id,chats){
+   return source.updateChat({chatId: id, chats: chats})
+ }
+
+}]);
+
 
 app.service("multiData",["$http","$window","templateService",function($http,$window,templateService){
   this.sendPic = function(url,data){
@@ -1028,8 +1052,21 @@ app.controller("testNotRanBycenterController",["$scope","$http",function($scope,
 }]);
 
 //radiology
-app.controller("radioProfileEdit",["$scope","$http","$location","$window","ModalService","templateService","localManager",
-  function($scope,$http,$location,$window,ModalService,templateService,localManager) {
+app.controller("radioProfileEdit",["$scope","$resource","$location","$window","ModalService","templateService","localManager",
+  function($scope,$resource,$location,$window,ModalService,templateService,localManager) {
+  var center = $resource("/user/getcenter-details",null,{updateInfo:{method:"PUT"}})
+  center.get(function(data){
+    $scope.centerInfo = data || {};
+  })
+
+  
+  $scope.sendUpdate = function() {
+    $scope.loading = true;
+    center.updateInfo($scope.centerInfo,function(res){
+      $scope.loading = false;
+      $scope.status = res.status;
+    })
+  }
 
 }]);
 
@@ -3015,13 +3052,13 @@ Meet In-Person',docInfo)"><i class="fa fa-user"> </i> &nbsp;Meet IN-PERSON</li>
   $scope.viewChatsHistory = function() {
      var source = $resource("/user/get-chats");
      source.query(function(chatsList){
-      console.log(chatsList);
       $scope.chatsList = chatsList || [];
      })
      $rootScope.$broadcast("unattendedMsg",false)
   }
 
   $scope.viewChat = function(chatId) {
+    $rootScope.$broadcast("in chat",true);
     var split = chatId.split("/")
     var id = split[split.length - 1];
     var path = "/doctor-patient/treatment/" + id;
@@ -3868,13 +3905,18 @@ app.controller("investigationController",["$scope","$http","labTests","scanTests
            patient.laboratory.patient_age = patient.age;
            patient.patient_firstname = patient.firstname;
            patient.patient_lastname = patient.lastname;
+           patient.patient_address = patient.address;
            patient.patient_profilePic = patient.profile_pic_url;
            patient.patient_title = patient.title;
            patient.session_id = $rootScope.session;
+           patient.clinical_summary = $scope.treatment.clinical_summary;
+           patient.indication = $scope.treatment.indication;
+           patient.lmp = $scope.treatment.lmp;
+           patient.parity = $scope.treatment.parity;
            patient.date = + new Date(); 
            patient.noUpdate = true,
            patient.typeOfSession = "";
-           patient.treatment = $rootScope.treatment;
+           patient.treatment = $rootScope.treatment ;
           
           
           $http({
@@ -4008,7 +4050,6 @@ app.controller("investigationController",["$scope","$http","labTests","scanTests
         var source = $resource("/user/getAllRadiology")
         $scope.loading = true;
         source.query({city:$scope.treatment.city,country:$scope.treatment.country},function(list){
-          console.log(list)
           $scope.loading = false;
           $scope.searchResult = list;
         })
@@ -4019,10 +4060,15 @@ app.controller("investigationController",["$scope","$http","labTests","scanTests
          patient.radiology.patient_gender = patient.gender;
          patient.history = $scope.treatment.history;
          patient.radiology.patient_age = patient.age;
+         patient.patient_address = patient.address;
          patient.patient_firstname = patient.firstname;
          patient.patient_lastname = patient.lastname;
          patient.patient_profilePic = patient.patient_profile_pic_url;
          patient.patient_title = patient.title;
+         patient.clinical_summary = $scope.treatment.clinical_summary;
+         patient.indication = $scope.treatment.indication;
+         patient.lmp = $scope.treatment.lmp;
+         patient.parity = $scope.treatment.parity;
          patient.session_id = $rootScope.session;
          patient.date = + new Date(); 
          patient.noUpdate = true;
@@ -4653,201 +4699,6 @@ app.controller("grantedRequestController",["$scope","$http","ModalService","requ
   }
 }]);
 
-app.controller("joinRoomController2",["$scope","mySocket","localManager","$rootScope","$http","$window",
-  function($scope,mySocket,localManager,$rootScope,$http,$window){
-   $scope.user = {};
-
-  //var user = localManager.getValue("resolveUser");
-
-  mySocket.emit('join',{userId: "bobosky2636"});
-  //"135920854"
-
-  mySocket.emit('init chat',{userId: "bobosky2636",partnerId: "emyakatras3778"},function(messages){
-    $rootScope.message1 = messages || [];
-  });
-
-  
-  $scope.sendChat2 = function(){ 
-    $scope.user.isSent = true;   
-    mySocket.emit("send message",{to: "emyakatras3778",message:$scope.user.text2,from:"bobosky2636"},function(data){ //replace to with doctor.id  later and
-      //from = user.user_id.
-      var date = + new Date();
-      var msg = {};
-      msg.time = date;
-      msg.sent = data.message;
-      msg.isReceived = false;
-      msg.isSent = false;
-      $rootScope.message1.push(msg);
-      var getIndex = $rootScope.message1.length -1 ;
-      msg.userId = "bobosky2636";
-      msg.partnerId = "emyakatras3778";      
-      mySocket.emit("isSent",msg,function(status){
-        $rootScope.message1[getIndex].isSent = status;
-        mySocket.emit("save message",msg);
-      });
-      mySocket.emit("save message",msg);
-      mySocket.on("isReceived",function(status){
-        $rootScope.message1[getIndex].isReceived = status;
-        mySocket.emit("save message",msg);
-      });
-    });
-    $scope.user.text2 = "";
-  }
-
-
-  mySocket.on("new_msg", function(data) {
-      var date = + new Date();
-      var msg = {};
-      msg.time = date;
-      //alert("it happend")
-      msg.received = data.message;
-      if(data.from === "emyakatras3778") {
-        $rootScope.message1.push(msg);
-        msg.userId = "bobosky2636";
-        msg.partnerId = "emyakatras3778";
-        mySocket.emit("save message",msg);
-      } else {
-        
-        //then push the message to the list of patients so that user can view later.
-      }
-
-      mySocket.emit("msg received",{to: "emyakatras3778"}); 
-  });
-
-  $scope.$watch("user.text2",function(newVal,oldVal){
-    if(newVal !== "" && newVal !== undefined){
-      mySocket.emit("user typing",{to: "emyakatras3778",message:"Typing..."})
-    } else {
-      mySocket.emit("user typing",{to: "emyakatras3778",message:""})
-    }
-  });
-
-  mySocket.on("typing", function(data) {
-    $scope.typing = data;
-  });
-
-
-  $scope.sendCommunictionRequest = function () {
-    var date = + new Date();
-    var random = Math.floor(Math.random() * 99999);
-    mySocket.emit("convseration signaling",{
-      date:date,
-      reqId: random,
-      message: "I want have a video chat with you doc",
-      to:"161792665",
-      type:"Video Call",
-      from: "135920854",
-      sender_profile_pic_url: "",
-      sender_firstname: "Ede",
-      sender_lastname: "gcamon"
-    },function(data){
-      if(data.error){
-        alert(data.error)
-      }
-    });
-  }
-
-  $scope.send = function() {
-    var date = new Date;
-    var dataToSend = {
-      type_of_test: "laboratory:",
-      doctorId: "161792665",
-      center_name: "jude lab",
-      center_address: "12 chezoka",
-      cente_city: "Enugu",
-      center_country: "Nigeria",
-      test_result: [],
-      conclusion: "Malaria",
-      files:[],
-      date_sent: "",
-      ref_id: 2525636363
-    }
-
-    $http({
-    method  : 'PUT',
-    url     : "/user/patient/test-result/forward",
-    data    : dataToSend,
-    headers : {'Content-Type': 'application/json'} 
-    })
-    .success(function(data) {
-      if(data.status) {       
-        alert("Test rssult sent successfully!!!");
-        
-        inRelTime("161792665")
-      } else {
-        alert("Oops! Something went wrong while sending test reusult. Try again...")
-      }
-    }); 
-  }
-
-  function inRelTime(id) {
-//notify doctor in real time
-    mySocket.emit("i sent test",{doctorId:id},function(response){
-      if(response.error){
-        alert(response.error);
-      }
-    });
-  }
-
-  $scope.patient = {}
-  $scope.sendRequest = function() {          
-  var random = Math.floor(Math.random() * 1000);       
-   $scope.patient.type = "consultation";      
-   $scope.patient.message_id = 76767632;
-   $scope.patient.date = + new Date();
-   $scope.patient.receiverId = "161792665";
-    $http({
-        method  : 'PUT',
-        url     : "/user/patient/doctor/connection",
-        data : $scope.patient,
-        headers : {'Content-Type': 'application/json'} 
-        })
-      .success(function(data) {            
-          if(data.status) {             
-            $scope.message = "Your consultation request has been sent!";
-             mySocket.emit("i sent consultation",{doctorId:"161792665"},function(response){
-              if(response.error){
-                alert(response.error);
-              }
-            });
-          }
-          $scope.isViewDoc = false;
-          $scope.isToConfirm = false;
-           //use settime out to clear the textfieeld and the response message
-      });
-        
-    }
-
-    $scope.logout = function(){
-      mySocket.emit("set presence",{status:"offline",userId:"135920854"},function(response){
-        if(response.status === false){          
-          mySocket.emit("patient disconnect",{user_id:"135920854"});          
-        }
-      });
-    }
-
-    $scope.login = function(){
-      mySocket.emit("set presence",{status:"online",userId:"135920854"},function(response){
-        if(response.status === true){        
-          mySocket.emit("patient connect",{user_id:"135920854"});        
-        }
-      });          
-    }
-
-    mySocket.on("calling",function(data){
-      alert(data.callerFirstname + " " + data.callerLastname  + " wants have video chat now!!!");
-      localManager.setValue("caller",data.receiver);
-      localManager.setValue("receiver",data.caller);
-      $window.location.href = "/user/doctor/call";
-      console.log(data);
-      mySocket.emit("in call connected",{to:data.from});
-    });
-
-}])
-
-
-
-
 
 
 /**** for patients ***/
@@ -5292,6 +5143,23 @@ app.controller("patientNotificationController",["$scope","$location","$http","$w
     var path = "/patient-doctor/treatment/" + id;
     $location.path(path);
   }
+
+    // to be modified later suit general
+  $scope.loadChats = function() {
+    $scope.loading = true;
+    $rootScope.chatsList = chatService.chats();
+    $rootScope.chatsList.$promise.then(function(result){
+      $scope.loading = false;
+      $rootScope.chatsList = result;
+    });
+  }
+
+  $scope.viewChatGeneral = function(partnerId) {
+    templateService.holdId = partnerId;
+    $location.path("/general-chat");
+  }
+
+
 
 }]);
 
@@ -7290,38 +7158,7 @@ app.controller("createRoomController",["$scope","localManager","mySocket","$root
   var getHandlerPage = localManager.getValue("holdPageForHandler");
   mySocket.emit('join',{userId: user.user_id});
 
-  /*if(!$rootScope.chatStatus || getCurrentPage !== getHandlerPage){ 
-    mySocket.emit('join',{userId: user.user_id});  
-    //when user is currently not in chat but messages can come and be stored in array
-    mySocket.on("new_msg", function(data) {
-      alert("djhfjjhfjhjhdf")
-      var date = + new Date();
-      var msg = {};
-      msg.time = date;
-      msg.received = data.message;
-
-      if(user.typeOfUser === "Patient"){
-        var elemPos = $rootScope.patientsDoctorList.map(function(x){return x.doctor_id}).indexOf(data.from);
-        var found = $rootScope.patientsDoctorList[elemPos];
-      } else if(user.typeOfUser === "Doctor"){
-        var elemPos = $rootScope.patientList.map(function(x){return x.patient_id}).indexOf(data.from);
-        var found = $rootScope.patientList[elemPos];
-      }
-
-      if(!found.queueLen) {
-        found.queueLen = 1;
-      } else {
-        found.queueLen++;
-      }
-
-      templateService.playAudio(2);
-      msg.userId = data.to;
-      msg.partnerId = data.from;
-      mySocket.emit("save message",msg);
-      //mySocket.emit("msg received",{to: data.from});    
-      //then push the message to the list of patients so that user can view later.
-    });
-  }*/
+  
 
 }]);
 
@@ -7735,13 +7572,11 @@ app.controller("myDoctorController",["$scope","$location","$http","$window","$ro
 
   /*if($rootScope.chatStatus !== true)
     mySocket.emit('join',{userId: user.user_id}); */
-  mySocket.emit('init chat',{userId: user.user_id,partnerId: doctor.id},function(messages){
+  mySocket.emit('init chat',{userId: user.user_id,partnerId: doctor.id},function(data){
     //$rootScope.message1 = messages || [];    
-    for(var i = 0; i < messages.length; i++) {        
-      chats(messages[i]);
+    for(var i = 0; i < data.messages.length; i++) {        
+      chats(data.messages[i]);
     }
-
-    console.log(messages);
   });
 
   $scope.getkeys = function (event) {
@@ -7752,13 +7587,10 @@ app.controller("myDoctorController",["$scope","$location","$http","$window","$ro
   }
 
   mySocket.on("isReceived",function(response){
-    //var getIndex = $rootScope.message1.length - 1; //gets the index of the currently send text from the array
-    //$rootScope.message1[getIndex].isReceived = response.isReceived;
-    //mySocket.emit("save message",msg);//this saves the message as received (ie blue) mark    
+    
     var elem = document.getElementById(response.id);
     elem.innerHTML = "";
     elem.innerHTML += " &nbsp;&nbsp;&nbsp;SEEN! ";
-      //mySocket.emit("save message",msg);//this saves the message as double mark
     
   });
   
@@ -7966,10 +7798,10 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
  /* if($rootScope.chatStatus !== true)
     mySocket.emit('join',{userId: user.user_id}); */
 
-  mySocket.emit('init chat',{userId: user.user_id,partnerId: patient.id},function(messages){
+  mySocket.emit('init chat',{userId: user.user_id,partnerId: patient.id},function(data){
     //$rootScope.message1 = messages || [];
-    for(var i = 0; i < messages.length; i++) {        
-        chats(messages[i])
+    for(var i = 0; i < data.messages.length; i++) {        
+        chats(data.messages[i])
     }
   });
 
@@ -9380,8 +9212,8 @@ app.controller("pharmacyCenterDashboardController",["$scope","$location","templa
     
 }]);
 
-app.controller("pharmacyCenterNotificationController",["$scope","$location","$resource","$window","templateService","localManager",
-  "$rootScope","mySocket",function($scope,$location,$resource,$window,templateService,localManager,$rootScope,mySocket){
+app.controller("pharmacyCenterNotificationController",["$scope","$location","$resource","$window","templateService","localManager","chatService",
+  "$rootScope","mySocket",function($scope,$location,$resource,$window,templateService,localManager,chatService,$rootScope,mySocket){
 
   var notification = $resource("/user/center/get-notification");
   notification.get(null,function(data){
@@ -9432,6 +9264,21 @@ app.controller("pharmacyCenterNotificationController",["$scope","$location","$re
       });
 
     }
+  }
+
+
+  $scope.loadChats = function() {
+    $scope.loading = true;
+    $rootScope.chatsList = chatService.chats();
+    $rootScope.chatsList.$promise.then(function(result){
+      $scope.loading = false;
+      $rootScope.chatsList = result;
+    });
+  }
+
+  $scope.viewChat = function(partnerId) {
+    templateService.holdId = partnerId;
+    $location.path("/general-chat");
   }
 
 }]);
@@ -9753,15 +9600,12 @@ app.controller("labCenterDashboardController",["$scope","$location","$http","tem
 
 
 
-app.controller("labCenterNotificationController",["$scope","$location","$resource","$window","templateService","localManager","$http",
-  "$rootScope","mySocket",function($scope,$location,$resource,$window,templateService,localManager,$http,$rootScope,mySocket){
+app.controller("labCenterNotificationController",["$scope","$location","$resource","$window","templateService","localManager","$http","chatService",
+  "$rootScope","mySocket",function($scope,$location,$resource,$window,templateService,localManager,$http,chatService,$rootScope,mySocket){
 
-
-  
   var notification = $resource("/user/center/get-notification");
   notification.get(null,function(data){
     $rootScope.allNote = data.diagnostic_center_notification || [];
-    console.log(data.diagnostic_center_notification);
     $rootScope.noteLen = $rootScope.allNote.length || 0;
   });
 
@@ -9798,7 +9642,6 @@ app.controller("labCenterNotificationController",["$scope","$location","$resourc
 
   $rootScope.viewNote = function(id,fromList,newPatient){
     templateService.holdId = id;
-
     //view test from attendance list does not need to go through backend since data that populated the list is already there
     if(fromList && !newPatient) {
       var list = $rootScope.attendanceList;
@@ -9807,9 +9650,8 @@ app.controller("labCenterNotificationController",["$scope","$location","$resourc
       $location.path(pageUrl);
       var elementPos = list.map(function(x) {return x.ref_id}).indexOf(id);
       localManager.setValue("laboratoryData",list[elementPos]);
-    } else {
-      
-      //viwe test from notification icon goes to the backend to get patient data;    
+    } else {      
+      //view test from notification icon goes to the backend to get patient data;    
       var labTest = $resource("/user/laboratory/get-referral/:refId",{refId: id});
       labTest.get(function(data){
         localManager.setValue("laboratoryData",data); //pharmacyData refers to patients prescription
@@ -9818,6 +9660,20 @@ app.controller("labCenterNotificationController",["$scope","$location","$resourc
         localManager.setValue("currPageForLaboratory",pageUrl);
       });   
     } 
+  }
+
+  $scope.loadChats = function() {
+    $scope.loading = true;
+    $rootScope.chatsList = chatService.chats();
+    $rootScope.chatsList.$promise.then(function(result){
+      $scope.loading = false;
+      $rootScope.chatsList = result;
+    });
+  }
+
+  $scope.viewChat = function(partnerId) {
+    templateService.holdId = partnerId;
+    $location.path("/general-chat");
   }
 
 }]);
@@ -10445,9 +10301,7 @@ app.controller("labTestControler",["$scope","$location","$http","templateService
     }).then(function(modal) {
       modal.element.modal();
 
-        getCenters();        /*
-        searchtestservice.find(data,"/user/laboratory/search/find-tests","/laboratory/test-search/result");
-        */
+        getCenters();    
       modal.close.then(function(result) {          
         
       });
@@ -10797,33 +10651,32 @@ app.controller("radioCenterDashboardController",["$scope","$location","$http","t
 
 }]);
 
-app.controller("radioCenterNotificationController",["$scope","$location","$http","$window","templateService","localManager","$resource","$rootScope",
-  function($scope,$location,$http,$window,templateService,localManager,$resource,$rootScope) {
+app.controller("radioCenterNotificationController",["$scope","$location","$http","$window","templateService","localManager","$resource","$rootScope","mySocket","chatService",
+  function($scope,$location,$http,$window,templateService,localManager,$resource,$rootScope,mySocket,chatService) {
 
-    
+  var notification = $resource("/user/center/get-notification",null,{updateStatus:{method:'PUT'}});
+  var radioTests = $resource( "/user/radiology/get-referral",null,{sendObj:{method:"PUT"}});
+  
 
-  var notification = $resource("/user/center/get-notification");
-  notification.get(null,function(data){
-    $rootScope.allNote = data.diagnostic_center_notification || [];
-    console.log(data.diagnostic_center_notification);
-    $rootScope.noteLen = $rootScope.allNote.length || 0;
-  });
+  function getNotification() {    
+    notification.get(null,function(data){
+      $rootScope.allNote = data.diagnostic_center_notification || [];
+      $rootScope.noteLen = $rootScope.allNote.length || 0;
+    });
+  }
 
-
+  getNotification();
 
 
  
-    //this fn gets all notification from the back end and adds to the attendance list. this is similar to toList fn jst that instead of 
+    //this fn gets all notification from the back end and adds to the worklist list. this is similar to toList fn jst that instead of 
   //adding patients to the list one by one you simply all add all together.
-  $scope.addAllNote = function(){
-   
-    if($rootScope.allNote.length > 0) {
-      var radioTests = $resource( "/user/radiology/get-referral",null,{sendObj:{method:"PUT"}});
+ 
+  $scope.addAllNote = function(){   
+    if($rootScope.allNote.length > 0) {     
       radioTests.sendObj($rootScope.allNote,function(res){
         var data = res.radioTest; 
-        console.log(data)
-        if($rootScope.attendanceList.length === 0){   
-          //templateService.holdList = data;          
+        if($rootScope.attendanceList.length === 0){        
           localManager.setValue("holdTestForAttendance",data);
           $rootScope.attendanceList = data;
         } else {
@@ -10834,7 +10687,6 @@ app.controller("radioCenterNotificationController",["$scope","$location","$http"
 
         $rootScope.allNote.splice(0);
         $rootScope.noteLen = 0;
-        //note delete from the backend 
       });
     }
   }
@@ -10842,20 +10694,19 @@ app.controller("radioCenterNotificationController",["$scope","$location","$http"
    var reverseNote = [];//this holds notic=fation from backend based on how new it is
    var deletedNote = [];//this holds all deleted notifications
 
-  $rootScope.viewNote = function(id,fromList,newPatient){
+  $rootScope.viewNote = function(id,fromList,newPatient,note){
     templateService.holdId = id;
-    //view test from attendance list does not need to go through backend since data that populated the list is already there
+    //view test from work list does not need to go through backend since data that populated the list is already there
     if(fromList && !newPatient) {
-      var list = $rootScope.attendanceList;
+      var list = $rootScope.attendanceList; //refers to work list
       var pageUrl = "/radiology/view-test/" + id;
       localManager.setValue("currPageForRadiology",pageUrl);
       $location.path(pageUrl);
       var elementPos = list.map(function(x) {return x.ref_id}).indexOf(id);
       localManager.setValue("radiologyData",list[elementPos]);
     } else {
-      console.log(id)
-      console.log($rootScope.attendanceList)
-      //viwe test from notification icon goes to the backend to get patient data;    
+     
+      //view test from notification icon goes to the backend to get patient data;    
       var labTest = $resource("/user/radiology/get-referral/:refId",{refId: id});
       labTest.get(function(data){
         console.log(data)
@@ -10865,11 +10716,39 @@ app.controller("radioCenterNotificationController",["$scope","$location","$http"
         localManager.setValue("currPageForRadiology",pageUrl);
       });   
     } 
+    if(!note.viewed)
+     notification.updateStatus({refId: id},function(res){
+        note.viewed = res.updated;
+     })
 
-    
   }
-  
 
+  //controls chat indictor and notifications
+  $scope.showIndicator = false;
+  $rootScope.$on("unattendedMsg",function(status,data){
+    $scope.showIndicator = data;
+  });
+  
+  mySocket.on("notification",function(response){
+    if(response.status){      
+      getNotification();
+      templateService.playAudio(2);
+    }
+  });
+
+  $scope.loadChats = function() {
+    $scope.loading = true;
+    $rootScope.chatsList = chatService.chats();
+    $rootScope.chatsList.$promise.then(function(result){
+      $scope.loading = false;
+      $rootScope.chatsList = result;
+    });
+  }
+
+  $scope.viewChat = function(partnerId) {
+    templateService.holdId = partnerId;
+    $location.path("/general-chat");
+  }
 }]);
 
 
@@ -10948,7 +10827,6 @@ app.controller("radioTestControler",["$scope","$location","$http","templateServi
   
     var objectFound = localManager.getValue("radiologyData");
     var holdInitialTestToRun = objectFound.radiology.test_to_run;
-   
 
     if(objectFound !== null && !objectFound.radiology.session_id) {
       var testArr = objectFound.radiology.test_to_run;
@@ -10962,7 +10840,7 @@ app.controller("radioTestControler",["$scope","$location","$http","templateServi
       $scope.refInfo = objectFound;
     }
 
-    fill(objectFound);
+    fill(objectFound)
 
 
     /*$scope.specimen = [{name: "Blood",status: false},
@@ -10970,7 +10848,6 @@ app.controller("radioTestControler",["$scope","$location","$http","templateServi
     {name: "Semen",status: false},{name: "Saliver",status: false},{name: "Mucus",status: false}]*/
 
     function fill(obj) {
-      console.log(obj);
 
       var allTests = scanTests.listInfo1.concat(scanTests.listInfo2,scanTests.listInfo3,scanTests.listInfo4,scanTests.listInfo5,
       scanTests.listInfo6);
@@ -11053,19 +10930,18 @@ app.controller("radioTestControler",["$scope","$location","$http","templateServi
         var objFound; 
         if(list.length === 1) {
           if(testName !== undefined && testName !== "") {
-          if(!/^[A-Z]/.test( testName))
-             testName = toTitleCase(testName);     
-          elementPos = $scope.tests.map(function(x){if(x !== undefined){return x.name}}).indexOf(testName)
-          objFound = $scope.tests[elementPos];
-          if( elementPos === -1) {
-            alert("There is no test match based on your search criteria. Make sure you entered the test name correctly.")
-          } else {
-          list[0].name = objFound.name;
-          list[0].id = objFound.id; 
-          list[0].select = true;     
-          obj.radiology.test_to_run = list
-          
-          }
+            if(!/^[A-Z]/.test( testName))
+               testName = toTitleCase(testName);     
+            elementPos = $scope.tests.map(function(x){if(x !== undefined){return x.name}}).indexOf(testName)
+            objFound = $scope.tests[elementPos];
+            if( elementPos === -1) {
+              alert("There is no test match based on your search criteria. Make sure you entered the test name correctly.")
+            } else {
+              list[0].name = objFound.name;
+              list[0].id = objFound.id; 
+              list[0].select = true;     
+              obj.radiology.test_to_run = list            
+            }
           } else {
             alert("Please enter the test name")
           }
@@ -11242,28 +11118,105 @@ app.controller("radioTestControler",["$scope","$location","$http","templateServi
       time: time,
       old_time: oldTime
     }
-
+    $scope.loading = true;
+     if($scope.otpError)
+        $scope.otpError = null;
     var otp = $resource("/user/payment/verification",{userId: null},{verify:{method:'POST'}});  
     otp.verify(sendObj,function(data){
+      $scope.loading = false;
       if(data.success){
-        alert(data.message);
-        $scope.otpMsg = "One Time Pin was sent to this patient via SMS. Get the pin from the patient and enter below."
-        //$rootScope.refData.amount = $scope.str; // holds the amount to pay for the otp template that will come next 
-       // $rootScope.refData.rawAmount = totalCost.sum;
-        //$location.path("/billing-otp");
+        $scope.otpMsg = data.message
       } else {
         alert(data.message);
       }
       
     });
+  }
+
+  $scope.getFolderPath = function(){
+    var str = ""; 
+    var letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    var d = + new Date();
+    var a = d.toString();
+    var id = a.substr(a.length - 4);
+    var random;
+    for(var i = 0; i < 4; i++) {
+        random = Math.floor(Math.random() * letters.length - 1);
+        str += letters[random];
+    }
+    return $scope.refInfo.radiology.patient_firstname + "_" + id + "_" +  str;
     
+  }
+
+  $scope.radio = {
+    type : "dicom"
+  }
+
+  $scope.dicomPath = $scope.getFolderPath();
+
+  var billAuth = $resource("/user/center/billing-verification",null,{verify: {method: "PUT"}})
+  billAuth.get({refId: $scope.refInfo.ref_id},function(data){
+    $scope.paymentStatus = data.payment; 
+    $scope.paymentDetail = data.detail || {};
+  })
+
+  $scope.verifyPay = function(refInfo) {
+    if($scope.lab.otp && $scope.lab.otp !== "") {
+      if($scope.otpError)
+        $scope.otpError = null;
+      var theStringTests = combineTest($scope.testReport);
+      var converToStr = theStringTests.join();
+      var date = + new Date();
+      var pin = $scope.lab.otp;
+      var str = "";
+      var count = 0;
+      for(var i = 0; i < pin.length; i++){
+        count++;      
+        if(count % 3 === 0) {
+          str += pin[i];
+          str += " ";
+        } else {
+          str += pin[i];
+        }
+      }
+
+      var newStr = str.replace(/\s*$/,"");       
+      refInfo.radiology.date = date;
+      refInfo.radiology.v_pin = newStr;
+      refInfo.radiology.strAmount = $scope.str;
+      refInfo.payObj = {
+        total: $scope.grabRawAmount,
+        doctorId: refInfo.radiology.doctor_id || "admin",
+        //this refInfo.referral may be the center's id who will be credited if test was not written by a doctor.it should be modified
+        type: "Radiology",
+        patientId: refInfo.radiology.patient_id,
+        doctorPhone: refInfo.radiology.doctor_phone,
+        patient_firstname: refInfo.radiology.patient_firstname,
+        patient_lastname: refInfo.radiology.patient_lastname,
+        ref_id: refInfo.ref_id
+      }
+
+      $scope.loading = true;
+      billAuth.verify(refInfo,function(response){
+        $scope.loading = false;
+        if(response.payment){          
+          $scope.otpMsg = null;
+          $scope.paymentStatus = response.payment;
+          $scope.paymentDetail = response.detail;
+          var round = Math.round(response.balance)
+          var format = "N" + round.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+          $rootScope.balance = format;
+        } else {
+            $scope.otpError = response.message;
+        }
+      })
+    }
   }
 
 
   /////////////////////////////////////////////////////
 
   $scope.result = function(refInfo){
-
     $scope.isResult = true;
     $scope.hasPreviewed = false;
    
@@ -11281,20 +11234,22 @@ app.controller("radioTestControler",["$scope","$location","$http","templateServi
   
 
   $scope.previewTestResult = function(refInfo){
+   
     $scope.compute = "";
     $scope.incomplete = "";
-     $scope.uploadStatus = "";
-    if($scope.grabRawAmount === 0 || !$scope.grabRawAmount) {
-      $scope.compute = "Please compute the total cost of services.";
-      return;
-    }
-
+    $scope.uploadStatus = "";
+    $scope.reportDate = + new Date();
+   
 
     if($scope.progress !== 100 && $scope.progress ) {
       $scope.uploadStatus = "Please wait files still uploading... " 
       return;
     }
 
+    if($scope.grabRawAmount === 0 || !$scope.grabRawAmount) {
+      $scope.grabRawAmount = 0;
+      $scope.compute = "Warning: Zero amount is billed for this service";
+    }
     
     $scope.hasPreviewed = false;
     $scope.errorList = [];
@@ -11325,41 +11280,70 @@ app.controller("radioTestControler",["$scope","$location","$http","templateServi
   }
 
 
-
-  
-
-  /*$scope.previewTestResult = function(refInfo){
-    $scope.hasPreviewed = false;
-    $scope.errorList = []
-    refInfo.radiology.test_to_run = ranTest;
-    refInfo.radiology.test_to_run.forEach(function(test){
-      if(!test.data) {
-        $scope.errorList.push(test.name);
-      }
-    });
-
-    $scope.$watch("errorList",function(newVal,oldVal){
-      if( $scope.errorList.length > 0 ) {
-        $scope.incomplete = "Please enter report for " + $scope.errorList[0];
-      } else if($scope.lab.conclusion !== undefined) {             
-        $scope.incomplete = "";
-        $scope.isPreview = true;
-        $scope.isResult = false;
-      } else {
-        $scope.incomplete = "Please write your conclusion based on the test reports";
-      }        
-      
-    });
-
-     $scope.preTest = ranTest;
-  }*/
-
   $scope.edit = function(){
     $scope.isPreview = false;
     $scope.isResult = true;
   }
 
-  $scope.sendTestResult = function(refInfo){
+  var theStringTests,
+      converToStr,
+      date,
+      report,
+      url;
+  $scope.sendTestResult = function(refInfo){ 
+    theStringTests = combineTest($scope.testReport);
+    converToStr = theStringTests.join();
+    date = + new Date();
+
+    refInfo.radiology.report = converToStr;
+    refInfo.radiology.test_ran = $scope.testReport;
+    refInfo.radiology.conclusion = $scope.lab.conclusion;
+    refInfo.radiology.test_to_run = holdInitialTestToRun;
+    refInfo.radiology.date = date;
+    refInfo.radiology.filesUrl = templateService.holdScanImageList;
+    refInfo.payObj = {
+      total: $scope.grabRawAmount,
+      doctorId: refInfo.radiology.doctor_id || "admin",
+      //this refInfo.referral may be the center's id who will be credited if test was not written by a doctor.it should be modified
+      type: "Radiology",
+      patientId: refInfo.radiology.patient_id,
+      doctorPhone: refInfo.radiology.doctor_phone,
+      patient_firstname: refInfo.radiology.patient_firstname,
+      patient_lastname: refInfo.radiology.patient_lastname,
+      ref_id: refInfo.ref_id
+    }
+
+     if(refInfo.radiology.session_id) {
+        url = "/user/radiology/test-result/session-update";
+        msg = "SUCCESS!!! Test result sent to Dr " + refInfo.referral_firstname + " " + refInfo.referral_lastname;
+      } else {
+        url = "/user/radiology/test-result/patient-scan-update"
+        msg = "Success!!! Test report sent to patient";
+      }
+      $scope.loading = true;
+      report = $resource(url,null,{sendReport:{method: "PUT"}});
+      report.sendReport(refInfo,function(response){
+        if(response.status === "success") {
+          alert(msg);
+          if($scope.unRantest.length > 0) {
+            templateService.holdUnranTest = $scope.unRantest;
+            forwardUnRanTest($scope.unRantest);          
+          }
+          $scope.reportSuccess = true;
+          localManager.removeItem("history")
+        } else {
+
+          alert("Error ocurred while sending your report. Please try again.");
+          $scope.error = "Error ocurred while sending your report. Please try again."
+          //$scope.edit()
+        }
+
+        $scope.loading = false;
+      });
+
+  }
+
+  /*$scope.sendTestResult = function(refInfo){
    
     if($scope.lab.otp && $scope.lab.otp !== "") {
       var theStringTests = combineTest($scope.testReport);
@@ -11395,7 +11379,7 @@ app.controller("radioTestControler",["$scope","$location","$http","templateServi
         //this refInfo.referral may be the center's id who will be credited if test was not written by a doctor.it should be modified
         type: "Radiology",
         patientId: refInfo.radiology.patient_id,
-        doctorPhone: refInfo.radiology.doctor_phone || 4555432451,
+        doctorPhone: refInfo.radiology.doctor_phone,
         patient_firstname: refInfo.radiology.patient_firstname,
         patient_lastname: refInfo.radiology.patient_lastname,
         ref_id: refInfo.ref_id
@@ -11437,7 +11421,7 @@ app.controller("radioTestControler",["$scope","$location","$http","templateServi
     }
 
     
-  }
+  }*/
 
   $scope.radio = {};
   $rootScope.uploadScanImage = function(){
@@ -11552,9 +11536,7 @@ app.controller("radioTestControler",["$scope","$location","$http","templateServi
     }).then(function(modal) {
       modal.element.modal();
 
-        getCenters();        /*
-        searchtestservice.find(data,"/user/laboratory/search/find-tests","/laboratory/test-search/result");
-        */
+        getCenters();        
       modal.close.then(function(result) {          
         
       });
@@ -11932,6 +11914,7 @@ function($scope,$location,$window,templateService,localManager,Drugs,searchtests
   
 
   $scope.findDrug = function(){
+    $scope.loading = true;
     var sendObj = {}
     sendObj.city = thisCity;
      if(thisCity !== undefined && !/^[A-Z]/.test(thisCity))
@@ -11953,6 +11936,7 @@ function($scope,$location,$window,templateService,localManager,Drugs,searchtests
       }
       } else {
         alert("Please enter the drug name")
+        $scope.loading = false;
       }
     } else {
       var elementPos = $scope.drugs.map(function(x){return x.name}).indexOf(drugName)
@@ -11972,8 +11956,9 @@ function($scope,$location,$window,templateService,localManager,Drugs,searchtests
   $scope.user = {};
   $scope.search.category = "";
   var toNum;
+
   $scope.findWithRef = function(Id){
-    console.log(Id)
+    $scope.loading = true;
     var sendObj = {};
     sendObj.drugList = [];
     sendObj.city = thisCity;
@@ -11993,6 +11978,7 @@ function($scope,$location,$window,templateService,localManager,Drugs,searchtests
       } 
     } else {
       alert("Prescription not found!");
+       $scope.loading = false;
     }
 
     if( elementPos !== -1) {
@@ -12034,6 +12020,7 @@ function($scope,$location,$window,templateService,localManager,Drugs,searchtests
   }
 
   function send(data){
+    $scope.loading = false;
     $rootScope.genRefId = Math.floor(Math.random() * 9999999999 );
     searchtestservice.find(data,"/user/pharmacy/search/find-drugs","/pharmacy/drug-search/result")
   }
@@ -12112,6 +12099,19 @@ app.controller("drugSearchResultController",["$scope","$location","$rootScope","
     });
 
     }
+  }
+
+
+  $scope.sendChat = function(center) {
+    $rootScope.holdcenter = center;
+    ModalService.showModal({
+          templateUrl: 'quick-chat.html',
+          controller: 'generalChatController'
+      }).then(function(modal) {
+          modal.element.modal();
+          modal.close.then(function(result) {             
+          });
+    });
   }
 
 }]);
@@ -12284,7 +12284,8 @@ function($scope,$location,$window,templateService,localManager,labTests,searchte
   }
 
   $scope.findTest = function(){
-    var sendObj = {}
+    var sendObj = {};
+    $scope.loading = true;
     sendObj.city = thisCity;
      if(thisCity !== undefined && !/^[A-Z]/.test(thisCity))
          sendObj.city = toTitleCase(thisCity);  
@@ -12293,7 +12294,8 @@ function($scope,$location,$window,templateService,localManager,labTests,searchte
       var elementPos = $scope.tests.map(function(x){if(x !== undefined){return x.name}}).indexOf(testName)
       objFound = $scope.tests[elementPos];
       if( elementPos === -1) {
-        alert("There is no test match based on your search criteria. Make sure you entered the test name correctly.")
+        alert("There is no test match based on your search criteria. Make sure you entered the test name correctly.");
+        $scope.loading = false;
       } else {
       list[0].name = objFound.name;
       list[0].id = objFound.id;
@@ -12302,7 +12304,8 @@ function($scope,$location,$window,templateService,localManager,labTests,searchte
       send(sendObj)
       }
       } else {
-        alert("Please enter the test name")
+        alert("Please enter the test name");
+        $scope.loading = false;
       }
     } else {
       var elementPos = $scope.tests.map(function(x){if(x !== undefined){return x.name}}).indexOf(testName)
@@ -12313,6 +12316,7 @@ function($scope,$location,$window,templateService,localManager,labTests,searchte
       templateService.holdList = sendObj.testList;
       send(sendObj)
     }
+    
     templateService.holdLaboratoryReferralData= {};   
   }
 
@@ -12322,8 +12326,8 @@ function($scope,$location,$window,templateService,localManager,labTests,searchte
   $scope.search.category = "";
 
   $scope.findWithRef = function(Id){
-    console.log(localManager.getValue("patientTests"))
     var sendObj = {};
+    $scope.loading = true;
     sendObj.testList = [];
     sendObj.city = thisCity;
      if(thisCity !== undefined && !/^[A-Z]/.test(thisCity))
@@ -12334,7 +12338,6 @@ function($scope,$location,$window,templateService,localManager,labTests,searchte
     var objFound = allTest[elementPos];
     if( elementPos !== -1) {
       var objList = objFound.test_to_run;
-      console.log(objList)
       for(var i = 0; i < objList.length; i++) {
         var elemPos = $scope.tests.map(function(x){if(x !== undefined){return x.name}}).indexOf(objList[i].name);
         if(elemPos !== -1) {
@@ -12342,10 +12345,12 @@ function($scope,$location,$window,templateService,localManager,labTests,searchte
           sendObj.testList.push(found);          
         } else {
           alert('Test not found!');
+          $scope.loading = false;
           return;
         }
 
       }
+     
       templateService.holdLaboratoryReferralData = objFound;
       send(sendObj);
     } else {
@@ -12370,7 +12375,8 @@ function($scope,$location,$window,templateService,localManager,labTests,searchte
   }
 
   function send(data){
-    $rootScope.genRefId = Math.floor(Math.random() * 9999999999 )
+    $scope.loading = false;
+    $rootScope.genRefId = Math.floor(Math.random() * 9999999 )
     searchtestservice.find(data,"/user/laboratory/search/find-tests","/laboratory/test-search/result")
   }
 
@@ -12449,6 +12455,20 @@ app.controller("testSearchResultController",["$scope","$location","$rootScope","
     });
     }
   }
+
+  $scope.sendChat = function(center) {
+    $rootScope.holdcenter = center;
+    ModalService.showModal({
+          templateUrl: 'quick-chat.html',
+          controller: 'generalChatController'
+      }).then(function(modal) {
+          modal.element.modal();
+          modal.close.then(function(result) {             
+          });
+    });
+  }
+
+
 }]);
 
 app.controller("testSearchSelectedCenterController",["$scope","$location","$window","$http","templateService","localManager","ModalService",
@@ -12689,7 +12709,7 @@ function($scope,$location,$window,templateService,localManager,scanTests,searcht
   }
 
   function send(data){
-    $rootScope.genRefId = Math.floor(Math.random() * 9999999999 );
+    $rootScope.genRefId = Math.floor(Math.random() * 9999999 );
     searchtestservice.find(data,"/user/radiology/search/find-tests","/radiology/scan-search/result")
   }
 
@@ -12767,6 +12787,18 @@ app.controller("scanSearchResultController",["$scope","$location","$rootScope","
     }
   }
 
+  $scope.sendChat = function(center) {
+    $rootScope.holdcenter = center;
+    ModalService.showModal({
+          templateUrl: 'quick-chat.html',
+          controller: 'generalChatController'
+      }).then(function(modal) {
+          modal.element.modal();
+          modal.close.then(function(result) {             
+          });
+    });
+  }
+
 }]);
 
 app.controller("scanSearchSelectedCenterController",["$scope","$location","$window","$http","templateService","localManager","ModalService",
@@ -12832,7 +12864,6 @@ app.controller("scanSearchSelectedCenterController",["$scope","$location","$wind
         alert(data.error);
         $scope.isEMP = true;
       } else {
-        console.log(data)
         $scope.isContent = false;
         $scope.isSent = true;
         $scope.result = data.ref_id;
@@ -13481,8 +13512,8 @@ app.controller("emScanTestController",["$scope","$location","$http","$window","t
 
 }]);
 
-app.controller("topHeaderController",["$scope","$rootScope","$window","$location","$resource","localManager","mySocket","templateService",
-  function($scope,$rootScope,$window,$location,$resource,localManager,mySocket,templateService){
+app.controller("topHeaderController",["$scope","$rootScope","$window","$location","$resource","localManager","mySocket","templateService","$filter",
+  function($scope,$rootScope,$window,$location,$resource,localManager,mySocket,templateService,$filter){
 
   if(!localManager.getValue("resolveUser")) {
     $window.location.href = "/login"
@@ -13556,6 +13587,62 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
       alert(response);
     });
   }
+
+  $rootScope.$on("in chat",function(env,status){
+    $rootScope.isInChat = status;
+  })
+
+  mySocket.on("new_msg", function(data) {
+    var date = + new Date();
+    var msg = {};
+    msg.time = data.date;
+    msg.received = data.message;
+    if($rootScope.isInChat) {
+      //$rootScope.message1.push(msg);
+      msg.userId = $rootscope.checkLogIn.user_id;
+      msg.partnerId = data.from;
+      //mySocket.emit("save message",msg);        
+      templateService.playAudio(3); // note all sounds can be turned of through settings.
+      $rootScope.chats(msg)
+    } else {     
+      $rootScope.$broadcast("unattendedMsg",true);   
+      templateService.playAudio(2);   
+    }
+    mySocket.emit("msg received",{to: data.from,id:data.date});
+  });
+
+   $rootScope.chats = function(data) {
+    var base = document.getElementById('base'); 
+    var container = angular.element(document.getElementById('sentmessage'));      
+    var item = angular.element(document.createElement('an-item'));
+    var breaker = document.createElement('div');
+    var p = document.createElement('p');
+    var small = document.createElement('small');
+    p.style.display = "block";      
+    small.style.display = "block";
+    small.style.marginTop = "10px";
+    small.style.color = "#ccc"
+    p.innerHTML += (data.sent) ? data.sent : data.received; 
+   
+    small.id = data.id;
+    small.innerHTML += (data.sent) ? $filter('date')(data.time, "shortTime") : $filter('date')(data.time, "shortTime");
+    small.innerHTML += (data.sent) ? "&nbsp;&nbsp;" + $filter('date')(data.time, "mediumDate") : "&nbsp;&nbsp;" + $filter('date')(data.time, "mediumDate");     
+    
+    breaker.style.display = "block";
+    breaker.style.textAlign = (data.sent) ? "right" : "Left";
+    
+    item[0].append(p);
+    item[0].append(small)
+    breaker.append(item[0]);
+    
+    //item[0]. += data.message;
+    item[0].style.display = "inline-block";
+    item[0].style.maxWidth = "45%";
+    item[0].className = (data.sent) ? "talk-bubble tri-right right-top talktext msg_sent bg-info" : "talk-bubble tri-right left-top talktext";
+    container.append(breaker);
+    base.scrollTop = sentmessage.scrollHeight;
+  }
+
 
   
 
@@ -13731,6 +13818,239 @@ app.controller("patientWaitingRoomController",["$scope","$resource","$location",
 
 
 }]);
+
+
+
+//for chats in modal and centers dashboard use for 
+app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatService", "templateService","$filter","ModalService","$location",
+  function($scope, $rootScope, mySocket,chatService,templateService,$filter,ModalService,$location){
+    var user = $rootScope.checkLogIn || {};
+    $rootScope.allChats = $rootScope.chatsList; // rootscope can be used instead   
+    $scope.center = $rootScope.holdcenter || {id : templateService.holdId}; //sometimes is not center but individual
+    $scope.isSent = false;
+    var elemPos;
+
+    //emit to be able to receive messages on for creating chat bubbles on the chat area.
+    $rootScope.$broadcast("in chat",true)
+    
+    if($rootScope.chatsList) {
+      var elemPos = $rootScope.chatsList.map(function(x){return x.partnerId}).indexOf(templateService.holdId)
+      if(elemPos !== -1){
+        $scope.partner = $rootScope.chatsList[elemPos];        
+      } else {
+        $scope.partner = {}
+      }
+    }
+
+
+    if($rootScope.holdcenter) {
+      initChatSingle(); //for sending one way messages
+    } else {
+      initChat();
+    }
+
+    
+    $scope.viewChat = function(chat) {
+      $scope.partner = chat;
+      var base = document.getElementById('base'); 
+      var msgDiv = document.getElementById("sentmessage");
+      base.removeChild(msgDiv)
+     
+      //use to control different chat data in the general chat body inner div
+      chatBodyCb(function(){
+        initChat()
+      })
+      
+    }
+
+    function chatBodyCb(cb){
+      var base = document.getElementById('base');
+      var msgDiv = document.createElement('div');
+      msgDiv.id = "sentmessage";
+      base.appendChild(msgDiv)
+      cb()
+    }
+    
+    $scope.sendChatSingle = function(partnerId){
+      $scope.loading = true;
+      mySocket.emit("send message general",{to: partnerId,message:$scope.messageBody,from: user.user_id},function(data){ 
+        if(data) {
+          $scope.loading = false;
+          $scope.isSent = true;
+        }
+      })
+    }
+
+    // checks to see who is online when chat div loads
+    mySocket.emit("check presence",{},function(connects){
+      var chat;
+      for(var i = 0; i < $rootScope.chatsList.length; i++) {
+        for(var j in connects){            
+          if(connects.hasOwnProperty(j)){
+            chat = (connects[j] === $rootScope.chatsList[i].partnerId) ? $rootScope.chatsList[i] : null;
+            if(chat) {               
+              chat.status = true;                          
+              break;
+            }
+          }
+        }
+      }
+    });
+    //checks to see when user is online or offline
+    mySocket.on("real time presence",function(connects){
+        var chat;
+        for(var i = 0; i < $rootScope.chatsList.length; i++) {
+          for(var j in connects){            
+            if(connects.hasOwnProperty(j)){
+              chat = (connects[j] === $rootScope.chatsList[i].partnerId) ? $rootScope.chatsList[i] : null;
+              if(!chat) {               
+                $rootScope.chatsList[i].status = false;                          
+              } else {
+                chat.status = true; 
+              }
+            }
+          }
+        }
+    });
+
+    //for modal sending one-way chat message.
+    function initChatSingle() {
+      mySocket.emit('init chat single',{userId: user.user_id,partnerId: $scope.center.id},function(data){
+        console.log(data)
+      });
+    }
+
+    //for general chats two-way messaging
+    function initChat() {
+      $scope.loading = true;
+      mySocket.emit('init chat',{userId: user.user_id,partnerId: $scope.partner.partnerId},function(data){ 
+         for(var i = 0; i < data.messages.length; i++) {        
+            $rootScope.chats(data.messages[i]);
+         }
+         $scope.loading = false;        
+      });
+    }
+
+  //chat logic
+
+  $scope.user = {}
+
+  $scope.getkeys = function (event) {
+    if(event.keyCode === 13) {
+      $scope.sendChat1();
+      event.preventDefault();
+    }
+  }
+
+  mySocket.on("isReceived",function(response){   
+    var elem = document.getElementById(response.id);
+    elem.innerHTML = "";
+    elem.innerHTML += " &nbsp;&nbsp;&nbsp;SEEN! ";
+  });
+  
+  $scope.sendChat1 = function(){ 
+   if($scope.user.text1 !== "" && $scope.user.text1 !== undefined) {   
+      $scope.user.isSent = true;
+      mySocket.emit("send message",{to: $scope.partner.partnerId,message:$scope.user.text1,from: user.user_id},function(data){ 
+        var date = + new Date();
+        var msg = {};
+        msg.time = data.date;
+        msg.sent = data.message;
+        msg.isSent = false;
+        msg.isReceived = false;
+        //$rootScope.message1.push(msg);      
+        msg.userId = user.user_id;
+        msg.partnerId = $scope.partner.partnerId; 
+        msg.id = data.date//genId();
+
+        $rootScope.chats(msg);
+        
+        mySocket.emit("isSent",msg,function(status){
+          
+          if(status) {
+            var elem = document.getElementById(msg.id);
+            elem.innerHTML += " &nbsp;&nbsp;&nbsp;sent! ";
+            
+          }
+        });
+        //mySocket.emit("save message",msg);//this saves the message as one mark
+      });
+      $scope.user.text1 = "";
+    }
+  }
+
+ 
+
+ 
+  
+  /*mySocket.on("new_msg", function(data) {
+    var date = + new Date();
+    var msg = {};
+    msg.time = data.date;
+    msg.received = data.message;
+    if(data.from === $scope.partner.partnerId) {
+     
+      msg.userId = user.user_id;
+      msg.partnerId = $scope.partner.partnerId;
+            
+      templateService.playAudio(3); // note all sounds can be turned of through settings.
+      chats(msg)
+    } else {
+     
+      $rootScope.$broadcast("unattendedMsg",true);   
+      templateService.playAudio(2);   
+    }
+    mySocket.emit("msg received",{to: data.from,id:data.date});
+  });*/
+
+
+  $scope.$watch("user.text1",function(newVal,oldVal){
+    if(newVal !== "" && newVal !== undefined){      
+      mySocket.emit("user typing",{to: $scope.partner.partnerId,message:"Typing..."});
+    } else {
+      mySocket.emit("user typing",{to: $scope.partner.partnerId,message:""});
+    }
+  });
+
+  mySocket.on("typing", function(data) {
+    $scope.typing = data;
+  });
+
+  $scope.videoRequest = function(type,docObj){
+    //$window.location.href = "/patient/call";
+    docObj.type = type;
+    reqModal(docObj);
+  }
+
+  $scope.audioRequest = function(type,docObj){
+    //$window.location.href = "/user/patient/call";
+    docObj.type = type;
+    reqModal(docObj);
+  }
+
+  $scope.inPersonRequest = function(type,docObj){
+    
+    docObj.type = type;
+    reqModal(docObj);
+  }
+
+  function reqModal(docObj) {
+    templateService.holdForSpecificDoc = docObj
+    ModalService.showModal({
+      templateUrl: 'sending-communication-request.html',
+      controller: "videoInitController"
+    }).then(function(modal) {
+      modal.element.modal();
+      modal.close.then(function(result) {
+         
+      });
+    });
+  }
+
+
+}])
+
+
 
 
 

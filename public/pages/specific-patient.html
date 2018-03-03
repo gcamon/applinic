@@ -82,47 +82,7 @@
 
 		<!-- removable div-->
             <div ng-if="isChat || isChat === undefined">
-                <!--<div class="panel-body msg_container_base bg-default">
-                	<div ng-repeat="u in message1">
-                         <div class="talk-bubble tri-right left-top" ng-if="u.received">
-						  <div class="talktext">
-						   <div>                      
-                                <p>{{u.received}}</p>
-                               
-                            </div>
-                                <time datetime="2009-11-13T20:00">&nbsp;{{u.time | date: "shortTime"}}</time>	                             
-	                        </div>
-                            </div>
-
-
-
-
-                    <div class="row msg_container base_sent" ng-if="u.sent">
-                      <div class="talk-bubble tri-right right-top bg-info">
-    				  <div class="talktext">
-    				      <div ng-class="{'msg_sent' : u.sent}">
-    				    <p>{{u.sent}}
-                          </p>
-        				
-    				</div>
-			      <time datetime="2009-11-13T20:00">&nbsp;{{u.time | date: "shortTime"}}</time>
-			     
-    			     <i class="fa fa-check" style="font-size:10px" ng-class="{'msg-received': u.isReceived === true}"></i>
-    			      <i class="fa fa-check" style="font-size:10px;margin-left:-10px;margin-top:3px" ng-class="{'msg-received': u.isReceived === true}" ng-if="u.isSent === true">{{(u.isReceived === true) ? ' seen' : ""}}</i>    
-  				  </div>
-                </div>  
-            </div>
-
-
-	                    
-                	</div>
-                	<div>
-                    	<div class="messages" ng-if="typing" style="max-width: 20%;">  
-                            <p> {{typing}} </p>                                
-                        </div>
-                    </div>
-                     
-                </div>-->
+               
                 <div class="panel-body msg_container_base bg-default" id="base" style="height: 360px">
 
                     <div id="sentmessage">
@@ -138,7 +98,8 @@
                 </form>
 
              
-</div>
+            </div>
+    </div>
 
  <!-- view session-->
 <section ng-if="isToViewSession" ng-class="{'transition-background':isTrans}" style="position: relative;">
@@ -611,7 +572,7 @@
               </div>
 
                <div class="col-md-12  col-sm-12 col-xs-12 form-group">
-                <label for="firstname">Final Diagnosis</label>
+                <label for="firstname">Diagnosis</label>
                 <textarea class="form-control" placeholder="{{sessionData.diagnosis.final_diagnosis}}" ng-model="edit.final_diagnosis"></textarea>
               </div>
 
@@ -688,7 +649,7 @@
                     <tr>
                       <td>{{test.sent_date | date : "mediumDate"}} <br> {{test.sent_date | date : "mediumTime"}}</td>
                       <!--<td>Radiography</td>-->
-                      <td><article ng-repeat="rantest in test.ranTest"><span ng-if="rantest.sn">{{rantest.sn}})</span> &mbsp;{{rantest.name}}</article></td>
+                      <td><article ng-repeat="rantest in test.ranTest"><span ng-if="rantest.sn">{{rantest.sn}})</span> {{rantest.name}}</article></td>
                       <td><article ng-repeat = "result in test.report"><strong>{{result.test}} :</strong> {{result.report}}</article></td>
                       <td>{{test.conclusion}}</td>
                       <td>{{test.receive_date | date : "mediumDate"}} <br>{{test.receive_date | date : "mediumTime"}}</td>
@@ -696,7 +657,7 @@
                   </tbody>
                 </table>
 
-                <p ng-if="test.conclusion">Patient test results ran by {{}}</p>
+                <p ng-if="test.conclusion">{{}} center name and info here</p>
                 <!--<button class="btn btn-info" ng-if="isScan" ng-click="newScan()">New lab test</button>-->
                 <!--<button class="btn btn-info" ng-click="other()" ng-click="ECG()">Request for a other test </button>-->
             </div>
@@ -704,7 +665,7 @@
             <div class="p-2" ng-if="isNewLab" ng-controller="investigationController">
                 <section ng-show="!isSearchToSend">  
                     <h6>Write Lab Investigation </h6>
-                    <table style="width: 96%">
+                    <table style="width: 78%">
                      
                         <thead>
                             <th style="width: 5%"></th>
@@ -713,7 +674,7 @@
                    
                         <tbody ng-repeat="lab in TestList">                                                                           
                             <td style="padding: 5px">{{lab.sn}}</td>
-                            <td style="width: 80%"><input  id="states" type="text" placeholder="Enter test name"  ng-model="test.name" uib-typeahead="test.name for test in tests | filter:$viewValue | limitTo:15" class="form-control" >
+                            <td style="width: 70%"><input  id="states" type="text" placeholder="Enter test name"  ng-model="test.name" uib-typeahead="test.name for test in tests | filter:$viewValue | limitTo:15" class="form-control" >
                                 {{getTest(test.name)}} 
                             </td>                                                              
                         </tbody>
@@ -723,10 +684,30 @@
                         <i class="fa fa-plus btn btn-simple round" style="font-size:16px;color:green;padding: 10px; cursor:pointer; margin-right: 5px" title="Add field" ng-click="addTest()"></i>
                             <i class="fa fa-minus btn btn-simple round" style="font-size:16px;color:green;padding: 10px; cursor:pointer; margin-right: 5px" title="Remove last field" ng-click="removeTest()"></i>
                     </div>
-
+                    <div>
+                        <div>
+                            <label>Indication:</label>
+                            <textarea  style="width: 80%;height: 120px;" placeholder="Write.." ng-model="treatment.indication" class="form-control pl-2"></textarea>
+                        </div>
+                        <div>
+                            <label>Clinical Summary:</label>
+                            <textarea style="width: 80%;height: 120px" placeholder="Write.." ng-model="treatment.clinical_summary" class="form-control pl-2"></textarea>
+                        </div>
+                         <div ng-if="patientInfo.gender === 'female'">
+                            <label>LMP:</label>
+                            <textarea style="width: 80%;height: 120px" placeholder="Write.." ng-model="treatment.lmp" class="form-control pl-2"></textarea>
+                        </div>
+                         <div ng-if="patientInfo.gender === 'female'">
+                            <label>Parity:</label>
+                            <textarea style="width: 80%;height: 120px" placeholder="Write.." ng-model="treatment.parity" class="form-control pl-2"></textarea>
+                        </div>
+                    </div>
+                    
                     <div>
                         <!--<button class="btn btn-success" bg-click="sendToPatient()">to Patient</button>-->
-                        <button class="btn btn-success" ng-click="sendToLab()">Continue</button>
+                        <div>
+                            <button class="btn btn-success" ng-click="sendToLab()">Continue</button>
+                        </div>
                     </div>
                 </section>
 
@@ -778,7 +759,7 @@
              <div class="p-2" ng-if="isNewRadio" ng-controller="investigationController">
                 <section ng-show="!isSearchToSend">             
                     <h6>Write Radio Investigation</h6>
-                    <table style="width: 96%">
+                    <table style="width: 78%">
                      
                         <thead>
                             <th style="width: 5%"></th>
@@ -797,10 +778,30 @@
                         <i class="fa fa-plus btn btn-simple round" style="font-size:16px;color:green;padding: 10px; cursor:pointer; margin-right: 5px" title="Add field" ng-click="addTest()"></i>
                             <i class="fa fa-minus btn btn-simple round" style="font-size:16px;color:green;padding: 10px; cursor:pointer; margin-right: 5px" title="Remove last field" ng-click="removeTest()"></i>
                     </div>
+                    <div>
+                        <div>
+                            <label>Indication:</label>
+                            <textarea  style="width: 80%;height: 120px;" placeholder="Write.." ng-model="treatment.indication" class="form-control pl-2"></textarea>
+                        </div>
+                        <div>
+                            <label>Clinical Summary:</label>
+                            <textarea style="width: 80%;height: 120px" placeholder="Write.." ng-model="treatment.clinical_summary" class="form-control pl-2"></textarea>
+                        </div>
+                         <div ng-if="patientInfo.gender === 'female'">
+                            <label>LMP:</label>
+                            <textarea style="width: 80%;height: 120px" placeholder="Write.." ng-model="treatment.lmp" class="form-control pl-2"></textarea>
+                        </div>
+                         <div ng-if="patientInfo.gender === 'female'">
+                            <label>Parity:</label>
+                            <textarea style="width: 80%;height: 120px" placeholder="Write.." ng-model="treatment.parity" class="form-control pl-2"></textarea>
+                        </div>
+                    </div>
 
                     <div>
                         <!--<button class="btn btn-success" bg-click="sendToPatient()">to Patient</button>-->
-                        <button class="btn btn-success" ng-click="sendToRad()">Continue</button>
+                        <div>
+                            <button class="btn btn-success" ng-click="sendToRad()">Continue</button>
+                        </div>
                     </div>
 
                 </section>
@@ -875,3 +876,45 @@
         
         
 </div>
+
+ <!--<div class="panel-body msg_container_base bg-default">
+                    <div ng-repeat="u in message1">
+                         <div class="talk-bubble tri-right left-top" ng-if="u.received">
+                          <div class="talktext">
+                           <div>                      
+                                <p>{{u.received}}</p>
+                               
+                            </div>
+                                <time datetime="2009-11-13T20:00">&nbsp;{{u.time | date: "shortTime"}}</time>                                
+                            </div>
+                            </div>
+
+
+
+
+                    <div class="row msg_container base_sent" ng-if="u.sent">
+                      <div class="talk-bubble tri-right right-top bg-info">
+                      <div class="talktext">
+                          <div ng-class="{'msg_sent' : u.sent}">
+                        <p>{{u.sent}}
+                          </p>
+                        
+                    </div>
+                  <time datetime="2009-11-13T20:00">&nbsp;{{u.time | date: "shortTime"}}</time>
+                 
+                     <i class="fa fa-check" style="font-size:10px" ng-class="{'msg-received': u.isReceived === true}"></i>
+                      <i class="fa fa-check" style="font-size:10px;margin-left:-10px;margin-top:3px" ng-class="{'msg-received': u.isReceived === true}" ng-if="u.isSent === true">{{(u.isReceived === true) ? ' seen' : ""}}</i>    
+                  </div>
+                </div>  
+            </div>
+
+
+                        
+                    </div>
+                    <div>
+                        <div class="messages" ng-if="typing" style="max-width: 20%;">  
+                            <p> {{typing}} </p>                                
+                        </div>
+                    </div>
+                     
+                </div>-->

@@ -13,6 +13,7 @@ Wallet.prototype.credit = function(model,receiver,amount,io,cb){
 	if(amount > 0) {
 		var self = this;
 		model.user.findOne(receiver,{ewallet:1,name:1}).exec(function(err,data){
+			console.log(receiver)
 			if(err) throw err;
 			if(self.message === "Consultation fee"){
 			  //amount -= 1000;
@@ -43,35 +44,37 @@ Wallet.prototype.credit = function(model,receiver,amount,io,cb){
 				})
 			}
 
-			if(data)
-			  self.beneficiary = data.name || data.firstaname + " " + data.lastname
-			data.ewallet.available_amount += amount;			
-			var names = self.firstname + " " + self.lastname;
-			var transacObj = {
-				date: self.date,
-				source: names,
-				activity: "Credit",
-				message: self.message,
-				body: {
-					amount: amount,
-					beneficiary: "You"
+			if(data) {
+				self.beneficiary = data.name || data.firstaname + " " + data.lastname
+				data.ewallet.available_amount += amount;			
+				var names = self.firstname + " " + self.lastname;
+				var transacObj = {
+					date: self.date,
+					source: names,
+					activity: "Credit",
+					message: self.message,
+					body: {
+						amount: amount,
+						beneficiary: "You"
+					}
 				}
+		  
+
+				if(cb)
+					cb(data.ewallet.available_amount)
+
+				
+				data.ewallet.transaction.push(transacObj);
+
+				if(io) {
+					updateAdminRealTime(data.ewallet.available_amount);
+				}
+
+				data.save(function(err,info){
+					if(err) throw err;
+					console.log("saved");				
+				});
 			}
-
-			if(cb)
-				cb(data.ewallet.available_amount)
-
-			
-			data.ewallet.transaction.push(transacObj);
-
-			if(io) {
-				updateAdminRealTime(data.ewallet.available_amount);
-			}
-
-			data.save(function(err,info){
-				if(err) throw err;
-				console.log("saved");				
-			});
 		
 		});
 
@@ -165,15 +168,15 @@ Wallet.prototype.billing = function(model,billingInfo,reciever,sms,io){
 		var newCut; //use to decide if doctor was involved in the sharing. ie if doctor was the one that reffered the test.
 
 		if(billingInfo.doctorId !== "admin") {
-			var docPercentage = getCommission * 0.25;
+			var docPercentage = getCommission * 0.20;
 			var creditDoc = {user_id: billingInfo.doctorId}
 			this.credit(model,creditDoc,docPercentage);
 		} else {
-			var newCut = 0.75;
+			var newCut = 0.80;
 		}		
 		
 		var msgBody = "Your Applinic account credited" + "\nAmount: " + docPercentage + "\nActivity: Commission for prescription written\n Source: " +
-		billingInfo.patient_firstname + " " + billingInfo.patient_lastname + ". Date: " + Date.now();
+		billingInfo.patient_firstname + " " + billingInfo.patient_lastname;
 		var phoneNunber =  billingInfo.doctorPhone;
 		sms.messages.create(
       {
@@ -205,7 +208,7 @@ Wallet.prototype.billing = function(model,billingInfo,reciever,sms,io){
 					drugList[elemPos].payment_acknowledgement = true;
 				}
 				var msgBody = "Your Applinic account debited" + "\nAmount: "  + amount + 
-				"\nActivity: Payment for billing\nPlus 5% discount applied for all billing paid through this app." + ". Date: " + Date.now();
+				"\nActivity: Payment for billing\nPlus 5% discount applied for all billing paid through this app.";
 				var phoneNunber =  debitor.phone;
 				sms.messages.create(
           {
@@ -228,7 +231,7 @@ Wallet.prototype.billing = function(model,billingInfo,reciever,sms,io){
 					record[elemPos].payment_acknowledgement = true;
 				
 				var msgBody = "Your Applinic account debited" + "\nAmount: "  + amount + 
-				"\nActivity: Payment for billing\nPlus 5% discount applied for all billing paid through this app." + ". Date: " + Date.now();
+				"\nActivity: Payment for billing\nPlus 5% discount applied for all billing paid through this app.";
 				var phoneNunber =  debitor.phone;
 				sms.messages.create(
           {

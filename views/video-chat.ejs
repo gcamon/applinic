@@ -430,6 +430,25 @@ span.dates {
                                     <i class="fa fa-minus" style="font-size:16px;color:green;padding: 10px; cursor:pointer; margin-right: 5px" title="Remove last field" ng-click="removeTest()"> Remove</i>
                             </div>
                             <div>
+                                <div>
+                                    <label>Indication:</label>
+                                    <textarea  style="width: 80%;height: 120px;" placeholder="Write.." ng-model="treatment.indication" class="form-control pl-2"></textarea>
+                                </div>
+                                <div>
+                                    <label>Clinical Summary:</label>
+                                    <textarea style="width: 80%;height: 120px" placeholder="Write.." ng-model="treatment.clinical_summary" class="form-control pl-2"></textarea>
+                                </div>
+                                 <div ng-if="patientInfo.gender === 'female'">
+                                    <label>LMP:</label>
+                                    <textarea style="width: 80%;height: 120px" placeholder="Write.." ng-model="treatment.lmp" class="form-control pl-2"></textarea>
+                                </div>
+                                 <div ng-if="patientInfo.gender === 'female'">
+                                    <label>Parity:</label>
+                                    <textarea style="width: 80%;height: 120px" placeholder="Write.." ng-model="treatment.parity" class="form-control pl-2"></textarea>
+                                </div>
+                            </div>
+
+                            <div>
                                 <!--<button class="btn btn-success" bg-click="sendToPatient()">to Patient</button>-->
                                 <button class="btn btn-success" ng-click="sendToLab()">To Laboratory Center</button>
                             </div>
@@ -457,6 +476,25 @@ span.dates {
                                 <i class="fa fa-plus" style="font-size:16px;color:green;padding: 10px; cursor:pointer; margin-right: 5px" title="Add field" ng-click="addTest()"> Add</i>
                                     <i class="fa fa-minus" style="font-size:16px;color:green;padding: 10px; cursor:pointer; margin-right: 5px" title="Remove last field" ng-click="removeTest()"> Remove</i>
                             </div>
+                            <div>
+                                <div>
+                                    <label>Indication:</label>
+                                    <textarea  style="width: 80%;height: 120px;" placeholder="Write.." ng-model="treatment.indication" class="form-control pl-2"></textarea>
+                                </div>
+                                <div>
+                                    <label>Clinical Summary:</label>
+                                    <textarea style="width: 80%;height: 120px" placeholder="Write.." ng-model="treatment.clinical_summary" class="form-control pl-2"></textarea>
+                                </div>
+                                 <div ng-if="patientInfo.gender === 'female'">
+                                    <label>LMP:</label>
+                                    <textarea style="width: 80%;height: 120px" placeholder="Write.." ng-model="treatment.lmp" class="form-control pl-2"></textarea>
+                                </div>
+                                 <div ng-if="patientInfo.gender === 'female'">
+                                    <label>Parity:</label>
+                                    <textarea style="width: 80%;height: 120px" placeholder="Write.." ng-model="treatment.parity" class="form-control pl-2"></textarea>
+                                </div>
+                            </div>
+
                             <div>
                                <!-- <button class="btn btn-success" bg-click="sendToPatient()">to Patient</button>-->
                                 <button class="btn btn-success" ng-click="sendToRad()">To Radiology Center</button>
