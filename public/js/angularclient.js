@@ -3052,13 +3052,13 @@ Meet In-Person',docInfo)"><i class="fa fa-user"> </i> &nbsp;Meet IN-PERSON</li>
   $scope.viewChatsHistory = function() {
      var source = $resource("/user/get-chats");
      source.query(function(chatsList){
+      console.log(chatsList);
       $scope.chatsList = chatsList || [];
      })
      $rootScope.$broadcast("unattendedMsg",false)
   }
 
   $scope.viewChat = function(chatId) {
-    $rootScope.$broadcast("in chat",true);
     var split = chatId.split("/")
     var id = split[split.length - 1];
     var path = "/doctor-patient/treatment/" + id;
@@ -7591,6 +7591,7 @@ app.controller("myDoctorController",["$scope","$location","$http","$window","$ro
     var elem = document.getElementById(response.id);
     elem.innerHTML = "";
     elem.innerHTML += " &nbsp;&nbsp;&nbsp;SEEN! ";
+      //mySocket.emit("save message",msg);//this saves the message as double mark
     
   });
   
@@ -13512,8 +13513,8 @@ app.controller("emScanTestController",["$scope","$location","$http","$window","t
 
 }]);
 
-app.controller("topHeaderController",["$scope","$rootScope","$window","$location","$resource","localManager","mySocket","templateService","$filter",
-  function($scope,$rootScope,$window,$location,$resource,localManager,mySocket,templateService,$filter){
+app.controller("topHeaderController",["$scope","$rootScope","$window","$location","$resource","localManager","mySocket","templateService",
+  function($scope,$rootScope,$window,$location,$resource,localManager,mySocket,templateService){
 
   if(!localManager.getValue("resolveUser")) {
     $window.location.href = "/login"
@@ -13588,61 +13589,12 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
     });
   }
 
-  $rootScope.$on("in chat",function(env,status){
-    $rootScope.isInChat = status;
-  })
 
-  mySocket.on("new_msg", function(data) {
-    var date = + new Date();
-    var msg = {};
-    msg.time = data.date;
-    msg.received = data.message;
-    if($rootScope.isInChat) {
-      //$rootScope.message1.push(msg);
-      msg.userId = $rootscope.checkLogIn.user_id;
-      msg.partnerId = data.from;
-      //mySocket.emit("save message",msg);        
-      templateService.playAudio(3); // note all sounds can be turned of through settings.
-      $rootScope.chats(msg)
-    } else {     
-      $rootScope.$broadcast("unattendedMsg",true);   
-      templateService.playAudio(2);   
-    }
+  mySocket.on("new_msg", function(data) { 
+    $rootScope.$broadcast("unattendedMsg",true);   
+    templateService.playAudio(2);   
     mySocket.emit("msg received",{to: data.from,id:data.date});
   });
-
-   $rootScope.chats = function(data) {
-    var base = document.getElementById('base'); 
-    var container = angular.element(document.getElementById('sentmessage'));      
-    var item = angular.element(document.createElement('an-item'));
-    var breaker = document.createElement('div');
-    var p = document.createElement('p');
-    var small = document.createElement('small');
-    p.style.display = "block";      
-    small.style.display = "block";
-    small.style.marginTop = "10px";
-    small.style.color = "#ccc"
-    p.innerHTML += (data.sent) ? data.sent : data.received; 
-   
-    small.id = data.id;
-    small.innerHTML += (data.sent) ? $filter('date')(data.time, "shortTime") : $filter('date')(data.time, "shortTime");
-    small.innerHTML += (data.sent) ? "&nbsp;&nbsp;" + $filter('date')(data.time, "mediumDate") : "&nbsp;&nbsp;" + $filter('date')(data.time, "mediumDate");     
-    
-    breaker.style.display = "block";
-    breaker.style.textAlign = (data.sent) ? "right" : "Left";
-    
-    item[0].append(p);
-    item[0].append(small)
-    breaker.append(item[0]);
-    
-    //item[0]. += data.message;
-    item[0].style.display = "inline-block";
-    item[0].style.maxWidth = "45%";
-    item[0].className = (data.sent) ? "talk-bubble tri-right right-top talktext msg_sent bg-info" : "talk-bubble tri-right left-top talktext";
-    container.append(breaker);
-    base.scrollTop = sentmessage.scrollHeight;
-  }
-
 
   
 
@@ -13830,9 +13782,8 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
     $scope.isSent = false;
     var elemPos;
 
-    //emit to be able to receive messages on for creating chat bubbles on the chat area.
-    $rootScope.$broadcast("in chat",true)
-    
+    mySocket.removeAllListeners("new_msg");
+
     if($rootScope.chatsList) {
       var elemPos = $rootScope.chatsList.map(function(x){return x.partnerId}).indexOf(templateService.holdId)
       if(elemPos !== -1){
@@ -13844,7 +13795,7 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
 
 
     if($rootScope.holdcenter) {
-      initChatSingle(); //for sending one way messages
+      initChatSingle();
     } else {
       initChat();
     }
@@ -13925,7 +13876,7 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
       $scope.loading = true;
       mySocket.emit('init chat',{userId: user.user_id,partnerId: $scope.partner.partnerId},function(data){ 
          for(var i = 0; i < data.messages.length; i++) {        
-            $rootScope.chats(data.messages[i]);
+            chats(data.messages[i]);
          }
          $scope.loading = false;        
       });
@@ -13942,10 +13893,12 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
     }
   }
 
-  mySocket.on("isReceived",function(response){   
+  mySocket.on("isReceived",function(response){
+   
     var elem = document.getElementById(response.id);
     elem.innerHTML = "";
     elem.innerHTML += " &nbsp;&nbsp;&nbsp;SEEN! ";
+    
   });
   
   $scope.sendChat1 = function(){ 
@@ -13963,7 +13916,7 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
         msg.partnerId = $scope.partner.partnerId; 
         msg.id = data.date//genId();
 
-        $rootScope.chats(msg);
+        chats(msg);
         
         mySocket.emit("isSent",msg,function(status){
           
@@ -13981,9 +13934,40 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
 
  
 
- 
+  function chats(data) {
+    var base = document.getElementById('base'); 
+    var container = angular.element(document.getElementById('sentmessage'));      
+    var item = angular.element(document.createElement('an-item'));
+    var breaker = document.createElement('div');
+    var p = document.createElement('p');
+    var small = document.createElement('small');
+    p.style.display = "block";      
+    small.style.display = "block";
+    small.style.marginTop = "10px";
+    small.style.color = "#ccc"
+    p.innerHTML += (data.sent) ? data.sent : data.received; 
+   
+    small.id = data.id;
+    small.innerHTML += (data.sent) ? $filter('date')(data.time, "shortTime") : $filter('date')(data.time, "shortTime");
+    small.innerHTML += (data.sent) ? "&nbsp;&nbsp;" + $filter('date')(data.time, "mediumDate") : "&nbsp;&nbsp;" + $filter('date')(data.time, "mediumDate");     
+    
+    breaker.style.display = "block";
+    breaker.style.textAlign = (data.sent) ? "right" : "Left";
+    
+    item[0].append(p);
+    item[0].append(small)
+    breaker.append(item[0]);
+    
+    //item[0]. += data.message;
+    item[0].style.display = "inline-block";
+    item[0].style.maxWidth = "45%";
+    item[0].className = (data.sent) ? "talk-bubble tri-right right-top talktext msg_sent bg-info" : "talk-bubble tri-right left-top talktext";
+    container.append(breaker);
+    base.scrollTop = sentmessage.scrollHeight;
+  }
+
   
-  /*mySocket.on("new_msg", function(data) {
+  mySocket.on("new_msg", function(data) {
     var date = + new Date();
     var msg = {};
     msg.time = data.date;
@@ -14001,7 +13985,7 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
       templateService.playAudio(2);   
     }
     mySocket.emit("msg received",{to: data.from,id:data.date});
-  });*/
+  });
 
 
   $scope.$watch("user.text1",function(newVal,oldVal){
