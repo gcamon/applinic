@@ -582,6 +582,7 @@ var myModel = function () {
 	var chatSchema = Schema({
 		userId: String,
 		name: String,
+		partnerType: String,
 		profilePic: String,
 		status: Boolean,
 		chat_id: String,

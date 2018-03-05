@@ -44,6 +44,8 @@
                     color: green;
                 }
 
+
+
                 .logo2.l.l4 {
                     bottom: 13px;
                     left: 25px;
@@ -65,6 +67,18 @@
                     float: right;
                     margin-top: 20px
                 }
+
+                 .view-animate-container {
+                    position:relative;  
+                    background:white;  
+                /*max-height:1000px;*/
+                background: transparent !important;
+                   /*overflow-y: auto;
+                  overflow-x: hidden;*/
+                  width: auto;
+                      margin-left: 100px
+
+                  }
 
                 @media screen and (max-width: 720px) {
                     .text-center a {
@@ -224,38 +238,38 @@
                                     </footer>
                                 </div>
                             </li>
-                              <li class="notifications new"> <a href="" ng-click = "viewChatsHistory()" data-toggle="dropdown">
-                    <i class="fa fa-comment" ></i>
-                    <sup>
-                      <span class="counter btn-danger" ng-if="showIndicator !== false" style="border-radius: 10px;width: 8px;height: 8px;display: inline-block;"  ng-cloak></span>
-                    </sup>
-                  </a>
+                             <li class="notifications new"> <a href="" ng-click = "loadChats()" data-toggle="dropdown">
+                              <i class="fa fa-comment" ></i>
+                              <sup>
+                                <span class="counter btn-danger" ng-if="showIndicator !== false" style="border-radius: 10px;width: 8px;height: 8px;display: inline-block;"  ng-cloak></span>
+                              </sup>
+                            </a>
                                 <div class="dropdown-menu notifications-dropdown-menu" style="max-height: 400px;overflow-y: auto;">
                                     <ul class="notifications-container noti-style">
                                         <li> <h6 style="text-align: center">Chats</h6> </li>
-                                        <li ng-repeat = "chat in chatsList" ng-click= "viewChat(chat.chat_id)" style="height: 80px;overflow:hidden">
+                                        <li ng-repeat = "chat in chatsList | orderBy : '-realTime'" ng-click= "viewChat(chat.partnerId)" style="height: 80px;overflow:hidden">
                                             <a href="" class="notification-item">
                                                 <div class="img-col">
                                                     <div class="img" style="background-image: url({{chat.profilePic}})"></div>
                                                 </div>
-                                                <div class="body-col">
+                                                <div class="body-col">                                                
                                                     <p style=""> <span class="accent" ng-cloak>{{chat.name}}</span>
-                                                        <span style="display:block">{{chat.messages[chat.messages.length - 1].received || chat.messages[chat.messages.length - 1].sent}} <small style="display:block" ng-cloak>{{chat.messages[chat.messages.length - 1].time | date: "shortTime" || chat.messages[chat.messages.length - 1].received | date: "shortTime"}} &nbsp;&nbsp;{{chat.messages[chat.messages.length - 1].time | date: "mediumDate" || chat.messages[chat.messages.length - 1].received | date: "mediumDate"}}</small>.</span> 
+                                                        <span style="display:block" class="ellipsis">{{chat.messages[chat.messages.length - 1].received || chat.messages[chat.messages.length - 1].sent}} <small style="display:block" ng-cloak>{{chat.messages[chat.messages.length - 1].time | date: "shortTime" || chat.messages[chat.messages.length - 1].received | date: "shortTime"}} &nbsp;&nbsp;{{chat.messages[chat.messages.length - 1].time | date: "mediumDate" || chat.messages[chat.messages.length - 1].received | date: "mediumDate"}}</small>.</span> 
                                                     </p>
                                                 </div>
                                             </a>
-                                        </li>                                       
+                                        </li>
+                                        <li ng-if="loading" style="text-align: center;height: 120px;padding-top: 50px"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange" ng-if="loading"></i></li>                                       
                                     </ul>
                                     <footer>
                                         <ul>
                                             <li> <a href="">
                             <!--View All -->
-                          </a> </li>
+                             </a> </li>
                                         </ul>
                                     </footer>
                                 </div>
-                            </li>
-
+                            </li>                                                 
                                <!--<li class="notifications new"> <a href="" data-toggle="dropdown">
                     <i class="fa fa-video-camera"></i>
                     <sup>
@@ -373,11 +387,11 @@
                             <div class="col-md-12 col-sm-12 col-xs-12">                                    
   
                                       
-                                <a class="nav-link"  href="#/help"><i class="fa fa-github-alt"></i>
+                                <a class="btn btn-simple round"  href="#/help"><i class="fa fa-question-circle"></i>
                                     <span style="color:red">Need Help?</span>
                                 </a>
                                       
-                                <a class="nav-link"  href="#/need-specialist" ><i class="fa fa-user-md"></i>
+                                <a class="btn btn-simple round ml-1"  href="#/need-specialist" ><i class="fa fa-user-md"></i>
                                     <span style="color:red">Need a Doctor?</span>
                                 </a>
 
@@ -614,12 +628,12 @@
       <div class="container">
     <div class="row">
 
-        <div class="col-sm-12 col-md-12 col-lg-12">                                
-            <div class="view-animate-container row">  
+       <div class="col-sm-12 col-md-11 col-lg-11">                                
+            <div class="view-animate-container row" >  
                 <div class="view-animate" ng-view >
                 </div>
             </div>
-        </div>
+        </div>              
         
 
 

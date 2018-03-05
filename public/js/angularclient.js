@@ -4737,9 +4737,9 @@ app.factory("medicaRecordFactory",function(){
 
 // this controller gets  the patient medical records from the backend and seperates laboratory tsest from radiology test 
 //to store then templateService. Note patient prescription  is not amonge the data filtered so far.
-app.controller("patientNotificationController",["$scope","$location","$http","$window","$rootScope","$resource",
+app.controller("patientNotificationController",["$scope","$location","$http","$window","$rootScope","$resource","chatService",
   "templateService","localManager","deleteFactory","mySocket","$timeout","medicaRecordFactory",
-  function($scope,$location,$http, $window,$rootScope,$resource,templateService,localManager,deleteFactory,mySocket,$timeout,medicaRecordFactory){
+  function($scope,$location,$http, $window,$rootScope,$resource,chatService,templateService,localManager,deleteFactory,mySocket,$timeout,medicaRecordFactory){
   
   var filter = {};
   /*$scope.getPatientId = function(id,firstname,lastname){
@@ -5137,12 +5137,12 @@ app.controller("patientNotificationController",["$scope","$location","$http","$w
      $rootScope.$broadcast("unattendedMsg",false)
   }
 
-  $scope.viewChat = function(chatId) {
+  /*$scope.viewChat = function(chatId) {
     var split = chatId.split("/")
     var id = split[split.length - 1];
     var path = "/patient-doctor/treatment/" + id;
     $location.path(path);
-  }
+  }*/
 
     // to be modified later suit general
   $scope.loadChats = function() {
@@ -5154,7 +5154,7 @@ app.controller("patientNotificationController",["$scope","$location","$http","$w
     });
   }
 
-  $scope.viewChatGeneral = function(partnerId) {
+  $scope.viewChat = function(partnerId) {
     templateService.holdId = partnerId;
     $location.path("/general-chat");
   }
@@ -10750,6 +10750,7 @@ app.controller("radioCenterNotificationController",["$scope","$location","$http"
     templateService.holdId = partnerId;
     $location.path("/general-chat");
   }
+
 }]);
 
 
@@ -13589,10 +13590,17 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
     });
   }
 
-
+  var elemPos;
   mySocket.on("new_msg", function(data) { 
-    $rootScope.$broadcast("unattendedMsg",true);   
-    templateService.playAudio(2);   
+    if($location.path() !== "/general-chat") {
+      $rootScope.$broadcast("unattendedMsg",true);   
+      templateService.playAudio(2);   
+    } else {
+      elemPos = $rootScope.chatsList.map(function(x){return x.chat_id}).indexOf(data.chatId)
+      if(elemPos !== -1) {
+        $rootScope.chatsList[elemPos].isUnRead = true;
+      }
+    }
     mySocket.emit("msg received",{to: data.from,id:data.date});
   });
 
@@ -13782,7 +13790,7 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
     $scope.isSent = false;
     var elemPos;
 
-    mySocket.removeAllListeners("new_msg");
+    mySocket.removeAllListeners("new_msg"); // incase if this listener is registered twice
 
     if($rootScope.chatsList) {
       var elemPos = $rootScope.chatsList.map(function(x){return x.partnerId}).indexOf(templateService.holdId)
@@ -13800,8 +13808,10 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
       initChat();
     }
 
+
     
     $scope.viewChat = function(chat) {
+      chat.isUnRead = false;
       $scope.partner = chat;
       var base = document.getElementById('base'); 
       var msgDiv = document.getElementById("sentmessage");
@@ -13935,35 +13945,36 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
  
 
   function chats(data) {
-    var base = document.getElementById('base'); 
+    var base = angular.element(document.getElementById('base')); 
     var container = angular.element(document.getElementById('sentmessage'));      
     var item = angular.element(document.createElement('an-item'));
-    var breaker = document.createElement('div');
-    var p = document.createElement('p');
-    var small = document.createElement('small');
-    p.style.display = "block";      
-    small.style.display = "block";
-    small.style.marginTop = "10px";
-    small.style.color = "#ccc"
-    p.innerHTML += (data.sent) ? data.sent : data.received; 
+    var breaker = angular.element(document.createElement('div'));
+    var p = angular.element(document.createElement('p'));
+    var small = angular.element(document.createElement('small'));
+    console.log(p[0])
+    p[0].style.display = "block";      
+    small[0].style.display = "block";
+    small[0].style.marginTop = "10px";
+    small[0].style.color = "#ccc"
+    p[0].innerHTML += (data.sent) ? data.sent : data.received; 
    
-    small.id = data.id;
-    small.innerHTML += (data.sent) ? $filter('date')(data.time, "shortTime") : $filter('date')(data.time, "shortTime");
-    small.innerHTML += (data.sent) ? "&nbsp;&nbsp;" + $filter('date')(data.time, "mediumDate") : "&nbsp;&nbsp;" + $filter('date')(data.time, "mediumDate");     
+    small[0].id = data.id;
+    small[0].innerHTML += (data.sent) ? $filter('date')(data.time, "shortTime") : $filter('date')(data.time, "shortTime");
+    small[0].innerHTML += (data.sent) ? "&nbsp;&nbsp;" + $filter('date')(data.time, "mediumDate") : "&nbsp;&nbsp;" + $filter('date')(data.time, "mediumDate");     
     
-    breaker.style.display = "block";
-    breaker.style.textAlign = (data.sent) ? "right" : "Left";
+    breaker[0].style.display = "block";
+    breaker[0].style.textAlign = (data.sent) ? "right" : "Left";
     
-    item[0].append(p);
-    item[0].append(small)
-    breaker.append(item[0]);
+    item[0].append(p[0]);
+    item[0].append(small[0])
+    breaker[0].append(item[0]);
     
     //item[0]. += data.message;
     item[0].style.display = "inline-block";
     item[0].style.maxWidth = "45%";
     item[0].className = (data.sent) ? "talk-bubble tri-right right-top talktext msg_sent bg-info" : "talk-bubble tri-right left-top talktext";
-    container.append(breaker);
-    base.scrollTop = sentmessage.scrollHeight;
+    container.append(breaker[0]);
+    base[0].scrollTop = sentmessage.scrollHeight;
   }
 
   
@@ -13977,10 +13988,9 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
       msg.userId = user.user_id;
       msg.partnerId = $scope.partner.partnerId;
             
-      templateService.playAudio(3); // note all sounds can be turned of through settings.
+      //templateService.playAudio(3); // note all sounds can be turned of through settings.
       chats(msg)
-    } else {
-     
+    } else {     
       $rootScope.$broadcast("unattendedMsg",true);   
       templateService.playAudio(2);   
     }
@@ -14016,6 +14026,19 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
     
     docObj.type = type;
     reqModal(docObj);
+  }
+
+
+  $scope.chatPrivate = function(chat) {
+    if(chat.partnerType === "Patient" || chat.partnerType === "Doctor") {
+      var split = chat.chat_id.split("/");
+      var id = split[split.length - 1];
+      var path = "/patient-doctor/treatment/" + id;
+      $location.path(path);
+    } else {
+      var getUser = (user.user_id === 'Patient') ? "patient" : 'a doctor';
+      alert("Oops! You can only chat private with " + getUser)
+    }
   }
 
   function reqModal(docObj) {

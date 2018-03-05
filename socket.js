@@ -10,10 +10,8 @@ module.exports = function(model,io,streams) {
 	    socket.on('join', function (data) {
 	    	user.isPresent = true; //use to check presence of user without hitting the database.
 	      socket.join(data.userId);
-	     	console.log("someone joined!");;
 	     	connects[socket.id] = data.userId;
 	     	//this will be reviewd later in terms of performance on the client.
-	     	console.log(connects);
 	    });
 
 	    socket.on('courier join', function (data) {
@@ -30,7 +28,6 @@ module.exports = function(model,io,streams) {
 	  
 	    //creat chat enable process for the user and the receiver
   		socket.on("init chat",function(data,cb){
-  			console.log(data)
   			var chatId = data.userId + "/" + data.partnerId; //creates chat id for the user and a partner to be saved in the database.
 	      model.chats.findOne({chat_id:chatId},function(err,chat){
 	      	if(err) throw err;
@@ -48,10 +45,11 @@ module.exports = function(model,io,streams) {
 	      			newChat.userId = data.userId; //user.user_id;
 	      			newChat.partnerId = data.partnerId;
 	      			newChat.name = partner.name || partner.firstname; // this refers the the parner name not the owner  of this chat
-	      			newChat.profilePic = partner.profile_pic_url
+	      			newChat.profilePic = partner.profile_pic_url;
+	      			newChat.partnerType = partner.type;
 	      			newChat.save(function(err,info){});
 	      		});
-	      		cb([]);	      		
+	      		cb({messages:[]});	      		
 	      	} else {
 	      		cb(chat);
 	      	}
@@ -78,6 +76,7 @@ module.exports = function(model,io,streams) {
 	      			newChat.partnerId = data.partnerId;
 	      			newChat.name = partner.name || partner.firstname; // this refers the the parner name not the owner  of this chat
 	      			newChat.profilePic = partner.profile_pic_url;
+	      			newChat.partnerType = partner.type;
 	      			newChat.save(function(err,info){});
 	      		});
 	      		cb({status: true});	      		
@@ -151,6 +150,7 @@ module.exports = function(model,io,streams) {
 	      			newChat.realTime = date;
 	      			newChat.name = user.name || user.title + " " + user.firstname; // refers tp parner name
 	      			newChat.profilePic = user.profile_pic_url;
+	      			newChat.partnerType = user.type;
 	      			newChat.messages.push(msg)
 	      			newChat.save(function(err,info){});
 	      		});	      		
@@ -160,18 +160,20 @@ module.exports = function(model,io,streams) {
 	    });
 
 
-	     socket.on("send message general",function(data,cb){
-	     	
+	     socket.on("send message general",function(data,cb){     	
+
+	     	var chatId = data.from + "/" + data.to;
+	    	var otherId = data.to + "/" + data.from;
 	    	var date = + new Date();
 	    	data.date = date.toString();
 	    	data.id = data.date;
+	    	data.chatId = chatId;
 	      cb(data);
 
 	      io.sockets.to(data.to).emit('new_msg',data);	       	
 	       
 	      //save chats
-	      var chatId = data.from + "/" + data.to;
-	    	var otherId = data.to + "/" + data.from;
+	     
 	    	model.chats.findOne({chat_id: chatId},{messages:1,realTime:1}).exec(function(err,chats){
 	    		if(err) throw err;
 	    		if(chats) {
@@ -217,6 +219,7 @@ module.exports = function(model,io,streams) {
 	      			newChat.realTime = date;
 	      			newChat.name = user.name || user.title + " " + user.firstname;
 	      			newChat.profilePic = user.profile_pic_url;
+	      			newChat.partnerType = user.type;
 	      			newChat.messages.push(msg)
 	      			newChat.save(function(err,info){});
 	      		});	      		

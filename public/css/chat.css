@@ -528,3 +528,11 @@ span.dates {
 .ok button{
   text-shadow:3px 3px 3px rgba(0, 0, 0, 0.5) !important;
 }
+
+.chat-header-text {
+  text-decoration: none;font-size: 14px;padding-left: 10px;position: relative;
+}
+
+.chat-header-text-new {
+  color: orange
+}
