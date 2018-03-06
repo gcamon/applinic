@@ -13591,7 +13591,7 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
       $rootScope.$broadcast("unattendedMsg",true);   
       templateService.playAudio(2);   
     } else {
-      alert("chat fro top header is called")
+      alert("chat fro top header is called");
       elemPos = $rootScope.chatsList.map(function(x){return x.chat_id}).indexOf(data.chatId)
       if(elemPos !== -1) {
         $rootScope.chatsList[elemPos].isUnRead = true;
