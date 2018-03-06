@@ -441,7 +441,7 @@
   }
 }
 
-@media screen and (max-height: 650px) {
+@media screen and (max-width: 960px) {
   .view-animate-container {
     width: 100%;
     background: transparent !important;

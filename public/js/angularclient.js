@@ -10711,7 +10711,7 @@ app.controller("radioCenterNotificationController",["$scope","$location","$http"
         localManager.setValue("currPageForRadiology",pageUrl);
       });   
     } 
-    console.log(note)
+   
     if(!note.viewed)
      notification.updateStatus({refId: id},function(res){
         note.viewed = res.updated;
