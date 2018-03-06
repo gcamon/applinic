@@ -13864,13 +13864,19 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
     //checks to see when user is online or offline
     mySocket.on("real time presence",function(connects){
         var chat;
+        console.log("===============================");
+        console.log(connects);
+        console.log($rootScope.chatsList);
         for(var i = 0; i < $rootScope.chatsList.length; i++) {
           for(var j in connects){            
             if(connects.hasOwnProperty(j)){
               chat = ( $rootScope.chatsList[i].partnerId === connects[j] ) ? $rootScope.chatsList[i] : null;
-              if(chat) {               
-                chat.status = true;                          
-              } 
+              if(chat) { 
+                chat.status = true; 
+                break;                 
+              } else {
+                $rootScope.chatsList[i].status = false;  
+              }
             }
           }
         }
