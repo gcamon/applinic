@@ -3065,7 +3065,6 @@ Meet In-Person',docInfo)"><i class="fa fa-user"> </i> &nbsp;Meet IN-PERSON</li>
   $scope.viewChatsHistory = function() {
      var source = $resource("/user/get-chats");
      source.query(function(chatsList){
-      console.log(chatsList);
       $scope.chatsList = chatsList || [];
      })
      $rootScope.$broadcast("unattendedMsg",false)
@@ -5158,7 +5157,7 @@ app.controller("patientNotificationController",["$scope","$location","$http","$w
   }*/
 
     // to be modified later suit general
-  $scope.loadChats = function() {
+  $rootScope.loadChats = function() {
     $scope.loading = true;
     $rootScope.chatsList = chatService.chats();
     $rootScope.chatsList.$promise.then(function(result){
@@ -9282,7 +9281,7 @@ app.controller("pharmacyCenterNotificationController",["$scope","$location","$re
   }
 
 
-  $scope.loadChats = function() {
+  $rootScope.loadChats = function() {
     $scope.loading = true;
     $rootScope.chatsList = chatService.chats();
     $rootScope.chatsList.$promise.then(function(result){
@@ -9689,7 +9688,7 @@ app.controller("labCenterNotificationController",["$scope","$location","$resourc
     }
   });
 
-  $scope.loadChats = function() {
+  $rootScope.loadChats = function() {
     $scope.loading = true;
     $rootScope.chatsList = chatService.chats();
     $rootScope.chatsList.$promise.then(function(result){
@@ -10732,7 +10731,7 @@ app.controller("radioCenterNotificationController",["$scope","$location","$http"
     }
   });
 
-  $scope.loadChats = function() {
+  $rootScope.loadChats = function() {
     $scope.loading = true;
     $rootScope.chatsList = chatService.chats();
     $rootScope.chatsList.$promise.then(function(result){
@@ -13865,9 +13864,6 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
     //checks to see when user is online or offline
     mySocket.on("real time presence",function(connects){
         var chat;
-        console.log("===============================");
-        console.log(connects);
-        console.log($rootScope.chatsList);
         for(var i = 0; i < $rootScope.chatsList.length; i++) {
           for(var j in connects){            
             if(connects.hasOwnProperty(j)){
@@ -14000,17 +13996,16 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
       //templateService.playAudio(3); // note all sounds can be turned of through settings.
       chats(msg);
     } else {     
-      $rootScope.$broadcast("unattendedMsg",true);   
-      templateService.playAudio(2);   
+      //$rootScope.$broadcast("unattendedMsg",true);   
+      templateService.playAudio(2);
+      var elemPos = $rootScope.chatsList.map(function(x){return x.partnerId}).indexOf(data.from);
+      if(elemPos !== -1) {
+        $rootScope.chatsList[elemPos].isUnRead = true;
+      } else {
+        $rootScope.loadChats();
+      }
     }
-
-    var elemPos = $rootScope.chatsList.map(function(x){return x.chat_id}).indexOf(data.chatId);
-    console.log(data)
-    if(elemPos !== -1) {
-      $rootScope.chatsList[elemPos].isUnRead = true;
-    } else {
-      $rootScope.chatsList.push(data);
-    }
+   
     mySocket.emit("msg received",{to: data.from,id:data.date});
   });
 
