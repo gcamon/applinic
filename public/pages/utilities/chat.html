@@ -23,7 +23,7 @@
 	                      <!--<button class="btn btn-simple text-danger" style="font-size: 16px" ng-click="chatLive()">Chat</button> &nbsp;&nbsp;-->
 	                        <span class="ellipsis" style="display:inline-block;font-size: 12px;padding: 3px 5px" ng-cloak><b>{{partner.name}}</b>
 	                        	<span style="display:block">
-	                            <em ng-if="!typing" style="color:green"><small>{{typing}}</small></em> 
+	                            <em ng-if="typing" style="font-size: 12px;color: green"><small>{{typing}}</small></em> 
 	                            <em ng-if="partner.status && !typing" style="font-size: 12px;color: green" ng-cloak>Online</em>
 	                            <em ng-if="!partner.status && !typing" ng-cloak style="color:red;font-size: 12px">Offline</em>
 	                            </span>
@@ -52,7 +52,7 @@
 
 		                
 		                <form class="panel-footer" ng-submit="sendChat1()">
-		                <textarea contenteditable="true" style="padding-top: 30px" ng-model="user.text1"  ng-keypress="getkeys($event)" placeholder="Type a message..."> <span class="textout" >{{typeMessage}}</span> </textarea>
+		                <textarea contenteditable="true" style="padding-top: 30px;word-break: normal;" ng-model="user.text1"  ng-keypress="getkeys($event)" placeholder="Type a message..."> <span class="textout" >{{typeMessage}}</span> </textarea>
 		                <button type="submit" class="btn btn-neutral btn-sm fa fa-send" style="font-size: 25px"></button>
 		                </form>
 
