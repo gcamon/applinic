@@ -13587,11 +13587,11 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
 
   var elemPos;
   mySocket.on("new_msg", function(data) { 
+    alert("dhgshjdsdsjhdhjhdshds")
     if($location.path() !== "/general-chat") {
       $rootScope.$broadcast("unattendedMsg",true);   
       templateService.playAudio(2);   
     } else {
-      alert("chat fro top header is called");
       elemPos = $rootScope.chatsList.map(function(x){return x.chat_id}).indexOf(data.chatId)
       if(elemPos !== -1) {
         $rootScope.chatsList[elemPos].isUnRead = true;
@@ -13795,7 +13795,7 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
     $scope.isSent = false;
     var elemPos;
 
-    mySocket.removeAllListeners("new_msg"); // incase if this listener is registered twice
+   
 
     if($rootScope.chatsList) {
       var elemPos = $rootScope.chatsList.map(function(x){return x.partnerId}).indexOf(templateService.holdId)
@@ -13821,7 +13821,8 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
       var base = document.getElementById('base'); 
       var msgDiv = document.getElementById("sentmessage");
       base.removeChild(msgDiv)
-     
+      
+      // mySocket.removeAllListeners("new_msg"); // incase if this listener is registered twice
       //use to control different chat data in the general chat body inner div
       chatBodyCb(function(){
         initChat()
