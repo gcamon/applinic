@@ -276,7 +276,7 @@
                                
                                 <li ng-repeat="person in attendanceList | filter: person.laboratory.patient_lastname || person.laboratory.patient_firstname || person.laboratory.date || person.laboratory.ref_id">
                                     
-                                    <a href="" ng-click="viewNote(person.laboratory.ref_id,'list',person.newPatient)">     
+                                    <a href="" ng-click="viewNote(person.laboratory.ref_id,'list',person.newPatient,person)">     
                                     
                                         <img class="img" src="{{person.laboratory.patient_profile_pic_url}}" style="width:32px;height:32px;display: inline-block;">
                                         <span style="padding-left: 10px;font-size:12px;display: inline-block;" class="ellipsis">{{person.laboratory.patient_firstname}}   {{person.laboratory.patient_lastname}} </span>                                                        
