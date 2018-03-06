@@ -13587,7 +13587,6 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
 
   var elemPos;
   mySocket.on("new_msg", function(data) { 
-    alert("dhgshjdsdsjhdhjhdshds")
     if($location.path() !== "/general-chat") {
       $rootScope.$broadcast("unattendedMsg",true);   
       templateService.playAudio(2);   
@@ -13795,7 +13794,7 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
     $scope.isSent = false;
     var elemPos;
 
-   
+    mySocket.removeAllListeners("new_msg"); // incase if this listener is registered twice
 
     if($rootScope.chatsList) {
       var elemPos = $rootScope.chatsList.map(function(x){return x.partnerId}).indexOf(templateService.holdId)
@@ -13821,8 +13820,7 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
       var base = document.getElementById('base'); 
       var msgDiv = document.getElementById("sentmessage");
       base.removeChild(msgDiv)
-      
-      // mySocket.removeAllListeners("new_msg"); // incase if this listener is registered twice
+     
       //use to control different chat data in the general chat body inner div
       chatBodyCb(function(){
         initChat()
@@ -13866,6 +13864,9 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
     //checks to see when user is online or offline
     mySocket.on("real time presence",function(connects){
         var chat;
+        console.log("===============================")
+        console.log(connects)
+        console.log($rootScope.chatsList)
         for(var i = 0; i < $rootScope.chatsList.length; i++) {
           for(var j in connects){            
             if(connects.hasOwnProperty(j)){
