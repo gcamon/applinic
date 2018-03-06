@@ -13794,7 +13794,7 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
     $scope.isSent = false;
     var elemPos;
 
-    mySocket.removeAllListeners("new_msg"); // incase if this listener is registered twice
+   
 
     if($rootScope.chatsList) {
       var elemPos = $rootScope.chatsList.map(function(x){return x.partnerId}).indexOf(templateService.holdId)
@@ -13806,13 +13806,14 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
     }
 
 
+
     if($rootScope.holdcenter) {
       initChatSingle();
     } else {
       initChat();
     }
 
-
+    mySocket.removeAllListeners("new_msg"); // incase if this listener is registered twice
     
     $scope.viewChat = function(chat) {
       chat.isUnRead = false;
@@ -14001,6 +14002,14 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
     } else {     
       $rootScope.$broadcast("unattendedMsg",true);   
       templateService.playAudio(2);   
+    }
+
+    var elemPos = $rootScope.chatsList.map(function(x){return x.chat_id}).indexOf(data.chatId);
+    console.log(data)
+    if(elemPos !== -1) {
+      $rootScope.chatsList[elemPos].isUnRead = true;
+    } else {
+      $rootScope.chatsList.push(data);
     }
     mySocket.emit("msg received",{to: data.from,id:data.date});
   });
