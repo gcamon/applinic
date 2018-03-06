@@ -23,7 +23,7 @@
 	                      <!--<button class="btn btn-simple text-danger" style="font-size: 16px" ng-click="chatLive()">Chat</button> &nbsp;&nbsp;-->
 	                        <span class="ellipsis" style="display:inline-block;font-size: 12px;padding: 3px 5px" ng-cloak><b>{{partner.name}}</b>
 	                        	<span style="display:block">
-	                            <em ng-if="!typing" color:green><small>{{typing}}</small></em> 
+	                            <em ng-if="!typing" style="color:green"><small>{{typing}}</small></em> 
 	                            <em ng-if="partner.status && !typing" style="font-size: 12px;color: green" ng-cloak>Online</em>
 	                            <em ng-if="!partner.status && !typing" ng-cloak style="color:red;font-size: 12px">Offline</em>
 	                            </span>
@@ -37,7 +37,7 @@
 	                </div>
 
 
-			<!-- removable div-->
+					<!-- removable div-->
 		            <div ng-if="isChat || isChat === undefined">
 		               
 		                <div class="panel-body msg_container_base bg-default" id="base" style="height: 360px">

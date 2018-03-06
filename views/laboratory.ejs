@@ -37,6 +37,7 @@
                   }
 
 
+
           </style>
 
           <script src="/assets/js/vendor2.js"></script>
@@ -68,7 +69,7 @@
                       <span class="counter" ng-if="noteLen > 0 " ng-cloak>{{noteLen}}</span>
                     </sup>
                     </a>
-                                <div class="dropdown-menu notifications-dropdown-menu">
+                            <div class="dropdown-menu notifications-dropdown-menu" style="max-height: 400px;overflow-y: auto;">
                                     <ul class="notifications-container">
                                         <li> <h6 style="text-align: center">Notification(s)</h6> </li>                                        
                                          <li><button style="color:green;" ng-click = "addAllNote()">Add all notifications to attendance list </button></li>
@@ -153,7 +154,7 @@
                                 <a href="" class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown">
                                     <i class="fa fa-search" aria-hidden="true"></i> Searches
                                 </a>
-                                <div class="okd dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
+                                <div class="okd dropdown-menu dropdown-menu-right" style="line-height: 35px" aria-labelledby="navbarDropdownMenuLink">
                                     <a class="dropdown-item" href="#/find-specialist">Find a Doctor</a>
                                     <a class="dropdown-item" href="#/drug">Find Drug</a>
                                     <a class="dropdown-item" href="#/scan-search">Find Scan</a>
@@ -178,16 +179,16 @@
                     <div class="col-md-7 col-sm-12 col-xs-12">
                        <ul class="nav nav-tabs" role="tablist">  
                           <li class="nav-item">
-                            <a class="nav-link"  href="#/help" ><i class="fa fa-calender"></i>
-                                <span style="color:red">Need help?</span>
+                            <a  class="btn btn-simple round mr-1"  href="#/help" ><i class="fa fa-question-circle"></i>
+                                <span style="color:red">Need help</span>
                             </a>
                           </li>
                           <li class="nav-item">
-                            <a class="nav-link"  href="#/referral/laboratory-test" ><i class="fa fa-calender"></i>
+                            <a  class="btn btn-simple round mr-1"  href="#/referral/laboratory-test" ><i class="fa fa-user"></i>
                                         <span style="color:red">Find patient lab test</span></a>
                           </li>
                           <li class="nav-item">
-                            <a class="nav-link"  href="" ng-click="newPatient()"><i class="fa fa-user-plus"></i>
+                            <a  class="btn btn-simple round mr-1" href="" ng-click="newPatient()"><i class="fa fa-user-plus"></i>
                                 <span style="color:red">Add patient</span></a>
                           </li>
                         </ul>
@@ -267,7 +268,7 @@
 
                         <li> 
                             <a href="">
-                                <i class="fa fa-users"></i>Attendance list
+                                <i class="fa fa-users"></i>Work list
                                 <i class="fa arrow"></i>
                             </a>
                             <ul  style="max-height: 600px;overflow-y:auto">
@@ -277,8 +278,8 @@
                                     
                                     <a href="" ng-click="viewNote(person.laboratory.ref_id,'list',person.newPatient)">     
                                     
-                                        <img class="img" src="{{person.laboratory.patient_profile_pic_url}}" style="width:32px;height:32px">
-                                        <span style="padding-left: 10px;font-size:12px">{{person.laboratory.patient_firstname}}   {{person.laboratory.patient_lastname}} </span>                                                        
+                                        <img class="img" src="{{person.laboratory.patient_profile_pic_url}}" style="width:32px;height:32px;display: inline-block;">
+                                        <span style="padding-left: 10px;font-size:12px;display: inline-block;" class="ellipsis">{{person.laboratory.patient_firstname}}   {{person.laboratory.patient_lastname}} </span>                                                        
                                         
                                     </a> 
                                 </li>
@@ -354,14 +355,12 @@
       <div class="container">
     <div class="row">
         
-         <div class="col-sm-12 col-md-11 col-lg-11">                                
+        <div class="col-sm-12 col-md-11 col-lg-11">                                
             <div class="view-animate-container row" >  
                 <div class="view-animate" ng-view >
                 </div>
             </div>
-        </div>              
-
-
+        </div>             
 
     </div>
 </div>

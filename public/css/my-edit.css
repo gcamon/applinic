@@ -440,3 +440,15 @@
     background: transparent !important;
   }
 }
+
+@media screen and (max-height: 650px) {
+  .view-animate-container {
+    width: 100%;
+    background: transparent !important;
+    margin-left: 0px!important;
+  }
+
+  .col-sm-12 li {
+    padding-top:20px
+  }
+}

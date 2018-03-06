@@ -666,24 +666,11 @@ var basicPaymentRoute = function(model,sms,io,paystack){
   router.put("/user/laboratory/test-result/session-update",function(req,res){
     //note that sms will be sent to patient and doctor when a lab test result is available.
     if(req.user) {
-      console.log(req.body)
-      //checks otp before test will be updated.
-      if(req.body.laboratory.v_pin) {
-        model.otpSchema.findOne({otp:req.body.laboratory.v_pin},function(err,data){
-          if(err) throw err;
 
-          if(!data) {
-            res.send({message: "Error! Wrong OTP or OTP does not exist!"});
-          } else {                          
-            if(data.user_id === req.body.laboratory.patient_id && data.senderId === req.user.user_id) {         
-              updateSession();
-            }
-          }
+     updateSession();
 
-        });
-      } else {
-        res.send({message: "Payment verification failed"})
-      }
+
+
 
       function updateSession() {       
         model.user.findOne({"doctor_patient_session.session_id": req.body.laboratory.session_id},{doctor_patient_session:1}).exec(function(err,data){
@@ -708,7 +695,7 @@ var basicPaymentRoute = function(model,sms,io,paystack){
               res.send({status: "error"});
             } else {         
               updatePatient();
-              updateTheCenter();              
+              //updateTheCenter();              
             }
           });        
 
@@ -731,12 +718,12 @@ var basicPaymentRoute = function(model,sms,io,paystack){
           objectFound.payment_acknowledgement = true;
 
 
-          var random = Math.floor(Math.random() * 999999);
+          //var random = Math.floor(Math.random() * 999999);
 
           data.patient_notification.unshift({
             type:"laboratory",
             date: req.body.laboratory.date,
-            note_id: random,
+            note_id: req.body.radiology.test_id,
             ref_id: req.body.ref_id,
             session_id:req.body.laboratory.session_id,
             message: "Laboratory test result received."
@@ -745,7 +732,7 @@ var basicPaymentRoute = function(model,sms,io,paystack){
           if(data.presence === true){
             io.sockets.to(data.user_id).emit("notification",{status:true})
           } else {
-            var msgBody = "Your laboratory test result is ready! Visit http://applinic.com/login"
+            var msgBody = "New laboratory test result received! Visit http://applinic.com/login"
             var phoneNunber =  data.phone;
              sms.messages.create(
               {
@@ -758,12 +745,12 @@ var basicPaymentRoute = function(model,sms,io,paystack){
 
           data.save(function(err,info){
             if(err) res.send({status: "error"}); 
-            //res.send({status: "success"});          
+            res.send({status: "success"});          
           });
         });
       }
 
-      function updateTheCenter() {
+      /*function updateTheCenter() {
         model.user.findOne({user_id: req.user.user_id},{referral:1,ewallet:1,user_id:1,city_grade:1,type:1,email:1}).exec(function(err,center){
           if(err) throw err;            
           var elementPos = center.referral.map(function(x) {          	
@@ -779,7 +766,7 @@ var basicPaymentRoute = function(model,sms,io,paystack){
           res.send({message: "Transaction successful! Your account is credited.",balance:center.ewallet.available_amount,status: "success"});
           center.save(function(err,info){})
         });
-      }
+      }*/
     } else {
       res.end("Unauthorized access");
     }
@@ -790,22 +777,8 @@ var basicPaymentRoute = function(model,sms,io,paystack){
   //patient who requested test without doctors approval.
   router.put("/user/laboratory/test-result/patient-test-update",function(req,res){
     if(req.user) {
-     //checks otp before test will be updated.
-      if(req.body.laboratory.v_pin) {
-        model.otpSchema.findOne({otp:req.body.laboratory.v_pin},function(err,data){
-          if(err) throw err;
-
-          if(!data) {
-            res.send({message: "Error! Wrong OTP or OTP does not exist!"});
-          } else {                          
-            if(data.user_id === req.body.laboratory.patient_id && data.senderId === req.user.user_id) {         
-              updatePatient();
-            }
-          }
-        });
-      } else {
-        res.send({message: "Payment verification failed"});
-      }
+     
+     updatePatient();
 
       function updatePatient() {
         model.user.findOne({user_id: req.body.laboratory.patient_id},{medical_records:1,patient_notification:1,user_id:1,presence:1,phone:1})
@@ -813,8 +786,7 @@ var basicPaymentRoute = function(model,sms,io,paystack){
           if(err) throw err;
          
           var elementPos = data.medical_records.laboratory_test.map(function(x) {return x.ref_id; }).indexOf(req.body.ref_id);
-          var objectFound = data.medical_records.laboratory_test[elementPos];
-          console.log(objectFound)           
+          var objectFound = data.medical_records.laboratory_test[elementPos];         
           objectFound.report = req.body.laboratory.report || objectFound.report;
           objectFound.conclusion = req.body.laboratory.conclusion || objectFound.conclusion;
           objectFound.test_to_run = req.body.laboratory.test_ran || objectFound.test_to_run;
@@ -837,7 +809,7 @@ var basicPaymentRoute = function(model,sms,io,paystack){
           if(data.presence === true){
             io.sockets.to(data.user_id).emit("notification",{status:true});
           } else {
-            var msgBody = "Your laboratory test result is ready! Visit http://applinic.com/login"
+            var msgBody = "New laboratory test result received! Visit http://applinic.com/login"
             var phoneNunber =  data.phone;
             sms.messages.create(
               {
@@ -850,14 +822,13 @@ var basicPaymentRoute = function(model,sms,io,paystack){
 
           data.save(function(err,info){
             if(err) res.send({status: "error"});           
-            //res.send({status: "success"});
-            transact();
+           	res.send({status: "success"});
           });
         
         });
       }
 
-      function transact() {
+      /*function transact() {
         model.user.findOne({user_id:req.user.user_id},{ewallet:1,user_id:1,city_grade:1,type:1,email:1}).exec(function(err,center){
         console.log(req.body)       
           if(err) throw err;
@@ -867,10 +838,10 @@ var basicPaymentRoute = function(model,sms,io,paystack){
           res.send({message: "Transaction successful! Your account is credited.",balance:center.ewallet.available_amount,status: "success"});
           center.save(function(err,info){})             
         });
-      }
+      }*/
 
     } else {
-      res.send("Unauthorized access!");
+      res.end("Unauthorized access!");
     }
 
   });
