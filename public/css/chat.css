@@ -205,8 +205,9 @@ img {
   position: relative;
   height: auto;
   background-color: lightyellow;
-  max-width: 80%;
-  word-break: break-all;
+  max-width: 95%;
+  word-break: normal;
+  overflow-wrap: break-word;
 }
 .border{
   border: 8px solid #666;

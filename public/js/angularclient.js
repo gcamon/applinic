@@ -13938,8 +13938,8 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
         mySocket.emit("isSent",msg,function(status){
           
           if(status) {
-            var elem = document.getElementById(msg.id);
-            elem.innerHTML += " &nbsp;&nbsp;&nbsp;sent! ";
+            var elem = angular.element(document.getElementById(msg.id));
+            elem[0].innerHTML += " &nbsp;&nbsp;&nbsp;sent! ";
             
           }
         });
@@ -13959,18 +13959,20 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
     var p = angular.element(document.createElement('p'));
     var small = angular.element(document.createElement('small'));
     p[0].style.display = "block";
+    //p[0].style.wordBreak = "normal";
+    //p[0].style.overflowWrap = "break-word";
     small[0].style.display = "block";
     small[0].style.marginTop = "10px";
     small[0].style.color = "#ccc";
     p[0].innerHTML += (data.sent) ? data.sent : data.received; 
-    p[0].style.wordBreak = "normal";
+   
    
     small[0].id = data.id;
     small[0].innerHTML += (data.sent) ? $filter('date')(data.time, "shortTime") : $filter('date')(data.time, "shortTime");
     small[0].innerHTML += (data.sent) ? "&nbsp;&nbsp;" + $filter('date')(data.time, "mediumDate") : "&nbsp;&nbsp;" + $filter('date')(data.time, "mediumDate");     
     
     breaker[0].style.display = "block";
-    breaker[0].style.textAlign = (data.sent) ? "right" : "Left";
+    breaker[0].style.textAlign = (data.sent) ? "right" : "left";
     
     item[0].appendChild(p[0]);
     item[0].appendChild(small[0]);
