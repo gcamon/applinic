@@ -13980,7 +13980,7 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
     
    
     item[0].style.display = "inline-block";
-    item[0].style.maxWidth = "45%";
+    item[0].style.maxWidth = (deviceCheckService.getDeviceType()) ? "90%" : "70%";
     item[0].className = (data.sent) ? "talk-bubble tri-right right-top talktext msg_sent bg-info" : "talk-bubble tri-right left-top talktext";
     container[0].appendChild(breaker[0]);
     base[0].scrollTop = sentmessage.scrollHeight;
