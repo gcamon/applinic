@@ -749,6 +749,16 @@ app.service("chatService",["$resource",function($resource){
 }]);
 
 
+app.service("deviceCheckService",function(){
+  this.getDeviceType = function() {
+      var check = false;
+      (function(a){if(/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino|android|ipad|playbook|silk/i.test(a)||/1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(a.substr(0,4))) check = true;})(navigator.userAgent||navigator.vendor||window.opera);
+      return check;
+  }
+})
+
+
+
 app.service("multiData",["$http","$window","templateService",function($http,$window,templateService){
   this.sendPic = function(url,data){
     
@@ -801,6 +811,8 @@ app.service("multiData2",["$http","$window","templateService",function($http,$wi
     });
   }
 }]);
+
+
 
 /***** All factorries *************/
 
@@ -2777,8 +2789,8 @@ app.controller("inDoctorDashboardController",["$scope","$location","$http","loca
 
 //sends a request to get all notifications for the logged in doctor and also filters the result.
 app.controller("docNotificationController",["$scope","$location","$resource","$interval","localManager","templateService",
-  "requestManager","mySocket","$rootScope","$timeout","ModalService",
-  function($scope,$location,$resource,$interval,localManager,templateService,requestManager,mySocket,$rootScope,$timeout,ModalService){
+  "requestManager","mySocket","$rootScope","$timeout","ModalService","chatService",
+  function($scope,$location,$resource,$interval,localManager,templateService,requestManager,mySocket,$rootScope,$timeout,ModalService,chatService){
     var getPerson = localManager.getValue("resolveUser");
     localManager.removeItem("callOptionMany");// removes call many if any was set before call page was redirected to
     var getRequestInTime = $resource("/user/doctor/:userId/get-all-request",{userId:getPerson.user_id});
@@ -2902,18 +2914,7 @@ app.controller("docNotificationController",["$scope","$location","$resource","$i
     
   getRequest();
 
-/*
-Meet In-Person',docInfo)"><i class="fa fa-user"> </i> &nbsp;Meet IN-PERSON</li>            
-                <li ng-click="audioRequest('Audio Call',docInfo)"><i class="fa fa-phone"> </i> &nbsp;Audio Call Request</li>
-                <li ng-click="videoRequest('Video Call',docInfo)
-*/
 
-
-  //alerting for quest this is note save to the database. when doctor refreshes the page he loose data. 
-  //the implementation is slightly different from getting from the following
-  //1) real time updating for consultation request
-  //2) real time updating for prescription request.
-  //3) real time updatating for notification request.
  
   var video = [];
   var audio = [];
@@ -3062,20 +3063,36 @@ Meet In-Person',docInfo)"><i class="fa fa-user"> </i> &nbsp;Meet IN-PERSON</li>
     $scope.showIndicator = data;
   });
 
-  $scope.viewChatsHistory = function() {
+  /*$scope.viewChatsHistory = function() {
      var source = $resource("/user/get-chats");
      source.query(function(chatsList){
       $scope.chatsList = chatsList || [];
      })
      $rootScope.$broadcast("unattendedMsg",false)
-  }
+  }*/
 
-  $scope.viewChat = function(chatId) {
+  /*$scope.viewChat = function(chatId) {
     var split = chatId.split("/")
     var id = split[split.length - 1];
     var path = "/doctor-patient/treatment/" + id;
     $location.path(path);
+  }*/
+
+  $rootScope.loadChats = function() {
+    $scope.loading = true;
+    $rootScope.chatsList = chatService.chats();
+    $rootScope.chatsList.$promise.then(function(result){
+      $scope.loading = false;
+      $rootScope.chatsList = result;
+      $rootScope.$broadcast("unattendedMsg",false)
+    });
   }
+
+  $scope.viewChat = function(partnerId) {
+    templateService.holdId = partnerId;
+    $location.path("/general-chat");
+  }
+
 
 }]);
 
@@ -7497,8 +7514,8 @@ app.directive('nop', function(){
 
 //doctor's id is paased to this controller for ajax call;
 app.controller("myDoctorController",["$scope","$location","$http","$window","$rootScope","templateService","$filter",
-  "localManager","ModalService","mySocket","$timeout",
-  function($scope,$location,$http,$window,$rootScope,templateService,$filter,localManager,ModalService,mySocket,$timeout){
+  "localManager","ModalService","mySocket","$timeout","deviceCheckService",
+  function($scope,$location,$http,$window,$rootScope,templateService,$filter,localManager,ModalService,mySocket,$timeout,deviceCheckService){
   var doctor = {};
   var savePath = localManager.getValue("currentPageForPatients");
   var arr = savePath.split("/");  
@@ -7584,18 +7601,24 @@ app.controller("myDoctorController",["$scope","$location","$http","$window","$ro
 
   /*if($rootScope.chatStatus !== true)
     mySocket.emit('join',{userId: user.user_id}); */
+
+ 
   mySocket.emit('init chat',{userId: user.user_id,partnerId: doctor.id},function(data){
     //$rootScope.message1 = messages || [];    
     for(var i = 0; i < data.messages.length; i++) {        
       chats(data.messages[i]);
     }
   });
+  
+
+
 
   $scope.getkeys = function (event) {
-    if(event.keyCode === 13) {
-      $scope.sendChat1();
-      event.preventDefault();
-    }
+    if(!deviceCheckService.getDeviceType())
+      if(event.keyCode === 13) {
+        $scope.sendChat1();
+        event.preventDefault();
+      }
   }
 
   mySocket.on("isReceived",function(response){
@@ -7642,35 +7665,36 @@ app.controller("myDoctorController",["$scope","$location","$http","$window","$ro
  
 
   function chats(data) {
-    var base = document.getElementById('base'); 
-    var container = angular.element(document.getElementById('sentmessage'));      
+    var base = angular.element(document.getElementById('base1')); 
+    var container = angular.element(document.getElementById('sentmessage1'));      
     var item = angular.element(document.createElement('an-item'));
-    var breaker = document.createElement('div');
-    var p = document.createElement('p');
-    var small = document.createElement('small');
-    p.style.display = "block";
-    p.style.wordBreak = "break-all";      
-    small.style.display = "block";
-    small.style.marginTop = "10px";
-    p.innerHTML += (data.sent) ? data.sent : data.received; 
+    var breaker = angular.element(document.createElement('div'));
+    var p = angular.element(document.createElement('p'));
+    var small = angular.element(document.createElement('small'));
+    p[0].style.display = "block";
+    small[0].style.display = "block";
+    small[0].style.marginTop = "10px";
+    small[0].style.color = "#ccc";
+    p[0].innerHTML += (data.sent) ? data.sent : data.received; 
    
-    small.id = data.id;
-    small.innerHTML += (data.sent) ? $filter('date')(data.time, "shortTime") : $filter('date')(data.time, "shortTime");
-    small.innerHTML += (data.sent) ? "&nbsp;&nbsp;" + $filter('date')(data.time, "mediumDate") : "&nbsp;&nbsp;" + $filter('date')(data.time, "mediumDate");     
+   
+    small[0].id = data.id;
+    small[0].innerHTML += (data.sent) ? $filter('date')(data.time, "shortTime") : $filter('date')(data.time, "shortTime");
+    small[0].innerHTML += (data.sent) ? "&nbsp;&nbsp;" + $filter('date')(data.time, "mediumDate") : "&nbsp;&nbsp;" + $filter('date')(data.time, "mediumDate");     
     
-    breaker.style.display = "block";
-    breaker.style.textAlign = (data.sent) ? "right" : "Left";
+    breaker[0].style.display = "block";
+    breaker[0].style.textAlign = (data.sent) ? "right" : "left";
     
-    item[0].append(p);
-    item[0].append(small)
-    breaker.append(item[0]);
+    item[0].appendChild(p[0]);
+    item[0].appendChild(small[0]);
+    breaker[0].appendChild(item[0]);
     
-    //item[0]. += data.message;
+   
     item[0].style.display = "inline-block";
-    item[0].style.maxWidth = "45%";
+    item[0].style.maxWidth = (deviceCheckService.getDeviceType()) ? "90%" : "70%";
     item[0].className = (data.sent) ? "talk-bubble tri-right right-top talktext msg_sent bg-info" : "talk-bubble tri-right left-top talktext";
-    container.append(breaker);
-    base.scrollTop = sentmessage.scrollHeight;
+    container[0].appendChild(breaker[0]);
+    base[0].scrollTop = sentmessage1.scrollHeight;
   }
 
   
@@ -7726,8 +7750,8 @@ app.controller("myDoctorController",["$scope","$location","$http","$window","$ro
 
 //similar the mydoctorController
 app.controller("myPatientController",["$scope","$http","$location","$window","$rootScope","templateService","localManager","$filter",
-  "ModalService","Drugs","mySocket","$resource",
-  function($scope,$http,$location,$window,$rootScope,templateService,localManager,$filter,ModalService,Drugs,mySocket,$resource){
+  "ModalService","Drugs","mySocket","$resource","deviceCheckService",
+  function($scope,$http,$location,$window,$rootScope,templateService,localManager,$filter,ModalService,Drugs,mySocket,$resource,deviceCheckService){
   var patient = {}; //patient obj.
   
   /*
@@ -7782,27 +7806,27 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
 
   
   $scope.deleteChat = function(){
-      var check = confirm("All chats will be deleted. Do you wish to continue?");
-      if(check) {
-        var chatId = user.user_id + "/" + patient.id;
-        var sendObj = {
-          item: chatId,
-          dest: "messages"
-        }
-        $http({
-        method  : 'DELETE',
-        url     : "/user/delete-all-chat",
-        data    : sendObj,
-        headers : {'Content-Type': 'application/json'} 
-        })
-        .success(function(data) {
-          if(data === "deleted" && $rootScope.message1){
-            $rootScope.message1.splice(0);
-          }
-          console.log("Chats " + data)
-        });
+    var check = confirm("All chats will be deleted. Do you wish to continue?");
+    if(check) {
+      var chatId = user.user_id + "/" + patient.id;
+      var sendObj = {
+        item: chatId,
+        dest: "messages"
       }
+      $http({
+      method  : 'DELETE',
+      url     : "/user/delete-all-chat",
+      data    : sendObj,
+      headers : {'Content-Type': 'application/json'} 
+      })
+      .success(function(data) {
+        if(data === "deleted" && $rootScope.message1){
+          $rootScope.message1.splice(0);
+        }
+        console.log("Chats " + data)
+      });
     }
+  }
 
   /*** this initializes the web socket for chat the patient to start send and receiving messages from doctor ****/
 
@@ -7811,16 +7835,21 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
 
  /* if($rootScope.chatStatus !== true)
     mySocket.emit('join',{userId: user.user_id}); */
+  
+  function initChat() {
+    mySocket.emit('init chat',{userId: user.user_id,partnerId: patient.id},function(data){
+      //$rootScope.message1 = messages || [];
+      for(var i = 0; i < data.messages.length; i++) {        
+          chats(data.messages[i])
+      }
+    });
+  }
 
-  mySocket.emit('init chat',{userId: user.user_id,partnerId: patient.id},function(data){
-    //$rootScope.message1 = messages || [];
-    for(var i = 0; i < data.messages.length; i++) {        
-        chats(data.messages[i])
-    }
-  });
+  initChat()
 
   $scope.getkeys = function (event) {
     //$scope.keyval = event.keyCode;
+  if(!deviceCheckService.getDeviceType())
     if(event.keyCode === 13) {
       $scope.sendChat2();
       event.preventDefault();
@@ -7873,34 +7902,36 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
   }
 
   function chats(data) {
-    var base = document.getElementById('base'); 
-    var container = angular.element(document.getElementById('sentmessage'));      
+    var base = angular.element(document.getElementById('base1')); 
+    var container = angular.element(document.getElementById('sentmessage1'));      
     var item = angular.element(document.createElement('an-item'));
-    var breaker = document.createElement('div');
-    var p = document.createElement('p');
-    var small = document.createElement('small');
-    p.style.display = "block";      
-    small.style.display = "block";
-    small.style.marginTop = "10px";
-    p.innerHTML += (data.sent) ? data.sent : data.received; 
+    var breaker = angular.element(document.createElement('div'));
+    var p = angular.element(document.createElement('p'));
+    var small = angular.element(document.createElement('small'));
+    p[0].style.display = "block";
+    small[0].style.display = "block";
+    small[0].style.marginTop = "10px";
+    small[0].style.color = "#ccc";
+    p[0].innerHTML += (data.sent) ? data.sent : data.received; 
    
-    small.id = data.id 
-    small.innerHTML += (data.sent) ? $filter('date')(data.time, "shortTime") : $filter('date')(data.time, "shortTime");
-    small.innerHTML += (data.sent) ? "&nbsp;&nbsp;" + $filter('date')(data.time, "mediumDate") : "&nbsp;&nbsp;" + $filter('date')(data.time, "mediumDate");     
+   
+    small[0].id = data.id;
+    small[0].innerHTML += (data.sent) ? $filter('date')(data.time, "shortTime") : $filter('date')(data.time, "shortTime");
+    small[0].innerHTML += (data.sent) ? "&nbsp;&nbsp;" + $filter('date')(data.time, "mediumDate") : "&nbsp;&nbsp;" + $filter('date')(data.time, "mediumDate");     
     
-    breaker.style.display = "block";
-    breaker.style.textAlign = (data.sent) ? "right" : "Left";
+    breaker[0].style.display = "block";
+    breaker[0].style.textAlign = (data.sent) ? "right" : "left";
     
-    item[0].append(p);
-    item[0].append(small)
-    breaker.append(item[0]);
+    item[0].appendChild(p[0]);
+    item[0].appendChild(small[0]);
+    breaker[0].appendChild(item[0]);
     
-    //item[0]. += data.message;
+   
     item[0].style.display = "inline-block";
-    item[0].style.maxWidth = "45%";
+    item[0].style.maxWidth = (deviceCheckService.getDeviceType()) ? "90%" : "70%";
     item[0].className = (data.sent) ? "talk-bubble tri-right right-top talktext msg_sent bg-info" : "talk-bubble tri-right left-top talktext";
-    container.append(breaker);
-    base.scrollTop = sentmessage.scrollHeight;
+    container[0].appendChild(breaker[0]);
+    base[0].scrollTop = sentmessage1.scrollHeight;
   }
 
   mySocket.on("new_msg", function(data) {
@@ -7913,7 +7944,7 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
       msg.userId = user.user_id;
       msg.partnerId = patient.id;
       //mySocket.emit("save message",msg);
-      templateService.playAudio(3);
+      //templateService.playAudio(3);
       chats(msg)
     } else {
       //alert("You have new message");
@@ -8432,6 +8463,7 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
 
     $scope.chatLive = function(){
       if(isClicked){
+        initChat()
         $scope.isChat = true;
         $scope.isToSeeRecord = false;
       $scope.isToPrescribe = false;
@@ -13774,15 +13806,6 @@ app.controller("patientWaitingRoomController",["$scope","$resource","$location",
 
 }]);
 
-app.service("deviceCheckService",function(){
-  this.getDeviceType = function() {
-      var check = false;
-      (function(a){if(/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino|android|ipad|playbook|silk/i.test(a)||/1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(a.substr(0,4))) check = true;})(navigator.userAgent||navigator.vendor||window.opera);
-      return check;
-  }
-})
-
-
 
 //for chats in modal and centers dashboard use for 
 app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatService", "templateService","$filter","ModalService","$location","deviceCheckService",
@@ -13793,12 +13816,12 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
     $scope.isSent = false;
     var elemPos;
 
-   
+    
 
     if($rootScope.chatsList) {
       var elemPos = $rootScope.chatsList.map(function(x){return x.partnerId}).indexOf(templateService.holdId)
       if(elemPos !== -1){
-        $scope.partner = $rootScope.chatsList[elemPos];        
+        $scope.partner = $rootScope.chatsList[elemPos];   
       } else {
         $scope.partner = {}
       }
@@ -13813,6 +13836,7 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
     }
 
     mySocket.removeAllListeners("new_msg"); // incase if this listener is registered twice
+
     
     $scope.viewChat = function(chat) {
       chat.isUnRead = false;
@@ -13890,7 +13914,8 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
     function initChat() {
       $scope.loading = true;
       mySocket.emit('init chat',{userId: user.user_id,partnerId: $scope.partner.partnerId},function(data){ 
-         for(var i = 0; i < data.messages.length; i++) {        
+         console.log(data);
+         for(var i = 0; i < data.messages.length; i++) { 
             chats(data.messages[i]);
          }
          $scope.loading = false;        
@@ -14044,15 +14069,25 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
 
 
   $scope.chatPrivate = function(chat) {
-    if(chat.partnerType === "Patient" || chat.partnerType === "Doctor") {
+    if(chat.partnerType === "Doctor") {
+
       var split = chat.chat_id.split("/");
       var id = split[split.length - 1];
       var path = "/patient-doctor/treatment/" + id;
       $location.path(path);
+
+    } else if(chat.partnerType === "Patient"){
+
+      var split = chat.chat_id.split("/");
+      var id = split[split.length - 1];
+      var path = "/doctor-patient/treatment/" + id;
+      $location.path(path);
+
     } else {
-      var getUser = (user.user_id === 'Patient') ? "patient" : 'a doctor';
-      alert("Oops! You can only chat private with " + getUser)
+      var getUser = (user.typeOfUser === 'Patient') ? "manage a patient" : 'chat private with a doctor';
+      alert("Oops! You can only " + getUser)
     }
+    
   }
 
   function reqModal(docObj) {

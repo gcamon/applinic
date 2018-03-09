@@ -31,7 +31,9 @@
 	                    </div>
 	                    <div class="col-md-5 col-sm-12 col-xs-12 " style="text-align: right;">
 	                    	<div ng-if="checkLogIn.typeOfUser === 'Patient' || checkLogIn.typeOfUser === 'Doctor'">
-	                    		<small><button class="btn btn-success ellipsis" ng-if="partner.partnerType !== 'Doctor' || partner.partnerType === 'Patient'"  ng-click="chatPrivate(partner)">Chat Private</button></small>
+	                    		<small><button class="btn btn-success ellipsis" ng-if="partner.partnerType === 'Doctor'"  ng-click="chatPrivate(partner)">Chat Private</button>
+	                    		<button class="btn btn-success ellipsis" ng-if="partner.partnerType === 'Patient'"  ng-click="chatPrivate(partner)">Manage Patient</button>
+	                    		</small>
 	                    	</div>
 	                    </div>
 	                </div>

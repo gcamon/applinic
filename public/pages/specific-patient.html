@@ -64,7 +64,7 @@
         	<div class="panel panel-default">
                 <div class="top-bar" style="border-bottom:1px solid rgba(0,0,0,0.2);box-shadow:0px 5px 5px #ccc">
                     <div class="col-md-7 col-sm-12 col-xs-12">
-                      <button class="btn btn-simple text-danger" style="font-size: 16px" ng-click="chatLive()">Chat</button> &nbsp;&nbsp;
+                      <button class="btn btn-simple text-danger" style="font-size: 16px" ng-click="chatLive()">Toggle Chat</button> &nbsp;&nbsp;
                         <span class="" style="display:inline-block;" ng-cloak style="font-size: 16px">{{patientInfo.title}} {{patientInfo.firstname}} is <em ng-if="typing">{{typing}}</em> 
                             <em ng-if="patientAvailability && !typing" ng-cloak>Online</em>
                             <em ng-if="!patientAvailability" ng-cloak style="color:red">Offline</em>
@@ -83,9 +83,9 @@
 		<!-- removable div-->
             <div ng-if="isChat || isChat === undefined">
                
-                <div class="panel-body msg_container_base bg-default" id="base" style="height: 360px">
+                <div class="panel-body msg_container_base bg-default" id="base1" style="height: 360px">
 
-                    <div id="sentmessage">
+                    <div id="sentmessage1">
                         
                     </div>
                     
