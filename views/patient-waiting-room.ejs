@@ -94,19 +94,24 @@
                                         <li><a href="#/9" ng-class="{'btn-primary':batch==='9'}" ng-click="getBatch('9')">9</a></li>
                                         <li><a href="#/10" ng-class="{'btn-primary':batch==='10'}" ng-click="getBatch('10')">10</a></li>
                                     </ul>
-                                    <section class="patient-complain card mt-3">
-                                        <div ng-repeat="i in complaints" style="color: rgba(0,0,0,0.8);padding: 15px;font-size: 14px">
-                                            <i class="fa fa-user"> &nbsp; Patient</i>
-                                            <span style="color:green" ng-cloak>{{i.age}}</span>
-                                            <span style="color:green" ng-cloak>{{i.gender}}</span>
-                                            <span style="color:green" ng-cloak>{{i.complaint_id}}</span>
-                                            <span style="color:green" ng-cloak>{{i.sent_date| date: "mediumDate"}}</span>
-                                            <ul class="patient-symptoms" >
-                                                <li><strong>Symptoms | &nbsp;</strong></li>
-                                                <li ng-repeat="symptom in i.symptoms" class="description" ng-cloak>{{symptom}}</li>
-                                            </ul>
-                                            <p ng-cloak>"{{i.description}}" &nbsp; <span style="color:red;cursor:pointer;text-decoration:underline" ng-click="veiwDatail(i.complaint_id)">Respond!</span></p>
+                                    <section class="patient-complain card mt-3">                                        
+                                        <div ng-repeat="i in complaints" style="color: rgba(0,0,0,0.8);padding: 15px;font-size: 14px;display: block;padding-bottom: 0">
+                                            <div>
+                                              <i class="fa fa-user" style="color: #000"> Patient</i>  
+                                              <span style="color:green" ng-cloak>{{i.age}}</span>
+                                                <span style="color:green" ng-cloak>{{i.gender}}</span>
+                                                <span style="color:green" ng-cloak>{{i.complaint_id}}</span>
+                                                <span style="color:green" ng-cloak>{{i.sent_date| date: "mediumDate"}}</span>
+                                            </div>                                         
+                                            
+                                            <div class="">
+                                                <span style="color: #000;font-size: 12px;">Symptoms |</span> <span ng-repeat="symptom in i.symptoms" class="" ng-cloak>{{symptom}} </span>
+                                                
+                                            </div>
+                                            <p style="font-size: 14px;text-indent: 15px;position: relative;" ng-cloak>"{{i.description}}" &nbsp; <span style="color:red;cursor:pointer;text-decoration:underline;display: inline-block;position: absolute;right: 5px;bottom: 2px;font-size:normal; ng-click="veiwDatail(i.complaint_id)">Respond!</span></p>
+                                             <hr class="bg-success">
                                         </div>
+
                                     </section>
                                 </div>
                                 <div  class="complain-in-view" ng-class="{'no-view':isViewPatient !== true}" id="complain-in-view">
@@ -121,7 +126,7 @@
 
                                         </aside>
                                         <aside>
-                                           <p style="color:red;font-size:18px;padding: 10px 0;border:1px dashed rgba(0,0,0,0.8);text-align:center;border-radius: 12px;margin: 15px 0" ng-cloak>Patient resides in {{patient.preferred_city}}</p>
+                                           <p style="color:red;font-size:18px;padding: 10px 0;border:1px dashed rgba(0,0,0,0.8);text-align:center;border-radius: 12px;margin: 15px 0" ng-cloak>Prefers resident in {{patient.preferred_city}}</p>
                                         </aside>
                                         <h6 style="font-weight:bold">History</h6><hr/>
                                         <ul class="patient-symptoms">                                            

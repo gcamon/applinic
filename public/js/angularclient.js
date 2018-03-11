@@ -64,7 +64,7 @@ app.config(['$paystackProvider','$routeProvider',function($paystackProvider,$rou
   })
 
   .when("/welcome",{
-    templateUrl: '/assets/pages/doc-welcome.html',
+    templateUrl: '/assets/pages/welcome.html',
     controller: 'docNotificationController'
   })
 
@@ -1827,22 +1827,21 @@ app.directive("fileModel",["$parse","$rootScope",function($parse,$rootScope){
 
       element.bind('change', function () {
           var values = [];
-          console.log("checking element")
-          console.log(element[0].files)          
+            
           angular.forEach(element[0].files, function (item) {              
             values.push(item);
           });
           scope.$apply(function () {
             if (isMultiple) {
-              console.log("values inside");
-              console.log(values);
+             
               modelSetter(scope.$parent, values);
               console.log(scope)
-              if(scope.$parent.$parent.$parent.radio.scanImage)
-                $rootScope.uploadScanImage()
+              if(scope.$parent.$parent.$parent)
+                if(scope.$parent.$parent.$parent.radio.scanImage)
+                  $rootScope.uploadScanImage()
             } else {
               modelSetter(scope.$parent, values[0]); //remember to check for help controller ie need a doctor
-              console.log(scope);
+              
               $rootScope.updateProfilePic()
             }
             
@@ -4737,9 +4736,7 @@ app.controller("inPatientDashboardController",["$scope","$location","templateSer
   function($scope,$location,templateService,localManager){
 
   if(localManager.getValue("resolveUser")) {
-    $location.path(localManager.getValue("currentPageForPatients") || "/patient-dashboard");
-  } else {
-
+    $location.path(localManager.getValue("currentPageForPatients") || "/welcome");
   } 
 
 }]);
@@ -6759,8 +6756,6 @@ app.controller("changePictureController",["$scope","$rootScope","$location","$ht
         alert("The upload has been canceled by the user or the browser dropped the connection.")
     }
 
-
-
 }]);
 
 //controller runs when patient clicks on the edit profile like on the panel of patient dashboard
@@ -7859,9 +7854,6 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
 
  
   mySocket.on("isReceived",function(response){
-    //var getIndex = $rootScope.message1.length - 1;
-   // $rootScope.message1[getIndex].isReceived = status;
-   // mySocket.emit("save message",msg);   
     var elem = document.getElementById(response.id);
     elem.innerHTML = "";
     elem.innerHTML += " &nbsp;&nbsp;&nbsp;SEEN! ";
@@ -9251,7 +9243,8 @@ app.controller("pharmacyCenterDashboardController",["$scope","$location","templa
     if(currPage) {
      $location.path(localManager.getValue("currPageForPharmacy"));
     } else {
-      $location.path("/referred-patients");
+      //$location.path("/referred-patients");
+      $location.path("/welcome");
     }
     $rootScope.attendanceList = localManager.getValue("holdPrescriptionForAttendance") || []; //display patients in attendace list when added
 
@@ -9626,7 +9619,8 @@ app.controller("labCenterDashboardController",["$scope","$location","$http","tem
     if(currPage) {
       $location.path(currPage);
     } else {
-      $location.path("/referral/laboratory-test");
+      //$location.path("/referral/laboratory-test");
+      $location.path("/welcome");
     }
 
     $rootScope.attendanceList = localManager.getValue("holdTestForAttendance") || [];
@@ -10657,7 +10651,8 @@ app.controller("radioCenterDashboardController",["$scope","$location","$http","t
     if(currPage) {
      $location.path(currPage);
     } else {
-     $location.path("/referral/radiology-test");
+     //$location.path("/referral/radiology-test");
+     $location.path("/welcome");
     }
 
    $rootScope.attendanceList = localManager.getValue("holdTestForAttendance") || [];
@@ -13007,7 +13002,7 @@ function($scope,$location,$window,$http,templateService,localManager,templateUrl
     }
 
     function sizeOk(){
-      $http.post("/user/help",fd,{
+      /*$http.post("/user/help",fd,{
         transformRequest: angular.identity,
         headers: {"Content-Type":undefined}
       })
@@ -13015,8 +13010,130 @@ function($scope,$location,$window,$http,templateService,localManager,templateUrl
         alert("Complaint sent successfully! Doctors will respond soon")
       });    
       //multiData.sendPic("/user/help",$scope.user);
+      */
+
+      var xhr = new XMLHttpRequest()
+      xhr.upload.addEventListener("progress", uploadProgress, false);
+      xhr.addEventListener("load", uploadComplete, false);
+      xhr.addEventListener("error", uploadFailed, false);
+      xhr.addEventListener("abort", uploadCanceled, false);
+     
+      xhr.open("POST", "/user/help");
+      xhr.send(fd);
+      $scope.progressVisible = false;
     }
   }
+
+
+  function uploadProgress(evt) {
+      $scope.progressVisible = true;
+      $scope.$apply(function(){
+          if (evt.lengthComputable) {
+             console.log(evt.loaded + " : " + evt.total)
+              $scope.progress = Math.round(evt.loaded * 100 / evt.total)
+              if($scope.progress === 100) {
+                $scope.statusMsg = "Your complain has been queued in PWR successfully! Doctors will respond soon.";
+              }
+              
+          } else {
+              $scope.progress = 'unable to compute'
+          }
+      })
+  }
+
+
+  function uploadComplete(evt) {       
+     $scope.$apply(function(){
+      $scope.userData = JSON.parse(evt.target.responseText);
+      console.log($scope.userData)
+    })
+       
+  }
+
+  function uploadFailed(evt) {
+    alert("There was an error attempting to upload the file.")
+  }
+
+  function uploadCanceled(evt) {
+    $scope.$apply(function(){
+        $scope.progressVisible = false
+    })
+    alert("The upload has been canceled by the user or the browser dropped the connection.")
+  }
+
+
+  /*
+ var fileType = $scope.files.type.split("/");
+    var fileAsImage = fileType[0];
+    if(fileAsImage === "image") {
+     
+      var uploadUrl = "/user/update/profile-pic";     
+      var fd = new FormData();
+      var xhr = new XMLHttpRequest;
+
+      //console.log($scope.files)
+      for(var key in $scope.files){
+
+          if($scope.files[key].name)
+            fd.append(key,$scope.files);
+          console.log($scope.files)
+
+      };
+
+      var xhr = new XMLHttpRequest()
+      xhr.upload.addEventListener("progress", uploadProgress, false);
+      xhr.addEventListener("load", uploadComplete, false);
+      xhr.addEventListener("error", uploadFailed, false);
+      xhr.addEventListener("abort", uploadCanceled, false);
+     
+      
+
+      
+      xhr.open("PUT", uploadUrl)
+      xhr.send(fd);
+      $scope.progressVisible = false
+    } else {
+      alert("Failed! Reason: File type not image");
+    }  
+  }
+
+  
+   
+    function uploadProgress(evt) {
+        $scope.progressVisible = true;
+        $scope.$apply(function(){
+            if (evt.lengthComputable) {
+               console.log(evt.loaded + " : " + evt.total)
+                $scope.progress = Math.round(evt.loaded * 100 / evt.total)
+                console.log($scope.progress)
+                
+            } else {
+                $scope.progress = 'unable to compute'
+            }
+        })
+    }
+
+    function uploadComplete(evt) {
+       
+         $scope.$apply(function(){
+            $scope.userData = JSON.parse(evt.target.responseText);
+            console.log($scope.userData)
+        })
+       
+    }
+
+    function uploadFailed(evt) {
+        alert("There was an error attempting to upload the file.")
+    }
+
+    function uploadCanceled(evt) {
+        $scope.$apply(function(){
+            $scope.progressVisible = false
+        })
+        alert("The upload has been canceled by the user or the browser dropped the connection.")
+    }
+
+  */
 
   $scope.sendHelp = function(){
     if(list[0].name !== "")

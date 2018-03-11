@@ -32,31 +32,55 @@
 
 <div class="container">
     <div class="card p-2">
- <p class="font-1_4">Please fill the form bellow we will place you with the right specilist.</p>
-
+    <h4 style="margin-top: 2px">Need a Doctor?</h4>
+ <p class="font-1_0">Fill in details below your details will be available on Patient Waiting Room (PWR) where the right specialist will respond.</p>
+ <p class="p-2 text-center" ng-if="statusMsg" style="color: #fff;background-color: #85CE36;text-align: center;font-size: 18px">{{statusMsg}}</p>
 <div class="row">
-<div class="col-md-12 col-sm-12">
-	<input name="states" id="states" type="text" placeholder="Enter city name" ng-model="city" uib-typeahead="city for city in cities | filter:$viewValue | limitTo:15" class="form-control">		
-		{{getCity(city)}} 
+<div class="col-md-6 col-sm-12">
+	
+	<div class="pb-2 pt-1">
+		<label>1) You want resident doctor in? (optional) </label>
+		<input name="states" id="states" type="text" placeholder="Enter city name" ng-model="city" uib-typeahead="city for city in cities | filter:$viewValue | limitTo:15" class="form-control">		
+			{{getCity(city)}} 
 	</div>
-
-<div  class="col-md-12 col-sm-12" ng-repeat="i in symptomsList">				
-	<input name="states" id="states" type="text" placeholder="Enter symptom" ng-model="name" uib-typeahead="name for name in symptoms | filter:$viewValue | limitTo:15" class="form-control">
-	<div>{{getSymptom(name)}} 
-	<i class="fa fa-times text-muted" style="cursor: pointer;" ng-click="remove(i.sn)" ng-if="i.sn !== 'a'"></i></div>
-</div>
-<div class="clearfix"></div>
-<div class="col-md-12">
-	<button class="fa fa-plus btn btn-simple pull-right" ng-click="add()">&nbsp;Add symptom</button> 
+	<div class="pt-1">
+		<label>2) Briefly describe how you feel right now *<br><small>(e.g I am having body pain,can't eat,i feel so weak, i vomit sometimes but not regular.)
+		</small></label>
+		<textarea placeholder="Write..." ng-model="user.description" class="form-control pl-1" style="height: 100px"></textarea>
+	</div>
 </div>
 
-<div class="clearfix"></div>
+<div  class="col-md-6 col-sm-12" >	
+	<div class="pb-2 pt-1">
+		<label>3) What symptoms do you feel right now?</label>
+		<div ng-repeat="i in symptomsList" style="position: relative;padding-bottom: 5px">			
+			<input name="states" id="states" type="text" placeholder="Enter symptom" ng-model="name" uib-typeahead="name for name in symptoms | filter:$viewValue | limitTo:15" class="form-control" style="width:90%">
+			<i class="fa fa-times text-muted" style="cursor: pointer;position: absolute;bottom: 10px;right: 8px" ng-click="remove(i.sn)" ng-if="i.sn !== 'a'"></i>
+			{{getSymptom(name)}}
+		</div>
+		<div> 
+			<button class="fa fa-plus btn btn-simple round  text-danger" ng-click="add()"></button> 
+		</div>
+		
+	</div>
+	<div class="pt-1">
+		<label>4) You can attach video or image file(s) associated with this illness (if any)</label>
+		
+		 <input type="file" id="file" class=""  file-model = "files" multiple="multiple">
+		
+		<div class="pt-2"><i class="fa fa-warning">&nbsp;</i> <span class="text-muted" style="font-size:.85em;">Not more than 5 files is allowed.File size must be less than 8mb.Type jpeg,jpg,mp3,mp4</span></div>
+
+	</div>
+</div>
+
+
+<!--<div class="clearfix"></div>
 <div class="col-md-6 col-sm-12">
 	<label>Briefly describe how you feel right now *<br><small>(e.g I am having body pain,can't eat,i feel so weak, i vomit sometimes but not regular.)</small></label>
 	<textarea placeholder="Write..." ng-model="user.description" class="form-control pl-1" style="height: 100px"></textarea>
-</div>
+</div>-->
 
-<div  class="col-md-6 col-sm-12">
+<!--<div  class="col-md-6 col-sm-12">
 	<label>You can attach video or image file(s) associated with this illness(if any)</label>
 <label class="custom-file">
   <input type="file" id="file" class="custom-file-input"  file-model = "files" multiple="multiple">
@@ -72,13 +96,14 @@
         <span class="progress-value">60%</span>
     </div>
 </div>
-</div>
+</div>-->
 
 </div>
 
 <div class="clearfix"></div>
-<div style="margin-top: 20px">		
-	<input type="button" value="submit" class="btn btn-success pull-right" style="background-color: #7dbb00" ng-click="getDoctor()">
+<div style="margin-top: 20px">
+	<i class="fa fa-check pull-right font-1_4" style="color: #7dbb00" ng-if="statusMsg"> sent!</i>	
+	<button class="btn btn-success pull-right" style="background-color: #7dbb00" ng-click="getDoctor()" ng-if="!statusMsg">{{(progress) ? progress + '% sending...'  : 'Submit'}}</button>
 </div>
 
 </div></div>

@@ -432,6 +432,31 @@
     visibility: visible;
   }
 
+  .info-palete {
+    height: 320px;
+    position: relative;
+  }
+
+  .info-palete.text-center {
+    font-weight: bol;
+  }
+
+  .info-palete .learn {
+    position: absolute;
+    left: 20px;
+    bottom: 15px;
+  }
+
+  .info-palete img{
+    max-width: 82px;
+    max-height: 82px;
+    display: inline-block;
+    margin: 0 30px!important;
+  }
+
+  .modal-body {
+    text-transform: none;
+  }
   
 
 @media screen and (min-height: 960px) {

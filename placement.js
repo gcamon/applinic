@@ -8,7 +8,9 @@ function placementRoute(model,sms){
 
 	//user sends help and the new help object is instantiated and saved to the data base.
 	router.post("/user/help",function(req,res){
-		if(req.user){		
+		if(req.user){
+		console.log(req.body)	
+		console.log(req.files)	
 			model.user.findOne({user_id: req.body.userId},{age:1,gender:1,city:1},function(err,user){
 				var random = Math.floor(Math.random() * 9999999);
 		  	var complain_id = "#" + random;
