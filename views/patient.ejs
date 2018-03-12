@@ -125,7 +125,7 @@
                                                     <div class="img icon-lab"></div>
                                                 </div>
                                                 <div class="body-col">
-                                                    <p> <span class="accent" ng-cloak>{{note.message}}</span>&nbsp;&nbsp;<small> {{note.date | date: "mediumDate"}} &nbsp;&nbsp;{{note.date | date : "mediumTime"}}</small></p>
+                                                    <p> <span class="accent" ng-cloak>{{note.message}}</span>&nbsp;&nbsp;<small am-time-ago="note.date"></small></p>
                                                 </div>
                                             </div>
 
@@ -134,7 +134,7 @@
                                                     <div class="img icon-radio"></div>
                                                 </div>
                                                 <div class="body-col">
-                                                    <p> <span class="accent" ng-cloak>{{note.message}}</span>&nbsp;&nbsp;<small> {{note.date | date: "mediumDate"}} &nbsp;&nbsp;{{note.date | date : "mediumTime"}}</small></p>
+                                                    <p> <span class="accent" ng-cloak>{{note.message}}</span>&nbsp;&nbsp;<small am-time-ago="note.date"></small></p>
                                                 </div>
                                             </div>
 
@@ -143,7 +143,7 @@
                                                     <div class="img icon-pill"></div>
                                                 </div>
                                                 <div class="body-col">
-                                                    <p> <span class="accent" ng-cloak>{{note.message}}</span>&nbsp;&nbsp;<small> {{note.date | date: "mediumDate"}} &nbsp;&nbsp;{{note.date | date : "mediumTime"}}</small> </p>
+                                                    <p> <span class="accent" ng-cloak>{{note.message}}</span>&nbsp;&nbsp;<small am-time-ago="note.date"></small> </p>
                                                 </div>
                                             </div>
 
@@ -174,7 +174,7 @@
                                                     <div class="img" style="background-image: url({{msg.profile_pic_url}})"></div>
                                                 </div>
                                                 <div class="body-col">
-                                                    <p> <span class="accent" ng-cloak>{{msg.title}} {{msg.firstname}} {{msg.lastname}}</span> <span style="display:block" ng-cloak>{{msg.message}}</span> <span style="display:block" ng-cloak>{{msg.date | date: "mediumDate"}} &nbsp;&nbsp;{{msg.date | date: "mediumTime"}}</span>. </p>
+                                                    <p> <span class="accent" ng-cloak>{{msg.title}} {{msg.firstname}} {{msg.lastname}}</span> <span style="display:block" ng-cloak>{{msg.message}}</span> <span style="display:block" am-time-ago="msg.date" ng-cloak></span>. </p>
                                                 </div>
                                             </div>                                            
                                         </li>                                        
@@ -184,7 +184,7 @@
                                                     <div class="img fa fa-user-md"></div>
                                                 </div>
                                                 <div class="body-col">
-                                                    <p> <span class="accent" ng-cloak>Ref {{msg.complaint_id}}</span> <span style="display:block">{{msg.message}}</span> <small <span style="display:block" ng-cloak>{{msg.date | date: "mediumDate"}}</small> </p>
+                                                    <p> <span class="accent" ng-cloak>Ref {{msg.complaint_id}}</span> <span style="display:block">{{msg.message}}</span> <small am-time-ago="msg.date"style="display:block" ng-cloak></small> </p>
                                                 </div>
                                             </div>
                                         </li>
@@ -250,7 +250,7 @@
                                                 </div>
                                                 <div class="body-col">                                                
                                                     <p style=""> <span class="accent" ng-cloak>{{chat.name}}</span>
-                                                        <span style="display:block" class="ellipsis">{{chat.messages[chat.messages.length - 1].received || chat.messages[chat.messages.length - 1].sent}} <small style="display:block" ng-cloak>{{chat.messages[chat.messages.length - 1].time | date: "shortTime" || chat.messages[chat.messages.length - 1].received | date: "shortTime"}} &nbsp;&nbsp;{{chat.messages[chat.messages.length - 1].time | date: "mediumDate" || chat.messages[chat.messages.length - 1].received | date: "mediumDate"}}</small>.</span> 
+                                                        <span style="display:block" class="ellipsis">{{chat.messages[chat.messages.length - 1].received || chat.messages[chat.messages.length - 1].sent}} <small am-time-ago="chat.messages[chat.messages.length - 1].time || chat.messages[chat.messages.length - 1].received" style="display:block" ng-cloak></small></span> 
                                                     </p>
                                                 </div>
                                             </a>
