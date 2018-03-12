@@ -5429,7 +5429,7 @@ router.post("/user/response/patients-histories",function(req,res){
               if(patient.presence === true){
                 io.sockets.to(patient.user_id).emit("message notification",{status:true})
               } else {
-                var msgBody = "A Doctor responded to your complain! Visit http://applinic.com/login"
+                var msgBody = "A doctor responded to your complain! Visit http://applinic.com/login"
                 var phoneNunber =  patient.phone;
                 sms.messages.create(
                   {
@@ -5441,14 +5441,13 @@ router.post("/user/response/patients-histories",function(req,res){
               }
             } else {
               patient.save(function(err,info){})
-              var info = "Oops!! The request was not submited.Reason: This history is from your patient.\nPlease contact " + 
+              var info = "Oops!! The request was not submited.Reason: This history is from your patient. Please contact " + 
               patient.firstname + " " + patient.lastname;
             }
             patient.save(function(err,info){});
-            var message = info || "Patient notified";
+            var message = info || "Thanks for responding " + req.user.title + " " + req.user.firstname + ". Your proposal has been sent to patient.";
             res.send({message: message}); 
-            found.save(function(err,info){
-              console.log("saved successfully");          
+            found.save(function(err,info){       
             });
           });
           

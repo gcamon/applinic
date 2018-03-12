@@ -4,24 +4,24 @@ var router = config.router;
 var path = require("path");
 var Wallet = require("./wallet");
 
-function placementRoute(model,sms){
+function placementRoute(model,sms,io){
 
 	//user sends help and the new help object is instantiated and saved to the data base.
 	router.post("/user/help",function(req,res){
-		if(req.user){
-		console.log(req.body)	
-		console.log(req.files)	
-			model.user.findOne({user_id: req.body.userId},{age:1,gender:1,city:1},function(err,user){
+		if(req.user){		
+			model.user.findOne({user_id: req.body.userId},{age:1,gender:1,city:1,country},function(err,user){
 				var random = Math.floor(Math.random() * 9999999);
 		  	var complain_id = "#" + random;
 		    var preferredCity = req.body.city || user.city;
-	      var newHelp = new model.help({       
+	      	var newHelp = new model.help({       
 	        helpType: req.body.helpType,	        
 		      description: req.body.description,
 		      sent_date: req.body.date,
 		      patient_id: req.body.userId,
 		      complaint_id: complain_id,
 		      age: user.age,
+		      patient_city: user.city,
+		      patient_country: user.country,
 	        gender: user.gender,
 	        preferred_city: preferredCity,
 		      isview: false
@@ -54,7 +54,10 @@ function placementRoute(model,sms){
 
 	      newHelp.symptoms = req.body.symptoms;
 	      	
-      	console.log(newHelp);
+  	      console.log(newHelp);
+
+  		  io.sockets.to('pwr').emit("receive help",newHelp);
+
 
 		    newHelp.save(function(err,info){
 		      if(err) throw err;

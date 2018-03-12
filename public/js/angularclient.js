@@ -7674,8 +7674,8 @@ app.controller("myDoctorController",["$scope","$location","$http","$window","$ro
    
    
     small[0].id = data.id;
-    small[0].innerHTML += (data.sent) ? $filter('date')(data.time, "shortTime") : $filter('date')(data.time, "shortTime");
-    small[0].innerHTML += (data.sent) ? "&nbsp;&nbsp;" + $filter('date')(data.time, "mediumDate") : "&nbsp;&nbsp;" + $filter('date')(data.time, "mediumDate");     
+    small[0].innerHTML += $filter('amCalendar')(data.time);
+    //small[0].innerHTML += (data.sent) ? "&nbsp;&nbsp;" + $filter('date')(data.time, "mediumDate") : "&nbsp;&nbsp;" + $filter('date')(data.time, "mediumDate");     
     
     breaker[0].style.display = "block";
     breaker[0].style.textAlign = (data.sent) ? "right" : "left";
@@ -7908,8 +7908,8 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
    
    
     small[0].id = data.id;
-    small[0].innerHTML += (data.sent) ? $filter('date')(data.time, "shortTime") : $filter('date')(data.time, "shortTime");
-    small[0].innerHTML += (data.sent) ? "&nbsp;&nbsp;" + $filter('date')(data.time, "mediumDate") : "&nbsp;&nbsp;" + $filter('date')(data.time, "mediumDate");     
+    small[0].innerHTML += $filter('amCalendar')(data.time) ;
+    //small[0].innerHTML += (data.sent) ? "&nbsp;&nbsp;" + $filter('date')(data.time, "mediumDate") : "&nbsp;&nbsp;" + $filter('date')(data.time, "mediumDate");     
     
     breaker[0].style.display = "block";
     breaker[0].style.textAlign = (data.sent) ? "right" : "left";
@@ -13749,7 +13749,8 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
     mySocket.emit("msg received",{to: data.from,id:data.date});
   });
 
-  
+  //use for filter in PWR
+  $rootScope.complain = {};
 
   $scope.logout = function(){
     mySocket.emit("set presence",{status:"offline",userId:$scope.checkLogIn.user_id},function(response){
@@ -13861,21 +13862,25 @@ app.controller("createTestController",["$scope","$resource","localManager","labT
 }]);
 
 
-app.controller("patientWaitingRoomController",["$scope","$resource","$location","$routeParams",function($scope,$resource,$location,$routeParams){
+app.controller("patientWaitingRoomController",["$scope","$resource","$location","$routeParams","mySocket",
+  function($scope,$resource,$location,$routeParams,mySocket){
   var complaints = $resource("/user/response/patients-histories/:batch",null,{respond:{method: "POST"}});
   complaints.query({batch:1},function(data){
     $scope.complaints = data;
   });
   $scope.isViewPatient = false;
   $location.path("/1");
+  //join patient waiting room for real time update
+  mySocket.emit("pwr join",{userId:'pwr'});
 
   $scope.batch =  "1";
 
   $scope.getBatch = function (set) {
     $scope.batch = set;
+    $scope.loading = true;
     var num = parseInt(set);
     complaints.query({batch:num},function(data){
-      console.log(data);
+      $scope.loading = false;
       $scope.complaints = data;
     });
   } 
@@ -13891,19 +13896,33 @@ app.controller("patientWaitingRoomController",["$scope","$resource","$location",
     $scope.isViewPatient = false;
   }
 
+  mySocket.on("receive help",function(data){
+    $scope.complaints.push(data);
+  })
+
   $scope.user = {};
   var value;
+  var commission;
   $scope.$watch("user.amount",function(newVal,oldVal){
     if(oldVal && newVal !== null) {
-      value =  $scope.user.amount + 1000;    
+      commission = $scope.user.amount * 0.2;
+      value = $scope.user.amount + commission;
+
       $scope.str = "N" + value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     } else {
       $scope.str = "";
     }
   });
 
+  /*window.onscroll = function(ev) {
+      if ((window.scrollY) === document.body.offsetHeight) {
+        alert("hey you are the bottom!!!" + window.scrollY + " - " + document.body.offsetHeight)
+      }
+  };*/
+
   $scope.sendRequest = function(){
     var date = + new Date();
+    $scope.loading = true;
     complaints.respond({
       date: date, 
       fee: value,
@@ -13912,10 +13931,11 @@ app.controller("patientWaitingRoomController",["$scope","$resource","$location",
       introductory: $scope.user.introductory 
     },function(info){
       if(info.message){
-        alert("Sent successfully! " + info.message);
+        alert(info.message);
       } else {
         alert(info.error);
       }
+      $scope.loading = false
     })
   }
 
@@ -14110,8 +14130,8 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
    
    
     small[0].id = data.id;
-    small[0].innerHTML += (data.sent) ? $filter('date')(data.time, "shortTime") : $filter('date')(data.time, "shortTime");
-    small[0].innerHTML += (data.sent) ? "&nbsp;&nbsp;" + $filter('date')(data.time, "mediumDate") : "&nbsp;&nbsp;" + $filter('date')(data.time, "mediumDate");     
+    small[0].innerHTML += $filter('amCalendar')(data.time) ;
+    //small[0].innerHTML += (data.sent) ? "&nbsp;&nbsp;" + $filter('amTimeAgo')(data.time) : "&nbsp;&nbsp;" + $filter('amTimeAgo')(data.time);     
     
     breaker[0].style.display = "block";
     breaker[0].style.textAlign = (data.sent) ? "right" : "left";

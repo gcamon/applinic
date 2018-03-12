@@ -89,7 +89,7 @@ signupRoute(model,sms,geonames,paystack);
 loginRoute(model);
 route(model,sms,io,streams); 
 payments(model,sms,io,paystack);
-placement(model,sms);
+placement(model,sms,io);
 mySocket(model,io,streams);
 
 

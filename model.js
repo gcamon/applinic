@@ -507,6 +507,8 @@ var myModel = function () {
 		patient_id: String,
 		complaint_id: String,
 		age: String,
+		patient_city:String,
+		patient_country: String,
 		gender: String,
 		preferred_city: String,
 		isview: Boolean,

@@ -14,6 +14,12 @@ module.exports = function(model,io,streams) {
 	     	//this will be reviewd later in terms of performance on the client.
 	    });
 
+	    //for pwr join a room for real time update
+	    socket.on("pwr join",function(data){
+	    	socket.join("pwr");
+	    })
+
+
 	    socket.on('courier join', function (data) {
 	      socket.join(data.id);      
 	      console.log("room created for courier service");
