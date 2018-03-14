@@ -167,6 +167,9 @@ var myModel = function () {
 		message: String,
 		sender_firstname: String,
 		sender_lastname: String,
+		sender_age: String,
+		sender_gender: String,
+		sender_location: String,
 		sender_profile_pic_url: String
 	});
 

@@ -2649,52 +2649,89 @@ app.controller('bookController',["$scope","$http","$location","$window","localMa
                       
 }]);
 
-app.controller("bookingDocModalController",["$scope","templateService","$http","mySocket","localManager",
-  function($scope,templateService,$http,mySocket,localManager){
+app.controller("bookingDocModalController",["$scope","templateService","$http","mySocket","localManager","symptomsFactory",
+  function($scope,templateService,$http,mySocket,localManager,symptomsFactory){
   $scope.docInfo = templateService.holdForSpecificDoc;
   $scope.isViewDoc = true;
 
-  $scope.request = function() {
+  $scope.patient = {};
+
+  /*$scope.request = function() {
     $scope.isViewDoc = false;
     $scope.isToConfirm = true;
-    $scope.patient = {};
+    
+  }*/
 
-    /*$scope.sendRequest = function() {
+  var list = [{sn:"a"}];
+  var symptom; 
+  var index = 0;
 
-      var user = localManager.getValue("resolveUser");
 
-      if($scope.docInfo.user_id !== user.user_id) {
+  $scope.getSymptom = function(name){
+    symptom = name;
+    if(list.length === 1){
+      list[0].name = name;
+    } else {
+      list[index].sn = index;
+      list[index].name = name;
+    }
+  }
 
-       var random = Math.floor(Math.random() * 1000);       
-       $scope.patient.type = "consultation";      
-       $scope.patient.message_id = random;
-       $scope.patient.date = + new Date();
-       $scope.patient.receiverId = $scope.docInfo.user_id;
-       
-      
-        $http({
-          method  : 'PUT',
-          url     : "/user/patient/doctor/connection",
-          data : $scope.patient,
-          headers : {'Content-Type': 'application/json'} 
-          })
-        .success(function(data) {            
-            if(data.status) {             
-              $scope.message = "Your consultation request has been sent!";
-            }
-            $scope.isViewDoc = false;
-            $scope.isToConfirm = false;
-            //use settime out to clear the textfieeld and the response message
-        });
-      } else {
-        alert("Booking failed! Reason: You cannot book yourself.")
+  $scope.symptoms = symptomsFactory;
+
+  $scope.symptomsList = list;
+
+  $scope.add = function(){
+    index++;    
+    var sympArr = {};
+    list.push(sympArr);
+  }
+
+  $scope.remove = function(sn){
+    index--;
+    var remove = list.splice(sn,1);
+  }
+
+  $scope.validate = function() {
+    $scope.sympMsg = "";
+    $scope.pregMsg = "";
+    if($scope.patient.sick) {
+      if(!$scope.symptomsList[0].name || $scope.symptomsList[0].name === "") {
+        $scope.sympMsg = "Add symptoms of your sickness";
+        return false;
       }
-        
-    }*/
+    }
+
+    if($scope.patient.pregnant) {
+      if(!$scope.patient.duration) {
+        $scope.pregMsg = "Please select how long you have been pregnant.";
+        return false;
+      }
+    }
+
+    $scope.sendRequest();
+
   }
 
 
-   $scope.sendRequest = function() {
+  $scope.sendRequest = function() {
+    $scope.loading = true
+      $scope.patient.history = "";
+      if($scope.patient.sick) {
+        $scope.patient.history =  "I am sick. The following are symptoms experiencing; "
+        for(var i = 0; i < $scope.symptomsList.length ; i++) {
+          $scope.patient.history += '\n' +  $scope.symptomsList[i].name + ", ";
+        }
+
+        if($scope.patient.how) {
+          $scope.patient.history += "\nBrief history of the sickness was stated as it happened; " + "\n" + $scope.patient.how + ".";
+        }
+       
+      } 
+
+      if($scope.patient.pregnant) {
+        $scope.patient.history += "\nI am " + $scope.patient.duration + " pregnant";
+      }
 
       var user = localManager.getValue("resolveUser");
 
@@ -2713,12 +2750,13 @@ app.controller("bookingDocModalController",["$scope","templateService","$http","
           data : $scope.patient,
           headers : {'Content-Type': 'application/json'} 
           })
-        .success(function(data) {            
+        .success(function(data) {
+            $scope.loading = false;         
             if(data.status) {             
-              $scope.message = "Your consultation request has been sent!";
+              $scope.status = "Your request was sent successfully!";
             }
-            $scope.isViewDoc = false;
-            $scope.isToConfirm = false;
+            //$scope.isViewDoc = false;
+            //$scope.isToConfirm = false;
             //use settime out to clear the textfieeld and the response message
         });
       } else {
@@ -2870,9 +2908,6 @@ app.controller("docNotificationController",["$scope","$location","$resource","$i
           requestManager.set(patient);
           $location.path("/patient-request/" + random);
         };
-        //deletes a selected request from a patient.
-        $scope.delete = function(){      
-        };
 
 
         
@@ -2913,8 +2948,16 @@ app.controller("docNotificationController",["$scope","$location","$resource","$i
     
   getRequest();
 
+ //deletes a selected request from a patient.        
+  $rootScope.$on('declined request',function(env,data){
+    if(data){
+      getRequest();
+      var random = Math.floor(Math.random() * ($scope.consultation.length - 1));      
+      //shows another consultation request
+      $scope.view($scope.consultation[random])
+    }
+  })
 
- 
   var video = [];
   var audio = [];
   var meeting = [];
@@ -4663,8 +4706,9 @@ app.controller("selectedRadioController",["$scope","$http","localManager","$loca
 
 //after a selected patient is clicked to be view this controller is connected waiting for the doctor to accept to run its modal 
 //and pass some data like the doctor's firstname.
-app.controller("requestController",["$scope","ModalService","requestManager","templateService",function($scope,ModalService,requestManager,templateService){
-  $scope.data = requestManager.get();
+app.controller("requestController",["$scope","ModalService","requestManager","templateService","$rootScope",
+  function($scope,ModalService,requestManager,templateService,$rootScope){
+  $rootScope.data = requestManager.get();
   $scope.docName = templateService.getfirstname;
 
   $scope.accept = function(){   
@@ -4679,12 +4723,38 @@ app.controller("requestController",["$scope","ModalService","requestManager","te
     });
    
   }
+
+  $scope.decline = function(){   
+      ModalService.showModal({
+          templateUrl: 'declined-request.html',
+          controller: "grantedRequestController"
+      }).then(function(modal) {
+          modal.element.modal();
+          modal.close.then(function(result) {
+             
+      });
+    });
+   
+  }
+
+  $scope.referToAnother = function(){   
+    ModalService.showModal({
+          templateUrl: 'redirect-request.html',
+          controller: "grantedRequestController"
+      }).then(function(modal) {
+          modal.element.modal();
+          modal.close.then(function(result) {
+             
+      });
+    });
+   
+  }
 }]);
 
 
 // inside the above modal doctor compiles acceptance object and send to paitent
-app.controller("grantedRequestController",["$scope","$http","ModalService","requestManager","templateService","deleteFactory",
-  function($scope,$http,ModalService,requestManager,templateService,deleteFactory){
+app.controller("grantedRequestController",["$scope","$http","ModalService","requestManager","templateService","deleteFactory","$rootScope","$location",
+  function($scope,$http,ModalService,requestManager,templateService,deleteFactory,$rootScope,$location){
   $scope.data = requestManager.get();
   $scope.docName = templateService.getfirstname;
   $scope.docName2 = templateService.getlastname;
@@ -4692,32 +4762,35 @@ app.controller("grantedRequestController",["$scope","$http","ModalService","requ
   $scope.user.fee = 0;
   var inNaira;
   var raw;
+  var commission;
   $scope.$watch('user.fee',function(){
-    raw = $scope.user.fee + 1000;
+    commission = $scope.user.fee * 0.2;
+    raw = $scope.user.fee + commission;
     inNaira = "N" + raw.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     $scope.total = inNaira;
   });  
   
   $scope.sendAcceptance = function(){
+    $scope.loading = true;
     var date = + new Date();
     if($scope.user.fee > 0){
       var grantedRequest = {};
       grantedRequest.patientId = $scope.data.sender_id;
       grantedRequest.date = date;      
       grantedRequest.consultation_fee = raw;      
-      grantedRequest.service_access = false;
-      
+      grantedRequest.service_access = false;       
       $http({
           method  : 'PUT',
           url     : "/user/doctor/acceptance",
           data : grantedRequest,
           headers : {'Content-Type': 'application/json'} 
           })
-        .success(function(data) {              
+        .success(function(data) {
+          $scope.loading = false;              
           if(data.status){
-            alert("Success! Patient will be notified");
+            $scope.acceptanceMsg = "Success! Consultation acceptance submitted, patient will be notified."//alert("Success! Patient will be notified");
           } else {
-            $scope.message = "Oops! Something went wrong.";
+            $scope.message = "Oops! Something went wrong. Acceptance not sent.";
           }
         });
 
@@ -4725,6 +4798,27 @@ app.controller("grantedRequestController",["$scope","$http","ModalService","requ
         $scope.message = "please enter your consultation fee amount below."
     }
   }
+
+  $scope.delineReq = function(data) {
+    $scope.loading = true;
+    $http({
+      method  : 'PUT',
+      url     : "/user/doctor/decline-request",
+      data : data,
+      headers : {'Content-Type': 'application/json'} 
+      })
+    .success(function(data) {
+      $scope.loading = false;              
+      if(data.status){
+        //alert("request")
+        //update doctor's  notification list
+        $rootScope.$broadcast('declined request',true);
+      } else {
+        alert("error occured! request was not declined. Try again")
+      }
+    });
+  }
+
 }]);
 
 
@@ -13898,7 +13992,7 @@ app.controller("patientWaitingRoomController",["$scope","$resource","$location",
 
   mySocket.on("receive help",function(data){
     $scope.complaints.push(data);
-  })
+  });
 
   $scope.user = {};
   var value;
@@ -13907,7 +14001,6 @@ app.controller("patientWaitingRoomController",["$scope","$resource","$location",
     if(oldVal && newVal !== null) {
       commission = $scope.user.amount * 0.2;
       value = $scope.user.amount + commission;
-
       $scope.str = "N" + value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     } else {
       $scope.str = "";

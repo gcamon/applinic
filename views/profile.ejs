@@ -116,20 +116,19 @@
                       <span class="counter" ng-if="<%= person.doctor_notification.length %> > 0 " ng-cloak>{{consultationLen}}</span>
                     </sup>
                   </a>
-                                <div class="dropdown-menu notifications-dropdown-menu" style="max-height: 400px;overflow-y: auto;">
+                                <div class="dropdown-menu notifications-dropdown-menu" style="max-height: 400px;overflow-y: auto;overflow-x: hidden;">
                                     <ul class="notifications-container noti-style">
                                         <li> <h6 style="text-align: center">Consultation Request(s)</h6> </li>
-                                        <li ng-repeat = "patient in consultation" ng-click= "view(patient)">
+                                        <li ng-repeat = "patient in consultation | orderBy: '-date'" ng-click= "view(patient)">
                                             <a href="" class="notification-item">
                                                 <div class="img-col">
                                                     <div class="img" style="background-image: url({{patient.sender_profile_pic_url}})"></div>
                                                 </div>
                                                 <div class="body-col">
-                                                    <p>
-                                                        
-                                                        <span class="accent" style="display:block">{{patient.title}} {{patient.sender_firstname}} {{patient.sender_lastname}}</span>
-                                                        <span class="accent" style="display:block">{{patient.message}}</span>
-                                                        <time am-time-ago="patient.date"></time>
+                                                    <p>                                                        
+                                                        <span class="accent ellipsis" style="display:block;">{{patient.title}} {{patient.sender_firstname}} {{patient.sender_lastname}}</span>
+                                                        <!--<span class="accent ellipsis" style="display:block;width: 70%">{{patient.message}}</span>-->
+                                                        <time am-time-ago="patient.date" style="display:block;float: left;"></time>
                                                     </p>                                                  
                                                 </div>
                                             </a>
@@ -362,8 +361,8 @@
                                 <a href="" class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown">
                                     <i class="fa fa-search" aria-hidden="true"></i> Searches
                                 </a>
-                                <div class="okd dropdown-menu dropdown-menu-right" style="line-height: 35px"aria-labelledby="navbarDropdownMenuLink">
-                                    <a class="dropdown-item" href="#/find-specialist">Find a Doctor</a>
+                                <div class="okd dropdown-menu dropdown-menu-right" style="line-height: 35px" aria-labelledby="navbarDropdownMenuLink">
+                                    <a class="dropdown-item" href="#/find-specialist">Find Doctor</a>
                                     <a class="dropdown-item" href="#/drug">Find Drug</a>
                                     <a class="dropdown-item" href="#/scan-search">Find Radio Test</a>
                                     <a class="dropdown-item" href="#/search-test">Find Lab Test</a>
@@ -1337,23 +1336,57 @@
           <div class="modal-dialog">
             <div class="modal-content">
               <div class="modal-header">
-                <h4 style="text-align: center; border-bottom: 1px solid rgba(0,0,0,0.3)">Acceptance from Dr. {{docName}}</h4>
+               <h5>Consultation Acceptance</h5>
               </div>
-              <p style="color:red; text-align: center">{{message}}</p>
-              <div class="modal-body">
-                <h6 style="text-align:center">You wish to send acceptance notification</h6>
-                <h5 style="text-align: center">To</h5>
-                <h5 style="text-align: center">{{data.sender_firstname}} {{data.sender_lastname}} (patient)</h5>
-                <p style="text-align: center">{{data.firstname}} {{data.lastname}}</p>
-                <form>
-                <span>Your consultation fee(amount) below</span><input type="number" placeholder="$ enter your consultation fee amount.*" ng-model="user.fee" required>
-                <span>Total bill to patient including service charge:</a> {{total}}</span>
-                <span style="font-size: 12px; color: rgba(0,0,0,0.7);display:block;padding:5px 0px"> Note: total bill is what the patient will see <a href="#" style="color: rgba(0,200,0,0.6)">learn more</a></span>
-                <button class="tg-btn tg-btn-lg" ng-click="sendAcceptance()">Continue</button>
+              <p style="color:red; text-align: center" class="p-1 bg-danger" ng-if="message">{{message}}</p>
+              <div class="modal-body">                
+                <div><b>Patient name: </b> {{data.sender_firstname}} {{data.sender_lastname}} </div>
+                <!--<p style="text-align: center">{{data.firstname}} {{data.lastname}}</p>-->
+                <form class="pt-1">
+                    <div>
+                        <label> Your consultation fee below (includes 20% service charge of fee)</label>
+                        <input type="number" placeholder="Enter amount.*" ng-model="user.fee" class="form-control" style="width: 80%" required>
+                    </div>
+                    <div class="pt-1">
+                        <label>Amount patient will see : {{total}}</label>
+                    </div>
+                    <div class="pt-1">
+                        <button class="btn btn-primary" ng-hide="acceptanceMsg" ng-click="sendAcceptance()"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i> {{(loading) ? '' : 'Submit'}}</button>
+                        <i class="fa fa-check test-success" ng-if="acceptanceMsg"> {{acceptanceMsg}}</i>
+                    </div>
                 </form>
               </div>
               <div class="modal-footer">
-                <button type="button" ng-click="close('No')" class="btn btn-default" data-dismiss="modal">No</button>                
+                <button type="button" ng-click="close('No')" class="btn btn-default" data-dismiss="modal">Close</button>                
+              </div>
+            </div>
+          </div>
+        </div>
+     </script>
+
+     <script type="text/ng-template" id="declined-request.html">
+         <div class="modal fade">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+               <h5>Consultation Rejection</h5>
+              </div>
+              <p style="color:red; text-align: center" class="p-1 bg-danger" ng-if="message">{{message}}</p>
+              <div class="modal-body">                
+                <div><b>Patient name: </b> {{data.sender_firstname}} {{data.sender_lastname}} </div>
+                <!--<p style="text-align: center">{{data.firstname}} {{data.lastname}}</p>-->
+                <form class="pt-1">
+                    <div>
+                        <label>Reason for declining this consultation request? (optional)</label>
+                        <textarea class="form-control pl-1" style="height: 200px" ng-model="data.reason"></textarea>
+                    </div> 
+                    <div>
+                        <button data-dismiss="modal" class="btn btn-primary" ng-click="delineReq(data)"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i> {{(loading) ? '' : 'Ok, decline'}}</button>
+                    </div>                   
+                </form>
+              </div>
+              <div class="modal-footer">
+                <button type="button" ng-click="close('No')" class="btn btn-default" data-dismiss="modal">Cancel</button>                
               </div>
             </div>
           </div>

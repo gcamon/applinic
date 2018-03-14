@@ -28,33 +28,42 @@
 </div>-->
 
 <div class="container">
-<div class="card p-2">
-
-<div class="card" style="padding:20px;">
+<div class="p-1 card">	
     <div class="row">
-    <div class="col-md-2 col-sm-2">
-        <img ng-src="{{data.sender_profile_pic_url}}" class="img-responsive" width="150" height="150">
-    </div>
-    <div class="col-md-10 col-sm-10 col-xs-10">
-        
-<h6>
-	<b class="font-1_4">{{data.sender_firstname}} {{data.sender_lastname}}</b>
-	<span class="font-1_1" style="display:block;"> Patient </span>
-</h6>
-<hr>
-Dear Dr. {{docName}},
-{{data.sender_firstname}} {{data.sender_lastname}} request for your consultation on {{data.date | date: "medium"}}. Brief explanation of his illness was <span style="font-style: italic;color: rgba(0,0,0,0.6);font-size:18px;display:block;text-indent: 30px;padding:20px">"{{data.sender_message}} </span>Consultation fee do apply if you grant this request.		   
+	    <div class="col-md-4 col-lg-4 col-sm-12">    	
+	    	<div>
+	        	<img ng-src="{{data.sender_profile_pic_url}}" class="img-responsive" style="max-height: 300px;max-width: 300px">
+	        </div>
+	        <div style="line-height: 35px">
+	        	<div><b>Name:</b> {{data.sender_firstname}} {{data.sender_lastname}}</div>
+	        	<div><b>gender:</b> {{data.sender_gender}}</div>
+				<div><b>Age:</b> {{data.sender_age}}</div>			
+				<div><b>Location:</b> {{data.sender_location}}</div>
+	        </div>
+	    </div>
+	    <div class="col-md-8 col-sm-12 col-lg-8">
+	        
+			<h6>
+				<h5><b>Consultation Request</b></h5>
+				<span style=""><b>Date received:</b> {{data.date | amCalendar}}</span>
+			</h6>
+			<hr>
+			<p><em style="display: block;padding: 10px 0"><b>Dear {{checkLogIn.title}} {{checkLogIn.firstname}},</b></em>
+			{{data.sender_firstname}} {{data.sender_lastname}} request for your consultation. Below are the details the request:
+			<em style="display: block;padding: 10px">{{data.message}}</em>
+			</p>
+			<p>Consultation fee do apply if you accept this request.</p>	   
 
-<br><br>
-Regards, <span style="display:block"><b>Applinic Management</b></span> <img src="">
+			<br><br>
+			Regards, <span style="display:block"><b>Applinic Management</b></span> <img src="">
 
-<div class="mt-1">
-<button class="btn btn-success" ng-click="accept()">Accept</button>
-<button class="btn btn-danger">Decline</button>
-<button class="btn btn-info">Refer to a specialist</button>
-</div></div>
-    </div>
-</div>
+			<div class="p-0 pt-2">
+			<button class="btn btn-success" ng-click="accept()">Accept</button>
+			<button class="btn btn-danger" ng-click="decline()">Decline</button>
+			<!--<button class="btn btn-info" ng-click="referToAnother()">Refer to a specialist</button>-->
+			</div>
+	    </div>
+	</div>
 <div class="clearfix"></div>
 
 

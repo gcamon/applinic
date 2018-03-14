@@ -357,8 +357,8 @@
                                 <a href="" class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown">
                                     <i class="fa fa-search" aria-hidden="true"></i> Searches
                                 </a>
-                                <div class="okd dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
-                                   <a class="dropdown-item" href="#/find-specialist">Find a Doctor</a>
+                                <div class="okd dropdown-menu dropdown-menu-right" style="line-height: 35px" aria-labelledby="navbarDropdownMenuLink">
+                                   <a class="dropdown-item" href="#/find-specialist">Find Doctor</a>
                                     <a class="dropdown-item" href="#/drug">Find Drug</a>
                                     <a class="dropdown-item" href="#/scan-search">Find Scan</a>
                                     <a class="dropdown-item" href="#/search-test">Find Test</a>
@@ -870,43 +870,90 @@
         <div class="modal-content">
           <div class="modal-header">
         <div class="title">{{message}}</div>
+         <h5>Consultation Request</h5>  
                 <button type="button" class="close" ng-click="close('Cancel')" data-dismiss="modal" aria-hidden="true" style="color:red;font-size: 32px">&times;</button>                                
           </div>
           <div class="row">
             <div class="col-sm-12 col-md-12 col-lg-12">
                 <div class="modal-body">
-                                        
-                    <div class="clearfix" ng-if="isViewDoc">
+                                
+                    <div class="row">
                         <div class=" col-md-3 col-sm-12 pull-right" style="padding-right: 0px;">
-                                <img src="assets/img/avatar.jpg" alt="image description" height="120" ng-src="{{docInfo.profile_pic_url}}">                                  
-                                    <div><span class="">online</span></div>                                                    
-                                    </div>
-                        <div class="col-md-9 col-sm-12 pl-1 pr-0">
-                            <h5 class="font-1_4">Dr. {{docInfo.firstname}} {{docInfo.lastname}}</h5>
-                             <h6 class="text-muted pb-1">{{docInfo.specialty}}</h6>
+                            <img alt="image description" height="120" ng-src="{{docInfo.profile_pic_url}}">                                  
+                                <div><span class=""></span></div>                                                    
                         </div>
-                        <div class="col-md-12">
-                            <div>Address: <span class="font-1_1">{{docInfo.work_place}}</span> | <span style="font-style:italic; color:black;font-size:12px">{{docInfo.address}}</span></div>
-                            <div>Availability: <span class="font-1_1">avalible at this time<span></div>
-                            <div>Experience: <span class="font-1_1">{{docInfo.experience + " years"}}</span></div>
-                            <div>Office hours</div>       
+                        <div class="col-md-9 col-sm-12 pl-1 pr-0">
+                            <div class=""><b>{{docInfo.title}} {{docInfo.firstname}} {{docInfo.lastname}}</b></div>
+                             <div class="">Specialty | {{docInfo.specialty}}</div>
+                             <div>Works at | <span class="">{{docInfo.work_place}}</span> <span>{{docInfo.address}} {{docInfo.city}} {{docInfo.country}}</span></div>
+                            <div>Work experience | <span class="">{{docInfo.experience + " years"}}</span></div>
+                             <div>Office hours | </div>       
                             <ul class="nav">        
                                 <li ng-repeat = "i in docInfo.office_hour "><span>{{i.day}}</span>, <span>from {{i.from}}</span> <span>to {{i.to}}</span></li> 
                             </ul>
-                            <p class="mt-1"><a ng-href= "{{docInfo.profile_url}}" style="color:rgba(0,0,0,0.6)">view doctors detail</a></p>
-                            <div class="in-patient-com">
-                                <article>You can &nbsp; <b>CHAT</b>&nbsp; <b>MAKE VIDEO CALL 
-                                </b>&nbsp; <b>MAKE AUDIO CALL</b> &nbsp;or &nbsp;<b>SHARE FILES</b> with  Dr. {{docInfo.firstname}} {{docInfo.lastname}} if Your request is granted by the doctor. 
-                                </article>
-                                <button class="btn btn-info" ng-click="request()">SEND CONSULTATION REQUEST</button>     
-                                                
-                                
+                        </div>
                     </div>
+                    <div class="row">
+                        <div class="col-md-12 col-lg-12">                      
+                           <form class="pt-1">
+                               <div class="pb-1">
+                                   <label>Why do yo want to consult {{docInfo.title}} {{docInfo.firstname}}?</label>
+                                   <div>
+                                     <input type="checkbox" name="" ng-model="patient.sick"> I am sick.
+                                   </div>
+                                   <div>
+                                     <input type="checkbox" name="" ng-model="patient.pregnant"> I am pregrant.
+                                   </div>
+                                   <div>
+                                    <input type="checkbox" name="" ng-model="patient.personal"> I need a personal doctor.
+                                   </div>
+                               </div>
+                               <div ng-if="patient.sick" class="pb-1">
+                                   <label>what symptoms are you experiencing?</label>
+                                   <div class="text-danger">{{sympMsg}}</div>
+                                   <div class="pb-1">
+                                       <div ng-repeat="i in symptomsList" style="position: relative;padding-bottom: 5px">           
+                                            <input name="states" id="states" type="text" placeholder="Enter symptom" ng-model="name" uib-typeahead="name for name in symptoms | filter:$viewValue | limitTo:15" class="form-control" style="width:90%">
+                                            <i class="fa fa-times text-muted" style="cursor: pointer;position: absolute;bottom: 10px;right: 8px" ng-click="remove(i.sn)" ng-if="i.sn !== 'a'"></i>
+                                            {{getSymptom(name)}}
+                                        </div>
+                                        <div> 
+                                            <button class="fa fa-plus btn btn-simple round  text-danger" ng-click="add()"></button> 
+                                        </div>
+                                   </div>
+                                   <label>How long have you been feeling this sick?</label>
+                                   <div>
+                                       <textarea class="form-control pl-1" ng-model="patient.how"></textarea>
+                                   </div>
+                               </div>
+                               <div ng-if="patient.pregnant" class="pb-1">
+                                   <label>How long has the pregnancy been?</label>
+                                   <div class="text-danger">{{pregMsg}}</div>
+                                   <div>
+                                       <select ng-model="patient.duration">
+                                           <option value="" selected="selected">_select</option>
+                                           <option value=""></option>
+                                           <option>less than 2 months</option>
+                                           <option>less than 3 months</option>
+                                           <option>less than 4 months</option>
+                                           <option>less than 5 months</option>
+                                           <option>less than 6 months</option>
+                                           <option>above 6 months</option>
+                                           <option>9 months</option>
+                                       </select>
+                                   </div>                                   
+                               </div>                                        
+                           </form>                              
+                                                
+                            <p><i class="fa fa-info"> <small>consultation fees will be charged if your request is granted.</small></i></p> 
+                            <button class="btn btn-info" ng-click="validate()" ng-if="patient.sick || patient.pregnant || patient.personal" ng-hide="status"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i> {{(loading) ? '' : 'SEND CONSULTATION REQUEST'}}</button>
+                            <i class="fa fa-check" style="color: green" ng-if="status"> {{status}}</i>
+                            <button class="btn btn-simple text-muted" disabled="disabled" ng-hide="patient.sick || patient.pregnant || patient.personal">SEND CONSULTATION REQUEST</button>        
                         </div>
                     </div>
                      
 
-                    <div class="col-md-12" ng-if="isToConfirm">
+                    <!--<div class="col-md-12" ng-if="isToConfirm">
                            <hr>
                         <h4>You want to send Consultation request to
                         </h4>                                                                              
@@ -923,7 +970,7 @@
                         <button class="btn btn-success pull-right" ng-click="sendRequest()">Continue</button>
                         </div>
                         </form>
-                    </div>
+                    </div>-->
                 </div> 
             </div>
           </div>         

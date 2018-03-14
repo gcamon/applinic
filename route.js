@@ -1015,6 +1015,10 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
         req.body.sender_profile_pic_url = req.user.profile_pic_url;
         req.body.message = req.body.history;
         req.body.sender_id = req.user.user_id;
+        req.body.sender_age = req.user.age;
+        req.body.sender_gender = req.user.gender;
+        req.body.sender_location = req.user.city + " " + req.user.country;
+
         var requestData = {};
         for(var item in req.body){
           if(req.body.hasOwnProperty(item) && item !== "receiverId") {
@@ -1073,13 +1077,14 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
             req.body.sender_profile_pic_url = patient.profile_pic_url;
             req.body.sender_id = patient.user_id;
             req.body.message = req.body.history;
+            req.body.type = "consultation";
             var requestData = {};
             
          
             model.user.findOne({user_id:req.params.docId},{doctor_notification:1,presence:1,set_presence:1,phone:1,firstname:1,title:1}).exec(function(err,data){
               if(err) throw err;
 
-              data.doctor_notification.push(requestData);
+              data.doctor_notification.push(req.body);
 
               if(data.presence === true && data.set_presence.general === true && req.body.type === "consultation"){           
                 io.sockets.to(req.params.docId).emit("receive consultation request",{status: "success"});
@@ -1155,45 +1160,50 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
                         req.body.service_access = true;
                         result.ewallet.available_amount -= req.body.consultation_fee;
                     }*/
-                    req.body.service_access = true;
-                    var random = Math.floor(Math.random() * 999999999); // use for check on the front end to distinguish messages sent.
-                      result.patient_mail.push({
-                      message_id: random,
-                      user_id: req.user.user_id,
-                      firstname: req.user.firstname,
-                      lastname: req.user.lastname,
-                      title: req.user.title,
-                      message: "Consultation request accepted",
-                      date: req.body.date,
-                      consultation_fee: req.body.consultation_fee,
-                      service_access: req.body.service_access,
-                      profile_pic_url: req.user.profile_pic_url,
-                      specialty: req.user.specialty
-                    });
+                    if(err) throw err;
+                    if(result) {
+                      req.body.service_access = true;
+                      var random = Math.floor(Math.random() * 999999999); // use for check on the front end to distinguish messages sent.
+                        result.patient_mail.push({
+                        message_id: random,
+                        user_id: req.user.user_id,
+                        firstname: req.user.firstname,
+                        lastname: req.user.lastname,
+                        title: req.user.title,
+                        message: "Consultation request accepted",
+                        date: req.body.date,
+                        consultation_fee: req.body.consultation_fee,
+                        service_access: req.body.service_access,
+                        profile_pic_url: req.user.profile_pic_url,
+                        specialty: req.user.specialty
+                      });
 
-                    if(result.presence === true){
-                      io.sockets.to(result.user_id).emit("message notification",{status:true})
+                      if(result.presence === true){
+                        io.sockets.to(result.user_id).emit("message notification",{status:true})
+                      } else {
+                        var msgBody = req.user.title + " " + req.user.firstname + " " + req.user.lastname + " accepted your consultation request! Visit http://applinic.com/login";
+                        var phoneNunber =  result.phone;                  
+
+                        sms.messages.create(
+                          {
+                            to: phoneNunber,
+                            from: '+16467985692',
+                            body: msgBody,
+                          }
+                        ) 
+                      }
+
+                      result.save(function(err){
+                        if(err) throw err;                    
+                        res.json({status: true});
+                      });
+
                     } else {
-                      var msgBody = req.user.title + " " + req.user.firstname + " " + req.user.lastname + " accepted your consultation request! Visit http://applinic.com/login";
-                      var phoneNunber =  result.phone;                  
-
-                      sms.messages.create(
-                        {
-                          to: phoneNunber,
-                          from: '+16467985692',
-                          body: msgBody,
-                        }
-                      ) 
+                      re.send({status: false});
                     }
-
-                    result.save(function(err){
-                      if(err) throw err;
-                      console.log("updated");                        
-                      res.send({status: "success"});
-                    });
-
                 }
             )
+
             
         } else {
            res.send("not allowed");
@@ -1204,11 +1214,51 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
 
     });
 
-    router.put("/user/doctor/decline-mail",function(req,res){
+    router.put("/user/doctor/decline-request",function(req,res){
+      if(req.user) {
+        model.user.findOne({user_id: req.body.sender_id},{patient_mail:1}).exec(function(err,patient){
+          if(err) throw err;
+          if(patient) {
+            patient.patient_mail.push({
+              message : "Consultation request rejected!",
+              message_id: req.body.message_id,
+              user_id: req.user.user_id,
+              firstname: req.user.firstname,
+              lastname: req.user.lastname,
+              title: req.user.title,
+              date: req.body.date, 
+              reason: req.body.reason                     
+            });
 
+            patient.save(function(err,info){});
+          } else {
+            res.send({message: "Patient does not exist!"})
+          }
+        });
+
+        console.log(req.body)
+        model.user.findOne({user_id:req.user.user_id},{doctor_notification: 1}).exec(function(err,user){
+          if(err) throw err;
+          var elemPos = user.doctor_notification.map(function(x){return x.message_id}).indexOf(req.body.message_id);
+          
+          if (elemPos !== -1) {
+            user.doctor_notification.splice(elemPos,1);
+          }
+
+          user.save(function(err,info){
+            console.log("request deleted")
+          })
+
+          res.send({status: "deleted"})
+        })
+
+        
+      } else {
+        res.end("unauthorized accesss!")
+      }
     })
 
-    router.put("/user/doctor/redirect-mail",function(req,res){
+    router.put("/user/doctor/redirect-request",function(req,res){
       
     })
     
@@ -2031,11 +2081,7 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
       }
     });
 
-    //this route deletes already attended prescription request from doctor_prescriptionRequest list and save to the database.
-    router.delete("/user/doctor/delete-request",function(req,res){
-
-    });
-    
+   
     //this router takes call of pahrmacy search for a patient prescription from the data base;
     router.put("/user/pharmacy/find-patient/prescription",function(req,res){
        if(req.user){     
