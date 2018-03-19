@@ -53,7 +53,7 @@ var myModel = function () {
 
 	var mailSchema = Schema({
 		firstname: String,
-		message_id: Number,
+		message_id: String,
 		title: String,
 		lastname: String,
 		specialty: String,

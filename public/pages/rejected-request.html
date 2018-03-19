@@ -1,0 +1,30 @@
+<div class="container">
+<div class="card p-2" style="padding:0px" >
+	<div ng-if="isRequest === true">
+		<div class="col-md-12 col-lg-12">
+			<p class="font-1_1">Dear {{patientName}},
+			  <span style="display: block"> Your request to consult Dr. {{reqInfo.firstname}} {{reqInfo.lastname}} was <strong style="font-weight: bold;">rejected</strong> by the doctor on {{reqInfo.date | date: "mediumDate"}}.</span>		   
+			</p>
+			<p style="font-style: italic">Reason for rejecting the consultaion request was <span ng-if="reqInfo.reason"> explained below:</span> <span style="display: block;padding: 15px;font-style: italic;">{{reqInfo.reason}}</span> <span ng-if="!reqInfo.reason"> was not stated.</span></p>
+			<div>
+				<label>You can find the right specialist for your medical need in just two ways as follows: </label>
+				<div>
+					<p> 1) Click <b>need a doctor</b> button on top left then submit you complain to Patient Waiting Room (PWR) where the right specialist will attend to you.</p>
+					<p> 2) Goto <b>Searches</b> then select <b>Find Doctor</b>. From the list of search results, you can book a specialist of your choice.</p>
+				</div>
+				<p>If you need assistance feel free to contact us or call +234-8096461927</p>
+			</div>
+		</div>
+		<div class="" style="margin-top: 30px; padding-right: 55px; padding-left: 15px">
+				<div class="tg-regardsleft">
+					<em>Regards,</em><br>
+					<strong>Applinic Management.</strong>
+				</div>
+			
+			</div>
+			<div  class="" style="margin-top: 30px;padding-left: 15px">
+				<button class="btn btn-danger" ng-click = "decline(reqInfo.message_id)">Delete</button>			
+			</div>
+	</div>
+</div>
+</div>

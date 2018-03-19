@@ -78,6 +78,11 @@ app.config(['$paystackProvider','$routeProvider',function($paystackProvider,$rou
     controller: 'patientViewRequestController'
   })
 
+  .when("/rejected-request/:id",{
+    templateUrl: '/assets/pages/rejected-request.html',
+    controller: 'patientViewRequestController'
+  })
+
  .when("/patient-doctor/treatment",{
   templateUrl: '/assets/pages/patient-treatment.html',
   controller: 'patientTreatmentController'
@@ -3031,7 +3036,7 @@ app.controller("docNotificationController",["$scope","$location","$resource","$i
 
 
   function popout(data) {
-    templateService.playAudio(1);
+    templateService.playAudio(3);
     $rootScope.sender = data;
     $scope.isReceivedRequest = true;
     $timeout(function(){
@@ -4740,7 +4745,7 @@ app.controller("requestController",["$scope","ModalService","requestManager","te
   $scope.referToAnother = function(){   
     ModalService.showModal({
           templateUrl: 'redirect-request.html',
-          controller: "grantedRequestController"
+          controller: "referRequestController"
       }).then(function(modal) {
           modal.element.modal();
           modal.close.then(function(result) {
@@ -4753,8 +4758,8 @@ app.controller("requestController",["$scope","ModalService","requestManager","te
 
 
 // inside the above modal doctor compiles acceptance object and send to paitent
-app.controller("grantedRequestController",["$scope","$http","ModalService","requestManager","templateService","deleteFactory","$rootScope","$location",
-  function($scope,$http,ModalService,requestManager,templateService,deleteFactory,$rootScope,$location){
+app.controller("grantedRequestController",["$scope","$http","ModalService","requestManager","templateService","deleteFactory","$rootScope","$location","$resource",
+  function($scope,$http,ModalService,requestManager,templateService,deleteFactory,$rootScope,$location,$resource){
   $scope.data = requestManager.get();
   $scope.docName = templateService.getfirstname;
   $scope.docName2 = templateService.getlastname;
@@ -4818,6 +4823,41 @@ app.controller("grantedRequestController",["$scope","$http","ModalService","requ
       }
     });
   }
+
+}]);
+
+app.controller("referRequestController",["$scope","$http","ModalService","requestManager","templateService","deleteFactory","$rootScope","$location","$resource",
+  function($scope,$http,ModalService,requestManager,templateService,deleteFactory,$rootScope,$location,$resource){
+    var source = $resource("/user/find-specialist",null,{refer:{method: "PUT"}});
+    $scope.search = {};
+    $scope.search.city = $rootScope.checkLogIn.city;
+    $scope.search.specialty = $rootScope.checkLogIn.specialty;
+
+    $scope.findSpecialist = function() {
+      $scope.loading = true;
+      source.query($scope.search,function(data){
+        $scope.loading = false;
+        $scope.searchResult = data;
+      });
+    }
+
+    $scope.findSpecialist();
+
+    $scope.refer = function(doc) {
+      doc.loading = true;
+      $rootScope.data.receiverId = doc.user_id;
+      //doc.loading = false;
+      //doc.msg = "request sent!"
+      console.log($rootScope.data)
+      source.refer($rootScope.data,function(response){
+        doc.loading = false;
+        if(response.status) {
+          doc.msg = "request sent!";
+        }
+      })
+
+    }
+
 
 }]);
 
@@ -5095,11 +5135,13 @@ app.controller("patientNotificationController",["$scope","$location","$http","$w
     });*/
   }
 
- 
-
-  $scope.viewMessage = function(id,msgId){    
+  $scope.viewMessage = function(id,msg){    
     templateService.holdId = id;
-    $location.path("/granted-request/" + msgId);
+    if(!msg.reason) {
+      $location.path("/granted-request/" + msg.message_id);
+    } else {
+      $location.path("/rejected-request/" + msg.message_id);
+    }
   }
 
   $scope.viewResponse = function(doctorId,complaintId){
@@ -5538,40 +5580,15 @@ app.controller("patientViewRequestController",["$scope","$location","$http","$ro
   for(var i = 0; i < msgData.length; i++){
     console.log(templateService.holdId)
     console.log(templateService.holdMsg)
-    if(msgData[i].service_access && msgData[i].user_id === templateService.holdId && !msgData[i].doctor_id) {
+    if(msgData[i].service_access && !msgData[i].reason && msgData[i].user_id === templateService.holdId && !msgData[i].doctor_id) {
       elementPos = i;      
       $scope.reqInfo = msgData[i];
       $scope.reqInfo.inNaira = "N" + msgData[i].consultation_fee.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    } else if(msgData[i].reason) {
+      $scope.reqInfo = msgData[i];
     }
   }
-/*templateService.sendObj.doctor_id
-var newStr = str.replace(/\s*$/,"");//removes empty string by the end of character
-      var receiver = templateService.sendObj.doctor_id || templateService.sendObj.receiverId;
-      var payObj = {
-        amount: templateService.holdRawAmount,
-        otp: newStr,
-        date: date,
-        message: "Consultation fee",
-        userId: receiver,
-        sendObj: templateService.sendObj
-      }
-      var Debitor = walletService.resource("/patient/consultation-acceptance/confirmation",{userId: null},{confirmed:{method:'POST'}});
-      var confirmed = Debitor.confirmed(payObj,function(data){
-        alert(data.message);
-        if(data.balance) {
-          $rootScope.balance = "N" + data.balance.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");          
-          console.log(data);
-          $rootScope.sendAcceptanceVerification = function(){};
-          console.log(templateService.holdCurrentPage)
-          if($rootScope.msgLen > 0)
-            $rootScope.msgLen--;
-          $location.path(templateService.holdCurrentPage);
-          console.log(data)
-        }
-      });
-      console.log(payObj)
-    }
-*/
+
     
   
   $rootScope.sendAcceptanceVerification = function(time){ //this function is all availabe on wallet controller
@@ -14169,7 +14186,7 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
    
     var elem = angular.element(document.getElementById(response.id));
     elem[0].innerHTML = "";
-    elem[0].innerHTML += " &nbsp;&nbsp;&nbsp;SEEN! ";
+    elem[0].innerHTML += " &nbsp;&nbsp;&nbsp;seen! ";
     
   });
   
@@ -14194,8 +14211,7 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
           
           if(status) {
             var elem = angular.element(document.getElementById(msg.id));
-            elem[0].innerHTML += " &nbsp;&nbsp;&nbsp;sent! ";
-            
+            elem[0].innerHTML += "";            
           }
         });
         //mySocket.emit("save message",msg);//this saves the message as one mark
@@ -14223,7 +14239,8 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
    
    
     small[0].id = data.id;
-    small[0].innerHTML += $filter('amCalendar')(data.time) ;
+    //var time = ($filter('amTimeAgo')(data.time) === 'a few seconds ago') ? 'Now' : $filter('amTimeAgo')(data.time);
+    small[0].innerHTML += $filter('amCalendar')(data.time);
     //small[0].innerHTML += (data.sent) ? "&nbsp;&nbsp;" + $filter('amTimeAgo')(data.time) : "&nbsp;&nbsp;" + $filter('amTimeAgo')(data.time);     
     
     breaker[0].style.display = "block";

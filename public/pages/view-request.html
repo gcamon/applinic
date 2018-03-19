@@ -44,7 +44,7 @@
 <div class="card p-2" style="padding:0px" >
 	<div ng-if="isRequest === true">
 		<div class="col-md-2 col-lg-2 pull-right">
-			<img src="assets/img/avatar.jpg" ng-src="{{reqInfo.profile_pic_url}}" style="width: 150px; height: 150px">
+			<img ng-src="{{reqInfo.profile_pic_url}}" style="width: 150px; height: 150px">
 		</div>
 		<div class="col-md-10 col-lg-10">
 			<h5 class="pb-1 font-1_4" style="border-bottom: 1px solid rgba(0,0,0,0.2)">Dr. {{reqInfo.firstname}} {{reqInfo.lastname}} <span style="display:block; text-align: center;font-size: 12px; color: #000"></span></h5>
@@ -57,14 +57,10 @@
 		</div>
 		<div class="" style="margin-top: 30px; padding-right: 55px; padding-left: 15px">
 				<div class="tg-regardsleft">
-					<em>Regards,</em>
+					<em>Regards,</em><br>
 					<strong>Applinic Management.</strong>
 				</div>
-				<div class="tg-regardsright">
-					<strong class="logo">
-						<img src="/assets/images/dashboard/logo.jpg" alt="image description">
-					</strong>
-				</div>
+				
 			</div>
 			<div  class="" style="margin-top: 30px;padding-left: 15px">
 				<button class="btn btn-success" ng-click="sendAcceptanceVerification()">accept</button>

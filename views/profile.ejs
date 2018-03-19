@@ -1393,6 +1393,46 @@
         </div>
      </script>
 
+      <script type="text/ng-template" id="redirect-request.html">
+         <div class="modal fade">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+               <h5>Refer to a Specialist</h5>
+              </div>
+                <div>
+                    <ul style="list-style: none;display: inline-block;">                        
+                        <li style="float: left;padding-right: 15px"><input type="" name="" placeholder="{{search.city || 'City'}}" ng-model="search.city" class="form-control"></li>
+                        <li style="float: left;padding-right: 15px"><input type="" name="" placeholder="{{search.specialty || 'Specialty'}}" ng-model="search.specialty" class="form-control"></li>
+                        <li style="float: left;padding-top:2px"><button class="btn btn-info" ng-click="findSpecialist()">Search</button></li>
+                    </ul>
+                </div>
+                <div style="width: 80%;padding-left: 15px;" ng-if="searchResult.length > 1">
+                    <input type="text" name="" placeholder="Filter by place of work, name or address" class="form-control" ng-model="info">
+                </div>
+                <div style="max-height: 600px;overflow-y: auto;padding: 15px;" ng-if="!loading">
+                    <div class="pb-1" ng-repeat="searchResult in searchResult | filter: info" style="position: relative;" ng-if="searchResult.user_id !== checkLogIn.user_id">
+                        <img src="{{searchResult.profile_pic_url}}" style="width: 42px;height: 52px;float: left;">
+                        <article style="display: inline-block;max-width: 300px;padding-left:  10px">
+                            <strong style="display: block;" class="ellipsis">{{searchResult.title}} {{searchResult.firstname}} {{searchResult.lastname}}</strong>
+                            <em style="display: block;"><small>{{searchResult.specialty}}</small></em> 
+                            <small style="display: block;">{{searchResult.work_place}} {{searchResult.address}} {{searchResult.city}} {{searchResult.country}}</small>                             
+                        </article>
+                         <button class="btn btn-sn bg-success" style="padding: 5px 10px;position: absolute; right: 20px;bottom: 10px" title="refer to {{searchResult.title}} {{searchResult.firstname}}" ng-click="refer(searchResult)"> <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff;" ng-if="searchResult.loading"></i>{{(searchResult.loading) ? '' : (searchResult.msg || 'refer')}}</button>
+                    </div>
+                    <p ng-if="searchResult.length === 0" class="pt-2 text-danger" style="text-align: center;">No result found based on search criteria!</p>
+                </div>
+                <div style="text-align: center;margin-top: 40px" ng-if="loading">
+                   <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange;font-size: 18px" ng-if="loading"></i> 
+                </div>
+              <div class="modal-footer">
+                <button type="button" ng-click="close('No')" class="btn btn-default" data-dismiss="modal">Cancel</button>                
+              </div>
+            </div>
+          </div>
+        </div>
+     </script>
+
       <script type="text/ng-template" id="search-result.html">
          <div class="modal fade">
           <div class="modal-dialog">

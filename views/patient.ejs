@@ -168,17 +168,17 @@
                                 <div class="dropdown-menu notifications-dropdown-menu" style="max-height: 400px;overflow-y: auto;">
                                     <ul class="notifications-container noti-style">
                                         <li> <h6 style="text-align: center">Message(s)</h6> </li>
-                                        <li ng-repeat = "msg in allMsg" ng-click= "viewMessage(msg.user_id,msg.message_id)" ng-if="msg.category !== 'need_doctor'">
+                                        <li ng-repeat = "msg in allMsg | orderBy: '-date'" ng-click= "viewMessage(msg.user_id,msg)" ng-if="msg.category !== 'need_doctor'">
                                             <div class="notification-item">
                                                 <div class="img-col">
                                                     <div class="img" style="background-image: url({{msg.profile_pic_url}})"></div>
                                                 </div>
                                                 <div class="body-col">
-                                                    <p> <span class="accent" ng-cloak>{{msg.title}} {{msg.firstname}} {{msg.lastname}}</span> <span style="display:block" ng-cloak>{{msg.message}}</span> <span style="display:block" am-time-ago="msg.date" ng-cloak></span>. </p>
+                                                    <p> <span class="accent" ng-cloak>{{msg.title}} {{msg.firstname}} {{msg.lastname}}</span> <span style="display:block" ng-class="{'text-danger': msg.reason}" ng-cloak>{{msg.message}}</span> <span style="display:block" am-time-ago="msg.date" ng-cloak></span>. </p>
                                                 </div>
                                             </div>                                            
                                         </li>                                        
-                                        <li ng-repeat = "msg in allMsg" class="msg-drp-list" ng-click= "viewResponse(msg.user_id,msg.complaint_id)" ng-if="msg.category === 'need_doctor'">
+                                        <li ng-repeat = "msg in allMsg | orderBy: '-date'" class="msg-drp-list" ng-click= "viewResponse(msg.user_id,msg.complaint_id)" ng-if="msg.category === 'need_doctor'">
                                             <div class="notification-item">
                                                 <div class="img-col">
                                                     <div class="img fa fa-user-md"></div>

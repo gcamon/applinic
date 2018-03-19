@@ -899,7 +899,72 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
     })
 
     router.get("/user/find-specialist",function(req,res){
-        res.render("list-doctors",{"userInfo":req.user})
+      if(req.user) {
+        req.query.type = "Doctor";     
+        model.user.find(req.query,{profile_pic_url:1, 
+          firstname: 1,title: 1,lastname:1,user_id:1,_id:0,work_place:1,address:1,city:1,country:1,phone:1,specialty:1},function(err,list){
+            if(err) throw err;
+            res.json(list)
+        })
+      } else {
+        res.end("unauthorized access!");
+      }
+    });
+
+    router.put("/user/find-specialist",function(req,res){
+
+      if(req.user) {
+
+        var requestData = {};
+        for(var item in req.body){
+          if(req.body.hasOwnProperty(item) && item !== "receiverId") {
+              requestData[item] = req.body[item];
+          }
+        }
+
+        if(requestData._id)
+          delete requestData._id;
+
+      
+        model.user.findOne({user_id:req.body.receiverId},{doctor_notification:1,presence:1,set_presence:1,phone:1}).exec(function(err,data){
+          if (err) {
+            return res.status(400).send({
+                message: errorHandler.getErrorMessage(err)
+            });
+
+          } else if(data) {
+
+            data.doctor_notification.push(requestData);
+
+            if(data.presence === true && data.set_presence.general === true && req.body.type === "consultation"){           
+              io.sockets.to(req.body.receiverId).emit("receive consultation request",{status: "success"});
+
+            } else if(req.body.type === "consultation" && data.set_presence.general === false || data.presence === false) {
+
+              var msgBody = req.user.title + " " + req.user.firstname + " " + req.user.lastname + " sends consultation request! Visit http://applinic.com/user/doctor";
+
+              var phoneNunber =  data.phone;            
+
+              sms.messages.create(
+                {
+                  to: phoneNunber,
+                  from: '+16467985692',
+                  body: msgBody,
+                }
+              ) 
+
+            }
+
+            data.save(function(err,info){});
+            res.send({status:"notified"});
+          } else {
+            res.end("error 404 occured!")
+          }
+        });
+      } else {
+        res.end("unauthorized access!")
+      }
+
     });
 
 
@@ -1162,15 +1227,16 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
                     }*/
                     if(err) throw err;
                     if(result) {
+                      var date = + new Date();
                       req.body.service_access = true;
                       var random = Math.floor(Math.random() * 999999999); // use for check on the front end to distinguish messages sent.
                         result.patient_mail.push({
-                        message_id: random,
+                        message_id: random.toString(),
                         user_id: req.user.user_id,
                         firstname: req.user.firstname,
                         lastname: req.user.lastname,
                         title: req.user.title,
-                        message: "Consultation request accepted",
+                        message: "Consultation request accepted!",
                         date: req.body.date,
                         consultation_fee: req.body.consultation_fee,
                         service_access: req.body.service_access,
@@ -1216,41 +1282,48 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
 
     router.put("/user/doctor/decline-request",function(req,res){
       if(req.user) {
+       var random = Math.floor(Math.random() * 9999999);
         model.user.findOne({user_id: req.body.sender_id},{patient_mail:1}).exec(function(err,patient){
           if(err) throw err;
           if(patient) {
             patient.patient_mail.push({
               message : "Consultation request rejected!",
-              message_id: req.body.message_id,
+              message_id: random.toString(),
               user_id: req.user.user_id,
               firstname: req.user.firstname,
               lastname: req.user.lastname,
               title: req.user.title,
               date: req.body.date, 
-              reason: req.body.reason                     
+              reason: req.body.reason,
+              profile_pic_url: req.user.profile_pic_url              
             });
 
-            patient.save(function(err,info){});
+            patient.save(function(err,info){
+              updateDoctor()
+            });
+            
           } else {
             res.send({message: "Patient does not exist!"})
           }
         });
 
-        console.log(req.body)
-        model.user.findOne({user_id:req.user.user_id},{doctor_notification: 1}).exec(function(err,user){
-          if(err) throw err;
-          var elemPos = user.doctor_notification.map(function(x){return x.message_id}).indexOf(req.body.message_id);
-          
-          if (elemPos !== -1) {
-            user.doctor_notification.splice(elemPos,1);
-          }
+        function updateDoctor() {
+          model.user.findOne({user_id:req.user.user_id},{doctor_notification: 1}).exec(function(err,user){
+            if(err) throw err;
+            var elemPos = user.doctor_notification.map(function(x){return x.message_id}).indexOf(req.body.message_id);
+            
+            if (elemPos !== -1) {
+              user.doctor_notification.splice(elemPos,1);
+            }
 
-          user.save(function(err,info){
-            console.log("request deleted")
+            user.save(function(err,info){
+              console.log("request deleted")
+            })
+
+            res.json({status: true})
+
           })
-
-          res.send({status: "deleted"})
-        })
+        }
 
         
       } else {
@@ -1258,9 +1331,7 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
       }
     })
 
-    router.put("/user/doctor/redirect-request",function(req,res){
-      
-    })
+    
     
 
     //this router gets all the patient medical records and prescriptions and send it to the front end as soon as the patient logs in. 

@@ -43,6 +43,12 @@ a{
   overflow:hidden;
 }
 
+/*.message_container_base.bg-info, .message_container_base.right-top{
+  background-color: #3a4651;
+}*/
+
+
+
 .msg_container_base:hover{
   background: #e5e5e5;
   margin: 0;
