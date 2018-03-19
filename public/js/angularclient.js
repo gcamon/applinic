@@ -5678,8 +5678,8 @@ app.service("walletService",["$resource",function($resource){
 }]);
 
 
-app.controller("walletController",["$scope","$http","$rootScope","$location","ModalService","requestManager","templateService","localManager","$resource","walletService",
-  function($scope,$http,$rootScope,$location,ModalService,requestManager,templateService,localManager,$resource,walletService){
+app.controller("walletController",["$scope","$http","$rootScope","$location","ModalService","requestManager","templateService","localManager","$resource","walletService","$filter",
+  function($scope,$http,$rootScope,$location,ModalService,requestManager,templateService,localManager,$resource,walletService,$filter){
   $scope.viewInvoice = false;
   var user = localManager.getValue("resolveUser");
   $scope.pay = {};
@@ -5964,23 +5964,50 @@ app.controller("walletController",["$scope","$http","$rootScope","$location","Mo
   
 
   /**** view transaction logic ***/
-  $scope.period = {};
-  $scope.transactHistory = function() {
-    console.log($scope.period)
-    var list = Object.keys($scope.period);      
-    if(list.length > 1){
-      var newObj = {};       
-      newObj["from"] = + new Date($scope.period.from);
-      newObj["to"] = + new Date($scope.period.to);        
-      
-      var User = walletService.resource("/user/:userId/transactions",{userId: user.user_id},{getWallet:{method:'GET',isArray:true}});
-      $scope.transacts = User.getWallet(newObj)
-      /*var User = $resource("/user/:userId/transactions",{userId: user.user_id},{getWallet:{method:'GET',isArray:true}})
-      $scope.transact = User.getWallet($scope.pariod);*/
-      console.log($scope.transact)
+var myVariable = new Date();
+var makeDate = new Date(myVariable);
+$scope.period = {};
+$scope.duration = {};
+var newObj = {};        
+var currMonth = + makeDate;
+makeDate.setMonth(makeDate.getMonth() - 1);
+var lastMonth = + makeDate;
 
-    }
+newObj["from"] = lastMonth;
+newObj["to"] = currMonth; 
+
+$scope.duration.from = $filter('date')(newObj["from"]);
+$scope.duration.to = $filter('date')(newObj["to"]);
+
+var User = walletService.resource("/user/:userId/transactions",{userId: user.user_id},{getWallet:{method:'GET',isArray:true}});
+
+$scope.transactHistory = function() {
+  
+  var list = Object.keys($scope.period);   
+  if(list.length > 1){      
+    newObj["from"] = + new Date($scope.period.from);
+    newObj["to"] = + new Date($scope.period.to);
+  } else {
+    newObj["from"] = lastMonth;
+    newObj["to"] = currMonth; 
   }
+
+  $scope.duration.from = $filter('date')(newObj["from"]);
+  $scope.duration.to = $filter('date')(newObj["to"]);
+
+  getTransactions() 
+}
+
+function getTransactions() {
+  $scope.loading = true;
+  User.getWallet(newObj,function(data){
+    $scope.loading = false;
+    $scope.transact = data;
+  });
+  console.log($scope.transact)     
+}
+
+getTransactions();
 
   /**** end of view transaction logic ******/
 
