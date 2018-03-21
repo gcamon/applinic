@@ -392,7 +392,7 @@
                                 </a>
 
                                  <a ng-controller="balanceController" href="#/transactions" class="btn btn-info btn-sm header-btn" style="float-right"><i class="fa fa-money"></i>
-                                    <span ng-cloak>Available Balance |  {{balance}}</span>
+                                    <span ng-cloak>Available Balance | <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i> {{(loading) ? "" : balance}}</span>
                                 </a>  
                                      
                             </div>     

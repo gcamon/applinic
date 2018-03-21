@@ -89,46 +89,44 @@
 </div>-->
 
 <div class="card p-2">
-	<h3 class="font-1_4 mb-1">Fund wallet</h3><hr>
-	{{date | date : "mediumDate"}}
+	<h3 class="mb-1 p-0">Fund wallet</h3><hr>
+	 {{date | date : "mediumDate"}}
 	<div>
-		<label class="font-1-4">Payment option: </label>
-		<select ng-model="pay.mode" class="col-sm-6 custom-select form-control">
-			<option value="">_Please select</option>
-			<option>Pay with ATM card/PayStack</option>
+		<label class="font-1-1">Payment option: </label>
+		<select ng-model="pay.mode" class="custom-select form-control" style="display: inline-block;width: 60%">
+			<option class="font-1-2" value="">_Please select</option>
+			<option class="font-1-2">Pay with ATM card/PayStack</option>
 			<!--<option>Pay with USSD</option>
 			<option>Pay through Bank Deposit</option>
 			<option>Voucher</option>-->
 		</select>
 	</div>
-	<form ng-if="isATM" >
-		<div>
-			<h5  class="font-1_1">{{pay.mode}}</h5>
-			<form>
-				<div>
-					<input type="number" ng-model="pay.amount" class="form-control"  placeholder="Enter amount">
-				</div>
-				<p style="color:red">{{errorMsg}}</p>
-				<div style="margin: 20px 0">
-					<strong  class="font_1-7">Depositing: <em>{{str}}</em></strong>
-				</div>
-				<div>
-				<paystack-pay-button
-			        class="yellow"
-			        text="<small><b>Pay</b> Now!</small>"
-			        email="email"
-			        amount="pay.amount"
-			        reference="reference"
-			        metadata="metadata"
-			        callback="callback"
-			        close="close" class="btn btn-success">
-				</paystack-pay-button>
-					<!--<input type="button" value="Confirm" ng-click="interswitch()" class="btn btn-success">-->
-				</div>
-			</form>
-
-		</div>		
-	</form>
+	
+	<div ng-if="isATM">
+		<h5  class="font-1_2 mt-2">{{pay.mode}}</h5>
+		<form>
+			<div>
+				<input type="number" ng-model="pay.amount" class="form-control" style="width: 80%" placeholder="Enter amount">
+			</div>
+			<p style="color:red">{{errorMsg}}</p>
+			<div style="margin: 20px 0">
+				<strong  class="font_1-2">Depositing: <em>{{str}}</em></strong>
+			</div>
+			<div>
+			<paystack-pay-button
+		        text="<small><b>Fund</b> Now!</small>"
+		        email="email"
+		        amount="pay.amount"
+		        reference="reference"
+		        metadata="metadata"
+		        callback="callback"
+		        close="close" class="btn btn-success">
+			</paystack-pay-button>
+				<!--<input type="button" value="Confirm" ng-click="interswitch()" class="btn btn-success">-->
+			</div>
+		</form>
+	</div>		
+	
 	<div ng-if = "isBank">
 		<div class="mt-2 col-md-4 col-sm-12 offset-md-4 offset-sm-0">
 			<h6>{{pay.mode}}</h6>

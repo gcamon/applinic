@@ -206,7 +206,7 @@ img {
 
 /* CSS talk bubble */
 .talk-bubble {
-  margin: 20px;
+  margin: 4px 20px;
   display: inline-block;
   position: relative;
   height: auto;
@@ -446,7 +446,7 @@ img {
 .talktext{
   padding: 1em;
   text-align: left;
-  line-height: 1.5em;
+  line-height: 0.5em;
 }
 .talktext p{
   /* remove webkit p margins */

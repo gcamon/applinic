@@ -1434,14 +1434,30 @@ app.controller('loginController',["$scope","$http","$location","$window","$resou
 }]);
 
 //display the current balance always
-app.controller("balanceController",["$rootScope","$resource","localManager",function($rootScope,$resource,localManager){  
-    var user = localManager.getValue("resolveUser");
+app.controller("balanceController",["$rootScope","$scope","$resource","localManager","mySocket",
+  function($rootScope,$scope,$resource,localManager,mySocket){  
+  var user = localManager.getValue("resolveUser");
+
+  function getBalance() {
+    $scope.loading = true;
     var amount = $resource('/user/:userId/get-balance',{userId: user.user_id},{headers:{withCredentials: true}});
     var wallet = amount.get(null,function(data){
+      $scope.loading = false;
       var whole = Math.round(data.balance);
       var format = "N" + whole.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
       $rootScope.balance = format;
     })
+  } 
+
+  getBalance();
+
+  mySocket.on("fund received",function(data){
+    if(data.status) {
+      getBalance()
+      $rootScope.alertService(3,data.message); 
+    }
+  })
+
 }]);  
 
 
@@ -5812,12 +5828,11 @@ app.controller("walletController",["$scope","$http","$rootScope","$location","Mo
       headers : {'Content-Type': 'application/json'} 
       })
     .success(function(data) {
-      console.log(data)
       if(!data.error) {
         var whole = Math.round(data.balance);
         var format = "N" + whole.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
         $rootScope.balance = format;
-        $rootScope.alertService(1,data.message);   
+        $rootScope.alertService(3,data.message);   
       } else {
          alert(data.message)               
       }
@@ -5835,6 +5850,8 @@ app.controller("walletController",["$scope","$http","$rootScope","$location","Mo
   }
 
 /***** end of paystack *******/
+
+
  /** transfer fund logic ***/
 
   $scope.$watch("pay.amount",function(newVal,oldVal){
@@ -5855,7 +5872,7 @@ app.controller("walletController",["$scope","$http","$rootScope","$location","Mo
       $scope.isPhone = true;
       $scope.isUserId = false;
     }
-    console.log(newVal)
+    
   });
 
   $scope.confirm = function(time){
@@ -6002,9 +6019,8 @@ function getTransactions() {
   $scope.loading = true;
   User.getWallet(newObj,function(data){
     $scope.loading = false;
-    $scope.transact = data;
+    $scope.transacts = data;
   });
-  console.log($scope.transact)     
 }
 
 getTransactions();
@@ -6101,7 +6117,6 @@ getTransactions();
         alert(data.message);
         if(data.balance) {
           $rootScope.balance = "N" + data.balance.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");          
-          console.log(data);
           $rootScope.sendAcceptanceVerification = function(){};
           if($rootScope.msgLen > 0)
             $rootScope.msgLen--;
@@ -14260,7 +14275,7 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
     //p[0].style.wordBreak = "normal";
     //p[0].style.overflowWrap = "break-word";
     small[0].style.display = "block";
-    small[0].style.marginTop = "10px";
+    small[0].style.marginTop = "5px";
     small[0].style.color = "#ccc";
     p[0].innerHTML += (data.sent) ? data.sent : data.received; 
    

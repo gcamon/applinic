@@ -247,11 +247,9 @@ var basicPaymentRoute = function(model,sms,io,paystack){
 
 	router.get("/user/verify",function(req,res){
 		if(req.user && req.query.phone || req.query.userId){
-			console.log(req.query)
 			var obj;
 			if(req.query.phone){
-				var toNum = parseInt(req.query.phone)
-				obj = {phone: toNum}
+				obj = {phone: req.query.phone}
 			} else if(req.query.userId){
 				obj = {user_id: req.query.userId}
 			}
@@ -261,10 +259,9 @@ var basicPaymentRoute = function(model,sms,io,paystack){
 				if(!user){
 					var person = req.query.phone || req.query.userId;
 					var msg = "User with this " + person + " does not exist";
-					res.send({error: msg})
+					res.json({error: msg})
 				} else {
-					console.log(user);
-					res.send(user);
+					res.json(user);
 				}
 				
 			})
@@ -281,13 +278,14 @@ var basicPaymentRoute = function(model,sms,io,paystack){
 			//note for payment req.body must have userId of who is to be debited is required while for transfer req.body do not have userId
 			//because is assumed the user at that moment is making the request which means his req.user.user_id will be used.
 			var personId = req.body.userId || req.user.user_id;
-
+			console.log(req.body)
 			model.user.findOne({user_id: personId},{phone:1,ewallet:1,user_id:1},function(err,user){
 				if(err) throw err;
 				if(!user){
 					res.send({message: "User does not exist!"});
 				} else {
-					if(user.ewallet.available_amount >= req.body.amount){
+					var amount = (typeof req.body.amount === "string") ? parseInt(req.body.amount) : req.body.amount;
+					if(user.ewallet.available_amount >= amount){
 						var random1 = Math.floor(Math.random() * 999);
 						var random2 = Math.floor(Math.random() * 999);
 						var password = check(random1) + " " + check(random2);
@@ -297,13 +295,6 @@ var basicPaymentRoute = function(model,sms,io,paystack){
 								if(err) throw err;
 							});
 						}
-
-						/*var verify = {
-							user_id: user.user_id,//this refers to the id of the debitor. ie the person otp will be sent to.
-							otp: password,
-							amount: req.body.amount,
-							time: req.body.time
-						}*/
 						
 						
 			      var otp = new model.otpSchema({
@@ -314,7 +305,6 @@ var basicPaymentRoute = function(model,sms,io,paystack){
 			        senderId: req.user.user_id
 			      });
 			      
-			      console.log(otp)
 
 			      //sets the expiration time for each otp sent.
 			      var date = new Date();
@@ -327,7 +317,7 @@ var basicPaymentRoute = function(model,sms,io,paystack){
 			        console.log("otp saved");
 			      }); 
 
-
+			      console.log(otp)
 			      var callBack = function(err,responseData){
 							if(err) {
 								console.log(err);
@@ -419,6 +409,7 @@ var basicPaymentRoute = function(model,sms,io,paystack){
 	//@params object. properties otp,date,message,userId or phone
 	router.post("/user/tranfer/confirmation",function(req,res){
 		if(req.user && req.body && req.body.userId !== req.user.user_id && req.body.otp && req.body.phone !== req.user.phone){
+			console.log(req.body)
 			model.otpSchema.findOne({otp:req.body.otp}).exec(function(err,data){
 				if(err) throw err;
 				if(!data){
@@ -438,22 +429,40 @@ var basicPaymentRoute = function(model,sms,io,paystack){
 							receiver = {user_id: req.body.userId}
 						}
 
-						model.user.findOne(receiver,{firstname:1,lastname:1,name:1},function(err,creditor){
+						model.user.findOne(receiver,{firstname:1,lastname:1,name:1,user_id:1},function(err,creditor){
 							if(err) throw err;
 							if(creditor) {
-								transact(creditor);								
+								transact(creditor,function(){
+									var name = req.user.firstname || req.user.name;
+									io.sockets.to(creditor.user_id).emit("fund received",{
+										message: data.amount + " was transfered to you by " + name,
+										status: true
+									});
+								});
+
 							} else {
-								res.send({message: "Transaction cancelled! Reason: User does not exist."});
+								res.send({message: "Transaction canceled! Reason: User does not exist."});
 							}
 						});
 
-						function transact(person){
+						function transact(person,cb){
 							model.user.findOne({user_id: req.user.user_id},{ewallet:1,firstname:1,lastname:1,name:1}).exec(function(err,debitor){
-								var name = req.user.firstname || req.user.name;
-								var pay = new Wallet(req.body.date,name,debitor.lastname,req.body.message);
-								//note firstname or lastname of patient may change.							
-								pay.transfer(model,data.amount,debitor,receiver,person);
-								res.send({message: "Transaction successful! Your account is debited.",balance:debitor.ewallet.available_amount});
+								if (err) {
+			            return res.status(400).send({
+			                message: errorHandler.getErrorMessage(err)
+			            });
+				        } else {
+				        	if(debitor.ewallet.available_amount >= data.amount) {
+										var name = req.user.firstname || req.user.name;
+										var pay = new Wallet(req.body.date,name,debitor.lastname,req.body.message);
+										//note firstname or lastname of patient may change.							
+										pay.transfer(model,data.amount,debitor,receiver,person);
+										res.json({message: "Transaction successful! Your account is debited.",balance:debitor.ewallet.available_amount});
+										cb();
+									} else {
+										res.json({message: "Transaction canceled! Reason: You have insufficient fund for this transaction."})
+									}
+								}
 							});
 						}	
 
