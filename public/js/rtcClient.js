@@ -5,10 +5,34 @@ var PeerManager = (function (name) {
         peerConnectionConfig: {
           iceServers: [
             {
-              urls: "turn:45.55.203.165:3478?transport=udp",             
-              username: "applinicvideo",
-              credential: "zajawekihascome",
-            }  
+              "url": "turn:45.55.203.165:3478?transport=udp",             
+              "username": "applinicvideo",
+              "credential": "zajawekihascome",
+            },
+            {
+              "url": "turn:45.55.203.165:3478?transport=tcp",             
+              "username": "applinicvideo",
+              "credential": "zajawekihascome",
+            },
+            {"url":"stun:w3.xirsys.com"},
+            {"username":"d9e8091c-2e0a-11e8-b899-820ee5d51a5e",
+            "url":"turn:w3.xirsys.com:80?transport=udp",
+            "credential":"d9e80994-2e0a-11e8-a497-b30dd1ef5383"},
+            {"username":"d9e8091c-2e0a-11e8-b899-820ee5d51a5e",
+            "url":"turn:w3.xirsys.com:3478?transport=udp",
+            "credential":"d9e80994-2e0a-11e8-a497-b30dd1ef5383"},
+            {"username":"d9e8091c-2e0a-11e8-b899-820ee5d51a5e",
+            "url":"turn:w3.xirsys.com:80?transport=tcp",
+            "credential":"d9e80994-2e0a-11e8-a497-b30dd1ef5383"},
+            {"username":"d9e8091c-2e0a-11e8-b899-820ee5d51a5e",
+            "url":"turn:w3.xirsys.com:3478?transport=tcp",
+            "credential":"d9e80994-2e0a-11e8-a497-b30dd1ef5383"},
+            {"username":"d9e8091c-2e0a-11e8-b899-820ee5d51a5e",
+            "url":"turns:w3.xirsys.com:443?transport=tcp",
+            "credential":"d9e80994-2e0a-11e8-a497-b30dd1ef5383"},
+            {"username":"d9e8091c-2e0a-11e8-b899-820ee5d51a5e",
+            "url":"turns:w3.xirsys.com:5349?transport=tcp",
+            "credential":"d9e80994-2e0a-11e8-a497-b30dd1ef5383"}
           ]
         },
         peerConnectionConstraints: {
@@ -29,6 +53,33 @@ var PeerManager = (function (name) {
   socket.on('id', function(id) {
     localId = id;
   });
+
+  /*
+{"v":{"iceServers":[{"url":"stun:w3.xirsys.com"},
+{"username":"d9e8091c-2e0a-11e8-b899-820ee5d51a5e",
+"url":"turn:w3.xirsys.com:80?transport=udp",
+"credential":"d9e80994-2e0a-11e8-a497-b30dd1ef5383"},
+
+{"username":"d9e8091c-2e0a-11e8-b899-820ee5d51a5e",
+"url":"turn:w3.xirsys.com:3478?transport=udp",
+"credential":"d9e80994-2e0a-11e8-a497-b30dd1ef5383"},
+
+{"username":"d9e8091c-2e0a-11e8-b899-820ee5d51a5e",
+"url":"turn:w3.xirsys.com:80?transport=tcp",
+"credential":"d9e80994-2e0a-11e8-a497-b30dd1ef5383"},
+
+{"username":"d9e8091c-2e0a-11e8-b899-820ee5d51a5e",
+"url":"turn:w3.xirsys.com:3478?transport=tcp",
+"credential":"d9e80994-2e0a-11e8-a497-b30dd1ef5383"},
+
+{"username":"d9e8091c-2e0a-11e8-b899-820ee5d51a5e",
+"url":"turns:w3.xirsys.com:443?transport=tcp",
+"credential":"d9e80994-2e0a-11e8-a497-b30dd1ef5383"},
+
+{"username":"d9e8091c-2e0a-11e8-b899-820ee5d51a5e",
+"url":"turns:w3.xirsys.com:5349?transport=tcp",
+"credential":"d9e80994-2e0a-11e8-a497-b30dd1ef5383"}]}
+  */
 
   //if peer does not exist yet, this function will create peer below otherwise peer will be retreived fron 'peerDatabase' where existin
   //peer are kept. The remark where this happened in "jj".

@@ -99,8 +99,25 @@ mySocket(model,io,streams);
 
 var a = "ede obinna".replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()});
 var a = "djdshj"
-console.log(a[0])
-console.log(parseInt(Math.floor(Math.random() * 9999 ) + "" + Math.floor(Math.random() * 9999)))
+
+var https = require("https");
+var options = {
+      host: "global.xirsys.net",
+      path: "/_turn/www.applinic.com",
+      method: "PUT",
+      headers: {
+          "Authorization": "Basic " + new Buffer("gcamon:406b470c-2ddf-11e8-9c83-538c56484774").toString("base64")
+      }
+};
+var httpreq = https.request(options, function(httpres) {
+      var str = "";
+      httpres.on("data", function(data){ str += data; });
+      httpres.on("error", function(e){ console.log("error: ",e); });
+      httpres.on("end", function(){ 
+          console.log("ICE List: ", str);
+      });
+});
+httpreq.end();
 
 /*const accountSid = 'AC79f290154f4c4236a3811054e2c5e2b7';
 const authToken = 'your_auth_token';

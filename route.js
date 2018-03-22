@@ -1,5 +1,6 @@
 'use strict';
 var path = require('path');
+var https = require('https');
 var route = require('./config');
 var router = route.router;
 var fs = require("fs");
@@ -7,6 +8,14 @@ var dateTime = require("node-datetime");
 var deleteItem = require("./delete");
 var EventEmmiter = require("events");
 var emitter = new EventEmmiter();
+var options = {
+  host: "global.xirsys.net",
+  path: "/_turn/www.applinic.com",
+  method: "PUT",
+  headers: {
+      "Authorization": "Basic " + new Buffer("gcamon:406b470c-2ddf-11e8-9c83-538c56484774").toString("base64")
+  }
+};
 
 //var token = require("./twilio");
 //var randomUserName = require("./randos");
@@ -236,6 +245,30 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
       res.redirect("/login");
     }
   });
+
+  /*router.get("/user/iceservers-list",function() {
+    if(req.user) {
+    var httpreq = https.request(options, function(httpres) {
+      var str = "";
+
+      httpres.on("data", function(data){
+       str += data; 
+       res.json(str);
+      });
+
+      httpres.on("error", function(e){ console.log("error: ",e); });
+
+      httpres.on("end", function(){ 
+          console.log("ICE List: ", str);
+      });
+    });
+
+    httpreq.end();
+ 
+    } else {
+      res.end("Unauthorized access!!")
+    }
+  })*/
 
    router.get('/user/streams.json/:controlId',function(req,res){
     if(req.user) {
