@@ -29,6 +29,8 @@ var express = require('express'),
   var Geonames = require("geonames.js");
   var geonames = new Geonames({username: 'gcamon29', lan: 'en', encoding: 'JSON'});
 
+
+
  
  // add geonames to the database once.
   model.geonames.find({},function(err,data){
@@ -98,6 +100,7 @@ mySocket(model,io,streams);
 var a = "ede obinna".replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()});
 var a = "djdshj"
 console.log(a[0])
+console.log(parseInt(Math.floor(Math.random() * 9999 ) + "" + Math.floor(Math.random() * 9999)))
 
 /*const accountSid = 'AC79f290154f4c4236a3811054e2c5e2b7';
 const authToken = 'your_auth_token';

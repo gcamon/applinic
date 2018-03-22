@@ -406,8 +406,8 @@ module.exports = function(model,io,streams) {
 				});
 
 				var date = new Date();
-	      control.expirationDate = new Date(date.getTime() + 300000);
-	      control.expirationDate.expires = 36000; //10 hours before the data is deleted.
+			    control.expirationDate = new Date(date.getTime() + 300000);
+			    control.expirationDate.expires = 36000; //10 hours before the data is deleted.
 				control.save(function(){});
 			}
 
@@ -444,6 +444,8 @@ module.exports = function(model,io,streams) {
 
     // gets te control to join a room
     socket.on("control join",function(control,cb){
+    	console.log("did it join?")
+    	console.log(control)
     	socket.join(control.control);//control.joins a roo
     	cb(control);
     	//streams.addStream(socket.id,control.name,control.control,model)
@@ -453,7 +455,7 @@ module.exports = function(model,io,streams) {
       console.log('-- ' + socket.id + ' is ready to stream --');
       //search database to see which control this socket belong to.
       streams.addStream(socket.id, options.name, options.controlId,model);
-      socket.join(options.controlId); //create a room for common sites using one control.
+      //socket.join(options.controlId); //create a room for common sites using one control.
       //io.sockets.to(options.controlId).emit("new stream added",{message:"new stream",controlId:options.controlId});
       cb({controlId:options.controlId})
     });

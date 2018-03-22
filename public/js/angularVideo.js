@@ -379,9 +379,9 @@
   $rootScope.treatment = {};
   var patient = {};  
  
-  var random = Math.floor(Math.random() * 999999999999);
+  var random = parseInt(Math.floor(Math.random() * 9999 ) + "" + Math.floor(Math.random() * 9999))//Math.floor(Math.random() * 9999999999);
 
-  $rootScope.session = Math.floor(Math.random() * 999999999999999999999);
+  $rootScope.session = parseInt(Math.floor(Math.random() * 9999 ) + "" + Math.floor(Math.random() * 9999))//Math.floor(Math.random() * 99999999999);
 
   patient.id = localManager.getValue("userId"); // Refers to user id of the patient to be treated 
 
