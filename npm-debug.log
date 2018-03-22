@@ -1,0 +1,99 @@
+0 info it worked if it ends with ok
+1 verbose cli [ 'C:\\Program Files\\nodejs\\node.exe',
+1 verbose cli   'C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js',
+1 verbose cli   'install',
+1 verbose cli   'mediasoup',
+1 verbose cli   '--save' ]
+2 info using npm@3.10.10
+3 info using node@v6.11.2
+4 silly loadCurrentTree Starting
+5 silly install loadCurrentTree
+6 silly install readLocalPackageData
+7 silly fetchPackageMetaData mediasoup
+8 silly fetchNamedPackageData mediasoup
+9 silly mapToRegistry name mediasoup
+10 silly mapToRegistry using default registry
+11 silly mapToRegistry registry https://registry.npmjs.org/
+12 silly mapToRegistry data Result {
+12 silly mapToRegistry   raw: 'mediasoup',
+12 silly mapToRegistry   scope: null,
+12 silly mapToRegistry   escapedName: 'mediasoup',
+12 silly mapToRegistry   name: 'mediasoup',
+12 silly mapToRegistry   rawSpec: '',
+12 silly mapToRegistry   spec: 'latest',
+12 silly mapToRegistry   type: 'tag' }
+13 silly mapToRegistry uri https://registry.npmjs.org/mediasoup
+14 verbose request uri https://registry.npmjs.org/mediasoup
+15 verbose request no auth needed
+16 info attempt registry request try #1 at 3:20:34 PM
+17 verbose request id f555732b9f948a91
+18 verbose etag "5a9471aa-161ab"
+19 verbose lastModified Mon, 26 Feb 2018 20:44:26 GMT
+20 http request GET https://registry.npmjs.org/mediasoup
+21 http 304 https://registry.npmjs.org/mediasoup
+22 verbose headers { date: 'Thu, 22 Mar 2018 14:20:42 GMT',
+22 verbose headers   via: '1.1 varnish',
+22 verbose headers   'cache-control': 'max-age=300',
+22 verbose headers   etag: '"5a9471aa-161ab"',
+22 verbose headers   age: '79',
+22 verbose headers   connection: 'keep-alive',
+22 verbose headers   'x-served-by': 'cache-lcy19246-LCY',
+22 verbose headers   'x-cache': 'HIT',
+22 verbose headers   'x-cache-hits': '1',
+22 verbose headers   'x-timer': 'S1521728442.221958,VS0,VE0',
+22 verbose headers   vary: 'Accept-Encoding, Accept' }
+23 silly get cb [ 304,
+23 silly get   { date: 'Thu, 22 Mar 2018 14:20:42 GMT',
+23 silly get     via: '1.1 varnish',
+23 silly get     'cache-control': 'max-age=300',
+23 silly get     etag: '"5a9471aa-161ab"',
+23 silly get     age: '79',
+23 silly get     connection: 'keep-alive',
+23 silly get     'x-served-by': 'cache-lcy19246-LCY',
+23 silly get     'x-cache': 'HIT',
+23 silly get     'x-cache-hits': '1',
+23 silly get     'x-timer': 'S1521728442.221958,VS0,VE0',
+23 silly get     vary: 'Accept-Encoding, Accept' } ]
+24 verbose etag https://registry.npmjs.org/mediasoup from cache
+25 verbose get saving mediasoup to C:\Users\Dr. Chimaroke\AppData\Roaming\npm-cache\registry.npmjs.org\mediasoup\.cache.json
+26 verbose correctMkdir C:\Users\Dr. Chimaroke\AppData\Roaming\npm-cache correctMkdir not in flight; initializing
+27 silly install normalizeTree
+28 silly loadCurrentTree Finishing
+29 silly loadIdealTree Starting
+30 silly install loadIdealTree
+31 silly cloneCurrentTree Starting
+32 silly install cloneCurrentTreeToIdealTree
+33 silly cloneCurrentTree Finishing
+34 silly loadShrinkwrap Starting
+35 silly install loadShrinkwrap
+36 silly loadShrinkwrap Finishing
+37 silly loadAllDepsIntoIdealTree Starting
+38 silly install loadAllDepsIntoIdealTree
+39 silly rollbackFailedOptional Starting
+40 silly rollbackFailedOptional Finishing
+41 silly runTopLevelLifecycles Finishing
+42 silly install printInstalled
+43 verbose stack Error: Unsupported platform for mediasoup@2.0.14: wanted {"name":"mediasoup","version":"2.0.14","description":"Cutting Edge WebRTC Video Conferencing","author":{"name":"Iñaki Baz Castillo","email":"ibc@aliax.net","url":"https://inakibaz.me"},"contributors":[{"name":"José Luis Millán","email":"jmillan@aliax.net","url":"https://github.com/jmillan"}],"homepage":"https://mediasoup.org","license":"ISC","repository":{"type":"git","url":"git+https://github.com/versatica/mediasoup.git"},"keywords":["webrtc","sfu","node","node-module","ortc"],"bugs":{"url":"https://github.com/versatica/mediasoup/issues"},"os":["!win32"],"engines":{"node":">=6.4"},"main":"lib/mediasoup.js","dependencies":{"check-types":"^7.3.0","debug":"^3.1.0","netstring":"^0.3.0","random-number":"0.0.9","randomatic":"^3.0.0","clang-tools-prebuilt":"^0.1.4"},"devDependencies":{"eslint":"^4.18.1","gulp":"^4.0.0","gulp-clang-format":"^1.0.25","gulp-eslint":"^4.0.2","gulp-rename":"^1.2.2","gulp-replace":"^0.6.1","gulp-shell":"^0.6.5","gulp-touch-cmd":"0.0.1","tap":"^11.1.1"},"optionalDependencies":{"clang-tools-prebuilt":"^0.1.4"},"scripts":{"test":"gulp test","postinstall":"make Release"},"gitHead":"2510eeb88ea7c28a62ac415db07b783155b446cd","_id":"mediasoup@2.0.14","_npmVersion":"5.6.0","_nodeVersion":"8.9.4","_npmUser":{"name":"ibc","email":"ibc@aliax.net"},"dist":{"integrity":"sha512-2i4m/W//YGzDQM+cOVIZqqRe2BjiKOUlz6iQiZCiev1wElZOmuvtPZKqIGkhhWjnkcTa2kSMNjY0upUz0gWncg==","shasum":"8c0549ba16ac0d71ff12066f7c78e65320216b4f","tarball":"https://registry.npmjs.org/mediasoup/-/mediasoup-2.0.14.tgz","fileCount":5617,"unpackedSize":51298597},"maintainers":[{"name":"ibc","email":"ibc@aliax.net"}],"directories":{},"_npmOperationalInternal":{"host":"s3://npm-registry-packages","tmp":"tmp/mediasoup_2.0.14_1519677864974_0.36741848948217126"},"_from":"mediasoup","_resolved":"https://registry.npmjs.org/mediasoup/-/mediasoup-2.0.14.tgz","_shasum":"8c0549ba16ac0d71ff12066f7c78e65320216b4f","_requested":{"raw":"mediasoup","scope":null,"escapedName":"mediasoup","name":"mediasoup","rawSpec":"","spec":"latest","type":"tag"},"_spec":"mediasoup","_where":"C:\\Users\\Dr. Chimaroke\\Desktop\\oceanapp","_args":[[{"raw":"mediasoup","scope":null,"escapedName":"mediasoup","name":"mediasoup","rawSpec":"","spec":"latest","type":"tag"},"C:\\Users\\Dr. Chimaroke\\Desktop\\oceanapp"]],"readme":"ERROR: No README data found!"} (current: {"os":"win32","cpu":"x64"})
+43 verbose stack     at checkPlatform (C:\nvm\v6.11.2\node_modules\npm\node_modules\npm-install-checks\index.js:45:14)
+43 verbose stack     at thenWarnEngineIssues (C:\nvm\v6.11.2\node_modules\npm\lib\install\validate-args.js:41:5)
+43 verbose stack     at C:\nvm\v6.11.2\node_modules\npm\node_modules\iferr\index.js:13:50
+43 verbose stack     at checkEngine (C:\nvm\v6.11.2\node_modules\npm\node_modules\npm-install-checks\index.js:24:10)
+43 verbose stack     at module.exports.isInstallable (C:\nvm\v6.11.2\node_modules\npm\lib\install\validate-args.js:38:3)
+43 verbose stack     at Array.<anonymous> (C:\nvm\v6.11.2\node_modules\npm\node_modules\slide\lib\bind-actor.js:15:8)
+43 verbose stack     at LOOP (C:\nvm\v6.11.2\node_modules\npm\node_modules\slide\lib\chain.js:15:14)
+43 verbose stack     at C:\nvm\v6.11.2\node_modules\npm\node_modules\slide\lib\chain.js:18:7
+43 verbose stack     at checkSelf (C:\nvm\v6.11.2\node_modules\npm\lib\install\validate-args.js:46:72)
+43 verbose stack     at Array.<anonymous> (C:\nvm\v6.11.2\node_modules\npm\node_modules\slide\lib\bind-actor.js:15:8)
+44 verbose pkgid mediasoup@2.0.14
+45 verbose cwd C:\Users\Dr. Chimaroke\Desktop\oceanapp
+46 error Windows_NT 10.0.14393
+47 error argv "C:\\Program Files\\nodejs\\node.exe" "C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js" "install" "mediasoup" "--save"
+48 error node v6.11.2
+49 error npm  v3.10.10
+50 error code EBADPLATFORM
+51 error notsup Unsupported platform for mediasoup@2.0.14: wanted {"os":"!win32","arch":"any"} (current: {"os":"win32","arch":"x64"})
+52 error notsup Valid OS:    !win32
+52 error notsup Valid Arch:  any
+52 error notsup Actual OS:   win32
+52 error notsup Actual Arch: x64
+53 verbose exit [ 1, true ]
