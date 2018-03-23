@@ -1803,13 +1803,13 @@ app.controller("contactController",["$scope","$http",function($scope,$http){
     $scope.loading = true;
     $http({
       method  : 'POST',
-      url     : '/message',
+      url     : '/messages',
       data    : $scope.contact, //forms user object
       headers : {'Content-Type': 'application/json'} 
     })
     .success(function(data){      
       $scope.loading = false;
-      alert("Message sent! we will contact you soon.");
+      $scope.responseMessage = "Message sent! we will contact you soon.";
     })
   }
 }]);
@@ -5706,7 +5706,7 @@ app.controller("walletController",["$scope","$http","$rootScope","$location","Mo
     if(newVal){
       console.log(newVal)
       switch(newVal) {
-        case "Pay with ATM card/PayStack":
+        case "Pay with Card/Bank Account":
           $scope.isATM = true;
           $scope.isBank = false;
           $scope.isUSSD = false;
@@ -5789,6 +5789,12 @@ app.controller("walletController",["$scope","$http","$rootScope","$location","Mo
  
   //The customer's email address. 
   $scope.email = customer.email;
+
+  //status check
+
+  $scope.status = function() {   
+    $scope.paystackLoad = "Loading Paystack..."
+  }
   
   //Amount you want to bill the customer 
   //$scope.amount = toStrAmount;
@@ -5805,8 +5811,8 @@ app.controller("walletController",["$scope","$http","$rootScope","$location","Mo
   };
   
   //Javascript function that is called when the payment is successful 
-  $scope.callback = function (response) {
-      console.log(response);
+  $scope.callback = function (response) {    
+      delete $scope.paystackLoad;
       $scope.$apply(function(){
         $scope.reference = genRef();
       });      
@@ -5818,6 +5824,7 @@ app.controller("walletController",["$scope","$http","$rootScope","$location","Mo
   //Javascript function that is called if the customer closes the payment window 
   $scope.close = function () {
     //alert("Paystack closed")
+    delete $scope.paystackLoad;
   };
 
   function verifyTransaction(data) {

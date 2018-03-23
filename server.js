@@ -100,7 +100,7 @@ mySocket(model,io,streams);
 var a = "ede obinna".replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()});
 var a = "djdshj"
 
-var https = require("https");
+/*var https = require("https");
 var options = {
       host: "global.xirsys.net",
       path: "/_turn/www.applinic.com",
@@ -117,7 +117,7 @@ var httpreq = https.request(options, function(httpres) {
           console.log("ICE List: ", str);
       });
 });
-httpreq.end();
+httpreq.end();*/
 
 /*const accountSid = 'AC79f290154f4c4236a3811054e2c5e2b7';
 const authToken = 'your_auth_token';

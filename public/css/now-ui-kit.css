@@ -3286,9 +3286,10 @@ Created using IcoMoon - icomoon.io
   top: 0;
   content: ""; }
 .page-header:before {
-  background:#f2f2f2 url(/assets/images/bg-hero-doc.jpg); 
+  background-color: #d7dde4;
+ /*background:#f2f2f2 url(/assets/images/bg-hero-doc.jpg); 
 background-repeat: no-repeat;
-background-size: cover;}
+background-size: cover;*/}
 .page-header[filter-color="orange"] {
   background: rgba(44, 44, 44, 0.2);
   /* For browsers that do not support gradients */

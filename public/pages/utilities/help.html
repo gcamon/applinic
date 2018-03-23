@@ -15,21 +15,18 @@
  
 
 <div class="container">
+<!--<a ng-href="{{pageUrl}}"><i class="fa fa-arrow-left btn btn-simple"> &nbsp;Back</i></a>-->
 <div class="card p-2">
-<a ng-href="{{pageUrl}}"><i class="fa fa-arrow-left btn btn-simple"> &nbsp;Back</i></a>
-<div>
-	<div class="font-1_4 pt-2 pl-0">How may we help you?</div>	
-	<form>		
+	<div class="font-1_4 pt-0 pl-0">Need Help?</div>	
+	<form class="pt-2">		
 		<div class="col-md-12 col-sm-12 pl-0">
-			<label>Briefly describe what you need *<small>(e.g I am looking for a center for dialysis.Please I need your help.)</small></label>
+			<label>Briefly describe what you need *<small>(e.g I am looking for a center for dialysis.)</small></label>
 			<textarea placeholder="Write..." ng-model="user.description" class="form-control col-md-12 col-sm-12 pl-1" style="height: 100px"></textarea>
 		</div>
-		<div ng-if="user.helpType" class="mt-1">		
-			<input type="button" value="submit" class="btn btn-success pull-right" ng-click="sendHelp()">
+		<div  class="mt-2">		
+			<input type="button" value="submit" class="btn btn-success" ng-click="sendHelp()">
 		</div>
 	</form>
-</div>
-
 </div>
 </div>
 

@@ -168,6 +168,14 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
     res.render("sign-up");
   })
 
+  router.get('/terms',function(req,res){
+    res.end("Page not available")
+  });
+
+  router.get('/privacy',function(req,res){
+    res.end("Page not available")
+  });
+
 
   //add default pic
   router.put("/admin/defaul-pic",function(req,res){
