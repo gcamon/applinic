@@ -406,21 +406,14 @@ module.exports = function(model,io,streams) {
 				});
 
 				var date = new Date();
-			    control.expirationDate = new Date(date.getTime() + 300000);
-			    control.expirationDate.expires = 36000; //10 hours before the data is deleted.
+			  control.expirationDate = new Date(date.getTime() + 300000);
+			  control.expirationDate.expires = 36000; //10 hours before the data is deleted.
 				control.save(function(){});
 			}
 
 			socket.on("call reject",function(details){
 				io.sockets.to(datails.to).emit("convserstion denied",details)
-			})
-
-
-
-
-
-
-
+			});
 
 
 			/////////////////////
@@ -455,7 +448,7 @@ module.exports = function(model,io,streams) {
       console.log('-- ' + socket.id + ' is ready to stream --');
       //search database to see which control this socket belong to.
       streams.addStream(socket.id, options.name, options.controlId,model);
-      //socket.join(options.controlId); //create a room for common sites using one control.
+      socket.join(options.controlId); //create a room for common sites using one control.
       //io.sockets.to(options.controlId).emit("new stream added",{message:"new stream",controlId:options.controlId});
       cb({controlId:options.controlId})
     });

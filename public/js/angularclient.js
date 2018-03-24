@@ -7515,14 +7515,15 @@ app.controller("videoInitController",["$scope","$window","localManager","mySocke
   var user = localManager.getValue("resolveUser");
   user.firstname = user.firstname || user.name;
 
-  $scope.docInfo = templateService.holdForSpecificDoc
+
+  $scope.docInfo = templateService.holdForSpecificDoc || templateService.holdForSpecificPatient; // <== also used for patient signaling by doctor
 
   $scope.yes = function () {
-    console.log($scope.docInfo);
     $scope.isYes = true;
   }
   
   $scope.requestVideoCall = function(userId) {
+    console.log(userId)
     var reqObj = {
       to: userId,
       name: user.firstname,
@@ -8135,17 +8136,16 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
 
   var viewed = false;
 
-  $scope.makeCall = function(type){
-      var caller = genId();
-      var receiver = genId();
-      localManager.setValue("personToCall",patient.id);
-      localManager.setValue("receiver",receiver); 
-      localManager.setValue('caller',caller);
-      if(type === "video") {  
-        $window.location.href = "/user/doctor/call";
-      } else if(type === "audio"){
-        $window.location.href = "/user/doctor/audio/call";
-      }
+  $scope.videoRequest = function(type,patientObj){
+    //$window.location.href = "/patient/call";
+    patientObj.type = type;
+    reqModal(patientObj);
+  }
+
+  $scope.audioRequest = function(type,patientObj){
+    //$window.location.href = "/user/patient/call";
+    patientObj.type = type;
+    reqModal(patientObj);
   }
 
   $scope.writePrescription =function(){     
@@ -8627,6 +8627,20 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
         isClicked = true;
         $scope.isChat = false;
       }
+    }
+
+
+    function reqModal(patientObj) {
+      templateService.holdForSpecificPatient = patientObj
+      ModalService.showModal({
+        templateUrl: 'sending-communication-request.html',
+        controller: "videoInitController"
+      }).then(function(modal) {
+        modal.element.modal();
+        modal.close.then(function(result) {
+           
+        });
+      });
     }
 
     function genId() {

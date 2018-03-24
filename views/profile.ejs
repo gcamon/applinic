@@ -1330,6 +1330,44 @@
         </div>
      </script>
 
+     <script type="text/ng-template" id="sending-communication-request.html">
+         <div class="modal fade">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                   <h5 class="modal-title">Sending {{docInfo.type}} request takes few steps</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+
+            
+              </div>
+              <div class="modal-body">
+               
+                <ul class="nav mb-1">
+                    <li style="margin-bottom:10px;"><b>Step 1: </b> Your request for {{docInfo.type}} will be send to {{docInfo.title}} {{docInfo.title.firstname}} {{docInfo.lastname}}</li>
+                    <li style="margin-bottom:10px;"><b>step 2: </b> If {{docInfo.title}} {{docInfo.title.firstname}} {{docInfo.lastname}} responds you will be notified.</li>
+                    <li style="margin-bottom:10px;" ng-if="docInfo.type !== 'Meet In-Person'"><b> step 3: </b> If the response includes an acceptance to communicate with you, the system will automatically redirect you to {{docInfo.type}} page and creates a connection between you and {{docInfo.title}} {{docInfo.title.firstname}} {{docInfo.lastname}}.</li>
+                    <li style="margin-bottom:10px;" ng-if="docInfo.type === 'Meet In-Person'"><b> step 3: </b>If the response includes acceptance to meet you in person, your appointment list will be updated indicating the time and venue of appointment with {{docInfo.title}} {{docInfo.firstname}} {{docInfo.lastname}}.</li>  
+                                 
+                </ul>
+                <b>Do you have any complain to back up this request? <b ng-click="yes()" style="cursor:pointer;color:green;text-decoration:underline">YES</b> 
+                <form ng-if= "isYes === true">
+                    <textarea ng-model="user.complain" placeholder="Briefly write your complain" class="form-control" style="height:100px; padding:5px;"></textarea>
+                </form>
+
+                <div>
+                    <!--<button class="btn btn-primary" ng-click="sendCommunictionRequest()" data-dismiss="modal">OK, send {{docInfo.type}} request</button>-->
+                    <button class="btn btn-primary" data-dismiss="modal" ng-click="requestVideoCall(docInfo.user_id)">OK, send {{docInfo.type}} request</button>
+                </div>
+              </div>
+              
+            
+          </div>
+        </div>
+
+     </script>
+
      
       <script type="text/ng-template" id="granted-request.html">
          <div class="modal fade">

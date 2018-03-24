@@ -72,8 +72,8 @@
                     </div>
                     <div class="col-md-5 col-sm-12 col-xs-12 " style="text-align: right;">
                     	 <a class="ick pull-right" href="" style="padding-right:15px" title="Delete all chats"  ng-click="deleteChat()"><span class="fa fa-trash-o"></span></a>
-                        <a class="ick pull-right" href="" style="padding-right:15px" title="Video chat with {{patientInfo.firstname}}" ng-click="makeCall('video')"><span class="fa fa-video-camera"></span></a>
-                       <!-- <a  class="ick pull-right" href="" style="padding-right:15px" title="Make an audio call to {{patientInfo.firstname}}" ng-click="makeCall('audio')"><span class="fa fa-phone"></span></a>-->
+                        <a class="ick pull-right" href="" style="padding-right:15px" title="Video chat with {{patientInfo.firstname}}" ng-click="videoRequest('video',patientInfo)"><span class="fa fa-video-camera"></span></a>
+                       <!-- <a  class="ick pull-right" href="" style="padding-right:15px" title="Make an audio call to {{patientInfo.firstname}}" ng-click="audioRequest('audio',patientInfo)"><span class="fa fa-phone"></span></a>-->
                          <a class="ick pull-right" href="" style="padding-right:15px" title="Book appointment with {{patientInfo.firstname}}"  ng-click="appointment(patientInfo)"><span class="fa fa-calendar"></span></a>
 
                     </div>
