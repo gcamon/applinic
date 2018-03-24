@@ -7523,7 +7523,6 @@ app.controller("videoInitController",["$scope","$window","localManager","mySocke
   }
   
   $scope.requestVideoCall = function(userId) {
-    console.log(userId)
     var reqObj = {
       to: userId,
       name: user.firstname,

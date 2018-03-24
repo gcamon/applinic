@@ -448,7 +448,7 @@ module.exports = function(model,io,streams) {
       console.log('-- ' + socket.id + ' is ready to stream --');
       //search database to see which control this socket belong to.
       streams.addStream(socket.id, options.name, options.controlId,model);
-      socket.join(options.controlId); //create a room for common sites using one control.
+      //socket.join(options.controlId); //create a room for common sites using one control.
       //io.sockets.to(options.controlId).emit("new stream added",{message:"new stream",controlId:options.controlId});
       cb({controlId:options.controlId})
     });
