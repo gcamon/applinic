@@ -136,13 +136,13 @@
 		}
 		
 
-		/*rtc.siteLink = function(controlId){
+		rtc.siteLink = function(controlId){
 			
 			control.controlId = controlId;
 				//join a room
-    	//client.controlJoin(controlId,name); 
+    	client.controlJoin(controlId,name); 
 			return $window.location.host + "/user/cam/" + controlId;
-		}*/
+		}
 
 		rtc.loadData = function () {
 			// get list of streams from the server
@@ -337,6 +337,7 @@
 		});
 
 		localStream.getControlId = function(id){
+			console.log(id)
 			saveControlId.id = id;		
 		}
 
