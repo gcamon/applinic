@@ -1463,8 +1463,6 @@ app.controller("balanceController",["$rootScope","$scope","$resource","localMana
 
 app.controller('signupController',["$scope","$http","$location","$window","templateService","$resource","$rootScope","localManager",
   function($scope,$http,$location,$window,templateService,$resource,$rootScope,localManager) {
-  $scope.user = {};
-  $scope.user.typeOfUser = "";
   var signUp = $resource('/user/signup',null,{userSignup:{method:"POST"},emailCheck:{method:"PUT"}});
   $scope.countries = localManager.getValue("countries") || getCountries();
   $scope.status = "Country";
@@ -1482,23 +1480,32 @@ app.controller('signupController',["$scope","$http","$location","$window","templ
   var currency = {};
 
   $scope.userType = function(type) {
+    $scope.user = {};
     $scope.user.typeOfUser = type; 
   }
 
   $scope.userType("Patient") // sets type of user as patient as default as patient is the landing form .
   
-  $scope.submit = function(type){
+  $scope.submit = function(type,argTitle){
   $scope.user.currencyCode = currency.code;
   $scope.user.state = currency.state;
   $scope.user.region = currency.region;
-  if(type === "Pharmacy")
+
+
+  /*if(type === "Pharmacy")
     $scope.user.typeOfUser = type;
+  */
 
   //capitalize the first letter in words like two words city names.
   if($scope.user.city && $scope.user.city !== "") {
     var capitalize = $scope.user.city.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()});
     $scope.user.city = capitalize;
   }
+
+
+  if(argTitle) {
+    $scope.user.title = "SC";
+  } 
 
   
 
@@ -1507,19 +1514,31 @@ app.controller('signupController',["$scope","$http","$location","$window","templ
 
     var objLen = Object.keys($scope.user).length;
     var msg = "Please fill out empty field"; 
+
   if($scope.user.email) {
-    signUp.emailCheck({email: $scope.user.email},function(response){
-      if(response.success === true){
-        validate($scope.user); 
-      } else {
+    signUp.get({email: $scope.user.email},function(response){
+      if(!response.success){ 
         $scope.emailMessage = "User with " + $scope.user.email + " already exist!";
-        return;
+      } else {
+        checkExistingPhone();
       }
     })
-  } else {
-    validate($scope.user); 
-  }   
+  } 
 
+  function checkExistingPhone() {
+    if($scope.user.phone) {
+      var phoneNumber = "+" + $scope.user.callingCode.toString() + $scope.user.phone.toString();
+      signUp.get({phone:phoneNumber},function(res){
+        if(res.error) {        
+          $scope.phoneMessage = res.errorMsg;
+        } else {
+          validate($scope.user); 
+        }
+
+      })
+    }
+  }
+    
  }
  // this will be to get the type of diagnostic center a user slected as the type of user
  $scope.center = {}
@@ -1588,9 +1607,9 @@ app.controller('signupController',["$scope","$http","$location","$window","templ
       } else if(data.username === undefined || data.username === "") {
         $scope.usernameMessage = "Enter value for your user name";
         return;
-      } else if(data.typeOfUser === "Doctor" && data.work_place === undefined || data.work_place === "") {
+      /*} else if(data.typeOfUser === "Doctor" && data.work_place === undefined || data.work_place === "") {
         $scope.workMessage = "Enter your place of work";
-        return;
+        return;*/
       } else if(data.address === undefined || data.address === "") {
         $scope.addressMessage = "Enter your place of work address";
         return;

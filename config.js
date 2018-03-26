@@ -64,6 +64,7 @@ var configuration = function (app,model) {
 
 	passport.deserializeUser(function(id, done) {			
 		model.user.findById(id, function(err, user) {
+			console.log("passport ran")
 			done(err, user);
 		});
 	});

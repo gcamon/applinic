@@ -94,11 +94,11 @@
             <a class="nav-link" data-toggle="tab" href="#pharmacy" ng-click="userType('Pharmacy')" role="tab">Pharmaceutical Center</a>
           </li>
            <li class="nav-item">
-            <a class="nav-link" data-toggle="tab" href="#diagnostic" role="tab">Diagnostic center</a>
+            <a class="nav-link" data-toggle="tab" ng-click="userType('')" href="#diagnostic" role="tab">Diagnostic center</a>
           </li>
-           <!--<li class="nav-item">
-            <a class="nav-link" data-toggle="tab" href="#special-center" role="tab">Special center</a>
-          </li>-->
+           <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" ng-click="userType('Doctor')" href="#special-center" role="tab">Special Center</a>
+          </li>
         </ul>
 </div>
 
@@ -487,6 +487,211 @@
 <br><br>
 <div class="clearfix"></div>
 <button class="btn btn-simple btn-lg" ng-click="submit('Doctor')"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:blue" ng-if="loading"></i>
+<span class="sr-only">Loading...</span> Create Account</button>
+</form>
+  </div>
+
+
+
+
+
+
+
+
+<!--Special Center signup starts here-->
+<div class="tab-pane" id="special-center" role="tabpanel">
+<div class="alert alert-info"><strong>Special Center signup :</strong> Please complete the form below.</div>
+<form class="row">      
+  <!--<div class="col-md-6 col-sm-12">
+  <select class="custom-select col-md-12" ng-model="user.special_center">
+  <option value="SC" selected="selected"></option>
+</select>
+<span class="text-danger" style="font-size: 10px;display: inline-block;margin:-60px 0 0 10px;float: left;">{{titleMessage}}</span> 
+  </div>-->
+  <div class="col-md-12 col-sm-12">
+    <input type="text" class="form-control" placeholder="Center name" ng-model="user.firstname" >
+    <span class="text-danger" style="font-size: 10px;display: inline-block;margin:-60px 0 0 10px;float: left;">{{FirstNameMessage}}</span>
+  </div>
+
+  <div class="col-md-6 col-sm-12">
+   <input type="text" class="form-control" placeholder="Enter specialty" ng-model="user.specialty" ng-if="isSpeciaty === true" ng-cloak >
+   <select class="custom-select col-md-12"  ng-model="user.specialty" ng-if="isSpeciaty === false" >
+  <option value="" disabled selected>Select Specialty</option>
+  <option>Acupunture</option>
+      <option>Addiction Medicine</option>
+      <option>Adolescent Medicine</option>
+      <option>Aerospace Medicine</option>
+      <option>Allergy</option>
+      <option>Allergy/Immunology</option>
+      <option>Anesthesiology</option>
+      <option>Audiologist</option>
+      <option>Bariatrician</option>
+      <option>Cardiac Electrophysiology</option>
+      <option>Cardiology</option>
+      <option>Chiropractic</option>
+      <option>Clinical Laboratory Immunology</option>
+      <option>Clinical Pathology</option>
+      <option>Colon/Rectal Surgery</option>
+      <option>Critical Care</option>
+      <option>Cythopathology</option>
+      <option>Dermatology</option>
+      <option>Dermatopathology</option>
+      <option>Diabetes</option>
+      <option>Diagnostic</option>
+      <option>Emergency Medical Tech</option>
+      <option>Emergency Medicine</option>
+      <option>Endocrinology</option>
+      <option>Endovascular Surgical Neuroradiology</option>
+      <option>Family Practice</option>
+      <option>Gastroenterology</option>
+      <option>General Practice</option>
+      <option>General Surgery</option>
+      <option>Genetics</option>
+      <option>Geriatrics</option>
+      <option>Gynecology</option>
+      <option>Gynecology Oncology</option>
+      <option>Hand Surgery</option>
+      <option>Hand and Neck Surgery</option>
+      <option>Hematology</option>
+      <option>Hematology/Oncology</option>
+      <option>Hepatology</option>
+      <option>Holistic Medicine</option>
+      <option>Hospitalist</option>
+      <option>Immunology</option>
+      <option>Infectious Disease</option>
+      <option>Internal Medicine</option>
+      <option>Interventional Cardiology</option>
+      <option>Legal Medicine</option>
+      <option>Medical Oncology</option>
+      <option>Medical Toxicology</option>
+      <option>Neonatology</option>
+      <option>Nephrology</option>
+      <option>Neurology</option>
+      <option>Neuroradiology</option>
+      <option>Nuclear Cardiology</option>
+      <option>Nuclear Cardiology</option>
+      <option>Neurosurgeon</option>
+      <option>Nutrition</option>
+      <option>Obstetrics/Gynecology</option>
+      <option>Occupational Medicine</option>
+      <option>Oncology</option>
+      <option>Opthalmology</option>
+      <option>Optometry</option>
+      <option>Orthopedic Foot & Ankle</option>
+      <option>Orthopedic Reconstructive Surgery</option>
+      <option>Orthopedic Spine Surgery</option>
+      <option>Orthopedic Surgery</option>
+      <option>Osteopathy</option>
+      <option>Otorhinolaryngology</option>
+      <option>Pain Management</option>
+      <option>Pathology</option>
+      <option>Pediatric Allergy</option>
+      <option>Pediatric Cardiology</option>
+      <option>Pediatric Critical Care</option>
+      <option>Padiatric Emergency Medicine</option>
+      <option value="edit-specialty">Other</option>
+</select>
+<span class="text-danger" style="font-size: 10px;display: inline-block;margin:-60px 0 0 10px;float: left;">{{specialtyMessage}}</span> 
+  </div>
+
+  
+  <!--<div class="col-md-6 col-sm-12">
+        <input type="text" class="form-control" placeholder="Last Name" ng-model="user.lastname" >
+        <span class="text-danger" style="font-size: 10px;display: inline-block;margin:-60px 0 0 10px;float: left;">{{lastNameMessage}}</span>
+  </div>-->
+  <hr>
+ <!--<div class="col-md-12"> 
+  </div>
+  <div class="col-md-6 col-sm-12">
+    <input type="text" class="form-control" placeholder="Place of Work" ng-model="user.work_place">
+    <span class="text-danger" style="font-size: 10px;display: inline-block;margin:-60px 0 0 10px;float: left;">{{workMessage}}</span>
+  </div>-->
+  <div class="col-md-6 col-sm-12">
+        <input type="text" class="form-control" placeholder="Address of center" ng-model="user.address" >
+        <span class="text-danger" style="font-size: 10px;display: inline-block;margin:-60px 0 0 10px;float: left;">{{addressMessage}}</span>
+  </div>
+
+  <div class="col-md-6 col-sm-12" style="position: relative;">
+  
+    <input type="text" class="form-control" placeholder="City" ng-model="user.city"  ng-cloak >
+  
+    <span class="text-danger" style="font-size: 10px;display: inline-block;margin:-60px 0 0 10px;float: left;">{{cityMessage}}</span> 
+  </div>
+
+
+  <div class="col-md-6 col-sm-12">
+    <!--<input type="text" class="form-control" placeholder="Country" ng-model="user.country" >-->
+    <select class="custom-select form-control col-md-12" ng-model="user.country">
+      <option value="" selected disabled >{{status}}</option>
+      <option ng-repeat="country in countries" value="{{country.geonameId}};{{country.countryCode}};{{country.countryName}}">{{country.countryName}}</option>
+    </select>
+    <span class="text-danger" style="font-size: 10px;display: inline-block;margin:-60px 0 0 10px;float: left;">{{countryMessage}}</span>
+  </div>
+ <!-- <div class="col-md-6 col-sm-12" style="position: relative;">
+   
+    <small class='fa fa-arrow-right' style="font-size:10px;color:blue;padding-left: 10px;position: absolute; left: 0;top:10px" ng-if="isNext1"></small>
+   <select class="custom-select form-control col-md-12" ng-model="user.state"  >
+      <option value="" selected disabled >{{status1}}</option>
+      <option ng-repeat="state in states" value="{{state.geonameId}} {{state.name}}">{{state.name}}</option>
+    </select>
+  </div>
+
+
+  <div class="col-md-6 col-sm-12" style="position: relative;">
+   <small class='fa fa-arrow-right' style="font-size:10px;color:blue;padding-left: 10px;position: absolute; left: 0;top:10px" ng-if="isNext2"></small>
+      <select class="custom-select form-control col-md-12" ng-model="user.region"/>
+      <option value="" selected disabled >{{status3}}</option>
+      <option ng-repeat="region in regions" value="{{region.geonameId}} {{region.name}}">{{region.name}}</option>
+    </select>
+  </div>-->
+  
+
+  <div class="row col-md-12">
+   <div  class="col-md-6 col-sm-12" style="position: relative;">
+  
+      <input type="number"  style="position:absolute; top:19px; background:transparent;  left:35px; border: none; width: 55px; outline:0;"  placeholder="{{user.callingCode || 'Code'}}" ng-model= "user.callingCode">
+      <input type="number"  class="form-control" noBorder" placeholder="Mobile number" ng-model="user.phone" style="padding-left: 80px">  
+    <span class="text-danger" style="font-size: 10px;display: inline-block;margin:-60px 0 0 10px;float: left;">{{phoneMessage}}</span>
+    <span class="text-danger" style="font-size: 10px;display: inline-block;margin:-60px 0 0 10px;float: left;">{{numberError}}</span>
+ </div>
+
+
+ <div  class="col-md-6 col-sm-12">
+      <input type="email" class="form-control" placeholder="Email" ng-model="user.email" >  
+      <span class="text-danger" style="font-size: 10px;display: inline-block;margin:0px 0 0 10px;float: left;">{{emailMessage}}</span>
+ </div>
+ 
+ 
+</div>
+
+<div class="col-md-12">
+<hr></div>
+
+
+  <div class="col-md-12">   
+    <input type="text" class="form-control" placeholder="User Name" ng-model="user.username" >
+    <span class="text-danger" style="font-size: 10px;display: inline-block;margin:-60px 0 0 10px;float: left;">{{usernameMessage}}</span>
+  </div>
+ 
+  <div class="col-md-6 col-sm-12">
+    <input type="password" class="form-control" placeholder="Password" ng-model="user.password" >
+    <span class="text-danger" style="font-size: 10px;display: inline-block;margin:0px 0 0 10px;float: left;">{{passwordMessage}}</span>
+  </div>
+  <div class="col-md-6 col-sm-12">
+        <input type="password" class="form-control" placeholder="Confirm Password" ng-model="user.password2" >
+        <span class="text-danger" style="font-size: 10px;display: inline-block;margin:-60px 0 0 10px;float: left;">{{passwordError}}</span>
+  </div>
+
+<div class="col-md-12">
+<label class="custom-control custom-checkbox" style="margin-top:20px">
+  <input type="checkbox"  ng-model="user.agree"  style="width:22px;height:22px">
+  <span class="custom-control-description" style="font-size: 14px;display:inline-block;padding-left:10px"> I agree with the <a href="/terms" target="_blank" >Terms of Service</a> and <a href="/privacy" target="_blank"> Privacy Policy.</a></span>
+  <span class="text-danger" style="font-size: 10px;display: inline-block;margin:0px 0 0 10px;float: left;">{{termMessage}}</span>
+</label>
+</div>
+<br><br>
+<div class="clearfix"></div>
+<button class="btn btn-simple btn-lg" ng-click="submit('Doctor','sc')"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:blue" ng-if="loading"></i>
 <span class="sr-only">Loading...</span> Create Account</button>
 </form>
   </div>

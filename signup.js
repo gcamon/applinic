@@ -21,9 +21,9 @@ var signupRoute = function(model,sms,geonames,paystack) {
 			model.user.findOne({email:email},function(err,user){
 			if(err) return done(err);
 			if(user){
-				return done(null, false, req.flash('signupMessage', 'Email has already been use please find another one'));	
+				return done(null, false, req.flash('signupMessage', 'Email has already been used please find another one'));	
 			} else {
-				var userphone = {}
+				var userphone = {};
 				model.verifyPhone.findOne({phone:req.body.phone,pin:req.body.v_pin},function(err,data){					
 					if(err) throw err;
 					if(data){
@@ -37,7 +37,7 @@ var signupRoute = function(model,sms,geonames,paystack) {
 				function createUser() {
 					if(req.body.agree === true && userphone.testuserPhone) {					
 						var uid = genId(req.body.username);
-						var referrral_link = "/referral/" + uid + "/signup";
+						var referral_link = "/referral/" + uid + "/signup";
 						var User = new model.user({
 						email: req.body.email,
 						user_id: uid,
@@ -52,7 +52,7 @@ var signupRoute = function(model,sms,geonames,paystack) {
 	          username: req.body.username,
 						address: req.body.address,
 						gender: req.body.gender,
-						title: req.body.title,
+						title: (req.body.title === "SC") ? "SC" : req.body.title,
 						age: req.body.age,
 						state: req.body.state,
 						region: req.body.region,
@@ -61,7 +61,7 @@ var signupRoute = function(model,sms,geonames,paystack) {
 							filename:""
 						},
 						specialty: req.body.specialty,
-						profile_url: "/user/ranking/views/" + uid,
+						profile_url: "/user/profile/view/" + uid,
 						profile_pic_url: "/download/profile_pic/nopic",
 						work_place: req.body.work_place,
 						name: req.body.name,
@@ -149,16 +149,7 @@ var signupRoute = function(model,sms,geonames,paystack) {
 		})
 	}));
 
-	router.put('/user/signup',function(req,res){
-		model.user.findOne({email:req.body.email},function(err,data){
-			if(err) throw err;
-			if(!data){
-				res.send({success: true});
-			} else {
-				res.send({success: false});
-			}
-		})
-	});
+	
 	
 
 	router.post('/user/signup', function(req, res, next) {	
@@ -229,7 +220,9 @@ var signupRoute = function(model,sms,geonames,paystack) {
 
 	//check to see if a user with a phone number already exist
 	router.get('/user/signup',function(req,res){
+
 		if(req.query.phone){
+			console.log(req.query)
 			model.user.findOne({phone:req.query.phone},function(err,userData){
 				if(err) throw err;
 				if(!userData){		
@@ -238,17 +231,32 @@ var signupRoute = function(model,sms,geonames,paystack) {
 					res.send({error: true,errorMsg: "User with this phone number already exist!"})
 				}
 			});
-		} else if(req.query.username){
+			return;
+		}
+
+		if(req.query.username){
 			model.user.findOne({username:req.query.username},function(err,username){
-				if(err) throw err;
-				
+				if(err) throw err;				
 				if(!username){	
 					res.send({error: false,errorMsg: ""});
 				} else {
-					res.send({error: true,errorMsg: "username already taken!"})
+					res.send({error: true,errorMsg: "username already taken!"});
 				}
 			});
+			return;
 		}
+
+		if(req.query.email) {
+			model.user.findOne({email:req.query.email},function(err,data){
+				if(err) throw err;
+				if(!data){
+					res.send({success: true});
+				} else {
+					res.send({success: false});
+				}
+			})
+		}
+	
 		
 	});
 

@@ -816,16 +816,16 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
 
 
     //this route should be removed later
-    router.get("/ranking/views/:id",function(req,res){
+   /* router.get("/ranking/views/:id",function(req,res){
 
       model.user.findOne({user_id: req.params.id},function(err,user){            
         if(err) throw err;
         res.render("doctor-details",{"userInfo":user});
       });
      
-    });
+    });*/
 
-   router.get("/user/ranking/views/:id",function(req,res){
+   router.get("/user/profile/view/:id",function(req,res){
     if(req.user) {
       model.user.findOne({user_id: req.params.id},function(err,user){            
         if(err) throw err;
