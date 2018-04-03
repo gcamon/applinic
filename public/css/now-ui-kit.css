@@ -3289,7 +3289,6 @@ Created using IcoMoon - icomoon.io
   /*background-color: #d7dde4;*/
  background: url(/assets/images/bg1.jpg);
   background-size: cover;
-  background-repeat:repeat-x;
   background-position: center center;}
 .page-header[filter-color="orange"] {
   background: rgba(44, 44, 44, 0.2);

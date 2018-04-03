@@ -6160,7 +6160,7 @@ router.post("/user/family/create-account",function(req,res){
         username: req.user.username,
         address: req.user.address,
         gender: req.body.gender,
-        title: req.user.attach.title,
+        title: req.body.title,
         age: req.body.age,
         family_flag: true,
         family_accounts : req.user.family_accounts,
