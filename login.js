@@ -81,7 +81,8 @@ router.get('/user/dashboard',function(req,res){
         address:req.user.address,
         experience: req.user.experience,
         courier_access: req.user.courier_access,
-        courier_access_password: req.user.courier_access_password
+        courier_access_password: req.user.courier_access_password,
+        family_accounts: req.user.family_accounts
       });
     }
   } else {

@@ -38,6 +38,11 @@ app.config(['$paystackProvider','$routeProvider',function($paystackProvider,$rou
     templateUrl: '/assets/pages/signups/patient-signup.html',
   })
 
+  .when("/create-family-account",{
+    templateUrl: "/assets/pages/signups/family-account-signup.html",
+    controller: 'familyAccountController'
+  })
+
   .when("/pharmacy-signup",{
     templateUrl: '/assets/pages/signups/pharmacy-signup.html',
     controller: 'signupController'
@@ -1365,8 +1370,14 @@ app.controller('loginController',["$scope","$http","$location","$window","$resou
     $scope.error = ""; 
     var login = $resource('/user/login',null,{logPerson:{method:"POST"}});
     login.logPerson($scope.login,function(data){   
-    if (data.isLoggedIn) {       
-        localManager.setValue("resolveUser",data);        
+    if (data.isLoggedIn) {  
+
+        localManager.setValue("resolveUser",data);  
+
+        //use to keep track of main user should sub accounts were used in a session. 
+        /*if(data.typeOfUser === "Patient")
+          localManager.setValue("mainAccount",data);  */  
+
        //user joins a room in socket.io and intantiayes his own socket
         switch(data.typeOfUser) {
           case "Patient":
@@ -1811,6 +1822,34 @@ app.controller('signupController',["$scope","$http","$location","$window","templ
     }
   });
   //password must be checked lastly. Very important.
+}]);
+
+app.controller("familyAccountController",["$scope","$http","$rootScope","localManager",function($scope,$http,$rootScope,localManager){
+  $scope.familyAccount = {};
+  $scope.createAccount = function() {
+    console.log($scope.familyAccount);
+    if(Object.keys($scope.familyAccount).length < 4 ) {
+      alert("Please complete empty fields")
+    } else {
+      $scope.loading = true;
+      $http({
+        method  : 'POST',
+        url     : '/user/family/create-account',
+        data    : $scope.familyAccount,
+        headers : {'Content-Type': 'application/json'} 
+      })
+      .success(function(data){      
+        $scope.loading = false;
+        if(data.status) {
+          $scope.responseMessage = "Account created successfully!";
+          $rootScope.checkLogIn.family_accounts = data.accountList;
+          localManager.setValue("resolveUser",$rootScope.checkLogIn);
+        } else {
+          alert("Error occured while creating account, Please try again.")
+        }
+      })
+    }
+  }
 }]);
 
 
@@ -6281,9 +6320,9 @@ app.controller("patientTreatmentController",["$scope","$http","ModalService","re
 
 
 //recieves the patients medical record and presvription from the back end.
-app.controller("patientPanelController",["$scope","$location","$http","$rootScope","localManager",
-  "templateService","templateUrlFactory","mySocket","$resource",
-  function($scope,$location,$http,$rootScope,localManager,templateService,templateUrlFactory,mySocket,$resource){
+app.controller("patientPanelController",["$scope","$location","$http","$rootScope","localManager","ModalService",
+  "templateService","templateUrlFactory","mySocket","$resource","$window",
+  function($scope,$location,$http,$rootScope,localManager, ModalService, templateService,templateUrlFactory,mySocket,$resource,$window){
   templateUrlFactory.setUrl();
   var medical = {};
 
@@ -6425,8 +6464,74 @@ app.controller("patientPanelController",["$scope","$location","$http","$rootScop
     $location.path("/pending/scan-test")
   }
 
+
+
+  /*
+    Family account logic 
+  */
   
+  $scope.switchAccount = function(account) {
+    console.log(account)
+     var count = {};
+     count.val = 0;
+     ModalService.showModal({
+          templateUrl: 'account-switch-modal.html',
+          controller: "accoundLoaderConTroller"
+      }).then(function(modal) {
+          accSwitcher();
+          modal.element.modal();
+          modal.close.then(function(result) {
+          })
+             
+      });
+    
+    function accSwitcher() {
+      var activeAcc = localManager.getValue("activeAccountId") || $rootScope.checkLogIn.user_id;
+      var url = (account.main) ? "/user/family-normal/" + activeAcc + "/" + account.memberId : "/user/family-switch/" + activeAcc + "/" + account.memberId
+      $http({
+        method  : 'GET',
+        url     : url,        
+        headers : {'Content-Type': 'application/json'} 
+        })
+      .success(function(data) {
+        count.val++;
+        $rootScope.newUserName = account.name
+        if(data.status && data.isLoggedIn) {
+          localManager.setValue("activeAccountId",account.memberId); //use to switch from main account to newUser         
+          localManager.setValue("resolveUser",data);
+          setValue(function(){
+            console.log(data)
+            console.log(localManager.getValue("resolveUser"));
+            $window.location.href = '/user/patient';
+          });          
+          //$rootScope.checkLogIn = data;         
+        } else {
+          if(count.val < 4) {
+            accSwitcher(account);
+          } else {
+            alert("Error: Account switch could not be completed! Please try again later")
+          }
+        }
+       
+      });
+    }
+
+
+    function setValue(cb) {
+      cb()
+    }
+
+
+  }
+
 }]);
+
+app.controller("accoundLoaderConTroller",["$rootScope",function(rootscope){
+
+}])
+
+
+//account-switch-modal.html
 
 app.controller("selectedAppointmentControllerForPatient",["$scope","$location","$rootScope","templateService","localManager","deleteFactory",
   function($scope,$location,$rootScope,templateService,localManager,deleteFactory){
@@ -13885,9 +13990,12 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
     
   }
 
-  console.log(localManager.getValue("resolveUser"))
+  console.log(localManager.getValue("resolveUser"));
   
   $rootScope.checkLogIn = localManager.getValue("resolveUser");
+
+  if($rootScope.checkLogIn.typeOfUser === "Patient")
+    $rootScope.keepMain = localManager.getValue("mainAccount");
 
   localManager.setValue("userId",$rootScope.checkLogIn.user_id);
 
@@ -13990,6 +14098,10 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
     localManager.removeItem('prescriptionRequestData'); 
     localManager.removeItem("userId");
     localManager.removeItem('saveSocket');
+    localManager.removeItem('activeAccountId');
+    localManager.removeItem('mainAccount');
+
+
   }
  
    

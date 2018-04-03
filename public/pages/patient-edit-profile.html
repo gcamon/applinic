@@ -1,27 +1,50 @@
-<div class="tg-widget tg-widget-doctor" ng-controller="patientProfileEditController" class="container-fluid" >
-    
+<div class="tg-widget tg-widget-doctor" ng-controller="patientProfileEditController" class="container" >
+    <div class="card p-2  card-center-1">
     <div class="row">        
         <div class="col-sm-12 col-md-12 col-lg-12">
-            <h5 style="font-weight: 100;padding: 10px 5px; margin-top: 30px;width: 30%;border-bottom: 1px solid rgba(0,0,0,0.3)"> Edit personal details </h5>
+            <h5> Edit Profile </h5>
             <form class="patient-update-input">
-                <div>
-                    <input type="text" placeholder="{{userData.firstname || 'Whats your firstname'}}" ng-model="user.firstname"/>
-                    <input type="text" placeholder="{{userData.lastname || 'Whats your lastname'}}" ng-model="user.lastname"/>
-                    <input type="number" placeholder="{{userData.age || 'How old are you?'}}" ng-model="user.age"/>
-                    <input type="text" placeholder="{{userData.gender || 'what is your gender?'}}" ng-model="user.gender"/>
-                    <input type="text" placeholder="{{userData.marital_status || 'Are you single or married?'}}" ng-model="user.marital_status"/>
-                    <input type="text" placeholder="{{userData.address || 'Enter your address here'}}" ng-model="user.address"/>
-                    <input type="text" placeholder="{{userData.state || 'What is your state name?'}}" ng-model="user.state"/>
-                    <input type="text" placeholder="{{userData.city || 'Enter city/town name'}}" ng-model="user.city"/>
-                    <input type="text" placeholder="{{userData.country || 'what is the name of your country?'}}" ng-model="user.country"/>
-                </div>                
-                <button ng-click="updateDetails()">Update</button>
+                    <label>Firstname:</label>
+                    <input type="text" placeholder="{{userData.firstname || 'Whats your firstname'}}" class="form-control" ng-model="user.firstname"/>
+                    <label>Lastname:</label>
+                    <input type="text" placeholder="{{userData.lastname || 'Whats your lastname'}}" class="form-control" ng-model="user.lastname"/>
+                    <label>Age:</label>
+                    <select class="form-control" ng-model="user.age">
+                        <option value="" disabled="disabled" selected="selected">_select</option>
+                        <option>0 - 28 days (newborn)</option>
+                        <option>29 days - 1 year (infant)</option>
+                        <option>1 - 5 years (younger child)</option>
+                        <option>6 - 12 years (older child)</option>
+                        <option>13 - 16 years (adolescent)</option>
+                        <option>17 - 29 years (young adult)</option>
+                        <option>30 - 39 years (adult)</option>
+                        <option>40 - 49 years (adult)</option>
+                        <option>50 - 64 years (adult)</option>
+                        <option>65 years - over (senior)</option>
+                    </select>
+                    <!--<input type="number" placeholder="{{userData.age || 'How old are you?'}}" class="form-control" ng-model="user.age"/>-->
+                    <label>Gender:</label>
+                    <select class="form-control" ng-model="user.gender">
+                        <option value="" disabled="disabled" selected="selected">_select</option>                        
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                    </select>
+                    <!--<input type="text" placeholder="{{userData.gender || 'what is your gender?'}}" class="form-control" ng-model="user.gender"/>-->
+                    <label>Address:</label>
+                    <input type="text" placeholder="{{userData.address || 'Enter your address here'}}" class="form-control" ng-model="user.address"/>
+                    <label>City:</label>                    
+                    <input type="text" placeholder="{{userData.city || 'Enter city/town name'}}" class="form-control" ng-model="user.city"/>
+                    <label>Country:</label>
+                    <input type="text" placeholder="{{userData.country || 'What is the name of your country?'}}" class="form-control" ng-model="user.country"/>
+                    <div style="margin-top: 15px"></div>
+                    <button ng-click="updateDetails()" class="btn btn-info">Update</button>
+                </div>              
+                
             </form>
         </div>
     </div>
                              
 </div>
-
-<div class="testing">
-    
 </div>
+
+

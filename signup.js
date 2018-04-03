@@ -71,7 +71,7 @@ var signupRoute = function(model,sms,geonames,paystack) {
 							current: 1,
 							max: 5
 						},
-						ref_link: referrral_link					
+						ref_link: referral_link					
 					});
 
 						/****create user paystack account****/
@@ -89,6 +89,15 @@ var signupRoute = function(model,sms,geonames,paystack) {
 						User.ewallet = {
 							available_amount: 0,
 							transaction: []
+						}
+
+						if(req.body.typeOfUser === "Patient"){
+							User.family_accounts.unshift({
+								status: true,
+		            memberId: uid,
+		            name: req.body.firstname,
+		            main: true
+							})
 						}
 
 
@@ -196,7 +205,7 @@ var signupRoute = function(model,sms,geonames,paystack) {
 		testPhone.expirationDate.expires  = 60 * 60; // 1 hour before deleted from database.
 
 		testPhone.save(function(err,info){});
-
+		console.log(testPhone)
 		var msgBody = "Your Phone Verification Pin for Applinic is: " + genPin;
 		var phoneNunber = (req.body.phone[0] !== "+") ? "+" + req.body.phone : req.body.phone;
 		//sms.message.sendSms('Appclinic',phoneNunber,msgBody,callBack); //"2348096461927" "2349092469137"

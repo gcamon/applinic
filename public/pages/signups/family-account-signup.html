@@ -1,0 +1,62 @@
+<div class="container">
+	<div class="card p-1 card-center-1" >
+		<h4>Create Family Account &nbsp; </h4>
+		<small>( A family member you want to share your account with )</small>
+		<form >
+			<div class="pt-1">
+				<label> Title *: </label>
+				<select ng-model="familyAccount.title" class="form-control">
+					<option value="" disabled selected="selected">_select</option>
+					<option>Dr</option>
+			        <option>Mr</option>
+			        <option>Mrs</option>
+			        <option>Miss</option>
+			        <option>Master</option>
+			        <option>Chief</option>
+			        <option>Rev</option>
+			        <option>Pastor</option>
+			        <option>Engr</option>
+			        <option>Barr</option>
+			        <option>Surv</option>
+			        <option>Hon</option>
+			        <option>Ven</option>
+			        <option>HRH</option>
+			        <option>Prof</option>
+			        <option>Justice</option>
+				</select>
+			</div>
+			<div class="pt-1">
+				<label> Firstname <small>( e.g Chizoba ) </small>*: </label>
+				<input type="text" name="" class="form-control" ng-model="familyAccount.firstname" placeholder="Firstname">
+			</div>
+			<div class="pt-1">
+				<label> Gender *: </label>
+				<select ng-model="familyAccount.gender" class="form-control">
+					<option value="" disabled selected="selected">_select</option>
+					<option value="male">Male</option>
+					<option value="female">Female</option>
+				</select>
+			</div>
+			<div class="pt-1">
+				<label> Age *: </label>
+				<select ng-model="familyAccount.age" class="form-control">
+					<option value="" disabled="disabled" selected="selected">_select</option>
+					<option>0 - 28 days (newborn)</option>
+					<option>29 days - 1 year (infant)</option>
+					<option>1 - 5 years (younger child)</option>
+					<option>6 - 12 years (older child)</option>
+					<option>13 - 16 years (adolescent)</option>
+					<option>17 - 29 years (young adult)</option>
+					<option>30 - 39 years (adult)</option>
+					<option>40 - 49 years (adult)</option>
+					<option>50 - 64 years (adult)</option>
+					<option>65 years - over (senior)</option>
+				</select>
+			</div>
+			<div class="pt-1">
+				<button class="btn btn-success" ng-click="createAccount()" ng-if="!responseMessage"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i> {{ (loading) ? " " : 'Create'}}</button> <span> <i class="fa fa-check" style="color: green" ng-if="responseMessage"></i> {{responseMessage}} </span>
+			</div>
+			
+		</form>
+	</div>	
+</div>

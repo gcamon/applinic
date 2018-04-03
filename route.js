@@ -8,6 +8,7 @@ var dateTime = require("node-datetime");
 var deleteItem = require("./delete");
 var EventEmmiter = require("events");
 var emitter = new EventEmmiter();
+var uuid = require("node-uuid");
 var options = {
   host: "global.xirsys.net",
   path: "/_turn/www.applinic.com",
@@ -5381,19 +5382,34 @@ router.get("/user/field-agent",function(req,res){
 });
 
 
-  
 
 //log out route
 router.get("/user/logout",function(req,res){
     if(req.user){
-       model.user.findOne({user_id: req.user.user_id},{presence:1,firstname:1,set_presence:1}).exec(function(err,data){
-        data.presence = false;
-        data.set_presence.general = false;
-        data.save(function(err,info){
-          console.log("presence is offline");           
-          completeAction()
-        });
-       }) 
+      model.user.findOne({password: req.user.password},{presence:1,firstname:1,set_presence:1,family_accounts:1,family_flag:1})
+      .exec(function(err,data){
+        if(data) {
+          data.presence = false;
+          data.set_presence.general = false;
+          data.family_flag = false;
+          if(data.family_accounts) {
+            for(var i = 0; i < data.family_accounts.length; i++) {
+              if(data.family_accounts[i].status === true) {
+                data.family_accounts[i].status = false;
+              }
+            }
+          }
+          data.family_accounts.push({});
+          data.family_accounts.pop()
+          data.save(function(err,info){
+            console.log("presence is offline");           
+            completeAction()
+          });
+        } else {
+          res.end("unauthorized access!")
+        }
+      }) 
+
       
     } else {      
       completeAction()
@@ -6087,6 +6103,147 @@ router.get("/user/chats",function(req,res){
     res.end("unautorized access!")
   }
 });
+
+
+
+/*
+    Family account logic amd implmentations
+
+*/
+
+
+//update family account
+router.put("/user/family-accounts",function(req,res){
+  
+})
+
+//creATE new family account
+router.post("/user/family/create-account",function(req,res){
+  if(req.user) {
+    var getId = uuid.v1();
+    model.user.findOne({password: req.user.password}).exec(function(err,main){
+      console.log(main.user_id)
+      if(err) throw err;
+      if(main) {
+        if(main.family_accounts.length <= 10) {
+          main.family_accounts.push({
+            status: false,
+            memberId: getId,
+            name: req.body.firstname,
+            title: req.body.title
+          })
+
+          main.save(function(err,info){
+            createAccount(main.family_accounts);
+          })
+        } else {
+          res.json({status:false,message: "Error: Maximum number of accounts exceeded!"})
+        }
+      } else {
+        res.json({status:false,message: "Error: User not found!"})
+      }
+    })
+
+    function createAccount(accounts) {
+      
+      var User = new model.user({
+        email: null,
+        user_id: getId,
+        password: null,
+        phone: req.user.phone,
+        admin: false,
+        country: req.user.countryName,
+        type: req.user.typeOfUser,
+        city: req.user.city,
+        firstname: req.body.firstname,
+        lastname: req.body.lastname,
+        username: req.user.username,
+        address: req.user.address,
+        gender: req.body.gender,
+        title: req.user.attach.title,
+        age: req.body.age,
+        family_flag: true,
+        family_accounts : req.user.family_accounts,
+        profile_pic_url: "/download/profile_pic/nopic",
+       
+      });     
+
+      User.ewallet = {
+        available_amount: 0,
+        transaction: []
+      }
+
+      User.save(function(err){
+        console.log("user saved");
+        res.json({status: true,accountList: accounts})
+        if(err) throw err;         
+      }); 
+    }
+
+  } else {
+    res.end("unautorized access!")
+  }
+});
+
+router.get("/user/family-switch/:userId/:memberId",function(req,res){
+  if(req.user){
+    if(req.user.switchSuccess) {
+      res.json({
+        status: req.user.family_flag,
+        isLoggedIn: true,        
+        typeOfUser: req.user.type,
+        firstname: req.user.attach.firstname,
+        lastname:req.user.lastname,
+        phone: req.user.phone,
+        email: req.user.email,
+        title: req.user.attach.title,
+        user_id: req.user.attach.userId,
+        balance: req.user.ewallet.available_amount,
+        profile_pic_url: req.user.profile_pic_url,
+        city: req.user.city,
+        country: req.user.country,     
+        address:req.user.address,
+        family_accounts: req.user.family_accounts
+      });
+    } else {
+      res.json({status: false});
+    }
+
+  } else {
+    res.end("unauthorized acesss!")
+  }
+  
+});
+
+router.get("/user/family-normal/:userId/:memberId",function(req,res){
+  if(req.user){
+    if(req.user.switchSuccess) {
+      res.json({
+        status: req.user.family_flag,
+        isLoggedIn: true,        
+        typeOfUser: req.user.type,
+        firstname: req.user.attach.firstname,
+        lastname:req.user.lastname,
+        phone: req.user.phone,
+        email: req.user.email,
+        title: req.user.title,
+        user_id: req.user.attach.userId,
+        balance: req.user.ewallet.available_amount,
+        profile_pic_url: req.user.profile_pic_url,
+        city: req.user.city,
+        country: req.user.country,     
+        address:req.user.address,
+        family_accounts: req.user.family_accounts
+      });
+    } else {
+      res.json({status: false});
+    }
+
+  } else {
+    res.end("unauthorized acesss!")
+  }
+  
+})
 
 }
 

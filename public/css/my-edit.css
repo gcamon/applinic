@@ -28,6 +28,11 @@
 
 }
 
+.card-center-1 {
+  width: 70%;
+  margin: 0 100px;
+}
+
 .ellipsis {
   text-overflow: ellipsis;
 
@@ -476,4 +481,11 @@
   .col-sm-12 li {
     padding-top:20px
   }
+
+
+  .card-center-1 {
+    width: 100%;
+    margin: inherit;
+  }
+  
 }

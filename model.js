@@ -495,6 +495,9 @@ var myModel = function () {
 		barred: Boolean,
 		courier_access:Boolean,
 		courier_access_password: String,//ue to authenticate field aagents for courier deleivery
+		family_flag: Boolean,
+		family_accounts: Array,
+		deleted: Boolean
 	},{
 		collections: "userinfos"
 	})
