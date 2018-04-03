@@ -5386,7 +5386,7 @@ router.get("/user/field-agent",function(req,res){
 //log out route
 router.get("/user/logout",function(req,res){
     if(req.user){
-      model.user.findOne({password: req.user.password},{presence:1,firstname:1,set_presence:1,family_accounts:1,family_flag:1})
+      model.user.findOne({email: req.user.email,phone: req.user.phone},{presence:1,firstname:1,set_presence:1,family_accounts:1,family_flag:1})
       .exec(function(err,data){
         if(data) {
           data.presence = false;
@@ -6121,7 +6121,7 @@ router.put("/user/family-accounts",function(req,res){
 router.post("/user/family/create-account",function(req,res){
   if(req.user) {
     var getId = uuid.v1();
-    model.user.findOne({password: req.user.password}).exec(function(err,main){
+    model.user.findOne({email: req.user.email,phone: req.user.phone}).exec(function(err,main){
       console.log(main.user_id)
       if(err) throw err;
       if(main) {
