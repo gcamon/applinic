@@ -434,7 +434,7 @@
                         
                                     <div class="img" style="background-image: url('{{checkLogIn.profile_pic_url}}')"> </div> 
                                     <span class="name">
-                      {{checkLogIn.firstname}} {{checkLogIn.lastname}}
+                      {{checkLogIn.firstname}} 
                     </span>
                             <i class="fa arrow"></i>
                         </a>
@@ -535,7 +535,7 @@
                                 </li>-->
                                 <li> 
                                     <a href="">
-                                        <i class="fa icon-pill"></i> Prescription ( <%= userInfo.medications.length %> )
+                                        <i class="fa icon-pill"></i> Prescription ( {{filteredPrescriptions.length}} )
                                         <i class="fa arrow"></i>
                                     </a>
                                     <ul>
