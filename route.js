@@ -6152,8 +6152,7 @@ router.put("/user/family-accounts",function(req,res){
 router.post("/user/family/create-account",function(req,res){
   if(req.user) {
     var getId = uuid.v1();
-    model.user.findOne({email: req.user.email,phone: req.user.phone}).exec(function(err,main){
-      console.log(main.user_id)
+    model.user.findOne({email: req.user.email,password: req.user.password}).exec(function(err,main){     
       if(err) throw err;
       if(main) {
         if(main.family_accounts.length <= 10) {
