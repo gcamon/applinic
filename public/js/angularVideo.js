@@ -362,19 +362,22 @@
 		}
 
 		$scope.userId = user.user_id;
+		var saveControlId = {};
 
 		$scope.sendInvitation = function(id) {
-			 controllerSocket.emit("convsersation signaling",{to: id,from: user.user_id},function(data){
+			 controllerSocket.emit("convsersation invitation signaling",{to: id,from: user.user_id,controlId:saveControlId.id},function(data){
 			 	$scope.$apply(function(){
 			 		$scope.deliveryMsg = "sent!";
+			 		alert(data.message)
 			 	});	      
 	    })
 		}
 
+		//when invitation was rejected.
+		controllerSocket.on("call reject",function(res){
+			alert(res.message)
+		});
 
-
-
-		var saveControlId = {};
 		var path = $location.path();
 		var newPath = path + "/local-streams";
 		$scope.allLocalStreams = function() {

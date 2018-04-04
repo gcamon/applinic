@@ -377,26 +377,69 @@ module.exports = function(model,io,streams) {
 						cb({message:"Video call request has been sent to " + user.title + " " + user.firstname})
 					} else {
 						var msg = user.title + " " + user.firstname + " is currently not available.Your request has been qeued for attendance."
-		    			cb({message: msg});
+		    		cb({message: msg});
 					}
 				});			
 			});
 
+			socket.on("convsersation invitation signaling",function(req,cb){
+				model.user.findOne({user_id:req.to},{set_presence:1,firstname:1,title:1,type:1,presence:1},function(err,user){
+					if(err) throw err;
+					if(user.set_presence.general && user.presence) {
+						//{type:req.type,message:req.message,time:req.time}
+						io.sockets.to(req.to).emit("receive invitation request",{message: req.title + " " + 
+							req.name + " requests for video call with you!",from: req.from,controlId:req.controlId});
+						cb({message:"Video call request has been sent to " + user.title + " " + user.firstname})
+					} else if(user.presence) {
+						io.sockets.to(req.to).emit("receive invitation request",{message: req.title + " " + 
+							req.name + " requests for video call with you!",from: req.from,controlId:req.controlId});
+						cb({message:"Video call request has been sent to " + user.title + " " + user.firstname})
+					} else {
+						var msg = user.title + " " + user.firstname + " is currently not available.Your request has been qeued for attendance."
+		    		cb({message: msg});
+					}
+
+				});			
+			});
+
+			/*
+			model.control.findOne({controlId: details.controlId}).exec(function(err,control){
+						if(err) throw err;
+						if(control) {
+							streams.addStream(socket.id, details.name, details.controlId,model);
+							cb({controlUrl: control.controlUrl});
+						}
+					})
+			*/
+
+			socket.on("conversation invitation acceptance",function(details,cb){
+				//will be modified to accomadate other chosen time							
+				model.control.findOne({controlId: details.controlId}).exec(function(err,control){
+					if(err) throw err;
+					console.log(control)
+					if(control) {
+						streams.addStream(socket.id, details.name, details.controlId,model);						
+						cb({controlUrl: control.controlUrl});
+					}
+				});
+
+			});
+
 			socket.on("conversation acceptance",function(details,cb){
-				//will be modified to accomadate other chosen time			
+				//will be modified to accomadate other chosen time							
 				switch(details.time){
 					case "now":
 					  var controlId = genRemoteId();
 						var createUrl = "/user/cam/" + controlId;
 						saveControlControl(createUrl,controlId,details);						
 						io.sockets.to(details.to).emit("video call able",{controlUrl: createUrl,message: details.title +
-						 " " + details.name + " is waiting to have video conference with you!"});
+						" " + details.name + " is waiting to have video conference with you!"});
 						cb({controlUrl: createUrl});
 					break;
 					default:
 					break;
 				}
-			})
+			});
 
 			function genRemoteId() {
 				return uuid.v1();
@@ -420,9 +463,7 @@ module.exports = function(model,io,streams) {
 			});
 
 
-			/////////////////////
-
-		// to be moved to another server for video
+		//webrtc data transfer logic
 		console.log('-- ' + socket.id + ' joined --');
     socket.emit('id', socket.id);
 
@@ -432,17 +473,15 @@ module.exports = function(model,io,streams) {
       if (!othersocket) {
         return;
       }
-        delete details.to;
-        details.from = socket.id;
-        othersocket.emit('message', details);
+      delete details.to;
+      details.from = socket.id;
+      othersocket.emit('message', details);
     });
       
    
 
     // gets te control to join a room
     socket.on("control join",function(control,cb){
-    	console.log("did it join?")
-    	console.log(control)
     	socket.join(control.control);//control.joins a roo
     	cb(control);
     	//streams.addStream(socket.id,control.name,control.control,model)

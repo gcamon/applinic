@@ -7599,6 +7599,37 @@ app.controller("presenceSocketController",["$rootScope","$scope","$window","mySo
     }
   });
 
+  mySocket.on("receive invitation request",function(data){
+    templateService.playAudio(1);
+    setTimeout(function(){
+      display()
+    },2000);
+
+    function display() {
+      var decide = confirm(data.message);
+      if(decide) {
+        //time will be include to enable user decide when t have conversation
+        mySocket.emit("conversation invitation acceptance",{status:true,time: "now",to:data.from,title:person.title,
+          name: person.firstname,type:person.typeOfUser,controlId: data.controlId},function(response){
+            localManager.setValue("userId",data.from);
+            $rootScope.controlUrl = response.controlUrl;
+            ModalService.showModal({
+              templateUrl: 'redirect-modal.html',
+              controller: 'redirectModal'
+              }).then(function(modal) {
+                modal.element.modal();
+                modal.close.then(function(result) {                     
+              });
+            });
+        });
+      } else {
+        //when call is rejected by the receiver
+        mySocket.emit("call reject",{to: data.from,message: person.title + " " + person.firstname + " rejected your video call request."})
+      }
+    }
+  });
+
+  
   mySocket.on("convserstion denied",function(details){
     alert(details.message);
   })

@@ -36,7 +36,6 @@ module.exports = function() {
           var elemPos = control.streams.map(function(x){return x.id}).indexOf(id);
           if(elemPos === -1)         
             control.streams.push(stream);
-
           control.save(function(err,info){
             console.log("streams save!")
           })
