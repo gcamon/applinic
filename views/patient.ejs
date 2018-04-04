@@ -432,16 +432,16 @@
 
                                  <li class="no-show"> <a href="">
                         
-                                    <div class="img" style="background-image: url(<%= userInfo.profile_pic_url %>)"> </div> 
+                                    <div class="img" style="background-image: url('{{checkLogIn.profile_pic_url}}')"> </div> 
                                     <span class="name">
-                      <%= userInfo.firstname %> <%= userInfo.lastname %>
+                      {{checkLogIn.firstname}} {{checkLogIn.lastname}}
                     </span>
                             <i class="fa arrow"></i>
                         </a>
                                     <ul>                                 
                                          
 
-                                  <li><a href=""> <i class="fa fa-user icon"></i> ID <%= userInfo.user_id %> </a> </li>
+                                  <li><a href=""> <i class="fa fa-user icon"></i> ID {{checkLogIn.user_id}} </a> </li>
 
                                   <li> <a href="#/edit-picture"> <i class="fa fa-user icon"></i> Change profile picture </a> </li>
 
@@ -449,9 +449,11 @@
                                      <a href="#/edit-profile"><i class="fa fa-gear icon"></i> Edit profile </a> 
                                      </li>
                                     
-                                    <li> <a href="#/create-family-account" ><i class="fa fa-users"></i>
-                                    Create Family Account
-                                    </a></li>
+                                    <li> 
+                                        <a href="#/create-family-account" ><i class="fa fa-users"></i>
+                                            Create Family Account
+                                        </a>
+                                    </li>
                                     <li><a href="" ng-click="logout()"><i class="fa fa-power-off icon"></i> Logout </a>
                                     </li>
                                     </ul>
