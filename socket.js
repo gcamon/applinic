@@ -366,8 +366,12 @@ module.exports = function(model,io,streams) {
 			socket.on("convsersation signaling",function(req,cb){
 				model.user.findOne({user_id:req.to},{set_presence:1,firstname:1,title:1},function(err,user){
 					if(err) throw err;
-					if(user.set_presence.general === true) {
+					if(user.set_presence.general === true && user.type === "Doctor") {
 						//{type:req.type,message:req.message,time:req.time}
+						io.sockets.to(req.to).emit("receive request",{message: req.title + " " + 
+							req.name + " requests for video call with you!",from: req.from});
+						cb({message:"Video call request has been sent to " + user.title + " " + user.firstname})
+					} else if(user.type === "Patient") {
 						io.sockets.to(req.to).emit("receive request",{message: req.title + " " + 
 							req.name + " requests for video call with you!",from: req.from});
 						cb({message:"Video call request has been sent to " + user.title + " " + user.firstname})

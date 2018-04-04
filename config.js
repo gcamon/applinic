@@ -82,16 +82,15 @@ var configuration = function (app,model) {
 		list =	path.split("/");
 		switchUrl = path.substr(0,20);
 		
-		console.log("++++++++++++++++++++++")
-		console.log(path)
+
 		if(switchUrl === "/user/family-switch/") {
 			switchUser();						
 		} else if(switchUrl === "/user/family-normal/"){
 			mainUser();
 		}  else if(list[list.length - 1] === "login")  {
 			model.user.findById(id, function(err, user) {		
-				user.family_flag = false;
-				user.save(function(){})		
+				//user.family_flag = false;
+				//user.save(function(){})		
 			  done(err, user);	
 			});
 	 	} else if(path === "/user/family/create-account") {

@@ -255,6 +255,35 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
     }
   });
 
+  router.get("/user/getInvitee",function(req,res){
+    if(req.user) {
+      var criteria;
+      var str;
+      switch(req.query.type) {
+        case "Doctor":
+          str = new RegExp(req.query.name.replace(/\s+/g,"\\s+"), "gi");         
+          criteria = { name : { $regex: str, $options: 'i' },type:"Doctor"};
+        break;
+        case "Patient":
+          str = new RegExp(req.query.name.replace(/\s+/g,"\\s+"), "gi");              
+          criteria = { firstname : { $regex: str, $options: 'i' },type:"Patient"};
+        break;
+        default:
+          str = new RegExp(req.query.name.replace(/\s+/g,"\\s+"), "gi");              
+          criteria = { name : { $regex: str, $options: 'i' }};
+        break;
+      }
+
+      model.user.find(criteria,{name:1,presence:1,firstname:1,lastname:1,specialty:1,work_place:1,_id:0,profile_pic_url:1,address:1,city:1,country:1,user_id:1},
+        function(err,list){
+        if(err) throw err;
+        res.json(list);
+      })
+    } else {
+      res.end("unauthorized access!");
+    }
+  })
+
   /*router.get("/user/iceservers-list",function() {
     if(req.user) {
     var httpreq = https.request(options, function(httpres) {
@@ -840,7 +869,7 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
     
     router.get("/user/patient/find-doctor",function(req,res){
       if(req.user){
-        console.log(req.query)
+       
         var criteria;
         var str;
         if(req.query.city && !req.query.specialty){
@@ -860,7 +889,7 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
           } else {
             finalStr = req.query.name;
           }
-          console.log(finalStr);
+          
           str = new RegExp(finalStr.replace(/\s+/g,"\\s+"), "gi");
           console.log(str);         
           criteria = { name : { $regex: str, $options: 'i' },type:"Doctor"};
@@ -5386,8 +5415,10 @@ router.get("/user/field-agent",function(req,res){
 //log out route
 router.get("/user/logout",function(req,res){
     if(req.user){
-      model.user.findOne({email: req.user.email,phone: req.user.phone},{presence:1,firstname:1,set_presence:1,family_accounts:1,family_flag:1})
+      model.user.findOne({email: req.user.email,password: req.user.password},{presence:1,firstname:1,set_presence:1,family_accounts:1,family_flag:1})
       .exec(function(err,data){
+        console.log(req.user.email + " " + req.user.phone)
+        console.log(data)
         if(data) {
           data.presence = false;
           data.set_presence.general = false;

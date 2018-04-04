@@ -145,8 +145,7 @@
 		}
 
 		rtc.loadData = function () {
-			// get list of streams from the server
-			
+			// get list of streams from the server		
 		
 			var url = '/user/streams.json/' + control.controlId;
 			
@@ -154,18 +153,15 @@
 				// filter own stream
 				
 				var streams = data.filter(function(stream) {
-			      	return stream.id != client.getId();
+			      	return stream.id !== client.getId();
 			    });
 			    // get former state
 			    //starts from one for remote streams
 			    for(var i=0; i<streams.length;i++) {
 			    	var stream = getStreamById(streams[i].id);
 			    	streams[i].isPlaying = (!!stream) ? stream.isPLaying : false;
-			    	//rtc.view(streams[i])
-			    }
-			    
-			    // save new streams
-			    console.log(data)
+			    	rtc.view(streams[i]);
+			    }			    
 			    $rootScope.connections = streams;
 			    rtc.remoteStreams = streams;
 			});
@@ -290,8 +286,8 @@
 
 	}]);
 
-	app.controller('LocalStreamController',['camera','$rootScope', '$scope', 'localManager','$window','$location',
-	 function(camera,$rootScope, $scope, localManager,$window, $location){
+	app.controller('LocalStreamController',['camera','$rootScope', '$scope', 'localManager','$window','$location','$http',
+	 function(camera,$rootScope, $scope, localManager,$window, $location, $http){
 		var localStream = this;
 		
 		localStream.name = user.title + " " + user.firstname + " " + user.lastname  || 'Guest';
@@ -321,6 +317,62 @@
 			}		
 		
 		}
+
+		/*
+			Invite Logic
+		*/
+
+		$scope.invite = {}
+		$scope.findInvitee = false;
+
+		$scope.$watch("invite.type",function(newVal,oldVal){
+			if(newVal){
+				$scope.findInvitee = true;
+			}
+
+			switch(newVal) {
+				case "Doctor": 
+					$scope.inviteInfo = "Enter Doctor's name e.g Dr Ede Obinna" 
+				break;
+				case "Patient": 
+					$scope.inviteInfo = "Enter patient's firstname e.g Obinna" 
+				break;
+				default:
+				 $scope.inviteInfo = "Enter center name" 
+				break
+			}
+		})
+
+		$scope.closeInvite = function() {
+			$scope.findInvitee = false;
+		}
+
+		$scope.getInvitee = function() {
+			$scope.loading = true;
+			$http({
+	      method  : 'GET',
+	      url     : "/user/getInvitee" + "?name=" + $scope.invite.name + "&type=" + $scope.invite.type,
+	      data    : $scope.invite,
+	      headers : {'Content-Type': 'application/json'} 
+	      })
+	    .success(function(data) {
+	    	$scope.loading = false;
+	    	$scope.inviteeList = data;
+	    });         
+		}
+
+		$scope.userId = user.user_id;
+
+		$scope.sendInvitation = function(id) {
+			 controllerSocket.emit("convsersation signaling",{to: id,from: user.user_id},function(data){
+			 	$scope.$apply(function(){
+			 		$scope.deliveryMsg = "sent!";
+			 	});	      
+	    })
+		}
+
+
+
 
 		var saveControlId = {};
 		var path = $location.path();
