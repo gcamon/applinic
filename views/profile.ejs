@@ -993,7 +993,7 @@
 
 
     <script type="text/ng-template" id="write-prescription-modal.html">
-        <div class="">
+         <div class="modal fade">
           <div class="modal-dialog">
             <div class="modal-content">
               <div class="modal-header">
@@ -1005,76 +1005,87 @@
               
               <div class="modal-body">
                     <div ng-if="isToPrescribe">
-                      
+                      <div style="max-height: 400px;overflow-y: auto;">
                       <ul class="nav">
                         <li ng-repeat="test in testObj.test_result"><strong>{{test.name}} :</strong> {{test.data}}</li>
                       </ul>
                       <p><strong>Conclusion :</strong> {{testObj.conclusion}}</p>
-                      <div class="form-inline">
-                        <label>Write provisional diagnosis</label>
-                        <input type="text" class="form-control" placeholder="What is wrong with this patient?" ng-model="patient.provisional_diagnosis">
+                      </div>
+                      <div class="pl-0">
+                        <label>Provisional diagnosis: </label>
+                        <textarea  class="form-control p-1" placeholder="Write..." ng-model="patient.provisional_diagnosis"></textarea>
                       </div> 
                       <div>
-                      {{drugList}}
                         <table class="table table-bordered table-responsive">
                           <tr>
                             <thead>
-                              <th><strong>S/N</strong></th>
-                              <th><strong>Drug name</strong></th>
-                              <th><strong>Dosage</strong></th>
-                              <th><strong>Frequency</strong></th>
-                              <th><strong>Duration</strong></th>
+                              <th style="padding: 0"><strong>S/N</strong></th>
+                              <th style="padding: 0"><strong>Drug name</strong></th>
+                              <th style="padding: 0"><strong>Dosage</strong></th>
+                              <th style="padding: 0"><strong>Frequency</strong></th>
+                              <th style="padding: 0"><strong>Duration</strong></th>
                             </thead>
                           </tr>
                           <tr>
                             <tbody ng-repeat="prescription in drugList">                
-                              <td>{{prescription.sn}}</td>
-                              <td><input name="states" id="states" type="text" placeholder="Enter drug name" ng-model="drug.name" uib-typeahead="drug.name for drug in drugs | filter:$viewValue | limitTo:15" class="form-control" style="width: 95%">
+                              <td style="padding: 0">{{prescription.sn}}</td>
+                              <td style="padding: 0"><input name="states" id="states" type="text" placeholder="Enter drug name" ng-model="drug.name" uib-typeahead="drug.name for drug in drugs | filter:$viewValue | limitTo:15" class="form-control" style="width: 95%">
                                 {{getDrug(drug.name)}} </td>
-                              <td><input type="text" class="form-control" ng-model="prescription.dosage"></td>
-                              <td><input type="text" class="form-control" ng-model="prescription.frequency"></td>
-                              <td><input type="text" class="form-control" ng-model="prescription.duration"></td>
+                              <td style="padding: 0"><input type="text" class="form-control" ng-model="prescription.dosage"></td>
+                              <td style="padding: 0"><input type="text" class="form-control" ng-model="prescription.frequency"></td>
+                              <td style="padding: 0"><input type="text" class="form-control" ng-model="prescription.duration"></td>
                             </tbody>
                           </tr>           
                         </table>
                       </div>
                       <div style="text-align: right">
-                        <i class="fa fa-plus text-muted" style="font-size:16px;padding: 10px; cursor:pointer; margin-right: 5px" title="Add field" ng-click="addDrug()"></i>
-                          <i class="fa fa-minus text-muted" style="font-size:16px; padding: 10px; cursor:pointer; margin-right: 5px" title="Remove last field" ng-click="removeDrug()"></i>
+                        <i class="fa fa-plus text-muted btn btn-simple round" style="padding: 10px; cursor:pointer; margin-right: 5px" title="Add field" ng-click="addDrug()"></i>
+                          <i class="fa fa-minus text-muted btn btn-simple round" style="padding: 10px; cursor:pointer; margin-right: 5px" title="Remove last field" ng-click="removeDrug()"></i>
                       </div>
                     <div> 
-                      <button class="btn btn-info" ng-click="toPatient()">Forward prescription to patient</button>
-                      <button class="btn btn-info" ng-click="toPharmacy()" data-dismiss="modal" aria-hidden="true">Forward prescription to a Pharmacy<button>
+                      <button class="btn btn-info" ng-click="toPatient()"   data-dismiss="modal">send to patient</button>
+                      <button class="btn btn-danger" ng-click="toPharmacy()" aria-hidden="true">send to a pharmacy</button>
                     </div>
 
                   </div>
 
                   <div ng-if="isFindPharmacy" style="max-height: 900px;overflow-y: auto; overflow-x:hidden;">
-                    <button class="btn btn-simple" ng-click="back('find')">Back</button>
-                    <h3>Find Pharmacy</h3>
-                    <p><strong>Tips: </strong> You can filter the result by "name"  <br>or complete the text box and click "find" to search based on the entered criteria.</p>
-                    <form>
-                        <div class="row">
-                            <div class="col-md-6 form-group">
-                                <label>Pharmacy City/Town</label>        
-                      <input class="form-control" type="text" placeholder="City/Town" ng-model = "pharmacy.city"/>
-                            </div><div class="col-md-6 form-group">
-                                <label>Pharmacy Name</label>
-                      <input class="form-control"  type="text" placeholder="Name" ng-model = "pharmacy.name"/> 
-                      </div>  
-                      <input class="btn btn-info" type="button" value="FIND" ng-click = "findPharmacy()"/>
-                    </div>
+                  <div>
+                      <i class="fa fa-arrow-left font-1_1" ng-click="back('find')"> Back</i>
+                  </div>
+                    
+                    <!--<h3>Find Pharmacy</h3>-->
+                   
+                    <form class="row">
+                      <div class="col-md-8 col-sm-8 col-lg-8 form-group">  
+                        <!--<label>City:</label>-->                        
+                        <input class="form-control" type="text" placeholder="City" ng-model = "pharmacy.city"/>
+                       </div>
+                      
+                      <div class="col-md-2 col-sm-2 col-lg-2">  
+                        <input class="btn btn-info" type="button" value="find" ng-click = "findPharmacy()"/>
+                      </div>
                     </form>
-                    <div class= "row look-up-phamarcy" ng-repeat = "result in pharmacyData | filter: pharmacy.name || pharmacy.city | orderBy: 'name'" style="cursor:pointer;" ng-click="forwardPrescriptionTo(result.user_id)"> 
-                      <div class="row">
-                      <div class="col-md-4 col-sm-12">
-                        <img ng-src="{{result.profile_pic_url}}" src="assets/img/avatar.jpg" alt="profile pic"/>
+                    <div>
+                        Drugs: <span ng-repeat="i in drugList"> {{i.drug_name}}, </span>
+                    </div>
+                    <hr class="bg-default">
+                    <div ng-if="pharmacyData.length">
+                        <!--<label>center name: </label>-->
+                        <input class="form-control"  style="width:70%" type="text" placeholder="filter by name or address" ng-model = "pharmacy.name"/> 
+                    </div>
+                    <div class= "row look-up-phamarcy" ng-repeat = "result in pharmacyData | filter: pharmacy.name || pharmacy.city | orderBy: 'name'" style="cursor:pointer;margin: 10px 5px;" ng-click="forwardPrescriptionTo(result.user_id)">                      
+                      <div style="float:left">
+                        <img ng-src="{{result.profile_pic_url}}" style="max-width: 72px; max-height: 72px" alt="profile pic"/>
                       </div>
-                      <div class="col-md-8 col-sm-12 " >
-                        <h3>{{result.name}}</h3>
-                        <address>{{result.address}} <span>{{result.city}}, <strong>{{result.country}}</strong></span></address>     
-                      </div>
-                      </div>
+                      <div style="float:left;padding-left: 15px">
+                        <strong>{{result.name}}</strong>
+                        <span style="display: block;margin-top: -5px">{{result.address}} {{result.city}}, {{result.country}}</span>
+                        <span style="display: block;margin-top: -5px">{{result.phone}}</span>   
+                      </div>                    
+                    </div>
+                    <div ng-if="loading" style="text-align: center;margin-top: 50px">
+                        <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange" ng-if="loading"></i>
                     </div>
                   </div>
                   <div ng-if="isCenter">                  

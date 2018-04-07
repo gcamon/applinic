@@ -422,7 +422,7 @@ app.config(['$paystackProvider','$routeProvider',function($paystackProvider,$rou
 
  .when("/patient/my-doctors",{
   templateUrl:"/assets/pages/patient/my-doctors.html",
-  controller: "chooseDoctorController"
+  controller: 'chooseDoctorController'
  })
   
  .when("/patient/selected-doctor",{
@@ -1471,7 +1471,6 @@ app.controller("balanceController",["$rootScope","$scope","$resource","localMana
 
 }]);  
 
-
 app.controller('signupController',["$scope","$http","$location","$window","templateService","$resource","$rootScope","localManager",
   function($scope,$http,$location,$window,templateService,$resource,$rootScope,localManager) {
   var signUp = $resource('/user/signup',null,{userSignup:{method:"POST"},emailCheck:{method:"PUT"}});
@@ -1496,7 +1495,8 @@ app.controller('signupController',["$scope","$http","$location","$window","templ
   }
 
   $scope.userType("Patient") // sets type of user as patient as default as patient is the landing form .
-  
+  var phoneNumber;
+
   $scope.submit = function(type,argTitle){
   $scope.user.currencyCode = currency.code;
   $scope.user.state = currency.state;
@@ -1538,7 +1538,7 @@ app.controller('signupController',["$scope","$http","$location","$window","templ
 
   function checkExistingPhone() {
     if($scope.user.phone) {
-      var phoneNumber = "+" + $scope.user.callingCode.toString() + $scope.user.phone.toString();
+      phoneNumber = "+" + $scope.user.callingCode.toString() + $scope.user.phone.toString();
       signUp.get({phone:phoneNumber},function(res){
         if(res.error) {        
           $scope.phoneMessage = res.errorMsg;
@@ -1641,9 +1641,10 @@ app.controller('signupController',["$scope","$http","$location","$window","templ
 
       if(data.agree === true) {        
         if($scope.user.callingCode){        
-          var phoneNumber = "+" + $scope.user.callingCode.toString() + $scope.user.phone.toString();
+          //var phoneNumber = "+" + $scope.user.callingCode.toString() + $scope.user.phone.toString();
           data.phone = phoneNumber;
           $rootScope.formData = data;
+          alert(phoneNumber)
           sendDetail();
         } else {
           $scope.numberError = "Invalid number format";
@@ -6870,13 +6871,61 @@ app.controller("patientRedirectTestController",["$scope","$location","$resource"
 
 
 
-app.controller("chooseDoctorController",["$scope","$location","$http","$window","templateService",function($scope,$location,$http,
-  $window,templateService){  
+app.controller("chooseDoctorController",["$scope","$location","$http","$window","templateService","localManager",
+  function($scope,$location,$http,$window,templateService,localManager){  
   $scope.doctors = templateService.holdMyDoctorsForSendingTest;
-
+  $scope.test = templateService.holdTestToBeForwarded;
+  console.log($scope.test)
   $scope.selectedDoctor = function(docObj) {
-    templateService.holdSelectedDoctorToSendTest = docObj;
-    $location.path("/patient/selected-doctor");
+    //templateService.holdSelectedDoctorToSendTest = docObj;
+    //$location.path("/patient/selected-doctor");
+    docObj.loading = true;
+    var date = new Date;
+    var dataToSend = {
+      type_of_test: $scope.test.type,
+      doctorId: docObj.doctor_id,
+      center_name: $scope.test.center_name,
+      center_address: $scope.test.center_address,
+      cente_city: $scope.test.center_city,
+      center_country: $scope.test.center_country,
+      test_result: $scope.test.test_to_run,
+      conclusion: $scope.test.conclusion,
+      files: $scope.test.files,
+      date_sent: date,
+      ref_id: $scope.test.ref_id
+    }
+
+    $http({
+    method  : 'PUT',
+    url     : "/user/patient/test-result/forward",
+    data    : dataToSend,
+    headers : {'Content-Type': 'application/json'} 
+    })
+    .success(function(data) {
+      docObj.loading = false;
+      if(data.status) {       
+        docObj.message = "request sent!";
+        /*switch($scope.test.type) {
+          case "laboratory":
+            $location.path("/patient/laboratory-test");
+          break;
+          case "radiology":
+            $location.path("/patient/radiology-test");
+          break;
+          default:
+          break;
+        }*/
+      } else {
+        alert("Oops! Something went wrong while sending prescription request. Try again...")
+      }
+
+    }); 
+
+
+  }
+
+  $scope.goBack = function() {
+    $location.path(localManager.getValue("currentPageForPatients"));
   }
 
 }]);
@@ -8719,7 +8768,7 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
       templateService.holdPrescriptionTestObj = testData;
       ModalService.showModal({
           templateUrl: 'write-prescription-modal.html',
-          controller: "prescriptionModalController"
+          controller: 'prescriptionModalController'
       }).then(function(modal) {
           modal.element.modal();
           modal.close.then(function(result) {
@@ -9073,10 +9122,7 @@ app.controller("prescriptionModalController",["$scope","$http","$window","localM
       count.num++;
       newDrug.sn = count.num;
       $scope.drugList.push(newDrug);
-      index = $scope.drugList.length - 1;     
-      console.log("static")
-      console.log($scope.drugList);
-      
+      index = $scope.drugList.length - 1;      
     }
 
     $scope.removeDrug = function(){
@@ -9114,7 +9160,6 @@ app.controller("prescriptionModalController",["$scope","$http","$window","localM
         headers : {'Content-Type': 'application/json'} 
         })
       .success(function(data) {      
-        console.log(data);
         alert(data.message);
         updateTheTestSent(data.ref_id,data.name,data.address,data.city,data.country,"patient")
       });      
@@ -9125,36 +9170,17 @@ app.controller("prescriptionModalController",["$scope","$http","$window","localM
 
     $scope.toPharmacy = function(){
       $scope.pharmacy = {};
-
+      $scope.loading = true;
       $http({
             method  : 'GET',
             url     : "/user/patient/getAllPharmacy",
             headers : {'Content-Type': 'application/json'} 
             })
-          .success(function(data) {        
-            $scope.pharmacyData = data;
-            console.log(data)        
+          .success(function(data) { 
+            $scope.loading = false;       
+            $scope.pharmacyData = data;       
             $scope.pharmacy.city = data[0].city;
-        });
-        
-        $scope.findPharmacy = function () {
-          var searchObj = {};
-          for(var i in $scope.pharmacy){
-            if($scope.pharmacy.hasOwnProperty(i) && $scope.pharmacy[i] !== ""){
-              searchObj[i] = $scope.pharmacy[i];
-            }
-          }
-           searchObj.type = "Pharmacy";
-           $http({
-            method  : 'PUT',
-            url     : "/user/patient/pharmacy/refined-search", 
-            data    : searchObj,
-            headers : {'Content-Type': 'application/json'} 
-            })
-          .success(function(data) {
-            $scope.pharmacyData = data;
-          });
-        }
+        });        
 
         $scope.isToPrescribe = false;
         $scope.isFindPharmacy = true;
@@ -9163,6 +9189,28 @@ app.controller("prescriptionModalController",["$scope","$http","$window","localM
     //to the backend after the doctor have searched and found the phamarcy to forward the prescription to.      
       //$location.path("/search/pharmacy");
     }
+
+    $scope.findPharmacy = function () {
+      var searchObj = {};
+      $scope.loading = true;
+      for(var i in $scope.pharmacy){
+        if($scope.pharmacy.hasOwnProperty(i) && $scope.pharmacy[i] !== ""){
+          searchObj[i] = $scope.pharmacy[i];
+        }
+      }
+      searchObj.type = "Pharmacy";
+      $http({
+        method  : 'PUT',
+        url     : "/user/patient/pharmacy/refined-search", 
+        data    : searchObj,
+        headers : {'Content-Type': 'application/json'} 
+        })
+      .success(function(data) {
+        $scope.loading = false;
+        $scope.pharmacyData = data;
+      });
+    }
+
 
     $scope.forwardPrescriptionTo = function(id){
       var elementPos = $scope.pharmacyData.map(function(x) {return x.user_id; }).indexOf(id);

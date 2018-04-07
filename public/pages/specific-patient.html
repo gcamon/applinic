@@ -10,7 +10,7 @@
              <div class=" text-center userpe"><a href="">
             <img title="profile image" class="img-responsive" src="{{patientInfo.profile_pic_url}}" style="max-width:200px;max-height:250px"></a>
         </div><br>
-             <div><div class="title">{{patientInfo.title}} {{patientInfo.firstname}} {{patientInfo.lastname}}</div>
+             <div><div class="font-1_2">{{patientInfo.title}} {{patientInfo.firstname}} {{patientInfo.lastname}}</div>
          <sub class="text-muted" style="margin-top:-3px; font-size:1em;">Patient</sub><br><br>
              </div>
 
@@ -27,14 +27,14 @@
 <a href="" class="grayish" ng-click="viewLabPrescriptionRequest()">
 	<i class="fa fa-flask text-info"  style="position:relative">
 		<strong style="display:inline-block;left: -3px; top:-5px;color:red;position:absolute;font-size:14px" ng-if="labLen > 0">{{labLen}}</strong>
-	</i> Prescribe By lab result
+	</i> Prescribe with lab report
 </a>
 
 
 <a href="" class="grayish" ng-click="viewRadioPrescriptionRequest()">
 	<i class="fa fa-flask text-warning" style="position:relative" title="Patient recent radiology test for your prescription">
     	<strong style="display:inline-block;left: -3px; top:-5px;color:red;position:absolute;font-size:14px" ng-if="radioLen > 0">{{radioLen}}</strong>
-    </i> Prescribe by radio result
+    </i> Prescribe with radio report
 </a>
  <div>
     
@@ -109,7 +109,7 @@
     </div>    
     <div style="text-align: right">
         <button ng-click="createNewSession()" class="btn btn-danger">
-            Create new
+            new
         </button>
     </div>
     <div>
@@ -389,7 +389,8 @@
 <!-- prescribe based on lab result -->
 
 <section ng-if="isToViewLabPrescriptionReq">
-    <div class="medical-record-Area"  style="border-top: 1px solid rgba(0,0,0,0.4)">
+    <h5 class="card p-1">Prescription with Lab Report</h5>
+    <div class="medical-record-Area card p-1">
     <section ng-repeat="test in labPrescriptionReq" style="border-bottom: 1px solid #000; margin-bottom: 10px">
         <span ng-if="test.attended || theAttended.length > 0"  class="sentto">
             Sent to ?
@@ -422,8 +423,9 @@
  <!-- prescribe based on lab result -->
 
 <section ng-if="isToViewRadPrescriptionReq">
-    <div class="medical-record-Area" style="border-top: 1px solid rgba(0,0,0,0.4)">
-    <section ng-repeat="test in radioPrescriptionReq" style="border-bottom: 1px solid #000; margin-bottom: 10px">
+    <h5 class="card p-1">Prescription with Radio Report</h5>
+    <div class="medical-record-Area ">
+    <section ng-repeat="test in radioPrescriptionReq | orderBy: '-date_sent'" style="margin-bottom: 10px" class=" card p-1">
         <span ng-if="test.attended"  class="sentto">
             Sent to ?
             <ul style="color: green">
@@ -443,9 +445,9 @@
         <article><strong>Conclusion :</strong> {{test.conclusion}}</article>
         <div style="text-align: right">
             <i class="fa fa-file-image-o" title="View files associated with this test result" ng-if="test.files.length > 0"
-            style="font-size:24px;color:rgba(0,150,0,0.9); cursor:pointer;margin:20px 10px" ng-click="viewFile(test.files,test.test_result)"></i>
-            <i class="icon-Pills icon-style" title="Write prescription based on this test result" style="cursor:pointer" ng-click="prescribe(test)"></i>
-            <i class="fa fa-times" title="Delete this request" style="cursor:pointer" ng-click="delete(test)"></i>
+            style="cursor:pointer;margin:20px 10px 0" ng-click="viewFile(test.files,test.test_result)"></i>
+            <i class="icon-Pills icon-style" title="Write prescription based on this test result" style="cursor:pointer;margin:20px 10px 0" ng-click="prescribe(test)"></i>
+            <i class="fa fa-times" title="Delete this request" style="cursor:pointer;margin:20px 10px 0" ng-click="delete(test)"></i>
         </div>
     </section>
 </div>
@@ -810,7 +812,7 @@
                     <div>
                        <form>
                            <label>Search: </label>
-                           <input type="text" name="city" ng-model="treatment.city" placeholder="City/Town">
+                           <input type="text" name="city" ng-model="treatment.city" placeholder="City">
                            <input type="text" name="country" ng-model="treatment.country" placeholder="Country">
                            <input type="button" ng-click="changeOption()" class="btn btn-primary" value="search">
                        </form>

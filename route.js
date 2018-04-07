@@ -1696,7 +1696,8 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
             rating: 1,
             profile_pic_url: 1,
             user_id: 1,
-            type: 1
+            type: 1,
+            phone:1
         }
         model.user.find(req.body,projection,function(err,data){
             if(err) throw err;

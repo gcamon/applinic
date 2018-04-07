@@ -7,13 +7,24 @@
 		<span>({{person.doctor_specialty}})</span>
 	</div>
 </div>-->
-
-<div class="col-sm-12 col-md-12 col-lg-12">
-	<h3 class="font-1_7">Choose a Doctor</h3>
-	<div class="form-inline">Filter: <input type="text" class="form-control" ng-model="doc.firstname" placeholder="filter list by surname or specialty"></div>
-	<div ng-repeat="person in doctors | filter: doc.firstname || doc.specialty" ng-click="selectedDoctor(person)" style="cursor:pointer;">
-		<img ng-src="{{person.doctor_profile_pic_url}}" style="width: 100px;height:100px">
-		<span class="font-1_4">Dr. {{person.doctor_firstname}} {{person.doctor_lastname}} EDE Obinna<span><br>
-		<span class="font-1_1">({{person.doctor_specialty}})CARDIOLOGIST</span>
+<div class="container">
+	<div class="card-center-1">
+		<button class="btn btn-neutral" ng-click="goBack()"><i class="fa fa-arrow-left"></i> Back</button>
+	</div>
+	<div class="card card-center-1 p-1">	
+		<h4 style="margin-top: 20px">Prescription Request</h4>
+		<p>Attached to this request is test result for <span ng-repeat="test in test.test_to_run"> {{test.name}}, </span> </p>
+		<div style="width:60%;padding-left: 0">
+		 <input type="text" class="form-control" ng-model="doc.firstname" placeholder="filter list by name or specialty">
+		</div>
+		<div ng-repeat="person in doctors | filter: doc.firstname"   style="cursor:pointer;padding: 10px;position: relative;" class="clearfix">
+			<img src="{{person.doctor_profile_pic_url}}" style="width: 45px;height:45px;float: left"/>
+			<article style="float: left;padding: 4px 5px;display: inline-block;">
+				<strong>{{person.title}} {{person.doctor_firstname}} {{person.doctor_lastname}}</strong>
+				<span style="display: block;">{{person.doctor_specialty}}</span>
+				<button class="btn btn-primary" ng-click="selectedDoctor(person)" style="position: absolute; right: 20px;padding: 5px 7px;bottom: 5px"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="person.loading"></i> {{(person.loading) ? "" : (person.message) ? person.message : 'send'}}</button>
+			</article>				
+		</div>
+		
 	</div>
 </div>
