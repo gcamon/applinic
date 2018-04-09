@@ -351,7 +351,13 @@ var myModel = function () {
 		sent_date: String,
 		test_ran_by: String,
 		test_id: Number,
-		files: Array
+		files: Array,
+		center_address: String,
+		center_city: String,
+		center_country: String,
+		center_phone: String,
+		center_profile_pic_url: String
+
 	});
 
 	var docDignosisSchema = Schema({
@@ -403,6 +409,7 @@ var myModel = function () {
 	    center_address: String,
 	    cente_city: String,
 	    center_country: String,
+	    center_phone: String,
 	    test_result: Array,
 	    files: Array,
 	    date_sent: String,

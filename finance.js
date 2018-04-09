@@ -695,6 +695,11 @@ var basicPaymentRoute = function(model,sms,io,paystack){
           theObj.conclusion = req.body.laboratory.conclusion;
           theObj.sent_date = req.body.date;
           theObj.test_ran_by = req.user.name;
+          theObj.center_address = req.user.address;
+          theObj.center_city = req.user.city;
+          theObj.center_country = req.user.country;
+          theObj.center_phone = req.user.phone;
+          theObj.center_profile_pic_url =  req.user.profile_pic_url;
            
           
           //the doctors session for a patient is updated, and patient dashboard is called for update.
@@ -967,6 +972,11 @@ var basicPaymentRoute = function(model,sms,io,paystack){
 	          theObj.conclusion = req.body.radiology.conclusion;
 	          theObj.sent_date = req.body.date;
 	          theObj.test_ran_by = req.user.name;
+	          theObj.center_address = req.user.address;
+	          theObj.center_city = req.user.city;
+	          theObj.center_country = req.user.country;
+	          theObj.center_phone = req.user.phone;
+	          theObj.center_profile_pic_url =  req.user.profile_pic_url;
 	          theObj.files = req.body.radiology.filesUrl;
 
 

@@ -2921,6 +2921,12 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
               newObjToSend.conclusion = objFound.conclusion;
               newObjToSend.receive_date = objFound.receive_date;
               newObjToSend.sent_date = objFound.sent_date;
+              newObjToSend.center_name = objFound.test_ran_by;
+              newObjToSend.center_address = objFound.center_address;
+              newObjToSend.center_city = objFound.center_city;
+              newObjToSend.center_country = objFound.center_country;
+              newObjToSend.center_phone = objFound.center_phone;
+              newObjToSend.files = objFound.files;
 
               sentObjArr.push(newObjToSend);
 

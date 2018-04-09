@@ -3577,6 +3577,8 @@ app.controller("inTreatmentController",["$scope","$http","localManager","$locati
     investigation("/user/doctor/get-test-result");      
     $scope.isLab = true;
     $scope.isScan = false;
+    $scope.isNewRadio = false;
+    $scope.isNewLab = false; 
    } 
 
    $scope.newLab = function() {
@@ -3596,6 +3598,8 @@ app.controller("inTreatmentController",["$scope","$http","localManager","$locati
     investigation("/user/doctor/get-scan-result");
     $scope.isScan = true;
     $scope.isLab = false;
+    $scope.isNewRadio = false;
+    $scope.isNewLab = false; 
   } 
 
   $scope.newRadio = function() {
@@ -8354,10 +8358,13 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
   $scope.writePrescription =function(){     
     $scope.isToPrescribe = true;
     $scope.isToSeeRecord = false;
-     $scope.isToViewLabPrescriptionReq = false;
+    $scope.isToViewLabPrescriptionReq = false;
     $scope.isToViewRadPrescriptionReq = false;
     $scope.isToViewSession = false;
-     $scope.isChat = false;
+    $scope.isChat = false;
+    $scope.isSearchToSend = false; 
+    $scope.isToViewSession = false;  
+    $scope.isTreatmentSession = false;   
   }
 
     $scope.appointment = function(patientObj){
@@ -8395,7 +8402,9 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
       $scope.isToViewRadPrescriptionReq = false;
       $scope.isToViewSession = false;
       $scope.isChat = false;
-       
+      $scope.isSearchToSend = false; 
+      $scope.isToViewSession = false;     
+      $scope.isTreatmentSession = false;
       if(!$scope.medicalRecordHistory)
         getMedicalHistory("/user/get-medical-record");
       
@@ -8438,9 +8447,9 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
     $scope.viewPreviousLaboratory = function(){        
       //$scope.isToViewOldPrescription = true;
       $scope.isDiagnosis = false;
-       $scope.isPharmacy = false;
-       $scope.isLaboratory = true;
-       $scope.isRadiology = false;    
+      $scope.isPharmacy = false;
+      $scope.isLaboratory = true;
+      $scope.isRadiology = false;    
       $scope.laboratoryTests = $scope.medicalRecordHistory.medical_records.laboratory_test;
     }
 
@@ -8479,7 +8488,6 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
       var getMedication = $resource(url);
       var sendObj = {patientId:patient.id}
       getMedication.get(sendObj,function(data){ 
-        console.log(data);
         $scope.medicalRecordHistory = data;
       });
     }
@@ -8507,10 +8515,7 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
       count.num++;
       newDrug.sn = count.num;
       $scope.drugList.push(newDrug);
-      index = $scope.drugList.length - 1;     
-      console.log("static")
-      console.log($scope.drugList);
-      
+      index = $scope.drugList.length - 1;         
     }
 
     $scope.removeDrug = function(){
@@ -8557,6 +8562,7 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
     //to the backend after the doctor have searched and found the phamarcy to forward the prescription to. 
       $scope.isToPrescribe = false;
       $scope.isSearchToSend = true; 
+      $scope.isToViewSession = false;
       $scope.treatment.city = patient.city;
       $scope.treatment.country = patient.country; 
       getPharmacy() 
@@ -8633,7 +8639,9 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
       $scope.isToViewLabPrescriptionReq = false;
       $scope.isToViewRadPrescriptionReq = false;
       $scope.isToViewSession = true;
+      $scope.isSearchToSend = false; 
       $scope.isChat = false;
+      $scope.isTreatmentSession = false;
     }
 
     $scope.viewTreatmentSession = function (session) {
@@ -8669,7 +8677,10 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
       $scope.isToViewLabPrescriptionReq = true;
       $scope.isToViewRadPrescriptionReq = false;
       $scope.isToViewSession = false; 
-      $scope.isChat = false;     
+      $scope.isChat = false;
+      $scope.isSearchToSend = false; 
+      $scope.isToViewSession = false;  
+      $scope.isTreatmentSession = false;   
     }
 
     $scope.viewRadioPrescriptionRequest = function () {
@@ -8679,6 +8690,9 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
       $scope.isToViewRadPrescriptionReq = true;
       $scope.isToViewSession = false;
       $scope.isChat = false;
+      $scope.isSearchToSend = false; 
+      $scope.isToViewSession = false;
+      $scope.isTreatmentSession = false; 
     }
 
     var sessionList = [];
@@ -9094,6 +9108,10 @@ app.controller("viewXRayFilesController",["$scope","$http","$window","localManag
     }
 }]);
 
+
+/*
+  this cotroller no longer in use maybe reoved later.
+*/
 app.controller("prescriptionModalController",["$scope","$http","$window","localManager","templateService","$location","$rootScope","Drugs",
   function($scope,$http,$window,localManager,templateService,$location,$rootScope,Drugs) {
     $scope.patient = templateService.holdPrescriptionToBeForwarded;
