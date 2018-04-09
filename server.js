@@ -69,7 +69,7 @@ app.use('/call',ExpressPeerServer(http,options));
 
 
 http.listen(port,function(){
-    console.log('listening on *:3000');
+    console.log('listening on *: ' + port);
 });
 
 /*sms.messages.create(

@@ -1,8 +1,17 @@
 'use strict';
 var mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
-var dbURL = process.env.MONGODB_ADDON_URI || "mongodb://127.0.0.1:27017/medicalmull" //"mongodb://127.0.0.1:27017/medicalmull"; 45.55.204.222
-mongoose.connect(dbURL);
+var dbURL = "mongodb://127.0.0.1:27017/medicalmull" //"mongodb://127.0.0.1:27017/medicalmull"; 45.55.204.222
+var options = {
+	autoReconnect: true,
+	useMongoClient: true,
+	reconnectTries: Number.MAX_VALUE, // Never stop trying to reconnect
+	reconnectInterval: 500, // Reconnect every 500ms
+	poolSize: 10, // Maintain up to 10 socket connections
+	// If not connected, return errors immediately rather than waiting for reconnect
+	bufferMaxEntries: 0
+}
+mongoose.connect(dbURL,options);
 mongoose.connection.on("error",function(err){
     console.log(err)
 });

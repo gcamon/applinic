@@ -276,7 +276,7 @@
 <section  ng-if="isToPrescribe">
     <div class="medical-record-Area card p-1" style="">
         <div>
-             <h5>Write new prescription</h5>
+             <h5>Write Prescription</h5>
         </div>   
        
         <table class="" style="width: 100%">       
@@ -395,7 +395,7 @@
 <!-- prescribe based on lab result -->
 
 <section ng-if="isToViewLabPrescriptionReq">
-    <h5 class="card p-1">Prescription with Lab Report</h5>
+    <h5 class="card p-1">Lab Result Inbox</h5>
     <div class="medical-record-Area card p-1">
     <section ng-repeat="test in labPrescriptionReq | orderBy: '-date_sent'" style="border-bottom: 1px solid #000; margin-bottom: 10px">
         <span ng-if="test.attended || theAttended.length > 0"  class="sentto">
@@ -404,13 +404,19 @@
                 <li ng-repeat="i in test.attended || theAttended"><small>{{i.name}} {{i.address}} {{i.city}} {{i.country}} &nbsp; <span am-time-ago="i.date_sent" class="text-info"></span></small></li>
             </ul>
         </span>
-        <h5 style="text-align:center">{{test.center_name}} 
-        <span style="display:block;color:#000;font-size:12px">{{test.center_address}} {{test.cente_city}} {{test.center_country}}</span>
-        <span style="display: block">{{test.center_phone}}</span>
-        <span am-time-ago="test.date_sent" class="text-info" style="float: right;font-size:14px"></span>
-        </h5>
+        <div style="text-align:center">
+            <strong class="font-1_2">{{test.center_name}} </strong>
+            <span style="display:block;color:#000;font-size:12px">{{test.center_address}} {{test.cente_city}} {{test.center_country}}</span>         
+            <span style="display: block">{{test.center_phone}}</span>
+            <span am-time-ago="test.date_sent" class="text-info" style="float: right;font-size:14px"></span>
+        </div>
+        <div>
+            <strong>Date : </strong> {{test.receive_date | date: 'mediumDate'}}
+        </div>
        
-        <h6>Test Result</h6>                    
+         <div>
+           <strong style="border-bottom: 2px solid orange">Test Result</strong> 
+        </div>                   
         <div>                        
             <article ng-repeat="report in test.test_result"> 
                 <h6>{{report.name}} :</h6>  
@@ -437,7 +443,7 @@
  <!-- prescribe based on lab result -->
 
 <section ng-if="isToViewRadPrescriptionReq">
-    <h5 class="card p-1">Prescription with Radio Report</h5>
+    <h5 class="card p-1">Radio Result Inbox</h5>
     <div class="medical-record-Area ">
     <section ng-repeat="test in radioPrescriptionReq | orderBy: '-date_sent'" style="margin-bottom: 10px" class=" card p-1">
         <span ng-if="test.attended"  class="sentto">
@@ -447,22 +453,27 @@
             </ul>
         </span>
         <div style="text-align:center">
-        <strong class="font-1_4">{{test.center_name}} </strong>
+        <strong class="font-1_2">{{test.center_name}} </strong>
         <span style="display:block;color:#000;font-size:12px">{{test.center_address}} {{test.cente_city}} {{test.center_country}}</span>         
         <span style="display: block">{{test.center_phone}}</span>
         <span am-time-ago="test.date_sent" class="text-info" style="float: right;font-size:14px"></span>
         </div>
+        <div>
+            <strong>Date : </strong> {{test.receive_date | date: 'mediumDate'}}
+        </div>
         
-
-        <h5>Test Result</h5>                    
+        <div>
+           <strong style="border-bottom: 2px solid orange">Test Result</strong> 
+        </div>
+                          
         <div>                        
             <article ng-repeat="report in test.test_result"> 
-                <h6>{{report.name}} :</h6>  
+                <label>{{report.name}} :</label>
                 <p style="padding: 20px; background-color: lightyellow;word-wrap: break-word;">{{report.data}}</p>
             </article>
         </div>
         <div>
-            <h6>Conclusion :</h6> 
+            <label>Conclusion :</label> 
             <p style="padding: 20px; background-color: lightyellow;word-wrap: break-word;">{{test.conclusion}}</p>
         </div>
         <div style="text-align: right">
