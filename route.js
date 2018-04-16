@@ -2652,7 +2652,6 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
       if(req.user){
         model.user.findOne({user_id: req.user.user_id},{appointment:1,_id:0},function(err,data){     
           if(err) throw err;
-          console.log(data.appointment);
           res.send(data.appointment);
         });
       } else {
@@ -2667,7 +2666,6 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
           if(err) throw err;
           var elementPos = data.doctor_patient_session.map(function(x) {return x.session_id; }).indexOf(req.body.sessionId);
           var objectFound = data.doctor_patient_session[elementPos];
-          console.log(objectFound)      
           var sessionData = {
             typeOfSession: objectFound.typeOfSession,
             session_id: objectFound.session_id,

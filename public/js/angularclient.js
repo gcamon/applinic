@@ -1,18 +1,19 @@
-var app = angular.module('myApp',["ngRoute","ngAnimate","angularModalService","angularMoment",
-  'ui.bootstrap','angular-clipboard',"ngResource","btford.socket-io","ngTouch",'ngPrint','paystack']);
+var app = angular.module('myApp',["ngRoute","ngAnimate","angularModalService","angularMoment",'ui.bootstrap','angular-clipboard',"ngResource","btford.socket-io","ngTouch",'ngPrint','paystack']);
 
-app.config(['$paystackProvider','$routeProvider',function($paystackProvider,$routeProvider){
+app.config(['$paystackProvider','$routeProvider',
+  function($paystackProvider,$routeProvider){
   $paystackProvider.configure({
       key: "pk_test_f9caf875a730e2ce7059b6eda000194c65125bda"
   });
 
+ 
+ 
   $routeProvider
 
   .when("/",{
     templateUrl: '/assets/pages/result-page.html',
     controller: 'resultController'
   })
-
 
   .when("/list",{
     templateUrl: '/assets/pages/list-doctors.html',
@@ -536,6 +537,7 @@ app.config(['$paystackProvider','$routeProvider',function($paystackProvider,$rou
 
 
 }]);
+
 
 app.service('templateService',[function(){
   this.isThroughLogin = false;
@@ -1529,7 +1531,7 @@ app.controller('signupController',["$scope","$http","$location","$window","templ
   if($scope.user.email) {
     signUp.get({email: $scope.user.email},function(response){
       if(!response.success){ 
-        $scope.emailMessage = "User with " + $scope.user.email + " already exist!";
+        $scope.emailMessage = "User with " + $scope.user.email + " already exists!";
       } else {
         checkExistingPhone();
       }
@@ -1583,13 +1585,13 @@ app.controller('signupController',["$scope","$http","$location","$window","templ
       }
 
       if(data.typeOfUser === "Patient" && data.firstname === undefined || data.firstname === "") {
-        $scope.FirstNameMessage = "Enter value for first name";
+        $scope.FirstNameMessage = "Enter value for firstname";
         return;
       } else if(data.typeOfUser === "Patient" && data.lastname === undefined || data.lastname === "") {
-        $scope.lastNameMessage = "Enter value for last name";
+        $scope.lastNameMessage = "Enter value for lastname";
         return;
       } else if(data.typeOfUser === undefined || data.typeOfUser === "" ) {
-        $scope.typeMessage = "Select type of user your are";
+        $scope.typeMessage = "Select type of user";
         return;
       } else if(data.country === undefined || data.country === "") {
         $scope.countryMessage = "Select your country of residence";
@@ -1601,10 +1603,10 @@ app.controller('signupController',["$scope","$http","$location","$window","templ
         $scope.phoneMessage = "Enter a valid mobile phone number";
         return;
       } else if(data.password !== data.password2) {
-        $scope.passwordError = "Passwords does not match!";
+        $scope.passwordError = "Password does not match!";
         return;
       } else if(data.agree !== true) {
-        $scope.termMessage = "You have to agree to our terms and conditions";
+        $scope.termMessage = "You have to agree to our terms and privacy policy";
         return;
       } else if(data.email === undefined || data.email === ""){
         $scope.emailMessage = "Enter value for email";
@@ -1616,13 +1618,13 @@ app.controller('signupController',["$scope","$http","$location","$window","templ
         $scope.genderMessage = "Select your gender";
         return;
       } else if(data.username === undefined || data.username === "") {
-        $scope.usernameMessage = "Enter value for your user name";
+        $scope.usernameMessage = "Enter value for username";
         return;
       /*} else if(data.typeOfUser === "Doctor" && data.work_place === undefined || data.work_place === "") {
         $scope.workMessage = "Enter your place of work";
         return;*/
       } else if(data.address === undefined || data.address === "") {
-        $scope.addressMessage = "Enter your place of work address";
+        $scope.addressMessage = "Enter place of work address";
         return;
       } else if(data.typeOfUser === "Doctor" && data.title === undefined || data.title === "") {
         $scope.titleMessage = "Select title";
@@ -3361,8 +3363,7 @@ app.controller("docAppointmentController",["$scope","$location","$http","$window
         data    : session,
         headers : {'Content-Type': 'application/json'} 
         })
-      .success(function(data) {
-        console.log(data);        
+      .success(function(data) {        
         templateService.holdAppointmentData = data;
         $location.path("/selected-appointment/" + sessionId);     
     });
@@ -3533,8 +3534,10 @@ app.controller("selectedAppointmentController",["$scope","$location","$http","$w
   function($scope,$location,$http,$window,templateService,localManager){
 
     $scope.sessionInfo = templateService.holdAppointmentData;
+    
    
     $scope.getTreatment = function(){
+      $scope.loading = true;
       var session = {};
       $scope.isToTreat = templateService.isTrue; 
       session.sessionId = $scope.sessionInfo.session_id;
@@ -3546,9 +3549,11 @@ app.controller("selectedAppointmentController",["$scope","$location","$http","$w
         })
       .success(function(data) {
         if(data){
-        data.patientInfo = templateService.holdAppointmentData;        
-        localManager.setValue("heldSessionData",data);
-          $window.location.href = "/user/treatment";
+          //data.patientInfo = templateService.holdAppointmentData;        
+          //localManager.setValue("heldSessionData",data);
+          $scope.loading = false;
+          $location.path("/doctor-patient/treatment/" + data.patient_id)
+          //$window.location.href = "/user/treatment";
         } else {
           alert("error occurred while trying to get this session")
         }              
@@ -14051,8 +14056,8 @@ app.controller("emScanTestController",["$scope","$location","$http","$window","t
 
 }]);
 
-app.controller("topHeaderController",["$scope","$rootScope","$window","$location","$resource","localManager","mySocket","templateService",
-  function($scope,$rootScope,$window,$location,$resource,localManager,mySocket,templateService){
+app.controller("topHeaderController",["$scope","$rootScope","$window","$location","$resource","localManager","mySocket","templateService","$timeout","$document","ModalService",
+  function($scope,$rootScope,$window,$location,$resource,localManager,mySocket,templateService, $timeout, $document, ModalService){
 
   if(!localManager.getValue("resolveUser")) {
     $window.location.href = "/login"
@@ -14149,7 +14154,7 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
   //use for filter in PWR
   $rootScope.complain = {};
 
-  $scope.logout = function(){
+  $rootScope.logout = function(){
     mySocket.emit("set presence",{status:"offline",userId:$scope.checkLogIn.user_id},function(response){
       if(response.status === false){
         if($scope.checkLogIn.typeOfUser === "Doctor"){
@@ -14197,12 +14202,83 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
     localManager.removeItem('saveSocket');
     localManager.removeItem('activeAccountId');
     localManager.removeItem('mainAccount');
-
-
   }
- 
-   
+
+
+
+  console.log('starting run');
+
+  // Timeout timer value
+  var TimeOutTimerValue = 900000; // 15 minutes
+
+  // Start a timeout
+  var TimeOut_Thread = $timeout(function(){ LogoutByTimer()} , TimeOutTimerValue);
+  var bodyElement = angular.element($document);
+
+ $rootScope.events = ['keydown', 'keyup', 'click', 'mousemove', 'DOMMouseScroll', 'mousewheel', 'mousedown', 'touchstart', 'touchmove', 'scroll'];
+  /*angular.forEach(['keydown', 'keyup', 'click', 'mousemove', 'DOMMouseScroll', 'mousewheel', 'mousedown', 'touchstart', 'touchmove', 'scroll', 'focus'], 
+  function(EventName) {
+       bodyElement.bind(EventName, function (e) { TimeOut_Resetter(e) });  
+  });*/
+
+  for(var i = 0; i < $rootScope.events.length; i++){
+    bodyElement.on($rootScope.events[i], function (e) { TimeOut_Resetter(e) }); 
+  }
+  var count = 0;
+  function LogoutByTimer(){
+      console.log("logout");     
+      //alert("You have been idle for a while you will be logged out!")      
+      //bodyElement.off()
+      ///////////////////////////////////////////////////
+      /// redirect to another page(eg. Login.html) here
+      ///////////////////////////////////////////////////
+      if(count > 0) {
+        //send request to log user out!
+        ModalService.showModal({
+            templateUrl: 'session-timeout.html',
+            controller: "timeOutModalController"
+        }).then(function(modal) {
+            modal.element.modal();
+            modal.close.then(function(result) {
+              
+            });
+        });        
+      }
+
+      count++;
+  }
+
+  function TimeOut_Resetter(e){
+      //console.log(e);
+      /// Stop the pending timeout
+      $timeout.cancel(TimeOut_Thread);
+
+      /// Reset the timeout
+      TimeOut_Thread = $timeout(function(){ LogoutByTimer() } , TimeOutTimerValue);
+  }
+
 }]);
+
+//logs user out if no action was taken
+app.controller("timeOutModalController",["$scope","$rootScope","$timeout","$window",function($scope,$rootScope,$timeout,$window){
+  var distance = 10;
+  var x = setInterval(function() {
+    $scope.$apply(function(){
+      $scope.countDown = --distance + 10;
+      if($scope.countDown <= 0) {  
+        clearInterval(x);        
+        $rootScope.logout()
+      }
+    }) 
+  },1000);
+
+  $scope.keepalive = function() {
+    clearInterval(x);
+  }
+
+ }]);
+
+
 
 app.controller("displayController",["$scope","$location",function($scope,$location){
   $location.path("/specialists");
@@ -14640,12 +14716,7 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
     });
   }
 
-
-}])
-
-
-
-
+}]);
 
 
 //Drug,lab,scan factory

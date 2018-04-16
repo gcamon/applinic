@@ -1,6 +1,6 @@
 
 <div class="container">
-<div class="card p-2">
+<div class="card card-center-1 p-2">
 
 
 
@@ -21,17 +21,17 @@
 	
 
 	   <div class="col-md-6 form-group" ng-if="isUserId === true">
-	    <label for="City"></label>
+	    <label for="City">Beneficiary: </label>
 	   <input type="text" ng-model="pay.userId" class="form-control" id="City" placeholder="Beneficiary's ID" >
 	  </div>
 
 	   <div class="col-md-6 form-group" ng-if="isPhone === true">
-	    <label for="City"></label>
+	    <label for="City">Beneficiary: </label>
 	   <input type="text" ng-model="pay.phone" class="form-control" id="City" placeholder="Beneficiary's Phone Number ( format: +234******** ) ">
 	  </div>
 
 	  <div class="col-md-6 form-group">
-	  	<label for="City"></label>
+	  	<label for="City">Amount: </label>
 	   	<input type="text" class="form-control" id="City" placeholder=" Enter Amount" ng-model="pay.amount">
 	    <b style="display: block;" class="mt-1">Amount | {{str}}</b> &nbsp;&nbsp;&nbsp;
 	   	<span style="color:red">{{errorMsg}}</span>

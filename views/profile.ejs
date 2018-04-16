@@ -13,7 +13,7 @@
        <!--<link rel="stylesheet" href="/assets/css/main.cs">-->
         <link rel="stylesheet" href="/assets/css/vendor.css">
          <link rel="stylesheet" href="/assets/css/app.css">
-         
+         <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
           <link rel="stylesheet" href="/assets/css/now-ui-kit2.css">
           <link rel="stylesheet" href="/assets/css/icomoon.css">
           <link rel="stylesheet" href="/assets/css/chat.css">
@@ -24,6 +24,9 @@
           <script type="text/javascript" src="/assets/js/source.js"></script>
          
           <style>
+            body {
+                font-family: 'Open Sans', sans-serif;
+             }
               .title{
                   font-weight: 300;
               }
@@ -1788,7 +1791,34 @@
             </div>
           </div>
         </div>
-    </script>                      
+    </script>     
+
+     <script type="text/ng-template" id="session-timeout.html">
+       <div class="modal fade">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+          
+            <div  style="padding: 20px;margin-bottom: 20px;text-align: center;">  
+                <div>
+                    <strong style="font-weight: 100;font-size: 22px">Hey! Are you still there?</strong>
+                </div>            
+                
+                <p style="font-size: 14px;padding-top: 30px" class="text-muted">You have been idle for a while you will be timed out at count down 0</p>
+                <div style="padding:20px">
+                    <a href="" class="btn btn-simple round">{{countDown}}</a>
+                </div>
+
+                <div>
+                    <a href="" class="btn btn-danger" ng-click="keepalive()" data-dismiss="modal">No, keep alive</a>
+                </div>
+            </div>
+            
+          </div>
+        </div>
+      </div>
+   </script>
+                 
 
         <!-- Reference block for JS -->
 

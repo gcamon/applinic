@@ -24,34 +24,29 @@
 
 
 <div class="container">
-<div class="card p-2">
-	<h3 class="font-1_7 mb-0">Cash out</h3><hr>
+<div class="card card-center-1 p-2">
+	<h3 class="mb-0 p-0">Cash Out</h3><hr>
 	<form>
          <div class="row">
-  <div class="col-md-6 form-group">
+  <div class="col-md-12 form-group">
     <label for="bname">Bank name:</label>
-    <input type="text" class="form-control"  placeholder="write.." ng-model="bankDetail.bank_name">
+    <input type="text" class="form-control" style="width: 70%" placeholder="write.." ng-model="bankDetail.bank_name">
   </div>
-  <div class="col-md-6 form-group">
+  <div class="col-md-12 form-group">
     <label for="Baccount">Bank account number:</label>
-    <input type="text" class="form-control" placeholder="write.." ng-model="bankDetail.account_number">
+    <input type="number" class="form-control" style="width: 70%" placeholder="write.." ng-model="bankDetail.account_number">
   </div>
 
- </div>
-
-    <div class="row">
-  <div class="col-md-6 form-group">
+   <div class="col-md-12 form-group">
     <label for="bname">Amount to cash out:</label>
-    <input type="number" class="form-control"  placeholder="write.." ng-model="bankDetail.amount">
-  </div>
-  <div class="col-md-6 form-group">
-    <label for="Baccount">Bank account number:</label>
-    <input type="text" class="form-control" placeholder="write.." ng-model="bankDetail.account_number">
+    <input type="number" class="form-control" style="width: 70%" placeholder="write.." ng-model="bankDetail.amount">
   </div>
 
  </div>
+
+    
 			
-		<div class="col-md-12 form-group pt-1">
+		<div class="form-group pt-1">
 			<p><b>Amount : {{str}}</b></p>
 		</div>
 		<div class="col-md-12">
