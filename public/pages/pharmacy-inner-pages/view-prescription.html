@@ -94,10 +94,10 @@
 
 
 <div class="container">
-    <div class="card p-2">
+    <div class="card card-center-1 p-2">
 <div class="col-sm-12 col-md-12 col-lg-12" >
-	<div class="row">
-		<h3 class="card p-0" style="padding: 0">Patient Prescription</h3>
+	<div>
+		<h3 class="p-0" style="padding: 0">Patient Prescription</h3>
 	</div>
 	<div class="row">
 		
@@ -116,12 +116,12 @@
 			<ul class="nav font-1_1">
 				<li><strong>Referred By </strong>| {{refData.referral_title}} {{refData.referral_firstname}} {{refData.referral_lastname}} {{refData.referral_name}}</li>
 				<li><strong>Date </strong>| {{refData.date | date: "mediumDate"}}</li>
-				<li><strong>Time </strong>| {{refData.date | date: "mediumTime"}}</li>
+				<!--<li><strong>Time </strong>| {{refData.date | date: "mediumTime"}}</li>-->
 				<li><strong>Ref.NO </strong>| {{refData.ref_id}}</li>
 			</ul>
 			<h6 class="text-muted pb-1 mt-2" style="border-bottom: 1px solid rgba(0,0,0,0.4);">Prescription Details</h6>
 			<p><strong>Tips:</strong> While attending to this patient, please <strong>Tick</strong> the drug you have already given to the patient below.If dosage, frquency and duration fields are missing you can add them based on the drugs you already administered.
-				<strong>Unticked drug </strong> is regarded as not available in your center<span style="display:block"> which you can <strong>forward to another center.</strong></span></p>	
+				<strong>Unticked drug </strong> is regarded as not available in your center<span> which you can <strong>forward to another center.</strong></span></p>	
 				<div style="text-align: right;">
 				<a href="" ng-click="refresh()"style="color:orange"><i class="fa fa-refresh"></i> Refresh</a>	
 				</div>			
@@ -228,10 +228,10 @@
 			<div class="prescription-info card" ng-if="refData.pharmacy.doctor_id">
 				<h6 class="text-muted pb-1" style="border-bottom: 1px solid rgba(0,0,0,0.2);">Prescribed by: </h6>
 				<div class="row">
-					<div class="col-sm-6 col-md-2 col-lg-2">			
+					<div class="col-sm-6 col-md-2 col-lg-2" style="padding-left: 10pz">			
 						<img class="img-rounded card" src="{{refData.pharmacy.doctor_profile_pic_url}}" style="max-height:120px; max-width:120px">
 					</div>
-					<div class="col-sm-6 col-md-10 col-lg-10" style="line-height: 25px">								
+					<div class="col-sm-6 col-md-10 col-lg-10" style="line-height: 25px;padding: 10px">								
 						<strong class="font-1_1"> {{refData.pharmacy.title}} {{refData.pharmacy.doctor_firstname}} {{refData.pharmacy.doctor_lastname}}</strong><br>
 						<span class="text-muted">{{refData.pharmacy.doctor_specialty}}</span>
 						<span>{{refData.pharmacy.doctor_phone}}</span><br>

@@ -11,10 +11,12 @@
 </div>-->
 
 <div class="container">
-    <div class="card p-2">
-<div>
-	<a class="btn btn-simple" href="#/pharmacy/drug-service/update">Back</a>
-	<h5 class="font-1_2" >Drug(s) not available in your center ( {{ notService.length }} )</h5><hr>
+	<div class="card card-center-1 p-2">
+		<a class="btn btn-simple" href="#/pharmacy/drug-service/update">Back</a>
+	</div>
+    <div class="card card-center-1 p-2">
+<div>	
+	<h5 class="font-1_2" >Unavailable Drugs ( {{ notService.length }} )</h5><hr>
 	<p class="font-1_1" ng-if="notService.length > 0">Please tick if a drug is currently available in your center</p>
 </div>
 <div class="all-test-check">

@@ -21,10 +21,10 @@
 
 
 <div class="container">
-<div class="card p-2">
+<div class="card card-center-1 p-2">
 <h3 class="p-0">Update Inventory</h3>
 <div  style="text-align: right">
-	<a class="" href="#/pharmacy/off-service" style="color:#000">Drugs not in store</a>
+	<a class="btn btn-simple btn-sm" href="#/pharmacy/off-service">Unavailable drugs</a>
 </div>
 <p>Please unmark any drug you don't have in stock below</p>
 <hr>
@@ -46,19 +46,19 @@
 	</div>
 
 	</div>
-	<div class="mt-0 mb-0" style="cursor:pointer;box-shadow: 0 5px 25px 0 rgba(0,0,0,.2);font-size: 22px;padding: 10px 20px;color:orange; ">
-		Others..
-	</div>
 
-	<div>
+
+	<div class="card p-2 card-center-1">
+		<h5>Others</h5>
 		<div ng-repeat="drug in allDrugs2">
-			<!--<input type="checkbox" ng-model="drug.val"><span></span>-->
+		<!--<input type="checkbox" ng-model="drug.val"><span></span>-->
 			<label class="custom-control custom-checkbox">   <input type="checkbox" class="custom-control-input" ng-model="drug.val">   <span class="custom-control-indicator"></span>   <span class="custom-control-description font-1_1">{{drug.name}}</span> </label>
-		  </div>
-		</div>
-		<div>
+	  </div>
+	  <div>
 			<button class="btn btn-success pull-right" ng-click="saveSelection()">Save</button>
 		</div>
+	</div>
+		
 	</div>
 </div>
 

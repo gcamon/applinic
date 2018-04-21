@@ -35,12 +35,12 @@
 		<div> 
 				<input type="text" class="form-control"  placeholder="Filter by name of center" ng-model = "pharmacy.name" style="border:none;border-bottom: 1px solid rgba(0,0,0,0.2);width:70%"/>
 		</div>	
-		<div class= "look-up-phamarcy row" ng-repeat = "result in pharmacyData | filter: pharmacy.name || pharmacy.city | orderBy: 'name'" style="position: relative; margin: 15px 0;padding-left: 10px">	
+		<div class= "look-up-phamarcy row" ng-repeat = "result in pharmacyData | filter: pharmacy.name | orderBy: 'name'" style="position: relative; margin: 15px 0;padding-left: 10px;max-height: 600px;overflow-y: auto;" ng-if="checkLogIn.user_id !== result.user_id">	
 			
 				<strong class="mb-0">{{result.name}}</strong>
-				<span class="" style="display: block;margin-bottom: 5px">{{result.address}} <span>{{result.city}}, <strong>{{result.country}}</strong></span></span>
+				<span class="" style="display: block;margin-bottom: 5px">{{result.address}} <span>{{result.city}}, {{result.country}}</span></span>
 				
-				<i class="fa fa-phone" style="display: block"> &nbsp;{{result.phone}} </i>
+				<!--<i class="fa fa-phone" style="display: block"> &nbsp;{{result.phone}} </i>-->
 						
 				 
 				<!--<div style="margin-left: 20px;margin-top: -15px;border-bottom:1px solid rgba(0,0,0,0.2);font-size: 14px"><div class="star-rating">

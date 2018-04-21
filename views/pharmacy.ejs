@@ -96,15 +96,15 @@
                                 <div class="dropdown-menu notifications-dropdown-menu" style="max-height: 400px;overflow-y: auto;">
                                     <ul class="notifications-container">
                                         <li> <h6 style="text-align: center">Notification(s)</h6> </li>                                        
-                                         <li><button style="color:green;" ng-click = "addAllNote()">Add all notifications to attendance list </button></li>
+                                         <li style="text-align: right;padding-right: 10px"><button class="btn btn-success btn-sm" ng-click = "addAllNote()">Add to Work List </button></li>
                                         <li ng-repeat = "note in allNote">
 
-                                            <a href="" class="notification-item" ng-click="viewNote(note.ref_id)">
+                                            <a href="" class="notification-item pt-1" ng-click="viewNote(note.ref_id)">
                                                 <div class="img-col">
                                                     <div class="img" style="background-image: url({{note.sender_profile_pic_url}})"></div>
                                                 </div>
                                                 <div class="body-col">
-                                                    <p> <span class="accent">{{note.sender_firstname}} {{note.sender_lastname}}</span> {{note.message}} <small class="accent"> &nbsp;&nbsp;{{note.sent_date | date: "mediumDate"}} &nbsp;&nbsp;{{note.sent_date | date: "mediumTime"}}</small>. </p>
+                                                    <p> <span class="accent ellipsis">{{note.sender_firstname}} {{note.sender_lastname}}</span> {{note.message}} <small class="accent" am-time-ago='note.sent_date'> &nbsp;&nbsp;</small>. </p>
                                                 </div>
                                             </a>
                                         </li>                                        
@@ -134,7 +134,7 @@
                                                 </div>
                                                 <div class="body-col">                                                
                                                     <p style=""> <span class="accent" ng-cloak>{{chat.name}}</span>
-                                                        <span style="display:block" class="ellipsis">{{chat.messages[chat.messages.length - 1].received || chat.messages[chat.messages.length - 1].sent}} <small style="display:block" ng-cloak>{{chat.messages[chat.messages.length - 1].time | date: "shortTime" || chat.messages[chat.messages.length - 1].received | date: "shortTime"}} &nbsp;&nbsp;{{chat.messages[chat.messages.length - 1].time | date: "mediumDate" || chat.messages[chat.messages.length - 1].received | date: "mediumDate"}}</small>.</span> 
+                                                        <span style="display:block" class="ellipsis">{{chat.messages[chat.messages.length - 1].received || chat.messages[chat.messages.length - 1].sent}} <small am-time-ago="chat.messages[chat.messages.length - 1].time || chat.messages[chat.messages.length - 1].received" style="display:block" ng-cloak></small></span> 
                                                     </p>
                                                 </div>
                                             </a>
@@ -293,7 +293,7 @@
                                 </li>                      
 
                                 
-                                <li class="active"> <a href="">
+                                <li class="active"> <a href="#/welcome">
                             <i class="fa fa-home"></i>Pharmacy Dashboard
                         </a> </li>
 
@@ -356,13 +356,13 @@
 
                                 <li> 
                                     <a href="#/transfer">
-                                    Transfer funds
+                                    Transfer Funds
                                     </a> 
                                 </li>
 
                                  <li> 
                                     <a href="#/cash-out">
-                                    Cash out
+                                    Cash Out
                                     </a> 
                                 </li>
                                 <li> 

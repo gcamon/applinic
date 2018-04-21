@@ -26,33 +26,31 @@
 </div>-->
 
 <div class="container">
-<div class="card p-2">
+<div class="card card-center-1 p-2">
 <div class="col-md-12 col-lg-12 col-sm-12">
 	<div class="row">		
-		<div class="col-md-6 col-lg-6 col-sm-6">			
+		<div class="col-md-12 col-lg-12 col-sm-12">			
 			<h3 class="p-0">Find Patient Prescription</h3>	
-		</div>
-		<div class="col-md-6 col-lg-6 col-sm-6" style="text-align: right;">
-			<button class="btn btn-simple" style="cursor: pointer;" ng-click="showOption()">Change search option</button>
-		</div>
+			<button class="btn btn-danger btn-sm" style="cursor: pointer;float: right;;margin-top: -60px" ng-click="showOption()">option</button>
+		</div>		
 	</div>	
     <div class="row">
-	<form class="col-md-8 col-lg-8 col-sm-8" ng-if="isNotOption">			
-		<input type="text" class="form-control" placeholder="Enter referrence number" ng-model="patient.ref_id" style="width:60%;display: inline-block;padding: 20px 10px"/>
-		<input type="button" class="btn btn-success" value="Search" ng-click="findPrescription()" style=""/>
-	</form>
+		<form class="col-md-12 col-lg-12 col-sm-12" ng-if="isNotOption" style="">			
+			<input type="text" class="form-control" placeholder="Enter referrence number" ng-model="patient.ref_id" style="width:60%;display: inline-block;padding: 20px 10px"/>
+			<input type="button" class="btn btn-success" value="Search" ng-click="findPrescription()" style=""/>
+		</form>
 
-	<form class="col-md-8 col-lg-8 col-sm-8" ng-if="isOption">
-		<input type="text" class="form-control" placeholder="Enter patient phone number ( eg +234364****9 )" ng-model="patient.phone" style="width:80%;display: inline-block;padding:20px 10px"/>
-		<input type="button" class="btn btn-success" value="Search" ng-click="findPrescription()" style=""/>
-	</form>
+		<form class="col-md-12 col-lg-12 col-sm-12" ng-if="isOption">
+			<input type="text" class="form-control" placeholder="Enter patient phone number ( eg +234364****9 )" ng-model="patient.phone" style="width:60%;display: inline-block;padding:20px 10px"/>
+			<input type="button" class="btn btn-success" value="Search" ng-click="findPrescription()" style=""/>
+		</form>
     </div>
 	<div  style="cursor:pointer;max-height: 400px;overflow-y: auto;padding-top: 30px" ng-if="foundData[0].ref_id">	
 		<div ng-repeat="item in foundData | orderBy: '-date'">	
 	        <div class="p-0" style="display: inline-block;float: left;">
 	        	<img  ng-src="{{item.pharmacy.patient_profile_pic_url}}" style="max-width:120px; max-height: 120px">
 	        </div>
-			<div class="pl-1 ellipsis" style="display: inline-block;float: left;width: 50%;position: relative;padding-bottom: 15px"> 
+			<div class="pl-1 ellipsis" style="display: inline-block;float: left;width: 60%;position: relative;padding-bottom: 15px"> 
 				<strong class="">{{item.pharmacy.patient_firstname}} {{item.pharmacy.patient_lastname}}</strong><br>				
 				<span class="">Ref No: {{item.ref_id}}</span><br>
 				<span am-Time-Ago = "item.date"></span><br>
