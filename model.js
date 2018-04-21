@@ -144,6 +144,7 @@ var myModel = function () {
 		patient_firstname: String,
 		patient_id: String,
 		patient_lastname: String,
+		patient_phone: String,
 		patient_address: String,
 		patient_gender: String,
 		patient_age: String,
@@ -152,6 +153,11 @@ var myModel = function () {
 		prescription_body: [prescriptionBodySchema],
 		ref_id: Number,
 		eligible:Boolean,
+		is_paid: Boolean,
+		detail: {
+			amount: String,
+			date: String
+		},
 		payment_acknowledgement: Boolean // use to check if patient have actually paid for a prescription through our app.
 		//if false, prescription will be deleted after one month it was created.
 	});

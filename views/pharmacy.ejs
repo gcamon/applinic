@@ -36,6 +36,27 @@
                       margin-left: 50px
 
                   }
+
+                  @media screen and (max-width: 960px) {
+                    .text-center a {
+                        margin-left: 20px;
+                    }
+
+                    .btn-sm {
+                        float: left;
+                        margin-top: 5px
+                    }
+
+                    .view-animate-container {
+                   
+                    background: transparent !important;
+                   
+                    width: auto;
+                    margin-left: 0px
+
+                  }
+                }
+
           </style>
           <script src="/assets/js/vendor2.js"></script>
           <script type="text/javascript" src="/assets/js/source.js"></script>
@@ -938,6 +959,32 @@
                 <div style="text-align: right;padding: 20px">
                     <button class="btn btn-success" ng-click="sendBilling()">Send billing</button>
                 </div>          
+            </div>
+            
+          </div>
+        </div>
+      </div>
+   </script>
+
+    <script type="text/ng-template" id="session-timeout.html">
+       <div class="modal fade">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+          
+            <div  style="padding: 20px;margin-bottom: 20px;text-align: center;">  
+                <div>
+                    <strong style="font-weight: 100;font-size: 22px">Hey! Are you still there?</strong>
+                </div>            
+                
+                <p style="font-size: 14px;padding-top: 30px" class="text-muted">You have been idle for a while you will be timed out at count down 0</p>
+                <div style="padding:20px">
+                    <a href="" class="btn btn-simple round">{{countDown}}</a>
+                </div>
+
+                <div>
+                    <a href="" class="btn btn-danger" ng-click="keepalive()" data-dismiss="modal">No, keep alive</a>
+                </div>
             </div>
             
           </div>

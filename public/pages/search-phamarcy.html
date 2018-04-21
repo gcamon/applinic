@@ -18,41 +18,39 @@
 
 
 <div class="container">
-<div class="card p-2">
-	<h3 class="font-1_7">Forwarding prescription
+  <div class="card-center-1">
+	<button class="btn btn-simple" ng-click="goBack()"><i class="fa fa-arrow-left"></i> Back</button>
+  </div>
+<div class="card card-center-1 p-2">
+	<h3 class="p-0">Forwarding Prescription</h3>
 	<strong style ="display:block;padding: 10px;font-size: 16px"><span ng-repeat="drug in unavailableDrugArr"> @{{drug.drug_name}} &nbsp;&nbsp;</span> </strong>
-	</h3>
-
-	<form class="row">
-		<div class="col-md-8"> 
-			<!--<input type="text" class="form-control" placeholder="City/Town" ng-model = "pharmacy.city" style="width:70%;display: inline-block;padding: 15px"/>-->
-
+	<form>
+		<div> 
 			 <input type="text" class="form-control"  type="text" placeholder="Enter city/town" ng-model="pharmacy.city" uib-typeahead="city for city in cities | filter:$viewValue | limitTo:20" style="width:70%;display: inline-block;padding: 15px">
 			<button style="margin-left:6px;" type="button" class="btn btn-success pl-1 pr-1" value="FIND" ng-click = "findPharmacy()">Find</button>
-			<p style="font-style: italic;padding:10px" class="font-1-7"><i class="fa fa-info"> &nbsp;By default search result shows the centers within your city/town. You can search based on your desired city/town.</i></p>
+			<p style="font-style: italic;padding:10px"><i class="fa fa-info"> &nbsp;By default search result shows the centers within your city/town. You can search based on your desired city/town.</i></p>
 		</div>
 	</form>
-	<div class="shadow space row">
-		<div class="col-sm-12 col-md-6 col-md-6"> 
+	<div>
+		<div> 
 				<input type="text" class="form-control"  placeholder="Filter by name of center" ng-model = "pharmacy.name" style="border:none;border-bottom: 1px solid rgba(0,0,0,0.2);width:70%"/>
 		</div>	
-		<div class= "look-up-phamarcy row" ng-repeat = "result in pharmacyData | filter: pharmacy.name || pharmacy.city | orderBy: 'name'" style="position: relative; margin-top: 10px">	
-			<div class="col-sm-12 col-md-8 col-md-8">
-				<h3 class="font-1_4 mb-0" style="padding-bottom: 10px">{{result.name}}</h3>
-				<address class="font-1_1" style="padding-left:20px">{{result.address}} <span>{{result.city}}, <strong>{{result.country}}</strong></span>
-				<i class="fa fa-phone font-1_1" style="display: block;padding: 10px 0"> &nbsp;+234 {{result.phone}} </i>
-				</address>
-				 
+		<div class= "look-up-phamarcy row" ng-repeat = "result in pharmacyData | filter: pharmacy.name || pharmacy.city | orderBy: 'name'" style="position: relative; margin: 15px 0;padding-left: 10px">	
+			
+				<strong class="mb-0">{{result.name}}</strong>
+				<span class="" style="display: block;margin-bottom: 5px">{{result.address}} <span>{{result.city}}, <strong>{{result.country}}</strong></span></span>
 				
-				<div style="margin-left: 20px;margin-top: -15px;border-bottom:1px solid rgba(0,0,0,0.2)"><div class="star-rating">
+				<i class="fa fa-phone" style="display: block"> &nbsp;{{result.phone}} </i>
+						
+				 
+				<!--<div style="margin-left: 20px;margin-top: -15px;border-bottom:1px solid rgba(0,0,0,0.2);font-size: 14px"><div class="star-rating">
 			        <span  ng-cloak > 
 			        <div class="star-rating"  star-rating rating-value="result.rating.current" max="result.rating.max"></div>
 			        </span>
 			        </div>
-			    </div>
-			      		
-			</div>
-			<a style="text-decoration: none;color: grey;position: absolute; bottom: 10px;right:30px"><i class="fa fa-share btn btn-simple text-success"  title="Forward to {{result.name}}" ng-click="forwardPrescriptionTo(result.user_id)"></i></a>
+			    </div>-->		      		
+			<a style="text-decoration: none;color: grey;position: absolute; bottom: 10px;right:80px"><i class="fa fa-comment btn btn-simple btn-sm text-success"  title="send message" ng-click="sendChat(result)"></i></a>
+			<a href="" style="text-decoration: none;position: absolute; bottom: 10px;right:30px" class=""  title="Forward to {{result.name}}"> <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="" ng-if="result.loading"></i> <i class="fa fa-share btn btn-danger btn-sm"  ng-click="forwardPrescriptionTo(result)" ng-if="!result.loading && !result.success"> </i> <span style="display: inline-block;padding: 5px">{{(result.success) ? "sent!" : ""}}</span></a>
 			
 		</div>
 	</div>

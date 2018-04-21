@@ -43,18 +43,28 @@
 	</form>
 
 	<form class="col-md-8 col-lg-8 col-sm-8" ng-if="isOption">
-		<input type="text" class="form-control" placeholder="Enter patient phone number" ng-model="patient.phone" style="width:60%;display: inline-block;padding:20px 10px"/>
+		<input type="text" class="form-control" placeholder="Enter patient phone number ( eg +234364****9 )" ng-model="patient.phone" style="width:80%;display: inline-block;padding:20px 10px"/>
 		<input type="button" class="btn btn-success" value="Search" ng-click="findPrescription()" style=""/>
 	</form>
     </div>
-	<div ng-click="viewPatientPrescription(foundData.ref_id)" style="cursor:pointer" ng-if="foundData.ref_id">
-		<div class="row mt-1">
-        <div class="col-md-2"><img  ng-src="{{foundData.pharmacy.patient_profile_pic_url}}" style="width:150px; height: 150px"></div>
-		<div class="col-md-9 pt-2"> <span class="font-1_4">{{foundData.pharmacy.patient_firstname}} {{foundData.pharmacy.patient_lastname}}</span><br>
-		<span class="font-1_1">{{foundData.ref_id}}</span></div>
-        </div>
+	<div  style="cursor:pointer;max-height: 400px;overflow-y: auto;padding-top: 30px" ng-if="foundData[0].ref_id">	
+		<div ng-repeat="item in foundData | orderBy: '-date'">	
+	        <div class="p-0" style="display: inline-block;float: left;">
+	        	<img  ng-src="{{item.pharmacy.patient_profile_pic_url}}" style="max-width:120px; max-height: 120px">
+	        </div>
+			<div class="pl-1 ellipsis" style="display: inline-block;float: left;width: 50%;position: relative;padding-bottom: 15px"> 
+				<strong class="">{{item.pharmacy.patient_firstname}} {{item.pharmacy.patient_lastname}}</strong><br>				
+				<span class="">Ref No: {{item.ref_id}}</span><br>
+				<span am-Time-Ago = "item.date"></span><br>
+				<button class="btn btn-danger" style="position: absolute;right: 5px;bottom: 10px;padding: 5px 7px;" ng-click="viewPatientPrescription(item)">view prescription</button>
+			</div>  
+			<div class="clearfix"></div>
+		</div>     
 	</div>
-	<p class="font-1_4" style="text-align: center;">{{error}}</p>
+	<div ng-if="loading" style="padding-top: 50px;width: 60%;text-align: center;">
+		  <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange;font-size: 22px" ng-if="loading"></i>
+	</div>
+	<p class="font-1_2" style="padding: 30px;color: red;" ng-if="!foundData[0].ref_id">{{error}}</p>
 </div>
 
 </div>

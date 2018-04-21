@@ -1894,7 +1894,7 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
               doctor_country: req.user.country,
               lab_analysis: req.body.lab_analysis,
               scan_analysis: req.body.scan_analysis,
-              Doctor_profile_pic_url: req.user.profile_pic_url,
+              doctor_profile_pic_url: req.user.profile_pic_url,
               patient_id : req.body.patient_id,
               patient_profile_pic_url: req.body.patient_profile_pic_url,
               patient_firstname: req.body.firstname,
@@ -1904,6 +1904,11 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
               patient_age: req.body.age,
               patient_city: req.body.city,
               patient_country: req.body.country,
+              is_paid: false,
+              detail: {
+                amount: 0,
+                date: null
+              },
               prescription_body: req.body.prescriptionBody,
               ref_id: ref_id,
               eligible: true
@@ -1937,36 +1942,35 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
             presence:1
 
           }).exec(function(err,pharmacy){          
-            if(err) throw err;           
-            var pharmacyNotification = {
-              sender_firstname: req.user.firstname,
-              sender_lastname: req.user.lastname,
-              sender_title : title,
-              sent_date: date,
-              ref_id: ref_id,
-              note_id: ref_id,
-              sender_profile_pic_url: req.user.profile_pic_url,
-              message: 'Please kindly administer the following prescriptions to my patient.'
+            if(err) throw err;
+            if(pharmacy){           
+              var pharmacyNotification = {
+                sender_firstname: req.user.firstname,
+                sender_lastname: req.user.lastname,
+                sender_title : title,
+                sent_date: date,
+                ref_id: ref_id,
+                note_id: ref_id,
+                sender_profile_pic_url: req.user.profile_pic_url,
+                message: 'Please kindly administer the following prescriptions to my patient.'
+              }             
+              
+              pharmacy.diagnostic_center_notification.push(pharmacyNotification);
+
+              if(pharmacy.presence === true){
+                io.sockets.to(req.body.user_id).emit("center notification",pharmacyNotification);
+              }
+
+              savePatient(pharmacy);
+
+            } else {
+              res.send({error: "Unknown error Occured"})
             }
-
-            pharmacy.referral.push(refObj);
-            pharmacy.diagnostic_center_notification.push(pharmacyNotification);
-
-            if(pharmacy.presence === true){
-              io.sockets.to(req.body.user_id).emit("center notification",pharmacyNotification);
-            }
-
-            pharmacy.save(function(err,info){             
-              if(err) throw err;             
-              console.log("prescription saved"); 
-              savePatient(pharmacy)                          
-            });
-
         });
 
          function savePatient(pharmacy) {
             model.user.findOne(
-              {user_id: req.body.patient_id},{patient_notification:1,firstname:1,lastname:1,prescription_tracking:1,medications:1}
+              {user_id: req.body.patient_id},{patient_notification:1,firstname:1,lastname:1,prescription_tracking:1,medications:1,phone:1}
               ).exec(function(err,data){
               if(err) throw err;             
               
@@ -1996,6 +2000,16 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
                 if(err) throw err;
                 console.log("patient notified");            
               });
+
+              preObj.patient_phone = data.phone;
+
+              pharmacy.referral.push(refObj);
+
+              pharmacy.save(function(err,info){             
+                if(err) throw err;             
+                console.log("prescription saved");                                         
+              });
+
             });           
 
             var by = req.user.title + " " + req.user.firstname + " " + req.user.lastname;
@@ -2065,7 +2079,6 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
 
     //prescription fowarded by the doctor to a patient inbox
     router.put("/user/patient/forwarded-prescription",function(req,res){   
-      console.log(req.body);
       var provisionalDiagnosis = (req.body.treatment) ? req.body.treatment.provisionalDiagnosis : null;
       var complain = (req.body.treatment) ? req.body.treatment.complain : null;
       if(req.user){  
@@ -2105,7 +2118,13 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
               patient_city: req.body.city,
               patient_country: req.body.country,
               prescription_body: req.body.prescriptionBody,
-            }           
+            }  
+
+            //just to add patient number on the above list;
+            model.user.findOne({user_id: req.body.patient_id},{phone:1},function(err,patient){
+              preObj.patient_phone = patient.phone;
+            });
+
             result.medications.unshift(preObj);
             result.save(function(err,info){             
               if(err) throw err;                       
@@ -2137,7 +2156,6 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
               }
             ) 
           }
-
 
           data.save(function(err,info){
             if(err) throw err;            
@@ -2227,32 +2245,41 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
    
     //this router takes call of pahrmacy search for a patient prescription from the data base;
     router.put("/user/pharmacy/find-patient/prescription",function(req,res){
-       if(req.user){     
+       if(req.user){    
+       console.log(req.body) 
         model.user.findOne({user_id:req.user.user_id},{referral:1},function(err,data){
             if (err) throw err;           
               switch(req.body.criteria) {
                 case "refIdCriteria":
                   var toNum = parseInt(req.body.ref_id);                
    
-                 var elementPos = data.referral.map(function(x) {return x.ref_id; }).indexOf(toNum);
+                  var elementPos = data.referral.map(function(x) {return x.ref_id; }).indexOf(toNum);
                   var objectFound = data.referral[elementPos];
-                  console.log(objectFound)
+                  console.log(objectFound);
                   if(objectFound === undefined) {
                    res.send({error: "Patient prescription not found"})
                   } else {
-                    res.send({data: objectFound});
+                    res.send({data: [objectFound]});
                   }
                   break;
 
                 case "phoneCriteria":
-                  var elementPos = data.referral.map(function(x) {return x.phone; }).indexOf(req.body.phone);
-                  var objectFound = data.referral[elementPos];
-                  if(objectFound === undefined) {
-                   res.send({error: "Patient prescription not found"})
-                  } else {
-                    res.send({data: objectFound});
+                  var presList = [];
+                 // var elementPos = data.referral.map(function(x) {return x.phone; }).indexOf(req.body.phone);
+                 // var objectFound = data.referral[elementPos];
+                  console.log(req.body.phone)
+                  for(var i = 0; i < data.referral.length; i++) {
+                    if(data.referral[i].pharmacy.patient_phone === req.body.phone) {
+                      presList.push(data.referral[i]);
+                    }
                   }
-                  break;
+
+                  if(presList.length === 0) {
+                    res.send({error: "Patient prescription not found"})
+                  } else {
+                    res.send({data: presList});
+                  }
+                    break;
 
                 default:
                   res.send({error: "Please enter search creteria"});

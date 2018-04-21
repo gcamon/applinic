@@ -190,7 +190,7 @@ app.config(['$paystackProvider','$routeProvider',
 //for pharmacy
  .when("/referred-patients",{
   templateUrl: "/assets/pages/referred-patients-list.html",
-  controller: "referredPatientsController"
+  controller: 'referredPatientsController'
  })
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -6223,7 +6223,7 @@ getTransactions();
 app.controller("billingController",["$scope","$http","$rootScope","$location","ModalService","requestManager","templateService","localManager","$resource","walletService",
   function($scope,$http,$rootScope,$location,ModalService,requestManager,templateService,localManager,$resource,walletService){
     $scope.pay = {};
-    console.log($rootScope.refData);
+    
     $scope.$watch("pay.otp",function(newVal,oldVal){
       if(newVal > oldVal && $scope.pay.otp.length === 6){
         var date = + new Date();
@@ -6257,15 +6257,27 @@ app.controller("billingController",["$scope","$http","$rootScope","$location","M
         console.log(payObj);
         var bill = $resource("/user/payment/patient-billing",null,{sendBill:{method: "POST"}});
         bill.sendBill(payObj,function(data){         
-          console.log(data)
-          templateService.playAudio(2);          
-          $rootScope.balance = "N" + data.balance.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-          if(data.balance)
-            $scope.isPaid = true;          
+          console.log(data)          
+          if(data.balance) {
+            templateService.playAudio(2);          
+            $rootScope.balance = "N" + data.balance.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            $scope.isPaid = true; 
+            $rootScope.refData.pharmacy.is_paid = true; 
+            $rootScope.refData.pharmacy.detail = {
+              amount: "N" + $rootScope.refData.rawAmount,
+              date: date
+            }
+          }        
           alert(data.message);
         });
       }
     });
+
+    $scope.goBack = function(){
+      $location.path(localManager.getValue("currPageForPharmacy"))
+    }
+
+
     /*
     var sendObj = {
       user_id: "6763463734",
@@ -7286,8 +7298,8 @@ app.controller("trackedPrescriptionController",["$scope","$rootScope","$location
 }])
 
 //this controls the search for phamarcy template. when a patient wish to forward his prescription to a desired phamarcy.
-app.controller("searchForPharmacyController",["$scope","$location","$http","templateService","ModalService","$rootScope","cities",
-  function($scope,$location,$http,templateService,ModalService,$rootScope,cities){
+app.controller("searchForPharmacyController",["$scope","$location","$http","templateService","ModalService","$rootScope","cities","localManager",
+  function($scope,$location,$http,templateService,ModalService,$rootScope,cities,localManager){
     //for phamarcy
     $scope.pharmacy = {};
 
@@ -7330,28 +7342,62 @@ app.controller("searchForPharmacyController",["$scope","$location","$http","temp
 
     //when a desired phamarcy is clicked by the patient this function runs to store that center details to a service which will be use for display
     //in selectedCenterController.
-    $scope.forwardPrescriptionTo = function (id) {
-      var elementPos = $scope.pharmacyData.map(function(x) {return x.user_id; }).indexOf(id);
-      var objectFound = $scope.pharmacyData[elementPos];          
-      templateService.holdTheCenterToFowardPrescriptionTo =  objectFound;   
-
-    /*$scope.pharmacyData.forEach(function(center){
-      if(center.user_id === id){
-        templateService.holdTheCenterToFowardPrescriptionTo = center;
-        return;
-      }
-    }); */     
-     // $location.path('/patient/selected-center/' + id);
-      ModalService.showModal({
-          templateUrl: 'selected-center.html',
-          controller: "selectedCenterController"
-      }).then(function(modal) {
-          modal.element.modal();
-          modal.close.then(function(result) {
-             
+    $scope.forwardPrescriptionTo = function (center) {
+      templateService.holdPrescriptionToBeForwarded.user_id = center.user_id;
+      center.loading = true;
+      $http({
+        method  : 'PUT',
+        url     : "/user/patient/pharmacy/referral-by-pharmacy", 
+        data    : templateService.holdPrescriptionToBeForwarded,
+        headers : {'Content-Type': 'application/json'} 
+        })
+      .success(function(data) {
+        if(data.success){   
+          center.success = true;
+        } else {          
+          alert("Prescription not sent!! Try again.");
+        }
+        center.loading = false;
       });
-    });
+      //var elementPos = $scope.pharmacyData.map(function(x) {return x.user_id; }).indexOf(id);
+      //var objectFound = $scope.pharmacyData[elementPos];          
+      //templateService.holdTheCenterToFowardPrescriptionTo =  objectFound;   
 
+      /*$scope.pharmacyData.forEach(function(center){
+        if(center.user_id === id){
+          templateService.holdTheCenterToFowardPrescriptionTo = center;
+          return;
+        }
+      }); */     
+       // $location.path('/patient/selected-center/' + id);
+       /* ModalService.showModal({
+            templateUrl: 'selected-center.html',
+            controller: "selectedCenterController"
+        }).then(function(modal) {
+            modal.element.modal();
+            modal.close.then(function(result) {
+               
+        });
+      });*/
+
+    }
+
+    
+    $scope.goBack = function() {
+      $location.path(localManager.getValue("currPageForPharmacy"));
+    }
+
+    $scope.sendChat = function(center) {
+      center.id = center.user_id // just to set common property for the modal and control using this resource.
+      $rootScope.holdcenter = center;
+      ModalService.showModal({
+            templateUrl: 'quick-chat.html',
+            controller: 'generalChatController'
+        }).then(function(modal) {
+            modal.element.modal();
+            modal.close.then(function(result) {             
+            });
+      });
     }
 
     
@@ -9850,7 +9896,8 @@ app.controller("pharmacyViewPrescriptionController",["$scope","$location","templ
     if (newVal !== null) {
       for(var k = 0; k < newVal.length; k++) {        
        if(oldVal.length > 0 && newVal[k].added) {
-        totalCost.sum -= oldVal[k].amount;
+        if(oldVal[k])
+          totalCost.sum -= oldVal[k].amount;
         totalCost.sum += newVal[k].amount;
         toNaira(totalCost.sum);
        } 
@@ -9898,13 +9945,19 @@ app.controller("pharmacyViewPrescriptionController",["$scope","$location","templ
         alert(data.message);
         $rootScope.refData.amount = $scope.str; // holds the amount to pay for the otp template that will come next 
         $rootScope.refData.rawAmount = totalCost.sum;
-        $location.path("/billing-otp");
+        $scope.isOTP = true;
+        //$location.path("/billing-otp");
       } else {
         alert(data.message);
       }
       
     });
     
+  }
+
+  $scope.newPayment = function() {
+    $rootScope.refData.pharmacy.is_paid = false;
+    $rootScope.refData.pharmacy.detail = {};
   }
  
 }]);
@@ -9964,46 +10017,49 @@ app.controller("referredPatientsController",["$scope","$location","$http","templ
   }
 
   $scope.findPrescription = function(){
-
-    if(Object.keys($scope.patient).length > 0) {
+    if(Object.keys($scope.patient).length > 0) {      
+      if($scope.patient.ref_id){
+        $scope.patient.criteria = "refIdCriteria";       
+      } else if($scope.patient.phone) {
+        $scope.patient.criteria = "phoneCriteria";
+      }
       typeOfSearch($scope.patient);
     } else {
       alert("Please enter search creteria in the text field")
       return;
     }
 
-   if($scope.patient.ref_id){
-      $scope.patient.criteria = "refIdCriteria";       
-    } else if($scope.patient.phone) {
-      $scope.patient.criteria = "phoneCriteria";
-    }
-
+  
   }
     
 
-  var typeOfSearch = function(criteria) {   
+  var typeOfSearch = function(criteria) { 
+    $scope.loading = true;  
     $http({
           method  : 'PUT',
           url     : "/user/pharmacy/find-patient/prescription",
           data    : criteria,
           headers : {'Content-Type': 'application/json'} 
           })
-        .success(function(response) {                 
-          $scope.patient = {};
+        .success(function(response) { 
+          $scope.foundData = []; 
+          $scope.patient = {};             
           if(response.data) {
-            $scope.foundData = response.data;            
+            $scope.foundData = response.data;           
           } else {
             $scope.error = response.error;
           }
+
+          $scope.loading = false;
       });
   }
 
-  $scope.viewPatientPrescription = function(id){
-    templateService.holdId = id;
-    var pageUrl = "/pharmacy/view-prescription/" + id;
+  $scope.viewPatientPrescription = function(patient){
+    templateService.holdId = patient.ref_id;
+    var pageUrl = "/pharmacy/view-prescription/" + patient.ref_id;
     localManager.setValue("currPageForPharmacy",pageUrl);
-    $location.path(pageUrl);
-    
+    localManager.setValue("pharmacyData",patient); 
+    $location.path(pageUrl);    
   }
 
 }]);

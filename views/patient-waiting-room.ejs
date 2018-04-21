@@ -261,7 +261,31 @@
         <!--************************************
                 Sign In Sign Up Light Box End
         *************************************-->
-        
+    <script type="text/ng-template" id="session-timeout.html">
+       <div class="modal fade">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+          
+            <div  style="padding: 20px;margin-bottom: 20px;text-align: center;">  
+                <div>
+                    <strong style="font-weight: 100;font-size: 22px">Hey! Are you still there?</strong>
+                </div>            
+                
+                <p style="font-size: 14px;padding-top: 30px" class="text-muted">You have been idle for a while you will be timed out at count down 0</p>
+                <div style="padding:20px">
+                    <a href="" class="btn btn-simple round">{{countDown}}</a>
+                </div>
+
+                <div>
+                    <a href="" class="btn btn-danger" ng-click="keepalive()" data-dismiss="modal">No, keep alive</a>
+                </div>
+            </div>
+            
+          </div>
+        </div>
+      </div>
+   </script>
         <script src="/assets/js/vendor/jquery-library.js"></script>
         <script src="/assets/js/vendor/bootstrap.min.js"></script>
        

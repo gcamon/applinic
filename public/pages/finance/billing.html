@@ -19,30 +19,37 @@
 
 
 
-  <div  class="container">
-
-<div class="card p-2">
+<div  class="container">
+  <div class="card-center-1">
+	<button class="btn btn-simple" ng-click="goBack()"><i class="fa fa-arrow-left"></i> Back</button>
+  </div>
+<div class="card card-center-1 p-2">
 <div ng-if="!isPaid">
-	<h3 class="mb-0 font-1_7">Billing confirmation</h3><hr>
-	<div class="row">
-		<div class="col-md-2 col-sm-12">
+	<h3 class="p-0">Billing confirmation</h3><hr>
+	<div>
+		<!--<div class="col-md-2 col-sm-12">
 			<img ng-src="{{refData.pharmacy.patient_profile_pic_url}}" style="width:150px; height:150px">
-		</div>
-		<article class="col-md-9 col-sm-12">
-			<p><strong>{{refData.pharmacy.patient_firstname}} {{refData.pharmacy.patient_lastname}}</strong></p>
-			<p>(Patient)</p>
+		</div>-->
+		<article>
+			<p><strong>To: {{refData.pharmacy.patient_firstname}} {{refData.pharmacy.patient_lastname}}</strong></p>			
 			<p><strong>Amount billed: </strong> {{refData.amount}}</p>
-			<p>Get OTP from this patient to confirm payment. Note OTP expires in <strong>5 minutes</strong></p>
+			<small>Get OTP from this patient to confirm payment. Note OTP expires in <strong>5 minutes</strong></small>
 		</article>
 	</div>
-	<p style="color:blue;cursor:pointer">
-        <button class="btn btn-info ml-5 mt-2" ng-click="sendBill(resendPatientId,resend)">Resend OTP</button></p>
-	<div class="col-md-5 p-0">
-    <input type="text" class="form-control" placeholder="Enter OTP" ng-model="pay.otp">
+	
+        
+	<div class="p-0">	
+		<div style="width: 60%">	
+	    	<input type="text" class="form-control" placeholder="Enter OTP" ng-model="pay.otp">
+	    </div>
+	    <div>
+	    	<small>Otp will auto submit when the six digits are completed</small> 
+	    </div>
     </div>
-	<p class="pt-1 pl-1"><small class="ml-1"> &nbsp;Otp will auto submit when the six digits are completed</small></p>
+	<div class="pt-1">
+		<a href=""  ng-click="sendBill(resendPatientId,resend)">Resend OTP</a><br>
+	</div>
     <div class="clearfix"></div>
-	<div>If you have difficulty sending OTP please <a href="/contact">contact us</a></div>
 </div>
 
 </div>

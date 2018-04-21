@@ -319,17 +319,17 @@ var basicPaymentRoute = function(model,sms,io,paystack){
 
 			      console.log(otp)
 			      var callBack = function(err,responseData){
+			      	console.log(responseData);
 							if(err) {
 								console.log(err);
 								res.send({message:"Oops! Error occured while sending OTP.Please resend",success:true,time_stamp:req.body.time}) 
-							} else {
-								console.log(responseData);
+							} else {								
 								res.send({message:"One time pin has been sent this patient vis SMS. The pin is needed for payment confirmation",success:true,time_stamp:req.body.time}) 
 							}
 							
 						}
 
-						var msgBody = "Your payment OTP for applinic.com is " + password + " \nThe amount billed is " + "N" + req.body.amount;
+						var msgBody = "Your payment OTP for applinic.com is " + password + " \nThe amount billed is " + req.body.amount;
 						var phoneNunber = user.phone;
 						sms.messages.create(
               {
@@ -648,20 +648,34 @@ var basicPaymentRoute = function(model,sms,io,paystack){
 				if(err) throw err;
 				if(!data){
 					res.send({message:"Confirmation failed! Transaction canceled."});					
-				} else {
-					//do the actual transaction
-					if(data.user_id === req.body.patientId && data.senderId === req.user.user_id) {					
-						model.user.findOne({user_id:req.user.user_id},{ewallet:1,user_id:1,city_grade:1,type:1,email:1}).exec(function(err,center){				
-							if(err) throw err;
-							var pay = new Wallet(req.body.date,req.body.patient_firstname,req.body.patient_lastname,"billing");
-							pay.billing(model,req.body,center,sms,io);
-							model.otpSchema.remove({otp:req.body.otp},function(err,info){});							
-							res.send({message: "Transaction successful! Your account is credited.",balance:center.ewallet.available_amount});							
-						});
-						
-					} else {
-						res.send({message: 'Transaction cancelled! Reason: This OTP is not for the right user.'});						
-					}
+				} else {			
+						if(data.user_id === req.body.patientId && data.senderId === req.user.user_id) {					
+							model.user.findOne({user_id:req.user.user_id},{ewallet:1,user_id:1,city_grade:1,type:1,email:1,referral:1}).exec(function(err,center){				
+								if(err) throw err;
+								var elementPos = center.referral.map(function(x){return x.pharmacy.patient_id}).indexOf(req.body.patientId);
+								var found = center.referral[elementPos];
+
+								if(found) {
+									found.pharmacy.is_paid = true;
+									found.pharmacy.detail.amount = req.body.total;
+									found.pharmacy.detail.date = req.body.date;
+								}
+
+								center.save(function(err,info){{
+									if(err) throw err;
+									console.log("is paid saved!")
+								}})
+
+								var pay = new Wallet(req.body.date,req.body.patient_firstname,req.body.patient_lastname,"billing");
+								pay.billing(model,req.body,center,sms,io);
+
+								model.otpSchema.remove({otp:req.body.otp},function(err,info){});							
+								res.send({message: "Transaction successful! Your account is credited.",balance:center.ewallet.available_amount});							
+							});
+							
+						} else {
+							res.send({message: 'Transaction cancelled! Reason: This OTP is not for the right user.'});						
+						}					
 					
 				}				
 			})
@@ -869,7 +883,6 @@ var basicPaymentRoute = function(model,sms,io,paystack){
   			} else {
   				var elementPos = center.referral.map(function(x){return x.ref_id}).indexOf(parseInt(req.query.refId))
           var objectFound = center.referral[elementPos];
-          console.log(objectFound)
           if(objectFound) {
           	if(req.user.type === "Radiology") {
           		res.send({payment: objectFound.radiology.is_paid,detail:objectFound.radiology.detail})
