@@ -278,7 +278,7 @@ var basicPaymentRoute = function(model,sms,io,paystack){
 			//note for payment req.body must have userId of who is to be debited is required while for transfer req.body do not have userId
 			//because is assumed the user at that moment is making the request which means his req.user.user_id will be used.
 			var personId = req.body.userId || req.user.user_id;
-			console.log(req.body)
+
 			model.user.findOne({user_id: personId},{phone:1,ewallet:1,user_id:1},function(err,user){
 				if(err) throw err;
 				if(!user){
@@ -294,23 +294,20 @@ var basicPaymentRoute = function(model,sms,io,paystack){
 							model.otpSchema.remove({time:req.body.old_time},function(err){
 								if(err) throw err;
 							});
-						}
-						
+						}						
 						
 			      var otp = new model.otpSchema({
 			        user_id: user.user_id,//this id refers to the debitors id. the person whose account will be debited.
 			        time: req.body.time,
 			        otp: password,
 			        amount: req.body.amount,
-			        senderId: req.user.user_id
-			      });
-			      
+			        senderId: req.user.user_id 
+			      });			      
 
 			      //sets the expiration time for each otp sent.
 			      var date = new Date();
 			      otp.expirationDate = new Date(date.getTime() + 300000);
-			      otp.expirationDate.expires = 300;
-			     
+			      otp.expirationDate.expires = 300;			     
 
 			      otp.save(function(err,info){
 			        if(err) throw err;
@@ -661,18 +658,39 @@ var basicPaymentRoute = function(model,sms,io,paystack){
 									found.pharmacy.detail.date = req.body.date;
 								}
 
-								center.save(function(err,info){{
+								center.save(function(err,info){
 									if(err) throw err;
-									console.log("is paid saved!")
-								}})
+									console.log("billing is paid and saved!");
+								})
 
 								var pay = new Wallet(req.body.date,req.body.patient_firstname,req.body.patient_lastname,"billing");
 								pay.billing(model,req.body,center,sms,io);
 
 								model.otpSchema.remove({otp:req.body.otp},function(err,info){});							
-								res.send({message: "Transaction successful! Your account is credited.",balance:center.ewallet.available_amount});							
+								res.send({message: "Transaction successful! Your account is credited.",balance:center.ewallet.available_amount});	
+								if(req.body.prescriptionBody) {
+									updatePatient()
+								}				
 							});
-							
+
+							function updatePatient() {
+								model.user.findOne({user_id: req.body.patientId},{medications:1}).exec(function(err,patient){
+									if(err) throw err;
+									if(patient){
+										var elementPos = patient.medications.map(function(x){return x.prescriptionId}).indexOf(req.body.prescriptionId);
+										var found = patient.medications[elementPos];
+										if(found){
+											found.prescription_body = req.body.prescriptionBody
+										}
+									}
+
+									patient.save(function(err,info){
+										if(err) throw err;
+										console.log("Patient prescription body updated.")
+									})
+								})
+							}
+ 							
 						} else {
 							res.send({message: 'Transaction cancelled! Reason: This OTP is not for the right user.'});						
 						}					
@@ -696,7 +714,7 @@ var basicPaymentRoute = function(model,sms,io,paystack){
 
 
       function updateSession() {       
-        model.user.findOne({"doctor_patient_session.session_id": req.body.laboratory.session_id},{doctor_patient_session:1}).exec(function(err,data){
+        model.user.findOne({"doctor_patient_session.session_id": req.body.laboratory.session_id},{doctor_patient_session:1,title:1,firstname:1,lastname:1}).exec(function(err,data){
           if(err) throw err;
           var elementPos = data.doctor_patient_session.map(function(x) {return x.session_id; }).indexOf(req.body.laboratory.session_id);
           var objectFound = data.doctor_patient_session[elementPos];         
@@ -723,7 +741,8 @@ var basicPaymentRoute = function(model,sms,io,paystack){
               res.send({status: "error"});
             } else {         
               updatePatient();
-              //updateTheCenter();              
+              //updateTheCenter();  
+              updateCenter(data)            
             }
           });        
 
@@ -778,6 +797,28 @@ var basicPaymentRoute = function(model,sms,io,paystack){
         });
       }
 
+       function updateCenter(receiver) {
+      	model.user.findOne({user_id: req.user.user_id},{service_details:1}).exec(function(err,center){
+      		if(err) {
+        		throw err;
+	        	res.end("server error");
+	        }
+      		if(center) {
+      			req.body.service_date = + new Date();
+      			req.body.receiver = receiver.title + " " + receiver.firstname + " " + receiver.lastname;
+      			req.receiver_phone = receiver.phone;
+      			center.service_details.unshift(req.body);
+      			center.save(function(err,info){
+      				if(err) throw err;
+      				console.log("service details saved!");
+      				res.send({status: "success"});
+      			})
+      		} else {
+      			res.end("something went wrong!");
+      		}
+      	})
+      }
+
       /*function updateTheCenter() {
         model.user.findOne({user_id: req.user.user_id},{referral:1,ewallet:1,user_id:1,city_grade:1,type:1,email:1}).exec(function(err,center){
           if(err) throw err;            
@@ -809,7 +850,7 @@ var basicPaymentRoute = function(model,sms,io,paystack){
      updatePatient();
 
       function updatePatient() {
-        model.user.findOne({user_id: req.body.laboratory.patient_id},{medical_records:1,patient_notification:1,user_id:1,presence:1,phone:1})
+        model.user.findOne({user_id: req.body.laboratory.patient_id},{medical_records:1,patient_notification:1,user_id:1,presence:1,phone:1,firstname:1,lastname:1,title:1})
         .exec(function(err,data){
           if(err) throw err;
          
@@ -824,7 +865,7 @@ var basicPaymentRoute = function(model,sms,io,paystack){
           objectFound.history = req.body.history;
 
 
-          var random = Math.floor(Math.random() * 9999999999);
+          var random = parseInt(Math.floor(Math.random() * 9999) + "" + Math.floor(Math.random() * 9999));
           data.patient_notification.unshift({
             type:"laboratory",
             date: req.body.laboratory.date,
@@ -849,12 +890,35 @@ var basicPaymentRoute = function(model,sms,io,paystack){
           }
 
           data.save(function(err,info){
-            if(err) res.send({status: "error"});           
-           	res.send({status: "success"});
+            if(err) res.send({status: "error"}); 
+            updateCenter(data);        
           });
         
         });
       }
+
+      function updateCenter(receiver) {
+      	model.user.findOne({user_id: req.user.user_id},{service_details:1}).exec(function(err,center){
+      		if(err) {
+        		throw err;
+	        	res.end("server error");
+	        }
+      		if(center) {
+      			req.body.service_date = + new Date();
+      			req.body.receiver = receiver.title + " " + receiver.firstname + " " + receiver.lastname;
+      			req.receiver_phone = receiver.phone;
+      			center.service_details.unshift(req.body);
+      			center.save(function(err,info){
+      				if(err) throw err;
+      				console.log("service details saved!");
+      				res.send({status: "success"});
+      			})
+      		} else {
+      			res.end("something went wrong!");
+      		}
+      	})
+      }
+
 
       /*function transact() {
         model.user.findOne({user_id:req.user.user_id},{ewallet:1,user_id:1,city_grade:1,type:1,email:1}).exec(function(err,center){
@@ -877,26 +941,26 @@ var basicPaymentRoute = function(model,sms,io,paystack){
   router.get("/user/center/billing-verification",function(req,res){
   	console.log(req.query)
   	if(req.user){
-  		model.user.findOne({user_id:req.user.user_id},{referral:1},function(err,center){
-  			if(err) {
-  				res.end("error occured!")
-  			} else {
-  				var elementPos = center.referral.map(function(x){return x.ref_id}).indexOf(parseInt(req.query.refId))
-          var objectFound = center.referral[elementPos];
-          if(objectFound) {
-          	if(req.user.type === "Radiology") {
-          		res.send({payment: objectFound.radiology.is_paid,detail:objectFound.radiology.detail})
-          	} else if(req.user.type === "Laboratory"){
-          		res.send({payment: objectFound.laboratory.is_paid,detail:objectFound.laboratory.detail})
-          	}
-          } else {
-          	res.send({payment: false})
-          }
-  			}
-  		})
+  		var center = req.user; //uuuu
+  		var refId = (typeof req.query.refId === "string") ? parseInt(req.query.refId) : req.query.refId;	
+			var elementPos = center.referral.map(function(x){return x.ref_id.toString()}).indexOf(refId.toString());
+			console.log(elementPos)
+      var objectFound = center.referral[elementPos];
+      if(objectFound) {
+      	if(req.user.type === "Radiology") {
+      		res.send({payment: objectFound.radiology.is_paid,detail:objectFound.radiology.detail});
+      	} else if(req.user.type === "Laboratory"){
+      		res.send({payment: objectFound.laboratory.is_paid,detail:objectFound.laboratory.detail});
+      	} else if(req.user.type === "Pharmacy"){ 
+      		res.send({payment: objectFound.pharmacy.is_paid,detail:objectFound.pharmacy.detail});
+      	}
+      } else {
+      	res.send({payment: false});
+      }
   	} else {
-  		res.end("Unauthorized access")
+  		res.end("Unauthorized access");
   	}
+
   })
 
   router.put("/user/center/billing-verification",function(req,res){
@@ -970,7 +1034,8 @@ var basicPaymentRoute = function(model,sms,io,paystack){
       updateSession();
 
       function updateSession() { 
-        model.user.findOne({"doctor_patient_session.session_id": req.body.radiology.session_id},{doctor_patient_session:1}).exec(function(err,data){
+        model.user.findOne({"doctor_patient_session.session_id": req.body.radiology.session_id},{doctor_patient_session:1,firstname:1,lastname:1,title:1,phone:1})
+       .exec(function(err,data){
           if(err) throw err;
           if(data) {
 	          var elementPos = data.doctor_patient_session.map(function(x) {return x.session_id; }).indexOf(req.body.radiology.session_id);
@@ -997,6 +1062,7 @@ var basicPaymentRoute = function(model,sms,io,paystack){
 	            if(err) res.send({status: "error"});         
 	            updatePatient();
 	            //updateTheCenter();
+	            updateCenter(data)
 	          });
 
       	   } else {
@@ -1051,6 +1117,28 @@ var basicPaymentRoute = function(model,sms,io,paystack){
         });
       }
 
+
+     function updateCenter(receiver) {
+      	model.user.findOne({user_id: req.user.user_id},{service_details:1}).exec(function(err,center){
+      		if(err) {
+        		throw err;
+	        	res.end("server error");
+	        }
+      		if(center) {
+      			req.body.service_date = + new Date();
+      			req.body.receiver = receiver.title + " " + receiver.firstname + " " + receiver.lastname;
+      			req.receiver_phone = receiver.phone;
+      			center.service_details.unshift(req.body);
+      			center.save(function(err,info){
+      				if(err) throw err;
+      				console.log("service details saved!");
+      			})
+      		} else {
+      			res.end("something went wrong!");
+      		}
+      	})
+      }
+
       /*function updateTheCenter() {
         model.user.findOne({user_id: req.user.user_id},{referral:1,ewallet:1,user_id:1,city_grade:1,type:1,email:1}).exec(function(err,center){
           if(err) throw err;            
@@ -1084,19 +1172,27 @@ var basicPaymentRoute = function(model,sms,io,paystack){
 	      updatePatient();
 
 	      function updatePatient() {
-		      model.user.findOne({user_id: req.body.radiology.patient_id},{medical_records: 1,patient_notification:1,user_id:1,presence:1,phone:1}).exec(function(err,data){
-		        if(err) throw err;
-		        var elementPos = data.medical_records.radiology_test.map(function(x) {return x.ref_id; }).indexOf(req.body.ref_id);
-		        var objectFound = data.medical_records.radiology_test[elementPos];           
-		        objectFound.report = req.body.radiology.report || objectFound.report;
-		        objectFound.conclusion = req.body.radiology.conclusion || objectFound.conclusion;
-		        objectFound.test_to_run = req.body.radiology.test_ran || objectFound.test_to_run;
-		        objectFound.sent_date = req.body.date || objectFound.sent_date;
-		        objectFound.receive_date = req.body.radiology.date;
-		        objectFound.payment_acknowledgement = true;
-		        objectFound.files = req.body.radiology.filesUrl;
+		      model.user.findOne({user_id: req.body.radiology.patient_id},
+		      	{medical_records: 1,patient_notification:1,user_id:1,presence:1,phone:1,firstname:1,lastname:1,title:1})
+		   		.exec(function(err,data){
+		        if(err) {
+		        	throw err;
+		        	res.end("server error");
+		        }
 
-		        var random = Math.floor(Math.random() * 9999999);
+		        var elementPos = data.medical_records.radiology_test.map(function(x) {return x.ref_id}).indexOf(req.body.ref_id);
+		        var objectFound = data.medical_records.radiology_test[elementPos];
+		        if(objectFound) {    
+			        objectFound.report = req.body.radiology.report || objectFound.report;
+			        objectFound.conclusion = req.body.radiology.conclusion || objectFound.conclusion;
+			        objectFound.test_to_run = req.body.radiology.test_ran || objectFound.test_to_run;
+			        objectFound.sent_date = req.body.date || objectFound.sent_date;
+			        objectFound.receive_date = req.body.radiology.date;
+			        objectFound.payment_acknowledgement = true;
+			        objectFound.files = req.body.radiology.filesUrl;
+		    		}
+
+		        var random = parseInt(Math.floor(Math.random() * 9999) + "" + Math.floor(Math.random() * 9999));
 		        data.patient_notification.unshift({
 		          type:"radiology",
 		          date: req.body.radiology.date,
@@ -1122,10 +1218,32 @@ var basicPaymentRoute = function(model,sms,io,paystack){
 
 		        data.save(function(err,info){
 		          if(err) res.send({status: "error"});           
-		          res.send({status: "success"});
+		          updateCenter(data)
 		        });
 
 		      });
+
+		      function updateCenter(receiver) {
+		      	model.user.findOne({user_id: req.user.user_id},{service_details:1}).exec(function(err,center){
+		      		if(err) {
+		        		throw err;
+			        	res.end("server error");
+			        }
+		      		if(center) {
+		      			req.body.service_date = + new Date();
+		      			req.body.receiver = receiver.title + " " + receiver.firstname + " " + receiver.lastname;
+		      			req.receiver_phone = receiver.phone;
+		      			center.service_details.unshift(req.body);
+		      			center.save(function(err,info){
+		      				if(err) throw err;
+		      				res.send({status: "success"});
+		      				console.log("service details saved!");
+		      			});
+		      		} else {
+		      			res.end("something went wrong!");
+		      		}
+		      	})
+		      }
 		   }
 
 			} else {

@@ -230,9 +230,9 @@
 .dropdown-menu>.active>a, 
 .dropdown-menu>.active>a:focus, 
 .dropdown-menu>.active>a:hover { 
-  box-shadow: 0 5px 25px 0 rgba(0,0,0,.2);
+  /*box-shadow: 0 5px 25px 0 rgba(0,0,0,.2);*/
   color:grey;
-  padding: 10px
+  padding: 10px 0;
 }
 
 .dropdown-menu > li {
@@ -436,14 +436,55 @@
     transition: width 500ms ease-out 1s;
     visibility: visible;
   }
+.p-4{
+  padding:30px;
+}
+  .doctor  .card{
+    border-radius: 5px;
+    min-height: 50px;
+  }
+ .doctor  .card i{
+  color:#45b649 !important;
+ }
+
+ .doctor  .card:hover i{
+  color:#fff !important;
+ }
+ .hoverr:hover{
+    background: #76b852 !important;
+    color:#fff;
+    cursor: pointer;
+    transition: 1s;
+  } 
+
+  .doctor  .card .card-block{
+    min-height:230px !important;
+  }
+
+  .doctor h6 {
+    font-weight: 400;
+    font-size: 13px!important
+  }
+
+  .doctor  .card .btn{
+    border-radius: 0px !important;
+    font-weight: bold;
+    text-transform: uppercase;
+  }
+
+  .doctor .card .card-title{
+text-transform: uppercase !important;
+font-weight: 300 !important;
+  }
 
   .info-palete {
-    height: 320px;
+    min-height: 320px;
     position: relative;
   }
 
-  .info-palete.text-center {
-    font-weight: bol;
+  .info-palete .text-center {
+    font-weight: bold;
+    text-align:center !important;
   }
 
   .info-palete .learn {
@@ -453,9 +494,9 @@
   }
 
   .info-palete img{
-    max-width: 82px;
-    max-height: 82px;
-    display: inline-block;
+    min-width: 82px;
+    min-height: 82px;
+    
     margin: 0 30px!important;
   }
 

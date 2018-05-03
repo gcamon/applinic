@@ -1,0 +1,50 @@
+<div class="container">
+	<div class="card card-center-1 p-2">
+		<h3 class="p-0">
+		Find Laboratory Center 
+		<button class="btn btn-danger btn-sm" style="float: right;" ng-click="options()">toggle option</button>
+		</h3>	
+		<div ng-if="isName">
+			<label>Find by center name: </label>	
+			<form class="row">
+		        <div class="col-md-8">
+		        	<input type="text"  class="form-control" placeholder="Enter center name" ng-model="service.name">
+		        </div>
+		        <div class="col-md-3 p-0">        
+		        	<button type="submit" ng-click="findCenter('Laboratory')" class="btn btn-success"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i>{{(loading) ? "" : 'Find'}}</button>	
+		        </div>
+			</form>
+		</div>
+		<div ng-if="isCity">
+			<label>Find by city: </label>	
+			<form class="row">
+		        <div class="col-md-8">
+		        	<input type="text" name="" class="form-control" placeholder="Enter center name" ng-model="service.city">
+		        </div>
+		        <div class="col-md-3 p-0">        
+		        	<button type="submit" ng-click="findCenter('Laboratory')" class="btn btn-success"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i>{{(loading) ? "" : 'Find'}}</button>	
+		        </div>
+			</form>
+		</div>
+	    <div class="clearfix"></div>
+	    <hr>
+	    <div ng-if="listOfCenter.length > 1">
+			<input type="text" name="" placeholder="filter result" class="form-control" ng-model="filterResult" style="width: 80%">
+		</div>
+		<div class="clearfix"></div>
+		<div ng-repeat = "center in listOfCenter | filter: filterResult" class="p-1" style="max-height: 700px;overflow-y: auto;position: relative;">
+			<strong style="display: block;width: 90%" class="ellipsis">{{center.name}}</strong>
+			<span class="font-1_1 ellipsis" style="display: block;width: 90%">{{center.address}} {{center.city}} {{center.country}}</span>
+			<span class="font-1_1 ellipsis" style="display: block;width: 90%">{{center.phone}}</span>  
+			<i class="fa fa-comment btn btn-success btn-sm" style="position: absolute;bottom: 5px;right: 35px" title="send message to {{center.name}}" ng-click="sendChat(center)"></i>
+			<span class="online" style="position: absolute;bottom: 15px;right: 0px" ng-if="center.presence"></span>
+			<span class="online" style="position: absolute;bottom: 15px;right: 0px;background-color: #ccc" ng-if="!center.presence"></span>
+		</div>
+		<div ng-if="listOfCenter.length === 0">
+			<p style="text-align: center;color: red">No match was found!</p>
+		</div>
+		<div style="text-align: center;" ng-if="loading">
+			<i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange;font-size: 20px" ng-if="loading"></i>
+		</div>
+	</div>
+</div>

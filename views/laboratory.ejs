@@ -37,7 +37,27 @@
                   width: 1000px;
                       margin-left: 50px
 
+              }
+
+               @media screen and (max-width: 960px) {
+                    .text-center a {
+                        margin-left: 20px;
+                    }
+
+                    .btn-sm {
+                        float: left;
+                        margin-top: 5px
+                    }
+
+                    .view-animate-container {
+                   
+                    background: transparent !important;
+                   
+                    width: auto;
+                    margin-left: 0px
+
                   }
+                }
 
 
 
@@ -75,15 +95,15 @@
                             <div class="dropdown-menu notifications-dropdown-menu" style="max-height: 400px;overflow-y: auto;">
                                     <ul class="notifications-container">
                                         <li> <h6 style="text-align: center">Notification(s)</h6> </li>                                        
-                                         <li><button style="color:green;" ng-click = "addAllNote()">Add all notifications to attendance list </button></li>
-                                        <li ng-repeat = "note in allNote">
+                                         <li style="text-align: right;"><button class="btn btn-neutral btn-sm" ng-click = "addAllNote()">Add to work list </button></li>
+                                        <li ng-repeat = "note in allNote | orderBy:'-sent_date'">
 
                                             <a href="" class="notification-item" ng-click="viewNote(note.ref_id)">
                                                 <div class="img-col">
                                                     <div class="img" style="background-image: url({{note.sender_profile_pic_url}})"></div>
                                                 </div>
                                                 <div class="body-col">
-                                                    <p> <span class="accent">{{note.sender_firstname}} {{note.sender_lastname}}</span> {{note.message}} <small class="accent"> &nbsp;&nbsp;{{note.sent_date | date: "mediumDate"}} &nbsp;&nbsp;{{note.sent_date | date: "mediumTime"}}</small>. </p>
+                                                    <p> <span class="accent">{{note.sender_firstname}} {{note.sender_lastname}}</span> {{note.message}} <small class="accent" style="display: block" am-time-ago="note.sent_date"></small>. </p>
                                                 </div>
                                             </a>
                                         </li>                                        
@@ -114,7 +134,7 @@
                                                 </div>
                                                 <div class="body-col">                                                
                                                     <p style=""> <span class="accent" ng-cloak>{{chat.name}}</span>
-                                                        <span style="display:block" class="ellipsis">{{chat.messages[chat.messages.length - 1].received || chat.messages[chat.messages.length - 1].sent}} <small style="display:block" ng-cloak>{{chat.messages[chat.messages.length - 1].time | date: "shortTime" || chat.messages[chat.messages.length - 1].received | date: "shortTime"}} &nbsp;&nbsp;{{chat.messages[chat.messages.length - 1].time | date: "mediumDate" || chat.messages[chat.messages.length - 1].received | date: "mediumDate"}}</small>.</span> 
+                                                        <span style="display:block" class="ellipsis">{{chat.messages[chat.messages.length - 1].received || chat.messages[chat.messages.length - 1].sent}} <small style="display:block" am-time-ago="chat.messages[chat.messages.length - 1].time" ng-cloak></small></span> 
                                                     </p>
                                                 </div>
                                             </a>
@@ -158,12 +178,14 @@
                                     <i class="fa fa-search" aria-hidden="true"></i> Searches
                                 </a>
                                 <div class="okd dropdown-menu dropdown-menu-right" style="line-height: 35px" aria-labelledby="navbarDropdownMenuLink">
-                                   <a class="dropdown-item" href="#/find-specialist">Find Doctor</a>
+                                  <a class="dropdown-item" href="#/find-specialist">Find Doctor</a>
+                                    <a class="dropdown-item" href="#/pharmacy-in">Find Pharmaceutical Center</a>
+                                     <a class="dropdown-item" href="#/laboratory-in">Find Laboratory Center</a>
+                                      <a class="dropdown-item" href="#/radiology-in">Find Radiology Center</a>
                                     <a class="dropdown-item" href="#/drug">Find Drug</a>
                                     <a class="dropdown-item" href="#/scan-search">Find Radiology Test</a>
                                     <a class="dropdown-item" href="#/search-test">Find Laboratory Test</a>
                                     <a class="dropdown-item" href="#/procedure">Find Skills &amp; Procedures</a>
-                                   </div>
                             </li>
                         </ul>
                     </div>
@@ -181,18 +203,22 @@
                 <header class="container text-center" style="background:#fff; border-left:1px solid #f2f2f2; min-height:70px; line-height:70px; padding:5px;" ng-controller="labCenterDashboardController">
                     <div class="col-md-8 col-lg-8 col-sm-12">
                        <ul class="nav nav-tabs" role="tablist">  
-                          <li class="nav-item">
+                          <!--<li class="nav-item">
                             <a  class="btn btn-simple round mr-1"  href="#/help" ><i class="fa fa-question-circle"></i>
                                 <span style="color:red">Need help</span>
                             </a>
-                          </li>
+                          </li>-->
                           <li class="nav-item">
                             <a  class="btn btn-simple round mr-1"  href="#/referral/laboratory-test" ><i class="fa fa-user"></i>
-                                        <span style="color:red">Find patient lab test</span></a>
+                                        <span style="color:red">Find Patient Tests</span></a>
                           </li>
-                          <li class="nav-item">
+                          <!--<li class="nav-item">
                             <a  class="btn btn-simple round mr-1" href="" ng-click="newPatient()"><i class="fa fa-user-plus"></i>
                                 <span style="color:red">Add patient</span></a>
+                          </li>-->
+                          <li class="nav-item">
+                            <a class="btn btn-simple round mr-1"  href="#/rendered-services"><i class="fa fa-file-text"></i>
+                                <span style="color:red">Work History</span></a>
                           </li>
                         </ul>
                     </div>
@@ -246,26 +272,35 @@
                             <i class="fa arrow"></i>
                         </a>
                                     <ul>
-                                        <li> <a href="#/find-specialist">Find a doctor</a>
+                                        <li> <a href="#/find-specialist">Find Doctor</a>
                                 </a> </li>
+                                 <li> <a href="#/pharmacy-in">Find Pharmaceutical Center</a>
+                                </a> </li>
+
+                                 <li> <a href="#/laboratory-in">Find Laboratory Center</a>
+                                </a> </li>
+
+                                 <li> <a href="#/radiology-in">Find Radiology Center</a>
+                                </a> </li>
+
 
                                  <li> <a href="#/drug">Find Drug
                                 </a> </li>
 
-                                 <li> <a href="#/scan-search">Find Scan
+                                 <li> <a href="#/scan-search">Find Radiology Tests
                                 </a> </li>
 
-                                <li><a href="#/search-test">Find Test
+                                <li><a href="#/search-test">Find Laboratory Tests
                                 </a> </li>
                                        
 
-                                <li><a href="#/procedure">Find Skills & Procedure
+                                <li><a href="#/procedure">Find Skills &amp; Procedure
                                 </a> </li>
                                     </ul>
                                 </li>                      
 
                                 
-                                <li class="active"> <a href="">
+                                <li class="active"> <a href="#/welcome">
                             <i class="fa fa-home"></i>Laboratory Dashboard
                         </a> </li>
 
@@ -338,11 +373,26 @@
                                 </li>                                       
                             </ul>
                         </li>
-                        <!--<li> 
-                            <a href="/contact">
-                                <i class="fa fa-github-alt"></i> Contact Us
-                            </a> 
-                        </li>-->
+                         <li> 
+                                    <a href="">
+                            <i class="fa fa-question-circle"></i> Help &amp; Support
+                            <i class="fa arrow"></i>
+                                    </a>
+                                    <ul>
+                                        <li> <a href="#/faq">
+                                    FAQ
+                                </a> </li>
+
+                                 <li> <a href="#/announcement">
+                                    Announcement
+                                </a> </li>
+
+                                <!-- <li> <a href="#/help">
+                                    Need help
+                                </a> </li> -->                               
+                                       
+                                    </ul>
+                                </li>                                
                     </ul>
                 </nav>
             </div>
@@ -657,53 +707,55 @@
 
 
 
-      <script type="text/ng-template" id="patient-emergency-form.html">
+       <script type="text/ng-template" id="patient-emergency-form.html">
          <div class="modal fade">
           <div class="modal-dialog">
             <div class="modal-content">
               <div class="modal-header">
-               <button type="button" class="close" ng-click="close('Cancel')" data-dismiss="modal" aria-hidden="true" style="color:red;font-size: 32px;z-index: 3">&times;</button>
+              <h6 class="p-0 font-1-2">Add Patient</h6>
+               <button type="button" class="close" ng-click="close('Cancel')" data-dismiss="modal" aria-hidden="true" style="color:red;font-size: 32px;z-index: 3;position: absolute;top:20px;right: 20px">&times;</button>
               </div>          
              
               <div class="modal-body">
-                    <div class="p-0">
+
+                    <!--<div class="p-0">
                         <div style="margin-top: 30px"> 
                             <button class="btn btn-primary" ng-click="existingP()" ng-class="{'active' : isExisting }">Existing Patient</button>
                             <button class="btn btn-primary" ng-click="newP()" ng-class="{'active' : isForm }">Create new Patient</button>
                         </div>
-                        <div ng-if="isExisting">
-                          <input type="number" class="form-control" placeholder="Enter patient phone number" ng-model="patient.existing_phone">
-                        </div>
+                        <p>Phone number patient is using for applinic.</p>
+                        <form class="row"> 
+                          <div class="col-md-8 col-lg-8">                             
+                            <input type="number" class="form-control" placeholder="Enter number eg +2348096****73" ng-model="patient.existing_phone">
+                          </div>
+                          <div class="col-md-3 col-lg-3 pl-0">
+                            <button type="submit" class="btn btn-success" ng-click="FindPatient()">Find</button>
+                          </div>
+                        </form>
                     </div>
 
-                    <div ng-if="isExisting">
-                        <p style='color:red;text-align:center'>{{error}}</p>
-                        <p>Phone number must be the one patient used to register on this platform.</p>
-                        <div class="row pt-1">
+                    <div> 
+                       
+                        <div class="row pt-1" ng-if="existingPatient" style="position: relative;">                              
                               <div class="col-md-3 col-sm-12 text-center">
-                                <img src="{{existingPatient.profile_pic_url}}" style="width: 120px; height:120px">
+                                <img src="{{existingPatient.profile_pic_url}}" style="max-width: 120px; max-height:120px">
                               </div>
-                                <div class="col-md-9 col-sm-12">
-                                    <strong>{{existingPatient.title}} {{existingPatient.firstname}} {{existingPatient.lastname}}</strong>
-                                </div>
-                         </div>
-                         <div class="clearfix"></div>
-                        <div ng-if="existingPatient">
-                          <div class="row pt-1">
-                              <div class="col-md-3 col-sm-12 text-center">
-                                <img src="{{existingPatient.profile_pic_url}}" style="width: 120px; height:120px">
+                              <div class="col-md-9 col-sm-12">
+                                  <strong>{{existingPatient.title}} {{existingPatient.firstname}} {{existingPatient.lastname}}</strong>
+                                  <span style="display: block;">{{existingPatient.gender}}</span>
+                                  <span style="display: block;">{{existingPatient.age}}</span>
+                                  <button class="btn btn-primary btn-sm" ng-click="addToList('radiology')" style="position: absolute;bottom:0;right: 120px">Add</button>
                               </div>
-                                <div class="col-md-9 col-sm-12">
-                                    <strong>{{existingPatient.title}} {{existingPatient.firstname}} {{existingPatient.lastname}}</strong>
-                                </div>
                          </div>
-                            <div class="mt-1 mb-1">
-                                <button class="btn btn-primary" ng-click="addToList('laboratory')">Add to Attendance list</button>
-                            </div>
-                        </div>
-                    </div>
+                         <div class="clearfix"></div>                     
+                          <div style="text-align: center;margin-top: 30px" ng-if="loading">
+                              <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange;font-size: 20px" ng-if="loading"></i>
+                          </div>
+                          <p style='color:red;text-align:center' ng-if="!existingPatient">{{error}}</p>
+                       
+                    </div>-->
                     
-                    <form ng-if="isForm">
+                   <form ng-if="isForm">
                         <h6 style="color: red">{{error}}</h6>
                         <h5 class="font-1_4">Fill this form for the new Patient</h5>
                         <div  class="row">
@@ -717,20 +769,36 @@
                         </div>
                         <div class="form-group col-md-6 col-sm-12">
                             <label>Age</label>
-                            <input type="number" class="form-control" placeholder="Age *" ng-model="patient.age" required/>
+                            <select class="form-control" ng-model="patient.age" required>
+                              <option value="" disabled selected>_select age category</option>                                           
+                              <option>0 - 28 days (newborn)</option>
+                              <option>29 days - 1 year (infant)</option>
+                              <option>1 - 5 years (younger child)</option>
+                              <option>6 - 12 years (older child)</option>
+                              <option>13 - 16 years (adolescent)</option>
+                              <option>17 - 29 years (young adult)</option>
+                              <option>30 - 39 years (adult)</option>
+                              <option>40 - 49 years (adult)</option>
+                              <option>50 - 64 years (adult)</option>
+                              <option>65 years - over (senior)</option>
+                            </select>
                         </div>
                         <div class="form-group col-md-6 col-sm-12">
                             <label>Gender</label>
-                            <input type="text" class="form-control" placeholder="Gender *" ng-model="patient.gender" required/>
+                            <select class="form-control" ng-model="patient.gender" required>
+                              <option disabled="disabled" value="" >_select</option>
+                              <option value="Male">Male</option>
+                              <option value="Female">Female</option>
+                            </select>
                         </div>
                         <p style="color:red">{{showErr}}</p>
                         <div class="form-group col-md-6 col-sm-12">
-                            <label>Phone Number</label>
-                            <input type="number" class="form-control" placeholder="Phone number *" ng-model="patient.phone" required/>
+                            <label>Phone Number: </label><small class="text-danger">{{formatError}}</small>
+                            <input type="text" class="form-control" placeholder="Phone number * eg +2348035****77" ng-model="patient.phone" required/>
                         </div>
                         <div class="form-group col-md-6 col-sm-12">
-                            <label>Email Address</label>
-                            <input type="text" class="form-control" placeholder="Email" ng-model="patient.email" required/>
+                            <label>Email Address: </label>
+                            <input type="email" class="form-control" placeholder="Email" ng-model="patient.email" required/>
                         </div>
                         
                         <div class="col-md-12 pl-1">
@@ -749,7 +817,8 @@
           </div>
         </div>
     </script>
-    <script type="text/ng-template" id="search-result.html">
+   
+<script type="text/ng-template" id="search-result.html">
          <div class="modal fade">
           <div class="modal-dialog">
             <div class="modal-content">
@@ -759,22 +828,21 @@
              
               <div class="modal-body">
               
-<div ng-if="isContent" class="card p-1" style="padding: 20px">
-    <p style="background-color: grey; padding: 20px 5px;color:#fff">    
-    <span>Forwarding:</span>
-        <span class="font-1_1 mb-0">{{data.str}}</span>
+<div ng-if="isContent" class="p-1">
+    <p style="padding: 20px 10px;color:grey">    
+    <strong>Forwarding:</strong>
+        <span class="font-1_1 mb-0" style="font-style: italic;">{{data.str}}</span>
     </p>
+    <hr>
     <div>
         <b>TO</b>
     </div>
-    <div class="font-1_1">
-        <b>{{data.name}}</b>
-    </div>
-    <address class="font-1_1" style="padding: 5px">
+    <div>
+        <strong style="display: block">{{data.name}}</strong>
         <span>{{data.address}}</span>
         <span>{{data.city}}</span>
         <span>{{data.country}}</span>
-    </address>
+    </div>
     <!--<div style="margin-left: 20px;margin-top: -15px;border-bottom:1px solid rgba(0,0,0,0.2)"><div class="star-rating">
         <span  ng-cloak > 
         <div class="star-rating"  star-rating rating-value="data.rating.current" max="data.rating.max"></div>
@@ -782,20 +850,42 @@
         </div>
     </div>-->
     <div>
-        <button class="btn btn-info" ng-class="{'dismiss': user.someone}" ng-click="send('inperson')" ng-if="checkLogIn.typeOfUser == 'Patient'">Forward on my behalf</button>&nbsp;&nbsp;&nbsp;&nbsp;
-        <button class="btn btn-info"  ng-click="someone()">Forward on behalf of someone else</button>
+        <button class="btn btn-info" ng-class="{'dismiss': user.someone}" ng-click="send('inperson')" ng-if="checkLogIn.typeOfUser == 'Patient'">Forward on my behalf</button>
+        <!--<button class="btn btn-info"  ng-click="someone()">Forward on behalf of someone else</button>-->
     </div>
-    <div ng-if="isToSomeOne">
+    <div ng-if="isToSomeOne || checkLogIn.typeOfUser !== 'Patient'">
         <form>
-            <p>Tips: The phone number must be the number the person used for registration</p>
-            <div class="row">
-                <div class="col-md-5 col-sm-12">
-                 <input type="number" Placeholder="Enter the person phone number" ng-model="data.phone" class="form-control" style="cursor:normal">
+            <p>The phone number patient is using on applinic.com</p>
+            <div>
+                <div>
+                 <label>Patient's phone number *: <span class="text-danger">{{phoneMsg}}</span></label>
+                 <input type="number" Placeholder=" ( e.g +2347053****48 )" ng-model="data.phone" class="form-control" required="required" style="cursor:normal">
                 </div>
-                <div class="col-md-5 col-sm-12 pr-1 font-1">
-                    <input type="button" value="Cancel" ng-click="cancel()" class="btn btn-danger">
+                <div ng-if="typeOfSearch === 'pharmacy'">
+                  <label>Provisional Diagnosis *: <span class="text-danger">{{provisionalMsg}}</span></label>
+                  <textarea class="form-control pl-1" placeholder="Write..." ng-model="data.provisional_diagnosis" required="required"> </textarea>
+                </div>
+                <div ng-if='typeOfSearch === "diagnostic"'>
+                  <label>Clinical Summary *: <span class="text-danger">{{summuryMsg}}</span></label></label>
+                   <textarea class="form-control p-1" placeholder="Write..." ng-model="data.clinical_summary" required="required"></textarea>
+                 </div>
+                 <div ng-if='typeOfSearch === "diagnostic"'>
+                   <label>Indication *: <span class="text-danger">{{indictionMsg}}</span></label></label>
+                   <textarea class="form-control p-1" placeholder="Write..." ng-model="data.indication" required="required"></textarea>
+                 </div>
+                 <div ng-if='typeOfSearch === "diagnostic"'>
+                   <label>LMP ( female ):</label>
+                   <textarea class="form-control p-1" placeholder="Write..." ng-model="data.lmp"></textarea>
+                 </div>
+                 <div ng-if='typeOfSearch === "diagnostic"'>
+                   <label>Parity ( female ):</label>
+                    <textarea class="form-control p-1" placeholder="Write..." ng-model="data.parity"></textarea>
+                 </div>
+
+                <div class="pb-3">
+                    <input type="button" value="Cancel" ng-click="cancel()" class="btn btn-danger" ng-if="checkLogIn.typeOfUser === 'Patient'">
                     
-                    <button type="button" ng-click="send('someone')" class="btn btn-success" ng-if="data.phone && data.phone !== ''">Send</button>
+                    <button type="button" ng-click="send('someone')" class="btn btn-danger"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i>{{(loading) ? "" : 'Send'}}</button>
                     
                     <!--<input type="button" value="New Person Form" ng-click="emp()" class="btn btn-simple" ng-if="isEMP">-->
                 </div>
@@ -803,15 +893,15 @@
         </form>
     </div>
 </div>
-<div ng-if="isSent" class="card p-1">
-  <h5 class=" text-success"  style="text-align:center"> Sent successfully!!!</h5>
-  <div class="m-0"><span class="font-1-1"> center name: </span><em>{{data.name}}</em> </div> 
-  <div class="m-0"><span class="font-1-1"> center location: </span><em>{{data.address}}, {{data.city}}, {{data.country}}</em> </div> 
+<div ng-if="isSent" class="p-1">
+    <h5 class=" text-success"  style="text-align:center"> Sent successfully!!!</h5>
+    <div class="m-0"><strong class="font-1-1"> center name: </strong><em>{{data.name}}</em> </div> 
+    <div class="m-0"><strong class="font-1-1"> center location: </strong><em>{{data.address}}, {{data.city}}, {{data.country}}</em> </div> 
     <div class="mb-1"><span class="font-1-2" style="color:red"> Ref No:  </span><em>{{result}}</em> </div> 
-  <div class="font-1-1">Plesae take note of the center name and 
+    <div class="font-1-1">Plesae take note of the center name and 
         reference number above because it will be used to easy 
         location and identification respectively
-  </div>
+    </div>
 </div>
   
               </div>
@@ -974,6 +1064,80 @@
         </div>
       </div>
    </script>
+
+    <script type="text/ng-template" id='report-history-modal.html'>
+         
+        <div  class="modal fade">
+          <div class="modal-dialog">
+            <div class="modal-content">
+             <div class="modal-header">
+                <div style="display: inline-block;font-size: 14px">
+                  <img src="{{(person.laboratory)? person.laboratory.patient_profile_pic_url: person.radiology.patient_profile_pic_url}}" style="float: left; max-height: 120px;max-width: 120px;">
+                  <div style="display: inline-block;padding-left: 10px">
+                    <strong style="font-weight: bold;">{{(person.laboratory)? person.laboratory.patient_firstname : person.radiology.patient_firstname}} 
+                    {{(person.laboratory)? person.laboratory.patient_lastname : person.radiology.patient_lastname}}</strong>
+                    <span style="display: block;">Reference number: {{person.ref_id}}</span>
+                    <span style="display: block;">{{(person.laboratory)? person.laboratory.patient_phone : person.radiology.patient_phone }}</span>
+                      <span style="display: block;">{{person.date | date: 'mediumDate' }}</span>
+                  </div>
+                </div>           
+                <button type="button" class="close" ng-click="close('Cancel')" data-dismiss="modal" aria-hidden="true">&times;</button>
+              </div>              
+              <div class="modal-body"> 
+              <hr>
+                <div class="p-1">
+                  <label>Clinical Summary: </label>
+                  <p style="text-indent: 15px;display: inline-block;">{{(person.laboratory) ? person.laboratory.clinical_summary : person.radiology.clinical_summary}}</p>
+                </div>
+                <div class="p-1">
+                  <label>Indications: </label>
+                  <p style="text-indent: 15px;display: inline-block;">{{(person.laboratory) ? person.laboratory.indication : person.radiology.indication}}</p>
+                </div>
+                <div class="p-1" ng-if="person.laboratory.parity || person.radiology.parity">
+                  <label>Parity: </label>
+                  <p style="text-indent: 15px;display: inline-block;">{{(person.laboratory) ? person.laboratory.parity : person.radiology.parity}}</p>
+                </div>
+                <div class="p-1"  ng-if="person.laboratory.lmp || person.radiology.lmp">
+                  <label>LMP: </label>
+                  <p style="text-indent: 15px;display: inline-block;">{{(person.laboratory) ? person.laboratory.lmp : person.radiology.lmp}}</p>
+                </div>
+                <div class="p-1">
+                  <label>Test Ran: </label>
+                    <ol>
+                      <li ng-if="person.laboratory" ng-repeat="test in person.laboratory.test_ran">
+                        <span>{{test.name}}</span>
+                      </li>
+                       <li ng-if="person.radiology" ng-repeat="test in person.radiology.test_ran">
+                        <span>{{test.name}}</span>
+                      </li>
+                    </ol>
+                </div>
+                <div class="p-1">
+                  <label>Test Reports: {{(person.laboratory) ? getReport(person.laboratory.report) : getReport(person.radiology.report)}}</label>
+                  <div ng-repeat="rep in reportList">
+                    <label class="text-primary">{{rep.investigation}}</label>
+                    <p style="text-indent: 15px">{{rep.report}}</p>
+                  </div>
+                </div>
+                <div class="p-1">
+                  <label class="text-primary">Conclusion:</label>
+                  <p style="text-indent: 15px">{{(person.laboratory) ? person.laboratory.conclusion : person.radiology.conclusion}}</p>
+                </div>
+                <div class="p-1">
+                  <label>Test Report date: {{person.service_date | date: 'mediumDate'}} 
+                  ( <span am-time-ago="person.service_date"></span> )</label>                 
+                </div>
+                <!--<div style="text-align: right;" class="p-1">
+                  <button class="btn btn-primary" ng-click="editReport(person)" class="close" data-dismiss="modal"><i class="fa fa-pencil"></i> edit report</button>
+                </div>-->
+              </div>              
+            </div>
+          </div>
+        </div>
+     </script>
+
+
+   
 
 
 

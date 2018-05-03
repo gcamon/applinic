@@ -31,10 +31,11 @@
 
 
     <div class="container">
-    <div class="card p-2">
-<div style="padding-left: 20px">
-<a ng-href="{{back}}" style="font-size: 22px; font-weight: 100; color: #000"><i class="fa fa-arrow-left btn btn-simple"> &nbsp;Back</i></a>
-</div>
+    <div class="card-center-1">
+		<a ng-href="{{back}}"><i class="fa fa-arrow-left btn btn-simple"> &nbsp;Back</i></a>
+	</div>
+    <div class="card card-center-1 p-2">
+
 <div class="drug-search-result">
 	<!--<p style="font-size: 18px" class="form-inline">
 		<strong>Search result for:</strong>
@@ -44,36 +45,42 @@
 
 	</p>-->
 
-	<p class="form-inline">
-		<strong class="font-1_4">Search result for:</strong>
+	<div class="form-inline">
+		<strong class="font-1_2">Search result for:</strong>
 		<span ng-repeat="test in criteria" style="display:inline-block; padding:10px">{{test.name}}</span> 
 		<label style="display:block">
-			<input type="text" class="form-control" placeholder="Filter NAME or ADDRESS" ng-model="testFilter.name">	
+			<input type="text" class="form-control" placeholder="filter" ng-model="testFilter.name">	
 		</label>
-	</p>
-	<div ng-repeat ="center in testResult.full | filter : testFilter.name || testFilter.address" class="card p-1">
-		<div style="width: 95%; box-shadow: 0 5px 25px 0 rgba(0,0,0,.2);">
-			<p><small>{{getStr(center.str)}}</small></p>
-			<h5>{{center.name}}</h5>
-			<address style="margin-bottom: 5px" >{{center.address}}
-				<span>{{center.city}}</span>
-				<span>{{center.country}}</span>
-			</address>
-			<i class="fa fa-phone" style="display: block;"> +234 {{center.phone}}</i>
-			<p style="text-align:right"><i class="fa fa-user btn btn-simple text-success" style="cursor:pointer;" title="View {{center.name}} profile" ng-click="toViewProfile(center.id)"></i> &nbsp;&nbsp;&nbsp;<i class="fa fa-comment btn btn-simple text-success" style="cursor:pointer;" title="Send chat message to {{center.name}} " ng-click="sendChat(center)"></i> &nbsp;&nbsp;&nbsp;<i class="fa fa-share btn btn-simple text-success" style="cursor:pointer;" title="Forward to {{center.name}}" ng-click="toForward(center)"></i></p> 
-		</div>
 	</div>
-	
-	<div ng-repeat="center in testResult.less | filter : testFilter.name || testFilter.address" class="card p-1">
-		<div style="width: 95%; box-shadow: 0 5px 25px 0 rgba(0,0,0,.2);">
-			<p><small>{{getStr(center.str)}}</small> <small style="text-decoration:line-through">{{notStr(center.notFound)}}</small></p>
-			<h5>{{center.name}}</h5>
-			<address style="margin-bottom: 5px">{{center.address}}
-				<span>{{center.city}}</span>
-				<span>{{center.country}}</span>
-			</address>
-			<i class="fa fa-phone" style="display: block;"> +234 {{center.phone}}</i>
-			<p style="text-align:right"><i class="fa fa-user btn btn-simple text-success" style="cursor:pointer;" title="View {{center.name}} profile" ng-click="toViewProfile(center.id)"></i> &nbsp;&nbsp;&nbsp;<i class="fa fa-comment btn btn-simple text-success" style="cursor:pointer;" title="Send chat message to {{center.name}} " ng-click="sendChat(center)"></i> &nbsp;&nbsp;&nbsp;<i class="fa fa-share btn btn-simple text-success" style="cursor:pointer;" title="Forward to {{center.name}}" ng-click="toForward(center)"></i></p> 
+	<div style="max-height: 700px;overflow-y: auto;">
+		<div ng-repeat ="center in testResult.full | filter : testFilter.name | orderBy: 'name'">
+			<div style="width: 95%;border-bottom:1px solid #f2f2f2;padding-top: 15px">				
+				<p><small>{{getStr(center.str)}}</small></p>
+				<strong class="font-1_2">{{center.name}}</strong>
+				<address style="margin-bottom: 5px" >{{center.address}}
+					<span>{{center.city}}</span>
+					<span>{{center.country}}</span>
+				</address>
+				<i class="fa fa-phone" style="display: block;"> {{center.phone}}</i>
+				<div style="text-align:right;padding: 10px 0"><i class="fa fa-user btn btn-simple btn-sm" style="cursor:pointer;" title="View {{center.name}} profile" ng-click="toViewProfile(center.id)"></i> <i class="fa fa-comment btn btn-success btn-sm" style="cursor:pointer;" title="Send chat message to {{center.name}} " ng-click="sendChat(center)"></i> <i class="fa fa-share btn btn-danger btn-sm" style="cursor:pointer;" title="Forward to {{center.name}}" ng-click="toForward(center)"></i></div>
+				<div class="clearfix"></div> 
+			</div>
+			
+		</div>
+		
+		<div ng-repeat="center in testResult.less | filter : testFilter.name | orderBy: 'name'">
+			<div style="width: 95%;border-bottom:1px solid #f2f2f2;padding-top: 15px">
+				<p><small>{{getStr(center.str)}}</small> <small style="text-decoration:line-through">{{notStr(center.notFound)}}</small></p>
+				<strong class="font-1_2">{{center.name}}</strong>
+				<address style="margin-bottom: 5px">{{center.address}}
+					<span>{{center.city}}</span>
+					<span>{{center.country}}</span>
+				</address>
+				<i class="fa fa-phone" style="display: block;">{{center.phone}}</i>
+				<div style="text-align:right;padding: 10px 0;margin-top: 20px"><i class="fa fa-user btn btn-simple btn-sm" style="cursor:pointer;" title="View {{center.name}} profile" ng-click="toViewProfile(center.id)"></i> <i class="fa fa-comment btn btn-success btn-sm" style="cursor:pointer;" title="Send chat message to {{center.name}} " ng-click="sendChat(center)"></i> <i class="fa fa-share btn btn-danger btn-sm" style="cursor:pointer;" title="Forward to {{center.name}}" ng-click="toForward(center)"></i></div> 
+				<div class="clearfix"></div>
+			</div>
+
 		</div>
 	</div>
 </div>

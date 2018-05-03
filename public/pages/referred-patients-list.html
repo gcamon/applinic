@@ -35,14 +35,20 @@
 		</div>		
 	</div>	
     <div class="row">
-		<form class="col-md-12 col-lg-12 col-sm-12" ng-if="isNotOption" style="">			
+		<form class="col-md-12 col-lg-12 col-sm-12" ng-if="isNotOption" style="">
+		<div>
+			<label style="padding: 20px 5px">Prescription reference Number</label>	
+		</div>			
 			<input type="text" class="form-control" placeholder="Enter referrence number" ng-model="patient.ref_id" style="width:60%;display: inline-block;padding: 20px 10px"/>
-			<input type="button" class="btn btn-success" value="Search" ng-click="findPrescription()" style=""/>
+			<button type="submit" class="btn btn-success"  ng-click="findPrescription()" style="">Find</button>
 		</form>
 
 		<form class="col-md-12 col-lg-12 col-sm-12" ng-if="isOption">
-			<input type="text" class="form-control" placeholder="Enter patient phone number ( eg +234364****9 )" ng-model="patient.phone" style="width:60%;display: inline-block;padding:20px 10px"/>
-			<input type="button" class="btn btn-success" value="Search" ng-click="findPrescription()" style=""/>
+		<div>
+			<label style="padding: 20px 5px">Patient's phone Number</label>	
+		</div>
+			<input type="number" class="form-control" placeholder="Enter patient phone number ( eg +234364****9 )" ng-model="patient.phone" style="width:60%;display: inline-block;padding:20px 10px"/>
+			<button type="submit" class="btn btn-success"  ng-click="findPrescription()" style="">Find</button>
 		</form>
     </div>
 	<div  style="cursor:pointer;max-height: 400px;overflow-y: auto;padding-top: 30px" ng-if="foundData[0].ref_id">	
@@ -63,6 +69,7 @@
 		  <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange;font-size: 22px" ng-if="loading"></i>
 	</div>
 	<p class="font-1_2" style="padding: 30px;color: red;" ng-if="!foundData[0].ref_id">{{error}}</p>
+
 </div>
 
 </div>

@@ -12,7 +12,7 @@
 				</ul>
 			</div>
 		</div>
-		<div style="padding: 30px;" class="row card"  ng-repeat="docInfo in prescriptionRecordsResult" id="{{docInfo.prescriptionId}}">	
+		<div style="padding: 30px;" class="row card"  ng-repeat="docInfo in prescriptionRecordsResult | orderBy: '-date'" id="{{docInfo.prescriptionId}}">	
 		    <div class="col-sm-12 col-md-4 col-lg-4">
 		  
 		    	
@@ -40,10 +40,10 @@
 				    <h6>Experience: <span style="color:black">{{docInfo.doctor_experience + " years"}}</span></h6>-->        
 				   		<h6 style="text-decoration: underline;">Prescription details</h6>		    	
 				    	<div class="row">
-				    		<div class="col-sm-12 col-md-6 col-lg-6"> 
-				    			<p><strong>Date</strong> : <span>{{docInfo.date | date: "mediumDate"}}</span></p>
+				    		<div class="col-sm-12 col-md-12 col-lg-12"> 
+				    			<p><strong>Date</strong> : <span>{{docInfo.date | date: "mediumDate"}} ( <span am-time-Ago="docInfo.date"></span> )</span></p>
 				    		</div>
-				    		<div class="col-sm-12 col-md-6 col-lg-6"> 
+				    		<div class="col-sm-12 col-md-12 col-lg-12"> 
 				    			<p style="padding-right:10px;word-wrap: break-word;"><strong>Diagnosis</strong> : <span>{{docInfo.provisional_diagnosis}}</span></p>
 				    		</div>		    		
 				    	</div>

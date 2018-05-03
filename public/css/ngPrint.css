@@ -9,13 +9,26 @@
         display:none;
     }
 
-    #printSection, #printSection * {
-        display: inline-block;
-        font-size: 16px
+    #printSection {
+      margin-top: 70px;
+      width: 960px
     }
 
-  
+    #printSection, #printSection * {
+        display: block;
+        font-size: 16px
+    }  
 
+    #noFooter {
+        display: none;
+    }
+
+    #patientInfo {
+        display: inline-block;
+        border-top:  1px solid #ccc;
+        padding:10px;
+        width: 960px
+    }
 
     #printSection table > tbody{
        display: block;

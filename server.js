@@ -97,7 +97,10 @@ mySocket(model,io,streams);
 
 
 
-var a = "ede obinna".replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()});
+var a = "ede".replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()});
+var b = "ede".replace(/\s+/g, '');
+
+
 
 
 /*var https = require("https");

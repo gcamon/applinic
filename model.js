@@ -285,6 +285,7 @@ var myModel = function () {
 		patient_title: String,
 		patient_gender: String,
 		patient_age: String,
+		patient_phone: String,
 		session_id: Number,
 		patient_id: String,
 		test_id: Number,
@@ -519,7 +520,8 @@ var myModel = function () {
 		courier_access_password: String,//ue to authenticate field aagents for courier deleivery
 		family_flag: Boolean,
 		family_accounts: Array,
-		deleted: Boolean
+		deleted: Boolean,
+		service_details: Array //services rendered by a center successfully
 	},{
 		collections: "userinfos"
 	})

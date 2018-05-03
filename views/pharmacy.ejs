@@ -97,7 +97,7 @@
                                     <ul class="notifications-container">
                                         <li> <h6 style="text-align: center">Notification(s)</h6> </li>                                        
                                          <li style="text-align: right;padding-right: 10px"><button class="btn btn-success btn-sm" ng-click = "addAllNote()">Add to Work List </button></li>
-                                        <li ng-repeat = "note in allNote">
+                                        <li ng-repeat = "note in allNote | orderBy: '-sent_date'">
 
                                             <a href="" class="notification-item pt-1" ng-click="viewNote(note.ref_id)">
                                                 <div class="img-col">
@@ -181,6 +181,9 @@
                                 </a>
                                 <div class="okd dropdown-menu dropdown-menu-right" style="line-height: 35px" aria-labelledby="navbarDropdownMenuLink">
                                     <a class="dropdown-item" href="#/find-specialist">Find Doctor</a>
+                                    <a class="dropdown-item" href="#/pharmacy-in">Find Pharmaceutical Center</a>
+                                     <a class="dropdown-item" href="#/laboratory-in">Find Laboratory Center</a>
+                                      <a class="dropdown-item" href="#/radiology-in">Find Radiology Center</a>
                                     <a class="dropdown-item" href="#/drug">Find Drug</a>
                                     <a class="dropdown-item" href="#/scan-search">Find Radiology Test</a>
                                     <a class="dropdown-item" href="#/search-test">Find Laboratory Test</a>
@@ -276,6 +279,15 @@
                                     <ul>
                                         <li> <a href="#/find-specialist">Find Doctor</a>
                                 </a> </li>
+                                 <li> <a href="#/pharmacy-in">Find Pharmaceutical Center</a>
+                                </a> </li>
+
+                                 <li> <a href="#/laboratory-in">Find Laboratory Center</a>
+                                </a> </li>
+
+                                 <li> <a href="#/radiology-in">Find Radiology Center</a>
+                                </a> </li>
+
 
                                  <li> <a href="#/drug">Find Drug
                                 </a> </li>
@@ -305,7 +317,7 @@
                             <ul  style="max-height: 600px;overflow-y:auto">
                                 <li style="text-align:center"><input type="text" ng-model="person.pharmacy.patient_lastname" placeholder="Name, Date or Ref No" style="border:none;width:80%;padding:15px"></li>
 
-                                <li ng-repeat="person in attendanceList | filter: person.pharmacy.patient_lastname || person.pharmacy.patient_firstname || person.pharmacy.date || person.pharmacy.ref_id">
+                                <li ng-repeat="person in attendanceList | filter: person.pharmacy.patient_lastname || person.pharmacy.patient_firstname || person.pharmacy.date || person.pharmacy.ref_id" style="margin-left: -15px">
                                     <!--<div class="img-col">
                                         <div class="img" style="background-image: url({{person.pharmacy.patient_profile_pic_url}})"></div>
                                     </div> 
@@ -315,8 +327,8 @@
 
                                     <a href="" ng-click="viewNote(person.ref_id,'list',person.newPatient)">     
                                     
-                                        <img class="img" src="{{person.pharmacy.patient_profile_pic_url}}" style="width:32px;height:32px">
-                                        <span style="padding-left: 10px;font-size:12px">{{person.pharmacy.patient_firstname}}  {{person.pharmacy.patient_lastname}} </span>                                                        
+                                        <img class="img" src="{{person.pharmacy.patient_profile_pic_url}}" style="width:32px;height:32px;display: inline-block;">
+                                        <small style="padding-left: 10px;font-size:12px">{{person.pharmacy.patient_firstname}}  {{person.pharmacy.patient_lastname}} </small>                                                        
                                         
                                     </a> 
                                 </li>
@@ -372,6 +384,26 @@
                                 </li>                                       
                             </ul>
                         </li>
+                         <li> 
+                                    <a href="">
+                            <i class="fa fa-question-circle"></i> Help &amp; Support
+                            <i class="fa arrow"></i>
+                                    </a>
+                                    <ul>
+                                        <li> <a href="#/faq">
+                                    FAQ
+                                </a> </li>
+
+                                 <li> <a href="#/announcement">
+                                    Announcement
+                                </a> </li>
+
+                                 <!--<li> <a href="#/help">
+                                    Need help
+                                </a> </li> -->                               
+                                       
+                                    </ul>
+                                </li>                                
                        
                     </ul>
                 </nav>  
@@ -698,7 +730,7 @@
             <p>Do you wish to contact <b class="font-1_4">{{centerInfo.name}}</b> for inquires before sending prescription? <span class="text-success btn btn-simple btn-sm" style="cursor:pointer;" ng-click="isEnquiry()"> &nbsp;Yes</span></p>
                 <div ng-if="isContactFirst">
                 <span class="font-1_4">Contact Through:</span>
-                <i class="fa fa-phone font-1_4 text-success mr-1 btn btn-simple btn-sm" style="cursor:pointer;"> +234 {{centerInfo.phone}}</i>
+                <i class="fa fa-phone font-1_4 text-success mr-1 btn btn-simple btn-sm" style="cursor:pointer;">{{centerInfo.phone}}</i>
                 <!--<i class="fa fa-commenting-o font-1_4 text-success btn btn-simple btn-sm" style="cursor:pointer"></i>  -->             
             </div>      
         </div>  
@@ -729,7 +761,7 @@
         </div>
     </script>
 
-    <script type="text/ng-template" id="search-result.html">
+<script type="text/ng-template" id="search-result.html">
          <div class="modal fade">
           <div class="modal-dialog">
             <div class="modal-content">
@@ -739,22 +771,21 @@
              
               <div class="modal-body">
               
-<div ng-if="isContent" class="card p-1" style="padding: 20px">
-    <p style="background-color: grey; padding: 20px 5px;color:#fff">    
-    <span>Forwarding:</span>
-        <span class="font-1_1 mb-0">{{data.str}}</span>
+<div ng-if="isContent" class="p-1">
+    <p style="padding: 20px 10px;color:grey">    
+    <strong>Forwarding:</strong>
+        <span class="font-1_1 mb-0" style="font-style: italic;">{{data.str}}</span>
     </p>
+    <hr>
     <div>
         <b>TO</b>
     </div>
-    <div class="font-1_1">
-        <b>{{data.name}}</b>
-    </div>
-    <address class="font-1_1" style="padding: 5px">
+    <div>
+        <strong style="display: block">{{data.name}}</strong>
         <span>{{data.address}}</span>
         <span>{{data.city}}</span>
         <span>{{data.country}}</span>
-    </address>
+    </div>
     <!--<div style="margin-left: 20px;margin-top: -15px;border-bottom:1px solid rgba(0,0,0,0.2)"><div class="star-rating">
         <span  ng-cloak > 
         <div class="star-rating"  star-rating rating-value="data.rating.current" max="data.rating.max"></div>
@@ -762,20 +793,42 @@
         </div>
     </div>-->
     <div>
-        <button class="btn btn-info" ng-class="{'dismiss': user.someone}" ng-click="send('inperson')" ng-if="checkLogIn.typeOfUser == 'Patient'">Forward on my behalf</button>&nbsp;&nbsp;&nbsp;&nbsp;
-        <button class="btn btn-info"  ng-click="someone()">Forward on behalf of someone else</button>
+        <button class="btn btn-info" ng-class="{'dismiss': user.someone}" ng-click="send('inperson')" ng-if="checkLogIn.typeOfUser == 'Patient'">Forward on my behalf</button>
+        <!--<button class="btn btn-info"  ng-click="someone()">Forward on behalf of someone else</button>-->
     </div>
-    <div ng-if="isToSomeOne">
+    <div ng-if="isToSomeOne || checkLogIn.typeOfUser !== 'Patient'">
         <form>
-            <p>Tips: The phone number must be the number the person used for registration</p>
-            <div class="row">
-                <div class="col-md-5 col-sm-12">
-                 <input type="number" Placeholder="Enter the person phone number" ng-model="data.phone" class="form-control" style="cursor:normal">
+            <p>The phone number patient is using on applinic.com</p>
+            <div>
+                <div>
+                 <label>Patient's phone number *: <span class="text-danger">{{phoneMsg}}</span></label>
+                 <input type="number" Placeholder=" ( e.g +2347053****48 )" ng-model="data.phone" class="form-control" required="required" style="cursor:normal">
                 </div>
-                <div class="col-md-5 col-sm-12 pr-1 font-1">
-                    <input type="button" value="Cancel" ng-click="cancel()" class="btn btn-danger">
+                <div ng-if="typeOfSearch === 'pharmacy'">
+                  <label>Provisional Diagnosis *: <span class="text-danger">{{provisionalMsg}}</span></label>
+                  <textarea class="form-control pl-1" placeholder="Write..." ng-model="data.provisional_diagnosis" required="required"> </textarea>
+                </div>
+                <div ng-if='typeOfSearch === "diagnostic"'>
+                  <label>Clinical Summary *: <span class="text-danger">{{summuryMsg}}</span></label></label>
+                   <textarea class="form-control p-1" placeholder="Write..." ng-model="data.clinical_summary" required="required"></textarea>
+                 </div>
+                 <div ng-if='typeOfSearch === "diagnostic"'>
+                   <label>Indication *: <span class="text-danger">{{indictionMsg}}</span></label></label>
+                   <textarea class="form-control p-1" placeholder="Write..." ng-model="data.indication" required="required"></textarea>
+                 </div>
+                 <div ng-if='typeOfSearch === "diagnostic"'>
+                   <label>LMP ( female ):</label>
+                   <textarea class="form-control p-1" placeholder="Write..." ng-model="data.lmp"></textarea>
+                 </div>
+                 <div ng-if='typeOfSearch === "diagnostic"'>
+                   <label>Parity ( female ):</label>
+                    <textarea class="form-control p-1" placeholder="Write..." ng-model="data.parity"></textarea>
+                 </div>
+
+                <div class="pb-3">
+                    <input type="button" value="Cancel" ng-click="cancel()" class="btn btn-danger" ng-if="checkLogIn.typeOfUser === 'Patient'">
                     
-                    <button type="button" ng-click="send('someone')" class="btn btn-success" ng-if="data.phone && data.phone !== ''">Send</button>
+                    <button type="button" ng-click="send('someone')" class="btn btn-danger"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i>{{(loading) ? "" : 'Send'}}</button>
                     
                     <!--<input type="button" value="New Person Form" ng-click="emp()" class="btn btn-simple" ng-if="isEMP">-->
                 </div>
@@ -783,10 +836,10 @@
         </form>
     </div>
 </div>
-<div ng-if="isSent" class="card p-1">
+<div ng-if="isSent" class="p-1">
     <h5 class=" text-success"  style="text-align:center"> Sent successfully!!!</h5>
-    <div class="m-0"><span class="font-1-1"> center name: </span><em>{{data.name}}</em> </div> 
-    <div class="m-0"><span class="font-1-1"> center location: </span><em>{{data.address}}, {{data.city}}, {{data.country}}</em> </div> 
+    <div class="m-0"><strong class="font-1-1"> center name: </strong><em>{{data.name}}</em> </div> 
+    <div class="m-0"><strong class="font-1-1"> center location: </strong><em>{{data.address}}, {{data.city}}, {{data.country}}</em> </div> 
     <div class="mb-1"><span class="font-1-2" style="color:red"> Ref No:  </span><em>{{result}}</em> </div> 
     <div class="font-1-1">Plesae take note of the center name and 
         reference number above because it will be used to easy 
@@ -855,17 +908,23 @@
             <div class="modal-header">
             <div class="row">
               <button type="button" class="close" ng-click="close('Yes')" data-dismiss="modal">&times;</button>
-               <img ng-src="{{docInfo.profile_pic_url}}" style="max-width:3em; max-height:3em"/>
-               <span style="display:inline-block;padding: 10px">{{docInfo.title}} {{docInfo.firstname}} {{docInfo.lastname}}  <span style="display: block;font-size: 0.7em">{{docInfo.specialty}}</span></span> 
+              <div style="display: inline-block;float: left;">
+                 <img ng-src="{{docInfo.profile_pic_url}}" style="max-width:2.5em; max-height:2.5em"/>
+              </div>
+              <div style="display: inline-block;float: left;padding-left: 10px;font-size: 14px">
+                 <span><strong>{{docInfo.title}} {{docInfo.firstname}} {{docInfo.lastname}}</strong>  <span style="display: block;">{{docInfo.specialty}}</span><span style="display: block;">{{docInfo.work_place}} {{docInfo.address}} {{docInfo.city}} {{docInfo.country}}</span>
+                 </span> 
+              </div>
+              
                           
             </div>
-            <div class="modal-body" style="max-height: 800px;overflow-y: auto;">  
-              <h2 style="text-align:center;text-decoration: underline;">{{docInfo.skill.skill}}</h2>
+            <div class="" style="padding-top: 20px">  
+              <h5 style="text-align:center;text-decoration: underline;">{{docInfo.skill.skill}}</h5>
               <section>
-                <p>{{docInfo.skill.procedure_description}}</p>
+                <p style="font-size: 14px">{{docInfo.skill.procedure_description}}</p>
                 <div ng-repeat = "file in docInfo.skill.files">
-                  <div style="text-decoration: underline;" ng-if="file.type === 'video/mp4'">
-                     <h6>Video</h6>
+                  <div style="text-decoration: underline;" ng-if="file.type !== 'video/mp4'">
+                     <label style="font-size: 18px">Video</label>
                      <video  style="width: 100%;height:480px" controls
                         poster="https://archive.org/download/WebmVp8Vorbis/webmvp8.gif"  class="img-responsive">  
                         <source
@@ -875,8 +934,8 @@
                       </video>
                   </div>
                   <div style="text-decoration: underline;" ng-if="file.type === 'image/jpg' || file.type === 'image/jpeg' || file.type === 'image/png'">
-                    <h6>Image</h6>
-                    <img src="{{file.path}}" class="img-responsive" alt="Sample image" style="max-height:650px;width:100%">
+                    <label style="font-size: 18px">Image</label>
+                    <img src="{{file.path}}" class="img-responsive" alt="Sample image" style="max-height:650px">
                   </div>
                 </div>                
               </section>                                                 

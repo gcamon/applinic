@@ -15,13 +15,8 @@
      <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
     <!--<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">-->
 
-   
-    <!-- Latest compiled and minified CSS -->
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-
-<!-- Optional theme -->
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
-
+ <link href="/assets/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="/assets/css/now-ui-kit.css" rel="stylesheet" />
 
  <style type="text/css">
     body {
@@ -32,6 +27,10 @@
     color: #fff;    
     padding: 5px 5px;
     text-align: center;
+}
+
+a {
+    color:#333 !important;
 }
 
 .calender-header i {
@@ -79,6 +78,9 @@ span.dates {
     font-weight: normal!important;
 }
 
+textarea{
+    padding:5px;
+}
 
 
 .today {
@@ -101,7 +103,7 @@ span.dates {
 }
 
 .updateInfo {
-    color: orange;
+    color: #333;
     float: right;
 }
 
@@ -110,6 +112,13 @@ span.dates {
   background-color: pink;
 }
 
+
+.card-footer{
+    font-size:.8em;
+    padding: 5px;
+    text-transform: uppercase;
+    font-weight: bold;
+}
 
  </style>
 
@@ -120,9 +129,9 @@ span.dates {
     <script type="text/javascript" src="/socket.io/socket.io.js"></script>
     <script type="text/javascript" src="/assets/js/adapter.js"></script>
     <script type="text/javascript" src="/assets/js/rtcClient.js"></script>
-    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular.min.js">
-    </script>
-    <!--<script type="text/javascript" src="/assets/js/angular-source.js"></script>-->
+    <!--<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular.min.js">
+    </script>-->
+    <script type="text/javascript" src="/assets/js/angular-source.js"></script>
     <script src="/assets/js/ngresource.js"></script>
     
      <script src="/assets/js/moment.min.js"></script>  
@@ -131,13 +140,15 @@ span.dates {
         
 </head>
 <body style="overflow-x: hidden;">
-    <main class="container-fluid"  style="margin: 0;padding: 0" ng-cloak>        
-        <header style="margin-bottom: 3px;background-color: #d9edf7;padding: 10px 30px" ng-controller="LocalStreamController as localStream" class="row">
-            <div class="col-sm-12 col-md-5 col-lg-5">
-                 <a href="" ng-click="goToDashbaord()" class="btn text-danger"><i class="fa fa-arrow-left"></i> Back to dashboard</a>&nbsp;&nbsp;&nbsp;
+    <main class="container-fluid"  style="margin: 0;padding: 0" ng-cloak>     
+
+
+        <header  style="margin-bottom: 3px;background-color:#fff; box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.15); padding: 10px 30px" ng-controller="LocalStreamController as localStream" class="row">
+            <div class="col-sm-12 col-md-5 col-lg-5 p-1">
+                 <a href="" ng-click="goToDashbaord()" class="btn btn-neutral "><i class="fa fa-arrow-left"></i> Back to dashboard</a>&nbsp;&nbsp;&nbsp;
                  <span ng-cloak style="font-size: 10px">{{localStream.getControlId('<%= person.controlId %>')}}</span>
                 <!--Appear as: <input ng-model="localStream.name" class="form-control" style="width: 50%;display: inline-block;"/>-->
-                <a href ng-click="localStream.toggleCam()" class="btn btn-danger" style="color:#fff;float: right;">{{ (localStream.cameraIsOn === true) ? 'Streaming... ( stop / disconnect )' : localStream.cameraStatus }}</a>
+                <a href ng-click="localStream.toggleCam()" class="btn btn-danger" style="color:#fff !important;float: right;">{{ (localStream.cameraIsOn === true) ? 'Streaming... ( stop / disconnect )' : localStream.cameraStatus }}</a>
 
             </div>
             <div  class="col-sm-12 col-md-7 col-lg-7">
@@ -183,23 +194,27 @@ span.dates {
                             </div>
                         </div>
                     </div>                  
-                    <p class="text-danger" style="display: inline-block;float: right;font-weight: bold;">{{(connectionStatus === true) ? message : "Waiting for partner..."}}</p>
+                    <p class="text-danger p-2 mt-2" style="display: inline-block;float: right; font-size: .8em; border: 1px solid #f2f2f2; border-radius: 50px;">{{(connectionStatus === true) ? message : "Waiting for partner..."}}</p>
                 </div>                
             </div> 
         </header>        
         <section class="row" ng-controller='RemoteStreamsController as rtc'>
-             <div class="col-sm-12 col-md-2 col-lg-2 pull-left" style="padding-left: 20px;">
-                    <div style="height: 250px">
-                        <h4 style="padding: 10px 0;text-align: center;background-color: #1d7e5f;color:#fff">Available streams</h4>
-                        <div ng-repeat="stream in rtc.remoteStreams" ng-class="{'selected' : stream.isPlaying}" style="padding-bottom: 5px">                    
+             <div class="col-sm-12 col-md-3 col-lg-3 pull-left card pt-1" style="height:100%; display: block;">
+                    <div class="col-md-12" style="height: 280px">
+                    <div class="card-header bg-primary p-1">
+                        <b class="pb-0 pt-1 m-0" style="color:#fff; font-size:1em;">Available streams</b>
+                        <div ng-repeat="stream in rtc.remoteStreams" ng-class="{'selected' : stream.isPlaying}">       </div>             
                             <span>{{stream.name}}</span> &nbsp;&nbsp;
                             <button ng-click="rtc.view(stream)" class="btn btn-success" style="padding: 5px 10px;font-size: 12px">{{(stream.isPlaying === false) ? 'view' : 'hide'}}</button>
                         </div>
                     </div>
-                    <h4 style="padding: 10px 0;text-align: center;background-color: #1d7e5f;color:#fff">Managment details</h4>
+
+                    <div class="col-md-12"  style="height: 285px">
+                    <div class="card-header bg-info p-1">
+                    <b class="pb-0 pt-1 m-0" style="color:#fff; font-size:1em;">Management details</b></div>
                     <div ng-repeat="j in rtc.prescriptions" style="max-height: 300px;overflow-y: auto;border-bottom: 1px solid #000">
                        <b style="display: inline-block;padding-top: 10px">{{j.type}}</b>
-                       <table class="table">
+                       <table class="table table-striped table-responsive">
                            <thead>
                                <th><small></small></th>
                                <th><small>Name</small></th>
@@ -242,18 +257,49 @@ span.dates {
                     </div>
                 <span style="visibility: hidden;">video connection channel : &nbsp;{{rtc.siteLink('<%= person.controlId %>')}}</span>
             </div> 
+</div>
 
-
-           <div class="col-sm-12 col-md-7 col-lg-7" style="margin-top:10px;padding-left: 30px">           
-                <div>
-                    <div style="display: inline-block;padding: 8px 8px 0 8px;border:2px solid #d9edf7">
-                        <p style="text-align: center;padding: 4px;color: orange;background-color: #d9edf7">Your Cam</p>
-                        <video id="localVideo" autoplay="true" muted="muted" style="width:auto;height:250px;margin-top: -4px"></video>
-                    </div>                   
-                    <div id="remoteVideosContainer" style="display: inline-block;padding: 8px 8px 0 8px;border:2px solid #d9edf7">
+           <div class="col-sm-12 col-md-6 col-lg-6" style="margin-top:10px;padding-left: 30px">           
+                <div class="col-md-8">
+                    <div class="card p-0">
                         
-                    </div>                    
-                </div>              
+                        <video id="localVideo" autoplay="true" muted="muted" 
+                        style="width:100%;height:300px;"></video>
+
+                        <div class="card-footer p-1"><p style="text-align: center; color:#333;">Name Here</p></div>
+                    </div>  
+
+  </div> 
+
+
+ <div class="col-md-12">
+ <div class="row">
+     <div class="col-md-4 col-sm-12  pl-1 pr-0">
+             <div class="card" style="display: inline-block;margin: 8px; min-height:150px;">
+                   <div class="card-body" id="remoteVideosContainer" style="height:130px;" ></div>
+                   <div class="card-footer">Name here</div>
+                    </div>
+     </div>
+
+      <div class="col-md-4 col-sm-12 pl-1 pr-0">
+             <div class="card" style="display: inline-block;margin: 8px; min-height:150px;">
+                   <div class="card-body" id="remoteVideosContainer" style="height:130px;" ></div>
+                   <div class="card-footer">Name here</div>
+                    </div>
+     </div>
+
+
+      <div class="col-md-4 col-sm-12  pl-1 pr-0">
+             <div class="card" style="display: inline-block;margin: 8px; min-height:150px;">
+                   <div class="card-body" id="remoteVideosContainer" style="height:130px;" ></div>
+                   <div class="card-footer">Name here</div>
+                    </div>
+     </div>
+     </div>
+ </div>
+
+
+                           
             </div>
 
                      
@@ -270,14 +316,14 @@ span.dates {
 
 
 
-            <div style="border-left:2px solid #d9edf7;padding-left: 10px;max-height: 800px;overflow-y: auto" class="col-sm-12 col-md-3 col-lg-3" ng-controller="VideoDiagnosisController">
+            <div style="border-left:2px solid #f2f2f2;padding-left: 10px;max-height: 800px;overflow-y: auto" class="col-sm-12 col-md-3 col-lg-3" ng-controller="VideoDiagnosisController">
                 <!-- ng-controller="VideoDiagnosisController" -->
 
-                <form style="background-color: #eee;padding:10px;box-shadow:3px 2px 3px rgba(0,0,0,0.5)"> 
+                <form style=" color:#555 !important; padding:10px;"> 
                         <div id="accordion">
                             <h6 style="color: #fff; font-size: 14px;padding:5px">
-                                <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTen" aria-expanded="false" aria-controls="collapseTen" style="color:#e97147; font-size: 18px;text-decoration:underline">Presenting complain</a>
-                            </h6>                 
+                                <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTen" aria-expanded="false" aria-controls="collapseTen" style=" font-size: 1em; text-transform: uppercase;text-decoration:none;">Presenting complain</a>
+                            </h6>       <hr class="m-1">
                             <div style="list-style:none" id="collapseTen" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTen">
                                 <textarea placeholder="write..." ng-model="treatment.complain" class="form-control" required></textarea>
                             </div>
@@ -285,7 +331,7 @@ span.dates {
 
                         <div id="accordion">
                             <h6 style="color: #fff; font-size: 14px;padding:5px">
-                                <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseNine" aria-expanded="false" aria-controls="collapseNine" style="color:#e97147; font-size: 18px;text-decoration:underline">History of presenting complain</a>
+                                <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseNine" aria-expanded="false" aria-controls="collapseNine" style=" font-size: 1em; text-transform: uppercase;text-decoration:none;">History of presenting complain</a> <hr class="m-1">
                             </h6>                 
                             <div style="list-style:none" id="collapseNine" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingNine">
                                 <textarea placeholder="write..." class="form-control" ng-model="treatment.historyOfComplain"></textarea>
@@ -294,7 +340,7 @@ span.dates {
 
                         <div id="accordion">
                             <h6 style="color: #fff; font-size: 14px;padding:5px">
-                                <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseEight" aria-expanded="false" aria-controls="collapseEight" style="color:#e97147; font-size: 18px;text-decoration:underline">Past medical history</a>
+                                <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseEight" aria-expanded="false" aria-controls="collapseEight" style=" font-size: 1em; text-transform: uppercase;text-decoration:none;">Past medical history</a> <hr class="m-1">
                             </h6>                 
                             <div style="list-style:none" id="collapseEight" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingEight">
                                  <textarea placeholder="write..." class="form-control" ng-model="treatment.pastMedicalHistory"></textarea>
@@ -302,8 +348,8 @@ span.dates {
                         </div>
                         
                         <div id="accordion">
-                            <h6 style="color: #fff; font-size: 14px;padding:5px">
-                                <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseSeven" aria-expanded="false" aria-controls="collapseSeven" style="color:#e97147; font-size: 18px;text-decoration:underline">Family history</a>
+                            <h6 style="color: #555 !important; font-size: 14px;padding:5px">
+                                <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseSeven" aria-expanded="false" aria-controls="collapseSeven" style=" font-size: 1em; text-transform: uppercase;text-decoration:none;">Family history</a> <hr class="m-1">
                             </h6>                 
                             <div style="list-style:none" id="collapseSeven" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingSeven">
                                  <textarea placeholder="write..." class="form-control" ng-model="treatment.familyHistory"></textarea>
@@ -312,7 +358,7 @@ span.dates {
 
                         <div id="accordion">
                             <h6 style="color: #fff; font-size: 14px;padding:5px">
-                                <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseSix" aria-expanded="false" aria-controls="collapseSix" style="color:#e97147; font-size: 18px;text-decoration:underline">Social history</a>
+                                <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseSix" aria-expanded="false" aria-controls="collapseSix" style=" font-size: 1em; text-transform: uppercase;text-decoration:none;">Social history</a> <hr class="m-1">
                             </h6>                 
                             <div style="list-style:none" id="collapseSix" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingSix">
                                  <textarea placeholder="write..." class="form-control" ng-model="treatment.socialHistory"></textarea>
@@ -321,7 +367,7 @@ span.dates {
 
                         <div id="accordion">
                             <h6 style="color: #fff; font-size: 14px;padding:5px">
-                                <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseFive" aria-expanded="false" aria-controls="collapseFive" style="color:#e97147; font-size: 18px;text-decoration:underline">Drug history</a>
+                                <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseFive" aria-expanded="false" aria-controls="collapseFive" style=" font-size: 1em; text-transform: uppercase;text-decoration:none;">Drug history</a> <hr class="m-1">
                             </h6>                 
                             <div style="list-style:none" id="collapseFive" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFive">
                                   <textarea placeholder="write..." class="form-control" ng-model="treatment.drugHistory"></textarea>
@@ -330,7 +376,7 @@ span.dates {
                         
                         <div id="accordion">
                             <h6 style="color: #fff; font-size: 14px;padding:5px">
-                                <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseFour" aria-expanded="false" aria-controls="collapseFour" style="color:#e97147; font-size: 18px;text-decoration:underline">Summary</a>
+                                <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseFour" aria-expanded="false" aria-controls="collapseFour" style=" font-size: 1em; text-transform: uppercase;text-decoration:none;">Summary</a>  <hr class="m-1">
                             </h6>                 
                             <div style="list-style:none" id="collapseFour" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFour">
                                   <textarea placeholder="write..." class="form-control" ng-model="treatment.summary"></textarea>
@@ -339,7 +385,7 @@ span.dates {
                         
                          <div id="accordion">
                             <h6 style="color: #fff; font-size: 14px;padding:5px">
-                                <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapsetwelve" aria-expanded="false" aria-controls="collapseTwelve" style="color:#e97147; font-size: 18px;text-decoration:underline">Notes</a>
+                                <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapsetwelve" aria-expanded="false" aria-controls="collapseTwelve" style=" font-size: 1em; text-transform: uppercase;text-decoration:none;">Notes</a>  <hr class="m-1">
                             </h6>                 
                             <div style="list-style:none" id="collapsetwelve" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwelve">
                                   <textarea placeholder="write..." class="form-control" ng-model="treatment.notes" required></textarea>
@@ -348,14 +394,14 @@ span.dates {
 
                         <div id="accordion">
                             <h6 style="color: #fff; font-size: 14px;padding:5px">
-                                <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree" style="color:#e97147; font-size: 18px;text-decoration:underline">Provisional diagnosis</a>
+                                <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree" style=" font-size: 1em; text-transform: uppercase;text-decoration:none;">Provisional diagnosis</a> 
                             </h6>                 
                             <div style="list-style:none" id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
                                   <textarea placeholder="write..." class="form-control" ng-model="treatment.provisionalDiagnosis" required></textarea>
                             </div>
                         </div> 
-                        <div style="text-align: right;padding: 20px;">
-                            <button class="btn btn-simple" ng-class="{'btn-danger': treatment.complain}" ng-click="submitSession()">Save Changes</button>
+                        <div>
+                            <button class="btn btn-neutral btn-block" ng-class="{'btn-danger': treatment.complain}" ng-click="submitSession()">Save Changes</button>
                         </div>                                                           
                                                                           
                        
@@ -365,7 +411,7 @@ span.dates {
                             
                             <div id="accordion">
                             <h6 style="color: #fff; font-size: 14px;padding:5px">
-                                <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo" style="color:#306756; font-size: 18px;text-decoration:underline"><i class="icon-Pills"></i> Pharmaceutical</a>
+                                <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo" style="color:#306756; font-size: 1em; text-transform: uppercase;text-decoration:none;"><i class="icon-Pills"></i> Pharmaceutical</a>
                             </h6>                 
                             <div style="list-style:none" id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
                                    <table>
@@ -407,7 +453,7 @@ span.dates {
 
                         <div style="margin-top: 10px;">
                             <h6 style="color: #fff; font-size: 14px;padding:5px">
-                                <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="false" aria-controls="collapseOne" style="color:#306756; font-size: 18px;text-decoration:underline"><i class="fa fa-calendar"></i> Physical Examination</a>
+                                <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="false" aria-controls="collapseOne" style="color:#306756; font-size: 1em; text-transform: uppercase;text-decoration:none;"><i class="fa fa-calendar"></i> Physical Examination</a>
                             </h6>                 
                             <div style="list-style:none" id="collapseOne" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
                                 <p>Enter date and time of the appointment below</p>
@@ -422,7 +468,7 @@ span.dates {
                     </div>-->
 
                 </form>
-                <h4 style="text-align: center;color:orange">Management</h4>
+                <h4 class="mb-0 mt-1" style="text-transform: uppercase; font-size:1em;">Management</h4>
                 <div style="word-spacing: 20px">
                     <button class="btn btn-simple" style="margin-top: 10px" ng-class="{'btn-primary': treatment.complain}" ng-click="investigation()">Investigation</button>
                     <button class="btn btn-simple" style="margin-top: 10px" ng-class="{'btn-success': treatment.complain}" ng-click="prescription()">Prescription</button>
@@ -441,7 +487,7 @@ span.dates {
             <div class="modal-content">
                 <div class="modal-header" style="border-bottom:1px solid #eee;">
                      <h4>Investigation</h4>
-                     <i class="fa fa-times" data-dismiss="modal" style="font-size: 18px;position: absolute;top:10px;right: 10px;padding: 10px"></i>    
+                     <i class="fa fa-times" data-dismiss="modal" style="font-size: 1em; text-transform: uppercase;position: absolute;top:10px;right: 10px;padding: 10px"></i>    
                      <div style="text-align:center;padding:20px" ng-if="isInitial === true">
                         <button class="btn btn-primary" ng-click="lab()">New Laboratory</button>
                         <button class="btn btn-danger" ng-click="radio()">New Radiology</button>  
@@ -661,7 +707,7 @@ span.dates {
             <div class="modal-content">
                 <div class="modal-header" style="border-bottom:1px solid #eee;">
                      <h4>Treatment Plan</h4>
-                     <i class="fa fa-times" data-dismiss="modal" style="font-size: 18px;position: absolute;top:10px;right: 10px;padding: 10px"></i>                       
+                     <i class="fa fa-times" data-dismiss="modal" style="font-size: 1em; text-transform: uppercase;position: absolute;top:10px;right: 10px;padding: 10px"></i>                       
                 </div>
             
                 <div class="modal-body">
@@ -684,7 +730,7 @@ span.dates {
             <div class="modal-content">
                 <div class="modal-header" style="border-bottom:1px solid #eee;position: relative;">
                       <h4> Pharmaceutical <button style="float:right;margin-top: 30px" class="btn btn-danger" ng-click="getHistory()">{{(isHistory === true) ? 'Write New' : 'View History'}}</button></h4>
-                      <i class="fa fa-times" data-dismiss="modal" style="font-size: 18px;position: absolute;top:10px;right: 10px;padding: 10px"></i>             
+                      <i class="fa fa-times" data-dismiss="modal" style="font-size: 1em; text-transform: uppercase;position: absolute;top:10px;right: 10px;padding: 10px"></i>             
                 </div>
             
                 <div class="modal-body">
@@ -863,6 +909,23 @@ span.dates {
      </script>    
     <script src="/assets/js/ui-bootstrap-tpls.js"></script>
     <script src="/assets/js/modalService.js"></script>
+
+
+
+          <!-- plug ins -->
+        <!--   Core JS Files   -->
+        <script src="assets/js/core/jquery.3.2.1.min.js" type="text/javascript"></script>
+        <script src="assets/js/core/tether.min.js" type="text/javascript"></script>
+        <script src="assets/js/core/bootstrap.min.js" type="text/javascript"></script>
+        <!--  Plugin for Switches, full documentation here: http://www.jque.re/plugins/version3/bootstrap.switch/ -->
+        <script src="assets/js/plugins/bootstrap-switch.js"></script>
+        <!--  Plugin for the Sliders, full documentation here: http://refreshless.com/nouislider/ -->
+        <script src="assets/js/plugins/nouislider.min.js" type="text/javascript"></script>
+        <!--  Plugin for the DatePicker, full documentation here: https://github.com/uxsolutions/bootstrap-datepicker -->
+        <script src="assets/js/plugins/bootstrap-datepicker.js" type="text/javascript"></script>
+        <!-- Control Center for Now Ui Kit: parallax effects, scripts for the example pages etc -->
+        <script src="assets/js/now-ui-kit.js" type="text/javascript"></script>
+
 </body>
 </html>
 

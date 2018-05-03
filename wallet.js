@@ -13,6 +13,7 @@ Wallet.prototype.credit = function(model,receiver,amount,io,cb){
 	if(amount > 0) {
 		var self = this;
 		model.user.findOne(receiver,{ewallet:1,name:1}).exec(function(err,data){
+			console.log("========================")
 			console.log(receiver)
 			if(err) throw err;
 			if(self.message === "Consultation fee"){

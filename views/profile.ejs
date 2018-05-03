@@ -365,7 +365,10 @@
                                     <i class="fa fa-search" aria-hidden="true"></i> Searches
                                 </a>
                                 <div class="okd dropdown-menu dropdown-menu-right" style="line-height: 35px" aria-labelledby="navbarDropdownMenuLink">
-                                    <a class="dropdown-item" href="#/find-specialist">Find Doctor</a>
+                                   <a class="dropdown-item" href="#/find-specialist">Find Doctor</a>
+                                    <a class="dropdown-item" href="#/pharmacy-in">Find Pharmaceutical Center</a>
+                                     <a class="dropdown-item" href="#/laboratory-in">Find Laboratory Center</a>
+                                      <a class="dropdown-item" href="#/radiology-in">Find Radiology Center</a>
                                     <a class="dropdown-item" href="#/drug">Find Drug</a>
                                     <a class="dropdown-item" href="#/scan-search">Find Radiology Test</a>
                                     <a class="dropdown-item" href="#/search-test">Find Laboratory Test</a>
@@ -407,9 +410,9 @@
                      
                         <!--<a class="nav-link"  href=""  class="btn btn-primary" data-toggle="modal" data-target="#exampleModalLong">-->
                         
-                        <a class="btn btn-simple round mr-1" style="color:red;margin-left:5px"  href=""  ng-click="newPatient()">
+                        <!--<a class="btn btn-simple round mr-1" style="color:red;margin-left:5px"  href=""  ng-click="newPatient()">
                         <i class="fa fa-user-plus" ></i>
-                                    <span> Add new patient</span></a>
+                                    <span> Add new patient</span></a>-->
                       
                         <a ng-controller="balanceController" href="#/transactions" class="btn btn-info btn-sm header-btn" style="float-right"><i class="fa fa-money"></i>
                             <span ng-cloak>Available Balance |  {{balance}}</span>
@@ -464,6 +467,16 @@
 
                                  <li> <a href="#/drug">Find Drug
                                 </a> </li>
+
+                                 <li> <a href="#/pharmacy-in">Find Pharmaceutical Center</a>
+                                </a> </li>
+
+                                 <li> <a href="#/laboratory-in">Find Laboratory Center</a>
+                                </a> </li>
+
+                                 <li> <a href="#/radiology-in">Find Radiology Center</a>
+                                </a> </li>
+
 
                                  <li> <a href="#/scan-search">Find Radiology
                                 </a> </li>
@@ -563,8 +576,29 @@
                                 </a> </li>
                                        
                                     </ul>
-                                </li>                               
+                                </li>
+                                 <li> 
+                                    <a href="">
+                            <i class="fa fa-question-circle"></i> Help &amp; Support
+                            <i class="fa arrow"></i>
+                                    </a>
+                                    <ul>
+                                        <li> <a href="#/faq">
+                                    FAQ
+                                </a> </li>
+
+                                 <li> <a href="#/announcement">
+                                    Announcement
+                                </a> </li>
+
+                                 <li> <a href="#/help">
+                                    Need help
+                                </a> </li>                                
+                                       
+                                    </ul>
+                                </li>                                                              
                             </ul>
+                           
                         </nav>
                     </div>
                  </aside>
@@ -1144,52 +1178,108 @@
      </script>
 
 
-     <script type="text/ng-template" id="patient-emergency-form.html">
+      <script type="text/ng-template" id="patient-emergency-form.html">
          <div class="modal fade">
           <div class="modal-dialog">
             <div class="modal-content">
-
-            <div class="modal-header">
-        <h5 class="modal-title">   Fill this form for the new Patient</h5>
-        <button type="button" class="close"  ng-click="close('Cancel')" data-dismiss="modal"aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-
-
-              <div>
-              
-              
+              <div class="modal-header">
+              <h6 class="p-0 font-1-2">Add Patient</h6>
+               <button type="button" class="close" ng-click="close('Cancel')" data-dismiss="modal" aria-hidden="true" style="color:red;font-size: 32px;z-index: 3;position: absolute;top:20px;right: 20px">&times;</button>
+              </div>          
+             
               <div class="modal-body">
+
+                    <!--<div class="p-0">
+                        <div style="margin-top: 30px"> 
+                            <button class="btn btn-primary" ng-click="existingP()" ng-class="{'active' : isExisting }">Existing Patient</button>
+                            <button class="btn btn-primary" ng-click="newP()" ng-class="{'active' : isForm }">Create new Patient</button>
+                        </div>
+                        <p>Phone number patient is using for applinic.</p>
+                        <form class="row"> 
+                          <div class="col-md-8 col-lg-8">                             
+                            <input type="number" class="form-control" placeholder="Enter number eg +2348096****73" ng-model="patient.existing_phone">
+                          </div>
+                          <div class="col-md-3 col-lg-3 pl-0">
+                            <button type="submit" class="btn btn-success" ng-click="FindPatient()">Find</button>
+                          </div>
+                        </form>
+                    </div>
+
+                    <div> 
+                       
+                        <div class="row pt-1" ng-if="existingPatient" style="position: relative;">                              
+                              <div class="col-md-3 col-sm-12 text-center">
+                                <img src="{{existingPatient.profile_pic_url}}" style="max-width: 120px; max-height:120px">
+                              </div>
+                              <div class="col-md-9 col-sm-12">
+                                  <strong>{{existingPatient.title}} {{existingPatient.firstname}} {{existingPatient.lastname}}</strong>
+                                  <span style="display: block;">{{existingPatient.gender}}</span>
+                                  <span style="display: block;">{{existingPatient.age}}</span>
+                                  <button class="btn btn-primary btn-sm" ng-click="addToList('radiology')" style="position: absolute;bottom:0;right: 120px">Add</button>
+                              </div>
+                         </div>
+                         <div class="clearfix"></div>                     
+                          <div style="text-align: center;margin-top: 30px" ng-if="loading">
+                              <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange;font-size: 20px" ng-if="loading"></i>
+                          </div>
+                          <p style='color:red;text-align:center' ng-if="!existingPatient">{{error}}</p>
+                       
+                    </div>-->
                     
-                    <form ng-if="isForm" class ="row p-0">
-                        <h6 style="text-align: center; color: red">{{error}}</h6>
-                        
+                   <form ng-if="isForm">
+                        <h6 style="color: red">{{error}}</h6>
+                        <h5 class="font-1_4">Fill this form for the new Patient</h5>
+                        <div  class="row">
                         <div class="form-group col-md-6 col-sm-12">
+                            <label>First Name</label>
                             <input type="text" class="form-control" placeholder="Firstname *" ng-model="patient.firstname" required/>
                         </div>
                         <div class="form-group col-md-6 col-sm-12">
+                            <label>Last Name</label>
                             <input type="text" class="form-control" placeholder="Lastname *" ng-model="patient.lastname" required/>
                         </div>
                         <div class="form-group col-md-6 col-sm-12">
-                            <input type="number" class="form-control" placeholder="Age *" ng-model="patient.age" required/>
+                            <label>Age</label>
+                            <select class="form-control" ng-model="patient.age" required>
+                              <option value="" disabled selected>_select age category</option>                                           
+                              <option>0 - 28 days (newborn)</option>
+                              <option>29 days - 1 year (infant)</option>
+                              <option>1 - 5 years (younger child)</option>
+                              <option>6 - 12 years (older child)</option>
+                              <option>13 - 16 years (adolescent)</option>
+                              <option>17 - 29 years (young adult)</option>
+                              <option>30 - 39 years (adult)</option>
+                              <option>40 - 49 years (adult)</option>
+                              <option>50 - 64 years (adult)</option>
+                              <option>65 years - over (senior)</option>
+                            </select>
                         </div>
                         <div class="form-group col-md-6 col-sm-12">
-                            <input type="text" class="form-control" placeholder="Gender *" ng-model="patient.gender" required/>
+                            <label>Gender</label>
+                            <select class="form-control" ng-model="patient.gender" required>
+                              <option disabled="disabled" value="" >_select</option>
+                              <option value="Male">Male</option>
+                              <option value="Female">Female</option>
+                            </select>
+                        </div>
+                        <p style="color:red">{{showErr}}</p>
+                        <div class="form-group col-md-6 col-sm-12">
+                            <label>Phone Number: </label><small class="text-danger">{{formatError}}</small>
+                            <input type="text" class="form-control" placeholder="Phone number * eg +2348035****77" ng-model="patient.phone" required/>
                         </div>
                         <div class="form-group col-md-6 col-sm-12">
-                            <input type="number" class="form-control" placeholder="Phone number *" ng-model="patient.phone" required/>
+                            <label>Email Address: </label>
+                            <input type="email" class="form-control" placeholder="Email" ng-model="patient.email" required/>
                         </div>
-                        <div class="form-group col-md-6 col-sm-12">
-                            <input type="text" class="form-control" placeholder="Email" ng-model="patient.email" required/>
+                        
+                        <div class="col-md-12 pl-1">
+                            <input type="button"  value="Submit" class="btn btn-primary" ng-click="sendForm('radiology')"/>
                         </div>
-                        <div class="col-md-12"><hr/></div>
-                        <div class="col-md-12">
-                            <input type="button"  value="Submit" class="btn btn-primary" ng-click="sendForm('doctor')"/>
                         </div>
                     </form>
-                    <div ng-if="isCreated" style="width: 95%; margin auto auto">
-                        <h4>Patient emergency profile created successfully!</h4>
+                    <div ng-if="isCreated">
+                        <h5 class="mb-0">Patient emergency profile created successfully!</h5>
+                        <p>EM profile link sent to patient via SMS. </p>
                     </div>
 
               </div>
@@ -1197,7 +1287,7 @@
             </div>
           </div>
         </div>
-     </script>
+    </script>
 
     
      <script type="text/ng-template" id="question.html" ng-controller="connectController">
@@ -1485,7 +1575,8 @@
         </div>
      </script>
 
-      <script type="text/ng-template" id="search-result.html">
+      
+<script type="text/ng-template" id="search-result.html">
          <div class="modal fade">
           <div class="modal-dialog">
             <div class="modal-content">
@@ -1495,22 +1586,21 @@
              
               <div class="modal-body">
               
-<div ng-if="isContent" class="card p-1" style="padding: 20px">
-    <p style="background-color: grey; padding: 20px 5px;color:#fff">    
-    <span>Forwarding:</span>
-        <span class="font-1_1 mb-0">{{data.str}}</span>
+<div ng-if="isContent" class="p-1">
+    <p style="padding: 20px 10px;color:grey">    
+    <strong>Forwarding:</strong>
+        <span class="font-1_1 mb-0" style="font-style: italic;">{{data.str}}</span>
     </p>
+    <hr>
     <div>
         <b>TO</b>
     </div>
-    <div class="font-1_1">
-        <b>{{data.name}}</b>
-    </div>
-    <address class="font-1_1" style="padding: 5px">
+    <div>
+        <strong style="display: block">{{data.name}}</strong>
         <span>{{data.address}}</span>
         <span>{{data.city}}</span>
         <span>{{data.country}}</span>
-    </address>
+    </div>
     <!--<div style="margin-left: 20px;margin-top: -15px;border-bottom:1px solid rgba(0,0,0,0.2)"><div class="star-rating">
         <span  ng-cloak > 
         <div class="star-rating"  star-rating rating-value="data.rating.current" max="data.rating.max"></div>
@@ -1518,20 +1608,42 @@
         </div>
     </div>-->
     <div>
-        <button class="btn btn-info" ng-class="{'dismiss': user.someone}" ng-click="send('inperson')" ng-if="checkLogIn.typeOfUser == 'Patient'">Forward on my behalf</button>&nbsp;&nbsp;&nbsp;&nbsp;
-        <button class="btn btn-info"  ng-click="someone()">Forward on behalf of someone else</button>
+        <button class="btn btn-info" ng-class="{'dismiss': user.someone}" ng-click="send('inperson')" ng-if="checkLogIn.typeOfUser == 'Patient'">Forward on my behalf</button>
+        <!--<button class="btn btn-info"  ng-click="someone()">Forward on behalf of someone else</button>-->
     </div>
-    <div ng-if="isToSomeOne">
-        <form>
-            <p>Tips: The phone number must be the number the person used for registration</p>
-            <div class="row">
-                <div class="col-md-5 col-sm-12">
-                 <input type="number" Placeholder="Enter the person phone number" ng-model="data.phone" class="form-control" style="cursor:normal">
+    <div ng-if="isToSomeOne || checkLogIn.typeOfUser !== 'Patient'">
+         <form>
+            <p>The phone number patient is using on applinic.com</p>
+            <div>
+                <div>
+                 <label>Patient's phone number *: <span class="text-danger">{{phoneMsg}}</span></label>
+                 <input type="number" Placeholder=" ( e.g +2347053****48 )" ng-model="data.phone" class="form-control" required="required" style="cursor:normal">
                 </div>
-                <div class="col-md-5 col-sm-12 pr-1 font-1">
-                    <input type="button" value="Cancel" ng-click="cancel()" class="btn btn-danger">
+                <div ng-if="typeOfSearch === 'pharmacy'">
+                  <label>Provisional Diagnosis *: <span class="text-danger">{{provisionalMsg}}</span></label>
+                  <textarea class="form-control pl-1" placeholder="Write..." ng-model="data.provisional_diagnosis" required="required"> </textarea>
+                </div>
+                <div ng-if='typeOfSearch === "diagnostic"'>
+                  <label>Clinical Summary *: <span class="text-danger">{{summuryMsg}}</span></label></label>
+                   <textarea class="form-control p-1" placeholder="Write..." ng-model="data.clinical_summary" required="required"></textarea>
+                 </div>
+                 <div ng-if='typeOfSearch === "diagnostic"'>
+                   <label>Indication *: <span class="text-danger">{{indictionMsg}}</span></label></label>
+                   <textarea class="form-control p-1" placeholder="Write..." ng-model="data.indication" required="required"></textarea>
+                 </div>
+                 <div ng-if='typeOfSearch === "diagnostic"'>
+                   <label>LMP ( female ):</label>
+                   <textarea class="form-control p-1" placeholder="Write..." ng-model="data.lmp"></textarea>
+                 </div>
+                 <div ng-if='typeOfSearch === "diagnostic"'>
+                   <label>Parity ( female ):</label>
+                    <textarea class="form-control p-1" placeholder="Write..." ng-model="data.parity"></textarea>
+                 </div>
+
+                <div class="pb-3">
+                    <input type="button" value="Cancel" ng-click="cancel()" class="btn btn-danger" ng-if="checkLogIn.typeOfUser === 'Patient'">
                     
-                    <button type="button" ng-click="send('someone')" class="btn btn-success" ng-if="data.phone && data.phone !== ''">Send</button>
+                    <button type="button" ng-click="send('someone')" class="btn btn-danger"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i>{{(loading) ? "" : 'Send'}}</button>
                     
                     <!--<input type="button" value="New Person Form" ng-click="emp()" class="btn btn-simple" ng-if="isEMP">-->
                 </div>
@@ -1539,10 +1651,10 @@
         </form>
     </div>
 </div>
-<div ng-if="isSent" class="card p-1">
+<div ng-if="isSent" class="p-1">
     <h5 class=" text-success"  style="text-align:center"> Sent successfully!!!</h5>
-    <div class="m-0"><span class="font-1-1"> center name: </span><em>{{data.name}}</em> </div> 
-    <div class="m-0"><span class="font-1-1"> center location: </span><em>{{data.address}}, {{data.city}}, {{data.country}}</em> </div> 
+    <div class="m-0"><strong class="font-1-1"> center name: </strong><em>{{data.name}}</em> </div> 
+    <div class="m-0"><strong class="font-1-1"> center location: </strong><em>{{data.address}}, {{data.city}}, {{data.country}}</em> </div> 
     <div class="mb-1"><span class="font-1-2" style="color:red"> Ref No:  </span><em>{{result}}</em> </div> 
     <div class="font-1-1">Plesae take note of the center name and 
         reference number above because it will be used to easy 
@@ -1818,6 +1930,8 @@
         </div>
       </div>
    </script>
+
+   
                  
 
         <!-- Reference block for JS -->

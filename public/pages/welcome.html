@@ -1,21 +1,351 @@
 
 
 <div class="col-md-12 col-sm-12 col-xs-12" ng-if="checkLogIn.typeOfUser === 'Doctor'">
-    <div class="title pl-1" style="font-size: 18px">Welcome {{checkLogIn.title}} {{checkLogIn.firstname}}</div>
+   
+    <h5 class="title pl-1">Welcome {{checkLogIn.title}} {{checkLogIn.firstname}}</h5>
+     <h6 class="pl-1 pt-2">Getting Started!</h6>
     <br><br>
-    <div class="container text-uppercase text-center">
-    <div class=" row">
-        <div class="col-md-4 col-sm-6 col-xs-12">
-            <div class="card info-palete"> 
-        <div class="card-block  text-center ">
-        <div class="card-title">What Applinic is to the Doctor</div>
-          <div class="p-2"> <img src="/assets/images/009-doctor.png"  height="80" width="310"></div>
+   <div class="container">
+      <div class="row doctor">
 
-         <!-- Button trigger modal -->
-<button type="button" class="btn btn-primary mt-3" data-toggle="modal" data-target="#myModal">
+      
+<div class="col-md-12">
+
+
+
+
+  <div class="row">  <!--palette start-->
+  <div class="col-md-4">
+   <div data-toggle="modal" data-target="#myModal" class="card hoverr">
+   <div class="row pl-2">
+     <div class="col-md-1" style="padding: 11px 0;"><img src="/assets/images/img/007-consulting.png" height="30" width="100%"> </div>
+     <div class="col-md-11 pl-2 pt-1"><h6>What Applinic is to the Doctor</h6></div>
+   </div></div>
+     </div>
+
+
+     <!--palette end-->
+
+        <!--palette start-->
+  <div class="col-md-4">
+   <div class="card hoverr" data-toggle="modal" data-target="#accessl">
+   <div class="row pl-2">
+     <div class="col-md-1"  style="padding: 11px 0;"><img src="/assets/images/img/016-worker.png" height="30" width="100%"> </div>
+     <div class="col-md-11 pl-2 pt-1"><h6>Become More Visible And Accessible</h6></div>
+   </div></div>
+     </div>
+
+     <!--palette end-->
+
+  <!--palette start-->
+   <div class="col-md-4">
+   <div class="card hoverr" data-toggle="modal" data-target="#enjoyfree">
+   <div class="row pl-2">
+     <div class="col-md-1" style="padding: 11px 0;"><img src="/assets/images/img/029-boss.png" height="30" width="100%"> </div>
+     <div class="col-md-11 pl-2 pt-1"><h6>Enjoy Free Account, Dashboard Management Software </h6></div>
+   </div></div>
+     </div>
+ 
+</div>
+     <!--palette end-->
+
+       <!--palette start-->
+<div class="row"> 
+       <div class="col-md-4">
+   <div class="card hoverr" data-toggle="modal" data-target="#growpa">
+   <div class="row pl-2">
+     <div class="col-md-1" style="padding: 11px 0;"><img src="/assets/images/img/036-sprout.png" height="30" width="100%"> </div>
+     <div class="col-md-11 pl-2 pt-1"><h6>Grow Your Practice</h6></div>
+   </div></div>
+     </div>
+
+     <!--palette end-->
+
+
+       <!--palette start-->
+  <div class="col-md-4">
+   <div class="card hoverr" data-toggle="modal" data-target="#Onlinecaht">
+   <div class="row pl-2">
+     <div class="col-md-1" style="padding: 11px 0;"><img src="/assets/images/img/031-chat.png" height="30" width="100%"> </div>
+     <div class="col-md-11 pl-2 pt-1"><h6>Online Multimedia Communication</h6></div>
+   </div></div>
+     </div>
+
+     <!--palette end-->
+
+      <!--palette start-->
+  <div class="col-md-4">
+   <div class="card hoverr" data-toggle="modal" data-target="#hostpa">
+   <div class="row pl-2">
+     <div class="col-md-1" style="padding: 11px 0;"><img src="/assets/images/img/030-conversation.png" height="30" width="100%"> </div>
+     <div class="col-md-11 pl-2 pt-1"><h6>Host or participate in video conference</h6></div>
+   </div></div>
+     </div>
+</div>
+     <!--palette end-->  
+
+      <!--palette start-->
+<div class="row"> 
+  <div class="col-md-4">
+   <div class="card hoverr" data-toggle="modal" data-target="#accsees">
+   <div class="row pl-2">
+     <div class="col-md-1" style="padding: 11px 0;"><img src="/assets/images/img/list.png" height="30" width="100%"> </div>
+     <div class="col-md-11 pl-2 pt-1"><h6>Access, review and manage on-the-go</h6></div>
+   </div></div>
+     </div>
+
+     <!--palette end-->
+
+     <!--palette start-->
+  <div class="col-md-4">
+   <div class="card hoverr" data-toggle="modal" data-target="#earnmon">
+   <div class="row pl-2">
+     <div class="col-md-1" style="padding: 11px 0;"><img src="/assets/images/img/025-money.png" height="30" width="100%"> </div>
+     <div class="col-md-11 pl-2 pt-1"><h6>Earn money by using the platform</h6></div>
+   </div></div>
+     </div>
+
+     <!--palette end-->
+
+     <!--palette start-->
+  <div class="col-md-4">
+   <div class="card hoverr" data-toggle="modal" data-target="#myModalPool">
+   <div class="row pl-2">
+     <div class="col-md-1" style="padding: 11px 0;"><img src="/assets/images/img/finddoctor.png" height="30" width="90%"> </div>
+     <div class="col-md-11 pl-2 pt-1"><h6>Patient Pooling</h6></div>
+   </div></div>
+     </div>
+</div>
+     <!--palette end-->
+
+       <!--palette start-->
+<div class="row"> 
+  <div class="col-md-4">
+   <div class="card hoverr" data-toggle="modal" data-target="#appoint">
+   <div class="row pl-2">
+     <div class="col-md-1" style="padding: 11px 0;"><img src="/assets/images/img/028-contract.png" height="30" width="100%"> </div>
+     <div class="col-md-11 pl-2 pt-1"><h6>Use The Appointment scheduler</h6></div>
+   </div></div>
+     </div>
+
+     <!--palette end-->
+
+
+       <!--palette start-->
+  <div class="col-md-4">
+   <div class="card hoverr" data-toggle="modal" data-target="#sourcess">
+   <div class="row pl-2">
+     <div class="col-md-1" style="padding: 11px 0;"><img src="/assets/images/img/user-search.png" height="30" width="100%"> </div>
+     <div class="col-md-11 pl-2 pt-1"><h6>Sources of patients for doctors</h6></div>
+   </div></div>
+     </div>
+
+     <!--palette end-->
+
+
+     <!--palette start-->
+  <div class="col-md-4">
+   <div class="card hoverr" data-toggle="modal" data-target="#myModalPWR">
+   <div class="row pl-2">
+     <div class="col-md-1" style="padding: 11px 0;"><img src="/assets/images/img/021-waiting-room-1.png" height="30" width="100%"> </div>
+     <div class="col-md-11 pl-2 pt-1"><h6>The patients' waiting room (pwr)</h6></div>
+   </div></div>
+     </div>
+</div>
+     <!--palette end-->
+
+
+       <!--palette start-->
+<div class="row"> 
+  <div class="col-md-4">
+   <div class="card hoverr" data-toggle="modal" data-target="#platft">
+   <div class="row pl-2">
+     <div class="col-md-1" style="padding: 11px 0;"><img src="/assets/images/img/027-online-pay.png" height="30" width="100%"> </div>
+     <div class="col-md-11 pl-2 pt-1"><h6>platform commisions</h6></div>
+   </div></div>
+     </div>
+
+     <!--palette end-->
+
+
+       <!--palette start-->
+  <div class="col-md-4">
+   <div class="card hoverr" data-toggle="modal" data-target="#platft">
+   <div class="row pl-2">
+     <div class="col-md-1" style="padding: 11px 0;"><img src="/assets/images/img/024-login.png" height="30" width="100%"> </div>
+     <div class="col-md-11 pl-2 pt-1"><h6>Help customers open accounts</h6></div>
+   </div></div>
+     </div>
+
+     <!--palette end-->
+
+
+
+       <!--palette start-->
+  <div class="col-md-4">
+   <div class="card hoverr" data-toggle="modal" data-target="#Rating">
+   <div class="row pl-2">
+     <div class="col-md-1" style="padding: 11px 0;"><img src="/assets/images/img/017-rating.png" height="30" width="100%"> </div>
+     <div class="col-md-11 pl-2 pt-1"><h6>Your rating</h6></div>
+   </div></div>
+     </div>
+</div>
+     <!--palette end-->
+
+
+
+   <!--palette start-->
+<div class="row"> 
+   <div class="col-md-4">
+   <div class="card hoverr" data-toggle="modal" data-target="#Skills">
+   <div class="row pl-2">
+     <div class="col-md-1" style="padding: 11px 0;"><img src="/assets/images/img/012-skills-1.png" height="30" width="100%"> </div>
+     <div class="col-md-11 pl-2 pt-1"><h6>update your professionals profile and skills</h6></div>
+   </div></div>
+     </div>
+
+     <!--palette end-->
+
+
+       <!--palette start-->
+  <div class="col-md-4">
+   <div class="card hoverr" data-toggle="modal" data-target="#onsult">
+   <div class="row pl-2">
+     <div class="col-md-1" style="padding: 11px 0;"><img src="/assets/images/img/007-consulting.png" height="30" width="100%"> </div>
+     <div class="col-md-11 pl-2 pt-1"><h6>rent consulting room</h6></div>
+   </div></div>
+     </div>
+
+     <!--palette end-->
+
+
+       <!--palette start-->
+  <div class="col-md-4">
+   <div class="card hoverr" data-toggle="modal" data-target="#Search">
+   <div class="row pl-2">
+     <div class="col-md-1" style="padding: 11px 0;"><img src="/assets/images/img/015-magnifier.png" height="30" width="100%"> </div>
+     <div class="col-md-11 pl-2 pt-1"><h6>The search functions</h6></div>
+   </div></div>
+     </div>
+</div>
+     <!--palette end-->
+
+
+       <!--palette start-->
+<div class="row"> 
+  <div class="col-md-4">
+   <div class="card hoverr" data-toggle="modal" data-target="#Diagon">
+   <div class="row pl-2">
+     <div class="col-md-1" style="padding: 11px 0;"><img src="/assets/images/img/010-contract-1.png" height="30" width="100%"> </div>
+     <div class="col-md-11 pl-2 pt-1"><h6>request for diagnostic investigations</h6></div>
+   </div></div>
+     </div>
+
+     <!--palette end-->
+
+       <!--palette start-->
+  <div class="col-md-4">
+   <div class="card hoverr" data-toggle="modal" data-target="#myModalPaperless">
+   <div class="row pl-2">
+     <div class="col-md-1" style="padding: 11px 0;"><img src="/assets/images/img/finddoctor.png" height="30" width="100%"> </div>
+     <div class="col-md-11 pl-2 pt-1"><h6>Write paperless prescriptions </h6></div>
+   </div></div>
+     </div>
+
+     <!--palette end-->
+
+
+       <!--palette start-->
+  <div class="col-md-4">
+   <div class="card hoverr" data-toggle="modal" data-target="#wallet">
+   <div class="row pl-2">
+     <div class="col-md-1" style="padding: 11px 0;"><img src="/assets/images/img/027-online-pay.png" height="30" width="100%"> </div>
+     <div class="col-md-11 pl-2 pt-1"><h6>Check your e-wallet for your transactions </h6></div>
+   </div></div>
+     </div>
+</div>
+
+     <!--palette end-->
+
+
+           <!--palette start-->
+<div class="row"> 
+
+ <!--palette start-->
+  <div class="col-md-4">
+   <div class="card hoverr" data-toggle="modal" data-target="#cashOut">
+   <div class="row pl-2">
+     <div class="col-md-1" style="padding: 11px 0;"><img src="/assets/images/img/026-credit-card.png" height="30" width="100%"> </div>
+     <div class="col-md-11 pl-2 pt-1"><h6 style="font-weight: 300">Cash Out Your Earnings Through Your E-Wallet</h6></div>
+   </div></div>
+     </div>
+
+      <!--palette start-->
+  <div class="col-md-4">
+   <div class="card hoverr" data-toggle="modal" data-target="#Skills">
+   <div class="row pl-2">
+     <div class="col-md-1" style="padding: 11px 0;"><img src="/assets/images/img/012-skills-1.png" height="30" width="100%"> </div>
+     <div class="col-md-11 pl-2 pt-1"><h6 style="font-weight: 300">Update Your Professional Profile And Skills</h6></div>
+   </div></div>
+     </div>
+
+      <!--palette start-->
+  <div class="col-md-4">
+   <div class="card hoverr" data-toggle="modal" data-target="#pubhealth">
+   <div class="row pl-2">
+     <div class="col-md-1" style="padding: 11px 0;"><img src="/assets/images/img/smartphone.png" height="30" width="100%"> </div>
+     <div class="col-md-11 pl-2 pt-1"><h6 style="font-weight: 300">Publish health articles on your dashboard</h6></div>
+   </div></div>
+     </div>
+
+</div>
+
+
+     <!--palette end-->
+
+
+ <!--palette start-->
+<!--<div class="row"> 
+  <div class="col-md-4">
+   <div class="card hoverr">
+   <div class="row pl-2">
+     <div class="col-md-1" style="padding: 11px 0;"><img src="/assets/images/img/008-doctors-1.png" height="30" width="100%"> </div>
+     <div class="col-md-11 pl-2 pt-1"><h6>Chat with colleagues on open doctors forum</h6></div>
+   </div></div>
+     </div>
+</div>-->
+     <!--palette end-->
+
+
+</div>
+
+
+
+
+
+<!--<div class="col-md-12">
+  <div class="card p-4">
+<h6>What Applinic is to the Doctor</h6>
+     <hr>
+      To the physician, Applinic means many things. Generally it is an online Health Information and Management System that connects him or his practice to the global pool of patients, providing both parties with a platform for communication using contemporary technological tools such as online appointment scheduler, instant messaging chats, audio and video calls as well as video conference. It also provides space for other health service providers such as the pharmacists, the laboratory scientists and radiologist or imaging scientist to weigh in their professional care on the patient as requested by the doctor, such that even the physician without a center can practice his profession by accessing these services on the platform for the welfare of his patients. 
+      <br><br><br>
+            The platform creates a virtual case note for each patient such that each of the service providers can render his service from his location and make requisite inputs while the physician in the center can review results of investigations, write prescriptions and treat or refer patients to appropriate consultants on the platform for a more specialized care. Each registered physician has a secure account he can log into to see his patients, review their case notes and communicate with those he is interested in using the means he prefers for communication among the lot on the platform. The doctor may also, visit his e-wallet account to see his earnings and cash out as much as he wants whenever he so desires without any restrictions or limitations.
+  </div>
+</div>
+</div>-->
+
+<!--<div class="col-md-4 col-sm-6 col-xs-12">
+    <div class="card"> 
+        <div class="card-block  text-center">
+        <div class="card-title">
+        </div>
+         <div class="p-2"> <img src="assets/img/applinic.png" height="80" width="310"></div>
+
+         <!Button trigger modal 
+<button type="button" class="btn btn-primary btn-block mt-1" data-toggle="modal" data-target="#exampleModal">
     Learn More
     
-  </button>
+  </button>-->
   
   <!-- Modal -->
   <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -29,40 +359,9 @@
         </div>
         <div class="modal-body">
             To the physician, Applinic means many things. Generally it is an online Health Information and Management System that connects him or his practice to the global pool of patients, providing both parties with a platform for communication using contemporary technological tools such as online appointment scheduler, instant messaging chats, audio and video calls as well as video conference. It also provides space for other health service providers such as the pharmacists, the laboratory scientists and radiologist or imaging scientist to weigh in their professional care on the patient as requested by the doctor, such that even the physician without a center can practice his profession by accessing these services on the platform for the welfare of his patients. 
-            The platform creates a virtual case note for each patient such that each of the service providers can render his service from his location and make requisite inputs while the physician in the center can review results of investigations, write prescriptions and treat or refer patients to appropriate consultants on the platform for a more specialized care. Each registered physician has a secure account he can log into to see his patients, review their case notes and communicate with those he is interested in using the means he prefers for communication among the lot on the platform. The doctor may also, visit his e-wallet account to see his earnings and cash out as much as he wants whenever he so desires without any restrictions or limitations.   <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            The platform creates a virtual case note for each patient such that each of the service providers can render his service from his location and make requisite inputs while the physician in the center can review results of investigations, write prescriptions and treat or refer patients to appropriate consultants on the platform for a more specialized care. Each registered physician has a secure account he can log into to see his patients, review their case notes and communicate with those he is interested in using the means he prefers for communication among the lot on the platform. The doctor may also, visit his e-wallet account to see his earnings and cash out as much as he wants whenever he so desires without any restrictions or limitations.
+            
         </div>
-      </div>
-    </div>
-  </div>
-        </div>
-    </div>
-</div>
-</div>
-
-<div class="col-md-4 col-sm-6 col-xs-12">
-    <div class="card info-palete"> 
-        <div class="card-block  text-center">
-        <div class="card-title">Become more Visible and Accessible</div>
-         <div class="p-2"> <img src="/assets/images/030-conversation.png" height="100"></div>
-
-         <!-- Button trigger modal -->
-<button type="button" class="btn btn-primary mt-3 learn" data-toggle="modal" data-target="#accessl">
-    Learn More
-  </button>
-  
-  <!-- Modal -->
-  <div class="modal fade" id="accessl" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Become more Visible and Accessible</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-            Patients are constantly in search of doctors and specialist with certain skills and abilities even in their own cities and countries but many times don’t find them. This leads many to seek solutions beyond their own boundaries of city, state or country. Applinic provides patients with a platform to find the doctor he desires based on specialty, location and skills. Doctors registered and practicing on Applinic will be more visible and accessible because they will be listed on the patients’ searches depending on the specialty and location filtered by the patient. This way doctors can be of service to more patients who need them than they currently are both in their location and beyond. This will also reduce the patients’ sometimes frustrating manual search, travels and expenditures.          </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
         </div>
@@ -73,29 +372,67 @@
     </div>
 </div>
 
-<div class="col-md-4 col-sm-6 col-xs-12">
-    <div class="card info-palete"> 
-        <div class="card-block text-center" >
-        <div class="card-title">Grow Your Practice </div>
-       <div class="p-2"> <img src="/assets/images/036-sprout.png" height="100"></div>
+<!--<div class="col-md-4 col-sm-6 col-xs-12">
+    <div class="card"> 
+        <div class="card-block  text-center">
+        <div class="card-title">Become more Visible and Accessible </div>
+         <div class="p-2"> <img src="assets/img/016-worker.png" height="100"></div>
 
-         <!-- Button trigger modal -->
-<button type="button" class="btn btn-primary mt-3 learn" data-toggle="modal" data-target="#growpa">
+         <!Button trigger modal
+<button type="button" class="btn btn-primary btn-block mt-1" data-toggle="modal" data-target="#accessl">
     Learn More
-  </button>
+  </button>-->
+  
+  <!-- Modal -->
+  <div class="modal fade" id="accessl" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Become more Visible and Accessible </h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+            Patients are constantly in search of doctors and specialist with certain skills and abilities even in their own cities and countries but many times don’t find them. This leads many to seek solutions beyond their own boundaries of city, state or country. Applinic provides patients with a platform to find the doctor he desires based on specialty, location and skills. Doctors registered and practicing on Applinic will be more visible and accessible because they will be listed on the patients’ searches depending on the specialty and location filtered by the patient. This way doctors can be of service to more patients who need them than they currently are both in their location and beyond. This will also reduce the patients’ sometimes frustrating manual search, travels and expenditures. 
+            
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+        </div>
+    </div>
+</div>
+
+
+<!--<div class="col-md-4 col-sm-6 col-xs-12">
+    <div class="card"> 
+        <div class="card-block  text-center">
+        <div class="card-title">Grow Your Practice</div>
+         <div class="p-2"> <img src="assets/img/036-sprout.png" height="100"></div>
+
+         utton trigger modal
+<button type="button" class="btn btn-primary btn-block mt-1" data-toggle="modal" data-target="#growpa">
+    Learn More
+  </button>-->
   
   <!-- Modal -->
   <div class="modal fade" id="growpa" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Grow Your Practice</h5>
+          <h5 class="modal-title" id="exampleModalLabel">Grow Your Practice </h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
         <div class="modal-body">
-            By being of service to many more patients than he ordinarily would, APPLINIC helps the doctor grow his practice more rapidly than the conventional way as his patients’ base expands the APPLINIC way. All patients that have ever been treated by the doctor are profiled on his dashboard such that he can search, view or access them at any time at will.  <div class="modal-footer">
+            By being of service to many more patients than he ordinarily would, APPLINIC helps the doctor grow his practice more rapidly than the conventional way as his patients’ base expands the APPLINIC way. All patients that have ever been treated by the doctor are profiled on his dashboard such that he can search, view or access them at any time at will. 
+        </div>
+        <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
           
         </div>
@@ -105,34 +442,34 @@
         </div>
     </div>
 </div>
-</div>
 
-</div> <!-- row end -->
 
-<div class="row">
-<div class="col-md-4 col-sm-6 col-xs-12">
-    <div class="card info-palete"> 
-        <div class="card-block text-center">
-        <div class="card-title">Free Dashboard, Management Software </div>
-           <div class="p-2"> <img src="/assets/images/029-boss.png" height="100"></div>
+<!--<div class="col-md-4 col-sm-6 col-xs-12">
+    <div class="card"> 
+        <div class="card-block  text-center">
+        <div class="card-title">Free Dashboard, Laboratory Management Software</div>
+         <div class="p-2"> <img src="assets/img/029-boss.png" height="100"></div>
 
-         <!-- Button trigger modal -->
-<button type="button" class="btn btn-primary mt-3 learn" data-toggle="modal" data-target="#enjoyfree">
+         Button trigger modal 
+<button type="button" class="btn btn-primary btn-block mt-1" data-toggle="modal" data-target="#enjoyfree">
     Learn More
-  </button>
+  </button>-->
   
   <!-- Modal -->
   <div class="modal fade" id="enjoyfree" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Free Dashboard, Management Software</h5>
+          <h5 class="modal-title" id="exampleModalLabel">Enjoy Free Account, Dashboard Management Software</h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
         <div class="modal-body">
-           Upon creation of an Applinic account, you will receive a free dashboard and access to our online software engine for managing your practice. This application will help you manage most of your practice such as patient registration, appointment scheduling, laboratory and radiology investigation requests, diagnostic result accessibility and drug prescriptions. Other functionalities available on your dashboard include virtual case notes for documentations of your patient clerking in standard format, medical reports, buttons for acceptance of requests from patients for consultations, chats, audio and video calls and for referrals of your patients to other colleagues. You will also enjoy the privilege of updating your profile from here, including your special skills and procedures so that when patients or doctors search for those procedures or the diseases they treat, your name/practice will be listed. You may also upload pictures and videos in line with the procedures. <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            Upon creation of an Applinic account, you will receive a free dashboard and access to our online software engine for managing your practice. This application will help you manage most of your practice such as patient registration, appointment scheduling, laboratory and radiology investigation requests, diagnostic result accessibility and drug prescriptions. Other functionalities available on your dashboard include virtual case notes for documentations of your patient clerking in standard format, medical reports, buttons for acceptance of requests from patients for consultations, chats, audio and video calls and for referrals of your patients to other colleagues. You will also enjoy the privilege of updating your profile from here, including your special skills and procedures so that when patients or doctors search for those procedures or the diseases they treat, your name/practice will be listed. You may also upload pictures and videos in line with the procedures. 
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
           
         </div>
       </div>
@@ -143,16 +480,16 @@
 </div>
 
 
-<div class="col-md-4 col-sm-6 col-xs-12">
-    <div class="card info-palete"> 
-        <div class="card-block text-center">
+<!--<div class="col-md-4 col-sm-6 col-xs-12">
+    <div class="card"> 
+        <div class="card-block  text-center">
         <div class="card-title">Online Multimedia Communication</div>
-        <div class="p-2"> <img src="/assets/images/031-chat.png" height="100"></div>
+         <div class="p-2"> <img src="assets/img/031-chat.png" height="100"></div>
 
-         <!-- Button trigger modal -->
-<button type="button" class="btn btn-primary mt-3 learn" data-toggle="modal" data-target="#Onlinecaht">
+         Button trigger modal
+<button type="button" class="btn btn-primary btn-block mt-1" data-toggle="modal" data-target="#Onlinecaht">
     Learn More
-  </button>
+  </button>-->
   
   <!-- Modal -->
   <div class="modal fade" id="Onlinecaht" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -165,7 +502,10 @@
           </button>
         </div>
         <div class="modal-body">
-          Applinic is equipped with free instant messaging and audio and video calls which doctors can use for chats with patients to consult online, with colleagues to review cases, and with pharmacists or diagnostic centers to discuss patients, make inquiries or obtain clarifications. When put to proper use, this real time communication can transfer the information that will save lives.<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            Applinic is equipped with free instant messaging and audio and video calls which doctors can use for chats with patients to consult online, with colleagues to review cases, and with pharmacists or diagnostic centers to discuss patients, make inquiries or obtain clarifications. When put to proper use, this real time communication can transfer the information that will save lives.
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
           
         </div>
       </div>
@@ -175,17 +515,17 @@
     </div>
 </div>
 
-<div class="col-md-4 col-sm-6 col-xs-12">
-    <div class="card info-palete"> 
-        <div class="card-block text-center">
-        <div class="card-title text-center">Host or Participate in Video Conference </div>
-        
-         <div class="p-2"> <img src="/assets/images/030-conversation.png" height="100"></div>
 
-         <!-- Button trigger modal -->
-<button type="button" class="btn btn-primary mt-3 learn" data-toggle="modal" data-target="#hostpa">
+<!--<div class="col-md-4 col-sm-6 col-xs-12">
+    <div class="card"> 
+        <div class="card-block  text-center">
+        <div class="card-title">Host or Participate in Video Conference  </div>
+         <div class="p-2"> <img src="assets/img/030-conversation.png" height="100"></div>
+
+         Button trigger modal
+<button type="button" class="btn btn-primary btn-block mt-1" data-toggle="modal" data-target="#hostpa">
     Learn More
-  </button>
+  </button>-->
   
   <!-- Modal -->
   <div class="modal fade" id="hostpa" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -198,7 +538,10 @@
           </button>
         </div>
         <div class="modal-body">
-              Applinic also provides free video conference service that can connect doctors with their patients and other stakeholders such as patient’s relatives, other doctors, pharmacists and diagnostic practitioners to discuss the patient together as a team to better understand the case and agree on how to best manage him. The video conference is also open for other applications.<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            Applinic also provides free video conference service that can connect doctors with their patients and other stakeholders such as patient’s relatives, other doctors, pharmacists and diagnostic practitioners to discuss the patient together as a team to better understand the case and agree on how to best manage him. The video conference is also open for other applications.
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
           
         </div>
       </div>
@@ -207,32 +550,34 @@
         </div>
     </div>
 </div>
-</div> <!-- row end -->
 
-<div class="row">
-<div class="col-md-4 col-sm-6 col-xs-12">
-    <div class="card info-palete"> 
-        <div class="card-block text-center">
+
+<!--<div class="col-md-4 col-sm-6 col-xs-12">
+    <div class="card"> 
+        <div class="card-block  text-center">
         <div class="card-title">Access, Review and Manage On-The-Go</div>
-        <div class="p-2"> <img src="/assets/images/031-chat.png" height="100"></div>
+         <div class="p-2"> <img src="assets/img/list.png" height="100"></div>
 
-         <!-- Button trigger modal -->
-<button type="button" class="btn btn-primary mt-3 learn" data-toggle="modal" data-target="#Onlinecaht">
+         <! Button trigger modal 
+<button type="button" class="btn btn-primary btn-block mt-1" data-toggle="modal" data-target="#accsees">
     Learn More
-  </button>
+  </button>-->
   
   <!-- Modal -->
-  <div class="modal fade" id="Onlinecaht" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal fade" id="accsees" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Access, Review and Manage On-The-Go </h5>
+          <h5 class="modal-title" id="exampleModalLabel">Access, Review and Manage On-The-Go</h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
         <div class="modal-body">
-        Applinic enables doctors access the electronic folders of all their patients on the go from any internet enabled device including mobile phones and tablets. When patients call for counsels or make complaints, the doctor will be able to open their Applinic accounts and quickly review his previous consultations with them to be updated on the case so he can more properly advise them. The results of the laboratory and radiological investigations they requested will be sent there as soon as they are ready. This way the doctor will be enabled to serve them quicker and better by reacting more promptly to abnormal results irrespective of their location. For example by immediately seeing a recent laboratory result and prescribing treatment for the new finding or changing antibiotics because of a revealing sensitivity test result without waiting for the next appointment with the patient, the doctor will more surely save and better serve the patient through the use of Applinic than through conventional practice.  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            Applinic enables doctors access the electronic folders of all their patients on the go from any internet enabled device including mobile phones and tablets. When patients call for counsels or make complaints, the doctor will be able to open their Applinic accounts and quickly review his previous consultations with them to be updated on the case so he can more properly advise them. The results of the laboratory and radiological investigations they requested will be sent there as soon as they are ready. This way the doctor will be enabled to serve them quicker and better by reacting more promptly to abnormal results irrespective of their location. For example by immediately seeing a recent laboratory result and prescribing treatment for the new finding or changing antibiotics because of a revealing sensitivity test result without waiting for the next appointment with the patient, the doctor will more surely save and better serve the patient through the use of Applinic than through conventional practice. 
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
           
         </div>
       </div>
@@ -242,30 +587,33 @@
     </div>
 </div>
 
-<div class="col-md-4 col-sm-6 col-xs-12">
-    <div class="card info-palete"> 
-        <div class="card-block text-center">
-        <div class="card-title text-center">Earn Money  by Using the Platform </div>
-        
-         <div class="p-2"> <img src="/assets/images/030-conversation.png" height="100"></div>
 
-         <!-- Button trigger modal -->
-<button type="button" class="btn btn-primary mt-3 learn" data-toggle="modal" data-target="#hostpa2">
+<!--<div class="col-md-4 col-sm-6 col-xs-12">
+    <div class="card"> 
+        <div class="card-block  text-center">
+        <div class="card-title">Earn Money  by Using the Platform </div>
+         <div class="p-2"> <img src="assets/img/025-money.png" height="100"></div>
+
+         <!Button trigger modal 
+<button type="button" class="btn btn-primary btn-block mt-1" data-toggle="modal" data-target="#earnmon">
     Learn More
-  </button>
+  </button>-->
   
   <!-- Modal -->
-  <div class="modal fade" id="hostpa2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal fade" id="earnmon" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Earn Money  by Using the Platform</h5>
+          <h5 class="modal-title" id="exampleModalLabel">Earn Money  by Using the Platform </h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
         <div class="modal-body">
-             By positioning doctors to be more easily accessible by a global pool of patients, Applinic increases their opportunities to profit both conventionally through onsite consultations, treatments and procedures as well as virtually via online sessions, follow ups and telemedical managements. Besides these opportunities, doctors can also bank financial revenue on the platform by earning credit scores when they request investigations or write prescriptions for patients via the platform and the patients pay for the services in pharmacies and diagnostic centers through their Applinic e-wallets. Credit scores are equivalent to monies which can be cashed out at will. This incentive enables doctors to earn passive income while engaging in routine practice. At the same time, it encourages their participation in the Electronic Patients Record (EPR) campaign which seeks to promote all patients having easily accessible medical records for better care. Patients’ medical records which include medical reports, results of investigations and doctors’ prescriptions are kept in Applinic ONLY IF the payments for them are made through the e-wallet for that is the way the application confirms the services were received. Doctors may also receive income from Applinic through other means such as participation in special treatment services organized by Applinic or third parties, publication of articles which attract populous readership, participation in clinical trials outsourced through the platform and through other modalities currently under development.        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            By positioning doctors to be more easily accessible by a global pool of patients, Applinic increases their opportunities to profit both conventionally through onsite consultations, treatments and procedures as well as virtually via online sessions, follow ups and telemedical managements. Besides these opportunities, doctors can also bank financial revenue on the platform by earning credit scores when they request investigations or write prescriptions for patients via the platform and the patients pay for the services in pharmacies and diagnostic centers through their Applinic e-wallets. Credit scores are equivalent to monies which can be cashed out at will. This incentive enables doctors to earn passive income while engaging in routine practice. At the same time, it encourages their participation in the Electronic Patients Record (EPR) campaign which seeks to promote all patients having easily accessible medical records for better care. Patients’ medical records which include medical reports, results of investigations and doctors’ prescriptions are kept in Applinic ONLY IF the payments for them are made through the e-wallet for that is the way the application confirms the services were received. Doctors may also receive income from Applinic through other means such as participation in special treatment services organized by Applinic or third parties, publication of articles which attract populous readership, participation in clinical trials outsourced through the platform and through other modalities currently under development.  
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
           
         </div>
       </div>
@@ -274,19 +622,21 @@
         </div>
     </div>
 </div>
-<div class="col-md-4 col-sm-6 col-xs-12">
-    <div class="card info-palete"> 
-        <div class="card-block text-center">
+
+
+<!--<div class="col-md-4 col-sm-6 col-xs-12">
+    <div class="card"> 
+        <div class="card-block  text-center">
         <div class="card-title">Patient Pooling</div>
-        <div class="p-2"> <img src="/assets/images/031-chat.png" height="100"></div>
+         <div class="p-2"> <img src="assets/img/finddoctor.png" height="100"></div>
 
-         <!-- Button trigger modal -->
-<button type="button" class="btn btn-primary mt-3 learn" data-toggle="modal" data-target="#Onlinecaht2">
+         <!Button trigger modal
+<button type="button" class="btn btn-primary btn-block mt-1" data-toggle="modal" data-target="#exampleModal">
     Learn More
-  </button>
+  </button>-->
   
   <!-- Modal -->
-  <div class="modal fade" id="Onlinecaht2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal fade" id="myModalPool" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
@@ -296,9 +646,12 @@
           </button>
         </div>
         <div class="modal-body">
-           Specialists with certain skills can also use Applinic to pool patients with certain conditions together in any city 
+            Specialists with certain skills can also use Applinic to pool patients with certain conditions together in any city 
             of choice to consult, treat or provide specific procedures for them. This service can be requested by clicking here. 
-            Terms and Conditions apply.  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            Terms and Conditions apply. 
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
           
         </div>
       </div>
@@ -308,33 +661,34 @@
     </div>
 </div>
 
-</div>
 
-<div class="row">
-<div class="col-md-4 col-sm-6 col-xs-12">
-    <div class="card info-palete"> 
-        <div class="card-block text-center">
-        <div class="card-title">Use the Appointment Scheduler</div>
-        <div class="p-2"> <img src="/assets/images/031-chat.png" height="100"></div>
+<!--<div class="col-md-4 col-sm-6 col-xs-12">
+    <div class="card"> 
+        <div class="card-block  text-center">
+        <div class="card-title">Use the Appointment Scheduler </div>
+         <div class="p-2"> <img src="assets/img/028-contract.png" height="100"></div>
 
-         <!-- Button trigger modal -->
-<button type="button" class="btn btn-primary mt-3 learn" data-toggle="modal" data-target="#Onlinecaht02">
+         <!Button trigger modal 
+<button type="button" class="btn btn-primary btn-block mt-1" data-toggle="modal" data-target="#appoint">
     Learn More
-  </button>
+  </button>-->
   
   <!-- Modal -->
-  <div class="modal fade" id="Onlinecaht02" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal fade" id="appoint" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Use the Appointment Scheduler</h5>
+          <h5 class="modal-title" id="exampleModalLabel">Use the Appointment Scheduler </h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
         <div class="modal-body">
             Of absolute necessity, many patients need to be physically seen by the doctor, examined and treated. Doctors can use the free appointment scheduler to fix or grant appointments to patients for both onsite and online consultations. This utility also keeps the doctor abreast of the appointments he has each day or week from the comfort of his
-             handheld device wherever he is for better planning and preparation.  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+             handheld device wherever he is for better planning and preparation. 
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
           
         </div>
       </div>
@@ -343,19 +697,21 @@
         </div>
     </div>
 </div>
-<div class="col-md-4 col-sm-6 col-xs-12">
-    <div class="card info-palete"> 
-        <div class="card-block text-center">
-        <div class="card-title">Sources of Patients for Doctors</div>
-        <div class="p-2"> <img src="/assets/images/031-chat.png" height="100"></div>
 
-         <!-- Button trigger modal -->
-<button type="button" class="btn btn-primary mt-3 learn" data-toggle="modal" data-target="#Onlinecaht3">
+
+<!--<div class="col-md-4 col-sm-6 col-xs-12">
+    <div class="card"> 
+        <div class="card-block  text-center">
+        <div class="card-title">Sources of Patients for Doctors</div>
+         <div class="p-2"> <img src="assets/img/user-search.png" height="100"></div>
+
+         <!Button trigger modal 
+<button type="button" class="btn btn-primary btn-block mt-1" data-toggle="modal" data-target="#sourcess">
     Learn More
-  </button>
+  </button>-->
   
   <!-- Modal -->
-  <div class="modal fade" id="Onlinecaht3" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal fade" id="sourcess" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
@@ -365,12 +721,16 @@
           </button>
         </div>
         <div class="modal-body">
-             There are five (5) main sources of patients for doctors on Applinic: <br>
+            There are five (5) main sources of patients for doctors on Applinic: <br>
             Patient  waiting room<br>
             Direct requests from patients<br>
             Direct requests from Applinic team<br>
             Referral from other doctors and health providers<br>
-            Patient Pooling<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            Patient Pooling
+            
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
           
         </div>
       </div>
@@ -380,30 +740,24 @@
     </div>
 </div>
 
-<div class="col-md-4 col-sm-6 col-xs-12">
-    <div class="card info-palete"> 
-        <div class="card-block text-center">
-        <div class="card-title">The Patients’ Waiting Room (PWR)</div>
-        <div class="p-2"> <img src="/assets/images/031-chat.png" height="100"></div>
 
-         <!-- Button trigger modal -->
-<button type="button" class="btn btn-primary mt-3 learn" data-toggle="modal" data-target="#Onlinecaht4">
-    Learn More
-  </button>
   
   <!-- Modal -->
-  <div class="modal fade" id="Onlinecaht4" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal fade" id="myModalPWR" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">The Patients’ Waiting Room (PWR)</h5>
+          <h5 class="modal-title" id="exampleModalLabel">The Patients’ Waiting Room (PWR) </h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
         <div class="modal-body">
             The PWR is the most viable source of patients. All complaints from patients who don’t have personal doctors or who do but are looking for a new type of specialist are anonymously published in the waiting room. Doctors visit the PWR to review the published cases and respond to those that pertain to their specialties or areas of interest. Each doctor’s response to a case may be accompanied by his consultation fee but this is discouraged. Consultation fees are better presented after the doctor has chatted and counseled with
-             the patient and explained his plan/strategy/approach to the case to build a relationship of trust and establish confidence before issuing a bill.   <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+             the patient and explained his plan/strategy/approach to the case to build a relationship of trust and establish confidence before issuing a bill. 
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
           
         </div>
       </div>
@@ -413,22 +767,20 @@
     </div>
 </div>
 
-</div>
 
-<div class="row">
-    <div class="col-md-4 col-sm-6 col-xs-12">
-    <div class="card info-palete"> 
-        <div class="card-block text-center">
+<!--<div class="col-md-4 col-sm-6 col-xs-12">
+    <div class="card"> 
+        <div class="card-block  text-center">
         <div class="card-title">Platform Commissions</div>
-        <div class="p-2"> <img src="/assets/images/031-chat.png" height="100"></div>
+         <div class="p-2"> <img src="assets/img/027-online-pay.png" height="100"></div>
 
-         <!-- Button trigger modal -->
-<button type="button" class="btn btn-primary mt-3 learn" data-toggle="modal" data-target="#Onlinecaht5">
+         <!Button trigger modal 
+<button type="button" class="btn btn-primary btn-block mt-1" data-toggle="modal" data-target="#platft">
     Learn More
-  </button>
+  </button>-->
   
   <!-- Modal -->
-  <div class="modal fade" id="Onlinecaht5" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal fade" id="platft" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
@@ -438,8 +790,11 @@
           </button>
         </div>
         <div class="modal-body">
-             If the patient and the doctor both agree on a consultation offer, the patient’s account will be debited and the doctor’s credited before the treatment commences. The system then gives the doctor and 
-            patient a link to communicate by chat, audio or video call as they desire, or an appointment for a physical consultation. The Applinic commission is deducted at source.   <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            If the patient and the doctor both agree on a consultation offer, the patient’s account will be debited and the doctor’s credited before the treatment commences. The system then gives the doctor and 
+            patient a link to communicate by chat, audio or video call as they desire, or an appointment for a physical consultation. The Applinic commission is deducted at source.
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
           
         </div>
       </div>
@@ -449,19 +804,11 @@
     </div>
 </div>
 
-<div class="col-md-4 col-sm-6 col-xs-12">
-    <div class="card info-palete"> 
-        <div class="card-block text-center">
-        <div class="card-title">Help Customers Open Accounts  </div>
-        <div class="p-2"> <img src="/assets/images/031-chat.png" height="100"></div>
 
-         <!-- Button trigger modal -->
-<button type="button" class="btn btn-primary mt-3 learn" data-toggle="modal" data-target="#Onlinecaht6">
-    Learn More
-  </button>
+
   
   <!-- Modal -->
-  <div class="modal fade" id="Onlinecaht6" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal fade" id="AccOpen" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
@@ -471,8 +818,11 @@
           </button>
         </div>
         <div class="modal-body">
-             Some customers who don’t have an Applinic account may come for your services.  The system allows you to create a quick account for them in just two steps so that an electronic record can be 
-            kept of their medical reports for your future references and theirs. This also enables their enlisting in your online patients’ list.   <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            Some customers who don’t have an Applinic account may come for your services.  The system allows you to create a quick account for them in just two steps so that an electronic record can be 
+            kept of their medical reports for your future references and theirs. This also enables their enlisting in your online patients’ list. 
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
           
         </div>
       </div>
@@ -482,19 +832,8 @@
     </div>
 </div>
 
-<div class="col-md-4 col-sm-6 col-xs-12">
-    <div class="card info-palete"> 
-        <div class="card-block text-center">
-        <div class="card-title">Your Rating</div>
-        <div class="p-2"> <img src="/assets/images/031-chat.png" height="100"></div>
-
-         <!-- Button trigger modal -->
-<button type="button" class="btn btn-primary mt-3 learn" data-toggle="modal" data-target="#Onlinecaht7">
-    Learn More
-  </button>
-  
   <!-- Modal -->
-  <div class="modal fade" id="Onlinecaht7" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal fade" id="Rating" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
@@ -504,42 +843,11 @@
           </button>
         </div>
         <div class="modal-body">
-            When patients search for doctors with specific skills and procedures or for specialists, the search result is usually listed according to the rating order of the professionals who fall within the searched category. Professionals with the highest ratings come tops in the list and are more likely to be seen and patronized. Several activities increase the rating of health service providers on the platform. Every health service provider on Applinic can be rated by a customer after a session or transaction. Positive feed-back ratings by patients after treatment or consultation sessions with them are the highest contributor to the overall ranking. Opening accounts for patients also similarly attracts a high rating score.   <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          
+            When patients search for doctors with specific skills and procedures or for specialists, the search result is usually listed according to the rating order of the professionals who fall within the searched category. Professionals with the highest ratings come tops in the list and are more likely to be seen and patronized. Several activities increase the rating of health service providers on the platform. Every health service provider on Applinic can be rated by a customer after a session or transaction. Positive feed-back ratings by patients after treatment or consultation sessions with them are the highest contributor to the overall ranking. Opening accounts for patients also similarly attracts a high rating score. 
+            
         </div>
-      </div>
-    </div>
-  </div>
-        </div>
-    </div>
-</div>
-</div>
-
-<div class="row">
-    <div class="col-md-4 col-sm-6 col-xs-12">
-    <div class="card info-palete"> 
-        <div class="card-block text-center">
-        <div class="card-title">The Search Functions</div>
-        <div class="p-2"> <img src="/assets/images/031-chat.png" height="100"></div>
-
-         <!-- Button trigger modal -->
-<button type="button" class="btn btn-primary mt-3 learn" data-toggle="modal" data-target="#Onlinecaht8">
-    Learn More
-  </button>
-  
-  <!-- Modal -->
-  <div class="modal fade" id="Onlinecaht8" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">The Search Functions</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-               Applinic provides doctors with a variety of search functions for use. These include search for drugs in pharmacies, investigations in diagnostic centers, procedures in special centers and specialists in selected cities. Doctors may also use the search function to look for colleagues with special skills who perform modern procedures in the patients’ cities, 
-            states or countries for referrals. The “Update Your Special Skills and Procedures” section below explains how doctors can add their special skills and procedures to their profiles so that they will be listed if a search for such skill is conducted on the platform.   <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
           
         </div>
       </div>
@@ -549,87 +857,10 @@
     </div>
 </div>
 
-<div class="col-md-4 col-sm-6 col-xs-12">
-    <div class="card info-palete"> 
-        <div class="card-block text-center">
-        <div class="card-title">Request For Diagnostic Investigations </div>
-        <div class="p-2"> <img src="/assets/images/031-chat.png" height="100"></div>
 
-         <!-- Button trigger modal -->
-<button type="button" class="btn btn-primary mt-3 learn" data-toggle="modal" data-target="#Onlinecaht9">
-    Learn More
-  </button>
   
   <!-- Modal -->
-  <div class="modal fade" id="Onlinecaht9" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Request For Diagnostic Investigations</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-           Applinic partners with the best laboratories and radio-diagnostic centers in the world. Use the appropriate online forms to request investigations for your patients and send the request to any center of your choice closest to the patient. The patient will need to visit the laboratory for the sample collection. Laboratories who offer home or offices services may also be contacted on patients’ request. Always encourage patients to pay with their e-wallet. Loyalty rewards accrue for physicians when patients pay for investigations from platform wallets. 
-            Such rewards are credited to the doctor’s Applinic account for subsequent cash out.   <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          
-        </div>
-      </div>
-    </div>
-  </div>
-        </div>
-    </div>
-</div>
-
-<div class="col-md-4 col-sm-6 col-xs-12">
-    <div class="card info-palete"> 
-        <div class="card-block text-center">
-        <div class="card-title">Write Paperless Prescriptions </div>
-        <div class="p-2"> <img src="/assets/images/031-chat.png" height="100"></div>
-
-         <!-- Button trigger modal -->
-<button type="button" class="btn btn-primary mt-3 learn" data-toggle="modal" data-target="#Onlinecaht10">
-    Learn More
-  </button>
-  
-  <!-- Modal -->
-  <div class="modal fade" id="Onlinecaht10" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Write Paperless Prescriptions</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-            Following online or onsite consultations, doctors can write prescriptions for patients using the paperless prescription sheets on the platform. Prescriptions for patients can be serviced by partnering pharmacies who operate within the patient’s city. Doctors may use the search function to find drugs on the Applinic platform by first identifying the pharmacies that have them in stock before forwarding the prescription. That way the patients don’t have to suffer looking for the drugs. Alternatively the patient may forward the prescription himself if the doctor so approves. <br>
-            When patients pay for the drugs with their e-wallet, doctors earn loyalty rewards as explained above (See the section titled “Earn Money By Using the Platform”) and the prescription registers in their medical records. If they pay cash, the system cannot confirm the drugs were procured so the prescription will not be recorded in the patient's’ record. More so, loyalty rewards will not be earned.   <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          
-        </div>
-      </div>
-    </div>
-  </div>
-        </div>
-    </div>
-</div>
-</div>
-
-<div class="row">
-    <div class="col-md-4 col-sm-6 col-xs-12">
-    <div class="card info-palete"> 
-        <div class="card-block text-center">
-        <div class="card-title">Rent Consulting Room</div>
-        <div class="p-2"> <img src="/assets/images/031-chat.png" height="100"></div>
-
-         <!-- Button trigger modal -->
-<button type="button" class="btn btn-primary mt-3 learn" data-toggle="modal" data-target="#Onlinecaht11">
-    Learn More
-  </button>
-  
-  <!-- Modal -->
-  <div class="modal fade" id="Onlinecaht11" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal fade" id="onsult" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
@@ -639,8 +870,11 @@
           </button>
         </div>
         <div class="modal-body">
-             If you don’t have a clinic yet, you may rent any of our partners’ consulting rooms for a percentage of the consultation fee. 
-            To express interest in this service fill the Rent Consulting Room form at the bottom.   <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            If you don’t have a clinic yet, you may rent any of our partners’ consulting rooms for a percentage of the consultation fee. 
+            To express interest in this service fill the Rent Consulting Room form at the bottom.
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
           
         </div>
       </div>
@@ -650,30 +884,25 @@
     </div>
 </div>
 
-<div class="col-md-4 col-sm-6 col-xs-12">
-    <div class="card info-palete"> 
-        <div class="card-block text-center">
-        <div class="card-title">Check Your E-Wallet For Your Transactions</div>
-        <div class="p-2"> <img src="/assets/images/031-chat.png" height="100"></div>
 
-         <!-- Button trigger modal -->
-<button type="button" class="btn btn-primary mt-3 learn" data-toggle="modal" data-target="#Onlinecaht12">
-    Learn More
-  </button>
+
   
   <!-- Modal -->
-  <div class="modal fade" id="Onlinecaht12" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal fade" id="Search" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Check Your E-Wallet For Your Transactions</h5>
+          <h5 class="modal-title" id="exampleModalLabel">The Search Functions</h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
         <div class="modal-body">
-             Doctors can view their financial accounts by opening the e-wallet to see all transactions. All incomes, expenditures, 
-            <br> transfers and earnings with their dates are automatically recorded and can be filtered by date, source, etc   <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            Applinic provides doctors with a variety of search functions for use. These include search for drugs in pharmacies, investigations in diagnostic centers, procedures in special centers and specialists in selected cities. Doctors may also use the search function to look for colleagues with special skills who perform modern procedures in the patients’ cities, 
+            states or countries for referrals. The “Update Your Special Skills and Procedures” section below explains how doctors can add their special skills and procedures to their profiles so that they will be listed if a search for such skill is conducted on the platform. 
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
           
         </div>
       </div>
@@ -683,19 +912,91 @@
     </div>
 </div>
 
-<div class="col-md-4 col-sm-6 col-xs-12">
-    <div class="card info-palete"> 
-        <div class="card-block text-center">
-        <div class="card-title">Cash Out Your Earnings Through Your E-Wallet</div>
-        <div class="p-2"> <img src="/assets/images/031-chat.png" height="100"></div>
 
-         <!-- Button trigger modal -->
-<button type="button" class="btn btn-primary mt-3 learn" data-toggle="modal" data-target="#Onlinecaht13">
-    Learn More
-  </button>
+
   
   <!-- Modal -->
-  <div class="modal fade" id="Onlinecaht13" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal fade" id="Diagon" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Request For Diagnostic Investigations </h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+            Applinic partners with the best laboratories and radio-diagnostic centers in the world. Use the appropriate online forms to request investigations for your patients and send the request to any center of your choice closest to the patient. The patient will need to visit the laboratory for the sample collection. Laboratories who offer home or offices services may also be contacted on patients’ request. Always encourage patients to pay with their e-wallet. Loyalty rewards accrue for physicians when patients pay for investigations from platform wallets. 
+            Such rewards are credited to the doctor’s Applinic account for subsequent cash out.
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          
+        </div>
+      </div>
+    </div>
+  </div>
+        </div>
+    </div>
+</div>
+
+
+
+  
+  <!-- Modal -->
+  <div class="modal fade" id="myModalPaperless" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Write Paperless Prescriptions </h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+            Following online or onsite consultations, doctors can write prescriptions for patients using the paperless prescription sheets on the platform. Prescriptions for patients can be serviced by partnering pharmacies who operate within the patient’s city. Doctors may use the search function to find drugs on the Applinic platform by first identifying the pharmacies that have them in stock before forwarding the prescription. That way the patients don’t have to suffer looking for the drugs. Alternatively the patient may forward the prescription himself if the doctor so approves. <br>
+            When patients pay for the drugs with their e-wallet, doctors earn loyalty rewards as explained above (See the section titled “Earn Money By Using the Platform”) and the prescription registers in their medical records. If they pay cash, the system cannot confirm the drugs were procured so the prescription will not be recorded in the patient's’ record. More so, loyalty rewards will not be earned. 
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          
+        </div>
+      </div>
+    </div>
+  </div>
+        </div>
+    </div>
+</div>
+
+
+  <!-- Modal -->
+  <div class="modal fade" id="wallet" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Check Your E-Wallet For Your Transactions </h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+            Doctors can view their financial accounts by opening the e-wallet to see all transactions. All incomes, expenditures, 
+            <br> transfers and earnings with their dates are automatically recorded and can be filtered by date, source, etc </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          
+        </div>
+      </div>
+    </div>
+  </div>
+        </div>
+    </div>
+</div>
+
+
+  
+  <!-- Modal -->
+  <div class="modal fade" id="cashOut" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
@@ -705,8 +1006,11 @@
           </button>
         </div>
         <div class="modal-body">
-             Doctors can cash out their earnings at will by filling the Cash Out form to indicate the amount and the bank they want their monies transferred 
-            to if that was not previously entered at registration. Cash out requests are serviced within 24-48 hours.   <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            Doctors can cash out their earnings at will by filling the Cash Out form to indicate the amount and the bank they want their monies transferred 
+            to if that was not previously entered at registration. Cash out requests are serviced within 24-48 hours.
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
           
         </div>
       </div>
@@ -715,21 +1019,20 @@
         </div>
     </div>
 </div>
-</div>
-<div class="row">
-<div class="col-md-4 col-sm-6 col-xs-12">
-    <div class="card info-palete"> 
-        <div class="card-block text-center">
-        <div class="card-title">Update Your Professional Profile And Skills </div>
-        <div class="p-2"> <img src="/assets/images/031-chat.png" height="100"></div>
 
-         <!-- Button trigger modal -->
-<button type="button" class="btn btn-primary mt-3 learn" data-toggle="modal" data-target="#Onlinecaht14">
+<!--<div class="col-md-4 col-sm-6 col-xs-12">
+    <div class="card"> 
+        <div class="card-block  text-center">
+        <div class="card-title">Update Your Professional Profile And Skills  </div>
+         <div class="p-2"> <img src="assets/img/012-skills-1.png" height="100"></div>
+
+         <!Button trigger modal 
+<button type="button" class="btn btn-primary btn-block mt-1" data-toggle="modal" data-target="#Skills">
     Learn More
-  </button>
+  </button>-->
   
   <!-- Modal -->
-  <div class="modal fade" id="Onlinecaht14" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal fade" id="Skills" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
@@ -739,8 +1042,10 @@
           </button>
         </div>
         <div class="modal-body">
-             From the doctor’s profile, the professional skills and special procedures the physician performs can be updated.  
-            <br>This will enable the search listing of the practitioner’s name or practice when that skill is sought after. Explanatory photos and videos of such procedures can be uploaded for the information of the public and re-assurance of prospective patients.   <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            From the doctor’s profile, the professional skills and special procedures the physician performs can be updated.  
+            <br>This will enable the search listing of the practitioner’s name or practice when that skill is sought after. Explanatory photos and videos of such procedures can be uploaded for the information of the public and re-assurance of prospective patients. </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
           
         </div>
       </div>
@@ -750,30 +1055,25 @@
     </div>
 </div>
 
-<div class="col-md-4 col-sm-6 col-xs-12">
-    <div class="card info-palete"> 
-        <div class="card-block text-center">
-        <div class="card-title">Publish Health Articles On Your Dashboard </div>
-        <div class="p-2"> <img src="/assets/images/031-chat.png" height="100"></div>
 
-         <!-- Button trigger modal -->
-<button type="button" class="btn btn-primary mt-3 learn" data-toggle="modal" data-target="#Onlinecaht15">
-    Learn More
-  </button>
   
   <!-- Modal -->
-  <div class="modal fade" id="Onlinecaht15" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal fade" id="pubhealth" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Publish Health Articles On Your Dashboard</h5>
+          <h5 class="modal-title" id="exampleModalLabel">Publish Health Articles With Photos And Videos On Your Dashboard
+        </h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
         <div class="modal-body">
-             When doctors publish health articles, they enlighten the world and create awareness about the topic or disease. 
-            <br>They may also attach photos or videos to their publications for more exposition. Most, if not all the articles doctors publish should be related to their areas of interest, specialization and skill so that patients or colleagues who read it can reach them for more information, expert service or partnership. Articles will have links to the profile pages of doctors for those interested in contacting them.   <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            When doctors publish health articles, they enlighten the world and create awareness about the topic or disease. 
+            <br>They may also attach photos or videos to their publications for more exposition. Most, if not all the articles doctors publish should be related to their areas of interest, specialization and skill so that patients or colleagues who read it can reach them for more information, expert service or partnership. Articles will have links to the profile pages of doctors for those interested in contacting them.
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
           
         </div>
       </div>
@@ -783,30 +1083,25 @@
     </div>
 </div>
 
-<div class="col-md-4 col-sm-6 col-xs-12">
-    <div class="card info-palete"> 
-        <div class="card-block text-center">
-        <div class="card-title">Chat With Colleagues On Open Doctors Forum </div>
-        <div class="p-2"> <img src="/assets/images/031-chat.png" height="100"></div>
 
-         <!-- Button trigger modal -->
-<button type="button" class="btn btn-primary mt-3 learn" data-toggle="modal" data-target="#Onlinecaht16">
-    Learn More
-  </button>
+
   
   <!-- Modal -->
-  <div class="modal fade" id="Onlinecaht16" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal fade" id="colleag" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Chat With Colleagues On Open Doctors Forum</h5>
+          <h5 class="modal-title" id="exampleModalLabel">Chat With Colleagues On Open Doctors Forum
+        </h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
         <div class="modal-body">
-             From the doctor’s profile, the professional skills and special procedures the physician performs can be updated.  
-            <br>This will enable the search listing of the practitioner’s name or practice when that skill is sought after. Explanatory photos and videos of such procedures can be uploaded for the information of the public and re-assurance of prospective patients.   <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            The public doctors’ chat room enables doctors to chat with each other on issues of common interest.
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
           
         </div>
       </div>
@@ -815,8 +1110,7 @@
         </div>
     </div>
 </div>
-</div>
-</div>
+   </div>
 </div>
  
 
@@ -827,22 +1121,260 @@
 <div class="col-md-12 col-sm-12 col-xs-12" ng-if="checkLogIn.typeOfUser === 'Patient'">
     <div class="title pl-1" style="font-size: 18px">Welcome {{checkLogIn.title}} {{checkLogIn.firstname}}</div>
     <br><br>
-   <div class="container text-uppercase text-center">
-    <div class=" row">
-        <div class="col-md-4 col-sm-6 col-xs-12">
-            <div class="card info-palete"> 
-        <div class="card-block  text-center ">
-        <div class="card-title">What is Applinic to the Patient?</div>
-          <div class="p-2"> <img src="/assets/images/009-doctor.png" height="80" width="310"></div>
+   <div class="container text-capitalize text-center">
 
-         <!-- Button trigger modal -->
-<button type="button" class="btn btn-primary mt-3" data-toggle="modal" data-target="#myModal">
-    Learn More
-    
-  </button>
+
+
+
+
+
+<div class="row doctor">
+
+      
+<div class="col-md-12">
+
+
+
+
+  <div class="row">  <!--palette start-->
+  <div class="col-md-4">
+   <div data-toggle="modal" data-target="#apppatient" class="card hoverr">
+   <div class="row pl-2">
+     <div class="col-md-1" style="padding: 11px 0;"><img src="/assets/images/img/007-consulting.png" height="30" width="100%"> </div>
+     <div class="col-md-11 pl-2 pt-1"><h6>What is Applinic to the Patient?  </h6></div>
+   </div></div>
+     </div>
+
+
+     <!--palette end-->
+
+        <!--palette start-->
+  <div class="col-md-4">
+   <div class="card hoverr" data-toggle="modal" data-target="#qualifiedcert">
+   <div class="row pl-2">
+     <div class="col-md-1"  style="padding: 11px 0;"><img src="/assets/images/img/016-worker.png" height="30" width="100%"> </div>
+     <div class="col-md-11 pl-2 pt-1"><h6>Need a Qualified and Certified Doctor?    </h6></div>
+   </div></div>
+     </div>
+
+     <!--palette end-->
+
+  <!--palette start-->
+   <div class="col-md-4">
+   <div class="card hoverr" data-toggle="modal" data-target="#med">
+   <div class="row pl-2">
+     <div class="col-md-1" style="padding: 11px 0;"><img src="/assets/images/img/029-boss.png" height="30" width="100%"> </div>
+     <div class="col-md-11 pl-2 pt-1"><h6>Free Account, Dashboard and Personal Medical Manager  </h6></div>
+   </div></div>
+     </div>
+ 
+</div>
+     <!--palette end-->
+
+       <!--palette start-->
+<div class="row"> 
+       <div class="col-md-4">
+   <div class="card hoverr" data-toggle="modal" data-target="#partdoc">
+   <div class="row pl-2">
+     <div class="col-md-1" style="padding: 11px 0;"><img src="/assets/images/img/036-sprout.png" height="30" width="100%"> </div>
+     <div class="col-md-11 pl-2 pt-1"><h6>Find a Particular Doctor You Know  </h6></div>
+   </div></div>
+     </div>
+
+     <!--palette end-->
+
+
+       <!--palette start-->
+  <div class="col-md-4">
+   <div class="card hoverr" data-toggle="modal" data-target="#specialski">
+   <div class="row pl-2">
+     <div class="col-md-1" style="padding: 11px 0;"><img src="/assets/images/img/031-chat.png" height="30" width="100%"> </div>
+     <div class="col-md-11 pl-2 pt-1"><h6>Search For Doctors or Centers With Special Skills and Procedures </h6></div>
+   </div></div>
+     </div>
+
+     <!--palette end-->
+
+      <!--palette start-->
+  <div class="col-md-4">
+   <div class="card hoverr" data-toggle="modal" data-target="#discounta">
+   <div class="row pl-2">
+     <div class="col-md-1" style="padding: 11px 0;"><img src="/assets/images/img/030-conversation.png" height="30" width="100%"> </div>
+     <div class="col-md-11 pl-2 pt-1"><h6>Get Discounted Costs for all Medical Services </h6></div>
+   </div></div>
+     </div>
+</div>
+     <!--palette end-->  
+
+      <!--palette start-->
+<div class="row"> 
+  <div class="col-md-4">
+   <div class="card hoverr" data-toggle="modal" data-target="#healthpro">
+   <div class="row pl-2">
+     <div class="col-md-1" style="padding: 11px 0;"><img src="/assets/images/img/list.png" height="30" width="100%"> </div>
+     <div class="col-md-11 pl-2 pt-1"><h6>Online Multimedia Communication with health Providers</h6></div>
+   </div></div>
+     </div>
+
+     <!--palette end-->
+
+     <!--palette start-->
+  <div class="col-md-4">
+   <div class="card hoverr" data-toggle="modal" data-target="#searchdrug">
+   <div class="row pl-2">
+     <div class="col-md-1" style="padding: 11px 0;"><img src="/assets/images/img/025-money.png" height="30" width="100%"> </div>
+     <div class="col-md-11 pl-2 pt-1"><h6>Search for Drugs and Radiology or Laboratory Investigations</h6></div>
+   </div></div>
+     </div>
+
+     <!--palette end-->
+
+     <!--palette start-->
+  <div class="col-md-4">
+   <div class="card hoverr" data-toggle="modal" data-target="#freeelect">
+   <div class="row pl-2">
+     <div class="col-md-1" style="padding: 11px 0;"><img src="/assets/images/img/finddoctor.png" height="30" width="90%"> </div>
+     <div class="col-md-11 pl-2 pt-1"><h6>Free Electronic Patients Records </h6></div>
+   </div></div>
+     </div>
+</div>
+     <!--palette end-->
+
+       <!--palette start-->
+<div class="row"> 
+  <div class="col-md-4">
+   <div class="card hoverr" data-toggle="modal" data-target="#medreco">
+   <div class="row pl-2">
+     <div class="col-md-1" style="padding: 11px 0;"><img src="/assets/images/img/028-contract.png" height="30" width="100%"> </div>
+     <div class="col-md-11 pl-2 pt-1"><h6>Access To Your Medical Records</h6></div>
+   </div></div>
+     </div>
+
+     <!--palette end-->
+
+
+       <!--palette start-->
+  <div class="col-md-4">
+   <div class="card hoverr" data-toggle="modal" data-target="#fundman">
+   <div class="row pl-2">
+     <div class="col-md-1" style="padding: 11px 0;"><img src="/assets/images/img/user-search.png" height="30" width="100%"> </div>
+     <div class="col-md-11 pl-2 pt-1"><h6>Fund and Manage Your E-Wallet Through Various Convenient Ways</h6></div>
+   </div></div>
+     </div>
+
+     <!--palette end-->
+
+
+     <!--palette start-->
+  <div class="col-md-4">
+   <div class="card hoverr" data-toggle="modal" data-target="#transmed">
+   <div class="row pl-2">
+     <div class="col-md-1" style="padding: 11px 0;"><img src="/assets/images/img/021-waiting-room-1.png" height="30" width="100%"> </div>
+     <div class="col-md-11 pl-2 pt-1"><h6>Transfer or Receive money for your Medicals from family and friends</h6></div>
+   </div></div>
+     </div>
+</div>
+     <!--palette end-->
+
+
+       <!--palette start-->
+<div class="row"> 
+  <div class="col-md-4">
+   <div class="card hoverr" data-toggle="modal" data-target="#ewallmak">
+   <div class="row pl-2">
+     <div class="col-md-1" style="padding: 11px 0;"><img src="/assets/images/img/027-online-pay.png" height="30" width="100%"> </div>
+     <div class="col-md-11 pl-2 pt-1"><h6>How to Make Payments with your E-Wallet </h6></div>
+   </div></div>
+     </div>
+
+     <!--palette end-->
+
+
+       <!--palette start-->
+  <div class="col-md-4">
+   <div class="card hoverr" data-toggle="modal" data-target="#benefitpay">
+   <div class="row pl-2">
+     <div class="col-md-1" style="padding: 11px 0;"><img src="/assets/images/img/024-login.png" height="30" width="100%"> </div>
+     <div class="col-md-11 pl-2 pt-1"><h6>The Benefits of Making Payments with Your E-Wallet  </h6></div>
+   </div></div>
+     </div>
+
+     <!--palette end-->
+
+
+
+       <!--palette start-->
+  <div class="col-md-4">
+   <div class="card hoverr" data-toggle="modal" data-target="#ratedoc">
+   <div class="row pl-2">
+     <div class="col-md-1" style="padding: 11px 0;"><img src="/assets/images/img/017-rating.png" height="30" width="100%"> </div>
+     <div class="col-md-11 pl-2 pt-1"><h6>Rate a Doctor, Diagnostic or Special Center After Treating You </h6></div>
+   </div></div>
+     </div>
+</div>
+     <!--palette end-->
+
+
+
+   <!--palette start-->
+<div class="row"> 
+   <div class="col-md-4">
+   <div class="card hoverr" data-toggle="modal" data-target="#confid">
+   <div class="row pl-2">
+     <div class="col-md-1" style="padding: 11px 0;"><img src="/assets/images/img/012-skills-1.png" height="30" width="100%"> </div>
+     <div class="col-md-11 pl-2 pt-1"><h6>Confidentiality and Security </h6></div>
+   </div></div>
+     </div>
+
+     <!--palette end-->
+
+
+       <!--palette start-->
+  <div class="col-md-4">
+   <div class="card hoverr" data-toggle="modal" data-target="#updatemedl">
+   <div class="row pl-2">
+     <div class="col-md-1" style="padding: 11px 0;"><img src="/assets/images/img/007-consulting.png" height="30" width="100%"> </div>
+     <div class="col-md-11 pl-2 pt-1"><h6>Update your Medical Knowledge on the Platform </h6></div>
+   </div></div>
+     </div>
+
+     <!--palette end-->
+
+
+       <!--palette start-->
+  <div class="col-md-4">
+   <div class="card hoverr" data-toggle="modal" data-target="#invplat">
+   <div class="row pl-2">
+     <div class="col-md-1" style="padding: 11px 0;"><img src="/assets/images/img/015-magnifier.png" height="30" width="100%"> </div>
+     <div class="col-md-11 pl-2 pt-1"><h6>Invite others to join the platform</h6></div>
+   </div></div>
+     </div>
+</div>
+     <!--palette end-->
+
+
+
+
+</div>
+
+
+     <!--palette end-->
+
+
+</div>
+</div>
+
+
+
+
+
+
+
+    <div class=" row">
+        
   
   <!-- Modal -->
-  <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal fade" id="apppatient" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
@@ -860,24 +1392,13 @@
       </div>
     </div>
   </div>
-        </div>
-    </div>
-</div>
+       
 </div>
 
-<div class="col-md-4 col-sm-6 col-xs-12">
-    <div class="card info-palete"> 
-        <div class="card-block  text-center">
-        <div class="card-title">Need a Qualified and Certified Doctor?</div>
-         <div class="p-2"> <img src="/assets/images/009-doctor.png" height="100"></div>
 
-         <!-- Button trigger modal -->
-<button type="button" class="btn btn-primary mt-3 learn" data-toggle="modal" data-target="#accessl">
-    Learn More
-  </button>
-  
+       
   <!-- Modal -->
-  <div class="modal fade" id="accessl" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal fade" id="qualifiedcert" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
@@ -894,23 +1415,12 @@
       </div>
     </div>
   </div>
-        </div>
-    </div>
-</div>
+      
 
-<div class="col-md-4 col-sm-6 col-xs-12">
-    <div class="card info-palete"> 
-        <div class="card-block text-center" >
-        <div class="card-title">Free Account, Dashboard and Personal Medical Manager </div>
-       <div class="p-2"> <img src="/assets/images/036-sprout.png" height="100"></div>
 
-         <!-- Button trigger modal -->
-<button type="button" class="btn btn-primary mt-3 learn" data-toggle="modal" data-target="#growpa">
-    Learn More
-  </button>
   
   <!-- Modal -->
-  <div class="modal fade" id="growpa" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal fade" id="med" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
@@ -927,27 +1437,16 @@
       </div>
     </div>
   </div>
-        </div>
-    </div>
-</div>
+        
 </div>
 
 </div> <!-- row end -->
 
-<div class="row">
-<div class="col-md-4 col-sm-6 col-xs-12">
-    <div class="card info-palete"> 
-        <div class="card-block text-center">
-        <div class="card-title">Find a Particular Doctor You Know </div>
-           <div class="p-2"> <img src="/assets/images/009-doctor.png" height="100"></div>
+<div class="">
 
-         <!-- Button trigger modal -->
-<button type="button" class="btn btn-primary mt-3 learn" data-toggle="modal" data-target="#enjoyfree">
-    Learn More
-  </button>
   
   <!-- Modal -->
-  <div class="modal fade" id="enjoyfree" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal fade" id="partdoc" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
@@ -962,25 +1461,14 @@
         </div>
       </div>
     </div>
-  </div>
-        </div>
-    </div>
+ 
 </div>
 
 
-<div class="col-md-4 col-sm-6 col-xs-12">
-    <div class="card info-palete"> 
-        <div class="card-block text-center">
-        <div class="card-title">Search For Doctors or Centers With Special Skills and Procedures </div>
-        <div class="p-2"> <img src="/assets/images/031-chat.png" height="100"></div>
 
-         <!-- Button trigger modal -->
-<button type="button" class="btn btn-primary mt-3 learn" data-toggle="modal" data-target="#Onlinecaht">
-    Learn More
-  </button>
   
   <!-- Modal -->
-  <div class="modal fade" id="Onlinecaht" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal fade" id="specialski" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
@@ -996,25 +1484,12 @@
         </div>
       </div>
     </div>
-  </div>
-        </div>
-    </div>
+ 
 </div>
 
-<div class="col-md-4 col-sm-6 col-xs-12">
-    <div class="card info-palete"> 
-        <div class="card-block text-center">
-        <div class="card-title text-center">Get Discounted Costs for all Medical Services</div>
-        
-         <div class="p-2"> <img src="/assets/images/030-conversation.png" height="100"></div>
 
-         <!-- Button trigger modal -->
-<button type="button" class="btn btn-primary mt-3 learn" data-toggle="modal" data-target="#hostpa">
-    Learn More
-  </button>
-  
   <!-- Modal -->
-  <div class="modal fade" id="hostpa" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal fade" id="discounta" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
@@ -1030,26 +1505,14 @@
         </div>
       </div>
     </div>
-  </div>
-        </div>
-    </div>
+
 </div>
 </div> <!-- row end -->
 
 <div class="row">
-<div class="col-md-4 col-sm-6 col-xs-12">
-    <div class="card info-palete"> 
-        <div class="card-block text-center">
-        <div class="card-title">Online Multimedia Communication with health Providers</div>
-        <div class="p-2"> <img src="/assets/images/031-chat.png" height="100"></div>
 
-         <!-- Button trigger modal -->
-<button type="button" class="btn btn-primary mt-3 learn" data-toggle="modal" data-target="#Onlinecaht">
-    Learn More
-  </button>
-  
   <!-- Modal -->
-  <div class="modal fade" id="Onlinecaht" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal fade" id="healthpro" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
@@ -1065,24 +1528,10 @@
       </div>
     </div>
   </div>
-        </div>
-    </div>
-</div>
+      
 
-<div class="col-md-4 col-sm-6 col-xs-12">
-    <div class="card info-palete"> 
-        <div class="card-block text-center">
-        <div class="card-title text-center">Search for Drugs and Radiology or Laboratory Investigations </div>
-        
-         <div class="p-2"> <img src="/assets/images/030-conversation.png" height="100"></div>
-
-         <!-- Button trigger modal -->
-<button type="button" class="btn btn-primary mt-3 learn" data-toggle="modal" data-target="#hostpa2">
-    Learn More
-  </button>
-  
   <!-- Modal -->
-  <div class="modal fade" id="hostpa2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal fade" id="searchdrug" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
@@ -1097,23 +1546,13 @@
         </div>
       </div>
     </div>
-  </div>
-        </div>
-    </div>
 </div>
-<div class="col-md-4 col-sm-6 col-xs-12">
-    <div class="card info-palete"> 
-        <div class="card-block text-center">
-        <div class="card-title">Free Electronic Patients Records</div>
-        <div class="p-2"> <img src="/assets/images/031-chat.png" height="100"></div>
 
-         <!-- Button trigger modal -->
-<button type="button" class="btn btn-primary mt-3 learn" data-toggle="modal" data-target="#Onlinecaht2">
-    Learn More
-  </button>
-  
+
+
+
   <!-- Modal -->
-  <div class="modal fade" id="Onlinecaht2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal fade" id="freeelect" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
@@ -1123,33 +1562,20 @@
           </button>
         </div>
         <div class="modal-body">
-          Records of all drug prescriptions, results of laboratory and radiological investigations and doctors ‘medical reports received on Applinic will be stored in your free Electronic Patients Records. This privilege is possible only if payments for these services are made through your Applinic e-wallet. Click on My EPR to see what your personal Electronic Patients Records look like. To enjoy this service, you must ask and insist that doctors who consult you use the APPLINIC online prescription to prescribe your drugs and also use the platform Laboratory and Radiology forms to request your investigations and at the end of the treatment, they should write a short medical report for you in your APPLINIC folder. You need to also remind the diagnostic centers to write/enter the results of your investigations through APPLINIC. 
+          Records of all drug prescriptions, results of laboratory and radiological investigations and doctors ‘medical reports received on Applinic will be stored in your free Electronic Patients Records. <br><br> This privilege is possible only if payments for these services are made through your Applinic e-wallet. Click on My EPR to see what your personal Electronic Patients Records look like. To enjoy this service, you must ask and insist that doctors who consult you use the APPLINIC online prescription to prescribe your drugs and also use the platform Laboratory and Radiology forms to request your investigations and at the end of the treatment, they should write a short medical report for you in your APPLINIC folder. You need to also remind the diagnostic centers to write/enter the results of your investigations through APPLINIC. <br><br> 
             Agree on this with the doctors, pharmacies, medical and diagnostic centers before you patronize them, even if you are receiving the treatment abroad. <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
           
         </div>
       </div>
     </div>
   </div>
-        </div>
-    </div>
-</div>
 
 </div>
 
 <div class="row">
-<div class="col-md-4 col-sm-6 col-xs-12">
-    <div class="card info-palete"> 
-        <div class="card-block text-center">
-        <div class="card-title">Access To Your Medical Records</div>
-        <div class="p-2"> <img src="/assets/images/031-chat.png" height="100"></div>
 
-         <!-- Button trigger modal -->
-<button type="button" class="btn btn-primary mt-3 learn" data-toggle="modal" data-target="#Onlinecaht2">
-    Learn More
-  </button>
-  
   <!-- Modal -->
-  <div class="modal fade" id="Onlinecaht2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal fade" id="medreco" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
@@ -1159,29 +1585,18 @@
           </button>
         </div>
         <div class="modal-body">
-           Applinic automatically creates a free Electronic Patients Records for you. This contains your doctors’ reports, prescriptions and results of diagnostic investigations you paid for through your Applinic e-wallet. You can access this record at will from your dashboard for free. If any doctor managing you on the platform requests for access to these records you can also grant it to him at your own discretion. This access is secured by a One Time Password (OTP) generated for you if you consent to the doctor’s request. If you release this token to him, he will be enabled to review your past medical history just once and be better informed about your health so he can offer you the best treatment. Even though there is a penalty for the violation of patients’ privacy rights, Applinic will not be held responsible for what the doctor does with your medical records. We are currently working 
+           Applinic automatically creates a free Electronic Patients Records for you. This contains your doctors’ reports, prescriptions and results of diagnostic investigations you paid for through your Applinic e-wallet. You can access this record at will from your dashboard for free. <br><br> If any doctor managing you on the platform requests for access to these records you can also grant it to him at your own discretion. This access is secured by a One Time Password (OTP) generated for you if you consent to the doctor’s request. If you release this token to him, he will be enabled to review your past medical history just once and be better informed about your health so he can offer you the best treatment. Even though there is a penalty for the violation of patients’ privacy rights, Applinic will not be held responsible for what the doctor does with your medical records. We are currently working <br><br>
             on the graded access to limit the type and details of your medical information the doctor will be able to view with each granted access. <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
           
         </div>
-      </div>
-    </div>
-  </div>
         </div>
     </div>
 </div>
-<div class="col-md-4 col-sm-6 col-xs-12">
-    <div class="card info-palete"> 
-        <div class="card-block text-center">
-        <div class="card-title">Fund and Manage Your E-Wallet Through Various Convenient Ways</div>
-        <div class="p-2"> <img src="/assets/images/031-chat.png" height="100"></div>
 
-         <!-- Button trigger modal -->
-<button type="button" class="btn btn-primary mt-3 learn" data-toggle="modal" data-target="#Onlinecaht3">
-    Learn More
-  </button>
+
   
   <!-- Modal -->
-  <div class="modal fade" id="Onlinecaht3" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal fade" id="fundman" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
@@ -1198,23 +1613,11 @@
       </div>
     </div>
   </div>
-        </div>
-    </div>
-</div>
+      
 
-<div class="col-md-4 col-sm-6 col-xs-12">
-    <div class="card info-palete"> 
-        <div class="card-block text-center">
-        <div class="card-title">Transfer or Receive money for your Medicals from family and friends</div>
-        <div class="p-2"> <img src="/assets/images/031-chat.png" height="100"></div>
-
-         <!-- Button trigger modal -->
-<button type="button" class="btn btn-primary mt-3 learn" data-toggle="modal" data-target="#Onlinecaht4">
-    Learn More
-  </button>
   
   <!-- Modal -->
-  <div class="modal fade" id="Onlinecaht4" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal fade" id="transmed" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
@@ -1231,26 +1634,13 @@
       </div>
     </div>
   </div>
-        </div>
-    </div>
-</div>
-
+      
 </div>
 
 <div class="row">
-    <div class="col-md-4 col-sm-6 col-xs-12">
-    <div class="card info-palete"> 
-        <div class="card-block text-center">
-        <div class="card-title">How to Make Payments with your E-Wallet</div>
-        <div class="p-2"> <img src="/assets/images/031-chat.png" height="100"></div>
-
-         <!-- Button trigger modal -->
-<button type="button" class="btn btn-primary mt-3 learn" data-toggle="modal" data-target="#Onlinecaht5">
-    Learn More
-  </button>
   
   <!-- Modal -->
-  <div class="modal fade" id="Onlinecaht5" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal fade" id="ewallmak" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
@@ -1266,23 +1656,10 @@
       </div>
     </div>
   </div>
-        </div>
-    </div>
-</div>
+     
 
-<div class="col-md-4 col-sm-6 col-xs-12">
-    <div class="card info-palete"> 
-        <div class="card-block text-center">
-        <div class="card-title">The Benefits of Making Payments with Your E-Wallet </div>
-        <div class="p-2"> <img src="/assets/images/031-chat.png" height="100"></div>
-
-         <!-- Button trigger modal -->
-<button type="button" class="btn btn-primary mt-3 learn" data-toggle="modal" data-target="#Onlinecaht6">
-    Learn More
-  </button>
-  
   <!-- Modal -->
-  <div class="modal fade" id="Onlinecaht6" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal fade" id="benefitpay" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
@@ -1299,23 +1676,11 @@
       </div>
     </div>
   </div>
-        </div>
-    </div>
-</div>
+       
 
-<div class="col-md-4 col-sm-6 col-xs-12">
-    <div class="card info-palete"> 
-        <div class="card-block text-center">
-        <div class="card-title">Rate a Doctor, Diagnostic or Special Center After Treating You</div>
-        <div class="p-2"> <img src="/assets/images/031-chat.png" height="100"></div>
 
-         <!-- Button trigger modal -->
-<button type="button" class="btn btn-primary mt-3 learn" data-toggle="modal" data-target="#Onlinecaht7">
-    Learn More
-  </button>
-  
   <!-- Modal -->
-  <div class="modal fade" id="Onlinecaht7" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal fade" id="ratedoc" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
@@ -1332,25 +1697,14 @@
       </div>
     </div>
   </div>
-        </div>
-    </div>
-</div>
+      
 </div>
 
 <div class="row">
-    <div class="col-md-4 col-sm-6 col-xs-12">
-    <div class="card info-palete"> 
-        <div class="card-block text-center">
-        <div class="card-title">Confidentiality and Security</div>
-        <div class="p-2"> <img src="/assets/images/031-chat.png" height="100"></div>
-
-         <!-- Button trigger modal -->
-<button type="button" class="btn btn-primary mt-3 learn" data-toggle="modal" data-target="#Onlinecaht8">
-    Learn More
-  </button>
+   
   
   <!-- Modal -->
-  <div class="modal fade" id="Onlinecaht8" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal fade" id="confid" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
@@ -1360,29 +1714,18 @@
           </button>
         </div>
         <div class="modal-body">
-              The confidentiality and security of your health information and e-wallet are of premium importance and priority to us. Consequently we have taken measures to ensure that no one else can access these information aside you and those you authorize.  The Secure Socket Layer (SSL), encryption of all health and financial information as well as anti-malwares installed in our servers are a few of these. You also have some responsibilities towards your account security. In the first place, you are advised to create your account with your Nick Names instead of your given names. Secondly do not put up your real pictures if you don’t want your health care providers to know who they are treating. You may conduct a video chat with them if you desire to disclose your identity or show them something in your body just for that moment.  Please ensure you do not share your log in details with others not even your health care providers. You may issue a One Time Password (OTP) generated from your phone to grant your doctor a one-time access to your medical records during a treatment session but please do not share this OTP with any other.  You are advised to use all other means you know to help secure your vital and confidential health information while we do our part. Applinic will never ask you for your log in details or private health information and will not be held responsible for any disclosure of your information to a third party as a result of your less than utmost security care with your account details.  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              The confidentiality and security of your health information and e-wallet are of premium importance and priority to us. Consequently we have taken measures to ensure that no one else can access these information aside you and those you authorize.  The Secure Socket Layer (SSL), encryption of all health and financial information as well as anti-malwares installed in our servers are a few of these. You also have some responsibilities towards your account security. <br><br>In the first place, you are advised to create your account with your Nick Names instead of your given names. Secondly do not put up your real pictures if you don’t want your health care providers to know who they are treating. You may conduct a video chat with them if you desire to disclose your identity or show them something in your body just for that moment.  Please ensure you do not share your log in details with others not even your health care providers. You may issue a One Time Password (OTP) generated from your phone to grant your doctor a one-time access to your medical records during a treatment session but please do not share this OTP with any other.  You are advised to use all other means you know to help secure your vital and confidential health information while we do our part. Applinic will never ask you for your log in details or private health information and will not be held responsible for any disclosure of your information to a third party as a result of your less than utmost security care with your account details.  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
           
         </div>
       </div>
     </div>
   </div>
-        </div>
-    </div>
-</div>
+     
 
-<div class="col-md-4 col-sm-6 col-xs-12">
-    <div class="card info-palete"> 
-        <div class="card-block text-center">
-        <div class="card-title">Update your Medical Knowledge on the Platform </div>
-        <div class="p-2"> <img src="/assets/images/031-chat.png" height="100"></div>
 
-         <!-- Button trigger modal -->
-<button type="button" class="btn btn-primary mt-3 learn" data-toggle="modal" data-target="#Onlinecaht9">
-    Learn More
-  </button>
   
   <!-- Modal -->
-  <div class="modal fade" id="Onlinecaht9" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal fade" id="updatemedl" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
@@ -1398,23 +1741,10 @@
       </div>
     </div>
   </div>
-        </div>
-    </div>
-</div>
-
-<div class="col-md-4 col-sm-6 col-xs-12">
-    <div class="card info-palete"> 
-        <div class="card-block text-center">
-        <div class="card-title">Invite others to join the platform</div>
-        <div class="p-2"> <img src="/assets/images/031-chat.png" height="100"></div>
-
-         <!-- Button trigger modal -->
-<button type="button" class="btn btn-primary mt-3 learn" data-toggle="modal" data-target="#Onlinecaht10">
-    Learn More
-  </button>
+       
   
   <!-- Modal -->
-  <div class="modal fade" id="Onlinecaht10" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal fade" id="invplat" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
@@ -1435,9 +1765,7 @@
       </div>
     </div>
   </div>
-        </div>
-    </div>
-</div>
+       
 </div>
 
 <div style="height: 300px">
@@ -1450,24 +1778,205 @@
 <!-- for pharmacy welcome div -->
 
 <div class="col-md-12 col-sm-12 col-xs-12" ng-if="checkLogIn.typeOfUser === 'Pharmacy'">
-    <div class="title pl-1" style="font-size: 18px">Welcome {{checkLogIn.name}}</div>
+   <h5 class="title pl-1">Welcome {{checkLogIn.name}}</h5>
+    <h6 class="pl-1 pt-2">Getting Started!</h6>
     <br><br>
-    <div class="container text-uppercase text-center">
-    <div class=" row">
-        <div class="col-md-4 col-sm-6 col-xs-12">
-            <div class="card info-palete"> 
-        <div class="card-block  text-center ">
-        <div class="card-title">What is Applinic to the Pharmacist?</div>
-          <div class="p-2"> <img src="/assets/images/applinic.png" height="80" width="310"></div>
+    <div class=" text-capitalize text-center">
 
-         <!-- Button trigger modal -->
-<button type="button" class="btn btn-primary mt-3" data-toggle="modal" data-target="#myModal">
-    Learn More
-    
-  </button>
-  
+
+
+
+<div class=" ">
+
+      
+<div class="">
+
+
+
+
+  <div class="row">  <!--palette start-->
+  <div class="col-md-4">
+   <div data-toggle="modal" data-target="#apppharma" class="card hoverr">
+   <div class="row pl-2">
+     <div class="col-md-1" style="padding: 11px 0;"><img src="/assets/images/img/007-consulting.png" height="30" width="100%"> </div>
+     <div class="col-md-11 pl-2 pt-1"><h6>What is Applinic to the Pharmacist? </h6></div>
+   </div></div>
+     </div>
+
+
+     <!--palette end-->
+
+        <!--palette start-->
+  <div class="col-md-4">
+   <div class="card hoverr" data-toggle="modal" data-target="#reapro">
+   <div class="row pl-2">
+     <div class="col-md-1"  style="padding: 11px 0;"><img src="/assets/images/img/016-worker.png" height="30" width="100%"> </div>
+     <div class="col-md-11 pl-2 pt-1"><h6>Be Listed Among the Real Professionals</h6></div>
+   </div></div>
+     </div>
+
+     <!--palette end-->
+
+  <!--palette start-->
+   <div class="col-md-4">
+   <div class="card hoverr" data-toggle="modal" data-target="#growbixx">
+   <div class="row pl-2">
+     <div class="col-md-1" style="padding: 11px 0;"><img src="/assets/images/img/036-sprout.png" height="30" width="100%"> </div>
+     <div class="col-md-11 pl-2 pt-1"><h6>Grow Your Business </h6></div>
+   </div></div>
+     </div>
+ 
+</div>
+     <!--palette end-->
+
+       <!--palette start-->
+<div class="row"> 
+       <div class="col-md-4">
+   <div class="card hoverr" data-toggle="modal" data-target="#managesoft">
+   <div class="row pl-2">
+     <div class="col-md-1" style="padding: 11px 0;"><img src="/assets/images/img/029-boss.png" height="30" width="100%"> </div>
+     <div class="col-md-11 pl-2 pt-1"><h6>Free Dashboard and Pharmacy Management Software</h6></div>
+   </div></div>
+     </div>
+
+     <!--palette end-->
+
+
+       <!--palette start-->
+  <div class="col-md-4">
+   <div class="card hoverr" data-toggle="modal" data-target="#Onlinecoaht">
+   <div class="row pl-2">
+     <div class="col-md-1" style="padding: 11px 0;"><img src="/assets/images/img/031-chat.png" height="30" width="100%"> </div>
+     <div class="col-md-11 pl-2 pt-1"><h6>Online Multimedia Communication</h6></div>
+   </div></div>
+     </div>
+
+     <!--palette end-->
+
+      <!--palette start-->
+  <div class="col-md-4">
+   <div class="card hoverr" data-toggle="modal" data-target="#Be Online Always ">
+   <div class="row pl-2">
+     <div class="col-md-1" style="padding: 11px 0;"><img src="/assets/images/img/030-conversation.png" height="30" width="100%"> </div>
+     <div class="col-md-11 pl-2 pt-1"><h6>Host or participate in video conference</h6></div>
+   </div></div>
+     </div>
+</div>
+     <!--palette end-->  
+
+      <!--palette start-->
+<div class="row"> 
+  <div class="col-md-4">
+   <div class="card hoverr" data-toggle="modal" data-target="#srtockre">
+   <div class="row pl-2">
+     <div class="col-md-1" style="padding: 11px 0;"><img src="/assets/images/img/list.png" height="30" width="100%"> </div>
+     <div class="col-md-11 pl-2 pt-1"><h6>Update Your Stock Regularly</h6></div>
+   </div></div>
+     </div>
+
+     <!--palette end-->
+
+     <!--palette start-->
+  <div class="col-md-4">
+   <div class="card hoverr" data-toggle="modal" data-target="#ewallettra">
+   <div class="row pl-2">
+     <div class="col-md-1" style="padding: 11px 0;"><img src="/assets/images/img/025-money.png" height="30" width="100%"> </div>
+     <div class="col-md-11 pl-2 pt-1"><h6>Check Your E-Wallet For Your Transactions</h6></div>
+   </div></div>
+     </div>
+
+     <!--palette end-->
+
+     <!--palette start-->
+  <div class="col-md-4">
+   <div class="card hoverr" data-toggle="modal" data-target="#epaydrugs">
+   <div class="row pl-2">
+     <div class="col-md-1" style="padding: 11px 0;"><img src="/assets/images/img/finddoctor.png" height="30" width="90%"> </div>
+     <div class="col-md-11 pl-2 pt-1"><h6>E- Payments for your drugs </h6></div>
+   </div></div>
+     </div>
+</div>
+     <!--palette end-->
+
+       <!--palette start-->
+<div class="row"> 
+  <div class="col-md-4">
+   <div class="card hoverr" data-toggle="modal" data-target="#helpewallet">
+   <div class="row pl-2">
+     <div class="col-md-1" style="padding: 11px 0;"><img src="/assets/images/img/027-online-pay.png" height="30" width="100%"> </div>
+     <div class="col-md-11 pl-2 pt-1"><h6>Help Customers Credit Their E-Wallets  </h6></div>
+   </div></div>
+     </div>
+
+     <!--palette end-->
+
+
+       <!--palette start-->
+  <div class="col-md-4">
+   <div class="card hoverr" data-toggle="modal" data-target="#ratingyo">
+   <div class="row pl-2">
+     <div class="col-md-1" style="padding: 11px 0;"><img src="/assets/images/img/017-rating.png" height="30" width="100%"> </div>
+     <div class="col-md-11 pl-2 pt-1"><h6>Your rating</h6></div>
+   </div></div>
+     </div>
+
+     <!--palette end-->
+
+
+
+       <!--palette start-->
+  <div class="col-md-4">
+   <div class="card hoverr" data-toggle="modal" data-target="#casshout">
+   <div class="row pl-2">
+     <div class="col-md-1" style="padding: 11px 0;"><img src="/assets/images/img/027-online-pay.png" height="30" width="100%"> </div>
+     <div class="col-md-11 pl-2 pt-1"><h6>Cash Out </h6></div>
+   </div></div>
+     </div>
+
+
+     <!--palette end-->
+
+
+
+</div>
+
+
+     <!--palette end-->
+
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class=" row">
+        
+          
   <!-- Modal -->
-  <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal fade" id="apppharma" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
@@ -1484,24 +1993,11 @@
       </div>
     </div>
   </div>
-        </div>
-    </div>
-</div>
 </div>
 
-<div class="col-md-4 col-sm-6 col-xs-12">
-    <div class="card info-palete"> 
-        <div class="card-block  text-center">
-        <div class="card-title">Be Listed Among the Real Professionals </div>
-         <div class="p-2"> <img src="/assets/images/009-doctor.png" height="100"></div>
 
-         <!-- Button trigger modal -->
-<button type="button" class="btn btn-primary mt-3 learn" data-toggle="modal" data-target="#accessl">
-    Learn More
-  </button>
-  
   <!-- Modal -->
-  <div class="modal fade" id="accessl" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal fade" id="reapro" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
@@ -1518,23 +2014,10 @@
       </div>
     </div>
   </div>
-        </div>
-    </div>
-</div>
 
-<div class="col-md-4 col-sm-6 col-xs-12">
-    <div class="card info-palete"> 
-        <div class="card-block text-center" >
-        <div class="card-title">Grow Your Business </div>
-       <div class="p-2"> <img src="/assets/images/036-sprout.png" height="100"></div>
-
-         <!-- Button trigger modal -->
-<button type="button" class="btn btn-primary mt-3 learn" data-toggle="modal" data-target="#growpa">
-    Learn More
-  </button>
   
   <!-- Modal -->
-  <div class="modal fade" id="growpa" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal fade" id="growbixx" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
@@ -1552,26 +2035,15 @@
     </div>
   </div>
         </div>
-    </div>
-</div>
-</div>
+    
 
 </div> <!-- row end -->
 
 <div class="row">
-<div class="col-md-4 col-sm-6 col-xs-12">
-    <div class="card info-palete"> 
-        <div class="card-block text-center">
-        <div class="card-title">Free Dashboard and Pharmacy Management Software</div>
-           <div class="p-2"> <img src="//assets/images/029-boss.png" height="100"></div>
 
-         <!-- Button trigger modal -->
-<button type="button" class="btn btn-primary mt-3 learn" data-toggle="modal" data-target="#enjoyfree">
-    Learn More
-  </button>
   
   <!-- Modal -->
-  <div class="modal fade" id="enjoyfree" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal fade" id="managesoft" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
@@ -1588,24 +2060,10 @@
       </div>
     </div>
   </div>
-        </div>
-    </div>
-</div>
+       
 
-
-<div class="col-md-4 col-sm-6 col-xs-12">
-    <div class="card info-palete"> 
-        <div class="card-block text-center">
-        <div class="card-title">Online Multimedia Communication</div>
-        <div class="p-2"> <img src="/assets/images/031-chat.png" height="100"></div>
-
-         <!-- Button trigger modal -->
-<button type="button" class="btn btn-primary mt-3 learn" data-toggle="modal" data-target="#Onlinecaht">
-    Learn More
-  </button>
-  
   <!-- Modal -->
-  <div class="modal fade" id="Onlinecaht" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal fade" id="Onlinecoaht" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
@@ -1622,24 +2080,11 @@
       </div>
     </div>
   </div>
-        </div>
-    </div>
-</div>
-
-<div class="col-md-4 col-sm-6 col-xs-12">
-    <div class="card info-palete"> 
-        <div class="card-block text-center">
-        <div class="card-title text-center">Be Online Always</div>
         
-         <div class="p-2"> <img src="/assets/images/030-conversation.png" height="100"></div>
 
-         <!-- Button trigger modal -->
-<button type="button" class="btn btn-primary mt-3 learn" data-toggle="modal" data-target="#hostpa">
-    Learn More
-  </button>
-  
+
   <!-- Modal -->
-  <div class="modal fade" id="hostpa" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal fade" id="onlinalae" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
@@ -1656,25 +2101,12 @@
       </div>
     </div>
   </div>
-        </div>
-    </div>
-</div>
+        
 </div> <!-- row end -->
 
-<div class="row">
-<div class="col-md-4 col-sm-6 col-xs-12">
-    <div class="card info-palete"> 
-        <div class="card-block text-center">
-        <div class="card-title">Online Multimedia Communication</div>
-        <div class="p-2"> <img src="/assets/images/031-chat.png" height="100"></div>
-
-         <!-- Button trigger modal -->
-<button type="button" class="btn btn-primary mt-3 learn" data-toggle="modal" data-target="#Onlinecaht">
-    Learn More
-  </button>
-  
+<div class="row">  
   <!-- Modal -->
-  <div class="modal fade" id="Onlinecaht" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal fade" id="mediacom" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
@@ -1691,24 +2123,10 @@
       </div>
     </div>
   </div>
-        </div>
-    </div>
-</div>
-
-<div class="col-md-4 col-sm-6 col-xs-12">
-    <div class="card info-palete"> 
-        <div class="card-block text-center">
-        <div class="card-title text-center">Update Your Stock Regularly </div>
         
-         <div class="p-2"> <img src="/assets/images/030-conversation.png" height="100"></div>
 
-         <!-- Button trigger modal -->
-<button type="button" class="btn btn-primary mt-3 learn" data-toggle="modal" data-target="#hostpa2">
-    Learn More
-  </button>
-  
   <!-- Modal -->
-  <div class="modal fade" id="hostpa2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal fade" id="srtockre" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
@@ -1724,26 +2142,11 @@
       </div>
     </div>
   </div>
-        </div>
-    </div>
-</div>
+       
 
-
-
-<div class="col-md-4 col-sm-6 col-xs-12">
-    <div class="card info-palete"> 
-        <div class="card-block text-center">
-        <div class="card-title text-center">Check Your E-Wallet For Your Transactions</div>
-        
-        <div class="p-2"> <img src="/assets/images/026-credit-card.png" height="100"></div>
-
-         <!-- Button trigger modal -->
-<button type="button" class="btn btn-primary mt-3 learn" data-toggle="modal" data-target="#myModal2">
-    Learn More
-  </button>
   
   <!-- Modal -->
-  <div class="modal fade" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal fade" id="ewallettra" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
@@ -1763,27 +2166,14 @@
       </div>
     </div>
   </div>
-        </div>
-    </div>
-</div>
+       
 </div> <!-- end row -->
 
 <div class="row">
 
-<div class="col-md-4 col-sm-6 col-xs-12">
-    <div class="card info-palete"> 
-        <div class="card-block text-center">
-        <div class="card-title text-center">E- Payments for your drugs</div>
-        
-        <div class="p-2"> <img src="/assets/images/025-money.png" height="100"></div>
 
-         <!-- Button trigger modal -->
-<button type="button" class="btn btn-primary mt-3 learn" data-toggle="modal" data-target="#earnmon">
-    Learn More
-  </button>
-  
   <!-- Modal -->
-  <div class="modal fade" id="earnmon" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal fade" id="epaydrugs" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
@@ -1799,24 +2189,11 @@
       </div>
     </div>
   </div>
-        </div>
-    </div>
-</div>
+       
 
-<div class="col-md-4 col-sm-6 col-xs-12">
-    <div class="card info-palete"> 
-        <div class="card-block text-center">
-        <div class="card-title text-center">Help Customers Credit Their E-Wallets</div>
-        
-       <div class="p-2"> <img src="/assets/images/payment.png" height="100"></div>
-
-         <!-- Button trigger modal -->
-<button type="button" class="btn btn-primary mt-3 learn" data-toggle="modal" data-target="#myModal3">
-    Learn More
-  </button>
   
   <!-- Modal -->
-  <div class="modal fade" id="myModal3" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal fade" id="helpewallet" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
@@ -1835,21 +2212,14 @@
     </div>
   </div>
         </div>
-    </div>
+  </div>
 </div>
 </div>
 
-<div class="col-md-4 col-sm-6 col-xs-12">
-    <div class="card info-palete"> 
-        <div class="card-block text-center">
-        <div class="card-title text-center">Your Rating</div>
-        <div class="display-2 text-primary p-1"><img src="/assets/images/payment.png"></div>
-        <button type="button" class="btn btn-primary mt-3 learn" data-toggle="modal" data-target="#platft">
-    Learn More
-  </button>
+
   
   <!-- Modal -->
-  <div class="modal fade" id="platft" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal fade" id="ratingyo" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
@@ -1867,25 +2237,12 @@
       </div>
     </div>
   </div>
-    </div>
-</div>
+  
 
-</div>
 
-<div class="col-md-4 col-sm-6 col-xs-12">
-    <div class="card info-palete"> 
-        <div class="card-block text-center">
-        <div class="card-title text-center">Cash Out </div>
-        
-      <div class="p-2"> <img src="/assets/images/027-online-pay.png" height="100"></div>
-
-         <!-- Button trigger modal -->
-<button type="button" class="btn btn-primary mt-3 learn" data-toggle="modal" data-target="#appoint">
-    Learn More
-  </button>
   
   <!-- Modal -->
-  <div class="modal fade" id="appoint" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal fade" id="casshout" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
@@ -1902,18 +2259,12 @@
       </div>
     </div>
   </div>
-        </div>
-    </div>
-</div>
+       
 
 </div>
 
 
-<div style="height: 300px"></div>
-</div>
 
-</div>
-</div>
 
 
 
@@ -1922,24 +2273,201 @@
 
 
 <div class="col-md-12 col-sm-12 col-xs-12" ng-if="checkLogIn.typeOfUser === 'Laboratory'">
-    <div class="title pl-1" style="font-size: 18px">Welcome {{checkLogIn.name}}</div>
+    <h5 class="title pl-1">Welcome {{checkLogIn.name}}</h5>
+    <h6 class="pl-1 pt-2">Getting Started!</h6>
     <br><br>
-     <div class="container text-uppercase text-center">
-    <div class=" row">
-        <div class="col-md-4 col-sm-6 col-xs-12">
-            <div class="card info-palete"> 
-        <div class="card-block  text-center ">
-        <div class="card-title">What is Applinic to the Laboratory Scientist?</div>
-          <div class="p-2"> <img src="/assets/images/applinic.png" height="80" width="310"></div>
+     <div class="container text-capitalize text-center">
 
-         <!-- Button trigger modal -->
-<button type="button" class="btn btn-primary mt-3" data-toggle="modal" data-target="#myModal">
-    Learn More
-    
-  </button>
+
+
+
+<div class="row doctor">
+
+      
+<div class="col-md-12">
+
+
+
+
+  <div class="row">  <!--palette start-->
+  <div class="col-md-4">
+   <div data-toggle="modal" data-target="#laboratory" class="card hoverr">
+   <div class="row pl-2">
+     <div class="col-md-1" style="padding: 11px 0;"><img src="/assets/images/img/007-consulting.png" height="30" width="100%"> </div>
+     <div class="col-md-11 pl-2 pt-1"><h6>What is Applinic to the Laboratory Scientist?</h6></div>
+   </div></div>
+     </div>
+
+
+     <!--palette end-->
+
+        <!--palette start-->
+  <div class="col-md-4">
+   <div class="card hoverr" data-toggle="modal" data-target="#realpro">
+   <div class="row pl-2">
+     <div class="col-md-1"  style="padding: 11px 0;"><img src="/assets/images/img/016-worker.png" height="30" width="100%"> </div>
+     <div class="col-md-11 pl-2 pt-1"><h6>Be Listed Among the Real Professionals</h6></div>
+   </div></div>
+     </div>
+
+     <!--palette end-->
+
+  <!--palette start-->
+   <div class="col-md-4">
+   <div class="card hoverr" data-toggle="modal" data-target="#enAccount">
+   <div class="row pl-2">
+     <div class="col-md-1" style="padding: 11px 0;"><img src="/assets/images/img/029-boss.png" height="30" width="100%"> </div>
+     <div class="col-md-11 pl-2 pt-1"><h6>Free Dashboard and Laboratory Management Software</h6></div>
+   </div></div>
+     </div>
+ 
+</div>
+     <!--palette end-->
+
+       <!--palette start-->
+<div class="row"> 
+       <div class="col-md-4">
+   <div class="card hoverr" data-toggle="modal" data-target="#growyob">
+   <div class="row pl-2">
+     <div class="col-md-1" style="padding: 11px 0;"><img src="/assets/images/img/036-sprout.png" height="30" width="100%"> </div>
+     <div class="col-md-11 pl-2 pt-1"><h6>Grow Your Business </h6></div>
+   </div></div>
+     </div>
+
+     <!--palette end-->
+
+
+       <!--palette start-->
+  <div class="col-md-4">
+   <div class="card hoverr" data-toggle="modal" data-target="#Onlinecom">
+   <div class="row pl-2">
+     <div class="col-md-1" style="padding: 11px 0;"><img src="/assets/images/img/031-chat.png" height="30" width="100%"> </div>
+     <div class="col-md-11 pl-2 pt-1"><h6>Online Multimedia Communication</h6></div>
+   </div></div>
+     </div>
+
+     <!--palette end-->
+
+      <!--palette start-->
+  <div class="col-md-4">
+   <div class="card hoverr" data-toggle="modal" data-target="#onlialwa">
+   <div class="row pl-2">
+     <div class="col-md-1" style="padding: 11px 0;"><img src="/assets/images/img/030-conversation.png" height="30" width="100%"> </div>
+     <div class="col-md-11 pl-2 pt-1"><h6>Be Online Always</h6></div>
+   </div></div>
+     </div>
+</div>
+     <!--palette end-->  
+
+      <!--palette start-->
+<div class="row"> 
+  <div class="col-md-4">
+   <div class="card hoverr" data-toggle="modal" data-target="#epayser">
+   <div class="row pl-2">
+     <div class="col-md-1" style="padding: 11px 0;"><img src="/assets/images/img/list.png" height="30" width="100%"> </div>
+     <div class="col-md-11 pl-2 pt-1"><h6>E- Payments for your services</h6></div>
+   </div></div>
+     </div>
+
+     <!--palette end-->
+
+     <!--palette start-->
+  <div class="col-md-4">
+   <div class="card hoverr" data-toggle="modal" data-target="#etransac">
+   <div class="row pl-2">
+     <div class="col-md-1" style="padding: 11px 0;"><img src="/assets/images/img/025-money.png" height="30" width="100%"> </div>
+     <div class="col-md-11 pl-2 pt-1"><h6>Check Your E-Wallet For Your Transactions</h6></div>
+   </div></div>
+     </div>
+
+     <!--palette end-->
+
+     <!--palette start-->
+  <div class="col-md-4">
+   <div class="card hoverr" data-toggle="modal" data-target="#cashout">
+   <div class="row pl-2">
+     <div class="col-md-1" style="padding: 11px 0;"><img src="/assets/images/img/finddoctor.png" height="30" width="90%"> </div>
+     <div class="col-md-11 pl-2 pt-1"><h6>Cash Out</h6></div>
+   </div></div>
+     </div>
+</div>
+     <!--palette end-->
+
+       <!--palette start-->
+<div class="row"> 
+  <div class="col-md-4">
+   <div class="card hoverr" data-toggle="modal" data-target="#customercred">
+   <div class="row pl-2">
+     <div class="col-md-1" style="padding: 11px 0;"><img src="/assets/images/img/028-contract.png" height="30" width="100%"> </div>
+     <div class="col-md-11 pl-2 pt-1"><h6>Help Customers Credit Their E-Walletsr</h6></div>
+   </div></div>
+     </div>
+
+     <!--palette end-->
+
+
+       <!--palette start-->
+  <div class="col-md-4">
+   <div class="card hoverr" data-toggle="modal" data-target="#rentcons">
+   <div class="row pl-2">
+     <div class="col-md-1" style="padding: 11px 0;"><img src="/assets/images/img/user-search.png" height="30" width="100%"> </div>
+     <div class="col-md-11 pl-2 pt-1"><h6>Rent your Consulting Rooms for a Fee and Patronage</h6></div>
+   </div></div>
+     </div>
+
+     <!--palette end-->
+
+
+
+
+
+
+       <!--palette start-->
+  <div class="col-md-4">
+   <div class="card hoverr" data-toggle="modal" data-target="#ratingy">
+   <div class="row pl-2">
+     <div class="col-md-1" style="padding: 11px 0;"><img src="/assets/images/img/017-rating.png" height="30" width="100%"> </div>
+     <div class="col-md-11 pl-2 pt-1"><h6>Your rating</h6></div>
+   </div></div>
+     </div>
+</div>
+     <!--palette end-->
+
+
+</div>
+
+
+     <!--palette end-->
+
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class=" row">
+       
   
   <!-- Modal -->
-  <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal fade" id="laboratory" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
@@ -1957,23 +2485,11 @@
     </div>
   </div>
         </div>
-    </div>
-</div>
-</div>
+  
 
-<div class="col-md-4 col-sm-6 col-xs-12">
-    <div class="card info-palete"> 
-        <div class="card-block  text-center">
-        <div class="card-title">Be Listed Among the Real Professionals </div>
-         <div class="p-2"> <img src="/assets/images/009-doctor.png" height="100"></div>
-
-         <!-- Button trigger modal -->
-<button type="button" class="btn btn-primary mt-3 learn" data-toggle="modal" data-target="#accessl">
-    Learn More
-  </button>
   
   <!-- Modal -->
-  <div class="modal fade" id="accessl" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal fade" id="realpro" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
@@ -1990,23 +2506,10 @@
       </div>
     </div>
   </div>
-        </div>
-    </div>
-</div>
+     
 
-<div class="col-md-4 col-sm-6 col-xs-12">
-    <div class="card info-palete"> 
-        <div class="card-block text-center" >
-        <div class="card-title">Grow Your Business </div>
-       <div class="p-2"> <img src="/assets/images/036-sprout.png" height="100"></div>
-
-         <!-- Button trigger modal -->
-<button type="button" class="btn btn-primary mt-3 learn" data-toggle="modal" data-target="#growpa">
-    Learn More
-  </button>
-  
   <!-- Modal -->
-  <div class="modal fade" id="growpa" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal fade" id="growyo" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
@@ -2024,26 +2527,15 @@
     </div>
   </div>
         </div>
-    </div>
-</div>
-</div>
+   
 
 </div> <!-- row end -->
 
 <div class="row">
-<div class="col-md-4 col-sm-6 col-xs-12">
-    <div class="card info-palete"> 
-        <div class="card-block text-center">
-        <div class="card-title">Free Dashboard and Laboratory Management Software</div>
-           <div class="p-2"> <img src="//assets/images/029-boss.png" height="100"></div>
 
-         <!-- Button trigger modal -->
-<button type="button" class="btn btn-primary mt-3 learn" data-toggle="modal" data-target="#enjoyfree">
-    Learn More
-  </button>
   
   <!-- Modal -->
-  <div class="modal fade" id="enjoyfree" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal fade" id="enAccount" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
@@ -2060,24 +2552,12 @@
       </div>
     </div>
   </div>
-        </div>
-    </div>
-</div>
+      
 
 
-<div class="col-md-4 col-sm-6 col-xs-12">
-    <div class="card info-palete"> 
-        <div class="card-block text-center">
-        <div class="card-title">Online Multimedia Communication</div>
-        <div class="p-2"> <img src="/assets/images/031-chat.png" height="100"></div>
 
-         <!-- Button trigger modal -->
-<button type="button" class="btn btn-primary mt-3 learn" data-toggle="modal" data-target="#Onlinecaht">
-    Learn More
-  </button>
-  
   <!-- Modal -->
-  <div class="modal fade" id="Onlinecaht" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal fade" id="Onlinecom" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
@@ -2094,24 +2574,12 @@
       </div>
     </div>
   </div>
-        </div>
-    </div>
-</div>
+       
 
-<div class="col-md-4 col-sm-6 col-xs-12">
-    <div class="card info-palete"> 
-        <div class="card-block text-center">
-        <div class="card-title text-center">Be Online Always</div>
-        
-         <div class="p-2"> <img src="/assets/images/030-conversation.png" height="100"></div>
 
-         <!-- Button trigger modal -->
-<button type="button" class="btn btn-primary mt-3 learn" data-toggle="modal" data-target="#hostpa">
-    Learn More
-  </button>
   
   <!-- Modal -->
-  <div class="modal fade" id="hostpa" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal fade" id="onlialwa" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
@@ -2127,28 +2595,17 @@
         </div>
       </div>
     </div>
-  </div>
-        </div>
-    </div>
+ 
 </div>
 </div> <!-- row end -->
 
 <div class="row">
 
-<div class="col-md-4 col-sm-6 col-xs-12">
-    <div class="card info-palete"> 
-        <div class="card-block text-center">
-        <div class="card-title text-center">E- Payments for your services</div>
-        
-        <div class="p-2"> <img src="/assets/images/025-money.png" height="100"></div>
 
-         <!-- Button trigger modal -->
-<button type="button" class="btn btn-primary mt-3 learn" data-toggle="modal" data-target="#earnmon">
-    Learn More
-  </button>
+
   
   <!-- Modal -->
-  <div class="modal fade" id="earnmon" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal fade" id="epayser" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
@@ -2161,28 +2618,17 @@
              Most payments by customers for products and services on the platform will be made through the e-wallet. When you render a service, the customer’s account will be debited to credit yours. 
             Your credit can be cashed in two ways – direct cash-out or transfer to others in exchange for cash.  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
           
-        </div>
-      </div>
-    </div>
+       
   </div>
         </div>
     </div>
 </div>
 
-<div class="col-md-4 col-sm-6 col-xs-12">
-    <div class="card info-palete"> 
-        <div class="card-block text-center">
-        <div class="card-title text-center">Check Your E-Wallet For Your Transactions</div>
-        
-        <div class="p-2"> <img src="/assets/images/026-credit-card.png" height="100"></div>
 
-         <!-- Button trigger modal -->
-<button type="button" class="btn btn-primary mt-3 learn" data-toggle="modal" data-target="#myModal2">
-    Learn More
-  </button>
+     
   
   <!-- Modal -->
-  <div class="modal fade" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal fade" id="etransac" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
@@ -2198,28 +2644,16 @@
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
           
-        </div>
-      </div>
-    </div>
   </div>
         </div>
     </div>
 </div>
 
-<div class="col-md-4 col-sm-6 col-xs-12">
-    <div class="card info-palete"> 
-        <div class="card-block text-center">
-        <div class="card-title text-center">Cash Out </div>
-        
-      <div class="p-2"> <img src="/assets/images/027-online-pay.png" height="100"></div>
 
-         <!-- Button trigger modal -->
-<button type="button" class="btn btn-primary mt-3 learn" data-toggle="modal" data-target="#appoint">
-    Learn More
-  </button>
+      
   
   <!-- Modal -->
-  <div class="modal fade" id="appoint" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal fade" id="cashout" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
@@ -2236,27 +2670,16 @@
       </div>
     </div>
   </div>
-        </div>
-    </div>
-</div>
+       
 </div>
 
 <div class="row">
 
-<div class="col-md-4 col-sm-6 col-xs-12">
-    <div class="card info-palete"> 
-        <div class="card-block text-center">
-        <div class="card-title text-center">Help Customers Credit Their E-Wallets</div>
-        
-       <div class="p-2"> <img src="/assets/images/payment.png" height="100"></div>
 
-         <!-- Button trigger modal -->
-<button type="button" class="btn btn-primary mt-3 learn" data-toggle="modal" data-target="#myModal3">
-    Learn More
-  </button>
+      
   
   <!-- Modal -->
-  <div class="modal fade" id="myModal3" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal fade" id="customercred" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
@@ -2273,26 +2696,13 @@
         </div>
       </div>
     </div>
-  </div>
-        </div>
-    </div>
+ 
 </div>
 </div>
 
-<div class="col-md-4 col-sm-6 col-xs-12">
-    <div class="card info-palete"> 
-        <div class="card-block text-center">
-        <div class="card-title text-center">Rent your Consulting Rooms for a Fee and Patronage</div>
-        
-       <div class="p-2"> <img src="/assets/images/payment.png" height="100"></div>
-
-         <!-- Button trigger modal -->
-<button type="button" class="btn btn-primary mt-3 learn" data-toggle="modal" data-target="#myModal5">
-    Learn More
-  </button>
   
   <!-- Modal -->
-  <div class="modal fade" id="myModal5" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal fade" id="rentcons" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
@@ -2308,22 +2718,12 @@
         </div>
       </div>
     </div>
-  </div>
-        </div>
-    </div>
+ 
 </div>
 </div>
-<div class="col-md-4 col-sm-6 col-xs-12">
-    <div class="card info-palete"> 
-        <div class="card-block text-center">
-        <div class="card-title text-center">Your Rating</div>
-        <div class="display-2 text-primary p-1"><img src="/assets/images/payment.png"></div>
-        <button type="button" class="btn btn-primary mt-3 learn" data-toggle="modal" data-target="#platft">
-    Learn More
-  </button>
-  
+
   <!-- Modal -->
-  <div class="modal fade" id="platft" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal fade" id="ratingy" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
@@ -2341,10 +2741,7 @@
       </div>
     </div>
   </div>
-    </div>
-</div>
-
-</div>
+   
 
 </div>
 
@@ -2360,21 +2757,158 @@
 <!-- Radiology welcome div -->
 
 <div class="col-md-12 col-sm-12 col-xs-12" ng-if="checkLogIn.typeOfUser === 'Radiology'">
-    <div class="title pl-1" style="font-size: 18px">Welcome {{checkLogIn.name}}</div>
-    <br><br>
-    <div class="container text-uppercase text-center">
-    <div class=" row">
-        <div class="col-md-4 col-sm-6 col-xs-12">
-            <div class="card info-palete"> 
-        <div class="card-block  text-center ">
-        <div class="card-title">What is Applinic to the Radiologist and Imaging Scientist?</div>
-          <div class="p-2"> <img src="/assets/images/applinic.png" height="80" width="310"></div>
 
-         <!-- Button trigger modal -->
-<button type="button" class="btn btn-primary mt-3" data-toggle="modal" data-target="#myModal">
-    Learn More
-    
-  </button>
+    <h5 class="title pl-1">Welcome {{checkLogIn.name}}</h5>
+    <h6 class="pl-1 pt-2">Getting Started!</h6>
+    <br><br>
+    <div class="container">
+        <div class="row doctor">
+            <div class="col-md-12">
+                    <div class="row">  <!--palette start-->
+                  <div class="col-md-4">
+                   <div data-toggle="modal" data-target="#myModal" class="card hoverr">
+                   <div class="row pl-2">
+                     <div class="col-md-1" style="padding: 11px 0;"><img src="/assets/images/img/007-consulting.png" height="30" width="100%"> </div>
+                     <div class="col-md-11 pl-2 pt-1"><h6>What is Applinic to the Radiologist?</h6></div>
+                   </div></div>
+                     </div>
+
+
+                     <!--palette end-->
+
+                        <!--palette start-->
+                  <div class="col-md-4">
+                   <div class="card hoverr" data-toggle="modal" data-target="#access2">
+                   <div class="row pl-2">
+                     <div class="col-md-1"  style="padding: 11px 0;"><img src="/assets/images/img/016-worker.png" height="30" width="100%"> </div>
+                     <div class="col-md-11 pl-2 pt-1"><h6>Be Listed Among the Real Professionals</h6></div>
+                   </div></div>
+                     </div>
+
+                     <!--palette end-->
+
+                  <!--palette start-->
+                   <div class="col-md-4">
+                   <div class="card hoverr" data-toggle="modal" data-target="#growpa2">
+                   <div class="row pl-2">
+                     <div class="col-md-1" style="padding: 11px 0;"><img src="/assets/images/img/029-boss.png" height="30" width="100%"> </div>
+                     <div class="col-md-11 pl-2 pt-1"><h6>Grow Your Business</h6></div>
+                   </div></div>
+                     </div>
+                 
+                </div>
+                     <!--palette end-->
+
+                       <!--palette start-->
+                <div class="row">                
+                        <div class="col-md-4">
+                   <div class="card hoverr" data-toggle="modal" data-target="#Search">
+                   <div class="row pl-2">
+                     <div class="col-md-1" style="padding: 11px 0;"><img src="/assets/images/img/015-magnifier.png" height="30" width="100%"> </div>
+                     <div class="col-md-11 pl-2 pt-1"><h6>The search functions</h6></div>
+                   </div></div>
+                     </div>
+                       <!--palette start-->
+                  <div class="col-md-4">
+                   <div class="card hoverr" data-toggle="modal" data-target="#enjoyfree2">
+                   <div class="row pl-2">
+                     <div class="col-md-1" style="padding: 11px 0;"><img src="/assets/images/img/031-chat.png" height="30" width="100%"> </div>
+                     <div class="col-md-11 pl-2 pt-1"><h6>Free Radiology Management Software</h6></div>
+                   </div></div>
+                     </div>
+
+                     <!--palette end-->
+
+                      <!--palette start-->
+                  <div class="col-md-4">
+                   <div class="card hoverr" data-toggle="modal" data-target="#Onlinecaht2">
+                   <div class="row pl-2">
+                     <div class="col-md-1" style="padding: 11px 0;"><img src="/assets/images/img/030-conversation.png" height="30" width="100%"> </div>
+                     <div class="col-md-11 pl-2 pt-1"><h6>Online Multimedia Communication</h6></div>
+                   </div></div>
+                     </div>
+                </div>
+
+  
+                     <!--palette end-->  
+
+                      <!--palette start-->
+                <div class="row"> 
+                  <div class="col-md-4">
+                   <div class="card hoverr" data-toggle="modal" data-target="#hostpa2">
+                   <div class="row pl-2">
+                     <div class="col-md-1" style="padding: 11px 0;"><img src="/assets/images/img/list.png" height="30" width="100%"> </div>
+                     <div class="col-md-11 pl-2 pt-1"><h6>Be Online Always</h6></div>
+                   </div></div>
+                     </div>
+  
+
+                     <!--palette end-->
+
+                     <!--palette start-->
+                  <div class="col-md-4">
+                   <div class="card hoverr" data-toggle="modal" data-target="#earnmon2">
+                   <div class="row pl-2">
+                     <div class="col-md-1" style="padding: 11px 0;"><img src="/assets/images/img/025-money.png" height="30" width="100%"> </div>
+                     <div class="col-md-11 pl-2 pt-1"><h6>E- Payments for your services</h6></div>
+                   </div></div>
+                     </div>
+  
+                     <!--palette end-->
+
+                     <!--palette start-->
+                  <div class="col-md-4">
+                   <div class="card hoverr" data-toggle="modal" data-target="#myModalRadio">
+                   <div class="row pl-2">
+                     <div class="col-md-1" style="padding: 11px 0;"><img src="/assets/images/026-credit-card.png" height="30" width="90%"> </div>
+                     <div class="col-md-11 pl-2 pt-1"><h6>Check Your E-Wallet For Your Transactions</h6></div>
+                   </div></div>
+                     </div>
+                </div>
+                     <!--palette end-->
+
+               
+
+                       <!--palette start-->
+                <div class="row"> 
+                  <div class="col-md-4">
+                   <div class="card hoverr" data-toggle="modal" data-target="#appoint2">
+                   <div class="row pl-2">
+                     <div class="col-md-1" style="padding: 11px 0;"><img src="/assets/images/027-online-pay.png" height="30" width="100%"> </div>
+                     <div class="col-md-11 pl-2 pt-1"><h6>Cash Out</h6></div>
+                   </div></div>
+                     </div>
+
+                     <!--palette end-->
+
+
+                       <!--palette start-->
+                  <div class="col-md-4">
+                   <div class="card hoverr" data-toggle="modal" data-target="#myModal3">
+                   <div class="row pl-2">
+                     <div class="col-md-1" style="padding: 11px 0;"><img src="/assets/images/payment.png" height="30" width="100%"> </div>
+                     <div class="col-md-11 pl-2 pt-1"><h6>Help Customers Credit Their E-Wallets</h6></div>
+                   </div></div>
+                     </div>
+
+                     <!--palette end-->
+
+
+                     <!--palette start-->
+                  <div class="col-md-4">
+                   <div class="card hoverr" data-toggle="modal" data-target="#platft2">
+                   <div class="row pl-2">
+                     <div class="col-md-1" style="padding: 11px 0;"><img src="/assets/images/img/017-rating.png" height="30" width="100%"> </div>
+                     <div class="col-md-11 pl-2 pt-1"><h6>Your Rating</h6></div>
+                   </div></div>
+                     </div>
+                </div>
+                     <!--palette end-->
+            </div>
+        </div>
+    </div>
+
+  
   
   <!-- Modal -->
   <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -2394,24 +2928,22 @@
       </div>
     </div>
   </div>
-        </div>
-    </div>
 </div>
-</div>
+ 
 
-<div class="col-md-4 col-sm-6 col-xs-12">
+<!--<div class="col-md-4 col-sm-6 col-xs-12">
     <div class="card info-palete"> 
         <div class="card-block  text-center">
         <div class="card-title">Be Listed Among the Real Professionals </div>
          <div class="p-2"> <img src="/assets/images/009-doctor.png" height="100"></div>
 
-         <!-- Button trigger modal -->
-<button type="button" class="btn btn-primary mt-3 learn" data-toggle="modal" data-target="#accessl">
+         
+<button type="button" class="btn btn-primary btn-block mt-1 learn" data-toggle="modal" data-target="#accessl">
     Learn More
-  </button>
+  </button>-->
   
   <!-- Modal -->
-  <div class="modal fade" id="accessl" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal fade" id="access2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
@@ -2429,23 +2961,22 @@
       </div>
     </div>
   </div>
-        </div>
-    </div>
-</div>
 
-<div class="col-md-4 col-sm-6 col-xs-12">
+    
+
+<!--<div class="col-md-4 col-sm-6 col-xs-12">
     <div class="card info-palete"> 
         <div class="card-block text-center" >
         <div class="card-title">Grow Your Business </div>
        <div class="p-2"> <img src="/assets/images/036-sprout.png" height="100"></div>
 
-         <!-- Button trigger modal -->
-<button type="button" class="btn btn-primary mt-3 learn" data-toggle="modal" data-target="#growpa">
+        
+<button type="button" class="btn btn-primary btn-block mt-1 learn" data-toggle="modal" data-target="#growpa">
     Learn More
-  </button>
+  </button>-->
   
   <!-- Modal -->
-  <div class="modal fade" id="growpa" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal fade" id="growpa2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
@@ -2470,19 +3001,19 @@
 </div> <!-- row end -->
 
 <div class="row">
-<div class="col-md-4 col-sm-6 col-xs-12">
+<!--<div class="col-md-4 col-sm-6 col-xs-12">
     <div class="card info-palete"> 
         <div class="card-block text-center">
-        <div class="card-title">Free Dashboard and Pharmacy Management Software</div>
+        <div class="card-title">Free Dashboard and Radiology Management Software</div>
            <div class="p-2"> <img src="//assets/images/029-boss.png" height="100"></div>
 
-         <!-- Button trigger modal -->
-<button type="button" class="btn btn-primary mt-3 learn" data-toggle="modal" data-target="#enjoyfree">
+         
+<button type="button" class="btn btn-primary btn-block mt-1 learn" data-toggle="modal" data-target="#enjoyfree">
     Learn More
-  </button>
+  </button>-->
   
   <!-- Modal -->
-  <div class="modal fade" id="enjoyfree" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal fade" id="enjoyfree2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
@@ -2503,19 +3034,19 @@
 </div>
 
 
-<div class="col-md-4 col-sm-6 col-xs-12">
+<!--<div class="col-md-4 col-sm-6 col-xs-12">
     <div class="card info-palete"> 
         <div class="card-block text-center">
         <div class="card-title">Online Multimedia Communication</div>
         <div class="p-2"> <img src="/assets/images/031-chat.png" height="100"></div>
 
-         <!-- Button trigger modal -->
-<button type="button" class="btn btn-primary mt-3 learn" data-toggle="modal" data-target="#Onlinecaht">
+         
+<button type="button" class="btn btn-primary btn-block mt-1 learn" data-toggle="modal" data-target="#Onlinecaht">
     Learn More
-  </button>
+  </button>-->
   
   <!-- Modal -->
-  <div class="modal fade" id="Onlinecaht" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal fade" id="Onlinecaht2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
@@ -2536,20 +3067,20 @@
     </div>
 </div>
 
-<div class="col-md-4 col-sm-6 col-xs-12">
+<!--<div class="col-md-4 col-sm-6 col-xs-12">
     <div class="card info-palete"> 
         <div class="card-block text-center">
         <div class="card-title text-center">Be Online Always</div>
         
          <div class="p-2"> <img src="/assets/images/030-conversation.png" height="100"></div>
 
-         <!-- Button trigger modal -->
-<button type="button" class="btn btn-primary mt-3 learn" data-toggle="modal" data-target="#hostpa">
+        
+<button type="button" class="btn btn-primary btn-block mt-1 learn" data-toggle="modal" data-target="#hostpa2">
     Learn More
-  </button>
+  </button>-->
   
   <!-- Modal -->
-  <div class="modal fade" id="hostpa" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal fade" id="hostpa2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
@@ -2573,20 +3104,20 @@
 
 <div class="row">
 
-<div class="col-md-4 col-sm-6 col-xs-12">
+<!--<div class="col-md-4 col-sm-6 col-xs-12">
     <div class="card info-palete"> 
         <div class="card-block text-center">
         <div class="card-title text-center">E- Payments for your services</div>
         
         <div class="p-2"> <img src="/assets/images/025-money.png" height="100"></div>
 
-         <!-- Button trigger modal -->
-<button type="button" class="btn btn-primary mt-3 learn" data-toggle="modal" data-target="#earnmon">
+        
+<button type="button" class="btn btn-primary btn-block mt-1 learn" data-toggle="modal" data-target="#earnmon2">
     Learn More
-  </button>
+  </button>-->
   
   <!-- Modal -->
-  <div class="modal fade" id="earnmon" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal fade" id="earnmon2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
@@ -2607,20 +3138,20 @@
     </div>
 </div>
 
-<div class="col-md-4 col-sm-6 col-xs-12">
+<!--<div class="col-md-4 col-sm-6 col-xs-12">
     <div class="card info-palete"> 
         <div class="card-block text-center">
         <div class="card-title text-center">Check Your E-Wallet For Your Transactions</div>
         
         <div class="p-2"> <img src="/assets/images/026-credit-card.png" height="100"></div>
 
-         <!-- Button trigger modal -->
-<button type="button" class="btn btn-primary mt-3 learn" data-toggle="modal" data-target="#myModal2">
+         
+<button type="button" class="btn btn-primary btn-block mt-1 learn" data-toggle="modal" data-target="#myModalRadio">
     Learn More
-  </button>
+  </button>-->
   
   <!-- Modal -->
-  <div class="modal fade" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal fade" id="myModalRadio" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
@@ -2644,20 +3175,20 @@
     </div>
 </div>
 
-<div class="col-md-4 col-sm-6 col-xs-12">
+<!--<div class="col-md-4 col-sm-6 col-xs-12">
     <div class="card info-palete"> 
         <div class="card-block text-center">
         <div class="card-title text-center">Cash Out </div>
         
       <div class="p-2"> <img src="/assets/images/027-online-pay.png" height="100"></div>
 
-         <!-- Button trigger modal -->
-<button type="button" class="btn btn-primary mt-3 learn" data-toggle="modal" data-target="#appoint">
+         
+<button type="button" class="btn btn-primary btn-block mt-1 learn" data-toggle="modal" data-target="#appoint2">
     Learn More
-  </button>
+  </button>-->
   
   <!-- Modal -->
-  <div class="modal fade" id="appoint" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal fade" id="appoint2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
@@ -2680,17 +3211,17 @@
 
 <div class="row">
 
-<div class="col-md-4 col-sm-6 col-xs-12">
+<!--<div class="col-md-4 col-sm-6 col-xs-12">
     <div class="card info-palete"> 
         <div class="card-block text-center">
         <div class="card-title text-center">Help Customers Credit Their E-Wallets</div>
         
        <div class="p-2"> <img src="/assets/images/payment.png" height="100"></div>
 
-         <!-- Button trigger modal -->
-<button type="button" class="btn btn-primary mt-3 learn" data-toggle="modal" data-target="#myModal3">
+         
+<button type="button" class="btn btn-primary btn-block mt-1 learn" data-toggle="modal" data-target="#myModal3">
     Learn More
-  </button>
+  </button>-->
   
   <!-- Modal -->
   <div class="modal fade" id="myModal3" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -2716,17 +3247,17 @@
 </div>
 </div>
 
-<div class="col-md-4 col-sm-6 col-xs-12">
+<!--<div class="col-md-4 col-sm-6 col-xs-12">
     <div class="card info-palete"> 
         <div class="card-block text-center">
         <div class="card-title text-center">Your Rating</div>
         <div class="display-2 text-primary p-1"><img src="/assets/images/payment.png"></div>
-        <button type="button" class="btn btn-primary mt-3 learn" data-toggle="modal" data-target="#platft">
+        <button type="button" class="btn btn-primary btn-block mt-1 learn" data-toggle="modal" data-target="#platft2">
     Learn More
-  </button>
+  </button>-->
   
   <!-- Modal -->
-  <div class="modal fade" id="platft" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal fade" id="platft2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">

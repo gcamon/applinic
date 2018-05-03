@@ -2,11 +2,13 @@
 	<h3 ng-if="checkLogIn.typeOfUser !== 'Pharmacy'">Add Investigation</h3>
 	<h3 ng-if="checkLogIn.typeOfUser === 'Pharmacy'" class="p-0">Add Drug</h3>
 	<p style="background-color:#85CE36;color:#fff;padding:15px;text-align:center;" ng-if="status && status !== '' ">{{status}}</p>
-	<p ng-if="checkLogIn.typeOfUser !== 'Pharmacy'">Create an investigation currently available in your center. Please note an investigation will not be created if it already exist in our database.Please look up the dropdown list to see if it already exist.</p>
-	<p ng-if="checkLogIn.typeOfUser === 'Pharmacy'">Create a drug currently available in your center. Please note a drug will not be created if it already exist in our database. Look up the dropdown list to see if it already exist.</p>
-	<form>
-		<input name="states" id="states" type="text" placeholder="Enter test name" ng-model="test.name" uib-typeahead="test.name for test in services | filter:$viewValue | limitTo:20" class="form-control"  ng-class="{'disabled': i.name}" style="width: 100%;font-weight:bold;width: 50%">
+	<p ng-if="checkLogIn.typeOfUser !== 'Pharmacy'">
+	Create an investigation currently available in your center. Please note that an investigation will not be created if it already exists in our database.Please type the investigation to see if it already exists.</p>
+	<p ng-if="checkLogIn.typeOfUser === 'Pharmacy'">Create a drug currently available in your center. Please note that a drug will not be created if it already exists in our database. Please type the drug to see if it already exists.</p>
+	<form>		
+	<input name="states" id="states" type="text" placeholder="Enter test name" ng-model="test.name" uib-typeahead="test.name for test in services | filter:$viewValue | limitTo:20" class="form-control"  ng-class="{'disabled': i.name}" style="width: 100%;font-weight:bold;width: 50%">
 		<div style="padding: 10px 5px">
+
 			<button class="fa fa-plus btn-simple" ng-click="createTest()" > &nbsp;Create</button>
 		</div>
 	</form>

@@ -24,7 +24,10 @@
     <link rel="stylesheet" href="/assets/css/responsive.css">
     <script src="/assets/js/vendor/modernizr-2.8.3-respond-1.4.2.min.js"></script>
       <script src="/assets/js/vendor2.js"></script>-->
-    <link rel="stylesheet" href="/assets/css/bootstrap.min.css">
+
+ <link href="/assets/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="/assets/css/now-ui-kit.css" rel="stylesheet" />
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css">
     <!--<link rel="stylesheet" href="/assets/css/font-awesome.min.css">-->
      <link type="style/css" rel="stylesheet" href="/assets/css/video.css">
@@ -32,26 +35,35 @@
     <script type="text/javascript" src="/socket.io/socket.io.js"></script>
     <script type="text/javascript" src="/assets/js/adapter.js"></script>
     <script type="text/javascript" src="/assets/js/rtcClient.js"></script>
-    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular.min.js">
-    </script>
+    <!--<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular.min.js">
+    </script>-->
 
-    <!--<script type="text/javascript" src="/assets/js/angular-source.js"></script>-->
+    <script type="text/javascript" src="/assets/js/angular-source.js"></script>
    <script src="/assets/js/ngresource.js"></script>
     <script src="/assets/js/modalService.js"></script>
      <script src="/assets/js/moment.min.js"></script>  
     <script src="/assets/js/angular-moment.min.js"></script>
     <script type="text/javascript" src="/assets/js/angularVideo.js"></script>
         
+        <style type="text/css">
+            .card-footer{
+    font-size:.8em;
+    padding: 5px;
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+        </style>
 </head>
 <body style="overflow-x: hidden;">
     <main class="container-fluid" style="padding: 0;margin: 0" ng-cloak>
-        <header style="margin-bottom: 3px;background-color: #d9edf7;padding: 10px 30px" ng-controller="LocalStreamController as localStream" class="row">
+        <header  style="margin-bottom: 3px;background-color:#fff; box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.15);" ng-controller="LocalStreamController as localStream" class="row">
             <div class="col-sm-12 col-md-5 col-lg-5"> 
                 <div style="text-align: center;">               
-                    <a  href="" ng-click="goToDashbaord()" class="btn text-danger"> <i class="fa fa-arrow-left"></i> Back to dashboard</a>
+                    <a  href="" ng-click="goToDashbaord()" class="btn btn-neutral text-danger mt-1"> <i class="fa fa-arrow-left"></i> Back to dashboard</a>
                     <span ng-cloak>{{localStream.getControlId('<%= person.controlId %>')}}</span>
                     <!--Appear as: <input ng-model="localStream.name" class="form-control" style="width: 50%;display: inline-block;"/>-->
-                    <a href ng-click="localStream.toggleCam()" class="btn btn-danger" style="color:#fff;float: right">{{ (localStream.cameraIsOn === true) ? 'Streaming... ( stop / disconnect )' : localStream.cameraStatus }}</a>  
+                    <a href ng-click="localStream.toggleCam()" class="btn btn-danger mt-2" style="color:#fff;float: right">{{ (localStream.cameraIsOn === true) ? 'Streaming... ( stop / disconnect )' : localStream.cameraStatus }}</a>  
                 </div>              
             </div>
             <div  class="col-sm-12 col-md-7 col-lg-7">
@@ -64,7 +76,7 @@
                     </select>
                     <div style="width: 50%;position: absolute;top:40px;left: 0px;background-color: #fff;z-index: 999;padding: 5px" class="shadow" ng-if="findInvitee">
                         <div style="text-align: right;">
-                            <i class="fa fa-times" style="padding: 5px;cursor: pointer;" ng-click="closeInvite()"></i>
+                            <i class="fa fa-times" style="padding: 5px;cursor: pointer;color: red" ng-click="closeInvite()"></i>
                         </div>
                         <div>
                             <input type="text" name="" ng-model="invite.name" placeholder="{{inviteInfo}}" class="form-control" style="width: 80%;display: inline-block;">
@@ -97,7 +109,7 @@
                             </div>
                         </div>
                     </div>                  
-                    <p class="text-danger" style="display: inline-block;float: right;font-weight: bold;">{{(connectionStatus === true) ? message : "Waiting for partner..."}}</p>
+                    <p class="text-danger p-2 mt-2" style="display: inline-block;float: right; font-size: .8em; border: 1px solid #f2f2f2; border-radius: 50px;">{{(connectionStatus === true) ? message : "Waiting for partner..."}}</p>
                 </div>                
             </div> 
         </header>
@@ -105,21 +117,51 @@
        
         <section class="row" ng-controller='RemoteStreamsController as rtc'> <!--ng-controller='siteRemoteStreamsController as rtc' -->  
             
-            <div class="col-sm-9 col-md-9 col-lg-9" style="margin-top:10px;padding: 0">
-                <div style="width: 80%;margin: 0 auto">
-                    
-                    <div style="display: inline-block;padding: 8px 8px 0 8px;border:2px solid #d9edf7">
-                        <p style="text-align: center;padding: 4px;color: orange;background-color: #d9edf7">Your Cam</p>
-                        <video id="localVideo" muted="muted" autoplay="true" style="width:auto;height:250px;margin-top: -4px"></video>
-                    </div>                   
-                    <div id="remoteVideosContainer" style="display: inline-block;padding: 8px 8px 0 8px;border:2px solid #d9edf7">
-                        
-                    </div>                    
-                </div> 
+            <div class="col-sm-9 col-md-9 col-lg-9 pl-4" style="margin-top:10px;">
+               
+            
+                    <div class="col-md-5 p-0 card" style="margin-left: 30%;">
+                       <div class="card-body">
+                        <video id="localVideo" muted="muted" autoplay="true" style="width:100%;height:290px;">    
+                        </video>
+                        </div>
+                        <div class="card-footer">Name here</div>
+                     
+                    </div>     
+
+ <div class="col-md-12">
+ <div class="row">
+     <div class="col-md-4 col-sm-12 pl-1 pr-0">
+             <div class="card" style="display: inline-block;margin: 8px; min-height:150px;">
+                   <div class="card-body" id="remoteVideosContainer" style="height:130px;" ></div>
+                   <div class="card-footer">Name here</div>
+                    </div>
+     </div>
+
+      <div class="col-md-4 col-sm-12 pl-1 pr-0">
+             <div class="card" style="display: inline-block;margin: 8px; min-height:150px;">
+                   <div class="card-body" id="remoteVideosContainer" style="height:130px;" ></div>
+                   <div class="card-footer">Name here</div>
+                    </div>
+     </div>
+
+
+      <div class="col-md-4 col-sm-12 pl-1 pr-0">
+             <div class="card" style="display: inline-block;margin: 8px; min-height:150px;">
+                   <div class="card-body" id="remoteVideosContainer" style="height:130px;" ></div>
+                   <div class="card-footer">Name here</div>
+                    </div>
+     </div>
+     </div>
+ </div>
+                                  
+           
                 <span style="visibility: hidden;">{{rtc.siteLink('<%= person.controlId %>')}}</span>               
             </div>
-            <div class="col-sm-3 col-md-3 col-lg-3" style="margin-top:10px;padding-right: 30px">
-                <h5 style="padding: 10px 0;color:green">Available live streams</h5>                  
+            <div class="col-sm-3 col-md-3 col-lg-3 card pt-1 pr-3 pl-1">
+            <div class="card-header bg-primary p-2">
+                        <b class="pb-0 pt-1 m-0" style="color:#fff; font-size:1em;">Available streams</b>
+               </div>          
 
                 <div ng-repeat="stream in rtc.remoteStreams" ng-class="{'selected' : stream.isPlaying}" style="font-size: 14px;margin-top: 10px">
                     <button ng-click="rtc.view(stream)" class="btn btn-success" style="padding: 5px 10px;font-size: 12px">view</button>&nbsp;&nbsp;

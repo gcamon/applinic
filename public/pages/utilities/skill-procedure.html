@@ -12,14 +12,14 @@
  
 
 <div class="container">
-	<div class="card p-2">
-		<h2 class="font-1_4">Search for Skills and Procedures</h2>
-		<form>
-			<div class="col-md-11 form-group">        
-	        <input type="text" class="form-control" placeholder="Skill or Procedure"   uib-typeahead="skill.procedure_description for skill in skills | filter:$viewValue | limitTo:15" ng-model="user.skill">
-	      	</div>
-	      	<div>
-				<button class="btn btn-info" ng-click = "find('skill')">Find</button>
+	<div class="card card-center-1 p-2">
+		<h2 class="font-1_4">Find Skills and Procedures</h2>
+		<form style="width: 70%">
+			<div class="form-group">        
+		        <input type="text" class="form-control" placeholder="Skill or Procedure"   uib-typeahead="skill.procedure_description for skill in skills | filter:$viewValue | limitTo:15" ng-model="user.skill">
+		      	</div>
+	      	<div class="form-group" style="padding-left: 3px">
+				<button class="btn btn-info" ng-click = "find('skill')"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color: #fff" ng-if="loading"></i> {{(loading) ? "" : "Find"}}</button>
 			</div>
 		</form>
 	</div>

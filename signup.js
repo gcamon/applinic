@@ -119,15 +119,15 @@ var signupRoute = function(model,sms,geonames,paystack) {
 						}*/
 
 						if(req.body.typeOfUser === "Doctor"){
-							User.name = "Dr " + req.body.firstname + " " + req.body.lastname.slice(0,1).toUpperCase();
+							User.name = (req.body.lastname) ? req.body.title + " " + req.body.firstname + " " + req.body.lastname.slice(0,1).toUpperCase() : req.body.title + " " + req.body.firstname;
 						}			
 					
 						if(req.body.typeOfUser === "Pharmacy" || req.body.typeOfUser === "Laboratory" || req.body.typeOfUser === "Radiology"){
 							var city = (req.body.city === "Lagos" || req.body.city === "Laboratory" || req.body.city === "Port-Harcourt" ) ? true : false;
 							if(city){
-								User.city_grade = 20
+								User.city_grade = 20;
 							} else {
-								User.city_grade = 15
+								User.city_grade = 15;
 							}							
 						}		
 
@@ -273,108 +273,121 @@ var signupRoute = function(model,sms,geonames,paystack) {
 	//this route takes care of patient that came to diagnostic center to run a test without a referral by a doctor.
 	//the center can find run and send test report to patient by simply find the user with the user phone number.
 	router.get("/user/existing-user",function(req,res){
-		
-		model.user.findOne({phone:req.query.phone,type:"Patient"},{firstname:1,lastname:1,user_id:1,profile_pic_url:1,title:1,gender:1,age:1,phone:1,medical_records:1})
-		.exec(function(err,data){
+		var phone = "+" + req.query.phone;
+		var type = (req.query.type === "laboratory") ? "laboratory" : "radiology";
+		model.user.findOne({user_id: req.user.user_id},{referral:1}).exec(function(err,result){
 			if(err) throw err;
-			if(data){
-				var refId = Math.floor(Math.random() * 99999999);
-				var date = + new Date();
-				
-				var sendObj = {
-					firstname: data.firstname,
-					lastname: data.lastname,
-					profile_pic_url: data.profile_pic_url,
-					user_id: data.user_id,
-					title: data.title,
-					age:data.age,
-					gender: data.gender,
-					age: data.age,
-					phone: data.phone,
-					ref_id: refId
+			if(result){
+				var elemPos = result.referral.map(function(x){return x[type].patient_phone}).indexOf(phone);
+				//var found = result.referral[elemPos]; 
+				//console.log(found);
+				if(elemPos !== -1){
+					res.json({error:"Person to add is already your patient!"});
+				} else {
+					createPatient(result);
 				}
+			} else {
+				res.end({error:"Something went wrong"});
+			}				
+		});  
 
-			 var recordObj = {
-          center_name: req.user.name,
-          test_to_run: [],
-          center_address: req.user.address,
-          center_city: req.user.city,
-          center_country: req.user.country,
-          center_phone: req.user.phone,
-          center_id: req.user.user_id,
-          patient_id: data.user_id,
-          ref_id: refId,
-          referral_firstname: req.user.name,
-          referral_lastname: req.user.lastname,
-          referral_title: req.user.title,
-          sent_date: date,
-          report: "Pending",
-          conclusion: "Pending"
-        }
+		function createPatient(result) {
 
-				var refObj = {};
-				refObj.ref_id = refId;
-	      refObj.referral_firstname = req.user.name;
-	      refObj.referral_id = req.user.user_id;  
-	      refObj.date = date;
-
-	      if(req.query.type === "laboratory") {
-		      refObj.laboratory = {
-		      	test_to_run : [],
-		        patient_firstname: data.firstname,
-		        patient_lastname: data.lastname,
-		        patient_profile_pic_url: data.profile_pic_url,
-		        patient_title: data.title,
-		        patient_gender: data.gender,
-		        patient_age: data.age,
-		        patient_phone: data.phone,
-		        patient_id: data.user_id,
-		        attended: false,
-		      }	     
-
-          data.medical_records.laboratory_test.unshift(recordObj);
-     
-	    	} else if(req.query.type === "radiology"){
-	    		refObj.radiology = {
-		      	test_to_run : [],
-		       	patient_firstname: data.firstname,
-		        patient_lastname: data.lastname,
-		        patient_profile_pic_url: data.profile_pic_url,
-		        patient_title: data.title,
-		        patient_gender: data.gender,
-		        patient_age: data.age,
-		        patient_phone: data.phone,
-		        patient_id: data.user_id,
-		        attended: false,
-		      }
-		      
-		      data.medical_records.radiology_test.unshift(recordObj);
-	    	}
-
-
-	    	
-				model.user.findOne({user_id: req.user.user_id},{referral:1}).exec(function(err,result){
-					if(err) throw err;
-					if(result){
-						result.referral.push(refObj);      
-					} else {
-						res.end({error:"Something went wrong"});
+			model.user.findOne({phone:phone,type:"Patient"},{firstname:1,lastname:1,user_id:1,profile_pic_url:1,title:1,gender:1,age:1,phone:1,medical_records:1})
+			.exec(function(err,data){
+				if(err) throw err;
+				if(data){
+					var refId = parseInt(Math.floor(Math.random() * 9999) + "" + Math.floor(Math.random() * 9999));
+					var date = + new Date();
+					
+					var sendObj = {
+						firstname: data.firstname,
+						lastname: data.lastname,
+						profile_pic_url: data.profile_pic_url,
+						user_id: data.user_id,
+						title: data.title,
+						gender: data.gender,
+						age: data.age,
+						phone: data.phone,
+						ref_id: refId
 					}
 
+				 var recordObj = {
+	          center_name: req.user.name,
+	          test_to_run: [],
+	          center_address: req.user.address,
+	          center_city: req.user.city,
+	          center_country: req.user.country,
+	          center_phone: req.user.phone,
+	          center_id: req.user.user_id,
+	          patient_id: data.user_id,
+	          ref_id: refId,
+	          referral_firstname: req.user.name,
+	          referral_lastname: req.user.lastname,
+	          referral_title: req.user.title,
+	          sent_date: date,
+	          report: "Pending",
+	          conclusion: "Pending"
+	        }
+
+					var refObj = {};
+					refObj.ref_id = refId;
+		      refObj.referral_firstname = req.user.name;
+		      refObj.referral_id = req.user.user_id;  
+		      refObj.date = date;
+
+		      if(req.query.type === "laboratory") {
+			      refObj.laboratory = {
+			      	test_to_run : [],
+			        patient_firstname: data.firstname,
+			        patient_lastname: data.lastname,
+			        patient_profile_pic_url: data.profile_pic_url,
+			        patient_title: data.title,
+			        patient_gender: data.gender,
+			        patient_age: data.age,
+			        patient_phone: data.phone,
+			        patient_id: data.user_id,
+			        attended: false,
+			      }	     
+
+	          data.medical_records.laboratory_test.unshift(recordObj);
+	     
+		    	} else if(req.query.type === "radiology"){
+		    		refObj.radiology = {
+			      	test_to_run : [],
+			       	patient_firstname: data.firstname,
+			        patient_lastname: data.lastname,
+			        patient_profile_pic_url: data.profile_pic_url,
+			        patient_title: data.title,
+			        patient_gender: data.gender,
+			        patient_age: data.age,
+			        patient_phone: data.phone,
+			        patient_id: data.user_id,
+			        attended: false,
+			      }
+			      
+			      data.medical_records.radiology_test.unshift(recordObj);
+		    	}
+
+
+		    	
+					result.referral.push(refObj); 
+
 					result.save(function(err,info){
-	          if(err) throw err;
-	        });
-				});   
+		        if(err) throw err;
+		      });
 
-			
-				data.save(function(err,info){});
+				
+					data.save(function(err,info){});
 
-				res.send({patient: sendObj});
-			} else {
-				res.send({error:"Patient does not exist!"});
-			}
-		});
+					res.send({patient: sendObj});
+				} else {
+					res.send({error:"Patient not found!"});
+				}
+			});
+		}
 	})
+
 
 	router.post("/referral/:id/signup",function(req,res){
 		passport.authenticate('signup', function(err, user, info) {

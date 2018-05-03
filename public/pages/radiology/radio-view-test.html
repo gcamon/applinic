@@ -1,8 +1,10 @@
-<div class="col-sm-12 col-md-12 col-lg-12">
+
+
+<div class="col-sm-12 col-md-12 col-lg-12 card-center-1">
 <!--<header style="padding: 0 10px 10px; font-size: 18px;font-weight: bold;"><i class="fa fa-arrow-left" style="cursor: pointer" ng-click="refresh()" ng-if="refInfo.radiology.test_to_run.length > 0"> &nbsp;Back</i></header>-->
 	<div class="row">
 		
-	<header  class="col-sm-12 col-md-3 col-lg-3" ng-if="!reportSuccess">
+	<!--<header  class="col-sm-12 col-md-3 col-lg-3" ng-if="!reportSuccess">
 		<div class="card"  style="text-align: center">
 			<img src="{{refInfo.radiology.patient_profile_pic_url}}" style="max-width: 100%; max-height: auto;">
 			<div>
@@ -17,33 +19,39 @@
 			<div style="padding: 5px;text-align: left;">
 				<span> Age | &nbsp;{{refInfo.radiology.patient_age}}</span>  
 				<span style="display:block;padding-top: 20px">Sex | &nbsp;{{refInfo.radiology.patient_gender}}</span> 
+				<span style="display:block;padding-top: 20px">Phone | &nbsp;{{refInfo.radiology.patient_phone}}</span>
 			</div>	
 		</div>
-	</header>
+	</header>-->
 	
-	<div ng-if="refInfo.radiology.test_to_run.length > 0" class="col-sm-12 col-md-9 clo-lg-9">
+	<div ng-if="refInfo.radiology.test_to_run.length > 0" class="col-sm-12 col-md-12 clo-lg-12">
 		<div class="row">
-			<!--<div class="col-sm-12 col-md-4 col-lg-4 pull-right" ng-if="hasSent">
-				<div style="text-align: center;">
-					<img ng-src="{{refInfo.radiology.patient_profile_pic_url}}" style="max-width:120px;max-height:120px">
+			
+			<div class="col-sm-12 col-md-12 col-lg-12 card pt-2" ng-if="hasSent && !isPreview">
+			<div style="display: inline-block;float: left">
+					<img src="{{refInfo.radiology.patient_profile_pic_url}}" style="max-width: 150px; max-height: 150px;">
 				</div>
-				
-				<div style="text-align: center; padding: 10px; border-bottom: 1px solid green"><strong>{{refInfo.radiology.patient_title}} {{refInfo.radiology.patient_firstname}} {{refInfo.radiology.patient_lastname}}</strong><span style="display:block;">Patient</span></div>
-							
-			</div>-->
-			<div class="col-sm-12 col-md-12 col-lg-12 card" ng-if="hasSent && !isPreview">
-			<h4 class="mb-0 mt-0 p-2 font-1_4">Investigation Details</h4> 				
-				
+				<div style="display: inline-block;padding-left: 10px">
+					<strong style="display: block;" class="ellipsis">{{refInfo.radiology.patient_title}} {{refInfo.radiology.patient_firstname}} {{refInfo.radiology.patient_lastname}}</strong>
+					<span style="display: block;">{{refInfo.radiology.patient_gender}}</span>
+					<span style="display: block;">{{refInfo.radiology.patient_age}}</span>					
+					<span style="display: block;">{{refInfo.radiology.patient_phone}}</span>
+					<span style="position: absolute; top: 25px;right: 20px;color: darkRed" am-time-ago="refInfo.date"></span>
+					<i class="fa fa-check-circle" style="font-size: 42px;color: #85CE36;position: absolute; top: 65px; right: 40px;" ng-if="refInfo.radiology.is_paid || paymentStatus"></i>
+				</div>
+				<div class="clearfix"></div>
+				<hr>
+
 				<div class="col-sm-12 " style="padding:20px" ng-if="!isPreview">
-					 <div class="mb-0 mt-0 pl-0 font-1_2" ><b>Clinical Summary: </b></div>
+					 <div class="mb-0 mt-0 pl-0 font-1_2" style="border-bottom: 4px solid #85CE36;display: inline-block;padding-bottom: 5px"><b>Clinical Summary </b></div>
 					<p class="pt-1 pb-1" style="font-size:1em;text-indent: 15px;margin-bottom: 10px" ng-if="refInfo.radiology.clinical_summary">
 						<em>{{refInfo.radiology.clinical_summary}}
 						</em>
 					</p>
-				</div>				
+				</div>
 
 				<div class="col-sm-12 " style="padding:20px" ng-if="!isPreview">
-					 <div class="mb-0 mt-0 pl-0 font-1_2" ><b>Indication :</b></div>
+					 <div class="mb-0 mt-0 pl-0 font-1_2"  style="border-bottom: 4px solid #85CE36;display: inline-block;padding-bottom: 5px"><b>Indication </b></div>
 					<p class="pt-1 pb-1" style="font-size:1em;text-indent: 15px;margin-bottom: 10px" ng-if="refInfo.radiology.indication">
 						<em>{{refInfo.radiology.indication}}
 						</em>
@@ -51,7 +59,7 @@
 				</div>
 
 				<div class="col-sm-12 " style="padding:20px" ng-if="!isPreview && refInfo.radiology.patient_gender === 'female'">
-					 <div class="mb-0 mt-0 pl-0 font-1_2" ><b>Parity :</b></div>
+					 <div class="mb-0 mt-0 pl-0 font-1_2"  style="border-bottom: 4px solid #85CE36;display: inline-block;padding-bottom: 5px"><b>Parity</b></div>
 					<p class="pt-1 pb-1" style="font-size:1em;text-indent: 15px;margin-bottom: 10px" ng-if="refInfo.radiology.parity">
 						<em>{{refInfo.radiology.parity}}
 						</em>
@@ -59,30 +67,17 @@
 				</div>
 
 				<div class="col-sm-12 " style="padding:20px" ng-if="!isPreview && refInfo.radiology.patient_gender === 'female'">
-					 <div class="mb-0 mt-0 pl-0 font-1_2" ><b>LMP :</b></div>
+					 <div class="mb-0 mt-0 pl-0 font-1_2"  style="border-bottom: 4px solid #85CE36;display: inline-block;padding-bottom: 5px"><b>LMP </b></div>
 					<p class="pt-1 pb-1" style="font-size:1em;text-indent: 15px;margin-bottom: 10px" ng-if="refInfo.radiology.lmp">
 						<em>{{refInfo.radiology.lmp}}
 						</em>
 					</p>
 				</div>
-
-
-
-
-				<div class="col-sm-12 " style="padding:20px" ng-if="!isPreview">
-					 <div class="mb-0 mt-0 pl-0 font-1_2" ><b>Referring Physician :</b></div>
-					<p class="pt-1 pb-1" style="font-size:1em;text-indent: 15px;margin-bottom: 10px">
-						{{refInfo.referral_title}} {{refInfo.referral_firstname}} {{refInfo.referral_lastname}}
-					</p>
-				</div>						
 					
 		
-			
-				<p class="" style="padding:20px" ng-if="!isPreview">If <strong>None</strong> of the below test(s) is run by your center please <a href="" style="color:red;font-size:16px" ng-click="redirectTest()"> refer patient to another center.</a>
-				If <strong> one </strong> or <strong> more </strong> of the tests is not done in your center <strong>unmark</strong> the particular test.</p>
-
-				<div class="col-sm-12" style="padding:20px" ng-if="!isPreview">					
-					<div class="mb-0 mt-0 pl-0 font-1_2"><b>Tests to run :</b></div>
+		
+				<div class="col-sm-12 card" style="padding:20px" ng-if="!isPreview">					
+					<div class="mb-0 mt-0 pl-0 font-1_2"  style="border-bottom: 4px solid #85CE36;display: inline-block;padding-bottom: 5px"><b>Tests To Run</b></div>
     				<div class="mt-1"  ng-repeat = "test in refInfo.radiology.test_to_run" >
 						<label class="custom-control custom-checkbox">
 		    				<input type="checkbox" ng-model="test.select"  class="custom-control-input">
@@ -90,9 +85,10 @@
 		    				<span class="custom-control-description">{{test.name}}</span>
     					</label>
     				</div>
-				</div>
+				</div>	
+					
 
-
+				<p style="padding:30px"><i class="fa fa-warning text-danger"></i>  If <strong>any</strong> of the tests to run services above is <b>not</b> available in your center please <b>uncheck it (if checked)</b> and <a href="" style="color: #85CE36;font-size:16px;text-decoration: unset;" ng-click="redirectTest()"> refer to another center.</a> Unchecked test is regarded as <b>not</b> available service in your center.</p>
 				
 
 		</div>
@@ -108,28 +104,28 @@
                 <div style="list-style:none;font-size:16px" id="collapseSeven" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingSeven"> -->
                 <div style="padding: 20px" class="card" ng-if="!isPreview">
                 	<article ng-if="!otpMsg && !paymentStatus">
-	                	<h4 class="mb-0 mt-0 p-2 font-1_4">Compute Cost</h4> 
-	                	 <p class="danger-mine p-2" ng-if="compute && compute !== '' ">{{compute}}</p>                            
-	                     <table class="table table-responsive p-2">
-	                    
-	                     	<tr>
-	                     		<thead>
-	                     			<th>Test name</th>
-	                     			<th>Cost</th>
-	                     		</thead>
-	                     	</tr>
-	                     	<tr>
-	                     		<tbody ng-repeat = "j in testsForSurchage">
-	                     			<td style="width: 55%;padding:10px;color:#000">{{j.name}}</td>
-	                     			<td style="width: 45%"><input type="number" ng-model="j.amount" style="padding:10px"></td>
-	                     		</tbody>
-	                     	</tr>
-	                     </table>
-	                     <div class="p-2">
-	                     	<strong>Total : <em>{{str}}</em></strong>
-	                     	<!--<a href="" class="btn btn-danger" style="float: right;" ng-click="sendBill()"></a>-->
-	                     	<button class="btn btn-danger" style="float: right;" ng-click="sendBill(refInfo.radiology.patient_id,resend)" ng-if="grabRawAmount > 0"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i> Request Payment </button>
-	                     </div>
+	                	<div class="mb-0 mt-0 pl-0 font-1_2"  style="border-bottom: 4px solid #85CE36;display: inline-block;padding-bottom: 5px"><b>Compute Cost</b></div>
+                	 <p class="danger-mine" ng-if="compute && compute !== '' ">{{compute}}</p>                            
+                     <table class="table table-responsive">
+                    
+                     	<tr>
+                     		<thead>
+                     			<th>Test name</th>
+                     			<th>Cost</th>
+                     		</thead>
+                     	</tr>
+                     	<tr>
+                     		<tbody ng-repeat = "j in testsForSurchage">
+                     			<td style="width: 55%;padding:10px;color:#000">{{j.name}}</td>
+                     			<td style="width: 45%"><input type="number" ng-model="j.amount" style="padding:10px"></td>
+                     		</tbody>
+                     	</tr>
+                     </table>
+                     <div>
+                     	<strong class="text-success">Total : <em>{{str}}</em></strong>
+                     	<strong style="display: block;" class="text-success">You'll receive : {{commissionedAmount}} &nbsp;<span style="font-weight: normal;">( platform {{checkLogIn.city_grade}}% commission applied )</span></strong>
+                     	<button class="btn btn-danger" style="float: right;" ng-click="sendBill(refInfo.radiology.patient_id,resend)" ng-if="grabRawAmount > 0"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i> Request Payment </button>
+                     </div>
                      </article>
                      <article ng-if="otpMsg">
                      	<div  class="p-2 col-md-8" class="text-center text-success font-1">
@@ -153,11 +149,13 @@
                      </article>
 
                      <article ng-if="refInfo.radiology.is_paid || paymentStatus">
-                     	<div class="p-2" style="font-size: 18px">
+                     	<div class="p-2">
                      		<i class="fa fa-check-circle" style="font-size: 42px;color: #85CE36;float: left;"></i>
                      		<aside style="padding: 20px;display: inline-block;margin-top: -20px">
-	                     		<span style="">Payment has been made for this service successfully!
-	                     		<span style="display: block;">Paid: {{paymentDetail.amount}}</span> <span>Date: {{paymentDetail.date | date: "mediumDate"}} Time: {{paymentDetail.date | date: "shortTime"}}</span>
+	                     		<strong style="">Payment has been made for this service successfully!</strong>
+	                     		<span style="display: block;"><b>Amount Paid:</b> {{paymentDetail.amount}}</span> 
+	                     		<span ><b>Date:</b> {{paymentDetail.date | date: "mediumDate"}} ( <span am-time-ago="paymentDetail.date"></span> ) </span>
+	                     		<span style="display: block;"><b>Time:</b> {{paymentDetail.date | date: "shortTime"}}</span>
                      		</aside>
                      	</div>
                      </article>
@@ -185,16 +183,16 @@
 					
 						
 					<div ng-if="!isPreview">
-					<h4 class="mb-0 mt-0 p-2 font-1_4">Report entry </h4>
+					<div class="mb-0 mt-0 pl-0 pt-2 font-1_2"  style="border-bottom: 4px solid #85CE36;display: inline-block;padding-bottom: 5px"><b>Report Entry</b></div>
 					<form>
 						<div class="row">
 						<p class="danger-mine pl-1" ng-if=" incomplete && incomplete !== ''">{{incomplete}}</p>
-						<div class="form-group col-md-6 col-sm-12" ng-repeat="report in testReport">
-							<label class="font-1_1">{{report.name}} Test Report:</label>
-							<textarea placeholder="Write..."  class="form-control"  ng-model="report.data" required= "required" style="height: 350px"></textarea>						
+						<div class="form-group col-md-12 col-lg-12 col-sm-12" ng-repeat="report in testReport">
+							<label class="font-1_1 pt-1">{{report.name}} Test Report:</label>
+							<textarea placeholder="Write..."  class="form-control"  ng-model="report.data" required= "required" style="height: 250px"></textarea>						
 						</div>
-						<div class="form-group col-md-6 col-sm-12">
-						<label class="font-1_1">Conclusion:</label>
+						<div class="form-group col-md-6 col-md-12 col-lg-12 col-sm-12">
+						<label class="font-1_1 mt-2">CONCLUSION:</label>
 						<textarea  class="form-control" placeholder="Write..." required ng-model="lab.conclusion" style="height: 200px"></textarea>
 						</div>
 						
@@ -204,7 +202,7 @@
 					</div>
 
 					<div ng-if="!isPreview" >	
-						<h4 class="mb-0 mt-0 p-2 font-1_4">Add Radiology Imagery</h4>
+						<div class="mt-2 pl-0 mb-2 font-1_2"  style="border-bottom: 4px solid #85CE36;display: inline-block;padding-bottom: 5px"><b>Add Radiology Imagery</b></div>
 						<div class="col-sm-12 col-md-12 col-lg-12">	
 							<div>						
 								
@@ -233,9 +231,9 @@
 							  	<p ng-if="progress && progress !== 100" class="danger-mine">{{uploadStatus}}</p>
 								
 							</form>
-							<div ng-if="radio.type === 'dicom'">							
-								<p> From Network Settings on MODALITY or DICOM VIEWER, Enter the following under <b>PACS Destinations:</b> <em style="display: block;">AE Title = APPLINIC</em> <em style="display:block"> IP address = 192.234.646.78</em>						
-								and save settings. Then select study from Worklist and send to APPLINIC cloud services. Viewing by your radiologist, physician and other third party require OTP.
+							<div ng-if="radio.type === 'dicom'" style="background-color: rgba(0,0,0,0.3);padding: 10px;color: #fff">							
+								<p> From Network Settings on MODALITY or DICOM VIEWER, Enter the following under <br><b>PACS Destinations:</b> <em style="display: block;">AE Title = APPLINIC</em> <em style="display:block"> IP address = 192.234.646.78</em>						
+								Save settings then select study from Worklist and send to APPLINIC cloud services. Viewing by your radiologist, physician and other third party require OTP.
 
 								<em style="display:block;padding-top: 20px">Set <b>Accession Number</b> for these investigations to <b>{{dicomPath}}</b> before sending to APPLINIC cloud services.</em>
 								</p>
@@ -259,20 +257,23 @@
 					<div class="card pb-2">
 					<div ng-if="!otpMsg" style="padding: 10px">
 						<!--<h5 class="p-1" style="font-weight:200; border-bottom:1px solid #ccc;">Preview</h5>-->
-						<div class="row p-1" id="print-section">
-							<div class="col-sm-12 col-md-7 col-lg-7">
+						<div class="row p-2" id="print-section">
+							<div class="col-sm-12 col-md-8 col-lg-8 pl-0">
 								<img src="{{checkLogIn.profile_pic_url}}" style="width:82px;height:82px; float:left">
-								<div style="display: inline-block;margin-top: -10px">
-									<strong style="font-size: 22px">{{checkLogIn.name}}</strong>
-									<article>{{checkLogIn.address}} {{checkLogIn.city}} {{checkLogIn.country}}</article>
-									<article>{{checkLogIn.email}}</article>
-									<article>{{checkLogIn.phone}}</article>											
+								<div style="display: inline-block;width: 300px;padding-left: 10px">
+									<span style="font-size:16px;font-weight: bolder">{{checkLogIn.name}}</span>
+									<span style="display: block;">{{checkLogIn.address}} {{checkLogIn.city}} {{checkLogIn.country}}</span>
+									<span style="display: block;">{{checkLogIn.email}}</span>
+									<span style="display: block;">{{checkLogIn.phone}}</span>									
 								</div>							
 							</div>
-							<aside class="col-sm-12 col-md-5 col-lg-5" style="">	
-								<div>
+							<aside class="col-sm-12 col-md-4 col-lg-4 pl-0">	
+								<div id="patientInfo">
+									<b>Name:</b> {{refInfo.radiology.patient_firstname}} {{refInfo.radiology.patient_lastname}}<br>
+									<b>Age:</b> {{refInfo.radiology.patient_age}} <br>
+									<b>Gender:</b> {{refInfo.radiology.patient_gender}}<br>
 									<b>Date: </b>{{reportDate | date: "mediumDate"}}<br>
-									<b>Applinic.com Reference Numeber:</b> {{refInfo.ref_id}}
+									<b>Ref NO:</b> {{refInfo.ref_id}} <br>
 								</div>
 							</aside>
 							<div class="clearfix"></div>				
@@ -292,37 +293,26 @@
 								<li ng-repeat="sample in specimen" ng-if="sample.status == true">{{sample.name}}</li>
 							</ul>-->
 							<hr class="bg-simple">
-							<h6>Findings: </h6>
+							<h6 class="pb-2">Findings: </h6>
 							
-							<div class="text-success pl-1 font-1_1 m-0" ng-repeat="picked in preTest"><b>{{picked.name}}: </b> <span style="display: block;padding: 20px;word-break: break-all;">{{picked.data}}</span></div>
-							<div class="text-success pl-1 font-1_1"><b>Conclusion: </b> <span style="display: block;padding: 20px;word-break: break-all;">{{lab.conclusion}}</span></div>
-							<div ng-if="">{{}} files attached</div>
+							<div class="text-success pl-1 font-1_1 m-0 pt-1" ng-repeat="picked in preTest"><b class="text-danger">{{picked.name}}: </b> <span style="display: block;padding: 20px;background-color: #d7dde;">{{picked.data}}</span></div>
+							<div class="text-success pl-1 font-1_1 pt-1"><b class="text-danger">Conclusion: </b> <span style="display: block;padding: 20px;dbackground-color: #d7dde;">{{lab.conclusion}}</span></div>
+							<div ng-if="files.length > 0">{{files.length}}files attached</div>
 							<hr class="bg-simple">
-							<div class="text-danger pt-1 pl-1 pb-0" style="text-transform:uppercase;"><b>Total cost of service(s): </b> {{paymentDetail.amount || str}}</div>
+							<div class="text-info pt-1 pl-1 pb-0" style="text-transform:uppercase;" id="noFooter"><b>Total cost of service(s): </b> {{paymentDetail.amount || str}}</div>
 						</div>
 
 						<div class="pl-1 pb-1">
 						<!--<small class="text-muted" ng-if="grabRawAmount > 0">
                         <i class="fa fa-warning"></i> Please confirm total cost of service before sending OTP</small>-->
                         </div>
-						<button class="btn btn-neutral mr-1 ml-1" ng-click="edit()"> Edit </button>
+						<button class="btn btn-simple text-danger ml-1" ng-click="edit()"> Edit </button>
 						<i class="btn btn-warning mr-1 ml-1 fa fa-print" ng-print  print-element-id="print-section"></i>
 						<button class="btn btn-primary" ng-click="sendTestResult(refInfo)"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i>{{(loading) ? "" : 'Ok,send' }}</button>
 						
 					</div>
 					 <hr class="bg-warning">
-					 <div class="row">
-					<!--<div  class="p-2 col-md-8" ng-if="otpMsg" class="text-center text-success font-1">
-						<p>{{otpMsg}}</p>
-						<input type="text" class="form-control" placeholder="Enter OTP you sent to this patient" ng-model="lab.otp" ng-if="grabRawAmount > 0">
-						<p ng-if="grabRawAmount <= 0"><span class="text-danger">Report will not be sent, patient is not billed for the service(s)</span></p>						
-						
-					</div>
-					<div class="p-2 col-md-4 pt-4" ng-if="!otpMsg"><br><br>
-						<a href=""  class="btn btn-danger">Cancel</a>	 					
-						<input type="button" value="Send report" ng-click="sendTestResult(refInfo)" class="btn btn-success" style="margin-left:10px">
-					</div>	-->
-					 </div>
+					 
 							
 					<p class="pl-2">{{message}}</p>	
 				</div>
@@ -331,54 +321,56 @@
 		</div>
 		<div class = "row" ng-if="isToForward">
 			<div class="card p-2">
-				<div class="col-sm-12 col-md-12">
-					<p style="font-size: 1.2em; font-weight:300;background-color: grey;color:#fff;padding: 10px">Hi, look up for radiology centers within your city/town that run this service(s) below.</p>
+				<div class="col-sm-12 col-md-12">					
 					<div class="p-0">
-					<button  ng-click="customGetLab()" style="cursor:pointer" class="btn btn-simple">Modify search criteria</button> &nbsp;&nbsp;&nbsp;
-					 <a href="#" class="btn btn-danger">Cancel this process</a>
+					<!--<button  ng-click="customGetLab()" style="cursor:pointer" class="btn btn-simple">Modify search criteria</button> &nbsp;&nbsp;&nbsp;-->
+					 <a href="" ng-click="cancel()" class="btn btn-btn-neutral">Back</a>
 					</div>
+
+					<div class="p-0 pt-1 pb-1">
+						<label>Search result for: <span ng-repeat="test in unRanTest" style="display:inline-block;font-weight: 100;font-style: italic;">{{test.name}},&nbsp; </span> 
+                        </label>
+                       
+                    </div>                        
 					<!--<h5  style="padding;4px; font-size:1em; color:#555; font-weight:300; ">Test <b>Not</b> ran by your center</h5>
 					<span ng-repeat="test in unRanTest" style="color:blue;color:rgba(255,100,19,0.9)">{{test.name}}</span>-->
-					<form style="margin-top: 20px;" ng-if="isCriteria === true">
-   						<p><small>By default your city is used as search criteria.</small></p>
-						<input type="text" name="" placeholder="Enter city / town" ng-model="user.city" class="form-control" style="width: 50%;display: inline-block;" uib-typeahead="city for city in cities | filter:$viewValue | limitTo:20">
+					<form style="margin-top: 20px;" >   <!--ng-if="isCriteria === true"-->						
+						<input type="text" name="" placeholder="Enter city name" ng-model="user.city" class="form-control" style="width: 50%;display: inline-block;" uib-typeahead="city for city in cities | filter:$viewValue | limitTo:20">
 
 						<button class="btn btn btn-success" ng-click="find()">Find</button>
 					</form>
-					
-					<div class="drug-search-result">
-						 <div class="pl-0 pb-2">
-                            
-                            <span class="col-md-7 col-sm-12 p-0 pt-1 pb-1">
-								<label>Search result for: <span ng-repeat="test in unRanTest" style="display:inline-block;font-weight: 100;font-style: italic;">{{test.name}}, </span> 
-                            </label><input type="text" class="form-control" placeholder="Filter by center name or address" ng-model="testFilter.name"></span>                         
-                        </div>
 
-						<div  class="card p-1" style="box-shadow: 0px 5px 25px 0px rgba(0, 0, 0, 0.2);"  ng-repeat ="center in testResult.full | filter : testFilter.name || testFilter.address" style="padding: 10px;margin-bottom: 1px solid grey;box-shadow: 0px 3px 5px grey">
-							<span>{{getStr(center.str)}}</span>
-							<span  style="display: block;padding: 10px 0;font-weight: bold;font-size: 18px;color: green">{{center.name}}</span>
+
+					<hr>
+					<div class="drug-search-result" style="max-width: 800px;overflow-y: auto">
+						 <input type="text" class="form-control" style="width: 70%" placeholder="Filter by center name or address" ng-model="testFilter.name" ng-if="testResult.full.length > 1 || testResult.less.length > 1">
+
+						<div  class="p-1" ng-repeat ="center in testResult.full | filter : testFilter.name" style="padding: 10px;position: relative;" ng-if="checkLogIn.user_id !== center.id">
+							<small>{{getStr(center.str)}}</small>
+							<span  style="display: block;font-weight: bold;font-size: 14px;color: green">{{center.name}}</span>
 							<span>{{center.address}}</span>
 							<span>{{center.city}}</span>
 							<span>{{center.country}}</span>							
-							<span style="display: block;padding-top: 10px"><i class="fa fa-phone"></i> +234 {{center.phone}}</span>
-							
-							<button  class="btn btn-simple pull-right" ng-click="toForwardToCenter(center)"><i class="fa fa-share" style="cursor:pointer;color:green" title="Forward {{getStr(center.str)}} to {{center.name}}" ></i></button>  
+							<span style="display: block;"><i class="fa fa-phone"></i> {{center.phone}}</span>
+							<button  class="btn btn-warning btn-sm" ng-click="toForwardToCenter(center)" style="position: absolute;right: 10px;bottom: 15px"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="center.loading"></i>{{(center.status) ? "sent!" : ''}}<i class="fa fa-share" title="Forward {{getStr(center.str)}} to {{center.name}}" ng-if="!center.status && !center.loading" ></i></button>  
 						</div>
-						<div class="card p-1" style="box-shadow: 0px 5px 25px 0px rgba(0, 0, 0, 0.2);" ng-repeat="center in testResult.less | filter : testFilter.name || testFilter.address" style="padding: 10px;margin-bottom: 1px solid grey;box-shadow: 0px 3px 5px grey">
+						<div style="width: 70%;margin: 0 auto;padding-top: 30px" ng-if="loading">
+							<i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange;font-size: 18px" ng-if="loading"></i>
+						</div>
+						<div class="p-1" ng-repeat="center in testResult.less | filter : testFilter.name" style="padding: 10px;position: relative;" ng-if="checkLogIn.user_id !== center.id">
 
-							<div><span>{{getStr(center.str)}}</span> 
+							<small>{{getStr(center.str)}}</small> 
 							<span style="text-decoration:line-through">{{notStr(center.notFound)}}</span>
-							</div>
-							<span  style="display: block;padding: 10px 0;font-weight: bold;font-size: 18px;color: green">{{center.name}}</span>
+							<span  style="display: block;font-weight: bold;color: green">{{center.name}}</span>
 							<span>{{center.address}}</span>
 							<span>{{center.city}}</span>
 							<span>{{center.country}}</span>
-							<span style="display: block;padding-top: 10px"><i class="fa fa-phone"></i> +234 {{center.phone}}</span>
-							<button  class="btn btn-simple pull-right" ng-click="toForwardToCenter(center)"><i class="fa fa-share" style="cursor:pointer;color:green" title="Forward {{getStr(center.str)}} to {{center.name}}" ></i></button>  
+							<span style="display: block"><i class="fa fa-phone"></i> {{center.phone}}</span>
+							<button  class="btn btn-warning btn-sm" ng-click="toForwardToCenter(center)" style="position: absolute;right: 10px;bottom: 15px"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="center.loading"></i>{{(center.status) ? "sent!" : ''}}<i class="fa fa-share" title="Forward {{getStr(center.str)}} to {{center.name}}" ng-if="!center.status && !center.loading" ></i></button>  
 						</div>
 						<div class="clearfix"></div>
 						<div ng-if="testResult.less.length === 0 && testResult.full.length === 0">
-							<p style="text-align: center;">No result found based on the search criteria. You can modify search criteria and search again.</p>
+							<p style="text-indent:20px;color: red">No result found!</p>
 						</div>
 					</div>
 				</div>
@@ -435,555 +427,12 @@
 	</div>
 </div>
 <div ng-if="reportSuccess">
-	<p style="text-align:center;font-size:18px;color:green;margin-top:30px" class="card">Test report sent succesfully!</p>
+	<p style="text-align:center;font-size:18px;color:green;padding-top:80px;height: 120px" class="card">Test report sent succesfully!</p>
 </div>
 
 <div style="height: 100px">
 	
 </div>
-
-
-
-
-<!--<div ng-if="!reportSuccess">
-		<div class="row">
-            <div class="col-md-3 col-sm-12">
-			<img src="{{refInfo.radiology.patient_profile_pic_url}}" style="max-width: 120px; max-height: 120px;">
-			</div>
-			<div  class="col-md-9 col-sm-12 pt-2 font-1_1">
-				<b>{{refInfo.radiology.patient_firstname}}</b> &nbsp;
-				<b>{{refInfo.radiology.patient_lastname}} (Patient)</b>
-			</div>
-		<div class="clearfix"></div>
-		<div class="row mt-2">
-			<div class="col-md-6">
-				<h5 class="bg-info mb-1" style="padding:10px; color: #fff">HISTORY</h5>
-				<textarea ng-model="refInfo.history"  class="form-control" style="height:90px; padding:7px;" placeholder="Write..."></textarea>
-			</div>
-
-			<div class="col-md-6">
-				<h5 class="bg-info mb-1" style="padding:10px; color: #fff">Test to run</h5>
-				<div ng-repeat="i in testList" style="width: 90%;margin:0 auto">				
-					<input name="states" class="form-control" id="states" type="text" placeholder="Choose test name" ng-model="test.name" uib-typeahead="test.name for test in tests | filter:$viewValue | limitTo:15" class="form-control"  ng-class="{'disabled': i.name}" style="width: 80%;;font-weight:bold">
-					{{getTest(test.name)}} 
-					<i class="fa fa-times" style="cursor: pointer;font-weight: 100; font-size: 16px;color:grey" ng-click="remove(i.sn)" ng-if="i.name"></i>				
-				</div>
-			</div>
-		</div>
-		<div style="text-align:right;padding: 10px;font-weight: bold">
-			<i class="fa fa-plus btn" style="cursor: pointer" ng-click="add(test.name)">&nbsp;<b>Add</b></i> 
-		</div>
-		<div class="col-md-3 col-sm-12 offset-md-9 offset-sm-0 p-1"  ng-if="testList.length > 1">
-			<input type="button" value="Ok,continue" class="btn btn-success btn-block" ng-click="testToRunFilled()">
-		</div>
-	</div>-->
-
-<!--	/////
-<div ng-if="refInfo.radiology.test_to_run.length > 0">
-		<div class="row">
-            <div class="card">
-			<div class="col-md-4 col-sm-12 pt-2" style="background:#f2f2f2;" ng-if="hasSent">
-				<div style="text-align: center;">
-					<img ng-src="{{refInfo.radiology.patient_profile_pic_url}}" style="width:200px;height:200px">
-				</div>
-				<div class="p-1 font-1_1" style="border-bottom: 1px solid #ccc;">
-                    <b>{{refInfo.radiology.patient_title}} {{refInfo.radiology.patient_firstname}} {{refInfo.radiology.patient_lastname}}</b>
-                    <span style="display:block;">Patient</span></div>
-				<p class="pl-1"><b class="pt-1 font-1_1">Age : </b>{{refInfo.radiology.age}}<br>
-				 <b class="pt-1 font-1_1">Gender |</b> {{refInfo.radiology.gender}}</p>				
-			</div>
-
-			<div class=" col-md-8 col-sm-12" ng-if="hasSent">
-				 <div class="col-sm-12">
-					<h4 class="mb-0 font-1_4">History</h4>
-					<p class="pt-1 pb-1" style="font-size:1em;" ng-if="refInfo.history"><em>{{refInfo.history}}
-					</em></p>
-				</div>
-				</div>
-
-                    <div class="clearfix"></div>
-<hr class="bg-info mt-0">
-
-				 <div class="col-sm-12">
-        <h4 class="mb-0 mt-0 pl-0 font-1_4">Tests to run</h4>
-        <div class="mt-1">
-					<label class="custom-control custom-checkbox" ng-repeat = "test in refInfo.radiology.test_to_run" >
-        <input type="checkbox" ng-model="test.select"  class="custom-control-input">
-        <span class="custom-control-indicator"></span>
-        <span class="custom-control-description">{{test.name}}</span>
-        </label>
-        </div>
-					
-					
-		
-			  </div>			
-		
-
-<div class="p-1">
-    <p>If <b>None</b> of the above test(s) is run by your center please <span href="" class="text-info" style="text-decoration:underline;font-size:1em; cursor:pointer" ng-click="redirectTest()"> refer patient to another center.</span></p>
-    <p>If <b> one </b> or <b> more </b> of the tests is not done in your center please unmark the particular test.</p>
-</div>
-
-</div>
-
-		<div class="row" ng-if="!reportSuccess">
-			<div class="col-sm-12 col-md-12 col-lg-12" ng-if="hasSent">
-
-				<div id="accordion">
-                <div class="card p-2 pl-0 mt-1">
-                    <a class="collapsed btn btn-info" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseSeven" aria-expanded="false" aria-controls="collapseSeven">Bill Patient</a>
-                     <a class="collapsed btn btn-info" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseSix" aria-expanded="false" aria-controls="collapseSix"  ng-click="result(refInfo)"ng-if="!isPreview">Enter test result</a>
-                </div>                 
-
-
-                <div style="list-style:none;font-size:16px" id="collapseSeven" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingSeven">
-                     
-                     <table  class="table table-responsive">
-                     	<tr>
-                     		<thead>
-                     			<th>Test name</th>
-                     			<th>Cost</th>
-                     		</thead>
-                     	</tr>
-                     	<tr>
-                     		<tbody ng-repeat = "j in testsForSurchage">
-                     			<td>{{j.name}}</td>
-                     			<td><input type="number" class="form-control" ng-model="j.amount" style="padding:10px"></td>
-                     		</tbody>
-                     	</tr>
-                     </table>
-                     <div>
-                     	<b>Total : {{str}}</b>
-                     </div>
-                    
-                     <div>&nbsp;</div>
-                </div>
-
-
-               
-                
-				
-				<div>
-					<p ng-if="isRefresh"><button class="btn btn-simple pull-right" ng-click="refresh()">Refresh</button></p>	
-					<h4 class="font-1_1">Uploads files associated with these test result(s)</h4>
-					<form enctype="multipart/form-data">
-						<input type="file" name="file" id="file" file-model = "radio.scanImage" multiple="multiple">
-						<button class="btn btn-simple" ng-click="upload()">Upload image</button>	
-						<p class="text-danger">{{incomplete}}</p>
-					</form>
-						
-					<form>
-						<div class="row">
-						<p class="text-danger pl-1">{{incomplete}}</p>
-						<div class="form-group col-md-6 col-sm-12" ng-repeat="report in testReport">
-							<label class="font-1_1">{{report.name}} Test Report:</label>
-							<textarea placeholder="Write..."  class="form-control"  ng-model="report.data" required= "required"></textarea>						
-						</div>
-						<div class="form-group col-md-6 col-sm-12">
-						<label class="font-1_1">Conclusion:</label>
-						<textarea  class="form-control" placeholder="Write..." required ng-model="lab.conclusion"></textarea>
-						</div>
-						<div class="form-group col-md-12 col-sm-12" ng-if="isFilled === true">
-                     	<button class="btn btn-success" ng-click="previewTestResult(refInfo)">Ok, continue</button>
-                     	</div>		
-						</div>							
-							
-					</form>				
-				</div>
-            </div>
-
-
-				
-				<div class="container p-0 mt-1" ng-i="isPreview">
-					<div class="card pb-2">
-					<div ng-if="!otpMsg">
-						<div class="p-1" style="font-size:2em; font-weight:200 !important; border-bottom:1px solid #ccc;">Preview of the result of above test ran based on your entry</div>
-						<div class="row p-1">
-							<div class="text-success pl-1 font-1_1 m-0" ng-repeat="picked in preTest"><b>{{picked.name}}: </b> {{picked.data}}</div>
-							<div class="text-success pl-1 font-1_1"><b>Conclusion: </b> {{lab.conclusion}}</div>
-							<div class="text-danger pt-1 pl-1 pb-0" style="text-transform:uppercase;"><b>Total cost of service(s): </b> {{str}}</div>
-						</div>
-
-						<div class="pl-1 pb-1"><small class="text-muted" ng-if="grabRawAmount > 0">
-                        <i class="fa fa-warning"></i> Please confirm total cost of service before sending OTP</small>
-                        </div>
-						<button class="btn btn-simple mr-1 ml-1" ng-click="edit()"> Edit </button>
-							<button class="btn btn-warning" ng-click="sendBill(refInfo.radiology.patient_id,resend)" ng-if="grabRawAmount > 0"> Ok,continue </button>
-						
-					</div>
-					 <hr class="bg-warning">
-					 <div class="row">
-					<div  class="p-2 col-md-8" ng-if="otpMsg" class="text-center text-success font-1">
-						<p>{{otpMsg}}</p>
-						<input type="text" class="form-control" placeholder="Enter OTP you sent to this patient" ng-model="lab.otp" ng-if="grabRawAmount > 0">
-						<p ng-if="grabRawAmount <= 0"><span class="text-danger">Report will not be sent, patient is not billed for the service(s)</span></p>						
-						
-					</div>
-					<div class="p-2 col-md-4 pt-4" ng-if="otpMsg"><br><br>
-						<a href="#"  class="btn btn-danger">Cancel</a>	 					
-						<input type="button" value="Send report" ng-click="sendTestResult(refInfo)" class="btn btn-success" style="margin-left:10px">
-					</div>	
-					 </div>
-							
-					<p class="pl-2">{{message}}</p>	
-				</div>
-				</div>
-			</div>
-		</div>
-		<div class = "row" ng-i="isToForward">
-			<div class="card p-2">
-				<div class="col-sm-12 col-md-12">
-					<p class="pt-1" style="font-size: 1.5em; font-weight:300;">Hi, we looked-up for radiology centers within your city/town that run this service(s) below.</p>
-					<div class="p-0"><span  ng-click="customGetLab()" style="cursor:pointer" class="btn btn-simple">Use custom search</span> &nbsp;&nbsp;&nbsp;
-					 <a href="#" class="btn btn-danger">Cancel this process</a></div>
-					<h5  style="padding;4px; font-size:1em; color:#555; font-weight:300; ">Test <b>Not</b> ran by your center</h5>
-					<span ng-repeat="test in unRanTest" style="color:blue;color:rgba(255,100,19,0.9)">{{test.name}}</span>
-					
-					
-					<div class="drug-search-result">
-						 <div class="pl-0 pb-2">
-                            
-                            <span class="col-md-7 col-sm-12 p-0 pt-1 pb-1">
-								<label>Search result for: <span ng-repeat="test in unRanTest" style="display:inline-block;">{{test.name}}</span> 
-                            </label><input type="text" class="form-control" placeholder="Filter by center name or address" ng-model="testFilter.name"></span>                         
-                        </div>
-
-						<div  class="card p-1" style="box-shadow: 0px 5px 25px 0px rgba(0, 0, 0, 0.2);"  ng-repeat ="center in testResult.full | filter : testFilter.name || testFilter.address" style="padding: 10px;margin-bottom: 1px solid grey;box-shadow: 0px 3px 5px grey">
-							<span>{{getStr(center.str)}}</span>
-							<h5 class="font-1_4">{{center.name}}</h5>
-							<span>{{center.address}}</span>
-							<span>{{center.city}}</span>
-							<span>{{center.country}}</span>
-							<div style="padding-top:10px">
-								<span><i class="fa fa-phone"></i>&nbsp; +234 {{center.phone}}</span>
-							</div>
-							<p class="btn btn-simple pull-right"><i class="fa fa-share" style="cursor:pointer;color:green" title="Forward  {{getStr(center.str)}} to {{center.name}}" ng-click="toForwardToCenter(center)"></i></p> 
-						</div>
-						<div class="card p-1" style="box-shadow: 0px 5px 25px 0px rgba(0, 0, 0, 0.2);" ng-repeat="center in testResult.less | filter : testFilter.name || testFilter.address" style="padding: 10px;margin-bottom: 1px solid grey;box-shadow: 0px 3px 5px grey">
-
-							<div><span>{{getStr(center.str)}}</span> 
-							<span style="text-decoration:line-through">{{notStr(center.notFound)}}</span>
-							</div>
-							<h5><b style="color:green">{{center.name}}</b></h5>
-							<span>{{center.address}}</span>
-							<span>{{center.city}}</span>
-							<span>{{center.country}}</span>
-							<div style="padding-top:10px">
-								<span><i class="fa fa-phone"></i>&nbsp; +234 {{center.phone}}</span>
-							</div>
-							<p  class="btn btn-simple pull-right"><i class="fa fa-share" style="cursor:pointer;color:green" title="Forward {{getStr(center.str)}} to {{center.name}}" ng-click="toForwardToCenter(center)"></i></p>  
-						</div>
-					</div>
-				</div>
-			</div>
-
-
-		
-<div class="clearfix"></div>
-<hr class="bg-info mt-2 mb-2">
-<div class="clearfix"></div>
-
-<div ng-if="refInfo.radiology.test_to_run.length === 0">
-	<div ng-if="!reportSuccess">
-		<div class="row">
-            <div class="col-md-3 col-sm-12">
-			<img src="{{refInfo.radiology.patient_profile_pic_url}}" style="max-width: 120px; max-height: 120px;">
-			</div>
-			<div  class="col-md-9 col-sm-12 pt-2 font-1_1">
-				<b>{{refInfo.radiology.patient_firstname}}</b> &nbsp;
-				<b>{{refInfo.radiology.patient_lastname}} (Patient)</b>
-			</div>
-		<div class="clearfix"></div>
-		<div class="row mt-2">
-			<div class="col-md-6">
-				<h5 class="bg-info mb-1" style="padding:10px; color: #fff">HISTORY</h5>
-				<textarea ng-model="refInfo.history"  class="form-control" style="height:90px; padding:7px;" placeholder="Write..."></textarea>
-			</div>
-
-			<div class="col-md-6">
-				<h5 class="bg-info mb-1" style="padding:10px; color: #fff">Test to run</h5>
-				<div ng-repeat="i in testList" style="width: 90%;margin:0 auto">				
-					<input name="states" class="form-control" id="states" type="text" placeholder="Choose test name" ng-model="test.name" uib-typeahead="test.name for test in tests | filter:$viewValue | limitTo:15" class="form-control"  ng-class="{'disabled': i.name}" style="width: 80%;;font-weight:bold">
-					{{getTest(test.name)}} 
-					<i class="fa fa-times" style="cursor: pointer;font-weight: 100; font-size: 16px;color:grey" ng-click="remove(i.sn)" ng-if="i.name"></i>				
-				</div>
-			</div>
-		</div>
-		<div style="text-align:right;padding: 10px;font-weight: bold">
-			<i class="fa fa-plus btn" style="cursor: pointer" ng-click="add(test.name)">&nbsp;<b>Add</b></i> 
-		</div>
-		<div class="col-md-3 col-sm-12 offset-md-9 offset-sm-0 p-1"  ng-if="testList.length > 1">
-			<input type="button" value="Ok,continue" class="btn btn-success btn-block" ng-click="testToRunFilled()">
-		</div>
-	</div>
-</div>
-<div class="clearfix"></div>
-<div ng-if="reportSuccess">
-	<p class="alert alert-success text-white mt-1" style="font-size:1.6em; font-weight:300;">Test report sent!</p>
-</div>-->
-
-
-
-
-<!--
-ORIGINAL
-
-<div class="col-sm-12 col-md-12 col-lg-12" style="height: 2000px">
-	<div class="row">
-		
-	<header  class="col-sm-12 col-md-2 clo-lg-2">
-		<img src="{{refInfo.radiology.patient_profile_pic_url}}" style="max-width: 120px; max-height: 120px;">
-		<div style="text-align: center">
-			<strong>{{refInfo.radiology.patient_firstname}} {{refInfo.radiology.patient_lastname}}</strong> 
-			<span style="display: block"> (Patient)</span>
-		</div>
-		<hr>
-		<div>
-			<Strong>Age | </strong> &nbsp;{{refInfo.radiology.age}} 
-			<strong style="display:block;padding-top: 20px">Gender |</strong> &nbsp;{{refInfo.radiology.gender}}
-		</div>	
-	</header>
-	
-	<div ng-if="refInfo.radiology.test_to_run.length > 0" class="col-sm-12 col-md-10 clo-lg-10">
-		<div class="row">
-			""<div class="col-sm-12 col-md-4 col-lg-4 pull-right" ng-if="hasSent">
-				<div style="text-align: center;">
-					<img ng-src="{{refInfo.radiology.patient_profile_pic_url}}" style="max-width:120px;max-height:120px">
-				</div>
-				
-				<div style="text-align: center; padding: 10px; border-bottom: 1px solid green"><strong>{{refInfo.radiology.patient_title}} {{refInfo.radiology.patient_firstname}} {{refInfo.radiology.patient_lastname}}</strong><span style="display:block;">Patient</span></div>
-							
-			</div>""
-			<div class="col-sm-12 col-md-12 col-lg-12" ng-if="hasSent">
-				
-				<div class="col-sm-12">
-					<h4 class="mb-0 font-1_4" style="text-decoration: underline;">History</h4>
-					<p class="pt-1 pb-1" style="font-size:1em;text-indent: 30px" ng-if="refInfo.history">
-						<em>{{refInfo.history}}
-						</em>
-					</p>
-				</div>				
-
-				<div>					
-					<h6 style="color:rgba(255,100,19,0.9)">Tests to run</h6>
-					<ul style="font-size: 18px">
-						<li ng-repeat = "test in refInfo.radiology.test_to_run" style="list-style-type:none;padding:10px;"><input type="checkbox" ng-model="test.select" style="width:22px;height:22px;margin-right:10px">{{test.name}}</li>
-					</ul>
-				</div>			
-		
-			
-				<p>If <strong>None</strong> of the above test(s) is run by your center please <span href="#" style="color:blue;text-decoration:underline;font-size:16px;cursor:pointer" ng-click="redirectTest()"> refer patient to another center.</span></p>
-				<p>If <strong> one </strong> or <strong> more </strong> of the tests is not done in your center please unmark the particular test.</p>
-				
-
-		</div>
-
-		<div class="row" ng-if="!reportSuccess">
-			<div class="col-sm-12 col-md-12 col-lg-12" ng-if="hasSent">
-
-				<div id="accordion">
-                <h6 style="color: #fff;padding:5px;margin:15px 0 20px">
-                    <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="/#collapseSeven" aria-expanded="false" aria-controls="collapseSeven" style="background-color:#e97147; font-size: 14px;color:#fff;border-radius:10px;padding:10px;margin-right: 20px">Bill Patient</a>
-                     <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="/#collapseSix" aria-expanded="false" aria-controls="collapseSix" style="background-color:#e97147; font-size: 14px;color:#fff;border-radius:10px;padding:10px" ng-click="result(refInfo)"ng-if="!isPreview">Enter test result</a>
-                </h6>                 
-                <div style="list-style:none;font-size:16px" id="collapseSeven" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingSeven">
-                     
-                     <table style="width: 60%">
-                     	<tr>
-                     		<thead>
-                     			<th>Test name</th>
-                     			<th>Cost</th>
-                     		</thead>
-                     	</tr>
-                     	<tr>
-                     		<tbody ng-repeat = "j in testsForSurchage">
-                     			<td style="width: 55%;padding:10px;color:#000">{{j.name}}</td>
-                     			<td style="width: 45%"><input type="number" ng-model="j.amount" style="padding:10px"></td>
-                     		</tbody>
-                     	</tr>
-                     </table>
-                     <div>
-                     	<strong>Total : <em>{{str}}</em></strong>
-                     </div>
-                     ""<div style="text-align:center;margin-top:20px" ng-if="isFilled === true">
-                     	<button style="background-color:#996b88;color:#fff;font-size:14px;border-radius:20px" ng-click="sendBill(refData.laboratory.patient_id)">Send billing to patient</button>
-                     </div>""
-                     <div>&nbsp;</div>
-                </div>
-
-
-               
-                """<p style="text-align:center; text-decoration: underline" ng-if="hasPreviewed"><button ng-click="result(refInfo)">Enter test result</button></p>"""
-				
-				<div ng-if="isResult" id="collapseSix" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingSix">
-					<p style="text-align:right; text-decoration: underline" ng-if="isRefresh"><button ng-click="refresh()">Refresh</button></p>	
-					<h4>Uploads files associated with these test result(s)</h4>
-					<form enctype="multipart/form-data">
-						<input type="file" name="file" id="file" file-model = "radio.scanImage" multiple="multiple">
-						<button ng-click="upload()">Upload image</button>	
-						<p style="text-align: center; color: red">{{incomplete}}</p>
-					</form>
-						
-					<form>
-						<p style="color:red; text-align:center">{{incomplete}}</p>
-						<div ng-repeat="report in testReport" style="margin-top: 25px">
-							<label>{{report.name}} Test Report:</label>
-							<textarea placeholder="Write..."  ng-model="report.data" required= "required" style="border:none"></textarea>						
-						</div>
-						<label style="margin-top: 25px;text-transform:uppercase">Conclusion:</label>
-						<textarea placeholder="Write..." required ng-model="lab.conclusion" style="border:none"></textarea>
-
-						<div style="text-align:center;margin-top:20px" ng-if="isFilled === true">
-                     	<button style="background-color:#996b88;color:#fff;font-size:16px;border-radius:20px;padding:10px" ng-click="previewTestResult(refInfo)">Ok, continue</button>
-                     	</div>									
-						
-					</form>				
-				</div>
-            </div>
-
-
-				
-				<div ng-if="isPreview">
-					<div ng-if="!otpMsg">
-						<h5 style="text-align:center; text-decoration: underline;color:green">Preview of the result of above test ran based on your entry</h5>
-						<ul>
-							<li style="list-style:none;padding: 10px;color:green" ng-repeat="picked in preTest"><strong>{{picked.name}}: </strong> {{picked.data}}</li>
-							<li style="list-style:none;padding: 10px;color:green"><strong>CONCLUSION: </strong> {{lab.conclusion}}</li>
-							<li style="list-style:none;padding: 10px;text-transform:uppercase;color:red;font-weight:bold"><strong>Total cost of service(s): </strong> {{str}}</li>
-						</ul>
-						<p><small style="display:inline-block;margin-left:5px" ng-if="grabRawAmount > 0"><i class="fa fa-warning"></i>Please confirm total cost of service before sending OTP</small></p>
-						<div style="text-align:center">
-							<button style="background-color:#996b88;color:#fff;font-size:14px;border-radius:20px;margin-left:50px" ng-click="edit()"> Edit </button>
-							<button style="background-color:#996b88;color:#fff;font-size:14px;border-radius:20px;margin-left:50px" ng-click="sendBill(refInfo.radiology.patient_id,resend)" ng-if="grabRawAmount > 0"> Ok,continue </button>
-						</div>
-					</div>
-					<div ng-if="otpMsg" style="color:green;font-size:16px;text-align:center">
-						<p>{{otpMsg}}</p>
-						<input type="text" placeholder="Enter OTP you sent to this patient" ng-model="lab.otp" style="width:50%" ng-if="grabRawAmount > 0">
-						<p ng-if="grabRawAmount <= 0"><small style="color:red">Report will not be sent, patient is not billed for the service(s)</small></p>						
-						
-					</div>
-					<div style="padding: 30px;text-align:center" ng-if="otpMsg">
-						<a href="#"  class="btn btn-primary">Cancel</a>	 					
-						<input type="button" value="Send report" ng-click="sendTestResult(refInfo)" class="btn btn-primary" style="margin-left:10px">
-					</div>					
-					<p>{{message}}</p>	
-				</div>
-			</div>
-		</div>
-		<div class = "row" ng-if="isToForward">
-			<div class="col-sm-12 col-md-12 col-lg-12">
-				<div style="width:80%;margin: 30px auto">
-					<p style="padding: 10px;font-size: 18px;">Hi, we looked-up for radiology centers within your city/town that run this service(s) below.</p>
-					<div style="text-align:right;color:blue"><span  ng-click="customGetLab()" style="color:blue;text-decoration:underline;cursor:pointer">Use custom search</span> &nbsp;&nbsp;&nbsp; <a href="#" style="color:blue;text-decoration:underline">Cancel this process</a></div>
-					<h6 style="text-decoration:underline;color:#000">Test <strong>Not</strong> ran by your center</h6>
-					<ul>
-						<li ng-repeat="test in unRanTest" style="color:blue;color:rgba(255,100,19,0.9)">{{test.name}}</li>
-					</ul>
-					
-					<div class="drug-search-result">
-						<p style="font-size: 18px;margin-top:20px">
-							<strong>Search result for:</strong>
-							<span ng-repeat="test in unRanTest" style="display:inline-block; padding:10px">{{test.name}}</span> 
-							
-							<input type="text" placeholder="Filter by center name or address" ng-model="testFilter.name">
-
-						</p>
-						<div ng-repeat ="center in testResult.full | filter : testFilter.name || testFilter.address" style="padding: 10px;margin-bottom: 1px solid grey;box-shadow: 0px 3px 5px grey">
-							<span>{{getStr(center.str)}}</span>
-							<h5><strong style="color:green">{{center.name}}</strong></h5>
-							<span>{{center.address}}</span>
-							<span>{{center.city}}</span>
-							<span>{{center.country}}</span>
-							<div style="padding-top:10px">
-								<span><i class="fa fa-phone"></i>&nbsp; +234 {{center.phone}}</span>
-							</div>
-							<p style="text-align:right"><i class="fa fa-share" style="cursor:pointer;color:green" title="Forward  {{getStr(center.str)}} to {{center.name}}" ng-click="toForwardToCenter(center)"></i></p> 
-						</div>
-						<div ng-repeat="center in testResult.less | filter : testFilter.name || testFilter.address" style="padding: 10px;margin-bottom: 1px solid grey;box-shadow: 0px 3px 5px grey">
-							<div><span>{{getStr(center.str)}}<span> 
-							<span style="text-decoration:line-through">{{notStr(center.notFound)}}</span>
-							</div>
-							<h5><strong style="color:green">{{center.name}}</strong></h5>
-							<span>{{center.address}}</span>
-							<span>{{center.city}}</span>
-							<span>{{center.country}}</span>
-							<div style="padding-top:10px">
-								<span><i class="fa fa-phone"></i>&nbsp; +234 {{center.phone}}</span>
-							</div>
-							<p style="text-align:right"><i class="fa fa-share" style="cursor:pointer;color:green" title="Forward {{getStr(center.str)}} to {{center.name}}" ng-click="toForwardToCenter(center)"></i></p>  
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>	
-</div>
-
-<div ng-if="refInfo.radiology.test_to_run.length === 0" class="col-sm-12 col-md-10 clo-lg-10">
-	<div ng-if="!reportSuccess">
-		<div class="row">			
-			<div class="col-sm-12 col-md-12 clo-lg-12">
-				<h5 class="bg-info mb-1" style="padding:10px; color: #fff">HISTORY</h5>
-				<textarea ng-model="refInfo.history"  class="form-control" style="height:90px; padding:7px;" placeholder="Write...">
-				</textarea>
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-sm-12 col-md-12 clo-lg-12">
-				<h5 class="bg-info mb-1" style="padding:10px; color: #fff">Test to run</h5>
-				<div class="row">
-					<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 pull-right" style="padding-left: 20px;max-height: 300px;overflow-y:auto">
-						<ol>
-							<li ng-repeat="i in testList" style="position: relative;padding-bottom:20px" ng-if="i.name">{{i.name}} 
-							<i class="fa fa-times" style="cursor: pointer;font-weight: 100; font-size: 16px;color:grey;position: absolute;right:20px;top:5px" ng-click="remove(i.sn)" ng-if="i.name"></i>						
-							</li>
-						</ol>
-
-						<div style="padding-top: 30px" ng-if="testList.length > 1">
-							<input type="button" value="Ok,continue" class="btn btn-primary" ng-click="testToRunFilled()">
-						</div>
-					</div>
-					<div class="col-sm-12 col-md-6 col-lg-6" >
-						<div ng-repeat="j in inputctrl">				
-							<input name="states" id="states" type="text" placeholder="Choose test name" ng-model="test.name" uib-typeahead="test.name for test in tests | filter:$viewValue | limitTo:15" class="form-control"  ng-class="{'disabled': i.name}" style="width: 100%;font-weight:bold">
-							{{getTest(test.name)}}
-
-							<i class="fa fa-times" style="cursor: pointer;font-weight: 100; font-size: 16px;color:grey;position: absolute;right:20px;top:5px" ng-click="remove(i.sn)" ng-if="i.name"></i>
-						</div>
-						<div style="padding-top: 20px">
-							<button class="fa fa-plus btn-simple"  ng-click="add(test.name)">&nbsp; Add</button> 
-						</div>				
-					</div>
-					
-				</div>
-
-				
-			</div>
-		</div>
-		
-		
-	</div>
-	</div>
-</div>
-<div ng-if="reportSuccess">
-	<p style="text-align:center;font-size:18px;color:green;margin-top:50px">Test report sent!</p>
-</div>
-
-
--->
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
