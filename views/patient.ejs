@@ -22,7 +22,7 @@
         <script src="/assets/js/vendor2.js"></script>
         <script type="text/javascript" src="/assets/js/source.js"></script>
 
-          
+      
           <style>
             body {
                 font-family: 'Open Sans', sans-serif;
@@ -737,15 +737,7 @@
 
 
                   </div>
-                <footer class="footer bg-white text-muted">
-                    <div class="footer-block buttons"> <iframe class="footer-github-btn" src="#" frameborder="0" scrolling="0" width="140px" height="20px"></iframe> </div>
-                    <div class="footer-block author">
-                        <ul>
-                            <li>Applinic</a> </li>
-                            <li> <a href="#">Contact Us</a> </li>
-                        </ul>
-                    </div>
-                </footer>
+                
                 <div class="modal fade" id="modal-media">
                     <div class="modal-dialog modal-lg">
                         <div class="modal-content">
@@ -930,10 +922,10 @@
                         </div>
                         <div class="col-md-9 col-sm-12 pl-1 pr-0">
                             <div class=""><b>{{docInfo.title}} {{docInfo.firstname}} {{docInfo.lastname}}</b></div>
-                             <div class="">Specialty | {{docInfo.specialty}}</div>
-                             <div>Works at | <span class="">{{docInfo.work_place}}</span> <span>{{docInfo.address}} {{docInfo.city}} {{docInfo.country}}</span></div>
-                            <div>Work experience | <span class="">{{docInfo.experience + " years"}}</span></div>
-                             <div>Office hours | </div>       
+                             <div class="">{{docInfo.specialty}}</div>
+                             <div>Works at <span class="">{{docInfo.work_place}}</span> <span>{{docInfo.address}} {{docInfo.city}} {{docInfo.country}}</span></div>
+                            <div><span class="">{{docInfo.experience + " years experience"}}</span></div>
+                             <div> </div>       
                             <ul class="nav">        
                                 <li ng-repeat = "i in docInfo.office_hour "><span>{{i.day}}</span>, <span>from {{i.from}}</span> <span>to {{i.to}}</span></li> 
                             </ul>
@@ -944,18 +936,33 @@
                            <form class="pt-1">
                                <div class="pb-1">
                                    <label>Why do yo want to consult {{docInfo.title}} {{docInfo.firstname}}?</label>
-                                   <div>
-                                     <input type="checkbox" name="" ng-model="patient.sick"> I am sick.
+                                   <div>                        
+                                     <label class="custom-control custom-checkbox">
+                                        I am sick.
+                                       <input type="checkbox" class="custom-control-input" ng-model="patient.sick">
+                                        <span class="custom-control-indicator"></span>
+                                        <span class="custom-control-description" style="opacity:0;"></span>
+                                      </label> 
+                                   </div>
+                                   <div>                                    
+                                     <label class="custom-control custom-checkbox">
+                                        I am pregrant.
+                                       <input type="checkbox" class="custom-control-input" ng-model="patient.pregnant" >
+                                        <span class="custom-control-indicator"></span>
+                                        <span class="custom-control-description" style="opacity:0;"></span>
+                                      </label> 
                                    </div>
                                    <div>
-                                     <input type="checkbox" name="" ng-model="patient.pregnant"> I am pregrant.
-                                   </div>
-                                   <div>
-                                    <input type="checkbox" name="" ng-model="patient.personal"> I need a personal doctor.
+                                      <label class="custom-control custom-checkbox">
+                                        I just need a personal doctor.
+                                       <input type="checkbox" class="custom-control-input" ng-model="patient.personal">
+                                        <span class="custom-control-indicator"></span>
+                                        <span class="custom-control-description" style="opacity:0;"></span>
+                                      </label> 
                                    </div>
                                </div>
                                <div ng-if="patient.sick" class="pb-1">
-                                   <label>what symptoms are you experiencing?</label>
+                                   <label>what are your complaints?</label>
                                    <div class="text-danger">{{sympMsg}}</div>
                                    <div class="pb-1">
                                        <div ng-repeat="i in symptomsList" style="position: relative;padding-bottom: 5px">           
@@ -969,14 +976,14 @@
                                    </div>
                                    <label>How long have you been feeling this sick?</label>
                                    <div>
-                                       <textarea class="form-control pl-1" ng-model="patient.how"></textarea>
+                                       <textarea class="form-control pl-1" ng-model="patient.how" style="height: 200px;width: 90%"></textarea>
                                    </div>
                                </div>
                                <div ng-if="patient.pregnant" class="pb-1">
                                    <label>How long has the pregnancy been?</label>
                                    <div class="text-danger">{{pregMsg}}</div>
                                    <div>
-                                       <select ng-model="patient.duration">
+                                       <select ng-model="patient.duration" class="form-control" style="width: 90%">
                                            <option value="" selected="selected">_select</option>
                                            <option value=""></option>
                                            <option>less than 2 months</option>
@@ -1737,7 +1744,24 @@
           </div>
         </div>
       </div>
-   </script>                    
+   </script>      
+  
+   <!--<script type="text/ng-template" id="capture-image.html">
+       <div class="modal fade">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+          
+            <div>  
+                <canvas id="canvas" width=320 height=240></canvas>
+                <video id="player" controls autoplay></video>
+                <button id="capture">Capture</button>                
+            </div>
+            
+          </div>
+        </div>
+      </div>
+   </script>-->                               
 
 
        

@@ -22,6 +22,8 @@
         <!--<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>-->
           <script src="/assets/js/vendor2.js"></script>
           <script type="text/javascript" src="/assets/js/source.js"></script>
+
+        </script>
          
           <style>
             body {
@@ -1486,11 +1488,11 @@
                 <!--<p style="text-align: center">{{data.firstname}} {{data.lastname}}</p>-->
                 <form class="pt-1">
                     <div>
-                        <label> Your consultation fee below (includes 20% service charge of fee)</label>
+                        <label> Your consultation fee below (20% discount applied)</label>
                         <input type="number" placeholder="Enter amount.*" ng-model="user.fee" class="form-control" style="width: 80%" required>
                     </div>
                     <div class="pt-1">
-                        <label>Amount patient will see : {{total}}</label>
+                        <label>You'll receive : {{total}}</label>
                     </div>
                     <div class="pt-1">
                         <button class="btn btn-primary" ng-hide="acceptanceMsg" ng-click="sendAcceptance()"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i> {{(loading) ? '' : 'Submit'}}</button>

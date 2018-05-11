@@ -13,11 +13,12 @@
         <!--<link rel="stylesheet" href="/assets/css/bootstrap.css">-->
         <link rel="stylesheet" href="/assets/css/vendor.css">
          <link rel="stylesheet" href="/assets/css/app.css">
-          <link rel="stylesheet" href="/assets/css/chat.css">
           <link rel="stylesheet" href="/assets/css/now-ui-kit2.css">
           <link rel="stylesheet" href="/assets/css/font-awesome.min.css">
-           <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
-           <link rel="stylesheet" href="/assets/css/my-edit.css">
+          <link rel="stylesheet" href="/assets/css/chat.css">
+          <link rel="stylesheet" href="/assets/css/my-edit.css">
+          <link rel="stylesheet" href="/assets/css/ngPrint.css">
+            <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
           <style>
               body {
                 font-family: 'Open Sans', sans-serif;
@@ -211,9 +212,10 @@
                                 <span style="color:red">Need help</span>
                             </a>
                           </li>-->
+                         
                           <li class="nav-item">
-                            <a class="btn btn-simple round mr-1"  href="#/referred-patients" ><i class="fa fa-user"></i>
-                                        <span style="color:red">Find Patient Prescription</span></a>
+                            <a class="btn btn-simple round mr-1"  href="#/rendered-services"><i class="fa fa-file-text"></i>
+                                <span style="color:red">Work History</span></a>
                           </li>
 
                           <li class="nav-item" ng-cloak>
@@ -223,6 +225,11 @@
                             <a class="btn btn-simple round mr-1"  href="#/courier-requests" ng-if="checkLogIn.courier_access === true"><i class="fa fa-bicycle"> </i>
                             <span style="color:red">Courier services</span></a>
                             </a>
+                          </li>
+
+                           <li class="nav-item">
+                            <a class="btn btn-simple round mr-1"  href="#/referred-patients" ><i class="fa fa-user"></i>
+                                        <span style="color:red">Find Patient Prescription</span></a>
                           </li>
                           
                         </ul>
@@ -439,13 +446,7 @@
 
                   </div>
                 <footer class="footer bg-white text-muted">
-                    <div class="footer-block buttons"> <iframe class="footer-github-btn" src="#" frameborder="0" scrolling="0" width="140px" height="20px"></iframe> </div>
-                    <div class="footer-block author">
-                        <ul>
-                            <li>Applinic</a> </li>
-                            <li> <a href="#">Contact Us</a> </li>
-                        </ul>
-                    </div>
+                    
                 </footer> <!-- Reference block for JS -->
         
        
@@ -1050,6 +1051,80 @@
         </div>
       </div>
    </script>
+   <script type="text/ng-template" id='report-history-modal.html'>
+         
+        <div  class="modal fade">
+          <div class="modal-dialog">
+            <div class="modal-content">
+             <div class="modal-header">
+                
+                <div style="display: inline-block;font-size: 14px">
+                  <img src="{{person.patient_profile_pic_url}}" style="float: left; max-height: 120px;max-width: 120px;">
+                  <div style="display: inline-block;padding-left: 10px">
+                    <strong style="font-weight: bold;">{{person.patient_names}}</strong>
+                    <span style="display: block;">Reference number: {{person.ref_id}}</span>
+                    <span style="display: block;">{{person.patient_phone}}</span>                    
+                      <span style="display: block;">{{person.patient_gender}}</span>
+                       <span style="display: block;">{{person.patient_age}}</span>
+                      <span style="display: block;">{{person.prescriptionDate_date | date: 'mediumDate' }}</span>
+                  </div>
+                </div>                      
+                <button type="button" class="close" ng-click="close('Cancel')" data-dismiss="modal" aria-hidden="true">&times;</button>
+              </div>              
+             
+
+              <div class="modal-body"> 
+              <hr>
+                <div class="p-1">
+                  <label>Provisional diagnosis: </label>
+                  <p style="text-indent: 15px;display: inline-block;">{{person.provisional_diagnosis}}</p>
+                </div>
+                
+                <div class="p-1">
+                  <label>Drug(s) details: </label>
+                  <label style="float: right;color:green">Total cost:{{checkLogIn.currencyCode || 'NGN '}} {{person.amount}}</label>
+                  <div class="clearfix"></div>
+                  <table class="table">
+                    <thead>
+                      <th>name</th>
+                      <th>dosage</th>
+                      <th>frequency</th>
+                      <th>duration</th>
+                    </thead>
+                    <tbody ng-repeat="drug in person.prescriptionBody">
+                      <td>{{drug.drug_name}}</td>
+                      <td>{{drug.dosage}}</td>
+                      <td>{{drug.frequency}}</td>
+                      <td>{{drug.duration}}</td>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="p-1">
+                  <label>Date sold: </label>
+                  <div>{{person.date | date: 'mediumDate'}} 
+                  ( <span am-time-ago="person.date"></span> )</label>  
+                  </div>               
+                </div>
+                <div class="p-1">
+                    <label>Prescribed by: </label>
+                    <div>
+                      <strong style="display: block;">{{person.doctor_names}}</strong>
+                      <span style="display: block;">{{person.doctor_specialty}}</span>
+                      <span style="display: block;">{{person.doctor_work_place}} {{person.doctor_address}} {{person.doctor_city}} {{person.doctor_country}}</span>
+                      <a href="{{person.doctor_profile_url}}">view profile</a>
+                    </div>
+                </div>
+               
+                
+                <!--<div style="text-align: right;" class="p-1">
+                  <button class="btn btn-primary" ng-click="editReport(person)" class="close" data-dismiss="modal"><i class="fa fa-pencil"></i> edit report</button>
+                </div>-->
+              </div>                           
+            </div>
+          </div>
+        </div>
+     </script>
+
 
 
 

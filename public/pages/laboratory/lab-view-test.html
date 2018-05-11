@@ -129,7 +129,7 @@
                      </table>
                      <div>
                      	<strong class="text-success">Total : <em>{{str}}</em></strong>
-                     	<strong style="display: block;" class="text-success">You'll receive : {{commissionedAmount}} &nbsp;<span style="font-weight: normal;">( platform {{checkLogIn.city_grade}}% commission applied )</span></strong>
+                     	<strong style="display: block;" class="text-success">You'll receive : {{commissionedAmount}} &nbsp;<span style="font-weight: normal;">( platform {{checkLogIn.city_grade}}% discount applied )</span></strong>
                      	<button class="btn btn-danger" style="float: right;" ng-click="sendBill(refInfo.laboratory.patient_id,resend)" ng-if="grabRawAmount > 0"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i> Request Payment </button>
                      </div>
                      </article>	
@@ -390,8 +390,9 @@
 </div>
 </div>
 <div ng-if="reportSuccess">
-	<p style="text-align:center;font-size:18px;color:green;margin-top:30px" class="card">Test report sent succesfully!</p>
+	<p style="text-align:center;font-size:18px;color:green;padding-top:80px;height: 120px" class="card">Test report sent succesfully!</p>
 </div>
+
 
 
 

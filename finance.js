@@ -647,21 +647,45 @@ var basicPaymentRoute = function(model,sms,io,paystack){
 					res.send({message:"Confirmation failed! Transaction canceled."});					
 				} else {			
 						if(data.user_id === req.body.patientId && data.senderId === req.user.user_id) {					
-							model.user.findOne({user_id:req.user.user_id},{ewallet:1,user_id:1,city_grade:1,type:1,email:1,referral:1}).exec(function(err,center){				
+							model.user.findOne({user_id:req.user.user_id},{ewallet:1,user_id:1,city_grade:1,type:1,email:1,referral:1,service_details:1}).exec(function(err,center){				
 								if(err) throw err;
-								var elementPos = center.referral.map(function(x){return x.pharmacy.patient_id}).indexOf(req.body.patientId);
+
+								var elementPos = center.referral.map(function(x){return x.pharmacy.ref_id}).indexOf(req.body.refId);
 								var found = center.referral[elementPos];
 
 								if(found) {
 									found.pharmacy.is_paid = true;
 									found.pharmacy.detail.amount = req.body.total;
-									found.pharmacy.detail.date = req.body.date;
+									found.pharmacy.detail.date = req.body.date;								
+
+									center.service_details.unshift({
+										type: "pharmacy",
+										prescriptionDate_date: found.pharmacy.date,
+										provisional_diagnosis: found.pharmacy.provisional_diagnosis,
+										patient_names: found.pharmacy.patient_firstname + " " + found.pharmacy.patient_lastname,
+										patient_phone: found.pharmacy.patient_phone,
+										patient_age: found.pharmacy.patient_age,
+										patient_gender: found.pharmacy.patient_gender,
+										patient_profile_pic_url: found.pharmacy.patient_profile_pic_url,
+										amount: req.body.total,
+										date: req.body.date,
+										prescriptionBody: req.body.prescriptionBody,
+										doctor_names: found.pharmacy.title + " " + found.pharmacy.doctor_firstname + " " + found.pharmacy.doctor_lastname,
+										ref_id: found.pharmacy.ref_id,
+										doctor_work_place: found.pharmacy.doctor_work_place,
+										doctor_specialty: found.pharmacy.doctor_specialty,
+										doctor_city: found.pharmacy.doctor_city,
+										doctor_country: found.pharmacy.doctor_country,
+										doctor_profile_url: found.pharmacy.doctor_profile_url,
+										doctor_address: found.pharmacy.doctor_address
+									});
 								}
 
 								center.save(function(err,info){
 									if(err) throw err;
+									console.log(err);
 									console.log("billing is paid and saved!");
-								})
+								});
 
 								var pay = new Wallet(req.body.date,req.body.patient_firstname,req.body.patient_lastname,"billing");
 								pay.billing(model,req.body,center,sms,io);
@@ -669,7 +693,7 @@ var basicPaymentRoute = function(model,sms,io,paystack){
 								model.otpSchema.remove({otp:req.body.otp},function(err,info){});							
 								res.send({message: "Transaction successful! Your account is credited.",balance:center.ewallet.available_amount});	
 								if(req.body.prescriptionBody) {
-									updatePatient()
+									updatePatient();
 								}				
 							});
 
@@ -961,7 +985,7 @@ var basicPaymentRoute = function(model,sms,io,paystack){
   		res.end("Unauthorized access");
   	}
 
-  })
+  });
 
   router.put("/user/center/billing-verification",function(req,res){
   	console.log(req.body)
@@ -1192,7 +1216,7 @@ var basicPaymentRoute = function(model,sms,io,paystack){
 			        objectFound.files = req.body.radiology.filesUrl;
 		    		}
 
-		        var random = parseInt(Math.floor(Math.random() * 9999) + "" + Math.floor(Math.random() * 9999));
+		        var random = parseInt(Math.floor(Math.random() * 99999) + "" + Math.floor(Math.random() * 9999));
 		        data.patient_notification.unshift({
 		          type:"radiology",
 		          date: req.body.radiology.date,
@@ -1294,7 +1318,7 @@ var basicPaymentRoute = function(model,sms,io,paystack){
 			});
 
 			function allClear(wallet) {
-				var random = Math.floor(Math.random() * 999999999999999);
+				var random = parseInt(Math.floor(Math.random() * 99999) + "" + Math.floor(Math.random() * 9999));
 				var date = + new Date();
 				var CashObj = new model.cashout({
 					date: date,
@@ -1347,8 +1371,6 @@ var basicPaymentRoute = function(model,sms,io,paystack){
 
 
 router.put("/user/field-agent",function(req,res){ 
-console.log("yesssssssssss")
-console.log(req.body)   
   var str = ""
   if(req.body.otp) {
     

@@ -73,11 +73,11 @@ border-radius: 30px;
                             </li>
                              
                             <li style="float: left;margin:25px 10px;list-style: none;color:#555 !important;">
-                                <h5><b>PWR</b></h5>
+                                <h5><b>Patients' Waiting Room</b></h5>
                             </li>  
 
                              <li style="float: left;margin:15px 10px;list-style: none; width: 300px">
-                                <input ng-model="complain.text" placeholder="Filter by id city age gender or symptoms etc" class="form-control">
+                                <input ng-model="complain.text" placeholder="Filter by ID, City, Age, Gender or Symptoms etc" class="form-control">
                             </li>  
                             <li style="float:right;list-style-type:none;margin:20px 10px;  border:1px solid #f2f2f2;">
                                 <a class="nav-link" href="" ng-click="logout()" style="color:#555 !important;">
@@ -140,7 +140,7 @@ border-radius: 30px;
                                                         <time  am-time-ago="i.sent_date" style="position: absolute;right: 0;top:2px;font-size: 12px"></time>
                                                 </header>
                                                  <p style="font-size: 14px;position: relative;font-style: italic;padding-right: 20px" ng-cloak>{{i.description}}
-                                                        <a href="" style="color:red;text-decoration:underline;display: inline-block;position: absolute;right: 5px;bottom: 2px;font-size:normal;" ng-click="veiwDatail(i.complaint_id)">Respond!</a>
+                                                        <a href="" style="color:red;text-decoration:underline;display: inline-block;position: absolute;right: 5px;bottom: -25px;font-size:normal;" ng-click="veiwDatail(i.complaint_id)">Respond!</a>
                                                  </p>
                                                  <small  ng-if="i.files.length > 0" style="position: absolute;bottom: -5px;left: 10px;color: green">{{i.files.length}} <i class="fa fa-paperclip"> </i></small>
                                                 
@@ -172,7 +172,7 @@ border-radius: 30px;
                                 <div style="background-color: #fff;box-shadow: 0 5px 25px 0 rgba(0,0,0,.2); border-radius:5px 5px 0 0; top: 80px" class="complain-in-view" ng-class="{'no-view':isViewPatient !== true}" id="complain-in-view">
                                     <div class="complaint-view-head" style="font-weight: bold;">
                                         <i class="fa fa-user complaint-user" ng-cloak> </i>&nbsp; Patient ({{patient.complaint_id}})
-                                        <i class="fa fa-times complaint-times"  ng-click="close()" ng-if="isViewPatient === true"></i>                                     
+                                        <i  style="float: right;margin-top: -15px" class="fa fa-times complaint-times"  ng-click="close()" ng-if="isViewPatient === true"></i>                                     
                                     </div>
                                     <section style="padding:10px">                                        
                                         <header>
@@ -181,14 +181,14 @@ border-radius: 30px;
                                             <span><strong>Residence</strong ng-cloak> | {{patient.patient_city}} {{patient.patient_coutry}}</span>
                                         </header><hr>
                                         <aside>
-                                           <div ng-if="patient.preferred_city" style=" background:#f2f2f2; text-transform:capitalize;;  font-size:16px;padding: 10px 0;text-align:center;margin: 15px 0" ng-cloak>Prefers resident doctors in {{patient.preferred_city}}</div>
+                                           <div ng-if="patient.preferred_city" style=" background:#f2f2f2; text-transform:capitalize; font-size:16px;padding: 10px 0;text-align:center;margin: 15px 0" ng-cloak>Prefers doctors resident in {{patient.preferred_city}}</div>
                                         </aside>
                                         <h6 style="font-weight:bold">History</h6><hr/>
                                         <ul class="patient-symptoms">                                            
                                             <li ng-repeat="symptom in patient.symptoms" class="description"><strong ng-cloak>{{symptom}}</strong></li>
                                         </ul>
                                         <p ng-cloak>"{{patient.description}}"</p>
-                                        <h6 style="font-weight:bold;">Attached file(s)</h6><hr/>
+                                        <h6 style="font-weight:bold;" ng-if="patient.files.length > 0">Attached file(s)</h6><hr/>
                                         <div class="card" ng-if="patient.files.length > 0" ng-repeat="file in patient.files" >
                                             <div  ng-if="file.type === 'image'" style="width: 480px;height:auto;margin:5px auto">
                                             <img ng-src="{{file.url}}"  ng-click="viewFile()"  style="width: 100%;height:100%;margin-right:10px" class="img-responsive">
@@ -208,20 +208,22 @@ border-radius: 30px;
                                         <h6 style="font-weight:bold">Your Response</h6>
                                         <hr>
                                         <form class="complaint-view-charge">
-                                            <label class="text-capitalize">Briefly introduce yourself </label>
-                                            <textarea class="form-control" style="padding: 10px" cols="6" ng-model="user.introductory"></textarea>
-                                            <div>
-                                                <p>Consultation Fee <small style="float: right;">20% service charge of fee</small></p>
-                                               
+                                            
+                                            <div class="pt-2">
+                                                <label style="font-weight:bold;font-size: 14px">Consultation Fee </label> 
+                                                &nbsp;&nbsp;( <small>20% discount for consultation applied</small> )         
                                             </div>
                                             <div class="clearfix"></div>
                                             <div class="pb-2">
-                                                <span>Your charge = </span>
+                                                <small>Your charge = </small>
                                                 <input type="number" class="form-control input-lg" placeholder="Enter amount" ng-model="user.amount">      
                                             </div>
-                                            <div class="mt-1">
-                                                <span ng-cloak>Amount patient will see : {{str}}</span>
+                                            <div class="mt-1 mb-2">
+                                                <small>You'll receive : {{str}} </small>
                                             </div>
+                                            <hr>
+                                            <label style="font-weight:bold;font-size: 14px" class="text-capitalize">Briefly explain how you may handle this complaint </label>
+                                            <textarea class="form-control" style="padding: 10px" cols="6" ng-model="user.introductory"></textarea>
                                             <div class="p-2"></div><hr>
                                             <div class="pb-5 mt-2" style="display: block;margin-top: 20px">
                                                 <button  ng-click="sendRequest()" class="btn btn-primary text-white"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff !important" ng-if="loading"></i> {{(loading) ? '' : 'Submit'}}</button>

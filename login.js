@@ -53,6 +53,8 @@ router.get('/user/dashboard',function(req,res){
       if(data.admin === true && req.user.user_id === process.env.ADMIN_ID){
         res.json({typeOfUser:"admin",isLoggedIn: true,balance: req.user.ewallet.available_amount,user_id:req.user.user_id});
       } else {
+        console.log("===============++++++++++++")
+        console.log(data.set_presence.general)
         data.presence = true;
         data.set_presence.general = true;
         data.save(function(err,info){
@@ -83,7 +85,8 @@ router.get('/user/dashboard',function(req,res){
         courier_access: req.user.courier_access,
         courier_access_password: req.user.courier_access_password,
         family_accounts: req.user.family_accounts,
-        city_grade: req.user.city_grade
+        city_grade: req.user.city_grade,
+        currencyCode: req.user.currencyCode
       });
     }
   } else {

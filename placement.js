@@ -10,7 +10,7 @@ function placementRoute(model,sms,io){
 	router.post("/user/help",function(req,res){
 		if(req.user){		
 			model.user.findOne({user_id: req.body.userId},{age:1,gender:1,city:1,country:1},function(err,user){
-				var random = Math.floor(Math.random() * 9999999);
+				var random = Math.floor(Math.random() * 99999999);
 		  	var complain_id = "#" + random;
 		    var preferredCity = req.body.city || user.city;
 	      	var newHelp = new model.help({       
@@ -26,6 +26,8 @@ function placementRoute(model,sms,io){
 	        preferred_city: preferredCity,
 		      isview: false
       	});
+
+	      console.log(req.files)
 
 	      if(req.files.length > 0){
 	      	var fileUrl;	      	

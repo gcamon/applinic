@@ -147,7 +147,7 @@ var signupRoute = function(model,sms,geonames,paystack) {
 					var getFirstLetter;
 					var toStr;
 					if(username) {
-						var getRandomNumber = Math.floor(Math.random() * 999999);
+						var getRandomNumber = parseInt(Math.floor(Math.random() * 999) + "" + Math.floor(Math.random() * 999));
 						toStr = username + getRandomNumber;
 					}				
 					return toStr;					

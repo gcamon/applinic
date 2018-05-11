@@ -24,8 +24,19 @@
 				<span style="display: block;"><b>Destination:  </b> &nbsp;{{person.receiver}} </span>
 				<button class="btn btn-info btn-sm" style="position: absolute;bottom: 3px; right: 20px" ng-click="viewReport(person)">view details</button>
 			</div>
+
+			<div ng-repeat="person in renderedServices | filter: filterRendered" ng-if="person.type === pharmacy" class="pt-1" style="position: relative;">
+				{{getDateGroup(person.date,person)}}
+				<div style="padding: 5px;background-color: #d7dde4;font-weight: bold;" ng-if="person.dategroup">{{person.dategroup}}</div>
+				<strong class="text-danger ellipsis" style="display: block;widows: 90%;">{{person.patient_names}}</strong>
+				<span style="display: block;"><b>Reference number: </b>&nbsp;{{person.ref_id}}</span>
+				<span style="display: block;"><b>Status: </b>&nbsp;Drug(s) delivered </b> &nbsp;<span am-time-ago="person.service_date"></span></span>
+				<span ><b>Drug(s):  </b> &nbsp;<span style="display: block;text-indent: 15px" class="text-danger" ng-repeat="item in person.prescriptionBody">{{item.drug_name}} <span style="color: #000">( {{item.dosage || 'not specified' }} )</span></span>
+				<span style="display: block;margin-top: 10px"><b>Total cost: </b>&nbsp; {{'NGN ' + person.amount}}</span>
+				<button class="btn btn-info btn-sm" style="position: absolute;bottom: 3px; right: 20px" ng-click="viewReport(person)">view details</button>
+			</div>
 			<div ng-if="renderedServices.length == 0">
-				<p style="text-align: center;padding-top: 20px">Oops! Work history is empty!</p>
+				<p style="text-align: center;padding-top: 20px">Oops! Work history is empty.</p>
 			</div>
 		</div>
 	</div>

@@ -123,7 +123,7 @@
                      </table>
                      <div>
                      	<strong class="text-success">Total : <em>{{str}}</em></strong>
-                     	<strong style="display: block;" class="text-success">You'll receive : {{commissionedAmount}} &nbsp;<span style="font-weight: normal;">( platform {{checkLogIn.city_grade}}% commission applied )</span></strong>
+                     	<strong style="display: block;" class="text-success">You'll receive : {{commissionedAmount}} &nbsp;<span style="font-weight: normal;">( platform {{checkLogIn.city_grade}}% discount applied )</span></strong>
                      	<button class="btn btn-danger" style="float: right;" ng-click="sendBill(refInfo.radiology.patient_id,resend)" ng-if="grabRawAmount > 0"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i> Request Payment </button>
                      </div>
                      </article>
@@ -296,7 +296,7 @@
 							<h6 class="pb-2">Findings: </h6>
 							
 							<div class="text-success pl-1 font-1_1 m-0 pt-1" ng-repeat="picked in preTest"><b class="text-danger">{{picked.name}}: </b> <span style="display: block;padding: 20px;background-color: #d7dde;">{{picked.data}}</span></div>
-							<div class="text-success pl-1 font-1_1 pt-1"><b class="text-danger">Conclusion: </b> <span style="display: block;padding: 20px;dbackground-color: #d7dde;">{{lab.conclusion}}</span></div>
+							<div class="text-success pl-1 font-1_1 pt-1"><b class="text-danger">Conclusion: </b> <span style="display: block;padding: 20px;background-color: #d7dde;">{{lab.conclusion}}</span></div>
 							<div ng-if="files.length > 0">{{files.length}}files attached</div>
 							<hr class="bg-simple">
 							<div class="text-info pt-1 pl-1 pb-0" style="text-transform:uppercase;" id="noFooter"><b>Total cost of service(s): </b> {{paymentDetail.amount || str}}</div>

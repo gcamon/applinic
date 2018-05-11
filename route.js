@@ -1709,7 +1709,6 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
       //this route handle patients sending his prescription to a pharmacy by himself.Therefore the prescription obj already exist. justs to
       //add the prescription object to the chosen pharmacy.
       if(req.user){
-        
         model.user.findOne(
           {
             user_id: req.body.user_id
@@ -1730,7 +1729,7 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
             if(req.body.ref_id) {
               ref_id = req.body.ref_id;
             } else {
-              ref_id = Math.floor(Math.random() * 9999999);
+              ref_id = parseInt(Math.floor(Math.random() * 99999) + "" + Math.floor(Math.random() * 99999));
             }
             var title = (req.user.type === "Doctor") ? 'Dr.': "";            
             var refObj = {
@@ -5606,10 +5605,12 @@ router.get("/user/response/patients-histories/:batch",function(req,res){
   model.help.find({},function(err,data){
     if(err) throw err;
     var len = data.length;
-    var selected = data.slice(index,len);
+    var selected = data.slice(index);
     res.send(selected);
     
-  }).limit(limit);
+  })
+  .sort('-sent_date')
+  .limit(limit);
 });
 
 router.post("/user/response/patients-histories",function(req,res){

@@ -72,16 +72,23 @@
 				    						<th>Drug Name</th>
 				    						<th>Dosage</th>
 				    						<th>Frequency</th>
-				    						<th>Duration</th>		    						
+				    						<th>Duration</th>
+				    						<th class="text-muted">Select</th>		    						
 				    					</thead>        					
 				    				</tr>
 				    				<tr>
-				    					<tbody ng-repeat="prescription in docInfo.prescription_body">		    						
+				    					<tbody ng-repeat="prescription in docInfo.prescription_body">	    						
 				    						<td>{{prescription.sn}}</td>
 				    						<td>{{prescription.drug_name}}</td>
 				    						<td>{{prescription.dosage}}</td>
 				    						<td>{{prescription.frequency}}</td>
-				    						<td>{{prescription.duration}}</td>		    							    						
+				    						<td>{{prescription.duration}}</td>
+				    						<td><label class="custom-control custom-checkbox">
+											   <input type="checkbox" class="custom-control-input" ng-model= "prescription.picked" >
+											  	<span class="custom-control-indicator"></span>
+											  	<span class="custom-control-description" style="opacity:0;">.</span>
+											   </label>
+											</td>				
 				    					</tbody>
 				    				</tr>
 				    			</table>

@@ -1,6 +1,6 @@
 <div class="container">
    <div class="card-center-1">
-         <a ng-href="{{back}}"><i class="fa fa-arrow-left btn btn-simple"> &nbsp;Back</i></a>
+         <a href="" ng-click="goBack()"><i class="fa fa-arrow-left btn btn-simple"> &nbsp;Back</i></a>
   </div>
   <div class="card card-center-1 p-2">
     <h3 class="p-0">Search Result</h3>
@@ -22,7 +22,7 @@
                                     <span  style="display:block;padding-bottom: 10px"><b>{{i.work_place}}</b> {{i.address}}  {{i.city}}, {{i.country || "N/A"}}</span>
                                     <a href="{{i.profile_url}}" class="" title="View {{i.firstname}} profile">View Profile</a>
 
-                                     <button class="btn btn-danger btn-sm" ng-click="book(i.user_id)" ng-if="checkLogIn.typeOfUser === 'Patient'" style="position: absolute;right: 2px;bottom: 2px">Book</button>
+                                     <button class="btn btn-danger btn-sm" ng-click="consultation(i.user_id)" ng-if="checkLogIn.typeOfUser === 'Patient'" style="position: absolute;right: 2px;bottom: 0px">Consult now!</button>
                                 </div>
                               
                                 <!--<div>

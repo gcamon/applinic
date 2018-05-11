@@ -13,8 +13,6 @@ Wallet.prototype.credit = function(model,receiver,amount,io,cb){
 	if(amount > 0) {
 		var self = this;
 		model.user.findOne(receiver,{ewallet:1,name:1}).exec(function(err,data){
-			console.log("========================")
-			console.log(receiver)
 			if(err) throw err;
 			if(self.message === "Consultation fee"){
 			  //amount -= 1000;
@@ -208,8 +206,8 @@ Wallet.prototype.billing = function(model,billingInfo,reciever,sms,io){
 				if(elemPos !== -1){
 					drugList[elemPos].payment_acknowledgement = true;
 				}
-				var msgBody = "Your Applinic account debited" + "\nAmount: "  + amount + 
-				"\nActivity: Payment for billing\nPlus 5% discount applied for all billing paid through this app.";
+				var msgBody = "Your Applinic was account debited" + "\nAmount: N"  + amount + 
+				"\nActivity: Payment for drugs\n(You received 5% discount for paying through the app.)";
 				var phoneNunber =  debitor.phone;
 				sms.messages.create(
           {
@@ -231,8 +229,8 @@ Wallet.prototype.billing = function(model,billingInfo,reciever,sms,io){
 				if(elemPos !== -1)
 					record[elemPos].payment_acknowledgement = true;
 				
-				var msgBody = "Your Applinic account debited" + "\nAmount: "  + amount + 
-				"\nActivity: Payment for billing\nPlus 5% discount applied for all billing paid through this app.";
+				var msgBody = "Your Applinic was account debited" + "\nAmount: N"  + amount + 
+				"\nActivity: Payment for " + billingInfo.type + " test" + "\n(You received 5% discount for paying through the app.)";
 				var phoneNunber =  debitor.phone;
 				sms.messages.create(
           {
