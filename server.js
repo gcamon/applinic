@@ -23,7 +23,7 @@ var express = require('express'),
   mySocket = require("./socket"),
   streams = require("./streams")(),//this will be moved to another server later
 
-  port = process.env.PORT || 3000;
+  port = process.env.PORT || 3001;
 
   var ExpressPeerServer = require('peer').ExpressPeerServer;
   var Geonames = require("geonames.js");

@@ -1,6 +1,6 @@
 "use strict";
 
-var uuid = require("node-uuid");
+var uuid = require("uuid");
 var connects = {}
 module.exports = function(model,io,streams) {    
   io.sockets.on('connection', function(socket){  	   

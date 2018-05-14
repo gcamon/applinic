@@ -8,7 +8,7 @@ var dateTime = require("node-datetime");
 var deleteItem = require("./delete");
 var EventEmmiter = require("events");
 var emitter = new EventEmmiter();
-var uuid = require("node-uuid");
+var uuid = require("uuid");
 var options = {
   host: "global.xirsys.net",
   path: "/_turn/www.applinic.com",
@@ -1312,6 +1312,7 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
                         consultation_fee: req.body.consultation_fee,
                         service_access: req.body.service_access,
                         profile_pic_url: req.user.profile_pic_url,
+                        profile_url: req.user.profile_url,
                         specialty: req.user.specialty
                       });
 

@@ -1,77 +1,44 @@
-<!--<div class="tg-docinfo tg-haslayout" style="padding:0px" >
-	<div ng-if="isRequest === true">
-		<div class="col-md-2 col-lg-2 pull-right">
-			<img ng-src="{{reqInfo.profile_pic_url}}" style="width: 80px; height: 80px">
-		</div>
-		<div class="col-md-10 col-lg-10" style="padding: 10px">
-			<h5 style="text-align: center; border-bottom: 1px solid rgba(0,0,0,0.4)">Dr. {{reqInfo.firstname}} {{reqInfo.lastname}} <span style="display:block; text-align: center;font-size: 12px; color: #000"></span></h5>
-			<p style="line-height: 25px">Dear {{patientName}},<br/>
-			   Your request to consult Dr. {{reqInfo.firstname}} {{reqInfo.lastname}} was granted by the doctor on {{reqInfo.date | date: "mediumDate"}}.		   
-			</p>
-			<p style="font-style: italic">NOTE: <strong>{{reqInfo.inNaira}} </strong>consultation fee amount will be deducted from your wallet if you accept treatment from this doctor.</p>
-			<a href="#/consultation-fee" style="display:block; margin-right: 30px;color:green">Tell me more about consultation fee</a>
-			<a href="#/wallet" style="display:block; margin-right: 30px;color:green">Tell me more about my wallet</a>
-		</div>
-		<div class="tg-bottominfo tg-haslayout" style="margin-top: 30px; padding-right: 55px; padding-left: 15px">
-				<div class="tg-regardsleft">
-					<em>Regards,</em>
-					<strong>DocDirect Management.</strong>
-				</div>
-				<div class="tg-regardsright">
-					<strong class="logo">
-						<img src="/assets/images/dashboard/logo.jpg" alt="image description">
-					</strong>
-				</div>
-			</div>
-			<div  class="tg-bottominfo tg-haslayout" style="margin-top: 30px;padding-left: 15px">
-				<button ng-click="sendAcceptanceVerification()">accept</button>
-				<button ng-click = "decline(reqInfo.message_id)">decline</button>			
-			</div>
-			<div  class="tg-bottominfo tg-haslayout" style="margin-top: 30px;padding-left: 15px" ng-if="fundWallet">
-				<a href="#/wallet" style="color:#fff" class="btn btn-primary">Fund your wallet now!</a>
-			</div>
-			<div ng-if="isPrescription">
-				<p>{{reqInfo.message}}</p>
-			</div>
-	</div>
-</div>-->
-
-
-
-
 
 <div class="container">
-<div class="card p-2" style="padding:0px" >
-	<div ng-if="isRequest === true">
-		<div class="col-md-2 col-lg-2 pull-right">
-			<img ng-src="{{reqInfo.profile_pic_url}}" style="width: 150px; height: 150px">
-		</div>
-		<div class="col-md-10 col-lg-10">
-			<h5 class="pb-1 font-1_4" style="border-bottom: 1px solid rgba(0,0,0,0.2)">Dr. {{reqInfo.firstname}} {{reqInfo.lastname}} <span style="display:block; text-align: center;font-size: 12px; color: #000"></span></h5>
-			<p class="font-1_1">Dear {{patientName}},<br/>
-			   Your request to consult Dr. {{reqInfo.firstname}} {{reqInfo.lastname}} was granted by the doctor on {{reqInfo.date | date: "mediumDate"}}.		   
+<div class="card card-center-1 p-1">
+	<div ng-if="isRequest === true">	
+			
+		
+		<div class="col-md-12 col-lg-12">
+			<img ng-src="{{reqInfo.profile_pic_url}}" style="max-width: 45px; max-height: 45px;float: left">
+			<div style="float: left;padding-left: 10px;font-size: 14px">
+				<strong>{{reqInfo.title}} {{reqInfo.firstname}} {{reqInfo.lastname}}</strong> 
+				<span style="display:block">{{reqInfo.specialty}}</span>
+			</div>
+			<div class="clearfix"></div>
+			<h6 class="pt-1">Consultation Request Accepted</h6>
+			<hr>
+			<p class="font-1_1 pt-1">Dear {{patientName}},<br/>
+			   Your request to consult {{reqInfo.title}} {{reqInfo.firstname}} {{reqInfo.lastname}} was granted on {{reqInfo.date | date: "mediumDate"}}.		   
 			</p>
-			<p style="font-style: italic">NOTE: <strong>{{reqInfo.inNaira}} </strong>consultation fee amount will be deducted from your wallet if you accept treatment from this doctor.</p>
-			<a href="#/consultation-fee" class="btn btn-link text-info font-1_1">Tell me more about consultation fee</a>
-			<a href="#/wallet" class="btn btn-link text-info font-1_1">Tell me more about my wallet</a>
+			<p style="font-style: italic"><strong>{{reqInfo.inNaira}} </strong>consultation fee amount will be deducted from your wallet if you accept treatment from this doctor.</p>
+			<!--<a href="#/consultation-fee" class="btn btn-link text-info font-1_1">Tell me more about consultation fee</a>
+			<a href="#/wallet" class="btn btn-link text-info font-1_1">Tell me more about my wallet</a>-->
+
+			<a href="{{reqInfo.profile_url}}" style="text-decoration: underline;">view {{reqInfo.title}} {{reqInfo.firstname}} profile</a>
 		</div>
-		<div class="" style="margin-top: 30px; padding-right: 55px; padding-left: 15px">
-				<div class="tg-regardsleft">
-					<em>Regards,</em><br>
-					<strong>Applinic Management.</strong>
-				</div>
-				
-			</div>
-			<div  class="" style="margin-top: 30px;padding-left: 15px">
-				<button class="btn btn-success" ng-click="sendAcceptanceVerification()">accept</button>
-				<button class="btn btn-danger" ng-click = "decline(reqInfo.message_id)">decline</button>			
-			</div>
-			<div  class="pl-1 mt-1" ng-if="fundWallet">
-				<a href="#/wallet" style="color:#fff" class="btn btn-info">Fund your wallet now!</a>
-			</div>
-			<div class="pl-1" ng-if="isPrescription">
-				<p>{{reqInfo.message}}</p>
-			</div>
+			
+		<div style="margin-top: 30px;">
+			<em>Regards,</em><br>
+			<strong>Applinic Management.</strong>
+		</div>
+			
+		
+		<div  class="" style="margin-top: 30px">
+			<button class="btn btn-success" ng-click="sendAcceptanceVerification()">accept</button>
+			<button class="btn btn-danger" ng-click = "decline(reqInfo.message_id)">decline</button>			
+		</div>
+		<div  class="pl-1 mt-1" ng-if="fundWallet">
+			<a href="#/wallet" style="color:#fff" class="btn btn-info">Fund your wallet now!</a>
+		</div>
+		<div class="pl-1" ng-if="isPrescription">
+			<p>{{reqInfo.message}}</p>
+		</div>
 	</div>
 </div>
 </div>

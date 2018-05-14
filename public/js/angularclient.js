@@ -1,6 +1,7 @@
 (function() {
 
-var app = angular.module('myApp',["ngRoute","ngAnimate","angularModalService","angularMoment",'ui.bootstrap','angular-clipboard',"ngResource","btford.socket-io","ngTouch",'ngPrint','paystack']);
+var app = angular.module('myApp',["ngRoute","ngAnimate","angularModalService","angularMoment",'ui.bootstrap',
+  'angular-clipboard',"ngResource","btford.socket-io","ngTouch",'ngPrint','paystack','ngSanitize']);
 
 app.config(['$paystackProvider','$routeProvider',
   function($paystackProvider,$routeProvider){
@@ -2868,7 +2869,6 @@ app.controller("bookingDocModalController",["$scope","templateService","$http","
     $scope.isToConfirm = true;
     
   }*/
-
   var list = [{sn:"a"}];
   var symptom; 
   var index = 0;
@@ -2888,6 +2888,7 @@ app.controller("bookingDocModalController",["$scope","templateService","$http","
 
   $scope.symptomsList = list;
 
+
   $scope.add = function(){
     index++;    
     var sympArr = {};
@@ -2902,6 +2903,11 @@ app.controller("bookingDocModalController",["$scope","templateService","$http","
   $scope.validate = function() {
     $scope.sympMsg = "";
     $scope.pregMsg = "";
+    $scope.accMsg = "";
+    $scope.parMsg = "";
+    $scope.earMsg = "";
+    $scope.eyeMsg = "";
+    $scope.teeMsg = "";
     if($scope.patient.sick) {
       if(!$scope.symptomsList[0].name || $scope.symptomsList[0].name === "") {
         $scope.sympMsg = "Add symptoms of your sickness";
@@ -2916,35 +2922,112 @@ app.controller("bookingDocModalController",["$scope","templateService","$http","
       }
     }
 
+    if($scope.patient.accident) {
+      if(!$scope.patient.injuries) {
+        $scope.accMsg = "Please write the injuries sustained.";
+        return false;
+      }
+    }
+
+    if($scope.patient.stroke) {
+      if(!$scope.patient.paralysis) {
+        $scope.paraMsg = "Please write the paralysis sustained.";
+        return false;
+      }
+    }
+
+
+    if($scope.patient.eye) {
+      if(!$scope.patient.eyeIssue) {
+        $scope.eyeMsg = "This field cannot be empty.";
+        return false;
+      }
+    }
+
+     if($scope.patient.ear) {
+      if(!$scope.patient.earIssue) {
+        $scope.earMsg = "This field cannot be empty.";
+        return false;
+      }
+    }
+
+     if($scope.patient.teeth) {
+      if(!$scope.patient.teethIssue) {
+        $scope.teeMsg = "This field cannot be empty.";
+        return false;
+      }
+    }
+
     $scope.sendRequest();
 
   }
 
-
+ 
   $scope.sendRequest = function() {
     $scope.loading = true
       $scope.patient.history = "";
       if($scope.patient.sick) {
-        $scope.patient.history =  "I am sick. The following are symptoms experiencing; "
+        $scope.patient.history =  "I am sick. I am having the following symptoms:"
+        var str = "";
         for(var i = 0; i < $scope.symptomsList.length ; i++) {
-          $scope.patient.history += '\n' +  $scope.symptomsList[i].name + ", ";
+          str += $scope.symptomsList[i].name + "<br>";
+        }
+
+        $scope.patient.history += '<blockquote>' + str + "</blockquote>";
+
+        if($scope.patient.period) {
+           $scope.patient.history += "<br>The symptom(s) has lasted for " +  $scope.patient.period +
+            " till date.<br>";
         }
 
         if($scope.patient.how) {
-          $scope.patient.history += "\nBrief history of the sickness was stated as it happened; " + "\n" + $scope.patient.how + ".";
+          $scope.patient.history += "Brief history of the sickness was stated as it is: <br>" +
+           "<blockquote>" + $scope.patient.how + ".</blockquote>";
         }
        
       } 
 
       if($scope.patient.pregnant) {
-        $scope.patient.history += "\nI am " + $scope.patient.duration + " pregnant";
+        $scope.patient.history += "This patient is  <b> " + $scope.patient.duration + "</b> pregnant.<br>";
       }
+
+      if($scope.patient.accident) {
+        $scope.patient.history += "This patient had an accident and sustained injuries as stated:<br>" +
+         "<blockquote> " + $scope.patient.injuries + "</blockquote>";
+      }
+
+      if($scope.patient.stroke) {
+         $scope.patient.history += "This patient had stroke and sustained paralysis as stated: <br>" +
+         "<blockquote>" + $scope.patient.paralysis + "</blockquote>";
+      }
+
+      if($scope.patient.ear) {
+         $scope.patient.history += "This patient is having an ear problem as explained: <br>" +
+         "<blockquote>" + $scope.patient.earIssue + "</blockquote>";
+      }
+
+      if($scope.patient.eye) {
+         $scope.patient.history += "This patient is having an eye problem as explained: <br>" +
+         "<blockquote>" + $scope.patient.eyeIssue + "</blockquote>";
+      }
+
+      if($scope.patient.teeth) {
+         $scope.patient.history += "This patient is having an teeth problem as explained: <br>" +
+         "<blockquote>" + $scope.patient.teethIssue + "</blockquote>";
+      }
+
+      if($scope.patient.hasMedicated) {
+         $scope.patient.history += "This patient has tried other medications or self medications but the complaints persisted."
+      }
+
+
+      //alert($scope.patient.history)
 
       var user = localManager.getValue("resolveUser");
 
       if($scope.docInfo.user_id !== user.user_id) {
 
-       var random = Math.floor(Math.random() * 1000);       
+       var random = Math.floor(Math.random() * 99999);       
        $scope.patient.type = "consultation";      
        $scope.patient.message_id = random;
        $scope.patient.date = + new Date();
@@ -5615,6 +5698,7 @@ app.controller("PatientViewResponseModalController",["$scope","$rootScope","$loc
   $scope.intro = templateService.holdDocInView.intro; 
   $scope.docInfo = templateService.holdDocInView;
   $scope.isViewDoc = true;
+  var User = walletService.resource("/user/payment/verification",{userId: null},{verify:{method:'POST'}});
   $scope.accept = function(){
     $scope.isViewDoc = false;
     $scope.isToConfirm = true;
@@ -5641,7 +5725,7 @@ app.controller("PatientViewResponseModalController",["$scope","$rootScope","$loc
       old_time: time
     }
 
-    var User = walletService.resource("/user/payment/verification",{userId: null},{verify:{method:'POST'}});
+    
     var send = User.verify(payObj,function(data){
       alert(data.message);
       if(data.success){
@@ -5802,7 +5886,7 @@ app.controller("patientViewRequestController",["$scope","$location","$http","$ro
   $scope.isRequest = false;
   $scope.isPrescription = true;
  }*/
-
+ localManager.setValue("currentPageForPatients",$location.path())
  $scope.viewPrescriptionFromNoticeTemplate = function () {
   templateService.holdPrescriptionsId = docObj.doctorId;
   $location.path("/patient-prescription/view-from-notification/" + docObj.doctorId);   
@@ -5811,8 +5895,20 @@ app.controller("patientViewRequestController",["$scope","$location","$http","$ro
  //sents out the doctor to the patient box showing that the patient has accepted the doctor and 
  //the wallet has enough fund to pay for consultation fee
 
- var msgData = templateService.holdMsg;
+ var msgData = templateService.holdMsg || localManager.getValue('holdMessages');
+ var User = walletService.resource("/user/payment/verification",{userId: null},{verify:{method:'POST'}});
+
+ if(templateService.holdId) {
+  localManager.setValue("holdId",templateService.holdId);
+ } else {
+  templateService.holdId = localManager.getValue("holdId");
+ }
+
+ if(templateService.holdMsg)
+  localManager.setValue('holdMessages',templateService.holdMsg);
+
  var name  = localManager.getValue("resolveUser");
+
  $scope.patientName = name.firstname;
  var elementPos;
   for(var i = 0; i < msgData.length; i++){
@@ -5821,7 +5917,7 @@ app.controller("patientViewRequestController",["$scope","$location","$http","$ro
     if(msgData[i].service_access && !msgData[i].reason && msgData[i].user_id === templateService.holdId && !msgData[i].doctor_id) {
       elementPos = i;      
       $scope.reqInfo = msgData[i];
-      $scope.reqInfo.inNaira = "NGN" + msgData[i].consultation_fee.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+      $scope.reqInfo.inNaira = "NGN " + msgData[i].consultation_fee.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     } else if(msgData[i].reason) {
       $scope.reqInfo = msgData[i];
     }
@@ -5831,7 +5927,6 @@ app.controller("patientViewRequestController",["$scope","$location","$http","$ro
   
   $rootScope.sendAcceptanceVerification = function(time){ //this function is all availabe on wallet controller
     var docObj = $scope.reqInfo;
-   
     templateService.holdRawAmount = $scope.reqInfo.consultation_fee;    
 
     var timeStamp = + new Date();
@@ -5847,7 +5942,6 @@ app.controller("patientViewRequestController",["$scope","$location","$http","$ro
       old_time: time
     }
 
-    var User = walletService.resource("/user/payment/verification",{userId: null},{verify:{method:'POST'}});
     var send = User.verify(payObj,function(data){
       alert(data.message);
       if(data.success){
@@ -5923,6 +6017,10 @@ app.controller("walletController",["$scope","$http","$rootScope","$location","Mo
   $scope.pay = {};
   $scope.pay.mode = "";
   $scope.pay.pin = "";
+
+  $scope.goBack = function () {
+    $location.path(localManager.getValue("currentPageForPatients"))
+  }
 
   $scope.$watch("pay.mode",function(newVal,oldVal){
     if(newVal){
@@ -6316,6 +6414,9 @@ getTransactions();
     });*/
   }
 
+  var Debitor = walletService.resource("/user/patient/consultation-acceptance/confirmation",{userId: null},{confirmed:{method:'POST'}});
+  var updateDocList = $resource("/user/patient/get-my-doctors");
+
   $scope.$watch("pay.acceptanceOtp",function(newVal,oldVal){    
     if(newVal > oldVal && $scope.pay.acceptanceOtp.length === 6){
       var date = + new Date();
@@ -6341,16 +6442,16 @@ getTransactions();
         userId: receiver,
         sendObj: templateService.sendObj
       }
-      var Debitor = walletService.resource("/user/patient/consultation-acceptance/confirmation",{userId: null},{confirmed:{method:'POST'}});
+      $scope.loading = true;
       var confirmed = Debitor.confirmed(payObj,function(data){
+        $scope.loading = false;
         alert(data.message);
         if(data.balance) {
           $rootScope.balance = "NGN" + data.balance.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");          
-          $rootScope.sendAcceptanceVerification = function(){};
           if($rootScope.msgLen > 0)
             $rootScope.msgLen--;
           //$location.path(templateService.holdCurrentPage);
-          var updateDocList = $resource("/user/patient/get-my-doctors");
+          
           updateDocList.query(null,function(data){            
             $rootScope.patientsDoctorList = data;
           });
@@ -6358,6 +6459,10 @@ getTransactions();
       });
     }
   });  
+
+  $scope.sendAcceptanceVerification = function(time){
+    $rootScope.sendAcceptanceVerification(time);
+  };
 
  $scope.invoice = function(){
   $scope.viewInvoice = true;
@@ -13746,7 +13851,7 @@ function($scope,$location,$window,$http,templateService,localManager,templateUrl
   $scope.symptoms = symptomsFactory;
 
   $scope.symptomsList = list;
- 
+  $scope.user.sick = true;
 
   $scope.add = function(){
     index++;    
@@ -13759,7 +13864,130 @@ function($scope,$location,$window,$http,templateService,localManager,templateUrl
     var remove = list.splice(sn,1);
   }
 
-  $scope.getDoctor = function(){
+
+  $scope.validate = function() {
+    $scope.sympMsg = "";
+    $scope.pregMsg = "";
+    $scope.accMsg = "";
+    $scope.parMsg = "";
+    $scope.earMsg = "";
+    $scope.eyeMsg = "";
+    $scope.teeMsg = "";
+
+    if($scope.user.sick) {
+      if(!$scope.symptomsList[0].name || $scope.symptomsList[0].name === "") {
+        $scope.sympMsg = "Add symptoms of your sickness";
+        return false;
+      }
+    }
+
+    if($scope.user.pregnant) {
+      if(!$scope.user.duration) {
+        $scope.pregMsg = "Please select how long you have been pregnant.";
+        return false;
+      }
+    }
+
+    if($scope.user.accident) {
+      if(!$scope.user.injuries) {
+        $scope.accMsg = "Please write the injuries sustained.";
+        return false;
+      }
+    }
+
+    if($scope.user.stroke) {
+      if(!$scope.user.paralysis) {
+        $scope.paraMsg = "Please write the paralysis sustained.";
+        return false;
+      }
+    }
+
+
+    if($scope.user.eye) {
+      if(!$scope.user.eyeIssue) {
+        $scope.eyeMsg = "This field cannot be empty.";
+        return false;
+      }
+    }
+
+     if($scope.user.ear) {
+      if(!$scope.user.earIssue) {
+        $scope.earMsg = "This field cannot be empty.";
+        return false;
+      }
+    }
+
+     if($scope.user.teeth) {
+      if(!$scope.user.teethIssue) {
+        $scope.teeMsg = "This field cannot be empty.";
+        return false;
+      }
+    }
+
+    sendComplait();
+
+  }
+
+  var sendComplait  = function(){
+
+    if($scope.user.sick) {
+        $scope.user.description = "";
+        /*var str = "";
+        for(var i = 0; i < $scope.symptomsList.length ; i++) {
+          str += $scope.symptomsList[i].name + "<br>";
+        }*/
+
+        /*$scope.user.description += '<blockquote>' + str + "</blockquote>";*/
+       
+       
+
+        if($scope.user.period) {
+           $scope.user.description += "<br>Symptom(s) has lasted for " +  $scope.user.period +
+            " till date.<br>";
+        }
+
+        if($scope.user.how) {
+          $scope.user.description += "Brief history of the sickness was stated as it is: <br>" +
+           "<blockquote>" + $scope.user.how + ".</blockquote>";
+        }
+
+        
+      } 
+
+      if($scope.user.pregnant) {
+        $scope.user.description += "This patient is  <b> " + $scope.user.duration + " pregnant</b>.<br>";
+      }
+
+      if($scope.user.accident) {
+        $scope.user.description += "This patient had  <b> an accident </b> and sustained injuries as stated:<br>" +
+         "<blockquote> " + $scope.user.injuries + "</blockquote>";
+      }
+
+      if($scope.user.stroke) {
+         $scope.user.description += "This patient had <b> stroke </b> and sustained paralysis as stated: <br>" +
+         "<blockquote>" + $scope.user.paralysis + "</blockquote>";
+      }
+
+      if($scope.user.ear) {
+         $scope.user.description += "This patient is having <b> an ear</b> problem as explained: <br>" +
+         "<blockquote>" + $scope.user.earIssue + "</blockquote>";
+      }
+
+      if($scope.user.eye) {
+         $scope.user.description += "This patient is having <b>an eye</b> problem as explained: <br>" +
+         "<blockquote>" + $scope.user.eyeIssue + "</blockquote>";
+      }
+
+      if($scope.user.teeth) {
+         $scope.user.description += "This patient is having <b>teeth</b> problem as explained: <br>" +
+         "<blockquote>" + $scope.user.teethIssue + "</blockquote>";
+      }
+
+     /* if($scope.patient.hasMedicated) {
+         $scope.patient.history += "This patient has tried other medications or self medications but the complaints persisted."
+      }*/
+
+
     if(list[0].name !== undefined);
       console.log($scope.user)
     $scope.user.userId = patient.user_id;
@@ -13769,7 +13997,7 @@ function($scope,$location,$window,$http,templateService,localManager,templateUrl
     console.log(data)
 
     if(!$scope.user.description || $scope.user.symptoms.length === 0) {
-      alert("Please complete required fields")
+      alert("Please add symptoms you're experiencing or briefly describe how you feel right now")
       return;
     }
 
@@ -14762,6 +14990,8 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
     localManager.removeItem('saveSocket');
     localManager.removeItem('activeAccountId');
     localManager.removeItem('mainAccount');
+    localManager.removeItem('holdMessages');
+    localManager.removeItem('holdId');
   }
 
 

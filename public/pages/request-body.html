@@ -48,11 +48,13 @@
 				<span style=""><b>Date received:</b> {{data.date | amCalendar}}</span>
 			</h6>
 			<hr>
-			<p><em style="display: block;padding: 10px 0"><b>Dear {{checkLogIn.title}} {{checkLogIn.firstname}},</b></em>
-			{{data.sender_firstname}} {{data.sender_lastname}} request for your consultation. Below are the details the request:
-			<em style="display: block;padding: 10px">{{data.message}}</em>
-			</p>
-			<p>Consultation fee do apply if you accept this request.</p>	   
+			<div>				
+				<b style="display: block;padding: 10px 0">Dear {{checkLogIn.title}} {{checkLogIn.firstname}},</b>
+				<h6 class="pb-1">{{data.sender_firstname}} {{data.sender_lastname}} request for your consultation. Below are the details the request:</h6>
+				<p style="" ng-bind-html="data.message"></p>
+				</p>
+				<strong>Consultation fee do apply if you accept this request.</strong>
+			</div>	   
 
 			<br><br>
 			Regards, <span style="display:block"><b>Applinic Management</b></span> <img src="">

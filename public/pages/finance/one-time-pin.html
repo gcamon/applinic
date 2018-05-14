@@ -1,8 +1,20 @@
-<div style="width:80%;padding:10px;margin: 0 auto">
-	<p style="text-align: right; text-decoration:underline;color:blue;cursor:pointer"><button ng-click="sendAcceptanceVerification(resend)">Resend OTP</button></p>
-	<div style="margin-bottom: 10px">
-		<input type="text" placeholder="Enter the six digits OTP" ng-model="pay.acceptanceOtp">
+<div class="container">
+	<div  class="card-center-1">
+		<a href="" ng-click="goBack()"><i class="fa fa-arrow-left btn btn-simple"> &nbsp;Back</i></a>
 	</div>
-	<p><small>Otp will auto submit when the six digits are completed</small></p>
-	<p>If you have dificulty sending OTP please <a href="#">contact us</a></p>
+	<div class="card card-center-1 p-2">
+		<h4 class="mt-0">Payment</h4>
+		<div style="text-align: right; text-decoration:underline;color:blue;cursor:pointer">
+			<button ng-click="sendAcceptanceVerification(resend)" class="btn btn-neutral btn-sm">Resend OTP</button>
+		</div>
+		<div style="margin-bottom: 10px">
+			<input type="text" placeholder="Enter the six digits OTP" class="form-control" style="width: 80%" ng-model="pay.acceptanceOtp"> &nbsp;&nbsp;
+			<div style="text-align: center;">
+				<i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange" ng-if="loading"></i>
+			</div>
+			
+		</div>
+		<p><small>Otp will auto submit when the six digits are completed</small></p>
+		<!--<p>If you have dificulty sending OTP please <a href="#">contact us</a></p>-->
+	</div>
 </div>

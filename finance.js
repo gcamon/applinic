@@ -278,7 +278,7 @@ var basicPaymentRoute = function(model,sms,io,paystack){
 			//note for payment req.body must have userId of who is to be debited is required while for transfer req.body do not have userId
 			//because is assumed the user at that moment is making the request which means his req.user.user_id will be used.
 			var personId = req.body.userId || req.user.user_id;
-
+			console.log(req.body)
 			model.user.findOne({user_id: personId},{phone:1,ewallet:1,user_id:1},function(err,user){
 				if(err) throw err;
 				if(!user){
@@ -291,51 +291,64 @@ var basicPaymentRoute = function(model,sms,io,paystack){
 						var password = check(random1) + " " + check(random2);
 
 						if(req.body.old_time){ //checks if otp was resend therefore removes the old otp which will not be in use anymore.
-							model.otpSchema.remove({time:req.body.old_time},function(err){
+							model.otpSchema.findOne({time:req.body.old_time},function(err,data){
+								if(data) {
+									data.remove(function(){})
+									createNew();
+								}  else {
+									res.send({message: "This OTP session has been used and expired! Transaction canceled."})
+								}
+							})
+							/*model.otpSchema.remove({time:req.body.old_time},function(err){
 								if(err) throw err;
-							});
+							});*/
+						} else {
+							createNew();
 						}						
 						
-			      var otp = new model.otpSchema({
-			        user_id: user.user_id,//this id refers to the debitors id. the person whose account will be debited.
-			        time: req.body.time,
-			        otp: password,
-			        amount: req.body.amount,
-			        senderId: req.user.user_id 
-			      });			      
+						function createNew() {
+				      var otp = new model.otpSchema({
+				        user_id: user.user_id,//this id refers to the debitors id. the person whose account will be debited.
+				        time: req.body.time,
+				        otp: password,
+				        amount: req.body.amount,
+				        senderId: req.user.user_id 
+				      });			      
 
-			      //sets the expiration time for each otp sent.
-			      var date = new Date();
-			      otp.expirationDate = new Date(date.getTime() + 300000);
-			      otp.expirationDate.expires = 300;			     
+				      //sets the expiration time for each otp sent.
+				      var date = new Date();
+				      otp.expirationDate = new Date(date.getTime() + 300000);
+				      otp.expirationDate.expires = 300;			     
 
-			      otp.save(function(err,info){
-			        if(err) throw err;
-			        console.log("otp saved");
-			      }); 
+				      otp.save(function(err,info){
+				        if(err) throw err;
+				        console.log("otp saved");
+				      }); 
 
-			      console.log(otp)
-			      var callBack = function(err,responseData){
-			      	console.log(responseData);
-							if(err) {
-								console.log(err);
-								res.send({message:"Oops! Error occured while sending OTP.Please resend",success:true,time_stamp:req.body.time}) 
-							} else {								
-								res.send({message:"One time pin has been sent this patient vis SMS. The pin is needed for payment confirmation",success:true,time_stamp:req.body.time}) 
+				      console.log(otp)
+				      var callBack = function(err,responseData){
+				      	console.log(responseData);
+								if(err) {
+									console.log(err);
+									res.send({message:"Oops! Error occured while sending OTP.Please resend",success:true,time_stamp:req.body.time}) 
+								} else {								
+									res.send({message:"One time pin has been sent this patient vis SMS. The pin is needed for payment confirmation",success:true,time_stamp:req.body.time}) 
+								}
+								
 							}
-							
-						}
 
-						var msgBody = "Your payment OTP for applinic.com is " + password + " \nThe amount billed is " + req.body.amount;
-						var phoneNunber = user.phone;
-						sms.messages.create(
-              {
-                to: phoneNunber,
-                from: '+16467985692',
-                body: msgBody,
-              },
-              callBack
-            )
+							var msgBody = "Your payment OTP for applinic.com is " + password + " \nThe amount billed is " + req.body.amount;
+							var phoneNunber = user.phone;
+							sms.messages.create(
+	              {
+	                to: phoneNunber,
+	                from: '+16467985692',
+	                body: msgBody,
+	              },
+	              callBack
+	            )
+
+						}
 
 						//res.send({message:"One time pin has been sent this patient vis SMS. The pin is needed for payment confirmation",success:true,time_stamp:req.body.time}) 
 
@@ -372,13 +385,11 @@ var basicPaymentRoute = function(model,sms,io,paystack){
 				
 				if(!data){
 					res.send({message:"Confirmation failed! Transaction canceled."})
-					data.save(function(err,info){
-						if(err) throw err;
-					});
+					
 				} else {						
 					//check is is the right otp for a user
 					if(data.user_id === req.body.userId && data.senderId === req.user.user_id) {
-						delete data.otp;
+						
 						//do the actual transaction. success!
 						model.user.findOne({user_id: req.body.userId},{ewallet:1,firstname:1,lastname:1,name:1}).exec(function(err,debitor){
 							var name = req.user.firstname || req.user.name;
@@ -387,14 +398,9 @@ var basicPaymentRoute = function(model,sms,io,paystack){
 							pay.payment(model,data.amount,debitor,req.user.user_id);
 							res.send({message: "Transaction successful! Your account is credited."});
 						});						
-						data.save(function(err,info){
-							if(err) throw err;
-						});
+						data.remove(function(){});
 					} else {
 						res.send({message: "This OTP is not for this user"});
-						data.save(function(err,info){
-							if(err) throw err;
-						});
 					}
 				}
 			})
@@ -411,13 +417,10 @@ var basicPaymentRoute = function(model,sms,io,paystack){
 				if(err) throw err;
 				if(!data){
 					res.send({message:"Confirmation failed! Transaction canceled."});
-					data.save(function(err,info){
-						if(err) throw err;
-					});
 				} else {					
 					//check is the right otp for a user
 					if(data.user_id === req.user.user_id) {
-						delete data.otp;
+						data.remove(function(){});
 						//do the actual transaction. success!
 						var receiver;	
 						if(req.body.phone){
@@ -463,9 +466,6 @@ var basicPaymentRoute = function(model,sms,io,paystack){
 							});
 						}	
 
-						data.save(function(err,info){
-							if(err) throw err;
-						});
 					} else {
 						res.send({message: "This OTP is not for this user"});
 						data.save(function(err,info){
@@ -488,13 +488,12 @@ var basicPaymentRoute = function(model,sms,io,paystack){
 				
 				if(!data){
 					res.send({message:"Confirmation failed! Transaction canceled."})
-					data.save(function(err,info){
+					/*data.save(function(err,info){
 						if(err) throw err;
-					});
+					});*/
 				} else {					
 					//check is is the right otp for a user
-					if(data.user_id === req.user.user_id) {
-						delete data.otp;
+					if(data.user_id === req.user.user_id) {;
 						//do the actual transaction. success!
 						model.user.findOne({user_id: req.user.user_id},{ewallet:1,firstname:1,lastname:1,name:1}).exec(function(err,debitor){
 							var name = req.user.firstname || req.user.name;
@@ -502,15 +501,10 @@ var basicPaymentRoute = function(model,sms,io,paystack){
 							//note firstname or lastname of patient may change.
 							pay.consultation(model,data.amount,debitor,req.body.userId);
 							createConnection(debitor);
-						});						
-						data.save(function(err,info){
-							if(err) throw err;
-						});
+						});	
+						data.remove(function(){})			
 					} else {
 						res.send({message: "This OTP is not for this user"});
-						data.save(function(err,info){
-							if(err) throw err;
-						});
 					}
 				}
 			})
@@ -1398,7 +1392,7 @@ router.put("/user/field-agent",function(req,res){
         var receiveDate = + new Date();
         data.receipt_date = receiveDate;
         data.completed = true;
-        delete data.otp;
+        data.otp = "xxdsh!sh76a";
         var pay = new Wallet(receiveDate,req.body.firstname,req.body.lastname,"billing");
         pay.courier(model,req.body.center_id,req.body.user_id,toNum,io,data.delivery_charge) //user_id refers to the patient,center_id refers to the center,toNum refrs to amount
         io.sockets.to(data.center_id).emit("completed courier",{receipt_date:receiveDate,city:data.city,date:data.date})

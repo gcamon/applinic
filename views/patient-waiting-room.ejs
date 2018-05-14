@@ -37,6 +37,13 @@
                 font-family: 'Open Sans', sans-serif;
              }
 
+            blockquote {
+                text-indent: 20px;
+                padding: 15px 0 5px;
+                background-color: lightYellow;
+                font-style: italic;
+            }
+
              .pagination li{
 border-radius: 30px;
              }
@@ -136,13 +143,14 @@ border-radius: 30px;
                                             
                                             <div style="width: 80%;display: inline-block;padding: 15px;position: relative;">
                                                 <header style="position: relative;">
-                                                        <b style="color: #000;font-size: 12px;width:400px;display: inline-block;text-decoration: un">Symptoms | <span ng-repeat="symptom in i.symptoms" ng-cloak>{{symptom}} &nbsp;</span></b>
+                                                        <b style="color: #000;font-size: 12px;width:400px;display: inline-block">Symptoms | <span ng-repeat="symptom in i.symptoms" ng-cloak>{{symptom}} &nbsp;</span></b>
                                                         <time  am-time-ago="i.sent_date" style="position: absolute;right: 0;top:2px;font-size: 12px"></time>
                                                 </header>
-                                                 <p style="font-size: 14px;position: relative;font-style: italic;padding-right: 20px" ng-cloak>{{i.description}}
-                                                        <a href="" style="color:red;text-decoration:underline;display: inline-block;position: absolute;right: 5px;bottom: -25px;font-size:normal;" ng-click="veiwDatail(i.complaint_id)">Respond!</a>
+                                                 <p class="pt-1" ng-bind-html = "i.description">
+                                                        
                                                  </p>
-                                                 <small  ng-if="i.files.length > 0" style="position: absolute;bottom: -5px;left: 10px;color: green">{{i.files.length}} <i class="fa fa-paperclip"> </i></small>
+                                                 <a href="" style="text-decoration:underlin;display: inline-block;position: absolute;right: 5px;bottom: 5px;padding:3px;font-size:normal;" ng-click="veiwDatail(i.complaint_id)" class="btn btn-info">Respond!</a>
+                                                 <small  ng-if="i.files.length > 0" style="position: absolute;bottom: 5px;left: 10px;color: green">{{i.files.length}} <i class="fa fa-paperclip"> </i></small>
                                                 
                                             </div>
                                            
@@ -187,7 +195,7 @@ border-radius: 30px;
                                         <ul class="patient-symptoms">                                            
                                             <li ng-repeat="symptom in patient.symptoms" class="description"><strong ng-cloak>{{symptom}}</strong></li>
                                         </ul>
-                                        <p ng-cloak>"{{patient.description}}"</p>
+                                        <p class="pt-1" ng-bind-html= "patient.description"></p>
                                         <h6 style="font-weight:bold;" ng-if="patient.files.length > 0">Attached file(s)</h6><hr/>
                                         <div class="card" ng-if="patient.files.length > 0" ng-repeat="file in patient.files" >
                                             <div  ng-if="file.type === 'image'" style="width: 480px;height:auto;margin:5px auto">
@@ -222,7 +230,7 @@ border-radius: 30px;
                                                 <small>You'll receive : {{str}} </small>
                                             </div>
                                             <hr>
-                                            <label style="font-weight:bold;font-size: 14px" class="text-capitalize">Briefly explain how you may handle this complaint </label>
+                                            <label style="font-weight:bold;font-size: 14px" class="text-capitalize">Briefly introduce yourself:</label>
                                             <textarea class="form-control" style="padding: 10px" cols="6" ng-model="user.introductory"></textarea>
                                             <div class="p-2"></div><hr>
                                             <div class="pb-5 mt-2" style="display: block;margin-top: 20px">
@@ -321,5 +329,6 @@ border-radius: 30px;
         <script src="/assets/js/ngresource.js"></script> 
           <script src="/assets/js/ngPrint.js"></script>
         <script type="text/javascript" src="/assets/js/angular-paystack/dist/angular-paystack.min.js"></script>
+         <script type="text/javascript" src="/assets/js/angular-sanitize.min.js"></script>
     </body>
 </html>

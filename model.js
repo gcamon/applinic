@@ -71,6 +71,7 @@ var myModel = function () {
 		consultation_fee: Number,
     service_access: String,
     profile_pic_url: String,
+    profile_url: String,
 		message: String,
 		category: String,//note categories are admin, decline, redirect,need_doctor.
 		reason: String,
