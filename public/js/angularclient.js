@@ -979,9 +979,16 @@ app.directive("loading",["$http",function($http){
 ////////////////////////////// move the controll below to a right place later.
 
 //laboratory
-app.controller("labProfileEdit",["$scope","$resource","$location","$window","ModalService","templateService","localManager",
-  function($scope,$resource,$location,$window,ModalService,templateService,localManager) {
-  var center = $resource("/user/getcenter-details",null,{updateInfo:{method:"PUT"}})
+app.service("labProfileEditService",["$resource",function($resource){
+  return $resource("/user/getcenter-details",null,{updateInfo:{method:"PUT"}});
+}]);
+
+app.controller("labProfileEdit",["$scope","$resource","$location","$window","ModalService",
+  "templateService","localManager","labProfileEditService",
+  function($scope,$resource,$location,$window,ModalService,templateService,localManager,labProfileEditService) {
+
+
+  var center = labProfileEditService; //$resource("/user/getcenter-details",null,{updateInfo:{method:"PUT"}})
   center.get(function(data){
     $scope.centerInfo = data || {};
   })
@@ -998,8 +1005,8 @@ app.controller("labProfileEdit",["$scope","$resource","$location","$window","Mod
 }]);
 
 app.controller("labTestServicesUpdateController",["$scope","$http","$location",
-  "localManager","templateService","labTests","ModalService","$resource","$rootScope",
-  function($scope,$http,$location,localManager,templateService,labTests,ModalService,$resource,$rootScope) {
+  "localManager","templateService","labTests","ModalService","$resource","$rootScope","dynamicService",
+  function($scope,$http,$location,localManager,templateService,labTests,ModalService,$resource,$rootScope,dynamicService) {
 
     /*** todo ajax call will be made to get the center unran test if any from the backend***/
     var ObjList = Object.keys(labTests);
@@ -1013,7 +1020,7 @@ app.controller("labTestServicesUpdateController",["$scope","$http","$location",
       count++
     }
 
-    var resource = $resource("/user/dynamic-service");
+    var resource = dynamicService; //$resource("/user/dynamic-service");
     resource.query({type:"Laboratory"},function(data){
       $rootScope.tests8 = data;
     });
@@ -1131,9 +1138,16 @@ app.controller("testNotRanBycenterController",["$scope","$http",function($scope,
 }]);
 
 //radiology
-app.controller("radioProfileEdit",["$scope","$resource","$location","$window","ModalService","templateService","localManager",
-  function($scope,$resource,$location,$window,ModalService,templateService,localManager) {
-  var center = $resource("/user/getcenter-details",null,{updateInfo:{method:"PUT"}})
+app.service("radioProfileEditService",["$resource",function($resource){
+  return  $resource("/user/getcenter-details",null,{updateInfo:{method:"PUT"}});
+}]);
+
+
+app.controller("radioProfileEdit",["$scope","$resource","$location","$window","ModalService",
+  "templateService","localManager","radioProfileEditService",
+  function($scope,$resource,$location,$window,ModalService,templateService,localManager,radioProfileEditService) {
+
+  var center = radioProfileEditService; //$resource("/user/getcenter-details",null,{updateInfo:{method:"PUT"}})
   center.get(function(data){
     $scope.centerInfo = data || {};
   })
@@ -1150,8 +1164,8 @@ app.controller("radioProfileEdit",["$scope","$resource","$location","$window","M
 }]);
 
 app.controller("radioTestServicesUpdateController",["$scope","$http","$location",
-  "localManager","templateService","scanTests","ModalService","$rootScope","$resource",
-  function($scope,$http,$location,localManager,templateService,scanTests,ModalService,$rootScope,$resource) {
+  "localManager","templateService","scanTests","ModalService","$rootScope","$resource","dynamicService",
+  function($scope,$http,$location,localManager,templateService,scanTests,ModalService,$rootScope,$resource,dynamicService) {
 
     /*** todo ajax call will be made to get the center unran test if any from the backend***/
     var ObjList = Object.keys(scanTests);
@@ -1166,7 +1180,7 @@ app.controller("radioTestServicesUpdateController",["$scope","$http","$location"
     }
 
 
-    var resource = $resource("/user/dynamic-service");
+    var resource = dynamicService; //$resource("/user/dynamic-service");
     resource.query({type:"Radiology"},function(data){
       $rootScope.tests7 = data;
     });
@@ -1284,8 +1298,8 @@ app.controller("radioTestNotRanBycenterController",["$scope","$http",function($s
 
 //pharmacy
 app.controller("pharmacyDrugServicesUpdateController",["$scope","$http","$location","localManager",
-  "templateService","Drugs","ModalService","$resource","$rootScope",
-  function($scope,$http,$location,localManager,templateService,Drugs,ModalService,$resource,$rootScope) {
+  "templateService","Drugs","ModalService","$resource","$rootScope","dynamicService",
+  function($scope,$http,$location,localManager,templateService,Drugs,ModalService,$resource,$rootScope,dynamicService) {
     var objLen = Drugs.length;
     var count = 0;
     while(objLen > count){
@@ -1295,7 +1309,7 @@ app.controller("pharmacyDrugServicesUpdateController",["$scope","$http","$locati
       count++
     }
 
-    var resource = $resource("/user/dynamic-service");
+    var resource = dynamicService; //$resource("/user/dynamic-service");
     resource.query({type:"Pharmacy"},function(data){
       console.log(data)
       $rootScope.allDrugs2 = data;
@@ -1403,16 +1417,21 @@ app.controller("pharmacyDrugNotHaveBycenterController",["$scope","$http",functio
 }]);
 
 
+app.service("userLoginService",["$resource",function($resource){
+  return $resource('/user/login',null,{logPerson:{method:"POST"}});
+}]);
 
-app.controller('loginController',["$scope","$http","$location","$window","$resource","ModalService","templateService","localManager",
-  "$rootScope","mySocket",function($scope,$http,$location,$window,$resource,ModalService,templateService,localManager,$rootScope,mySocket) {
+app.controller('loginController',["$scope","$http","$location","$window","$resource",
+  "ModalService","templateService","localManager","userLoginService",
+  "$rootScope","mySocket",function($scope,$http,$location,$window,$resource,ModalService,
+    templateService,localManager,userLoginService,$rootScope,mySocket) {
   $scope.login = {};
   $scope.error = "";  
   
   $scope.send = function(){ 
     $scope.loading = true;
     $scope.error = ""; 
-    var login = $resource('/user/login',null,{logPerson:{method:"POST"}});
+    var login = userLoginService; //$resource('/user/login',null,{logPerson:{method:"POST"}});
     login.logPerson($scope.login,function(data){   
     if (data.isLoggedIn) {  
 
@@ -1514,11 +1533,26 @@ app.controller("balanceController",["$rootScope","$scope","$resource","localMana
     }
   })
 
-}]);  
+}]); 
 
-app.controller('signupController',["$scope","$http","$location","$window","templateService","$resource","$rootScope","localManager",
-  function($scope,$http,$location,$window,templateService,$resource,$rootScope,localManager) {
-  var signUp = $resource('/user/signup',null,{userSignup:{method:"POST"},emailCheck:{method:"PUT"}});
+app.service("userSignUpService",["$resource",function($resource){
+  return $resource('/user/signup',null,{userSignup:{method:"POST"},emailCheck:{method:"PUT"}});
+}]); 
+
+app.service("phoneVerifyService",["$resource",function($resource){
+  return $resource("/user/verify-phone-number",null,{go:{method:"PUT"}});
+}]);
+
+app.service("getCountryService",["$resource",function($resource){
+  return $resource("/user/getCountries");
+}]);
+
+app.controller('signupController',["$scope","$http","$location","$window","templateService",
+  "$resource","$rootScope","localManager","userSignUpService","phoneVerifyService","getCountryService",
+  function($scope,$http,$location,$window,templateService,$resource,$rootScope,localManager,
+    userSignUpService,phoneVerifyService,getCountryService) {
+
+  var signUp = userSignUpService; //$resource('/user/signup',null,{userSignup:{method:"POST"},emailCheck:{method:"PUT"}});
   $scope.countries = localManager.getValue("countries") || getCountries();
   $scope.status = "Country";
   $scope.status1 = "State/Province";
@@ -1696,9 +1730,11 @@ app.controller('signupController',["$scope","$http","$location","$window","templ
           return;
         }
 
+       
+
         function sendDetail() {
           $scope.loading = true;
-          var sendPin = $resource("/user/verify-phone-number",null,{go:{method:"PUT"}});
+          var sendPin = phoneVerifyService;//$resource("/user/verify-phone-number",null,{go:{method:"PUT"}});
           var send = sendPin.go({phone:phoneNumber},function(data){
             if(data.error) {
               $scope.phoneMessage = data.message;
@@ -1717,10 +1753,12 @@ app.controller('signupController',["$scope","$http","$location","$window","templ
     } 
   }
 
+
+
   var reqObj;
   function getCountries() {
     $scope.status = "Loading...";
-    reqObj = $resource("/user/getCountries");
+    reqObj = getCountryService;//$resource("/user/getCountries");
     reqObj.query(function(data){
       $scope.countries = data;
       localManager.setValue("countries",data);
@@ -1915,13 +1953,14 @@ app.controller("contactController",["$scope","$http",function($scope,$http){
 }]);
 
 
-app.controller("verifyPhoneController",["$rootScope","$scope","$resource","$window",function($rootScope,$scope,$resource,$window){
+app.controller("verifyPhoneController",["$rootScope","$scope","$resource","$window","userSignUpService",
+  function($rootScope,$scope,$resource,$window,userSignUpService){
   $scope.verify = {};
   $scope.sendForm = function (){
     $scope.loading = true;
     $rootScope.formData.v_pin = $scope.verify.pin;
-    var signUp = $resource("/user/signup",null,{userSignup:{method: "POST"}})    
-    signUp.userSignup($rootScope.formData,function(response){
+    var signUp = userSignUpService;//$resource("/user/signup",null,{userSignup:{method: "POST"}})    
+    signUp.userSignup($rootScope.formData,function(response){ //
       $scope.loading = false;
       alert(response.message);
       console.log(response);
@@ -2168,18 +2207,22 @@ app.controller('docProfileEditController',["$scope","$rootScope","$http","$locat
 }]);
 
 
+app.service("profileDataService",["$resource",function($resource){
+  return $resource("/user/get-profile-data");
+}]);
+
 //for view of docors profile public
 app.controller("docProfileViewController",["$scope","$rootScope","$resource","$location","localManager",
-  "ModalService","templateService",function($scope,$rootScope,$resource,$location,localManager,ModalService,templateService) {
+  "ModalService","templateService","profileDataService",
+  function($scope,$rootScope,$resource,$location,localManager,ModalService,templateService,profileDataService) {
 
    var path = window.location.pathname;
    var toArr = path.split("/");
    var userId = toArr[toArr.length-1];
    console.log(toArr[toArr.length-1]);
 
-   var source = $resource("/user/get-profile-data",{userId: userId });
-   source.get(function(data) {
-    console.log(data);
+   var source = profileDataService;//$resource("/user/get-profile-data",{userId: userId });
+   source.get({userId: userId },function(data) {
     $rootScope.docInfo = data;
     templateService.holdForSpecificDoc = data;
 
@@ -2325,12 +2368,17 @@ app.controller("authChangeController",["$scope","$rootScope","$http","$location"
   }     
 }]);
 
-app.controller("verifyPhoneForChangeController",["$rootScope","$scope","$resource","$window",function($rootScope,$scope,$resource,$window){
+app.service("phoneUpdateService",["$resource",function($resource){
+  return $resource("/user/new-phone-update",null,{userChangeNumber:{method: "PUT"}});
+}]);
+
+app.controller("verifyPhoneForChangeController",["$rootScope","$scope","$resource","$window","phoneUpdateService",
+  function($rootScope,$scope,$resource,$window,phoneUpdateService){
   $scope.verify = {};
   $scope.verify.phone = $rootScope.phone;
   $rootScope.status = "success";
   $scope.sendForm = function (){
-    var user = $resource("/user/new-phone-update",null,{userChangeNumber:{method: "PUT"}})    
+    var user = phoneUpdateService; //$resource("/user/new-phone-update",null,{userChangeNumber:{method: "PUT"}})    
     user.userChangeNumber($scope.verify,function(response){
       alert("Phone number changed!")
       console.log(response)
@@ -2380,9 +2428,21 @@ app.controller('searchController',["$scope","$http","$location","$window","multi
     }    
 }]);
 
+app.service("patientfindDoctorService",["$resource",function($resource){
+  return $resource("/user/patient/find-doctor");
+}]);
+
 //for the list of doctors page
-app.controller('resultController',["$scope","$rootScope","$http","$location","$resource","localManager","cities","templateService","templateUrlFactory",
-  function($scope,$rootScope,$http,$location,$resource,localManager,cities,templateService,templateUrlFactory) {
+
+app.service("skillProcedureService",["$resource",function($resource){
+  return $resource("/user/skills-procedures");
+}]);
+
+
+app.controller('resultController',["$scope","$rootScope","$http","$location","$resource",
+  "localManager","cities","templateService","templateUrlFactory","patientfindDoctorService","skillProcedureService",
+  function($scope,$rootScope,$http,$location,$resource,localManager,
+    cities,templateService,templateUrlFactory,patientfindDoctorService,skillProcedureService) {
   $scope.user = {};
   $scope.user.type = "Doctor";
   $scope.user.city = $rootScope.checkLogIn.city;
@@ -2394,12 +2454,12 @@ app.controller('resultController',["$scope","$rootScope","$http","$location","$r
   }
 
   $scope.goBack = function() {
-    $location.path("/find-specialist")
+    $location.path("/find-specialist");
   }
 
   $scope.cities = cities;
   templateUrlFactory.setUrl();
-  var data = $resource("/user/patient/find-doctor");
+  var data = patientfindDoctorService;//$resource("/user/patient/find-doctor");
   $scope.find = function (skill) {
     
     if($scope.user.specialty || $scope.user.doctorId || $scope.user.name || $scope.user.skill || $scope.user.city){      
@@ -2517,7 +2577,9 @@ app.controller('resultController',["$scope","$rootScope","$http","$location","$r
    //search($scope.user,"/user/find-group");
   }
 
-  var source = $resource("/user/skills-procedures");
+  
+
+  var source = skillProcedureService; //$resource("/user/skills-procedures");
   source.query(function(data){
     if(!data.status)
       $scope.skills = data;
@@ -3115,6 +3177,7 @@ app.controller("inDoctorDashboardController",["$scope","$location","$http","loca
 }]);
 
 //sends a request to get all notifications for the logged in doctor and also filters the result.
+
 app.controller("docNotificationController",["$scope","$location","$resource","$interval","localManager","templateService",
   "requestManager","mySocket","$rootScope","$timeout","ModalService","chatService",
   function($scope,$location,$resource,$interval,localManager,templateService,requestManager,mySocket,$rootScope,$timeout,ModalService,chatService){
@@ -4161,8 +4224,27 @@ app.controller("inTreatmentController",["$scope","$http","localManager","$locati
 
 /****************** lab and radio controller inside in-treatment view *********************/
 
-app.controller("investigationController",["$scope","$http","labTests","scanTests","$rootScope","$resource","templateService",
-  function($scope,$http,labTests,scanTests,$rootScope,$resource,templateService){
+app.service("labNotRanService",["$resource",function($resource){
+  return $resource("/user/laboratory/not-ran-services");
+}]);
+
+app.service("getAllLaboratoryService",["$resource",function($resource){
+  return $resource("/user/getAllLaboratory")
+}]);
+
+ app.service("radioNotRanService",["$resource",function($resource){
+  return $resource("/user/radiology/not-ran-services");
+}]);
+
+app.service("getAllRadiologyService",["$resource",function($resource){
+  return $resource("/user/getAllRadiology");
+}]);
+
+app.controller("investigationController",["$scope","$http","labTests","scanTests",
+  "$rootScope","$resource","templateService","labNotRanService","getAllLaboratoryService",
+  "radioNotRanService","getAllRadiologyService",
+  function($scope,$http,labTests,scanTests,$rootScope,$resource,templateService,
+    labNotRanService,getAllLaboratoryService,radioNotRanService,getAllRadiologyService){
 
     var sessionInfo = templateService.holdForSpecificPatient || localManager.getValue("heldSessionData");
     var patient = $rootScope.patientInfo || {};
@@ -4172,6 +4254,7 @@ app.controller("investigationController",["$scope","$http","labTests","scanTests
 
     $scope.treatment.city = patient.city;
     $scope.treatment.country = patient.country;
+
     $scope.lab = function() {
       $scope.isNewLab = true;
       $scope.isNewRadio = false;
@@ -4260,7 +4343,10 @@ app.controller("investigationController",["$scope","$http","labTests","scanTests
           if($scope.message) 
             $scope.message = null;
 
-          var source = $resource("/user/laboratory/not-ran-services");
+
+         
+
+          var source = labNotRanService;//$resource("/user/laboratory/not-ran-services");
 
           source.query({centerId: center.user_id},function(data) { 
             if(data.error){
@@ -4282,14 +4368,13 @@ app.controller("investigationController",["$scope","$http","labTests","scanTests
           });
         }
 
+
+       
       
         function getLaboratories() {
           $scope.loading = true;
-          var source = $resource("/user/getAllLaboratory")
-          console.log($rootScope.treatment)
-          console.log(patient)
+          var source = getAllLaboratoryService; //$resource("/user/getAllLaboratory")
           source.query({city:$scope.treatment.city,country:$scope.treatment.country},function(list){
-            console.log(list)
             $scope.loading = false;
             $scope.searchResult = list;
           });
@@ -4421,7 +4506,9 @@ app.controller("investigationController",["$scope","$http","labTests","scanTests
         if($scope.message) 
           $scope.message = null;
 
-        var source = $resource("/user/radiology/not-ran-services");
+       
+
+        var source = radioNotRanService; //$resource("/user/radiology/not-ran-services");
         source.query({centerId: center.user_id},function(data) { 
           if(data.error){
             $sccope.status = "Not Updated!";
@@ -4442,9 +4529,9 @@ app.controller("investigationController",["$scope","$http","labTests","scanTests
         })
       }
 
-     
+
       function getRadiologies() {
-        var source = $resource("/user/getAllRadiology")
+        var source = getAllRadiologyService; //$resource("/user/getAllRadiology")
         $scope.loading = true;
         source.query({city:$scope.treatment.city,country:$scope.treatment.country},function(list){
           $scope.loading = false;
@@ -5147,9 +5234,17 @@ app.controller("grantedRequestController",["$scope","$http","$rootScope","ModalS
 
 }]);
 
-app.controller("referRequestController",["$scope","$http","ModalService","requestManager","templateService","deleteFactory","$rootScope","$location","$resource",
-  function($scope,$http,ModalService,requestManager,templateService,deleteFactory,$rootScope,$location,$resource){
-    var source = $resource("/user/find-specialist",null,{refer:{method: "PUT"}});
+
+app.service("findSpecialistService",["$resource",function($resource){
+  return $resource("/user/find-specialist",null,{refer:{method: "PUT"}});
+}]);
+
+app.controller("referRequestController",["$scope","$http","ModalService","requestManager",
+  "templateService","deleteFactory","$rootScope","$location","$resource","findSpecialistService",
+  function($scope,$http,ModalService,requestManager,templateService,
+    deleteFactory,$rootScope,$location,$resource,findSpecialistService){
+
+    var source = findSpecialistService;//$resource("/user/find-specialist",null,{refer:{method: "PUT"}});
     $scope.search = {};
     $scope.search.city = $rootScope.checkLogIn.city;
     $scope.search.specialty = $rootScope.checkLogIn.specialty;
@@ -5216,11 +5311,26 @@ app.factory("medicaRecordFactory",function(){
   }
 })
 
+
+app.service("patientNotificationService",["$resource",function($resource){
+  return $resource("/user/patient/notifications");
+}]);
+
+app.service("chatHistoryService",["$resource",function($resource){
+  return $resource("/user/get-chats");
+}]);
+
+app.service("getResponseService",["$resource",function($resource){
+  return $resource("/user/patient/get-response");
+}]);
 // this controller gets  the patient medical records from the backend and seperates laboratory tsest from radiology test 
 //to store then templateService. Note patient prescription  is not amonge the data filtered so far.
 app.controller("patientNotificationController",["$scope","$location","$http","$window","$rootScope","$resource","chatService",
-  "templateService","localManager","deleteFactory","mySocket","$timeout","medicaRecordFactory",
-  function($scope,$location,$http, $window,$rootScope,$resource,chatService,templateService,localManager,deleteFactory,mySocket,$timeout,medicaRecordFactory){
+  "templateService","localManager","deleteFactory","mySocket","$timeout","medicaRecordFactory","patientNotificationService",
+  "getMedicalHistoryService","chatHistoryService","getResponseService",
+  function($scope,$location,$http, $window,$rootScope,$resource,chatService,templateService,localManager,
+    deleteFactory,mySocket,$timeout,medicaRecordFactory,patientNotificationService,
+    getMedicalHistoryService,chatHistoryService,getResponseService){
   
   var filter = {};
   /*$scope.getPatientId = function(id,firstname,lastname){
@@ -5237,7 +5347,7 @@ app.controller("patientNotificationController",["$scope","$location","$http","$w
   }*/
   
   var getRecords = function(){
-    var records = $resource("/user/get-medical-record");
+    var records = getMedicalHistoryService; //$resource("/user/get-medical-record"); //$resource("/user/get-medical-record");
     records.get(function(data){
       if(data){
         medicaRecordFactory.set(data);
@@ -5366,8 +5476,11 @@ app.controller("patientNotificationController",["$scope","$location","$http","$w
 
   $scope.isView = false;
 
+
+ 
+
   function getNotification() {
-    var note = $resource("/user/patient/notifications");
+    var note = patientNotificationService; //$resource("/user/patient/notifications");
     note.query(function(data){
       $scope.allNote = data;
       console.log(data)
@@ -5465,12 +5578,14 @@ app.controller("patientNotificationController",["$scope","$location","$http","$w
     }
   }
 
+ 
+
   $scope.viewResponse = function(doctorId,complaintId){
     var sendObj = {
       doctorId: doctorId,
       complaintId: complaintId
     }
-    var msg = $resource("/user/patient/get-response");
+    var msg = getResponseService; //$resource("/user/patient/get-response");
     msg.get(sendObj,function(data){
       console.log(data)
       templateService.holdData = data;
@@ -5611,8 +5726,10 @@ app.controller("patientNotificationController",["$scope","$location","$http","$w
     $scope.showIndicator = data;
   });
 
+  
+
   $scope.viewChatsHistory = function() {
-     var source = $resource("/user/get-chats");
+     var source = chatHistoryService; //$resource("/user/get-chats");
      source.query(function(chatsList){
       console.log(chatsList);
       $scope.chatsList = chatsList || [];
@@ -5646,19 +5763,24 @@ app.controller("patientNotificationController",["$scope","$location","$http","$w
 
 }]);
 
+app.service("getPersonProfileService",["$resource",function($resource){
+  return $resource("/user/get-person-profile");
+}]);
 
-app.controller("PatientViewResponseController",["$scope","$rootScope","$resource","templateService","ModalService",
-  function($scope,$rootScope,$resource,templateService,ModalService){
+
+app.controller("PatientViewResponseController",["$scope","$rootScope","$resource",
+  "templateService","ModalService","getPersonProfileService",
+  function($scope,$rootScope,$resource,templateService,ModalService,getPersonProfileService){
 
   
   $scope.responders = templateService.holdData;
 
   $scope.viewDocProfile = function(docId,intro,fee){
-    var resource = $resource("/user/get-person-profile/:personId",{personId:docId});
-    templateService.holdDocInView = resource.get();
+    var resource = getPersonProfileService; //$resource("/user/get-person-profile");
+    templateService.holdDocInView = resource.get({personId:docId},function(d){});
     if(!fee)
       fee = 1000;
-    var inNaira = $rootScope.checkLogIn.currencyCode + fee.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    var inNaira = $rootScope.checkLogIn.currencyCode + " " + fee.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     templateService.holdRawAmount = fee;
     templateService.holdDocInView.fee = inNaira;
     templateService.holdDocInView.intro = intro;
@@ -5673,9 +5795,9 @@ app.controller("PatientViewResponseController",["$scope","$rootScope","$resource
   }
 
   $scope.acceptDoc = function(docId,intro,fee){
-    var resource = $resource("/user/get-person-profile/:personId",{personId:docId});
-    templateService.holdDocInView = resource.get();
-    var inNaira = $rootScope.checkLogIn.currencyCode + fee.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    var resource = getPersonProfileService; //$resource("/user/get-person-profile/:personId",{personId:docId});
+    templateService.holdDocInView = resource.get({personId:docId},function(){});
+    var inNaira = $rootScope.checkLogIn.currencyCode + " " + fee.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     templateService.holdRawAmount = fee;
     templateService.holdDocInView.fee = inNaira;
     templateService.holdDocInView.intro = intro;
@@ -5691,14 +5813,15 @@ app.controller("PatientViewResponseController",["$scope","$rootScope","$resource
   
 }]);
 
-app.controller("PatientViewResponseModalController",["$scope","$rootScope","$location","ModalService","templateService","walletService",
-  function($scope,$rootScope,$location,ModalService,templateService,walletService){
+app.controller("PatientViewResponseModalController",["$scope","$rootScope","$location","ModalService",
+  "templateService","walletService","paymentVerificationService",
+  function($scope,$rootScope,$location,ModalService,templateService,walletService,paymentVerificationService){
   
   $scope.fee = templateService.holdDocInView.fee;
   $scope.intro = templateService.holdDocInView.intro; 
   $scope.docInfo = templateService.holdDocInView;
   $scope.isViewDoc = true;
-  var User = walletService.resource("/user/payment/verification",{userId: null},{verify:{method:'POST'}});
+  var User = paymentVerificationService; //walletService.resource("/user/payment/verification",{userId: null},{verify:{method:'POST'}});
   $scope.accept = function(){
     $scope.isViewDoc = false;
     $scope.isToConfirm = true;
@@ -5856,8 +5979,9 @@ app.controller("pendingRadioTestController",["$scope","templateService","$window
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //patient acknowledgee doctors reply and send confirmation to the backend to be save in both doctors box and patient box.
 app.controller("patientViewRequestController",["$scope","$location","$http","$rootScope","templateService","ModalService",
-  "deleteFactory","localManager","walletService",
-  function($scope,$location,$http,$rootScope,templateService,ModalService,deleteFactory,localManager,walletService){
+  "deleteFactory","localManager","walletService","paymentVerificationService",
+  function($scope,$location,$http,$rootScope,templateService,ModalService,deleteFactory,
+    localManager,walletService,paymentVerificationService){
  var id = templateService.holdId;
  /*var docObj = {};
  templateService.holdAllNotification.forEach(function(item){  
@@ -5896,7 +6020,7 @@ app.controller("patientViewRequestController",["$scope","$location","$http","$ro
  //the wallet has enough fund to pay for consultation fee
 
  var msgData = templateService.holdMsg || localManager.getValue('holdMessages');
- var User = walletService.resource("/user/payment/verification",{userId: null},{verify:{method:'POST'}});
+ var User = paymentVerificationService; //walletService.resource("/user/payment/verification",{userId: null},{verify:{method:'POST'}});
 
  if(templateService.holdId) {
   localManager.setValue("holdId",templateService.holdId);
@@ -6009,9 +6133,15 @@ app.service("walletService",["$resource",function($resource){
   }
 }]);
 
+app.service("userVerifyService",["$resource",function($resource){
+  return $resource("/user/verify");
+}]);
 
-app.controller("walletController",["$scope","$http","$rootScope","$location","ModalService","requestManager","templateService","localManager","$resource","walletService","$filter",
-  function($scope,$http,$rootScope,$location,ModalService,requestManager,templateService,localManager,$resource,walletService,$filter){
+
+app.controller("walletController",["$scope","$http","$rootScope","$location","ModalService","requestManager",
+  "templateService","localManager","$resource","walletService","$filter","paymentVerificationService","userVerifyService",
+  function($scope,$http,$rootScope,$location,ModalService,requestManager,templateService,
+    localManager,$resource,walletService,$filter,paymentVerificationService,userVerifyService){
   $scope.viewInvoice = false;
   var user = localManager.getValue("resolveUser");
   $scope.pay = {};
@@ -6183,7 +6313,7 @@ app.controller("walletController",["$scope","$http","$rootScope","$location","Mo
 
   $scope.$watch("pay.amount",function(newVal,oldVal){
     if(oldVal && newVal !== null) { 
-      $scope.str = "NGN" + $scope.pay.amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+      $scope.str = "NGN " + $scope.pay.amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     } else {
       $scope.str = "N0.00"
     }
@@ -6202,6 +6332,8 @@ app.controller("walletController",["$scope","$http","$rootScope","$location","Mo
     
   });
 
+ 
+
   $scope.confirm = function(time){
    if($scope.pay.amount !== null){
       var sendParam;
@@ -6210,7 +6342,7 @@ app.controller("walletController",["$scope","$http","$rootScope","$location","Mo
       } else if($scope.pay.userId && $scope.pay.userId !== undefined) {
         sendParam = {userId: $scope.pay.userId}
       }
-      var creditor = $resource("/user/verify");
+      var creditor = userVerifyService; //$resource("/user/verify");
       creditor.get(sendParam,function(data){
         if(data.error){
           alert(data.error)
@@ -6253,7 +6385,7 @@ app.controller("walletController",["$scope","$http","$rootScope","$location","Mo
       old_time: time
     }
 
-    var User = walletService.resource("/user/payment/verification",{userId: null},{verify:{method:'POST'}});
+    var User = paymentVerificationService; //walletService.resource("/user/payment/verification",{userId: null},{verify:{method:'POST'}});
     var send = User.verify(payObj,function(data){
       alert(data.message);
       if(data.success){
@@ -6599,17 +6731,20 @@ app.controller("patientTreatmentController",["$scope","$http","ModalService","re
       
 }]);
 
+app.service("medicalRecordService",["$resource",function($resource){
+  return $resource("/user/get-medical-record");
+}])
 
-//recieves the patients medical record and presvription from the back end.
+//recieves the patients medical record and prescription from the back end.
 app.controller("patientPanelController",["$scope","$location","$http","$rootScope","localManager","ModalService",
-  "templateService","templateUrlFactory","mySocket","$resource","$window",
-  function($scope,$location,$http,$rootScope,localManager, ModalService, templateService,templateUrlFactory,mySocket,$resource,$window){
+  "templateService","templateUrlFactory","mySocket","$resource","$window","medicalRecordService",
+  function($scope,$location,$http,$rootScope,localManager, ModalService, templateService,templateUrlFactory,
+    mySocket,$resource,$window,medicalRecordService){
   templateUrlFactory.setUrl();
   var medical = {};
   
-  var records = $resource("/user/get-medical-record");
-  records.get(function(data){
-   
+  var records = medicalRecordService; //$resource("/user/get-medical-record");
+  records.get(function(data){   
     var filter = {};
     var total = {};
     var filteredPrescriptions = [];
@@ -7097,9 +7232,12 @@ app.controller("patientViewScanController",["$rootScope","$scope",function($root
   $scope.test = $rootScope.holdTest
 }]);
 
+
+
 //controller for patient who wish to redirect an investigation another center.
-app.controller("patientRedirectTestController",["$scope","$location","$resource","$window","templateService",function($scope,$location,$resource,
-  $window,templateService){ 
+app.controller("patientRedirectTestController",["$scope","$location","$resource","$window","templateService","patientRedirectTestService",
+  function($scope,$location,$resource,
+  $window,templateService,patientRedirectTestService){ 
   $scope.criteria = {};
 
   var test = templateService.holdTestToBeForwarded;
@@ -8250,7 +8388,12 @@ app.controller("cashoutModalController",["$scope","$rootScope","templateService"
   console.log($rootScope.userDetails)
 }])
 
-app.controller("cashOutController",["$scope","$rootScope","$resource",function($scope,$rootScope,$resource){
+app.service("cashOutControllerService",["$resource",function($resource){
+  return $resource("/user/cashout",null,{cashing:{method: "PUT"}});
+}]);
+
+app.controller("cashOutController",["$scope","$rootScope","$resource","cashOutControllerService",
+  function($scope,$rootScope,$resource,cashOutControllerService){
   $scope.bankDetail = {};
 
   $scope.$watch("bankDetail.amount",function(newVal,oldVal){
@@ -8261,7 +8404,7 @@ app.controller("cashOutController",["$scope","$rootScope","$resource",function($
 
   $scope.cash = function(){
     if(Object.keys($scope.bankDetail).length >= 3 && $scope.bankDetail.amount && $scope.bankDetail.amount !== "") {
-      var cashOut = $resource("/user/cashout",null,{cashing:{method: "PUT"}});
+      var cashOut = cashOutControllerService //$resource("/user/cashout",null,{cashing:{method: "PUT"}});
       cashOut.cashing($scope.bankDetail,function(data){
         alert(data.message);
         if(data.balance) {
@@ -8533,11 +8676,38 @@ app.controller("myDoctorController",["$scope","$location","$http","$window","$ro
 }]);
 
 
+app.service("myPatientControllerService",["$resource",function($resource){
+  return $resource("/user/doctor/specific-patient");
+}]);
+
+app.service("getPatientMedicationByDoctorService",["$resource",function($resource){
+  return $resource("/user/get-medical-record");
+}]);
+
+app.service("getMedicalHistoryService",["$resource",function($resource){
+  return $resource("/user/get-medical-record");
+}]);
+
+app.service("drugNotRanService",["$resource",function($resource){
+  return $resource("/user/pharmacy/not-ran-services");
+}]);
+
+app.service("getAllPharmacyService",["$resource",function($resource){
+  return $resource("/user/patient/getAllPharmacy");
+}]);
+
+app.service("getSessionService",["$resource",function($resource){
+  return $resource("/user/doctor/get-patient-sessions");
+}]);
 
 //similar the mydoctorController
 app.controller("myPatientController",["$scope","$http","$location","$window","$rootScope","templateService","localManager","$filter",
-  "ModalService","Drugs","mySocket","$resource","deviceCheckService",
-  function($scope,$http,$location,$window,$rootScope,templateService,localManager,$filter,ModalService,Drugs,mySocket,$resource,deviceCheckService){
+  "ModalService","Drugs","mySocket","$resource","deviceCheckService","myPatientControllerService",
+  "getPatientMedicationByDoctorService","getMedicalHistoryService","drugNotRanService","getAllPharmacyService","getSessionService",
+  function($scope,$http,$location,$window,$rootScope,templateService,localManager,$filter,ModalService,
+    Drugs,mySocket,$resource,deviceCheckService,myPatientControllerService,
+    getPatientMedicationByDoctorService,getMedicalHistoryService,drugNotRanService,getAllPharmacyService,getSessionService){
+
   var patient = {}; //patient obj.
   
   /*
@@ -8549,13 +8719,13 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
   var path = localManager.getValue("currentPage");
   var arr = path.split("/");  
   var userId = arr[arr.length-1];
-  var random = Math.floor(Math.random() * 999999999999 );
-  var sessionId = Math.floor(Math.random() * 99999999999999);
+  var random =parseInt(Math.floor(Math.random() * 99999) + "" + Math.floor(Math.random() * 999999));
+  var sessionId = parseInt(Math.floor(Math.random() * 99999) + "" + Math.floor(Math.random() * 999999));
   patient.id = templateService.holdIdForSpecificPatient || userId;
   $rootScope.holdId =  patient.id;
   var user = localManager.getValue("resolveUser");
 
-  var getPatientData = $resource("/user/doctor/specific-patient");
+  var getPatientData = myPatientControllerService //$resource("/user/doctor/specific-patient");
   getPatientData.get(patient,function(data){  
     $scope.patientInfo = data; 
     $rootScope.patientInfo = data       
@@ -8876,14 +9046,13 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
       $scope.laboratoryTests = $scope.medicalRecordHistory.medical_records.laboratory_test;
     }
 
+   
 
     var getPatientMedicationByDoctor = function(url){
       if(!$scope.medicalRecordHistory) {
-        var getMedication = $resource(url);
+        var getMedication = getPatientMedicationByDoctorService //$resource(url);
         var sendObj = {patientId:patient.id}
         getMedication.get(sendObj,function(data){
-          console.log(data)
-          console.log($rootScope.checkLogIn.user_id)
           var myFoundPrescriptions = [];
           for(var i = data.prescriptions.length-1; i >= 0; i--){
             if(data.prescriptions[i].doctor_id === $rootScope.checkLogIn.user_id) {
@@ -8906,9 +9075,11 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
       
     }
 
+    
+
     //doctor views patient medical records. 
     var getMedicalHistory = function(url) {
-      var getMedication = $resource(url);
+      var getMedication = getMedicalHistoryService //$resource(url);
       var sendObj = {patientId:patient.id}
       getMedication.get(sendObj,function(data){ 
         $scope.medicalRecordHistory = data;
@@ -9007,12 +9178,16 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
 
     $scope.pickedCenter = null;
 
+
+
+   
+
     $scope.selected = function(center) {
       $scope.pickedCenter = center;
       if($scope.message) 
         $scope.message = null;
 
-      var source = $resource("/user/pharmacy/not-ran-services")
+      var source = drugNotRanService; //$resource("/user/pharmacy/not-ran-services")
       source.query({centerId: center.user_id},function(data) { 
         if(data.error){
           $scope.status = "Not Updated!";
@@ -9034,11 +9209,13 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
     }
 
     function getPharmacy() {
-      var source = $resource("/user/patient/getAllPharmacy")
+      var source = getAllPharmacyService; // $resource("/user/patient/getAllPharmacy")
       source.query({city:$scope.treatment.city,country:$scope.treatment.country},function(list){
         $scope.searchResult = list;
       })
     }
+
+   
 
     $scope.sendDrug = function() {
       patient.treatment = $scope.treatment;
@@ -9120,9 +9297,11 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
 
     var sessionList = [];
 
+
+
     function loadSession() {
       $scope.loading = true;
-      var getSession = $resource("/user/doctor/get-patient-sessions");
+      var getSession = getSessionService;//$resource("/user/doctor/get-patient-sessions");
       var sendObj = {patient_id:patient.id}
       getSession.query(sendObj,function(data){
         $scope.loading = false;
@@ -9432,8 +9611,9 @@ app.controller("appointmentModalController",["$scope","$http","moment","template
 
 
 //this controller controls the form filled by the doctor when creating new session for a selected patient above.
-app.controller("fromModalSessionController",["$scope","$http","$window","localManager","templateService","$rootScope","$resource",
-  function($scope,$http,$window,localManager,templateService,$rootScope,$resource){
+app.controller("fromModalSessionController",["$scope","$http","$window","localManager",
+  "templateService","$rootScope","$resource","getSessionService",
+  function($scope,$http,$window,localManager,templateService,$rootScope,$resource,getSessionService){
   $scope.patient = {};
   var date = new Date();
   $scope.patient.date = date;      
@@ -9467,7 +9647,7 @@ app.controller("fromModalSessionController",["$scope","$http","$window","localMa
     function loadSession() {
       $scope.loading = true;
       var sessionList = [];
-      var getSession = $resource("/user/doctor/get-patient-sessions");     
+      var getSession = getSessionService;//$resource("/user/doctor/get-patient-sessions");     
       getSession.query($scope.patient,function(data){
         $scope.loading = false;
         for(var i = 1; i < data.length; i++) {          
@@ -10068,9 +10248,14 @@ app.controller("pharmacyCenterDashboardController",["$scope","$location","templa
     
 }]);
 
-app.controller("pharmacyProfileEditController",["$scope","$resource","$location","$window","ModalService","templateService","localManager",
-  function($scope,$resource,$location,$window,ModalService,templateService,localManager) {
-  var center = $resource("/user/getcenter-details",null,{updateInfo:{method:"PUT"}})
+app.service("pharmacyProfileEditControllerService",["$resource",function($resource){
+  return $resource("/user/getcenter-details",null,{updateInfo:{method:"PUT"}})
+}]);
+
+app.controller("pharmacyProfileEditController",["$scope","$resource","$location","$window",
+  "ModalService","templateService","localManager","pharmacyProfileEditControllerService",
+  function($scope,$resource,$location,$window,ModalService,templateService,localManager,pharmacyProfileEditControllerService) {
+  var center = pharmacyProfileEditControllerService;//$resource("/user/getcenter-details",null,{updateInfo:{method:"PUT"}})
   center.get(function(data){
     $scope.centerInfo = data || {};
   })
@@ -10086,11 +10271,24 @@ app.controller("pharmacyProfileEditController",["$scope","$resource","$location"
 
 }]);
 
+app.service("pharmacyCenterNotificationControllerService",["$resource",function($resource){
+  return $resource("/user/center/get-notification");
+}]);
 
-app.controller("pharmacyCenterNotificationController",["$scope","$location","$resource","$window","templateService","localManager","chatService",
-  "$rootScope","mySocket",function($scope,$location,$resource,$window,templateService,localManager,chatService,$rootScope,mySocket){
+app.service("addNoteService",["$resource",function($resource){
+  return $resource("/user/pharmacy/get-referral",null,{sendObj:{method:"PUT"}});
+}]);
 
-  var notification = $resource("/user/center/get-notification");
+app.service("viewNoteService",["$resource",function($resource){
+  return $resource("/user/pharmacy/get-referral");
+}]);
+
+app.controller("pharmacyCenterNotificationController",["$scope","$location","$resource","$window","templateService",
+  "localManager","chatService","$rootScope","mySocket","pharmacyCenterNotificationControllerService","addNoteService","viewNoteService",
+  function($scope,$location,$resource,$window,templateService,localManager,chatService,
+    $rootScope,mySocket,pharmacyCenterNotificationControllerService,addNoteService,viewNoteService){
+
+  var notification = pharmacyCenterNotificationControllerService; //$resource("/user/center/get-notification");
 
   
   notification.get(null,function(data){
@@ -10107,9 +10305,8 @@ app.controller("pharmacyCenterNotificationController",["$scope","$location","$re
 
   $rootScope.viewNote = function(id){
     templateService.holdId = id;
-    var prescription = $resource("/user/pharmacy/get-referral/:refId",{refId: id});
-    prescription.get(function(data){
-      console.log(data)
+    var prescription = viewNoteService; //$resource("/user/pharmacy/get-referral");
+    prescription.get({refId: id},function(data){
       localManager.setValue("pharmacyData",data); //pharmacyData refers to patients prescription
       var pageUrl = "/pharmacy/view-prescription/" + id;
       $location.path(pageUrl);
@@ -10122,7 +10319,7 @@ app.controller("pharmacyCenterNotificationController",["$scope","$location","$re
   //adding patients to the list one by one you simply all add all together.
   $scope.addAllNote = function(){
     if($rootScope.allNote.length > 0) {
-      var prescriptions = $resource("/user/pharmacy/get-referral",null,{sendObj:{method:"PUT"}});
+      var prescriptions = addNoteService//$resource("/user/pharmacy/get-referral",null,{sendObj:{method:"PUT"}});
       prescriptions.sendObj($rootScope.allNote,function(res){
         var data = res.prescriptions; 
         if($rootScope.attendanceList.length === 0){   
@@ -10160,8 +10357,17 @@ app.controller("pharmacyCenterNotificationController",["$scope","$location","$re
 
 }]);
 
-app.controller("pharmacyViewPrescriptionController",["$scope","$location","templateService","localManager","$rootScope","$resource",
-  function($scope,$location,templateService,localManager,$rootScope,$resource){ 
+app.service("billingAuthService",["$resource",function($resource){
+  return $resource("/user/center/billing-verification",null,{verify: {method: "PUT"}});
+}]);
+
+app.service("paymentVerificationService",["$resource",function($resource){
+  return $resource("/user/payment/verification",{userId: null},{verify:{method:'POST'}}); 
+}]);
+
+app.controller("pharmacyViewPrescriptionController",["$scope","$location","templateService",
+  "localManager","$rootScope","$resource","billingAuthService","paymentVerificationService",
+  function($scope,$location,templateService,localManager,$rootScope,$resource,billingAuthService,paymentVerificationService){ 
   //var pharmacyData = templateService.holdPharmacyReferralData = localManager.getValue("pharmacyData");  
   var getCurrentPage = localManager.getValue("currPageForPharmacy");
   var getIdOfCurrentPage = getCurrentPage.split("/");
@@ -10179,9 +10385,8 @@ app.controller("pharmacyViewPrescriptionController",["$scope","$location","templ
 
 
   //check payment
-  var billAuth = $resource("/user/center/billing-verification",null,{verify: {method: "PUT"}})
+  var billAuth = billingAuthService; //$resource("/user/center/billing-verification",null,{verify: {method: "PUT"}})
   billAuth.get({refId: $rootScope.refData.ref_id},function(data){
-    console.log(data)
     $rootScope.refData.pharmacy.is_paid = data.payment; 
     $rootScope.refData.pharmacy.detail = data.detail || {};
   });
@@ -10340,7 +10545,7 @@ app.controller("pharmacyViewPrescriptionController",["$scope","$location","templ
 
   function toNaira(val){
     $scope.str = "NGN" + val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-    $scope.commissionedAmount = "NGN" + ( val - (val * ($rootScope.checkLogIn.city_grade / 100))).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    $scope.commissionedAmount = "NGN " + ( val - (val * ($rootScope.checkLogIn.city_grade / 100))).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   }
 
   // sending billing to patient which otp will be send to patient informing the patient the toal cost of the bill.
@@ -10356,7 +10561,7 @@ app.controller("pharmacyViewPrescriptionController",["$scope","$location","templ
       old_time: oldTime
     }
 
-    var otp = $resource("/user/payment/verification",{userId: null},{verify:{method:'POST'}});  
+    var otp = paymentVerificationService;//$resource("/user/payment/verification",{userId: null},{verify:{method:'POST'}});  
     otp.verify(sendObj,function(data){
       if(data.success){
         alert(data.message);
@@ -10511,14 +10716,27 @@ app.controller("labCenterDashboardController",["$scope","$location","$http","tem
     }
 }]);
 
+app.service("labCenterNotificationService",["$resource",function($resource){
+  return $resource("/user/center/get-notification");
+}]);
+
+app.service("labNoteService",["$resource",function($resource){
+  return $resource( "/user/laboratory/get-referral",null,{sendObj:{method:"PUT"}});
+}]);
+
+/*app.service("labViewNoteService",["$resource",function($resource){
+  return $resource("/user/laboratory/get-referral");
+}]);*/
 
 
-app.controller("labCenterNotificationController",["$scope","$location","$resource","$window","templateService","localManager","$http","chatService",
-  "$rootScope","mySocket",function($scope,$location,$resource,$window,templateService,localManager,$http,chatService,$rootScope,mySocket){
+app.controller("labCenterNotificationController",["$scope","$location","$resource","$window","templateService",
+  "localManager","$http","chatService","labCenterNotificationService","labNoteService",
+  "$rootScope","mySocket",function($scope,$location,$resource,$window,templateService,
+    localManager,$http,chatService,labCenterNotificationService,labNoteService,$rootScope,mySocket){
 
 
   function getNotification() {
-    var notification = $resource("/user/center/get-notification");
+    var notification = labCenterNotificationService ; //$resource("/user/center/get-notification");
     notification.get(null,function(data){
       $rootScope.allNote = data.diagnostic_center_notification || [];
       $rootScope.noteLen = $rootScope.allNote.length || 0;
@@ -10532,11 +10750,9 @@ app.controller("labCenterNotificationController",["$scope","$location","$resourc
   //adding patients to the list one by one you simply all add all together.
   $scope.addAllNote = function(){
     if($rootScope.allNote.length > 0) {
-      var labTests = $resource( "/user/laboratory/get-referral",null,{sendObj:{method:"PUT"}});
+      var labTests = labNoteService; //$resource( "/user/laboratory/get-referral",null,{sendObj:{method:"PUT"}});
       labTests.sendObj($rootScope.allNote,function(res){
         var data = res.labTest; 
-        console.log(res)
-        console.log($rootScope.attendanceList)
         if($rootScope.attendanceList.length === 0){   
           //templateService.holdList = data;          
           localManager.setValue("holdTestForAttendance",data);
@@ -10558,6 +10774,7 @@ app.controller("labCenterNotificationController",["$scope","$location","$resourc
    var reverseNote = [];//this holds notic=fation from backend based on how new it is
    var deletedNote = [];//this holds all deleted notifications
 
+  
   $rootScope.viewNote = function(id,fromList,newPatient){
     templateService.holdId = id;
     //view test from attendance list does not need to go through backend since data that populated the list is already there
@@ -10570,8 +10787,8 @@ app.controller("labCenterNotificationController",["$scope","$location","$resourc
       localManager.setValue("laboratoryData",list[elementPos]);
     } else {      
       //view test from notification icon goes to the backend to get patient data;    
-      var labTest = $resource("/user/laboratory/get-referral/:refId",{refId: id});
-      labTest.get(function(data){
+      var labTest = labNoteService; //$resource("/user/laboratory/get-referral");
+      labTest.get({refId: id},function(data){
         localManager.setValue("laboratoryData",data); //pharmacyData refers to patients prescription
         var pageUrl = "/laboratory/view-test/" + id;
         $location.path(pageUrl);
@@ -10690,9 +10907,20 @@ app.controller("labCenterPanelController",["$scope","$location","$http","templat
     }
 }]);
 
+
+app.service("searchTestService",["$resource",function($resource){
+  return $resource("/user/laboratory/search/find-tests",null,{findCenter:{method:"PUT"}});
+}]);
+
+app.service("toCenterService",["$resource",function($resource){
+  return $resource("/user/center/send-test",null,{sendTest:{method: 'POST'}});
+}]);
+
 app.controller("labTestControler",["$scope","$location","$http","templateService","localManager",
-  "ModalService","labTests","$resource","$rootScope","cities",
-  function($scope,$location,$http,templateService,localManager,ModalService,labTests,$resource,$rootScope,cities) {
+  "ModalService","labTests","$resource","$rootScope","cities","paymentVerificationService","billingAuthService",
+  "searchTestService","toCenterService",
+  function($scope,$location,$http,templateService,localManager,ModalService,labTests,$resource,$rootScope,
+    cities,paymentVerificationService,billingAuthService,searchTestService,toCenterService) {
    
    
     var objectFound = localManager.getValue("laboratoryData");
@@ -10989,7 +11217,7 @@ app.controller("labTestControler",["$scope","$location","$http","templateService
     $scope.loading = true;
      if($scope.otpError)
         $scope.otpError = null;
-    var otp = $resource("/user/payment/verification",{userId: null},{verify:{method:'POST'}});  
+    var otp = paymentVerificationService;//$resource("/user/payment/verification",{userId: null},{verify:{method:'POST'}});  
     otp.verify(sendObj,function(data){
       $scope.loading = false;
       if(data.success){
@@ -11010,7 +11238,7 @@ app.controller("labTestControler",["$scope","$location","$http","templateService
     {name: "Semen",status: false},{name: "Saliver",status: false},{name: "Mucus",status: false}]
 
 
-  var billAuth = $resource("/user/center/billing-verification",null,{verify: {method: "PUT"}})
+  var billAuth = billingAuthService;//$resource("/user/center/billing-verification",null,{verify: {method: "PUT"}})
   billAuth.get({refId: $scope.refInfo.ref_id},function(data){
     $scope.paymentStatus = data.payment; 
     $scope.paymentDetail = data.detail || {};
@@ -11265,10 +11493,10 @@ app.controller("labTestControler",["$scope","$location","$http","templateService
     $scope.cities = cities;
     $scope.unRanTest = templateService.holdUnranTest;
 
-   
+  
     
-    var searchTest = $resource("/user/laboratory/search/find-tests",null,{findCenter:{method:"PUT"}});
-    var toCenter = $resource("/user/center/send-test",null,{sendTest:{method: 'POST'}});
+    var searchTest = searchTestService;//$resource("/user/laboratory/search/find-tests",null,{findCenter:{method:"PUT"}});
+    var toCenter = toCenterService;//$resource("/user/center/send-test",null,{sendTest:{method: 'POST'}});
     function getResource() {
      if(!$scope.user.city && $scope.user.city !== "") {
         user = localManager.getValue("resolveUser");
@@ -11443,31 +11671,36 @@ app.controller("unRanTestModalController",["$scope","$location","templateService
   }
 }]); 
 
-app.controller("unranTestController",["$scope","templateService","localManager",function($scope,templateService,localManager){
+app.service("labUnRanTestService",["$resource",function($resource){
+  return $resource("/user/laboratory/search/find-tests");
+}]);
+
+
+app.controller("unranTestController",["$scope","templateService","localManager","labUnRanTestService",
+  function($scope,templateService,localManager,labUnRanTestService){
   $scope.back = localManager.getValue("currPageForLaboratory");
    //center sends unran tests to another center.This is important for maintaning patient test integrity.
   var user = localManager.getValue("resolveUser");
-  var searchTest = $resource("/user/laboratory/search/find-tests");
+  var searchTest = labUnRanTestService; //$resource("/user/laboratory/search/find-tests");
   searchTest.get({city:user.city,testList:templateService.holdUnranTest},function(data){
     $scope.testResult = data;
   });
-
 }]);
 
 app.controller("laboratoryfindLabController",["$scope","$http","$location","templateService",function($scope,$http,$location,templateService){
   $http({
-      method  : 'GET',
-      url     : "/user/doctor/find-laboratory",// this route is use both for doctor and laboratory to find a center.
-      headers : {'Content-Type': 'application/json'} 
-      })
-    .success(function(data) {          
-      if(data.length > 0) {
-        $scope.isFound = true;
-        $scope.labCenters = data;
-      } else {        
-        $scope.isError = true;
-        $scope.message = "Oops! Currently, It seems there are no laboratory center registered within your location. You can search for other locations";
-      }
+    method  : 'GET',
+    url     : "/user/doctor/find-laboratory",// this route is use both for doctor and laboratory to find a center.
+    headers : {'Content-Type': 'application/json'} 
+    })
+  .success(function(data) {          
+    if(data.length > 0) {
+      $scope.isFound = true;
+      $scope.labCenters = data;
+    } else {        
+      $scope.isError = true;
+      $scope.message = "Oops! Currently, It seems there are no laboratory center registered within your location. You can search for other locations";
+    }
   });
 
   $scope.laboratory = {};
@@ -11574,11 +11807,22 @@ app.controller("radioCenterDashboardController",["$scope","$location","$http","t
 
 }]);
 
-app.controller("radioCenterNotificationController",["$scope","$location","$http","$window","templateService","localManager","$resource","$rootScope","mySocket","chatService",
-  function($scope,$location,$http,$window,templateService,localManager,$resource,$rootScope,mySocket,chatService) {
 
-  var notification = $resource("/user/center/get-notification",null,{updateStatus:{method:'PUT'}});
-  var radioTests = $resource( "/user/radiology/get-referral",null,{sendObj:{method:"PUT"}});
+app.service("radioNotificationService",["$resource",function($resource){
+  return $resource("/user/center/get-notification",null,{updateStatus:{method:'PUT'}});
+}]);
+
+app.service("radioTestsService",["$resource",function($resource){
+  return $resource("/user/radiology/get-referral",null,{sendObj:{method:"PUT"}});
+}]);
+
+app.controller("radioCenterNotificationController",["$scope","$location","$http","$window","templateService",
+  "localManager","$resource","$rootScope","mySocket","chatService","radioNotificationService","radioTestsService",
+  function($scope,$location,$http,$window,templateService,localManager,$resource,
+    $rootScope,mySocket,chatService,radioNotificationService,radioTestsService) {
+
+  var notification = radioNotificationService; //$resource("/user/center/get-notification",null,{updateStatus:{method:'PUT'}});
+  var radioTests = radioTestsService; //$resource( "/user/radiology/get-referral",null,{sendObj:{method:"PUT"}});
   
 
   function getNotification() {    
@@ -11628,11 +11872,11 @@ app.controller("radioCenterNotificationController",["$scope","$location","$http"
       var elementPos = list.map(function(x) {return x.ref_id}).indexOf(id);
       localManager.setValue("radiologyData",list[elementPos]);
     } else {
-     
+
       //view test from notification icon goes to the backend to get patient data;    
-      var labTest = $resource("/user/radiology/get-referral/:refId",{refId: id});
-      labTest.get(function(data){
-        console.log(data)
+      var labTest = radioTestsService; //$resource("/user/radiology/get-referral");
+      labTest.get({refId: id},function(data){
+       
         localManager.setValue("radiologyData",data); //pharmacyData refers to patients prescription
         var pageUrl = "/radiology/view-test/" + id;
         $location.path(pageUrl);
@@ -11756,9 +12000,21 @@ app.controller("radioCenterPanelController",["$scope","$location","$http","templ
     }
 }]);
 
+
+app.service("radioSearchTestService",["$resource",function($resource){
+  return  $resource("/user/radiology/search/find-tests",null,{findCenter:{method:"PUT"}});
+}]);
+
+app.service("radioToService",["$resource",function($resource){
+  return $resource("/user/center/radiology/send-test",null,{sendTest:{method: 'POST'}});
+}]);
+
 app.controller("radioTestControler",["$scope","$location","$http","templateService","localManager","ModalService",
-  "multiData","scanTests","$rootScope","$resource","$rootScope","cities",
-  function($scope,$location,$http,templateService,localManager,ModalService,multiData,scanTests,$rootScope,$resource,$rootScope,cities) {
+  "multiData","scanTests","$rootScope","$resource","$rootScope","cities","billingAuthService","paymentVerificationService",
+  "radioSearchTestService","radioToService",
+  function($scope,$location,$http,templateService,localManager,ModalService,multiData,
+    scanTests,$rootScope,$resource,$rootScope,cities,billingAuthService,paymentVerificationService,
+    radioSearchTestService,radioToService) {
   
     var objectFound = localManager.getValue("radiologyData");
     var holdInitialTestToRun = objectFound.radiology.test_to_run;
@@ -12057,7 +12313,7 @@ app.controller("radioTestControler",["$scope","$location","$http","templateServi
     $scope.loading = true;
      if($scope.otpError)
         $scope.otpError = null;
-    var otp = $resource("/user/payment/verification",{userId: null},{verify:{method:'POST'}});  
+    var otp = paymentVerificationService; //$resource("/user/payment/verification",{userId: null},{verify:{method:'POST'}});  
     otp.verify(sendObj,function(data){
       $scope.loading = false;
       if(data.success){
@@ -12090,7 +12346,7 @@ app.controller("radioTestControler",["$scope","$location","$http","templateServi
 
   $scope.dicomPath = $scope.getFolderPath();
 
-  var billAuth = $resource("/user/center/billing-verification",null,{verify: {method: "PUT"}})
+  var billAuth = billingAuthService; //$resource("/user/center/billing-verification",null,{verify: {method: "PUT"}})
   billAuth.get({refId: $scope.refInfo.ref_id},function(data){
     $scope.paymentStatus = data.payment; 
     $scope.paymentDetail = data.detail || {};
@@ -12450,9 +12706,12 @@ app.controller("radioTestControler",["$scope","$location","$http","templateServi
 
     $scope.cities = cities;
     $scope.unRanTest = templateService.holdUnranTest;
-     
-    var searchTest = $resource("/user/radiology/search/find-tests",null,{findCenter:{method:"PUT"}});
-    var toCenter = $resource("/user/center/radiology/send-test",null,{sendTest:{method: 'POST'}});
+    
+  
+
+ 
+    var searchTest = radioSearchTestService; //$resource("/user/radiology/search/find-tests",null,{findCenter:{method:"PUT"}});
+    var toCenter = radioToService; //$resource("/user/center/radiology/send-test",null,{sendTest:{method: 'POST'}});
     function getResource() {
        if(!$scope.user.city && $scope.user.city !== "") {
           user = localManager.getValue("resolveUser");
@@ -12715,11 +12974,15 @@ function($scope,$location,$window,templateService,localManager,labTests,searchte
   $location.path("/search-test")
 }]);
 
+app.service("dynamicService",["$resource",function($resource){
+  return $resource("/user/dynamic-service",null,{createService:{"method": "POST"}});
+}]);
 
 
 app.controller("drugController",["$scope","$location","$window","templateService","localManager",
-  "Drugs","searchtestservice","cities","templateUrlFactory","$resource","$rootScope",
-function($scope,$location,$window,templateService,localManager,Drugs,searchtestservice,cities,templateUrlFactory,$resource,$rootScope){
+  "Drugs","searchtestservice","cities","templateUrlFactory","$resource","$rootScope","dynamicService",
+function($scope,$location,$window,templateService,localManager,Drugs,searchtestservice,cities,
+  templateUrlFactory,$resource,$rootScope,dynamicService){
   templateUrlFactory.setUrl();
   var list = [{sn:'a'}];
 
@@ -12773,7 +13036,8 @@ function($scope,$location,$window,templateService,localManager,Drugs,searchtests
     }
   }
 
-  var resource = $resource("/user/dynamic-service");
+ 
+  var resource = dynamicService; //$resource("/user/dynamic-service");
   resource.query({type:"Pharmacy"},function(data){
     $scope.drugs = Drugs.concat(data);
   });
@@ -12901,8 +13165,13 @@ function($scope,$location,$window,templateService,localManager,Drugs,searchtests
   
 }]);
 
-app.controller("drugSearchResultController",["$scope","$location","$rootScope","$resource","templateService","localManager","ModalService",
-  function($scope,$location,$rootScope,$resource,templateService,localManager,ModalService){
+app.service("centerProfileService",["$resource",function($resource){
+  return $resource("/user/center-profile");
+}]);
+
+app.controller("drugSearchResultController",["$scope","$location","$rootScope","$resource",
+  "templateService","localManager","ModalService","centerProfileService",
+  function($scope,$location,$rootScope,$resource,templateService,localManager,ModalService,centerProfileService){
   $scope.drugResult = templateService.holdSearchResult; 
 
   $scope.criteria = templateService.holdList;
@@ -12925,11 +13194,12 @@ app.controller("drugSearchResultController",["$scope","$location","$rootScope","
     return newStr;
   }
 
+  
+
   $scope.toViewProfile = function(centerId){
     templateService.holdId = centerId;
-    var resource = $resource("/user/center-profile/:id",{id:templateService.holdId});
-    resource.get(function(center){
-      console.log(center)
+    var resource = centerProfileService; //$resource("/user/center-profile");
+    resource.get({id:templateService.holdId},function(center){
       $rootScope.center = center;
       callModal()
     });
@@ -13110,8 +13380,9 @@ function($scope,$location,$window,templateService,localManager,ModalService){
 
 
 app.controller("searchTestController",["$scope","$location","$window","templateService","localManager","labTests",
-  "searchtestservice","cities","templateUrlFactory","$resource","$rootScope",
-function($scope,$location,$window,templateService,localManager,labTests,searchtestservice,cities,templateUrlFactory,$resource,$rootScope){
+  "searchtestservice","cities","templateUrlFactory","$resource","$rootScope","dynamicService",
+function($scope,$location,$window,templateService,localManager,labTests,searchtestservice,cities,
+  templateUrlFactory,$resource,$rootScope,dynamicService){
   var allTests = labTests.listInfo.concat(labTests.listInfo1,labTests.listInfo2,labTests.listInfo3,labTests.listInfo4,
     labTests.listInfo5,labTests.listInfo6,labTests.listInfo7);
 
@@ -13132,7 +13403,7 @@ function($scope,$location,$window,templateService,localManager,labTests,searchte
 
   $scope.city = $rootScope.checkLogIn.city;
 
-  var resource = $resource("/user/dynamic-service");
+  var resource = dynamicService //$resource("/user/dynamic-service");
   resource.query({type:"Laboratory"},function(data){
     $scope.tests = allTests.concat(data);
   });
@@ -13277,8 +13548,9 @@ function($scope,$location,$window,templateService,localManager,labTests,searchte
 
 
 
-app.controller("testSearchResultController",["$scope","$location","$rootScope","$resource","templateService","localManager","ModalService",
-  function($scope,$location,$rootScope,$resource,templateService,localManager,ModalService){
+app.controller("testSearchResultController",["$scope","$location","$rootScope","$resource",
+  "templateService","localManager","ModalService","centerProfileService",
+  function($scope,$location,$rootScope,$resource,templateService,localManager,ModalService,centerProfileService){
 
   $scope.testResult = templateService.holdSearchResult;
   $scope.criteria = templateService.holdList;
@@ -13304,8 +13576,8 @@ app.controller("testSearchResultController",["$scope","$location","$rootScope","
   $scope.back = "#/search-test";
 
   $scope.toViewProfile = function(centerId){
-    var resource = $resource("/user/center-profile/:id",{id:centerId});
-    resource.get(function(center){
+    var resource = centerProfileService//$resource("/user/center-profile");
+    resource.get({id:centerId},function(center){
       $rootScope.center = center;
       callModal()
     });
@@ -13468,8 +13740,9 @@ app.controller("testSearchSelectedCenterController",["$scope","$location","$wind
 
 
 app.controller("searchScanController",["$scope","$location","$window","templateService","localManager",
-  "scanTests","searchtestservice","cities","templateUrlFactory","$resource","$rootScope",
-function($scope,$location,$window,templateService,localManager,scanTests,searchtestservice,cities,templateUrlFactory,$resource,$rootScope){
+  "scanTests","searchtestservice","cities","templateUrlFactory","$resource","$rootScope","dynamicService",
+function($scope,$location,$window,templateService,localManager,scanTests,
+  searchtestservice,cities,templateUrlFactory,$resource,$rootScope,dynamicService){
   var allTests = scanTests.listInfo1.concat(scanTests.listInfo2,scanTests.listInfo3,scanTests.listInfo4,scanTests.listInfo5,
   scanTests.listInfo6);
 
@@ -13490,7 +13763,7 @@ function($scope,$location,$window,templateService,localManager,scanTests,searcht
 
   $scope.city = $rootScope.checkLogIn.city;
 
-  var resource = $resource("/user/dynamic-service",null,{createService:{"method": "POST"}});
+  var resource = dynamicService //$resource("/user/dynamic-service",null,{createService:{"method": "POST"}});
   resource.query({type:"Radiology"},function(data){
     $scope.tests = allTests.concat(data);
   });
@@ -13628,8 +13901,9 @@ function($scope,$location,$window,templateService,localManager,scanTests,searcht
 
 }]);
 
-app.controller("scanSearchResultController",["$scope","$location","$rootScope","$resource","templateService","localManager","ModalService",
-  function($scope,$location,$rootScope,$resource,templateService,localManager,ModalService){
+app.controller("scanSearchResultController",["$scope","$location","$rootScope","$resource",
+  "templateService","localManager","ModalService","centerProfileService",
+  function($scope,$location,$rootScope,$resource,templateService,localManager,ModalService,centerProfileService){
   $scope.testResult = templateService.holdSearchResult;
   $scope.criteria = templateService.holdList;
   $scope.testFilter = {};
@@ -13654,9 +13928,10 @@ app.controller("scanSearchResultController",["$scope","$location","$rootScope","
   $scope.back = "#/scan-search";
 
 
+
   $scope.toViewProfile = function(centerId){
-    var resource = $resource("/user/center-profile/:id",{id:centerId});
-    resource.get(function(center){
+    var resource = centerProfileService;
+    resource.get({id:centerId},function(center){
       $rootScope.center = center;
       callModal()
     });
@@ -14525,12 +14800,17 @@ app.controller("selectedCourierRequestController",["$scope","$rootScope","$http"
 
 }]);
 
+app.service("fieldAgentService",["$resource",function($resource){
+  return $resource("/user/field-agent",null,{verify:{method: "PUT"}});
+}]);
+
 //refers to couroer field agents controller
-app.controller("filedAgentController",["$scope","$rootScope","$resource",function($scope,$rootScope,$resource){
+app.controller("filedAgentController",["$scope","$rootScope","$resource","fieldAgentService",
+  function($scope,$rootScope,$resource,fieldAgentService){
 
   var data;
   
-  var resource = $resource("/user/field-agent",null,{verify:{method: "PUT"}});
+  var resource = fieldAgentService; //$resource("/user/field-agent",null,{verify:{method: "PUT"}});
 
   resource.query(function(data){
     $scope.courierList = data;
@@ -15076,12 +15356,12 @@ app.controller("displayController",["$scope","$location",function($scope,$locati
 
 
 
-app.controller("createTestController",["$scope","$resource","localManager","labTests","scanTests","Drugs",
-  function($scope,$resource,localManager,labTests,scanTests,Drugs){
+app.controller("createTestController",["$scope","$resource","localManager","labTests","scanTests","Drugs","dynamicService",
+  function($scope,$resource,localManager,labTests,scanTests,Drugs,dynamicService){
   var user = localManager.getValue("resolveUser");
   var list; 
 
-    var resource = $resource("/user/dynamic-service",null,{createService:{"method": "POST"}});
+    var resource = dynamicService; //$resource("/user/dynamic-service",null,{createService:{"method": "POST"}});
     resource.query(function(data){
       $scope.services = list.concat(data);
     });

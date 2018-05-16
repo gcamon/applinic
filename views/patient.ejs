@@ -521,7 +521,7 @@
                                         <i class="fa fa-user-md"></i> My Doctors
                                         <i class="fa arrow"></i>
                                     </a>
-                                    <ul style="max-height:300px;overflow-y:auto">
+                                    <ul style="max-height:300px;overflow-y:auto" ng-cloak>
                                         <li style="text-align: center;"><input type="" ng-model="filter.doctor_firstname" class="form-contro" placeholder="Filter by name or specialty" style="width: 85%;border: none;padding: 5px 10px;background-color: grey;"></li>
                                         <li ng-repeat= " i in patientsDoctorList | filter: filter.doctor_firstname || filter: filter.doctor_lastname || filter: filter.doctor_specialty || filter: filter.title"  ng-click="userDoctor(i.doctor_id)" style="margin-left: -15px">
                                            <a href="" style="position: relative;" ng-cloak> 
@@ -554,7 +554,7 @@
                                        
                                     </ul>
                                 </li>-->
-                                <li> 
+                                <li ng-cloak> 
                                     <a href="">
                                         <i class="fa icon-pill"></i> Prescription ( {{filteredPrescriptions.length}} )
                                         <i class="fa arrow"></i>
@@ -939,7 +939,7 @@
                     </div>
                     <div class="row">
                         <div class="col-md-12 col-lg-12">                      
-                           <form class="pt-1">
+                           <form class="pt-1" ng-if="!status">
                                <div class="pb-1">
                                    <label>Why do yo want to consult {{docInfo.title}} {{docInfo.firstname}}?</label>
                                    <div class="row">
@@ -1120,7 +1120,16 @@
                                                 
                             <p><i class="fa fa-info"> <small>consultation fees will be charged if your request is granted.</small></i></p> 
                             <button class="btn btn-info" ng-click="validate()" ng-if="patient.sick || patient.pregnant || patient.personal || patient.stroke || patient.ear || patient.eye || patient.teeth || patient.accident" ng-hide="status"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i> {{(loading) ? '' : 'SEND CONSULTATION REQUEST'}}</button>
-                            <i class="fa fa-check" style="color: green" ng-if="status"> {{status}}</i>
+                           
+                            <div class="p-2" ng-if="status">
+                                <i class="fa fa-check" style="color: green;font-size: 18px" ng-if="status"> {{status}} </i>
+                                <div>
+                                    <label>If your request is granted...</label>
+                                </div>
+                                <i class="fa fa-camera text-success"> Video Chat</i> &nbsp;&nbsp;
+                                <i class="fa fa-comment text-success"> Chat</i> &nbsp;&nbsp;
+                                <i class="fa fa-calendar text-success"> Book an appointment</i>
+                            </div>
                             <button class="btn btn-simple text-muted" disabled="disabled" ng-hide="patient.sick || patient.pregnant || patient.personal || patient.stroke || patient.ear || patient.eye || patient.teeth || patient.accident"">SEND CONSULTATION REQUEST</button>        
                         </div>
                     </div>

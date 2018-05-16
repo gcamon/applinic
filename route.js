@@ -1490,9 +1490,11 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
     })
 
     //this route gets the individual prescription for a patient 
-    router.get("/user/pharmacy/get-referral/:refId",function(req,res){
+    router.get("/user/pharmacy/get-referral",function(req,res){
+      console.log("jjaaaaaaaaa");
+      console.log(req.query);
       if(req.user){
-        var toNum = parseInt(req.params.refId)
+        var toNum = parseInt(req.query.refId)
         model.user.findOne({user_id:req.user.user_id},{referral:1,_id:0},function(err,data){
           if(err) throw err;          
           var elemPos = data.referral.map(function(x){return x.ref_id}).indexOf(toNum);
@@ -2331,9 +2333,9 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
 
 
   
-    router.get("/user/laboratory/get-referral/:refId",function(req,res){
+    router.get("/user/laboratory/get-referral",function(req,res){
       if(req.user){
-        var toNum = parseInt(req.params.refId)
+        var toNum = parseInt(req.query.refId)
         model.user.findOne({user_id:req.user.user_id},{referral:1,_id:0},function(err,data){
           if(err) throw err;          
           var elemPos = data.referral.map(function(x){return x.ref_id}).indexOf(toNum);
@@ -2384,9 +2386,9 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
     });
 
 
-    router.get("/user/radiology/get-referral/:refId", function(req,res){
+    router.get("/user/radiology/get-referral", function(req,res){
       if(req.user){
-        var toNum = parseInt(req.params.refId)
+        var toNum = parseInt(req.query.refId)
         model.user.findOne({user_id:req.user.user_id},{referral:1,_id:0},function(err,data){
           if(err) throw err;          
           var elemPos = data.referral.map(function(x){return x.ref_id}).indexOf(toNum);
@@ -5699,9 +5701,9 @@ router.get("/user/patient/get-response",function(req,res){
   }
 })
 
-router.get("/user/get-person-profile/:personId",function(req,res){
+router.get("/user/get-person-profile",function(req,res){
   if(req.user){
-    model.user.findOne({user_id: req.params.personId},function(err,data){
+    model.user.findOne({user_id: req.query.personId},function(err,data){
       if(err) throw err;
       res.send(data);
     })
@@ -6062,9 +6064,9 @@ router.get("/user/rating/:id",function(req,res){
 
 
 
-router.get("/user/center-profile/:id",function(req,res){
+router.get("/user/center-profile",function(req,res){
   if(req.user){
-    model.user.findOne({user_id: req.params.id},{name:1,rating:1,address:1,city:1,country:1,_id:0,phone:1,profile_pic_url:1},function(err,data){
+    model.user.findOne({user_id: req.query.id},{name:1,rating:1,address:1,city:1,country:1,_id:0,phone:1,profile_pic_url:1},function(err,data){
       if(err) throw err;
       res.send(data);
     })
