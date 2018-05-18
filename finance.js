@@ -982,7 +982,6 @@ var basicPaymentRoute = function(model,sms,io,paystack){
   });
 
   router.put("/user/center/billing-verification",function(req,res){
-  	console.log(req.body)
   	if(req.user){
   		var type = (req.user.type === "Radiology") ? req.body.radiology : req.body.laboratory;
   		if(type) {

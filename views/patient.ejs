@@ -556,12 +556,12 @@
                                 </li>-->
                                 <li ng-cloak> 
                                     <a href="">
-                                        <i class="fa icon-pill"></i> Prescription ( {{filteredPrescriptions.length}} )
+                                        <i class="fa icon-pill"></i> Prescription ( {{totalPrescription}} )
                                         <i class="fa arrow"></i>
                                     </a>
                                     <ul>
-                                        <li ng-click="viewPrescription(prescription.doctor_id)" ng-repeat="prescription in filteredPrescriptions">
-                                            <a href="" ng-cloak> {{prescription.title}} {{prescription.doctor_firstname}} {{prescription.doctor_lastname}} ({{prescription.count || 0}}) 
+                                        <li ng-click="viewPrescription(prescription.doctor_id)" ng-repeat="prescription in filteredPrescriptions" >
+                                            <a href="" style="display: block;width: 97%;margin-left: -5px" title="{{(prescription.len > 1) ? prescription.len + ' prescriptions' : prescription.len + ' prescription'}}" class="ellipsis" ng-cloak> {{ prescription.title }} {{ prescription.doctor_firstname }}  ( {{ prescription.len || 0 }} ) 
                                             </a>
                                         </li>                                      
                                     </ul>
@@ -573,7 +573,7 @@
                                     <ul>
                                         <li> 
                                             <a href="" ng-cloak ng-click="viewLabTest()">
-                                                All Tests ( {{labLen}} )
+                                                Received Results ( {{receivedLab}} )
                                             </a> 
                                         </li>
                                         <li> 
@@ -590,7 +590,7 @@
                                     <ul>
                                         <li> 
                                             <a href="" ng-cloak ng-click="viewScanTest()">
-                                                All Tests ( {{radioLen}} )
+                                                Received Results ( {{receivedRadio}} )
                                             </a> 
                                         </li>
                                         <li> 
@@ -1693,8 +1693,8 @@
         </div>
     </div>-->
     <div>
-        <button class="btn btn-info" ng-class="{'dismiss': user.someone}" ng-click="send('inperson')" ng-if="checkLogIn.typeOfUser == 'Patient'">Forward on my behalf</button>
-        <!--<button class="btn btn-info"  ng-click="someone()">Forward on behalf of someone else</button>-->
+        <button class="btn btn-info" ng-class="{'dismiss': user.someone}" ng-click="send('inperson')" ng-if="checkLogIn.typeOfUser == 'Patient'"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i>{{(loading) ? "" : 'Forward on my behalf'}}</button>
+        <button class="btn btn-success"  ng-click="someone()" ng-if="checkLogIn.typeOfUser === 'Patient'">Forward on behalf of someone else</button>
     </div>
     <div ng-if="isToSomeOne || checkLogIn.typeOfUser !== 'Patient'">
         <form>
@@ -1728,7 +1728,7 @@
                 <div class="pb-3">
                     <input type="button" value="Cancel" ng-click="cancel()" class="btn btn-danger" ng-if="checkLogIn.typeOfUser === 'Patient'">
                     
-                    <button type="button" ng-click="send('someone')" class="btn btn-danger"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i>{{(loading) ? "" : 'Send'}}</button>
+                    <button type="button" ng-click="send('someone')" class="btn btn-info"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i>{{(loading) ? "" : 'Send'}}</button>
                     
                     <!--<input type="button" value="New Person Form" ng-click="emp()" class="btn btn-simple" ng-if="isEMP">-->
                 </div>

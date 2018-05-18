@@ -1491,8 +1491,6 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
 
     //this route gets the individual prescription for a patient 
     router.get("/user/pharmacy/get-referral",function(req,res){
-      console.log("jjaaaaaaaaa");
-      console.log(req.query);
       if(req.user){
         var toNum = parseInt(req.query.refId)
         model.user.findOne({user_id:req.user.user_id},{referral:1,_id:0},function(err,data){
@@ -1886,7 +1884,7 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
               title: req.user.title,
               doctor_specialty: req.user.specialty,
               doctor_profile_url: req.user.profile_url,
-              doctor_firstname: req.user.firstname,
+              doctor_firstname: req.user.firstname || req.user.name,
               doctor_lastname: req.user.lastname,
               doctor_address: req.user.address,
               doctor_verified: req.user.verified,   
@@ -2099,7 +2097,7 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
               prescriptionId: req.body.prescriptionId,
               title: req.user.title,
               doctor_specialty: req.user.specialty,
-              doctor_firstname: req.user.firstname,
+              doctor_firstname: req.user.firstname || req.user.name,
               doctor_lastname: req.user.lastname,
               doctor_profile_url: req.user.profile_url,
               doctor_address: req.user.address,   
@@ -3209,7 +3207,6 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
 
     //this route takes care of  un ran test which was forwarded to another center by a center.
     router.post("/user/center/send-test",function(req,res){   
-        console.log(req.body);
         model.user.findOne({user_id: req.body.user_id},{
           diagnostic_center_notification:1,referral:1,address:1,name:1,city:1,country:1,phone:1,user_id:1,presence:1})
         .exec(function(err,result){
@@ -3815,9 +3812,9 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
       }
     })
 
-    router.get("/user/patient/get-centers/:type",function(req,res){
+    router.get("/user/patient/get-centers",function(req,res){
       if(req.user){
-         var type = req.params.type;
+         var type = req.query.type;
          var criteria;
          if(!req.query.city || !req.query.country){
           criteria = {type: type,city:req.user.city,country: req.user.country}
@@ -3829,14 +3826,13 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
           res.send(list)
          })
       } else {
-        res.send("unauthorized access!")
+        res.send("unauthorized access!");
       }
     });
 
-    router.put("/user/patient/get-centers/:type",function(req,res){
-      console.log(req.params)
+    router.put("/user/patient/get-centers",function(req,res){
       if(req.user) {
-
+        console.log(req.body)
         var date = + new Date();
         var refObj = {
           ref_id: req.body.refId,
@@ -3847,7 +3843,7 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
           date: date, 
         }
 
-        var toLower = req.params.type.toLowerCase(); // the lower case was how it saved in the database.
+        var toLower = req.body.type.toLowerCase(); // the lower case was how it saved in the database.
 
         model.user.findOne({user_id:req.body.oldCenterId},{referral:1},function(err,data){
           if(err) throw err;
@@ -3923,7 +3919,7 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
           if(result.presence === true){
             io.sockets.to(result.user_id).emit("notification",{status:true});
           } else {
-            var msgBody = "You have new test request! Visit http://applinic.com/user/" + toLower;
+            var msgBody = "You have new test request! Visit http://applinic.com/login";
             var phoneNunber =  result.phone;
             sms.messages.create(
               {
@@ -3992,7 +3988,7 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
                 throw err;
                 res.end('500: Internal server error')
               }
-              res.send({message: "Success! Investigation has been referred to another center"})
+              res.send({message: "Success! Investigation has been referred to another center",status:true})
             });
 
           });
@@ -4660,8 +4656,8 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
 
   router.put("/user/drug-search/pharmacy/referral",function(req,res){
    if(req.user){
-    console.log(req.body)
-    var phone = req.body.line || req.body.phone;
+    console.log(req.body);
+    var phone = parseInt(req.body.line) || parseInt(req.body.phone);
     var person = (phone) ? {phone: "+" + phone,type:"Patient"} : {user_id: req.user.user_id,type:"Patient"};
     model.user.findOne(person,
       {
@@ -4761,10 +4757,11 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
             provisional_diagnosis: req.body.provisional_diagnosis,
             date: req.body.sent_date,
             prescriptionId: req.body.prescriptionId,
-            doctor_firstname: (req.user.type == "Doctor") ? req.user.firstname : "",
-            doctor_lastname: (req.user.type == "Doctor") ?  req.user.lastname : "",
+            doctor_firstname: req.user.firstname || req.user.name,
+            title: req.user.title,
+            doctor_lastname: req.user.lastname,
             doctor_address: (req.user.type == "Doctor") ?  req.user.address : "",   
-            doctor_id: (req.user.type == "Doctor") ?  req.user.user_id : "",
+            doctor_id: req.user.user_id,
             doctor_work_place: (req.user.type == "Doctor") ?  req.user.work_place : "",
             doctor_city: (req.user.type == "Doctor") ? req.user.city : "",
             doctor_country: (req.user.type == "Doctor") ? req.user.country : "",
@@ -4783,6 +4780,8 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
             prescription_body: req.body.prescription_body,
             ref_id: ref_id,
           }
+
+          console.log(preObj)
           
           var track_record = {
             date: req.body.sent_date,
@@ -4838,6 +4837,30 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
     res.end("Unauthorized access!")
    }
   });
+
+router.post("/user/need-help",function(req,res){
+  if(req.user) {
+    console.log(req.body)
+     var help = new model.needHelp({
+        user_id: req.user.user_id,
+        message: req.body.description,
+        name: (req.user.lastname) ? req.user.title + " " + req.user.firstname + " " + req.user.lastname : req.user.name,
+        phone: req.user.phone
+     });
+
+     help.save(function(err,info){
+      if(err) {
+        res.json({status: false})
+      } else {
+        res.json({status: true});
+      }
+      
+     })
+
+  } else {
+    res.end("unauthorized access!")
+  }
+})
 
 
 //for lab test search
@@ -5789,6 +5812,7 @@ router.get("/user/patient/get-my-doctors",function(req,res){
         if(err) throw err;
         res.send(data);
       });
+      //res.json({doctor_patients_list: req.user.doctor_patients_list});
     } else {
       res.end("Unauthorized access!!")
     }
@@ -5797,10 +5821,11 @@ router.get("/user/patient/get-my-doctors",function(req,res){
 //this route gets all patients accepted doctors. just for other ourposes wihich may no include whether use is presence or not at first.
   router.get("/user/patient/my-doctors",function(req,res){
     if(req.user){
-      model.user.findOne({email: req.user.email},{accepted_doctors:1,_id:0},function(err,data){
+      /*model.user.findOne({user_id: req.user.user_id},{accepted_doctors:1,_id:0},function(err,data){
         if(err) throw err;
         res.send(data);
-      });
+      });*/
+      res.json({accepted_doctors: req.user.accepted_doctors});
     } else {
       res.end("Unauthorized access!!!");
     }

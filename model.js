@@ -526,6 +526,13 @@ var myModel = function () {
 	},{
 		collections: "userinfos"
 	})
+
+	var needHelpchema = Schema({
+		user_id: String,
+		message: String,
+		name: String,
+		phone: String
+	})
 	
 
 	//for patient waiting room
@@ -765,6 +772,7 @@ var myModel = function () {
 	models.geonames = mongoose.model("geonamesinfo",geonameSchema);
 	models.messages = mongoose.model("messageinfo",messageSchema);
 	models.control = mongoose.model("controlinfos",controlSchema);//to be moved to another server
+	models.needHelp = mongoose.model('needhelpinfos',needHelpchema)
 	//models.calling_code = mongoose.model("callingcodeinfos",callingSchema)
 	
 	

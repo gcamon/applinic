@@ -19,9 +19,9 @@
 		</div>
 		<div ng-repeat="person in doctors | filter: doc.firstname"   style="cursor:pointer;padding: 10px;position: relative;" class="clearfix">
 			<img src="{{person.doctor_profile_pic_url}}" style="width: 45px;height:45px;float: left"/>
-			<article style="float: left;padding: 4px 5px;display: inline-block;">
+			<article style="float: left;padding: 4px 15px;display: inline-block;">
 				<strong>{{person.title}} {{person.doctor_firstname}} {{person.doctor_lastname}}</strong>
-				<span style="display: block;">{{person.doctor_specialty}}</span>
+				<span style="display: block;font-size: 12px">{{person.doctor_specialty}}</span>
 				<button class="btn btn-primary" ng-click="selectedDoctor(person)" style="position: absolute; right: 20px;padding: 5px 7px;bottom: 5px"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="person.loading"></i> {{(person.loading) ? "" : (person.message) ? person.message : 'send'}}</button>
 			</article>				
 		</div>

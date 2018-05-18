@@ -9,7 +9,12 @@
         display:none;
     }
 
-    #printSection {
+    div {
+        width: 100%;
+    }
+
+
+    #printSection{
       margin-top: 70px;
       width: 960px
     }

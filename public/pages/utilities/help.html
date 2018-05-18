@@ -20,11 +20,11 @@
 	<div class="font-1_4 pt-0 pl-0">Need Help?</div>	
 	<form class="pt-2">		
 		<div class="col-md-12 col-sm-12 pl-0">
-			<label>Briefly describe what you need *<small>(e.g I am looking for a center for dialysis.)</small></label>
-			<textarea placeholder="Write..." ng-model="user.description" class="form-control col-md-12 col-sm-12 pl-1" style="height: 100px"></textarea>
+			<label>How may we help you <small>(e.g I am looking for a center for dialysis but could not find one.)</small></label>
+			<textarea placeholder="Write..." ng-model="user.description" class="form-control col-md-12 col-sm-12 pl-1" style="height: 300px"></textarea>
 		</div>
 		<div  class="mt-2">		
-			<input type="button" value="submit" class="btn btn-success" ng-click="sendHelp()">
+			<button  class="btn btn-success" ng-click="sendHelp()"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i> {{(loading) ? "" : 'Submit'}} </button>
 		</div>
 	</form>
 </div>

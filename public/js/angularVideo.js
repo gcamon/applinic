@@ -221,7 +221,8 @@
 
 		$rootScope.connectionStatus = false; // use to check when stream is available;
 		
-    controllerSocket.on("reload streams",function(data){
+    cont
+    rollerSocket.on("reload streams",function(data){
     	console.log(data)
     	if(data.userId !== user.user_id) {
     		$rootScope.message = (data.name) ? data.name + " stream is availble now! Click view button." : "Partner stream is now available.";
@@ -1021,8 +1022,14 @@ app.controller("investigationController",["$scope","$http","labTests","scanTests
 
 }]);
 
-app.controller("prescriptionController",["$rootScope","$scope","$window","$http","localManager","Drugs","$resource","ModalService","$resource",
-  function($rootScope,$scope,$window,$http,localManager,Drugs,$resource,ModalService,$resource) {
+app.service("medicalRecordService",["$resource",function($resource){
+  return $resource("/user/get-medical-record");
+}]);
+
+
+app.controller("prescriptionController",["$rootScope","$scope","$window","$http",
+	"localManager","Drugs","$resource","ModalService","$resource","medicalRecordService",
+  function($rootScope,$scope,$window,$http,localManager,Drugs,$resource,ModalService,$resource,medicalRecordService) {
  		
   	var patient = $rootScope.holdPatientData;
   	$scope.isHistory = false;
@@ -1187,6 +1194,7 @@ app.controller("prescriptionController",["$rootScope","$scope","$window","$http"
       });
     }
 
+ 
     $scope.isHistory = false;
   	$scope.getHistory = function() {
   		if($scope.isHistory === false) {
@@ -1195,7 +1203,7 @@ app.controller("prescriptionController",["$rootScope","$scope","$window","$http"
 				$scope.isHistory = true; 
 
 	  		if(!$scope.patientMedicalRecord) {
-		  		var source = $resource("/user/get-medical-record");
+		  		var source = medicalRecordService;//$resource("/user/get-medical-record");
 		  		source.get({patientId: patient.id},function(data){
 	  				$scope.patientMedicalRecord = data.prescriptions;
 		  		});

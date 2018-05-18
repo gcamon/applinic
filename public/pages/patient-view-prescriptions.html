@@ -2,17 +2,21 @@
 <div class="container">
 	<div class="">
 		<div class="row">
-			
-			<div class="col-sm-12 col-md-12 col-lg-12">
-				<ul class="prescription-options">			
+		<div class="col-sm-12 col-md-12 col-lg-12">
+			<div class="row">		
+				<ul class="prescription-options col-sm-12 col-md-7 col-lg-7" style="padding-left: 0">			
 					<li ng-click="recent()" ng-class="{highlight: isRecent === true}">most recent</li>
 					<li ng-click="three()" ng-class="{highlight: isThree === true}">last three months</li>
 					<li ng-click="six()" ng-class="{highlight: isSix === true}">last six months</li>
 					<li ng-click="all()" ng-class="{highlight: isAll === true}">all</li>
 				</ul>
+				<div class="col-sm-12 col-md-5 col-lg-5 prescription-options" style="padding-bottom: 10px">
+					<input type="text" name="" placeholder="Filter by drug name, center name, date sent, date received, etc" ng-model="filterResult" class="form-control" style="width: 90%">
+				</div>
 			</div>
 		</div>
-		<div style="padding: 30px;" class="row card"  ng-repeat="docInfo in prescriptionRecordsResult | orderBy: '-date'" id="{{docInfo.prescriptionId}}">	
+	</div>
+		<div style="padding: 30px;" class="row card"  ng-repeat="docInfo in prescriptionRecordsResult |filter : filterResult | orderBy: '-date'" id="{{docInfo.prescriptionId}}">	
 		    <div class="col-sm-12 col-md-4 col-lg-4">
 		  
 		    	
