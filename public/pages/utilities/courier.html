@@ -35,13 +35,13 @@
 
 
 <div>
-<a href="#{{back}}" class="btn btn-link font-1_2"><i class="fa fa-arrow-left btn btn-simple"> Back</i></a>
+<a href="#{{back}}" class="btn btn-simple"><i class="fa fa-arrow-left"> Back</i></a>
 </div>
 
- <div class="shadow container" style="padding-top:30px;" id="track">
+ <div class="card" style="padding-top:30px;" id="track">
    
 	<div>
-		<h5 style="padding-left: 20px">Courier service</h5>
+		<h4 style="padding-left: 20px" class="mt-0">Courier Service</h4>
 	</div>
 
     <div class="row">		
@@ -135,7 +135,8 @@
 	   			<label>Receiver phone2 (Optional): </label>
 	   			<input type="number" class="form-control" ng-model="user.phone2" placeholder="{{}}">
 	   			<div style="margin: 20px 0px">
-	   			<button class="btn btn-success" ng-click="sendRequest()">Submit</button>
+	   			<button class="btn btn-success" ng-click="sendRequest()" ng-if="!status"> <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i> {{(loading) ? '' : 'Submit'}}</button>
+	   			<b ng-if="status" style="color: green">{{status}}</b>
 	   			</div>
 	   		</form>		
 	    </div>

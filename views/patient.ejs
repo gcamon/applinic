@@ -232,13 +232,16 @@
                                     <ul class="notifications-container noti-style">
                                         <li> <h6 style="text-align: center">Appointment(s)</h6> </li>
                                         <li ng-repeat = "app in allApp" class="msg-drp-list" ng-click= "viewAppointment(app.session_id)">
+
                                             <a href="" class="notification-item">
                                                 <div class="img-col">
                                                     <div class="img" style="background-image: url({{app.profilePic}})"></div>
                                                 </div>
                                                 <div class="body-col">
                                                     <p> <span class="accent" ng-cloak>{{app.title}} {{app.firstname}} {{app.lastname}}</span>
-                                                        <span style="display:block">Hi, you have an appointment with me.</span> </p>
+                                                        <span style="display:block">Hi, you have an appointment with me.</span>
+                                                        <span>{{app.date | date: 'fullDate'}} (<b am-time-ago="app.date"></b>)</span>
+                                                    </p>
                                                 </div>
                                             </a>
                                         </li>                                        

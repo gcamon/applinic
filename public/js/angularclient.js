@@ -925,15 +925,15 @@ app.factory("deleteFactory",["$http",function($http){
  Del.prototype.deleteItem = function(url,msg){
   var self = this;
   $http({
-      method  : 'DELETE',
-      url     : url,
-      data    : this, 
-      headers : {'Content-Type': 'application/json'} 
-     })
-    .success(function(data) {
-      if(self.dest !== "patient_notification")
-        alert(msg);
-    });                  
+    method  : 'DELETE',
+    url     : url,
+    data    : this, 
+    headers : {'Content-Type': 'application/json'} 
+   })
+  .success(function(data) {
+    if(self.dest !== "patient_notification")
+      alert(msg);
+  });                  
  }
 
  return Del;
@@ -5510,10 +5510,12 @@ app.controller("patientNotificationController",["$scope","$location","$http","$w
     if(elementPos !== -1) {
       templateService.singleView = [data[elementPos]]
     }
+
+    deleteByRefId(id,"/user/patient/delete-one/refId");
     $location.path(absPath)
   }
 
-  $scope.viewNoteRadio = function(){
+  $scope.viewNoteRadio = function(id){
     //deleteFomBackEnd();
     $scope.isView = true;
     //deleteFomBackEnd();
@@ -5525,25 +5527,33 @@ app.controller("patientNotificationController",["$scope","$location","$http","$w
     if(elementPos !== -1) {
       templateService.singleView = [data[elementPos]]
     }
+    deleteByRefId(id,"/user/patient/delete-one/refId");
     $location.path(absPath)
   }
 
   $scope.viewNotePharmacy = function(id){
     var prescriptions = templateService.holdPrescriptions;
+     $http({
+      method  : 'GET',
+      url     : "/user/patient/get-prescription/track-record",        
+      headers : {'Content-Type': 'application/json'} 
+      })
+    .success(function(data) {
+      templateService.holdTrackRecord = data;
+    });
+
     var presIndex = prescriptions.map(function(x){return x.prescriptionId}).indexOf(id)
     var found = prescriptions[presIndex];
     templateService.holdPrescriptionForTrackRecord = found;
     $location.path("/patient/view-prescription-history/" + id)    
-    deleteFomBackEnd(id,prescriptions);
+    deleteByNoteId(id,"/user/patient/delete-one/noteId");
     $scope.isView = true;
   }
 
  
   function getMessages() {
-
     var note = $resource("/user/patient/get-message");
     note.query(function(data){
-      console.log(data)  
       var len = data.length;
       if(len > 0){
         $rootScope.msgLen = templateService.holdMsgLen(len);   
@@ -5623,7 +5633,23 @@ app.controller("patientNotificationController",["$scope","$location","$http","$w
       var del = new deleteFactory(id,"patient_notification");
       del.deleteItem("/user/patient/delete-one/appointment","");//deletes notification once it is viewed.
       if($rootScope.noteLen > 0)
-        $rootScope.noteLen--
+        $rootScope.noteLen--;
+  }
+
+  function deleteByRefId(id,field){
+    var msg = "Notification deleted";
+    var del = new deleteFactory(id,"patient_notification");
+    del.deleteItem("/user/patient/delete-one/refId","");//deletes notification once it is viewed.
+    if($rootScope.noteLen > 0)
+      $rootScope.noteLen--;    
+  }
+
+  function deleteByNoteId(id,field) {
+    var msg = "Notification deleted";
+    var del = new deleteFactory(id,"patient_notification");
+    del.deleteItem("/user/patient/delete-one/refId","");//deletes notification once it is viewed.
+    if($rootScope.noteLen > 0)
+      $rootScope.noteLen--;    
   }
 
 
@@ -5632,7 +5658,6 @@ app.controller("patientNotificationController",["$scope","$location","$http","$w
 
   mySocket.on("conversation status",function(data){
     alert(data.firstname + "says yes");
-    console.log(data)
     templateService.playAudio(1);
     if(data.type === "Video Call"){
       $scope.holdVideoCallResponse.unshift(data);
@@ -6064,8 +6089,6 @@ app.controller("patientViewRequestController",["$scope","$location","$http","$ro
  $scope.patientName = name.firstname;
  var elementPos;
   for(var i = 0; i < msgData.length; i++){
-    console.log(templateService.holdId)
-    console.log(templateService.holdMsg)
     if(msgData[i].service_access && !msgData[i].reason && msgData[i].user_id === templateService.holdId && !msgData[i].doctor_id) {
       elementPos = i;      
       $scope.reqInfo = msgData[i];
@@ -7027,6 +7050,8 @@ app.controller("selectedAppointmentControllerForPatient",["$scope","$location","
     $scope.notDeleted = true;
     $scope.delbtn = "Delete appointment";
 
+    console.log(appData)
+
     $scope.deleteApp = function(){
       var remove = appData.splice(elementPos,1);
       var len = appData.length;
@@ -7340,8 +7365,8 @@ app.service('patientRedirectTestService',["$resource",function($resource){
 
 //controller for patient who wish to redirect an investigation another center.
 app.controller("patientRedirectTestController",["$scope","$location","$resource","$window",
-  "templateService","patientRedirectTestService","$rootScope",
-  function($scope,$location,$resource,$window,templateService,patientRedirectTestService,$rootScope){ 
+  "templateService","patientRedirectTestService","$rootScope","ModalService",
+  function($scope,$location,$resource,$window,templateService,patientRedirectTestService,$rootScope,ModalService){ 
   $scope.criteria = {};
 
   var resource = patientRedirectTestService; //$resource("/user/patient/get-centers",{sendTest:{method:"PUT"}});
@@ -7398,6 +7423,20 @@ app.controller("patientRedirectTestController",["$scope","$location","$resource"
       
     })
     
+  }
+
+  $scope.sendChat = function(center) {
+    console.log(center)
+    center.id = center.user_id // just to set common property for the modal and controller using this resource.
+    $rootScope.holdcenter = center;
+    ModalService.showModal({
+        templateUrl: 'quick-chat.html',
+        controller: 'generalChatController'
+    }).then(function(modal) {
+        modal.element.modal();
+        modal.close.then(function(result) {             
+        });
+    });
   }
 
   getData();
@@ -7695,7 +7734,7 @@ app.controller("prescriptionTemplateController",["$scope","$rootScope","$locatio
 
     var hasBeenSentTo = {};
 
-    $rootScope.back = $location.path();
+    $rootScope.path = $location.path();
 
     $http({
       method  : 'GET',
@@ -7812,11 +7851,14 @@ app.controller("prescriptionTemplateController",["$scope","$rootScope","$locatio
 
 }]);
 
-app.controller("trackedPrescriptionController",["$scope","$rootScope","$location","templateService",
-  function($scope,$rootScope,$location,templateService){
+app.controller("trackedPrescriptionController",["$scope","$rootScope","$location","templateService","localManager",
+  function($scope,$rootScope,$location,templateService,localManager){
   $scope.presInfo = templateService.holdPrescriptionForTrackRecord;
   $scope.trackedPrescription = templateService.holdTrackRecord;
-  $rootScope.goBack = $rootScope.back;
+  //$rootScope.goBack = $rootScope.back;
+
+  $rootScope.path = $location.path() //localManager.setValue('currentPageForPatients',$location.path());
+
   //this fn is invoked when patient wish to forward prescription by himself to a phamarcy.
   $scope.forwardPrescription = function (prescription) {       
     /*templateService.holdPrescriptionToBeForwarded = prescription;
@@ -8010,7 +8052,7 @@ app.controller("patientSearchForPharmacyController",["$scope","$location","$http
 
     
     $scope.goBack = function() {
-      $location.path(localManager.getValue("currentPageForPatients"));
+      $location.path($rootScope.path);
     }
 
     $scope.sendChat = function(center) {
@@ -14771,8 +14813,10 @@ function($scope,$rootScope,$location,$http,localManager,Drugs,cities){
  
   $scope.sendRequest = function(){
     if($scope.user.phone1 !== undefined && $scope.user.phone1 !== "") {
+
       var check = confirm("Our courier service will cost your some extra charges outside the cost of actual drugs. Do you understand?");
       if(check) {
+        $scope.loading = true;
         $scope.user.address = ($scope.user.location !== "" && $scope.user.location !== undefined) ? $scope.user.location : "" + 
         $scope.presInfo.patient_address + "," + $scope.presInfo.patient_city + "," + $scope.presInfo.patient_country;
 
@@ -14786,7 +14830,13 @@ function($scope,$rootScope,$location,$http,localManager,Drugs,cities){
           headers : {'Content-Type': 'application/json'} 
           })
         .success(function(data) {
-          alert(data.message);
+          $scope.loading = false;
+          if(data.status) {
+            $scope.status = 'Courier request sent!';         
+            alert(data.message);
+          } else {
+            alert("OOps! something went wrong while sending your request. Try again")
+          }
         });
       } 
     } else {

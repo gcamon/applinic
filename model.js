@@ -118,6 +118,7 @@ var myModel = function () {
 		city:String,
 		country: String,
 		ref_id: Number,
+		phone: String,
 		prescriptionId: Number
 	});
 

@@ -1628,10 +1628,11 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
     //where all his prescriptions has been send sent to.
     router.get("/user/patient/get-prescription/track-record",function(req,res){
       if(req.user){
-        model.user.findOne({user_id:req.user.user_id},{prescription_tracking:1,_id:0},function(err,data){
+        /*model.user.findOne({user_id:req.user.user_id},{prescription_tracking:1,_id:0},function(err,data){
           console.log(data.prescription_tracking);
           res.send(data.prescription_tracking);
-        })
+        })*/
+        res.json(req.user.prescription_tracking)
       } else {
         res.end("Unauthorized access");
       }
@@ -1939,7 +1940,8 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
             diagnostic_center_notification:1,
             city:1,
             country:1,
-            presence:1
+            presence:1,
+            phone: 1
 
           }).exec(function(err,pharmacy){          
             if(err) throw err;
@@ -1990,6 +1992,7 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
                 ref_id: ref_id,
                 city: pharmacy.city,
                 country: pharmacy.country,
+                phone: pharmacy.phone,
                 prescriptionId: req.body.prescriptionId
               };
 
@@ -2504,7 +2507,7 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
     router.post("/user/doctor/patient-session",function(req,res){
       if(req.user){ 
 
-        var session_id = Math.floor(Math.random() * 99999999999999922888);
+        var session_id = parseInt(Math.floor(Math.random() * 999999) + "" + Math.floor(Math.random() * 999999));
         
         var connectObj = {
           presenting_complain: req.body.complain,
@@ -2537,7 +2540,8 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
           req.body.appointment.lastname = req.user.lastname;
           req.body.appointment.address = req.body.appointment.address || createAddress;
           req.body.appointment.title = req.user.title;
-          req.body.appointment.profilePic = req.user.profile_pic_url;   
+          req.body.appointment.profilePic = req.user.profile_pic_url;
+          req.body.appointment.session_id = session_id;  
           model.user.findOne({user_id:req.body.patient_id},{appointment:1,profile_pic_url:1,firstname:1,lastname:1,name:1}).exec(function(err,result){            
             if(err) throw err;
             result.appointment.unshift(req.body.appointment);
@@ -4790,6 +4794,7 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
             ref_id: ref_id,
             city: pharmacy.city,
             country: pharmacy.country,
+            phone: pharmacy.phone,
             prescriptionId: req.body.prescriptionId
           };
 
@@ -5334,11 +5339,9 @@ router.post("/user/courier",function(req,res){
     //console.log(req.body);
     var courier = new model.courier(req.body);
     courier.save(function(err,info){
-      console.log("courier saved!");
-      console.log(courier);
       io.sockets.to("couriergroup").emit("receiver courier",req.body);
     });
-    res.send({status:true,message:"Sent successfully! Admin will contact you soon for cost and billing."});
+    res.send({status:true,message:"Sent successfully! Admin will contact you soon for cost and billing.",status: true});
   } else {
     res.send("unauthorized access!");
   }
@@ -5530,39 +5533,83 @@ router.put("/patient/get-prescription/track-record/em",function(req,res){
 
 /********** All delete route *******/
 
-router.delete("/patient/delete-one",function(req,res){
-  var projection = {};
-  projection[req.body.dest] = 1;
-  var del = new deleteItem(req.body.item,req.user.user_id);
-  del.DeleteByUserId(model,projection);
-  res.send("deleted");
+router.delete("/user/patient/delete-one",function(req,res){
+  if(req.user) {
+    var projection = {};
+    projection[req.body.dest] = 1;
+    var del = new deleteItem(req.body.item,req.user.user_id);
+    del.DeleteByUserId(model,projection);
+    res.send("deleted");
+  } else {
+    res.end("unauthorized access!");
+  }
+});
+
+router.delete("/user/patient/delete-one/refId", function(req,res){
+  if(req.user){
+    console.log(req.body)
+    var projection = {};
+    projection[req.body.dest] = 1;
+    var del = new deleteItem(req.body.item,req.user.user_id);
+    del.DeleteByRefId(model,projection);
+    res.send("deleted");
+  } else {
+    res.end("unauthorized access!")
+  }
+});
+
+router.delete("/user/patient/delete-one/noteId", function(req,res){
+  if(req.user){
+    console.log(req.body)
+    var projection = {};
+    projection[req.body.dest] = 1;
+    var del = new deleteItem(req.body.item,req.user.user_id);
+    del.DeleteByNoteId(model,projection);
+    res.send("deleted");
+  } else {
+    res.end("unauthorized access!")
+  }
+})
+
+
+
+router.delete("/user/patient/delete-one/appointment",function(req,res){
+  if(req.user) {
+    console.log(req.body)
+    var projection = {};
+    projection[req.body.dest] = 1;
+    var del = new deleteItem(req.body.item,req.user.user_id);
+    del.DeleteBySessionId(model,projection);
+    res.send("deleted");
+  } else {
+    res.end("unauthorized access!");
+  }
 });
 
 
-router.delete("/patient/delete-one/appointment",function(req,res){
-  var projection = {};
-  projection[req.body.dest] = 1;
-  var del = new deleteItem(req.body.item,req.user.user_id);
-  del.DeleteBySessionId(model,projection);
-  res.send("deleted");
-});
-
-
-router.delete("/patient/delete-many",function(req,res){
-  console.log(req.body);
-  var projection = {};
-  projection[req.body.dest] = 1;
-  var del = new deleteItem(req.body.item,req.user.user_id);
-  del.DeleteAll(model,projection);
-  res.send("deleted");
+router.delete("/user/patient/delete-many",function(req,res){
+  if(req.user) {
+    console.log(req.body);
+    var projection = {};
+    projection[req.body.dest] = 1;
+    var del = new deleteItem(req.body.item,req.user.user_id);
+    del.DeleteAll(model,projection);
+    res.send("deleted");
+  } else {
+    res.end("unauthorized access!")
+  }
 });
 
 router.delete("/user/delete-all-chat",function(req,res){
-  var projection = {};
-  projection[req.body.dest] = 1;
-  var del = new deleteItem(req.body.item);
-  del.deleteAllChat(model,projection);
-  res.send("deleted");
+  if(req.user) {
+    var projection = {};
+    projection[req.body.dest] = 1;
+    var del = new deleteItem(req.body.item);
+    del.deleteAllChat(model,projection);
+    res.send("deleted");
+  } else {
+    res.end("unauthorized access!")
+  }
 });
 
 

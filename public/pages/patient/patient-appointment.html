@@ -19,14 +19,16 @@
 </div>-->
 
 <div class="container" style="line-height: 30px" ng-if="notDeleted === true">
-    <div class=" card p-2">
+    <div class=" card card-center-1 p-2">
 	<h4 class="font-1_7 mt-0">My appointment</h4> <hr>
-	
-	<span class="font-1_4"><strong>Doctors name: </strong> {{appointment.title}} {{appointment.firstname}} {{appointment.lastname}} </span>
-
-	<h6 class="text-muted mt-1">Appointment description</h6>
 	<div>
-		<span><strong>Date of appointment </strong> : {{appointment.date | date : "mediumDate"}}</span>
+		<span><strong>Appointment with</strong> : {{appointment.title}} {{appointment.firstname}} {{appointment.lastname}} </span>
+	</div>
+	<div>
+		<span><strong>Appointment type </strong> : Meet-In-Person appointment</span>
+	</div>
+	<div>
+		<span><strong>Date of appointment </strong> : {{appointment.date | date : "fullDate"}}</span> ( <span am-time-ago="appointment.date"></span> )
 	</div>
 	<div>
 		<span><strong>Time of appointment </strong> : {{appointment.time | date : "mediumTime"}}</span>
