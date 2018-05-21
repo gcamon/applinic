@@ -600,7 +600,8 @@ with just few clicks without having to ask around or wonder where to find your n
             </div>
              <div  style="padding: 20px;margin-bottom: 20px;font-size: 14px"> 
                 <p>Showing {{searchResult.length}} result(s) for <b>{{user.item}}</b> in <b>{{user.city}}</b> category <b>{{user.category}}</b></p> 
-                <div ng-repeat="found in searchResult" style="padding: 5px; max-height: 800px;overflow-y: auto">
+                <div style="padding-right: 5px"><input type="text" class="form-control" placeholder="filter by name, address, etc" ng-model="filt" name=""></div>
+                <div ng-repeat="found in searchResult | filter : filt" style="padding: 5px; max-height: 800px;overflow-y: auto">
                     <span ng-bind-html = "found.msg" class="text-info"></span>
                     <strong style="display: block;max-width: 80%;color: green">{{found.firstname}} {{found.lastname}} {{found.name}}</strong>
                     <span style="display: block;" ng-if="found.specialty">{{found.specialty}}</span>
