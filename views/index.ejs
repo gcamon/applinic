@@ -40,7 +40,7 @@
         }
 
         .dropdown-menu {
-            width:270px!important;
+            width:330px!important;
         }
 
         .list-group-item{
@@ -314,15 +314,9 @@ font-weight:600;}
 
   <div style="background-color: #fff;width: 80%;position: absolute;bottom:0;left: 10%;height: 100px;border-top-left-radius:2px;border-top-right-radius: 2px;padding: 15px;z-index: 2" ng-controller="hompageController">
     
-        <form>
+        <form ng-cloak>
             <div class="row">
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <!--<input type="text" class="form-control" ng-model="item" style="padding: 15px 10px" placeholder="Drug / Test / Specialty">-->
-                        <input type="text" class="form-control" ng-model="user.item" style="padding: 15px 10px" name="states" placeholder="Drug / Test / Specialty" uib-typeahead="item.name for item in itemList | filter:$viewValue | limitTo:15">
-                    </div>
-                </div>
-                <div class="col-md-4">
+               <div class="col-md-4">
                     <div class="form-group">
                         <!--<input type="text" class="form-control" ng-model="category" style="padding: 15px 10px" name="states"  placeholder="Category" uib-typeahead="category for category in categories | filter:$viewValue | limitTo:15">
                         <span ng-cloak>{{getCategory(category)}}</span>-->
@@ -338,6 +332,13 @@ font-weight:600;}
                         </select>
                     </div>
                 </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <!--<input type="text" class="form-control" ng-model="item" style="padding: 15px 10px" placeholder="Drug / Test / Specialty">-->
+                        <input type="text" class="form-control" ng-model="user.item" style="padding: 15px 10px" name="states" placeholder="{{itemName}}" uib-typeahead="item.name for item in itemList | filter:$viewValue | limitTo:15">
+                    </div>
+                </div>
+               
                 <div class="col-md-3">
                     <div class="form-group">
                         <input type="text" class="form-control"  style="padding: 15px 10px" name="states" type="text" placeholder="City" ng-model="user.city" uib-typeahead="city for city in cities | filter:$viewValue | limitTo:15">

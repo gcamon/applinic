@@ -16122,28 +16122,37 @@ app.controller("hompageController",["$scope","scanTests","cities","labTests","Dr
 
   $scope.itemList = [];
   $rootScope.user = {}
- 
- 
+  
+  $scope.itemName = "Drug / Test / Specialty / Disease"
+
   $scope.$watch('user.category',function(newVal,oldVal){
     if(newVal) {
       switch(newVal) {
         case 'Doctor':
           $scope.itemList = [];
+          $scope.itemName = "Enter Specialty";
         break;
         case 'Pharmacy':
           $scope.itemList = Drugs;
+          $scope.itemName = "Enter drug name";
         break;
         case "Laboratory":
-          $scope.itemList = labTests.listInfo.concat(labTests.listInfo2,labTests.listInfo3,labTests.listInfo4,labTests.listInfo5,labTests.listInfo6,labTests.listInfo7);
+          $scope.itemList = labTests.listInfo.concat(labTests.listInfo2,labTests.listInfo3,
+            labTests.listInfo4,labTests.listInfo5,labTests.listInfo6,labTests.listInfo7);
+          $scope.itemName = "Enter test name";
         break;
         case 'Radiology':
-          $scope.itemList = scanTests.listInfo1.concat(scanTests.listInfo2,scanTests.listInfo3,scanTests.listInfo4,scanTests.listInfo5,scanTests.listInfo6);
+          $scope.itemList = scanTests.listInfo1.concat(scanTests.listInfo2,scanTests.listInfo3,
+            scanTests.listInfo4,scanTests.listInfo5,scanTests.listInfo6);
+          $scope.itemName = "Enter test name";
         break;
         case 'Special Center':
           $scope.itemList = [];
+          $scope.itemName = "Enter keyword ( e.g Kidney failure. )"
         break;
         case 'Skills & Procedures':
           $scope.itemList = [];
+          $scope.itemName = "Enter procedure";
         break;
         default:
         break;
