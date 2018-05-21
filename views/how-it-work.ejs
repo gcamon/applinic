@@ -6,20 +6,23 @@
     <link rel="apple-touch-icon" sizes="76x76" href="assets/img/apple-icon.png">
     <link rel="icon" type="image/png" href="assets/img/favicon.png">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-    <title></title>
+    <title>APPLINIC</title>
     <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no' name='viewport' />
     <!--     Fonts and icons     -->
     <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700,200" rel="stylesheet" />
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" />
+    <!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" />-->
+    <link rel="stylesheet" href="/assets/css/vendor.css">
     <!-- CSS Files -->
-    <link href="/assets/css/my-edit.css" rel="stylesheet" />
-    <link href="assets/css/bootstrap.min.css" rel="stylesheet" />
-    <link href="assets/css/now-ui-kit.css" rel="stylesheet" />
-     <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+    <link href="/assets/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="/assets/css/now-ui-kit.css" rel="stylesheet" />
+     <link href="/assets/css/my-edit.css" rel="stylesheet" />
+      <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+    <!-- CSS Just for demo purpose, don't include it in your project -->
+    <link href="/assets/css/demo.css" rel="stylesheet" />
 
     <style>
          body {
-            font-family: 'Open Sans', sans-serif;
+            line-height: 30px;
          }
 
         .card-title {
@@ -37,6 +40,15 @@
         .input-group-addon{
             border-radius:0;
             padding:0;
+        }
+
+        .title{font-size:1.2em;
+        font-weight:600;}
+
+        .list-group-item{
+            font-size: .8em;
+            padding: 10px 10px 10px 5px;
+            margin: 0;
         }
     </style>
 </head>
@@ -56,131 +68,166 @@
 
     
 <div class="row">
-    <div class="col-md-3 col-sm-12 col-xs-12 no-display">
-         <div class="list-group" style="background:transparent; border:0; position:fixed; width:70%;">
- <a href="#" class="list-group-item list-group-item-action" style="font-size:1.7em; font-weight:300;">TABLE OF CONTENTS</a>
-  <a href="#introduction" class="list-group-item list-group-item-action">Introduction</a>
-  <a href="#introduction" class="list-group-item list-group-item-action">Getting started</a>
-  <a href="#patients" class="list-group-item list-group-item-action">Patients</a>
-  <a href="#doctors" class="list-group-item list-group-item-action">Doctors</a>
-  <a href="#session" class="list-group-item list-group-item-action">session</a>
-  <a href="#pharma" class="list-group-item list-group-item-action">Pharmaceutical centers</a>
-  <a href="#diagnostic" class="list-group-item list-group-item-action">Diagnostic centers</a>
-  <a href="#wallet" class="list-group-item list-group-item-action">Payments and wallet</a>
-</div>
+      <!-- <div class="col-md-3 col-sm-12 col-xs-12 no-display">
+             <div class="list-group" style="background:transparent; border:0; position:fixed; width:70%;">
+     <a href="#" class="list-group-item list-group-item-action" style="font-size:1.7em; font-weight:300;">TABLE OF CONTENTS</a>
+      <a href="#introduction" class="list-group-item list-group-item-action">Introduction</a>
+      <a href="#introduction" class="list-group-item list-group-item-action">Getting started</a>
+      <a href="#patients" class="list-group-item list-group-item-action">Patients</a>
+      <a href="#doctors" class="list-group-item list-group-item-action">Doctors</a>
+      <a href="#session" class="list-group-item list-group-item-action">session</a>
+      <a href="#pharma" class="list-group-item list-group-item-action">Pharmaceutical centers</a>
+      <a href="#diagnostic" class="list-group-item list-group-item-action">Diagnostic centers</a>
+      <a href="#wallet" class="list-group-item list-group-item-action">Payments and wallet</a>
     </div>
-      <div class="col-md-8 col-sm-12 col-xs-12 card">
+        </div>-->
+        <div  class="card p-2" style="font-size: 14px;width:70%;margin:0 auto">  
       
           <div class="container" style="padding-top:3em;">
-<h4 id="introduction" class="display-5">INTRODUCTION</h4><div class="separator01 separator-primary"></div><br>
-Imagine when you are very sick and you’d sent to your doctor a prescription request. <br>How would you feel having to refresh pages to see whether your doctor has responded? Boring right?  Wouldn’t be nice the response comes and notify you in real time without stress. 
-Applinic is an online platform where patients meet their doctors, interact with each other. The system is equipped with the services of diagnostic centers and pharmaceutical center. <br>Applinic ensures paperless medical records kept in our high end database. Built on top real time technology, its activities are based on real time communication which is an effective approach to medical needs.<br> Emergency health care needs are taken care of with our high engine backend you make use of your medical information as it happened in time.
-<br><br><b>Getting started:</b>
-If you have not registered held on to <a href="/signup">SIGN UP</a> to create account. <br>Phone number is used for verification purposes. Please make sure you have a working phone number. If you are registering as a doctor it will take more additional step to verify your qualification with the appropriate body. <br>Your account creation will be pending  determined by the outcome of the verification exercise. <br>You will be notified on the outcome of your qualification verification.
+<h2  class="display-5">HOW IT WORK</h2><br>
+<div class="list-group">
+     <a href="#" class="list-group-item list-group-item-action" style="color:blue">TABLE OF CONTENTS</a>
+      <a href="#introduction" class="">Introduction</a>
+      <a href="#introduction" class="">Getting started</a>
+      <a href="#patients" class="">Patients</a>
+      <a href="#doctors" class="">Doctors</a>
+      <a href="#session" class="">Session</a>
+      <a href="#pharma" class="">Pharmaceutical centers</a>
+      <a href="#diagnostic" class="">Diagnostic centers</a>
+      <a href="#ewallet" class="">Payments and wallet</a>
+      <a href="#communication" class="">Communication on Applinic</a>
+</div>
+<div id="introduction"></div>
+<br><br>
+<h4>Introducton</h4><div class="separator01 separator-primary"></div>
+Applinic is an online platform where patients meet doctors, interact and consult with them, search for and receive services of diagnostic centers and buy drugs from pharmacies, all at discounted prices. 
+Applinic also ensures that records of these treatments are kept for the patient in a secure cloud for future access. Built on cutting edge technology, the functionalities of Applinic are based on real time communication for a more effective approach to online qualitative healthcare.<br>
+Aside medical emergencies, most of the patient’s health care needsand the information resources and functionalities required by the Health Care Providers (HCPs) to deliver efficient health care in a digital age are provided and maintained by our high back end engine and proficient support team. 
 
+<div id="patients"></div>
 <br><br>
 
-<h4 id="patients">PATIENTS</h4><div class="separator01 separator-primary"></div>
-Patients can sign up a dashboard will be created for the patient to manage his/her account. Dashboard has the utilities to access all medical needs. For example, patient can right from the dashboard find a doctor within any city, or table complain if need a doctor.  Patient can get a doctor I two ways;
-<br>-Go to   the menu icon on the top left and select find a doctor, enter preferred city you want to search for doctors in.  From the search result you can book (send consultation request) a doctor. Once that is done, the preferred doctor will be notified in real time or not currently online an SMS will be sent to the doctor for consultation request.
-<br>-Use “need a doctor?” utility to table your complaint. Once sent doctors will see it and respond immediately if the complaint is within their field of specialization. This approach is preferred if you do not have a doctor  to contact or you don’t know the right specialist for your case
+<h4>Patients</h4><div class="separator01 separator-primary"></div>
+Patients create Applinic accounts for free. This entitles them to an account dashboard for management of their activities. The patient’s dashboard has the utilities to access all medical needs. For example, from the dashboard, the patient can find a doctor of any specialty, within any city and request for an appointment with him or her for online or onsite consultation. <br> 
 
-<br>Patient can view the prescription history, laboratory history, radiology history.
-<br>Patients can forward their tests to a center.
-<br>Patients can forward their tests result to their doctor (prescription request).
-<br>Patients can forward their prescription to a pharmaceutical center.
-<br>
-<br>Patient can find a labor radio test services in a city. Note the search criteria may be the test to run name or the reference number of a received lab test and the preferred city you wish to find test in.
-<br>Patient can choose to use our courier service. This utility allows you to request for our mobile group within your city to send a list of purchased drug(s) to your home. <a href="#courier">learn more about our courier services</a>
-<br>In case patient gets stuck and needs help from our team maybe to find a center or right specialist or general on how to use certain utilities in our app click “need help? “ and complete the form. Our team will contact you for assistance.
-Communicate with your doctor through live chat or send video call, audio call or in-person meeting request.
-<br><br>
-Once the above request is granted by your doctor, Patient will be notified in real time. Note Doctor can as well initiate a request for in-person appointment with patient. In this case patient will be notified in real time.
-<br>When doctor sends a video call or audio request,<a id="doctors"></a> Patient will be prompted to accept or decline. If accepted the system will automatically redirect patient to the communication page.
+To access this service, go to the “Searches” button on the top right and select –“find a doctor”, enter the specialty, if you know and the preferred city you want the doctor and click search. Other filters include the doctor’s name and Platform ID. From the search result you can book (send consultation request to) a doctor of interest. The doctor will be notified of this request real time if he is online, otherwise an SMS notification will be sent to him. <br>
 
-<br>Should in case you changed your phone please update your existing number to your current phone number in the dashboard. Phone numbers are used for primary authentication and verification in this app.
+The “Need a Doctor” utility is used to submit health complaints to doctors. Images and videos of the complaint may also be uploaded. Doctors specialized in the condition will respond immediately. From there, a relationship can be established, chats can commence and appointments made for consultation either online by video or onsite by in-person meeting. <br> 
+ 
+Patients can also receive drug prescriptions from doctors through the dashboard, search for pharmacies which have the drugs on the platform and forward the prescription to thestore from there. Patients can also receive investigation requests from their doctors through Applinic, search for diagnostic centers providing the services and send the request forms to them.Theresults of the investigations will also be sent to their dashboard and to the referring physician.<br>  
 
+Patients and doctors can choose to use our courier services. This utility allows them place orders for the home/office/hotel/anywhere delivery of the drugs purchased online on Applinic. Learn more about our delivery services.<br>
+ 
+If a customer needs help, for example with finding the right center or specialist or general help on how to use certain utilities, please click the “Need Help?“ button and complete the form. A member of the Applinic team will contact you within 24 hours for support. 
 
+<div id="communication"></div>
 <br><br>
 
-<h4>
-DOCTOR</h4>
+<h4>Communications on Applinic</h4>
 <div class="separator01 separator-primary"></div>
-Doctors can sign up and have their dashboard created. Doctor s qualifications will be verified in line with Nigeria Medical Association (NMA). Doctor will be notified on the outcome of the verification. If verification is successful, doctor will have a working dashboard where he/she can manage their account.<br><br>
-<b style="font-size:2em; font-weight:300;">Doctor can get a patient in two ways:</b>
-<br>
-Head on to “patient waiting room” where patients’ histories (complaints) are listed .Doctor can go through this complains and respond to any that falls within their field of specialization. PLEASE respond to a case you can handle effectively.
-<br>Patient can send a consultation request which you can accept or decline. If accepted, patient will be notified in real time. The acceptance will include the doctor’s consultation fee which will be presented to the patient for the complaint he/she submitted. If patient accepts, Doctor will be notified in real time and the patient will be added to the doctor’s list of patients. <br><b>Consultation fee</b> per patient lasts for a period of three months (3 months).Thereafter, patient will have to renew consultation fee or will not have access to communicate with doctor .Note, the other option is to redirect patient consultation request to another doctor should in case such request does not fall within your specialty.
-<br><br>
-Doctor can write prescription for patient with two options presented for sending such prescription
-<br><b>Send to a preferred pharmacy:</b> In this scenario, the doctor will search and find a pharmacy to send the prescription to. Once sent, the center will receive the prescription in real time. A REFERENCE NUMBER will be issued which identifies the prescription. The patient should have this number for it will be use to find the prescription should the patient visit the pharmaceutical center where the prescription was sent to.
+Patients communicate with doctors basically through the live text chat. They can also send request for audio or video web calls or seek appointment for in-person meeting. 
 
-<br><b>Send to patient:</b> in this case doctor may not have interest in which pharmacy to send prescription or patient demands the prescription sent to his dashboard. Doctor can send prescription to the patient of which patient can find and send the prescription to the patient’s pharmaceutical center of choice.
+If any of the above types of request is granted, the patient will be notified in real time. The doctor can also initiate a request for in-person appointment with patient or for audio or video call. In this case,the patient will be notified. Either case, if any of the parties is offline, a notification SMS will be sent to his registered phone.<br>
 
-<br>
-Doctor can refer patient for a laboratory or radiological tests. This will notify the center in real time about such referral. Reference number will be issued for it to be used to identify the test should the patient visit the center.
-<br>
-Doctor can receive a prescription request from his/her patient. <a id="session"></a>Sometimes, doctor’s patient may have a test result from a center and wish to forward such test to his/her doctor. In this scenario, doctor will receive a prescription request which will include the test result from the patient. Doctor can write prescription for the patient and forward such prescription using the options described above.
 
+
+When the patient or doctor sends an audio or video call request, the other will be prompted to accept or decline. If the request is accepted the system will automatically redirect both to the multimedia communication page.<br> 
+
+All accounts are based on phone numbers. If a customer loses or changeshis phone number, it is pertinent tonotify Applinic or update his profile with the new phone number respectively. This way he is not shut out from privileges and services that require his phone. Phone numbers are the primary means of identification, authentication and verification on the platform. 
+
+
+<div id="doctors"></div>
 
 <br><br>
+<h4 >Doctors</h4><div class="separator01 separator-primary"></div>
+Doctors can sign up to create accounts for free. The acclaimed qualifications of registered doctors will be verified through the appropriate National/International professional bodies before they can practice on Applinic. Successfully verified physicians will be notified and their dashboards activated to manage their patients, their e-wallet and their practice.<br>
 
-<h4>
-SESSION</h4><div class="separator01 separator-primary"></div>
-Session (treatment session) is a strategy adopted to handle doctor-patient interaction. When patient visit you the doctor you can’t really do anything without the patient’s medical folder, right? In Applinic, this is called treatment session. Session is like an empty file brought before you the doctor whenever you are in contact or communication with your patient to keep the notes, investigations and treatments made out of the conversation. Sessions can be created by you or initiated when system identifies one.<br><br> For example, when you had a video or audio call conversation with your patients, all the complains and histories the patient made will be written down by you as the conversations ends system will save these written notes you made from the interaction and this will be regarded as a session. Sessions are usually identified by the date the conversation was held, brief history the patient made. Doctor can also create a session should in case the patient is in physical contact with him. Every session is saved for that patient and doctor can reopen a session at any time. 
-Note in a session doctor can send patient for investigation and importantly those investigations and results that comes with it will be saved in that particular session.
-<br><br><b style="font-size:2em; font-weight:300;">Ways sessions are created:</b>
-<br><b>Doctor initiated session:</b> This means that when doctor is in physical contact with his patient he can click create session .In that session; everything he needs to treat that patient is available. He can note the patient’s response to his question, book appointment with patient for physical examination, refer patient laboratory or radiology test, prescribe for the patient whom he can forward to or pharmacy of choice etc. All within that treatment session which will be save as the doctor wish exit the session page.
+Patients can send consultation requeststo doctors which they (the doctors) can accept or decline. If accepted, patient will be notified in real time. The acceptance will include the doctor’s consultation fee which will be presented to the patient. If patient accepts this fee, the doctor will be notified in real time and the patient’s account will be debited of this amount and his name added to the doctor’s list of patients. From there the management can commence.
+ 
+When a doctor writes a prescription for a patient, there are two options for servicing it:<br>
+ 
+<b>Send to a preferred pharmacy:</b><br>
+In this case, the doctor will search and find a pharmacy to send the prescription to. Once sent, the center will receive the prescription in real time. A Reference Number will be issued which identifies the prescription. The patient should always have this number for it will be used to find the prescription  whenthe patient visitsthe pharmaceutical center the prescription was sent to.<br> 
 
-<br><b>System initiated treatment session:</b> This happens when doctor is not in physical contact (through video or audio call) with his patient. This session can be saved if the doctor needs to. As explained above the session information is saved.
+<b>Send to Patient: </b><br>
+Whenthe doctor does not have particular interest in the pharmacy for servicing the prescription, he can send the prescription to the patient who may forward it to his pharmaceutical center of choice.<br>
+ 
+Doctors can refer patients for laboratory and or radiological investigations. This will notify the center in real time about the request. Reference number will be issued for the identification of the test when the patient arrives at the center. 
+The Frequently Asked Questions (FAQs) and Explanatory Palettes in the doctors’ dashboard provides all the explanation and information the doctor needs to use the platform for service practice and business satisfactorily.
 
-<br><br>Please note sessions are never created when chatting with patient. I this platform, chats are just primary line of communication and sessions are only created for doctor – patient interactions but not with other interactions like center-patient interactions.
-Doctor can add new patient if the patient is not registered already. This approached if for emergency and only used for attending to patient who is not in Applinic .Once this method is used a temporary profile is created for that patient will last only for one month. Within this period, you can send prescription only to this patient until patient updates its profile to have full access.
-<br><br><b>BENEFITS:</b>
-Doctor has 5% commission from the total cost. All prescriptions written by<a id="pharma"></a> a doctor follows that doctor till the point of purchase of such drug likewise lab and radio test referred by the doctor. This mean that doctor will be credited anytime a prescription written by him or lab or radio test he referred is attended to regardless the pharmaceutical and diagnostic center that attended to the referral. As long as the patient buys through our platform doctor’s commission will never seize to come.
+<div id="session"></div>
+<br><br>
+
+<h4>Sessions</h4><div class="separator01 separator-primary"></div>
+Sessions (treatment sessions) refer to periods of doctor-patient interactions for the management of specific conditions. Each session contains chats, diagnostic investigation results, prescriptions and doctors notes. It is the equivalent of patients’ case note in the hospital.<br>
+
+Sessions can be created by the doctor or initiated when the application matches a patient with one.
+
+Sessions are usually identified by the date the conversation was initiated. Every session is auto-saved in the patients account for future reference. Only the consulting physician and patient can see the sessions they had. Doctors managing the same patient will see their sessions with him but not that with other doctors except the patient grants them access through an OTP. <br>
+
+<b>Creation of Sessions</b><br>
+During a physical or online consultation, the doctor cancreate a session by clicking the session button. Most tools needed for the consultation are available on the doctor’s dashboard for his use. He can take notes, book appointments, refer patients for laboratory or radiological investigations and write prescriptions.<br> 
+
+Note that sessions are not created when the patient initially chats with doctor in a quest for consultation. Chat is the primary line of communication.Sessions arecreated by the doctor when he accepts a patient’s request for consultation.
+A doctor can create a new patient for consultation from his dashboards if the patient was not previously registered.This registration would be temporal until the patient updates his profile by providing other required mandatory profile information. In the interim, the doctor will be able to use all the available tools for his consultation.
 
 
-<br>
+<div id="pharma"></div>
+<br><br>
 
-<h4>
-PHARMACEUTICAL CENTER</h4><div class="separator01 separator-primary"></div>
-Registered pharmaceutical center plays the role of receiving request either from patients, doctors, or other center for purchase of drugs.<br>
-Center can find patient’s prescription using the reference number given to patient.<br>
-Center can forward prescription to another center if they don’t sell all or any of the prescriptions.<br>
-Center can add new patient (if not registered yet) that wants to purchase drug and also wish to have his/her drug history saved with us.<br>
-Center can search to find a registered patient using his PHONE<a id="diagnostic"></a> NUMBER and add to attendance for whom to administer drug to. <br>
+<h4>Pharmaceutical Centers</h4><div class="separator01 separator-primary"></div>
+Interested certified pharmacies can partner with Applinic by creating free accounts on the platform to service patients and sell pharmaceutical products. This can happen only after their verification. Following registration, the center will receive a call or notification on the verification date. 
+Successfully verified centers will be activated on the platform. This will create pharmacy dashboard with an inventory for products population and electronic wallet for receiving payments.  
+Partnering pharmaceutical centers operate by servicing electronic prescriptions and product purchase requests from doctors, patients and other health providers. Each e-prescription or request has a unique Reference ID the pharmacy will use to identify it on the platform. <br>
+Patients pay through their e-wallet and the pharmacy account is credited instantly before the drug is dispensed. 
+Pharmacies who are out of stock of requested drugs may forward the prescription to other centers.<br>
 
-
-<br>
-
-<h4>
-DIAGNOSTIC CENTER	</h4><div class="separator01 separator-primary"></div>
-Registered laboratory center plays the role of receiving request either from patients, doctors, or other center for purchase of drugs.<br>
-Center can find patient’s lab test using the reference number given to patient.<br>
-Center can forward lab test to another center if they don’t sell all or any of the laboratory test.<br>
-Center can add new patient (if not registered yet) that <a id="wallet"></a>wants to run a test(s) and also wish to have his/her drug history saved with us.<br>
-Center can search to find a registered patient using his PHONE NUMBER and add to attendance for whom to run test for. <br>
+Customers who don’t have Applinic accounts but desire to register one or to use the application to save their prescriptions can be assisted by the partnering pharmacies. Pharmacies can create accounts for new patients and customers before selling products to them.
+They can also search for registered patients using their phone or Registration number before serving them. 
+ 
     
-    
-<br>
+<div id="diagnostic"></div>  
+<br><br>
 
-<h4>
-PAYMENT AND WALLET</h4><div class="separator01 separator-primary"></div>
-<b>Fund wallet:</b>
-Applinic is secure site information on our site are encrypted. Users can pay using their debit card or pay manually through banks.<br>
-When paid manually, a voucher pin will be given which user will use to credit his e-wallet
-When patients’ fund their wallet, the money is kept with us this will be used run all transactions and pay for services. Note paying for services you get a discount from the total cost of such service as opposed to paying cash which may not amount to the benefit. For all payment made, two factor authentication will be made to verify if the patient is aware of such transaction. This means that an OTP will usually be sent to payment to confirm payment before patient’s wallet will be debited.
-<br><b>Fund transfer:</b>
-Applinic comes with this utility to transfer fund to another user as long as amount to transfer is available in your e-wallet. This is useful in emergency situations or where registered user needs fund in the e-wallet to access medical services.
-<br><b>Cash Out:</b>
-This service is available for doctors, diagnostic centers and pharmaceutical centers. User can request to withdraw from the e-wallet. Note cash out request may take up to 48 hours for verification before requester account is credited.
- <br><br>
+<h4>Diagnostic Centers</h4><div class="separator01 separator-primary"></div>
+Registered and verified radiology and laboratory centers can receive investigation requestsfrom doctors, other health providers and patients through the platform. The center willsee the requests in their notification box if it was sent specifically to them or will have to search for them with the patient’s phone or reference number if it was non-specifically sent.<br>
+
+Diagnostic centers can also use the patients’ Phone or Registration numbers to search their accounts to view and act on pending requests or to enter the results of the completed investigations.<br>
+
+When patients pay for investigations through their e-wallets, the diagnostic centers will be credited instantly. This is the recommended payment option otherwise the records cannot be archived.<br>
+
+Diagnostic centers will conduct the investigations they render and forward those they don’t provide to other centers. Diagnostic results can be filled and generated through the platform’s result template. This result can be printed or accessed online from anywhere by authorized personnel who have Applinic accounts.<br>
+
+Customers who don’t have Applinic accounts but desire to register one for archiving their health records for easy future access can be assisted in this registration by the diagnostic centers if the payment for the investigation is made through the application. Centers can create Applinic accounts for new patients before serving them. The account is free.
+
+
+<div id="ewallet"></div>
+<br><br>
+
+<h4>Payment and E-Wallet (MediPay)</h4><div class="separator01 separator-primary"></div>
+<b>Fund wallet</b><br>
+Applinic is secure, and all health and financial information of patients areencrypted end-to-end. It has an e-wallet payment system for all online paymets through the platform. This is the MediPay. Patients can use the MediPay tomake payments directly to health service providers - doctors, special centers, pharmacies and diagnostic centers through their electronic wallets. The e-wallets are funded on the platform using debit or credit cards or directly from the user’s bank account through a payment gateway. This direct bank account debit is authenticated through a Verification Code (VC) or One Time Pass word (OTP) sent to the customer’s phone.<br>
+
+Each payment made for the purpose of funding the wallet generates a PIN which the user keys in to credit his e-wallet. When patients fund their wallets, the money remains secure in their accounts. From here, they can fund all healthcare bills on Applinic with no transaction charges.
+Paying for health services through the Applinice-wallet attracts discounts. Doctors’ consultation fees, drug charges, diagnostic services and treatment costs are all discounted between 5-50% when payments for them are made through the e-wallet. More so, the records of medical treatments, drug prescriptions and diagnostic results are kept in patients’ accounts only when payments for them are made through the wallet. So payment through the e-wallet is a double win for the patient; and technically that is the only way the application can know the patient received the service. Payments made with cash to the service provider do not tunnel through the platform workflow so no records of the associated health information will be kept. This is not advisable for those who desire to keep a electronic record of their health history and everybody should. 
+Patients who want to enjoy the discount associated with the e-payment but deliberately don’t want to keep the record of that health service can select the No Health Record (NHR) option in the payment page. This will disable the archival of the particular record, and still grant the discount.<br> 
+
+<b>Fund transfer </b><br>
+Funds can be transferred between users on Applinic provided the transfer amount is available in the creditor’s wallet. Peer to peer funds transfer is useful in situations where registered users need to access medical services but do not have the requisite fundin their wallet to pay for them but they have a family or friend who owns an account and is willing to come to their aid. For example, a father can come to the aid of a daughter in college who is sick and has just received a doctor’s prescription but has not enough money to pay. A son abroad can pay for the mother’s prescription in Africa after she has been reviewed by an Applinic doctor who issued her a prescription. 
+Like other financial transactions on Applinic, this service requires authentication by a One Time Password sent to the creditor’s phone.<br>  
+
+<b>Cash Out</b><br> 
+The health service providers cash out earned monies from their wallets through their registered bank accounts. There are no cash out limits. 
+This utility is available to only health service providers - doctors, hospitals, pharmacies and diagnostic centers. These users can request to withdraw from the e-wallet any amount they have earned. This request is processed within 24 hours and credited to the provided bank account after verification. A Verification Code (VC) or One Time Password (OTP) will be sent to the HSPs registered phone to confirm he initiated the transaction. 
+
 </div>
       </div>
 </div>
     </div>
 <div class="clearfix"></div>
-
+<div style="height: 300px">
+  
+</div>
 
 <% include ./inner/footer-links %>
 

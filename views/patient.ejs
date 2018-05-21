@@ -461,7 +461,7 @@
                                   <li> <a href="#/edit-picture"> <i class="fa fa-user icon"></i> Change profile picture </a> </li>
 
                                   <li>
-                                     <a href="#/edit-profile"><i class="fa fa-gear icon"></i> Edit profile </a> 
+                                     <a href="#/edit-profile" data-dismiss="modal"><i class="fa fa-gear icon"></i> Edit profile </a> 
                                      </li>
                                     
                                     <li> 
@@ -1878,23 +1878,7 @@
       </div>
    </script>      
   
-   <!--<script type="text/ng-template" id="capture-image.html">
-       <div class="modal fade">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-          
-            <div>  
-                <canvas id="canvas" width=320 height=240></canvas>
-                <video id="player" controls autoplay></video>
-                <button id="capture">Capture</button>                
-            </div>
-            
-          </div>
-        </div>
-      </div>
-   </script>-->                               
-
+  
 
        
     <script src="/assets/js/app.js"></script>
@@ -1905,48 +1889,20 @@
     <script src="/socket.io/socket.io.js"></script>   
     <script src="/assets/js/socket.min.js"></script>
         
-        <!--<script src="http://maps.google.com/maps/api/js?sensor=false"></script>-->
-        <!--<script src="/assets/js/map/jquery.gomap.js"></script>-->
+       
         
-        <!--<script src="/assets/js/jquery.nicescroll.js"></script>-->
-        <!--<script type="text/javascript">
-            $(document).ready(function(){
-                //$("#drp-of-msg").niceScroll({cursorcolor:"#ccc",cursorwidth:"5px"});
-                //$("#my-doctors-list").niceScroll({cursorcolor:"#ccc",cursorwidth:"5px"});
-                //$("#noti-drp-list").niceScroll({cursorcolor:"#ccc",cursorwidth:"5px"});
-                //$(".view-animate-container").niceScroll({cursorcolor:"#ccc",cursorwidth:"3px"})
-                $(".view-animate-container").niceScroll("#chat-body",{cursorcolor:"#ccc",cursorwidth:"3px"});
-
-                /*var textarea = document.querySelector('textarea');
-
-                textarea.addEventListener('keydown', autosize);
-                             
-                function autosize(){
-                  var el = this;
-                  setTimeout(function(){
-                    el.style.cssText = 'height:auto; padding:0';
-                    // for box-sizing other than "content-box" use:
-                    // el.style.cssText = '-moz-box-sizing:content-box';
-                    el.style.cssText = 'height:' + el.scrollHeight + 'px';
-                  },0);
-                } */           
-            })
-        </script>-->
-        <!--<script src="/assets/js/main.js"></script>-->       
-        
-        
-        <script src="/assets/js/angularAnimate.js"></script>
-        <script src="/assets/js/modalService.js"></script>
-        <script src="/assets/js/angular-touch.min.js"></script>
-        <!--<script src="/assets/js/angular-carousel.js"></script>-->
-        <script src="/assets/js/moment.min.js"></script>
-        <script src="/assets/js/angular-moment.min.js"></script>
-        <script src="/assets/js/ui-bootstrap-tpls.js"></script>
-        <script src="/assets/js/angular-clipboard.js"></script>
-        <script src="/assets/js/ngresource.js"></script>
-        <script src="/assets/js/ngPrint.js"></script>
-        <script type="text/javascript" src="/assets/js/angular-paystack/dist/angular-paystack.min.js"></script>
-        <script type="text/javascript" src="/assets/js/angular-sanitize.min.js"></script>
+    <script src="/assets/js/angularAnimate.js"></script>
+    <script src="/assets/js/modalService.js"></script>
+    <script src="/assets/js/angular-touch.min.js"></script>
+    <!--<script src="/assets/js/angular-carousel.js"></script>-->
+    <script src="/assets/js/moment.min.js"></script>
+    <script src="/assets/js/angular-moment.min.js"></script>
+    <script src="/assets/js/ui-bootstrap-tpls.js"></script>
+    <script src="/assets/js/angular-clipboard.js"></script>
+    <script src="/assets/js/ngresource.js"></script>
+    <script src="/assets/js/ngPrint.js"></script>
+    <script type="text/javascript" src="/assets/js/angular-paystack/dist/angular-paystack.min.js"></script>
+    <script type="text/javascript" src="/assets/js/angular-sanitize.min.js"></script>
         
 
         <!--<script src="/assets/js/bootstrap-toolkit.js"></script>

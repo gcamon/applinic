@@ -170,11 +170,13 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
   })
 
   router.get('/terms',function(req,res){
-    res.end("Page not available")
+    res.render('terms')
+    //res.end("Page not available")
   });
 
   router.get('/privacy',function(req,res){
-    res.end("Page not available")
+    res.render("privacy")
+    //res.end("Page not available")
   });
 
 
@@ -6395,7 +6397,339 @@ router.get("/user/rendered-services",function(req,res){
   } else {
     res.end("unauthorized access!")
   }
+});
+
+router.get("/user/general/homepage-search",function(req,res){
+  if(req.query.category === "Pharmacy") {
+    
+    if(!req.query.city)
+      req.query.city = "Enugu";
+
+    if(!req.query.item) {
+      res.send({full:[]});
+      return;
+    }
+
+    req.query.drugList = [{name: req.query.item}];
+    model.services.find({type:"Pharmacy",center_city:req.query.city},
+      {center_name:1,center_city:1,center_address:1,center_country:1,center_phone:1,user_id:1,unavailable_services:1,_id:0},function(err,data){
+      if(err) throw err;
+      var newListToSend = [];        
+      var sendObj = {};
+      var listOfDrugs = req.query.drugList;        
+      for(var i = 0; i < listOfDrugs.length; i++){
+        var elements = data.map(function(x){return x.unavailable_services});
+        var count = 0;
+        var foundDrug = [];          
+        while(count < elements.length){
+          var centerInfo = {}                      
+          var elementPos = elements[count].map(function(x){ return x.name}).indexOf(listOfDrugs[i].name);            
+          centerInfo.notFound = listOfDrugs[i].name;
+          if(elementPos === -1){              
+            centerInfo.center_name = data[count].center_name;
+            centerInfo.center_city = data[count].center_city;
+            centerInfo.center_country = data[count].center_country;
+            centerInfo.center_city = data[count].center_city;
+            centerInfo.center_id = data[count].user_id;
+            centerInfo.center_address = data[count].center_address;
+            centerInfo.center_phone = data[count].center_phone;
+            centerInfo.drugFound = listOfDrugs[i].name;              
+            foundDrug.push(centerInfo)               
+            sendObj[listOfDrugs[i].name] = foundDrug;
+            newListToSend.push(sendObj)  
+          } 
+          count++;
+        }
+      }
+
+       var filter = {};
+        
+        for(var i in sendObj){
+          for(var j = 0; j < sendObj[i].length; j++){
+            if(!filter.hasOwnProperty(sendObj[i][j].center_id)){                             
+              filter[sendObj[i][j].center_id] = {};
+              filter[sendObj[i][j].center_id].count = 1;
+              filter[sendObj[i][j].center_id].name = sendObj[i][j].center_name;
+              filter[sendObj[i][j].center_id].address = sendObj[i][j].center_address;
+              filter[sendObj[i][j].center_id].city = sendObj[i][j].center_city;
+              filter[sendObj[i][j].center_id].country = sendObj[i][j].center_country;
+              filter[sendObj[i][j].center_id].id = sendObj[i][j].center_id;
+               filter[sendObj[i][j].center_id].phone = sendObj[i][j].center_phone;
+              filter[sendObj[i][j].center_id].str = sendObj[i][j].drugFound;
+            } else {
+              filter[sendObj[i][j].center_id].str += "," + sendObj[i][j].drugFound;
+              filter[sendObj[i][j].center_id].count++;
+            }
+          }
+        }
+        
+        Array.prototype.diff = function(arr2) {
+          var ret = [];
+          this.sort();
+          arr2.sort();
+          for(var i = 0; i < this.length; i += 1) {
+            if(arr2.indexOf( this[i].name ) === -1){
+                ret.push( this[i] );
+            }
+          }
+          return ret;
+        };
+
+        var sub = {};
+         sub['full'] = [];
+         sub['less'] = [];
+        for(var k in filter){
+          if(filter[k].count === req.query.drugList.length) {
+            sub['full'].push(filter[k]);
+          } else {
+            var arr1 = req.query.drugList;
+            var newFilterArr = filter[k].str.split(",")            
+            var notFoundArr = arr1.diff(newFilterArr)
+            filter[k].notFound = notFoundArr;          
+            sub['less'].push(filter[k])
+          }
+        }
+
+        res.send(sub)
+      })
+
+  } else if(req.query.category === "Doctor") {
+    if(!req.query.city)
+      req.query.city = "Enugu";
+
+    var str = new RegExp(req.query.item.replace(/\s+/g,"\\s+"), "gi");              
+    var criteria = { specialty : { $regex: str, $options: 'i' },type:"Doctor",city:req.query.city};
+    model.user.find(criteria,{firstname:1,lastname:1,work_place:1,city:1,country:1,address:1,_id:0},function(err,data){
+      if(err) {
+        res.send({error:"status 500",full:[]});
+      } else {
+        res.json({full: data});
+      }
+    });
+
+  } else if(req.query.category === "Laboratory" || req.query.category === "Radiology") {
+    console.log(req.query);
+    //for lab and radio search from home page
+  if(!req.query.city)
+    req.query.city = "Enugu";
+
+  req.query.testList = [{name: req.query.item}];
+  model.services.find({type:req.query.category,center_city:req.query.city},
+    {center_name:1,center_city:1,center_address:1,center_country:1,user_id:1,unavailable_services:1,center_phone:1,_id:0},function(err,data){
+    if(err) throw err;
+    if(data) {
+      var newListToSend = [];        
+      var sendObj = {};
+      var listOfTests = req.query.testList;        
+      for(var i = 0; i < listOfTests.length; i++){
+        var elements = data.map(function(x){return x.unavailable_services});
+        var count = 0;
+        var foundTest = [];          
+        while(count < elements.length){
+          var centerInfo = {}                      
+          var elementPos = elements[count].map(function(x){ return x.name}).indexOf(listOfTests[i].name);            
+          centerInfo.notFound = listOfTests[i].name;
+          if(elementPos === -1){                     
+            centerInfo.center_name = data[count].center_name;
+            centerInfo.center_city = data[count].center_city;
+            centerInfo.center_country = data[count].center_country;
+            centerInfo.center_city = data[count].center_city;
+            centerInfo.center_phone = data[count].center_phone;
+            centerInfo.center_id = data[count].user_id;
+            centerInfo.center_address = data[count].center_address;
+            centerInfo.testFound = listOfTests[i].name;              
+            foundTest.push(centerInfo);               
+            sendObj[listOfTests[i].name] = foundTest;
+            newListToSend.push(sendObj)  
+          } 
+          count++;
+        }
+      }
+     
+      var filter = {};
+          
+      for(var i in sendObj){
+        for(var j = 0; j < sendObj[i].length; j++){
+          if(!filter.hasOwnProperty(sendObj[i][j].center_id)){                             
+            filter[sendObj[i][j].center_id] = {};
+            filter[sendObj[i][j].center_id].count = 1;
+            filter[sendObj[i][j].center_id].name = sendObj[i][j].center_name;
+            filter[sendObj[i][j].center_id].address = sendObj[i][j].center_address;
+            filter[sendObj[i][j].center_id].city = sendObj[i][j].center_city;
+            filter[sendObj[i][j].center_id].country = sendObj[i][j].center_country
+            filter[sendObj[i][j].center_id].id = sendObj[i][j].center_id
+            filter[sendObj[i][j].center_id].str = sendObj[i][j].testFound;
+            filter[sendObj[i][j].center_id].phone = sendObj[i][j].center_phone;
+          } else {
+            filter[sendObj[i][j].center_id].str += "," + sendObj[i][j].testFound;
+            filter[sendObj[i][j].center_id].count++;
+          }
+        }
+      }
+     
+
+      Array.prototype.diff = function(arr2) {
+        var ret = [];
+        this.sort();
+        arr2.sort();
+        for(var i = 0; i < this.length; i += 1) {
+            if(arr2.indexOf( this[i].name ) === -1){
+                ret.push( this[i] );
+            }
+        }
+        return ret;
+      };
+
+      var sub = {};
+      sub['full'] = []
+      sub['less'] = [];
+      for(var k in filter){
+        if(filter[k].count === req.query.testList.length) {
+          sub['full'].push(filter[k])
+        } else {
+          var arr1 = req.query.testList;
+          var newFilterArr = filter[k].str.split(",");           
+          var notFoundArr = arr1.diff(newFilterArr);
+          filter[k].notFound = notFoundArr;          
+          sub['less'].push(filter[k]);
+        }
+      }
+      res.send(sub)
+    } else {
+      var sub = {};
+      sub['full'] = []
+      sub['less'] = [];
+      res.send(sub);
+    }
+  });
+
+  } else if(req.query.category === "Skills & Procedures") {
+
+    if(!req.query.city)
+      req.query.city = "Enugu";
+
+    var str = new RegExp(req.query.item.replace(/\s+/g,"\\s+"), "gi");              
+    var criteria = { "skills.skill" : { $regex: str, $options: 'i' },type:"Doctor",city:req.query.city};
+    model.user.find(criteria,{firstname:1,lastname:1,work_place:1,city:1,country:1,address:1,_id:0},function(err,data){
+      if(err) {
+        res.send({error:"status 500",full:[]});
+      } else {
+        res.json({full: data});
+      }
+    });
+
+  } else if(req.query.category === "Special Center") {
+
+    if(!req.query.city)
+      req.query.city = "Enugu";
+
+    var str = new RegExp(req.query.item.replace(/\s+/g,"\\s+"), "gi");              
+    var criteria = { "skills.disease" : { $regex: str, $options: 'i' },type:"Doctor",title:"SC",city:req.query.city};
+    model.user.find(criteria,{name:1,city:1,country:1,address:1,_id:0},function(err,data){
+      if(err) {
+        res.send({error:"status 500",full:[]});
+      } else {
+        res.json({full: data});
+      }
+    });
+
+  } else {
+    res.json({full:[]});
+  }
+
 })
+
+
+
+/*
+router.put("/user/pharmacy/search/find-drugs",function(req,res){
+      console.log(req.body)
+      if(req.user && req.body.city === undefined)
+        req.body.city = req.user.city;
+      model.services.find({type:"Pharmacy",center_city:req.body.city},
+        {center_name:1,center_city:1,center_address:1,center_country:1,center_phone:1,user_id:1,unavailable_services:1,_id:0},function(err,data){
+        if(err) throw err;
+        var newListToSend = [];        
+        var sendObj = {};
+        var listOfDrugs = req.body.drugList;        
+        for(var i = 0; i < listOfDrugs.length; i++){
+          var elements = data.map(function(x){return x.unavailable_services});
+          var count = 0;
+          var foundDrug = [];          
+          while(count < elements.length){
+            var centerInfo = {}                      
+            var elementPos = elements[count].map(function(x){ return x.id}).indexOf(listOfDrugs[i].id);            
+            centerInfo.notFound = listOfDrugs[i].name;
+            if(elementPos === -1){              
+              centerInfo.center_name = data[count].center_name;
+              centerInfo.center_city = data[count].center_city;
+              centerInfo.center_country = data[count].center_country;
+              centerInfo.center_city = data[count].center_city;
+              centerInfo.center_id = data[count].user_id;
+              centerInfo.center_address = data[count].center_address;
+              centerInfo.center_phone = data[count].center_phone;
+              centerInfo.drugFound = listOfDrugs[i].name;              
+              foundDrug.push(centerInfo)               
+              sendObj[listOfDrugs[i].name] = foundDrug;
+              newListToSend.push(sendObj)  
+            } 
+            count++;
+          }
+        }
+
+        var filter = {};
+        
+        for(var i in sendObj){
+          for(var j = 0; j < sendObj[i].length; j++){
+            if(!filter.hasOwnProperty(sendObj[i][j].center_id)){                             
+              filter[sendObj[i][j].center_id] = {};
+              filter[sendObj[i][j].center_id].count = 1;
+              filter[sendObj[i][j].center_id].name = sendObj[i][j].center_name;
+              filter[sendObj[i][j].center_id].address = sendObj[i][j].center_address;
+              filter[sendObj[i][j].center_id].city = sendObj[i][j].center_city;
+              filter[sendObj[i][j].center_id].country = sendObj[i][j].center_country;
+              filter[sendObj[i][j].center_id].id = sendObj[i][j].center_id;
+               filter[sendObj[i][j].center_id].phone = sendObj[i][j].center_phone;
+              filter[sendObj[i][j].center_id].str = sendObj[i][j].drugFound;
+            } else {
+              filter[sendObj[i][j].center_id].str += "," + sendObj[i][j].drugFound;
+              filter[sendObj[i][j].center_id].count++;
+            }
+          }
+        }
+        
+        Array.prototype.diff = function(arr2) {
+          var ret = [];
+          this.sort();
+          arr2.sort();
+          for(var i = 0; i < this.length; i += 1) {
+            if(arr2.indexOf( this[i].name ) === -1){
+                ret.push( this[i] );
+            }
+          }
+          return ret;
+        };
+
+        var sub = {};
+         sub['full'] = [];
+         sub['less'] = [];
+        for(var k in filter){
+          if(filter[k].count === req.body.drugList.length) {
+            sub['full'].push(filter[k]);
+          } else {
+            var arr1 = req.body.drugList;
+            var newFilterArr = filter[k].str.split(",")            
+            var notFoundArr = arr1.diff(newFilterArr)
+            filter[k].notFound = notFoundArr;          
+            sub['less'].push(filter[k])
+          }
+        }
+
+        res.send(sub)
+      })
+
+    });
+*/
 
 }
 

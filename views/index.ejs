@@ -10,7 +10,8 @@
     <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no' name='viewport' />
     <!--     Fonts and icons     -->
     <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700,200" rel="stylesheet" />
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" />
+    <!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" />-->
+    <link rel="stylesheet" href="/assets/css/vendor.css">
     <!-- CSS Files -->
     <link href="/assets/css/bootstrap.min.css" rel="stylesheet" />
     <link href="/assets/css/now-ui-kit.css" rel="stylesheet" />
@@ -19,7 +20,8 @@
     <!-- CSS Just for demo purpose, don't include it in your project -->
     <link href="/assets/css/demo.css" rel="stylesheet" />
     <!--<link rel="stylesheet" href="/assets/css/main.css">-->
-    
+    <script src="assets/js/core/jquery.3.2.1.min.js" type="text/javascript"></script>
+    <script type="text/javascript" src="/assets/js/source.js"></script>
     <style>
 
         body {
@@ -28,13 +30,17 @@
 
         .card-block {
            text-align: center;
-        }
+        }       
 
         .card-title {
             text-transform: uppercase;
             text-align: center;
             border-bottom: 1px solid #ccc;
             padding-bottom: 1em;
+        }
+
+        .dropdown-menu {
+            width:270px!important;
         }
 
         .list-group-item{
@@ -121,6 +127,9 @@
             background:rgba(0,0,0,0.4) !important;
         }
 
+
+
+
         @media screen and (max-width: 699px) {
             .carousel-caption {
                 right: 0;
@@ -145,6 +154,10 @@
                 font-size:22px;
             }
 
+            .toExpect  {
+                margin-top: 120px
+            }
+
         }
 .title{font-size:1.2em;
 font-weight:600;}
@@ -156,16 +169,11 @@ font-weight:600;}
 }
     </style>
 
-    <script type="text/javascript">
-         $('.carousel').carousel({
-          interval: 60000,
-          pause: false
-        });
-    </script>
+   
     
 </head>
 
-<body class="template-page" style="overflow-x:hidden">
+<body class="template-page" ng-app="myApp" style="overflow-x:hidden;position: relative;">
     <!-- Navbar -->
     <!--<nav class="navbar navbar-toggleable-md bg-primary fixed-top  navbar-transparent" color-on-scroll="500">
         <div class="container">
@@ -213,13 +221,13 @@ font-weight:600;}
     <% include ./inner/nav %>
     <!-- End Navbar -->
 
-    <div id="carouselExampleIndicators" class="carousel slide carousel-fade bg-default" data-ride="carousel">
-  <ol class="carousel-indicators">
+    <div id="carouselExampleIndicators" class="slide carousel-fade bg-default" role="listbox" data-ride="carousel" style="position: relative;">
+  <!--<ol class="carousel-indicators">
     <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
     <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
     <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
      <li data-target="#carouselExampleIndicators" data-slide-to="3"></li>
-  </ol>
+  </ol>-->
   <div class="carousel-inner" role="listbox" >
 
     <div class="carousel-item active">
@@ -236,7 +244,7 @@ font-weight:600;}
 •  Discount on all consultations paid through your e-wallet<br>
 
 <br>
-    <a href="/login" class="btn btn-primary">FIND A DOCTOR</a>
+    <!--<a href="/login" class="btn btn-primary">FIND A DOCTOR</a>-->
   </div>
     </div>
    
@@ -257,7 +265,7 @@ font-weight:600;}
 •   Discounts on all purchases through your e-wallet<br>
 
 <br>
-    <a href="/login" class="btn btn-info">FIND DRUGS</a>
+    <!--<a href="/login" class="btn btn-info">FIND DRUGS</a>-->
   </div>
     </div>
 
@@ -274,7 +282,7 @@ font-weight:600;}
 •  Discounts on all radiology  investigations <br>
 •  Your radiology report secure in your free Electronic Medical Record
 <br><br>
-    <a href="/login" class="btn btn-primary">FIND RADIOLOGY TEST</a>
+    <!--<a href="/login" class="btn btn-primary">FIND RADIOLOGY TEST</a>-->
   </div>
     </div>
    
@@ -291,7 +299,7 @@ font-weight:600;}
 • Discounts on all laboratory investigations <br>
 • All your lab investigation results secure in your Electronic Personal Record<br>
 <br>
-    <a href="/login" class="btn btn-primary">FIND LABORATORY TEST</a>
+    <!--<a href="/login" class="btn btn-primary">FIND LABORATORY TEST</a>-->
   </div>
     </div>
   </div>
@@ -303,11 +311,55 @@ font-weight:600;}
     <span style="height:43px; width:80px;" class="carousel-control-next-icon bg-black" aria-hidden="true"></span>
     <span class="sr-only">Next</span>
   </a>
+
+  <div style="background-color: #fff;width: 80%;position: absolute;bottom:0;left: 10%;height: 100px;border-top-left-radius:2px;border-top-right-radius: 2px;padding: 15px;z-index: 2" ng-controller="hompageController">
+    
+        <form>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <!--<input type="text" class="form-control" ng-model="item" style="padding: 15px 10px" placeholder="Drug / Test / Specialty">-->
+                        <input type="text" class="form-control" ng-model="user.item" style="padding: 15px 10px" name="states" placeholder="Drug / Test / Specialty" uib-typeahead="item.name for item in itemList | filter:$viewValue | limitTo:15">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <!--<input type="text" class="form-control" ng-model="category" style="padding: 15px 10px" name="states"  placeholder="Category" uib-typeahead="category for category in categories | filter:$viewValue | limitTo:15">
+                        <span ng-cloak>{{getCategory(category)}}</span>-->
+                        <select class="form-control" style="height:47px;" ng-model="user.category">
+                            <option value="" disabled selected>Choose category</option>
+                            <option>Doctor</option>                           
+                            <option>Pharmacy</option>
+                            <option>Laboratory</option>
+                            <option>Radiology</option>
+                            <option>Special Center</option>
+                            <option>Skills &amp; Procedures</option>
+                            
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <input type="text" class="form-control"  style="padding: 15px 10px" name="states" type="text" placeholder="City" ng-model="user.city" uib-typeahead="city for city in cities | filter:$viewValue | limitTo:15">
+                        <!--<span ng-cloak>{{getCity(city)}}</span>-->
+                    </div>
+                </div>
+                <div class="col-md-1" style="padding-top: 10px">
+                    <button class="btn btn-danger" ng-click="search()">
+                        <i class="fa fa-search"></i>
+                    </button>
+                </div>
+            </div>
+        </form>
+    
+  </div>
 </div>
+
+
    
 
 
-        <div class="section">
+        <div class="section toExpect">
             <div class="container">
 <h3 class="title text-center"> WHAT TO EXPECT</h3>
 <div class="separator separator-primary"></div>
@@ -538,7 +590,33 @@ with just few clicks without having to ask around or wonder where to find your n
                 Sign In Sign Up Light Box End
         *************************************-->
        
-
+<script type="text/ng-template" id="home-page-search.html">
+       <div class="modal fade">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+                <strong style="font-weight: 100;font-size: 22px">Hey, Look what we found!</strong>
+                <button type="button"  style="float: right;" class="close" ng-click="close('Cancel')" data-dismiss="modal" aria-hidden="true">&times;</button>        
+            </div>
+             <div  style="padding: 20px;margin-bottom: 20px;font-size: 14px"> 
+                <p>Showing {{searchResult.length}} result(s) for <b>{{user.item}}</b> in <b>{{user.city}}</b> category <b>{{user.category}}</b></p> 
+                <div ng-repeat="found in searchResult" style="padding: 5px; max-height: 800px;overflow-y: auto">
+                    <span ng-bind-html = "found.msg" class="text-info"></span>
+                    <strong style="display: block;max-width: 80%;color: green">{{found.firstname}} {{found.lastname}} {{found.name}}</strong>
+                    <span style="display: block;" ng-if="found.specialty">{{found.specialty}}</span>
+                    <span style="display: block;max-width: 80%"> <span ng-if="found.work_place">works at | <b>{{found.work_place}}</b> </span>{{found.address}} {{found.city}} {{found.country}}</span>         
+                    <small ng-click="account(found)"><i class="fa fa-comment text-muted" title="chat with {{found.firstname || found.name}}"></i></small>&nbsp;
+                    <small ng-click="account(found)"><i class="fa fa-phone text-muted" title="call {{found.firstname || found.name}}"></i></small>&nbsp;
+                    <small ng-click="account(found)"><i class="fa fa-video-camera text-muted" title="video chat with {{found.firstname || found.name}}"></i></small>&nbsp;
+                    <small ng-click="account(found)"><i class="fa fa-share text-muted" title="forward to {{found.firstname || found.name}}"></i></small>&nbsp;<br> 
+                    <hr class="text-muted">                
+                </div> 
+                <div ng-if="loading" style="text-align: center;margin-top: 20px"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange" ng-if="loading"></i></div>
+                <p ng-if="searchResult.length == 0 && !loading" style="text-align: center">Oops! No result was found.</p>        
+            </div>
+        </div>
+      </div>
+</script>      
 
         
         
@@ -546,7 +624,7 @@ with just few clicks without having to ask around or wonder where to find your n
 
         <!-- plug ins -->
         <!--   Core JS Files   -->
-        <script src="assets/js/core/jquery.3.2.1.min.js" type="text/javascript"></script>
+       
         <script src="assets/js/core/tether.min.js" type="text/javascript"></script>
         <script src="assets/js/core/bootstrap.min.js" type="text/javascript"></script>
         <!--  Plugin for Switches, full documentation here: http://www.jque.re/plugins/version3/bootstrap.switch/ -->
@@ -557,7 +635,34 @@ with just few clicks without having to ask around or wonder where to find your n
         <script src="assets/js/plugins/bootstrap-datepicker.js" type="text/javascript"></script>
         <!-- Control Center for Now Ui Kit: parallax effects, scripts for the example pages etc -->
         <script src="assets/js/now-ui-kit.js" type="text/javascript"></script>
+        <script src="/assets/js/app.js"></script>
+        
+        
+        <script type="text/javascript" src="/assets/js/angularclient.js"></script>
+        <script type="text/javascript" src="/assets/js/ngroute.js"></script>
+        <script src="/socket.io/socket.io.js"></script>   
+        <script src="/assets/js/socket.min.js"></script>
+            
+           
+            
+        <script src="/assets/js/angularAnimate.js"></script>
+        <script src="/assets/js/modalService.js"></script>
+        <script src="/assets/js/angular-touch.min.js"></script>
+        <!--<script src="/assets/js/angular-carousel.js"></script>-->
+        <script src="/assets/js/moment.min.js"></script>
+        <script src="/assets/js/angular-moment.min.js"></script>
+        <script src="/assets/js/ui-bootstrap-tpls.js"></script>
+        <script src="/assets/js/angular-clipboard.js"></script>
+        <script src="/assets/js/ngresource.js"></script>
+        <script src="/assets/js/ngPrint.js"></script>
+        <script type="text/javascript" src="/assets/js/angular-paystack/dist/angular-paystack.min.js"></script>
+        <script type="text/javascript" src="/assets/js/angular-sanitize.min.js"></script>
 
-
+         <script type="text/javascript">
+         $('.carousel').carousel({
+          interval: 60000,
+          pause: false
+        });
+    </script>
        </body> 
 </html>

@@ -16112,7 +16112,104 @@ app.controller("workHistoryModalController",["$rootScope","$scope","$location","
     $location.path(path);
   }
   
+}]);
+
+app.controller("hompageController",["$scope","scanTests","cities","labTests","Drugs","ModalService","$rootScope",
+  function($scope,scanTests,cities,labTests,Drugs,ModalService,$rootScope){
+
+
+  $scope.cities = cities;
+
+  $scope.itemList = [];
+  $rootScope.user = {}
+ 
+ 
+  $scope.$watch('user.category',function(newVal,oldVal){
+    if(newVal) {
+      switch(newVal) {
+        case 'Doctor':
+          $scope.itemList = [];
+        break;
+        case 'Pharmacy':
+          $scope.itemList = Drugs;
+        break;
+        case "Laboratory":
+          $scope.itemList = labTests.listInfo.concat(labTests.listInfo2,labTests.listInfo3,labTests.listInfo4,labTests.listInfo5,labTests.listInfo6,labTests.listInfo7);
+        break;
+        case 'Radiology':
+          $scope.itemList = scanTests.listInfo1.concat(scanTests.listInfo2,scanTests.listInfo3,scanTests.listInfo4,scanTests.listInfo5,scanTests.listInfo6);
+        break;
+        case 'Special Center':
+          $scope.itemList = [];
+        break;
+        case 'Skills & Procedures':
+          $scope.itemList = [];
+        break;
+        default:
+        break;
+      }
+    }
+  })
+
+
+  $scope.search = function() {    
+    //alert($rootScope.user.city + " " + $rootScope.user.item + " " + $rootScope.user.category)
+    ModalService.showModal({
+      templateUrl: 'home-page-search.html',
+      controller: 'homePageModalController'
+    }).then(function(modal) {
+      modal.element.modal();
+      modal.close.then(function(result) {             
+      });
+    });
+  }
+
+  //$scope.categories = ["Pharmacy","Doctor","Laboratory","Radiology","Special Center"]
+}]);
+
+app.service("homepageSearchService",["$resource",function($resource){
+  return $resource("/user/general/homepage-search");
 }])
+
+app.controller("homePageModalController",["$scope","$rootScope","homepageSearchService",
+  function($scope,$rootScope,homepageSearchService){
+    $scope.loading = true;
+    homepageSearchService.get($rootScope.user,function(response){
+      console.log(response)
+      $scope.loading = false;
+      $scope.searchResult = response.full;
+    });  
+
+    $scope.account = function(selected) {
+      selected.msg = "Please <a href='/signup'> create account </a> or <a href='/login'> log in </a> to have full access!";
+    }
+}]);
+
+
+
+
+/*
+app.controller("searchScanController",["$scope","$location","$window","templateService","localManager",
+  "scanTests","searchtestservice","cities","templateUrlFactory","$resource","$rootScope","dynamicService",
+function($scope,$location,$window,templateService,localManager,scanTests,
+  searchtestservice,cities,templateUrlFactory,$resource,$rootScope,dynamicService){
+  var allTests = scanTests.listInfo1.concat(scanTests.listInfo2,scanTests.listInfo3,scanTests.listInfo4,scanTests.listInfo5,
+  scanTests.listInfo6);
+
+  templateUrlFactory.setUrl();
+  var list = [{sn:'a'}];
+  var testName;
+  var thisCity;
+
+  $scope.getTest = function(name){
+    testName = name;
+  }
+
+  $scope.getCity = function(city){
+    thisCity = city;
+  } 
+
+*/
 
 
 //Drug,lab,scan factory
