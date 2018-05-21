@@ -16114,14 +16114,27 @@ app.controller("workHistoryModalController",["$rootScope","$scope","$location","
   
 }]);
 
-app.controller("hompageController",["$scope","scanTests","cities","labTests","Drugs","ModalService","$rootScope",
-  function($scope,scanTests,cities,labTests,Drugs,ModalService,$rootScope){
+
+app.service("homePageDynamicService",["$resource",function($resource){
+  return $resource("/dynamic-service");
+}]);
+
+app.service("homepageSearchService",["$resource",function($resource){
+  return $resource("/general/homepage-search");
+}]);
+
+app.controller("hompageController",["$scope","scanTests","cities","labTests","Drugs",
+  "ModalService","$rootScope","homePageDynamicService",
+  function($scope,scanTests,cities,labTests,Drugs,ModalService,$rootScope,homePageDynamicService){
 
 
   $scope.cities = cities;
 
   $scope.itemList = [];
-  $rootScope.user = {}
+  $rootScope.user = {};
+  var dyna = [];
+
+
   
   $scope.itemName = "Drug / Test / Specialty / Disease"
 
@@ -16133,17 +16146,24 @@ app.controller("hompageController",["$scope","scanTests","cities","labTests","Dr
           $scope.itemName = "Enter Specialty";
         break;
         case 'Pharmacy':
-          $scope.itemList = Drugs;
+          homePageDynamicService.query($rootScope.user,function(data){
+            $scope.itemList = Drugs.concat(data);
+          });         
           $scope.itemName = "Enter drug name";
         break;
         case "Laboratory":
-          $scope.itemList = labTests.listInfo.concat(labTests.listInfo2,labTests.listInfo3,
-            labTests.listInfo4,labTests.listInfo5,labTests.listInfo6,labTests.listInfo7);
+          homePageDynamicService.query($rootScope.user,function(data){
+            $scope.itemList = labTests.listInfo.concat(labTests.listInfo2,labTests.listInfo3,
+            labTests.listInfo4,labTests.listInfo5,labTests.listInfo6,labTests.listInfo7,data);
+          });         
           $scope.itemName = "Enter test name";
         break;
         case 'Radiology':
-          $scope.itemList = scanTests.listInfo1.concat(scanTests.listInfo2,scanTests.listInfo3,
-            scanTests.listInfo4,scanTests.listInfo5,scanTests.listInfo6);
+          homePageDynamicService.query($rootScope.user,function(data){
+            console.log(data)
+            $scope.itemList = scanTests.listInfo1.concat(scanTests.listInfo2,scanTests.listInfo3,
+            scanTests.listInfo4,scanTests.listInfo5,scanTests.listInfo6,data);
+          });        
           $scope.itemName = "Enter test name";
         break;
         case 'Special Center':
@@ -16176,9 +16196,7 @@ app.controller("hompageController",["$scope","scanTests","cities","labTests","Dr
   //$scope.categories = ["Pharmacy","Doctor","Laboratory","Radiology","Special Center"]
 }]);
 
-app.service("homepageSearchService",["$resource",function($resource){
-  return $resource("/user/general/homepage-search");
-}])
+
 
 app.controller("homePageModalController",["$scope","$rootScope","homepageSearchService",
   function($scope,$rootScope,homepageSearchService){

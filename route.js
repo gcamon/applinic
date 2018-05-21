@@ -4448,7 +4448,7 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
       } else {
         res.send("unauthorized access!");
       }
-    })
+    });
 
     router.post("/user/dynamic-service",function(req,res){
       if(req.user && req.body && req.user.type !== "Doctor" || req.user.type !== "Patient"){
@@ -4484,7 +4484,7 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
 
         function updateDynaService() {
           var date = + new Date();
-          var random = Math.floor(Math.random() * 999999999);
+          var random = parseInt(Math.floor(Math.random() * 99999) + "" + Math.floor(Math.random() * 99999));
           var testId = random + 1000;
           var test = {
             center_id: req.user.user_id,
@@ -6399,7 +6399,7 @@ router.get("/user/rendered-services",function(req,res){
   }
 });
 
-router.get("/user/general/homepage-search",function(req,res){
+router.get("/general/homepage-search",function(req,res){
 
   if(!req.query.city)
       req.query.city = "Enugu";
@@ -6627,7 +6627,19 @@ router.get("/user/general/homepage-search",function(req,res){
     res.json({full:[]});
   }
 
-})
+});
+
+router.get("/dynamic-service",function(req,res){ 
+  model.dynaService.findOne({type: req.query.category},function(err,data){
+    if(err) throw err;
+    if(!data){
+      res.send([]);
+    } else {
+      res.send(data.test_list);
+    }
+   console.log(data)
+  });
+});
 
 
 
