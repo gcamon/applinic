@@ -6400,16 +6400,16 @@ router.get("/user/rendered-services",function(req,res){
 });
 
 router.get("/user/general/homepage-search",function(req,res){
-  if(req.query.category === "Pharmacy") {
-    
-    if(!req.query.city)
+
+  if(!req.query.city)
       req.query.city = "Enugu";
 
-    if(!req.query.item) {
-      res.send({full:[]});
-      return;
-    }
+  if(!req.query.item) {
+    res.send({full:[]});
+    return;
+  }
 
+  if(req.query.category === "Pharmacy") {
     req.query.drugList = [{name: req.query.item}];
     model.services.find({type:"Pharmacy",center_city:req.query.city},
       {center_name:1,center_city:1,center_address:1,center_country:1,center_phone:1,user_id:1,unavailable_services:1,_id:0},function(err,data){
@@ -6493,9 +6493,7 @@ router.get("/user/general/homepage-search",function(req,res){
         res.send(sub)
       })
 
-  } else if(req.query.category === "Doctor") {
-    if(!req.query.city)
-      req.query.city = "Enugu";
+  } else if(req.query.category === "Doctor") {    
 
     var str = new RegExp(req.query.item.replace(/\s+/g,"\\s+"), "gi");              
     var criteria = { specialty : { $regex: str, $options: 'i' },type:"Doctor",city:req.query.city};
@@ -6510,9 +6508,7 @@ router.get("/user/general/homepage-search",function(req,res){
   } else if(req.query.category === "Laboratory" || req.query.category === "Radiology") {
     console.log(req.query);
     //for lab and radio search from home page
-  if(!req.query.city)
-    req.query.city = "Enugu";
-
+  
   req.query.testList = [{name: req.query.item}];
   model.services.find({type:req.query.category,center_city:req.query.city},
     {center_name:1,center_city:1,center_address:1,center_country:1,user_id:1,unavailable_services:1,center_phone:1,_id:0},function(err,data){
@@ -6605,9 +6601,6 @@ router.get("/user/general/homepage-search",function(req,res){
 
   } else if(req.query.category === "Skills & Procedures") {
 
-    if(!req.query.city)
-      req.query.city = "Enugu";
-
     var str = new RegExp(req.query.item.replace(/\s+/g,"\\s+"), "gi");              
     var criteria = { "skills.skill" : { $regex: str, $options: 'i' },type:"Doctor",city:req.query.city};
     model.user.find(criteria,{firstname:1,lastname:1,work_place:1,city:1,country:1,address:1,_id:0},function(err,data){
@@ -6619,9 +6612,6 @@ router.get("/user/general/homepage-search",function(req,res){
     });
 
   } else if(req.query.category === "Special Center") {
-
-    if(!req.query.city)
-      req.query.city = "Enugu";
 
     var str = new RegExp(req.query.item.replace(/\s+/g,"\\s+"), "gi");              
     var criteria = { "skills.disease" : { $regex: str, $options: 'i' },type:"Doctor",title:"SC",city:req.query.city};
