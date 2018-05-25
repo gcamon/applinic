@@ -5694,6 +5694,13 @@ router.post("/user/response/patients-histories",function(req,res){
     model.user.findOne({user_id: req.user.user_id},{firstname:1,lastname:1,title:1,profile_pic_url:1,user_id:1,specialty:1,profile_url:1},function(err,data){
       if(err) throw err;
       model.help.findOne({complaint_id: req.body.complaint_id,patient_id:req.body.patient_id},{response:1}).exec(function(err,found){
+        if(err) throw err;
+
+        if(!found){
+          res.send({error:"user not found!"})
+          return;
+        }
+        
         req.body.doctor_name = data.title + " " + data.firstname + " " + data.lastname;
         req.body.doctor_profile_pic_url = data.profile_pic_url;
         req.body.doctor_profile_url = data.profile_url;
@@ -5706,7 +5713,7 @@ router.post("/user/response/patients-histories",function(req,res){
             if(err) throw err;
             var checkIsMyDoctor = patient.accepted_doctors.map(function(x){return x.doctor_id}).indexOf(data.user_id);
             
-            if(checkIsMyDoctor !== -1){              
+            if(checkIsMyDoctor === -1){              
               found.response.push(req.body);
               var date = + new Date();
               var msg = "(" + found.response.length + ") Doctors" + " has responded to your complain.";

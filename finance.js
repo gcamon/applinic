@@ -488,7 +488,7 @@ var basicPaymentRoute = function(model,sms,io,paystack){
 				if(err) throw err;
 				
 				if(!data){
-					res.send({message:"Confirmation failed! Transaction canceled."})
+					res.send({message:"Confirmation failed! Transaction canceled.",success: true})
 					/*data.save(function(err,info){
 						if(err) throw err;
 					});*/

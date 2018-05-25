@@ -5846,9 +5846,9 @@ app.controller("PatientViewResponseController",["$scope","$rootScope","$resource
 }]);
 
 app.controller("PatientViewResponseModalController",["$scope","$rootScope","$location","ModalService",
-  "templateService","walletService","paymentVerificationService","consultationAccptanceService",
+  "templateService","walletService","paymentVerificationService","consultationAccptanceService","getMyDoctorService",
   function($scope,$rootScope,$location,ModalService,templateService,walletService,
-    paymentVerificationService,consultationAccptanceService){
+    paymentVerificationService,consultationAccptanceService,getMyDoctorService){
 
   $scope.docInfo = $rootScope.holdDocInView;
   $scope.isViewDoc = true;
@@ -5864,8 +5864,8 @@ app.controller("PatientViewResponseModalController",["$scope","$rootScope","$loc
     $scope.msg = "";
     $scope.loading = true;
     var timeStamp = + new Date();
-    if(templateService.holdDocInView);
-    /*templateService.sendObj = {
+    /*if(templateService.holdDocInView);
+    templateService.sendObj = {
       user_id: $scope.docInfo.user_id,
       date_of_acceptance : timeStamp,
       firstname: $scope.docInfo.name,
@@ -5898,123 +5898,70 @@ app.controller("PatientViewResponseModalController",["$scope","$rootScope","$loc
 
 
   $scope.confirmAcceptance = function() {
-    $scope.loading = true;
-    var resource = consultationAccptanceService;
+    if($scope.pay.acceptanceOtp) {
+      $scope.loading = true;
+      var resource = consultationAccptanceService;
 
-    var date = + new Date();
-    var pin = $scope.pay.acceptanceOtp;
-    var str = "";
-    var count = 0;
-    for(var i = 0; i < pin.length; i++){
-        count++;      
-        if(count % 3 === 0) {
-          str += pin[i];
-          str += " ";
-        } else {
-          str += pin[i];
-        }
-     }
-
-    var newStr = str.replace(/\s*$/,"");//removes empty string by the end of character
-    //var receiver = templateService.sendObj.user_id || templateService.sendObj.receiverId;
-
-    var payObj = {
-      amount: $scope.docInfo.fee,
-      otp: newStr,
-      date: date,
-      message: "Consultation fee",
-      userId: $scope.docInfo.doctor_user_id,
-      sendObj: {
-        doctor_id: $scope.docInfo.doctor_user_id,
-        date_of_acceptance: $scope.docInfo.date,
-        doctor_firstname: $scope.docInfo.doctor_name,
-        doctor_lastname:  $scope.docInfo.lastname,
-        doctor_name: $scope.docInfo.doctor_name,
-        doctor_profile_pic_url: $scope.docInfo.doctor_profile_pic_url,
-        service_access: true,
-        doctor_specialty: $scope.docInfo.doctor_specialty,
-        compaintId: $scope.docInfo.complaint_id,
-        user_id: $scope.docInfo.doctor_user_id
-      }
-    }
-
-    $scope.loading = true;
-    var confirmed = resource.confirmed(payObj,function(data){
-      $scope.loading = false;
-      $scope.msg = data.message;
-      if(data.balance) {
-        $rootScope.balance = "NGN " + data.balance.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");          
-        if($rootScope.msgLen > 0)
-          $rootScope.msgLen--;
-        //$location.path(templateService.holdCurrentPage);
-        
-        /*updateDocList.query(null,function(data){            
-          $rootScope.patientsDoctorList = data;
-        });*/
-      }
-    });
-
-  }
-
-
- /* $scope.$watch("pay.acceptanceOtp",function(newVal,oldVal){    
-    if(newVal > oldVal && $scope.pay.acceptanceOtp.length === 6){
       var date = + new Date();
       var pin = $scope.pay.acceptanceOtp;
       var str = "";
       var count = 0;
       for(var i = 0; i < pin.length; i++){
-        count++;      
-        if(count % 3 === 0) {
-          str += pin[i];
-          str += " ";
-        } else {
-          str += pin[i];
-        }
-      }
+          count++;      
+          if(count % 3 === 0) {
+            str += pin[i];
+            str += " ";
+          } else {
+            str += pin[i];
+          }
+       }
+
       var newStr = str.replace(/\s*$/,"");//removes empty string by the end of character
-      var receiver = templateService.sendObj.user_id || templateService.sendObj.receiverId;
+      //var receiver = templateService.sendObj.user_id || templateService.sendObj.receiverId;
+
       var payObj = {
-        amount: templateService.holdRawAmount,
+        amount: $scope.docInfo.fee,
         otp: newStr,
         date: date,
         message: "Consultation fee",
-        userId: receiver,
-        sendObj: templateService.sendObj
+        userId: $scope.docInfo.doctor_user_id,
+        sendObj: {
+          doctor_id: $scope.docInfo.doctor_user_id,
+          date_of_acceptance: $scope.docInfo.date,
+          doctor_firstname: $scope.docInfo.doctor_name,
+          doctor_lastname:  $scope.docInfo.lastname,
+          doctor_name: $scope.docInfo.doctor_name,
+          doctor_profile_pic_url: $scope.docInfo.doctor_profile_pic_url,
+          service_access: true,
+          doctor_specialty: $scope.docInfo.doctor_specialty,
+          compaintId: $scope.docInfo.complaint_id,
+          user_id: $scope.docInfo.doctor_user_id
+        }
       }
+
       $scope.loading = true;
-      var confirmed = Debitor.confirmed(payObj,function(data){
+      var confirmed = resource.confirmed(payObj,function(data){
         $scope.loading = false;
-        alert(data.message);
+        $scope.msg = data.message;
         if(data.balance) {
-          $rootScope.balance = "NGN" + data.balance.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");          
+          $rootScope.balance = "NGN " + data.balance.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");          
           if($rootScope.msgLen > 0)
             $rootScope.msgLen--;
           //$location.path(templateService.holdCurrentPage);
           
-          updateDocList.query(null,function(data){            
+          getMyDoctorService.query(null,function(data){            
             $rootScope.patientsDoctorList = data;
           });
         }
       });
+
+    } else {
+      $scope.msg = "Please enter otp sent to the number below."
     }
-  });  */
 
-  /*
-    "doctor_id" : "161792665",
-  "date_of_acceptance" : ISODate("48938-03-19T06:13:42Z"),
+  }
 
-  "doctor_firstname" : "Ani",
-  "doctor_lastname" : "Emeka",
-  "doctor_profile_pic_url" : "/download/profile_pic/nopic"
-
-  "service_access" : "false",
-  "doctor_specialty" : "Aerospace Medicine",
-  "_id" : ObjectId("58582cb3ff0b8410551cbd67"),
-  "office_hour" : [ ]
-  */
-
-}])
+}]);
 
 app.controller("pendingLabTestController",["$scope","templateService","$window","localManager","$location","$rootScope",
   function($scope,templateService,$window,localManager,$location,$rootScope){
