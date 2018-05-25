@@ -278,7 +278,6 @@ var basicPaymentRoute = function(model,sms,io,paystack){
 			//note for payment req.body must have userId of who is to be debited is required while for transfer req.body do not have userId
 			//because is assumed the user at that moment is making the request which means his req.user.user_id will be used.
 			var personId = req.body.userId || req.user.user_id;
-			console.log(req.body)
 			model.user.findOne({user_id: personId},{phone:1,ewallet:1,user_id:1},function(err,user){
 				if(err) throw err;
 				if(!user){
@@ -293,7 +292,7 @@ var basicPaymentRoute = function(model,sms,io,paystack){
 						if(req.body.old_time){ //checks if otp was resend therefore removes the old otp which will not be in use anymore.
 							model.otpSchema.findOne({time:req.body.old_time},function(err,data){
 								if(data) {
-									data.remove(function(){})
+									data.remove(function(){});
 									createNew();
 								}  else {
 									res.send({message: "This OTP session has been used and expired! Transaction canceled."})
@@ -482,6 +481,8 @@ var basicPaymentRoute = function(model,sms,io,paystack){
 	/*this route handles the patient accepting consultation fee. the patient wallet will be debited and doctor's wallet credited slightly*/
 	
 	router.post("/user/patient/consultation-acceptance/confirmation",function(req,res){
+		console.log(req.body);
+
 		if(req.user && req.body && req.body.userId !== req.user.user_id && req.body.otp && req.user.type === "Patient"){
 			model.otpSchema.findOne({otp:req.body.otp}).exec(function(err,data){
 				if(err) throw err;
@@ -493,7 +494,7 @@ var basicPaymentRoute = function(model,sms,io,paystack){
 					});*/
 				} else {					
 					//check is is the right otp for a user
-					if(data.user_id === req.user.user_id) {;
+					if(data.user_id === req.user.user_id) {
 						//do the actual transaction. success!
 						model.user.findOne({user_id: req.user.user_id},{ewallet:1,firstname:1,lastname:1,name:1}).exec(function(err,debitor){
 							var name = req.user.firstname || req.user.name;
@@ -502,7 +503,7 @@ var basicPaymentRoute = function(model,sms,io,paystack){
 							pay.consultation(model,data.amount,debitor,req.body.userId);
 							createConnection(debitor);
 						});	
-						data.remove(function(){})			
+						data.remove(function(){});			
 					} else {
 						res.send({message: "This OTP is not for this user"});
 					}

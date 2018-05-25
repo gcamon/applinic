@@ -530,7 +530,7 @@ app.config(['$paystackProvider','$routeProvider',
 
 .when("/view-response/:complaintId",{
   templateUrl: "/assets/pages/utilities/view-response.html",
-  controller: "PatientViewResponseController"
+  controller: 'PatientViewResponseController'
 })
 
  .when("/courier",{
@@ -5799,16 +5799,21 @@ app.controller("PatientViewResponseController",["$scope","$rootScope","$resource
 
   
   $scope.responders = templateService.holdData;
+  var str;
 
-  $scope.viewDocProfile = function(docId,intro,fee){
+  $scope.getInCurr = function(doc) {
+    str =  ($rootScope.checkLogIn.currencyCode) ? $rootScope.checkLogIn.currencyCode + " " +
+     doc.fee.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") :
+      "NGN " + doc.fee.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    doc.strAmount = str;
+    $rootScope.consultfee = str;
+    return str;
+  }
+
+  $scope.viewDocProfile = function(docId){
     var resource = getPersonProfileService; //$resource("/user/get-person-profile");
-    templateService.holdDocInView = resource.get({personId:docId},function(d){});
-    if(!fee)
-      fee = 1000;
-    var inNaira = $rootScope.checkLogIn.currencyCode + " " + fee.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-    templateService.holdRawAmount = fee;
-    templateService.holdDocInView.fee = inNaira;
-    templateService.holdDocInView.intro = intro;
+    $rootScope.holdDocInView = resource.get({personId:docId},function(d){});
+   
     ModalService.showModal({
         templateUrl: "view-dco-profile-modal.html",
         controller: "PatientViewResponseModalController"
@@ -5819,13 +5824,15 @@ app.controller("PatientViewResponseController",["$scope","$rootScope","$resource
     });    
   }
 
-  $scope.acceptDoc = function(docId,intro,fee){
-    var resource = getPersonProfileService; //$resource("/user/get-person-profile/:personId",{personId:docId});
-    templateService.holdDocInView = resource.get({personId:docId},function(){});
-    var inNaira = $rootScope.checkLogIn.currencyCode + " " + fee.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-    templateService.holdRawAmount = fee;
-    templateService.holdDocInView.fee = inNaira;
-    templateService.holdDocInView.intro = intro;
+  $scope.acceptDoc = function(doc){
+    //var resource = getPersonProfileService; //$resource("/user/get-person-profile/:personId",{personId:docId});
+    //templateService.holdDocInView = resource.get({personId:docId},function(){});
+    //var inNaira = $rootScope.checkLogIn.currencyCode + " " + fee.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    //templateService.holdRawAmount = fee;
+    //templateService.holdDocInView.fee = inNaira;
+    //templateService.holdDocInView.intro = intro;
+    
+    $rootScope.holdDocInView = doc;
     ModalService.showModal({
         templateUrl: "acceptance-notification.html",
         controller: "PatientViewResponseModalController"
@@ -5839,13 +5846,14 @@ app.controller("PatientViewResponseController",["$scope","$rootScope","$resource
 }]);
 
 app.controller("PatientViewResponseModalController",["$scope","$rootScope","$location","ModalService",
-  "templateService","walletService","paymentVerificationService",
-  function($scope,$rootScope,$location,ModalService,templateService,walletService,paymentVerificationService){
-  
-  $scope.fee = templateService.holdDocInView.fee;
-  $scope.intro = templateService.holdDocInView.intro; 
-  $scope.docInfo = templateService.holdDocInView;
+  "templateService","walletService","paymentVerificationService","consultationAccptanceService",
+  function($scope,$rootScope,$location,ModalService,templateService,walletService,
+    paymentVerificationService,consultationAccptanceService){
+
+  $scope.docInfo = $rootScope.holdDocInView;
   $scope.isViewDoc = true;
+  $scope.isOTP = false;
+
   var User = paymentVerificationService; //walletService.resource("/user/payment/verification",{userId: null},{verify:{method:'POST'}});
   $scope.accept = function(){
     $scope.isViewDoc = false;
@@ -5853,34 +5861,144 @@ app.controller("PatientViewResponseModalController",["$scope","$rootScope","$loc
   }
 
   $rootScope.sendAcceptanceVerification = function(time){ //this function is all availabe on wallet controller
+    $scope.msg = "";
+    $scope.loading = true;
     var timeStamp = + new Date();
     if(templateService.holdDocInView);
-    templateService.sendObj = {
+    /*templateService.sendObj = {
       user_id: $scope.docInfo.user_id,
       date_of_acceptance : timeStamp,
       firstname: $scope.docInfo.name,
       lastname: $scope.docInfo.lastname,
       profile_pic_url: $scope.docInfo.profile_pic_url,
-      specialty:  $scope.docInfo.specialty,
-      compaintId : templateService.holdData.complaint_id
-    }
+      specialty: $scope.docInfo.specialty,
+      compaintId: templateService.holdData.complaint_id
+    }*/
 
      
     $rootScope.resend = timeStamp //time stamp use to check resend for an otp. this will find the previously sent otp and delete.
     var payObj = {
-      amount: templateService.holdRawAmount,
+      amount: $scope.docInfo.fee,
       time: timeStamp,
       old_time: time
     }
 
     
     var send = User.verify(payObj,function(data){
-      alert(data.message);
+      $scope.loading = false;
+      $scope.msg = data.message;
       if(data.success){
-        $location.path("/user-otp");
+        //$location.path("/user-otp");
+        $scope.isOTP = true;
       }
     });
   }
+
+  $scope.pay = {}
+
+
+  $scope.confirmAcceptance = function() {
+    $scope.loading = true;
+    var resource = consultationAccptanceService;
+
+    var date = + new Date();
+    var pin = $scope.pay.acceptanceOtp;
+    var str = "";
+    var count = 0;
+    for(var i = 0; i < pin.length; i++){
+        count++;      
+        if(count % 3 === 0) {
+          str += pin[i];
+          str += " ";
+        } else {
+          str += pin[i];
+        }
+     }
+
+    var newStr = str.replace(/\s*$/,"");//removes empty string by the end of character
+    //var receiver = templateService.sendObj.user_id || templateService.sendObj.receiverId;
+
+    var payObj = {
+      amount: $scope.docInfo.fee,
+      otp: newStr,
+      date: date,
+      message: "Consultation fee",
+      userId: $scope.docInfo.doctor_user_id,
+      sendObj: {
+        doctor_id: $scope.docInfo.doctor_user_id,
+        date_of_acceptance: $scope.docInfo.date,
+        doctor_firstname: $scope.docInfo.doctor_name,
+        doctor_lastname:  $scope.docInfo.lastname,
+        doctor_name: $scope.docInfo.doctor_name,
+        doctor_profile_pic_url: $scope.docInfo.doctor_profile_pic_url,
+        service_access: true,
+        doctor_specialty: $scope.docInfo.doctor_specialty,
+        compaintId: $scope.docInfo.complaint_id,
+        user_id: $scope.docInfo.doctor_user_id
+      }
+    }
+
+    $scope.loading = true;
+    var confirmed = resource.confirmed(payObj,function(data){
+      $scope.loading = false;
+      $scope.msg = data.message;
+      if(data.balance) {
+        $rootScope.balance = "NGN " + data.balance.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");          
+        if($rootScope.msgLen > 0)
+          $rootScope.msgLen--;
+        //$location.path(templateService.holdCurrentPage);
+        
+        /*updateDocList.query(null,function(data){            
+          $rootScope.patientsDoctorList = data;
+        });*/
+      }
+    });
+
+  }
+
+
+ /* $scope.$watch("pay.acceptanceOtp",function(newVal,oldVal){    
+    if(newVal > oldVal && $scope.pay.acceptanceOtp.length === 6){
+      var date = + new Date();
+      var pin = $scope.pay.acceptanceOtp;
+      var str = "";
+      var count = 0;
+      for(var i = 0; i < pin.length; i++){
+        count++;      
+        if(count % 3 === 0) {
+          str += pin[i];
+          str += " ";
+        } else {
+          str += pin[i];
+        }
+      }
+      var newStr = str.replace(/\s*$/,"");//removes empty string by the end of character
+      var receiver = templateService.sendObj.user_id || templateService.sendObj.receiverId;
+      var payObj = {
+        amount: templateService.holdRawAmount,
+        otp: newStr,
+        date: date,
+        message: "Consultation fee",
+        userId: receiver,
+        sendObj: templateService.sendObj
+      }
+      $scope.loading = true;
+      var confirmed = Debitor.confirmed(payObj,function(data){
+        $scope.loading = false;
+        alert(data.message);
+        if(data.balance) {
+          $rootScope.balance = "NGN" + data.balance.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");          
+          if($rootScope.msgLen > 0)
+            $rootScope.msgLen--;
+          //$location.path(templateService.holdCurrentPage);
+          
+          updateDocList.query(null,function(data){            
+            $rootScope.patientsDoctorList = data;
+          });
+        }
+      });
+    }
+  });  */
 
   /*
     "doctor_id" : "161792665",
@@ -6193,7 +6311,7 @@ app.service("getMyDoctorService",["$resource",function($resource){
 }]);
 
 app.service("consultationAccptanceService",["$resource",function($resource){
-  return resource("/user/patient/consultation-acceptance/confirmation",{userId: null},{confirmed:{method:'POST'}});
+  return $resource("/user/patient/consultation-acceptance/confirmation",{userId: null},{confirmed:{method:'POST'}});
 }]);
 
 
@@ -16160,7 +16278,6 @@ app.controller("hompageController",["$scope","scanTests","cities","labTests","Dr
         break;
         case 'Radiology':
           homePageDynamicService.query($rootScope.user,function(data){
-            console.log(data)
             $scope.itemList = scanTests.listInfo1.concat(scanTests.listInfo2,scanTests.listInfo3,
             scanTests.listInfo4,scanTests.listInfo5,scanTests.listInfo6,data);
           });        

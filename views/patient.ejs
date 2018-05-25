@@ -1236,85 +1236,43 @@
     -->
 
     <script type="text/ng-template" id="view-dco-profile-modal.html">  
-
-
      <div class="modal fade">
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-          <div class="row">
-            <div  style="text-align:right">
-                <i class="fa fa-times"  data-dismiss="modal" aria-hidden="true" style="font-size: 22px;padding-right: 30px"></i>                
-              </div>                               
+              <div class="row">
+                <div  style="text-align:right">
+                    <i class="fa fa-times"  data-dismiss="modal" aria-hidden="true" style="font-size: 22px;padding-right: 30px"></i>                
+                  </div>                               
+              </div>
           </div>
-          <div class="row">
+          <div class="modal-body p-2">
             <div>
-                <div class="modal-body pb-3"style="height:550px; overflow-y:scroll; overscroll-x:hidden;">
-                                      
-                    <div class="row p-0" ng-if="isViewDoc === true">
-                        <div class=" col-md-3 col-sm-12">
-                            <div class="tg-widget tg-widget-doctor">
-                                <figure class="tg-docprofile-img">
-                                    <figcaption>
-                                    <span></span>                                                    
-                                    </figcaption>
-                                   
-                                    <img alt="image description" src="assets/img/avatar.jpg" ng-src="{{docInfo.profile_pic_url}}">                                  
-                                </figure>
-                                <h6>{{message}}</h6>    
-                            </div>
-                        </div>
-                        <div class=" col-md-9 col-sm-12 p-0">
-                            <h4 class="font-1_4">Dr. {{docInfo.firstname}} {{docInfo.lastname}}</h4>
-                             <h6 class="text-muted pb-1" style="border-bottom: 1px solid rgba(0,0,0,0.2);">{{docInfo.specialty}}</h6></div>
-                        </div>
-                            <div><b>Place of work:</b> <span style="font-weight: 200; ">{{docInfo.work_place}}</span> </div> 
-                            <div><b>Address: </b> <span style="font-style:italic; font-size:12px">{{docInfo.address}}</span></div>                 
-                            <div><b>City:</b> <span >{{docInfo.city}}</span>  <span class="col-md-6 p-0 pull-right"><b>Country:</b> <span >{{docInfo.country}}</span></span></div>
-                            <div><b>Experience: </b><span >{{docInfo.experience + " years"}}</span></div>                            
-                            <div><b>Office hours:</b> <span ng-repeat="hour in docInfo.office_hour">{{hour}}kjshhds</span></div>
-                            <div><b>Education:</b> <span ng-repeat="edu in docInfo.education" >{{edu}}hjds</span></div>
-                            <div><b>Honors &amp; awards:</b> <span ng-repeat="award in docInfo.awards" >{{award}}</span></div>
-                            <div><b>Rating:</b> <span></span></h6>
-                            <div><b>Consultation Fee:</b> <span style="color:green;font-size:18px"> {{fee}}</span></h6>  
-                                   
-                            <ul class="nav">        
-                                <li ng-repeat = "i in docInfo.office_hour "><span>{{i.day}}</span>, <span>from {{i.from}}</span> <span>to {{i.to}}</span></li> 
-                            </ul>
-                            <h6 class="mt-1">Brief introductory to your history</h6>
-                            <div style="padding: 10px;min-height: 50px; max-height:200px;">{{intro}}jnshghghghdsghgdshghdshhdsdhgdsghgdshghdsgghgdshdshdgshhg</div>
-                            <div class="in-patient-com">
-                                <small> <b>Chat, make video call, audio call, share files, receive prescriptions online</b>
-                                 and more if you accept Dr {{docInfo.firstname}}</small>
-                                <div class="clearfix"></div>
-                                <div class="col-md-12">
-                                <button class="btn btn-success" ng-click="accept()" data-dismiss="modal">Accept</button>     
-                                </div>             
-                              
-                        </div>  
-                        <div class="clearfix"></div>  
-                    </div>
-                    <hr>
-                    <div class="clearfix"></div>
-                    <div class="col-md-12 p-0 mb-1" ng-if="isToConfirm === true">
-                        <div><b>By Accepting</b></div>
-                        <ul class="nav">
-                            <li>You agree to our terms and condition</li>
-                            <li>One time pin will be sent to you for payment confirmation</li> 
-                            <li>{{fee}} consultation fee amount will be deducted from your wallet</li>                                         
-                        </ul>
-                        <div class="col-sm-12 pb-1" style="height:50px; margin-bottom:30px;">
-                            <button class="btn btn-primary" ng-click="sendAcceptanceVerification()" data-dismiss="modal">OK</button> 
-                        </div>
-                    </div>
-
-                </div> 
+                <img src="{{docInfo.profile_pic_url}}" style="max-height: 75px;max-width: 75px;float: left;">
+                <div style="display: inline-block;float: left;padding-left: 10px">
+                    <strong class="font-1_3" style="font-size: 20px">{{docInfo.title}} {{docInfo.firstname}} {{docInfo.lastname}}</strong>
+                    <span style="display: block;font-size: 18px" class="font-1-2">{{docInfo.specialty}}</span>
+                </div>
             </div>
+            <div class="clearfix"></div>
+            <div class="pt-1">
+                <div><b>Place of work:</b> <span>{{docInfo.work_place}}</span> </div> 
+                <div><b>Address: </b> <span>{{docInfo.address}}</span></div> 
+                <div><b>City:</b> <span>{{docInfo.city}}</span>  </div>
+                <div><b>Country:</b> <span>{{docInfo.country}}</span></div>
+                <div><b>Experience: </b><span>{{docInfo.experience + " years"}}</span></div>
+
+                <div><b>Office hours:</b> <span ng-repeat="hour in docInfo.office_hour">{{hour.day}},from {{hour.from | date: 'shortTime'}} to {{hour.to | date: 'shortTime'}}</span></div>
+                <div><b>Education:</b> <span ng-repeat="edu in docInfo.education" style="display: block;">{{edu.school}} <br> {{edu.start_year | date: "mediumDate"}} to {{edu.end_year | date: "mediumDate"}} <br> {{edu.certificate}}</span></div>
+                <!--<div><b>Honors &amp; awards:</b> <span ng-repeat="award in docInfo.awards" >{{award}}</span></div>-->
+                <!--<div><b>Rating:</b> <span></span></h6>-->
+                <div><b>Consultation Fee:</b> <span style="color:green;font-size:18px"> {{consultfee}}</span></div>                                                 
+            </div>
+            
           </div>         
         </div>
       </div>
     </div>
-
     </script>
 
     <script type="text/ng-template" id="skill-modal.html">
@@ -1571,59 +1529,47 @@
     </div>-->
 
 
-    <script type="text/ng-template" id="acceptance-notification.html">
-         
+    <script type="text/ng-template" id="acceptance-notification.html">       
 
         <div class="modal fade">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">By Accepting</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <ul class="nav">
-                    <li>You agree to our terms and condition</li>
-                    <li>One time pin will be sent to you for payment confirmation</li>
-                    <li>{{fee}} consultation fee amount will be deducted from your wallet</li> 
-                                 
-                </ul>
-      </div>
-      <div class="modal-footer">
-       
-       <button class="btn btn-primary pull-right" ng-click="sendAcceptanceVerification()" data-dismiss="modal">OK</button> 
-      </div>
-    </div>
-  </div>
-</div>
-
-<!--<div class="modal fade">
           <div class="modal-dialog">
             <div class="modal-content">
               <div class="modal-header">
-              <div class="row" style="text-align:right">
-                <i class="fa fa-times"  data-dismiss="modal" aria-hidden="true"style="color:black;font-size: 22px;padding-right: 30px"></i>                
+                <h5 class="modal-title">Acceptance</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
               </div>
               <div class="modal-body">
-                <h5>By accepting</h5>
-                <ul>
-                    <li><strong>You agree to our terms and condition</strong></li>
-                    <li><strong>One time pin will be sent to you for payment confirmation</strong></li>
-                    <li><strong>{{fee}} consultation fee amount will be deducted from your wallet</strong></li> 
-                                 
-                </ul>
-                <div style ="text-align:center;margin-top:20px">
-
-                    <button class="btn btn-primary" ng-click="sendAcceptanceVerification()" data-dismiss="modal">OK</button> 
+                <div class="p-2">
+                   <img src="{{docInfo.doctor_profile_pic_url}}" style="max-height: 72px;max-width: 72px;float: left;"> 
+                   <div style="display: inline-block;float: left;padding-left: 10px">
+                       <strong>{{docInfo.doctor_name}}</strong>
+                       <span style="display: block;">{{docInfo.doctor_specialty}}</span>
+                       <span>Consultaion fee: <b>{{docInfo.strAmount}}</b></span>
+                   </div> 
+                </div>
+                <div class="clearfix"></div>
+                <div class="p-2" style="text-align: center;padding-top: 10px">
+                    <span class="text-white bg-success" ng-if="msg" style="display: block;width: 90%;margin: 0 auto;padding: 5px">{{msg}}</span>
+                    <label class="font-1-2">You want to accept this doctor and pay the consultation fee above?</label>
+                    <div class="p-2" ng-if="isOTP" style="text-align: center;">
+                        <span style="display: block;padding: 10px">Enter OTP sent to {{checkLogIn.phone}} below</span>
+                        <input type="text" name="" class="form-control" placeholder="Enter otp" ng-model="pay.acceptanceOtp">
+                        <a href="" style="float: right;color: blue" class="pt-1" ng-click="sendAcceptanceVerification(resend)">resend OTP</a>
+                    </div>
+                    <div class="pt-1">                        
+                        <button class="btn btn-success btn-lg" ng-if="isOTP" ng-click="confirmAcceptance()"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i>{{(loading) ? '' : "Continue"}}</button>
+                        <button class="btn btn-success btn-lg" ng-if="!isOTP" ng-click="sendAcceptanceVerification()"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i> {{(loading) ? "" : 'Yes, accept!'}}</button>
+                    </div>
                 </div>
               </div>
-              
+              <!--<div class="modal-footer">       
+               <button class="btn btn-primary pull-right" data-dismiss="modal">cancel</button> 
+              </div>-->
             </div>
           </div>
-        </div>-->
-
+        </div>
 
      </script>
 
