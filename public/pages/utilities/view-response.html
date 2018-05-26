@@ -50,7 +50,7 @@
 
 			<span style="display: block;padding-top: 10px">
 			
-				<a href="" ng-click="acceptDoc(doc)" style="color: green;" class="btn btn-simple btn-sm"><b>Accept</b></a>&nbsp;&nbsp;
+				<a href="" ng-click="acceptDoc(doc)" ng-if="!hasComplete" style="color: green;" class="btn btn-simple btn-sm"><b>Accept</b></a> <i class="fa fa-check" ng-if="hasComplete"> {{hasComplete}}</i>&nbsp;&nbsp;
 				<!--<a href="" ng-click="declineDoc(doc.doctor_user_id)" class="btn btn-simple btn-sm" style="color: red;">Decline</a>&nbsp;&nbsp;-->
 				<a href="" ng-click="viewDocProfile(doc.doctor_user_id)" class="btn btn-simple btn-sm" style="color: blue;">View profile</a> 
 			</span>

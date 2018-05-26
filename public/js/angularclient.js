@@ -5952,6 +5952,7 @@ app.controller("PatientViewResponseModalController",["$scope","$rootScope","$loc
           getMyDoctorService.query(null,function(data){            
             $rootScope.patientsDoctorList = data;
           });
+          $rootScope.hasComplete = "Consultation accepted!";
         }
       });
 

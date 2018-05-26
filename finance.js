@@ -492,7 +492,8 @@ var basicPaymentRoute = function(model,sms,io,paystack){
 					/*data.save(function(err,info){
 						if(err) throw err;
 					});*/
-				} else {					
+				} else {			
+				console.log(data)		
 					//check is is the right otp for a user
 					if(data.user_id === req.user.user_id) {
 						//do the actual transaction. success!
