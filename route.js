@@ -5700,7 +5700,7 @@ router.post("/user/response/patients-histories",function(req,res){
           res.send({error:"user not found!"})
           return;
         }
-        
+
         req.body.doctor_name = data.title + " " + data.firstname + " " + data.lastname;
         req.body.doctor_profile_pic_url = data.profile_pic_url;
         req.body.doctor_profile_url = data.profile_url;
@@ -5766,7 +5766,11 @@ router.post("/user/response/patients-histories",function(req,res){
       });
     });
   } else {
-    res.send({error: "Unauthorized access!!!. You are not a doctor."});
+      if(!req.user){
+        res.send({error: "Oops!Request NOT submitted! Your session has expired because you have been idle for a while.Please refresh and log in then continue."})
+      } else {
+        res.end("Error 403: You are not unathorized to view this page");
+      }
   }
 });
 

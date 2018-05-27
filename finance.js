@@ -481,7 +481,7 @@ var basicPaymentRoute = function(model,sms,io,paystack){
 	/*this route handles the patient accepting consultation fee. the patient wallet will be debited and doctor's wallet credited slightly*/
 	
 	router.post("/user/patient/consultation-acceptance/confirmation",function(req,res){
-		console.log(req.body);
+	
 
 		if(req.user && req.body && req.body.userId !== req.user.user_id && req.body.otp && req.user.type === "Patient"){
 			model.otpSchema.findOne({otp:req.body.otp}).exec(function(err,data){
@@ -627,7 +627,11 @@ var basicPaymentRoute = function(model,sms,io,paystack){
 
 
 		} else {
-			res.send("You are not registered as a patient or not a patient in this platform");
+			if(!req.user){
+				res.send({message: "Oops!Seems you session has expired because you have been idle for a while.Please refresh and log in"})
+			} else {
+				res.end("Error 403: You are not unathorized");
+			}
 		}
 	});
 

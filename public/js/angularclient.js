@@ -15524,9 +15524,8 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
           mySocket.emit("patient disconnect",$scope.checkLogIn);
         }
       }
-      $window.location.href = "/user/logout";
+      //$window.location.href = "/user/logout";
     });
-   
     destroyStorage();
   }
 
