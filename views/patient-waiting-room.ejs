@@ -39,13 +39,14 @@
 
             blockquote {
                 text-indent: 20px;
-                padding: 15px 0 5px;
+                padding: 15px 5px 5px;
                 background-color: lightYellow;
-                font-style: italic;
+                font-style: normal;
+
             }
 
              .pagination li{
-border-radius: 30px;
+                border-radius: 30px;
              }
         </style>
 
@@ -143,8 +144,8 @@ border-radius: 30px;
                                             
                                             <div style="width: 80%;display: inline-block;padding: 15px;position: relative;">
                                                 <header style="position: relative;">
-                                                        <b style="color: #000;font-size: 12px;width:400px;display: inline-block">Symptoms | <span ng-repeat="symptom in i.symptoms" ng-cloak>{{symptom}} &nbsp;</span></b><br>
-                                                        <time  am-time-ago="i.sent_date" style="position: absolute;right: 0;top:2px;font-size: 12px"></time>
+                                                        <b style="color: #000;font-size: 12px;width:400px;display: inline-block" ng-if="i.symptoms.length > 0">Symptoms | <span ng-repeat="symptom in i.symptoms" ng-cloak>{{symptom}} &nbsp;</span></b><br>
+                                                        <time  am-time-ago="i.sent_date" style="position: absolute;right: 0;top:2px;font-size: 12px;font-weight: bold;"></time>
                                                 </header>
                                                  <p class="pt-1" ng-bind-html = "i.description">
                                                         

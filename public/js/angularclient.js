@@ -14401,6 +14401,8 @@ function($scope,$location,$window,$http,templateService,localManager,templateUrl
     $scope.earMsg = "";
     $scope.eyeMsg = "";
     $scope.teeMsg = "";
+    $scope.lmpMsg = "";
+    $scope.getPregnantMsg = "";
 
     if($scope.user.sick) {
       if(!$scope.symptomsList[0].name || $scope.symptomsList[0].name === "") {
@@ -14421,6 +14423,19 @@ function($scope,$location,$window,$http,templateService,localManager,templateUrl
         $scope.accMsg = "Please write the injuries sustained.";
         return false;
       }
+    }
+
+    if($scope.user.getPregnant) {
+      if(!$scope.user.getPregIssue) {
+        $scope.lmpMsg = " Please select when you had your last menstruation."
+        return false;
+      }
+
+      if(!$scope.user.lmp) {
+         $scope.user.getPregnantMsg = "Please briefly explain the problem you're having with pregnacy."
+         return false;
+      }
+     
     }
 
     if($scope.user.stroke) {
@@ -14458,8 +14473,8 @@ function($scope,$location,$window,$http,templateService,localManager,templateUrl
 
   var sendComplait  = function(){
 
-    if($scope.user.sick) {
-        $scope.user.description = "";
+    $scope.user.description = "";
+    if($scope.user.sick) {        
         /*var str = "";
         for(var i = 0; i < $scope.symptomsList.length ; i++) {
           str += $scope.symptomsList[i].name + "<br>";
@@ -14481,6 +14496,22 @@ function($scope,$location,$window,$http,templateService,localManager,templateUrl
 
         
       } 
+
+      if($scope.user.getPregnant){
+
+        if($scope.user.getPregIssue) {
+           $scope.user.description += "This patient wants to <b>get pregnant</b> <br>Brief issue this patient has with pregnancy was stated as written: <br>" +
+           "<blockquote>" + $scope.user.getPregIssue + ".</blockquote>";
+        }
+
+        if($scope.user.lmp){
+          if($scope.user.lmp === 'I am in menopause') {
+             $scope.user.description += "<br>This patient is in <b> menopause</b> ";
+          } else {
+             $scope.user.description += "<br>This patient last <b> menstruation </b> was <b> " +  $scope.user.lmp + "</b><br>";
+          }
+        }
+      }
 
       if($scope.user.pregnant) {
         $scope.user.description += "This patient is  <b> " + $scope.user.duration + " pregnant</b>.<br>";
@@ -14537,7 +14568,8 @@ function($scope,$location,$window,$http,templateService,localManager,templateUrl
     };
 
     for(var i = 0; i < data.symptoms.length; i++){
-      fd.append("symptoms", data.symptoms[i].name);
+      if(data.symptoms[i].name)
+        fd.append("symptoms", data.symptoms[i].name);
     }
 
     //validate the files picked.
