@@ -192,7 +192,7 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
   //Tickets is created for every queestion and it intend to be display on a page where answers can follow.
   router.post("/messages",function(req,res){
     if(!req.body.ticket) {    
-      var ticket = "#" + Math.floor(Math.random() * 99999999999);
+      var ticket = "#" + parseInt(Math.floor(Math.random() * 99999) + " " + Math.floor(Math.random() * 99999));
       var date = + new Date();
       var msgObj = new model.messages({
         names: req.body.names,
@@ -363,7 +363,7 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
       if(req.body.type == "procedure"){
         model.user.findOne({user_id: req.user.user_id},{skills:1}).exec(function(err,data){
           if(err) throw err;
-          var random = Math.floor(Math.random() * 99999999);
+          var random = parseInt(Math.floor(Math.random() * 99999) + " " + Math.floor(Math.random() * 99999));
           //add files associated with this skill.
           var description = req.body.skill + ": ( " + req.body.disease + " ); "  + req.body.description;
           var procedure = {
@@ -518,7 +518,7 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
        //email will be sent;
 
       //otp will be generated;
-      console.log(testPhone);
+     
 
       res.render("auth-change");
 
@@ -555,7 +555,7 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
         model.authCheck.findOne({pin:req.body.pin,user_id:req.user.user_id},function(err,record){
            
             if(record) {
-              var genPin = Math.floor(Math.random() * 999999);
+              var genPin = parseInt(Math.floor(Math.random() * 99999) + " " + Math.floor(Math.random() * 9999));
              
               var testPhone = new model.verifyPhone({
                 phone: req.body.phone,
@@ -1302,7 +1302,7 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
                     if(result) {
                       var date = + new Date();
                       req.body.service_access = true;
-                      var random = Math.floor(Math.random() * 999999999); // use for check on the front end to distinguish messages sent.
+                      var random = parseInt(Math.floor(Math.random() * 9999) + " " + Math.floor(Math.random() * 99999)); // use for check on the front end to distinguish messages sent.
                         result.patient_mail.push({
                         message_id: random.toString(),
                         user_id: req.user.user_id,
@@ -1356,7 +1356,7 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
 
     router.put("/user/doctor/decline-request",function(req,res){
       if(req.user) {
-       var random = Math.floor(Math.random() * 9999999);
+       var random = parseInt(Math.floor(Math.random() * 99999) + " " + Math.floor(Math.random() * 99999));
         model.user.findOne({user_id: req.body.sender_id},{patient_mail:1}).exec(function(err,patient){
           if(err) throw err;
           if(patient) {
@@ -1812,7 +1812,7 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
 
           }).exec(function(err,pharmacy){
             var date = new Date();
-            var note_id = Math.floor(Math.random() * 9999999);
+            var note_id = parseInt(Math.floor(Math.random() * 99999) + " " + Math.floor(Math.random() * 99999));
             var title = (req.user.type === "Doctor") ? req.user.title : req.user.name;            
             var refObj = {
               ref_id: req.body.ref_id,              
@@ -1877,7 +1877,7 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
             if(req.body.ref_id) {
               ref_id = req.body.ref_id;
             } else {
-              ref_id = Math.floor(Math.random() * 9999999);
+              ref_id = parseInt(Math.floor(Math.random() * 99999) + " " + Math.floor(Math.random() * 99999));
             }
             
             var preObj = {              
@@ -2084,6 +2084,7 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
 
     //prescription fowarded by the doctor to a patient inbox
     router.put("/user/patient/forwarded-prescription",function(req,res){   
+      console.log(req.body);
       var provisionalDiagnosis = (req.body.treatment) ? req.body.treatment.provisionalDiagnosis : null;
       var complain = (req.body.treatment) ? req.body.treatment.complain : null;
       if(req.user){  
@@ -2112,7 +2113,7 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
               doctor_country: req.user.country,
               lab_analysis: req.body.lab_analysis,
               scan_analysis: req.body.scan_analysis,
-              Doctor_profile_pic_url: req.user.profile_pic_url,
+              doctor_profile_pic_url: req.user.profile_pic_url,
               patient_id: req.body.patient_id,
               patient_profile_pic_url: req.body.patient_profile_pic_url,
               patient_firstname: req.body.firstname,
@@ -2509,7 +2510,7 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
     router.post("/user/doctor/patient-session",function(req,res){
       if(req.user){ 
 
-        var session_id = parseInt(Math.floor(Math.random() * 999999) + "" + Math.floor(Math.random() * 999999));
+        var session_id = uuid.v1() //parseInt(Math.floor(Math.random() * 999999) + "" + Math.floor(Math.random() * 999999));
         
         var connectObj = {
           presenting_complain: req.body.complain,
@@ -2654,7 +2655,7 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
               record.doctor_patient_session[0].profilePic = getPatientInfo.profilePic;
              
             }
-            console.log(record.doctor_patient_session[0]);
+            
             record.save(function(err,info){
               if(err) throw err;
               console.log("appointment saved!"); 
@@ -2813,7 +2814,7 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
           req.body.appointment.firstname = req.user.firstname;
           req.body.appointment.lastname = req.user.lastname;
           req.body.appointment.address = req.body.appointment.address || req.user.address;
-          req.body.appointment.title = "Dr";
+          req.body.appointment.title = req.user.title;
           req.body.appointment.profilePic = req.user.profile_pic_url;   
           model.user.findOne({user_id:req.body.patient_id},{appointment:1}).exec(function(err,result){            
             if(err) throw err;
@@ -3773,7 +3774,6 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
 
     router.put("/user/doctor/treatment-plan",function(req,res){
       if(req.user) {
-        console.log(req.body);
         model.user.findOne({user_id: req.user.user_id},{doctor_patient_session:1}).exec(function(err,data){
             if(err) throw err; 
 
@@ -5004,7 +5004,7 @@ router.put("/user/test-search/laboratory/referral",function(req,res){
             clinical_summary: req.body.clinical_summary,
             indication: req.body.indication,
             lmp: req.body.lmp,
-            test_id: Math.floor(Math.random() * 999999999),
+            test_id: parseInt(Math.floor(Math.random() * 99999) + " " + Math.floor(Math.random() * 99999)),
             parity: req.body.parity,
             attended: false
           }             
@@ -5228,7 +5228,7 @@ router.put("/user/scan-search/radiology/referral",function(req,res){
             clinical_summary: req.body.clinical_summary,
             indication: req.body.indication,
             lmp: req.body.lmp,
-            test_id: Math.floor(Math.random() * 999999999),
+            test_id: parseInt(Math.floor(Math.random() * 99999) + " " + Math.floor(Math.random() * 99999)),
             parity: req.body.parity,
             attended: false
           }             
@@ -5716,13 +5716,13 @@ router.post("/user/response/patients-histories",function(req,res){
             if(checkIsMyDoctor === -1){              
               found.response.push(req.body);
               var date = + new Date();
-              var msg = "(" + found.response.length + ") Doctors" + " has responded to your complain.";
+              var msg = "(" + found.response.length + ") Doctors" + " have responded to your complain.";
               var checkComplain = patient.patient_mail.map(function(x){return x.complaint_id}).indexOf(req.body.complaint_id);
               if(checkComplain !== -1){
                 var complain = patient.patient_mail[checkComplain];
                 complain.message = msg;
               } else {
-                msg = "1 Doctor has responded for the complain ";
+                msg = "1 Doctor has responded to your complain ";
                 patient.patient_mail.push({
                   category: "need_doctor",
                   date: date,
@@ -5829,6 +5829,7 @@ router.get("/user/patient/get-my-doctors",function(req,res){
           count++
         }       
         res.send(sendList);
+        console.log(sendList)
       });      
     });
   } else {

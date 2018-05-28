@@ -212,7 +212,7 @@ var myModel = function () {
 		date: String,
 		note_id: Number,
 		ref_id: Number,
-		session_id: Number,
+		session_id: String,
 		type: String,
 		message: String
 	});
@@ -269,7 +269,7 @@ var myModel = function () {
 		receive_date: String,
 		report: String,
 		conclusion: String,
-		session_id: Number,
+		session_id: String,
 		files: Array,
 		history: String,
 		payment_acknowledgement: Boolean //use to check if patient have actually paid for a service.
@@ -288,7 +288,7 @@ var myModel = function () {
 		patient_gender: String,
 		patient_age: String,
 		patient_phone: String,
-		session_id: Number,
+		session_id: String,
 		patient_id: String,
 		test_id: Number,
 		patient_address: String,
@@ -339,7 +339,7 @@ var myModel = function () {
 		title: String,
 		patient_id: String,
 		address: String,
-		session_id: Number,
+		session_id: String,
 		typeOfSession: String,
 		profilePic: String
 	});
@@ -403,7 +403,7 @@ var myModel = function () {
 	var sessionSchema = Schema({
 		date: String,
 		last_modified: String,
-		session_id: Number,
+		session_id: String,
 		patient_id: String,
 		profilePic: String,
 		patient_firstname: String,

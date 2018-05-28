@@ -5949,7 +5949,8 @@ app.controller("PatientViewResponseModalController",["$scope","$rootScope","$loc
             $rootScope.msgLen--;
           //$location.path(templateService.holdCurrentPage);
           
-          getMyDoctorService.query(null,function(data){            
+          getMyDoctorService.query(null,function(data){   
+            console.log(data)         
             $rootScope.patientsDoctorList = data;
           });
           $rootScope.hasComplete = "Consultation accepted!";
@@ -6400,7 +6401,7 @@ app.controller("walletController",["$scope","$http","$rootScope","$location","Mo
   //Javascript function that is called if the customer closes the payment window 
   $scope.close = function () {
     //alert("Paystack closed")
-    delete $scope.paystackLoad;
+    $scope.paystackLoad = "";
   };
 
   function verifyTransaction(data) {
@@ -6415,7 +6416,8 @@ app.controller("walletController",["$scope","$http","$rootScope","$location","Mo
         var whole = Math.round(data.balance);
         var format = "NGN" + whole.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
         $rootScope.balance = format;
-        $rootScope.alertService(3,data.message);   
+        $rootScope.alertService(3,data.message);
+        $scope.paystackLoad = ""; 
       } else {
          alert(data.message)               
       }
@@ -8944,7 +8946,7 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
   var path = localManager.getValue("currentPage");
   var arr = path.split("/");  
   var userId = arr[arr.length-1];
-  var random =parseInt(Math.floor(Math.random() * 99999) + "" + Math.floor(Math.random() * 999999));
+  
   var sessionId = parseInt(Math.floor(Math.random() * 99999) + "" + Math.floor(Math.random() * 999999));
   patient.id = templateService.holdIdForSpecificPatient || userId;
   $rootScope.holdId =  patient.id;
@@ -8954,7 +8956,7 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
   getPatientData.get(patient,function(data){  
     $scope.patientInfo = data; 
     $rootScope.patientInfo = data       
-    patient.prescriptionId = random;
+    //patient.prescriptionId = random;
     patient.patient_id = patient.id;    
     patient.firstname = $scope.patientInfo.firstname;
     patient.lastname = $scope.patientInfo.lastname;
@@ -9004,7 +9006,6 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
         if(data === "deleted" && $rootScope.message1){
           $rootScope.message1.splice(0);
         }
-        console.log("Chats " + data)
       });
     }
   }
@@ -9044,7 +9045,6 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
     elem.innerHTML = "";
     elem.innerHTML += " &nbsp;&nbsp;&nbsp;SEEN! ";
     //mySocket.emit("save message",msg);//this saves the message as double mark
-    
   });
 
   $scope.sendChat2 = function(){    
@@ -9313,42 +9313,49 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
 
     //creates drug object for the ng-repeat on the view.
     $scope.drugs = Drugs;
-    var drug_name;
-    var index;
-    $scope.getDrug = function(drugName){
+    
+    var count = {}; 
+    var drug = {};     
+    count.num = 1;
+    drug.sn = count.num;
+   
+    $scope.drugList = [drug];
+  
+
+    /*$scope.getDrug = function(drugName){
       drug_name = drugName;
       if($scope.drugList.length === 1)
         $scope.drugList[0].drug_name = drugName;
       if( $scope.drugList.length > 1)
-        $scope.drugList[index].drug_name = drugName;
-    }
+        $scope.drugList[pos.index].drug_name = drugName;
+    }*/
 
-    var drug = {};
-    var count = {};
-    count.num = 1;
-    drug.sn = count.num;
-    $scope.drugList = [drug]; // this populates the array for the view ng-repeat. this is the prescription body as the doctor writes it.
+    
+     // this populates the array for the view ng-repeat. this is the prescription body as the doctor writes it.
 
     $scope.addDrug = function(){  
       var newDrug = {};         
       count.num++;
       newDrug.sn = count.num;
-      $scope.drugList.push(newDrug);
-      index = $scope.drugList.length - 1;         
+      $scope.drugList.push(newDrug);    
     }
 
     $scope.removeDrug = function(){
       if(count.num > 1){
-        $scope.drugList.pop(drug);
+        $scope.drugList.pop();
         count.num--;
-        index--;
       }
     }
     var finalBody;
-    $scope.$watch("drugList",function(newVal,oldVal){
-      patient.prescriptionBody = newVal;// adds prescription body to the prescription object as the doctor 
+
+   
+    /*$scope.$watch("drugList",function(newVal,oldVal){
+      if(oldVal){
+        patient.prescriptionBody = newVal;
+      }
+      // adds prescription body to the prescription object as the doctor 
     //prepares to send it to the back end.
-    },true)    
+    },true) */   
 
 
     $http({
@@ -9361,16 +9368,36 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
     });
 
     templateService.holdPrescriptionToBeForwarded = patient;
+
+    
+
     $scope.toPatient = function(){
       //doctor creates the prescription object and sends it the the back end. url is "patient/forwarded-prescription", other informations that
       //comes with the prescription object added to the prescription object in the backend.
+
+      var isWritten = chechIfPrescription($scope.drugList)
+
+      if(!isWritten) {
+        alert("Please complete all prescription fields");
+        return false;
+      }
+
+      var random =parseInt(Math.floor(Math.random() * 99999) + "" + Math.floor(Math.random() * 999999));
+      patient.provisional_diagnosis = $scope.treatment.provisionalDiagnosis;
+      patient.prescriptionBody = $scope.drugList;
+      patient.prescriptionId = random;
+      
+     
+
+      $scope.loading = true;
       $http({
         method  : 'PUT',
         url     : "/user/patient/forwarded-prescription",
         data    : patient,
         headers : {'Content-Type': 'application/json'} 
         })
-      .success(function(data) {      
+      .success(function(data) {   
+        $scope.loading = false;   
         alert(data.message);
       });
       
@@ -9379,6 +9406,20 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
     $scope.toPharmacy = function(){
     //doctor creates a prescription object like above but saves it to a service called holdPrescriptionToBeForwarded. which will later be forwarded
     //to the backend after the doctor have searched and found the phamarcy to forward the prescription to. 
+      var isWritten = chechIfPrescription($scope.drugList)
+
+      if(!isWritten) {
+        alert("Please complete all prescription fields");
+        return false;
+      }
+
+      
+
+      var random = parseInt(Math.floor(Math.random() * 99999) + "" + Math.floor(Math.random() * 999999));
+      patient.provisional_diagnosis = $scope.treatment.provisionalDiagnosis;
+      patient.prescriptionBody = $scope.drugList;
+      patient.prescriptionId = random;
+
       $scope.isToPrescribe = false;
       $scope.isSearchToSend = true; 
       $scope.isToViewSession = false;
@@ -9390,6 +9431,18 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
 
     $scope.treatment = {};
     
+    chechIfPrescription = function(data) {
+      if(!data)
+        data = [];
+        console.log(data)
+      for(var i = 0; i < data.length; i++) {
+        if(!data[i].drug_name || !data[i].dosage ||!data[i].frequency || !data[i].duration) {
+          return false;
+        } 
+      }
+
+      return true;
+    }
 
     $scope.goBack = function() {
       $scope.isToPrescribe = true;
@@ -9434,8 +9487,10 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
     }
 
     function getPharmacy() {
+       $scope.isLoading = true;
       var source = getAllPharmacyService; // $resource("/user/patient/getAllPharmacy")
       source.query({city:$scope.treatment.city,country:$scope.treatment.country},function(list){
+        $scope.isLoading = false;
         $scope.searchResult = list;
       })
     }
@@ -9443,6 +9498,7 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
    
 
     $scope.sendDrug = function() {
+      $scope.loading = true;
       patient.treatment = $scope.treatment;
       $http({
         method  : 'PUT',
@@ -9451,8 +9507,9 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
         headers : {'Content-Type': 'application/json'} 
         })
       .success(function(data) {
+        $scope.loading = false;
         if(data.success)   
-          $scope.message = "Prescriptions sent !!"       
+          $scope.message = "Prescription sent !!!" ;     
       });
     }
 
@@ -15524,7 +15581,7 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
           mySocket.emit("patient disconnect",$scope.checkLogIn);
         }
       }
-      //$window.location.href = "/user/logout";
+      $window.location.href = "/user/logout";
     });
     destroyStorage();
   }

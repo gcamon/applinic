@@ -481,7 +481,9 @@ var basicPaymentRoute = function(model,sms,io,paystack){
 	/*this route handles the patient accepting consultation fee. the patient wallet will be debited and doctor's wallet credited slightly*/
 	
 	router.post("/user/patient/consultation-acceptance/confirmation",function(req,res){
-	
+		
+		console.log("===========");
+		console.log(req.body);
 
 		if(req.user && req.body && req.body.userId !== req.user.user_id && req.body.otp && req.user.type === "Patient"){
 			model.otpSchema.findOne({otp:req.body.otp}).exec(function(err,data){
@@ -515,12 +517,12 @@ var basicPaymentRoute = function(model,sms,io,paystack){
 				var DocObj = {					
 					doctor_id: req.body.sendObj.user_id,
 					date_of_acceptance: req.body.sendObj.date_of_acceptance,
-					doctor_firstname: req.body.sendObj.firstname,
-					doctor_lastname:  req.body.sendObj.lastname,
-					doctor_name: req.body.sendObj.name,
-					doctor_profile_pic_url: req.body.sendObj.profile_pic_url,
+					doctor_firstname: req.body.sendObj.firstname || req.body.sendObj.doctor_firstname,
+					doctor_lastname:  req.body.sendObj.lastname || req.body.sendObj.doctor_lastname,
+					doctor_name: req.body.sendObj.name || req.body.sendObj.doctor_name,
+					doctor_profile_pic_url: req.body.sendObj.profile_pic_url || req.body.sendObj.doctor_profile_pic_url,
 					service_access: true,
-					doctor_specialty: req.body.sendObj.specialty,
+					doctor_specialty: req.body.sendObj.specialty || req.body.sendObj.doctor_specialty,
 				}
 
 	             model.user.findOne(

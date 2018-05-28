@@ -28,7 +28,7 @@
              <a href="" class="grayish"  ng-click="viewMedicalHistory()"><i class="fa fa-medkit text-primary"></i> <span>Medical Record</span> </a>
 <a href="" class="grayish" ng-click="viewSession()"><i class="fa fa-folder-open text-info"></i> Treatment Sessions</a>
 
-<a href="" class="grayish" ng-click="writePrescription()"><i class="icon-pill text-primary"></i> Write Prescription</a>
+<a href="" class="grayish" ng-click="writePrescription()"><i class="icon-Pills" style="color: green"></i> Write Prescription</a>
 
 <a href="" class="grayish" ng-click="viewLabPrescriptionRequest()">
 	<i class="fa fa-flask text-info"  style="position:relative">
@@ -70,7 +70,7 @@
         	<div class="panel panel-default">
                 <div class="top-bar" style="border-bottom:1px solid rgba(0,0,0,0.2);box-shadow:0px 5px 5px #ccc">
                     <div class="col-md-7 col-sm-12 col-xs-12">
-                      <button class="btn btn-simple text-danger" style="font-size: 16px" ng-click="chatLive()">Toggle Chat</button> &nbsp;&nbsp;
+                      <button class="btn btn-success btn-sm" style="font-size: 16px" ng-click="chatLive()">Toggle Chat</button> &nbsp;&nbsp;
                         <span class="" style="display:inline-block;" ng-cloak style="font-size: 16px">{{patientInfo.title}} {{patientInfo.firstname}} is <em ng-if="typing">{{typing}}</em> 
                             <em ng-if="patientAvailability && !typing" ng-cloak>Online</em>
                             <em ng-if="!patientAvailability" ng-cloak style="color:red">Offline</em>
@@ -279,20 +279,20 @@
              <h5>Write Prescription</h5>
         </div>   
        
-        <table class="" style="width: 100%">       
+        <table class="tabl" style="width: 100%;">       
             <thead>
                 <th>&nbsp;</th>
-                <th>Drug Name</th>
-                <th>Dosage</th>
-                <th>Frequency</th>
-                <th>Duration</th>
+                <th class="pl-1"> Drug Name</th>
+                <th class="pl-1"> Dosage</th>
+                <th class="pl-1"> Frequency</th>
+                <th class="pl-1"> Duration</th>
             </thead>
         
             <tbody ng-repeat="prescription in drugList">                                
-                <td style="padding-right: 5px">{{prescription.sn}}</td>
+                <td style="padding-left: 10px"><b>{{prescription.sn}}</b></td>
                 <!--<td><textarea ng-model="prescription.drug_name" style="max-width: 200px;max-height: 80px"></textarea></td>-->
-                <td><input name="states" id="states" type="text" placeholder="Enter drug name" ng-model="drug.name" uib-typeahead="drug.name for drug in drugs | filter:$viewValue | limitTo:15" class="form-control">
-                {{getDrug(drug.name)}} </td>
+                <td><input name="states" id="states" type="text" placeholder="Enter drug name" ng-model="prescription.drug_name" uib-typeahead="drug.name for drug in drugs | filter:$viewValue | limitTo:15" class="form-control">
+                </td>
                 <td><input type="text" ng-model="prescription.dosage" class="form-control"></td>
                 <td><input type="text" ng-model="prescription.frequency" class="form-control"></td>
                 <td><input type="text" ng-model="prescription.duration" class="form-control"></td>
@@ -305,32 +305,41 @@
         </div>
         <div>
             <!--<textarea class="form-control p-1" placeholder="Complain" ng-model="treatment.complain"></textarea>-->
-            <textarea class="form-control p-1" placeholder="Provisional diagnosis" ng-model="treatment.provisionalDiagnosis"></textarea>
+            <label style="margin-left: -5px">{{drugList.length + 1}} &nbsp;Provisional Diagnosis: </label>
+            <textarea class="form-control p-1" style="width: 80%;" placeholder="write..." ng-model="treatment.provisionalDiagnosis"></textarea>
         </div>
-        <div> 
-            <button ng-click="toPatient()" class="btn btn-info">Send To Patient</button>
+        <div class="pt-1"> 
+            <button ng-click="toPatient()" class="btn btn-info"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i> {{(loading) ? '' : 'Send To Patient'}}</button>
             <button ng-click="toPharmacy()" class="btn btn-success">Send To Phamarcy</button>
+            <a href="" class="btn btn-danger" ng-click="viewPreviousPrescriptionByDoctor()" style="float:right">{{(isToViewOldPrescription !== true) ? 'View Previous Prescriptions' : 'Close Previous Prescriptions' }}</a>  
         </div>                          
-        <div>
-          <a href="" class="btn btn-danger" ng-click="viewPreviousPrescriptionByDoctor()" style="float:right">{{(isToViewOldPrescription !== true) ? 'View Previous Prescriptions' : 'Close Previous Prescriptions' }}</a>  
+        <div class="clearfix">
+          
         </div>
     
     <div ng-if="isToViewOldPrescription">
     <hr>                   
-        <table ng-repeat="prescription in wroteByThisDoctor" class="table card" style="margin-bottom: 20px;padding: 10px">
-            <thead class="bg-success">                   
-                <td>
-                    <span>{{prescription.title}} {{prescription.doctor_firstname}} {{prescription.doctor_lastname}}</span>
-                    <small style="display: block">{{prescription.doctor_specialty}}</small>
-                    <small>{{prescription.doctor_work_place}} {{prescription.doctor_address}} {{prescription.doctor_city}} {{prescription.doctor_country}}</small>  
+        <table ng-repeat="prescription in wroteByThisDoctor | orderBy: '-date'" class="table table-respnsive card" style="margin-bottom: 20px;padding: 10px">
+            <thead style="background-color: #d7dde4;font-size: 14px">                   
+                <td style="width: 20%">
+                    <label>Prescribed By:</label>
+                    <span style="display: block;">{{prescription.title}} {{prescription.doctor_firstname}} {{prescription.doctor_lastname}}</span>
+                    <small style="display: block">{{prescription.doctor_specialty}}</small>                    
                 </td> 
-                <td>
-                    <small><b>Date</b>: {{prescription.date | date : "mediumDate"}}</small>
-                    <small style="display: block;padding: 10px 0"><b>Diagnosis</b>: {{prescription.provisional_diagnosis || "N/A"}}</small>
+                <td style="width: 25%">
+                    <label>Place of Work: </label>
+                    <small style="display: block;">{{prescription.doctor_work_place}} {{prescription.doctor_address}} {{prescription.doctor_city}} {{prescription.doctor_country}}</small>  
+                                     
                 </td>  
-                <td></td> 
-                <td></td>  
-                <td></td>             
+                <td style="width: 20%">
+                    <label>Diagnosis:</label>
+                     <small style="display: block;padding: 10px 0"> {{prescription.provisional_diagnosis || "N/A"}}</small>
+                </td> 
+                <td style="width: 25%">
+                    <label>Date of Prescription:</label>
+                    <small style="display: block;">{{prescription.date | date : "shortDate"}} ( <span am-time-ago="prescription.date"></span> )</small> 
+                </td>  
+                <td style="width: 10%"></td>             
             </thead>                
             <tbody>
                 <th><strong>S/N</strong></th>
@@ -351,40 +360,46 @@
 </div>
 </section>
 
-<section ng-if="isSearchToSend === true" class="medical-record-Area card p-1">
+<section ng-if="isSearchToSend === true" class="medical-record-Area card p-2">
     <a href="" ng-click="goBack()"><i class="fa fa-arrow-left"></i> Back</a> 
     <div>
        <form>
-           <label>Criteria: </label>
-           <input type="text" name="city" ng-model="treatment.city">
-           <input type="text" name="country" ng-model="treatment.country">
+           <!--<label>Criteria: </label>-->
+           <input type="text" name="city" ng-model="treatment.city" class="form-control" style="width: 30%;display: inline-block;">
+           <input type="text" name="country" ng-model="treatment.country" class="form-control" style="width: 30%;display: inline-block;">
            <input type="button" ng-click="changeOption()" class="btn btn-primary" value="search">
        </form>
        <hr>
        <div class="row">
-        <div class="col-sm-12 col-md-7">
+        <div class="col-sm-12 col-md-7 col-lg-7">
             <div>
                 <input type="text" name="" ng-model="filterResult" placeholder="Filter centers" class="form-control">
            </div>
            <div style="overflow-y: auto; height: 400px">
-               <div ng-repeat="center in searchResult | filter: filterResult" style="padding:10px">
-                   <a href="" ng-click="selected(center)">{{center.name}}<span style="display: block">{{center.address}},{{center.city}},{{center.country}}</span></a>
-               </div>                               
+               <div ng-repeat="center in searchResult | filter: filterResult" style="padding:10px;border-bottom: 1px solid rgba(0,0,0,0.1)">
+                   <a href="" ng-click="selected(center)"><b>{{center.name}}</b>
+                   <span style="display: block" class="fa fa-globe"> {{center.address}},{{center.city}},{{center.country}}</span></a>
+               </div> 
+               <div ng-if="isLoading" style="text-align: center;padding-top: 40px">
+                   <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange" ng-if="isLoading"></i>
+               </div>                              
             </div>
         </div>
-        <div class="col-sm-12 col-md-5" style="padding: 2px">
-            <h5 style="background-color: rgba(0,0,0,0.5);color:#fff;padding: 3px 7px 5px">Selection Info</h5>
+        <div class="col-sm-12 col-md-5 col-lg-5" style="padding: 2px">
+            <div style="background-color: #d7dde4;padding: 3px 7px 5px"><b>Selected Center</b></div>
+            <div class="pl-2" style="line-height: 30px">
+            <strong style="display: block;margin-top: 5px">{{pickedCenter.name}}</strong>
+            <span style="display: block"><i class="fa fa-globe" ng-if="pickedCenter.address"></i> {{pickedCenter.address}} {{pickedCenter.city}} {{pickedCenter.country}}</span>
+            <span style="display: block;margin-bottom: 5px"><i class="fa fa-phone" ng-if="pickedCenter.phone"></i> {{pickedCenter.phone}}</span>
+            </div>
+
+            <div style="padding: 7px;background-color: #d7dde4;"> <b>Drug Availability</b> <small class="updateInfo" ng-class="{'text-danger': status === 'Not Updated!'}">{{status}}</small></div>
             
-            <p>{{pickedCenter.name}}</p>
-            <p>{{pickedCenter.address}} {{pickedCenter.city}} {{pickedCenter.country}}</p>
-            <p>{{pickedCenter.phone}}</p>
-            <h5 style="padding: 7px;background-color: rgba(0,0,0,0.5);color: #fff">Stock info <b class="updateInfo" ng-class="{'text-danger': status === 'Not Updated!'}">{{status}}</b></h5>
-            
-            <ol ng-repeat="d in drugList" style="list-style: none">
-                <li ng-class="{'notAvail': d.available === false}">{{d.drug_name}} &nbsp;<span style="font-size: 8px" ng-if="d.available === true">available</span></li>
-            </ol>
+            <div class="p-1" ng-repeat="d in drugList">
+                <span style="display: block" ng-class="{'notAvail': d.available === false}"><i class="icon-Pills" style="color: green"></i> <b>{{d.drug_name}}</b> ( {{d.dosage}} ) &nbsp;<span style="font-size: 8px" ng-if="d.available === true">available</span></span>
+            </div>
             <div style="padding: 20px;text-align: center;">
-                <button class="btn btn-success form-control" ng-click="sendDrug()" ng-if="pickedCenter">{{(message) ? message : 'Send'}}</button>
+                <button class="btn btn-danger form-control" ng-click="sendDrug()" ng-if="pickedCenter"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i> {{(message) ? message : (loading) ? '': 'Send'}}</button>
             </div>
         </div>                               
        </div>                           
