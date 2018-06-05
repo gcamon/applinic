@@ -32,12 +32,14 @@
              }
 
             blockquote {
-                text-indent: 20px;
+                /*text-indent: 20px;*/
                 padding: 15px 5px 5px;
                 background-color: lightYellow;
                 font-style: normal;
                 
             }
+
+
               .title{
                   font-weight: 300;
               }
@@ -51,7 +53,7 @@
                 }
 
                 .text-center a {
-                    margin-left: 50px;
+                    /*margin-left: 50px;*/
                 }
 
                 .notAvail {
@@ -373,17 +375,17 @@
 
                              <li class="dropdown">
                                 <a href="" class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown">
-                                    <i class="fa fa-search" aria-hidden="true"></i> Searches
+                                    <i class="fa fa-search text-warning" aria-hidden="true"></i> Searches
                                 </a>
                                 <div class="okd dropdown-menu dropdown-menu-right" style="line-height: 35px" aria-labelledby="navbarDropdownMenuLink">
-                                   <a class="dropdown-item" href="#/find-specialist">Find Doctor</a>
-                                    <a class="dropdown-item" href="#/pharmacy-in">Find Pharmaceutical Center</a>
-                                     <a class="dropdown-item" href="#/laboratory-in">Find Laboratory Center</a>
-                                      <a class="dropdown-item" href="#/radiology-in">Find Radiology Center</a>
-                                    <a class="dropdown-item" href="#/drug">Find Drug</a>
-                                    <a class="dropdown-item" href="#/scan-search">Find Radiology Test</a>
-                                    <a class="dropdown-item" href="#/search-test">Find Laboratory Test</a>
-                                    <a class="dropdown-item" href="#/procedure">Find Skills &amp; Procedures</a>
+                                   <a class="dropdown-item" href="#/find-specialist"><i class="fa fa-search text-warning" aria-hidden="true"></i> Doctor</a>
+                                    <a class="dropdown-item" href="#/pharmacy-in"><i class="fa fa-search text-warning" aria-hidden="true"></i> Pharmaceutical Center</a>
+                                     <a class="dropdown-item" href="#/laboratory-in"><i class="fa fa-search text-warning" aria-hidden="true"></i> Laboratory Center</a>
+                                      <a class="dropdown-item" href="#/radiology-in"><i class="fa fa-search text-warning" aria-hidden="true"></i> Radiology Center</a>
+                                    <a class="dropdown-item" href="#/drug"><i class="fa fa-search text-warning" aria-hidden="true"></i> Drug</a>
+                                    <a class="dropdown-item" href="#/scan-search"><i class="fa fa-search text-warning" aria-hidden="true"></i> Radiology Test</a>
+                                    <a class="dropdown-item" href="#/search-test"><i class="fa fa-search text-warning" aria-hidden="true"></i> Laboratory Test</a>
+                                    <a class="dropdown-item" href="#/procedure"><i class="fa fa-search text-warning" aria-hidden="true"></i> Skills &amp; Procedures</a>
                                 </div>
                             </li>
                         </ul>
@@ -473,30 +475,30 @@
                             <i class="fa arrow"></i>
                         </a>
                                     <ul>
-                                        <li> <a href="#/find-specialist">Find Doctor</a>
+                                        <li> <a href="#/find-specialist"><i class="fa fa-search text-warning" aria-hidden="true"></i> Doctor</a>
                                 </a> </li>
 
-                                 <li> <a href="#/drug">Find Drug
+                                 <li> <a href="#/drug"><i class="fa fa-search text-warning" aria-hidden="true"></i> Drug
                                 </a> </li>
 
-                                 <li> <a href="#/pharmacy-in">Find Pharmaceutical Center</a>
+                                 <li> <a href="#/pharmacy-in"><i class="fa fa-search text-warning" aria-hidden="true"></i> Pharmaceutical Center</a>
                                 </a> </li>
 
-                                 <li> <a href="#/laboratory-in">Find Laboratory Center</a>
+                                 <li> <a href="#/laboratory-in"><i class="fa fa-search text-warning" aria-hidden="true"></i> Laboratory Center</a>
                                 </a> </li>
 
-                                 <li> <a href="#/radiology-in">Find Radiology Center</a>
+                                 <li> <a href="#/radiology-in"><i class="fa fa-search text-warning" aria-hidden="true"></i> Radiology Center</a>
                                 </a> </li>
 
 
-                                 <li> <a href="#/scan-search">Find Radiology
+                                 <li> <a href="#/scan-search"><i class="fa fa-search text-warning" aria-hidden="true"></i> Radiology
                                 </a> </li>
 
-                                <li><a href="#/search-test">Find Laboratory
+                                <li><a href="#/search-test"><i class="fa fa-search text-warning" aria-hidden="true"></i> Laboratory
                                 </a> </li>
                                        
 
-                                <li><a href="#/procedure">Find Skills &amp; Procedure
+                                <li><a href="#/procedure"><i class="fa fa-search text-warning" aria-hidden="true"></i> Skills &amp; Procedure
                                 </a> </li>
                                     </ul>
                                 </li>                    
@@ -727,7 +729,7 @@
           <div class="modal-dialog">
             <div class="modal-content">
               <div class="modal-header">
-              <div class="title">Complete the fields below</div>
+              <div class="title">New Session <span style="display: block;font-size: 12px">Complete the fields below</span></div>
                 
                     <button type="button" class="close" ng-click="close('Cancel')" data-dismiss="modal" aria-hidden="true">&times;</button>
                                                   
@@ -774,7 +776,8 @@
                         </fieldset>
                     </form>
                     <div style="text-align:right">
-                      <button class="btn btn-success" ng-click="createSession()">Proceed to treatment</button>
+                      <button class="btn btn-success" ng-click="createSession()" ng-if="!isCreated"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i>{{(loading) ? '' : "Create"}}</button>
+                      <i class="fa fa-check" ng-if="isCreated"> Treatment session created!</i>
                     </div>                        
               </div>
               

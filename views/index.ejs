@@ -3,8 +3,8 @@
 
 <head>
     <meta charset="utf-8" />
-    <link rel="apple-touch-icon" sizes="76x76" href="assets/img/apple-icon.png">
-    <link rel="icon" type="image/png" href="assets/img/favicon.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="/assets/images/apple-icon.png">
+    <link rel="icon" type="image/png" href="/assets/images/favicon.png">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <title>APPLINIC</title>
     <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no' name='viewport' />
@@ -133,7 +133,8 @@
         @media screen and (max-width: 699px) {
             .carousel-caption {
                 right: 0;
-                bottom: 0
+                bottom: 0;
+                 min-height:400px;
             }
 
             .d-none{
@@ -142,11 +143,11 @@
             }
 
             .make-up-bg {
-                height:400px
+                min-height:400px
             }
 
             .carousel-inner {
-                height:400px;
+                min-height:400px;
             }
 
             .display-4 {
@@ -167,6 +168,50 @@ font-weight:600;}
     padding: 10px 10px 10px 5px;
     margin: 0;
 }
+
+ .card-title {
+            text-transform: uppercase;
+            text-align: center;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 1em;
+        }
+
+        .list-group-item{
+            background: transparent;
+            border:0;
+        }
+
+        .list-group-item:first-child, .list-group-item:last-child {
+            background: transparent;
+            border:0;
+        }
+
+        .navbar-transparent{
+            background:rgba(0,0,0,0.4) !important;
+           
+        }
+
+        .dropdown-item{
+text-transform: uppercase;
+padding:10px 10px;
+ border-bottom:1px solid #f2f2f2;
+ color:#000;
+ font-size: .8em;
+        }
+
+ .dropdown-item:hover{
+ background: #71BB52;
+     color:#555;
+     text-transform: uppercase;
+ }
+
+ .card{
+     border-radius: 10px;
+ }
+
+ .all .card img{
+     margin-bottom:30px;
+ }
     </style>
 
    
@@ -187,7 +232,7 @@ font-weight:600;}
                     <img src="/assets/images/applinic1.png" alt="Applinic" style="width: 40%;height:40px">
                 </a>
             </div>
-            <div class="collapse navbar-collapse justify-content-end" id="navigation" data-nav-image="assets/img/blurred-image-1.jpg">
+            <div class="collapse navbar-collapse justify-content-end" id="navigation" data-nav-image="/assets/images/blurred-image-1.jpg">
                 <ul class="navbar-nav">
                     <li class="nav-item">
                         <a class="nav-link" href="/">
@@ -312,9 +357,11 @@ font-weight:600;}
     <span class="sr-only">Next</span>
   </a>
 
-  <div style="background-color: #fff;width: 80%;position: absolute;bottom:0;left: 10%;height: 100px;border-top-left-radius:2px;border-top-right-radius: 2px;padding: 15px;z-index: 2" ng-controller="hompageController">
+  <div class="clearfix"></div><br>
+
+  <div style="background-color: #fff;width: 80%; left:10%; position: absolute;bottom:0;max-height: 200px;border-top-left-radius:2px;border-top-right-radius: 2px;padding: 15px;z-index: 2" ng-controller="hompageController">
     
-        <form ng-cloak>
+        <form  ng-cloak>
             <div class="row">
                <div class="col-md-4">
                     <div class="form-group">
@@ -346,7 +393,11 @@ font-weight:600;}
                     </div>
                 </div>
                 <div class="col-md-1" style="padding-top: 10px">
-                    <button class="btn btn-danger" ng-click="search()">
+                    <button class="btn btn-danger hidden-md-down" ng-click="search()">
+                        <i class="fa fa-search"></i>
+                    </button>
+
+                    <button class="btn btn-danger btn-block hidden-md-up" ng-click="search()">
                         <i class="fa fa-search"></i>
                     </button>
                 </div>
@@ -357,101 +408,194 @@ font-weight:600;}
 </div>
 
 
-   
+   <div class="section">
+    <div class="container pl-5 pr-5">
+        <div class="h4 title text-center">MEET A DOCTOR</div>
+<div class="separator separator-primary"></div>
+
+<div class="container all">
+        <div class="row">
+
+<div class="col-md-4 col-sm-6 pl-5 pr-5  col-xs-12">
+    <div class="card">
+        <div class="card-block text-center" style="position:relative">
+           
+            <div class="p-2">
+                <img src="/assets/images/speech-bubble.png" height="100">
+            </div>
+<div class="h6">Live Chat</div>
+
+        </div>
+    </div>
+</div>
 
 
-        <div class="section toExpect">
+
+<div class="col-md-4 pl-5 pr-5 col-sm-6 col-xs-12">
+    <div class="card">
+        <div class="card-block  text-center">
+
+            <div class="">
+                <img src="/assets/images/meeting.png" height="118">
+            </div>
+            <div class="h6">IN-PERSON MEETING</div>
+
+        </div>
+    </div>
+</div>
+
+
+
+<div class="col-md-4 col-sm-6 pl-5 pr-5 col-xs-12">
+    <div class="card">
+        <div class="card-block  text-center">
+           
+            <div class="p-2">
+<img src="/assets/images/videocall.png" height="100">
+            </div>
+<div class="h6">Video call</div>
+        </div>
+    </div>
+</div>
+</div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="section">
             <div class="container">
 <h3 class="title text-center"> WHAT TO EXPECT</h3>
 <div class="separator separator-primary"></div>
 
-<p style="text-align:center;padding: 40px 10px">Applinic facilitates patient-doctor communications, promotes easy access to and
+<div class="col-md-12">
+<p class="col-md-10 col-sm-12 offset-md-1 offset-sm-0 text-center">We're here to help you find and receive the best medical care.
+        Applinic facilitates patient-doctor communications, promotes easy access to and
         interaction with diagnostic centers and pharmacies and keeps a secure free
         online record of each patient’s medical management history.
-        In just a few clicks, you can receive answers to all your medical needs.</p>
-    <div class="row">
-<div class="col-md-4 col-sm-6 col-xs-12">
-    <div class="card"> 
+        In just a few clicks, you can receive answers to your all medical needs.</p>
+</div>
+
+<div class="col-md-12">
+
+    <div class="row all">
+<!-- <div class="col-md-3 col-sm-6 col-xs-12">
+    <div class="">
+        <div class="card-block  text-center pt-5">
+<div class="bg-warning mt-4" style="font-size:.8em;">
+    <h3 style="padding:3px;">MEET A DOCTOR</h3>
+</div>
+                    </div>
+    </div>
+</div> -->
+
+
+<div class="col-md-4 col-sm-6 pb-3 pr-3 pl-3 col-xs-12">
+    <div class="card">
         <div class="card-block  text-center">
-        <div class="card-title">Find Your doctor</div>
-         <div class="p-2"> <img src="/assets/images/finddoctor.png" height="100"></div>
-        </div>
-    </div>
-</div>
 
-<div class="col-md-4 col-sm-6 col-xs-12">
-    <div class="card"> 
-        <div class="card-block  text-center">
-        <div class="card-title">In-Person Meeting</div>
-        <div class="p-2"> <img src="/assets/images/metting.png"  height="100"></div>
-        
-        </div>
-    </div>
-</div>
-
-<div class="col-md-4 col-sm-6 col-xs-12">
-    <div class="card"> 
-        <div class="card-block text-center">
-        <div class="card-title">Electronic Prescription</div>
-        <div class="p-2"> <img src="/assets/images/prescription.png" height="100"></div>
+            <div class="p-2">
+                <img src="/assets/images/finddoctor.png" height="100">
+            </div>
+            <div class="h6">Find Your doctor</div>
         </div>
     </div>
 </div>
 
 
-<div class="col-md-4 col-sm-6 col-xs-12">
-    <div class="card"> 
+
+
+
+<div class="col-md-4 col-sm-6 pb-3 pr-3 pl-3 col-xs-12">
+    <div class="card">
         <div class="card-block text-center" style="position:relative">
-        <div class="card-title">Live Chat/video Call</div>
-          <div class="p-2"> <img src="/assets/images/video-chat.png" height="100"></div>
+           
+            <div class="p-2">
+                <img src="/assets/images/video-chat.png" height="100">
+            </div>
+<div class="h6">Live Chat/video call</div>
+        </div>
+    </div>
+</div>
+
+
+<div class="col-md-4 col-sm-6 pb-3 pr-3 pl-3 col-xs-12">
+    <div class="card">
+        <div class="card-block  text-center">
+            <div class="p-2">
+                <img src="/assets/images/metting.png" height="100">
+            </div>
+            <div class="h6">IN-PERSON MEETING</div>
+        </div>
+    </div>
+</div>
+
+
+<div class="col-md-4 col-sm-6 pb-3 pr-3 pl-3 col-xs-12">
+    <div class="card">
+        <div class="card-block text-center">
+
+            <div class="p-2">
+                <img src="/assets/images/appointment.png" height="100">
+            </div>
+            <div class="h6 text-center">appointment booking</div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<div class="col-md-4 col-sm-6 pb-3 pr-3 pl-3 col-xs-12">
+    <div class="card"> 
+        <div class="card-block text-center">
        
+        <div class="display-2 text-primary p-2"><img src="/assets/images/records.png" height="100"></div>
+<div class="h6">Patients' medical records</div>
+        </div>
+    </div>
+</div>
+
+<div class="col-md-4 col-sm-6 pb-3 pr-3 pl-3 col-xs-12">
+    <div class="card"> 
+        <div class="card-block text-center">       
+        <div class="display-2 text-primary p-1"><img src="/assets/images/payment.png" height="100"></div>
+<div class="h6 text-center">Medipay E-wallet</div>
+        </div>
+    </div>
+</div>
+
+<div class="col-md-4 col-sm-6 pb-3 pr-3 pl-3 col-xs-12">
+    <div class="card">
+        <div class="card-block text-center">
+
+            <div class="p-2">
+                <img src="/assets/images/prescription.png" height="100">
+            </div>
+            <div class="h6">Electronic PRESCRIPTIONS</div>
         </div>
     </div>
 </div>
 
 
-<div class="col-md-4 col-sm-6 col-xs-12">
-    <div class="card"> 
-        <div class="card-block text-center">
-        <div class="card-title">Up To Date Medical Records</div>
-        <div class="display-2 text-primary p-2"><img src="/assets/images/records.png"  height="100"></div>
-        </div>
-    </div>
-</div>
 
-<div class="col-md-4 col-sm-6 col-xs-12">
+<div class="col-md-4 col-sm-6 pb-3 pr-3 pl-3 col-xs-12">
     <div class="card"> 
         <div class="card-block text-center">
-        <div class="card-title text-center">Online Payment</div>
         
-        <div class="display-2 text-primary p-1"><img src="/assets/images/payment.png"  height="100"></div>
-        </div>
-    </div>
-</div>
-
-<div class="col-md-4 col-sm-6 col-xs-12">
-    <div class="card"> 
-        <div class="card-block text-center">
-        <div class="card-title text-center">Appointment Booking</div>
-         <div class="p-2"> <img src="/assets/images/appointment.png" height="100"></div>
-        </div>
-    </div>
-</div>
-
-<div class="col-md-4 col-sm-6 col-xs-12">
-    <div class="card"> 
-        <div class="card-block text-center">
-        <div class="card-title">Electronic Lab Results</div>
               <div class="p-2"> <img src="/assets/images/lab.png" height="100"></div>
+<div class="h6">Electronic lab results</div>
         </div>
     </div>
 </div>
 
-<div class="col-md-4 col-sm-6 col-xs-12">
+<div class="col-md-4 col-sm-6  pb-3 pr-3 pl-3 col-xs-12">
     <div class="card"> 
         <div class="card-block text-center">
-        <div class="card-title">Electronic Radiology Results</div>
+   
           <div class="p-2"> <img src="/assets/images/svcan.png" height="100"></div>
+<div class="h6">Electronic radiology results</div>
         </div>
     </div>
 </div>
@@ -459,6 +603,11 @@ font-weight:600;}
 
         </div>
         </div>
+        </div>
+
+       
+
+
 <div style="text-align:center;padding-bottom:30px">
     <a href="/how-it-works" class="btn btn-primary text-uppercase">Learn more</a>
 </div>

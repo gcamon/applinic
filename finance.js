@@ -481,9 +481,6 @@ var basicPaymentRoute = function(model,sms,io,paystack){
 	/*this route handles the patient accepting consultation fee. the patient wallet will be debited and doctor's wallet credited slightly*/
 	
 	router.post("/user/patient/consultation-acceptance/confirmation",function(req,res){
-		
-		console.log("===========");
-		console.log(req.body);
 
 		if(req.user && req.body && req.body.userId !== req.user.user_id && req.body.otp && req.user.type === "Patient"){
 			model.otpSchema.findOne({otp:req.body.otp}).exec(function(err,data){
@@ -734,30 +731,30 @@ var basicPaymentRoute = function(model,sms,io,paystack){
     //note that sms will be sent to patient and doctor when a lab test result is available.
     if(req.user) {
 
-     updateSession();
-
-
-
+    updateSession();   
 
       function updateSession() {       
         model.user.findOne({"doctor_patient_session.session_id": req.body.laboratory.session_id},{doctor_patient_session:1,title:1,firstname:1,lastname:1}).exec(function(err,data){
           if(err) throw err;
-          var elementPos = data.doctor_patient_session.map(function(x) {return x.session_id; }).indexOf(req.body.laboratory.session_id);
-          var objectFound = data.doctor_patient_session[elementPos];         
-
-          var pos = objectFound.diagnosis.laboratory_test_results.map(function(x) { return x.test_id;}).indexOf(req.body.laboratory.test_id);
-          var theObj = objectFound.diagnosis.laboratory_test_results[pos];         
-          theObj.receive_date = req.body.laboratory.date;
-          theObj.test_to_run = req.body.laboratory.test_to_run;
-          theObj.report = req.body.laboratory.report;
-          theObj.conclusion = req.body.laboratory.conclusion;
-          theObj.sent_date = req.body.date;
-          theObj.test_ran_by = req.user.name;
-          theObj.center_address = req.user.address;
-          theObj.center_city = req.user.city;
-          theObj.center_country = req.user.country;
-          theObj.center_phone = req.user.phone;
-          theObj.center_profile_pic_url =  req.user.profile_pic_url;
+          var elementPos = data.doctor_patient_session.map(function(x) {return x.session_id }).indexOf(req.body.laboratory.session_id);
+  
+          if(elementPos !== -1) {
+	          var	objectFound = data.doctor_patient_session[elementPos];       
+	 
+	          var pos = objectFound.diagnosis.laboratory_test_results.map(function(x) { return x.test_id;}).indexOf(req.body.laboratory.test_id);
+	          var theObj = objectFound.diagnosis.laboratory_test_results[pos];         
+	          theObj.receive_date = req.body.laboratory.date;
+	          theObj.test_to_run = req.body.laboratory.test_to_run;
+	          theObj.report = req.body.laboratory.report;
+	          theObj.conclusion = req.body.laboratory.conclusion;
+	          theObj.sent_date = req.body.date;
+	          theObj.test_ran_by = req.user.name;
+	          theObj.center_address = req.user.address;
+	          theObj.center_city = req.user.city;
+	          theObj.center_country = req.user.country;
+	          theObj.center_phone = req.user.phone;
+	          theObj.center_profile_pic_url =  req.user.profile_pic_url;
+       	 }
            
           
           //the doctors session for a patient is updated, and patient dashboard is called for update.
@@ -765,10 +762,11 @@ var basicPaymentRoute = function(model,sms,io,paystack){
           data.save(function(err,info){
             if(err) {
               res.send({status: "error"});
-            } else {         
-              updatePatient();
+            } else {  
+            	updatePatient(); 
               //updateTheCenter();  
-              updateCenter(data)            
+              updateCenter(data)  
+                       
             }
           });        
 
@@ -779,47 +777,59 @@ var basicPaymentRoute = function(model,sms,io,paystack){
         //here patient test result is updated.
         model.user.findOne({user_id: req.body.laboratory.patient_id},{medical_records: 1,patient_notification:1,user_id:1,presence:1,phone:1})
         .exec(function(err,data){
+
           if(err) throw err;
-          var elementPos = data.medical_records.laboratory_test.map(function(x) {return x.ref_id; }).indexOf(req.body.ref_id);
-          var objectFound = data.medical_records.laboratory_test[elementPos];           
-          objectFound.report = req.body.laboratory.report || objectFound.report;
-          objectFound.conclusion = req.body.laboratory.conclusion || objectFound.conclusion;
-          objectFound.test_to_run = req.body.laboratory.test_to_run || objectFound.test_to_run;
-          objectFound.sent_date = req.body.date || objectFound.sent_date;
-          objectFound.test_ran_by = req.user.name;
-          objectFound.receive_date = req.body.laboratory.date;
-          objectFound.payment_acknowledgement = true;
+
+          var elementPos = data.medical_records.laboratory_test.map(function(x) {return x.ref_id }).indexOf(req.body.ref_id);
+          if(elementPos !== -1) {
+	          var objectFound = data.medical_records.laboratory_test[elementPos];           
+	          objectFound.report = req.body.laboratory.report || objectFound.report;
+	          objectFound.conclusion = req.body.laboratory.conclusion || objectFound.conclusion;
+	          objectFound.test_to_run = req.body.laboratory.test_to_run || objectFound.test_to_run;
+	          objectFound.sent_date = req.body.date || objectFound.sent_date;
+	          objectFound.test_ran_by = req.user.name;
+	          objectFound.receive_date = req.body.laboratory.date;
+	          objectFound.payment_acknowledgement = true;
+        	
 
 
-          //var random = Math.floor(Math.random() * 999999);
+	          //var random = Math.floor(Math.random() * 999999);
 
-          data.patient_notification.unshift({
-            type:"laboratory",
-            date: req.body.laboratory.date,
-            note_id: req.body.radiology.test_id,
-            ref_id: req.body.ref_id,
-            session_id:req.body.laboratory.session_id,
-            message: "Laboratory test result received."
-          })
+	          data.patient_notification.unshift({
+	            type:"laboratory",
+	            date: req.body.laboratory.date,
+	            note_id: req.body.laboratory.test_id,
+	            ref_id: req.body.ref_id,
+	            session_id: req.body.laboratory.session_id,
+	            message: "Laboratory test result received."
+	          })
 
-          if(data.presence === true){
-            io.sockets.to(data.user_id).emit("notification",{status:true})
-          } else {
-            var msgBody = "New laboratory test result received! Visit http://applinic.com/login"
-            var phoneNunber =  data.phone;
-             sms.messages.create(
-              {
-                to: phoneNunber,
-                from: '+16467985692',
-                body: msgBody,
-              }
-            ) 
-          }
+	         
+	          if(data.presence === true){
+	            io.sockets.to(data.user_id).emit("notification",{status:true})
+	          } else {
+	            var msgBody = "New laboratory test result received! Visit http://applinic.com/login";
+	            var phoneNunber =  data.phone;
+	             sms.messages.create(
+	              {
+	                to: phoneNunber,
+	                from: '+16467985692',
+	                body: msgBody
+	              }
+	            ) 
+	          }
 
-          data.save(function(err,info){
-            if(err) res.send({status: "error"}); 
-            res.send({status: "success"});          
-          });
+	          data.save(function(err,info){
+	            if(err) { 
+	            	console.log(err)
+	            	res.send({status: "error"}); 
+	            } else {
+	            	res.send({status: "success"}); 
+	            }         
+	          });
+        	} else {
+        		res.end("error: 404")
+        	}
         });
       }
 
@@ -830,20 +840,23 @@ var basicPaymentRoute = function(model,sms,io,paystack){
 	        	res.end("server error");
 	        }
       		if(center) {
+      		
       			req.body.service_date = + new Date();
       			req.body.receiver = receiver.title + " " + receiver.firstname + " " + receiver.lastname;
-      			req.receiver_phone = receiver.phone;
+      			req.body.receiver_phone = receiver.phone;
       			center.service_details.unshift(req.body);
       			center.save(function(err,info){
       				if(err) throw err;
       				console.log("service details saved!");
-      				res.send({status: "success"});
       			})
       		} else {
       			res.end("something went wrong!");
       		}
       	})
       }
+
+
+      
 
       /*function updateTheCenter() {
         model.user.findOne({user_id: req.user.user_id},{referral:1,ewallet:1,user_id:1,city_grade:1,type:1,email:1}).exec(function(err,center){
@@ -891,7 +904,7 @@ var basicPaymentRoute = function(model,sms,io,paystack){
           objectFound.history = req.body.history;
 
 
-          var random = parseInt(Math.floor(Math.random() * 9999) + "" + Math.floor(Math.random() * 9999));
+          var random = parseInt(Math.floor(Math.random() * 9999) + "" + Math.floor(Math.random() * 99999));
           data.patient_notification.unshift({
             type:"laboratory",
             date: req.body.laboratory.date,
@@ -932,7 +945,7 @@ var basicPaymentRoute = function(model,sms,io,paystack){
       		if(center) {
       			req.body.service_date = + new Date();
       			req.body.receiver = receiver.title + " " + receiver.firstname + " " + receiver.lastname;
-      			req.receiver_phone = receiver.phone;
+      			req.body.receiver_phone = receiver.phone;
       			center.service_details.unshift(req.body);
       			center.save(function(err,info){
       				if(err) throw err;
@@ -965,12 +978,10 @@ var basicPaymentRoute = function(model,sms,io,paystack){
   });
 
   router.get("/user/center/billing-verification",function(req,res){
-  	console.log(req.query)
   	if(req.user){
   		var center = req.user; //uuuu
   		var refId = (typeof req.query.refId === "string") ? parseInt(req.query.refId) : req.query.refId;	
 			var elementPos = center.referral.map(function(x){return x.ref_id.toString()}).indexOf(refId.toString());
-			console.log(elementPos)
       var objectFound = center.referral[elementPos];
       if(objectFound) {
       	if(req.user.type === "Radiology") {
@@ -1102,43 +1113,49 @@ var basicPaymentRoute = function(model,sms,io,paystack){
         .exec(function(err,data){
           if(err) throw err;
           var elementPos = data.medical_records.radiology_test.map(function(x) {return x.session_id; }).indexOf(req.body.radiology.session_id);
-          var objectFound = data.medical_records.radiology_test[elementPos];           
-          objectFound.report = req.body.radiology.report || objectFound.report;
-          objectFound.conclusion = req.body.radiology.conclusion || objectFound.conclusion;
-          objectFound.test_to_run = req.body.radiology.test_to_run || objectFound.test_to_run;
-          objectFound.sent_date = req.body.date || objectFound.sent_date;
-          objectFound.receive_date = req.body.radiology.date;
-          objectFound.payment_acknowledgement = true;
-          objectFound.files = req.body.radiology.filesUrl;
+          var objectFound = data.medical_records.radiology_test[elementPos]; 
 
-          //var random = Math.floor(Math.random() * 999999);
-          data.patient_notification.unshift({
-            type:"radiology",
-            date: req.body.radiology.date,
-            note_id: req.body.radiology.test_id,
-            ref_id: req.body.ref_id,
-            session_id:req.body.radiology.session_id,
-            message: "Radiology test result received."
-          });
+          if(objectFound) {         
+	          objectFound.report = req.body.radiology.report || objectFound.report;
+	          objectFound.conclusion = req.body.radiology.conclusion || objectFound.conclusion;
+	          objectFound.test_to_run = req.body.radiology.test_to_run || objectFound.test_to_run;
+	          objectFound.sent_date = req.body.date || objectFound.sent_date;
+	          objectFound.receive_date = req.body.radiology.date;
+	          objectFound.payment_acknowledgement = true;
+	          objectFound.files = req.body.radiology.filesUrl;
 
-          if(data.presence === true){
-            io.sockets.to(data.user_id).emit("notification",{status:true})
-          } else {
-            var msgBody = "New radiology test result received! Visit http://applinic.com/login"
-            var phoneNunber =  data.phone;
-            sms.messages.create(
-              {
-                to: phoneNunber,
-                from: '+16467985692',
-                body: msgBody,
-              }
-            ) 
-          }
+	          //var random = Math.floor(Math.random() * 999999);
+	          data.patient_notification.unshift({
+	            type:"radiology",
+	            date: req.body.radiology.date,
+	            note_id: req.body.radiology.test_id,
+	            ref_id: req.body.ref_id,
+	            session_id:req.body.radiology.session_id,
+	            message: "Radiology test result received."
+	          });
 
-          data.save(function(err,info){
-            if(err) res.send({status: "error"});           
-            res.send({status: "success"});
-          });
+	          if(data.presence === true){
+	            io.sockets.to(data.user_id).emit("notification",{status:true});
+	          } else {
+	            var msgBody = "New radiology test result received! Visit http://applinic.com/login"
+	            var phoneNunber =  data.phone;
+	            sms.messages.create(
+	              {
+	                to: phoneNunber,
+	                from: '+16467985692',
+	                body: msgBody,
+	              }
+	            ) 
+	          }
+
+	          data.save(function(err,info){
+	            if(err) res.send({status: "error"});           
+	            res.send({status: "success"});
+	          });
+
+        	} else {
+        		res.end("error: 404")
+        	}
         });
       }
 
@@ -1152,7 +1169,7 @@ var basicPaymentRoute = function(model,sms,io,paystack){
       		if(center) {
       			req.body.service_date = + new Date();
       			req.body.receiver = receiver.title + " " + receiver.firstname + " " + receiver.lastname;
-      			req.receiver_phone = receiver.phone;
+      			req.body.receiver_phone = receiver.phone;
       			center.service_details.unshift(req.body);
       			center.save(function(err,info){
       				if(err) throw err;
@@ -1257,7 +1274,7 @@ var basicPaymentRoute = function(model,sms,io,paystack){
 		      		if(center) {
 		      			req.body.service_date = + new Date();
 		      			req.body.receiver = receiver.title + " " + receiver.firstname + " " + receiver.lastname;
-		      			req.receiver_phone = receiver.phone;
+		      			req.body.receiver_phone = receiver.phone;
 		      			center.service_details.unshift(req.body);
 		      			center.save(function(err,info){
 		      				if(err) throw err;

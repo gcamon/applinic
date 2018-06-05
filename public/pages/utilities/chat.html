@@ -1,10 +1,10 @@
 <div class="container">
-	<div class="card pl-2">
+	<div class="card">
 		<div class="row">
 			<div class="col-sm-12 col-md-4 col-lg-4 p-1" >
-				<h6>Chats</h6>
+				<h6 class="p-1">Chats</h6>
 				<hr>
-				<div class="pl-0 ellipsis" style="max-height: 600px; overflow-y: auto">
+				<div class="pl-1 ellipsis" style="max-height: 600px; overflow-y: auto">
 					<div ng-repeat="chat in chatsList | orderBy : '-realTime'" ng-click="viewChat(chat)" class="pl-0">
 						<img src="{{chat.profilePic}}" style="float: left;height: 62px;width:62px">			
 						<a href="" class="chat-header-text" ng-class="{'chat-header-text-new' : chat.isUnRead === true}">

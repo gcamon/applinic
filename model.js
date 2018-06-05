@@ -203,11 +203,7 @@ var myModel = function () {
 
 	
 
-	var accessSchema = Schema({
-		patient_id: String,
-		access_to_record: Boolean
-	});
-
+	
 	var patient_noteSchema = Schema({
 		date: String,
 		note_id: Number,
@@ -374,8 +370,15 @@ var myModel = function () {
 		center_city: String,
 		center_country: String,
 		center_phone: String,
-		center_profile_pic_url: String
+		center_profile_pic_url: String,
+		sub_session_id: String
 
+	});
+
+	var subSession = Schema({
+		date: String,
+		note: String,
+		sub_session_id: String
 	});
 
 	var docDignosisSchema = Schema({
@@ -386,6 +389,7 @@ var myModel = function () {
 		family_history: String,
 		drug_history: String,
 		summary: String,
+		medical_report: String,
 		notes: String,
 		provisional_diagnosis: String,
 		general_examination: String,
@@ -397,7 +401,9 @@ var myModel = function () {
 		others: [testResultSchema],
 		final_diagnosis: String,
 		files: Array,
-		treatment_plan: String
+		treatment_plan: String,
+		sub_session: [subSession]
+
 	});
 
 	var sessionSchema = Schema({
@@ -433,6 +439,38 @@ var myModel = function () {
 	    date_sent: String,
 	    ref_id: Number
 	});
+
+	var accessObjSchema = Schema({
+		
+	});
+
+	var accessSchema = Schema({
+		patient_id: String,
+		access_to_record: Boolean,
+		key: String,
+		userId: String,
+		name: String,
+		profile_pic_url: String
+	});
+
+	var medReportSchema = Schema({ //hold doctors medical report for patients
+		doctor_id: String,
+		doctor_name: String,
+		doctor_specialty: String,
+		doctor_work_place: String,
+		doctor_address: String,
+		doctor_city: String,
+		doctor_country: String,
+		patient_id: String,
+		doctor_profile_pic_url: String,
+		report: String,
+		date: String,
+		diagnosis: String,
+		report_id: String,
+		session_id: String,
+		doctor_profile_url: String
+	})
+
 
 //end for session
 	var userSchema = Schema({	  
@@ -523,7 +561,9 @@ var myModel = function () {
 		family_flag: Boolean,
 		family_accounts: Array,
 		deleted: Boolean,
-		service_details: Array //services rendered by a center successfully
+		service_details: Array, //services rendered by a center successfully
+		mrak: String, //medical record access key
+		medical_reports: [medReportSchema],
 	},{
 		collections: "userinfos"
 	})

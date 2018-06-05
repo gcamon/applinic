@@ -3869,6 +3869,10 @@ app.controller("inTreatmentController",["$scope","$http","localManager","$locati
 
   $scope.sessionData = localManager.getValue("heldSessionData");
 
+  console.log($scope.sessionData);
+
+  $rootScope.sub_session_id = genId();
+
   templateService.holdForSpecificPatient = $scope.sessionData;
    $scope.isLab = false;
    $scope.isScan = false;
@@ -3892,7 +3896,12 @@ app.controller("inTreatmentController",["$scope","$http","localManager","$locati
     $scope.isScan = false;
     $scope.isNewRadio = false;
     $scope.isNewLab = true; 
-    $rootScope.flag = 'lab';     
+    $rootScope.flag = 'lab'; 
+
+    //sets if the investigation request is made from continuation
+    if($scope.isSubNote) {
+      $rootScope.isSubNote = true;
+    }   
    }
 
    //for radiology
@@ -3909,11 +3918,100 @@ app.controller("inTreatmentController",["$scope","$http","localManager","$locati
 
   $scope.newRadio = function() {
     //$location.path('/scan');
-     $scope.isLab = false;
-      $scope.isScan = false;
-      $scope.isNewRadio = true;
-      $scope.isNewLab = false; 
-      $rootScope.flag = 'radio';      
+    $scope.isLab = false;
+    $scope.isScan = false;
+    $scope.isNewRadio = true;
+    $scope.isNewLab = false; 
+    $rootScope.flag = 'radio';
+
+    if($scope.isSubNote) {
+      $rootScope.isSubNote = true;
+    }       
+  }
+
+  $scope.subSession = function() {
+    $scope.isSubNote = true;
+    $scope.isMain = false;
+    $scope.isSubView = false;
+    sanitize($scope.sessionData.diagnosis.sub_session)
+  }
+
+  
+
+   
+  //var getSubList = (!$scope.sessionData.diagnosis.sub_session) ? [{sub_session_id:"main",status: false}] : $scope.sessionData.diagnosis.sub_session.unshift({sub_session_id:"main",status: false});
+  if(!$scope.sessionData.diagnosis.sub_session) {
+    $scope.sessionData.diagnosis.sub_session = [{sub_session_id:"main",status: false}];
+  } else {
+    $scope.sessionData.diagnosis.sub_session.unshift({sub_session_id:"main",status: false});
+  }
+
+
+  //$scope.subSessionList = getSubList;
+  $scope.sub = function(item,arr){
+    if(!item) {
+      $scope.sessionData.diagnosis.sub_session[0].status = true;
+      $scope.isMain = true;
+      return;
+    } else if(item.sub_session_id === "main"){
+      sanitize(arr);
+      $scope.isMain = true;
+      item.status = true;
+      $scope.isSubView = false;
+      return;
+    } 
+
+    sanitize(arr);
+
+    $scope.isMain = false;
+    $scope.isSubNote = false;
+    $scope.isSubView = true;
+    item.status = true;
+    getContinuationData(item.sub_session_id)
+    
+  }
+
+  function sanitize(arr) {
+    for(var k = 0; k < arr.length; k++) {
+      arr[k].status = false;
+    }
+  }
+
+  $scope.sub();
+
+  function getContinuationData(id) {
+    var subList = $scope.sessionData.diagnosis.sub_session;
+    //var testList = $scope.sessionData.diagnosis.laboratory_test_results.concat($scope.sessionData.diagnosis.radiology_test_results);
+    
+    var elementPos = subList.map(function(x){return x.sub_session_id}).indexOf(id);
+    if(elementPos)
+      $scope.subDate =  subList[elementPos].date;
+      $scope.subNote = subList[elementPos].note;
+    $scope.loading = true;
+    $http.put("/user/doctor/get-scan-result",{
+      id : $scope.sessionData.session_id
+    })
+    .success(function(radioRes){
+      $http.put("/user/doctor/get-test-result",{
+         id : $scope.sessionData.session_id
+      })
+      .success(function(labRes){
+        var allTests = [];
+        var testList = radioRes.result.concat(labRes.result)
+        for(var i = 0; i < testList.length; i++) {
+          if(testList[i].sub_session_id === id) {
+            allTests.push(testList[i]);
+          }
+        }
+
+        $scope.loading = false;
+        
+        $scope.subTests = allTests;
+        console.log(allTests)
+       
+      })
+    })
+
   }
   
  function investigation(url)  {
@@ -4009,11 +4107,11 @@ app.controller("inTreatmentController",["$scope","$http","localManager","$locati
   $scope.isOldPrescription = false;
 
   var patient = {};
+  patient.id = $scope.sessionData.patient_id;
 
   $scope.writeNew = function() {
     if($scope.isNewPrescription === false) {      
-      var random = Math.floor(Math.random() * 99999999999999 );
-      patient.id = $scope.sessionData.patient_id;
+      var random = parseInt(Math.floor(Math.random() * 999999 ) + "" + Math.floor(Math.random() * 9999999 ));      
       $http({
         method  : 'PUT',
         url     : "/user/doctor/specific-patient",
@@ -4141,17 +4239,12 @@ app.controller("inTreatmentController",["$scope","$http","localManager","$locati
     var dt = + new Date();
     edit.date = $filter('date')(dt, 'EEE, MMM d, y')
     
-    $scope.$watch("edit.presenting_complain",function(newVal,oldVal){
+    /*$scope.$watch("edit.presenting_complain",function(newVal,oldVal){
       if(edit.newlyEdit === true) {
         if(!$scope.sessionData.diagnosis.presenting_complain) {
 
          
-          //console.log(date)
-          /*$scope.editDate = " <span> => ( " + date + " ); </span>";
-           var mover = angular.element($scope.editDate);
-          
-           var elem = $document.find('#complain');
-           elem.append(mover);*/
+         
            $scope.sessionData.diagnosis.presenting_complain = ""
            edit["presenting_complain"]  = "  ( " + edit.date  + " ) ; " ; 
 
@@ -4162,50 +4255,51 @@ app.controller("inTreatmentController",["$scope","$http","localManager","$locati
       }
        
      $scope.setHistory();
-    });
+    });*/
 
     
-    $scope.setHistory = function() {
-      if($scope.edit.presenting_complain) {
-        $scope.sessionData.diagnosis.history_of_presenting_complain = "# ";
-        $scope.sessionData.diagnosis.history_of_presenting_complain +=  
-        $scope.edit.presenting_complain + " ( " + edit.date + " ) has been ________ ;"
-        //$scope.sessionData.diagnosis.history_of_presenting_complain += $scope.history;
-      }
+  /*$scope.setHistory = function() {
+    if($scope.edit.presenting_complain) {
+      $scope.sessionData.diagnosis.history_of_presenting_complain = "# ";
+      $scope.sessionData.diagnosis.history_of_presenting_complain +=  
+      $scope.edit.presenting_complain + " ( " + edit.date + " ) has been ________ ;"
+      //$scope.sessionData.diagnosis.history_of_presenting_complain += $scope.history;
     }
+  }*/
 
   var check = 0;// scope watch count to show save changes button on ui this is bcos newVal is set when the controller is initialized.
   //when count is 2 the watch should display the save changes button on the ui.
   
   $scope.$watch("edit",function(newVal,oldVal){
     check++;
-    if(check > 1)
+    if($scope.updateMsg)
+      $scope.updateMsg = "";
+    
+    if(check > 1) 
       $scope.isChanges = true;
   },true);
 
-  $scope.saveChanges = function () {
-    if($scope.sessionData.diagnosis.history_of_presenting_complain){
-      //$scope.edit.presenting_complain = $scope.sessionData.diagnosis.presenting_complain;
-      $scope.edit.history_of_presenting_complain = $scope.sessionData.diagnosis.history_of_presenting_complain;
-    }
+  $scope.saveChanges = function () {    
+  
+    var filter = {};
 
-    var filter = {}
     for(var i in $scope.edit) {
-      if($scope.edit.hasOwnProperty(i) && typeof $scope.edit[i] !== "object") {
-        if($scope.edit[i] !== "" || i == "presenting_complain" ) {
-          if(i !== "history_of_presenting_complain") {
-            filter[i] = $scope.edit[i] + "  ( " + edit.date  + " ) ;   ";
-          } else {
-            filter[i] = $scope.edit[i] + "  ";
-          }
-        } else {
-          alert( "Field" + " '" + i + "'" + " cannot be empty")
-          return;
-        }
+      if($scope.edit.hasOwnProperty(i) && typeof $scope.edit[i] !== "object" && $scope.edit[i] !== "" && $scope.edit[i] !== undefined) {
+        filter[i] = ($scope.edit[i]) ? (!$scope.isSubNote) ? "<br><font color='green' weight='bold'> " +
+         edit.date + " </font>:  " + $scope.edit[i] : "<br><font color='grey' weight='bold'> &nbsp;" +
+          $scope.edit[i] + "</font>" : "";
       }
     }
 
     filter.session_id = $scope.sessionData.session_id;
+
+    if($scope.isSubNote) {
+      filter.subSession = true;
+      filter.sub_session_id = $rootScope.sub_session_id;
+    }
+
+    filter.patient_id = patient.id;
+    $scope.loading = true;
     $http({
       method  : 'PUT',
       url     : "/user/doctor/session-update/save-changes",
@@ -4213,11 +4307,25 @@ app.controller("inTreatmentController",["$scope","$http","localManager","$locati
       headers : {'Content-Type': 'application/json'} 
       })
     .success(function(data) {
+      $scope.loading = false;
       if(data.success)
-        alert("Changes saved successfully!!!");
+        if(data.subSession)
+          $scope.sessionData.diagnosis.sub_session.push(data.subSession);
+        $scope.updateMsg = "Changes saved successfully!!!" ;
+        //alert("Changes saved successfully!!!");
       if(data.error)
         alert("Oops! Error occured. Changes not saved!,Try again");
     });         
+  }
+
+
+  function genId() {
+    var text = "";
+    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz01234567899966600555777222";
+
+      for( var i=0; i < 16; i++ )
+          text += possible.charAt(Math.floor(Math.random() * possible.length));
+      return text;
   }
 
 }]); 
@@ -4381,6 +4489,7 @@ app.controller("investigationController",["$scope","$http","labTests","scanTests
         }
        
         $scope.sendTest = function () {
+            $scope.isLoading = true;
            patient.laboratory = {};
            patient.laboratory.patient_gender = patient.gender;
            patient.history = $rootScope.treatment.history;
@@ -4399,6 +4508,12 @@ app.controller("investigationController",["$scope","$http","labTests","scanTests
            patient.noUpdate = true,
            patient.typeOfSession = "";
            patient.treatment = $rootScope.treatment ;
+
+           if($rootScope.isSubNote) {
+              patient.subSession = true;
+              patient.sub_session_id = $rootScope.sub_session_id;
+              $rootScope.isSubNote = false;
+           }
           
           
           $http({
@@ -4408,6 +4523,7 @@ app.controller("investigationController",["$scope","$http","labTests","scanTests
           headers : {'Content-Type': 'application/json'} 
           })
           .success(function(data) {
+            $scope.isLoading = false;
             if(data) {   
               $scope.message = "Investigations sent!";
             } else {
@@ -4540,6 +4656,7 @@ app.controller("investigationController",["$scope","$http","labTests","scanTests
       }
 
       $scope.sendTest = function () {
+        $scope.isLoading = true;
          patient.radiology = {};
          patient.radiology.patient_gender = patient.gender;
          patient.history = $scope.treatment.history;
@@ -4558,6 +4675,12 @@ app.controller("investigationController",["$scope","$http","labTests","scanTests
          patient.noUpdate = true;
          patient.typeOfSession = "";
          patient.treatment = $rootScope.treatment;
+
+         if($rootScope.isSubNote) {
+            patient.subSession = true;
+            patient.sub_session_id = $rootScope.sub_session_id;
+            $rootScope.isSubNote = false;
+         }
           
         $http({
           method  : 'POST',
@@ -4566,6 +4689,7 @@ app.controller("investigationController",["$scope","$http","labTests","scanTests
           headers : {'Content-Type': 'application/json'} 
           })
         .success(function(data) {
+          $scope.isLoading = false;
           if(data) { 
             $scope.message = "Investigations sent!"  
           } else {
@@ -8947,7 +9071,7 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
   var arr = path.split("/");  
   var userId = arr[arr.length-1];
   
-  var sessionId = parseInt(Math.floor(Math.random() * 99999) + "" + Math.floor(Math.random() * 999999));
+  var sessionId = parseInt(Math.floor(Math.random() * 9999999) + "" + Math.floor(Math.random() * 999999));
   patient.id = templateService.holdIdForSpecificPatient || userId;
   $rootScope.holdId =  patient.id;
   var user = localManager.getValue("resolveUser");
@@ -8955,7 +9079,7 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
   var getPatientData = myPatientControllerService //$resource("/user/doctor/specific-patient");
   getPatientData.get(patient,function(data){  
     $scope.patientInfo = data; 
-    $rootScope.patientInfo = data       
+    $rootScope.patientInfo = data;     
     //patient.prescriptionId = random;
     patient.patient_id = patient.id;    
     patient.firstname = $scope.patientInfo.firstname;
@@ -9185,91 +9309,92 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
     $scope.isTreatmentSession = false;   
   }
 
-    $scope.appointment = function(patientObj){
-      templateService.holdId = patientObj.user_id; //sets id of the patient for the appointmentModal controller to use.
-      //make sure templateSevice is always iniatialize elsewhere.
-      ModalService.showModal({
-          templateUrl: 'calender-template.html',
-          controller: 'appointmentModalController'
-      }).then(function(modal) {
-          modal.element.modal();
-          modal.close.then(function(result) {             
-          });
-      });
-    
-    }
+  $scope.appointment = function(patientObj){
+    templateService.holdId = patientObj.user_id; 
+    //sets id of the patient for the appointmentModal controller to use.
+    //make sure templateSevice is always iniatialize elsewhere.
+    ModalService.showModal({
+        templateUrl: 'calender-template.html',
+        controller: 'appointmentModalController'
+    }).then(function(modal) {
+        modal.element.modal();
+        modal.close.then(function(result) {             
+        });
+    });
+  
+  }
 
    
 
-    //doctor can view prvious prescriptions written by him for this patient
-    $scope.viewPreviousPrescriptionByDoctor = function(){         
-      if(!viewed) {
-        getPatientMedicationByDoctor("/user/get-medical-record");
-        $scope.isToViewOldPrescription = true;
-        viewed = true;
-      } else {        
-        $scope.isToViewOldPrescription = false;
-        viewed = false;
-      }
+  //doctor can view prvious prescriptions written by him for this patient
+  $scope.viewPreviousPrescriptionByDoctor = function(){         
+    if(!viewed) {
+      getPatientMedicationByDoctor("/user/get-medical-record");
+      $scope.isToViewOldPrescription = true;
+      viewed = true;
+    } else {        
+      $scope.isToViewOldPrescription = false;
+      viewed = false;
     }
+  }
 
-    $scope.viewMedicalHistory = function(){
-      $scope.isToSeeRecord = true;
-      $scope.isToPrescribe = false;
-      $scope.isToViewLabPrescriptionReq = false;
-      $scope.isToViewRadPrescriptionReq = false;
-      $scope.isToViewSession = false;
-      $scope.isChat = false;
-      $scope.isSearchToSend = false; 
-      $scope.isToViewSession = false;     
-      $scope.isTreatmentSession = false;
-      if(!$scope.medicalRecordHistory)
-        getMedicalHistory("/user/get-medical-record");
-      
-    }
+  $scope.viewMedicalHistory = function(){
+    $scope.isToSeeRecord = true;
+    $scope.isToPrescribe = false;
+    $scope.isToViewLabPrescriptionReq = false;
+    $scope.isToViewRadPrescriptionReq = false;
+    $scope.isToViewSession = false;
+    $scope.isChat = false;
+    $scope.isSearchToSend = false; 
+    $scope.isToViewSession = false;     
+    $scope.isTreatmentSession = false;
+    if(!$scope.medicalRecordHistory)
+      getMedicalHistory("/user/get-medical-record");
+    
+  }
 
-    $scope.writeNew = function(){
-      if(!viewed) {
-        $scope.isNewPrescription = true;
-        viewed = true;
-      } else {
-        $scope.isNewPrescription = false;
-        viewed = false;
-      }
+  $scope.writeNew = function(){
+    if(!viewed) {
+      $scope.isNewPrescription = true;
+      viewed = true;
+    } else {
+      $scope.isNewPrescription = false;
+      viewed = false;
     }
+  }
 
-    $scope.viewDiagnosis = function(){         
-      $scope.isDiagnosis = true;
-       $scope.isPharmacy = false;
-       $scope.isLaboratory = false;
-       $scope.isRadiology = false;     
-    }
+  $scope.viewDiagnosis = function(){         
+    $scope.isDiagnosis = true;
+    $scope.isPharmacy = false;
+    $scope.isLaboratory = false;
+    $scope.isRadiology = false; 
+  }
 
-    $scope.viewPreviousPrescriptions = function(){ 
-       $scope.isDiagnosis = false;
-       $scope.isPharmacy = true;
-       $scope.isLaboratory = false;
-       $scope.isRadiology = false;        
-       $scope.prescriptionList = $scope.medicalRecordHistory.prescriptions;
-    }
+  $scope.viewPreviousPrescriptions = function(){ 
+    $scope.isDiagnosis = false;
+    $scope.isPharmacy = true;
+    $scope.isLaboratory = false;
+    $scope.isRadiology = false;        
+    $scope.prescriptionList = $scope.medicalRecordHistory.prescriptions;
+  }
 
-    $scope.viewPreviousRadiology = function(){        
-      //$scope.isToViewOldPrescription = true;
-      $scope.isDiagnosis = false;
-      $scope.isPharmacy = false;
-      $scope.isLaboratory = false;
-      $scope.isRadiology = true;    
-      $scope.radiologyTests = $scope.medicalRecordHistory.medical_records.radiology_test;
-    }
+  $scope.viewPreviousRadiology = function(){        
+    //$scope.isToViewOldPrescription = true;
+    $scope.isDiagnosis = false;
+    $scope.isPharmacy = false;
+    $scope.isLaboratory = false;
+    $scope.isRadiology = true;    
+    $scope.radiologyTests = $scope.medicalRecordHistory.medical_records.radiology_test;
+  }
 
-    $scope.viewPreviousLaboratory = function(){        
-      //$scope.isToViewOldPrescription = true;
-      $scope.isDiagnosis = false;
-      $scope.isPharmacy = false;
-      $scope.isLaboratory = true;
-      $scope.isRadiology = false;    
-      $scope.laboratoryTests = $scope.medicalRecordHistory.medical_records.laboratory_test;
-    }
+  $scope.viewPreviousLaboratory = function(){        
+    //$scope.isToViewOldPrescription = true;
+    $scope.isDiagnosis = false;
+    $scope.isPharmacy = false;
+    $scope.isLaboratory = true;
+    $scope.isRadiology = false;    
+    $scope.laboratoryTests = $scope.medicalRecordHistory.medical_records.laboratory_test;
+  }
 
    
 
@@ -9300,6 +9425,43 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
       
     }
 
+    $scope.access = {};
+
+    $scope.getPermission = function() {
+      if($scope.successMsg) 
+        $scope.message = "";
+
+      if($scope.failureMsg)
+        $scope.failureMsg = "";
+
+      if(!$scope.access.key){
+        alert("Please enter patient MRA key");
+        return;
+      }
+
+      $scope.loading = true;
+      var sendObj = {
+        key: $scope.access.key,
+        patientId: patient.id
+      }
+
+      $http.put("/user/record-permission",sendObj)
+      .success(function(response){
+        console.log(response)
+        $scope.loading = false;
+        if(response.status){         
+          $scope.successMsg = "Access Granted!!!";
+          //$scope.medicalRecordHistory.status = true;
+          getMedicalHistory("/user/get-medical-record");
+        } else {
+          $scope.failureMsg = response.message;
+        }
+      })
+      .error(function(err){
+        console.log(err)
+      })
+    }
+
     
 
     //doctor views patient medical records. 
@@ -9307,6 +9469,7 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
       var getMedication = getMedicalHistoryService //$resource(url);
       var sendObj = {patientId:patient.id}
       getMedication.get(sendObj,function(data){ 
+        console.log(data);
         $scope.medicalRecordHistory = data;
       });
     }
@@ -9619,7 +9782,7 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
        
 
         switch(theReqList[i].type_of_test) {
-          case "laboratory:":
+          case "laboratory":
             if(theReqList[i].ref_id !== getId)
               templateService.labPrescriptionReq.push(theReqList[i]);
           break;
@@ -9894,23 +10057,38 @@ app.controller("appointmentModalController",["$scope","$http","moment","template
 
 //this controller controls the form filled by the doctor when creating new session for a selected patient above.
 app.controller("fromModalSessionController",["$scope","$http","$window","localManager",
-  "templateService","$rootScope","$resource","getSessionService",
-  function($scope,$http,$window,localManager,templateService,$rootScope,$resource,getSessionService){
+  "templateService","$rootScope","$resource","getSessionService","$filter",
+  function($scope,$http,$window,localManager,templateService,$rootScope,$resource,getSessionService,$filter){
   $scope.patient = {};
-  var date = new Date();
-  $scope.patient.date = date;      
+  //var date = new Date();     
   $scope.patient.patient_id = $rootScope.holdId;
   $scope.patient.typeOfSession = "In-person meeting"; 
 
   $scope.createSession = function () {
-    console.log($scope.patient)
+    $scope.loading = true;     
+    var dt = + new Date();
+    $scope.patient.date = dt;
+    var date = $filter('date')(dt, 'EEE, MMM d, y');
+    var sendObj = {};
+
+
+    for(var i in $scope.patient) {
+      if($scope.patient.hasOwnProperty(i) && $scope.patient[i] && i !== 'date' && i !== 'patient_id' && i !== 'typeOfSession') {
+
+        sendObj[i] = "<font color='green' weight='bold'> >> &nbsp; " + date + "</font> : " + $scope.patient[i];
+      } else {
+        sendObj[i] = $scope.patient[i];
+      }
+    }
+
     $http({
       method  : 'POST',
       url     : "/user/doctor/patient-session",
-      data    : $scope.patient,
+      data    : sendObj,
       headers : {'Content-Type': 'application/json'} 
       })
-    .success(function(data) {   
+    .success(function(data) {  
+      $scope.loading = false; 
       if(data.success === "success") {
         $scope.patient.diagnosis = connectObj;
         $scope.patient.session_id = data.session_id;
@@ -9918,10 +10096,11 @@ app.controller("fromModalSessionController",["$scope","$http","$window","localMa
         $scope.patient.patient_lastname = data.patient_lastname;
         $scope.patient.profilePic = data.profilePic;
         localManager.setValue("heldSessionData",$scope.patient);
+        $scope.isCreated = true;
         //$window.location.href = "/user/treatment";
         loadSession();
       } else {
-        alert("Error occured while creating this treatment session")
+        alert("Error occured while creating this treatment session");
       }
     });
 
@@ -15581,8 +15760,9 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
           mySocket.emit("patient disconnect",$scope.checkLogIn);
         }
       }
-      $window.location.href = "/user/logout";
     });
+
+    $window.location.href = "/user/logout";
     destroyStorage();
   }
 

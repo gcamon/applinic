@@ -7,6 +7,7 @@ var chance = require("chance").Chance();
 var salt = require('./salt');
 var router = config.router;
 var http = require("http");
+var uuid = require('uuid');
 
 
 
@@ -97,7 +98,9 @@ var signupRoute = function(model,sms,geonames,paystack) {
 		            memberId: uid,
 		            name: req.body.firstname,
 		            main: true
-							})
+							});
+
+							User.mrak = uuid.v1();
 						}
 
 
@@ -219,11 +222,13 @@ var signupRoute = function(model,sms,geonames,paystack) {
 		)	   	
 		
 		function callBack(err,response){
-			if(!err) {
+			/*if(!err) {
 				res.send({message:"Phone Verification Pin sent to " + req.body.phone});
 			} else {
 				res.send({message:err.message,error: true});
-			}
+			}*/
+
+			res.send({message:"Phone Verification Pin sent to " + req.body.phone});
 		}			
 	})
 

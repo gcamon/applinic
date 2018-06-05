@@ -1,3 +1,55 @@
+<style>
+.list-group-item{
+    font-size: .8em;
+    padding: 10px 10px 10px 5px;
+    margin: 0;
+}
+
+ .card-title {
+            text-transform: uppercase;
+            text-align: center;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 1em;
+        }
+
+        .list-group-item{
+            background: transparent;
+            border:0;
+        }
+
+        .list-group-item:first-child, .list-group-item:last-child {
+            background: transparent;
+            border:0;
+        }
+
+        .navbar-transparent{
+            background:rgba(0,0,0,0.4) !important;
+           
+        }
+
+        .dropdown-item{
+text-transform: uppercase;
+padding:10px 10px;
+ border-bottom:1px solid #f2f2f2;
+ color:#000;
+ font-size: .8em;
+        }
+
+ .dropdown-item:hover{
+ background: #71BB52;
+     color:#555;
+     text-transform: uppercase;
+ }
+
+ .card{
+     border-radius: 10px;
+ }
+
+ .all .card img{
+     margin-bottom:30px;
+ }
+</style>
+
 <nav class="navbar navbar-toggleable-md bg-primary fixed-top  navbar-transparent" color-on-scroll="500">
         <div class="container">
             <div class="navbar-translate">
@@ -17,27 +69,28 @@
                             <p>Home</p>
                            </a>
                     </li>
-                     <li class="nav-item">
-                        <a class="nav-link" href="/how-it-works">
-                            <p>How it works</p>
-                        </a>
-                    </li>
                     
-                    <li class="nav-item">
-                        <a class="nav-link" href="/contact">
-                            <p>Contact</p>
-                        </a>
-                    </li>
+                    
                     </ul>
-                    <div class="button-groups">
-                        <a href="/login" class="btn btn-neutral" style="color:#f96332;background-color:#fff">
-                           Login
-                        </a>
-                
-                        <a href="/signup" class="btn btn-primary" style="background-color:#f96332">
-                           Sign up
-                        </a>
-                </div>
+                   
+
+
+                <div class="dropdown ">
+<button class="btn btn-warning btn-block dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        START
+    </button>
+    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+<a class="dropdown-item" href="/login">Login</a>
+
+<a class="dropdown-item" href="/signup">Signup</a>
+
+        <a class="dropdown-item" href="#">Need Doctor</a>
+
+        <a class="dropdown-item" href="#">Need Help</a>
+<a class="dropdown-item" href="/how-it-works">How it works</a>
+        <a class="dropdown-item" href="/contact">Contact Us</a>
+    </div>
+</div>
             </div>
         </div>
     </nav>
