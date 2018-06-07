@@ -408,25 +408,75 @@
     <!-- End Navbar -->
      <div class="clearfix"></div>
             <div class="app" id="app">
-                <header class="container text-center" style="background:#fff; border-bottom:1px solid #f2f2f2; min-height:70px; line-height:70px; padding:5px;position:relative">
-                            <div class="col-md-12 col-sm-12 col-xs-12">                                    
+                <header class="container text-center" style="background:#fff; border-bottom:1px solid #f2f2f2; min-height:70px; line-height:70px; padding:5px;position:relative;z-index: 999">
+                            <div class="col-md-12 col-sm-12 col-xs-12" ng-controller="balanceController">                                    
   
-                                      
-                                <a class="btn btn-simple round"  href="#/help"><i class="fa fa-question-circle"></i>
-                                    <span style="color:red">Need Help?</span>
-                                </a>
-                                      
-                                <a class="btn btn-simple round ml-1"  href="#/need-specialist" ><i class="fa fa-user-md"></i>
-                                    <span style="color:red">Need a Doctor?</span>
-                                </a>
+                                <div class="row"> 
+                                    <div class="col-sm-12 col-md-4 col-lg-4">  
+                                        <a class="btn btn-simple round"  href="#/help"><i class="fa fa-question-circle"></i>
+                                        <span style="color:red">Need Help?</span>
+                                        </a>
+                                          
+                                        <a class="btn btn-simple round ml-1"  href="#/need-specialist" ><i class="fa fa-user-md"></i>
+                                        <span style="color:red">Need a Doctor?</span>
+                                        </a>
+                                    </div>
+                                
 
                                 <!--<a class="btn btn-simple round ml-1"  href="#/create-family-account" ><i class="fa fa-users"></i>
                                     <span style="color:red">Create Family Account</span>
                                 </a>-->
+                                    <div class="col-sm-12 col-md-3 col-lg-3"> 
+                                        <a href="#/transactions" class="btn btn-info btn-sm header-btn" style=""><i class="fa fa-money"></i>
+                                        <span ng-cloak>Available Balance | <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i> {{(loading) ? "" : balance}}</span>
+                                        </a> 
+                                    </div> 
 
-                                 <a ng-controller="balanceController" href="#/transactions" class="btn btn-info btn-sm header-btn" style="float-right"><i class="fa fa-money"></i>
-                                    <span ng-cloak>Available Balance | <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i> {{(loading) ? "" : balance}}</span>
-                                </a>  
+                                    <div class="col-sm-12 col-md-5 col-lg-5 dropdown" style="position: relative;"> 
+                                        <a href="" class="btn btn-neutral text-muted" style="font-size: 14px" ng-cloak>
+                                            <strong style="float: left;">MRA Key: </strong>
+                                            <span style="width: 120px;float: left;padding-left: 2px" title="Your Medical Record Access Key is {{checkLogIn.mrak}}" class="ellipsis">{{(copy) ? "Copied!" : checkLogIn.mrak}}</span> &nbsp;  
+                                            <span class="fa fa-copy text-warning" text="checkLogIn.mrak" style="float: left;padding-left: 5px" clipboard  supported="supported" on-copied="success(checkLogIn.mrak)" title="{{copy}}" on-error="fail(err)"> copy</span>&nbsp;&nbsp;
+                                                                            
+                                        </a>
+
+                                         <a href="" class="fa fa-wrench text-warning nav-link dropdown-toggle"  id="navbarDropdownMenuLink2" data-toggle="dropdown" style="position: absolute;bottom: 30px;right:15px" ng-click="getAccess()"> manage</a> 
+
+                                        <div class="dropdown-menu dropdown-menu-right p-2"  aria-labelledby="navbarDropdownMenuLink2" id="accessBody" style="line-height: 30px;font-size: 16px">                                            
+                                            <h5 class="p-0 m-0">Medical Record Access
+                                                <i class="fa fa-times" style="float: right;" ng-click="closeAccDiv()"></i>
+                                            </h5>
+                                            <div class="clearfix"></div>
+                                            <hr>
+                                             <a href="" style="color: blue;font-size: 10px ;float: right" class="btn btn-simple btn-sm" ng-click="changeKey()"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange" ng-if="isLoading"></i> {{(isLoading)? "" : 'Change key'}}</a><br>
+                                             <span style="font-size: 14px;"><b>Key:</b> {{checkLogIn.mrak}}</span><br>
+                                            <small>Decide who should have access to your medical records</small>
+                                            <hr>
+                                            <div style="text-align: right;">
+                                                <button class="btn btn-sm btn-warning" ng-click="updateAccess('all',$event)" ari>
+                                                <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="allLoading"></i> {{ (allLoading) ? "" : (allMsg) ? allMsg :'Deny all' }}</button>
+                                            </div>
+                                            <div style="max-height: 400px;overflow-y: auto;">
+                                                <div ng-repeat="i in accessList" style="position: relative;padding-top: 5px" ng-if="i.userId">
+                                                    <img src="{{i.profile_pic_url}}" style="max-width: 32px; max-height: 32px;float: left;">
+                                                    <div style="display: inline-block;float: left;padding-left:10px">
+                                                        <strong style="font-size: 12px;">{{i.name}}</strong>
+                                                    </div>
+                                                    <div class="clearfix"></div>                                                  
+                                                    <button style="position: absolute;top:2px; right: 2px;" class="btn btn-info btn-sm" ng-click="updateAccess(i)"> <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="i.loading"></i> {{ (i.loading) ? "" : (i.resMsg) ? i.resMsg :'deny' }}</button>
+                                                </div>
+                                                <div style="text-align: center;padding-top: 20px">
+                                                    <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange" ng-if="accLoading"></i>
+                                                </div>
+                                            </div>
+                                         </div>
+                                    </div>
+                                </div>
+                                <!--
+                                     <a href="" class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown">
+                                    <i class="fa fa-search text-warning" aria-hidden="true"></i> Searches
+                                </a>
+                                -->
                                      
                             </div>     
                             

@@ -440,10 +440,7 @@ var myModel = function () {
 	    ref_id: Number
 	});
 
-	var accessObjSchema = Schema({
-		
-	});
-
+	
 	var accessSchema = Schema({
 		patient_id: String,
 		access_to_record: Boolean,

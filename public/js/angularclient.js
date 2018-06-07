@@ -1507,9 +1507,14 @@ app.controller('loginController',["$scope","$http","$location","$window","$resou
   
 }]);
 
+app.service("manageRecordAccessService",["$resource",function($resource){
+  return $resource("/user/manage-access",null,{updateAccess:{method: "PUT"},changeKey: {method: "PATCH"}})
+}])
+
 //display the current balance always
-app.controller("balanceController",["$rootScope","$scope","$resource","localManager","mySocket",
-  function($rootScope,$scope,$resource,localManager,mySocket){  
+app.controller("balanceController",["$rootScope","$scope","$resource","localManager","mySocket","$timeout",
+  "manageRecordAccessService",
+  function($rootScope,$scope,$resource,localManager,mySocket,$timeout,manageRecordAccessService){  
   var user = localManager.getValue("resolveUser");
 
   function getBalance() {
@@ -1532,6 +1537,84 @@ app.controller("balanceController",["$rootScope","$scope","$resource","localMana
       $rootScope.alertService(3,data.message); 
     }
   })
+
+
+  $scope.supported = false;
+
+  $scope.copy = "";
+
+  $scope.success = function (id) {
+    $scope.copy = id + ' Copied!';
+    $timeout(function(){
+      $scope.copy = "";
+    },2000)
+  };
+
+  $scope.fail = function (err) {
+    console.error('Error!', err);
+  };
+
+  var elem = document.getElementById('accessBody'); 
+
+  $scope.getAccess = function() {
+    $scope.accLoading = true;
+    elem.style.display = "block";
+    manageRecordAccessService.query(function(response){
+      console.log(response)
+      $scope.accLoading = false;
+      $scope.accessList = response;
+    });
+  }
+
+  
+
+  $scope.closeAccDiv = function() {
+    elem.style.display = "none"
+  }
+
+  $scope.updateAccess = function(user,e) {
+    
+    elem.style.display = "block";
+
+    if(typeof user == "string") {
+      var user = {
+        userId : "all"
+      }
+
+      $scope.allLoading = true;
+      user.isAll = true;
+    } else {
+       user.isAll = false;
+    }
+
+    user.loading = true;
+    manageRecordAccessService.updateAccess({userId: user.userId},function(res){
+        user.loading = false;
+        $scope.allLoading = false;
+        console.log(res)
+        
+        if(res.status) {
+          if(user.isAll)
+            $scope.allMsg = "All access denied"
+          user.resMsg = res.message
+        }
+        //$scope.accessList = res.list
+    });
+  }
+
+  $scope.changeKey = function() {
+    var verify = confirm("Changing your Medical Record Access Key will deny existing users of your medical records access. Do you wish to continue?")
+
+    if(verify) {
+      $scope.isLoading = true;
+      manageRecordAccessService.changeKey(function(res){
+        $scope.isLoading = false;
+        alert(res.message)
+        $rootScope.checkLogIn.mrak = res.mrak;
+        localManager.setValue("resolveUser",$rootScope.checkLogIn);
+      })
+    }
+  }
 
 }]); 
 
@@ -4274,7 +4357,7 @@ app.controller("inTreatmentController",["$scope","$http","localManager","$locati
     check++;
     if($scope.updateMsg)
       $scope.updateMsg = "";
-    
+
     if(check > 1) 
       $scope.isChanges = true;
   },true);
@@ -7367,6 +7450,8 @@ app.controller("patientLabTestController",["$scope","$location","$http","$window
     $scope.isAll = true;
     $scope.all = function(){
       $scope.isAll = true;
+
+
       $scope.isRecent = false;
       $scope.isThree = false;
       $scope.isSix = false;
@@ -16477,7 +16562,7 @@ app.controller("hompageController",["$scope","scanTests","cities","labTests","Dr
       switch(newVal) {
         case 'Doctor':
           $scope.itemList = [];
-          $scope.itemName = "Enter Specialty";
+          $scope.itemName = "Enter specialty or disease";
         break;
         case 'Pharmacy':
           homePageDynamicService.query($rootScope.user,function(data){
@@ -16505,7 +16590,7 @@ app.controller("hompageController",["$scope","scanTests","cities","labTests","Dr
         break;
         case 'Skills & Procedures':
           $scope.itemList = [];
-          $scope.itemName = "Enter procedure";
+          $scope.itemName = "Enter procedure or disease";
         break;
         default:
         break;

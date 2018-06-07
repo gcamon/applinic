@@ -2772,7 +2772,6 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
 
     router.put("/user/record-permission", function(req,res){
       if(req.user){
-        console.log(req.body)
         model.user.findOne({mrak: req.body.key,user_id: req.body.patientId}).exec(function(err,data){
           if(err) throw err;
           if(data){
@@ -2798,6 +2797,66 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
           } else {
             res.send({message:"Permission denied! Reason: Invalid key or key mismatch.",status: false})
           }
+        })
+      } else {
+        res.end("unauthorized access!")
+      }
+    });
+
+    router.get("/user/manage-access",function(req,res){
+        if(req.user) {
+          res.json(req.user.record_access);
+        } else {
+          res.end("unauthorized access!");
+        }
+    });
+
+    router.put("/user/manage-access",function(req,res){
+      console.log(req.body)
+      if(req.user) {
+        model.user.findOne({user_id:req.user.user_id},{record_access: 1}).exec(function(err,data){
+          if(err) throw err;
+          if(data){
+            if(req.body.userId === "all"){
+              data.record_access.splice(0);
+              res.json({message: "access denied",status: true});
+            } else {
+              var elemPos = data.record_access.map(function(x){return x.userId}).indexOf(req.body.userId);              
+              if(elemPos !== -1){
+                data.record_access.splice(elemPos,1);
+              }
+              res.json({message: "access denied",status: true});
+            }
+          } else {
+            res.send({message: "failed."});
+          }
+
+          data.save(function(err,info){
+            if(err) throw err;
+            console.log("record access updated!")
+          })
+        })
+      } else {
+        res.end("unauthorized access!")
+      }
+    });
+
+    router.patch("/user/manage-access",function(req,res){
+      if(req.user){
+        model.user.findOne({user_id:req.user.user_id},{mrak:1,record_access:1}).exec(function(err,data){
+          if(err) throw err;
+          if(data){
+            data.mrak = uuid.v1();
+            data.record_access.splice(0);
+            res.json({message: "Medical Record Access Key changed successfully",mrak: data.mrak})
+          } else {
+            res.json({message: "Oops! Something went wrong. Try again."})
+          }
+
+          data.save(function(err,info){
+            if(err) throw err;
+            console.log("mrak key changed")
+          })
         })
       } else {
         res.end("unauthorized access!")
@@ -6700,11 +6759,14 @@ router.get("/general/homepage-search",function(req,res){
   } else if(req.query.category === "Doctor") {    
 
     var str = new RegExp(req.query.item.replace(/\s+/g,"\\s+"), "gi");              
-    var criteria = { specialty : { $regex: str, $options: 'i' },type:"Doctor",city:req.query.city};
-    model.user.find(criteria,{firstname:1,lastname:1,work_place:1,city:1,country:1,address:1,_id:0},function(err,data){
+    //var criteria = { specialty : { $regex: str, $options: 'i' },type:"Doctor",city:req.query.city};
+    //var byDisease = {"skills.disease": { $regex: str, $options: 'i' },type:"Doctor",city:req.query.city};
+    var criteria = { $or: [{ specialty : { $regex: str, $options: 'i' },type:"Doctor",city:req.query.city},{"skills.disease": { $regex: str, $options: 'i' },type:"Doctor",city:req.query.city}]};
+
+    model.user.find(criteria,{firstname:1,lastname:1,work_place:1,city:1,country:1,address:1,specialty:1,_id:0},function(err,data){
       if(err) {
         res.send({error:"status 500",full:[]});
-      } else {
+      } else {       
         res.json({full: data});
       }
     });
@@ -6806,7 +6868,8 @@ router.get("/general/homepage-search",function(req,res){
   } else if(req.query.category === "Skills & Procedures") {
 
     var str = new RegExp(req.query.item.replace(/\s+/g,"\\s+"), "gi");              
-    var criteria = { "skills.skill" : { $regex: str, $options: 'i' },type:"Doctor",city:req.query.city};
+    var criteria = { $or: [{ "skills.skill" : { $regex: str, $options: 'i' },type:"Doctor",city:req.query.city},{"skills.disease": { $regex: str, $options: 'i' },type:"Doctor",city:req.query.city}]};
+    //var byDisease = {"skills.disease": { $regex: str, $options: 'i' },type:"Doctor",city:req.query.city};
     model.user.find(criteria,{firstname:1,lastname:1,work_place:1,city:1,country:1,address:1,_id:0},function(err,data){
       if(err) {
         res.send({error:"status 500",full:[]});
