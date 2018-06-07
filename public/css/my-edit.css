@@ -523,6 +523,12 @@ font-weight: 300 !important;
   }
 }
 
+.mng {
+  position: absolute;bottom: 30px;right: 35px;
+}
+
+
+
 @media screen and (max-width: 960px) {
   .view-animate-container {
    
@@ -546,5 +552,20 @@ font-weight: 300 !important;
     width: 100%;
     margin: inherit;
   }
+
+  .nmg {
+    right:25px
+  }
   
+}
+
+@media screen and (max-width: 450px) {
+  .deny-mobile-btn {
+    text-align: right;
+  }
+
+  #accessBody {
+    width: 100%!important;
+  }
+
 }

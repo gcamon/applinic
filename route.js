@@ -869,11 +869,15 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
   });
 
     
-    router.get("/user/patient/find-doctor",function(req,res){
+  router.get("/user/patient/find-doctor",function(req,res){
       if(req.user){
        
         var criteria;
         var str;
+
+        if(!req.query.city)
+          req.query.city = req.user.city;
+        
         if(req.query.city && !req.query.specialty){
           str = new RegExp(req.query.city);          
           criteria = { city : { $regex: str, $options: 'i' },type:"Doctor"};
@@ -897,17 +901,20 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
           criteria = { name : { $regex: str, $options: 'i' },type:"Doctor"};
 
         } else if(req.query.skill){
-          console.log(req.query)
+
           var checkStr = req.query.skill.split(":") || req.query.skill.split(";");
-          console.log(checkStr)
+          
           if(checkStr.length <= 1) {
             str = new RegExp(req.query.skill.replace(/\s+/g,"\\s+"), "gi"); 
-            console.log(str)        
+          
             criteria = { "skills.procedure_description" : { $regex: str, $options: 'i' },type:"Doctor"};
           } else {
             criteria = { "skills.procedure_description" : req.query.skill};
           }
 
+        } else if(req.query.disease) {
+          str = new RegExp(req.query.disease.replace(/\s+/g,"\\s+"), "gi"); 
+          criteria = { $or: [{ "skills.skill" : { $regex: str, $options: 'i' },type:"Doctor",city:req.query.city},{"skills.disease": { $regex: str, $options: 'i' },type:"Doctor",city:req.query.city}]};
         } else {
           criteria = req.query;
         }
@@ -6879,7 +6886,6 @@ router.get("/general/homepage-search",function(req,res){
     });
 
   } else if(req.query.category === "Special Center") {
-    console.log(req.query.city)
     var str = new RegExp(req.query.item.replace(/\s+/g,"\\s+"), "gi");              
    // var criteria = { "skills.disease" : { $regex: str, $options: 'i' },type:"Doctor",title:"SC",city:req.query.city};
     var criteria = { $or: [{"skills.disease" : { $regex: str, $options: 'i' },type:"Doctor",title:"SC",city:req.query.city},{"skills.skill" : { $regex: str, $options: 'i' },type:"Doctor",title:"SC",city:req.query.city}]};

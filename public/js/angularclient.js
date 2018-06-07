@@ -2545,11 +2545,12 @@ app.controller('resultController',["$scope","$rootScope","$http","$location","$r
   var data = patientfindDoctorService;//$resource("/user/patient/find-doctor");
   $scope.find = function (skill) {
     
-    if($scope.user.specialty || $scope.user.doctorId || $scope.user.name || $scope.user.skill || $scope.user.city){      
+    if($scope.user.specialty || $scope.user.doctorId || $scope.user.name || $scope.user.skill || $scope.user.city || $scope.user.disease){      
       $scope.loading = true;
       if(skill !== undefined) {
         $scope.user.creteria = "skill";
-      }    
+      } 
+
       switch($scope.user.creteria){
         case "doctorId":
         if($scope.user.doctorId) {
@@ -2610,6 +2611,21 @@ app.controller('resultController',["$scope","$rootScope","$http","$location","$r
           if(data.length > 0) {
             localManager.setValue("userInfo",data);
             $location.path("/skills-result");
+            console.log(data);
+          } else {
+            alert("No result found!")
+          }
+          $scope.loading = false;
+          });          
+        break;
+        case "disease":
+          //alert($scope.user.skill)
+          var sendObj = {};        
+          sendObj.disease = $scope.user.disease;          
+          data.query(sendObj,function(data){
+          if(data.length > 0) {
+            localManager.setValue("userInfo",data);
+            $location.path("/list");
             console.log(data);
           } else {
             alert("No result found!")
@@ -2717,14 +2733,22 @@ app.controller('resultController',["$scope","$rootScope","$http","$location","$r
       $scope.isSpecialty = true;
       $scope.isDoctorId = false;
       $scope.isName = false;
+      $scope.isDisease = false;
     } else if($scope.user.creteria === "doctorname"){
       $scope.isDoctorId = false;
       $scope.isSpecialty = false;
       $scope.isName = true;
+      $scope.isDisease = false;
     } else if($scope.user.creteria === "doctorId"){
       $scope.isDoctorId = true;
       $scope.isSpecialty = false;
       $scope.isName = false;
+      $scope.isDisease = false;
+    } else if($scope.user.creteria === "disease"){
+      $scope.isDoctorId = false;
+      $scope.isSpecialty = false;
+      $scope.isName = false;
+      $scope.isDisease = true;
     }
   })                              
 }]);
@@ -3053,6 +3077,7 @@ app.controller("bookingDocModalController",["$scope","templateService","$http","
     $scope.earMsg = "";
     $scope.eyeMsg = "";
     $scope.teeMsg = "";
+    $scope.getPregnantMsg = "";
     if($scope.patient.sick) {
       if(!$scope.symptomsList[0].name || $scope.symptomsList[0].name === "") {
         $scope.sympMsg = "Add symptoms of your sickness";
@@ -3099,6 +3124,13 @@ app.controller("bookingDocModalController",["$scope","templateService","$http","
      if($scope.patient.teeth) {
       if(!$scope.patient.teethIssue) {
         $scope.teeMsg = "This field cannot be empty.";
+        return false;
+      }
+    }
+
+    if($scope.patient.getPregnant) {
+      if(!$scope.patient.getPregIssue) {
+        $scope.getPregnantMsg = "This field cannot be empty.";
         return false;
       }
     }
@@ -3160,6 +3192,12 @@ app.controller("bookingDocModalController",["$scope","templateService","$http","
          $scope.patient.history += "This patient is having an teeth problem as explained: <br>" +
          "<blockquote>" + $scope.patient.teethIssue + "</blockquote>";
       }
+
+      if($scope.patient.getPregnant) {
+         $scope.patient.history += "This patient wants to <b> get pregnant. </b>This issue was explained as stated: <br>" +
+         "<blockquote>" + $scope.patient.getPregIssue + "<br> Last menstruation was  <b> " + $scope.patient.lmp + " </b></blockquote>";
+      }
+
 
       if($scope.patient.hasMedicated) {
          $scope.patient.history += "This patient has tried other medications or self medications but the complaints persisted."
@@ -11145,6 +11183,7 @@ app.controller("checkingOutPatientController",["$scope","$location","templateSer
       } 
     }); 
   }*/
+
 
   $scope.viewLabTest = function(id){ 
     templateService.holdId = id;

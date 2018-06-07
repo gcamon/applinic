@@ -5,9 +5,10 @@
      <div class="">
         <label for="lastname">Options: </label>
         <select class="custom-select form-control" ng-model="user.creteria">
-          <option selected value="doctorname">Find by Name</option>
+          <option selected value="doctorname">Find by name</option>
           <option value="specialty">City &amp; Doctor's Specialty</option>
-          <option value="doctorId">Find by Doctor's id</option>
+          <option value="doctorId">Find by doctor's ID</option>
+          <option value="disease">Find by disease</option>
         </select>
      </div>
     <hr>
@@ -108,6 +109,12 @@
           <label for="doctorId">Doctor's ID</label>
         <input type="text" class="form-control"  placeholder="Enter Doctor's ID" ng-model="user.doctorId" >
       </div>
+
+      <div class="form-group" ng-if="isDisease === true">
+          <label for="disease">Find by disease</label>
+        <input type="text" class="form-control"  placeholder="Enter disease" ng-model="user.disease" >
+      </div>
+      
       
       <div class="col-md-12 form-group">
         <button class="btn btn-info" ng-click = "find()"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color: #fff" ng-if="loading"></i> {{(loading) ? "" : "Find"}}</button>
