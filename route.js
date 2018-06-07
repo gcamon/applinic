@@ -6879,10 +6879,11 @@ router.get("/general/homepage-search",function(req,res){
     });
 
   } else if(req.query.category === "Special Center") {
-
+    console.log(req.query.city)
     var str = new RegExp(req.query.item.replace(/\s+/g,"\\s+"), "gi");              
-    var criteria = { "skills.disease" : { $regex: str, $options: 'i' },type:"Doctor",title:"SC",city:req.query.city};
-    model.user.find(criteria,{name:1,city:1,country:1,address:1,_id:0},function(err,data){
+   // var criteria = { "skills.disease" : { $regex: str, $options: 'i' },type:"Doctor",title:"SC",city:req.query.city};
+    var criteria = { $or: [{"skills.disease" : { $regex: str, $options: 'i' },type:"Doctor",title:"SC",city:req.query.city},{"skills.skill" : { $regex: str, $options: 'i' },type:"Doctor",title:"SC",city:req.query.city}]};
+    model.user.find(criteria,{name:1,city:1,country:1,address:1,specialty:1,_id:0},function(err,data){
       if(err) {
         res.send({error:"status 500",full:[]});
       } else {
