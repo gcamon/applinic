@@ -9070,6 +9070,10 @@ app.controller("myDoctorController",["$scope","$location","$http","$window","$ro
       if(event.keyCode === 13) {
         $scope.sendChat1();
         event.preventDefault();
+      } else {
+        if($scope.user.text1) {
+          $scope.user.text1 += "\n";
+        }
       }
   }
 
@@ -9327,10 +9331,17 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
 
   $scope.getkeys = function (event) {
     //$scope.keyval = event.keyCode;
-  if(!deviceCheckService.getDeviceType())
-    if(event.keyCode === 13) {
-      $scope.sendChat2();
-      event.preventDefault();
+  if(!deviceCheckService.getDeviceType()) {
+      if(event.keyCode === 13) {
+        $scope.sendChat2();
+        event.preventDefault();
+      } else {
+        if($scope.user.text2) {
+          $scope.user.text2 += "\n";
+        }
+
+        alert($scope.user.text2)
+      }
     }
     
   }
@@ -16330,6 +16341,10 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
       if(event.keyCode === 13) {
         $scope.sendChat1();
         event.preventDefault();
+      } else {
+        if($scope.user.text1) {
+          $scope.user.text1 += "\n";
+        }
       }
 
   }

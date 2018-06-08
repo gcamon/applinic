@@ -98,9 +98,9 @@
                 </div>
 
                 
-                <form class="panel-footer" ng-submit="sendChat2()">
+                <form class="panel-footer" ng-submit="sendChat2()" style="position: relative;">
                 <textarea contenteditable="true" style="padding-top: 30px" ng-model="user.text2"  ng-keypress="getkeys($event)" placeholder="Type a message..."> <span class="textout" >{{typeMessage}}</span> </textarea>
-                <button type="submit" class="btn btn-neutral btn-sm fa fa-send" style="font-size: 25px"></button>
+                <button type="submit" class="btn btn-neutral btn-sm fa fa-send chat-send-btn csb" style="font-size: 25px"></button>
                 </form>
 
              
