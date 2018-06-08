@@ -1319,7 +1319,7 @@ span.dates {
 	top:120px;
 	left:62%;
 	background-color: #fff;
-	z-index: 4;
+	z-index:1000;
 	overflow-y: auto;
 	border: 1px solid rgba(0,0,0,0.2);
 }
@@ -1444,23 +1444,10 @@ move later
 		/*height:200px;*/
 		width:100%;
 	}
-
-	.complain-in-view {
-		border: 1px solid rgba(0,0,0,0.2);
-		display: block;
-		width: 90%;
-		margin: 30px auto;
-		height:200px;
-		position:absolute;
-		background-color: rgba(255,255,255,0.9);
-		top:0;
-		left:10px;
-	}
-
 }
 
 
-@media (max-width:480px) {
+@media (max-width:720px) {
 	.mobile-header {
 		font-size: 12px
 	}
@@ -1481,6 +1468,16 @@ move later
 
 	.menu-drp {
 		width: 5%;
+	}
+
+	.complain-in-view {
+		width: 90%;
+		margin: 30px auto;
+		/*height:900px!important;*/
+		top:0;
+		left:10px;
+		overflow-y: auto;
+		/*overflow-y: auto;*/
 	}
 }
 
