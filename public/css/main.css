@@ -1274,7 +1274,7 @@ span.dates {
 .complain-list {
 	border: none!important;
 	width:700px;
-	min-height: 960px;
+	/*min-height: 960px;*/
 	
 	overflow: auto;
 	padding-right: 20px  
@@ -1441,7 +1441,7 @@ move later
 @media (max-width: 1200px) { 
 	.complain-list {
 		border: none;
-		height:200px;
+		/*height:200px;*/
 		width:100%;
 	}
 

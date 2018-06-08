@@ -528,7 +528,6 @@ font-weight: 300 !important;
 }
 
 
-
 @media screen and (max-width: 960px) {
   .view-animate-container {
    
@@ -555,6 +554,9 @@ font-weight: 300 !important;
 
   .nmg {
     right:25px
+  }
+  .mobile-center {
+    text-align: center;
   }
   
 }
