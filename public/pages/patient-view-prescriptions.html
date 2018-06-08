@@ -62,8 +62,8 @@
 				    	</div>-->
 				    	<div class="row">
 				    		<div class="col-sm-12 col-md-12 col-lg-12" style="padding: 10px 15px 0;">
-				    			<strong>Prescription ID :</strong> <span>{{docInfo.prescriptionId}}</span>
-								<button clipboard supported="supported" text="docInfo.prescriptionId" on-copied="success(docInfo.prescriptionId)" on-error="fail(err)" title="{{copy}}" class="btn btn-info fa fa-copy" style="padding: 5px"> Copy</button>		    			
+				    			<strong>Prescription ID :</strong> <span>{{(docInfo.copy) ? "Copied!" : docInfo.prescriptionId}}</span>
+								<button clipboard supported="supported" text="docInfo.prescriptionId" on-copied="success(docInfo)" on-error="fail(err)" title="{{copy}}" class="btn btn-info fa fa-copy" style="padding: 5px"> Copy</button>		    			
 				    		</div>
 				    	</div>
 				    	

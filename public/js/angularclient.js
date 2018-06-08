@@ -6210,8 +6210,9 @@ app.controller("PatientViewResponseModalController",["$scope","$rootScope","$loc
 
 }]);
 
-app.controller("pendingLabTestController",["$scope","templateService","$window","localManager","$location","$rootScope",
-  function($scope,templateService,$window,localManager,$location,$rootScope){
+app.controller("pendingLabTestController",["$scope","templateService","$window",
+  "localManager","$location","$rootScope","$timeout",
+  function($scope,templateService,$window,localManager,$location,$rootScope,$timeout){
   $scope.type = "Pending laboratory test(s)";  
   console.log(templateService.pendingLab);
   $scope.pendingTest = templateService.pendingLab;
@@ -6270,11 +6271,30 @@ app.controller("pendingLabTestController",["$scope","templateService","$window",
     $location.path("/patient/forward-test");
   } 
 
+
+  $scope.supported = false;
+
+  $scope.copy = "";
+
+  $scope.success = function (test) {
+    test.copy = 'Copied!';
+    $timeout(function(){
+      test.copy = "";
+    },2000)
+  };
+
+
+  $scope.fail = function (err) {
+    console.error('Error!', err);
+  };
+
+
 }]);
 
 /////handles pending tests list including communications
-app.controller("pendingRadioTestController",["$scope","templateService","$window","localManager","$location","$rootScope",
-  function($scope,templateService,$window,localManager,$location,$rootScope){
+app.controller("pendingRadioTestController",["$scope","templateService","$window",
+  "localManager","$location","$rootScope","$timeout",
+  function($scope,templateService,$window,localManager,$location,$rootScope,$timeout){
   $scope.type = "Pending radiology test(s)"
   console.log(templateService.pendingScan);
   $scope.pendingTest = templateService.pendingScan;
@@ -6339,6 +6359,22 @@ app.controller("pendingRadioTestController",["$scope","templateService","$window
     templateService.holdTestToBeForwarded = testObj;
     $location.path("/patient/forward-test");
   } 
+
+  $scope.supported = false;
+
+  $scope.copy = "";
+
+  $scope.success = function (test) {
+    test.copy = 'Copied!';
+    $timeout(function(){
+      test.copy = "";
+    },2000)
+  };
+
+
+  $scope.fail = function (err) {
+    console.error('Error!', err);
+  };
 
 }]);
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -7378,8 +7414,8 @@ app.controller("selectedAppointmentControllerForPatient",["$scope","$location","
 }]);
 
 app.controller("patientLabTestController",["$scope","$location","$http","$window",
-  "templateService","localManager","patientMedViewController","$rootScope",
-  function($scope,$location,$http,$window,templateService,localManager,patientMedViewController,$rootScope){ 
+  "templateService","localManager","patientMedViewController","$rootScope","$timeout",
+  function($scope,$location,$http,$window,templateService,localManager,patientMedViewController,$rootScope,$timeout){ 
 
   if(!templateService.singleView) {
     $scope.labTest = templateService.holdAllLabTest || localManager.getValue("holdLabData");
@@ -7474,11 +7510,15 @@ app.controller("patientLabTestController",["$scope","$location","$http","$window
 
   $scope.supported = false;
 
-  $scope.copy = "Copy Ref NO";
+  $scope.copy = "";
 
-  $scope.success = function (id) {
-    $scope.copy = id + ' Copied!';
+  $scope.success = function (test) {
+    test.copy = 'Copied!';
+    $timeout(function(){
+      test.copy = "";
+    },2000)
   };
+
 
   $scope.fail = function (err) {
     console.error('Error!', err);
@@ -7523,8 +7563,8 @@ app.controller("patientLabTestController",["$scope","$location","$http","$window
 }]);
 
 app.controller("patientRadioTestController",["$scope","$rootScope","$location","$http","$window","templateService",
-  "localManager","patientMedViewController","ModalService",
-  function($scope,$rootScope,$location,$http,$window,templateService,localManager,patientMedViewController,ModalService){
+  "localManager","patientMedViewController","ModalService","$timeout",
+  function($scope,$rootScope,$location,$http,$window,templateService,localManager,patientMedViewController,ModalService,$timeout){
 
 
   if(!templateService.singleView) {
@@ -7623,11 +7663,15 @@ app.controller("patientRadioTestController",["$scope","$rootScope","$location","
 
   $scope.supported = false;
 
-  $scope.copy = "Copy Ref NO";
+  $scope.copy = "";
 
-  $scope.success = function (id) {
-    $scope.copy = id + ' Copied!';
+  $scope.success = function (test) {
+    test.copy = 'Copied!';
+    $timeout(function(){
+      test.copy = "";
+    },2000)
   };
+
 
   $scope.fail = function (err) {
     console.error('Error!', err);
@@ -8040,8 +8084,9 @@ app.service("patientMedViewController",function(){
   }
 });
 
-app.controller("prescriptionTemplateController",["$scope","$rootScope","$location","$http","templateService","localManager","patientMedViewController",
-  function($scope,$rootScope,$location,$http,templateService,localManager,patientMedViewController){
+app.controller("prescriptionTemplateController",["$scope","$rootScope","$location","$http","templateService",
+  "localManager","patientMedViewController","$timeout",
+  function($scope,$rootScope,$location,$http,templateService,localManager,patientMedViewController,$timeout){
     
     var prescriptionObjs = (templateService.holdPrescriptions.length > 0) ? templateService.holdPrescriptions : localManager.getValue("holdPrescriptions");
     
@@ -8119,11 +8164,15 @@ app.controller("prescriptionTemplateController",["$scope","$rootScope","$locatio
 
     $scope.supported = false;
 
-    $scope.copy = "Copy ID"
+    $scope.copy = "";
 
-    $scope.success = function (id) {
-      $scope.copy = id + ' Copied!'
+    $scope.success = function (pres) {
+      pres.copy = 'Copied!';
+      $timeout(function(){
+        pres.copy = "";
+      },2000);
     };
+
 
     $scope.fail = function (err) {
       console.error('Error!', err);
@@ -15264,7 +15313,7 @@ app.controller("captureImageController",["$scope",function($scope){
 
 app.controller("courierController",["$scope","$rootScope","$location","$http","localManager","Drugs","cities",
 function($scope,$rootScope,$location,$http,localManager,Drugs,cities){
-  $rootScope.back = $rootScope.back;
+  $rootScope.back = $rootScope.back || localManager.getValue("currentPageForPatients");
   $scope.user = {}//$rootScope.selectedPrescription;
   $scope.presInfo = $rootScope.selectedPrescription;
   $scope.cities = cities;
@@ -15709,8 +15758,8 @@ app.controller("emtrackedPrescriptionController",["$scope","$location","template
   }
 }]);
 
-app.controller("emLabTestController",["$scope","$location","$http","$window","templateService","localManager",
-  function($scope,$location,$http,$window,templateService,localManager){
+app.controller("emLabTestController",["$scope","$location","$http","$window","templateService","localManager","$timeout",
+  function($scope,$location,$http,$window,templateService,localManager,$timeout){
 
   $scope.labTest= localManager.getValue("holdLabData");
 
@@ -15731,11 +15780,15 @@ app.controller("emLabTestController",["$scope","$location","$http","$window","te
 
   $scope.supported = false;
 
-  $scope.copy = "Copy Ref NO";
+  $scope.copy = "";
 
-  $scope.success = function (id) {
+  $scope.success = function (test) {
     $scope.copy = id + ' Copied!';
+    $timeout(function(){
+      $scope.copy = "";
+    },2000)
   };
+
 
   $scope.fail = function (err) {
     console.error('Error!', err);
@@ -15743,8 +15796,8 @@ app.controller("emLabTestController",["$scope","$location","$http","$window","te
 
 }]);
 
-app.controller("emScanTestController",["$scope","$location","$http","$window","templateService","localManager",
-  function($scope,$location,$http,$window,templateService,localManager){
+app.controller("emScanTestController",["$scope","$location","$http","$window","templateService","localManager","$timeout",
+  function($scope,$location,$http,$window,templateService,localManager,$timeout){
 
   $scope.labTest= localManager.getValue("holdScanData");
 
@@ -15765,11 +15818,15 @@ app.controller("emScanTestController",["$scope","$location","$http","$window","t
 
   $scope.supported = false;
 
-  $scope.copy = "Copy Ref NO";
+  $scope.copy = "";
 
   $scope.success = function (id) {
     $scope.copy = id + ' Copied!';
+    $timeout(function(){
+      $scope.copy = "";
+    },2000)
   };
+
 
   $scope.fail = function (err) {
     console.error('Error!', err);
