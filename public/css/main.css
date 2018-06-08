@@ -1471,12 +1471,12 @@ move later
 	}
 
 	.complain-in-view {
-		width: 90%;
-		margin: 30px auto;
+		width: 93%;
 		/*height:900px!important;*/
 		top:0;
-		left:10px;
+		left:15px;
 		overflow-y: auto;
+		height: auto;
 		/*overflow-y: auto;*/
 	}
 }

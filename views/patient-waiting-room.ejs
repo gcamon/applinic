@@ -217,7 +217,7 @@
 
 
 
-                                <aside style="background-color: #fff;box-shadow: 0 5px 25px 0 rgba(0,0,0,.2); border-radius:5px 5px 0 0; top: 80px;" class="complain-in-view" ng-class="{'no-view':isViewPatient !== true}" id="complain-in-view">
+                                <aside style="background-color: #fff;box-shadow: 0 10px 25px 0 rgba(0,0,0,.2); border-radius:5px 5px 0 0; top: 80px;" class="complain-in-view" ng-class="{'no-view':isViewPatient !== true}" id="complain-in-view">
                                     <div class="complaint-view-head" style="font-weight: bold;position: relative;">
                                         <i class="fa fa-user complaint-user" ng-cloak> &nbsp; Patient ({{patient.complaint_id}})</i>
                                         <i  style="position: absolute;bottom: 10px;right: 25px;padding: 0;" class="fa fa-times complaint-times"  ng-click="close()" ng-if="isViewPatient === true"></i>                                     
@@ -272,7 +272,7 @@
                                           
                                             <label style="font-weight:bold;font-size: 14px" class="text-capitalize">Why should you be consulted ? </label>
                                             <textarea class="form-control" style="padding: 10px" cols="6" ng-model="user.introductory"></textarea>
-                                            <div class="p-2"></div><hr>
+                                            <div class="p-2"></div>
                                             <div class="pb-5 mt-2" style="display: block;margin-top: 20px">
                                                 <button  ng-click="sendRequest()" class="btn btn-primary text-white"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff !important" ng-if="loading"></i> {{(loading) ? '' : 'Submit'}}</button>
                                             </div>
