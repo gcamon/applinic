@@ -9066,15 +9066,12 @@ app.controller("myDoctorController",["$scope","$location","$http","$window","$ro
 
 
   $scope.getkeys = function (event) {
-    if(!deviceCheckService.getDeviceType())
+    if(!deviceCheckService.getDeviceType()) {
       if(event.keyCode === 13) {
         $scope.sendChat1();
         event.preventDefault();
-      } else {
-        if($scope.user.text1) {
-          $scope.user.text1 += "\n";
-        }
       }
+    } 
   }
 
   mySocket.on("isReceived",function(response){
@@ -9149,6 +9146,7 @@ app.controller("myDoctorController",["$scope","$location","$http","$window","$ro
     item[0].style.display = "inline-block";
     item[0].style.maxWidth = (deviceCheckService.getDeviceType()) ? "90%" : "70%";
     item[0].className = (data.sent) ? "talk-bubble tri-right right-top talktext msg_sent bg-info" : "talk-bubble tri-right left-top talktext";
+    item[0].style.whiteSpace = "pre-line";
     container[0].appendChild(breaker[0]);
     base[0].scrollTop = sentmessage1.scrollHeight;
   }
@@ -9331,17 +9329,10 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
 
   $scope.getkeys = function (event) {
     //$scope.keyval = event.keyCode;
-  if(!deviceCheckService.getDeviceType()) {
-      if(event.keyCode === 13) {
-        $scope.sendChat2();
-        event.preventDefault();
-      } else {
-        if($scope.user.text2) {
-          $scope.user.text2 += "\n";
-        }
-
-        alert($scope.user.text2)
-      }
+  if(!deviceCheckService.getDeviceType())
+    if(event.keyCode === 13) {
+      $scope.sendChat2();
+      event.preventDefault();
     }
     
   }
@@ -9415,6 +9406,7 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
     item[0].style.display = "inline-block";
     item[0].style.maxWidth = (deviceCheckService.getDeviceType()) ? "90%" : "70%";
     item[0].className = (data.sent) ? "talk-bubble tri-right right-top talktext msg_sent bg-info" : "talk-bubble tri-right left-top talktext";
+    item[0].style.whiteSpace = "pre-line";
     container[0].appendChild(breaker[0]);
     base[0].scrollTop = sentmessage1.scrollHeight;
   }
@@ -16341,10 +16333,6 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
       if(event.keyCode === 13) {
         $scope.sendChat1();
         event.preventDefault();
-      } else {
-        if($scope.user.text1) {
-          $scope.user.text1 += "\n";
-        }
       }
 
   }
@@ -16421,6 +16409,7 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
     item[0].style.display = "inline-block";
     item[0].style.maxWidth = (deviceCheckService.getDeviceType()) ? "90%" : "70%";
     item[0].className = (data.sent) ? "talk-bubble tri-right right-top talktext msg_sent bg-info" : "talk-bubble tri-right left-top talktext";
+    item[0].style.whiteSpace = "pre-line";
     container[0].appendChild(breaker[0]);
     base[0].scrollTop = sentmessage.scrollHeight;
   }

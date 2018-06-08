@@ -528,7 +528,7 @@ font-weight: 300 !important;
 }
 
 .chat-send-btn {
-  font-size: 25px;position: absolute;right: 30px;top:0
+  font-size: 25px;position: absolute;right: 20px;top:0
 }
 
 
@@ -569,6 +569,12 @@ font-weight: 300 !important;
 
   .csb {
     top: 0!important;
+  }
+
+  .csbg {
+    top: -2px!important;
+    right: 20px;
+    padding: 10px;
   }
   
 }
