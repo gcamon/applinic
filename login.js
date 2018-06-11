@@ -6,7 +6,7 @@ var salt = require('./salt');
 var router = config.router;
 var passport = config.passport;
 
-var loginRoute = function(model) {    
+var loginRoute = function(model,sms) {    
    passport.use('user-login', new LocalStrategy({
         // by default, local strategy uses username and password, we will override with email
         usernameField : 'username',
@@ -105,6 +105,112 @@ router.get("/user/admin",function(req,res){
 
 router.get('/failed',function(req,res){        
     res.send(false);
+})
+
+// Change password routes
+
+router.get('/user/change-password',function(req,res){
+  console.log(req.query);
+  model.user.findOne({email: req.query.email},{phone:1,email:1,user_id:1},function(err,user){
+    if(err) {
+      res.send({error:"error : 500"});
+      return;
+    }
+
+    if(user) {
+      var random1 = Math.floor(Math.random() * 9999);
+      var random2 = Math.floor(Math.random() * 9999);
+      var password = check(random1) + " " + check(random2);
+
+      var otp = new model.otpSchema({
+        user_id: user.user_id,//this id refers to the debitors id. the person whose account will be debited.
+        otp: password,
+        amount: 0,
+        senderId: user.user_id 
+      });           
+
+      //sets the expiration time for each otp sent.
+      var date = new Date();
+      otp.expirationDate = new Date(date.getTime() + 300000);
+      otp.expirationDate.expires = 300;          
+
+      otp.save(function(err,info){
+        if(err) throw err;
+        console.log("otp saved!");
+      }); 
+
+
+      console.log(password);
+
+      var msgBody = "Your pin for applinic.com change password is " + password;
+      var phoneNumber = user.phone;
+      sms.messages.create(
+        {
+          to: phoneNumber,
+          from: '+16467985692',
+          body: msgBody,
+        },
+        callBack
+      )
+
+      function callBack(err,responseData) {
+        console.log(err);
+        console.log(responseData);
+      }
+
+      function check(num) {
+        var toStr = num.toString();  
+        if(toStr.length < 4) {
+          for( var i = toStr.length - 1; i < 2; i++){
+            toStr+= 0;
+          }
+        } 
+        return toStr; 
+      }
+      
+
+
+      res.json({status: true, message: "Verifications pin sent to <b> " + user.phone + " </b> via SMS",userId:user.user_id,id:user.user_id})
+    } else {
+      res.send({status: false, message: "User with <b> &nbsp;" + req.query.email + " &nbsp;</b> not found!"})
+    }
+    
+  })
+});
+
+router.post("/user/change-password",function(req,res){
+  console.log(req.body)
+  model.otpSchema.findOne({otp: req.body.pin,user_id: req.body.id},function(err,data){
+    if(err) throw err;
+    if(data) {
+      res.json({isVerified: true,userId: data.user_id});
+      data.remove(function(err,info){});      
+    } else {
+      res.json({isVerified: false});
+    }
+
+  });
+  
+});
+
+router.put("/user/change-password/:id",function(req,res){
+  if(req.body.newPassword) {
+    var password = salt.createHash(req.body.newPassword);
+    model.user.findOne({user_id: req.body.userId},{password: 1}).exec(function(err,user){
+      if(err) throw err;
+      if(user){       
+        user.password = password;
+        console.log(user);
+        user.save(function(err,info){})
+        res.json({isPasswordChanged: true});
+      } else {
+        res.json({isPasswordChanged: false})
+      }
+    })
+    
+  } else {
+    res.end("No password was found")
+  }
 })
 
 

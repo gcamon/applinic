@@ -1421,10 +1421,14 @@ app.service("userLoginService",["$resource",function($resource){
   return $resource('/user/login',null,{logPerson:{method:"POST"}});
 }]);
 
+app.service("changPasswordService",["$resource",function($resource){
+  return $resource('/user/change-password/:id',{id:"@userId"},{updatePassword:{method:"PUT"},verifyUser:{method:"POST"}});
+}]);
+
 app.controller('loginController',["$scope","$http","$location","$window","$resource",
-  "ModalService","templateService","localManager","userLoginService",
+  "ModalService","templateService","localManager","userLoginService","changPasswordService",
   "$rootScope","mySocket",function($scope,$http,$location,$window,$resource,ModalService,
-    templateService,localManager,userLoginService,$rootScope,mySocket) {
+    templateService,localManager,userLoginService,changPasswordService,$rootScope,mySocket) {
   $scope.login = {};
   $scope.error = "";  
   
@@ -1503,6 +1507,89 @@ app.controller('loginController',["$scope","$http","$location","$window","$resou
               $scope.message = "You said " + result;
           });
       });
+  }
+
+  // Change Password Logic
+
+  $scope.changePassword = {};
+  
+  $scope.getUser = function() {
+    $scope.isLoading = true;
+    var user = changPasswordService.get({email: $scope.changePassword.email});
+
+    user.$promise.then(function() {
+      console.log(user);
+      if(user.status){
+        $scope.isSuccess = true;
+      }
+      $scope.cpMsg = user.message;
+      $scope.changePassword.userId = user.id;
+      $scope.isLoading = false;
+     
+    })
+  }
+
+  var verifyUser = null;
+
+  $scope.verify = function() {
+    $scope.isLoading = true;
+    var pin = $scope.changePassword.pin;
+    var str = "";
+    var count = 0;
+    for(var i = 0; i < pin.length; i++){
+      count++;      
+      if(count % 4 === 0) {
+        str += pin[i];
+        str += " ";
+      } else {
+        str += pin[i];
+      }
+    }
+    var newStr = str.replace(/\s*$/,"");
+    //user.pin = newStr;
+    $scope.verifyMsg = "";
+    var verifyUser = new changPasswordService();
+    verifyUser.pin = newStr;
+    verifyUser.id = $scope.changePassword.userId;
+    var savePromise = verifyUser.$verifyUser();
+
+    savePromise.then(function() {
+      console.log(verifyUser.isVerified);
+      if(verifyUser.isVerified) {
+        $scope.isVerified = verifyUser.isVerified;
+        $scope.changePassword.userId = verifyUser.userId;
+      } else {
+        $scope.verifyMsg = "Pin incorrect.";
+      }
+
+      $scope.isLoading = false;
+    })
+  }
+
+  $scope.updatePassword = function() {
+    $scope.passwordErrorMsg = "";
+    $scope.passwordMsg = "";
+    if($scope.changePassword.newPassword === $scope.changePassword.newPassword2) {
+      $scope.isLoading = true;
+      var update = new changPasswordService();
+      update.newPassword = $scope.changePassword.newPassword;
+      update.userId = $scope.changePassword.userId;
+
+      console.log(update);
+
+      var savePromise = update.$updatePassword();
+
+      savePromise.then(function(){
+        $scope.isLoading = false;
+        if(update.isPasswordChanged){
+          $scope.passwordMsg = "Password changed successfully.";
+        } else {
+          $scope.passwordErrorMsg = "Oops! something went wrong; Try again.";
+        }
+      })
+    } else {
+      $scope.passwordErrorMsg = "Password mismatch";
+    }
   }
   
 }]);
@@ -16720,7 +16807,6 @@ app.controller("homePageModalController",["$scope","$rootScope","homepageSearchS
   function($scope,$rootScope,homepageSearchService){
     $scope.loading = true;
     homepageSearchService.get($rootScope.user,function(response){
-      console.log(response)
       $scope.loading = false;
       $scope.searchResult = response.full;
     });  
@@ -16729,6 +16815,11 @@ app.controller("homePageModalController",["$scope","$rootScope","homepageSearchS
       selected.msg = "Please <a href='/signup'> create account </a> or <a href='/login'> log in </a> to have full access!";
     }
 }]);
+
+
+/*app.controller("forgotPasswordModalController",["$scope",function($scope){
+  alert("jash")
+}]);*/
 
 
 

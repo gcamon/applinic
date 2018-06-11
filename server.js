@@ -88,13 +88,13 @@ http.listen(port,function(){
 
 config.configuration(app,model);
 signupRoute(model,sms,geonames,paystack);
-loginRoute(model);
+loginRoute(model,sms);
 route(model,sms,io,streams); 
 payments(model,sms,io,paystack);
 placement(model,sms,io);
 mySocket(model,io,streams);
 
-
+console.log(Date.now())
 
 
 var a = "ede".replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()});
