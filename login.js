@@ -170,16 +170,16 @@ router.get('/user/change-password',function(req,res){
       
 
 
-      res.json({status: true, message: "Verifications pin sent to <b> " + user.phone + " </b> via SMS",userId:user.user_id,id:user.user_id})
+      res.json({status: true, message: "Verifications pin sent to <b> " + user.phone + " </b> via SMS",userId:user.user_id,id:user.user_id});
     } else {
-      res.send({status: false, message: "User with <b> &nbsp;" + req.query.email + " &nbsp;</b> not found!"})
+      res.send({status: false, message: "User with <b> &nbsp;" + req.query.email + " &nbsp;</b> not found!"});
     }
     
   })
 });
 
 router.post("/user/change-password",function(req,res){
-  console.log(req.body)
+  console.log(req.body);
   model.otpSchema.findOne({otp: req.body.pin,user_id: req.body.id},function(err,data){
     if(err) throw err;
     if(data) {
@@ -194,13 +194,13 @@ router.post("/user/change-password",function(req,res){
 });
 
 router.put("/user/change-password/:id",function(req,res){
-  if(req.body.newPassword) {
+  console.log(req.body);
+  if(req.body.newPassword && req.body.isVerified) {
     var password = salt.createHash(req.body.newPassword);
     model.user.findOne({user_id: req.body.userId},{password: 1}).exec(function(err,user){
       if(err) throw err;
       if(user){       
         user.password = password;
-        console.log(user);
         user.save(function(err,info){})
         res.json({isPasswordChanged: true});
       } else {
@@ -209,7 +209,7 @@ router.put("/user/change-password/:id",function(req,res){
     })
     
   } else {
-    res.end("No password was found")
+    res.send({isPasswordChanged: false})
   }
 })
 

@@ -1558,6 +1558,7 @@ app.controller('loginController',["$scope","$http","$location","$window","$resou
       if(verifyUser.isVerified) {
         $scope.isVerified = verifyUser.isVerified;
         $scope.changePassword.userId = verifyUser.userId;
+        $scope.changePassword.isVerified = verifyUser.isVerified;
       } else {
         $scope.verifyMsg = "Pin incorrect.";
       }
@@ -1574,6 +1575,7 @@ app.controller('loginController',["$scope","$http","$location","$window","$resou
       var update = new changPasswordService();
       update.newPassword = $scope.changePassword.newPassword;
       update.userId = $scope.changePassword.userId;
+      update.isVerified = $scope.changePassword.isVerified;
 
       console.log(update);
 
