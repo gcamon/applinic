@@ -531,6 +531,9 @@ font-weight: 300 !important;
   font-size: 25px;position: absolute;right: 20px;top:0
 }
 
+.side-article {
+  display: inline-block;padding-left: 10px;float: left
+}
 
 @media screen and (max-width: 960px) {
   .view-animate-container {
@@ -586,6 +589,15 @@ font-weight: 300 !important;
 
   #accessBody {
     width: 100%!important;
+  }
+
+  input.form-control {
+    width: 98%!important;
+  }
+
+
+  .side-article {
+    padding-left: 0!important;
   }
 
 }

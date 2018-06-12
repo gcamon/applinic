@@ -1438,6 +1438,7 @@ move later
 
 
 
+
 @media (max-width: 1200px) { 
 	.complain-list {
 		border: none;
@@ -1479,6 +1480,11 @@ move later
 		height: auto;
 		/*overflow-y: auto;*/
 	}
+
+	input.form-control {
+		width: 98%!important;
+	}
+
 }
 
 

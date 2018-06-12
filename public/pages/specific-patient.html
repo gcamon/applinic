@@ -66,21 +66,21 @@
         
         <div class="col-sm-12 col-md-9 col-lg-9" contenteditable="false">
                        <div class="row">
-                          <div class="col-xs-12 col-md-12 p-0">
+                          <div class="col-md-12 p-0">
         	<div class="panel panel-default">
-                <div class="top-bar" style="border-bottom:1px solid rgba(0,0,0,0.2);box-shadow:0px 5px 5px #ccc">
-                    <div class="col-md-7 col-sm-12 col-xs-12">
-                      <button class="btn btn-success btn-sm" style="font-size: 16px" ng-click="chatLive()">Toggle Chat</button> &nbsp;&nbsp;
+                <div class="top-bar row" style="border-bottom:1px solid rgba(0,0,0,0.2);box-shadow:0px 5px 5px #ccc">
+                    <div class="col-md-7 col-sm-6 col-lg-7 col-xs-6" style="display: inline-block;">
+                        <button class="btn btn-success btn-sm" style="font-size: 16px" ng-click="chatLive()">Toggle Chat</button><br><br>
                         <span class="" style="display:inline-block;" ng-cloak style="font-size: 16px">{{patientInfo.title}} {{patientInfo.firstname}} is <em ng-if="typing">{{typing}}</em> 
                             <em ng-if="patientAvailability && !typing" ng-cloak>Online</em>
                             <em ng-if="!patientAvailability" ng-cloak style="color:red">Offline</em>
                         </span>
                     </div>
-                    <div class="col-md-5 col-sm-12 col-xs-12 " style="text-align: right;">
-                    	 <a class="ick pull-right" href="" style="padding-right:15px" title="Delete all chats"  ng-click="deleteChat()"><span class="fa fa-trash-o"></span></a>
-                        <a class="ick pull-right" href="" style="padding-right:15px" title="Video chat with {{patientInfo.firstname}}" ng-click="videoRequest('video',patientInfo)"><span class="fa fa-video-camera"></span></a>
+                    <div class="col-md-5 col-sm-6 col-lg-5 col-xs-6" style="text-align: right;">
+                    	 <a class="ick" href="" style="padding-left:15px" title="Delete all chats"  ng-click="deleteChat()"><span class="fa fa-trash-o"></span></a>
+                        <a class="ick" href="" style="padding-left:15px" title="Video chat with {{patientInfo.firstname}}" ng-click="videoRequest('video',patientInfo)"><span class="fa fa-video-camera"></span></a>
                        <!-- <a  class="ick pull-right" href="" style="padding-right:15px" title="Make an audio call to {{patientInfo.firstname}}" ng-click="audioRequest('audio',patientInfo)"><span class="fa fa-phone"></span></a>-->
-                         <a class="ick pull-right" href="" style="padding-right:15px" title="Book appointment with {{patientInfo.firstname}}"  ng-click="appointment(patientInfo)"><span class="fa fa-calendar"></span></a>
+                         <a class="ick" href="" style="padding-left:15px" title="Book appointment with {{patientInfo.firstname}}"  ng-click="appointment(patientInfo)"><span class="fa fa-calendar"></span></a>
 
                     </div>
                 </div>
@@ -192,81 +192,82 @@
 
         <div ng-if="isPharmacy">
             <h6 style="background-color: grey;color: #fff;padding: 10px">Prescription History</h6>
-              <div style="width: 80%">
+              <div style="width: 90%">
                 <input type="text" ng-model="search" class="form-control" placeholder="Filter list by drug name, doctor firstname or anything">
             </div>
          
-            <table ng-repeat="prescription in prescriptionList | filter: search | orderBy: '-date'" class="table card" style="margin-bottom: 20px;padding: 10px">
-                <thead class="bg-success">
-                    <td>
-                        <img ng-src="{{prescription.doctor_profile_pic_url}}" ng-if="prescription.doctor_profile_pic_url" style="width: 72px;height: 72px">
-                    </td> 
-                    <td>
-                        <span>{{prescription.title}} {{prescription.doctor_firstname}} {{prescription.doctor_lastname}}</span>
+            <div ng-repeat="prescription in prescriptionList | filter: search | orderBy: '-date'" class="table" style="margin-bottom: 20px">
+                <div style="background-color: d7dde4;font-size: 16px">
+
+                    <img ng-src="{{prescription.doctor_profile_pic_url}}" ng-if="prescription.doctor_profile_pic_url" style="width: 72px;height: 72px;float: left;">
+                    <div class="side-article">
+                        <strong class="text-primary">{{prescription.title}} {{prescription.doctor_firstname}} {{prescription.doctor_lastname}}</strong>
                         <small style="display: block">{{prescription.doctor_specialty}}</small>
-                        <small>{{prescription.doctor_work_place}} {{prescription.doctor_address}} {{prescription.doctor_city}} {{prescription.doctor_country}}</small>  
-                    </td> 
-                    <td>
+                        <small>{{prescription.doctor_work_place}} {{prescription.doctor_address}} {{prescription.doctor_city}} {{prescription.doctor_country}}</small>  <br>
+                    
                         <small><b>Date</b>: {{prescription.date | date : "mediumDate"}}</small>
-                        <small style="display: block;padding: 10px 0"><b>Diagnosis</b>: {{prescription.provisional_diagnosis || "N/A"}}</small>
-                    </td>  
-                    <td></td> 
-                    <td></td>               
-                </thead>
+                        <small style=""><b>Diagnosis</b>: {{prescription.provisional_diagnosis || "N/A"}}</small>
+                    </div>
+                   <div class="clearfix"></div>
+                </div>
                 
-                <tbody>
-                    <th><strong>S/N</strong></th>
-                    <th><strong>Drug name</strong></th>
-                    <th><strong>Dosage</strong></th>
-                    <th><strong>Frequency</strong></th>
-                    <th><strong>Duration</strong></th>
-                </tbody>            
-            
-                <tbody ng-repeat= "drug in prescription.prescription_body">                             
-                    <td>{{drug.sn}}</td>
-                    <td>{{drug.drug_name}}</td>
-                    <td>{{drug.dosage}}</td>
-                    <td>{{drug.frequency}}</td>
-                    <td>{{drug.duration}}</td>
-                </tbody>
-                                                    
-            </table>                    
+                <table class="table-respnsive">
+                    <tbody>
+                        <th><strong>S/N</strong></th>
+                        <th><strong>Drug name</strong></th>
+                        <th><strong>Dosage</strong></th>
+                        <th><strong>Frequency</strong></th>
+                        <th><strong>Duration</strong></th>
+                    </tbody>            
+                
+                    <tbody ng-repeat= "drug in prescription.prescription_body">                             
+                        <td>{{drug.sn}}</td>
+                        <td>{{drug.drug_name}}</td>
+                        <td>{{drug.dosage}}</td>
+                        <td>{{drug.frequency}}</td>
+                        <td>{{drug.duration}}</td>
+                    </tbody>
+                </table>
+                <hr class="bg-primary">                                 
+            </div>                    
         </div>         
         <div ng-if="isRadiology">
             <h6 style="background-color: grey;color: #fff;padding: 10px">Radiology History</h6>
-            <div style="width: 80%">
+            <div style="width: 90%">
                 <input type="text" ng-model="search" class="form-control" placeholder="Filter list by test name, center name or anything">
             </div>
-             <table ng-repeat="test in radiologyTests | filter: search | orderBy: '-sent_date'" class="table card" style="margin-bottom: 20px;padding: 10px">
-                <thead class="bg-success">                    
-                    <td>
-                        <span>{{test.center_name}}</span>
-                        <small style="display: block">{{test.center_address}} {{test.center_city}} {{test.center_country}}</small>  
-                        <small><i class="fa fa-phone"></i> {{test.center_phone}}</small>
-                    </td> 
-                    <td>
-                        <small><b>Date</b>: {{test.sent_date | date : "mediumDate"}}</small>
-                    </td>  
-                    <td></td>
-                </thead>
-                
-                <tbody>
-                    <th><strong>Investigations</strong></th>
-                    <th><strong>Report</strong></th>
-                    <th><strong>Conclusion</strong></th>
-                </tbody>            
-            
-                <tbody>                          
-                    <td>
+            <div ng-repeat="test in radiologyTests | filter: search | orderBy: '-sent_date'" class="table card" style="margin-bottom: 20px;">
+                <div>                  
+                    <strong class="text-primary">{{test.center_name}}</strong>
+                    <small style="display: block">{{test.center_address}} {{test.center_city}} {{test.center_country}}</small>  
+                    <small><i class="fa fa-phone"></i> {{test.center_phone}}</small>
+               
+                    <small><b>Date</b>: {{test.sent_date | date : "mediumDate"}}</small>                    
+                </div>
+                <div class="table-respnsive">
+                    <div>
+                        <strong>Investigations</strong><br>
                         <ol>
                             <li ng-repeat= "i in test.test_to_run">{{i.name}}</li>
                         </ol>
-                    </td>
-                    <td>{{test.report}}</td>
-                    <td>{{test.conclusion}}</td>
-                </tbody>
-                                                    
-            </table>                    
+                    </div>  
+
+                    <div>
+                         <strong>Report</strong>
+                         <div>{{test.report}}</div>
+                    </div>       
+                
+                    <div>                         
+                        <strong>Conclusion</strong>
+                        <div>{{test.conclusion}}</div>
+                    </div>
+
+                    <div ng-if="test.files" style="color: blue">
+                        attached files {{test.files.length}}
+                    </div>
+                </div>
+                <hr class="bg-primary">                               
+            </div>                   
         </div>
 
         <div ng-if="isLaboratory">
@@ -274,36 +275,36 @@
             <div style="width: 80%">
                 <input type="text" ng-model="search" class="form-control" placeholder="Filter list by test name, center name or anything">
             </div>
-            <table ng-repeat="test in laboratoryTests  | filter: search | orderBy: '-sent_date'" class="table card" style="margin-bottom: 20px;padding: 10px">
-                <thead class="bg-success">                    
-                    <td>
-                        <span>{{test.center_name}}</span>
-                        <small style="display: block">{{test.center_address}} {{test.center_city}} {{test.center_country}}</small>  
-                        <small><i class="fa fa-phone"></i> {{test.center_phone}}</small>
-                    </td> 
-                    <td>
-                        <small><b>Date</b>: {{test.sent_date | date : "mediumDate"}}</small>
-                    </td>  
-                    <td></td>
-                </thead>
-                
-                <tbody>
-                    <th><strong>Investigations</strong></th>
-                    <th><strong>Report</strong></th>
-                    <th><strong>Conclusion</strong></th>
-                </tbody>            
-            
-                <tbody>                          
-                    <td>
+            <div ng-repeat="test in laboratoryTests  | filter: search | orderBy: '-sent_date'" class="table card" style="margin-bottom: 20px">
+                <div>                  
+                    <strong class="text-primary">{{test.center_name}}</strong>
+                    <small style="display: block">{{test.center_address}} {{test.center_city}} {{test.center_country}}</small>  
+                    <small><i class="fa fa-phone"></i> {{test.center_phone}}</small>
+               
+                    <small><b>Date</b>: {{test.sent_date | date : "mediumDate"}}</small>                    
+                </div>
+                <div class="table-respnsive">
+                    <div>
+                        <strong>Investigations</strong><br>
                         <ol>
                             <li ng-repeat= "i in test.test_to_run">{{i.name}}</li>
                         </ol>
-                    </td>
-                    <td>{{test.report}}</td>
-                    <td>{{test.conclusion}}</td>
-                </tbody>
+                    </div>  
+
+                    <div>
+                         <strong>Report</strong>
+                         <div>{{test.report}}</div>
+                    </div>       
+                
+                    <div>                         
+                        <strong>Conclusion</strong>
+                        <div>{{test.conclusion}}</div>
+                    </div>
+
+                </div>
+                <hr class="bg-primary">                               
                                                     
-            </table>                    
+            </div>                 
         </div>                           
     </div>
 </section>

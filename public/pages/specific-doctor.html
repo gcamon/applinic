@@ -39,8 +39,8 @@
                 <div class="panel panel-default">
                     <div class="top-bar" style="border-bottom:1px solid rgba(0,0,0,0.2);box-shadow:0px 5px 5px #ccc">
                         <div class="col-md-7 col-sm-12 col-xs-12">
-                          <button class="btn btn-simple text-danger" style="font-size: 16px" ng-click="chatLive()">Chat</button> &nbsp;&nbsp; 
-                            <span class="" style="display:inline-block;" ng-cloak style="font-size: 16px">{{docInfo.title}} {{docInfo.firstname}} is <em ng-if="typing">{{typing}}</em> 
+                          <!--<button class="btn btn-simple text-danger" style="font-size: 16px" ng-click="chatLive()">Chat</button> &nbsp;&nbsp; -->
+                            <span class="" style="display:inline-block;" ng-cloak style="font-size: 16px"><b>{{docInfo.title}} {{docInfo.firstname}}</b> is <em ng-if="typing">{{typing}}</em> 
                                 <em ng-if="dispalyPresence && !typing" ng-cloak>Online</em>
                                 <em ng-if="!dispalyPresence" ng-cloak style="color:red">Offline</em>
                             </span>
