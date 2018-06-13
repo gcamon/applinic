@@ -7662,6 +7662,9 @@ app.controller("patientRadioTestController",["$scope","$rootScope","$location","
     $scope.labTest = templateService.singleView;
     templateService.singleView = null;
   }
+
+  console.log($scope.labTest);
+
   $rootScope.path = $location.path();
   localManager.setValue("patientTests",$scope.labTest);
 

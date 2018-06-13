@@ -582,6 +582,14 @@ font-weight: 300 !important;
   
 }
 
+.arrange-p label{
+  margin-left: -5px
+}
+
+.arrange-p span{
+  display: inline-block;padding-right: 20px
+}
+
 @media screen and (max-width: 450px) {
   .deny-mobile-btn {
     text-align: right;
@@ -598,6 +606,47 @@ font-weight: 300 !important;
 
   .side-article {
     padding-left: 0!important;
+  }
+
+  td,th {
+    padding: 2px!important;
+  }
+
+  .tbm-0 {
+    width: 5%;
+  }
+
+  .tbm-1 {
+    width: 35%;
+  }
+
+  .tbm-2 {
+    width: 20%;
+  }
+
+  .tbm-3 {
+    width: 20%;
+  }
+
+  .tbm-4 {
+    width: 20%;
+  }
+
+  .arrange-p {
+    padding-left: 0!important;
+    margin-left: 10px
+  }
+  
+  .arrange-p label{
+    margin-left: -5!important;
+  }
+
+  .arrange-p span {
+    padding-right: 2px!important;
+  }
+
+  .arrange-p div{
+    padding: 0!important
   }
 
 }

@@ -90,7 +90,7 @@
 		</div>
 		<div class="tg-widget tg-widget-doctor" style="padding: 10px 0px;margin-top: 10px"> 
 		    <h6 style="text-decoration: underline;">Investigation details</h6>
-    		<p><strong>Reference Number:</strong> : <span>{{(test.copy) ? "Copied!" : test}}</span> <button clipboard supported="supported" text="test.ref_id" on-copied="success(test.ref_id)" on-error="fail(err)" title="{{copy}}" class="btn btn-info fa fa-copy" style="padding: 5px"> Copy</button></p>
+    		<p><strong>Reference Number:</strong> <span>{{(test.copy) ? "Copied!" : test.ref_id}}</span> <button clipboard supported="supported" text="test.ref_id" on-copied="success(test.ref_id)" on-error="fail(err)" title="{{copy}}" class="btn btn-info fa fa-copy" style="padding: 5px"> Copy</button></p>
     			<p><strong>Sent:</strong> : <span>{{test.sent_date | date : "mediumDate"}} ( <span am-time-Ago="test.sent_date" ng-if="test.sent_date"></span> )</span></p>
     			<p ng-if="test.report === 'Pending'"><strong>Status: </strong> <span style="color: red">Awaiting test result</span></p>
 				<!--<p><strong>Date sent: </strong>{{test.sent_date | date : "mediumDate"}} &nbsp; <strong>Time: </strong>{{test.sent_date | date : "shortTime"}}</p>-->

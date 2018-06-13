@@ -213,19 +213,19 @@
                 
                 <table class="table-respnsive">
                     <tbody>
-                        <th><strong>S/N</strong></th>
-                        <th><strong>Drug name</strong></th>
-                        <th><strong>Dosage</strong></th>
-                        <th><strong>Frequency</strong></th>
-                        <th><strong>Duration</strong></th>
+                        <th><span>S/N</span></th>
+                        <th class="pl-1"><span>Drug name</span></th>
+                        <th class="pl-1"><span>Dosage</span></th>
+                        <th class="pl-1"><span>Frequency</span></th>
+                        <th class="pl-1"><span>Duration</span></th>
                     </tbody>            
                 
                     <tbody ng-repeat= "drug in prescription.prescription_body">                             
-                        <td>{{drug.sn}}</td>
-                        <td>{{drug.drug_name}}</td>
-                        <td>{{drug.dosage}}</td>
-                        <td>{{drug.frequency}}</td>
-                        <td>{{drug.duration}}</td>
+                        <td >{{drug.sn}}</td>
+                        <td class="pl-1">{{drug.drug_name}}</td>
+                        <td class="pl-1">{{drug.dosage}}</td>
+                        <td class="pl-1">{{drug.frequency}}</td>
+                        <td class="pl-1">{{drug.duration}}</td>
                     </tbody>
                 </table>
                 <hr class="bg-primary">                                 
@@ -252,14 +252,21 @@
                         </ol>
                     </div>  
 
-                    <div>
+                   <div >
                          <strong>Report</strong>
-                         <div>{{test.report}}</div>
+                         <div ng-repeat= "i in test.test_to_run">                         
+                             <blockquote>
+                                <label class="text-muted">{{i.name}} :</label>
+                                <span>{{i.data}} </span> 
+                                <span ng-if="!i.data">Awaiting report</span>                         
+                             </blockquote>
+                             
+                         </div>
                     </div>       
                 
                     <div>                         
                         <strong>Conclusion</strong>
-                        <div>{{test.conclusion}}</div>
+                        <blockquote>{{test.conclusion}}</blockquote>
                     </div>
 
                     <div ng-if="test.files" style="color: blue">
@@ -291,14 +298,21 @@
                         </ol>
                     </div>  
 
-                    <div>
+                    <div >
                          <strong>Report</strong>
-                         <div>{{test.report}}</div>
+                         <div ng-repeat= "i in test.test_to_run">                         
+                             <blockquote>
+                                <label class="text-muted">{{i.name}} :</label>
+                                <span>{{i.data}} </span> 
+                                <span ng-if="!i.data">Awaiting report</span>                         
+                             </blockquote>
+                             
+                         </div>
                     </div>       
                 
                     <div>                         
                         <strong>Conclusion</strong>
-                        <div>{{test.conclusion}}</div>
+                        <blockquote>{{test.conclusion}}</blockquote>
                     </div>
 
                 </div>
@@ -313,28 +327,28 @@
 <!-- prescribe -->
 
 <section  ng-if="isToPrescribe">
-    <div class="medical-record-Area card p-1" style="">
+    <div class="medical-record-Area card p-1 table" style="">
         <div>
              <h5>Write Prescription</h5>
         </div>   
        
-        <table class="tabl" style="width: 100%;">       
+        <table class="table-respnsive" style="">       
             <thead>
-                <th>&nbsp;</th>
-                <th class="pl-1"> Drug Name</th>
-                <th class="pl-1"> Dosage</th>
-                <th class="pl-1"> Frequency</th>
-                <th class="pl-1"> Duration</th>
+                <th class="tbm-0">&nbsp;</th>
+                <th class="tbm-1"> Drug Name </th>
+                <th class="tbm-2"> Dosage </th>
+                <th class="tbm-3"> Frequency </th>
+                <th class="tbm-4"> Duration </th>
             </thead>
         
             <tbody ng-repeat="prescription in drugList">                                
-                <td style="padding-left: 10px"><b>{{prescription.sn}}</b></td>
+                <td style="padding-left: 10px" class="tbm-0"><b>{{prescription.sn}}</b></td>
                 <!--<td><textarea ng-model="prescription.drug_name" style="max-width: 200px;max-height: 80px"></textarea></td>-->
-                <td><input name="states" id="states" type="text" placeholder="Enter drug name" ng-model="prescription.drug_name" uib-typeahead="drug.name for drug in drugs | filter:$viewValue | limitTo:15" class="form-control">
+                <td class="tbm-1"><input name="states" id="states" type="text" placeholder="Enter drug name" ng-model="prescription.drug_name" uib-typeahead="drug.name for drug in drugs | filter:$viewValue | limitTo:15" class="form-control">
                 </td>
-                <td><input type="text" ng-model="prescription.dosage" class="form-control"></td>
-                <td><input type="text" ng-model="prescription.frequency" class="form-control"></td>
-                <td><input type="text" ng-model="prescription.duration" class="form-control"></td>
+                <td class="tbm-2"><input type="text" ng-model="prescription.dosage" class="form-control"></td>
+                <td class="tbm-3"><input type="text" ng-model="prescription.frequency" class="form-control"></td>
+                <td class="tbm-4"><input type="text" ng-model="prescription.duration" class="form-control"></td>
             </tbody>                             
         </table>
         
@@ -342,10 +356,12 @@
             <i class="fa fa-plus btn btn-simple round" style="font-size:16px;color:green;padding: 10px; cursor:pointer; margin-right: 5px" title="Add field" ng-click="addDrug()"></i>
                 <i class="fa fa-minus btn btn-simple round" style="font-size:16px;color:green;padding: 10px; cursor:pointer; margin-right: 5px" title="Remove last field" ng-click="removeDrug()"></i>
         </div>
-        <div>
+        <div  class="arrange-p">
             <!--<textarea class="form-control p-1" placeholder="Complain" ng-model="treatment.complain"></textarea>-->
-            <label style="margin-left: -5px">{{drugList.length + 1}} &nbsp;Provisional Diagnosis: </label>
-            <textarea class="form-control p-1" style="width: 80%;" placeholder="write..." ng-model="treatment.provisionalDiagnosis"></textarea>
+            <label><span>{{drugList.length + 1}}</span> Diagnosis ( Provisional or Final ) </label>
+            <div class="pl-2">
+                <textarea class="form-control p-1"  placeholder="write..." ng-model="treatment.provisionalDiagnosis"></textarea>
+            </div>
         </div>
         <div class="pt-1"> 
             <button ng-click="toPatient()" class="btn btn-info"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i> {{(loading) ? '' : 'Send To Patient'}}</button>
@@ -358,43 +374,46 @@
     
     <div ng-if="isToViewOldPrescription">
     <hr>                   
-        <table ng-repeat="prescription in wroteByThisDoctor | orderBy: '-date'" class="table table-respnsive card" style="margin-bottom: 20px;padding: 10px">
-            <thead style="background-color: #d7dde4;font-size: 14px">                   
-                <td style="width: 20%">
+        <div ng-repeat="prescription in wroteByThisDoctor | orderBy: '-date'" class="table" style="margin-bottom: 20px;padding-left: 0">
+            <div style="background-color: d7dde4;font-size: 14px;padding: 0">                   
+                <div>
                     <label>Prescribed By:</label>
                     <span style="display: block;">{{prescription.title}} {{prescription.doctor_firstname}} {{prescription.doctor_lastname}}</span>
                     <small style="display: block">{{prescription.doctor_specialty}}</small>                    
-                </td> 
-                <td style="width: 25%">
+                </div>
+                <div>
                     <label>Place of Work: </label>
                     <small style="display: block;">{{prescription.doctor_work_place}} {{prescription.doctor_address}} {{prescription.doctor_city}} {{prescription.doctor_country}}</small>  
                                      
-                </td>  
-                <td style="width: 20%">
+                </div>
+                <div>
                     <label>Diagnosis:</label>
                      <small style="display: block;padding: 10px 0"> {{prescription.provisional_diagnosis || "N/A"}}</small>
-                </td> 
-                <td style="width: 25%">
+                </div>
+                <div>
                     <label>Date of Prescription:</label>
                     <small style="display: block;">{{prescription.date | date : "shortDate"}} ( <span am-time-ago="prescription.date"></span> )</small> 
-                </td>  
-                <td style="width: 10%"></td>             
-            </thead>                
-            <tbody>
-                <th><strong>S/N</strong></th>
-                <th><strong>Drug name</strong></th>
-                <th><strong>Dosage</strong></th>
-                <th><strong>Frequency</strong></th>
-                <th><strong>Duration</strong></th>
-            </tbody>          
-            <tbody ng-repeat= "drug in prescription.prescription_body">                             
-                <td>{{drug.sn}}</td>
-                <td>{{drug.drug_name}}</td>
-                <td>{{drug.dosage}}</td>
-                <td>{{drug.frequency}}</td>
-                <td>{{drug.duration}}</td>
-            </tbody>                                                    
-        </table>                                      
+                </div> 
+                           
+            </div>  
+            <table class="table-respnsive">            
+                <tbody>
+                    <th><strong>S/N</strong></th>
+                    <th class="pl-1"><strong>Drug name</strong></th>
+                    <th class="pl-1"><strong>Dosage</strong></th>
+                    <th class="pl-1"><strong>Frequency</strong></th>
+                    <th class="pl-1"><strong>Duration</strong></th>
+                </tbody>          
+                <tbody ng-repeat= "drug in prescription.prescription_body">                             
+                    <td>{{drug.sn}}</td>
+                    <td class="pl-1">{{drug.drug_name}}</td>
+                    <td class="pl-1">{{drug.dosage}}</td>
+                    <td class="pl-1">{{drug.frequency}}</td>
+                    <td class="pl-1">{{drug.duration}}</td>
+                </tbody>  
+            </table>
+            <hr class="bg-primary">                                                  
+        </div>                                   
     </div>
 </div>
 </section>
@@ -414,7 +433,7 @@
             <div>
                 <input type="text" name="" ng-model="filterResult" placeholder="Filter centers" class="form-control">
            </div>
-           <div style="overflow-y: auto; height: 400px">
+           <div style="overflow-y: auto; max-height: 400px">
                <div ng-repeat="center in searchResult | filter: filterResult" style="padding:10px;border-bottom: 1px solid rgba(0,0,0,0.1)">
                    <a href="" ng-click="selected(center)"><b>{{center.name}}</b>
                    <span style="display: block" class="fa fa-globe"> {{center.address}},{{center.city}},{{center.country}}</span></a>
