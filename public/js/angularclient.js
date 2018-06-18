@@ -15057,7 +15057,6 @@ function($scope,$location,$window,$http,templateService,localManager,templateUrl
     $scope.user.symptoms = list;
     $scope.user.city = thisCity;
     var data = $scope.user;
-    console.log(data)
 
     if(!$scope.user.description || $scope.user.symptoms.length === 0) {
       alert("Please add symptoms you're experiencing or briefly describe how you feel right now")
@@ -15141,7 +15140,7 @@ function($scope,$location,$window,$http,templateService,localManager,templateUrl
              console.log(evt.loaded + " : " + evt.total)
               $scope.progress = Math.round(evt.loaded * 100 / evt.total)
               if($scope.progress === 100) {
-                $scope.statusMsg = "Your complain has been queued in PWR successfully! Doctors will respond soon.";
+                $scope.statusMsg = "Your complaint has been queued in PWR successfully! Doctors will respond soon.";
               }
               
           } else {
@@ -15394,26 +15393,76 @@ app.controller("captureImageController",["$scope",function($scope){
     video: true,
   };
 
-  captureButton[0].addEventListener('click', () => {
+  captureButton[0].addEventListener('click', function(){
     // Draw the video frame to the canvas.
     context.drawImage(player, 0, 0, canvas.width, canvas.height);
   });
 
   // Attach the video stream to the video element and autoplay.
   navigator.mediaDevices.getUserMedia(constraints)
-    .then((stream) => {
+    .then(function(stream){
       player[0].srcObject = stream;
-  });
+    });
 }]);
 
 app.controller("courierController",["$scope","$rootScope","$location","$http","localManager","Drugs","cities",
 function($scope,$rootScope,$location,$http,localManager,Drugs,cities){
   $rootScope.back = $rootScope.back || localManager.getValue("currentPageForPatients");
   $scope.user = {}//$rootScope.selectedPrescription;
+
+  $scope.filteredPres = [];
+  for(var k = 0; k < $rootScope.selectedPrescription.prescription_body.length; k++) {
+    if($rootScope.selectedPrescription.prescription_body[k].picked){
+      $scope.filteredPres.push($rootScope.selectedPrescription.prescription_body[k]);
+    }
+  }
+
   $scope.presInfo = $rootScope.selectedPrescription;
+  //$scope.presInfo.prescription_body = (filteredPres.length === 0) ? $rootScope.selectedPrescription.prescription_body : filteredPres;
   $scope.cities = cities;
+
+  $http.get("/user/courier-centers")
+  .success(function(response){
+    $scope.centerList = response ||  [];
+    $scope.user.city = $rootScope.checkLogIn.city;
+  });
+
+  
+
  
   $scope.sendRequest = function(){
+    $scope.phoneMsg = "";
+    $scope.centerMsg = "";
+
+    if(!$scope.user.center_id) {
+      $scope.centerMsg = "Please choose center that will attend to your request.";
+      return;
+    }
+
+    if($scope.user.phone1) {
+      if($scope.user.phone1.slice(0,1) != "+") {
+        $scope.phoneMsg = "Phone number format incorrect!" ;
+        return;
+      }
+    } else {
+      $scope.user.phone1 = $rootScope.checkLogIn.phone;
+    }
+
+    if($scope.user.phone2) {
+       if($scope.user.phone2.slice(0,1) != "+") {
+        $scope.phoneMsg = "Phone number format incorrect!" ;
+        return;
+      }
+
+    } else {
+      $scope.user.phone2 = $rootScope.checkLogIn.phone;
+    }
+
+    if(!$scope.user.location) {
+       $scope.user.location = $rootScope.checkLogIn.address;
+    }
+
+
     if($scope.user.phone1 !== undefined && $scope.user.phone1 !== "") {
 
       var check = confirm("Our courier service will cost your some extra charges outside the cost of actual drugs. Do you understand?");
@@ -15423,8 +15472,9 @@ function($scope,$rootScope,$location,$http,localManager,Drugs,cities){
         $scope.presInfo.patient_address + "," + $scope.presInfo.patient_city + "," + $scope.presInfo.patient_country;
 
         $scope.user.prescriptionId = $rootScope.selectedPrescription.prescriptionId;
-        $scope.user.prescription_body = $rootScope.selectedPrescription.prescription_body;
-        console.log($scope.user);
+
+        $scope.user.prescription_body = ($scope.filteredPres.length === 0) ? $rootScope.selectedPrescription.prescription_body : $scope.filteredPres;
+    
         $http({
           method  : 'POST',
           url     : "/user/courier",
@@ -15456,13 +15506,13 @@ function($scope,$rootScope,$location,$http,localManager,Drugs,cities){
 //for center that is eligeable to render courier service can join room
 app.controller("courierJoinController",["$scope","$rootScope","$http","mySocket",function($scope,$rootScope,$http,mySocket){
   if($rootScope.checkLogIn.courier_access === true) {
-    mySocket.emit("courier join",{id: "couriergroup"});
+    //mySocket.emit("courier join",{id: "couriergroup"});
   }
 
 }]);
 
-app.controller("centerCourierController",["$scope","$rootScope","$http","mySocket","ModalService",
-  function($scope,$rootScope,$http,mySocket,ModalService){
+app.controller("centerCourierController",["$scope","$rootScope","$http","mySocket","ModalService","templateService",
+  function($scope,$rootScope,$http,mySocket,ModalService,templateService){
   
   //this will only allow cebters permitted to render courier services use the feature.
   //note for center that will run courier service must have "courier access" enabled and "courier_access_password" set to desired password;
@@ -15482,8 +15532,10 @@ app.controller("centerCourierController",["$scope","$rootScope","$http","mySocke
   getCurr();
 
   mySocket.on("receiver courier",function(data){
-    if(data.city === $rootScope.checkLogIn.city)
+    if(data.city === $rootScope.checkLogIn.city) {
       $rootScope.courierRequests.unshift(data);
+      templateService.playAudio(3);
+    }
   });
 
   mySocket.on("completed courier",function(data){
@@ -15504,11 +15556,29 @@ app.controller("centerCourierController",["$scope","$rootScope","$http","mySocke
     });
   }
 
+  $scope.refresh = function() {
+    getCurr();
+  }
+
+  $scope.decline = function(request) {
+    console.log(request);
+    request.loading = true;
+    var warn = confirm("This courier request will be deleted.");
+    if(warn) {
+      $http.put("/user/decline-courier",request)
+      .success(function(res){
+        request.loading = false;
+        var elemPos = $rootScope.courierRequests.map(function(x){return x._id}).indexOf(res._id);
+        $rootScope.courierRequests.splice(elemPos,1);
+      })
+    }
+  }
+
   $scope.current = function(){
     getCurr();
     $scope.selected1 = true;
 
-     $scope.selected2 = false;
+    $scope.selected2 = false;
   }
 
   $scope.attended = function() {
@@ -15519,11 +15589,12 @@ app.controller("centerCourierController",["$scope","$rootScope","$http","mySocke
       url     : url,
       headers : {'Content-Type': 'application/json'} 
       })
-    .success(function(data) {      
+    .success(function(data) { 
+      console.log(data);     
       $rootScope.courierRequests = data || [];
     });
     $scope.selected2 = true;
-     $scope.selected1 = false;
+    $scope.selected1 = false;
   }
   
   $scope.toNaira = function(val){
@@ -15541,7 +15612,10 @@ app.controller("selectedCourierRequestController",["$scope","$rootScope","$http"
   var totalCost = {};
   var obj = {};
   var deliveryCost;
+  var rawCost;
   var snStr;
+
+  $scope.deliveryCharge = $rootScope.checkLogIn.courier_charge || 1000;
  
 
 
@@ -15550,11 +15624,11 @@ app.controller("selectedCourierRequestController",["$scope","$rootScope","$http"
       for(var i = 0; i < newVal.length; i++) {
         if(newVal[i].cost || newVal[i].cost === null) {         
           snStr = newVal[i].sn.toString();
-          deliveryCost = newVal[i].delivery_charge || 0;
-          $rootScope.aCourierRequest.delivery_charge = deliveryCost;
+          deliveryCost = $scope.deliveryCharge //newVal[i].delivery_charge || 0;
+          $rootScope.aCourierRequest.delivery_charge = $scope.deliveryCharge;
           $rootScope.aCourierRequest.prescription_body[i].cost = newVal[i].cost;
-          totalCost[snStr] = newVal[i].cost + deliveryCost;
-
+          //totalCost.rawCost = newVal[i].cost;
+          totalCost[snStr] = newVal[i].cost //+ $scope.deliveryCharge;
           computeTotal()
         } 
       }
@@ -15566,18 +15640,24 @@ app.controller("selectedCourierRequestController",["$scope","$rootScope","$http"
     for(var j in totalCost) {
       if(totalCost.hasOwnProperty(j)){        
         obj.cost += totalCost[j];
-        toNaira(obj.cost)    
+        toNaira(obj.cost);    
       }
     }
   }
 
   function toNaira(val){
-   $scope.str = "NGN" + val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+   $scope.str = $rootScope.toCurrency(val);
    $scope.request.total_cost = val;
+   var applyDiscount = val * ( $rootScope.checkLogIn.city_grade / 100)
+   var amt = val - applyDiscount;
+   $scope.receivable = $rootScope.toCurrency(amt);
   }
 
-  $scope.sendBilling = function() {     
-    console.log($rootScope.aCourierRequest)   
+  $scope.sendBilling = function() { 
+    $scope.loading = true; 
+
+    console.log($scope.request);
+
     if($scope.request.delivery_charge > 0 ) {
       $rootScope.aCourierRequest.attended = true;
       $http({
@@ -15587,8 +15667,8 @@ app.controller("selectedCourierRequestController",["$scope","$rootScope","$http"
         headers : {'Content-Type': 'application/json'} 
         })
       .success(function(data) {      
-        console.log(data)
-        $scope.message = "Billing sent successfully. Patient will be notified via SMS."
+        $scope.message = "Billing sent successfully. Patient will be notified via SMS.";
+        $scope.loading = false;
       });    
     } else {
       $scope.deliveryChargeMsg = "Please add amount for the for delivery charge."
@@ -15604,19 +15684,20 @@ app.service("fieldAgentService",["$resource",function($resource){
 //refers to couroer field agents controller
 app.controller("filedAgentController",["$scope","$rootScope","$resource","fieldAgentService",
   function($scope,$rootScope,$resource,fieldAgentService){
-
-  var data;
   
   var resource = fieldAgentService; //$resource("/user/field-agent",null,{verify:{method: "PUT"}});
-
+  $scope.loading = true;
   resource.query(function(data){
+    console.log(data)
+    $scope.loading = false;
     $scope.courierList = data;
   });
 
   $scope.confirmPay = function(item) {
-    console.log($scope.courierList)
+    item.message = "";
+    item.isLoading = true;
     resource.verify(item,function(result){
-      console.log(result)
+      item.isLoading = false;
       item.message = result.message;
       item.receipt_date = result.receipt_date;
     })
@@ -15935,6 +16016,13 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
   if(!localManager.getValue("resolveUser")) {
     $window.location.href = "/login"
   } 
+
+  
+
+  $rootScope.toCurrency = function(amount) {
+    var str = ($rootScope.checkLogIn.currencyCode) ? $rootScope.checkLogIn.currencyCode + amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") : "NGN" + amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    return str;
+  }
   
   //user this service within controllers to alert on every event status.
   $rootScope.alertService = function (val,msg) {

@@ -85,7 +85,8 @@ router.get('/user/dashboard',function(req,res){
         family_accounts: req.user.family_accounts,
         city_grade: req.user.city_grade,
         currencyCode: req.user.currencyCode,
-        mrak: req.user.mrak
+        mrak: req.user.mrak,
+        courier_charge: req.user.courier_charge
       });
     }
   } else {

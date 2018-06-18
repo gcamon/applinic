@@ -131,7 +131,9 @@ var signupRoute = function(model,sms,geonames,paystack) {
 								User.city_grade = 20;
 							} else {
 								User.city_grade = 15;
-							}							
+							}	
+
+							User.courier_charge = 1200;						
 						}		
 
 						User.save(function(err){

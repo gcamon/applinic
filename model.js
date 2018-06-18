@@ -561,6 +561,7 @@ var myModel = function () {
 		service_details: Array, //services rendered by a center successfully
 		mrak: String, //medical record access key
 		medical_reports: [medReportSchema],
+		courier_charge: Number
 	},{
 		collections: "userinfos"
 	})
@@ -700,10 +701,10 @@ var myModel = function () {
 		total_cost: String,
 		firstname: String,
 		address: String,
-		prescription_body: [prescriptionBodySchema],
+		prescription_body: Array,
 		city: String,
-		phone1: Number,
-		phone2: Number,
+		phone1: String,
+		phone2: String,
 		lastname: String,
 		title: String,
 		attended: Boolean,
@@ -715,13 +716,14 @@ var myModel = function () {
 		receipt_date: Number,
 		verification_date: Number,
 		completed: Boolean,
-		delivery_charge: Number
+		delivery_charge: Number,
+		deleted: Boolean
 	},{
 		collections: "courierinfos"
 	});
 
 	var geonameSchema = Schema({
-	   continent: String,
+	 continent: String,
      capital: String,
      languages: String,
      geonameId: Number,

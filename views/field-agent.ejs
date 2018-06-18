@@ -15,11 +15,16 @@
          <link rel="stylesheet" href="/assets/css/app.css">
           <link rel="stylesheet" href="/assets/css/now-ui-kit2.css">
           <link rel="stylesheet" href="/assets/css/font-awesome.min.css">
+           <link rel="icon" type="image/png" href="/assets/images/icons/favicon.png">
           
            <link rel="stylesheet" href="/assets/css/my-edit.css">
           <style>
               .title{
                   font-weight: 300;
+              }
+
+              body {
+                background-color: #f0f3f6
               }
           </style>
           <script src="/assets/js/vendor2.js"></script>
@@ -27,33 +32,58 @@
     </head>
 
     <body ng-app="myApp">
+        <header id="header" class="container-fluid card"  ng-controller="topHeaderController">
+            <div class="container" style="position: relative;">               
+                <div class="p-2">
+                    <a class="brand" href="/" style="text-decoration: none;color: red">
+                        <div class=""> <span class="l l1"></span> <span class="l l2"></span> <span class="l l3"></span> <span class="l l4"></span> <span class="l l5"></span> </div> <b>Applinic</b> 
+                    </a>  
+                                        
+                </div>                           
+               
+                <a class="btn btn-simple text-danger btn-sm"  href="" ng-click="logout()" style="position: absolute;top: 15px;right: 0">
+                    <span><i class="fa fa-power-off icon"></i>
+                        Logout
+                    </span> 
+                </a>
+            </div>
+        </header>
                     
-        <div class="container" ng-controller="filedAgentController">
-            <h4>Applinic field agent</h4>
-          
+        <div class="container" ng-controller="filedAgentController" ng-cloak>
+            <h4>
+                Applinic Field Agent
 
-                   <div class="shadow row" style="padding: 20px 0" ng-repeat="patient in courierList" ng-i="!patient.receipt_date">
+            </h4>
+            <div class="pb-1" style="width: 70%">
+                 <input type="text" name="" class="form-control" placeholder="Filter by name, phone number, drug, address etc." ng-model="filterValue" style="font-size: 14px!important">
+                 <div class="pt-2">
+                     <strong>{{courierList.length}} patients</strong>
+                 </div>
+            </div>
+
+        <div class="card row p-2" style="padding: 20px 0;position: relative;margin-top: 10px" ng-repeat="patient in courierList | filter: filterValue | orderBy : '-verification_date'" >
+                    <strong style="float: right;color: grey;position: absolute;right: 15px;top:15px" am-time-ago="patient.verification_date"></strong>
                     <div class="col-sm-12 col-md-3 col-lg-3">
                         <h6 style="text-decoration: underline;padding: 10px 0">Patient detail</h6>
                         <img src='{{patient.profile_pic_url}}' style="max-width:200px;max-height:200px">
-                        <div><strong>Name :</strong> {{patient.title}} {{patient.firstname}} {{patient.lastname}}</div>
-                        <div><strong>Address : </strong> {{patient.address}} ( {{patient.city}} )</div>
-                        <div><strong>Cost : </strong> {{patient.total_cost }}</div>
+                        <div><strong><i class="fa fa-user"></i> </strong> {{patient.title}} {{patient.firstname}} {{patient.lastname}}</div>
+                        <div><strong><i class="fa fa-globe"></i>  </strong> {{patient.address}} ( {{patient.city}} )</div>
+                        <div><strong><i class="fa fa-clock-o"></i> </strong> {{patient.date | date: 'fullDate'}}</div> 
+                        <div><strong><i class="fa fa-phone"></i> </strong> {{patient.phone1}}, {{patient.phone2}}</div>                  
                     </div>
                     
                     <div class="col-sm-12 col-md-5 col-lg-5" >
-                        <h6 style="text-decoration: underline;padding: 10px 0">Prescription detail</h6>
-                         
+                        <h6 style="text-decoration: underline;padding: 10px 0">Prescription detail</h6>                       
                          
                             <table class="table table-striped table-responsive">
                                 <tr>
                                     <thead>
                                         <th>S/N</th>
-                                        <th>Drug Name</th>
-                                        <th>Cost</th>
-                                        <th>Dosage</th>
-                                        <th>Frequency</th>
-                                        <th>Duration</th>                                   
+                                        <th>drug</th>
+                                        <th>cost</th>
+                                        <th>dosage</th>
+                                        <th>frequency</th>
+                                        <th>duration</th>                                   
                                     </thead>                            
                                 </tr>
                                 <tr>
@@ -61,7 +91,7 @@
                                     <tbody ng-repeat="pres in patient.prescription_body">                                   
                                         <td>{{pres.sn }}</td>
                                         <td>{{pres.drug_name}}</td>
-                                        <td>{{pres.cost}}</td>
+                                        <td>{{(pres.cost) ? toCurrency(pres.cost):""}}</td>
                                         <td>{{pres.dosage}}</td>
                                         <td>{{pres.frequency}}</td>
                                         <td>{{pres.duration }}</td>                                              
@@ -70,14 +100,14 @@
                                 </tr>
                             </table>
                         
-                        
+                            <div><strong>Total cost : </strong> {{toCurrency(patient.total_cost)}}</div>
                     </div>
                     <div class="col-sm-12 col-md-4 col-lg-4" style="padding:10px;line-height: 30px">
-                        <h6 style="text-decoration: underline;padding: 10px 0">Verification/payment</h6>
-                        <div ng-cloak><strong>Date received : </strong> {{patient.receipt_date | date: "mediumDate"}} | {{patient.receipt_date | date: "mediumTime"}}</div>
-                        <div><strong>Verify OTP :</strong> <input type="text" ng-model="patient.otp" placeholder=" Enter otp"> <i class="fa fa-check" aria-hidden="true" style="font-size: 25px;padding: 0 10px;color:green" ng-if="patient.receipt_date"></i> <span style="display: block;" class="text-danger" ng-if="!patient.receipt_date">{{patient.message}}</span> <span style="display: block;color:green" ng-if="patient.receipt_date">{{patient.message}}</span></div> 
-                        <div style="margin-top: 20px">
-                                <button class="btn btn-success" ng-click="confirmPay(patient)" ng-hide="patient.receipt_date">Verify</button>
+                        <h6 style="text-decoration: underline;padding: 10px 0">Payment</h6>
+                        <div ng-cloak ng-if="patient.receipt_date"><strong>Date received : </strong> {{patient.receipt_date | date: "mediumDate"}} | {{patient.receipt_date | date: "mediumTime"}}</div>
+                        <div style="text-align: center;"><input type="text" ng-model="patient.otp" class="form-control" placeholder=" Enter otp"> <i class="fa fa-check" aria-hidden="true" style="font-size: 25px;padding: 0 10px;color:green" ng-if="patient.receipt_date"></i> <span style="" class="text-danger" ng-if="!patient.receipt_date">{{patient.message}}</span> <span style="color:green" ng-if="patient.receipt_date">{{patient.message}}</span></div> 
+                        <div style="margin-top: 10px;text-align: center;">
+                                <button class="btn btn-success btn-lg" ng-click="confirmPay(patient)" ng-hide="patient.receipt_date"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="patient.isLoading"></i> {{(patient.isLoading) ? "" : "Verify"}}</button>
                         </div>
                     </div>
                    </div>
@@ -94,7 +124,7 @@
 
 
 
-    <script src="/assets/js/app.js"></script>
+     <script src="/assets/js/app.js"></script>
     <script src="/assets/js/now-ui-kit.js"></script>
 
 
@@ -125,6 +155,8 @@
     <script src="/assets/js/angular-clipboard.js"></script>
     <script src="/assets/js/ngresource.js"></script>
      <script src="/assets/js/ngPrint.js"></script>
+     <script type="text/javascript" src="/assets/js/angular-paystack/dist/angular-paystack.min.js"></script>
+      <script type="text/javascript" src="/assets/js/angular-sanitize.min.js"></script>
     </body>
 
 </html>

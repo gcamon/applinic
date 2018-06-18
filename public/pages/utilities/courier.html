@@ -41,44 +41,17 @@
  <div class="card" style="padding-top:30px;" id="track">
    
 	<div>
-		<h4 style="padding-left: 20px" class="mt-0">Courier Service</h4>
+		<h4 style="padding-left: 20px" class="mt-0"><i class="fa fa-motorcycle"></i> Courier Service</h4>
 	</div>
 
     <div class="row">		
-    	<div class="col-md-6 col-sm-6 col-sm-12" >
+    	<div class="col-md-6 col-sm-6 col-sm-12 pl-2" >
    
-            <!--<img alt="image description" class="card" src="assets/img/avatar.jpg" ng-src="{{presInfo.Doctor_profile_pic_url}}" style="width: 190px; height:190px">              
-              
-              <div class="col-sm-12 mb-1 pt-1">
-                <span class="badge badge-success pl-2 pr-2" style="width:100%;">online</span>                                                    
-                </div>   -->  
 
 	       		
 
            		<h6 style="text-decoration: underline;padding-left: 20px">Prescription details</h6>		    	
-		    	<!--<div class="row">
-		    		<div class="col-sm-12 col-md-6 col-lg-6"> 
-		    			<p><strong>Date</strong> : <span>{{presInfo.date | date: "mediumDate"}}</span></p>
-		    		</div>
-		    		<div class="col-sm-12 col-md-6 col-lg-6"> 
-		    			<p style="padding-right:10px;word-wrap: break-word;"><strong>Diagnosis</strong> : <span>{{presInfo.provisional_diagnosis}}</span></p>
-		    		</div>		    		
-		    	</div>
-		    	<div class="row">
-		    		<div class="col-sm-12 col-md-6 col-lg-6">
-		    			<p style="padding-right:10px;word-wrap: break-word;"><strong>Lab</strong> : <span>{{presInfo.lab_analysis}}</span></p/>
-		    		</div>
-		    		<div class="col-sm-12 col-md-6 col-lg-6">
-		    			<div>
-		    			<p style="padding-right:10px;word-wrap: break-word;"><strong>Radio</strong> : <span>{{presInfo.scan_analysis}}</span></p>
-		    			</div>
-		    		</div>
-		    	<div class="row">
-		    		<div class="col-sm-12 col-md-12 col-lg-12" style="padding: 10px 30px 0;">
-		    			<strong>Prescription ID :</strong> <span>{{presInfo.prescriptionId}}</span>
-						<button clipboard supported="supported" text="presInfo.prescriptionId" on-copied="success(presInfo.prescriptionId)" on-error="fail(err)" title="{{copy}}" class="btn btn-info fa fa-copy" style="padding: 5px"> Copy</button>		    			
-		    		</div>
-		    	</div>-->
+		    	
 		    	
 		    	<div class="row">
 		    		<div class="col-sm-12 col-md-12 col-lg-12" style="padding: 10px 30px 0;">
@@ -93,7 +66,15 @@
 		    					</thead>        					
 		    				</tr>
 		    				<tr>
-		    					<tbody ng-repeat="prescription in presInfo.prescription_body">		    						
+		    					<tbody ng-repeat="prescription in presInfo.prescription_body" ng-if="filteredPres.length == 0">		    						
+		    						<td>{{prescription.sn}}</td>
+		    						<td>{{prescription.drug_name}}</td>
+		    						<td>{{prescription.dosage}}</td>
+		    						<td>{{prescription.frequency}}</td>
+		    						<td>{{prescription.duration}}</td>		    							    						
+		    					</tbody>
+
+		    					<tbody ng-repeat="prescription in filteredPres" ng-if="filteredPres.length > 0">		    						
 		    						<td>{{prescription.sn}}</td>
 		    						<td>{{prescription.drug_name}}</td>
 		    						<td>{{prescription.dosage}}</td>
@@ -111,7 +92,7 @@
 			    		<h6 style="margin-top:20px;text-decoration: underline;">Prescription by</h6>
 				   		 <!--<img alt="image description" ng-src="{{presInfo.Doctor_profile_pic_url}}" style="max-width: 200px; max-height:200px" class="shadow">-->
 				        <div class="tg-widget tg-widget-doctor" style="">
-				           <strong style="font-weight: bold;padding: 15px 0px 5px;line-height: 25px" ><i class="fa fa-user-md"></i> <em>{{presInfo.title}} {{presInfo.doctor_firstname}} {{presInfo.doctor_lastname}}</em><span style="display: block;text-indent: 14px;font-weight: normal;font-style: italic;" ng-if="presInfo.doctor_specialty" > {{presInfo.doctor_specialty}} dsdhjhdsj</span></strong>
+				           <strong style="font-weight: bold;padding: 15px 0px 5px;line-height: 25px" ><i class="fa fa-user-md"></i> <em>{{presInfo.title}} {{presInfo.doctor_firstname}} {{presInfo.doctor_lastname}}</em><span style="display: block;text-indent: 14px;font-weight: normal;font-style: italic;" ng-if="presInfo.doctor_specialty" > {{presInfo.doctor_specialty}}</span></strong>
 				           <p ng-if="presInfo.doctor_work_place"><i class="fa fa-globe"></i> Works at {{presInfo.doctor_work_place}} {{presInfo.doctor_address}} {{presInfo.doctor_city}} {{presInfo.doctor_country}}.
 				           </p>
 				            <p ng-if="!presInfo.doctor_work_place"><i class="fa fa-globe"></i> Adress: {{presInfo.doctor_work_place}} {{presInfo.doctor_address}} {{presInfo.doctor_city}} {{presInfo.doctor_country}}.
@@ -122,18 +103,28 @@
            
         </div>            
 
-	    <div class="col-md-6 col-sm-6 col-sm-12" style="padding: 10px 30px 0;position: relative;">
+	    <div class="col-md-6 col-sm-6 col-sm-12" style="padding: 0px 30px 0;position: relative;">
 	   		<h6 style="text-decoration: underline">Billing information</h6>
 	   		<p class="text-danger">{{info}}</p>
-	   		<form>
+	   		<form style="line-height: 32px">
 	   			<label>Receiver address: </label>
-	   			<input type="text" class="form-control" ng-model="user.location" placeholder="{{presInfo.patient_address}} {{presInfo.patient_city}} {{presInfo.patient_country}}">
-	   			<label>Receiver city/town: </label>
-	   			<input name="states" id="states" type="text" placeholder="Enter city name" ng-model="user.city" uib-typeahead="city for city in cities | filter:$viewValue | limitTo:15" class="form-control">	
-	   			<label>Receiver phone1: </label>
-	   			<input type="number" class="form-control" ng-model="user.phone1" placeholder="{{}}">
-	   			<label>Receiver phone2 (Optional): </label>
-	   			<input type="number" class="form-control" ng-model="user.phone2" placeholder="{{}}">
+	   			<input type="text" class="form-control" style="font-size: 14px!important" ng-model="user.location" placeholder="{{presInfo.patient_address}} {{presInfo.patient_city}} {{presInfo.patient_country}}">
+	   			<label>Receiver city: </label>
+	   			<input name="states" id="states" type="text" style="font-size: 14px!important" placeholder="{{checkLogIn.city}}" ng-model="user.city" uib-typeahead="city for city in cities | filter:$viewValue | limitTo:15" class="form-control">	
+	   			<span class="text-danger">{{phoneMsg}}</span><br>
+	   			<label>Receiver phone 1: </label>
+	   			<input type="text" class="form-control" style="font-size: 14px!important" placeholder="{{checkLogIn.phone}}" ng-model="user.phone1">
+	   			<label>Receiver phone 2 (optional): </label> 
+	   			<input type="text" class="form-control" style="font-size: 14px!important" placeholder="{{checkLogIn.phone}}" ng-model="user.phone2"><br>
+	   			<span class="text-danger">{{centerMsg}}</span><br>
+	   			<label>Choose center:</label>
+	   			<select ng-model="user.center_id" class="form-control" style="font-size: 14px!important">
+	   				<option value="" selected="selected" disabled="disabled">select</option>
+	   				<option value="{{k.user_id}}" ng-repeat="k in centerList | filter: user.city" style="font-size: 14px;">
+	   					<b>{{k.name}}</b>
+	   					<span>{{k.address}}, {{k.city}}</span>
+	   				</option>
+	   			</select>
 	   			<div style="margin: 20px 0px">
 	   			<button class="btn btn-success" ng-click="sendRequest()" ng-if="!status"> <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i> {{(loading) ? '' : 'Submit'}}</button>
 	   			<b ng-if="status" style="color: green">{{status}}</b>

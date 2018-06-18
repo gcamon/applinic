@@ -8,6 +8,7 @@
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="apple-touch-icon" href="apple-touch-icon.png">
+         <link rel="icon" type="image/png" href="/assets/images/icons/favicon.png">
         <!-- Place favicon.ico in the root directory -->
        
         <!--<link rel="stylesheet" href="/assets/css/bootstrap.css">-->
@@ -222,7 +223,7 @@
                             <a class="btn btn-simple round mr-1"  href="" disabled="disabled" style="cursor: no-drop;" ng-if="checkLogIn.courier_access !== true"><i class="fa fa-bicycle"> </i>
                             <span style="color:red">Courier services</span></a>
                             </a>
-                            <a class="btn btn-simple round mr-1"  href="#/courier-requests" ng-if="checkLogIn.courier_access === true"><i class="fa fa-bicycle"> </i>
+                            <a class="btn btn-simple round mr-1"  href="#/courier-requests" ng-if="checkLogIn.courier_access === true"><i class="fa fa-motorcycle"> </i>
                             <span style="color:red">Courier services</span></a>
                             </a>
                           </li>
@@ -1002,19 +1003,23 @@
             </div>
             <div class="modal-body" style="padding: 0 20px;margin-bottom: 20px">   
                 <h4 style="border-bottom: 1px solid grey">{{request.title}} {{request.firstname}} {{request.lastname}} 
-                    <span style="display: block;font-size: 16px; font-style: italic;">{{request.address}} ( {{request.city}} )</span>
-                    <span style="display: block;font-size: 16px; font-style: italic;">phone 1 : {{request.phone1}}, phone 2 : {{request.phone2}} </span>
+                    <span style="display: block;font-size: 16px;">{{request.address}} ( {{request.city}} )</span>
+                    <span style="display: block;font-size: 16px;"> phone 1 : {{request.phone1}}, phone 2 : {{request.phone2}} </span>
                 </h4> 
-                <p class="background-color:orange;color:#fff;padding:10px;text-align:center">{{message}}</p>
+                <p style="background-color:orange;color:#fff;padding:10px;text-align:center" ng-if="message">{{message}}</p>
                 <div ng-repeat="pres in request.prescription_body" class="courier-cost">
-                    <label style="width: 40%;word-break: break-all;padding-right: 10px">{{pres.drug_name}} <span ng-if="pres.dosage" style="display: inline-block;">( {{pres.dosage}} )</span>:</label>
-                    <input type="number" placeholder="{{pres.cost}}" ng-model="pres.cost">
-                    <p class="text-danger">{{deliveryChargeMsg}}</p>
-                     <label style="width: 40%;word-break: break-all;padding-right: 10px">Delivery charge:  <span ng-if="pres.dosage" style="display: inline-block;"></span></label>
-                    <input type="number" placeholder="{{pres.delivery_charge}}" ng-model="pres.delivery_charge">
+                    <label style="width: 40%;word-break: break-all;padding-right: 10px">{{pres.drug_name}} <span ng-if="pres.dosage" style="display: inline-block;">( {{pres.dosage}} )</span>:
+                    </label>
+                    <input type="number" placeholder="{{pres.cost}}" ng-model="pres.cost">                   
                 </div> 
-                <div style="padding: 10px;font-size: 18px">
-                   <b> Total : </b> {{str}}
+                <!--<div>
+                   <p class="text-danger">{{deliveryChargeMsg}}</p>
+                    <label style="width: 40%;word-break: break-all;padding-right: 10px">Delivery charge:  <span  style="display: inline-block;"></span></label>
+                    <input type="number" placeholder="{{deliveryCharge}}" ng-model="deliveryCharge">
+                </div>-->
+                <div style="padding: 10px;font-size: 14px">
+                   <b>Total : </b> <span style="color: green">{{str}}</span> <!--&nbsp;&nbsp;(Includes delivery charge)--><br><br>
+                   <b>You'll receive :</b> <span style="color: green">{{receivable}}</span> &nbsp;&nbsp;( includes {{checkLogIn.city_grade + '%'}} discount )
                 </div>
                 <div style="text-align: right;padding: 20px">
                     <button class="btn btn-success" ng-click="sendBilling()">Send billing</button>

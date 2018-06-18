@@ -5586,6 +5586,7 @@ router.put("/user/scan-search/radiology/referral",function(req,res){
 /**** courier services logic ****/
 router.post("/user/courier",function(req,res){
   if(req.user) {
+    console.log(req.body)
     var date = + new Date();
     req.body.firstname = req.user.firstname;
     req.body.lastname = req.user.lastname;
@@ -5596,10 +5597,13 @@ router.post("/user/courier",function(req,res){
     req.body.verified = false;
     req.body.attended = false;
     req.body.completed = false;
+    req.body.deleted = false;
+
     //console.log(req.body);
     var courier = new model.courier(req.body);
     courier.save(function(err,info){
-      io.sockets.to("couriergroup").emit("receiver courier",req.body);
+      //io.sockets.to("couriergroup").emit("receiver courier",req.body);
+      io.sockets.to(req.body.center_id).emit("receiver courier",req.body);
     });
     res.send({status:true,message:"Sent successfully! Admin will contact you soon for cost and billing.",status: true});
   } else {
@@ -5608,8 +5612,21 @@ router.post("/user/courier",function(req,res){
   
 });
 
+router.get("/user/courier-centers",function(req,res){
+  if(req.user){
+    model.user.find({type: "Pharmacy",courier_access: true},{_id: 0, name:1,address:1,city:1,user_id:1},function(err,data){
+      if(err) throw err;
+      res.send(data);
+    })
+  } else {
+    res.end("unauthorized access!");
+  }
+})
+
 router.put("/user/courier-update",function(req,res){
   if(req.user){
+    console.log(req.body);
+
     if(req.body.prescription_body){
       model.courier.findOne({date: req.body.date}).exec(function(err,user){
         if(user && user.verified !== true) {
@@ -5624,6 +5641,8 @@ router.put("/user/courier-update",function(req,res){
           user.verification_date = + new Date();
           user.delivery_charge = 0;
           user.center_id = req.user.user_id;
+          user.user_id = req.body.user_id;
+          user.prescription_body = req.body.prescription_body;
 
           var count = 0;
           var presObj = {};
@@ -5634,9 +5653,10 @@ router.put("/user/courier-update",function(req,res){
             presObj.details += capture.drug_name + "( " + capture.dosage +  " )" + " ==> " + capture.cost + "\n";
             count++;
           }*/
-          var msgBody = "Courier Request status : Acknowledged\nPayment OTP: " + password  +
-           "\nTotal: " + req.body.total_cost + "\nSender : " + req.user.name + "\n" + req.user.address + "," + req.user.city + "," + req.user.country;
-          var phoneNunber = "+2348064245256"; // "+234" + user.phone1 || "+234" + user.phone2;
+          var currency = (req.user.currencyCode) ? req.user.currencyCode : "NGN";
+          var msgBody = "Applinic Courier Request\nStatus : Acknowledged\nPayment OTP: " + password  +
+           "\nCost of drugs: " + currency + "" + req.body.total_cost.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + "\nDelivery charge: " + currency + "" + req.body.delivery_charge.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + "\nCenter : " + req.user.name + "\n" + req.user.address + "," + req.user.city + "," + req.user.country + "\n" + req.user.phone;
+          var phoneNunber = req.body.phone1 || req.body.phone2; //"+2348064245256"; 
         
           sms.messages.create(
             {
@@ -5677,19 +5697,37 @@ router.get("/bicboy/:userId/:password",function(req,res){
     if(err) throw err;
     if(center) {
       //ths could be modified for centers to run by theselves but for now lets assume field agents are applinic guys.
-      model.courier.find({},function(err,data){
+      model.courier.find({center_id:req.params.userId},function(err,data){
         if(err) throw err;
-        console.log(data)
         if(data) {
           res.render("field-agent");
-        } else {
-          res.render("field-agent");
-        }
-      })
+        }       
+      });
     } else {
-      res.send({error: "User not enrolled for courier services. For enquires goto https://applinic.com/courier-services"})
+      res.send({error: "User not enrolled for courier services. For enquires goto https://applinic.com/courier-services"});
     }
-  })
+  });
+});
+
+router.put("/user/decline-courier",function(req,res){
+  if(req.user){
+    console.log(req.body);
+    model.courier.findOne({_id: req.body._id,center_id: req.user.user_id},{deleted: 1}).exec(function(err,courier){
+      if(err) throw err;
+      if(courier)
+        courier.deleted = true;
+      res.send(req.body);
+      courier.save(function(err,info){
+        if(err) {
+          console.log(err);
+        } else {
+          console.log("courier deleted!")
+        }
+      });
+    })
+  } else {
+    res.end("unauthorized access!");
+  }
 })
 
 
@@ -5697,21 +5735,21 @@ router.get("/user/get-courier",function(req,res){
   if(req.user){
     var criteria;
     if(req.query.attended) {
-      criteria = {city:req.user.city,attended: true}
+      criteria = {city:req.user.city,attended: true,center_id: req.user.user_id}
     } else {
-      criteria = {city:req.user.city,attended:false}
+      criteria = {city:req.user.city,attended:false,center_id: req.user.user_id,deleted: false}
     }
-    model.courier.find(criteria,{_id:0},function(err,data){
+    model.courier.find(criteria,{otp:0},function(err,data){
       res.send(data);
     });
   } else {
-    res.send("unauthorized access!")
+    res.send("unauthorized access!");
   }
 
 });
 
 router.get("/user/field-agent",function(req,res){
-   model.courier.find({verified: true,completed: false},{_id:0,otp:0,delivery_charge:0},function(err,data){
+   model.courier.find({verified: true,completed: false},{otp:0,delivery_charge:0},function(err,data){
       res.send(data);
    });
 });

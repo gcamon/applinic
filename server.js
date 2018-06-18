@@ -65,7 +65,7 @@ var options = {
   debug: true
 }
 
-app.use('/call',ExpressPeerServer(http,options));
+//app.use('/call',ExpressPeerServer(http,options));
 
 
 http.listen(port,function(){
@@ -94,12 +94,12 @@ payments(model,sms,io,paystack);
 placement(model,sms,io);
 mySocket(model,io,streams);
 
-console.log(Date.now())
 
 
 var a = "ede".replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()});
 var b = "ede".replace(/\s+/g, '');
 
+console.log(a.slice(0,1))
 
 
 

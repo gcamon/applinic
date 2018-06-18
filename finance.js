@@ -1389,7 +1389,7 @@ var basicPaymentRoute = function(model,sms,io,paystack){
 
 
 router.put("/user/field-agent",function(req,res){ 
-  var str = ""
+  var str = "";
   if(req.body.otp) {
     
     for(var i = 0; i < req.body.otp.length; i++) {
@@ -1397,36 +1397,58 @@ router.put("/user/field-agent",function(req,res){
       if(i == 2)
           str += " ";
     }
+
+  } else {
+  	res.send({message: "Wrong or invalid OTP"});
+  	return;
   }
   
-   model.courier.findOne({verified: true,otp: str}).exec(function(err,data){
+  console.log(req.body);
+
+   model.courier.findOne({verified: true,otp: str,verified: true, attended: true,center_id: req.user.user_id,_id:req.body._id}).exec(function(err,data){
      if(err) throw err;
+     console.log("sdkjdkhdhsjjhdshjdshjdjs");
+     console.log(data);
      if(data){
      	var toNum = parseInt(req.body.total_cost)
-      model.user.findOne({user_id: req.body.user_id},{ewallet:1},function(err,data){
-        if(err) throw err;      
-        if(data.ewallet.available_amount >= toNum) {        	
-          transect();
-        } else {
-          res.send({message: 'Transaction canceled! Reason: Patient has insufficient fund to pay for this service.'})
-        }
+      model.user.findOne({user_id: req.body.user_id},{ewallet:1},function(err,patient){
+        if(err) throw err;
+        if(patient) {   
+	        if(patient.ewallet.available_amount >= toNum) {        	
+	          transect();
+	        } else {
+	          res.send({message: 'Transaction canceled! Reason: Patient has insufficient fund to pay for this service.'})
+	        }
+	    } else {
+	    	res.send({message: "Oops! Patient not found. Transaction canceled!"});
+	    }
       });
 
       function transect() {
         var receiveDate = + new Date();
         data.receipt_date = receiveDate;
         data.completed = true;
-        data.otp = "xxdsh!sh76a";
+        data.otp = genId();
         var pay = new Wallet(receiveDate,req.body.firstname,req.body.lastname,"billing");
         pay.courier(model,req.body.center_id,req.body.user_id,toNum,io,data.delivery_charge) //user_id refers to the patient,center_id refers to the center,toNum refrs to amount
         io.sockets.to(data.center_id).emit("completed courier",{receipt_date:receiveDate,city:data.city,date:data.date})
-        data.save(function(){})
+        data.save(function(){});
         res.send({receipt_date: receiveDate,message: "Transactions successful!"});
       }
      } else {
        res.send({message: "Wrong or invalid OTP"});
      }
    });
+
+    function genId() {
+		var text = "";
+		var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrs!$%&_-tuvwxyz01234567899966600555777222";
+
+	    for( var i=0; i < 16; i++ )
+	        text += possible.charAt(Math.floor(Math.random() * possible.length));
+	    return text;
+	 }
+	  
 })
 
 
