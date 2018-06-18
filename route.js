@@ -5643,6 +5643,7 @@ router.put("/user/courier-update",function(req,res){
           user.center_id = req.user.user_id;
           user.user_id = req.body.user_id;
           user.prescription_body = req.body.prescription_body;
+          user.currencyCode = req.user.currencyCode;
 
           var count = 0;
           var presObj = {};
@@ -5692,22 +5693,7 @@ router.put("/user/courier-update",function(req,res){
   }
 });
 
-router.get("/bicboy/:userId/:password",function(req,res){
-  model.user.findOne({user_id: req.params.userId,courier_access: true,courier_access_password: req.params.password},function(err,center){
-    if(err) throw err;
-    if(center) {
-      //ths could be modified for centers to run by theselves but for now lets assume field agents are applinic guys.
-      model.courier.find({center_id:req.params.userId},function(err,data){
-        if(err) throw err;
-        if(data) {
-          res.render("field-agent");
-        }       
-      });
-    } else {
-      res.send({error: "User not enrolled for courier services. For enquires goto https://applinic.com/courier-services"});
-    }
-  });
-});
+
 
 router.put("/user/decline-courier",function(req,res){
   if(req.user){
@@ -5746,6 +5732,23 @@ router.get("/user/get-courier",function(req,res){
     res.send("unauthorized access!");
   }
 
+});
+
+router.get("/bicboy/:userId/:password",function(req,res){
+  model.user.findOne({user_id: req.params.userId,courier_access: true,courier_access_password: req.params.password},function(err,center){
+    if(err) throw err;
+    if(center) {
+      //ths could be modified for centers to run by theselves but for now lets assume field agents are applinic guys.
+      model.courier.find({center_id:req.params.userId},function(err,data){
+        if(err) throw err;
+        if(data) {
+          res.render("field-agent");
+        }       
+      });
+    } else {
+      res.end("User not enrolled for courier services. For enquires call +234064245256");
+    }
+  });
 });
 
 router.get("/user/field-agent",function(req,res){

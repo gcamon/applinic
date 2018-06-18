@@ -717,7 +717,8 @@ var myModel = function () {
 		verification_date: Number,
 		completed: Boolean,
 		delivery_charge: Number,
-		deleted: Boolean
+		deleted: Boolean,
+		currencyCode: String
 	},{
 		collections: "courierinfos"
 	});

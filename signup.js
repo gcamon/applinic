@@ -133,8 +133,12 @@ var signupRoute = function(model,sms,geonames,paystack) {
 								User.city_grade = 15;
 							}	
 
-							User.courier_charge = 1200;						
 						}		
+
+						if(req.body.typeOfUser === "Pharmacy") {
+							User.courier_charge = 1200;		
+							User.courier_access_password = uuid.v1();			
+						}
 
 						User.save(function(err){
 							console.log("user saved");
@@ -143,7 +147,7 @@ var signupRoute = function(model,sms,geonames,paystack) {
 						});			
 
 						} else {
-							res.send({error: "Email already in use. Please find another one"})
+							res.send({error: "Email already in use. Please find another one"});
 						}
 					}
 				}//end of function creatuser

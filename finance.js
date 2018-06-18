@@ -1405,12 +1405,10 @@ router.put("/user/field-agent",function(req,res){
   
   console.log(req.body);
 
-   model.courier.findOne({verified: true,otp: str,verified: true, attended: true,center_id: req.user.user_id,_id:req.body._id}).exec(function(err,data){
+   model.courier.findOne({verified: true,otp: str,verified: true, attended: true,center_id: req.body.center_id,_id:req.body._id}).exec(function(err,data){
      if(err) throw err;
-     console.log("sdkjdkhdhsjjhdshjdshjdjs");
-     console.log(data);
      if(data){
-     	var toNum = parseInt(req.body.total_cost)
+      var toNum = parseInt(req.body.total_cost)
       model.user.findOne({user_id: req.body.user_id},{ewallet:1},function(err,patient){
         if(err) throw err;
         if(patient) {   

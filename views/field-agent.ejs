@@ -12,19 +12,19 @@
        
         <!--<link rel="stylesheet" href="/assets/css/bootstrap.css">-->
         <link rel="stylesheet" href="/assets/css/vendor.css">
-         <link rel="stylesheet" href="/assets/css/app.css">
-          <link rel="stylesheet" href="/assets/css/now-ui-kit2.css">
-          <link rel="stylesheet" href="/assets/css/font-awesome.min.css">
-           <link rel="icon" type="image/png" href="/assets/images/icons/favicon.png">
+        <link rel="stylesheet" href="/assets/css/app.css">
+        <link rel="stylesheet" href="/assets/css/now-ui-kit2.css">
+        <link rel="stylesheet" href="/assets/css/font-awesome.min.css">
+        <link rel="icon" type="image/png" href="/assets/images/icons/favicon.png">
           
-           <link rel="stylesheet" href="/assets/css/my-edit.css">
+        <link rel="stylesheet" href="/assets/css/my-edit.css">
           <style>
               .title{
                   font-weight: 300;
               }
 
               body {
-                background-color: #f0f3f6
+                background-color: #f0f3f6;
               }
           </style>
           <script src="/assets/js/vendor2.js"></script>
@@ -32,27 +32,24 @@
     </head>
 
     <body ng-app="myApp">
-        <header id="header" class="container-fluid card"  ng-controller="topHeaderController">
+        <header id="header" class="container-fluid card">
             <div class="container" style="position: relative;">               
                 <div class="p-2">
                     <a class="brand" href="/" style="text-decoration: none;color: red">
                         <div class=""> <span class="l l1"></span> <span class="l l2"></span> <span class="l l3"></span> <span class="l l4"></span> <span class="l l5"></span> </div> <b>Applinic</b> 
-                    </a>  
-                                        
-                </div>                           
-               
-                <a class="btn btn-simple text-danger btn-sm"  href="" ng-click="logout()" style="position: absolute;top: 15px;right: 0">
+                    </a>                
+                </div>                          
+                <!--<a class="btn btn-simple text-danger btn-sm"  href="" ng-click="logout()" style="position: absolute;top: 15px;right: 0">
                     <span><i class="fa fa-power-off icon"></i>
                         Logout
                     </span> 
-                </a>
+                </a>-->
             </div>
         </header>
                     
         <div class="container" ng-controller="filedAgentController" ng-cloak>
             <h4>
                 Applinic Field Agent
-
             </h4>
             <div class="pb-1" style="width: 70%">
                  <input type="text" name="" class="form-control" placeholder="Filter by name, phone number, drug, address etc." ng-model="filterValue" style="font-size: 14px!important">
@@ -91,7 +88,7 @@
                                     <tbody ng-repeat="pres in patient.prescription_body">                                   
                                         <td>{{pres.sn }}</td>
                                         <td>{{pres.drug_name}}</td>
-                                        <td>{{(pres.cost) ? toCurrency(pres.cost):""}}</td>
+                                        <td>{{(pres.cost) ? toCurrency(pres.cost,patient):""}}</td>
                                         <td>{{pres.dosage}}</td>
                                         <td>{{pres.frequency}}</td>
                                         <td>{{pres.duration }}</td>                                              
@@ -100,12 +97,14 @@
                                 </tr>
                             </table>
                         
-                            <div><strong>Total cost : </strong> {{toCurrency(patient.total_cost)}}</div>
+                            <div><strong>Total cost : </strong> {{toCurrency(patient.total_cost,patient)}}</div>
                     </div>
                     <div class="col-sm-12 col-md-4 col-lg-4" style="padding:10px;line-height: 30px">
                         <h6 style="text-decoration: underline;padding: 10px 0">Payment</h6>
                         <div ng-cloak ng-if="patient.receipt_date"><strong>Date received : </strong> {{patient.receipt_date | date: "mediumDate"}} | {{patient.receipt_date | date: "mediumTime"}}</div>
-                        <div style="text-align: center;"><input type="text" ng-model="patient.otp" class="form-control" placeholder=" Enter otp"> <i class="fa fa-check" aria-hidden="true" style="font-size: 25px;padding: 0 10px;color:green" ng-if="patient.receipt_date"></i> <span style="" class="text-danger" ng-if="!patient.receipt_date">{{patient.message}}</span> <span style="color:green" ng-if="patient.receipt_date">{{patient.message}}</span></div> 
+                        <div style="text-align: center;">
+                            <input type="text" ng-model="patient.otp" class="form-control" style="font-size: 14px!important" placeholder=" Enter OTP">
+                         <i class="fa fa-check" aria-hidden="true" style="font-size: 25px;padding: 0 10px;color:green" ng-if="patient.receipt_date"></i> <span style="" class="text-danger" ng-if="!patient.receipt_date">{{patient.message}}</span> <span style="color:green" ng-if="patient.receipt_date">{{patient.message}}</span></div> 
                         <div style="margin-top: 10px;text-align: center;">
                                 <button class="btn btn-success btn-lg" ng-click="confirmPay(patient)" ng-hide="patient.receipt_date"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="patient.isLoading"></i> {{(patient.isLoading) ? "" : "Verify"}}</button>
                         </div>

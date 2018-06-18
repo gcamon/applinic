@@ -15700,7 +15700,12 @@ app.controller("filedAgentController",["$scope","$rootScope","$resource","fieldA
       item.isLoading = false;
       item.message = result.message;
       item.receipt_date = result.receipt_date;
-    })
+    });
+  }
+
+  $scope.toCurrency = function(amount,user) {
+    var str = (user.currencyCode) ? user.currencyCode + amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") : "NGN" + amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    return str;
   }
   
 }])
@@ -16013,8 +16018,10 @@ app.controller("emScanTestController",["$scope","$location","$http","$window","t
 app.controller("topHeaderController",["$scope","$rootScope","$window","$location","$resource","localManager","mySocket","templateService","$timeout","$document","ModalService",
   function($scope,$rootScope,$window,$location,$resource,localManager,mySocket,templateService, $timeout, $document, ModalService){
 
+   
+
   if(!localManager.getValue("resolveUser")) {
-    $window.location.href = "/login"
+    $window.location.href = "/login";
   } 
 
   
