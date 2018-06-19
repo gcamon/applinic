@@ -2,7 +2,7 @@
 <section style="padding: 20px">
 	<header style="position: relative;">
 		<h4> 
-		<i class="fa fa-motorcycle"></i> Courier Services <span style="font-size: 16px;display: inline-block;">( {{courierRequests.length}} requests )</span> &nbsp;&nbsp; <span style="font-size: 14px">Field 	Agent URL: </span>
+		<i class="fa fa-motorcycle"></i> Courier Services <span style="font-size: 16px;display: inline-block;">( {{courierRequests.length}} requests )</span> &nbsp;&nbsp; <span style="font-size: 14px;display: block;">Field 	Agent URL: </span>
 		<a href="{{fieldagentUrl}}" target="_blank" style="font-size: 14px"> {{fieldagentUrl}}</a>
 		</h4>
 		
@@ -17,7 +17,7 @@
 		<!--<a href="/bicboy/judepharmacy6768/y2kisawesome">Field agent</a>-->
 	</header>
 
-	<div class="card" ng-repeat="request in courierRequests | orderBy: '-date'" style="padding: 20px">
+	<div class="card" ng-repeat="request in courierRequests | orderBy: '-date'" style="padding: 20px;line-height: 32px">
 		<div class="col-sm-12 col-md-3 col-lg-3">
 		<h6 style="text-decoration: underline;">Sender detail</h6>
 			<div>
@@ -39,15 +39,17 @@
 				<tr>
 					<thead>
 						<th>S/N</th>
-						<th>Drug Name</th>
-						<th>Dosage</th>
-						<th>Frequency</th>
-						<th>Duration</th>		    						
+						<th>cost</th>
+						<th>drug</th>
+						<th>dosage</th>
+						<th>frequency</th>
+						<th>duration</th>		    						
 					</thead>        					
 				</tr>
 				<tr>
 					<tbody ng-repeat="prescription in request.prescription_body">		    						
 						<td>{{prescription.sn}}</td>
+						<td>{{(!prescription.cost) ? "N/A" : toCurrency(prescription.cost)}}</td>
 						<td>{{prescription.drug_name}}</td>
 						<td>{{prescription.dosage}}</td>
 						<td>{{prescription.frequency}}</td>
@@ -55,6 +57,7 @@
 					</tbody>
 				</tr>
 			</table>
+			<div ng-if="request.total_cost"> <strong>Total:</strong> {{toCurrency(request.total_cost)}}</div>
 		</div>
 		<div class="col-sm-12 col-md-3 col-lg-3" style="line-height: 25px">
 			<h6 style="text-decoration: underline;">Delivery report</h6>

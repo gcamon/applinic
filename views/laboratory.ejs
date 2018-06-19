@@ -235,7 +235,11 @@
                     </div>
                 </header>
 
-                     <div class="clearfix"></div>
+                <div class="custom-alert-box" ng-class="{'toogle-custom-alert': alert === true}"  ng-cloak>
+                  <span>{{message}}</span>
+                </div>
+                
+                <div class="clearfix"></div>
 
                 <aside class="sidebar" style="top:.4em;" ng-controller="checkingOutPatientController">
                     <div class="sidebar-container">

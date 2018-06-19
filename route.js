@@ -2090,9 +2090,9 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
     });
   
     //user getting the available on the dashboard balance route.
-    router.get('/user/:userId/get-balance',function(req,res){
+    router.get('/user/get-balance',function(req,res){
       if(req.user){
-        model.user.findOne({user_id: req.params.userId},{ewallet:1},function(err,wallet){
+        model.user.findOne({user_id: req.query.userId},{ewallet:1},function(err,wallet){
           if(err) throw err;
           res.send({balance: wallet.ewallet.available_amount})
         })
@@ -5586,7 +5586,6 @@ router.put("/user/scan-search/radiology/referral",function(req,res){
 /**** courier services logic ****/
 router.post("/user/courier",function(req,res){
   if(req.user) {
-    console.log(req.body)
     var date = + new Date();
     req.body.firstname = req.user.firstname;
     req.body.lastname = req.user.lastname;
@@ -5617,7 +5616,7 @@ router.get("/user/courier-centers",function(req,res){
     model.user.find({type: "Pharmacy",courier_access: true},{_id: 0, name:1,address:1,city:1,user_id:1},function(err,data){
       if(err) throw err;
       res.send(data);
-    })
+    });
   } else {
     res.end("unauthorized access!");
   }
@@ -5628,8 +5627,8 @@ router.put("/user/courier-update",function(req,res){
     console.log(req.body);
 
     if(req.body.prescription_body){
-      model.courier.findOne({date: req.body.date}).exec(function(err,user){
-        if(user && user.verified !== true) {
+      model.courier.findOne({_id: req.body._id,center_id: req.body.center_id}).exec(function(err,user){
+        if(user) { //user.verified !== true
           var random1 = Math.floor(Math.random() * 999);
           var random2 = Math.floor(Math.random() * 999);
           var password = check(random1) + " " + check(random2);
@@ -5639,11 +5638,12 @@ router.put("/user/courier-update",function(req,res){
           user.otp = password;
           user.attended = true;
           user.verification_date = + new Date();
-          user.delivery_charge = 0;
+          user.delivery_charge = req.body.delivery_charge;
           user.center_id = req.user.user_id;
           user.user_id = req.body.user_id;
           user.prescription_body = req.body.prescription_body;
           user.currencyCode = req.user.currencyCode;
+          user.city_grade = req.user.city_grade
 
           var count = 0;
           var presObj = {};
@@ -5668,9 +5668,9 @@ router.put("/user/courier-update",function(req,res){
           ) 
 
           user.save(function(err,info){});
-          res.send({message:"Success! Patient will be notified via sms"})
+          res.send({message:"Billing sent successfully! Patient will be notified via sms",status: true})
         } else {
-          res.send({message: "Patient has already been verified by another center"})
+          res.send({message: "Patient has already been verified by another center",status:false})
         }
       });
 
@@ -5727,7 +5727,7 @@ router.get("/user/get-courier",function(req,res){
     }
     model.courier.find(criteria,{otp:0},function(err,data){
       res.send(data);
-    });
+    }).limit(200);
   } else {
     res.send("unauthorized access!");
   }
@@ -5742,7 +5742,7 @@ router.get("/bicboy/:userId/:password",function(req,res){
       model.courier.find({center_id:req.params.userId},function(err,data){
         if(err) throw err;
         if(data) {
-          res.render("field-agent");
+          res.render("field-agent",{user: req.params.userId});
         }       
       });
     } else {
@@ -5752,9 +5752,16 @@ router.get("/bicboy/:userId/:password",function(req,res){
 });
 
 router.get("/user/field-agent",function(req,res){
-   model.courier.find({verified: true,completed: false},{otp:0,delivery_charge:0},function(err,data){
-      res.send(data);
-   });
+  var criteria;
+  console.log(req.query)
+  if(!req.query.isCompleted) {
+    criteria = {verified: true,completed: false,center_id: req.query.userId};
+  } else {
+    criteria = {verified: true,completed: true,center_id: req.query.userId};
+  }
+  model.courier.find(criteria,{otp:0,delivery_charge:0},function(err,data){
+    res.send(data);
+  });
 });
 
 

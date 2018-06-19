@@ -1598,18 +1598,22 @@ app.controller('loginController',["$scope","$http","$location","$window","$resou
 
 app.service("manageRecordAccessService",["$resource",function($resource){
   return $resource("/user/manage-access",null,{updateAccess:{method: "PUT"},changeKey: {method: "PATCH"}})
-}])
+}]);
+
+app.service("getBalanceService",["$resource",function($resource){
+  return $resource('/user/get-balance',null,{headers:{withCredentials: true}});
+}]);
 
 //display the current balance always
 app.controller("balanceController",["$rootScope","$scope","$resource","localManager","mySocket","$timeout",
-  "manageRecordAccessService",
-  function($rootScope,$scope,$resource,localManager,mySocket,$timeout,manageRecordAccessService){  
+  "manageRecordAccessService","getBalanceService",
+  function($rootScope,$scope,$resource,localManager,mySocket,$timeout,manageRecordAccessService,getBalanceService){  
   var user = localManager.getValue("resolveUser");
 
   function getBalance() {
     $scope.loading = true;
-    var amount = $resource('/user/:userId/get-balance',{userId: user.user_id},{headers:{withCredentials: true}});
-    var wallet = amount.get(null,function(data){
+    var amount = getBalanceService;
+    var wallet = amount.get({userId: user.user_id},function(data){
       $scope.loading = false;
       var whole = Math.round(data.balance);
       var format = ($rootScope.checkLogIn.currencyCode) ? $rootScope.checkLogIn.currencyCode +
@@ -1620,10 +1624,11 @@ app.controller("balanceController",["$rootScope","$scope","$resource","localMana
 
   getBalance();
 
+
   mySocket.on("fund received",function(data){
     if(data.status) {
-      getBalance()
-      $rootScope.alertService(3,data.message); 
+      getBalance();
+      $rootScope.alertService(2,data.message); 
     }
   })
 
@@ -15541,6 +15546,7 @@ app.controller("centerCourierController",["$scope","$rootScope","$http","mySocke
   mySocket.on("completed courier",function(data){
     var elemPos = $rootScope.courierRequests.map(function(x){return x.date.toString()}).indexOf(data.date.toString())
     $rootScope.courierRequests[elemPos].receipt_date = data.receipt_date;
+    templateService.playAudio(3);
   })
 
   $scope.courierBilling = function(courier) {
@@ -15666,8 +15672,13 @@ app.controller("selectedCourierRequestController",["$scope","$rootScope","$http"
         data    : $scope.request,
         headers : {'Content-Type': 'application/json'} 
         })
-      .success(function(data) {      
-        $scope.message = "Billing sent successfully. Patient will be notified via SMS.";
+      .success(function(data) {  
+      if(data.status) {
+         $scope.message = data.message;
+      } else {
+        $scope.error = data.message;
+      }
+       
         $scope.loading = false;
       });    
     } else {
@@ -15682,16 +15693,26 @@ app.service("fieldAgentService",["$resource",function($resource){
 }]);
 
 //refers to couroer field agents controller
-app.controller("filedAgentController",["$scope","$rootScope","$resource","fieldAgentService",
-  function($scope,$rootScope,$resource,fieldAgentService){
+app.controller("filedAgentController",["$scope","$rootScope","$resource","fieldAgentService","$location",
+  function($scope,$rootScope,$resource,fieldAgentService,$location){
   
   var resource = fieldAgentService; //$resource("/user/field-agent",null,{verify:{method: "PUT"}});
   $scope.loading = true;
-  resource.query(function(data){
-    console.log(data)
-    $scope.loading = false;
-    $scope.courierList = data;
-  });
+  $scope.params = {};
+  $scope.params.isCompleted = null;
+  var spt = window.location.toString();
+  var arr = spt.split("/");
+  $scope.params.userId = arr[4];
+
+
+  function getCourier(courier) {
+    resource.query($scope.params,function(data){
+      $scope.loading = false;
+      $scope.courierList = data;
+    });
+  }
+
+  getCourier();
 
   $scope.confirmPay = function(item) {
     item.message = "";
@@ -15701,6 +15722,16 @@ app.controller("filedAgentController",["$scope","$rootScope","$resource","fieldA
       item.message = result.message;
       item.receipt_date = result.receipt_date;
     });
+  }
+
+  $scope.viewVerified = function() {
+    $scope.params.isCompleted = true;
+    getCourier();
+  }
+
+  $scope.pendingRequest = function() {
+    $scope.params.isCompleted = null;
+    getCourier();
   }
 
   $scope.toCurrency = function(amount,user) {

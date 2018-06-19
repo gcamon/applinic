@@ -427,9 +427,8 @@ textarea.form-control {
     font-size: 1em;
     height: 100px;
     overflow-y: auto;
-    word-break: break-all;
     color: #fff;
-    background-color: #85CE36;
+    background-color: orange;
     position: absolute;
     right: 0;
     top: 150px;
@@ -439,7 +438,7 @@ textarea.form-control {
   }
 
   .toogle-custom-alert {  
-    z-index: 5;
+    z-index: 9999999;
     width: 30%;
     -webkit-transition: width 500ms ease-out 1s;
     -moz-transition: width 500ms ease-out 1s;

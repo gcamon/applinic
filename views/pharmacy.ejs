@@ -246,7 +246,9 @@
                         </a>  
                     </div>
                 </header>
-
+                 <div class="custom-alert-box" ng-class="{'toogle-custom-alert': alert === true}"  ng-cloak>
+                  <span>{{message}}</span>
+                </div>
                      <div class="clearfix"></div>
 
                 <aside class="sidebar" style="top:.4em;"  ng-controller="checkingOutPatientController">
@@ -883,7 +885,7 @@
                                     </li>
                                 </ul>
                             </li>
-                            <li><strong>Office line : </strong> +234 {{center.phone}}</li>
+                            <li><strong>Office line : </strong>{{center.phone}}</li>
 
                         </ul>
 
@@ -1021,8 +1023,9 @@
                    <b>Total : </b> <span style="color: green">{{str}}</span> <!--&nbsp;&nbsp;(Includes delivery charge)--><br><br>
                    <b>You'll receive :</b> <span style="color: green">{{receivable}}</span> &nbsp;&nbsp;( includes {{checkLogIn.city_grade + '%'}} discount )
                 </div>
+                <span class="text-danger">{{error}}</span>
                 <div style="text-align: right;padding: 20px">
-                    <button class="btn btn-success" ng-click="sendBilling()">Send billing</button>
+                    <button class="btn btn-success" ng-click="sendBilling()"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i> {{(loading) ? "" : "Send billing"}}</button>
                 </div>          
             </div>
             

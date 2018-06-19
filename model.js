@@ -718,7 +718,8 @@ var myModel = function () {
 		completed: Boolean,
 		delivery_charge: Number,
 		deleted: Boolean,
-		currencyCode: String
+		currencyCode: String,
+		city_grade: Number
 	},{
 		collections: "courierinfos"
 	});

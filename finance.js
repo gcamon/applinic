@@ -1408,7 +1408,7 @@ router.put("/user/field-agent",function(req,res){
    model.courier.findOne({verified: true,otp: str,verified: true, attended: true,center_id: req.body.center_id,_id:req.body._id}).exec(function(err,data){
      if(err) throw err;
      if(data){
-      var toNum = parseInt(req.body.total_cost)
+      var toNum = parseInt(data.total_cost);
       model.user.findOne({user_id: req.body.user_id},{ewallet:1},function(err,patient){
         if(err) throw err;
         if(patient) {   
@@ -1427,9 +1427,12 @@ router.put("/user/field-agent",function(req,res){
         data.receipt_date = receiveDate;
         data.completed = true;
         data.otp = genId();
-        var pay = new Wallet(receiveDate,req.body.firstname,req.body.lastname,"billing");
-        pay.courier(model,req.body.center_id,req.body.user_id,toNum,io,data.delivery_charge) //user_id refers to the patient,center_id refers to the center,toNum refrs to amount
+        var pay = new Wallet(receiveDate,req.body.firstname,req.body.lastname,"courier billing");
+        pay.courier(model,req.body.center_id,req.body.user_id,toNum,io,data.delivery_charge,req.body.city_grade,sms) //user_id refers to the patient,center_id refers to the center,toNum refrs to amount
+        var per = toNum * (req.body.city_grade / 100);
+        var receivable = toNum - per;
         io.sockets.to(data.center_id).emit("completed courier",{receipt_date:receiveDate,city:data.city,date:data.date})
+        io.sockets.to(data.center_id).emit("fund received",{message: "Your MediPay account was credited! Payment made through courier service.",status:true})
         data.save(function(){});
         res.send({receipt_date: receiveDate,message: "Transactions successful!"});
       }

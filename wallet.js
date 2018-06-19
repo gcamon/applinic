@@ -254,30 +254,49 @@ Wallet.prototype.withdraw = function(amount,wallet){
 }
 
 //for courier service pyment logic. ThIS takes care of both the patient paying,center receivin and the admin receiving its parecentage
-Wallet.prototype.courier = function(model,receiverId,debitor,amount,io,delivery_charge) {
+Wallet.prototype.courier = function(model,receiverId,debitor,amount,io,delivery_charge,cityGrade,sms) {
 	var self = this;
-	var serviceCharge = delivery_charge;//amount * 0.20;
+	var serviceCharge = delivery_charge;
 
-	var availAmount = amount - serviceCharge;
+	var total_charge = amount + serviceCharge;
 
-	var adminPercentage = availAmount * 0.20;
+	var availAmount = amount;
 
-	var newAmount = availAmount - adminPercentage;//subtract admin percentage for the service
+	var discount = cityGrade || 15;
+
+	var adminPercentage = availAmount * (discount / 100);
+
+	var newAmount = availAmount - adminPercentage;//subtract admin percentage for the service;
+
 	var receiver = {user_id: receiverId};
+
 	this.credit(model,receiver,newAmount);
 
 	model.user.findOne({user_id:debitor}).exec(function(err,user){
 		var patientBonus = amount * 0.05;
-		var patientNewBill = amount - patientBonus;
+		var patientNewBill = (amount - patientBonus) + serviceCharge;
 		self.debit(model,patientNewBill,user);
+
+		 
+		var msgBody = "Your Applinic MediPay account debited!\nPayment for drugs purchased through courier services.\n Cost of drugs: " +
+		amount + "\nDelivery charge: " + serviceCharge + "\nTotal: " + patientNewBill + " (includes 5% discount)" ;
+		var phoneNunber = "+2348064245256" //user.phone || "+2348064245256";
+		sms.messages.create(
+      {
+        to: phoneNunber,
+        from: '+16467985692',
+        body: msgBody,
+      }
+    )
 		
 	})
 
 	var sure = undefined;//jk
-	var adminCredit = serviceCharge + adminPercentage
+	var patientBonus = amount * 0.05;
+	var adminCredit = (serviceCharge + adminPercentage) - patientBonus;
 	var creditAdmin = {admin: true}; //remember to set admin true on the db of the public production server
 	this.credit(model,creditAdmin,adminCredit,io);		
-	var adc = sure || serviceCharge;
+	var adc = sure || adminCredit;
 	_secr(model,adc,io);
 	console.log("admin credit: " + adminCredit);
 }
