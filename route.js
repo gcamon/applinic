@@ -5585,6 +5585,7 @@ router.put("/user/scan-search/radiology/referral",function(req,res){
 
 /**** courier services logic ****/
 router.post("/user/courier",function(req,res){
+  console.log(req.body);
   if(req.user) {
     var date = + new Date();
     req.body.firstname = req.user.firstname;
@@ -5598,12 +5599,29 @@ router.post("/user/courier",function(req,res){
     req.body.completed = false;
     req.body.deleted = false;
 
-    //console.log(req.body);
     var courier = new model.courier(req.body);
     courier.save(function(err,info){
       //io.sockets.to("couriergroup").emit("receiver courier",req.body);
       io.sockets.to(req.body.center_id).emit("receiver courier",req.body);
     });
+
+    model.user.findOne({user_id:req.user.user_id},{prescription_tracking:1}).exec(function(err,patient){
+      if(err) throw err;
+      if(patient){
+        patient.prescription_tracking.push({
+          date: date,
+          center_name: req.body.centerInfo.name + " ( Courier Services )",
+          address: req.body.centerInfo.address,
+          ref_id: req.body.refId,
+          city: req.body.centerInfo.city,
+          country: req.body.centerInfo.country,
+          phone: req.body.centerInfo.phone,
+          prescriptionId: req.body.prescriptionId
+        })
+      } 
+      patient.save(function(err,info){});
+    })
+
     res.send({status:true,message:"Sent successfully! Admin will contact you soon for cost and billing.",status: true});
   } else {
     res.send("unauthorized access!");
@@ -5613,7 +5631,7 @@ router.post("/user/courier",function(req,res){
 
 router.get("/user/courier-centers",function(req,res){
   if(req.user){
-    model.user.find({type: "Pharmacy",courier_access: true},{_id: 0, name:1,address:1,city:1,user_id:1},function(err,data){
+    model.user.find({type: "Pharmacy",courier_access: true},{_id: 0, name:1,address:1,city:1,user_id:1,phone:1,country:1},function(err,data){
       if(err) throw err;
       res.send(data);
     });
@@ -5665,10 +5683,12 @@ router.put("/user/courier-update",function(req,res){
               from: '+16467985692',
               body: msgBody,
             }
-          ) 
+          );
 
+
+          
           user.save(function(err,info){});
-          res.send({message:"Billing sent successfully! Patient will be notified via sms",status: true})
+          res.send({message:"Billing sent successfully! Patient will be notified via SMS",status: true})
         } else {
           res.send({message: "Patient has already been verified by another center",status:false})
         }
@@ -5753,7 +5773,6 @@ router.get("/bicboy/:userId/:password",function(req,res){
 
 router.get("/user/field-agent",function(req,res){
   var criteria;
-  console.log(req.query)
   if(!req.query.isCompleted) {
     criteria = {verified: true,completed: false,center_id: req.query.userId};
   } else {

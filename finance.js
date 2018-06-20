@@ -1409,11 +1409,48 @@ router.put("/user/field-agent",function(req,res){
      if(err) throw err;
      if(data){
       var toNum = parseInt(data.total_cost);
-      model.user.findOne({user_id: req.body.user_id},{ewallet:1},function(err,patient){
+      model.user.findOne({user_id: req.body.user_id},{ewallet:1,medications:1},function(err,patient){
         if(err) throw err;
         if(patient) {   
 	        if(patient.ewallet.available_amount >= toNum) {        	
 	          transect();
+	          var elemPos = patient.medications.map(function(x){return x.prescriptionId}).indexOf(req.body.prescriptionId);
+	          if(elemPos != -1){
+	            var found = patient.medications[elemPos];            
+	            model.user.findOne({user_id: req.body.center_id},{service_details:1})
+	            .exec(function(err,center){
+	              if(err) throw err;
+	              center.service_details.push({
+	                type: "pharmacy",
+	                prescriptionDate_date: found.date,
+	                provisional_diagnosis: found.provisional_diagnosis,
+	                patient_names: found.patient_firstname + " " + found.patient_lastname,
+	                patient_phone: found.patient_phone,
+	                patient_age: found.patient_age,
+	                patient_gender: found.patient_gender,
+	                patient_profile_pic_url: found.patient_profile_pic_url,
+	                amount: req.body.total_cost,
+	                date: req.body.verification_date,
+	                prescriptionBody: req.body.prescription_body,
+	                doctor_names: found.title + " " + found.doctor_firstname + " " + found.doctor_lastname,
+	                ref_id: found.ref_id,
+	                doctor_work_place: found.doctor_work_place,
+	                doctor_specialty: found.doctor_specialty,
+	                doctor_city: found.doctor_city,
+	                doctor_country: found.doctor_country,
+	                doctor_profile_url: found.doctor_profile_url,
+	                doctor_address: found.doctor_address
+	              });
+
+		            center.save(function(err,info){
+			            console.log("service details saved!");
+			          });
+
+	            });
+
+	           
+
+	          }
 	        } else {
 	          res.send({message: 'Transaction canceled! Reason: Patient has insufficient fund to pay for this service.'})
 	        }
@@ -1436,6 +1473,7 @@ router.put("/user/field-agent",function(req,res){
         data.save(function(){});
         res.send({receipt_date: receiveDate,message: "Transactions successful!"});
       }
+
      } else {
        res.send({message: "Wrong or invalid OTP"});
      }

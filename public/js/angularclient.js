@@ -15446,7 +15446,7 @@ function($scope,$rootScope,$location,$http,localManager,Drugs,cities){
 
     if($scope.user.phone1) {
       if($scope.user.phone1.slice(0,1) != "+") {
-        $scope.phoneMsg = "Phone number format incorrect!" ;
+        $scope.phoneMsg = "Phone number format incorrect!";
         return;
       }
     } else {
@@ -15455,7 +15455,7 @@ function($scope,$rootScope,$location,$http,localManager,Drugs,cities){
 
     if($scope.user.phone2) {
        if($scope.user.phone2.slice(0,1) != "+") {
-        $scope.phoneMsg = "Phone number format incorrect!" ;
+        $scope.phoneMsg = "Phone number format incorrect!";
         return;
       }
 
@@ -15478,8 +15478,15 @@ function($scope,$rootScope,$location,$http,localManager,Drugs,cities){
 
         $scope.user.prescriptionId = $rootScope.selectedPrescription.prescriptionId;
 
+        $scope.user.refId = $rootScope.selectedPrescription.ref_id;
+
         $scope.user.prescription_body = ($scope.filteredPres.length === 0) ? $rootScope.selectedPrescription.prescription_body : $scope.filteredPres;
-    
+
+        var elemPos = $scope.centerList.map(function(x){return x.user_id}).indexOf($scope.user.center_id);
+        if(elemPos != -1) {
+          $scope.user.centerInfo = $scope.centerList[elemPos];
+        }
+
         $http({
           method  : 'POST',
           url     : "/user/courier",

@@ -132,12 +132,12 @@ var myModel = function () {
 		title: String,
 		doctor_address: String,		
 		doctor_id: String,
-		doctor_verified:Boolean,
+		doctor_verified: Boolean,
 		doctor_work_place: String,
 		doctor_city: String,
 		doctor_country: String,
 		doctor_phone: String,
-		doctor_specialty:String,
+		doctor_specialty: String,
 		lab_analysis: String,
 		scan_analysis: String,
 		doctor_profile_pic_url: String,
@@ -154,7 +154,7 @@ var myModel = function () {
 		patient_country: String,
 		prescription_body: [prescriptionBodySchema],
 		ref_id: Number,
-		eligible:Boolean,
+		eligible: Boolean,
 		is_paid: Boolean,
 		detail: {
 			amount: String,
@@ -719,7 +719,8 @@ var myModel = function () {
 		delivery_charge: Number,
 		deleted: Boolean,
 		currencyCode: String,
-		city_grade: Number
+		city_grade: Number,
+		prescriptionId: Number
 	},{
 		collections: "courierinfos"
 	});
