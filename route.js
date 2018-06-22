@@ -5676,13 +5676,22 @@ router.put("/user/courier-update",function(req,res){
           var msgBody = "Applinic Courier Request\nStatus : Acknowledged\nPayment OTP: " + password  +
            "\nCost of drugs: " + currency + "" + req.body.total_cost.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + "\nDelivery charge: " + currency + "" + req.body.delivery_charge.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + "\nCenter : " + req.user.name + "\n" + req.user.address + "," + req.user.city + "," + req.user.country + "\n" + req.user.phone;
           var phoneNunber = req.body.phone1 || req.body.phone2; //"+2348064245256"; 
-        
+          console.log(phoneNunber);
+          var callBack = function(err,info) {
+            if(err) {
+              console.log(err)
+            } else {
+              console.log(info)
+            }
+          }
+
           sms.messages.create(
             {
               to: phoneNunber,
               from: '+16467985692',
               body: msgBody,
-            }
+            },
+            callBack
           );
 
 
