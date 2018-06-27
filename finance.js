@@ -285,9 +285,9 @@ var basicPaymentRoute = function(model,sms,io,paystack){
 				} else {
 					var amount = (typeof req.body.amount === "string") ? parseInt(req.body.amount) : req.body.amount;
 					if(user.ewallet.available_amount >= amount){
-						var random1 = Math.floor(Math.random() * 999);
-						var random2 = Math.floor(Math.random() * 999);
-						var password = check(random1) + " " + check(random2);
+						//var random1 = Math.floor(Math.random() * 999);
+						//var random2 = Math.floor(Math.random() * 999);
+						var password = genId() + " " + genId() //check(random1) + " " + check(random2);
 
 						if(req.body.old_time){ //checks if otp was resend therefore removes the old otp which will not be in use anymore.
 							model.otpSchema.findOne({time:req.body.old_time},function(err,data){
@@ -331,7 +331,7 @@ var basicPaymentRoute = function(model,sms,io,paystack){
 									console.log(err);
 									res.send({message:"Oops! Error occured while sending OTP.Please resend",success:true,time_stamp:req.body.time}) 
 								} else {								
-									res.send({message:"One time pin has been sent this patient vis SMS. The pin is needed for payment confirmation",success:true,time_stamp:req.body.time}) 
+									res.send({message:"One time pin sent to this patient vis SMS. The pin is needed for payment confirmation",success:true,time_stamp:req.body.time}) 
 								}
 								
 							}
@@ -355,7 +355,7 @@ var basicPaymentRoute = function(model,sms,io,paystack){
 						res.send({message: 'Transaction failed! Reason: The person to debit has insufficient fund for the service!',success:false});
 					}   
 
-					function check(num) {
+					/*function check(num) {
 						var toStr = num.toString();  
 					  if(toStr.length < 3) {
 					    for( var i = toStr.length - 1; i < 2; i++){
@@ -363,7 +363,16 @@ var basicPaymentRoute = function(model,sms,io,paystack){
 					    }
 					  } 
 					  return toStr; 
-				  	}
+				  }*/
+
+				  function genId() {
+						var text = "";
+						var possible = "000111222333444555666777888999";
+
+					    for( var i=0; i < 3; i++ )
+					        text += possible.charAt(Math.floor(Math.random() * possible.length));
+					    return text;
+					}
 				 }
 
 				})
@@ -1488,7 +1497,153 @@ router.put("/user/field-agent",function(req,res){
 	    return text;
 	 }
 	  
+});
+
+router.get("/user/outpatient-billing",function(req,res){
+	if(req.user){
+	  model.outPatientBilling.findOne({bill_id: req.query.billId},function(err,bill){
+	  	if(err) throw err;
+	  	if(bill) {
+	  		res.json(bill);
+	  	} else {
+	  		res.send({});
+	  	}
+	  })
+	} else {
+		res.end("Unauthorized access!!");
+	}
+});
+
+router.post("/user/outpatient-billing",function(req,res){
+	console.log(req.body);
+
+	if(req.user) {
+		var id = genId();
+
+		var bill = new model.outPatientBilling({
+			date: + new Date(),
+			sender_names: req.user.name,
+			sender_address: req.user.address,
+			sender_id: req.user.user_id,
+			sender_city: req.user.city,
+			sender_specialty: req.user.specialty,
+			sender_country: req.user.country,
+			sender_profile_pic_url: req.user.profile_pic_url,
+			patient_names: req.body.patientName,
+			patient_id: req.body.patientId,
+			total: req.body.total,
+			bill_id: id,
+			payment_acknowledgement: {
+				status: false,
+				date: null
+			},
+			bill_list: req.body.billList
+		});
+
+		bill.save(function(err,info){
+			if(err) {
+				throw err;
+				res.send({status: false});
+			} else {
+				res.json({status: true});
+			}
+
+		});
+
+	  
+
+	  model.user.findOne({user_id: req.body.patientId},{patient_mail:1}).exec(function(err,patient){
+	  	if(err) throw err;
+	  	if(patient) {
+	  		var mailData = {
+		  		firstname: req.user.name,
+					message_id: id,
+					title: req.user.title,
+					lastname: null,
+					specialty: req.user.specialty,
+					user_id: req.user.user_id,
+					date: + new Date(),
+					//consultation_fee: Number,
+			    //service_access: String,
+			    profile_pic_url: req.user.profile_pic_url,
+			    profile_url: req.user.profile_url,
+					message: "Cost of treatment bill received.",
+					category: "outPatientBilling",//note categories are admin, decline, redirect,need_doctor.
+					//reason: String,
+					//complaint_id: String,
+				}
+				patient.patient_mail.push(mailData);
+	  	}
+
+	  	if(patient.presence) {
+	  		io.sockets.to(req.body.patientId).emit("message notification",{status: true});
+	  	}
+
+	  	patient.save(function(err,info){
+	  		if(err) throw err;
+	  		console.log("patient's mail saved!");
+	  	});
+	  })
+
+	  function genId() {
+			var text = "";
+			var possible = "000111222333444555666777888999ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+		    for( var i=0; i < 8; i++ )
+		        text += possible.charAt(Math.floor(Math.random() * possible.length));
+		    return text;
+		}
+
+	} else {
+		res.end("Unauthorized access");
+	}
+});
+
+router.put("/user/outpatient-billing",function(req,res){
+	if(req.user) {
+		console.log(req.body);		
+		model.otpSchema.findOne({user_id: req.user.user_id,otp: req.body.otp},function(err,data){
+			if(err) throw err;
+			if(data) {
+				console.log(data)
+				model.outPatientBilling.findOne({_id:req.body._id}).exec(function(err,bill){
+					if(err) throw err;
+					if(bill){
+						if(!bill.payment_acknowledgement.status){
+							if(req.user.ewallet.available_amount >= bill.total) {
+								var date = + new Date();
+								bill.payment_acknowledgement.status = true;
+								bill.payment_acknowledgement.date = date;
+
+								var pay = new Wallet(date,req.user.firstname,req.user.lastname,"hospitality bill");
+								pay.hospitalityBill(model,bill.total,req.user.user_id,bill.sender_id,sms,io);
+								bill.save(function(err,info){});
+								res.send({status: true});
+							} else {
+								res.send({status: false,message: "You have insufficient fund for this transaction."});
+							}
+						} else {
+							res.send({status: false,message: "This OTP is not for this transaction."});
+						}
+					}
+				});
+				data.remove(function(err,info){});
+			} else {
+				res.send({status: false,message: "Oops, Wrong or invalid OTP!"});
+			}
+			
+		})
+	} else {
+		res.end("Unauthorized access!");
+	}
 })
+
+/*
+	 user_id: user.user_id,//this id refers to the debitors id. the person whose account will be debited.
+				        time: req.body.time,
+				        otp: password,
+				        amount: req.body.amount,
+				        senderId: req.user.user_id 
+*/
 
 
 }

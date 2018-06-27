@@ -188,23 +188,49 @@
                                 <div class="dropdown-menu notifications-dropdown-menu" style="max-height: 400px;overflow-y: auto;">
                                     <ul class="notifications-container noti-style">
                                         <li> <h6 style="text-align: center">Message(s)</h6> </li>
-                                        <li ng-repeat = "msg in allMsg | orderBy: '-date'" ng-click= "viewMessage(msg.user_id,msg)" ng-if="msg.category !== 'need_doctor'" style="cursor: pointer;">
+                                        <!--<li ng-repeat = "msg in allMsg | orderBy: '-date'" ng-click= "viewMessage(msg.user_id,msg)" ng-if="msg.category !== 'need_doctor' && msg.category !== 'outPatientBilling'" style="cursor: pointer;">
                                             <div class="notification-item">
                                                 <div class="img-col">
                                                     <div class="img" style="background-image: url({{msg.profile_pic_url}})"></div>
                                                 </div>
                                                 <div class="body-col">
-                                                    <p> <span class="accent" ng-cloak>{{msg.title}} {{msg.firstname}} {{msg.lastname}}</span> <span style="display:block" ng-class="{'text-danger': msg.reason}" ng-cloak>{{msg.message}}</span> <span style="display:block" am-time-ago="msg.date" ng-cloak></span>. </p>
+                                                    <p> <span class="accent" ng-cloak>{{msg.title}} {{msg.firstname}} {{msg.lastname}}</span> <span style="display:block" ng-class="{'text-danger': msg.reason}" ng-cloak>{{msg.message}}</span> <span style="display:block" am-time-ago="msg.date" ng-cloak></span></p>
                                                 </div>
                                             </div>                                            
-                                        </li>                                        
-                                        <li ng-repeat = "msg in allMsg | orderBy: '-date'" class="msg-drp-list" ng-click= "viewResponse(msg.user_id,msg.complaint_id)" ng-if="msg.category === 'need_doctor'" style="cursor: pointer;">
+                                        </li> -->                                       
+                                        <!--<li ng-repeat = "msg in allMsg | orderBy: '-date'" class="msg-drp-list" ng-click= "viewResponse(msg.user_id,msg.complaint_id)" ng-if="msg.category === 'need_doctor' && msg.category !== 'outPatientBilling' " style="cursor: pointer;">
                                             <div class="notification-item">
                                                 <div class="img-col">
                                                     <div class="img fa fa-user-md"></div>
                                                 </div>
                                                 <div class="body-col">
                                                     <p> <span class="accent" ng-cloak>Ref {{msg.complaint_id}}</span> <span style="display:block">{{msg.message}}</span> <small am-time-ago="msg.date"style="display:block" ng-cloak></small> </p>
+                                                </div>
+                                            </div>
+                                        </li>-->
+                                        <li  ng-repeat = "msg in allMsg | orderBy: '-date'">
+                                            <div class="notification-item"  class="msg-drp-list" ng-click= "viewBill(msg.message_id)" ng-if="msg.category === 'outPatientBilling' && msg.category !== 'need_doctor'" style="cursor: pointer;">
+                                                <div class="img-col">
+                                                    <div class="img fa fa-user-md" style="font-size: 28px"></div>
+                                                </div>
+                                                <div class="body-col">
+                                                    <p> <span class="accent" ng-cloak>{{msg.firstname}}</span> <span style="display:block">{{msg.message}}</span> <small am-time-ago="msg.date"style="display:block" ng-cloak></small> </p>
+                                                </div>
+                                            </div>
+                                            <div class="notification-item" ng-click= "viewResponse(msg.user_id,msg.complaint_id)" ng-if="msg.category === 'need_doctor' && msg.category !== 'outPatientBilling' " style="cursor: pointer;">
+                                                <div class="img-col">
+                                                    <div class="img fa fa-user-md"></div>
+                                                </div>
+                                                <div class="body-col">
+                                                    <p> <span class="accent" ng-cloak>Ref {{msg.complaint_id}}</span> <span style="display:block">{{msg.message}}</span> <small am-time-ago="msg.date"style="display:block" ng-cloak></small> </p>
+                                                </div>
+                                            </div>
+                                            <div class="notification-item" ng-click= "viewMessage(msg.user_id,msg)" ng-if="msg.category !== 'need_doctor' && msg.category !== 'outPatientBilling'" style="cursor: pointer;">
+                                                <div class="img-col">
+                                                    <div class="img" style="background-image: url({{msg.profile_pic_url}})"></div>
+                                                </div>
+                                                <div class="body-col">
+                                                    <p> <span class="accent" ng-cloak>{{msg.title}} {{msg.firstname}} {{msg.lastname}}</span> <span style="display:block" ng-class="{'text-danger': msg.reason}" ng-cloak>{{msg.message}}</span> <span style="display:block" am-time-ago="msg.date" ng-cloak></span></p>
                                                 </div>
                                             </div>
                                         </li>
@@ -534,7 +560,7 @@
                                     <i class="fa arrow"></i>
                                 </a>
                                     <ul>
-                                        <li> <a href="#/find-specialist"><i class="fa fa-search text-warning" aria-hidden="true"></i> doctor</a>
+                                        <li> <a href="#/find-specialist"><i class="fa fa-search text-warning" aria-hidden="true"></i> Doctor</a>
                                 </a> </li>
                                  <li> <a href="#/pharmacy-in"><i class="fa fa-search text-warning" aria-hidden="true"></i> Pharmaceutical Center</a>
                                 </a> </li>

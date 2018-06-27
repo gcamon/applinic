@@ -32,7 +32,7 @@
       </tr>
     </thead>
 
-    <tbody ng-repeat="transact in transacts">
+    <tbody ng-repeat="transact in transacts | orderBy: '-date'">
       <tr>
         <td><small>{{transact.date | date: "mediumDate"}} &nbsp;&nbsp;{{transact.date | date: "mediumTime"}}</small></td>
         <td>{{transact.activity}}</td>

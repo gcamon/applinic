@@ -112,16 +112,19 @@ router.get('/failed',function(req,res){
 
 router.get('/user/change-password',function(req,res){
   console.log(req.query);
-  model.user.findOne({email: req.query.email},{phone:1,email:1,user_id:1},function(err,user){
+  var criteria = { $or: [{ email : req.query.val},{phone: req.query.val}]}
+  model.user.findOne(criteria,{phone:1,email:1,user_id:1},function(err,user){
     if(err) {
       res.send({error:"error : 500"});
       return;
     }
 
+    console.log(user)
+
     if(user) {
-      var random1 = Math.floor(Math.random() * 9999);
-      var random2 = Math.floor(Math.random() * 9999);
-      var password = check(random1) + " " + check(random2);
+      //var random1 = Math.floor(Math.random() * 9999);
+      //var random2 = Math.floor(Math.random() * 9999);
+      var password = genId() + " " + genId();
 
       var otp = new model.otpSchema({
         user_id: user.user_id,//this id refers to the debitors id. the person whose account will be debited.
@@ -143,7 +146,7 @@ router.get('/user/change-password',function(req,res){
 
       console.log(password);
 
-      var msgBody = "Your pin for applinic.com change password is " + password;
+      var msgBody = "Applinic change password pin is  " + password;
       var phoneNumber = user.phone;
       sms.messages.create(
         {
@@ -159,7 +162,7 @@ router.get('/user/change-password',function(req,res){
         console.log(responseData);
       }
 
-      function check(num) {
+      /*function check(num) {
         var toStr = num.toString();  
         if(toStr.length < 4) {
           for( var i = toStr.length - 1; i < 2; i++){
@@ -167,13 +170,33 @@ router.get('/user/change-password',function(req,res){
           }
         } 
         return toStr; 
-      }
-      
+      }*/
+      //+234806 4245256
 
+      function genId() {
+        var text = "";
+        var possible = "000111222333444555666777888999";
+          for( var i=0; i < 4; i++ )
+              text += possible.charAt(Math.floor(Math.random() * possible.length));
+          return text;
+      }      
 
-      res.json({status: true, message: "Verifications pin sent to <b> " + user.phone + " </b> via SMS",userId:user.user_id,id:user.user_id});
+      var phone = hashPart(user.phone);
+
+      res.json({status: true, message: "Verification pin sent to <b> " + phone + " </b> via SMS",userId:user.user_id,id:user.user_id});
     } else {
-      res.send({status: false, message: "User with <b> &nbsp;" + req.query.email + " &nbsp;</b> not found!"});
+      res.send({status: false, message: "User with <b> &nbsp;" + req.query.val + " &nbsp;</b> not found!"});
+    }
+
+    function hashPart(val) {  
+      var cardnumber = val;
+      var getLen = val.length / 2;
+      var len = (getLen >= 7) ? 8 : 6;
+      var first4 = cardnumber.substring(0, len);
+      var last5 = cardnumber.substring(cardnumber.length - 2);
+
+      var mask = cardnumber.substring(len, cardnumber.length - 2).replace(/\d/g,"*");
+      return first4 + mask + last5
     }
     
   })

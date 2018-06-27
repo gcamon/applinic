@@ -51,6 +51,20 @@
             padding: 10px 10px 10px 5px;
             margin: 0;
         }
+
+        .how-responsive {
+          position: fixed;
+        }
+
+        @media screen and (max-width: 450px) {
+          .card {
+            box-shadow: none!important;
+          }
+
+          .how-responsive {
+            position: static!important;
+          }
+        }
     </style>
 </head>
 
@@ -69,35 +83,25 @@
 
     
 <div class="row">
-      <!-- <div class="col-md-3 col-sm-12 col-xs-12 no-display">
-             <div class="list-group" style="background:transparent; border:0; position:fixed; width:70%;">
-     <a href="#" class="list-group-item list-group-item-action" style="font-size:1.7em; font-weight:300;">TABLE OF CONTENTS</a>
-      <a href="#introduction" class="list-group-item list-group-item-action">Introduction</a>
-      <a href="#introduction" class="list-group-item list-group-item-action">Getting started</a>
-      <a href="#patients" class="list-group-item list-group-item-action">Patients</a>
-      <a href="#doctors" class="list-group-item list-group-item-action">Doctors</a>
-      <a href="#session" class="list-group-item list-group-item-action">session</a>
-      <a href="#pharma" class="list-group-item list-group-item-action">Pharmaceutical centers</a>
-      <a href="#diagnostic" class="list-group-item list-group-item-action">Diagnostic centers</a>
-      <a href="#wallet" class="list-group-item list-group-item-action">Payments and wallet</a>
-    </div>
-        </div>-->
-        <div  class="card p-2" style="font-size: 14px;width:70%;margin:0 auto">  
-      
-          <div class="container" style="padding-top:3em;">
-<h2  class="display-5">HOW IT WORK</h2><br>
-<div class="list-group">
+      <div class="col-md-3 col-lg-3 col-sm-12  no-display">
+           <div class="list-group how-responsive p-2" style="">
      <a href="#" class="list-group-item list-group-item-action" style="color:blue">TABLE OF CONTENTS</a>
       <a href="#introduction" class="">Introduction</a>
       <a href="#introduction" class="">Getting started</a>
       <a href="#patients" class="">Patients</a>
-      <a href="#doctors" class="">Doctors</a>
-      <a href="#session" class="">Session</a>
+      <a href="#doctors" class="">Doctors</a>     
       <a href="#pharma" class="">Pharmaceutical centers</a>
       <a href="#diagnostic" class="">Diagnostic centers</a>
+       <a href="#session" class="">Session</a>
       <a href="#ewallet" class="">Payments and wallet</a>
       <a href="#communication" class="">Communication on Applinic</a>
 </div>
+        </div>
+        <div  class="card p-1 col-md-9 col-sm-12 col-lg-9 no-display" style="font-size: 14px;">  
+      
+          <div style="padding-top:3em;">
+<h2  class="display-5">HOW IT WORK</h2><br>
+
 <div id="introduction"></div>
 <br><br>
 <h4>Introducton</h4><div class="separator01 separator-primary"></div>

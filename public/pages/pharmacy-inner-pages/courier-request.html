@@ -63,7 +63,7 @@
 			<h6 style="text-decoration: underline;">Delivery report</h6>
 			<div><strong>Status :</strong> <span ng-if="request.attended !== true">Not yet billed</span> <span style="color:red" ng-if="request.attended == true"> Billing sent! <small>( {{request.verification_date | date: 'mediumDate'}} | {{request.verification_date | date: 'mediumTime'}} ) </small></span></div>
 			<div><strong>Delivery status :</strong> <span ng-if="!request.receipt_date">pending</span> <span ng-if="request.receipt_date">Delivered! Package in receipt @ {{request.address}}</span></div>
-			<div><strong>Payment confirmation :</strong> <span ng-if="!request.receipt_date">No</span> <span ng-if="request.receipt_date">Yes! Paid <b>{{toNaira(request.total_cost)}}</b> on {{request.receipt_date | date : 'mediumDate'}} | {{request.receipt_date | date : 'mediumTime'}}</span></div>
+			<div><strong>Payment confirmation :</strong> <span ng-if="!request.receipt_date">No</span> <span ng-if="request.receipt_date">Yes! Paid <b>{{toNaira(request.total_cost)}}</b> on {{request.receipt_date | date : 'fullDate'}} | {{request.receipt_date | date : 'mediumTime'}}</span></div>
 			
 		</div>
 		<div class="clearfix"></div>

@@ -1,0 +1,55 @@
+<div class="card card-center-1 p-2">
+	<!--<h5 class="p-0">Treatment Bill</h5>-->
+	<header class="pb-1">
+		<div style="display: inline-block;float: left;padding-right: 10px ">
+			<i class="fa fa-user-md" style="font-size: 32px"></i>
+		</div>	
+		<div style="display: inline-block;float: left ">
+			<strong>{{bill.sender_names}}</strong>
+			<span style="display: block;">{{bill.sender_address}}, {{bill.sender_city}}, {{bill.sender_country}}</span>
+		</div>	
+		<div class="clearfix"></div>
+	</header>	
+	<div class="pb-2">
+		<span style=""><b>Received:</b> {{bill.date | date: "fullDate"}}</span>
+		<span style="float: right;"><b>Bill ID: </b>{{bill.bill_id}}</span>
+	</div>
+	<div ng-if="!isOtp">
+		<table class="table-responsive table" style="width: 90%">
+			<thead>
+				<th style="width: 5%">S/N</th>
+				<th style="width: 6%">Description</th>
+				<th style="width: 20%">Cost</th>
+			</thead>
+			<tbody ng-repeat="i in bill.bill_list">
+				<td>{{i.sn}}</td>
+				<td>{{i.description}}</td>
+				<td>{{toCurrency(i.cost)}}</td>
+			</tbody>
+			<caption><b>Total: {{toCurrency(bill.total)}}</b></caption>
+		</table>
+		<div ng-if="!bill.payment_acknowledgement.status">
+			<button class="btn btn-info" ng-click="verify()"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i> {{(loading) ? " " : 'Pay now'}}</button> &nbsp;&nbsp;
+			<!--<button class="btn btn-danger">query bill</button>-->
+		</div>
+		<p ng-if="bill.payment_acknowledgement.status" class="text-simple">
+			<i class="fa fa-check" style="font-size: 18px;color: green"></i> &nbsp;
+			This bill has been settled on {{bill.payment_acknowledgement.date | date: 'fullDate'}}.<br>
+			Amount paid was {{toCurrency(bill.total)}}
+		</p>
+	</div>
+	<form ng-if="isOtp">
+		<h6 class="text-info" style="text-align: center;">{{otpMsg}}</h6>
+		<!--<p  style="text-align: center;">OTP sent to {{checkLogIn.phone}} via SMS-->
+			<a href="" ng-click="verify(resend)" style="float: right;" ng-if="!isPaid">Re-send OTP</a>
+		</p>
+		<div style="width: 60%;margin: 0 auto;">
+			<input type="text" name="" placeholder="Enter OTP" class="form-control" ng-model="bill.pin" style="font-size: 14px!important">
+		</div>
+		<div style="text-align: center;padding-top: 10px">
+			<button class="btn btn-danger" ng-click="pay()" ng-if="!isPaid"> <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i> {{(loading) ? " " : 'Continue'}}</button>
+			<i class="fa fa-check" style="font-size:18px;color: green" ng-if="isPaid"> Payment made successfully!!</i>
+		</div>
+	</form>
+	
+</div>

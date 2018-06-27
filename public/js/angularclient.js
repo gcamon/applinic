@@ -574,6 +574,11 @@ app.config(['$paystackProvider','$routeProvider',
   controller: 'generalChatController'
  })
 
+ .when("/outpatient-billing/:id",{
+  templateUrl: "/assets/pages/utilities/out-patient-billing.html",
+  controller: "outPatientBillingCtrl"
+ })
+
 
 }]);
 
@@ -1512,11 +1517,27 @@ app.controller('loginController',["$scope","$http","$location","$window","$resou
   // Change Password Logic
 
   $scope.changePassword = {};
+  $scope.changePassword.val = "";
+  $scope.cpMsg = "";
   
   $scope.getUser = function() {
-    $scope.isLoading = true;
-    var user = changPasswordService.get({email: $scope.changePassword.email});
+    $scope.cpMsg = "";
 
+    if(!$scope.changePassword.val){
+      $scope.cpMsg = "Please enter email or phone number";
+      return;
+    }
+
+    var input = validateEmailorPhone($scope.changePassword.val);
+    var sendObj = {};
+    if(input){
+      sendObj.val = input;
+    } else{
+      return;
+    }
+
+    var user = changPasswordService.get(sendObj);
+    $scope.isLoading = true;
     user.$promise.then(function() {
       console.log(user);
       if(user.status){
@@ -1593,6 +1614,21 @@ app.controller('loginController',["$scope","$http","$location","$window","$resou
       $scope.passwordErrorMsg = "Password mismatch";
     }
   }
+
+  function validateEmailorPhone(val) {
+       
+        var mailFormat = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})|([0-9]{10})+$/;
+        if (val == "") {
+            alert( "Please enter your Email or Phone Number  ");
+        }
+        else if (!mailFormat.test(val)) {
+            alert( "Email Address / Phone number is not valid, Please provide a valid Email or phone number ");
+            return false;
+        }
+        else {
+            return val;
+        }
+}
   
 }]);
 
@@ -1630,6 +1666,12 @@ app.controller("balanceController",["$rootScope","$scope","$resource","localMana
       getBalance();
       $rootScope.alertService(2,data.message); 
     }
+  })
+
+  $rootScope.$on("debit",function(data,event){
+    console.log(data);
+    console.log(event);
+    getBalance();
   })
 
 
@@ -5662,14 +5704,23 @@ app.service("chatHistoryService",["$resource",function($resource){
 app.service("getResponseService",["$resource",function($resource){
   return $resource("/user/patient/get-response");
 }]);
+
+app.service("getMessagesService",["$resource",function($resource){
+  return $resource("/user/patient/get-message");
+}]);
+
+app.service("getAppointmentServce",["$resource",function($resource){
+  return $resource("/user/patient/appointment/view");
+}])
+
 // this controller gets  the patient medical records from the backend and seperates laboratory tsest from radiology test 
 //to store then templateService. Note patient prescription  is not amonge the data filtered so far.
 app.controller("patientNotificationController",["$scope","$location","$http","$window","$rootScope","$resource","chatService",
   "templateService","localManager","deleteFactory","mySocket","$timeout","medicaRecordFactory","patientNotificationService",
-  "getMedicalHistoryService","chatHistoryService","getResponseService",
+  "getMedicalHistoryService","chatHistoryService","getResponseService","getMessagesService","getAppointmentServce",
   function($scope,$location,$http, $window,$rootScope,$resource,chatService,templateService,localManager,
     deleteFactory,mySocket,$timeout,medicaRecordFactory,patientNotificationService,
-    getMedicalHistoryService,chatHistoryService,getResponseService){
+    getMedicalHistoryService,chatHistoryService,getResponseService,getMessagesService,getAppointmentServce){
   
   var filter = {};
   /*$scope.getPatientId = function(id,firstname,lastname){
@@ -5891,8 +5942,9 @@ app.controller("patientNotificationController",["$scope","$location","$http","$w
 
  
   function getMessages() {
-    var note = $resource("/user/patient/get-message");
+    var note = getMessagesService;
     note.query(function(data){
+      console.log(data)
       var len = data.length;
       if(len > 0){
         $rootScope.msgLen = templateService.holdMsgLen(len);   
@@ -5916,6 +5968,14 @@ app.controller("patientNotificationController",["$scope","$location","$http","$w
         }  
            
     });*/
+  }
+
+  $scope.viewBill = function(id){
+    if(id){
+      templateService.holdId = id;
+      var temp = "/outpatient-billing/" + id;
+      $location.path(temp);
+    }
   }
 
   $scope.viewMessage = function(id,msg){    
@@ -5948,7 +6008,7 @@ app.controller("patientNotificationController",["$scope","$location","$http","$w
 
   //appointment views
   function getAppointment (){
-    var note = $resource("/user/patient/appointment/view");
+    var note = getAppointmentServce //$resource("/user/patient/appointment/view");
     note.query(function(data){
       var len = data.length;
       if(len > 0) {
@@ -6123,9 +6183,72 @@ app.controller("patientNotificationController",["$scope","$location","$http","$w
     $location.path("/general-chat");
   }
 
+}]);
 
+app.controller("outPatientBillingCtrl",["$scope","outPatientBillingService","templateService","$http","$rootScope",
+function($scope,outPatientBillingService,templateService,$http,$rootScope){
+  var bill = outPatientBillingService.get({billId: templateService.holdId});
+  console.log(bill);
+  $scope.bill = bill;
+  var sendObj = {};
+  $scope.verify = function(oldTime) {
+    var time = + new Date();
+    $scope.otpMsg = "";
+    $scope.loading = true;
+    sendObj.amount = bill.total;
+    sendObj.time = time;
+    if(oldTime) {
+      sendObj.old_time = oldTime;
+    }
+
+    $http.post("/user/payment/verification",sendObj)
+    .success(function(response){
+      $scope.loading = false;
+      if(response.success){
+        $scope.otpMsg = response.message;
+        $scope.isOtp = true;
+      }
+    })
+
+    $rootScope.resend = time;
+  }
+
+  $scope.pay = function() {
+    if(!$scope.bill.pin) {
+      alert("Please enter OTP sent to your phone number via SMS.");
+      return;
+    }
+
+    $scope.otpMsg = "";
+    var pin = $scope.bill.pin;
+    var str = "";
+    var count = 0;
+    for(var i = 0; i < pin.length; i++){
+        count++;      
+        if(count % 3 === 0) {
+          str += pin[i];
+          str += " ";
+        } else {
+          str += pin[i];
+        }
+     }
+
+    $scope.bill.otp = str.replace(/\s*$/,"");//removes empty string by the end of character
+
+    $scope.loading = true;
+    outPatientBillingService.acceptBill($scope.bill,function(res){
+      if(res.status) {
+        $scope.isPaid = true;
+        $rootScope.$broadcast("debit",{status: true})
+      } else {
+        $scope.otpMsg = res.message;
+      }
+      $scope.loading = false;
+    })
+  }
 
 }]);
+
 
 app.service("getPersonProfileService",["$resource",function($resource){
   return $resource("/user/get-person-profile");
@@ -9322,12 +9445,16 @@ app.service("getSessionService",["$resource",function($resource){
   return $resource("/user/doctor/get-patient-sessions");
 }]);
 
+app.service("outPatientBillingService",["$resource",function($resource){
+  return $resource("/user/outpatient-billing",null,{createBill: {method: "POST"},acceptBill:{method: "PUT"}});
+}]);
+
 //similar the mydoctorController
 app.controller("myPatientController",["$scope","$http","$location","$window","$rootScope","templateService","localManager","$filter",
-  "ModalService","Drugs","mySocket","$resource","deviceCheckService","myPatientControllerService",
+  "ModalService","Drugs","mySocket","$resource","deviceCheckService","myPatientControllerService","outPatientBillingService",
   "getPatientMedicationByDoctorService","getMedicalHistoryService","drugNotRanService","getAllPharmacyService","getSessionService",
   function($scope,$http,$location,$window,$rootScope,templateService,localManager,$filter,ModalService,
-    Drugs,mySocket,$resource,deviceCheckService,myPatientControllerService,
+    Drugs,mySocket,$resource,deviceCheckService,myPatientControllerService,outPatientBillingService,
     getPatientMedicationByDoctorService,getMedicalHistoryService,drugNotRanService,getAllPharmacyService,getSessionService){
 
   var patient = {}; //patient obj.
@@ -9579,6 +9706,7 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
     $scope.isSearchToSend = false; 
     $scope.isToViewSession = false;  
     $scope.isTreatmentSession = false;   
+    $scope.isOutPatientBilling = false;
   }
 
   $scope.appointment = function(patientObj){
@@ -9596,7 +9724,87 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
   
   }
 
-   
+
+  //out patient billing logic
+
+  $scope.outPatientBilling = function() {
+    $scope.isToPrescribe = false;
+    $scope.isToSeeRecord = false;
+    $scope.isToViewLabPrescriptionReq = false;
+    $scope.isToViewRadPrescriptionReq = false;
+    $scope.isToViewSession = false;
+    $scope.isChat = false;
+    $scope.isSearchToSend = false; 
+    $scope.isToViewSession = false;  
+    $scope.isTreatmentSession = false;   
+
+    $scope.isOutPatientBilling = true;
+    $scope.inMainBill = true;
+    $scope.isPreviewBill = false;
+  }
+
+  $scope.billList = [];
+  $scope.billList.push({sn: $scope.billList.length + 1});
+
+  $scope.addBill = function() {
+    $scope.billList.push({
+      sn: $scope.billList.length + 1
+    })
+  }
+
+  var billPos;
+  var countBill;
+  $scope.removeBill = function(sn) {
+    billPos = $scope.billList.map(function(x){return x.sn}).indexOf(sn);
+    if(billPos != -1) {
+      $scope.billList.splice(billPos,1);
+      countBill = 1;
+      for(var i = 0; i < $scope.billList.length; i++) {
+        if(i === 0) {
+          $scope.billList[i].sn = countBill;
+        } else {
+          $scope.billList[i].sn = countBill;
+        }
+        countBill++;
+      }
+    }
+  }
+
+  $scope.mainBill = function() {
+    $scope.inMainBill = true;
+    $scope.isPreviewBill = false
+  }
+
+  $scope.previewBill = function() {
+    $scope.inMainBill = false;
+    $scope.isPreviewBill = true
+
+    $scope.totalBilled = 0;
+
+    for(var j = 0; j < $scope.billList.length; j++) {   
+      if($scope.billList[j].cost)  
+        $scope.totalBilled += $scope.billList[j].cost;
+    }
+  }
+
+  $scope.sendBill = function() {
+    $scope.loading = true;
+    outPatientBillingService.createBill({
+      patientNames: $scope.patientInfo.firstname + " " + $scope.patientInfo.lastname,
+      patientId: patient.id,
+      billList: $scope.billList,
+      total: $scope.totalBilled
+    },function(res){
+      $scope.loading = false;
+      if(res.status) {
+        $scope.isSent = res.status;
+      } else {
+        alert("Oops,bill not sent! Please try again.");
+      }
+      console.log(res)
+    })
+  }
+
 
   //doctor can view prvious prescriptions written by him for this patient
   $scope.viewPreviousPrescriptionByDoctor = function(){         
@@ -9620,6 +9828,7 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
     $scope.isSearchToSend = false; 
     $scope.isToViewSession = false;     
     $scope.isTreatmentSession = false;
+    $scope.isOutPatientBilling = false;
     if(!$scope.medicalRecordHistory)
       getMedicalHistory("/user/get-medical-record");
     
@@ -9959,6 +10168,7 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
       $scope.isSearchToSend = false; 
       $scope.isChat = false;
       $scope.isTreatmentSession = false;
+      $scope.isOutPatientBilling = false;
     }
 
     $scope.viewTreatmentSession = function (session) {
@@ -9997,7 +10207,8 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
       $scope.isChat = false;
       $scope.isSearchToSend = false; 
       $scope.isToViewSession = false;  
-      $scope.isTreatmentSession = false;   
+      $scope.isTreatmentSession = false;  
+      $scope.isOutPatientBilling = false; 
     }
 
     $scope.viewRadioPrescriptionRequest = function () {
@@ -10010,6 +10221,7 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
       $scope.isSearchToSend = false; 
       $scope.isToViewSession = false;
       $scope.isTreatmentSession = false; 
+      $scope.isOutPatientBilling = false;
     }
 
     var sessionList = [];
@@ -16065,8 +16277,12 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
   
 
   $rootScope.toCurrency = function(amount) {
-    var str = ($rootScope.checkLogIn.currencyCode) ? $rootScope.checkLogIn.currencyCode + amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") : "NGN" + amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-    return str;
+    if(amount) {
+      var str = ($rootScope.checkLogIn.currencyCode) ? $rootScope.checkLogIn.currencyCode + amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") : "NGN" + amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+      return str;
+    } else {
+      return "";
+    }
   }
   
   //user this service within controllers to alert on every event status.

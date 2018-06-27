@@ -777,6 +777,29 @@ var myModel = function () {
 		collections: "controlinfos"
 	});
 
+
+	var treatmentBillSchema = Schema({
+		date: Number,
+		sender_names: String,
+		sender_address: String,
+		sender_id: String,
+		sender_city: String,
+		sender_country: String,
+		sender_profile_pic_url: String,
+		sender_specialty: String,
+		patient_names: String,
+		patient_id: String,
+		total: Number,
+		payment_acknowledgement: {
+			status: Boolean,
+			date: Number
+		},
+		bill_list: Array,
+		bill_id: String
+	},{
+		collections: "billinginfos"
+	});
+
 	/*var callingSchema = Schema({
 		calling_code: {
 			countryCode: String
@@ -815,7 +838,8 @@ var myModel = function () {
 	models.geonames = mongoose.model("geonamesinfo",geonameSchema);
 	models.messages = mongoose.model("messageinfo",messageSchema);
 	models.control = mongoose.model("controlinfos",controlSchema);//to be moved to another server
-	models.needHelp = mongoose.model('needhelpinfos',needHelpchema)
+	models.needHelp = mongoose.model('needhelpinfos',needHelpchema);
+	models.outPatientBilling = mongoose.model("billinginfos",treatmentBillSchema);
 	//models.calling_code = mongoose.model("callingcodeinfos",callingSchema)
 	
 	

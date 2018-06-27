@@ -99,9 +99,14 @@ mySocket(model,io,streams);
 var a = "ede".replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()});
 var b = "ede".replace(/\s+/g, '');
 
-console.log(a.slice(0,1))
+//var phone_number = '******' . substr( phone_number, - 4);
 
+var cardnumber = '+2348064245256';
+var first4 = cardnumber.substring(0, 7);
+var last5 = cardnumber.substring(cardnumber.length - 2);
 
+var mask = cardnumber.substring(7, cardnumber.length - 2).replace(/\d/g,"*");
+console.log(first4 + mask + last5);
 
 /*var https = require("https");
 var options = {

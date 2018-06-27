@@ -81,7 +81,7 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
 
   router.get("/user/doctor",function(req,res){    
     if(req.user){
-      res.render("profile",{"person":req.user});
+      res.render("doctor",{"person":req.user});
     } else {
       res.redirect("/login");
     }
@@ -161,7 +161,7 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
  
   //user requesting login page.
   router.get('/login',function(req,res){
-    res.render("success",{"message":""})
+    res.render("login",{"message":""})
   });
 
   //user request sign up page
@@ -6990,6 +6990,8 @@ router.get("/dynamic-service",function(req,res){
    console.log(data)
   });
 });
+
+
 
 
 

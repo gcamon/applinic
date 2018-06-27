@@ -1,7 +1,7 @@
 <div class="container">
 	<div class="card-center-1 card p-2">
 		<h4 class="p-0 mt-0">Work History <span style="font-size: 14px;color: darkRed"> ( {{(renderedServices.length > 1000) ? '1K+' : renderedServices.length}} ) </span></h4>
-		<hr>
+		
 		<div style="width: 70%">
 			<input type="text" name="" class="form-control" placeholder="filter" ng-model="filterRendered">
 		</div>
@@ -15,17 +15,17 @@
 				<span style="display: block;"><b>Destination:  </b> &nbsp;{{person.receiver}} </span>
 				<button class="btn btn-info btn-sm" style="position: absolute;bottom: 3px; right: 20px" ng-click="viewReport(person)">view details</button>
 			</div>
-			<div ng-repeat="person in renderedServices | filter: filterRendered" ng-if="person.laboratory" class="pt-1" style="position: relative;">
+			<div ng-repeat="person in renderedServices | filter: filterRendered | orderBy: '-service_date' " ng-if="person.laboratory" class="pt-1" style="position: relative;">
 			{{getDateGroup(person.service_date,person)}}
 				<div style="padding: 5px;background-color: #d7dde4;font-weight: bold;" ng-if="person.dategroup">{{person.dategroup}}</div>
-				<strong class="text-danger ellipsis" style="display: block;widows: 90%;">{{person.laboratory.patient_firstname}} {{person.laboratory.patient_lastname}}</strong>
+				<strong class="text-danger ellipsis" style="display: block;width: 90%;">{{person.laboratory.patient_firstname}} {{person.laboratory.patient_lastname}}</strong>
 				<span style="display: block;"><b>Reference number: </b>&nbsp;{{person.ref_id}}</span>
 				<span style="display: block;"><b>Status: </b>&nbsp;Test report delivered </b> &nbsp;<span am-time-ago="person.service_date"></span></span>
 				<span style="display: block;"><b>Destination:  </b> &nbsp;{{person.receiver}} </span>
 				<button class="btn btn-info btn-sm" style="position: absolute;bottom: 3px; right: 20px" ng-click="viewReport(person)">view details</button>
 			</div>
 
-			<div ng-repeat="person in renderedServices | filter: filterRendered" ng-if="person.type === 'pharmacy'" class="pt-1" style="position: relative;">
+			<div ng-repeat="person in renderedServices | filter: filterRendered | orderBy: '-date'" ng-if="person.type === 'pharmacy'" class="pt-1" style="position: relative;">
 				{{getDateGroup(person.date,person)}}
 				<div style="padding: 5px;background-color: #d7dde4;font-weight: bold;" ng-if="person.dategroup">{{person.dategroup}}</div>
 				<strong class="ellipsis" style="display: block;width: 90%;color: green">{{person.patient_names}}</strong>

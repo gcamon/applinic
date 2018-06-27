@@ -113,7 +113,8 @@
             <div style="text-align: center;"><span ng-bind-html="cpMsg" style="font-size: 14px;"></span></div>
             <div ng-if="!isSuccess">
               <div>
-                <input type="text" name="" placeholder="Enter your email" class="form-control" ng-model="changePassword.email">
+                <label></label>
+                <input type="text" name="" placeholder="Enter email or phone number (eg +2348064****56)" class="form-control" ng-model="changePassword.val">
               </div>
               <div style="text-align: center;padding-top: 10px">
                 <button class="btn btn-danger btn-sm" ng-click="getUser()"> <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="isLoading"></i> {{(isLoading) ? "" : "Submit"}}</button>

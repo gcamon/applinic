@@ -12,7 +12,7 @@ function Wallet(date,firstname,lastname,message){
 Wallet.prototype.credit = function(model,receiver,amount,io,cb){
 	if(amount > 0) {
 		var self = this;
-		model.user.findOne(receiver,{ewallet:1,name:1}).exec(function(err,data){
+		model.user.findOne(receiver,{ewallet:1,name:1,firstname:1,lastname:1,presence:1,user_id:1}).exec(function(err,data){
 			if(err) throw err;
 			if(self.message === "Consultation fee"){
 			  //amount -= 1000;
@@ -56,6 +56,10 @@ Wallet.prototype.credit = function(model,receiver,amount,io,cb){
 						amount: amount,
 						beneficiary: "You"
 					}
+				}
+
+				if(data.presence) {
+					io.sockets.to(data.user_id).emit("fund received",{status: true,message: this.message + "payment received from " + names})
 				}
 		  
 
@@ -103,7 +107,7 @@ Wallet.prototype.debit = function(model,amount,debitor){
 	} else if(this.message === "Consultation fee"){
 		transacObj.source = "You";
 	} else if(this.message === "billing"){
-		transacObj.activity = "Paid for billing"
+		transacObj.activity = "Debit";
 		transacObj.source = "You";
 	} else {
 		transacObj.activity = "Debit";
@@ -253,6 +257,24 @@ Wallet.prototype.withdraw = function(amount,wallet){
 	
 }
 
+Wallet.prototype.hospitalityBill = function(model,amount,debitor,receiver,sms,io) {
+	var receiver = {user_id: receiver};
+	var debitor = {user_id: debitor};
+	var admin = {admin:true};
+	var getValue = calculatePer(amount,20);
+	var self = this;
+	console.log(getValue);
+
+	this.credit(model,receiver,getValue.receiverValue);
+	this.credit(model,admin,getValue.adminValue,io);
+	model.user.findOne(debitor,{ewallet:1}).exec(function(err,user){
+		self.debit(model,getValue.debitorValue,user);
+	});
+	_secr(model,getValue.adminValue,io);
+}
+
+
+
 //for courier service pyment logic. ThIS takes care of both the patient paying,center receivin and the admin receiving its parecentage
 Wallet.prototype.courier = function(model,receiverId,debitor,amount,io,delivery_charge,cityGrade,sms) {
 	var self = this;
@@ -299,6 +321,24 @@ Wallet.prototype.courier = function(model,receiverId,debitor,amount,io,delivery_
 	var adc = sure || adminCredit;
 	_secr(model,adc,io);
 	console.log("admin credit: " + adminCredit);
+}
+
+
+function calculatePer(amount,platformDiscount,patientDiscount) {
+	var discount = (platformDiscount) ? platformDiscount / 100 : 0.20;
+	var userDiscount = patientDiscount || 0.05;
+	var adminPer = amount * discount;	
+	var patientCommission = adminPer * userDiscount;
+
+	var userReceivable = amount - adminPer;
+	var patientDbitable = amount - patientCommission
+	var adminReceivalbe = adminPer - patientCommission
+
+	return {
+		receiverValue: userReceivable,
+		debitorValue: patientDbitable,
+		adminValue: adminReceivalbe
+	}
 }
 
 module.exports = Wallet;
