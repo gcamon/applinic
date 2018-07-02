@@ -50,15 +50,15 @@
     <main class="container-fluid" style="padding: 0;margin: 0" ng-cloak>
         <header  style="margin-bottom: 3px;background-color:#fff; box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.15); padding: 10px 30px" ng-controller="LocalStreamController as localStream" class="row">
             <div class="col-sm-12 col-md-5 col-lg-5"> 
-                <div style="text-align: center;">               
-                    <a  href="" ng-click="goToDashbaord()" class="btn btn-neutral text-danger"> <i class="fa fa-arrow-left"></i> Back to dashboard</a>
+                <div style="text-align: center;padding-top: 15px">               
+                    <a  href="" ng-click="goToDashbaord()" class="text-danger"> <i class="fa fa-arrow-left"></i> Back to dashboard</a>
                     <span ng-cloak>{{localStream.getControlId('<%= person.controlId %>')}}</span>
                     <!--Appear as: <input ng-model="localStream.name" class="form-control" style="width: 50%;display: inline-block;"/>-->
-                    <a href ng-click="localStream.toggleCam()" class="btn btn-danger" style="color:#fff;float: right">{{ (localStream.cameraIsOn === true) ? 'Streaming... ( stop / disconnect )' : localStream.cameraStatus }}</a>  
+                    <a href ng-click="localStream.toggleCam()" class="btn btn-danger btn-sm" style="color:#fff;float: right">{{ (localStream.cameraIsOn === true) ? 'Streaming... ( stop / disconnect )' : localStream.cameraStatus }}</a>  
                 </div>              
             </div>
             <div  class="col-sm-12 col-md-7 col-lg-7">
-                <div style="position: relative;">
+                <div style="position: relative;width: 80%;margin: 0 auto">
                     <!--<a href=""><i class="fa fa-camera" ng-click="streamControl()"> videos</i></a>&nbsp;&nbsp;-->
                     <select ng-model="invite.type" class="form-control" style="width: 50%;display: inline-block;">
                         <option value="" selected="selected" disabled="disabled"><i class="fa fa-user text-danger"></i> Invite</option>
@@ -100,7 +100,7 @@
                             </div>
                         </div>
                     </div>                  
-                    <p class="text-danger" style="display: inline-block;float: right;font-weight: bold;">{{(connectionStatus === true) ? message : "Waiting for partner..."}}</p>
+                    <small class="text-danger" style="display: inline-block;float: right;margin-top: 15px">{{(connectionStatus === true) ? message : "Waiting for partner..."}}</small>
                 </div>                
             </div> 
         </header>
@@ -108,28 +108,15 @@
        
         <section class="row" ng-controller='RemoteStreamsController as rtc'> <!--ng-controller='siteRemoteStreamsController as rtc' -->  
             
-            <div class="col-sm-9 col-md-9 col-lg-9" style="margin-top:10px;padding: 0">
-                <div style="width: 80%;margin: 0 auto">
-                    
-                    <div style="display: inline-block;padding: 8px 8px 0 8px;border:2px solid #d9edf7">
-                        <p style="text-align: center;padding: 4px;color: orange;background-color: #d9edf7">Your Cam</p>
-                        <video id="localVideo" muted="muted" autoplay="true" style="width:auto;height:250px;margin-top: -4px"></video>
-                    </div>                   
-                    <div id="remoteVideosContainer" style="display: inline-block;padding: 8px 8px 0 8px;border:2px solid #d9edf7">
-                        
-                    </div>                    
-                </div> 
-                <span style="visibility: hidden;">{{rtc.siteLink('<%= person.controlId %>')}}</span>               
-            </div>
-            <div class="col-sm-3 col-md-3 col-lg-3" style="margin-top:10px;padding-right: 30px">
-                <h5 style="padding: 10px 0;color:green">Available live streams</h5>                  
-
+            
+            <div class="col-sm-3 col-md-3 col-lg-3 card" style="margin-top:10px;">
+                <div style="padding: 10px 15px 0;color:green; border-bottom: 1px solid #ccc"><b>live stream</b></div>               
+                
                 <div ng-repeat="stream in rtc.remoteStreams" ng-class="{'selected' : stream.isPlaying}" style="font-size: 14px;margin-top: 10px">
                     <button ng-click="rtc.view(stream)" class="btn btn-success" style="padding: 5px 10px;font-size: 12px">view</button>&nbsp;&nbsp;
                     <span>{{stream.name}}</span>
                     <!--<button ng-click="rtc.call(stream)"><a>Call</a></button>-->
                 </div>
-                <h5 style="padding: 10px 0;color:green"></h5>
                 <div ng-repeat="j in rtc.prescriptions" style="max-height: 300px;overflow-y: auto;border-bottom: 1px solid #000">
                        <b style="display: inline-block;padding-top: 10px">{{j.type}}</b>
                        <b>Written by: <em>{{j.by}}</em></b>
@@ -177,12 +164,26 @@
                         </div>
                     </div>
             </div>
+
+            <div class="col-sm-9 col-md-9 col-lg-9" style="margin-top:10px;padding: 0">
+                <div style="width: 90%;margin: 0 auto">                    
+                    <div style="display: inline-block;padding: 8px 8px 0 8px;border:2px solid #d9edf7;margin-top: 10px">
+                        <p style="text-align: center;padding: 4px;color: orange;background-color: #d9edf7">You</p>
+                        <video id="localVideo" muted="muted" autoplay="true" style="width:auto;height:240px;margin-top: -4px"></video>
+                    </div>                   
+                    <div id="remoteVideosContainer" style="display: inline-block;padding: 8px 8px 0 8px;">
+                        
+                    </div> 
+                    <!--border:2px solid #d9edf7 -->                   
+                </div> 
+                <span style="visibility: hidden;">{{rtc.siteLink('<%= person.controlId %>')}}</span>               
+            </div>
              
         </section>
     </main>
 
 
-    <script src="/assets/js/modalService.js"></script>
+    <!--<script src="/assets/js/modalService.js"></script>-->
     <script src="/assets/js/ui-bootstrap-tpls.js"></script>
     
 </body>
