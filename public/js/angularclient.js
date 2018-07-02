@@ -759,22 +759,22 @@ app.service('templateService',[function(){
   this.playAudio = function(track){
     switch(track){
       case 1:
-        audio('/assets/audio/demonstrative.mp3');
+        audio('/assets/audio/ping-bang.wav');
       break;
       case 2:
-        audio('/assets/audio/whatsappweb.mp3');
+        audio('/assets/audio/ping-bang.wav');
       break;
       case 3:
         audio('/assets/audio/gets-in-the-way.mp3');
       break;
       case 4:
-        audio('/assets/audio/cute.mp3');
+        audio('/assets/audio/dreamy.wav');
       break;
       case 5: 
         audio('/assets/audio/camera-shutter-click-01.wav');
       break;
       default:
-        audio('/assets/audio/tweet.mp3');
+        audio('/assets/audio/clunk-notification.wav');
       break
     }
     
