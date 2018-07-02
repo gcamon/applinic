@@ -219,10 +219,9 @@
 
 
 
-		$rootScope.connectionStatus = false; // use to check when stream is available;
+	$rootScope.connectionStatus = false; // use to check when stream is available;
 		
-    cont
-    rollerSocket.on("reload streams",function(data){
+    controllerSocket.on("reload streams",function(data){
     	console.log(data)
     	if(data.userId !== user.user_id) {
     		$rootScope.message = (data.name) ? data.name + " stream is availble now! Click view button." : "Partner stream is now available.";
