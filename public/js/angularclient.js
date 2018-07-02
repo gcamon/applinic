@@ -15386,7 +15386,7 @@ function($scope,$location,$window,$http,templateService,localManager,templateUrl
     alert("The upload has been canceled by the user or the browser dropped the connection.")
   }
 
-
+  //take photo logic
   var player = document.getElementById('player');
   var captureButton = document.getElementById('capture');
   var canvasArea = document.getElementById('canvasArea');
@@ -15406,7 +15406,7 @@ function($scope,$location,$window,$http,templateService,localManager,templateUrl
     //var context = canvas.getContext('2d');
     
     //console.log(captureButton)
-     constraints = {
+    constraints = {
       video: { width: 420, height: 235 },
     };
 
@@ -15427,8 +15427,7 @@ function($scope,$location,$window,$http,templateService,localManager,templateUrl
           iconClose.id = Math.floor(Math.random() * 99999).toString();
           context = canvas.getContext('2d');
           context.drawImage(player, 0, 0, canvas.width, canvas.height);
-          console.log(canvas);
-          console.log(iconClose);
+
 
           templateService.playAudio(5);
           canvasArea.append(canvas);
@@ -15450,11 +15449,58 @@ function($scope,$location,$window,$http,templateService,localManager,templateUrl
       });
     
 
+    /*
+   getUserMedia = navigator.mozGetUserMedia.bind(navigator);
+  navigator.getUserMedia = getUserMedia;
+    */
+
+    var getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
     // Attach the video stream to the video element and autoplay.
-    navigator.mediaDevices.getUserMedia(constraints)
-    .then(function(stream){
-      player.srcObject = stream;
-    });
+
+    var media = getUserMedia.bind(navigator);
+
+    var onSuccess = function(stream) {
+      player.srcObject = stream;      
+    };
+
+    var onError = function(error) {
+      console.log(error);
+    };
+
+    media(constraints,onSuccess,onError);
+
+
+
+    /*if(navigator.mozGetUserMedia) {
+
+      getUserMedia = navigator.mozGetUserMedia.bind(navigator);
+      navigator.getUserMedia = getUserMedia;
+
+      var onSuccess = function(stream) {
+        player.srcObject = stream;      
+      };
+      var onError = function(error) {
+        console.log(error);
+      };
+
+      navigator.getUserMedia(constraints,onSuccess,onError);
+
+    
+
+    } else if(navigator.webkitGetUserMedia){
+      getUserMedia = navigator.webkitGetUserMedia.bind(navigator);
+      navigator.getUserMedia = getUserMedia;
+
+      var onSuccess = function(stream) {
+        player.srcObject = stream;      
+      };
+      var onError = function(error) {
+        console.log(error);
+      };
+
+      navigator.getUserMedia(constraints,onSuccess,onError);
+      
+    }*/
   }
 
   $scope.closeCam = function() {
@@ -15462,6 +15508,7 @@ function($scope,$location,$window,$http,templateService,localManager,templateUrl
   }
 
   function getImage(canvas) {
+    try {
     var img = new Image();
     var Pic = document.getElementById(canvas).toDataURL("image/png");
     Pic = Pic.replace(/^data:image\/(png|jpg);base64,/, "")
@@ -15471,7 +15518,6 @@ function($scope,$location,$window,$http,templateService,localManager,templateUrl
     //img.src = Pic;
     if(window.atob) {
       var blobBin = window.atob(Pic);
-      console.log(blobBin);
       var array = [];
       for(var i = 0; i < blobBin.length; i++) {
           array.push(blobBin.charCodeAt(i));
@@ -15480,10 +15526,13 @@ function($scope,$location,$window,$http,templateService,localManager,templateUrl
       var file = new Blob([new Uint8Array(array)], {type: 'image/png'});      
       file.id = canvas;
       $scope.blobs.push(file);
-      console.log(file)
     } else {
       alert("Oops! Seems your browser does not support this for now.Please choose an existing file.")
     }
+
+  } catch(e) {
+    console.log(e.message);
+  }
 
   }
 
@@ -15602,11 +15651,9 @@ function($scope,$location,$window,$http,templateService,localManager,templateUrl
 app.controller("captureImageController",["$scope",function($scope){
   var player = angular.element(document.getElementById('player'));
   var canvas = angular.element(document.getElementById('canvas'));
-  console.log(canvas);
   var context = angular.element(canvas.context.getContext('2d'));
   var captureButton = angular.element(document.getElementById('capture'));
-  console.log(captureButton)
-   constraints = {
+  constraints = {
     video: true,
   };
 

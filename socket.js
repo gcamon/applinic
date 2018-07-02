@@ -364,9 +364,12 @@ module.exports = function(model,io,streams) {
 			//video logic this will be moved to a new server
 			//sending video or audio request
 			socket.on("convsersation signaling",function(req,cb){
-				model.user.findOne({user_id:req.to},{set_presence:1,firstname:1,title:1},function(err,user){
+
+				model.user.findOne({user_id:req.to},{set_presence:1,firstname:1,title:1,type:1},function(err,user){
+					console.log(req);
+					console.log(user)
 					if(err) throw err;
-					if(user.set_presence.general === true && user.type === "Doctor") {
+					if(user.set_presence.general && user.type === "Doctor") {
 						//{type:req.type,message:req.message,time:req.time}
 						io.sockets.to(req.to).emit("receive request",{message: req.title + " " + 
 							req.name + " requests for video call with you!",from: req.from});
