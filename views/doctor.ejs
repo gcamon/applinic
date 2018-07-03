@@ -562,7 +562,7 @@
                                     <ul>
                                         <% for(var k = 0; k < person.appointment.length; k++) { %>
                                         <li> 
-                                            <a href=""  ng-click="viewAppointment(<%= person.appointment[k].session_id %>)">
+                                            <a href=""  ng-click="viewAppointment('<%= person.appointment[k].session_id %>')">
                                             <p><%= person.appointment[k].firstname %> <%= person.appointment[k].lastname %>
                                             <span style="display:block">{{"<%=person.appointment[k].date %>" | date : "mediumDate"}}</span> <span style="display:block">{{ "<%= person.appointment[k].time %>" | date: "mediumTime" }}</span> 
                                             </p>

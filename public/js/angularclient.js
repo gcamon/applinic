@@ -9465,11 +9465,12 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
   * @localManager.getValue this gets the current url of the current view template from the local storage of the browser.
   * @writePrescription,@viewMedicalHistory,@writeNew all controls the html element on the template
   */ 
-  var path = localManager.getValue("currentPage");
+
+  var path = localManager.getValue("currentPage") || $location.path();
   var arr = path.split("/");  
   var userId = arr[arr.length-1];
   
-  var sessionId = parseInt(Math.floor(Math.random() * 9999999) + "" + Math.floor(Math.random() * 999999));
+  var sessionId = genId(); //parseInt(Math.floor(Math.random() * 9999999) + "" + Math.floor(Math.random() * 999999));
   patient.id = templateService.holdIdForSpecificPatient || userId;
   $rootScope.holdId =  patient.id;
   var user = localManager.getValue("resolveUser");

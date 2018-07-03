@@ -2710,23 +2710,43 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
 
     router.put("/user/doctor/appointment/view",function(req,res){
       if(req.user){
-        model.user.findOne({"appointment.session_id": req.body.id},{appointment:1,_id:0},function(err,data){     
+        /*model.user.findOne({"appointment.session_id": req.body.id},{appointment:1,_id:0},function(err,data){     
           if(err) throw err;
-          var elementPos = data.appointment.map(function(x) {return x.session_id; }).indexOf(req.body.id);
-          var objectFound = data.appointment[elementPos];          
-          res.send(objectFound);         
-        });
+          if(data) {
+            var elementPos = data.appointment.map(function(x) {return x.session_id; }).indexOf(req.body.id);
+            var objectFound = data.appointment[elementPos];          
+            res.send(objectFound); 
+          } else {
+            res.send({});
+          }        
+        });*/
+
+        var appointmentId;
+        if(req.body.id) {
+          appointmentId = req.body.id.toString();
+        }
+
+        var elementPos = req.user.appointment.map(function(x) {return x.session_id; }).indexOf(appointmentId);
+        var objectFound = req.user.appointment[elementPos]; 
+        if(objectFound) {       
+          res.send(objectFound); 
+        } else {
+          res.send({});
+        }
+
       } else {
-        res.end("Unauthorized access")
+        res.end("Unauthorized access!");
       }
     });
 
     router.get("/user/patient/appointment/view",function(req,res){
       if(req.user){
-        model.user.findOne({user_id: req.user.user_id},{appointment:1,_id:0},function(err,data){     
+        /*model.user.findOne({user_id: req.user.user_id},{appointment:1,_id:0},function(err,data){     
           if(err) throw err;
           res.send(data.appointment);
-        });
+        });*/
+
+        res.send(req.user.appointment);
       } else {
         res.end("Unauthorized access");
       }
