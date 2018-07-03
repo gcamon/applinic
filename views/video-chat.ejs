@@ -245,7 +245,7 @@ span.dates {
                                 {{item.name}}
                             </li>
                         </ol>
-                        
+
                         <div>
                             <b>{{test.center.name}}</b>
                             <address><span>{{test.center.address}}</span> <span>{{test.center.city}} </span> 
@@ -266,7 +266,7 @@ span.dates {
                        <p style="text-align: center;padding: 4px;color: orange;background-color: #d9edf7">Your Cam</p>
                        <video id="localVideo" autoplay="true" muted="muted" style="width:auto;height:200px;margin-top: -4px"></video>       
                     </div>                   
-                    <div id="remoteVideosContainer" style="display: inline-block; padding: 8px 8px 0 8px;">                      
+                    <div id="remoteVideosContainer" style="border:2px solid #d9edf7;display: inline-block; padding: 8px 8px 0 8px;">                      
                       
                     </div>                  
                 </div>              
@@ -278,9 +278,9 @@ span.dates {
                     <i class="fa fa-wifi" style="font-size: 24px;color: orange;border-bottom:2px solid #d9edf7"> live stream</i><br>                    
                     <div>
                         <!--<div style="padding: 10px 15px 0;color:green; border-bottom: 1px solid #ccc"><b>live stream</b></div>-->  
-                        <div ng-repeat="stream in rtc.remoteStreams" ng-class="{'selected' : stream.isPlaying}" style="padding-bottom: 5px">       
+                        <div ng-repeat="stream in rtc.remoteStreams"  style="padding: 10px 0">       
                             <!--<span>{{stream.name}}</span> &nbsp;&nbsp;-->
-                            <button ng-click="rtc.view(stream)" class="btn btn-danger btn-sm" style="padding: 5px 10px;font-size: 12px">{{(stream.isPlaying === false) ? stream.name : 'hide'}}</button>
+                            <button ng-click="rtc.view(stream)" class="btn btn-danger btn-sm" style="padding: 5px 10px;font-size: 12px">{{(stream.isPlaying === false) ? stream.name + '( view )' : stream.name + '( hide )'}}</button>
                         </div>
                     </div>
                 </div>
