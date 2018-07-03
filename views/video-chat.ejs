@@ -147,7 +147,7 @@ span.dates {
                 <!--Appear as: <input ng-model="localStream.name" class="form-control" style="width: 50%;display: inline-block;"/>-->
                 <a href ng-click="localStream.toggleCam()" class="btn btn-danger text-white" style="text-decoration: none;">{{ (localStream.cameraIsOn === true) ? 'Streaming... ( stop / disconnect )' : localStream.cameraStatus }}</a>
 
-                <div style="display: inline-block;">
+                <div style="display: inline-block;margin-left: 30px">
                     <small class="text-danger" style="display: inline-block;font-weight: bold;margin-top: 10px">{{(connectionStatus === true) ? message : "Waiting for partner..."}}</small>
                 </div> 
 
@@ -257,7 +257,7 @@ span.dates {
                 <span style="visibility: hidden;">video connection channel : &nbsp;{{rtc.siteLink('<%= person.controlId %>')}}</span>
             </div> -->
 
-           <span style="visibility: hidden;">{{rtc.siteLink('<%= person.controlId %>')}}</span>  
+           <span style="visibility: hidden;position: absolute;">{{rtc.siteLink('<%= person.controlId %>')}}</span>  
            <div class="col-sm-12 col-md-7 col-lg-7" style="margin-top:10px;padding-left: 30px">           
                 <div style="width: 98%;margin: 0 auto">
                     <div style="display: inline-block; padding: 8px 8px 0 8px;border:2px solid #d9edf7"> 
@@ -275,7 +275,6 @@ span.dates {
                  <div>
                     <i class="fa fa-wifi" style="font-size: 24px;color: orange;border-bottom:2px solid #d9edf7"> live stream</i><br>                    
                     <div>
-                     {{rtc.remoteStreams}}
                         <!--<div style="padding: 10px 15px 0;color:green; border-bottom: 1px solid #ccc"><b>live stream</b></div>-->  
                         <div ng-repeat="stream in rtc.remoteStreams" ng-class="{'selected' : stream.isPlaying}" style="padding-bottom: 5px">       
                             <!--<span>{{stream.name}}</span> &nbsp;&nbsp;-->
