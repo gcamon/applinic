@@ -257,15 +257,14 @@ span.dates {
                 <span style="visibility: hidden;">video connection channel : &nbsp;{{rtc.siteLink('<%= person.controlId %>')}}</span>
             </div> -->
 
-
+           <span style="visibility: hidden;">{{rtc.siteLink('<%= person.controlId %>')}}</span>  
            <div class="col-sm-12 col-md-7 col-lg-7" style="margin-top:10px;padding-left: 30px">           
                 <div style="width: 98%;margin: 0 auto">
                     <div style="display: inline-block; padding: 8px 8px 0 8px;border:2px solid #d9edf7"> 
                        <p style="text-align: center;padding: 4px;color: orange;background-color: #d9edf7">Your Cam</p>
                        <video id="localVideo" autoplay="true" muted="muted" style="width:auto;height:200px;margin-top: -4px"></video>       
                     </div>                   
-                    <div id="remoteVideosContainer" style="display: inline-block; padding: 8px 8px 0 8px;">
-                      
+                    <div id="remoteVideosContainer" style="display: inline-block; padding: 8px 8px 0 8px;">                      
                       
                     </div>                  
                 </div>              
@@ -275,7 +274,7 @@ span.dates {
                 
                  <div>
                     <i class="fa fa-wifi" style="font-size: 24px;color: orange;border-bottom:2px solid #d9edf7"> live stream</i><br>                    
-                     <div>
+                    <div>
                      {{rtc.remoteStreams}}
                         <!--<div style="padding: 10px 15px 0;color:green; border-bottom: 1px solid #ccc"><b>live stream</b></div>-->  
                         <div ng-repeat="stream in rtc.remoteStreams" ng-class="{'selected' : stream.isPlaying}" style="padding-bottom: 5px">       
