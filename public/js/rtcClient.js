@@ -253,8 +253,12 @@ var Peer = function (pcConfig, pcConstraints,name) {
   this.name = name //refers to the remote user name
   this.pc = new RTCPeerConnection(pcConfig, pcConstraints);
   this.remoteVideoEl = document.createElement('video');
+  this.videoDiv = document.createElement('div');
+  this.videoDiv.style.border = "2px solid #d9edf7";
+  this.videoDiv.style.display = "inline-block";
+  this.videoDiv.style.padding = "8px 8px 0 8px";
   this.remoteVideoEl.style.width = "auto";
-  this.remoteVideoEl.style.height = "270px";
+  this.remoteVideoEl.style.height = "250px";
   this.remoteVideoEl.style.width = "auto";
   
   this.remoteVideoEl.controls = true;
