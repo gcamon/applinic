@@ -98,8 +98,10 @@ var PeerManager = (function (name) {
     
     peer.pc.onaddstream = function(event) {
       attachMediaStream(peer.remoteVideoEl, event.stream);
-      remoteVideosContainer.appendChild(peer.captionElement)
-      remoteVideosContainer.appendChild(peer.remoteVideoEl);
+      peer.videoDiv.appendChild(peer.captionElement);
+      peer.videoDiv.appendChild(peer.remoteVideoEl);
+      remoteVideosContainer.appendChild(peer.videoDiv)
+      //remoteVideosContainer.appendChild(peer.remoteVideoEl);
     };
     peer.pc.onremovestream = function(event) {
       peer.remoteVideoEl.src = '';
