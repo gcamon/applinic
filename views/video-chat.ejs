@@ -141,11 +141,11 @@ span.dates {
         <header style="margin-bottom: 3px;background-color: #d9edf7;padding: 0px 30px 5px" ng-controller="LocalStreamController as localStream" class="row">
             <div class="col-sm-12 col-md-9 col-lg-9 pt-1">
                  <!--<a href="" style="color: orange"><b>Applinic</b></a>-->
-                 <a href="" ng-click="goToDashbaord()" class="btn btn-simple text-white" style="text-decoration: none;"><i class="fa fa-arrow-left"></i> Back</a>&nbsp;&nbsp;&nbsp;
+                 <a href="" ng-click="goToDashbaord()" class="btn btn-simple text-danger" style="text-decoration: none;"><i class="fa fa-arrow-left"></i> Back</a>&nbsp;&nbsp;&nbsp;
                  <span ng-cloak style="font-size: 10px">{{localStream.getControlId('<%= person.controlId %>')}}</span>
                  
                 <!--Appear as: <input ng-model="localStream.name" class="form-control" style="width: 50%;display: inline-block;"/>-->
-                <a href ng-click="localStream.toggleCam()" class="btn btn-danger text-white" style="text-decoration: none;">{{ (localStream.cameraIsOn === true) ? 'Streaming... ( stop / disconnect )' : localStream.cameraStatus }}</a>
+                <a href ng-click="localStream.toggleCam()" class="btn btn-danger text-white" style="text-decoration: none;">{{ (localStream.cameraIsOn === true) ? 'Streaming... ( disconnect )' : localStream.cameraStatus }}</a>
 
                 <div style="display: inline-block;margin-left: 30px">
                     <small class="text-danger" style="display: inline-block;font-weight: bold;margin-top: 10px">{{(connectionStatus === true) ? message : "Waiting for partner..."}}</small>
@@ -270,21 +270,25 @@ span.dates {
 
 
            <span style="visibility: hidden;position: absolute;">{{rtc.siteLink('<%= person.controlId %>')}}</span>  
-           <div class="col-sm-12 col-md-9 col-lg-9" style="margin-top:10px;padding-left: 30px">   
-                 <div style="padding: 10px;border-bottom:2px solid #d9edf7;">
+           <div class="col-sm-12 col-md-9 col-lg-9" style="margin-top:10px;padding-left:0px">   
+                 <!--<div style="padding: 10px;border-bottom:2px solid #d9edf7;">
                     <i class="fa fa-wifi" style="font-size: 24px;color: orange;float: left;"> live stream | </i>                    
-                    <div style="float: left;">
-                        <!--<div style="padding: 10px 15px 0;color:green; border-bottom: 1px solid #ccc"><b>live stream</b></div>-->  
+                    <div style="float: left;">                      
                        
                         <div ng-repeat="stream in rtc.remoteStreams"  style="padding: 10px 0">       
-                            <!--<span>{{stream.name}}</span> &nbsp;&nbsp;-->
                             <button ng-click="rtc.view(stream)" class="btn btn-danger btn-sm" style="padding: 5px 10px;font-size: 12px">{{(stream.isPlaying === false) ? stream.name + '( view )' : stream.name + '( hide )'}}</button>
                         </div>
                     </div>
                     <div class="clearfix"></div>  
-                </div> 
+                </div> -->
+                <ul style="display: inline-block;list-style: none;width: 90%">
+                    <li style="float: left;padding: 10px;"><b>Remote stream:</b></li>
+                    <li ng-repeat="stream in rtc.remoteStreams" style="padding: 10px 10px;float: left;">
+                         <button ng-click="rtc.view(stream)" class="btn btn-info btn-sm" style="padding: 5px 10px;font-size: 12px"><i class="fa fa-video-camera text-muted"></i> &nbsp;<b>{{(stream.isPlaying === false) ? stream.name + '( view )' : stream.name + ' ( hide )'}}</b></button>
+                    </li>
+                </ul>
 
-                <div style="width: 100%;margin: 0 auto" id="remoteVideosContainer">
+                <div style="width: 90%;margin: 0 auto" id="remoteVideosContainer">
                     <div style="display: inline-block; padding: 8px 8px 0 8px;border:2px solid #d9edf7"> 
                        <p style="text-align: center;padding: 4px;color: orange;background-color: #d9edf7">Your Cam</p>
                        <video id="localVideo" autoplay="true" muted="muted" style="width:auto;height:250px;margin-top: -4px"></video>       
