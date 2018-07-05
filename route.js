@@ -264,11 +264,12 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
       switch(req.query.type) {
         case "Doctor":
           str = new RegExp(req.query.name.replace(/\s+/g,"\\s+"), "gi");         
-          criteria = { name : { $regex: str, $options: 'i' },type:"Doctor"};
+          criteria = {$or: [{ name : { $regex: str, $options: 'i' },type:"Doctor"},{firstname: { $regex: str, $options: 'i' },type:"Doctor" }]};
         break;
         case "Patient":
           str = new RegExp(req.query.name.replace(/\s+/g,"\\s+"), "gi");              
-          criteria = { firstname : { $regex: str, $options: 'i' },type:"Patient"};
+          //criteria = { firstname : { $regex: str, $options: 'i' },type:"Patient"};
+          criteria = {$or: [{ lastname : { $regex: str, $options: 'i' },type:"Patient"},{firstname: { $regex: str, $options: 'i' },type: "Patient"}]};
         break;
         default:
           str = new RegExp(req.query.name.replace(/\s+/g,"\\s+"), "gi");              

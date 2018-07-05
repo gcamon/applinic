@@ -386,19 +386,21 @@ module.exports = function(model,io,streams) {
 			});
 
 			socket.on("convsersation invitation signaling",function(req,cb){
-				model.user.findOne({user_id:req.to},{set_presence:1,firstname:1,title:1,type:1,presence:1},function(err,user){
+				model.user.findOne({user_id:req.to},{set_presence:1,firstname:1,title:1,type:1,presence:1,name:1},function(err,user){
 					if(err) throw err;
+					var names = user.name || user.title + " " + user.firstname 
 					if(user.set_presence.general && user.presence) {
 						//{type:req.type,message:req.message,time:req.time}
 						io.sockets.to(req.to).emit("receive invitation request",{message: req.title + " " + 
 							req.name + " requests for video call with you!",from: req.from,controlId:req.controlId});
-						cb({message:"Video call request has been sent to " + user.title + " " + user.firstname})
+						cb({message:"Video call request sent to " + names})
 					} else if(user.presence) {
 						io.sockets.to(req.to).emit("receive invitation request",{message: req.title + " " + 
 							req.name + " requests for video call with you!",from: req.from,controlId:req.controlId});
-						cb({message:"Video call request has been sent to " + user.title + " " + user.firstname})
+						cb({message:"Video call request sent to " + names})
 					} else {
-						var msg = user.title + " " + user.firstname + " is currently not available.Your request has been qeued for attendance."
+						
+						var msg = names + " is currently not available.Your request is qeued for attendance."
 		    		cb({message: msg});
 					}
 

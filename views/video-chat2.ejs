@@ -65,13 +65,13 @@
                         <option value="Doctor"><i class="fa fa-user"></i> invite a Doctor</option>
                         <option value="Patient"><i class="fa fa-user"></i> invite a Patient</option>
                     </select>
-                    <div style="width: 50%;position: absolute;top:40px;left: 0px;background-color: #fff;z-index: 999;padding: 5px" class="shadow" ng-if="findInvitee">
+                    <div style="width: 95%;position: absolute;top:40px;left: 0px;background-color: #fff;z-index: 999;padding: 5px" class="shadow" ng-if="findInvitee">
                         <div style="text-align: right;">
                             <i class="fa fa-times" style="padding: 5px;cursor: pointer;" ng-click="closeInvite()"></i>
                         </div>
-                        <div>
+                        <div style="text-align: center;">
                             <input type="text" name="" ng-model="invite.name" placeholder="{{inviteInfo}}" class="form-control" style="width: 80%;display: inline-block;">
-                            <button class="btn btn-simple" ng-click="getInvitee()">Go</button>
+                            <button class="btn btn-info btn-sm" ng-click="getInvitee()">Go</button>
                         </div>
                         <div style="max-height: 400px;overflow-y: auto;">                        
                             <div ng-repeat="invitee in inviteeList" style="padding-top: 10px" ng-if="userId !== invitee.user_id">

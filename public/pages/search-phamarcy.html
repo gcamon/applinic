@@ -9,11 +9,11 @@
 		<div> 
 			 <input type="text" class="form-control"  type="text" placeholder="Enter city/town" ng-model="pharmacy.city" uib-typeahead="city for city in cities | filter:$viewValue | limitTo:20" style="width:70%;display: inline-block;padding: 15px">
 			<button style="margin-left:6px;" type="button" class="btn btn-success pl-1 pr-1" value="FIND" ng-click = "findPharmacy()">Find</button>
-			<p style="font-style: italic;padding:10px"><i class="fa fa-info"> &nbsp;By default search result shows the centers within your city. You can search based on your desired city.</i></p>
+			<!--<p style="font-style: italic;padding:10px"><i class="fa fa-info"> &nbsp;By default search result shows the centers within your city. You can search based on your desired city.</i></p>-->
 		</div>
 	</form>
 	<div>
-		<div> 
+		<div ng-if="pharmacyData.length > 0"> 
 				<input type="text" class="form-control"  placeholder="Filter by name of center" ng-model = "pharmacy.name" style="border:none;border-bottom: 1px solid rgba(0,0,0,0.2);width:70%"/>
 		</div>	
 		<div class= "look-up-phamarcy row" ng-repeat = "result in pharmacyData | filter: pharmacy.name | orderBy: 'name'" style="position: relative; margin: 15px 0;padding-left: 10px;max-height: 600px;overflow-y: auto;" ng-if="checkLogIn.user_id !== result.user_id">	
