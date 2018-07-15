@@ -1,5 +1,6 @@
 var PeerManager = (function (name) {
     this.name = name;
+    alert(name)
     var localId,
       config = {
         peerConnectionConfig: {
