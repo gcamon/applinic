@@ -223,8 +223,10 @@ var PeerManager = (function (name) {
     },
     
     peerInit: function(remoteId,name) {
-      alert(name)
-      console.log("=========", peerDatabase[remoteId] )
+     
+      if(peerDatabase[remoteId])
+        peerDatabase[remoteId]['name'] = name;
+
       peer = peerDatabase[remoteId] || addPeer(remoteId,name); //'jj'
       send('init', remoteId, null);
     },
@@ -255,7 +257,7 @@ var PeerManager = (function (name) {
 });
 
 var Peer = function (pcConfig, pcConstraints,name) {
-  this.name = name //refers to the remote user name
+  //this.name = name //refers to the remote user name
   this.pc = new RTCPeerConnection(pcConfig, pcConstraints);
   this.remoteVideoEl = document.createElement('video');
   this.videoDiv = document.createElement('div');
@@ -273,5 +275,5 @@ var Peer = function (pcConfig, pcConstraints,name) {
   this.captionElement.style.color = "orange";
   this.captionElement.style.padding = "4px";
   this.captionElement.style.textAlign = "center";
-  this.captionElement.innerHTML += "Live: " + this.name;
+  this.captionElement.innerHTML = name;
 }
