@@ -1,5 +1,5 @@
 var PeerManager = (function (name) {
-    //this.name = name;
+    this.name = name;
     var localId,
       config = {
         peerConnectionConfig: {
@@ -224,7 +224,6 @@ var PeerManager = (function (name) {
     
     peerInit: function(remoteId,name) {
       peer = peerDatabase[remoteId] || addPeer(remoteId,name); //'jj'
-      this.name = name;
       send('init', remoteId, null);
     },
 

@@ -2,7 +2,10 @@
 	var app = angular.module('rtcVideo', ["ngResource","angularModalService","angularMoment",'ui.bootstrap'],
 		function($locationProvider){$locationProvider.html5Mode(true);}
     );
-		var client = new PeerManager(name);
+
+		var user = JSON.parse(storage)
+		var names = user.name || user.title + " " + user.firstname;
+		var client = new PeerManager(names);
 		var mediaConfig = {
         audio:true,
         video: {
