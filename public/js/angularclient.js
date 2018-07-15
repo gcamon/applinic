@@ -8868,9 +8868,7 @@ app.controller("presenceSocketController",["$rootScope","$scope","$window","mySo
      });
     }
 
-   /*mySocket.on("receive request",function(data){    
-    alert("responsone says");
-   })*/
+  
 
   
   $scope.user = {};
@@ -8936,16 +8934,15 @@ app.controller("presenceSocketController",["$rootScope","$scope","$window","mySo
       if(decide) {
         //time will be include to enable user decide when t have conversation
         mySocket.emit("conversation acceptance",{status:true,time: "now",to:data.from,title:person.title,
-          name: person.firstname,type:person.typeOfUser},function(response){
+          name: person.firstname || person.name,type:person.typeOfUser},function(response){
             localManager.setValue("userId",data.from);
             $rootScope.controlUrl = response.controlUrl;
             ModalService.showModal({
               templateUrl: 'redirect-modal.html',
-                  controller: 'redirectModal'
+                controller: 'redirectModal'
               }).then(function(modal) {
-                  modal.element.modal();
-                  modal.close.then(function(result) {
-                     
+                modal.element.modal();
+                modal.close.then(function(result) {                     
               });
             });
         });
@@ -8967,7 +8964,7 @@ app.controller("presenceSocketController",["$rootScope","$scope","$window","mySo
       if(decide) {
         //time will be include to enable user decide when t have conversation
         mySocket.emit("conversation invitation acceptance",{status:true,time: "now",to:data.from,title:person.title,
-          name: person.firstname,type:person.typeOfUser,controlId: data.controlId},function(response){
+          name: person.firstname || person.name,type:person.typeOfUser,controlId: data.controlId},function(response){
             localManager.setValue("userId",data.from);
             $rootScope.controlUrl = response.controlUrl;
             ModalService.showModal({

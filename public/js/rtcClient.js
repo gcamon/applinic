@@ -1,5 +1,5 @@
 var PeerManager = (function (name) {
-    this.name = name;
+    //this.name = name;
     var localId,
       config = {
         peerConnectionConfig: {
@@ -50,6 +50,7 @@ var PeerManager = (function (name) {
       var user = JSON.parse(storage);
       
   socket.on('message', handleMessage);
+
   socket.on('id', function(id) {
     localId = id;
   });
@@ -223,6 +224,7 @@ var PeerManager = (function (name) {
     
     peerInit: function(remoteId,name) {
       peer = peerDatabase[remoteId] || addPeer(remoteId,name); //'jj'
+      this.name = name;
       send('init', remoteId, null);
     },
 
@@ -233,7 +235,7 @@ var PeerManager = (function (name) {
     send: function(type, payload) {
       socket.emit(type, payload,function(data){
         console.log(data);
-        var names = user.title + " " + user.firstname;
+        var names = user.name || user.title + " " + user.firstname;
         socket.emit("init reload",{controlId:data.controlId,message:"from site init",userId: user.user_id,names: names});
       });
     },

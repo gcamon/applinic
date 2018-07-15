@@ -122,8 +122,8 @@
             <div class="col-sm-3 col-md-3 col-lg-3 card" style="margin-top:10px;">
                 <div style="padding: 10px 15px 0;color:green; border-bottom: 1px solid #ccc"><b>Remote stream</b></div>               
                 
-                <div ng-repeat="stream in rtc.remoteStreams" ng-class="{'selected' : stream.isPlaying}" style="font-size: 14px;margin-top: 10px">
-                    <button ng-click="rtc.view(stream)" class="btn btn-success" style="padding: 5px 10px;font-size: 12px">{{stream.name}}</button>&
+                <div ng-repeat="stream in rtc.remoteStreams"  style="font-size: 14px;margin-top: 10px;padding-left: 20px">
+                    <button ng-click="rtc.view(stream)" class="btn btn-info btn-sm" style="padding: 5px 10px;font-size: 12px">{{stream.name}}</button>
                     <!--<span>{{stream.name}}</span>-->
                     <!--<button ng-click="rtc.call(stream)"><a>Call</a></button>-->
                 </div>
