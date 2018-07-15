@@ -3,8 +3,12 @@
 		function($locationProvider){$locationProvider.html5Mode(true);}
     );
 
-		var user = JSON.parse(storage)
+
+		var storage = window.localStorage.getItem("resolveUser");
+		var user = JSON.parse(storage);
+
 		var names = user.name || user.title + " " + user.firstname;
+		
 		var client = new PeerManager(names);
 		var mediaConfig = {
         audio:true,
@@ -28,8 +32,8 @@
 
     */
 
-    var storage = window.localStorage.getItem("resolveUser");
-		var user = JSON.parse(storage)
+    
+		//var user = JSON.parse(storage)
 
     app.factory("localManager",["$window",function($window){
 		  return {
