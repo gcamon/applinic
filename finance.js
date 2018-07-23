@@ -214,7 +214,6 @@ var basicPaymentRoute = function(model,sms,io,paystack){
 		console.log(req.body);
 
 		if(req.user){
-
 			paystack.transaction.verify(req.body.reference, function(err, body) {
 				console.log(body);
 				if(body) {

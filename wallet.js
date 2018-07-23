@@ -59,7 +59,7 @@ Wallet.prototype.credit = function(model,receiver,amount,io,cb){
 				}
 
 				if(data.presence) {
-					io.sockets.to(data.user_id).emit("fund received",{status: true,message: this.message + "payment received from " + names})
+					io.sockets.to(data.user_id).emit("fund received",{status: true,message: self.message + "payment received from " + names})
 				}
 		  
 
