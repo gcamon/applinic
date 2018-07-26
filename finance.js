@@ -509,7 +509,7 @@ var basicPaymentRoute = function(model,sms,io,paystack){
 							var msg = req.body.message || "Consultation fee";
 							var pay = new Wallet(req.body.date,name,req.user.lastname,req.body.message);
 							//note firstname or lastname of patient may change.
-							pay.consultation(model,data.amount,debitor,req.body.userId);
+							pay.consultation(model,data.amount,debitor,req.body.userId,io);
 							createConnection(debitor);
 						});	
 						data.remove(function(){});			

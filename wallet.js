@@ -121,10 +121,10 @@ Wallet.prototype.debit = function(model,amount,debitor){
 
 }
 
-Wallet.prototype.payment = function(model,amount,debitor,reciever_id){
+Wallet.prototype.payment = function(model,amount,debitor,reciever_id,io){
 	var creditor = {user_id: reciever_id};
 	//credit the render of the service;
-	this.credit(model,creditor,amount);
+	this.credit(model,creditor,amount,io);
 
 	//debit the user of the service
 	this.debit(model,amount,debitor);
