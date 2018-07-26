@@ -8214,13 +8214,13 @@ app.controller("changePictureController",["$scope","$rootScope","$location","$ht
   function uploadProgress(evt) {
         $scope.progressVisible = true;
         $scope.$apply(function(){
-            if (evt.lengthComputable) {
+            if (evt.lengthComputable && evt.total <= 1048576) {
                console.log(evt.loaded + " : " + evt.total)
                 $scope.progress = Math.round(evt.loaded * 100 / evt.total)
                 console.log($scope.progress)
                 
             } else {
-                $scope.progress = 'unable to compute'
+                $scope.progress = 'Unable to compute! File size out of range.'
             }
         })
     }
