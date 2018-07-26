@@ -8194,8 +8194,12 @@ app.controller("changePictureController",["$scope","$rootScope","$location","$ht
         } else {
           $scope.userData = response;
         }
+
+        files[key].size <= 8388608
         
       }); */
+
+      console.log(fd)
 
       xhr.open("PUT", uploadUrl)
       xhr.send(fd);
@@ -8207,7 +8211,7 @@ app.controller("changePictureController",["$scope","$rootScope","$location","$ht
 
   
    
-    function uploadProgress(evt) {
+  function uploadProgress(evt) {
         $scope.progressVisible = true;
         $scope.$apply(function(){
             if (evt.lengthComputable) {
@@ -8222,12 +8226,14 @@ app.controller("changePictureController",["$scope","$rootScope","$location","$ht
     }
 
     function uploadComplete(evt) {
-        /* This event is raised when the server send back a response */
-        //alert(evt.target.responseText)
-         $scope.$apply(function(){
-            $scope.userData = JSON.parse(evt.target.responseText);
-            console.log($scope.userData)
-        })
+      $scope.$apply(function(){
+        if(evt.target.responseText) {
+          $scope.userData = JSON.parse(evt.target.responseText);
+        } else {
+          alert("Picture size out of range! Less than 1mb recommended.")
+        }
+        console.log($scope.userData)
+      })
        
     }
 

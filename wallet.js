@@ -106,6 +106,7 @@ Wallet.prototype.debit = function(model,amount,debitor){
 		transacObj.source = "You";		
 	} else if(this.message === "Consultation fee"){
 		transacObj.source = "You";
+		transacObj.activity = "Debit";
 	} else if(this.message === "billing"){
 		transacObj.activity = "Debit";
 		transacObj.source = "You";

@@ -1329,7 +1329,7 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
                       if(result.presence === true){
                         io.sockets.to(result.user_id).emit("message notification",{status:true})
                       } else {
-                        var msgBody = req.user.title + " " + req.user.firstname + " " + req.user.lastname + " accepted your consultation request! Visit http://applinic.com/login";
+                        var msgBody = req.user.title + " " + req.user.firstname + " " + req.user.lastname + " accepted your consultation request! log in to your account https://applinic.com/login to view details";
                         var phoneNunber =  result.phone;                  
 
                         sms.messages.create(

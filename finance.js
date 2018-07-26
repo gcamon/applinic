@@ -506,6 +506,7 @@ var basicPaymentRoute = function(model,sms,io,paystack){
 						//do the actual transaction. success!
 						model.user.findOne({user_id: req.user.user_id},{ewallet:1,firstname:1,lastname:1,name:1}).exec(function(err,debitor){
 							var name = req.user.firstname || req.user.name;
+							var msg = req.body.message || "Consultation fee";
 							var pay = new Wallet(req.body.date,name,req.user.lastname,req.body.message);
 							//note firstname or lastname of patient may change.
 							pay.consultation(model,data.amount,debitor,req.body.userId);
