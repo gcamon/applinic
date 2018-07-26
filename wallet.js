@@ -121,20 +121,20 @@ Wallet.prototype.debit = function(model,amount,debitor){
 
 }
 
-Wallet.prototype.payment = function(model,amount,debitor,reciever_id,io){
+Wallet.prototype.payment = function(model,amount,debitor,reciever_id){
 	var creditor = {user_id: reciever_id};
 	//credit the render of the service;
-	this.credit(model,creditor,amount,io);
+	this.credit(model,creditor,amount);
 
 	//debit the user of the service
 	this.debit(model,amount,debitor);
 	
 }
 
-Wallet.prototype.consultation = function(model,amount,debitor,reciever_id){
+Wallet.prototype.consultation = function(model,amount,debitor,reciever_id,io){
 	var creditor = {user_id: reciever_id};
 	//credit the render of the service;
-	this.credit(model,creditor,amount);
+	this.credit(model,creditor,amount,io);
 	var self = this;
 	model.user.findOne({user_id: reciever_id},{firstname:1,lastname:1,name:1},function(err,person){
 		if(err) throw err;
