@@ -384,6 +384,27 @@ module.exports = function(model,io,streams) {
 				});			
 			});
 
+			// this refers to appointment signaling from patient to meet in-person with his doctor.
+			socket.on("appointment signaling",function(req,cb){
+				model.user.findOne({user_id: req.to},{doctor_notification:1,presence:1})
+				.exec(function(err,data){
+					if(err) {
+						cb({status: false,message: "Oops! Error occured while sending request."})
+						throw err;
+					} else {
+						data.doctor_notification.push(req);
+						cb({status:true,message: "Meet in-person request sent successfully."})
+						if(data.presence){
+							io.sockets.to(req.to).emit("received in-person request",{status:true,data: req})
+						}
+						data.save(function(err,info){
+							if(err) throw err;
+							console.log("meet inperson request saved!")
+						})
+					}					
+				})
+			})
+
 			socket.on("convsersation invitation signaling",function(req,cb){
 				model.user.findOne({user_id:req.to},{set_presence:1,firstname:1,title:1,type:1,presence:1,name:1},function(err,user){
 					if(err) throw err;

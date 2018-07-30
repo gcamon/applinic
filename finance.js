@@ -1552,7 +1552,7 @@ router.post("/user/outpatient-billing",function(req,res){
 
 	  
 
-	  model.user.findOne({user_id: req.body.patientId},{patient_mail:1}).exec(function(err,patient){
+	  model.user.findOne({user_id: req.body.patientId},{patient_mail:1,presence:1}).exec(function(err,patient){
 	  	if(err) throw err;
 	  	if(patient) {
 	  		var mailData = {

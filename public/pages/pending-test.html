@@ -68,7 +68,7 @@
   </div>
 </div>
 
-  <section style="padding: 30px;" class="row card" ng-repeat="test in pendingTest | filter : filterResult" id="{{test.ref_id}}" ng-if="test.report == 'Pending'">    
+  <section style="padding: 30px;" class="row card" ng-repeat="test in pendingTest | filter : filterResult | orderBy: '-sent_date'" id="{{test.ref_id}}" ng-if="test.report == 'Pending'">    
       <div class="col-sm-12 col-md-3 col-lg-3">
         <div class="tg-widget tg-widget-doctor" style="padding: 10px 0px">
          <h6 style="text-decoration: underline;">Investigation by</h6>

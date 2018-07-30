@@ -1420,7 +1420,6 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
     //the data is sent as json and the controller that receives it on the front end is "patientPanelController" .
     router.get("/user/get-medical-record",function(req,res){
       if(req.user) {
-        console.log(req.query)
         var criteria = (req.user.type !== "Patient") ? {user_id: req.query.patientId} : {user_id: req.user.user_id};
 
         model.user.findOne(criteria,{medical_records: 1,medications:1,medical_reports:1,record_access:1},function(err,data){
@@ -1439,7 +1438,30 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
                   }
                 )
               } else {
-                res.send({message: "You have no permission to view this patient's full medical records.",status: false});
+                if(req.user.type === "Doctor") {
+                  var presArr = [];
+                  for(var j = 0; j < data.medications.length; j++){
+                    if(data.medications[j].doctor_id === req.user.user_id){
+                      presArr.push(data.medications[j]);
+                    }
+                  }
+
+                  //for prescription only when doctor wish to view previous prescriptions he had given to patient
+                  res.json(
+                     {                      
+                      prescriptions: presArr,
+                      status: true
+                    }
+                  );
+                } else {
+                  res.send({
+                    message: "You have no permission to view this patient's full medical records.",
+                    status: false,
+                    medical_records: [],
+                    prescriptions: [],
+                    reports: []
+                  });
+                }
               }
             } else {    
               res.json(
@@ -1916,7 +1938,7 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
             if(req.body.ref_id) {
               ref_id = req.body.ref_id;
             } else {
-              ref_id = parseInt(Math.floor(Math.random() * 99999) + " " + Math.floor(Math.random() * 99999));
+              ref_id = parseInt(Math.floor(Math.random() * 9999) + " " + Math.floor(Math.random() * 9999));
             }
             
             var preObj = {              
@@ -2013,7 +2035,7 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
 
          function savePatient(pharmacy) {
             model.user.findOne(
-              {user_id: req.body.patient_id},{patient_notification:1,firstname:1,lastname:1,prescription_tracking:1,medications:1,phone:1}
+              {user_id: req.body.patient_id},{patient_notification:1,firstname:1,lastname:1,prescription_tracking:1,medications:1,phone:1,user_id:1}
               ).exec(function(err,data){
               if(err) throw err;             
               
@@ -2042,6 +2064,7 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
 
               data.save(function(err,info){
                 if(err) throw err;
+                io.sockets.to(data.user_id).emit("notification",{status:true});
                 console.log("patient notified");            
               });
 
@@ -2119,7 +2142,28 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
         res.end("Unauthorized access!")
       }
       
-    });    
+    });
+
+    router.delete("/user/doctor/deleteAppRequest",function(req,res){
+      if(req.user){
+        console.log(req.body)
+        model.user.findOne({user_id: req.user.user_id},{doctor_notification:1})
+        .exec(function(err,data){
+          if(err) throw err;
+          console.log(data)
+          var elemPos = data.doctor_notification.map(function(x){return x.message_id}).indexOf(req.body.item)
+          if(elemPos !== -1) {
+            data.doctor_notification.splice(elemPos,1);
+          }
+          data.save(function(err,info){
+            if(err) throw err;
+            console.log("Appointment request viewed and deleted.");
+          })
+        })
+      } else {
+        res.send("unauthorized access!");
+      }
+    })
 
     //prescription fowarded by the doctor to a patient inbox
     router.put("/user/patient/forwarded-prescription",function(req,res){   
@@ -2189,7 +2233,7 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
           });
 
           if(data.presence === true){
-              io.sockets.to(data.user_id).emit("notification",{status:true})
+            io.sockets.to(data.user_id).emit("notification",{status:true});
           } else {
             var msgBody = "You have new unread prescription! Visit https://applinic.com/login"
             var phoneNunber =  data.phone;              
@@ -2227,7 +2271,6 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
               record.doctor_patient_session.unshift(req.body);
               record.doctor_patient_session[0].diagnosis = req.body.treatment;
             }
-
             record.save(function(err,info){});
           })
         }
@@ -3238,8 +3281,8 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
     //this route takes care doctor sending new test to a laboratory.
     router.post("/user/doctor/send-test",function(req,res){
         if(req.user) {  
-        var random = parseInt(Math.floor(Math.random() * 99999) + "" + Math.floor(Math.random() * 9999));
-        var testId = parseInt(Math.floor(Math.random() * 99999) + "" + Math.floor(Math.random() * 9999)); 
+        var random = parseInt(Math.floor(Math.random() * 9999) + "" + Math.floor(Math.random() * 9999));
+        var testId = parseInt(Math.floor(Math.random() * 9999) + "" + Math.floor(Math.random() * 9999)); 
         var date = + new Date();     
         model.user.findOne({user_id: req.body.user_id},
           {diagnostic_center_notification:1,referral:1,address:1,name:1,city:1,country:1,phone:1,user_id:1,presence:1}).exec(function(err,result){                  
@@ -3253,8 +3296,7 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
             phone: result.phone,
             id: result.user_id
           }
-          console.log("+++++++++++")
-          console.log(req.body)
+        
           var refObj = {
             ref_id: random,
             referral_firstname: req.user.firstname,
@@ -3329,7 +3371,8 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
 
         var tellPatient = function(centerInfo){
           //remember sms will be sent to the patient
-          model.user.findOne({user_id: req.body.patient_id},{medical_records: 1,user_id:1,patient_notification:1,presence:1,phone:1}).exec(function(err,record){            
+          model.user.findOne({user_id: req.body.patient_id},{medical_records: 1,user_id:1,patient_notification:1,presence:1,phone:1})
+          .exec(function(err,record){            
             if(err) throw err;     
             var recordObj = {
               center_name: centerInfo.name,
@@ -3361,7 +3404,7 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
             };
 
             if(record.presence === true) {
-              io.sockets.to(record.user_id).emit("notification",{status:true,message: "You have new unread test to run."});
+              io.sockets.to(record.user_id).emit("notification",{status:true,message: "You have new unread test to run.",type: "laboratory"});
             } else {     
               var name = (req.user.firstname) ?  req.user.title + " " + req.user.firstname : req.user.name   
               var msgBody = "Your laboratory test was referred to " + centerInfo.name + "\n@ " + centerInfo.address + " " + centerInfo.city + " " +

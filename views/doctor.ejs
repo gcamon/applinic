@@ -205,16 +205,17 @@
                                 <div class="dropdown-menu notifications-dropdown-menu" style="max-height: 400px;overflow-y: auto;">
                                     <ul class="notifications-container">
                                         <li> <h6 style="text-align: center">In-Person Appointment Request</h6> </li>
-                                        <li ng-repeat = "patient in inPersonRequest">
-                                            <a href="" class="notification-item" ng-click= "viewAppointment(app.session_id)">
+                                        <li ng-repeat = "patient in inPersonRequest | orderBy: '-date'">
+                                            <a href="" class="notification-item" ng-click="viewApp(patient.sender_id,patient.message_id)">
                                                 <div class="img-col">
-                                                    <div class="img" style="background-image: url({{app.profilePic}})"></div>
+                                                    <div class="img" style="background-image: url({{patient.sender_profile_pic_url}})"></div>
                                                 </div>
                                                 <div class="body-col">
-                                                    <p> <span class="accent">{{app.title}} {{app.firstname}} {{app.lastname}}</span> 
-                                                        <span style="display:block">Hi, wants to {{patient.type}} with you</span>
-                                                        <time am-time-ago="app.sent_date"></time>
-                                                        <button ng-click="viewApp(patient.from,patient.firstname,patient.lastname,patient.profile_pic_url)" style="font-size: 12px;margin-top: 2px;float:right;color:#fff">Respond</button>. 
+                                                    <p> 
+                                                    <span class="" style="display: block;">{{patient.sender_firstname}} {{patient.sender_lastname}}</span> 
+                                                    <span style="">Hi, I want to {{patient.type}} with you</span>&nbsp;&nbsp;&nbsp;
+                                                    <time am-time-ago="patient.date"></time>
+                                                        <!--<button ng-click="viewApp(patient.sender_id,patient.firstname,patient.lastname,patient.profile_pic_url)" style="font-size: 12px;margin-top: 2px;float:right;color:#fff">Respond</button>. -->
                                                     </p>
                                                 </div>
                                             </a>
