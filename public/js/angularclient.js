@@ -7365,7 +7365,7 @@ app.controller("patientPanelController",["$scope","$location","$http","$rootScop
       checkIsLabPending(data.medical_records.laboratory_test);
       checkIsRadioPending(data.medical_records.radiology_test);
       templateService.holdAllLabTest = data.medical_records.laboratory_test; //hold lab tests for real time view from the notification inbox
-      templateService.holdAllRadioTest = data.medical_records.laboratory_test; // hholds radio for  real time view from the notification inbox
+      templateService.holdAllRadioTest = data.medical_records.radiology_test; // hholds radio for  real time view from the notification inbox
       $scope.labLen = data.medical_records.laboratory_test.length;
       $scope.radioLen = data.medical_records.radiology_test.length; 
     }); 
