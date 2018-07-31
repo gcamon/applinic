@@ -15378,7 +15378,7 @@ function($scope,$location,$window,$http,templateService,localManager,templateUrl
     
     //console.log(captureButton)
     constraints = {
-      video: { width: 420, height: 235 },
+      video: { width: 480, height: 280 },
     };
 
     captureButton.style.visibility = "visible";
@@ -15392,8 +15392,8 @@ function($scope,$location,$window,$http,templateService,localManager,templateUrl
           iconClose.style.marginTop = "-85px";
           iconClose.style.marginRight = "20px";
           iconClose.style.color = "red";
-          canvas.style.width = "60%";
-          canvas.style.height = "auto";
+          canvas.style.maxWidth = "100%";
+          canvas.style.maxHeight = "280px";
           canvas.id = Math.floor(Math.random() * 9999999).toString();
           iconClose.id = Math.floor(Math.random() * 99999).toString();
           context = canvas.getContext('2d');

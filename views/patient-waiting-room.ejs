@@ -240,7 +240,7 @@
                                         <h6 style="font-weight:bold;" ng-if="patient.files.length > 0">Attached file(s)</h6><hr/>
                                         <div class="card" ng-if="patient.files.length > 0" ng-repeat="file in patient.files" >
                                             <div  ng-if="file.type === 'image'" style="width: auto;height:auto;margin:5px auto">
-                                            <img src="{{file.url}}"  ng-click="viewFile()"  style="width: 100%;height:100%;margin-right:10px" class="img-responsive">
+                                            <img src="{{file.url}}"  ng-click="viewFile()"  style="max-width: 480px;max-height:280px;margin-right:10px" class="img-responsive">
                                             </div>
                                             
                                             <video style="width:100%;height: auto;" controls
