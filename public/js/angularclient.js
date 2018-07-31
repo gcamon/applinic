@@ -5708,18 +5708,6 @@ app.controller("patientNotificationController",["$scope","$location","$http","$w
     getMedicalHistoryService,chatHistoryService,getResponseService,getMessagesService,getAppointmentServce){
   
   var filter = {};
-  /*$scope.getPatientId = function(id,firstname,lastname){
-    var tostr = id.toString();
-
-    var comObj = {
-      callerId: tostr,
-      firstname: firstname,
-      lastname: lastname
-    }
-    
-    templateService.holdPatientIdForCommunication = comObj;
-    
-  }*/
   
   var getRecords = function(){
     var records = getMedicalHistoryService; //$resource("/user/get-medical-record"); //$resource("/user/get-medical-record");
@@ -5739,25 +5727,6 @@ app.controller("patientNotificationController",["$scope","$location","$http","$w
     });
   }
 
- /*$http({
-    method  : 'GET',
-    url     : "/patient-panel/get-medical-record",
-    headers : {'Content-Type': 'application/json'} 
-    })
-  .success(function(data) {
-    if(data){
-      templateService.holdAllPrescriptionForTemplate = data;      
-      templateService.holdAllLabTest = data.medical_records.laboratory_test;
-      templateService.holdAllRadioTest = data.medical_records.radiology_test;
-      localManager.setValue("holdLabData",data.medical_records.laboratory_test);
-      localManager.setValue("holdScanData",data.medical_records.radiology_test);     
-      
-      // this fns checks the list to see if any test is pending for both laboratory and radiology
-      checkIsLabPending(data.medical_records.laboratory_test);
-      checkIsRadioPending(data.medical_records.radiology_test);
-    } 
-
-  });*/
 
   var checkIsLabPending = function (list) {
     var pendingLab = [];      
@@ -5847,7 +5816,7 @@ app.controller("patientNotificationController",["$scope","$location","$http","$w
  
 
   function getNotification() {
-    var note = patientNotificationService; //$resource("/user/patient/notifications");
+    var note = patientNotificationService; 
     note.query(function(data){
       $scope.allNote = data;
       $rootScope.noteLen = data.length; 
@@ -5857,35 +5826,37 @@ app.controller("patientNotificationController",["$scope","$location","$http","$w
              
     
   $scope.viewNoteLab = function(id){
-
     $scope.isView = true;
-    var absPath = "/patient/laboratory-test/" + id;
+    var absPath;
     var data = templateService.holdAllLabTest;
     var elementPos = data.map(function(x){return x.ref_id}).indexOf(id);
-    
     if(elementPos !== -1) {   
       $rootScope.isViewSingle = true;   // shows single lab tests for
-      templateService.singleView = [data[elementPos]];
-      //templateService.holdAllLabTest.unshift(data[elementPos]);
-    }
-
+      $rootScope.singleView = [data[elementPos]];
+      if(data[elementPos].report === "Pending"){
+        absPath = "/pending/lab-test";
+      } else {        
+        absPath = "/patient/laboratory-test/" + id;
+      }
+    }     
     deleteByRefId(id,"/user/patient/delete-one/refId");
     $location.path(absPath);
   }
 
-  $scope.viewNoteRadio = function(id){
-    //deleteFomBackEnd();
+  $scope.viewNoteRadio = function(id){   
     $scope.isView = true;
-    //deleteFomBackEnd();
-    $scope.isView = true;
-    var absPath = "/patient/radiology-test/" + id;
+    var absPath; 
     var data = templateService.holdAllRadioTest;
     var elementPos = data.map(function(x){return x.ref_id}).indexOf(id);
     
     if(elementPos !== -1) {
-      $rootScope.isViewSingle = true; 
-      templateService.singleView = [data[elementPos]];
-      //templateService.holdAllLabTest.unshift(data[elementPos]);
+      $rootScope.isViewSingle = true;   // shows single lab tests for
+      $rootScope.singleView = [data[elementPos]];
+      if(data[elementPos].report === "Pending"){
+        absPath = "/pending/scan-test";
+      } else {        
+        absPath = "/patient/radiology-test/" + id;
+      }
     }
     deleteByRefId(id,"/user/patient/delete-one/refId");
     $location.path(absPath);
@@ -5899,7 +5870,13 @@ app.controller("patientNotificationController",["$scope","$location","$http","$w
       headers : {'Content-Type': 'application/json'} 
       })
     .success(function(data) {
-      templateService.holdTrackRecord = data;
+      var holdRecord = [];
+      data.forEach(function(record){
+        if(record.prescriptionId === id) {
+          holdRecord.unshift(record);
+        }
+      });
+      templateService.holdTrackRecord = holdRecord;
     });
 
     var presIndex = prescriptions.map(function(x){return x.prescriptionId}).indexOf(id)
@@ -5921,22 +5898,10 @@ app.controller("patientNotificationController",["$scope","$location","$http","$w
         templateService.holdMsg = data;
       }  
     })
-    //mesage views
-    /*$http({
-      method  : 'GET',
-      url     : "/patient/get-message",
-      headers : {'Content-Type': 'application/json'} 
-      })
-      .success(function(data){
-        console.log(data)  
-        var len = data.length;
-        if(len > 0){
-          $rootScope.msgLen = templateService.holdMsgLen(len);   
-          $scope.allMsg = data;
-          templateService.holdMsg = data;
-        }  
-           
-    });*/
+  }
+
+  $scope.hideLen = function(){
+    $scope.msgLen = 0
   }
 
   $scope.viewBill = function(id){
@@ -7446,13 +7411,19 @@ app.controller("patientPanelController",["$scope","$location","$http","$rootScop
 
   $scope.viewLabTest = function () {
     localManager.setValue("currentPageForPatients","/patient/laboratory-test");   
-    $rootScope.isViewSingle = false; //prevents single view if present;
+    if($rootScope.singleView){
+      $rootScope.isViewSingle = false; //prevents single view;
+      $rootScope.singleView = [];
+    }
     $location.path("/patient/laboratory-test");
   }
 
   $scope.viewScanTest = function () {
     localManager.setValue("currentPageForPatients","/patient/radiology-test");
-    $rootScope.isViewSingle = false; //prevents single view if present;
+    if($rootScope.singleView){
+      $rootScope.isViewSingle = false; //prevents single view;
+      $rootScope.singleView = [];
+    }
     $location.path("/patient/radiology-test");
   }
 
@@ -7493,13 +7464,19 @@ app.controller("patientPanelController",["$scope","$location","$http","$rootScop
     
   }
 
-  $scope.viewLabPending = function () {
-    $rootScope.isViewSingle = false; //prevents single view;
+  $scope.viewLabPending = function () {   
+    if($rootScope.singleView){
+      $rootScope.isViewSingle = false; //prevents single view;
+      $rootScope.singleView = [];
+    }
     $location.path("/pending/lab-test")
   }
 
   $scope.viewRadioPending = function () {
-    $rootScope.isViewSingle = false; //prevents single view;
+    if($rootScope.singleView){
+      $rootScope.isViewSingle = false; //prevents single view;
+      $rootScope.singleView = [];
+    }
     $location.path("/pending/scan-test")
   }
 
@@ -7597,14 +7574,7 @@ app.controller("patientLabTestController",["$scope","$location","$http","$window
   "templateService","localManager","patientMedViewController","$rootScope","$timeout",
   function($scope,$location,$http,$window,templateService,localManager,patientMedViewController,$rootScope,$timeout){ 
 
-  /*if(!templateService.singleView) {
-    $scope.labTest = templateService.holdAllLabTest || localManager.getValue("holdLabData");
-  } else {
-    $scope.labTest = templateService.singleView;
-    templateService.singleView = null;
-  }*/
-
-  $scope.labTest = ($rootScope.isViewSingle) ? templateService.singleView : (templateService.holdAllLabTest || localManager.getValue("holdLabData"));
+  $scope.labTest = templateService.holdAllLabTest || localManager.getValue("holdLabData") //($rootScope.isViewSingle) ? templateService.singleView : (templateService.holdAllLabTest || localManager.getValue("holdLabData"));
   
   $rootScope.path = $location.path();
   localManager.setValue("patientTests",$scope.labTest);
@@ -7755,7 +7725,7 @@ app.controller("patientRadioTestController",["$scope","$rootScope","$location","
     templateService.singleView = null;
   }*/
 
-  $scope.labTest = ($rootScope.isViewSingle) ? templateService.singleView : (templateService.holdAllRadioTest || localManager.getValue("holdScanData"));
+  $scope.labTest = templateService.holdAllRadioTest || localManager.getValue("holdScanData")
 
   $rootScope.path = $location.path();
   localManager.setValue("patientTests",$scope.labTest);

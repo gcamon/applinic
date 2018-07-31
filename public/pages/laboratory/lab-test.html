@@ -91,7 +91,7 @@
 		</section>
 		</div>
 		<div ng-if="isViewSingle">
-		<section style="padding: 30px;" class="row card" ng-repeat="test in labTest | filter : filterResult " id="{{test.ref_id}}" >		
+		<section style="padding: 30px;" class="row card" ng-repeat="test in singleView | filter : filterResult " id="{{test.ref_id}}" ng-if="test.report !== 'Pending'">		
 			<div class="col-sm-12 col-md-4 col-lg-4">
 				<div>
 					<h6 style="text-decoration: underline;">Investigation by</h6>
