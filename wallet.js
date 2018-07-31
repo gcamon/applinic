@@ -46,7 +46,7 @@ Wallet.prototype.credit = function(model,receiver,amount,io,cb){
 			if(data) {
 				self.beneficiary = data.name || data.firstaname + " " + data.lastname
 				data.ewallet.available_amount += amount;			
-				var names = self.firstname + " " + self.lastname;
+				var names = (self.lastname) ? (self.firstname + " " + self.lastname) : (data.name);
 				var transacObj = {
 					date: self.date,
 					source: names,
