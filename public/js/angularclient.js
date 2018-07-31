@@ -947,7 +947,7 @@ app.factory("deleteFactory",["$http",function($http){
     headers : {'Content-Type': 'application/json'} 
    })
   .success(function(data) {
-    if(self.dest !== "patient_notification" && self.dest !== "doctor_notification")
+    if(self.dest !== "patient_notification" && self.dest !== "doctor_notification" && self.dest !== "diagnostic_center_notification")
       alert(msg);
   });                  
  }
@@ -5850,7 +5850,7 @@ app.controller("patientNotificationController",["$scope","$location","$http","$w
         absPath = "/patient/laboratory-test/" + id;
       }
     }     
-    deleteByRefId(id,"/user/patient/delete-one/refId");
+    deleteByRefId(id,"/user/delete-one/refId");
     $location.path(absPath);
   }
 
@@ -5869,7 +5869,7 @@ app.controller("patientNotificationController",["$scope","$location","$http","$w
         absPath = "/patient/radiology-test/" + id;
       }
     }
-    deleteByRefId(id,"/user/patient/delete-one/refId");
+    deleteByRefId(id,"/user/delete-one/refId");
     $location.path(absPath);
   }
 
@@ -5983,7 +5983,7 @@ app.controller("patientNotificationController",["$scope","$location","$http","$w
   function deleteByRefId(id,field){
     var msg = "Notification deleted";
     var del = new deleteFactory(id,"patient_notification");
-    del.deleteItem("/user/patient/delete-one/refId","");//deletes notification once it is viewed.
+    del.deleteItem("/user/delete-one/refId","");//deletes notification once it is viewed.
     if($rootScope.noteLen > 0)
       $rootScope.noteLen--;    
   }
@@ -5991,7 +5991,7 @@ app.controller("patientNotificationController",["$scope","$location","$http","$w
   function deleteByNoteId(id,field) {
     var msg = "Notification deleted";
     var del = new deleteFactory(id,"patient_notification");
-    del.deleteItem("/user/patient/delete-one/refId","");//deletes notification once it is viewed.
+    del.deleteItem("/user/delete-one/refId","");//deletes notification once it is viewed.
     if($rootScope.noteLen > 0)
       $rootScope.noteLen--;    
   }
@@ -11647,9 +11647,9 @@ app.service("labNoteService",["$resource",function($resource){
 
 
 app.controller("labCenterNotificationController",["$scope","$location","$resource","$window","templateService",
-  "localManager","$http","chatService","labCenterNotificationService","labNoteService",
+  "localManager","$http","chatService","labCenterNotificationService","labNoteService","deleteFactory",
   "$rootScope","mySocket",function($scope,$location,$resource,$window,templateService,
-    localManager,$http,chatService,labCenterNotificationService,labNoteService,$rootScope,mySocket){
+    localManager,$http,chatService,labCenterNotificationService,labNoteService,deleteFactory,$rootScope,mySocket){
 
 
   function getNotification() {
@@ -11682,7 +11682,8 @@ app.controller("labCenterNotificationController",["$scope","$location","$resourc
 
         $rootScope.allNote.splice(0);
         $rootScope.noteLen = 0;
-        //note delete from the backend 
+        //note delete from the backend  /user/delete-many
+        deleteAllNote("all","diagnostic_center_notification");
       });
     }
     
@@ -11710,9 +11711,27 @@ app.controller("labCenterNotificationController",["$scope","$location","$resourc
         var pageUrl = "/laboratory/view-test/" + id;
         $location.path(pageUrl);
         localManager.setValue("currPageForLaboratory",pageUrl);
+        deleteByRefId(id,"diagnostic_center_notification");
       });   
     } 
   }
+
+
+  function deleteByRefId(id,field){
+    var msg = "no alert";
+    var del = new deleteFactory(id,field);
+    del.deleteItem("/user/delete-one/refId",msg);//deletes notification once it is viewed.
+    if($rootScope.noteLen > 0)
+      $rootScope.noteLen--;    
+  }
+
+   function deleteAllNote(id,field){
+    var msg = "Notification deleted";
+    var del = new deleteFactory(id,field);
+    del.deleteItem("/user/delete-many",msg);//deletes notification once it is viewed.
+    $rootScope.noteLen = 0;
+  }
+
 
   mySocket.on("notification",function(response){
     if(response.status){      
@@ -12475,108 +12494,6 @@ app.controller("labTestControler",["$scope","$location","$http","templateService
       return str.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
   }
 
-
-  /**************
- var user;
-  $scope.customGetLab = function(){
-    //templateService.holdSelectedLabTest = $scope.unRanTest;          
-    //var objectFound = localManager.getValue("radiologyData");          
-
-    //objectFound.radiology.test_to_run = $scope.unRanTest;
-
-    //templateService.holdReferral = objectFound;
-    
-    //$location.path("/radiology/find-radiology");
-
-    $scope.isCriteria = true;
-    $scope.user.city = user.city;
-
-  }
-
-  $scope.isCriteria = false;
-  $scope.user = {};
-  $scope.redirectTest = function(){
-    getCenters()
-  }
-
-  //sends test for search from updated services collections from the database on backend
-  function getCenters() {
-    $scope.isToForward = true;
-    $scope.hasPreviewed = false;
-    $scope.isPreview = false;
-    $scope.hasSent = false;
-    $scope.isRefresh = false;
-    $scope.unRanTest = templateService.holdUnranTest;
-
-    if(templateService.holdUnranTest) {
-      objectFound.radiology.test_to_run =  templateService.holdUnranTest 
-    } else {
-      templateService.holdUnranTest = objectFound.radiology.test_to_run;
-      $scope.unRanTest = templateService.holdUnranTest;
-    }
-
-   
-   
-    $scope.cities = cities;
-     
-    var searchTest = $resource("/user/radiology/search/find-tests",null,{findCenter:{method:"PUT"}});
-    function getResource() {
-       if(!$scope.user.city && $scope.user.city !== "") {
-          user = localManager.getValue("resolveUser");
-        } else {
-          user = $scope.user;
-        }
-     
-      searchTest.findCenter({city:user.city,testList:templateService.holdUnranTest},function(data){
-        
-        $scope.testResult = data;
-        $scope.getStr = function(str){
-          var newStr = "";
-          var strArr = str.split(",");
-          for(var i = 0; i < strArr.length; i++){
-            newStr += "@" + strArr[i] + " "
-          }
-          return newStr;
-        }
-
-        $scope.notStr = function(arr) {
-          var newStr = "";
-          for(var i = 0; i < arr.length; i++){
-            newStr += "@" + arr[i].name + " "
-          }
-
-          return newStr;
-        }
-
-        
-
-        $scope.toForwardToCenter = function(center) {
-          //here the objectfound refers to the patient ref data send initially.
-          //the test_to_run is set to unranTest to send to the backend. other values is thus maintained for center to forward to another center.
-          objectFound.user_id = center.id // sets the seleted center's id to locate the center in the database.
-          var toCenter = $resource("/user/center/radiology/send-test",null,{sendTest:{method: 'POST'}});
-          toCenter.sendTest(objectFound,function(data){
-            if(data.success){
-              alert("Test send successfully! Ref No is " + data.ref_no);
-            }
-            console.log(data)
-          });
-        }
-      });
-    }
-
-    $scope.find = function(){
-      getResource();
-    }
-
-    getResource();
-  }
-
-
-
-  ****************/
-
-
 }]);
 
 app.controller("unRanTestModalController",["$scope","$location","templateService","localManager",
@@ -12734,9 +12651,9 @@ app.service("radioTestsService",["$resource",function($resource){
 }]);
 
 app.controller("radioCenterNotificationController",["$scope","$location","$http","$window","templateService",
-  "localManager","$resource","$rootScope","mySocket","chatService","radioNotificationService","radioTestsService",
+  "localManager","$resource","$rootScope","mySocket","chatService","radioNotificationService","radioTestsService","deleteFactory",
   function($scope,$location,$http,$window,templateService,localManager,$resource,
-    $rootScope,mySocket,chatService,radioNotificationService,radioTestsService) {
+    $rootScope,mySocket,chatService,radioNotificationService,radioTestsService,deleteFactory) {
 
   var notification = radioNotificationService; //$resource("/user/center/get-notification",null,{updateStatus:{method:'PUT'}});
   var radioTests = radioTestsService; //$resource( "/user/radiology/get-referral",null,{sendObj:{method:"PUT"}});
@@ -12771,6 +12688,7 @@ app.controller("radioCenterNotificationController",["$scope","$location","$http"
 
         $rootScope.allNote.splice(0);
         $rootScope.noteLen = 0;
+        deleteAllNote("all","diagnostic_center_notification")
       });
     }
   }
@@ -12798,6 +12716,7 @@ app.controller("radioCenterNotificationController",["$scope","$location","$http"
         var pageUrl = "/radiology/view-test/" + id;
         $location.path(pageUrl);
         localManager.setValue("currPageForRadiology",pageUrl);
+        deleteByRefId(id,"diagnostic_center_notification")
       });   
     } 
 
@@ -12806,6 +12725,21 @@ app.controller("radioCenterNotificationController",["$scope","$location","$http"
         note.viewed = res.updated;
      })
 
+  }
+
+   function deleteByRefId(id,field){
+    var msg = "no alert";
+    var del = new deleteFactory(id,field);
+    del.deleteItem("/user/delete-one/refId",msg);//deletes notification once it is viewed.
+    if($rootScope.noteLen > 0)
+      $rootScope.noteLen--;    
+  }
+
+   function deleteAllNote(id,field){
+    var msg = "Notification deleted";
+    var del = new deleteFactory(id,field);
+    del.deleteItem("/user/delete-many",msg);//deletes notification once it is viewed.
+    $rootScope.noteLen = 0;
   }
 
   //controls chat indictor and notifications

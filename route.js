@@ -5944,8 +5944,9 @@ router.delete("/user/patient/delete-one",function(req,res){
   }
 });
 
-router.delete("/user/patient/delete-one/refId", function(req,res){
+router.delete("/user/delete-one/refId", function(req,res){ //this route is also used by diagnostic centers to delete viewed notification
   if(req.user){
+    console.log("=============")
     console.log(req.body)
     var projection = {};
     projection[req.body.dest] = 1;
@@ -5986,8 +5987,9 @@ router.delete("/user/patient/delete-one/appointment",function(req,res){
 });
 
 
-router.delete("/user/patient/delete-many",function(req,res){
+router.delete("/user/delete-many",function(req,res){
   if(req.user) {
+    console.log("++++++++++++++")
     console.log(req.body);
     var projection = {};
     projection[req.body.dest] = 1;
