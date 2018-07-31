@@ -15378,7 +15378,7 @@ function($scope,$location,$window,$http,templateService,localManager,templateUrl
     
     //console.log(captureButton)
     constraints = {
-      video: { width: 480, height: 280 },
+      video: { width: 480, height: 280 }
     };
 
     captureButton.style.visibility = "visible";

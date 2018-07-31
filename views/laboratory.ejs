@@ -97,7 +97,7 @@
                                     <ul class="notifications-container">
                                         <li> <h6 style="text-align: center">Notification(s)</h6> </li>                                        
                                          <li style="text-align: right;"><button class="btn btn-neutral btn-sm" ng-click = "addAllNote()">Add to work list </button></li>
-                                        <li ng-repeat = "note in allNote">
+                                        <li ng-repeat = "note in allNote | orderBy : '-sent_date'">
 
                                             <a href="" class="notification-item" ng-click="viewNote(note.ref_id)">
                                                 <div class="img-col">

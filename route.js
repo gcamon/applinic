@@ -3295,7 +3295,8 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
             phone: result.phone,
             id: result.user_id
           }
-        
+
+          
           var refObj = {
             ref_id: random,
             referral_firstname: req.user.firstname,
@@ -3342,7 +3343,7 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
             message: "Please run the test for my patient"
           }
 
-          if(result.presence === true){
+          if(result.presence){
             io.sockets.to(result.user_id).emit("center notification",refNotification);
           } /*else {
             var msgBody = "You have new test request! Visit http://applinic.com/login"
@@ -3572,7 +3573,7 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
           }
 
 
-          if(result.presence === true){
+          if(result.presence){
             io.sockets.to(result.user_id).emit("center notification",refNotification)
           } /*else {
             var msgBody = "You have new test request! Visit http://applinic.com/login"
@@ -3618,7 +3619,7 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
               conclusion: "Pending"
             }
 
-            if(record.presence === true)
+            if(record.presence)
               io.sockets.to(record.user_id).emit("notification",{status:true,message: "You have new unread test to run."});
           
             var msgBody = "Your test was referred to " + centerInfo.name + "\n@ " + centerInfo.address + " " + centerInfo.city + " " +
