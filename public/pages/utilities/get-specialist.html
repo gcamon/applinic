@@ -3,7 +3,7 @@
     <div class="card card-center-1 p-2">
     <h4 style="margin-top: 2px">Need a Doctor?</h4>
  <div class="font-1_0">Fill your complaints below for the right specialist to contact you at the Patient Waiting Room (PWR).</div>
- <p class="p-2 text-center" ng-if="statusMsg" style="color: #000;background-color: #f2f2f2;text-align: center;font-size: 14px">{{statusMsg}}</p>
+ <p class="p-2 text-center" ng-if="statusMsg" style="color: #000;background-color: orange;text-align: center;font-size: 14px">{{statusMsg}}</p>
  <label class="font-1_2 pt-2">Why do you need a doctor? </label>
  <div class="row p-1">
 
@@ -226,13 +226,15 @@
 		</div> 
 		<div class="clearfix"></div>
 		<hr>         
-		<div class="col-sm-12 col-md-12 col-lg-12" style="text-align: center;">
+		<div class="col-sm-12 col-md-12 col-lg-12" style="text-align: center">
 			<div style="text-align: left;" ng-if="isCapture">
 				<a href="" ng-click="closeCam()" class="btn btn-sm btn-neutral">Close Camera</a>
 			</div>
-			<video id="player"  autoplay width ="420" height="0"></video>
+     
+			<video id="player"  autoplay style="width:100%;height:auto;"></video>
+     
 			<div style="width: 40%;margin: 10px auto">
-			 	<button id="capture" class="btn-danger btn-lg btn" style="visibility: hidden;">Capture</button>  
+			 	<button id="capture" class="btn-danger  btn" style="visibility: hidden;">Capture</button>  
 			</div>
 		</div>		
 		 
@@ -272,6 +274,8 @@
 	<button class="btn btn-success pull-right" style="background-color: #7dbb00" ng-click="validate()" ng-if="!statusMsg">{{(progress) ? progress + '% sending...'  : 'Submit Complaint'}}</button>
 </div>
 
-</div></div>
-    </div>
+</div>
+
+</div>
+    
 

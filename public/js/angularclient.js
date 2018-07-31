@@ -15388,12 +15388,12 @@ function($scope,$location,$window,$http,templateService,localManager,templateUrl
         if($scope.blobs.length <= 5) {    
           canvas = document.createElement('canvas');
           iconClose = document.createElement('i');
-          iconClose.className = "fa fa-times ml-0";
+          iconClose.className = "fa fa-times ml-1";
           iconClose.style.marginTop = "-85px";
           iconClose.style.marginRight = "20px";
           iconClose.style.color = "red";
-          canvas.width = 140;
-          canvas.height = 120;
+          canvas.style.width = "60%";
+          canvas.style.height = "auto";
           canvas.id = Math.floor(Math.random() * 9999999).toString();
           iconClose.id = Math.floor(Math.random() * 99999).toString();
           context = canvas.getContext('2d');
