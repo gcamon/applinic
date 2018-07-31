@@ -5724,7 +5724,7 @@ app.controller("patientNotificationController",["$scope","$location","$http","$w
     var records = getMedicalHistoryService; //$resource("/user/get-medical-record"); //$resource("/user/get-medical-record");
     records.get(function(data){
       if(data){
-        medicaRecordFactory.set(data);
+        //medicaRecordFactory.set(data);
         templateService.holdAllPrescriptionForTemplate = data;      
         templateService.holdAllLabTest = data.medical_records.laboratory_test;
         templateService.holdAllRadioTest = data.medical_records.radiology_test;
@@ -7364,6 +7364,8 @@ app.controller("patientPanelController",["$scope","$location","$http","$rootScop
       //localManager.setValue("holdPrescriptionData",medical.prescriptions);
       checkIsLabPending(data.medical_records.laboratory_test);
       checkIsRadioPending(data.medical_records.radiology_test);
+      templateService.holdAllLabTest = data.medical_records.laboratory_test; //hold lab tests for real time view from the notification inbox
+      templateService.holdAllRadioTest = data.medical_records.laboratory_test; // hholds radio for  real time view from the notification inbox
       $scope.labLen = data.medical_records.laboratory_test.length;
       $scope.radioLen = data.medical_records.radiology_test.length; 
     }); 
