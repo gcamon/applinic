@@ -146,8 +146,8 @@ Wallet.prototype.consultation = function(model,amount,debitor,reciever_id,io){
 }
 
 
-Wallet.prototype.transfer = function(model,amount,debitor,reciever,person){	
-		this.credit(model,reciever,amount);
+Wallet.prototype.transfer = function(model,amount,debitor,reciever,person,io){	
+		this.credit(model,reciever,amount,io);
 		this.beneficiary = person.firstname + " " + person.lastname || person.name;
 		this.debit(model,amount,debitor);	
 }

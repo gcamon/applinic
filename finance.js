@@ -463,7 +463,7 @@ var basicPaymentRoute = function(model,sms,io,paystack){
 										var name = req.user.firstname || req.user.name;
 										var pay = new Wallet(req.body.date,name,debitor.lastname,req.body.message);
 										//note firstname or lastname of patient may change.							
-										pay.transfer(model,data.amount,debitor,receiver,person);
+										pay.transfer(model,data.amount,debitor,receiver,person,io);
 										res.json({message: "Transaction successful! Your account is debited.",balance:debitor.ewallet.available_amount});
 										cb();
 									} else {
