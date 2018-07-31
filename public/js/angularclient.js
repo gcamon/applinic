@@ -440,6 +440,17 @@ app.config(['$paystackProvider','$routeProvider',
   controller: 'pendingRadioTestController'
  })
 
+ .when("/pending/lab-test/:id",{
+  templateUrl: "/assets/pages/pending-test.html",
+  controller: 'pendingLabTestController'
+ })
+
+ .when("/pending/scan-test/:id",{
+  templateUrl: "/assets/pages/pending-test.html",
+  controller: 'pendingRadioTestController'
+ })
+
+
  .when("/patient/laboratory-test",{
   templateUrl:"/assets/pages/laboratory/lab-test.html",
   controller: 'patientLabTestController'
@@ -5834,7 +5845,7 @@ app.controller("patientNotificationController",["$scope","$location","$http","$w
       $rootScope.isViewSingle = true;   // shows single lab tests for
       $rootScope.singleView = [data[elementPos]];
       if(data[elementPos].report === "Pending"){
-        absPath = "/pending/lab-test";
+        absPath = "/pending/lab-test/" + id;
       } else {        
         absPath = "/patient/laboratory-test/" + id;
       }
@@ -5853,7 +5864,7 @@ app.controller("patientNotificationController",["$scope","$location","$http","$w
       $rootScope.isViewSingle = true;   // shows single lab tests for
       $rootScope.singleView = [data[elementPos]];
       if(data[elementPos].report === "Pending"){
-        absPath = "/pending/scan-test";
+        absPath = "/pending/scan-test/" + id;
       } else {        
         absPath = "/patient/radiology-test/" + id;
       }
