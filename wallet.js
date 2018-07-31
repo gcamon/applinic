@@ -266,7 +266,7 @@ Wallet.prototype.hospitalityBill = function(model,amount,debitor,receiver,sms,io
 	var self = this;
 	console.log(getValue);
 
-	this.credit(model,receiver,getValue.receiverValue);
+	this.credit(model,receiver,getValue.receiverValue,io);
 	this.credit(model,admin,getValue.adminValue,io);
 	model.user.findOne(debitor,{ewallet:1}).exec(function(err,user){
 		self.debit(model,getValue.debitorValue,user);

@@ -1695,7 +1695,7 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
           console.log(data.prescription_tracking);
           res.send(data.prescription_tracking);
         })*/
-        res.json(req.user.prescription_tracking)
+        res.json(req.user.prescription_tracking);
       } else {
         res.end("Unauthorized access");
       }
@@ -1715,7 +1715,6 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
               address: 1,
               work_place: 1,
               user_id:1,
-              _id:0,
               presence:1
           }
           model.user.findOne({ user_id: req.body.id},projection,function(err,data){
@@ -6113,13 +6112,13 @@ router.post("/user/response/patients-histories",function(req,res){
             if(checkIsMyDoctor === -1){              
               found.response.push(req.body);
               var date = + new Date();
-              var msg = "(" + found.response.length + ") Doctors" + " have responded to your complain.";
+              var msg = "(" + found.response.length + ") doctors" + " have responded to your complain.";
               var checkComplain = patient.patient_mail.map(function(x){return x.complaint_id}).indexOf(req.body.complaint_id);
               if(checkComplain !== -1){
                 var complain = patient.patient_mail[checkComplain];
                 complain.message = msg;
               } else {
-                msg = "1 Doctor has responded to your complain ";
+                msg = "1 doctor has responded to your complain ";
                 patient.patient_mail.push({
                   category: "need_doctor",
                   date: date,
@@ -6145,7 +6144,7 @@ router.post("/user/response/patients-histories",function(req,res){
               }
             } else {
               patient.save(function(err,info){})
-              var info = "Oops!! The request was not submited.Reason: This history is from your patient. Please contact " + 
+              var info = "Oops!! The request was not submited.Reason: This complaint is from your patient. Please contact " + 
               patient.firstname + " " + patient.lastname;
             }
             patient.save(function(err,info){});
