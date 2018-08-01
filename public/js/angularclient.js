@@ -9444,6 +9444,9 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
   $rootScope.holdId =  patient.id;
   var user = localManager.getValue("resolveUser");
 
+  $scope.frequencies = ["OD","BD","TDS","QDS"];
+  $scope.durations = ["1 day","2 days","3 days", "5 days", "7 days","1 week", "2 weeks", "3 weeks", "1 month", "2 months","3 months","4 months","6 months"]
+
   var getPatientData = myPatientControllerService //$resource("/user/doctor/specific-patient");
   getPatientData.get(patient,function(data){  
     $scope.patientInfo = data; 
@@ -11742,7 +11745,7 @@ app.controller("labCenterNotificationController",["$scope","$location","$resourc
 
   mySocket.on("center notification",function(data){
     templateService.playAudio(3);
-    $rootScope.allNote.push(data);
+    $rootScope.allNote.unshift(data);
     $rootScope.noteLen++;
   });
 
@@ -12757,7 +12760,7 @@ app.controller("radioCenterNotificationController",["$scope","$location","$http"
 
   mySocket.on("center notification",function(data){
     templateService.playAudio(3);
-    $rootScope.allNote.push(data);
+    $rootScope.allNote.unshift(data);
     $rootScope.noteLen++;
   });
 

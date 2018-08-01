@@ -352,8 +352,12 @@
                 <td class="tbm-1"><input name="states" id="states" type="text" placeholder="Enter drug name" ng-model="prescription.drug_name" uib-typeahead="drug.name for drug in drugs | filter:$viewValue | limitTo:15" class="form-control">
                 </td>
                 <td class="tbm-2"><input type="text" ng-model="prescription.dosage" class="form-control"></td>
-                <td class="tbm-3"><input type="text" ng-model="prescription.frequency" class="form-control"></td>
-                <td class="tbm-4"><input type="text" ng-model="prescription.duration" class="form-control"></td>
+                <!--<td class="tbm-3"><input type="text" ng-model="prescription.frequency" class="form-control"></td>-->
+                <td class="tbm-1"><input name="freq" id="states" type="text" placeholder="" ng-model="prescription.frequency" uib-typeahead="f for f in frequencies | filter:$viewValue | limitTo:15" class="form-control">
+                </td>
+                <!--<td class="tbm-4"><input type="text" ng-model="prescription.duration" class="form-control"></td>-->
+                <td class="tbm-1"><input name="duru" id="states" type="text" placeholder="" ng-model="prescription.duration" uib-typeahead="d for d in durations | filter:$viewValue | limitTo:15" class="form-control" style="">
+                </td>
             </tbody>                             
         </table>
         
@@ -1048,7 +1052,7 @@
                                         <span style="display: block;margin-bottom: 5px"><i class="fa fa-phone" ng-if="pickedCenter.phone"></i> {{pickedCenter.phone}}</span>
                                 </div>
 
-                                <div style="padding: 7px;background-color: #d7dde4;"> <b>Drug Availability</b> <small class="updateInfo" ng-class="{'text-danger': status === 'Not Updated!'}">{{status}}</small></div>
+                                <div style="padding: 7px;background-color: #d7dde4;"> <b>Investigation Availability</b> <small class="updateInfo" ng-class="{'text-danger': status === 'Not Updated!'}">{{status}}</small></div>
                                 
                                 <span ng-repeat="d in TestList" style="display: block;margin-top: 10px;padding-left: 5px">
                                     <span ng-class="{'notAvail': d.available === false}">{{d.name}} &nbsp;<span style="font-size: 8px" ng-if="d.available === true">available</span></span>
@@ -1147,7 +1151,7 @@
                                         <span style="display: block;margin-bottom: 5px"><i class="fa fa-phone" ng-if="pickedCenter.phone"></i> {{pickedCenter.phone}}</span>
                                 </div>
 
-                                <div style="padding: 7px;background-color: #d7dde4;"> <b>Drug Availability</b> <small class="updateInfo" ng-class="{'text-danger': status === 'Not Updated!'}">{{status}}</small></div>
+                                <div style="padding: 7px;background-color: #d7dde4;"> <b>Investigation Availability</b> <small class="updateInfo" ng-class="{'text-danger': status === 'Not Updated!'}">{{status}}</small></div>
                                 
                                 <span ng-repeat="d in TestList" style="display: block;margin-top: 10px;padding-left: 5px">
                                     <span ng-class="{'notAvail': d.available === false}">{{d.name}} &nbsp;<span style="font-size: 8px" ng-if="d.available === true">available</span></span>
