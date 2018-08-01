@@ -622,7 +622,7 @@
 
                  <div class="col-md-12 col-sm-12 col-xs-12 form-group mb-3">
                     <label class="col-md-12 p-0" style="display:block;" for="firstname">
-                        <div class="col-sm-9 p-0 pull-left"  style="font-size:1.2em; font-weight:500;">Past Medical History </div> 
+                        <div class="col-sm-9 p-0 pull-left"  style="font-size:1.2em; font-weight:500;">Past Medical / Surgical History </div> 
 
                     <div class="col-sm-3 text-right"><button class="btn btn-simple btn-sm  pull-right fa fa-pencil" type="button" data-toggle="collapse" 
                     data-target="#past" aria-expanded="false" aria-controls="collapseExample">
@@ -633,6 +633,22 @@
                     </blockquote>
                    <div class="collapse" id="past">
                         <textarea class="form-control inc-height" placeholder="Write.." ng-model="edit.past_medical_history"></textarea>
+                  </div>
+                  </div>
+
+                  <div class="col-md-12 col-sm-12 col-xs-12 form-group mb-3">
+                    <label class="col-md-12 p-0" style="display:block;" for="firstname">
+                        <div class="col-sm-9 p-0 pull-left"  style="font-size:1.2em; font-weight:500;">Drug History </div> 
+
+                    <div class="col-sm-3 text-right"><button class="btn btn-simple btn-sm  pull-right fa fa-pencil" type="button" data-toggle="collapse" 
+                    data-target="#drug" aria-expanded="false" aria-controls="collapseExample">
+                  </button></div></label>
+                   <div class="clearfix"></div>               
+                    <blockquote ng-bind-html="sessionData.diagnosis.drug_history">
+                       
+                    </blockquote>
+                   <div class="collapse" id="drug">
+                        <textarea class="form-control inc-height" placeholder="Write.." ng-model="edit.drug_history"></textarea>
                   </div>
                   </div>
 
