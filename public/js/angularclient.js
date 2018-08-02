@@ -3741,7 +3741,6 @@ app.controller("docNotificationController",["$scope","$location","$resource","$i
     $location.path("/general-chat");
   }
 
-
 }]);
 
 //modal controiller for pick time slot for video or audio request from patients.
@@ -16812,6 +16811,10 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
 
   
   mySocket.on("new_msg", function(data) {
+    if($location.path() !== "/general-chat") {
+      $rootScope.$broadcast("unattendedMsg",true);   
+      templateService.playAudio(2);   
+    }
     var date = + new Date();
     var msg = {};
     msg.time = data.date;
@@ -16819,7 +16822,6 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
     if(data.from === $scope.partner.partnerId) {     
       msg.userId = user.user_id;
       msg.partnerId = $scope.partner.partnerId;            
-      //templateService.playAudio(3); // note all sounds can be turned of through settings.
       chats(msg);
     } else {     
       //$rootScope.$broadcast("unattendedMsg",true);   
@@ -16849,7 +16851,6 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
   });
 
   $scope.videoRequest = function(type,docObj){
-    //$window.location.href = "/patient/call";
     docObj.type = type;
     reqModal(docObj);
   }

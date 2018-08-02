@@ -125,7 +125,7 @@
     </div>
     <div>
     <h6>Most recent</h6>
-        <article  style='padding: 10px; cursor:pointer;margin-bottom: 10px;box-shadow: 1px 5px 5px rgba(0,0,0,0.5);color:#fff;position: relative;' class="bg-warning" ng-if="recentSession.diagnosis || recentSession.date">
+        <article  style='padding: 10px; cursor:pointer;margin-bottom: 10px;box-shadow: 1px 5px 5px rgba(0,0,0,0.5);color:#fff;position: relative;' class="bg-warning" ng-click="viewTreatmentSession(recentSession)" ng-if="recentSession.diagnosis || recentSession.date">
             <span style="display: block;">{{recentSession.date | date : "mediumDate" }}</span> <span style="padding-left: 20p" ng-bind-html="recentSession.diagnosis.presenting_complain || 'Empty'"></span> <small style="float:right">Last modified: {{recentSession.last_modified | date : "mediumDate"}}</small>
             <button class="btn btn-neutral btn-sm" style="position: absolute;top: 5px; right: 4px" ng-click="viewTreatmentSession(recentSession)">Continue With Treatment</button>
         </article>
