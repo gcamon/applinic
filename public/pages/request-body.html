@@ -27,7 +27,7 @@
 		</div>
 </div>-->
 
-<div class="container">
+<div class="container" ng-if="data">
 <div class="p-1 card">	
     <div class="row">
 	    <div class="col-md-4 col-lg-4 col-sm-12">    	
@@ -50,7 +50,7 @@
 			<hr>
 			<div>				
 				<b style="display: block;padding: 10px 0">Dear {{checkLogIn.title}} {{checkLogIn.firstname}},</b>
-				<h6 class="pb-1">{{data.sender_firstname}} {{data.sender_lastname}} request for your consultation. Below are the details the request:</h6>
+				<h6 class="pb-1">{{data.sender_firstname}} {{data.sender_lastname}} request for your consultation. Below are the details of the request:</h6>
 				<p style="" ng-bind-html="data.message"></p>
 				</p>
 				<strong>Consultation fee do apply if you accept this request.</strong>

@@ -55,7 +55,6 @@ var myModel = function () {
 		user_id: String,
 		unavailable_services: [service_objSchema],
 		type: String
-
 	},{
 		collections: "centerservices"
 	});
@@ -76,6 +75,8 @@ var myModel = function () {
 		category: String,//note categories are admin, decline, redirect,need_doctor.
 		reason: String,
 		complaint_id: String,
+		original_complaint: String,
+    original_complaint_date : String,
 		redirect: {
 			title: String,
 			firstname: String,
@@ -237,7 +238,12 @@ var myModel = function () {
 		patient_gender: String,
 		patient_age: Number,
 		patient_body_weight: String,
-		presence: Boolean
+		presence: Boolean,
+		initial_complaint: {
+    	complaint: String,
+    	complaint_date: String,
+    	date_received: Number
+    }
 	});
 	//this holds records for lab,prescription and scan for the patient
 	var diagnosisSchema = Schema({

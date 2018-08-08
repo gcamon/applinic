@@ -531,107 +531,114 @@ var basicPaymentRoute = function(model,sms,io,paystack){
 					doctor_specialty: req.body.sendObj.specialty || req.body.sendObj.doctor_specialty,
 				}
 
-	             model.user.findOne(
-	                {
-	                    user_id: req.user.user_id
-	                },
-	                {
-	                    accepted_doctors : 1,
-	                    patient_mail: 1,
-	                    firstname:1,
-	                    lastname:1,
-	                    profile_pic_url:1
-	                    
-	                }
-	            )
-	            .exec(
-	                function(err, result){                    
-	                    for (var i = 0; i < result.patient_mail.length; i++) {
-	                    	if(!req.body.sendObj.compaintId){
-	                        if (result.patient_mail[i].user_id === DocObj.doctor_id) {
-	                            result.accepted_doctors.push(DocObj);
-	                            deleteFromPatientNotification(i);
-	                            updateDoctorPatientList();
-	                            break;
-	                        }
-	                      } else {	                      	
-	                      	if (result.patient_mail[i].complaint_id === req.body.sendObj.compaintId) {
-	                            result.accepted_doctors.push(DocObj);
-	                            deleteFromPatientNotification(i);
-	                            updateDoctorPatientList();
-	                            break;
-	                        }
-	                      }
-	                    }
+          model.user.findOne(
+            {
+              user_id: req.user.user_id
+            },
+            {
+              accepted_doctors : 1,
+              patient_mail: 1,
+              firstname:1,
+              lastname:1,
+              profile_pic_url:1                
+            }
+          )
+          .exec(
+             function(err, result){                    
+                for (var i = 0; i < result.patient_mail.length; i++) {
+                	if(!req.body.sendObj.compaintId){
+                    if (result.patient_mail[i].user_id === DocObj.doctor_id) {
+                      result.accepted_doctors.push(DocObj);
+                      deleteFromPatientNotification(i);
+                      updateDoctorPatientList();
+                      break;
+                    }	                        
+                  } else {	                      	
+                  	if (result.patient_mail[i].complaint_id === req.body.sendObj.compaintId) {
+                      result.accepted_doctors.push(DocObj);
+                      deleteFromPatientNotification(i);
+                      updateDoctorPatientList();
+                      break;
+                    }
+                  }
+                }
 
-	                    function deleteFromPatientNotification(index) {
-	                    	console.log(index)
-	                      result.patient_mail.splice(index,1);                                  
-	                    }
+                function deleteFromPatientNotification(index) {
+                	console.log(index)
+                  result.patient_mail.splice(index,1);                                  
+                }
 
-	                    var msgInfo;
+                var msgInfo;
 
-	                    function updateDoctorPatientList() {
-	                      model.user.findOne(
-	                        {
-	                          user_id: req.body.sendObj.user_id
-	                        },
-	                        {
-	                          doctor_patients_list:1,
-	                          phone: 1,
-	                          firstname:1,
-	                          lastname:1,
-	                          phone:1,
-	                          user_id:1,
-	                          presence:1
-	                        }
-	                      )
-	                      .exec(function(err,data){
-	                        data.doctor_patients_list.unshift({
-	                          patient_firstname: result.firstname,
-	                          patient_lastname: result.lastname,
-	                          patient_id: req.user.user_id,
-	                          patient_profile_pic_url: result.profile_pic_url
-	                        });
+                  function updateDoctorPatientList() {
+                    model.user.findOne(
+                      {
+                        user_id: req.body.sendObj.user_id
+                      },
+                      {
+                        doctor_patients_list:1,
+                        phone: 1,
+                        firstname:1,
+                        lastname:1,
+                        phone:1,
+                        user_id:1,
+                        presence:1
+                      }
+                    )
+                    .exec(function(err,data){
+                    	if(data) {
+                        data.doctor_patients_list.unshift({
+                          patient_firstname: result.firstname,
+                          patient_lastname: result.lastname,
+                          patient_id: req.user.user_id,
+                          patient_profile_pic_url: result.profile_pic_url,
+                          initial_complaint: {
+                          	complaint: req.body.sendObj.original_complaint,
+                          	complaint_date: req.body.sendObj.original_complaint_date,
+                          	date_received: req.body.date
+                          }
+                        });
 
-	                        if(data.presence === true){
-					                  io.sockets.to(data.user_id).emit("acceptance notification",{status:true})
-					                } else {
-					                  var msgBody = "Success! " +  result.firstname + " " + result.lastname + " is now your patient. Visit http://applinic.com/login"
-					                  var phoneNunber =  data.phone;
-				                    sms.messages.create(
-								              {
-								                to: phoneNunber,
-								                from: '+16467985692',
-								                body: msgBody,
-								              }
-								            ) 
-					                }
+                        if(data.presence === true){
+				                  io.sockets.to(data.user_id).emit("acceptance notification",{status:true});
+				                } else {
+				                  var msgBody = "Success! " +  result.firstname + " " + result.lastname + " is now your patient. Visit http://applinic.com/login"
+				                  var phoneNunber =  data.phone;
+			                    sms.messages.create(
+							              {
+							                to: phoneNunber,
+							                from: '+16467985692',
+							                body: msgBody,
+							              }
+							            ) 
+				                }
 
-	                        msgInfo = "Transaction successful! Your account is debited. " + data.firstname + " " + data.lastname + " is now your doctor." 
-	                        data.save(function(err,info){
-	                          if(err) throw err;	                           	                          
-	                        });
+                        msgInfo = "Transaction successful! Your account is debited. " + data.firstname + " " + data.lastname + " is now your doctor." 
+                        data.save(function(err,info){
+                          if(err) throw err;	                           	                          
+                        });
+                    	}
 
-	                        result.save(function(err,info){
-		                        if(err) throw err;                       
-		                    		removeFromWaitingRoom();
-		                    	});
-	                      })
+                      result.save(function(err,info){
+                        if(err) throw err;                       
+                    		removeFromWaitingRoom();
+                    	});
 
-	                    }
-	                    //remove from patient waiting list
-	                    function removeFromWaitingRoom(){
-	                    	model.help.remove({complaint_id:req.body.sendObj.compaintId},function(err,info){
-	                    	});
-	                    	res.send({message: msgInfo,balance:debitor.ewallet.available_amount});
-	                      console.log("note deleted");                        		                   
-	                    }
+                    })
 
-	                }
-            	)
-							           
-        	} 
+                  }
+                  //remove from patient waiting list
+                  function removeFromWaitingRoom(){
+                  	model.help.remove({complaint_id:req.body.sendObj.compaintId},function(err,info){
+                  	});
+                  	res.send({message: msgInfo,balance:debitor.ewallet.available_amount});
+                    console.log("note deleted");                        		                   
+                  }
+
+              }
+        	)
+					           
+    	} 
 
 
 		} else {

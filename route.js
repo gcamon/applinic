@@ -872,14 +872,48 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
     
   router.get("/user/patient/find-doctor",function(req,res){
       if(req.user){
-       
+       console.log(req.query)
         var criteria;
         var str;
 
         if(!req.query.city)
           req.query.city = req.user.city;
+
+        switch(req.query.type){
+          case 'doctorId':
+            criteria = {user_id: req.query.user_id,type:"Doctor"}
+          break;
+          case 'specialty':
+            str = new RegExp(req.query.specialty); 
+            var str2 = new RegExp(req.query.city);     
+            criteria = { specialty : { $regex: str, $options: 'i' },city : { $regex: str2, $options: 'i' },type:"Doctor"};
+          break;
+          case 'doctorname':
+            str = new RegExp(req.query.name);          
+            criteria = { $or : [{firstname : { $regex: str, $options: 'i' }},{lastname : { $regex: str, $options: 'i' }}],type:"Doctor"};
+          break;
+          case 'disease':
+            str = new RegExp(req.query.disease.replace(/\s+/g,"\\s+"), "gi"); 
+            criteria = { $or: [{ "skills.skill" : { $regex: str, $options: 'i' },type:"Doctor",city:req.query.city},{"skills.disease": { $regex: str, $options: 'i' },type:"Doctor",city:req.query.city}]};
+          break;
+          default:
+          break;
+        }
+
+
+        if(req.query.skill) {
+          var checkStr = req.query.skill.split(":") || req.query.skill.split(";");
+          
+          if(checkStr.length <= 1) {
+            str = new RegExp(req.query.skill.replace(/\s+/g,"\\s+"), "gi"); 
+          
+            criteria = { "skills.procedure_description" : { $regex: str, $options: 'i' },type:"Doctor"};
+          } else {
+            criteria = { "skills.procedure_description" : req.query.skill};
+          }
+        }
         
-        if(req.query.city && !req.query.specialty){
+        /*if(req.query.city && !req.query.specialty){
           str = new RegExp(req.query.city);          
           criteria = { city : { $regex: str, $options: 'i' },type:"Doctor"};
         } else if(req.query.city && req.query.specialty){
@@ -896,6 +930,8 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
           } else {
             finalStr = req.query.name;
           }
+
+          console.log(finalStr)
           
           str = new RegExp(finalStr.replace(/\s+/g,"\\s+"), "gi");
           console.log(str);         
@@ -918,7 +954,7 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
           criteria = { $or: [{ "skills.skill" : { $regex: str, $options: 'i' },type:"Doctor",city:req.query.city},{"skills.disease": { $regex: str, $options: 'i' },type:"Doctor",city:req.query.city}]};
         } else {
           criteria = req.query;
-        }
+        }*/
         model.user.find(criteria,{
           name:1,
           _id:0,
@@ -1171,7 +1207,9 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
               requestData[item] = req.body[item];
           }
         }
-       
+        
+        console.log(requestData);
+
         model.user.findOne({user_id:req.body.receiverId},{doctor_notification:1,presence:1,set_presence:1,phone:1}).exec(function(err,data){
           if(err) throw err;
 
@@ -1286,7 +1324,7 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
 
     router.put("/user/doctor/acceptance",function(req,res){
          if(req.user){ 
-                  
+          console.log(req.body)
              model.user.findOne(
                 {
                     user_id: req.body.patientId
@@ -1302,15 +1340,11 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
             )
             .exec(
                 function(err, result){                    
-                    /*if(result.ewallet.available_amount > 0 && result.ewallet.available_amount >= req.body.consultation_fee) {
-                        req.body.service_access = true;
-                        result.ewallet.available_amount -= req.body.consultation_fee;
-                    }*/
                     if(err) throw err;
                     if(result) {
                       var date = + new Date();
                       req.body.service_access = true;
-                      var random = parseInt(Math.floor(Math.random() * 9999) + " " + Math.floor(Math.random() * 99999)); // use for check on the front end to distinguish messages sent.
+                      var random = parseInt(Math.floor(Math.random() * 99999) + " " + Math.floor(Math.random() * 99999)); // use for check on the front end to distinguish messages sent.
                         result.patient_mail.push({
                         message_id: random.toString(),
                         user_id: req.user.user_id,
@@ -1323,7 +1357,9 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
                         service_access: req.body.service_access,
                         profile_pic_url: req.user.profile_pic_url,
                         profile_url: req.user.profile_url,
-                        specialty: req.user.specialty
+                        specialty: req.user.specialty,
+                        original_complaint: (req.body.originalComp) ? req.body.originalComp.message : null,
+                        original_complaint_date : (req.body.originalComp) ? req.body.originalComp.date : null
                       });
 
                       if(result.presence === true){
@@ -1347,7 +1383,7 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
                       });
 
                     } else {
-                      re.send({status: false});
+                      res.send({status: false});
                     }
                 }
             )
@@ -1364,8 +1400,10 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
 
     router.put("/user/doctor/decline-request",function(req,res){
       if(req.user) {
+
        var random = parseInt(Math.floor(Math.random() * 99999) + " " + Math.floor(Math.random() * 99999));
-        model.user.findOne({user_id: req.body.sender_id},{patient_mail:1}).exec(function(err,patient){
+        model.user.findOne({user_id: req.body.sender_id},{patient_mail:1})
+        .exec(function(err,patient){
           if(err) throw err;
           if(patient) {
             patient.patient_mail.push({
@@ -2591,6 +2629,8 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
     router.post("/user/doctor/patient-session",function(req,res){
       if(req.user){ 
 
+        console.log(req.body)
+
         var session_id = uuid.v1() //parseInt(Math.floor(Math.random() * 999999) + "" + Math.floor(Math.random() * 999999));
         
         var connectObj = {
@@ -2659,18 +2699,22 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
 
         model.user.findOne({user_id:req.body.patient_id},{profile_pic_url:1,firstname:1,lastname:1,name:1},function(err,result){            
           if(err) throw err; 
-          console.log(result)           
-          getPatientInfo.firstname = result.firstname;
-          getPatientInfo.lastname = result.lastname;
-          getPatientInfo.profilePic = result.profile_pic_url;
-          getPatientInfo.patient_username = result.name;
+          console.log(result) 
+          if(result) {        
+            getPatientInfo.firstname = result.firstname;
+            getPatientInfo.lastname = result.lastname;
+            getPatientInfo.profilePic = result.profile_pic_url;
+            getPatientInfo.patient_username = result.name;
 
-          //create session Note; video chat initiation of sessions comes with session id from the client
-          if(!req.body.session_id){
-            newSession();
+            //create session Note; video chat initiation of sessions comes with session id from the client
+            if(!req.body.session_id){
+              newSession();
+            } else {
+              updateSession()
+            }  
           } else {
-            updateSession()
-          }         
+            res.end("Error occured")
+          }    
          
         });
 
@@ -2678,11 +2722,6 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
         var queryObj = (req.body.user_id) ? {user_id:req.body.user_id} : {user_id:req.user.user_id};
 
         function newSession(){         
-          /*if(req.body.complaint){
-            queryObj = {user_id:req.body.user_id}
-          } else {
-            queryObj = {user_id:req.user.user_id};
-          }*/
           model.user.findOne(queryObj,{doctor_patient_session:1}).exec(function(err,result){
            if(err) throw err;             
            req.body.session_id = session_id;
@@ -5946,12 +5985,36 @@ router.delete("/user/patient/delete-one",function(req,res){
 
 router.delete("/user/delete-one/refId", function(req,res){ //this route is also used by diagnostic centers to delete viewed notification
   if(req.user){
-    console.log("=============")
-    console.log(req.body)
     var projection = {};
     projection[req.body.dest] = 1;
     var del = new deleteItem(req.body.item,req.user.user_id);
     del.DeleteByRefId(model,projection);
+    res.send("deleted");
+  } else {
+    res.end("unauthorized access!")
+  }
+});
+
+router.delete("/user/delete-one/noteId", function(req,res){ //this route is also used by diagnostic centers to delete viewed notification
+  if(req.user){
+    console.log(req.body)
+    var projection = {};
+    projection[req.body.dest] = 1;
+    var del = new deleteItem(req.body.item,req.user.user_id);
+    del.DeleteByNoteId(model,projection);
+    res.send("deleted");
+  } else {
+    res.end("unauthorized access!")
+  }
+});
+
+router.delete("/user/delete-one/msgId", function(req,res){ //this route is also used by diagnostic centers to delete viewed notification
+  if(req.user){
+    console.log(req.body)
+    var projection = {};
+    projection[req.body.dest] = 1;
+    var del = new deleteItem(req.body.item,req.user.user_id);
+    del.DeleteByMsgId(model,projection);
     res.send("deleted");
   } else {
     res.end("unauthorized access!")
@@ -7056,6 +7119,22 @@ router.get("/dynamic-service",function(req,res){
    console.log(data)
   });
 });
+
+router.get("/user/doctor/initial-complaint",function(req,res){
+  if(req.user){
+    console.log(req.query)
+    var list = req.user.doctor_patients_list;
+    var complaints = [];
+    for(var i = 0; i < list.length; i++){
+      if(list[i].patient_id == req.query.patientId){
+        complaints.push(list[i])
+      }
+    }
+    res.json(complaints);
+  } else {
+    res.end("unauthorized access")
+  }
+}) 
 
 
 

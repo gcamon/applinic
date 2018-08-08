@@ -203,16 +203,16 @@
                                        <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange" ng-if="loading"></i> 
                                     </div>
                                     <ul class="pt-3 pagination">
-                                        <li><a href="#/1" ng-class="{'btn-primary':batch==='1'}" ng-click="getBatch('1')">1</a></li>
-                                        <li><a href="#/2" ng-class="{'btn-primary':batch==='2'}" ng-click="getBatch('2')">2</a></li>
-                                        <li><a href="#/3" ng-class="{'btn-primary':batch==='3'}" ng-click="getBatch('3')">3</a></li>
-                                        <li><a href="#/4" ng-class="{'btn-primary':batch==='4'}" ng-click="getBatch('4')">4</a></li>
-                                        <li><a href="#/5" ng-class="{'btn-primary':batch==='5'}" ng-click="getBatch('5')">5</a></li>
-                                        <li><a href="#/6" ng-class="{'btn-primary':batch==='6'}" ng-click="getBatch('6')">6</a></li>
-                                        <li><a href="#/7" ng-class="{'btn-primary':batch==='7'}" ng-click="getBatch('7')">7</a></li>
-                                        <li><a href="#/8" ng-class="{'btn-primary':batch==='8'}" ng-click="getBatch('8')">8</a></li>
-                                        <li><a href="#/9" ng-class="{'btn-primary':batch==='9'}" ng-click="getBatch('9')">9</a></li>
-                                        <li><a href="#/10" ng-class="{'btn-primary':batch==='10'}" ng-click="getBatch('10')">10</a></li>
+                                        <li ng-if="complaints.length > 20" ><a href="#/1" ng-class="{'btn-primary':batch==='1'}" ng-click="getBatch('1')">1</a></li>
+                                        <li ng-if="complaints.length > 20"><a href="#/2" ng-class="{'btn-primary':batch==='2'}" ng-click="getBatch('2')">2</a></li>
+                                        <li ng-if="complaints.length > 40"><a href="#/3" ng-class="{'btn-primary':batch==='3'}" ng-click="getBatch('3')">3</a></li>
+                                        <li ng-if="complaints.length > 60"><a href="#/4" ng-class="{'btn-primary':batch==='4'}" ng-click="getBatch('4')">4</a></li>
+                                        <li ng-if="complaints.length > 80"><a href="#/5" ng-class="{'btn-primary':batch==='5'}" ng-click="getBatch('5')">5</a></li>
+                                        <li ng-if="complaints.length > 100"><a href="#/6" ng-class="{'btn-primary':batch==='6'}" ng-click="getBatch('6')">6</a></li>
+                                        <li ng-if="complaints.length > 120"><a href="#/7" ng-class="{'btn-primary':batch==='7'}" ng-click="getBatch('7')">7</a></li>
+                                        <li ng-if="complaints.length > 140"><a href="#/8" ng-class="{'btn-primary':batch==='8'}" ng-click="getBatch('8')">8</a></li>
+                                        <li ng-if="complaints.length > 160"><a href="#/9" ng-class="{'btn-primary':batch==='9'}" ng-click="getBatch('9')">9</a></li>
+                                        <li ng-if="complaints.length > 180"><a href="#/10" ng-class="{'btn-primary':batch==='10'}" ng-click="getBatch('10')">more...</a></li>
                                     </ul>
                                 </div>
 

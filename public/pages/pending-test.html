@@ -121,11 +121,11 @@
               </li>
               <li><strong>Conclusion : </strong> <em>{{test.conclusion}}dffdfddffdfdfdfddffdfd</em></li>
             </ul>-->
-            <p ng-if="test.report == 'Pending'" style="text-align: center;font-size: 12px;padding: 40px"> No report received a this time</p>
+            <p ng-if="test.report == 'Pending'" style="text-align: center;font-size: 12px;padding: 40px"> No report received at this time</p>
 
 
             <div class="row">
-                <div class="col-sm-12 col-md-12 col-lg-12" style="padding: 10px 15px 0;position: relative;text-align: right;">
+                <div class="col-sm-12 col-md-12 col-lg-12" style="padding: 10px 15px 0;position: relative;text-align: righ">
                   <div>  
                     <i class="fa fa-user-md btn btn-info" aria-hidden="true" style="font-size: 18px;margin-right:0px;cursor:pointer;padding: 5px 15px" title="send test result to your doctor(s)" ng-click="sendDocTest(test)" ng-if="test.report !== 'Pending'"></i>
                   <i class="fa fa-user-md btn btn-simple" aria-hidden="true" style="color:#ccc;font-size: 18px;margin-right:0px;cursor:pointer;padding: 5px 15px" title="send test result to your doctor(s)"  ng-if="test.report === 'Pending'"></i>             

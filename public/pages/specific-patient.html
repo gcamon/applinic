@@ -1,12 +1,12 @@
 <div style="height:5px"></div>
                 
-<div class="container target">
+<div class="container target" style="position: relative;">
     
     <div class="row">
         
         
         <div class="col-sm-12 clo-md-3 col-lg-3">
-                <div class="col-sm-12"  style="background:rgba(255,255,255, .8)">
+                <div class="col-sm-12"  style="background:rgba(255,255,255, .8);">
              <div class=" text-center userpe"><a href="">
             <img title="profile image" class="img-responsive" src="{{patientInfo.profile_pic_url}}" style="max-width:200px;max-height:250px"></a>
         </div>
@@ -24,59 +24,43 @@
  
 
             <!--left col-->
-             <a href="" class="bg-info grayish"> <span>MANAGEMENT</span> </a>
-             <a href="" class="grayish"  ng-click="viewMedicalHistory()"><i class="fa fa-medkit text-primary"></i> <span>Medical Record</span> </a>
-<a href="" class="grayish" ng-click="viewSession()"><i class="fa fa-folder-open text-info"></i> Treatment Sessions</a>
+             <h6 href=""> <span>MANAGEMENT</span> </h6>
+             <a href="" class="grayish"  ng-click="viewMedicalHistory()" ng-class="{'btn-info': isToSeeRecord}" ><i class="fa fa-medkit text-primary"></i> <span>Medical Record</span> </a>
+<a href="" class="grayish" ng-click="viewSession()" ng-class="{'btn-info': isToViewSession}"><i class="fa fa-folder-open text-info"></i> Treatment Sessions</a>
 
-<a href="" class="grayish" ng-click="writePrescription()"><i class="icon-Pills" style="color: green"></i> Prescription</a>
+<a href="" class="grayish" ng-click="writePrescription()" ng-class="{'btn-info': isToPrescribe}"><i class="icon-Pills" style="color: green"></i> Prescription</a>
 
-<a href="" class="grayish" ng-click="viewLabPrescriptionRequest()">
+<a href="" class="grayish" ng-click="viewLabPrescriptionRequest()" ng-class="{'btn-info': isToViewLabPrescriptionReq}">
 	<i class="fa fa-flask text-info"  style="position:relative">
 		<strong style="display:inline-block;left: -3px; top:-5px;color:red;position:absolute;font-size:14px" ng-if="labLen > 0">{{labLen}}</strong>
 	</i> Other Laboratory
 </a>
 
 
-<a href="" class="grayish" ng-click="viewRadioPrescriptionRequest()">
+<a href="" class="grayish" ng-click="viewRadioPrescriptionRequest()" ng-class="{'btn-info': isToViewRadPrescriptionReq}">
 	<i class="fa fa-flask text-warning" style="position:relative" title="Patient recent radiology test for your prescription">
     	<strong style="display:inline-block;left: -3px; top:-5px;color:red;position:absolute;font-size:14px" ng-if="radioLen > 0">{{radioLen}}</strong>
-    </i>Other Radiology
+    </i> Other Radiology
 </a>
 
-<a href="" class="grayish" ng-click="outPatientBilling()">
+<a href="" class="grayish" ng-click="outPatientBilling()" ng-class="{'btn-info': isOutPatientBilling}">
     <i class="fa fa-money text-simple" style="position:relative" title="Bill patient for completed medical care expenses">
-    </i>Generate Bill
+    </i> Generate Bill
 </a>
- <!--<div>
-    
-    <a class="grayish bg-success" data-toggle="collapse" data-parent="#accordion" href="/#collapseTen" aria-expanded="false" aria-controls="collapseTen" style="">
-     BIOGRAPHY
-    </a>
-    
-    
-      
-    <aside style="list-style:none;line-height: 32px">
-        <div style="font-size: 14px"><b>Age</b>: &nbsp;<span style="">{{patientInfo.age || "N/A"}} </span></div>
-        <div style="font-size: 14px"><b>Gender</b>: &nbsp;<span style="">{{patientInfo.gender || "N/A"}}</span></div>
-        <div style="font-size: 14px"><b>Body  weight</b>: &nbsp;<span style="">{{patientInfo.body_weight || "N/A"}}</span></div>
-        <div style="font-size: 14px"><b>Address</b>: &nbsp;<span style="">{{patientInfo.address || "N/A"}}</span></div>
-        <div style="font-size: 14px"><b>City</b>: &nbsp;<span style="">{{patientInfo.city || "N/A"}}</span></div>
-        <div style="font-size: 14px"><b>Country</b>: &nbsp;<span style="">{{patientInfo.country || "N/A"}}</span></div>
-    </aside>
-     
-    
-  </div>-->
-          
-        </div></div>
+  </div>
+</div>
         
+
+
         <div class="col-sm-12 col-md-9 col-lg-9" contenteditable="false">
                        <div class="row">
                           <div class="col-md-12 p-0">
         	<div class="panel panel-default">
                 <div class="top-bar row" style="border-bottom:1px solid rgba(0,0,0,0.2);box-shadow:0px 5px 5px #ccc">
                     <div class="col-md-7 col-sm-6 col-lg-7 col-xs-6" style="display: inline-block;">
-                        <button class="btn btn-success btn-sm" style="font-size: 16px" ng-click="chatLive()">Toggle Chat</button><br><br>
-                        <span class="" style="display:inline-block;" ng-cloak style="font-size: 16px">{{patientInfo.title}} {{patientInfo.firstname}} is <em ng-if="typing">{{typing}}</em> 
+                        <button class="btn btn-success btn-sm" style="font-size: 16px" ng-click="chatLive()"><i class="fa fa-comment"></i> </button>&nbsp;&nbsp;&nbsp;
+                        <span ng-cloak style="font-size: 16px">{{patientInfo.title}} {{patientInfo.firstname}} is 
+                            <em ng-if="typing">{{typing}}</em> 
                             <em ng-if="patientAvailability && !typing" ng-cloak>Online</em>
                             <em ng-if="!patientAvailability" ng-cloak style="color:red">Offline</em>
                         </span>
@@ -84,7 +68,6 @@
                     <div class="col-md-5 col-sm-6 col-lg-5 col-xs-6" style="text-align: right;">
                     	 <a class="ick" href="" style="padding-left:15px" title="Delete all chats"  ng-click="deleteChat()"><span class="fa fa-trash-o"></span></a>
                         <a class="ick" href="" style="padding-left:15px" title="Video chat with {{patientInfo.firstname}}" ng-click="videoRequest('video',patientInfo)"><span class="fa fa-video-camera"></span></a>
-                       <!-- <a  class="ick pull-right" href="" style="padding-right:15px" title="Make an audio call to {{patientInfo.firstname}}" ng-click="audioRequest('audio',patientInfo)"><span class="fa fa-phone"></span></a>-->
                          <a class="ick" href="" style="padding-left:15px" title="Book appointment with {{patientInfo.firstname}}"  ng-click="appointment(patientInfo)"><span class="fa fa-calendar"></span></a>
 
                     </div>
@@ -119,24 +102,27 @@
         <h5 style="">Treatment sessions</h5>
     </div>    
     <div style="text-align: right">
+        <button ng-click="getInitialComplaint()" class="btn btn-info">
+            Initial Complaint
+        </button>
         <button ng-click="createNewSession()" class="btn btn-danger">
             new
         </button>
     </div>
     <div>
-    <h6>Most recent</h6>
+    <!--<h6>Most recent</h6>
         <article  style='padding: 10px; cursor:pointer;margin-bottom: 10px;box-shadow: 1px 5px 5px rgba(0,0,0,0.5);color:#fff;position: relative;' class="bg-warning" ng-click="viewTreatmentSession(recentSession)" ng-if="recentSession.diagnosis || recentSession.date">
             <span style="display: block;">{{recentSession.date | date : "mediumDate" }}</span> <span style="padding-left: 20p" ng-bind-html="recentSession.diagnosis.presenting_complain || 'Empty'"></span> <small style="float:right">Last modified: {{recentSession.last_modified | date : "mediumDate"}}</small>
             <button class="btn btn-neutral btn-sm" style="position: absolute;top: 5px; right: 4px" ng-click="viewTreatmentSession(recentSession)">Continue With Treatment</button>
-        </article>
+        </article>-->
        
-        <h6 style="margin-top: 35px">others</h6>            
+        <h6 style="margin-top: 35px">Folders</h6>            
         <article ng-repeat = "session in sessionData" ng-click="viewTreatmentSession(session)" style='padding: 10px; cursor:pointer;margin-bottom: 10px;box-shadow: 1px 5px 5px rgba(0,0,0,0.5);color:#fff;position: relative;' class="bg-warning">
-            <span style="display: block;">{{session.date | date : "mediumDate" }}</span> <span style="padding-left: 20p" ng-bind-html="recentSession.diagnosis.presenting_complain || 'Empty'"></span> <small style="float:right">Last modified: {{session.last_modified | date : "mediumDate"}}</small>
-            <button class="btn btn-neutral btn-sm" style="position: absolute;top: 5px; right: 4px" ng-click="viewTreatmentSession(recentSession)">Continue With Treatment</button>
+            <span style="display: block;">{{session.date | date : "mediumDate" }}</span> <span style="" ng-bind-html="session.diagnosis.presenting_complain || 'Empty'"></span> <small style="float:right">Last modified: {{session.last_modified | date : "mediumDate"}}</small>
+            <button class="btn btn-neutral btn-sm" style="position: absolute;top: 5px; right: 4px" ng-click="viewTreatmentSession(session)">Continue With Treatment</button>
         </article>
     </div>
-    <div style="height: auto;position:absolute;top:150px;left: 300px;text-align: center" ng-if="loading">
+    <div style="position:absolute;top:150px;left: 300px;text-align: center" ng-if="loading">
         <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange;font-size: 24px"></i>
     </div>
 </div>
@@ -373,8 +359,8 @@
             </div>
         </div>
         <div class="pt-1"> 
-            <button ng-click="toPatient()" class="btn btn-info"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i> {{(loading) ? '' : 'Send To Patient'}}</button>
-            <button ng-click="toPharmacy()" class="btn btn-success">Send To Phamarcy</button>
+            <button ng-click="toPatient()" class="btn btn-info"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i> {{(loading) ? '' : 'Send To Patient only'}}</button>
+            <button ng-click="toPharmacy()" class="btn btn-success">Send To Patient / Phamarcy</button>
             <a href="" class="btn btn-danger" ng-click="viewPreviousPrescriptionByDoctor()" style="float:right">{{(isToViewOldPrescription !== true) ? 'View Previous Prescriptions' : 'Close Previous Prescriptions' }}</a>  
         </div>                          
         <div class="clearfix">

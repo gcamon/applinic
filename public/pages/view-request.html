@@ -16,6 +16,8 @@
 			<p class="font-1_1 pt-1">Dear {{patientName}},<br/>
 			   Your request to consult {{reqInfo.title}} {{reqInfo.firstname}} {{reqInfo.lastname}} was granted on {{reqInfo.date | date: "mediumDate"}}.		   
 			</p>
+			<div ng-if="reqInfo.original_complaint"><b>Your complaint was reported to this doctor as stated below:</b> </div>
+			<blockquote ng-bind-html="reqInfo.original_complaint"></blockquote>
 			<p style="font-style: italic"><strong>{{reqInfo.inNaira}} </strong>consultation fee amount will be deducted from your wallet if you accept treatment from this doctor.</p>
 			<!--<a href="#/consultation-fee" class="btn btn-link text-info font-1_1">Tell me more about consultation fee</a>
 			<a href="#/wallet" class="btn btn-link text-info font-1_1">Tell me more about my wallet</a>-->

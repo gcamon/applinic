@@ -13,12 +13,12 @@
 
        <!--<link rel="stylesheet" href="/assets/css/main.cs">-->
         <link rel="stylesheet" href="/assets/css/vendor.css">
-         <link rel="stylesheet" href="/assets/css/app.css">
-         <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
-          <link rel="stylesheet" href="/assets/css/now-ui-kit2.css">
-          <link rel="stylesheet" href="/assets/css/icomoon.css">
-          <link rel="stylesheet" href="/assets/css/chat.css">
-           <link rel="stylesheet" href="/assets/css/my-edit.css">
+        <link rel="stylesheet" href="/assets/css/app.css">
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+        <link rel="stylesheet" href="/assets/css/now-ui-kit2.css">
+        <link rel="stylesheet" href="/assets/css/icomoon.css">
+        <link rel="stylesheet" href="/assets/css/chat.css">
+        <link rel="stylesheet" href="/assets/css/my-edit.css">
           
         <!--<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>-->
           <script src="/assets/js/vendor2.js"></script>
@@ -66,6 +66,11 @@
                     color: orange!important;
                     float: right!important;
                     font-size: 14px
+                }
+
+                .grayish:hover {
+                    background-color: orange;
+                    color: #fff!important;
                 }
 
                 /*@media screen and (max-width: 720px) {
@@ -1498,7 +1503,10 @@
           <div class="modal-dialog">
             <div class="modal-content">
               <div class="modal-header">
-               <h5>Consultation Acceptance</h5>
+               <h5>Consultation Acceptance
+                <i ng-click="close('No')" class="fa fa-times" data-dismiss="modal" style="float: right;cursor: pointer;"></i>  
+               </h5>
+               
               </div>
               <p style="color:red; text-align: center" class="p-1 bg-danger" ng-if="message">{{message}}</p>
               <div class="modal-body">                
@@ -1518,9 +1526,9 @@
                     </div>
                 </form>
               </div>
-              <div class="modal-footer">
+              <!--<div class="modal-footer">
                 <button type="button" ng-click="close('No')" class="btn btn-default" data-dismiss="modal">Close</button>                
-              </div>
+              </div>-->
             </div>
           </div>
         </div>
@@ -1531,7 +1539,8 @@
           <div class="modal-dialog">
             <div class="modal-content">
               <div class="modal-header">
-               <h5>Consultation Rejection</h5>
+               <h5>Consultation Rejection
+               <i ng-click="close('No')" class="fa fa-times" data-dismiss="modal" style="float: right;cursor: pointer;"></i>  </h5>
               </div>
               <p style="color:red; text-align: center" class="p-1 bg-danger" ng-if="message">{{message}}</p>
               <div class="modal-body">                
@@ -1547,20 +1556,48 @@
                     </div>                   
                 </form>
               </div>
-              <div class="modal-footer">
+             <!-- <div class="modal-footer">
                 <button type="button" ng-click="close('No')" class="btn btn-default" data-dismiss="modal">Cancel</button>                
+              </div>-->
+            </div>
+          </div>
+        </div>
+     </script>
+
+     <script type="text/ng-template" id="quickViewInitialComplaint.html">
+         <div class="modal fade">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+               <h5>Initial  Complaint by {{initial[0].patient_firstname}} {{initial[0].patient_lastname}}
+               <i ng-click="close('No')" class="fa fa-times" data-dismiss="modal" style="float: right;cursor: pointer;"></i>  </h5>
+              </div>
+              
+              <div class="modal-body">
+                 
+                <div ng-repeat="c in initial" style="margin-bottom: 15px;max-height: 500px">              
+                    <article> - Complaint was recorded on {{c.initial_complaint.complaint_date | date: 'mediumDate'}} of which consultation request was accepted by you on {{c.initial_complaint.date_received | date: 'mediumDate'}}. The complaint is stated as reported:</article>
+                    <blockquote ng-bind-html="c.initial_complaint.complaint"></blockquote>
+                </div>
+                <div style="text-align: center;margin-top: 50px">
+                    <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange;" ng-if="loading"></i>
+                </div>
+
               </div>
             </div>
           </div>
         </div>
      </script>
 
+
       <script type="text/ng-template" id="redirect-request.html">
          <div class="modal fade">
           <div class="modal-dialog">
             <div class="modal-content">
               <div class="modal-header">
-               <h5>Refer to a Specialist</h5>
+               <h5>Refer to a Specialist
+               <i ng-click="close('No')" class="fa fa-times" data-dismiss="modal" style="float: right;cursor: pointer;"></i>  
+               </h5>
               </div>
                 <div>
                     <ul style="list-style: none;display: inline-block;">                        
@@ -1587,9 +1624,9 @@
                 <div style="text-align: center;margin-top: 40px" ng-if="loading">
                    <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange;font-size: 18px" ng-if="loading"></i> 
                 </div>
-              <div class="modal-footer">
+              <!--<div class="modal-footer">
                 <button type="button" ng-click="close('No')" class="btn btn-default" data-dismiss="modal">Cancel</button>                
-              </div>
+              </div>-->
             </div>
           </div>
         </div>

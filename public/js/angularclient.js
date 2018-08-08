@@ -1807,6 +1807,34 @@ app.controller('signupController',["$scope","$http","$location","$window","templ
   var phoneNumber;
 
   $scope.submit = function(type,argTitle){
+  alert("test sms 9ja")
+ var data = JSON.stringify({
+      "from": "Applinic",
+      "to": "2348064245256",
+      "text": "Test SMS."
+    });
+    
+    var xhr = new XMLHttpRequest();
+    xhr.withCredentials = false;
+    
+    xhr.addEventListener("readystatechange", function () {
+      if (this.readyState === this.DONE) {
+        console.log(this.responseText);
+      }
+    });
+    
+    xhr.open("POST", "https://api.infobip.com/sms/1/text/single");
+    xhr.setRequestHeader("authorization", "Basic C0FF03BE09629685A88C5F510F3113E4");
+    xhr.setRequestHeader("content-type", "application/json");
+    xhr.setRequestHeader("accept", "application/json");
+    
+    xhr.onload = function() {
+      console.log(xhr.responseText)
+    }
+    xhr.send(data);
+
+  return;
+
   $scope.user.currencyCode = currency.code;
   $scope.user.state = currency.state;
   $scope.user.region = currency.region;
@@ -2703,6 +2731,7 @@ app.controller('resultController',["$scope","$rootScope","$http","$location","$r
         if($scope.user.doctorId) {
           var sendObj = {};
           sendObj.user_id = $scope.user.doctorId;
+          sendObj.type = $scope.user.creteria;
           data.query(sendObj,function(data){           
             if(data.length > 0) {
               localManager.setValue("userInfo",data);
@@ -2720,6 +2749,7 @@ app.controller('resultController',["$scope","$rootScope","$http","$location","$r
         case "specialty":        
           var sendObj = {};
           sendObj.specialty = $scope.user.specialty;
+          sendObj.type = $scope.user.creteria;
           sendObj.city = $scope.user.city;
           data.query(sendObj,function(data){
             if(data.length > 0) {
@@ -2734,7 +2764,8 @@ app.controller('resultController',["$scope","$rootScope","$http","$location","$r
         case "doctorname": 
           if($scope.user.name) {        
             var sendObj = {};
-            sendObj.name = $scope.user.name;          
+            sendObj.name = $scope.user.name;
+            sendObj.type = $scope.user.creteria;           
             data.query(sendObj,function(data){
               if(data.length > 0) {
                 localManager.setValue("userInfo",data);
@@ -2753,7 +2784,8 @@ app.controller('resultController',["$scope","$rootScope","$http","$location","$r
         case "skill":
           //alert($scope.user.skill)
           var sendObj = {};         
-          sendObj.skill = $scope.user.skill;          
+          sendObj.skill = $scope.user.skill; 
+          sendObj.type = $scope.user.creteria;        
           data.query(sendObj,function(data){
           if(data.length > 0) {
             localManager.setValue("userInfo",data);
@@ -2768,7 +2800,8 @@ app.controller('resultController',["$scope","$rootScope","$http","$location","$r
         case "disease":
           //alert($scope.user.skill)
           var sendObj = {};        
-          sendObj.disease = $scope.user.disease;          
+          sendObj.disease = $scope.user.disease;
+          sendObj.type = $scope.user.creteria;          
           data.query(sendObj,function(data){
           if(data.length > 0) {
             localManager.setValue("userInfo",data);
@@ -3357,7 +3390,7 @@ app.controller("bookingDocModalController",["$scope","templateService","$http","
 
       if($scope.docInfo.user_id !== user.user_id) {
 
-       var random = Math.floor(Math.random() * 99999);       
+       var random = parseInt(Math.floor(Math.random() * 999999) + "" + Math.floor(Math.random() * 99999));     
        $scope.patient.type = "consultation";      
        $scope.patient.message_id = random;
        $scope.patient.date = + new Date();
@@ -3387,7 +3420,7 @@ app.controller("bookingDocModalController",["$scope","templateService","$http","
 
    $scope.getAnswer = function() {
      if(Object.keys($scope.patient).length > 0){
-      var random = Math.random(Math.floor() * 1000);
+      var random = parseInt(Math.floor(Math.random() * 999999) + "" + Math.floor(Math.random() * 99999));
        
        $scope.patient.type = "question";
        
@@ -3475,7 +3508,7 @@ app.controller("docNotificationController",["$scope","$location","$resource","$i
           }
         }
 
-        console.log(filter["Meet In-person"])
+        
         $scope.name = templateService.getfirstname;
         $scope.total = data.doctor_notification.length;        
         $scope.consultation = filter.consultation;
@@ -3489,44 +3522,20 @@ app.controller("docNotificationController",["$scope","$location","$resource","$i
         if(filter.hasOwnProperty("consultation"))
           $scope.consultationLen = filter.consultation.length;
 
-        /*if(filter.hasOwnProperty("question"))
-          $scope.questionLen = filter.question.length;
-        
-        if(filter.hasOwnProperty("Video Call"))         
-          $scope.videoRequestLen = filter["Video Call"].length
-          
-        if(filter.hasOwnProperty("Meet In-Person"))
-          $scope.inPersonRequestLen = filter["Meet In-Person"].length;
-
-        if(filter.hasOwnProperty("Audio Call"))
-          $scope.audioRequestLen = filter["Audio Call"].length;
-
-        if(filter.hasOwnProperty("Live Chat"))
-          $scope.chatRequestLen = filter["Live Chat"].length;*/
-
-        
-
-        /*
-        
-        $scope.videoRequestLen = filter.videocall.length;
-        $scope.audioRequest = filter.audiocall;
-        $scope.audioRequestLen = filter.audiocall.length;
-        $scope.chatRequest = filter.livechat;
-        $scope.chatRequestLen = filter.livechat.length;
-        $scope.inPersonRequestLen = filter.inperson.length;
-        console.log($scope.inPersonRequest);*/
-
+      
         $scope.view = function(patient){
-          random = Math.floor(Math.random() * 99999);          
+          random = Math.floor(Math.random() * 999999);          
           requestManager.set(patient);
           $location.path("/patient-request/" + random);
         };
 
         $scope.viewsMessage = function(patient){
-          random = Math.floor(Math.random() * 99999);          
+          random = Math.floor(Math.random() * 999999);          
           requestManager.set(patient);
           $location.path("/patient-request/" + random);
         };
+
+
 
 
         
@@ -3578,13 +3587,49 @@ app.controller("docNotificationController",["$scope","$location","$resource","$i
 
  //deletes a selected request from a patient.        
   $rootScope.$on('declined request',function(env,data){
-    if(data){
-      getRequest();
+    if(data.status){
+      /*getRequest();
       var random = Math.floor(Math.random() * ($scope.consultation.length - 1));      
       //shows another consultation request
-      $scope.view($scope.consultation[random])
+      $scope.view($scope.consultation[random])*/
+      var elemPos = $scope.consultation.map(function(x){return x.message_id}).indexOf(data.id);
+      if(elemPos !== -1){
+        $scope.consultation.splice(elemPos,1)
+        if($scope.consultationLen > 0)
+          $scope.consultationLen--;    
+      }
     }
   })
+
+  //deletes attended request from doctor notification.        
+  $rootScope.$on('consultation attended',function(env,data){
+    var elemPos = $scope.consultation.map(function(x){return x.message_id}).indexOf(data.id);
+    if(elemPos !== -1){
+      $scope.consultation.splice(elemPos,1)
+    }
+
+    if(data.status){
+      deleteByMsgId(data.id,"doctor_notification")
+    }
+  })
+
+  function deleteByMsgId(id,field) {
+    var msg = "Notification deleted";
+    var del = new deleteFactory(id,field);
+    del.deleteItem("/user/delete-one/msgId","");//deletes notification once it is viewed.
+    if($scope.consultationLen > 0)
+      $scope.consultationLen--;    
+  }
+
+
+  function deleteByNoteId(id,field) {
+    var msg = "Notification deleted";
+    var del = new deleteFactory(id,field);
+    del.deleteItem("/user/delete-one/noteId","");//deletes notification once it is viewed.
+    if($rootScope.noteLen > 0)
+      $rootScope.noteLen--;    
+  }
+
 
   var video = [];
   var audio = [];
@@ -5567,24 +5612,28 @@ app.controller("grantedRequestController",["$scope","$http","$rootScope","ModalS
       grantedRequest.patientId = $scope.data.sender_id;
       grantedRequest.date = date;      
       grantedRequest.consultation_fee = $scope.user.fee;      
-      grantedRequest.service_access = false;       
+      grantedRequest.service_access = false;
+      grantedRequest.originalComp = $rootScope.data
+
       $http({
-          method  : 'PUT',
-          url     : "/user/doctor/acceptance",
-          data : grantedRequest,
-          headers : {'Content-Type': 'application/json'} 
-          })
-        .success(function(data) {
-          $scope.loading = false;              
-          if(data.status){
-            $scope.acceptanceMsg = "Success! Consultation acceptance submitted, patient will be notified."//alert("Success! Patient will be notified");
-          } else {
-            $scope.message = "Oops! Something went wrong. Acceptance not sent.";
-          }
-        });
+        method  : 'PUT',
+        url     : "/user/doctor/acceptance",
+        data : grantedRequest,
+        headers : {'Content-Type': 'application/json'} 
+        })
+      .success(function(data) {
+        $scope.loading = false;              
+        if(data.status){
+          $rootScope.$broadcast("consultation attended",{status:true,id: $rootScope.data.message_id});
+          $rootScope.data = null;
+          $scope.acceptanceMsg = "Success! Consultation acceptance submitted, patient will be notified."//alert("Success! Patient will be notified");
+        } else {
+          $scope.message = "Oops! Something went wrong. Acceptance not sent.";
+        }
+      });
 
     } else {
-        $scope.message = "please enter your consultation fee amount below."
+        $scope.message = "Please enter your consultation fee amount below."
     }
   }
 
@@ -5596,12 +5645,14 @@ app.controller("grantedRequestController",["$scope","$http","$rootScope","ModalS
       data : data,
       headers : {'Content-Type': 'application/json'} 
       })
-    .success(function(data) {
+    .success(function(res) {
       $scope.loading = false;              
-      if(data.status){
+      if(res.status){
         //alert("request")
         //update doctor's  notification list
-        $rootScope.$broadcast('declined request',true);
+        //;
+        $rootScope.$broadcast('declined request',{status: true, id: $rootScope.data.message_id});
+        $rootScope.data = null;
       } else {
         alert("error occured! request was not declined. Try again")
       }
@@ -5638,13 +5689,13 @@ app.controller("referRequestController",["$scope","$http","ModalService","reques
     $scope.refer = function(doc) {
       doc.loading = true;
       $rootScope.data.receiverId = doc.user_id;
-      //doc.loading = false;
-      //doc.msg = "request sent!"
       console.log($rootScope.data)
       source.refer($rootScope.data,function(response){
         doc.loading = false;
         if(response.status) {
           doc.msg = "request sent!";
+          $rootScope.$broadcast("consultation attended",{status:true,id: $rootScope.data.message_id});
+          $rootScope.data = null
         }
       })
 
@@ -6329,7 +6380,7 @@ app.controller("PatientViewResponseModalController",["$scope","$rootScope","$loc
         amount: $scope.docInfo.fee,
         otp: newStr,
         date: date,
-        message: "Consultation fee",
+        message: "Consultation fee ",
         userId: $scope.docInfo.doctor_user_id,
         sendObj: {
           doctor_id: $scope.docInfo.doctor_user_id,
@@ -6545,33 +6596,7 @@ app.controller("patientViewRequestController",["$scope","$location","$http","$ro
   function($scope,$location,$http,$rootScope,templateService,ModalService,deleteFactory,
     localManager,walletService,paymentVerificationService){
  var id = templateService.holdId;
- /*var docObj = {};
- templateService.holdAllNotification.forEach(function(item){  
-  if(item.doctorId === id ){
-    for(var i in item){
-      docObj[i] = item[i];
-    }
-  
-  templateService.holdfee = item.getFee;
-  templateService.holdwalletAmount = item.wallet;
-  }
- });
- console.log("==============")
- console.log(templateService.holdMsg)
 
- $scope.reqInfo = docObj;
- $scope.fundWallet = false;
-
- if(docObj.getFee === "") {
-    showOnlyMsg();
-  } else {
-    $scope.isRequest = true;
-  }
-
- function showOnlyMsg(){
-  $scope.isRequest = false;
-  $scope.isPrescription = true;
- }*/
  localManager.setValue("currentPageForPatients",$location.path())
  $scope.viewPrescriptionFromNoticeTemplate = function () {
   templateService.holdPrescriptionsId = docObj.doctorId;
@@ -6609,7 +6634,7 @@ app.controller("patientViewRequestController",["$scope","$location","$http","$ro
 
     
   
-  $rootScope.sendAcceptanceVerification = function(time){ //this function is all availabe on wallet controller
+  $rootScope.sendAcceptanceVerification = function(time){ //this function is also availabe on wallet controller
     var docObj = $scope.reqInfo;
     templateService.holdRawAmount = $scope.reqInfo.consultation_fee;    
 
@@ -7141,7 +7166,7 @@ getTransactions();
         amount: templateService.holdRawAmount,
         otp: newStr,
         date: date,
-        message: "Consultation fee",
+        message: "Consultation fee ",
         userId: receiver,
         sendObj: templateService.sendObj
       }
@@ -8129,24 +8154,6 @@ app.controller("changePictureController",["$scope","$rootScope","$location","$ht
       xhr.addEventListener("abort", uploadCanceled, false);
      
       
-
-      /*$http.put(uploadUrl,fd,{
-        transformRequest: angular.identity,
-        headers: {"Content-Type":undefined}
-      })
-      .success(function(response){
-        if(response.error){
-          alert(response.error)
-        } else {
-          $scope.userData = response;
-        }
-
-        files[key].size <= 8388608
-        
-      }); */
-
-      console.log(fd)
-
       xhr.open("PUT", uploadUrl)
       xhr.send(fd);
       $scope.progressVisible = false
@@ -10171,6 +10178,16 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
       });
     }
 
+    $scope.getInitialComplaint = function() {
+      ModalService.showModal({
+          templateUrl: 'quickViewInitialComplaint.html',
+          controller: "fromModalSessionController"
+      }).then(function(modal) {
+          modal.element.modal();
+          modal.close.then(function(result){});
+      });
+    }
+
     $scope.viewLabPrescriptionRequest = function () {
       $scope.isToSeeRecord = false;
       $scope.isToPrescribe = false;
@@ -10206,14 +10223,9 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
       var getSession = getSessionService;//$resource("/user/doctor/get-patient-sessions");
       var sendObj = {patient_id:patient.id}
       getSession.query(sendObj,function(data){
-        $scope.loading = false;
-        for(var i = 1; i < data.length; i++) {          
-          if(sessionList.length >= 10)
-            break;
-          sessionList.push(data[i]);
-        }
-        $rootScope.recentSession = data[0];
-        $rootScope.sessionData = sessionList;
+        $scope.loading = false; 
+        //$rootScope.recentSession = data[0];
+        $rootScope.sessionData = data;
         if(data.length > 0)
           templateService.holdId = data[0].patient_id;
       })
@@ -10594,6 +10606,19 @@ app.controller("fromModalSessionController",["$scope","$http","$window","localMa
     }
 
   }
+
+  $scope.loading = true;
+  $http({
+    method  : 'GET',
+    url     : "/user/doctor/initial-complaint/" + "?patientId=" + $rootScope.holdId,
+    headers : {'Content-Type': 'application/json'} 
+    })
+  .success(function(data) {  
+    $scope.loading = false; 
+    $scope.initial = data;
+    console.log(data)
+  });
+
 
 }]);
 

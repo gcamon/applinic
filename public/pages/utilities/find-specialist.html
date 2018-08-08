@@ -1,10 +1,10 @@
 
  <div class="card card-center-1 p-1">
- <div style="width: 70%">
-     <h3 class="font-1_4 mb-0" style="">Find Doctor</h3><br>
+ <form style="width: 70%;margin: 0 auto">
+     <h3 class=" mb-0" style="">Find Doctor</h3><br>
      <div class="">
-        <label for="lastname">Options: </label>
-        <select class="custom-select form-control" ng-model="user.creteria">
+        <label for="lastname">Options </label>
+        <select class="custom-select form-control" ng-model="user.creteria" style="font-size: 14px!important">
           <option selected value="doctorname">Find by name</option>
           <option value="specialty">City &amp; Doctor's Specialty</option>
           <option value="doctorId">Find by doctor's ID</option>
@@ -13,13 +13,13 @@
      </div>
     <hr>
         <div class="form-group" ng-if="isName === true">
-        <label for="lastname" class="pl-0">Doctor's Name: </label>
-        <input type="text" class="form-control" placeholder="e.g Dr Ede Obinna or Dr Ede" ng-model="user.name" >
+        <label for="lastname" class="pl-0">Doctor's first name or last name </label>
+        <input type="text" class="form-control" placeholder="e.g Obinna" ng-model="user.name" style="font-size: 14px!important">
       </div>
 
        <div class="form-group" ng-if="isSpecialty === true">
-           <label for="lastname">City: </label>
-        <input type="text" class="form-control" placeholder="Enter city name" name="states" id="states"  uib-typeahead="city for city in cities | filter:$viewValue | limitTo:15" ng-model="user.city">
+           <label for="lastname">City </label>
+        <input type="text" class="form-control" placeholder="Enter city name" name="states" id="states"  uib-typeahead="city for city in cities | filter:$viewValue | limitTo:15" ng-model="user.city" style="font-size: 14px!important">
         {{getCity(city)}} 
       </div>
 
@@ -27,8 +27,8 @@
 
 
       <div class="form-group" ng-if="isSpecialty === true">
-          <label for="specialty">Specialty: </label>
-        <select id="group1" id="specialty" class="custom-select form-control" ng-model="user.specialty" >
+          <label for="specialty">Specialty </label>
+        <select id="group1" id="specialty" class="custom-select form-control" ng-model="user.specialty" style="font-size: 14px!important" >
         <option value="" selected="selected">_select specialty</option>
         <option>Acupunture</option>
         <option>Addiction Medicine</option>
@@ -89,7 +89,7 @@
         <option>Oncology</option>
         <option>Opthalmology</option>
         <option>Optometry</option>
-        <option>Orthopedic Foot & Ankle</option>
+        <option>Orthopedic Foot &amp; Ankle</option>
         <option>Orthopedic Reconstructive Surgery</option>
         <option>Orthopedic Spine Surgery</option>
         <option>Orthopedic Surgery</option>
@@ -107,19 +107,19 @@
 
       <div class="form-group" ng-if="isDoctorId === true">
           <label for="doctorId">Doctor's ID</label>
-        <input type="text" class="form-control"  placeholder="Enter Doctor's ID" ng-model="user.doctorId" >
+        <input type="text" class="form-control"  placeholder="Enter Doctor's ID" ng-model="user.doctorId" style="font-size: 14px!important">
       </div>
 
       <div class="form-group" ng-if="isDisease === true">
           <label for="disease">Find by disease</label>
-        <input type="text" class="form-control"  placeholder="Enter disease" ng-model="user.disease" >
+        <input type="text" class="form-control"  placeholder="Enter disease eg Malaria" ng-model="user.disease" style="font-size: 14px!important">
       </div>
       
       
-      <div class="col-md-12 form-group">
-        <button class="btn btn-info" ng-click = "find()"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color: #fff" ng-if="loading"></i> {{(loading) ? "" : "Find"}}</button>
+      <div class="col-md-12 form-group" style="text-align: center;">
+        <button class="btn btn-info btn-lg" ng-click ="find()"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color: #fff" ng-if="loading"></i> {{(loading) ? "" : "Find"}}</button>
       </div>
-</div>
+</form>
  </div>
  
 
