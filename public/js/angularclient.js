@@ -10576,17 +10576,11 @@ app.controller("fromModalSessionController",["$scope","$http","$window","localMa
 
     function loadSession() {
       $scope.loading = true;
-      var sessionList = [];
       var getSession = getSessionService;//$resource("/user/doctor/get-patient-sessions");     
       getSession.query($scope.patient,function(data){
-        $scope.loading = false;
-        for(var i = 1; i < data.length; i++) {          
-          if(sessionList.length >= 10)
-            break;
-          sessionList.push(data[i]);
-        }
-        $rootScope.recentSession = data[0];
-        $rootScope.sessionData = sessionList;
+        $scope.loading = false;       
+        //$rootScope.recentSession = data[0];
+        $rootScope.sessionData = data;
         if(data.length > 0)
           templateService.holdId = data[0].patient_id;
       })
