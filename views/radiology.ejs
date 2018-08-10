@@ -99,7 +99,7 @@
                                 <div class="dropdown-menu notifications-dropdown-menu" style="max-height: 400px;overflow-y: auto;">
                                     <ul class="notifications-container noti-style">
                                         <li> <h6 style="text-align: center">Notification(s)</h6> </li>
-                                         <li style="padding: 10px;text-align: right;"><a href="" style="font-size: 14px;text-decoration: underline;" class="text-danger" ng-click = "addAllNote()">Add to work list </a></li>
+                                         <!--<li style="padding: 10px;text-align: right;"><a href="" style="font-size: 14px;text-decoration: underline;" class="text-danger" ng-click = "addAllNote()">Add to work list </a></li>-->
                                         <li ng-repeat = "note in allNote | orderBy: '-sent_date'">
                                             <a href="" class="notification-item" ng-click="viewNote(note.ref_id,null,null,note)">
                                                 <div class="img-col">
@@ -312,7 +312,7 @@
                             <i class="fa fa-home"></i>Radiology Dashboard
                         </a> </li>
 
-                        <li> 
+                        <!--<li> 
                             <a href="">
                                 <i class="fa fa-users"></i>Work list
                                 <i class="fa arrow"></i>
@@ -329,7 +329,7 @@
                                     </a> 
                                 </li>
                             </ul>
-                        </li>
+                        </li>-->
                                                     
                         <li> 
                             <a href="">
