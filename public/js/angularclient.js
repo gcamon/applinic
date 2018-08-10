@@ -9421,6 +9421,11 @@ app.controller("myDoctorController",["$scope","$location","$http","$window","$ro
     base[0].scrollTop = sentmessage1.scrollHeight;
   }
 
+
+  //controls alert when doctor is currently in view of chat page
+  var currChat = $location.path();
+  var toArr = currChat.split("/");
+
   
   mySocket.on("new_msg", function(data) {
     var date = + new Date();
@@ -9431,8 +9436,9 @@ app.controller("myDoctorController",["$scope","$location","$http","$window","$ro
       //$rootScope.message1.push(msg);
       msg.userId = user.user_id;
       msg.partnerId = doctor.id;
-      //mySocket.emit("save message",msg);        
-      templateService.playAudio(3); // note all sounds can be turned of through settings.
+      //mySocket.emit("save message",msg);
+      if(toArr[1] !== "patient-doctor")        
+        templateService.playAudio(2); // note all sounds can be turned of through settings.
       chats(msg)
     } else {
       
@@ -9693,6 +9699,10 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
     base[0].scrollTop = sentmessage1.scrollHeight;
   }
 
+  //alert when doctor is not view active chat div
+  var currChat = $location.path();
+  var toArr = currChat.split("/")
+
   mySocket.on("new_msg", function(data) {
     var date = + new Date();
     var msg = {};
@@ -9704,6 +9714,9 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
       msg.partnerId = patient.id;
       //mySocket.emit("save message",msg);
       //templateService.playAudio(3);
+      if(toArr[1] !== 'doctor-patient'){
+        templateService.playAudio(2);
+      }
       chats(msg)
     } else {
       

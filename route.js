@@ -4068,7 +4068,7 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
           }
 
           result.referral.push(refObj);
-          result.diagnostic_center_notification.push(refNotification);
+          result.diagnostic_center_notification.unshift(refNotification);
 
           result.save(function(err,info){
             if(err) throw err;            
@@ -5552,7 +5552,6 @@ router.put("/user/radiology/search/find-tests",function(req,res){
 
 router.put("/user/scan-search/radiology/referral",function(req,res){
     if(req.user){  
-   console.log(req.body);
     var phone = req.body.line  || req.body.phone;
     var person = (phone) ? {phone: "+" + phone, type: 'Patient'} : {user_id: req.user.user_id,type:"Patient"};
     model.user.findOne(person,{firstname:1,lastname:1,title:1,profile_pic_url:1,city:1,country:1,name:1,age:1,user_id:1,medical_records:1,phone:1})
@@ -5655,7 +5654,7 @@ router.put("/user/scan-search/radiology/referral",function(req,res){
               res.json({success:true,ref_id:req.body.ref_id});
             });
 
-            result.diagnostic_center_notification.push(refNotification);
+            result.diagnostic_center_notification.unshift(refNotification);
             result.save(function(err,info){
               if(err) throw err;          
             });  

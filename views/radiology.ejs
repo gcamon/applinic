@@ -100,7 +100,7 @@
                                     <ul class="notifications-container noti-style">
                                         <li> <h6 style="text-align: center">Notification(s)</h6> </li>
                                          <!--<li style="padding: 10px;text-align: right;"><a href="" style="font-size: 14px;text-decoration: underline;" class="text-danger" ng-click = "addAllNote()">Add to work list </a></li>-->
-                                        <li ng-repeat = "note in allNote | orderBy: '-sent_date'">
+                                        <li ng-repeat = "note in allNote">
                                             <a href="" class="notification-item" ng-click="viewNote(note.ref_id,null,null,note)">
                                                 <div class="img-col">
                                                     <div class="img" style="background-image: url({{note.sender_profile_pic_url}})"></div>

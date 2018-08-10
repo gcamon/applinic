@@ -496,9 +496,6 @@ var basicPaymentRoute = function(model,sms,io,paystack){
 				
 				if(!data){
 					res.send({message:"Confirmation failed! Transaction canceled.",success: true})
-					/*data.save(function(err,info){
-						if(err) throw err;
-					});*/
 				} else {			
 				console.log(data)		
 					//check is is the right otp for a user
