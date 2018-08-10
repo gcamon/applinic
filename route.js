@@ -1873,7 +1873,7 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
             });
 
             pharmacy.referral.push(refObj);
-            pharmacy.diagnostic_center_notification.push(pharmacyNotification);
+            pharmacy.diagnostic_center_notification.unshift(pharmacyNotification);
 
             if(pharmacy.presence === true){
               io.sockets.to(req.body.user_id).emit("center notification",pharmacyNotification);
@@ -1948,7 +1948,7 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
             })
 
             pharmacy.referral.push(refObj);
-            pharmacy.diagnostic_center_notification.push(pharmacyNotification);
+            pharmacy.diagnostic_center_notification.unshift(pharmacyNotification);
             pharmacy.save(function(err,info){
               if(err) throw err;
               console.log(info);
@@ -2057,7 +2057,7 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
                 message: 'Please kindly administer the following prescriptions to my patient.'
               }             
               
-              pharmacy.diagnostic_center_notification.push(pharmacyNotification);
+              pharmacy.diagnostic_center_notification.unshift(pharmacyNotification);
 
               if(pharmacy.presence === true){
                 io.sockets.to(req.body.user_id).emit("center notification",pharmacyNotification);
@@ -5183,7 +5183,7 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
 
 
           pharmacy.referral.push(refObj);
-          pharmacy.diagnostic_center_notification.push(pharmacyNotification);
+          pharmacy.diagnostic_center_notification.unshift(pharmacyNotification);
 
           pharmacy.save(function(err,info){
             if(err) throw err;
