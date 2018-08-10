@@ -1807,33 +1807,6 @@ app.controller('signupController',["$scope","$http","$location","$window","templ
   var phoneNumber;
 
   $scope.submit = function(type,argTitle){
-  alert("test sms 9ja")
- var data = JSON.stringify({
-      "from": "Applinic",
-      "to": "2348064245256",
-      "text": "Test SMS."
-    });
-    
-    var xhr = new XMLHttpRequest();
-    xhr.withCredentials = false;
-    
-    xhr.addEventListener("readystatechange", function () {
-      if (this.readyState === this.DONE) {
-        console.log(this.responseText);
-      }
-    });
-    
-    xhr.open("POST", "https://api.infobip.com/sms/1/text/single");
-    xhr.setRequestHeader("authorization", "Basic C0FF03BE09629685A88C5F510F3113E4");
-    xhr.setRequestHeader("content-type", "application/json");
-    xhr.setRequestHeader("accept", "application/json");
-    
-    xhr.onload = function() {
-      console.log(xhr.responseText)
-    }
-    xhr.send(data);
-
-  return;
 
   $scope.user.currencyCode = currency.code;
   $scope.user.state = currency.state;

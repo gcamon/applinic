@@ -202,7 +202,7 @@ var signupRoute = function(model,sms,geonames,paystack) {
 	});
 
 	router.put("/user/verify-phone-number",function(req,res){
-		var genPin = Math.floor(Math.random() * 999999);			
+		var genPin = (Math.floor(Math.random() * 9999) + "" + Math.floor(Math.random() * 99));			
 
 		var testPhone = new model.verifyPhone({
 			phone: req.body.phone,
@@ -228,13 +228,12 @@ var signupRoute = function(model,sms,geonames,paystack) {
 		)	   	
 		
 		function callBack(err,response){
-			/*if(!err) {
-				res.send({message:"Phone Verification Pin sent to " + req.body.phone});
+			if(!err) {
+				res.send({message:"Phone Verification Pin sent to " + req.body.phone + " (use " + genPin + " to complete registration)"});
 			} else {
 				res.send({message:err.message,error: true});
-			}*/
-
-			res.send({message:"Phone Verification Pin sent to " + req.body.phone});
+			}
+			
 		}			
 	})
 
