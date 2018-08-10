@@ -9350,6 +9350,7 @@ app.controller("myDoctorController",["$scope","$location","$http","$window","$ro
   /*if($rootScope.chatStatus !== true)
     mySocket.emit('join',{userId: user.user_id}); */
 
+  mySocket.removeAllListeners("new_msg"); // incase if this listener is registered already
  
   mySocket.emit('init chat',{userId: user.user_id,partnerId: doctor.id},function(data){
     //$rootScope.message1 = messages || [];    
@@ -9461,12 +9462,11 @@ app.controller("myDoctorController",["$scope","$location","$http","$window","$ro
       templateService.playAudio(3); // note all sounds can be turned of through settings.
       chats(msg)
     } else {
-     
-      if($location.path() !== "/general-chat")  {
-        $rootScope.$broadcast("unattendedMsg",true);    
-        templateService.playAudio(2);
-        $rootScope.loadChats();
-      } 
+      
+      if($location.path() !== "/general-chat") {
+        $rootScope.$broadcast("unattendedMsg",true);   
+        templateService.playAudio(2);  
+      }
     }
     mySocket.emit("msg received",{to: data.from,id:data.date});
   });
@@ -9632,6 +9632,8 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
     });
   }
 
+  mySocket.removeAllListeners("new_msg"); // incase if this listener is registered already
+
   initChat()
 
   $scope.getkeys = function (event) {
@@ -9731,23 +9733,11 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
       //templateService.playAudio(3);
       chats(msg)
     } else {
-      //alert("You have new message");
-      /*var elemPos = $rootScope.patientList.map(function(x){return x.patient_id}).indexOf(data.from);
-      var found = $rootScope.patientList[elemPos];
-      if(!found.queueLen) {
-        found.queueLen = 1;
-      } else {
-        found.queueLen++;
-      }
-      msg.userId = data.to;
-      msg.partnerId = data.from;
-      //mySocket.emit("save message",msg);  */
-     
-      if($location.path() !== "/general-chat")  {
+      
+      if($location.path() !== "/general-chat") {
         $rootScope.$broadcast("unattendedMsg",true);    
-        templateService.playAudio(2);
-        $rootScope.loadChats();
-      } 
+        templateService.playAudio(2); 
+      }
       //then push the message to the list of patients so that user can view later.
     }
     mySocket.emit("msg received",{to: data.from,id:data.date});
@@ -16442,8 +16432,7 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
   mySocket.on("new_msg", function(data) { 
     if($location.path() !== "/general-chat") {
       $rootScope.$broadcast("unattendedMsg",true);   
-      templateService.playAudio(2); 
-      $rootScope.loadChats();  
+      templateService.playAudio(2);
     } else {
       elemPos = $rootScope.chatsList.map(function(x){return x.chat_id}).indexOf(data.chatId)
       if(elemPos !== -1) {

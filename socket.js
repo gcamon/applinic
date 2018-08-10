@@ -98,7 +98,7 @@ module.exports = function(model,io,streams) {
 	    socket.on("send message",function(data,cb){
 	    	var date = + new Date();
 	    	data.date = date.toString();
-	    	data.id = data.date
+	    	data.id = data.date;
 	      cb(data);
 	       model.user.findOne({user_id: data.to},{set_presence:1},function(err,Obj){
 	       	if(err) throw err;
