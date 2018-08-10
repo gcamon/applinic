@@ -30,6 +30,8 @@
 
 textarea.form-control {
   border: 1px solid powderblue;
+  font-size: 14px!important;
+  height: 200px
 }
 
 .form-control {

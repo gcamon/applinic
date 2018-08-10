@@ -3002,9 +3002,9 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
             objectFound.diagnosis.systemic_examination = (objectFound.diagnosis.systemic_examination) ?
              objectFound.diagnosis.systemic_examination + req.body.systemic_examination : req.body.systemic_examination;
 
-          if(req.body.final_diagnosis)
+          if(req.body.final_diagnosis) 
             objectFound.diagnosis.final_diagnosis = (objectFound.diagnosis.final_diagnosis) ?
-             objectFound.diagnosis.final_diagnosis + req.body.final_diagnosis : objectFound.diagnosis.final_diagnosis; 
+             objectFound.diagnosis.final_diagnosis + req.body.final_diagnosis : req.body.final_diagnosis; 
 
           if(req.body.medical_report) {
             model.user.findOne({user_id: req.body.patient_id},{medical_reports:1}).exec(function(err,patient){

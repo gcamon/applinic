@@ -3,35 +3,163 @@
     <div class="card">
 
 <div class="row">
-  <div class="col-sm-12 col-md-9 col-lg-9">
-    <h4 style="padding-left: 30px">Update services</h4>
-    <p style="padding-left: 30px">Please unmark any test not currently available in your center.</p>
-  </div>
-  <div class="col-sm-12 col-md-3 col-lg-3" style="padding-top:30px">
-	 <a href="#/lab/off-service" class="btn btn-success" style="padding:15px">Tests not ran by me</a>
-  </div>
+  <div class="col-sm-11 col-md-11 col-lg-11">
+    <h4 style="padding-left: 30px">Update services <a href="#/lab/off-service" class="btn-danger btn btn-sm" style="float: right;font-size: 14px">Investigations not done</a></h4>
+    <div class="clearfix"></div>
+    <p style="padding-left: 30px">Please Untick any investigation below not currently done in your center and save.</p>
+  </div> 
 </div>
-
-	
 
 <div class="p-2 row" id="accordion" role="tablist" aria-multiselectable="true">
    <div class="card mmine">
-    <div class="card-header">
-        <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="" aria-expanded="false" aria-controls="collapseThree">
-        Listing of Chemical Pathology
+    <div class="">
+        <a href="" data-toggle="collapse" data-target="#cp" aria-expanded="false" aria-controls="collapseExample" class="dropdown-toggle btn btn-warning">
+          Chemical Pathology
         </a>
+
+        <a href="" data-toggle="collapse" class="dropdown-toggle btn btn-warning" data-target="#hb" aria-expanded="false" aria-controls="collapseExample">
+          Hematology/Blood Bank
+        </a>
+
+        <a href="" data-toggle="collapse" class="dropdown-toggle btn btn-warning" data-target="#hc" aria-expanded="false" aria-controls="collapseExample">
+          Histology/Cytology
+        </a>       
+        <a href="" data-toggle="collapse" class="dropdown-toggle btn btn-warning" data-target="#ho" aria-expanded="false" aria-controls="collapseExample">
+          Listing of Hormone
+        </a>
+        <a href="" data-toggle="collapse" class="dropdown-toggle btn btn-warning" data-target="#mp" aria-expanded="false" aria-controls="collapseExample">
+          Microbiology/Parasitology
+        </a>
+        <a href="" data-toggle="collapse" class="dropdown-toggle btn btn-warning" data-target="#to" aria-expanded="false" aria-controls="collapseExample">
+          Listing of Toxicology
+        </a>
+        <a href="" data-toggle="collapse" class="dropdown-toggle btn btn-warning" data-target="#mb" aria-expanded="false" aria-controls="collapseExample">
+          Listing of Molecular Biology
+        </a>
+        <a href="" data-toggle="collapse" class="dropdown-toggle btn btn-warning" data-target="#ot" aria-expanded="false" aria-controls="collapseExample">
+          others
+        </a>
+        <hr>
     </div>
-    <div>
-      <div ng-repeat="test in tests1">
+    <div id="cp" class="collapse">
+      <h6>Listing of Chemical Pathology</h6>
+      <div>
+        <input type="text" name="" class="form-control" ng-model="testname" placeholder="Filter by investigation name" style="width: 70%">
+      </div>  
+      <br>
+      <div ng-repeat="test in tests1 | filter : testname">
 			<label class="custom-control custom-checkbox">   <input type="checkbox" class="custom-control-input" ng-model="test.val">   <span class="custom-control-indicator"></span>   <span class="custom-control-description font-1_1">{{test.name}}</span> </label>
 		  </div>
-    </div>
       <div style="text-align:right;">
-      <button class="btn btn-success" ng-click="saveSelection()">SAVE</button>
+        <button class="btn btn-success" ng-click="saveSelection()">SAVE</button>
+      </div>
     </div>
+
+
+    <div id="hb" class="collapse">
+      <h6>Listing of Hematology/Blood Bank</h6>
+      <div>
+        <input type="text" name="" class="form-control" ng-model="testname" placeholder="Filter by investigation name" style="width: 70%">
+      </div>  
+      <br>
+      <div ng-repeat="test in tests2 | filter : testname">
+      <label class="custom-control custom-checkbox">   <input type="checkbox" class="custom-control-input" ng-model="test.val">   <span class="custom-control-indicator"></span>   <span class="custom-control-description font-1_1">{{test.name}}</span> </label>
+      </div>
+      <div style="text-align:right;">
+        <button class="btn btn-success" ng-click="saveSelection()">SAVE</button>
+      </div>
+    </div>
+
+
+    <div id="hc" class="collapse">
+      <h6>Listing of Histology/Cytology</h6>
+      <div>
+        <input type="text" name="" class="form-control" ng-model="testname" placeholder="Filter by investigation name" style="width: 70%">
+      </div>  
+      <br>
+      <div ng-repeat="test in tests3 | filter : testname">
+      <label class="custom-control custom-checkbox">   <input type="checkbox" class="custom-control-input" ng-model="test.val">   <span class="custom-control-indicator"></span>   <span class="custom-control-description font-1_1">{{test.name}}</span> </label>
+      </div>
+      <div style="text-align:right;">
+        <button class="btn btn-success" ng-click="saveSelection()">SAVE</button>
+      </div>
+    </div>
+
+    <div id="ho" class="collapse">
+      <h6>Listing of Hormone</h6>
+      <div>
+        <input type="text" name="" class="form-control" ng-model="testname" placeholder="Filter by investigation name" style="width: 70%">
+      </div>  
+      <br>
+      <div ng-repeat="test in tests4 | filter : testname">
+      <label class="custom-control custom-checkbox">   <input type="checkbox" class="custom-control-input" ng-model="test.val">   <span class="custom-control-indicator"></span>   <span class="custom-control-description font-1_1">{{test.name}}</span> </label>
+      </div>
+      <div style="text-align:right;">
+        <button class="btn btn-success" ng-click="saveSelection()">SAVE</button>
+      </div>
+    </div>
+
+    <div id="mp" class="collapse">
+      <h6>Listing of Microbiology/Parasitology</h6>
+      <div>
+        <input type="text" name="" class="form-control" ng-model="testname" placeholder="Filter by investigation name" style="width: 70%">
+      </div>  
+      <br>
+      <div ng-repeat="test in tests5 | filter : testname">
+      <label class="custom-control custom-checkbox">   <input type="checkbox" class="custom-control-input" ng-model="test.val">   <span class="custom-control-indicator"></span>   <span class="custom-control-description font-1_1">{{test.name}}</span> </label>
+      </div>
+      <div style="text-align:right;">
+        <button class="btn btn-success" ng-click="saveSelection()">SAVE</button>
+      </div>
+    </div>
+
+    <div id="to" class="collapse">
+      <h6>Listing of Toxicology</h6>
+      <div>
+        <input type="text" name="" class="form-control" ng-model="testname" placeholder="Filter by investigation name" style="width: 70%">
+      </div>  
+      <br>
+      <div ng-repeat="test in tests6 | filter : testname">
+      <label class="custom-control custom-checkbox">   <input type="checkbox" class="custom-control-input" ng-model="test.val">   <span class="custom-control-indicator"></span>   <span class="custom-control-description font-1_1">{{test.name}}</span> </label>
+      </div>
+      <div style="text-align:right;">
+        <button class="btn btn-success" ng-click="saveSelection()">SAVE</button>
+      </div>
+    </div>
+
+
+    <div id="mb" class="collapse">
+      <h6>Listing of Molecular Biology</h6>
+      <div>
+        <input type="text" name="" class="form-control" ng-model="testname" placeholder="Filter by investigation name" style="width: 70%">
+      </div>  
+      <br>
+      <div ng-repeat="test in tests7 | filter : testname">
+      <label class="custom-control custom-checkbox">   <input type="checkbox" class="custom-control-input" ng-model="test.val">   <span class="custom-control-indicator"></span>   <span class="custom-control-description font-1_1">{{test.name}}</span> </label>
+      </div>
+      <div style="text-align:right;">
+        <button class="btn btn-success" ng-click="saveSelection()">SAVE</button>
+      </div>
+    </div>
+
+
+    <div id="ot" class="collapse">
+      <h6>Other Investigations</h6>
+      <div>
+        <input type="text" name="" class="form-control" ng-model="testname" placeholder="Filter by investigation name" style="width: 70%">
+      </div>  
+      <br>
+      <div ng-repeat="test in tests8 | filter : testname">
+      <label class="custom-control custom-checkbox">   <input type="checkbox" class="custom-control-input" ng-model="test.val">   <span class="custom-control-indicator"></span>   <span class="custom-control-description font-1_1">{{test.name}}</span> </label>
+      </div>
+      <div style="text-align:right;">
+        <button class="btn btn-success" ng-click="saveSelection()">SAVE</button>
+      </div>
+    </div>
+    
 </div>
 
-<div class="card mmine" style="padding: 20px">
+<!--<div class="card mmine" style="padding: 20px">
     <div class="card-header" role="tab" id="headingThree">
         <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="" aria-expanded="false" aria-controls="collapseThree">
         Listing of Hematology/Blood Bank
@@ -139,7 +267,7 @@
      <div style="text-align:right;">
       <button class="btn btn-success" ng-click="saveSelection()">SAVE</button>
     </div>
-  </div>
+  </div>-->
 	<!--<div style="text-align:center">
 		<button class="btn btn-success" ng-click="saveSelection()">SAVE</button>
 	</div>-->

@@ -4177,49 +4177,65 @@ app.controller("inTreatmentController",["$scope","$http","localManager","$locati
    $scope.isNewRadio = false;
 
    $scope.laboratory = function(){
-    if($scope.testResult) {
-      $scope.testResult = [];        
+    if(!$scope.isLab) {
+      if($scope.testResult) {
+        $scope.testResult = [];        
+      }
+      investigation("/user/doctor/get-test-result");      
+      $scope.isLab = true;
+      $scope.isScan = false;
+      $scope.isNewRadio = false;
+      $scope.isNewLab = false; 
+    } else {
+      $scope.isLab = false;
     }
-    investigation("/user/doctor/get-test-result");      
-    $scope.isLab = true;
-    $scope.isScan = false;
-    $scope.isNewRadio = false;
-    $scope.isNewLab = false; 
    } 
 
    $scope.newLab = function() {
     //$location.path('/lab');
-    $scope.isLab = false;
-    $scope.isScan = false;
-    $scope.isNewRadio = false;
-    $scope.isNewLab = true; 
-    $rootScope.flag = 'lab'; 
+    if(!$scope.isNewLab) {
+      $scope.isLab = false;
+      $scope.isScan = false;
+      $scope.isNewRadio = false;
+      $scope.isNewLab = true; 
+      $rootScope.flag = 'lab'; 
 
-    //sets if the investigation request is made from continuation
-    if($scope.isSubNote) {
-      $rootScope.isSubNote = true;
-    }   
+      //sets if the investigation request is made from continuation
+      if($scope.isSubNote) {
+        $rootScope.isSubNote = true;
+      }
+    } else {
+      $scope.isNewLab = false;
+    }
    }
 
    //for radiology
   $scope.radiology = function(){
-    if($scope.testResult) { 
-      $scope.testResult = [];
+    if(!$scope.isScan) {
+      if($scope.testResult) { 
+        $scope.testResult = [];
+      }
+      investigation("/user/doctor/get-scan-result");
+      $scope.isScan = true;
+      $scope.isLab = false;
+      $scope.isNewRadio = false;
+      $scope.isNewLab = false; 
+    } else {
+      $scope.isScan = false;
     }
-    investigation("/user/doctor/get-scan-result");
-    $scope.isScan = true;
-    $scope.isLab = false;
-    $scope.isNewRadio = false;
-    $scope.isNewLab = false; 
   } 
 
   $scope.newRadio = function() {
     //$location.path('/scan');
-    $scope.isLab = false;
-    $scope.isScan = false;
-    $scope.isNewRadio = true;
-    $scope.isNewLab = false; 
-    $rootScope.flag = 'radio';
+    if(!$scope.isNewRadio){
+      $scope.isLab = false;
+      $scope.isScan = false;
+      $scope.isNewRadio = true;
+      $scope.isNewLab = false; 
+      $rootScope.flag = 'radio';
+    } else {
+      $scope.isNewRadio = false;
+    }
 
     if($scope.isSubNote) {
       $rootScope.isSubNote = true;
@@ -4228,9 +4244,95 @@ app.controller("inTreatmentController",["$scope","$http","localManager","$locati
 
   $scope.subSession = function() {
     $scope.isSubNote = true;
+    $scope.isClerk = true;
     $scope.isMain = false;
     $scope.isSubView = false;
-    sanitize($scope.sessionData.diagnosis.sub_session)
+    $scope.isInvestigation = true;
+    $scope.isPE = false;
+    $scope.isReportView = false;
+    $scope.isFollowups = false;
+    sanitize($scope.sessionData.diagnosis.sub_session);
+    $scope.isLab = false;
+    $scope.isScan = false;
+    $scope.isNewRadio = false;
+    $scope.isNewLab = false; 
+
+  }
+
+  $scope.isClerk = true;
+
+  $scope.clerk = function() {
+    $scope.isFollowups = false;
+    $scope.isSubNote = false;
+    $scope.isClerk = true;
+    $scope.isMain = true;
+    $scope.isPE = false;
+    $scope.isReportView = false;
+    $scope.isInvestigation = false;
+    $scope.isLab = false;
+    $scope.isScan = false;
+    $scope.isNewRadio = false;
+    $scope.isNewLab = false; 
+  }
+
+  $scope.FollowUpsView = function() {
+    $scope.isFollowups = true;
+    $scope.isSubNote = false;
+    $scope.isClerk = true;
+    $scope.isPE = false;
+    $scope.isReportView = false;
+    $scope.isMain = true;
+    $scope.isInvestigation = false;
+    $scope.isLab = false;
+    $scope.isScan = false;
+    $scope.isNewRadio = false;
+    $scope.isNewLab = false; 
+  }
+
+  $scope.investView = function(){
+    $scope.isInvestigation = true;
+    $scope.isFollowups = false;
+    $scope.isSubNote = false;
+    $scope.isClerk = true;
+    $scope.isPE = false;
+    $scope.isReportView = false;
+    $scope.isMain = false;
+    $scope.isSubView = false;
+    $scope.isLab = false;
+    $scope.isScan = false;
+    $scope.isNewRadio = false;
+    $scope.isNewLab = false; 
+  }
+
+  $scope.reportView = function(){
+    $scope.isReportView = true;
+    $scope.isPE = false;
+    $scope.isInvestigation = false;
+    $scope.isFollowups = false;
+    $scope.isSubNote = false;
+    $scope.isClerk = true;
+    $scope.isMain = false;
+    $scope.isSubView = false;
+    $scope.isLab = false;
+    $scope.isScan = false;
+    $scope.isNewRadio = false;
+    $scope.isNewLab = false; 
+  }
+
+
+  $scope.peView = function(){
+    $scope.isPE = true;
+    $scope.isReportView = false;
+    $scope.isInvestigation = false;
+    $scope.isFollowups = false;
+    $scope.isSubNote = false;
+    $scope.isClerk = true;
+    $scope.isMain = false;
+    $scope.isSubView = false;
+    $scope.isLab = false;
+    $scope.isScan = false;
+    $scope.isNewRadio = false;
+    $scope.isNewLab = false; 
   }
 
   
@@ -4259,7 +4361,6 @@ app.controller("inTreatmentController",["$scope","$http","localManager","$locati
     } 
 
     sanitize(arr);
-
     $scope.isMain = false;
     $scope.isSubNote = false;
     $scope.isSubView = true;
@@ -9361,8 +9462,11 @@ app.controller("myDoctorController",["$scope","$location","$http","$window","$ro
       chats(msg)
     } else {
      
-      $rootScope.$broadcast("unattendedMsg",true);   
-      templateService.playAudio(2);   
+      if($location.path() !== "/general-chat")  {
+        $rootScope.$broadcast("unattendedMsg",true);    
+        templateService.playAudio(2);
+        $rootScope.loadChats();
+      } 
     }
     mySocket.emit("msg received",{to: data.from,id:data.date});
   });
@@ -9638,8 +9742,12 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
       msg.userId = data.to;
       msg.partnerId = data.from;
       //mySocket.emit("save message",msg);  */
-      $rootScope.$broadcast("unattendedMsg",true);    
-      templateService.playAudio(2);    
+     
+      if($location.path() !== "/general-chat")  {
+        $rootScope.$broadcast("unattendedMsg",true);    
+        templateService.playAudio(2);
+        $rootScope.loadChats();
+      } 
       //then push the message to the list of patients so that user can view later.
     }
     mySocket.emit("msg received",{to: data.from,id:data.date});
@@ -10544,7 +10652,7 @@ app.controller("fromModalSessionController",["$scope","$http","$window","localMa
     for(var i in $scope.patient) {
       if($scope.patient.hasOwnProperty(i) && $scope.patient[i] && i !== 'date' && i !== 'patient_id' && i !== 'typeOfSession') {
 
-        sendObj[i] = "<font color='green' weight='bold'> >> &nbsp; " + date + "</font> : " + $scope.patient[i];
+        sendObj[i] = "<i>" + $scope.patient[i] + "<i>" //"<font color='green' weight='bold'> >> &nbsp; " + date + "</font> : " + $scope.patient[i];
       } else {
         sendObj[i] = $scope.patient[i];
       }
@@ -16334,7 +16442,8 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
   mySocket.on("new_msg", function(data) { 
     if($location.path() !== "/general-chat") {
       $rootScope.$broadcast("unattendedMsg",true);   
-      templateService.playAudio(2);   
+      templateService.playAudio(2); 
+      $rootScope.loadChats();  
     } else {
       elemPos = $rootScope.chatsList.map(function(x){return x.chat_id}).indexOf(data.chatId)
       if(elemPos !== -1) {

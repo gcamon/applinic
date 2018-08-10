@@ -116,11 +116,25 @@
             <button class="btn btn-neutral btn-sm" style="position: absolute;top: 5px; right: 4px" ng-click="viewTreatmentSession(recentSession)">Continue With Treatment</button>
         </article>-->
        
-        <h6 style="margin-top: 35px">Folders</h6>            
-        <article ng-repeat = "session in sessionData" ng-click="viewTreatmentSession(session)" style='padding: 10px; cursor:pointer;margin-bottom: 10px;box-shadow: 1px 5px 5px rgba(0,0,0,0.5);color:#fff;position: relative;' class="bg-warning">
+        <h6 style="margin-top: 35px">Folders</h6>  
+        <table class="table-responsiv table" style="width: 100%">
+            <thead>
+                <th style="width: 20%">Date created</th>
+                <th style="width: 45%">Complaint</th>
+                <th style="width: 20%">Last modified</th>
+                <th style="width: 15%">Action</th>
+            </thead>
+            <tbody ng-repeat = "session in sessionData" ng-click="viewTreatmentSession(session)">
+                <td style="width: 20%">{{session.date | date : "mediumDate" }}</td>
+                <td style="width: 45%" ng-bind-html="session.diagnosis.presenting_complain || 'Empty'"></td>
+                <td style="width: 20%">{{session.last_modified | date : "mediumDate"}}</td>
+                <td style="width: 15%"><button class="btn btn-sm btn-success" style="" ng-click="viewTreatmentSession(session)">Continue treatment</button></td>
+            </tbody>
+        </table>
+        <!--<article ng-repeat = "session in sessionData" ng-click="viewTreatmentSession(session)" style='padding: 10px; cursor:pointer;margin-bottom: 10px;box-shadow: 1px 5px 5px rgba(0,0,0,0.5);color:#fff;position: relative;' class="bg-warning">
             <span style="display: block;">{{session.date | date : "mediumDate" }}</span> <span style="" ng-bind-html="session.diagnosis.presenting_complain || 'Empty'"></span> <small style="float:right">Last modified: {{session.last_modified | date : "mediumDate"}}</small>
             <button class="btn btn-neutral btn-sm" style="position: absolute;top: 5px; right: 4px" ng-click="viewTreatmentSession(session)">Continue With Treatment</button>
-        </article>
+        </article>-->
     </div>
     <div style="position:absolute;top:150px;left: 300px;text-align: center" ng-if="loading">
         <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange;font-size: 24px"></i>
@@ -557,18 +571,24 @@
 <section ng-if="isTreatmentSession" ng-controller="inTreatmentController">
     <div class="medical-record-Area card p-1">
         <div style="position: relative;">
-             <h5>In Treatment Session</h5>
-             <button class="btn btn-primary" style="position: absolute;top:2px;right: 5px" ng-click="subSession()">Continuation entry</button>
+             <h5>In Treatment Session <small style="float: right;font-size: 14px"> <b>Last modified:</b> <span am-time-ago="sessionData.last_modified"></span></small></h5>
+             
         </div>
-        <div>
-           <span style="font-size:1.2em; font-weight:300;">This session was intiated on {{sessionData.date | date : "mediumDate"}}, <br> Through <b>{{sessionData.typeOfSession}}</b></span>
-           <span style="float: right;"> <b>Last modified:</b> <span am-time-ago="sessionData.last_modified"></span></span>            
+        <div style="">
+          <!-- <span style="font-size:1.2em; font-weight:300;">This session was intiated on {{sessionData.date | date : "mediumDate"}}, <br> Through <b>{{sessionData.typeOfSession}}</b></span>-->
+           <!--<button class="btn btn-simple" ng-click="clerk()" ng-class="{'bg-info text-white': true}">clerking</button> -->         
+           <button class="btn btn-simple" ng-click="subSession()" ng-class="{'bg-info text-white': isSubNote}">Continuation entry</button> 
+           <button class="btn btn-simple" ng-click="investView()" ng-class="{'bg-info text-white': isInvestigation}">Investigation</button>
+           <button class="btn btn-simple" ng-click="peView()" ng-class="{'bg-info text-white': isPE}">Physical Examination Entry</button>
+           <button class="btn btn-simple" ng-click="reportView()" ng-class="{'bg-info text-white': isReportView}">Write Report</button>
+           <button class="btn btn-simple" ng-click="FollowUpsView()" ng-class="{'bg-info text-white': (isMain || isSubView)}">Follow-ups</button>
         </div>
-        <div style="padding-top: 20px">
-            <button ng-repeat="j in sessionData.diagnosis.sub_session" class="btn btn-simple"  ng-class="{'bg-warning text-white': j.status}" ng-click="sub(j,sessionData.diagnosis.sub_session)">{{(j.sub_session_id === 'main') ? 'Main' : 'Follow up'}} <span ng-if="!j.date">( {{ sessionData.date | date : "fullDate" }} ) </span><span ng-if="j.date">( {{ j.date | date : 'fullDate'}} )</span></button>
+        <hr>
+        <div style="padding-top: 10px" ng-if="isFollowups || isMain">
+            <button ng-repeat="j in sessionData.diagnosis.sub_session" class="btn btn-simple btn-sm"  ng-class="{'bg-warning text-white': j.status}" ng-click="sub(j,sessionData.diagnosis.sub_session)">{{(j.sub_session_id === 'main') ? 'Main' : 'Follow up'}} <span ng-if="!j.date">( {{ sessionData.date | date : "fullDate" }} ) </span><span ng-if="j.date">( {{ j.date | date : 'fullDate'}} )</span></button>
         </div>
         <hr class="bg-simple"> 
-        <form>
+        <form ng-if="isClerk">
             <div ng-if="isMain">
                 <div class="col-md-12  col-sm-12 col-xs-12 form-group">
                     <label class="col-md-12 p-0" style="display:block;" for="firstname">
@@ -707,17 +727,16 @@
               </div>
 
               <div class="col-md-12 col-sm-12 col-xs-12 form-group" ng-if="isSubNote && !isMain">                   
-                   <label for="firstname">Continuation Note </label><br>
+                   <label for="firstname">Note </label><br>
                    <textarea class="form-control" placeholder="Write..." style="height: 200px" ng-model="edit.sub_note"></textarea>          
               </div>
               
               <div class="clearfix"></div>
               <!--physical examination-->
                <!--<h5 class="" style="font-weight:300;">Physical Examination Entry</h5>-->
-              <div ng-if="isMain">
-                  
+              <div ng-if="!isMain && isPE"> <!-- break by ng if-->
                   <div class="col-md-12  col-sm-12 col-xs-12 form-group">
-                  <h5 class="" style="font-weight:300;">Physical Examination Entry</h5>
+                  <h5 class="" style="font-weight:300;">Physical Examination Entry</h5><br>
                     <label for="firstname"> General Examination</label><br>
                     <blockquote ng-bind-html="sessionData.diagnosis.general_examination"></blockquote>
                   <textarea class="form-control" placeholder="Write.." ng-model="edit.general_examination"></textarea>
@@ -734,21 +753,20 @@
                     <blockquote ng-bind-html="sessionData.diagnosis.final_diagnosis"></blockquote>
                     <textarea class="form-control" placeholder="Write.." ng-model="edit.final_diagnosis"></textarea>
                   </div>
-
-                  <div class="col-md-12  col-sm-12 col-xs-12 form-group">
-                    <h5 class="" style="font-weight:300;">Medical Report</h5>
-                    <label>Write report based on overall findings</label>
-                    <blockquote ng-bind-html="sessionData.diagnosis.medical_report"></blockquote>
-                    <textarea class="form-control" placeholder="Write.." style="height: 300px" ng-model="edit.medical_report"></textarea>
-                  </div>                 
+                          
               </div>
+               <div class="col-md-12  col-sm-12 col-xs-12 form-group" ng-if="!isMain && isReportView"> <!-- break by ng if-->
+                <h5 class="" style="font-weight:300;">Medical Report</h5> 
+                <label>Write report based on overall findings</label>
+                <blockquote ng-bind-html="sessionData.diagnosis.medical_report"></blockquote>
+                <textarea class="form-control" placeholder="Write.." style="height: 300px" ng-model="edit.medical_report"></textarea>
+              </div>         
 
-               <div ng-if="isSubView">
-                  <h5>Continuation on {{subDate | date : "fullDate"}}</h5>
-
-                  <label>Note </label>
-                  <div ng-bind-html="subNote" style="margin-top: -20px"></div> 
-                  <label ng-if="subTests">Investigation Details </label> 
+               <div ng-if="isSubView"> <!-- break by ng if-->
+                  <h6>Follow-up on {{subDate | date : "fullDate"}}</h6><br>
+                  <!--<label>Note: </label><br>-->
+                  <blockquote ng-bind-html="subNote" style="margin-top: -20px"></blockquote>
+                  <h6 ng-if="subTests">Investigation Requested: </h6>              
                     <div ng-repeat="test in subTests | orderBy: '-sent_date'" class="pb-1">
                       <div style="" ng-if="test.center_name">
                          <strong> Ran by : </strong>{{test.center_name}}                          
@@ -815,31 +833,21 @@
             <div class="clearfix"></div>
            
 
-            <div class="col-md-12  col-sm-12 col-xs-12" ng-if="!isSubView">
-               
-                <div class="btn-inline  p-1">
-                <h5 class="" style="font-weight:300;">Investigation Services</h5>
+            <div class="col-md-12 col-sm-12 col-xs-12" ng-if="isInvestigation">             
+                <h6>Investigation</h6><br>
                 <button class="btn btn-success"  ng-click="newLab()"><i class="fa fa-pencil"></i> New Laboratory Request</button>
-                <button class="btn btn-danger"  ng-click="newRadio()" style="margin-right: 5px"><i class="fa fa-pencil"></i> New Radiology Request</button> 
-
-
+                <button class="btn btn-danger"  ng-click="newRadio()" style="margin-right: 5px"><i class="fa fa-pencil"></i> New Radiology Request</button>
                 <a href="" class="btn btn-primary" ng-click="laboratory()">Laboratory Reports </a>
                 <a href="" class="btn btn-warning" ng-click="radiology()">Radiology Reports</a>
-
-                
-            
-                <!--<a href="" class="btn btn-primary">ECG</a>
-                <a href="" class="btn btn-primary">Other</a>-->
-                </div>
                 <hr>
             </div>
 
 
             <div class="p-2" ng-if="isLab && !isSubView">
                 <h6>Laboratory Report(s)</h6>
-                 <div ng-repeat="test in testResult | orderBy: '-sent_date'" class="shadow pb-2">
+                 <div ng-repeat="test in testResult | orderBy: '-sent_date'" class="pb-2">
                       <div style="text-align: center">
-                         <h5 class="mt-2 mb-0">{{test.center_name}}</h5> 
+                         <h5 class="mt-2 mb-1">{{test.center_name}}</h5> 
                          <div>{{test.center_address}} {{test.center_city}} {{test.center_country}}</div>
                       </div>
                    
@@ -847,7 +855,7 @@
                         <strong> Sent: </strong> {{test.sent_date | date: "mediumDate"}} ( <span am-time-ago="test.sent_date"></span> )
                       </div>
                       <div>
-                        <strong> Recieved: </strong> {{test.receive_date | date: "mediumDate"}} ( <span am-time-ago="test.receive_date"></span> )
+                        <strong> Recieved: </strong> {{test.receive_date | date: "mediumDate"}} <span ng-if="test.receive_date !== 'Pending'">( <span am-time-ago="test.receive_date"></span> )</span>
                       </div>
                      
                       <div>  
@@ -861,27 +869,28 @@
                       </div>
                       <div class="pt-1">
                           <label  style="border-bottom: 2px solid orange">Report</label>
-                      </div>
-                      <div ng-if="test.conclusion !== 'Pending'" >
-                          <div ng-repeat = "result in test.report">                        
-                            <strong style="display: block;padding: 5px 15px">{{result.test}}:</strong>
-                            <p style="padding: 10px 20px;word-wrap: break-word;">{{result.report}}</p>
+                          <p style="margin-top: 50px" ng-if="test.conclusion === 'Pending'">Awaiting investigation reports</p>
+                          <div ng-if="test.conclusion !== 'Pending'" >
+                            <div ng-repeat = "result in test.report">                        
+                                <strong style="display: block;padding: 5px 15px">{{result.test}}:</strong>
+                                <p style="padding: 10px 20px;word-wrap: break-word;">{{result.report}}</p>
+                            </div>
+                            <div class="pt-1">
+                                <label style="padding: 5px 15px">Conclusion:</label>
+                                <p style="padding: 10px 20px;word-wrap: break-word;">{{test.conclusion}}</p>
+                            </div>
                           </div>
-                          <div class="pt-1">
-                            <label style="padding: 5px 15px">Conclusion:</label>
-                            <p style="padding: 10px 20px;word-wrap: break-word;">{{test.conclusion}}</p>
-                          </div>
                       </div>
-                      <p style="text-align: center;margin-top: 50px" ng-if="test.conclusion === 'Pending'">Report NOT available at this time.</p>
-                        
+                      
+                      
+                    <hr>
                   </div>
             </div>
 
 
             <div class="p-2" ng-if="isScan && !isSubView">
-                <h6>Radiology Report(s)</h6>
-                
-                  <div ng-repeat="test in testResult | orderBy: '-sent_date'" class="shadow pb-2">
+                <h6>Radiology Report(s)</h6>                
+                  <div ng-repeat="test in testResult | orderBy: '-sent_date'" class="pb-2">
                       <div style="text-align: center">
                          <h5 class="mt-2 mb-0">{{test.center_name}}</h5> 
                          <div>{{test.center_address}} {{test.center_city}} {{test.center_country}}</div>
@@ -891,7 +900,7 @@
                         <strong> Sent: </strong> {{test.sent_date | date: "mediumDate"}} ( <span am-time-ago="test.sent_date"></span> )
                       </div>
                       <div>
-                        <strong> Recieved: </strong> {{test.receive_date | date: "mediumDate"}} ( <span am-time-ago="test.receive_date"></span> )
+                        <strong> Recieved: </strong> {{test.receive_date | date: "mediumDate"}}  <span ng-if="test.receive_date !== 'Pending'">( <span am-time-ago="test.receive_date"></span> )</span>
                       </div>
                      
                       <div>  
@@ -905,32 +914,33 @@
                       </div>
                       <div class="pt-1">
                           <label  style="border-bottom: 2px solid orange">Report</label>
-                      </div>
-                      <div ng-if="test.conclusion !== 'Pending'" >
-                          <div ng-repeat = "result in test.report">                        
-                            <strong style="display: block;padding: 5px 15px">{{result.test}}:</strong>
-                            <p style="padding: 10px 20px;word-wrap: break-word;">{{result.report}}</p>
+                          <p style="margin-top: 50px" ng-if="test.conclusion === 'Pending'">Awaiting investigation reports</p>
+                          <div ng-if="test.conclusion !== 'Pending'" >
+                            <div ng-repeat = "result in test.report">                        
+                                <strong style="display: block;padding: 5px 15px">{{result.test}}:</strong>
+                                <p style="padding: 10px 20px;word-wrap: break-word;">{{result.report}}</p>
+                            </div>
+                            <div class="pt-1">
+                                <label style="padding: 5px 15px">Conclusion:</label>
+                                <p style="padding: 10px 20px;word-wrap: break-word;">{{test.conclusion}}</p>
+                            </div>
                           </div>
-                          <div class="pt-1">
-                            <label style="padding: 5px 15px">Conclusion:</label>
-                            <p style="padding: 10px 20px;word-wrap: break-word;">{{test.conclusion}}</p>
-                          </div>
                       </div>
-                      <p style="padding: 10px 20px " ng-if="test.conclusion === 'Pending'">Awaiting investigation report.</p>
+                      <!--<p style="padding: 10px 20px " ng-if="test.conclusion === 'Pending'">Awaiting investigation report.</p>-->
                       <div ng-if="test.conclusion !== 'Pending'">
                           <strong> <i class="fa fa-file-o"></i> {{test.files.length}} image files &nbsp;&nbsp;&nbsp; <a href="" ng-if="test.files.length > 0">view</a></strong>
                       </div>
                    
                   </div>
                     
-                <p ng-if="test.conclusion">{{}} center name and info here</p>
+                <!--<p ng-if="test.conclusion">{{}} center name and info here</p>-->
                 <!--<button class="btn btn-info" ng-if="isScan" ng-click="newScan()">New lab test</button>-->
                 <!--<button class="btn btn-info" ng-click="other()" ng-click="ECG()">Request for a other test </button>-->
             </div>
 
             <div class="p-2" ng-if="isNewLab && !isSubView" ng-controller="investigationController">
                 <section ng-show="!isSearchToSend">  
-                    <h6>New Lab Test </h6>
+                    <h6>New Laboratory Test </h6><br>
                     <table style="width: 78%">
                      
                         <thead>
@@ -1073,7 +1083,7 @@
 
              <div class="p-2" ng-if="isNewRadio && !isSubView" ng-controller="investigationController">
                 <section ng-show="!isSearchToSend">             
-                    <h6>New Radio Test</h6>
+                    <h6>New Radiology Test</h6><br>
                     <table style="width: 78%">
                      
                         <thead>

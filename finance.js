@@ -402,7 +402,7 @@ var basicPaymentRoute = function(model,sms,io,paystack){
 							var name = req.user.firstname || req.user.name;
 							var pay = new Wallet(req.body.date,name,req.user.lastname,req.body.message);
 							//note firstname or lastname of patient may change.
-							pay.payment(model,data.amount,debitor,req.user.user_id);
+							pay.payment(model,data.amount,debitor,req.user.user_id,io);
 							res.send({message: "Transaction successful! Your account is credited."});
 						});						
 						data.remove(function(){});

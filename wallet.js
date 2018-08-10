@@ -121,10 +121,10 @@ Wallet.prototype.debit = function(model,amount,debitor){
 
 }
 
-Wallet.prototype.payment = function(model,amount,debitor,reciever_id){
+Wallet.prototype.payment = function(model,amount,debitor,reciever_id,io){
 	var creditor = {user_id: reciever_id};
 	//credit the render of the service;
-	this.credit(model,creditor,amount);
+	this.credit(model,creditor,amount,io);
 
 	//debit the user of the service
 	this.debit(model,amount,debitor);
@@ -166,7 +166,7 @@ Wallet.prototype.billing = function(model,billingInfo,reciever,sms,io){
 		reciever.ewallet.available_amount += amountDueForCenter;
 
 		var creditor = {user_id: reciever.user_id};
-		this.credit(model,creditor,amountDueForCenter);
+		this.credit(model,creditor,amountDueForCenter,io);
 
 		// this will take care crediting the doctor that wrote such prescription based on 5% commission for the service
 		var newCut; //use to decide if doctor was involved in the sharing. ie if doctor was the one that reffered the test.
@@ -174,7 +174,7 @@ Wallet.prototype.billing = function(model,billingInfo,reciever,sms,io){
 		if(billingInfo.doctorId !== "admin") {
 			var docPercentage = getCommission * 0.20;
 			var creditDoc = {user_id: billingInfo.doctorId}
-			this.credit(model,creditDoc,docPercentage);
+			this.credit(model,creditDoc,docPercentage,io);
 		} else {
 			var newCut = 0.80;
 		}		
@@ -293,7 +293,7 @@ Wallet.prototype.courier = function(model,receiverId,debitor,amount,io,delivery_
 
 	var receiver = {user_id: receiverId};
 
-	this.credit(model,receiver,newAmount);
+	this.credit(model,receiver,newAmount,io);
 
 	model.user.findOne({user_id:debitor}).exec(function(err,user){
 		var patientBonus = amount * 0.05;
