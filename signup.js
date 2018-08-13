@@ -8,6 +8,7 @@ var salt = require('./salt');
 var router = config.router;
 var http = require("http");
 var uuid = require('uuid');
+var randos = require("./randos");
 
 
 
@@ -156,7 +157,7 @@ var signupRoute = function(model,sms,geonames,paystack) {
 					var getFirstLetter;
 					var toStr;
 					if(username) {
-						var getRandomNumber = parseInt(Math.floor(Math.random() * 999) + "" + Math.floor(Math.random() * 999));
+						var getRandomNumber = randos.genRef(4);
 						toStr = username + getRandomNumber;
 					}				
 					return toStr;					
@@ -202,7 +203,7 @@ var signupRoute = function(model,sms,geonames,paystack) {
 	});
 
 	router.put("/user/verify-phone-number",function(req,res){
-		var genPin = (Math.floor(Math.random() * 9999) + "" + Math.floor(Math.random() * 99));			
+		var genPin = randos.genRef(6);			
 
 		var testPhone = new model.verifyPhone({
 			phone: req.body.phone,
@@ -307,7 +308,7 @@ var signupRoute = function(model,sms,geonames,paystack) {
 			.exec(function(err,data){
 				if(err) throw err;
 				if(data){
-					var refId = parseInt(Math.floor(Math.random() * 9999) + "" + Math.floor(Math.random() * 9999));
+					var refId = randos.genRef(6);
 					var date = + new Date();
 					
 					var sendObj = {
@@ -441,7 +442,7 @@ var signupRoute = function(model,sms,geonames,paystack) {
 			if(user){
 				res.json({message: "User with this phone number " + "'" + req.body.phone + "'" + " already exist"})
 			} else {
-				var ref = Math.floor(Math.random() * 99999999);
+				var ref = randos.genRef(8);
 				var uid = genId();
 				var profileUrl = "/patient/EM/profile/" + uid;				
 				var User = new model.user({

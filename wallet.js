@@ -44,7 +44,8 @@ Wallet.prototype.credit = function(model,receiver,amount,io,cb){
 			}
 
 			if(data) {
-				self.beneficiary = data.name || data.firstaname + " " + data.lastname
+				self.beneficiary = data.name || data.firstaname + " " + data.lastname;
+				console.log(data.user_id,"====", data.ewallet.available_amount);
 				data.ewallet.available_amount += amount;			
 				var names = (self.lastname) ? (self.firstname + " " + self.lastname) : (data.name);
 				var transacObj = {
@@ -59,7 +60,7 @@ Wallet.prototype.credit = function(model,receiver,amount,io,cb){
 				}
 
 				if(data.presence) {
-					io.sockets.to(data.user_id).emit("fund received",{status: true,message: self.message + "payment received from " + names})
+					io.sockets.to(data.user_id).emit("fund received",{status: true,message: "Payment received from " + names})
 				}
 		  
 
@@ -171,12 +172,12 @@ Wallet.prototype.billing = function(model,billingInfo,reciever,sms,io){
 		// this will take care crediting the doctor that wrote such prescription based on 5% commission for the service
 		var newCut; //use to decide if doctor was involved in the sharing. ie if doctor was the one that reffered the test.
 
-		if(billingInfo.doctorId !== "admin") {
+		if(billingInfo.doctorId) {
 			var docPercentage = getCommission * 0.20;
 			var creditDoc = {user_id: billingInfo.doctorId}
 			this.credit(model,creditDoc,docPercentage,io);
 		} else {
-			var newCut = 0.80;
+			newCut = 0.80;
 		}		
 		
 		var msgBody = "Your Applinic account credited" + "\nAmount: " + docPercentage + "\nActivity: Commission for prescription written\n Source: " +

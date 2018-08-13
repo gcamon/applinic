@@ -5,6 +5,7 @@ var router = config.router;
 var http = require("http");
 var path = require("path");
 var Wallet = require("./wallet");
+var randos = require("./randos");
 
 
 var basicPaymentRoute = function(model,sms,io,paystack){
@@ -60,10 +61,10 @@ var basicPaymentRoute = function(model,sms,io,paystack){
 				function printPins(grade) {
 					var quantity = 0;
 					while(req.body.quantity > quantity) {
-						var random1 = Math.floor(Math.random() * 99);
-						var random2 = Math.floor(Math.random() * 9999);
-						var random3 = Math.floor(Math.random() * 9999);
-						var random4 = Math.floor(Math.random() * 9999);
+						var random1 = randos.genRef(2);
+						var random2 = randos.genRef(4);
+						var random3 = randos.genRef(4);
+						var random4 = randos.genRef(4);
 						var valObj = {};
 						valObj.din = req.body.grade;
 						valObj.pin = grade + check(random1,false) + " " + check(random2) + " " + check(random3) + " " + check(random4);
@@ -662,7 +663,7 @@ var basicPaymentRoute = function(model,sms,io,paystack){
 							model.user.findOne({user_id:req.user.user_id},{ewallet:1,user_id:1,city_grade:1,type:1,email:1,referral:1,service_details:1}).exec(function(err,center){				
 								if(err) throw err;
 
-								var elementPos = center.referral.map(function(x){return x.pharmacy.ref_id}).indexOf(req.body.refId);
+								var elementPos = center.referral.map(function(x){return x.ref_id}).indexOf(req.body.refId);
 								var found = center.referral[elementPos];
 
 								if(found) {
@@ -682,8 +683,8 @@ var basicPaymentRoute = function(model,sms,io,paystack){
 										amount: req.body.total,
 										date: req.body.date,
 										prescriptionBody: req.body.prescriptionBody,
-										doctor_names: found.pharmacy.title + " " + found.pharmacy.doctor_firstname + " " + found.pharmacy.doctor_lastname,
-										ref_id: found.pharmacy.ref_id,
+										doctor_names: (found.pharmacy.doctor_firstname) ? found.pharmacy.title + " " + found.pharmacy.doctor_firstname + " " + found.pharmacy.doctor_lastname : 'This prescriptions was not prescribed by a doctor',
+										ref_id: found.ref_id,
 										doctor_work_place: found.pharmacy.doctor_work_place,
 										doctor_specialty: found.pharmacy.doctor_specialty,
 										doctor_city: found.pharmacy.doctor_city,
@@ -692,7 +693,7 @@ var basicPaymentRoute = function(model,sms,io,paystack){
 										doctor_address: found.pharmacy.doctor_address
 									});
 								}
-
+							
 								center.save(function(err,info){
 									if(err) throw err;
 									console.log(err);
@@ -702,8 +703,10 @@ var basicPaymentRoute = function(model,sms,io,paystack){
 								var pay = new Wallet(req.body.date,req.body.patient_firstname,req.body.patient_lastname,"billing");
 								pay.billing(model,req.body,center,sms,io);
 
-								model.otpSchema.remove({otp:req.body.otp},function(err,info){});							
-								res.send({message: "Transaction successful! Your account is credited.",balance:center.ewallet.available_amount});	
+								
+								model.otpSchema.remove({otp:req.body.otp},function(err,info){});
+
+								res.send({message: "Transaction successful! Your account is credited.",balance:center.ewallet.available_amount,status:true});	
 								if(req.body.prescriptionBody) {
 									updatePatient();
 								}				
@@ -716,10 +719,9 @@ var basicPaymentRoute = function(model,sms,io,paystack){
 										var elementPos = patient.medications.map(function(x){return x.prescriptionId}).indexOf(req.body.prescriptionId);
 										var found = patient.medications[elementPos];
 										if(found){
-											found.prescription_body = req.body.prescriptionBody
+											found.prescription_body = req.body.prescriptionBody;
 										}
 									}
-
 									patient.save(function(err,info){
 										if(err) throw err;
 										console.log("Patient prescription body updated.")
@@ -917,7 +919,7 @@ var basicPaymentRoute = function(model,sms,io,paystack){
           objectFound.history = req.body.history;
 
 
-          var random = parseInt(Math.floor(Math.random() * 9999) + "" + Math.floor(Math.random() * 99999));
+          var random = randos.genRef(8);
           data.patient_notification.unshift({
             type:"laboratory",
             date: req.body.laboratory.date,
@@ -1247,7 +1249,7 @@ var basicPaymentRoute = function(model,sms,io,paystack){
 			        objectFound.files = req.body.radiology.filesUrl;
 		    		}
 
-		        var random = parseInt(Math.floor(Math.random() * 99999) + "" + Math.floor(Math.random() * 9999));
+		        var random = randos.genRef(8);
 		        data.patient_notification.unshift({
 		          type:"radiology",
 		          date: req.body.radiology.date,
@@ -1349,7 +1351,7 @@ var basicPaymentRoute = function(model,sms,io,paystack){
 			});
 
 			function allClear(wallet) {
-				var random = parseInt(Math.floor(Math.random() * 99999) + "" + Math.floor(Math.random() * 9999));
+				var random = randos.genRef(8);
 				var date = + new Date();
 				var CashObj = new model.cashout({
 					date: date,

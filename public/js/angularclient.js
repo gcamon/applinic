@@ -1675,7 +1675,7 @@ app.controller("balanceController",["$rootScope","$scope","$resource","localMana
   mySocket.on("fund received",function(data){
     if(data.status) {
       getBalance();
-      $rootScope.alertService(2,data.message); 
+      $rootScope.alertService(3,data.message); 
     }
   })
 
@@ -7291,6 +7291,7 @@ app.controller("billingController",["$scope","$http","$rootScope","$location","M
     templateService,localManager,$resource,walletService,patientBillingService){
 
     $scope.pay = {};
+    var bill = patientBillingService;//$resource("/user/payment/patient-billing",null,{sendBill:{method: "POST"}});
     
     $scope.$watch("pay.otp",function(newVal,oldVal){
       if(newVal > oldVal && $scope.pay.otp.length === 6){
@@ -7324,13 +7325,9 @@ app.controller("billingController",["$scope","$http","$rootScope","$location","M
           prescriptionBody: ($rootScope.refData.isSearchDrugRef) ? $rootScope.refData.pharmacy.prescription_body : null
         }
 
-
-      
-       
-        var bill = patientBillingService;//$resource("/user/payment/patient-billing",null,{sendBill:{method: "POST"}});
         bill.sendBill(payObj,function(data){         
           if(data.balance) {
-            templateService.playAudio(2);          
+            //templateService.playAudio(2);          
             $rootScope.balance = "NGN" + data.balance.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
             $scope.isPaid = true; 
             $rootScope.refData.pharmacy.is_paid = true; 
@@ -7348,56 +7345,6 @@ app.controller("billingController",["$scope","$http","$rootScope","$location","M
       $location.path(localManager.getValue("currPageForPharmacy"))
     }
 
-
-    /*
-    var sendObj = {
-      user_id: "6763463734",
-      amount: 4000,
-      otp: "11stytty",
-      time: + new Date()
-    }
-    var bill = $resource("/user/payment/patient-billing",{patientId:patientId},{sendBill:{method: "POST"}});
-    bill.sendBill(sendObj,function(data){
-      console.log(data.success);
-    });
-
-
-    if(newVal > oldVal && $scope.pay.otp.length === 6){
-      var date = + new Date();
-      var pin = $scope.pay.otp;
-      var str = "";
-      var count = 0;
-      for(var i = 0; i < pin.length; i++){
-        count++;      
-        if(count % 3 === 0) {
-          str += pin[i];
-          str += " ";
-        } else {
-          str += pin[i];
-        }
-      }
-      var newStr = str.replace(/\s*$/,"");
-      var payObj = {
-        amount: $scope.pay.amount,
-        otp: newStr,
-        date: date,
-        message: "Fund transfer",
-        userId: $scope.pay.beneficiaryId
-      }
-      var Debitor = walletService.resource("/user/tranfer/confirmation",{userId: null},{confirmed:{method:'POST'}});
-      Debitor.confirmed(payObj,function(data){
-        alert(data.message);
-        if(data.balance) {
-          $rootScope.balance = "NGN" + data.balance.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-          $scope.isTransfer = true;
-          $scope.isOTP = false;
-          $scope.isPhone = true;
-          $scope.isUserId = false;
-          console.log(data);
-        }
-      });
-    }
-    */
 }]);
 
 
@@ -11304,9 +11251,9 @@ app.service("viewNoteService",["$resource",function($resource){
   return $resource("/user/pharmacy/get-referral");
 }]);
 
-app.controller("pharmacyCenterNotificationController",["$scope","$location","$resource","$window","templateService",
+app.controller("pharmacyCenterNotificationController",["$scope","$location","$resource","$window","templateService","deleteFactory",
   "localManager","chatService","$rootScope","mySocket","pharmacyCenterNotificationControllerService","addNoteService","viewNoteService",
-  function($scope,$location,$resource,$window,templateService,localManager,chatService,
+  function($scope,$location,$resource,$window,templateService,deleteFactory,localManager,chatService,
     $rootScope,mySocket,pharmacyCenterNotificationControllerService,addNoteService,viewNoteService){
 
   var notification = pharmacyCenterNotificationControllerService; //$resource("/user/center/get-notification");
@@ -11328,11 +11275,27 @@ app.controller("pharmacyCenterNotificationController",["$scope","$location","$re
     templateService.holdId = id;
     var prescription = viewNoteService; //$resource("/user/pharmacy/get-referral");
     prescription.get({refId: id},function(data){
+      console.log(data)
       localManager.setValue("pharmacyData",data); //pharmacyData refers to patients prescription
       var pageUrl = "/pharmacy/view-prescription/" + id;
       $location.path(pageUrl);
       localManager.setValue("currPageForPharmacy",pageUrl);
+      deleteByRefId(id,"diagnostic_center_notification")
     });    
+  }
+
+
+  function deleteByRefId(id,field){
+    var msg = "no alert";
+    var del = new deleteFactory(id,field);
+    del.deleteItem("/user/delete-one/refId",msg);//deletes notification once it is viewed.
+    if($rootScope.noteLen > 0) {
+      $rootScope.noteLen--;  
+      var elem = $rootScope.allNote.map(function(x){return x.ref_id}).indexOf(id);
+      if($rootScope.allNote[elem]){
+        $rootScope.allNote.splice(elem,1)
+      }
+    }
   }
 
 
@@ -11375,6 +11338,11 @@ app.controller("pharmacyCenterNotificationController",["$scope","$location","$re
     templateService.holdId = partnerId;
     $location.path("/general-chat");
   }
+
+  $scope.showIndicator = false;
+  $rootScope.$on("unattendedMsg",function(status,data){
+    $scope.showIndicator = data;
+  });
 
 }]);
 
@@ -16345,7 +16313,7 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
   //user this service within controllers to alert on every event status.
   $rootScope.alertService = function (val,msg) {
     if (val) { 
-      templateService.playAudio(3);
+      templateService.playAudio(val);
       $rootScope.alert = true;
       $rootScope.message = msg;
       setTimeout(function(){

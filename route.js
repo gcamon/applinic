@@ -19,7 +19,7 @@ var options = {
 };
 
 //var token = require("./twilio");
-//var randomUserName = require("./randos");
+var randos = require("./randos");
 
 var basicRoute = function (model,sms,io,streams) { //remember streams arg will be removed atfer test
 
@@ -192,7 +192,7 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
   //Tickets is created for every queestion and it intend to be display on a page where answers can follow.
   router.post("/messages",function(req,res){
     if(!req.body.ticket) {    
-      var ticket = "#" + parseInt(Math.floor(Math.random() * 99999) + " " + Math.floor(Math.random() * 99999));
+      var ticket = "#" + randos.genRef(8);
       var date = + new Date();
       var msgObj = new model.messages({
         names: req.body.names,
@@ -364,7 +364,7 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
       if(req.body.type == "procedure"){
         model.user.findOne({user_id: req.user.user_id},{skills:1}).exec(function(err,data){
           if(err) throw err;
-          var random = parseInt(Math.floor(Math.random() * 99999) + " " + Math.floor(Math.random() * 99999));
+          var random = randos.genRef(8);
           //add files associated with this skill.
           var description = req.body.skill + ": ( " + req.body.disease + " ); "  + req.body.description;
           var procedure = {
@@ -556,7 +556,7 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
         model.authCheck.findOne({pin:req.body.pin,user_id:req.user.user_id},function(err,record){
            
             if(record) {
-              var genPin = parseInt(Math.floor(Math.random() * 99999) + " " + Math.floor(Math.random() * 9999));
+              var genPin = randos.genRef(6);
              
               var testPhone = new model.verifyPhone({
                 phone: req.body.phone,
@@ -1344,7 +1344,7 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
                     if(result) {
                       var date = + new Date();
                       req.body.service_access = true;
-                      var random = parseInt(Math.floor(Math.random() * 99999) + " " + Math.floor(Math.random() * 99999)); // use for check on the front end to distinguish messages sent.
+                      var random = randos.genRef(8); // use for check on the front end to distinguish messages sent.
                         result.patient_mail.push({
                         message_id: random.toString(),
                         user_id: req.user.user_id,
@@ -1401,7 +1401,7 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
     router.put("/user/doctor/decline-request",function(req,res){
       if(req.user) {
 
-       var random = parseInt(Math.floor(Math.random() * 99999) + " " + Math.floor(Math.random() * 99999));
+       var random = randos.genRef(8);
         model.user.findOne({user_id: req.body.sender_id},{patient_mail:1})
         .exec(function(err,patient){
           if(err) throw err;
@@ -1831,7 +1831,7 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
             if(req.body.ref_id) {
               ref_id = req.body.ref_id;
             } else {
-              ref_id = parseInt(Math.floor(Math.random() * 99999) + "" + Math.floor(Math.random() * 99999));
+              ref_id = randos.genRef(6);
             }
             var title = (req.user.type === "Doctor") ? 'Dr.': "";            
             var refObj = {
@@ -1910,7 +1910,7 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
 
           }).exec(function(err,pharmacy){
             var date = new Date();
-            var note_id = parseInt(Math.floor(Math.random() * 99999) + " " + Math.floor(Math.random() * 99999));
+            var note_id = randos.genRef(8);
             var title = (req.user.type === "Doctor") ? req.user.title : req.user.name;            
             var refObj = {
               ref_id: req.body.ref_id,              
@@ -1975,7 +1975,7 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
             if(req.body.ref_id) {
               ref_id = req.body.ref_id;
             } else {
-              ref_id = parseInt(Math.floor(Math.random() * 9999) + " " + Math.floor(Math.random() * 9999));
+              ref_id = randos.genRef(6);
             }
             
             var preObj = {              
@@ -2371,8 +2371,45 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
     //this router takes call of pahrmacy search for a patient prescription from the data base;
     router.put("/user/pharmacy/find-patient/prescription",function(req,res){
        if(req.user){    
-       console.log(req.body) 
-        model.user.findOne({user_id:req.user.user_id},{referral:1},function(err,data){
+         console.log(req.body);
+          var data = req.user;
+          switch(req.body.criteria) {
+            case "refIdCriteria":
+              var toNum = parseInt(req.body.ref_id);                
+
+              var elementPos = data.referral.map(function(x) {return x.ref_id}).indexOf(toNum);
+              var objectFound = data.referral[elementPos];
+              
+              if(objectFound === undefined) {
+                res.send({error: "Patient prescription not found"});
+              } else {
+                res.send({data: [objectFound]});
+              }
+            break;
+            case "phoneCriteria":
+              var presList = [];
+             // var elementPos = data.referral.map(function(x) {return x.phone; }).indexOf(req.body.phone);
+             // var objectFound = data.referral[elementPos];
+              var phone = "+" + req.body.phone;
+              for(var i = 0; i < data.referral.length; i++) {
+                if(data.referral[i].pharmacy.patient_phone === phone) {
+                  presList.push(data.referral[i]);
+                }
+              }
+
+              if(presList.length === 0) {
+                res.send({error: "Patient prescription not found"})
+              } else {
+                res.send({data: presList});
+              }
+                break;
+
+            default:
+              res.send({error: "Please enter search creteria"});
+              break
+          }            
+
+        /*model.user.findOne({user_id:req.user.user_id},{referral:1},function(err,data){
             if (err) throw err;           
               switch(req.body.criteria) {
                 case "refIdCriteria":
@@ -2410,7 +2447,7 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
                   res.send({error: "Please enter search creteria"});
                   break
               }            
-        });
+        });*/
       } else {
         res.end("Unauthorized access");
       }
@@ -3319,8 +3356,8 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
     //this route takes care doctor sending new test to a laboratory.
     router.post("/user/doctor/send-test",function(req,res){
         if(req.user) {  
-        var random = parseInt(Math.floor(Math.random() * 9999) + "" + Math.floor(Math.random() * 9999));
-        var testId = parseInt(Math.floor(Math.random() * 9999) + "" + Math.floor(Math.random() * 9999)); 
+        var random = randos.genRef(6);
+        var testId = randos.genRef(8); 
         var date = + new Date();     
         model.user.findOne({user_id: req.body.user_id},
           {diagnostic_center_notification:1,referral:1,address:1,name:1,city:1,country:1,phone:1,user_id:1,presence:1}).exec(function(err,result){                  
@@ -3766,8 +3803,8 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
     //this route takes care doctor sending new test to a radiology.
     router.post("/user/doctor/radiology/send-test",function(req,res){  
         if(req.user) { 
-          var random = parseInt(Math.floor(Math.random() * 99999) + "" + Math.floor(Math.random() * 9999));
-          var testId = parseInt(Math.floor(Math.random() * 99999) + "" + Math.floor(Math.random() * 99999)); 
+          var random = randos.genRef(6);
+          var testId = randos.genRef(8); 
           var date = + new Date();   
          model.user.findOne({user_id: req.body.user_id},{
           diagnostic_center_notification:1,referral:1,address:1,name:1,city:1,country:1,phone:1,user_id:1,presence:1})        
@@ -4845,8 +4882,8 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
 
         function updateDynaService() {
           var date = + new Date();
-          var random = parseInt(Math.floor(Math.random() * 99999) + "" + Math.floor(Math.random() * 99999));
-          var testId = random + 1000;
+          var random = randos.genRef(6);
+          var testId = randos.genRef(8);
           var test = {
             center_id: req.user.user_id,
             date: date,
@@ -5025,7 +5062,7 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
    if(req.user){
     console.log(req.body);
     var phone = parseInt(req.body.line) || parseInt(req.body.phone);
-    var person = (phone) ? {phone: "+" + phone,type:"Patient"} : {user_id: req.user.user_id,type:"Patient"};
+    var person = (req.body.type == 'inperson') ? {user_id: req.user.user_id,type:"Patient"} : {phone: "+" + phone,type:"Patient"}
     model.user.findOne(person,
       {
         firstname:1,
@@ -5062,7 +5099,7 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
           if(req.body.ref_id){            
             ref_id = req.body.ref_id;
           }  else {        
-            ref_id = parseInt(Math.floor(Math.random() * 9999) + "" + Math.floor(Math.random() * 9999));
+            ref_id = randos.genRef(6);
           }
          
           req.body.patient_profile_pic_url = user.profile_pic_url;
@@ -5365,7 +5402,7 @@ router.put("/user/test-search/laboratory/referral",function(req,res){
             clinical_summary: req.body.clinical_summary,
             indication: req.body.indication,
             lmp: req.body.lmp,
-            test_id: parseInt(Math.floor(Math.random() * 99999) + " " + Math.floor(Math.random() * 99999)),
+            test_id: randos.genRef(8),
             parity: req.body.parity,
             attended: false
           }             
@@ -5588,7 +5625,7 @@ router.put("/user/scan-search/radiology/referral",function(req,res){
             clinical_summary: req.body.clinical_summary,
             indication: req.body.indication,
             lmp: req.body.lmp,
-            test_id: parseInt(Math.floor(Math.random() * 99999) + " " + Math.floor(Math.random() * 99999)),
+            test_id: randos.genRef(8),
             parity: req.body.parity,
             attended: false
           }             
@@ -5749,8 +5786,8 @@ router.put("/user/courier-update",function(req,res){
     if(req.body.prescription_body){
       model.courier.findOne({_id: req.body._id,center_id: req.body.center_id}).exec(function(err,user){
         if(user) { //user.verified !== true
-          var random1 = Math.floor(Math.random() * 999);
-          var random2 = Math.floor(Math.random() * 999);
+          var random1 = randos.genRef(3);
+          var random2 = randos.genRef(3);
           var password = check(random1) + " " + check(random2);
 
           user.verified = true;
@@ -6867,6 +6904,7 @@ router.get('/user/find-center',function(req,res){
 
 router.get("/user/rendered-services",function(req,res){
   if(req.user) {
+    console.log(req.user.service_details)
     res.json(req.user.service_details.slice(0,200))
   } else {
     res.end("unauthorized access!")

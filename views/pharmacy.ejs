@@ -1110,12 +1110,13 @@
                 </div>
                 <div class="p-1">
                     <label>Prescribed by: </label>
-                    <div>
+                    <div ng-if="person.doctor_specialty">
                       <strong style="display: block;">{{person.doctor_names}}</strong>
                       <span style="display: block;">{{person.doctor_specialty}}</span>
                       <span style="display: block;">{{person.doctor_work_place}} {{person.doctor_address}} {{person.doctor_city}} {{person.doctor_country}}</span>
                       <a href="{{person.doctor_profile_url}}">view profile</a>
                     </div>
+                    <p class="text-muted">{{person.doctor_names}}</p>
                 </div>
                
                 

@@ -20,6 +20,8 @@ var LAST_NAMES = [
     'Zimmerman'
 ];
 
+var possible = "00112233445566778899112233445566778899";
+
 function randomUsername() {
     function rando(arr) {
         return arr[Math.floor(Math.random()*arr.length)];
@@ -27,4 +29,21 @@ function randomUsername() {
     return rando(ADJECTIVES) + rando(FIRST_NAMES) + rando(LAST_NAMES);
 }
 
-module.exports = randomUsername;
+function genRef(count) {
+    var val;
+    if(typeof count == 'number'){
+        var text = "";
+          for( var i=0; i < count; i++ )
+            text += possible.charAt(Math.floor(Math.random() * possible.length));
+          val = parseInt(text);
+    } else {
+        val = Math.floor(Math.random() * 99999999);
+    }
+
+    return val;
+} 
+
+module.exports = {
+    username: randomUsername,
+    genRef : genRef
+}
