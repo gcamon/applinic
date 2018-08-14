@@ -11,7 +11,7 @@
 
 	<div class="col-md-12 form-group">
 		<label>Transfer options: </label>	
-		<select class="custom-select form-control" style="display: inline-block;width: 60%" ng-model="pay.mode">
+		<select class="custom-select form-control" style="display: inline-block;width: 60%;font-size: 14px!important" ng-model="pay.mode">
 		  <option value="phone" selected>Beneficiary's phone number</option>
 		  <option value="userId">Beneficiary's ID</option>
 		</select> 
@@ -21,23 +21,21 @@
 	
 
 	   <div class="col-md-6 form-group" ng-if="isUserId === true">
-	    <label for="City">Beneficiary: </label>
-	   <input type="text" ng-model="pay.userId" class="form-control" id="City" placeholder="Beneficiary's ID" >
+	    <label for="City">Beneficiary </label>
+	   <input type="text" ng-model="pay.userId" class="form-control" id="City" placeholder="Beneficiary's ID" style="font-size: 14px!important">
 	  </div>
 
 	   <div class="col-md-6 form-group" ng-if="isPhone === true">
-	    <label for="City">Beneficiary: </label>
-	   <input type="text" ng-model="pay.phone" class="form-control" id="City" placeholder="Beneficiary's Phone Number ( format: +234******** ) ">
+	    <label for="City">Beneficiary </label>
+	   <input type="text" ng-model="pay.phone" class="form-control" id="City" placeholder="Beneficiary's Phone Number ( format: +234******** ) " style="font-size: 14px!important">
 	  </div>
 
 	  <div class="col-md-6 form-group">
-	  	<label for="City">Amount: </label>
-	   	<input type="text" class="form-control" id="City" placeholder=" Enter Amount" ng-model="pay.amount">
-	    <b style="display: block;" class="mt-1">Amount | {{str}}</b> &nbsp;&nbsp;&nbsp;
-	   	<span style="color:red">{{errorMsg}}</span>
+	  	<label for="City">Amount | {{str}} </label>
+	   	<input type="text" class="form-control" id="City" placeholder=" Enter Amount" ng-model="pay.amount" style="font-size: 14px!important">
+	   	<span style="color:red;display: block;">{{errorMsg}}</span>
 	  </div>
-
-	  <div class="col-md-3 form-group mt-1 pl-1" ng-if="isTransfer===true">
+	  <div class="mt-1" ng-if="isTransfer===true">
 	    <button class="btn btn-success" ng-click="confirm()">Send</button>
 	  </div>
 </div>

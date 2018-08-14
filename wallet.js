@@ -44,7 +44,9 @@ Wallet.prototype.credit = function(model,receiver,amount,io,cb){
 			}
 
 			if(data) {
-				self.beneficiary = data.name || data.firstaname + " " + data.lastname;
+				if(self.message !== 'billing')
+					self.beneficiary = data.name || data.firstaname + " " + data.lastname;
+
 				console.log(data.user_id,"====", data.ewallet.available_amount);
 				data.ewallet.available_amount += amount;			
 				var names = (self.lastname) ? (self.firstname + " " + self.lastname) : (data.name);
@@ -103,7 +105,7 @@ Wallet.prototype.debit = function(model,amount,debitor){
 	}
 
 	if(this.message === "Fund transfer"){
-		transacObj.activity = "Transfer";
+		transacObj.activity = "Debit";
 		transacObj.source = "You";		
 	} else if(this.message === "Consultation fee"){
 		transacObj.source = "You";
@@ -149,7 +151,7 @@ Wallet.prototype.consultation = function(model,amount,debitor,reciever_id,io){
 
 Wallet.prototype.transfer = function(model,amount,debitor,reciever,person,io){	
 		this.credit(model,reciever,amount,io);
-		this.beneficiary = person.firstname + " " + person.lastname || person.name;
+		this.beneficiary = (person.firstname) ? person.firstname + " " + person.lastname : person.name;
 		this.debit(model,amount,debitor);	
 }
 
@@ -201,7 +203,7 @@ Wallet.prototype.billing = function(model,billingInfo,reciever,sms,io){
 		_secr(model,adc,io);
 
 		//debit patient
-		if(!billingInfo.type) { //type was not included in the sent api for pharmacy when it was written.
+		if(!billingInfo.type) { //type was not included in the sent api for pharmacy when it was written  so block below works for pharmacy.
 			var self = this;
 			model.user.findOne({user_id: billingInfo.patientId},{ewallet:1,phone:1,medications:1}).exec(function(err,debitor){
 				if(err) throw err;
@@ -221,7 +223,9 @@ Wallet.prototype.billing = function(model,billingInfo,reciever,sms,io){
             from: '+16467985692',
             body: msgBody,
           }
-        ) 
+        );
+
+        self.beneficiary = reciever.name;
 				self.debit(model,amount,debitor);
 			});	
 		} else if(billingInfo.type === "Laboratory" || billingInfo.type === "Radiology") {
@@ -244,7 +248,8 @@ Wallet.prototype.billing = function(model,billingInfo,reciever,sms,io){
             from: '+16467985692',
             body: msgBody,
           }
-        )  
+        );
+        self.beneficiary = reciever.name;  
 				self.debit(model,amount,debitor);
 			});	
 		} 

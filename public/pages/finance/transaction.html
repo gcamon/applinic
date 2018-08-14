@@ -36,7 +36,7 @@
       <tr>
         <td><small>{{transact.date | date: "mediumDate"}} &nbsp;&nbsp;{{transact.date | date: "mediumTime"}}</small></td>
         <td>{{transact.activity}}</td>
-        <td>{{transact.body.amount}}</td>
+        <td>{{toCurrency(transact.body.amount)}}</td>
         <td>{{transact.source}}</td>
         <td>{{transact.body.beneficiary}}</td>
         <td>{{transact.message}}</td>

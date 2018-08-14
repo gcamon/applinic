@@ -12,7 +12,7 @@
 
 <div class="container">
 	<div class="card card-center-1 p-2">
-		<a class="btn btn-simple" href="#/pharmacy/drug-service/update">Back</a>
+		<a class="btn btn-simple" href="#/pharmacy/drug-service/update"><i class="fa fa-arrow-left"></i> Back</a>
 	</div>
     <div class="card card-center-1 p-2">
 <div>	
@@ -20,13 +20,13 @@
 	<p class="font-1_1" ng-if="notService.length > 0">Please tick if a drug is currently available in your center</p>
 </div>
 <div class="all-test-check">
-    <div class=" mb-1">
-<label class="custom-control custom-checkbox" ng-repeat="drug in notService">
-  <input type="checkbox" class="custom-control-input" ng-model="drug.val">
-  <span class="custom-control-indicator"></span>
-  <span class="custom-control-description"> {{drug.name}}</span>
-</label>
-</div>
+    <div ng-repeat="drug in notService">
+		<label class="custom-control custom-checkbox">
+		  <input type="checkbox" class="custom-control-input" ng-model="drug.val">
+		  <span class="custom-control-indicator"></span>
+		  <span class="custom-control-description"> {{drug.name}}</span>
+		</label>
+	</div>
 
 	<button class="btn btn-success" ng-click="saveDrugs()" ng-if="isToSave">Save</button>
 </div>

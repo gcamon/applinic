@@ -2758,6 +2758,7 @@ app.controller('resultController',["$scope","$rootScope","$http","$location","$r
           //alert($scope.user.skill)
           var sendObj = {};         
           sendObj.skill = $scope.user.skill; 
+          $rootScope.searchItem = $scope.user.skill;
           sendObj.type = $scope.user.creteria;        
           data.query(sendObj,function(data){
           if(data.length > 0) {
@@ -3332,17 +3333,17 @@ app.controller("bookingDocModalController",["$scope","templateService","$http","
       }
 
       if($scope.patient.ear) {
-         $scope.patient.history += "This patient is having an ear problem as explained: <br>" +
+         $scope.patient.history += "This patient is having ear problem as explained: <br>" +
          "<blockquote>" + $scope.patient.earIssue + "</blockquote>";
       }
 
       if($scope.patient.eye) {
-         $scope.patient.history += "This patient is having an eye problem as explained: <br>" +
+         $scope.patient.history += "This patient is having  eye problem as explained: <br>" +
          "<blockquote>" + $scope.patient.eyeIssue + "</blockquote>";
       }
 
       if($scope.patient.teeth) {
-         $scope.patient.history += "This patient is having an teeth problem as explained: <br>" +
+         $scope.patient.history += "This patient is having teeth problem as explained: <br>" +
          "<blockquote>" + $scope.patient.teethIssue + "</blockquote>";
       }
 
@@ -14213,14 +14214,16 @@ app.controller("searchSelectedCenterController",["$scope","$location","$window",
 
     if( $rootScope.checkLogIn.typeOfUser !== 'Patient') {
 
-      if(!$scope.data.phone) {
-        $scope.phoneMsg = "Enter patient's phone number";
-        return;
-      }
+      if(type !== 'inperson') {
+        if(!$scope.data.phone) {
+          $scope.phoneMsg = "Enter patient's phone number";
+          return;
+        }
 
-      if(!$scope.data.provisional_diagnosis) {
-        $scope.provisionalMsg = "Enter provisional diagnosis";
-        return;
+        if(!$scope.data.provisional_diagnosis) {
+          $scope.provisionalMsg = "Enter description";
+          return;
+        }
       }
     }
 
@@ -14586,19 +14589,21 @@ app.controller("testSearchSelectedCenterController",["$scope","$location","$wind
 
   $scope.send = function (type){ 
 
-    if(!$scope.data.phone) {
-      $scope.phoneMsg = "Enter patient's phone number";
-      return;
-    }
+    if(type !== 'inperson') {
+      if(!$scope.data.phone) {
+        $scope.phoneMsg = "Enter patient's phone number";
+        return;
+      }
 
-    if(!$scope.data.clinical_summary) {
-      $scope.summuryMsg = "Enter clinic summary";
-      return;
-    }
+      if(!$scope.data.clinical_summary) {
+        $scope.summuryMsg = "Enter clinic summary";
+        return;
+      }
 
-    if(!$scope.data.indication) {
-      $scope.indictionMsg = "Enter indication";
-      return;
+      if(!$scope.data.indication) {
+        $scope.indictionMsg = "Enter indication";
+        return;
+      }
     }
 
     $scope.summuryMsg = "";
@@ -14939,19 +14944,21 @@ app.controller("scanSearchSelectedCenterController",["$scope","$location","$wind
 
   $scope.send = function (type){  
 
-    if(!$scope.data.phone) {
-      $scope.phoneMsg = "Enter patient's phone number";
-      return;
-    }
+    if(type !== 'inperson') {
+      if(!$scope.data.phone) {
+        $scope.phoneMsg = "Enter patient's phone number";
+        return;
+      }
 
-    if(!$scope.data.clinical_summary) {
-      $scope.summuryMsg = "Enter clinic summary";
-      return;
-    }
+      if(!$scope.data.clinical_summary) {
+        $scope.summuryMsg = "Enter clinic summary";
+        return;
+      }
 
-    if(!$scope.data.indication) {
-      $scope.indictionMsg = "Enter indication";
-      return;
+      if(!$scope.data.indication) {
+        $scope.indictionMsg = "Enter indication";
+        return;
+      }
     }
 
     $scope.summuryMsg = "";

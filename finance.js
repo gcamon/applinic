@@ -402,7 +402,6 @@ var basicPaymentRoute = function(model,sms,io,paystack){
 						model.user.findOne({user_id: req.body.userId},{ewallet:1,firstname:1,lastname:1,name:1}).exec(function(err,debitor){
 							var name = req.user.firstname || req.user.name;
 							var pay = new Wallet(req.body.date,name,req.user.lastname,req.body.message);
-							//note firstname or lastname of patient may change.
 							pay.payment(model,data.amount,debitor,req.user.user_id,io);
 							res.send({message: "Transaction successful! Your account is credited."});
 						});						
@@ -660,8 +659,13 @@ var basicPaymentRoute = function(model,sms,io,paystack){
 					res.send({message:"Confirmation failed! Transaction canceled."});					
 				} else {			
 						if(data.user_id === req.body.patientId && data.senderId === req.user.user_id) {					
-							model.user.findOne({user_id:req.user.user_id},{ewallet:1,user_id:1,city_grade:1,type:1,email:1,referral:1,service_details:1}).exec(function(err,center){				
+							model.user.findOne({user_id:req.user.user_id},{ewallet:1,user_id:1,city_grade:1,type:1,email:1,referral:1,service_details:1,name:1}).exec(function(err,center){				
 								if(err) throw err;
+
+								if(!center){
+									res.send({message: 'Oops! Something went wrong.Center does not exist or have been deleted.==> finance.js: 666'});
+									return;
+								}
 
 								var elementPos = center.referral.map(function(x){return x.ref_id}).indexOf(req.body.refId);
 								var found = center.referral[elementPos];

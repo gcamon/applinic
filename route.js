@@ -5365,15 +5365,16 @@ router.put("/user/laboratory/search/find-tests",function(req,res){
 
 router.put("/user/test-search/laboratory/referral",function(req,res){
     if(req.user){  
-   console.log(req.body);
+    console.log(req.body)
     var phone = req.body.line  || req.body.phone;
-    var person = (phone) ? {phone: "+" + phone, type: 'Patient'} : {user_id: req.user.user_id,type:"Patient"};
+    var person = (req.body.type === 'inperson') ? {user_id: req.user.user_id,type:"Patient"} : {phone: "+" + phone, type: 'Patient'};
     model.user.findOne(person,{firstname:1,lastname:1,title:1,profile_pic_url:1,city:1,country:1,name:1,age:1,user_id:1,medical_records:1,phone:1})
     .exec(function(err,user){
 
       if(err) throw err;
 
       if(user) {
+        req.body.ref_id = randos.genRef(6);
         model.user.findOne({user_id: req.body.user_id},{
           diagnostic_center_notification:1,referral:1,address:1,name:1,city:1,country:1,phone:1,user_id:1,presence:1,age:1,gender:1})
         .exec(function(err,result){
@@ -5490,7 +5491,7 @@ router.put("/user/test-search/laboratory/referral",function(req,res){
       })
    
       } else {
-       res.send({error:"Patient number does not exist in Applinic. Make sure the number was typed correctly."})
+       res.send({error:"The person using this Investigations does not exist or not a patient. Make sure the number was typed correctly."})
       }
     });
 
@@ -5589,14 +5590,16 @@ router.put("/user/radiology/search/find-tests",function(req,res){
 
 router.put("/user/scan-search/radiology/referral",function(req,res){
     if(req.user){  
+      console.log(req.body)
     var phone = req.body.line  || req.body.phone;
-    var person = (phone) ? {phone: "+" + phone, type: 'Patient'} : {user_id: req.user.user_id,type:"Patient"};
+    var person = (req.body.type === 'inperson') ? {user_id: req.user.user_id,type:"Patient"} : {phone: "+" + phone, type: 'Patient'};
     model.user.findOne(person,{firstname:1,lastname:1,title:1,profile_pic_url:1,city:1,country:1,name:1,age:1,user_id:1,medical_records:1,phone:1})
     .exec(function(err,user){
 
       if(err) throw err;
 
       if(user) {
+        req.body.ref_id = randos.genRef(6);
         model.user.findOne({user_id: req.body.user_id},{
           diagnostic_center_notification:1,referral:1,address:1,name:1,city:1,country:1,phone:1,user_id:1,presence:1,age:1,gender:1})
         .exec(function(err,result){
@@ -5713,7 +5716,7 @@ router.put("/user/scan-search/radiology/referral",function(req,res){
       })
    
       } else {
-       res.send({error:"Patient number does not exist in Applinic. Make sure the number was typed correctly."})
+       res.send({error:"The person using this Investigations does not exist or not a patient. Make sure the number was typed correctly."})
       }
     });
 
