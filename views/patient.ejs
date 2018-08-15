@@ -889,7 +889,62 @@
                 <!-- /.modal -->
             </div>
         </div>
-        <!-- Reference block for JS -->      
+        <!-- Reference block for JS -->
+        <div class="modal fade" id="accessl" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" ng-controller = "loginController">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Change Password </h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body" style="padding-right: 40px">
+          <form>
+            <div style="text-align: center;"><span ng-bind-html="cpMsg" style="font-size: 14px;"></span></div>
+            <div ng-if="!isSuccess">
+              <div>
+                <label></label>
+                <input type="text" name="" placeholder="Enter email or phone number (eg +2348064****56)" class="form-control" ng-model="changePassword.val">
+              </div>
+              <div style="text-align: center;padding-top: 10px">
+                <button class="btn btn-danger btn-sm" ng-click="getUser()"> <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="isLoading"></i> {{(isLoading) ? "" : "Submit"}}</button>
+              </div>
+            </div>
+            <div ng-if="isSuccess && !isVerified">
+              <div class="text-danger" style="text-align: center;">{{verifyMsg}}</div>
+              <div>
+                <input type="text" name="" placeholder="Enter pin" class="form-control" ng-model="changePassword.pin">
+              </div>
+              <div style="text-align: center;padding-top: 10px">
+                <button class="btn btn-danger btn-sm" ng-click="verify()"> <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="isLoading"></i> {{(isLoading) ? "" : "Submit"}}</button>
+              </div>
+            </div>
+            <div ng-if="isVerified">
+              <div class="text-success" style="text-align: center;">{{passwordMsg}}</div>
+              <div class="text-danger" style="text-align: center;">{{passwordErrorMsg}}</div>
+              <div>
+                <input type="password" name="" placeholder="Enter Password" class="form-control" ng-model="changePassword.newPassword">
+              </div>
+              <div>
+                <input type="password" name="" placeholder="Re-type Password" class="form-control" ng-model="changePassword.newPassword2">
+              </div>
+              <div style="text-align: center;padding-top: 10px" ng-if="!passwordMsg">
+                <button class="btn btn-danger btn-sm" ng-click="updatePassword()"> <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="isLoading"></i> {{(isLoading) ? "" : "Submit"}}</button>                
+              </div>
+              <div ng-if="passwordMsg" style="text-align: center;">
+                <i class="fa fa-check text-muted"> Password changed!</i>
+              </div>
+            </div>
+          </form>
+        </div>
+       <!-- <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          
+        </div>-->
+      </div>
+    </div>
+  </div>  
         
        
         <!--<script src="https://media.twiliocdn.com/sdk/js/common/v0.1/twilio-common.min.js"></script>        

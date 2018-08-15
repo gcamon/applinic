@@ -111,8 +111,8 @@ router.get('/failed',function(req,res){
 // Change password routes
 
 router.get('/user/change-password',function(req,res){
-  console.log(req.query);
-  var criteria = { $or: [{ email : req.query.val},{phone: req.query.val}]}
+
+  var criteria = (req.user) ? {user_id: req.user.user_id} : { $or: [{ email : req.query.val},{phone: req.query.val}]}
   model.user.findOne(criteria,{phone:1,email:1,user_id:1},function(err,user){
     if(err) {
       res.send({error:"error : 500"});

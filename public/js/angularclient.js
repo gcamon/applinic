@@ -2454,7 +2454,6 @@ app.controller("docProfileViewController",["$scope","$rootScope","$resource","$l
 
    var source = profileDataService;//$resource("/user/get-profile-data",{userId: userId });
    source.get({userId: userId },function(data) {
-    console.log(data)
     $rootScope.docInfo = data;
     templateService.holdForSpecificDoc = data;
 
