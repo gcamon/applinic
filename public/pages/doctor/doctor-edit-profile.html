@@ -264,7 +264,7 @@
         <div ng-repeat="j in docInfo.skills">       
           <p style="max-height:200px;overflow-y:hidden">{{j.procedure_description}}</p>
           <div ng-if="j.files.length > 0">
-            <a href="" style="color:green">{{j.files.length}} files </a>
+            <a href="" style="color:green">{{j.files.length}} {{(j.files.length > 1) ? 'files': 'file'}} </a>
           </div>
           <p style="color:red;text-decoration:underline;cursor:pointer;text-align:right"><small  ng-click="deleteRecord(j._id,'skills')">Delete</small></p>
         </div>
@@ -275,7 +275,7 @@
       </div>
 
       <div ng-if="type === 'years' ">
-        <p>Years of experience : {{docInfo.experience + " years" || "months"}} &nbsp;&nbsp;<span style="color:red;text-decoration:underline;cursor:pointer;float:right" ng-click="deleteRecord('years')"><i class="fa fa-pencil" aria-hidden="true"></i></span></p>
+        <p>Years of experience : {{(docInfo.experience) ? docInfo.experience + " years" : "N/A"}} &nbsp;&nbsp;<span style="color:red;text-decoration:underline;cursor:pointer;float:right" ng-click="deleteRecord('years')"><i class="fa fa-pencil" aria-hidden="true"></i></span></p>
       </div>      
 
       <div ng-if="type === 'edu' ">
