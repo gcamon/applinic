@@ -5,16 +5,16 @@
         <ul class="doc-edit">
           <li ng-click="view('personal')" ng-class="{'selected-edit': type === 'personal'}">Personal Information</li>
           <li ng-click="view('intro')" ng-class="{'selected-edit': type === 'intro'}">Introductory Note</li>
-          <li ng-click="view('years')" ng-class="{'selected-edit': type === 'years'}">Years Of Experience</li>
+          <li ng-click="view('years')" ng-class="{'selected-edit': type === 'years'}">Years of Experience</li>
           <li ng-click="view('edu')"  ng-class="{'selected-edit': type === 'edu'}">Education</li>
-          <li ng-click="view('speciaty')" ng-class="{'selected-edit': type === 'speciaty'}">Sub-speciaty</li>
-          <li ng-click="view('skill')" ng-class="{'selected-edit': type === 'skill'}">Skill &amp; Procedure</li>
+          <li ng-click="view('speciaty')" ng-class="{'selected-edit': type === 'speciaty'}">Sub-Specialty</li>
+          <li ng-click="view('skill')" ng-class="{'selected-edit': type === 'skill'}">Skills &amp; Procedures</li>
           <li ng-click="view('honor')" ng-class="{'selected-edit': type === 'honor'}">Honors &amp; Awards</li>
           <li ng-click="view('office')" ng-class="{'selected-edit': type === 'office'}">Office Hours</li>
         </ul>
-        <footer>
+        <footer style="padding-bottom: 10px"> 
           <div style="margin-top:20px">
-            <a href="/user/change-number"> Change registered applinic phone number </a>
+            <a href="/user/change-number" class="btn btn-info btn-sm"> Change Phone Number </a>
           </div>
            <!--<div style="margin-top:20px">
             <a href="/user/change-email">Change email </a>
@@ -24,7 +24,7 @@
     </div>
     <div class="col-sm-6 col-md-6 col-lg-6">
       <div ng-if="type === 'personal'">
-        <h3>Personal Infomation</h3>
+        <h3>Personal Information</h3>
         <hr>
         <div class="col-md-6 form-group">
             <label for="firstname">First Name</label>
@@ -80,13 +80,83 @@
       </div>
 
       <div ng-if="type === 'speciaty'">
-        <h3>Speciaties</h3>
+        <h3>Specialties</h3>
         <div ng-repeat="item in user.subSpecialty">
            <!--<input type="text" class="form-control mb-1" placeholder="Sub specialty" ng-model="item.sub_specialty">-->
            <select class="form-control mb-1" placeholder="Sub specialty" ng-model="item.sub_specialty">
-            <option value="" selected> Select speciaty</option>
-             <option>Cardiology</option>
-             <option>Dermatology</option>
+            <option value="" selected> Select specialty</option>
+            <option>Acupunture</option>
+            <option>Addiction Medicine</option>
+            <option>Adolescent Medicine</option>
+            <option>Aerospace Medicine</option>
+            <option>Allergy</option>
+            <option>Allergy/Immunology</option>
+            <option>Anesthesiology</option>
+            <option>Audiologist</option>
+            <option>Bariatrician</option>
+            <option>Cardiac Electrophysiology</option>
+            <option>Cardiology</option>
+            <option>Chiropractic</option>
+            <option>Clinical Laboratory Immunology</option>
+            <option>Clinical Pathology</option>
+            <option>Colon/Rectal Surgery</option>
+            <option>Critical Care</option>
+            <option>Cythopathology</option>
+            <option>Dermatology</option>
+            <option>Dermatopathology</option>
+            <option>Diabetes</option>
+            <option>Diagnostic</option>
+            <option>Emergency Medical Tech</option>
+            <option>Emergency Medicine</option>
+            <option>Endocrinology</option>
+            <option>Endovascular Surgical Neuroradiology</option>
+            <option>Family Practice</option>
+            <option>Gastroenterology</option>
+            <option>General Practice</option>
+            <option>General Surgery</option>
+            <option>Genetics</option>
+            <option>Geriatrics</option>
+            <option>Gynecology</option>
+            <option>Gynecology Oncology</option>
+            <option>Hand Surgery</option>
+            <option>Hand and Neck Surgery</option>
+            <option>Hematology</option>
+            <option>Hematology/Oncology</option>
+            <option>Hepatology</option>
+            <option>Holistic Medicine</option>
+            <option>Hospitalist</option>
+            <option>Immunology</option>
+            <option>Infectious Disease</option>
+            <option>Internal Medicine</option>
+            <option>Interventional Cardiology</option>
+            <option>Legal Medicine</option>
+            <option>Medical Oncology</option>
+            <option>Medical Toxicology</option>
+            <option>Neonatology</option>
+            <option>Nephrology</option>
+            <option>Neurology</option>
+            <option>Neuroradiology</option>
+            <option>Nuclear Cardiology</option>
+            <option>Nuclear Cardiology</option>
+            <option>Neurosurgeon</option>
+            <option>Nutrition</option>
+            <option>Obstetrics/Gynecology</option>
+            <option>Occupational Medicine</option>
+            <option>Oncology</option>
+            <option>Opthalmology</option>
+            <option>Optometry</option>
+            <option>Orthopedic Foot &amp; Ankle</option>
+            <option>Orthopedic Reconstructive Surgery</option>
+            <option>Orthopedic Spine Surgery</option>
+            <option>Orthopedic Surgery</option>
+            <option>Osteopathy</option>
+            <option>Otorhinolaryngology</option>
+            <option>Pain Management</option>
+            <option>Pathology</option>
+            <option>Pediatric Allergy</option>
+            <option>Pediatric Cardiology</option>
+            <option>Pediatric Critical Care</option>
+            <option>Padiatric Emergency Medicine</option>
            </select>
         </div>
         <div>
@@ -149,7 +219,7 @@
 
       <div ng-if="type === 'skill' ">
 
-        <h3>Skills &amp; Procedure </h3>
+        <h3>Skills &amp; Procedures </h3>
         <form>
           <div class="col-md-12 col-sm-12 col-lg-12 form-group">
             <label for="lastname">Disease Name</label>
@@ -214,7 +284,7 @@
 
 
       <div ng-if="type === 'office'">
-        <h3>OfFice hours</h3>
+        <h3>Office Hours</h3>
         <div ng-repeat="item in user.office" >
           <div class="col-md-12 col-sm-12 col-lg-12 form-group">
               <label for="lastname">Day</label>
@@ -223,7 +293,7 @@
                 <option>Tuesday</option>
                 <option>Wednesday</option>
                 <option>Thursday</option>
-                <option>Frnameay</option>
+                <option>Friday</option>
                 <option>Saturday</option>
                 <option>Sunday</option>
               </select>
@@ -253,7 +323,7 @@
       <div ng-if="type === 'personal'" class="rec">        
           <div>Names : {{docInfo.firstname}} {{docInfo.lastname}}</div>
           <div>Email : {{docInfo.email}} </div>
-          <div>Phone : +234 {{docInfo.phone}}</div>
+          <div>Phone : {{docInfo.phone}}</div>
           <div>Place of work : {{docInfo.work_place}}</div>
           <div>Work address : {{docInfo.address}}</div>
           <div>City/Town : {{docInfo.city}}</div>

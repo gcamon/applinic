@@ -66,7 +66,7 @@
         </div><br>
              <div><div class="title" ng-cloak >{{docInfo.title}}  {{docInfo.firstname}} {{docInfo.lastname}}</div>
          <sub class="text-muted" style="margin-top:-3px; font-size:1em;" ng-cloak>{{docInfo.specialty}} Specialist</sub><br><br>
-          <button type="button" class="btn btn-success btn-sm" ng-click="profileBook()">Book me!</button>  
+          <button type="button" class="btn btn-success btn-sm" ng-click="profileBook()" ng-if="checkLogIn.typeOfUser !== 'Doctor'">Book me!</button>  
           <!--<button type="button" class="btn btn-info btn-sm" ng-click="profileAsk()">Ask Question</button>-->
 
           <span style="padding: 10px; float:right;background-color:#109CFF;font-size:14px;color:#fff;margin-top:-10px;opacity:0.8" ng-if="docInfo.verified == true" ng-cloak><i class="fa fa-certificate" aria-hidden="true" style="color:#D90000;font-size: 18px"></i>&nbsp; VERIFIED</span>
@@ -77,8 +77,8 @@
 
             <!--left col-->
              <div class="grayish" ng-cloak ><i class="text-success fa fa-map-pin"></i> <span style="font-weight: bold">{{docInfo.work_place }}|</span> <span>{{docInfo.address}} </span></div>
-<div class="grayish" ng-cloak ><i class="text-success fa fa-phone"></i> +234 {{docInfo.phone }} </div>
-<div class="grayish" ng-cloak ><i class="text-success fa fa-envelope-open"></i> info@fareland.com</div>
+<!--<div class="grayish" ng-cloak ><i class="text-success fa fa-phone"></i> {{docInfo.phone }} </div>-->
+<div class="grayish" ng-cloak ><i class="text-success fa fa-envelope"></i> info@applinic.com</div>
 <div class="grayish" ng-cloak ><i class="text-success fa fa-home"></i> Residence: {{ docInfo.city }}, {{docInfo.country || "N/A" }}</div>
 <div class="grayish" ng-cloak ><i class="text-success fa fa-tasks"></i> Experience: {{ docInfo.experience || "N/A" }} years</div>
 <div class="grayish" ng-cloak ><i class="text-success fa fa-graduation-cap"></i> Degree(s): 
@@ -119,7 +119,7 @@
                   <div class="row">
 
                       <div class="col-md-12 card p-1 mb-2" >
-<div class="title" style="border-bottom:1px solid #f2f2f2;" ng-cloak >{{docInfo.title}} {{docInfo.firstname}} {{docInfo.lastname }}, Md note</div>
+<div class="title" style="border-bottom:1px solid #f2f2f2;" ng-cloak >{{docInfo.title}} {{docInfo.firstname}} {{docInfo.lastname }}, MD</div>
 <p style="padding: 10px; font-style: italic; font-weight:100" ng-cloak>{{docInfo.introductory || "A specialist in " + docInfo.specialty + " with clinical experience in diagnosing and treating patients with various diseases."}}</p>
  </div>
 
