@@ -82,82 +82,11 @@
       <div ng-if="type === 'speciaty'">
         <h3>Specialties</h3>
         <div ng-repeat="item in user.subSpecialty">
-           <!--<input type="text" class="form-control mb-1" placeholder="Sub specialty" ng-model="item.sub_specialty">-->
-           <select class="form-control mb-1" placeholder="Sub specialty" ng-model="item.sub_specialty">
+           <input type="text" class="form-control mb-1" placeholder="Sub specialty" ng-model="item.sub_specialty">
+           <!--<select class="form-control mb-1" placeholder="Sub specialty" ng-model="item.sub_specialty">
             <option value="" selected> Select specialty</option>
-            <option>Acupunture</option>
-            <option>Addiction Medicine</option>
-            <option>Adolescent Medicine</option>
-            <option>Aerospace Medicine</option>
-            <option>Allergy</option>
-            <option>Allergy/Immunology</option>
-            <option>Anesthesiology</option>
-            <option>Audiologist</option>
-            <option>Bariatrician</option>
-            <option>Cardiac Electrophysiology</option>
-            <option>Cardiology</option>
-            <option>Chiropractic</option>
-            <option>Clinical Laboratory Immunology</option>
-            <option>Clinical Pathology</option>
-            <option>Colon/Rectal Surgery</option>
-            <option>Critical Care</option>
-            <option>Cythopathology</option>
-            <option>Dermatology</option>
-            <option>Dermatopathology</option>
-            <option>Diabetes</option>
-            <option>Diagnostic</option>
-            <option>Emergency Medical Tech</option>
-            <option>Emergency Medicine</option>
-            <option>Endocrinology</option>
-            <option>Endovascular Surgical Neuroradiology</option>
-            <option>Family Practice</option>
-            <option>Gastroenterology</option>
-            <option>General Practice</option>
-            <option>General Surgery</option>
-            <option>Genetics</option>
-            <option>Geriatrics</option>
-            <option>Gynecology</option>
-            <option>Gynecology Oncology</option>
-            <option>Hand Surgery</option>
-            <option>Hand and Neck Surgery</option>
-            <option>Hematology</option>
-            <option>Hematology/Oncology</option>
-            <option>Hepatology</option>
-            <option>Holistic Medicine</option>
-            <option>Hospitalist</option>
-            <option>Immunology</option>
-            <option>Infectious Disease</option>
-            <option>Internal Medicine</option>
-            <option>Interventional Cardiology</option>
-            <option>Legal Medicine</option>
-            <option>Medical Oncology</option>
-            <option>Medical Toxicology</option>
-            <option>Neonatology</option>
-            <option>Nephrology</option>
-            <option>Neurology</option>
-            <option>Neuroradiology</option>
-            <option>Nuclear Cardiology</option>
-            <option>Nuclear Cardiology</option>
-            <option>Neurosurgeon</option>
-            <option>Nutrition</option>
-            <option>Obstetrics/Gynecology</option>
-            <option>Occupational Medicine</option>
-            <option>Oncology</option>
-            <option>Opthalmology</option>
-            <option>Optometry</option>
-            <option>Orthopedic Foot &amp; Ankle</option>
-            <option>Orthopedic Reconstructive Surgery</option>
-            <option>Orthopedic Spine Surgery</option>
-            <option>Orthopedic Surgery</option>
-            <option>Osteopathy</option>
-            <option>Otorhinolaryngology</option>
-            <option>Pain Management</option>
-            <option>Pathology</option>
-            <option>Pediatric Allergy</option>
-            <option>Pediatric Cardiology</option>
-            <option>Pediatric Critical Care</option>
-            <option>Padiatric Emergency Medicine</option>
-           </select>
+              
+           </select>-->
         </div>
         <div>
           <button class="btn btn-simple pull-right mr-1" ng-click="addNewField(user.subSpecialty)" style="color:blue;position:absolute;bottom:0;right:0"><b>+</b> Add Field</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -202,7 +131,7 @@
             </div>
 
 
-           <div class="col-md-12 col-lg-12 col-sm-12 form-group" style="border-bottom: 1px solname grey">
+           <div class="col-md-12 col-lg-12 col-sm-12 form-group" style="border-bottom: 1px solid grey;padding-bottom: 15px">
               <label for="CertificateObtained">Certificate Obtained</label>
               <input type="text" class="form-control" name="CertificateObtained" placeholder="Certificate Obtained" ng-model="item.certificate">
             </div>
@@ -215,6 +144,7 @@
         <div>
           <button class="btn btn-success" ng-click="update()">Save</button>
         </div>
+
       </div>
 
       <div ng-if="type === 'skill' ">
@@ -351,7 +281,7 @@
       <div ng-if="type === 'edu' ">
         <div ng-repeat="k in docInfo.education">
           <p><strong>{{k.certificate}}</strong>&nbsp;&nbsp;<em>{{k.school}},</em>
-            <span style="display:block">{{k.start-year | date: "mediumDate"}} - {{k.end_year | date: "mediumDate"}}.</span>
+            <span style="display:block">{{k.start_year | date: "mediumDate"}} - {{k.end_year | date: "mediumDate"}}.</span>
             <small style="color:red;text-decoration:underline;cursor:pointer;float:right" ng-click="deleteRecord(k._id,'education')">Delete</small>
           </p>
         </div>
