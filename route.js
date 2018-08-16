@@ -1449,10 +1449,20 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
       } else {
         res.end("unauthorized accesss!")
       }
-    })
+    });
 
-    
-    
+    router.get("/user/get-specialties",function(req,res){
+      if(req.user){
+        model.user.find({type:"Doctor"},{specialty:1})
+        .sort('specialty')
+        .exec(function(err,data){
+          if(err) throw err;
+          res.json(data);
+        });
+      } else {
+        res.end("Unauthorized access");
+      }
+    });
 
     //this router gets all the patient medical records and prescriptions and send it to the front end as soon as the patient logs in. 
     //the data is sent as json and the controller that receives it on the front end is "patientPanelController" .

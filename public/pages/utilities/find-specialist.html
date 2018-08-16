@@ -28,7 +28,10 @@
 
       <div class="form-group" ng-if="isSpecialty === true">
           <label for="specialty">Specialty </label>
-        <select id="group1" id="specialty" class="custom-select form-control" ng-model="user.specialty" style="font-size: 14px!important" >
+           <input type="text" class="form-control" placeholder="Enter specialty"  id="states"  uib-typeahead="specialty for specialty in allSpecialties | filter:$viewValue | limitTo:15" ng-model="user.specialty" style="font-size: 14px!important">
+          
+
+        <!--<select id="group1" id="specialty" class="custom-select form-control" ng-model="user.specialty" style="font-size: 14px!important" >
         <option value="" selected="selected">_select specialty</option>
         <option>Acupunture</option>
         <option>Addiction Medicine</option>
@@ -102,7 +105,7 @@
         <option>Pediatric Critical Care</option>
         <option>Pediatric Emergency Medicine</option>
         <option>Other</option>  
-        </select>
+        </select>-->
       </div>
 
       <div class="form-group" ng-if="isDoctorId === true">

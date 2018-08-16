@@ -2680,13 +2680,38 @@ app.controller('resultController',["$scope","$rootScope","$http","$location","$r
   $scope.refineUser = {};
   var theCity;
   var theSkill;
+
   $scope.getCity = function(city){
     theCity = city;
   }
 
+  
   $scope.goBack = function() {
     $location.path("/find-specialist");
   }
+
+  var filter = {};
+  var spArr = [];
+
+  $http({
+    method  : 'GET',
+    url     : "/user/get-specialties",
+    headers : {'Content-Type': 'application/json'} 
+    })
+  .success(function(data) {              
+    if(data){
+      for(var i = 0; i < data.length; i++){
+        if(!filter[data[i].specialty]) {
+          filter[data[i].specialty] = 1;
+          spArr.push(data[i].specialty)
+        } else {
+          filter[data[i].specialty]++;
+        }
+      }
+      console.log(spArr)
+      $scope.allSpecialties = spArr;
+    }
+  });                                    
 
   $scope.cities = cities;
   templateUrlFactory.setUrl();
