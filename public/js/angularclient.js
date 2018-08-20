@@ -3,14 +3,25 @@
 var app = angular.module('myApp',["ngRoute","ngAnimate","angularModalService","angularMoment",'ui.bootstrap',
   'angular-clipboard',"ngResource","btford.socket-io","ngTouch",'ngPrint','paystack','ngSanitize']);
 
+app.run(['$rootScope',function($rootScope){
+
+ $rootScope.$on('$routeChangeStart',function(){
+     $rootScope.stateIsLoading = true;
+ });
+
+
+  $rootScope.$on('$routeChangeSuccess',function(){
+      $rootScope.stateIsLoading = false;
+ });
+
+}]);
+
 app.config(['$paystackProvider','$routeProvider',
   function($paystackProvider,$routeProvider){
   $paystackProvider.configure({
       key: "pk_test_f9caf875a730e2ce7059b6eda000194c65125bda"
   });
 
- 
- 
   $routeProvider
 
   .when("/",{
