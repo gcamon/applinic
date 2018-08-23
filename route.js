@@ -7068,11 +7068,13 @@ router.get("/general/homepage-search",function(req,res){
     //var criteria = { specialty : { $regex: str, $options: 'i' },type:"Doctor",city:req.query.city};
     //var byDisease = {"skills.disease": { $regex: str, $options: 'i' },type:"Doctor",city:req.query.city};
     if(req.query.city) {
-      var criteria = { $or: [{ specialty : { $regex: str, $options: 'i' },type:"Doctor",city:req.query.city},
-      {"skills.disease": { $regex: str, $options: 'i' },type:"Doctor",city:req.query.city}]};
+      var criteria = {$text : {$search : req.query.item},city:req.query.city}
+      /*var criteria = { $or: [{ specialty : { $regex: str, $options: 'i' },type:"Doctor",city:req.query.city},
+      {"skills.disease": { $regex: str, $options: 'i' },type:"Doctor",city:req.query.city}]};*/
     } else {
-      var criteria = { $or: [{ specialty : { $regex: str, $options: 'i' },type:"Doctor"},
-      {"skills.disease": { $regex: str, $options: 'i' },type:"Doctor"}]}; 
+      var criteria = {$text : {$search : req.query.item}}
+      //var criteria = { $or: [{ specialty : { $regex: str, $options: 'i' },type:"Doctor"},
+      //{"skills.disease": { $regex: str, $options: 'i' },type:"Doctor"}]}; 
     }
 
     model.user.find(criteria,{firstname:1,lastname:1,work_place:1,city:1,country:1,address:1,specialty:1,_id:0},function(err,data){
