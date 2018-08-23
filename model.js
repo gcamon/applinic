@@ -11,10 +11,13 @@ var options = {
 	// If not connected, return errors immediately rather than waiting for reconnect
 	bufferMaxEntries: 0
 }
-mongoose.connect(dbURL,options);
-mongoose.connection.on("error",function(err){
-    console.log(err)
-});
+mongoose.connect(dbURL,options)
+.then(
+  () => { console.log("db connected!") },
+  err => { console.log(err)}
+)
+
+
 
 var Schema = mongoose.Schema;
 
@@ -806,6 +809,24 @@ var myModel = function () {
 		collections: "billinginfos"
 	});
 
+	var docAppointmentSchema = Schema({
+		date: Date,
+		time: Date,
+		last_meeting: String,
+		firstname: String,
+		lastname: String,
+		title: String,
+		patient_id: String,
+		address: String,
+		session_id: String,
+		typeOfSession: String,
+		profilePic: String,
+		doctorId: String,
+		attended: Boolean
+	},{
+		collections: "appointmentinfos"
+	});
+
 	/*var callingSchema = Schema({
 		calling_code: {
 			countryCode: String
@@ -846,6 +867,7 @@ var myModel = function () {
 	models.control = mongoose.model("controlinfos",controlSchema);//to be moved to another server
 	models.needHelp = mongoose.model('needhelpinfos',needHelpchema);
 	models.outPatientBilling = mongoose.model("billinginfos",treatmentBillSchema);
+	models.appointment = mongoose.model("appointmentinfos",docAppointmentSchema);
 	//models.calling_code = mongoose.model("callingcodeinfos",callingSchema)
 	
 	

@@ -16,7 +16,7 @@ var ExpressPeerServer = require('peer').ExpressPeerServer;
 
 var configuration = function (app,model) {
   //config
-  var storeDB = process.env.MONGODB_ADDON_URI || "mongodb://127.0.0.1:27017/medicalmull";
+  var storeDB = "mongodb://127.0.0.1:27017/medicalmull";
   var store = new MongoDBStore(
     {
       uri: storeDB,
@@ -37,7 +37,7 @@ var configuration = function (app,model) {
 	  saveUninitialized: true,
 	  cookie: {
 	  	httpOnly: true, 
-	  	maxAge: 3600000 * 3, // 3 hours
+	  	maxAge: 3600000 * 24, // 24 hours
 	  	path: "/user"
 	  } //secure: true will be set on the cookie when i this site is on https
 	}));

@@ -35,10 +35,16 @@
 
 		<p><span class="pt-2 pb-2"><b>Date of meeting</b> | {{sessionInfo.date | date : "mediumDate"}} </span> ( <span am-time-ago="sessionInfo.date"> </span> )<br>
         <span><b>Time of meeting</b> | {{sessionInfo.time | date : "mediumTime"}}</span></p>
-
         	<div class="col-md-12 col-lg-12 p-0" style="">
 			<button class="btn btn-danger" ng-click="getTreatment()"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i>Proceed to treatment</button>
-</div>
+			<label class="custom-control custom-checkbox" style="float: right;">
+			<small>mark as attended.</small>
+		   <input type="checkbox" class="custom-control-input" ng-model="isAttended">
+		  	<span class="custom-control-indicator"></span>
+		  	<span class="custom-control-description" style="opacity:0;">.</span>
+		   </label>
+
+		</div>
 	</div>	
 </div>
 

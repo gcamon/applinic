@@ -2350,6 +2350,7 @@ app.controller('docProfileEditController',["$scope","$rootScope","$http","$locat
    $scope.item = {};
 
   $scope.update = function(arg){
+    $scope.loading = true;
     if(arg){     
       if(Object.keys($scope.item).length >= 3 && $scope.item.procedure_skill !== undefined && $scope.item.procedure_description !== undefined) {
         uploadSkill();
@@ -2365,12 +2366,12 @@ app.controller('docProfileEditController',["$scope","$rootScope","$http","$locat
         })
       .success(function(data) {              
         if (data) {
-          console.log(data);
           updateRecord();
           initForm();
           alert("Saved to records");
          // $window.location.href = '/user/doctor/update';                           
         } 
+        $scope.loading = false;
       });                          
     }    
              
@@ -3920,11 +3921,34 @@ app.controller("setTimeForConversationController",["$scope","$rootScope","$windo
 
 }]);
 
+app.service("docAppointmentViewService",["$resource",function($resource){
+  return $resource("/user/doctor/appointment/view",null,{view: {method: "PUT"},mark: {method: "PATCH"}})
+}]);
+
+app.controller("docAppointmentController",["$scope","$rootScope","$location","templateService","docAppointmentViewService",
+  function($scope,$rootScope,$location,templateService,docAppointmentViewService){
 
 
-app.controller("docAppointmentController",["$scope","$location","$http","$window","templateService","localManager",
-  function($scope,$location,$http,$window,templateService,localManager){
+  var appointment = docAppointmentViewService;
+  var date = new Date();
 
+  var day = date.getDay();
+  var month = date.getMonth();
+  var year = date.getFullYear();
+
+  var getAppoint = function() {
+    appointment.query({month: month,year: year,day: day},function(list){
+      console.log(list)
+      $rootScope.appointmentList = list;
+    })
+  }
+
+  getAppoint();
+
+  $scope.refresh = function() {
+    getAppoint()
+  }
+     
   $scope.getDateTime = function(date,time){    
     $scope.date = date;
     $scope.time = time;
@@ -3935,17 +3959,18 @@ app.controller("docAppointmentController",["$scope","$location","$http","$window
       id: sessionId
     }
 
-    $http({
-        method  : 'PUT',
-        url     : "/user/doctor/appointment/view",
-        data    : session,
-        headers : {'Content-Type': 'application/json'} 
-        })
-      .success(function(data) {        
+    appointment.view(session,function(data){
+      if(data.session_id){
         templateService.holdAppointmentData = data;
-        $location.path("/selected-appointment/" + sessionId);     
-    });
+        $location.path("/selected-appointment/" + sessionId);
+      } else {
+        alert("Appointment details not found!")
+      }
+           
+    })
   }
+
+ 
 
 }]);
 
@@ -4137,11 +4162,12 @@ app.controller("newPatientModalController",["$scope","$http","ModalService","tem
 
 }]);
 /////////////////////////////////////////////////////////////////////////////////////////
-app.controller("selectedAppointmentController",["$scope","$location","$http","$window","templateService","localManager",
-  function($scope,$location,$http,$window,templateService,localManager){
+app.controller("selectedAppointmentController",["$scope","$rootScope","$location","$http","$window","templateService",
+  "localManager","docAppointmentViewService",
+  function($scope,$rootScope,$location,$http,$window,templateService,localManager,docAppointmentViewService){
 
     $scope.sessionInfo = templateService.holdAppointmentData;
-    
+    var appointment = docAppointmentViewService;
    
     $scope.getTreatment = function(){
       $scope.loading = true;
@@ -4159,12 +4185,43 @@ app.controller("selectedAppointmentController",["$scope","$location","$http","$w
           //data.patientInfo = templateService.holdAppointmentData;        
           //localManager.setValue("heldSessionData",data);
           $scope.loading = false;
+          templateService.holdIdForSpecificPatient = data.patient_id;
           $location.path("/doctor-patient/treatment/" + data.patient_id)
           //$window.location.href = "/user/treatment";
         } else {
           alert("error occurred while trying to get this session")
         }              
       });
+    }
+
+   
+
+    $scope.$watch('isAttended',function(oldVal,newVal){
+      if($scope.isAttended) {
+        markAttended($scope.sessionInfo.session_id)
+      }
+    })
+
+    var markAttended = function(sessionId){
+      var session = {
+        id: sessionId
+      }
+
+      appointment.mark(session,function(data){
+        console.log(data)
+        if(data.status){
+          $scope.info = data.message;
+        }
+             
+      })
+
+      var list = $rootScope.appointmentList;
+      var elemPost = list.map(function(x){return x.session_id}).indexOf(sessionId)
+
+      if(list[elemPost]){
+        list.splice(elemPost,1)
+      }
+
     }
 }]);
 
@@ -10456,8 +10513,8 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
 
 }]);  
   
-app.controller("appointmentModalController",["$scope","$http","moment","templateService","mySocket",
-  function($scope,$http,moment,templateService,mySocket){
+app.controller("appointmentModalController",["$scope","$rootScope","$http","moment","templateService","mySocket",
+  function($scope,$rootScope,$http,moment,templateService,mySocket){
     
     $scope.day = moment();
 
@@ -10537,6 +10594,7 @@ app.controller("appointmentModalController",["$scope","$http","moment","template
       $scope.treatment.appointment.title = "";
       $scope.treatment.appointment.date = $scope.dd._d;
 
+
       //this will take care of differrent object populating the data variable.
       if(data.hasOwnProperty("patientInfo")) {
        
@@ -10573,6 +10631,7 @@ app.controller("appointmentModalController",["$scope","$http","moment","template
     }
 
     function sendData(data,url,method) {
+      $scope.loading = true;
       $http({
         method  : method,
         url     : url,
@@ -10580,10 +10639,12 @@ app.controller("appointmentModalController",["$scope","$http","moment","template
         headers : {'Content-Type': 'application/json'} 
         })
       .success(function(response) {   
+        $scope.loading = false;
         if(response) {
           console.log(response)
           alert("Appointment booked, patient will be notified.")
           mySocket.emit("realtime appointment notification",{to:data.patient_id})
+          
         }  
       });
     }
@@ -16033,6 +16094,12 @@ app.controller('supportController',["$scope","$http",function($scope,$http){
 
   $scope.reportIssue = function() {
 
+  }
+
+  $scope.picked = 'grow';
+
+  $scope.select = function(article){
+    $scope.picked = article;
   }
 
       

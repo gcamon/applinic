@@ -17,7 +17,7 @@
            <div>
              <a href="" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#accessl">Change Your Password</a>
            </div>
-            <a href="/user/change-number" class="btn btn-info btn-sm"> Change Phone Number </a>
+            <!--<a href="/user/change-number" class="btn btn-info btn-sm"> Change Phone Number </a>-->
           </div>
            <!--<div style="margin-top:20px">
             <a href="/user/change-email">Change email </a>
@@ -68,7 +68,7 @@
            &nbsp;
           </div>
           <div>
-            <button class="btn btn-success " ng-click="update()">Save</button>
+            <button class="btn btn-success " ng-click="update()"> <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i>{{(loading) ? "" : 'Save'}}</button>
           </div>
       </div>
       <div ng-if="type === 'intro' ">
@@ -78,7 +78,7 @@
           <textarea class="form-control" placeholder="Brief Introduction about me" ng-model="user.introductory" ></textarea>
         </div>
         <div>
-          <button class="btn btn-success pull-right" ng-click="update()">Save</button>
+          <button class="btn btn-success " ng-click="update()"> <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i>{{(loading) ? "" : 'Save'}}</button>
         </div>
       </div>
 
@@ -96,7 +96,7 @@
           <button class="btn btn-simple pull-right mr-1" ng-click="removeNewField(user.subSpecialty)" ng-if="sp" style="color:red;position:absolute;bottom:0;right:130px"><b>-</b> remove last field</button>     
         </div>
         <div>
-            <button class="btn btn-success" ng-click="update()">Save</button>
+            <button class="btn btn-success " ng-click="update()"> <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i>{{(loading) ? "" : 'Save'}}</button>
         </div>
       </div>
 
@@ -109,7 +109,7 @@
            <input type="number" class="form-control" placeholder="Years of Experience" ng-model="user.experience">
         </div>
         <div>
-            <button class="btn btn-success pull-right" ng-click="update()">Save</button>
+             <button class="btn btn-success " ng-click="update()"> <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i>{{(loading) ? "" : 'Save'}}</button>
         </div>
       </div>
 
@@ -145,7 +145,7 @@
           <button class="btn btn-simple pull-right mr-1" ng-click="removeNewField(user.education)" ng-if="edu" style="color:red;position:absolute;bottom:0;right:130px"><b>-</b> remove last field</button>     
         </div>
         <div>
-          <button class="btn btn-success" ng-click="update()">Save</button>
+           <button class="btn btn-success " ng-click="update()"> <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i>{{(loading) ? "" : 'Save'}}</button>
         </div>
 
       </div>
@@ -183,7 +183,7 @@
         </div>-->
 
         <div>
-          <button class="btn btn-success" ng-click="update('procedure')">Save</button>
+           <button class="btn btn-success " ng-click="update()"> <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i>{{(loading) ? "" : 'Save'}}</button>
         </div>
       </div>
 
@@ -211,7 +211,7 @@
           <button class="btn btn-simple pull-right mr-1" ng-click="removeNewField(user.award)" ng-if="ha" style="color:red;position:absolute;bottom:0;right:130px"><b>-</b> remove last field</button>     
         </div>
          <div>
-          <button class="btn btn-success" ng-click="update()">Save</button>
+           <button class="btn btn-success " ng-click="update()"> <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i>{{(loading) ? "" : 'Save'}}</button>
         </div>
       </div>
 
@@ -249,7 +249,7 @@
             <button class="btn btn-simple pull-right mr-1" ng-click="removeNewField(user.office)" ng-if="of" style="color:red;position:absolute;bottom:0;right:130px"><b>-</b> remove last field</button>     
           </div> 
           <div>
-            <button class="btn btn-success" ng-click="update()">Save</button>
+             <button class="btn btn-success " ng-click="update()"> <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i>{{(loading) ? "" : 'Save'}}</button>
           </div>        
         </div>
     </div>

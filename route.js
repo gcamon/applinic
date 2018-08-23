@@ -9,6 +9,7 @@ var deleteItem = require("./delete");
 var EventEmmiter = require("events");
 var emitter = new EventEmmiter();
 var uuid = require("uuid");
+var moment = require('moment');
 var options = {
   host: "global.xirsys.net",
   path: "/_turn/www.applinic.com",
@@ -2712,7 +2713,8 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
           req.body.appointment.address = req.body.appointment.address || createAddress;
           req.body.appointment.title = req.user.title;
           req.body.appointment.profilePic = req.user.profile_pic_url;
-          req.body.appointment.session_id = session_id;  
+          req.body.appointment.session_id = session_id; 
+          req.body.appointment.attended = false; 
           model.user.findOne({user_id:req.body.patient_id},{appointment:1,profile_pic_url:1,firstname:1,lastname:1,name:1}).exec(function(err,result){            
             if(err) throw err;
             result.appointment.unshift(req.body.appointment);
@@ -2733,14 +2735,20 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
           req.body.appointment.last_meeting = req.body.date;
           req.body.appointment.firstname = names.firstname;
           req.body.appointment.lastname = names.lastname;         
-          req.body.appointment.typeOfSession = req.body.typeOfSession,
-          req.body.appointment.profilePic = req.body.appointment.profilePic;        
-          model.user.findOne({user_id: req.user.user_id},{appointment:1}).exec(function(err,result){
+          req.body.appointment.typeOfSession = req.body.typeOfSession;
+          req.body.appointment.doctorId = req.user.user_id;
+          var ap = new model.appointment(req.body.appointment)
+          ap.save(function(err){
+            if(err) throw err;
+            console.log("appointment saved!")
+          })
+          //req.body.appointment.profilePic = req.body.appointment.profilePic;        
+         /* model.user.findOne({user_id: req.user.user_id},{appointment:1}).exec(function(err,result){
             result.appointment.unshift(req.body.appointment);
             result.save(function(err,info){
               if(err) throw err;                       
             });
-          });
+          });*/
         }
 
 
@@ -2837,44 +2845,75 @@ var basicRoute = function (model,sms,io,streams) { //remember streams arg will b
     });
 
 
+  /* this takes care of doctor appointment with patients to be advanced later */
+
+    router.get("/user/doctor/appointment/view",function(req,res){
+      if(req.user) {
+        console.log(req.query);
+        var startDate = moment().year(req.query.year).month(req.query.month).startOf("month");
+        var endDate = startDate.clone().endOf('month');
+
+        console.log(startDate, "=======", endDate);
+        model.appointment.find({doctorId: req.user.user_id, date: {$gt: startDate,$lt: endDate},attended:false},function(err,data){
+          if(err) throw err;
+          res.json(data);
+        })
+      } else {
+        res.end("unauthorized access!");
+      }
+    })
+
+
     router.put("/user/doctor/appointment/view",function(req,res){
       if(req.user){
-        /*model.user.findOne({"appointment.session_id": req.body.id},{appointment:1,_id:0},function(err,data){     
-          if(err) throw err;
-          if(data) {
-            var elementPos = data.appointment.map(function(x) {return x.session_id; }).indexOf(req.body.id);
-            var objectFound = data.appointment[elementPos];          
-            res.send(objectFound); 
-          } else {
-            res.send({});
-          }        
-        });*/
-
         var appointmentId;
         if(req.body.id) {
           appointmentId = req.body.id.toString();
         }
 
-        var elementPos = req.user.appointment.map(function(x) {return x.session_id; }).indexOf(appointmentId);
-        var objectFound = req.user.appointment[elementPos]; 
-        if(objectFound) {       
-          res.send(objectFound); 
-        } else {
-          res.send({});
-        }
-
+        model.appointment.findOne({doctorId: req.user.user_id,session_id:appointmentId,attended: false},function(err,data){
+          if(err) throw err;
+          if(data){
+            res.send(data)
+          } else {
+            res.send({});
+          }
+        })
       } else {
         res.end("Unauthorized access!");
       }
     });
 
+     router.patch("/user/doctor/appointment/view",function(req,res){
+      if(req.user){
+        var appointmentId;
+        if(req.body.id) {
+          appointmentId = req.body.id.toString();
+        }
+
+        model.appointment.findOne({doctorId: req.user.user_id,session_id:appointmentId,attended: false})
+        .exec(function(err,data){
+          if(err) throw err;
+          if(data){
+            data.attended = true;
+            data.save(function(err,info){
+              console.log("appointment marked attended!")
+            });
+            res.send({status: true,message:"marked!"})
+          } else {
+            res.send({});
+          }
+
+        })
+        
+      } else {
+        res.end("Unauthorized access!");
+      }
+    });
+
+     /* for patient appointment logic */
     router.get("/user/patient/appointment/view",function(req,res){
       if(req.user){
-        /*model.user.findOne({user_id: req.user.user_id},{appointment:1,_id:0},function(err,data){     
-          if(err) throw err;
-          res.send(data.appointment);
-        });*/
-
         res.send(req.user.appointment);
       } else {
         res.end("Unauthorized access");

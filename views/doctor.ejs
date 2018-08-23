@@ -32,6 +32,11 @@
                 font-family: 'Open Sans', sans-serif;
              }
 
+             .p-4 h6 {
+                font-weight: bold!important;
+                padding-top: 20px!important
+             }
+
             blockquote {
                 /*text-indent: 20px;*/
                 padding: 15px 5px 5px;
@@ -411,7 +416,7 @@
     </nav>
     <!-- End Navbar -->
      <div class="clearfix"></div>
-            <div class="app" id="app" >
+            <div class="app" id="app">
                 <header class="container mobile-center" style="background:#fff; border-left:1px solid #f2f2f2; min-height:70px; line-height:70px; padding:5px;" ng-controller="presenceSocketController">
                             <div class="col-md-12 col-sm-12 col-xs-12" >
                                
@@ -513,7 +518,7 @@
                                 </a> </li>
                                        
 
-                                <li><a href="#/procedure"><i class="fa fa-search text-warning" aria-hidden="true"></i> Skills &amp; Procedure
+                                <li><a href="#/procedure"><i class="fa fa-search text-warning" aria-hidden="true"></i> Skills &amp; Procedures
                                 </a> </li>
                                     </ul>
                                 </li>                    
@@ -536,7 +541,7 @@
                                                 </div>
                                             </form>
                                         </li>-->
-                                        <li style="text-align: center;"><input type="" ng-model="patient.firstname" class="form-contro" placeholder="Filter Patients" style="width: 85%;border: none;padding: 5px 10px;background-color: grey;"></li>
+                                        <li style="padding: 5px 10px 0 0"><input type="" ng-model="patient.firstname" class="form-control" placeholder="filter name"></li>
                                         <li ng-repeat="patient in patientList | filter : patient.firstname || patient.lastname" style="margin-left: -15px">
                                            <a href="" style="position: relative;" ng-click="userPatient(patient.patient_id)" ng-cloak> 
                                                 <img ng-src="{{patient.patient_profile_pic_url}}" class="img-responsive" style="width:32px;height:32px;margin-right: 5px;display: inline-block;" alt="image description"> <small>
@@ -562,28 +567,29 @@
                                     </ul>
                                 </li>
                                 <li ng-controller="docAppointmentController"> 
-                                    <a href="">
-                                        <i class="fa fa-bar-chart">
+                                    <a href="" ng-cloak>
+                                        <i class="fa fa-calendar">
                                         </i>
-                                        Appointment (<%= person.appointment.length %>)
+                                        Appointment ( {{appointmentList.length}} )
                                         <i class="fa arrow">
                                         </i>
                                     </a>
-                                    <ul>
-                                        <% for(var k = 0; k < person.appointment.length; k++) { %>
-                                        <li> 
-                                            <a href=""  ng-click="viewAppointment('<%= person.appointment[k].session_id %>')">
-                                            <p><%= person.appointment[k].firstname %> <%= person.appointment[k].lastname %>
-                                            <span style="display:block">{{"<%=person.appointment[k].date %>" | date : "mediumDate"}}</span> <span style="display:block">{{ "<%= person.appointment[k].time %>" | date: "mediumTime" }}</span> 
-                                            </p>
+                                    <ul style="max-height: 500px;overflow-y:auto;" ng-cloak>
+                                        <li style="padding: 5px 10px 0 0;position: relative;"><input type="text" placeholder="filter by name" class="form-control" ng-model="p" style="width: 80%"><i class="fa fa-refresh" style="color:#fff;position: absolute;top:20px;right:10px;cursor: pointer;" ng-click="refresh()"></i></li>
+                                        <li ng-repeat="k in appointmentList | filter : p | orderBy: 'date'" >
+                                            <a href=""  ng-click="viewAppointment(k.session_id)">
+                                            <span>{{k.firstname}} {{k.lastname}}
+                                            <span style="display:block">{{k.date  | date : "mediumDate"}}</span> <span style="display:block">{{k.time | date: "mediumTime" }}</span> 
+                                            </span>
                                             </a> 
                                         </li>
-                                         <% } %>
+                                       
                                     </ul>
                                 </li>
+                               
                                 <li> 
                                     <a href="">
-                            <i class="fa fa-file-text-o"></i> Payment &amp; Wallet
+                            <i class="fa fa-money"></i> Payment &amp; Wallet
                             <i class="fa arrow"></i>
                                     </a>
                                     <ul>
@@ -1456,23 +1462,17 @@
           </div>
         </div>
      </script>
-
-
-
-
-
-
      
       <script type="text/ng-template" id="calender-template.html">
         <div class="modal fade">
           <div class="modal-dialog">
             <div class="modal-content">
-            <div class="modal-header" style="border-bottom:1px solid #eee;">
+            <div class="modal-header">
               <div class="row">
                 <div class="col-sm-12 col-md-12 col-lg-12">
                 <div>
-                <b>Book an Appointment</b>
-                <button type="button"  ng-click="close('Cancel')" data-dismiss="modal" aria-hidden="true" style="color:red;font-size: 32px; margin-top:-9px;float:right; top:5px;border:none">&times;</button>
+                <b>Book Appointment</b>
+                <a href=""   ng-click="close('Cancel')" data-dismiss="modal" aria-hidden="true" style="color:red;font-size: 32px; margin-top:-9px;float:right; top:5px">&times;</a>
                 </div>  
                     
                 </div> </div>                                    
@@ -1482,12 +1482,12 @@
                     <div class="row">
                 <div class="col-sm-12 col-md-12 col-lg-12">
                                               
-                        <div class="calender-header bg-primary">
+                        <div class="calender-header bg-info">
                             <i class="fa fa-angle-left" ng-click="previous()"></i>
-                            <span>{{month.format("MMMM, YYYY")}}</span>
+                            <span style="font-size: 24px">{{month.format("MMMM, YYYY")}}</span>
                             <i class="fa fa-angle-right" ng-click="next()"></i>
                         </div>
-                        <div class="week">
+                        <div class="week" style="line-height: 0.5">
                             <span class="day">Sun</span>
                             <span class="day">Mon</span>
                             <span class="day">Tue</span>
@@ -1500,26 +1500,28 @@
                         <div ng-repeat="week in weeks" class="indays">
                             <span class="dates" ng-class="{ today: day.isToday, 'different-month': !day.isCurrentMonth, selected: day.date.isSame(selected) }" ng-click="select(day)" style="cursor:pointer" ng-repeat="day in week.days">{{day.number}}</span>
                         </div>                        
-                        <p class="bg-default" style="font-size:1em; padding:15px;">Picked Date: <em>{{dd.format('dddd, MMMM Do YYYY')}}</em><span style="display:block">Picked time: <em>{{treatment.appointment.time | date: "mediumTime"}} </em></span>
-                            <span>Picked Venue: <em>{{treatment.appointment.address}} </em></span>
+                        <p class="bg-default" style="font-size:1em; padding:15px;">Picked Date: <em style="color: green">{{dd.format('dddd, MMMM Do YYYY')}}</em><span style="display:block">Picked time: <em style="color: green">{{treatment.appointment.time | date: "mediumTime"}} </em></span>
+                            <span>Picked Venue: <em style="color: green">{{treatment.appointment.address}} </em></span>
                         </p>
 
                         <div>
-                        <b style="font-size:1.4em; font-weight:bold;">Time of appointment: <br><input type="time" class="form-control" placeholder="Enter time" ng-model="treatment.appointment.time" style="font-size:.5em;"/></b>
-                        <div style="font-size:1.3em;"><b>Venue</b> <sub>(If none,defaults to the address in your profile)</sub>: <br><input class="form-control" type="address" placeholder="Enter address" ng-model="treatment.appointment.address"></div>
+                            <label>Time of appointment: <br><input type="time" class="form-control" style="font-size: 14px!important" placeholder="Enter time" ng-model="treatment.appointment.time" style="font-size:.5em;"/></label>
+                            <br>
+                            <label>Venue (If none,defaults to the address in your profile): <br> <input class="form-control" style="font-size: 14px!important" type="address" placeholder="Enter address" ng-model="treatment.appointment.address"></label>
+                        </div>
   </div>  </div> 
                         <div class="clearfix"></div>
                        
                 </div>
 
                 <div class="modal-footer ok">
-                            <button class="btn bg-primary" style="font-size:1.4em; font-weight:300; width:50%;" ng-click="book()" class="btn btn-success">Book</button>
+                            <button  ng-click="book()" class="btn btn-info btn-sm"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i> {{(loading)? " " : 'Submit'}}</button>
                         </div>
               </div>          
             </div>
           </div>
-        </div>
      </script>
+
 
      <script type="text/ng-template" id="sending-communication-request.html">
          <div class="modal fade">
