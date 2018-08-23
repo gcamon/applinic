@@ -6,7 +6,7 @@
 </style>
 <div class="col-md-12 col-sm-12 col-xs-12" ng-if="checkLogIn.typeOfUser === 'Doctor'">
    
-    <h5 class="title pl-1">Welcome {{checkLogIn.title}} {{checkLogIn.firstname}}</h5>
+    <h5 class="title pl-1">Welcome {{(checkLogIn.title == 'SC') ? "" : checkLogIn.title }} {{checkLogIn.firstname}}</h5>
      <h6 class="pl-1 pt-2">Getting Started!</h6>
     <br><br>
    <div class="container">

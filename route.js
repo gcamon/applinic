@@ -6965,8 +6965,8 @@ router.get("/user/rendered-services",function(req,res){
 
 router.get("/general/homepage-search",function(req,res){
 
-  if(!req.query.city)
-      req.query.city = "Enugu";
+  /*if(!req.query.city)
+      req.query.city = "Enugu";*/
 
   if(!req.query.item) {
     res.send({full:[]});
@@ -6975,7 +6975,12 @@ router.get("/general/homepage-search",function(req,res){
 
   if(req.query.category === "Pharmacy") {
     req.query.drugList = [{name: req.query.item}];
-    model.services.find({type:"Pharmacy",center_city:req.query.city},
+    if(req.query.city){
+      var criteria = {type:"Pharmacy",center_city:req.query.city}
+    } else {
+      var criteria = {type:"Pharmacy"}
+    }
+    model.services.find(criteria,
       {center_name:1,center_city:1,center_address:1,center_country:1,center_phone:1,user_id:1,unavailable_services:1,_id:0},function(err,data){
       if(err) throw err;
       var newListToSend = [];        
@@ -7062,7 +7067,13 @@ router.get("/general/homepage-search",function(req,res){
     var str = new RegExp(req.query.item.replace(/\s+/g,"\\s+"), "gi");              
     //var criteria = { specialty : { $regex: str, $options: 'i' },type:"Doctor",city:req.query.city};
     //var byDisease = {"skills.disease": { $regex: str, $options: 'i' },type:"Doctor",city:req.query.city};
-    var criteria = { $or: [{ specialty : { $regex: str, $options: 'i' },type:"Doctor",city:req.query.city},{"skills.disease": { $regex: str, $options: 'i' },type:"Doctor",city:req.query.city}]};
+    if(req.query.city) {
+      var criteria = { $or: [{ specialty : { $regex: str, $options: 'i' },type:"Doctor",city:req.query.city},
+      {"skills.disease": { $regex: str, $options: 'i' },type:"Doctor",city:req.query.city}]};
+    } else {
+      var criteria = { $or: [{ specialty : { $regex: str, $options: 'i' },type:"Doctor"},
+      {"skills.disease": { $regex: str, $options: 'i' },type:"Doctor"}]}; 
+    }
 
     model.user.find(criteria,{firstname:1,lastname:1,work_place:1,city:1,country:1,address:1,specialty:1,_id:0},function(err,data){
       if(err) {
@@ -7077,7 +7088,13 @@ router.get("/general/homepage-search",function(req,res){
     //for lab and radio search from home page
   
   req.query.testList = [{name: req.query.item}];
-  model.services.find({type:req.query.category,center_city:req.query.city},
+
+  if(req.query.city){
+    var criteria = {type:req.query.category,center_city:req.query.city}
+  } else {
+    var criteria = {type:req.query.category}
+  }
+  model.services.find(criteria,
     {center_name:1,center_city:1,center_address:1,center_country:1,user_id:1,unavailable_services:1,center_phone:1,_id:0},function(err,data){
     if(err) throw err;
     if(data) {
@@ -7168,8 +7185,15 @@ router.get("/general/homepage-search",function(req,res){
 
   } else if(req.query.category === "Skills & Procedures") {
 
-    var str = new RegExp(req.query.item.replace(/\s+/g,"\\s+"), "gi");              
-    var criteria = { $or: [{ "skills.skill" : { $regex: str, $options: 'i' },type:"Doctor",city:req.query.city},{"skills.disease": { $regex: str, $options: 'i' },type:"Doctor",city:req.query.city}]};
+    var str = new RegExp(req.query.item.replace(/\s+/g,"\\s+"), "gi");  
+
+    if(req.query.city) {            
+      var criteria = { $or: [{ "skills.skill" : { $regex: str, $options: 'i' },type:"Doctor",city:req.query.city},
+      {"skills.disease": { $regex: str, $options: 'i' },type:"Doctor",city:req.query.city}]};
+    } else {
+      var criteria = { $or: [{ "skills.skill" : { $regex: str, $options: 'i' },type:"Doctor"},
+      {"skills.disease": { $regex: str, $options: 'i' },type:"Doctor"}]};
+    }
     //var byDisease = {"skills.disease": { $regex: str, $options: 'i' },type:"Doctor",city:req.query.city};
     model.user.find(criteria,{firstname:1,lastname:1,work_place:1,city:1,country:1,address:1,_id:0},function(err,data){
       if(err) {
