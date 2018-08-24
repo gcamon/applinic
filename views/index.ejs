@@ -1010,14 +1010,14 @@ with just few clicks without having to ask around or wonder where to find your n
 <script type="text/ng-template" id="home-page-search.html">
        <div class="modal fade">
         <div class="modal-dialog">
-          <div class="modal-content" style="margin-top: -150px!important;">
+          <div class="modal-content" style="position: absolute; top:0;">
             <div class="modal-header">
                 <strong style="font-weight: 100;font-size: 22px">Hey, Look what we found!</strong>
                 <button type="button"  style="float: right;" class="close" ng-click="close('Cancel')" data-dismiss="modal" aria-hidden="true">&times;</button>        
             </div>
              <div  style="padding: 20px;margin-bottom: 20px;font-size: 14px"> 
                 <p>Showing {{searchResult.length}} result(s) for <b>{{user.item}}</b> in <b>{{user.city}}</b> category <b>{{user.category}}</b></p> 
-                <div style="padding-right: 5px"><input type="text" class="form-control" placeholder="filter by name, address, etc" ng-model="filt" name=""></div>
+                <div style="padding-right: 5px"><input type="text" class="form-control" placeholder="filter by name, address, work place etc" ng-model="filt" name=""></div>
                 <div ng-repeat="found in searchResult | filter : filt" style="padding: 5px; max-height: 800px;overflow-y: auto;position: relative;">   <img src="{{found.profile_pic_url}}" style="width: 75px;height: auto;float: left;">
                     <div style="display: inline-block;padding-left: 10px;max-width: 80%">
                     <span ng-bind-html = "found.msg" class="text-info"></span>
@@ -1032,6 +1032,7 @@ with just few clicks without having to ask around or wonder where to find your n
                     <a href="" class="btn btn-info btn-sm" style="position: absolute;top: 10px;right: 10px" ng-click="account(found)">Book</a>
                     <hr class="text-muted">                
                 </div> 
+              
                 <div ng-if="loading" style="text-align: center;margin-top: 20px"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange" ng-if="loading"></i></div>
                 <p ng-if="searchResult.length == 0 && !loading" style="text-align: center">Oops! No result was found.</p>        
             </div>
