@@ -17299,6 +17299,7 @@ app.controller("homePageModalController",["$scope","$rootScope","homepageSearchS
     $scope.loading = true;
     homepageSearchService.get($rootScope.user,function(response){
       $scope.loading = false;
+      console.log(response.full)
       $scope.searchResult = response.full;
     });  
 

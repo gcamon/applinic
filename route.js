@@ -7077,10 +7077,12 @@ router.get("/general/homepage-search",function(req,res){
       //{"skills.disease": { $regex: str, $options: 'i' },type:"Doctor"}]}; 
     }
 
-    model.user.find(criteria,{firstname:1,lastname:1,work_place:1,city:1,country:1,address:1,specialty:1,_id:0},function(err,data){
-      if(err) {
+    model.user.find(criteria,{firstname:1,lastname:1,work_place:1,city:1,country:1,address:1,specialty:1,_id:0,profile_pic_url:1,education:1},
+      function(err,data){
+      if(err) {        
         res.send({error:"status 500",full:[]});
-      } else {       
+      } else {   
+        //res.render('list-view',{data: data})    
         res.json({full: data});
       }
     });
