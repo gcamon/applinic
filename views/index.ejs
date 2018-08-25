@@ -965,7 +965,7 @@ with just few clicks without having to ask around or wonder where to find your n
         <div class="modal-dialog">
           <div class="modal-content" style="position: absolute; top:0;">
             <div class="modal-header">
-                <strong style="font-weight: 100;font-size: 22px">Hey, Look what we found!</strong>
+                <strong style="font-weight: 100;font-size: 22px">Hey, look what we found!</strong>
                 <button type="button"  style="float: right;" class="close" ng-click="close('Cancel')" data-dismiss="modal" aria-hidden="true">&times;</button>        
             </div>
              <div  style="padding: 20px;margin-bottom: 20px;font-size: 14px"> 
@@ -984,7 +984,7 @@ with just few clicks without having to ask around or wonder where to find your n
                     <small ng-click="account(found)"><i class="fa fa-comment text-muted" title="chat with {{found.firstname || found.name}}"></i></small>&nbsp;
                     <small ng-click="account(found)"><i class="fa fa-phone text-muted" title="call {{found.firstname || found.name}}"></i></small>&nbsp;
                     <small ng-click="account(found)"><i class="fa fa-video-camera text-muted" title="video chat with {{found.firstname || found.name}}"></i></small>&nbsp;
-                    <small ng-click="account(found)"><i class="fa fa-share text-muted" title="forward to {{found.firstname || found.name}}"></i></small>&nbsp; <a href="{{found.profile_url}}" class="text-danger" ng-if="found.title">view profile</a><br>
+                    <small ng-click="account(found)"><i class="fa fa-share text-muted" title="forward to {{found.firstname || found.name}}"></i></small>&nbsp; <a href="{{found.profile_url}}" class="text-danger" ng-if="found.title" target="_blank">view profile</a><br>
                     </div>
                     <a href="" class="btn btn-info btn-sm" style="position: absolute;top: 10px;right: 10px" ng-click="account(found)" ng-if="user.category == 'Doctor'|| user.category == 'Special Center' || user.category == 'Disease' || user.category =='Skills & Procedures'" title="send consultation request to {{found.title}} {{found.firstname}} {{found.lastname}}">Book</a>
                     <a href="" class="btn btn-danger btn-sm" style="position: absolute;top: 10px;right: 10px" ng-click="account(found)" ng-if="user.category == 'Pharmacy' || user.category == 'Laboratory' || user.category == 'Radiology'" title="Forward {{user.item}} to {{found.name}}"><i class="fa fa-share"></i></a>
