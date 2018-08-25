@@ -404,6 +404,7 @@ padding:10px 10px;
                             <option>Pharmacy</option>
                             <option>Laboratory</option>
                             <option>Radiology</option>
+                            <option>Disease</option>
                             <option>Special Center</option>
                             <option>Skills &amp; Procedures</option>
                             
@@ -413,13 +414,13 @@ padding:10px 10px;
                 <div class="col-md-4">
                     <div class="form-group">
                         <!--<input type="text" class="form-control" ng-model="item" style="padding: 15px 10px" placeholder="Drug / Test / Specialty">-->
-                        <input type="text" class="form-control" ng-model="user.item" style="padding: 15px 10px" name="states" placeholder="{{itemName}}" uib-typeahead="item.name for item in itemList | filter:$viewValue | limitTo:15">
+                        <input type="text" class="form-control" ng-model="user.item" style="padding: 15px 10px" name="" placeholder="{{itemName}}" uib-typeahead="item.name for item in itemList | filter:$viewValue | limitTo:15">
                     </div>
                 </div>
                
                 <div class="col-md-3">
                     <div class="form-group">
-                        <input type="text" class="form-control"  style="padding: 15px 10px" name="states" type="text" placeholder="City" ng-model="user.city" uib-typeahead="city for city in cities | filter:$viewValue | limitTo:15">
+                        <input type="text" class="form-control"  style="padding: 15px 10px" name="" type="text" placeholder="City" ng-model="user.city" uib-typeahead="city for city in cities | filter:$viewValue | limitTo:15">
                         <!--<span ng-cloak>{{getCity(city)}}</span>-->
                     </div>
                 </div>
@@ -948,54 +949,6 @@ with just few clicks without having to ask around or wonder where to find your n
 </div>
 </div>
 
-<div class="modal fade" id="accessl" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Change Password </h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body" style="padding-right: 40px">
-          <form>
-            <div style="text-align: center;"><span ng-bind-html="cpMsg" style="font-size: 14px;"></span></div>
-            <div ng-if="!isSuccess">
-              <div>
-                <label></label>
-                <input type="text" name="" placeholder="Enter email or phone number (eg +2348064****56)" class="form-control" ng-model="changePassword.val">
-              </div>
-              <div style="text-align: center;padding-top: 10px">
-                <button class="btn btn-danger btn-sm" ng-click="getUser()"> <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="isLoading"></i> {{(isLoading) ? "" : "Submit"}}</button>
-              </div>
-            </div>
-            <div ng-if="isSuccess && !isVerified">
-              <div class="text-danger" style="text-align: center;">{{verifyMsg}}</div>
-              <div>
-                <input type="text" name="" placeholder="Enter pin" class="form-control" ng-model="changePassword.pin">
-              </div>
-              <div style="text-align: center;padding-top: 10px">
-                <button class="btn btn-danger btn-sm" ng-click="verify()"> <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="isLoading"></i> {{(isLoading) ? "" : "Submit"}}</button>
-              </div>
-            </div>
-            <div ng-if="isVerified">
-              <div class="text-success" style="text-align: center;">{{passwordMsg}}</div>
-              <div class="text-danger" style="text-align: center;">{{passwordErrorMsg}}</div>
-              <div>
-                <input type="password" name="" placeholder="Enter Password" class="form-control" ng-model="changePassword.newPassword">
-              </div>
-              <div>
-                <input type="password" name="" placeholder="Re-type Password" class="form-control" ng-model="changePassword.newPassword2">
-              </div>
-              <div style="text-align: center;padding-top: 10px" ng-if="!passwordMsg">
-                <button class="btn btn-danger btn-sm" ng-click="updatePassword()"> <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="isLoading"></i> {{(isLoading) ? "" : "Submit"}}</button>                
-              </div>
-              <div ng-if="passwordMsg" style="text-align: center;">
-                <i class="fa fa-check text-muted"> Password changed!</i>
-              </div>
-            </div>
-          </form>
-        </div>
 
 <% include ./inner/footer-links %>
 
@@ -1016,20 +969,25 @@ with just few clicks without having to ask around or wonder where to find your n
                 <button type="button"  style="float: right;" class="close" ng-click="close('Cancel')" data-dismiss="modal" aria-hidden="true">&times;</button>        
             </div>
              <div  style="padding: 20px;margin-bottom: 20px;font-size: 14px"> 
+             <span ng-if="user.category !== 'Doctor'" class="text-info"> You can search for more items at once from your account. <a href="/login">log in</a> or <a href="/signup">create account</a> now!</span>
                 <p>Showing {{searchResult.length}} result(s) for <b>{{user.item}}</b> in <b>{{user.city}}</b> category <b>{{user.category}}</b></p> 
-                <div style="padding-right: 5px"><input type="text" class="form-control" placeholder="filter by name, address, work place etc" ng-model="filt" name=""></div>
+                <div style="padding-right: 5px"><input type="text" class="form-control" placeholder="filter by name, address, work place etc" ng-model="filt" name="">
+
+                </div>
                 <div ng-repeat="found in searchResult | filter : filt" style="padding: 5px; max-height: 800px;overflow-y: auto;position: relative;">   <img src="{{found.profile_pic_url}}" style="width: 75px;height: auto;float: left;">
                     <div style="display: inline-block;padding-left: 10px;max-width: 80%">
                     <span ng-bind-html = "found.msg" class="text-info"></span>
-                    <strong style="display: block;max-width: 80%;font-size: 16px">{{found.firstname}} {{found.lastname}} {{found.name}}</strong>
+                    <strong style="display: block;max-width: 90%;font-size: 16px">{{found.name}}</strong>
+                     <!--<strong style="display: block;max-width: 90%;font-size: 16px"> <span ng-if="user.category == 'Doctor'">{{found.title}}</span> {{found.firstname}} {{found.lastname}} {{found.name}}</strong>-->
                     <span style="display: block;max-width: 80%" ng-if="found.specialty"><b>{{found.specialty}}</b> <span ng-if="found.education.length > 0">|</span> <span ng-repeat="e in found.education">{{e.certificate}}</span></span>
-                    <span style="display: block;max-width: 80%"> <span ng-if="found.work_place"><b>works at</b> | <b>{{found.work_place}}</b> </span>{{found.addres}} {{found.city}} {{found.country}}</span>         
+                    <span style="display: block;max-width: 80%"> <span ng-if="found.work_place"><b>works at</b> | <em>{{found.work_place}}</em> </span><em ng-if="user.category !== 'Doctor'">{{found.address}}</em> {{found.city}} {{found.country}}</span>         
                     <small ng-click="account(found)"><i class="fa fa-comment text-muted" title="chat with {{found.firstname || found.name}}"></i></small>&nbsp;
                     <small ng-click="account(found)"><i class="fa fa-phone text-muted" title="call {{found.firstname || found.name}}"></i></small>&nbsp;
                     <small ng-click="account(found)"><i class="fa fa-video-camera text-muted" title="video chat with {{found.firstname || found.name}}"></i></small>&nbsp;
-                    <small ng-click="account(found)"><i class="fa fa-share text-muted" title="forward to {{found.firstname || found.name}}"></i></small>&nbsp;<br>
+                    <small ng-click="account(found)"><i class="fa fa-share text-muted" title="forward to {{found.firstname || found.name}}"></i></small>&nbsp; <a href="{{found.profile_url}}" class="text-danger" ng-if="found.title">view profile</a><br>
                     </div>
-                    <a href="" class="btn btn-info btn-sm" style="position: absolute;top: 10px;right: 10px" ng-click="account(found)">Book</a>
+                    <a href="" class="btn btn-info btn-sm" style="position: absolute;top: 10px;right: 10px" ng-click="account(found)" ng-if="user.category == 'Doctor'|| user.category == 'Special Center' || user.category == 'Disease' || user.category =='Skills & Procedures'" title="send consultation request to {{found.title}} {{found.firstname}} {{found.lastname}}">Book</a>
+                    <a href="" class="btn btn-danger btn-sm" style="position: absolute;top: 10px;right: 10px" ng-click="account(found)" ng-if="user.category == 'Pharmacy' || user.category == 'Laboratory' || user.category == 'Radiology'" title="Forward {{user.item}} to {{found.name}}"><i class="fa fa-share"></i></a>
                     <hr class="text-muted">                
                 </div> 
               

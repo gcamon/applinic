@@ -100,7 +100,7 @@ app.config(['$paystackProvider','$routeProvider',
 
   .when("/welcome",{
     templateUrl: '/assets/pages/welcome.html',
-    controller: 'docNotificationController'
+    controller: 'welcomeController'
   })
 
   .when("/patient-request/:num",{
@@ -5873,14 +5873,37 @@ app.controller("referRequestController",["$scope","$http","ModalService","reques
 }]);
 
 
+app.controller('welcomeController',["$scope","templateService","localManager","ModalService",
+  function($scope,templateService,localManager,ModalService){
+  var user = localManager.getValue("resolveUser")
+  if(localManager.getValue("onreg_held_item") && user.typeOfUser == "Patient") {
+    templateService.holdForSpecificDoc = localManager.getValue("onreg_held_item");
+    if(templateService.holdForSpecificDoc.title)
+      ModalService.showModal({
+        templateUrl: "selected-doc.html",
+        controller: "bookingDocModalController"
+      }).then(function(modal) {
+        modal.element.modal();
+        modal.close.then(function(result) {
+        });
+      });
+
+  }
+
+  localManager.removeItem("onreg_held_item");
+
+}]);
+
+
+
 
 /**** for patients ***/
 
 //runs first when patient first logged in
-app.controller("inPatientDashboardController",["$scope","$location","templateService","localManager",
-  function($scope,$location,templateService,localManager){
+app.controller("inPatientDashboardController",["$scope","$location","templateService","localManager","ModalService",
+  function($scope,$location,templateService,localManager,ModalService){
 
-  if(localManager.getValue("resolveUser")) {
+ if(localManager.getValue("resolveUser")) {
     $location.path(localManager.getValue("currentPageForPatients") || "/welcome");
   } 
 
@@ -17240,7 +17263,7 @@ app.controller("hompageController",["$scope","scanTests","cities","labTests","Dr
       switch(newVal) {
         case 'Doctor':
           $scope.itemList = [];
-          $scope.itemName = "Enter specialty or disease";
+          $scope.itemName = "Enter specialty or name (e.g Dr Ede)";
         break;
         case 'Pharmacy':
           homePageDynamicService.query($rootScope.user,function(data){
@@ -17268,7 +17291,11 @@ app.controller("hompageController",["$scope","scanTests","cities","labTests","Dr
         break;
         case 'Skills & Procedures':
           $scope.itemList = [];
-          $scope.itemName = "Enter procedure or disease";
+          $scope.itemName = "Enter a skill or disease";
+        break;
+        case 'Disease':
+          $scope.itemList = [];
+          $scope.itemName = "Enter a disease";
         break;
         default:
         break;
@@ -17292,19 +17319,45 @@ app.controller("hompageController",["$scope","scanTests","cities","labTests","Dr
   //$scope.categories = ["Pharmacy","Doctor","Laboratory","Radiology","Special Center"]
 }]);
 
-
-
-app.controller("homePageModalController",["$scope","$rootScope","homepageSearchService",
-  function($scope,$rootScope,homepageSearchService){
+app.controller("homePageModalController",["$scope","$rootScope","homepageSearchService","localManager","$window",
+  function($scope,$rootScope,homepageSearchService,localManager,$window){
     $scope.loading = true;
     homepageSearchService.get($rootScope.user,function(response){
       $scope.loading = false;
-      console.log(response.full)
+      //console.log(response.full);
       $scope.searchResult = response.full;
     });  
 
-    $scope.account = function(selected) {
-      selected.msg = "Please <a href='/signup'> create account </a> or <a href='/login'> log in </a> to have full access!";
+    $scope.account = function(selected) {      
+      localManager.setValue("onreg_held_item",selected);
+      var user = localManager.getValue('resolveUser');
+      if(user && selected.title) {
+         switch(user.typeOfUser) {
+          case "Patient":
+            $window.location.href = "/user/patient";   
+          break;
+          case "Doctor":
+           $window.location.href = "/user/doctor";   
+          break;
+          case "Pharmacy":
+            $window.location.href = "/user/pharmacy"; 
+          break;
+          case "Laboratory":
+            $window.location.href = "/user/laboratory"; 
+          break;
+          case "Radiology":
+            $window.location.href = "/user/radiology"; 
+          break;          
+          case "admin":
+            $window.location.href = "/user/admin";
+          break;
+          default:
+            $window.location.href = "/user/view"; 
+          break; 
+        }
+      } else {
+        selected.msg = "Please <a href='/signup'> create account </a> or <a href='/login'> log in </a> to have full access!";
+      }
     }
 }]);
 
@@ -17312,10 +17365,6 @@ app.controller("homePageModalController",["$scope","$rootScope","homepageSearchS
 /*app.controller("forgotPasswordModalController",["$scope",function($scope){
   alert("jash")
 }]);*/
-
-
-
-
 /*
 app.controller("searchScanController",["$scope","$location","$window","templateService","localManager",
   "scanTests","searchtestservice","cities","templateUrlFactory","$resource","$rootScope","dynamicService",
