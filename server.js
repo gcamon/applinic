@@ -18,6 +18,7 @@ var express = require('express'),
 		apiSecret: process.env.NEXMO_API_SECRET || "ddb306aa9194c137"
   }),*/
   sms = require('twilio')(process.env.TWILIO_ACCOUNT_SID,process.env.TWILIO_AUTH_TOKEN),
+ 
 
   placement = require("./placement"),
   mySocket = require("./socket"),
@@ -71,6 +72,8 @@ http.listen(port,function(){
     console.log('listening on *: ' + port);
 });
 
+
+
 /*sms.messages.create(
   {
     to: '+2348096461',
@@ -82,6 +85,21 @@ http.listen(port,function(){
     console.log(msg)
   }
 )*/
+
+sms.calls
+.create({
+  url: "https://applinic.com/twiliovoicemsg",//'http://demo.twilio.com/docs/voice.xml',//"https://applinic.com/twiliovoicemsg",//
+  to: '+2348064245256',
+  from: '+16467985692',
+})
+.then(
+  function(call){
+    console.log(call.sid)
+  },
+  function(err) {
+    console.log(err)
+  }
+);
 
 
 

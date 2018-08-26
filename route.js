@@ -22,7 +22,7 @@ var options = {
 //var token = require("./twilio");
 var randos = require("./randos");
 
-var basicRoute = function (model,sms,io,streams) { //remember streams arg will be removed atfer test
+var basicRoute = function (model,sms,io,streams,Voice) { //remember streams arg will be removed atfer test
 
   router.get("/",function(req,res){
     res.render('index',{"message":""});
@@ -7330,12 +7330,22 @@ router.get("/user/doctor/initial-complaint",function(req,res){
   }
 }) 
 
-
+router.get("/twiliovoicemsg",function(req,res){
+  var twiml = '<?xml version="1.0" encoding="UTF-8" ?>\n<Response>\n<Say>Thanks for your text, we\'ll be in touch.</Say>\n</Response>'
+  res.send(twiml, {'Content-Type':'text/xml'}, 200)
+})
 
 
 
 /*
 router.put("/user/pharmacy/search/find-drugs",function(req,res){
+  <?xml version="1.0" encoding="UTF-8"?>
+<Response>
+    <Say>
+      This message must be nested in a Response element
+      in order for Twilio to say it to your caller.
+    </Say>
+</Response>
       console.log(req.body)
       if(req.user && req.body.city === undefined)
         req.body.city = req.user.city;
