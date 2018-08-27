@@ -86,7 +86,7 @@ http.listen(port,function(){
   }
 )*/
 
-sms.calls
+/*sms.calls
 .create({
   url: "https://applinic.com/twiliovoicemsg",//'http://demo.twilio.com/docs/voice.xml',//"https://applinic.com/twiliovoicemsg",//
   to: '+2348064245256',
@@ -99,7 +99,7 @@ sms.calls
   function(err) {
     console.log(err)
   }
-);
+);*/
 
 
 

@@ -1051,6 +1051,25 @@
         </div>
      </script>
 
+      <script type="text/ng-template" id="info.html">
+         <div class="modal fade">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">             
+                <h4>Nice to have you onboard!</h4>
+                <button type="button" class="close" ng-click="close('Cancel')" data-dismiss="modal" aria-hidden="true">&times;</button>           
+                       
+            </div>
+            <div class="modal-body">                
+                <p style="font-size: 14px">Please to continue with your search again, go to <b>" <i class="fa fa-search"></i> searches "</b> on the top right and select from  the dropdown list  <b>" <span><i class="fa fa-search"></i> <span ng-if="holdType == 'Pharmacy'">Drugs</span><span ng-if="holdType == 'Laboratory'">Laboratory Test</span><span ng-if="holdType == 'Radiology'">Radiology Test</span></span> "</b> <br> Note, you can search for more <span ng-if="holdType == 'Pharmacy'">drugs</span> <span ng-if="holdType !== 'Pharmacy'">tests</span> at once with this advance search utilities.</p>
+            </div>
+            <div class="modal-footer">               
+                <button type="button" ng-click="close('Yes')" class="btn btn-primary" data-dismiss="modal">Got it!</button>
+            </div>
+          </div>
+        </div>
+     </script>
+
     <script type="text/ng-template" id="selected-doc.html">
    <div class="modal fade">
       <div class="modal-dialog">

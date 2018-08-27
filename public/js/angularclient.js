@@ -5873,12 +5873,15 @@ app.controller("referRequestController",["$scope","$http","ModalService","reques
 }]);
 
 
-app.controller('welcomeController',["$scope","templateService","localManager","ModalService",
-  function($scope,templateService,localManager,ModalService){
+app.controller('welcomeController',["$scope","$rootScope","templateService","localManager","ModalService",
+  function($scope,$rootScope,templateService,localManager,ModalService){
   var user = localManager.getValue("resolveUser")
-  if(localManager.getValue("onreg_held_item") && user.typeOfUser == "Patient") {
-    templateService.holdForSpecificDoc = localManager.getValue("onreg_held_item");
-    if(templateService.holdForSpecificDoc.title)
+  var data = localManager.getValue("onreg_held_item");
+  
+  if(data) { 
+    $rootScope.holdType = data.type;   
+    if(data.title && user.typeOfUser == "Patient") {
+      templateService.holdForSpecificDoc = data;
       ModalService.showModal({
         templateUrl: "selected-doc.html",
         controller: "bookingDocModalController"
@@ -5888,9 +5891,46 @@ app.controller('welcomeController',["$scope","templateService","localManager","M
         });
       });
 
+    } else if(data.type == "Pharmacy") {
+      //templateService.holdTheCenterToFowardPrescriptionTo = data;
+      
+      ModalService.showModal({
+        templateUrl: 'info.html',
+        controller: "infoController"
+        }).then(function(modal) {
+          modal.element.modal();
+          modal.close.then(function(result) {           
+          });
+      });
+    } else if(data.type == "Laboratory") {
+      //templateService.holdTheCenterToFowardPrescriptionTo = data;
+      ModalService.showModal({
+        templateUrl: 'info.html',
+        controller: "infoController"
+        }).then(function(modal) {
+          modal.element.modal();
+          modal.close.then(function(result) {           
+          });
+      });
+    } else if(data.type == "Radiology") {
+      //templateService.holdTheCenterToFowardPrescriptionTo = data;
+      ModalService.showModal({
+        templateUrl: 'info.html',
+        controller: "infoController"
+        }).then(function(modal) {
+          modal.element.modal();
+          modal.close.then(function(result) {           
+          });
+      });
+    }
+
   }
 
   localManager.removeItem("onreg_held_item");
+
+}]);
+
+app.controller('infoController',["$scope",function($scope){
 
 }]);
 
@@ -17243,9 +17283,9 @@ app.service("homepageSearchService",["$resource",function($resource){
   return $resource("/general/homepage-search");
 }]);
 
-app.controller("hompageController",["$scope","scanTests","cities","labTests","Drugs",
+app.controller("hompageController",["$scope","scanTests","cities","labTests","Drugs","$http",
   "ModalService","$rootScope","homePageDynamicService",
-  function($scope,scanTests,cities,labTests,Drugs,ModalService,$rootScope,homePageDynamicService){
+  function($scope,scanTests,cities,labTests,Drugs,$http,ModalService,$rootScope,homePageDynamicService){
 
 
   $scope.cities = cities;
@@ -17253,7 +17293,26 @@ app.controller("hompageController",["$scope","scanTests","cities","labTests","Dr
   $scope.itemList = [];
   $rootScope.user = {};
   var dyna = [];
+  var filter = {};
+  var spArr = [];
 
+  $http({
+    method  : 'GET',
+    url     : "/user/get-specialties",
+    headers : {'Content-Type': 'application/json'} 
+    })
+  .success(function(data) {              
+    if(data){
+      for(var i = 0; i < data.length; i++){
+        if(!filter[data[i].specialty]) {
+          filter[data[i].specialty] = 1;
+          spArr.push({name:data[i].specialty})
+        } else {
+          filter[data[i].specialty]++;
+        }
+      }
+    }
+  });                                    
 
   
   $scope.itemName = "Drug / Test / Specialty / Disease"
@@ -17262,7 +17321,7 @@ app.controller("hompageController",["$scope","scanTests","cities","labTests","Dr
     if(newVal) {
       switch(newVal) {
         case 'Doctor':
-          $scope.itemList = [];
+          $scope.itemList = spArr;
           $scope.itemName = "Enter specialty or name (e.g Dr Ede)";
         break;
         case 'Pharmacy':
@@ -17286,7 +17345,7 @@ app.controller("hompageController",["$scope","scanTests","cities","labTests","Dr
           $scope.itemName = "Enter test name";
         break;
         case 'Special Center':
-          $scope.itemList = [];
+          $scope.itemList = spArr;
           $scope.itemName = "Enter keyword ( e.g Kidney failure. )"
         break;
         case 'Skills & Procedures':
@@ -17316,7 +17375,6 @@ app.controller("hompageController",["$scope","scanTests","cities","labTests","Dr
     });
   }
 
-  //$scope.categories = ["Pharmacy","Doctor","Laboratory","Radiology","Special Center"]
 }]);
 
 app.controller("homePageModalController",["$scope","$rootScope","homepageSearchService","localManager","$window",
@@ -17328,10 +17386,11 @@ app.controller("homePageModalController",["$scope","$rootScope","homepageSearchS
       $scope.searchResult = response.full;
     });  
 
-    $scope.account = function(selected) {      
+    $scope.account = function(selected,type) {
+      selected.type = type;       
       localManager.setValue("onreg_held_item",selected);
       var user = localManager.getValue('resolveUser');
-      if(user && selected.title) {
+      if(user) {
          switch(user.typeOfUser) {
           case "Patient":
             $window.location.href = "/user/patient";   

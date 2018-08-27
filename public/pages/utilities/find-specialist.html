@@ -19,7 +19,7 @@
 
        <div class="form-group" ng-if="isSpecialty === true">
            <label for="lastname">City </label>
-        <input type="text" class="form-control" placeholder="Enter city name" name="states" id="states"  uib-typeahead="city for city in cities | filter:$viewValue | limitTo:15" ng-model="user.city" style="font-size: 14px!important">
+        <input type="text" class="form-control" placeholder="Enter city name" name="states" id=""  uib-typeahead="city for city in cities | filter:$viewValue | limitTo:15" ng-model="user.city" style="font-size: 14px!important">
         {{getCity(city)}} 
       </div>
 
@@ -28,7 +28,7 @@
 
       <div class="form-group" ng-if="isSpecialty === true">
           <label for="specialty">Specialty </label>
-           <input type="text" class="form-control" placeholder="Enter specialty"  id="states"  uib-typeahead="specialty for specialty in allSpecialties | filter:$viewValue | limitTo:15" ng-model="user.specialty" style="font-size: 14px!important">
+           <input type="text" class="form-control" placeholder="Enter specialty"  id=""  uib-typeahead="specialty for specialty in allSpecialties | filter:$viewValue | limitTo:15" ng-model="user.specialty" style="font-size: 14px!important">
           
 
         <!--<select id="group1" id="specialty" class="custom-select form-control" ng-model="user.specialty" style="font-size: 14px!important" >
