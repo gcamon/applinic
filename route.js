@@ -131,7 +131,7 @@ var basicRoute = function (model,sms,io,streams,Voice) { //remember streams arg 
         _id:0,
         profile_pic_url: 1,
         sub_specialty: 1,
-        skills: 1,
+        //skills: 1,
         introductory: 1,
         awards:1,
         education:1,
@@ -152,8 +152,12 @@ var basicRoute = function (model,sms,io,streams,Voice) { //remember streams arg 
         title: 1,
         sub_specialty:1,
       },function(err,data){
-        res.send(data)
-      })
+        model.skills.find({doctorId: req.user.user_id,deleted:false},function(err,result){
+          if(err) throw err;          
+          data.skills = result;
+          res.send(data)
+        });        
+      });
     } else {
       res.redirect("/login");
     }
@@ -362,8 +366,55 @@ var basicRoute = function (model,sms,io,streams,Voice) { //remember streams arg 
   //doctors profile update route
   router.put("/user/update",function(req,res){
     if(req.user){
+      console.log(req.body)
       if(req.body.type == "procedure"){
-        model.user.findOne({user_id: req.user.user_id},{skills:1}).exec(function(err,data){
+        var random = randos.genRef(10);
+        var description = req.body.description;
+        var newSkill = new model.skills({
+          doctorId: req.user.user_id,
+          doctor_name: req.user.name,
+          doctor_profile_pic_url: req.user.profile_pic_url,
+          doctor_profile_url: req.user.profile_url,
+          doctor_specialty: req.user.specialty,
+          date: + new Date(),
+          comments: [],
+          skill_id: random,
+          disease: req.body.disease,
+          skill: req.body.skill,
+          procedure_description: description,
+          ref_url: "https://" + req.hostname + "/skill/" + req.user.user_id + "/" + random,
+          like: 0,
+          dislike: 0,
+          views: 0,
+          deleted: false
+        })
+
+
+        if(req.files){
+          var fileUrl;
+          for(var i = 0; i < req.files.length; i++){
+            fileUrl = "/download/skills/" + req.files[i].filename; // this will be change to link dropbox;
+            var file = {
+              type: req.files[i].mimetype,
+              filename: req.files[i].filename,
+              path: fileUrl,
+              file_id: random,
+            }
+            newSkill.files.push(file);
+          }
+        }
+
+        console.log(newSkill);
+        
+        newSkill.save(function(err,info){
+          if(err) throw err;
+          res.json({status:"success"});
+          console.log("skill saved!");
+          io.sockets.to(req.user.user_id).emit("uploaded skill",newSkill);
+        })
+        
+
+        /*model.user.findOne({user_id: req.user.user_id},{skills:1}).exec(function(err,data){
           if(err) throw err;
           var random = randos.genRef(8);
           //add files associated with this skill.
@@ -397,10 +448,8 @@ var basicRoute = function (model,sms,io,streams,Voice) { //remember streams arg 
             io.sockets.to(req.user.user_id).emit("uploaded skill",{status:"success"});
           });
           res.send({status:"success"});
-        })        
-      }
-
-      if(req.body.type == "form"){
+        })    */    
+      } else if(req.body.type == "form"){
         console.log(req.body)
         model.user.findOne(
                 {
@@ -646,22 +695,40 @@ var basicRoute = function (model,sms,io,streams,Voice) { //remember streams arg 
       var field = req.body.field;
       delObj[req.body.field] = 1;
 
-      model.user.findOne({user_id:req.user.user_id},delObj).exec(function(err,data){
-        if(err) throw err;        
-        var record = data[req.body.field];
-        
-        var recPos = record.map(function(x){var tostr = x._id.toString(); return tostr}).indexOf(req.body.item_id);
-        if(recPos !== -1){
-          var removed = record.splice(recPos,1);
-        } else {
-          console.log("record not found");
-        }
-       
-        data.save(function(err,info){
-          res.send({status:"success"})
-        });
-        
-      })
+      if(req.body.field == "skills"){
+        model.skills.findById(req.body.item_id)
+        .exec(function(err,data){
+          if(err) throw err;
+          console.log(data)
+          if(data) {
+            data.deleted = true;
+            data.save(function(err,info){
+              if(err) throw err;
+              console.log("skill deleted!")
+              res.send({status:"success"})
+            })
+          } else {
+            res.send({status:"error"})
+          }
+        })
+      } else {
+        model.user.findOne({user_id:req.user.user_id},delObj).exec(function(err,data){
+          if(err) throw err;        
+          var record = data[req.body.field];
+          
+          var recPos = record.map(function(x){var tostr = x._id.toString(); return tostr}).indexOf(req.body.item_id);
+          if(recPos !== -1){
+            var removed = record.splice(recPos,1);
+          } else {
+            console.log("record not found");
+          }
+         
+          data.save(function(err,info){
+            res.send({status:"success"})
+          });
+          
+        })
+      }
     } else {
       res.send("Unauthorized access!")
     }
@@ -1019,6 +1086,33 @@ var basicRoute = function (model,sms,io,streams,Voice) { //remember streams arg 
               }
             });
           break;
+          case "skill": 
+            var str = new RegExp(req.query.skill.replace(/\s+/g,"\\s+"), "gi");              
+           // var criteria = { "skills.disease" : { $regex: str, $options: 'i' },type:"Doctor",title:"SC",city:req.query.city};
+            var criteria = { $or: [{"skills.procedure_description" : { $regex: str, $options: 'i' },type:"Doctor",city:req.query.city},
+            {"skills.skill" : { $regex: str, $options: 'i' },type:"Doctor",city:req.query.city}]};
+            model.user.find(criteria,{firstname:1,lastname:1,work_place:1,city:1,country:1,address:1,
+            specialty:1,_id:0,profile_pic_url:1,education:1,user_id:1,title:1,name:1,profile_url:1},function(err,data){
+              if(err) {
+                res.send({error:"status 500",full:[]});
+              } else {
+                  if(data.length == 0){
+                  var first4 = req.query.skill.substring(0,5);
+                  str = new RegExp(first4.replace(/\s+/g,"\\s+"), "gi");  
+                  var criteria = (req.query.city) ? { "skills.procedure_description" : { $regex: str, $options: 'i'},type:"Doctor",city:req.query.city} : 
+                  { "skills.procedure_description" : { $regex: str, $options: 'i' },type:"Doctor"};
+                  model.user.find(criteria,{firstname:1,lastname:1,work_place:1,city:1,country:1,address:1,
+                    specialty:1,_id:0,profile_pic_url:1,education:1,user_id:1,title:1,name:1,skills:1,profile_url:1},
+                    function(err,data2){
+                      if(err) throw err;
+                      res.json(data2);
+                  })
+                } else {
+                  res.json(data);
+                }   
+              }
+            });
+          break;
           default:
           break;
         }
@@ -1100,7 +1194,12 @@ var basicRoute = function (model,sms,io,streams,Voice) { //remember streams arg 
 
     router.get("/user/skills-procedures",function(req,res){
       if(req.user){
-        model.user.find({type:"Doctor"},{skills:1,_id:0},function(err,data){
+
+        model.skills.find({skill: req.query.item},function(err,data){
+          if(err) throw err;
+          res.send(data)
+        });
+       /* model.user.find({type:"Doctor"},{skills:1,_id:0},function(err,data){
           if(err) throw err; 
 
           Array.prototype.flatten = function flatten() {
@@ -1141,7 +1240,7 @@ var basicRoute = function (model,sms,io,streams,Voice) { //remember streams arg 
           } else {
             res.send({status:null});
           }          
-        }).limit(1000)
+        }).limit(1000)*/
       } else {
         res.send("Unauthorized access");
       }

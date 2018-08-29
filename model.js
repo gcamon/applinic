@@ -32,11 +32,26 @@ var myModel = function () {
 	});
 
 	var skillSchema = Schema({
+		doctorId: String,
+		doctor_name: String,
+		doctor_profile_pic_url: String,
+		doctor_profile_url: String,
+		doctor_specialty: String,
+		date: Number,
+		comments: Array,
 		skill_id: String,
 		disease: String,
 		skill: String,
 		procedure_description: String,
-		files: [fileSchema]
+		files: [fileSchema],
+		ref_url: String,
+		like: Number,
+		dislike: Number,
+		views: Number,
+		deleted: Boolean
+
+	},{
+		collections: "skillinfos"
 	});
 
 
@@ -869,6 +884,7 @@ var myModel = function () {
 	models.needHelp = mongoose.model('needhelpinfos',needHelpchema);
 	models.outPatientBilling = mongoose.model("billinginfos",treatmentBillSchema);
 	models.appointment = mongoose.model("appointmentinfos",docAppointmentSchema);
+	models.skills = mongoose.model("skillinfos",skillSchema)
 	//models.calling_code = mongoose.model("callingcodeinfos",callingSchema)
 	
 	

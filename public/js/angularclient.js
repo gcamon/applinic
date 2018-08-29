@@ -2431,7 +2431,11 @@ app.controller('docProfileEditController',["$scope","$rootScope","$http","$locat
    multiData2.sendSkill("/user/update",$scope.skill);
 
    mySocket.on("uploaded skill",function(data){
-    updateRecord();
+    console.log(data)
+    $scope.skill = {}
+    //updateRecord();
+    $scope.loading = false;
+    $scope.docInfo.skills.push(data)
     initForm();
    });
   }
@@ -2719,11 +2723,11 @@ app.controller('resultController',["$scope","$rootScope","$http","$location","$r
     source.query(function(data){
       if(!data.status) {    
         for(var i = 0; i < data.length; i++){
-          if(!filter[data[i].disease]) {
-            filter[data[i].disease] = 1;
+          if(!filter[data[i].skill]) {
+            filter[data[i].skill] = 1;
             skArr.push(data[i])
           } else {
-            filter[data[i].disease]++;
+            filter[data[i].skill]++;
           }
         }
         $scope.skills = skArr;

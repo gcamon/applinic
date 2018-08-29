@@ -166,10 +166,10 @@
 
           <div class="col-md-12 form-group">
             <label for="from">Briefly Describe Your Approach</label>
-            <textarea class="form-control" placeholder="Briefly Describe Your Approach" ng-model="item.procedure_description" required></textarea>
+            <textarea class="form-control" placeholder="Briefly Describe Your Approach" ng-model="item.procedure_description" style="height: 330px" required></textarea>
           </div>
 
-          <div class="col-md-12 col-sm-12 col-lg-12 form-group" style="border-bottom:1px dashed grey;padding-bottom:20px">
+          <div class="col-md-12 col-sm-12 col-lg-12 form-group" style="border-bottom:1px dashed gre;padding-bottom:20px">
             <label>Attach files (If any) </label>
             <input type="file"  id="file" file-model = "files" multiple="multiple" class="form-control"/>
            <!--<i class="fa fa-warning">&nbsp; <small style="font-size: 14px;">
@@ -183,7 +183,7 @@
         </div>-->
 
         <div>
-           <button class="btn btn-success " ng-click="update()"> <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i>{{(loading) ? "" : 'Save'}}</button>
+           <button class="btn btn-success " ng-click="update('procedure')"> <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i>{{(loading) ? "" : 'Add to record'}}</button>
         </div>
       </div>
 
@@ -267,8 +267,8 @@
       </div>
 
       <div ng-if="type === 'skill' "> 
-        <div ng-repeat="j in docInfo.skills">       
-          <p style="max-height:200px;overflow-y:hidden">{{j.procedure_description}}</p>
+        <div ng-repeat="j in docInfo.skills | orderBy: '-date'">       
+          <p style="max-height:200px;overflow-y:hidden">{{j.skill}}</p>
           <div ng-if="j.files.length > 0">
             <a href="" style="color:green">{{j.files.length}} {{(j.files.length > 1) ? 'files': 'file'}} </a>
           </div>
