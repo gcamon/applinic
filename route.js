@@ -879,7 +879,7 @@ var basicRoute = function (model,sms,io,streams,Voice) { //remember streams arg 
 
         switch(req.query.type){
           case "doctorname":
-            var first4 = (req.query.name.substring(0,2) !== 'Dr' || req.query.name.substring(0,2) !== 'Prof') ? req.query.name.substring(0,5) : req.query.name;
+            var first4 = (req.query.name.substring(0,2) !== 'Dr' || req.query.name.substring(0,2) !== 'Prof' || req.query.name.substring(0,2) !== 'Dr.') ? req.query.name.substring(0,5) : req.query.name;
             var str = new RegExp(first4.replace(/\s+/g,"\\s+"), "gi");              
                
             if(req.query.city) {

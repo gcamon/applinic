@@ -183,6 +183,7 @@
                                 </a>
                                 <div class="okd dropdown-menu dropdown-menu-right" style="line-height: 35px" aria-labelledby="navbarDropdownMenuLink">
                                     <a class="dropdown-item" href="#/find-specialist"><i class="fa fa-search text-warning" aria-hidden="true"></i> Doctor</a>
+                                     <a class="dropdown-item" href="#/special-center"><i class="fa fa-search text-warning" aria-hidden="true"></i> Special Center</a>
                                     <a class="dropdown-item" href="#/pharmacy-in"><i class="fa fa-search text-warning" aria-hidden="true"></i> Pharmaceutical Center</a>
                                      <a class="dropdown-item" href="#/laboratory-in"><i class="fa fa-search text-warning" aria-hidden="true"></i> Laboratory Center</a>
                                       <a class="dropdown-item" href="#/radiology-in"><i class="fa fa-search text-warning" aria-hidden="true"></i> Radiology Center</a>
@@ -289,6 +290,9 @@
                                     <ul>
                                         <li> <a href="#/find-specialist"><i class="fa fa-search text-warning" aria-hidden="true"></i> Doctor</a>
                                 </a> </li>
+                                <li>
+                                   <a href="#/special-center"><i class="fa fa-search text-warning" aria-hidden="true"></i> Special Center</a>
+                                </li>
                                  <li> <a href="#/pharmacy-in"><i class="fa fa-search text-warning" aria-hidden="true"></i> Pharmaceutical Center</a>
                                 </a> </li>
 
@@ -895,6 +899,25 @@
                     </div>
                  </div>
               </div>              
+            </div>
+          </div>
+        </div>
+     </script>
+
+      <script type="text/ng-template" id="info.html">
+         <div class="modal fade">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">             
+                <h4>Nice to have you onboard!</h4>
+                <button type="button" class="close" ng-click="close('Cancel')" data-dismiss="modal" aria-hidden="true">&times;</button>           
+                       
+            </div>
+            <div class="modal-body">                
+                <p style="font-size: 14px">Please to continue with your search again, go to <b>" <i class="fa fa-search"></i> searches "</b> on the top right and select from  the dropdown list  <b>" <span><i class="fa fa-search"></i> <span ng-if="holdType == 'Pharmacy'">Drugs</span><span ng-if="holdType == 'Laboratory'">Laboratory Test</span><span ng-if="holdType == 'Radiology'">Radiology Test</span></span> "</b> <br> Note, you can search for more <span ng-if="holdType == 'Pharmacy'">drugs</span> <span ng-if="holdType !== 'Pharmacy'">tests</span> at once with this advance search utilities.</p>
+            </div>
+            <div class="modal-footer">               
+                <button type="button" ng-click="close('Yes')" class="btn btn-primary" data-dismiss="modal">Got it!</button>
             </div>
           </div>
         </div>

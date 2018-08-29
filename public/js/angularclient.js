@@ -550,6 +550,12 @@ app.config(['$paystackProvider','$routeProvider',
   controller: 'resultController'
  })
 
+.when("/special-center",{
+  templateUrl: "/assets/pages/utilities/special-center.html",
+  controller: 'resultController'
+ })
+
+
 .when("/view-response/:complaintId",{
   templateUrl: "/assets/pages/utilities/view-response.html",
   controller: 'PatientViewResponseController'
@@ -2704,6 +2710,26 @@ app.controller('resultController',["$scope","$rootScope","$http","$location","$r
 
   var filter = {};
   var spArr = [];
+  var skArr = [];
+
+
+  var source = skillProcedureService; //$resource("/user/skills-procedures");
+  source.query(function(data){
+    console.log(data)
+    if(!data.status) {    
+      for(var i = 0; i < data.length; i++){
+        if(!filter[data[i].disease]) {
+          filter[data[i].disease] = 1;
+          skArr.push(data[i].disease)
+        } else {
+          filter[data[i].disease]++;
+        }
+      }
+      $scope.skills = skArr;
+    }
+    
+  });  
+ 
 
   $http({
     method  : 'GET',
@@ -2720,9 +2746,9 @@ app.controller('resultController',["$scope","$rootScope","$http","$location","$r
           filter[data[i].specialty]++;
         }
       }
-      console.log(spArr)
-      $scope.allSpecialties = spArr;
+      $scope.allSpecialties = ($location.path() == '/special-center') ? spArr.concat(skArr) : spArr;
     }
+
   });                                    
 
   $scope.cities = cities;
@@ -2730,11 +2756,30 @@ app.controller('resultController',["$scope","$rootScope","$http","$location","$r
   var data = patientfindDoctorService;//$resource("/user/patient/find-doctor");
   $scope.find = function (skill) {
     
-    if($scope.user.specialty || $scope.user.doctorId || $scope.user.name || $scope.user.skill || $scope.user.city || $scope.user.disease){      
+    if(skill === 'special-center'){
+      var sendObj = {};
+      sendObj.item = $scope.user.item;
+      sendObj.type = 'special-center';
+      sendObj.city = $scope.user.city;
+      data.query(sendObj,function(response){
+        if(response.length > 0) {
+          localManager.setValue("userInfo",response);
+          $location.path("/list");
+        } else {
+          alert("No result found!")
+        }
+        $scope.loading = false;
+      });          
+
+      localManager.setValue("path","/special-center");
+
+    } else if($scope.user.specialty || $scope.user.doctorId || $scope.user.name || $scope.user.skill || $scope.user.city || $scope.user.disease){      
       $scope.loading = true;
       if(skill !== undefined) {
         $scope.user.creteria = "skill";
       } 
+
+      localManager.setValue("path","/find-specialist");
 
       switch($scope.user.creteria){
         case "doctorId":
@@ -2869,12 +2914,6 @@ app.controller('resultController',["$scope","$rootScope","$http","$location","$r
 
   
 
-  var source = skillProcedureService; //$resource("/user/skills-procedures");
-  source.query(function(data){
-    if(!data.status)
-      $scope.skills = data;
-    console.log(data);
-  });  
  
 
   /*$scope.searchMore = function () {
@@ -3104,8 +3143,8 @@ app.controller('listController',["$scope","$location","$window","localManager","
       }
     }
 
-    $scope.goBack = function() {
-      $location.path("/find-specialist")
+    $scope.goBack = function() {      
+      $location.path(localManager.getValue('path'));
     }
 
    
