@@ -2694,7 +2694,7 @@ app.controller('resultController',["$scope","$rootScope","$http","$location","$r
     cities,templateService,templateUrlFactory,patientfindDoctorService,skillProcedureService) {
   $scope.user = {};
   $scope.user.type = "Doctor";
-  $scope.user.city = $rootScope.checkLogIn.city;
+  //$scope.user.city = $rootScope.checkLogIn.city;
   $scope.refineUser = {};
   var theCity;
   var theSkill;
