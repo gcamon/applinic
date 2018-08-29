@@ -570,7 +570,8 @@ var myModel = function () {
 		service_details: Array, //services rendered by a center successfully
 		mrak: String, //medical record access key
 		medical_reports: [medReportSchema],
-		courier_charge: Number
+		courier_charge: Number,
+		disease_tag: String
 	},{
 		collections: "userinfos"
 	})

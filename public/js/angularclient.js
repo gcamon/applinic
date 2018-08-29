@@ -2694,7 +2694,7 @@ app.controller('resultController',["$scope","$rootScope","$http","$location","$r
     cities,templateService,templateUrlFactory,patientfindDoctorService,skillProcedureService) {
   $scope.user = {};
   $scope.user.type = "Doctor";
-  //$scope.user.city = $rootScope.checkLogIn.city;
+  $scope.user.city = $rootScope.checkLogIn.city;
   $scope.refineUser = {};
   var theCity;
   var theSkill;
@@ -2711,45 +2711,79 @@ app.controller('resultController',["$scope","$rootScope","$http","$location","$r
   var filter = {};
   var spArr = [];
   var skArr = [];
+  var centerArr = [];
 
-
-  var source = skillProcedureService; //$resource("/user/skills-procedures");
-  source.query(function(data){
-    console.log(data)
-    if(!data.status) {    
-      for(var i = 0; i < data.length; i++){
-        if(!filter[data[i].disease]) {
-          filter[data[i].disease] = 1;
-          skArr.push(data[i].disease)
-        } else {
-          filter[data[i].disease]++;
+  if($location.path() == "/procedure") {
+    var source = skillProcedureService; //$resource("/user/skills-procedures");
+    source.query(function(data){
+      if(!data.status) {    
+        for(var i = 0; i < data.length; i++){
+          if(!filter[data[i].disease]) {
+            filter[data[i].disease] = 1;
+            skArr.push(data[i])
+          } else {
+            filter[data[i].disease]++;
+          }
         }
+        $scope.skills = skArr;
       }
-      $scope.skills = skArr;
-    }
-    
-  });  
+      
+    });  
+  };
  
-
-  $http({
-    method  : 'GET',
-    url     : "/user/get-specialties",
-    headers : {'Content-Type': 'application/json'} 
-    })
-  .success(function(data) {              
-    if(data){
-      for(var i = 0; i < data.length; i++){
-        if(!filter[data[i].specialty]) {
-          filter[data[i].specialty] = 1;
-          spArr.push(data[i].specialty)
-        } else {
-          filter[data[i].specialty]++;
+  if($location.path() == "/find-specialist") {
+    $http({
+      method  : 'GET',
+      url     : "/user/get-specialties",
+      headers : {'Content-Type': 'application/json'} 
+      })
+    .success(function(data) {              
+      if(data){
+        for(var i = 0; i < data.length; i++){
+          if(!filter[data[i].specialty]) {
+            filter[data[i].specialty] = 1;
+            spArr.push(data[i].specialty)
+          } else {
+            filter[data[i].specialty]++;
+          }
         }
       }
-      $scope.allSpecialties = ($location.path() == '/special-center') ? spArr.concat(skArr) : spArr;
+      $scope.allSpecialties = spArr;
+    });
+  }
+
+
+  if($location.path() == "/special-center") {
+    $http({
+      method  : 'GET',
+      url     : "/user/get-specialcenters",
+      headers : {'Content-Type': 'application/json'} 
+      })
+    .success(function(data) {              
+      if(data){
+        for(var i = 0; i < data.length; i++){
+          if(!filter[data[i].specialty]) {
+            filter[data[i].specialty] = 1;
+            var keywords = (data[i].skills.length > 0) ? addDisease(data[i]) : data[i].specialty;
+            centerArr.push(keywords)
+          } else {
+            filter[data[i].specialty]++;
+          }
+        }
+      }
+      $scope.allSpecialCenter = centerArr;
+    }); 
+  }   
+
+  function addDisease(item) {
+    var str = "";
+    for(var i = 0; i < item.skills.length; i++){
+      str += item.skills[i].disease + " ";
     }
 
-  });                                    
+    return str;
+  }                                
+                                    
 
   $scope.cities = cities;
   templateUrlFactory.setUrl();
