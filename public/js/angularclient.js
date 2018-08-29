@@ -2712,6 +2712,7 @@ app.controller('resultController',["$scope","$rootScope","$http","$location","$r
   var spArr = [];
   var skArr = [];
   var centerArr = [];
+  var diseasArr = [];
 
   if($location.path() == "/procedure") {
     var source = skillProcedureService; //$resource("/user/skills-procedures");
@@ -2730,6 +2731,8 @@ app.controller('resultController',["$scope","$rootScope","$http","$location","$r
       
     });  
   };
+
+  var keywords;
  
   if($location.path() == "/find-specialist") {
     $http({
@@ -2740,15 +2743,19 @@ app.controller('resultController',["$scope","$rootScope","$http","$location","$r
     .success(function(data) {              
       if(data){
         for(var i = 0; i < data.length; i++){
+          keywords = (data[i].skills.length > 0) ? addDisease(data[i]) : null;
+          diseasArr.push(keywords) 
           if(!filter[data[i].specialty]) {
-            filter[data[i].specialty] = 1;
+            filter[data[i].specialty] = 1;           
             spArr.push(data[i].specialty)
           } else {
             filter[data[i].specialty]++;
           }
         }
       }
-      $scope.allSpecialties = spArr;
+      $scope.allSpecialties = spArr; 
+      $scope.diseases = diseasArr;    
+           
     });
   }
 
@@ -2891,7 +2898,7 @@ app.controller('resultController',["$scope","$rootScope","$http","$location","$r
           //alert($scope.user.skill)
           var sendObj = {};        
           sendObj.disease = $scope.user.disease;
-          sendObj.type = $scope.user.creteria;          
+          sendObj.type = $scope.user.creteria;   
           data.query(sendObj,function(data){
           if(data.length > 0) {
             localManager.setValue("userInfo",data);

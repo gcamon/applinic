@@ -37,8 +37,9 @@
       </div>
 
       <div class="form-group" ng-if="isDisease === true">
-          <label for="disease">Find by disease</label>
-        <input type="text" class="form-control"  placeholder="Enter disease eg Malaria" ng-model="user.disease" style="font-size: 14px!important">
+        <label for="disease">Find by disease</label>
+        <!--<input type="text" class="form-control"  placeholder="Enter disease eg Malaria" ng-model="user.disease" style="font-size: 14px!important">-->
+         <input type="text" class="form-control" placeholder="Enter e.g sickle cell"    uib-typeahead="disease for disease in diseases | filter:$viewValue | limitTo:15" ng-model="user.disease" style="font-size: 14px!important">
       </div>
       
       

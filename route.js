@@ -1466,7 +1466,7 @@ var basicRoute = function (model,sms,io,streams,Voice) { //remember streams arg 
 
     router.get("/user/get-specialties",function(req,res){
       if(req.user){
-        model.user.find({type:"Doctor"},{specialty:1})
+        model.user.find({type:"Doctor"},{specialty:1,skills:1})
         .limit(500)
         .sort('specialty')
         .exec(function(err,data){
