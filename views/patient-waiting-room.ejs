@@ -256,7 +256,12 @@
                                         <!--<h6>{{patient.response.length}} doctor(s) has responded so far.</h6>-->
                                         <h6 style="font-weight:bold">Your Response</h6>
                                        
-                                        <form class="complaint-view-charge">
+                                        <form class="complaint-view-charge">                                          
+                                            
+                                          
+                                            <label style="font-weight:bold;font-size: 14px" class="text-capitalize">Management Plan? </label>
+                                            <textarea class="form-control" style="padding: 10px" cols="6" ng-model="user.introductory"></textarea>
+                                            <div class="p-2"></div>
                                             
                                             <div class="pt-2">
                                                 <label style="font-weight:bold;font-size: 14px">Consultation Fee </label> 
@@ -270,12 +275,9 @@
                                             <div class="mt-1 mb-2">
                                                 <small>You'll receive : {{str}} </small>
                                             </div>
-                                          
-                                            <label style="font-weight:bold;font-size: 14px" class="text-capitalize">Management Plan? </label>
-                                            <textarea class="form-control" style="padding: 10px" cols="6" ng-model="user.introductory"></textarea>
-                                            <div class="p-2"></div>
+
                                             <div class="pb-5 mt-2" style="display: block;margin-top: 20px">
-                                                <button  ng-click="sendRequest()" class="btn btn-primary text-white"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff !important" ng-if="loading"></i> {{(loading) ? '' : 'Submit'}}</button>
+                                                <a href=""  ng-click="sendRequest()" class="btn btn-danger text-white"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff !important" ng-if="loading"></i> {{(loading) ? '' : 'Submit'}}</a>
                                             </div>
                                         </form>
                                     </section>
@@ -293,7 +295,7 @@
             *************************************-->
             <footer id="footer" class="tg-haslayout">
           
-            <div class="tg-footerbar tg-haslayout">
+            <div class="tg-footerba tg-haslayout">
                <div class="copyright" style="color: #fff">
                     &copy;
                     <script>

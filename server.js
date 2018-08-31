@@ -107,7 +107,7 @@ model.help.find({}).exec(function(err,data){
       data[i].remove(function(err,info){})
     }
   } else {
-    console.log("empty")
+    console.log("empty");
   }
 })
 
