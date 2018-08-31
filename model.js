@@ -27,16 +27,20 @@ var myModel = function () {
 		filename: String,
 		path: String,
 		file_id: String,
+		external_link: String
 	},{
 		collections: "fileinfo"
 	});
 
 	var skillSchema = Schema({
-		doctorId: String,
-		doctor_name: String,
-		doctor_profile_pic_url: String,
-		doctor_profile_url: String,
-		doctor_specialty: String,
+		user_id: String,
+		name: String,
+		profile_pic_url: String,
+		profile_url: String,
+		specialty: String,
+		work_place: String,
+		city: String,
+		country: String,
 		date: Number,
 		comments: Array,
 		skill_id: String,
@@ -45,6 +49,7 @@ var myModel = function () {
 		procedure_description: String,
 		files: [fileSchema],
 		ref_url: String,
+		path: String,
 		like: Number,
 		dislike: Number,
 		views: Number,

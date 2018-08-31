@@ -1,0 +1,314 @@
+
+<!doctype html>
+<!--[if lt IE 7]>       <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang=""> <![endif]-->
+<!--[if IE 7]>          <html class="no-js lt-ie9 lt-ie8" lang=""> <![endif]-->
+<!--[if IE 8]>          <html class="no-js lt-ie9" lang=""> <![endif]-->
+<!--[if gt IE 8]><!-->  <html class="no-js" lang=""> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Applinic | <%= skill.skill %></title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta property="og:url"           content="<%= skill.ref_url %>" />
+        <meta property="og:type"          content="<%= skill.disease%>" />
+        <meta property="og:title"         content="<%= skill.skill %>" />
+        <meta property="og:description"   content="skill.procedural_description" />
+        <meta property="og:image"         content="<%= skill.files[0].external_link %>" />
+
+
+        <link rel="apple-touch-icon" href="apple-touch-icon.png">
+        <link rel="stylesheet" href="/assets/css/bootstrap.min.css">
+        <link rel="stylesheet" href="/assets/css/normalize.css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+        <link rel="stylesheet" href="assets/css/app.css">
+        <link rel="stylesheet" href="/assets/css/main.css">
+        <link rel="stylesheet" href="/assets/css/now-ui-kit2.css">
+        <link href="http://code.jquery.com/ui/1.10.4/themes/ui-lightness/jquery-ui.css" rel="stylesheet">
+        <link rel="stylesheet" href="/assets/css/angular-carousel.css"> 
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet"> 
+        <link rel="icon" type="image/png" href="/assets/images/icons/favicon.png">
+        <script src="/assets/js/vendor/modernizr-2.8.3-respond-1.4.2.min.js"></script>
+        <link href="https://fonts.googleapis.com/css?family=Ubuntu+Condensed" rel="stylesheet">
+        <script src="/assets/js/vendor/jquery-library.js"></script>
+         <script type="text/javascript" src="/assets/js/source.js"></script>
+        <script type="text/javascript" src="/assets/js/jquery.nicescroll.js"></script>
+         <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+         <!--<script type="text/javascript">
+            $(document).ready(function(){
+                $("html").niceScroll({cursorcolor:"#ccc",cursorwidth:"10px"});
+                $("#main").niceScroll("#complaint",{cursorcolor:"#ccc"});
+                $("#complain-in-view").niceScroll({cursorcolor:"#ccc",cursorwidth:"10px"});
+            })
+        </script>-->
+        <style type="text/css">
+              body {
+                font-family: 'Open Sans', sans-serif;
+             }
+
+            blockquote {
+                text-indent: 20px;
+                padding: 15px 5px 5px;
+                background-color: lightYellow;
+                font-style: normal;
+
+            }
+
+             .pagination li{
+                border-radius: 30px;
+             }
+
+             .complaint-main {
+              margin-bottom:30px!important;
+              margin-top: 60px!important;
+            }
+
+            @media screen and (max-width: 960px) {
+             
+              .complaint-main {
+                  margin-top: 100px!important;
+              }
+
+            }
+
+        </style>
+
+        
+    </head>
+    <body ng-app= "myApp">
+        <!--[if lt IE 8]>
+                <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+        <![endif]-->
+        <!--************************************
+                        Wrapper Start
+        *************************************-->
+        
+            <!--************************************
+                            Header Start
+            *************************************-->
+             <header id="header" class="container-fluid"  ng-controller="topHeaderController" style="background-color:#fff;position: fixed;width: 100%;z-index: 999;">
+              
+               
+                <div class="container" style="position: relative;">
+                    <nav class="row">
+                        <div class="col-sm-6 col-md-2 col-lg-2 pb-2 pt-3">
+                            
+                            <!--<a href="" ng-href="{{back}}" class="nav-link btn btn-simple btn-sm" style="color:#555!important;float: left;">
+                              <b> &larr; Back</b>
+                            </a> &nbsp;-->
+
+                              <a class="brand" href="/" style="text-decoration: none;float: left;">
+                                <div class=""> <span class="l l1"></span> <span class="l l2"></span> <span class="l l3"></span> <span class="l l4"></span> <span class="l l5"></span> </div> <b>Applinic</b> </a>  
+                                                
+                        </div>  
+                         <div class="col-sm-12 col-md-8 col-lg-8 pb-2 pt-3">
+                           <h5><b>Skills &amp; Procedures</b> &nbsp; <!--<input type="text" placeholder="search" class="" name="" style="padding:0 10px ;">--> <!--<i class="fa fa-search btn btn-neutral"></i>--></h5>
+
+                        </div> 
+
+                    </nav>
+                    <a class="btn btn-simple text-danger btn-sm"  href="" ng-click="logout()" ng-if="checkLogIn" style="position: absolute;top: 15px;right: 0">
+                        <span><i class="fa fa-power-off icon"></i>
+                            Logout
+                        </span> 
+                    </a>
+                </div>
+            </header>
+            <!--************************************
+                            Header End
+            *************************************-->
+            
+            <!--************************************
+                            Main Start
+            *************************************-->
+           
+            <main id="main" class="tg-haslayout complaint-main" ng-controller="skillController" style="" ng-cloak>
+                <section class="container">                    
+                    <div class="row">
+                        <div class="col-sm-12 col-md-12 col-lg-12">                           
+                            <div class="row">
+                                <div class="col-sm-12 col-md-8 col-lg-8">
+                                  
+                                    <section class="card mt-3 p-4"> 
+                                       <header style="position: relative;" class="pt-2">
+                                         <img src="<%= skill.profile_pic_url %>" style="width: 75px;height: auto;float: left;">
+                                         <article style="display: inline-block;padding-left: 8px">
+                                           <div><b style="font-size: 18px"> <%= skill.name %> </b></div>
+                                           <div><span style="font-size: 12px"> <%= skill.specialty %> </span></div>
+                                           <div><span style="font-size: 12px"> <b><%= skill.work_place %></b> <%= skill.city %> <%= skill.country %></span></div>
+                                         </article>
+                                         <a href="<%= skill.profile_url %>" class="btn btn-info btn-sm" style="position: absolute;top:5px;right: 5px;">view profile</a>
+                                       </header>
+                                       <hr class="bg-muted">
+                                       <section>
+                                         <h3><%= skill.skill %>
+                                           <span style="font-size: 12px;display: block;"> <b class="text-muted">{{<%= skill.date %> | date: "mediumDate"}}</b></span>
+                                           <span style="font-size: 14px;display: block;position: relative;margin-top: 10px">
+                                           <div class="fb-share-button" data-href="<%= skill.ref_url %>" data-layout="button_count" data-size="small" data-mobile-iframe="true" style="display: inline-block;margin-left: 10px"><a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fdevelopers.facebook.com%2Fdocs%2Fplugins%2F&amp;src=sdkpreparse" class="fb-xfbml-parse-ignore">Share</a>
+                                           </div> 
+
+                                          <a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-show-count="false">Tweet</a>
+
+                                           <span style="position: absolute;right: 30px;top: 0"><%= skill.comments.length %>  <i class="fa fa-comment text-muted"></i> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <!--<%= skill.views %> <i class="fa fa-eye text-muted"></i></span>--></span>
+
+                                         </h3>
+                                         <div style="text-align: center;max-height: 550px;overflow-y: hidden;">
+                                            <img src="<%= skill.files[0].path %>" style="width: 100%;height: auto;" ng-if="'<%= skill.files[0].path %>'">
+                                         </div> 
+                                         <div style="font-size: 18px;padding: 20px 0;line-height: 28px" ng-bind-html="trustAsHtml('<%= skill.procedure_description %>')"></div>
+
+                                         <div style="padding-bottom: 40px">
+                                           <h5><b>Comments</b></h5>
+                                           <hr><!-- -->
+                                           <% for(var i = skill.comments.length - 1; i >= 0 ; i--) { %>                       
+                                             <div style="margin-bottom: 30px">
+                                               <img src="<%= skill.profile_pic_url %>" style="width: 45px;height: auto;;float: left;">
+                                               <article style="display: inline-block;padding-left: 10px">
+                                                 <span style="display: block;padding-bottom: 5px">
+                                                    <b style=""><%= skill.comments[i].name %></b><br>
+                                                    <small am-time-ago="'<%= skill.comments[i].date %>'"></small>
+                                                 </span>
+                                                 <span ng-bind-html="'<%= skill.comments[i].article %>'"></span>
+                                               </article>
+                                             </div>
+                                           <% } %>
+                                           <form>
+                                             <div>
+                                               <label><b>Write your comment</b></label>
+                                             </div>
+                                             <div>
+                                               <textarea class="form-control" placeholder="Write..." style="height: 200px;padding:10px" ng-model="article">
+                                                 
+                                               </textarea>
+                                             </div>
+                                             <div>
+                                               <a href="" class="btn btn-danger btn-sm" ng-click="post('<%= skill._id %>')"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" ng-if="laoding"></i>{{(loading) ? 'posting...' : 'Post'}}</a>
+                                               <span ng-if="info" ng-bind-html="info"></span>
+                                             </div>
+                                           </form>
+                                         </div>                                     
+
+                                       </section>
+                                    </section>
+                                    <!--<div style="font-size: 22px;padding: 80px 100px" ng-if="loading">
+                                       <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange" ng-if="loading"></i> 
+                                    </div>-->
+                                    
+                                </div>
+
+
+
+                                <aside class="col-sm-12 col-md-4 col-lg-4">
+                                    <section class="card p-3 mt-3">
+                                      <h5 class="pt-2"><b>Similar Skills</b></h5>
+                                      <hr class="bg-muted">
+                                      <% for(var i = 0; i < related.length; i++) { %> 
+                                        <a href="" class="text-muted">
+                                          <article style="text-transform: capitalize;"><b><%= related[i].skill %></b> <span style="display: block;font-size: 13px;">by <b><%= related[i].name %></b></span></article>
+                                        </a>
+                                        <hr class="bg-muted">
+                                       <% } %>
+                                    </section>
+                                </aside>
+                            </div>
+                        </div>                                        
+                    </div>
+                </section>
+            </main>
+            <!--************************************
+                            Main End
+            *************************************-->
+            <!--************************************
+                            Footer Start
+            *************************************-->
+            <footer id="footer" class="tg-haslayout">
+          
+            <div class="tg-footerbar tg-haslayout">
+               <div class="copyright" style="color: #fff">
+                    &copy;
+                    <script>
+                        document.write(new Date().getFullYear())
+                    </script>, applinic.com
+                </div>
+            </div>
+        </footer>
+            <!--************************************
+                            Footer End
+            *************************************-->
+        </div>
+        <!--************************************
+                        Wrapper End
+        *************************************-->
+        <!--************************************
+                Sign In Sign Up Light Box Start
+        *************************************-->
+
+       
+        
+        
+        <!--************************************
+                Sign In Sign Up Light Box End
+        *************************************-->
+    <script type="text/ng-template" id="session-timeout.html">
+       <div class="modal fade">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+          
+            <div  style="padding: 20px;margin-bottom: 20px;text-align: center;">  
+                <div>
+                    <strong style="font-weight: 100;font-size: 22px">Hey! Are you still there?</strong>
+                </div>            
+                
+                <p style="font-size: 14px;padding-top: 30px" class="text-muted">You have been idle for a while you will be timed out at count down 0</p>
+                <div style="padding:20px">
+                    <a href="" class="btn btn-simple round">{{countDown}}</a>
+                </div>
+
+                <div>
+                    <a href="" class="btn btn-danger" ng-click="keepalive()" data-dismiss="modal">No, keep alive</a>
+                </div>
+            </div>
+            
+          </div>
+        </div>
+      </div>
+   </script>
+        <script src="/assets/js/vendor/bootstrap.min.js"></script>
+       <script src="/assets/js/bower_components/angular-summernote/dist/angular-summernote.js"></script>
+        <script type="text/javascript" src="/assets/js/angularclient.js"></script>
+        <script type="text/javascript" src="/assets/js/ngroute.js"></script>
+        <script src="/socket.io/socket.io.js"></script>   
+        <script src="/assets/js/socket.min.js"></script>
+        <script src="/assets/js/jquery-ui.js"></script>
+        <!--<script src="http://maps.google.com/maps/api/js?sensor=false"></script>
+        <script src="/assets/js/map/jquery.gomap.js"></script>-->
+        
+        <script src="/assets/js/jquery.nicescroll.js"></script>
+       
+        
+        <script src="/assets/js/angularAnimate.js"></script>
+        <script src="/assets/js/modalService.js"></script>
+        
+        <script src="/assets/js/moment.min.js"></script>
+        <script src="/assets/js/angular-touch.min.js"></script>
+        <script src="/assets/js/angular-moment.min.js"></script>
+        <script src="/assets/js/angucomplete-alt.min.js"></script> 
+        <script src="/assets/js/ui-bootstrap-tpls.js"></script>
+        <script src="/assets/js/angular-clipboard.js"></script>
+        <script src="/assets/js/ngresource.js"></script> 
+          <script src="/assets/js/ngPrint.js"></script>
+        <script type="text/javascript" src="/assets/js/angular-paystack/dist/angular-paystack.min.js"></script>
+         <script type="text/javascript" src="/assets/js/angular-sanitize.min.js"></script>
+         <script>
+          (function(d, s, id) {
+            var js, fjs = d.getElementsByTagName(s)[0];
+            if (d.getElementById(id)) return;
+            js = d.createElement(s); js.id = id;
+            js.src = "https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v3.0";
+            fjs.parentNode.insertBefore(js, fjs);
+          }(document, 'script', 'facebook-jssdk'));
+        </script>
+        
+    </body>
+</html>

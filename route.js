@@ -22,6 +22,30 @@ var options = {
 //var token = require("./twilio");
 var randos = require("./randos");
 
+function createNewsLink(title){
+  var str = "";
+  if(title) {
+    var spt = title.split(" ");
+    for(var i = 0; i < spt.length; i++){
+      str += spt[i] + "-";
+    }
+  }
+
+  var tm = str.slice(0, -1)
+
+  console.log(tm)
+  return tm;
+}
+
+function genHash(count) {
+  var text = "";
+  var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz01234567899966600555777222";
+
+    for( var i=0; i < count; i++ )
+        text += possible.charAt(Math.floor(Math.random() * possible.length));
+    return text;
+}
+
 var basicRoute = function (model,sms,io,streams,Voice) { //remember streams arg will be removed atfer test
 
   router.get("/",function(req,res){
@@ -152,8 +176,8 @@ var basicRoute = function (model,sms,io,streams,Voice) { //remember streams arg 
         title: 1,
         sub_specialty:1,
       },function(err,data){
-        model.skills.find({doctorId: req.user.user_id,deleted:false},function(err,result){
-          if(err) throw err;          
+        model.skills.find({user_id: req.user.user_id,deleted:false},function(err,result){
+          if(err) throw err;     
           data.skills = result;
           res.send(data)
         });        
@@ -363,26 +387,78 @@ var basicRoute = function (model,sms,io,streams,Voice) { //remember streams arg 
     }
   });
 
+
+  router.get("/skill/:id/:title",function(req,res){
+    model.skills.findOne({skill_id: req.params.id,deleted: false},function(err,data){
+      if(err) throw err;
+      if(data){        
+        model.skills.find({specialty:data.specialty},function(err,result){
+          if(err) throw err;
+          res.render("skills",{skill:data,related: result});
+        }).limit(20)
+      } else {
+        res.send({error: "OOps, this skill was not found!"})
+      }
+    })
+  });
+
+
+  router.get("/user/get-skills",function(req,res){
+    model.skills.find({deleted: false},function(err,data){
+      res.json(data)
+    }).limit(500);
+  })
+
+  router.put("/user/skill/comments",function(req,res){
+    if(req.user) {
+      model.skills.findById(req.body.id)
+      .exec(function(err,skill){
+        skill.comments.push({
+          name: (req.user.name) ? req.user.name : req.user.title + " " + req.user.firstname,
+          userId: req.user.user_id,
+          date: + new Date(),
+          article: req.body.message,
+          messageId: genHash(7)
+        });
+
+        skill.save(function(err,inf){
+          console.log("comment saved")
+        })
+      });
+      res.json({status: true,message: "Your comment was sent successfully!"});
+    } else {
+      res.json({status: false, message: "You cannot comment on the post."})
+    }
+    
+  })
+
+
+
   //doctors profile update route
   router.put("/user/update",function(req,res){
     if(req.user){
-      console.log(req.body)
       if(req.body.type == "procedure"){
-        var random = randos.genRef(10);
+        var random = genHash(10);
+        var titledLink = createNewsLink(req.body.skill);
         var description = req.body.description;
+
         var newSkill = new model.skills({
-          doctorId: req.user.user_id,
-          doctor_name: req.user.name,
-          doctor_profile_pic_url: req.user.profile_pic_url,
-          doctor_profile_url: req.user.profile_url,
-          doctor_specialty: req.user.specialty,
+          user_id: req.user.user_id,
+          name: req.user.name,
+          work_place: req.user.work_place,
+          city: req.user.city,
+          country: req.user.country,
+          profile_pic_url: req.user.profile_pic_url,
+          profile_url: req.user.profile_url,
+          specialty: req.user.specialty,
           date: + new Date(),
           comments: [],
           skill_id: random,
           disease: req.body.disease,
           skill: req.body.skill,
           procedure_description: description,
-          ref_url: "https://" + req.hostname + "/skill/" + req.user.user_id + "/" + random,
+          ref_url: "https://" + req.hostname + "/skill/" + random + "/" + titledLink,
+          path: "/skill/" + random + "/" + titledLink,
           like: 0,
           dislike: 0,
           views: 0,
@@ -399,13 +475,13 @@ var basicRoute = function (model,sms,io,streams,Voice) { //remember streams arg 
               filename: req.files[i].filename,
               path: fileUrl,
               file_id: random,
+              external_link: "https://" + req.hostname + "/download/skills/" + req.files[i].filename
             }
             newSkill.files.push(file);
           }
         }
 
-        console.log(newSkill);
-        
+  
         newSkill.save(function(err,info){
           if(err) throw err;
           res.json({status:"success"});
@@ -1062,7 +1138,7 @@ var basicRoute = function (model,sms,io,streams,Voice) { //remember streams arg 
           case "special-center":
             var str = new RegExp(req.query.item.replace(/\s+/g,"\\s+"), "gi");              
            // var criteria = { "skills.disease" : { $regex: str, $options: 'i' },type:"Doctor",title:"SC",city:req.query.city};
-            var criteria = { $or: [{"skills.disease" : { $regex: str, $options: 'i' },type:"Doctor",title:"SC",city:req.query.city},
+            var criteria = { $or: [{disease_tag : { $regex: str, $options: 'i' },type:"Doctor",title:"SC",city:req.query.city},
             {specialty : { $regex: str, $options: 'i' },type:"Doctor",title:"SC",city:req.query.city}]};
             model.user.find(criteria,{firstname:1,lastname:1,work_place:1,city:1,country:1,address:1,
             specialty:1,_id:0,profile_pic_url:1,education:1,user_id:1,title:1,name:1,profile_url:1},function(err,data){
@@ -1072,8 +1148,8 @@ var basicRoute = function (model,sms,io,streams,Voice) { //remember streams arg 
                   if(data.length == 0){
                   var first4 = req.query.item.substring(0,4);
                   str = new RegExp(first4.replace(/\s+/g,"\\s+"), "gi");  
-                  var criteria = (req.query.city) ? { "skills.disease" : { $regex: str, $options: 'i'},type:"Doctor",title:"SC",city:req.query.city} : 
-                  { "skills.disease" : { $regex: str, $options: 'i' },type:"Doctor",title:"SC"};
+                  var criteria = (req.query.city) ? { disease_tag : { $regex: str, $options: 'i'},type:"Doctor",title:"SC",city:req.query.city} : 
+                  { disease_tag : { $regex: str, $options: 'i' },type:"Doctor",title:"SC"};
                   model.user.find(criteria,{firstname:1,lastname:1,work_place:1,city:1,country:1,address:1,
                     specialty:1,_id:0,profile_pic_url:1,education:1,user_id:1,title:1,name:1,skills:1,profile_url:1},
                     function(err,data2){
@@ -1088,21 +1164,18 @@ var basicRoute = function (model,sms,io,streams,Voice) { //remember streams arg 
           break;
           case "skill": 
             var str = new RegExp(req.query.skill.replace(/\s+/g,"\\s+"), "gi");              
-           // var criteria = { "skills.disease" : { $regex: str, $options: 'i' },type:"Doctor",title:"SC",city:req.query.city};
-            var criteria = { $or: [{"skills.procedure_description" : { $regex: str, $options: 'i' },type:"Doctor",city:req.query.city},
-            {"skills.skill" : { $regex: str, $options: 'i' },type:"Doctor",city:req.query.city}]};
-            model.user.find(criteria,{firstname:1,lastname:1,work_place:1,city:1,country:1,address:1,
-            specialty:1,_id:0,profile_pic_url:1,education:1,user_id:1,title:1,name:1,profile_url:1},function(err,data){
+            // var criteria = { "skills.disease" : { $regex: str, $options: 'i' },type:"Doctor",title:"SC",city:req.query.city};
+            var criteria = { $or: [{disease : { $regex: str, $options: 'i' },type:"Doctor"},
+            {skill : { $regex: str, $options: 'i' },type:"Doctor"}]};
+            model.skills.find(criteria,function(err,data){
               if(err) {
                 res.send({error:"status 500",full:[]});
               } else {
-                  if(data.length == 0){
+                if(data.length == 0){
                   var first4 = req.query.skill.substring(0,5);
                   str = new RegExp(first4.replace(/\s+/g,"\\s+"), "gi");  
-                  var criteria = (req.query.city) ? { "skills.procedure_description" : { $regex: str, $options: 'i'},type:"Doctor",city:req.query.city} : 
-                  { "skills.procedure_description" : { $regex: str, $options: 'i' },type:"Doctor"};
-                  model.user.find(criteria,{firstname:1,lastname:1,work_place:1,city:1,country:1,address:1,
-                    specialty:1,_id:0,profile_pic_url:1,education:1,user_id:1,title:1,name:1,skills:1,profile_url:1},
+                  var criteria = { procedure_description : { $regex: str, $options: 'i' },type:"Doctor"};
+                  model.skills.find(criteria,
                     function(err,data2){
                       if(err) throw err;
                       res.json(data2);
@@ -1195,10 +1268,50 @@ var basicRoute = function (model,sms,io,streams,Voice) { //remember streams arg 
     router.get("/user/skills-procedures",function(req,res){
       if(req.user){
 
-        model.skills.find({skill: req.query.item},function(err,data){
+        /*model.skills.find({skill: req.query.item},function(err,data){
           if(err) throw err;
           res.send(data)
-        });
+        });*/
+         if(req.query.item) {
+           var str = new RegExp(req.query.item.replace(/\s+/g,"\\s+"), "gi");  
+
+            if(req.query.city) {            
+              var criteria = { $or: [{ skill : { $regex: str, $options: 'i' },city:req.query.city,deleted:false},
+              {disease: { $regex: str, $options: 'i' },city:req.query.city,deleted:false}]};
+            } else {
+              var criteria = { $or: [{ skill : { $regex: str, $options: 'i' },deleted: false},
+              {disease: { $regex: str, $options: 'i' },deleted:false}]};
+            }
+            //var byDisease = {"skills.disease": { $regex: str, $options: 'i' },type:"Doctor",city:req.query.city};
+            model.skills.find(criteria,function(err,data){
+              if(err) {
+                res.send({error:"status 500",full:[]});
+              } else {
+                if(data.length == 0){
+                  var first4 = req.query.item.substring(0,5)
+                  str = new RegExp(first4.replace(/\s+/g,"\\s+"), "gi");  
+                  var criteria = (req.query.city) ? { skill : { $regex: str, $options: 'i' },deleted:false,city:req.query.city} : 
+                  { skill : { $regex: str, $options: 'i' },deleted:false}
+
+                  model.skills.find(criteria,
+                  function(err,data2){
+                    if(err) throw err;
+                    res.json(data2);
+                  })
+                } else {
+                  res.json(data);
+                }   
+              }
+            });
+          } else {
+            model.skills.find({deleted: false})
+            .limit(500)
+            .exec(function(err,data){
+              if(err) throw err;
+              res.send(data)
+            })
+            
+          }
        /* model.user.find({type:"Doctor"},{skills:1,_id:0},function(err,data){
           if(err) throw err; 
 
@@ -7329,48 +7442,48 @@ router.get("/general/homepage-search",function(req,res){
 
   } else if(req.query.category === "Skills & Procedures") {
 
-    var str = new RegExp(req.query.item.replace(/\s+/g,"\\s+"), "gi");  
+    if(req.query.item){
+      var str = new RegExp(req.query.item.replace(/\s+/g,"\\s+"), "gi");  
 
-    if(req.query.city) {            
-      var criteria = { $or: [{ "skills.skill" : { $regex: str, $options: 'i' },type:"Doctor",city:req.query.city},
-      {"skills.disease": { $regex: str, $options: 'i' },type:"Doctor",city:req.query.city}]};
-    } else {
-      var criteria = { $or: [{ "skills.skill" : { $regex: str, $options: 'i' },type:"Doctor"},
-      {"skills.disease": { $regex: str, $options: 'i' },type:"Doctor"}]};
-    }
-    //var byDisease = {"skills.disease": { $regex: str, $options: 'i' },type:"Doctor",city:req.query.city};
-    model.user.find(criteria,{firstname:1,lastname:1,work_place:1,city:1,country:1,address:1,
-    specialty:1,_id:0,profile_pic_url:1,education:1,user_id:1,title:1,name:1,profile_url:1},function(err,data){
-      if(err) {
-        res.send({error:"status 500",full:[]});
+      if(req.query.city) {            
+        var criteria = { $or: [{ skill : { $regex: str, $options: 'i' },city:req.query.city,deleted: false},
+        {disease: { $regex: str, $options: 'i' },city:req.query.city,deleted: false}]};
       } else {
-        if(data.length == 0){
-          var first4 = req.query.item.substring(0,5)
-          str = new RegExp(first4.replace(/\s+/g,"\\s+"), "gi");  
-          var criteria = (req.query.city) ? { "skills.skill" : { $regex: str, $options: 'i' },type:"Doctor",city:req.query.city} : 
-          { "skills.disease" : { $regex: str, $options: 'i' },type:"Doctor"}
-
-          model.user.find(criteria,{firstname:1,lastname:1,work_place:1,city:1,country:1,address:1,
-          specialty:1,_id:0,profile_pic_url:1,education:1,user_id:1,title:1,name:1,skills:1,profile_url:1},
-          function(err,data2){
-            if(err) throw err;
-            res.json({full: data2});
-          })
-        } else {
-          res.json({full: data});
-        }   
+        var criteria = { $or: [{ skill : { $regex: str, $options: 'i' },deleted: false},
+        {disease: { $regex: str, $options: 'i' },deleted: false}]};
       }
-    });
+      //var byDisease = {"skills.disease": { $regex: str, $options: 'i' },type:"Doctor",city:req.query.city};
+      model.skills.find(criteria,function(err,data){
+        if(err) {
+          res.send({error:"status 500",full:[]});
+        } else {
+          if(data.length == 0){
+            var first4 = req.query.item.substring(0,4)
+            str = new RegExp(first4.replace(/\s+/g,"\\s+"), "gi");  
+            var criteria = (req.query.city) ? { skill : { $regex: str, $options: 'i' },city:req.query.city,deleted: false} : 
+            { disease : { $regex: str, $options: 'i' },deleted: false}
+
+            model.skills.find(criteria,
+            function(err,data2){
+              if(err) throw err;
+              res.json({full: data2});
+            })
+          } else {
+            res.json({full: data});
+          }   
+        }
+      });
+    }
   } else if(req.query.category === "Disease") {
 
     var str = new RegExp(req.query.item.replace(/\s+/g,"\\s+"), "gi");  
 
     if(req.query.city) {            
-      var criteria = { $or: [{ "skills.skill" : { $regex: str, $options: 'i' },type:"Doctor",city:req.query.city},
-      {"skills.disease": { $regex: str, $options: 'i' },type:"Doctor",city:req.query.city}]};
+      var criteria = { $or: [{ disease_tag : { $regex: str, $options: 'i' },type:"Doctor",city:req.query.city},
+      {disease_tag: { $regex: str, $options: 'i' },type:"Doctor",city:req.query.city}]};
     } else {
-      var criteria = { $or: [{ "skills.skill" : { $regex: str, $options: 'i' },type:"Doctor"},
-      {"skills.disease": { $regex: str, $options: 'i' },type:"Doctor"}]};
+      var criteria = { $or: [{ disease_tag : { $regex: str, $options: 'i' },type:"Doctor"},
+      {disease_tag: { $regex: str, $options: 'i' },type:"Doctor"}]};
     }
     //var byDisease = {"skills.disease": { $regex: str, $options: 'i' },type:"Doctor",city:req.query.city};
     model.user.find(criteria,{firstname:1,lastname:1,work_place:1,city:1,country:1,address:1,
@@ -7381,8 +7494,8 @@ router.get("/general/homepage-search",function(req,res){
         if(data.length == 0){
           var first4 = req.query.item.substring(0,5)
           str = new RegExp(first4.replace(/\s+/g,"\\s+"), "gi");  
-          var criteria = (req.query.city) ? { "skills.disease" : { $regex: str, $options: 'i' },type:"Doctor",city:req.query.city} : 
-          { "skills.disease" : { $regex: str, $options: 'i' },type:"Doctor"}
+          var criteria = (req.query.city) ? { disease_tag : { $regex: str, $options: 'i' },type:"Doctor",city:req.query.city} : 
+          { disease_tag : { $regex: str, $options: 'i' },type:"Doctor"}
 
           model.user.find(criteria,{firstname:1,lastname:1,work_place:1,city:1,country:1,address:1,
           specialty:1,_id:0,profile_pic_url:1,education:1,user_id:1,title:1,name:1,skills:1,profile_url:1},
@@ -7398,7 +7511,7 @@ router.get("/general/homepage-search",function(req,res){
   } else if(req.query.category === "Special Center") {
     var str = new RegExp(req.query.item.replace(/\s+/g,"\\s+"), "gi");              
    // var criteria = { "skills.disease" : { $regex: str, $options: 'i' },type:"Doctor",title:"SC",city:req.query.city};
-    var criteria = { $or: [{"skills.disease" : { $regex: str, $options: 'i' },type:"Doctor",title:"SC",city:req.query.city},
+    var criteria = { $or: [{disease_tag : { $regex: str, $options: 'i' },type:"Doctor",title:"SC",city:req.query.city},
     {specialty : { $regex: str, $options: 'i' },type:"Doctor",title:"SC",city:req.query.city}]};
     model.user.find(criteria,{firstname:1,lastname:1,work_place:1,city:1,country:1,address:1,
     specialty:1,_id:0,profile_pic_url:1,education:1,user_id:1,title:1,name:1,profile_url:1},function(err,data){
@@ -7408,8 +7521,8 @@ router.get("/general/homepage-search",function(req,res){
           if(data.length == 0){
           var first4 = req.query.item.substring(0,4);
           str = new RegExp(first4.replace(/\s+/g,"\\s+"), "gi");  
-          var criteria = (req.query.city) ? { "skills.disease" : { $regex: str, $options: 'i' },type:"Doctor",title:"SC",city:req.query.city} : 
-          { "skills.disease" : { $regex: str, $options: 'i' },type:"Doctor",title:"SC"};
+          var criteria = (req.query.city) ? { disease_tag : { $regex: str, $options: 'i' },type:"Doctor",title:"SC",city:req.query.city} : 
+          { disease_tag : { $regex: str, $options: 'i' },type:"Doctor",title:"SC"};
           model.user.find(criteria,{firstname:1,lastname:1,work_place:1,city:1,country:1,address:1,
             specialty:1,_id:0,profile_pic_url:1,education:1,user_id:1,title:1,name:1,skills:1,profile_url:1},
             function(err,data2){

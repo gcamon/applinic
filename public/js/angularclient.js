@@ -1,7 +1,7 @@
 (function() {
 
 var app = angular.module('myApp',["ngRoute","ngAnimate","angularModalService","angularMoment",'ui.bootstrap',
-  'angular-clipboard',"ngResource","btford.socket-io","ngTouch",'ngPrint','paystack','ngSanitize']);
+  'angular-clipboard',"ngResource","btford.socket-io","ngTouch",'ngPrint','paystack','ngSanitize','summernote']);
 
 app.run(['$rootScope',function($rootScope){
 
@@ -2360,8 +2360,10 @@ app.controller('docProfileEditController',["$scope","$rootScope","$http","$locat
     if(arg){     
       if(Object.keys($scope.item).length >= 3 && $scope.item.procedure_skill !== undefined && $scope.item.procedure_description !== undefined) {
         uploadSkill();
+        console.log($scope.item.procedure_description)
       } else {
         alert("Please complete all fields!");
+        $scope.loading = false;
       }
     } else {
       $http({
@@ -2457,6 +2459,40 @@ app.controller('docProfileEditController',["$scope","$rootScope","$http","$locat
   initForm();
   updateRecord();
 
+}]);
+
+
+app.service("skillCommentsService",["$resource",function($resource){
+  return $resource("/user/skill/comments",null,{updateComment: {method: "PUT"}});
+}])
+
+app.controller("skillController",["$scope","$rootScope","skillCommentsService","$sce",
+function($scope,$rootScope,skillCommentsService,$sce){
+
+  var comments = skillCommentsService;
+
+  $scope.trustAsHtml = function(string) {
+    return $sce.trustAsHtml(string);
+  };
+
+  $scope.search = function() {
+
+  }
+
+  var user = $rootScope.checkLogIn;
+  $scope.post = function(id) {
+    if(user) {
+      if($scope.article)  {
+        $scope.loading = true;
+        comments.updateComment({id: id,message: $scope.article},function(data){
+          $scope.loading = false;
+          alert(data.message)
+        })
+      }
+    } else {
+      $scope.info = " Oops! You cannot comment on this post. Please <a href='/login' target='_blank'>log in</a> or <a href='/signup' target='_blank'>create account</a>"
+    }
+  }
 }]);
 
 
@@ -2887,7 +2923,7 @@ app.controller('resultController',["$scope","$rootScope","$http","$location","$r
           sendObj.skill = $scope.user.skill; 
           $rootScope.searchItem = $scope.user.skill;
           sendObj.type = $scope.user.creteria;        
-          data.query(sendObj,function(data){
+          skillProcedureService.query(sendObj,function(data){
           if(data.length > 0) {
             localManager.setValue("userInfo",data);
             $location.path("/skills-result");
@@ -17379,6 +17415,7 @@ app.controller("hompageController",["$scope","scanTests","cities","labTests","Dr
   var dyna = [];
   var filter = {};
   var spArr = [];
+  var skArr = [];
 
   $http({
     method  : 'GET',
@@ -17396,7 +17433,23 @@ app.controller("hompageController",["$scope","scanTests","cities","labTests","Dr
         }
       }
     }
-  });                                    
+  });  
+
+  $http({
+    method  : 'GET',
+    url     : "/user/get-skills",
+    headers : {'Content-Type': 'application/json'} 
+    })
+  .success(function(data) {            
+    for(var i = 0; i < data.length; i++){
+      if(!filter[data[i].skill]) {
+        filter[data[i].skill] = 1;
+        skArr.push({name:data[i].skill})
+      } else {
+        filter[data[i].skill]++;
+      }
+    }
+  });                                                                
 
   
   $scope.itemName = "Drug / Test / Specialty / Disease"
@@ -17433,7 +17486,7 @@ app.controller("hompageController",["$scope","scanTests","cities","labTests","Dr
           $scope.itemName = "Enter keyword ( e.g Kidney failure. )"
         break;
         case 'Skills & Procedures':
-          $scope.itemList = [];
+          $scope.itemList = skArr;
           $scope.itemName = "Enter a skill or disease";
         break;
         case 'Disease':

@@ -11,19 +11,20 @@
 	</div>
 	<div style="padding: 30px;position: relative;max-height: 800px;overflow-y: auto;" class="row" ng-repeat="skill in searchResult | filter: filter.skill">
 		<div class="col-sm-4 col-lg-2 col-md-2">
-			<img src="{{skill.profile_pic_url}}" style="max-width: 120px;height: auto">
+			<img src="{{skill.profile_pic_url}}" style="max-width: 110px;height: auto">
 		</div>
-		<div class="col-sm-8 col-lg-10 col-md-10 pl-2"> 
-		<strong>{{skill.title}} {{skill.firstname}} {{skill.lastname}} </strong>
+		<div class="col-sm-8 col-lg-10 col-md-10 pl-2" style="line-height: 14px"> 
+		<strong>{{skill.title}} {{skill.firstname}} {{skill.lastname}} {{skill.name}}</strong>
 		<span style="display:block;padding: 5px 0">{{skill.specialty}}</span>
 		<span style="display:block;padding: 5px 0;color:rgba(0,0,0,0.4)"><i class="fa fa-globe" aria-hidden="true"></i> &nbsp;Works at {{skill.work_place}}, {{skill.city}}, {{skill.country}}</span>
 		<a href="{{skill.profile_url}}" style="font-size: 14px;padding: 5px 0;text-decoration: none;"><i class="fa fa-user" aria-hidden="true"></i> View profile</a>
 		<!--<a href="" ng-click="referToMe(skill)" style="font-size: 14px;padding: 5px 10px; text-decoration: none;"><i class="fa fa-hand-o-right" aria-hidden="true"></i> Book me!</a>-->
 		<p style="padding:10px 0 0 0;font-style: italic" class="ellipsis">
-		<strong style="padding: 10px 0;font-weight: bold"> Disease tag: </strong> {{skill.skills[0].disease}} <span style="display: block;width: 95%" class="ellipsis"><strong style="padding: 10px 0;font-weight: bold"> Procedure: </strong> {{skill.skills[0].skill}}</span><!--<span style="display: block">{{skill.skill.procedure_description}}</span>-->
+		<strong style="padding: 10px 0;font-weight: bold"> Disease tags: </strong> {{skill.disease}} <span style="display: block;width: 95%" class="ellipsis"><strong style="padding: 10px 0;font-weight: bold"> Procedure: </strong> {{skill.skill}}</span><!--<span style="display: block">{{skill.skill.procedure_description}}</span>-->
 		</p>	
 		</div>
-		<button class="btn btn-danger btn-sm" style="position: absolute; right: 25px;bottom: 80px" ng-click="viewProcedure(skill)">view</button>	
+		<!--<button class="btn btn-danger btn-sm" style="position: absolute; right: 25px;bottom: 80px" ng-click="viewProcedure(skill)">view</button>-->	
+		<a href="{{skill.path}}" target="_blank" class="btn btn-danger btn-sm" style="position: absolute; right: 25px;bottom: 80px">view <i class="fa fa-external-link" style="color: #ccc;font-size: 12px"></i></a>
 		<div class="clearfix"></div>
 		<hr>
 	</div>

@@ -166,10 +166,12 @@
 
           <div class="col-md-12 form-group">
             <label for="from">Briefly Describe Your Approach</label>
-            <textarea class="form-control" placeholder="Briefly Describe Your Approach" ng-model="item.procedure_description" style="height: 330px" required></textarea>
+            <summernote placeholder="Briefly Describe Your Approach" focus ng-model="item.procedure_description">
+              
+            </summernote>
           </div>
 
-          <div class="col-md-12 col-sm-12 col-lg-12 form-group" style="border-bottom:1px dashed gre;padding-bottom:20px">
+          <div class="col-md-12 col-sm-12 col-lg-12 form-group" style="padding-bottom:20px">
             <label>Attach files (If any) </label>
             <input type="file"  id="file" file-model = "files" multiple="multiple" class="form-control"/>
            <!--<i class="fa fa-warning">&nbsp; <small style="font-size: 14px;">
