@@ -103,6 +103,11 @@ app.config(['$paystackProvider','$routeProvider',
     controller: 'welcomeController'
   })
 
+  .when("/my-skills",{
+    templateUrl: '/assets/pages/utilities/my-skills.html',
+    controller: 'skillController'
+  })
+
   .when("/patient-request/:num",{
     templateUrl: '/assets/pages/request-body.html',
     controller: 'requestController'
@@ -2461,15 +2466,43 @@ app.controller('docProfileEditController',["$scope","$rootScope","$http","$locat
 
 }]);
 
+app.service("skillService",["$resource",function($resource){
+  return $resource("/user/get-skills",null,{updateSkill: {method: "PUT"}});
+}])
 
 app.service("skillCommentsService",["$resource",function($resource){
   return $resource("/user/skill/comments",null,{updateComment: {method: "PUT"}});
 }])
 
-app.controller("skillController",["$scope","$rootScope","skillCommentsService","$sce",
-function($scope,$rootScope,skillCommentsService,$sce){
+app.controller("skillController",["$scope","$rootScope","skillCommentsService","$sce","skillService","$http",
+function($scope,$rootScope,skillCommentsService,$sce,skillService,$http){
 
   var comments = skillCommentsService;
+  var skill = skillService
+
+  skill.query({id: $rootScope.checkLogIn.user_id},function(data){
+    $scope.mySkills = data;
+  })
+
+  $scope.deleteSkill = function(item) {
+    var sure = confirm("You want to delete " + item.skill + " ?")
+    if(sure)
+      $http({
+        method  : 'DELETE',
+        url     : '/user/doctor/delete-record',
+        data    : {field:'skills',item_id: item._id}, //forms user object
+        headers : {'Content-Type': 'application/json'} 
+      })
+      .success(function(data) {              
+          if (data) {
+             var elemPos = $scope.mySkills.map(function(x){return x._id}).indexOf(item._id)   
+             if($scope.mySkills[elemPos]){
+               $scope.mySkills.splice(elemPos,1)
+             }                       
+          } 
+      });     
+
+  }
 
   $scope.trustAsHtml = function(string) {
     return $sce.trustAsHtml(string);
@@ -17404,8 +17437,8 @@ app.service("homepageSearchService",["$resource",function($resource){
 }]);
 
 app.controller("hompageController",["$scope","scanTests","cities","labTests","Drugs","$http",
-  "ModalService","$rootScope","homePageDynamicService",
-  function($scope,scanTests,cities,labTests,Drugs,$http,ModalService,$rootScope,homePageDynamicService){
+  "ModalService","$rootScope","homePageDynamicService","skillService",
+  function($scope,scanTests,cities,labTests,Drugs,$http,ModalService,$rootScope,homePageDynamicService,skillService){
 
 
   $scope.cities = cities;
@@ -17433,9 +17466,21 @@ app.controller("hompageController",["$scope","scanTests","cities","labTests","Dr
         }
       }
     }
-  });  
+  }); 
 
-  $http({
+
+  skillService.query(function(data){
+    for(var i = 0; i < data.length; i++){
+      if(!filter[data[i].skill]) {
+        filter[data[i].skill] = 1;
+        skArr.push({name:data[i].skill})
+      } else {
+        filter[data[i].skill]++;
+      }
+    }
+  });          
+
+ /* $http({
     method  : 'GET',
     url     : "/user/get-skills",
     headers : {'Content-Type': 'application/json'} 
@@ -17449,7 +17494,7 @@ app.controller("hompageController",["$scope","scanTests","cities","labTests","Dr
         filter[data[i].skill]++;
       }
     }
-  });                                                                
+  });*/                                                            
 
   
   $scope.itemName = "Drug / Test / Specialty / Disease"

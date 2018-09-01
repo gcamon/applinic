@@ -404,9 +404,15 @@ var basicRoute = function (model,sms,io,streams,Voice) { //remember streams arg 
 
 
   router.get("/user/get-skills",function(req,res){
-    model.skills.find({deleted: false},function(err,data){
-      res.json(data)
-    }).limit(500);
+    if(!req.query.id)
+      model.skills.find({deleted: false},function(err,data){
+        res.json(data)
+      }).limit(500);
+    else 
+      model.skills.find({deleted: false,user_id:req.query.id},function(err,data){
+        if(err) throw err;
+        res.json(data)
+      })
   })
 
   router.put("/user/skill/comments",function(req,res){

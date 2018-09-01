@@ -101,7 +101,7 @@ http.listen(port,function(){
   }
 );*/
 
-model.help.find({}).exec(function(err,data){
+/*model.help.find({}).exec(function(err,data){
   if(data.length > 0) {
     for(var i = 0; i < data.length; i++){
       data[i].remove(function(err,info){})
@@ -109,7 +109,7 @@ model.help.find({}).exec(function(err,data){
   } else {
     console.log("empty");
   }
-})
+})*/
 
 
 config.configuration(app,model);
