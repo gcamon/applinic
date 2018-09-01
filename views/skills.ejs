@@ -152,7 +152,7 @@
                                            <span style="position: absolute;right: 30px;top: 0"><%= skill.comments.length %>  <i class="fa fa-comment text-muted"></i> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <!--<%= skill.views %> <i class="fa fa-eye text-muted"></i></span>--></span>
 
                                          </h3>
-                                         <div style="text-align: center;max-height: 550px;overflow-y: hidden;">
+                                         <div style="text-align: center;">
                                             <img src="<%= skill.files[0].path %>" style="width: 100%;height: auto;" ng-if="'<%= skill.files[0].path %>'">
                                          </div> 
                                          <div style="font-size: 18px;padding: 20px 0;line-height: 28px" ng-bind-html="trustAsHtml('<%= skill.procedure_description %>')"></div>
