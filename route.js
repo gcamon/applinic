@@ -392,7 +392,7 @@ var basicRoute = function (model,sms,io,streams,Voice) { //remember streams arg 
     model.skills.findOne({skill_id: req.params.id,deleted: false},function(err,data){
       if(err) throw err;
       if(data){        
-        model.skills.find({specialty:data.specialty},function(err,result){
+        model.skills.find({specialty:data.specialty,deleted: false},function(err,result){
           if(err) throw err;
           res.render("skills",{skill:data,related: result});
         }).limit(20)
@@ -1386,14 +1386,16 @@ var basicRoute = function (model,sms,io,streams,Voice) { //remember streams arg 
           verified:1,
           rating:1,
           sub_specialty:1,
-          skills:1,
           introductory:1,
           awards:1,
           education:1,
           office_hour:1,
         },function(err,data){
           if(err) throw err;
-          res.send(data);
+          model.skills.find({user_id: data.user_id,deleted:false},function(err,result){
+            data.skills = result;
+            res.send(data);
+          });          
         });
       } else {
         res.send("Unauthorized access!")

@@ -34,8 +34,9 @@
 
     <body ng-app="myApp">
         <nav class="header" style="height:70px; margin-top:-.5em; z-index:1000;"  ng-controller="topHeaderController">
+
                <div class="brand" style="margin-left:3em;" style="cursor:pointer">
-                     <a ng-href="{{back}}" class="nav-link"> Back To Dashboard </a>
+                     <a ng-href="{{back}}" class="nav-link"><i class="fa fa-arrow-left"> back</i></a> &nbsp;&nbsp;&nbsp; <a href="/" style="text-decoration: none;">Applinic</a>
                  </div>
         <div class="header-block header-block-collapse hidden-lg-up"> <button class="collapse-btn" id="sidebar-collapse-btn">
     <i class="fa fa-bars"></i></button>
@@ -168,11 +169,11 @@
 
 
 <div class="card card-block">
-    <div class="title" style="border-bottom:1px solid #f2f2f2;">Skills & Procedures</div>
+    <div class="title" style="border-bottom:1px solid #f2f2f2;">Skills &amp; Procedures</div>
 
       <ul class="skill-sects">
-       <li ng-repeat="skill in docInfo.skills" ng-cloak ng-click="viewSkill(skill)">
-        <div class="grayish">{{skill.skill}} <small style="float:right"> {{skill.files.length}} file(s)  attached</small></div>
+       <li ng-repeat="skill in docInfo.skills" ng-cloak>
+        <a href="{{skill.path}}" class="grayis">{{skill.skill}} <small style="float:right"> {{skill.files.length}} file(s)  attached</small></a>
        </li>
      </ul>
             </div>                                 

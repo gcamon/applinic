@@ -2538,6 +2538,14 @@ app.controller("docProfileViewController",["$scope","$rootScope","$resource","$l
   "ModalService","templateService","profileDataService",
   function($scope,$rootScope,$resource,$location,localManager,ModalService,templateService,profileDataService) {
 
+   /**
+  var skill = skillService
+
+  skill.query({id: $rootScope.checkLogIn.user_id},function(data){
+    $scope.mySkills = data;
+  })
+  **/
+
    var path = window.location.pathname;
    var toArr = path.split("/");
    var userId = toArr[toArr.length-1];

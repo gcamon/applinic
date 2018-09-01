@@ -13,8 +13,7 @@
 				<td style="width: 10%">{{j.date | date : "mediumDate"}}</td>
 				<td>{{j.skill}}</td>
 				<td>{{j.disease}}</td>
-				<td><!--<i class="fa fa-copy" style="padding: 0 3px;cursor: pointer;" title="copy {{j.skill}} link"></i>-->   <a href="{{j.path}}" target="_blank" class="fa fa-eye" style="font-size: 18px" title="view {{j.skill}} "></a>
-				<i class="fa fa-trash" style="padding: 0 3px;cursor: pointer;font-size: 18px;color: grey" title="delete {{j.skill}} skill" ng-click="deleteSkill(j)"></i></td>
+				<td><!--<i class="fa fa-copy" style="padding: 0 3px;cursor: pointer;" title="copy {{j.skill}} link"></i>--> <i class="fa fa-trash" style="padding: 0 3px;cursor: pointer;font-size: 18px;color: grey" title="delete {{j.skill}} skill" ng-click="deleteSkill(j)"></i>  <a href="{{j.path}}" target="_blank" class="fa fa-eye" style="font-size: 18px" title="view {{j.skill}} "></a></td>
 			</tbody>
 		</table>
 	</div>
