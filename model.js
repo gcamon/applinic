@@ -1,7 +1,7 @@
 'use strict';
 var mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
-var dbURL = "mongodb://127.0.0.1:27017/medicalmull" //"mongodb://127.0.0.1:27017/medicalmull"; 45.55.204.222
+var dbURL = "mongodb://127.0.0.1:27017/medicalmull"; //"mongodb://127.0.0.1:27017/medicalmull"; 45.55.204.222
 var options = {
 	autoReconnect: true,
 	useMongoClient: true,
