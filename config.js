@@ -66,7 +66,7 @@ var configuration = function (app,model) {
 	    cb(null, './uploads')
 	  },
 	  filename: function (req, file, cb) {
-	    cb(null, "nopic" + pathExp.extname(file.originalname)) //Appending .jpg
+	    cb(null, Date.now() + genHash(5) + pathExp.extname(file.originalname)) //Appending .jpg
 	  }
 	})
 
