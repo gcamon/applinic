@@ -249,7 +249,7 @@ var basicRoute = function (model,sms,io,streams,Voice) { //remember streams arg 
   router.get("/download/profile_pic/:pic_id", function(req,res){        
     if(req.params.pic_id === "nopic") {    
                     
-      var nopic = __dirname + "/uploads/2d5383cfc31897aafbe6b4cdfbd30bf1"
+      var nopic = __dirname + "/uploads/nopic.jpg"
       res.download(nopic);
     
     } else {
@@ -361,7 +361,8 @@ var basicRoute = function (model,sms,io,streams,Voice) { //remember streams arg 
   //handles all change picture 
   router.put("/user/update/profile-pic",function(req,res){   
     if(req.user){
-      if(req.files.length > 0 && req.files[0].mimetype === "image/jpg" || req.files[0].mimetype === "image/jpeg" && req.files[0].size < 2097152) {
+      console.log(req.files)
+      if(req.files.length > 0 && req.files[0].mimetype === "image/jpg" || req.files[0].mimetype === "image/jpeg" || req.files[0].mimetype === "image/png") {
           model.user.update({user_id: req.user.user_id},{$set : {
           "profile_pic.filename": req.files[0].filename,
           "profile_pic.path":  req.files[0].path,
