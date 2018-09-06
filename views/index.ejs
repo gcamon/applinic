@@ -31,6 +31,8 @@
 
         .card-block {
            text-align: center;
+           padding:0px;
+           min-height:340px;
         }       
 
         .card-title {
@@ -133,7 +135,31 @@
         }
 
 
+
+.carddr{
+    height:10px;
+}
+
+ @media screen and (max-width: 829px) {
+
+            .home-pallete-content {
+    font-size: 0.85em;
+    min-height: 234px;
+}
+
+.carddr{
+    height:10px;
+}
+}
+
         @media screen and (max-width: 699px) {
+
+            .home-pallete-content {
+    font-size: 0.85em;
+    min-height: 390px;
+}
+
+
             .topUp{
                 top:340px;
             }
@@ -169,9 +195,9 @@
                 padding-top: 95px!important
             }
 
-            .mob-gap {
+           /* .mob-gap {
                 margin-top: 70px
-            }
+            }*/
 
             .home-pallete-content {
                 height: 180px;
@@ -503,22 +529,19 @@ padding:10px 10px;
 <div class="separator separator-primary"></div>
 
 <div class="col-md-12">
-<p class="col-md-10 col-sm-12 offset-md-1 offset-sm-0 text-center pb-3 home-pallete-content">
+<div class="col-md-10 col-sm-12 offset-md-1 offset-sm-0 text-center pt-2 pb-3 home-pallete-content">
         We're here to help you find and receive the best medical care.
         Applinic facilitates patient-doctor communications, promotes easy access to and
         interaction with diagnostic centers and pharmacies and keeps a secure free
         online record of each patient’s medical management history.
-        In just a few clicks, you can receive answers to your all medical needs.</p>
+        In just a few clicks, you can receive answers to your all medical needs.</div>
 </div>
 
 <div class="col-md-12 col-lg-12 col-sm-12">
     <div class="row all">
-     <div class="">
-        <div class="card-block  text-center mob-gap">
-        <div class="bg-white">
-            <!--<h3 style="padding:3px;">MEET A DOCTOR</h3>--> &nbsp;
-        </div>
-        </div>
+     
+        <div class="carddr" >
+    
         </div>
     </div>
 
@@ -536,12 +559,12 @@ padding:10px 10px;
 
 <div class="col-md-4 col-sm-6 pb-3 pr-3 pl-3 col-xs-12">
     <div class="card">
-        <div class="card-bl  text-center">
+        <div class="card-block  text-center">
 
             <div class="p-2 " style="background-color: #f2f2f2">
                 <img src="/assets/images/finddoctor.png" height="100">
             </div>
-            <div class="h6 pt-2">FIND SPECIALISTS</div>
+            <div class="h6 pt-4">FIND SPECIALISTS</div>
             <div class="text-muted p-2 home-pallete-content">Find specialists in all medical fields in your city and beyond 
 and consult them by chat, audio, video and office meetings. 
 
@@ -556,12 +579,12 @@ and consult them by chat, audio, video and office meetings.
 
 <div class="col-md-4 col-sm-6 pb-3 pr-3 pl-3 col-xs-12">
     <div class="card">
-        <div class="card-bloc text-center" style="position:relative">
+        <div class="card-block text-center" style="position:relative">
            
             <div class="p-2" style="background-color: #f2f2f2">
                 <img src="/assets/images/video-chat.png" height="100">
             </div>
-            <div class="h6 pt-2">LIVE CHAT/VIDEO CALL</div>
+            <div class="h6 pt-4">LIVE CHAT/VIDEO CALL</div>
             <!--<div class="h6 pt-1">Find Your doctor</div>-->
             <div class="text-muted p-2 home-pallete-content">Available chat and video calls and conferences among patients,doctors,diagnostic centers and pharmacies including real time notication of requests.
               </div>
@@ -572,11 +595,11 @@ and consult them by chat, audio, video and office meetings.
 
 <div class="col-md-4 col-sm-6 pb-3 pr-3 pl-3 col-xs-12">
     <div class="card">
-        <div class="card-bloc  text-center">
+        <div class="card-block  text-center">
             <div class="p-2" style="background-color: #f2f2f2">
                 <img src="/assets/images/metting.png" height="100">
             </div>
-            <div class="h6 pt-2">IN-PERSON MEETING</div>
+            <div class="h6 pt-4">IN-PERSON MEETING</div>
             <!--<div class="h6 pt-1">Find Your doctor</div>-->
             <div class="text-muted p-2 home-pallete-content">Built in appointment schedular for clinical consultations including real time notification of appointment requests and approvals</div>
         </div>
@@ -586,13 +609,13 @@ and consult them by chat, audio, video and office meetings.
 
 <div class="col-md-4 col-sm-6 pb-3 pr-3 pl-3 col-xs-12">
     <div class="card">
-        <div class="card-bloc text-center">
+        <div class="card-block text-center">
 
             <div class="p-2" style="background-color: #f2f2f2">
                 <img src="/assets/images/appointment.png" height="100">
             </div>
             <!--<div class="h6 text-center">appointment booking</div>-->
-            <div class="h6 pt-2">AVAILABLE  MEDICAL PROCEDURES</div>
+            <div class="h6 pt-4">AVAILABLE  MEDICAL PROCEDURES</div>
             <div class="text-muted p-2 home-pallete-content">View the centers and doctors offering the latest 
             non-invasive medical procedures and 
             interventional skills in your country.
@@ -606,11 +629,11 @@ and consult them by chat, audio, video and office meetings.
 
 <div class="col-md-4 col-sm-6 pb-3 pr-3 pl-3 col-xs-12">
     <div class="card"> 
-        <div class="card-bloc text-center">
+        <div class="card-block text-center">
        
         <div class="display-2 text-primary p-2" style="background-color: #f2f2f2"><img src="/assets/images/records.png" height="100"></div>
         <!--<div class="h6">Patients' medical records</div>-->
-        <div class="h6 pt-2">FIND DIAGNOSTIC CENTERS</div>
+        <div class="h6 pt-4">FIND DIAGNOSTIC CENTERS</div>
         <div class="text-muted p-2 home-pallete-content">Search for laboratory and radiology centers 
     Providing authentic diagnostic services in your city and beyond.
     </div>
@@ -620,11 +643,11 @@ and consult them by chat, audio, video and office meetings.
 
 <div class="col-md-4 col-sm-6 pb-3 pr-3 pl-3 col-xs-12">
     <div class="card"> 
-        <div class="card-bloc text-center">       
+        <div class="card-block text-center">       
         <div class="display-2 text-primary p-1" style="background-color: #f2f2f2">
         <img src="/assets/images/payment.png" height="100"></div>
         <!--<div class="h6 text-center">Medipay E-wallet</div>-->
-        <div class="h6 pt-2">ELECTRONIC MEDICAL RECORDS</div>
+        <div class="h6 pt-4">ELECTRONIC MEDICAL RECORDS</div>
             <div class="text-muted p-2 home-pallete-content">View your medical records or send 
             them to your doctor for professional advice.</div>
         </div>
@@ -633,13 +656,13 @@ and consult them by chat, audio, video and office meetings.
 
 <div class="col-md-4 col-sm-6 pb-3 pr-3 pl-3 col-xs-12">
     <div class="card">
-        <div class="card-bloc text-center">
+        <div class="card-block text-center">
 
             <div class="p-2" style="background-color: #f2f2f2">
                 <img src="/assets/images/prescription.png" height="100">
             </div>
             <!--<div class="h6">Electronic PRESCRIPTIONS</div>-->
-            <div class="h6 pt-2">QUICK PRESCRIPTION</div>
+            <div class="h6 pt-4">QUICK PRESCRIPTION</div>
             <div class="text-muted p-2 home-pallete-content">
                 Need a quick doctor’s prescription or 
                 online drug purchase. 
@@ -653,11 +676,11 @@ and consult them by chat, audio, video and office meetings.
 
 <div class="col-md-4 col-sm-6 pb-3 pr-3 pl-3 col-xs-12">
     <div class="card"> 
-        <div class="card-bloc text-center">
+        <div class="card-block text-center">
         
               <div class="p-2" style="background-color: #f2f2f2" > <img src="/assets/images/lab.png" height="100"></div>
                 <!--<div class="h6">Electronic lab results</div>-->
-            <div class="h6 pt-2">ACCESS LABORATORY RESULTS</div>
+            <div class="h6 pt-4">ACCESS LABORATORY RESULTS</div>
             <div class="text-muted p-2 home-pallete-content">Do not go back to the laboratory to collect your results.
 Access it right here or give access to your doctor. 
 </div>
@@ -667,11 +690,11 @@ Access it right here or give access to your doctor.
 
 <div class="col-md-4 col-sm-6 pb-3 pr-3 pl-3 col-xs-12">
     <div class="card"> 
-        <div class="card-bloc text-center">
+        <div class="card-block text-center">
         
               <div class="p-2" style="background-color: #f2f2f2" >  <img src="/assets/images/svcan.png" height="100"></div>
                 <!--<div class="h6">Electronic lab results</div>-->
-            <div class="h6 pt-2">ACCESS RADIOLOGY RESULTS</div>
+            <div class="h6 pt-4">ACCESS RADIOLOGY RESULTS</div>
             <div class="text-muted p-2 home-pallete-content">Do not go back to the radiology center to collect your results.
     Access it right here or give access to your doctor. 
     </div>
@@ -685,10 +708,10 @@ Access it right here or give access to your doctor.
 
 <div class="col-md-4 col-sm-6 pb-3 pr-3 pl-3 col-xs-12">
     <div class="card"> 
-        <div class="card-bloc text-center">       
+        <div class="card-block text-center">       
         <div class="display-2 text-primary p-1" style="background-color: #f2f2f2"><img src="/assets/images/payment.png" height="100"></div>
         <!--<div class="h6 text-center">Medipay E-wallet</div>-->
-        <div class="h6 pt-2">E-WALLET SERVICES (MEDIPAY)</div>
+        <div class="h6 pt-4">E-WALLET SERVICES (MEDIPAY)</div>
             <div class="text-muted p-2 home-pallete-content">You can fund your medipay wallet anytime to purchase drugs or pay for laboratory or radiology services online </div>
         </div>
     </div>
@@ -697,10 +720,10 @@ Access it right here or give access to your doctor.
 
 <div class="col-md-4 col-sm-6 pb-3 pr-3 pl-3 col-xs-12">
     <div class="card"> 
-        <div class="card-bloc text-center">       
+        <div class="card-block text-center">       
         <div class="display-2 text-primary p-1" style="background-color: #f2f2f2"><img src="/assets/images/prescription.png" height="100"></div>
         <!--<div class="h6 text-center">Medipay E-wallet</div>-->
-        <div class="h6 pt-2">DRUG DELIVERY SERVICE</div>
+        <div class="h6 pt-4">DRUG DELIVERY SERVICE</div>
             <div class="text-muted p-2 home-pallete-content">Send your prescription to an online pharmacy and 
             have your drugs delivered to your home, office  or hotel
             </div>
@@ -711,10 +734,10 @@ Access it right here or give access to your doctor.
 
 <div class="col-md-4 col-sm-6 pb-3 pr-3 pl-3 col-xs-12">
     <div class="card"> 
-        <div class="card-bloc text-center">       
+        <div class="card-block text-center">       
         <div class="display-2 text-primary p-1" style="background-color: #f2f2f2"><img src="/assets/images/records.png" height="100"></div>
         <!--<div class="h6 text-center">Medipay E-wallet</div>-->
-        <div class="h6 pt-2">TRACK MEDICAL HISTORY</div>
+        <div class="h6 pt-4">TRACK MEDICAL HISTORY</div>
             <div class="text-muted p-2 home-pallete-content">All records of your  medical activities from doctors' consultations to treatments, results of radiology/laboratory tests and prescriptions are kept for your future needs.</div>
         </div>
     </div>
@@ -723,11 +746,11 @@ Access it right here or give access to your doctor.
 
 <div class="col-md-4 col-sm-6  pb-3 pr-3 pl-3 col-xs-12">
     <div class="card"> 
-        <div class="card-bloc text-center">
+        <div class="card-block text-center">
    
           <div class="p-2" style="background-color: #f2f2f2"> <img src="/assets/images/svcan.png" height="100"></div>
             <!--<div class="h6">Electronic radiology results</div>-->
-            <div class="h6 pt-2">RADIOLOGY STUDIES UTILITY</div>
+            <div class="h6 pt-4">RADIOLOGY STUDIES UTILITY</div>
             <div class="text-muted p-2 home-pallete-content">
 Available online PACS and DICOM viewer with 3D and other tools for advanced reporting 
 by radiologists and viewing by referring physicians. Perfect for radioogy studies and reporting.
@@ -738,11 +761,11 @@ by radiologists and viewing by referring physicians. Perfect for radioogy studie
 
 <div class="col-md-4 col-sm-6  pb-3 pr-3 pl-3 col-xs-12">
     <div class="card"> 
-        <div class="card-bloc text-center">
+        <div class="card-block text-center">
    
           <div class="p-2" style="background-color: #f2f2f2"> <img src="/assets/images/img/037-binoculars.png" height="100"></div>
             <!--<div class="h6">Electronic radiology results</div>-->
-            <div class="h6 pt-2">ADVANCED UTILITY SEARCH</div>
+            <div class="h6 pt-4">ADVANCED UTILITY SEARCH</div>
             <div class="text-muted p-2 home-pallete-content">
               You can search for diagnostic investigations and drugs singly or in multiples and get instant results (listed in order of availability)
               of centers and locations matching your search criteria.
@@ -753,11 +776,11 @@ by radiologists and viewing by referring physicians. Perfect for radioogy studie
 
 <div class="col-md-4 col-sm-6  pb-3 pr-3 pl-3 col-xs-12">
     <div class="card"> 
-        <div class="card-bloc text-center">
+        <div class="card-block text-center">
    
           <div class="p-2" style="background-color: #f2f2f2"> <img src="/assets/images/img/021-waiting-room-1.png" height="100"></div>
             <!--<div class="h6">Electronic radiology results</div>-->
-            <div class="h6 pt-2">PATIENTS WAITING ROOM (PWR)</div>
+            <div class="h6 pt-4">PATIENTS WAITING ROOM (PWR)</div>
             <div class="text-muted p-2 home-pallete-content">
              When unsure of the right specialist,complete and submit the "Need a Doctor" form and the right physician will contact you.
             </div>
@@ -835,7 +858,7 @@ by radiologists and viewing by referring physicians. Perfect for radioogy studie
                 </div>
             </div>
         </div>
-        <div class="col-md-4 col-lg-4 col-sm-11 card pt-1">
+        <div class="col-md-4 col-lg-4 col-sm-12 card pt-1">
                 <div class="container pt-3"   style="min-height:350px;"> 
          <div class="col-md-12 pt-2 col-sm-12">        
 <h3 class="title text-uppercase ml-0 mb-0 p-0">ARE YOU A DOCTOR?</h3>

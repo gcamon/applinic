@@ -2474,15 +2474,74 @@ app.service("skillCommentsService",["$resource",function($resource){
   return $resource("/user/skill/comments",null,{updateComment: {method: "PUT"}});
 }])
 
-app.controller("skillController",["$scope","$rootScope","skillCommentsService","$sce","skillService","$http",
-function($scope,$rootScope,skillCommentsService,$sce,skillService,$http){
+app.controller("skillController",["$scope","$rootScope","skillCommentsService","$sce","skillService","$http","localManager","mySocket",
+function($scope,$rootScope,skillCommentsService,$sce,skillService,$http,localManager,mySocket){
 
   var comments = skillCommentsService;
-  var skill = skillService
+  var skill = skillService;
 
-  skill.query({id: $rootScope.checkLogIn.user_id},function(data){
-    $scope.mySkills = data;
-  })
+  var user = $rootScope.checkLogIn || localManager.getValue("resolveUser");
+  $rootScope.checkLogIn = user;
+
+  $scope.logout = function(){
+    if(user) {
+      mySocket.emit("set presence",{status:"offline",userId:user.user_id},function(response){
+        if(response.status === false){
+          if(user.typeOfUser === "Doctor"){
+            mySocket.emit("doctor disconnect",{userId:user.user_id});
+          } else if(user.typeOfUser === "Patient") {
+            mySocket.emit("patient disconnect",user);
+          }
+        }
+      });
+
+      window.location.href = "/user/logout";
+      destroyStorage();
+    }
+  }
+
+  function destroyStorage() {
+    localManager.removeItem("resolveUser")
+    localManager.removeItem("userInfo");
+    localManager.removeItem("heldSessionData");
+    localManager.removeItem("currentPage");
+    localManager.removeItem("currentPageForPatients");
+    localManager.removeItem("receiver");
+    localManager.removeItem('caller');
+    localManager.removeItem("doctorInfoforCommunication")
+    localManager.removeItem("patientInfoforCommunication");
+    localManager.removeItem("resolveUser");
+    //localManager.removeItem("patientPrescriptions");
+    localManager.removeItem("holdPrescriptionId");
+    localManager.removeItem("patientTests");
+    localManager.removeItem("holdLabData");
+    localManager.removeItem("holdScanData");
+    localManager.removeItem("holdPrescriptions");
+    localManager.removeItem("hasChat");
+    localManager.removeItem("videoCallerList");
+    localManager.removeItem("audioCallerList");
+    localManager.removeItem("currPageForPharmacy");
+    localManager.removeItem("pharmacyData");
+    localManager.removeItem("holdPrescriptionForAttendance");
+    localManager.removeItem("holdTestForAttendance");
+    localManager.removeItem("laboratoryData");
+    localManager.removeItem("radiologyData");
+    localManager.removeItem('currPageForLaboratory');
+    localManager.removeItem('currPageForRadiology');
+    localManager.removeItem('prescriptionRequestData'); 
+    localManager.removeItem("userId");
+    localManager.removeItem('saveSocket');
+    localManager.removeItem('activeAccountId');
+    localManager.removeItem('mainAccount');
+    localManager.removeItem('holdMessages');
+    localManager.removeItem('holdId');
+  }
+
+  if(user) {
+    skill.query({id: user.user_id},function(data){
+      $scope.mySkills = data;
+    })
+  }
 
   $scope.deleteSkill = function(item) {
     var sure = confirm("You want to delete " + item.skill + " ?")
@@ -2512,7 +2571,7 @@ function($scope,$rootScope,skillCommentsService,$sce,skillService,$http){
 
   }
 
-  var user = $rootScope.checkLogIn;
+  
   $scope.post = function(id) {
     if(user) {
       if($scope.article)  {
@@ -16627,7 +16686,7 @@ app.controller("emScanTestController",["$scope","$location","$http","$window","t
 app.controller("topHeaderController",["$scope","$rootScope","$window","$location","$resource","localManager","mySocket","templateService","$timeout","$document","ModalService",
   function($scope,$rootScope,$window,$location,$resource,localManager,mySocket,templateService, $timeout, $document, ModalService){
 
-   
+
 
   if(!localManager.getValue("resolveUser")) {
     $window.location.href = "/login";
