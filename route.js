@@ -1010,14 +1010,12 @@ var basicRoute = function (model,sms,io,streams,Voice) { //remember streams arg 
     });*/
 
    router.get("/user/profile/view/:id",function(req,res){
-    if(req.user) {
+    
       model.user.findOne({user_id: req.params.id},function(err,user){            
         if(err) throw err;
         res.render("doctor-details",{"userInfo":user});
       });
-    } else {
-      res.send("Unauthorzed access!")
-    }
+   
   });
 
     

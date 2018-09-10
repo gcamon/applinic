@@ -17534,8 +17534,6 @@ app.controller("hompageController",["$scope","scanTests","cities","labTests","Dr
           filter[data[i].specialty]++;
         }
       }
-
-      console.log(spArr)
     }
   }); 
 
@@ -17547,7 +17545,7 @@ app.controller("hompageController",["$scope","scanTests","cities","labTests","Dr
     })
   .success(function(data) {              
     if(data){
-      console.log(data)
+      
       for(var i = 0; i < data.length; i++){
         if(!filter[data[i].disease]) {
           filter[data[i].disease] = 1;
@@ -17556,7 +17554,7 @@ app.controller("hompageController",["$scope","scanTests","cities","labTests","Dr
           filter[data[i].disease]++;
         }
       }
-      console.log(diArr);
+     
     }
   }); 
 
