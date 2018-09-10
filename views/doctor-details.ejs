@@ -70,7 +70,7 @@
         </div><br>
              <div><div class="title" ng-cloak ><%= userInfo.title %>  {{docInfo.firstname}} {{docInfo.lastname}}</div>
          <sub class="text-muted" style="margin-top:-3px; font-size:1em;" ng-cloak>{{docInfo.specialty}} Specialist</sub><br><br>
-          <button type="button" class="btn btn-success btn-sm" ng-click="profileBook()" ng-if="checkLogIn.typeOfUser !== 'Doctor'">Book me!</button>  
+          <!--<button type="button" class="btn btn-success btn-sm" ng-click="profileBook()" ng-if="checkLogIn.typeOfUser !== 'Doctor'">Book me!</button>-->
           <!--<button type="button" class="btn btn-info btn-sm" ng-click="profileAsk()">Ask Question</button>-->
 
           <span style="padding: 10px; float:right;background-color:#109CFF;font-size:14px;color:#fff;margin-top:-10px;opacity:0.8" ng-if="docInfo.verified == true" ng-cloak><i class="fa fa-certificate" aria-hidden="true" style="color:#D90000;font-size: 18px"></i>&nbsp; VERIFIED</span>
