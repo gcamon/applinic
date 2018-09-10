@@ -33,22 +33,22 @@
     </head>
 
     <body ng-app="myApp">
-        <nav class="header" style="height:70px; margin-top:-.5em; z-index:1000;"  ng-controller="topHeaderController">
+        <nav class="header" style="height:70px; margin-top:-.5em; z-index:1000;" ng-cloak>
 
                <div class="brand" style="margin-left:3em;" style="cursor:pointer">
-                     <a ng-href="{{back}}" class="nav-link"><i class="fa fa-arrow-left"> back to dashboard</i></a> &nbsp;&nbsp;&nbsp; <a href="/" style="text-decoration: none;font-size: 14px">Applinic</a>
+                     <a ng-href="{{back}}" ng-if="back" class="nav-link"><i class="fa fa-arrow-left"> back to dashboard</i></a> &nbsp;&nbsp;&nbsp; <a href="/" style="text-decoration: none;font-size: 14px;color:red">Applinic</a>
                  </div>
         <div class="header-block header-block-collapse hidden-lg-up"> <button class="collapse-btn" id="sidebar-collapse-btn">
     <i class="fa fa-bars"></i></button>
              </div>
         <div class="header-block header-block-nav">
             <ul class="nav-profile">
-              <li class="profile dropdown">
+              <!--<li class="profile dropdown">
                     <a class="nav-link" href="" role="button" aria-haspopup="true" aria-expanded="false" ng-click="logout()" >
                         <span class="name">
                        <i class="fa fa-power-off icon"></i> Logout
                     </span> </a>
-              </li>
+              </li>-->
             </ul>
         </div>
     </nav>
@@ -57,15 +57,18 @@
 <div class="container " ng-controller="docProfileViewController" style="max-height: 1200px;overflow-y: scroll;">
     
     <div class="row">
+        <div class="pl-2 mt-1">
+          <h4>Profile</h4>
+        </div>
         
         
         <div class="col-sm-5">
                 <div class="col-sm-12"  style="background:rgba(255,255,255, 0.8)">
              <div class=" text-center userpe"><a href="">
 
-            <img title="profile image" class="img-responsive" src="{{docInfo.profile_pic_url}}" style="max-height: 400px"></a>
+            <img title="profile image" class="img-responsive" src="<%= userInfo.profile_pic_url %>" style="max-height: 400px"></a>
         </div><br>
-             <div><div class="title" ng-cloak >{{docInfo.title}}  {{docInfo.firstname}} {{docInfo.lastname}}</div>
+             <div><div class="title" ng-cloak ><%= userInfo.title %>  {{docInfo.firstname}} {{docInfo.lastname}}</div>
          <sub class="text-muted" style="margin-top:-3px; font-size:1em;" ng-cloak>{{docInfo.specialty}} Specialist</sub><br><br>
           <button type="button" class="btn btn-success btn-sm" ng-click="profileBook()" ng-if="checkLogIn.typeOfUser !== 'Doctor'">Book me!</button>  
           <!--<button type="button" class="btn btn-info btn-sm" ng-click="profileAsk()">Ask Question</button>-->

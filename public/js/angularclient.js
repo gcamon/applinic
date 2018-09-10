@@ -16690,7 +16690,7 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
 
   if(!localManager.getValue("resolveUser")) {
     $window.location.href = "/login";
-  } 
+  }
 
   
 

@@ -1009,13 +1009,14 @@ var basicRoute = function (model,sms,io,streams,Voice) { //remember streams arg 
      
     });*/
 
-   router.get("/user/profile/view/:id",function(req,res){
-    
+   router.get("/user/profile/view/:id",function(req,res){    
       model.user.findOne({user_id: req.params.id},function(err,user){            
         if(err) throw err;
-        res.render("doctor-details",{"userInfo":user});
-      });
-   
+        if(user)
+         res.render("doctor-details",{"userInfo":user});
+       else 
+        res.end("Person profile not found!")
+      });   
   });
 
     
@@ -1365,7 +1366,7 @@ var basicRoute = function (model,sms,io,streams,Voice) { //remember streams arg 
     });
 
     router.get("/user/get-profile-data",function(req,res){
-      if(req.user) {
+     
         model.user.findOne({user_id: req.query.userId},{
           _id:0,
           phone:1,
@@ -1396,9 +1397,7 @@ var basicRoute = function (model,sms,io,streams,Voice) { //remember streams arg 
             res.send(data);
           });          
         });
-      } else {
-        res.send("Unauthorized access!")
-      }
+      
     });
 
     router.put("/user/book",function(req,res){
