@@ -17516,6 +17516,7 @@ app.controller("hompageController",["$scope","scanTests","cities","labTests","Dr
   var filter = {};
   var spArr = [];
   var skArr = [];
+  var diArr = [];
 
   $http({
     method  : 'GET',
@@ -17524,6 +17525,7 @@ app.controller("hompageController",["$scope","scanTests","cities","labTests","Dr
     })
   .success(function(data) {              
     if(data){
+      console.log(data)
       for(var i = 0; i < data.length; i++){
         if(!filter[data[i].specialty]) {
           filter[data[i].specialty] = 1;
@@ -17532,8 +17534,32 @@ app.controller("hompageController",["$scope","scanTests","cities","labTests","Dr
           filter[data[i].specialty]++;
         }
       }
+
+      console.log(spArr)
     }
   }); 
+
+
+  $http({
+    method  : 'GET',
+    url     : "/user/get-diseases",
+    headers : {'Content-Type': 'application/json'} 
+    })
+  .success(function(data) {              
+    if(data){
+      console.log(data)
+      for(var i = 0; i < data.length; i++){
+        if(!filter[data[i].disease]) {
+          filter[data[i].disease] = 1;
+          diArr.push({name:data[i].disease})
+        } else {
+          filter[data[i].disease]++;
+        }
+      }
+      console.log(diArr);
+    }
+  }); 
+
 
 
   skillService.query(function(data){
@@ -17602,7 +17628,7 @@ app.controller("hompageController",["$scope","scanTests","cities","labTests","Dr
           $scope.itemName = "Enter a skill or disease";
         break;
         case 'Disease':
-          $scope.itemList = [];
+          $scope.itemList = diArr;
           $scope.itemName = "Enter a disease";
         break;
         default:

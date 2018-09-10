@@ -1685,30 +1685,34 @@ var basicRoute = function (model,sms,io,streams,Voice) { //remember streams arg 
       }
     });
 
-    router.get("/user/get-specialties",function(req,res){
-      if(req.user){
-        model.user.find({type:"Doctor"},{specialty:1,skills:1})
-        .limit(500)
-        .sort('specialty')
-        .exec(function(err,data){
-          if(err) throw err;
-          res.json(data);
-        });
-      } else {
-        res.end("Unauthorized access");
-      }
+    router.get("/user/get-specialties",function(req,res){      
+      model.user.find({type:"Doctor"},{specialty:1,skills:1})
+      .limit(500)
+      .sort('specialty')
+      .exec(function(err,data){
+        if(err) throw err;
+        res.json(data);
+      });
+     
+    });
+
+    router.get("/user/get-diseases",function(req,res){      
+      model.skills.find({},{specialty:1,disease:1})
+      .limit(500)
+      .exec(function(err,data){
+        if(err) throw err;
+        res.json(data);
+      });
+     
     });
 
 
-    router.get("/user/get-specialcenters",function(req,res){
-      if(req.user){
-        model.user.find({title: "SC", type: "Doctor"},function(err,data){
-          if(err) throw err;
-          res.json(data);
-        });
-      } else {
-        res.end("unauthorized access!")
-      }
+    router.get("/user/get-specialcenters",function(req,res){      
+      model.user.find({title: "SC", type: "Doctor"},function(err,data){
+        if(err) throw err;
+        res.json(data);
+      });
+      
     })
 
 

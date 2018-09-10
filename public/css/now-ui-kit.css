@@ -1,29 +1,4 @@
-/*!
 
- =========================================================
- * Now-ui-kit - v1.0.0
- =========================================================
-
- * Product Page: http://www.creative-tim.com/product/now-ui-kit
- * Copyright 2017 Creative Tim (http://www.creative-tim.com)
- * Licensed under MIT (https://github.com/creativetimofficial/now-ui-kit/blob/master/LICENSE.md)
-
- * Designed by www.invisionapp.com Coded by www.creative-tim.com
-
- =========================================================
-
- * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
- */
-/*     brand Colors              */
-/*      light colors         */
-/* ========================================================================
- * bootstrap-switch - v3.3.2
- * http://www.bootstrap-switch.org
- * ========================================================================
- * Copyright 2012-2013 Mattia Larentis
- * http://www.apache.org/licenses/LICENSE-2.0
- */
  @font-face {
   font-family: 'ProductSans-Regular';
   src: url('ProductSans-Regular.eot?#iefix') format('embedded-opentype'),  
@@ -36,6 +11,23 @@
 **{
   font-family: 'ProductSans-Regular' !important;
 }
+
+ 
+.profilePic-150{
+  margin-top:10px;
+  border-radius: 5px;
+height:120px !important;
+width:150px !important;
+  }
+
+.mt-mb{
+margin:20px 0 !important;
+}
+
+.pt-pb{
+  padding:20px  0 !important;
+}
+
 .bootstrap-switch {
   display: inline-block;
   direction: ltr;
@@ -1806,7 +1798,7 @@ p.description {
 
 body {
   color: #2c2c2c;
-  font-size: 18px;
+  /*font-size: 14px;*/
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased; }
 
@@ -2040,6 +2032,8 @@ body {
 .navbar .navbar-nav .nav-link.profile-photo .profile-photo-small {
   width: 27px;
   height: 27px; }
+
+
 .navbar .navbar-nav .nav-link.disabled {
   opacity: .5;
   color: #FFFFFF; }
