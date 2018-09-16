@@ -58,7 +58,7 @@ router.get('/user/dashboard',function(req,res){
         data.save(function(err,info){
           console.log("presence is true");
         });
-        normalUser()
+        normalUser();
       }
     });
 

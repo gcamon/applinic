@@ -46,6 +46,7 @@ var signupRoute = function(model,sms,geonames,paystack) {
 	          password: salt.createHash(password),
 	          phone: req.body.phone,
 	          admin: false,
+	          date: new Date(),
 	          country: req.body.countryName,
 	          type: req.body.typeOfUser,
 	          city: req.body.city,
@@ -229,11 +230,12 @@ var signupRoute = function(model,sms,geonames,paystack) {
 		)	   	
 		
 		function callBack(err,response){
-			if(!err) {
+			res.send({message:"Phone Verification Pin sent to " + req.body.phone + " (use " + genPin + " to complete registration)"});
+			/*if(!err) {
 				res.send({message:"Phone Verification Pin sent to " + req.body.phone + " (use " + genPin + " to complete registration)"});
 			} else {
 				res.send({message:err.message,error: true});
-			}
+			}*/
 			
 		}			
 	})

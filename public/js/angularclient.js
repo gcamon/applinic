@@ -613,7 +613,51 @@ app.config(['$paystackProvider','$routeProvider',
  })
 
 
+ /** Admin utilities **/
+
+ .when('/admin',{
+  templateUrl: "/assets/pages/welcome.html",
+  controller: "adminManageCtrl"
+ })
+
+ .when("/admin-doctors",{
+    templateUrl: "/assets/pages/utilities/admin-users.html",
+    controller: "adminManageCtrl"
+ })
+
+ .when("/admin-patients",{
+    templateUrl: "/assets/pages/utilities/admin-users.html",
+    controller: "adminManageCtrl"
+ })
+
+ .when("/admin-pharmacy",{
+    templateUrl: "/assets/pages/utilities/admin-users.html",
+    controller: "adminManageCtrl"
+ })
+
+ .when("/admin-laboratory",{
+    templateUrl: "/assets/pages/utilities/admin-users.html",
+    controller: "adminManageCtrl"
+ })
+
+ .when("/admin-radiology",{
+    templateUrl: "/assets/pages/utilities/admin-users.html",
+    controller: "adminManageCtrl"
+ })
+
+ .when("/admin-special-center",{
+    templateUrl: "/assets/pages/utilities/admin-users.html",
+    controller: "adminManageCtrl"
+ })
+
+ .when("/admin-user-details",{
+    templateUrl: "/assets/pages/utilities/admin-user-details.html",
+    controller: "adminGetUserCtrl"
+ })
+
+
 }]);
+
 
 
 app.service('templateService',[function(){
@@ -9423,9 +9467,13 @@ app.controller("videoInitController",["$scope","$window","localManager","mySocke
 
 }]);  
 
+app.factory("adminDoctorsService",["$resource",function($resource){
+  return $resource('/user/getAllDoctor',null,{verify:{method: "PUT"}});
+}])
 
-app.controller("adminCreateRoomController",["$scope","localManager","mySocket","$rootScope","templateService","$location","$resource","ModalService",
-  function($scope,localManager,mySocket,$rootScope,templateService,$location,$resource,ModalService){
+app.controller("adminCreateRoomController",["$scope","localManager","mySocket","$rootScope","templateService",
+  "$location","$resource","ModalService","adminDoctorsService","$http",
+  function($scope,localManager,mySocket,$rootScope,templateService,$location,$resource,ModalService,adminDoctorsService,$http){
   var user = localManager.getValue("resolveUser");  
   mySocket.emit('join',{userId: user.user_id});
 
@@ -9448,38 +9496,53 @@ app.controller("adminCreateRoomController",["$scope","localManager","mySocket","
   var getAllPatients = $resource('/user/getAllPatients');
   getAllPatients.get(null,function(data){
     $scope.patients = data.count;
-     $scope.total += data.count;
-  })
+    $scope.total += data.count;
+    $rootScope.listPatients = data.data;
+  });
 
-  var getAllDoctor = $resource('/user/getAllDoctor');
+  var getAllDoctor = adminDoctorsService;//$resource('/user/getAllDoctor');
   getAllDoctor.get(null,function(data){
     $scope.doctors = data.count;
+    $rootScope.listDoctors = data.data;
     $scope.total += data.count;
-  })
+  });
 
   var getAllPharmarcy = $resource('/user/getAllPharmarcy');
   getAllPharmarcy.get(null,function(data){
     $scope.pharmacy = data.count;
+    $rootScope.listPharmacy = data.data;
     $scope.total += data.count;
-  })
+  });
 
   var getAllLaboratory = $resource('/user/getAllLaboratory');
   getAllLaboratory.get(null,function(data){
     $scope.laboratory = data.count;
+    $rootScope.listLaboratory = data.data;
     $scope.total += data.count;
-  })
+  });
 
   var getAllRadiology = $resource('/user/getAllRadiology');
   getAllRadiology.get(null,function(data){
     $scope.radiology = data.count;
+    $rootScope.listRadiology = data.data;
     $scope.total += data.count;
   })
+
+  var getAllSpecialCenters = $resource('/user/get-specialcenters');
+  getAllSpecialCenters.query(null,function(data){
+    $scope.specialCenter = data.length;
+    $rootScope.listSpecialCenter = data;
+    console.log(data)
+    $scope.total += data.length;
+  })
+
+
 
   var getCashOut = $resource("/user/cashout");
   getCashOut.query(null,function(data){
     var result = (data.length > 0) ? data : [];
     console.log(data)
-    $rootScope.CashOutList = result;
+    $rootScope.CashOutList = result.length;
   });
 
   $scope.view = function(id) {
@@ -9497,7 +9560,98 @@ app.controller("adminCreateRoomController",["$scope","localManager","mySocket","
     });
   }
 
+  $rootScope.getUser = function(id) {    
+    $http({
+      method  : "GET",
+      url     : (!id) ? ("/user/admin/get-user-details?item=" + $scope.user) : ("/user/admin/get-user-details?item=" + id), //gets special drugs from backend     
+      headers : {'Content-Type': 'application/json'} 
+      })
+    .success(function(data) {  
+      if(data.length > 0) {
+        localManager.setValue("adminFoundUser",data);
+        $rootScope.foundUser = data;
+        $location.path("/admin-user-details");
+      } else {
+        alert("User not found!")
+      }
+    });
+    
+  }
+
 }]);
+
+app.controller("adminGetUserCtrl",["$scope","$location","$rootScope","$http","localManager","$http",
+  function($scope,$location,$rootScope,http,localManager,$http){
+
+  $scope.userDetails = $rootScope.foundUser || localManager.getValue("adminFoundUser");
+  console.log($scope.userDetails);
+
+
+  $scope.verifyUser = function(type,user){
+    if(type == 'verify')
+      var check = confirm("Are you sure you want to mark this user as verified?");
+    if(type == 'block')
+      var check = confirm("Are you sure you want to block this user?");
+    if(check) {
+      $http({
+        method  : "PUT",
+        data: {action: type, userId: user._id},
+        url     : "/user/admin/verify-user",   
+        headers : {'Content-Type': 'application/json'} 
+        })
+      .success(function(data) {  
+        if(data) {
+          if(!data.type) {
+            user.verified = data.status;
+            localManager.setValue("adminFoundUser",[user]);
+          }
+
+          alert(data.message);
+        }
+        
+      });
+    }
+  }
+
+}]);
+
+app.controller("adminManageCtrl",["$scope","$location","$rootScope","adminDoctorsService",
+  function($scope,$location,$rootScope,adminDoctorsService){
+
+    switch($location.path()) {
+      case '/admin-doctors':
+        $scope.name = "Doctors"
+        $scope.isDoctorsView = true;
+        $scope.list = $rootScope.listDoctors;
+        break;
+      case '/admin-patients': 
+        $scope.name = "Patients";
+        $scope.isPatientsView = true;
+        $scope.list = $rootScope.listPatients;
+        break;
+      case '/admin-pharmacy':
+        $scope.name = "Pharmacies";
+        $scope.list = $rootScope.listPharmacy;
+        break;
+      case '/admin-laboratory': 
+        $scope.name = "Laboratories";
+        $scope.list = $rootScope.listLaboratory;
+        break;
+      case '/admin-radiology': 
+        $scope.name = "Radiologies";
+        $scope.list = $rootScope.listRadiology;
+        break;
+      case '/admin-special-center': 
+        $scope.name = "Special Centers";
+        $scope.list = $rootScope.listSpecialCenter;
+        break;
+      default:
+          alert("dghdshg")
+        break;
+    }
+
+   
+}])
 
 
 app.controller("cashoutModalController",["$scope","$rootScope","templateService",function($scope,$rootScope,templateService){
@@ -16844,6 +16998,7 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
     localManager.removeItem('mainAccount');
     localManager.removeItem('holdMessages');
     localManager.removeItem('holdId');
+    localManager.removeItem("adminFoundUser");
   }
 
 

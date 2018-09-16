@@ -1,0 +1,32 @@
+<div class="p-2" style="">
+	<h3>{{name}} <input type="text" style="float: right;padding: 3px;font-size: 14px" placeholder="Filter" ng-model="usr" name=""></h3>
+	
+		<table class="table table-responsive">
+			<thead>
+				<!--<th></th>-->
+				<th>Created</th>
+				<th style="width: 20%"><b>Name</b></th>
+				<th ng-if="isDoctorsView"><b>Specialty</b></th>
+				<th><b>Email</b></th>
+				<th><b>Phone</b></th>
+				<th><b>ID</b></th>
+				<th ng-if="!isPatientsView"><b>Status</b></th>
+				<th><b>Action</b></th>
+			</thead>
+			<tbody ng-repeat="i in list | filter: usr">
+				<!--<td><img src="{{i.profile_pic_url}}" style="width: 45px; height: auto;"></td>-->
+				<td>{{i.date | date: 'mediumDate'}}</td>
+				<td style="width: 20%">
+				<span ng-if="i.lastname">{{i.title}} {{i.firstname}} {{i.lastname}}</span> 
+				<span ng-if="!i.lastname">{{i.name}}</span>
+				</td>
+				<td ng-if="isDoctorsView">{{i.specialty}}</td>
+				<td>{{i.email}}</td>
+				<td>{{i.phone}}</td>
+				<td>{{i.user_id}}</td>
+				<td ng-if="!isPatientsView"><span ng-if="i.verified" class="text-success">Verified</span> <span ng-if="!i.verified" class="text-danger">Not Verified</span></td>
+				<td><a href="" class="btn btn-success btn-sm" ng-click="getUser(i.user_id)">view details</a></td>
+			</tbody>
+		</table>	
+
+</div>

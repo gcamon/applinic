@@ -6879,7 +6879,7 @@ router.put("/user/set-presence",function(req,res){
 router.get('/user/getAllPatients',function(req,res){
   if(req.user){
     model.user.find({type:"Patient"},function(err,data){
-      res.send({count:data.length});
+      res.send({count:data.length,data:data});
     })
   } else {
     res.redirect("/login")
@@ -6889,7 +6889,7 @@ router.get('/user/getAllPatients',function(req,res){
 router.get('/user/getAllDoctor',function(req,res){
   if(req.user){
     model.user.find({type:"Doctor"},function(err,data){
-      res.send({count:data.length});
+      res.send({count:data.length,data: data});
     })
   } else {
     res.redirect("/login")
@@ -6899,7 +6899,7 @@ router.get('/user/getAllDoctor',function(req,res){
 router.get('/user/getAllPharmarcy',function(req,res){
   if(req.user){   
     model.user.find({type:"Pharmacy"},function(err,data){
-      res.send({count:data.length});
+      res.send({count:data.length,data:data});
     })
   } else {
     res.redirect("/login")
@@ -6909,10 +6909,10 @@ router.get('/user/getAllPharmarcy',function(req,res){
 router.get('/user/getAllLaboratory',function(req,res){
   if(req.user){
     var criteria = (req.query.city) ? {city: req.query.city,country:req.query.country,type:"Laboratory"} : {type:"Laboratory"};
-    model.user.find(criteria,{name:1,address:1,user_id:1,city:1,country:1,phone:1,_id:0},function(err,data){
+    model.user.find(criteria,{name:1,address:1,user_id:1,city:1,country:1,phone:1,_id:0,email:1},function(err,data){
       if(err) throw err;
       if(!req.query.city) {
-        res.send({count:data.length});
+        res.send({count:data.length,data:data});
       } else {
         res.send(data);
       }
@@ -6925,10 +6925,10 @@ router.get('/user/getAllLaboratory',function(req,res){
 router.get('/user/getAllRadiology',function(req,res){
   if(req.user){
     var criteria = (req.query.city) ? {city: req.query.city,country:req.query.country,type:"Radiology"} : {type:"Radiology"};
-    model.user.find(criteria,{name:1,address:1,user_id:1,city:1,country:1,phone:1,_id:0},function(err,data){
+    model.user.find(criteria,{name:1,address:1,user_id:1,city:1,country:1,phone:1,_id:0,email:1},function(err,data){
       if(err) throw err;
       if(!req.query.city) {
-        res.send({count:data.length});
+        res.send({count:data.length,data:data});
       } else {
         res.send(data);
       }
@@ -6947,6 +6947,20 @@ router.get("/user/rating/:id",function(req,res){
     res.send("Unauthorized access!")
   }
 });
+
+router.get("/user/admin/get-user-details",function(req,res){
+  if(req.user && req.user.type == 'admin'){
+    if(req.query.item){
+       var criteria = { $or: [{ phone : req.query.item},{user_id: req.query.item},{email : req.query.item}]};
+       model.user.find(criteria,function(err,data){
+        if(err) throw err;
+        res.json(data);
+       })
+    }
+  } else {
+    res.end("unauthorized access!");
+  }
+})
 
 
 
@@ -7039,14 +7053,40 @@ router.get("/user/chats",function(req,res){
       res.json(chats);
     })
   } else {
-    res.end("unautorized access!")
+    res.end("unautorized access!");
   }
 });
+
+router.put("/user/admin/verify-user",function(req,res){
+  if(req.user && req.user.type == 'admin') {
+    model.user.findById(req.body.userId)
+    .exec(function(err,user){
+      if(err) throw err;
+      if(user){
+        if(req.body.action == 'verify'){
+          user.verified = true;
+          user.save(function(err,info){})
+          res.json({status: true,message: "User verified!"});
+        } else if(req.body.action == 'block'){
+          user.deleted = true;
+          user.save(function(err,info){
+            console.log("user blocked by admin");
+          });
+          res.json({status: true, message: "User blocked!",type: "block"})
+        }
+      } else {
+        res.send({status: false,message: "verification failed!"})
+      }
+    })
+  } else {
+    res.end("unautorized access!");
+  }
+})
 
 
 
 /*
-    Family account logic amd implmentations
+    Family account logic and implmentations
 
 */
 

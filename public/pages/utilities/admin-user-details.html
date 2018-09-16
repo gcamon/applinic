@@ -1,0 +1,130 @@
+<div class="p-2">
+	<h3>Search Result: ( {{userDetails.length}} )</h3>
+    <hr class="bg-muted">
+	<div ng-repeat="user in userDetails" class="pt-1">
+		<!-- for doctors -->
+		<div ng-if="user.type === 'Doctor'">
+			<div class="row">
+				<div class="col-sm-3 col-md-3 col-lg-3">
+					<img src="{{user.profile_pic_url}}" style="width: 120px; height:auto">
+				</div>
+				<div class="col-sm-9 col-md-9 col-lg-9 pl-2">
+					<h3><b ng-if="user.lastname">{{user.title}} {{user.firstname}} {{user.lastname}}</b> <b ng-if="!user.lastname">{{user.name}}</b> <button style="float: right;" class="btn btn-danger btn-sm" ng-if="user.verified" ng-click="verifyUser('block',user)">block user</button> <button style="float: right;" class="btn btn-success btn-sm" ng-if="!user.verified" ng-click="verifyUser('verify',user)">verify user</button></h3>
+					<div class="row">
+						<div class="col-sm-6 col-md-6 col-lg-6 pl-2" style="line-height: 25px">
+							<div><b>User ID:</b> {{user.user_id}}</div>
+							<div><b>Specialty:</b> {{user.specialty}}</div>
+							<div><b>email:</b> {{user.email}}</div>
+							<div><b>phone:</b> {{user.phone}}</div>
+							<div><b>Address:</b> {{user.address}}</div>
+							<div ng-if="user.education"><b>Certification:</b> <span ng-repeat="i in user.education">{{i.certificate}}, </span></div>
+						</div>
+						<div class="col-sm-6 col-md-6 col-lg-6 pl-2" style="line-height: 25px">
+							<div><b>Place of work:</b> {{user.work_place}}</div>
+							<div><b>City:</b> {{user.city}}</div>
+							<div><b>Country:</b> {{user.country}}</div>
+							<div><b>Date Registered:</b> {{user.date | date:'fullDate'}}</div>
+							<div><b>Status:</b> <span class="text-success" ng-if="user.verified"> <i class="fa fa-check"></i> <b>Verified</b> </span> <span class="text-danger" ng-if="!user.verified"> <i class="fa fa-check-o"></i> <b> Not Verified</b> </span></div>
+							<div><a href="{{user.profile_url}}" target="_blank" style="text-decoration: underline;color: blue" title="takes you to a new page">view profile</a> <i class="fa fa-external-link"></i></div>
+						</div>
+					</div>
+					
+				</div>
+			</div>
+			<div class="row">
+				<ul style="display: inline-block;list-style: none;width: 50%;margin: 0 auto;padding: 20px 0" ng-if="user.type =='Doctor'">
+					<li style="float: left;padding: 10px" class=""><a href="" class="btn btn-info">Transactions</a></li>
+					<li style="float: left;padding: 10px" class=""><a href="" class="btn btn-info">Patients</a></li>
+					<!--<li style="float: left;padding: 10px" class="bg primary"><a href="" class="btn btn-primary">Skills &amp; Procedures</a></li>
+					<li style="float: left;padding: 10px" class="bg primary"><a href="" class="btn btn-primary">Sub Specialties</a></li>-->
+				</ul>
+				<div>
+					<h4><b>Transations</b></h4>
+					 	<table class="table table-bordered">
+						    <!--<caption><b class="pl-1">Period: {{duration.from}}&nbsp; - &nbsp;{{duration.to}}</b> <i class="fa fa-print" style="float: right;font-size: 22px;color: orange;padding-top: 10px;cursor: pointer;"></i></caption>-->
+						    <thead class="thead-default">
+						      <tr>      
+						       <th>Date/time</th>
+						      <th>Action</th>
+						      <th>Amount</th>
+						      <th>Source</th>
+						      <th>Beneficiary</th>
+						      <th>Activity</th>
+						      </tr>
+						    </thead>
+
+						    <tbody ng-repeat="transact in user.ewallet.transaction | orderBy: '-date'">
+						      <tr>
+						        <td><small>{{transact.date | date: "mediumDate"}} &nbsp;&nbsp;{{transact.date | date: "mediumTime"}}</small></td>
+						        <td>{{transact.activity}}</td>
+						        <td>{{toCurrency(transact.body.amount)}}</td>
+						        <td>{{transact.source}}</td>
+						        <td>{{transact.body.beneficiary}}</td>
+						        <td>{{transact.message}}</td>
+						      </tr>
+						     
+						    </tbody>
+						    
+						</table>
+				</div>		
+			</div>
+		</div>
+
+		<!-- for patients -->
+		<div ng-if="user.type === 'Patient'">
+			<div class="row">
+				<div class="col-sm-3 col-md-4 col-lg-4">
+					<img src="{{user.profile_pic_url}}" style="width: 45px; height: 45px">
+				</div>
+				<div class="col-sm-9 col-md-8 col-lg-8 pl-2">
+					<div><b ng-if="user.lastname">{{user.title}} {{user.firstname}} {{user.lastname}}</b> <b ng-if="!user.lastname">{{user.name}}</b></div>
+					<div></div>
+				</div>
+			</div>
+		</div>
+
+		<!-- for Pharmacy -->
+		<div ng-if="user.type === 'Pharmacy'">
+			<div class="row">
+				<div class="col-sm-3 col-md-4 col-lg-4">
+					<img src="{{user.profile_pic_url}}" style="width: 45px; height: 45px">
+				</div>
+				<div class="col-sm-9 col-md-8 col-lg-8 pl-2">
+					<div><b ng-if="user.lastname">{{user.title}} {{user.firstname}} {{user.lastname}}</b> <b ng-if="!user.lastname">{{user.name}}</b></div>
+					<div></div>
+				</div>
+			</div>
+		</div>
+
+		<!-- for Laboratory -->
+		<div ng-if="user.type === 'Laboratory'">
+			<div class="row">
+				<div class="col-sm-3 col-md-4 col-lg-4">
+					<img src="{{user.profile_pic_url}}" style="width: 45px; height: 45px">
+				</div>
+				<div class="col-sm-9 col-md-8 col-lg-8 pl-2">
+					<div><b ng-if="user.lastname">{{user.title}} {{user.firstname}} {{user.lastname}}</b> <b ng-if="!user.lastname">{{user.name}}</b></div>
+					<div></div>
+				</div>
+			</div>
+		</div>
+
+
+		<!-- for Radiology -->
+		<div ng-if="user.type === 'Radiology'">
+			<div class="row">
+				<div class="col-sm-3 col-md-4 col-lg-4">
+					<img src="{{user.profile_pic_url}}" style="width: 45px; height: 45px">
+				</div>
+				<div class="col-sm-9 col-md-8 col-lg-8 pl-2">
+					<div><b ng-if="user.lastname">{{user.title}} {{user.firstname}} {{user.lastname}}</b> <b ng-if="!user.lastname">{{user.name}}</b></div>
+					<div></div>
+				</div>
+			</div>
+		</div>
+
+
+
+
+	</div>
+</div>
