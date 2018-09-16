@@ -12,7 +12,7 @@
 				<th ng-if="!isPatientsView" style="width: 15%"><b>Status</b></th>
 				<th style="width: 10%"><b>Action</b></th>
 			</thead>
-			<tbody ng-repeat="i in list | filter: usr">
+			<tbody ng-repeat="i in list | filter: usr | orderBy: '-date'">
 				<!--<td><img src="{{i.profile_pic_url}}" style="width: 45px; height: auto;"></td>-->
 				<td style="width: 5%">{{i.date | date: 'mediumDate'}}</td>
 				<td style="width: 25%">

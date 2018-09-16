@@ -1,5 +1,5 @@
 <div class="p-2">
-	<h3>Search Result: ( {{userDetails.length}} )</h3>
+	<h3>Result: ( {{userDetails.length}} )</h3>
     <hr class="bg-muted">
 	<div ng-repeat="user in userDetails" class="pt-1">
 		<!-- for doctors -->
@@ -24,7 +24,7 @@
 							<div><b>City:</b> {{user.city}}</div>
 							<div><b>Country:</b> {{user.country}}</div>
 							<div><b>Date Registered:</b> {{user.date | date:'fullDate'}}</div>
-							<div><b>Status:</b> <span class="text-success" ng-if="user.verified"> <i class="fa fa-check"></i> <b>Verified</b> </span> <span class="text-danger" ng-if="!user.verified"> <i class="fa fa-check-o"></i> <b> Not Verified</b> </span></div>
+							<div><b>Status:</b> <span class="text-success" ng-if="user.verified"> <i class="fa fa-check"></i> <b>Verified</b> </span> <span class="text-danger" ng-if="!user.verified"> <i class="fa fa-check"></i> <b> Not Verified</b> </span></div>
 							<div><a href="{{user.profile_url}}" target="_blank" style="text-decoration: underline;color: blue" title="takes you to a new page">view profile</a> <i class="fa fa-external-link"></i></div>
 						</div>
 					</div>
@@ -34,7 +34,7 @@
 			<div class="row">
 				<div class="col-sm-12 col-md-12 col-lg-12">
 					<ul style="display: inline-block;list-style: none;width: 50%;margin: 0 auto;padding: 20px 0" ng-if="user.type =='Doctor'">
-						<li style="float: left;padding: 10px" class=""><a href="" class="btn btn-info">Transactions</a></li>
+						<li style="float: left;padding: 10px" class=""><a href="" class="btn btn-info">Transactions</a> <span>Balance: <b>{{getBance(user)}}</b></span></li>
 						<li style="float: left;padding: 10px" class=""><a href="" class="btn btn-info">Patients</a></li>
 						<!--<li style="float: left;padding: 10px" class="bg primary"><a href="" class="btn btn-primary">Skills &amp; Procedures</a></li>
 						<li style="float: left;padding: 10px" class="bg primary"><a href="" class="btn btn-primary">Sub Specialties</a></li>-->

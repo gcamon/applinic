@@ -9560,6 +9560,12 @@ app.controller("adminCreateRoomController",["$scope","localManager","mySocket","
     });
   }
 
+  $scope.getBance = function(user){
+    var whole = Math.round(user.ewallet.available_amount);
+    var format = user.currencyCode + whole.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    return format;
+  }
+
   $rootScope.getUser = function(id) {    
     $http({
       method  : "GET",
