@@ -9572,7 +9572,7 @@ app.controller("adminCreateRoomController",["$scope","localManager","mySocket","
         $rootScope.foundUser = data;
         $location.path("/admin-user-details");
       } else {
-        alert("User not found!")
+        alert("User not found!");
       }
     });
     
