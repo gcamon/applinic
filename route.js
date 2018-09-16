@@ -7067,7 +7067,7 @@ router.put("/user/admin/verify-user",function(req,res){
           user.verified = true;
           user.save(function(err,info){})
           res.json({status: true,message: "User verified!"});
-          
+
         } else if(req.body.action == 'block'){
           user.deleted = true;
           user.save(function(err,info){
@@ -7078,7 +7078,7 @@ router.put("/user/admin/verify-user",function(req,res){
         } else if(req.body.action == 'unverify'){
           user.verified = false;
           user.save(function(err,info){
-            console.log("user blocked by admin");
+            console.log("user unverified by admin");
           });
           res.json({status: false,message: "User unverified!"});
         }

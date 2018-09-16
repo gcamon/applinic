@@ -9592,6 +9592,8 @@ app.controller("adminGetUserCtrl",["$scope","$location","$rootScope","$http","lo
       var check = confirm("Are you sure you want to mark this user as verified?");
     if(type == 'block')
       var check = confirm("Are you sure you want to block this user?");
+    if(type == 'unverify')
+      var check = confirm("Are you sure you want to mark this user as not verified?");
     if(check) {
       $http({
         method  : "PUT",
