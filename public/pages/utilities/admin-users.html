@@ -8,7 +8,7 @@
 				<th ng-if="isDoctorsView"><b>Specialty</b></th>
 				<th><b>Email</b></th>
 				<th><b>Phone</b></th>
-				<th><b>ID</b></th>
+				<!--<th><b>ID</b></th>-->
 				<th ng-if="!isPatientsView"><b>Status</b></th>
 				<th><b>Action</b></th>
 			</thead>
@@ -22,7 +22,7 @@
 				<td ng-if="isDoctorsView">{{i.specialty}}</td>
 				<td>{{i.email}}</td>
 				<td>{{i.phone}}</td>
-				<td>{{i.user_id}}</td>
+				<!--<td>{{i.user_id}}</td>-->
 				<td ng-if="!isPatientsView"><span ng-if="i.verified" class="text-success">Verified</span> <span ng-if="!i.verified" class="text-danger">Not Verified</span></td>
 				<td><a href="" class="btn btn-success btn-sm" ng-click="getUser(i.user_id)">view details</a></td>
 			</tbody>
