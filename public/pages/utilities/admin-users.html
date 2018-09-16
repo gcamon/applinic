@@ -4,8 +4,8 @@
 		<table class="table table-responsive">
 			<thead>
 				<th>Created</th>
-				<th ><b>Name</b></th>
-				<th ng-if="isDoctorsView"><b>Specialty</b></th>
+				<th style="width: 25%"><b>Name</b></th>
+				<th ng-if="isDoctorsView" style="width: 25%"><b>Specialty</b></th>
 				<th><b>Email</b></th>
 				<th><b>Phone</b></th>
 				<!--<th><b>ID</b></th>-->
@@ -15,11 +15,11 @@
 			<tbody ng-repeat="i in list | filter: usr">
 				<!--<td><img src="{{i.profile_pic_url}}" style="width: 45px; height: auto;"></td>-->
 				<td>{{i.date | date: 'mediumDate'}}</td>
-				<td>
+				<td style="width: 25%">
 				<span ng-if="i.lastname">{{i.title}} {{i.firstname}} {{i.lastname}}</span> 
 				<span ng-if="!i.lastname">{{i.name}}</span>
 				</td>
-				<td ng-if="isDoctorsView">{{i.specialty}}</td>
+				<td ng-if="isDoctorsView" style="width: 25%">{{i.specialty}}</td>
 				<td>{{i.email}}</td>
 				<td>{{i.phone}}</td>
 				<!--<td>{{i.user_id}}</td>-->
