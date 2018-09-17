@@ -9584,22 +9584,37 @@ app.controller("adminCreateRoomController",["$scope","localManager","mySocket","
   }
 
   $scope.isViewTransaction = true;
+
   $scope.view = function(type){
     switch(type) {
       case 'transaction':
         $scope.isViewTransaction = true;
+        $scope.isViewFamily = false;
         $scope.isViewMatter = false;
+        $scope.isReferral = true;
         break;
       case 'matters':
         $scope.isViewMatter = true;
+        $scope.isViewFamily = false;
         $scope.isViewTransaction = false;
+        $scope.isReferral = true;
+        break;
+      case 'family':
+        $scope.isViewFamily = true;
+        $scope.isViewTransaction = false;
+        $scope.isViewMatter = false;
+        $scope.isReferral = true;
+        break;
+      case 'referral':
+        $scope.isViewFamily = false;
+        $scope.isViewTransaction = false;
+        $scope.isViewMatter = false;
+        $scope.isReferral = true;
         break;
       default:
       break;
     }
   }
-
-  
 
 }]);
 
@@ -9692,7 +9707,7 @@ app.controller("adminManageCtrl",["$scope","$location","$rootScope","adminDoctor
         $scope.list = $rootScope.listSpecialCenter;
         break;
       default:
-          alert("dghdshg")
+         
         break;
     }
 
