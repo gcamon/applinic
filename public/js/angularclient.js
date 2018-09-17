@@ -9580,9 +9580,26 @@ app.controller("adminCreateRoomController",["$scope","localManager","mySocket","
       } else {
         alert("User not found!");
       }
-    });
-    
+    });    
   }
+
+  $scope.isViewTransaction = true;
+  $scope.view = function(type){
+    switch(type) {
+      case 'transaction':
+        $scope.isViewTransaction = true;
+        $scope.isViewMatter = false;
+        break;
+      case 'matters':
+        $scope.isViewMatter = true;
+        $scope.isViewTransaction = false;
+        break;
+      default:
+      break;
+    }
+  }
+
+  
 
 }]);
 
@@ -9618,6 +9635,27 @@ app.controller("adminGetUserCtrl",["$scope","$location","$rootScope","$http","lo
         }
         
       });
+    }
+  }
+
+  $scope.deleteAcc = function(userId){
+    var sure = prompt("Enter confirm key. Note account will be erased from the database and will never be recovered.");
+    if(sure === 'yeye!') {
+      $http({
+        method  : "DELETE",
+        data  : {userId: userId},
+        url     : "/user/admin/delete-user", //gets special drugs from backend     
+        headers : {'Content-Type': 'application/json'} 
+      })
+      .success(function(res) {  
+        if(res.status){
+          alert(res.message);
+          $scope.userDetails = [{}];
+          localManager.setValue("adminFoundUser",[{}]);
+        }
+      });
+    } else {
+      alert("wrong confirmation key!")
     }
   }
 

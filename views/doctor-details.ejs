@@ -4,7 +4,7 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="x-ua-compatible" content="ie=edge">
-        <title> Applinic</title>
+        <title> Applinic | user profile</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -32,29 +32,29 @@
           </style>
     </head>
 
-    <body ng-app="myApp">
+    <body ng-app="myApp" style="font-size: 14px!important">
         <nav class="header" style="height:70px; margin-top:-.5em; z-index:1000;" ng-cloak>
 
-               <div class="brand" style="margin-left:3em;" style="cursor:pointer">
-                     <a ng-href="{{back}}" ng-if="back" class="nav-link"><i class="fa fa-arrow-left"> back to dashboard</i></a> &nbsp;&nbsp;&nbsp; <a href="/" style="text-decoration: none;font-size: 14px;color:red">Applinic</a>
-                 </div>
-        <div class="header-block header-block-collapse hidden-lg-up"> <button class="collapse-btn" id="sidebar-collapse-btn">
+          <div class="container">
+              <a ng-href="{{back}}" ng-if="back" class="nav-link"><i class="fa fa-arrow-left"> back to dashboard</i></a> &nbsp;&nbsp;&nbsp; <a href="/" style="text-decoration: none;font-size: 14px;color:red"><b>Applinic</b></a>
+          </div>
+        <!--<div class="header-block header-block-collapse hidden-lg-up"> <button class="collapse-btn" id="sidebar-collapse-btn">
     <i class="fa fa-bars"></i></button>
              </div>
         <div class="header-block header-block-nav">
             <ul class="nav-profile">
-              <!--<li class="profile dropdown">
+              <li class="profile dropdown">
                     <a class="nav-link" href="" role="button" aria-haspopup="true" aria-expanded="false" ng-click="logout()" >
                         <span class="name">
                        <i class="fa fa-power-off icon"></i> Logout
                     </span> </a>
-              </li>-->
+              </li>
             </ul>
-        </div>
+        </div>-->
     </nav>
     <div style="height:70px"></div>
                 
-<div class="container " ng-controller="docProfileViewController" style="max-height: 1200px;overflow-y: scroll;">
+<div class="container" ng-controller="docProfileViewController">
     
     <div class="row">
         <div class="pl-2 mt-1">
@@ -73,8 +73,8 @@
           <!--<button type="button" class="btn btn-success btn-sm" ng-click="profileBook()" ng-if="checkLogIn.typeOfUser !== 'Doctor'">Book me!</button>-->
           <!--<button type="button" class="btn btn-info btn-sm" ng-click="profileAsk()">Ask Question</button>-->
 
-          <span style="padding: 10px; float:right;background-color:#109CFF;font-size:14px;color:#fff;margin-top:-10px;opacity:0.8" ng-if="docInfo.verified == true" ng-cloak><i class="fa fa-certificate" aria-hidden="true" style="color:#D90000;font-size: 18px"></i>&nbsp; VERIFIED</span>
-          <span style="color:#D90000;font-size: 18px;float:right;" ng-if="docInfo.verified == false" ng-cloak>NOT VERIFIED</span>
+          <span style="padding: 10px; float:right;font-size:18px;color:green;margin-top:-10px;opacity:0.8" ng-if="docInfo.verified === true" ng-cloak><i class="fa fa-certificate" aria-hidden="true" style="color:green;font-size: 22px"></i>&nbsp; VERIFIED</span>
+          <span style="color:#D90000;font-size: 18px;float:right;" ng-if="docInfo.verified === false" ng-cloak>NOT VERIFIED</span>
 
              </div><br>
 <div class="clearfix"></div>
@@ -96,18 +96,18 @@
                                 </li>
                               </ul>
                              </div>
-<div class="grayish"> Rating: <div class="star-rating">
-        <!--<span class="fa fa-star-o" data-rating="1" ng-class ="{'fa-star': rating0 === 0}"></span>
+<!--<div class="grayish"> Rating: <div class="star-rating">
+        <span class="fa fa-star-o" data-rating="1" ng-class ="{'fa-star': rating0 === 0}"></span>
         <span class="fa fa-star-o" data-rating="2" ng-class ="{'fa-star': rating20 === 20}"></span>
         <span class="fa fa-star-o" data-rating="3" ng-class ="{'fa-star': rating40 === 40}"></span>
         <span class="fa fa-star-o" data-rating="4" ng-class ="{'fa-star': rating60 === 60}"></span>
         <span class="fa fa-star-o" data-rating="5" ng-class ="{'fa-star': rating80 === 80}"></span>
-        <input type="hidden" name="whatever1" class="rating-value" value="2.56">-->
+        <input type="hidden" name="whatever1" class="rating-value" value="2.56">
 
         <span ng-repeat="rating in ratings" ng-cloak > 
         <div  class="star-rating" star-rating rating-value="docInfo.rating.current" max="docInfo.rating.max" on-rating-selected="getSelectedRating(rating)"></div>
         </span>
-      </div></div>
+      </div></div>-->
 
 
  

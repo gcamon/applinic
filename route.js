@@ -7091,6 +7091,17 @@ router.put("/user/admin/verify-user",function(req,res){
   }
 })
 
+router.delete("/user/admin/delete-user",function(req,res){
+  if(req.user && req.user.type == 'admin') {
+   model.user.remove({_id: req.body.userId},function(err,info){
+    if(err) throw err;
+    res.json({status: true, message: "User account deleted!"})
+   });
+  } else {
+    res.end("unautorized access!");
+  }
+})
+
 
 
 /*

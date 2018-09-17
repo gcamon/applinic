@@ -1,15 +1,17 @@
-<div class="p-2">
+<div class="p-2" ng-if="userDetails[0].email">
 	<h3>Result: ( {{userDetails.length}} )</h3>
     <hr class="bg-muted">
 	<div ng-repeat="user in userDetails" class="pt-1">
+		
 		<!-- for doctors -->
 		<div ng-if="user.type === 'Doctor'">
 			<div class="row">
-				<div class="col-sm-3 col-md-3 col-lg-3">
+				<div class="col-sm-4 col-md-2 col-lg-2">
 					<img src="{{user.profile_pic_url}}" style="width: 120px; height:auto">
 				</div>
-				<div class="col-sm-9 col-md-9 col-lg-9 pl-2">
-					<h3><b ng-if="user.lastname">{{user.title}} {{user.firstname}} {{user.lastname}}</b> <b ng-if="!user.lastname">{{user.name}}</b> <button style="float: right;" class="btn btn-danger btn-sm" ng-if="user.verified" ng-click="verifyUser('block',user)">block user</button> <button style="float: right;" class="btn btn-success btn-sm" ng-if="!user.verified" ng-click="verifyUser('verify',user)">verify user</button> <button style="float: right;" class="btn btn-warning btn-sm" ng-if="user.verified" ng-click="verifyUser('unverify',user)">unverify user</button></h3>
+				<div class="col-sm-8 col-md-10 col-lg-10 pl-2">
+					<h3><b ng-if="user.lastname">{{user.title}} {{user.firstname}} {{user.lastname}}</b> <b ng-if="!user.lastname">{{user.name}}</b> <button style="float: right;" class="btn btn-danger btn-sm" ng-if="user.verified" ng-click="verifyUser('block',user)">block user</button> <button style="float: right;" class="btn btn-simple btn-sm" ng-if="!user.verified" ng-click="verifyUser('verify',user)">verify user</button> <button style="float: right;" class="btn btn-warning btn-sm" ng-if="user.verified" ng-click="verifyUser('unverify',user)">unverify user</button>&nbsp;&nbsp;&nbsp;
+					<button class="btn btn-simple btn-sm" ng-click="deleteAcc(user._id)"> Delete Account</button></h3>
 					<div class="row">
 						<div class="col-sm-6 col-md-6 col-lg-6 pl-2" style="line-height: 25px">
 							<div><b>User ID:</b> {{user.user_id}}</div>
@@ -34,16 +36,16 @@
 			<div class="row">
 				<div class="col-sm-12 col-md-12 col-lg-12">
 					<ul style="display: inline-block;list-style: none;width: 50%;margin: 0 auto;padding: 20px 0" ng-if="user.type =='Doctor'">
-						<li style="float: left;padding: 10px" class=""><a href="" class="btn btn-info">Transactions</a> </li>
-						<li style="float: left;padding: 10px" class=""><a href="" class="btn btn-info">Patients</a></li>
+						<li style="float: left;padding: 10px" class=""><a href="" class="btn btn-info" ng-click="view('transaction')">Transactions ({{user.ewallet.transaction.length }})</a> </li>
+						<li style="float: left;padding: 10px" class=""><a href="" class="btn btn-info" ng-click="view('matters')">Patients ({{user.doctor_patients_list.length}})</a></li>
 						<!--<li style="float: left;padding: 10px" class="bg primary"><a href="" class="btn btn-primary">Skills &amp; Procedures</a></li>
 						<li style="float: left;padding: 10px" class="bg primary"><a href="" class="btn btn-primary">Sub Specialties</a></li>-->
 					</ul>
 				</div>
 
-				<div class="col-sm-12 col-md-12 col-lg-12">
+				<div class="col-sm-12 col-md-12 col-lg-12" ng-if="isViewTransaction">
 					<h4><b>Transations</b> <a href="" style="float: right;font-size: 14px;margin-right: 20px" class="text-muted">Balance: <b>{{getBance(user)}}</b></a></h4>
-					 	<table class="table table-bordered">
+					 	<table class="table table-bordered" >
 						    <!--<caption><b class="pl-1">Period: {{duration.from}}&nbsp; - &nbsp;{{duration.to}}</b> <i class="fa fa-print" style="float: right;font-size: 22px;color: orange;padding-top: 10px;cursor: pointer;"></i></caption>-->
 						    <thead class="thead-default">
 						      <tr>      
@@ -69,20 +71,112 @@
 						    </tbody>
 						    
 						</table>
-				</div>		
+				</div>	
+				<div class="col-sm-12 col-md-12 col-lg-12" ng-if="isViewMatter">
+					<h4><b>Patients</b></h4>
+					<div ng-repeat="p in user.doctor_patients_list | orderBy: '-p.date_received'" style="margin-bottom: 15px!important">
+						<img src="{{p.patient_profile_pic_url}}" style="width: 85px; height: auto;float: left;">
+						<div style="display: inline-block;padding-left: 20px">
+							<span><b>{{p.patient_firstname}} {{p.patient_lastname}}</b></span><br>
+							<!--<span>{{p.patient_gender}}</span><br>
+							<span>{{p.patient_age}}</span><br>
+							<span>{{p.patient_city}}</span><br>-->
+							<span>{{p.patient_id}}</span><br>
+							<span>{{p.patient_initial_complaint.date_received | date : "fullDate"}}</span>
+						</div>
+						<div class="clearfix"></div>
+					</div>
+
+				</div>	
 			</div>
 		</div>
 
 		<!-- for patients -->
 		<div ng-if="user.type === 'Patient'">
 			<div class="row">
-				<div class="col-sm-3 col-md-4 col-lg-4">
-					<img src="{{user.profile_pic_url}}" style="width: 45px; height: 45px">
+				<div class="col-sm-4 col-md-2 col-lg-2">
+					<img src="{{user.profile_pic_url}}" style="width: 120px; height:auto">
 				</div>
-				<div class="col-sm-9 col-md-8 col-lg-8 pl-2">
-					<div><b ng-if="user.lastname">{{user.title}} {{user.firstname}} {{user.lastname}}</b> <b ng-if="!user.lastname">{{user.name}}</b></div>
-					<div></div>
+				<div class="col-sm-8 col-md-10 col-lg-10 pl-2">
+					<h3><b ng-if="user.lastname">{{user.title}} {{user.firstname}} {{user.lastname}}</b> <b ng-if="!user.lastname">{{user.name}}</b> <button style="float: right;" class="btn btn-danger btn-sm"  ng-click="verifyUser('block',user)">block user</button>
+					<button class="btn btn-simple btn-sm" ng-click="deleteAcc(user._id)"> Delete Account</button></h3>
+					<div class="row">
+						<div class="col-sm-6 col-md-6 col-lg-6 pl-2" style="line-height: 25px">
+							<div><b>User ID:</b> {{user.user_id}}</div>
+							<div><b>Gender:</b> {{user.gender}}</div>
+							<div><b>Age:</b> {{user.age}}</div>
+							<div><b>email:</b> {{user.email}}</div>
+							<div><b>phone:</b> {{user.phone}}</div>
+							<div><b>Address:</b> {{user.address}}</div>							
+						</div>
+						<div class="col-sm-6 col-md-6 col-lg-6 pl-2" style="line-height: 25px">
+							<div><b>City:</b> {{user.city}}</div>
+							<div><b>Country:</b> {{user.country}}</div>
+							<div><b>Date Registered:</b> {{user.date | date:'fullDate'}}</div>
+							<div><a href="{{user.profile_url}}" target="_blank" style="text-decoration: underline;color: blue" title="takes you to a new page">view profile</a> <i class="fa fa-external-link"></i></div>
+						</div>
+					</div>
+					
 				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-12 col-md-12 col-lg-12">
+					<ul style="display: inline-block;list-style: none;width: 50%;margin: 0 auto;padding: 20px 0">
+						<li style="float: left;padding: 10px" class=""><a href="" class="btn btn-info" ng-click="view('transaction')">Transactions ({{user.ewallet.transaction.length}})</a> </li>
+						<li style="float: left;padding: 10px" class=""><a href="" class="btn btn-info" ng-click="view('matters')">Doctors ({{user.accepted_doctors.length}})</a></li>
+
+						<li style="float: left;padding: 10px" class=""><a href="" class="btn btn-info" ng-click="view('family')">Family Accounts ({{user.family_accounts.length}})</a></li>
+						<!--<li style="float: left;padding: 10px" class="bg primary"><a href="" class="btn btn-primary">Skills &amp; Procedures</a></li>
+						<li style="float: left;padding: 10px" class="bg primary"><a href="" class="btn btn-primary">Sub Specialties</a></li>-->
+					</ul>
+				</div>
+
+				<div class="col-sm-12 col-md-12 col-lg-12" ng-if="isViewTransaction">
+					<h4><b>Transations</b> <a href="" style="float: right;font-size: 14px;margin-right: 20px" class="text-muted">Balance: <b>{{getBance(user)}}</b></a></h4>
+					 	<table class="table table-bordered" >
+						    <!--<caption><b class="pl-1">Period: {{duration.from}}&nbsp; - &nbsp;{{duration.to}}</b> <i class="fa fa-print" style="float: right;font-size: 22px;color: orange;padding-top: 10px;cursor: pointer;"></i></caption>-->
+						    <thead class="thead-default">
+						      <tr>      
+						       <th>Date/time</th>
+						      <th>Action</th>
+						      <th>Amount</th>
+						      <th>Source</th>
+						      <th>Beneficiary</th>
+						      <th>Activity</th>
+						      </tr>
+						    </thead>
+
+						    <tbody ng-repeat="transact in user.ewallet.transaction | orderBy: '-date'">
+						      <tr>
+						        <td><small>{{transact.date | date: "mediumDate"}} &nbsp;&nbsp;{{transact.date | date: "mediumTime"}}</small></td>
+						        <td>{{transact.activity}}</td>
+						        <td>{{toCurrency(transact.body.amount)}}</td>
+						        <td>{{transact.source}}</td>
+						        <td>{{transact.body.beneficiary}}</td>
+						        <td>{{transact.message}}</td>
+						      </tr>
+						     
+						    </tbody>
+						    
+						</table>
+				</div>	
+				<div class="col-sm-12 col-md-12 col-lg-12" ng-if="isViewMatter">
+					<h4><b>Doctors</b></h4>
+					<div ng-repeat="p in user.accepted_doctors | orderBy: '-p.date_of_acceptance'" style="margin-bottom: 15px!important">
+						<img src="{{p.doctor_profile_pic_url}}" style="width: 85px; height: auto;float: left;">
+						<div style="display: inline-block;padding-left: 20px">
+							<span><b>{{p.doctor_firstname}} {{p.doctor_lastname}}</b></span><br>
+							<span><b>{{p.doctor_specialty}}</b></span><br>
+							<!--<span>{{p.patient_gender}}</span><br>
+							<span>{{p.patient_age}}</span><br>
+							<span>{{p.patient_city}}</span><br>-->
+							<span>Doctor's ID | {{p.doctor_id}}</span><br>
+							<span>Date of acceptance | {{p.date_of_acceptance | date : "fullDate"}}</span>
+						</div>
+						<div class="clearfix"></div>
+					</div>
+
+				</div>	
 			</div>
 		</div>
 
