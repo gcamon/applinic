@@ -154,29 +154,34 @@ var configuration = function (app,model) {
 			model.user.findById(id)
 			.exec(function(err, user) {	
 				if(err) throw err;
-				//var elemPos = user.family_accounts.map(function(x){return x.memberId}).indexOf(memberId);
-				for(var k = 0; k < user.family_accounts.length; k++) {					
-					if(user.family_accounts[k].main) {
-						user.family_accounts[k].status = true;
-						user.attach = { // this will not be saved in db
-							firstname: user.family_accounts[k].name,
-							userId: user.family_accounts[k].memberId,
-							title: user.family_accounts[k].title
-						}	
-					} else {
-						user.family_accounts[k].status = false;
-					}
-				}
 
-				user.family_flag = true;
-				user.switchSuccess = true; // use to know when switch was successful.
-				user.family_accounts.push({});
-				user.family_accounts.pop();
-				user.save(function(err,info){
-					if(err) throw err;
-					updatewallet();
-					done(err, user);
-				});					
+				if(user) {
+					//var elemPos = user.family_accounts.map(function(x){return x.memberId}).indexOf(memberId);
+					for(var k = 0; k < user.family_accounts.length; k++) {					
+						if(user.family_accounts[k].main) {
+							user.family_accounts[k].status = true;
+							user.attach = { // this will not be saved in db
+								firstname: user.family_accounts[k].name,
+								userId: user.family_accounts[k].memberId,
+								title: user.family_accounts[k].title
+							}	
+						} else {
+							user.family_accounts[k].status = false;
+						}
+					}
+				
+					user.family_flag = true;
+					user.switchSuccess = true; // use to know when switch was successful.
+					user.family_accounts.push({});
+					user.family_accounts.pop();
+					user.save(function(err,info){
+						if(err) throw err;
+						updatewallet();
+						done(err, user);
+					});	
+				} else {
+					done(err, null);
+				}			
 							
 			})
 
@@ -201,16 +206,19 @@ var configuration = function (app,model) {
 						user.family_accounts[k].status = false;
 					}
 				}	
-
-				user.family_flag = true;
-				user.switchSuccess = true; // use to know when switch was successful.
-				user.family_accounts.push({});
-				user.family_accounts.pop();
-				user.save(function(er,info){
-					if(er) throw er;
-					updatewallet();
-					done(err, user);
-				});					
+				if(user) {
+					user.family_flag = true;
+					user.switchSuccess = true; // use to know when switch was successful.
+					user.family_accounts.push({});
+					user.family_accounts.pop();
+					user.save(function(er,info){
+						if(er) throw er;
+						updatewallet();
+						done(err, user);
+					});
+				} else {
+					done(err, null);
+				}				
 
 			})
 		}
