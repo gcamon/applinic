@@ -245,7 +245,7 @@
 	                <table>
 	                	<tr>
 	                		<thead>
-	                			<th>Time</th>
+	                			<th>Date/time</th>
 	                			<th>City</th>
 	                			<th>Name</th>
 	                			<th>phone</th>
@@ -253,7 +253,7 @@
 	                	</tr>
 	                	<tr>
 	                		<tbody ng-repeat="j in newUserDetails.data | orderBy: 'city'">
-	                			<td>{{j.date | date: "mediumTime"}}</td>
+	                			<td><small><span am-time-ago="j.date"></span> <span style="display: block;">{{j.date | date: "shortTime"}}</span></small></td>
 	                			<td>{{j.city}}</td>
 	                			<td><span  ng-if="!j.name">{{j.title}} {{j.firstname}}</span> <span ng-if="j.name">{{j.name}}</span></td>
 	                			<td>{{j.phone}}</td>
