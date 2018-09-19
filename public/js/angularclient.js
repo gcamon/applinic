@@ -9591,19 +9591,19 @@ app.controller("adminCreateRoomController",["$scope","localManager","mySocket","
         $scope.isViewTransaction = true;
         $scope.isViewFamily = false;
         $scope.isViewMatter = false;
-        $scope.isReferral = true;
+        $scope.isReferral = false;
         break;
       case 'matters':
         $scope.isViewMatter = true;
         $scope.isViewFamily = false;
         $scope.isViewTransaction = false;
-        $scope.isReferral = true;
+        $scope.isReferral = false;
         break;
       case 'family':
         $scope.isViewFamily = true;
         $scope.isViewTransaction = false;
         $scope.isViewMatter = false;
-        $scope.isReferral = true;
+        $scope.isReferral = false;
         break;
       case 'referral':
         $scope.isViewFamily = false;

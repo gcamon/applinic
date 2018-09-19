@@ -35,9 +35,9 @@
 			</div>
 			<div class="row">
 				<div class="col-sm-12 col-md-12 col-lg-12">
-					<ul style="display: inline-block;list-style: none;width: 50%;margin: 0 auto;padding: 20px 0" ng-if="user.type =='Doctor'">
-						<li style="float: left;padding: 10px" class=""><a href="" class="btn btn-info" ng-click="view('transaction')">Transactions ({{user.ewallet.transaction.length }})</a> </li>
-						<li style="float: left;padding: 10px" class=""><a href="" class="btn btn-info" ng-click="view('matters')">Patients ({{user.doctor_patients_list.length}})</a></li>
+					<ul style="display: inline-block;list-style: none;margin: 0 auto;padding: 20px 0" ng-if="user.type =='Doctor'">
+						<li style="float: left;padding: 10px" class=""><a href="" class="btn btn-info dropdown-toggle" ng-click="view('transaction')">Transactions ({{user.ewallet.transaction.length }})</a> </li>
+						<li style="float: left;padding: 10px" class=""><a href="" class="btn btn-info dropdown-toggle" ng-click="view('matters')">Patients ({{user.doctor_patients_list.length}})</a></li>
 						<!--<li style="float: left;padding: 10px" class="bg primary"><a href="" class="btn btn-primary">Skills &amp; Procedures</a></li>
 						<li style="float: left;padding: 10px" class="bg primary"><a href="" class="btn btn-primary">Sub Specialties</a></li>-->
 					</ul>
@@ -121,11 +121,11 @@
 			</div>
 			<div class="row">
 				<div class="col-sm-12 col-md-12 col-lg-12">
-					<ul style="display: inline-block;list-style: none;width: 50%;margin: 0 auto;padding: 20px 0">
-						<li style="float: left;padding: 10px" class=""><a href="" class="btn btn-info" ng-click="view('transaction')">Transactions ({{user.ewallet.transaction.length}})</a> </li>
-						<li style="float: left;padding: 10px" class=""><a href="" class="btn btn-info" ng-click="view('matters')">Doctors ({{user.accepted_doctors.length}})</a></li>
+					<ul style="display: inline-block;list-style: none;margin: 0 auto;padding: 20px 0">
+						<li style="float: left;padding: 10px" class=""><a href="" class="btn btn-info dropdown-toggle" ng-click="view('transaction')">Transactions ({{user.ewallet.transaction.length}})</a> </li>
+						<li style="float: left;padding: 10px" class=""><a href="" class="btn btn-info dropdown-toggle" ng-click="view('matters')">Doctors ({{user.accepted_doctors.length}})</a></li>
 
-						<li style="float: left;padding: 10px" class=""><a href="" class="btn btn-info" ng-click="view('family')">Family Accounts ({{user.family_accounts.length}})</a></li>
+						<li style="float: left;padding: 10px" class=""><a href="" class="btn btn-info dropdown-toggle" ng-click="view('family')">Family Accounts ({{user.family_accounts.length}})</a></li>
 						<!--<li style="float: left;padding: 10px" class="bg primary"><a href="" class="btn btn-primary">Skills &amp; Procedures</a></li>
 						<li style="float: left;padding: 10px" class="bg primary"><a href="" class="btn btn-primary">Sub Specialties</a></li>-->
 					</ul>
@@ -223,11 +223,11 @@
 			<div class="row">
 				
 				<div class="col-sm-12 col-md-12 col-lg-12">
-					<ul style="display: inline-block;list-style: none;width: 50%;margin: 0 auto;padding: 20px 0">
-						<li style="float: left;padding: 10px" class=""><a href="" class="btn btn-info" ng-click="view('transaction')">Transactions ({{user.ewallet.transaction.length}})</a> </li>
-						<li style="float: left;padding: 10px" class=""><a href="" class="btn btn-info" ng-click="view('matters')">Services ({{user.service_details.length}})</a></li>
+					<ul style="display: inline-block;list-style: none;margin: 0 auto;padding: 20px 0">
+						<li style="float: left;padding: 10px" class=""><a href="" class="btn btn-info dropdown-toggle" ng-click="view('transaction')">Transactions ({{user.ewallet.transaction.length}})</a> </li>
+						<li style="float: left;padding: 10px" class=""><a href="" class="btn btn-info dropdown-toggle" ng-click="view('matters')">Services ({{user.service_details.length}})</a></li>
 
-						<li style="float: left;padding: 10px" class=""><a href="" class="btn btn-info" ng-click="view('referral')">Referrals({{user.referral.length}})</a></li>
+						<li style="float: left;padding: 10px" class=""><a href="" class="btn btn-info dropdown-toggle" ng-click="view('referral')">Referrals({{user.referral.length}})</a></li>
 						<!--<li style="float: left;padding: 10px" class="bg primary"><a href="" class="btn btn-primary">Skills &amp; Procedures</a></li>
 						<li style="float: left;padding: 10px" class="bg primary"><a href="" class="btn btn-primary">Sub Specialties</a></li>-->
 					</ul>
@@ -351,28 +351,326 @@
 		<!-- for Laboratory -->
 		<div ng-if="user.type === 'Laboratory'">
 			<div class="row">
-				<div class="col-sm-3 col-md-4 col-lg-4">
-					<img src="{{user.profile_pic_url}}" style="width: 45px; height: 45px">
+				<div class="col-sm-4 col-md-2 col-lg-2">
+					<img src="{{user.profile_pic_url}}" style="width: 120px; height:auto">
 				</div>
-				<div class="col-sm-9 col-md-8 col-lg-8 pl-2">
-					<div><b ng-if="user.lastname">{{user.title}} {{user.firstname}} {{user.lastname}}</b> <b ng-if="!user.lastname">{{user.name}}</b></div>
-					<div></div>
+				<div class="col-sm-8 col-md-10 col-lg-10 pl-2">
+					<h3><b>{{user.name}}</b> <button style="float: right;" class="btn btn-danger btn-sm" ng-if="user.verified" ng-click="verifyUser('block',user)">block user</button> <button style="float: right;" class="btn btn-simple btn-sm" ng-if="!user.verified" ng-click="verifyUser('verify',user)">verify user</button> <button style="float: right;" class="btn btn-warning btn-sm" ng-if="user.verified" ng-click="verifyUser('unverify',user)">unverify user</button>&nbsp;&nbsp;&nbsp;
+					<button class="btn btn-simple btn-sm" ng-click="deleteAcc(user._id)"> Delete Account</button></h3>
+					<div class="row">
+						<div class="col-sm-6 col-md-6 col-lg-6 pl-2" style="line-height: 25px">
+							<div><b>User Type:</b> <span class="text-danger">{{user.type}}</span></div>
+							<div><b>User ID:</b> {{user.user_id}}</div>
+							<div><b>email:</b> {{user.email}}</div>
+							<div><b>phone:</b> {{user.phone}}</div>
+							<div><b>Address:</b> {{user.address}}</div>
+							<!--<div ng-if="user.education"><b>Certification:</b> <span ng-repeat="i in user.education">{{i.certificate}}, </span></div>-->
+						</div>
+						<div class="col-sm-6 col-md-6 col-lg-6 pl-2" style="line-height: 25px">
+							<div><b>City:</b> {{user.city}}</div>
+							<div><b>Country:</b> {{user.country}}</div>
+							<div><b>Date Registered:</b> {{user.date | date:'fullDate'}}</div>
+							<div><b>Status:</b> <span class="text-success" ng-if="user.verified"> <i class="fa fa-check"></i> <b>Verified</b> </span> <span class="text-danger" ng-if="!user.verified"> <i class="fa fa-check"></i> <b> Not Verified</b> </span></div>
+							<div><a href="{{user.profile_url}}" target="_blank" style="text-decoration: underline;color: blue" title="takes you to a new page">view profile</a> <i class="fa fa-external-link"></i></div>
+						</div>
+					</div>
+					
 				</div>
 			</div>
+
+			<div class="row">
+				
+				<div class="col-sm-12 col-md-12 col-lg-12">
+					<ul style="display: inline-block;list-style: none;margin: 0 auto;padding: 20px 0">
+						<li style="float: left;padding: 10px" class=""><a href="" class="btn btn-info dropdown-toggle" ng-click="view('transaction')">Transactions ({{user.ewallet.transaction.length}})</a> </li>
+						<li style="float: left;padding: 10px" class=""><a href="" class="btn btn-info dropdown-toggle" ng-click="view('matters')">Services ({{user.service_details.length}})</a></li>
+
+						<li style="float: left;padding: 10px" class=""><a href="" class="btn btn-info dropdown-toggle" ng-click="view('referral')">Referrals({{user.referral.length}})</a></li>
+						<!--<li style="float: left;padding: 10px" class="bg primary"><a href="" class="btn btn-primary">Skills &amp; Procedures</a></li>
+						<li style="float: left;padding: 10px" class="bg primary"><a href="" class="btn btn-primary">Sub Specialties</a></li>-->
+					</ul>
+				</div>
+				<div class="col-sm-12 col-md-12 col-lg-12" ng-if="isViewTransaction">
+					<h4><b>Transations</b> <a href="" style="float: right;font-size: 14px;margin-right: 20px" class="text-muted">Balance: <b>{{getBance(user)}}</b></a></h4>
+					 	<table class="table table-bordered" >
+						    <!--<caption><b class="pl-1">Period: {{duration.from}}&nbsp; - &nbsp;{{duration.to}}</b> <i class="fa fa-print" style="float: right;font-size: 22px;color: orange;padding-top: 10px;cursor: pointer;"></i></caption>-->
+						    <thead class="thead-default">
+						      <tr>      
+						       <th>Date/time</th>
+						      <th>Action</th>
+						      <th>Amount</th>
+						      <th>Source</th>
+						      <th>Beneficiary</th>
+						      <th>Activity</th>
+						      </tr>
+						    </thead>
+
+						    <tbody ng-repeat="transact in user.ewallet.transaction | orderBy: '-date'">
+						      <tr>
+						        <td><small>{{transact.date | date: "mediumDate"}} &nbsp;&nbsp;{{transact.date | date: "mediumTime"}}</small></td>
+						        <td>{{transact.activity}}</td>
+						        <td>{{toCurrency(transact.body.amount)}}</td>
+						        <td>{{transact.source}}</td>
+						        <td>{{transact.body.beneficiary}}</td>
+						        <td>{{transact.message}}</td>
+						      </tr>
+						     
+						    </tbody>
+						    
+						</table>
+					</div>	
+					<div class="col-sm-12 col-md-12 col-lg-12" ng-if="isViewMatter">
+					<h4><b>Service Details</b></h4>
+					<div style="margin-bottom: 15px!important">
+						<table class="table table-bordered" >
+						    <!--<caption><b class="pl-1">Period: {{duration.from}}&nbsp; - &nbsp;{{duration.to}}</b> <i class="fa fa-print" style="float: right;font-size: 22px;color: orange;padding-top: 10px;cursor: pointer;"></i></caption>-->
+						    <thead class="thead-default">
+						      <tr>      
+						       <th>Date/time</th>
+						       <th>Ref NO</th>
+						      <th>Amount</th>
+						      <th>Patient details</th>
+						      <th>Investigations</th>
+						      <th>Sent To</th>
+						      <th>Referred By</th>
+						      </tr>
+						    </thead>
+
+						    <tbody ng-repeat="transact in user.service_details | orderBy: '-date'">
+						      <tr>
+						        <td><small>{{transact.date | date: "mediumDate"}} &nbsp;&nbsp;{{transact.date | date: "mediumTime"}}</small></td>
+						        <td>{{transact.ref_id}}</td>
+						        <td>{{toCurrency(transact.payObj.total)}}</td>
+						        <td>
+						        	<span><b>Names:</b> {{transact.laboratory.patient_firstname}} {{transact.laboratory.patient_lastname}}</span> <br>
+						        	<span><b>Age:</b> {{transact.laboratory.patient_age}}</span> <br>
+						        	<span><b>Gender:</b> {{transact.laboratory.patient_gender}}</span> <br>
+						        	<span><b>Phone:</b> {{transact.laboratory.patient_phone}}</span>
+						        </td>
+						        <td>
+						        	<ol>
+						        		<li ng-repeat="d in transact.laboratory.test_ran"><b>{{d.name}}</b> <!--=> <span style="font-style: italic;">{{d.data}} </span>--></li>
+						        	</ol>
+						        </td>
+						        <td>
+						        	{{transact.receiver}}
+						        </td>
+						         <td>
+						        	{{transact.referral_title}} {{transact.referral_firstname}} {{transact.referral_lastname}}
+						        </td>
+						      </tr>
+						     
+						    </tbody>
+						    
+						</table>
+					</div>
+
+				</div>	
+				<div class="col-sm-12 col-md-12 col-lg-12" ng-if="isReferral">
+					<h4><b>Referrals</b></h4>
+					<div style="margin-bottom: 15px!important">
+						<table class="table table-bordered" >
+						    <!--<caption><b class="pl-1">Period: {{duration.from}}&nbsp; - &nbsp;{{duration.to}}</b> <i class="fa fa-print" style="float: right;font-size: 22px;color: orange;padding-top: 10px;cursor: pointer;"></i></caption>-->
+						    <thead class="thead-default">
+						      <tr>      
+						       <th>Date/time</th>
+						       <th>Ref NO</th>						     
+						      <th>Patient details</th>
+						      <th>Precriptions</th>
+						      <th>referred By</th>
+						      </tr>
+						    </thead>
+
+						    <tbody ng-repeat="p in user.referral | orderBy: '-date'">
+						      <tr>
+						        <td><small>{{p.date | date: "fullDate"}}</small></td>
+						        <td>{{p.ref_id}}</td>
+						        
+						        <td>
+						        	<span><b>Names:</b>{{p.laboratory.patient_title}} {{p.laboratory.patient_firstname}} {{p.laboratory.patient_lastname}}</span> <br>
+						        	<span><b>Patient ID:</b> {{p.laboratory.patient_id}}</span> <br>
+						        	<!--<span><b>:</b> {{p.laboratory.patient_country}}</span> <br>-->
+						        </td>
+						        <td>
+						        	<ol>
+						        		<li ng-repeat="d in p.laboratory.test_to_run">{{d.name}} </li>
+						        	</ol>
+						        </td>
+						        <td>
+						        	{{p.referral_title}} {{p.referral_firstname}} {{p.referral_lastname}}
+						        </td>
+						      </tr>
+						     
+						    </tbody>
+						    
+						</table>
+					</div>
+
+				</div>	
+				</div>
 		</div>
 
 
 		<!-- for Radiology -->
 		<div ng-if="user.type === 'Radiology'">
 			<div class="row">
-				<div class="col-sm-3 col-md-4 col-lg-4">
-					<img src="{{user.profile_pic_url}}" style="width: 45px; height: 45px">
+				<div class="col-sm-4 col-md-2 col-lg-2">
+					<img src="{{user.profile_pic_url}}" style="width: 120px; height:auto">
 				</div>
-				<div class="col-sm-9 col-md-8 col-lg-8 pl-2">
-					<div><b ng-if="user.lastname">{{user.title}} {{user.firstname}} {{user.lastname}}</b> <b ng-if="!user.lastname">{{user.name}}</b></div>
-					<div></div>
+				<div class="col-sm-8 col-md-10 col-lg-10 pl-2">
+					<h3><b>{{user.name}}</b> <button style="float: right;" class="btn btn-danger btn-sm" ng-if="user.verified" ng-click="verifyUser('block',user)">block user</button> <button style="float: right;" class="btn btn-simple btn-sm" ng-if="!user.verified" ng-click="verifyUser('verify',user)">verify user</button> <button style="float: right;" class="btn btn-warning btn-sm" ng-if="user.verified" ng-click="verifyUser('unverify',user)">unverify user</button>&nbsp;&nbsp;&nbsp;
+					<button class="btn btn-simple btn-sm" ng-click="deleteAcc(user._id)"> Delete Account</button></h3>
+					<div class="row">
+						<div class="col-sm-6 col-md-6 col-lg-6 pl-2" style="line-height: 25px">
+							<div><b>User Type:</b> <span class="text-danger">{{user.type}}</span></div>
+							<div><b>User ID:</b> {{user.user_id}}</div>
+							<div><b>email:</b> {{user.email}}</div>
+							<div><b>phone:</b> {{user.phone}}</div>
+							<div><b>Address:</b> {{user.address}}</div>
+							<!--<div ng-if="user.education"><b>Certification:</b> <span ng-repeat="i in user.education">{{i.certificate}}, </span></div>-->
+						</div>
+						<div class="col-sm-6 col-md-6 col-lg-6 pl-2" style="line-height: 25px">
+							<div><b>City:</b> {{user.city}}</div>
+							<div><b>Country:</b> {{user.country}}</div>
+							<div><b>Date Registered:</b> {{user.date | date:'fullDate'}}</div>
+							<div><b>Status:</b> <span class="text-success" ng-if="user.verified"> <i class="fa fa-check"></i> <b>Verified</b> </span> <span class="text-danger" ng-if="!user.verified"> <i class="fa fa-check"></i> <b> Not Verified</b> </span></div>
+							<div><a href="{{user.profile_url}}" target="_blank" style="text-decoration: underline;color: blue" title="takes you to a new page">view profile</a> <i class="fa fa-external-link"></i></div>
+						</div>
+					</div>
+					
 				</div>
 			</div>
+
+			<div class="row">
+				
+				<div class="col-sm-12 col-md-12 col-lg-12">
+					<ul style="display: inline-block;list-style: none;margin: 0 auto;padding: 20px 0">
+						<li style="float: left;padding: 10px" class=""><a href="" class="btn btn-info dropdown-toggle" ng-click="view('transaction')">Transactions ({{user.ewallet.transaction.length}})</a> </li>
+						<li style="float: left;padding: 10px" class=""><a href="" class="btn btn-info dropdown-toggle" ng-click="view('matters')">Services ({{user.service_details.length}})</a></li>
+
+						<li style="float: left;padding: 10px" class=""><a href="" class="btn btn-info dropdown-toggle" ng-click="view('referral')">Referrals({{user.referral.length}})</a></li>
+						<!--<li style="float: left;padding: 10px" class="bg primary"><a href="" class="btn btn-primary">Skills &amp; Procedures</a></li>
+						<li style="float: left;padding: 10px" class="bg primary"><a href="" class="btn btn-primary">Sub Specialties</a></li>-->
+					</ul>
+				</div>
+				<div class="col-sm-12 col-md-12 col-lg-12" ng-if="isViewTransaction">
+					<h4><b>Transations</b> <a href="" style="float: right;font-size: 14px;margin-right: 20px" class="text-muted">Balance: <b>{{getBance(user)}}</b></a></h4>
+					 	<table class="table table-bordered" >
+						    <!--<caption><b class="pl-1">Period: {{duration.from}}&nbsp; - &nbsp;{{duration.to}}</b> <i class="fa fa-print" style="float: right;font-size: 22px;color: orange;padding-top: 10px;cursor: pointer;"></i></caption>-->
+						    <thead class="thead-default">
+						      <tr>      
+						       <th>Date/time</th>
+						      <th>Action</th>
+						      <th>Amount</th>
+						      <th>Source</th>
+						      <th>Beneficiary</th>
+						      <th>Activity</th>
+						      </tr>
+						    </thead>
+
+						    <tbody ng-repeat="transact in user.ewallet.transaction | orderBy: '-date'">
+						      <tr>
+						        <td><small>{{transact.date | date: "mediumDate"}} &nbsp;&nbsp;{{transact.date | date: "mediumTime"}}</small></td>
+						        <td>{{transact.activity}}</td>
+						        <td>{{toCurrency(transact.body.amount)}}</td>
+						        <td>{{transact.source}}</td>
+						        <td>{{transact.body.beneficiary}}</td>
+						        <td>{{transact.message}}</td>
+						      </tr>
+						     
+						    </tbody>
+						    
+						</table>
+					</div>	
+					<div class="col-sm-12 col-md-12 col-lg-12" ng-if="isViewMatter">
+					<h4><b>Service Details</b></h4>
+					<div style="margin-bottom: 15px!important">
+						<table class="table table-bordered" >
+						    <!--<caption><b class="pl-1">Period: {{duration.from}}&nbsp; - &nbsp;{{duration.to}}</b> <i class="fa fa-print" style="float: right;font-size: 22px;color: orange;padding-top: 10px;cursor: pointer;"></i></caption>-->
+						    <thead class="thead-default">
+						      <tr>      
+						       <th>Date/time</th>
+						       <th>Ref NO</th>
+						      <th>Amount</th>
+						      <th>Patient details</th>
+						      <th>Investigations</th>
+						      <th>Sent To</th>
+						      <th>Referred By</th>
+						      </tr>
+						    </thead>
+
+						    <tbody ng-repeat="transact in user.service_details | orderBy: '-date'">
+						      <tr>
+						        <td><small>{{transact.date | date: "mediumDate"}} &nbsp;&nbsp;{{transact.date | date: "mediumTime"}}</small></td>
+						        <td>{{transact.ref_id}}</td>
+						        <td>{{toCurrency(transact.payObj.total)}}</td>
+						        <td>
+						        	<span><b>Names:</b> {{transact.laboratory.patient_firstname}} {{transact.laboratory.patient_lastname}}</span> <br>
+						        	<span><b>Age:</b> {{transact.laboratory.patient_age}}</span> <br>
+						        	<span><b>Gender:</b> {{transact.laboratory.patient_gender}}</span> <br>
+						        	<span><b>Phone:</b> {{transact.laboratory.patient_phone}}</span>
+						        </td>
+						        <td>
+						        	<ol>
+						        		<li ng-repeat="d in transact.laboratory.test_ran"><b>{{d.name}}</b> <!--=> <span style="font-style: italic;">{{d.data}} </span>--></li>
+						        	</ol>
+						        </td>
+						        <td>
+						        	{{transact.receiver}}
+						        </td>
+						         <td>
+						        	{{transact.referral_title}} {{transact.referral_firstname}} {{transact.referral_lastname}}
+						        </td>
+						      </tr>
+						     
+						    </tbody>
+						    
+						</table>
+					</div>
+
+				</div>	
+				<div class="col-sm-12 col-md-12 col-lg-12" ng-if="isReferral">
+					<h4><b>Referrals</b></h4>
+					<div style="margin-bottom: 15px!important">
+						<table class="table table-bordered" >
+						    <!--<caption><b class="pl-1">Period: {{duration.from}}&nbsp; - &nbsp;{{duration.to}}</b> <i class="fa fa-print" style="float: right;font-size: 22px;color: orange;padding-top: 10px;cursor: pointer;"></i></caption>-->
+						    <thead class="thead-default">
+						      <tr>      
+						       <th>Date/time</th>
+						       <th>Ref NO</th>						     
+						      <th>Patient details</th>
+						      <th>Precriptions</th>
+						      <th>referred By</th>
+						      </tr>
+						    </thead>
+
+						    <tbody ng-repeat="p in user.referral | orderBy: '-date'">
+						      <tr>
+						        <td><small>{{p.date | date: "fullDate"}}</small></td>
+						        <td>{{p.ref_id}}</td>
+						        
+						        <td>
+						        	<span><b>Names:</b>{{p.radiology.patient_title}} {{p.radiology.patient_firstname}} {{p.radiology.patient_lastname}}</span> <br>
+						        	<span><b>Patient ID:</b> {{p.radiology.patient_id}}</span> <br>
+						        	<!--<span><b>:</b> {{p.laboratory.patient_country}}</span> <br>-->
+						        </td>
+						        <td>
+						        	<ol>
+						        		<li ng-repeat="d in p.radiology.test_to_run">{{d.name}} </li>
+						        	</ol>
+						        </td>
+						        <td>
+						        	{{p.referral_title}} {{p.referral_firstname}} {{p.referral_lastname}}
+						        </td>
+						      </tr>
+						     
+						    </tbody>
+						    
+						</table>
+					</div>
+
+				</div>	
+				</div>
 		</div>
 
 
