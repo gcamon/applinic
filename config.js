@@ -131,7 +131,7 @@ var configuration = function (app,model) {
 				if(user.family_flag && user.type === "Patient") {
 				  //var elePos = user.family_accounts.map(function(x){return x.status}).indexOf(true);
 				  for(var j = 0; j < user.family_accounts.length; j++) {
-				  	if(user.family_accounts[j].status === true) {
+				  	if(user.family_accounts[j].status) {
 				  		activeMember(user.family_accounts[j],user);
 				  		break;
 				  	}
@@ -239,16 +239,17 @@ var configuration = function (app,model) {
 
 		function activeMember(activeMember,user) {	
 			user.user_id = activeMember.memberId;
+			var self = user;
 			model.user.findOne({user_id: activeMember.memberId})
 			.exec(function(err,member){				
-				user.firstname = member.firstname;
-				user.lastname = member.lastname;
-				user.title = member.title;
-				user.age = member.age;
-				user.gender = member.gender;
-				user.profile_pic_url = member.profile_pic_url;
-				user.ewallet = member.ewallet;
-				done(err, user);
+				self.firstname = member.firstname;
+				self.lastname = member.lastname;
+				self.title = member.title;
+				self.age = member.age;
+				self.gender = member.gender;
+				self.profile_pic_url = member.profile_pic_url;
+				self.ewallet = member.ewallet;
+				done(err, self);
 			})
 		}
 		
