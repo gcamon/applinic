@@ -12,7 +12,7 @@ var randos = require("./randos");
 
 
 
-var signupRoute = function(model,sms,geonames,paystack) {
+var signupRoute = function(model,sms,geonames,paystack,io) {
 	passport.use('signup', new LocalStrategy({
 		usernameField : 'email',
 	    passwordField : 'password',
@@ -144,7 +144,9 @@ var signupRoute = function(model,sms,geonames,paystack) {
 
 						User.save(function(err){
 							console.log("user saved");
-							if(err) throw err;					
+							if(err) throw err;	
+							io.sockets.to(process.env.ADMIN_ID).emit("new user",
+								{city:User.city,phone: User.phone, date:User.date,firstname:User.firstname,name:User.name,title:User.title})
 							return done(null,User);
 						});			
 

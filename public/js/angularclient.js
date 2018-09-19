@@ -9490,9 +9490,9 @@ app.controller("adminCreateRoomController",["$scope","localManager","mySocket","
   });
 
   mySocket.on("new user",function(data){
-    $rootScope.newUserToday++;
-    $rootScope.newUserWeek++;
-    $rootScope.newUserMonth++;
+    $rootScope.newUserToday.push(data)
+    $rootScope.newUserWeek.push(data);
+    $rootScope.newUserMonth.push(data);
   });
 
   mySocket.on("help request",function(data){

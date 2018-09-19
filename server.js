@@ -110,7 +110,7 @@ console.log(startDate, "" , endDate)
 
 
 config.configuration(app,model);
-signupRoute(model,sms,geonames,paystack);
+signupRoute(model,sms,geonames,paystack,io);
 loginRoute(model,sms);
 route(model,sms,io,streams); 
 payments(model,sms,io,paystack);
