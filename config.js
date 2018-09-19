@@ -123,7 +123,7 @@ var configuration = function (app,model) {
 			  done(err, user);	
 			});
 	 	} else {				
-			model.user.findById(id, function(err, user) {	
+			/*model.user.findById(id, function(err, user) {	
 				//user.family_flag = false;
 				//user.save(function(){})	
 				//console.log(user)
@@ -140,7 +140,9 @@ var configuration = function (app,model) {
 				} else {		
 				  done(err, user);
 				}	
-			});
+			});*/
+
+			mainUser();
 		}
 
 		
@@ -238,18 +240,18 @@ var configuration = function (app,model) {
 		}
 
 		function activeMember(activeMember,user) {	
+			var fmUser = {};
 			user.user_id = activeMember.memberId;
-			var self = user;
 			model.user.findOne({user_id: activeMember.memberId})
 			.exec(function(err,member){				
-				self.firstname = member.firstname;
-				self.lastname = member.lastname;
-				self.title = member.title;
-				self.age = member.age;
-				self.gender = member.gender;
-				self.profile_pic_url = member.profile_pic_url;
-				self.ewallet = member.ewallet;
-				done(err, self);
+				user.firstname = member.firstname;
+				user.lastname = member.lastname;
+				user.title = member.title;
+				user.age = member.age;
+				user.gender = member.gender;
+				user.profile_pic_url = member.profile_pic_url;
+				user.ewallet = member.ewallet;
+				done(err, user);
 			})
 		}
 		
