@@ -616,8 +616,8 @@ app.config(['$paystackProvider','$routeProvider',
  /** Admin utilities **/
 
  .when('/admin',{
-  templateUrl: "/assets/pages/welcome.html",
-  controller: "adminManageCtrl"
+  templateUrl: "/assets/pages/utilities/analytics.html",
+  controller: "adminAnalyticManageCtrl"
  })
 
  .when("/admin-doctors",{
@@ -9472,10 +9472,12 @@ app.factory("adminDoctorsService",["$resource",function($resource){
 }])
 
 app.controller("adminCreateRoomController",["$scope","localManager","mySocket","$rootScope","templateService",
-  "$location","$resource","ModalService","adminDoctorsService","$http",
-  function($scope,localManager,mySocket,$rootScope,templateService,$location,$resource,ModalService,adminDoctorsService,$http){
+  "$location","$resource","ModalService","adminDoctorsService","$http","$location",
+  function($scope,localManager,mySocket,$rootScope,templateService,$location,$resource,ModalService,adminDoctorsService,$http,$location){
   var user = localManager.getValue("resolveUser");  
   mySocket.emit('join',{userId: user.user_id});
+
+  $location.path("/admin");
 
   mySocket.on("income",function(data){
     var whole = Math.round(data.balance);
@@ -9485,6 +9487,12 @@ app.controller("adminCreateRoomController",["$scope","localManager","mySocket","
 
   mySocket.on("cash out",function(data){
     $rootScope.CashOutList.push(data);
+  });
+
+  mySocket.on("new user",function(data){
+    $rootScope.newUserToday++;
+    $rootScope.newUserWeek++;
+    $rootScope.newUserMonth++;
   });
 
   mySocket.on("help request",function(data){
@@ -9670,10 +9678,48 @@ app.controller("adminGetUserCtrl",["$scope","$location","$rootScope","$http","lo
         }
       });
     } else {
-      alert("wrong confirmation key!")
+      alert("wrong confirmation key!");
     }
   }
 
+}]);
+
+app.controller("adminAnalyticManageCtrl",["$scope","$rootScope","$location","$http","ModalService",
+  function($scope,$rootScope,$location,$http,ModalService){
+
+    $http({
+      method  : "GET",
+      url     : "/user/admin/new-user-report", //gets special drugs from backend     
+      headers : {'Content-Type': 'application/json'} 
+    })
+    .success(function(res) {  
+      $rootScope.newUserToday = res.day;
+      $rootScope.newUserWeek = res.week;
+      $rootScope.newUserMonth = res.month;
+    });
+
+    $scope.date = new Date();
+
+    $scope.viewDetails = function(data,when) {
+      $rootScope.newUserDetails = {
+        data:data,
+        when: when
+      };
+      ModalService.showModal({
+      templateUrl: 'admin-view-new-user.html',
+      controller: "newUserDetailsModal"
+      }).then(function(modal) {
+        modal.element.modal();
+        modal.close.then(function(result) {
+           
+        });
+      });
+    }
+
+}]);
+
+app.controller("newUserDetailsModal",["$scope","$rootScope",function($scope,$rootScope){
+  console.log($rootScope.newUserDetails,"sajh");
 }]);
 
 app.controller("adminManageCtrl",["$scope","$location","$rootScope","adminDoctorsService",

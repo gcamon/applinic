@@ -11,6 +11,7 @@ var express = require('express'),
   model = db(),
   payments = require("./finance"),  
   paystack = require('paystack')(process.env.PAYSTACK_SECRET_KEY),   
+  moment = require('moment'),
   
   /*Nexmo = require("nexmo"), 
   sms = new Nexmo({
@@ -71,6 +72,10 @@ var options = {
 http.listen(port,function(){
     console.log('listening on *: ' + port);
 });
+
+var startDate = moment().startOf('week');//day week month
+var endDate = startDate.clone().endOf('week');
+console.log(startDate, "" , endDate)
 
 
 

@@ -1,0 +1,23 @@
+<div class="p-2">
+	<h4>How well Are People Registering? <input type="date" style="float: right;font-size: 14px" ng-model="date" name=""></h4>
+	<ul style="width: 70%;margin: 20px auto;list-style: none;line-height: 30px;font-size: 14px" class="card p-2">
+		<li class="p-3">
+			<h6 style="display: inline-block;">Real Time Reports</h6>
+			<div style="float: right;">Total Users: <b>{{total}}</b></div>
+		</li>		
+		<li class="p-3">
+			<span>Today:</span><br>
+			<div style="text-indent: 40px"><b>{{newUserToday.length}}</b> &nbsp;&nbsp;&nbsp; <a href="" style="text-decoration: underline;" ng-click="viewDetails(newUserToday,'today')"><small>details</small></a></div>
+		</li>
+		<li class="p-3">
+			<span>This Week:</span><br>
+			<div style="text-indent: 40px"><b>{{newUserWeek.length}}</b> &nbsp;&nbsp;&nbsp; <a href="" style="text-decoration: underline;" ng-click="viewDetails(newUserWeek,'this week')"><small>details</small></a></div>
+		</li>
+		<li class="p-3">
+			<span>This Month:</span><br>
+			<div style="text-indent: 40px"><b>{{newUserMonth.length}}</b> &nbsp;&nbsp;&nbsp; <a href="" style="text-decoration: underline;" ng-click="viewDetails(newUserMonth,'this month')"><small>details</small></a></div>
+		</li>
+	</ul>
+
+	
+</div>

@@ -73,11 +73,11 @@
 	<!--************************************
 			Wrapper Start
 	*************************************-->
-	<div class="container-fluid" style="margin: 0;padding: 0" ng-controller="adminCreateRoomController">
+	<div ng-controller="adminCreateRoomController">
 		<!--************************************
 				Header Start
 		*************************************-->
-		<header    style="background-color: #fff;position: relative;" class="card">
+		<header style="background-color: #fff;position: relative;" class="card">
 			<div class="bg-danger p-1 text-white row">
 				<div class="col-sm-12 col-md-8 col-lg-8">
 					<a href="/" style="padding: 10px 20px 0;color: #fff"><b>Applinic > Admin</b></a> &nbsp; | &nbsp;
@@ -123,7 +123,7 @@
 						<a href="#/admin-special-center" class="text-danger"><b>{{specialCenter}}</b></a>
 					</div>
 		           
-           </div>
+          		 </div>
            </div>
         </header>
 		<!--************************************
@@ -140,11 +140,12 @@
 				Main Start
 		*************************************-->
 		<main>
-			<div  " class="row">
+			<div class="row">
 				<div class="col-sm-12 col-md-2 col-lg-2 card p-4 " style="border-radius: 0">
 					<h5 class="issues" class="text-muted">Requests</h5>
 					<hr>
 					<ul class="issues">
+						<li><a href="#/admin"><i class="fa fa-home"></i> Home</a></li>
 						<li><a href="">Withdrawals  &nbsp;&nbsp;<small style="color: red">{{CashOutList}}</small></a></li>
 						<li><a href="">Need Help &nbsp;&nbsp;<small style="color: red">50</small></a></li>
 						<li><a href="">Suggestions &nbsp;&nbsp;<small style="color: red">50</small></a></li>
@@ -162,26 +163,26 @@
 						<a href="">mail: <b>info@applinic.com</b></a>						
 					</div>-->
 
-					<div class="view-animate-container" >  
+					<div class="view-animate-container">  
 		                <div class="view-animate" ng-view>
 		                </div>
 		                <div style="height: 200px">
-		                	
 		                </div>
 		            </div>
 					
 				</div>
 				
 			</div>
-				
-			</div>
-
 		</main>
+				
+	</div>
+
+	
 		
 		<!--************************************
 				Footer End
 		*************************************-->
-	</div>
+	
 	<!--************************************
 			Wrapper End
 	*************************************-->
@@ -192,7 +193,7 @@
 	<!--************************************
 		Sign In Sign Up Light Box End
 	*************************************-->
-		<script type="text/ng-template" id='pay-user.html'>
+	<script type="text/ng-template" id='pay-user.html'>
 	         <div class="modal fade">
 	          <div class="modal-dialog">
 	            <div class="modal-content">
@@ -224,6 +225,41 @@
 	                 	</div>
 	                 	<p>Request was made on {{info.date | date: 'mediumDate'}} by {{info.date | date: "mediumTime"}}</p>
 	                 </div>
+	              </div>
+	              <div class="modal-footer">
+	                <button type="button" ng-click="goBack()" class="btn btn-primary" data-dismiss="modal">Close</button>	                
+	              </div>
+	            </div>
+	          </div>
+	        </div>
+	    </script>
+
+	    <script type="text/ng-template" id='admin-view-new-user.html'>
+	         <div class="modal" style="transition: opacity .15s linear;">
+	          <div class="modal-dialog">
+	            <div class="modal-content">
+	              <div class="modal-header">
+	              	<h5>{{newUserDetails.when}}</h5>
+	              </div>              
+	              <div class="modal-body" > 
+	                <table>
+	                	<tr>
+	                		<thead>
+	                			<th>Time</th>
+	                			<th>City</th>
+	                			<th>Name</th>
+	                			<th>phone</th>
+	                		</thead>
+	                	</tr>
+	                	<tr>
+	                		<tbody ng-repeat="j in newUserDetails.data | orderBy: 'city'">
+	                			<td>{{j.date | date: "mediumTime"}}</td>
+	                			<td>{{j.city}}</td>
+	                			<td><span  ng-if="!j.name">{{j.title}} {{j.firstname}}</span> <span ng-if="j.name">{{j.name}}</span></td>
+	                			<td>{{j.phone}}</td>
+	                		</tbody>
+	                	</tr>
+	                </table>
 	              </div>
 	              <div class="modal-footer">
 	                <button type="button" ng-click="goBack()" class="btn btn-primary" data-dismiss="modal">Close</button>	                

@@ -7058,49 +7058,105 @@ router.get("/user/chats",function(req,res){
 });
 
 router.put("/user/admin/verify-user",function(req,res){
-  if(req.user && req.user.type == 'admin') {
-    model.user.findById(req.body.userId)
-    .exec(function(err,user){
-      if(err) throw err;
-      if(user){
-        if(req.body.action == 'verify'){
-          user.verified = true;
-          user.save(function(err,info){})
-          res.json({status: true,message: "User verified!"});
+  if(req.user)
+    if(req.user.type == 'admin') {
+      model.user.findById(req.body.userId)
+      .exec(function(err,user){
+        if(err) throw err;
+        if(user){
+          if(req.body.action == 'verify'){
+            user.verified = true;
+            user.save(function(err,info){})
+            res.json({status: true,message: "User verified!"});
 
-        } else if(req.body.action == 'block'){
-          user.deleted = true;
-          user.save(function(err,info){
-            console.log("user blocked by admin");
-          });
-          res.json({status: true, message: "User blocked!",type: "block"});
+          } else if(req.body.action == 'block'){
+            user.deleted = true;
+            user.save(function(err,info){
+              console.log("user blocked by admin");
+            });
+            res.json({status: true, message: "User blocked!",type: "block"});
 
-        } else if(req.body.action == 'unverify'){
-          user.verified = false;
-          user.save(function(err,info){
-            console.log("user unverified by admin");
-          });
-          res.json({status: false,message: "User unverified!"});
+          } else if(req.body.action == 'unverify'){
+            user.verified = false;
+            user.save(function(err,info){
+              console.log("user unverified by admin");
+            });
+            res.json({status: false,message: "User unverified!"});
+          }
+        } else {
+          res.send({status: false,message: "verification failed!"})
         }
-      } else {
-        res.send({status: false,message: "verification failed!"})
-      }
-    })
-  } else {
-    res.end("unautorized access!");
-  }
+      })
+    } else {
+      res.end("unautorized access!");
+    }
 })
 
 router.delete("/user/admin/delete-user",function(req,res){
-  if(req.user && req.user.type == 'admin') {
-   model.user.remove({_id: req.body.userId},function(err,info){
-    if(err) throw err;
-    res.json({status: true, message: "User account deleted!"})
-   });
+  if(req.user) {
+    if(req.user.type == 'admin' && req.user.admin) {
+      model.user.remove({_id: req.body.userId},function(err,info){
+        if(err) throw err;
+        res.json({status: true, message: "User account deleted!"})
+      });
+    }
   } else {
     res.end("unautorized access!");
   }
-})
+});
+
+router.get("/user/admin/new-user-report",function(req,res){
+  if(req.user){
+    if(req.user.type == "admin" && req.user.admin){
+      var resObj = {};
+
+      var startDay = moment().startOf('day');//day week month
+      var endDay = startDay.clone().endOf('day');
+
+      var startWeek = moment().startOf('week');
+      var endWeek = startWeek.clone().endOf('week');
+
+      var startMonth = moment().startOf('month');
+      var endMonth = startMonth.clone().endOf('month');
+
+      model.user.find({date: {
+        $gt: startDay,
+        $lt: endDay
+      }},{email:1,phone:1,city:1,firstname:1,name:1,type:1,country:1,title:1,date:1},function(err,dayData){
+        resObj.day = dayData;
+
+        model.user.find({date: {
+          $gt: startWeek,
+          $lt: endWeek
+        }},{email:1,phone:1,city:1,firstname:1,name:1,type:1,country:1,title:1,date:1},function(err,weekData){
+          resObj.week = weekData;
+           model.user.find({date: {
+            $gt: startMonth,
+            $lt: endMonth
+          }},{email:1,phone:1,city:1,firstname:1,name:1,type:1,country:1,title:1,date:1},function(err,monthData){
+            resObj.month = monthData;
+            res.json(resObj);
+          });
+        })
+      })
+
+
+     
+     
+
+    } else {
+      res.send({});
+    }
+  } else {
+    res.end("unautorized access")
+  }
+});
+
+/*
+$gt: startDate,
+$lt: endDate
+
+*/
 
 
 
