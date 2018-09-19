@@ -9479,6 +9479,8 @@ app.controller("adminCreateRoomController",["$scope","localManager","mySocket","
 
   $location.path("/admin");
 
+  $scope.total = 0;
+
   mySocket.on("income",function(data){
     var whole = Math.round(data.balance);
     var format = "NGN" + whole.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -9493,13 +9495,14 @@ app.controller("adminCreateRoomController",["$scope","localManager","mySocket","
     $rootScope.newUserToday.push(data)
     $rootScope.newUserWeek.push(data);
     $rootScope.newUserMonth.push(data);
+    $scope.total++;
   });
 
   mySocket.on("help request",function(data){
     $rootScope.HelpRequestList.push(data);
   });
 
-  $scope.total = 0;
+ 
 
   var getAllPatients = $resource('/user/getAllPatients');
   getAllPatients.get(null,function(data){

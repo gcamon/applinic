@@ -7059,7 +7059,7 @@ router.get("/user/chats",function(req,res){
 
 router.put("/user/admin/verify-user",function(req,res){
   if(req.user)
-    if(req.user.type == 'admin') {
+    if(req.user.type == 'admin' && req.user.admin) {
       model.user.findById(req.body.userId)
       .exec(function(err,user){
         if(err) throw err;
