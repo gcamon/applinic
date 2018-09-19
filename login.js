@@ -50,7 +50,7 @@ router.get('/user/dashboard',function(req,res){
     model.user.findOne({user_id: req.user.user_id},{presence:1,set_presence:1,admin:1}).exec(function(err,data){
       if(err) throw err;
     
-      if(data.admin === true && req.user.user_id === process.env.ADMIN_ID){
+      if(data.admin === true && req.user.user_id === process.env.ADMIN_ID,req.user.type == "admin"){
         res.json({typeOfUser:"admin",isLoggedIn: true,balance: req.user.ewallet.available_amount,user_id:req.user.user_id});
       } else {
         data.presence = true;
@@ -97,8 +97,12 @@ router.get('/user/dashboard',function(req,res){
 //for admin loggin
 
 router.get("/user/admin",function(req,res){
-  if(req.user && req.user.user_id === process.env.ADMIN_ID && req.user.admin === true){
-    res.render("admin")
+  if(req.user) {
+    if(req.user.user_id === process.env.ADMIN_ID && req.user.admin === true,req.user.type == 'admin'){
+      res.render("admin");
+    } else {
+      res.end("You are not authorized to view this page.");
+    }
   } else {
     res.redirect("/login");
   }
