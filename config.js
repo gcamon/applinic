@@ -106,7 +106,6 @@ var configuration = function (app,model) {
 		
 		list =	path.split("/");
 		switchUrl = path.substr(0,20);
-		var activeUser = {};
 		
 
 		if(switchUrl === "/user/family-switch/") {
@@ -130,7 +129,6 @@ var configuration = function (app,model) {
 				//console.log(user)
 				console.log(user.family_accounts)
 				if(user.family_flag && user.type === "Patient") {
-				  activeUser.grabUser = user;
 				  //var elePos = user.family_accounts.map(function(x){return x.status}).indexOf(true);
 				  for(var j = 0; j < user.family_accounts.length; j++) {
 				  	if(user.family_accounts[j].status) {
@@ -240,17 +238,20 @@ var configuration = function (app,model) {
 		}
 
 		function activeMember(activeMember,user) {	
-			activeUser.grabUser.user_id = activeMember.memberId;
+			user.user_id = activeMember.memberId;
+			console.log(user.firstname,user.email)
 			model.user.findOne({user_id: activeMember.memberId})
-			.exec(function(err,member){				
-				activeUser.grabUser.firstname = member.firstname;
-				activeUser.grabUser.lastname = member.lastname;
-				activeUser.grabUser.title = member.title;
-				activeUser.grabUser.age = member.age;
-				activeUser.grabUser.gender = member.gender;
-				activeUser.grabUser.profile_pic_url = member.profile_pic_url;
-				activeUser.grabUser.ewallet = member.ewallet;
-				done(err, activeUser.grabUser);
+			.exec(function(err,member){	
+				console.log("===========")
+				console.log(user)			
+				user.firstname = member.firstname;
+				user.lastname = member.lastname;
+				user.title = member.title;
+				user.age = member.age;
+				user.gender = member.gender;
+				user.profile_pic_url = member.profile_pic_url;
+				user.ewallet = member.ewallet;
+				done(err, user);
 			})
 		}
 		
