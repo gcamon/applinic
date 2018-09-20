@@ -1682,6 +1682,18 @@ var basicRoute = function (model,sms,io,streams,Voice) { //remember streams arg 
       }
     });
 
+
+    router.get("/user/get-doctors-names",function(req,res){      
+      model.user.find({type:"Doctor"},{name:1,_id:0})
+      .limit(500)
+      .sort('name')
+      .exec(function(err,data){
+        if(err) throw err;
+        res.json(data);
+      });
+     
+    });
+
     router.get("/user/get-specialties",function(req,res){      
       model.user.find({type:"Doctor"},{specialty:1,skills:1})
       .limit(500)

@@ -17805,6 +17805,23 @@ app.controller("hompageController",["$scope","scanTests","cities","labTests","Dr
 
   $http({
     method  : 'GET',
+    url     : "/user/get-doctors-names",
+    headers : {'Content-Type': 'application/json'} 
+    })
+  .success(function(res) {     
+     console.log(res)       
+     //res.concat(spArr);
+     for(var i = 0; i < res.length; i++){
+        spArr.push(res[i]);
+     }
+
+  });
+
+
+
+
+  $http({
+    method  : 'GET',
     url     : "/user/get-diseases",
     headers : {'Content-Type': 'application/json'} 
     })
