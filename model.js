@@ -591,7 +591,8 @@ var myModel = function () {
 		mrak: String, //medical record access key
 		medical_reports: [medReportSchema],
 		courier_charge: Number,
-		disease_tag: String
+		disease_tag: String,
+		bank_details: Array
 	},{
 		collections: "userinfos"
 	})
@@ -714,7 +715,12 @@ var myModel = function () {
 		phone: Number,
 		bank: String,
 		id: Number,
-		name: String
+		name: String,
+		account_type: String,
+		verified: Boolean,
+		title: String,
+		email: String,
+		attended: Boolean
 	},{
 		collections: "cashoutinfos"
 	});

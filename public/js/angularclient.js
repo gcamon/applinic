@@ -613,6 +613,12 @@ app.config(['$paystackProvider','$routeProvider',
  })
 
 
+ .when("/bank-details",{
+  templateUrl: "/assets/pages/finance/add-bank-details.html",
+  controller: "bankDetailsCtrl"
+ })
+
+
  /** Admin utilities **/
 
  .when('/admin',{
@@ -17759,6 +17765,44 @@ app.controller("workHistoryModalController",["$rootScope","$scope","$location","
   
 }]);
 
+app.service("bankDetailsService",["$resource",function($resource){
+  return $resource("/user/bank-details",null,{update:{method: "PUT"},create:{method:'POST'}});
+}]);
+
+app.controller("bankDetailsCtrl",["$scope","bankDetailsService",function($scope,bankDetailsService){
+
+  var user = bankDetailsService;
+
+  user.query(function(data){
+    $scope.bank_details = data || [];
+  })
+
+  $scope.bankDetail = {};
+
+  $scope.save = function() {    
+    if(Object.keys($scope.bankDetail).length >= 2) {
+      $scope.loading = true;
+      $scope.bankDetail.id = Math.floor(Math.random() * 9999999);
+      user.create($scope.bankDetail,function(response){
+        if(response.status){
+          $scope.bank_details.push($scope.bankDetail);
+        }
+        $scope.loading = false;
+      });
+    } else {
+      alert("Complete all fields");
+    }
+    console.log($scope.bankDetail);
+  }
+
+  $scope.deleteAcc = function(acc){
+    user.delete(acc,function(res){
+      
+    })
+  }
+
+}]);
+
 
 app.service("homePageDynamicService",["$resource",function($resource){
   return $resource("/dynamic-service");
@@ -17794,7 +17838,7 @@ app.controller("hompageController",["$scope","scanTests","cities","labTests","Dr
       for(var i = 0; i < data.length; i++){
         if(!filter[data[i].specialty]) {
           filter[data[i].specialty] = 1;
-          spArr.push({name:data[i].specialty})
+          spArr.push({name:data[i].specialty});
         } else {
           filter[data[i].specialty]++;
         }

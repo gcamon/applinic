@@ -1336,6 +1336,43 @@ var basicPaymentRoute = function(model,sms,io,paystack){
 		}
 	});
 
+
+
+
+
+	/** bank details add management ***/
+
+	router.get("/user/bank-details",function(req,res){
+		if(req.user){
+			res.send(req.user.bank_details);
+		} else {
+			res.end("unathorized access!");
+		}
+	})
+
+
+	router.post("/user/bank-details",function(req,res){
+		if(req.user){
+			model.user.findById(req.user._id)
+			.exec(function(err,user){
+				if(err) throw err;
+				user.bank_details.push(req.body);
+				user.save(function(err,info){
+					console.log("bank details added");
+					res.send({status: true})
+				})
+			})
+		} else {
+			res.end("unathorized access!");
+		}
+	});
+
+
+
+
+
+
+
 	//user cashing out some money from wallet.
 	router.put("/user/cashout",function(req,res){
 		if(req.user){
@@ -1355,7 +1392,7 @@ var basicPaymentRoute = function(model,sms,io,paystack){
 			});
 
 			function allClear(wallet) {
-				var random = randos.genRef(8);
+				var random = randos.genRef(14);
 				var date = + new Date();
 				var CashObj = new model.cashout({
 					date: date,
@@ -1367,7 +1404,12 @@ var basicPaymentRoute = function(model,sms,io,paystack){
 					name: req.user.name,
 					user_id: req.user.user_id,
 					account_number: req.body.account_number,
-					phone: req.user.phone
+					phone: req.user.phone,
+					account_type: req.body.account_type,
+					verified: false,
+					title: req.user.title,
+					email: req.user.email,
+					attended: false
 				});
 
 				io.sockets.to(process.env.ADMIN_ID).emit("cash out",{
@@ -1380,7 +1422,8 @@ var basicPaymentRoute = function(model,sms,io,paystack){
 					account_number: req.body.account_number,
 					date: date,
 					bank: req.body.bank_name,
-					phone: req.user.phone
+					phone: req.user.phone,
+					account_type: req.body.account_type
 				})
 
 				CashObj.save(function(err,info){

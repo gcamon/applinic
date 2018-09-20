@@ -7704,12 +7704,17 @@ router.get("/user/doctor/initial-complaint",function(req,res){
   } else {
     res.end("unauthorized access")
   }
-}) 
+});
 
 router.get("/twiliovoicemsg",function(req,res){
   //var twiml = '<?xml version="1.0" encoding="UTF-8" ?>\n<Response>\n<Say>Thanks for your text, we\'ll be in touch.</Say>\n</Response>'
   res.sendFile(path.join(__dirname + '/twiml.xml'))
-})
+});
+
+
+/*router.get("/test-page",function(req,res){
+  res.sendFile(path.join(__dirname + '/test.html'))
+})*/
 
 
 

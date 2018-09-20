@@ -1,0 +1,38 @@
+<div class="p-2 card-center-1 card ">
+	<h4>Bank Details</h4>
+	<div>
+		<ul>
+			<li ng-repeat="j in bank_details" class="pt-2" style="font-size: 18px">
+				<div class="col-md-3">{{j.bank_name}}</div> <div class="col-md-5">{{j.acc_no}}</div> <div class="col-md-2">{{j.acc_type}}</div>
+				 <i class="fa fa-trash col-md-2" style="cursor: pointer;" title="delete account"></i>
+			</li>
+		</ul>
+	</div>
+	<hr>
+	<h6>Add New Account</h6>
+	<form>
+	   	<div class="row">
+		  <div class="col-md-12 form-group">
+		    <label for="bname">Bank name:</label>
+		    <input type="text" class="form-control" style="width: 70%" placeholder="write.." ng-model="bankDetail.bank_name">
+		  </div>
+		  <div class="col-md-12 form-group">
+		    <label for="bname">Account Type:</label>
+		    <select ng-model="bankDetail.acc_type" class="form-control font_2" style="width: 70%">
+		    	<option value="" selected="" disabled="disabled">Select type</option>
+		    	<option>Savings</option>
+		    	<option>Current</option>
+		    </select>
+		  </div>
+		  <div class="col-md-12 form-group">
+		    <label for="Baccount">Bank account number:</label>
+		    <input type="number" class="form-control" style="width: 70%" placeholder="write..." ng-model="bankDetail.acc_no">
+		  </div>		 
+		  <div class="col-md-12">
+			  <button ng-click="save()" class='btn btn-primary'><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i>{{(loading) ? "" : 'Save'}}</button>
+		   </div>
+	 	</div> 				
+		
+		
+	</form>
+</div>
