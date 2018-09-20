@@ -17788,6 +17788,7 @@ app.controller("bankDetailsCtrl",["$scope","bankDetailsService",function($scope,
           $scope.bank_details.push($scope.bankDetail);
         }
         $scope.loading = false;
+        $scope.bankDetail = {};
       });
     } else {
       alert("Complete all fields");
@@ -17797,7 +17798,7 @@ app.controller("bankDetailsCtrl",["$scope","bankDetailsService",function($scope,
 
   $scope.deleteAcc = function(acc){
     user.delete(acc,function(res){
-      
+
     })
   }
 
