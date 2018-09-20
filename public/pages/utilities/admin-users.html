@@ -3,7 +3,7 @@
 	
 		<table class="table table-responsiv" style="width: 100%">
 			<thead>
-				<th style="width: 5%">Created</th>
+				<!--<th style="width: 5%">Created</th>-->
 				<th style="width:25%"><b>Name</b></th>
 				<th style="width:25%"><b>City</b></th>
 				<th ng-if="isDoctorsView" style="width: 15%"><b>Specialty</b></th>
@@ -15,7 +15,7 @@
 			</thead>
 			<tbody ng-repeat="i in list | filter: usr | orderBy: '-date'">
 				<!--<td><img src="{{i.profile_pic_url}}" style="width: 45px; height: auto;"></td>-->
-				<td style="width: 5%">{{i.date | date: 'mediumDate'}}</td>
+				<!--<td style="width: 5%">{{i.date | date: 'mediumDate'}}</td>-->
 				<td style="width: 25%">
 				<span ng-if="i.lastname">{{i.title}} {{i.firstname}} {{i.lastname}}</span> 
 				<span ng-if="!i.lastname">{{i.name}}</span>
