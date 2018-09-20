@@ -239,19 +239,21 @@ var configuration = function (app,model) {
 
 		function activeMember(activeMember,user) {	
 			user.user_id = activeMember.memberId;
-			console.log(user.firstname,user.email)
 			model.user.findOne({user_id: activeMember.memberId})
 			.exec(function(err,member){	
-				console.log("===========")
-				console.log(user)			
-				user.firstname = member.firstname;
-				user.lastname = member.lastname;
-				user.title = member.title;
-				user.age = member.age;
-				user.gender = member.gender;
-				user.profile_pic_url = member.profile_pic_url;
-				user.ewallet = member.ewallet;
-				done(err, user);
+				if(user) {
+					user.firstname = member.firstname;
+					user.lastname = member.lastname;
+					user.title = member.title;
+					user.age = member.age;
+					user.gender = member.gender;
+					user.profile_pic_url = member.profile_pic_url;
+					user.ewallet = member.ewallet;
+					done(err, user);
+				} else {
+					done(err, null);
+				}
+				
 			})
 		}
 		
