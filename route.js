@@ -1012,11 +1012,20 @@ var basicRoute = function (model,sms,io,streams,Voice) { //remember streams arg 
    router.get("/user/profile/view/:id",function(req,res){    
       model.user.findOne({user_id: req.params.id},function(err,user){            
         if(err) throw err;
-        if(user)
-         res.render("doctor-details",{"userInfo":user});
-       else 
-        res.end("Person profile not found!")
-      });   
+        if(user) {
+          if(user.type == 'Doctor'){
+            res.render("doctor-details",{"userInfo":user});
+          } else if(user.type !== "Patient"){
+            res.render("user-details",{"userInfo":user});
+          } else {
+            res.end("Patients has no profile");
+          }
+          
+        } else {
+          res.end("Person profile not found!");
+        }
+       
+      })
   });
 
     

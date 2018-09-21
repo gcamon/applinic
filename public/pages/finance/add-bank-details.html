@@ -1,10 +1,10 @@
 <div class="p-2 card-center-1 card ">
-	<h4>Bank Details</h4>
+	<h4>Bank Details <a href="#/cash-out" style="float: right;font-size: 14px" class="btn btn-info btn-sm">Cash out now</a></h4>
 	<div>
 		<ul>
-			<li ng-repeat="j in bank_details" class="pt-2" style="font-size: 18px">
+			<li ng-repeat="j in bank_details" class="pt-2" style="font-size: 16px">
 				<div class="col-md-3">{{j.bank_name}}</div> <div class="col-md-5">{{j.acc_no}}</div> <div class="col-md-2">{{j.acc_type}}</div>
-				 <i class="fa fa-trash col-md-2" style="cursor: pointer;" title="delete account"></i>
+				 <i class="fa fa-trash col-md-2" style="cursor: pointer;" title="delete account" ng-click="deleteAcc(j)"></i>
 			</li>
 		</ul>
 	</div>

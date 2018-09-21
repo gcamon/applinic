@@ -1,0 +1,185 @@
+<!doctype html>
+<html class="no-js" lang="en">
+
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title> Applinic - user profile</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="apple-touch-icon" href="apple-touch-icon.png">
+        <!-- Place favicon.ico in the root directory -->
+        <link rel="stylesheet" href="/assets/css/vendor.css">
+         <link rel="stylesheet" href="/assets/css/app.css">
+          <link rel="stylesheet" href="/assets/css/now-ui-kit.css">
+          <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css">
+          <link rel="stylesheet" href="/assets/css/my-edit.css">
+          <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+           <link rel="icon" type="image/png" href="/assets/images/icons/favicon.png">
+          <script src="/assets/js/vendor2.js"></script>
+          <script type="text/javascript" src="/assets/js/source.js"></script>
+          <style>
+
+              body{
+                 font-family: 'Open Sans', sans-serif;
+                  background: url(/assets/images/bg1.jpg);
+                  background-size: cover;
+                  background-repeat: no-repeat;
+              }
+
+              
+
+          </style>
+    </head>
+
+    <body ng-app="myApp" style="font-size: 14px!important">
+        <nav class="header" style="height:70px; margin-top:-.5em; z-index:1000;" ng-cloak>
+
+          <div class="container">
+              <a ng-href="{{back}}" ng-if="back" class="nav-link"><i class="fa fa-arrow-left"> back to dashboard</i></a> &nbsp;&nbsp;&nbsp; <a href="/" style="text-decoration: none;font-size: 14px;color:red"><b>Applinic</b></a>
+          </div>
+        <!--<div class="header-block header-block-collapse hidden-lg-up"> <button class="collapse-btn" id="sidebar-collapse-btn">
+    <i class="fa fa-bars"></i></button>
+             </div>
+        <div class="header-block header-block-nav">
+            <ul class="nav-profile">
+              <li class="profile dropdown">
+                    <a class="nav-link" href="" role="button" aria-haspopup="true" aria-expanded="false" ng-click="logout()" >
+                        <span class="name">
+                       <i class="fa fa-power-off icon"></i> Logout
+                    </span> </a>
+              </li>
+            </ul>
+        </div>-->
+    </nav>
+    <div style="height:70px"></div>
+                
+<div class="container" ng-controller="docProfileViewController">
+    
+    <div class="row">
+        <div class="pl-2 mt-1">
+          <h4>Profile</h4>
+        </div>
+        
+        
+  <div class="col-sm-12">
+    <div class="col-sm-12 col-md-4 col-lg-4"  style="background:rgba(255,255,255, 0.8)">
+      <div class=" text-center userpe"><a href="">
+
+        <img title="profile image" class="img-responsive" src="<%= userInfo.profile_pic_url %>" style="max-height: 400px"></a>
+      </div><br>
+      
+      <div class="clearfix"></div>
+    </div>
+
+    <div class="col-sm-12 col-md-8 col-lg-8">
+    <div><div class="title" ng-cloak ><%= userInfo.title %> <%= userInfo.firstname %> <%= userInfo.lastname %> <%= userInfo.name %></div>
+     <sub class="text-muted" style="margin-top:-3px; font-size:1em;"></sub>
+      <!--<button type="button" class="btn btn-success btn-sm" ng-click="profileBook()" ng-if="checkLogIn.typeOfUser !== 'Doctor'">Book me!</button>-->
+      <!--<button type="button" class="btn btn-info btn-sm" ng-click="profileAsk()">Ask Question</button>-->
+
+      <span style="padding: 30px 0;font-size:18px;color:green;opacity:0.8;display: block;" ng-if="'<%= userInfo.verified %>'" ng-cloak><i class="fa fa-certificate" aria-hidden="true" style="color:green;font-size: 22px"></i>&nbsp; VERIFIED</span>
+      <span style="color:#D90000;font-size: 18px;float:right;" ng-if="!'<%= userInfo.verified %>'">NOT VERIFIED</span>
+
+      </div>
+    <div class="grayish" ng-cloak ><i class="text-success fa fa-user-md"></i> <b><%= userInfo.type %> Center</b></div>
+      <div class="grayish" ng-cloak ><i class="text-success fa fa-map-pin"></i> <span style="font-weight: bold"></span> <span><b><%= userInfo.address %></b> </span></div>
+
+          <div class="grayish" ng-cloak ><i class="text-success fa fa-phone"></i> <b><%= userInfo.phone %></b></div>
+          <div class="grayish" ng-cloak ><i class="text-success fa fa-envelope"></i> info@applinic.com </div>
+          <div class="grayish" ng-cloak ><i class="text-success fa fa-home"></i> <b>Residence: <%= userInfo.city %>, <%= userInfo.country %></b></div>
+          
+         
+
+          <!--<div class="grayish" ng-cloak ><i class="text-success fa fa-clock-o"></i> Office hours: 
+            <ul ng-cloak>
+              <li ng-repeat="office in userInfo.office_hour"  style="list-style-type: none;font-size: 16px"> 
+              <strong>{{office.day}}</strong> &nbsp;<span>{{office.from | date: "shortTime"}} - {{office.to | date: "shortTime"}}</span>
+              </li>
+            </ul>
+          </div>-->
+          <div class="grayish"> Rating: <div class="star-rating">
+                  <span class="fa fa-star-o" data-rating="1" ng-class ="{'fa-star': rating0 === 0}"></span>
+                  <span class="fa fa-star-o" data-rating="2" ng-class ="{'fa-star': rating20 === 20}"></span>
+                  <span class="fa fa-star-o" data-rating="3" ng-class ="{'fa-star': rating40 === 40}"></span>
+                  <span class="fa fa-star-o" data-rating="4" ng-class ="{'fa-star': rating60 === 60}"></span>
+                  <span class="fa fa-star-o" data-rating="5" ng-class ="{'fa-star': rating80 === 80}"></span>
+                  <input type="hidden" name="whatever1" class="rating-value" value="2.56">
+
+                  <span ng-repeat="rating in ratings" ng-cloak > 
+                  <div  class="star-rating" star-rating rating-value="'<%= userInfo.rating.current %>'" max="'<%=userInfo.rating.max %>'" on-rating-selected="getSelectedRating(rating)"></div>
+                  </span>
+    </div></div>
+
+
+ 
+    </div>
+  </div>
+       
+
+
+            
+        </div>
+        
+        
+</div>
+<div id="push" style="height:100px;background-color:rgba(0,0,0,0.9);text-align:center;margin-top:50px">
+    <span style="display: inline-block;margin-top:40px;color:#fff;font-size:14px">
+        &copy;
+        <script>
+            document.write(new Date().getFullYear())
+        </script>, Applinic All Rights Reserved.
+    </span>
+</div>
+
+     
+
+<script src="/assets/js/app.js"></script>
+<script type="text/javascript" src="/assets/js/angularclient.js"></script>
+<script type="text/javascript" src="/assets/js/ngroute.js"></script>
+<script src="/socket.io/socket.io.js"></script>   
+<script src="/assets/js/socket.min.js"></script>
+
+<script src="/assets/js/angularAnimate.js"></script>
+<script src="/assets/js/modalService.js"></script>
+<script src="/assets/js/angular-touch.min.js"></script>
+<!--<script src="/assets/js/angular-carousel.js"></script>-->
+<script src="/assets/js/moment.min.js"></script>
+<script src="/assets/js/angular-moment.min.js"></script>
+<script src="/assets/js/ui-bootstrap-tpls.js"></script>
+<script src="/assets/js/angular-clipboard.js"></script>
+<script src="/assets/js/ngresource.js"></script>
+<script src="/assets/js/ngPrint.js"></script>
+<script type="text/javascript" src="/assets/js/angular-paystack/dist/angular-paystack.min.js"></script>
+ <script type="text/javascript" src="/assets/js/angular-sanitize.min.js"></script>
+ <script src="/assets/js/bower_components/angular-summernote/dist/angular-summernote.js"></script>
+       
+
+<!--<script type="text/javascript">
+  var $star_rating = $('.star-rating .fa');
+
+var SetRatingStar = function() {
+  return $star_rating.each(function() {
+    if (parseInt($star_rating.siblings('input.rating-value').val()) >= parseInt($(this).data('rating'))) {
+      return $(this).removeClass('fa-star-o').addClass('fa-star');
+    } else {
+      return $(this).removeClass('fa-star').addClass('fa-star-o');
+    }
+  });
+};
+
+$star_rating.on('click', function() {
+  $star_rating.siblings('input.rating-value').val($(this).data('rating'));
+  return SetRatingStar();
+});
+
+SetRatingStar();
+$(document).ready(function() {
+
+});
+</script>-->
+
+        
+    </body>
+
+</html>

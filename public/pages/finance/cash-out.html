@@ -25,8 +25,34 @@
 
 <div class="container">
 <div class="card card-center-1 p-2">
-	<h3 class="mb-0 p-0">Cash Out</h3><hr>
-	<form>
+	<h3 class="mb-0 p-0">Cash Out <a href="#/bank-details" style="float: right;" class="btn btn-info btn-sm">Bank Details</a></h3>
+	<hr>
+	<div>
+		<label>Choose Account: </label>
+	</div>
+	<div ng-repeat="j in bankDetails" style="line-height: 25px" ng-if="bankDetails.length > 0">
+		<label class="custom-control custom-radio">
+		   <input type="radio" class="custom-control-input" ng-model="bankDetail.acc" value="{{j.acc_no}}">
+		   <span class="custom-control-indicator"></span>
+		   <span class="custom-control-description">{{j.bank_name}} &nbsp;&nbsp;&nbsp;{{j.acc_no}} &nbsp;&nbsp;&nbsp;{{j.acc_type}}</span>
+		</label>
+	</div>
+	<p class="p-3" ng-if="bankDetails.length == 0">No bank account was added.<a href="#/bank-details">Add one now!</a></p>
+	<hr>
+	<form ng-submit="cash()" class="row">
+		<div class="col-md-12 form-group">
+		    <label for="bname">Amount to cash out:</label>
+		    <input type="number" class="form-control" style="width: 80%" placeholder="write.." ng-model="bankDetail.amount">
+		 </div>
+		 <div class="col-md-12 form-group">
+			<p><b>Amount  {{str}}</b></p>
+		</div>
+		<div class="col-md-12">
+			<button type="submit" class='btn btn-primary' ng-if="!isSent"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i>{{(loading) ? "" : 'Submit'}}</button><span class="text-success" ng-if="isSent"><i class="fa fa-check"></i> Sent!</span>
+		</div>
+	</form>
+	
+	<!--<form>
          <div class="row">
   <div class="col-md-12 form-group">
     <label for="bname">Bank name:</label>
@@ -42,17 +68,17 @@
     <input type="number" class="form-control" style="width: 70%" placeholder="write.." ng-model="bankDetail.amount">
   </div>
 
- </div>
+   </div>
 
     
 			
-		<div class="form-group pt-1">
-			<p><b>Amount : {{str}}</b></p>
-		</div>
-		<div class="col-md-12">
-			<button ng-click="cash()" class='btn btn-primary'> Submit </button>
-		</div>
-	</form>
+	<div class="form-group pt-1">
+		<p><b>Amount : {{str}}</b></p>
+	</div>
+	<div class="col-md-12">
+		<button ng-click="cash()" class='btn btn-primary'> Submit </button>
+	</div>
+	</form>-->
 </div>
 
     

@@ -1367,6 +1367,28 @@ var basicPaymentRoute = function(model,sms,io,paystack){
 		}
 	});
 
+	router.delete("/user/bank-details",function(req,res){
+		if(req.user){
+			model.user.findById(req.user._id)
+			.exec(function(err,user){
+				console.log(user.bank_details);
+				var toNum = parseInt(req.query.id);
+				var elemPos = user.bank_details.map(function(x){return x.id}).indexOf(toNum);
+				if(elemPos !== -1){
+					var found = user.bank_details.splice(elemPos,1);
+					console.log(found);
+					res.send({status:true,index:elemPos});
+				} else {
+					res.send({status:false});
+				}
+				user.save(function(err,info){});
+				
+			})
+		} else {
+			res.end("unathorized access!");
+		}
+	})
+
 
 
 

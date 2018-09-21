@@ -1519,52 +1519,58 @@ app.controller('loginController',["$scope","$http","$location","$window","$resou
     templateService,localManager,userLoginService,changPasswordService,$rootScope,mySocket) {
   $scope.login = {};
   $scope.error = "";  
+  var count = 0
   
   $scope.send = function(){ 
-    $scope.loading = true;
-    $scope.error = ""; 
-    var login = userLoginService; //$resource('/user/login',null,{logPerson:{method:"POST"}});
-    login.logPerson($scope.login,function(data){   
-    if (data.isLoggedIn) {  
+    if(count <= 10) { 
+      $scope.loading = true;
+      $scope.error = ""; 
+      var login = userLoginService; //$resource('/user/login',null,{logPerson:{method:"POST"}});
+      login.logPerson($scope.login,function(data){   
+      if (data.isLoggedIn) {  
 
-        localManager.setValue("resolveUser",data);  
+          localManager.setValue("resolveUser",data);  
 
-        //use to keep track of main user should sub accounts were used in a session. 
-        /*if(data.typeOfUser === "Patient")
-          localManager.setValue("mainAccount",data);  */  
+          //use to keep track of main user should sub accounts were used in a session. 
+          /*if(data.typeOfUser === "Patient")
+            localManager.setValue("mainAccount",data);  */  
 
-       //user joins a room in socket.io and intantiayes his own socket
-        switch(data.typeOfUser) {
-          case "Patient":
-            createAwareness(data)
-            $window.location.href = "/user/patient";   
-          break;
-          case "Doctor":
-            createAwareness(data)
-           $window.location.href = "/user/doctor";   
-          break;
-          case "Pharmacy":
-            $window.location.href = "/user/pharmacy"; 
-          break;
-          case "Laboratory":
-            $window.location.href = "/user/laboratory"; 
-          break;
-          case "Radiology":
-            $window.location.href = "/user/radiology"; 
-          break;          
-          case "admin":
-            $window.location.href = "/user/admin";
-          break;
-          default:
-            $window.location.href = "/user/view"; 
-          break; 
+         //user joins a room in socket.io and intantiayes his own socket
+          switch(data.typeOfUser) {
+            case "Patient":
+              createAwareness(data)
+              $window.location.href = "/user/patient";   
+            break;
+            case "Doctor":
+              createAwareness(data)
+             $window.location.href = "/user/doctor";   
+            break;
+            case "Pharmacy":
+              $window.location.href = "/user/pharmacy"; 
+            break;
+            case "Laboratory":
+              $window.location.href = "/user/laboratory"; 
+            break;
+            case "Radiology":
+              $window.location.href = "/user/radiology"; 
+            break;          
+            case "admin":
+              $window.location.href = "/user/admin";
+            break;
+            default:
+              $window.location.href = "/user/view"; 
+            break; 
+          }
+          
+        } else {   
+          $scope.loading = false;      
+          $scope.error = "Email or Password incorrect!"; 
+          count++;
         }
-        
-      } else {   
-        $scope.loading = false;      
-        $scope.error = "Email or Password incorrect!"; 
-      }
-    });
+      });
+    } else {
+      $scope.error = "Oops! Seems you are having trouble login. Please contact us."
+    }
   }
 
   //this updates the current availability of user in real time.
@@ -9766,41 +9772,63 @@ app.controller("adminManageCtrl",["$scope","$location","$rootScope","adminDoctor
         break;
     }
 
-   
-}])
+}]);
 
 
 app.controller("cashoutModalController",["$scope","$rootScope","templateService",function($scope,$rootScope,templateService){
   console.log($rootScope.userDetails)
-}])
+}]);
 
 app.service("cashOutControllerService",["$resource",function($resource){
   return $resource("/user/cashout",null,{cashing:{method: "PUT"}});
 }]);
 
-app.controller("cashOutController",["$scope","$rootScope","$resource","cashOutControllerService",
-  function($scope,$rootScope,$resource,cashOutControllerService){
+app.controller("cashOutController",["$scope","$rootScope","$resource","cashOutControllerService","bankDetailsService",
+  function($scope,$rootScope,$resource,cashOutControllerService,bankDetailsService){
   $scope.bankDetail = {};
+
+  var user = bankDetailsService;
+  var elemPos;
+
+  user.query(function(data){
+    $scope.bankDetails = data;
+  });
+
+  $scope.$watch("bankDetail.acc",function(newVal,oldVal){
+    if(newVal) {
+      elemPos = $scope.bankDetails.map(function(x){return x.acc_no.toString()}).indexOf(newVal);
+      if(elemPos !== -1) {
+        $scope.bankDetail.account_number = newVal;
+        $scope.bankDetail.account_type = $scope.bankDetails[elemPos].acc_type;
+        $scope.bankDetail.bank_name = $scope.bankDetails[elemPos].bank_name;
+      }
+    }
+  });
 
   $scope.$watch("bankDetail.amount",function(newVal,oldVal){
     if(oldVal){
-      $scope.str = "NGN" + $scope.bankDetail.amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+      $scope.str = "NGN " + $scope.bankDetail.amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     }
   });  
 
   $scope.cash = function(){
-    if(Object.keys($scope.bankDetail).length >= 3 && $scope.bankDetail.amount && $scope.bankDetail.amount !== "") {
-      var cashOut = cashOutControllerService //$resource("/user/cashout",null,{cashing:{method: "PUT"}});
+    if(!$scope.bankDetail.account_number) {
+      alert("Please select account to use.");
+    } else if(Object.keys($scope.bankDetail).length >= 3 && $scope.bankDetail.amount && $scope.bankDetail.amount !== "") {
+      $scope.loading = true;
+      var cashOut = cashOutControllerService; //$resource("/user/cashout",null,{cashing:{method: "PUT"}});
       cashOut.cashing($scope.bankDetail,function(data){
+        $scope.loading = false;
         alert(data.message);
         if(data.balance) {
           var whole = Math.round(data.balance);
           var format = "NGN" + whole.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
           $rootScope.balance = format;
+          $scope.isSent = true;
         }    
       });
     } else {
-      alert("Please fill out all fields")
+      alert("Please fill out all fields");
     }
   }
 
@@ -17798,7 +17826,7 @@ app.controller("bankDetailsCtrl",["$scope","bankDetailsService",function($scope,
 
   $scope.deleteAcc = function(acc){
     user.delete(acc,function(res){
-
+      $scope.bank_details.splice(res.index,1)
     })
   }
 
