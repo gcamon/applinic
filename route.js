@@ -1455,12 +1455,12 @@ var basicRoute = function (model,sms,io,streams,Voice) { //remember streams arg 
 
           data.doctor_notification.push(requestData);
 
-          if(data.presence === true && data.set_presence.general === true && req.body.type === "consultation"){           
+          if(data.presence && data.set_presence.general && req.body.type === "consultation"){           
             io.sockets.to(req.body.receiverId).emit("receive consultation request",{status: "success"});
 
-          } else if(req.body.type === "consultation" && data.set_presence.general === false || data.presence === false) {
+          } else if(req.body.type === "consultation" && !data.set_presence.general || !data.presence) {
 
-            var msgBody = req.user.title + " " + req.user.firstname + " " + req.user.lastname + " sends consultation request! Visit http://applinic.com/user/doctor";
+            var msgBody = req.user.title + " " + req.user.firstname + " " + req.user.lastname + " sent you consultation request! Visit https://applinic.com/user/doctor";
 
             var phoneNunber =  data.phone;            
 
@@ -1472,7 +1472,7 @@ var basicRoute = function (model,sms,io,streams,Voice) { //remember streams arg 
               }
             ) 
 
-          } else if(data.presence === true && data.set_presence.general === true && req.body.type === "question"){
+          } else if(data.presence  && data.set_presence.general  && req.body.type === "question"){
            
             io.sockets.to(req.body.receiverId).emit("receive consultation request",{status: "success",type:"question"});
           }

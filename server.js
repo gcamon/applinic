@@ -12,6 +12,7 @@ var express = require('express'),
   payments = require("./finance"),  
   paystack = require('paystack')(process.env.PAYSTACK_SECRET_KEY),   
   moment = require('moment'),
+  infobip = require('infobip'),
   
   /*Nexmo = require("nexmo"), 
   sms = new Nexmo({
@@ -30,7 +31,17 @@ var express = require('express'),
   var Geonames = require("geonames.js");
   var geonames = new Geonames({username: 'gcamon29', lan: 'en', encoding: 'JSON'});
 
-
+  //Initialize the client
+/*var client = new infobip.Infobip('Farelands', 'icui4cuok');
+ 
+//Set the message
+var message = {from: "InfoSMS", to : "+2348096461927", text : "Testing Infobip SMS for applinic"};
+ 
+//Send an SMS
+client.SMS.send(message,function(err, response){
+   console.log(err)
+   console.log(response);
+});*/
 
  
  // add geonames to the database once.
