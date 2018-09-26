@@ -9,6 +9,7 @@
 						<img src="{{chat.profilePic}}" style="float: left;max-height: 62px;width:62px">			
 						<a href="" class="chat-header-text" ng-class="{'chat-header-text-new' : chat.isUnRead === true}">
 							<strong >{{chat.name}}</strong>
+							<span style="display: block;padding-left: 10px" class="ellipsis">{{chat.partnerType}}</span>
 							 <span style="display:block;padding-left: 10px" class="ellipsis">{{chat.messages[chat.messages.length - 1].received || chat.messages[chat.messages.length - 1].sent}} <small style="display:block;" am-time-ago="chat.messages[chat.messages.length - 1].time  || chat.messages[chat.messages.length - 1].received" ng-cloak> <span ng-if="chat.status" class="online" style="margin-right: 15px;background-color: #85CE36"></span><span ng-if="!chat.status" class="online" style="background-color: #ccc;margin-right: 15px"></span></small>.</span> 
 							 <!--<i class="fa fa-comment-o" style="position: absolute;top:3px;right:5px" ng-if="chat.isUnRead"></i>-->
 						</a>
@@ -31,7 +32,7 @@
 	                    </div>
 	                    <div class="col-md-5 col-sm-12 col-xs-12 " style="text-align: right;">
 	                    	<div ng-if="checkLogIn.typeOfUser === 'Patient' || checkLogIn.typeOfUser === 'Doctor'">
-	                    		<small><button class="btn btn-success ellipsis" ng-if="partner.partnerType === 'Doctor'"  ng-click="chatPrivate(partner)">Single Chat</button>
+	                    		<small><button class="btn btn-success ellipsis" ng-if="partner.partnerType === 'Doctor' && checkLogIn.typeOfUser !== 'Doctor'"  ng-click="chatPrivate(partner)">Single Chat</button>
 	                    		<button class="btn btn-success ellipsis" ng-if="partner.partnerType === 'Patient'"  ng-click="chatPrivate(partner)">Manage Patient</button>
 	                    		</small>
 	                    	</div>
