@@ -10,7 +10,7 @@
 						<a href="" class="chat-header-text ellipsis" ng-class="{'chat-header-text-new' : chat.isUnRead === true}" style="font-size: 12px;display: inline-block;padding-left: 10px">
 							<strong style="display: block;" >{{chat.name}}</strong>
 							<span style="display: block;">{{chat.partnerType}}</span>
-							 <span style="display:block;">{{chat.messages[chat.messages.length - 1].received || chat.messages[chat.messages.length - 1].sent}} <small style="display:block;" am-time-ago="chat.messages[chat.messages.length - 1].time  || chat.messages[chat.messages.length - 1].received" ng-cloak> <span ng-if="chat.status" class="online" style="margin-right: 15px;background-color: #85CE36"></span><span ng-if="!chat.status" class="online" style="background-color: #ccc;margin-right: 15px"></span></small>.</span> 
+							 <span style="display:block;position: relative;">{{chat.messages[chat.messages.length - 1].received || chat.messages[chat.messages.length - 1].sent}} <small style="display:block;" am-time-ago="chat.messages[chat.messages.length - 1].time  || chat.messages[chat.messages.length - 1].received" ng-cloak> <span style="position: absolute;bottom: 0;right: 5px"><span ng-if="chat.status" class="online" style="background-color: #85CE36"></span><span ng-if="!chat.status" class="online" style="background-color: #ccc;"></span></span></small></span> 
 							 <!--<i class="fa fa-comment-o" style="position: absolute;top:3px;right:5px" ng-if="chat.isUnRead"></i>-->
 						</a>
 					</div> <!--<time  am-time-ago="i.sent_date" style="position: absolute;right: 0;top:2px;font-size: 12px"></time>-->
