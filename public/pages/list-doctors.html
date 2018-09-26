@@ -20,9 +20,10 @@
                                     <strong class="">{{i.title}} {{i.firstname}} {{i.lastname}}</strong>
                                     <span style="display:block">{{i.specialty}}</span>
                                     <span  style="display:block;padding-bottom: 10px"><b>{{i.work_place}}</b> {{i.address}}  {{i.city}}, {{i.country || "N/A"}}</span>
-                                    <a href="{{i.profile_url}}" class="" title="View {{i.firstname}} profile">View Profile</a>
+                                    <a href="{{i.profile_url}}" class="" title="View {{i.firstname}} profile" style="color: blue;margin-right: 20px">View Profile</a>
+                                    <a href="" class="text-danger" ng-click="ask(i)" title="send chat message"><i class="fa fa-comment-o"></i> Send chat message</a>
 
-                                     <button class="btn btn-danger btn-sm" ng-click="consultation(i.user_id)" ng-if="checkLogIn.typeOfUser === 'Patient'" style="position: absolute;right: 2px;bottom: 0px">Consult now!</button>
+                                     <button class="btn btn-danger btn-sm" ng-click="consultation(i)" ng-if="checkLogIn.typeOfUser === 'Patient'" style="position: absolute;right: 2px;bottom: 0px">Consult now!</button>
                                 </div>
                               
                                 <!--<div>

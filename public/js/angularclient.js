@@ -2953,6 +2953,15 @@ app.controller('resultController',["$scope","$rootScope","$http","$location","$r
       $scope.diseases = diseasArr;    
            
     });
+
+    $http({
+      method  : 'GET',
+      url     : "/user/get-doctors-names",
+      headers : {'Content-Type': 'application/json'} 
+      })
+    .success(function(data) {              
+       $scope.names = data;    
+    });
   }
 
 
@@ -3366,8 +3375,9 @@ app.controller("referToMeModalController",["$scope","$rootScope","$http",functio
 
 
 //list all the doctors or others
-app.controller('listController',["$scope","$location","$window","localManager","templateService","templateUrlFactory","ModalService",
-  function($scope,$location,$window,localManager,templateService,templateUrlFactory,ModalService) { 
+app.controller('listController',["$scope","$location","$window","localManager",
+  "templateService","templateUrlFactory","ModalService","$rootScope",
+  function($scope,$location,$window,localManager,templateService,templateUrlFactory,ModalService,$rootScope) { 
    //$scope.back = templateUrlFactory.getUrl();
    $scope.searchResult = localManager.getValue("userInfo");
    $scope.valid = true;
@@ -3386,24 +3396,26 @@ app.controller('listController',["$scope","$location","$window","localManager","
 
    
 
-  $scope.consultation = function(doctorId){
-    var elementPos = $scope.searchResult.map(function(x){return x.user_id}).indexOf(doctorId)
-    var objFound = $scope.searchResult[elementPos];
-    templateService.holdForSpecificDoc = objFound;   
+  $scope.consultation = function(doctor){
+    //var elementPos = $scope.searchResult.map(function(x){return x.user_id}).indexOf(doctorId)
+    //var objFound = $scope.searchResult[elementPos];
+    templateService.holdForSpecificDoc = doctor;   
     templateService.doctorsData = localManager.getValue("userInfo");
     getAHelp("book");    
   }
 
-  $scope.ask = function(doctorId){
-    var elementPos = $scope.searchResult.map(function(x){return x.user_id}).indexOf(doctorId)
-    var objFound = $scope.searchResult[elementPos];
-    templateService.holdForSpecificDoc = objFound;   
+  $scope.ask = function(doctor){
+    //var elementPos = $scope.searchResult.map(function(x){return x.user_id}).indexOf(doctorId)
+    //var objFound = $scope.searchResult[elementPos];
+    $rootScope.holdcenter = doctor;   
     getAHelp("ask")
   }
 
   function getAnswer(type) {
 
   }
+
+
 
   function getAHelp(type) {
     var checkIsLoggedIn = localManager.getValue("resolveUser");
@@ -3412,7 +3424,16 @@ app.controller('listController',["$scope","$location","$window","localManager","
       if(type === "book") {
         modalCall("selected-doc.html","bookingDocModalController")
       } else if(type === "ask") {
-        modalCall("question.html","bookingDocModalController")
+        //$rootScope.holdcenter set above as doctor for the modal to use 
+        $rootScope.holdcenter.id = $rootScope.holdcenter.user_id;
+        ModalService.showModal({
+            templateUrl: 'quick-chat.html',
+            controller: 'generalChatController'
+        }).then(function(modal) {
+            modal.element.modal();
+            modal.close.then(function(result) {             
+            });
+        });
       }
      } else {
       modalCall('login.html',"loginController");
@@ -3434,7 +3455,7 @@ app.controller('listController',["$scope","$location","$window","localManager","
   
   }
 
-    localManager.setValue("currentPageForPatients","/list");
+  localManager.setValue("currentPageForPatients","/list");
                       
 }]);
 
@@ -9860,7 +9881,7 @@ app.controller("myDoctorController",["$scope","$location","$http","$window","$ro
   "localManager","ModalService","mySocket","$timeout","deviceCheckService",
   function($scope,$location,$http,$window,$rootScope,templateService,$filter,localManager,ModalService,mySocket,$timeout,deviceCheckService){
   var doctor = {};
-  var savePath = localManager.getValue("currentPageForPatients");
+  var savePath = (localManager.getValue("currentPageForPatients")) ? localManager.getValue("currentPageForPatients") : $location.path();
   var arr = savePath.split("/");  
   var userId = arr[arr.length-1];
   doctor.id = templateService.holdIdForSpecificDoc || userId;

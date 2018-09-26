@@ -12,14 +12,15 @@
         </select>
      </div>
     <hr>
-        <div class="form-group" ng-if="isName === true">
+      <div class="form-group" ng-if="isName === true">
         <label for="lastname" class="pl-0">Doctor's name</label>
-        <input type="text" class="form-control" placeholder="e.g Dr Ede or Ede" ng-model="user.name" style="font-size: 14px!important">
+        <!--<input type="text" class="form-control" placeholder="e.g Dr Ede or Ede" ng-model="user.name" style="font-size: 14px!important">-->
+        <input type="text" class="form-control" placeholder="e.g Dr Ede or Ede"  id=""  uib-typeahead="name.name for name in names | filter:$viewValue | limitTo:15" ng-model="user.name" style="font-size: 14px!important">
       </div>
 
        <div class="form-group" ng-if="isSpecialty === true">
            <label for="lastname">City </label>
-        <input type="text" class="form-control" placeholder="Enter city name" name="states" id=""  uib-typeahead="city for city in cities | filter:$viewValue | limitTo:15" ng-model="user.city" style="font-size: 14px!important">
+        <input type="text" class="form-control" placeholder="Enter city name"  id=""  uib-typeahead="city for city in cities | filter:$viewValue | limitTo:15" ng-model="user.city" style="font-size: 14px!important">
         {{getCity(city)}} 
       </div>
 
