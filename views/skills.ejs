@@ -155,7 +155,7 @@
                                          <div style="text-align: center;">
                                             <img src="<%= skill.files[0].path %>" style="width: 100%;height: auto;" ng-if="'<%= skill.files[0].path %>'">
                                          </div> 
-                                         <div style="font-size: 18px;padding: 20px 0;line-height: 28px" ng-bind-html="trustAsHtml('<%= skill.procedure_description %>')"></div>
+                                         <p style="font-size: 18px;padding: 20px 0;line-height: 28px"><%- skill.procedure_description %></p> <!-- ng-bind-html="trustAsHtml('<%= skill.procedure_description %>')"-->
 
                                          <div style="padding-bottom: 40px">
                                            <h5><b>Comments</b></h5>

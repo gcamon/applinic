@@ -1593,11 +1593,16 @@
                </h5>
                
               </div>
-              <p style="color:red; text-align: center" class="p-1 bg-danger" ng-if="message">{{message}}</p>
+              <p style="color:#fff; text-align: center" class="p-1 bg-danger" ng-if="message">{{message}}</p>
               <div class="modal-body">                
                 <div><b>Patient name: </b> {{data.sender_firstname}} {{data.sender_lastname}} </div>
                 <!--<p style="text-align: center">{{data.firstname}} {{data.lastname}}</p>-->
                 <form class="pt-1">
+                    <div>
+                        <label>Your Response</label>
+                        <textarea placeholder="write..." ng-model="user.response" class="form-control pl-1" style="width: 80%">
+                        </textarea>
+                    </div>
                     <div>
                         <label> Your consultation fee below (20% discount applied)</label>
                         <input type="number" placeholder="Enter amount.*" ng-model="user.fee" class="form-control" style="width: 80%" required>
@@ -1705,8 +1710,15 @@
               </div>
                 <div>
                     <ul style="list-style: none;display: inline-block;">                        
-                        <li style="float: left;padding-right: 15px"><input type="" name="" placeholder="{{search.city || 'City'}}" ng-model="search.city" class="form-control"></li>
-                        <li style="float: left;padding-right: 15px"><input type="" name="" placeholder="{{search.specialty || 'Specialty'}}" ng-model="search.specialty" class="form-control"></li>
+                        <li style="float: left;padding-right: 15px">
+                        <!--<input type="" name="" placeholder="{{search.city || 'City'}}" ng-model="search.city" class="form-control">--> 
+                        <input type="text" class="form-control"  type="text" placeholder="Enter city name" ng-model="search.city" uib-typeahead="city for city in cities | filter:$viewValue | limitTo:15">
+
+                        </li>
+                        <li style="float: left;padding-right: 15px">
+                        <!--<input type="" name="" placeholder="{{search.specialty || 'Specialty'}}" ng-model="search.specialty" class="form-control">-->
+                            <input type="text" class="form-control" placeholder="Enter specialty"   uib-typeahead="specialty.name for specialty in allSpecialties | filter:$viewValue | limitTo:15" ng-model="search.specialty" style="font-size: 14px!important"> 
+                        </li>
                         <li style="float: left;padding-top:2px"><button class="btn btn-info" ng-click="findSpecialist()">Search</button></li>
                     </ul>
                 </div>

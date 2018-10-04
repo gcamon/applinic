@@ -1226,7 +1226,6 @@ var basicRoute = function (model,sms,io,streams,Voice) { //remember streams arg 
     router.put("/user/find-specialist",function(req,res){
 
       if(req.user) {
-
         var requestData = {};
         for(var item in req.body){
           if(req.body.hasOwnProperty(item) && item !== "receiverId") {
@@ -1599,7 +1598,8 @@ var basicRoute = function (model,sms,io,streams,Voice) { //remember streams arg 
                         profile_url: req.user.profile_url,
                         specialty: req.user.specialty,
                         original_complaint: (req.body.originalComp) ? req.body.originalComp.message : null,
-                        original_complaint_date : (req.body.originalComp) ? req.body.originalComp.date : null
+                        original_complaint_date : (req.body.originalComp) ? req.body.originalComp.date : null,
+                        response: req.body.response
                       });
 
                       if(result.presence === true){

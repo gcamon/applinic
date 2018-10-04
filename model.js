@@ -100,6 +100,7 @@ var myModel = function () {
 		complaint_id: String,
 		original_complaint: String,
     original_complaint_date : String,
+    response: String,
 		redirect: {
 			title: String,
 			firstname: String,

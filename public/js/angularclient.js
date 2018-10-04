@@ -6070,15 +6070,18 @@ app.controller("grantedRequestController",["$scope","$http","$rootScope","ModalS
   });  
   
   $scope.sendAcceptance = function(){
-    $scope.loading = true;
-    var date = + new Date();
+  
     if($scope.user.fee > 0){
+      $scope.loading = true;
+      var date = + new Date();
       var grantedRequest = {};
       grantedRequest.patientId = $scope.data.sender_id;
       grantedRequest.date = date;      
       grantedRequest.consultation_fee = $scope.user.fee;      
       grantedRequest.service_access = false;
-      grantedRequest.originalComp = $rootScope.data
+      grantedRequest.originalComp = $rootScope.data;
+      grantedRequest.response = $scope.user.response;
+
 
       $http({
         method  : 'PUT',
@@ -6098,7 +6101,7 @@ app.controller("grantedRequestController",["$scope","$http","$rootScope","ModalS
       });
 
     } else {
-        $scope.message = "Please enter your consultation fee amount below."
+        $scope.message = "Please enter your consultation fee below."
     }
   }
 
@@ -6131,15 +6134,17 @@ app.service("findSpecialistService",["$resource",function($resource){
   return $resource("/user/find-specialist",null,{refer:{method: "PUT"}});
 }]);
 
-app.controller("referRequestController",["$scope","$http","ModalService","requestManager",
+app.controller("referRequestController",["$scope","$http","ModalService","requestManager","cities",
   "templateService","deleteFactory","$rootScope","$location","$resource","findSpecialistService",
-  function($scope,$http,ModalService,requestManager,templateService,
+  function($scope,$http,ModalService,requestManager,cities,templateService,
     deleteFactory,$rootScope,$location,$resource,findSpecialistService){
 
     var source = findSpecialistService;//$resource("/user/find-specialist",null,{refer:{method: "PUT"}});
     $scope.search = {};
     $scope.search.city = $rootScope.checkLogIn.city;
     $scope.search.specialty = $rootScope.checkLogIn.specialty;
+    var spArr = [];
+    var filter = {};
 
     $scope.findSpecialist = function() {
       $scope.loading = true;
@@ -6147,14 +6152,36 @@ app.controller("referRequestController",["$scope","$http","ModalService","reques
         $scope.loading = false;
         $scope.searchResult = data;
       });
-    }
+    } 
 
-    $scope.findSpecialist();
+    //$scope.findSpecialist();
+
+    $scope.cities = cities;
+
+    $http({
+      method  : 'GET',
+      url     : "/user/get-specialties",
+      headers : {'Content-Type': 'application/json'} 
+      })
+    .success(function(data) {              
+      if(data){
+    
+        for(var i = 0; i < data.length; i++){
+          if(!filter[data[i].specialty]) {
+            filter[data[i].specialty] = 1;
+            spArr.push({name:data[i].specialty});
+          } else {
+            filter[data[i].specialty]++;
+          }
+        }
+
+        $scope.allSpecialties = spArr || [];
+      }
+    }); 
 
     $scope.refer = function(doc) {
       doc.loading = true;
       $rootScope.data.receiverId = doc.user_id;
-      console.log($rootScope.data)
       source.refer($rootScope.data,function(response){
         doc.loading = false;
         if(response.status) {
@@ -12040,11 +12067,14 @@ app.controller("pharmacyCenterNotificationController",["$scope","$location","$re
   }
 
   $scope.showIndicator = false;
+
   $rootScope.$on("unattendedMsg",function(status,data){
     $scope.showIndicator = data;
   });
 
 }]);
+
+
 
 app.service("billingAuthService",["$resource",function($resource){
   return $resource("/user/center/billing-verification",null,{verify: {method: "PUT"}});

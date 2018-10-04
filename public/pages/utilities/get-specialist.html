@@ -93,7 +93,7 @@
 <div class="col-md-12 col-sm-12">
 	<div class="pb-2 pt-1">
 		<label style="color: grey">Where do you prefer to see doctor ? (optional) </label>
-		<input name="" id="states" style="width: 90%" type="text" placeholder="Enter city name" ng-model="city" uib-typeahead="city for city in cities | filter:$viewValue | limitTo:15" class="form-control">		
+		<input  style="width: 90%" type="text" placeholder="Enter city name" ng-model="city" uib-typeahead="city for city in cities | filter:$viewValue | limitTo:15" class="form-control">		
 			{{getCity(city)}} 
 	</div>
 </div>
@@ -102,7 +102,7 @@
 	<div class="pb-2 pt-1">
 		<label style="color: grey">What are your complaints ? <span class="text-danger">*</span></label>
 		<div ng-repeat="i in symptomsList" style="position: relative;padding-bottom: 5px">			
-			<input name="" id="states" style="width: 90%" type="text" placeholder="Enter your symptom(s)" ng-model="name" uib-typeahead="name for name in symptoms | filter:$viewValue | limitTo:15" class="form-control">
+			<input  style="width: 90%" type="text" placeholder="Enter your symptom(s)" ng-model="name" uib-typeahead="name for name in symptoms | filter:$viewValue | limitTo:15" class="form-control">
 			<i class="fa fa-times text-muted" style="cursor: pointer;position: absolute;bottom: 10px;right: 8px" ng-click="remove(i.sn)" ng-if="i.sn !== 'a'"></i>
 			{{getSymptom(name)}}
 		</div>
