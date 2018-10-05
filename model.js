@@ -856,6 +856,7 @@ var myModel = function () {
 		collections: "appointmentinfos"
 	});
 
+	
 	/*var callingSchema = Schema({
 		calling_code: {
 			countryCode: String
