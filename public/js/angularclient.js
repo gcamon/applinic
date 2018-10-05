@@ -17655,6 +17655,7 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
       msg.userId = user.user_id;
       msg.partnerId = $scope.partner.partnerId;            
       chats(msg);
+      templateService.playAudio(3); 
     } else {     
       //$rootScope.$broadcast("unattendedMsg",true);   
       templateService.playAudio(2);
@@ -17680,6 +17681,7 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
   });
 
   mySocket.on("typing", function(data) {
+    $scope.partner.typing = data;
     $scope.typing = data;
   });
 
