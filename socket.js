@@ -136,7 +136,8 @@ module.exports = function(model,io,streams) {
 	    		msg.received = data.message;
 	    		msg.time = data.date;
       		msg.id = data.date;	
-	    		if(chats) {		    		
+	    		if(chats) {	
+	    			chats.is_read = false;  // added to check when a chat is read.  		    		
 		    		chats.messages.push(msg);
 		    		chats.save(function(err,info){
 		    			if(err) throw err;		    			
@@ -156,6 +157,7 @@ module.exports = function(model,io,streams) {
 	      			newChat.realTime = date;
 	      			newChat.name = user.name || user.title + " " + user.firstname; // refers tp parner name
 	      			newChat.profilePic = user.profile_pic_url;
+	      			newChat.is_read = (!data.presence) ? false : true; // added to check when a chat is read.
 	      			newChat.partnerType = user.type;
 	      			newChat.messages.push(msg)
 	      			newChat.save(function(err,info){});
@@ -166,7 +168,7 @@ module.exports = function(model,io,streams) {
 	    });
 
 
-	     socket.on("send message general",function(data,cb){     	
+	    socket.on("send message general",function(data,cb){     	
 
 	     	var chatId = data.from + "/" + data.to;
 	    	var otherId = data.to + "/" + data.from;
@@ -174,6 +176,7 @@ module.exports = function(model,io,streams) {
 	    	data.date = date.toString();
 	    	data.id = data.date;
 	    	data.chatId = chatId;
+	    	data.opponentId = otherId;
 	      cb(data);
 
 	      io.sockets.to(data.to).emit('new_msg',data);	       	
@@ -192,8 +195,7 @@ module.exports = function(model,io,streams) {
 	      		chats.realTime = + new Date();
 		    		chats.messages.push(msg);
 		    		chats.save(function(err,info){
-		    			if(err) throw err;
-		    		
+		    			if(err) throw err;		    		
 		    		});
 	    		}
 	    	});
@@ -205,7 +207,8 @@ module.exports = function(model,io,streams) {
 	    		msg.time = data.date;
       		msg.id = data.date;	
 	    		if(chats) {	
-	    			chats.realTime = + new Date();	    		
+	    			chats.realTime = + new Date();
+	    			chats.is_read = false; // added to check when a chat is read.  			
 		    		chats.messages.push(msg);
 		    		chats.save(function(err,info){
 		    			if(err) throw err;		    			
@@ -220,20 +223,45 @@ module.exports = function(model,io,streams) {
 	      		});
 	      		model.user.findOne({user_id: data.from},function(err,user){
 	      			if(err) throw err;
-	      			newChat.userId = data.to;
-	      			newChat.partnerId = user.user_id;
-	      			newChat.realTime = date;
-	      			newChat.name = user.name || user.title + " " + user.firstname;
-	      			newChat.profilePic = user.profile_pic_url;
-	      			newChat.partnerType = user.type;
-	      			newChat.messages.push(msg)
-	      			newChat.save(function(err,info){});
+	      			if(user) {
+		      			newChat.userId = data.to;
+		      			newChat.partnerId = user.user_id;
+		      			newChat.realTime = date;
+		      			newChat.name = user.name || user.title + " " + user.firstname;
+		      			newChat.profilePic = user.profile_pic_url;
+		      			newChat.partnerType = user.type;
+		      			newChat.is_read = (!data.presence) ? false : true; // added to check when a chat is read.
+		      			newChat.messages.push(msg)
+		      			newChat.save(function(err,info){});
+	      			}
 	      		});	      		
 	    		}
 	    	});
 
 	    });
 
+	    socket.on("seen chat",function(data){ // for general chat when a chat from the list is viewed/clicked.
+	    	model.chats.findById(data.id)
+	    	.exec(function(err,chat){
+	    		if(err) throw err;
+	    		if(chat) {
+		    		chat.is_read = true;
+		    		chat.save(function(err,info){})
+	    		}
+	    	})
+	    });
+
+	    //when user is not currently viewing or replying to chats in the general chats view it sets incoming messages as not seen
+	    socket.on("chat in-view",function(data){
+	    	model.chats.findOne({chat_id: data.opponentId})
+	    	.exec(function(err,chat){
+	    		if(err) throw err;
+	    		if(chat){
+	    			chat.is_read = true;
+	    			chat.save(function(err,info){});
+	    		}
+	    	})
+	    });
 
 	    socket.on("isSent",function(data,cb){
        	data.isSent = true;
@@ -243,7 +271,7 @@ module.exports = function(model,io,streams) {
 	    socket.on("msg received",function(data){
 	    	data.isReceived = true;
 	    	io.sockets.to(data.to).emit("isReceived",data)
-	    })
+	    });
 
 	    socket.on("user typing",function(data){
 	    	if(user.isPresent === true)

@@ -17427,7 +17427,7 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
     $scope.isSent = false;
     var elemPos;
 
-    
+    var currView = $location.path();
 
     if($rootScope.chatsList) {
       var elemPos = $rootScope.chatsList.map(function(x){return x.partnerId}).indexOf(templateService.holdId)
@@ -17450,11 +17450,19 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
 
     
     $scope.viewChat = function(chat) {
-      chat.isUnRead = false;
+     
+
       $scope.partner = chat;
       var base = document.getElementById('base'); 
       var msgDiv = document.getElementById("sentmessage");
-      base.removeChild(msgDiv)
+      base.removeChild(msgDiv);
+
+      if(!chat.is_read) {
+        chat.is_read = true;
+        mySocket.emit("seen chat",{id: chat._id})
+      }
+
+
      
       //use to control different chat data in the general chat body inner div
       chatBodyCb(function(){
@@ -17623,12 +17631,15 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
     base[0].scrollTop = sentmessage.scrollHeight;
   }
 
-  
+  var elPos;
   mySocket.on("new_msg", function(data) {
-    if($location.path() !== "/general-chat") {
-      $rootScope.$broadcast("unattendedMsg",true);   
+    if(currView !== "/general-chat") {
+      $rootScope.$broadcast("unattendedMsg",true);
       templateService.playAudio(2);   
+    } else {
+      mySocket.emit("chat in-view",data);
     }
+
     var date = + new Date();
     var msg = {};
     msg.time = data.date;
@@ -17642,6 +17653,7 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
       templateService.playAudio(2);
       var elemPos = $rootScope.chatsList.map(function(x){return x.partnerId}).indexOf(data.from);
       if(elemPos !== -1) {
+        $rootScope.chatsList[elemPos].message.push(msg);
         $rootScope.chatsList[elemPos].isUnRead = true;
       } else {
         $rootScope.loadChats();

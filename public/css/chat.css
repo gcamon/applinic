@@ -537,9 +537,13 @@ span.dates {
 }
 
 .chat-header-text {
-  text-decoration: none;font-size: 14px;padding-left: 10px;position: relative;
+  text-decoration: none;
+  font-size: 14px;
+  padding-left: 10px;
+  position: relative;
 }
 
 .chat-header-text-new {
-  color: orange
+  color: green!important;
+  font-weight: bold!important;
 }

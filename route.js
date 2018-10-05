@@ -7069,7 +7069,7 @@ router.get("/user/getSpecialTestsRadio",function(req,res){
 
 router.get("/user/chats",function(req,res){
   if(req.user){
-    model.chats.find({userId: req.user.user_id},{_id:0},function(err,chats){
+    model.chats.find({userId: req.user.user_id},function(err,chats){
       if(err) throw err;
       res.json(chats);
     })

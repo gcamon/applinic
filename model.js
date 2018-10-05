@@ -701,7 +701,8 @@ var myModel = function () {
 		type: String,
 		realTime: String,
 		messages: Array,
-		date_created: String
+		date_created: String,
+		is_read: Boolean
 	},{
 		collections: "chatinfos"
 	});
