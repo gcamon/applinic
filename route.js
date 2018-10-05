@@ -7657,7 +7657,7 @@ router.get("/general/homepage-search",function(req,res){
   } else if(req.query.category === "Special Center") {
     var str = new RegExp(req.query.item.replace(/\s+/g,"\\s+"), "gi");              
    // var criteria = { "skills.disease" : { $regex: str, $options: 'i' },type:"Doctor",title:"SC",city:req.query.city};
-    var criteria = { $or: [{specialty : { $regex: str, $options: 'i' },type:"Doctor",title:"SC",city:req.query.city},
+    var criteria = { $or: [{specialty : { $regex: str, $options: 'i' },type:"Doctor",title:"SC",city:req.query.city}, //note disease tag may be use
     {specialty : { $regex: str, $options: 'i' },type:"Doctor",title:"SC"}]};
     model.user.find(criteria,{firstname:1,lastname:1,work_place:1,city:1,country:1,address:1,
     specialty:1,_id:0,profile_pic_url:1,education:1,user_id:1,title:1,name:1,profile_url:1},function(err,data){
@@ -7667,8 +7667,8 @@ router.get("/general/homepage-search",function(req,res){
           if(data.length == 0){
           var first4 = req.query.item.substring(0,4);
           str = new RegExp(first4.replace(/\s+/g,"\\s+"), "gi");  
-          var criteria = (req.query.city) ? { disease_tag : { $regex: str, $options: 'i' },type:"Doctor",title:"SC",city:req.query.city} : 
-          { disease_tag : { $regex: str, $options: 'i' },type:"Doctor",title:"SC"};
+          var criteria = (req.query.city) ? { name : { $regex: str, $options: 'i' },type:"Doctor",title:"SC",city:req.query.city} : 
+          { name : { $regex: str, $options: 'i' },type:"Doctor",title:"SC"};
           model.user.find(criteria,{firstname:1,lastname:1,work_place:1,city:1,country:1,address:1,
             specialty:1,_id:0,profile_pic_url:1,education:1,user_id:1,title:1,name:1,skills:1,profile_url:1},
             function(err,data2){
