@@ -17653,7 +17653,7 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
       templateService.playAudio(2);
       var elemPos = $rootScope.chatsList.map(function(x){return x.partnerId}).indexOf(data.from);
       if(elemPos !== -1) {
-        $rootScope.chatsList[elemPos].message.push(msg);
+        $rootScope.chatsList[elemPos].messages.push(msg);
         $rootScope.chatsList[elemPos].isUnRead = true;
       } else {
         $rootScope.loadChats();
