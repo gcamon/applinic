@@ -17684,11 +17684,10 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
 
   mySocket.on("typing", function(data) {
     tpPos = $rootScope.chatsList.map(function(x){return x.partnerId}).indexOf(data.from);
-    console.log($scope.partner.partnerId, "=======", data.from)
+    
     if(tpPos !== -1){
-      $rootScope.chatsList[tpPos].typing = data.message;
-      if($scope.partner.partnerId == data.from)
-        $scope.partner.typing = data.message
+      $rootScope.chatsList[tpPos].typing = data.message;      
+      $scope.partner.typing = data.message;
     }
     //$scope.partner.typing = data.message;
     //$scope.typing = data;

@@ -28,8 +28,8 @@
 	                        <span class="ellipsis" style="display:inline-block;font-size: 12px;padding: 3px 5px" ng-cloak><b>{{partner.name}} ( {{partner.partnerType}} )</b>&nbsp;
 	                        	<span style="display: block;">
 	                            <em ng-if="partner.typing" style="font-size: 12px;color: green"><small>{{typing}}</small></em> 
-	                            <em ng-if="partner.status && !typing" style="font-size: 12px;color: green" ng-cloak>Online</em>
-	                            <em ng-if="!partner.status && !typing" ng-cloak style="color:red;font-size: 12px">Offline</em>
+	                            <em ng-if="partner.status && !partner.typing" style="font-size: 12px;color: green" ng-cloak>Online</em>
+	                            <em ng-if="!partner.status && !partner.typing" ng-cloak style="color:red;font-size: 12px">Offline</em>
 	                            </span>
 	                        </span>
 	                    </div>
