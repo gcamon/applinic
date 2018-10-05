@@ -274,8 +274,8 @@ module.exports = function(model,io,streams) {
 	    });
 
 	    socket.on("user typing",function(data){
-	    	if(user.isPresent === true)
-	    		io.sockets.to(data.to).emit('typing',data.message);	      
+	    	//if(user.isPresent === true)
+	    	io.sockets.to(data.to).emit('typing',data);	      
 	    });
 
 	    socket.on("save message",function(data){

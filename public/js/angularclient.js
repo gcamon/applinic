@@ -10130,7 +10130,7 @@ app.controller("myDoctorController",["$scope","$location","$http","$window","$ro
   });
 
   mySocket.on("typing", function(data) {
-    $scope.typing = data;
+    $scope.typing = data.message;
   });
 
   function reqModal(docObj) {
@@ -10410,7 +10410,7 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
   });
 
   mySocket.on("typing", function(data) {
-    $scope.typing = data;
+    $scope.typing = data.message;
   });
 
      
@@ -17674,15 +17674,20 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
 
   $scope.$watch("user.text1",function(newVal,oldVal){
     if(newVal !== "" && newVal !== undefined){      
-      mySocket.emit("user typing",{to: $scope.partner.partnerId,message:"Typing...",status:true});
+      mySocket.emit("user typing",{to: $scope.partner.partnerId,message:"Typing...",from: user.user_id});
     } else {
-      mySocket.emit("user typing",{to: $scope.partner.partnerId,message:"",status: false});
+      mySocket.emit("user typing",{to: $scope.partner.partnerId,message:"",from: user.user_id});
     }
   });
 
+  var tpPos;
+
   mySocket.on("typing", function(data) {
-    alert($scope.partner.name)
-    $scope.partner.typing = data;
+    tpPos = $rootScope.chatsList.map(function(x){return x.partnerId}).indexOf(data.from);
+    if(tpPos !== -1){
+      $rootScope.chatsList[tpPos].typing = data.message;
+    }
+    //$scope.partner.typing = data.message;
     //$scope.typing = data;
   });
 
