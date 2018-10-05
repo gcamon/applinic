@@ -17674,15 +17674,16 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
 
   $scope.$watch("user.text1",function(newVal,oldVal){
     if(newVal !== "" && newVal !== undefined){      
-      mySocket.emit("user typing",{to: $scope.partner.partnerId,message:"Typing..."});
+      mySocket.emit("user typing",{to: $scope.partner.partnerId,message:"Typing...",status:true});
     } else {
-      mySocket.emit("user typing",{to: $scope.partner.partnerId,message:""});
+      mySocket.emit("user typing",{to: $scope.partner.partnerId,message:"",status: false});
     }
   });
 
   mySocket.on("typing", function(data) {
+    alert($scope.partner.name)
     $scope.partner.typing = data;
-    $scope.typing = data;
+    //$scope.typing = data;
   });
 
   $scope.videoRequest = function(type,docObj){
