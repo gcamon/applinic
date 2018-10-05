@@ -17684,7 +17684,7 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
 
   mySocket.on("typing", function(data) {
     tpPos = $rootScope.chatsList.map(function(x){return x.partnerId}).indexOf(data.from);
-    alert(tpPos)
+    console.log($scope.partner.partnerId, "=======", data.from)
     if(tpPos !== -1){
       $rootScope.chatsList[tpPos].typing = data.message;
       if($scope.partner.partnerId == data.from)
