@@ -17577,8 +17577,10 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
         msg.partnerId = $scope.partner.partnerId; 
         msg.id = data.date//genId();
 
-        var elPos = $rootScope.chatsList.map(function(x){return x.partnerId}).indexOf(data.from);
+
+        var elPos = $rootScope.chatsList.map(function(x){return x.partnerId}).indexOf($scope.partner.partnerId);
         if(elPos !== -1) {
+          $rootScope.chatsList[elPos].is_read = true;
           $rootScope.chatsList[elPos].messages.push(msg);
         }
 
@@ -17642,7 +17644,7 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
       $rootScope.$broadcast("unattendedMsg",true);
       templateService.playAudio(2);   
     } else {
-      mySocket.emit("chat in-view",data);
+      mySocket.emit("chat in-view",data); // use to reset a chat that has been read at the backend as read in db
     }
 
     var date = + new Date();
@@ -17658,8 +17660,8 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
       templateService.playAudio(2);
       var elemPos = $rootScope.chatsList.map(function(x){return x.partnerId}).indexOf(data.from);
       if(elemPos !== -1) {
-        $rootScope.chatsList[elemPos].messages.push(msg);
-        $rootScope.chatsList[elemPos].isUnRead = true;
+        $rootScope.chatsList[elemPos].is_read = false;
+        $rootScope.chatsList[elemPos].messages.push(msg);       
       } else {
         $rootScope.loadChats();
       }
