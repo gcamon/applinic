@@ -17577,6 +17577,11 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
         msg.partnerId = $scope.partner.partnerId; 
         msg.id = data.date//genId();
 
+        var elPos = $rootScope.chatsList.map(function(x){return x.partnerId}).indexOf(data.from);
+        if(elPos !== -1) {
+          $rootScope.chatsList[elPos].messages.push(msg);
+        }
+
         chats(msg);
         
         mySocket.emit("isSent",msg,function(status){
