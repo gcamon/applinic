@@ -7,7 +7,7 @@
 				<div class="pl-1 ellipsis" style="max-height: 600px; overflow-y: auto">
 					<div ng-repeat="chat in chatsList | orderBy : '-realTime'" ng-click="viewChat(chat)" class="pl-0" ng-if="chat.partnerId !== checkLogIn.user_id">
 						<img src="{{chat.profilePic}}" style="float: left;max-height: 62px;width:62px">			
-						<a href="" class="chat-header-text ellipsis" ng-class="{'chat-header-text-new' : !chat.is_read || chat.isUnRead}" style="font-size: 12px;display: inline-block;padding-left: 10px;width: 85%;position: relative;">
+						<a href="" class="chat-header-text ellipsis" ng-class="{'chat-header-text-new' : !chat.is_read}" style="font-size: 12px;display: inline-block;padding-left: 10px;width: 85%;position: relative;">
 							<strong style="display: block;" >{{chat.name}}</strong>
 							<span style="display: block;">{{chat.partnerType}}</span>
 							 <span style="display:block;" class="ellipsis">{{chat.messages[chat.messages.length - 1].received || chat.messages[chat.messages.length - 1].sent}} <small style="display:block;" am-time-ago="chat.messages[chat.messages.length - 1].time  || chat.messages[chat.messages.length - 1].received" ng-cloak></small></span> 
