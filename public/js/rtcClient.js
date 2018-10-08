@@ -84,7 +84,7 @@ var PeerManager = (function (name) {
 
   //if peer does not exist yet, this function will create peer below otherwise peer will be retreived fron 'peerDatabase' where existin
   //peer are kept. The remark where this happened in "jj".
-  function addPeer(remoteId,name,id) {
+  function addPeer(remoteId,name) {
     var peer = new Peer(config.peerConnectionConfig, config.peerConnectionConstraints, name);
     console.log("checking out peer object")
     peer.pc.onicecandidate = function(event) {
@@ -115,7 +115,7 @@ var PeerManager = (function (name) {
       .iceConnectionState) {
         case 'disconnected':
           remoteVideosContainer.removeChild(peer.videoDiv);
-          var btn = document.getElementById(this.getId());
+          var btn = document.getElementById(remoteId);
           btn.style.display = "none";
           break;
       }
