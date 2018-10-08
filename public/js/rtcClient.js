@@ -185,6 +185,9 @@ var PeerManager = (function (name) {
       to: to,
       type: type,
       payload: payload
+    },function(response){
+      if(!response.status)
+        alert("Oops! this " + name + " channel has no signal. Please try again.");
     });
   }
 
@@ -225,9 +228,13 @@ var PeerManager = (function (name) {
     },
     
     peerInit: function(remoteId,name) {
+
+      if(peerDatabase[remoteId])
+        peerDatabase[remoteId].captionElement.innerHTML = name;
      
       //peer = peerDatabase[remoteId] || addPeer(remoteId,name); //'jj'
-      addPeer(remoteId,name);
+      peer = peerDatabase[remoteId] || addPeer(remoteId,name);
+      
       send('init', remoteId, null,name);
     },
 
