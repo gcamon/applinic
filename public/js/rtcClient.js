@@ -114,7 +114,7 @@ var PeerManager = (function (name) {
       || event.target   ) // Firefox
       .iceConnectionState) {
         case 'disconnected':
-          remoteVideosContainer.removeChild(peer.remoteVideoEl);
+          remoteVideosContainer.removeChild(peer.videoDiv);
           break;
       }
     };
@@ -231,7 +231,7 @@ var PeerManager = (function (name) {
 
       if(peerDatabase[remoteId]) {
         peerDatabase[remoteId].captionElement.innerHTML = name;
-        peerDatabase[remoteId].remoteVideoEl.id = remoteId;
+        peerDatabase[remoteId].videoDiv.id = remoteId;
       }
      
       //peer = peerDatabase[remoteId] || addPeer(remoteId,name); //'jj'
@@ -276,7 +276,7 @@ var Peer = function (pcConfig, pcConstraints,name,id) {
   this.remoteVideoEl.style.width = "auto";
   this.remoteVideoEl.style.height = "250px";
   this.remoteVideoEl.style.width = "auto";
-  this.remoteVideoEl.id = id;
+  this.videoDiv.id = id;
   
   this.remoteVideoEl.controls = true;
   this.remoteVideoEl.autoplay = true;
