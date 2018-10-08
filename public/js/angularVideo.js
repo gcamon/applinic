@@ -159,14 +159,16 @@
 			
 			$http.get(url).success(function(data){
 				// filter own stream
-				
+					console.log(data, "======", data.length);
 				var streams = data.filter(function(stream) {
 			      	return stream.id !== client.getId();
 			    });
+
+					console.log(streams, "======", streams.length)
 			    // get former state
 			    //starts from one for remote streams
 			    for(var i=0; i < streams.length; i++) {
-			    	//var stream = getStreamById(streams[i].id);
+			    	var stream = getStreamById(streams[i].id);
 			    	streams[i].isPlaying = (!!stream) ? stream.isPLaying : false;
 			    	//rtc.view(streams[i]);
 			    }		
