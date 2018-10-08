@@ -175,11 +175,11 @@
 				    	//streams[i].isPlaying = (!!stream) ? stream.isPLaying : false;
 				    	streams[i].isPlaying = true;
 				    	rtc.remoteStreams.push(streams[i]);
-				    	rtc.view(streams[i]);
+				    	//rtc.view(streams[i]);
 				    }		
 			  	} else {
 			  		rtc.remoteStreams.push(streams[streams.length - 1]);
-			  		rtc.view(streams[i]);
+			  		//rtc.view(streams[i]);
 			  	}
 
 			    console.log(rtc.remoteStreams)	    
