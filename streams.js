@@ -34,13 +34,13 @@ module.exports = function() {
         var stream = new Stream(id, name, userId);
         if(err) throw err;
         if(control){ 
-          var elemPos = control.streams.map(function(x){return x.userId}).indexOf(userId);
+          var elemPos = control.streams.map(function(x){return x.id}).indexOf(id);
           if(elemPos === -1) {       
             control.streams.push(stream);
-          } else {
-            control.streams[elemPos] = stream;
-          }
+          } 
+            //control.streams[elemPos] = stream;
           
+
           control.save(function(err,info){
             console.log("streams save!")
           })
