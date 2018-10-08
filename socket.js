@@ -520,11 +520,11 @@ module.exports = function(model,io,streams) {
 		console.log('-- ' + socket.id + ' joined --');
     socket.emit('id', socket.id);
 
-    socket.on('message', function (details,cb) {
+    socket.on('message', function (details) {
       var othersocket = io.sockets.connected[details.to];
       
       if (!othersocket) {
-      	cb({status:false});
+      	//cb({status:false});
         return;
       }
       delete details.to;

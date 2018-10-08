@@ -185,9 +185,6 @@ var PeerManager = (function (name) {
       to: to,
       type: type,
       payload: payload
-    },function(response){
-      if(!response.status)
-        alert("Oops! " + name + "  has not connected yet. Please try again.");
     });
   }
 
