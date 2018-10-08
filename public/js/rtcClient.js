@@ -115,6 +115,8 @@ var PeerManager = (function (name) {
       .iceConnectionState) {
         case 'disconnected':
           remoteVideosContainer.removeChild(peer.videoDiv);
+          var btn = document.getElementById(this.getId());
+          btn.style.display = "none";
           break;
       }
     };
