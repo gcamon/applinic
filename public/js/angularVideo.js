@@ -160,22 +160,29 @@
 			$http.get(url).success(function(data){
 				// filter own stream
 					console.log(data, "======", data.length);
-				var streams = data.filter(function(stream) {
-			      	return stream.id !== client.getId();
+					console.log(client.getId())
+				  var streams = data.filter(function(stream) {							
+			      	//return stream.id !== client.getId();
+			      	return stream.userId !== user.user_id;
 			    });
 
-					console.log(streams, "======", streams.length)
+					console.log(streams, "======", streams.length);
 			    // get former state
 			    //starts from one for remote streams
-			    for(var i=0; i < streams.length; i++) {
-			    	var stream = getStreamById(streams[i].id);
-			    	streams[i].isPlaying = (!!stream) ? stream.isPLaying : false;
-			    	//rtc.view(streams[i]);
-			    }		
+			    if(rtc.remoteStreams.length == 0) { 
+				    for(var i=0; i < streams.length; i++) {
+				    	var stream = getStreamById(streams[i].id);
+				    	streams[i].isPlaying = (!!stream) ? stream.isPLaying : false;
+				    	rtc.remoteStreams.push(streams[i])
+				    	//rtc.view(streams[i]);
+				    }		
+			  	} else {
+			  		rtc.remoteStreams.push(streams[streams.length - 1])
+			  	}
 
-			    console.log(streams)	    
+			    console.log(rtc.remoteStreams)	    
 			    $rootScope.connections = streams;
-			    rtc.remoteStreams = streams;
+			    //rtc.remoteStreams = streams;
 			});
 		};
 
@@ -428,7 +435,7 @@
 					if(localManager.getValue("username") !== "Guest" || localManager.getValue("username") !== ""){
 						localManager.setValue("username",localStream.name);
 					}				
-					client.send('readyToStream', { name: localStream.name,controlId: saveControlId.id });
+					client.send('readyToStream', { name: localStream.name,controlId: saveControlId.id,userId: user.user_id });
 				})
 				.catch(function(err) {
 					console.log(err);
