@@ -85,7 +85,7 @@ var PeerManager = (function (name) {
   //if peer does not exist yet, this function will create peer below otherwise peer will be retreived fron 'peerDatabase' where existin
   //peer are kept. The remark where this happened in "jj".
   function addPeer(remoteId,name) {
-    var peer = new Peer(config.peerConnectionConfig, config.peerConnectionConstraints, name);
+    var peer = new Peer(config.peerConnectionConfig, config.peerConnectionConstraints, name, id);
     console.log("checking out peer object")
     peer.pc.onicecandidate = function(event) {
       if (event.candidate) {
@@ -229,11 +229,13 @@ var PeerManager = (function (name) {
     
     peerInit: function(remoteId,name) {
 
-      if(peerDatabase[remoteId])
+      if(peerDatabase[remoteId]) {
         peerDatabase[remoteId].captionElement.innerHTML = name;
+        peerDatabase[remoteId].remoteVideoEl.id = remoteId;
+      }
      
       //peer = peerDatabase[remoteId] || addPeer(remoteId,name); //'jj'
-      peer = peerDatabase[remoteId] || addPeer(remoteId,name);
+      peer = peerDatabase[remoteId] || addPeer(remoteId,name,remoteId);
       
       send('init', remoteId, null,name);
     },
@@ -263,7 +265,7 @@ var PeerManager = (function (name) {
   
 });
 
-var Peer = function (pcConfig, pcConstraints,name) {
+var Peer = function (pcConfig, pcConstraints,name,id) {
   //this.name = name //refers to the remote user name
   this.pc = new RTCPeerConnection(pcConfig, pcConstraints);
   this.remoteVideoEl = document.createElement('video');
@@ -274,6 +276,7 @@ var Peer = function (pcConfig, pcConstraints,name) {
   this.remoteVideoEl.style.width = "auto";
   this.remoteVideoEl.style.height = "250px";
   this.remoteVideoEl.style.width = "auto";
+  this.remoteVideoEl.id = id;
   
   this.remoteVideoEl.controls = true;
   this.remoteVideoEl.autoplay = true;

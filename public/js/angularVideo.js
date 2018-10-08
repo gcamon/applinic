@@ -163,6 +163,8 @@
 					console.log(client.getId())
 				  var streams = data.filter(function(stream) {							
 			      	//return stream.id !== client.getId();
+			      	var vCont = document.getElementById(client.getId())
+			      	console.log("++++++++++++++++++++++++++++++++",vCont)
 			      	return stream.userId !== user.user_id;
 			    });
 
@@ -173,7 +175,7 @@
 				    for(var i=0; i < streams.length; i++) {
 				    	//var stream = getStreamById(streams[i].id);
 				    	//streams[i].isPlaying = (!!stream) ? stream.isPLaying : false;
-				    	streams[i].isPlaying = true;
+				    	streams[i].isPlaying = false;
 				    	rtc.remoteStreams.push(streams[i]);
 				    	//rtc.view(streams[i]);
 				    }		

@@ -582,9 +582,9 @@ module.exports = function(model,io,streams) {
       console.log('-- ' + socket.id + ' left --');
       delete connects[socket.id];
       io.sockets.emit("real time presence",connects);
-      console.log(connects)
+      console.log(connects);
       //io.sockets.emit("real time presence",{socketId: socket.id,status: false})
-      streams.removeStream(socket.id);
+      //streams.removeStream(socket.id);
     }	
 
     socket.on('disconnect', leave);
