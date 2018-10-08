@@ -35,12 +35,15 @@ module.exports = function() {
         if(err) throw err;
         if(control){ 
           var elemPos = control.streams.map(function(x){return x.id}).indexOf(id);
-          if(elemPos === -1) {       
+          if(elemPos === -1) {  
+            for(var j = 0; j < control.streams.length; j++){
+              if(control.streams[j].userId === userId){
+                control.streams.splice(j,1);
+              }
+            }     
             control.streams.push(stream);
           } 
             //control.streams[elemPos] = stream;
-          
-
           control.save(function(err,info){
             console.log("streams save!")
           })
