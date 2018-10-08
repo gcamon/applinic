@@ -171,13 +171,15 @@
 			    //starts from one for remote streams
 			    if(rtc.remoteStreams.length == 0) { 
 				    for(var i=0; i < streams.length; i++) {
-				    	var stream = getStreamById(streams[i].id);
-				    	streams[i].isPlaying = (!!stream) ? stream.isPLaying : false;
-				    	rtc.remoteStreams.push(streams[i])
-				    	//rtc.view(streams[i]);
+				    	//var stream = getStreamById(streams[i].id);
+				    	//streams[i].isPlaying = (!!stream) ? stream.isPLaying : false;
+				    	streams[i].isPlaying = true;
+				    	rtc.remoteStreams.push(streams[i]);
+				    	rtc.view(streams[i]);
 				    }		
 			  	} else {
-			  		rtc.remoteStreams.push(streams[streams.length - 1])
+			  		rtc.remoteStreams.push(streams[streams.length - 1]);
+			  		rtc.view(streams[i]);
 			  	}
 
 			    console.log(rtc.remoteStreams)	    
