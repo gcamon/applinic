@@ -184,7 +184,7 @@
 			  		//rtc.view(streams[i]);
 			  	}
 
-			    console.log(rtc.remoteStreams)	    
+			    console.log(rtc.remoteStreams);	    
 			    $rootScope.connections = streams;
 			    //rtc.remoteStreams = streams;
 			});

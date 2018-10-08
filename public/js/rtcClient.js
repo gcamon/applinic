@@ -84,7 +84,7 @@ var PeerManager = (function (name) {
 
   //if peer does not exist yet, this function will create peer below otherwise peer will be retreived fron 'peerDatabase' where existin
   //peer are kept. The remark where this happened in "jj".
-  function addPeer(remoteId,name) {
+  function addPeer(remoteId,name,id) {
     var peer = new Peer(config.peerConnectionConfig, config.peerConnectionConstraints, name, id);
     console.log("checking out peer object")
     peer.pc.onicecandidate = function(event) {
