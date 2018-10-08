@@ -135,7 +135,8 @@
 	 function($scope,$rootScope,camera, $location, $http, $window,templateService){
 		var rtc = this;
 		rtc.remoteStreams = [];
-		var name = user.title + " " + user.firstname; //gets name of doctor in this case
+		//var name = user.title + " " + user.firstname; //gets name of doctor in this case
+
 		function getStreamById(id) {
 		    for(var i=0; i<rtc.remoteStreams.length;i++) {
 		    	if (rtc.remoteStreams[i].id === id) {return rtc.remoteStreams[i];}
@@ -147,7 +148,7 @@
 			
 			control.controlId = controlId;
 				//join a room
-    	client.controlJoin(controlId,name); 
+    	client.controlJoin(controlId,names); 
 			return $window.location.host + "/user/cam/" + controlId;
 		}
 
@@ -165,19 +166,23 @@
 			    // get former state
 			    //starts from one for remote streams
 			    for(var i=0; i < streams.length; i++) {
-			    	var stream = getStreamById(streams[i].id);
+			    	//var stream = getStreamById(streams[i].id);
 			    	streams[i].isPlaying = (!!stream) ? stream.isPLaying : false;
 			    	//rtc.view(streams[i]);
-			    }			    
+			    }		
+
+			    console.log(streams)	    
 			    $rootScope.connections = streams;
 			    rtc.remoteStreams = streams;
 			});
 		};
 
 		rtc.view = function(stream){
+			console.log(stream);
 			client.peerInit(stream.id,stream.name);
 			stream.isPlaying = !stream.isPlaying;
 		};
+
 		rtc.call = function(stream){
 			/* If json isn't loaded yet, construct a new stream 
 			 * This happens when you load <serverUrl>/<socketId> : 
@@ -230,17 +235,17 @@
 		
     controllerSocket.on("reload streams",function(data){
     	console.log(data)
-    	if(data.userId !== user.user_id) {
-    		$rootScope.message = (data.name) ? data.name + " stream is availble now! Click view button." : "Partner stream is now available.";
+    
+  		$rootScope.message = (data.name) ? data.name + " stream is availble now! Click view button." : "Partner stream is now available.";
 
-    		$rootScope.connectionStatus = data.status;
+  		$rootScope.connectionStatus = data.status;
 
-    		setTimeout(function(){
-	    		$scope.$apply(function(){
-	    			$rootScope.message = "";
-	    		})
-    		},3500);
-    	}
+  		setTimeout(function(){
+    		$scope.$apply(function(){
+    			$rootScope.message = "";
+    		})
+  		},3500);
+    	
     	
    		//var decide = confirm($rootScope.message);
     	if(data.status) {

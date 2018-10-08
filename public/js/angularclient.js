@@ -4079,19 +4079,29 @@ app.controller("docNotificationController",["$scope","$location","$resource","$i
 
   
 
+
+   // to be modified later suit general
   $rootScope.loadChats = function() {
     $scope.loading = true;
     $rootScope.chatsList = chatService.chats();
     $rootScope.chatsList.$promise.then(function(result){
       $scope.loading = false;
       $rootScope.chatsList = result;
-      $rootScope.$broadcast("unattendedMsg",false)
+      for(var i = 0; i < result.length; i++) {
+        if(!result[i].is_read) {
+          $scope.showIndicator = true;
+          break;
+        }
+      }
     });
   }
+
+  $rootScope.loadChats();
 
   $scope.viewChat = function(partnerId) {
     templateService.holdId = partnerId;
     $location.path("/general-chat");
+    $scope.showIndicator = false;
   }
 
 }]);
@@ -6708,7 +6718,7 @@ app.controller("patientNotificationController",["$scope","$location","$http","$w
       console.log(chatsList);
       $scope.chatsList = chatsList || [];
      })
-     $rootScope.$broadcast("unattendedMsg",false)
+     $rootScope.$broadcast("unattendedMsg",false);
   }
 
   /*$scope.viewChat = function(chatId) {
@@ -6725,12 +6735,21 @@ app.controller("patientNotificationController",["$scope","$location","$http","$w
     $rootScope.chatsList.$promise.then(function(result){
       $scope.loading = false;
       $rootScope.chatsList = result;
+      for(var i = 0; i < result.length; i++) {
+        if(!result[i].is_read) {
+          $scope.showIndicator = true;
+          break;
+        }
+      }
     });
   }
+
+  $rootScope.loadChats();
 
   $scope.viewChat = function(partnerId) {
     templateService.holdId = partnerId;
     $location.path("/general-chat");
+    $scope.showIndicator = false;
   }
 
 }]);
@@ -12058,12 +12077,21 @@ app.controller("pharmacyCenterNotificationController",["$scope","$location","$re
     $rootScope.chatsList.$promise.then(function(result){
       $scope.loading = false;
       $rootScope.chatsList = result;
+      for(var i = 0; i < result.length; i++) {
+        if(!result[i].is_read) {
+          $scope.showIndicator = true;
+          break;
+        }
+      }
     });
   }
+
+  $rootScope.loadChats();
 
   $scope.viewChat = function(partnerId) {
     templateService.holdId = partnerId;
     $location.path("/general-chat");
+    $scope.showIndicator = false;
   }
 
   $scope.showIndicator = false;
@@ -12071,6 +12099,7 @@ app.controller("pharmacyCenterNotificationController",["$scope","$location","$re
   $rootScope.$on("unattendedMsg",function(status,data){
     $scope.showIndicator = data;
   });
+
 
 }]);
 
@@ -12549,21 +12578,31 @@ app.controller("labCenterNotificationController",["$scope","$location","$resourc
     $rootScope.noteLen++;
   });
 
-  $rootScope.loadChats = function() {
+   $rootScope.loadChats = function() {
     $scope.loading = true;
     $rootScope.chatsList = chatService.chats();
     $rootScope.chatsList.$promise.then(function(result){
       $scope.loading = false;
       $rootScope.chatsList = result;
+      for(var i = 0; i < result.length; i++) {
+        if(!result[i].is_read) {
+          $scope.showIndicator = true;
+          break;
+        }
+      }
     });
   }
+
+  $rootScope.loadChats();
 
   $scope.viewChat = function(partnerId) {
     templateService.holdId = partnerId;
     $location.path("/general-chat");
+    $scope.showIndicator = false;
   }
 
   $scope.showIndicator = false;
+
   $rootScope.$on("unattendedMsg",function(status,data){
     $scope.showIndicator = data;
   });
@@ -13570,12 +13609,20 @@ app.controller("radioCenterNotificationController",["$scope","$location","$http"
     $rootScope.chatsList.$promise.then(function(result){
       $scope.loading = false;
       $rootScope.chatsList = result;
+       for(var i = 0; i < result.length; i++) {
+        if(!result[i].is_read) {
+          $scope.showIndicator = true;
+          break;
+        }
+      }
     });
   }
+  $rootScope.loadChats();
 
   $scope.viewChat = function(partnerId) {
     templateService.holdId = partnerId;
     $location.path("/general-chat");
+     $scope.showIndicator = false;
   }
 
 }]);
@@ -17140,6 +17187,9 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
     mySocket.emit("msg received",{to: data.from,id:data.date});
   });
 
+
+
+
   //use for filter in PWR
   $rootScope.complain = {};
 
@@ -17422,7 +17472,7 @@ app.controller("patientWaitingRoomController",["$scope","$resource","$location",
 app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatService", "templateService","$filter","ModalService","$location","deviceCheckService",
   function($scope, $rootScope, mySocket,chatService,templateService,$filter,ModalService,$location,deviceCheckService){
     var user = $rootScope.checkLogIn || {};
-    $rootScope.allChats = $rootScope.chatsList; // rootscope can be used instead   
+    $rootScope.allChats = $rootScope.chatsList; // rootScope can be used instead   
     $scope.center = $rootScope.holdcenter || {id : templateService.holdId}; //sometimes is not center but individual
     $scope.isSent = false;
     var elemPos;
