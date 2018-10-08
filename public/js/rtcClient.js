@@ -118,7 +118,9 @@ var PeerManager = (function (name) {
           break;
       }
     };
+
     peerDatabase[remoteId] = peer;
+    //peerDatabase[remoteId]['name'] = name;
         
     return peer;
   }
@@ -176,13 +178,16 @@ var PeerManager = (function (name) {
     }
   }
 
-  function send(type, to, payload) {
+  function send(type, to, payload,name) {
     console.log('sending ' + type + ' to ' + to);
 
     socket.emit('message', {
       to: to,
       type: type,
       payload: payload
+    },function(response){
+      if(!response.status)
+        alert("Oops! " + name + "  has not connected yet. Please try again.");
     });
   }
 
@@ -224,11 +229,9 @@ var PeerManager = (function (name) {
     
     peerInit: function(remoteId,name) {
      
-      if(peerDatabase[remoteId])
-        peerDatabase[remoteId]['name'] = name;
-
-      peer = peerDatabase[remoteId] || addPeer(remoteId,name); //'jj'
-      send('init', remoteId, null);
+      //peer = peerDatabase[remoteId] || addPeer(remoteId,name); //'jj'
+      addPeer(remoteId,name);
+      send('init', remoteId, null,name);
     },
 
     peerRenegociate: function(remoteId) {
