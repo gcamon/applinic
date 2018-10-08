@@ -284,7 +284,7 @@ span.dates {
                 <ul style="display: inline-block;list-style: none;width: 90%">
                     <li style="float: left;padding: 10px;"><b>Remote stream:</b></li>
                     <li ng-repeat="stream in rtc.remoteStreams" style="padding: 10px 10px;float: left;">
-                         <a  href="" ng-click="rtc.view(stream)" class="" style="padding: 5px 10px;font-size: 12px"><i class="fa fa-video-camera text-muted"></i> &nbsp;<b>{{(stream.isPlaying === false) ? stream.name + '( view )' : stream.name + ' ( hide )'}}</b></a>
+                         <a  href="" ng-click="rtc.view(stream)" class="" style="padding: 5px 10px;font-size: 12px" id="{{stream.id}}"><i class="fa fa-video-camera text-muted"></i> &nbsp;<b>{{(stream.isPlaying === false) ? stream.name + '( view )' : stream.name + ' ( hide )'}}</b></a>
                     </li>
                 </ul>
 
