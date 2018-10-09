@@ -14,10 +14,13 @@ module.exports = function() {
    /*
    todo keep  control in  database. Creat a json object with the following field, Name of control, id of control, streamlist of Array of objects.,
    */
-  var Stream = function(id, name, userId) {
+  var Stream = function(id, name, userId, pic, type, specialty) {
     this.name = name;
     this.id = id;
     this.userId = userId;
+    this.profilePic = pic;
+    this.type = type;
+    this.specialty = specialty;
   }
 
   return {
@@ -26,7 +29,7 @@ module.exports = function() {
       streamList.push(stream);
     },*/
 
-    addStream : function(id, name, controlId,model,userId) {
+    addStream : function(id, name, controlId,model,userId,pic,type,specialty) {
             
       //controlwill be deleted after 10 hour as ttl was set for every instance of control that was initiated on socket.js
       model.control.findOne({controlId: controlId})

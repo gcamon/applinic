@@ -536,25 +536,25 @@ module.exports = function(model,io,streams) {
 
     // gets te control to join a room
     socket.on("control join",function(control,cb){
-    	socket.join(control.control);//control.joins a roo
+    	socket.join(control.control); //control.joins a roo
     	cb(control);
-    	//streams.addStream(socket.id,control.name,control.control,model)
+    	//streams.addStream(socket.id,control.name,control.control,model);
     })
 
     socket.on('readyToStream', function(options,cb) {
       console.log('-- ' + socket.id + ' is ready to stream --');
-      console.log(options)
+      console.log(options);
       //search database to see which control this socket belong to.
-      streams.addStream(socket.id, options.name, options.controlId,model,options.userId);
+      streams.addStream(socket.id, options.name, options.controlId,model,options.userId,options.profile_pic_url,options.type,options.specialty);
       //socket.join(options.controlId); //create a room for common sites using one control.
       //io.sockets.to(options.controlId).emit("new stream added",{message:"new stream",controlId:options.controlId});
-      cb({controlId:options.controlId})
+      cb({controlId:options.controlId});
     });
 
     socket.on("init reload",function(data){
-    	console.log("==================")
+    	console.log("==================");
     	console.log(data);
-    	io.sockets.to(data.controlId).emit("reload streams",{status:true,name:data.names,userId:data.userId})
+    	io.sockets.to(data.controlId).emit("reload streams",{status:true,name:data.names,userId:data.userId});
     })
     
     socket.on('update', function(options) {

@@ -437,7 +437,14 @@
 					if(localManager.getValue("username") !== "Guest" || localManager.getValue("username") !== ""){
 						localManager.setValue("username",localStream.name);
 					}				
-					client.send('readyToStream', { name: localStream.name,controlId: saveControlId.id,userId: user.user_id });
+					client.send('readyToStream', { 
+						name: localStream.name,
+						controlId: saveControlId.id,
+						userId: user.user_id,
+						profile_pic_url: user.profile_pic_url,
+						type: user.typeOfUser,
+						specialty: user.specialty
+					});
 				})
 				.catch(function(err) {
 					console.log(err);
