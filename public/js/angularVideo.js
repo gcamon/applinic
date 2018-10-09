@@ -184,7 +184,8 @@
 				  			rtc.remoteStreams.push(streams[streams.length - 1]);
 				  		} else {
 				  			rtc.remoteStreams.splice(elePo,1);
-				  			moteStreams.push(streams[streams.length - 1]);
+				  			streams[streams.length - 1].isPlaying = false;
+				  			rtc.remoteStreams.push(streams[streams.length - 1]);
 				  		}
 			  		}
 			  		//rtc.view(streams[i]);
