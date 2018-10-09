@@ -470,7 +470,7 @@ module.exports = function(model,io,streams) {
 					if(err) throw err;
 					console.log(control)
 					if(control) {
-						streams.addStream(socket.id, details.name, details.controlId,model);						
+						streams.addStream(socket.id, details.name, details.controlId,model,details.userId);						
 						cb({controlUrl: control.controlUrl});
 					}
 				});

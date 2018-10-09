@@ -9445,7 +9445,7 @@ app.controller("presenceSocketController",["$rootScope","$scope","$window","mySo
       if(decide) {
         //time will be include to enable user decide when t have conversation
         mySocket.emit("conversation invitation acceptance",{status:true,time: "now",to:data.from,title:person.title,
-          name: person.firstname || person.name,type:person.typeOfUser,controlId: data.controlId},function(response){
+          name: person.firstname || person.name,type:person.typeOfUser,controlId: data.controlId,userId:person.user_id},function(response){
             localManager.setValue("userId",data.from);
             $rootScope.controlUrl = response.controlUrl;
             ModalService.showModal({
