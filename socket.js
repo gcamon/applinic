@@ -468,7 +468,7 @@ module.exports = function(model,io,streams) {
 				//will be modified to accomadate other chosen time							
 				model.control.findOne({controlId: details.controlId}).exec(function(err,control){
 					if(err) throw err;
-					console.log(control)
+					console.log(details);
 					if(control) {
 						streams.addStream(socket.id, details.name, details.controlId,model,details.userId);						
 						cb({controlUrl: control.controlUrl});

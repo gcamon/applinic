@@ -197,7 +197,7 @@
 		};
 
 		rtc.view = function(stream){
-			console.log(stream);
+			alert(stream.name);
 			client.peerInit(stream.id,stream.name);
 			stream.isPlaying = !stream.isPlaying;
 		};
