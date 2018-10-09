@@ -177,9 +177,12 @@
 				    	//rtc.view(streams[i]);
 				    }		
 			  	} else {
-			  		var elePo = rtc.remoteStreams.map(function(x){return x.id}).indexOf(streams[streams.length - 1].id);
-			  		if(elePo === -1)
-			  			rtc.remoteStreams.push(streams[streams.length - 1]);
+			  		if(streams.length > 0) {
+				  		var elePo = rtc.remoteStreams.map(function(x){return x.id}).indexOf(streams[streams.length - 1].id);
+				  		if(elePo === -1)
+				  			streams[streams.length - 1].isPlaying = false;
+				  			rtc.remoteStreams.push(streams[streams.length - 1]);
+			  		}
 			  		//rtc.view(streams[i]);
 			  	}
 
@@ -247,7 +250,7 @@
     controllerSocket.on("reload streams",function(data){
     	console.log(data)
     
-  		$rootScope.message = (data.name) ? data.name + " stream is availble now! Click view button." : "Partner stream is now available.";
+  		$rootScope.message = "Partner stream is now available.";
 
   		$rootScope.connectionStatus = data.status;
 
