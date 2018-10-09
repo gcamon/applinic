@@ -656,8 +656,5 @@ module.exports = function(model,io,streams) {
 				io.sockets.to(data.to).emit("patient in call connected",{status: true})
 			});
 
-			socket.on("call rejected",function(data){
-				io.sockets.to(data.to).emit("user rejected calls",{status:"Call rejected!"})
-			});*/
-
+			
 			///////

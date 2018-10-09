@@ -9429,8 +9429,7 @@ app.controller("presenceSocketController",["$rootScope","$scope","$window","mySo
       } else {
         //when call is rejected by the receiver
         var name = person.name || person.title + " " + person.firstname;
-        alert(data.from)
-        mySocket.emit("call reject",{to: data.from,message: name + " rejected your video call request."})
+        //mySocket.emit("call reject",{to: data.from,message: name + " rejected your video chat request."})
       }
     }
   });
@@ -9461,7 +9460,7 @@ app.controller("presenceSocketController",["$rootScope","$scope","$window","mySo
       } else {
         //when call is rejected by the receiver
         var name = person.name || person.title + " " + person.firstname;
-        mySocket.emit("call reject",{to: data.from,message: name + " rejected your video call request."})
+        //mySocket.emit("call reject",{to: data.from,message: name + " rejected your video chat request."})
       }
     }
   });
