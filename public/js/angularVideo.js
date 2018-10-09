@@ -178,10 +178,14 @@
 				    }		
 			  	} else {
 			  		if(streams.length > 0) {
-				  		var elePo = rtc.remoteStreams.map(function(x){return x.id}).indexOf(streams[streams.length - 1].id);
-				  		if(elePo === -1)
+				  		var elePo = rtc.remoteStreams.map(function(x){return x.userId}).indexOf(streams[streams.length - 1].userId);
+				  		if(elePo === -1) {				  			
 				  			streams[streams.length - 1].isPlaying = false;
 				  			rtc.remoteStreams.push(streams[streams.length - 1]);
+				  		} else {
+				  			rtc.remoteStreams.splice(elePo,1);
+				  			moteStreams.push(streams[streams.length - 1]);
+				  		}
 			  		}
 			  		//rtc.view(streams[i]);
 			  	}
