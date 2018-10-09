@@ -197,7 +197,6 @@
 		};
 
 		rtc.view = function(stream){
-			alert(stream.name);
 			client.peerInit(stream.id,stream.name);
 			stream.isPlaying = !stream.isPlaying;
 		};
@@ -447,7 +446,7 @@
 						localManager.setValue("username",localStream.name);
 					}				
 					client.send('readyToStream', { 
-						name: localStream.name,
+						name: user.name || user.title + " " + user.firstname,
 						controlId: saveControlId.id,
 						userId: user.user_id,
 						profile_pic_url: user.profile_pic_url,
