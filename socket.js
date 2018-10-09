@@ -655,6 +655,7 @@ module.exports = function(model,io,streams) {
 			socket.on("in call connected",function(data){
 				io.sockets.to(data.to).emit("patient in call connected",{status: true})
 			});
+			*/
 
 			
 			///////
