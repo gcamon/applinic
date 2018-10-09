@@ -553,8 +553,6 @@ module.exports = function(model,io,streams) {
     });
 
     socket.on("init reload",function(data){
-    	console.log("==================");
-    	console.log(data);
     	io.sockets.to(data.controlId).emit("reload streams",{status:true,name:data.names,userId:data.userId});
     })
     

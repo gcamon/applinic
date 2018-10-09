@@ -159,14 +159,13 @@
 			
 			$http.get(url).success(function(data){
 				// filter own stream
-					console.log(data, "======", data.length);
-					console.log(client.getId())
+					
 				  var streams = data.filter(function(stream) {							
 			      	//return stream.id !== client.getId();
 			      	return stream.userId !== user.user_id;
 			    });
 
-					console.log(streams, "======", streams.length);
+					
 			    // get former state
 			    //starts from one for remote streams
 			    if(rtc.remoteStreams.length == 0) { 
@@ -178,11 +177,12 @@
 				    	//rtc.view(streams[i]);
 				    }		
 			  	} else {
-			  		rtc.remoteStreams.push(streams[streams.length - 1]);
+			  		var elePo = rtc.remoteStreams.map(function(x){return x.id}).indexOf(streams[streams.length - 1].id);
+			  		if(elePo === -1)
+			  			rtc.remoteStreams.push(streams[streams.length - 1]);
 			  		//rtc.view(streams[i]);
 			  	}
 
-			    console.log(rtc.remoteStreams);	    
 			    $rootScope.connections = streams;
 			    //rtc.remoteStreams = streams;
 			});
