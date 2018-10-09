@@ -9346,7 +9346,7 @@ app.controller("presenceSocketController",["$rootScope","$scope","$window","mySo
       }
       
      });
-    }
+  }
 
   
 
@@ -9428,7 +9428,9 @@ app.controller("presenceSocketController",["$rootScope","$scope","$window","mySo
         });
       } else {
         //when call is rejected by the receiver
-        mySocket.emit("call reject",{to: data.from,message: person.title + " " + person.firstname + " rejected your video call request."})
+        var name = person.name || person.title + " " + person.firstname;
+        alert(data.from)
+        mySocket.emit("call reject",{to: data.from,message: name + " rejected your video call request."})
       }
     }
   });
@@ -9458,7 +9460,8 @@ app.controller("presenceSocketController",["$rootScope","$scope","$window","mySo
         });
       } else {
         //when call is rejected by the receiver
-        mySocket.emit("call reject",{to: data.from,message: person.title + " " + person.firstname + " rejected your video call request."})
+        var name = person.name || person.title + " " + person.firstname;
+        mySocket.emit("call reject",{to: data.from,message: name + " rejected your video call request."})
       }
     }
   });

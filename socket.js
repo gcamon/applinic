@@ -399,14 +399,14 @@ module.exports = function(model,io,streams) {
 					if(user.set_presence.general && user.type === "Doctor") {
 						//{type:req.type,message:req.message,time:req.time}
 						io.sockets.to(req.to).emit("receive request",{message: req.title + " " + 
-							req.name + " requests for video call with you!",from: req.from});
+							req.name + " wants to have video chat with you!",from: req.from});
 						cb({message:"Video call request has been sent to " + names})
 					} else if(user.type === "Patient") {
 						io.sockets.to(req.to).emit("receive request",{message: req.title + " " + 
-							req.name + " requests for video call with you!",from: req.from});
+							req.name + " wants to have video chat with you!",from: req.from});
 						cb({message:"Video call request has been sent to " + names})
 					} else {
-						var msg = names + " is currently not available.Your request has been qeued for attendance."
+						var msg = names + " is currently not available.Your request has been qeued for attendance.";
 		    		cb({message: msg});
 					}
 				});			
@@ -440,11 +440,11 @@ module.exports = function(model,io,streams) {
 					if(user.set_presence.general && user.presence) {
 						//{type:req.type,message:req.message,time:req.time}
 						io.sockets.to(req.to).emit("receive invitation request",{message: req.title + " " + 
-							req.name + " requests for video call with you!",from: req.from,controlId:req.controlId});
+							req.name + " wants to have video conference with you!",from: req.from,controlId:req.controlId});
 						cb({message:"Video call request sent to " + names})
 					} else if(user.presence) {
 						io.sockets.to(req.to).emit("receive invitation request",{message: req.title + " " + 
-							req.name + " requests for video call with you!",from: req.from,controlId:req.controlId});
+							req.name + " wants to have video conference with you!",from: req.from,controlId:req.controlId});
 						cb({message:"Video call request sent to " + names})
 					} else {
 						
@@ -507,11 +507,12 @@ module.exports = function(model,io,streams) {
 
 				var date = new Date();
 			  control.expirationDate = new Date(date.getTime() + 300000);
-			  control.expirationDate.expires = 36000; //10 hours before the data is deleted.
+			  control.expirationDate.expires = 36000; //10 hours before the control data is deleted.
 				control.save(function(){});
 			}
 
 			socket.on("call reject",function(details){
+				console.log('Cecking out details +========', details)
 				io.sockets.to(datails.to).emit("convserstion denied",details)
 			});
 
