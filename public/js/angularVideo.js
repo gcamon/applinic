@@ -396,7 +396,8 @@
 		var saveControlId = {};
 
 		$scope.sendInvitation = function(id) {
-			 controllerSocket.emit("convsersation invitation signaling",{to: id,from: user.user_id,controlId:saveControlId.id},function(data){
+			 controllerSocket.emit("convsersation invitation signaling",
+			 	{to: id,from: user.user_id,controlId:saveControlId.id,name: user.name,firstname: user.firstname},function(data){
 			 	$scope.$apply(function(){
 			 		$scope.deliveryMsg = "sent!";
 			 		alert(data.message)

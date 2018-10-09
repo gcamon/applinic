@@ -437,14 +437,13 @@ module.exports = function(model,io,streams) {
 				model.user.findOne({user_id:req.to},{set_presence:1,firstname:1,title:1,type:1,presence:1,name:1},function(err,user){
 					if(err) throw err;
 					var names = user.name || user.title + " " + user.firstname;
+					var senderNames = req.name ||  req.firstname;
 					if(user.set_presence.general && user.presence) {
 						//{type:req.type,message:req.message,time:req.time}
-						io.sockets.to(req.to).emit("receive invitation request",{message: req.title + " " + 
-							req.name + " wants to have video conference with you!",from: req.from,controlId:req.controlId});
+						io.sockets.to(req.to).emit("receive invitation request",{message: senderNames + " wants to have video conference with you!",from: req.from,controlId:req.controlId});
 						cb({message:"Video call request sent to " + names})
 					} else if(user.presence) {
-						io.sockets.to(req.to).emit("receive invitation request",{message: req.title + " " + 
-							req.name + " wants to have video conference with you!",from: req.from,controlId:req.controlId});
+						io.sockets.to(req.to).emit("receive invitation request",{message: senderNames + " wants to have video conference with you!",from: req.from,controlId:req.controlId});
 						cb({message:"Video call request sent to " + names})
 					} else {
 						
