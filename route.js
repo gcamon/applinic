@@ -15,7 +15,7 @@ var options = {
   path: "/_turn/www.applinic.com",
   method: "PUT",
   headers: {
-      "Authorization": "Basic " + new Buffer("gcamon:406b470c-2ddf-11e8-9c83-538c56484774").toString("base64");
+      "Authorization": "Basic " + new Buffer("gcamon:406b470c-2ddf-11e8-9c83-538c56484774").toString("base64")
   }
 };
 
