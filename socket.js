@@ -512,7 +512,6 @@ module.exports = function(model,io,streams) {
 			}
 
 			socket.on("call reject",function(details){
-				console.log('Cecking out details +========', details)
 				io.sockets.to(datails.to).emit("convserstion denied",details)
 			});
 

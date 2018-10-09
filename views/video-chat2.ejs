@@ -120,7 +120,8 @@
             
             
             <div class="col-sm-3 col-md-3 col-lg-3 card" style="margin-top:10px;">
-                <div style="padding: 10px 15px 0;color:green; border-bottom: 1px solid #ccc"><b>Remote stream</b></div>               
+                <div style="padding: 10px 15px 0;color:green; border-bottom: 1px solid #ccc"><b>Remote Stream</b></div> 
+                <hr>              
                 
                 <div ng-repeat="stream in rtc.remoteStreams"  style="font-size: 14px;margin-top: 10px;padding-left: 20px">
                   <a  href="" ng-click="rtc.view(stream)" class="" style="padding: 5px 10px;font-size: 12px" id="{{stream.id}}"><i class="fa fa-video-camera text-muted"></i> &nbsp;<b>{{(stream.isPlaying === false) ? stream.name + '( view )' : stream.name + ' ( hide )'}}</b></a>
