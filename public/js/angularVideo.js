@@ -522,6 +522,8 @@
   	} else {
   		alert("Error: Presenting Complain and Provisional Diagnosis fields cannot be empty!")
   	}
+
+  
   }
 
 
@@ -543,6 +545,7 @@
     } else {
     	alert("Error: Presenting Complain and Provisional Diagnosis fields cannot be empty!")
     }
+   
   }
 
   $scope.prescription = function() {
@@ -566,7 +569,7 @@
   }
 
   $scope.appointment = function() {
-  	if($rootScope.treatment.complain && $rootScope.treatment.provisionalDiagnosis) {  
+  	/*if($rootScope.treatment.complain && $rootScope.treatment.provisionalDiagnosis) {  
 	  	if($scope.patientInfo.error) {
 	  		alert("Not allowed: Not your patient.");
 	  		return;
@@ -582,8 +585,21 @@
 	    });
     } else {
     	alert("Error: Presenting Complain and Provisional Diagnosis fields cannot be empty!")
-    }
+    }*/
+
+
+    ModalService.showModal({
+        templateUrl: 'calender-template.html',
+        controller: 'appointmentModalController'
+    }).then(function(modal) {
+        modal.element.modal();
+        modal.close.then(function(result) { 
+             
+        });
+    });
   }
+
+
 
     //creates drug object for the ng-repeat on the view.
     /*$scope.drugs = Drugs;
@@ -689,8 +705,8 @@
 
 }]);
 
-app.controller("investigationController",["$scope","$http","labTests","scanTests","$rootScope","$resource",
-  function($scope,$http,labTests,scanTests,$rootScope,$resource){
+app.controller("investigationController",["$scope","$http","labTests","scanTests","$rootScope","$resource","cities","medicalRecordService",
+  function($scope,$http,labTests,scanTests,$rootScope,$resource,cities,medicalRecordService){
 
   	var patient = $rootScope.holdPatientData;
   	$scope.isLab = false;
@@ -698,6 +714,7 @@ app.controller("investigationController",["$scope","$http","labTests","scanTests
   	$scope.isInitial = true;
    	$scope.isSearchToSend = false;
    	$rootScope.treatment = ($rootScope.treatment) ? $rootScope.treatment : {};
+   	$scope.cities = cities;
 
   	$scope.lab = function() {
   		$scope.isLab = true;
@@ -1049,7 +1066,7 @@ app.controller("investigationController",["$scope","$http","labTests","scanTests
   		}
 
   		if(!$scope.patientMedicalRecord) {
-	  		var source = $resource("/user/get-medical-record");
+	  		var source = medicalRecordService; //$resource("/user/get-medical-record");
 	  		source.get({patientId: patient.id},function(data){
   				console.log(data);
   				$scope.patientMedicalRecord = data;
@@ -1064,12 +1081,14 @@ app.service("medicalRecordService",["$resource",function($resource){
 }]);
 
 
-app.controller("prescriptionController",["$rootScope","$scope","$window","$http",
+app.controller("prescriptionController",["$rootScope","$scope","$window","$http","cities",
 	"localManager","Drugs","$resource","ModalService","$resource","medicalRecordService",
-  function($rootScope,$scope,$window,$http,localManager,Drugs,$resource,ModalService,$resource,medicalRecordService) {
+  function($rootScope,$scope,$window,$http,cities,localManager,Drugs,$resource,ModalService,$resource,medicalRecordService) {
  		
   	var patient = $rootScope.holdPatientData;
   	$scope.isHistory = false;
+
+  	$scope.cities = cities;
   	 //creates drug object for the ng-repeat on the view.
   	$http({
       method  : "GET",
@@ -1879,6 +1898,27 @@ labTestList.listInfo7 = [{name: "HBV DNA VIRAL LOAD",id:80},{name: "HCV RNA VIRA
   return labTestList;
 
 });
+
+app.factory("cities",function(){
+  var allCities = ["Aba","Abakaliki","Abeokuta","Abonnema","Abuja","Ado Ekiti","Afikpo","Agbor","Agulu","Aku","Akure",
+  "Amaigbo","Ankpa","Asaba","Auchi","Awka","Azare","Bama","Bauchi","Bende","Benin City",
+  "Bida","Birnin Kebbi","Biu","Buguma","Calabar","Damaturu","Daura","Dutse","Ede","Effium","Effon Alaiye","Eha Amufu",
+  "Ejigbo","Ekpoma","Enugu","Enugu Ukwu","Epe","Etiti",
+  "Ezza Inyimagu","Funtua","Gamboru","Gashua","Gboko","Gbongan","Gombe","Gusau","Hadejia","Ibadan","Idah",
+  "Ife","Ifo","Ifon","Igboho","Igbo Ora","Igbo Ukwu","Ihiala","Ijebu Igbo",
+  "Ijebu Ode","Ijero","Ikare","Ikeja","Ikerre","Ikire","Ikirun","Ikom","Ikorodu","Ikot Ekpene","Ila Orangun",
+  "Ilawe Ekiti","Ilesha","Ilobu","Ilorin","Inisa","Ise","Iseyin",
+  "Ishieke","Iwo","Jalingo","Jimeta","Jos","Kaduna","Kafanchan","Kagoro","Kano","Katsina","Kaura Namoda","Keffi","Kishi",
+  "Kontagora","Kuroko","Lafia","Lagos",
+  "Lokoja","Maiduguri","Makurdi","Malumfashi","Minna","Modakeke","Mubi","Nguru","Nkpor",
+  "Nnewi","Nsukka","Numan","Obosi","Offa","Ogaminan","Ogbomosho","Ohafia","Oka Akoko","Okene",
+  "Okigwi","Okitipupa","Okpogho","Okrika","Ondo","Onitsha","Oron","Oshogbo","Otukpo","Owerri",
+  "Owo","Oyo","Ozubulu","Port Harcourt","Sagamu","Sango Otta","Sapele","Shaki",
+  "Sokoto","Suleja","Uga","Ugep","Ughelli","Umuahia","Uromi","Uyo","Warri","Wukari","Yenagoa","Yola","Zaria"];
+
+  return allCities;
+});
+
 
 })();
 

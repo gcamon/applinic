@@ -484,35 +484,37 @@ span.dates {
                 <div class="modal-header" style="border-bottom:1px solid #eee;">
                      <h4>Investigation</h4>
                      <i class="fa fa-times" data-dismiss="modal" style="font-size: 18px;position: absolute;top:10px;right: 10px;padding: 10px"></i>    
-                     <div style="text-align:center;padding:20px" ng-if="isInitial === true">
-                        <button class="btn btn-primary" ng-click="lab()">New Laboratory</button>
-                        <button class="btn btn-danger" ng-click="radio()">New Radiology</button>  
-                     </div>                    
+                    
                 </div>
+                 <div style="text-align:center;padding:20px" ng-if="isInitial === true">
+                    <button class="btn btn-neutral" ng-click="lab()">New Laboratory</button>
+                    <button class="btn btn-neutral" ng-click="radio()">New Radiology</button>  
+                 </div>                    
             
                 <div class="modal-body">
                     <div ng-if="isInitial === true">
                         <div ng-if="isLab">
-                             <h4>Lab Investigation <button style="float:right;background-color:orange;color: #fff" class="btn btn-simple" ng-click="getHistory('Lab')">View Lab History</button></h4>
-                              <table>
-                                <tr>
-                                    <thead>
-                                        <th></th>
-                                        <th>Test Name</th>                                    
-                                    </thead>
-                                </tr>
-                                <tr>
-                                    <tbody ng-repeat="lab in TestList">                                                                           
-                                        <td style="padding: 5px">{{lab.sn}}</td>
-                                        <td><input name="states" id="states" type="text" placeholder="Enter test name" class="form-control" ng-model="test.name" uib-typeahead="test.name for test in tests | filter:$viewValue | limitTo:15" class="form-control" style="width: 95%">
-                                            {{getTest(test.name)}} </td>
-                                                                          
-                                    </tbody>
-                                </tr>                       
+                            <h4>Laboratory <button style="float:right;background-color:orange;color: #fff" class="btn btn-neutral btn-sm" ng-click="getHistory('Lab')">Previous Laboratory</button></h4>
+
+                              <label>Investigation:</label>
+                            <table class="table-responsive">
+                               
+                                <thead style="">
+                                    <th></th>
+                                    <th></th>                                    
+                                </thead>
+                           
+                                <tbody ng-repeat="lab in TestList">                                                                           
+                                    <td style="padding: 5px;width: 5%;">{{lab.sn}}</td>
+                                    <td style="width: 90%"><input  type="text" placeholder="Enter test name" class="form-control" ng-model="test.name" uib-typeahead="test.name for test in tests | filter:$viewValue | limitTo:15" class="form-control">
+                                        {{getTest(test.name)}} </td><!--{{getTest(test.name)}}-->
+                                                                      
+                                </tbody>
+                                                     
                             </table>
                             <div style="text-align: right">
-                                <i class="fa fa-plus" style="font-size:16px;color:green;padding: 10px; cursor:pointer; margin-right: 5px" title="Add field" ng-click="addTest()"> Add</i>
-                                    <i class="fa fa-minus" style="font-size:16px;color:green;padding: 10px; cursor:pointer; margin-right: 5px" title="Remove last field" ng-click="removeTest()"> Remove</i>
+                                <i class="fa fa-plus btn-simple rounded" style="font-size:16px;color:green;padding: 10px; cursor:pointer; margin-right: 5px" title="Add field" ng-click="addTest()"></i>
+                                    <i class="fa fa-minus btn-simple rounded" style="font-size:16px;color:green;padding: 10px; cursor:pointer; margin-right: 5px" title="Remove last field" ng-click="removeTest()"></i>
                             </div>
                             <div>
                                 <div>
@@ -540,26 +542,28 @@ span.dates {
                          </div> 
 
                          <div ng-if="isRadio">
-                             <h4>Radio Investigation <button style="float:right;background-color:orange;color: #fff" class="btn btn-simple" ng-click="getHistory('Radio')">View Radio History</button></h4>
+                             <h4>Radiology <button style="float:right;background-color:orange;color: #fff" class="btn btn-neutral btn-sm" ng-click="getHistory('Radio')">Previous Radiology</button></h4>
+
+                             <label>Investigation:</label>
                              <table>
                                 <tr>
                                     <thead>
                                         <th></th>
-                                        <th>Test Name</th>                                    
+                                        <th></th>                                    
                                     </thead>
                                 </tr>
                                 <tr>
                                     <tbody ng-repeat="lab in TestList">                                                                           
-                                        <td style="padding: 5px">{{lab.sn}}</td>
-                                        <td><input name="states" id="states" type="text" placeholder="Enter test name" class="form-control" ng-model="test.name" uib-typeahead="test.name for test in tests | filter:$viewValue | limitTo:15" class="form-control" style="width: 95%">
+                                        <td style="padding: 5px;width: 5%">{{lab.sn}}</td>
+                                        <td style="width: 90%"><input  type="text" placeholder="Enter test name" class="form-control" ng-model="test.name" uib-typeahead="test.name for test in tests | filter:$viewValue | limitTo:15" class="form-control" style="width: 95%">
                                             {{getTest(test.name)}} </td>
                                                                           
                                     </tbody>
                                 </tr>                       
                             </table>
                             <div style="text-align: right">
-                                <i class="fa fa-plus" style="font-size:16px;color:green;padding: 10px; cursor:pointer; margin-right: 5px" title="Add field" ng-click="addTest()"> Add</i>
-                                    <i class="fa fa-minus" style="font-size:16px;color:green;padding: 10px; cursor:pointer; margin-right: 5px" title="Remove last field" ng-click="removeTest()"> Remove</i>
+                                  <i class="fa fa-plus btn-simple rounded" style="font-size:16px;color:green;padding: 10px; cursor:pointer; margin-right: 5px" title="Add field" ng-click="addTest()"></i>
+                                    <i class="fa fa-minus btn-simple rounded" style="font-size:16px;color:green;padding: 10px; cursor:pointer; margin-right: 5px" title="Remove last field" ng-click="removeTest()"></i>
                             </div>
                             <div>
                                 <div>
@@ -657,8 +661,9 @@ span.dates {
                         <a href="" ng-click="goBack()"><i class="fa fa-arrow-left"></i> Back</a> 
                         <div>
                            <form>
-                               <label>Criteria: </label>
-                               <input type="text" name="city" ng-model="treatment.city">
+                              
+                               <!--<input type="text" name="city" ng-model="treatment.city">-->
+                                <input type="text" type="text" placeholder="Enter city name" ng-model="treatment.city" uib-typeahead="city for city in cities | filter:$viewValue | limitTo:15">           
                                <input type="text" name="country" ng-model="treatment.country">
                                <input type="button" ng-click="changeOption()" class="btn btn-primary" value="search">
                            </form>
@@ -671,18 +676,19 @@ span.dates {
                                <div style="overflow-y: auto; height: 400px">
                                    <div ng-repeat="center in searchResult | filter: filterResult" style="padding:10px">
                                        <a href="" ng-click="selected(center)">{{center.name}}<span style="display: block">{{center.address}},{{center.city}},{{center.country}}</span></a>
-                                   </div>                               
+                                   </div>
+                                   <p ng-if="searchResult.length == 0" style="padding:30px 10px">No center was found!</p>                          
                                 </div>
                             </div>
                             <div class="col-sm-12 col-md-5" style="padding: 2px">
-                                <h5 style="background-color: rgba(0,0,0,0.5);color:#fff;padding: 3px 7px 5px">Selection Info</h5>
+                                <h6 style="background-color: rgba(0,0,0,0.5);color:#fff;padding: 3px 7px 5px">Selection Info</h6>
                                 
                                 <p>{{pickedCenter.name}}</p>
                                 <p>{{pickedCenter.address}} {{pickedCenter.city}} {{pickedCenter.country}}</p>
                                 <p>{{pickedCenter.phone}}</p>
-                                <h5 style="padding: 7px;background-color: rgba(0,0,0,0.5);color: #fff">Stock info <b class="updateInfo" ng-class="{'text-danger': status === 'Not Updated!'}">{{status}}</b></h5>
+                                <h6 style="padding: 7px;background-color: rgba(0,0,0,0.5);color: #fff">Service info <b class="updateInfo" ng-class="{'text-danger': status === 'Not Updated!'}">{{status}}</b></h6>
                                 
-                                <ol ng-repeat="d in TestList" style="list-style: none">
+                                <ol ng-repeat="d in TestList" style="list-style: none;font-size: 12px">
                                     <li ng-class="{'notAvail': d.available === false}">{{d.name}} &nbsp;<span style="font-size: 8px" ng-if="d.available === true">available</span></li>
                                 </ol>
                                 <div style="padding: 20px;text-align: center;">
@@ -725,16 +731,19 @@ span.dates {
           <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header" style="border-bottom:1px solid #eee;position: relative;">
-                      <h4> Pharmaceutical <button style="float:right;margin-top: 30px" class="btn btn-danger" ng-click="getHistory()">{{(isHistory === true) ? 'Write New' : 'View History'}}</button></h4>
+                      <h4> Pharmaceutical </h4>
                       <i class="fa fa-times" data-dismiss="modal" style="font-size: 18px;position: absolute;top:10px;right: 10px;padding: 10px"></i>             
+                </div>
+                <div style="text-align: right;;padding-right: 20px">
+                    <button style="" class="btn btn-neutral btn-sm" ng-click="getHistory()">{{(isHistory === true) ? 'Write New' : 'Previous Prescriptions'}}</button>
                 </div>
             
                 <div class="modal-body">
                    <div ng-if="isInitial === true">                                                       
-                           <table>
+                           <table class="table-responsive table">
                             <tr>
                                 <thead>
-                                    <th></th>
+                                    <!--<th></th>-->
                                     <th>Drug name</th>
                                     <th>Dosage</th>
                                     <th>Frequency</th>
@@ -742,19 +751,19 @@ span.dates {
                                 </thead>
                             </tr>
                             <tr>
-                                <tbody ng-repeat="prescription in drugList">                                                                           
-                                    <td style="padding: 5px">{{prescription.sn}}</td>
-                                    <td><input name="states" id="states" type="text" placeholder="Enter drug name" class="form-control" ng-model="drug.name" uib-typeahead="drug.name for drug in drugs | filter:$viewValue | limitTo:15" class="form-control" style="width: 95%">
+                                <tbody ng-repeat="prescription in drugList">                                                                       
+                                    <!--<td style="padding: 5px">{{prescription.sn}}</td>-->
+                                    <td><input type="text"  placeholder="name" class="" ng-model="drug.name" uib-typeahead="drug.name for drug in drugs | filter:$viewValue | limitTo:15">
                                         {{getDrug(drug.name)}} </td>
-                                    <td><input type="text" ng-model="prescription.dosage" class="form-control" style="padding: 18px 2px"></td>
-                                    <td><input type="text" ng-model="prescription.frequency" class="form-control" style="padding: 18px 2px"></td>
-                                    <td><input type="text" ng-model="prescription.duration" class="form-control" style="padding: 18px 2px"></td>
+                                    <td><input type="text" ng-model="prescription.dosage"></td>
+                                    <td><input type="text" ng-model="prescription.frequency"></td>
+                                    <td><input type="text" ng-model="prescription.duration"></td>
                                 </tbody>
                             </tr>                       
                         </table>
                         <div style="text-align: right">
-                            <i class="fa fa-plus" style="font-size:16px;color:green;padding: 10px; cursor:pointer; margin-right: 5px" title="Add field" ng-click="addDrug()"> Add</i>
-                                <i class="fa fa-minus" style="font-size:16px;color:green;padding: 10px; cursor:pointer; margin-right: 5px" title="Remove last field" ng-click="removeDrug()"> Remove</i>
+                            <i class="fa fa-plus btn-simple rounded" style="font-size:16px;color:green;padding: 10px; cursor:pointer; margin-right: 5px" title="Add field" ng-click="addDrug()"></i>
+                                <i class="fa fa-minus btn-simple rounded" style="font-size:16px;color:green;padding: 10px; cursor:pointer; margin-right: 5px" title="Remove last field" ng-click="removeDrug()"></i>
                         </div>
                         <div> 
                             <button ng-click="toPatient()" class="btn btn-success">Send to patient</button>
@@ -802,8 +811,8 @@ span.dates {
                        <a href="" ng-click="goBack()"><i class="fa fa-arrow-left"></i> Back</a> 
                        <div>
                            <form>
-                               <label>Criteria: </label>
-                               <input type="text" name="city" ng-model="treatment.city">
+                               <!--<input type="text" name="city" ng-model="treatment.city">-->
+                               <input type="text" placeholder="Enter city name" ng-model="treatment.city" uib-typeahead="city for city in cities | filter:$viewValue | limitTo:15">
                                <input type="text" name="country" ng-model="treatment.country">
                                <input type="button" ng-click="changeOption()" class="btn btn-primary" value="search">
                            </form>
@@ -815,7 +824,7 @@ span.dates {
                                </div>
                                <div style="overflow-y: auto; height: 400px">
                                    <div ng-repeat="center in searchResult | filter: filterResult" style="padding:10px">
-                                       <a href="" ng-click="selected(center)">{{center.name}}<span style="display: block">{{center.address}},{{center.city}},{{center.country}}</span></a>
+                                       <a href="" ng-click="selected(center)">{{center.name}}<span style="display: block;color: grey">{{center.address}},{{center.city}},{{center.country}}</span></a>
                                    </div>                               
                                 </div>
                             </div>
@@ -845,7 +854,7 @@ span.dates {
           </div>
         </div>
      </script>
-     <script type="text/ng-template" id="calender-template.html">
+   <!--  <script type="text/ng-template" id="calender-template.html">
         <div class="modal fade">
           <div class="modal-dialog">
             <div class="modal-content">
@@ -854,7 +863,7 @@ span.dates {
                 <div class="col-sm-12 col-md-12 col-lg-12">
                 <div>
                 <b>Book an Appointment</b>
-                <!--<button type="button"  ng-click="close('Cancel')" data-dismiss="modal" aria-hidden="true" style="color:red;font-size: 32px; margin-top:-9px;float:right; top:5px;border:none">&times;</button>-->
+               
                 <i class="fa fa-times" data-dismiss="modal" style="color:red;font-size: 22px; margin-top:-9px;float:right; top:5px;border:none"></i>
                 </div>  
                     
@@ -902,7 +911,67 @@ span.dates {
             </div>
           </div>
         </div>
-     </script>    
+     </script>  -->
+
+
+       <script type="text/ng-template" id="calender-template.html">
+        <div class="modal fade">
+          <div class="modal-dialog">
+            <div class="modal-content">
+            <div class="modal-header" style="position: relative;">
+              <div class="row">
+                <div class="col-sm-12 col-md-12 col-lg-12" >
+                <b>Book Appointment</b>             
+                
+                </div> </div> 
+                <a href="" ng-click="close('Cancel')" data-dismiss="modal" aria-hidden="true" style="color:red;font-size: 42px;position: absolute;right: 20px; top: 8px">&times;</a>                                          
+              </div>
+            
+                    <div class="modal-body">
+                    <div class="row">
+                <div class="col-sm-12 col-md-12 col-lg-12">
+                                              
+                        <div class="calender-header bg-info">
+                            <i class="fa fa-angle-left" ng-click="previous()"></i>
+                            <span style="font-size: 24px">{{month.format("MMMM, YYYY")}}</span>
+                            <i class="fa fa-angle-right" ng-click="next()"></i>
+                        </div>
+                        <div class="week" style="line-height: 0.5">
+                            <span class="day">Sun</span>
+                            <span class="day">Mon</span>
+                            <span class="day">Tue</span>
+                            <span class="day">Wed</span>
+                            <span class="day">Thu</span>
+                            <span class="day">Fri</span>
+                            <span class="day">Sat</span>
+                        </div>
+                        
+                        <div ng-repeat="week in weeks" class="indays">
+                            <span class="dates" ng-class="{ today: day.isToday, 'different-month': !day.isCurrentMonth, selected: day.date.isSame(selected) }" ng-click="select(day)" style="cursor:pointer" ng-repeat="day in week.days">{{day.number}}</span>
+                        </div>                        
+                        <p class="bg-default" style="font-size:1em; padding:15px;">Picked Date: <em style="color: green">{{dd.format('dddd, MMMM Do YYYY')}}</em><span style="display:block">Picked time: <em style="color: green">{{treatment.appointment.time | date: "mediumTime"}} </em></span>
+                            <span>Picked Venue: <em style="color: green">{{treatment.appointment.address}} </em></span>
+                        </p>
+
+                        <div>
+                            <label>Time of appointment: <br><input type="time" class="form-control" style="font-size: 14px!important" placeholder="Enter time" ng-model="treatment.appointment.time" style="font-size:.5em;"/></label>
+                            <br>
+                            <label>Venue (If none,defaults to the address in your profile): <br> <input class="form-control" style="font-size: 14px!important" type="address" placeholder="Enter address" ng-model="treatment.appointment.address"></label>
+                        </div>
+  </div>  </div> 
+                        <div class="clearfix"></div>
+                       
+                </div>
+
+                <div class="modal-footer ok">
+                            <button  style="font-size:1.4em; font-weight:300; width:50%;" ng-click="book()" class="btn btn-danger">{{(message) ? message : 'Book'}}</button>
+                        </div>
+              </div>          
+            </div>
+          </div>
+     </script>
+
+
     <script src="/assets/js/ui-bootstrap-tpls.js"></script>
     <script src="/assets/js/modalService.js"></script>
 </body>
