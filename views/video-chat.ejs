@@ -312,163 +312,108 @@ span.dates {
 
             <div style="border-left:2px solid #d9edf7;padding-left: 10px;" class="col-sm-12 col-md-3 col-lg-3" ng-controller="VideoDiagnosisController">
                 <!-- ng-controller="VideoDiagnosisController" -->
+                <div style="text-align: center;padding: 10px" ng-if="!session">
+                    <button class="btn btn-success" ng-click="chechSession()">Manage Patient/Clerking</button>
+                </div>
+                <div ng-if="session">
 
-                <form style="max-height: 800px;overflow-y: auto"> 
-                        <div id="accordion">
-                            <label style="color: #fff; font-size: 14px;padding:5px">
-                                <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTen" aria-expanded="false" aria-controls="collapseTen" style="color:#e97147; font-size: 18px;text-decoration:underline">Presenting complain</a>
-                            </label>                 
-                            <div style="list-style:none" id="collapseTen" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTen">
-                                <textarea placeholder="write..." ng-model="treatment.complain" class="form-control" required></textarea>
+                    <form style="max-height: 800px;overflow-y: auto"> 
+                            <div id="accordion">
+                                <label style="color: #fff; font-size: 14px;padding:5px">
+                                    <a class="collapsed dropdown-toggle" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTen" aria-expanded="false" aria-controls="collapseTen" style="color:#e97147; font-size: 18px;text-decoration:underline">Presenting Complaint<span style="color: #000">*</span></a>
+                                </label>                 
+                                <div style="list-style:none" id="collapseTen" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTen">
+                                    <textarea placeholder="write..." ng-model="treatment.complain" class="form-control" required></textarea>
+                                </div>
                             </div>
-                        </div>
 
-                        <div id="accordion">
-                            <label style="color: #fff; font-size: 14px;padding:5px">
-                                <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseNine" aria-expanded="false" aria-controls="collapseNine" style="color:#e97147; font-size: 18px;text-decoration:underline">History of presenting complain</a>
-                            </label>                 
-                            <div style="list-style:none" id="collapseNine" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingNine">
-                                <textarea placeholder="write..." class="form-control" ng-model="treatment.historyOfComplain"></textarea>
+                            <div id="accordion">
+                                <label style="color: #fff; font-size: 14px;padding:5px">
+                                    <a class="collapsed dropdown-toggle" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseNine" aria-expanded="false" aria-controls="collapseNine" style="color:#e97147; font-size: 18px;text-decoration:underline">History Of Presenting Complaint</a>
+                                </label>                 
+                                <div style="list-style:none" id="collapseNine" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingNine">
+                                    <textarea placeholder="write..." class="form-control" ng-model="treatment.historyOfComplain"></textarea>
+                                </div>
                             </div>
-                        </div>
 
-                        <div id="accordion">
-                            <label style="color: #fff; font-size: 14px;padding:5px">
-                                <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseEight" aria-expanded="false" aria-controls="collapseEight" style="color:#e97147; font-size: 18px;text-decoration:underline">Past medical history</a>
-                            </label>                
-                            <div style="list-style:none" id="collapseEight" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingEight">
-                                 <textarea placeholder="write..." class="form-control" ng-model="treatment.pastMedicalHistory"></textarea>
+                            <div id="accordion">
+                                <label style="color: #fff; font-size: 14px;padding:5px">
+                                    <a class="collapsed dropdown-toggle" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseEight" aria-expanded="false" aria-controls="collapseEight" style="color:#e97147; font-size: 18px;text-decoration:underline">Past Medical History</a>
+                                </label>                
+                                <div style="list-style:none" id="collapseEight" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingEight">
+                                     <textarea placeholder="write..." class="form-control" ng-model="treatment.pastMedicalHistory"></textarea>
+                                </div>
                             </div>
-                        </div>
-                        
-                        <div id="accordion">
-                            <label style="color: #fff; font-size: 14px;padding:5px">
-                                <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseSeven" aria-expanded="false" aria-controls="collapseSeven" style="color:#e97147; font-size: 18px;text-decoration:underline">Family history</a>
-                            </label>               
-                            <div style="list-style:none" id="collapseSeven" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingSeven">
-                                 <textarea placeholder="write..." class="form-control" ng-model="treatment.familyHistory"></textarea>
-                            </div>
-                        </div>
-
-                        <div id="accordion">
-                            <label style="color: #fff; font-size: 14px;padding:5px">
-                                <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseSix" aria-expanded="false" aria-controls="collapseSix" style="color:#e97147; font-size: 18px;text-decoration:underline">Social history</a>
-                            </label>                 
-                            <div style="list-style:none" id="collapseSix" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingSix">
-                                 <textarea placeholder="write..." class="form-control" ng-model="treatment.socialHistory"></textarea>
-                            </div>
-                        </div>
-
-                        <div id="accordion">
-                            <label style="color: #fff; font-size: 14px;padding:5px">
-                                <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseFive" aria-expanded="false" aria-controls="collapseFive" style="color:#e97147; font-size: 18px;text-decoration:underline">Drug history</a>
-                            </label>                
-                            <div style="list-style:none" id="collapseFive" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFive">
-                                  <textarea placeholder="write..." class="form-control" ng-model="treatment.drugHistory"></textarea>
-                            </div>
-                        </div>
-                        
-                        <div id="accordion">
-                            <label style="color: #fff; font-size: 14px;padding:5px">
-                                <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseFour" aria-expanded="false" aria-controls="collapseFour" style="color:#e97147; font-size: 18px;text-decoration:underline">Summary</a>
-                            </label>                
-                            <div style="list-style:none" id="collapseFour" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFour">
-                                  <textarea placeholder="write..." class="form-control" ng-model="treatment.summary"></textarea>
-                            </div>
-                        </div>                       
-                        
-                         <div id="accordion">
-                            <label style="color: #fff; font-size: 14px;padding:5px">
-                                <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapsetwelve" aria-expanded="false" aria-controls="collapseTwelve" style="color:#e97147; font-size: 18px;text-decoration:underline">Notes</a>
-                            </label>                
-                            <div style="list-style:none" id="collapsetwelve" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwelve">
-                                  <textarea placeholder="write..." class="form-control" ng-model="treatment.notes" required></textarea>
-                            </div>
-                        </div>
-
-                        <div id="accordion">
-                            <label style="color: #fff; font-size: 14px;padding:5px">
-                                <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree" style="color:#e97147; font-size: 18px;text-decoration:underline">Provisional diagnosis</a>
-                            </label>                 
-                            <div style="list-style:none" id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
-                                  <textarea placeholder="write..." class="form-control" ng-model="treatment.provisionalDiagnosis" required></textarea>
-                            </div>
-                        </div> 
-                        <div style="text-align: right;padding: 20px;">
-                            <button class="btn btn-info btn-sm" ng-class="{'btn-success': treatment.complain}" ng-click="submitSession()">Save Changes</button>
-                        </div>                                                           
-                                                                          
-                       
-                        <!--<div style="margin-top: 10px;">                         
-
-                           
                             
                             <div id="accordion">
-                            <h6 style="color: #fff; font-size: 14px;padding:5px">
-                                <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo" style="color:#306756; font-size: 18px;text-decoration:underline"><i class="icon-Pills"></i> Pharmaceutical</a>
-                            </h6>                 
-                            <div style="list-style:none" id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
-                                   <table>
-                                    <tr>
-                                        <thead>
-                                            <th>S/N</th>
-                                            <th>Drug name</th>
-                                            <th>Dosage</th>
-                                            <th>Frequency</th>
-                                            <th>Duration</th>
-                                        </thead>
-                                    </tr>
-                                    <tr>
-                                        <tbody ng-repeat="prescription in drugList">                                                                           
-                                            <td>{{prescription.sn}}</td>
-                                            <td><input name="states" id="states" type="text" placeholder="Enter drug name" class="form-control" ng-model="drug.name" uib-typeahead="drug.name for drug in drugs | filter:$viewValue | limitTo:15" class="form-control" style="width: 95%">
-                                                {{getDrug(drug.name)}} </td>
-                                            <td><input type="text" ng-model="prescription.dosage" class="form-control" style="padding: 18px 2px"></td>
-                                            <td><input type="text" ng-model="prescription.frequency" class="form-control" style="padding: 18px 2px"></td>
-                                            <td><input type="text" ng-model="prescription.duration" class="form-control" style="padding: 18px 2px"></td>
-                                        </tbody>
-                                    </tr>                       
-                                </table>
-                                <div style="text-align: right">
-                                    <i class="fa fa-plus" style="font-size:16px;color:green;padding: 10px; cursor:pointer; margin-right: 5px" title="Add field" ng-click="addDrug()"></i>
-                                        <i class="fa fa-minus" style="font-size:16px;color:green;padding: 10px; cursor:pointer; margin-right: 5px" title="Remove last field" ng-click="removeDrug()"></i>
+                                <label style="color: #fff; font-size: 14px;padding:5px">
+                                    <a class="collapsed dropdown-toggle" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseSeven" aria-expanded="false" aria-controls="collapseSeven" style="color:#e97147; font-size: 18px;text-decoration:underline">Family History</a>
+                                </label>               
+                                <div style="list-style:none" id="collapseSeven" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingSeven">
+                                     <textarea placeholder="write..." class="form-control" ng-model="treatment.familyHistory"></textarea>
                                 </div>
-                                <div> 
-                                    <button ng-click="toPatient()" class="btn btn-primary">Send to patient</button>
-                                    <button ng-click="toPharmacy()" class="btn btn-primary">Send to a Phamarcy</button>
+                            </div>
+
+                            <div id="accordion">
+                                <label style="color: #fff; font-size: 14px;padding:5px">
+                                    <a class="collapsed dropdown-toggle" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseSix" aria-expanded="false" aria-controls="collapseSix" style="color:#e97147; font-size: 18px;text-decoration:underline">Social History</a>
+                                </label>                 
+                                <div style="list-style:none" id="collapseSix" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingSix">
+                                     <textarea placeholder="write..." class="form-control" ng-model="treatment.socialHistory"></textarea>
                                 </div>
-                                <div class="view-animate-container" style="height:auto">
-                                    <div class="view-animate" ng-view >
-                                    </div>
+                            </div>
+
+                            <div id="accordion">
+                                <label style="color: #fff; font-size: 14px;padding:5px">
+                                    <a class="collapsed dropdown-toggle" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseFive" aria-expanded="false" aria-controls="collapseFive" style="color:#e97147; font-size: 18px;text-decoration:underline">Drug History</a>
+                                </label>                
+                                <div style="list-style:none" id="collapseFive" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFive">
+                                      <textarea placeholder="write..." class="form-control" ng-model="treatment.drugHistory"></textarea>
                                 </div>
                             </div>
                             
-                        </div>                         
-
-                        <div style="margin-top: 10px;">
-                            <h6 style="color: #fff; font-size: 14px;padding:5px">
-                                <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="false" aria-controls="collapseOne" style="color:#306756; font-size: 18px;text-decoration:underline"><i class="fa fa-calendar"></i> Physical Examination</a>
-                            </h6>                 
-                            <div style="list-style:none" id="collapseOne" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
-                                <p>Enter date and time of the appointment below</p>
-                                <input type="date" ng-model="treatment.appointment.date" class="form-control" style="margin-bottom: 10px">
-                                <input type="time" ng-model="treatment.appointment.time" class="form-control" style="margin-bottom: 10px">                              
-                                <input type="text" placeholder="Enter address" class="form-control" ng-model="treatment.appointment.address"/>
-                                <p>Tips: Enter address of the place of appointment, if none is specified, the place of appointment defaults to the address in your profile.</p>
-                                <input type="button" value="Send" ng-click="bookAppointment()" class="btn btn-primary"/>
+                            <div id="accordion">
+                                <label style="color: #fff; font-size: 14px;padding:5px">
+                                    <a class="collapsed dropdown-toggle" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseFour" aria-expanded="false" aria-controls="collapseFour" style="color:#e97147; font-size: 18px;text-decoration:underline">Summary<span style="color: #000">*</span></a>
+                                </label>                
+                                <div style="list-style:none" id="collapseFour" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFour">
+                                      <textarea placeholder="write..." class="form-control" ng-model="treatment.summary"></textarea>
+                                </div>
+                            </div>                       
+                            
+                             <div id="accordion">
+                                <label style="color: #fff; font-size: 14px;padding:5px">
+                                    <a class="collapsed dropdown-toggle" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapsetwelve" aria-expanded="false" aria-controls="collapseTwelve" style="color:#e97147; font-size: 18px;text-decoration:underline">Notes</a>
+                                </label>                
+                                <div style="list-style:none" id="collapsetwelve" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwelve">
+                                      <textarea placeholder="write..." class="form-control" ng-model="treatment.notes" required></textarea>
+                                </div>
                             </div>
-                        </div>                      
-                        
-                    </div>-->
 
-                </form>
-                <hr class="bg-simple">
-                <h6 style="text-align: center;color:orange">Management</h6>
-                <div style="word-spacing: 20px">
-                    <button class="btn btn-simple btn-sm" style="margin-top: 10px" ng-class="{'btn-primary': treatment.complain}" ng-click="investigation()">Investigation</button>
-                    <button class="btn btn-simple btn-sm" style="margin-top: 10px" ng-class="{'btn-success': treatment.complain}" ng-click="prescription()">Prescription</button>
-                    <button class="btn btn-simple btn-sm" style="margin-top: 10px" ng-class="{'btn-danger': treatment.complain}" ng-click="appointment()">Appointment</button>
-                    <button class="btn btn-simple btn-sm" style="margin-top: 10px" ng-class="{'btn-primary': treatment.complain}" ng-click="treamentPlan()">Treatment Plan</button>
+                            <div id="accordion">
+                                <label style="color: #fff; font-size: 14px;padding:5px">
+                                    <a class="collapsed dropdown-toggle" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree" style="color:#e97147; font-size: 18px;text-decoration:underline">Provisional Diagnosis<span style="color: #000">*</span></a>
+                                </label>                 
+                                <div style="list-style:none" id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+                                      <textarea placeholder="write..." class="form-control" ng-model="treatment.provisionalDiagnosis" required></textarea>
+                                </div>
+                            </div> 
+                            <div style="padding: 20px;">
+                                 <span>* required</span>
+                                <button class="btn btn-info btn-sm" ng-class="{'btn-success': treatment.complain}" ng-click="submitSession()" style="float: right;"> <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading" ></i>{{(loading) ? "" : (message) ? message : "Save Changes"}}</button>
+                            </div>                                                           
+                                                                              
+                           
+                          
+                    </form>
+                    <hr class="bg-simple">
+                    <h6 style="text-align: center;color:orange">Management</h6>
+                    <div style="word-spacing: 20px">
+                        <button class="btn btn-simple btn-sm" style="margin-top: 10px" ng-class="{'btn-primary': treatment.complain}" ng-click="investigation()">Investigation</button>
+                        <button class="btn btn-simple btn-sm" style="margin-top: 10px" ng-class="{'btn-primary': treatment.complain}" ng-click="prescription()">Prescription</button>
+                        <button class="btn btn-simple btn-sm" style="margin-top: 10px" ng-class="{'btn-primary': treatment.complain}" ng-click="appointment()">Appointment</button>
+                        <button class="btn btn-simple btn-sm" style="margin-top: 10px" ng-class="{'btn-primary': treatment.complain}" ng-click="treamentPlan()">Treatment Plan</button>
+                    </div>
                 </div>
                 <div style="height: 100px"></div>
                                              
@@ -726,6 +671,46 @@ span.dates {
           </div>
         </div>
      </script>
+    <script type="text/ng-template" id="sessionsList.html">
+        <div class="modal fade">
+          <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header" style="border-bottom:1px solid #eee;">
+                     <h6>Please select a session to save entries</h6>
+                     <i class="fa fa-times" data-dismiss="modal" style="font-size: 22px;position: absolute;top:10px;right: 10px;padding: 10px;cursor: pointer;"></i>                       
+                </div>
+            
+                <div class="modal-body">
+                    <div>
+                        <div class="p-1">
+                            <label><b>New</b></label>
+                        </div>
+                        <div class="p-1">                       
+                             <label class="custom-control custom-radio"  ng-click="getSession()">
+                               <input type="radio" class="custom-control-input"  value="false">
+                                <span class="custom-control-indicator"></span>
+                                <span class="custom-control-description">Create new session</span>
+                            </label>
+                        </div>
+                        <div class="p-1">
+                            <label><b>Other</b></label>
+                        </div>
+                        <div ng-repeat="j in sessions | orderBy: '-date'" class="p-1">                            
+                            <label class="custom-control custom-radio" ng-click="getSession(j)">
+                               <input type="radio" class="custom-control-input"   value="false">
+                                <span class="custom-control-indicator"></span>
+                                <span class="custom-control-description">{{j.diagnosis.presenting_complain}} &nbsp;&nbsp;&nbsp; ( <span am-time-ago="j.date"></span> )</span>
+                            </label>
+                        </div>
+                         <div style="text-align: center;padding-top: 40px" ng-if="loading">
+                            <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange" ></i>
+                        </div>
+                    </div>
+                </div>          
+            </div>
+          </div>
+        </div>
+     </script>
      <script type="text/ng-template" id="prescription.html">
         <div class="modal fade">
           <div class="modal-dialog">
@@ -911,7 +896,7 @@ span.dates {
             </div>
           </div>
         </div>
-     </script>  -->
+     </script> -->
 
 
        <script type="text/ng-template" id="calender-template.html">
@@ -954,9 +939,9 @@ span.dates {
                         </p>
 
                         <div>
-                            <label>Time of appointment: <br><input type="time" class="form-control" style="font-size: 14px!important" placeholder="Enter time" ng-model="treatment.appointment.time" style="font-size:.5em;"/></label>
+                            <label><b>Time of appointment:</b> <br><input type="time" class="form-control" style="font-size: 14px!important" placeholder="Enter time" ng-model="treatment.appointment.time" style="font-size:.5em;"/></label>
                             <br>
-                            <label>Venue (If none,defaults to the address in your profile): <br> <input class="form-control" style="font-size: 14px!important" type="address" placeholder="Enter address" ng-model="treatment.appointment.address"></label>
+                            <label><b>Venue (If none,defaults to the address in your profile):</b> <br> <input class="form-control" style="font-size: 14px!important" type="address" placeholder="Enter address" ng-model="treatment.appointment.address"></label>
                         </div>
   </div>  </div> 
                         <div class="clearfix"></div>

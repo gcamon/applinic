@@ -464,9 +464,40 @@
 
 	}]);
 
+	app.controller("chooseSessionController",["$scope","$http","$rootScope",function($scope,$http,$rootScope){
+		
+		//$rootScope.holdPatientData saved when VideoDiagnosisController initialized
+		$scope.loading = true;
+		$http({
+      method  : 'GET',
+      url     : "/user/doctor/get-patient-sessions?patient_id=" + $rootScope.holdPatientData.id, 
+      headers : {'Content-Type': 'application/json'} 
+      })
+    .success(function(data) {      
+      console.log(data);
+      $scope.loading = false;
+      $scope.sessions = data;
+    });
 
-	app.controller("VideoDiagnosisController",["$rootScope","$scope","$window","$http","localManager","Drugs","$resource","ModalService",
-  function($rootScope,$scope,$window,$http,localManager,Drugs,$resource,ModalService){
+   	$scope.getSession = function(sess) {
+   		if(sess) {
+   			$rootScope.session = sess.session_id;
+   		} else {
+   			$rootScope.session = genHash(18);
+   		}
+   	}
+
+	}]);
+
+
+	app.service("patientService",["$resource",function($resource){
+		return $resource("/user/doctor/specific-patient");
+	}]);
+
+
+	app.controller("VideoDiagnosisController",["$rootScope","$scope","$window","$http","localManager","Drugs","$resource",
+		"ModalService","patientService",
+  function($rootScope,$scope,$window,$http,localManager,Drugs,$resource,ModalService,patientService){
 
 
   $rootScope.treatment = {};
@@ -474,13 +505,17 @@
  
   var random = parseInt(Math.floor(Math.random() * 9999 ) + "" + Math.floor(Math.random() * 9999))//Math.floor(Math.random() * 9999999999);
 
-  $rootScope.session = parseInt(Math.floor(Math.random() * 9999 ) + "" + Math.floor(Math.random() * 9999))//Math.floor(Math.random() * 99999999999);
+  //$rootScope.session = parseInt(Math.floor(Math.random() * 9999 ) + "" + Math.floor(Math.random() * 9999))//Math.floor(Math.random() * 99999999999);
 
   patient.id = localManager.getValue("userId"); // Refers to user id of the patient to be treated 
 
   controllerSocket.emit("join",{userId: user.user_id});
 
-  var getPatientData = $resource("/user/doctor/specific-patient");
+
+
+
+
+  var getPatientData = patientService;
 
   getPatientData.get(patient,function(data){
     $scope.patientInfo = data;
@@ -520,7 +555,7 @@
 	        });
 	    });
   	} else {
-  		alert("Error: Presenting Complain and Provisional Diagnosis fields cannot be empty!")
+  		alert("Presenting Complaint and Provisional Diagnosis fields cannot be empty!")
   	}
 
   
@@ -543,7 +578,7 @@
 	      });
 	    });
     } else {
-    	alert("Error: Presenting Complain and Provisional Diagnosis fields cannot be empty!")
+    	alert("Presenting Complaint and Provisional Diagnosis fields cannot be empty!")
     }
    
   }
@@ -564,12 +599,13 @@
 	      });
 	    });
     } else {
-    	alert("Error: Presenting Complain and Provisional Diagnosis fields cannot be empty!")
+    	alert("Presenting Complaint and Provisional Diagnosis fields cannot be empty!");
     }
+
   }
 
   $scope.appointment = function() {
-  	/*if($rootScope.treatment.complain && $rootScope.treatment.provisionalDiagnosis) {  
+  	if($rootScope.treatment.complain && $rootScope.treatment.provisionalDiagnosis) {  
 	  	if($scope.patientInfo.error) {
 	  		alert("Not allowed: Not your patient.");
 	  		return;
@@ -584,11 +620,11 @@
 	        });
 	    });
     } else {
-    	alert("Error: Presenting Complain and Provisional Diagnosis fields cannot be empty!")
-    }*/
+    	alert("Presenting Complaint and Provisional Diagnosis fields cannot be empty!");
+    }
 
 
-    ModalService.showModal({
+    /*ModalService.showModal({
         templateUrl: 'calender-template.html',
         controller: 'appointmentModalController'
     }).then(function(modal) {
@@ -596,7 +632,7 @@
         modal.close.then(function(result) { 
              
         });
-    });
+    });*/
   }
 
 
@@ -679,11 +715,27 @@
       $rootScope.holdPrescriptionToBeForwarded = patient;
       $location.path("/search/pharmacy");
     }
+    
+
+     // use to select session where entries would be saved.
+	  $scope.chechSession = function() {
+		  if(!$rootScope.session) {
+				ModalService.showModal({
+		        templateUrl: 'sessionsList.html',
+		        controller: "chooseSessionController"
+		    }).then(function(modal) {
+		        modal.element.modal();
+		        modal.close.then(function(result) {});
+		    });
+		  } 
+		}
+
 
     
-    $scope.submitSession = function(){ 
+    $rootScope.submitSession = function(){
     	if($rootScope.treatment.complain && $rootScope.treatment.provisionalDiagnosis) {  
 	      var date = new Date();
+	      $scope.loading = true;
 	      $rootScope.treatment.date = date;      
 	      $rootScope.treatment.patient_id = patient.id;
 	      $rootScope.treatment.session_id = $rootScope.session;
@@ -694,16 +746,19 @@
 	        data    : $rootScope.treatment,
 	        headers : {'Content-Type': 'application/json'} 
 	        })
-	      .success(function(data) {
-	        if(data)   
-	          alert("Entry saved successfully!!!");
+	      .success(function(data) {	      	
+	        if(data) {  
+	        	$scope.loading = false;
+	          $scope.message = "Entry saved successfully!!!";
+	        }
 	      });
     	} else {    		
-    		alert("Error: Presenting Complain and Provisional Diagnosis fields cannot be empty!")
+    		alert("Presenting Complaint and Provisional Diagnosis fields cannot be empty!")
     	}
     }
 
 }]);
+
 
 app.controller("investigationController",["$scope","$http","labTests","scanTests","$rootScope","$resource","cities","medicalRecordService",
   function($scope,$http,labTests,scanTests,$rootScope,$resource,cities,medicalRecordService){
@@ -1152,8 +1207,17 @@ app.controller("prescriptionController",["$rootScope","$scope","$window","$http"
         data    : patient,
         headers : {'Content-Type': 'application/json'} 
         })
-      .success(function(data) {      
+      .success(function(data) { 
+      	console.log(data);   
         alert(data.message);
+        controllerSocket.emit("new drugs",{
+        	drugList:$scope.drugList,
+        	ref_id: patient.ref_id,
+        	to:patient.id,
+        	controlId: control.controlId,
+        	by: data.by,
+        	type: "Prescriptions"
+        });		     
       });
       
     }
@@ -1545,6 +1609,17 @@ app.factory("Drugs",["$http",function($http){
 
   return listOfDrugs;
 }]);
+
+
+function genHash(count) {
+  var text = "";
+  var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz01234567899966600555777222";
+
+    for( var i=0; i < count; i++ )
+        text += possible.charAt(Math.floor(Math.random() * possible.length));
+    return text;
+}
+
 
 
 app.factory("scanTests",function(){

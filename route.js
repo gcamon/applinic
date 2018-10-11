@@ -3080,18 +3080,17 @@ var basicRoute = function (model,sms,io,streams,Voice) { //remember streams arg 
             if(elementPos !== -1) {
               var objFound = record.doctor_patient_session[elementPos];    
               objFound.last_modified = + new Date();
-              objFound.diagnosis.presenting_complain = req.body.complain;
-              objFound.diagnosis.history_of_presenting_complain = req.body.historyOfComplain;
-              objFound.diagnosis.past_medical_history = req.body.pastMedicalHistory;
-              objFound.diagnosis.social_history = req.body.socialHistory;
-              objFound.diagnosis.family_history = req.body.familyHistory;
-              objFound.diagnosis.drug_history = req.body.drugHistory;
-              objFound.diagnosis.notes = req.body.notes;
-              objFound.diagnosis.summary = req.body.summary;
-              objFound.diagnosis.provisional_diagnosis = req.body.provisionalDiagnosis;
-
-            } else {
-             
+              objFound.diagnosis.presenting_complain = (objFound.diagnosis.presenting_complain ) ? objFound.diagnosis.presenting_complain + " " + req.body.complain : req.body.complain;
+              objFound.diagnosis.history_of_presenting_complain = (objFound.diagnosis.history_of_presenting_complain) ? objFound.diagnosis.history_of_presenting_complain + " " + req.body.historyOfComplain : req.body.historyOfComplain; 
+              objFound.diagnosis.past_medical_history = (objFound.diagnosis.past_medical_history) ? objFound.diagnosis.past_medical_history + " " + req.body.pastMedicalHistory : req.body.pastMedicalHistory;
+              objFound.diagnosis.social_history = (objFound.diagnosis.social_history) ? objFound.diagnosis.social_history + " " + req.body.socialHistory : req.body.socialHistory;
+              objFound.diagnosis.family_history = (objFound.diagnosis.family_history) ? objFound.diagnosis.family_history + " " + req.body.familyHistory : req.body.familyHistory;
+              objFound.diagnosis.drug_history = (objFound.diagnosis.drug_history) ? objFound.diagnosis.drug_history + " " + req.body.drugHistory : req.body.drugHistory;
+              objFound.diagnosis.notes = (objFound.diagnosis.notes) ? objFound.diagnosis.notes + " " + req.body.notes : req.body.notes;
+              objFound.diagnosis.summary = (objFound.diagnosis.summary) ? objFound.diagnosis.summary + " " + req.body.summary : req.body.summary;
+              objFound.diagnosis.provisional_diagnosis = (objFound.diagnosis.provisional_diagnosis) ? objFound.diagnosis.provisional_diagnosis + " " + req.body.provisionalDiagnosis : req.body.provisionalDiagnosis;
+              console.log("=========", objFound);
+            } else {             
               record.doctor_patient_session.unshift(req.body);
               record.doctor_patient_session[0].diagnosis = connectObj;
               record.doctor_patient_session[0].patient_firstname = getPatientInfo.firstname;
@@ -3103,7 +3102,7 @@ var basicRoute = function (model,sms,io,streams,Voice) { //remember streams arg 
             
             record.save(function(err,info){
               if(err) throw err;
-              console.log("appointment saved!"); 
+              console.log("session updated!"); 
               res.send({status:"success"});
             }) 
            
