@@ -7,6 +7,7 @@
 		var storage = window.localStorage.getItem("resolveUser");
 		var user = JSON.parse(storage);
 
+
 		var names = user.name || user.title + " " + user.firstname;
 		
 		var client = new PeerManager(names);
@@ -501,18 +502,22 @@
 
 
   $rootScope.treatment = {};
-  var patient = {};  
+  var patient = {}; 
+
+  $rootScope.userId = user.user_id; 
  
   var random = parseInt(Math.floor(Math.random() * 9999 ) + "" + Math.floor(Math.random() * 9999))//Math.floor(Math.random() * 9999999999);
 
   //$rootScope.session = parseInt(Math.floor(Math.random() * 9999 ) + "" + Math.floor(Math.random() * 9999))//Math.floor(Math.random() * 99999999999);
 
-  patient.id = localManager.getValue("userId"); // Refers to user id of the patient to be treated 
+  
+  var toArr = window.location.href.split("/");
+
+
+  patient.id = toArr[toArr.length-2] //localManager.getValue("userId"); Refers to user id of the patient to be treated 
+
 
   controllerSocket.emit("join",{userId: user.user_id});
-
-
-
 
 
   var getPatientData = patientService;

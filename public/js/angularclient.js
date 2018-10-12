@@ -9413,9 +9413,14 @@ app.controller("presenceSocketController",["$rootScope","$scope","$window","mySo
       var decide = confirm(data.message);
       if(decide) {
         //time will be include to enable user decide when t have conversation
+
+        var idPatient = (person.typeOfUser === 'Patient') ? person.user_id : data.from; // this will identify which patient was used to initilalze the video caht
+
         mySocket.emit("conversation acceptance",{status:true,time: "now",to:data.from,title:person.title,
-          name: person.firstname || person.name,type:person.typeOfUser},function(response){
-            localManager.setValue("userId",data.from);
+          name: person.firstname || person.name,type:person.typeOfUser,patientId: idPatient},function(response){
+
+            //localManager.setValue("userId",data.from);
+
             $rootScope.controlUrl = response.controlUrl;
             ModalService.showModal({
               templateUrl: 'redirect-modal.html',
@@ -9447,16 +9452,16 @@ app.controller("presenceSocketController",["$rootScope","$scope","$window","mySo
         //time will be include to enable user decide when t have conversation
         mySocket.emit("conversation invitation acceptance",{status:true,time: "now",to:data.from,
           name: names ,type:person.typeOfUser,controlId: data.controlId,userId:person.user_id},function(response){
-            localManager.setValue("userId",data.from);
-            $rootScope.controlUrl = response.controlUrl;
-            ModalService.showModal({
-              templateUrl: 'redirect-modal.html',
-              controller: 'redirectModal'
-              }).then(function(modal) {
-                modal.element.modal();
-                modal.close.then(function(result) {                     
-              });
+          localManager.setValue("userId",data.from);
+          $rootScope.controlUrl = response.controlUrl;
+          ModalService.showModal({
+            templateUrl: 'redirect-modal.html',
+            controller: 'redirectModal'
+            }).then(function(modal) {
+              modal.element.modal();
+              modal.close.then(function(result) {                     
             });
+          });
         });
       } else {
         //when call is rejected by the receiver
@@ -10684,7 +10689,6 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
 
       $http.put("/user/record-permission",sendObj)
       .success(function(response){
-        console.log(response)
         $scope.loading = false;
         if(response.status){         
           $scope.successMsg = "Access Granted!!!";

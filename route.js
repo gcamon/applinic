@@ -273,7 +273,27 @@ var basicRoute = function (model,sms,io,streams,Voice) { //remember streams arg 
     res.download(file); // Set disposition and send it.
   });
 
-  router.get("/user/cam/:controlId",function(req,res){
+  router.get("/user/cam/:userId/:controlId",function(req,res){
+    if(req.user){ //check to see if the param exist in database
+      model.user.findOne({user_id:req.params.userId},function(err,data){
+        if(err) throw err;
+        if(data) {
+          if(req.user.type === "Doctor"){
+            res.render("video-chat",{"person":{controlId: req.params.controlId}});
+          } else {
+            res.render("video-chat2",{"person":{controlId: req.params.controlId}});
+          }
+        } else {
+          res.end("Error 404: resource not found!");
+        }
+      });   
+      
+    } else {
+      res.redirect("/login");
+    }
+  });
+
+  /*router.get("/user/cam/:controlId",function(req,res){
     if(req.user){ //check to see if the param exist in database
       if(req.user.type === "Doctor"){
         res.render("video-chat",{"person":{controlId: req.params.controlId}});
@@ -284,7 +304,7 @@ var basicRoute = function (model,sms,io,streams,Voice) { //remember streams arg 
     } else {
       res.redirect("/login");
     }
-  });
+  });*/
 
   router.get("/user/getInvitee",function(req,res){
     if(req.user) {
@@ -1741,7 +1761,7 @@ var basicRoute = function (model,sms,io,streams,Voice) { //remember streams arg 
       if(req.user) {
         var criteria = (req.user.type !== "Patient") ? {user_id: req.query.patientId} : {user_id: req.user.user_id};
 
-        model.user.findOne(criteria,{medical_records: 1,medications:1,medical_reports:1,record_access:1},function(err,data){
+        model.user.findOne(criteria,{medical_records:1,medications:1,medical_reports:1,record_access:1},function(err,data){
           if(err) throw err;
           if(data) {
             if(req.user.type !== "Patient") {
@@ -1759,19 +1779,32 @@ var basicRoute = function (model,sms,io,streams,Voice) { //remember streams arg 
               } else {
                 if(req.user.type === "Doctor") {
                   var presArr = [];
+                  var invArr = [];
+
+                  //for prescription only when doctor wish to view previous prescriptions he had given to patient
                   for(var j = 0; j < data.medications.length; j++){
                     if(data.medications[j].doctor_id === req.user.user_id){
                       presArr.push(data.medications[j]);
                     }
                   }
 
-                  //for prescription only when doctor wish to view previous prescriptions he had given to patient
+                  /* todo the medical record is sent to doctor on video call session without being filtered for the only the doctor referred */
+                 
+                  /*for(var i = 0; i < data.medical_records.length; i++){
+                    if(data.medical_records[i].referral_id === req.user.user_id){
+                      invArr.push(data.medical_records[i]);
+                    }
+                  }*/
+                  
                   res.json(
                      {                      
                       prescriptions: presArr,
-                      status: true
+                      status: false,
+                      medical_records: data.medical_records,
+                      reports: []
                     }
                   );
+
                 } else {
                   res.send({
                     message: "You have no permission to view this patient's full medical records.",
@@ -1944,8 +1977,9 @@ var basicRoute = function (model,sms,io,streams,Voice) { //remember streams arg 
     //this route gets a notifications for the fn getAllNotification for pharmacy on the client.
     
     router.get("/user/doctor/specific-patient",function(req,res){
-      var patientId = req.query.id || null;
-      if(req.user){        
+      
+      if(req.user){   
+        var patientId = req.query.id || null;     
         var projection = {
             firstname: 1,
             lastname: 1,
@@ -3689,7 +3723,6 @@ var basicRoute = function (model,sms,io,streams,Voice) { //remember streams arg 
             phone: result.phone,
             id: result.user_id
           }
-
           
           var refObj = {
             ref_id: random,
@@ -3781,6 +3814,7 @@ var basicRoute = function (model,sms,io,streams,Voice) { //remember streams arg 
               referral_firstname: req.user.firstname,
               referral_lastname: req.user.lastname,
               referral_title: req.user.title,
+              referral_id: req.user.user_id,
               sent_date: req.body.date,
               session_id: req.body.session_id,
               test_id: testId,
@@ -4006,6 +4040,7 @@ var basicRoute = function (model,sms,io,streams,Voice) { //remember streams arg 
               ref_id: req.body.ref_id,
               referral_firstname: req.user.firstname,
               referral_lastname: req.user.lastname,
+              referral_id: req.user.user_id,
               referral_title: req.user.title,
               sent_date: req.body.date,
               session_id: req.body.session_id,

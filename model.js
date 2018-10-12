@@ -289,6 +289,7 @@ var myModel = function () {
 		patient_id: String,
 		ref_id: Number,
 		referral_firstname: String,
+		referral_id: String,
 		referral_lastname: String,
 		referral_title: String,
 		sent_date: String,

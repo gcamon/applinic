@@ -482,7 +482,7 @@ module.exports = function(model,io,streams) {
 				switch(details.time){
 					case "now":
 					  var controlId = genRemoteId();
-						var createUrl = "/user/cam/" + controlId;
+						var createUrl = "/user/cam/" + details.patientId + "/" + controlId;
 						saveControlControl(createUrl,controlId,details);						
 						io.sockets.to(details.to).emit("video call able",{controlUrl: createUrl,message: details.title +
 						" " + details.name + " is waiting to have video conference with you!"});
@@ -538,7 +538,7 @@ module.exports = function(model,io,streams) {
     	socket.join(control.control); //control.joins a roo
     	cb(control);
     	//streams.addStream(socket.id,control.name,control.control,model);
-    })
+    });
 
     socket.on('readyToStream', function(options,cb) {
       console.log('-- ' + socket.id + ' is ready to stream --');
@@ -552,7 +552,7 @@ module.exports = function(model,io,streams) {
 
     socket.on("init reload",function(data){
     	io.sockets.to(data.controlId).emit("reload streams",{status:true,name:data.names,userId:data.userId});
-    })
+    });
     
     socket.on('update', function(options) {
       streams.update(socket.id, options.name);

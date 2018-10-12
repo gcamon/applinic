@@ -498,7 +498,7 @@ span.dates {
                                     </thead>
                                 </tr>
                                 <tr>
-                                    <tbody ng-repeat="lab in TestList">                                                                           
+                                    <tbody ng-repeat="lab in TestList" ng-if="lab.referral_id === userId">                                                            
                                         <td style="padding: 5px;width: 5%">{{lab.sn}}</td>
                                         <td style="width: 90%"><input  type="text" placeholder="Enter test name" class="form-control" ng-model="test.name" uib-typeahead="test.name for test in tests | filter:$viewValue | limitTo:15" class="form-control" style="width: 95%">
                                             {{getTest(test.name)}} </td>
