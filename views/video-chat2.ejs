@@ -119,7 +119,7 @@
         <section class="row" ng-controller='RemoteStreamsController as rtc'> <!--ng-controller='siteRemoteStreamsController as rtc' -->  
             
             
-            <div class="col-sm-3 col-md-3 col-lg-3 card" style="margin-top:10px;">
+            <div class="col-sm-12 col-md-2 col-lg-2 card" style="margin-top:10px;">
                 <div style="padding: 10px 15px 0;color:green; border-bottom: 1px solid #ccc"><b>Remote Stream</b></div> 
                 <hr>              
                 
@@ -129,7 +129,7 @@
                     <!--<span>{{stream.name}}</span>-->
                     <!--<button ng-click="rtc.call(stream)"><a>Call</a></button>-->
                 </div>
-                <div ng-repeat="j in rtc.prescriptions" style="max-height: 300px;overflow-y: auto;border-bottom: 1px solid #000">
+                <!--<div ng-repeat="j in rtc.prescriptions" style="max-height: 300px;overflow-y: auto;border-bottom: 1px solid #000">
                        <b style="display: inline-block;padding-top: 10px">{{j.type}}</b>
                        <b>Written by: <em>{{j.by}}</em></b>
                        <table class="table">
@@ -156,8 +156,8 @@
                             </address>
                             <b>Reference Number: <em>{{j.ref_id}}</em></b>
                         </div>
-                    </div>
-                    <div ng-repeat="test in rtc.investigations" style="max-height: 300px;overflow-y: auto;border-bottom: 1px solid #000">
+                    </div>-->
+                    <!--<div ng-repeat="test in rtc.investigations" style="max-height: 300px;overflow-y: auto;border-bottom: 1px solid #000">
                         <b style="display: inline-block;padding-top: 10px">{{test.type}}</b>
                         <b>Written by: <em>{{test.by}}</em></b>
                         <ol>
@@ -174,10 +174,10 @@
                             <b>Reference Number: <em>{{test.ref_id}}</em></b>
                            
                         </div>
-                    </div>
+                    </div>-->
             </div>
 
-            <div class="col-sm-9 col-md-9 col-lg-9" style="margin-top:10px;padding: 0">
+            <div class="col-sm-12 col-md-7 col-lg-7" style="margin-top:10px;padding: 0">
                 <div style="width: 90%;margin: 0 auto" id="remoteVideosContainer">                    
                     <div style="display: inline-block;padding: 8px 8px 0 8px;border:2px solid #d9edf7;margin-top: 10px">
                         <p style="text-align: center;padding: 4px;color: orange;background-color: #d9edf7">You</p>
@@ -190,7 +190,60 @@
                 </div> 
                 <span style="visibility: hidden;">{{rtc.siteLink('<%= person.controlId %>')}}</span>               
             </div>
-             
+
+            <div class="col-sm-12 col-md-3 col-lg-3" style="margin-top:10px;padding: 0">
+                <div style="width: 90%;margin: 0 auto">                    
+                    <h6  ng-if="rtc.prescriptions">Pharmaceutical</h6> 
+                    <div ng-repeat="j in rtc.prescriptions">
+                        <table class="table table-responsive">
+                           <thead>
+                               <!--<th><small></small></th>-->
+                               <th><small>Name</small></th>
+                               <th><small>Dosage</small></th>
+                               <th><small>Frequency</small></th>
+                               <th><small>Duration</small></th>
+                           </thead>
+                           <tbody ng-repeat="drug in j.drugList">
+                               <!--<td>{{drug.sn}}vccv</td>-->
+                               <td>{{drug.drug_name}}</td>
+                               <td>{{drug.dosage}}</td>
+                               <td>{{drug.frequency}}</td>
+                               <td>{{drug.duration}}</td>
+                           </tbody>
+                       </table>
+                       <div>                                                  
+                            <address>
+                            <span>{{j.center.name}}</span> <br> 
+                            <span>{{j.center.address}}</span> <span>{{j.center.city}}</span> 
+                            <span>{{j.center.country}}</span>
+                            <span>{{j.center.phone}}</span><br>
+                            <span>Ref No: <em>{{j.ref_id}}</em></span>
+                            </address>
+                            
+                        </div>   
+                    </div>
+
+                    <h6 ng-if="rtc.investigations">Investigation</h6> 
+                    <div ng-repeat="test in rtc.investigations">
+                        <label style="display: inline-block;padding-top: 10px">{{test.type}}</label>
+                        <b></b></em></b>
+                        <ol>
+                            <li ng-repeat="item in test.testList">
+                                {{item.name}} 
+                            </li>
+                        </ol>
+                        <div>                            
+                            <address>
+                            <span>{{test.center.name}}</span>
+                            <span>{{test.center.address}}</span> <span>{{test.center.city}} </span> 
+                            <span>{{test.center.country}}</span>
+                            <span>{{test.center.phone}}</span><br>
+                            <span>Ref No: <em>{{test.ref_id}}</em></span>
+                            </address>                          
+                        </div>
+                    </div>  
+                </div>
+            </div> 
         </section>
     </main>
 
