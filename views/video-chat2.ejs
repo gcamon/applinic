@@ -193,7 +193,7 @@
 
             <div class="col-sm-12 col-md-3 col-lg-3" style="margin-top:10px;padding: 0">
                 <div style="width: 90%;margin: 0 auto">                    
-                    <h6  ng-if="rtc.prescriptions">Pharmaceutical</h6> 
+                    <h6>Pharmaceutical</h6> 
                     <div ng-repeat="j in rtc.prescriptions">
                         <table class="table table-responsive">
                            <thead>
@@ -220,7 +220,8 @@
                             <span>Ref No: <em>{{j.ref_id}}</em></span>
                             </address>
                             
-                        </div>   
+                        </div>
+                        <hr>
                     </div>
 
                     <h6 ng-if="rtc.investigations">Investigation</h6> 
@@ -234,13 +235,14 @@
                         </ol>
                         <div>                            
                             <address>
-                            <span>{{test.center.name}}</span>
+                            <span>{{test.center.name}}</span><br>
                             <span>{{test.center.address}}</span> <span>{{test.center.city}} </span> 
                             <span>{{test.center.country}}</span>
                             <span>{{test.center.phone}}</span><br>
                             <span>Ref No: <em>{{test.ref_id}}</em></span>
                             </address>                          
                         </div>
+                        <hr>
                     </div>  
                 </div>
             </div> 
