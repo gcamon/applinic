@@ -70,11 +70,7 @@
 		}
 
     @media screen and (max-width: 699px) {
-      .nav-link {
-        display: block;
-        width: 100%;
-        height: 100%
-      }
+     
     }
     </style>
 </head>
@@ -99,19 +95,19 @@
        <div class="pl-3">
         <ul class="nav nav-tabs ml-2" role="tablist">
           <li class="nav-item">
-            <a class="nav-link active" data-toggle="tab" href="#patient" ng-click="userType('Patient')" role="tab">Patient</a>
+            <a class="nav-link active" data-toggle="tab" href="" data-target="#patient" ng-click="userType('Patient')" role="tab">Patient</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" data-toggle="tab" href="#doctor" ng-click="userType('Doctor')" role="tab">Doctor</a>
+            <a class="nav-link" data-toggle="tab" href="" data-target="#doctor" ng-click="userType('Doctor')" role="tab">Doctor</a>
           </li> 
            <li class="nav-item">
-            <a class="nav-link" data-toggle="tab" ng-click="userType('Doctor')" href="#special-center" role="tab">Special Center</a>
+            <a class="nav-link" data-toggle="tab" ng-click="userType('Doctor')" href="" data-target="#special-center" role="tab">Special Center</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" data-toggle="tab" href="#pharmacy" ng-click="userType('Pharmacy')" role="tab">Pharmaceutical Center</a>
+            <a class="nav-link" data-toggle="tab" href="" data-target="#pharmacy" ng-click="userType('Pharmacy')" role="tab">Pharmaceutical Center</a>
           </li>
            <li class="nav-item">
-            <a class="nav-link" data-toggle="tab" ng-click="userType('')" href="#diagnostic" role="tab">Diagnostic center</a>
+            <a class="nav-link" data-toggle="tab" ng-click="userType('')" href="" data-target="#diagnostic" role="tab">Diagnostic center</a>
           </li>
           
         </ul>
