@@ -1919,6 +1919,7 @@ app.controller('signupController',["$scope","$http","$location","$window","templ
 
 
   $scope.userType = function(type) {
+    alert("chaaillll")
     $scope.user.typeOfUser = type;
   }
   
