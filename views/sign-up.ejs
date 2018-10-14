@@ -69,8 +69,18 @@
 			color: #fff!important
 		}
 
+        .inst {
+            display: none;
+        }
+
     @media screen and (max-width: 699px) {
-     
+        .inst {
+            display: block;
+        }
+
+        .tab-pane {
+            width: 100%!important
+        }
     }
     </style>
 </head>
@@ -93,7 +103,8 @@
         <div class="col-md-8 col-sm-12 col-xs-12 bg-white p-1" style="padding:2em;" >
        <!-- Nav tabs -->
        <div class="pl-3">
-        <h6 class="ml-2 p-3">Please select who you are?</h6>
+        <h6 class="ml-2 pl-3 pt-3">Please select who you are?</h6>
+        <span class="inst ml-2 pl-3">See form below.</span>
         <ul class="nav nav-tabs ml-2" role="tablist">
           <li class="nav-item">
             <a class="nav-link"  href="" ng-click="userType('Patient','patient-signup')" ng-class="{'active': user.typeOfUser === 'Patient'}"><b class="text-danger">Patient</b></a>
@@ -117,7 +128,7 @@
     <!-- Tab panes -->
     <div class="container">
       <div class="tab-content p-1" style="min-height:540px;">
-         <div ng-view>
+         <div ng-view class="p-0">
              
          </div>
       </div>
