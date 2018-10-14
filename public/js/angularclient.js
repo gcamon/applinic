@@ -59,6 +59,12 @@ app.config(['$paystackProvider','$routeProvider',
     controller: 'patientWelcomeController'
   })
 
+  //signup routes
+  .when("/landing-signup",{
+    templateUrl: '/assets/pages/signups/landing-signup.html',
+    controller: 'signupController'
+  })
+
   .when("/doctor-signup",{
     templateUrl: '/assets/pages/signups/doctor-signup.html',
     controller: 'signupController'
@@ -66,11 +72,12 @@ app.config(['$paystackProvider','$routeProvider',
 
   .when("/patient-signup",{
     templateUrl: '/assets/pages/signups/patient-signup.html',
+    controller: 'signupController'
   })
 
-  .when("/create-family-account",{
-    templateUrl: "/assets/pages/signups/family-account-signup.html",
-    controller: 'familyAccountController'
+  .when("/diagnostic-signup",{
+    templateUrl: '/assets/pages/signups/diagnostic-center-signup.html',
+    controller: 'signupController'
   })
 
   .when("/pharmacy-signup",{
@@ -78,13 +85,8 @@ app.config(['$paystackProvider','$routeProvider',
     controller: 'signupController'
   })
 
-  .when("/skills-result",{
-    templateUrl: "/assets/pages/utilities/skills.html",
-    controller: 'skillListController'
-  })
-
-  .when("/diagnostic-center-signup",{
-    templateUrl: '/assets/pages/signups/diagnostic-center-signup.html',
+  .when("/special-center-signup",{
+    templateUrl: '/assets/pages/signups/special-center.html',
     controller: 'signupController'
   })
 
@@ -93,6 +95,17 @@ app.config(['$paystackProvider','$routeProvider',
     controller: 'verifyPhoneController'
   })
 
+  .when("/skills-result",{
+    templateUrl: "/assets/pages/utilities/skills.html",
+    controller: 'skillListController'
+  })
+
+  .when("/create-family-account",{
+    templateUrl: "/assets/pages/signups/family-account-signup.html",
+    controller: 'familyAccountController'
+  })
+
+ 
   .when("/appointment",{
     templateUrl: '/assets/pages/in-patient-dashboard.html',
     controller: 'appointmentController'
@@ -1876,12 +1889,45 @@ app.controller('signupController',["$scope","$http","$location","$window","templ
 
   var currency = {};
 
-  $scope.userType = function(type) {
-    $scope.user = {};
-    $scope.user.typeOfUser = type; 
+  $scope.user = {};
+
+
+
+  $rootScope.path = $location.path();
+  
+  switch($rootScope.path) {
+    case '/':
+      $scope.user.typeOfUser = "";
+    break;
+    case '/patient-signup':
+      $scope.user.typeOfUser = "Patient";
+    break;
+    case '/doctor-signup':
+      $scope.user.typeOfUser = "Doctor";
+    break;
+    case '/pharmacy-signup':
+      $scope.user.typeOfUser = "Pharmacy";
+    break;
+    case '/diagnostic-center-signup':
+      $scope.user.typeOfUser = "Diagnostic";
+    break;
+     case '/special-center-signup':
+      $scope.user.typeOfUser = "Special Center";
+    break;
+    default:
+      $location.path("landing-signup");
+      $scope.user.typeOfUser = "landing signup";
+    break;
   }
 
-  $scope.userType("Patient") // sets type of user as patient as default as patient is the landing form .
+
+  $scope.userType = function(type) {
+    $scope.user.typeOfUser = type;
+  }
+  
+
+ 
+
   var phoneNumber;
 
   $scope.submit = function(type,argTitle){
@@ -2048,16 +2094,16 @@ app.controller('signupController',["$scope","$http","$location","$window","templ
             if(data.error) {
               $scope.phoneMessage = data.message;
             } else {
-              $scope.verifyInfo = data.message; 
-              $scope.isPhoneVerify = true;
-              //$location.path("/phone-verification");
+              $rootScope.verifyInfo = data.message; 
+              //$scope.isPhoneVerify = true;
+              $location.path("phone-verification");
             }
             $scope.loading = false;
           });   
         }     
         
       } else {
-        $scope.termMessage = "You have to agree to our terms and conditions";        
+        $scope.termMessage = "Agree to our terms and conditions";        
       }
     } 
   }
@@ -2108,80 +2154,7 @@ app.controller('signupController',["$scope","$http","$location","$window","templ
     currency.code = $scope.countries[elemPos].currencyCode;
   }
 
-  /*$scope.isNext1 = false;
-  var getRegionAndState = {}
-
-  $scope.$watch("user.state",function(newVal,oldVal){
-    if($scope.user.state !== undefined) {
-      //extract id and state name from value      
-      var arr = $scope.user.state.split(" ");
-      var getId = arr[0];
-      getRegionAndState.state = getId;
-      var arrLen = arr.length;
-      var name = "";
-      for(var i = 1; i < arrLen; i++){
-        name += arr[i] + " ";
-      }
-      currency.state = name.slice(0,-1);
-      $scope.status3 = "Loading...";
-      reqObj = $resource("/user/remote/geo-data",{stateGeonameId: parseInt(getId)});
-      reqObj.query(function(data){
-         $scope.status3 = "LGA/Region";        
-        $scope.regions = data || [];
-         $scope.isNext2 = true;
-      });
-    }
-  });
  
-  $scope.$watch("user.region",function(newVal,oldVal){
-    if($scope.user.region !== undefined) { 
-        //extract id and region or LGA name from value      
-      var arr = $scope.user.region.split(" ");
-      var getId = arr[0];
-      getRegionAndState.region = getId;
-      var arrLen = arr.length;
-      var name = "";
-      for(var i = 1; i < arrLen; i++){
-        name += arr[i] + " ";
-      }
-      //remember to modify if you wnt to add other on the html page option list.   
-      currency.region = name.slice(0,-1);    
-      $scope.status2 = "Loading...";
-      reqObj = $resource("/user/remote/geo-data",{regionGeonameId: parseInt(getId)});
-      reqObj.query(function(data){
-        $scope.status3 = "LGA/Region";
-         $scope.isNext3 = true;        
-        getCity()
-      });
-    }
-  });*/
-
-
-
-  /*function getCity() {
-   $scope.status2 = "City/Town";
-   reqObj = $resource("/user/remote/geo-data",{regionGeonameId: parseInt(getRegionAndState.region),
-    geonameId: $scope.user.country,stateGeonameId: parseInt(getRegionAndState.state )});
-    reqObj.query(function(data){
-      console.log(data);
-      $scope.status2 = "City/Town";
-      $scope.cities = data || []; 
-      setTimeout(function() {
-        delete $scope.isNext3;
-        delete $scope.isNext2;
-        delete $scope.isNext1;  
-      }, 10);   
-    });
-  }*/
-
-  /*$scope.isEdit = false;
-  
-  $scope.$watch("user.city",function(newVal,oldVal){
-    if($scope.user.city === "edit") {
-      $scope.isEdit = true;
-      $scope.user.city = "";
-    }
-  });*/
   $scope.isSpeciaty = false;
   $scope.$watch("user.specialty",function(newVal,oldVal){
     if($scope.user.specialty === "edit-specialty") {

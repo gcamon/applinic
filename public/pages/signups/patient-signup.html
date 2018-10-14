@@ -1,114 +1,178 @@
-<div>
-	<h5>Patient signup</h5>
-	<p>Please the complete the form below. Make sure your email and phone number is currently active.</p>
-	<form class="signup-form-style">        
-        <fieldset>                      
-            <div class="">
-            	<label>Firstname *: </label>
-                <input type="text" class="placeholder-color"  id="firstname" ng-model="user.firstname" >
-            </div>                                
-            <div class="form-group">
-            	<label>Lastname *: </label>
-                <input type="text" class="form-control placeholder-color" id="lastname" ng-model="user.lastname">
-            </div>
-            <div class="form-group">
-                <span class="select">
-                    <label>Select title * :</label>                                
-                    <select id="title"  ng-model="user.title">
-                        <option value="">Please select</option>                                            
-                        <option>Dr</option>
-                        <option>Mr</option>
-                        <option>Mrs</option>
-                        <option>Miss</option>
-                        <option>Master</option>
-                        <option>Chief</option>
-                        <option>Surgeon</option>
-                        <option>MD</option>
-                        <option>CMD</option>
-                        <option>Rev</option>
-                        <option>Pastor</option>
-                        <option>Engr</option>
-                        <option>Barr</option>
-                        <option>Surv</option>
-                        <option>Hon</option>
-                        <option>Ven</option>
-                        <option>HRH</option>
-                        <option>Prof</option>
-                        <option>Justice</option>
-                    </select>
-                </span>
-            </div>
-             <div class="form-group">
-                <label>Select age category * : </label>  
-                <select class="form-control placeholder-color" placeholder="Age*"  ng-model="user.age">
-                    <option value="">Please select</option>
-                    <option>0 - 28 days (newborn)</option>
-                    <option>29 days - 1 year (infant)</option>
-                    <option>1 - 5 years (younger child)</option>
-                    <option>6 - 12 years (older child)</option>
-                    <option>13 - 16 years (adolescent)</option>
-                    <option>17 - 29 years (young adult)</option>
-                    <option>30 - 39 years (adult)</option>
-                    <option>40 - 49 years (adult)</option>
-                    <option>50 - 64 years (adult)</option>
-                    <option>65 years - over (senior)</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>Sex * : </label>  
-                <select class="form-control placeholder-color" placeholder="Gender*" ng-model="user.gender">
-                    <option value="">Male</option>
-                    <option>Female</option>                                        
-                </select>
-            </div>
-            <div class="form-group">
-            	<label>Address * : </label>  
-                <input type="text" class="form-control placeholder-color" ng-model="user.address">
-            </div>
-            <div class="form-group">
-            	<label>City/Town * : </label>  
-                <input type="text" class="form-control placeholder-color" id="firstname" ng-model="user.city" required>
-            </div>
-            <div class="form-group">
-                <p style="color:red;text-align:center">{{showErr}}</p>
-            	<label>Phone number * : </label>  
-                <input type="number" class="form-control placeholder-color" placeholder="(080*****)" id="phone" ng-model="user.phone">
-            </div>
-            <div class="form-group">
-            	<label>Country * : </label>  
-                <input type="text" class="form-control placeholder-color" ng-model="user.country" required>
-            </div>
+ <div class="tab-pane active" id="patient" role="tabpanel" ng-cloak>
+      <div class="alert alert-info"><strong>Patient Signup : </strong>Please complete the form below.</div>
+  <form class="row">
 
-            <hr style="padding-bottom: 10px"/>
-            <div class="form-group">
-                <p style="color:red;">{{usernameError}}</p>                
-                <label>Username * : </label> 
-                <input type="text" class="form-control placeholder-color" id="username" ng-model="user.username">
-                <p style="color: green">{{info}}</p>
-            </div>
-            
-            <div class="form-group">
-            	<label>Email * : </label>  
-                <input type="email" class="form-control placeholder-color" id="firstname" ng-model="user.email" required>
-            </div>
-            <div class="form-group">
-            	<label>Password * : </label>  
-                <input type="password" class="form-control" ng-model="user.password">
-            </div>
-            <div class="form-group">
-            	<label>Comfirm password : </label>  
-                <input type="password" class="form-control" ng-model="user.password2" ng-class="{'password2':misMatch === true}">
-            </div>                                                      
-           
-            <div class="form-group tg-checkbox">
-                <label>
-                    <input type="checkbox" class="form-control" ng-model="user.agree">
-                    I agree with the terms and conditions
-                </label>
-            </div>
-            <div style="text-align:center">                                
-            	<button class="tg-btn" ng-click="submit('Patient')">Create an Account</button>
-        	</div>
-        </fieldset>
-    </form>            
+    <div class="col-md-12">
+    <select class="custom-select form-control col-md-12" ng-model="user.title" >
+        <option value="" disabled selected>Select Title</option>                                           
+        <option>Dr</option>
+        <option>Mr</option>
+        <option>Mrs</option>
+        <option>Miss</option>
+        <option>Master</option>
+        <option>Chief</option>
+        <option>Rev</option>
+        <option>Pastor</option>
+        <option>Engr</option>
+        <option>Barr</option>
+        <option>Surv</option>
+        <option>Hon</option>
+        <option>Ven</option>
+        <option>HRH</option>
+        <option>Prof</option>
+        <option>Justice</option>
+    </select>
+  </div>  
+
+
+  <div class="col-md-6 col-sm-12">     
+    <input type="text" class="form-control" placeholder="First Name"  ng-model="user.firstname" >
+    <span class="text-danger" style="font-size: 10px;display: inline-block;margin:-60px 0 0 10px;float: left;">{{FirstNameMessage}}</span>  
+  </div>
+  <div class="col-md-6 col-sm-12">    
+    <input type="text" class="form-control" placeholder="Last Name"  ng-model="user.lastname" >
+    <span class="text-danger" style="font-size: 10px;display: inline-block;margin:-60px 0 0 10px;float: left;">{{lastNameMessage}}</span> 
+  </div>
+
+  
+  <div class="col-md-6 col-sm-12">
+  <select class="custom-select form-control col-md-12" ng-model="user.age" >
+  <option value="" disabled selected>Age category</option>                                           
+    <option>0 - 28 days (newborn)</option>
+    <option>29 days - 1 year (infant)</option>
+    <option>1 - 5 years (younger child)</option>
+    <option>6 - 12 years (older child)</option>
+    <option>13 - 16 years (adolescent)</option>
+    <option>17 - 29 years (young adult)</option>
+    <option>30 - 39 years (adult)</option>
+    <option>40 - 49 years (adult)</option>
+    <option>50 - 64 years (adult)</option>
+    <option>65 years - over (senior)</option>
+  </select>
+  <span class="text-danger" style="font-size: 10px;display: inline-block;margin:-60px 0 0 10px;float: left;">{{ageMessage}}</span> 
+  </div>
+  <div class="col-md-6 col-sm-12">
+    <select class="custom-select form-control col-md-12" ng-model="user.gender">
+        <option value="" disabled selected>Sex</option>                                           
+        <option>Male</option>
+        <option>Female</option>
+    </select>
+    <span class="text-danger" style="font-size: 10px;display: inline-block;margin:-60px 0 0 10px;float: left;">{{genderMessage}}</span> 
+  </div>
+
+  <div class="col-md-12">
+  <hr>
+  </div>
+  <div class="col-md-6 col-sm-12">
+    <!--<input type="text" class="form-control" placeholder="Country" ng-model="user.country" >-->
+    <select class="custom-select form-control col-md-12" ng-model="user.country">
+      <option value="" selected disabled >{{status}}</option>
+      <option ng-repeat="country in countries" value="{{country.geonameId}};{{country.countryCode}};{{country.countryName}}">{{country.countryName}}</option>
+    </select>
+    <span class="text-danger" style="font-size: 10px;display: inline-block;margin:-60px 0 0 10px;float: left;">{{countryMessage}}</span> 
+  </div>
+ <!-- <div class="col-md-6 col-sm-12" style="position: relative;">
+   
+    <small class='fa fa-arrow-right' style="font-size:10px;color:blue;padding-left: 10px;position: absolute; left: 0;top:10px" ng-if="isNext1"></small>
+   <select class="custom-select form-control col-md-12" ng-model="user.state"  >
+      <option value="" selected disabled >{{status1}}</option>
+      <option ng-repeat="state in states" value="{{state.geonameId}} {{state.name}}">{{state.name}}</option>
+    </select>
+  </div>
+
+
+  <div class="col-md-6 col-sm-12" style="position: relative;">
+   <small class='fa fa-arrow-right' style="font-size:10px;color:blue;padding-left: 10px;position: absolute; left: 0;top:10px" ng-if="isNext2"></small>
+      <select class="custom-select form-control col-md-12" ng-model="user.region"/>
+      <option value="" selected disabled >{{status3}}</option>
+      <option ng-repeat="region in regions" value="{{region.geonameId}} {{region.name}}">{{region.name}}</option>
+    </select>
+  </div>-->
+  <div class="col-md-6 col-sm-12" style="position: relative;">
+   <!--<small class='fa fa-arrow-right' style="font-size:10px;color:blue;padding-left: 10px;position: absolute; left: 0;top:10px" ng-if="isNext3"></small>-->
+    <input type="text" class="form-control" placeholder="City" ng-model="user.city"  ng-cloak >
+    <!--<select class="custom-select form-control col-md-12" ng-model="user.city"  ng-cloak ng-if="isEdit === false" >
+      <option value="" selected disabled >{{status2}}</option>
+      <option ng-repeat="city in cities" value="{{city.name}}">{{city.name}}</option>
+      <option value="edit">_Other</option>
+    </select>-->
+    <span class="text-danger" style="font-size: 10px;display: inline-block;margin:-60px 0 0 10px;float: left;">{{cityMessage}}</span> 
+
+  </div>
+
+
+ 
+ 
+ <div  class="col-md-6 col-sm-12" style="position: relative">
+  
+      <input type="number" name="callingcode" style="position:absolute; top:19px; background:transparent;  left:35px; border: none; width: 55px; outline:0;"  placeholder="{{(user.callingCode) ? user.callingCode : 'Code'}}" ng-model= "user.callingCode"/>
+      <input type="number" class="form-control" noBorder" placeholder="Mobile number" ng-model="user.phone" style="padding-left: 80px"/>  
+    <span class="text-danger" style="font-size: 10px;display: inline-block;margin:-60px 0 0 10px;float: left;">{{phoneMessage}}</span>
+    <span class="text-danger" style="font-size: 10px;display: inline-block;margin:-60px 0 0 10px;float: left;">{{numberError}}</span>  
+ </div>
+
+
+ <div  class="col-md-6 col-sm-12">
+      <input type="text" name="address" class="form-control" placeholder="Address" ng-model="user.address" />
+      <span class="text-danger" style="font-size: 10px;display: inline-block;margin:-60px 0 0 10px;float: left;">{{addressMessage}}</span>   
+ </div>
+ 
+
+
+ <!-- <div class="row col-md-12">
+  <div class="col-md-6 col-sm-12 pr-0">  
+
+  <div class="row col-md-12 p-0 mr-3 inputCreach" >
+  <div class="col-md-3 col-sm-3 m-0 p-0">
+    <input type="text"  class="form-control noBorder" placeholder="Code" value="{{callingCode}}"></div>
+    <div class="col-md-9 col-sm-9 m-0 p-0">
+    <input type="number" string-to-number class="form-control noBorder" placeholder="Mobile number" ng-model="user.phone"></div>
+    </div>
+  </div>
+
+  <div class="col-md-6 col-sm-12" style="border: 1px solid blue">
+   <input type="text" class="form-control" placeholder="Address" ng-model="user.address" style="margin-left: 10px">    
+  </div>
+</div>
+
+
+  <div class="col-md-6 col-sm-12">
+   <input type="text" class="form-control" placeholder="Address" ng-model="user.address" >    
+  </div>-->
+<div class="col-md-12">
+<hr>
+</div>
+
+  <div class="col-md-6 col-sm-12">
+  
+    <input type="text" name="username" class="form-control" placeholder="User Name" ng-model="user.username" >
+    <span class="text-danger" style="font-size: 10px;display: inline-block;margin:-60px 0 0 10px;float: left;">{{usernameMessage}}</span> 
+  </div>
+  <div class="col-md-6 col-sm-12">
+    <input type="email" name= "email" class="form-control" placeholder="Email" ng-model="user.email" >
+    <span class="text-danger" style="font-size: 10px;display: inline-block;margin:-60px 0 0 10px;float: left;">{{emailMessage}}</span> 
+  </div>
+
+
+  <div class="col-md-6 col-sm-12">
+    <input type="password" class="form-control" placeholder="Password" ng-model="user.password" >
+    <span class="text-danger" style="font-size: 10px;display: inline-block;margin:0px 0 0 10px;float: left;">{{passwordMessage}}</span> 
+  </div>
+  <div class="col-md-6 col-sm-12">
+    <input type="password" class="form-control" placeholder="Confirm Password" ng-model="user.password2" ng-class="{'password2':misMatch === true}" >
+    <span class="text-danger" style="font-size: 10px;display: inline-block;margin:-60px 0 0 10px;float: left;">{{passwordError}}</span> 
+  </div>
+
+<div class="col-md-12">
+<label class="custom-control custom-checkbox" style="margin-top:20px">
+  <input type="checkbox"  ng-model="user.agree"  style="width:22px;height:22px" >
+  <span class="custom-control-description" style="font-size: 14px;display:inline-block;padding-left:10px"> I agree with the <a href="/terms" target="_blank" >Terms of Service</a> and <a href="/privacy" target="_blank"> Privacy Policy.</a></span>
+  <span class="text-danger" style="font-size: 10px;display: inline-block;margin:0px 0 0 10px;float: left;">{{termMessage}}</span> 
+</label>
+</div>
+<div class="clearfix"></div>
+<br><br>
+<button class="btn btn-simple" ng-click="submit('Patient')"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:blue" ng-if="loading"></i>
+<span class="sr-only">Loading...</span> Create Account</button>
+</form>
 </div>
