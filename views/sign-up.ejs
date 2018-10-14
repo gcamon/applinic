@@ -96,19 +96,19 @@
         <h6 class="ml-2 p-3">Please select who you are?</h6>
         <ul class="nav nav-tabs ml-2" role="tablist">
           <li class="nav-item">
-            <a class="nav-link"  href="#/patient-signup" ng-click="userType('Patient')" ng-class="{'active': user.typeOfUser === 'Patient'}"><b class="text-danger">Patient</b></a>
+            <a class="nav-link"  href="" ng-click="userType('Patient','patient-signup')" ng-class="{'active': user.typeOfUser === 'Patient'}"><b class="text-danger">Patient</b></a>
           </li>
           <li class="nav-item">
-            <a class="nav-link"  href="#/doctor-signup" ng-click="userType('Doctor')" ng-class="{'active': user.typeOfUser === 'Doctor'}"><b class="text-danger">Doctor</b></a>
+            <a class="nav-link"  href="" ng-click="userType('Doctor','doctor-signup')" ng-class="{'active': user.typeOfUser === 'Doctor'}"><b class="text-danger">Doctor</b></a>
           </li> 
            <li class="nav-item">
-            <a class="nav-link" ng-click="userType('Special Center')"  href="#/special-center-signup" ng-class="{'active': user.typeOfUser === 'Special Center'}"><b class="text-danger">Special Center</b></a>
+            <a class="nav-link" ng-click="userType('Special Center','special-center-signup')"  href="" ng-class="{'active': user.typeOfUser === 'Special Center'}"><b class="text-danger">Special Center</b></a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" ng-click="userType('Pharmacy')"  href="#/pharmacy-signup" ng-class="{'active': user.typeOfUser === 'Pharmacy'}"><b class="text-danger">Pharmaceutical Center</b></a>
+            <a class="nav-link" ng-click="userType('Pharmacy','pharmacy-signup')"  href="" ng-class="{'active': user.typeOfUser === 'Pharmacy'}"><b class="text-danger">Pharmaceutical Center</b></a>
           </li>
            <li class="nav-item">
-            <a class="nav-link" ng-click="userType('Diagnostic')" href="#/diagnostic-signup" ng-class="{'active': user.typeOfUser === 'Diagnostic'}"><b class="text-danger">Diagnostic center</b></a>
+            <a class="nav-link" ng-click="userType('Diagnostic','diagnostic-signup')" href="" ng-class="{'active': user.typeOfUser === 'Diagnostic'}"><b class="text-danger">Diagnostic center</b></a>
           </li>
           
         </ul>
