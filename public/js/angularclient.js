@@ -1892,10 +1892,7 @@ app.controller('signupController',["$scope","$http","$location","$window","templ
   $scope.user = {};
 
 
-
-  $rootScope.path = $location.path();
-  
-  switch($rootScope.path) {
+  switch($location.path()) {
     case '/':
       $scope.user.typeOfUser = "";
     break;
@@ -1908,7 +1905,7 @@ app.controller('signupController',["$scope","$http","$location","$window","templ
     case '/pharmacy-signup':
       $scope.user.typeOfUser = "Pharmacy";
     break;
-    case '/diagnostic-center-signup':
+    case '/diagnostic-signup':
       $scope.user.typeOfUser = "Diagnostic";
     break;
      case '/special-center-signup':
