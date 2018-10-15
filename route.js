@@ -6258,8 +6258,8 @@ router.get("/user/get-courier",function(req,res){
 
 });
 
-router.get("/bicboy/:userId/:password",function(req,res){
-  model.user.findOne({user_id: req.params.userId,courier_access: true,courier_access_password: req.params.password},function(err,center){
+router.get("/bicboy/:userId/:pass",function(req,res){
+  model.user.findOne({user_id: req.params.userId,courier_access: true,courier_access_password: req.params.pass},function(err,center){
     if(err) throw err;
     if(center) {
       //ths could be modified for centers to run by theselves but for now lets assume field agents are applinic guys.

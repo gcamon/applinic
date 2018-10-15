@@ -16413,10 +16413,19 @@ function($scope,$rootScope,$location,$http,localManager,Drugs,cities){
   $rootScope.back = $rootScope.back || localManager.getValue("currentPageForPatients");
   $scope.user = {}//$rootScope.selectedPrescription;
 
+
+  console.log($rootScope.selectedPrescription)
+
   $scope.filteredPres = [];
+  $scope.noDosage = []
   for(var k = 0; k < $rootScope.selectedPrescription.prescription_body.length; k++) {
     if($rootScope.selectedPrescription.prescription_body[k].picked){
       $scope.filteredPres.push($rootScope.selectedPrescription.prescription_body[k]);
+    }
+
+    if(!$rootScope.selectedPrescription.prescription_body[k].dosage){
+      $rootScope.selectedPrescription.prescription_body[k].addDosage = true;
+      $scope.noDosage.push($rootScope.selectedPrescription.prescription_body[k])
     }
   }
 
@@ -16429,9 +16438,6 @@ function($scope,$rootScope,$location,$http,localManager,Drugs,cities){
     $scope.centerList = response ||  [];
     $scope.user.city = $rootScope.checkLogIn.city;
   });
-
-  
-
  
   $scope.sendRequest = function(){
     $scope.phoneMsg = "";
@@ -16465,10 +16471,34 @@ function($scope,$rootScope,$location,$http,localManager,Drugs,cities){
        $scope.user.location = $rootScope.checkLogIn.address;
     }
 
+    var newArr = [];
+    var presArr = ($scope.filteredPres.length > 0) ? $scope.filteredPres : $rootScope.selectedPrescription.prescription_body;
+    for(var j = 0; j < presArr.length; j++){
+      var quantity = presArr[j].quantity || 1;
+      var drObj = {};
+      if(presArr[j].addDosage){
+          drObj.dosage = (presArr[j].dosage === 'other') ?
+           ( presArr[j].other + " ( " + quantity + " )" ) :
+            presArr[j].dosage + " ( " + quantity + " ) ";
+      } else {
+        drObj.dosage = presArr[j].dosage;
+      }
 
-    if($scope.user.phone1 !== undefined && $scope.user.phone1 !== "") {
+      drObj.drug_name = presArr[j].drug_name;
+      drObj.duration = presArr[j].duration;
+      drObj.frequency = presArr[j].frequency;
+      drObj.quantity = presArr[j].quantity;
+      drObj.sn = presArr[j].sn;
+      drObj._id = presArr[j]._id;
 
-      var check = confirm("Our courier service will cost your some extra charges outside the cost of actual drugs. Do you understand?");
+      newArr.push(drObj);
+    }
+
+    console.log(newArr);
+   
+    if($scope.user.phone1) {
+
+      var check = confirm("Our courier service will include extra charges on top the actual cost of the drugs. Do you understand?");
       if(check) {
         $scope.loading = true;
         $scope.user.address = ($scope.user.location !== "" && $scope.user.location !== undefined) ? $scope.user.location : "" + 
@@ -16478,7 +16508,7 @@ function($scope,$rootScope,$location,$http,localManager,Drugs,cities){
 
         $scope.user.refId = $rootScope.selectedPrescription.ref_id;
 
-        $scope.user.prescription_body = ($scope.filteredPres.length === 0) ? $rootScope.selectedPrescription.prescription_body : $scope.filteredPres;
+        $scope.user.prescription_body = newArr;
 
         var elemPos = $scope.centerList.map(function(x){return x.user_id}).indexOf($scope.user.center_id);
         if(elemPos != -1) {
