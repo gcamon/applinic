@@ -17089,6 +17089,8 @@ app.controller('fieldAgentModalCtrl',["$scope","fieldAgentService",function($sco
         if(response.status) {
           var elem = document.getElementById(details.courierId);        
           elem.style.display = "none";
+        } else {
+          $scope.message = response.message;
         }
       });
     } else {
