@@ -228,10 +228,10 @@
 
                           <li class="nav-item" ng-cloak>
                             <a class="btn btn-simple round mr-1"  href="" disabled="disabled" style="cursor: no-drop;" ng-if="checkLogIn.courier_access !== true"><i class="fa fa-bicycle"> </i>
-                            <span style="color:red">Courier services</span></a>
+                            <span style="color:red">Courier Services</span></a>
                             </a>
                             <a class="btn btn-simple round mr-1"  href="#/courier-requests" ng-if="checkLogIn.courier_access"><i class="fa fa-motorcycle"> </i>
-                            <span style="color:red">Courier services</span></a>
+                            <span style="color:red">Courier Services</span></a>
                             </a>
                           </li>
 
@@ -1040,10 +1040,10 @@
                 <button type="button" class="close" ng-click="close('Cancel')" data-dismiss="modal" aria-hidden="true">&times;</button>         
             </div>
             <div class="modal-body" style="padding: 0 20px;margin-bottom: 20px">   
-                <h4 style="border-bottom: 1px solid grey">{{request.title}} {{request.firstname}} {{request.lastname}} 
+                <h5 style="border-bottom: 1px solid grey">{{request.title}} {{request.firstname}} {{request.lastname}} 
                     <span style="display: block;font-size: 16px;">{{request.address}} ( {{request.city}} )</span>
-                    <span style="display: block;font-size: 16px;"> phone 1 : {{request.phone1}}, phone 2 : {{request.phone2}} </span>
-                </h4> 
+                    <!--<span style="display: block;font-size: 16px;"> phone 1 : {{request.phone1}}, phone 2 : {{request.phone2}} </span>-->
+                </h5> 
                 <p style="background-color:orange;color:#fff;padding:10px;text-align:center" ng-if="message">{{message}}</p>
                 <div ng-repeat="pres in request.prescription_body" class="courier-cost">
                     <label style="width: 40%;word-break: break-all;padding-right: 10px">{{pres.drug_name}} <span ng-if="pres.dosage" style="display: inline-block;">( {{pres.dosage}} )</span>:
@@ -1091,6 +1091,70 @@
                 </div>
             </div>
             
+          </div>
+        </div>
+      </div>
+   </script>
+
+   <script type="text/ng-template" id="new-field-agent.html">
+       <div class="modal fade">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5>New Field Agent</h5>
+              <button type="button" class="close" ng-click="close('Cancel')" data-dismiss="modal" style="float: right;" aria-hidden="true">&times;</button>
+            </div>
+            <div>
+               
+            </div class="modal-body">
+              <form ng-submit="create()" class="p-2">
+                <div>
+                  <input type="text" name="" ng-model="user.firstname" class="form-control" placeholder="First Name" required="required">
+                </div>
+                 <div  class="pt-1">
+                  <input type="text" name="" ng-model="user.lastname" class="form-control" placeholder="Last Name" required="required">
+                </div>
+                 <div  class="pt-1">
+                  <input type="text" name="" ng-model="user.phone" class="form-control" placeholder="Phone e.g +23480475****" required="required">
+                </div>
+                <div  class="pt-1">
+                  <input type="email" name="" ng-model="user.email" class="form-control" placeholder="Email Address">
+                </div>
+                <div class="pt-1">
+                  <p class="text-danger">{{message}}</p>
+                </div>
+                <div ng-if="isSuccess">
+                    <h6>Login details:</h6>
+                    <div>
+                      Phone : {{user.phone}}
+                    </div>
+                    <div>
+                      password : {{user.password}}
+                    </div>
+                </div>
+                <div  class="pt-1">
+                  <input type="submit" name="" value="Create Field Agent Account" class="btn btn-info" ng-if="!isSuccess && !loading"> &nbsp;<span class="text-primary">{{(loading) ? "Submitting..." : (isSuccess) ? "Account created successfully!" : "" }}</span>
+                </div>
+              </form>              
+            </div>
+        </div>
+      </div>
+  </script>
+   
+  <script type="text/ng-template" id="manage-field-agent.html">
+       <div class="modal fade">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5>Field Agents ( {{agents.length}} )</h5>
+              <button type="button" class="close" ng-click="close('Cancel')" data-dismiss="modal" style="float: right;" aria-hidden="true">&times;</button>            
+            </div>
+            <div class="modal-body" style="line-height: 32px">
+              <div ng-repeat="j in agents">
+                <a href="{{j.url}}"" target="_blank"><b>{{j.names}}</b> &nbsp;({{j.phone}}) &nbsp;<i class="fa fa-external-link"></i></a>
+                <i class="fa fa-trash-o font-1_4" title="Remove this agent" style="float: right;" ng-click="delete(j.id)"></i>
+              </div>
+            </div>            
           </div>
         </div>
       </div>

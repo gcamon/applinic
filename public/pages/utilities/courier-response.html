@@ -1,0 +1,106 @@
+<div class="card p-2  card-center-1" style="position: relative;" ng-if="courierResponse">
+	<h5>Courier Order </h5>
+	<span style="position: absolute;top: 20px;right: 20px">Order ID: {{courierResponse.request_id}}</span>
+	<hr>
+	<div>
+		Status:  <span style="font-weight: bold" ng-class="{'text-danger': !courierResponse.attended,'text-info': courierResponse.attended,'text-primary':courierResponse.completed,'text-warning':courierResponse.is_paid}">{{(!courierResponse.verified || !courierResponse.attended) ? 'Pending' : (!courierResponse.is_paid && courierResponse.attended) ? 'Ready': (courierResponse.is_paid) ? 'On Delivery' : (courierResponse.completed) ? "Received" : ""}}</span> 
+	</div>
+	<div>
+		Order Date: {{courierResponse.date | date: "fullDate"}}
+	</div>
+	<div>
+		Order Time: {{courierResponse.date | date: "mediumTime"}}
+	</div>
+	<div>
+		Phone Numbers: {{courierResponse.phone1}} {{courierResponse.phone2}}
+	</div>
+	<div>
+		Delivery Address: {{courierResponse.address}}
+	</div>
+	<hr>
+	<h6>Dispatch Center</h6>
+	<div>
+		Name: {{courierResponse.center_name}}
+	</div>
+	<div>
+		Address: {{courierResponse.center_address}}
+	</div>
+	<div ng-if="courierResponse.is_paid">
+		Phone: {{courierResponse.center_phone}}
+	</div>
+	<hr>
+	<h6>Drug(s) Ordered</h6>
+	<table class="table">
+		<thead>
+			<th>sn</th>
+			<th>Name</th>
+			<th>Dosage</th>
+			<th>Frequency</th>
+			<th>Duration</th>
+		</thead>
+		<tbody ng-repeat="i in courierResponse.prescription_body">
+			<td>{{i.sn}}</td>
+			<td>{{i.drug_name}}</td>
+			<td>{{i.dosage}}</td>
+			<td>{{i.frequency}}</td>
+			<td>{{i.duration}}</td>
+		</tbody>
+	</table>
+	<div ng-if="!courierResponse.attended && !courierResponse.is_paid">
+		<button class="btn btn-danger" ng-click="cancel(courierResponse._id)">{{(canceling) ? 'Canceling...' :'Cancel order'}}</button>
+	</div>
+	<div style="line-height: 35px" ng-if="courierResponse.attended && courierResponse.verified">
+		<h6>Billing</h6>
+		<div>
+			Cost of Drugs : {{toCurrency(courierResponse.total_cost)}}
+		</div>
+		<div>
+			Delivery Charge : {{toCurrency(courierResponse.delivery_charge)}}
+		</div>
+		<div>
+			Total Billed : <b>{{getTotal(courierResponse.delivery_charge,courierResponse.total_cost)}}</b>
+		</div>
+		<div class="pt-1">
+			<p class="text-success">{{otpMsg}}</p>
+		</div>
+		<div class="pt-2" ng-if="!isOtp && !courierResponse.is_paid">
+			<button class="btn btn-info" ng-click="pay(resend)" ><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i> {{(loading) ? "" : "Pay Now!"}}</button>&nbsp;&nbsp;&nbsp;
+			<button class="btn btn-neutral" ng-click="reOrder(courierResponse)">Re-order</button>&nbsp;&nbsp;&nbsp;
+			<button class="btn btn-neutral" ng-click="cancel(courierResponse._id)">Cancel Order</button>
+		</div>
+	</div>
+	<div ng-if="isOtp && !courierResponse.is_paid">
+		<div style="text-align: right;">
+			<a href="" ng-click="pay(resend)">Resend OTP</a>
+		</div>
+		<div style="width: 70%;">
+			<input type="text" placeholder="Enter otp" class="form-control" ng-model="user.pin">
+		</div>
+		<div style="width: 50%;margin: 0 auto;padding: 10px 0">			
+			<button class="btn-info btn" ng-click="confirm(courierResponse)"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i> {{(loading) ? "" : "Confirm Payment"}}</button>
+		</div>
+	</div>
+	<hr>
+	<div style="line-height: 25px" ng-if="courierResponse.is_paid && courierResponse.attended && courierResponse.verified">
+		<h6>Payment History</h6>
+		<div class="text-primary">
+			<i class="fa fa-check-circle"></i> Payment for this drug(s) was made successfully!
+		</div>
+		<div>
+			Amount Paid for Drug(s): <b>{{toCurrency(courierResponse.total_cost)}}</b>
+		</div>
+		<div>
+			Amount Paid for Delivery: <b>{{toCurrency(courierResponse.delivery_charge)}}</b>
+		</div>
+		<div>
+			Order ID: <b>{{courierResponse.request_id}}</b>
+		</div>
+		<hr>
+		<p class="text-success">Order ID is required for confirmation of receipt of the package/drugs. Please give out to field agent if you had received the package/drugs.<br><br>
+		If you have any complaint for this service please <a href="" class="text-info" ng-click="sendDispute(courierResponse._id)"> send to us a dispute notification </a> and we'll contact you shortly.
+		</p>
+	</div>
+</div>
+<div style="height: 200px">
+	
+</div>

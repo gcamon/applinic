@@ -13,6 +13,8 @@ var express = require('express'),
   paystack = require('paystack')(process.env.PAYSTACK_SECRET_KEY),   
   moment = require('moment'),
   infobip = require('infobip'),
+
+  client = new infobip.Infobip('Farelands', 'icui4cuok'),
   
   /*Nexmo = require("nexmo"), 
   sms = new Nexmo({
@@ -24,7 +26,7 @@ var express = require('express'),
 
   placement = require("./placement"),
   mySocket = require("./socket"),
-  streams = require("./streams")(),//this will be moved to another server later
+  streams = require("./streams")(),
   port = process.env.PORT || 3001
 
   var ExpressPeerServer = require('peer').ExpressPeerServer;
@@ -123,8 +125,8 @@ console.log(startDate, "" , endDate)
 config.configuration(app,model);
 signupRoute(model,sms,geonames,paystack,io);
 loginRoute(model,sms);
-route(model,sms,io,streams); 
-payments(model,sms,io,paystack);
+route(model,sms,io,streams,client); 
+payments(model,sms,io,paystack,client);
 placement(model,sms,io);
 mySocket(model,io,streams);
 

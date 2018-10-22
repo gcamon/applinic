@@ -594,7 +594,8 @@ var myModel = function () {
 		medical_reports: [medReportSchema],
 		courier_charge: Number,
 		disease_tag: String,
-		bank_details: Array
+		bank_details: Array,
+		field_agents: Array
 	},{
 		collections: "userinfos"
 	})
@@ -736,6 +737,7 @@ var myModel = function () {
 	});
 
 	var courierSchema = Schema({
+		request_id : String,
 		verified: Boolean,
 		total_cost: String,
 		firstname: String,
@@ -750,6 +752,9 @@ var myModel = function () {
 		profile_pic_url: String,
 		user_id: String,
 		center_id: String,
+		center_name: String,
+		center_address: String,
+		center_phone: String,
 		date: Number, //use date to find refers to date the request was made or initaiated
 		otp: String,
 		receipt_date: Number,
@@ -759,7 +764,14 @@ var myModel = function () {
 		deleted: Boolean,
 		currencyCode: String,
 		city_grade: Number,
-		prescriptionId: Number
+		prescriptionId: Number,
+		is_paid: Boolean,
+		new: Number,
+		dispute: Boolean,
+		complaints: Array,
+		on_delivery: Boolean,
+		delivery_msg: String,
+		delivery_start_date: Date
 	},{
 		collections: "courierinfos"
 	});
@@ -857,6 +869,40 @@ var myModel = function () {
 		collections: "appointmentinfos"
 	});
 
+	var mediScroll = Schema({
+		amount: Number,
+		debitor: String,
+		amount_str: String,
+		creditor: String,
+		start_date: Date,
+		end_date: Date,
+		courier_id: String, // refers to _id of the subject obj
+		order_id : String, // refers to generated id of the subject obj also called request ID
+		type: String,
+		deleted: Boolean,
+		delivery_charge: Number
+	},{
+		collections: "scrollinfos"
+	});
+
+	var fieldAgentSchema = Schema({
+		password: String,
+		isLoggedIn: Boolean,
+		userId: String,
+		date: Date,
+		center_id: String,
+		center_name: String,
+		center_city: String,
+		couriers: Array,
+		firstname: String,
+		lastname: String,
+		email: String,
+		phone: String,
+		url: String
+	},{
+		collections: "fieldagentinfos"
+	});
+
 	
 	/*var callingSchema = Schema({
 		calling_code: {
@@ -899,7 +945,9 @@ var myModel = function () {
 	models.needHelp = mongoose.model('needhelpinfos',needHelpchema);
 	models.outPatientBilling = mongoose.model("billinginfos",treatmentBillSchema);
 	models.appointment = mongoose.model("appointmentinfos",docAppointmentSchema);
-	models.skills = mongoose.model("skillinfos",skillSchema)
+	models.skills = mongoose.model("skillinfos",skillSchema);
+	models.scroll = mongoose.model("scrollinfos",mediScroll);
+	models.agent = mongoose.model("fieldagentinfos",fieldAgentSchema);
 	//models.calling_code = mongoose.model("callingcodeinfos",callingSchema)
 	
 	

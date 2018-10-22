@@ -7,8 +7,10 @@ var path = require("path");
 var Wallet = require("./wallet");
 var randos = require("./randos");
 
+ 
 
-var basicPaymentRoute = function(model,sms,io,paystack){
+
+var basicPaymentRoute = function(model,sms,io,paystack,client){
 
 	//this route creates the token for use ie creating vouchers
 	router.post("/user/token",function(req,res){
@@ -271,7 +273,7 @@ var basicPaymentRoute = function(model,sms,io,paystack){
 	});
 
 	router.post("/user/payment/verification",function(req,res){
-
+		console.log(req.body)
 		if(req.user && req.body.userId !== req.user.user_id){
 			//generate otp for confirmation. the debitor's id is sent from the request including the amount.
 			//request is obj of the debitor's id, amount to debit ie the person paying for the service.
@@ -331,21 +333,29 @@ var basicPaymentRoute = function(model,sms,io,paystack){
 									console.log(err);
 									res.send({message:"Oops! Error occured while sending OTP.Please resend",success:true,time_stamp:req.body.time}) 
 								} else {								
-									res.send({message:"One time pin sent to this patient vis SMS. The pin is needed for payment confirmation",success:true,time_stamp:req.body.time}) 
+									//res.send({message:"One time pin was sent to this patient via SMS. Enter the pin to confirm payment",success:true,time_stamp:req.body.time}) 
 								}
 								
 							}
 
 							var msgBody = "Your payment OTP for applinic.com is " + password + " \nThe amount billed is " + req.body.amount;
 							var phoneNunber = user.phone;
-							sms.messages.create(
+							/*sms.messages.create(
 	              {
 	                to: phoneNunber,
 	                from: '+16467985692',
 	                body: msgBody,
 	              },
 	              callBack
-	            )
+	            )*/
+	            //Set the message
+							var message = {from: "InfoSMS", to : phoneNunber, text : "Your payment OTP for applinic.com is " +
+							 password + " \nThe amount billed is " + req.user.currencyCode + "" + req.body.amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")};
+							 
+							//Send an SMS
+							client.SMS.send(message,callBack);
+							res.send({message:"One time pin was sent to this patient via SMS. Enter the pin to confirm payment",success:true,time_stamp:req.body.time}) 
+
 
 						}
 
@@ -1390,11 +1400,6 @@ var basicPaymentRoute = function(model,sms,io,paystack){
 	})
 
 
-
-
-
-
-
 	//user cashing out some money from wallet.
 	router.put("/user/cashout",function(req,res){
 		if(req.user){
@@ -1460,20 +1465,136 @@ var basicPaymentRoute = function(model,sms,io,paystack){
 		}
 	});
 
-	router.get("/user/cashout",function(req,res){
-		if(req.user && req.user.user_id === process.env.ADMIN_ID){
-			model.cashout.find({},function(err,list){
+router.get("/user/cashout",function(req,res){
+	if(req.user && req.user.user_id === process.env.ADMIN_ID){
+		model.cashout.find({},function(err,list){
+			if(err) throw err;
+			res.send(list)
+		})
+	} else {
+		res.send("Unauthorized access!")
+	}
+});
+
+//for courier matters
+
+router.post("/user/courier/payment-confirmation",function(req,res){
+	if(req.user){
+		console.log(req.body);
+		if(req.body.otp) {
+			model.otpSchema.findOne({otp: req.body.otp})
+			.exec(function(err,data){
 				if(err) throw err;
-				res.send(list)
+				if(data){
+					if(data.amount <= req.user.ewallet.available_amount){
+						model.courier.findById(req.body.courier_id)
+						.exec(function(err,courier){
+							if(err) throw err;
+							if(courier) {
+								var mediScroll = new model.scroll({
+									amount: data.amount,
+									amount_str: req.user.currencyCode + "" + data.amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+									debitor: req.user.user_id,
+									creditor: req.body.centerId,
+									start_date: new Date(),
+									courier_id: req.body.courier_id, // refers to _id of the subject obj
+									order_id : courier.request_id, // refers to generated id of the subject obj also called request ID
+									type: "courier",
+									deleted: false,
+									delivery_charge: courier.delivery_charge
+								});
+								console.log(mediScroll);
+								req.user.ewallet.available_amount -= data.amount;
+
+								courier.is_paid = true;
+
+
+								mediScroll.save(function(){})
+
+								data.remove(function(){});
+
+								courier.save(function(){})
+
+								req.user.save(function(err,info){
+									if(err) throw err;
+									console.log("patient wallet debited!!");
+									res.json({message: "Payment made successfully!",status: true})
+								});
+							} else {
+								res.send({});
+							}
+						})
+						
+					} else {
+						res.send({message: 
+							"Oops! Seems you have insufficient fund in your account to pay for this service. Please fund your MediPay wallet and try again.",
+							status: false});
+					}
+				} else {
+					res.send({message: "The pin you entered is incorrect",status:false});
+				}
 			})
 		} else {
-			res.send("Unauthorized access!")
+			res.send({message: "Please enter the OTP sent to you via SMS.",status: false});
 		}
-	});
+	} else {
+		res.end("Unauthorized access!");
+	}
+});
 
 
 router.put("/user/field-agent",function(req,res){ 
-  var str = "";
+	console.log(req.body)	
+
+	model.agent.findById(req.body.agentId)
+	.exec(function(err,agent){
+		if(err) throw err;
+		if(agent || req.user){ //agent or center cn verify a courier delivery
+		
+			model.scroll.findOne({debitor: req.body.debitorId,order_id: req.body.order,courier_id: req.body.courierId,creditor:req.body.creditorId})
+			.exec(function(err,scroll){
+				if(err) throw err;
+				if(scroll){
+						console.log(scroll)
+						res.json({message: "Verification successfully!",status:true});
+				} else {
+					res.json({message: "Error: No record for this service was found in mediscroll",status: false})
+				}
+			})
+		} else {
+			res.send({status: false, message: "You are not allowed to confirm this transaction."});
+		}
+	})
+  /*var str = "";
+
+
+
+amount: Number,
+		debitor: String,
+		amount_str: String,
+		creditor: String,
+		start_date: Date,
+		end_date: Date,
+		courier_id: String, // refers to _id of the subject obj
+		order_id : String, // refers to generated id of the subject obj also called request ID
+		type: String,
+		deleted: Boolean,
+		delivery_charge: Number
+
+
+
+{ names: 'Chibuzor Ede',
+  courierId: '5bc4d39c54e33f38bcefbb83',
+  creditorId: 'chibuzor468616',
+  debitorId: 'judepharmacy6768',
+  totalCost: '1500',
+  status: false,
+  agentId: '5bcb62c4cb5f7913ccdf46b1',
+  order: '4335465',
+  message: '' }
+
+
+
   if(req.body.otp) {
     
     for(var i = 0; i < req.body.otp.length; i++) {
@@ -1570,7 +1691,7 @@ router.put("/user/field-agent",function(req,res){
 	    for( var i=0; i < 16; i++ )
 	        text += possible.charAt(Math.floor(Math.random() * possible.length));
 	    return text;
-	 }
+	 }*/
 	  
 });
 

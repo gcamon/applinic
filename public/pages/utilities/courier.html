@@ -35,7 +35,7 @@
 		    					<tbody ng-repeat="prescription in presInfo.prescription_body" ng-if="filteredPres.length == 0">		    						
 		    						<td>{{prescription.sn}}</td>
 		    						<td>{{prescription.drug_name}}</td>
-		    						<td>{{(prescription.dosage !== 'other') ? prescription.dosage : prescription.other}} <span ng-if="prescription.quantity">( {{prescription.quantity }} )</span></td>
+		    						<td>{{(prescription.dosage !== 'dosage') ? prescription.dosage : prescription.other}} <span ng-if="prescription.quantity">( {{prescription.quantity }} )</span></td>
 		    						<td>{{prescription.frequency}}</td>
 		    						<td>{{prescription.duration}}</td>		    							    						
 		    					</tbody>
@@ -43,7 +43,7 @@
 		    					<tbody ng-repeat="prescription in filteredPres" ng-if="filteredPres.length > 0">		    						
 		    						<td>{{prescription.sn}}</td>
 		    						<td>{{prescription.drug_name}}</td>
-		    						<td>{{(prescription.dosage !== 'other') ? prescription.dosage : prescription.other}} <span ng-if="prescription.quantity">( {{ prescription.quantity }} )</span></td>
+		    						<td>{{(prescription.dosage !== 'dosage') ? prescription.dosage : prescription.other}} <span ng-if="prescription.quantity">( {{ prescription.quantity }} )</span></td>
 		    						<td>{{prescription.frequency}}</td>
 		    						<td>{{prescription.duration}}</td>		    							    						
 		    					</tbody>
@@ -56,34 +56,34 @@
 		    					<li ng-repeat="j in noDosage" style="list-style: none;padding-bottom: 20px" ng-if="filteredPres.length == 0">
 		    						<form class="row">
 		    							<label>{{j.drug_name}}</label><br>
-		    							<select ng-model="j.dosage" class="col-sm-12 col-md-5" style="padding: 10px;margin-right: 5px" ng-if="j.dosage !== 'other'">
-		    								<option value="" disabled="disabled" selected="selected">_select dosage</option>
+		    							<select ng-model="j.dosage" class="col-sm-12 col-md-5" style="padding: 10px;margin-right: 5px" ng-if="j.dosage !== 'dosage'">
+		    								<option value="" disabled="disabled" selected="selected">_select description</option>
 		    								<option>tablets</option>
 		    								<option>caplets</option>
 		    								<option>capsule</option>
 		    								<option>packet</option>
 		    								<option>bottle</option>
 		    								<option>sachet</option>
-		    								<option>other</option>
+		    								<option>dosage</option>
 		    							</select>
-		    							<input type="text" ng-model="j.other" placeholder="e.g 500mg" class="col-sm-12 col-md-5" style="padding: 8px" ng-if="j.dosage == 'other'">
+		    							<input type="text" ng-model="j.other" placeholder="e.g 500mg" class="col-sm-12 col-md-5" style="padding: 8px" ng-if="j.dosage == 'dosage'">
 		    							<input type="number" ng-model="j.quantity" placeholder="quantity" class="col-sm-12 col-md-5" style="padding: 8px">
 		    						</form>
 		    					</li>
 		    					<li ng-repeat="j in noDosage" style="list-style: none;padding-bottom: 20px" ng-if="filteredPres.length > 0">
 		    						<form class="row" ng-if="j.picked">
 		    							<label>{{j.drug_name}}</label><br>
-		    							<select ng-model="j.dosage" class="col-sm-12 col-md-5" style="padding: 10px;margin-right: 5px" ng-if="j.dosage !== 'other'">
-		    								<option value="" disabled="disabled" selected="selected">_select dosage</option>
+		    							<select ng-model="j.dosage" class="col-sm-12 col-md-5" style="padding: 10px;margin-right: 5px" ng-if="j.dosage !== 'dosage'">
+		    								<option value="" disabled="disabled" selected="selected">_select description</option>
 		    								<option>tablets</option>
 		    								<option>caplets</option>
 		    								<option>capsule</option>
 		    								<option>packet</option>
 		    								<option>bottle</option>
 		    								<option>sachet</option>
-		    								<option>other</option>
+		    								<option>dosage</option>
 		    							</select>
-		    							<input type="text" ng-model="j.other" placeholder="e.g 500mg" class="col-sm-12 col-md-5" style="padding: 8px" ng-if="j.dosage == 'other'">
+		    							<input type="text" ng-model="j.other" placeholder="e.g 500mg" class="col-sm-12 col-md-5" style="padding: 8px" ng-if="j.dosage == 'dosage'">
 		    							<input type="number" ng-model="j.quantity" placeholder="quantity" class="col-sm-12 col-md-5" style="padding: 8px">
 		    						</form>
 		    					</li>

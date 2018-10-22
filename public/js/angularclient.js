@@ -584,6 +584,11 @@ app.config(['$paystackProvider','$routeProvider',
   controller: 'courierController'
  })
 
+ .when("/courier-response/:id",{
+  templateUrl: "/assets/pages/utilities/courier-response.html",
+  controller: "courierResponseCtrl"
+ })
+
  //display
 
  .when("/specialists",{
@@ -6299,10 +6304,10 @@ app.service("getAppointmentServce",["$resource",function($resource){
 //to store then templateService. Note patient prescription  is not amonge the data filtered so far.
 app.controller("patientNotificationController",["$scope","$location","$http","$window","$rootScope","$resource","chatService",
   "templateService","localManager","deleteFactory","mySocket","$timeout","medicaRecordFactory","patientNotificationService",
-  "getMedicalHistoryService","chatHistoryService","getResponseService","getMessagesService","getAppointmentServce",
+  "getMedicalHistoryService","chatHistoryService","getResponseService","getMessagesService","getAppointmentServce","courierResponseService",
   function($scope,$location,$http, $window,$rootScope,$resource,chatService,templateService,localManager,
     deleteFactory,mySocket,$timeout,medicaRecordFactory,patientNotificationService,
-    getMedicalHistoryService,chatHistoryService,getResponseService,getMessagesService,getAppointmentServce){
+    getMedicalHistoryService,chatHistoryService,getResponseService,getMessagesService,getAppointmentServce,courierResponseService){
   
   var filter = {};
   
@@ -6723,12 +6728,40 @@ app.controller("patientNotificationController",["$scope","$location","$http","$w
     $scope.showIndicator = false;
   }
 
+
+  var courierResponse = courierResponseService;
+
+  function getCourier() {
+    courierResponse.query(function(data){
+      $rootScope.courierResponseList = data;
+      $scope.unRead = data[0];
+      console.log(data);
+    });
+  }
+
+  mySocket.on("courier billed",function(res){
+    getCourier();
+  });
+
+  mySocket.on("new courier order",function(res){
+    getCourier();
+  });
+
+  var pt;
+
+  $scope.viewResponse = function(item) {
+    $rootScope.courierResponse = item;
+    pt = '/courier-response/' + Math.floor(Math.random() * 99999999);
+    $location.path(pt);
+  }
+
+  getCourier();
+
 }]);
 
 app.controller("outPatientBillingCtrl",["$scope","outPatientBillingService","templateService","$http","$rootScope",
 function($scope,outPatientBillingService,templateService,$http,$rootScope){
   var bill = outPatientBillingService.get({billId: templateService.holdId});
-  console.log(bill);
   $scope.bill = bill;
   var sendObj = {};
   $scope.verify = function(oldTime) {
@@ -16408,13 +16441,129 @@ app.controller("captureImageController",["$scope",function($scope){
     });
 }]);
 
+
+/** courier services logic **/
+
+app.service("courierResponseService",["$resource",function($resource){
+  return $resource("/user/courier-response",null,{pay:{method: "POST"},reOder:{method: "PUT"}});
+}])
+
+app.controller("courierResponseCtrl",["$scope","$rootScope","courierResponseService","templateService","$location",
+  "paymentVerificationService","$http",
+  function($scope,$rootScope,courierResponseService,templateService,$location,paymentVerificationService,$http){
+
+  $scope.reOrder = function(item) {    
+    var presList = templateService.holdPrescriptions;
+    var elemPos = presList.map(function(x){return x.prescriptionId}).indexOf(item.prescriptionId);
+    if(elemPos !== -1) {
+      $rootScope.selectedPrescription = presList[elemPos];
+      $location.path('courier');
+    }
+  }
+
+  $scope.user = {};
+
+  $scope.cancel = function(itemId){
+    var check = confirm("This order will be deleted and can never be used again.");
+    if(check) {
+      $scope.canceling = true;
+      courierResponseService.delete({item: itemId},function(res){
+        if(res.status) {
+          var elementPos = $rootScope.courierResponseList.map(function(x){return x._id.toString()}).indexOf(itemId);
+          $scope.canceling = false;
+          if(elementPos !== -1) {
+            $rootScope.courierResponseList.splice(elementPos,1);
+            $rootScope.courierResponse = null;
+          }
+        } else {
+          alert("Order cannot delete! Maybe it has be attended to or does not exist anymore.");
+        }
+      })
+    }
+  }
+
+  $scope.getTotal = function(val1,val2){
+    $scope.sum = parseInt(val1) + parseInt(val2);
+    return $rootScope.checkLogIn.currencyCode + " " + $scope.sum.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  }
+
+  var otp = paymentVerificationService;
+
+  $scope.pay = function(oldTime){
+    
+    var time = + new Date();
+    $rootScope.resend = time;
+    var sendObj = {
+      amount : $scope.sum,
+      time: time,
+      old_time: oldTime
+    }
+
+    if($scope.otpMsg)
+       $scope.otpMsg = "";
+
+    $scope.loading = true;
+    otp.verify(sendObj,function(data){
+      $scope.loading = false;
+      if(data.success){
+        $scope.otpMsg = data.message;
+        $scope.isOtp = true;
+      } else {
+        alert(data.message);
+      }
+    })
+  }
+
+  $scope.confirm = function(courier){
+    var str = "";
+    if($scope.user.pin) {
+      
+      for(var i = 0; i < $scope.user.pin.length; i++) {
+        str += $scope.user.pin[i];
+        if(i == 2)
+            str += " ";
+      }
+
+    } else {
+      alert("Please enter the pin sent to your phone.");
+      return;
+    }
+    $scope.user.otp = str;
+    $scope.user.centerId = courier.center_id;
+    $scope.user.courier_id = courier._id;
+    $scope.user.orderId = courier.request_id;
+    $http.post("/user/courier/payment-confirmation",$scope.user)
+    .success(function(response){
+      if(response.status) {
+        courier.is_paid = response.status;
+        $scope.otpMsg = "";
+        $rootScope.$broadcast("debit",{status:true});
+      } else {
+        $scope.otpMsg = response.message;
+      }
+    });
+ 
+  }
+
+  $scope.sendDispute = function(id){
+    var check = confirm("You want to initiate a dispute based on this courier service")
+    if(check) {
+      $http.post("/user/courier/dispute",{courierId: id})
+      .success(function(response){
+        alert("Dispute submitted! we'll contact you soon.")
+      });
+    }
+  }
+
+
+}]);
+
 app.controller("courierController",["$scope","$rootScope","$location","$http","localManager","Drugs","cities",
 function($scope,$rootScope,$location,$http,localManager,Drugs,cities){
   $rootScope.back = $rootScope.back || localManager.getValue("currentPageForPatients");
   $scope.user = {}//$rootScope.selectedPrescription;
 
-
-  console.log($rootScope.selectedPrescription)
+  console.log($rootScope.selectedPrescription);
 
   $scope.filteredPres = [];
   $scope.noDosage = []
@@ -16476,8 +16625,14 @@ function($scope,$rootScope,$location,$http,localManager,Drugs,cities){
     for(var j = 0; j < presArr.length; j++){
       var quantity = presArr[j].quantity || 1;
       var drObj = {};
+
+      if(!presArr[j].dosage){
+        alert("Please add description/dosage for all drugs.");
+        return;
+      } 
+
       if(presArr[j].addDosage){
-          drObj.dosage = (presArr[j].dosage === 'other') ?
+          drObj.dosage = (presArr[j].dosage === 'dosage') ?
            ( presArr[j].other + " ( " + quantity + " )" ) :
             presArr[j].dosage + " ( " + quantity + " ) ";
       } else {
@@ -16552,11 +16707,12 @@ app.controller("courierJoinController",["$scope","$rootScope","$http","mySocket"
 }]);
 
 app.controller("centerCourierController",["$scope","$rootScope","$http","mySocket","ModalService","templateService",
-  function($scope,$rootScope,$http,mySocket,ModalService,templateService){
+  "ModalService","fieldAgentService",
+  function($scope,$rootScope,$http,mySocket,ModalService,templateService,ModalService,fieldAgentService){
   
   //this will only allow cebters permitted to render courier services use the feature.
   //note for center that will run courier service must have "courier access" enabled and "courier_access_password" set to desired password;
-  $rootScope.fieldagentUrl = "https://applinic.com/bicboy/" + $rootScope.checkLogIn.user_id + "/" + $rootScope.checkLogIn.courier_access_password;
+  //$rootScope.fieldagentUrl = "https://applinic.com/bicboy/" + $rootScope.checkLogIn.user_id + "/" + $rootScope.checkLogIn.courier_access_password;
   var getCurr = function(){
     $http({
       method  : 'GET',
@@ -16567,6 +16723,8 @@ app.controller("centerCourierController",["$scope","$rootScope","$http","mySocke
       $rootScope.courierRequests = data || [];
     });
      $scope.selected1 = true;
+     $scope.selected = false;
+     $scope.selected2 = false;
   }
 
   getCurr();
@@ -16602,10 +16760,10 @@ app.controller("centerCourierController",["$scope","$rootScope","$http","mySocke
   }
 
   $scope.decline = function(request) {
-    console.log(request);
-    request.loading = true;
+    
     var warn = confirm("This courier request will be deleted.");
     if(warn) {
+      request.loading = true;
       $http.put("/user/decline-courier",request)
       .success(function(res){
         request.loading = false;
@@ -16622,9 +16780,9 @@ app.controller("centerCourierController",["$scope","$rootScope","$http","mySocke
     $scope.selected2 = false;
   }
 
-  $scope.attended = function() {
+  $scope.completed = function() {
 
-    var url = "/user/get-courier" + "?attended=true";
+    var url = "/user/get-courier" + "?completed=true";
     $http({
       method  : 'GET',
       url     : url,
@@ -16636,13 +16794,132 @@ app.controller("centerCourierController",["$scope","$rootScope","$http","mySocke
     });
     $scope.selected2 = true;
     $scope.selected1 = false;
+    $scope.selected = false;
   }
-  
+
+  $scope.ready = function(){
+    $http({
+      method  : 'GET',
+      url     : "/user/get-courier" + "?paid=true",
+      headers : {'Content-Type': 'application/json'} 
+      })
+    .success(function(data) {      
+      $rootScope.courierRequests = data || [];
+    });
+    $scope.selected = true;
+    $scope.selected2 = false;
+    $scope.selected1 = false;
+  }
+
+  $scope.getTotal = function(val1,val2){
+    $scope.sum = parseInt(val1) + parseInt(val2);
+    return ($rootScope.checkLogIn.currencyCode) ? $rootScope.checkLogIn.currencyCode +
+     " " + $scope.sum.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") : "NGN" +
+     " " + $scope.sum.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  }
+
+  $scope.addFieldAgent = function(){
+    ModalService.showModal({
+        templateUrl: 'new-field-agent.html',
+        controller: "fieldAgentCtrl"
+    }).then(function(modal) {
+        modal.element.modal();
+        modal.close.then(function(result) {
+          
+        });
+    });       
+  }
+
+  $scope.manageFieldAgent = function(){
+    ModalService.showModal({
+        templateUrl: 'manage-field-agent.html',
+        controller: "manageFieldAgentCtrl"
+    }).then(function(modal) {
+        modal.element.modal();
+        modal.close.then(function(result) {
+          
+        });
+    });       
+  }
+
+
+  //gets  the field agents working for this center
+  var agent = fieldAgentService;
+
+  $scope.fieldUser = {};
+
+  agent.query(function(data){
+    $scope.agents = data || [];
+  });
+
+  $scope.startDelivery = function(courier){
+    $scope.fieldUser.courierId = courier._id;
+    $scope.loading = true;
+    $http.put("/user/agent-delivery",$scope.fieldUser)
+    .success(function(res){
+      $scope.loading = false;
+      if(res.status){
+        courier.on_delivery = res.status;
+        courier.delivery_msg = res.message;
+      }      
+    })
+  }
+
   $scope.toNaira = function(val){
      var str = "NGN" + val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
      return str
   }
 
+}]);
+
+app.controller("fieldAgentCtrl",["$scope","$http",function($scope,$http){
+  $scope.user = {};
+
+  $scope.create = function(){
+    if($scope.message)
+      $scope.message = "";
+    $scope.loading = true;
+    $http.post("/user/field-agent",$scope.user)
+    .success(function(response){
+      if(response.status){
+        $scope.isSuccess = response.status;
+        $scope.user.password = response.password;
+      } else {
+        $scope.message = response.message;
+      }
+      $scope.loading = false;
+    });
+  }
+}]);
+
+app.service("fieldAgentService",["$resource",function($resource){
+  return $resource("/user/field-agent",null,{update:{method: "PUT"},del:{method:"DELETE"}})
+}])
+
+app.controller("manageFieldAgentCtrl",["$scope","$http","fieldAgentService",function($scope,$http,fieldAgentService){
+
+  var agent = fieldAgentService;
+
+  agent.query(function(data){
+    $scope.agents = data || [];
+  });
+
+  $scope.delete = function(id){
+    var check = confirm("You want to delete this agent permanently");
+    if(check) {
+      agent.delete({id: id},function(data){
+        if(data.status){
+          alert(data.message);
+          var elePo = $scope.agents.map(function(x){return x.id}).indexOf(id);
+          if(elePo !== -1){
+            $scope.agents.splice(elePo,1)
+          }
+        }
+      })
+    }
+  }
+  
+  
 }]);
 
 app.controller("selectedCourierRequestController",["$scope","$rootScope","$http","mySocket",function($scope,$rootScope,$http,mySocket){
@@ -16728,10 +17005,10 @@ app.service("fieldAgentService",["$resource",function($resource){
 }]);
 
 //refers to couroer field agents controller
-app.controller("filedAgentController",["$scope","$rootScope","$resource","fieldAgentService","$location",
-  function($scope,$rootScope,$resource,fieldAgentService,$location){
+app.controller("filedAgentController",["$scope","$rootScope","$resource","fieldAgentService","$location","ModalService",
+  function($scope,$rootScope,$resource,fieldAgentService,$location,ModalService){
   
-  var resource = fieldAgentService; //$resource("/user/field-agent",null,{verify:{method: "PUT"}});
+  /*var resource = fieldAgentService; //$resource("/user/field-agent",null,{verify:{method: "PUT"}});
   $scope.loading = true;
   $scope.params = {};
   $scope.params.isCompleted = null;
@@ -16767,6 +17044,29 @@ app.controller("filedAgentController",["$scope","$rootScope","$resource","fieldA
   $scope.pendingRequest = function() {
     $scope.params.isCompleted = null;
     getCourier();
+  }*/
+
+  $scope.attend = function(firstname,lastname,courierId,creditorId,debitorId,cost,agentId){
+    $rootScope.courier = {
+      names: firstname + " " + lastname,
+      courierId: courierId,
+      creditorId: creditorId,
+      debitorId: debitorId,
+      totalCost: cost,
+      status: false,
+      agentId: agentId 
+    }
+
+    console.log($rootScope.courier);
+   
+    ModalService.showModal({
+        templateUrl: 'fieldAgentModal.html',
+        controller: "fieldAgentModalCtrl"
+    }).then(function(modal) {
+        modal.element.modal();
+        modal.close.then(function(result) {});
+    });       
+
   }
 
   $scope.toCurrency = function(amount,user) {
@@ -16774,8 +17074,27 @@ app.controller("filedAgentController",["$scope","$rootScope","$resource","fieldA
     return str;
   }
   
-}])
+}]);
 
+
+app.controller('fieldAgentModalCtrl',["$scope","fieldAgentService",function($scope,fieldAgentService){
+  var agent = fieldAgentService;
+  $scope.verify = function(details){
+    details.message = "";
+    if(details.order){
+      agent.verify(details,function(response){
+        details.message = response.message;
+        details.status = response.status;
+        if(response.status) {
+          var elem = document.getElementById(details.courierId);        
+          elem.style.display = "none";
+        }
+      });
+    } else {
+      alert("Please enter order ID in the field below.");
+    }
+  }
+}]);
 
 app.controller('supportController',["$scope","$http",function($scope,$http){
 

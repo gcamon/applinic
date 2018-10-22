@@ -46,7 +46,7 @@ function genHash(count) {
     return text;
 }
 
-var basicRoute = function (model,sms,io,streams,Voice) { //remember streams arg will be removed atfer test
+var basicRoute = function (model,sms,io,streams,client) { 
 
   router.get("/",function(req,res){
     res.render('index',{"message":""});
@@ -6079,8 +6079,72 @@ router.put("/user/scan-search/radiology/referral",function(req,res){
 });
 
 /**** courier services logic ****/
+
+router.get('/field-agent/login',function(req,res){
+  res.render("field-agent-login")
+})
+
+//for patient getting requested courier services
+router.get("/user/courier-response",function(req,res){
+  if(req.user){
+    model.courier.find({user_id: req.user.user_id})
+    .sort('new')
+    .exec(function(err,data){
+      if(err) throw err;
+      res.json(data);
+    })
+  } else {
+    res.end("unauthorized access!")
+  }
+});
+
+//for patient updating/paying for the courier billed amount
+router.post("/user/courier-response",function(req,res){
+  if(req.user){
+    res.end("sdds")
+  } else {
+    res.end("unauthorized access!")
+  }
+});
+
+
+//for patient re-ordering the prescription dosage and quantities or wish to choose another center.
+router.put("/user/courier-response",function(req,res){
+  if(req.user){
+    console.log(req.body)
+    res.send({})
+  } else {
+    res.end("unauthorized access!")
+  }
+});
+
+
+//for patient deleting or declining the bill if cannot pay
+router.delete("/user/courier-response",function(req,res){
+  if(req.user){
+    model.courier.findOne({_id: req.query.item})
+    .exec(function(err,data){
+      if(err) throw err;
+      if(data){
+        if(!data.attended || !data.verified){
+          data.remove(function(){});
+          res.send({status: true})
+        } else {
+          res.send({status: false})
+        }
+      } else {
+        res.send({status: false})
+      }
+    })
+    
+  } else {
+    res.end("unauthorized access!");
+  }
+});
+
+
+//for patient creating new courier request. note is defferent from the above route
 router.post("/user/courier",function(req,res){
-  console.log(req.body);
   if(req.user) {
     var date = + new Date();
     req.body.firstname = req.user.firstname;
@@ -6093,10 +6157,16 @@ router.post("/user/courier",function(req,res){
     req.body.attended = false;
     req.body.completed = false;
     req.body.deleted = false;
+    req.body.new = 0;
+    req.body.request_id = randos.genRef(10);
+    req.body.center_name = req.body.centerInfo.name;
+    req.body.center_address = req.body.centerInfo.address;
+    req.body.center_phone =  req.body.centerInfo.phone;
 
     var courier = new model.courier(req.body);
     courier.save(function(err,info){
       //io.sockets.to("couriergroup").emit("receiver courier",req.body);
+      io.sockets.to(req.user.user_id).emit("new courier order",{status:true});
       io.sockets.to(req.body.center_id).emit("receiver courier",req.body);
     });
 
@@ -6137,8 +6207,6 @@ router.get("/user/courier-centers",function(req,res){
 
 router.put("/user/courier-update",function(req,res){
   if(req.user){
-    console.log(req.body);
-
     if(req.body.prescription_body){
       model.courier.findOne({_id: req.body._id,center_id: req.body.center_id}).exec(function(err,user){
         if(user) { //user.verified !== true
@@ -6151,32 +6219,33 @@ router.put("/user/courier-update",function(req,res){
           user.otp = password;
           user.attended = true;
           user.verification_date = + new Date();
-          user.delivery_charge = req.body.delivery_charge;
+          user.delivery_charge = req.body.delivery_charge || 1000;
           user.center_id = req.user.user_id;
           user.user_id = req.body.user_id;
           user.prescription_body = req.body.prescription_body;
           user.currencyCode = req.user.currencyCode;
-          user.city_grade = req.user.city_grade
+          user.city_grade = req.user.city_grade;
+          user.isPaid = false;
+          user.new = 1;
 
           var count = 0;
           var presObj = {};
           presObj.details = "";
           var capture;
-          /*while(count < req.body.prescription_body.length) {
-            capture = req.body.prescription_body[count];
-            presObj.details += capture.drug_name + "( " + capture.dosage +  " )" + " ==> " + capture.cost + "\n";
-            count++;
-          }*/
+        
           var currency = (req.user.currencyCode) ? req.user.currencyCode : "NGN";
           var msgBody = "Applinic Courier Request\nStatus : Acknowledged\nPayment OTP: " + password  +
-           "\nCost of drugs: " + currency + "" + req.body.total_cost.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + "\nDelivery charge: " + currency + "" + req.body.delivery_charge.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + "\nCenter : " + req.user.name + "\n" + req.user.address + "," + req.user.city + "," + req.user.country + "\n" + req.user.phone;
+           "\nCost of drugs: " + currency + "" + req.body.total_cost.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") +
+            "\nDelivery charge: " + currency + "" + req.body.delivery_charge.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") +
+             "\nCenter : " + req.user.name + "\n" + req.user.address + "," + req.user.city + "," + req.user.country + "\n" + req.user.phone;
+          
           var phoneNunber = req.body.phone1 || req.body.phone2; //"+2348064245256"; 
-          console.log(phoneNunber);
+
           var callBack = function(err,info) {
             if(err) {
-              console.log(err)
+              console.log(err);
             } else {
-              console.log(info)
+              console.log(info);
             }
           }
 
@@ -6189,12 +6258,13 @@ router.put("/user/courier-update",function(req,res){
             callBack
           );
 
-
-          
           user.save(function(err,info){});
-          res.send({message:"Billing sent successfully! Patient will be notified via SMS",status: true})
+
+          io.sockets.to(req.body.user_id).emit("courier billed",{status: true});
+
+          res.send({message:"Billing sent successfully! Patient will be notified via SMS",status: true});
         } else {
-          res.send({message: "Patient has already been verified by another center",status:false})
+          res.send({message: "Patient has already been verified by another center",status:false});
         }
       });
 
@@ -6209,13 +6279,16 @@ router.put("/user/courier-update",function(req,res){
       }
       
     } else {
-      res.send({message: "Can not send empty drug list"})
+      res.send({message: "Can not send empty drug list"});
     }
 
   } else {
     res.send("unauthorized access!");
   }
+
 });
+
+
 
 
 
@@ -6231,7 +6304,7 @@ router.put("/user/decline-courier",function(req,res){
         if(err) {
           console.log(err);
         } else {
-          console.log("courier deleted!")
+          console.log("courier deleted!");
         }
       });
     })
@@ -6244,47 +6317,196 @@ router.put("/user/decline-courier",function(req,res){
 router.get("/user/get-courier",function(req,res){
   if(req.user){
     var criteria;
-    if(req.query.attended) {
-      criteria = {city:req.user.city,attended: true,center_id: req.user.user_id}
+    if(req.query.completed) {
+      criteria = {attended: true,center_id: req.user.user_id,verified: true,is_paid: true,deleted:false}
+    } else if(req.query.paid){
+      criteria = {is_paid: true,center_id: req.user.user_id,deleted: false}
     } else {
-      criteria = {city:req.user.city,attended:false,center_id: req.user.user_id,deleted: false}
+      criteria = {city:req.user.city,attended:false,center_id: req.user.user_id,deleted: false,deleted:false}
     }
-    model.courier.find(criteria,{otp:0},function(err,data){
+    model.courier.find(criteria,{otp:0,request_id: 0})
+    .sort('date')
+    .limit(200)
+    .exec(function(err,data){
       res.send(data);
-    }).limit(200);
+    })
   } else {
     res.send("unauthorized access!");
   }
 
 });
 
-router.get("/bicboy/:userId/:pass",function(req,res){
-  model.user.findOne({user_id: req.params.userId,courier_access: true,courier_access_password: req.params.pass},function(err,center){
+
+//field agent gets the courier assigned to them to deliver
+router.get("/user/field-agent/:centerId/:agentId",function(req,res){
+  model.user.findOne({user_id: req.params.centerId},function(err,center){
     if(err) throw err;
-    if(center) {
-      //ths could be modified for centers to run by theselves but for now lets assume field agents are applinic guys.
-      model.courier.find({center_id:req.params.userId},function(err,data){
+    if(center){
+      model.agent.findOne({userId: req.params.agentId})
+      .exec(function(err,agent){
         if(err) throw err;
-        if(data) {
-          res.render("field-agent",{user: req.params.userId});
-        }       
-      });
+        if(agent){
+          if(agent.isLoggedIn || req.user.user_id === req.params.centerId){
+            console.log(agent)
+            res.render("field-agent",{agent: agent});
+          } else {
+            res.redirect('/field-agent/login');
+          }
+        } else {
+          res.send({Error: "This agent is not registered by the center."});
+        }
+      })
     } else {
-      res.end("User not enrolled for courier services. For enquires call +234064245256");
+      res.send({Error: "Permission error! User not enrolled for courier services"})
     }
-  });
+  })
 });
 
+//this gets field agents registered by a center
 router.get("/user/field-agent",function(req,res){
-  var criteria;
-  if(!req.query.isCompleted) {
-    criteria = {verified: true,completed: false,center_id: req.query.userId};
+  if(req.user){
+    res.json(req.user.field_agents);
   } else {
-    criteria = {verified: true,completed: true,center_id: req.query.userId};
+    res.end("unauthorized access!");
   }
-  model.courier.find(criteria,{otp:0,delivery_charge:0},function(err,data){
-    res.send(data);
-  });
+});
+
+
+//this creates field agent by the center
+router.post("/user/field-agent",function(req,res){
+  if(req.user){
+    model.agent.findOne({phone: req.body.phone}).exec(function(err,data){
+      if(err) throw err;
+      if(!data) {
+        var agentId = genHash(12);
+        var password = genHash(8);
+        var agent = new model.agent({
+          password: password,
+          isLoggedIn: false,
+          userId: agentId,
+          date: new Date(),
+          center_id: req.user.user_id,
+          center_name: req.user.name,
+          center_city: req.user.city,
+          couriers: [],
+          firstname: req.body.firstname,
+          lastname: req.body.lastname,
+          email: req.body.email,
+          phone: req.body.phone,
+          url: req.hostname + "/user/field-agent/" + req.user.user_id + "/" + agentId
+        });
+
+        console.log(agent);
+        req.user.field_agents.push({
+          names: req.body.firstname + " " + req.body.lastname,
+          url: req.hostname + "/field-agent/" + req.user.user_id + "/" + agentId,
+          id: agent._id,
+          phone: req.body.phone
+        });
+
+        req.user.save(function(){});
+
+        agent.save(function(err,info){
+          if(err) throw err;
+          console.log("agent saved!")
+        })
+
+        sms.messages.create(
+          {
+            to: req.body.phone,
+            from: '+16467985692',
+            body: "Your applinic.com field agent log in details\nphone " + req.body.phone + "\npassword " + password,
+          },
+          callBack
+        ) 
+        //infobip sms gateway for second option
+        var msg = "Your applinic.com field agent log in details\nphone " + req.body.phone + "\npassword " + password;
+
+        var message = {from: "InfoSMS", to : req.body.phone, text : msg}
+        client.SMS.send(message,callBack);
+
+        function callBack (err,info){
+          if(err)
+            console.log(err)
+          console.log(info)
+        }
+        res.send({message: "Field agent created successfully!",phone: req.body.phone, password: password,status:true})
+      } else {
+        res.json({message: "User already exists as an agent!", status: false})
+      }
+    });    
+
+  } else {
+    res.end("unauthorized access!")
+  }
+});
+
+//this deletes the field agent by the center
+router.delete("/user/field-agent",function(req,res){
+  if(req.user){
+    model.agent.remove({_id: req.query.id});
+    var elemPos = req.user.field_agents.map(function(x){return x.id.toString()}).indexOf(req.query.id)
+    console.log(elemPos)
+    if(elemPos !== -1){
+      req.user.field_agents.splice(elemPos,1);
+      req.user.save(function(){});
+    }
+    res.send({message:"Agent deleted!",status: true});
+  } else {
+    res.end("unauthorized access!");
+  }
+});
+
+// this route handles the allocation of delivery task to agent
+router.put("/user/agent-delivery",function(req,res){
+  if(req.user){
+    model.agent.findById(req.body.agent_id)
+    .exec(function(err,agent){
+      if(err) throw err;
+      if(agent){
+        model.courier.findById(req.body.courierId,{request_id:0,otp:0})
+        .exec(function(err,courier){
+          if(err) throw err;
+          if(courier) {
+
+            var message = "Assigned to " + 
+            agent.firstname + " " + agent.lastname + " " + agent.phone;
+
+            courier.on_delivery = true;
+            courier.delivery_msg = message;
+            courier.delivery_start_date = new Date();
+
+            agent.couriers.push(courier);
+            agent.save(function(err,info){});
+
+            courier.save(function(err,info){});
+            res.json({status: true,message: message});
+          } else {
+           res.send({message: "Error: Courier record not found!",status:false})
+          }
+        })
+      } else {
+        res.send({message: "Error: Field agent not found!",status:false})
+      }
+    })
+  } else {
+    res.end("unauthorized access!");
+  }
+});
+
+router.post("/user/courier/dispute",function(req,res){
+  if(req.user){
+    console.log(req.body);
+     model.courier.findById(req.body.courierId)
+     .exec(function(err,data){
+      if(err) throw err;
+      data.dispute = true;
+      data.save(function(){})
+      res.send({})
+     })
+  } else {
+    res.send("unauthorized access!");
+  }
 });
 
 
