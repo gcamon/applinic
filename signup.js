@@ -48,7 +48,7 @@ var signupRoute = function(model,sms,geonames,paystack,io) {
 	          admin: false,
 	          date: new Date(),
 	          country: req.body.countryName,
-	          type: req.body.typeOfUser,
+	          type: (req.body.typeOfUser === "Special Center") ? "Doctor" : req.body.typeOfUser,
 	          city: req.body.city,
 	          firstname: req.body.firstname,
 	          lastname: req.body.lastname,
@@ -125,23 +125,25 @@ var signupRoute = function(model,sms,geonames,paystack,io) {
 
 						if(req.body.typeOfUser === "Doctor"){
 							User.name = (req.body.lastname) ? req.body.title + " " + req.body.firstname + " " + req.body.lastname.slice(0,1).toUpperCase() : req.body.title + " " + req.body.firstname;
+							User.city_grade = 10;
 						}			
 					
 						if(req.body.typeOfUser === "Pharmacy" || req.body.typeOfUser === "Laboratory" || req.body.typeOfUser === "Radiology"){
-							var city = (req.body.city === "Lagos" || req.body.city === "Laboratory" || req.body.city === "Port-Harcourt" ) ? true : false;
+							var city = (req.body.city === "Lagos" || req.body.city === "Abuja" || req.body.city === "Port-Harcourt" ) ? true : false;
 							if(city){
-								User.city_grade = 20;
+								User.city_grade = 10;
 							} else {
-								User.city_grade = 15;
+								User.city_grade = 5;
 							}	
 
 						}		
 
 						if(req.body.typeOfUser === "Pharmacy") {
-							User.courier_charge = 1200;		
+							User.courier_charge = 1000;		
 							User.courier_access_password = uuid.v1();			
 						}
 
+						console.log(User)
 						User.save(function(err){
 							console.log("user saved");
 							if(err) throw err;	
@@ -246,10 +248,11 @@ var signupRoute = function(model,sms,geonames,paystack,io) {
 	router.get('/user/signup',function(req,res){
 
 		if(req.query.phone){
-			console.log(req.query)
+			
 			model.user.findOne({phone:req.query.phone},function(err,userData){
 				if(err) throw err;
 				if(!userData){		
+					console.log(req.query);
 					res.send({error: false,errorMsg: ""});
 				} else {
 					res.send({error: true,errorMsg: "User with this phone number already exist!"})

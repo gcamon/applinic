@@ -1924,7 +1924,7 @@ app.controller('signupController',["$scope","$http","$location","$window","templ
 
 
   $scope.userType = function(type,path) {
-    $location.path(path)
+    $location.path(path);
     $scope.user.typeOfUser = type;
   }
   
@@ -2004,7 +2004,7 @@ app.controller('signupController',["$scope","$http","$location","$window","templ
   function validate(data){
       console.log(data)
 
-      if(data.typeOfUser !== "Patient" && data.typeOfUser !== "Doctor") {
+      if(data.typeOfUser !== "Patient" && data.typeOfUser !== "Doctor" && data.typeOfUser !== 'Special Center') {
         if(data.name === undefined || data.name === "") {
           $scope.typeMessage = "Enter value for your center name";
           return;
@@ -2081,6 +2081,7 @@ app.controller('signupController',["$scope","$http","$location","$window","templ
           //var phoneNumber = "+" + $scope.user.callingCode.toString() + $scope.user.phone.toString();
           data.phone = phoneNumber;
           data.username = data.username.replace(/\s+/g, '');
+          console.log(data);
           $rootScope.formData = data;
           sendDetail();
         } else {
