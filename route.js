@@ -6380,7 +6380,8 @@ router.post("/user/field-agent",function(req,res){
       if(!data) {
         var agentId = genHash(12);
         var password = genHash(8);
-        var url = req.hostname + "/user/field-agent/" + req.user.user_id + "/" + agentId;
+        var url = "https://" + req.host + "/user/field-agent/" + req.user.user_id + "/" + agentId;
+        console.log(url)
         var agent = new model.agent({
           password: password,
           isLoggedIn: false,

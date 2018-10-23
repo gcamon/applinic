@@ -1549,13 +1549,25 @@ router.put("/user/field-agent",function(req,res){
 	model.agent.findById(req.body.agentId)
 	.exec(function(err,agent){
 		if(err) throw err;
-		if(agent || req.user){ //agent or center cn verify a courier delivery
+		if(agent || req.user.user_id === agent.center_id){ //agent or center cn verify a courier delivery
 		
-			model.scroll.findOne({debitor: req.body.debitorId,order_id: req.body.order,courier_id: req.body.courierId,creditor:req.body.creditorId})
+			model.scroll.findOne({order_id: req.body.order,courier_id: req.body.courierId,
+				creditor:req.body.creditorId,debitor:req.body.debitorId,deleted:false})
 			.exec(function(err,scroll){
 				if(err) throw err;
 				if(scroll){
 						console.log(scroll)
+						scroll.end_date = new Date();
+						scroll.deleted = true;
+						model.courier.findById(req.body.courierId)
+						.exec(function(err,courier){
+							if(err) throw err;
+							if(courier){
+								courier.completed = true;
+								courier.save(function(err,info){})
+							}
+						})
+						scroll.save(function(err,info){});
 						res.json({message: "Verification successfully!",status:true});
 				} else {
 					res.json({message: "Error: No record for this service was found in mediscroll",status: false})
