@@ -1564,6 +1564,7 @@ router.put("/user/field-agent",function(req,res){
 							if(err) throw err;
 							if(courier){
 								courier.completed = true;
+								io.sockets.to(courier.user_id).emit("courier billed",{status:true});
 								courier.save(function(err,info){})
 							}
 						})

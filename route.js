@@ -6166,7 +6166,7 @@ router.post("/user/courier",function(req,res){
     var courier = new model.courier(req.body);
     courier.save(function(err,info){
       //io.sockets.to("couriergroup").emit("receiver courier",req.body);
-      io.sockets.to(req.user.user_id).emit("new courier order",{status:true});
+      //io.sockets.to(req.user.user_id).emit("new courier order",{status:true});
       io.sockets.to(req.body.center_id).emit("receiver courier",req.body);
     });
 

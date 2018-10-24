@@ -6748,6 +6748,11 @@ app.controller("patientNotificationController",["$scope","$location","$http","$w
     getCourier();
   });
 
+
+  $rootScope.$on('new courier order',function(status,res){
+     getCourier();
+  })
+
   var pt;
 
   $scope.viewResponse = function(item) {
@@ -16681,7 +16686,8 @@ function($scope,$rootScope,$location,$http,localManager,Drugs,cities){
           $scope.loading = false;
           if(data.status) {
             $scope.status = 'Courier request sent!';         
-            alert(data.message);
+            //alert(data.message);
+            $rootScope.$broadcast("new courier order",{status:true});
           } else {
             alert("OOps! something went wrong while sending your request. Try again")
           }
@@ -16934,10 +16940,8 @@ app.controller("selectedCourierRequestController",["$scope","$rootScope","$http"
   var rawCost;
   var snStr;
 
-  $scope.deliveryCharge = $rootScope.checkLogIn.courier_charge || 1000;
+  $scope.deliveryCharge = $rootScope.checkLogIn.courier_charge || 1200;
  
-
-
   $scope.$watch("request.prescription_body",function(newVal,oldVal){
     if(newVal){
       for(var i = 0; i < newVal.length; i++) {
@@ -16988,6 +16992,9 @@ app.controller("selectedCourierRequestController",["$scope","$rootScope","$http"
       .success(function(data) {  
       if(data.status) {
          $scope.message = data.message;
+         var elem = document.getElementById($scope.request._id);
+         elem.style.display = "none";
+         
       } else {
         $scope.error = data.message;
       }

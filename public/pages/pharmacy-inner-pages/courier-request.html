@@ -24,11 +24,11 @@
 		<!--<a href="/bicboy/judepharmacy6768/y2kisawesome">Field agent</a>-->
 	</header>
 
-	<div class="card" ng-repeat="request in courierRequests | orderBy: '-date'" style="padding: 20px;line-height: 32px">
+	<div class="card" ng-repeat="request in courierRequests | orderBy: '-date'" style="padding: 20px;line-height: 32px" id="{{request._id}}">
 		<div class="col-sm-12 col-md-3 col-lg-3">
 		<h6 style="text-decoration: underline;">Sender details</h6>
 			<div>
-				<i class="fa fa-user"> {{request.title}} {{request.firstname}} {{request.lastname}} </i>
+				<i class="fa fa-user"> {{request.title}} {{request.firstname}} {{request.lastname}}</i>
 			</div>
 			<div>
 				<i class="fa fa-globe"> {{request.address}} ( {{request.city}} )</i>
@@ -118,7 +118,7 @@
 				Total: <b>{{getTotal(request.delivery_charge,request.total_cost)}}</b>
 			</div>
 			<hr>
-			<p ng-if="!request.completed"><small>You won't be credited until delivery of this items is confirmed by the patient.<a href="">Learn more</a></small></p>
+			<p ng-if="!request.completed"><small>You won't be credited until delivery of the package/drugs is confirmed by the patient.<a href="">Learn more</a></small></p>
 		</div>
 		<div class="clearfix"></div>
 
