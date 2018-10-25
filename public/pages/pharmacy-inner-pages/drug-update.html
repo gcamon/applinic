@@ -20,43 +20,43 @@
 </div>-->
 
 
-<div class="container">
-<div class="card card-center-1 p-2 pb-1">
-<h3 class="p-0">Update Inventory <a class="btn btn-info btn-sm" href="#/pharmacy/off-service" style="float: right;">Unavailable drugs</a></h3>
-<p>Please unmark any drug you don't have in stock below.This action Automtically adds unmarked drugs to unavailable drugs list.</p>
-<hr>
-<div class="all-test-check">
-
-	<div class="mt-0 mb-1 text-muted">
-		<input type="text" class="form-control" ng-model="ava" name="" placeholder="Filter list by drug name">
+<div class="container card p-2 card-center-1">
+	<div class="">
+		<h3 class="p-0">Update Inventory <a class="btn btn-info btn-sm" href="#/pharmacy/off-service" style="float: right;">Unavailable drugs</a></h3>
+		<p>Please unmark any drug you don't have in stock below.This action Automtically adds unmarked drugs to unavailable drugs list.</p>
 	</div>
+	
+	<div class="">
 
-	<div>
-		<div ng-repeat="drug in allDrugs | filter: ava">
+		<div class="text-muted">
+			<input type="text" class="form-control" ng-model="ava" name="" placeholder="Filter list by drug name">
+		</div>
+
+
+		<div class="">
+			<div ng-repeat="drug in allDrugs2 | filter: ava">
+			<!--<input type="checkbox" ng-model="drug.val"><span></span>-->
+				<label class="custom-control custom-checkbox">   <input type="checkbox" class="custom-control-input" ng-model="drug.val">   <span class="custom-control-indicator"></span>   <span class="custom-control-description font-1_1">{{drug.name}}</span> </label>
+		  </div>
+		  <div>
+				<button class="btn btn-success pull-right" ng-click="saveSelection()">Save</button>
+			</div>
+		</div>
+
+		<div>
+			<div ng-repeat="drug in allDrugs | filter: ava">
 			<!--<input type="checkbox" ng-model="drug.val"><span></span>-->
 			<label class="custom-control custom-checkbox">   <input type="checkbox" class="custom-control-input" ng-model="drug.val">   <span class="custom-control-indicator"></span>   <span class="custom-control-description font-1_1">{{drug.name}}</span> </label>
 		  </div>
+			
+			<div>
+				<button class="btn btn-success pull-right" ng-click="saveSelection()">Save</button>
+			</div>
 		</div>
-		<!--<div>
-			<button class="btn btn-success pull-right" ng-click="saveSelection()">Save</button>
-		</div>-->
-	</div>
 
-	</div>
-
-
-	<div class="card pl-2 pr-2 pb-2 card-center-1">
-		<div ng-repeat="drug in allDrugs2 | filter: ava">
-		<!--<input type="checkbox" ng-model="drug.val"><span></span>-->
-			<label class="custom-control custom-checkbox">   <input type="checkbox" class="custom-control-input" ng-model="drug.val">   <span class="custom-control-indicator"></span>   <span class="custom-control-description font-1_1">{{drug.name}}</span> </label>
-	  </div>
-	  <div>
-			<button class="btn btn-success pull-right" ng-click="saveSelection()">Save</button>
-		</div>
-	</div>
 		
+
+
 	</div>
 </div>
 
-
-</div>
