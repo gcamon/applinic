@@ -6318,14 +6318,14 @@ router.get("/user/get-courier",function(req,res){
   if(req.user){
     var criteria;
     if(req.query.completed) {
-      criteria = {attended: true,center_id: req.user.user_id,verified: true,is_paid: true,deleted:false}
+      criteria = {completed: true,center_id: req.user.user_id,attended: true,is_paid: true,deleted:false}
     } else if(req.query.paid){
-      criteria = {is_paid: true,center_id: req.user.user_id,deleted: false}
+      criteria = {is_paid: true,center_id: req.user.user_id,deleted: false,completed: false,attended:true}
     } else {
-      criteria = {city:req.user.city,attended:false,center_id: req.user.user_id,deleted: false,deleted:false}
+      criteria = {city:req.user.city,attended:false,center_id: req.user.user_id,deleted: false}
     }
     model.courier.find(criteria,{otp:0,request_id: 0})
-    .sort('date')
+    .sort('-date')
     .limit(200)
     .exec(function(err,data){
       res.send(data);

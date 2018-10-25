@@ -47,7 +47,6 @@ Wallet.prototype.credit = function(model,receiver,amount,io,cb){
 				if(self.message !== 'billing')
 					self.beneficiary = data.name || data.firstaname + " " + data.lastname;
 
-				console.log(data.user_id,"====", data.ewallet.available_amount);
 				data.ewallet.available_amount += amount;			
 				var names = (self.lastname) ? (self.firstname + " " + self.lastname) : (data.name);
 				var transacObj = {
@@ -295,7 +294,8 @@ Wallet.prototype.courier = function(model,receiverId,debitor,amount,io,delivery_
 
 	var adminPercentage = availAmount * (discount / 100);
 
-	var newAmount = availAmount - adminPercentage;//subtract admin percentage for the service;
+	var newAmount = availAmount - adminPercentage;
+	//subtract admin percentage for the service;
 
 	var receiver = {user_id: receiverId};
 
@@ -308,8 +308,8 @@ Wallet.prototype.courier = function(model,receiverId,debitor,amount,io,delivery_
 
 		 
 		var msgBody = "Your Applinic MediPay account debited!\nPayment for drugs purchased through courier services.\n Cost of drugs: " +
-		amount + "\nDelivery charge: " + serviceCharge + "\nTotal: " + patientNewBill + " (includes 5% discount)" ;
-		var phoneNunber = "+2348064245256" //user.phone || "+2348064245256";
+		amount + "\nDelivery charge: " + serviceCharge + "\nTotal: " + patientNewBill + " includes 5% discount" ;
+		var phoneNunber = user.phone; //user.phone || "+2348064245256";
 		sms.messages.create(
       {
         to: phoneNunber,

@@ -16732,6 +16732,7 @@ app.controller("centerCourierController",["$scope","$rootScope","$http","mySocke
      $scope.selected1 = true;
      $scope.selected = false;
      $scope.selected2 = false;
+     $rootScope.completedRequest = [];
   }
 
   getCurr();
@@ -16788,7 +16789,7 @@ app.controller("centerCourierController",["$scope","$rootScope","$http","mySocke
   }
 
   $scope.completed = function() {
-
+    $rootScope.courierRequests = [];
     var url = "/user/get-courier" + "?completed=true";
     $http({
       method  : 'GET',
@@ -16797,7 +16798,7 @@ app.controller("centerCourierController",["$scope","$rootScope","$http","mySocke
       })
     .success(function(data) { 
       console.log(data);     
-      $rootScope.courierRequests = data || [];
+      $rootScope.completedRequest = data || [];
     });
     $scope.selected2 = true;
     $scope.selected1 = false;
@@ -16816,6 +16817,7 @@ app.controller("centerCourierController",["$scope","$rootScope","$http","mySocke
     $scope.selected = true;
     $scope.selected2 = false;
     $scope.selected1 = false;
+    $rootScope.completedRequest = [];
   }
 
   $scope.getTotal = function(val1,val2){

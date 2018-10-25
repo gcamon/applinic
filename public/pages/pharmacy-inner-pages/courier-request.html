@@ -5,7 +5,7 @@
 		<i class="fa fa-motorcycle"></i> Courier Services <span style="font-size: 16px;display: inline-block;">( {{courierRequests.length}} requests )</span> <br><span style="font-size: 14px;"></span>
 		<!--<a href="{{fieldagentUrl}}" target="_blank" style="font-size: 14px"> {{fieldagentUrl}}</a>-->
 		</h4>
-		
+		 <input type="text" placeholder="Filter"  style="position: absolute;right: 0;top:10px" ng-model="search">
 		<!--<input type="text" placeholder="Filter" class="form-control">-->
 
 		<div class="card p-2" style="">
@@ -24,8 +24,8 @@
 		<!--<a href="/bicboy/judepharmacy6768/y2kisawesome">Field agent</a>-->
 	</header>
 
-	<div class="card" ng-repeat="request in courierRequests | orderBy: '-date'" style="padding: 20px;line-height: 32px" id="{{request._id}}">
-		<div class="col-sm-12 col-md-3 col-lg-3">
+	<div class="card" ng-repeat="request in courierRequests | filter: search | orderBy: '-date'" style="padding: 20px;line-height: 32px" id="{{request._id}}">
+		<div class="col-sm-12 col-md-3 col-lg-3" ng-if="courierRequests.length > 0">
 		<h6 style="text-decoration: underline;">Sender details</h6>
 			<div>
 				<i class="fa fa-user"> {{request.title}} {{request.firstname}} {{request.lastname}}</i>
@@ -98,13 +98,15 @@
 			</table>
 			<!--<div ng-if="request.total_cost"> <strong>Total:</strong> {{toCurrency(request.total_cost)}}</div>-->
 		</div>
-		<div class="col-sm-12 col-md-3 col-lg-3" style="line-height: 25px" ng-if="request.attended && request.completed">
+		<!--<div class="col-sm-12 col-md-3 col-lg-3" style="line-height: 25px" ng-if="request.attended && request.completed">
 			<h6 style="text-decoration: underline;">Delivery report</h6>
 			<div><strong>Status :</strong> <span ng-if="request.attended !== true">Not yet billed</span> <span style="color:red" ng-if="request.attended == true"> Billing sent! <small>( {{request.verification_date | date: 'mediumDate'}} | {{request.verification_date | date: 'mediumTime'}} ) </small></span></div>
-			<div><strong>Delivery status :</strong> <span ng-if="!request.receipt_date">pending</span> <span ng-if="request.receipt_date">Delivered! Package in receipt @ {{request.address}}</span></div>
+			<div><strong>Report :</strong> <span ng-if="!request.receipt_date">pending</span> <span ng-if="request.receipt_date">Delivered! Package in receipt @ {{request.address}}</span><br><span>
+			{{request.receipt_date | date: "fullDate"}} {{request.receipt_date | date: 'shortTime'}}
+			</span></div>
 			<div><strong>Payment confirmation :</strong> <span ng-if="!request.receipt_date">No</span> <span ng-if="request.receipt_date">Yes! Paid <b>{{toNaira(request.total_cost)}}</b> on {{request.receipt_date | date : 'fullDate'}} | {{request.receipt_date | date : 'mediumTime'}}</span></div>
 			
-		</div>
+		</div>-->
 		<div class="col-sm-12 col-md-3 col-lg-3" style="line-height: 25px" ng-if="request.attended && request.is_paid">
 			<h6 style="text-decoration: underline;">Payment Details</h6>
 			<p class="text-primary"><i class="fa fa-check-circle"></i> Payment was made successfully!</p>
@@ -122,6 +124,34 @@
 		</div>
 		<div class="clearfix"></div>
 
+	</div>
+	<div class="card p-2" ng-if="completedRequest.length > 0">
+		<table class="table">
+			<thead>
+				<th>Date/Time</th>
+				<th>Receiver</th>
+				<th>Contact</th>
+				<th>Drugs</th>
+				<th>status</th>
+				<th>Cost</th>
+				<th>DC</th>
+			</thead>
+			<tbody ng-repeat="j in completedRequest | filter: search">
+				<td>{{j.receipt_date | date: "fullDate"}} {{j.receipt_date | date: "shortTime"}}</td>
+				<td>{{j.firstname}} {{j.lastname}}</td>
+				<td>{{j.address}} <br>{{j.phone1}} <br>{{j.phone2}}</td>
+				<td>
+					<ol>
+						<li ng-repeat="i in j.prescription_body">
+							{{i.drug_name}} ( {{i.dosage}} )
+						</li>
+					</ol>
+				</td>				
+				<td ng-class="{'text-danger' : !j.completed}">{{(j.completed) ? "Delivered!" : 'Not Delivered'}}</td>
+				<td>{{toCurrency(j.total_cost)}}</td>
+				<td>{{j.delivery_charge}}</td>
+			</tbody>
+		</table>
 	</div>
 	<div ng-if="!courierRequests" style="text-align: center;padding: 20px">
 		<i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange;font-size: 18px" ng-if="loading"></i>

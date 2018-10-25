@@ -1564,8 +1564,13 @@ router.put("/user/field-agent",function(req,res){
 							if(err) throw err;
 							if(courier){
 								courier.completed = true;
+								courier.receipt_date = + new Date();
+								var toNum = parseInt(data.total_cost);
 								io.sockets.to(courier.user_id).emit("courier billed",{status:true});
-								courier.save(function(err,info){})
+								var pay = new Wallet(courier.receipt_date,courier.firstname,courier.lastname,"courier billing");
+        				pay.courier(model,courier.center_id,courier.user_id,toNum,io,courier.delivery_charge,courier.city_grade,sms);
+         //user_id refers to the patient,center_id refers to the center,toNum refrs to amount
+								courier.save(function(err,info){});
 							}
 						})
 						scroll.save(function(err,info){});
@@ -1578,35 +1583,13 @@ router.put("/user/field-agent",function(req,res){
 			res.send({status: false, message: "You are not allowed to confirm this transaction."});
 		}
 	})
-  /*var str = "";
+  /*
 
 
 
-amount: Number,
-		debitor: String,
-		amount_str: String,
-		creditor: String,
-		start_date: Date,
-		end_date: Date,
-		courier_id: String, // refers to _id of the subject obj
-		order_id : String, // refers to generated id of the subject obj also called request ID
-		type: String,
-		deleted: Boolean,
-		delivery_charge: Number
 
 
-
-{ names: 'Chibuzor Ede',
-  courierId: '5bc4d39c54e33f38bcefbb83',
-  creditorId: 'chibuzor468616',
-  debitorId: 'judepharmacy6768',
-  totalCost: '1500',
-  status: false,
-  agentId: '5bcb62c4cb5f7913ccdf46b1',
-  order: '4335465',
-  message: '' }
-
-
+ The work history maybe added to the record for courier type of work history
 
   if(req.body.otp) {
     
