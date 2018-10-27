@@ -380,8 +380,12 @@ var basicRoute = function (model,sms,io,streams,client) {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   //handles all change picture 
   router.put("/user/update/profile-pic",function(req,res){   
-    if(req.user){
+    if(req.user && req.files){
+      console.log("=============")
       console.log(req.files)
+
+      var path = req.files[0].location || "/download/profile_pic/" + req.files[0].filename;
+
       if(req.files.length > 0 && req.files[0].mimetype === "image/jpg" || req.files[0].mimetype === "image/jpeg" || req.files[0].mimetype === "image/png") {
           model.user.update({user_id: req.user.user_id},{$set : {
           "profile_pic.filename": req.files[0].filename,
@@ -392,13 +396,12 @@ var basicRoute = function (model,sms,io,streams,client) {
           "profile_pic.destination":  req.files[0].destination,
           "profile_pic.fieldname":  req.files[0].fieldname,
           "profile_pic.originalname":  req.files[0].originalname,
-          profile_pic_url: "/download/profile_pic/" + req.files[0].filename
+          profile_pic_url: path
           }},function(err,info){        
           if(err) throw err;
           console.log(info) 
-          var pic = "/download/profile_pic/"  + req.files[0].filename;
-          console.log(pic)      
-          res.send({profile_pic_url: pic});               
+          //var pic = "/download/profile_pic/"  + req.files[0].filename;   
+          res.send({profile_pic_url: path});               
           });
       } else {
           res.send({error: "Picture does not meet specifications"});

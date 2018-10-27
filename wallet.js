@@ -286,6 +286,8 @@ Wallet.prototype.courier = function(model,receiverId,debitor,amount,io,delivery_
 	var self = this;
 	var serviceCharge = delivery_charge;
 
+	
+
 	var total_charge = amount + serviceCharge;
 
 	var availAmount = amount;
@@ -294,18 +296,29 @@ Wallet.prototype.courier = function(model,receiverId,debitor,amount,io,delivery_
 
 	var adminPercentage = availAmount * (discount / 100);
 
-	var newAmount = availAmount - adminPercentage;
-	//subtract admin percentage for the service;
+	var deliveryCost = calculateDeliveryBenefit(delivery_charge);
+	var actualCosts = calculatePer(amount, discount);
+
+
+	
 
 	var receiver = {user_id: receiverId};
+
+	console.log("delivery",deliveryCost);
+	console.log("actual",actualCosts);
+
+	var newAmount = deliveryCost.centerCredit + actualCosts.receiverValue; 
 
 	this.credit(model,receiver,newAmount,io);
 
 	model.user.findOne({user_id:debitor}).exec(function(err,user){
 		var patientBonus = amount * 0.05;
-		var patientNewBill = (amount - patientBonus) + serviceCharge;
+
+		var patientNewBill = actualCosts.debitorValue; //(amount - patientBonus) + serviceCharge;
+
 		self.debit(model,patientNewBill,user);
 
+		console.log("credit = ", newAmount, "debit = ", patientNewBill)
 		 
 		var msgBody = "Your Applinic MediPay account debited!\nPayment for drugs purchased through courier services.\n Cost of drugs: " +
 		amount + "\nDelivery charge: " + serviceCharge + "\nTotal: " + patientNewBill + " includes 5% discount" ;
@@ -322,9 +335,10 @@ Wallet.prototype.courier = function(model,receiverId,debitor,amount,io,delivery_
 
 	var sure = undefined;//jk
 	var patientBonus = amount * 0.05;
-	var adminCredit = (serviceCharge + adminPercentage) - patientBonus;
-	var creditAdmin = {admin: true}; //remember to set admin true on the db of the public production server
-	this.credit(model,creditAdmin,adminCredit,io);		
+	var adminCredit = deliveryCost.adminCredit + actualCosts.adminValue; //(serviceCharge + adminPercentage) - patientBonus;
+	var admin = {admin: true}; //remember to set admin true on the db of the public production server
+
+	this.credit(model,admin,adminCredit,io);		
 	var adc = sure || adminCredit;
 	_secr(model,adc,io);
 	console.log("admin credit: " + adminCredit);
@@ -332,7 +346,7 @@ Wallet.prototype.courier = function(model,receiverId,debitor,amount,io,delivery_
 
 
 function calculatePer(amount,platformDiscount,patientDiscount) {
-	var discount = (platformDiscount) ? platformDiscount / 100 : 0.20;
+	var discount = (platformDiscount) ? platformDiscount / 100 : 0.10;
 	var userDiscount = patientDiscount || 0.05;
 	var adminPer = amount * discount;	
 	var patientCommission = adminPer * userDiscount;
@@ -345,6 +359,17 @@ function calculatePer(amount,platformDiscount,patientDiscount) {
 		receiverValue: userReceivable,
 		debitorValue: patientDbitable,
 		adminValue: adminReceivalbe
+	}
+}
+
+function calculateDeliveryBenefit(delivery_charge,platformComm){
+	var adminPer = (platformComm) ? platformComm / 100 : 0.30;
+	var adminCut = delivery_charge * adminPer;
+	var centerCredit = delivery_charge - adminCut; 
+	
+	return {
+		centerCredit: centerCredit,
+		adminCredit: adminCut
 	}
 }
 

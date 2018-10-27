@@ -22,10 +22,18 @@
         <link rel="stylesheet" href="/assets/css/my-edit.css" rel="stylesheet">
 
          <link href="/assets/js/bower_components/summernote/dist/summernote.css" rel="stylesheet">
+         <script type="text/javascript">
+        var Opera = (navigator.userAgent.match(/Opera|OPR\//) ? true : false);
+        if(Opera){
+          window.location.href = "/assets/show-error.html";
+        }
+    </script>
           
         <!--<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>-->
 
-
+         <noscript>
+          <META HTTP-EQUIV="Refresh" CONTENT="0;URL=/assets/show-error.html">
+      </noscript>
        
           <script src="/assets/js/vendor2.js"></script>
           <script type="text/javascript" src="/assets/js/source.js"></script>

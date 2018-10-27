@@ -1417,7 +1417,6 @@ app.controller("pharmacyDrugServicesUpdateController",["$scope","$http","$locati
 
     var resource = dynamicService; //$resource("/user/dynamic-service");
     resource.query({type:"Pharmacy"},function(data){
-      console.log(data)
       $rootScope.allDrugs2 = data;
     });
 
@@ -16538,8 +16537,10 @@ app.controller("courierResponseCtrl",["$scope","$rootScope","courierResponseServ
     $scope.user.centerId = courier.center_id;
     $scope.user.courier_id = courier._id;
     $scope.user.orderId = courier.request_id;
+    $scope.loading = true;
     $http.post("/user/courier/payment-confirmation",$scope.user)
     .success(function(response){
+      $scope.loading = false;
       if(response.status) {
         courier.is_paid = response.status;
         $scope.otpMsg = "";
@@ -16863,10 +16864,10 @@ app.controller("centerCourierController",["$scope","$rootScope","$http","mySocke
 
   $scope.startDelivery = function(courier){
     $scope.fieldUser.courierId = courier._id;
-    $scope.loading = true;
+    courier.loading = true;
     $http.put("/user/agent-delivery",$scope.fieldUser)
     .success(function(res){
-      $scope.loading = false;
+      courier.loading = false;
       if(res.status){
         courier.on_delivery = res.status;
         courier.delivery_msg = res.message;

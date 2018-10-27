@@ -1565,12 +1565,22 @@ router.put("/user/field-agent",function(req,res){
 							if(courier){
 								courier.completed = true;
 								courier.receipt_date = + new Date();
-								var toNum = parseInt(data.total_cost);
+								var toNum = parseInt(courier.total_cost);
 								io.sockets.to(courier.user_id).emit("courier billed",{status:true});
 								var pay = new Wallet(courier.receipt_date,courier.firstname,courier.lastname,"courier billing");
         				pay.courier(model,courier.center_id,courier.user_id,toNum,io,courier.delivery_charge,courier.city_grade,sms);
-         //user_id refers to the patient,center_id refers to the center,toNum refrs to amount
+
+         				//user_id refers to the patient,center_id refers to the center,toNum refrs to amount
 								courier.save(function(err,info){});
+								//remove courier from agent List
+								var elemPo = agent.couriers.map(function(x){return x._id.toString()}).indexOf(req.body.courierId);
+								if(elemPo !== -1){
+									agent.couriers.splice(elemPo,1);
+								}
+								
+								agent.save(function(err,info){
+									console.log("courier removed from field agent's list");
+								});
 							}
 						})
 						scroll.save(function(err,info){});

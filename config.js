@@ -11,6 +11,9 @@ var flash = require('connect-flash');
 var cookieParser = require("cookie-parser");
 var MongoDBStore = require('connect-mongodb-session')(session);
 var ExpressPeerServer = require('peer').ExpressPeerServer;
+var aws = require('aws-sdk');
+var multerS3 = require('multer-s3');
+
 
 function genHash(count) {
   var text = "";
@@ -20,6 +23,12 @@ function genHash(count) {
         text += possible.charAt(Math.floor(Math.random() * possible.length));
     return text;
 }
+
+aws.config.update({
+    secretAccessKey: 'Cnlua83ykwL/61h1wpdyE0o5Igcc76gyf5KHqBJ/',
+    accessKeyId: 'AKIAIRU2ESARYOVIDU3Q',
+    region: 'us-east-1'
+});
  
 
 var configuration = function (app,model) {
@@ -61,7 +70,7 @@ var configuration = function (app,model) {
 
 	//var multer = require('multer');
 
-	var storage = multer.diskStorage({
+	/*var storage = multer.diskStorage({
 	  destination: function (req, file, cb) {
 	    cb(null, './uploads')
 	  },
@@ -70,7 +79,23 @@ var configuration = function (app,model) {
 	  }
 	})
 
-	var upload = multer({ storage: storage });
+	var upload = multer({ storage: storage });*/
+
+	var s3 = new aws.S3();
+
+	var upload = multer({
+    storage: multerS3({
+        s3: s3,
+        bucket: 'applinic',
+        acl: "public-read",//"bucket-owner-read",
+        metadata: function (req, file, cb) {
+		      cb(null, {fieldName: file.fieldname});
+		    },
+		    key: function (req, file, cb) {
+		      cb(null, genHash(10) + file.originalname)
+		    }
+    })
+	});
 
 	app.use(upload.any())
 	

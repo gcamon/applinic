@@ -50,7 +50,7 @@
 						</select>
 					</div>
 					<div style="text-align: center;">
-						<button class="btn-sm btn-info btn" ng-click="startDelivery(request)">Go</button>
+						<button class="btn-sm btn-info btn" ng-click="startDelivery(request)"> <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="request.loading"></i> {{(request.loading) ? "" : "Go" }}</button>
 					</div>
 				</form>
 			</div>
