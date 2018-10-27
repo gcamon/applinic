@@ -24,9 +24,10 @@ function genHash(count) {
     return text;
 }
 
+
 aws.config.update({
-    secretAccessKey: 'Cnlua83ykwL/61h1wpdyE0o5Igcc76gyf5KHqBJ/',
-    accessKeyId: 'AKIAIRU2ESARYOVIDU3Q',
+    secretAccessKey: process.env.AMAZON_SECRET_KEY,
+    accessKeyId: process.env.AMAZON_ACCESS_KEY,
     region: 'us-east-1'
 });
  
