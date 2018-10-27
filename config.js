@@ -88,7 +88,7 @@ var configuration = function (app,model) {
     storage: multerS3({
         s3: s3,
         bucket: 'applinic',
-        acl: "bucket-owner-read",//"bucket-owner-read",
+        acl: "public-read",//"bucket-owner-read",
         metadata: function (req, file, cb) {
 		      cb(null, {fieldName: file.fieldname});
 		    },
