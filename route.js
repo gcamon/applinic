@@ -7950,8 +7950,14 @@ router.get("/general/homepage-search",function(req,res){
   } else if(req.query.category === "Special Center") {
     var str = (req.query.item) ? new RegExp(req.query.item.replace(/\s+/g,"\\s+"), "gi") : null;              
    // var criteria = { "skills.disease" : { $regex: str, $options: 'i' },type:"Doctor",title:"SC",city:req.query.city};
-    var criteria = { $or: [{specialty : { $regex: str, $options: 'i' },type:"Doctor",title:"SC",city:req.query.city}, //note disease tag may be use
-    {specialty : { $regex: str, $options: 'i' },type:"Doctor",title:"SC"}]};
+   var criteria;
+    if(str) {
+      criteria = { $or: [{specialty : { $regex: str, $options: 'i' },type:"Doctor",title:"SC",city:req.query.city}, //note disease tag may be use
+      {specialty : { $regex: str, $options: 'i' },type:"Doctor",title:"SC"}]};
+    } else {
+      criteria = (req.query.city) ? {type: "Doctor",title: "SC", city: req.query.city} : {type: "Doctor",title: "SC"}
+    }
+    
     model.user.find(criteria,{firstname:1,lastname:1,work_place:1,city:1,country:1,address:1,
     specialty:1,_id:0,profile_pic_url:1,education:1,user_id:1,title:1,name:1,profile_url:1})
     .limit(100)
