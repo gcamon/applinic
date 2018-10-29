@@ -162,9 +162,12 @@ var signupRoute = function(model,sms,geonames,paystack,io) {
 					var getFirstLetter;
 					var toStr;
 					if(username) {
-						var getRandomNumber = randos.genRef(4);
+						var getRandomNumber = randos.genRef(6);
 						toStr = username + getRandomNumber;
-					}				
+					} else {
+						var getRandomNumber = randos.genRef(8);
+						toStr = getRandomNumber.toString();
+					}			
 					return toStr;					
 				}
 

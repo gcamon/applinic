@@ -381,9 +381,7 @@ var basicRoute = function (model,sms,io,streams,client) {
   //handles all change picture 
   router.put("/user/update/profile-pic",function(req,res){   
     if(req.user && req.files){
-      console.log("=============")
-      console.log(req.files)
-
+     
       var path = req.files[0].location || "/download/profile_pic/" + req.files[0].filename;
 
       if(req.files.length > 0 && req.files[0].mimetype === "image/jpg" || req.files[0].mimetype === "image/jpeg" || req.files[0].mimetype === "image/png") {
@@ -499,13 +497,13 @@ var basicRoute = function (model,sms,io,streams,client) {
         if(req.files){
           var fileUrl;
           for(var i = 0; i < req.files.length; i++){
-            fileUrl = "/download/skills/" + req.files[i].filename; // this will be change to link dropbox;
+            fileUrl = req.files[i].location || "/download/skills/" + req.files[i].filename; // this will be change to link dropbox;
             var file = {
               type: req.files[i].mimetype,
               filename: req.files[i].filename,
               path: fileUrl,
               file_id: random,
-              external_link: "https://" + req.hostname + "/download/skills/" + req.files[i].filename
+              external_link: req.files[i].location || "https://" + req.hostname + "/download/skills/" + req.files[i].filename
             }
             newSkill.files.push(file);
           }
@@ -2916,11 +2914,9 @@ var basicRoute = function (model,sms,io,streams,client) {
 
     router.put("/user/radiology/upload-scan",function(req,res){
       if(req.user){        
-        console.log(req.files);
-        console.log(req.body);
         var fileUrl = [];
         for(var i = 0; i < req.files.length; i++) {
-          var url = "/download/scan-image/" + req.files[i].filename;
+          var url = req.files[i].location || "/download/scan-image/" + req.files[i].filename;
           fileUrl.push(url)
         }
         res.send(fileUrl)
@@ -7614,118 +7610,134 @@ router.get("/general/homepage-search",function(req,res){
   /*if(!req.query.city)
       req.query.city = "Enugu";*/
 
-  if(!req.query.item) {
+  /*if(!req.query.item) {
     res.send({full:[]});
     return;
-  }
+  }*/
 
   if(req.query.category === "Pharmacy") {
     req.query.drugList = [{name: req.query.item}];
     if(req.query.city){
-      var criteria = {type:"Pharmacy",center_city:req.query.city}
+      var criteria = (req.query.item) ? {type:"Pharmacy",center_city:req.query.city} : {type:"Pharmacy",city:req.query.city}
     } else {
       var criteria = {type:"Pharmacy"}
     }
-    model.services.find(criteria,
-      {center_name:1,center_city:1,center_address:1,center_country:1,center_phone:1,user_id:1,unavailable_services:1,_id:0},function(err,data){
-      if(err) throw err;
-      var newListToSend = [];        
-      var sendObj = {};
-      var listOfDrugs = req.query.drugList;        
-      for(var i = 0; i < listOfDrugs.length; i++){
-        var elements = data.map(function(x){return x.unavailable_services});
-        var count = 0;
-        var foundDrug = [];          
-        while(count < elements.length){
-          var centerInfo = {}                      
-          var elementPos = elements[count].map(function(x){ return x.name}).indexOf(listOfDrugs[i].name);            
-          centerInfo.notFound = listOfDrugs[i].name;
-          if(elementPos === -1){              
-            centerInfo.center_name = data[count].center_name;
-            centerInfo.center_city = data[count].center_city;
-            centerInfo.center_country = data[count].center_country;
-            centerInfo.center_city = data[count].center_city;
-            centerInfo.center_id = data[count].user_id;
-            centerInfo.center_address = data[count].center_address;
-            centerInfo.center_phone = data[count].center_phone;
-            centerInfo.drugFound = listOfDrugs[i].name;              
-            foundDrug.push(centerInfo)               
-            sendObj[listOfDrugs[i].name] = foundDrug;
-            newListToSend.push(sendObj)  
-          } 
-          count++;
+
+    if(req.query.item) {
+      model.services.find(criteria,
+        {center_name:1,center_city:1,center_address:1,center_country:1,center_phone:1,user_id:1,unavailable_services:1,_id:0},function(err,data){
+        if(err) throw err;
+        var newListToSend = [];        
+        var sendObj = {};
+        var listOfDrugs = req.query.drugList;        
+        for(var i = 0; i < listOfDrugs.length; i++){
+          var elements = data.map(function(x){return x.unavailable_services});
+          var count = 0;
+          var foundDrug = [];          
+          while(count < elements.length){
+            var centerInfo = {}                      
+            var elementPos = elements[count].map(function(x){ return x.name}).indexOf(listOfDrugs[i].name);            
+            centerInfo.notFound = listOfDrugs[i].name;
+            if(elementPos === -1){              
+              centerInfo.center_name = data[count].center_name;
+              centerInfo.center_city = data[count].center_city;
+              centerInfo.center_country = data[count].center_country;
+              centerInfo.center_city = data[count].center_city;
+              centerInfo.center_id = data[count].user_id;
+              centerInfo.center_address = data[count].center_address;
+              centerInfo.center_phone = data[count].center_phone;
+              centerInfo.drugFound = listOfDrugs[i].name;              
+              foundDrug.push(centerInfo)               
+              sendObj[listOfDrugs[i].name] = foundDrug;
+              newListToSend.push(sendObj)  
+            } 
+            count++;
+          }
         }
+
+        var filter = {};
+          
+          for(var i in sendObj){
+            for(var j = 0; j < sendObj[i].length; j++){
+              if(!filter.hasOwnProperty(sendObj[i][j].center_id)){                             
+                filter[sendObj[i][j].center_id] = {};
+                filter[sendObj[i][j].center_id].count = 1;
+                filter[sendObj[i][j].center_id].name = sendObj[i][j].center_name;
+                filter[sendObj[i][j].center_id].address = sendObj[i][j].center_address;
+                filter[sendObj[i][j].center_id].city = sendObj[i][j].center_city;
+                filter[sendObj[i][j].center_id].country = sendObj[i][j].center_country;
+                filter[sendObj[i][j].center_id].id = sendObj[i][j].center_id;
+                 filter[sendObj[i][j].center_id].phone = sendObj[i][j].center_phone;
+                filter[sendObj[i][j].center_id].str = sendObj[i][j].drugFound;
+              } else {
+                filter[sendObj[i][j].center_id].str += "," + sendObj[i][j].drugFound;
+                filter[sendObj[i][j].center_id].count++;
+              }
+            }
+          }
+          
+          Array.prototype.diff = function(arr2) {
+            var ret = [];
+            this.sort();
+            arr2.sort();
+            for(var i = 0; i < this.length; i += 1) {
+              if(arr2.indexOf( this[i].name ) === -1){
+                  ret.push( this[i] );
+              }
+            }
+            return ret;
+          };
+
+          var sub = {};
+           sub['full'] = [];
+           sub['less'] = [];
+          for(var k in filter){
+            if(filter[k].count === req.query.drugList.length) {
+              sub['full'].push(filter[k]);
+            } else {
+              var arr1 = req.query.drugList;
+              var newFilterArr = filter[k].str.split(",")            
+              var notFoundArr = arr1.diff(newFilterArr)
+              filter[k].notFound = notFoundArr;          
+              sub['less'].push(filter[k])
+            }
+          }
+
+          res.send(sub)
+        })
+      } else {
+        model.user.find(criteria,{address:1,name:1,profile_pic_url:1,city:1,country:1,user_id:1,profile_url:1,title:1},function(err,data){
+          if(err) throw err;
+          console.log(data);
+          var sub = {};
+          sub['full'] = data;
+          res.send(sub)
+        });
       }
 
-       var filter = {};
-        
-        for(var i in sendObj){
-          for(var j = 0; j < sendObj[i].length; j++){
-            if(!filter.hasOwnProperty(sendObj[i][j].center_id)){                             
-              filter[sendObj[i][j].center_id] = {};
-              filter[sendObj[i][j].center_id].count = 1;
-              filter[sendObj[i][j].center_id].name = sendObj[i][j].center_name;
-              filter[sendObj[i][j].center_id].address = sendObj[i][j].center_address;
-              filter[sendObj[i][j].center_id].city = sendObj[i][j].center_city;
-              filter[sendObj[i][j].center_id].country = sendObj[i][j].center_country;
-              filter[sendObj[i][j].center_id].id = sendObj[i][j].center_id;
-               filter[sendObj[i][j].center_id].phone = sendObj[i][j].center_phone;
-              filter[sendObj[i][j].center_id].str = sendObj[i][j].drugFound;
-            } else {
-              filter[sendObj[i][j].center_id].str += "," + sendObj[i][j].drugFound;
-              filter[sendObj[i][j].center_id].count++;
-            }
-          }
-        }
-        
-        Array.prototype.diff = function(arr2) {
-          var ret = [];
-          this.sort();
-          arr2.sort();
-          for(var i = 0; i < this.length; i += 1) {
-            if(arr2.indexOf( this[i].name ) === -1){
-                ret.push( this[i] );
-            }
-          }
-          return ret;
-        };
-
-        var sub = {};
-         sub['full'] = [];
-         sub['less'] = [];
-        for(var k in filter){
-          if(filter[k].count === req.query.drugList.length) {
-            sub['full'].push(filter[k]);
-          } else {
-            var arr1 = req.query.drugList;
-            var newFilterArr = filter[k].str.split(",")            
-            var notFoundArr = arr1.diff(newFilterArr)
-            filter[k].notFound = notFoundArr;          
-            sub['less'].push(filter[k])
-          }
-        }
-
-        res.send(sub)
-      })
-
-  } else if(req.query.category === "Doctor") {    
-    var first4 = (req.query.item.substring(0,2) !== 'Dr' || req.query.item.substring(0,2) !== 'Prof') ? req.query.item.substring(0,5) : req.query.item;
-    var str = new RegExp(first4.replace(/\s+/g,"\\s+"), "gi");              
-    //var criteria = { specialty : { $regex: str, $options: 'i' },type:"Doctor",city:req.query.city};
-    //var byDisease = {"skills.disease": { $regex: str, $options: 'i' },type:"Doctor",city:req.query.city};
-    if(req.query.city) {
-      var criteria = {$text : {$search : req.query.item},city:req.query.city}
-      /*var criteria = { $or: [{ specialty : { $regex: str, $options: 'i' },type:"Doctor",city:req.query.city},
-      {"skills.disease": { $regex: str, $options: 'i' },type:"Doctor",city:req.query.city}]};*/
+  } else if(req.query.category === "Doctor") {
+    if(req.query.item) {  
+      var first4 = (req.query.item.substring(0,2) !== 'Dr' || req.query.item.substring(0,2) !== 'Prof') ? req.query.item.substring(0,5) : req.query.item;
+      var str = new RegExp(first4.replace(/\s+/g,"\\s+"), "gi");              
+      //var criteria = { specialty : { $regex: str, $options: 'i' },type:"Doctor",city:req.query.city};
+      //var byDisease = {"skills.disease": { $regex: str, $options: 'i' },type:"Doctor",city:req.query.city};
+      if(req.query.city) {
+        var criteria = {$text : {$search : req.query.item},city:req.query.city}
+        /*var criteria = { $or: [{ specialty : { $regex: str, $options: 'i' },type:"Doctor",city:req.query.city},
+        {"skills.disease": { $regex: str, $options: 'i' },type:"Doctor",city:req.query.city}]};*/
+      } else {
+        var criteria = {$text : {$search : req.query.item}}
+        //var criteria = { $or: [{ specialty : { $regex: str, $options: 'i' },type:"Doctor"},
+        //{"skills.disease": { $regex: str, $options: 'i' },type:"Doctor"}]}; 
+      }
     } else {
-      var criteria = {$text : {$search : req.query.item}}
-      //var criteria = { $or: [{ specialty : { $regex: str, $options: 'i' },type:"Doctor"},
-      //{"skills.disease": { $regex: str, $options: 'i' },type:"Doctor"}]}; 
+      var criteria = (req.query.city) ? {type: "Doctor",city:req.query.city} : {type: "Doctor"};
     }
 
     model.user.find(criteria,{firstname:1,lastname:1,work_place:1,city:1,country:1,address:1,
-      specialty:1,_id:0,profile_pic_url:1,education:1,user_id:1,title:1,name: 1,profile_url:1},
-      function(err,data){
+      specialty:1,_id:0,profile_pic_url:1,education:1,user_id:1,title:1,name: 1,profile_url:1})
+      .limit(100)
+      .exec(function(err,data){
       if(err) {        
         res.send({error:"status 500",full:[]});
       } else {   
@@ -7758,6 +7770,8 @@ router.get("/general/homepage-search",function(req,res){
   } else {
     var criteria = {type:req.query.category}
   }
+
+  if(req.query.item) {
   model.services.find(criteria,
     {center_name:1,center_city:1,center_address:1,center_country:1,user_id:1,unavailable_services:1,center_phone:1,_id:0,profile_url:1},function(err,data){
     if(err) throw err;
@@ -7847,25 +7861,40 @@ router.get("/general/homepage-search",function(req,res){
     }
   });
 
+  } else {
+    model.user.find(criteria,{address:1,name:1,profile_pic_url:1,city:1,country:1,user_id:1,profile_url:1,title:1},function(err,data){
+      if(err) throw err;
+      console.log(data);
+      var sub = {};
+      sub['full'] = data;
+      res.send(sub)
+    });
+  }
+
   } else if(req.query.category === "Skills & Procedures") {
 
-    if(req.query.item){
-      var str = new RegExp(req.query.item.replace(/\s+/g,"\\s+"), "gi");  
+      if(req.query.item) {
+        var str = new RegExp(req.query.item.replace(/\s+/g,"\\s+"), "gi");  
 
-      if(req.query.city) {            
-        var criteria = { $or: [{ skill : { $regex: str, $options: 'i' },city:req.query.city,deleted: false},
-        {disease: { $regex: str, $options: 'i' },city:req.query.city,deleted: false}]};
+        if(req.query.city) {            
+          var criteria = { $or: [{ skill : { $regex: str, $options: 'i' },city:req.query.city,deleted: false},
+          {disease: { $regex: str, $options: 'i' },city:req.query.city,deleted: false}]};
+        } else {
+          var criteria = { $or: [{ skill : { $regex: str, $options: 'i' },deleted: false},
+          {disease: { $regex: str, $options: 'i' },deleted: false}]};
+        }
       } else {
-        var criteria = { $or: [{ skill : { $regex: str, $options: 'i' },deleted: false},
-        {disease: { $regex: str, $options: 'i' },deleted: false}]};
+        var criteria = (req.query.city) ? {city: req.query.city} : {};
       }
       //var byDisease = {"skills.disease": { $regex: str, $options: 'i' },type:"Doctor",city:req.query.city};
-      model.skills.find(criteria,function(err,data){
+      model.skills.find(criteria)
+      .limit(100)
+      .exec(function(err,data){
         if(err) {
           res.send({error:"status 500",full:[]});
         } else {
           if(data.length == 0){
-            var first4 = req.query.item.substring(0,4)
+            var first4 = (req.query.item) ? req.query.item.substring(0,4) : "";
             str = new RegExp(first4.replace(/\s+/g,"\\s+"), "gi");  
             var criteria = (req.query.city) ? { skill : { $regex: str, $options: 'i' },city:req.query.city,deleted: false} : 
             { disease : { $regex: str, $options: 'i' },deleted: false}
@@ -7880,32 +7909,35 @@ router.get("/general/homepage-search",function(req,res){
           }   
         }
       });
-    }
+    
   } else if(req.query.category === "Disease") {
 
-    var str = new RegExp(req.query.item.replace(/\s+/g,"\\s+"), "gi");  
+
+    var str = (req.query.item) ? new RegExp(req.query.item.replace(/\s+/g,"\\s+"), "gi") : null;  
 
     if(req.query.city) {            
-      var criteria = { $or: [{ disease_tag : { $regex: str, $options: 'i' },type:"Doctor",city:req.query.city},
-      {disease_tag: { $regex: str, $options: 'i' },type:"Doctor",city:req.query.city}]};
+      var criteria =   { disease : { $regex: str, $options: 'i' },city:req.query.city}; //{ $or: [{ disease : { $regex: str, $options: 'i' },city:req.query.city},
+      //{disease: { $regex: str, $options: 'i' },city:req.query.city}]};
     } else {
-      var criteria = { $or: [{ disease_tag : { $regex: str, $options: 'i' },type:"Doctor"},
-      {disease_tag: { $regex: str, $options: 'i' },type:"Doctor"}]};
+      var criteria = { disease : { $regex: str, $options: 'i'}}; //{ $or: [{ disease : { $regex: str, $options: 'i'}},
+      //{disease: { $regex: str, $options: 'i' }}]};
     }
     //var byDisease = {"skills.disease": { $regex: str, $options: 'i' },type:"Doctor",city:req.query.city};
-    model.user.find(criteria,{firstname:1,lastname:1,work_place:1,city:1,country:1,address:1,
-    specialty:1,_id:0,profile_pic_url:1,education:1,user_id:1,title:1,name:1,profile_url:1},function(err,data){
+    model.skills.find(criteria,{firstname:1,lastname:1,work_place:1,city:1,country:1,address:1,
+    specialty:1,_id:0,profile_pic_url:1,education:1,user_id:1,title:1,name:1,profile_url:1,skill:1,ref_url:1})
+    .limit(100)
+    .exec(function(err,data){
       if(err) {
         res.send({error:"status 500",full:[]});
       } else {
         if(data.length == 0){
-          var first4 = req.query.item.substring(0,5)
+          var first4 = (req.query.item) ? req.query.item.substring(0,5) : "";
           str = new RegExp(first4.replace(/\s+/g,"\\s+"), "gi");  
-          var criteria = (req.query.city) ? { disease_tag : { $regex: str, $options: 'i' },type:"Doctor",city:req.query.city} : 
-          { disease_tag : { $regex: str, $options: 'i' },type:"Doctor"}
+          var criteria = (req.query.city) ? { disease: { $regex: str, $options: 'i' },city:req.query.city} : 
+          { disease : { $regex: str, $options: 'i' }}
 
-          model.user.find(criteria,{firstname:1,lastname:1,work_place:1,city:1,country:1,address:1,
-          specialty:1,_id:0,profile_pic_url:1,education:1,user_id:1,title:1,name:1,skills:1,profile_url:1},
+          model.skills.find(criteria,{firstname:1,lastname:1,work_place:1,city:1,country:1,address:1,
+          specialty:1,_id:0,profile_pic_url:1,education:1,user_id:1,title:1,name:1,skill:1,profile_url:1,ref_url:1},
           function(err,data2){
             if(err) throw err;
             res.json({full: data2});
@@ -7916,17 +7948,19 @@ router.get("/general/homepage-search",function(req,res){
       }
     });
   } else if(req.query.category === "Special Center") {
-    var str = new RegExp(req.query.item.replace(/\s+/g,"\\s+"), "gi");              
+    var str = (req.query.item) ? new RegExp(req.query.item.replace(/\s+/g,"\\s+"), "gi") : null;              
    // var criteria = { "skills.disease" : { $regex: str, $options: 'i' },type:"Doctor",title:"SC",city:req.query.city};
     var criteria = { $or: [{specialty : { $regex: str, $options: 'i' },type:"Doctor",title:"SC",city:req.query.city}, //note disease tag may be use
     {specialty : { $regex: str, $options: 'i' },type:"Doctor",title:"SC"}]};
     model.user.find(criteria,{firstname:1,lastname:1,work_place:1,city:1,country:1,address:1,
-    specialty:1,_id:0,profile_pic_url:1,education:1,user_id:1,title:1,name:1,profile_url:1},function(err,data){
+    specialty:1,_id:0,profile_pic_url:1,education:1,user_id:1,title:1,name:1,profile_url:1})
+    .limit(100)
+    .exec(function(err,data){
       if(err) {
         res.send({error:"status 500",full:[]});
       } else {
           if(data.length == 0){
-          var first4 = req.query.item.substring(0,4);
+          var first4 = (req.query.item) ? req.query.item.substring(0,4) : "";
           str = new RegExp(first4.replace(/\s+/g,"\\s+"), "gi");  
           var criteria = (req.query.city) ? { name : { $regex: str, $options: 'i' },type:"Doctor",title:"SC",city:req.query.city} : 
           { name : { $regex: str, $options: 'i' },type:"Doctor",title:"SC"};

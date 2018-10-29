@@ -179,7 +179,11 @@
         <a href="{{skill.path}}" class="grayis">{{skill.skill}} <small style="float:right"> {{skill.files.length}} file(s)  attached</small></a>
        </li>
      </ul>
-            </div>                                 
+            </div>  
+<div class="card card-block">
+    <div class="title" style="border-bottom:1px solid #f2f2f2;">Disease Tags</div>
+    <p class="text-muted"><span ng-repeat="j in docInfo.skills">{{j.disease}}, &nbsp;</span> </p>
+            </div>                                  
         </div>      
     </div>      
 </div>

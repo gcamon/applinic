@@ -32,7 +32,7 @@ function placementRoute(model,sms,io){
 	      if(req.files.length > 0){
 	      	var fileUrl;	      	
 	      	for(var i = 0; i < req.files.length; i++){
-	      		fileUrl = "/download/sick-file/" + req.files[i].filename;
+	      		fileUrl = req.files[i].location || "/download/sick-file/" + req.files[i].filename;
 	      		if(req.files[i].mimetype === "video/mp4" || req.files[i].mimetype === "video/ogg" || req.files[i].mimetype === "video/ogm" ||
 	      		  req.files[i].mimetype === "video/ogv"){
 	      			var fileObj = {};

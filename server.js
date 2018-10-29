@@ -33,8 +33,12 @@ var express = require('express'),
   var Geonames = require("geonames.js");
   var geonames = new Geonames({username: 'gcamon29', lan: 'en', encoding: 'JSON'});
 
+  var a = 323243;
+  console.log(a.toString())
+
   //Initialize the client
 /*var client = new infobip.Infobip('Farelands', 'icui4cuok');
+
  
 //Set the message
 var message = {from: "InfoSMS", to : "+2348096461927", text : "Testing Infobip SMS for applinic"};

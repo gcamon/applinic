@@ -87,13 +87,15 @@ var configuration = function (app,model) {
 	var upload = multer({
     storage: multerS3({
         s3: s3,
-        bucket: 'applinic',
+        bucket: 'applinic-files',
         acl: "public-read",//"bucket-owner-read",
         metadata: function (req, file, cb) {
 		      cb(null, {fieldName: file.fieldname});
 		    },
 		    key: function (req, file, cb) {
-		      cb(null, genHash(10) + file.originalname)
+		    	console.log(req.user.user_id)
+		    	var user = (req.user) ? req.user.user_id : genHash(12);
+		      cb(null, user + file.originalname)
 		    }
     })
 	});
