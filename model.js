@@ -75,6 +75,7 @@ var myModel = function () {
 		center_city: String,
 		center_country: String,
 		center_phone: Number, 
+		profile_url: String,
 		user_id: String,
 		unavailable_services: [service_objSchema],
 		type: String

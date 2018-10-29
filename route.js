@@ -4904,6 +4904,7 @@ var basicRoute = function (model,sms,io,streams,client) {
             user_id : req.user.user_id,
             center_phone: req.user.phone,
             unavailable_services : req.body,
+            profile_url: req.user.profile_url,
             type: "Laboratory"
           })
 
@@ -5005,6 +5006,7 @@ var basicRoute = function (model,sms,io,streams,client) {
           center_country: req.user.country,
           center_phone: req.user.phone,
           user_id : req.user.user_id,
+          profile_url: req.user.profile_url,
           unavailable_services : req.body,
           type: "Radiology"
         });
@@ -5106,6 +5108,7 @@ var basicRoute = function (model,sms,io,streams,client) {
           center_country: req.user.country,
           center_phone: req.user.phone,
           user_id : req.user.user_id,
+          profile_url: req.user.profile_url,
           date: date,
           unavailable_services : req.body,
           type: "Pharmacy"
@@ -5220,6 +5223,7 @@ var basicRoute = function (model,sms,io,streams,client) {
             center_country: req.user.country,
             center_phone: req.user.phone,
             user_id: req.user.user_id,
+            profile_url: req.user.profile_url,
             date: date,
             unavailable_services: [],
             type: req.user.type
@@ -5625,7 +5629,7 @@ router.put("/user/laboratory/search/find-tests",function(req,res){
   if(req.user && req.body.city === undefined)
     req.body.city = req.user.city;
   model.services.find({type:"Laboratory",center_city:req.body.city},
-    {center_name:1,center_city:1,center_address:1,center_country:1,user_id:1,unavailable_services:1,center_phone:1,_id:0},function(err,data){
+    {center_name:1,center_city:1,center_address:1,center_country:1,user_id:1,unavailable_services:1,center_phone:1,_id:0,profile_url:1},function(err,data){
     if(err) throw err;
     if(data) {
       var newListToSend = [];        
@@ -5857,7 +5861,7 @@ router.put("/user/radiology/search/find-tests",function(req,res){
   if(req.user && req.body.city === undefined)
     req.body.city = req.user.city;
   model.services.find({type:"Radiology",center_city:req.body.city},
-    {center_name:1,center_city:1,center_address:1,center_country:1,user_id:1,unavailable_services:1,center_phone:1,_id:0},function(err,data){
+    {center_name:1,center_city:1,center_address:1,center_country:1,user_id:1,unavailable_services:1,center_phone:1,_id:0,profile_url:1},function(err,data){
     if(err) throw err;
     var newListToSend = [];        
     var sendObj = {};
