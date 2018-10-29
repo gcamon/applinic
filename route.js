@@ -7625,7 +7625,7 @@ router.get("/general/homepage-search",function(req,res){
 
     if(req.query.item) {
       model.services.find(criteria,
-        {center_name:1,center_city:1,center_address:1,center_country:1,center_phone:1,user_id:1,unavailable_services:1,_id:0},function(err,data){
+        {center_name:1,center_city:1,center_address:1,center_country:1,center_phone:1,user_id:1,unavailable_services:1,_id:0,profile_url:1},function(err,data){
         if(err) throw err;
         var newListToSend = [];        
         var sendObj = {};
@@ -7957,7 +7957,7 @@ router.get("/general/homepage-search",function(req,res){
     } else {
       criteria = (req.query.city) ? {type: "Doctor",title: "SC", city: req.query.city} : {type: "Doctor",title: "SC"}
     }
-    
+
     model.user.find(criteria,{firstname:1,lastname:1,work_place:1,city:1,country:1,address:1,
     specialty:1,_id:0,profile_pic_url:1,education:1,user_id:1,title:1,name:1,profile_url:1})
     .limit(100)

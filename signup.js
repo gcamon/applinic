@@ -55,7 +55,7 @@ var signupRoute = function(model,sms,geonames,paystack,io) {
 	          username: req.body.username,
 						address: req.body.address,
 						gender: req.body.gender,
-						title: (req.body.title === "SC") ? "SC" : req.body.title,
+						title: (req.body.typeOfUser === "Special Center") ? "SC" : req.body.title,
 						age: req.body.age,
 						state: req.body.state,
 						region: req.body.region,
