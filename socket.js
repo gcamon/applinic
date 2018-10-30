@@ -1,7 +1,17 @@
 "use strict";
 
 var uuid = require("uuid");
-var connects = {}
+var AWS = require('aws-sdk');
+
+AWS.config.update({
+    accessKeyId: process.env.AMAZON_ACCESS_KEY,
+    secretAccessKey: process.env.AMAZON_SECRET_KEY
+});
+
+var s3 = new AWS.S3();
+var connects = {};
+
+
 module.exports = function(model,io,streams) {    
   io.sockets.on('connection', function(socket){  	   
 	    console.log('a user connected');
@@ -92,10 +102,8 @@ module.exports = function(model,io,streams) {
 	      });
   		})
 
-  	
-
-
 	    socket.on("send message",function(data,cb){
+	    	console.log(data);
 	    	var date = + new Date();
 	    	data.date = date.toString();
 	    	data.id = data.date;
@@ -116,11 +124,13 @@ module.exports = function(model,io,streams) {
 	    		if(err) throw err;
 	    		if(chats) {
 		    		var msg = {}	  
-		    		msg.sent = data.message;
+		    		msg.sent = (data.fileType) ? data.fileType : data.message;
 		    		msg.time = data.date;
 		    		msg.isSent = false;
 	      		msg.isReceived = false;
 	      		msg.id = data.date;	
+	      		msg.url = data.url;
+	      		msg.fileType = data.fileType;
 	      		chats.realTime = + new Date();
 		    		chats.messages.push(msg);
 		    		chats.save(function(err,info){
@@ -133,9 +143,11 @@ module.exports = function(model,io,streams) {
 	    	model.chats.findOne({chat_id: otherId},{messages:1}).exec(function(err,chats){
 	    		if(err) throw err;
 	    		var msg = {}	  
-	    		msg.received = data.message;
+	    		msg.received = (data.fileType) ? data.fileType : data.message;
 	    		msg.time = data.date;
-      		msg.id = data.date;	
+      		msg.id = data.date;
+      		msg.url = data.url;
+      		msg.fileType = data.fileType;	
 	    		if(chats) {	
 	    			chats.is_read = false;  // added to check when a chat is read.  		    		
 		    		chats.messages.push(msg);
@@ -169,7 +181,6 @@ module.exports = function(model,io,streams) {
 
 
 	    socket.on("send message general",function(data,cb){     	
-
 	     	var chatId = data.from + "/" + data.to;
 	    	var otherId = data.to + "/" + data.from;
 	    	var date = + new Date();
@@ -291,18 +302,71 @@ module.exports = function(model,io,streams) {
 	    		});
 	    	});
 
-	    	model.chats.findOne({chat_id: otherId},{messages:1}).exec(function(err,chat){
+	    	/*model.chats.findOne({chat_id: otherId},{messages:1}).exec(function(err,chat){
 	    		if(err) throw err;
 
-	    	})
+	    	})*/
 	    });
-	    /*
-	 var date = + new Date();
-    var msg = {};
-    msg.time = date;
-    msg.received = data.message;
-	    */
-	    //for blocking a user
+
+	  	/***
+		 Sending file through chats
+	  	**/
+
+	  	var files = {},
+		  	struct = { 
+	        name: null, 
+	        type: null, 
+	        size: 0, 
+	        data: [], 
+	        slice: 0, 
+	    };
+
+	    var params;
+
+	  	socket.on("slice upload",function(data){
+	  		if (!files[data.name]) { 
+	        files[data.name] = Object.assign({}, struct, data); 
+	        files[data.name].data = []; 
+		    }
+		    console.log(data);
+
+		    //convert the ArrayBuffer to Buffer 
+		    data.data = new Buffer(new Uint8Array(data.data)); 
+		    //save the data 
+		    files[data.name].data.push(data.data); 
+		    files[data.name].slice++;
+		    
+		    if (files[data.name].slice * 100000 >= files[data.name].size) { 
+		        //do something with the data 
+		        var fileBuffer = Buffer.concat(files[data.name].data); 
+		        
+		        //then save the file to amazon s3 stoarge of save locally to server.
+		        var fileResource = Date.now() + data.name;
+		        params = {Bucket: 'applinic-files', Key: fileResource, Body: fileBuffer };
+
+		        s3.putObject(params, function(err, response) {
+		        	if(err) {
+		        		console.log(err);
+		        		socket.emit("upload error",{status:false});
+		        		return;
+		        	} else {
+		        		console.log(response);
+		        		var fileUrl = "https://s3.amazonaws.com/applinic-files/" + fileResource;		        		
+		        		socket.emit('end upload',{url: fileUrl,fileType: data.fileType});
+		        	} 
+		        })
+
+		        delete files[data.name];
+
+		    } else { 
+		        socket.emit('request slice upload', { 
+		            currentSlice: files[data.name].slice 
+		        }); 
+		    } 
+	    	console.log(fileBuffer)
+	    });
+
+//https://s3.amazonaws.com/applinic-files/
 	    socket.on("block user",function(data){
 	    	model.user.findOne({user_id:data.userId},{set_presence:1}).exec(function(err,user){
 	    		if(err) throw err;

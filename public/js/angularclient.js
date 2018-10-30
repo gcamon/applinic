@@ -2296,6 +2296,37 @@ app.directive("fileModel",["$parse","$rootScope",function($parse,$rootScope){
   }
 }]);
 
+app.directive("fileModelChat",["$parse","$rootScope",function($parse,$rootScope){
+  return {
+    restrict: "A",
+    link: function(scope,element,attrs){
+      var model = $parse(attrs.fileModelChat);
+      var modelSetter = model.assign;
+      var isMultiple = attrs.multiple;
+
+      element.bind('change', function () {
+          var values = [];
+            
+          angular.forEach(element[0].files, function (item) {              
+            values.push(item);
+          });
+          scope.$apply(function () {
+            if (isMultiple) {
+             
+              modelSetter(scope.$parent, values);
+              $rootScope.imageFiles()
+            } else {
+              modelSetter(scope.$parent, values[0]); //remember to check for help controller ie need a doctor
+              
+              $rootScope.imageFile()
+            }
+            
+          });
+      });
+    }
+  }
+}]);
+
 app.controller('pictureController',["$scope","$http","$location","multiData",function($scope,$http,$location,multiData) {
    $scope.user = {};
     
@@ -8671,8 +8702,9 @@ app.controller("changePictureController",["$scope","$rootScope","$location","$ht
       //console.log($scope.files)
       for(var key in $scope.files){
 
-          if($scope.files[key].name)
+          if($scope.files[key].name){
             fd.append(key,$scope.files);
+          }
           console.log($scope.files)
 
       };
@@ -8697,7 +8729,7 @@ app.controller("changePictureController",["$scope","$rootScope","$location","$ht
   function uploadProgress(evt) {
         $scope.progressVisible = true;
         $scope.$apply(function(){
-            if (evt.lengthComputable && evt.total <= 1048576) {
+            if (evt.lengthComputable && evt.total <= 26214400) {
                console.log(evt.loaded + " : " + evt.total)
                 $scope.progress = Math.round(evt.loaded * 100 / evt.total)
                 console.log($scope.progress)
@@ -8726,7 +8758,7 @@ app.controller("changePictureController",["$scope","$rootScope","$location","$ht
 
     function uploadCanceled(evt) {
         $scope.$apply(function(){
-            $scope.progressVisible = false
+            $scope.progressVisible = false;
         })
         alert("The upload has been canceled by the user or the browser dropped the connection.")
     }
@@ -17998,13 +18030,37 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
     var breaker = angular.element(document.createElement('div'));
     var p = angular.element(document.createElement('p'));
     var small = angular.element(document.createElement('small'));
+    console.log(data, "-----------------")
+    var fileElem; //angular.element(document.createElement('img'));
+    switch(data.fileType){
+      case 'image':
+        fileElem = angular.element(document.createElement('img'));
+        fileElem[0].src = data.url;
+        fileElem[0].alt = "loading image...";
+        fileElem[0].style.maxWidth = "200px";
+        fileElem[0].style.height = "auto";
+      break;
+      case 'audio':
+        fileElem = angular.element(document.createElement('audio'));
+      break;
+      case "video":
+        fileElem = angular.element(document.createElement('video'));
+      break;
+      default:
+      break;
+    }
+
     p[0].style.display = "block";
     //p[0].style.wordBreak = "normal";
     //p[0].style.overflowWrap = "break-word";
     small[0].style.display = "block";
     small[0].style.marginTop = "5px";
     small[0].style.color = "#ccc";
-    p[0].innerHTML += (data.sent) ? data.sent : data.received; 
+    if(!fileElem) {
+      p[0].innerHTML += (data.sent) ? data.sent : data.received; 
+    } else {
+      p[0].innerHTML += data.fileType;
+    }
    
    
     small[0].id = data.id;
@@ -18016,7 +18072,14 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
     breaker[0].style.textAlign = (data.sent) ? "right" : "left";
     
     item[0].appendChild(p[0]);
+    
+    if(fileElem)
+      item[0].appendChild(fileElem[0]);
+
+    
     item[0].appendChild(small[0]);
+
+
     breaker[0].appendChild(item[0]);
     
    
@@ -18029,6 +18092,7 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
   }
 
   var elPos;
+
   mySocket.on("new_msg", function(data) {
     if(currView !== "/general-chat") {
       $rootScope.$broadcast("unattendedMsg",true);
@@ -18041,6 +18105,8 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
     var msg = {};
     msg.time = data.date;
     msg.received = data.message;
+    msg.url = data.url;
+    msg.fileType = data.fileType;
     if(data.from === $scope.partner.partnerId) {     
       msg.userId = user.user_id;
       msg.partnerId = $scope.partner.partnerId;            
@@ -18135,6 +18201,119 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
       });
     });
   }
+
+
+  //for single file upload
+  $rootScope.imageFile = function() {
+    console.log($scope.files);
+    var file = $scope.files,
+      fileReader = new FileReader(),
+      slice = file.slice(0, 100000);
+
+    fileReader.readAsArrayBuffer(slice); 
+
+    //incase listener is registered twice.
+    mySocket.removeAllListeners("request slice upload");
+    mySocket.removeAllListeners("end upload");
+
+    fileReader.onload = function(evt){
+      var arrayBuffer = fileReader.result;
+      var toArr = file.type.split('/');
+      var theType = toArr[0];
+
+      mySocket.emit('slice upload', { 
+        name: file.name, 
+        type: file.type, 
+        size: file.size, 
+        data: arrayBuffer,
+        fileType: theType
+      }); 
+
+      console.log(arrayBuffer);
+    }
+
+     //keep sending slice
+    mySocket.on('request slice upload',function(data){ 
+      var place = data.currentSlice * 100000, 
+          slice = file.slice(place, place + Math.min(100000, file.size - place)); 
+      
+      fileReader.readAsArrayBuffer(slice); 
+    });
+
+    mySocket.on("end upload",function(response){
+        //alert("upload ended!")
+      mySocket.emit("send message",{to: $scope.partner.partnerId,message:response.url,url:response.url, from: user.user_id,fileType: response.fileType},function(data){ 
+        var date = + new Date();
+        var msg = {};
+        msg.time = data.date;
+        msg.sent = (response.fileType) ? response.fileType : data.message;
+        msg.isSent = false;
+        msg.isReceived = false;
+        //$rootScope.message1.push(msg);      
+        msg.userId = user.user_id;
+        msg.partnerId = $scope.partner.partnerId; 
+        msg.id = data.date;//genId();
+        msg.url = response.url;
+        msg.fileType = response.fileType;
+
+
+        var elPos = $rootScope.chatsList.map(function(x){return x.partnerId}).indexOf($scope.partner.partnerId);
+        if(elPos !== -1) {
+          $rootScope.chatsList[elPos].is_read = true;
+          $rootScope.chatsList[elPos].messages.push(msg);
+        }
+
+        chats(msg);
+        
+        mySocket.emit("isSent",msg,function(status){          
+          if(status) {
+            var elem = angular.element(document.getElementById(msg.id));
+            elem[0].innerHTML += "";            
+          }
+        });
+        //mySocket.emit("save message",msg);//this saves the message as one mark
+      });
+    })
+
+    mySocket.on("upload error",function(res){
+      alert("Error occured while uploading");
+    })
+
+  }
+
+
+
+  //for multiple file upload
+  $rootScope.imageFiles = function() {
+    alert("the file dey come many oooo")
+  }
+
+
+  /*
+
+function handleFileSelect(evt) {
+    var files = evt.target.files; // FileList object
+
+    // use the 1st file from the list
+    f = files[0];
+
+    var reader = new FileReader();
+
+    // Closure to capture the file information.
+    reader.onload = (function(theFile) {
+        return function(e) {
+
+          jQuery( '#ms_word_filtered_html' ).val( e.target.result );
+        };
+      })(f);
+
+      // Read in the image file as a data URL.
+      reader.readAsText(f);
+  }
+
+  document.getElementById('upload').addEventListener('change', handleFileSelect, false);
+
+  */
 
 }]);
 
