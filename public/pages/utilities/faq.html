@@ -2,7 +2,7 @@
 <button class="btn btn-danger btn-sm" style="float: right;font-weight: 200" data-toggle="modal" data-target="#reprtIssueModal" ng-click="reportIssue()">Report an issue</button>
 </h5>
  
-<div class="container">
+<div class="container" ng-if="checkLogIn.typeOfUser == 'Doctor'">
 
  	<div class="row doctor">
       
@@ -77,33 +77,103 @@
 			     </div>
 
 			     <div class="col-md-12">
+			   <div class="card hoverr" ng-click="select('update')" ng-class="{'bg-info': picked == 'Integrate'}">
+			   <div class="row pl-2">
+			     <div class="col-md-1" style="padding: 11px 0;"><img src="/assets/images/img/012-skills-1.png" height="30" width="100%"> </div>
+			     <div class="col-md-11 pl-2 pt-1"><h6>How Do We Integrate Dispatch Delivery?</h6></div>
+			   </div></div>
+					 </div>
+
+<div class="col-md-12">
+	<div class="card hoverr" ng-click="select('update')" ng-class="{'bg-info': picked == 'finances'}">
+		<div class="row pl-2">
+			<div class="col-md-1" style="padding: 11px 0;"><img src="/assets/images/img/012-skills-1.png" height="30" width="100%">
+			</div>
+			<div class="col-md-11 pl-2 pt-1">
+				<h6>How Do We Manage Our Finances?</h6>
+			</div>
+		</div>
+	</div>
+</div>
+					 
+					 <!--=======================I added these=========-->
+					<!-- <div class="col-md-12">
 			   <div class="card hoverr" ng-click="select('update')" ng-class="{'bg-info': picked == 'update'}">
 			   <div class="row pl-2">
 			     <div class="col-md-1" style="padding: 11px 0;"><img src="/assets/images/img/012-skills-1.png" height="30" width="100%"> </div>
-			     <div class="col-md-11 pl-2 pt-1"><h6>How Do I Update My Account Profile?</h6></div>
+			     <div class="col-md-11 pl-2 pt-1"><h6>What should we do after opening account?</h6></div>
 			   </div></div>
-			     </div>
+					 </div>
+					 
+<div class="col-md-12">
+	<div class="card hoverr" ng-click="select('update')" ng-class="{'bg-info': picked == 'optimize'}">
+		<div class="row pl-2">
+			<div class="col-md-1" style="padding: 11px 0;"><img src="/assets/images/img/012-skills-1.png" height="30" width="100%">
+			</div>
+			<div class="col-md-11 pl-2 pt-1">
+				<h6>How Do I Optimize Patronage?</h6>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="col-md-12">
+	<div class="card hoverr" ng-click="select('update')" ng-class="{'bg-info': picked == 'manage'}">
+		<div class="row pl-2">
+			<div class="col-md-1" style="padding: 11px 0;"><img src="/assets/images/img/012-skills-1.png" height="30" width="100%">
+			</div>
+			<div class="col-md-11 pl-2 pt-1">
+<h6>How Do We Manage Our Account?</h6>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="col-md-12">
+	<div class="card hoverr" ng-click="select('update')" ng-class="{'bg-info': picked == 'communicate'}">
+		<div class="row pl-2">
+			<div class="col-md-1" style="padding: 11px 0;"><img src="/assets/images/img/012-skills-1.png" height="30" width="100%">
+			</div>
+			<div class="col-md-11 pl-2 pt-1">
+<h6>How Do We Communicate?</h6>
+			</div>
+		</div>
+	</div>
+</div>-->
+
+<!--<div class="col-md-12">
+	<div class="card hoverr" ng-click="select('update')" ng-class="{'bg-info': picked == 'manage'}">
+		<div class="row pl-2">
+			<div class="col-md-1" style="padding: 11px 0;"><img src="/assets/images/img/012-skills-1.png" height="30" width="100%">
+			</div>
+			<div class="col-md-11 pl-2 pt-1">
+<h6>How Do We Manage Our Account?</h6>
+			</div>
+		</div>
+	</div>
+</div>-->
+
 			</div>
 		</div>
 		<div class="col-md-8">
+			<div>
 			  <div class="card p-4" ng-if="picked === 'grow'">
 				<h6>Will updating my skills and procedures help ?</h6>
 Patients and those who represent them will often search the platform for physicians who possess certain skills, render specific services, or perform certain procedures. You need to update your skills, services and procedures so that your name will appear when such services are searched for in your city or country. This is one of the fastest ways to grow your practice. Please review the information palette on your dashboard titled Skills and Procedures to learn how to do this.
-
+<br>
 <h6>Can I bring my pre-existing patients to manage on Applinic ?</h6>
 All existing patients you currently manage as well as those who may still contact you in the future can be directed or invited to meet you at Applinic. They can create their free accounts or you may help them create one. There are three advantages of directing your patients to Applinic. First is the leverage it grants you to manage them on-the-go; second is the ease of accessing their medical records and results of diagnostic investigations right from your device and the third is the opportunity of having them pay for consultation and treatment through their wallets and you get immediate value in your account.      
 
-
+<br/><br/>
 
 <h6>What is the Patients Waiting Room (PWR) ?</h6>
 The PWR is the major source of new patients for doctors. It is a pool of all complaints from our global community of patients. The complaints are anonymous. The PWR button is located on the top of the doctors’ dashboard. Click it to navigate to the room. Doctors visit the room to review and respond to the cases posted by patients which pertain to their specialty. Your initial response should include your opinion on the case and a possible plan of how you intend to manage the condition. The system expects you to state your consultation fee at this time but this is not mandatory. If you offer your advice with consultation fees, the patient may approve the offer and his or her account will be debited while yours will be credited or he may decline it. If accepted, a consultation session will immediately open to enable communication between both of you by chat, video, or in-person appointment at your chosen clinic.   
-
+<br/><br/>
 <h6>Why should I check the PWR always ?</h6>
 Aside your known patients who consult you directly and others who specifically searched for you, you will not see all other complaints from the patients in the community or obtain new patients to grow your practice except you visit the Patients Waiting Room. It is here that doctors review all complaints from patients to identify those which concern their specialty for response. 
-	
+	<br/><br/>
 <h6>Can other health providers or Applinic team refer patients to me ?</h6>
 Your colleagues, pharmacies and diagnostic centers can refer patients to you if they encounter patients with conditions which pertain to your specialty. Those who know you may do so easily but others may have to find you on the platform before they can refer a patient to you. This is possible if you have updated the Skills and Procedures section of your profile.  The Applinic team may also refer patients to your specialty is applicable.
-
+<br/><br/>
 <h6>How does updating my profile increase patronage ?</h6>
 If it is updated, your profile will boost the confidence of patients who don’t know you. Your picture, qualifications, awards, skills and procedures will all aggregate to attract more cases, referrals, consultations and of course opportunities to save lives, alleviate sufferings and mitigate disorders if you keep the world updated on who you are and what you  do. Of course this should eventually translate to more revenues if you don’t mind.
 
@@ -113,22 +183,22 @@ If it is updated, your profile will boost the confidence of patients who don’t
 			   <div class="card p-4" ng-if="picked === 'manage'">
 				<h6>Where do I see all my patients ?</h6>
 All users whom you have ever treated or who have accepted your treatment offer become your patients. Once a relationship has been established between you and the patient, he or she will be added to your list of patients. This list is accessible from the left hand menu of your dashboard. To access all your patients on a laptop or desktop, click on “My Patients” tab on the left menu and the drop down will list all your patients, with last one first. To access it on mobile, click in the menu sign (3 horizontal lines on top, also called “hamburger sign”) and the menu will open on the left of your screen. After ‘My Patients’ tab has dropped your list of patients, you may scroll down or type the patient’s name in the filter bar to find him if the list is a long one.Click on the patient’s name to load his or her details including your last chat with him and case note. You can toggle between the chat and the consultation sessions. You may also review entries, prescriptions and diagnostic results as desired or continue consultation by chat, video or appointment at your clinic.
-
+<br/><br/>
 <h6>How do I keep records of patients’ clerking ?</h6>
 There are various sources of patients on Applinic. Irrespective of how you received the patient, once he or she has accepted your medical opinion and consultation offer, a chat and management session will immediately be enabled between both of you. This chat and the management session folders will remain visible to you except the patient denies you access or unsubscribes for the service. You keep records of your clerking by opening treatment sessions and entering the notes there. There are also buttons for continuation sheets during follow up visits, and others for physical examinations, diagnostic requests, prescriptions and medical reports.  
-
+<br/><br/>
 <h6>How do I manage the clerkship ?</h6>
 As soon as the relationship is established, the patient’s e-folder will become available to you to type or dictate (when implemented) your clerkship according to the standard format: history, general and systemic examination, summary, diagnosis, investigations and treatment. These entries will remain in the patient’s folders and accessible to you. You can use the Chat Toggle button to switch from Chat to Case Note and back. 
-
+<br/><br/>
 <h6>How do I request or view investigations ?</h6>
 Laboratory and Radiological investigations requests can be filled in the dashboard and the request sent using the e-request forms in the patient’s folder. These diagnostic request forms are available in the treatment sessions. After filling the request, the system provides a quick search for the diagnostic centers in your selected city which provide the services for you to choose from. When the list displays, you may choose to send it to your preferred center or let the patient who also receives a copy of the request forward it to his or her center of choice. He or she will be required to go to the laboratory to perform the investigation or give them the sample. Occasionally, some laboratories provide home service. This option may also be selected. All results of diagnostic investigations will be available for your review on the patient’s folder when you log into your dashboard. The envelope notification icon on your dashboard will indicate when the result is received.   
-
+<br/><br/>
 <h6>How do I send prescriptions ? </h6>
 Prescriptions can be written according to the standard format using the e-prescription form in the patient’s folder. After writing a prescription, you can search for the pharmacies which have the drugs in your selected city. When the list displays, you may choose to send it to a preferred pharmacy which has them or allow the patient because he also receives a copy of the prescription to forward it to his or her pharmacy of choice. Prescriptions can be paid for at the pharmacy through the MediPay e-wallet and drugs picked up. Alternatively, a request may be made for dispatch service to deliver them if this service is available in the city. 
-	
+	<br/><br/>
 <h6>How do I improve my rating and search ranking ?</h6>
 One of the objectives of Applinic is to elevate the ethical standards of practice among health providers through accountability and feedback from patients. Rating of providers is one way patients can contribute to this standardization. The way providers relate with patients is very important in health care delivery. The more refined this relationship is the better the patients’ response to treatment and recovery will be. Applinic has defined five virtue pairs and practice attributes against which patients will rate providers after treatment sessions. 
-
+<br/><br/>
 <h6>What are the five parameters for rating providers ?</h6>
 
 The five criteria for patients to use to rate providers are:<br>
@@ -136,10 +206,10 @@ i.	Excellence/Aptness (Doctors is mostly correct in his opinions, judgments and 
 ii.	Sensitivity/Empathy (Doctor is compassionate to patient in his suffering, shows kindness and care, and treats him like his own)<br>
 iii.	Informative/Enlightening (Doctor generously enlightens patients, freely  answers his questions and explains about his conditions and other associated matters to him without hesitation)<br>
 iv.	Sociability/Friendliness (Doctor treats patient like a friend, is nice and warm, welcoming and hospitable)<br>
-v.	Promptness/Punctuality (Doctor responds to chats or other requests  promptly, is punctual for appointments and treats patients like a king)
+v.	Promptness/Punctuality (Doctor responds to chats or other requests  promptly, is punctual for appointments and treats patients like a king)<br><br>
 
 <h6>How do I ensure I don’t lose patients ?</h6>
-By observing the standard of medical ethics and relationship listed above; by observing the principles of patients’ confidentiality and privacy of health information; by offering your patients the best and referring them to colleagues who specialize in the conditions you observe in them; by promptly responding to their messages and keeping your bills moderate, you will not lose patients on Applinic, rather you will grow your practice quicker than you would without it.
+By observing the standard of medical ethics and relationship listed above; by observing the principles of patients’ confidentiality and privacy of health information; by offering your patients the best and referring them to colleagues who specialize in the conditions you observe in them; by promptly responding to their messages and keeping your bills moderate, you will not lose patients on Applinic, rather you will grow your practice quicker than you would without it.<br><br>
 
 <h6>How can publications and videos help my practice ?</h6>
 Publications and videos will create awareness about your skills and procedures and inform your colleagues and searching patients about the local availability of such services. It will also help build confidence in patients intending to use those skills of their safety and allay their anxieties and fears. 
@@ -149,10 +219,10 @@ Publications and videos will create awareness about your skills and procedures a
 
 			   <div class="card p-4" ng-if="picked === 'consult'">
 				<h6>What is the basic mode of communication ?</h6>
-Four modes of communication are available on Applinic. Instant messaging chats, audio calls, video calls and in-person meetings. For the last, the appointment scheduler of the platform can be used to schedule appointments with patients. 
+Four modes of communication are available on Applinic. Instant messaging chats, audio calls, video calls and in-person meetings. For the last, the appointment scheduler of the platform can be used to schedule appointments with patients. <br><br>
 
 <h6>Why is it advisable to be online always ?</h6>
-It is advisable to be online always so you don’t miss a patient or an opportunity to be of service. You can be logged in always with your laptop or mobile device or can have a trusted junior colleague, matron or nurse do that for you. They do not have to respond to your patients’ enquiries if you don’t want them to. They basically will notify you of requests, notifications and chats from patients so you can remember to respond to them. Sometimes they may use your known clinic schedule to give appointments on your behalf. You will see the appointments scheduled for your patients when you log in. You can review the patients’ medical history before the appointment if the patient gives you his Medical Record Access (MRA) Key. 
+It is advisable to be online always so you don’t miss a patient or an opportunity to be of service. You can be logged in always with your laptop or mobile device or can have a trusted junior colleague, matron or nurse do that for you. They do not have to respond to your patients’ enquiries if you don’t want them to. They basically will notify you of requests, notifications and chats from patients so you can remember to respond to them. Sometimes they may use your known clinic schedule to give appointments on your behalf. You will see the appointments scheduled for your patients when you log in. You can review the patients’ medical history before the appointment if the patient gives you his Medical Record Access (MRA) Key. <br><br>
 
 <h6>How can I review a patient’s past medical records ?</h6>
 You can view the past medical records of a patient only if you are currently managing or have managed him in the past. If you want to view the medical records of a new patient, then he or she must give you his or her Medical Records Access (MRA) Key. This is a token the system will require of you when you request for the medical history of the patient you didn’t generate. Only the patient can give you this token. He will copy it from his dashboard and pass it on to you during a chat. Copy it and paste in the appropriate field.
@@ -162,13 +232,13 @@ You can view the past medical records of a patient only if you are currently man
 
 			   <div class="card p-4" ng-if="picked === 'comm'">
 				 <h6>What are the available modes of communication ?</h6>
-There are four modes for communication between you and your Applinic patients: instant messaging chat, audio and video calls and the regular in-person meeting scheduled with the appointment module. 
+There are four modes for communication between you and your Applinic patients: instant messaging chat, audio and video calls and the regular in-person meeting scheduled with the appointment module. <br><br>
 
 <h6>How does the chat, audio and video call work ?</h6>
-These communication modules become activated between you and each patient for the first time after the patient has accepted your treatment offer. After a patient has shared his or her complaints with you directly or through the PWR, you will respond with a management plan and a consultation fee which the patient may or may not accept. If the patient accepts it, his account will be debited and yours credited and then all the above communication lines will open up between both of you. This patient will then be listed in your list of patients easily accessible from your dashboard. Subsequently he or she may request for chats, audio and video appointments with you or for in-person meeting.  
+These communication modules become activated between you and each patient for the first time after the patient has accepted your treatment offer. After a patient has shared his or her complaints with you directly or through the PWR, you will respond with a management plan and a consultation fee which the patient may or may not accept. If the patient accepts it, his account will be debited and yours credited and then all the above communication lines will open up between both of you. This patient will then be listed in your list of patients easily accessible from your dashboard. Subsequently he or she may request for chats, audio and video appointments with you or for in-person meeting.  <br><br>
 
 <h6>How do I participate in a video conference ?</h6>
-After two parties have scheduled a video call appointment, other participants may also be invited to join them. All participants must have Applinic accounts and must be online at the time. If they are not, an SMS will be sent to their phones to invite them to the conference. 
+After two parties have scheduled a video call appointment, other participants may also be invited to join them. All participants must have Applinic accounts and must be online at the time. If they are not, an SMS will be sent to their phones to invite them to the conference. <br><br>
 
 <h6>What notifications should I expect ?</h6>
 On top of the dashboard are two notification signs. The first is an envelope sign for notification on patients’ consultation requests and offer acceptances while the second is a chat sign for notification on pending chats. All notifications will drop there. If you click any, it will display the details. 
@@ -177,16 +247,16 @@ On top of the dashboard are two notification signs. The first is an envelope sig
 
 			   <div class="card p-4" ng-if="picked === 'relate'">
 				 <h6>How can I refer patients to my colleagues ?</h6>
-You can refer patients to your professional colleagues for expert management if you discover they have medical conditions you are not specialized to manage. On the patients folder, click the refer button and find the colleague by name or ID in the selected city and refer.
+You can refer patients to your professional colleagues for expert management if you discover they have medical conditions you are not specialized to manage. On the patients folder, click the refer button and find the colleague by name or ID in the selected city and refer.<br><br>
 
 <h6>How Can I find Drugs in Pharmacies ?</h6>
-After writing prescriptions, forward them to specific pharmacies to search their availability. If they are available you can either place order for them or request your patient to go buy them. If they are not available, you can search for them in other pharmacies and in other cities until you find them. 
+After writing prescriptions, forward them to specific pharmacies to search their availability. If they are available you can either place order for them or request your patient to go buy them. If they are not available, you can search for them in other pharmacies and in other cities until you find them. <br><br>
 
 <h6>How do I Relate to Pharmacies ?</h6>
-Search results for drugs have a message button beside each listed pharmacy which can be used to chat with them. Inquiries for availability and prices can be done through this service.
+Search results for drugs have a message button beside each listed pharmacy which can be used to chat with them. Inquiries for availability and prices can be done through this service.<br><br>
 
 <h6>How do I find diagnostic centers to send requests to?</h6>
-Use the ‘Searches’ button on your dashboard to locate the search bar for laboratories and radiology centers. Type the required investigations and search. You will receive a result of all centers in the city which provide the service. You may then chat with them or forward the request to them. This request will be sent to both the diagnostic center and the patient. The patient will need to visit the center for sample collection and investigation. Some laboratories provide home service and if the patient is willing to pay for it he can access the luxury. 
+Use the ‘Searches’ button on your dashboard to locate the search bar for laboratories and radiology centers. Type the required investigations and search. You will receive a result of all centers in the city which provide the service. You may then chat with them or forward the request to them. This request will be sent to both the diagnostic center and the patient. The patient will need to visit the center for sample collection and investigation. Some laboratories provide home service and if the patient is willing to pay for it he can access the luxury. <br><br>
 
 <h6>How do I relate to diagnostic centers ?</h6>
 You will relate with diagnostic centers essentially by chat just as the pharmaciesdo. You may also invite them to video conferences when you need to.
@@ -195,25 +265,25 @@ You will relate with diagnostic centers essentially by chat just as the pharmaci
 
 			  <div class="card p-4" ng-if="picked === 'finance'">
 			  <h6>What is MediPay ?</h6>
-MediPay is the name of the electronic wallet for Applinic. All payments for health services on the platform are to be made through the wallet. Consultation fees, treatment charges and other bills are expected to be made by patients through MediPay. It is through this system that Applinic also receives its discounts. Once a provider opens an account on Applinic, an e-wallet account is assigned him by default. The account becomes immediately operational as soon as the provider is verified. 
+MediPay is the name of the electronic wallet for Applinic. All payments for health services on the platform are to be made through the wallet. Consultation fees, treatment charges and other bills are expected to be made by patients through MediPay. It is through this system that Applinic also receives its discounts. Once a provider opens an account on Applinic, an e-wallet account is assigned him by default. The account becomes immediately operational as soon as the provider is verified. <br><br>
 
 <h6>How do I bill my patients ?</h6>
-Patients are either billed from the consultation request page (Consultation fee) or from the patients’ e-folder (treatment/procedure fee). Doctors generate their bills and present to the patient for review. If they accept it, the system will debit their account and credit you. If not, the transaction will not happen. If the patient doesn’t have enough money in his account, the system will prompt him or her to fund the account.
+Patients are either billed from the consultation request page (Consultation fee) or from the patients’ e-folder (treatment/procedure fee). Doctors generate their bills and present to the patient for review. If they accept it, the system will debit their account and credit you. If not, the transaction will not happen. If the patient doesn’t have enough money in his account, the system will prompt him or her to fund the account.<br><br>
 
 <h6>What if the transaction fails ?</h6>
-If due to network failure or other reason, the transaction fails to complete, the process may be repeated up to three times. If the failure persists, the health provider can collect cash from the patient and call our toll free Customer Service line to report the failed transaction for manual entry into the system or fill the failed transaction form to report it. This will enable us update the transaction and enter the prescription or diagnostic results into the patient’s account. The equivalent discount will then be debited the provider and credited the patient. 
+If due to network failure or other reason, the transaction fails to complete, the process may be repeated up to three times. If the failure persists, the health provider can collect cash from the patient and call our toll free Customer Service line to report the failed transaction for manual entry into the system or fill the failed transaction form to report it. This will enable us update the transaction and enter the prescription or diagnostic results into the patient’s account. The equivalent discount will then be debited the provider and credited the patient. <br><br>
 
 <h6>Can Users Transfer Money To One Another ?</h6>
-Applinic has the leverage of enabling intra-platform money transfers strictly for the payment of health services. Users, both patients and health providers can transfer money to friends and families to enable them pay for consultations, drugs, diagnostic services and treatments at no transaction costs. Patients can not cash out their wallets. Only health providers can. Also transfers can be made only to patients. It cannot be made to health providers by any user.
+Applinic has the leverage of enabling intra-platform money transfers strictly for the payment of health services. Users, both patients and health providers can transfer money to friends and families to enable them pay for consultations, drugs, diagnostic services and treatments at no transaction costs. Patients can not cash out their wallets. Only health providers can. Also transfers can be made only to patients. It cannot be made to health providers by any user.<br><br>
 
 <h6>How do I access or cash out my earnings ?</h6>
-Providers can access or cash out their earnings by clicking on the ‘Cash Out’ button on the Payment & Wallet menu. This menu is on the left side of the dashboard. The system will open the field for you to enter the amount you want to cash out and your receiving bank account details. When you do and send the request, a One Time Password (OTP) will be sent to your phone by SMS to validate the transaction. Type this OTP in the space provided and if it is correct, your wallet will be debited to credit your profiled bank account.
+Providers can access or cash out their earnings by clicking on the ‘Cash Out’ button on the Payment & Wallet menu. This menu is on the left side of the dashboard. The system will open the field for you to enter the amount you want to cash out and your receiving bank account details. When you do and send the request, a One Time Password (OTP) will be sent to your phone by SMS to validate the transaction. Type this OTP in the space provided and if it is correct, your wallet will be debited to credit your profiled bank account.<br><br>
 
 <h6>How secure is the Medipay wallet ?</h6>
-MediPay applies the contemporary cutting edge technology in today’s web security and online financial safe practice through the use of end-to-end encryption, secure gateways, anti-hack, and anti-malware applications to secure our in-app transactions. These systems are regularly updated. Our third party payment gate-way - Paystack which transfers value from your wallet to bank account provides similar service to hundreds of successful companies and have invested a lot in financial security. Till date, all their business have been safe and secure. .
+MediPay applies the contemporary cutting edge technology in today’s web security and online financial safe practice through the use of end-to-end encryption, secure gateways, anti-hack, and anti-malware applications to secure our in-app transactions. These systems are regularly updated. Our third party payment gate-way - Paystack which transfers value from your wallet to bank account provides similar service to hundreds of successful companies and have invested a lot in financial security. Till date, all their business have been safe and secure. <br><br>
 
 <h6>How do I view my transaction history ?</h6>
-The record of financial transactions on Applinic including account payment for services received and transfers is kept in your MediPay wallet. This can be accessed on the dashboard by clicking the e-wallet button on the left hand menu of the dashboard. This history can be searched by period and printed or mailed. 
+The record of financial transactions on Applinic including account payment for services received and transfers is kept in your MediPay wallet. This can be accessed on the dashboard by clicking the e-wallet button on the left hand menu of the dashboard. This history can be searched by period and printed or mailed. <br><br>
 
 <h6>How much do I pay Applinic for using the platform ? </h6>
 Applinic registration, online services, information storage and access are all free to the patient and providers. Providers don’t pay to register or to use the service. Nevertheless we receive a discount of 10-20% from the patient’s bill for every payment the patients make. Please review the terms of use and the explanatory notes in the dashboard palettes to update yourself on our discount requirements. 
@@ -222,23 +292,1167 @@ Applinic registration, online services, information storage and access are all f
 
 			   <div class="card p-4" ng-if="picked === 'update'">
 			  <h6>Why do I have to update my profile ?</h6>
-Your profile if updated will boost the confidence of patients who don’t know you. Your picture, qualifications, awards, skills and procedures will all aggregate to attract more cases, referrals, consultations and of course opportunities to save lives, alleviate sufferings and mitigate disorders if you keep the world updated on who you are and what you can do. 
+Your profile if updated will boost the confidence of patients who don’t know you. Your picture, qualifications, awards, skills and procedures will all aggregate to attract more cases, referrals, consultations and of course opportunities to save lives, alleviate sufferings and mitigate disorders if you keep the world updated on who you are and what you can do. <br><br>
 
 <h6>Why update my skills and procedures ?</h6>
-Patients all over are looking for your skills and procedures. Even your colleagues in other specialties may not know you have those skills, yet they are in search of the one to refer their patients to for expert management. You may be underutilized and your skills disoptimized. By updating your skills on your profile you stand a better chance of being of service to more people – patients and colleagues, for whom you acquired to skills to serve. 
+Patients all over are looking for your skills and procedures. Even your colleagues in other specialties may not know you have those skills, yet they are in search of the one to refer their patients to for expert management. You may be underutilized and your skills disoptimized. By updating your skills on your profile you stand a better chance of being of service to more people – patients and colleagues, for whom you acquired to skills to serve. <br><br>
 
 <h6>What types of articles and videos can I put up ?</h6>
-Publications, videos, animations and slide presentations on medical subjects, diseases, case managements and procedures published in your profile page are permitted as long as our editorial team has approved them and no copyrights were violated. Please see the Terms of Service and Privacy Policy for details on how we manage your intellectual property.
+Publications, videos, animations and slide presentations on medical subjects, diseases, case managements and procedures published in your profile page are permitted as long as our editorial team has approved them and no copyrights were violated. Please see the Terms of Service and Privacy Policy for details on how we manage your intellectual property.<br><br>
 
 <h6>Why do I have to tag my skills, procedures, articles and videos ?</h6>
 Tagging your publications with keywords will help in the search. Patients and colleagues will search for keywords relating to the skills, procedures and conditions they manage. The more these related keywords are used to tag your publications the more likely the search will be optimized for ease of finding. 
 
-			  </div>
+				</div>
+
+				</div>
 
 
+
+
+	</div>
+</div>
+
+</div>
+
+
+
+
+<!-- Pharmacy -->
+
+
+<div class="container" ng-if="checkLogIn.typeOfUser == 'Pharmacy'">
+
+ 	<div class="row doctor">
+      
+		<div class="col-md-4">
+
+			  <div class="row">  <!--palette start-->
+			  <div class="col-md-12">
+			   <div data-toggle="modal" class="card hoverr" ng-click="select('info1')" ng-class="{'bg-info': picked == 'info1'}">
+			   <div class="row pl-2">
+			     <div class="col-md-1" style="padding: 11px 0;"><img src="/assets/images/img/036-sprout.png" height="30" width="100%"> </div>
+			     <div class="col-md-11 pl-2 pt-1" ><h6>Where Do We Start?</h6></div>
+			   </div></div>
+			     </div>
+
+
+			     <!--palette end-->
+
+			        <!--palette start-->
+			  <div class="col-md-12">
+			   <div class="card hoverr"  ng-click="select('info2')" ng-class="{'bg-info': picked == 'info2'}">
+			   <div class="row pl-2">
+			     <div class="col-md-1"  style="padding: 11px 0;"><img src="/assets/images/img/007-consulting.png" height="30" width="100%"> </div>
+			     <div class="col-md-11 pl-2 pt-1"><h6>How Do I Optimize Patronage?</h6></div>
+			   </div></div>
+			     </div>
+
+			     <!--palette end-->
+
+			  <!--palette start-->
+			   <div class="col-md-12">
+			   <div class="card hoverr"  ng-click="select('info3')" ng-class="{'bg-info': picked == 'info3'}">
+			   <div class="row pl-2">
+			     <div class="col-md-1" style="padding: 11px 0;"><img src="/assets/images/img/021-waiting-room-1.png" height="30" width="100%"> </div>
+			     <div class="col-md-11 pl-2 pt-1"><h6>How Do We Manage Our Account?</h6></div>
+			   </div></div>
+			     </div>
+			 
+			</div>
+			     <!--palette end-->
+
+			       <!--palette start-->
+			<div class="row"> 
+			       <div class="col-md-12">
+			   <div class="card hoverr" ng-click="select('info4')" ng-class="{'bg-info': picked == 'info4'}">
+			   <div class="row pl-2">
+			     <div class="col-md-1" style="padding: 11px 0;"><img src="/assets/images/img/031-chat.png" height="30" width="100%"> </div>
+			     <div class="col-md-11 pl-2 pt-1"><h6>What Communication Options Do I Have?</h6></div>
+			   </div></div>
+			     </div>
+
+			     <!--palette end-->
+
+
+			       <!--palette start-->
+			  <div class="col-md-12">
+			   <div class="card hoverr" ng-click="select('info5')" ng-class="{'bg-info': picked == 'info5'}">
+			   <div class="row pl-2">
+			     <div class="col-md-1" style="padding: 11px 0;"><img src="/assets/images/img/016-worker.png" height="30" width="100%"> </div>
+			     <div class="col-md-11 pl-2 pt-1"><h6>How Do We Integrate Dispatch Delivery?</h6></div>
+			   </div></div>
+			     </div>
+
+			     <!--palette end-->
+
+			      <!--palette start-->
+			  <div class="col-md-12">
+			   <div class="card hoverr" ng-click="select('info6')" ng-class="{'bg-info': picked == 'info6'}">
+			   <div class="row pl-2">
+			     <div class="col-md-1" style="padding: 11px 0;"><img src="/assets/images/img/027-online-pay.png" height="30" width="100%"> </div>
+			     <div class="col-md-11 pl-2 pt-1"><h6>How Do We Manage Our Finances?</h6></div>
+			   </div></div>
+			     </div>
+
+			     <!--<div class="col-md-12">
+			   <div class="card hoverr" ng-click="select('info7')" ng-class="{'bg-info': picked == 'info7'}">
+			   <div class="row pl-2">
+			     <div class="col-md-1" style="padding: 11px 0;"><img src="/assets/images/img/012-skills-1.png" height="30" width="100%"> </div>
+			     <div class="col-md-11 pl-2 pt-1"><h6>How Do We Integrate Dispatch Delivery?</h6></div>
+			   </div></div>
+					 </div>
+
+<div class="col-md-12">
+	<div class="card hoverr" ng-click="select('update')" ng-class="{'bg-info': picked == 'finances'}">
+		<div class="row pl-2">
+			<div class="col-md-1" style="padding: 11px 0;"><img src="/assets/images/img/012-skills-1.png" height="30" width="100%">
+			</div>
+			<div class="col-md-11 pl-2 pt-1">
+				<h6>How Do We Manage Our Finances?</h6>
+			</div>
 		</div>
 	</div>
 </div>
+					 
+					
+					 <div class="col-md-12">
+			   <div class="card hoverr" ng-click="select('update')" ng-class="{'bg-info': picked == 'update'}">
+			   <div class="row pl-2">
+			     <div class="col-md-1" style="padding: 11px 0;"><img src="/assets/images/img/012-skills-1.png" height="30" width="100%"> </div>
+			     <div class="col-md-11 pl-2 pt-1"><h6>What should we do after opening account?</h6></div>
+			   </div></div>
+					 </div>
+					 
+<div class="col-md-12">
+	<div class="card hoverr" ng-click="select('update')" ng-class="{'bg-info': picked == 'optimize'}">
+		<div class="row pl-2">
+			<div class="col-md-1" style="padding: 11px 0;"><img src="/assets/images/img/012-skills-1.png" height="30" width="100%">
+			</div>
+			<div class="col-md-11 pl-2 pt-1">
+				<h6>How Do I Optimize Patronage?</h6>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="col-md-12">
+	<div class="card hoverr" ng-click="select('update')" ng-class="{'bg-info': picked == 'manage'}">
+		<div class="row pl-2">
+			<div class="col-md-1" style="padding: 11px 0;"><img src="/assets/images/img/012-skills-1.png" height="30" width="100%">
+			</div>
+			<div class="col-md-11 pl-2 pt-1">
+<h6>How Do We Manage Our Account?</h6>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="col-md-12">
+	<div class="card hoverr" ng-click="select('update')" ng-class="{'bg-info': picked == 'communicate'}">
+		<div class="row pl-2">
+			<div class="col-md-1" style="padding: 11px 0;"><img src="/assets/images/img/012-skills-1.png" height="30" width="100%">
+			</div>
+			<div class="col-md-11 pl-2 pt-1">
+<h6>How Do We Communicate?</h6>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="col-md-12">
+	<div class="card hoverr" ng-click="select('update')" ng-class="{'bg-info': picked == 'manage'}">
+		<div class="row pl-2">
+			<div class="col-md-1" style="padding: 11px 0;"><img src="/assets/images/img/012-skills-1.png" height="30" width="100%">
+			</div>
+			<div class="col-md-11 pl-2 pt-1">
+<h6>How Do We Manage Our Account?</h6>
+			</div>
+		</div>
+	</div>
+</div>-->
+
+		</div>
+	</div>
+
+
+
+	<div class="col-md-8">
+		<div>
+			<div class="card p-4" ng-if="picked === 'info1'">
+							<h5>Where Do We Start?</h5>
+				<h6>- What should we do after opening account?</h6>
+				The very first thing to do after opening a pharmaceutical account is to update your profile and
+				drug inventory.
+
+
+				
+				<br/><br/><h6>- Why should we update our profile?</h6>
+				After creation of your account, you need to add your pharmacy store’s profile picture, verify
+				your practice and profile your bank account for cashing out to set the stage for your practice on
+				Applinic. You may also assign a trusted staff to manage your account, if you will be too busy to
+				do so.
+
+
+				
+				<br/><br/><h6>- How should we update our inventory?</h6>
+				The very first time you create a pharmacy Applinic account, your inventory will be populated
+				with drugs from our database. You need to update this list as a matter of priority. Uncheck all
+				the drugs you don’t have in stock and add those you have that we didn’t capture. Your
+				inventory will then be up to date. This will open your world of online business through the
+				Applinic platform.
+				
+				<br/><br/><h6>- Why should we update our services?</h6>
+				It is highly advisable to update your drug inventory for two reasons. First, Applinic has an in-built
+				drug-search which enables doctors, patients and other users search for drugs on the platform
+				before going to buy them. If your inventory is not updated and searches are done for drugs you
+				have, the system will not list your store in the search result, so you may miss sales. Secondly, if
+				you don’t have a drug in stock and your inventory shows you do, the customer who visits your
+				store to buy them will be disappointed to discover you don’t have them in stock and may be
+				discouraged from patronizing you the next time your center appears in a search result.
+				</div>
+
+
+				<div class="card p-4" ng-if="picked === 'info2'">
+				<h5> How Do I Optimize Patronage?</h5>
+				
+				<br/><br/><h6>- Why should we be online always?</h6>
+				To optimize patronage, you need to be always logged in with any available device so you can see
+				and respond to chat inquiries and other service opportunities that may present. Patients,
+				doctors and other users are more likely to patronize you when you are online than when you are
+				off. You may designate or delegate a trusted staff to remain online for your center and notify
+				you whenever there is a request he cannot handle.
+				
+				<br/><br/><h6>- Why assist Patients fund accounts?</h6>
+				Patients who don’t have money in their e-wallet accounts to pay for your services but have cash
+				can be assisted. The system allows you to fund their e-wallets for them. This is done by direct
+				
+				transfer from your account to theirs in exchange for their cash and then transacting the
+				payment through the Medipay e-wallet. When patients pay through their wallets, the platform
+				records their prescriptions in their electronic medical records. But if they pay cash, this record
+				cannot be kept. E-wallet payment is the way the application confirms the drugs were truly
+				procured.
+				
+				<br/><br/><h6>- What if a patient has no account?</h6>
+				All health providers can open temporary accounts for their patients who don’t have an account
+				before they attend to them. They do this with just the patient’s name and phone number. Other
+				details can be filled in by the patient at a later time. To do this, click on the create account
+				button on the dashboard and fill the basic information in the fields provided.
+				</div>
+
+
+
+				<div class="card p-4" ng-if="picked === 'info3'">
+				<h5> How Do We Manage Our Account?</h5>
+				
+				<br/><br/><h6>- How can we access our sales?</h6>
+				The Work History button on the dashboard opens up all the cases that have been attended to
+				for a period. In fact it provides this information based on periodic categorizations. Click on any
+				button that represents a period to view the details of your activities for the selected period.
+				
+				<br/><br/><h6>- Where do we see our unattended requests?</h6>
+				All pending prescriptions from doctors, patients and other customers are listed in the Work List.
+				The Work List button drops down the list of pending tasks when it is clicked. Click on each
+				request to view the details. You may then attend to them from there.
+				
+				<br/><br/><h6>- Where do we find prescriptions?</h6>
+				The prescriptions for all patients not sent directly to you can be found in the prescription pool
+				by clicking the ‘Find Patient Prescription’ button. This will open a search bar for you to type the
+				reference number of the prescription. If this is typed correctly, it will search for the prescription
+				and display its details. From here the request can be processed and served.
+				
+				<br/><br/><h6>- Can we refer patients to doctors</h6>
+				All health providers including Pharmacists can refer patients to physicians for expert
+				management. By using the Refer button, pharmacists can achieve this purpose.
+				</div>
+
+
+
+				<div class="card p-4" ng-if="picked === 'info4'">
+				<h5> How Do We Communicate?</h5>
+				
+				<br/><br/><h6>- What are the available modes of communication?</h6>
+				The basic and main channel of communication for pharmacists with other platform users is chat.
+				Sometimes they may be invited to participate in a video conference.
+				
+				
+				<br/><br/><h6>- How do we view or commence chats?</h6>
+				You can view chats by clicking on the chat notification sign on the dashboard. It will open the
+				chat in details. You can also commence chats by clicking on the chat sign beside any user the
+				pharmacist finds through a completed search.
+				
+				<br/><br/><h6>- What notifications should we expect?</h6>
+				On top of the dashboard are two notification signs. The first is a bell sign for notifications on
+				requests, prescriptions and so forth while the second is a chat sign for notification on pending
+				chats. All notifications will drop there. If you click on any, the details will be displayed.
+				</div>
+
+
+
+
+				<div class="card p-4" ng-if="picked === 'info5'">
+				<h5> How Do We Integrate Dispatch Delivery?</h5>
+				<br/><br/><h6>- How do we use the dispatch service?</h6>
+				To render dispatch service, the administrator for Applinic needs to activate your center for
+				dispatch after you have applied to support@applinic.com. If your application is approved, the
+				‘Courier Services’ button on the pharmacy dashboard will become active. Click on it to view the
+				requests you have from customers who want to buy your drugs under the terms of home
+				delivery. Accept the requests and bill the drugs requested. If the customer accepts it, you will
+				receive the credit value of the drug requested. You may then release the drugs to the rider.
+				Please review the appropriate section of the Terms of Use to understand the legal details of this
+				service.
+				<br/><br/><h6>- How much does the service cost?</h6>
+				There are two ways drug dispatch services are billed. The first is a city-fixed charge per delivery
+				irrespective of location of the buyer and the second is a manual location-based billing by the
+				courier operator. Either of these may be used at any time depending on the market factors.
+				When the second model is in operation and you receive a request, you can bill the customer
+				based on both the value of the drug and his location.
+				<br/><br/><h6>- Who directs the dispatch delivery services</h6>
+				The dispatch delivery service in each city is a third party service that is operated by a franchisee.
+				The management of this service is different from Applinic but we provide the guidelines and
+				regulations. The rules and policies governing them are universal and apply in every city with
+				minor price variations. Neither the franchisees nor their riders collect cash from customers. All
+				payments for drugs and their dispatch must be made using MediPay E-wallet. You may report an
+				undesirable experience with any courier service by mail to info@applinic.com or by call to our
+				customer care line - +2349080045678.
+				<br/><br/><h6>- How do we get our monies for drugs for dispatch?</h6>
+				All payments for drugs including dispatch are made through MediPay e-wallet. When drugs are
+				paid for by MediPay, the pharmacy receives the deposit instantly and it can be cashed out at
+				will.
+				
+				<br/><br/><h6>- What rules and governs them?</h6>
+				The details of the policies governing the dispatch delivery services can be found in the relevant
+				section of the pharmacies’ Terms of Use and the information palettes on the pharmacy
+				dashboard.
+				</div>
+
+
+
+
+				<div class="card p-4" ng-if="picked === 'info6'">
+				<h5>How Do We Manage Our Finances?</h5>
+
+				
+				<br/><br/><h6>- What is MediPay?
+				MediPay is the name of the electronic wallet for Applinic. All payments for health services
+				including drugs and pharmaceutical products on the platform are to be made by the patients
+				through the wallet. It is through this system that Applinic also receives its discounts. Once a
+				provider opens an account on Applinic, an e-wallet account is assigned to him by default. The
+				account becomes immediately operational as soon as the provider is verified.
+				
+				<br/><br/><h6>- How do we bill prescriptions?
+				Electronic prescriptions are served by costing of the drugs on the platform and submission to
+				patients for approval. If the patient accepts the bill, the system will send an OTP to the patient’s
+				phone number to confirm he initiated the debit. He will give this number to the pharmacy to
+				enter and validate the transaction after which the buyer’s account will be debited to credit the
+				pharmacy.
+				
+				<br/><br/><h6>- How should the patient pay for my products?</h6>
+				Patients and customers will pay for all your pharmaceutical products using the MediPay. All
+				credits to your account are instant. You may also cash out the money into your regular bank
+				account.
+				
+				<br/><br/><h6>- Why must I receive payments through the E-wallet?</h6>
+				E-wallet payment via MediPay is the standard payment model for all sales and services on
+				Applinic. This makes record keeping easier, especially the recording of patient’s medical history.
+				That is one of the main objectives of Applinic.
+				
+				<br/><br/><h6>- What if the transaction fails?</h6>
+				If due to network failure or other reason, the transaction fails to complete, the health provider
+				can collect cash from the patient and call our Customer Service line on +2349080045678 or send
+				mail to info@applinic.com to report the failed transaction for manual entry into the system.
+				Alternatively, he may fill the failed transaction form to report it. This will enable us update the
+				transaction and enter the prescription or diagnostic results into the patient’s account. The
+				equivalent discount will then be debited the provider and credited the patient.
+				
+				<br/><br/><h6>- How do we access or cash out our earnings?</h6>
+				Providers can cash out their earnings by clicking on the ‘Cash Out’ button on the Payment &amp;
+				Wallet menu. This menu is on the left side of the dashboard. The system will open the field for
+				
+				you to enter the amount you want to cash out. When you do and send the request, a One Time
+				Password (OTP) will be sent to your phone by SMS to validate the transaction. Type this OTP in
+				the space provided and your wallet will be debited to credit your profiled bank account.
+				
+				<br/><br/><h6>- How secure is the Medipay wallet?</h6>
+				
+				 MediPay applies the contemporary cutting edge technology in today’s web security and online
+				financial safe practice through the use of end-to-end encryption, secure gateways and anti-
+				hack/malware applications to secure our in-app transactions. These systems are regularly
+				updated. Our third party payment gate-way - Paystack which transfers value from your wallet to
+				bank account provides secure interbank services globally and observes best practices in online
+				financial security.
+			<br/><br/><h6>	- Can Users Transfer Money To One Another?</h6>
+				Applinic has the leverage of enabling intra-platform money transfers strictly for the payment of
+				health services. Users can transfer money to friends and families to enable them pay for
+				consultations, drugs, diagnostic services and treatments at no transaction costs.
+				<br/><br/><h6>- How do we view our transaction history</h6>
+				The record of financial transactions on Applinic including account payment for services received
+				and transfers is kept in your MediPay wallet. This can be accessed on the dashboard by clicking
+				the e-wallet button on the left hand menu of the dashboard. This history can be searched by
+				period and printed or mailed.
+				<br/><br/><h6>- How much do we pay Applinic for using the platform?</h6>
+				Applinic registration, online services, medical records archival and access are all free to the
+				patient and providers. Providers don’t pay to open an account or to use the service.
+				Nevertheless depending on the city, we receive a discount of 5-10% of the patient’s bill for every
+				payment made. Please review the terms of use and the explanatory notes in the dashboard
+				palettes to update yourself on the discount requirements.
+
+		</div>
+		</div>
+	</div>
+</div>
+
+</div>
+
+
+<!-- Laboratory -->
+
+
+<div class="container" ng-if="checkLogIn.typeOfUser == 'Laboratory'">
+
+ 	<div class="row doctor">
+      
+		<div class="col-md-4">
+
+			  <div class="row">  <!--palette start-->
+			  <div class="col-md-12">
+			   <div data-toggle="modal" class="card hoverr" ng-click="select('info1')" ng-class="{'bg-info': picked == 'info1'}">
+			   <div class="row pl-2">
+			     <div class="col-md-1" style="padding: 11px 0;"><img src="/assets/images/img/036-sprout.png" height="30" width="100%"> </div>
+			     <div class="col-md-11 pl-2 pt-1" ><h6>Where Do We Start?</h6></div>
+			   </div></div>
+			     </div>
+
+
+			     <!--palette end-->
+
+			        <!--palette start-->
+			  <div class="col-md-12">
+			   <div class="card hoverr"  ng-click="select('info2')" ng-class="{'bg-info': picked == 'info2'}">
+			   <div class="row pl-2">
+			     <div class="col-md-1"  style="padding: 11px 0;"><img src="/assets/images/img/007-consulting.png" height="30" width="100%"> </div>
+			     <div class="col-md-11 pl-2 pt-1"><h6>How Do We Manage Our Account?</h6></div>
+			   </div></div>
+			     </div>
+
+			     <!--palette end-->
+
+			  <!--palette start-->
+			   <div class="col-md-12">
+			   <div class="card hoverr"  ng-click="select('info3')" ng-class="{'bg-info': picked == 'info3'}">
+			   <div class="row pl-2">
+			     <div class="col-md-1" style="padding: 11px 0;"><img src="/assets/images/img/021-waiting-room-1.png" height="30" width="100%"> </div>
+			     <div class="col-md-11 pl-2 pt-1"><h6>How Do I Optimize Patronage?</h6></div>
+			   </div></div>
+			     </div>
+			 
+			</div>
+			     <!--palette end-->
+
+			       <!--palette start-->
+			<div class="row"> 
+			       <div class="col-md-12">
+			   <div class="card hoverr" ng-click="select('info4')" ng-class="{'bg-info': picked == 'info4'}">
+			   <div class="row pl-2">
+			     <div class="col-md-1" style="padding: 11px 0;"><img src="/assets/images/img/031-chat.png" height="30" width="100%"> </div>
+			     <div class="col-md-11 pl-2 pt-1"><h6>What Communication Options Do I Have?</h6></div>
+			   </div></div>
+			     </div>
+
+			     <!--palette end-->
+
+
+			       <!--palette start-->
+			  <div class="col-md-12">
+			   <div class="card hoverr" ng-click="select('info5')" ng-class="{'bg-info': picked == 'info5'}">
+			   <div class="row pl-2">
+			     <div class="col-md-1" style="padding: 11px 0;"><img src="/assets/images/img/016-worker.png" height="30" width="100%"> </div>
+			     <div class="col-md-11 pl-2 pt-1"><h6>How Do We Manage Our Finances?</h6></div>
+			   </div></div>
+			     </div>
+
+			     <!--palette end-->
+
+			      <!--palette start-->
+			  <!--<div class="col-md-12">
+			   <div class="card hoverr" ng-click="select('info6')" ng-class="{'bg-info': picked == 'info6'}">
+			   <div class="row pl-2">
+			     <div class="col-md-1" style="padding: 11px 0;"><img src="/assets/images/img/027-online-pay.png" height="30" width="100%"> </div>
+			     <div class="col-md-11 pl-2 pt-1"><h6>How Do We Manage Our Finances?</h6></div>
+			   </div></div>
+			     </div>
+
+			     <div class="col-md-12">
+			   <div class="card hoverr" ng-click="select('info7')" ng-class="{'bg-info': picked == 'info7'}">
+			   <div class="row pl-2">
+			     <div class="col-md-1" style="padding: 11px 0;"><img src="/assets/images/img/012-skills-1.png" height="30" width="100%"> </div>
+			     <div class="col-md-11 pl-2 pt-1"><h6>How Do We Integrate Dispatch Delivery?</h6></div>
+			   </div></div>
+					 </div>
+
+<div class="col-md-12">
+	<div class="card hoverr" ng-click="select('update')" ng-class="{'bg-info': picked == 'finances'}">
+		<div class="row pl-2">
+			<div class="col-md-1" style="padding: 11px 0;"><img src="/assets/images/img/012-skills-1.png" height="30" width="100%">
+			</div>
+			<div class="col-md-11 pl-2 pt-1">
+				<h6>How Do We Manage Our Finances?</h6>
+			</div>
+		</div>
+	</div>
+</div>
+					 
+					
+					 <div class="col-md-12">
+			   <div class="card hoverr" ng-click="select('update')" ng-class="{'bg-info': picked == 'update'}">
+			   <div class="row pl-2">
+			     <div class="col-md-1" style="padding: 11px 0;"><img src="/assets/images/img/012-skills-1.png" height="30" width="100%"> </div>
+			     <div class="col-md-11 pl-2 pt-1"><h6>What should we do after opening account?</h6></div>
+			   </div></div>
+					 </div>
+					 
+<div class="col-md-12">
+	<div class="card hoverr" ng-click="select('update')" ng-class="{'bg-info': picked == 'optimize'}">
+		<div class="row pl-2">
+			<div class="col-md-1" style="padding: 11px 0;"><img src="/assets/images/img/012-skills-1.png" height="30" width="100%">
+			</div>
+			<div class="col-md-11 pl-2 pt-1">
+				<h6>How Do I Optimize Patronage?</h6>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="col-md-12">
+	<div class="card hoverr" ng-click="select('update')" ng-class="{'bg-info': picked == 'manage'}">
+		<div class="row pl-2">
+			<div class="col-md-1" style="padding: 11px 0;"><img src="/assets/images/img/012-skills-1.png" height="30" width="100%">
+			</div>
+			<div class="col-md-11 pl-2 pt-1">
+<h6>How Do We Manage Our Account?</h6>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="col-md-12">
+	<div class="card hoverr" ng-click="select('update')" ng-class="{'bg-info': picked == 'communicate'}">
+		<div class="row pl-2">
+			<div class="col-md-1" style="padding: 11px 0;"><img src="/assets/images/img/012-skills-1.png" height="30" width="100%">
+			</div>
+			<div class="col-md-11 pl-2 pt-1">
+<h6>How Do We Communicate?</h6>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="col-md-12">
+	<div class="card hoverr" ng-click="select('update')" ng-class="{'bg-info': picked == 'manage'}">
+		<div class="row pl-2">
+			<div class="col-md-1" style="padding: 11px 0;"><img src="/assets/images/img/012-skills-1.png" height="30" width="100%">
+			</div>
+			<div class="col-md-11 pl-2 pt-1">
+<h6>How Do We Manage Our Account?</h6>
+			</div>
+		</div>
+	</div>
+</div>-->
+
+		</div>
+	</div>
+
+
+
+	<div class="col-md-8">
+		<div>
+			<div class="card p-4" ng-if="picked === 'info1'">
+							<h5>Where Do We Start?</h5>
+				<h6> - What should we do after opening account?</h6>
+		The very first thing to do after opening a laboratory account is to update your profile and
+		services.<br><br>
+		
+		<h6>- Why should we update our profile?</h6>
+		After creation of your account, you need to add your laboratory’s profile picture, verify your
+		practice and profile your bank account for cashing out. All these set the stage for your practice
+		
+		on Applinic. You may also assign a trusted staff to manage your account, if you will be too busy
+		to do so.<br><br>
+		
+		<h6>- Why should we update our services?</h6>
+		Keeping the list of your services up to date optimizes patronage. Applinic has an in-built
+		investigation search which enables doctors, patients and other users search for laboratory
+		services online to know the centers that perform them in the user’s city before going to
+		patronize them. If your services are not updated, you may either miss opportunities or create
+		false hopes that may act against your patronage in the future.<br><br><br>
+		
+		<h6>- How should we update our services?</h6>
+		The very first time you create an Applinic laboratory account, your services will be populated
+		with the investigations in our database. You need to update this list as a matter of priority.
+		Uncheck all the services you don’t render and add those you do which we didn’t capture. Your
+		services will then be up to date. When your services are updated, your center will be listed in
+		the search results displayed when patients and physicians search such services in your city.
+				</div>
+
+
+				<div class="card p-4" ng-if="picked === 'info2'">
+							<h5>How Do We Manage Our Account?</h5><hr>
+		
+		<h6>	- How can we access my cases?</h6>
+		The Work History button on the dashboard opens up all the cases that have been attended to
+		for a period. In fact it provides this information based on periodic categorizations. Click on any
+		button that represents periods to view the details of your activities in the selected period.<br><br><br>
+		
+		<h6>- Where do we see our unattended requests?</h6>
+		All pending investigation requests from doctors, patients and other customers are listed in the
+		Work List. The Work List button drops down the list of pending tasks when it is clicked. Click on
+		each request to view the details and attend to them from there.<br><br><br>
+		
+		<h6>- Where do we access laboratory requests?</h6>
+		The investigation requests of all patients which were not sent directly to you can be found by
+		clicking the Find Investigation Request. This will open a search bar to type the reference number
+		of the request. Search this number to open details of the request and from there you can
+		attend to it.<br><br><br>
+		
+		<h6>- Can we refer patients to doctors?</h6>
+		All health providers including Laboratory scientists can refer patients to physicians for expert
+		management. You can achieve this purpose by using the Refer button.
+				</div>
+
+
+
+				<div class="card p-4" ng-if="picked === 'info3'">
+				<h5>How Do I Optimize Patronage?</h5><hr>
+		
+		<h6>	- Why should we be online always?</h6>
+		You need to be always logged in with any available device so you can see and respond to chat
+		inquiries and other service opportunities that may present. Patients, doctors, pharmacies and
+		
+		other customers are more likely to patronize you when you are online than when you are not.
+		You may designate a trusted staff to remain logged in for your center and notify you whenever
+		there is a request he cannot handle.<br><br><br>
+		
+		<h6>- How can I render home service?</h6>
+		You can render Home Service on Applinic. This premium service will increase your patronage for
+		a premium cost. To add Home Service to your account, update your Service by adding Home
+		Service. When patients search for this service in your city, your practice will be listed and they
+		can then contact you by chat.<br><br><br>
+		
+		<h6>- What if a patient has no account?</h6>
+		All health providers can open temporary accounts for their patients who don’t have an account
+		before they attend to them. They do this with just the patient’s name and phone number. Other
+		details can be filled in by the patient at a later time. To do this, click on the create account
+		button on the dashboard and fill the basic information in the fields provided.<br><br><br>
+		
+		<h6>- Why assist Patients fund accounts?</h6>
+		Patients who don’t have money in their e-wallet accounts to pay for your services but have cash
+		can be assisted. The system allows you to fund their e-wallets for them. This is done by direct
+		transfer from your account to theirs in exchange for their cash and then transacting the
+		payment through the e-wallet. When patients pay through their wallets, the platform records
+		the investigation results in their electronic medical records and for your center’s record also. If
+		they pay cash, this record cannot be created.
+				</div>
+
+
+
+				<div class="card p-4" ng-if="picked === 'info4'">
+				<h5>How Do We Communicate?</h5><hr>
+		
+		<h6>	- What are the available modes of communication?</h6>
+		The basic and main channel of communication for laboratories is chat. Sometimes laboratory
+		scientists may be invited to participate in a video conference.<br><br><br>
+		
+		<h6>- How do we view or commence chats?</h6>
+		You can view chats by clicking on the chat notification sign on the dashboard. It will open the
+		chat in details. You can also commence chats by clicking on the chat sign beside the provider
+		after finding him through a search.<br><br><br>
+		
+		<h6>- What notifications should we expect?</h6>
+		On top of the dashboard are two notification signs. The first is a bell sign for notifications on
+		requests and the second is a chat sign for notification on pending chats. All notifications will
+		drop there. If you click any, it will display the details.
+				</div>
+
+
+
+
+				<div class="card p-4" ng-if="picked === 'info5'">
+				<h5>How Do We Manage Our Finances?</h5><hr>
+		
+		<h6>	- What is MediPay?</h6>
+		MediPay is the name of the electronic wallet for Applinic. All payments for laboratory services
+		on the platform are to be made through the wallet. It is through this system that Applinic also
+		receives its discounts. Once a provider opens an account on Applinic, an e-wallet account is
+		assigned him by default. The account becomes immediately operational as soon as the provider
+		is verified.<br><br><br>
+		
+		<h6>- How do we bill laboratory services?</h6>
+		Electronic laboratory requests are served by costing of the services on the platform and
+		submission to patients for approval. If the patient accepts the bill, the system will send a One
+		Time Password (OTP) to the patient to confirm he initiated the debit. If he accepts it, his
+		account will be debited and the laboratory’s credited.<br><br><br>
+		
+		<h6>- How should the patient pay for my services?</h6>
+		Patients and customers will pay for all your laboratory services using the MediPay. All credits to
+		your account are instant. You may also cash out the money into your regular bank account.<br><br><br>
+		
+		<h6>- Why must we receive payments through the e-wallet?</h6>
+		E-wallet payment via MediPay is the standard payment model for all sales and services on
+		Applinic. This makes record keeping easier, especially the recording of patient’s medical history.
+		Keeping an Electronic Patients Record (EPR) for every consumer of healthcare is one of the main
+		objectives of Applinic and laboratory results form an integral part of that record. It is also the
+		way the platform receives discounts for purchases made through it.<br><br><br>
+		
+		<h6>- What if the transaction fails?</h6>
+		If due to network failure or other reason, the transaction fails to complete, the health provider
+		can collect cash from the patient and call our Customer Service line on +2349080045678 or send
+		an e-mail to info@applinic.com to report the failed transaction for manual entry into the
+		system. Alternatively, he may fill the failed transaction form to report it. This will enable us
+		update the transaction and enter the diagnostic results into the patient’s account. The
+		equivalent discount will then be debited the provider and credited the patient.<br><br><br>
+		
+		<h6>- How do we cash out our earnings?</h6>
+		Providers can cash out their earnings by clicking on the ‘Cash Out’ button on the Payment &amp;
+		Wallet menu. This menu is on the left side of the dashboard. The system will open the field for
+		you to enter the amount you want to cash out. When you do and send the request, a One Time
+		Password (OTP) will be sent to your phone by SMS to validate the transaction. Type this OTP in
+		the space provided for your wallet will be debited to credit your profiled bank account.<br><br><br>
+		
+		
+		<h6>- How secure is the Medipay wallet?</h6>
+		MediPay applies the contemporary cutting edge technology in today’s web security and online
+		financial safe practice through the use of end-to-end encryption, secure gateways and anti-
+		hack/malware applications to secure our in-app transactions. These systems are regularly
+		updated. Our third party payment gate-way - Paystack which transfers value from your wallet to
+		bank account provides secure interbank services globally and observes best practices in online
+		financial security.<br><br><br>
+		
+		<h6>- Can Users Transfer Money To One Another?</h6>
+		Applinic has the leverage of enabling intra-platform money transfers strictly for the payment of
+		health services. Users can transfer money to friends and families to enable them pay for
+		consultations, drugs, diagnostic services and treatments at no transaction costs.<br><br><br>
+		
+		<h6>- How do we view our transaction history</h6>
+		The record of financial transactions on Applinic including account payment for services received
+		and transfers is kept in your MediPay wallet. This can be accessed on the dashboard by clicking
+		the e-wallet button on the left hand menu of the dashboard. This history can be searched by
+		period and printed or mailed.<br><br><br>
+		
+		<h6>- How much do we pay Applinic for using the platform?</h6>
+		Applinic registration, online services, medical records archival and access are all free to the
+		patient and providers. Providers don’t pay to open an account or to use the service.
+		Nevertheless, depending on your city, Applinic receives a discount of 5-10% of the patient’s bill
+		for every payment made on the platform. Please review the terms of use and the explanatory
+		notes in the dashboard palettes for more details on the discount requirements.
+				</div>
+
+
+
+
+			
+		</div>
+	</div>
+</div>
+
+</div>
+
+
+
+<!-- Radiology -->
+
+<div class="container" ng-if="checkLogIn.typeOfUser == 'Radiology'">
+
+ 	<div class="row doctor">
+      
+		<div class="col-md-4">
+
+			  <div class="row">  <!--palette start-->
+			  <div class="col-md-12">
+			   <div data-toggle="modal" class="card hoverr" ng-click="select('info1')" ng-class="{'bg-info': picked == 'info1'}">
+			   <div class="row pl-2">
+			     <div class="col-md-1" style="padding: 11px 0;"><img src="/assets/images/img/036-sprout.png" height="30" width="100%"> </div>
+			     <div class="col-md-11 pl-2 pt-1" ><h6>Where Do We Start?</h6></div>
+			   </div></div>
+			     </div>
+
+
+			     <!--palette end-->
+
+			        <!--palette start-->
+			  <div class="col-md-12">
+			   <div class="card hoverr"  ng-click="select('info2')" ng-class="{'bg-info': picked == 'info2'}">
+			   <div class="row pl-2">
+			     <div class="col-md-1"  style="padding: 11px 0;"><img src="/assets/images/img/007-consulting.png" height="30" width="100%"> </div>
+			     <div class="col-md-11 pl-2 pt-1"><h6>How Do We Manage Our Account?</h6></div>
+			   </div></div>
+			     </div>
+
+			     <!--palette end-->
+
+			  <!--palette start-->
+			   <div class="col-md-12">
+			   <div class="card hoverr"  ng-click="select('info3')" ng-class="{'bg-info': picked == 'info3'}">
+			   <div class="row pl-2">
+			     <div class="col-md-1" style="padding: 11px 0;"><img src="/assets/images/img/021-waiting-room-1.png" height="30" width="100%"> </div>
+			     <div class="col-md-11 pl-2 pt-1"><h6>How Do I Optimize Patronage?</h6></div>
+			   </div></div>
+			     </div>
+			 
+			</div>
+			     <!--palette end-->
+
+			       <!--palette start-->
+			<div class="row"> 
+			       <div class="col-md-12">
+			   <div class="card hoverr" ng-click="select('info4')" ng-class="{'bg-info': picked == 'info4'}">
+			   <div class="row pl-2">
+			     <div class="col-md-1" style="padding: 11px 0;"><img src="/assets/images/img/031-chat.png" height="30" width="100%"> </div>
+			     <div class="col-md-11 pl-2 pt-1"><h6>What Communication Options Do I Have?</h6></div>
+			   </div></div>
+			     </div>
+
+			     <!--palette end-->
+
+
+			       <!--palette start-->
+			  <div class="col-md-12">
+			   <div class="card hoverr" ng-click="select('info5')" ng-class="{'bg-info': picked == 'info5'}">
+			   <div class="row pl-2">
+			     <div class="col-md-1" style="padding: 11px 0;"><img src="/assets/images/img/016-worker.png" height="30" width="100%"> </div>
+			     <div class="col-md-11 pl-2 pt-1"><h6>How Do We Manage Our Studies?</h6></div>
+			   </div></div>
+			     </div>
+
+			     <!--palette end-->
+
+			      <!--palette start-->
+			  <div class="col-md-12">
+			   <div class="card hoverr" ng-click="select('info6')" ng-class="{'bg-info': picked == 'info6'}">
+			   <div class="row pl-2">
+			     <div class="col-md-1" style="padding: 11px 0;"><img src="/assets/images/img/027-online-pay.png" height="30" width="100%"> </div>
+			     <div class="col-md-11 pl-2 pt-1"><h6>How Do We Manage Our Finances?</h6></div>
+			   </div></div>
+			     </div>
+
+			     <!--<div class="col-md-12">
+			   <div class="card hoverr" ng-click="select('info7')" ng-class="{'bg-info': picked == 'info7'}">
+			   <div class="row pl-2">
+			     <div class="col-md-1" style="padding: 11px 0;"><img src="/assets/images/img/012-skills-1.png" height="30" width="100%"> </div>
+			     <div class="col-md-11 pl-2 pt-1"><h6>How Do We Integrate Dispatch Delivery?</h6></div>
+			   </div></div>
+					 </div>
+
+<div class="col-md-12">
+	<div class="card hoverr" ng-click="select('update')" ng-class="{'bg-info': picked == 'finances'}">
+		<div class="row pl-2">
+			<div class="col-md-1" style="padding: 11px 0;"><img src="/assets/images/img/012-skills-1.png" height="30" width="100%">
+			</div>
+			<div class="col-md-11 pl-2 pt-1">
+				<h6>How Do We Manage Our Finances?</h6>
+			</div>
+		</div>
+	</div>
+</div>
+					 
+					
+					 <div class="col-md-12">
+			   <div class="card hoverr" ng-click="select('update')" ng-class="{'bg-info': picked == 'update'}">
+			   <div class="row pl-2">
+			     <div class="col-md-1" style="padding: 11px 0;"><img src="/assets/images/img/012-skills-1.png" height="30" width="100%"> </div>
+			     <div class="col-md-11 pl-2 pt-1"><h6>What should we do after opening account?</h6></div>
+			   </div></div>
+					 </div>
+					 
+<div class="col-md-12">
+	<div class="card hoverr" ng-click="select('update')" ng-class="{'bg-info': picked == 'optimize'}">
+		<div class="row pl-2">
+			<div class="col-md-1" style="padding: 11px 0;"><img src="/assets/images/img/012-skills-1.png" height="30" width="100%">
+			</div>
+			<div class="col-md-11 pl-2 pt-1">
+				<h6>How Do I Optimize Patronage?</h6>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="col-md-12">
+	<div class="card hoverr" ng-click="select('update')" ng-class="{'bg-info': picked == 'manage'}">
+		<div class="row pl-2">
+			<div class="col-md-1" style="padding: 11px 0;"><img src="/assets/images/img/012-skills-1.png" height="30" width="100%">
+			</div>
+			<div class="col-md-11 pl-2 pt-1">
+<h6>How Do We Manage Our Account?</h6>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="col-md-12">
+	<div class="card hoverr" ng-click="select('update')" ng-class="{'bg-info': picked == 'communicate'}">
+		<div class="row pl-2">
+			<div class="col-md-1" style="padding: 11px 0;"><img src="/assets/images/img/012-skills-1.png" height="30" width="100%">
+			</div>
+			<div class="col-md-11 pl-2 pt-1">
+<h6>How Do We Communicate?</h6>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="col-md-12">
+	<div class="card hoverr" ng-click="select('update')" ng-class="{'bg-info': picked == 'manage'}">
+		<div class="row pl-2">
+			<div class="col-md-1" style="padding: 11px 0;"><img src="/assets/images/img/012-skills-1.png" height="30" width="100%">
+			</div>
+			<div class="col-md-11 pl-2 pt-1">
+<h6>How Do We Manage Our Account?</h6>
+			</div>
+		</div>
+	</div>
+</div>-->
+
+		</div>
+	</div>
+
+
+
+	<div class="col-md-8">
+		<div>
+			<div class="card p-4" ng-if="picked === 'info1'">
+						<h5>Where Do We Start?</h5>
+	<br><br>
+	<h6>- What should we do after opening account?</h6>
+	The first thing to do after opening a radiology practice account is to update your profile and
+	services.
+	<br><br>
+	<h6>- Why should we update our profile?</h6>
+	After creation of your account, you need to update your profile. The addition of your Radiology
+	center’s profile picture, the verification of your practice and the profiling of your bank account
+	for cashing out, all set the stage for your practice on Applinic. You may also assign a trusted staff
+	to manage your account, if you may be too busy to do so.
+	<br><br>
+	<h6>- Why should we update our services?</h6>
+	Keeping the list of your services up to date optimizes patronage. It is highly advisable to update
+	your services. Applinic has an in-built investigation search functionality which enables doctors,
+	patients and other users search for diagnostic services online to know the centers that perform
+	them in your city before visiting. If your services are not updated, you may either miss
+	opportunities or create false hopes that may act against your patronage in the future.
+	<br><br>
+	<h6>- How should we update our services?</h6>
+	The very first time you create an Applinic radiology account, your services will be populated with
+	the investigations in our database. You need to update this list as a matter of priority. Uncheck
+	all the services you don’t render and add those you do which we didn’t capture. Your services
+	will then be up to date. When your services are updated, your center will be listed in the search
+	results displayed when patients and physicians search such services in your city.
+				</div>
+
+
+				<div class="card p-4" ng-if="picked === 'info2'">
+							<h5> How Do We Manage Our Account?</h5>
+	<br><br>
+	<h6>	- How can we access our cases?</h6>
+	The Work History button on the dashboard opens up all the cases that have been attended to
+	for a period. In fact it provides this information based on periodic categorizations. Click on any
+	button that represents periods to view the details of your activities in the selected period.
+	<br><br>
+	<h6>- Where do we see our investigation requests?</h6>
+	All investigation requests from doctors, patients and other health providers first appear in the
+	notification icon on the top right of the dashboard. From there you can move them to the ‘Work
+	List’ by clicking on the link. The ‘Work List’ is on the left menu. When you click the ‘Work List’,
+	the button will drop down to display the list of all the pending tasks. Click on each request to
+	view the details and attend to them from there. Upon completing the task, the request will
+	migrate to the ‘Work History’.
+	
+	<br><br>
+	<h6>- How do we find other requests?</h6>
+	The investigation requests of all patients that were sent directly to you can be found by clicking
+	the ‘Find Investigation Request’. This will open a search bar for you to type the reference
+	number of the request or phone number of the patient for the search. You can toggle between
+	these two search filters. If this is typed correctly, it will search the database and display the
+	details of the request. From here you can be process and attend to the patient.
+	<br><br>
+	<h6>- Can we refer patients to doctors?</h6>
+	All health providers including radiological centers can refer patients to physicians for expert
+	management. You can achieve this purpose by using the ‘Refer’ button.
+				</div>
+
+
+
+				<div class="card p-4" ng-if="picked === 'info3'">
+				<h5>How Do We Optimize Patronage?</h5>
+	<br><br>
+	<h6>	- Why should we be online always?</h6>
+	You need to be always logged in with any available device so you can see and respond to chat
+	inquiries and other service opportunities that may present. Patients, doctors, pharmacies and
+	other users are more likely to patronize you when you are online than when you are not. You
+	may designate a staff to remain logged in for your center and notify you whenever there is a
+	request he cannot handle.
+	<br><br>
+	<h6>- How can I render home service?</h6>
+	You can render Home Service on Applinic. This premium service will increase your patronage for
+	a premium cost. To add Home Service to your account, update your Service by adding Home
+	Service. When patients search for this service in your city, your practice will be listed and they
+	can then contact you by chat. Ultrasonography with a portable ultrasound machine appears to
+	be the commonest radiological service that may rendered to patient at home.
+	<br><br>
+	<h6>- What if a patient has no account?</h6>
+	All health providers can open temporary accounts for their patients who don’t have an account
+	before they attend to them. They do this with just the patient’s name and phone number. Other
+	details can be filled in by the patient at a later time. To do this, click on the create account
+	button on the dashboard and fill the basic information in the fields provided.
+	<br><br>
+	<h6>- Why assist Patients fund accounts?</h6>
+	Patients who don’t have money in their e-wallet accounts to pay for your services but have cash
+	can be assisted. The system allows you to fund their e-wallets for them. This is done by direct
+	transfer from your account to theirs in exchange for their cash and then transacting the
+	payment through the e-wallet. When patients pay through their wallets, the platform records
+	the investigation results in their electronic medical records and for your center’s record also. If
+	they pay cash, this record cannot be created.
+				</div>
+
+
+
+				<div class="card p-4" ng-if="picked === 'info4'">
+					<h5>How Do We Communicate?</h5>
+	<br><br>
+	<h6>	- What are the available modes of communication?</h6>
+	The basic and main channel of communication for diagnostic centers is chat. Sometimes
+	diagnostic centers may be invited to participate in video conferences.
+	<br><br>
+	<h6>- How do we view or commence chats?</h6>
+	You can view chats by clicking on the chat notification sign on the dashboard. It will open the
+	chat in details. You can also commence chats by clicking on the chat icon beside any user after
+	finding him through a completed search.
+	<br><br>
+	<h6>- What notifications should we expect?</h6>
+	On top of the dashboard are two notification signs. The first is a bell sign for notifications on
+	requests and the second is a chat sign for notification on pending chats. All notifications will
+	drop there. If you click any, it will display the details.
+				</div>
+
+
+
+
+				<div class="card p-4" ng-if="picked === 'info5'">
+				<h5>How Do We Manage Our Studies?</h5>
+	<br><br>
+	<h6>	- Can we upload our studies to an Applinic online PACS?</h6>
+	Applinic has an online PACS with a web viewer which users can engage to view both DICOM
+	radiological studies and those stored in other formats. Patients’ radiological studies can be
+	uploaded into our cloud storage for short and long term archiving and access for reporting and
+	viewing. From the radiology dashboard, click on the ‘Work List’ to open the request of the
+	patient you want to work on and click on the upload study button and follow the navigator to
+	the drive where the study is stored if it’s a JPEG or use the provided DICOM key if it’s a DICOM
+	image and click upload. If it is an old patient of yours click on the ‘Work History’ to search for
+	him and open his account to upload the studies. If this patient is not yours and you need to
+	upload his study, then click ‘Find Request, enter the Reference Number for the investigation and
+	it will open the patients account and if you have the MRA key, then you can view the image.
+	<br><br>
+	<h6>- How can we configure or set up our modality to upload to Applinic online PACS?</h6>
+	Please send a mail to support@applinic.com to receive assistance on how to do this.
+	<br><br>
+	<h6>- How can we share our studies with colleagues for reporting and opinions?</h6>
+	You can share radiological studies with colleagues and other physicians for reporting and
+	viewing if you have the patient’s Medical Record Access (MRA) key. This is a token generated by
+	the system which gives access to physicians for patients’ medical records. With this set of
+	random numbers and alphabets which is unique for each patient, physicians can access the
+	patient’s medical records including radiological studies.
+	<br><br>
+	<h6>- How much does the Online PACS cost</h6>
+	The online PACS is free for all patients whose studies were performed by our partnering
+	diagnostic centers. Patients whose studies were performed by non-partners can also upload
+	
+	their studies if they pay to obtain the Medical record Access (MRA) key which enables health
+	providers to access and view the studies with DICOM viewer. The patient has to open Applinic
+	account like all others, fund the account and make payment from his e-wallet to obtain the key.
+	This token will be required to upload the image.
+				</div>
+
+
+	<div class="card p-4" ng-if="picked === 'info6'">
+		<h5>How Do We Manage Our Finances?</h5>
+	<br><br>
+	<h6>	- What is MediPay?</h6>
+	MediPay is the name of the electronic wallet for Applinic. All payments for health services
+	including radiological are to be made through the wallet. It is through this system that Applinic
+	also receives its discounts. Once a provider creates an account on Applinic, an e-wallet account
+	is opened for him by default. The account becomes immediately operational as soon as the
+	provider is verified.
+	<br><br>
+	<h6>- How do we bill for investigations?</h6>
+	Investigation requests are costed on the platform and submitted to patients for approval. If the
+	patient accepts the bill, the system will send an OTP to the patient to confirm he initiated the
+	debit in his account and if he accepts it, his account will be debited and that of the radiology
+	center credited.
+	<br><br>
+	<h6>- How should the patient pay for our services?</h6>
+	Patients and customers should pay for all radiological investigations and services using MediPay.
+	All credits to your account are instant. You may also cash out the money into your conventional
+	bank account.
+<br><br>
+<h6>	- Why must we receive payments through the e-wallet?</h6>
+	E-wallet payment via MediPay is the standard payment model for all services on Applinic. This
+	makes record keeping easier, especially the recording of patient’s medical history. Keeping an
+	Electronic Patients Record (EPR) for every consumer of healthcare is one of the main objectives
+	of Applinic and reports of radiological investigations form an integral part of that record.
+	<br><br>
+	<h6>- What if the transaction fails?</h6>
+	If due to network failure or other reason, the transaction fails to complete, the health provider
+	can collect cash from the patient and call our Customer Service line on +2349080045678 or send
+	mail to info@applinic.com to report the failed transaction for manual entry into the system.
+	Alternatively, he may fill the failed transaction form to report it. This will enable us update the
+	transaction and enter the diagnostic results into the patient’s account. The equivalent discount
+	will then be debited the provider and credited the patient.
+	<br><br>
+	<h6>- How do we cash out our earnings?</h6>
+	Providers can cash out their earnings by clicking on the ‘Cash Out’ button on the Payment &amp;
+	Wallet menu. This menu is on the left side of the dashboard. The system will open the field for
+	
+	you to enter the amount you want to cash out. When you do and send the request, a One Time
+	Password (OTP) will be sent to your phone by SMS to validate the transaction. Type this OTP in
+	the space provided for your wallet will be debited to credit your profiled bank account.
+	<br><br>
+	<h6>- How secure is the Medipay wallet?</h6>
+	MediPay applies the contemporary cutting edge technology in today’s web security and online
+	financial safe practice through the use of end-to-end encryption, secure gateways and anti-
+	hack/malware applications to secure our in-app transactions. These systems are regularly
+	updated. Our third party payment gate-way - Paystack which transfers value from your wallet to
+	bank account provides secure interbank services globally and observes best practices in online
+	financial security.
+	<br><br>
+	<h6>- Can Users Transfer Money To One Another?</h6>
+	Applinic has the leverage of enabling intra-platform money transfers strictly for the payment of
+	health services. Users can transfer money to friends and families to enable them pay for
+	consultations, drugs, diagnostic services and treatments at no transaction costs.
+	<br><br>
+	<h6>- How do we view our transaction history</h6>
+	The record of financial transactions on Applinic including account payment for services received
+	and transfers is kept in your MediPay wallet. This can be accessed on the dashboard by clicking
+	the e-wallet button on the left hand menu of the dashboard. This history can be searched by
+	period and printed or mailed.
+	<br><br>
+	<h6>- How much do we pay Applinic for using the platform?</h6>
+	Applinic registration, online services, medical records archival and access are all free to the
+	patient and providers. Providers don’t pay to open an account or to use the service.
+	Nevertheless, depending on your city, Applinic receives a discount of 5-10% of the patient’s bill
+	for every payment made on the platform. Please review the terms of use and the explanatory
+	notes in the dashboard palettes for more details on the discount requirements.
+	</div>
+
+
+
+
+			
+		</div>
+	</div>
+</div>
+
+</div>
+
+
+
+
+
+
+
+
 
  <!-- Modal -->
   <div class="modal fade" id="reprtIssueModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -278,6 +1492,5 @@ Tagging your publications with keywords will help in the search. Patients and co
       </div>
     </div>
   </div>
-        </div>
-    </div>
 </div>
+   

@@ -18030,7 +18030,6 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
     var breaker = angular.element(document.createElement('div'));
     var p = angular.element(document.createElement('p'));
     var small = angular.element(document.createElement('small'));
-    console.log(data, "-----------------")
     var fileElem; //angular.element(document.createElement('img'));
     switch(data.fileType){
       case 'image':
@@ -18072,7 +18071,7 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
     breaker[0].style.textAlign = (data.sent) ? "right" : "left";
     
     item[0].appendChild(p[0]);
-    
+
     if(fileElem)
       item[0].appendChild(fileElem[0]);
 

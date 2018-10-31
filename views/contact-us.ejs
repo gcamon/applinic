@@ -66,13 +66,16 @@
 
       
           <div class="container" ng-controller="contactController">
-          <h3 class="p-2">Contact Us</h3>
-
-<div class="row">
+          <h3 class="p-2 title">Contact Us</h3>
+          <div class="pl-2">
+             <i class="fa fa-envelope"></i> info@applinic.com
+          </div>
+<hr>
+<div class="row mb-5">
     <div class="col-md-6 col-sm-12">
         <p class="p-2 bg-info" style="text-align: center; color: #fff" ng-cloak ng-if="responseMessage">{{responseMessage}}</p>
         <div class="col-md-10">
-            
+
             <form style="margin-bottom: 40px">
                 <label><b>Send us Message</b></label>
                 <div class="form-group">
@@ -97,7 +100,6 @@
 
                 <div class="form-group">
                     <button class="btn btn-success" ng-click="sendMessage()" ng-cloak> <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i>{{(loading) ? " " : (responseMessage) ? "Sent!" : "Send"}}</button>
-        
                 </div>
             </form>
         </div>
@@ -109,13 +111,13 @@
             width="100%" height="400" frameborder="0" style="border:0" allowfullscreen></iframe>
         </div>
 
-        <div class="col-sm-12">
+        <div class="col-sm-12 mt-3">
             <h4>Our Office</h4>
-            <Address>
+            <Address style="line-height: 30px">
                     Farelands Information Technology<br>
                     1, Nwodo St, GRA, Enugu, Nigeria<br>
-                    <i class="fa fa-phone"> (+234) 8064245256</i> <br>
-                    <i class="fa fa-phone"> (+234) 8086675053</i>
+                    <i class="fa fa-phone"> (+234) 908 004 5678</i> <br>
+                    
             </Address>
         </div>
     </div>
