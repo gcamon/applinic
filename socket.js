@@ -131,6 +131,7 @@ module.exports = function(model,io,streams) {
 	      		msg.id = data.date;	
 	      		msg.url = data.url;
 	      		msg.fileType = data.fileType;
+	      		msg.mimeType = data.mimeType;
 	      		chats.realTime = + new Date();
 		    		chats.messages.push(msg);
 		    		chats.save(function(err,info){
@@ -148,6 +149,7 @@ module.exports = function(model,io,streams) {
       		msg.id = data.date;
       		msg.url = data.url;
       		msg.fileType = data.fileType;	
+      		msg.mimeType = data.mimeType;
 	    		if(chats) {	
 	    			chats.is_read = false;  // added to check when a chat is read.  		    		
 		    		chats.messages.push(msg);
@@ -330,6 +332,10 @@ module.exports = function(model,io,streams) {
 		    }
 		    console.log(data);
 
+		   	var evt1 = "request slice upload " + data.name;
+    		var evt2 = "end upload " + data.name;
+    		var evt3 = "upload error " + data.name;
+
 		    //convert the ArrayBuffer to Buffer 
 		    data.data = new Buffer(new Uint8Array(data.data)); 
 		    //save the data 
@@ -347,20 +353,21 @@ module.exports = function(model,io,streams) {
 		        s3.putObject(params, function(err, response) {
 		        	if(err) {
 		        		console.log(err);
-		        		socket.emit("upload error",{status:false});
+		        		socket.emit(evt3,{status:false});
 		        		return;
 		        	} else {
 		        		console.log(response);
 		        		var fileUrl = "https://s3.amazonaws.com/applinic-files/" + fileResource;		        		
-		        		socket.emit('end upload',{url: fileUrl,fileType: data.fileType});
+		        		socket.emit(evt2,{url: fileUrl,fileType: data.fileType,mimeType: data.type});
 		        	} 
 		        })
 
 		        delete files[data.name];
 
 		    } else { 
-		        socket.emit('request slice upload', { 
-		            currentSlice: files[data.name].slice 
+		        socket.emit(evt1, { 
+		            currentSlice: files[data.name].slice,
+		            name: data.name
 		        }); 
 		    } 
 	    	console.log(fileBuffer)
