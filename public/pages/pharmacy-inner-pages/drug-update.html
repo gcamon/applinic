@@ -34,7 +34,7 @@
 
 
 		<div class="">
-			<div ng-repeat="drug in allDrugs2 | filter: ava | orderBy: name">
+			<div ng-repeat="drug in allDrugs2 | filter: ava | orderBy: 'name'">
 			<!--<input type="checkbox" ng-model="drug.val"><span></span>-->
 				<label class="custom-control custom-checkbox">   <input type="checkbox" class="custom-control-input" ng-model="drug.val">   <span class="custom-control-indicator"></span>   <span class="custom-control-description font-1_1">{{drug.name}}</span> </label>
 		  </div>
@@ -44,7 +44,7 @@
 		</div>
 
 		<div>
-			<div ng-repeat="drug in allDrugs | filter: ava | orderBy: name"">
+			<div ng-repeat="drug in allDrugs | filter: ava | orderBy: 'name'">
 			<!--<input type="checkbox" ng-model="drug.val"><span></span>-->
 			<label class="custom-control custom-checkbox">   <input type="checkbox" class="custom-control-input" ng-model="drug.val">   <span class="custom-control-indicator"></span>   <span class="custom-control-description font-1_1">{{drug.name}}</span> </label>
 		  </div>
