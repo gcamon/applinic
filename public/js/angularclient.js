@@ -17841,8 +17841,9 @@ app.controller("patientWaitingRoomController",["$scope","$resource","$location",
 
 
 //for chats in modal and centers dashboard use for 
-app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatService", "templateService","$filter","ModalService","$location","deviceCheckService",
-  function($scope, $rootScope, mySocket,chatService,templateService,$filter,ModalService,$location,deviceCheckService){
+app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatService", "templateService","$filter","ModalService",
+  "$location","deviceCheckService","$compile",
+  function($scope, $rootScope, mySocket,chatService,templateService,$filter,ModalService,$location,deviceCheckService,$compile){
     var user = $rootScope.checkLogIn || {};
     $rootScope.allChats = $rootScope.chatsList; // rootScope can be used instead   
     $scope.center = $rootScope.holdcenter || {id : templateService.holdId}; //sometimes is not center but individual
@@ -18021,7 +18022,21 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
     }
   }
 
- 
+
+  //for viewing image on chat template
+  var imageArg;
+  $scope.imageClickEvt = function(imgUrl){
+    $rootScope.imgUrl = imgUrl;
+    ModalService.showModal({
+        templateUrl: 'image-modal.html',
+        controller: "imageModalController"
+    }).then(function(modal) {
+        modal.element.modal();
+        modal.close.then(function(result) {
+          
+        });
+    });     
+  }
 
   function chats(data) {
     var base = angular.element(document.getElementById('base')); 
@@ -18030,28 +18045,94 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
     var breaker = angular.element(document.createElement('div'));
     var p = angular.element(document.createElement('p'));
     var small = angular.element(document.createElement('small'));
-    var fileElem; //angular.element(document.createElement('img'));
+    var fileElem;
+    console.log(data);
     switch(data.fileType){
-      case 'image':
+      case 'image':        
         fileElem = angular.element(document.createElement('img'));
         fileElem[0].src = data.url;
         fileElem[0].alt = "loading image...";
-        fileElem[0].style.maxWidth = "200px";
-        fileElem[0].style.height = "auto";
+        fileElem[0].style.maxWidth = "280px";
+        fileElem[0].style.height = "220px";
+        //fileElem[0]["data-ng-click"] = $scope.create;
+        imageArg = "imageClickEvt('" + data.url + "')";
+        fileElem.attr('ng-click', imageArg);
+        $compile(fileElem[0])($scope);
+        
       break;
       case 'audio':
         fileElem = angular.element(document.createElement('audio'));
+        fileElem[0].src = data.url;
+        fileElem[0].controls = true;
       break;
       case "video":
-        fileElem = angular.element(document.createElement('video'));
+         fileElem = angular.element(document.createElement('video'));
+        var sourceElem = angular.element(document.createElement('source'));
+        sourceElem[0].src = data.url; //"/assets/daddy_home.mp4";
+        //sourceElem[0].type = data.type;
+        fileElem[0].append(sourceElem[0]);
+        fileElem[0].style.maxWidth = "280px";
+        fileElem[0].style.height = "220px";
+        fileElem[0].controls = true;
+      break;
+      case 'application':
+        if(data.mimeType == "application/pdf") {
+          fileElem = angular.element(document.createElement('div'));
+          //var embed = angular.element(document.createElement('embed'));
+          var a = angular.element(document.createElement('a'));
+          a[0].href = "https://drive.google.com/viewerng/viewer?embedded=true&url=" + data.url;
+          a[0].style.cursor = "pointer";
+          a[0].style.display = "block";
+          a[0].style.textAlign = "center";
+          a[0].style.fontSize = "32px";
+          a[0].className = "fa fa-file";
+          a[0].innerHTML += "";
+          a[0].style.color = (data.sent) ? "#eee" : "yellow";
+          a[0].target = "_blank";
+          a[0].style.margin = "20px 0";
+          a[0].title = "View file";
+          
+          fileElem[0].appendChild(a[0]);
+
+          data.fileType = "pdf";
+          
+        } else {
+          fileElem = angular.element(document.createElement('a'));
+          fileElem[0].href = data.url;
+          fileElem[0].style.display = "block";
+          fileElem[0].style.color = "#fff";
+          fileElem[0].style.fontSize = "18px";
+          fileElem[0].style.padding = "10px 0";
+          fileElem[0].className = "fa fa-download";
+          fileElem[0].innerHTML += " download word document.";
+          data.fileType = "";
+        }
+      break;
+      case 'text':
+           fileElem = angular.element(document.createElement('div'));
+          //var embed = angular.element(document.createElement('embed'));
+          var a = angular.element(document.createElement('a'));
+          a[0].href = "https://drive.google.com/viewerng/viewer?embedded=true&url=" + data.url;
+          a[0].style.cursor = "pointer";
+          a[0].style.display = "block";
+          a[0].style.textAlign = "center";
+          a[0].style.fontSize = "32px";
+          a[0].className = "fa fa-file";
+          a[0].innerHTML += "";
+          a[0].style.color = "#eee";
+          a[0].target = "_blank";
+          a[0].style.margin = "20px 0";
+          a[0].title = "View file";
+         
+          fileElem[0].appendChild(a[0]);
+
+          data.fileType = "txt";
       break;
       default:
       break;
     }
 
     p[0].style.display = "block";
-    //p[0].style.wordBreak = "normal";
-    //p[0].style.overflowWrap = "break-word";
     small[0].style.display = "block";
     small[0].style.marginTop = "5px";
     small[0].style.color = "#ccc";
@@ -18108,7 +18189,11 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
     msg.fileType = data.fileType;
     if(data.from === $scope.partner.partnerId) {     
       msg.userId = user.user_id;
-      msg.partnerId = $scope.partner.partnerId;            
+      msg.partnerId = $scope.partner.partnerId; 
+      msg.id = data.date;//genId();
+      msg.url = response.url;
+      msg.fileType = response.fileType;
+      msg.mimeType = response.mimeType;           
       chats(msg);
       templateService.playAudio(3); 
     } else {     
@@ -18202,18 +18287,64 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
   }
 
 
+
+  var img = {};
+  var progress = {};
   //for single file upload
   $rootScope.imageFile = function() {
     console.log($scope.files);
+    if($scope.files.size <= 31457280) { // 30mb max size
     var file = $scope.files,
       fileReader = new FileReader(),
       slice = file.slice(0, 100000);
 
     fileReader.readAsArrayBuffer(slice); 
+    img[file.name] = file.name;
 
-    //incase listener is registered twice.
-    mySocket.removeAllListeners("request slice upload");
-    mySocket.removeAllListeners("end upload");
+      //incase listener is registered twice.
+    var evt1 = "request slice upload " + file.name;
+    var evt2 = "end upload " + file.name;
+    var evt3 = "upload error " + file.name;
+
+
+    mySocket.removeAllListeners(evt1);
+    mySocket.removeAllListeners(evt2);
+    mySocket.removeAllListeners(evt3);
+
+    var base = angular.element(document.getElementById('base')); 
+    var container = angular.element(document.getElementById('sentmessage'));      
+    var item = angular.element(document.createElement('an-item'));
+    var breaker = angular.element(document.createElement('div'));
+    var p = angular.element(document.createElement('p'));
+    var small = angular.element(document.createElement('small'));
+    var span = angular.element(document.createElement('span'));
+
+    breaker[0].style.display = "block";
+    breaker[0].style.textAlign =  "right";
+    p[0].style.display = "inline-block";
+
+   // p[0].className = "fa fa-upload";
+    p[0].innerHTML += file.name + "\n Uploading... ";
+    
+    item[0].appendChild(p[0]);
+
+    item[0].appendChild(span[0]);
+    
+    item[0].appendChild(small[0]);
+
+    breaker[0].id = file.name;
+
+
+    breaker[0].appendChild(item[0]);
+
+
+    item[0].style.display = "inline-block";
+    item[0].style.maxWidth = (deviceCheckService.getDeviceType()) ? "90%" : "70%";
+    item[0].className =  "talk-bubble tri-right right-top talktext msg_sent bg-info";
+    item[0].style.whiteSpace = "pre-line";
+    container[0].appendChild(breaker[0]);
+  
+    base[0].scrollTop = sentmessage.scrollHeight;
 
     fileReader.onload = function(evt){
       var arrayBuffer = fileReader.result;
@@ -18227,21 +18358,30 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
         data: arrayBuffer,
         fileType: theType
       }); 
-
-      console.log(arrayBuffer);
     }
 
+    var ele2;
      //keep sending slice
-    mySocket.on('request slice upload',function(data){ 
+    mySocket.on(evt1,function(data){ 
       var place = data.currentSlice * 100000, 
-          slice = file.slice(place, place + Math.min(100000, file.size - place)); 
+          slice = file.slice(place, place + Math.min(100000, file.size - place));  
       
+
+      ele2 = document.getElementById(img[data.name]);     
+      ele2.children[0].childNodes[1].innerHTML = "" + Math.round(fnProgress(place)) + "%";
       fileReader.readAsArrayBuffer(slice); 
     });
 
-    mySocket.on("end upload",function(response){
-        //alert("upload ended!")
-      mySocket.emit("send message",{to: $scope.partner.partnerId,message:response.url,url:response.url, from: user.user_id,fileType: response.fileType},function(data){ 
+
+    var fnProgress = function(bytes) {
+      var percentage = (bytes / file.size) * 100;
+      return percentage;
+    }
+
+    
+
+    mySocket.on(evt2,function(response){
+      mySocket.emit("send message",{to: $scope.partner.partnerId,message:response.url,url:response.url, from: user.user_id,fileType: response.fileType,mimeType: response.mimeType},function(data){ 
         var date = + new Date();
         var msg = {};
         msg.time = data.date;
@@ -18254,6 +18394,7 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
         msg.id = data.date;//genId();
         msg.url = response.url;
         msg.fileType = response.fileType;
+        msg.mimeType = response.mimeType;
 
 
         var elPos = $rootScope.chatsList.map(function(x){return x.partnerId}).indexOf($scope.partner.partnerId);
@@ -18263,6 +18404,9 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
         }
 
         chats(msg);
+        var ele = document.getElementById(img[file.name]);
+        ele.style.display = "none";
+        delete img[file.name];
         
         mySocket.emit("isSent",msg,function(status){          
           if(status) {
@@ -18274,11 +18418,21 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
       });
     })
 
-    mySocket.on("upload error",function(res){
-      alert("Error occured while uploading");
+    mySocket.on(evt3,function(res){
+      var ele = document.getElementById(img[file.name]);
+      ele.style.display = "none";
+      delete img[file.name];
+      alert("Error occured while uploading " + file.name);
     })
 
+    } else {
+      alert("File size out of range. Max size should be less than 30mb");
+    }
+
   }
+
+
+ 
 
 
 
@@ -18315,6 +18469,8 @@ function handleFileSelect(evt) {
   */
 
 }]);
+
+app.controller("imageModalController",function(){})
 
 //for diagnostic and pharmaceutical center search
 app.controller("findCenterController",["$scope","$http","$rootScope","ModalService",function($scope,$http,$rootScope,ModalService){

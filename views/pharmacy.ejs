@@ -612,6 +612,23 @@
       </div>
    </script>
 
+    <script type="text/ng-template" id="image-modal.html">
+         <div class="modal fade">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">             
+                <h4>Image</h4>
+                <button type="button" class="close" ng-click="close('Cancel')" data-dismiss="modal" aria-hidden="true">&times;</button>           
+                       
+            </div>
+            <div class="modal-body">                
+              <img src="{{imgUrl}}" style="width: auto; height: auto;" alt="image">
+            </div>
+           
+          </div>
+        </div>
+     </script>
+
      <script type="text/ng-template" id='selected-drug-not-have.html'>
          
         <div  class="modal fade">

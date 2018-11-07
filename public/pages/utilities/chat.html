@@ -34,6 +34,7 @@
 	                        </span>
 	                    </div>
 	                    <div class="col-md-5 col-sm-12 col-xs-12 " style="text-align: right;">
+	                    	<!--<object type="application/pdf" src="https://s3.amazonaws.com/applinic-files/1541107583724MIRASYD.pdf" width="200px" height="300px"></object>-->
 	                    	<div ng-if="checkLogIn.typeOfUser === 'Patient' || checkLogIn.typeOfUser === 'Doctor'">
 	                    		<small><button class="btn btn-success ellipsis" ng-if="partner.partnerType === 'Doctor' && checkLogIn.typeOfUser !== 'Doctor'"  ng-click="chatPrivate(partner)">Single Chat</button>
 	                    		<button class="btn btn-success ellipsis" ng-if="partner.partnerType === 'Patient'"  ng-click="chatPrivate(partner)">Manage Patient</button>
