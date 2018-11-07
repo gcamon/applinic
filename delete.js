@@ -42,7 +42,7 @@ Delete.prototype.DeleteByRefId = function(model,projection) {
 
 		data.save(function(err,info){
 			if(err) throw err;
-			console.log("deleted");
+			console.log("deleted")
 		});
 	});
 	
