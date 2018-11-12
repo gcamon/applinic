@@ -1408,16 +1408,32 @@ app.controller("pharmacyDrugServicesUpdateController",["$scope","$http","$locati
   function($scope,$http,$location,localManager,templateService,Drugs,ModalService,$resource,$rootScope,dynamicService) {
     var objLen = Drugs.length;
     var count = 0;
-    while(objLen > count){
+    /* while(objLen > count){
       Drugs.forEach(function(item){
         item.val = true;
       })
       count++
-    }
+    }*/
 
     var resource = dynamicService; //$resource("/user/dynamic-service");
-    resource.query({type:"Pharmacy"},function(data){
-      $rootScope.allDrugs2 = data;
+
+    $http({
+      method  : 'GET',
+      url     : "/user/pharmacy/not-ran-services",        
+      headers : {'Content-Type': 'application/json'} 
+     })
+    .success(function(response) {
+      $scope.notService = response;
+      resource.query({type:"Pharmacy"},function(data){
+        $rootScope.allDrugs2 = data;
+        var elemPos;
+        for(var i = 0; i < $scope.notService.length; i++) {
+          elemPos = $rootScope.allDrugs2.map(function(x){return x.id}).indexOf($scope.notService[i].id);
+          if(elemPos !== -1){
+            $rootScope.allDrugs2[elemPos].val = false;
+          }
+        }
+      });
     });
 
     $scope.allDrugs = Drugs;
@@ -1459,6 +1475,7 @@ app.controller("pharmacyDrugNotHaveByCenterModalController",["$scope","$http","$
     $scope.selectedDrugs = notRanList;
 
     $scope.save = function(){
+      $scope.loading = true;
       $http({
         method  : 'POST',
         url     : "/user/pharmacy/create-services",
@@ -1469,12 +1486,12 @@ app.controller("pharmacyDrugNotHaveByCenterModalController",["$scope","$http","$
         if(data){
           alert("Service saved successfully.")
         }
-        
+        $scope.loading = false;
       });                                  
     }
 
     $scope.goBack = function(){
-      $location.path("/pharmacy/drug-service/update")
+      $location.path("/pharmacy/drug-service/update");
     }
 
 }]);
@@ -17705,10 +17722,15 @@ app.controller("createTestController",["$scope","$resource","localManager","labT
   var user = localManager.getValue("resolveUser");
   var list; 
 
-    var resource = dynamicService; //$resource("/user/dynamic-service",null,{createService:{"method": "POST"}});
-    resource.query(function(data){
+  var resource = dynamicService; //$resource("/user/dynamic-service",null,{createService:{"method": "POST"}});
+
+  function getService() {    
+      resource.query(function(data){
       $scope.services = list.concat(data);
     });
+  }
+
+  getService();
 
   switch(user.typeOfUser) {
     case"Laboratory":
@@ -17720,21 +17742,22 @@ app.controller("createTestController",["$scope","$resource","localManager","labT
       scanTests.listInfo6);
     break;
     case"Pharmacy":
-      list = Drugs;
+      list = Drugs
     break;
     case"Special_Center":
       list = [{}];
     break;
   }
 
-  $scope.services = list;
+  //$scope.services = list;
   $scope.test = {};
   $scope.createTest = function(){
     if($scope.test.name !== ''){
+      $scope.loading = true;
       var testName = $scope.test.name.toUpperCase();
-      var elemPos = list.map(function(x){if(x) {return x.name.toUpperCase()}}).indexOf(testName);
+      var elemPos = $scope.services.map(function(x){return x.name}).indexOf(testName);
      
-      if(elemPos == -1) {
+      if(elemPos === -1) {
         resource.createService({name:testName},function(data){
           $scope.status = data.message;
           setTimeout(function(){
@@ -17742,11 +17765,14 @@ app.controller("createTestController",["$scope","$resource","localManager","labT
                $scope.status = "";
                $scope.test.name = "";
              })
-            
-          },3000)
+          },3000);
+          getService();
+          $scope.loading = false;
         });
+        
       } else {
-        alert("Service already exist!.");
+        alert("Oops! Item already exist!.");
+        $scope.loading = false;
       }
     }
   }
@@ -19368,7 +19394,7 @@ app.factory("Drugs",function(){
   {name: "Zosyn",id:450},{name: "Zovirax",id:451},{name: "Zyprexa",id:452},{name: "Zyrtec",id:453},
   {name: "Zytiga",id:454},{name: "Zyvox",id:455}];
 
-  return listOfDrugs;
+  return [];//listOfDrugs;
 });
 
 app.factory("cities",function(){

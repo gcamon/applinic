@@ -629,8 +629,8 @@
                   </ol>          
               </div>
               <div class="modal-footer">
-                <button type="button" ng-click="goBack()" class="btn btn-simple" data-dismiss="modal">No,go back</button>
-                <button type="button" ng-click="save()" class="btn btn-success" data-dismiss="modal">Yes,save</button>              
+                <button type="button" ng-click="goBack()" class="btn btn-simple" data-dismiss="modal">No</button>
+                <button type="button" ng-click="save()" class="btn btn-success" data-dismiss="modal" ng-if="!loading">Yes,save</button> <span ng-if="loading"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange" ></i> saving...</span>             
               </div>
             </div>
           </div>

@@ -28,7 +28,7 @@
 		</label>
 	</div>
 
-	<button class="btn btn-success" ng-click="saveDrugs()" ng-if="isToSave">Save</button>
+	<button class="btn btn-success" ng-click="saveDrugs()" ng-if="!loading">Save</button><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange" ng-if="loading">saving...</i>
 </div>
 </div>
 </div>

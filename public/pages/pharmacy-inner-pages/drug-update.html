@@ -20,10 +20,10 @@
 </div>-->
 
 
-<div class="container card p-2 card-center-1">
+<div class="container card p-2">
 	<div class="">
 		<h3 class="p-0">Update Inventory <a class="btn btn-info btn-sm" href="#/pharmacy/off-service" style="float: right;">Unavailable drugs</a></h3>
-		<p>Please unmark any drug you don't have in stock below.This action Automtically adds unmarked drugs to unavailable drugs list.</p>
+		<p>Please unmark any drug you don't have in stock below.Do remember to save your changes.</p>
 	</div>
 	
 	<div class="">
@@ -32,27 +32,30 @@
 			<input type="text" class="form-control" ng-model="ava" name="" placeholder="Filter list by drug name">
 		</div>
 
-
+		<div>
+			<button class="btn btn-success pull-right" ng-click="saveSelection()">Save changes</button>
+		</div>
+		<div class="clearfix"></div>
 		<div class="">
-			<div ng-repeat="drug in allDrugs2 | filter: ava | orderBy: 'name'">
+			<div ng-repeat="drug in allDrugs2 | filter: ava | orderBy: 'name'" style="display: inline-block;width: 48%;padding-right: 2px;word-wrap: break-word;float: left;">
 			<!--<input type="checkbox" ng-model="drug.val"><span></span>-->
 				<label class="custom-control custom-checkbox">   <input type="checkbox" class="custom-control-input" ng-model="drug.val">   <span class="custom-control-indicator"></span>   <span class="custom-control-description font-1_1">{{drug.name}}</span> </label>
 		  </div>
 		  <div>
-				<button class="btn btn-success pull-right" ng-click="saveSelection()">Save</button>
+				<button class="btn btn-success pull-right" ng-click="saveSelection()">Save changes</button>
 			</div>
 		</div>
 
-		<div>
+		<!--<div>
 			<div ng-repeat="drug in allDrugs | filter: ava | orderBy: 'name'">
-			<!--<input type="checkbox" ng-model="drug.val"><span></span>-->
+			
 			<label class="custom-control custom-checkbox">   <input type="checkbox" class="custom-control-input" ng-model="drug.val">   <span class="custom-control-indicator"></span>   <span class="custom-control-description font-1_1">{{drug.name}}</span> </label>
 		  </div>
 			
 			<div>
 				<button class="btn btn-success pull-right" ng-click="saveSelection()">Save</button>
 			</div>
-		</div>
+		</div>-->
 
 		
 
