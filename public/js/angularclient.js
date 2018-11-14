@@ -15053,6 +15053,10 @@ app.controller("drugSearchResultController",["$scope","$location","$rootScope","
      if(user.typeOfUser == "Patient") {
 
       var drugArr = center.str.split(",");  
+      if($rootScope.back)
+        $rootScope.back = "";
+
+      $rootScope.currPath = "/pharmacy/drug-search/result";
 
       for(var i = 0; i < drugArr.length; i++){
         var drugObj = {};
@@ -16747,7 +16751,7 @@ app.controller("courierResponseCtrl",["$scope","$rootScope","courierResponseServ
 
 app.controller("courierController",["$scope","$rootScope","$location","$http","localManager","Drugs","cities",
 function($scope,$rootScope,$location,$http,localManager,Drugs,cities){
-  $rootScope.back = $rootScope.back || localManager.getValue("currentPageForPatients");
+  $rootScope.back = (!$rootScope.back) ? $rootScope.currPath : ($rootScope.back || localManager.getValue("currentPageForPatients") );
   $scope.user = {}//$rootScope.selectedPrescription;
 
 
