@@ -108,7 +108,7 @@
                     <div class="header-block header-block-nav" ng-controller = "createRoomController">
                         <ul class="nav-profile" ng-controller="topHeaderController">
                             <li class="notifications new"> <a href="" data-toggle="dropdown">
-                    <i class="fa fa-bell-o"></i>
+                    <i class="fa fa-bell"></i>
                     <sup>
                       <span class="counter" ng-if="noteLen > 0 " ng-cloak>{{noteLen}}</span>
                     </sup>
@@ -125,6 +125,37 @@
                                                 </div>
                                                 <div class="body-col">
                                                     <p> <span class="accent ellipsis">{{note.sender_firstname}} {{note.sender_lastname}}</span> {{note.message}} <small class="accent" am-time-ago='note.sent_date'> &nbsp;&nbsp;</small>. </p>
+                                                </div>
+                                            </a>
+                                        </li>                                        
+                                    </ul>
+                                    <footer>
+                                        <ul>
+                                            <li> <a href="">
+                           
+                                        </a> </li>
+                                        </ul>
+                                    </footer>
+                                </div>
+                            </li>
+                            <li class="notifications new"> <a href="" data-toggle="dropdown" title="Drugs delivery requests">
+                    <i class="fa fa-motorcycle"></i>
+                    <sup>
+                      <span class="counter" ng-if="courierRequests.length > 0 " ng-cloak>{{courierRequests.length}}</span>
+                    </sup>
+                    </a>
+                                <div class="dropdown-menu notifications-dropdown-menu" style="max-height: 400px;overflow-y: auto;">
+                                    <ul class="notifications-container">
+                                        <li> <h6 style="text-align: center">Courier Request(s)</h6> </li>                                        
+                                         <!--<li style="text-align: right;padding-right: 10px"><button class="btn btn-success btn-sm" ng-click = "addAllNote()">Add to Work List </button></li>-->
+                                        <li ng-repeat = "co in courierRequests | orderBy : '-date'">
+
+                                            <a href="#/courier-requests" class="notification-item pt-1"  ng-if="checkLogIn.courier_access">
+                                                <div class="img-col">
+                                                    <div class="img" style="background-image: url({{co.profile_pic_url}})"></div>
+                                                </div>
+                                                <div class="body-col">
+                                                    <p> <span class="accent ellipsis">{{co.firstname}} {{co.lastname}}</span> <br><small class="accent" am-time-ago='co.date'> &nbsp;&nbsp;</small>. </p>
                                                 </div>
                                             </a>
                                         </li>                                        
@@ -245,7 +276,7 @@
                           </li>
 
                           <li class="nav-item" ng-cloak>
-                            <a class="btn btn-simple round mr-1"  href="" disabled="disabled" style="cursor: no-drop;" ng-if="checkLogIn.courier_access !== true"><i class="fa fa-bicycle"> </i>
+                            <a class="btn btn-simple round mr-1"  href="" disabled="disabled" style="cursor: no-drop;" ng-if="checkLogIn.courier_access !== true"><i class="fa fa-motorcycle"> </i>
                             <span style="color:red">Courier Services</span></a>
                             </a>
                             <a class="btn btn-simple round mr-1"  href="#/courier-requests" ng-if="checkLogIn.courier_access"><i class="fa fa-motorcycle"> </i>

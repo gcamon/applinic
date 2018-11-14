@@ -1159,6 +1159,7 @@ app.controller("labTestNotRanByCenterModalController",["$scope","$http","$locati
     var notRanList = [];
     var ObjList = Object.keys(labTests);
     var objLen = Object.keys(labTests).length;
+    var userId = $rootScope.checkLogIn.user_id;
 
     var count = 0;
     while(objLen > count){
@@ -1173,6 +1174,7 @@ app.controller("labTestNotRanByCenterModalController",["$scope","$http","$locati
     if($rootScope.tests8)
       for(var j = 0; j < $rootScope.tests8.length; j++) {
         if($rootScope.tests8[j].val === false) {
+          $rootScope.tests8[j].center_id = userId;
           notRanList.push($rootScope.tests8[j]);
         }
       }
@@ -1320,6 +1322,7 @@ app.controller("radioTestNotRanByCenterModalController",["$scope","$http","$loca
     var notRanList = [];
     var ObjList = Object.keys(scanTests);
     var objLen = Object.keys(scanTests).length;
+    var userId = $rootScope.checkLogIn.user_id;
    
     var count = 0;
     while(objLen > count){
@@ -1335,6 +1338,7 @@ app.controller("radioTestNotRanByCenterModalController",["$scope","$http","$loca
     if($rootScope.tests7)
       for(var j = 0; j < $rootScope.tests7.length; j++) {
         if($rootScope.tests7[j].val === false) {
+          $rootScope.tests7[j].center_id = userId;
           notRanList.push($rootScope.tests7[j]);
         }
       }
@@ -1458,6 +1462,7 @@ app.controller("pharmacyDrugNotHaveByCenterModalController",["$scope","$http","$
   function($scope,$http,$location,templateService,Drugs,$rootScope) {
     var notRanList = [];
     var objLen = Drugs.length;
+    var userId = $rootScope.checkLogIn.user_id;
 
     var count = 0;
     while(objLen > count){         
@@ -1469,6 +1474,7 @@ app.controller("pharmacyDrugNotHaveByCenterModalController",["$scope","$http","$
     if($rootScope.allDrugs2)
       for(var j = 0; j < $rootScope.allDrugs2.length; j++) {
         if($rootScope.allDrugs2[j].val === false) {
+          //$rootScope.allDrugs2[j].center_id = userId;
           notRanList.push($rootScope.allDrugs2[j]);
         }
       }
@@ -12063,9 +12069,9 @@ app.service("viewNoteService",["$resource",function($resource){
 }]);
 
 app.controller("pharmacyCenterNotificationController",["$scope","$location","$resource","$window","templateService","deleteFactory",
-  "localManager","chatService","$rootScope","mySocket","pharmacyCenterNotificationControllerService","addNoteService","viewNoteService",
+  "localManager","chatService","$rootScope","mySocket","pharmacyCenterNotificationControllerService","addNoteService","viewNoteService","$http",
   function($scope,$location,$resource,$window,templateService,deleteFactory,localManager,chatService,
-    $rootScope,mySocket,pharmacyCenterNotificationControllerService,addNoteService,viewNoteService){
+    $rootScope,mySocket,pharmacyCenterNotificationControllerService,addNoteService,viewNoteService,$http){
 
   var notification = pharmacyCenterNotificationControllerService; //$resource("/user/center/get-notification");
 
@@ -12163,6 +12169,36 @@ app.controller("pharmacyCenterNotificationController",["$scope","$location","$re
 
   $rootScope.$on("unattendedMsg",function(status,data){
     $scope.showIndicator = data;
+  });
+
+
+  //for courier services  notification
+
+
+  //this will only allow centers permitted to render courier services use the feature.
+  //note for center that will run courier service must have "courier access" enabled and "courier_access_password" set to desired password;
+  //$rootScope.fieldagentUrl = "https://applinic.com/bicboy/" + $rootScope.checkLogIn.user_id + "/" + $rootScope.checkLogIn.courier_access_password;
+  var getCurr = function(){
+    $http({
+      method  : 'GET',
+      url     : "/user/get-courier",
+      headers : {'Content-Type': 'application/json'} 
+      })
+    .success(function(data) { 
+    console.log(data)     
+      $rootScope.courierRequests = data || [];
+    });
+  }
+
+  getCurr();
+
+  mySocket.on("receiver courier",function(data){  
+    if(!data.subType) {
+      $rootScope.courierRequests.unshift(data);
+    } else {
+      getCurr();
+    }
+    templateService.playAudio(3); 
   });
 
 
@@ -14940,13 +14976,18 @@ app.controller("drugSearchResultController",["$scope","$location","$rootScope","
   function($scope,$location,$rootScope,$resource,templateService,localManager,ModalService,centerProfileService){
   $scope.drugResult = templateService.holdSearchResult; 
 
+  console.log(templateService.holdSearchResult)
+
   $scope.criteria = templateService.holdList;
   $scope.drugFilter = {};
-  $scope.getStr = function(str){
+  $scope.getStr = function(str,by){
     var newStr = "";
     var strArr = str.split(",");
     for(var i = 0; i < strArr.length; i++){
-      newStr += "@" + strArr[i] + " "
+      if(by)
+        newStr += "@" + strArr[i] + "* ";
+      else 
+         newStr += "@" + strArr[i] + " ";
     }
     return newStr;
   }
@@ -15005,6 +15046,92 @@ app.controller("drugSearchResultController",["$scope","$location","$rootScope","
     }
   }
 
+  var user = $rootScope.checkLogIn;
+
+  $scope.courier = function(center) {
+     console.log(center);
+     if(user.typeOfUser == "Patient") {
+
+      var drugArr = center.str.split(",");  
+
+      for(var i = 0; i < drugArr.length; i++){
+        var drugObj = {};
+        drugObj.sn = i + 1;
+        drugObj.drug_name = drugArr[i];
+        drugObj.dosage = "";
+        drugObj.frequency = "";
+        drugObj.duration = "";
+        drugArr[i] = drugObj;
+      }
+
+      var presId = Math.floor(Math.random() * 99999999);
+      var refId = parseInt(Math.floor(Math.random() * 9999) + "" + Math.floor(Math.random() * 9999));
+
+      $rootScope.holdPresDataForCourier = { 
+        name: center.name,
+        address: center.address,
+        city: center.city,
+        country: center.country,
+        id: center.id,
+        phone: center.phone,
+        str: center.str,
+        type: 'inperson',
+        prescriptionId: presId,
+        user_id: center.id,
+        sent_date: new Date(),
+        prescription_body: drugArr,
+        ref_id: refId,
+        initViaCourier: true
+      }
+
+
+      $rootScope.selectedPrescription = {
+        doctor_city: "",
+        doctor_country: "",
+        doctor_firstname: "",
+        doctor_id: "",
+        doctor_lastname: "",
+        patient_address: user.address,
+        patient_city: user.city,
+        patient_country: user.country,
+        patient_id: user.user_id,
+        patient_profile_pic_url: user.profile_pic_url,
+        prescriptionId: presId,
+        prescription_body: drugArr,
+        ref_id: refId
+      }
+
+      $location.path('courier');
+
+    }
+
+
+  }
+
+  /*
+  doctor_address: ""
+doctor_city: ""
+doctor_country: ""
+doctor_firstname: "Chibuzor"
+doctor_id: "chibuzor468616"
+doctor_lastname: "Ede"
+doctor_profile_pic_url: "https://applinic-files.s3.amazonaws.com/chibuzor46861661s1ep0idgl._sl1500__1.jpg"
+doctor_work_place: ""
+patient_address: "13 Agbani Road"
+patient_city: "Enugu"
+patient_country: "Nigeria"
+patient_id: "chibuzor468616"
+patient_profile_pic_url: "https://applinic-files.s3.amazonaws.com/chibuzor46861661s1ep0idgl._sl1500__1.jpg"
+prescriptionId: 694569
+prescription_body: Array(1)
+0: {sn: 1, drug_name: "KSDSD", dosage: "", frequency: "", duration: "", …}
+length: 1
+__proto__: Array(0)
+ref_id: 616512
+title: "Mr"
+
+  */
+ 
 
   $scope.sendChat = function(center) {
     $rootScope.holdcenter = center;
@@ -15112,10 +15239,14 @@ app.controller("searchSelectedCenterController",["$scope","$location","$window",
         alert(data.error);
         $scope.isEMP = true;
       } else {
-        console.log(data)
-        $scope.isContent = false;
-        $scope.isSent = true;
-        $scope.result = data.ref_id;
+        if(!courier) {
+          console.log(data)
+          $scope.isContent = false;
+          $scope.isSent = true;
+          $scope.result = data.ref_id;
+        } else {
+          $location.path('courier')
+        }
       }
 
       $scope.loading = false;
@@ -16619,7 +16750,6 @@ function($scope,$rootScope,$location,$http,localManager,Drugs,cities){
   $rootScope.back = $rootScope.back || localManager.getValue("currentPageForPatients");
   $scope.user = {}//$rootScope.selectedPrescription;
 
-  console.log($rootScope.selectedPrescription);
 
   $scope.filteredPres = [];
   $scope.noDosage = []
@@ -16705,7 +16835,6 @@ function($scope,$rootScope,$location,$http,localManager,Drugs,cities){
       newArr.push(drObj);
     }
 
-    console.log(newArr);
    
     if($scope.user.phone1) {
 
@@ -16736,8 +16865,23 @@ function($scope,$rootScope,$location,$http,localManager,Drugs,cities){
           $scope.loading = false;
           if(data.status) {
             $scope.status = 'Courier request sent!';         
-            //alert(data.message);
             $rootScope.$broadcast("new courier order",{status:true});
+
+            if($rootScope.holdPresDataForCourier) {
+              var url = "/user/drug-search/pharmacy/referral";
+              $http({
+                method  : 'PUT',
+                url     : url,
+                data    : $rootScope.holdPresDataForCourier,
+                headers : {'Content-Type': 'application/json'} 
+                })
+              .success(function(data) {
+                if(data.success){
+                  $rootScope.holdPresDataForCourier = null;
+                }
+              });
+
+            }
           } else {
             alert("OOps! something went wrong while sending your request. Try again")
           }
@@ -16787,12 +16931,12 @@ app.controller("centerCourierController",["$scope","$rootScope","$http","mySocke
 
   getCurr();
 
-  mySocket.on("receiver courier",function(data){
+  /*mySocket.on("receiver courier",function(data){
     if(data.city === $rootScope.checkLogIn.city) {
       $rootScope.courierRequests.unshift(data);
       templateService.playAudio(3);
     }
-  });
+  });*/
 
   mySocket.on("completed courier",function(data){
     var elemPos = $rootScope.courierRequests.map(function(x){return x.date.toString()}).indexOf(data.date.toString())
@@ -18720,9 +18864,6 @@ app.controller("hompageController",["$scope","scanTests","cities","labTests","Dr
 
   });
 
-
-
-
   $http({
     method  : 'GET',
     url     : "/user/get-diseases",
@@ -18756,21 +18897,7 @@ app.controller("hompageController",["$scope","scanTests","cities","labTests","Dr
     }
   });          
 
- /* $http({
-    method  : 'GET',
-    url     : "/user/get-skills",
-    headers : {'Content-Type': 'application/json'} 
-    })
-  .success(function(data) {            
-    for(var i = 0; i < data.length; i++){
-      if(!filter[data[i].skill]) {
-        filter[data[i].skill] = 1;
-        skArr.push({name:data[i].skill})
-      } else {
-        filter[data[i].skill]++;
-      }
-    }
-  });*/                                                            
+                                   
 
   
   $scope.itemName = "Drug / Test / Specialty / Disease"

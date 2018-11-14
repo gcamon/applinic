@@ -5099,7 +5099,9 @@ var basicRoute = function (model,sms,io,streams,client) {
             updateUser(user);
           }
         });
+
       var date = + new Date();
+
       function createUser() {
         var user = new model.services({
           center_name : req.user.name,
@@ -5128,10 +5130,12 @@ var basicRoute = function (model,sms,io,streams,client) {
           if(elementPos === -1) {
             serviceList.push(test)
           } else {
+            console.log(serviceList[elementPos], "========", test);
             serviceList[elementPos] = test;
           }
 
         }
+
         user.save(function(err,info){
           if(err) throw err;
           console.log("service updated");
@@ -5344,7 +5348,9 @@ var basicRoute = function (model,sms,io,streams,client) {
             var centerInfo = {}                      
             var elementPos = elements[count].map(function(x){ return x.id}).indexOf(listOfDrugs[i].id);            
             centerInfo.notFound = listOfDrugs[i].name;
-            if(elementPos === -1){              
+            
+            if(elementPos === -1){   
+              var el = elements[count].map(function(x){return x.center_id}).indexOf(data[count].user_id);
               centerInfo.center_name = data[count].center_name;
               centerInfo.center_city = data[count].center_city;
               centerInfo.center_country = data[count].center_country;
@@ -5352,7 +5358,8 @@ var basicRoute = function (model,sms,io,streams,client) {
               centerInfo.center_id = data[count].user_id;
               centerInfo.center_address = data[count].center_address;
               centerInfo.center_phone = data[count].center_phone;
-              centerInfo.drugFound = listOfDrugs[i].name;              
+              centerInfo.drugFound = listOfDrugs[i].name;  
+              centerInfo.addBy = (elements[count][el]) ? elements[count][el].center_id : undefined;// the id of center that added the drugs           
               foundDrug.push(centerInfo)               
               sendObj[listOfDrugs[i].name] = foundDrug;
               newListToSend.push(sendObj)  
@@ -5365,7 +5372,7 @@ var basicRoute = function (model,sms,io,streams,client) {
         
         for(var i in sendObj){
           for(var j = 0; j < sendObj[i].length; j++){
-            if(!filter.hasOwnProperty(sendObj[i][j].center_id)){                             
+            if(!filter.hasOwnProperty(sendObj[i][j].center_id)){                            
               filter[sendObj[i][j].center_id] = {};
               filter[sendObj[i][j].center_id].count = 1;
               filter[sendObj[i][j].center_id].name = sendObj[i][j].center_name;
@@ -5375,6 +5382,7 @@ var basicRoute = function (model,sms,io,streams,client) {
               filter[sendObj[i][j].center_id].id = sendObj[i][j].center_id;
                filter[sendObj[i][j].center_id].phone = sendObj[i][j].center_phone;
               filter[sendObj[i][j].center_id].str = sendObj[i][j].drugFound;
+              filter[sendObj[i][j].center_id].addBy = sendObj[i][j].addBy;
             } else {
               filter[sendObj[i][j].center_id].str += "," + sendObj[i][j].drugFound;
               filter[sendObj[i][j].center_id].count++;
@@ -5499,7 +5507,7 @@ var basicRoute = function (model,sms,io,streams,client) {
             message: 'Hi, I need your services'
           };
 
-          if(pharmacy.presence === true){
+          if(pharmacy.presence === true && !req.body.initViaCourier){
             io.sockets.to(pharmacy.user_id).emit("center notification",pharmacyNotification)
           } 
           /*else {
@@ -5517,28 +5525,28 @@ var basicRoute = function (model,sms,io,streams,client) {
             provisional_diagnosis: req.body.provisional_diagnosis,
             date: req.body.sent_date,
             prescriptionId: req.body.prescriptionId,
-            doctor_firstname: req.user.firstname || req.user.name,
+            doctor_firstname: (req.user.firstname || req.user.name),
             title: req.user.title,
             doctor_lastname: req.user.lastname,
-            doctor_address: (req.user.type == "Doctor") ?  req.user.address : "",   
-            doctor_id: req.user.user_id,
+            doctor_address: req.user.address,   
+            doctor_id: (req.user.type == "Doctor") ? req.user.user_id : "",
             doctor_work_place: (req.user.type == "Doctor") ?  req.user.work_place : "",
             doctor_city: (req.user.type == "Doctor") ? req.user.city : "",
             doctor_country: (req.user.type == "Doctor") ? req.user.country : "",
             lab_analysis: req.body.lab_analysis,
             scan_analysis: req.body.scan_analysis,
-            doctor_profile_pic_url: req.user.profile_pic_url,
+            doctor_profile_pic_url: (req.user.type == "Doctor") ? req.user.profile_pic_url : "",
             patient_id : req.body.patient_id || user.user_id,
-            patient_profile_pic_url: req.body.patient_profile_pic_url,
-            patient_firstname: req.body.firstname,
-            patient_lastname: req.body.lastname,
-            patient_address: req.body.address,
-            patient_gender: req.body.gender,
-            patient_age: req.body.age,
-            patient_city: req.body.city,
-            patient_country: req.body.country,
+            patient_profile_pic_url: req.body.patient_profile_pic_url || user.profile_pic_url,
+            patient_firstname: req.body.firstname || user.firstname,
+            patient_lastname: req.body.lastname || user.lastname,
+            patient_address: req.body.address || user.address,
+            patient_gender: req.body.gender || user.gender,
+            patient_age: req.body.age || user.age,
+            patient_city: req.body.city || user.city,
+            patient_country: req.body.country || user.country,
             prescription_body: req.body.prescription_body,
-            ref_id: ref_id,
+            ref_id: ref_id
           }
 
           console.log(preObj)
@@ -5554,12 +5562,12 @@ var basicRoute = function (model,sms,io,streams,client) {
             prescriptionId: req.body.prescriptionId
           };
 
-          if(!req.body.ref_id){
+          if(!req.body.ref_id || req.body.initViaCourier){
             user.medications.push(preObj);
           }
           
-
-          user.prescription_tracking.unshift(track_record); 
+          user.prescription_tracking.unshift(track_record);
+           
 
           //send sms to the patient for the ntification of prescription
           var msgBody = "Your prescription was sent to " +  "\n" + pharmacy.name + "\n" + pharmacy.address +
@@ -5574,13 +5582,19 @@ var basicRoute = function (model,sms,io,streams,client) {
             }
           ) 
 
-
           pharmacy.referral.push(refObj);
-          pharmacy.diagnostic_center_notification.unshift(pharmacyNotification);
+
+          if(!req.body.initViaCourier) {
+            pharmacy.diagnostic_center_notification.unshift(pharmacyNotification);
+          } else {
+            if(pharmacy.presence === true)
+              io.sockets.to(pharmacy.user_id).emit("receiver courier",{subType: true,message: "You have new courier request."});
+          }
 
           pharmacy.save(function(err,info){
             if(err) throw err;
           });
+
 
           user.save(function(err,info){
             if(err) throw err;
@@ -5643,7 +5657,8 @@ router.put("/user/laboratory/search/find-tests",function(req,res){
           var centerInfo = {}                      
           var elementPos = elements[count].map(function(x){ return x.id}).indexOf(listOfTests[i].id);            
           centerInfo.notFound = listOfTests[i].name;
-          if(elementPos === -1){                     
+          if(elementPos === -1){  
+            var el = elements[count].map(function(x){return x.center_id}).indexOf(data[count].user_id);                   
             centerInfo.center_name = data[count].center_name;
             centerInfo.center_city = data[count].center_city;
             centerInfo.center_country = data[count].center_country;
@@ -5651,7 +5666,8 @@ router.put("/user/laboratory/search/find-tests",function(req,res){
             centerInfo.center_phone = data[count].center_phone;
             centerInfo.center_id = data[count].user_id;
             centerInfo.center_address = data[count].center_address;
-            centerInfo.testFound = listOfTests[i].name;              
+            centerInfo.testFound = listOfTests[i].name;  
+            centerInfo.addBy = (elements[count][el]) ? elements[count][el].center_id : undefined;            
             foundTest.push(centerInfo);               
             sendObj[listOfTests[i].name] = foundTest;
             newListToSend.push(sendObj)  
@@ -5674,6 +5690,7 @@ router.put("/user/laboratory/search/find-tests",function(req,res){
             filter[sendObj[i][j].center_id].id = sendObj[i][j].center_id
             filter[sendObj[i][j].center_id].str = sendObj[i][j].testFound;
             filter[sendObj[i][j].center_id].phone = sendObj[i][j].center_phone;
+            filter[sendObj[i][j].center_id].addBy = sendObj[i][j].addBy;
           } else {
             filter[sendObj[i][j].center_id].str += "," + sendObj[i][j].testFound;
             filter[sendObj[i][j].center_id].count++;
@@ -5874,7 +5891,8 @@ router.put("/user/radiology/search/find-tests",function(req,res){
         var centerInfo = {}                      
         var elementPos = elements[count].map(function(x){ return x.id}).indexOf(listOfTests[i].id);            
         centerInfo.notFound = listOfTests[i].name;
-        if(elementPos === -1){              
+        if(elementPos === -1){    
+          var el = elements[count].map(function(x){return x.center_id}).indexOf(data[count].user_id);          
           centerInfo.center_name = data[count].center_name;
           centerInfo.center_city = data[count].center_city;
           centerInfo.center_country = data[count].center_country;
@@ -5882,6 +5900,7 @@ router.put("/user/radiology/search/find-tests",function(req,res){
           centerInfo.center_id = data[count].user_id;
           centerInfo.center_address = data[count].center_address;
           centerInfo.center_phone = data[count].center_phone;
+          centerInfo.addBy = (elements[count][el]) ? elements[count][el].center_id : undefined;
           centerInfo.testFound = listOfTests[i].name;              
           foundTest.push(centerInfo)               
           sendObj[listOfTests[i].name] = foundTest;
@@ -5905,6 +5924,7 @@ router.put("/user/radiology/search/find-tests",function(req,res){
           filter[sendObj[i][j].center_id].id = sendObj[i][j].center_id;
           filter[sendObj[i][j].center_id].phone = sendObj[i][j].center_phone;
           filter[sendObj[i][j].center_id].str = sendObj[i][j].testFound;
+          filter[sendObj[i][j].center_id].addBy = sendObj[i][j].addBy;
         } else {
           filter[sendObj[i][j].center_id].str += "," + sendObj[i][j].testFound;
           filter[sendObj[i][j].center_id].count++;
@@ -7642,7 +7662,8 @@ router.get("/general/homepage-search",function(req,res){
             var centerInfo = {}                      
             var elementPos = elements[count].map(function(x){ return x.name}).indexOf(listOfDrugs[i].name);            
             centerInfo.notFound = listOfDrugs[i].name;
-            if(elementPos === -1){              
+            if(elementPos === -1){    
+              var el = elements[count].map(function(x){return x.center_id}).indexOf(data[count].user_id);          
               centerInfo.center_name = data[count].center_name;
               centerInfo.center_city = data[count].center_city;
               centerInfo.center_country = data[count].center_country;
@@ -7650,6 +7671,7 @@ router.get("/general/homepage-search",function(req,res){
               centerInfo.center_id = data[count].user_id;
               centerInfo.center_address = data[count].center_address;
               centerInfo.center_phone = data[count].center_phone;
+              centerInfo.addBy = (elements[count][el]) ? elements[count][el].center_id : undefined;
               centerInfo.drugFound = listOfDrugs[i].name;              
               foundDrug.push(centerInfo)               
               sendObj[listOfDrugs[i].name] = foundDrug;
@@ -7673,6 +7695,7 @@ router.get("/general/homepage-search",function(req,res){
                 filter[sendObj[i][j].center_id].id = sendObj[i][j].center_id;
                  filter[sendObj[i][j].center_id].phone = sendObj[i][j].center_phone;
                 filter[sendObj[i][j].center_id].str = sendObj[i][j].drugFound;
+                filter[sendObj[i][j].center_id].addBy = sendObj[i][j].addBy;
               } else {
                 filter[sendObj[i][j].center_id].str += "," + sendObj[i][j].drugFound;
                 filter[sendObj[i][j].center_id].count++;
@@ -7791,7 +7814,8 @@ router.get("/general/homepage-search",function(req,res){
           var centerInfo = {}                      
           var elementPos = elements[count].map(function(x){ return x.name}).indexOf(listOfTests[i].name);            
           centerInfo.notFound = listOfTests[i].name;
-          if(elementPos === -1){                     
+          if(elementPos === -1){  
+            var el = elements[count].map(function(x){return x.center_id}).indexOf(data[count].user_id);                   
             centerInfo.center_name = data[count].center_name;
             centerInfo.center_city = data[count].center_city;
             centerInfo.center_country = data[count].center_country;
@@ -7799,6 +7823,7 @@ router.get("/general/homepage-search",function(req,res){
             centerInfo.center_phone = data[count].center_phone;
             centerInfo.center_id = data[count].user_id;
             centerInfo.center_address = data[count].center_address;
+            centerInfo.addBy = (elements[count][el]) ? elements[count][el].center_id : undefined;
             centerInfo.testFound = listOfTests[i].name;              
             foundTest.push(centerInfo);               
             sendObj[listOfTests[i].name] = foundTest;
@@ -7822,6 +7847,7 @@ router.get("/general/homepage-search",function(req,res){
             filter[sendObj[i][j].center_id].id = sendObj[i][j].center_id
             filter[sendObj[i][j].center_id].str = sendObj[i][j].testFound;
             filter[sendObj[i][j].center_id].phone = sendObj[i][j].center_phone;
+            filter[sendObj[i][j].center_id].addBy = sendObj[i][j].addBy;
           } else {
             filter[sendObj[i][j].center_id].str += "," + sendObj[i][j].testFound;
             filter[sendObj[i][j].center_id].count++;
