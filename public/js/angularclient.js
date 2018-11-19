@@ -10309,6 +10309,7 @@ app.controller("myDoctorController",["$scope","$location","$http","$window","$ro
     var date = + new Date();
     var msg = {};
     msg.time = data.date;
+    msg.received = data.message;
     msg.url = data.url;
     msg.fileType = data.fileType;
     msg.mimeType = data.mimeType;  
