@@ -10271,10 +10271,10 @@ app.service("outPatientBillingService",["$resource",function($resource){
 //similar the mydoctorController
 app.controller("myPatientController",["$scope","$http","$location","$window","$rootScope","templateService","localManager","$filter",
   "ModalService","Drugs","mySocket","$resource","deviceCheckService","myPatientControllerService","outPatientBillingService",
-  "getPatientMedicationByDoctorService","getMedicalHistoryService","drugNotRanService","getAllPharmacyService","getSessionService",
+  "getPatientMedicationByDoctorService","getMedicalHistoryService","drugNotRanService","getAllPharmacyService","getSessionService",'$compile',
   function($scope,$http,$location,$window,$rootScope,templateService,localManager,$filter,ModalService,
     Drugs,mySocket,$resource,deviceCheckService,myPatientControllerService,outPatientBillingService,
-    getPatientMedicationByDoctorService,getMedicalHistoryService,drugNotRanService,getAllPharmacyService,getSessionService){
+    getPatientMedicationByDoctorService,getMedicalHistoryService,drugNotRanService,getAllPharmacyService,getSessionService,$compile){
 
   var patient = {}; //patient obj.
   
