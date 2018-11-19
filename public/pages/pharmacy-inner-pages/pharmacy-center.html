@@ -8,7 +8,8 @@
 			<label>Find by center name: </label>	
 			<form class="row">
 		        <div class="col-md-8">
-		        	<input type="text"  class="form-control" placeholder="Enter center name" ng-model="service.name">
+		        	<!--<input type="text"  class="form-control" placeholder="Enter center name" ng-model="service.name">-->
+		        	  <input type="text" class="form-control"  placeholder="Enter center name" ng-model="service.name" uib-typeahead="item.name for item in centers | filter:$viewValue | limitTo:15">
 		        </div>
 		        <div class="col-md-3 p-0">        
 		        	<button type="submit" ng-click="findCenter('Pharmacy')" class="btn btn-success"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i>{{(loading) ? "" : 'Find'}}</button>	

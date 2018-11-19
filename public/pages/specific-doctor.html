@@ -66,6 +66,7 @@
                 </div>
                 
                 <form class="panel-footer" ng-submit="sendChat1()" style="position: relative;">
+                <input type="file" style="position: absolute;left: 2px;top: 0" id="file" file-model-chat="files">
                     <textarea contenteditable="true"  style="padding-top: 30px;padding-right: 30px" ng-model="user.text1"  ng-keypress="getkeys($event)" placeholder="Type a message..."> <span class="textout" >{{typeMessage}}</span> </textarea>
                     <button type="submit" class="btn btn-neutral btn-sm fa fa-send chat-send-btn" style=""></button>
                     

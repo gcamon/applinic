@@ -21,7 +21,7 @@
         <div style="width: 80%">
           <div class="form-group">
             <div style="padding: 15px 4px 0"><label for="City">City:</label>
-           <input type="text" class="form-control"   type="text" placeholder="Enter city name" ng-model="city" uib-typeahead="city for city in cities | filter:$viewValue | limitTo:15">
+           <input type="text" class="form-control"  placeholder="Enter city name" ng-model="city" uib-typeahead="city for city in cities | filter:$viewValue | limitTo:15">
            {{getCity(city)}}
           </div>
           </div>
