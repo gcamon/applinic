@@ -10720,7 +10720,7 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
     
 
     mySocket.on(evt2,function(response){
-      mySocket.emit("send message",{to: $scope.partner.partnerId,message:response.url,url:response.url, from: user.user_id,fileType: response.fileType,mimeType: response.mimeType},function(data){ 
+      mySocket.emit("send message",{to: patient.id,message:response.url,url:response.url, from: user.user_id,fileType: response.fileType,mimeType: response.mimeType},function(data){ 
         var date = + new Date();
         var msg = {};
         msg.time = data.date;
@@ -10729,7 +10729,7 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
         msg.isReceived = false;
         //$rootScope.message1.push(msg);      
         msg.userId = user.user_id;
-        msg.partnerId = $scope.partner.partnerId; 
+        msg.partnerId = patient.id; 
         msg.id = data.date;//genId();
         msg.url = response.url;
         msg.fileType = response.fileType;
