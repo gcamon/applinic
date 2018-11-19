@@ -9999,6 +9999,7 @@ app.controller("myDoctorController",["$scope","$location","$http","$window","$ro
   "localManager","ModalService","mySocket","$timeout","deviceCheckService",
   function($scope,$location,$http,$window,$rootScope,templateService,$filter,$compile,localManager,ModalService,mySocket,
     $timeout,deviceCheckService){
+    
   var doctor = {};
   var savePath = (localManager.getValue("currentPageForPatients")) ? localManager.getValue("currentPageForPatients") : $location.path();
   var arr = savePath.split("/");  
