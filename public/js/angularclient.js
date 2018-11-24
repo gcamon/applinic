@@ -19,7 +19,7 @@ app.run(['$rootScope',function($rootScope){
 app.config(['$paystackProvider','$routeProvider',
   function($paystackProvider,$routeProvider){
   $paystackProvider.configure({
-      key: "pk_test_f9caf875a730e2ce7059b6eda000194c65125bda"
+      key: "pk_live_8c802331778d98d466afb1817e00867080369bfe"//"pk_test_f9caf875a730e2ce7059b6eda000194c65125bda"
   });
 
   $routeProvider
@@ -157,6 +157,7 @@ app.config(['$paystackProvider','$routeProvider',
   templateUrl: '/assets/pages/finance/my-wallet.html',
   controller: 'walletController'
  })
+
 
  .when("/transfer",{
   templateUrl: '/assets/pages/finance/fund-transfer.html',
@@ -7461,15 +7462,19 @@ app.controller("walletController",["$scope","$http","$rootScope","$location","Mo
   /***** end of pin recharge logic ***/
 
 
- 
+  localManager.setValue("currentPageForPatients",'wallet');
 
   /****paystack ************/
   var customer = $rootScope.checkLogIn;
+
+  $scope.paystatusMsg = "";
   //var toStrAmount = (!$scope.pay.amount) ? null : $scope.pay.amount.toString();
   $scope.reference = genRef();
  
   //The customer's email address. 
   $scope.email = customer.email;
+
+  $scope.pay.amount = 0;
 
   //status check
 
@@ -7494,13 +7499,15 @@ app.controller("walletController",["$scope","$http","$rootScope","$location","Mo
   //Javascript function that is called when the payment is successful 
   $scope.callback = function (response) {    
       delete $scope.paystackLoad;
-      $scope.$apply(function(){
+      /*$scope.$apply(function(){
         $scope.reference = genRef();
-      });      
+      });*/    
       if(response) {
         verifyTransaction(response);        
       }
   };
+
+
   
   //Javascript function that is called if the customer closes the payment window 
   $scope.close = function () {
@@ -7517,13 +7524,17 @@ app.controller("walletController",["$scope","$http","$rootScope","$location","Mo
       })
     .success(function(data) {
       if(!data.error) {
-        var whole = Math.round(data.balance);
+        /*var whole = Math.round(data.balance);
         var format = "NGN" + whole.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
         $rootScope.balance = format;
-        $rootScope.alertService(3,data.message);
+        //$rootScope.alertService(3,data.message);
         $scope.paystackLoad = ""; 
+        $rootScope.paystatusMsg = data.message;*/
+        alert(data.message)
+        window.location.href = "/user/patient";
       } else {
-         alert(data.message)               
+        alert(data.message);
+        window.location.href = "/user/patient";              
       }
     });
   }
@@ -7532,11 +7543,14 @@ app.controller("walletController",["$scope","$http","$rootScope","$location","Mo
 
   function genRef() {
     var text = "";
-    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz012345678999666005557772229999";
-      for( var i=0; i < 22; i++ )
+    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0001112333344467888999666005557772229999";
+      for( var i=0; i < 26; i++ )
         text += possible.charAt(Math.floor(Math.random() * possible.length));
       return text;
   }
+
+
+  
 
 /***** end of paystack *******/
 

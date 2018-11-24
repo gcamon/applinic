@@ -142,7 +142,7 @@
                                 var handler = PaystackPop.setup({
                                     key: options.key,
                                     email: scope.email,
-                                    amount: scope.amount,
+                                    amount: scope.amount * 100,
                                     ref: scope.reference,
                                     metadata: scope.metadata,
                                     callback: function (response) {

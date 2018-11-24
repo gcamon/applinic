@@ -26,6 +26,8 @@
     <link href="/assets/css/demo.css" rel="stylesheet" />
 
 
+
+
     <!--<link rel="stylesheet" href="/assets/css/main.css">-->
     <script src="assets/js/core/jquery.3.2.1.min.js" type="text/javascript"></script>
     <script type="text/javascript" src="/assets/js/source.js"></script>
@@ -290,7 +292,7 @@ padding:10px 10px;
  }
 
  .home-pallete-content {
-    font-size: 0.85em;
+    font-size: 0.95em;
     height: 130px;
  }
     </style>
@@ -300,50 +302,7 @@ padding:10px 10px;
 </head>
 
 <body class="template-page" ng-app="myApp" style="overflow-x:hidden;position: relative;">
-    <!-- Navbar -->
-    <!--<nav class="navbar navbar-toggleable-md bg-primary fixed-top  navbar-transparent" color-on-scroll="500">
-        <div class="container">
-            <div class="navbar-translate">
-                <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navigation" aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-bar bar1"></span>
-                    <span class="navbar-toggler-bar bar2"></span>
-                    <span class="navbar-toggler-bar bar3"></span>
-                </button>
-                <a class="navbar-brand" href="/">
-                    <img src="/assets/images/applinic1.png" alt="Applinic" style="width: 40%;height:40px">
-                </a>
-            </div>
-            <div class="collapse navbar-collapse justify-content-end" id="navigation" data-nav-image="/assets/images/blurred-image-1.jpg">
-                <ul class="navbar-nav">
-                    <li class="nav-item">
-                        <a class="nav-link" href="/">
-                            <p>Home</p>
-                           </a>
-                    </li>
-                     <li class="nav-item">
-                        <a class="nav-link" href="/how-it-works">
-                            <p>How it works</p>
-                        </a>
-                    </li>
-                    
-                    <li class="nav-item">
-                        <a class="nav-link" href="/contact">
-                            <p>Contact</p>
-                        </a>
-                    </li>
-                    </ul>
-                    <div class="button-groups">
-                        <a href="/login" class="btn btn-neutral" style="color:#f96332;background-color:#fff">
-                           Login
-                        </a>
-                
-                        <a href="/signup" class="btn btn-primary" style="background-color:#f96332">
-                           Sign up
-                        </a>
-                </div>
-            </div>
-        </div>
-    </nav>-->
+   
     <% include ./inner/nav %>
     <!-- End Navbar -->
 
@@ -561,11 +520,13 @@ padding:10px 10px;
 
             <div class="col-md-12">
                 <div class="col-md-10 col-sm-12 offset-md-1 offset-sm-0 text-center pt-2 pb-3 home-pallete-content">
-                    We're here to help you find and receive the best medical care.
+                 <h5 class="text-muted"> We facilitate patient- doctor communications and promote easy access to pharmacies and diagnostic centers.</h5>
+                    <!-- We're here to help you find and receive the best medical care.
                     Applinic facilitates patient-doctor communications, promotes easy access to and
                     interaction with diagnostic centers and pharmacies and keeps a secure free
                     online record of each patient’s medical management history.
-                    In just a few clicks, you can receive answers to your all medical needs.</div>
+                    In just a few clicks, you can receive answers to your all medical needs. -->
+                </div>
             </div>
 
             <div class="col-md-12 col-lg-12 col-sm-12">
@@ -995,10 +956,10 @@ padding:10px 10px;
         <br />
         <div class="container">
             <div class="text-center home-pallete-content">
-                In just three simple steps, applinic.com will help you find your nearest healthcare. We aim to
+                <p class="text-mute"><b>In just three simple steps, we'll help you find your nearest healthcare. We aim to
                 facilitate you in finding your right doctor
                 with just few clicks without having to ask around or wonder where to find your nearest healthcare
-                facility.
+                facility.</b></p>
             </div>
 
             <div class="row">
@@ -1013,27 +974,29 @@ padding:10px 10px;
                                 <div class="col-md-12 pull-left text-capitalize title p-0 patient-note">Stella Johnson
                                 </div><br><sub class="text-muted text-bold m-0">PATIENT</sub>
                                 <div class="clearfix"></div><br>
-                                <div>I had this test for so long but could not find a diagnostic center to run it. When
+                                <div>
+                                <p class="home-pallete-content font_1-2">I had this test for so long but could not find a diagnostic center to run it. When
                                     I used applinic.com,
                                     I was able to locate a center within my city that solved my problem.This guys are
-                                    great!!!</div>
+                                    great!!!</p></div>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-6 col-lg-6 col-sm-12 col-xs-12" style="padding:1.5em;">
                     <div class="card  card-block">
-                        <div class="col-md-4  col-sm-12 col-xs-12 pull-left" style="height:150px; width:100%; ">
-                            <img src="assets/images/obinna.jpg" class="img-responsive  card"></div>
+                        <div class="col-md-4  col-sm-12 col-xs-12 pull-left" style="height:150px;width:100%;">
+                            <img src="assets/images/obinna.jpg" class="img-responsive  card">
+                            </div>
 
                         <div class="col-md-8 col-sm-12 col-xs-12 pull-right">
                             <div style="font-size:.8em; text-align:left !important;">
                                 <div class="col-md-12 pull-left text-capitalize title p-0 patient-note">Ede Obinna
                                 </div><br> <sub class="text-muted text-bold m-0">PATIENT</sub>
                                 <div class="clearfix"></div> <br>
-                                A friend told me about applinic.com, when I registered was able to find a medical
+                                <p class="home-pallete-content">A friend told me about applinic.com, when I registered was able to find a medical
                                 specialist for my illness.
-                                applinic.com made communication with my doctor so easy.
+                                applinic.com made communication with my doctor so easy.</p>
                             </div>
                         </div>
                     </div>
@@ -1059,9 +1022,9 @@ padding:10px 10px;
         <div class="modal fade">
         <div class="modal-dialog">
           <div class="modal-content" style="position: absolute; top:10;">
-            <div class="modal-header" style="position: relative;">
+            <div class="modal-header">
                 <strong style="font-weight: 100;font-size: 22px">Hey, look what we found!</strong>
-                <a href=''  class="close" style="z-index: 9999;position: absolute;top: 20px;right: 20px"  data-dismiss="modal" aria-hidden="true">&times;</a>      
+                <button type="button"  style="float: right;" class="close" ng-click="close('Cancel')" data-dismiss="modal" aria-hidden="true">&times;</button>        
             </div><hr>
              <div  style="padding: 20px;margin-bottom: 20px;font-size: 14px"> 
              <span ng-if="user.category !== 'Doctor'" class="text-info"> You can search for more items at once from your account. <a href="/login">log in</a> or <a href="/signup">create account</a> now!</span>
@@ -1069,7 +1032,7 @@ padding:10px 10px;
                 <div style="padding-right: 5px"><input type="text" class="form-control" placeholder="filter by name, address, work place etc" ng-model="filt" name="">
 
                 </div>
-                <div ng-repeat="found in searchResult | filter : filt | orderBy: 'addBy'" style="padding: 5px; max-height: 800px;overflow-y: auto;position: relative;">   <img src="{{found.profile_pic_url}}" style="width: 75px;height: auto;float: left;">
+                <div ng-repeat="found in searchResult | filter : filt" style="padding: 5px; max-height: 800px;overflow-y: auto;position: relative;">   <img src="{{found.profile_pic_url}}" style="width: 75px;height: auto;float: left;">
                     <div style="display: inline-block;padding-left: 10px; margin:5px;">
                     <span ng-bind-html = "found.msg" class="text-info"></span>
                     <strong style="display: block;max-width: 90%;font-size: 16px">{{found.name}}</strong>
@@ -1094,6 +1057,7 @@ padding:10px 10px;
         </div>
       </div>
 </script>
+
 
 
 
@@ -1135,6 +1099,22 @@ padding:10px 10px;
     <script type="text/javascript" src="/assets/js/angular-paystack/dist/angular-paystack.min.js"></script>
     <script type="text/javascript" src="/assets/js/angular-sanitize.min.js"></script>
     <script src="/assets/js/bower_components/angular-summernote/dist/angular-summernote.js"></script>
+
+     <!-- Start of LiveChat (www.livechatinc.com) code -->
+    <script type="text/javascript">
+    window.__lc = window.__lc || {};
+    window.__lc.license = 10352687;
+    (function() {
+      var lc = document.createElement('script'); lc.type = 'text/javascript'; lc.async = true;
+      lc.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'cdn.livechatinc.com/tracking.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(lc, s);
+    })();
+    </script>
+    <noscript>
+    <a href="https://www.livechatinc.com/chat-with/10352687/">Chat with us</a>,
+    powered by <a href="https://www.livechatinc.com/?welcome" rel="noopener" target="_blank">LiveChat</a>
+    </noscript>
+    <!-- End of LiveChat code -->
 
 
     <script type="text/javascript">

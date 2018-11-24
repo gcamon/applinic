@@ -220,7 +220,14 @@ var basicPaymentRoute = function(model,sms,io,paystack,client){
 			paystack.transaction.verify(req.body.reference, function(err, body) {
 				console.log(body);
 				if(body) {
-				  creditUser(body.data.amount)
+				  console.log(body.data.amount);
+				  body.data.amount /= 100;
+				  console.log(body.data.amount);
+				  if(body.status) {
+				   creditUser(body.data.amount);
+				  } else {
+				  	res.send({message:"Oops! Something went wrong and payment was not successful.",error:true});
+				  }
 				} else {
 				 res.send({error:true, message: "Oops! Something went wrong while updating you wallet. Please contact admin of this site."})
 				}
@@ -233,9 +240,9 @@ var basicPaymentRoute = function(model,sms,io,paystack,client){
 					} else {
 						var date = + new Date();
 						var reciever = {user_id: data.user_id};
-						var pay = new Wallet(date,data.firstname,data.lastname,"Account top-up (Paystack)");
+						var pay = new Wallet(date,data.firstname,data.lastname,"Account top-up (Paystack)",req.body.reference);
 						pay.credit(model,reciever,amount,io,function(currBalnce){
-							res.send({message:"You wallet has been credited successfully!",balance:currBalnce});
+							res.send({message:"Your account has been credited successfully!",balance:currBalnce});
 						});				
 						
 						

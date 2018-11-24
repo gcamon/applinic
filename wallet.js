@@ -1,12 +1,14 @@
 "use strict";
 var _secr = require("./secr");
+var uuid = require("uuid");
 
-function Wallet(date,firstname,lastname,message){
+function Wallet(date,firstname,lastname,message,reference){
 	this.date = date;
 	this.firstname = firstname;
 	this.lastname = lastname;
 	this.message = message;
 	this.result = false;
+	this.reference_number = reference;
 }
 
 Wallet.prototype.credit = function(model,receiver,amount,io,cb){
@@ -31,7 +33,8 @@ Wallet.prototype.credit = function(model,receiver,amount,io,cb){
 							body: {
 								amount: amount,
 								beneficiary: "Admin"
-							}
+							},
+							reference_number: self.reference_number || uuid.v1()
 						}
 
 						updateAdminRealTime(admin.ewallet.available_amount);
@@ -57,10 +60,13 @@ Wallet.prototype.credit = function(model,receiver,amount,io,cb){
 					body: {
 						amount: amount,
 						beneficiary: "You"
-					}
+					},
+					reference_number: self.reference_number || uuid.v1()
 				}
 
-				if(data.presence) {
+				console.log(transacObj);
+
+				if(data.presence && !self.reference_number) {
 					io.sockets.to(data.user_id).emit("fund received",{status: true,message: "Payment received from " + names})
 				}
 		  
@@ -100,7 +106,8 @@ Wallet.prototype.debit = function(model,amount,debitor){
 		body: {
 			amount: amount,
 			beneficiary: names
-		}
+		},
+		reference_number: this.reference_number || uuid.v1()
 	}
 
 	if(this.message === "Fund transfer"){

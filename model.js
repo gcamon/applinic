@@ -199,6 +199,7 @@ var myModel = function () {
 			amount: Number,
 			beneficiary: String,
 		},
+		reference_number: String
 		
 	});
 
