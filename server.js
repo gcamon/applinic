@@ -130,20 +130,7 @@ console.log(startDate, "" , endDate)
   }
 )*/
 
-sms.calls 
-.create({
-  url: "https://applinic.com/twiliovoicemsg?pin=2345",//'http://demo.twilio.com/docs/voice.xml',//"https://applinic.com/twiliovoicemsg",//
-  to: '+2348064245256',
-  from: '+16467985692',
-})
-.then(
-  function(call){
-    console.log(call.sid)
-  },
-  function(err) {
-    console.log(err)
-  }
-);
+
 
 
 
