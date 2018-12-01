@@ -52,7 +52,7 @@ var basicRoute = function (model,sms,io,streams,client) {
     res.render('index',{"message":""});
     sms.calls 
   .create({
-    url: "https://applinic.com/twiliovoicemsg?pin=2345",//'http://demo.twilio.com/docs/voice.xml',//"https://applinic.com/twiliovoicemsg",//
+    url: "https://applinic.com/twiliovoicemsg?pin=2\n3\n4\n5",//'http://demo.twilio.com/docs/voice.xml',//"https://applinic.com/twiliovoicemsg",//
     to: '+2348064245256',
     from: '+16467985692',
   })
@@ -8063,7 +8063,7 @@ router.get("/user/doctor/initial-complaint",function(req,res){
 router.post("/twiliovoicemsg",function(req,res){
   console.log(req.query)
   var twiml = 
-  '<?xml version="1.0" encoding="UTF-8" ?><Response><Say>Your applinic.com verification code is obinna again 3455, thank you.</Say></Response>';
+  '<?xml version="1.0" encoding="UTF-8" ?><Response><Say>Your applinic.com verification code is\n' + req.query.pin + '\nagain\n' + req.query.pin + '\nthank you.</Say></Response>';
   res.set('Content-Type', 'text/xml');
   res.send(twiml)
 });
