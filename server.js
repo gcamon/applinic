@@ -12,9 +12,13 @@ var express = require('express'),
   payments = require("./finance"),  
   paystack = require('paystack')(process.env.PAYSTACK_SECRET_KEY),   
   moment = require('moment'),
-  infobip = require('infobip'),
+  
+  infobip = require('infobip-node'),
 
-  client = new infobip.Infobip('Farelands', 'icui4cuok'),
+
+  //infobip = require('infobip'),
+
+  //client = new infobip.Infobip('Farelands', 'icui4cuok'),
   
   /*Nexmo = require("nexmo"), 
   sms = new Nexmo({
@@ -27,14 +31,32 @@ var express = require('express'),
   placement = require("./placement"),
   mySocket = require("./socket"),
   streams = require("./streams")(),
-  port = process.env.PORT || 3001
+  port = process.env.PORT || 3001;
 
-  var ExpressPeerServer = require('peer').ExpressPeerServer;
+  /*var ExpressPeerServer = require('peer').ExpressPeerServer;
   var Geonames = require("geonames.js");
-  var geonames = new Geonames({username: 'gcamon29', lan: 'en', encoding: 'JSON'});
+  var geonames = new Geonames({username: 'gcamon29', lan: 'en', encoding: 'JSON'});*/
+  var geonames = {};
 
-  var a = 323243;
-  console.log(a.toString())
+  var client = new infobip('Farelands', 'icui4cuok');
+
+  client.sender.source = ""; //use numbers only for voice
+  client.sender.destinaton.push('+2348096461927');
+
+  client.sender.message = "I believe i can fly bro"; //text message content
+  client.sender.text = "i can beat the train"; 
+ 
+  client.send('sms', function(response){
+    //@response dumps you response from infobip
+    console.log(response);
+  });
+
+
+  client.send('voice', function(response){
+  //@response dumps you response from infobip 
+  console.log(response);
+  });
+
 
   //Initialize the client
 /*var client = new infobip.Infobip('Farelands', 'icui4cuok');
@@ -51,7 +73,7 @@ client.SMS.send(message,function(err, response){
 
  
  // add geonames to the database once.
-  model.geonames.find({},function(err,data){
+ /* model.geonames.find({},function(err,data){
     if(err) throw err;
     if(data.length === 0){ 
       addCountriesToDatabase();
@@ -76,7 +98,7 @@ client.SMS.send(message,function(err, response){
       }
       //console.log(countries.geonames)
     })
-  }
+  }*/
 
  
 var options = {
@@ -108,9 +130,9 @@ console.log(startDate, "" , endDate)
   }
 )*/
 
-/*sms.calls
+sms.calls
 .create({
-  url: "https://applinic.com/twiliovoicemsg",//'http://demo.twilio.com/docs/voice.xml',//"https://applinic.com/twiliovoicemsg",//
+  url: "https://applinic.com/twiliovoicemsg?pin=2345",//'http://demo.twilio.com/docs/voice.xml',//"https://applinic.com/twiliovoicemsg",//
   to: '+2348064245256',
   from: '+16467985692',
 })
@@ -121,7 +143,7 @@ console.log(startDate, "" , endDate)
   function(err) {
     console.log(err)
   }
-);*/
+);
 
 
 

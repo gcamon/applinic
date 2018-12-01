@@ -19,7 +19,7 @@ app.run(['$rootScope',function($rootScope){
 app.config(['$paystackProvider','$routeProvider',
   function($paystackProvider,$routeProvider){
   $paystackProvider.configure({
-      key: "pk_live_8c802331778d98d466afb1817e00867080369bfe"//"pk_test_f9caf875a730e2ce7059b6eda000194c65125bda"
+      key: "pk_live_8c802331778d98d466afb1817e00867080369bfe",//"pk_test_f9caf875a730e2ce7059b6eda000194c65125bda"
   });
 
   $routeProvider
@@ -7499,9 +7499,9 @@ app.controller("walletController",["$scope","$http","$rootScope","$location","Mo
   //Javascript function that is called when the payment is successful 
   $scope.callback = function (response) {    
       delete $scope.paystackLoad;
-      /*$scope.$apply(function(){
+      $scope.$apply(function(){
         $scope.reference = genRef();
-      });*/    
+      }); 
       if(response) {
         verifyTransaction(response);        
       }

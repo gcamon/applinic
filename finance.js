@@ -219,6 +219,11 @@ var basicPaymentRoute = function(model,sms,io,paystack,client){
 		if(req.user){
 			paystack.transaction.verify(req.body.reference, function(err, body) {
 				console.log(body);
+				if(err){
+				  res.send({error:true, message: "Oops! while verifying your payment through paystack. Please contact us for help."});
+				  return;
+				}
+
 				if(body) {
 				  console.log(body.data.amount);
 				  body.data.amount /= 100;
