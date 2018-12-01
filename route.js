@@ -8048,8 +8048,8 @@ router.get("/user/doctor/initial-complaint",function(req,res){
 
 router.get("/twiliovoicemsg",function(req,res){
   console.log(req.query)
-  var twiml = '<?xml version="1.0" encoding="UTF-8" ?>\n<Response>\n<Say>Thanks for your text, we\'ll be in touch.</Say>\n</Response>'
-  res.send(twiml)
+  var twiml = '<?xml version="1.0" encoding="UTF-8" ?><Response><Say>Your applinic.com verification code is obinna again 3455, thank you.</Say></Response>';
+  res.send(twiml.toString())
 });
 
 
