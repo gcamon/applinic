@@ -13,7 +13,7 @@ var express = require('express'),
   paystack = require('paystack')(process.env.PAYSTACK_SECRET_KEY),   
   moment = require('moment'),
   
-  infobip = require('infobip-node'),
+  //infobip = require('infobip-node'),
 
 
   //infobip = require('infobip'),
@@ -38,24 +38,24 @@ var express = require('express'),
   var geonames = new Geonames({username: 'gcamon29', lan: 'en', encoding: 'JSON'});*/
   var geonames = {};
 
-  var client = new infobip('Farelands', 'icui4cuok');
+  var client; //= new infobip('Farelands', 'icui4cuok');
 
-  client.sender.source = ""; //use numbers only for voice
-  client.sender.destinaton.push('+2348096461927');
+  //client.sender.source = ""; //use numbers only for voice
+  //client.sender.destinaton.push('+2348096461927');
 
-  client.sender.message = "I believe i can fly bro"; //text message content
-  client.sender.text = "i can beat the train"; 
+ // client.sender.message = "I believe i can fly bro"; //text message content
+  //client.sender.text = "i can beat the train"; 
  
-  client.send('sms', function(response){
+  //client.send('sms', function(response){
     //@response dumps you response from infobip
-    console.log(response);
-  });
+    //console.log(response);
+  //});
 
 
-  client.send('voice', function(response){
+  //client.send('voice', function(response){
   //@response dumps you response from infobip 
-  console.log(response);
-  });
+  //console.log(response);
+  //});
 
 
   //Initialize the client
@@ -130,7 +130,7 @@ console.log(startDate, "" , endDate)
   }
 )*/
 
-sms.calls
+/*sms.calls
 .create({
   url: "https://applinic.com/twiliovoicemsg?pin=2345",//'http://demo.twilio.com/docs/voice.xml',//"https://applinic.com/twiliovoicemsg",//
   to: '+2348064245256',
@@ -143,7 +143,7 @@ sms.calls
   function(err) {
     console.log(err)
   }
-);
+);*/
 
 
 
