@@ -8065,7 +8065,8 @@ router.post("/twiliovoicemsg",function(req,res){
   var arr = req.query.pin.split('');
   var twiml = 
   '<?xml version="1.0" encoding="UTF-8" ?><Response><Say>Your\n applinic.com\n verification\n code\n is\n' + arr[0] + ' ' 
-  + arr[1] + ' ' + arr[2] + ' ' + arr[3] + '\nagain\n' + req.query.pin + '\nthank you.</Say></Response>';
+  + arr[1] + ' ' + arr[2] + ' ' + arr[3] + '\n   again    \n' +  arr[0] + ' ' 
+  + arr[1] + ' ' + arr[2] + ' ' + arr[3]  + '\nthank you.</Say></Response>';
   res.set('Content-Type', 'text/xml');
   res.send(twiml)
 });
