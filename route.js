@@ -38,6 +38,21 @@ function createNewsLink(title){
   return tm;
 }
 
+function createVoiceText(title){
+  var str = "";
+  if(title) {
+    var spt = title.split(" ");
+    for(var i = 0; i < spt.length; i++){
+      str += spt[i] + ",,";
+    }
+  }
+
+  var tm = str.slice(0, -1)
+
+  console.log(tm)
+  return tm;
+}
+
 function genHash(count) {
   var text = "";
   var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz01234567899966600555777222";
@@ -8066,7 +8081,7 @@ router.get("/user/doctor/initial-complaint",function(req,res){
 
 router.post("/twiliovoicemsg",function(req,res){
  
-  var arr = req.query.pin.split('');
+  //var arr = req.query.pin.split('');
   /*var twiml = 
   '<?xml version="1.0" encoding="UTF-8" ?><Response><Say>Your\n applinic.com\n verification\n code\n is\n' + arr[0] + ' \n' + ' \n' +
    ' \n' + ' \n' + ' \n' 
@@ -8075,8 +8090,7 @@ router.post("/twiliovoicemsg",function(req,res){
   res.set('Content-Type', 'text/xml');
   res.send(twiml)*/
   var twiml = new Voice();
-  var textToSay = 'Your, applinic dot com, verification, code, is,'  + arr[0] + ',, ' + arr[1] + ',, '  + arr[2] + ',, '  + arr[3] + ',, ' + 'again,'  
-  + arr[0] + ',, ' + arr[1] + ',, ' + arr[2] + ',, ' + arr[3] + ',,' + 'thank you!';
+  var textToSay = 'Your, app linic dot com, verification, code, is,'  + createVoiceText(req.query.pin) + 'thank you!';
   twiml.say({ voice: 'alice' },textToSay);
   res.type('text/xml');
   res.send(twiml.toString());
