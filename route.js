@@ -44,11 +44,11 @@ function createVoiceText(title){
     var toStr = title.toString();
     var spt = toStr.split("");
     for(var i = 0; i < spt.length; i++){
-      str += spt[i] + ",,";
+      str += spt[i] + " ,, ";
     }
   }
 
-  var tm = str.slice(0, -1)
+  var tm = str.slice(0, -2)
 
   
   return tm;
@@ -8093,7 +8093,8 @@ router.post("/twiliovoicemsg",function(req,res){
   res.set('Content-Type', 'text/xml');
   res.send(twiml)*/
   var twiml = new Voice();
-  var textToSay = 'Your, app linic dot com, verification, code, is,'  + createVoiceText(req.query.pin) + 'thank you!';
+  var splitTxt = createVoiceText(req.query.pin);
+  var textToSay = 'Your, app linic dot com, verification, code, is,'  + splitTxt + ', again, ' + splitTxt + 'thank you!';
   twiml.say({ voice: 'alice' },textToSay);
   res.type('text/xml');
   res.send(twiml.toString());
