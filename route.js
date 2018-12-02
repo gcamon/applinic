@@ -10,6 +10,7 @@ var EventEmmiter = require("events");
 var emitter = new EventEmmiter();
 var uuid = require("uuid");
 var moment = require('moment');
+var Voice = require('twilio').twiml.VoiceResponse;
 var options = {
   host: "global.xirsys.net",
   path: "/_turn/www.applinic.com",
@@ -8060,8 +8061,11 @@ router.get("/user/doctor/initial-complaint",function(req,res){
   }
 });
 
+
+
+
 router.post("/twiliovoicemsg",function(req,res){
-  console.log(req.query)
+  /*console.log(req.query)
   var arr = req.query.pin.split('');
   var twiml = 
   '<?xml version="1.0" encoding="UTF-8" ?><Response><Say>Your\n applinic.com\n verification\n code\n is\n' + arr[0] + ' \n' + ' \n' +
@@ -8069,7 +8073,13 @@ router.post("/twiliovoicemsg",function(req,res){
   + arr[1] + ' \n' + ' \n' + ' \n' + ' \n' + ' \n' + arr[2] + ' \n' + ' \n' + ' \n' + ' \n' + ' \n' + arr[3] + ' \n' + ' \n' + ' \n' +  'again' + ' \n' + ' \n' + ' \n' + ' \n' +  arr[0] + ' ' + ' ' + ' ' + ' '
   + arr[1] + ' \n' + ' \n' + ' \n' + ' \n' + ' \n' + arr[2] + ' \n' + ' \n' + ' \n' + ' \n' + ' \n' + arr[3]  + '\nthank you.</Say></Response>';
   res.set('Content-Type', 'text/xml');
-  res.send(twiml)
+  res.send(twiml)*/
+  var twiml = new Voice();
+  twiml.say({ voice: 'alice' }, 'hello world!');
+  // Render the response as XML in reply to the webhook request
+  res.type('text/xml');
+  res.send(twiml.toString());
+ 
 });
 
 
