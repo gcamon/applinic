@@ -34,14 +34,15 @@ function createNewsLink(title){
 
   var tm = str.slice(0, -1)
 
-  console.log(tm)
+  
   return tm;
 }
 
 function createVoiceText(title){
   var str = "";
   if(title) {
-    var spt = title.split(" ");
+    var toStr = title.toString();
+    var spt = toStr.split(" ");
     for(var i = 0; i < spt.length; i++){
       str += spt[i] + ",,";
     }
@@ -49,7 +50,7 @@ function createVoiceText(title){
 
   var tm = str.slice(0, -1)
 
-  console.log(tm)
+  
   return tm;
 }
 
