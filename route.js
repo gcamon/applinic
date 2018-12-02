@@ -69,20 +69,6 @@ var basicRoute = function (model,sms,io,streams,client) {
 
   router.get("/",function(req,res){
     res.render('index',{"message":""});
-    sms.calls 
-  .create({
-    url: "https://applinic.com/twiliovoicemsg?pin=2345",//'http://demo.twilio.com/docs/voice.xml',//"https://applinic.com/twiliovoicemsg",//
-    to: '+2348064245256',
-    from: '+16467985692',
-  })
-  .then(
-    function(call){
-      console.log(call.sid)
-    },
-    function(err) {
-      console.log(err)
-    }
-  );
   });
 
   router.get("/user",function (req,res) {
@@ -8094,7 +8080,7 @@ router.post("/twiliovoicemsg",function(req,res){
   res.send(twiml)*/
   var twiml = new Voice();
   var splitTxt = createVoiceText(req.query.pin);
-  var textToSay = 'Your, app linic dot com, verification, code, is,'  + splitTxt + ', again, ' + splitTxt + 'thank you!';
+  var textToSay = 'Your, app linic dot com, verification, code, is,'  + splitTxt + ', I repeat, ' + splitTxt + ', again, ' + splitTxt + 'thank you!';
   twiml.say({ voice: 'alice' },textToSay);
   res.type('text/xml');
   res.send(twiml.toString());
