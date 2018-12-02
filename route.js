@@ -8075,8 +8075,8 @@ router.post("/twiliovoicemsg",function(req,res){
   res.set('Content-Type', 'text/xml');
   res.send(twiml)*/
   var twiml = new Voice();
-  var textToSay = 'Your, applinic dot com, verification, code, is,'  + arr[0] + ',,' + arr[1] + ',,'  + arr[2] + ',,'  + arr[3] + ',,' + 'again,'  
-  + arr[0] + ',,' + arr[1] + ',,' + arr[2] + ',,' + arr[3] + ',,' + 'thank you!';
+  var textToSay = 'Your, applinic dot com, verification, code, is,'  + arr[0] + ',, ' + arr[1] + ',, '  + arr[2] + ',, '  + arr[3] + ',, ' + 'again,'  
+  + arr[0] + ',, ' + arr[1] + ',, ' + arr[2] + ',, ' + arr[3] + ',,' + 'thank you!';
   twiml.say({ voice: 'alice' },textToSay);
   res.type('text/xml');
   res.send(twiml.toString());
