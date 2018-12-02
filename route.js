@@ -42,7 +42,7 @@ function createVoiceText(title){
   var str = "";
   if(title) {
     var toStr = title.toString();
-    var spt = toStr.split(" ");
+    var spt = toStr.split("");
     for(var i = 0; i < spt.length; i++){
       str += spt[i] + ",,";
     }
@@ -53,6 +53,8 @@ function createVoiceText(title){
   
   return tm;
 }
+
+console.log(createVoiceText(2345))
 
 function genHash(count) {
   var text = "";
