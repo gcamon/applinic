@@ -8075,7 +8075,10 @@ router.post("/twiliovoicemsg",function(req,res){
   res.set('Content-Type', 'text/xml');
   res.send(twiml)*/
   var twiml = new Voice();
-  twiml.say({ voice: 'alice' }, 'hello world!');
+  twiml.say({ voice: 'alice' }, 'Your\n applinic.com\n verification\n code\n is\n' + arr[0] + ' \n' + ' \n' +
+   ' \n' + ' \n' + ' \n' 
+  + arr[1] + ' \n' + ' \n' + ' \n' + ' \n' + ' \n' + arr[2] + ' \n' + ' \n' + ' \n' + ' \n' + ' \n' + arr[3] + ' \n' + ' \n' + ' \n' +  'again' + ' \n' + ' \n' + ' \n' + ' \n' +  arr[0] + ' ' + ' ' + ' ' + ' '
+  + arr[1] + ' \n' + ' \n' + ' \n' + ' \n' + ' \n' + arr[2] + ' \n' + ' \n' + ' \n' + ' \n' + ' \n' + arr[3]  + '\nthank you.');
   // Render the response as XML in reply to the webhook request
   res.type('text/xml');
   res.send(twiml.toString());
