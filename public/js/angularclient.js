@@ -1897,9 +1897,9 @@ app.service("getCountryService",["$resource",function($resource){
 }]);
 
 app.controller('signupController',["$scope","$http","$location","$window","templateService",
-  "$resource","$rootScope","localManager","userSignUpService","phoneVerifyService","getCountryService",
+  "$resource","$rootScope","localManager","userSignUpService","phoneVerifyService","getCountryService",'phoneCallService',
   function($scope,$http,$location,$window,templateService,$resource,$rootScope,localManager,
-    userSignUpService,phoneVerifyService,getCountryService) {
+    userSignUpService,phoneVerifyService,getCountryService,phoneCallService) {
 
   var signUp = userSignUpService; //$resource('/user/signup',null,{userSignup:{method:"POST"},emailCheck:{method:"PUT"}});
   $scope.countries = localManager.getValue("countries") || getCountries();
@@ -2003,6 +2003,7 @@ app.controller('signupController',["$scope","$http","$location","$window","templ
         if(res.error) {        
           $scope.phoneMessage = res.errorMsg;
         } else {
+          $rootScope.holdPhoneForCall = phoneNumber;
           validate($scope.user); 
         }
 
@@ -2135,6 +2136,8 @@ app.controller('signupController',["$scope","$http","$location","$window","templ
     } 
   }
 
+  
+
 
 
   var reqObj;
@@ -2213,6 +2216,23 @@ app.controller('signupController',["$scope","$http","$location","$window","templ
   //password must be checked lastly. Very important.
 }]);
 
+app.service('phoneCallService',['$http','mySocket',function($http,mySocket){
+    return function(data,url,method){
+      if(data)
+        data.isPhoneCall = true;
+
+      $http({
+        method  : method,
+        url     : url,
+        data    : data,
+        headers : {'Content-Type': 'application/json'} 
+      })
+      .success(function(data){      
+        data.isPhoneCall = false;
+      })
+    }
+}]);
+
 app.controller("familyAccountController",["$scope","$http","$rootScope","localManager",function($scope,$http,$rootScope,localManager){
   $scope.familyAccount = {};
   $scope.createAccount = function() {
@@ -2262,8 +2282,8 @@ app.controller("contactController",["$scope","$http",function($scope,$http){
 }]);
 
 
-app.controller("verifyPhoneController",["$rootScope","$scope","$resource","$window","userSignUpService",
-  function($rootScope,$scope,$resource,$window,userSignUpService){
+app.controller("verifyPhoneController",["$rootScope","$scope","$resource","$window","userSignUpService","phoneCallService",
+  function($rootScope,$scope,$resource,$window,userSignUpService,phoneCallService){
   $scope.verify = {};
   $scope.sendForm = function (){
     $scope.loading = true;
@@ -2280,6 +2300,11 @@ app.controller("verifyPhoneController",["$rootScope","$scope","$resource","$wind
         $scope.error = response.errorMsg;       
       }
     });
+  }
+
+  $scope.call = function(oldTime){
+    phoneCallService({phone: $rootScope.holdPhoneForCall || '2348064245256'},"/user/verify-phone-number",'PUT')
+    $scope.showCallingMsg = "You'll receive a phone call in just a moment. Please enter the pin you hear from the voice call below..."
   }
 
 }]);

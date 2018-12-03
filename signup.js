@@ -217,7 +217,7 @@ var signupRoute = function(model,sms,geonames,paystack,io) {
 			phone: req.body.phone,
 			pin: genPin
 		});
-		
+		console.log(req.body)
 		var date = new Date()
 		testPhone.expirationDate = new Date(date.getTime() + 300000);
 		testPhone.expirationDate.expires  = 60 * 60; // 1 hour before deleted from database.
@@ -227,24 +227,43 @@ var signupRoute = function(model,sms,geonames,paystack,io) {
 		var msgBody = "Your Phone Verification Pin for Applinic is: " + genPin;
 		var phoneNunber = (req.body.phone[0] !== "+") ? "+" + req.body.phone : req.body.phone;
 		//sms.message.sendSms('Appclinic',phoneNunber,msgBody,callBack); //"2348096461927" "2349092469137"
-		sms.messages.create(
-		  {
-		    to: phoneNunber,
-		    from: '+16467985692',
-		    body: msgBody,
-		  },
-		  callBack
-		)	   	
-		
-		function callBack(err,response){
-			res.send({message:"Phone Verification Pin sent to " + req.body.phone + " (use " + genPin + " to complete registration)"});
-			/*if(!err) {
-				res.send({message:"Phone Verification Pin sent to " + req.body.phone + " (use " + genPin + " to complete registration)"});
-			} else {
-				res.send({message:err.message,error: true});
-			}*/
+		if(!req.body.isPhoneCall) {
+			sms.messages.create(
+			  {
+			    to: phoneNunber,
+			    from: '+16467985692',
+			    body: msgBody,
+			  },
+			  callBack
+			)	   	
 			
-		}			
+			function callBack(err,response){
+				//res.send({message:"Phone Verification Pin sent to " + req.body.phone + " (use " + genPin + " to complete registration)"});
+				if(!err) {
+					//res.send({message:"Phone Verification Pin sent to " + req.body.phone + " (use " + genPin + " to complete registration)"});
+					res.send({message:"Phone Verification Pin sent to " + req.body.phone + " (enter pin below  to complete registration)"})
+				} else {
+					res.send({message:err.message,error: true});
+				}
+				
+			}		
+		} else {
+			sms.calls 
+		  .create({
+		    url: "https://applinic.com/twiliovoicemsg?pin=" + genPin,
+		    to: '+2348064245256',
+		    from: '+16467985692',
+		  })
+		  .then(
+		    function(call){
+		      console.log(call.sid)
+		    },
+		    function(err) {
+		      console.log(err)
+		    }
+		  );
+		}	
+
 	})
 
 	//check to see if a user with a phone number already exist

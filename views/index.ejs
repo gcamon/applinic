@@ -1022,9 +1022,9 @@ padding:10px 10px;
         <div class="modal fade">
         <div class="modal-dialog">
           <div class="modal-content" style="position: absolute; top:10;">
-            <div class="modal-header">
+            <div class="modal-header" style="position: relative;">
                 <strong style="font-weight: 100;font-size: 22px">Hey, look what we found!</strong>
-                <button type="button"  style="float: right;" class="close" ng-click="close('Cancel')" data-dismiss="modal" aria-hidden="true">&times;</button>        
+                <a href=""  style="position: absolute;right: 20px;top: 25px" class="close"  data-dismiss="modal" aria-hidden="true">&times;</a>       
             </div><hr>
              <div  style="padding: 20px;margin-bottom: 20px;font-size: 14px"> 
              <span ng-if="user.category !== 'Doctor'" class="text-info"> You can search for more items at once from your account. <a href="/login">log in</a> or <a href="/signup">create account</a> now!</span>
