@@ -115,7 +115,12 @@ router.get('/failed',function(req,res){
 // Change password routes
 
 router.get('/user/change-password',function(req,res){
-
+  
+  if(req.query.isPhoneCall) {
+    var num = req.query.val.slice(1);
+    req.query.val = "+" + num;
+  }
+ 
   var criteria = { $or: [{ email : req.query.val},{phone: req.query.val}]};
   model.user.findOne(criteria,{phone:1,email:1,user_id:1},function(err,user){
     if(err) {
@@ -125,9 +130,15 @@ router.get('/user/change-password',function(req,res){
 
     console.log(user)
 
+
     if(user) {
-      //var random1 = Math.floor(Math.random() * 9999);
-      //var random2 = Math.floor(Math.random() * 9999);
+      
+
+      if(req.query.isPhoneCall) {
+        model.otpSchema.remove({user_id: user.user_id,amount:0})
+      }
+
+     
       var password = genId() + " " + genId();
 
       var otp = new model.otpSchema({
@@ -148,22 +159,43 @@ router.get('/user/change-password',function(req,res){
       }); 
 
 
-      console.log(password);
+      console.log(password,user.phone);
 
-      var msgBody = "Applinic change password pin is  " + password;
-      var phoneNumber = user.phone;
-      sms.messages.create(
-        {
-          to: phoneNumber,
+
+      if(req.query.isPhoneCall) {
+        var str = password.replace(/ +/g, "");
+        sms.calls 
+        .create({
+          url: "https://applinic.com/twiliovoicemsg?pin=" + str,
+          to: user.phone,
           from: '+16467985692',
-          body: msgBody,
-        },
-        callBack
-      )
+        })
+        .then(
+          function(call){
+            console.log(call.sid)
+          },
+          function(err) {
+            console.log(err)
+          }
+        );
+      } else {
 
-      function callBack(err,responseData) {
-        console.log(err);
-        console.log(responseData);
+        var msgBody = "Applinic change password pin is  " + password;
+        var phoneNumber = user.phone;
+        sms.messages.create(
+          {
+            to: phoneNumber,
+            from: '+16467985692',
+            body: msgBody,
+          },
+          callBack
+        )
+
+        function callBack(err,responseData) {
+          console.log(err);
+          console.log(responseData);
+        }
+
       }
 
       /*function check(num) {
@@ -187,7 +219,7 @@ router.get('/user/change-password',function(req,res){
 
       var phone = hashPart(user.phone);
 
-      res.json({status: true, message: "Verification pin sent to <b> " + phone + " </b> via SMS",userId:user.user_id,id:user.user_id});
+      res.json({status: true, message: "Verification pin sent to <b> " + phone + " </b> via SMS",userId:user.user_id,id:user.user_id,phone:user.phone});
     } else {
       res.send({status: false, message: "User with <b> &nbsp;" + req.query.val + " &nbsp;</b> not found!"});
     }

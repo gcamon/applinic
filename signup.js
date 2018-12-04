@@ -251,7 +251,7 @@ var signupRoute = function(model,sms,geonames,paystack,io) {
 			sms.calls 
 		  .create({
 		    url: "https://applinic.com/twiliovoicemsg?pin=" + genPin,
-		    to: '+2348064245256',
+		    to: req.body.phone,
 		    from: '+16467985692',
 		  })
 		  .then(

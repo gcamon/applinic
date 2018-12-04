@@ -134,24 +134,33 @@
                      </div>
                      </article>	
                     <article ng-if="otpMsg">
-                     	<div  class="p-2 col-md-8" class="text-center text-success font-1">
-                     		<p class="bg-warning p-1 text-white" ng-if="otpError">{{otpError}}</p>
-							<p class="">{{otpMsg}} </p>
-							<input type="text" class="form-control" placeholder="Enter OTP you sent to this patient" ng-model="lab.otp" ng-if="grabRawAmount > 0">
-							<div style="padding-left: 5px">
+                     	<div  class="p-2 col-md-12" class="text-center text-success font-1">
+                     		<p class="bg-warning p-1 text-danger" ng-if="otpError">{{otpError}}</p>
+							<p class="text-muted">{{otpMsg}} </p>
+							<p>
+					            Cannot receive SMS?  <a href="" ng-click="sendBill(refInfo.laboratory.patient_id,resend)">Re-send OTP via SMS</a> <b> or </b> Try making a phone call to get the OTP code<br>
+					            <a href="" ng-click="call(refInfo.laboratory.patient_id,resend)" class="text-danger"><i class="fa fa-phone"></i> Call now!</a>
+					        </p> 	
+					        <p style="font-size: 14px" ng-if="showCallingMsg">{{showCallingMsg}}</p>		
+							<div>
+								<input type="text" class="form-control" placeholder="Enter OTP you sent to this patient" ng-model="lab.otp" ng-if="grabRawAmount > 0">
+							</div>
+							<div style="padding-left: 5px;text-align: center;">
 								<button class="btn btn-success" ng-click="verifyPay(refInfo)"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i>  Confirm</button>
 							</div>
 							
 							<p ng-if="grabRawAmount <= 0"><span class="text-danger">Report will not be sent, patient is not billed for the service(s)</span>
-							</p>							
+							</p>	
+							<p class="text-success">Amount: {{str}}</p>
+										
 						</div>
-						<div class="p-2 col-md-3">
+						<!--<div class="p-2 col-md-3">
 							<p class="text-success">Amount: {{str}}</p>
 							
 							<div>
 								<a href="" ng-click="sendBill(refInfo.laboratory.patient_id,resend)"><i class="fa fa-refresh"></i> Resend OTP</a>
 							</div>
-						</div>
+						</div>-->
                      </article>
 
                      <article ng-if="refInfo.laboratory.is_paid || paymentStatus">

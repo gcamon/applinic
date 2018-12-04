@@ -70,9 +70,20 @@
 		</div>
 	</div>
 	<div ng-if="isOtp && !courierResponse.is_paid">
-		<div style="text-align: right;">
-			<a href="" ng-click="pay(resend)">Resend OTP</a>
+		<div style="">			
+			<p>
+	            cannot receive SMS? <a href="" ng-click="pay(resend)" class="text-info">resend OTP via SMS</a> <b> or </b> Try making a phone call to get the OTP code
+	            <a href="" ng-click="call(resend)" class="text-danger"><i class="fa fa-phone"></i> Call now!</a>
+	        </p> 
+	        <p style="font-size: 14px" ng-if="showCallingMsg">{{showCallingMsg}}</p>
 		</div>
+		<!--
+			 <p>
+	            cannot receive SMS? <a href="" style="color: blue" class="pt-1" ng-click="sendAcceptanceVerification(resend)">resend OTP via SMS</a> <b>or</b> Try making a phone call to get the OTP code
+	            <a href="" ng-click="call(resend)" class="text-danger"><i class="fa fa-phone"></i> Call now!</a>
+	        </p> 
+	        <p style="text-align: center;font-size: 14px" ng-if="showCallingMsg">{{showCallingMsg}}</p>
+		-->
 		<div style="width: 70%;">
 			<input type="text" placeholder="Enter otp" class="form-control" ng-model="user.pin">
 		</div>

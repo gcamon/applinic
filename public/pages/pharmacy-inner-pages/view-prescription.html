@@ -101,13 +101,19 @@
 						<article>
 							<p><strong>To: {{refData.pharmacy.patient_firstname}} {{refData.pharmacy.patient_lastname}}</strong></p>			
 							<p><strong>Amount billed: </strong> {{refData.amount}}</p>
-							<small>Get OTP from this patient to confirm payment. Note OTP expires in <strong>5 minutes</strong></small>
+							<!--<small>Get OTP from this patient to confirm payment. Note OTP expires in <strong>5 minutes</strong></small>-->
 						</article>
+						<!--<a href=""  ng-click="sendBill(resendPatientId,resend)">Resend OTP</a><br>-->
+						<p>
+				            cannot receive SMS? <a href=""  ng-click="sendBill(resendPatientId,resend)" class="text-info">resend OTP via SMS</a> <b> or </b> Try making a phone call to get the OTP code<br>
+				            <a href="" ng-click="call(resendPatientId,resend)" class="text-danger"><i class="fa fa-phone"></i> Call now!</a>
+				        </p> 
+				        <p style="font-size: 14px" ng-if="showCallingMsg">{{showCallingMsg}}</p>
 					</div>
 					
 				        
 					<div class="p-0">	
-						<div style="width: 60%">	
+						<div style="width: 90%">	
 					    	<input type="text" class="form-control" placeholder="Enter OTP" ng-model="pay.otp">
 					    </div>
 					    <div>
@@ -115,7 +121,7 @@
 					    </div>
 				    </div>
 					<div class="pt-1">
-						<a href=""  ng-click="sendBill(resendPatientId,resend)">Resend OTP</a><br>
+						
 					</div>
 				    <div class="clearfix"></div>
 				</div>

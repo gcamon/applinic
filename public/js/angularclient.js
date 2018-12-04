@@ -1555,9 +1555,9 @@ app.service("changPasswordService",["$resource",function($resource){
 }]);
 
 app.controller('loginController',["$scope","$http","$location","$window","$resource",
-  "ModalService","templateService","localManager","userLoginService","changPasswordService",
+  "ModalService","templateService","localManager","userLoginService","changPasswordService","phoneCallService",
   "$rootScope","mySocket",function($scope,$http,$location,$window,$resource,ModalService,
-    templateService,localManager,userLoginService,changPasswordService,$rootScope,mySocket) {
+    templateService,localManager,userLoginService,changPasswordService,phoneCallService,$rootScope,mySocket) {
   $scope.login = {};
   $scope.error = "";  
   var count = 0
@@ -1675,9 +1675,20 @@ app.controller('loginController',["$scope","$http","$location","$window","$resou
       }
       $scope.cpMsg = user.message;
       $scope.changePassword.userId = user.id;
+      $rootScope.holdPhoneForCall = user.phone;
       $scope.isLoading = false;
-     
     })
+  }
+
+  var count = 0;
+  $scope.call = function(oldTime){
+    count++;
+    if(count < 5) {
+      phoneCallService({val: $rootScope.holdPhoneForCall,phone: $rootScope.holdPhoneForCall},'/user/change-password','GET')
+      $scope.showCallingMsg = "You'll receive a phone call in just a moment. Please enter the pin you hear from the voice call below...";
+    } else {
+      alert("Sorry, you have exceeded call limit. Please contact us for assistance.");
+    }
   }
 
   var verifyUser = null;
@@ -1713,7 +1724,6 @@ app.controller('loginController',["$scope","$http","$location","$window","$resou
       } else {
         $scope.verifyMsg = "Pin incorrect.";
       }
-
       $scope.isLoading = false;
     })
   }
@@ -2216,10 +2226,17 @@ app.controller('signupController',["$scope","$http","$location","$window","templ
   //password must be checked lastly. Very important.
 }]);
 
-app.service('phoneCallService',['$http','mySocket',function($http,mySocket){
-    return function(data,url,method){
+app.service('phoneCallService',['$http','mySocket','$rootScope',function($http,mySocket,$rootScope){
+    return function(data,url,method,oldTime){
       if(data)
         data.isPhoneCall = true;
+
+      if(method == 'GET'){
+        url += "?isPhoneCall=yes&&val=" + data.val + "&&phone=" + data.phone;
+      }
+
+      if(oldTime)
+        data.old_time = oldTime;
 
       $http({
         method  : method,
@@ -2229,6 +2246,10 @@ app.service('phoneCallService',['$http','mySocket',function($http,mySocket){
       })
       .success(function(data){      
         data.isPhoneCall = false;
+        $rootScope.showCallingMsg = "";
+        if(data.error) {
+          alert(data.message)
+        }
       })
     }
 }]);
@@ -6605,7 +6626,7 @@ app.controller("patientNotificationController",["$scope","$location","$http","$w
 
  
 
-  $scope.viewResponse = function(doctorId,complaintId){
+  $scope.viewResponse1 = function(doctorId,complaintId){
     var sendObj = {
       doctorId: doctorId,
       complaintId: complaintId
@@ -6844,31 +6865,46 @@ app.controller("patientNotificationController",["$scope","$location","$http","$w
 
 }]);
 
-app.controller("outPatientBillingCtrl",["$scope","outPatientBillingService","templateService","$http","$rootScope",
-function($scope,outPatientBillingService,templateService,$http,$rootScope){
+app.controller("outPatientBillingCtrl",["$scope","outPatientBillingService","templateService","$http","$rootScope","phoneCallService",
+function($scope,outPatientBillingService,templateService,$http,$rootScope,phoneCallService){
   var bill = outPatientBillingService.get({billId: templateService.holdId});
   $scope.bill = bill;
   var sendObj = {};
-  $scope.verify = function(oldTime) {
+  var count = 0;
+  $scope.verify = function(oldTime,phoneCall) {
     var time = + new Date();
     $scope.otpMsg = "";
-    $scope.loading = true;
+   
     sendObj.amount = bill.total;
     sendObj.time = time;
     if(oldTime) {
       sendObj.old_time = oldTime;
     }
 
-    $http.post("/user/payment/verification",sendObj)
-    .success(function(response){
-      $scope.loading = false;
-      if(response.success){
-        $scope.otpMsg = response.message;
-        $scope.isOtp = true;
+    if(phoneCall) {
+      count++;
+      if(count < 5) {
+        phoneCallService(sendObj,'/user/payment/verification','POST') // "/user/payment/verification",{userId: null},{verify:{method:'POST'}}); 
+        $scope.showCallingMsg = "You'll receive a phone call in just a moment. Please enter the pin you hear from the voice call below...";
+      } else {
+        alert("Sorry, you have exceeded call limit. Please contact us for assistance.");
       }
-    })
-
+    } else {
+      $scope.loading = true;
+      $http.post("/user/payment/verification",sendObj)
+      .success(function(response){
+        $scope.loading = false;
+        if(response.success){
+          $scope.otpMsg = response.message;
+          $scope.isOtp = true;
+        }
+      })
+    }
     $rootScope.resend = time;
+  }
+
+  $scope.call = function(oldTime){
+    $scope.verify(oldTime,'isCall');
   }
 
   $scope.pay = function() {
@@ -6966,23 +7002,21 @@ app.controller("PatientViewResponseController",["$scope","$rootScope","$resource
 }]);
 
 app.controller("PatientViewResponseModalController",["$scope","$rootScope","$location","ModalService",
-  "templateService","walletService","paymentVerificationService","consultationAccptanceService","getMyDoctorService",
+  "templateService","walletService","paymentVerificationService","consultationAccptanceService","getMyDoctorService","phoneCallService",
   function($scope,$rootScope,$location,ModalService,templateService,walletService,
-    paymentVerificationService,consultationAccptanceService,getMyDoctorService){
+    paymentVerificationService,consultationAccptanceService,getMyDoctorService,phoneCallService){
 
   $scope.docInfo = $rootScope.holdDocInView;
   $scope.isViewDoc = true;
   $scope.isOTP = false;
-
   var User = paymentVerificationService; //walletService.resource("/user/payment/verification",{userId: null},{verify:{method:'POST'}});
   $scope.accept = function(){
     $scope.isViewDoc = false;
     $scope.isToConfirm = true;
   }
 
-  $rootScope.sendAcceptanceVerification = function(time){ //this function is all availabe on wallet controller
+  $rootScope.sendAcceptanceVerification = function(time,phoneCall){ //this function is all availabe on wallet controller
     $scope.msg = "";
-    $scope.loading = true;
     var timeStamp = + new Date();
     /*if(templateService.holdDocInView);
     templateService.sendObj = {
@@ -7003,18 +7037,33 @@ app.controller("PatientViewResponseModalController",["$scope","$rootScope","$loc
       old_time: time
     }
 
-    
-    var send = User.verify(payObj,function(data){
-      $scope.loading = false;
-      $scope.msg = data.message;
-      if(data.success){
-        //$location.path("/user-otp");
-        $scope.isOTP = true;
+    var count = 0;
+    if(phoneCall) {
+      count++;
+      if(count < 5) {
+        phoneCallService(payObj,'/user/payment/verification','POST') // "/user/payment/verification",{userId: null},{verify:{method:'POST'}}); 
+        $scope.showCallingMsg = "You'll receive a phone call in just a moment. Please enter the pin you hear from the voice call below...";
+      } else {
+        alert("Sorry, you have exceeded call limit. Please contact us for assistance.");
       }
-    });
+    } else {
+      $scope.loading = true;
+      var send = User.verify(payObj,function(data){
+        $scope.loading = false;
+        $scope.msg = data.message;
+        if(data.success){
+          //$location.path("/user-otp");
+          $scope.isOTP = true;
+        }
+      });
+    }
   }
 
-  $scope.pay = {}
+  $scope.call = function(oldTime){
+    $rootScope.sendAcceptanceVerification(oldTime,'isCall')
+  }
+
+  $scope.pay = {};
 
 
   $scope.confirmAcceptance = function() {
@@ -7255,9 +7304,9 @@ app.controller("pendingRadioTestController",["$scope","templateService","$window
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //patient acknowledgee doctors reply and send confirmation to the backend to be save in both doctors box and patient box.
 app.controller("patientViewRequestController",["$scope","$location","$http","$rootScope","templateService","ModalService",
-  "deleteFactory","localManager","walletService","paymentVerificationService",
+  "deleteFactory","localManager","walletService","paymentVerificationService","phoneCallService",
   function($scope,$location,$http,$rootScope,templateService,ModalService,deleteFactory,
-    localManager,walletService,paymentVerificationService){
+    localManager,walletService,paymentVerificationService,phoneCallService){
  var id = templateService.holdId;
 
  localManager.setValue("currentPageForPatients",$location.path())
@@ -7297,7 +7346,7 @@ app.controller("patientViewRequestController",["$scope","$location","$http","$ro
 
     
   
-  $rootScope.sendAcceptanceVerification = function(time){ //this function is also availabe on wallet controller
+  $rootScope.sendAcceptanceVerification = function(time,phoneCall){ //this function is also availabe on wallet controller
     var docObj = $scope.reqInfo;
     templateService.holdRawAmount = $scope.reqInfo.consultation_fee;    
 
@@ -7314,12 +7363,23 @@ app.controller("patientViewRequestController",["$scope","$location","$http","$ro
       old_time: time
     }
 
-    var send = User.verify(payObj,function(data){
-      alert(data.message);
-      if(data.success){
-        $location.path("/user-otp");
+    var count = 0;
+    if(phoneCall){
+      count++;
+      if(count < 5) {
+        phoneCallService(payObj,'/user/payment/verification','POST') // "/user/payment/verification",{userId: null},{verify:{method:'POST'}}); 
+        $rootScope.showCallingMsg = "You'll receive a phone call in just a moment. Please enter the pin you hear from the voice call below...";
+      } else {
+        alert("Sorry, you have exceeded call limit. Please contact us for assistance.");
       }
-    });
+    } else {
+      var send = User.verify(payObj,function(data){
+        alert(data.message);
+        if(data.success){
+          $location.path("/user-otp");
+        }
+      });
+    }
   }
    
  $scope.decline = function(message_id){
@@ -7867,6 +7927,10 @@ getTransactions();
   $scope.sendAcceptanceVerification = function(time){
     $rootScope.sendAcceptanceVerification(time);
   };
+
+  $scope.call = function(time){
+    $rootScope.sendAcceptanceVerification(time,'isCall');
+  }
 
  $scope.invoice = function(){
   $scope.viewInvoice = true;
@@ -12795,8 +12859,8 @@ app.service("paymentVerificationService",["$resource",function($resource){
 }]);
 
 app.controller("pharmacyViewPrescriptionController",["$scope","$location","templateService",
-  "localManager","$rootScope","$resource","billingAuthService","paymentVerificationService",
-  function($scope,$location,templateService,localManager,$rootScope,$resource,billingAuthService,paymentVerificationService){ 
+  "localManager","$rootScope","$resource","billingAuthService","paymentVerificationService","phoneCallService",
+  function($scope,$location,templateService,localManager,$rootScope,$resource,billingAuthService,paymentVerificationService,phoneCallService){ 
   //var pharmacyData = templateService.holdPharmacyReferralData = localManager.getValue("pharmacyData");  
   var getCurrentPage = localManager.getValue("currPageForPharmacy");
   var getIdOfCurrentPage = getCurrentPage.split("/");
@@ -12977,8 +13041,9 @@ app.controller("pharmacyViewPrescriptionController",["$scope","$location","templ
     $scope.commissionedAmount = "NGN " + ( val - (val * ($rootScope.checkLogIn.city_grade / 100))).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   }
 
+  var count = 0;
   // sending billing to patient which otp will be send to patient informing the patient the toal cost of the bill.
-  $rootScope.sendBill = function(patientId,oldTime) {
+  $rootScope.sendBill = function(patientId,oldTime,phoneCall) {
     var center = localManager.getValue('resolveUser');
     var time = + new Date();
     $rootScope.resend = time; //sets th old time in case otp  is resend to delete the formal otp sent by thsame user.
@@ -12990,21 +13055,36 @@ app.controller("pharmacyViewPrescriptionController",["$scope","$location","templ
       old_time: oldTime
     }
 
-    var otp = paymentVerificationService;//$resource("/user/payment/verification",{userId: null},{verify:{method:'POST'}});  
-    otp.verify(sendObj,function(data){
-      if(data.success){
-        alert(data.message);
-        $rootScope.refData.amount = $scope.str; // holds the amount to pay for the otp template that will come next 
-        $rootScope.refData.rawAmount = totalCost.sum;
-        $rootScope.refData.isSearchDrugRef = true;//use to check if precription from search drug utility was in use so that missing fields may be updated
-        $scope.isOTP = true;
-        //$location.path("/billing-otp");
+    if(phoneCall) {
+      count++;
+      if(count <= 5) {
+        phoneCallService(sendObj,'/user/payment/verification','POST'); 
+        $rootScope.showCallingMsg = "This patient will receive a phone call in just a moment. Please enter the pin heard from the voice call below...";
       } else {
-        alert(data.message);
+        alert("Sorry, you have exceeded call limit. Please contact us for assistance.");
       }
-      
-    });
+
+    } else {
+      var otp = paymentVerificationService; 
+      otp.verify(sendObj,function(data){
+        if(data.success){
+          alert(data.message);
+          $rootScope.refData.amount = $scope.str; // holds the amount to pay for the otp template that will come next 
+          $rootScope.refData.rawAmount = totalCost.sum;
+          $rootScope.refData.isSearchDrugRef = true;//use to check if precription from search drug utility was in use so that missing fields may be updated
+          $scope.isOTP = true;
+          //$location.path("/billing-otp");
+        } else {
+          alert(data.message);
+        }
+        
+      });
+    }
     
+  }
+
+  $scope.call = function(patientId,oldTime) {
+    $rootScope.sendBill(patientId,oldTime,'isCall');
   }
 
   $scope.newPayment = function() {
@@ -13377,9 +13457,9 @@ app.service("toCenterService",["$resource",function($resource){
 
 app.controller("labTestControler",["$scope","$location","$http","templateService","localManager",
   "ModalService","labTests","$resource","$rootScope","cities","paymentVerificationService","billingAuthService",
-  "searchTestService","toCenterService",
+  "searchTestService","toCenterService","phoneCallService",
   function($scope,$location,$http,templateService,localManager,ModalService,labTests,$resource,$rootScope,
-    cities,paymentVerificationService,billingAuthService,searchTestService,toCenterService) {
+    cities,paymentVerificationService,billingAuthService,searchTestService,toCenterService,phoneCallService) {
    
    
     var objectFound = localManager.getValue("laboratoryData");
@@ -13660,9 +13740,9 @@ app.controller("labTestControler",["$scope","$location","$http","templateService
 
 
 
-
+  var count = 0;
    // sending billing to patient which otp will be send to patient informing the patient the toal cost of the bill.
-  $rootScope.sendBill = function(patientId,oldTime) {
+  $rootScope.sendBill = function(patientId,oldTime,phoneCall) {
     var center = localManager.getValue('resolveUser');
     var time = + new Date();
     $rootScope.resend = time; //sets th old time in case otp  is resend to delete the formal otp sent by thsame user.
@@ -13673,19 +13753,34 @@ app.controller("labTestControler",["$scope","$location","$http","templateService
       time: time,
       old_time: oldTime
     }
-    $scope.loading = true;
-     if($scope.otpError)
-        $scope.otpError = null;
-    var otp = paymentVerificationService;//$resource("/user/payment/verification",{userId: null},{verify:{method:'POST'}});  
-    otp.verify(sendObj,function(data){
-      $scope.loading = false;
-      if(data.success){
-        $scope.otpMsg = data.message
+
+    if(phoneCall) {
+      count++;
+      if(count < 5) {
+        phoneCallService(sendObj,'/user/payment/verification','POST'); 
+        $rootScope.showCallingMsg = "This patient will receive a phone call in just a moment. Please enter the pin heard from the voice call below...";
       } else {
-        alert(data.message);
+        alert("Sorry, you have exceeded call limit. Please contact us for assistance.");
       }
-      
-    });
+    } else {
+      $scope.loading = true;
+       if($scope.otpError)
+          $scope.otpError = null;
+      var otp = paymentVerificationService; 
+      otp.verify(sendObj,function(data){
+        $scope.loading = false;
+        if(data.success){
+          $scope.otpMsg = data.message
+        } else {
+          alert(data.message);
+        }        
+      });
+    }
+  }
+
+
+  $scope.call = function(patientId,oldTime) {
+    $rootScope.sendBill(patientId,oldTime,'isCall')
   }
 
 
@@ -14393,10 +14488,10 @@ app.service("radioToService",["$resource",function($resource){
 
 app.controller("radioTestControler",["$scope","$location","$http","templateService","localManager","ModalService",
   "multiData","scanTests","$rootScope","$resource","$rootScope","cities","billingAuthService","paymentVerificationService",
-  "radioSearchTestService","radioToService",
+  "radioSearchTestService","radioToService","phoneCallService",
   function($scope,$location,$http,templateService,localManager,ModalService,multiData,
     scanTests,$rootScope,$resource,$rootScope,cities,billingAuthService,paymentVerificationService,
-    radioSearchTestService,radioToService) {
+    radioSearchTestService,radioToService,phoneCallService) {
   
     var objectFound = localManager.getValue("radiologyData");
     var holdInitialTestToRun = objectFound.radiology.test_to_run;
@@ -14680,8 +14775,9 @@ app.controller("radioTestControler",["$scope","$location","$http","templateServi
     $scope.commissionedAmount = "NGN" + ( val - (val * ($rootScope.checkLogIn.city_grade / 100))).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   }
 
+  var count = 0;
   // sending billing to patient which otp will be send to patient informing the patient the toal cost of the bill.
-  $rootScope.sendBill = function(patientId,oldTime) {
+  $rootScope.sendBill = function(patientId,oldTime,phoneCall) {
     var center = localManager.getValue('resolveUser');
     var time = + new Date();
     $rootScope.resend = time; //sets th old time in case otp  is resend to delete the formal otp sent by thsame user.
@@ -14692,20 +14788,36 @@ app.controller("radioTestControler",["$scope","$location","$http","templateServi
       time: time,
       old_time: oldTime
     }
-    $scope.loading = true;
-     if($scope.otpError)
-        $scope.otpError = null;
-    var otp = paymentVerificationService; //$resource("/user/payment/verification",{userId: null},{verify:{method:'POST'}});  
-    otp.verify(sendObj,function(data){
-      $scope.loading = false;
-      if(data.success){
-        $scope.otpMsg = data.message
+
+    if(phoneCall) {
+      count++;
+      if(count < 5) {
+        phoneCallService(sendObj,'/user/payment/verification','POST'); 
+        $rootScope.showCallingMsg = "This patient will receive a phone call in just a moment. Please enter the pin heard from the voice call below...";
       } else {
-        alert(data.message);
+        alert("Sorry, you have exceeded call limit. Please contact us for assistance.");
       }
-      
-    });
+    } else {
+      $scope.loading = true;
+       if($scope.otpError)
+          $scope.otpError = null;
+      var otp = paymentVerificationService; 
+      otp.verify(sendObj,function(data){
+        $scope.loading = false;
+        if(data.success){
+          $scope.otpMsg = data.message
+        } else {
+          alert(data.message);
+        }
+        
+      });
+    }
   }
+
+  $scope.call = function(patientId,oldTime) {
+    $rootScope.sendBill(patientId,oldTime,'isCall')
+  }
+
 
   $scope.getFolderPath = function(){
     var str = ""; 
@@ -17217,9 +17329,9 @@ app.service("courierResponseService",["$resource",function($resource){
   return $resource("/user/courier-response",null,{pay:{method: "POST"},reOder:{method: "PUT"}});
 }])
 
-app.controller("courierResponseCtrl",["$scope","$rootScope","courierResponseService","templateService","$location",
+app.controller("courierResponseCtrl",["$scope","$rootScope","courierResponseService","templateService","$location","phoneCallService",
   "paymentVerificationService","$http",
-  function($scope,$rootScope,courierResponseService,templateService,$location,paymentVerificationService,$http){
+  function($scope,$rootScope,courierResponseService,templateService,$location,phoneCallService,paymentVerificationService,$http){
 
   $scope.reOrder = function(item) {    
     var presList = templateService.holdPrescriptions;
@@ -17257,8 +17369,8 @@ app.controller("courierResponseCtrl",["$scope","$rootScope","courierResponseServ
   }
 
   var otp = paymentVerificationService;
-
-  $scope.pay = function(oldTime){
+  var count = 0;
+  $scope.pay = function(oldTime,phoneCall){
     
     var time = + new Date();
     $rootScope.resend = time;
@@ -17268,19 +17380,33 @@ app.controller("courierResponseCtrl",["$scope","$rootScope","courierResponseServ
       old_time: oldTime
     }
 
-    if($scope.otpMsg)
-       $scope.otpMsg = "";
-
-    $scope.loading = true;
-    otp.verify(sendObj,function(data){
-      $scope.loading = false;
-      if(data.success){
-        $scope.otpMsg = data.message;
-        $scope.isOtp = true;
+    if(phoneCall) {
+      count++;
+      if(count < 5) {
+        phoneCallService(sendObj,'/user/payment/verification','POST'); 
+        $rootScope.showCallingMsg = "You'll receive a phone call in just a moment. Please enter the pin you hear from the voice call below...";
       } else {
-        alert(data.message);
+        alert("Sorry, you have exceeded call limit. Please contact us for assistance.");
       }
-    })
+    } else {
+      if($scope.otpMsg)
+         $scope.otpMsg = "";
+
+      $scope.loading = true;
+      otp.verify(sendObj,function(data){
+        $scope.loading = false;
+        if(data.success){
+          $scope.otpMsg = data.message;
+          $scope.isOtp = true;
+        } else {
+          alert(data.message);
+        }
+      })
+    }
+  }
+
+  $scope.call = function(oldTime) {
+    $scope.pay(oldTime,'isCall')
   }
 
   $scope.confirm = function(courier){

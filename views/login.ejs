@@ -142,6 +142,13 @@
             <div ng-if="isSuccess && !isVerified">
               <div class="text-danger" style="text-align: center;">{{verifyMsg}}</div>
               <div>
+                  <p style="text-align: center;font-size: 12px">
+                    cannot receive SMS? Try making a phone call to get the verification code
+                    <a href="" ng-click="call(resend)"><i class="fa fa-phone"></i> Call now!</a>
+                  </p> 
+                  <p style="text-align: center;font-size: 14px" ng-if="showCallingMsg">{{showCallingMsg}}</p>
+              </div>
+              <div>
                 <input type="text" name="" placeholder="Enter pin" class="form-control" ng-model="changePassword.pin">
               </div>
               <div style="text-align: center;padding-top: 10px">

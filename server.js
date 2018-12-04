@@ -151,6 +151,8 @@ var b = "ede".replace(/\s+/g, '');
 console.log("obinna".substring(0,2))
 
 
+
+
 //var phone_number = '******' . substr( phone_number, - 4);
 
 //var cardnumber = '+2348064245256';
