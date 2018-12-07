@@ -8107,14 +8107,11 @@ router.post("/twiliovoicemsg",function(req,res){
 
 
 router.post('/mamavoice',function(req,res){
-  //twiml.say({ voice: 'alice' },textToSay);
-  //res.type('text/xml');
-  //res.send(twiml.toString());
   var twiml = new Voice();
-  twiml.play('https://applinic.com/assets/audio/test-voice.amr');
+  twiml.play('https://api.twilio.com/cowbell.mp3');
 
-  console.log(twiml.toString());
-  res.send(twiml.toString())
+  //console.log(twiml.toString());
+  //res.send(twiml.toString())
 })
 
 
