@@ -11,7 +11,6 @@ var emitter = new EventEmmiter();
 var uuid = require("uuid");
 var moment = require('moment');
 var Voice = require('twilio').twiml.VoiceResponse;
-var twiml = new Voice();
 var options = {
   host: "global.xirsys.net",
   path: "/_turn/www.applinic.com",
@@ -8097,7 +8096,7 @@ router.post("/twiliovoicemsg",function(req,res){
   + arr[1] + ' \n' + ' \n' + ' \n' + ' \n' + ' \n' + arr[2] + ' \n' + ' \n' + ' \n' + ' \n' + ' \n' + arr[3]  + '\nthank you.</Say></Response>';
   res.set('Content-Type', 'text/xml');
   res.send(twiml)*/
-  
+  var twiml = new Voice();
   var splitTxt = createVoiceText(req.query.pin);
   var textToSay = 'Your, applinic dot com verification code is, '  + splitTxt + ', I repeat, ' + splitTxt + ', again, ' + splitTxt + 'thank you!';
   twiml.say({ voice: 'alice' },textToSay);
@@ -8111,7 +8110,7 @@ router.post('/mamavoice',function(req,res){
   //twiml.say({ voice: 'alice' },textToSay);
   //res.type('text/xml');
   //res.send(twiml.toString());
-
+  var twiml = new Voice();
   twiml.play({
     loop: 2,
   }, 'https://applinic.com/assets/audio/test-voice.amr');
