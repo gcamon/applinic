@@ -40,7 +40,7 @@
 				<div class="clearfix"></div>
 				<hr>
 				<div class="col-sm-12 " style="padding:20px" ng-if="!isPreview">
-					 <div class="mb-0 mt-0 pl-0 font-1_2" style="border-bottom: 4px solid #85CE36;display: inline-block;padding-bottom: 5px"><b>Clinical Summary </b></div>
+					 <div class="mb-0 mt-0 pl-0 font-1_2" style="display: inline-block;padding-bottom: 5px"><b>Clinical Summary </b></div>
 					<p class="pt-1 pb-1" style="font-size:1em;text-indent: 15px;margin-bottom: 10px" ng-if="refInfo.laboratory.clinical_summary">
 						<em>{{refInfo.laboratory.clinical_summary}}
 						</em>
@@ -48,7 +48,7 @@
 				</div>
 
 				<div class="col-sm-12 " style="padding:20px" ng-if="!isPreview">
-					 <div class="mb-0 mt-0 pl-0 font-1_2"  style="border-bottom: 4px solid #85CE36;display: inline-block;padding-bottom: 5px"><b>Indication </b></div>
+					 <div class="mb-0 mt-0 pl-0 font-1_2"  style="display: inline-block;padding-bottom: 5px"><b>Indication </b></div>
 					<p class="pt-1 pb-1" style="font-size:1em;text-indent: 15px;margin-bottom: 10px" ng-if="refInfo.laboratory.indication">
 						<em>{{refInfo.laboratory.indication}}
 						</em>
@@ -56,7 +56,7 @@
 				</div>
 
 				<div class="col-sm-12 " style="padding:20px" ng-if="!isPreview && refInfo.laboratory.patient_gender === 'female'">
-					 <div class="mb-0 mt-0 pl-0 font-1_2"  style="border-bottom: 4px solid #85CE36;display: inline-block;padding-bottom: 5px"><b>Parity</b></div>
+					 <div class="mb-0 mt-0 pl-0 font-1_2"  style="display: inline-block;padding-bottom: 5px"><b>Parity</b></div>
 					<p class="pt-1 pb-1" style="font-size:1em;text-indent: 15px;margin-bottom: 10px" ng-if="refInfo.laboratory.parity">
 						<em>{{refInfo.laboratory.parity}}
 						</em>
@@ -64,7 +64,7 @@
 				</div>
 
 				<div class="col-sm-12 " style="padding:20px" ng-if="!isPreview && refInfo.laboratory.patient_gender === 'female'">
-					 <div class="mb-0 mt-0 pl-0 font-1_2"  style="border-bottom: 4px solid #85CE36;display: inline-block;padding-bottom: 5px"><b>LMP </b></div>
+					 <div class="mb-0 mt-0 pl-0 font-1_2"  style="display: inline-block;padding-bottom: 5px"><b>LMP </b></div>
 					<p class="pt-1 pb-1" style="font-size:1em;text-indent: 15px;margin-bottom: 10px" ng-if="refInfo.laboratory.lmp">
 						<em>{{refInfo.laboratory.lmp}}
 						</em>
@@ -74,7 +74,7 @@
 
 
 				<div class="col-sm-12 " style="padding:20px" ng-if="!isPreview">
-					 <div class="mb-0 mt-0 pl-0 font-1_2"  style="border-bottom: 4px solid #85CE36;display: inline-block;padding-bottom: 5px"><b>Referring Physician</b></div>
+					 <div class="mb-0 mt-0 pl-0 font-1_2"  style="display: inline-block;padding-bottom: 5px"><b>Referring Physician</b></div>
 					<p class="pt-1 pb-1" style="font-size:1em;text-indent: 15px;margin-bottom: 10px">
 						{{refInfo.referral_title}} {{refInfo.referral_firstname}} {{refInfo.referral_lastname}}
 					</p>
@@ -82,7 +82,7 @@
 
 				
 				<div class="col-sm-12 card" style="padding:20px" ng-if="!isPreview">					
-					<div class="mb-0 mt-0 pl-0 font-1_2"  style="border-bottom: 4px solid #85CE36;display: inline-block;padding-bottom: 5px"><b>Tests To Run</b></div>
+					<div class="mb-0 mt-0 pl-0 font-1_2"  style="display: inline-block;padding-bottom: 5px"><b>Tests To Run</b></div>
     				<div class="mt-1"  ng-repeat = "test in refInfo.laboratory.test_to_run" >
 						<label class="custom-control custom-checkbox">
 		    				<input type="checkbox" ng-model="test.select"  class="custom-control-input">
@@ -148,10 +148,10 @@
 							<div style="padding-left: 5px;text-align: center;">
 								<button class="btn btn-success" ng-click="verifyPay(refInfo)"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i>  Confirm</button>
 							</div>
-							
+							<p class="text-success">Amount: {{str}}</p>
 							<p ng-if="grabRawAmount <= 0"><span class="text-danger">Report will not be sent, patient is not billed for the service(s)</span>
 							</p>	
-							<p class="text-success">Amount: {{str}}</p>
+							
 										
 						</div>
 						<!--<div class="p-2 col-md-3">

@@ -11,6 +11,7 @@ var emitter = new EventEmmiter();
 var uuid = require("uuid");
 var moment = require('moment');
 var Voice = require('twilio').twiml.VoiceResponse;
+var twiml = new Voice();
 var options = {
   host: "global.xirsys.net",
   path: "/_turn/www.applinic.com",
@@ -8065,7 +8066,25 @@ router.get("/user/doctor/initial-complaint",function(req,res){
   }
 });
 
-
+router.get('/test',function(req,res){
+  console.log(req.query)
+  sms.calls 
+  .create({
+    url: "https://applinic.com/mamavoice",
+    to: req.query.phone,
+    from: '+16467985692',
+  })
+  .then(
+    function(call){
+      console.log(call.sid);
+      res.send({message:"Phone call initiated",success:true,time_stamp:req.body.time}) 
+    },
+    function(err) {
+      console.log(err)
+      res.send({error: true, message:"Error occured while trying to call the destination. Please try again"})
+    }
+  )
+});
 
 
 router.post("/twiliovoicemsg",function(req,res){
@@ -8078,7 +8097,7 @@ router.post("/twiliovoicemsg",function(req,res){
   + arr[1] + ' \n' + ' \n' + ' \n' + ' \n' + ' \n' + arr[2] + ' \n' + ' \n' + ' \n' + ' \n' + ' \n' + arr[3]  + '\nthank you.</Say></Response>';
   res.set('Content-Type', 'text/xml');
   res.send(twiml)*/
-  var twiml = new Voice();
+  
   var splitTxt = createVoiceText(req.query.pin);
   var textToSay = 'Your, applinic dot com verification code is, '  + splitTxt + ', I repeat, ' + splitTxt + ', again, ' + splitTxt + 'thank you!';
   twiml.say({ voice: 'alice' },textToSay);
@@ -8086,6 +8105,20 @@ router.post("/twiliovoicemsg",function(req,res){
   res.send(twiml.toString());
  
 });
+
+
+router.post('/mamavoice',function(req,res){
+  //twiml.say({ voice: 'alice' },textToSay);
+  //res.type('text/xml');
+  //res.send(twiml.toString());
+
+  twiml.play({
+    loop: 2,
+  }, 'https://applinic.com/assets/audio/test-voice.amr');
+
+  console.log(twiml.toString());
+  res.send(twiml.toString())
+})
 
 
 /*router.get("/test-page",function(req,res){

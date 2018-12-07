@@ -43,7 +43,7 @@
 				<hr>
 
 				<div class="col-sm-12 " style="padding:20px" ng-if="!isPreview">
-					 <div class="mb-0 mt-0 pl-0 font-1_2" style="border-bottom: 4px solid #85CE36;display: inline-block;padding-bottom: 5px"><b>Clinical Summary </b></div>
+					 <div class="mb-0 mt-0 pl-0 font-1_2" style="display: inline-block;padding-bottom: 5px"><b>Clinical Summary </b></div>
 					<p class="pt-1 pb-1" style="font-size:1em;text-indent: 15px;margin-bottom: 10px" ng-if="refInfo.radiology.clinical_summary">
 						<em>{{refInfo.radiology.clinical_summary}}
 						</em>
@@ -51,7 +51,7 @@
 				</div>
 
 				<div class="col-sm-12 " style="padding:20px" ng-if="!isPreview">
-					 <div class="mb-0 mt-0 pl-0 font-1_2"  style="border-bottom: 4px solid #85CE36;display: inline-block;padding-bottom: 5px"><b>Indication </b></div>
+					 <div class="mb-0 mt-0 pl-0 font-1_2"  style="display: inline-block;padding-bottom: 5px"><b>Indication </b></div>
 					<p class="pt-1 pb-1" style="font-size:1em;text-indent: 15px;margin-bottom: 10px" ng-if="refInfo.radiology.indication">
 						<em>{{refInfo.radiology.indication}}
 						</em>
@@ -59,7 +59,7 @@
 				</div>
 
 				<div class="col-sm-12 " style="padding:20px" ng-if="!isPreview && refInfo.radiology.patient_gender === 'female'">
-					 <div class="mb-0 mt-0 pl-0 font-1_2"  style="border-bottom: 4px solid #85CE36;display: inline-block;padding-bottom: 5px"><b>Parity</b></div>
+					 <div class="mb-0 mt-0 pl-0 font-1_2"  style="display: inline-block;padding-bottom: 5px"><b>Parity</b></div>
 					<p class="pt-1 pb-1" style="font-size:1em;text-indent: 15px;margin-bottom: 10px" ng-if="refInfo.radiology.parity">
 						<em>{{refInfo.radiology.parity}}
 						</em>
@@ -67,7 +67,7 @@
 				</div>
 
 				<div class="col-sm-12 " style="padding:20px" ng-if="!isPreview && refInfo.radiology.patient_gender === 'female'">
-					 <div class="mb-0 mt-0 pl-0 font-1_2"  style="border-bottom: 4px solid #85CE36;display: inline-block;padding-bottom: 5px"><b>LMP </b></div>
+					 <div class="mb-0 mt-0 pl-0 font-1_2"  style="display: inline-block;padding-bottom: 5px"><b>LMP </b></div>
 					<p class="pt-1 pb-1" style="font-size:1em;text-indent: 15px;margin-bottom: 10px" ng-if="refInfo.radiology.lmp">
 						<em>{{refInfo.radiology.lmp}}
 						</em>
@@ -77,7 +77,7 @@
 		
 		
 				<div class="col-sm-12 card" style="padding:20px" ng-if="!isPreview">					
-					<div class="mb-0 mt-0 pl-0 font-1_2"  style="border-bottom: 4px solid #85CE36;display: inline-block;padding-bottom: 5px"><b>Tests To Run</b></div>
+					<div class="mb-0 mt-0 pl-0 font-1_2"  style="display: inline-block;padding-bottom: 5px"><b>Tests To Run</b></div>
     				<div class="mt-1"  ng-repeat = "test in refInfo.radiology.test_to_run" >
 						<label class="custom-control custom-checkbox">
 		    				<input type="checkbox" ng-model="test.select"  class="custom-control-input">
@@ -140,12 +140,12 @@
 							<div style="padding-left: 5px;text-align: center;">
 								<button class="btn btn-success" ng-click="verifyPay(refInfo)"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i>  Confirm</button>
 							</div>
-							
+							<p class="text-success">Amount: {{str}}</p>
 							<p ng-if="grabRawAmount <= 0"><span class="text-danger">Report will not be sent, patient is not billed for the service(s)</span>
 							</p>							
 						</div>
 						<!--<div class="p-2 col-md-3">
-							<p class="text-success">Amount: {{str}}</p>
+							
 							
 							<div>
 								<a href="" ng-click="sendBill(refInfo.radiology.patient_id,resend)"><i class="fa fa-refresh"></i> Resend OTP</a>
