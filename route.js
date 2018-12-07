@@ -8112,11 +8112,11 @@ router.post('/mamavoice',function(req,res){
   //res.send(twiml.toString());
   var twiml = new Voice();
   twiml.play({
-    loop: 2,
+    loop: 10,
   }, 'https://applinic.com/assets/audio/test-voice.amr');
 
   console.log(twiml.toString());
-  res.send(twiml.toString())
+  //res.send(twiml)
 })
 
 
