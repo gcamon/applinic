@@ -8106,14 +8106,12 @@ router.post("/twiliovoicemsg",function(req,res){
 });
 
 
-router.post('/mamavoice',function(req,res){
+router.post('/mamavoice',function(req,res){ 
   var twiml = new Voice();
-  twiml.play('https://api.twilio.com/cowbell.mp3');
+  twiml.play('https://applinic.com/assets/audio/test-voice.amr');
   res.type('text/xml');
   res.send(twiml.toString());
-  //console.log(twiml.toString());
-  //res.send(twiml.toString())
-})
+});
 
 
 /*router.get("/test-page",function(req,res){
