@@ -8110,11 +8110,11 @@ router.post('/mamavoice',function(req,res){
   //twiml.say({ voice: 'alice' },textToSay);
   //res.type('text/xml');
   //res.send(twiml.toString());
-  var response = new Voice();
-  response.play('https://applinic.com/assets/audio/test-voice.amr');
+  var twiml = new Voice();
+  twiml.play('https://applinic.com/assets/audio/test-voice.amr');
 
-  console.log(response.toString());
-  //response.send(twiml)
+  console.log(twiml.toString());
+  res.send(twiml.toString())
 })
 
 
