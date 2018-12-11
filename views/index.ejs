@@ -1032,7 +1032,7 @@ padding:10px 10px;
                 <div style="padding-right: 5px"><input type="text" class="form-control" placeholder="filter by name, address, work place etc" ng-model="filt" name="">
 
                 </div>
-                <div ng-repeat="found in searchResult | filter : filt" style="padding: 5px; max-height: 800px;overflow-y: auto;position: relative;">   <img src="{{found.profile_pic_url}}" style="width: 75px;height: auto;float: left;">
+                <div ng-repeat="found in searchResult | filter : filt" style="padding: 5px; max-height: 800px;overflow-y: auto;position: relative;">    <!--<img src="{{found.profile_pic_url}}" style="width: 75px;height: auto;float: left;">-->
                     <div style="display: inline-block;padding-left: 10px; margin:5px;">
                     <span ng-bind-html = "found.msg" class="text-info"></span>
                     <strong style="display: block;max-width: 90%;font-size: 16px">{{found.name}} <sup ng-if='found.addBy' class="font_1-2 text-danger">*</sup></strong>

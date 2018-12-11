@@ -680,6 +680,11 @@ app.config(['$paystackProvider','$routeProvider',
     controller: "adminGetUserCtrl"
  })
 
+ .when("/admin-withdrawals",{
+    templateUrl: "/assets/pages/utilities/admin-withdrawals.html",
+    controller: "adminWithdrawalCtrl"
+ })
+
 
 }]);
 
@@ -9726,8 +9731,9 @@ app.factory("adminDoctorsService",["$resource",function($resource){
 }])
 
 app.controller("adminCreateRoomController",["$scope","localManager","mySocket","$rootScope","templateService",
-  "$location","$resource","ModalService","adminDoctorsService","$http","$location",
-  function($scope,localManager,mySocket,$rootScope,templateService,$location,$resource,ModalService,adminDoctorsService,$http,$location){
+  "$location","$resource","ModalService","adminDoctorsService","$http","$location","cashOutControllerService",
+  function($scope,localManager,mySocket,$rootScope,templateService,$location,$resource,
+    ModalService,adminDoctorsService,$http,$location,cashOutControllerService){
   var user = localManager.getValue("resolveUser");  
   mySocket.emit('join',{userId: user.user_id});
 
@@ -9803,11 +9809,11 @@ app.controller("adminCreateRoomController",["$scope","localManager","mySocket","
 
 
 
-  var getCashOut = $resource("/user/cashout");
+  var getCashOut = cashOutControllerService;
   getCashOut.query(null,function(data){
     var result = (data.length > 0) ? data : [];
     console.log(data)
-    $rootScope.CashOutList = result.length;
+    $rootScope.CashOutList = result;
   });
 
   $scope.view = function(id) {
@@ -10017,12 +10023,17 @@ app.controller("adminManageCtrl",["$scope","$location","$rootScope","adminDoctor
 }]);
 
 
-app.controller("cashoutModalController",["$scope","$rootScope","templateService",function($scope,$rootScope,templateService){
-  console.log($rootScope.userDetails)
+app.service("cashOutControllerService",["$resource",function($resource){
+  return $resource("/user/cashout",null,{cashing:{method: "POST"},update:{method: "PUT"}});
 }]);
 
-app.service("cashOutControllerService",["$resource",function($resource){
-  return $resource("/user/cashout",null,{cashing:{method: "POST"}});
+app.controller('adminWithdrawalCtrl',["$scope","cashOutControllerService",function($scope,cashOutControllerService){
+  
+}]);
+
+
+app.controller("cashoutModalController",["$scope","$rootScope","templateService",function($scope,$rootScope,templateService){
+  console.log($rootScope.userDetails)
 }]);
 
 app.controller("cashOutController",["$scope","$rootScope","$resource","cashOutControllerService","bankDetailsService",

@@ -1442,10 +1442,13 @@ var basicPaymentRoute = function(model,sms,io,paystack,client){
 			model.user.findOne({user_id:userId},{ewallet:1}).exec(function(err,wallet){
 				if(err) throw err;
 				if(wallet.ewallet.available_amount >= req.body.amount) {
-					wallet.ewallet.available_amount -= req.body.amount;
-					allClear(wallet.ewallet.available_amount);
+					wallet.ewallet.available_amount -= req.body.amount;					
 					wallet.save(function(err,info){
-						if(err) throw err;
+						if(err) {
+							res.json({message: "Error occured! Please try again later."});
+						} else {
+							allClear(wallet.ewallet.available_amount);
+						}
 					});				
 				} else {
 					res.send({message: "Request rejected!! Reason: Amount you entered is more than available balance."});

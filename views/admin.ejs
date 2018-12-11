@@ -64,6 +64,12 @@
      		font-size: 14px;
      	}
 
+     	.cashouts:hover {
+     		background-color: #ccc;
+     		color: #fff;
+     		cursor: pointer;
+     	}
+
      </style>
 </head>
 <body ng-app = "myApp" class="ng-cloak" ng-controller="topHeaderController">
@@ -146,7 +152,7 @@
 					<hr>
 					<ul class="issues">
 						<li><a href="#/admin"><i class="fa fa-home"></i> Home</a></li>
-						<li><a href="">Withdrawals  &nbsp;&nbsp;<small style="color: red">{{CashOutList}}</small></a></li>
+						<li><a href="#/admin-withdrawals">Cah out Requests  &nbsp;&nbsp;<small style="color: red">{{CashOutList.length}}</small></a></li>
 						<li><a href="">Need Help &nbsp;&nbsp;<small style="color: red">50</small></a></li>
 						<li><a href="">Suggestions &nbsp;&nbsp;<small style="color: red">50</small></a></li>
 						<li><a href="">complaints &nbsp;&nbsp;<small style="color: red">50</small></a></li>

@@ -1,0 +1,26 @@
+<div class="p-2" style="">
+	<h3>Withdrawal Requests ( {{CashOutList.length}} ) <input type="text" placeholder="filter" ng-model="filt" style="float: right;"></h3>
+	
+	<table class="table">
+		<thead>
+			<th>Time</th>
+			<th>Names</th>
+			<th>Bank</th>
+			<th>Acc. No</th>
+			<th>Amount</th>
+			<th>Type</th>
+			<th>user Id</th>
+		</thead>
+		
+	    <tbody ng-repeat="i in CashOutList | filter : filt" class="cashouts" ng-click="viewDetails()">
+	    	<td><span am-time-ago="i.date"></span></td>
+	    	<td>{{i.name}}</td>
+	    	<td>{{i.bank}}</td>
+	    	<td>{{i.account_number}}</td>
+	    	<td>{{toCurrency(i.amount)}}</td>
+	    	<td>{{i.account_type}}</td>
+	    	<td>{{i.user_id}}</td>
+	    </tbody>
+		
+	</table>
+</div>
