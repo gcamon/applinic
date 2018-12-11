@@ -9,12 +9,43 @@
 		</ul>
 	</div>
 	<hr>
-	<h6>Add New Account</h6>
-	<form>
+	<h4>Add New Account</h4>
+	<form class="pt-2">
 	   	<div class="row">
-		  <div class="col-md-12 form-group">
+	   	  <div class="col-md-12 form-group" ng-if="bankDetail.bank_name !== 'Other'">
+	   	    <label for="bname">Bank name:</label>
+	   	  	<select ng-model="bankDetail.bank_name" style="width: 70%" class="form-control">
+	   	  		<option value="" disabled="disabled" selected="selected">_select bank name</option>
+	   	  		<option>Access Bank</option>
+				<option>Citibank</option>
+				<option>Diamond Bank</option>
+				<option>Ecobank Nigeria</option>
+				<option>Enterprise Bank Limited</option>
+				<option>Fidelity Bank Nigeria</option>
+				<option>First Bank of Nigeria</option>
+				<option>First City Monument Bank</option>
+	   	  		<option>FSDH Merchant Bank </option>
+				<option>Guaranty Trust Bank </option>
+				<option>Heritage Bank Plc.</option>
+				<option>Keystone Bank Limited </option>
+				<option>Mainstreet Bank Limited </option>
+				<option>Rand Merchant Bank</option>
+				<option>Savannah Bank</option>
+				<option>Skye Bank</option>
+				<option>Stanbic IBTC Bank Nigeria Limited </option>
+				<option>Standard Chartered Bank</option>
+				<option>Sterling Bank </option>
+				<option>Union Bank of Nigeria</option>
+				<option>United Bank for Africa</option>
+				<option>Unity Bank Plc.</option>
+				<option>Wema Bank </option>
+				<option>Zenith Bank </option>
+				<option>Other</option>
+	   	  	</select>
+	   	  </div>
+		  <div class="col-md-12 form-group" ng-if="bankDetail.bank_name == 'Other'">
 		    <label for="bname">Bank name:</label>
-		    <input type="text" class="form-control" style="width: 70%" placeholder="write.." ng-model="bankDetail.bank_name">
+		    <input type="text" class="form-control" style="width: 70%" placeholder="Enter bank name" ng-model="bankDetail.other">
 		  </div>
 		  <div class="col-md-12 form-group">
 		    <label for="bname">Account Type:</label>
@@ -26,7 +57,7 @@
 		  </div>
 		  <div class="col-md-12 form-group">
 		    <label for="Baccount">Bank account number:</label>
-		    <input type="text" class="form-control" style="width: 70%" placeholder="write..." ng-model="bankDetail.acc_no">
+		    <input type="text" class="form-control" style="width: 70%" placeholder="Enter account no" ng-model="bankDetail.acc_no">
 		  </div>		 
 		  <div class="col-md-12">
 			  <button ng-click="save()" class='btn btn-primary'><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i>{{(loading) ? "" : 'Save'}}</button>

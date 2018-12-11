@@ -1435,7 +1435,7 @@ var basicPaymentRoute = function(model,sms,io,paystack,client){
 
 
 	//user cashing out some money from wallet.
-	router.put("/user/cashout",function(req,res){
+	router.post("/user/cashout",function(req,res){
 		if(req.user){
 			console.log(req.body)
 			var userId = (req.body.userId === undefined) ? req.user.user_id : req.body.userId;
@@ -1448,7 +1448,7 @@ var basicPaymentRoute = function(model,sms,io,paystack,client){
 						if(err) throw err;
 					});				
 				} else {
-					res.send({message: "Request rejected!! Reason; amount for cash out is more than available balance."});
+					res.send({message: "Request rejected!! Reason: Amount you entered is more than available balance."});
 				}
 			});
 

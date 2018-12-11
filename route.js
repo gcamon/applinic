@@ -8087,7 +8087,6 @@ router.get('/test',function(req,res){
 
 
 router.post("/twiliovoicemsg",function(req,res){
- 
   //var arr = req.query.pin.split('');
   /*var twiml = 
   '<?xml version="1.0" encoding="UTF-8" ?><Response><Say>Your\n applinic.com\n verification\n code\n is\n' + arr[0] + ' \n' + ' \n' +

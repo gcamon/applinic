@@ -10022,7 +10022,7 @@ app.controller("cashoutModalController",["$scope","$rootScope","templateService"
 }]);
 
 app.service("cashOutControllerService",["$resource",function($resource){
-  return $resource("/user/cashout",null,{cashing:{method: "PUT"}});
+  return $resource("/user/cashout",null,{cashing:{method: "POST"}});
 }]);
 
 app.controller("cashOutController",["$scope","$rootScope","$resource","cashOutControllerService","bankDetailsService",
@@ -19527,6 +19527,7 @@ app.controller("bankDetailsCtrl",["$scope","bankDetailsService",function($scope,
   $scope.save = function() {    
     if(Object.keys($scope.bankDetail).length >= 2) {
       $scope.loading = true;
+      $scope.bankDetail.bank_name = ($scope.bankDetail.other) ? $scope.bankDetail.other : $scope.bankDetail.bank_name;
       $scope.bankDetail.id = Math.floor(Math.random() * 9999999);
       user.create($scope.bankDetail,function(response){
         if(response.status){

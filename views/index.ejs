@@ -1035,7 +1035,7 @@ padding:10px 10px;
                 <div ng-repeat="found in searchResult | filter : filt" style="padding: 5px; max-height: 800px;overflow-y: auto;position: relative;">   <img src="{{found.profile_pic_url}}" style="width: 75px;height: auto;float: left;">
                     <div style="display: inline-block;padding-left: 10px; margin:5px;">
                     <span ng-bind-html = "found.msg" class="text-info"></span>
-                    <strong style="display: block;max-width: 90%;font-size: 16px">{{found.name}}</strong>
+                    <strong style="display: block;max-width: 90%;font-size: 16px">{{found.name}} <sup ng-if='found.addBy' class="font_1-2">*</sup></strong>
                      <!--<strong style="display: block;max-width: 90%;font-size: 16px"> <span ng-if="user.category == 'Doctor'">{{found.title}}</span> {{found.firstname}} {{found.lastname}} {{found.name}}</strong>-->
                     <span style="display: block;max-width: 80%" ng-if="found.specialty"><b>{{found.specialty}}</b> <span ng-if="found.education.length > 0">|</span> <span ng-repeat="e in found.education">{{e.certificate}}</span></span>
                     <span style="display: block;max-width: 80%"> <span ng-if="found.work_place"><b>works at</b> | <em>{{found.work_place}}</em> </span><em ng-if="user.category !== 'Doctor'">{{found.address}}</em> {{found.city}} {{found.country}}</span>  
@@ -1043,7 +1043,7 @@ padding:10px 10px;
                     <small ng-click="account(found)"><i class="fa fa-comment text-muted" title="chat with {{found.firstname || found.name}}"></i></small>&nbsp;
                     <small ng-click="account(found)"><i class="fa fa-phone text-muted" title="call {{found.firstname || found.name}}"></i></small>&nbsp;
                     <small ng-click="account(found)"><i class="fa fa-video-camera text-muted" title="video chat with {{found.firstname || found.name}}"></i></small>&nbsp;
-                    <small ng-click="account(found)"><i class="fa fa-share text-muted" title="forward to {{found.firstname || found.name}}"></i></small>&nbsp; <a href="{{found.profile_url}}" class="text-danger" target="_blank">view profile</a><br>
+                    <small ng-click="account(found)"><i class="fa fa-share text-muted" title="forward to {{found.firstname || found.name}}"></i></small>&nbsp; <a href="{{(found.profile_url) ? found.profile_url : ('https://applinic.com/user/profile/view/' + found.id)}}" class="text-danger" target="_blank">view profile</a><br>
                     </div>
                     <a href="" class="btn btn-info btn-sm" style="position: absolute;top: 10px;right: 10px" ng-click="account(found)" ng-if="user.category == 'Doctor'|| user.category == 'Special Center' || user.category == 'Disease' && user.category !=='Skills & Procedures' && user.category !=='Pharmacy' && user.category !=='Radiology' && user.category !=='Laboratory'" title="send consultation request to {{found.title}} {{found.firstname}} {{found.lastname}}">Book</a>
                     <a href="{{found.ref_url}}" target="_blank" class="" style="position: absolute;top: 10px;right: 10px"  ng-if=" user.category =='Skills & Procedures'" title="Learn more about {{found.skill}} {{found.firstname}} {{found.lastname}}"><i class="fa fa-eye" style="font-size: 26px"></i></a>
