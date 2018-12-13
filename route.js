@@ -48,7 +48,7 @@ function createVoiceText(title){
     }
   }
 
-  var tm = str.slice(0, -2)
+  var tm = str.slice(0, -3)
 
   
   return tm;
@@ -2490,7 +2490,11 @@ var basicRoute = function (model,sms,io,streams,client) {
       if(req.user){
         model.user.findOne({user_id: req.query.userId},{ewallet:1},function(err,wallet){
           if(err) throw err;
-          res.send({balance: wallet.ewallet.available_amount})
+          if(wallet) {
+            res.send({balance: wallet.ewallet.available_amount})
+          } else {
+            res.send({balance: 0})
+          }
         })
       } else {
         res.send("Unauthorized access!!!")

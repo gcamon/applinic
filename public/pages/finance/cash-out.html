@@ -25,7 +25,7 @@
 
 <div class="container">
 <div class="card card-center-1 p-2">
-	<h3 class="mb-0 p-0">Cash Out <a href="#/bank-details" style="float: right;" class="btn btn-info btn-sm">Bank Details</a></h3>
+	<h4 class="mb-0 p-0">Cash Out <a href="#/bank-details" style="float: right;" class="btn btn-info btn-sm">Bank Details</a></h4>
 	<hr>
 	<div>
 		<label>Choose Account: </label>
@@ -39,18 +39,54 @@
 	</div>
 	<p class="p-3" ng-if="bankDetails.length == 0">No bank account was added.<a href="#/bank-details">Add one now!</a></p>
 	<hr>
-	<form ng-submit="cash()" class="row">
+	<form ng-submit="auth(resend)" class="row" ng-if="!isVerify">
 		<div class="col-md-12 form-group">
-		    <label for="bname">Amount to cash out:</label>
+		    <label for="bname">Amount to cash out: <b>{{str}}</b></label>
 		    <input type="number" class="form-control" style="width: 80%" placeholder="Enter amount" ng-model="bankDetail.amount">
-		 </div>
-		 <div class="col-md-12 form-group">
-			<p><b>Amount  {{str}}</b></p>
-		</div>
+		</div>	
 		<div class="col-md-12">
-			<button type="submit" class='btn btn-primary' ng-if="!isSent"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i>{{(loading) ? "" : 'Submit'}}</button><span class="text-success" ng-if="isSent"><i class="fa fa-check"></i> Sent!</span>
-		</div>
+			<button type="submit" class='btn btn-primary'><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i>{{(loading) ? "" : 'Submit new request'}}</button><!--<span class="text-success" ng-if="isSent"><i class="fa fa-check"></i> Sent!</span>-->
+		</div>	
 	</form>
+	<div class="row" ng-if="isVerify">
+		<div class="col-md-12">
+			<label>Verify is you!</label>
+			<p class="text-muted">{{otpMsg}}</p>
+			<p>If you did not receive SMS, try <a href="" ng-click="auth(resend)" class="text-info">resend OTP</a> or get the OTP via <a href="" class="text-danger" ng-click="auth(resend,'isCall')"><i class="fa fa-phone"></i> phone call</a></p>
+			<p style="text-align: center;font-size: 14px" ng-if="showCallingMsg">{{showCallingMsg}}</p>
+			<input type="text" placeholder="Enter otp" ng-model="bankDetail.otp" class="form-control" style="width: 80%">
+			<div style="text-align: center;width: 80%;padding-top: 15px">
+				<button class="btn btn-info" ng-click="cash()" ng-if="!isSent"> <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i>{{(loading) ? "" : 'verify'}}</button><span class="text-primary" ng-if="isSent"><i class="fa fa-check"></i> request submitted successfully!  &nbsp; &nbsp;&nbsp;<a href="" ng-click="requestAgain()" class="text-info">Withdraw again</a></span> 
+
+			</div>
+		</div>
+	</div>
+	
+	<div style="height: 30px">
+		
+	</div>
+	<div class="row" ng-if="requests.length > 0">
+		<div class="col-md-12 col-lg-12">
+			<label>Pending Requests</label><br>
+			<table class="table">
+				<thead>
+					<th>Date</th>
+					<th>Amount</th>
+					<th>Bank name</th>
+					<th>Account No</th>
+					<th>Transaction ID</th>
+				</thead>
+				<tbody ng-repeat="j in requests">
+					<td>{{j.date | date: 'mediumDate'}}</td>
+					<td>{{toCurrency(j.amount)}}</td>
+					<td>{{j.bank}}</td>
+					<td>{{j.account_number}}</td>
+					<td>{{j.id}}</td>
+					<!--<td><a href="">cancel request</a></td>-->
+				</tbody>
+			</table>
+		</div>
+	</div>
 	
 	<!--<form>
          <div class="row">

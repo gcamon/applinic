@@ -685,6 +685,16 @@ app.config(['$paystackProvider','$routeProvider',
     controller: "adminWithdrawalCtrl"
  })
 
+ .when("/admin-withdrawals-attend/:id",{
+    templateUrl: "/assets/pages/utilities/admin-withdrawals-attend.html",
+    controller: "adminWithdrawalAttendCtrl"
+ })
+
+ .when("/admin-settled-withdrawals",{
+    templateUrl: "/assets/pages/utilities/settled-withdrawals.html",
+    controller: "adminSettledWithdrawalAttendCtrl"
+ })
+
 
 }]);
 
@@ -9816,7 +9826,7 @@ app.controller("adminCreateRoomController",["$scope","localManager","mySocket","
     $rootScope.CashOutList = result;
   });
 
-  $scope.view = function(id) {
+  /*$scope.view = function(id) {
     templateService.holdId = id;
     var elemPos = $rootScope.CashOutList.map(function(x){return x.date}).indexOf(id);
     $rootScope.info = $rootScope.CashOutList[elemPos];
@@ -9829,7 +9839,7 @@ app.controller("adminCreateRoomController",["$scope","localManager","mySocket","
          
       });
     });
-  }
+  }*/
 
   $scope.getBance = function(user){
     var whole = Math.round(user.ewallet.available_amount);
@@ -9853,6 +9863,37 @@ app.controller("adminCreateRoomController",["$scope","localManager","mySocket","
       }
     });    
   }
+
+
+  $http({
+    method  : "GET",
+    url     :  "/user/get-balance?userId=" + user.user_id,  
+    headers : {'Content-Type': 'application/json'} 
+    })
+  .success(function(data) {  
+    $rootScope.adminProfit = data.balance;
+  });    
+
+
+
+  // note has update route for reopening
+  $http({
+    method  : "GET",
+    url     :  "/user/settled-cashout",  
+    headers : {'Content-Type': 'application/json'} 
+    })
+  .success(function(data) {  
+    var total = 0;
+    for(var i = 0; i < data.length; i++){
+      total += data[i].amount;
+    }
+    $scope.cashedOutTotal = total;
+    $rootScope.cashedOut = data;
+  });    
+
+
+
+  
 
   $scope.isViewTransaction = true;
 
@@ -10027,17 +10068,56 @@ app.service("cashOutControllerService",["$resource",function($resource){
   return $resource("/user/cashout",null,{cashing:{method: "POST"},update:{method: "PUT"}});
 }]);
 
-app.controller('adminWithdrawalCtrl',["$scope","cashOutControllerService",function($scope,cashOutControllerService){
-  
+app.controller('adminWithdrawalCtrl',["$scope","$location",function($scope,$location){
+  //$rootscope.cashoutList is filled in adminController
+  $scope.viewDetails = function(id) {
+    $location.path('/admin-withdrawals-attend/' + id)
+  }
+}]);
+
+app.controller('adminWithdrawalAttendCtrl',["$scope","$location","$rootScope","cashOutControllerService",
+  function($scope,$location,$rootScope,cashOutControllerService){
+
+  var path = $location.path();
+  var arr = path.split('/');
+  var reqId = (arr[arr.length - 1]) ? parseInt(arr[arr.length - 1]) : "";
+
+  var elemPos = $rootScope.CashOutList.map(function(x){return x.id}).indexOf(reqId);
+  if($rootScope.CashOutList[elemPos]) {
+    $scope.request = $rootScope.CashOutList[elemPos];
+  } else {
+    $scope.request = {};
+  }
+
+  $scope.confirmPay = function(_id) {
+    cashOutControllerService.update({id: _id},function(res){      
+      if(res.status) {
+        $scope.resMsg = res.message;
+        $scope.request = null;
+        $rootScope.CashOutList.splice(elemPos,1)
+      } else {
+        alert(res.message)
+      }
+    })
+  }
+   
 }]);
 
 
-app.controller("cashoutModalController",["$scope","$rootScope","templateService",function($scope,$rootScope,templateService){
+app.controller('adminSettledWithdrawalAttendCtrl',["$scope","$location",function($scope,$location){
+ 
+}]);
+
+
+
+
+/*app.controller("cashoutModalController",["$scope","$rootScope","templateService",function($scope,$rootScope,templateService){
   console.log($rootScope.userDetails)
-}]);
+}]);*/
 
-app.controller("cashOutController",["$scope","$rootScope","$resource","cashOutControllerService","bankDetailsService",
-  function($scope,$rootScope,$resource,cashOutControllerService,bankDetailsService){
+app.controller("cashOutController",["$scope","$rootScope","$resource","cashOutControllerService",
+  "bankDetailsService","phoneCallService","paymentVerificationService",
+  function($scope,$rootScope,$resource,cashOutControllerService,bankDetailsService,phoneCallService,paymentVerificationService){
   $scope.bankDetail = {};
 
   var user = bankDetailsService;
@@ -10046,6 +10126,12 @@ app.controller("cashOutController",["$scope","$rootScope","$resource","cashOutCo
   user.query(function(data){
     $scope.bankDetails = data;
   });
+
+  var cashOut = cashOutControllerService; 
+
+  cashOut.query({id: $rootScope.checkLogIn.user_id},function(res){
+    $scope.requests = res;
+  })
 
   $scope.$watch("bankDetail.acc",function(newVal,oldVal){
     if(newVal) {
@@ -10064,12 +10150,80 @@ app.controller("cashOutController",["$scope","$rootScope","$resource","cashOutCo
     }
   });  
 
+  var count = 0;
+  $scope.auth = function(oldTime,phoneCall) {
+
+      $scope.isSent = false;
+
+      if(!$scope.bankDetail.amount){
+        alert("Please enter amount you want to withdraw.")
+        return;
+      }
+
+      if(!$scope.bankDetail.account_number){
+        alert("Please choose account to use.")
+        return;
+      }
+
+      var time = + new Date();
+        $rootScope.resend = time;
+        var sendObj = {
+        amount : $scope.bankDetail.amount,
+        userId: $rootScope.checkLogIn.user_id,
+        time: time,
+        old_time: oldTime,
+        isCashOutVerify: "yes"
+      }
+
+    if(phoneCall) {
+      count++;
+      if(count < 5) {
+        phoneCallService(sendObj,'/user/payment/verification','POST'); 
+        $rootScope.showCallingMsg = "This patient will receive a phone call in just a moment. Please enter the pin heard from the voice call below...";
+      } else {
+        alert("Sorry, you have exceeded call limit. Please contact us for assistance.");
+      }
+    } else {
+      $scope.loading = true;
+      var otp = paymentVerificationService; 
+      otp.verify(sendObj,function(data){
+        $scope.loading = false;
+        $scope.isVerify = true;
+        if(data.success){
+          $scope.otpMsg = "One Time Pin was sent to your phone. Use the pin to verify is you."
+        } else {
+          alert(data.message);
+        }
+        
+      });
+    }
+  }
+
   $scope.cash = function(){
     if(!$scope.bankDetail.account_number) {
       alert("Please select account to use.");
     } else if(Object.keys($scope.bankDetail).length >= 3 && $scope.bankDetail.amount && $scope.bankDetail.amount !== "") {
+
+      if(!$scope.bankDetail.otp) {
+        alert('Please enter OTP');
+        return;
+      }
+
+      var pin = $scope.bankDetail.otp;
+      var str = "";
+      var count = 0;
+      for(var i = 0; i < pin.length; i++){
+        count++;      
+        if(count % 3 === 0) {
+          str += pin[i];
+          str += " ";
+        } else {
+          str += pin[i];
+        }
+      }
+       
+      $scope.bankDetail.otp = str.replace(/\s*$/,"");
       $scope.loading = true;
-      var cashOut = cashOutControllerService; //$resource("/user/cashout",null,{cashing:{method: "PUT"}});
       cashOut.cashing($scope.bankDetail,function(data){
         $scope.loading = false;
         alert(data.message);
@@ -10085,7 +10239,15 @@ app.controller("cashOutController",["$scope","$rootScope","$resource","cashOutCo
     }
   }
 
+
+  $scope.requestAgain = function() {
+    $scope.isVerify = false;
+    $rootScope.resend = null;
+  }
+
 }]);
+
+
 
 
 

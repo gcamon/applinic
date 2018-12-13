@@ -727,7 +727,8 @@ var myModel = function () {
 		verified: Boolean,
 		title: String,
 		email: String,
-		attended: Boolean
+		attended: Boolean,
+		confirmation_date: Date
 	},{
 		collections: "cashoutinfos"
 	});

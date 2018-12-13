@@ -1,5 +1,5 @@
 <div class="p-2" style="">
-	<h3>Withdrawal Requests ( {{CashOutList.length}} ) <input type="text" placeholder="filter" ng-model="filt" style="float: right;"></h3>
+	<h3>Settled Withdrawals ( {{cashedOut.length}} ) <input type="text" placeholder="filter" ng-model="filt" style="float: right;"></h3>
 	
 	<table class="table">
 		<thead>
@@ -10,17 +10,15 @@
 			<th>Amount</th>
 			<th>Type</th>
 			<th>user Id</th>
-		</thead>
-		
-	    <tbody ng-repeat="i in CashOutList | filter : filt | orderBy: '-date'" class="cashouts" ng-click="viewDetails(i.id)">
-	    	<td><span am-time-ago="i.date"></span></td>
+		</thead>		
+	    <tbody ng-repeat="i in cashedOut | filter : filt" class="cashouts">
+	    	<td><span>{{i.confirmation_date}}</span></td>
 	    	<td>{{i.name}}</td>
 	    	<td>{{i.bank}}</td>
 	    	<td>{{i.account_number}}</td>
 	    	<td>{{toCurrency(i.amount)}}</td>
 	    	<td>{{i.account_type}}</td>
 	    	<td>{{i.user_id}}</td>
-	    </tbody>
-		
+	    </tbody>		
 	</table>
 </div>

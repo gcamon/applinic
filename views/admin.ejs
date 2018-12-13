@@ -85,13 +85,14 @@
 		*************************************-->
 		<header style="background-color: #fff;position: relative;" class="card">
 			<div class="bg-success p-1 text-white row">
-				<div class="col-sm-12 col-md-8 col-lg-8">
+				<div class="col-sm-12 col-md-9 col-lg-9">
 					<a href="/" style="padding: 10px 20px 0;color: #fff"><b>Applinic > Admin</b></a> &nbsp; | &nbsp;
 					<a href="https://privateemail.com/appsuite/signin#!!&app=io.ox/mail&folder=default0/INBOX" target="_blank" style="padding: 10px 20px 0;color: #fff">info@applinic.com</a> &nbsp; | &nbsp;
-					<a href="" style="padding: 10px 20px 0;color: #fff">{{balance}}</a> &nbsp;  &nbsp;
+					<a href="" style="padding: 10px 20px 0;color: #fff">Returns | {{toCurrency(adminProfit)}}</a> &nbsp;  &nbsp;
+					<a href="#/admin-settled-withdrawals" style="padding: 10px 20px 0;color: #fff" ng-click="cashedDetails()">Withdrawals | {{toCurrency(cashedOutTotal)}}</a> &nbsp;  &nbsp;
 				</div>
 
-				<div class="col-sm-12 col-md-4 col-lg-4">
+				<div class="col-sm-12 col-md-3 col-lg-3">
 					<form style="display: inline-block;" ng-submit="getUser()">
 						<input type="text" placeholder="Search" name="users" ng-model="user" style="color: grey;padding: 2px" />
 						<input type="submit" name="" value="Find" style="padding: 3px 5px;background-color: red;color: #fff;" class="btn btn-danger">
@@ -152,12 +153,13 @@
 					<hr>
 					<ul class="issues">
 						<li><a href="#/admin"><i class="fa fa-home"></i> Home</a></li>
-						<li><a href="#/admin-withdrawals">Cah out Requests  &nbsp;&nbsp;<small style="color: red">{{CashOutList.length}}</small></a></li>
-						<li><a href="">Need Help &nbsp;&nbsp;<small style="color: red">50</small></a></li>
-						<li><a href="">Suggestions &nbsp;&nbsp;<small style="color: red">50</small></a></li>
-						<li><a href="">complaints &nbsp;&nbsp;<small style="color: red">50</small></a></li>
-						<li><a href="">Disputes &nbsp;&nbsp;<small style="color: red">50</small></a></li>
-						<li><a href="">E-Scroll &nbsp;&nbsp;<small style="color: red">50</small></a></li>
+						<li><a href="#/admin-withdrawals">Withdrawal Requests  &nbsp;&nbsp;<small style="color: red">{{CashOutList.length}}</small></a></li>
+						<li><a href="">E-Scroll &nbsp;&nbsp;<small style="color: red">{{}}</small></a></li>
+						<li><a href="">Need Help &nbsp;&nbsp;<small style="color: red">{{}}</small></a></li>
+						<li><a href="">Suggestions &nbsp;&nbsp;<small style="color: red">{{}}</small></a></li>
+						<li><a href="">complaints &nbsp;&nbsp;<small style="color: red">{{}}</small></a></li>
+						<li><a href="">Disputes &nbsp;&nbsp;<small style="color: red">{{}}</small></a></li>
+						
 					</ul>
 					
 				</div>

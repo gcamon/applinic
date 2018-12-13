@@ -1,0 +1,50 @@
+<div class="p-2" style="">
+	<a href="#/admin-withdrawals" class="btn btn-neutral"><i class="fa fa-arrow-left"></i> Back</a>
+	<hr>
+	<div>
+		<div ng-if="request">
+			<h6>Personal Info</h6>
+			<div style="line-height: 25px">
+				<div>
+					<strong>Request date: </strong> <span>{{request.date | date : 'fullDate'}}</span>
+				</div>
+				<div>
+					<strong>Request ID : </strong> <span>{{request.id}}</span>
+				</div>
+				<div>
+					<strong>Name user: </strong> <span>{{request.name}} ({{request.lastname}})</span>
+				</div>
+				<div>
+					<strong>Phone: </strong> <span>{{request.phone}}</span>
+				</div>
+				<div>
+					<strong>email: </strong> <span>{{request.email}}</span>
+				</div>
+				<div>
+					<strong>User ID: </strong> <span>{{request.user_id}}</span>
+				</div>
+			</div>
+			<hr>
+			<h6>Bank Details</h6>
+			<div style="line-height: 30px">
+				<div>
+					<strong>Bank Name: </strong> <span style="font-size: 18px">{{request.bank}}</span>
+				</div>
+				<div>
+					<strong>Account No: </strong> <span style="font-size: 18px">{{request.account_number}}</span>
+				</div>
+				<div>
+					<strong>Account: </strong> <span style="font-size: 18px">{{request.account_type}}</span>
+				</div>
+			</div>
+		</div>
+		<p style="text-align: center;" class="text-muted" ng-if="!request">{{resMsg}}</p>
+
+		<h4 style="text-align: center;padding: 10px 0"><b>{{toCurrency(request.amount)}}</b></h4>
+		<div style="text-align: center;"">
+			<button class="btn btn-danger btn-lg" ng-click="confirmPay(request._id)" ng-if="request">Confirm as paid</button>
+			<p ng-if="!request" style="font-size: 18px"><b><i class="fa fa-check"></i> confirmation successful!</b> </p>
+		</div>
+	</div>
+
+</div>

@@ -288,7 +288,7 @@ var basicPaymentRoute = function(model,sms,io,paystack,client){
 		console.log(req.body)
 		if(req.user) {
 
-			if(req.body.userId !== req.user.user_id){
+			if(req.body.userId !== req.user.user_id || req.body.isCashOutVerify){
 				//generate otp for confirmation. the debitor's id is sent from the request including the amount.
 				//request is obj of the debitor's id, amount to debit ie the person paying for the service.
 				//note for payment req.body must have userId of who is to be debited is required while for transfer req.body do not have userId
@@ -1438,25 +1438,43 @@ var basicPaymentRoute = function(model,sms,io,paystack,client){
 	router.post("/user/cashout",function(req,res){
 		if(req.user){
 			console.log(req.body)
-			var userId = (req.body.userId === undefined) ? req.user.user_id : req.body.userId;
-			model.user.findOne({user_id:userId},{ewallet:1}).exec(function(err,wallet){
-				if(err) throw err;
-				if(wallet.ewallet.available_amount >= req.body.amount) {
-					wallet.ewallet.available_amount -= req.body.amount;					
-					wallet.save(function(err,info){
-						if(err) {
-							res.json({message: "Error occured! Please try again later."});
-						} else {
-							allClear(wallet.ewallet.available_amount);
-						}
-					});				
-				} else {
-					res.send({message: "Request rejected!! Reason: Amount you entered is more than available balance."});
-				}
-			});
+
+			if(!req.body.otp) {
+				res.send({message: "Authentication is required before request can be submitted."});
+				return;
+			} else {
+				model.otpSchema.findOne({otp: req.body.otp})
+				.exec(function(err,data){
+					if(data){
+						authSuccess()
+						data.remove(function(){})
+					} else {
+						res.send({message: "Authentication failed.Please make sure you entered the right OTP and try again."});
+					}
+				})
+			}
+
+			function authSuccess() {
+				var userId = (!req.body.userId) ? req.user.user_id : req.body.userId;
+				model.user.findOne({user_id:userId},{ewallet:1}).exec(function(err,wallet){
+					if(err) throw err;
+					if(wallet.ewallet.available_amount >= req.body.amount) {
+						wallet.ewallet.available_amount -= req.body.amount;					
+						wallet.save(function(err,info){
+							if(err) {
+								res.json({message: "Error occured! Please try again later."});
+							} else {
+								allClear(wallet.ewallet.available_amount);
+							}
+						});				
+					} else {
+						res.send({message: "Request rejected!! Reason: Amount you entered is more than available balance."});
+					}
+				});
+			}
 
 			function allClear(wallet) {
-				var random = randos.genRef(14);
+				var random = randos.genRef(12);
 				var date = + new Date();
 				var CashObj = new model.cashout({
 					date: date,
@@ -1490,9 +1508,7 @@ var basicPaymentRoute = function(model,sms,io,paystack,client){
 					account_type: req.body.account_type
 				})
 
-				CashObj.save(function(err,info){
-					
-				});
+				CashObj.save(function(err,info){});
 
 				res.send({message: "Request accepted! Transaction may take up to 48hrs to complete.",balance:wallet});
 			}
@@ -1504,14 +1520,84 @@ var basicPaymentRoute = function(model,sms,io,paystack,client){
 
 router.get("/user/cashout",function(req,res){
 	if(req.user && req.user.user_id === process.env.ADMIN_ID){
-		model.cashout.find({},function(err,list){
+		model.cashout.find({verified: false,attended: false},function(err,list){
 			if(err) throw err;
 			res.send(list)
 		})
 	} else {
-		res.send("Unauthorized access!")
+		if(req.query.id) {
+				model.cashout.find({user_id: req.query.id,verified: false,attended: false},function(err,list){
+					if(err) throw err;
+					res.send(list)
+				})
+		} else {
+			res.send("Unauthorized access!")
+		}
+		
 	}
 });
+
+router.put("/user/cashout",function(req,res){
+	if(req.user && req.user.user_id === process.env.ADMIN_ID){
+		model.cashout.findById(req.body.id)
+		.exec(function(err,data){
+			if(err) throw err;
+			if(data){
+				data.attended = true;
+				data.verified = true;
+				confirmation_date: new Date();
+				data.save(function(err,info){
+					if(err) {
+						throw err;
+						res.json({message: "Error occured"});
+					}
+					if(info){
+						res.json({status: true,message: "This transaction has been completed!"})
+					} else {
+						res.json({message: "Error occured will verifying transaction.Please try again."})
+					}
+				})
+			} else {
+				res.json({message: "Error: This transaction ID does not exist."})
+			}
+		})
+		
+	} else {
+		res.end("Unauthorized access!");
+	}
+});
+
+router.get("/user/settled-cashout",function(req,res){
+	if(req.user && req.user.user_id === process.env.ADMIN_ID){
+		model.cashout.find({verified: true,attended: true})
+		.exec(function(err,data){
+			if(err) throw err;
+			res.json(data);
+		});
+	} else {
+		res.end("Unauthorized access!");
+	}
+})
+
+router.put("/user/settled-cashout",function(req,res){
+	if(req.user && req.user.user_id === process.env.ADMIN_ID){
+		model.cashout.findById(req.body.id)
+		.exec(function(err,data){
+			if(err) throw err;
+			if(data){
+				data.attended = false;
+				data.verified = false;
+				data.save(function(err,info){
+					res.json({status:true,message:"transaction re-opened"})
+				})
+			} else {
+				res.json({message: "Error occured, cannot reopen"})
+			}
+		});
+	} else {
+		res.end("Unauthorized access!");
+	}
+})
 
 //for courier matters
 
