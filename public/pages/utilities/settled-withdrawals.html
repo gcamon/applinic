@@ -11,7 +11,7 @@
 			<th>Type</th>
 			<th>user Id</th>
 		</thead>		
-	    <tbody ng-repeat="i in cashedOut | filter : filt" class="cashouts">
+	    <tbody ng-repeat="i in cashedOut | filter : filt | orderBy: '-confirmation_date'" class="cashouts">
 	    	<td><span>{{i.confirmation_date}}</span></td>
 	    	<td>{{i.name}}</td>
 	    	<td>{{i.bank}}</td>

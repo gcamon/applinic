@@ -10,7 +10,7 @@
 					<img src="{{user.profile_pic_url}}" style="width: 120px; height:auto">
 				</div>
 				<div class="col-sm-8 col-md-10 col-lg-10 pl-2">
-					<h3><b ng-if="user.lastname">{{user.title}} {{user.firstname}} {{user.lastname}}</b> <b ng-if="!user.lastname">{{user.name}}</b> <button style="float: right;" class="btn btn-danger btn-sm" ng-if="user.verified" ng-click="verifyUser('block',user)">block user</button> <button style="float: right;" class="btn btn-simple btn-sm" ng-if="!user.verified" ng-click="verifyUser('verify',user)">verify user</button> <button style="float: right;" class="btn btn-warning btn-sm" ng-if="user.verified" ng-click="verifyUser('unverify',user)">unverify user</button>&nbsp;&nbsp;&nbsp;
+					<h3><b ng-if="user.lastname">{{user.title}} {{user.firstname}} {{user.lastname}}</b> <b ng-if="!user.lastname || user.title == 'SC'">{{user.name}}</b> <button style="float: right;" class="btn btn-danger btn-sm" ng-if="user.verified" ng-click="verifyUser('block',user)">block user</button> <button style="float: right;" class="btn btn-simple btn-sm" ng-if="!user.verified" ng-click="verifyUser('verify',user)">verify user</button> <button style="float: right;" class="btn btn-warning btn-sm" ng-if="user.verified" ng-click="verifyUser('unverify',user)">unverify user</button>&nbsp;&nbsp;&nbsp;
 					<button class="btn btn-simple btn-sm" ng-click="deleteAcc(user._id)"> Delete Account</button></h3>
 					<div class="row">
 						<div class="col-sm-6 col-md-6 col-lg-6 pl-2" style="line-height: 25px">

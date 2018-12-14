@@ -19,7 +19,7 @@
 				<td style="width: 25%">
 				<b class="text-muted">
 				<span ng-if="i.lastname">{{i.title}} {{i.firstname}} {{i.lastname}}</span> 
-				<span ng-if="!i.lastname">{{i.name}}</span></b>
+				<span ng-if="!i.lastname">{{(i.title == 'SC') ? i.firstname : i.name}}</span></b>
 				</td>
 				<td>{{i.city}}</td>
 				<td ng-if="isDoctorsView" style="width: 15%">{{i.specialty}}</td>
