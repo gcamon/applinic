@@ -67,7 +67,7 @@ var signupRoute = function(model,sms,geonames,paystack,io) {
 						profile_url: "/user/profile/view/" + uid,
 						profile_pic_url: "/download/profile_pic/nopic",
 						work_place: req.body.work_place,
-						name: req.body.name,
+						name: (req.body.typeOfUser === "Special Center") ? req.body.firstname : req.body.name,
 						verified: false,
 						rating: {
 							votes:20,
