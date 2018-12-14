@@ -2321,17 +2321,23 @@ app.controller("contactController",["$scope","$http",function($scope,$http){
 app.controller("verifyPhoneController",["$rootScope","$scope","$resource","$window","userSignUpService","phoneCallService",
   function($rootScope,$scope,$resource,$window,userSignUpService,phoneCallService){
   $scope.verify = {};
+  $scope.success;
   $scope.sendForm = function (){
+    if(!$scope.verify.pin){
+      alert("Please enter the verification pin you received.")
+      return;
+    }
+
     $scope.loading = true;
     $rootScope.formData.v_pin = $scope.verify.pin;
     var signUp = userSignUpService;//$resource("/user/signup",null,{userSignup:{method: "POST"}})    
     signUp.userSignup($rootScope.formData,function(response){ //
       $scope.loading = false;
-      alert(response.message);
-      console.log(response);
-      $scope.success = response.message;
-      if(response.error === false) {              
-        $window.location.href = '/login';                           
+      //alert(response.message);
+      //console.log(response);      
+      if(!response.error) {  
+        $scope.success = response.message;            
+        //$window.location.href = '/login';                           
       } else {       
         $scope.error = response.errorMsg;       
       }

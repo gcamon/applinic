@@ -60,9 +60,6 @@ var signupRoute = function(model,sms,geonames,paystack,io) {
 						state: req.body.state,
 						region: req.body.region,
 						currencyCode: req.body.currencyCode,
-						profile_pic: {
-							filename:""
-						},
 						specialty: req.body.specialty,
 						profile_url: "/user/profile/view/" + uid,
 						profile_pic_url: "/download/profile_pic/nopic",
@@ -77,6 +74,14 @@ var signupRoute = function(model,sms,geonames,paystack,io) {
 						ref_link: referral_link					
 					});
 
+
+
+					User.ewallet = {
+						available_amount: 0,
+						transaction: []
+					}
+
+					if(req.body.typeOfUser === "Patient"){
 						/****create user paystack account****/
 						paystack.customer.create({
 						  first_name: req.body.firstname,
@@ -89,21 +94,17 @@ var signupRoute = function(model,sms,geonames,paystack,io) {
 						  }
 						});
 
-						User.ewallet = {
-							available_amount: 0,
-							transaction: []
-						}
+						//family account
+						User.family_accounts.unshift({
+							status: true,
+	            memberId: uid,
+	            name: req.body.firstname,
+	            main: true
+						});
 
-						if(req.body.typeOfUser === "Patient"){
-							User.family_accounts.unshift({
-								status: true,
-		            memberId: uid,
-		            name: req.body.firstname,
-		            main: true
-							});
-
-							User.mrak = uuid.v1();
-						}
+						//medical record access key
+						User.mrak = uuid.v1();
+					}
 
 
 						/*cities are capture for record purposes.Note country of the user if is saved for the user form 

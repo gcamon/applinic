@@ -17,22 +17,30 @@
 </section>-->
 
 <div style="width: 85%;margin: 30px auto">
-	<p class="text-success">{{verifyInfo}}</p>
-	<p class="text-danger">{{error}}</p>
+	
 	<form>
-		<div>
+		<div  ng-if="!success">
+			<p class="text-success">{{verifyInfo}}</p>
+			<p class="text-danger">{{error}}</p>
+		</div>
+		<div ng-if="!success">
 			<p>
-				Cannot receive SMS? Get verification code via Phone call.<br>
+				If you did not receive SMS, get the verification pin via phone call. &nbsp;&nbsp;
 				<a href="" ng-click="call(resend)"><i class="fa fa-phone"></i> Call Now!</a>
 			</p> 
 			<p style="text-align: center;font-size: 14px" ng-if="showCallingMsg">{{showCallingMsg}}</p>
 		</div>
-		<div>
+		<div ng-if="!success">
 			<input type="text" placeholder="Enter verification pin" ng-model="verify.pin" class="form-control">
         </div>
-        <div style="text-align: center;">
-			<button class="btn btn-danger" ng-click="sendForm()" ng-if="!loading">
-        	<span class="sr-only">Loading...</span> Continue</button> <i class="fa fa-spinner fa-pulse fa-1x fa-fw text-info"  ng-if="loading"></i><span ng-if="loading">verifying...</span>
+        <div style="text-align: center;" ng-if="!success">
+			<button class="btn btn-danger" ng-click="sendForm()" ng-if="!loading && !success">
+        	<span class="sr-only">Loading...</span> Verify</button> 
+        	<span ng-if="loading"><i class="fa fa-spinner fa-pulse fa-1x fa-fw text-info"  ng-if="loading"></i> verifying...</span>
 		</div>
+		<div ng-if="success" class="mt-3" style="text-align: center;">
+    		<span class="text-muted">{{success}}</span><br><br>
+    		<a href="/login" class="btn btn-success btn-lg">Log In</a>
+    	</div>
 	</form>
 </div>
