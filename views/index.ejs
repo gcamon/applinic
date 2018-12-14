@@ -185,14 +185,20 @@
     min-height: 130px;
 }
 
-
+.m-top{
+    margin-top: 54px;
+}
             .topUp{
                 top:340px;
             }
             .carousel-caption {
+                top:0;
+                left:0;
                 right: 0;
                 bottom: 0;
+                padding-top: 55px !important;
                  min-height:400px;
+                 margin-bottom: 80px;
             }
 
             .d-none{
@@ -230,11 +236,15 @@
             }
 
             .patient-note {
-                margin-top: 90px
+                margin-top: 120px
             }
 
             .ways-to-meet {
                 padding-left:50px
+            }
+
+            .section {
+                margin-top: 140px
             }
 
         }
@@ -292,17 +302,60 @@ padding:10px 10px;
  }
 
  .home-pallete-content {
-    font-size: 0.95em;
+    font-size: 0.85em;
     height: 130px;
  }
-    </style>
+</style>
 
 
 
 </head>
 
 <body class="template-page" ng-app="myApp" style="overflow-x:hidden;position: relative;">
-   
+    <!-- Navbar -->
+    <!--<nav class="navbar navbar-toggleable-md bg-primary fixed-top  navbar-transparent" color-on-scroll="500">
+        <div class="container">
+            <div class="navbar-translate">
+                <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navigation" aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-bar bar1"></span>
+                    <span class="navbar-toggler-bar bar2"></span>
+                    <span class="navbar-toggler-bar bar3"></span>
+                </button>
+                <a class="navbar-brand" href="/">
+                    <img src="/assets/images/applinic1.png" alt="Applinic" style="width: 40%;height:40px">
+                </a>
+            </div>
+            <div class="collapse navbar-collapse justify-content-end" id="navigation" data-nav-image="/assets/images/blurred-image-1.jpg">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">
+                            <p>Home</p>
+                           </a>
+                    </li>
+                     <li class="nav-item">
+                        <a class="nav-link" href="/how-it-works">
+                            <p>How it works</p>
+                        </a>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a class="nav-link" href="/contact">
+                            <p>Contact</p>
+                        </a>
+                    </li>
+                    </ul>
+                    <div class="button-groups">
+                        <a href="/login" class="btn btn-neutral" style="color:#f96332;background-color:#fff">
+                           Login
+                        </a>
+                
+                        <a href="/signup" class="btn btn-primary" style="background-color:#f96332">
+                           Sign up
+                        </a>
+                </div>
+            </div>
+        </div>
+    </nav>-->
     <% include ./inner/nav %>
     <!-- End Navbar -->
 
@@ -401,7 +454,7 @@ padding:10px 10px;
         <div class="clearfix"></div>
 
 
-        <div class="container offset-md-1 topUp" style="background-color: #fff; position: absolute;bottom:0;max-height: 200px;border-top-left-radius:2px;border-top-right-radius: 2px;padding: 15px;z-index: 2"
+        <div class="container offset-md-1 topUp m-top" style="background-color: #fff; position: absolute;bottom:0;max-height: 200px;border-top-left-radius:2px;border-top-right-radius: 2px;padding: 15px;z-index: 2"
             ng-controller="hompageController">
 
             <form ng-cloak>
@@ -520,7 +573,7 @@ padding:10px 10px;
 
             <div class="col-md-12">
                 <div class="col-md-10 col-sm-12 offset-md-1 offset-sm-0 text-center pt-2 pb-3 home-pallete-content">
-                 <h5 class="text-muted" style="font-size: 1.25em"> We facilitate patient- doctor communications and promote easy access to pharmacies and diagnostic centers.</h5>
+                 <p class="text-muted" style="font-size: 16px">We facilitate patient-doctor communications and promote easy access to pharmacies and diagnostic centers.</p>
                     <!-- We're here to help you find and receive the best medical care.
                     Applinic facilitates patient-doctor communications, promotes easy access to and
                     interaction with diagnostic centers and pharmacies and keeps a secure free
@@ -956,47 +1009,46 @@ padding:10px 10px;
         <br />
         <div class="container">
             <div class="text-center home-pallete-content">
-                <p class="text-mute"><b>In just three simple steps, we'll help you find your nearest healthcare. We aim to
+                In just three simple steps, applinic.com will help you find your nearest healthcare. We aim to
                 facilitate you in finding your right doctor
                 with just few clicks without having to ask around or wonder where to find your nearest healthcare
-                facility.</b></p>
+                facility.
             </div>
 
             <div class="row">
                 <div class="col-md-6 col-lg-6 col-sm-12 col-xs-12" style="padding:1.5em; ">
-                    <div class="card  card-block" style="position:relative;">
+                    <div class="card  card-block"  style="text-align: center; padding: 13px; min-height: 190px;">
                         <div class="col-md-4 col-lg-4 col-sm-12 col-xs-12" style="height:150px; width:100%;">
                             <img src="assets/images/avatar.jpg" class="img-responsive card">
                         </div>
+
                         <div class="col-md-8 col-lg-8 col-sm-12">
 
-                            <div style="font-size:.8em; text-align:left !important;">
+                            <div style="font-size:.9em; text-align:left !important;">
                                 <div class="col-md-12 pull-left text-capitalize title p-0 patient-note">Stella Johnson
                                 </div><br><sub class="text-muted text-bold m-0">PATIENT</sub>
                                 <div class="clearfix"></div><br>
-                                <div>
-                                <p class="home-pallete-content font_1-2">I had this test for so long but could not find a diagnostic center to run it. When
+                                <div>I had this test for so long but could not find a diagnostic center to run it. When
                                     I used applinic.com,
                                     I was able to locate a center within my city that solved my problem.This guys are
-                                    great!!!</p></div>
+                                    great!!!</div>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-6 col-lg-6 col-sm-12 col-xs-12" style="padding:1.5em;">
-                    <div class="card  card-block">
-                        <div class="col-md-4  col-sm-12 col-xs-12 pull-left" style="height:150px;width:100%;">
-                            <img src="assets/images/obinna.jpg" class="img-responsive  card">
-                            </div>
+                    <div class="card  card-block" style="text-align: center; padding: 13px; min-height: 190px;">
+                        <div class="col-md-4  col-sm-12 col-xs-12 pull-left" style="height:150px; width:100%; ">
+                            <img src="assets/images/obinna.jpg" class="img-responsive  card"></div>
 
                         <div class="col-md-8 col-sm-12 col-xs-12 pull-right">
-                            <div style="font-size:.8em; text-align:left !important;">
+                            <div style="font-size:.9em; text-align:left !important;">
                                 <div class="col-md-12 pull-left text-capitalize title p-0 patient-note">Ede Obinna
                                 </div><br> <sub class="text-muted text-bold m-0">PATIENT</sub>
                                 <div class="clearfix"></div> <br>
-                                <p class="home-pallete-content">A friend told me about applinic.com, when I registered was able to find a medical
+                                A friend told me about applinic.com, when I registered was able to find a medical
                                 specialist for my illness.
-                                applinic.com made communication with my doctor so easy.</p>
+                                applinic.com made communication with my doctor so easy.
                             </div>
                         </div>
                     </div>
