@@ -1,7 +1,7 @@
 <!--Special Center signup starts here-->
 <div class="tab-pane">
 <div class="alert alert-info"><strong>Special Center signup :</strong> Please complete the form below.</div>
-<form class="row">      
+<form class="row" ng-submit="submit('Doctor','sc')">      
   <!--<div class="col-md-6 col-sm-12">
   <select class="custom-select col-md-12" ng-model="user.special_center">
   <option value="SC" selected="selected"></option>
@@ -10,7 +10,7 @@
   </div>-->
   <div class="col-md-12 col-sm-12">
     <input type="text" class="form-control" placeholder="Center Name" ng-model="user.firstname" >
-    <span class="text-danger" style="font-size: 10px;display: inline-block;margin:-60px 0 0 10px;float: left;">{{FirstNameMessage}}</span>
+    <span class="text-danger" style="font-size: 10px;display: inline-block;margin:-60px 0 0 10px;float: left;">{{nameMessage}}</span>
   </div>
 
   <div class="col-md-6 col-sm-12">
@@ -189,9 +189,14 @@
   <span class="text-danger" style="font-size: 10px;display: inline-block;margin:0px 0 0 10px;float: left;">{{termMessage}}</span>
 </label>
 </div>
-<br><br>
 <div class="clearfix"></div>
-<button class="btn btn-simple btn-lg" ng-click="submit('Doctor','sc')"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:blue" ng-if="loading"></i>
-<span class="sr-only">Loading...</span> Create Account</button>
+<!--<button class="btn btn-simple btn-lg" ng-click="submit('Doctor','sc')"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:blue" ng-if="loading"></i>
+<span class="sr-only">Loading...</span> Create Account</button>-->
+<div class="col-md-12">
+    <div>
+      <input type="submit" class="btn btn-simple btn-lg" value="Create Account" ng-if="!loading && !isPhoneverify" style="font-size: 18px!important">
+      <span ng-if="loading"> <i class="fa fa-spinner fa-pulse fa-1x fa-fw text-info" ></i> Processing...</span>
+    </div>
+</div>
 </form>
   </div>

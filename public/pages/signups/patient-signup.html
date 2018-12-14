@@ -1,9 +1,9 @@
  <div class="tab-pane" ng-cloak>
       <div class="alert alert-info"><strong>Patient Signup : </strong>Please complete the form below.</div>
-  <form class="row">
+  <form class="row" ng-submit="submit('Patient')">
 
     <div class="col-md-12">
-    <select class="custom-select form-control col-md-12" ng-model="user.title" >
+    <select class="custom-select form-control col-md-12" ng-model="user.title" required>
         <option value="" disabled selected>Select Title</option>                                           
         <option>Dr</option>
         <option>Mr</option>
@@ -26,17 +26,17 @@
 
 
   <div class="col-md-6 col-sm-12">     
-    <input type="text" class="form-control" placeholder="First Name"  ng-model="user.firstname" >
+    <input type="text" class="form-control" placeholder="First Name"  ng-model="user.firstname" required>
     <span class="text-danger" style="font-size: 10px;display: inline-block;margin:-60px 0 0 10px;float: left;">{{FirstNameMessage}}</span>  
   </div>
   <div class="col-md-6 col-sm-12">    
-    <input type="text" class="form-control" placeholder="Last Name"  ng-model="user.lastname" >
+    <input type="text" class="form-control" placeholder="Last Name"  ng-model="user.lastname">
     <span class="text-danger" style="font-size: 10px;display: inline-block;margin:-60px 0 0 10px;float: left;">{{lastNameMessage}}</span> 
   </div>
 
   
   <div class="col-md-6 col-sm-12">
-  <select class="custom-select form-control col-md-12" ng-model="user.age" >
+  <select class="custom-select form-control col-md-12" ng-model="user.age" required>
   <option value="" disabled selected>Age category</option>                                           
     <option>0 - 28 days (newborn)</option>
     <option>29 days - 1 year (infant)</option>
@@ -52,7 +52,7 @@
   <span class="text-danger" style="font-size: 10px;display: inline-block;margin:-60px 0 0 10px;float: left;">{{ageMessage}}</span> 
   </div>
   <div class="col-md-6 col-sm-12">
-    <select class="custom-select form-control col-md-12" ng-model="user.gender">
+    <select class="custom-select form-control col-md-12" ng-model="user.gender" required>
         <option value="" disabled selected>Sex</option>                                           
         <option>Male</option>
         <option>Female</option>
@@ -65,7 +65,7 @@
   </div>
   <div class="col-md-6 col-sm-12">
     <!--<input type="text" class="form-control" placeholder="Country" ng-model="user.country" >-->
-    <select class="custom-select form-control col-md-12" ng-model="user.country">
+    <select class="custom-select form-control col-md-12" ng-model="user.country" required>
       <option value="" selected disabled >{{status}}</option>
       <option ng-repeat="country in countries" value="{{country.geonameId}};{{country.countryCode}};{{country.countryName}}">{{country.countryName}}</option>
     </select>
@@ -90,7 +90,7 @@
   </div>-->
   <div class="col-md-6 col-sm-12" style="position: relative;">
    <!--<small class='fa fa-arrow-right' style="font-size:10px;color:blue;padding-left: 10px;position: absolute; left: 0;top:10px" ng-if="isNext3"></small>-->
-    <input type="text" class="form-control" placeholder="City" ng-model="user.city"  ng-cloak >
+    <input type="text" class="form-control" placeholder="City" ng-model="user.city" required >
     <!--<select class="custom-select form-control col-md-12" ng-model="user.city"  ng-cloak ng-if="isEdit === false" >
       <option value="" selected disabled >{{status2}}</option>
       <option ng-repeat="city in cities" value="{{city.name}}">{{city.name}}</option>
@@ -106,14 +106,14 @@
  <div  class="col-md-6 col-sm-12" style="position: relative">
   
       <input type="number" name="callingcode" style="position:absolute; top:19px; background:transparent;  left:35px; border: none; width: 55px; outline:0;"  placeholder="{{(user.callingCode) ? user.callingCode : 'Code'}}" ng-model= "user.callingCode"/>
-      <input type="number" class="form-control" noBorder" placeholder="Mobile number" ng-model="user.phone" style="padding-left: 80px"/>  
+      <input type="number" class="form-control" noBorder" placeholder="Mobile number" ng-model="user.phone" required style="padding-left: 80px"/>  
     <span class="text-danger" style="font-size: 10px;display: inline-block;margin:-60px 0 0 10px;float: left;">{{phoneMessage}}</span>
     <span class="text-danger" style="font-size: 10px;display: inline-block;margin:-60px 0 0 10px;float: left;">{{numberError}}</span>  
  </div>
 
 
  <div  class="col-md-6 col-sm-12">
-      <input type="text" name="address" class="form-control" placeholder="Address" ng-model="user.address" />
+      <input type="text" name="address" class="form-control" placeholder="Address" ng-model="user.address" required />
       <span class="text-danger" style="font-size: 10px;display: inline-block;margin:-60px 0 0 10px;float: left;">{{addressMessage}}</span>   
  </div>
  
@@ -145,17 +145,17 @@
 
   <div class="col-md-6 col-sm-12">
   
-    <input type="text" name="username" class="form-control" placeholder="User Name" ng-model="user.username" >
+    <input type="text" name="username" class="form-control" placeholder="User Name" ng-model="user.username" required>
     <span class="text-danger" style="font-size: 10px;display: inline-block;margin:-60px 0 0 10px;float: left;">{{usernameMessage}}</span> 
   </div>
   <div class="col-md-6 col-sm-12">
-    <input type="email" name= "email" class="form-control" placeholder="Email" ng-model="user.email" >
+    <input type="email" name= "email" class="form-control" placeholder="Email" ng-model="user.email" required>
     <span class="text-danger" style="font-size: 10px;display: inline-block;margin:-60px 0 0 10px;float: left;">{{emailMessage}}</span> 
   </div>
 
 
   <div class="col-md-6 col-sm-12">
-    <input type="password" class="form-control" placeholder="Password" ng-model="user.password" >
+    <input type="password" class="form-control" placeholder="Password" ng-model="user.password" required>
     <span class="text-danger" style="font-size: 10px;display: inline-block;margin:0px 0 0 10px;float: left;">{{passwordMessage}}</span> 
   </div>
   <div class="col-md-6 col-sm-12">
@@ -171,8 +171,13 @@
 </label>
 </div>
 <div class="clearfix"></div>
-<br><br>
-<button class="btn btn-simple" ng-click="submit('Patient')"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:blue" ng-if="loading"></i>
-<span class="sr-only">Loading...</span> Create Account</button>
+<!--<button class="btn btn-simple" ng-click="submit('Patient')"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:blue" ng-if="loading"></i>
+<span class="sr-only">Loading...</span> Create Account</button>-->
+<div class="col-md-12">
+    <div>
+      <input type="submit" class="btn btn-simple btn-lg" value="Create Account" ng-if="!loading && !isPhoneverify" style="font-size: 18px!important">
+      <span ng-if="loading"> <i class="fa fa-spinner fa-pulse fa-1x fa-fw text-info" ></i> Processing...</span>
+    </div>
+</div>
 </form>
 </div>

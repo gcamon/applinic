@@ -1988,9 +1988,7 @@ app.controller('signupController',["$scope","$http","$location","$window","templ
   $scope.user.region = currency.region;
 
 
-  /*if(type === "Pharmacy")
-    $scope.user.typeOfUser = type;
-  */
+  
 
   //capitalize the first letter in words like two words city names.
   if($scope.user.city && $scope.user.city !== "") {
@@ -2000,7 +1998,7 @@ app.controller('signupController',["$scope","$http","$location","$window","templ
 
 
   if(argTitle) {
-    $scope.user.title = "SC";
+    $scope.user.title = ($scope.user.typeOfUser == "Special Center") ? "SC" : $scope.user.title;
   } 
 
   
@@ -2050,12 +2048,50 @@ app.controller('signupController',["$scope","$http","$location","$window","templ
     close(result,500);
   }
 
+
+ 
   function validate(data){
-      console.log(data)
+      //console.log(data)
+      $scope.nameMessage = ""
+      $scope.typeMessage = ""
+      $scope.passwordMessage = ""
+      $scope.FirstNameMessage = ""
+      $scope.lastNameMessage = ""
+      $scope.typeMessage = ""
+      $scope.countryMessage = ""
+      $scope.cityMessage = ""
+      $scope.phoneMessage = ""
+      $scope.passwordError = ""
+      $scope.termMessage = ""
+      $scope.emailMessage = ""
+      $scope.ageMessage = ""
+      $scope.genderMessage = ""
+      $scope.usernameMessage = ""
+      $scope.addressMessage = ""
+      $scope.titleMessage = ""
+      $scope.specialtyMessage = ""
+      $scope.passwordMessage = ""
+      $scope.numberError = "";
 
       if(data.typeOfUser !== "Patient" && data.typeOfUser !== "Doctor" && data.typeOfUser !== 'Special Center') {
         if(data.name === undefined || data.name === "") {
-          $scope.typeMessage = "Enter value for your center name";
+          $scope.nameMessage = "Enter your center name";
+          return;
+        }
+        
+      } 
+      
+      if(data.typeOfUser === 'Special Center') {
+        if(!data.firstname) {
+          $scope.nameMessage = "Enter your center name";
+          return;
+        }
+        
+      } 
+
+      if(data.typeOfUser !== "Patient" && data.typeOfUser !== "Doctor" && data.typeOfUser !== 'Special Center' && data.typeOfUser !== 'Pharmacy') {
+        if(!$scope.center.type) {
+          $scope.typeMessage = "Select the type of diagnostic center";
           return;
         }
         
@@ -2130,7 +2166,6 @@ app.controller('signupController',["$scope","$http","$location","$window","templ
           //var phoneNumber = "+" + $scope.user.callingCode.toString() + $scope.user.phone.toString();
           data.phone = phoneNumber;
           data.username = data.username.replace(/\s+/g, '');
-          console.log(data);
           $rootScope.formData = data;
           sendDetail();
         } else {
@@ -2148,7 +2183,7 @@ app.controller('signupController',["$scope","$http","$location","$window","templ
               $scope.phoneMessage = data.message;
             } else {
               $rootScope.verifyInfo = data.message; 
-              //$scope.isPhoneVerify = true;
+              $scope.isPhoneverify = true;
               $location.path("phone-verification");
             }
             $scope.loading = false;
