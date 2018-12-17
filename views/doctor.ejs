@@ -138,22 +138,25 @@
                    
                     <div class="header-block header-block-nav">
                         <ul class="nav-profile">
-                            <li class="notifications new"> <a href="" data-toggle="dropdown">
+                            <li class="notifications new"> <a href="" data-toggle="dropdown" title="notifications for newly added patients">
                     <i class="fa fa-bell-o"></i>
                     <sup>
-                      <span class="counter" ng-if="<%= person.doctor_notification.length %> > 0 " ng-cloak>{{getLen(<%= person.doctor_notification.length %>)}}</span>
+                      <span class="counter" ng-if="docNotification.length > 0 " ng-cloak>{{docNotification.length}}</span>
                     </sup>
                   </a>
                                 <div class="dropdown-menu notifications-dropdown-menu" style="max-height: 400px;overflow-y: auto;">
                                     <ul class="notifications-container noti-style">
                                          <li> <h6 style="text-align: center">Notification(s)</h6> </li>
-                                        <li ng-repeat = "note in allNote">
-                                            <a href="" class="notification-item">
+                                        <li ng-repeat = "note in docNotification">
+                                            <a href="{{'#/doctor-patient/treatment/' + note.sender_id}}" class="notification-item" ng-click="delMsg(note.message_id)">
                                                 <div class="img-col">                                                    
-                                                    <div class="img" style="background-image: url({{note.doctor_profile_pic_url}})"></div>
+                                                    <div class="img" style="background-image: url({{note.sender_profile_pic_url}})"></div>
                                                 </div>
-                                                <div class="body-col">                                                    
-                                                    <p> <span class="accent">{{note.message}}</span>&nbsp;&nbsp;<small am-time-ago ="note.date"></small></p>
+                                                <div class="body-col" ng-if="note.type == 'acceptance'">                                                    
+                                                    <p> <span class="accent">{{note.message}}<br></span>&nbsp;&nbsp;<small am-time-ago ="note.date"></small></p>
+                                                </div>
+                                                 <div class="body-col" ng-if="note.type == 'video'">                                                    
+                                                    <p> <i class="fa fa-video-camera"></i> <span class="accent">{{note.message}}<br></span>&nbsp;&nbsp;<small am-time-ago ="note.date"></small></p>
                                                 </div>
                                             </a>
                                         </li>                                        
@@ -168,7 +171,7 @@
                                 </div>
                             </li>
 
-                               <li class="notifications new"> <a href="" data-toggle="dropdown">
+                               <li class="notifications new"> <a href="" data-toggle="dropdown" title="consultation requests">
                     <i class="fa fa-envelope-o"></i>
                     <sup>
                       <span class="counter" ng-if="<%= person.doctor_notification.length %> > 0 " ng-cloak>{{consultationLen}}</span>
@@ -203,7 +206,7 @@
                                 </div>
                             </li>
 
-                              <li class="notifications new"> <a href="" data-toggle="dropdown">
+                              <li class="notifications new"> <a href="" data-toggle="dropdown" title="prescription requests">
                     <i class="icon-Pills"></i>
                     <sup>
                       <span class="counter" ng-if="isNew" ng-cloak>{{len}}</span>
@@ -237,7 +240,7 @@
                                 </div>
                             </li>
 
-                               <li class="notifications new"> <a href="" data-toggle="dropdown">
+                               <li class="notifications new"> <a href="" data-toggle="dropdown" title="appointment requests">
                     <i class="fa fa-calendar"></i>
                     <sup>
                       <span class="counter" ng-if="inPersonRequestLen > 0 " ng-cloak>{{inPersonRequestLen}}</span>
@@ -305,7 +308,7 @@
                                     </footer>
                                 </div>
                             </li>-->
-                             <li class="notifications new"> <a href="" ng-click = "loadChats()" data-toggle="dropdown">
+                             <li class="notifications new"> <a href="" ng-click = "loadChats()" data-toggle="dropdown" title="public chats with patients, health care providers and colleagues">
                     <i class="fa fa-comment" ></i>
                     <sup>
                       <span class="counter btn-danger" ng-if="showIndicator" style="border-radius: 10px;width: 8px;height: 8px;display: inline-block;"  ng-cloak></span>

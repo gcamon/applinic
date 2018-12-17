@@ -3938,6 +3938,7 @@ app.controller("docNotificationController",["$scope","$location","$resource","$i
       var filter2 = {};
 
 
+
      var requests =  getRequestInTime.get(null,function(data){
        
         for(var item = data.doctor_notification.length - 1; item >= 0; item--) {
@@ -3954,6 +3955,7 @@ app.controller("docNotificationController",["$scope","$location","$resource","$i
         $scope.total = data.doctor_notification.length;        
         $scope.consultation = filter.consultation;
 
+        $rootScope.docNotification = filter.acceptance; //remember to concat for video and audio requests
         $rootScope.videoRequest = (!localManager.getValue("videoCallerList")) ? localManager.getValue("videoCallerList") : null;
         $rootScope.audioRequest = (!localManager.getValue("audioCallerList")) ? localManager.getValue("audioCallerList") : null;
         $scope.inPersonRequest =  filter["Meet In-person"] || [];//(!localManager.getValue("meetInPersonList")) ? localManager.getValue("meetInPersonList") : null;
@@ -3975,8 +3977,6 @@ app.controller("docNotificationController",["$scope","$location","$resource","$i
           requestManager.set(patient);
           $location.path("/patient-request/" + random);
         };
-
-
 
 
         
@@ -4017,13 +4017,28 @@ app.controller("docNotificationController",["$scope","$location","$resource","$i
     
   getRequest();
 
+ 
+  $scope.delMsg = function(msgId){
+    var del = new deleteFactory(msgId,'doctor_notification');
+    del.deleteItem("/user/delete-one/msgId","");//deletes notification once it is viewed.
+    var elem = $rootScope.docNotification.map(function(x){return x.message_id}).indexOf(msgId);
+    if(elem !== -1) {
+      $rootScope.docNotification.splice(elem,1);
+    }
+  }
+
+
+  $rootScope.$on('get notification',function(e,r){
+    getRequest();
+  });
+
 
   mySocket.on("received in-person request",function(res){
     if(res.status){
       templateService.playAudio(0);
       $scope.inPersonRequestLen.unshift(res.data)
     }
-  })
+  });
 
 
  //deletes a selected request from a patient.        
@@ -7043,16 +7058,20 @@ app.controller("PatientViewResponseController",["$scope","$rootScope","$resource
     //templateService.holdRawAmount = fee;
     //templateService.holdDocInView.fee = inNaira;
     //templateService.holdDocInView.intro = intro;
-    
-    $rootScope.holdDocInView = doc;
-    ModalService.showModal({
-        templateUrl: "acceptance-notification.html",
-        controller: "PatientViewResponseModalController"
-    }).then(function(modal) {
-        modal.element.modal();
-        modal.close.then(function(result) {
-        });
-    });    
+    var elemPos = $rootScope.patientsDoctorList.map(function(x){if(x) return x.doctor_id}).indexOf(doc.doctor_user_id);
+    if(elemPos === -1) {
+      $rootScope.holdDocInView = doc;
+      ModalService.showModal({
+          templateUrl: "acceptance-notification.html",
+          controller: "PatientViewResponseModalController"
+      }).then(function(modal) {
+          modal.element.modal();
+          modal.close.then(function(result) {
+          });
+      }); 
+    } else {
+      alert("You have already accepted " + doc.doctor_name)
+    }   
   }
   
 }]);
@@ -7175,10 +7194,10 @@ app.controller("PatientViewResponseModalController",["$scope","$rootScope","$loc
           //$location.path(templateService.holdCurrentPage);
           
           getMyDoctorService.query(null,function(data){   
-            console.log(data)         
+            console.log(data);         
             $rootScope.patientsDoctorList = data;
           });
-          $rootScope.hasComplete = "Consultation accepted!";
+          $rootScope.holdDocInView.hasComplete = "Consultation accepted!";
         }
       });
 
@@ -9503,6 +9522,7 @@ function($scope,$location,$rootScope,$http,$interval,templateService,localManage
         $timeout(function(){
           $scope.isReceivedRequest = false;
         },10000);
+        $rootScope.$broadcast('get notification',{status: true});
         getList("/user/doctor/my-online-patients","doctor");
       });
 
@@ -18851,8 +18871,8 @@ app.service("patientWaitingRoomService",["$resource",function($resource){
   return $resource("/user/response/patients-histories/:batch",null,{respond:{method: "POST"}});
 }]);
 
-app.controller("patientWaitingRoomController",["$scope","$resource","$location","$routeParams","mySocket","patientWaitingRoomService",
-  function($scope,$resource,$location,$routeParams,mySocket,patientWaitingRoomService){
+app.controller("patientWaitingRoomController",["$scope","$resource","$location","$routeParams","mySocket","patientWaitingRoomService","$rootScope",
+  function($scope,$resource,$location,$routeParams,mySocket,patientWaitingRoomService,$rootScope){
   var complaints = patientWaitingRoomService; //$resource("/user/response/patients-histories/:batch",null,{respond:{method: "POST"}});
   complaints.query({batch:1},function(data){
     $scope.complaints = data;
@@ -18894,9 +18914,10 @@ app.controller("patientWaitingRoomController",["$scope","$resource","$location",
   $scope.user = {};
   var value;
   var commission;
+  var discount = $rootScope.checkLogIn.city_grade || 10;
   $scope.$watch("user.amount",function(newVal,oldVal){
     if(oldVal && newVal !== null) {
-      commission = $scope.user.amount * 0.2;
+      commission = $scope.user.amount * ( discount / 100 );
       value = $scope.user.amount - commission;
       $scope.str = "NGN " + value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     } else {

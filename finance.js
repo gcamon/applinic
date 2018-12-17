@@ -533,6 +533,10 @@ var basicPaymentRoute = function(model,sms,io,paystack,client){
 	/*this route handles the patient accepting consultation fee. the patient wallet will be debited and doctor's wallet credited slightly*/
 	
 	router.post("/user/patient/consultation-acceptance/confirmation",function(req,res){
+		if(!req.user) {
+			res.send({message: "Session has expired!, refresh and log in"});
+			return;
+		}
 
 		if(req.user && req.body && req.body.userId !== req.user.user_id && req.body.otp && req.user.type === "Patient"){
 			model.otpSchema.findOne({otp:req.body.otp}).exec(function(err,data){
@@ -623,7 +627,8 @@ var basicPaymentRoute = function(model,sms,io,paystack,client){
                         lastname:1,
                         phone:1,
                         user_id:1,
-                        presence:1
+                        presence:1,
+                        doctor_notification:1
                       }
                     )
                     .exec(function(err,data){
@@ -638,6 +643,20 @@ var basicPaymentRoute = function(model,sms,io,paystack,client){
                           	complaint_date: req.body.sendObj.original_complaint_date,
                           	date_received: req.body.date
                           }
+                        });
+
+                        data.doctor_notification.unshift({
+                        	sender_id: req.user.user_id,
+													message_id: parseInt(randos.genRef(6)),
+													type: "acceptance",
+													date: + new Date(),
+													message: "Congratulations! New patient was added to your account.",
+													sender_firstname: result.firstname,
+													sender_lastname: result.lastname,
+													sender_age: "",
+													sender_gender: "",
+													sender_location: "",
+													sender_profile_pic_url: result.profile_pic_url
                         });
 
                         if(data.presence === true){

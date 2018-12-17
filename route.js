@@ -4777,20 +4777,33 @@ var basicRoute = function (model,sms,io,streams,client) {
       } else {
         res.send("unauthorized access!")
       }
-    })
+    });
+
+
+    router.get("/user/doctor/notifications",function(req,res){
+      if(req.user){
+        var data = req.user.doctor_notification || [];
+        res.send(data);
+      } else {
+        res.end("Unauthorized access!!!");
+      }
+    });
+    
 
    
     //patients get notifications/messages/appointments
     router.get("/user/patient/notifications",function(req,res){
       if(req.user){
-        model.user.findOne({user_id: req.user.user_id},{patient_notification:1},function(err,data){
+        /*model.user.findOne({user_id: req.user.user_id},{patient_notification:1},function(err,data){
           if(err) throw err;
           if(data){
-            res.send(data.patient_notification);
+            
           } else {
             res.send([]);
           }
-        });
+        });*/
+        var data = req.user.patient_notification || [];
+        res.send(data);
       } else {
         res.end("Unauthorized access!!!");
       }
@@ -4798,13 +4811,16 @@ var basicRoute = function (model,sms,io,streams,client) {
 
     router.get("/user/patient/get-message",function(req,res){
       if(req.user){
-        model.user.findOne({user_id: req.user.user_id},{patient_mail: 1},function(err,data){
+        /*model.user.findOne({user_id: req.user.user_id},{patient_mail: 1},function(err,data){
           if(data){
-            res.send(data.patient_mail);
+            
           } else {
             res.send([]);
           }
-        });
+        });*/
+
+        var data = req.user.patient_mail || [];
+        res.send(data);
       } else {
         res.end("Unauthorized access");
       }
@@ -4812,14 +4828,16 @@ var basicRoute = function (model,sms,io,streams,client) {
 
     router.get("/user/center/notification",function(req,res){
       if(req.user) {
-        model.user.findOne({user_id:req.user.user_id},{diagnostic_center_notification:1},function(err,data){
+        /*model.user.findOne({user_id:req.user.user_id},{diagnostic_center_notification:1},function(err,data){
           if(err) throw err;
           if(data){
             res.send(data.diagnostic_center_notification);
           } else {
             res.send([]);
           }
-        })
+        })*/
+        var data = req.user.diagnostic_center_notification || [];
+        res.send(data);
       } else {
         res.end("Unauthorized access");
       }
@@ -6813,82 +6831,85 @@ router.get("/user/response/patients-histories/:batch",function(req,res){
 });
 
 router.post("/user/response/patients-histories",function(req,res){
-  console.log(req.body)
-  if(req.user && req.user.type === "Doctor"){
-    model.user.findOne({user_id: req.user.user_id},{firstname:1,lastname:1,title:1,profile_pic_url:1,user_id:1,specialty:1,profile_url:1},function(err,data){
-      if(err) throw err;
-      model.help.findOne({complaint_id: req.body.complaint_id,patient_id:req.body.patient_id},{response:1}).exec(function(err,found){
-        if(err) throw err;
+  if(req.user){
+      if(req.user.type === "Doctor") {
+        var data = req.user;
+        model.help.findOne({complaint_id: req.body.complaint_id,patient_id:req.body.patient_id},{response:1}).exec(function(err,found){
+          if(err) throw err;
 
-        if(!found){
-          res.send({error:"user not found!"})
-          return;
-        }
+          if(!found){
+            res.send({error:"user not found!",message: "Sorry, This complaint has been closed."})
+            return;
+          }
 
-        req.body.doctor_name = data.title + " " + data.firstname + " " + data.lastname;
-        req.body.doctor_profile_pic_url = data.profile_pic_url;
-        req.body.doctor_profile_url = data.profile_url;
-        req.body.doctor_specialty = data.specialty;
-        req.body.doctor_user_id = data.user_id;
-        var elemPos = found.response.map(function(x){return x.doctor_user_id}).indexOf(data.user_id);
-        if(elemPos === -1){          
-          model.user.findOne({user_id:req.body.patient_id},
-            {patient_mail:1,accepted_doctors:1,firstname:1,lastname:1,user_id:1,phone:1,presence:1}).exec(function(err,patient){           
-            if(err) throw err;
-            var checkIsMyDoctor = patient.accepted_doctors.map(function(x){return x.doctor_id}).indexOf(data.user_id);
-            
-            if(checkIsMyDoctor === -1){              
-              found.response.push(req.body);
-              var date = + new Date();
-              var msg = "(" + found.response.length + ") doctors" + " have responded to your complain.";
-              var checkComplain = patient.patient_mail.map(function(x){return x.complaint_id}).indexOf(req.body.complaint_id);
-              if(checkComplain !== -1){
-                var complain = patient.patient_mail[checkComplain];
-                complain.message = msg;
+          req.body.doctor_name = data.title + " " + data.firstname + " " + data.lastname;
+          req.body.doctor_profile_pic_url = data.profile_pic_url;
+          req.body.doctor_profile_url = data.profile_url;
+          req.body.doctor_specialty = data.specialty;
+          req.body.doctor_user_id = data.user_id;
+          var elemPos = found.response.map(function(x){return x.doctor_user_id}).indexOf(data.user_id);
+          if(elemPos === -1){          
+            model.user.findOne({user_id:req.body.patient_id},
+              {patient_mail:1,accepted_doctors:1,firstname:1,lastname:1,user_id:1,phone:1,presence:1}).exec(function(err,patient){           
+              if(err) throw err;
+              var checkIsMyDoctor = patient.accepted_doctors.map(function(x){return x.doctor_id}).indexOf(data.user_id);
+              
+              if(checkIsMyDoctor === -1){              
+                found.response.push(req.body);
+                var date = + new Date();
+                var msg = "(" + found.response.length + ") doctors" + " have responded to your complain.";
+                var checkComplain = patient.patient_mail.map(function(x){return x.complaint_id}).indexOf(req.body.complaint_id);
+                if(checkComplain !== -1){
+                  var complain = patient.patient_mail[checkComplain];
+                  complain.message = msg;
+                } else {
+                  msg = "1 doctor has responded to your complain ";
+                  patient.patient_mail.push({
+                    category: "need_doctor",
+                    date: date,
+                    user_id: data.user_id,
+                    complaint_id: req.body.complaint_id,
+                    message: msg,
+                    profile_pic_url: data.profile_pic_url
+                  });                
+                }
+
+                if(patient.presence === true){
+                  io.sockets.to(patient.user_id).emit("message notification",{status:true})
+                } else {
+                  var msgBody = "A doctor responded to your complain! Visit http://applinic.com/login"
+                  var phoneNunber =  patient.phone;
+                  sms.messages.create(
+                    {
+                      to: phoneNunber,
+                      from: '+16467985692',
+                      body: msgBody,
+                    }
+                  ) 
+                }
               } else {
-                msg = "1 doctor has responded to your complain ";
-                patient.patient_mail.push({
-                  category: "need_doctor",
-                  date: date,
-                  user_id: data.user_id,
-                  complaint_id: req.body.complaint_id,
-                  message: msg,
-                  profile_pic_url: data.profile_pic_url
-                });                
+                patient.save(function(err,info){})
+                var info = "Oops!! The request was not submited.Reason: This complaint is from your patient. Please contact " + 
+                patient.firstname + " " + patient.lastname;
               }
-
-              if(patient.presence === true){
-                io.sockets.to(patient.user_id).emit("message notification",{status:true})
-              } else {
-                var msgBody = "A doctor responded to your complain! Visit http://applinic.com/login"
-                var phoneNunber =  patient.phone;
-                sms.messages.create(
-                  {
-                    to: phoneNunber,
-                    from: '+16467985692',
-                    body: msgBody,
-                  }
-                ) 
-              }
-            } else {
-              patient.save(function(err,info){})
-              var info = "Oops!! The request was not submited.Reason: This complaint is from your patient. Please contact " + 
-              patient.firstname + " " + patient.lastname;
-            }
-            patient.save(function(err,info){});
-            var message = info || "Thanks for responding " + req.user.title + " " + req.user.firstname + ". Your proposal has been sent to patient.";
-            res.send({message: message}); 
-            found.save(function(err,info){       
+              patient.save(function(err,info){});
+              var message = info || "Thanks for responding " + req.user.title + " " + req.user.firstname + ". Your proposal has been sent to patient.";
+              res.send({message: message}); 
+              found.save(function(err,info){       
+              });
             });
-          });
-          
-        } else {
-          res.send({error: "You have already responded to this history"});
+            
+          } else {
+            res.send({error: "You have already responded to this history"});
 
-        }
+          }
 
-      });
-    });
+        });
+
+    } else {
+      res.end("Error 403: You are not unathorized to view this page");
+    }
+
   } else {
       if(!req.user){
         res.send({error: "Oops!Request NOT submitted! Your session has expired because you have been idle for a while.Please refresh and log in then continue."})

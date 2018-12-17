@@ -93,9 +93,16 @@ var configuration = function (app,model) {
 		      cb(null, {fieldName: file.fieldname});
 		    },
 		    key: function (req, file, cb) {
-		    	console.log(req.user.user_id)
-		    	var user = (req.user) ? req.user.user_id : genHash(12);
-		      cb(null, user + file.originalname)
+		    	console.log(file)
+		    	var user = (req.user) ? req.user.user_id + genHash(6): genHash(14);
+		    	var getMime;
+
+		    	if(file.originalname === 'blob'){
+		    		getMime = (file.mimetype) ? file.mimetype.split("/") : "";
+		    	}
+
+		    	var storageName  = (file.originalname !== 'blob') ? (user + file.originalname) : (getMime) ? (user + "." + getMime[getMime.length - 1]) : user;
+		      cb(null, storageName)
 		    }
     })
 	});

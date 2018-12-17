@@ -25,12 +25,13 @@
 		<span ng-repeat = "symptom in responders.symptoms"> {{symptom}}, </span>
 	</div>
 	<p style="padding: 15px" ng-bind-html="responders.description"></p>
-	<hr/>
 	
-	<h6 style="color: green;padding: 10px 0">Responses <span>( {{responders.response.length}} {{(response.length > 1 ? 'doctors' : 'doctor')}} )</span></h6>
+	<h5 style="padding: 10px 0" class="text-muted">Responses <span>( {{responders.response.length}} {{(response.length > 1 ? 'doctors' : 'doctor')}} )</span></h5>
 	<section ng-repeat = "doc in responders.response" style="position: relative;width: 100%;max-height: 800px;overflow-y: auto;">
 		<div>
-			<img ng-src="{{doc.doctor_profile_pic_url}}" style="width:72px; height: 72px;float: left;">
+			<div style="width:72px; height: 72px;float: left;">
+				<img ng-src="{{doc.doctor_profile_pic_url}}" class="image-fit">
+			</div>			
 			<div style="display: inline-block;float: left;padding-left: 10px">
 				<div class="mb-1" style="line-height: 25px">
 					<strong class="mb-1">{{doc.doctor_name}}</strong>
@@ -50,9 +51,9 @@
 
 			<span style="display: block;padding-top: 10px">
 			
-				<a href="" ng-click="acceptDoc(doc)" ng-if="!hasComplete" style="color: green;" class="btn btn-simple btn-sm"><b>Accept</b></a> <i class="fa fa-check" ng-if="hasComplete"> {{hasComplete}}</i>&nbsp;&nbsp;
+				<a href="" ng-click="acceptDoc(doc)" ng-if="!holdDocInView.hasComplete" style="color: green;" class="btn btn-simple btn-sm"><b>Accept</b></a> <i class="fa fa-check" ng-if="holdDocInView.hasComplete"> {{holdDocInView.hasComplete}}</i>&nbsp;&nbsp;
 				<!--<a href="" ng-click="declineDoc(doc.doctor_user_id)" class="btn btn-simple btn-sm" style="color: red;">Decline</a>&nbsp;&nbsp;-->
-				<a href="" ng-click="viewDocProfile(doc.doctor_user_id)" class="btn btn-simple btn-sm" style="color: blue;">View profile</a> 
+				<a href="" ng-click="viewDocProfile(doc.doctor_user_id)" style="color: blue;">View profile</a> 
 			</span>
 		</div>
 		<hr class="text-muted" />

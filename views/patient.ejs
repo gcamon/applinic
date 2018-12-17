@@ -1810,7 +1810,7 @@
                 </div>
                 <div class="clearfix"></div>
                 <div class="p-2" style="text-align: center;padding-top: 10px">
-                    <span class="text-white bg-success" ng-if="msg" style="display: block;width: 90%;margin: 0 auto;padding: 5px">{{msg}}</span>
+                    <span class="text-white bg-info" ng-if="msg" style="display: block;width: 90%;margin: 0 auto;padding: 5px">{{msg}}</span>
                     <label class="font-1-2">You want to accept this doctor and pay the consultation fee above?</label>
                     <div class="p-2" ng-if="isOTP" style="">
                         <span style="padding: 10px">Enter OTP sent to <!--{{checkLogIn.phone}}--> your phone below</span>                         
@@ -1826,9 +1826,9 @@
                         
                     </div>
                     <div class="pt-1">                        
-                        <button class="btn btn-success btn-lg" ng-if="isOTP && !hasComplete" ng-click="confirmAcceptance()"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i>{{(loading) ? '' : "Continue"}}</button>
+                        <button class="btn btn-success btn-lg" ng-if="isOTP && !holdDocInView.hasComplete" ng-click="confirmAcceptance()"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i>{{(loading) ? '' : "Continue"}}</button>
                         <button class="btn btn-success btn-lg" ng-if="!isOTP" ng-click="sendAcceptanceVerification()"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i> {{(loading) ? "" : 'Yes, accept!'}}</button>
-                        <i class="fa fa-check" ng-if="hasComplete">{{hasComplete}}</i>
+                        <i class="fa fa-check" ng-if="holdDocInView.hasComplete"> {{holdDocInView.hasComplete}}</i>
                     </div>
                 </div>
               </div>

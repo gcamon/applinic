@@ -598,6 +598,11 @@ font-weight: 300 !important;
   display: inline-block;padding-right: 20px
 }
 
+
+.image-fit {
+  height: 100%; width: 100%; object-fit: contain
+}
+
 @media screen and (max-width: 450px) {
   .deny-mobile-btn {
     text-align: right;
