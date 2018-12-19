@@ -3512,9 +3512,9 @@ app.controller('listController',["$scope","$location","$window","localManager",
   "templateService","templateUrlFactory","ModalService","$rootScope",
   function($scope,$location,$window,localManager,templateService,templateUrlFactory,ModalService,$rootScope) { 
    //$scope.back = templateUrlFactory.getUrl();
-   $scope.searchResult = localManager.getValue("userInfo");
-   $scope.valid = true;
-   if($scope.searchResult) {
+    $scope.searchResult = localManager.getValue("userInfo");
+    $scope.valid = true;
+    if($scope.searchResult) {
       if($scope.searchResult.length >= 10) {
          $scope.data = true;   
       }
@@ -3530,11 +3530,15 @@ app.controller('listController',["$scope","$location","$window","localManager",
    
 
   $scope.consultation = function(doctor){
-    //var elementPos = $scope.searchResult.map(function(x){return x.user_id}).indexOf(doctorId)
-    //var objFound = $scope.searchResult[elementPos];
-    templateService.holdForSpecificDoc = doctor;   
-    templateService.doctorsData = localManager.getValue("userInfo");
-    getAHelp("book");    
+    var elementPos = $rootScope.patientsDoctorList.map(function(x){if(x) return x.doctor_id}).indexOf(doctor.user_id)
+    var objFound = $rootScope.patientsDoctorList[elementPos];
+    if(!objFound) {
+      templateService.holdForSpecificDoc = doctor;   
+      templateService.doctorsData = localManager.getValue("userInfo");
+      getAHelp("book");    
+    } else {
+      alert("You have already accepted this doctor.")
+    }
   }
 
   $scope.ask = function(doctor){
@@ -4093,7 +4097,6 @@ app.controller("docNotificationController",["$scope","$location","$resource","$i
 
   //Note list clears when page is refreshed. will be improved later
   mySocket.on("receive signal",function(data){   
-    alert("i received " + data.type + " request");
     switch(data.type){
       case "Meet In-Person":        
         meeting.unshift(data);
@@ -9466,6 +9469,7 @@ function($scope,$location,$rootScope,$http,$interval,templateService,localManage
     })
     .success(function(data) {
       if(type === "patient") {
+        console.log(data)
         $rootScope.patientsDoctorList = data;
       } else if(type === "doctor"){
         console.log(data)

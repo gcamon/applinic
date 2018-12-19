@@ -303,7 +303,7 @@
                              <li class="notifications new"> <a href="" data-toggle="dropdown">
                     <i class="fa fa-motorcycle"></i>
                     <sup>
-                      <span class="counter"  ng-cloak>{{courierResponseList.length}}</span>
+                      <span class="counter" ng-if="courierResponseList.length > 0" ng-cloak>{{courierResponseList.length}}</span>
                     </sup>
                   </a>
                                 <div class="dropdown-menu notifications-dropdown-menu" style="max-height: 400px;overflow-y: auto;" ng-controller = "createRoomController">
@@ -501,13 +501,26 @@
                             <div class="col-md-12 col-sm-12 col-xs-12" ng-controller="balanceController">                                    
   
                                 <div class="row"> 
-                                    <div class="col-sm-12 col-md-4 col-lg-4">  
-                                        <a class="btn btn-simple round"  href="#/help"><i class="fa fa-question-circle"></i>
+                                    <div class="col-sm-12 col-md-8 col-lg-8">  
+                                        <!--<a class="btn btn-simple round"  href="#/help"><i class="fa fa-question-circle"></i>
                                         <span style="color:red">Need Help?</span>
-                                        </a>
+                                        </a>-->
                                           
-                                        <a class="btn btn-simple round ml-1"  href="#/need-specialist" ><i class="fa fa-user-md"></i>
+                                        <a class="btn btn-simple round"  href="#/need-specialist" ><i class="fa fa-user-md"></i>
                                         <span style="color:red">Need a Doctor?</span>
+                                        </a>
+
+                                        <a class="btn btn-simple round ml-1"  href="#/find-specialist" ><i class="fa fa-search"></i>
+                                          <span style="color:red">Doctor</span>
+                                        </a>
+                                         <a class="btn btn-simple round ml-1"  href="#/drug" ><i class="fa fa-search"></i>
+                                          <span style="color:red">Drug</span>
+                                        </a>
+                                         <a class="btn btn-simple round ml-1"  href="#/search-test" ><i class="fa fa-search"></i>
+                                          <span style="color:red">Lab Test</span>
+                                        </a>
+                                         <a class="btn btn-simple round ml-1"  href="#/scan-search" ><i class="fa fa-search"></i>
+                                          <span style="color:red">Radio Test</span>
                                         </a>
                                     </div>
                                 
@@ -515,19 +528,19 @@
                                 <!--<a class="btn btn-simple round ml-1"  href="#/create-family-account" ><i class="fa fa-users"></i>
                                     <span style="color:red">Create Family Account</span>
                                 </a>-->
-                                    <div class="col-sm-12 col-md-4 col-lg-4" style=""> 
+                                    <div class="col-sm-12 col-md-3 col-lg-3"> 
                                         <a href="#/transactions" class="btn btn-info btn-sm header-btn" style=""><i class="fa fa-money"></i>
-                                        <span ng-cloak>MediPay Balance | <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i> {{(loading) ? "" : balance}}</span>
+                                        <span ng-cloak>Balance | <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i> {{(loading) ? "" : balance}}</span>
                                         </a> 
                                     </div> 
 
-                                    <div class="col-sm-12 col-md-4 col-lg-4 dropdown" style="position: relative;" ng-cloak> 
-                                        <article class="btn btn-neutral text-muted " style="font-size: 14px;" >
-                                            <strong style="float: left;">MRA Key: </strong>
+                                    <div class="col-sm-12 col-md-1 col-lg-1 dropdown" style="position: relative;"> 
+                                        <article class="btn btn-neutral mob-art" style="font-size: 14px;" >
+                                            <!--<strong style="float: left;">MRA Key: </strong>
                                             <span style="width: 110px;float: left;padding-left: 2px" title="Your Medical Record Access Key is {{checkLogIn.mrak}}" class="ellipsis">{{(copy) ? "Copied!" : checkLogIn.mrak}}</span> &nbsp;  
-                                            <span class="fa fa-copy text-warning" text="checkLogIn.mrak" style="padding-left: 5px" clipboard  supported="supported" on-copied="success(checkLogIn.mrak)" title="{{copy}}" on-error="fail(err)"> copy</span>
+                                            <span class="fa fa-copy text-warning" text="checkLogIn.mrak" style="padding-left: 5px" clipboard  supported="supported" on-copied="success(checkLogIn.mrak)" title="{{copy}}" on-error="fail(err)"> copy</span>-->
 
-                                             <a href="" class="fa fa-wrench text-warning nav-link dropdown-toggle"  id="navbarDropdownMenuLink2" data-toggle="dropdown" ng-click="getAccess()" style="margin-left: 0px"> manage</a> 
+                                             <a href="" class="text-muted dropdown-toggle"  id="navbarDropdownMenuLink2" data-toggle="dropdown" ng-click="getAccess()" style="margin-left: -15px"> MRA Key</a> 
                                                                             
                                         </article>
 
@@ -540,7 +553,7 @@
                                             <div class="clearfix"></div>
                                             <hr>
                                              <a href="" style="color: blue;font-size: 10px ;float: right" class="btn btn-simple btn-sm" ng-click="changeKey()"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange" ng-if="isLoading"></i> {{(isLoading)? "" : 'Change key'}}</a><br>
-                                             <span style="font-size: 14px;"><b>Key:</b> {{checkLogIn.mrak}}</span><br>
+                                             <span style="font-size: 14px;"><b>Key:</b> {{(copy) ? "Copied!" : checkLogIn.mrak}}</span> <span text="checkLogIn.mrak" style="padding-left: 5px" clipboard  supported="supported" on-copied="success(checkLogIn.mrak)" title="{{copy}}" on-error="fail(err)" class="fa fa-copy text-warning"></span><br><br>
                                             <small>Decide who should have access to your medical records</small>
                                             <hr>
                                             <div style="" class="deny-mobile-btn">
@@ -673,7 +686,7 @@
                                     <ul style="max-height:300px;overflow-y:auto" ng-cloak>
                                         <li style="text-align: center;"><input type="" ng-model="filter.doctor_firstname" class="form-contro" placeholder="Filter by name or specialty" style="width: 85%;border: none;padding: 5px 10px;background-color: grey;"></li>
 
-                                        <li ng-repeat= " i in patientsDoctorList | filter: filter.doctor_firstname"  ng-click="userDoctor(i.doctor_id)" style="margin-left: -15px" ng-if="patientsDoctorList[0]">
+                                        <li ng-repeat= " i in patientsDoctorList | filter: filter.doctor_firstname"  ng-click="userDoctor(i.doctor_id)" style="margin-left: -15px" ng-if="i">
                                            <a href="" style="position: relative;font-size: 12px" ng-cloak> 
                                                 <img ng-src="{{i.doctor_profile_pic_url}}" class="img-responsive" style="width:32px;height:32px;margin-right: 2px;display: inline-block;" alt="image description"> 
                                                 <span style="display: inline-block;width: 100px;" class="ellipsis">{{i.doctor_firstname}} </span><span ng-if="i.presence === true" class="online" style="margin-right: 15px"></span><span ng-if="i.presence !== true" class="online" style="background-color: grey;margin-right: 15px"></span>
@@ -1149,9 +1162,9 @@
                 <div class="modal-body">
                                 
                     <div class="row">
-                        <div class=" col-md-3 col-sm-12 pull-right" style="padding-right: 0px;">
-                            <img alt="image description" height="120" ng-src="{{docInfo.profile_pic_url}}">                                  
-                                <div><span class=""></span></div>                                                    
+                        <div class=" col-md-3 col-sm-12 pull-right" style="padding-right: 0px;max-height: 300px">
+                            <img alt="image description" height="120" ng-src="{{docInfo.profile_pic_url}}" class="image-fit">                                  
+                        <div><span class=""></span></div>                                                    
                         </div>
                         <div class="col-md-9 col-sm-12 pl-1 pr-0">
                             <div class=""><b>{{docInfo.title}} {{docInfo.firstname}} {{docInfo.lastname}}</b></div>
@@ -1257,7 +1270,7 @@
                                    <div class="text-info">{{sympMsg}}</div>
                                    <div class="pb-1">
                                        <div ng-repeat="i in symptomsList" style="position: relative;padding-bottom: 5px">           
-                                            <input name="states" id="states" type="text" placeholder="Enter symptom" ng-model="name" uib-typeahead="name for name in symptoms | filter:$viewValue | limitTo:15" class="form-control" style="width:90%">
+                                            <input  type="text" placeholder="Enter symptom" ng-model="name" uib-typeahead="name for name in symptoms | filter:$viewValue | limitTo:15" class="form-control" style="width:90%">
                                             <i class="fa fa-times text-muted" style="cursor: pointer;position: absolute;bottom: 10px;right: 12px" ng-click="remove(i.sn)" ng-if="i.sn !== 'a'"></i>
                                             {{getSymptom(name)}}
                                         </div>
@@ -1379,18 +1392,18 @@
                            </form>                              
                                                 
                             <p><i class="fa fa-info"> <small>consultation fees will be charged if your request is granted.</small></i></p> 
-                            <button class="btn btn-info" ng-click="validate()" ng-if="patient.sick || patient.pregnant || patient.personal || patient.stroke || patient.ear || patient.eye || patient.teeth || patient.accident || patient.getPregnant" ng-hide="status"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i> {{(loading) ? '' : 'SEND CONSULTATION REQUEST'}}</button>
+                            <button class="btn btn-info" ng-click="validate()" ng-if="patient.sick || patient.pregnant || patient.personal || patient.stroke || patient.ear || patient.eye || patient.teeth || patient.accident || patient.getPregnant" ng-hide="status"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i> {{(loading) ? '' : 'send consultation request'}}</button>
                            
                             <div class="p-2" ng-if="status">
                                 <i class="fa fa-check" style="color: green;font-size: 18px" ng-if="status"> {{status}} </i>
-                                <div>
-                                    <label>If your request is granted you can meet a doctor through: </label>
+                                <!--<div>
+                                    <label>If your request is granted you will have full access to: </label>
                                 </div>
                                 <i class="fa fa-camera text-success"> Video Chat</i> &nbsp;&nbsp;
                                 <i class="fa fa-comment text-success"> Chat</i> &nbsp;&nbsp;
                                 <i class="fa fa-calendar text-success"> Book an appointment</i>
-                            </div>
-                            <button class="btn btn-simple text-muted" disabled="disabled" ng-hide="patient.sick || patient.pregnant || patient.personal || patient.stroke || patient.ear || patient.eye || patient.teeth || patient.accident || patient.getPregnant">SEND CONSULTATION REQUEST</button>        
+                            </div>-->
+                            <button class="btn btn-simple text-muted" disabled="disabled" ng-hide="patient.sick || patient.pregnant || patient.personal || patient.stroke || patient.ear || patient.eye || patient.teeth || patient.accident || patient.getPregnant">send consultation request</button>        
                         </div>
                     </div>
                      

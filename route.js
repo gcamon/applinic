@@ -1487,9 +1487,7 @@ var basicRoute = function (model,sms,io,streams,client) {
           }
         }
         
-        console.log(requestData);
-
-        model.user.findOne({user_id:req.body.receiverId},{doctor_notification:1,presence:1,set_presence:1,phone:1}).exec(function(err,data){
+        model.user.findOne({user_id:req.body.receiverId},{doctor_notification:1,presence:1,set_presence:1,phone:1,firstname:1,title:1}).exec(function(err,data){
           if(err) throw err;
 
           data.doctor_notification.push(requestData);
@@ -1503,13 +1501,28 @@ var basicRoute = function (model,sms,io,streams,client) {
 
             var phoneNunber =  data.phone;            
 
-            sms.messages.create(
+            /*sms.messages.create(
               {
                 to: phoneNunber,
                 from: '+16467985692',
                 body: msgBody,
               }
-            ) 
+            )*/
+
+            sms.calls 
+            .create({
+              url: "https://applinic.com/voicenotification?firstname=" + data.firstname + "&&title=" + data.title,
+              to: phoneNunber,
+              from: '+16467985692',
+            })
+            .then(
+              function(call){
+                console.log(call.sid);
+              },
+              function(err) {
+                console.log(err)
+              }
+            )
 
           } else if(data.presence  && data.set_presence.general  && req.body.type === "question"){
            
@@ -8128,6 +8141,15 @@ router.post("/twiliovoicemsg",function(req,res){
   res.send(twiml.toString());
  
 });
+
+router.post("/voicenotification",function(req,res){
+  var twiml = new Voice();
+  var textToSay = "Greetings " + req.query.title + " , " + req.query.firstname + " , " +  
+  " You have new consultation request. Please log on to your app linic dot com account and attend to the patient. Thank you" 
+  twiml.say({ voice: 'man',language: 'en-gb' },textToSay);
+  res.type('text/xml');
+  res.send(twiml.toString());
+})
 
 
 router.post('/mamavoice',function(req,res){ 
