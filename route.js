@@ -1487,7 +1487,9 @@ var basicRoute = function (model,sms,io,streams,client) {
           }
         }
         
-        model.user.findOne({user_id:req.body.receiverId},{doctor_notification:1,presence:1,set_presence:1,phone:1,firstname:1,title:1}).exec(function(err,data){
+        model.user.findOne({user_id:req.body.receiverId},
+          {doctor_notification:1,presence:1,set_presence:1,phone:1,firstname:1,title:1,user_id:1,email:1})
+        .exec(function(err,data){
           if(err) throw err;
 
           data.doctor_notification.push(requestData);
@@ -1497,22 +1499,35 @@ var basicRoute = function (model,sms,io,streams,client) {
 
           } else if(req.body.type === "consultation" && !data.set_presence.general || !data.presence) {
 
-            var msgBody = req.user.title + " " + req.user.firstname + " " + req.user.lastname + " sent you consultation request! Visit https://applinic.com/user/doctor";
+            var msgBody = req.user.title + " " + req.user.firstname + " " + req.user.lastname + 
+            " sent you consultation request! Visit https://applinic.com/user/doctor";
 
-            var phoneNunber =  data.phone;            
+            var phoneNunber = data.phone;   
 
-            /*sms.messages.create(
+            var consult = new model.consult({
+              patient_name: req.user.title + " " + req.user.firstname + " " + req.user.lastname,
+              doctor_name: data.title + " " + data.firstname,
+              date: new Date(),
+              doctor_phone: data.phone,
+              doctor_email: data.email,
+              doctor_id: data.user_id,
+              patient_phone: req.user.phone,
+              patient_email: req.user.email,
+              patient_id: req.user.user_id
+            })         
+
+            sms.messages.create(
               {
                 to: phoneNunber,
                 from: '+16467985692',
                 body: msgBody,
               }
-            )*/
+            );
 
             sms.calls 
             .create({
               url: "https://applinic.com/voicenotification?firstname=" + data.firstname + "&&title=" + data.title,
-              to: "+2348064245256" || phoneNunber,
+              to: phoneNunber,
               from: '+16467985692',
             })
             .then(
@@ -1522,10 +1537,9 @@ var basicRoute = function (model,sms,io,streams,client) {
               function(err) {
                 console.log(err)
               }
-            )
+            );
 
-          } else if(data.presence  && data.set_presence.general  && req.body.type === "question"){
-           
+          } else if(data.presence  && data.set_presence.general  && req.body.type === "question"){           
             io.sockets.to(req.body.receiverId).emit("receive consultation request",{status: "success",type:"question"});
           }
 

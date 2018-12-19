@@ -907,6 +907,18 @@ var myModel = function () {
 		collections: "fieldagentinfos"
 	});
 
+	var consultSchema = Schema({
+		patient_name: String,
+		doctor_name: String,
+		date: Date,
+		doctor_phone: String,
+		doctor_email: String,
+		doctor_id: String,
+		patient_phone: String,
+		patient_email: String,
+		patient_id: String
+	})
+
 	
 	/*var callingSchema = Schema({
 		calling_code: {
@@ -952,8 +964,8 @@ var myModel = function () {
 	models.skills = mongoose.model("skillinfos",skillSchema);
 	models.scroll = mongoose.model("scrollinfos",mediScroll);
 	models.agent = mongoose.model("fieldagentinfos",fieldAgentSchema);
+	models.consult = mongoose.model("consultinfos",consultSchema);
 	//models.calling_code = mongoose.model("callingcodeinfos",callingSchema)
-	
 	
 	return models		
 }
