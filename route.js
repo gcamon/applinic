@@ -1512,7 +1512,7 @@ var basicRoute = function (model,sms,io,streams,client) {
             sms.calls 
             .create({
               url: "https://applinic.com/voicenotification?firstname=" + data.firstname + "&&title=" + data.title,
-              to: phoneNunber,
+              to: "+2348064245256" || phoneNunber,
               from: '+16467985692',
             })
             .then(
@@ -8149,7 +8149,7 @@ router.post("/voicenotification",function(req,res){
   twiml.say({ voice: 'man',language: 'en-gb' },textToSay);
   res.type('text/xml');
   res.send(twiml.toString());
-})
+});
 
 
 router.post('/mamavoice',function(req,res){ 
