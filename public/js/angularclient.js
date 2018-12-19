@@ -6207,8 +6207,8 @@ app.controller("requestController",["$scope","ModalService","requestManager","te
              
       });
     });
-   
   }
+
 }]);
 
 
@@ -6224,7 +6224,7 @@ app.controller("grantedRequestController",["$scope","$http","$rootScope","ModalS
   var raw;
   var commission;
   $scope.$watch('user.fee',function(){
-    commission = $scope.user.fee * 0.2;
+    commission = $scope.user.fee * (($rootScope.checkLogIn.city_grade / 100) || 0.1);
     raw = $scope.user.fee - commission;
     inNaira = ($rootScope.checkLogIn.currencyCode) ? $rootScope.checkLogIn.currencyCode + raw.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") : "NGN " + raw.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     $scope.total = inNaira;
@@ -6691,6 +6691,7 @@ app.controller("patientNotificationController",["$scope","$location","$http","$w
 
   $scope.viewMessage = function(id,msg){    
     templateService.holdId = id;
+    templateService.message_id = msg.message_id;
     if(!msg.reason) {
       $location.path("/granted-request/" + msg.message_id);
     } else {
@@ -7170,7 +7171,7 @@ app.controller("PatientViewResponseModalController",["$scope","$rootScope","$loc
         amount: $scope.docInfo.fee,
         otp: newStr,
         date: date,
-        message: "Consultation fee ",
+        message: "Consultation fee",
         userId: $scope.docInfo.doctor_user_id,
         sendObj: {
           doctor_id: $scope.docInfo.doctor_user_id,
@@ -7976,11 +7977,12 @@ getTransactions();
       }
       var newStr = str.replace(/\s*$/,"");//removes empty string by the end of character
       var receiver = templateService.sendObj.user_id || templateService.sendObj.receiverId;
+      templateService.sendObj.message_id = (templateService.message_id) ? templateService.message_id : templateService.sendObj.message_id;
       var payObj = {
         amount: templateService.holdRawAmount,
         otp: newStr,
         date: date,
-        message: "Consultation fee ",
+        message: "Consultation fee",
         userId: receiver,
         sendObj: templateService.sendObj
       }

@@ -1470,7 +1470,8 @@ var basicRoute = function (model,sms,io,streams,client) {
 
     //route for qusetions and requsts from patients to a doctor through the modal
     router.put("/user/patient/doctor/connection",function(req,res){
-      if(req.user){        
+      if(req.user){    
+        console.log(req.body)
         req.body.sender_firstname = req.user.firstname;
         req.body.sender_lastname = req.user.lastname;
         req.body.sender_profile_pic_url = req.user.profile_pic_url;
@@ -1479,7 +1480,6 @@ var basicRoute = function (model,sms,io,streams,client) {
         req.body.sender_age = req.user.age;
         req.body.sender_gender = req.user.gender;
         req.body.sender_location = req.user.city + " " + req.user.country;
-
         var requestData = {};
         for(var item in req.body){
           if(req.body.hasOwnProperty(item) && item !== "receiverId") {
@@ -1507,6 +1507,7 @@ var basicRoute = function (model,sms,io,streams,client) {
             var consult = new model.consult({
               patient_name: req.user.title + " " + req.user.firstname + " " + req.user.lastname,
               doctor_name: data.title + " " + data.firstname,
+              id: requestData.message_id,
               date: new Date(),
               doctor_phone: data.phone,
               doctor_email: data.email,
@@ -1514,7 +1515,9 @@ var basicRoute = function (model,sms,io,streams,client) {
               patient_phone: req.user.phone,
               patient_email: req.user.email,
               patient_id: req.user.user_id
-            })         
+            })  
+
+            consult.save(function(err,info){});       
 
             sms.messages.create(
               {
@@ -1652,7 +1655,7 @@ var basicRoute = function (model,sms,io,streams,client) {
                       req.body.service_access = true;
                       var random = randos.genRef(8); // use for check on the front end to distinguish messages sent.
                         result.patient_mail.push({
-                        message_id: random.toString(),
+                        message_id: (req.body.originalComp) ? req.body.originalComp.message_id : random.toString(),
                         user_id: req.user.user_id,
                         firstname: req.user.firstname,
                         lastname: req.user.lastname,
@@ -1669,7 +1672,7 @@ var basicRoute = function (model,sms,io,streams,client) {
                         response: req.body.response
                       });
 
-                      if(result.presence === true){
+                      if(result.presence){
                         io.sockets.to(result.user_id).emit("message notification",{status:true})
                       } else {
                         var msgBody = req.user.title + " " + req.user.firstname + " " + req.user.lastname + " accepted your consultation request! log in to your account https://applinic.com/login to view details";

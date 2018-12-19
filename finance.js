@@ -538,6 +538,7 @@ var basicPaymentRoute = function(model,sms,io,paystack,client){
 			return;
 		}
 
+	  console.log("========>>>",req.body)
 		if(req.user && req.body && req.body.userId !== req.user.user_id && req.body.otp && req.user.type === "Patient"){
 			model.otpSchema.findOne({otp:req.body.otp}).exec(function(err,data){
 				if(err) throw err;
@@ -552,7 +553,7 @@ var basicPaymentRoute = function(model,sms,io,paystack,client){
 						model.user.findOne({user_id: req.user.user_id},{ewallet:1,firstname:1,lastname:1,name:1}).exec(function(err,debitor){
 							var name = req.user.firstname || req.user.name;
 							var msg = req.body.message || "Consultation fee";
-							var pay = new Wallet(req.body.date,name,req.user.lastname,req.body.message);
+							var pay = new Wallet(req.body.date,name,req.user.lastname,msg);
 							//note firstname or lastname of patient may change.
 							pay.consultation(model,data.amount,debitor,req.body.userId,io);
 							createConnection(debitor);
@@ -609,7 +610,6 @@ var basicPaymentRoute = function(model,sms,io,paystack,client){
                 }
 
                 function deleteFromPatientNotification(index) {
-                	console.log(index)
                   result.patient_mail.splice(index,1);                                  
                 }
 
@@ -644,6 +644,18 @@ var basicPaymentRoute = function(model,sms,io,paystack,client){
                           	date_received: req.body.date
                           }
                         });
+
+                        var consultId = (req.body.sendObj) ? parseInt(req.body.sendObj.message_id) : undefined;
+                        if(consultId) {
+	                        model.consult.remove({id: consultId},function(err,info){
+	                        	if(err) throw err;
+	                        	if(info){
+	                        		console.log(info)
+	                        		console.log("consultation record deleted!");
+	                        	}
+	                        });
+	                      }
+
 
                         data.doctor_notification.unshift({
                         	sender_id: req.user.user_id,

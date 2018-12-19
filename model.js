@@ -916,7 +916,8 @@ var myModel = function () {
 		doctor_id: String,
 		patient_phone: String,
 		patient_email: String,
-		patient_id: String
+		patient_id: String,
+		id: Number
 	})
 
 	
