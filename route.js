@@ -1488,7 +1488,7 @@ var basicRoute = function (model,sms,io,streams,client) {
         }
         
         model.user.findOne({user_id:req.body.receiverId},
-          {doctor_notification:1,presence:1,set_presence:1,phone:1,firstname:1,title:1,user_id:1,email:1})
+          {doctor_notification:1,presence:1,set_presence:1,phone:1,firstname:1,title:1,user_id:1,email:1,specialty:1})
         .exec(function(err,data){
           if(err) throw err;
 
@@ -1514,7 +1514,8 @@ var basicRoute = function (model,sms,io,streams,client) {
               doctor_id: data.user_id,
               patient_phone: req.user.phone,
               patient_email: req.user.email,
-              patient_id: req.user.user_id
+              patient_id: req.user.user_id,
+              doctor_specialty: data.specialty
             })  
 
             consult.save(function(err,info){});       
@@ -7325,19 +7326,35 @@ router.get("/user/rating/:id",function(req,res){
 });
 
 router.get("/user/admin/get-user-details",function(req,res){
-  if(req.user && req.user.type == 'admin'){
-    if(req.query.item){
+  if(req.user){
+    if(req.query.item && req.user.type == 'admin'){
        var criteria = { $or: [{ phone : req.query.item},{user_id: req.query.item},{email : req.query.item}]};
        model.user.find(criteria,function(err,data){
         if(err) throw err;
         res.json(data);
        })
+    } else {
+      res.end("unauthorized access!");
     }
   } else {
     res.end("unauthorized access!");
   }
-})
+});
 
+router.get('/user/admin/get-consultations',function(req,res){
+  if(req.user){
+    if(req.user.type == 'admin'){
+      model.consult.find({},function(err,data){
+        if(err) throw err;
+        res.json(data);
+      });
+    } else {
+      res.end("unauthorized access!");
+    }
+  } else {
+    res.end("unauthorized access!");
+  }
+});
 
 
 router.get("/user/center-profile",function(req,res){

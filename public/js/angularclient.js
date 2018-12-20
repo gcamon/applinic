@@ -695,6 +695,10 @@ app.config(['$paystackProvider','$routeProvider',
     controller: "adminSettledWithdrawalAttendCtrl"
  })
 
+ .when("/consultation-requests",{
+    templateUrl: "/assets/pages/utilities/consultations.html",
+    controller: "adminConsultationRequestCtrl"
+ })
 
 }]);
 
@@ -9807,10 +9811,10 @@ app.factory("adminDoctorsService",["$resource",function($resource){
   return $resource('/user/getAllDoctor',null,{verify:{method: "PUT"}});
 }])
 
-app.controller("adminCreateRoomController",["$scope","localManager","mySocket","$rootScope","templateService",
-  "$location","$resource","ModalService","adminDoctorsService","$http","$location","cashOutControllerService",
-  function($scope,localManager,mySocket,$rootScope,templateService,$location,$resource,
-    ModalService,adminDoctorsService,$http,$location,cashOutControllerService){
+app.controller("adminCreateRoomController",["$scope","localManager","mySocket","$rootScope",
+  "templateService","$resource","ModalService","adminDoctorsService","$http","$location","cashOutControllerService","adminConsultationService",
+  function($scope,localManager,mySocket,$rootScope,templateService,$resource,
+    ModalService,adminDoctorsService,$http,$location,cashOutControllerService,adminConsultationService){
   var user = localManager.getValue("resolveUser");  
   mySocket.emit('join',{userId: user.user_id});
 
@@ -9892,6 +9896,11 @@ app.controller("adminCreateRoomController",["$scope","localManager","mySocket","
     console.log(data)
     $rootScope.CashOutList = result;
   });
+
+
+  adminConsultationService.query(function(data){
+    $rootScope.consultations = data;
+  })
 
   /*$scope.view = function(id) {
     templateService.holdId = id;
@@ -10175,6 +10184,19 @@ app.controller('adminSettledWithdrawalAttendCtrl',["$scope","$location",function
  
 }]);
 
+
+app.service("adminConsultationService",["$resource",function($resource){
+  return $resource('/user/admin/get-consultations');
+}]);
+
+
+app.controller('adminConsultationRequestCtrl',["$scope","adminConsultationService",function($scope,adminConsultationService){
+  $scope.delConsultation = function(id){
+    adminConsultationService.delete({id: id},function(res){
+      alert(res.message)
+    })
+  }
+}]);    
 
 
 

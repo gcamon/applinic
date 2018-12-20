@@ -1,0 +1,24 @@
+<div class="p-2" style="">
+	<h3>Pending Consultations ({{consultations.length}})</h3>
+	<div ng-repeat="i in consultations" class="row" style="padding: 20px;line-height: 30px">
+			<div class="col-md-4 col-sm-12 col-lg-4">
+				<div><span><b>Date</b>: {{i.date | date: "fullDate"}} (<span am-time-ago="i.date"></span>)</span></div>
+				<div><b>Patient Name</b>: {{i.patient_name}}</div>
+				<div><b>Phone</b>: {{i.patient_phone}}</div>
+				<div><b>Email</b>: {{i.patient_email}}</div>
+				<div><b>Id</b>: {{i.patient_id}}</div>
+			</div>
+			<div class="col-md-4 col-sm-12 col-lg-4">
+				<div><b>Physician</b>: {{i.doctor_name}}</div>
+				<div><b>Specialty</b>: {{i.doctor_specialty}} </div>
+				<div><b>Phone</b>: {{i.doctor_phone}}</div>
+				<div><b>Email</b>: {{i.doctor_email}}</div>
+				<div><b>Id</b>: {{i.doctor_id}}</div>
+			</div>
+			<div class="col-md-2 col-sm-12 col-lg-2">
+				<button class="btn btn-danger btn-sm">Delete</button>
+			</div>
+		<hr>
+	</div>
+
+</div>
