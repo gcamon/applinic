@@ -569,7 +569,7 @@
                     <form class="tg-form-modal tg-form-signin" style="text-align: center">                        
                             <fieldset>
                             <img ng-src="{{docInfo.profile_pic_url}}" style="width:150px; height:150px;margin-bottom: 20px;margin-top:-10px"/>
-                            <h6>Dr. {{docInfo.firstname}} {{docInfo.lastname}}</h6>
+                            <h6>{{docInfo.title}} {{docInfo.firstname}} {{docInfo.lastname}}</h6>
                             <span style="display:block;margin-top: -10px; margin-bottom:20px">{{docInfo.specialty}}</span>
                             <p>Note: consultation fees will apply if your request is granted. </p>                                 
                         <button class="tg-btn tg-btn-lg" ng-click="sendRequest('<%= userInfo.firstname %>','<%= userInfo.lastname %>','<%= userInfo.profile_pic_url %>',<%=userInfo.user_id %>)">Continue</button>
@@ -1200,8 +1200,15 @@
             </div>
             <div class="modal-body" style="line-height: 32px">
               <div ng-repeat="j in agents">
-                <a href="{{j.url}}"" target="_blank"><b>{{j.names}}</b> &nbsp;({{j.phone}}) &nbsp;<i class="fa fa-external-link"></i></a>
+                <div  style="padding: 5px 0">
+                  <b>Name: </b> <span>{{j.names}}</span><br>
+                  <b>Phone: </b> <span>{{j.phone}}</span><br>
+                  <b>email: </b> <span>{{j.email}}</span><br>
+                  <b>Password: </b> <span>{{j.password}}</span>
+                </div> 
+                <a href="{{j.url}}"  target="_blank" > <i class="fa fa-external-link"></i> View Delivery Page</a>                 
                 <i class="fa fa-trash-o font-1_4" title="Remove this agent" style="float: right;" ng-click="delete(j.id)"></i>
+                <hr>
               </div>
             </div>            
           </div>

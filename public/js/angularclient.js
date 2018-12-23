@@ -1617,6 +1617,9 @@ app.controller('loginController',["$scope","$http","$location","$window","$resou
             case "admin":
               $window.location.href = "/user/admin";
             break;
+            case "Field Agent":
+              $window.location.href = "/user/field-agent/" + data.user_id;
+            break;
             default:
               $window.location.href = "/user/view"; 
             break; 
@@ -2300,7 +2303,7 @@ app.service('phoneCallService',['$http','mySocket','$rootScope',function($http,m
       })
       .success(function(data){      
         data.isPhoneCall = false;
-        $rootScope.showCallingMsg = "";
+        //$rootScope.showCallingMsg = "";
         if(data.error) {
           alert(data.message)
         }
@@ -2594,11 +2597,7 @@ app.controller('docProfileEditController',["$scope","$rootScope","$http","$locat
 
     } else {
       var verify = confirm("Do you want to delete one of " + arg2 + "?")
-      if(verify) {
-        var list = $scope.docInfo[arg2];
-        var elemPos = list.map(function(x){return x._id}).indexOf(arg);
-        var found = list[elemPos];
-        var removed = list.splice(elemPos,1);
+      if(verify) {        
         var sendObj = {field: arg2,item_id: arg};
         $http({
         method  : 'DELETE',
@@ -2607,9 +2606,16 @@ app.controller('docProfileEditController',["$scope","$rootScope","$http","$locat
         headers : {'Content-Type': 'application/json'} 
         })
         .success(function(data) {              
-          if (data) {
-            console.log(data)                           
-          } 
+          if (data.status) {
+            console.log(data) 
+            var list = $scope.docInfo[arg2];
+            var elemPos = list.map(function(x){return x._id}).indexOf(arg);
+            //var found = list[elemPos];
+            var removed = list.splice(elemPos,1); 
+            $scope.docInfo.specialty = data.specialty;                         
+          } else {
+            alert("Oops! error occured, Try again.")
+          }
         });                          
       }
       
@@ -2631,11 +2637,11 @@ app.controller('docProfileEditController',["$scope","$rootScope","$http","$locat
    multiData2.sendSkill("/user/update",$scope.skill);
 
    mySocket.on("uploaded skill",function(data){
-    console.log(data)
-    $scope.skill = {}
-    //updateRecord();
+    console.log(data);
+    $scope.skill = {};
+    updateRecord();
     $scope.loading = false;
-    $scope.docInfo.skills.push(data)
+    $scope.docInfo.skills.push(data);
     initForm();
    });
   }
@@ -2647,7 +2653,7 @@ app.controller('docProfileEditController',["$scope","$rootScope","$http","$locat
       headers : {'Content-Type': 'application/json'} 
       })
     .success(function(data) { 
-      console.log(data);             
+      //console.log(data);             
       if (data) {
         $scope.docInfo = data;                         
       } 
@@ -2656,6 +2662,12 @@ app.controller('docProfileEditController',["$scope","$rootScope","$http","$locat
 
   initForm();
   updateRecord();
+
+  /*$scope.$watch("user.subSpecialty",function(newVal,oldVal){
+    if(oldVal){
+      alert("sdsjh")
+    }
+  },true)*/
 
 }]);
 
@@ -7539,9 +7551,10 @@ app.service("consultationAccptanceService",["$resource",function($resource){
 
 app.controller("walletController",["$scope","$http","$rootScope","$location","ModalService","requestManager",
   "templateService","localManager","$resource","walletService","$filter","paymentVerificationService","userVerifyService",
-  "getMyDoctorService","consultationAccptanceService",
+  "getMyDoctorService","consultationAccptanceService","phoneCallService",
   function($scope,$http,$rootScope,$location,ModalService,requestManager,templateService,
-    localManager,$resource,walletService,$filter,paymentVerificationService,userVerifyService,getMyDoctorService,consultationAccptanceService){
+    localManager,$resource,walletService,$filter,paymentVerificationService,userVerifyService,
+    getMyDoctorService,consultationAccptanceService,phoneCallService){
   $scope.viewInvoice = false;
   var user = localManager.getValue("resolveUser");
   $scope.pay = {};
@@ -7748,7 +7761,7 @@ app.controller("walletController",["$scope","$http","$rootScope","$location","Mo
 
  
 
-  $scope.confirm = function(time){
+  $scope.confirm = function(time,phoneCall){
    if($scope.pay.amount !== null){
       var sendParam;
       if($scope.pay.phone && $scope.pay.phone !== undefined){
@@ -7760,12 +7773,16 @@ app.controller("walletController",["$scope","$http","$rootScope","$location","Mo
       creditor.get(sendParam,function(data){
         if(data.error){
           alert(data.error)
-        } else if(data.user_id && data.user_id !== user.user_id){          
-          var check = confirm("Your want to transfer " + $scope.str + " to " +  data.firstname + " " + data.lastname + "\nThis amount will be debited from your wallet.");
-          if(check){         
-            transferFund(data,time);
+        } else if(data.user_id && data.user_id !== user.user_id){ 
+          if(!time) {      
+            var check = confirm("Your want to transfer " + $scope.str + " to " +  data.firstname + " " + data.lastname + "\nThis amount will be debited from your wallet.");
+            if(check){         
+              transferFund(data,time,phoneCall);
+            } else {
+              alert("Transaction canceled!");
+            }
           } else {
-            alert("Transaction canceled!");
+            transferFund(data,time,phoneCall);
           }
         } else {
           alert("You can not transfer to this person. Transanction canceled!")
@@ -7786,8 +7803,8 @@ app.controller("walletController",["$scope","$http","$rootScope","$location","Mo
 
  
   $scope.isTransfer = true;
-
-  function transferFund(creditor,time) {
+  var count = 0;
+  function transferFund(creditor,time,phoneCall) {
     //the id of the beneficiary will be saved in an obj
     $scope.pay.beneficiaryId = creditor.user_id;
     //otp,date,message,userId or phone
@@ -7798,17 +7815,30 @@ app.controller("walletController",["$scope","$http","$rootScope","$location","Mo
       time: timeStamp,
       old_time: time
     }
-
-    var User = paymentVerificationService; //walletService.resource("/user/payment/verification",{userId: null},{verify:{method:'POST'}});
-    var send = User.verify(payObj,function(data){
-      alert(data.message);
-      if(data.success){
-        $scope.isTransfer = false;
-        $scope.isOTP = true;
-        $scope.isPhone = false;
-        $scope.isUserId = false;
+    $scope.loading = true;
+    if(phoneCall) {
+      count++;
+      if(count < 5) {
+        phoneCallService(payObj,'/user/payment/verification','POST'); 
+        $rootScope.showCallingMsg = "Please enter the pin heard from the voice call below...";
+      } else {
+        alert("Sorry, you have exceeded call limit. Please contact us for assistance.");
       }
-    });
+    } else {
+      var User = paymentVerificationService; //walletService.resource("/user/payment/verification",{userId: null},{verify:{method:'POST'}});
+      var send = User.verify(payObj,function(data){        
+        if(data.success){
+          alert("OTP was sent to your phone.");
+          $scope.isTransfer = false;
+          $scope.isOTP = true;
+          $scope.isPhone = false;
+          $scope.isUserId = false;
+        } else {
+          alert(data.message);
+        }
+        $scope.loading = false;
+      });
+    }
   }
 
   
@@ -7836,15 +7866,16 @@ app.controller("walletController",["$scope","$http","$rootScope","$location","Mo
         userId: $scope.pay.beneficiaryId
       }
       var Debitor = walletService.resource("/user/tranfer/confirmation",{userId: null},{confirmed:{method:'POST'}});
+      $scope.loading = true;
       Debitor.confirmed(payObj,function(data){
         alert(data.message);
+        $scope.loading = false;
         if(data.balance) {
           $rootScope.balance = "NGN " + data.balance.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
           $scope.isTransfer = true;
           $scope.isOTP = false;
           $scope.isPhone = true;
           $scope.isUserId = false;
-          console.log(data);
         }
       });
     }

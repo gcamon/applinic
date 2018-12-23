@@ -10,6 +10,7 @@ var EventEmmiter = require("events");
 var emitter = new EventEmmiter();
 var uuid = require("uuid");
 var moment = require('moment');
+var salt = require('./salt');
 var Voice = require('twilio').twiml.VoiceResponse;
 var options = {
   host: "global.xirsys.net",
@@ -589,7 +590,8 @@ var basicRoute = function (model,sms,io,streams,client) {
                   experience:1,
                   work_place:1,
                   country:1,
-                  city:1
+                  city:1,
+                  specialty:1
                 }
             )
             .exec(
@@ -639,6 +641,8 @@ var basicRoute = function (model,sms,io,streams,client) {
                             result.education.push(arr[i]);
                             break;                               
                             case "ss":
+                            result.specialty += "," + arr[i].sub_specialty;
+                            req.body.specialty = result.specialty;
                             result.sub_specialty.push(arr[i]);
                             break;
                             case "ha":
@@ -817,6 +821,7 @@ var basicRoute = function (model,sms,io,streams,client) {
       var delObj = {};
       var field = req.body.field;
       delObj[req.body.field] = 1;
+      delObj.specialty = 1;
 
       if(req.body.field == "skills"){
         model.skills.findById(req.body.item_id)
@@ -840,14 +845,20 @@ var basicRoute = function (model,sms,io,streams,client) {
           var record = data[req.body.field];
           
           var recPos = record.map(function(x){var tostr = x._id.toString(); return tostr}).indexOf(req.body.item_id);
+         
+
           if(recPos !== -1){
+            if(req.body.field === "sub_specialty"){
+              var str = "," + record[recPos].sub_specialty;
+              data.specialty = data.specialty.replace(str, '');
+            }
             var removed = record.splice(recPos,1);
           } else {
             console.log("record not found");
           }
          
           data.save(function(err,info){
-            res.send({status:"success"})
+            res.send({status:"success",specialty: data.specialty})
           });
           
         })
@@ -6175,9 +6186,9 @@ router.put("/user/scan-search/radiology/referral",function(req,res){
 
 /**** courier services logic ****/
 
-router.get('/field-agent/login',function(req,res){
+/*router.get('/field-agent/login',function(req,res){
   res.render("field-agent-login")
-})
+})*/
 
 //for patient getting requested courier services
 router.get("/user/courier-response",function(req,res){
@@ -6434,27 +6445,32 @@ router.get("/user/get-courier",function(req,res){
 
 //field agent gets the courier assigned to them to deliver
 router.get("/user/field-agent/:centerId/:agentId",function(req,res){
-  model.user.findOne({user_id: req.params.centerId},function(err,center){
-    if(err) throw err;
-    if(center){
-      model.agent.findOne({userId: req.params.agentId})
-      .exec(function(err,agent){
-        if(err) throw err;
-        if(agent){
-          if(agent.isLoggedIn || req.user.user_id === req.params.centerId){
-            console.log(agent)
-            res.render("field-agent",{agent: agent});
+  if(req.user) {
+    model.user.findOne({user_id: req.params.centerId},function(err,center){
+      if(err) throw err;
+      if(center){
+        var agentId = req.params.centerId + "/" + req.params.agentId;
+        console.log(agentId)
+        model.agent.findOne({userId: agentId})
+        .exec(function(err,agent){
+          if(err) throw err;
+          if(agent){
+            if(req.user.user_id === agent.userId || agent.center_id === req.user.user_id) {
+              res.render("field-agent",{agent: agent});
+            } else {
+              res.send({Error: "Field agent not authentication failed!"});
+            }
           } else {
-            res.redirect('/field-agent/login');
+            res.send({Error: "This agent is not registered by the center."});
           }
-        } else {
-          res.send({Error: "This agent is not registered by the center."});
-        }
-      })
-    } else {
-      res.send({Error: "Permission error! User not enrolled for courier services"})
-    }
-  })
+        })
+      } else {
+        res.send({Error: "Permission error! User not enrolled for courier services"})
+      }
+    });
+  } else {
+    res.end("Unauthorized access!")
+  }
 });
 
 //this gets field agents registered by a center
@@ -6473,13 +6489,11 @@ router.post("/user/field-agent",function(req,res){
     model.agent.findOne({phone: req.body.phone}).exec(function(err,data){
       if(err) throw err;
       if(!data) {
-        var agentId = genHash(12);
+        var agentId = req.user.user_id + "/" + genHash(12);
         var password = genHash(8);
-        var url = "https://" + req.host + "/user/field-agent/" + req.user.user_id + "/" + agentId;
-        console.log(url)
+        var url = "https://" + req.host + "/user/field-agent/" + agentId;
         var agent = new model.agent({
           password: password,
-          isLoggedIn: false,
           userId: agentId,
           date: new Date(),
           center_id: req.user.user_id,
@@ -6493,41 +6507,67 @@ router.post("/user/field-agent",function(req,res){
           url: url
         });
 
-        console.log(agent);
-        req.user.field_agents.push({
-          names: req.body.firstname + " " + req.body.lastname,
-          url: url,
-          id: agent._id,
-          phone: req.body.phone
-        });
-
-        req.user.save(function(){});
-
-        agent.save(function(err,info){
+        model.user.findOne({phone: req.body.phone})
+        .exec(function(err,result){
           if(err) throw err;
-          console.log("agent saved!")
+
+          if(result){
+            res.json({message: "User with the phone number already exists", status: false});
+
+          } else {         
+
+            var User = new model.user({
+              password: salt.createHash(password),
+              type: "Field Agent",
+              email: req.body.email,
+              phone: req.body.phone,
+              user_id: agentId,
+              profile_pic_url: "/download/profile_pic/nopic",
+            });
+
+
+            User.save(function(err,info){});
+
+            console.log(agent);
+            req.user.field_agents.push({
+              names: req.body.firstname + " " + req.body.lastname,
+              url: url,
+              id: agent._id,
+              phone: req.body.phone,
+              email: req.body.email,
+              password: password
+            });
+
+            req.user.save(function(){});
+
+            agent.save(function(err,info){
+              if(err) throw err;
+              console.log("agent saved!")
+            })
+
+            sms.messages.create(
+              {
+                to: req.body.phone,
+                from: '+16467985692',
+                body: "Your applinic.com field agent log in details\nphone " + req.body.phone + "\npassword " + password,
+              },
+              callBack
+            ) 
+            //infobip sms gateway for second option
+            var msg = "Your applinic.com field agent log in details\nphone " + req.body.phone + "\npassword " + password;
+
+            //var message = {from: "InfoSMS", to : req.body.phone, text : msg}
+            //client.SMS.send(message,callBack);
+
+            function callBack (err,info){
+              if(err)
+                console.log(err)
+              console.log(info)
+            }
+            res.send({message: "Field agent created successfully!",phone: req.body.phone, password: password,status:true})
+          }
         })
 
-        sms.messages.create(
-          {
-            to: req.body.phone,
-            from: '+16467985692',
-            body: "Your applinic.com field agent log in details\nphone " + req.body.phone + "\npassword " + password,
-          },
-          callBack
-        ) 
-        //infobip sms gateway for second option
-        var msg = "Your applinic.com field agent log in details\nphone " + req.body.phone + "\npassword " + password;
-
-        var message = {from: "InfoSMS", to : req.body.phone, text : msg}
-        client.SMS.send(message,callBack);
-
-        function callBack (err,info){
-          if(err)
-            console.log(err)
-          console.log(info)
-        }
-        res.send({message: "Field agent created successfully!",phone: req.body.phone, password: password,status:true})
       } else {
         res.json({message: "User already exists as an agent!", status: false})
       }
@@ -6544,7 +6584,9 @@ router.delete("/user/field-agent",function(req,res){
     model.agent.remove({_id: req.query.id});
     var elemPos = req.user.field_agents.map(function(x){return x.id.toString()}).indexOf(req.query.id)
     console.log(elemPos)
-    if(elemPos !== -1){
+    if(elemPos !== -1){    
+      //var phone = req.user.field_agents[elemPos].phone;
+      //req.user.remove({phone: phone});
       req.user.field_agents.splice(elemPos,1);
       req.user.save(function(){});
     }

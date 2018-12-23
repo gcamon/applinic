@@ -169,19 +169,23 @@ var configuration = function (app,model) {
 				//user.family_flag = false;
 				//user.save(function(){})	
 				//console.log(user)
-				console.log(user.family_accounts)
-				if(user.family_flag && user.type === "Patient") {
-				  //var elePos = user.family_accounts.map(function(x){return x.status}).indexOf(true);
-				  for(var j = 0; j < user.family_accounts.length; j++) {
-				  	if(user.family_accounts[j].status) {
-				  		activeMember(user.family_accounts[j],user);
-				  		break;
-				  	}
-				  }				 
+				if(user) {
+					console.log(user.family_accounts)
+					if(user.family_flag && user.type === "Patient") {
+					  //var elePos = user.family_accounts.map(function(x){return x.status}).indexOf(true);
+					  for(var j = 0; j < user.family_accounts.length; j++) {
+					  	if(user.family_accounts[j].status) {
+					  		activeMember(user.family_accounts[j],user);
+					  		break;
+					  	}
+					  }				 
 
-				} else {		
-				  done(err, user);
-				}	
+					} else {		
+					  done(err, user);
+					}	
+				} else {
+					done(err, user);
+				}
 			});
 		}
 

@@ -7,7 +7,7 @@
           <li ng-click="view('intro')" ng-class="{'selected-edit': type === 'intro'}">Introductory Note</li>
           <li ng-click="view('years')" ng-class="{'selected-edit': type === 'years'}">Years of Experience</li>
           <li ng-click="view('edu')"  ng-class="{'selected-edit': type === 'edu'}">Education</li>
-          <li ng-click="view('speciaty')" ng-class="{'selected-edit': type === 'speciaty'}">Sub-Specialty</li>
+          <li ng-click="view('speciaty')" ng-class="{'selected-edit': type === 'speciaty'}">Specialties</li>
           <li ng-click="view('skill')" ng-class="{'selected-edit': type === 'skill'}">Skills &amp; Procedures</li>
           <li ng-click="view('honor')" ng-class="{'selected-edit': type === 'honor'}">Honors &amp; Awards</li>
           <li ng-click="view('office')" ng-class="{'selected-edit': type === 'office'}">Office Hours</li>
@@ -85,7 +85,7 @@
       <div ng-if="type === 'speciaty'">
         <h3>Specialties</h3>
         <div ng-repeat="item in user.subSpecialty">
-           <input type="text" class="form-control mb-1" placeholder="Sub specialty" ng-model="item.sub_specialty">
+           <input type="text" class="form-control mb-1" placeholder="Enter Specialty or Sub-Specialty" ng-model="item.sub_specialty">
            <!--<select class="form-control mb-1" placeholder="Sub specialty" ng-model="item.sub_specialty">
             <option value="" selected> Select specialty</option>
               
@@ -313,7 +313,10 @@
       </div>
 
        <div ng-if="type === 'speciaty' ">
-        <p><strong>Sub specialties: </strong></p>
+        <div>
+           <strong>Specialties: </strong> {{docInfo.specialty}}
+        </div>       
+        <label>Other</label>
         <div ng-repeat="j in docInfo.sub_specialty">
           <p><em>{{j.sub_specialty}}</em>            
             <small style="color:red;text-decoration:underline;cursor:pointer;float:right" ng-click="deleteRecord(j._id,'sub_specialty')">Delete</small>
