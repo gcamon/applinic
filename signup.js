@@ -125,7 +125,7 @@ var signupRoute = function(model,sms,geonames,paystack,io) {
 						}*/
 
 						if(req.body.typeOfUser === "Doctor"){
-							User.name = (req.body.lastname) ? req.body.title + " " + req.body.firstname + " " + req.body.lastname.slice(0,1).toUpperCase() : req.body.title + " " + req.body.firstname;
+							User.name = (req.body.lastname) ? req.body.title + " " + req.body.lastname + " " + req.body.firstname.slice(0,1).toUpperCase() : req.body.title + " " + req.body.firstname;
 							User.city_grade = 10;
 						}			
 					
@@ -140,7 +140,7 @@ var signupRoute = function(model,sms,geonames,paystack,io) {
 						}		
 
 						if(req.body.typeOfUser === "Pharmacy") {
-							User.courier_charge = 1000;		
+							User.courier_charge = 500;		
 							User.courier_access_password = uuid.v1();			
 						}
 

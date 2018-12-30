@@ -51,7 +51,8 @@ Wallet.prototype.credit = function(model,receiver,amount,io,cb){
 					self.beneficiary = data.name || data.firstaname + " " + data.lastname;
 
 				data.ewallet.available_amount += amount;			
-				var names = (self.lastname) ? (self.firstname + " " + self.lastname) : (data.name);
+				var names = (self.lastname) ? (self.firstname + " " + self.lastname) : (self.message == "courier billing") ? self.firstname
+				 : (data.name);
 				var transacObj = {
 					date: self.date,
 					source: names,
@@ -95,9 +96,13 @@ Wallet.prototype.credit = function(model,receiver,amount,io,cb){
 	}
 }
 //handles all debiting. note someone must be ccredited whenever debit happens. plus ewallet amount must be greater than amount to debit.
-Wallet.prototype.debit = function(model,amount,debitor){
+Wallet.prototype.debit = function(model,amount,debitor,discount){
 	//debit the user of the service
-	debitor.ewallet.available_amount -= amount;
+	if(discount) {
+	   debitor.ewallet.available_amount -= discount;
+	} else {
+	   debitor.ewallet.available_amount -= amount;
+	}
 	var names = this.beneficiary || this.firstname + " " + this.lastname;	
 	var transacObj = {
 		date: this.date,
@@ -289,7 +294,7 @@ Wallet.prototype.hospitalityBill = function(model,amount,debitor,receiver,sms,io
 
 
 //for courier service pyment logic. ThIS takes care of both the patient paying,center receivin and the admin receiving its parecentage
-Wallet.prototype.courier = function(model,receiverId,debitor,amount,io,delivery_charge,cityGrade,sms) {
+Wallet.prototype.courier = function(model,receiverId,debitor,amount,io,delivery_charge,cityGrade,sms,centerCharge) {
 	var self = this;
 	var serviceCharge = delivery_charge;
 
@@ -303,7 +308,7 @@ Wallet.prototype.courier = function(model,receiverId,debitor,amount,io,delivery_
 
 	var adminPercentage = availAmount * (discount / 100);
 
-	var deliveryCost = calculateDeliveryBenefit(delivery_charge);
+	var deliveryCost = calculateDeliveryBenefit(delivery_charge,centerCharge);
 	var actualCosts = calculatePer(amount, discount);
 
 
@@ -319,13 +324,14 @@ Wallet.prototype.courier = function(model,receiverId,debitor,amount,io,delivery_
 	this.credit(model,receiver,newAmount,io);
 
 	model.user.findOne({user_id:debitor}).exec(function(err,user){
-		var patientBonus = amount * 0.05;
+		//var patientBonus = amount * 0.05;
 
-		var patientNewBill = actualCosts.debitorValue; //(amount - patientBonus) + serviceCharge;
+		var patientNewBill = actualCosts.debitorValue + delivery_charge; //(amount - patientBonus) + serviceCharge;
+		var finalBill = 0 - (total_charge - (actualCosts.debitorValue + delivery_charge));
+		
+		self.debit(model,patientNewBill,user,finalBill);
 
-		self.debit(model,patientNewBill,user);
-
-		console.log("credit = ", newAmount, "debit = ", patientNewBill)
+		console.log("credit = ", newAmount, "debit = ", patientNewBill, "==>", user.name)
 		 
 		var msgBody = "Your Applinic MediPay account debited!\nPayment for drugs purchased through courier services.\n Cost of drugs: " +
 		amount + "\nDelivery charge: " + serviceCharge + "\nTotal: " + patientNewBill + " includes 5% discount" ;
@@ -341,7 +347,7 @@ Wallet.prototype.courier = function(model,receiverId,debitor,amount,io,delivery_
 	})
 
 	var sure = undefined;//jk
-	var patientBonus = amount * 0.05;
+	//var patientBonus = amount * 0.05;
 	var adminCredit = deliveryCost.adminCredit + actualCosts.adminValue; //(serviceCharge + adminPercentage) - patientBonus;
 	var admin = {admin: true}; //remember to set admin true on the db of the public production server
 
@@ -369,14 +375,16 @@ function calculatePer(amount,platformDiscount,patientDiscount) {
 	}
 }
 
-function calculateDeliveryBenefit(delivery_charge,platformComm){
-	var adminPer = (platformComm) ? platformComm / 100 : 0.30;
-	var adminCut = delivery_charge * adminPer;
-	var centerCredit = delivery_charge - adminCut; 
+function calculateDeliveryBenefit(delivery_charge,centerCharge){
+	if(typeof centerCharge == 'number' && centerCharge == 0)
+	  centerCharge = null;
+
+	var centerNet = (centerCharge ) ? (delivery_charge * (centerCharge / 100)) : 0; 
+	var adminNet = (!centerCharge) ? delivery_charge : (delivery_charge - centerNet);
 	
 	return {
-		centerCredit: centerCredit,
-		adminCredit: adminCut
+		centerCredit: centerNet,
+		adminCredit: adminNet
 	}
 }
 

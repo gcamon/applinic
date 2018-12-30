@@ -1657,7 +1657,7 @@ router.post("/user/courier/payment-confirmation",function(req,res){
 									deleted: false,
 									delivery_charge: courier.delivery_charge
 								});
-								console.log(mediScroll);
+								
 								req.user.ewallet.available_amount -= data.amount;
 
 								courier.is_paid = true;
@@ -1710,7 +1710,6 @@ router.put("/user/field-agent",function(req,res){
 			.exec(function(err,scroll){
 				if(err) throw err;
 				if(scroll){
-						console.log(scroll)
 						scroll.end_date = new Date();
 						scroll.deleted = true;
 						model.courier.findById(req.body.courierId)
@@ -1722,7 +1721,7 @@ router.put("/user/field-agent",function(req,res){
 								var toNum = parseInt(courier.total_cost);
 								io.sockets.to(courier.user_id).emit("courier billed",{status:true});
 								var pay = new Wallet(courier.receipt_date,courier.firstname,courier.lastname,"courier billing");
-        				pay.courier(model,courier.center_id,courier.user_id,toNum,io,courier.delivery_charge,courier.city_grade,sms);
+        				pay.courier(model,courier.center_id,courier.user_id,toNum,io,courier.delivery_charge,courier.city_grade,sms,courier.center_charge);
 
          				//user_id refers to the patient,center_id refers to the center,toNum refrs to amount
 								courier.save(function(err,info){});

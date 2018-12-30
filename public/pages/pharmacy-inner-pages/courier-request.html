@@ -1,7 +1,7 @@
 
-<section style="padding: 20px">
+<section class="card">
 	<header style="position: relative;">
-		<h4> 
+		<h4 class="p-1"> 
 		<i class="fa fa-motorcycle"></i> Courier Services <span style="font-size: 16px;display: inline-block;">( {{courierRequests.length}} requests )</span> <br><span style="font-size: 14px;"></span>
 		<!--<a href="{{fieldagentUrl}}" target="_blank" style="font-size: 14px"> {{fieldagentUrl}}</a>-->
 		</h4>
@@ -24,7 +24,63 @@
 		<!--<a href="/bicboy/judepharmacy6768/y2kisawesome">Field agent</a>-->
 	</header>
 
-	<div class="card" ng-repeat="request in courierRequests | filter: search | orderBy: '-date'" style="padding: 20px;line-height: 32px" id="{{request._id}}">
+	<hr>
+
+	<div ng-repeat="request in courierRequests | filter: search | orderBy: '-date'" style="padding: 20px;line-height: 32px" id="{{request._id}}">
+		<div class="col-sm-12 col-md-2 col-lg-2" style="line-height: 25px" ng-if="request.attended && request.is_paid">
+			<h6 style="text-decoration: underline;">Payment Details</h6>
+			<p class="text-primary"><i class="fa fa-check-circle"></i> Payment was made successfully!</p>
+			<div>
+				Amount: <b>{{toCurrency(request.total_cost)}}</b>
+			</div>
+			<div>
+				Delivery Charge: <b>{{toCurrency(request.delivery_charge)}}</b>
+			</div>
+			<div>
+				Total: <b>{{getTotal(request.delivery_charge,request.total_cost)}}</b>
+			</div>
+			<hr>
+			<p ng-if="!request.completed"><small>You won't be credited until delivery of the package/drugs is confirmed by the patient.<a href="">Learn more</a></small></p>
+		</div>
+
+		<div class="col-sm-12 col-md-7 col-lg-7">
+		<h6 style="text-decoration: underline;">Prescription detail</h6>
+			<table class="table table-striped table-responsive">
+				<tr>
+					<thead>
+						<th>S/N</th>
+						<th>cost</th>
+						<th>drug</th>
+						<th>dosage</th>
+						<th>frequency</th>
+						<th>duration</th>		    						
+					</thead>        					
+				</tr>
+				<tr>
+					<tbody ng-repeat="prescription in request.prescription_body">		    						
+						<td>{{prescription.sn}}</td>
+						<td>{{(!prescription.cost) ? "N/A" : toCurrency(prescription.cost)}}</td>
+						<td>{{prescription.drug_name}}</td>
+						<td>{{prescription.dosage}}</td>
+						<td>{{prescription.frequency}}</td>
+						<td>{{prescription.duration}}</td>		    							    						
+					</tbody>
+				</tr>
+			</table>
+			<!--<div ng-if="request.total_cost"> <strong>Total:</strong> {{toCurrency(request.total_cost)}}</div>-->
+		</div>
+		<!--<div class="col-sm-12 col-md-3 col-lg-3" style="line-height: 25px" ng-if="request.attended && request.completed">
+			<h6 style="text-decoration: underline;">Delivery report</h6>
+			<div><strong>Status :</strong> <span ng-if="request.attended !== true">Not yet billed</span> <span style="color:red" ng-if="request.attended == true"> Billing sent! <small>( {{request.verification_date | date: 'mediumDate'}} | {{request.verification_date | date: 'mediumTime'}} ) </small></span></div>
+			<div><strong>Report :</strong> <span ng-if="!request.receipt_date">pending</span> <span ng-if="request.receipt_date">Delivered! Package in receipt @ {{request.address}}</span><br><span>
+			{{request.receipt_date | date: "fullDate"}} {{request.receipt_date | date: 'shortTime'}}
+			</span></div>
+			<div><strong>Payment confirmation :</strong> <span ng-if="!request.receipt_date">No</span> <span ng-if="request.receipt_date">Yes! Paid <b>{{toNaira(request.total_cost)}}</b> on {{request.receipt_date | date : 'fullDate'}} | {{request.receipt_date | date : 'mediumTime'}}</span></div>
+			
+		</div>-->
+		
+
+
 		<div class="col-sm-12 col-md-3 col-lg-3" ng-if="courierRequests.length > 0">
 		<h6 style="text-decoration: underline;">Sender details</h6>
 			<div>
@@ -70,57 +126,6 @@
 				<button ng-click="courierBilling(request)" ng-class="{'btn btn-success' : request.attended == true}" class="btn btn-info" ng-if="!request.is_paid">{{(request.verified) ? "Re-send billing" : "Bill patient"}}</button> &nbsp;
 				<button ng-click="decline(request)"  class="btn btn-danger" ng-if="!request.verified"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff;" ng-if="request.loading"></i>{{(request.loading) ? "" : "Decline"}}</button>
 			</div>		
-		</div>
-
-		<div class="col-sm-12 col-md-6 col-lg-6">
-		<h6 style="text-decoration: underline;">Prescription detail</h6>
-			<table class="table table-striped table-responsive">
-				<tr>
-					<thead>
-						<th>S/N</th>
-						<th>cost</th>
-						<th>drug</th>
-						<th>dosage</th>
-						<th>frequency</th>
-						<th>duration</th>		    						
-					</thead>        					
-				</tr>
-				<tr>
-					<tbody ng-repeat="prescription in request.prescription_body">		    						
-						<td>{{prescription.sn}}</td>
-						<td>{{(!prescription.cost) ? "N/A" : toCurrency(prescription.cost)}}</td>
-						<td>{{prescription.drug_name}}</td>
-						<td>{{prescription.dosage}}</td>
-						<td>{{prescription.frequency}}</td>
-						<td>{{prescription.duration}}</td>		    							    						
-					</tbody>
-				</tr>
-			</table>
-			<!--<div ng-if="request.total_cost"> <strong>Total:</strong> {{toCurrency(request.total_cost)}}</div>-->
-		</div>
-		<!--<div class="col-sm-12 col-md-3 col-lg-3" style="line-height: 25px" ng-if="request.attended && request.completed">
-			<h6 style="text-decoration: underline;">Delivery report</h6>
-			<div><strong>Status :</strong> <span ng-if="request.attended !== true">Not yet billed</span> <span style="color:red" ng-if="request.attended == true"> Billing sent! <small>( {{request.verification_date | date: 'mediumDate'}} | {{request.verification_date | date: 'mediumTime'}} ) </small></span></div>
-			<div><strong>Report :</strong> <span ng-if="!request.receipt_date">pending</span> <span ng-if="request.receipt_date">Delivered! Package in receipt @ {{request.address}}</span><br><span>
-			{{request.receipt_date | date: "fullDate"}} {{request.receipt_date | date: 'shortTime'}}
-			</span></div>
-			<div><strong>Payment confirmation :</strong> <span ng-if="!request.receipt_date">No</span> <span ng-if="request.receipt_date">Yes! Paid <b>{{toNaira(request.total_cost)}}</b> on {{request.receipt_date | date : 'fullDate'}} | {{request.receipt_date | date : 'mediumTime'}}</span></div>
-			
-		</div>-->
-		<div class="col-sm-12 col-md-3 col-lg-3" style="line-height: 25px" ng-if="request.attended && request.is_paid">
-			<h6 style="text-decoration: underline;">Payment Details</h6>
-			<p class="text-primary"><i class="fa fa-check-circle"></i> Payment was made successfully!</p>
-			<div>
-				Amount: <b>{{toCurrency(request.total_cost)}}</b>
-			</div>
-			<div>
-				Delivery Charge: <b>{{toCurrency(request.delivery_charge)}}</b>
-			</div>
-			<div>
-				Total: <b>{{getTotal(request.delivery_charge,request.total_cost)}}</b>
-			</div>
-			<hr>
-			<p ng-if="!request.completed"><small>You won't be credited until delivery of the package/drugs is confirmed by the patient.<a href="">Learn more</a></small></p>
 		</div>
 		<div class="clearfix"></div>
 

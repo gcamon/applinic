@@ -1,6 +1,6 @@
 
- <div class="container">
-    <div class="card card-center-1 p-2">
+ <div>
+    <div class="card card-center-1 p-1">
     <h4 style="margin-top: 2px">Need a Doctor?</h4>
  <div class="font-1_0">Fill your complaints below for the right specialist to contact you at the Patient Waiting Room (PWR).</div>
  <p class="p-2 text-center" ng-if="statusMsg" style="color: #000;background-color: orange;text-align: center;font-size: 14px">{{statusMsg}}</p>
@@ -88,10 +88,10 @@
                                    </div>-->
                                </div>
                            </div>
-<div class="row">
-
-<div class="col-md-12 col-sm-12">
-	<div class="pb-2 pt-1">
+<div>
+<hr>
+<div>
+	<div class="pb-2">
 		<label style="color: grey">Where do you prefer to see doctor ? (optional) </label>
 		<input  style="width: 90%" type="text" placeholder="Enter city name" ng-model="city" uib-typeahead="city for city in cities | filter:$viewValue | limitTo:15" class="form-control">		
 			{{getCity(city)}} 
@@ -107,7 +107,7 @@
 			{{getSymptom(name)}}
 		</div>
 		<div style="text-align: right;margin-top: 15px"> 
-			<button class="fa fa-plus btn btn-simple round  text-danger" ng-click="add()"></button> 
+			<i class="fa fa-plus text-muted" ng-click="add()" style="cursor: pointer;"> Add</i>
 		</div>
 
 		<div class="pt-1">

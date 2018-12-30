@@ -63,7 +63,7 @@
 				<i class="fa fa-phone" style="display: block;">  {{center.phone}}</i>
 				
 				<div style="text-align:right;"><i class="fa fa-user btn btn-simple btn-sm" style="cursor:pointer;" title="View {{center.name}} profile" ng-click="toViewProfile(center.id)"></i><i class="fa fa-comment btn btn-success btn-sm" style="cursor:pointer;" title="Send chat message to {{center.name}} " ng-click="sendChat(center)"></i>
-				<i class="fa fa-bicycle btn btn-info btn-sm" style="cursor:pointer;" title="request courier service " ng-click="courier(center)" ng-if="checkLogIn.typeOfUser === 'Patient'"></i>
+				<i class="fa fa-bicycle btn btn-info btn-sm" style="cursor:pointer;" title="request courier service " ng-click="courier(center)" ng-if="checkLogIn.typeOfUser !== 'Pharmacy'"></i>
 				<i class="fa fa-share btn btn-danger btn-sm" style="cursor:pointer;" title="Forward to {{center.name}}" ng-click="toForward(center)"></i>
 				</div> 
 				<div class="clearfix"></div>
@@ -81,7 +81,7 @@
 				<i class="fa fa-phone" style="display: block;">  {{center.phone}}</i>
 				
 				<div style="text-align:right;padding: 10px 0"><i class="fa fa-user btn btn-simple btn-sm" style="cursor:pointer;" title="View {{center.name}} profile" ng-click="toViewProfile(center.id)"></i><i class="fa fa-comment btn btn-success btn-sm" style="cursor:pointer;" title="Send chat message to {{center.name}} " ng-click="sendChat(center)"></i>
-				<i class="fa fa-bicycle btn btn-info btn-sm" style="cursor:pointer;" title="request courier service " ng-click="courier(center)" ng-if="checkLogIn.typeOfUser === 'Patient'"></i>
+				<i class="fa fa-bicycle btn btn-info btn-sm" style="cursor:pointer;" title="request courier service " ng-click="courier(center)" ng-if="checkLogIn.typeOfUser !== 'Pharmacy'"></i>
 				<i class="fa fa-share btn btn-danger btn-sm" style="cursor:pointer;" title="Forward to {{center.name}}" ng-click="toForward(center)"></i>
 				</div> 
 				<div class="clearfix"></div>

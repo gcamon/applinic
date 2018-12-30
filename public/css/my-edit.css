@@ -561,10 +561,25 @@ font-weight: 300 !important;
     overflow-x: auto;
   }
 
+  .p-1 div {
+    padding: 0!important;
+  }
 
+  .p-2 div {
+    padding: 0!important;
+  }
+
+  .card {
+    box-shadow: none;
+  }
   .card-center-1 {
-    width: 100%;
+    width: 100%!important;
     margin: inherit;
+  }
+
+  .container {
+    padding: 0!important;
+    margin: 0!important;
   }
 
   .nmg {

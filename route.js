@@ -5414,10 +5414,9 @@ var basicRoute = function (model,sms,io,streams,client) {
     });
 
     router.put("/user/pharmacy/search/find-drugs",function(req,res){
-      console.log(req.body)
-      if(req.user && req.body.city === undefined)
-        req.body.city = req.user.city;
-      model.services.find({type:"Pharmacy",center_city:req.body.city},
+      console.log(req.body);
+      var criteria = (req.body.city) ? {type:"Pharmacy",center_city:req.body.city} : {type: "Pharmacy"};
+      model.services.find(criteria,
         {center_name:1,center_city:1,center_address:1,center_country:1,center_phone:1,user_id:1,unavailable_services:1,_id:0},function(err,data){
         if(err) throw err;
         var newListToSend = [];        
@@ -6232,11 +6231,11 @@ router.delete("/user/courier-response",function(req,res){
     .exec(function(err,data){
       if(err) throw err;
       if(data){
-        if(!data.attended || !data.verified){
+        if(!data.attended || !data.isPaid){
           data.remove(function(){});
-          res.send({status: true})
+          res.send({status: true});
         } else {
-          res.send({status: false})
+          res.send({status: false});
         }
       } else {
         res.send({status: false})
@@ -6253,9 +6252,10 @@ router.delete("/user/courier-response",function(req,res){
 router.post("/user/courier",function(req,res){
   if(req.user) {
     var date = + new Date();
-    req.body.firstname = req.user.firstname;
-    req.body.lastname = req.user.lastname;
-    req.body.title = req.user.title;
+    console.log(req.body)
+    req.body.firstname = req.user.name || req.user.firstname;
+    req.body.lastname = (!req.user.name) ? req.user.lastname : "";
+    req.body.title = (req.user.type !== "Doctor") ? req.user.title : "";
     req.body.profile_pic_url = req.user.profile_pic_url;
     req.body.user_id = req.user.user_id;
     req.body.date = date;
@@ -6276,22 +6276,23 @@ router.post("/user/courier",function(req,res){
       io.sockets.to(req.body.center_id).emit("receiver courier",req.body);
     });
 
-    model.user.findOne({user_id:req.user.user_id},{prescription_tracking:1}).exec(function(err,patient){
-      if(err) throw err;
-      if(patient){
-        patient.prescription_tracking.push({
-          date: date,
-          center_name: req.body.centerInfo.name + " ( Courier Services )",
-          address: req.body.centerInfo.address,
-          ref_id: req.body.refId,
-          city: req.body.centerInfo.city,
-          country: req.body.centerInfo.country,
-          phone: req.body.centerInfo.phone,
-          prescriptionId: req.body.prescriptionId
-        })
-      } 
-      patient.save(function(err,info){});
-    })
+    if(req.user.type == "Patient")
+      model.user.findOne({user_id:req.user.user_id},{prescription_tracking:1}).exec(function(err,patient){
+        if(err) throw err;
+        if(patient){
+          patient.prescription_tracking.push({
+            date: date,
+            center_name: req.body.centerInfo.name + " ( Courier Services )",
+            address: req.body.centerInfo.address,
+            ref_id: req.body.refId,
+            city: req.body.centerInfo.city,
+            country: req.body.centerInfo.country,
+            phone: req.body.centerInfo.phone,
+            prescriptionId: req.body.prescriptionId
+          })
+        } 
+        patient.save(function(err,info){});
+      })
 
     res.send({status:true,message:"Sent successfully! Admin will contact you soon for cost and billing.",status: true});
   } else {
@@ -6333,6 +6334,7 @@ router.put("/user/courier-update",function(req,res){
           user.city_grade = req.user.city_grade;
           user.isPaid = false;
           user.new = 1;
+          user.center_charge = req.user.courier_commission;
 
           var count = 0;
           var presObj = {};
@@ -8236,108 +8238,41 @@ router.post('/mamavoice',function(req,res){
 });
 
 
+
+router.get("/user/admin/commissions",function(req,res){
+  if(req.user){
+    if(req.user.type == "admin"){
+      var resObj = {};
+      model.user.find({type: "Doctor"},{city_grade:1,city:1,country:1},function(err,doctors){
+        resObj.doctors = doctors;
+        model.user.find({type:"Pharmacy"},{city_grade:1,city:1,country:1,courier_charge:1,courier_commission:1,
+          courier_access:1,name:1,user_id:1},function(err,pharmacies){
+          resObj.pharmacies = pharmacies;
+          model.user.find({type:"Laboratory"},{city_grade:1,city:1,country:1},function(err,laboratories){
+            resObj.laboratories = laboratories;
+            model.user.find({type:"Radiology"},{city_grade:1,city:1,country:1},function(err,radiologies){
+              resObj.radiologies = pharmacies;
+              res.json(resObj)
+            })
+          })
+        })
+      })
+    } else {
+      res.end("unauthorized access")
+    }
+  } else {
+    res.end("unauthorized access")
+  }
+})
+
+
 /*router.get("/test-page",function(req,res){
   res.sendFile(path.join(__dirname + '/test.html'))
 })*/
 
 
 
-/*
-router.put("/user/pharmacy/search/find-drugs",function(req,res){
-  <?xml version="1.0" encoding="UTF-8"?>
-<Response>
-    <Say>
-      This message must be nested in a Response element
-      in order for Twilio to say it to your caller.
-    </Say>
-</Response>
-      console.log(req.body)
-      if(req.user && req.body.city === undefined)
-        req.body.city = req.user.city;
-      model.services.find({type:"Pharmacy",center_city:req.body.city},
-        {center_name:1,center_city:1,center_address:1,center_country:1,center_phone:1,user_id:1,unavailable_services:1,_id:0},function(err,data){
-        if(err) throw err;
-        var newListToSend = [];        
-        var sendObj = {};
-        var listOfDrugs = req.body.drugList;        
-        for(var i = 0; i < listOfDrugs.length; i++){
-          var elements = data.map(function(x){return x.unavailable_services});
-          var count = 0;
-          var foundDrug = [];          
-          while(count < elements.length){
-            var centerInfo = {}                      
-            var elementPos = elements[count].map(function(x){ return x.id}).indexOf(listOfDrugs[i].id);            
-            centerInfo.notFound = listOfDrugs[i].name;
-            if(elementPos === -1){              
-              centerInfo.center_name = data[count].center_name;
-              centerInfo.center_city = data[count].center_city;
-              centerInfo.center_country = data[count].center_country;
-              centerInfo.center_city = data[count].center_city;
-              centerInfo.center_id = data[count].user_id;
-              centerInfo.center_address = data[count].center_address;
-              centerInfo.center_phone = data[count].center_phone;
-              centerInfo.drugFound = listOfDrugs[i].name;              
-              foundDrug.push(centerInfo)               
-              sendObj[listOfDrugs[i].name] = foundDrug;
-              newListToSend.push(sendObj)  
-            } 
-            count++;
-          }
-        }
 
-        var filter = {};
-        
-        for(var i in sendObj){
-          for(var j = 0; j < sendObj[i].length; j++){
-            if(!filter.hasOwnProperty(sendObj[i][j].center_id)){                             
-              filter[sendObj[i][j].center_id] = {};
-              filter[sendObj[i][j].center_id].count = 1;
-              filter[sendObj[i][j].center_id].name = sendObj[i][j].center_name;
-              filter[sendObj[i][j].center_id].address = sendObj[i][j].center_address;
-              filter[sendObj[i][j].center_id].city = sendObj[i][j].center_city;
-              filter[sendObj[i][j].center_id].country = sendObj[i][j].center_country;
-              filter[sendObj[i][j].center_id].id = sendObj[i][j].center_id;
-               filter[sendObj[i][j].center_id].phone = sendObj[i][j].center_phone;
-              filter[sendObj[i][j].center_id].str = sendObj[i][j].drugFound;
-            } else {
-              filter[sendObj[i][j].center_id].str += "," + sendObj[i][j].drugFound;
-              filter[sendObj[i][j].center_id].count++;
-            }
-          }
-        }
-        
-        Array.prototype.diff = function(arr2) {
-          var ret = [];
-          this.sort();
-          arr2.sort();
-          for(var i = 0; i < this.length; i += 1) {
-            if(arr2.indexOf( this[i].name ) === -1){
-                ret.push( this[i] );
-            }
-          }
-          return ret;
-        };
-
-        var sub = {};
-         sub['full'] = [];
-         sub['less'] = [];
-        for(var k in filter){
-          if(filter[k].count === req.body.drugList.length) {
-            sub['full'].push(filter[k]);
-          } else {
-            var arr1 = req.body.drugList;
-            var newFilterArr = filter[k].str.split(",")            
-            var notFoundArr = arr1.diff(newFilterArr)
-            filter[k].notFound = notFoundArr;          
-            sub['less'].push(filter[k])
-          }
-        }
-
-        res.send(sub)
-      })
-
-    });
-*/
 
 }
 

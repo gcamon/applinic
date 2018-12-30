@@ -1,0 +1,76 @@
+<div class="p-2" style="">
+	<h3>Commission Control</h3>
+	<div  class="row" style="padding: 20px;line-height: 40px">
+			<div class="col-md-3 col-sm-12 col-lg-3">
+				<h6>Manage discount</h6>
+				<div>
+					<a href="" class="btn btn-info btn-sm" ng-click="view('doc')">Doctors</a>
+				</div>
+				<div>
+					<a href="" class="btn btn-info btn-sm" ng-click="view('pharm')">Pharmacies</a>
+				</div>
+				<div>
+					<a href="" class="btn btn-info btn-sm" ng-click="view('lab')">Laboratories</a>
+				</div>
+				<div>
+					<a href="" class="btn btn-info btn-sm" ng-click="view('radio')">Radiologies</a>
+				</div>
+
+				<h6>Manage courier Service</h6>
+				<div>
+					<a href="" class="btn btn-danger btn-sm" ng-click="view('courier')">Courier Access</a>
+				</div>
+			</div>
+			<div class="col-md-4 col-sm-12 col-lg-4">
+				<div>
+					<h6 class="text-muted">{{selected}}</h6>
+					<table class="table">
+						<thead ng-if="!isCourierView">
+							<th>City</th>
+							<th>discount (%)</th>
+							<th>Action</th>
+						</thead>
+						<thead ng-if="isCourierView">
+							<th>Center Name</th>
+							<th>City</th>
+							<th>Deivery Charge</th>
+							<th>Commission (%)</th>
+							<th>Action</th>
+						</thead>
+						<tbody ng-repeat="i in docObj" ng-if="isDocView">
+							<td>{{i.city}}</td>
+							<td>{{i.discount}}</td>
+							<td><a href="" class="btn  btn-info btn-sm">update</a></td>
+						</tbody>
+						<tbody ng-repeat="i in pharmObj" ng-if="isPharmView">
+							<td>{{i.city}}</td>
+							<td>{{i.discount}}</td>
+							<td><a href="" class="btn  btn-info btn-sm">update</a></td>
+						</tbody>
+						<tbody ng-repeat="i in labObj" ng-if="isLabView">
+							<td>{{i.city}}</td>
+							<td>{{i.discount}}</td>
+							<td><a href="" class="btn  btn-info btn-sm">update</a></td>
+						</tbody>
+						<tbody ng-repeat="i in labObj" ng-if="isRadioView">
+							<td>{{i.city}}</td>
+							<td>{{i.discount}}</td>
+							<td><a href="" class="btn  btn-info btn-sm">update</a></td>
+						</tbody>
+
+						<tbody ng-repeat="i in courierObj" ng-if="isCourierView && i.courier_access">
+						    <td>{{i.name}}</td>
+						    <td>{{i.city}}</td>
+						    <td>{{i.courier_charge}}</td>
+							<td>{{i.courier_commission}}</td>
+							<td><a href="" class="btn  btn-info btn-sm">update</a></td>
+						</tbody>
+						
+					</table>
+				</div>
+			</div>
+			
+		<hr>
+	</div>
+
+</div>

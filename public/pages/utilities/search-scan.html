@@ -15,8 +15,8 @@
 
  
 
-<div class="container">
-<div class="card card-center-1 p-2">
+<div>
+<div class="card card-center-1 p-1">
 <a href="#/drug"><i class="fa fa-arrow-left btn btn-simple"> &nbsp;Back</i></a>
 <div>
 	<h4 class="font-1_4">Enter criteria below</h4>
@@ -28,7 +28,7 @@
         </div>
         <div class="col-md-6">
         <label>Test name</label>
-		<input name="states" id="states" type="text" placeholder="Enter test name" ng-model="test.name" uib-typeahead="test.name for test in tests | filter:$viewValue | limitTo:50" class="form-control">
+		<input  type="text" placeholder="Enter test name" ng-model="test.name" uib-typeahead="test.name for test in tests | filter:$viewValue | limitTo:50" class="form-control">
         </div>
         </div>
         <button ng-click="labTest(test.name)" class="btn btn-success"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i>{{(loading) ? "" : 'Find'}}</button>

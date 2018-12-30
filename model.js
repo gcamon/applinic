@@ -596,6 +596,7 @@ var myModel = function () {
 		mrak: String, //medical record access key
 		medical_reports: [medReportSchema],
 		courier_charge: Number,
+		courier_commission: Number,
 		disease_tag: String,
 		bank_details: Array,
 		field_agents: Array
@@ -775,7 +776,8 @@ var myModel = function () {
 		complaints: Array,
 		on_delivery: Boolean,
 		delivery_msg: String,
-		delivery_start_date: Date
+		delivery_start_date: Date,
+		center_charge: String
 	},{
 		collections: "courierinfos"
 	});
