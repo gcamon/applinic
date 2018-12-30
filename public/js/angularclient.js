@@ -13699,9 +13699,9 @@ app.service("labNoteService",["$resource",function($resource){
 
 
 app.controller("labCenterNotificationController",["$scope","$location","$resource","$window","templateService",
-  "localManager","$http","chatService","labCenterNotificationService","labNoteService","deleteFactory",
+  "localManager","$http","chatService","labCenterNotificationService","labNoteService","deleteFactory","courierResponseService",
   "$rootScope","mySocket",function($scope,$location,$resource,$window,templateService,
-    localManager,$http,chatService,labCenterNotificationService,labNoteService,deleteFactory,$rootScope,mySocket){
+    localManager,$http,chatService,labCenterNotificationService,labNoteService,deleteFactory,courierResponseService,$rootScope,mySocket){
 
 
   function getNotification() {
@@ -13826,6 +13826,41 @@ app.controller("labCenterNotificationController",["$scope","$location","$resourc
   $rootScope.$on("unattendedMsg",function(status,data){
     $scope.showIndicator = data;
   });
+
+
+   //courier services
+  var courierResponse = courierResponseService;
+
+  function getCourier() {
+    courierResponse.query(function(data){
+      $rootScope.courierResponseList = data;
+      $scope.unRead = data[0];
+      console.log(data);
+    });
+  }
+
+  mySocket.on("courier billed",function(res){
+    getCourier();
+  });
+
+  mySocket.on("new courier order",function(res){
+    getCourier();
+  });
+
+
+  $rootScope.$on('new courier order',function(status,res){
+     getCourier();
+  })
+
+  var pt;
+
+  $scope.viewResponse = function(item) {
+    $rootScope.courierResponse = item;
+    pt = '/courier-response/' + Math.floor(Math.random() * 99999999);
+    $location.path(pt);
+  }
+
+  getCourier();
   
 
 }]);
@@ -14728,9 +14763,10 @@ app.service("radioTestsService",["$resource",function($resource){
 }]);
 
 app.controller("radioCenterNotificationController",["$scope","$location","$http","$window","templateService",
-  "localManager","$resource","$rootScope","mySocket","chatService","radioNotificationService","radioTestsService","deleteFactory",
+  "localManager","$resource","$rootScope","mySocket","chatService","radioNotificationService",
+  "radioTestsService","deleteFactory","courierResponseService",
   function($scope,$location,$http,$window,templateService,localManager,$resource,
-    $rootScope,mySocket,chatService,radioNotificationService,radioTestsService,deleteFactory) {
+    $rootScope,mySocket,chatService,radioNotificationService,radioTestsService,deleteFactory,courierResponseService) {
 
   var notification = radioNotificationService; //$resource("/user/center/get-notification",null,{updateStatus:{method:'PUT'}});
   var radioTests = radioTestsService; //$resource( "/user/radiology/get-referral",null,{sendObj:{method:"PUT"}});
@@ -14859,6 +14895,41 @@ app.controller("radioCenterNotificationController",["$scope","$location","$http"
     $location.path("/general-chat");
      $scope.showIndicator = false;
   }
+
+
+  //courier services
+  var courierResponse = courierResponseService;
+
+  function getCourier() {
+    courierResponse.query(function(data){
+      $rootScope.courierResponseList = data;
+      $scope.unRead = data[0];
+      console.log(data);
+    });
+  }
+
+  mySocket.on("courier billed",function(res){
+    getCourier();
+  });
+
+  mySocket.on("new courier order",function(res){
+    getCourier();
+  });
+
+
+  $rootScope.$on('new courier order',function(status,res){
+     getCourier();
+  })
+
+  var pt;
+
+  $scope.viewResponse = function(item) {
+    $rootScope.courierResponse = item;
+    pt = '/courier-response/' + Math.floor(Math.random() * 99999999);
+    $location.path(pt);
+  }
+
+  getCourier();
 
 }]);
 
