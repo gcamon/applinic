@@ -134,7 +134,7 @@ var signupRoute = function(model,sms,geonames,paystack,io) {
 							if(city){
 								User.city_grade = 10;
 							} else {
-								User.city_grade = 5;
+								User.city_grade = 10;
 							}	
 
 						}		
