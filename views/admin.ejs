@@ -160,7 +160,7 @@
 						<li><a href="">Suggestions &nbsp;&nbsp;<small style="color: red">{{}}</small></a></li>
 						<li><a href="">complaints &nbsp;&nbsp;<small style="color: red">{{}}</small></a></li>
 						<li><a href="">Disputes &nbsp;&nbsp;<small style="color: red">{{}}</small></a></li>
-						<li><a href="#/Commissions" class="btn btn-danger">Commissions &nbsp;&nbsp;</a></li>
+						<li><a href="#/commissions" class="btn btn-danger">Commissions &nbsp;&nbsp;</a></li>
 					</ul>
 					
 				</div>
@@ -171,7 +171,17 @@
 					<div class="card p-2" style="float: right;margin-right: 20px">
 						<a href="">mail: <b>info@applinic.com</b></a>						
 					</div>-->
-
+					<div ng-show='stateIsLoading' style="text-align: center;padding-top: 10px;">
+		              <span class="btn btn-warning btn-sm">Loading...</span>
+		            </div>  
+		            <div ng-show='!onlineStatus' style="text-align: center;padding-top: 10px;" ng-cloak>
+		              <span class="btn btn-warning btn-sm text-white font-1_2">No internet connections
+		              </span>
+		            </div>
+		            <div ng-show='onlineStatus && !acknowledged && !stateIsLoading' style="text-align: center;padding-top: 10px;" ng-cloak>
+		              <span class="btn btn-success btn-sm text-white font-1_2">You're connected to internet
+		              </span>
+		            </div>                       
 					<div class="view-animate-container">  
 		                <div class="view-animate" ng-view>
 		                </div>

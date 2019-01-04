@@ -121,6 +121,16 @@
        </div>
 
         <div class="col-md-8 col-sm-12 col-xs-12 bg-white p-1" style="padding:2em;" >
+        <div>
+          <div ng-show='!onlineStatus' style="text-align: center;padding-top: 10px;" ng-cloak>
+            <span class="btn btn-warning btn-sm text-white font-1_2">No internet connections
+            </span>
+          </div>
+          <!--<div ng-show='onlineStatus && !acknowledged && !stateIsLoading' style="text-align: center;padding-top: 10px;" ng-cloak>
+            <span class="btn btn-success btn-sm text-white font-1_2">You're connected to internet
+            </span>
+          </div>--> 
+        </div> 
        <!-- Nav tabs -->
        <div class="pl-3">
         <h6 class="ml-2 pl-3 pt-3">Please select your user category below</h6>

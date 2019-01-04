@@ -40,6 +40,14 @@
                                         <span class="custom-control-description" style="opacity:0;"></span>
                                       </label> 
                                    </div>
+                                   <div>
+                                      <label class="custom-control custom-checkbox">
+                                        I need personal doctor
+                                       <input type="checkbox" class="custom-control-input" ng-model="user.personal">
+                                        <span class="custom-control-indicator"></span>
+                                        <span class="custom-control-description" style="opacity:0;"></span>
+                                      </label> 
+                                   </div>
                                    
                                </div>                                  
 
@@ -78,41 +86,41 @@
                                       </label> 
                                    </div>
                                   
-                                    <!--<div>
+                                    <div>
                                       <label class="custom-control custom-checkbox">
-                                        I need a personal doctor.
-                                       <input type="checkbox" class="custom-control-input" ng-model="user.personal">
+                                        Other
+                                       <input type="checkbox" class="custom-control-input" ng-model="user.other">
                                         <span class="custom-control-indicator"></span>
                                         <span class="custom-control-description" style="opacity:0;"></span>
                                       </label> 
-                                   </div>-->
+                                   </div>
                                </div>
                            </div>
 <div>
 <hr>
-<div>
+<section>
 	<div class="pb-2">
 		<label style="color: grey">Where do you prefer to see doctor ? (optional) </label>
-		<input  style="width: 90%" type="text" placeholder="Enter city name" ng-model="city" uib-typeahead="city for city in cities | filter:$viewValue | limitTo:15" class="form-control">		
+		<input  style="" type="text" placeholder="Enter city name" ng-model="city" uib-typeahead="city for city in cities | filter:$viewValue | limitTo:15" class="form-control">		
 			{{getCity(city)}} 
 	</div>
-</div>
-<div class="col-md-12 col-sm-12" ng-if="user.sick">
+</section>
+<section class="" ng-if="user.sick || user.other">
 	
 	<div class="pb-2 pt-1">
 		<label style="color: grey">What are your complaints ? <span class="text-danger">*</span></label>
-		<div ng-repeat="i in symptomsList" style="position: relative;padding-bottom: 5px">			
-			<input  style="width: 90%" type="text" placeholder="Enter your symptom(s)" ng-model="name" uib-typeahead="name for name in symptoms | filter:$viewValue | limitTo:15" class="form-control">
+		<section ng-repeat="i in symptomsList" style="position: relative;padding-bottom: 5px">			
+			<input  style="" type="text" placeholder="Enter your symptom(s)" ng-model="name" uib-typeahead="name for name in symptoms | filter:$viewValue | limitTo:15" class="form-control">
 			<i class="fa fa-times text-muted" style="cursor: pointer;position: absolute;bottom: 10px;right: 8px" ng-click="remove(i.sn)" ng-if="i.sn !== 'a'"></i>
 			{{getSymptom(name)}}
-		</div>
+		</section>
 		<div style="text-align: right;margin-top: 15px"> 
 			<i class="fa fa-plus text-muted" ng-click="add()" style="cursor: pointer;"> Add</i>
 		</div>
 
-		<div class="pt-1">
+	
 			<label style="color: grey">How long have you been experiencing the above symptom(s) ?</label>
-			<select class="form-control" style="width:90%" ng-model="user.period">
+			<select class="form-control" style="" ng-model="user.period">
                 <option value="" selected="selected" disabled="disabled">_select</option>
                 <option style="font-size: 14px">few days ago</option>
                 <option style="font-size: 14px">one week</option>
@@ -130,17 +138,17 @@
 		<div class="pt-1">
 		<label style="color: grey">How do you feel right now ? <span class="text-danger">*</span><br><small>(e.g I am having body pains, I feel so weak, etc.)
 		</small></label>
-		<textarea placeholder="Write..."  ng-model="user.how" class="form-control pl-1" style="height: 120px;width: 90%"></textarea>
+		<textarea placeholder="Write..."  ng-model="user.how" class="form-control pl-1" style="min-height: 120px;"></textarea>
 	</div>
 		
-	</div>
+</section>
 	
-</div>
-<div class="col-md-12 col-sm-12" ng-if="user.pregnant">
-	<label style="color: grey">How long has the pregnancy been ?</label>
-    <div class="text-info">{{pregMsg}}</div>
-    <div>
-        <select ng-model="user.lmp" class="form-control" style="width: 90%">
+<section  ng-if="user.pregnant">
+    <div class="pt-1">
+	   <label style="color: grey">How long has the pregnancy been ?</label>
+       <div class="text-info">{{pregMsg}}</div>
+   
+        <select ng-model="user.lmp" class="form-control" style="">
         	<option value="" selected="selected">_select</option>
           	<option style="font-size: 14px" > a month</option>
             <option style="font-size: 14px" >less than 2 months</option>
@@ -152,14 +160,14 @@
             <option style="font-size: 14px" >9 months</option>
         </select>
     </div>                                   
-</div>
+</section>
 
 
-<div class="col-md-12 col-sm-12 pt-1" ng-if="user.getPregnant">
-
+<section class="pt-1" ng-if="user.getPregnant">
+  <div class="pt-1">
   <label style="color: grey;">When was your last menstruation ?</label>
   <div>{{lmpMsg}}</div>
-  <select class="form-control" style="width:90%" ng-model="user.lmp">
+  <select class="form-control" style="" ng-model="user.lmp">
       <option value="" selected="selected" disabled="disabled">_select</option>
       <option style="font-size: 14px">few days ago</option>
       <option style="font-size: 14px">one week ago</option>
@@ -173,43 +181,67 @@
       <option style="font-size: 14px">over two years ago</option>
       <option style="font-size: 14px">I am in menopause</option>
   </select>
+  </div>
   
   <div class="pt-1">
     <label style="color: grey">What complaint do you have for pregnancy ? <span class="text-muted"></span></label>
       <div class="text-danger">{{getPregnantMsg}}</div>
-      <textarea class="form-control pl-1" ng-model="user.getPregIssue" placeholder="write..." style="height: 200px;width: 90%"></textarea>
+      <textarea class="form-control pl-1" ng-model="user.getPregIssue" placeholder="write..." style="min-height: 200px;"></textarea>
   </div>
-</div>
+</section>
 
 
-<div class="col-md-12 col-sm-12 pt-1" ng-if="user.accident">
-	<label style="color: grey">Where did you sustain injuries ? <span class="text-muted">(e.g I had a car accident and i broke my leg )</span></label>
+<section ng-if="user.accident">
+  <div>
+	  <label style="color: grey">Where did you sustain injuries ? <span class="text-muted"></span></label>
     <div class="text-danger">{{accMsg}}</div>
-    <textarea class="form-control pl-1" ng-model="user.injuries" placeholder="write..." style="height: 200px;width: 90%"></textarea>
-</div>
-<div class="col-md-12 col-sm-12 pt-1" ng-if="user.stroke">
-	<label style="color: grey">Where did you sustain paralysis ?</label>
+    <textarea class="form-control pl-1" ng-model="user.injuries" placeholder="write..." style="min-height: 200px;"></textarea>
+  </div>
+</section>
+<section ng-if="user.stroke">
+  <div>
+	   <label style="color: grey">Where did you sustain paralysis ?</label>
     <div class="text-danger">{{paraMsg}}</div>
-    <textarea class="form-control pl-1" placeholder="write..." ng-model="user.paralysis" style="height: 200px;width: 90%"></textarea>
-</div>
-<div class="col-md-12 col-sm-12 pt-1" ng-if="user.eye">
-	<label style="color: grey">What is wrong with your eye ?</label>
+    <textarea class="form-control pl-1" placeholder="write..." ng-model="user.paralysis" style="min-height: 200px;"></textarea>
+  </div>
+</section>
+<section ng-if="user.eye">
+  <div>
+	  <label style="color: grey">What is wrong with your eye ?</label>
     <div class="text-danger">{{eyeMsg}}</div>
-    <textarea class="form-control pl-1" placeholder="write..." ng-model="user.eyeIssue" style="height: 200px;width: 90%"></textarea>
-</div>
-<div class="col-md-12 col-sm-12 pt-1" ng-if="user.ear">
-	<label style="color: grey">What is wrong with your ear ?</label>
+    <textarea class="form-control pl-1" placeholder="write..." ng-model="user.eyeIssue" style="min-height: 200px;"></textarea>
+  </div>
+</section>
+<section ng-if="user.ear">
+  <div>
+	  <label style="color: grey">What is wrong with your ear ?</label>
     <div class="text-danger">{{earMsg}}</div>
-    <textarea class="form-control pl-1" placeholder="write..." ng-model="user.earIssue" style="height: 200px;width: 90%"></textarea>	
-</div>
-<div class="col-md-12 col-sm-12 pt-1" ng-if="user.teeth">
+    <textarea class="form-control pl-1" placeholder="write..." ng-model="user.earIssue" style="min-height: 200px;"></textarea>	
+  </div>
+</section>
+<section ng-if="user.teeth">
+ <div>
 	<label style="color: grey">What is wrong with you teeth ?</label>
     <div class="text-danger">{{teeMsg}}</div>
-    <textarea class="form-control pl-1" placeholder="write..." ng-model="user.teethIssue" style="height: 200px;width: 90%"></textarea>
-</div>
-<hr>
-<div  class="col-md-12 col-sm-12">	
-	<div class="pt-2">
+    <textarea class="form-control pl-1" placeholder="write..." ng-model="user.teethIssue" style="min-height: 200px;"></textarea>
+  </div>
+</section>
+<section ng-if="user.other">
+  <div>
+    <label style="color: grey">What is your reason for seeing a doctor ?</label>
+    <div class="text-danger">{{otherMsg}}</div>
+    <textarea class="form-control pl-1" placeholder="write..." ng-model="user.otherIssue" style="min-height: 200px;"></textarea>
+  </div>
+</section>
+<section ng-if="user.personal">
+  <div>
+    <label style="color: grey">Why do you need a personal doctor ?</label>
+    <div class="text-danger">{{personalMsg}}</div>
+    <textarea class="form-control pl-1" placeholder="write..." ng-model="user.personalIssue" style="min-height: 200px;"></textarea>
+  </div>
+</section>
+<section>	
+	<div>
 		<label style="color: grey">Do you have an image or video associated with the complaint ?</label>
 		
 		 <input type="file" id="file" class=""  file-model = "files" multiple="multiple"> 
@@ -220,13 +252,13 @@
 		<div class="pt-2"><i class="fa fa-warning">&nbsp;</i> <span class="text-muted" style="font-size:.85em;">Not more than 6 files is allowed.File size must be less than 8mb.Type jpeg,jpg,png,mp3,mp4</span></div>
 
 	</div>
-	<div class="pt-2 row"> 
-		<div class="col-sm-12 col-md-12 col-lg-12" id="canvasArea">
+	<div> 
+		<div id="canvasArea">
 			<!--<canvas id="canvas" width=150 height=120></canvas>-->
 		</div> 
 		<div class="clearfix"></div>
 		<hr>         
-		<div class="col-sm-12 col-md-12 col-lg-12" style="text-align: center">
+		<div style="text-align: center">
 			<div style="text-align: left;" ng-if="isCapture">
 				<a href="" ng-click="closeCam()" class="btn btn-sm btn-neutral">Close Camera</a>
 			</div>
@@ -239,7 +271,7 @@
 		</div>		
 		 
 	</div>
-</div>
+</section>
 
 
 <!--<div class="clearfix"></div>
@@ -277,5 +309,6 @@
 </div>
 
 </div>
+
     
 

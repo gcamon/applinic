@@ -920,8 +920,14 @@ var myModel = function () {
 		patient_email: String,
 		patient_id: String,
 		doctor_specialty: String,
+		patient_city: String,
+		doctor_city: String,
+		patient_country: String,
+		doctor_country: String,
+		files: Array,
+		message: String,
 		id: Number
-	})
+	});
 
 	
 	/*var callingSchema = Schema({

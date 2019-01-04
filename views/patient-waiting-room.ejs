@@ -164,7 +164,18 @@
             <main id="main" class="tg-haslayout complaint-main" ng-controller="patientWaitingRoomController" style="" ng-cloak>
                 <section class="container">                    
                     <div class="row">
-                        <div class="col-sm-12 col-md-12 col-lg-12">                           
+                        <div class="col-sm-12 col-md-12 col-lg-12">  
+                          <div ng-show='stateIsLoading' style="text-align: center;padding-top: 10px;">
+                            <span class="btn btn-warning btn-sm">Loading...</span>
+                          </div>  
+                          <div ng-show='!onlineStatus' style="text-align: center;padding-top: 10px;" ng-cloak>
+                            <span class="btn btn-warning btn-sm text-white font-1_2">No internet connections
+                            </span>
+                          </div>
+                          <div ng-show='onlineStatus && !acknowledged && !stateIsLoading' style="text-align: center;padding-top: 10px;" ng-cloak>
+                            <span class="btn btn-success btn-sm text-white font-1_2">You're connected to internet
+                            </span>
+                          </div>                                                
                             <div class="waiting-roo">
                                 <div class="complain-list" id="complaint">
                                     <!--<ul>

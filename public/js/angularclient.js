@@ -7,14 +7,31 @@ app.run(['$rootScope',function($rootScope){
 
  $rootScope.$on('$routeChangeStart',function(){
      $rootScope.stateIsLoading = true;
+     $rootScope.acknowledged = true;
  });
 
 
   $rootScope.$on('$routeChangeSuccess',function(){
       $rootScope.stateIsLoading = false;
+      $rootScope.acknowledged = true;
  });
 
 }]);
+
+app.run(function($window, $rootScope) {
+    $rootScope.online = navigator.onLine;
+    $window.addEventListener("offline", function() {
+      $rootScope.$apply(function() {
+        $rootScope.online = false;
+      });
+    }, false);
+
+    $window.addEventListener("online", function() {
+      $rootScope.$apply(function() {
+        $rootScope.online = true;
+      });
+    }, false);
+});
 
 app.config(['$paystackProvider','$routeProvider',
   function($paystackProvider,$routeProvider){
@@ -700,7 +717,7 @@ app.config(['$paystackProvider','$routeProvider',
     controller: "adminConsultationRequestCtrl"
  })
 
- .when("/Commissions",{
+ .when("/commissions",{
     templateUrl: "/assets/pages/utilities/commission.html",
     controller: "adminCommissionRequestCtrl"
  })
@@ -1579,9 +1596,9 @@ app.service("changPasswordService",["$resource",function($resource){
 }]);
 
 app.controller('loginController',["$scope","$http","$location","$window","$resource",
-  "ModalService","templateService","localManager","userLoginService","changPasswordService","phoneCallService",
+  "ModalService","templateService","localManager","userLoginService","changPasswordService","phoneCallService","$timeout",
   "$rootScope","mySocket",function($scope,$http,$location,$window,$resource,ModalService,
-    templateService,localManager,userLoginService,changPasswordService,phoneCallService,$rootScope,mySocket) {
+    templateService,localManager,userLoginService,changPasswordService,phoneCallService,$timeout,$rootScope,mySocket) {
   $scope.login = {};
   $scope.error = "";  
   var count = 0
@@ -1796,6 +1813,17 @@ app.controller('loginController',["$scope","$http","$location","$window","$resou
             return val;
         }
 }
+
+
+  $scope.$watch('online', function(newStatus) { 
+    $rootScope.onlineStatus = newStatus;
+    $rootScope.acknowledged = false;
+    if(newStatus) {
+      $timeout(function(){
+        $rootScope.acknowledged = true;
+      },3000)
+    }
+  });
   
 }]);
 
@@ -1934,9 +1962,9 @@ app.service("getCountryService",["$resource",function($resource){
 }]);
 
 app.controller('signupController',["$scope","$http","$location","$window","templateService",
-  "$resource","$rootScope","localManager","userSignUpService","phoneVerifyService","getCountryService",'phoneCallService',
+  "$resource","$rootScope","localManager","userSignUpService","phoneVerifyService","getCountryService",'phoneCallService',"$timeout",
   function($scope,$http,$location,$window,templateService,$resource,$rootScope,localManager,
-    userSignUpService,phoneVerifyService,getCountryService,phoneCallService) {
+    userSignUpService,phoneVerifyService,getCountryService,phoneCallService,$timeout) {
 
   var signUp = userSignUpService; //$resource('/user/signup',null,{userSignup:{method:"POST"},emailCheck:{method:"PUT"}});
   $scope.countries = localManager.getValue("countries") || getCountries();
@@ -2283,6 +2311,16 @@ app.controller('signupController',["$scope","$http","$location","$window","templ
       $scope.passwordMessage = "Password must be more than six characters. Make sure you used conbinations of letters and numbers for security purposes."
     if(str.length > 6){
       $scope.passwordMessage = "";
+    }
+  });
+
+  $scope.$watch('online', function(newStatus) { 
+    $rootScope.onlineStatus = newStatus;
+    $rootScope.acknowledged = false;
+    if(newStatus) {
+      $timeout(function(){
+        $rootScope.acknowledged = true;
+      },3000)
     }
   });
   //password must be checked lastly. Very important.
@@ -3780,6 +3818,20 @@ app.controller("bookingDocModalController",["$scope","templateService","$http","
       }
     }
 
+    if($scope.patient.other) {
+      if(!$scope.patient.otherIssue) {
+        $scope.otherMsg = "This field cannot be empty.";
+        return false;
+      }
+    }
+
+    if($scope.patient.personal) {
+      if(!$scope.patient.personalIssue) {
+        $scope.personalMsg = "This field cannot be empty.";
+        return false;
+      }
+    }
+
     $scope.sendRequest();
 
   }
@@ -3846,6 +3898,16 @@ app.controller("bookingDocModalController",["$scope","templateService","$http","
 
       if($scope.patient.hasMedicated) {
          $scope.patient.history += "This patient has tried other medications or self medications but the complaints persisted."
+      }
+
+      if($scope.patient.personal) {
+         $scope.patient.history += "This patient needs a personal doctor. The reason is explained below: <br>" +
+         "<blockquote>" + $scope.patient.personalIssue + "</blockquote>";
+      }
+
+      if($scope.patient.other) {
+         $scope.patient.history += "Other issues this patient had was also explained below: <br>" +
+         "<blockquote>" + $scope.patient.otherIssue + "</blockquote>";
       }
 
 
@@ -17370,12 +17432,27 @@ function($scope,$location,$window,$http,templateService,localManager,templateUrl
       }
     }
 
-     if($scope.user.teeth) {
+    if($scope.user.teeth) {
       if(!$scope.user.teethIssue) {
         $scope.teeMsg = "This field cannot be empty.";
         return false;
       }
     }
+
+    if($scope.user.personal) {
+      if(!$scope.user.personalIssue) {
+        $scope.personalMsg = "This field cannot be empty.";
+        return false;
+      }
+    }
+
+    if($scope.user.other) {
+      if(!$scope.user.otherIssue) {
+        $scope.otherMsg = "This field cannot be empty.";
+        return false;
+      }
+    }
+
 
     sendComplait();
 
@@ -17451,6 +17528,17 @@ function($scope,$location,$window,$http,templateService,localManager,templateUrl
          $scope.user.description += "This patient is having <b>teeth</b> problem as explained: <br>" +
          "<blockquote>" + $scope.user.teethIssue + "</blockquote>";
       }
+
+      if($scope.user.personal) {
+         $scope.user.description += "This patient needs a personal doctor. The reason is explained below: <br>" +
+         "<blockquote>" + $scope.user.personalIssue + "</blockquote>";
+      }
+
+      if($scope.user.other) {
+         $scope.user.description += "Other issues this patient had was also explained below: <br>" +
+         "<blockquote>" + $scope.user.otherIssue + "</blockquote>";
+      }
+
 
      /* if($scope.patient.hasMedicated) {
          $scope.patient.history += "This patient has tried other medications or self medications but the complaints persisted."
@@ -17609,9 +17697,8 @@ function($scope,$location,$window,$http,templateService,localManager,templateUrl
           iconClose.className = "fa fa-times ml-1";
           iconClose.style.marginTop = "-85px";
           iconClose.style.marginRight = "20px";
-          iconClose.style.color = "red";
-          canvas.style.maxWidth = "100%";
-          canvas.style.maxHeight = "280px";
+          iconClose.style.color = "red";         
+          canvas.className = "image-fit";
           canvas.id = Math.floor(Math.random() * 9999999).toString();
           iconClose.id = Math.floor(Math.random() * 99999).toString();
           context = canvas.getContext('2d');
@@ -17720,6 +17807,7 @@ function($scope,$location,$window,$http,templateService,localManager,templateUrl
     }
 
   } catch(e) {
+    alert(e.mess)
     console.log(e.message);
   }
 
@@ -18901,12 +18989,13 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
   }
   
   //user this service within controllers to alert on every event status.
+  
   $rootScope.alertService = function (val,msg) {
     if (val) { 
       templateService.playAudio(val);
       $rootScope.alert = true;
       $rootScope.message = msg;
-      setTimeout(function(){
+      $timeout(function(){
         $scope.$apply(function(){
           $rootScope.alert = false;
           $rootScope.message = msg;
@@ -18915,6 +19004,15 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
     } 
   }
 
+  $scope.$watch('online', function(newStatus) { 
+    $rootScope.onlineStatus = newStatus;
+    $rootScope.acknowledged = false;
+    if(newStatus) {
+      $timeout(function(){
+        $rootScope.acknowledged = true;
+      },3000)
+    }
+  });
 
   $scope.isMenu = false;
 

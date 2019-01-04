@@ -840,9 +840,17 @@
     <div>
 
        <div> 
-            <div ng-show='stateIsLoading' style="text-align: center;padding-top: 10px">
-              <span class="btn btn-warning btn-sm"><b>Loading...</b></span>
-            </div>                               
+            <div ng-show='stateIsLoading' style="text-align: center;padding-top: 10px;">
+              <span class="btn btn-warning btn-sm">Loading...</span>
+            </div>  
+            <div ng-show='!onlineStatus' style="text-align: center;padding-top: 10px;" ng-cloak>
+              <span class="btn btn-warning btn-sm text-white font-1_2">No internet connections
+              </span>
+            </div>
+            <div ng-show='onlineStatus && !acknowledged && !stateIsLoading' style="text-align: center;padding-top: 10px;" ng-cloak>
+              <span class="btn btn-success btn-sm text-white font-1_2">You're connected to internet
+              </span>
+            </div>                                                    
             <div class="view-animate-container">  
                 <div class="view-animate" ng-view>
                 </div>
@@ -1254,8 +1262,16 @@
                                            </div>
                                             <div>
                                               <label class="custom-control custom-checkbox">
-                                                I need a personal doctor.
+                                                I need a personal doctor
                                                <input type="checkbox" class="custom-control-input" ng-model="patient.personal">
+                                                <span class="custom-control-indicator"></span>
+                                                <span class="custom-control-description" style="opacity:0;"></span>
+                                              </label> 
+                                           </div>
+                                           <div>                                    
+                                             <label class="custom-control custom-checkbox">
+                                                Other
+                                               <input type="checkbox" class="custom-control-input" ng-model="patient.other" >
                                                 <span class="custom-control-indicator"></span>
                                                 <span class="custom-control-description" style="opacity:0;"></span>
                                               </label> 
@@ -1271,11 +1287,11 @@
                                    <div class="pb-1">
                                        <div ng-repeat="i in symptomsList" style="position: relative;padding-bottom: 5px">           
                                             <input  type="text" placeholder="Enter symptom" ng-model="name" uib-typeahead="name for name in symptoms | filter:$viewValue | limitTo:15" class="form-control" style="width:90%">
-                                            <i class="fa fa-times text-muted" style="cursor: pointer;position: absolute;bottom: 10px;right: 12px" ng-click="remove(i.sn)" ng-if="i.sn !== 'a'"></i>
+                                            <i class="fa fa-times text-muted" style="cursor: pointer;position: absolute;bottom: 10px;right: 20px" ng-click="remove(i.sn)" ng-if="i.sn !== 'a'"></i>
                                             {{getSymptom(name)}}
                                         </div>
-                                        <div style="text-align: right;margin-top: 10px"> 
-                                            <button class="fa fa-plus btn btn-simple round  text-danger" ng-click="add()"></button> 
+                                        <div style="text-align: right;margin: 5px 30px 0"> 
+                                            <a href="" class="fa fa-plus text-muted" ng-click="add()"> Add</a> 
                                         </div>
                                    </div>
                                    <label class="text-muted">How long have you been experiencing the above symptom(s)?</label>
@@ -1388,11 +1404,23 @@
                                     <label class="text-muted">What is wrong with you teeth?</label>
                                     <div class="text-info">{{teeMsg}}</div>
                                     <textarea class="form-control pl-1" placeholder="write..." ng-model="patient.teethIssue" style="height: 200px;width: 90%"></textarea>
-                               </div>                                                                                         
+                               </div>
+                                <div class="pb-1" ng-if="patient.other">
+                                     
+                                    <label class="text-muted">What is your reason for seeing a doctor?</label>
+                                    <div class="text-info">{{otherMsg}}</div>
+                                    <textarea class="form-control pl-1" placeholder="write..." ng-model="patient.otherIssue" style="height: 200px;width: 90%"></textarea>
+                               </div>
+                                <div class="pb-1" ng-if="patient.personal">
+                                     
+                                    <label class="text-muted">Why do you need a personal doctor?</label>
+                                    <div class="text-info">{{personalMsg}}</div>
+                                    <textarea class="form-control pl-1" placeholder="write..." ng-model="patient.personalIssue" style="height: 200px;width: 90%"></textarea>
+                               </div>                                                                                                         
                            </form>                              
                                                 
-                            <p><i class="fa fa-info"> <small>consultation fees will be charged if your request is granted.</small></i></p> 
-                            <button class="btn btn-info" ng-click="validate()" ng-if="patient.sick || patient.pregnant || patient.personal || patient.stroke || patient.ear || patient.eye || patient.teeth || patient.accident || patient.getPregnant" ng-hide="status"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i> {{(loading) ? '' : 'send consultation request'}}</button>
+                            <!--<p><i class="fa fa-info"> <small>consultation fees will be charged if your request is granted.</small></i></p> -->
+                            <button class="btn btn-info" ng-click="validate()" ng-if="patient.sick || patient.pregnant || patient.personal || patient.stroke || patient.ear || patient.eye || patient.teeth || patient.accident || patient.getPregnant" ng-hide="status"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i> {{(loading) ? '' : 'Send consultation request'}}</button>
                            
                             <div class="p-2" ng-if="status">
                                 <i class="fa fa-check" style="color: green;font-size: 18px" ng-if="status"> {{status}} </i>

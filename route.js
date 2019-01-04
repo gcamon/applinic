@@ -1491,6 +1491,23 @@ var basicRoute = function (model,sms,io,streams,client) {
         req.body.sender_age = req.user.age;
         req.body.sender_gender = req.user.gender;
         req.body.sender_location = req.user.city + " " + req.user.country;
+        if(req.files){
+          req.body.files = [];
+          var fileUrl;
+          for(var i = 0; i < req.files.length; i++){
+            fileUrl = req.files[i].location || "/download/skills/" + req.files[i].filename; // this will be change to link dropbox;
+            var file = {
+              type: req.files[i].mimetype,
+              filename: req.files[i].filename,
+              path: fileUrl,
+              file_id: random,
+              external_link: req.files[i].location || "https://" + req.hostname + "/download/skills/" + req.files[i].filename
+            }
+            req.body.files.push(file);
+          }
+
+        }
+        
         var requestData = {};
         for(var item in req.body){
           if(req.body.hasOwnProperty(item) && item !== "receiverId") {
@@ -1499,7 +1516,7 @@ var basicRoute = function (model,sms,io,streams,client) {
         }
         
         model.user.findOne({user_id:req.body.receiverId},
-          {doctor_notification:1,presence:1,set_presence:1,phone:1,firstname:1,title:1,user_id:1,email:1,specialty:1})
+          {doctor_notification:1,presence:1,set_presence:1,phone:1,firstname:1,title:1,user_id:1,email:1,specialty:1,city:1,country:1})
         .exec(function(err,data){
           if(err) throw err;
 
@@ -1526,8 +1543,12 @@ var basicRoute = function (model,sms,io,streams,client) {
               patient_phone: req.user.phone,
               patient_email: req.user.email,
               patient_id: req.user.user_id,
-              doctor_specialty: data.specialty
-            })  
+              doctor_specialty: data.specialty,
+              patient_city: req.user.city,
+              doctor_city: data.city,
+              message: req.body.history,
+              files: (req.body.files) ? req.body.files : null
+            });
 
             consult.save(function(err,info){});       
 
