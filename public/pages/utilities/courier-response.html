@@ -1,6 +1,6 @@
 <div class="card p-2  card-center-1" style="position: relative;" ng-if="courierResponse">
 	<h5>Courier Order </h5>
-	<span style="position: absolute;top: 20px;right: 20px">Order ID: {{courierResponse.request_id}}</span>
+	<!--<span style="position: absolute;top: 20px;right: 20px">Order ID: {{courierResponse.request_id}}</span>-->
 	<hr>
 	<div>
 		Status:  <span style="font-weight: bold" ng-class="{'text-danger': !courierResponse.attended,'text-info': courierResponse.attended,'text-success':courierResponse.completed,'text-warning':courierResponse.is_paid}">{{(!courierResponse.verified || !courierResponse.attended) ? 'Pending' : (!courierResponse.is_paid && courierResponse.attended) ? 'Ready': (courierResponse.is_paid && !courierResponse.completed) ? 'On Delivery' : (courierResponse.completed) ? "Received" : ""}}</span> 

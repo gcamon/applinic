@@ -109,11 +109,52 @@
                     font-size: 14px!important;
                 }
 
-                /*@media screen and (max-width: 720px) {
+                @media screen and (max-width: 1024px) {
                     .text-center a {
                         margin-left: 20px;
                     }
-                }*/
+
+
+                    .view-animate-container {
+                   
+                    background: transparent !important;
+                   
+                    width: auto;
+                    margin-left: 0px
+
+                  }
+
+                  /*.brand {
+                    display: none!important;
+                  }*/
+
+                  .header .header-block-nav .notifications a {
+                    padding-right: 9px;
+                  }
+
+                 .header .header-block-nav>ul>li>a {
+                    padding: 0 10px;
+                    color: #4f5f6f;
+                  }
+                }
+
+                @media screen and (max-width: 720px) {
+                  .brand {
+                    display: none!important;
+                  }
+
+                 .prf {
+                    display: none!important;
+                  }
+
+                  .sarch {
+                    display: none!important;
+                  }
+
+                  li {
+                    border-right: none;
+                  }
+                }
           </style>
 
            
@@ -434,7 +475,7 @@
 
 
                              <li class="profile dropdown" ng-controller="topHeaderController">
-                                <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="" role="button" aria-haspopup="true" aria-expanded="false">
+                                <a class="nav-link dropdown-toggle prf" data-toggle="dropdown" href="" role="button" aria-haspopup="true" aria-expanded="false">
                                     <div class="img" style="background-image: url('<%= person.profile_pic_url %>')"> </div> 
                                     <span class="name">
                       <%= person.firstname %> !
@@ -467,7 +508,7 @@
                     </a> </div>
                             </li>
 
-                             <li class="dropdown">
+                             <li class="dropdown sarch">
                                 <a href="" class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown">
                                     <i class="fa fa-search text-warning" aria-hidden="true"></i> Searches
                                 </a>
@@ -526,7 +567,7 @@
                                     <span> Add new patient</span></a>-->
                       
                         <a ng-controller="balanceController" href="#/transactions" class="btn btn-info btn-sm header-btn" style="float:right;margin: 20px 10px 20px 0"><i class="fa fa-money"></i>
-                            <span ng-cloak>MediPay Balance |  {{balance}}</span>
+                            <span ng-cloak>Balance |  {{balance}}</span>
                         </a>  
                      </div>
                 </header>

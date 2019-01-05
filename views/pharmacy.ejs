@@ -57,15 +57,11 @@
 
                   }
 
-                  @media screen and (max-width: 960px) {
+                   @media screen and (max-width: 1024px) {
                     .text-center a {
                         margin-left: 20px;
                     }
 
-                    .btn-sm {
-                        float: left;
-                        margin-top: 5px
-                    }
 
                     .view-animate-container {
                    
@@ -75,7 +71,39 @@
                     margin-left: 0px
 
                   }
+
+                  /*.brand {
+                    display: none!important;
+                  }*/
+
+                  .header .header-block-nav .notifications a {
+                    padding-right: 9px;
+                  }
+
+                 .header .header-block-nav>ul>li>a {
+                    padding: 0 10px;
+                    color: #4f5f6f;
+                  }
                 }
+
+                @media screen and (max-width: 720px) {
+                  .brand {
+                    display: none!important;
+                  }
+
+                 .prf {
+                    display: none!important;
+                  }
+
+                  .sarch {
+                    display: none!important;
+                  }
+
+                  li {
+                    border-right: none;
+                  }
+                }
+
 
           </style>
           <script src="/assets/js/vendor2.js"></script>
@@ -205,7 +233,7 @@
                                                  
 
                             <li class="profile dropdown">
-                                            <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="" role="button" aria-haspopup="true" aria-expanded="false">
+                                            <a class="nav-link dropdown-toggle prf" data-toggle="dropdown" href="" role="button" aria-haspopup="true" aria-expanded="false">
                                                 <div class="img" style="background-image: url(<%= userInfo.profile_pic_url %>)"> </div> 
                                                 <span class="name">
                                   <%= userInfo.firstname %> <%= userInfo.name %>
@@ -232,7 +260,7 @@
                                 </a> </div>
                             </li>
 
-                             <li class="dropdown">
+                             <li class="dropdown sarch">
                                 <a href="" class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown">
                                     <i class="fa fa-search text-warning" aria-hidden="true"></i> Searches
                                 </a>
