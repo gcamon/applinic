@@ -558,6 +558,10 @@
                                     </div>
 
                                     <div class="col-sm-12 col-md-12 hidden-md-up dropdown" style="position: relative;"> 
+                                         <div class="btn btn-simple btn-block mt-2 round mob-art" style="font-size: 14px;" >
+                                             <a href="#/need-specialist" class="text-muted text-danger"  id="navbarDropdownMenuLink23" style="margin-left: -15px"> <i class="fa fa-user-md"></i> Need a Doctor</a> 
+                                                                            
+                                        </div>
                                         <div class="btn btn-simple btn-block mt-2 round mob-art" style="font-size: 14px;" >
                                              <a href="" class="text-muted dropdown-toggle "  id="navbarDropdownMenuLink23" data-toggle="dropdown" ng-click="getAccess('qs')" style="margin-left: -15px"> <i class="fa fa-search"></i>  Quick Searches </a> 
                                                                             
@@ -570,20 +574,20 @@
                                                 <i class="fa fa-times" style="float: right;" ng-click="closeAccDiv('qs')"></i>
                                             </h5>
                                             <div class="clearfix"></div>
-                                            <a class="btn btn-simple round"  href="#/need-specialist" ><i class="fa fa-user-md"></i>
+                                            <!--<a class="btn btn-simple round"  href="#/need-specialist" ><i class="fa fa-user-md"></i>
                                         <span class="text-danger">Need a Doctor?</span>
-                                        </a>
+                                        </a>-->
 
-                                        <a class="btn btn-simple round ml-1"  href="#/find-specialist" ><i class="fa fa-search"></i>
+                                        <a class="btn btn-simple round ml-1"  href="#/find-specialist" ng-click="closeAccDiv('qs')"><i class="fa fa-search"></i>
                                           <span  class="text-danger">Specialists</span>
                                         </a>
-                                         <a class="btn btn-simple round ml-1"  href="#/drug" ><i class="fa fa-search"></i>
+                                         <a class="btn btn-simple round ml-1"  href="#/drug" ng-click="closeAccDiv('qs')"><i class="fa fa-search"></i>
                                           <span  class="text-danger">Drugs</span>
                                         </a>
-                                         <a class="btn btn-simple round ml-1"  href="#/search-test" ><i class="fa fa-search"></i>
+                                         <a class="btn btn-simple round ml-1"  href="#/search-test" ng-click="closeAccDiv('qs')"><i class="fa fa-search"></i>
                                           <span  class="text-danger">Laboratory</span>
                                         </a>
-                                         <a class="btn btn-simple round ml-1"  href="#/scan-search" ><i class="fa fa-search"></i>
+                                         <a class="btn btn-simple round ml-1"  href="#/scan-search" ng-click="closeAccDiv('qs')"><i class="fa fa-search"></i>
                                           <span class="text-danger" ">Radiology</span>
                                         </a>
                                          </div>
