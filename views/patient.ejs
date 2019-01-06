@@ -151,6 +151,12 @@
                   }
                 }
 
+
+                /*===================================  new style sheet 1-5-19 ====================================================*/
+                video#player {
+                height: 180px;
+                }
+
           </style>
     </head>
 
@@ -528,27 +534,59 @@
                             <div class="col-md-12 col-sm-12 col-xs-12" ng-controller="balanceController">                                    
   
                                 <div class="row"> 
-                                    <div class="col-sm-12 col-md-8 col-lg-8" style="padding-left: 0;">  
+                                    <div class="col-sm-12 col-md-8 col-lg-8 hidden-md-down">  
                                         <!--<a class="btn btn-simple round"  href="#/help"><i class="fa fa-question-circle"></i>
                                         <span style="color:red">Need Help?</span>
                                         </a>-->
                                           
                                         <a class="btn btn-simple round"  href="#/need-specialist" ><i class="fa fa-user-md"></i>
-                                        <span style="color:red">Need a Doctor?</span>
+                                        <span class="hidden-md-down text-danger">Need a Doctor?</span>
                                         </a>
 
                                         <a class="btn btn-simple round ml-1"  href="#/find-specialist" ><i class="fa fa-search"></i>
-                                          <span style="color:red">Specialists</span>
+                                          <span  class="hidden-md-down text-danger">Specialists</span>
                                         </a>
                                          <a class="btn btn-simple round ml-1"  href="#/drug" ><i class="fa fa-search"></i>
-                                          <span style="color:red">Drugs</span>
+                                          <span  class="hidden-md-down text-danger">Drugs</span>
                                         </a>
                                          <a class="btn btn-simple round ml-1"  href="#/search-test" ><i class="fa fa-search"></i>
-                                          <span style="color:red">Laboratory</span>
+                                          <span  class="hidden-md-down text-danger">Laboratory</span>
                                         </a>
                                          <a class="btn btn-simple round ml-1"  href="#/scan-search" ><i class="fa fa-search"></i>
-                                          <span style="color:red">Radiology</span>
+                                          <span class="text-success" ">Radiology</span>
                                         </a>
+                                    </div>
+
+                                    <div class="col-sm-12 col-md-12 hidden-md-up dropdown" style="position: relative;"> 
+                                        <div class="btn btn-simple btn-block mt-2 round mob-art" style="font-size: 14px;" >
+                                             <a href="" class="text-muted dropdown-toggle "  id="navbarDropdownMenuLink23" data-toggle="dropdown" ng-click="getAccess('qs')" style="margin-left: -15px"> <i class="fa fa-search"></i>  Quick Searches </a> 
+                                                                            
+                                        </div>
+
+                                        
+
+                                        <div class="dropdown-menu dropdown-menu-right p-2"  aria-labelledby="navbarDropdownMenuLink23" id="accessBody1" style="line-height: 30px;font-size: 16px">                                            
+                                            <h5 class="p-0 m-0">
+                                                <i class="fa fa-times" style="float: right;" ng-click="closeAccDiv('qs')"></i>
+                                            </h5>
+                                            <div class="clearfix"></div>
+                                            <a class="btn btn-simple round"  href="#/need-specialist" ><i class="fa fa-user-md"></i>
+                                        <span class="text-danger">Need a Doctor?</span>
+                                        </a>
+
+                                        <a class="btn btn-simple round ml-1"  href="#/find-specialist" ><i class="fa fa-search"></i>
+                                          <span  class="text-danger">Specialists</span>
+                                        </a>
+                                         <a class="btn btn-simple round ml-1"  href="#/drug" ><i class="fa fa-search"></i>
+                                          <span  class="text-danger">Drugs</span>
+                                        </a>
+                                         <a class="btn btn-simple round ml-1"  href="#/search-test" ><i class="fa fa-search"></i>
+                                          <span  class="text-danger">Laboratory</span>
+                                        </a>
+                                         <a class="btn btn-simple round ml-1"  href="#/scan-search" ><i class="fa fa-search"></i>
+                                          <span class="text-danger" ">Radiology</span>
+                                        </a>
+                                         </div>
                                     </div>
                                 
 
@@ -641,14 +679,14 @@
 
                                   <li><a href=""> <i class="fa fa-user icon"></i> ID {{checkLogIn.user_id}} </a> </li>
 
-                                  <li> <a href="#/edit-picture"> <i class="fa fa-user icon"></i> Change profile picture </a> </li>
+                                  <li> <a href="#/edit-picture" class="h"> <i class="fa fa-user icon"></i> Change profile picture </a> </li>
 
                                   <li>
-                                     <a href="#/edit-profile" data-dismiss="modal"><i class="fa fa-gear icon"></i> Edit profile </a> 
+                                     <a href="#/edit-profile" data-dismiss="modal" class="h"><i class="fa fa-gear icon"></i> Edit profile </a> 
                                      </li>
                                     
                                     <li> 
-                                        <a href="#/create-family-account" ><i class="fa fa-users"></i>
+                                        <a href="#/create-family-account" class="h"><i class="fa fa-users"></i>
                                             Create Family Account
                                         </a>
                                     </li>
@@ -662,31 +700,31 @@
                                     <i class="fa arrow"></i>
                                 </a>
                                     <ul>
-                                        <li> <a href="#/find-specialist"><i class="fa fa-search text-warning" aria-hidden="true"></i> Doctor</a>
+                                        <li> <a href="#/find-specialist" class="h"><i class="fa fa-search text-warning" aria-hidden="true"></i> Doctor</a>
                                 </a> </li>
                                 <li>
-                                     <a href="#/special-center"><i class="fa fa-search text-warning" aria-hidden="true"></i> Special Center</a>
+                                     <a href="#/special-center" class="h"><i class="fa fa-search text-warning" aria-hidden="true"></i> Special Center</a>
                                 </li>
-                                 <li> <a href="#/pharmacy-in"><i class="fa fa-search text-warning" aria-hidden="true"></i> Pharmaceutical Center</a>
+                                 <li> <a href="#/pharmacy-in" class="h"><i class="fa fa-search text-warning" aria-hidden="true"></i> Pharmaceutical Center</a>
                                 </a> </li>
 
-                                 <li> <a href="#/laboratory-in"><i class="fa fa-search text-warning" aria-hidden="true"></i> Laboratory Center</a>
+                                 <li> <a href="#/laboratory-in" class="h"><i class="fa fa-search text-warning" aria-hidden="true"></i> Laboratory Center</a>
                                 </a> </li>
 
-                                 <li> <a href="#/radiology-in"><i class="fa fa-search text-warning" aria-hidden="true"></i> Radiology Center</a>
+                                 <li> <a href="#/radiology-in" class="h"><i class="fa fa-search text-warning" aria-hidden="true"></i> Radiology Center</a>
                                 </a> </li>
 
 
-                                 <li> <a href="#/drug"><i class="fa fa-search text-warning" aria-hidden="true"></i> Drug
+                                 <li> <a href="#/drug" class="h"><i class="fa fa-search text-warning" aria-hidden="true"></i> Drug
                                 </a> </li>
 
-                                 <li> <a href="#/scan-search"><i class="fa fa-search text-warning" aria-hidden="true"></i> Radiology test
+                                 <li> <a href="#/scan-search" class="h"><i class="fa fa-search text-warning" aria-hidden="true"></i> Radiology test
                                 </a> </li>
 
-                                <li><a href="#/search-test"><i class="fa fa-search text-warning" aria-hidden="true"></i> Laboratory Test
+                                <li><a href="#/search-test" class="h"><i class="fa fa-search text-warning" aria-hidden="true"></i> Laboratory Test
                                 </a> </li>
 
-                                <li><a href="#/procedure"><i class="fa fa-search text-warning" aria-hidden="true"></i> Skills &amp; Procedures
+                                <li><a href="#/procedure" class="h"><i class="fa fa-search text-warning" aria-hidden="true"></i> Skills &amp; Procedures
                                 </a> </li>
                                        
                                     </ul>
@@ -694,7 +732,7 @@
                                   
 
                                 
-                                <li class="active"> <a href="#/welcome" > <!-- ng-click="dashboardhome()" -->
+                                <li class="active"> <a href="#/welcome"  class="h"> <!-- ng-click="dashboardhome()" -->
                             <i class="fa fa-home"></i>Patient's Dashboard
                         </a> </li>
 
@@ -713,7 +751,7 @@
                                     <ul style="max-height:300px;overflow-y:auto" ng-cloak>
                                         <li style="text-align: center;"><input type="" ng-model="filter.doctor_firstname" class="form-contro" placeholder="Filter by name or specialty" style="width: 85%;border: none;padding: 5px 10px;background-color: grey;"></li>
 
-                                        <li ng-repeat= " i in patientsDoctorList | filter: filter.doctor_firstname"  ng-click="userDoctor(i.doctor_id)" style="margin-left: -15px" ng-if="i">
+                                        <li ng-repeat= " i in patientsDoctorList | filter: filter.doctor_firstname" id="{{i.doctor_id}}" ng-click="userDoctor(i.doctor_id)" style="margin-left: -15px" ng-if="i">
                                            <a href="" style="position: relative;font-size: 12px" ng-cloak> 
                                                 <img ng-src="{{i.doctor_profile_pic_url}}" class="img-responsive" style="width:32px;height:32px;margin-right: 2px;display: inline-block;" alt="image description"> 
                                                 <span style="display: inline-block;width: 100px;" class="ellipsis">{{i.doctor_firstname}} </span><span ng-if="i.presence === true" class="online" style="margin-right: 15px"></span><span ng-if="i.presence !== true" class="online" style="background-color: grey;margin-right: 15px"></span>
@@ -796,19 +834,19 @@
                         </a>
                                     <ul>
                                         <li> 
-                                            <a href="#/wallet">
+                                            <a href="#/wallet" class="h">
                                                 Fund Wallet
                                             </a> 
                                         </li>
 
                                         <li> 
-                                            <a href="#/transfer">
+                                            <a href="#/transfer" class="h">
                                                 Transfer Funds
                                             </a> 
                                         </li>
 
                                         <li> 
-                                            <a href="#/transactions">
+                                            <a href="#/transactions" class="h">
                                                 View Transactions
                                             </a> 
                                         </li>
@@ -836,15 +874,15 @@
                             <i class="fa arrow"></i>
                                     </a>
                                     <ul>
-                                        <li> <a href="#/faq">
+                                        <li> <a href="#/faq" class="h">
                                     FAQ
                                 </a> </li>
 
-                                 <li> <a href="#/announcement">
+                                 <li> <a href="#/announcement" class="h">
                                     Announcement
                                 </a> </li>
 
-                                 <li> <a href="#/help">
+                                 <li> <a href="#/help" class="h">
                                     Need help
                                 </a> </li>                                
                                        
@@ -926,7 +964,13 @@
 
         <div>
             <label>You can attach video or image file(s) associated with this illness(if any)</label>
-           <input type="file"  id="file" file-model = "files" multiple="multiple"/>
+            <div class="box">
+                    <input type="file" name="file-1[]" id="file-1" class="inputfile inputfile-1" data-multiple-caption="{count} files selected" multiple />
+                    <label for="file-1"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="17" viewBox="0 0 20 17"><path d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z"/></svg> <span>Choose a file&hellip;</span></label>
+                </div>
+
+
+         <!--   <input type="file"  id="file" file-model = "files" multiple="multiple"/> -->
            <i class="fa fa-warning">&nbsp; <strong style="font-size: 14px;">Not more than 5 files is allowed.File size must be less than 8mb.Type jpeg,jpg,mp3,mp4</strong></i>
         </div>
 
@@ -1091,7 +1135,7 @@
                             <fieldset>
                                 <caption>Your question?</caption>
                                 <div>
-                                    <textarea style="height: 300px; color: black" placeholder="write.." ng-model="patient.message"></textarea>
+                                    <textarea style="max-height: 300px; color: black" placeholder="write.." ng-model="patient.message"></textarea>
                                 </div>
                         <button class="btn btn-primary" ng-click="getAnswer()">Get answer</button>
                             </fieldset>
@@ -1197,7 +1241,7 @@
                 <div class="modal-body">
                                 
                     <div class="row">
-                        <div class=" col-md-3 col-sm-12 pull-right" style="padding-right: 0px;max-height: 300px">
+                        <div class=" col-md-3 col-sm-12 pull-right" style="padding-right: 0px; max-height: 300px">
                             <img alt="image description" height="120" ng-src="{{docInfo.profile_pic_url}}" class="image-fit">                                  
                         <div><span class=""></span></div>                                                    
                         </div>

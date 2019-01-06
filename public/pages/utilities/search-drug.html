@@ -34,7 +34,7 @@
                                     
                       <input type="text" class="form-control" stid="age"  type="text" placeholder="Enter drug name" ng-model="drug.name" uib-typeahead="drug.name for drug in drugs | filter:$viewValue | limitTo:15">
                        {{getDrug(drug.name)}} 
-                      <i class="fa fa-times text-muted" style="cursor: pointer;position: absolute;right:-10px;bottom: 10px" ng-click="remove(i.sn)" ng-if="i.sn !== 'a'"></i>
+                      <i class="fa fa-times text-muted" style="cursor: pointer;position: absolute;right:10px;bottom: 10px" ng-click="remove(i.sn)" ng-if="i.sn !== 'a'"></i>
                     
                 </div>
            

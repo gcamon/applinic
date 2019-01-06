@@ -1886,21 +1886,29 @@ app.controller("balanceController",["$rootScope","$scope","$resource","localMana
   };
 
   var elem = document.getElementById('accessBody'); 
-
-  $scope.getAccess = function() {
-    $scope.accLoading = true;
-    elem.style.display = "block";
-    manageRecordAccessService.query(function(response){
-      console.log(response)
-      $scope.accLoading = false;
-      $scope.accessList = response;
-    });
+  var elem1 = document.getElementById('accessBody1');
+  $scope.getAccess = function(search) {
+    if(search) {
+      elem1.style.display = "block";
+    } else {
+      $scope.accLoading = true;
+      elem.style.display = "block";
+      manageRecordAccessService.query(function(response){
+        console.log(response)
+        $scope.accLoading = false;
+        $scope.accessList = response;
+      });
+    }
   }
 
   
 
-  $scope.closeAccDiv = function() {
-    elem.style.display = "none"
+  $scope.closeAccDiv = function(se) {
+    if(se){
+      elem1.style.display = "none";
+    } else {
+      elem.style.display = "none";
+    }
   }
 
   $scope.updateAccess = function(user,e) {
@@ -4531,10 +4539,10 @@ app.controller("docAppointmentController",["$scope","$rootScope","$location","te
   }
 
   $scope.viewAppointment = function(sessionId) {
+    $("#app").removeClass("sidebar-open");
     var session = {
       id: sessionId
     }
-
     appointment.view(session,function(data){
       if(data.session_id){
         templateService.holdAppointmentData = data;
@@ -8329,6 +8337,7 @@ app.controller("patientPanelController",["$scope","$location","$http","$rootScop
   }  
 
   $scope.viewPrescription = function (id) {
+    $("#app").removeClass("sidebar-open");
     if(id === undefined){
       templateService.holdPrescriptions = medical.prescriptions;
       localManager.setValue("holdPrescriptions",medical.prescriptions);
@@ -8351,6 +8360,7 @@ app.controller("patientPanelController",["$scope","$location","$http","$rootScop
   }
 
   $scope.viewLabTest = function () {
+     $("#app").removeClass("sidebar-open");
     localManager.setValue("currentPageForPatients","/patient/laboratory-test");   
     if($rootScope.singleView){
       $rootScope.isViewSingle = false; //prevents single view;
@@ -8360,6 +8370,7 @@ app.controller("patientPanelController",["$scope","$location","$http","$rootScop
   }
 
   $scope.viewScanTest = function () {
+    $("#app").removeClass("sidebar-open");
     localManager.setValue("currentPageForPatients","/patient/radiology-test");
     if($rootScope.singleView){
       $rootScope.isViewSingle = false; //prevents single view;
@@ -8406,6 +8417,7 @@ app.controller("patientPanelController",["$scope","$location","$http","$rootScop
   }
 
   $scope.viewLabPending = function () {   
+     $("#app").removeClass("sidebar-open");
     if($rootScope.singleView){
       $rootScope.isViewSingle = false; //prevents single view;
       $rootScope.singleView = [];
@@ -8414,6 +8426,7 @@ app.controller("patientPanelController",["$scope","$location","$http","$rootScop
   }
 
   $scope.viewRadioPending = function () {
+    $("#app").removeClass("sidebar-open");
     if($rootScope.singleView){
       $rootScope.isViewSingle = false; //prevents single view;
       $rootScope.singleView = [];
@@ -8428,6 +8441,7 @@ app.controller("patientPanelController",["$scope","$location","$http","$rootScop
   */
   
   $scope.switchAccount = function(account) {
+    $("#app").removeClass("sidebar-open");
      var count = {};
      count.val = 0;
      ModalService.showModal({
@@ -9637,6 +9651,8 @@ function($scope,$location,$rootScope,$http,$interval,templateService,localManage
       $location.path(page);
       mySocket.removeAllListeners("new_msg");
 
+     $("#app").removeClass("sidebar-open");
+
       //remove queue of received messages if any
       var elemPos = $rootScope.patientsDoctorList.map(function(x){return x.doctor_id}).indexOf(id);
       if(elemPos !== -1 && $rootScope.patientsDoctorList[elemPos].hasOwnProperty("queueLen"))
@@ -9647,6 +9663,7 @@ function($scope,$location,$rootScope,$http,$interval,templateService,localManage
 
     getList("/user/doctor/my-online-patients","doctor");
     $scope.userPatient = function(id){
+      $("#app").removeClass("sidebar-open");
       var callerId = templateService.holdDoctorIdForCommunication;
       localManager.setValue("receiver",id);
       localManager.setValue('caller',callerId);    
@@ -17694,7 +17711,7 @@ function($scope,$location,$window,$http,templateService,localManager,templateUrl
         if($scope.blobs.length <= 5) {    
           canvas = document.createElement('canvas');
           iconClose = document.createElement('i');
-          iconClose.className = "fa fa-times ml-1";
+          iconClose.className = "fa fa-times ml-1 videoPicDelete";
           iconClose.style.marginTop = "-85px";
           iconClose.style.marginRight = "20px";
           iconClose.style.color = "red";         

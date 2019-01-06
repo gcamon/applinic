@@ -63,7 +63,7 @@
 				
 			<input  type="text" placeholder="Enter test name" ng-model="test.name" uib-typeahead="test.name for test in tests | filter:$viewValue | limitTo:15" class="form-control">
 			{{getTest(test.name)}} 
-			<i class="fa fa-times text-muted" style="cursor: pointer;position: absolute;right:-10px;bottom: 10px" ng-click="remove(i.sn)" ng-if="i.sn !== 'a'"></i>				
+			<i class="fa fa-times text-muted" style="cursor: pointer;position: absolute;right:10px;bottom: 10px" ng-click="remove(i.sn)" ng-if="i.sn !== 'a'"></i>				
 					
 		</div>
 

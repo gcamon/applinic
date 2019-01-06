@@ -347,6 +347,10 @@ $(function () {
     $("#sidebar-overlay").on('click', function() {
         $("#app").removeClass("sidebar-open");
     });
+
+    $(".h").on('click', function() {
+        $("#app").removeClass("sidebar-open");
+    });
     
 });
 //Flot Bar Chart
