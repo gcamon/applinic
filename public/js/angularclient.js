@@ -10204,7 +10204,7 @@ app.controller("adminGetUserCtrl",["$scope","$location","$rootScope","$http","lo
 
   $scope.deleteAcc = function(userId){
     var sure = prompt("Enter confirm key. Note account will be erased from the database and will never be recovered.");
-    if(sure === 'yeye!') {
+    if(sure === 'yeyemaster!') {
       $http({
         method  : "DELETE",
         data  : {userId: userId},

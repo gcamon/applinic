@@ -7098,7 +7098,7 @@ router.get("/user/patient/get-my-doctors",function(req,res){
             
             count++
           } 
-          res.send(sendList);
+          res.json(sendList);
         
       })
     } else {
@@ -7112,7 +7112,7 @@ router.get("/user/patient/get-my-doctors",function(req,res){
     if(req.user){
       model.user.findOne({"accepted_doctors.doctor_id":req.user.user_id},{doctor_patients_list:1,_id:0},function(err,data){
         if(err) throw err;
-        res.send(data);
+        res.json(data);
       });
       //res.json({doctor_patients_list: req.user.doctor_patients_list});
     } else {
