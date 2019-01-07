@@ -3237,11 +3237,9 @@ var basicRoute = function (model,sms,io,streams,client) {
 
     router.get("/user/doctor/appointment/view",function(req,res){
       if(req.user) {
-        console.log(req.query);
         var startDate = moment().year(req.query.year).month(req.query.month).startOf("month");
         var endDate = startDate.clone().endOf('month');
 
-        console.log(startDate, "=======", endDate);
         model.appointment.find({doctorId: req.user.user_id, date: {$gt: startDate,$lt: endDate},attended:false},function(err,data){
           if(err) throw err;
           res.json(data);
@@ -7087,20 +7085,21 @@ router.get("/user/patient/get-my-doctors",function(req,res){
         var sendList = [];
         var dataLen = data.length;
         var count = 0;
-        model.user.findOne({user_id:req.user.user_id},{doctor_patients_list:1},function(err,list){
+       
           while(dataLen > count){
-            var elementPos = list.doctor_patients_list.map(function(x){return x.patient_id}).indexOf(data[count].user_id)
+            var elementPos = req.user.doctor_patients_list.map(function(x){if(x) return x.patient_id}).indexOf(data[count].user_id)
               
-              if(data[count].presence === true){             
-                list.doctor_patients_list[elementPos].presence = true;                
+              if(data[count].presence){ 
+                if(req.user.doctor_patients_list[elementPos])            
+                  req.user.doctor_patients_list[elementPos].presence = true;                
               }
 
-              sendList.push(list.doctor_patients_list[elementPos]);
+              sendList.push(req.user.doctor_patients_list[elementPos]);
             
             count++
           } 
           res.send(sendList);
-        });
+        
       })
     } else {
       res.end("Unauthorized access!!")
