@@ -14,11 +14,11 @@ function Wallet(date,firstname,lastname,message,reference){
 Wallet.prototype.credit = function(model,receiver,amount,io,cb){
 	if(amount > 0) {
 		var self = this;
-		model.user.findOne(receiver,{ewallet:1,name:1,firstname:1,lastname:1,presence:1,user_id:1}).exec(function(err,data){
+		model.user.findOne(receiver,{ewallet:1,name:1,firstname:1,lastname:1,presence:1,user_id:1,city_grade:1}).exec(function(err,data){
 			if(err) throw err;
 			if(self.message === "Consultation fee"){
-			  //amount -= 1000;
-			  var consulPer = amount * 0.20;
+			  var discount = data.city_grade || 0.10;
+			  var consulPer = amount * discount;
 			  amount -= consulPer;
 				model.user.findOne({admin: true,user_id:process.env.ADMIN_ID},{ewallet:1}).exec(function(err,admin){
 					if(err) throw err;
