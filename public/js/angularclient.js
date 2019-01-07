@@ -10171,7 +10171,7 @@ app.controller("adminGetUserCtrl",["$scope","$location","$rootScope","$http","lo
   function($scope,$location,$rootScope,http,localManager,$http){
 
   $scope.userDetails = $rootScope.foundUser || localManager.getValue("adminFoundUser");
-  console.log($scope.userDetails);
+  
 
 
   $scope.verifyUser = function(type,user){
@@ -10212,11 +10212,46 @@ app.controller("adminGetUserCtrl",["$scope","$location","$rootScope","$http","lo
         headers : {'Content-Type': 'application/json'} 
       })
       .success(function(res) {  
-        if(res.status){
-          alert(res.message);
+        if(res.status){         
           $scope.userDetails = [{}];
-          localManager.setValue("adminFoundUser",[{}]);
+          localManager.setValue("adminFoundUser",[{}]);        
+          switch(res.type) {
+            case 'Patient':
+              var elemPos = $rootScope.listPatients.map(function(x){return x._id.toString()}).indexOf(userId);
+              if(elemPos !== -1)
+                $rootScope.listPatients.splice(elemPos,1)
+            break;
+            case 'Doctor':
+              if(res.title == "SC") {
+                var elemPos = $rootScope.listSpecialCenter.map(function(x){return x._id.toString()}).indexOf(userId);
+                if(elemPos !== -1){                
+                  $rootScope.listSpecialCenter.splice(elemPos,1)
+                }
+              } else {
+                var elemPos = $rootScope.listDoctors.map(function(x){return x._id.toString()}).indexOf(userId);
+                if(elemPos !== -1){
+                  $rootScope.listDoctors.splice(elemPos,1)
+                }
+              }              
+            break;
+            case 'Pharmacy':
+              var elemPos = $rootScope.listPharmacy.map(function(x){return x._id.toString()}).indexOf(userId);
+              if(elemPos !== -1)
+                $rootScope.listPharmacy.splice(elemPos,1)
+            break;
+            case 'Laboratory':
+              var elemPos = $rootScope.listLaboratory.map(function(x){return x._id.toString()}).indexOf(userId);
+              if(elemPos !== -1)
+                $rootScope.listLaboratory.splice(elemPos,1)
+            break;
+            case 'Radiology':
+              var elemPos = $rootScope.listRadiology.map(function(x){return x._id.toString()}).indexOf(userId);
+              if(elemPos !== -1)
+                $rootScope.listRadiology.splice(elemPos,1)
+            break;
+          }
         }
+        
       });
     } else {
       alert("wrong confirmation key!");
@@ -10501,7 +10536,6 @@ app.controller('adminScrollCtrl',["$scope","$rootScope","adminScrollService","Mo
 
   $scope.refresh = function() {
     adminScrollService.query(function(data){
-      alert(data.length)
       $rootScope.scrollList = data;
     })
   }
