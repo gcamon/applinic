@@ -7351,7 +7351,7 @@ router.get('/user/getAllPharmarcy',function(req,res){
 router.get('/user/getAllLaboratory',function(req,res){
   if(req.user){
     var criteria = (req.query.city) ? {city: req.query.city,country:req.query.country,type:"Laboratory"} : {type:"Laboratory"};
-    model.user.find(criteria,{name:1,address:1,user_id:1,city:1,country:1,phone:1,_id:1,email:1},function(err,data){
+    model.user.find(criteria,{name:1,address:1,user_id:1,city:1,country:1,phone:1,_id:1,email:1,verified:1},function(err,data){
       if(err) throw err;
       if(!req.query.city) {
         res.json({count:data.length,data:data});
@@ -7367,7 +7367,7 @@ router.get('/user/getAllLaboratory',function(req,res){
 router.get('/user/getAllRadiology',function(req,res){
   if(req.user){
     var criteria = (req.query.city) ? {city: req.query.city,country:req.query.country,type:"Radiology"} : {type:"Radiology"};
-    model.user.find(criteria,{name:1,address:1,user_id:1,city:1,country:1,phone:1,_id:1,email:1},function(err,data){
+    model.user.find(criteria,{name:1,address:1,user_id:1,city:1,country:1,phone:1,_id:1,email:1,verified:1},function(err,data){
       if(err) throw err;
       if(!req.query.city) {
         res.json({count:data.length,data:data});
