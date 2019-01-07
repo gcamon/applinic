@@ -10327,15 +10327,17 @@ app.controller('adminWithdrawalAttendCtrl',["$scope","$location","$rootScope","c
   }
 
   $scope.confirmPay = function(_id) {
-    cashOutControllerService.update({id: _id},function(res){      
-      if(res.status) {
-        $scope.resMsg = res.message;
-        $scope.request = null;
-        $rootScope.CashOutList.splice(elemPos,1)
-      } else {
-        alert(res.message)
-      }
-    })
+    var sure = confirm("You want to confirm this transction and transfer was successfully done?");
+    if(sure)
+      cashOutControllerService.update({id: _id},function(res){      
+        if(res.status) {
+          $scope.resMsg = res.message;
+          $scope.request = null;
+          $rootScope.CashOutList.splice(elemPos,1)
+        } else {
+          alert(res.message)
+        }
+      })
   }
    
 }]);

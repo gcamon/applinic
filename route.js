@@ -8326,7 +8326,7 @@ router.get("/user/admin/commissions",function(req,res){
           model.user.find({type:"Laboratory"},{city_grade:1,city:1,country:1},function(err,laboratories){
             resObj.laboratories = laboratories;
             model.user.find({type:"Radiology"},{city_grade:1,city:1,country:1},function(err,radiologies){
-              resObj.radiologies = pharmacies;
+              resObj.radiologies = radiologies;
               res.json(resObj)
             })
           })
