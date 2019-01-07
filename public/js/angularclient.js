@@ -722,6 +722,11 @@ app.config(['$paystackProvider','$routeProvider',
     controller: "adminCommissionRequestCtrl"
  })
 
+ .when("/scroll",{
+    templateUrl: "/assets/pages/utilities/scroll.html",
+    controller: "adminScrollCtrl"
+ })
+
 }]);
 
 
@@ -9962,9 +9967,10 @@ app.factory("adminDoctorsService",["$resource",function($resource){
 }])
 
 app.controller("adminCreateRoomController",["$scope","localManager","mySocket","$rootScope",
-  "templateService","$resource","ModalService","adminDoctorsService","$http","$location","cashOutControllerService","adminConsultationService",
+  "templateService","$resource","ModalService","adminDoctorsService","$http","$location",
+  "cashOutControllerService","adminConsultationService","adminScrollService",
   function($scope,localManager,mySocket,$rootScope,templateService,$resource,
-    ModalService,adminDoctorsService,$http,$location,cashOutControllerService,adminConsultationService){
+    ModalService,adminDoctorsService,$http,$location,cashOutControllerService,adminConsultationService,adminScrollService){
   var user = localManager.getValue("resolveUser");  
   mySocket.emit('join',{userId: user.user_id});
 
@@ -10050,6 +10056,11 @@ app.controller("adminCreateRoomController",["$scope","localManager","mySocket","
 
   adminConsultationService.query(function(data){
     $rootScope.consultations = data;
+  })
+
+  adminScrollService.query(function(data){
+    console.log(data)
+    $rootScope.scrollList = data;
   })
 
   /*$scope.view = function(id) {
@@ -10465,14 +10476,64 @@ app.service("adminConsultationService",["$resource",function($resource){
   return $resource('/user/admin/get-consultations');
 }]);
 
+app.service("adminScrollService",["$resource",function($resource){
+  return $resource('/user/admin/scrolls');
+}]);
 
-app.controller('adminConsultationRequestCtrl',["$scope","adminConsultationService",function($scope,adminConsultationService){
+app.controller('adminConsultationRequestCtrl',["$scope","$rootScope","adminConsultationService",
+  function($scope,$rootScope,adminConsultationService){
   $scope.delConsultation = function(id){
-    adminConsultationService.delete({id: id},function(res){
-      alert(res.message)
+    var sure = confirm("You want to delete this consultation?")
+    if(sure)
+      adminConsultationService.delete({id: id},function(res){
+        var elemPos = $rootScope.consultations.map(function(x){return x._id}).indexOf(id);
+        if(elemPos !== -1) {
+          $rootScope.consultations.splice(elemPos,1);
+        }
+      })
+  }
+}]); 
+
+app.controller('adminScrollCtrl',["$scope","$rootScope","adminScrollService","ModalService",
+  function($scope,$rootScope,adminScrollService,ModalService){
+
+  $scope.refresh = function() {
+    adminScrollService.query(function(data){
+      alert(data.length)
+      $rootScope.scrollList = data;
     })
   }
-}]);    
+
+  $scope.viewDetails = function(courierId){
+    $rootScope.courierId = courierId;
+    ModalService.showModal({
+      templateUrl: 'admin-view-courier.html',
+      controller: "adminCourierModalCtrl"
+    }).then(function(modal) {
+      modal.element.modal();
+      modal.close.then(function(result) {
+         
+      });
+    });
+  }
+
+  $scope.refund = function(request){
+    //note this should refund the requester, delete the scroll, delete both reqester and center courier notifications
+  }
+
+}]); 
+
+
+app.controller('adminCourierModalCtrl',["$rootScope","$http",function($rootScope,$http){
+  $http({
+    method  : 'GET',
+    url     : "/user/admin/get-courier?id=" + $rootScope.courierId,
+    headers : {'Content-Type': 'application/json'} 
+    })
+  .success(function(data) {
+    $rootScope.courierDetails = data || {};
+  });
+}]);             
 
 
 

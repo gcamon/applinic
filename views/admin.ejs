@@ -154,7 +154,7 @@
 					<ul class="issues">
 						<li><a href="#/admin"><i class="fa fa-home"></i> Home</a></li>
 						<li><a href="#/admin-withdrawals">Withdrawals  &nbsp;&nbsp;<span style="color: red">{{CashOutList.length}}</span></a></li>
-						<li><a href="#/scroll">E-Scroll &nbsp;&nbsp;<small style="color: red">{{}}</small></a></li>
+						<li><a href="#/scroll">Pending delivery&nbsp;&nbsp;<small style="color: red">{{scrollList.length}}</small></a></li>
 						<li><a href="#/consultation-requests">Consultations &nbsp;&nbsp;<span style="color: red">{{consultations.length}}</span></a></li>
 						<li><a href="">Need Help &nbsp;&nbsp;<small style="color: red">{{}}</small></a></li>
 						<li><a href="">Suggestions &nbsp;&nbsp;<small style="color: red">{{}}</small></a></li>
@@ -289,6 +289,104 @@
 	          </div>
 	        </div>
 	    </script>
+
+	    <script type="text/ng-template" id='admin-view-courier.html'>
+	         <div class="modal" style="transition: opacity .15s linear;">
+	          <div class="modal-dialog">
+	            <div class="modal-content">
+	              <div class="modal-header">
+	              	<h5></h5>
+	              </div>              
+	              <div class="modal-body" style="line-height: 32px"> 
+	                <div>
+	                <h6>User Details</h6>
+	                <b>Order ID: {{courierDetails.request_id}}</b><br>
+	                <p class="text-success" ng-if="courierDetails.is_paid"><i class="fa fa-check"></i> <b>Paid for items plus delivery</b></p>
+	                </div>
+	                <div>
+	                	<b>From</b> : {{courierDetails.firstname}}<br>
+	                	<b>Date of request</b> : {{courierDetails.date | date : 'fullDate'}} ( <span am-time-ago="courierDetails.date"></span> )<br>
+	                	<b>Address</b> : {{courierDetails.address}}<br>
+	                	<b>City</b> : {{courierDetails.city}}<br>
+	                	<b>Phone1</b> : {{courierDetails.phone1}}<br>
+	                	<b>Phone2</b> : {{courierDetails.phone2}}<br>
+	                </div>
+	                <hr>
+	                <div>
+	                	<h6>Delivery Details</h6>
+	                	<b>Dispatch center</b> : {{courierDetails.center_name}}<br>
+	                	<b>Address</b> : {{courierDetails.center_address}}<br>
+	                	<b>Phone</b> : {{courierDetails.center_phone}}<br>
+	                </div>
+	                <table>
+	                	<thead>
+	                		<th>sn</th>
+	                		<th>name</th>
+	                		<th>dosage</th>
+	                		<th>frequency</th>
+	                		<th>duration</th>
+	                	</thead>
+	                	<tbody ng-repeat="j in courierDetails.prescription_body">
+	                		<td>{{j.sn}}</td>
+	                		<td>{{j.drug_name}}</td>
+	                		<td>{{j.dosage}}</td>
+	                		<td>{{j.frequency}}</td>
+	                		<td>{{j.duration}}</td>
+	                	</tbody>
+	                </table>
+	                <hr>
+	                <div>
+	                	<b>Total cost of items</b> : {{courierDetails.total_cost}}<br>
+	                	<b>Delivery charge</b> : {{courierDetails.delivery_charge}}<br>
+	                </div>
+	                
+	              </div>
+	              <div class="modal-footer">
+	                <button type="button" ng-click="goBack()" class="btn btn-primary" data-dismiss="modal">Close</button>	                
+	              </div>
+	            </div>
+	          </div>
+	        </div>
+	    </script>
+
+	    <!--
+	request_id : String,
+		verified: Boolean,
+		total_cost: String,
+		firstname: String,
+		address: String,
+		prescription_body: Array,
+		city: String,
+		phone1: String,
+		phone2: String,
+		lastname: String,
+		title: String,
+		attended: Boolean,
+		profile_pic_url: String,
+		user_id: String,
+		center_id: String,
+		center_name: String,
+		center_address: String,
+		center_phone: String,
+		date: Number, //use date to find refers to date the request was made or initiated
+		otp: String,
+		receipt_date: Number,
+		verification_date: Number,
+		completed: Boolean,
+		delivery_charge: Number,
+		deleted: Boolean,
+		currencyCode: String,
+		city_grade: Number,
+		prescriptionId: Number,
+		is_paid: Boolean,
+		new: Number,
+		dispute: Boolean,
+		complaints: Array,
+		on_delivery: Boolean,
+		delivery_msg: String,
+		delivery_start_date: Date,
+		center_charge: String
+	    -->
 
 	 	 <script src="/assets/js/app.js"></script>
         <script src="/assets/js/now-ui-kit.js"></script>

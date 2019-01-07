@@ -760,7 +760,7 @@ var myModel = function () {
 		center_name: String,
 		center_address: String,
 		center_phone: String,
-		date: Number, //use date to find refers to date the request was made or initaiated
+		date: Number, //use date to find refers to date the request was made or initiated
 		otp: String,
 		receipt_date: Number,
 		verification_date: Number,

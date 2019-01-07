@@ -7421,6 +7421,60 @@ router.get('/user/admin/get-consultations',function(req,res){
   }
 });
 
+router.delete('/user/admin/get-consultations',function(req,res){
+  if(req.user){
+    if(req.user.type == 'admin'){
+      model.consult.findById(req.query.id)
+      .exec(function(err,data){
+        if(err) throw err;
+        if(data){
+          data.remove(function(){});
+        }
+        res.json({message: "deleted!"})
+      })
+    } else {
+      res.end("unauthorized access!");
+    }
+  } else {
+    res.end("unauthorized access!");
+  }
+});
+
+
+
+router.get('/user/admin/scrolls',function(req,res){
+  if(req.user){
+    if(req.user.type == 'admin'){
+      model.scroll.find({deleted: false},function(err,data){
+        if(err) throw err;
+        res.json(data);
+      });
+    } else {
+      res.end("unauthorized access!");
+    }
+  } else {
+    res.end("unauthorized access!");
+  }
+});
+
+
+router.get('/user/admin/get-courier',function(req,res){
+  if(req.user){
+    if(req.user.type == 'admin'){
+      model.courier.findById(req.query.id)
+      .exec(function(err,data) {
+        if(err) throw err;
+        res.json(data);
+      });
+    } else {
+      res.end("unauthorized access!");
+    }
+  } else {
+    res.end("unauthorized access!");
+  }
+});
+
+
 
 router.get("/user/center-profile",function(req,res){
   if(req.user){
