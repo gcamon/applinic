@@ -1495,7 +1495,7 @@
                            </form>                              
                                                 
                             <!--<p><i class="fa fa-info"> <small>consultation fees will be charged if your request is granted.</small></i></p> -->
-                            <button class="btn btn-info" ng-click="validate()" ng-if="patient.sick || patient.pregnant || patient.personal || patient.stroke || patient.ear || patient.eye || patient.teeth || patient.accident || patient.getPregnant" ng-hide="status"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i> {{(loading) ? '' : 'Send consultation request'}}</button>
+                            <button class="btn btn-info" ng-click="validate()" ng-if="patient.sick || patient.pregnant || patient.personal || patient.stroke || patient.ear || patient.eye || patient.teeth || patient.accident || patient.getPregnant || patient.other" ng-hide="status"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i> {{(loading) ? '' : 'Send consultation request'}}</button>
                            
                             <div class="p-2" ng-if="status">
                                 <i class="fa fa-check" style="color: green;font-size: 18px" ng-if="status"> {{status}} </i>
