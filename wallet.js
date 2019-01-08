@@ -17,7 +17,7 @@ Wallet.prototype.credit = function(model,receiver,amount,io,cb){
 		model.user.findOne(receiver,{ewallet:1,name:1,firstname:1,lastname:1,presence:1,user_id:1,city_grade:1}).exec(function(err,data){
 			if(err) throw err;
 			if(self.message === "Consultation fee"){
-			  var discount = data.city_grade || 0.10;
+			  var discount = (data.city_grade) ? (data.city_grade / 100 ) : 0.10;
 			  var consulPer = amount * discount;
 			  amount -= consulPer;
 				model.user.findOne({admin: true,user_id:process.env.ADMIN_ID},{ewallet:1}).exec(function(err,admin){
