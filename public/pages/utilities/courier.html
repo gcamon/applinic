@@ -44,10 +44,18 @@
 	    			</table>
     			</div>
     			<div class="mobile-item-display">				    		
-		    		<table class="table" ng-repeat="prescription in presInfo.prescription_body">
+		    		<table class="table" ng-repeat="prescription in presInfo.prescription_body" ng-if="filteredPres.length == 0">
 		    		    <thead><th>sn: </th> <td>{{prescription.sn}}</td></thead>
 		    			<thead><th>Name: </th> <td>{{prescription.drug_name}}</td></thead>
-		    			<thead><th>Dosage: </th> <td>{{(prescription.dosage !== 'dosage') ? prescription.dosage : prescription.other}}</td></thead>
+		    			<thead><th>Dosage: </th> <td>{{(prescription.dosage !== 'dosage') ? prescription.dosage : prescription.other}} <span ng-if="prescription.quantity">( {{prescription.quantity }} )</span></td></thead>
+		    			<thead><th>Frequency: </th> <td>{{prescription.frequency}}</td></thead>
+		    			<thead><th>Duration: </th> <td>{{prescription.duration}}</td></thead>
+		    			<hr>
+		    		</table>
+		    		<table class="table" ng-repeat="prescription in filteredPres" ng-if="filteredPres.length > 0">
+		    		    <thead><th>sn: </th> <td>{{prescription.sn}}</td></thead>
+		    			<thead><th>Name: </th> <td>{{prescription.drug_name}}</td></thead>
+		    			<thead><th>Dosage: </th> <td>{{(prescription.dosage !== 'dosage') ? prescription.dosage : prescription.other}} <span ng-if="prescription.quantity">( {{prescription.quantity }} )</span></td></thead>
 		    			<thead><th>Frequency: </th> <td>{{prescription.frequency}}</td></thead>
 		    			<thead><th>Duration: </th> <td>{{prescription.duration}}</td></thead>
 		    			<hr>
