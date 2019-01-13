@@ -104,6 +104,11 @@
 
                   }
 
+                  .mobile-item-display {
+                    display: none;
+                  }
+                
+
                  @media screen and (max-width: 1024px) {
                     .text-center a {
                         margin-left: 20px;
@@ -146,6 +151,14 @@
                     display: none!important;
                   }
 
+                  .no-mobile-item-display {
+                    display: none;
+                  }
+
+                 .mobile-item-display {
+                    display: block;
+                  }
+
                   li {
                     border-right: none;
                   }
@@ -183,7 +196,7 @@
                             <a href="" data-toggle="dropdown">
                                 <i class="fa fa-bell-o"></i>
                                 <sup>
-                                  <span class="counter" ng-if="noteLen > 0 " ng-cloak>{{noteLen}}</span>
+                                  <span class="counter" ng-if="noteLen > 0 " ng-cloak>{{(noteLen <= 100) ? noteLen : "99+" }}</span>
                                 </sup>
                               </a>
                                 <div class="dropdown-menu notifications-dropdown-menu" style="max-height: 400px;overflow-y: auto;">
@@ -232,7 +245,7 @@
                                <li class="notifications new"> <a href="" data-toggle="dropdown" ng-click="hideLen()">
                     <i class="fa fa-envelope-o"></i>
                     <sup>
-                      <span class="counter" ng-if=" msgLen > 0 " ng-cloak>{{msgLen}}</span>
+                      <span class="counter" ng-if=" msgLen > 0 " ng-cloak>{{(msgLen <= 100) ? msgLen : "99+"}}</span>
                     </sup>
                   </a>
                                 <div class="dropdown-menu notifications-dropdown-menu" style="max-height: 400px;overflow-y: auto;">
@@ -303,7 +316,7 @@
                                <li class="notifications new"> <a href="" data-toggle="dropdown">
                     <i class="fa fa-calendar"></i>
                     <sup>
-                      <span class="counter" ng-if="appLen > 0 " ng-cloak>{{appLen}}</span>
+                      <span class="counter" ng-if="appLen > 0 " ng-cloak>{{(appLen <= 100) ? appLen : "99+"}}</span>
                     </sup>
                   </a>
                                 <div class="dropdown-menu notifications-dropdown-menu" style="max-height: 400px;overflow-y: auto;" ng-controller = "createRoomController">
@@ -336,7 +349,7 @@
                              <li class="notifications new"> <a href="" data-toggle="dropdown">
                     <i class="fa fa-motorcycle"></i>
                     <sup>
-                      <span class="counter" ng-if="courierResponseList.length > 0" ng-cloak>{{courierResponseList.length}}</span>
+                      <span class="counter" ng-if="courierResponseList.length > 0" ng-cloak>{{(courierResponseList.length <= 100) ? courierResponseList.length : "99+"}}</span>
                     </sup>
                   </a>
                                 <div class="dropdown-menu notifications-dropdown-menu" style="max-height: 400px;overflow-y: auto;" ng-controller = "createRoomController">

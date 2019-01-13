@@ -677,4 +677,14 @@ font-weight: 300 !important;
     padding: 0!important
   }
 
+  .no-mobile-item-display {
+    display: none;
+  }
+
+  .mobile-item-display {
+    display: block;
+  }
+
 }
+
+

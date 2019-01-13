@@ -1,10 +1,10 @@
-<div class="container">
+<div>
   <div class="card-center-1">
 	<button class="btn btn-simple" ng-click="goBack()"><i class="fa fa-arrow-left"></i> Back</button>
   </div>
-<div class="card card-center-1 p-2">
-	<h3 class="p-0">Forwarding Prescription</h3>
-	<strong style ="display:block;padding: 10px;font-size: 16px"><span ng-repeat="drug in unavailableDrugArr"> @{{drug.drug_name}} &nbsp;&nbsp;</span> </strong>
+<div class="card card-center-1 p-1">
+	<h4 class="p-0">Forwarding Prescription</h4>
+	<strong style =""><span ng-repeat="drug in unavailableDrugArr"> @{{drug.drug_name}} &nbsp;&nbsp;</span> </strong>
 	<form>
 		<div> 
 			 <input type="text" class="form-control"  type="text" placeholder="Enter city/town" ng-model="pharmacy.city" uib-typeahead="city for city in cities | filter:$viewValue | limitTo:20" style="width:70%;display: inline-block;padding: 15px">
@@ -16,23 +16,16 @@
 		<div ng-if="pharmacyData.length > 0"> 
 				<input type="text" class="form-control"  placeholder="Filter by name of center" ng-model = "pharmacy.name" style="border:none;border-bottom: 1px solid rgba(0,0,0,0.2);width:70%"/>
 		</div>	
-		<div class= "look-up-phamarcy row" ng-repeat = "result in pharmacyData | filter: pharmacy.name | orderBy: 'name'" style="position: relative; margin: 15px 0;padding-left: 10px;max-height: 600px;overflow-y: auto;" ng-if="checkLogIn.user_id !== result.user_id">	
-			
+		<div class= "look-up-phamarcy row" ng-repeat = "result in pharmacyData | filter: pharmacy.name | orderBy: 'name'" style="position: relative; margin: 15px 0;padding-left: 10px;overflow-y: auto;" ng-if="checkLogIn.user_id !== result.user_id">	
+			<div class="col-md-7 col-lg-7">
 				<strong class="mb-0">{{result.name}}</strong>
 				<span class="" style="display: block;margin-bottom: 5px">{{result.address}} <span>{{result.city}}, {{result.country}}</span></span>
 				<span style="display: block;">{{result.phone}}</span>
-				
-				<!--<i class="fa fa-phone" style="display: block"> &nbsp;{{result.phone}} </i>-->
-						
-				 
-				<!--<div style="margin-left: 20px;margin-top: -15px;border-bottom:1px solid rgba(0,0,0,0.2);font-size: 14px"><div class="star-rating">
-			        <span  ng-cloak > 
-			        <div class="star-rating"  star-rating rating-value="result.rating.current" max="result.rating.max"></div>
-			        </span>
-			        </div>
-			    </div>-->		      		
-			<a style="text-decoration: none;color: grey;position: absolute; bottom: 10px;right:80px"><i class="fa fa-comment btn btn-simple btn-sm text-success"  title="send message" ng-click="sendChat(result)"></i></a>
-			<a href="" style="text-decoration: none;position: absolute; bottom: 10px;right:30px" class=""  title="Forward to {{result.name}}"> <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="" ng-if="result.loading"></i> <i class="fa fa-share btn btn-danger btn-sm"  ng-click="forwardPrescriptionTo(result)" ng-if="!result.loading && !result.success"> </i> <span style="display: inline-block;padding: 5px">{{(result.success) ? "sent!" : ""}}</span></a>
+			</div>	
+		    <div class="col-md-5 col-lg-5 pt-1 pb-1">	      		
+				<a style="text-decoration: none;color: grey;"><i class="fa fa-comment btn btn-simple btn-sm text-success"  title="send message" ng-click="sendChat(result)"></i></a>
+				<a href="" style="text-decoration: none;" class=""  title="Forward to {{result.name}}"> <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="" ng-if="result.loading"></i> <i class="fa fa-share btn btn-danger btn-sm"  ng-click="forwardPrescriptionTo(result)" ng-if="!result.loading && !result.success"> </i> <span style="display: inline-block;padding: 5px">{{(result.success) ? "sent!" : ""}}</span></a>
+			</div>
 			
 		</div>
 	</div>

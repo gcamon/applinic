@@ -8348,6 +8348,10 @@ router.get("/user/admin/commissions",function(req,res){
   } else {
     res.end("unauthorized access")
   }
+});
+
+router.get("/user/dicom-viewer",function(req,res){
+  res.render("dicom-viewer");
 })
 
 

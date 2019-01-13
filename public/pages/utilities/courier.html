@@ -4,102 +4,115 @@
 <a href="#{{back}}" class="btn btn-simple"><i class="fa fa-arrow-left"> Back</i></a>
 </div>
 
- <div class="card" style="padding-top:30px;" id="track" class="container">
+ <div class="card p-1" id="track">
    
 	<div>
-		<h4 style="padding-left: 20px" class="mt-0"><i class="fa fa-motorcycle"></i> Courier Service</h4>
+		<h4 style="" class="mt-0"><i class="fa fa-motorcycle"></i> Courier Service</h4>
 	</div>
 
-    <div class="row">		
-    	<div class="col-md-7 col-sm-7 col-sm-12 pl-2" >
-   
+    <div>		
+    	<div class="col-md-7 col-sm-7 col-sm-12">
+	       		<div class="no-mobile-item-display">
+	           		<h6 style="text-decoration: underline;">Prescription details</h6>		    	
+	    			<table class="table table-striped table-responsive">
+	    				<tr>
+	    					<thead>
+	    						<th>S/N</th>
+	    						<th>Drug Name</th>
+	    						<th>Dosage</th>
+	    						<th>Frequency</th>
+	    						<th>Duration</th>		    						
+	    					</thead>        					
+	    				</tr>
+	    				<tr>
+	    					<tbody ng-repeat="prescription in presInfo.prescription_body" ng-if="filteredPres.length == 0">		    						
+	    						<td>{{prescription.sn}}</td>
+	    						<td>{{prescription.drug_name}}</td>
+	    						<td>{{(prescription.dosage !== 'dosage') ? prescription.dosage : prescription.other}} <span ng-if="prescription.quantity">( {{prescription.quantity }} )</span></td>
+	    						<td>{{prescription.frequency}}</td>
+	    						<td>{{prescription.duration}}</td>		    							    						
+	    					</tbody>
 
-	       		
-
-           		<h6 style="text-decoration: underline;padding-left: 20px">Prescription details</h6>		    	
-		    	
-		    	
-		    	<div class="row">
-		    		<div class="col-sm-12 col-md-12 col-lg-12" style="padding: 10px 30px 0;">
-		    			<table class="table table-striped table-responsive">
-		    				<tr>
-		    					<thead>
-		    						<th>S/N</th>
-		    						<th>Drug Name</th>
-		    						<th>Dosage</th>
-		    						<th>Frequency</th>
-		    						<th>Duration</th>		    						
-		    					</thead>        					
-		    				</tr>
-		    				<tr>
-		    					<tbody ng-repeat="prescription in presInfo.prescription_body" ng-if="filteredPres.length == 0">		    						
-		    						<td>{{prescription.sn}}</td>
-		    						<td>{{prescription.drug_name}}</td>
-		    						<td>{{(prescription.dosage !== 'dosage') ? prescription.dosage : prescription.other}} <span ng-if="prescription.quantity">( {{prescription.quantity }} )</span></td>
-		    						<td>{{prescription.frequency}}</td>
-		    						<td>{{prescription.duration}}</td>		    							    						
-		    					</tbody>
-
-		    					<tbody ng-repeat="prescription in filteredPres" ng-if="filteredPres.length > 0">		    						
-		    						<td>{{prescription.sn}}</td>
-		    						<td>{{prescription.drug_name}}</td>
-		    						<td>{{(prescription.dosage !== 'dosage') ? prescription.dosage : prescription.other}} <span ng-if="prescription.quantity">( {{ prescription.quantity }} )</span></td>
-		    						<td>{{prescription.frequency}}</td>
-		    						<td>{{prescription.duration}}</td>		    							    						
-		    					</tbody>
-		    				</tr>
-		    			</table>
-
-		    			<div ng-if="noDosage.length > 0" style="margin-bottom: 15px ">
-		    				<p class="text-muted">Please add dosage and quantity for the drug(s) above</p>
-		    				<ul>
-		    					<li ng-repeat="j in noDosage" style="list-style: none;padding-bottom: 20px" ng-if="filteredPres.length == 0">
-		    						<form class="row">
-		    							<label>{{j.drug_name}}</label><br>
-		    							<select ng-model="j.dosage" class="col-sm-12 col-md-5" style="padding: 10px;margin-right: 5px" ng-if="j.dosage !== 'dosage'">
-		    								<option value="" disabled="disabled" selected="selected">_select description</option>
-		    								<option>tablets</option>
-		    								<option>caplets</option>
-		    								<option>capsule</option>
-		    								<option>packet</option>
-		    								<option>bottle</option>
-		    								<option>sachet</option>
-		    								<option>dosage</option>
-		    							</select>
-		    							<input type="text" ng-model="j.other" placeholder="e.g 500mg" class="col-sm-12 col-md-5" style="padding: 8px" ng-if="j.dosage === 'dosage'">
-		    							<input type="number" ng-model="j.quantity" placeholder="quantity" class="col-sm-12 col-md-5" style="padding: 8px">
-		    							&nbsp;
-		    							<a href="" ng-click="returnMain(j)"> <i class="fa fa-refresh"></i></a>
-		    							
-		    						</form>
-		    					</li>
-		    					<li ng-repeat="j in noDosage" style="list-style: none;padding-bottom: 20px" ng-if="filteredPres.length > 0">
-		    						<form class="row" ng-if="j.picked">
-		    							<label>{{j.drug_name}}</label><br>
-		    							<select ng-model="j.dosage" class="col-sm-12 col-md-5" style="padding: 10px;margin-right: 5px" ng-if="j.dosage !== 'dosage'">
-		    								<option value="" disabled="disabled" selected="selected">_select description</option>
-		    								<option>tablets</option>
-		    								<option>caplets</option>
-		    								<option>capsule</option>
-		    								<option>packet</option>
-		    								<option>bottle</option>
-		    								<option>sachet</option>
-		    								<option>dosage</option>
-		    							</select>
-		    							<input type="text" ng-model="j.other" placeholder="e.g 500mg" class="col-sm-12 col-md-5" style="padding: 8px" ng-if="j.dosage == 'dosage'">
-		    							<input type="number" ng-model="j.quantity" placeholder="quantity" class="col-sm-12 col-md-5" style="padding: 8px">
-		    							&nbsp;
-		    							<a href="" ng-click="returnMain(j)"><i class="fa fa-refresh"></i></a>
-		    							
-		    						</form>
-		    					</li>
-		    					
-		    				</ul>
-	    				</div>
-		    		</div>
+	    					<tbody ng-repeat="prescription in filteredPres" ng-if="filteredPres.length > 0">		    						
+	    						<td>{{prescription.sn}}</td>
+	    						<td>{{prescription.drug_name}}</td>
+	    						<td>{{(prescription.dosage !== 'dosage') ? prescription.dosage : prescription.other}} <span ng-if="prescription.quantity">( {{ prescription.quantity }} )</span></td>
+	    						<td>{{prescription.frequency}}</td>
+	    						<td>{{prescription.duration}}</td>		    							    						
+	    					</tbody>
+	    				</tr>
+	    			</table>
+    			</div>
+    			<div class="mobile-item-display">				    		
+		    		<table class="table" ng-repeat="prescription in presInfo.prescription_body">
+		    		    <thead><th>sn: </th> <td>{{prescription.sn}}</td></thead>
+		    			<thead><th>Name: </th> <td>{{prescription.drug_name}}</td></thead>
+		    			<thead><th>Dosage: </th> <td>{{prescription.dosage}}</td></thead>
+		    			<thead><th>Frequency: </th> <td>{{prescription.frequency}}</td></thead>
+		    			<thead><th>Duration: </th> <td>{{prescription.duration}}</td></thead>
+		    			<hr>
+		    		</table>
 		    	</div>
-    			<div class="row" ng-if="presInfo.doctor_specialty">
-    				<div class="col-sm-12 col-md-12 col-lg-12" style="padding: 10px 30px 0;position: relative;">
+
+    			<div ng-if="noDosage.length > 0" style="margin-bottom: 15px">
+    				<p class="text-muted">Please add dosage and quantity for the drug(s) above</p>    				
+    					<section ng-repeat="j in noDosage" style="padding: 5px" ng-if="filteredPres.length == 0">
+    						<form class="row">
+	    						<div>
+	    							<label>{{j.drug_name}}</label>
+	    							<a href="" ng-click="returnMain(j)" style="float: right;"> <i class="fa fa-refresh"></i></a>
+	    						</div>
+    							<div class="col-sm-12 col-md-5">	    							
+	    							<select ng-model="j.dosage" class="form-control"  ng-if="j.dosage !== 'dosage'">
+	    								<option value="" disabled="disabled" selected="selected">_select description</option>
+	    								<option>tablets</option>
+	    								<option>caplets</option>
+	    								<option>capsule</option>
+	    								<option>packet</option>
+	    								<option>bottle</option>
+	    								<option>sachet</option>
+	    								<option>dosage</option>
+	    							</select>
+    							</div>
+    							<div class="col-sm-12 col-md-5">
+	    							<input type="text" ng-model="j.other" placeholder="e.g 500mg"  class="form-control" ng-if="j.dosage === 'dosage'">
+	    							<input type="number" ng-model="j.quantity" placeholder="quantity" class="form-control">
+	    							&nbsp;	    							
+    							</div>
+    						</form>
+    					</section>
+    					<section ng-repeat="j in noDosage" style="padding-bottom: 5px" ng-if="filteredPres.length > 0">
+    						<form class="row" ng-if="j.picked">
+    							<div>
+    								<label>{{j.drug_name}}</label>
+    								<a href="" ng-click="returnMain(j)" style="float: right;"> <i class="fa fa-refresh"></i></a>
+    							</div>
+	    						<div class="col-sm-12 col-md-5">	    							
+	    							<select ng-model="j.dosage" class="col-sm-12 col-md-5" style="padding: 10px;margin-right: 5px" ng-if="j.dosage !== 'dosage'">
+	    								<option value="" disabled="disabled" selected="selected">_select description</option>
+	    								<option>tablets</option>
+	    								<option>caplets</option>
+	    								<option>capsule</option>
+	    								<option>packet</option>
+	    								<option>bottle</option>
+	    								<option>sachet</option>
+	    								<option>dosage</option>
+	    							</select>
+	    						</div>
+	    						<div class="col-sm-12 col-md-5">
+	    							<input type="text" ng-model="j.other" placeholder="e.g 500mg" class="form-control"  ng-if="j.dosage == 'dosage'">
+	    							<input type="number" ng-model="j.quantity" placeholder="quantity" class="form-control">
+	    							&nbsp;
+	    						</div>
+	    						
+    						</form>
+    					</section>
+    					
+    				
+				</div>
+		    		
+    			<div ng-if="presInfo.doctor_specialty">
+    				<div class="col-sm-12 col-md-12 col-lg-12 p-1">
     					
 	    			
 			    		<h6 style="margin-top:20px;text-decoration: underline;">Prescription by</h6>
