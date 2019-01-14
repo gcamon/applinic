@@ -11,10 +11,10 @@
             
             <div class="col-lg-1 col-md-3 col-sm-3 col-xs-3 p-1">
                  <a href="{{i.profile_url}}">
-                 <img src="{{i.profile_pic_url}}" class="img-rounded img-responsive" style="max-width: 100%; display:block; max-height: 100px" alt="image description"></a>     
+                 <img src="{{i.profile_pic_url}}" class="img-rounded img-responsive" style="max-width: 100%; height: auto;" alt="profile image"></a>     
             </div>
 
-            <section class="col-lg-9 col-md-8 col-sm-8 col-xs-8 pl-3">
+            <section class="col-lg-9 col-md-8 col-sm-8 col-xs-8 pl-1">
                 
                     <h6 style="text-transform: capitalize;">{{i.title}} {{i.firstname}} {{i.lastname}}</h6>
                     <div>{{i.specialty}}</div>
@@ -24,10 +24,9 @@
             <div class="clearfix"></div>     
             <section class="pl-1">                                       
             
-                    <a href="{{i.profile_url}}" class="text-muted" title="View {{i.firstname}} profile">view profile</a> &nbsp;
+                    <a href="{{i.profile_url}}" class="text-muted" title="View {{i.firstname}} profile">profile</a> &nbsp;
 
-                    <a href="" class="text-muted" ng-click="ask(i)" title="send chat message" style="margin-bottom: 10px"><i class="fa fa-comment-o"></i> message</a>&nbsp;                                 
-             
+                    <a href="" class="text-muted" ng-click="ask(i)" title="send chat message" style="margin-bottom: 10px"><i class="fa fa-comment-o"></i> message</a>&nbsp;                               
 
                     <a href="" class="text-danger" ng-click="consultation(i)" ng-if="checkLogIn.typeOfUser === 'Patient'">consult now!</a>
             </section>
