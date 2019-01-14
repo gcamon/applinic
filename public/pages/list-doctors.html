@@ -18,13 +18,13 @@
                 
                     <h6 style="text-transform: capitalize;">{{i.title}} {{i.firstname}} {{i.lastname}}</h6>
                     <div>{{i.specialty}}</div>
-                    <div><b>{{i.work_place}}</b> {{i.address}}  {{i.city}}, {{i.country || "N/A"}}</div>
+                    <div><i class="fa fa-globe"></i> <b>{{i.work_place}}</b> | <em>{{i.address}}  {{i.city}}, {{i.country || "N/A"}}</em></div>
                 
             </section>            
             <div class="clearfix"></div>     
-            <section class="pl-1">                                       
+            <section class="pl-1 pt-1">                                       
             
-                    <a href="{{i.profile_url}}" class="text-muted" title="View {{i.firstname}} profile">profile</a> &nbsp;
+                    <a href="{{i.profile_url}}" class="text-muted" title="View {{i.firstname}} profile"><i class="fa fa-user-md"></i> profile</a> &nbsp;
 
                     <a href="" class="text-muted" ng-click="ask(i)" title="send chat message" style="margin-bottom: 10px"><i class="fa fa-comment-o"></i> message</a>&nbsp;                               
 
