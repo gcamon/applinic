@@ -19263,7 +19263,7 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
   console.log('starting run');
 
   // Timeout timer value
-  var TimeOutTimerValue = 900000; // 15 minutes
+  var TimeOutTimerValue = 60000000; // 15 minutes
 
   // Start a timeout
   var TimeOut_Thread = $timeout(function(){ LogoutByTimer()} , TimeOutTimerValue);

@@ -1541,7 +1541,7 @@ var basicPaymentRoute = function(model,sms,io,paystack,client){
 
 				CashObj.save(function(err,info){});
 
-				res.send({message: "Request accepted! Transaction may take up to 48hrs to complete.",balance:wallet});
+				res.send({message: "Request accepted! Transaction may take up to 24hrs to complete.",balance:wallet});
 			}
 
 		} else {

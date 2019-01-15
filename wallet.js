@@ -334,7 +334,7 @@ Wallet.prototype.courier = function(model,receiverId,debitor,amount,io,delivery_
 		console.log("credit = ", newAmount, "debit = ", patientNewBill, "==>", user.name)
 		 
 		var msgBody = "Your Applinic MediPay account debited!\nPayment for drugs purchased through courier services.\n Cost of drugs: " +
-		amount + "\nDelivery charge: " + serviceCharge + "\nTotal: " + patientNewBill + " includes 5% discount" ;
+		amount + "\nDelivery charge: " + serviceCharge + "\nTotal: " + patientNewBill + " discount of 5% applied" ;
 		var phoneNunber = user.phone; //user.phone || "+2348064245256";
 		sms.messages.create(
       {

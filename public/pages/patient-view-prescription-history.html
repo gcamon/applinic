@@ -7,8 +7,7 @@
   <div class="card card-center-1 p-1" id="track">
    
     
-    <div class="row">		
-    	<div class="col-md-12 col-lg-12 col-sm-12">
+   
    
             <!--<img alt="image description" class="card" src="assets/img/avatar.jpg" ng-src="{{presInfo.Doctor_profile_pic_url}}" style="width: 190px; height:190px">              
               
@@ -22,8 +21,8 @@
            				    	
 		    	
 		    	
-    			<div class="row">
-    				<div class="col-sm-12 col-md-12 col-lg-12" style="position: relative;">
+    			
+    				<div class="" style="position: relative;">
     					
 	    			
 			    		<h6 style="margin-top:20px;text-decoration: underline;">Prescription by</h6>
@@ -36,10 +35,10 @@
 				           </p>
 			           </div>			           
     				</div>
-    			</div>
+    			
 
-    			<div class="row">
-		    		<div class="col-sm-12 col-md-12 col-lg-12">
+    			
+		    		<div>
 		    		<h6 style="text-decoration: underline;">Prescription details</h6>
 		    			<table class="table table-striped table-responsiv">
 		    				<tr>
@@ -69,11 +68,11 @@
 		    				</tr>
 		    			</table>
 		    		</div>
-		    	</div>
-		    	<div class="row">
-		    		<div class="col-md-12 col-lg-12 col-sm-12" style="position: relative;">
+		    	
+		    	
+		    		<div style="position: relative;">
 				   		<h6 style="text-decoration: underline">Track record</h6>
-				   		<div style="max-height: 500px; overflow-y: auto">
+				   		<div style="">
 				   			
 							<section ng-repeat = "go in trackedPrescription" ng-if="trackedPrescription.length > 0"  style="width: 80%;line-height: 30px">
 								<div> <strong> Sent to:</strong> {{go.center_name}} </div>
@@ -99,13 +98,11 @@
 							
 						</div>
 				    </div>
-		    	</div>
+		    	
            
         </div>            
 
-	    
-	  </div>
-  </div>
+	 
 
 
 

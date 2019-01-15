@@ -173,9 +173,9 @@ var transporter = nodemailer.createTransport({
 });
 
 var mailOptions = {
-  from: 'info@applinic.com',
+  from: 'Applinic info@applinic.com',
   to: 'ede.obinna27@gmail.com',
-  subject: 'Sending Email using Node.js',
+  subject: 'Thank you for creating an account with us',
   text: 'That was easy!'
 };
 
