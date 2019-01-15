@@ -185,7 +185,7 @@
                       <span class="counter" ng-if="docNotification.length > 0 " ng-cloak>{{docNotification.length}}</span>
                     </sup>
                   </a>
-                                <div class="dropdown-menu notifications-dropdown-menu" style="max-height: 400px;overflow-y: auto;">
+                                <div class="dropdown-menu notifications-dropdown-menu menuOne" style="max-height: 400px;overflow-y: auto;">
                                     <ul class="notifications-container noti-style">
                                          <li> <h6 style="text-align: center">Notification(s)</h6> </li>
                                         <li ng-repeat = "note in docNotification">
@@ -218,7 +218,7 @@
                       <span class="counter" ng-if="<%= person.doctor_notification.length %> > 0 " ng-cloak>{{consultationLen}}</span>
                     </sup>
                   </a>
-                                <div class="dropdown-menu notifications-dropdown-menu" style="max-height: 400px;overflow-y: auto;overflow-x: hidden;">
+                                <div class="dropdown-menu notifications-dropdown-menu menuTwo" style="max-height: 400px;overflow-y: auto;overflow-x: hidden;">
                                     <ul class="notifications-container noti-style">
                                         <li> <h6 style="text-align: center">Consultation Request(s)</h6> </li>
                                         <li ng-repeat = "patient in consultation | orderBy: '-date'" ng-click= "view(patient)">
@@ -253,7 +253,7 @@
                       <span class="counter" ng-if="isNew" ng-cloak>{{len}}</span>
                     </sup>
                   </a>
-                                <div class="dropdown-menu notifications-dropdown-menu" style="max-height: 400px;overflow-y: auto;">
+                                <div class="dropdown-menu notifications-dropdown-menu menuThree" style="max-height: 400px;overflow-y: auto;">
                                     <ul class="notifications-container">
                                         <li> <h6 style="text-align: center">Prescription Request(s)</h6> </li>
                                         <li ng-repeat="request in allRequest">
@@ -287,7 +287,7 @@
                       <span class="counter" ng-if="inPersonRequestLen > 0 " ng-cloak>{{inPersonRequestLen}}</span>
                     </sup>
                   </a>
-                                <div class="dropdown-menu notifications-dropdown-menu" style="max-height: 400px;overflow-y: auto;">
+                                <div class="dropdown-menu notifications-dropdown-menu menuFour" style="max-height: 400px;overflow-y: auto;">
                                     <ul class="notifications-container">
                                         <li> <h6 style="text-align: center">In-Person Appointment Request</h6> </li>
                                         <li ng-repeat = "patient in inPersonRequest | orderBy: '-date'">
@@ -321,7 +321,7 @@
                       <span class="counter" ng-if="courierResponseList.length > 0" ng-cloak>{{courierResponseList.length}}</span>
                     </sup>
                   </a>
-                                <div class="dropdown-menu notifications-dropdown-menu" style="max-height: 400px;overflow-y: auto;" ng-controller = "createRoomController">
+                                <div class="dropdown-menu notifications-dropdown-menu menuFive" style="max-height: 400px;overflow-y: auto;" ng-controller = "createRoomController">
                                     <ul class="notifications-container noti-style">
                                         <li> <h5 style="text-align: center">Courier Notifications</h5> </li>
                                         <li ng-repeat = "j in courierResponseList | orderBy : '-date'" class="msg-drp-list" style="position: relative;" ng-click= "viewResponse(j)">
@@ -399,7 +399,7 @@
                       <span class="counter btn-danger" ng-if="showIndicator" style="border-radius: 10px;width: 8px;height: 8px;display: inline-block;"  ng-cloak></span>
                     </sup>
                   </a>
-                                <div class="dropdown-menu notifications-dropdown-menu" style="max-height: 400px;overflow-y: auto;">
+                                <div class="dropdown-menu notifications-dropdown-menu menuSix" style="max-height: 400px;overflow-y: auto;">
                                     <ul class="notifications-container noti-style">
                                         <li> <h6 style="text-align: center">Chats</h6> </li>
                                         <!--<li ng-repeat = "chat in chatsList" ng-click= "viewChat(chat.chat_id)" style="height: 80px;overflow:hidden">

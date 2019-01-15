@@ -141,7 +141,7 @@
                       <span class="counter" ng-if="noteLen > 0 " ng-cloak>{{noteLen}}</span>
                     </sup>
                     </a>
-                                <div class="dropdown-menu notifications-dropdown-menu" style="max-height: 400px;overflow-y: auto;">
+                                <div class="dropdown-menu notifications-dropdown-menu menuOne" style="max-height: 400px;overflow-y: auto;">
                                     <ul class="notifications-container">
                                         <li> <h6 style="text-align: center">Notification(s)</h6> </li>                                        
                                          <!--<li style="text-align: right;padding-right: 10px"><button class="btn btn-success btn-sm" ng-click = "addAllNote()">Add to Work List </button></li>-->
@@ -172,7 +172,7 @@
                       <span class="counter" ng-if="courierRequests.length > 0 " ng-cloak>{{courierRequests.length}}</span>
                     </sup>
                     </a>
-                                <div class="dropdown-menu notifications-dropdown-menu" style="max-height: 400px;overflow-y: auto;">
+                                <div class="dropdown-menu notifications-dropdown-menu menuTwo" style="max-height: 400px;overflow-y: auto;">
                                     <ul class="notifications-container">
                                         <li> <h6 style="text-align: center">Courier Request(s)</h6> </li>                                        
                                          <!--<li style="text-align: right;padding-right: 10px"><button class="btn btn-success btn-sm" ng-click = "addAllNote()">Add to Work List </button></li>-->
@@ -203,7 +203,7 @@
                                 <span class="counter btn-danger" ng-if="showIndicator !== false" style="border-radius: 10px;width: 8px;height: 8px;display: inline-block;"  ng-cloak></span>
                               </sup>
                             </a>
-                                <div class="dropdown-menu notifications-dropdown-menu" style="max-height: 400px;overflow-y: auto;">
+                                <div class="dropdown-menu notifications-dropdown-menu menuThree" style="max-height: 400px;overflow-y: auto;">
                                     <ul class="notifications-container noti-style">
                                         <li> <h6 style="text-align: center">Chats</h6> </li>
                                         <li ng-repeat = "chat in chatsList | orderBy : '-realTime'" ng-click= "viewChat(chat.partnerId)" style="height: 80px;overflow:hidden">
