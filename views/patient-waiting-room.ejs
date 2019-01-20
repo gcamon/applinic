@@ -221,7 +221,7 @@
                                             <span><strong>Residence</strong ng-cloak> | {{patient.patient_city}} {{patient.patient_coutry}}</span>
                                         </header><hr>
                                         <aside>
-                                           <div ng-if="patient.preferred_city" style=" background:#f2f2f2; text-transform:capitalize; font-size:16px;padding: 10px 0;text-align:center;margin: 15px 0" ng-cloak>Prefers doctors resident in {{patient.preferred_city}}</div>
+                                           <div ng-if="patient.preferred_city" style=" background:#f2f2f2; text-transform:capitalize; font-size:16px;padding: 10px 0;text-align:center;margin: 15px 0" ng-cloak>Prefers doctors resident in {{(patient.preferred_city && patient.preferred_city !== 'undefined') ? patient.preferred_city : 'any state'}}</div>
                                         </aside>
                                         <h6 style="font-weight:bold">History</h6><hr/>
                                         <ul class="patient-symptoms">                                            
