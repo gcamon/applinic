@@ -152,9 +152,11 @@
                                     <div class="p-1">                               
                                       <input type="text" ng-model="complain.text" placeholder="Filter by ID, City, Age, Gender, Symptoms or Disease ,  etc" class="form-control" style="margin-left: -20px "> 
                                     </div>                                      
-                                    <div ng-repeat="i in complaints | filter: complain.text | orderBy: '-sent_date'" class="card row">
-
-                                        <div class="p-2">
+                                    <div ng-repeat="i in complaints | filter: complain.text | orderBy: '-sent_date'" class="card row" style="position: relative;">
+                                        <div style="height: 20px">
+                                          
+                                        </div>
+                                        <div class="p-2 pb-0">
                                           
                                           <span  class="text-muted" ng-cloak>{{i.complaint_id}}</span> |
                                           
@@ -167,15 +169,14 @@
                                             
                                            
                                           
-                                          <span class="text-muted" class="fa fa-globe">Prefers doctors resident in <b>{{(i.preferred_city && i.preferred_city !== 'undefined') ? i.preferred_city : 'any state'}}</b></span>
-                                                                                        
+                                          <span class="text-muted" class="fa fa-globe">Prefers doctors resident in <b>{{(i.preferred_city && i.preferred_city !== 'undefined') ? i.preferred_city : 'any state'}}</b></span>                                      
                                          
                                         </div>                            
-                                        
-                                        <div class="p-2" style="position: relative;">
+                                         <time  am-time-ago="i.sent_date" style="position: absolute;right: 10px;top:5px;font-size: 12px;font-weight: bold;"></time>
+                                        <div class="p-2 pt-0">
                                             <div style="position: relative;">
                                                 <b style="color: #000;font-size: 12px;margin-top:20px;display: inline-block" ng-if="i.symptoms.length > 0"><span class="text-muted">Symptoms :</span> <span ng-repeat="symptom in i.symptoms" ng-cloak>{{symptom}}, &nbsp;</span></b><br>
-                                                <time  am-time-ago="i.sent_date" style="position: absolute;right: 0;top:2px;font-size: 12px;font-weight: bold;"></time>
+                                               
                                             </div>
                                              <p class="p-1" ng-bind-html = "i.description">
                                                     
