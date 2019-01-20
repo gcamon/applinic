@@ -167,7 +167,7 @@
                                             
                                            
                                           
-                                          <span class="text-muted" class="fa fa-globe">Prefers doctors resident in <b>{{(i.preferred_city || i.preferred_city !== 'undefined') ? i.preferred_city : 'Anywhere'}}</b></span>
+                                          <span class="text-muted" class="fa fa-globe">Prefers doctors resident in <b>{{(i.preferred_city && i.preferred_city !== 'undefined') ? i.preferred_city : 'Any state'}}</b></span>
                                                                                         
                                           <hr>
                                         </div>                            
