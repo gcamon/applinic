@@ -12,7 +12,7 @@ var randos = require("./randos");
 
 
 
-var signupRoute = function(model,sms,geonames,paystack,io) {
+var signupRoute = function(model,sms,geonames,paystack,io,nodemailer) {
 	passport.use('signup', new LocalStrategy({
 		usernameField : 'email',
 	    passwordField : 'password',
@@ -144,14 +144,57 @@ var signupRoute = function(model,sms,geonames,paystack,io) {
 							User.courier_access_password = uuid.v1();			
 						}
 
-						console.log(User)
-						User.save(function(err){
-							console.log("user saved");
-							if(err) throw err;	
-							io.sockets.to(process.env.ADMIN_ID).emit("new user",
-								{city:User.city,phone: User.phone, date:User.date,firstname:User.firstname,name:User.name,title:User.title})
-							return done(null,User);
-						});			
+							console.log(User)
+							User.save(function(err){
+								console.log("user saved");
+								if(err) throw err;	
+								io.sockets.to(process.env.ADMIN_ID).emit("new user",
+									{city:User.city,phone: User.phone, date:User.date,firstname:User.firstname,name:User.name,title:User.title})
+
+								var transporter = nodemailer.createTransport({
+								  host: "mail.privateemail.com",
+								  port: 465,
+								  auth: {
+								    user: "info@applinic.com",
+								    pass: process.env.EMAIL_PASSWORD
+								  }
+								});
+								var enames = (req.body.title && req.body.title !== "SC") ? (req.body.title + " " + req.body.lastname) : req.body.name;
+								var emsg = "<b>Dear " + enames 
+								+ "</b><br><br><b>Congratulations and welcome to Applinic Healthcare.</b><br><br>" 
+								+ "Your registration as an Applinic doctor was successful.<br><br>"
+								+ "Your login details are as follows:<br><br>"
+								+ "Email: " + req.body.email + "<br><br>"
+								+ "Password: " + password + "<br><br>"
+								+ "For ease of usage, you may download the Applinic mobile application on google play store if you use an android phone." 
+								+ "<a href='https://play.google.com/store/apps/details?id=com.farelandsnigeria.applinic'>Click here </a> to do so now.<br><br>"
+								+ "To learn how to use Applinic, please read the information palettes on your dashboard after logging in and or " 
+								+ "<a href='https://youtu.be/CctDIyN_QA0'> click here</a> to watch Applinic videos for " +  req.body.typeOfUser + "<br><br>"
+								+ "We will occasionally send you information updates on our services and new packages through this mail and your registered phone no.<br><br>" 
+								+ "For further inquiries please call customer support on +2349080045678 <br><br>"
+								+ "You may log in to your account now by <a href='https://applinic.com/login'>clicking here.</a> <br><br>"
+								+ "Thank you for choosing Applinic.<br><br>"
+								+ "Sincerely,<br><br>"
+								+ "Applinic Team"
+
+
+								var mailOptions = {
+								  from: 'Applinic info@applinic.com',
+								  to: req.body.email,//req.body.email || 'ede.obinna27@gmail.com',
+								  subject: 'Your registration as an Applinic ' + req.body.typeOfUser + ' was successful',
+								  html: emsg
+								};
+
+								transporter.sendMail(mailOptions, function(error, info){
+								  if (error) {
+								    console.log(error);
+								  } else {
+								    console.log('Email sent: ' + info.response);
+								  }
+								});
+
+								return done(null,User);
+							});			
 
 						} else {
 							res.send({error: "Email already in use. Please find another one"});
@@ -189,7 +232,7 @@ var signupRoute = function(model,sms,geonames,paystack,io) {
 	    if (!user) {	
 	      	res.send({error:true,message: "User phone number not active or wrong verification pin!"});
 	    } else {
-    		var msgBody = "Applinic login details Email " + req.body.email + " Password " + req.body.password;
+    		/*var msgBody = "Applinic login details Email " + req.body.email + " Password " + req.body.password;
 				var phoneNunber = (req.body.phone[0] !== "+") ? "+" + req.body.phone : req.body.phone;
 			
 				function callBack(err,info){
@@ -197,7 +240,7 @@ var signupRoute = function(model,sms,geonames,paystack,io) {
 					console.log(info)
 				}
 
-				//sms.message.sendSms('Appclinic',phoneNunber,msgBody,callBack); //"2348096461927"	    	
+				//sms.message.sendSms('Applinic',phoneNunber,msgBody,callBack); //"2348096461927"	    	
     		console.log(msgBody)
     		sms.messages.create(
 				  {
@@ -205,8 +248,8 @@ var signupRoute = function(model,sms,geonames,paystack,io) {
 				    from: '+16467985692',
 				    body: msgBody
 				  }
-				) 
-				res.send({error: false,message: "Success! Account created. Login credentials sent to your phone via sms."}); 	
+				) */
+				res.send({error: false,message: "Success! Account created."}); 	
 	    }
 	  })(req, res, next)
 	});

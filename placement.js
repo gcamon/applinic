@@ -4,7 +4,7 @@ var router = config.router;
 var path = require("path");
 var Wallet = require("./wallet");
 
-function placementRoute(model,sms,io){
+function placementRoute(model,sms,io,nodemailer){
 
 	//user sends help and the new help object is instantiated and saved to the data base.
 	router.post("/user/help",function(req,res){

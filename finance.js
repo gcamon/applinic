@@ -10,7 +10,7 @@ var randos = require("./randos");
  
 
 
-var basicPaymentRoute = function(model,sms,io,paystack,client){
+var basicPaymentRoute = function(model,sms,io,paystack,client,nodemailer){
 
 	//this route creates the token for use ie creating vouchers
 	router.post("/user/token",function(req,res){

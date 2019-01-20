@@ -349,46 +349,86 @@
 	        </div>
 	    </script>
 
-	    <!--
-	request_id : String,
-		verified: Boolean,
-		total_cost: String,
-		firstname: String,
-		address: String,
-		prescription_body: Array,
-		city: String,
-		phone1: String,
-		phone2: String,
-		lastname: String,
-		title: String,
-		attended: Boolean,
-		profile_pic_url: String,
-		user_id: String,
-		center_id: String,
-		center_name: String,
-		center_address: String,
-		center_phone: String,
-		date: Number, //use date to find refers to date the request was made or initiated
-		otp: String,
-		receipt_date: Number,
-		verification_date: Number,
-		completed: Boolean,
-		delivery_charge: Number,
-		deleted: Boolean,
-		currencyCode: String,
-		city_grade: Number,
-		prescriptionId: Number,
-		is_paid: Boolean,
-		new: Number,
-		dispute: Boolean,
-		complaints: Array,
-		on_delivery: Boolean,
-		delivery_msg: String,
-		delivery_start_date: Date,
-		center_charge: String
-	    -->
+	    <script type="text/ng-template" id='admin-refer-another.html'>
+	         <div class="modal" style="transition: opacity .15s linear;">
+	          <div class="modal-dialog">
+	            <div class="modal-content">
+	              <div class="modal-header">
+	              	<h5>Redirect Consultaton</h5>
+	              </div>              
+	              <div class="modal-body" > 
+	             	<div>
+		              	<b>Patient Name:</b> {{user.patient_name}}
+		              	<b>City:</b> {{user.patient_city}}
+	              	</div>
+	              	<div>
+	              		<form ng-submit="find()" class="row">	              		  
+	              			<div class="col-md-5">
+	              				<input type="text" class="form-control" placeholder="Enter city name"  uib-typeahead="city for city in cities | filter:$viewValue | limitTo:15" ng-model="req.city" style="border: 1px solid #ccc">
+	              			</div>
+	              			<div class="col-md-5">
+	              				<input type="text" class="form-control" placeholder="Enter specialty"   uib-typeahead="specialty.specialty for specialty in specialties | filter:$viewValue | limitTo:15" ng-model="req.specialty" style="font-size: 14px!important;border: 1px solid #ccc">
+	              			</div>
+	              			<div class="col-md-2 pt-3">
+	              				<input type="submit" value="Find" class="btn btn-info">
+	              			</div>
+	              		</form>
+	              	</div>
+	              	<div style="height: 20px"></div>
+	              	<div class="p-1 row" ng-repeat="result in result">
+	              		<div class="col-md-3">
+	              			<img src="{{result.profile_pic_url}}" style="max-width: 300px;height: auto;">
+	              		</div>
+	              		<div class="col-md-7">
+	              			<span><b>{{result.title}} {{result.lastname}} {{result.firstname}}</b></span><br>
+	              			<span>{{result.specialty}}</span><br>
+	              			<span>{{result.work_place}} | {{result.address}}, {{result.city}} {{result.country}}</span>
+	              		</div>
+	              		<div class="col-md-2 pt-2">
+	              			<a href="" ng-click="refer(user,result)" class="btn-danger btn btn-sm" ng-if="!result.msg && !result.loading">Refer</a>
+	              			<span>{{(result.loading) ? "sending..." : result.msg}}</span>
+	              		</div>
+	              		<hr>
+	              	</div>
+	              	<div style="text-align: center;padding-top: 20px" ng-if="loading">
+	              		<span>Loading...</span>
+	              	</div>
+	              </div>
+	              <div class="modal-footer">
+	                <button type="button" ng-click="goBack()" class="btn btn-primary" data-dismiss="modal">Close</button>	                
+	              </div>
+	            </div>
+	          </div>
+	        </div>
+	    </script>
 
-	 	 <script src="/assets/js/app.js"></script>
+
+	    <script type="text/ng-template" id='admin-view-complaint.html'>
+	         <div class="modal" style="transition: opacity .15s linear;">
+	          <div class="modal-dialog">
+	            <div class="modal-content">
+	              <div class="modal-header">
+	              	<div><b>{{complaint.patient_name}}</b></div>
+	              	<div><b>{{complaint.patient_phone}}</b></div>   
+	              </div>              
+	              <div class="modal-body" > 
+	              	<div><b>Complaint</b></div>
+	              	<div><b>{{complaint.date | date : "fullDate"}}</b> ( <span am-time-ago="complaint.date"></span> )</div> 	              	          	
+
+	              	<div class="pt-2" ng-bind-html="complaint.message">
+	              	</div>
+	              </div>
+	              <div class="modal-footer">
+	                <button type="button" ng-click="goBack()" class="btn btn-primary" data-dismiss="modal">Close</button>	                
+	              </div>
+	            </div>
+	          </div>
+	        </div>
+	    </script>
+
+	
+
+	 	<script src="/assets/js/app.js"></script>
         <script src="/assets/js/now-ui-kit.js"></script>
         <script src="/assets/js/bower_components/summernote/dist/summernote.js"></script>
         <script src="/assets/js/bower_components/angular-summernote/dist/angular-summernote.js"></script>

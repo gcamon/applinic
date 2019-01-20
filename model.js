@@ -10,18 +10,16 @@ var options = {
 	poolSize: 10, // Maintain up to 10 socket connections
 	// If not connected, return errors immediately rather than waiting for reconnect
 	bufferMaxEntries: 0,
-	useNewUrlParser: true 
+	//useNewUrlParser: true 
 }
+
 mongoose.connect(dbURL,options)
 .then(
   () => { console.log("db connected!") },
   err => { console.log(err)}
 )
 
-
-
 var Schema = mongoose.Schema;
-
 var myModel = function () {
 	var fileSchema = Schema({
 		type: String,
@@ -926,7 +924,15 @@ var myModel = function () {
 		doctor_country: String,
 		files: Array,
 		message: String,
-		id: Number
+		id: Number,
+		redirect_info: {
+			date: Date,
+			id: String,
+			doctor: String,
+			specialty: String,
+			doctorId: String,
+			city: String
+		}
 	});
 
 	

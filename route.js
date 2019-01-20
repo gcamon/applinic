@@ -66,7 +66,7 @@ function genHash(count) {
     return text;
 }
 
-var basicRoute = function (model,sms,io,streams,client) { 
+var basicRoute = function (model,sms,io,streams,client,nodemailer) { 
 
   router.get("/",function(req,res){
     res.render('index',{"message":""});
@@ -1528,7 +1528,7 @@ var basicRoute = function (model,sms,io,streams,client) {
           } else if(req.body.type === "consultation" && !data.set_presence.general || !data.presence) {
 
             var msgBody = req.user.title + " " + req.user.firstname + " " + req.user.lastname + 
-            " sent you consultation request! Visit https://applinic.com/user/doctor";
+            " sent a consultation request! Go to https://applinic.com/user/doctor and check your mail";
 
             var phoneNunber = data.phone;   
 
@@ -1536,7 +1536,7 @@ var basicRoute = function (model,sms,io,streams,client) {
               patient_name: req.user.title + " " + req.user.firstname + " " + req.user.lastname,
               doctor_name: data.title + " " + data.firstname,
               id: requestData.message_id,
-              date: new Date(),
+              date: + new Date(),
               doctor_phone: data.phone,
               doctor_email: data.email,
               doctor_id: data.user_id,
@@ -1552,13 +1552,13 @@ var basicRoute = function (model,sms,io,streams,client) {
 
             consult.save(function(err,info){});       
 
-            sms.messages.create(
+            /*sms.messages.create(
               {
                 to: phoneNunber,
                 from: '+16467985692',
                 body: msgBody,
               }
-            );
+            );*/
 
             sms.calls 
             .create({
@@ -1579,6 +1579,41 @@ var basicRoute = function (model,sms,io,streams,client) {
             io.sockets.to(req.body.receiverId).emit("receive consultation request",{status: "success",type:"question"});
           }
 
+          var transporter = nodemailer.createTransport({
+            host: "mail.privateemail.com",
+            port: 465,
+            auth: {
+              user: "info@applinic.com",
+              pass: process.env.EMAIL_PASSWORD
+            }
+          });
+
+          var mailOptions = {
+            from: 'Applinic info@applinic.com',
+            to: data.email,//'ede.obinna27@gmail.com',//data.email
+            subject: 'Consultation Request from a Patient',
+            html: '<b> Dear ' + data.title + " " + data.firstname + 
+            ",</b><br><br> You received a consultation request from a patient.<br><br>" 
+            + req.user.title + " " + req.user.firstname + " " + req.user.lastname 
+            + " has just submitted a consultation request to you on Applinic<br><br>"
+            + "Please click the link below to sign in to respond to her request.<br><br>"
+            + "URL: https://applinic.com/user/doctor <br><br>"
+            + "When you log in, click the notification message icon on top of your dashboard to see the request.<br>" 
+            + "Select the message to open, review and respond to the request.<br><br>"
+            + "For inquiries please call customer support on +2349080045678<br><br>"
+            + "Thank you for using Applinic<br><br>"
+            + "<b>Applinic Team</b>"
+
+          };
+
+          transporter.sendMail(mailOptions, function(error, info){
+            if (error) {
+              console.log(error);
+            } else {
+              console.log('Email sent: ' + info.response);
+            }
+          });
+
           data.save(function(err,info){});
           res.send({status:"notified"});
         });
@@ -1588,6 +1623,247 @@ var basicRoute = function (model,sms,io,streams,client) {
       }
         
     });
+
+    router.post("/user/admin/redirect-consultation",function(req,res){
+      if(req.user) {
+        if(req.user.type == "admin") {
+          console.log(req.body)
+          model.user.findOne({user_id: req.body.patient_id}).exec(function(err,patient){
+            req.user = patient;
+
+           /* req.body.sender_firstname = req.user.firstname;
+            req.body.sender_lastname = req.user.lastname;
+            req.body.sender_profile_pic_url = req.user.profile_pic_url;
+            req.body.message = req.body.history;
+            req.body.sender_id = req.user.user_id;
+            req.body.sender_age = req.user.age;
+            req.body.sender_gender = req.user.gender;
+            req.body.sender_location = req.user.city + " " + req.user.country;
+            if(req.body.files){
+              
+              var fileUrl;
+              for(var i = 0; i < req.body.files.length; i++){
+                fileUrl = req.body.files[i].location || "/download/skills/" + req.body.files[i].filename; // this will be change to link dropbox;
+                var file = {
+                  type: req.body.files[i].mimetype,
+                  filename: req.body.files[i].filename,
+                  path: fileUrl,
+                  file_id: random,
+                  external_link: req.files[i].location || "https://" + req.hostname + "/download/skills/" + req.files[i].filename
+                }
+                req.body.files.push(file);
+              }
+  
+
+
+  { _id: '5c42c632112b8822d8ba7951',
+  patient_name: 'Mr Nnaji Chidiebere',
+  doctor_name: 'Dr Obinna',
+  id: 25340138747,
+  date: '2019-01-19T06:39:46.992Z',
+  doctor_phone: '+2348063345256',
+  doctor_email: 'ede.obinnsddssda27@gmail.com',
+  doctor_id: 'dssddsds274736',
+  patient_phone: '+2348064245255',
+  patient_email: 'chidiebere@gmail.com',
+  patient_id: 'chidiebere187432',
+  doctor_specialty: 'Aerospace Medicine',
+  patient_city: 'Enugu',
+  doctor_city: 'Enugu',
+  message: 'I am sick. I am having the following symptoms:<blockquote>Headache<br></blockquote><br>The symptom(s) has lasted for a month till date.<br>Brief history of the sickness was stated as it is: <br><blockquote>dssds.</blockquote>This patient has tried other medications or self medications but the complaints persisted.',
+  __v: 0,
+  files: null,
+  newDoctor: 'dssddsds274736' }
+[]
+https://localhost:3001/user/admin/redirect-consultation
+{ _id: '5c42c632112b8822d8ba7951',
+  patient_name: 'Mr Nnaji Chidiebere',
+  doctor_name: 'Dr Obinna',
+  id: 25340138747,
+  date: '2019-01-19T06:39:46.992Z',
+  doctor_phone: '+2348063345256',
+  doctor_email: 'ede.obinnsddssda27@gmail.com',
+  doctor_id: 'dssddsds274736',
+  patient_phone: '+2348064245255',
+  patient_email: 'chidiebere@gmail.com',
+  patient_id: 'chidiebere187432',
+  doctor_specialty: 'Aerospace Medicine',
+  patient_city: 'Enugu',
+  doctor_city: 'Enugu',
+  message: 'I am sick. I am having the following symptoms:<blockquote>Headache<br></blockquote><br>The symptom(s) has lasted for a month till date.<br>Brief history of the sickness was stated as it is: <br><blockquote>dssds.</blockquote>This patient has tried other medications or self medications but the complaints persisted.',
+  __v: 0,
+  files: null,
+  newDoctor: 'dssddsds274736' }
+
+
+
+              { sick: true,
+  period: 'about six months',
+  how: 'sdsddssdds',
+  hasMedicated: 'yes',
+  history: 'I am sick. I am having the following symptoms:<blockquote>Body Weakness<br></blockquote><br>The symptom(s) has lasted for about six months till date.<br>Brief history of the sickness was stated as it is: <br><blockquote>sdsddssdds.</blockquote>This patient has tried other medications or self medications but the complaints persisted.',
+  type: 'consultation',
+  message_id: 14829076612,
+  date: 1547980926943,
+  receiverId: 'jajaweki' }
+
+            }*/
+            
+            var requestData = {
+              sender_firstname: req.user.firstname,
+              sender_lastname : req.user.lastname,
+              sender_profile_pic_url : req.user.profile_pic_url,
+              message : req.body.history,
+              sender_id : req.user.user_id,
+              sender_age : req.user.age,
+              sender_gender: req.user.gender,
+              sender_location : req.user.city + " " + req.user.country,
+              type: 'consultation',
+              message_id: req.body.id,
+              date: + new Date(),
+            };
+            /*for(var item in req.body){
+              if(req.body.hasOwnProperty(item) && item !== "receiverId") {
+                  requestData[item] = req.body[item];
+              }
+            }*/
+            
+            model.user.findOne({user_id:req.body.newDoctor},
+              {doctor_notification:1,presence:1,set_presence:1,phone:1,firstname:1,title:1,user_id:1,email:1,specialty:1,city:1,country:1,name:1})
+            .exec(function(err,data){
+              if(err) throw err;
+              if(data) {
+              data.doctor_notification.push(requestData);
+
+              if(data.presence && data.set_presence.general && req.body.type === "consultation"){           
+                io.sockets.to(req.body.receiverId).emit("receive consultation request",{status: "success"});
+
+              } else if(req.body.type === "consultation" && !data.set_presence.general || !data.presence) {
+
+                var msgBody = req.user.title + " " + req.user.firstname + " " + req.user.lastname + 
+                " sent a consultation request! Go to https://applinic.com/user/doctor and check your mail";
+
+                var phoneNunber = data.phone;   
+
+                model.consult.findById(req.body._id)
+                .exec(function(err,con){
+                  if(err) {
+                    throw err;
+                    //res.send({})
+                    return;
+                  }
+
+                  console.log(con)
+                  if(con){
+                    con.redirect_info = {
+                      date: new Date(),
+                      id: requestData.message_id,
+                      doctor: data.name,
+                      specialty: data.specialty,
+                      doctorId: data.user_id,
+                      city: data.city
+                    }
+                    con.save(function(err,info){});
+                  } 
+                })
+
+                var consult = new model.consult({
+                  patient_name: req.user.title + " " + req.user.firstname + " " + req.user.lastname,
+                  doctor_name: data.title + " " + data.firstname,
+                  id: requestData.message_id,
+                  date: + new Date(),
+                  doctor_phone: data.phone,
+                  doctor_email: data.email,
+                  doctor_id: data.user_id,
+                  patient_phone: req.user.phone,
+                  patient_email: req.user.email,
+                  patient_id: req.user.user_id,
+                  doctor_specialty: data.specialty,
+                  patient_city: req.user.city,
+                  doctor_city: data.city,
+                  message: req.body.message,
+                  files: (req.body.files) ? req.body.files : null
+                });
+
+                consult.save(function(err,info){});       
+
+                sms.messages.create(
+                  {
+                    to: phoneNunber || "",
+                    from: '+16467985692',
+                    body: msgBody,
+                  }
+                );
+
+                sms.calls 
+                .create({
+                  url: "https://applinic.com/voicenotification?firstname=" + data.firstname + "&&title=" + data.title,
+                  to: phoneNunber || "",
+                  from: '+16467985692',
+                })
+                .then(
+                  function(call){
+                    console.log(call.sid);
+                  },
+                  function(err) {
+                    console.log(err)
+                  }
+                );
+
+              } else if(data.presence  && data.set_presence.general  && req.body.type === "question"){           
+                io.sockets.to(req.body.receiverId).emit("receive consultation request",{status: "success",type:"question"});
+              }
+
+              var transporter = nodemailer.createTransport({
+                host: "mail.privateemail.com",
+                port: 465,
+                auth: {
+                  user: "info@applinic.com",
+                  pass: process.env.EMAIL_PASSWORD
+                }
+              });
+
+              var mailOptions = {
+                from: 'Applinic info@applinic.com',
+                to: data.email,//'ede.obinna27@gmail.com',//data.email
+                subject: 'Consultation Request from a Patient',
+                html: '<b> Dear ' + data.title + " " + data.firstname + 
+                ",</b><br><br> You received a consultation request from a patient.<br><br>" 
+                + req.user.title + " " + req.user.firstname + " " + req.user.lastname 
+                + " has just submitted a consultation request to you on Applinic<br><br>"
+                + "Please click the link below to sign in to respond to her request.<br><br>"
+                + "URL: https://applinic.com/user/doctor <br><br>"
+                + "When you log in, click the notification message icon on top of your dashboard to see the request.<br>" 
+                + "Select the message to open, review and respond to the request.<br><br>"
+                + "For inquiries please call customer support on +2349080045678<br><br>"
+                + "Thank you for using Applinic<br><br>"
+                + "<b>Applinic Team</b>"
+
+              };
+
+                transporter.sendMail(mailOptions, function(error, info){
+                  if (error) {
+                    console.log(error);
+                  } else {
+                    console.log('Email sent: ' + info.response);
+                  }
+                });
+
+                data.save(function(err,info){});
+                res.send({status:true,message: "Redirect successful."});
+              } else {
+                res.send({Error: "Doctor not found!"})
+              }
+            });
+
+          });
+          } else {
+            res.send({Error: "403"})
+          }
+      } else {
+        res.end("unauthorized access!")
+      }
+    })
 
     router.put("/user/skill-referral/:docId",function(req,res){
       if(req.user){
@@ -1677,7 +1953,11 @@ var basicRoute = function (model,sms,io,streams,client) {
                     service_access: 1,
                     user_id:1,
                     phone:1,
-                    presence:1
+                    presence:1,
+                    title:1,
+                    lastname:1,
+                    email:1
+
                 }
             )
             .exec(
@@ -1719,6 +1999,39 @@ var basicRoute = function (model,sms,io,streams,client) {
                           }
                         ) 
                       }
+
+                      var transporter = nodemailer.createTransport({
+                        host: "mail.privateemail.com",
+                        port: 465,
+                        auth: {
+                          user: "info@applinic.com",
+                          pass: process.env.EMAIL_PASSWORD
+                        }
+                      });
+
+                      
+
+                      var mailOptions = {
+                        from: 'Applinic info@applinic.com',
+                        to: result.email,//result.email,//req.body.email || 'ede.obinna27@gmail.com',
+                        subject: 'Response to Your Consultation Request',
+                        html: "<b>Dear " + result.lastname + ",</b><br><br>" 
+                        + req.user.title + " " + req.user.lastname 
+                        + "has accepted your consultation request. Click the link below to log in and see his response.<br><br>"
+                        + "URL: https://applinic.com/user/patient<br><br>"
+                        + "Thank you for using Applinic.<br><br>"
+                        + "For inquiries please call customer support on +2349080045678<br><br>"
+                        + "Thank you for using Applinic.<br></br><br>"
+                        + "<b>Applinic Team</b>"
+                      };
+
+                      transporter.sendMail(mailOptions, function(error, info){
+                        if (error) {
+                          console.log(error);
+                        } else {
+                          console.log('Email sent: ' + info.response);
+                        }
+                      });
 
                       result.save(function(err){
                         if(err) throw err;                    

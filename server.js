@@ -12,6 +12,7 @@ var express = require('express'),
   payments = require("./finance"),  
   paystack = require('paystack')(process.env.PAYSTACK_SECRET_KEY),   
   moment = require('moment'),
+  nodemailer = require('nodemailer'),
   
   //infobip = require('infobip-node'),
 
@@ -38,7 +39,7 @@ var express = require('express'),
   var geonames = new Geonames({username: 'gcamon29', lan: 'en', encoding: 'JSON'});*/
   var geonames = {};
 
-  var client; //= new infobip('Farelands', 'icui4cuok');
+  var client = {}; //= new infobip('Farelands', 'icui4cuok');
 
   //client.sender.source = ""; //use numbers only for voice
   //client.sender.destinaton.push('+2348096461927');
@@ -136,11 +137,11 @@ console.log(startDate, "" , endDate)
 
 
 config.configuration(app,model);
-signupRoute(model,sms,geonames,paystack,io);
+signupRoute(model,sms,geonames,paystack,io,nodemailer);
 loginRoute(model,sms);
-route(model,sms,io,streams,client); 
-payments(model,sms,io,paystack,client);
-placement(model,sms,io);
+route(model,sms,io,streams,client,nodemailer); 
+payments(model,sms,io,paystack,client,nodemailer);
+placement(model,sms,io,nodemailer);
 mySocket(model,io,streams);
 
 
@@ -151,14 +152,14 @@ var b = "ede".replace(/\s+/g, '');
 console.log("obinna".substring(0,2))
 
 
-var nodemailer = require('nodemailer');
+
 /*
 var transporter = nodemailer.createTransport({
   service: "gmail",
   //port: 465,
   auth: {
     user: "ede.obinna27@gmail.com",
-    pass: "icui4cuok"
+    pass: "myGmailPassword"
   }
 });
 */
@@ -168,7 +169,7 @@ var transporter = nodemailer.createTransport({
   port: 465,
   auth: {
     user: "info@applinic.com",
-    pass: "b2bisawesome"
+    pass: process.env.EMAIL_PASSWORD
   }
 });
 
@@ -176,7 +177,7 @@ var mailOptions = {
   from: 'Applinic info@applinic.com',
   to: 'ede.obinna27@gmail.com',
   subject: 'Thank you for creating an account with us',
-  text: 'That was easy!'
+  html: '<b>welcome onboard!</b>'
 };
 
 transporter.sendMail(mailOptions, function(error, info){

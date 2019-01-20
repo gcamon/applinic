@@ -10517,10 +10517,53 @@ app.service("adminScrollService",["$resource",function($resource){
   return $resource('/user/admin/scrolls');
 }]);
 
-app.controller('adminConsultationRequestCtrl',["$scope","$rootScope","adminConsultationService",
-  function($scope,$rootScope,adminConsultationService){
+app.controller('adminConsultationRequestCtrl',["$scope","$rootScope","adminConsultationService","ModalService",
+  function($scope,$rootScope,adminConsultationService,ModalService){
+
+
+  $scope.viewComplaint = function(complaint) {
+    if(!$rootScope.access){
+      var key = prompt("Enter access key");
+      if(key == "cfcd") {
+        $rootScope.complaint = complaint;
+        $rootScope.access = key;
+        ModalService.showModal({
+          templateUrl: 'admin-view-complaint.html',
+          controller: "adminComplaintModalCtrl"
+        }).then(function(modal) {
+          modal.element.modal();
+          modal.close.then(function(result) {
+             
+          });
+        });
+      } else {
+        alert("Wrong access key")
+      }
+    } else {
+      $rootScope.complaint = complaint;
+      ModalService.showModal({
+        templateUrl: 'admin-view-complaint.html',
+        controller: "adminComplaintModalCtrl"
+      }).then(function(modal) {
+        modal.element.modal();
+        modal.close.then(function(result) {});
+      });
+    }
+  }
+
+  $scope.toAnother = function(user) {
+    $rootScope.user = user;
+    ModalService.showModal({
+      templateUrl: 'admin-refer-another.html',
+      controller: "adminReferToAnotherModalCtrl"
+    }).then(function(modal) {
+      modal.element.modal();
+      modal.close.then(function(result) {});
+    });
+  }
+
   $scope.delConsultation = function(id){
-    var sure = confirm("You want to delete this consultation?")
+    var sure = confirm("You want to delete this consultation?");
     if(sure)
       adminConsultationService.delete({id: id},function(res){
         var elemPos = $rootScope.consultations.map(function(x){return x._id}).indexOf(id);
@@ -10529,7 +10572,78 @@ app.controller('adminConsultationRequestCtrl',["$scope","$rootScope","adminConsu
         }
       })
   }
+
+
+  $scope.lessThanOneHourAgo = function(date) {
+    return moment(date).isAfter(moment().subtract(24, 'hours'));
+  }
+
 }]); 
+
+app.controller("adminComplaintModalCtrl",function(){});
+
+app.controller("adminReferToAnotherModalCtrl",["$scope","$rootScope","$http","cities","adminConsultationService",
+function($scope,$rootScope,$http,cities,adminConsultationService){
+  $scope.req = {
+    city: $rootScope.user.doctor_city,
+    specialty: $rootScope.user.doctor_specialty
+  }
+  
+  function getDoctors() {
+    $scope.loading = true;
+    $http({
+      method  : 'GET',
+      url     : "/user/patient/find-doctor?city=" + $scope.req.city + "&specialty=" 
+      + $scope.req.specialty + "&type=specialty",
+      headers : {'Content-Type': 'application/json'} 
+    })
+    .success(function(data) {
+      console.log(data)
+      $scope.loading = false;
+      $scope.result = data;
+    });
+  }
+
+  $http({
+    method  : 'GET',
+    url     : "/user/get-specialties",
+    headers : {'Content-Type': 'application/json'} 
+  })
+  .success(function(data) {
+    console.log(data)
+    $scope.specialties = data;
+  });
+
+  $scope.cities = cities;
+
+  $scope.find = function() {
+    getDoctors()
+  }
+
+  $scope.refer = function(user,doc) {
+    user.newDoctor = doc.user_id;
+    doc.loading = true;
+    $http({
+      method  : 'POST',
+      url     : "/user/admin/redirect-consultation", 
+      data    : user,
+      headers : {'Content-Type': 'application/json'} 
+      })
+    .success(function(data) {
+      doc.loading = false;
+      if(data.status){
+        doc.msg = data.message;
+        adminConsultationService.query(function(data){
+          $rootScope.consultations = data;
+        })
+      } else {
+        alert("Referral failed!")
+      }
+    });
+  }
+
+  getDoctors()
+}]);
 
 app.controller('adminScrollCtrl',["$scope","$rootScope","adminScrollService","ModalService",
   function($scope,$rootScope,adminScrollService,ModalService){

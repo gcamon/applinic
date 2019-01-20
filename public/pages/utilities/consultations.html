@@ -1,24 +1,33 @@
 <div class="p-2" style="">
 	<h3>Pending Consultations ({{consultations.length}})</h3>
-	<div ng-repeat="i in consultations" class="row" style="padding: 20px;line-height: 30px">
+	<div ng-repeat="i in consultations | orderBy: '-date'" class="row" style="padding: 20px;line-height: 30px">
 			<div class="col-md-4 col-sm-12 col-lg-4">
 				<div><span><b>Date</b>: {{i.date | date: "fullDate"}} (<span am-time-ago="i.date"></span>)</span></div>
 				<div><b>Patient Name</b>: {{i.patient_name}}</div>
 				<div><b>Phone</b>: {{i.patient_phone}}</div>
 				<div><b>Email</b>: {{i.patient_email}}</div>
-				<div><b>Id</b>: {{i.patient_id}}</div>
+				<div><b>City</b>: {{i.patient_city}}</div>
+				<div><a href="" ng-click="viewComplaint(i)" class="text-info">view Complaint</a></div>
 			</div>
 			<div class="col-md-4 col-sm-12 col-lg-4">
 				<div><b>Physician</b>: {{i.doctor_name}}</div>
 				<div><b>Specialty</b>: {{i.doctor_specialty}} </div>
 				<div><b>Phone</b>: {{i.doctor_phone}}</div>
 				<div><b>Email</b>: {{i.doctor_email}}</div>
-				<div><b>Id</b>: {{i.doctor_id}}</div>
+				<div><b>City</b>: {{i.doctor_city}}</div>
 			</div>
-			<div class="col-md-2 col-sm-12 col-lg-2">
-				<button class="btn btn-danger btn-sm" ng-click="delConsultation(i._id)">Delete</button>
+			<div class="col-md-4 col-sm-12 col-lg-4">
+				<button class="btn btn-info btn-sm" ng-click="toAnother(i)" ng-if="!lessThanOneHourAgo(i.date) && !i.redirect_info">Refer to another</button>&nbsp;
+				<div style="display: inline-block;" ng-if="i.redirect_info">
+					<span>Referred to: {{i.redirect_info.doctor}}</span><br>
+					<span>Specialty: {{i.redirect_info.specialty}}</span><br>
+					<span>City: {{i.redirect_info.city}}</span><br>
+					<span am-time-ago="i.redirect_info.date"></span><br>
+					<!--<a href="" ng-click="toAnother(i)" ng-if="!lessThanOneHourAgo(i.date)" class="text-info">refer to another</a>-->
+				</div>
+				<button class="btn btn-neutral btn-sm" ng-click="delConsultation(i._id)" ng-if="!lessThanOneHourAgo(i.date)">Delete</button>
 			</div>
-		<hr>
+		<hr class="text-muted">
 	</div>
 
 </div>
