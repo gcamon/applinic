@@ -7245,7 +7245,7 @@ router.post("/user/response/patients-histories",function(req,res){
           if(err) throw err;
 
           if(!found){
-            res.send({error:"user not found!",message: "Sorry, This complaint has been closed."})
+            res.send({error:"user not found!",message: "Sorry, this complaint has been closed."});
             return;
           }
 
