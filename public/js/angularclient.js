@@ -1477,6 +1477,7 @@ app.controller("pharmacyDrugServicesUpdateController",["$scope","$http","$locati
       $scope.notService = response;
       resource.query({type:"Pharmacy"},function(data){
         $rootScope.allDrugs2 = data;
+        console.log(data)
         var elemPos;
         for(var i = 0; i < $scope.notService.length; i++) {
           elemPos = $rootScope.allDrugs2.map(function(x){return x.id}).indexOf($scope.notService[i].id);

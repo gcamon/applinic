@@ -227,9 +227,6 @@ var myModel = function () {
 		sub_specialty: String
 	});
 
-	
-
-	
 	var patient_noteSchema = Schema({
 		date: String,
 		note_id: Number,
