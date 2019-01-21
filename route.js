@@ -1528,37 +1528,17 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
           } else if(req.body.type === "consultation" && !data.set_presence.general || !data.presence) {
 
             var msgBody = req.user.title + " " + req.user.firstname + " " + req.user.lastname + 
-            " sent a consultation request! Go to https://applinic.com/user/doctor and check your mail";
+            " sent a consultation request! visit https://applinic.com/user/doctor to attend.";
 
             var phoneNunber = data.phone;   
 
-            var consult = new model.consult({
-              patient_name: req.user.title + " " + req.user.firstname + " " + req.user.lastname,
-              doctor_name: data.title + " " + data.firstname,
-              id: requestData.message_id,
-              date: + new Date(),
-              doctor_phone: data.phone,
-              doctor_email: data.email,
-              doctor_id: data.user_id,
-              patient_phone: req.user.phone,
-              patient_email: req.user.email,
-              patient_id: req.user.user_id,
-              doctor_specialty: data.specialty,
-              patient_city: req.user.city,
-              doctor_city: data.city,
-              message: req.body.history,
-              files: (req.body.files) ? req.body.files : null
-            });
-
-            consult.save(function(err,info){});       
-
-            /*sms.messages.create(
+            sms.messages.create(
               {
                 to: phoneNunber,
                 from: '+16467985692',
                 body: msgBody,
               }
-            );*/
+            );
 
             sms.calls 
             .create({
@@ -1578,6 +1558,27 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
           } else if(data.presence  && data.set_presence.general  && req.body.type === "question"){           
             io.sockets.to(req.body.receiverId).emit("receive consultation request",{status: "success",type:"question"});
           }
+
+
+          var consult = new model.consult({
+            patient_name: req.user.title + " " + req.user.firstname + " " + req.user.lastname,
+            doctor_name: data.title + " " + data.firstname,
+            id: requestData.message_id,
+            date: + new Date(),
+            doctor_phone: data.phone,
+            doctor_email: data.email,
+            doctor_id: data.user_id,
+            patient_phone: req.user.phone,
+            patient_email: req.user.email,
+            patient_id: req.user.user_id,
+            doctor_specialty: data.specialty,
+            patient_city: req.user.city,
+            doctor_city: data.city,
+            message: req.body.history,
+            files: (req.body.files) ? req.body.files : null
+          });
+
+          consult.save(function(err,info){});       
 
           var transporter = nodemailer.createTransport({
             host: "mail.privateemail.com",
@@ -1629,85 +1630,7 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
         if(req.user.type == "admin") {
           console.log(req.body)
           model.user.findOne({user_id: req.body.patient_id}).exec(function(err,patient){
-            req.user = patient;
-
-           /* req.body.sender_firstname = req.user.firstname;
-            req.body.sender_lastname = req.user.lastname;
-            req.body.sender_profile_pic_url = req.user.profile_pic_url;
-            req.body.message = req.body.history;
-            req.body.sender_id = req.user.user_id;
-            req.body.sender_age = req.user.age;
-            req.body.sender_gender = req.user.gender;
-            req.body.sender_location = req.user.city + " " + req.user.country;
-            if(req.body.files){
-              
-              var fileUrl;
-              for(var i = 0; i < req.body.files.length; i++){
-                fileUrl = req.body.files[i].location || "/download/skills/" + req.body.files[i].filename; // this will be change to link dropbox;
-                var file = {
-                  type: req.body.files[i].mimetype,
-                  filename: req.body.files[i].filename,
-                  path: fileUrl,
-                  file_id: random,
-                  external_link: req.files[i].location || "https://" + req.hostname + "/download/skills/" + req.files[i].filename
-                }
-                req.body.files.push(file);
-              }
-  
-
-
-  { _id: '5c42c632112b8822d8ba7951',
-  patient_name: 'Mr Nnaji Chidiebere',
-  doctor_name: 'Dr Obinna',
-  id: 25340138747,
-  date: '2019-01-19T06:39:46.992Z',
-  doctor_phone: '+2348063345256',
-  doctor_email: 'ede.obinnsddssda27@gmail.com',
-  doctor_id: 'dssddsds274736',
-  patient_phone: '+2348064245255',
-  patient_email: 'chidiebere@gmail.com',
-  patient_id: 'chidiebere187432',
-  doctor_specialty: 'Aerospace Medicine',
-  patient_city: 'Enugu',
-  doctor_city: 'Enugu',
-  message: 'I am sick. I am having the following symptoms:<blockquote>Headache<br></blockquote><br>The symptom(s) has lasted for a month till date.<br>Brief history of the sickness was stated as it is: <br><blockquote>dssds.</blockquote>This patient has tried other medications or self medications but the complaints persisted.',
-  __v: 0,
-  files: null,
-  newDoctor: 'dssddsds274736' }
-[]
-https://localhost:3001/user/admin/redirect-consultation
-{ _id: '5c42c632112b8822d8ba7951',
-  patient_name: 'Mr Nnaji Chidiebere',
-  doctor_name: 'Dr Obinna',
-  id: 25340138747,
-  date: '2019-01-19T06:39:46.992Z',
-  doctor_phone: '+2348063345256',
-  doctor_email: 'ede.obinnsddssda27@gmail.com',
-  doctor_id: 'dssddsds274736',
-  patient_phone: '+2348064245255',
-  patient_email: 'chidiebere@gmail.com',
-  patient_id: 'chidiebere187432',
-  doctor_specialty: 'Aerospace Medicine',
-  patient_city: 'Enugu',
-  doctor_city: 'Enugu',
-  message: 'I am sick. I am having the following symptoms:<blockquote>Headache<br></blockquote><br>The symptom(s) has lasted for a month till date.<br>Brief history of the sickness was stated as it is: <br><blockquote>dssds.</blockquote>This patient has tried other medications or self medications but the complaints persisted.',
-  __v: 0,
-  files: null,
-  newDoctor: 'dssddsds274736' }
-
-
-
-              { sick: true,
-  period: 'about six months',
-  how: 'sdsddssdds',
-  hasMedicated: 'yes',
-  history: 'I am sick. I am having the following symptoms:<blockquote>Body Weakness<br></blockquote><br>The symptom(s) has lasted for about six months till date.<br>Brief history of the sickness was stated as it is: <br><blockquote>sdsddssdds.</blockquote>This patient has tried other medications or self medications but the complaints persisted.',
-  type: 'consultation',
-  message_id: 14829076612,
-  date: 1547980926943,
-  receiverId: 'jajaweki' }
-
-            }*/
+            req.user = patient;         
             
             var requestData = {
               sender_firstname: req.user.firstname,
@@ -1745,7 +1668,37 @@ https://localhost:3001/user/admin/redirect-consultation
 
                 var phoneNunber = data.phone;   
 
-                model.consult.findById(req.body._id)
+               
+
+                sms.messages.create(
+                  {
+                    to: phoneNunber || "",
+                    from: '+16467985692',
+                    body: msgBody,
+                  }
+                );
+
+                sms.calls 
+                .create({
+                  url: "https://applinic.com/voicenotification?firstname=" + data.firstname + "&&title=" + data.title,
+                  to: phoneNunber || "",
+                  from: '+16467985692',
+                })
+                .then(
+                  function(call){
+                    console.log(call.sid);
+                  },
+                  function(err) {
+                    console.log(err)
+                  }
+                );
+
+              } else if(data.presence  && data.set_presence.general  && req.body.type === "question"){           
+                io.sockets.to(req.body.receiverId).emit("receive consultation request",{status: "success",type:"question"});
+              }
+
+
+              model.consult.findById(req.body._id)
                 .exec(function(err,con){
                   if(err) {
                     throw err;
@@ -1786,33 +1739,6 @@ https://localhost:3001/user/admin/redirect-consultation
                 });
 
                 consult.save(function(err,info){});       
-
-                sms.messages.create(
-                  {
-                    to: phoneNunber || "",
-                    from: '+16467985692',
-                    body: msgBody,
-                  }
-                );
-
-                sms.calls 
-                .create({
-                  url: "https://applinic.com/voicenotification?firstname=" + data.firstname + "&&title=" + data.title,
-                  to: phoneNunber || "",
-                  from: '+16467985692',
-                })
-                .then(
-                  function(call){
-                    console.log(call.sid);
-                  },
-                  function(err) {
-                    console.log(err)
-                  }
-                );
-
-              } else if(data.presence  && data.set_presence.general  && req.body.type === "question"){           
-                io.sockets.to(req.body.receiverId).emit("receive consultation request",{status: "success",type:"question"});
-              }
 
               var transporter = nodemailer.createTransport({
                 host: "mail.privateemail.com",
