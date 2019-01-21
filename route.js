@@ -7239,7 +7239,7 @@ router.get("/user/response/patients-histories/:batch",function(req,res){
 
 router.post("/user/response/patients-histories",function(req,res){
   if(req.user){
-      if(req.user.type === "Doctor") {
+      if(req.user.type === "Doctor" && req.user.verified) {
         var data = req.user;
         model.help.findOne({complaint_id: req.body.complaint_id,patient_id:req.body.patient_id},{response:1}).exec(function(err,found){
           if(err) throw err;
@@ -7314,7 +7314,7 @@ router.post("/user/response/patients-histories",function(req,res){
         });
 
     } else {
-      res.end("Error 403: You are not unathorized to view this page");
+      res.json({Error: "403",error: "You are not verified or authorized to respond to patients' complaint. Please contact admin for more details"});
     }
 
   } else {
