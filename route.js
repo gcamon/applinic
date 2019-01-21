@@ -1713,7 +1713,7 @@ https://localhost:3001/user/admin/redirect-consultation
               sender_firstname: req.user.firstname,
               sender_lastname : req.user.lastname,
               sender_profile_pic_url : req.user.profile_pic_url,
-              message : req.body.history,
+              message : req.body.message,
               sender_id : req.user.user_id,
               sender_age : req.user.age,
               sender_gender: req.user.gender,
@@ -7344,7 +7344,7 @@ router.get("/user/get-person-profile",function(req,res){
       res.send(data);
     })
   } else {
-    res.send("Unauthorized access!")
+    res.send("Unauthorized access!");
   }
 });
 

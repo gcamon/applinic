@@ -1,38 +1,11 @@
 
-<!--<div class="tg-docinfo tg-haslayout" >
-	<div class="col-md-3 col-lg-3 pull-right">
-		<img ng-src="{{data.sender_profile_pic_url}}" style="width: 80px; height: 80px">
-	</div>
-	<div class="col-md-9 col-lg-9">
-		<h5 style="text-align: center; border-bottom: 1px solid rgba(0,0,0,0.4)">{{data.sender_firstname}} {{data.sender_lastname}} <span style="display:block; text-align: center;font-size: 12px; color: #000"> Patient </span></h5>
-		<p style="line-height: 25px">Dear Dr. {{docName}},<br/>
-		   {{data.sender_firstname}} {{data.sender_lastname}} request for your consultation on {{data.date | date: "medium"}}. Brief explanation of his illness was <span style="font-style: italic;color: rgba(0,0,0,0.6">"{{data.sender_message}}"</span>. Consultation fee do apply if you grant this request.		   
-		</p>
-	</div>
-	<div class="tg-bottominfo tg-haslayout" style="margin-top: 30px">
-			<div class="tg-regardsleft">
-				<em>Regards,</em>
-				<strong>DocDirect Management.</strong>
-			</div>
-			<div class="tg-regardsright">
-				<strong class="logo">
-					<img src="/assets/images/dashboard/logo.jpg" alt="image description">
-				</strong>
-			</div>
-		</div>
-		<div  class="tg-bottominfo tg-haslayout" style="margin-top: 30px">
-			<button ng-click="accept()">accept</button>
-			<button>decline</button>
-			<button>refer to a specialist</button>
-		</div>
-</div>-->
 
-<div class="container" ng-if="data">
-<div class="p-1 card">	
-    <div class="row">
-	    <div class="col-md-4 col-lg-4 col-sm-12">    	
+
+<div class="card card-center-1" ng-if="data">	
+  
+	    <!--<div class="col-md-4 col-lg-4 col-sm-12">    	
 	    	<div>
-	        	<img ng-src="{{data.sender_profile_pic_url}}" class="img-responsive" style="max-height: 300px;max-width: 300px">
+	        	<img ng-src="{{data.sender_profile_pic_url}}" class="img-responsive" style="height: auto;max-width: 300px">
 	        </div>
 	        <div style="line-height: 35px">
 	        	<div><b>Name:</b> {{data.sender_firstname}} {{data.sender_lastname}}</div>
@@ -40,33 +13,40 @@
 				<div><b>Age:</b> {{data.sender_age}}</div>			
 				<div><b>Location:</b> {{data.sender_location}}</div>
 	        </div>
-	    </div>
-	    <div class="col-md-8 col-sm-12 col-lg-8">
-	        
-			<h6>
-				<h5><b>Consultation Request</b></h5>
-				<span style=""><b>Date received:</b> {{data.date | amCalendar}}</span>
-			</h6>
-			<hr>
-			<div>				
-				<b style="display: block;padding: 10px 0">Dear {{checkLogIn.title}} {{checkLogIn.firstname}},</b>
-				<h6 class="pb-1">{{data.sender_firstname}} {{data.sender_lastname}} request for your consultation. Below are the details of the request:</h6>
-				<p style="" ng-bind-html="data.message"></p>
-				</p>
-				<strong>Consultation fee do apply if you accept this request.</strong>
-			</div>	   
-
-			<br><br>
-			Regards, <span style="display:block"><b>Applinic Management</b></span> <img src="">
-
-			<div class="p-0 pt-2">
-			<button class="btn btn-success" ng-click="accept()">Accept</button>
-			<button class="btn btn-danger" ng-click="decline()">Decline</button>
-			<button class="btn btn-info" ng-click="referToAnother()">Refer to a specialist</button>
-			</div>
-	    </div>
+	    </div>-->
+	    
+	<h4 class="p-1">Consultation</h4>
+	<div class="row">
+		<div class="col-md-3 p-2">
+        	<img ng-src="{{data.sender_profile_pic_url}}" class="img-responsive" style="height: auto;max-width: 300px">
+        </div>
+        <div class="col-md-9 p-2">
+        	<div><b>Name:</b> {{data.sender_firstname}} {{data.sender_lastname}}</div>
+        	<div><b>gender:</b> {{data.sender_gender}}</div>
+			<div><b>Age:</b> {{data.sender_age}}</div>			
+			<div><b>Location:</b> {{data.sender_location}}</div>
+			<div><span style=""><b>Date received:</b> {{data.date | amCalendar}}</span></div>
+        </div>
+	
 	</div>
-<div class="clearfix"></div>
+	<div class="p-1">				
+		<p style="display: block;padding: 10px 0">Dear {{checkLogIn.title}} {{checkLogIn.firstname}},<br>
+		<span>{{data.sender_firstname}} {{data.sender_lastname}} request for your consultation. Below are the details of the request:</span></p>
+		<p style="" ng-bind-html="data.message"></p>
+		<span>Consultation fee do apply if you accept this request.</span>
+	</div>	   
+
+
+	<div class="p-1">Regards, <span style="display:block"><b>Applinic Management</b></span></div>
+
+	<div class="pt-1">
+	<button class="btn btn-success" ng-click="accept()">Accept</button>
+	<button class="btn btn-danger" ng-click="decline()">Decline</button>
+	<button class="btn btn-info" ng-click="referToAnother()">Refer to a specialist</button>
+	</div>
+</div>
+
+
 
 
 
