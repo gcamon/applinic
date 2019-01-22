@@ -46,7 +46,7 @@
                 font-family: 'Open Sans', sans-serif;
              }
             blockquote {
-               text-indent: 20px;
+               /*text-indent: 20px;*/
                 padding: 15px 5px 5px;
                 background-color: lightYellow;
                 font-style: normal;
@@ -1929,7 +1929,7 @@
                 </button>
               </div>
               <div class="modal-body">
-                <div class="p-2">
+                <div class="p-1">
                    <img src="{{docInfo.doctor_profile_pic_url}}" style="max-height: 72px;max-width: 72px;float: left;"> 
                    <div style="display: inline-block;float: left;padding-left: 10px">
                        <strong>{{docInfo.doctor_name}}</strong>
@@ -1938,10 +1938,10 @@
                    </div> 
                 </div>
                 <div class="clearfix"></div>
-                <div class="p-2" style="text-align: center;padding-top: 10px">
-                    <span class="text-white bg-info" ng-if="msg" style="display: block;width: 90%;margin: 0 auto;padding: 5px">{{msg}}</span>
+                <div class="p-1" style="padding-top: 10px">
+                    <span class="text-white bg-info" ng-if="msg" style="display: block;padding: 5px">{{msg}}</span>
                     <label class="font-1-2">You want to accept this doctor and pay the consultation fee above?</label>
-                    <div class="p-2" ng-if="isOTP" style="">
+                    <div class="p-1" ng-if="isOTP" style="">
                         <span style="padding: 10px">Enter OTP sent to <!--{{checkLogIn.phone}}--> your phone below</span>                         
 
                         <p>

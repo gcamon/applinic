@@ -8,7 +8,7 @@ function placementRoute(model,sms,io,nodemailer){
 
 	//user sends help and the new help object is instantiated and saved to the data base.
 	router.post("/user/help",function(req,res){
-		console.log(req.body, req.files)
+		console.log(req.body)
 		if(req.user){		
 			model.user.findOne({user_id: req.body.userId},{age:1,gender:1,city:1,country:1},function(err,user){
 				var random = parseInt(Math.floor(Math.random() * 999999) + " " + Math.floor(Math.random() * 999999));

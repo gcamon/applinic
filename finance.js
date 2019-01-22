@@ -537,8 +537,7 @@ var basicPaymentRoute = function(model,sms,io,paystack,client,nodemailer){
 			res.send({message: "Session has expired!, refresh and log in"});
 			return;
 		}
-
-	  console.log("========>>>",req.body)
+		console.log(req.body)
 		if(req.user && req.body && req.body.userId !== req.user.user_id && req.body.otp && req.user.type === "Patient"){
 			model.otpSchema.findOne({otp:req.body.otp}).exec(function(err,data){
 				if(err) throw err;

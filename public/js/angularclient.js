@@ -7195,7 +7195,7 @@ app.controller("PatientViewResponseController",["$scope","$rootScope","$resource
     //templateService.holdDocInView.fee = inNaira;
     //templateService.holdDocInView.intro = intro;
     var elemPos = $rootScope.patientsDoctorList.map(function(x){if(x) return x.doctor_id}).indexOf(doc.doctor_user_id);
-    if(elemPos === -1) {
+    if(elemPos !== -1) {
       $rootScope.holdDocInView = doc;
       ModalService.showModal({
           templateUrl: "acceptance-notification.html",
@@ -7314,11 +7314,13 @@ app.controller("PatientViewResponseModalController",["$scope","$rootScope","$loc
           doctor_profile_pic_url: $scope.docInfo.doctor_profile_pic_url,
           service_access: true,
           doctor_specialty: $scope.docInfo.doctor_specialty,
-          compaintId: $scope.docInfo.complaint_id,
-          user_id: $scope.docInfo.doctor_user_id
+          compaintId: templateService.holdData.complaint_id,
+          user_id: $scope.docInfo.doctor_user_id,
+          original_complaint: templateService.holdData.description,
+          original_complaint_date: templateService.holdData.sent_date
         }
       }
-
+      
       $scope.loading = true;
       var confirmed = resource.confirmed(payObj,function(data){
         $scope.loading = false;
@@ -17691,12 +17693,12 @@ function($scope,$location,$window,$http,templateService,localManager,templateUrl
 
     $scope.user.description = "";
     if($scope.user.sick) {        
-        /*var str = "";
+        var str = "";
         for(var i = 0; i < $scope.symptomsList.length ; i++) {
           str += $scope.symptomsList[i].name + "<br>";
-        }*/
+        }
 
-        /*$scope.user.description += '<blockquote>' + str + "</blockquote>";*/
+        $scope.user.description += '<blockquote>' + str + "</blockquote>";
        
        
 

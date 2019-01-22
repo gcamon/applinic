@@ -21,11 +21,13 @@
         	<img ng-src="{{data.sender_profile_pic_url}}" class="img-responsive" style="height: auto;max-width: 200px; object-fit: contain">
         </div>
         <div class="col-md-9 p-2">
+        	<div class="pl-1">
         	<div><b>Name:</b> {{data.sender_firstname}} {{data.sender_lastname}}</div>
         	<div><b>gender:</b> {{data.sender_gender}}</div>
 			<div><b>Age:</b> {{data.sender_age}}</div>			
 			<div><b>Location:</b> {{data.sender_location}}</div>
 			<div><span style=""><b>Date received:</b> {{data.date | amCalendar}}</span></div>
+			</div>
         </div>
 	
 	</div>

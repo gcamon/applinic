@@ -1525,40 +1525,40 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
           if(data.presence && data.set_presence.general && req.body.type === "consultation"){           
             io.sockets.to(req.body.receiverId).emit("receive consultation request",{status: "success"});
 
-          } else if(req.body.type === "consultation" && !data.set_presence.general || !data.presence) {
+          } //else if(req.body.type === "consultation" && !data.set_presence.general || !data.presence) {
 
-            var msgBody = req.user.title + " " + req.user.firstname + " " + req.user.lastname + 
-            " sent a consultation request! visit https://applinic.com/user/doctor to attend.";
+          var msgBody = req.user.title + " " + req.user.firstname + " " + req.user.lastname + 
+          " sent a consultation request! visit https://applinic.com/user/doctor to attend.";
 
-            var phoneNunber = data.phone;   
-
-            sms.messages.create(
-              {
-                to: phoneNunber,
-                from: '+16467985692',
-                body: msgBody,
-              }
-            );
-
-            sms.calls 
-            .create({
-              url: "https://applinic.com/voicenotification?firstname=" + data.firstname + "&&title=" + data.title,
+          var phoneNunber = data.phone;   
+          
+          sms.messages.create(
+            {
               to: phoneNunber,
               from: '+16467985692',
-            })
-            .then(
-              function(call){
-                console.log(call.sid);
-              },
-              function(err) {
-                console.log(err)
-              }
-            );
+              body: msgBody,
+            }
+          );
 
-          } else if(data.presence  && data.set_presence.general  && req.body.type === "question"){           
+          sms.calls 
+          .create({
+            url: "https://applinic.com/voicenotification?firstname=" + data.firstname + "&&title=" + data.title,
+            to: phoneNunber,
+            from: '+16467985692',
+          })
+          .then(
+            function(call){
+              console.log(call.sid);
+            },
+            function(err) {
+              console.log(err)
+            }
+          );
+
+          //} else if(data.presence  && data.set_presence.general  && req.body.type === "question"){  
+          if(data.presence  && data.set_presence.general  && req.body.type === "question") {      
             io.sockets.to(req.body.receiverId).emit("receive consultation request",{status: "success",type:"question"});
           }
-
 
           var consult = new model.consult({
             patient_name: req.user.title + " " + req.user.firstname + " " + req.user.lastname,
@@ -1601,6 +1601,8 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
             + "URL: https://applinic.com/user/doctor <br><br>"
             + "When you log in, click the notification message icon on top of your dashboard to see the request.<br>" 
             + "Select the message to open, review and respond to the request.<br><br>"
+            + "For ease of usage, you may download the Applinic mobile application on google play store if you use an android phone." 
+            + "<a href='https://play.google.com/store/apps/details?id=com.farelandsnigeria.applinic'>Click here </a> to do so now.<br><br>"
             + "For inquiries please call customer support on +2349080045678<br><br>"
             + "Thank you for using Applinic<br><br>"
             + "<b>Applinic Team</b>"
@@ -1661,39 +1663,40 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
               if(data.presence && data.set_presence.general && req.body.type === "consultation"){           
                 io.sockets.to(req.body.receiverId).emit("receive consultation request",{status: "success"});
 
-              } else if(req.body.type === "consultation" && !data.set_presence.general || !data.presence) {
+              } //else if(req.body.type === "consultation" && !data.set_presence.general || !data.presence) {
 
-                var msgBody = req.user.title + " " + req.user.firstname + " " + req.user.lastname + 
-                " sent a consultation request! Go to https://applinic.com/user/doctor and check your mail";
+              var msgBody = req.user.title + " " + req.user.firstname + " " + req.user.lastname + 
+              " sent a consultation request! Go to https://applinic.com/user/doctor and check your mail";
 
-                var phoneNunber = data.phone;   
+              var phoneNunber = data.phone;   
 
-               
+             
 
-                sms.messages.create(
-                  {
-                    to: phoneNunber || "",
-                    from: '+16467985692',
-                    body: msgBody,
-                  }
-                );
-
-                sms.calls 
-                .create({
-                  url: "https://applinic.com/voicenotification?firstname=" + data.firstname + "&&title=" + data.title,
+              sms.messages.create(
+                {
                   to: phoneNunber || "",
                   from: '+16467985692',
-                })
-                .then(
-                  function(call){
-                    console.log(call.sid);
-                  },
-                  function(err) {
-                    console.log(err)
-                  }
-                );
+                  body: msgBody,
+                }
+              );
 
-              } else if(data.presence  && data.set_presence.general  && req.body.type === "question"){           
+              sms.calls 
+              .create({
+                url: "https://applinic.com/voicenotification?firstname=" + data.firstname + "&&title=" + data.title,
+                to: phoneNunber || "",
+                from: '+16467985692',
+              })
+              .then(
+                function(call){
+                  console.log(call.sid);
+                },
+                function(err) {
+                  console.log(err)
+                }
+              );
+
+              //} else if(data.presence  && data.set_presence.general  && req.body.type === "question"){   
+              if(data.presence  && data.set_presence.general  && req.body.type === "question") {     
                 io.sockets.to(req.body.receiverId).emit("receive consultation request",{status: "success",type:"question"});
               }
 
@@ -1706,7 +1709,6 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
                     return;
                   }
 
-                  console.log(con)
                   if(con){
                     con.redirect_info = {
                       date: new Date(),
@@ -1761,6 +1763,8 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
                 + "URL: https://applinic.com/user/doctor <br><br>"
                 + "When you log in, click the notification message icon on top of your dashboard to see the request.<br>" 
                 + "Select the message to open, review and respond to the request.<br><br>"
+                + "For ease of usage, you may download the Applinic mobile application on google play store if you use an android phone." 
+                + "<a href='https://play.google.com/store/apps/details?id=com.farelandsnigeria.applinic'>Click here </a> to do so now.<br><br>"
                 + "For inquiries please call customer support on +2349080045678<br><br>"
                 + "Thank you for using Applinic<br><br>"
                 + "<b>Applinic Team</b>"
@@ -1913,18 +1917,35 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
 
                       if(result.presence){
                         io.sockets.to(result.user_id).emit("message notification",{status:true})
-                      } else {
-                        var msgBody = req.user.title + " " + req.user.firstname + " " + req.user.lastname + " accepted your consultation request! log in to your account https://applinic.com/login to view details";
-                        var phoneNunber =  result.phone;                  
+                      } //else {
 
-                        sms.messages.create(
-                          {
-                            to: phoneNunber,
-                            from: '+16467985692',
-                            body: msgBody,
+                      var msgBody = req.user.title + " " + req.user.firstname + " " + req.user.lastname +
+                       " accepted your consultation request! Go to dashboard https://applinic.com/user/patient to view details";
+                      var phoneNunber =  result.phone;                  
+
+                      sms.messages.create(
+                        {
+                          to: phoneNunber,
+                          from: '+16467985692',
+                          body: msgBody,
+                        }
+                      ) 
+                      //}
+
+                      sms.calls 
+                        .create({
+                          url: "https://applinic.com/voicenotification?firstname=" + req.user.lastname + "&&title=" + req.user.title,
+                          to: phoneNunber || "",
+                          from: '+16467985692',
+                        })
+                        .then(
+                          function(call){
+                            console.log(call.sid);
+                          },
+                          function(err) {
+                            console.log(err)
                           }
-                        ) 
-                      }
+                      );
 
                       var transporter = nodemailer.createTransport({
                         host: "mail.privateemail.com",
@@ -1935,8 +1956,6 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
                         }
                       });
 
-                      
-
                       var mailOptions = {
                         from: 'Applinic info@applinic.com',
                         to: result.email,//result.email,//req.body.email || 'ede.obinna27@gmail.com',
@@ -1946,6 +1965,8 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
                         + "has accepted your consultation request. Click the link below to log in and see his response.<br><br>"
                         + "URL: https://applinic.com/user/patient<br><br>"
                         + "Thank you for using Applinic.<br><br>"
+                        + "For ease of usage, you may download the Applinic mobile application on google play store if you use an android phone." 
+                        + "<a href='https://play.google.com/store/apps/details?id=com.farelandsnigeria.applinic'>Click here </a> to do so now.<br><br>"
                         + "For inquiries please call customer support on +2349080045678<br><br>"
                         + "Thank you for using Applinic.<br></br><br>"
                         + "<b>Applinic Team</b>"
@@ -7164,6 +7185,7 @@ router.get("/user/response/patients-histories/:batch",function(req,res){
 });
 
 router.post("/user/response/patients-histories",function(req,res){
+  console.log(req.body)
   if(req.user){
       if(req.user.type === "Doctor" && req.user.verified) {
         var data = req.user;
@@ -7183,20 +7205,20 @@ router.post("/user/response/patients-histories",function(req,res){
           var elemPos = found.response.map(function(x){return x.doctor_user_id}).indexOf(data.user_id);
           if(elemPos === -1){          
             model.user.findOne({user_id:req.body.patient_id},
-              {patient_mail:1,accepted_doctors:1,firstname:1,lastname:1,user_id:1,phone:1,presence:1}).exec(function(err,patient){           
+              {patient_mail:1,accepted_doctors:1,firstname:1,lastname:1,user_id:1,phone:1,presence:1,email:1}).exec(function(err,patient){           
               if(err) throw err;
               var checkIsMyDoctor = patient.accepted_doctors.map(function(x){return x.doctor_id}).indexOf(data.user_id);
               
               if(checkIsMyDoctor === -1){              
                 found.response.push(req.body);
                 var date = + new Date();
-                var msg = "(" + found.response.length + ") doctors" + " have responded to your complain.";
+                var msg = "(" + found.response.length + ") " + " responses to your complaint.";
                 var checkComplain = patient.patient_mail.map(function(x){return x.complaint_id}).indexOf(req.body.complaint_id);
                 if(checkComplain !== -1){
                   var complain = patient.patient_mail[checkComplain];
                   complain.message = msg;
                 } else {
-                  msg = "1 doctor has responded to your complain ";
+                  msg = "One response to your complaint";
                   patient.patient_mail.push({
                     category: "need_doctor",
                     date: date,
@@ -7209,20 +7231,69 @@ router.post("/user/response/patients-histories",function(req,res){
 
                 if(patient.presence === true){
                   io.sockets.to(patient.user_id).emit("message notification",{status:true})
-                } else {
-                  var msgBody = "A doctor responded to your complain! Visit http://applinic.com/login"
-                  var phoneNunber =  patient.phone;
-                  sms.messages.create(
-                    {
-                      to: phoneNunber,
-                      from: '+16467985692',
-                      body: msgBody,
-                    }
-                  ) 
-                }
+                } 
+
+                var msgBody = "A doctor reacted to your complaint! Go to dashboard https://applinic.com/user/patient"
+                var phoneNunber =  patient.phone;
+                sms.messages.create(
+                  {
+                    to: phoneNunber,
+                    from: '+16467985692',
+                    body: msgBody,
+                  }
+                );
+
+                sms.calls 
+                .create({
+                  url: "https://applinic.com/voicenotification?firstname=" + req.user.lastname + "&&title=" + req.user.title + "&&type=" + "resp",
+                  to: phoneNunber || "",
+                  from: '+16467985692',
+                })
+                .then(
+                  function(call){
+                    console.log(call.sid);
+                  },
+                  function(err) {
+                    console.log(err)
+                  }
+                );
+
+                var transporter = nodemailer.createTransport({
+                  host: "mail.privateemail.com",
+                  port: 465,
+                  auth: {
+                    user: "info@applinic.com",
+                    pass: process.env.EMAIL_PASSWORD
+                  }
+                });
+
+                var mailOptions = {
+                  from: 'Applinic info@applinic.com',
+                  to: patient.email,//result.email,//req.body.email || 'ede.obinna27@gmail.com',
+                  subject: 'Response to Your Consultation Request',
+                  html: "<b>Dear " + patient.lastname + ",</b><br><br>" 
+                  + req.user.title + " " + req.user.lastname 
+                  + "has accepted your consultation request. Click the link below to log in and see his response.<br><br>"
+                  + "URL: https://applinic.com/user/patient<br><br>"
+                  + "Thank you for using Applinic.<br><br>"
+                  + "For ease of usage, you may download the Applinic mobile application on google play store if you use an android phone." 
+                  + "<a href='https://play.google.com/store/apps/details?id=com.farelandsnigeria.applinic'>Click here </a> to do so now.<br><br>"
+                  + "For inquiries please call customer support on +2349080045678<br><br>"
+                  + "Thank you for using Applinic.<br></br><br>"
+                  + "<b>Applinic Team</b>"
+                };
+
+                transporter.sendMail(mailOptions, function(error, info){
+                  if (error) {
+                    console.log(error);
+                  } else {
+                    console.log('Email sent: ' + info.response);
+                  }
+                });
+                
               } else {
                 patient.save(function(err,info){})
-                var info = "Oops!! The request was not submited.Reason: This complaint is from your patient. Please contact " + 
+                var info = "Oops!! Your response was declined.Reason: This complaint is from your patient. Please contact " + 
                 patient.firstname + " " + patient.lastname;
               }
               patient.save(function(err,info){});
@@ -8546,7 +8617,9 @@ router.post("/twiliovoicemsg",function(req,res){
 
 router.post("/voicenotification",function(req,res){
   var twiml = new Voice();
-  var textToSay = "Greetings " + req.query.title + " , " + req.query.firstname + " , " +  
+  var textToSay = (req.query.type) ? "Hello " + req.query.title + " , " + req.query.firstname + " , " 
+  + ", a doctor just responded to your complaint.Please go to your dashboard on app linic for more details , Thank you."
+   :  "Hello " + req.query.title + " , " + req.query.firstname + " , " +  
   " You have new consultation request. Please log on to your app linic dot com account and attend to the patient. Thank you" 
   twiml.say({ voice: 'man',language: 'en-gb' },textToSay);
   res.type('text/xml');
