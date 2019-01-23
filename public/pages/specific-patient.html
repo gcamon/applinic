@@ -889,10 +889,10 @@
 
             <div class="col-md-12 col-sm-12 col-xs-12" ng-if="isInvestigation">             
                 <h6>Investigation</h6><br>
-                <button class="btn btn-success"  ng-click="newLab()"><i class="fa fa-pencil"></i> New Laboratory Request</button>
-                <button class="btn btn-danger"  ng-click="newRadio()" style="margin-right: 5px"><i class="fa fa-pencil"></i> New Radiology Request</button>
-                <a href="" class="btn btn-primary" ng-click="laboratory()">Laboratory Reports </a>
-                <a href="" class="btn btn-warning" ng-click="radiology()">Radiology Reports</a>
+                <button class="btn btn-neutral btn-sm"  ng-click="newLab()"><i class="fa fa-pencil"></i> New Laboratory Request</button>
+                <button class="btn btn-neutral btn-sm"  ng-click="newRadio()" style="margin-right: 5px"><i class="fa fa-pencil"></i> New Radiology Request</button>
+                <a href="" class="btn btn-neutral btn-sm" ng-click="laboratory()">Laboratory Reports </a>
+                <a href="" class="btn btn-neutral btn-sm" ng-click="radiology()">Radiology Reports</a>
                 <hr>
             </div>
 
@@ -1252,7 +1252,7 @@
              <div ng-if="isOutPatientBilling" class="card p-2">
                 <div ng-if="inMainBill">
                     <h6>Out Patient Billing</h6>
-                    <table class="table table-striped table-responsive">
+                    <table class="table table-striped table-responsive no-mobile-item-display">
                         <thead>
                             <th style="width:3%"></th>
                             <th style="width:67%;padding-left: 15px">Description</th>
@@ -1266,6 +1266,15 @@
                             <td style="padding-top: 22px"><i class="fa fa-times btn btn-neutral btn-sm" ng-if="billList.length > 1" ng-click="removeBill(i.sn)"></i></td>
                         </tbody>
                     </table>
+                    <div class="mobile-item-display">                            
+                        <table class="table" ng-repeat=" i in billList">
+                            <thead><th ></th> <td></td></thead>
+                            <thead><th>Description</th> <td><input type="text" name="" ng-model="i.description" class="form-control" style="font-size: 14px!important"></td></thead>
+                            <thead><th>Cost</th> <td><input type="number" name="" ng-model="i.cost" class="form-control" style="font-size: 14px!important"></td></thead>
+                            <thead><th></th> <td><i class="fa fa-times btn btn-neutral btn-sm" ng-if="billList.length > 1" ng-click="removeBill(i.sn)"></i></td></thead>
+                        </table>
+                    </div>
+
                     <div style="">
                         <button class="btn btn-info" ng-click="previewBill()">Preview</button>
                         <i class="fa fa-plus btn btn-simple btn-round" ng-click="addBill()" style="float: right;"></i>
@@ -1284,7 +1293,7 @@
                    
                      <div class="clearfix"></div>
                     <hr class="bg-simple">
-                     <table class="tabletable-responsive">
+                     <table class="tabletable-responsive no-mobile-item-display">
                         <thead>
                             <th style="width:3%"></th>
                             <th style="width:70%;padding-left: 15px"></th>
@@ -1295,10 +1304,20 @@
                             <td>{{i.sn}}</td>
                             <td style="width:60%;padding-left: 15px">{{i.description}}</td>
                             <td>{{toCurrency(i.cost)}}</td>
-                            <td style="padding-top: 22p"><i class="fa fa-times btn btn-neutral btn-sm" ng-if="billList.length > 1" ng-click="removeBill(i.sn)"></i></td>
+                            <td><i class="fa fa-times btn btn-neutral btn-sm" ng-if="billList.length > 1" ng-click="removeBill(i.sn)"></i></td>
                         </tbody>
                         <caption><b>Total: </b>  {{toCurrency(totalBilled)}}</caption>
                     </table>
+                    <div class="mobile-item-display">                            
+                        <table class="table" ng-repeat=" i in billList">
+                            <thead><th></th> <td>{{i.sn}}</td></thead>
+                            <thead><th></th> <td>{{i.description}}</td></thead>
+                            <thead><th></th> <td>{{toCurrency(i.cost)}}</td></thead>
+                            <thead><th></th> <td><i class="fa fa-times btn btn-neutral btn-sm" ng-if="billList.length > 1" ng-click="removeBill(i.sn)"></i></td></thead>
+                            <caption><b>Total: </b>  {{toCurrency(totalBilled)}}</caption>
+                            <hr>
+                        </table>
+                    </div>
                     <div>
                         <button class="btn btn-danger" ng-click="sendBill()" ng-if="!isSent"> <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i> {{(loading) ? "" : "Send Bill"}}</button> <i class="fa fa-check" ng-if="isSent"> Bill sent!!</i>
                     </div>
