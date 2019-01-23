@@ -419,8 +419,8 @@
             </div>
         </div>
         <div class="pt-1"> 
-            <a href="" ng-click="toPatient()" class="btn btn-neutral btn-sm text-primary"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange" ng-if="loading"></i><i class="fa fa-send" ng-if="!loading"></i> {{(loading) ? '' : ' Patient only'}}</a>
-            <a href="" ng-click="toPharmacy()" class="btn btn-neutral btn-sm text-primary"><i class="fa fa-send"></i> Patient / Phamarcy</a>
+            <a href="" ng-click="toPatient()" class="btn btn-info btn-sm"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange" ng-if="loading"></i><i class="fa fa-send" ng-if="!loading"></i> {{(loading) ? '' : ' Patient only'}}</a>
+            <a href="" ng-click="toPharmacy()" class="btn btn-info btn-sm"><i class="fa fa-send"></i> Patient / Phamarcy</a>
             <a href="" class="btn btn-neutral btn-sm dropdown-toggle" data-toggle="dropdown" ng-click="viewPreviousPrescriptionByDoctor()">{{(isToViewOldPrescription !== true) ? 'Previous Prescriptions' : 'Close Previous Prescriptions' }}</a>  
         </div>                          
         <div class="clearfix">
