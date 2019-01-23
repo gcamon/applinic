@@ -685,6 +685,11 @@ font-weight: 300 !important;
     display: block;
   }
 
+  .counter {
+    font-size: 10px!important;
+    color:orange!important;
+  }
+
 }
 
 
