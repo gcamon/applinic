@@ -544,7 +544,7 @@ span.dates {
 }
 
 .chat-header-text-new {
-  color: green!important;
+  color: rgba(0,0,0,0.7)!important;
   font-weight: bold!important;
 }
 

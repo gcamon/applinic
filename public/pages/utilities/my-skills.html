@@ -2,7 +2,7 @@
 	<div class="card card-center-1 p-2">
 		<h2 class="font-1_4">My Skills &amp; Procedures</h2>
 		<p ng-if="mySkills.length === 0" class="p-2">This record is empty. <a href="#/doc-edit-profile" class="text-info"> <i class="fa fa-plus"></i> Add Skills & Procedures</a></b>.</p>
-		<table class="table">
+		<table class="table no-mobile-item-display">
 			<thead>
 				<th>Created</th>
 				<th>Title</th>
@@ -16,5 +16,14 @@
 				<td><!--<i class="fa fa-copy" style="padding: 0 3px;cursor: pointer;" title="copy {{j.skill}} link"></i>--> <i class="fa fa-trash" style="padding: 0 3px;cursor: pointer;font-size: 18px;color: grey" title="delete {{j.skill}} skill" ng-click="deleteSkill(j)"></i>  <a href="{{j.path}}" target="_blank" class="fa fa-eye" style="font-size: 18px" title="view {{j.skill}} "></a></td>
 			</tbody>
 		</table>
+		 <div class="mobile-item-display">                            
+            <table class="table" ng-repeat="j in mySkills | orderBy: '-date'">
+                <thead><th>Created: </th> <td>{{j.date | date : "mediumDate"}}</td></thead>
+                <thead><th>Title: </th> <td>{{j.skill}}</td></thead>
+                <thead><th>Disease: </th> <td>{{j.disease}}</td></thead>
+                <thead><th>Manage: </th> <td><i class="fa fa-trash" style="padding: 0 3px;cursor: pointer;font-size: 18px;color: grey" title="delete {{j.skill}} skill" ng-click="deleteSkill(j)"></i>  <a href="{{j.path}}" target="_blank" class="fa fa-eye" style="font-size: 18px" title="view {{j.skill}} "></a></td></thead>
+                <hr>
+            </table>
+        </div>
 	</div>
 </div>
