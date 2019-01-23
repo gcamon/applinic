@@ -652,7 +652,7 @@ module.exports = function(model,io,streams,sms) {
     	sms.calls 
         .create({
           url: "https://applinic.com/inviteonlinecall?receiver=" +
-           data.receiver_name + "&&sender=" + data.sender + "&&type" + data.type,
+           data.receiver_name + "&&sender=" + data.sender + "&&type=" + data.type,
            to: "+2348064245256", //data.receiver_phone,//"+2348064245256",
            from: '+16467985692',
         })
