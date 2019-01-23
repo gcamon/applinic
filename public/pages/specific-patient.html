@@ -545,14 +545,14 @@
             <strong class="font-1_2">{{test.center_name}} </strong>
             <span style="display:block;color:#000;font-size:12px">{{test.center_address}} {{test.cente_city}} {{test.center_country}}</span>         
             <span style="display: block">{{test.center_phone}}</span>
-            <span am-time-ago="test.date_sent" class="text-info" style="float: right;font-size:14px"></span>
+            <span am-time-ago="test.date_sent" class="text-info"></span>
         </div>
-        <div>
-            <strong>Date : </strong> {{test.receive_date | date: 'mediumDate'}}
+        <div class="pb-1">
+            <strong>Date  Received: </strong> {{test.receive_date | date: 'mediumDate'}}
         </div>
        
-         <div>
-           <strong style="border-bottom: 2px solid orange">Test Result</strong> 
+         <div class="pb-1">
+           <strong>Investigation Result</strong> 
         </div>                   
         <div>                        
             <article ng-repeat="report in test.test_result"> 
@@ -566,9 +566,9 @@
         </div>
         <div style="text-align: right">
             <i class="fa fa-file-image-o" title="View X-Ray files associated with this test result" ng-if="test.files.length > 0"
-            style="font-size:24px;color:rgba(0,150,0,0.9); cursor:pointer;margin:20px 10px" ng-click="viewFile()"></i>
+            style="font-size:24px;color:rgba(0,150,0,0.9); cursor:pointer;margin:20px 10px" ng-click="viewFile()"></i>&nbsp;&nbsp;
             <!--<i class="icon-Pills icon-style" title="Write prescription based on this test result" style="cursor:pointer" ng-click="prescribe(test)"></i>-->
-            <i class="icon-Pills icon-style" title="Write prescription based on this test result" style="cursor:pointer"  ng-click="writePrescription()"></i>
+            <i class="icon-Pills icon-style" title="Write prescription based on this test result" style="cursor:pointer"  ng-click="writePrescription()"></i>&nbsp;&nbsp;
            
             <i class="fa fa-times" title="Delete this request" style="cursor:pointer" ng-click="delete(test)"></i>
         </div>
@@ -593,15 +593,15 @@
         <strong class="font-1_2">{{test.center_name}} </strong>
         <span style="display:block;color:#000;font-size:12px">{{test.center_address}} {{test.cente_city}} {{test.center_country}}</span>         
         <span style="display: block">{{test.center_phone}}</span>
-        <span am-time-ago="test.date_sent" class="text-info" style="float: right;font-size:14px"></span>
+        <span am-time-ago="test.date_sent" class="text-info"></span>
         </div>
-        <div>
-            <strong>Date : </strong> {{test.receive_date | date: 'mediumDate'}}
+       <div class="pb-1">
+            <strong>Date  Received: </strong> {{test.receive_date | date: 'mediumDate'}}
         </div>
-        
-        <div>
-           <strong style="border-bottom: 2px solid orange">Test Result</strong> 
-        </div>
+       
+         <div class="pb-1">
+           <strong>Investigation Result</strong> 
+        </div>                   
                           
         <div>                        
             <article ng-repeat="report in test.test_result"> 
@@ -615,8 +615,8 @@
         </div>
         <div style="text-align: right">
             <i class="fa fa-file-image-o font-1_4 text-primary" title="View files associated with this test result" ng-if="test.files.length > 0"
-            style="cursor:pointer;margin:20px 10px 0;float: left;" ng-click="viewFile(test.files,test.test_result)"> {{test.files.length}} file(s)</i>
-            <i class="icon-Pills icon-style" title="Write prescription based on this test result" style="cursor:pointer;margin:20px 10px 0" ng-click="writePrescription()"></i>
+            style="cursor:pointer;margin:20px 10px 0;float: left;" ng-click="viewFile(test.files,test.test_result)"> {{test.files.length}} file(s)</i>&nbsp;&nbsp;
+            <i class="icon-Pills icon-style" title="Write prescription based on this test result" style="cursor:pointer;margin:20px 10px 0" ng-click="writePrescription()"></i>&nbsp;&nbsp;
             <i class="fa fa-times" title="Delete this request" style="cursor:pointer;margin:20px 10px 0" ng-click="delete(test)"></i>
         </div>
     </section>
