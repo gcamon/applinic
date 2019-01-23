@@ -19377,18 +19377,22 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
   }
 
   $rootScope.inviteOnline = function(receiver) {
+    var msg = "You want to invite this " + $rootScope.checkLogIn.lastname + " to come online and have a chat with you"
+    var check = confirm(msg);
+    if(check) {
+      var name = ($rootScope.checkLogIn.lastname) ? $rootScope.checkLogIn.lastname : "center";
+      var data = {
+        sender: name,
+        receiver_name: (receiver.lastname) ? receiver.lastname : "center",
+        receiver_phone: receiver.phone,
+        receiver_id: receiver.user_id,
+        type: $rootScope.checkLogIn.typeOfUser
+      }
 
-    var name = ($rootScope.checkLogIn.lastname) ? $rootScope.checkLogIn.lastname : $rootScope.checkLogIn.name;
-    var data = {
-      sender: name,
-      receiver_name: (receiver.lastname) ? receiver.lastname : receiver.name,
-      receiver_phone: receiver.phone,
-      receiver_id: receiver.user_id
+      mySocket.emit('invite online',data,function(respnse){
+        alert("initiated")
+      })
     }
-
-    mySocket.emit('invite online',data,function(respnse){
-      alert("initiated")
-    })
 
   }
 

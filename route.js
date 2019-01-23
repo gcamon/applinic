@@ -8629,7 +8629,7 @@ router.post("/voicenotification",function(req,res){
 router.post("/inviteonlinecall",function(req,res){
   var twiml = new Voice();
   console.log(req.query)
-  var textToSay = "Hi, " + req.query.receiver + ", " + req.query.sender + "is waiting to have a chat with you on app linic .com, Please log in now to attend. Thank you."
+  var textToSay = "Hi, " + req.query.receiver + ", " + req.query.sender + ", a" + req.query.type + "is waiting to have a chat with you on app linic .com, Please log in now to attend. Thank you."
   twiml.say({ voice: 'man',language: 'en-gb' },textToSay);
   res.type('text/xml');
   res.send(twiml.toString());
