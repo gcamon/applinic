@@ -19376,22 +19376,29 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
     localManager.removeItem("adminFoundUser");
   }
 
+  var inviteCount = 0;
   $rootScope.inviteOnline = function(receiver) {
-    var msg = "You want to invite this " + $rootScope.checkLogIn.lastname + " to come online and have a chat with you"
-    var check = confirm(msg);
-    if(check) {
-      var name = ($rootScope.checkLogIn.lastname) ? $rootScope.checkLogIn.lastname : "center";
-      var data = {
-        sender: name,
-        receiver_name: (receiver.lastname) ? receiver.lastname : "center",
-        receiver_phone: receiver.phone,
-        receiver_id: receiver.user_id,
-        type: $rootScope.checkLogIn.typeOfUser
-      }
+    if(inviteCount <= 5)  {
+      var type = receiver.type || "center";
+      var msg = "You want to invite this " + type + " to come online and have a chat with you."
+      var check = confirm(msg);
+      if(check) {
+        inviteCount++;
+        var name = ($rootScope.checkLogIn.lastname) ? $rootScope.checkLogIn.lastname : "center";
+        var data = {
+          sender: name,
+          receiver_name: (receiver.lastname) ? receiver.lastname : "center",
+          receiver_phone: receiver.phone,
+          receiver_id: receiver.user_id,
+          type: $rootScope.checkLogIn.typeOfUser
+        }
 
-      mySocket.emit('invite online',data,function(respnse){
-        alert("initiated")
-      })
+        mySocket.emit('invite online',data,function(respnse){
+          alert("initiated")
+        })
+      }
+    } else {
+      alert("Ooops! You have reached your invitation limit for this user. Please be patient till you receive a response.")
     }
 
   }
