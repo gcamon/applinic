@@ -1310,13 +1310,14 @@
                     </table>
                     <div class="mobile-item-display">                            
                         <table class="table" ng-repeat=" i in billList">
-                            <thead><th></th> <td>{{i.sn}}</td></thead>
-                            <thead><th></th> <td>{{i.description}}</td></thead>
-                            <thead><th></th> <td>{{toCurrency(i.cost)}}</td></thead>
-                            <thead><th></th> <td><i class="fa fa-times btn btn-neutral btn-sm" ng-if="billList.length > 1" ng-click="removeBill(i.sn)"></i></td></thead>
-                            <caption><b>Total: </b>  {{toCurrency(totalBilled)}}</caption>
-                            <hr>
+                            <thead><th style="width:20%"></th> <td>{{i.sn}}</td></thead>
+                            <thead><th style="width:20%"></th> <td>{{i.description}}</td></thead>
+                            <thead><th style="width:20%"></th> <td>{{toCurrency(i.cost)}}</td></thead>
+                            <thead><th style="width:20%"></th> <td><i class="fa fa-times btn btn-neutral btn-sm" ng-if="billList.length > 1" ng-click="removeBill(i.sn)"></i></td></thead>                            
                         </table>
+                        <div>
+                            <b>Total: </b>  {{toCurrency(totalBilled)}}
+                        </div>
                     </div>
                     <div>
                         <button class="btn btn-danger" ng-click="sendBill()" ng-if="!isSent"> <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i> {{(loading) ? "" : "Send Bill"}}</button> <i class="fa fa-check" ng-if="isSent"> Bill sent!!</i>
