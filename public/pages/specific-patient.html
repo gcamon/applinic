@@ -1283,8 +1283,8 @@
                 <div ng-if="isPreviewBill">
                      <a href="" ng-click="mainBill()" class="btn btn-simple btn-sm" style="float: right;"><i class="fa fa-pencil"></i> edit</a>
                      <div>
-                         <i class="fa fa-user-md" style="float: left;font-size: 34px;padding-right: 10px"></i> 
-                         <div style="display: inline-block;float: left;">
+                         <!--<i class="fa fa-user-md" style="float: left;font-size: 34px;padding-right: 10px"></i> -->
+                         <div style="">
                              <strong style="font-size: 18px;">{{checkLogIn.name}} </strong>
                              <span style="display: block;">{{checkLogIn.specialty}}</span>
                              <span style="display: block;">{{checkLogIn.work_place}} {{checkLogIn.address}}, {{checkLogIn.city}} {{checkLogIn.country}}</span>
@@ -1313,7 +1313,7 @@
                             <thead><th style="width:20%"></th> <td>{{i.sn}}</td></thead>
                             <thead><th style="width:20%"></th> <td>{{i.description}}</td></thead>
                             <thead><th style="width:20%"></th> <td>{{toCurrency(i.cost)}}</td></thead>
-                            <thead><th style="width:20%"></th> <td><i class="fa fa-times btn btn-neutral btn-sm" ng-if="billList.length > 1" ng-click="removeBill(i.sn)"></i></td></thead>                            
+                            <!--<thead><th style="width:20%"></th> <td><i class="fa fa-times btn btn-neutral btn-sm" ng-if="billList.length > 1" ng-click="removeBill(i.sn)"></i></td></thead> -->                         
                         </table>
                         <div>
                             <b>Total: </b>  {{toCurrency(totalBilled)}}
