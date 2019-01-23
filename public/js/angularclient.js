@@ -19394,7 +19394,7 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
         }
 
         mySocket.emit('invite online',data,function(respnse){
-          alert("initiated")
+          alert(respnse.message);
         })
       }
     } else {

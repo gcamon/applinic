@@ -653,13 +653,13 @@ module.exports = function(model,io,streams,sms) {
         .create({
           url: "https://applinic.com/inviteonlinecall?receiver=" +
            data.receiver_name + "&&sender=" + data.sender + "&&type" + data.type,
-           to: data.receiver_phone,//"+2348064245256",
+           to: "+2348064245256", //data.receiver_phone,//"+2348064245256",
            from: '+16467985692',
         })
         .then(
           function(call){
             console.log(call.sid)
-            cb({status:true})
+            cb({status:true,message: "invitation sent! Please wait for " + data.receiver_name + " to come online"})
           },
           function(err) {
             console.log(err)

@@ -20,11 +20,13 @@
                          <div style="font-weight:bold;padding:5px 0;">Place of work: <span style="">{{docInfo.work_place}}</span></div>
                             <div style="font-weight:bold;padding:5px 0">Address: <span style="">{{docInfo.address}} {{docInfo.city}} {{docInfo.country}}</span></div>
                             <div style="font-weight:bold;padding:5px 0">Experience: <span style="">{{docInfo.experience + " years"}}</span></div>
-                            <div><a ng-href= "{{docInfo.profile_url}}" style=""  class="btn btn-success">view doctor's profile</a></div>
+                            <div><a ng-href= "{{docInfo.profile_url}}">view doctor's profile</a></div>
 
-                     </div><br>
-
-                     <div class="clearfix"></div>
+                     </div>
+                      <div class="pt-2">
+                         <a href="" class="btn btn-sm btn-danger" ng-click="inviteOnline(docInfo)">Seek Attention</a>
+                     </div>
+                    <div class="clearfix"></div>
         
                 </div>
             </div>
