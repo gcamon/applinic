@@ -640,7 +640,8 @@ var basicPaymentRoute = function(model,sms,io,paystack,client,nodemailer){
                           initial_complaint: {
                           	complaint: req.body.sendObj.original_complaint,
                           	complaint_date: req.body.sendObj.original_complaint_date,
-                          	date_received: req.body.date
+                          	date_received: req.body.date,
+                          	files: req.body.sendObj.files
                           }
                         });
 

@@ -7317,10 +7317,11 @@ app.controller("PatientViewResponseModalController",["$scope","$rootScope","$loc
           compaintId: templateService.holdData.complaint_id,
           user_id: $scope.docInfo.doctor_user_id,
           original_complaint: templateService.holdData.description,
-          original_complaint_date: templateService.holdData.sent_date
+          original_complaint_date: templateService.holdData.sent_date,
+          files: templateService.holdData.files || templateService.holdData.file
         }
       }
-      
+
       $scope.loading = true;
       var confirmed = resource.confirmed(payObj,function(data){
         $scope.loading = false;

@@ -547,3 +547,28 @@ span.dates {
   color: green!important;
   font-weight: bold!important;
 }
+
+
+ .chat-text-area {
+    padding-top: 25px!important;
+    padding-right: 20px!important;
+    padding-bottom: 10px!important;
+  }
+
+  .chat-btn {
+    font-size: 25px;
+    border: none;
+    float: none!important;
+    position: absolute;right: 25px;top: 0;padding: 0;background-color: transparent;
+  }
+
+  .cht-body:hover {
+    background-color: #B8B8B8;
+    color: #fff!important;
+  }
+
+   @media screen and (max-width: 720px) {
+      .chat-btn {
+        right: 10px
+      }
+   }

@@ -264,7 +264,8 @@ var myModel = function () {
 		initial_complaint: {
     	complaint: String,
     	complaint_date: String,
-    	date_received: Number
+    	date_received: Number,
+    	files: Array
     }
 	});
 	//this holds records for lab,prescription and scan for the patient

@@ -106,6 +106,12 @@
                     font-size: 14px!important;
                 }
 
+                 .mobile-item-display {
+                    display: none;
+                  }
+
+                 
+
                 @media screen and (max-width: 1024px) {
                     .text-center a {
                         margin-left: 20px;
@@ -146,6 +152,14 @@
 
                   .sarch {
                     display: none!important;
+                  } 
+
+                  .no-mobile-item-display {
+                    display: none;
+                  }
+
+                 .mobile-item-display {
+                    display: block;
                   }
 
                   li {
@@ -1717,7 +1731,7 @@
                 <form class="pt-1">
                     <div>
                         <label>Your Response</label>
-                        <textarea placeholder="write..." ng-model="user.response" class="form-control pl-1" style="width: 80%">
+                        <textarea placeholder="write..." ng-model="user.response" class="form-control pl-1">
                         </textarea>
                     </div>
                     <div>
