@@ -20,9 +20,12 @@
                     <!--<sub class="text-muted" style="margin-top:-3px; font-size:1em;">{{patientInfo.body_weight}}</sub><br> -->     
                      <sub class="text-muted" style="margin-top:-3px; font-size:1em;">{{patientInfo.city}} {{patientInfo.country}}</sub>
                  </div>
+                 <div>
+                     <a href="" class="btn btn-sm btn-danger" ng-click="inviteOnline(patientInfo)">Seek Attention</a>
+                 </div>
              </div>
 
-  
+            <hr>
  
 
             <!--left col-->
@@ -1249,7 +1252,7 @@
                 <!--removable div-->
     		</div>
 
-             <div ng-if="isOutPatientBilling" class="card p-2">
+             <div ng-if="isOutPatientBilling" class="card p-1">
                 <div ng-if="inMainBill">
                     <h6>Out Patient Billing</h6>
                     <table class="table table-striped table-responsive no-mobile-item-display">
@@ -1285,7 +1288,7 @@
                      <div>
                          <!--<i class="fa fa-user-md" style="float: left;font-size: 34px;padding-right: 10px"></i> -->
                          <div style="">
-                             <strong style="font-size: 18px;">{{checkLogIn.name}} </strong>
+                             <strong>{{checkLogIn.name}} </strong>
                              <span style="display: block;">{{checkLogIn.specialty}}</span>
                              <span style="display: block;">{{checkLogIn.work_place}} {{checkLogIn.address}}, {{checkLogIn.city}} {{checkLogIn.country}}</span>
                          </div>
@@ -1304,7 +1307,7 @@
                             <td>{{i.sn}}</td>
                             <td style="width:60%;padding-left: 15px">{{i.description}}</td>
                             <td>{{toCurrency(i.cost)}}</td>
-                            <td><i class="fa fa-times btn btn-neutral btn-sm" ng-if="billList.length > 1" ng-click="removeBill(i.sn)"></i></td>
+                            <!--<td><i class="fa fa-times btn btn-neutral btn-sm" ng-if="billList.length > 1" ng-click="removeBill(i.sn)"></i></td>-->
                         </tbody>
                         <caption><b>Total: </b>  {{toCurrency(totalBilled)}}</caption>
                     </table>
@@ -1319,7 +1322,7 @@
                             <b>Total: </b>  {{toCurrency(totalBilled)}}
                         </div>
                     </div>
-                    <div>
+                    <div class="mt-1">
                         <button class="btn btn-danger" ng-click="sendBill()" ng-if="!isSent"> <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i> {{(loading) ? "" : "Send Bill"}}</button> <i class="fa fa-check" ng-if="isSent"> Bill sent!!</i>
                     </div>
                 </div>

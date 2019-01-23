@@ -142,7 +142,7 @@ loginRoute(model,sms);
 route(model,sms,io,streams,client,nodemailer); 
 payments(model,sms,io,paystack,client,nodemailer);
 placement(model,sms,io,nodemailer);
-mySocket(model,io,streams);
+mySocket(model,io,streams,sms);
 
 
 

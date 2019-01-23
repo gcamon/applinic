@@ -19376,6 +19376,22 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
     localManager.removeItem("adminFoundUser");
   }
 
+  $rootScope.inviteOnline = function(receiver) {
+
+    var name = ($rootScope.checkLogIn.lastname) ? $rootScope.checkLogIn.lastname : $rootScope.checkLogIn.name;
+    var data = {
+      sender: name,
+      receiver_name: (receiver.lastname) ? receiver.lastname : receiver.name,
+      receiver_phone: receiver.phone,
+      receiver_id: receiver.user_id
+    }
+
+    mySocket.emit('invite online',data,function(respnse){
+      alert("initiated")
+    })
+
+  }
+
 
 
   console.log('starting run');

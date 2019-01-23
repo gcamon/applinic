@@ -12,7 +12,7 @@ var s3 = new AWS.S3();
 var connects = {};
 
 
-module.exports = function(model,io,streams) {    
+module.exports = function(model,io,streams,sms) {    
   io.sockets.on('connection', function(socket){  	   
 	    console.log('a user connected');
 	    var user = {};
@@ -643,6 +643,27 @@ module.exports = function(model,io,streams) {
 
     socket.on("check presence",function(data,cb){
     	cb(connects);
+    });
+
+    //this is used to call a user via twiml to log in and conversate with the partner
+    socket.on('invite online',function(data,cb){
+    	console.log(data)
+    	cb({status:true})
+
+    	sms.calls 
+        .create({
+          url: "https://applinic.com/inviteonlinecall?receiver=" + data.receiver_name + "&&sender=" + data.sender,
+          to: "+2348064245256",//data.receiver_phone,
+          from: '+16467985692',
+        })
+        .then(
+          function(call){
+            console.log(call.sid)
+          },
+          function(err) {
+            console.log(err)
+          }
+        );
     })
 
 
