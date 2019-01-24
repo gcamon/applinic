@@ -555,7 +555,7 @@ var basicPaymentRoute = function(model,sms,io,paystack,client,nodemailer){
 							var pay = new Wallet(req.body.date,name,req.user.lastname,msg);
 							//note firstname or lastname of patient may change.
 							pay.consultation(model,data.amount,debitor,req.body.userId,io);
-							createConnection(debitor);
+							createConnection(debitor,data.amount);
 						});	
 						data.remove(function(){});			
 					} else {
@@ -564,7 +564,7 @@ var basicPaymentRoute = function(model,sms,io,paystack,client,nodemailer){
 				}
 			})
 		
-			function createConnection(debitor){
+			function createConnection(debitor,amount){
 				var DocObj = {					
 					doctor_id: req.body.sendObj.user_id,
 					date_of_acceptance: req.body.sendObj.date_of_acceptance,
@@ -627,7 +627,8 @@ var basicPaymentRoute = function(model,sms,io,paystack,client,nodemailer){
                         phone:1,
                         user_id:1,
                         presence:1,
-                        doctor_notification:1
+                        doctor_notification:1,
+                        email:1
                       }
                     )
                     .exec(function(err,data){
@@ -673,17 +674,55 @@ var basicPaymentRoute = function(model,sms,io,paystack,client,nodemailer){
 
                         if(data.presence === true){
 				                  io.sockets.to(data.user_id).emit("acceptance notification",{status:true});
-				                } else {
-				                  var msgBody = "Success! " +  result.firstname + " " + result.lastname + " is now your patient. Visit http://applinic.com/login"
-				                  var phoneNunber =  data.phone;
-			                    sms.messages.create(
-							              {
-							                to: phoneNunber,
-							                from: '+16467985692',
-							                body: msgBody,
-							              }
-							            ) 
-				                }
+				                } //else {
+
+			                  var msgBody = "Success! " +  result.firstname + " " + result.lastname + " is now your patient. Visit https://applinic.com/login"
+			                  var phoneNunber =  data.phone;
+		                    sms.messages.create(
+						              {
+						                to: phoneNunber,
+						                from: '+16467985692',
+						                body: msgBody,
+						              }
+						            ) 
+
+						            var transporter = nodemailer.createTransport({
+				                  host: "mail.privateemail.com",
+				                  port: 465,
+				                  auth: {
+				                    user: "info@applinic.com",
+				                    pass: process.env.EMAIL_PASSWORD
+				                  }
+				                });
+
+				                var mailOptions = {
+				                  from: 'Applinic info@applinic.com',
+				                  to: data.email,
+				                  subject: 'Consultation Fee Paid',
+				                  html: '<table><tr><th><h3  style="background-color:#85CE36; color: #fff; padding: 30px"><img src="https://applinic.com/assets/images/applinic1.png" style="width: 250px; height: auto"/><br/><span>Healthcare... anywhere, anytime.</span></h3></th></tr><tr><td style="font-family: Arial, Helvetica, sans-serif; font-size: 14px;"><b>Dear ' + data.lastname + ",</b><br><br>"
+				                  + req.user.title + " " + req.user.lastname 
+				                  + "has paid your consultation fee and now added to the list of your patients.<br><br>" 
+				                  + "Details of Payment:<br><br>"
+				                  + "Amount paid: " + amount + "<br>"
+				                  + "Date: " + new Date() + "<br>"
+				                  + "Click the link below to log in and attend your patient(s).<br><br>"
+				                  + "URL: https://applinic.com/user/doctor<br><br>"
+				                  + "Thank you for using Applinic.<br><br>"
+				                  + "For ease of usage, you may download the Applinic mobile application on google play store if you use an android phone." 
+				                  + "<a href='https://play.google.com/store/apps/details?id=com.farelandsnigeria.applinic'>Click here </a> to do so now.<br><br>"
+				                  + "For inquiries please call customer support on +2349080045678<br><br>"
+				                  + "Thank you for using Applinic.<br></br><br>"
+				                  + "<b>Applinic Team</b></td></tr></table>"
+				                };
+
+				                transporter.sendMail(mailOptions, function(error, info){
+				                  if (error) {
+				                    console.log(error);
+				                  } else {
+				                    console.log('Email sent: ' + info.response);
+				                  }
+				                });
+				                //}
 
                         msgInfo = "Transaction successful! Your account is debited. " + data.firstname + " " + data.lastname + " is now your doctor." 
                         data.save(function(err,info){

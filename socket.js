@@ -665,6 +665,20 @@ module.exports = function(model,io,streams,sms) {
             console.log(err)
           }
         );
+
+        var msgBody = "Hi, " + data.receiver_name + "," + "\nYour " + data.type + "- " + data.sender 
+        + " wants to have a chat with you on Applinic. Please log in https://applinic.com/login to attend. You can download the app in play store for android"
+	    var phoneNunber =  req.body.phone;	      
+	        sms.messages.create(
+	        {
+	          to: data.receiver_phone,
+	          from: '+16467985692',
+	          body: msgBody,
+	        },
+	        function(err,response) {
+	        	if(err) console.log(err);
+	        }
+	    ) 
     })
 
 

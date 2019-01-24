@@ -1593,7 +1593,7 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
             from: 'Applinic info@applinic.com',
             to: data.email,//'ede.obinna27@gmail.com',//data.email
             subject: 'Consultation Request from a Patient',
-            html: '<b> Dear ' + data.title + " " + data.firstname + 
+            html: '<table><tr><th><h3  style="background-color:#85CE36; color: #fff; padding: 30px"><img src="https://applinic.com/assets/images/applinic1.png" style="width: 250px; height: auto"/><br/><span>Healthcare... anywhere, anytime.</span></h3></th></tr><tr><td style="font-family: Arial, Helvetica, sans-serif; font-size: 14px;"><b> Dear ' + data.title + " " + data.firstname + 
             ",</b><br><br> You received a consultation request from a patient.<br><br>" 
             + req.user.title + " " + req.user.firstname + " " + req.user.lastname 
             + " has just submitted a consultation request to you on Applinic<br><br>"
@@ -1605,7 +1605,7 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
             + "<a href='https://play.google.com/store/apps/details?id=com.farelandsnigeria.applinic'>Click here </a> to do so now.<br><br>"
             + "For inquiries please call customer support on +2349080045678<br><br>"
             + "Thank you for using Applinic<br><br>"
-            + "<b>Applinic Team</b>"
+            + "<b>Applinic Team</b></td></tr></table>"
 
           };
 
@@ -1755,7 +1755,7 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
                 from: 'Applinic info@applinic.com',
                 to: data.email,//'ede.obinna27@gmail.com',//data.email
                 subject: 'Consultation Request from a Patient',
-                html: '<b> Dear ' + data.title + " " + data.firstname + 
+                html: '<table><tr><th><h3  style="background-color:#85CE36; color: #fff; padding: 30px"><img src="https://applinic.com/assets/images/applinic1.png" style="width: 250px; height: auto"/><br/><span>Healthcare... anywhere, anytime.</span></h3></th></tr><tr><td style="font-family: Arial, Helvetica, sans-serif; font-size: 14px;"><b> Dear ' + data.title + " " + data.firstname + 
                 ",</b><br><br> You received a consultation request from a patient.<br><br>" 
                 + req.user.title + " " + req.user.firstname + " " + req.user.lastname 
                 + " has just submitted a consultation request to you on Applinic<br><br>"
@@ -1767,7 +1767,7 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
                 + "<a href='https://play.google.com/store/apps/details?id=com.farelandsnigeria.applinic'>Click here </a> to do so now.<br><br>"
                 + "For inquiries please call customer support on +2349080045678<br><br>"
                 + "Thank you for using Applinic<br><br>"
-                + "<b>Applinic Team</b>"
+                + "<b>Applinic Team</b></td></tr></table>"
 
               };
 
@@ -1960,7 +1960,7 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
                         from: 'Applinic info@applinic.com',
                         to: result.email,//result.email,//req.body.email || 'ede.obinna27@gmail.com',
                         subject: 'Response to Your Consultation Request',
-                        html: "<b>Dear " + result.lastname + ",</b><br><br>" 
+                        html: '<table><tr><th><h3  style="background-color:#85CE36; color: #fff; padding: 30px"><img src="https://applinic.com/assets/images/applinic1.png" style="width: 250px; height: auto"/><br/><span>Healthcare... anywhere, anytime.</span></h3></th></tr><tr><td style="font-family: Arial, Helvetica, sans-serif; font-size: 14px;"><b>Dear ' + result.lastname + ",</b><br><br>" 
                         + req.user.title + " " + req.user.lastname 
                         + "has accepted your consultation request. Click the link below to log in and see his response.<br><br>"
                         + "URL: https://applinic.com/user/patient<br><br>"
@@ -1969,7 +1969,7 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
                         + "<a href='https://play.google.com/store/apps/details?id=com.farelandsnigeria.applinic'>Click here </a> to do so now.<br><br>"
                         + "For inquiries please call customer support on +2349080045678<br><br>"
                         + "Thank you for using Applinic.<br></br><br>"
-                        + "<b>Applinic Team</b>"
+                        + "<b>Applinic Team</b></td></tr></table>"
                       };
 
                       transporter.sendMail(mailOptions, function(error, info){
@@ -7273,7 +7273,7 @@ router.post("/user/response/patients-histories",function(req,res){
                   from: 'Applinic info@applinic.com',
                   to: patient.email,//result.email,//req.body.email || 'ede.obinna27@gmail.com',
                   subject: 'Response to Your Consultation Request',
-                  html: "<b>Dear " + patient.lastname + ",</b><br><br>" 
+                  html: '<table><tr><th><h3  style="background-color:#85CE36; color: #fff; padding: 30px"><img src="https://applinic.com/assets/images/applinic1.png" style="width: 250px; height: auto"/><br/><span>Healthcare... anywhere, anytime.</span></h3></th></tr><tr><td style="font-family: Arial, Helvetica, sans-serif; font-size: 14px;"><b>Dear ' + patient.lastname + ",</b><br><br>"
                   + req.user.title + " " + req.user.lastname 
                   + "has accepted your consultation request. Click the link below to log in and see his response.<br><br>"
                   + "URL: https://applinic.com/user/patient<br><br>"
@@ -7282,7 +7282,7 @@ router.post("/user/response/patients-histories",function(req,res){
                   + "<a href='https://play.google.com/store/apps/details?id=com.farelandsnigeria.applinic'>Click here </a> to do so now.<br><br>"
                   + "For inquiries please call customer support on +2349080045678<br><br>"
                   + "Thank you for using Applinic.<br></br><br>"
-                  + "<b>Applinic Team</b>"
+                  + "<b>Applinic Team</b></td></tr></table>"
                 };
 
                 transporter.sendMail(mailOptions, function(error, info){

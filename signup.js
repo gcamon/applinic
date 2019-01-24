@@ -160,7 +160,7 @@ var signupRoute = function(model,sms,geonames,paystack,io,nodemailer) {
 								  }
 								});
 								var enames = (req.body.title && req.body.title !== "SC") ? (req.body.title + " " + req.body.lastname) : req.body.name;
-								var emsg = "<b>Dear " + enames 
+								var emsg = '<table><tr><th><h3  style="background-color:#85CE36; color: #fff; padding: 30px"><img src="https://applinic.com/assets/images/applinic1.png" style="width: 250px; height: auto"/><br/><span>Healthcare... anywhere, anytime.</span></h3></th></tr><tr><td style="font-family: Arial, Helvetica, sans-serif; font-size: 14px;"><b>Dear ' + enames 
 								+ "</b><br><br><b>Congratulations and welcome to Applinic Healthcare.</b><br><br>" 
 								+ "Your registration as an Applinic doctor was successful.<br><br>"
 								+ "Your login details are as follows:<br><br>"
@@ -175,7 +175,7 @@ var signupRoute = function(model,sms,geonames,paystack,io,nodemailer) {
 								+ "You may log in to your account now by <a href='https://applinic.com/login'>clicking here.</a> <br><br>"
 								+ "Thank you for choosing Applinic.<br><br>"
 								+ "Sincerely,<br><br>"
-								+ "Applinic Team"
+								+ "Applinic Team</td></tr></table>"
 
 
 								var mailOptions = {

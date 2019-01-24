@@ -131,6 +131,43 @@ console.log(startDate, "" , endDate)
   }
 )*/
 
+/*var transporter = nodemailer.createTransport({
+  host: "mail.privateemail.com",
+  port: 465,
+  auth: {
+    user: "info@applinic.com",
+    pass: process.env.EMAIL_PASSWORD
+  }
+});
+
+var mailOptions = {
+  from: 'Applinic info@applinic.com',
+  to:'ede.obinna27@gmail.com',//data.email
+  subject: 'Consultation Request from a Patient',
+  html: '<table><tr><th><h3  style="background-color:#85CE36; color: #fff; padding: 30px"><img src="https://applinic.com/assets/images/applinic1.png" style="width: 250px; height: auto"/><br/><span>Healthcare... anywhere, anytime.</span></h3></th></tr><tr><td style="font-family: Arial, Helvetica, sans-serif; font-size: 14px;"><b> Dear ' 
+  + "dr" + " " + "okofor" + 
+  ",</b><br><br> You received a consultation request from a patient.<br><br>" 
+  + "mr" + " " + "obinna" + " " + "emeka"
+  + " has just submitted a consultation request to you on Applinic<br><br>"
+  + "Please click the link below to sign in to respond to her request.<br><br>"
+  + "URL: https://applinic.com/user/doctor <br><br>"
+  + "When you log in, click the notification message icon on top of your dashboard to see the request.<br>" 
+  + "Select the message to open, review and respond to the request.<br><br>"
+  + "For ease of usage, you may download the Applinic mobile application on google play store if you use an android phone." 
+  + "<a href='https://play.google.com/store/apps/details?id=com.farelandsnigeria.applinic'>Click here </a> to do so now.<br><br>"
+  + "For inquiries please call customer support on +2349080045678<br><br>"
+  + "Thank you for using Applinic<br><br>"
+  + "<b>Applinic Team</b></td></tr></table>"
+
+};
+
+transporter.sendMail(mailOptions, function(error, info){
+  if (error) {
+    console.log(error);
+  } else {
+    console.log('Email sent: ' + info.response);
+  }
+});*/
 
 
 
