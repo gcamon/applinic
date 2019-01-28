@@ -974,7 +974,7 @@ app.service("multiData",["$http","$window","templateService",function($http,$win
       fd.append(key,data[key]);
     }; 
 
-    console.log(fd)
+  
     
     $http.put(url,fd,{
       transformRequest: angular.identity,
@@ -984,7 +984,7 @@ app.service("multiData",["$http","$window","templateService",function($http,$win
       templateService.changedProfilePic = response;
       templateService.isUpdated = true;
       templateService.holdScanImageList = response;
-      console.log(response)
+      
       alert("Updated successfuly!")
     });
   }
@@ -1059,7 +1059,7 @@ app.factory("userData",function(){
   var user = {};
   return {
     set: function(data){
-      console.log(data)
+      
       user["userInfo"] = data;
     },
     get: function(){
@@ -1257,7 +1257,7 @@ app.controller("testNotRanBycenterController",["$scope","$http",function($scope,
       headers : {'Content-Type': 'application/json'} 
      })
     .success(function(data) {
-      console.log(data)
+     
       $scope.notService = data;
     });
 
@@ -1416,7 +1416,7 @@ app.controller("radioTestNotRanBycenterController",["$scope","$http",function($s
       headers : {'Content-Type': 'application/json'} 
      })
     .success(function(data) {
-      console.log(data)
+     
       $scope.notService = data;
     });
 
@@ -1445,8 +1445,7 @@ app.controller("radioTestNotRanBycenterController",["$scope","$http",function($s
     } 
 
     $scope.$watch("notService",function(newVal,oldVal){
-      console.log("i am watching")
-      console.log(oldVal)
+    
       if(oldVal){
         $scope.isToSave = true;
       }
@@ -1477,7 +1476,7 @@ app.controller("pharmacyDrugServicesUpdateController",["$scope","$http","$locati
       $scope.notService = response;
       resource.query({type:"Pharmacy"},function(data){
         $rootScope.allDrugs2 = data;
-        console.log(data)
+      
         var elemPos;
         for(var i = 0; i < $scope.notService.length; i++) {
           elemPos = $rootScope.allDrugs2.map(function(x){return x.id}).indexOf($scope.notService[i].id);
@@ -1557,7 +1556,7 @@ app.controller("pharmacyDrugNotHaveBycenterController",["$scope","$http",functio
       headers : {'Content-Type': 'application/json'} 
      })
     .success(function(data) {
-      console.log(data)
+      
       $scope.notService = data;
     });
 
@@ -1719,7 +1718,7 @@ app.controller('loginController',["$scope","$http","$location","$window","$resou
     var user = changPasswordService.get(sendObj);
     $scope.isLoading = true;
     user.$promise.then(function() {
-      console.log(user);
+     
       if(user.status){
         $scope.isSuccess = true;
       }
@@ -1766,7 +1765,7 @@ app.controller('loginController',["$scope","$http","$location","$window","$resou
     var savePromise = verifyUser.$verifyUser();
 
     savePromise.then(function() {
-      console.log(verifyUser.isVerified);
+     
       if(verifyUser.isVerified) {
         $scope.isVerified = verifyUser.isVerified;
         $scope.changePassword.userId = verifyUser.userId;
@@ -1788,7 +1787,7 @@ app.controller('loginController',["$scope","$http","$location","$window","$resou
       update.userId = $scope.changePassword.userId;
       update.isVerified = $scope.changePassword.isVerified;
 
-      console.log(update);
+      
 
       var savePromise = update.$updatePassword();
 
@@ -1870,8 +1869,7 @@ app.controller("balanceController",["$rootScope","$scope","$resource","localMana
   })
 
   $rootScope.$on("debit",function(data,event){
-    console.log(data);
-    console.log(event);
+    
     getBalance();
   })
 
@@ -1900,7 +1898,7 @@ app.controller("balanceController",["$rootScope","$scope","$resource","localMana
       $scope.accLoading = true;
       elem.style.display = "block";
       manageRecordAccessService.query(function(response){
-        console.log(response)
+        
         $scope.accLoading = false;
         $scope.accessList = response;
       });
@@ -1936,7 +1934,7 @@ app.controller("balanceController",["$rootScope","$scope","$resource","localMana
     manageRecordAccessService.updateAccess({userId: user.userId},function(res){
         user.loading = false;
         $scope.allLoading = false;
-        console.log(res)
+       
         
         if(res.status) {
           if(user.isAll)
@@ -1987,7 +1985,7 @@ app.controller('signupController',["$scope","$http","$location","$window","templ
   $scope.status2 = "City/Town";
   $scope.status3 = "LGA/Region";
   
-  //console.log(localManager.getValue("countries"))
+  
 
   $scope.getRoute = function(type){
     $location.path(type);
@@ -2105,7 +2103,7 @@ app.controller('signupController',["$scope","$http","$location","$window","templ
 
  
   function validate(data){
-      //console.log(data)
+      
       $scope.nameMessage = ""
       $scope.typeMessage = ""
       $scope.passwordMessage = ""
@@ -2294,7 +2292,7 @@ app.controller('signupController',["$scope","$http","$location","$window","templ
 
   function getCurrency(id) {
     var elemPos = $scope.countries.map(function(x){return x.geonameId.toString()}).indexOf(id.toString());
-    console.log($scope.countries[elemPos].currencyCode);
+   
     currency.code = $scope.countries[elemPos].currencyCode;
   }
 
@@ -2371,7 +2369,7 @@ app.service('phoneCallService',['$http','mySocket','$rootScope',function($http,m
 app.controller("familyAccountController",["$scope","$http","$rootScope","localManager",function($scope,$http,$rootScope,localManager){
   $scope.familyAccount = {};
   $scope.createAccount = function() {
-    console.log($scope.familyAccount);
+   
     if(Object.keys($scope.familyAccount).length < 4 ) {
       alert("Please complete empty fields")
     } else {
@@ -2432,8 +2430,7 @@ app.controller("verifyPhoneController",["$rootScope","$scope","$resource","$wind
     var signUp = userSignUpService;//$resource("/user/signup",null,{userSignup:{method: "POST"}})    
     signUp.userSignup($rootScope.formData,function(response){ //
       $scope.loading = false;
-      //alert(response.message);
-      //console.log(response);      
+         
       if(!response.error) {  
         $scope.success = response.message;            
         //$window.location.href = '/login';                           
@@ -2470,7 +2467,7 @@ app.directive("fileModel",["$parse","$rootScope",function($parse,$rootScope){
             if (isMultiple) {
              
               modelSetter(scope.$parent, values);
-              console.log(scope)
+             
               if(scope.$parent.$parent.$parent)
                 if(scope.$parent.$parent.$parent.radio.scanImage)
                   $rootScope.uploadScanImage()
@@ -2618,7 +2615,7 @@ app.controller('docProfileEditController',["$scope","$rootScope","$http","$locat
     if(arg){     
       if(Object.keys($scope.item).length >= 3 && $scope.item.procedure_skill !== undefined && $scope.item.procedure_description !== undefined) {
         uploadSkill();
-        console.log($scope.item.procedure_description)
+        
       } else {
         alert("Please complete all fields!");
         $scope.loading = false;
@@ -2664,7 +2661,7 @@ app.controller('docProfileEditController',["$scope","$rootScope","$http","$locat
         })
         .success(function(data) {              
           if (data.status) {
-            console.log(data) 
+            
             var list = $scope.docInfo[arg2];
             var elemPos = list.map(function(x){return x._id}).indexOf(arg);
             //var found = list[elemPos];
@@ -2694,7 +2691,7 @@ app.controller('docProfileEditController',["$scope","$rootScope","$http","$locat
    multiData2.sendSkill("/user/update",$scope.skill);
 
    mySocket.on("uploaded skill",function(data){
-    console.log(data);
+   
     $scope.skill = {};
     updateRecord();
     $scope.loading = false;
@@ -2710,7 +2707,7 @@ app.controller('docProfileEditController',["$scope","$rootScope","$http","$locat
       headers : {'Content-Type': 'application/json'} 
       })
     .success(function(data) { 
-      //console.log(data);             
+                 
       if (data) {
         $scope.docInfo = data;                         
       } 
@@ -2869,7 +2866,7 @@ app.controller("docProfileViewController",["$scope","$rootScope","$resource","$l
    var path = window.location.pathname;
    var toArr = path.split("/");
    var userId = toArr[toArr.length-1];
-   console.log(toArr[toArr.length-1]);
+   
 
    var source = profileDataService;//$resource("/user/get-profile-data",{userId: userId });
    source.get({userId: userId },function(data) {
@@ -2982,7 +2979,7 @@ app.controller("authChangeController",["$scope","$rootScope","$http","$location"
   $rootScope.message = "";
   $scope.update = function(arg){
     if(arg == "phone"){
-      console.log(typeof $scope.user.phone)
+     
       if(typeof $scope.user.phone === 'number'){
         sendForm();
       } else {
@@ -3007,7 +3004,7 @@ app.controller("authChangeController",["$scope","$rootScope","$http","$location"
           $scope.error = data.message;
         }
 
-        console.log(data)
+       
       });                 
     }
 
@@ -3031,7 +3028,7 @@ app.controller("verifyPhoneForChangeController",["$rootScope","$scope","$resourc
     var user = phoneUpdateService; //$resource("/user/new-phone-update",null,{userChangeNumber:{method: "PUT"}})    
     user.userChangeNumber($scope.verify,function(response){
       alert("Phone number changed!")
-      console.log(response)
+      
       $rootScope.message = response.message;
       if(response.status === "updated"){
         $scope.isUpdate = true;
@@ -3297,7 +3294,7 @@ app.controller('resultController',["$scope","$rootScope","$http","$location","$r
           if(data.length > 0) {
             localManager.setValue("userInfo",data);
             $location.path("/skills-result");
-            console.log(data);
+            
           } else {
             alert("No result found!")
           }
@@ -3313,7 +3310,7 @@ app.controller('resultController',["$scope","$rootScope","$http","$location","$r
           if(data.length > 0) {
             localManager.setValue("userInfo",data);
             $location.path("/list");
-            console.log(data);
+            
           } else {
             alert("No result found!")
           }
@@ -3367,47 +3364,7 @@ app.controller('resultController',["$scope","$rootScope","$http","$location","$r
 
  
 
-  /*$scope.searchMore = function () {
-   search($scope.user,"/user/find-group");
-  }
-
-  $scope.refineSearch = function () {
-    //work on refine user for embedded doc
-   search($scope.refineUser,"/user/refine-find-group");
-  }
-
-  var search = function(data,url){
-    if(Object.keys(data).length > 0){
-      if(data.city !== undefined) {
-        var capitalize = data.city.charAt(0).toUpperCase() + data.city.slice(1);
-        data.city = capitalize;
-      }
-      var filterInput = {};
-      for(var i in data){
-        if(data.hasOwnProperty(i) && data[i] !== "" && data[i].length > 1) {
-          filterInput[i] = data[i];
-        }
-      }
-      
-      $http({
-        method  : 'POST',
-        url     : url,
-        data    : filterInput, //forms user object
-        headers : {'Content-Type': 'application/json'} 
-        })
-      .success(function(data) {              
-        if(data){          
-          localManager.setValue("userInfo",data);
-          var id = Math.floor(Math.random() * 2635374836);
-          $location.path("/list/" + id);
-        } else {
-          console.log("no data");
-        }
-        
-      });
-      $location.path("/list");
-   }                                     
-  }*/
+ 
   $scope.user.creteria = "doctorname";
   $scope.$watch("user.creteria",function(newVal,oldVal){
     if($scope.user.creteria === "specialty"){
@@ -3557,7 +3514,7 @@ app.controller("referToMeModalController",["$scope","$rootScope","$http",functio
   $scope.doc = $rootScope.userSkill;
 
   $scope.send = function(){
-    console.log($scope.doc)
+   
     if($rootScope.checkLogIn.typeOfUser !== "Patient" && !$scope.patient.phone && typeof $scope.patient.phone !== 'number') {
       alert("Patient number is needed!");
       return;
@@ -3730,11 +3687,7 @@ app.controller("bookingDocModalController",["$scope","templateService","$http","
 
   $scope.patient = {};
 
-  /*$scope.request = function() {
-    $scope.isViewDoc = false;
-    $scope.isToConfirm = true;
-    
-  }*/
+  
   var list = [{sn:"a"}];
   var symptom; 
   var index = 0;
@@ -4360,7 +4313,7 @@ app.controller("docNotificationController",["$scope","$location","$resource","$i
     courierResponse.query(function(data){
       $rootScope.courierResponseList = data;
       $scope.unRead = data[0];
-      console.log(data);
+     
     });
   }
 
@@ -4528,7 +4481,7 @@ app.controller("docAppointmentController",["$scope","$rootScope","$location","te
 
   var getAppoint = function() {
     appointment.query({month: month,year: year,day: day},function(list){
-      console.log(list)
+     
       $rootScope.appointmentList = list;
     })
   }
@@ -4590,7 +4543,7 @@ app.controller("newPatientModalController",["$scope","$http","ModalService","tem
       var patient = $resource("/user/existing-user");
       var centerType = (user.typeOfUser === "Laboratory") ? 'laboratory' : 'radiology';
       patient.get({phone:$scope.patient.existing_phone,type: centerType},function(data){
-        console.log(data);
+       
         if(data.patient){
           $scope.existingPatient = data.patient;
           $scope.addToList = function(type){           
@@ -4605,7 +4558,7 @@ app.controller("newPatientModalController",["$scope","$http","ModalService","tem
                 newPatient.laboratory.patient_profile_pic_url = data.patient.profile_pic_url;
                 newPatient.date = data.date;
                 newPatient.newPatient = true;
-                console.log(newPatient);              
+                             
                 $rootScope.attendanceList.unshift(newPatient);
               break;
               case "radiology":
@@ -4633,21 +4586,7 @@ app.controller("newPatientModalController",["$scope","$http","ModalService","tem
       });
   }
 
- /* $scope.$watch("patient.phone",function(newVal,oldVal){
-    str = "" + newVal;
-    if(str.length >= 10) { // note this could be modified to accomodate foreign numbers
-      var signUp = $resource("/user/signup")
-      signUp.get({phone:$scope.patient.phone},function(res){
-        if(res.error === true){
-          $scope.showErr = res.errorMsg;
-        } else {
-          $scope.showErr = "";
-        }
-
-        $scope.numErr = res.error;
-      });
-    }
-  });*/
+ 
 
   
 
@@ -4673,7 +4612,7 @@ app.controller("newPatientModalController",["$scope","$http","ModalService","tem
         $scope.showErr = res.errorMsg;
       } else {
         createPatient(type)
-        console.log($scope.patient)
+       
       }
       $scope.numErr = res.error;
     });    
@@ -4709,7 +4648,7 @@ app.controller("newPatientModalController",["$scope","$http","ModalService","tem
       })
     .success(function(data) {
       if(data.message){
-        console.log(data)
+        
         $scope.error = data.message;
       } else {        
         switch(type){
@@ -4726,7 +4665,7 @@ app.controller("newPatientModalController",["$scope","$http","ModalService","tem
             newPatient.laboratory.patient_profile_pic_url = data.patient_profile_pic_url;
             newPatient.date = data.date;
             newPatient.newPatient = true;
-            console.log(newPatient);              
+                          
             $rootScope.attendanceList.unshift(newPatient);
           break;
           case "radiology":
@@ -4798,7 +4737,7 @@ app.controller("selectedAppointmentController",["$scope","$rootScope","$location
       }
 
       appointment.mark(session,function(data){
-        console.log(data)
+        
         if(data.status){
           $scope.info = data.message;
         }
@@ -4823,7 +4762,7 @@ app.controller("inTreatmentController",["$scope","$http","localManager","$locati
 
   $scope.sessionData = localManager.getValue("heldSessionData");
 
-  console.log($scope.sessionData);
+  
 
   $rootScope.sub_session_id = genId();
 
@@ -4900,7 +4839,7 @@ app.controller("inTreatmentController",["$scope","$http","localManager","$locati
   }
 
   $scope.subSession = function() {
-    if(input.check <= 1) { // this value is used below in watchers to check and prompt users to save changes made.
+    //if(input.check <= 1) { // this value is used below in watchers to check and prompt users to save changes made.
     $scope.isSubNote = true;
     $scope.isClerk = true;
     $scope.isMain = false;
@@ -4917,9 +4856,9 @@ app.controller("inTreatmentController",["$scope","$http","localManager","$locati
     $scope.isNote = false;
     $scope.updateMsg = "";
     $scope.edit = {};
-    } else {
-      alert("Please save changes before you can proceed.")
-    }
+    //} else {
+     // alert("Please save changes before you can proceed.")
+    //}
 
   }
 
@@ -4948,7 +4887,7 @@ app.controller("inTreatmentController",["$scope","$http","localManager","$locati
   }
 
   $scope.FollowUpsView = function() {
-    if(input.check <= 1) { // this value is used below in watchers to check and prompt users to save changes made.
+    //if(input.check <= 1) { // this value is used below in watchers to check and prompt users to save changes made.
       $scope.isFollowups = true;
       $scope.isSubNote = false;
       $scope.isClerk = true;
@@ -4963,9 +4902,9 @@ app.controller("inTreatmentController",["$scope","$http","localManager","$locati
       $scope.updateMsg = "";
       $scope.isNote = false;
       $scope.edit = {};
-    } else {
-      alert("Please save changes before you can proceed.")
-    }
+   // } else {
+   //   alert("Please save changes before you can proceed.")
+   // }
   }
 
   $scope.investView = function(){
@@ -5135,7 +5074,7 @@ app.controller("inTreatmentController",["$scope","$http","localManager","$locati
         $scope.subTests = allTests;       
       })
     });
-    console.log($scope.subRecord);
+    
     $scope.getReportForSub(id)
 
   }
@@ -5149,7 +5088,7 @@ app.controller("inTreatmentController",["$scope","$http","localManager","$locati
       headers : {'Content-Type': 'application/json'} 
       })
     .success(function(res) {
-      console.log(res)
+      
       $scope.medReport = res;
     });           
   }
@@ -5379,33 +5318,7 @@ app.controller("inTreatmentController",["$scope","$http","localManager","$locati
     var dt = + new Date();
     edit.date = $filter('date')(dt, 'EEE, MMM d, y')
     
-    /*$scope.$watch("edit.presenting_complain",function(newVal,oldVal){
-      if(edit.newlyEdit === true) {
-        if(!$scope.sessionData.diagnosis.presenting_complain) {
-
-         
-         
-           $scope.sessionData.diagnosis.presenting_complain = ""
-           edit["presenting_complain"]  = "  ( " + edit.date  + " ) ; " ; 
-
-        }
-
-        edit.newlyEdit = false;
-
-      }
-       
-     $scope.setHistory();
-    });*/
-
-    
-  /*$scope.setHistory = function() {
-    if($scope.edit.presenting_complain) {
-      $scope.sessionData.diagnosis.history_of_presenting_complain = "# ";
-      $scope.sessionData.diagnosis.history_of_presenting_complain +=  
-      $scope.edit.presenting_complain + " ( " + edit.date + " ) has been ________ ;"
-      //$scope.sessionData.diagnosis.history_of_presenting_complain += $scope.history;
-    }
-  }*/
+   
 
   var input = {
     check : 0
@@ -5446,15 +5359,6 @@ app.controller("inTreatmentController",["$scope","$http","localManager","$locati
         filter.sub_session_id = $rootScope.sub_session_id;
       }
     }
-    /*} else {
-      if($scope.sessionData.diagnosis.sub_session.length > 0) {
-        var prevSub = $scope.sessionData.diagnosis.sub_session[$scope.sessionData.diagnosis.sub_session.length - 1];
-        var prevSubId = prevSub.sub_session_id;
-        filter.sub_session_id = prevSubId;
-      } else {
-        filter.sub_session_id = $rootScope.sub_session_id;
-      }
-    }*/
     
 
     filter.patient_id = patient.id;
@@ -6342,7 +6246,7 @@ app.controller("selectedLabController",["$scope","$http","localManager","$locati
   $scope.sendTest = function () {
     var sendObj = {};
     var date = new Date();
-    console.log(templateService.holdForSpecificPatient)
+    
     //create patient object to be sent alongside the lab test to run.
     sendObj.patient_id = templateService.holdForSpecificPatient.patient_id;
     sendObj.user_id = $scope.labCenter.user_id;
@@ -6362,7 +6266,7 @@ app.controller("selectedLabController",["$scope","$http","localManager","$locati
       headers : {'Content-Type': 'application/json'} 
       })
     .success(function(data) {
-      console.log(data)
+      
       if(data.success){
         $scope.success = true;
         $scope.placeHolder = false;
@@ -6390,7 +6294,7 @@ app.controller("selectedRadioController",["$scope","$http","localManager","$loca
   $scope.sendTest = function () {
     var sendObj = {};
     var date = new Date();
-    console.log(templateService.holdForSpecificPatient)
+   
     //create patient object to be sent alongside the lab test to run.
     sendObj.patient_id = templateService.holdForSpecificPatient.patient_id;
     sendObj.user_id = $scope.labCenter.user_id;
@@ -6409,7 +6313,7 @@ app.controller("selectedRadioController",["$scope","$http","localManager","$loca
       headers : {'Content-Type': 'application/json'} 
       })
     .success(function(data) {
-      console.log(data)
+      
       if(data.success){
         $scope.success = true;
         $scope.placeHolder = false;
@@ -6967,7 +6871,7 @@ app.controller("patientNotificationController",["$scope","$location","$http","$w
     }
     var msg = getResponseService; //$resource("/user/patient/get-response");
     msg.get(sendObj,function(data){
-      console.log(data)
+      
       templateService.holdData = data;
       var path = "/view-response/" + complaintId;
       $location.path(path);
@@ -7041,7 +6945,7 @@ app.controller("patientNotificationController",["$scope","$location","$http","$w
     $timeout(function(){
       $scope.isReceivedRequest = false;
     },10000);
-    //console.log(data);
+    
   });
 
 
@@ -7091,7 +6995,7 @@ app.controller("patientNotificationController",["$scope","$location","$http","$w
       localManager.setValue("doctorInfoforCommunication",{userId:data.from,title: data.title,firstname: data.callerFirstname,lastname: data.callerLastname})
       mySocket.emit("in call connected",{to:data.from});
       $window.location.href = "/user/patient/call";
-      console.log(data)      
+            
     } else {
       mySocket.emit("call rejected",{to:data.from});
     }
@@ -7126,7 +7030,7 @@ app.controller("patientNotificationController",["$scope","$location","$http","$w
   $scope.viewChatsHistory = function() {
      var source = chatHistoryService; //$resource("/user/get-chats");
      source.query(function(chatsList){
-      console.log(chatsList);
+      
       $scope.chatsList = chatsList || [];
      })
      $rootScope.$broadcast("unattendedMsg",false);
@@ -7170,7 +7074,7 @@ app.controller("patientNotificationController",["$scope","$location","$http","$w
     courierResponse.query(function(data){
       $rootScope.courierResponseList = data;
       $scope.unRead = data[0];
-      console.log(data);
+      
     });
   }
 
@@ -7460,7 +7364,7 @@ app.controller("PatientViewResponseModalController",["$scope","$rootScope","$loc
           //$location.path(templateService.holdCurrentPage);
           
           getMyDoctorService.query(null,function(data){   
-            console.log(data);         
+                    
             $rootScope.patientsDoctorList = data;
           });
           $rootScope.holdDocInView.hasComplete = "Consultation accepted!";
@@ -7479,7 +7383,7 @@ app.controller("pendingLabTestController",["$scope","templateService","$window",
   "localManager","$location","$rootScope","$timeout",
   function($scope,templateService,$window,localManager,$location,$rootScope,$timeout){
   $scope.type = "Pending laboratory test(s)";  
-  console.log(templateService.pendingLab);
+ 
   $scope.pendingTest = templateService.pendingLab;
     
   $rootScope.path = $location.path();
@@ -7488,7 +7392,7 @@ app.controller("pendingLabTestController",["$scope","templateService","$window",
     localManager.setValue("receiver",receiverId);
     localManager.setValue('caller',patienId);
     localManager.setValue("currentPageForPatients",page);
-    console.log(receiverId)
+   
     var center = {
       center_name: center_name
     }
@@ -7500,7 +7404,7 @@ app.controller("pendingLabTestController",["$scope","templateService","$window",
     localManager.setValue("receiver",receiverId);
     localManager.setValue('caller',patienId);
     localManager.setValue("currentPageForPatients",page);
-    console.log(receiverId)
+   
     var center = {
       center_name: center_name
     }
@@ -7561,7 +7465,7 @@ app.controller("pendingRadioTestController",["$scope","templateService","$window
   "localManager","$location","$rootScope","$timeout",
   function($scope,templateService,$window,localManager,$location,$rootScope,$timeout){
   $scope.type = "Pending radiology test(s)"
-  console.log(templateService.pendingScan);
+  
   $scope.pendingTest = templateService.pendingScan;
 
   $rootScope.path = $location.path();
@@ -7569,11 +7473,11 @@ app.controller("pendingRadioTestController",["$scope","templateService","$window
   var page = "/pending/scan-test";
 
   $scope.makeVideoCall = function (receiverId,center_name,patienId) {
-    console.log(patienId)
+    
     localManager.setValue("receiver",receiverId);
     localManager.setValue('caller',patienId);
     localManager.setValue("currentPageForPatients",page);
-    console.log(receiverId);
+    
     var center = {
       center_name: center_name
     }
@@ -7587,7 +7491,7 @@ app.controller("pendingRadioTestController",["$scope","templateService","$window
     localManager.setValue("receiver",receiverId);
     localManager.setValue('caller',patienId);
     localManager.setValue("currentPageForPatients",page);
-    console.log(receiverId)
+    
     var center = {
       center_name: center_name
     }
@@ -7597,7 +7501,7 @@ app.controller("pendingRadioTestController",["$scope","templateService","$window
 
 
   $scope.forwardTest = function(testObj) {
-    console.log(path)
+   
      var path = $location.path();
      var toArr = path.split("/");
      var type;
@@ -7813,7 +7717,7 @@ app.controller("walletController",["$scope","$http","$rootScope","$location","Mo
 
   $scope.$watch("pay.mode",function(newVal,oldVal){
     if(newVal){
-      console.log(newVal)
+      
       switch(newVal) {
         case "Pay with Card/Bank Account":
           $scope.isATM = true;
@@ -8033,7 +7937,7 @@ app.controller("walletController",["$scope","$http","$rootScope","$location","Mo
         } else {
           alert("You can not transfer to this person. Transanction canceled!")
         }
-        console.log(data)
+       
       });
    } else {
       $scope.errorMsg = "Please enter the amount";
@@ -8298,7 +8202,7 @@ getTransactions();
   $scope.viewTransactions = false;
   $scope.phone = user.phone;
   $scope.name = user.user_id;
-  console.log(localManager.getValue("resolveUser"));
+ 
  }
 
  $scope.transactions = function(){
@@ -8647,7 +8551,7 @@ app.controller("selectedAppointmentControllerForPatient",["$scope","$location","
     $scope.notDeleted = true;
     $scope.delbtn = "Delete appointment";
 
-    console.log(appData)
+   
 
     $scope.deleteApp = function(){
       var remove = appData.splice(elementPos,1);
@@ -8984,7 +8888,7 @@ app.controller("patientRedirectTestController",["$scope","$location","$resource"
 
   
   $scope.testToRun = test.test_to_run;
-  console.log($scope.testToRun)
+  
  
   function getData() {
     $scope.loading = true; 
@@ -9030,7 +8934,7 @@ app.controller("patientRedirectTestController",["$scope","$location","$resource"
   }
 
   $scope.sendChat = function(center) {
-    console.log(center)
+    
     center.id = center.user_id // just to set common property for the modal and controller using this resource.
     $rootScope.holdcenter = center;
     ModalService.showModal({
@@ -9053,7 +8957,7 @@ app.controller("chooseDoctorController",["$scope","$location","$http","$window",
   function($scope,$location,$http,$window,templateService,localManager){  
   $scope.doctors = templateService.holdMyDoctorsForSendingTest;
   $scope.test = templateService.holdTestToBeForwarded;
-  console.log($scope.test)
+ 
   $scope.selectedDoctor = function(docObj) {
     //templateService.holdSelectedDoctorToSendTest = docObj;
     //$location.path("/patient/selected-doctor");
@@ -9176,7 +9080,7 @@ app.controller("changePictureController",["$scope","$rootScope","$location","$ht
     headers : {'Content-Type': 'application/json'} 
     })
   .success(function(data) {
-    console.log(data);
+   
     $scope.userData = data;
   });
 
@@ -9192,13 +9096,13 @@ app.controller("changePictureController",["$scope","$rootScope","$location","$ht
       var fd = new FormData();
       var xhr = new XMLHttpRequest;
 
-      //console.log($scope.files)
+     
       for(var key in $scope.files){
 
           if($scope.files[key].name){
             fd.append(key,$scope.files);
           }
-          console.log($scope.files)
+          
 
       };
 
@@ -9223,10 +9127,9 @@ app.controller("changePictureController",["$scope","$rootScope","$location","$ht
         $scope.progressVisible = true;
         $scope.$apply(function(){
             if (evt.lengthComputable && evt.total <= 26214400) {
-               console.log(evt.loaded + " : " + evt.total)
+              
                 $scope.progress = Math.round(evt.loaded * 100 / evt.total)
-                console.log($scope.progress)
-                
+               
             } else {
                 $scope.progress = 'Unable to compute! File size out of range.'
             }
@@ -9240,7 +9143,7 @@ app.controller("changePictureController",["$scope","$rootScope","$location","$ht
         } else {
           alert("Picture size out of range! Less than 1mb recommended.")
         }
-        console.log($scope.userData)
+        
       })
        
     }
@@ -9354,7 +9257,7 @@ app.controller("prescriptionTemplateController",["$scope","$rootScope","$locatio
 
     //this fn is invoked when patient wish to forward prescription by himself to a phamarcy.
     $scope.forwardPrescription = function (prescription) {
-      console.log(prescription);
+      
       $rootScope.unavailableDrugArr = [];
 
       for(var i = 0; i < prescription.prescription_body.length; i++) {
@@ -9387,7 +9290,7 @@ app.controller("prescriptionTemplateController",["$scope","$rootScope","$locatio
     $scope.courier = function(prescription){
       $rootScope.selectedPrescription = prescription;
       $location.path("/courier")
-      console.log(prescription);//attend later;
+     
     }
 
 
@@ -9460,7 +9363,7 @@ app.controller("trackedPrescriptionController",["$scope","$rootScope","$location
   //this fn is invoked when patient wish to forward prescription by himself to a phamarcy.
   $scope.forwardPrescription = function (prescription) {       
     /*templateService.holdPrescriptionToBeForwarded = prescription;
-    console.log(prescription)
+   
     templateService.holdPrescriptionToBeForwarded.sender = "patient";          
     $location.path("/patient/search/pharmacy");*/
 
@@ -9505,7 +9408,7 @@ app.controller("searchForPharmacyController",["$scope","$location","$http","temp
         })
       .success(function(data) { 
         $scope.pharmacyData = data;
-        console.log(data)
+      
         $scope.pharmacy.city = data[0].city;
         $scope.loading = false;
     });
@@ -9597,7 +9500,7 @@ app.controller("patientSearchForPharmacyController",["$scope","$location","$http
         })
       .success(function(data) { 
         $scope.pharmacyData = data;
-        console.log(data)
+       
         $scope.pharmacy.city = data[0].city;
         $scope.loading = false;
     });
@@ -9693,7 +9596,7 @@ app.controller("selectedCenterController",["$scope","$location","$http","templat
       switch (type) {
         case "Pharmacy":
           if(templateService.holdPrescriptionToBeForwarded.sender === "doctor"){
-            console.log(templateService.holdPrescriptionToBeForwarded)
+            
             sending(id,type,"/user/patient/pharmacy/referral");
           } else if (templateService.holdPrescriptionToBeForwarded.sender ==="patient") {
             sending(id,type,"/user/patient/pharmacy/referral-by-patient");
@@ -9730,7 +9633,7 @@ app.controller("selectedCenterController",["$scope","$location","$http","templat
         headers : {'Content-Type': 'application/json'} 
         })
       .success(function(data) {
-        console.log(data)
+       
         $scope.sendGif = false;
         $scope.message = {};
         $scope.message.ref = data.ref_id;
@@ -9758,10 +9661,10 @@ function($scope,$location,$rootScope,$http,$interval,templateService,localManage
     })
     .success(function(data) {
       if(type === "patient") {
-        console.log(data)
+        
         $rootScope.patientsDoctorList = data;
       } else if(type === "doctor"){
-        console.log(data)
+       
         $rootScope.patientList = data;
       }
 
@@ -9900,7 +9803,7 @@ app.controller("presenceSocketController",["$rootScope","$scope","$window","mySo
     } else if(newVal === "offline"){
       var warn = confirm("Turning offline you will not be able to receive massages and requests in real time");      
       if(warn){        
-        console.log(warn)
+       
         offline();        
       } else {
         online();
@@ -10171,7 +10074,7 @@ app.controller("adminCreateRoomController",["$scope","localManager","mySocket","
   getAllSpecialCenters.query(null,function(data){
     $scope.specialCenter = data.length;
     $rootScope.listSpecialCenter = data;
-    console.log(data)
+   
     $scope.total += data.length;
   })
 
@@ -10180,7 +10083,7 @@ app.controller("adminCreateRoomController",["$scope","localManager","mySocket","
   var getCashOut = cashOutControllerService;
   getCashOut.query(null,function(data){
     var result = (data.length > 0) ? data : [];
-    console.log(data)
+   
     $rootScope.CashOutList = result;
   });
 
@@ -10190,7 +10093,7 @@ app.controller("adminCreateRoomController",["$scope","localManager","mySocket","
   })
 
   adminScrollService.query(function(data){
-    console.log(data)
+    
     $rootScope.scrollList = data;
   })
 
@@ -10426,7 +10329,7 @@ app.controller("adminAnalyticManageCtrl",["$scope","$rootScope","$location","$ht
 }]);
 
 app.controller("newUserDetailsModal",["$scope","$rootScope",function($scope,$rootScope){
-  console.log($rootScope.newUserDetails,"sajh");
+ 
 }]);
 
 app.controller("adminManageCtrl",["$scope","$location","$rootScope","adminDoctorsService",
@@ -10520,7 +10423,7 @@ app.service("commissionService",["$resource",function($resource){
 app.controller('adminCommissionRequestCtrl',["$scope","commissionService",function($scope,commissionService){
   commissionService.get(function(data){
     $scope.response = data;
-    console.log(data)
+   
     $scope.docObj = [];
     $scope.pharmObj = [];
     $scope.labObj = [];
@@ -10543,7 +10446,7 @@ app.controller('adminCommissionRequestCtrl',["$scope","commissionService",functi
               }
           })
 
-          console.log($scope.docObj);
+          
 
         } else if( i == "pharmacies") {
           var filter = {}
@@ -10729,7 +10632,7 @@ function($scope,$rootScope,$http,cities,adminConsultationService){
       headers : {'Content-Type': 'application/json'} 
     })
     .success(function(data) {
-      console.log(data)
+      
       $scope.loading = false;
       $scope.result = data;
     });
@@ -10741,7 +10644,7 @@ function($scope,$rootScope,$http,cities,adminConsultationService){
     headers : {'Content-Type': 'application/json'} 
   })
   .success(function(data) {
-    console.log(data)
+    
     $scope.specialties = data;
   });
 
@@ -10819,7 +10722,7 @@ app.controller('adminCourierModalCtrl',["$rootScope","$http",function($rootScope
 
 
 /*app.controller("cashoutModalController",["$scope","$rootScope","templateService",function($scope,$rootScope,templateService){
-  console.log($rootScope.userDetails)
+  
 }]);*/
 
 app.controller("cashOutController",["$scope","$rootScope","$resource","cashOutControllerService",
@@ -10970,7 +10873,7 @@ app.directive('nop', function(){
           var base = document.getElementById('base');
           base.scrollTop = 0
           base.scrollTop = elm[0].scrollHeight
-          console.log(elm[0])
+          
           elm.css('color', 'red');
         }
     }
@@ -11156,7 +11059,7 @@ app.controller("myDoctorController",["$scope","$location","$http","$window","$ro
     var p = angular.element(document.createElement('p'));
     var small = angular.element(document.createElement('small'));
     var fileElem;
-    console.log(data);
+    
     switch(data.fileType){
       case 'image':        
         fileElem = angular.element(document.createElement('img'));
@@ -12147,7 +12050,7 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
       } else {
         alert("Oops,bill not sent! Please try again.");
       }
-      console.log(res)
+     
     })
   }
 
@@ -12231,7 +12134,7 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
         var sendObj = {patientId:patient.id}
         getMedication.get(sendObj,function(data){
           var myFoundPrescriptions = [];
-          console.log(data)
+          
           for(var i = data.prescriptions.length-1; i >= 0; i--){
             if(data.prescriptions[i].doctor_id === $rootScope.checkLogIn.user_id) {
               myFoundPrescriptions.push(data.prescriptions[i]);
@@ -12296,7 +12199,7 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
       var getMedication = getMedicalHistoryService //$resource(url);
       var sendObj = {patientId:patient.id}
       getMedication.get(sendObj,function(data){ 
-        console.log(data);
+        
         $scope.medicalRecordHistory = data;
       });
     }
@@ -12424,7 +12327,7 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
     chechIfPrescription = function(data) {
       if(!data)
         data = [];
-        console.log(data)
+       
       for(var i = 0; i < data.length; i++) {
         if(!data[i].drug_name || !data[i].dosage ||!data[i].frequency || !data[i].duration) {
           return false;
@@ -12882,7 +12785,7 @@ app.controller("appointmentModalController",["$scope","$rootScope","$http","mome
       .success(function(response) {   
         $scope.loading = false;
         if(response) {
-          console.log(response)
+         
           alert("Appointment booked, patient will be notified.")
           mySocket.emit("realtime appointment notification",{to:data.patient_id})
           
@@ -13222,7 +13125,7 @@ app.controller("prescriptionModalController",["$scope","$http","$window","localM
       }
 
       var updateTheTestSent = function(id,name,address,city,country,receiver) {
-        console.log(receiver)
+        
         var theTest;
         switch($scope.testObj.type_of_test){
           case "laboratory":
@@ -13259,7 +13162,7 @@ app.controller("prescriptionModalController",["$scope","$http","$window","localM
         localManager.setValue("attended", objectFound.attended);
 
         $scope.theAttended = localManager.getValue("attended");
-        console.log($scope.theAttended)
+        
       }
 
 }]);
@@ -13614,7 +13517,7 @@ app.controller("pharmacyCenterNotificationController",["$scope","$location","$re
     templateService.holdId = id;
     var prescription = viewNoteService; //$resource("/user/pharmacy/get-referral");
     prescription.get({refId: id},function(data){
-      console.log(data)
+     
       localManager.setValue("pharmacyData",data); //pharmacyData refers to patients prescription
       var pageUrl = "/pharmacy/view-prescription/" + id;
       $location.path(pageUrl);
@@ -13707,7 +13610,7 @@ app.controller("pharmacyCenterNotificationController",["$scope","$location","$re
       headers : {'Content-Type': 'application/json'} 
       })
     .success(function(data) { 
-    console.log(data)     
+      
       $rootScope.courierRequests = data || [];
     });
   }
@@ -13793,7 +13696,7 @@ app.controller("pharmacyViewPrescriptionController",["$scope","$location","templ
       }
     };
 
-    console.log($rootScope.unavailableDrugArr);
+    
     $location.path("/search/pharmacy"); 
     //$rootScope.refData.pharmacy.prescription_body = unavailableDrugArr;
     //templateService.holdPrescriptionToBeForwarded = $rootScope.refData;
@@ -13807,7 +13710,7 @@ app.controller("pharmacyViewPrescriptionController",["$scope","$location","templ
 
 
  
-  console.log($rootScope.refData);
+  
 
   $scope.toList = function(firstname,lastname,profilePicUrl,ref_id,date){
     var listObj = {};
@@ -14254,7 +14157,7 @@ app.controller("labCenterNotificationController",["$scope","$location","$resourc
     courierResponse.query(function(data){
       $rootScope.courierResponseList = data;
       $scope.unRead = data[0];
-      console.log(data);
+     
     });
   }
 
@@ -14331,7 +14234,7 @@ app.controller("labReferredPatientsController",["$scope","$location","$http","te
       })
     .success(function(response) { 
       $scope.patient = {};
-      console.log(response);
+     
       $scope.loading = false;      
       if(response.length > 0) {
         $scope.tests = response;            
@@ -15127,7 +15030,7 @@ app.controller("laboratorySelectedLabController",["$scope","$http","localManager
       headers : {'Content-Type': 'application/json'} 
       })
     .success(function(data) {
-      console.log(data)
+      
       if(data.success){
         $scope.success = true;
         $scope.placeHolder = false;
@@ -15323,7 +15226,7 @@ app.controller("radioCenterNotificationController",["$scope","$location","$http"
     courierResponse.query(function(data){
       $rootScope.courierResponseList = data;
       $scope.unRead = data[0];
-      console.log(data);
+     
     });
   }
 
@@ -15410,7 +15313,7 @@ app.controller("radioReferredPatientController",["$scope","$location","$http","t
 
   $scope.viewRadioTest = function(test){
     templateService.holdId = test.ref_id;
-    console.log(test)
+    
     var pageUrl = "/radiology/view-test/" + test.ref_id;
     localManager.setValue("radiologyData",test);
     localManager.setValue("currPageForRadiology",pageUrl);
@@ -15602,7 +15505,7 @@ app.controller("radioTestControler",["$scope","$location","$http","templateServi
     if(!templateService.checkInTheList.hasOwnProperty(toStr)) {      
       templateService.checkInTheList[toStr] = true;
       templateService.holdList.push(listObj);
-      console.log(listObj)
+      
     }
   }
 
@@ -15981,7 +15884,7 @@ app.controller("radioTestControler",["$scope","$location","$http","templateServi
   
   $scope.radio = {};
   $rootScope.uploadScanImage = function(){
-    console.log($scope.radio.scanImage)
+    
     var arr = $scope.radio.scanImage;
     $scope.radio.ImageId = $scope.refInfo.ref_id;
    
@@ -15991,7 +15894,7 @@ app.controller("radioTestControler",["$scope","$location","$http","templateServi
     var fd = new FormData();
     var xhr = new XMLHttpRequest;
 
-    //console.log($scope.files)
+    
     for(var i = 0; i < arr.length; i++){
         fd.append(arr[i].name,arr[i]);
     };
@@ -16015,9 +15918,9 @@ app.controller("radioTestControler",["$scope","$location","$http","templateServi
         $scope.progressVisible = true;
         $scope.$apply(function(){
             if (evt.lengthComputable) {
-               console.log(evt.loaded + " : " + evt.total)
+              
                 $scope.progress = Math.round(evt.loaded * 100 / evt.total)
-                console.log($scope.progress)
+               
                 
             } else {
                 $scope.progress = 'unable to compute'
@@ -16030,7 +15933,7 @@ app.controller("radioTestControler",["$scope","$location","$http","templateServi
       //alert(evt.target.responseText)
       $scope.$apply(function(){
         $scope.userData = JSON.parse(evt.target.responseText);
-        console.log($scope.userData)
+       
       })
        
     }
@@ -16048,30 +15951,6 @@ app.controller("radioTestControler",["$scope","$location","$http","templateServi
 
   
 
-  /*
-  this.sendPic = function(url,data){
-    
-    var fd = new FormData();
-    for(var key in data){
-      fd.append(key,data[key]);
-    }; 
-
-    console.log(fd)
-    
-    $http.put(url,fd,{
-      transformRequest: angular.identity,
-      headers: {"Content-Type":undefined}
-    })
-    .success(function(response){
-      templateService.changedProfilePic = response;
-      templateService.isUpdated = true;
-      templateService.holdScanImageList = response;
-      console.log(response)
-      alert("Updated successfuly!")
-    });
-  }
-
-  */
 
   function combineTest(testArray) {
     var report = [];
@@ -16297,7 +16176,7 @@ app.controller("radiologySelectedRadioController",["$scope","$http","localManage
       headers : {'Content-Type': 'application/json'} 
       })
     .success(function(data) {
-      console.log(data)
+     
       if(data.success){
         $scope.success = true;
         $scope.placeHolder = false;
@@ -16617,7 +16496,7 @@ app.controller("drugSearchResultController",["$scope","$location","$rootScope","
   function($scope,$location,$rootScope,$resource,templateService,localManager,ModalService,centerProfileService){
   $scope.drugResult = templateService.holdSearchResult; 
 
-  console.log(templateService.holdSearchResult)
+ 
 
   $scope.criteria = templateService.holdList;
   $scope.drugFilter = {};
@@ -16690,7 +16569,7 @@ app.controller("drugSearchResultController",["$scope","$location","$rootScope","
   var user = $rootScope.checkLogIn;
 
   $scope.courier = function(center) {
-     console.log(center);
+    
      if(user.typeOfUser !== "Pharmacy") {
 
       var drugArr = center.str.split(",");  
@@ -16753,29 +16632,6 @@ app.controller("drugSearchResultController",["$scope","$location","$rootScope","
 
   }
 
-  /*
-  doctor_address: ""
-doctor_city: ""
-doctor_country: ""
-doctor_firstname: "Chibuzor"
-doctor_id: "chibuzor468616"
-doctor_lastname: "Ede"
-doctor_profile_pic_url: "https://applinic-files.s3.amazonaws.com/chibuzor46861661s1ep0idgl._sl1500__1.jpg"
-doctor_work_place: ""
-patient_address: "13 Agbani Road"
-patient_city: "Enugu"
-patient_country: "Nigeria"
-patient_id: "chibuzor468616"
-patient_profile_pic_url: "https://applinic-files.s3.amazonaws.com/chibuzor46861661s1ep0idgl._sl1500__1.jpg"
-prescriptionId: 694569
-prescription_body: Array(1)
-0: {sn: 1, drug_name: "KSDSD", dosage: "", frequency: "", duration: "", …}
-length: 1
-__proto__: Array(0)
-ref_id: 616512
-title: "Mr"
-
-  */
  
 
   $scope.sendChat = function(center) {
@@ -16885,7 +16741,7 @@ app.controller("searchSelectedCenterController",["$scope","$location","$window",
         $scope.isEMP = true;
       } else {
         if(!courier) {
-          console.log(data)
+          
           $scope.isContent = false;
           $scope.isSent = true;
           $scope.result = data.ref_id;
@@ -17612,7 +17468,7 @@ app.controller("scanSearchSelectedCenterController",["$scope","$location","$wind
       testArr[i] = testObj;
     }
     $scope.data.test_to_run = testArr;
-    console.log($scope.data)
+    
     send($scope.data,"/user/scan-search/radiology/referral");
   }
 
@@ -17903,7 +17759,7 @@ function($scope,$location,$window,$http,templateService,localManager,templateUrl
 
 
     if(list[0].name !== undefined);
-      console.log($scope.user)
+      
     $scope.user.userId = patient.user_id;
     $scope.user.symptoms = list;
     $scope.user.city = thisCity;
@@ -17988,7 +17844,7 @@ function($scope,$location,$window,$http,templateService,localManager,templateUrl
       $scope.progressVisible = true;
       $scope.$apply(function(){
           if (evt.lengthComputable) {
-             console.log(evt.loaded + " : " + evt.total)
+            
               $scope.progress = Math.round(evt.loaded * 100 / evt.total)
               if($scope.progress === 100) {
                 $scope.statusMsg = "Your complaint has been queued in PWR successfully! Doctors will respond soon.";
@@ -18004,7 +17860,7 @@ function($scope,$location,$window,$http,templateService,localManager,templateUrl
   function uploadComplete(evt) {       
      $scope.$apply(function(){
       $scope.userData = JSON.parse(evt.target.responseText);
-      console.log($scope.userData)
+     
     })
        
   }
@@ -18039,7 +17895,7 @@ function($scope,$location,$window,$http,templateService,localManager,templateUrl
    
     //var context = canvas.getContext('2d');
     
-    //console.log(captureButton)
+    
     constraints = {
       video: { width: 480, height: 280 }
     };
@@ -18104,36 +17960,7 @@ function($scope,$location,$window,$http,templateService,localManager,templateUrl
 
 
 
-    /*if(navigator.mozGetUserMedia) {
-
-      getUserMedia = navigator.mozGetUserMedia.bind(navigator);
-      navigator.getUserMedia = getUserMedia;
-
-      var onSuccess = function(stream) {
-        player.srcObject = stream;      
-      };
-      var onError = function(error) {
-        console.log(error);
-      };
-
-      navigator.getUserMedia(constraints,onSuccess,onError);
-
-    
-
-    } else if(navigator.webkitGetUserMedia){
-      getUserMedia = navigator.webkitGetUserMedia.bind(navigator);
-      navigator.getUserMedia = getUserMedia;
-
-      var onSuccess = function(stream) {
-        player.srcObject = stream;      
-      };
-      var onError = function(error) {
-        console.log(error);
-      };
-
-      navigator.getUserMedia(constraints,onSuccess,onError);
-      
-    }*/
+   
   }
 
   $scope.closeCam = function() {
@@ -18165,7 +17992,7 @@ function($scope,$location,$window,$http,templateService,localManager,templateUrl
 
   } catch(e) {
     alert(e.mess)
-    console.log(e.message);
+   
   }
 
   }
@@ -18179,79 +18006,7 @@ function($scope,$location,$window,$http,templateService,localManager,templateUrl
   }
 
 
-  /*
- var fileType = $scope.files.type.split("/");
-    var fileAsImage = fileType[0];
-    if(fileAsImage === "image") {
-     
-      var uploadUrl = "/user/update/profile-pic";     
-      var fd = new FormData();
-      var xhr = new XMLHttpRequest;
-
-      //console.log($scope.files)
-      for(var key in $scope.files){
-
-          if($scope.files[key].name)
-            fd.append(key,$scope.files);
-          console.log($scope.files)
-
-      };
-
-      var xhr = new XMLHttpRequest()
-      xhr.upload.addEventListener("progress", uploadProgress, false);
-      xhr.addEventListener("load", uploadComplete, false);
-      xhr.addEventListener("error", uploadFailed, false);
-      xhr.addEventListener("abort", uploadCanceled, false);
-     
-      
-
-      
-      xhr.open("PUT", uploadUrl)
-      xhr.send(fd);
-      $scope.progressVisible = false
-    } else {
-      alert("Failed! Reason: File type not image");
-    }  
-  }
-
   
-   
-    function uploadProgress(evt) {
-        $scope.progressVisible = true;
-        $scope.$apply(function(){
-            if (evt.lengthComputable) {
-               console.log(evt.loaded + " : " + evt.total)
-                $scope.progress = Math.round(evt.loaded * 100 / evt.total)
-                console.log($scope.progress)
-                
-            } else {
-                $scope.progress = 'unable to compute'
-            }
-        })
-    }
-
-    function uploadComplete(evt) {
-       
-         $scope.$apply(function(){
-            $scope.userData = JSON.parse(evt.target.responseText);
-            console.log($scope.userData)
-        })
-       
-    }
-
-    function uploadFailed(evt) {
-        alert("There was an error attempting to upload the file.")
-    }
-
-    function uploadCanceled(evt) {
-        $scope.$apply(function(){
-            $scope.progressVisible = false
-        })
-        alert("The upload has been canceled by the user or the browser dropped the connection.")
-    }
-
-  */
-
   $scope.sendHelp = function(){
     if(list[0].name !== "")
       $scope.user.symptoms = list;
@@ -18315,15 +18070,7 @@ app.controller("courierResponseCtrl",["$scope","$rootScope","courierResponseServ
   function($scope,$rootScope,courierResponseService,templateService,$location,phoneCallService,paymentVerificationService,$http){
 
   $scope.reOrder = function(item) {    
-    /*var presList = templateService.holdPrescriptions;
-    var elemPos = presList.map(function(x){return x.prescriptionId}).indexOf(item.prescriptionId);
-    if(elemPos !== -1) {
-      $rootScope.selectedPrescription = presList[elemPos];
-      console.log($rootScope.selectedPrescription)
-      $location.path('courier');
-    } else {
-      console.log(item)
-    }*/
+   
     if(item) {
       item.prescription_body.forEach(function(drug){
         if(drug.quantity){
@@ -18704,7 +18451,7 @@ app.controller("centerCourierController",["$scope","$rootScope","$http","mySocke
       headers : {'Content-Type': 'application/json'} 
       })
     .success(function(data) { 
-      console.log(data);     
+          
       $rootScope.completedRequest = data || [];
     });
     $scope.selected2 = true;
@@ -18888,7 +18635,7 @@ app.controller("selectedCourierRequestController",["$scope","$rootScope","$http"
   $scope.sendBilling = function() { 
     $scope.loading = true; 
 
-    console.log($scope.request);
+    
 
     if($scope.request.delivery_charge > 0 ) {
       $rootScope.aCourierRequest.attended = true;
@@ -18925,44 +18672,6 @@ app.service("fieldAgentService",["$resource",function($resource){
 app.controller("filedAgentController",["$scope","$rootScope","$resource","fieldAgentService","$location","ModalService",
   function($scope,$rootScope,$resource,fieldAgentService,$location,ModalService){
   
-  /*var resource = fieldAgentService; //$resource("/user/field-agent",null,{verify:{method: "PUT"}});
-  $scope.loading = true;
-  $scope.params = {};
-  $scope.params.isCompleted = null;
-  var spt = window.location.toString();
-  var arr = spt.split("/");
-  $scope.params.userId = arr[4];
-
-
-  function getCourier(courier) {
-    resource.query($scope.params,function(data){
-      $scope.loading = false;
-      $scope.courierList = data;
-    });
-  }
-
-  getCourier();
-
-  $scope.confirmPay = function(item) {
-    item.message = "";
-    item.isLoading = true;
-    resource.verify(item,function(result){
-      item.isLoading = false;
-      item.message = result.message;
-      item.receipt_date = result.receipt_date;
-    });
-  }
-
-  $scope.viewVerified = function() {
-    $scope.params.isCompleted = true;
-    getCourier();
-  }
-
-  $scope.pendingRequest = function() {
-    $scope.params.isCompleted = null;
-    getCourier();
-  }*/
-
   $scope.attend = function(firstname,lastname,courierId,creditorId,debitorId,cost,agentId){
     $rootScope.courier = {
       names: firstname + " " + lastname,
@@ -18974,7 +18683,7 @@ app.controller("filedAgentController",["$scope","$rootScope","$resource","fieldA
       agentId: agentId 
     }
 
-    console.log($rootScope.courier);
+   
    
     ModalService.showModal({
         templateUrl: 'fieldAgentModal.html',
@@ -19030,42 +18739,7 @@ app.controller('supportController',["$scope","$http",function($scope,$http){
       
 }])
 
-/*
-   $scope.$watch("testsForSurchage",function(newVal,oldVal){
-    if (newVal !== null) {
-      for(var k = 0; k < newVal.length; k++) {        
-       if(oldVal.length > 0 && newVal[k].added) {
-        totalCost.sum -= oldVal[k].amount;
-        totalCost.sum += newVal[k].amount;
-        toNaira(totalCost.sum);
-       } 
 
-      }        
-    }
-  },true); 
-
-  function updateTotal() {
-    if(testForPay.pickedTests.length > 0){
-      var tests = testForPay.pickedTests;
-      for(var l = 0; l < tests.length; l++){
-        tests[l].added = true;
-        totalCost.sum += tests[l].amount;
-        toNaira(totalCost.sum);
-      }
-      $scope.isFilled = true;
-    } else {
-      totalCost.sum = 0;
-      toNaira(totalCost.sum);
-      $scope.isFilled = false;
-    }
-  }
-
-  function toNaira(val){
-     $scope.str = "NGN" + val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-     $scope.grabRawAmount = val;
-  }
-
-*/
 
  
 
@@ -19132,7 +18806,7 @@ app.service('emMedService',["$http","localManager",function($http,localManager,t
     })
     .success(function(data) {
       if(data){
-        console.log(data)
+       
         localManager.setValue("holdPrescriptions",data.prescriptions); 
         localManager.setValue("holdLabData",data.medical_records.laboratory_test);
         localManager.setValue("holdScanData",data.medical_records.radiology_test);
@@ -19199,7 +18873,7 @@ app.controller("emprescriptionTemplateController",["$scope","$location","$http",
       headers : {'Content-Type': 'application/json'} 
       })
     .success(function(data) {
-      console.log(data)
+     
       hasBeenSentTo.trackRecord = data;
     });
 
@@ -19217,7 +18891,7 @@ app.controller("emprescriptionTemplateController",["$scope","$location","$http",
 
 
     $scope.downloadPrescription = function (prescription) {
-      console.log(prescription)
+     
     }
 
     //this fn is invoked when patient wish to forward prescription by himself to a phamarcy.
@@ -19255,7 +18929,7 @@ app.controller("emLabTestController",["$scope","$location","$http","$window","te
   $scope.labTest= localManager.getValue("holdLabData");
 
   $scope.downloadTest = function(testObj) {
-    console.log(testObj);
+    
   }
   
   //this fn is invoked when a patient wish to delete a prescription.
@@ -19293,7 +18967,7 @@ app.controller("emScanTestController",["$scope","$location","$http","$window","t
   $scope.labTest= localManager.getValue("holdScanData");
 
   $scope.downloadTest = function(testObj) {
-    console.log(testObj);
+    
   }
   
   //this fn is invoked when a patient wish to delete a prescription.
@@ -19388,7 +19062,7 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
 
   $rootScope.cities = cities;
 
-  console.log(localManager.getValue("resolveUser"));
+ 
   
   $rootScope.checkLogIn = localManager.getValue("resolveUser");
 
@@ -19577,7 +19251,7 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
   }
 
   function TimeOut_Resetter(e){
-      //console.log(e);
+      
       /// Stop the pending timeout
       $timeout.cancel(TimeOut_Thread);
 
@@ -19882,7 +19556,7 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
     //for modal sending one-way chat message.
     function initChatSingle() {
       mySocket.emit('init chat single',{userId: user.user_id,partnerId: $scope.center.id},function(data){
-        console.log(data)
+       
       });
     }
 
@@ -19890,7 +19564,7 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
     function initChat() {
       $scope.loading = true;
       mySocket.emit('init chat',{userId: user.user_id,partnerId: $scope.partner.partnerId},function(data){ 
-         console.log(data);
+        
          for(var i = 0; i < data.messages.length; i++) { 
             chats(data.messages[i]);
          }
@@ -19980,7 +19654,7 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
     var p = angular.element(document.createElement('p'));
     var small = angular.element(document.createElement('small'));
     var fileElem;
-    console.log(data);
+    
     switch(data.fileType){
       case 'image':        
         fileElem = angular.element(document.createElement('img'));
@@ -20227,7 +19901,7 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
   var progress = {};
   //for single file upload
   $rootScope.imageFile = function() {
-    console.log($scope.files);
+    
     if($scope.files.size <= 31457280) { // 30mb max size
     var file = $scope.files,
       fileReader = new FileReader(),
@@ -20504,7 +20178,7 @@ function($scope,$http,$rootScope,ModalService,$filter){
     headers : {'Content-Type': 'application/json'} 
     })
     .success(function(data) {    
-      console.log(data)          
+            
       if(data) {
         $scope.renderedServices = data || [];                          
       } 
@@ -20539,7 +20213,7 @@ app.controller("workHistoryModalController",["$rootScope","$scope","$location","
   var count = 0
   $scope.getReport = function(report){
     if(count === 0) {
-      console.log(report)
+     
       var reportSplt = report.split(",");
       for(var i = 0; i < reportSplt.length; i++) {
         var nextSplt = reportSplt[i].split(":");
@@ -20550,7 +20224,7 @@ app.controller("workHistoryModalController",["$rootScope","$scope","$location","
       }
     }
      count++;
-     console.log($scope.reportList)
+    
   }
 
   
@@ -20593,7 +20267,7 @@ app.controller("bankDetailsCtrl",["$scope","bankDetailsService",function($scope,
     } else {
       alert("Complete all fields");
     }
-    console.log($scope.bankDetail);
+   
   }
 
   $scope.deleteAcc = function(acc){
@@ -20635,7 +20309,7 @@ app.controller("hompageController",["$scope","scanTests","cities","labTests","Dr
     })
   .success(function(data) {              
     if(data){
-      console.log(data)
+      
       for(var i = 0; i < data.length; i++){
         if(!filter[data[i].specialty]) {
           filter[data[i].specialty] = 1;
@@ -20654,8 +20328,7 @@ app.controller("hompageController",["$scope","scanTests","cities","labTests","Dr
     headers : {'Content-Type': 'application/json'} 
     })
   .success(function(res) {     
-     console.log(res)       
-     //res.concat(spArr);
+    
      for(var i = 0; i < res.length; i++){
         spArr.push(res[i]);
      }
@@ -20765,7 +20438,7 @@ app.controller("homePageModalController",["$scope","$rootScope","homepageSearchS
     $scope.loading = true;
     homepageSearchService.get($rootScope.user,function(response){
       $scope.loading = false;
-      //console.log(response.full);
+      
       $scope.searchResult = response.full;
     });  
 
