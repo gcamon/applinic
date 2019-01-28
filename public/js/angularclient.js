@@ -4856,6 +4856,7 @@ app.controller("inTreatmentController",["$scope","$http","localManager","$locati
     $scope.isNote = false;
     $scope.updateMsg = "";
     $scope.edit = {};
+    input.check = 0;
     //} else {
      // alert("Please save changes before you can proceed.")
     //}
@@ -4902,6 +4903,7 @@ app.controller("inTreatmentController",["$scope","$http","localManager","$locati
       $scope.updateMsg = "";
       $scope.isNote = false;
       $scope.edit = {};
+      input.check = 0;
    // } else {
    //   alert("Please save changes before you can proceed.")
    // }
