@@ -193,16 +193,17 @@ Wallet.prototype.billing = function(model,billingInfo,reciever,sms,io){
 			newCut = 0.80;
 		}		
 		
-		var msgBody = "Your Applinic account credited" + "\nAmount: " + docPercentage + "\nActivity: Commission for prescription written\n Source: " +
+		/*var msgBody = "Your Applinic account credited" + "\nAmount: " + docPercentage + "\nActivity: Commission for prescription written\n Source: " +
 		billingInfo.patient_firstname + " " + billingInfo.patient_lastname;
 		var phoneNunber =  billingInfo.doctorPhone;
+		console.log(billingInfo)
 		sms.messages.create(
       {
-        to: phoneNunber,
+        to: phoneNunber || "",
         from: '+16467985692',
         body: msgBody,
       }
-    ) 
+    )*/
 
 		//crediting addmin
 		var adminCut = newCut || 0.5;
@@ -230,7 +231,7 @@ Wallet.prototype.billing = function(model,billingInfo,reciever,sms,io){
 				var phoneNunber =  debitor.phone;
 				sms.messages.create(
           {
-            to: phoneNunber,
+            to: phoneNunber || "",
             from: '+16467985692',
             body: msgBody,
           }
@@ -255,7 +256,7 @@ Wallet.prototype.billing = function(model,billingInfo,reciever,sms,io){
 				var phoneNunber =  debitor.phone;
 				sms.messages.create(
           {
-            to: phoneNunber,
+            to: phoneNunber || "",
             from: '+16467985692',
             body: msgBody,
           }
