@@ -408,6 +408,9 @@ var myModel = function () {
 	var subSession = Schema({
 		date: String,
 		note: String,
+		general: String,
+		systemic: String,
+		diagnosis: String,
 		sub_session_id: String
 	});
 
@@ -495,7 +498,8 @@ var myModel = function () {
 		diagnosis: String,
 		report_id: String,
 		session_id: String,
-		doctor_profile_url: String
+		doctor_profile_url: String,
+		sub_session_id: String
 	})
 
 

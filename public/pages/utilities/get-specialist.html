@@ -143,7 +143,7 @@
 		<div class="pt-1">
 		<label style="color: grey">How do you feel right now? <span class="text-danger">*</span><br><small>(e.g I am having body pains, I feel so weak, etc.)
 		</small></label>
-		<textarea placeholder="Write..."  ng-model="user.how" class="form-control pl-1" style="min-height: 120px;"></textarea>
+		<textarea placeholder="Write..."  ng-model="user.how" class="form-control pl-1"  ng-keyup="autoExpand($event)" id="textarea"></textarea>
 	</div>
 		
 </section>
@@ -191,7 +191,7 @@
   <div class="pt-1">
     <label style="color: grey">What complaint do you have for pregnancy ? <span class="text-muted"></span></label>
       <div class="text-danger">{{getPregnantMsg}}</div>
-      <textarea class="form-control pl-1" ng-model="user.getPregIssue" placeholder="write..." style="min-height: 200px;"></textarea>
+      <textarea class="form-control pl-1" ng-model="user.getPregIssue" placeholder="write..." ng-keyup="autoExpand($event)" id="textarea"></textarea>
   </div>
 </section>
 
@@ -200,49 +200,49 @@
   <div>
 	  <label style="color: grey">Where did you sustain injuries ? <span class="text-muted"></span></label>
     <div class="text-danger">{{accMsg}}</div>
-    <textarea class="form-control pl-1" ng-model="user.injuries" placeholder="write..." style="min-height: 200px;"></textarea>
+    <textarea class="form-control pl-1" ng-model="user.injuries" placeholder="write..." ng-keyup="autoExpand($event)" id="textarea"></textarea>
   </div>
 </section>
 <section ng-if="user.stroke">
   <div>
 	   <label style="color: grey">Where did you sustain paralysis ?</label>
     <div class="text-danger">{{paraMsg}}</div>
-    <textarea class="form-control pl-1" placeholder="write..." ng-model="user.paralysis" style="min-height: 200px;"></textarea>
+    <textarea class="form-control pl-1" placeholder="write..." ng-model="user.paralysis" ng-keyup="autoExpand($event)" id="textarea"></textarea>
   </div>
 </section>
 <section ng-if="user.eye">
   <div>
 	  <label style="color: grey">What is wrong with your eye ?</label>
     <div class="text-danger">{{eyeMsg}}</div>
-    <textarea class="form-control pl-1" placeholder="write..." ng-model="user.eyeIssue" style="min-height: 200px;"></textarea>
+    <textarea class="form-control pl-1" placeholder="write..." ng-model="user.eyeIssue" ng-keyup="autoExpand($event)" id="textarea"></textarea>
   </div>
 </section>
 <section ng-if="user.ear">
   <div>
 	  <label style="color: grey">What is wrong with your ear ?</label>
     <div class="text-danger">{{earMsg}}</div>
-    <textarea class="form-control pl-1" placeholder="write..." ng-model="user.earIssue" style="min-height: 200px;"></textarea>	
+    <textarea class="form-control pl-1" placeholder="write..." ng-model="user.earIssue" ng-keyup="autoExpand($event)" id="textarea"></textarea>	
   </div>
 </section>
 <section ng-if="user.teeth">
  <div>
 	<label style="color: grey">What is wrong with you teeth ?</label>
     <div class="text-danger">{{teeMsg}}</div>
-    <textarea class="form-control pl-1" placeholder="write..." ng-model="user.teethIssue" style="min-height: 200px;"></textarea>
+    <textarea class="form-control pl-1" placeholder="write..." ng-model="user.teethIssue" ng-keyup="autoExpand($event)" id="textarea"></textarea>
   </div>
 </section>
 <section ng-if="user.other">
   <div>
     <label style="color: grey">What is your reason for seeing a doctor ?</label>
     <div class="text-danger">{{otherMsg}}</div>
-    <textarea class="form-control pl-1" placeholder="write..." ng-model="user.otherIssue" style="min-height: 200px;"></textarea>
+    <textarea class="form-control pl-1" placeholder="write..." ng-model="user.otherIssue" ng-keyup="autoExpand($event)" id="textarea"></textarea>
   </div>
 </section>
 <section ng-if="user.personal">
   <div>
     <label style="color: grey">Why do you need a personal doctor ?</label>
     <div class="text-danger">{{personalMsg}}</div>
-    <textarea class="form-control pl-1" placeholder="write..." ng-model="user.personalIssue" style="min-height: 200px;"></textarea>
+    <textarea class="form-control pl-1" placeholder="write..." ng-model="user.personalIssue" ng-keyup="autoExpand($event)" id="textarea"></textarea>
   </div>
 </section>
 <section>	

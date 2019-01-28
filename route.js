@@ -2484,8 +2484,8 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
             presence:1,
             address:1,
             phone:1
-
           }).exec(function(err,pharmacy){
+            
             var date = new Date();
             var ref_id;
             if(req.body.ref_id) {
@@ -2493,6 +2493,7 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
             } else {
               ref_id = randos.genRef(6);
             }
+
             var title = (req.user.type === "Doctor") ? 'Dr.': "";            
             var refObj = {
               ref_id: ref_id,
@@ -2503,6 +2504,7 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
               date: date,
               pharmacy: req.body
             }
+
             var pharmacyNotification = {
               sender_firstname: req.user.firstname,
               sender_lastname: req.user.lastname,
@@ -2543,11 +2545,11 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
               if(err) throw err;              
             });
 
-           res.send({success:true,ref_id: ref_id}); 
+            res.send({success:true,ref_id: ref_id}); 
           });
 
       } else {
-        res.end("Unauthorized access. You need to log in")
+        res.end("Unauthorized access. You need to log in");
       }
 
     });
@@ -3744,23 +3746,32 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
             model.user.findOne({user_id: req.body.patient_id},{medical_reports:1}).exec(function(err,patient){
               if(err) throw err;
               if(patient) {
-                patient.medical_reports.unshift({
-                  doctor_id: req.user.user_id,
-                  doctor_name: req.user.title + " " + req.user.firstname + " " + req.user.lastname,
-                  doctor_specialty: req.user.specialty,
-                  doctor_work_place: req.user.work_place,
-                  doctor_address: req.user.address,
-                  doctor_city: req.user.city,
-                  doctor_country: req.user.country,
-                  patient_id: patient.user_id,
-                  doctor_profile_pic_url: req.user.profile_pic_url,
-                  doctor_profile_url: req.user.profile_url,
-                  report: req.body.medical_report,
-                  date: + new Date(),
-                  diagnosis: req.body.final_diagnosis,
-                  report_id: uuid.v1(),
-                  session_id: req.body.session_id
-                }); 
+                var elemPos = patient.medical_reports.map(function(x){ if(x) return x.sub_session_id}).indexOf(req.body.sub_session_id)
+                console.log(elemPos, req.body.sub_session_id);
+
+                if(elemPos === -1) {
+                  patient.medical_reports.unshift({
+                    doctor_id: req.user.user_id,
+                    doctor_name: req.user.title + " " + req.user.firstname + " " + req.user.lastname,
+                    doctor_specialty: req.user.specialty,
+                    doctor_work_place: req.user.work_place,
+                    doctor_address: req.user.address,
+                    doctor_city: req.user.city,
+                    doctor_country: req.user.country,
+                    patient_id: patient.user_id,
+                    doctor_profile_pic_url: req.user.profile_pic_url,
+                    doctor_profile_url: req.user.profile_url,
+                    report: req.body.medical_report,
+                    date: + new Date(),
+                    diagnosis: req.body.final_diagnosis,
+                    report_id: uuid.v1(),
+                    session_id: req.body.session_id,
+                    sub_session_id: req.body.sub_session_id
+                  }); 
+                } else {
+                  patient.medical_reports[elemPos].report = req.body.medical_report;
+                  patient.medical_reports[elemPos].date = + new Date();
+                }
 
                 patient.save(function(err,info){
                   console.log("report save")
@@ -3803,19 +3814,31 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
           objectFound.last_modified = date;
 
 
-           var sub = {
+          var sub = {
             date: date,
-            note: req.body.sub_note,
+            note: (req.body.sub_note) ? req.body.sub_note : "",
+            general: (req.body.general_examination) ? req.body.general_examination : "",
+            systemic: (req.body.systemic_examination) ? req.body.systemic_examination : "",
+            diagnosis: (req.body.final_diagnosis) ? req.body.final_diagnosis : "",
             sub_session_id: req.body.sub_session_id
           }
 
-          if(req.body.subSession) { 
+      
+
+          if(req.body.subSession && !req.body.medical_report) { 
             var subList = objectFound.diagnosis.sub_session;
             var elemPos = subList.map(function(x){return x.sub_session_id}).indexOf(req.body.sub_session_id)
             if(elemPos === -1) {   
               objectFound.diagnosis.sub_session.push(sub);
             } else {
-              objectFound.diagnosis.sub_session[elemPos].note = req.body.sub_note;
+              if(req.body.sub_note)
+                objectFound.diagnosis.sub_session[elemPos].note = req.body.sub_note;
+              if(req.body.general_examination)
+                objectFound.diagnosis.sub_session[elemPos].general = req.body.general_examination;
+              if(req.body.systemic_examination)
+                objectFound.diagnosis.sub_session[elemPos].systemic = req.body.systemic_examination;
+              if(req.body.final_diagnosis)
+                objectFound.diagnosis.sub_session[elemPos].diagnosis = req.body.final_diagnosis;
             }
           }
 
@@ -3893,11 +3916,34 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
       } else {
         res.end("Unauthorized access!!!")
       }
+    });
+
+    router.get("/user/doctor/get-report",function(req,res){
+      if(req.user){
+        console.log(req.query,"++++++++");
+        model.user.findOne({user_id: req.query.patientId},{medical_reports:1})
+        .exec(function(err,data){
+          if(err) throw err;
+          if(data){
+            var elemPos = data.medical_reports.map(function(x){return x.sub_session_id}).indexOf(req.query.subSessionId);
+            if(elemPos !== -1) {
+              res.json(data.medical_reports[elemPos]);
+            } else {
+              res.json({error: "No record found!"});
+            }
+          } else {
+            res.send({error: "No record found!"});
+          }
+        });
+      } else {
+        res.end("unauthorized access!")
+      }
     })
 
     //doctor finds the patient's lab tests if
     router.put("/user/doctor/get-test-result",function(req,res){
-        if(req.user){         
+        if(req.user){   
+          console.log(req.body)      
           model.user.findOne({user_id: req.user.user_id},{doctor_patient_session:1}).exec(function(err,data){
             if(err) throw err;
             var elementPos = data.doctor_patient_session.map(function(x) {return x.session_id; }).indexOf(req.body.id);

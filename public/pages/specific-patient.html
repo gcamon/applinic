@@ -21,7 +21,7 @@
                      <sub class="text-muted" style="margin-top:-3px; font-size:1em;">{{patientInfo.city}} {{patientInfo.country}}</sub>
                  </div>
                  <div>
-                     <a href="" class="btn btn-sm btn-danger" ng-click="inviteOnline(patientInfo)">Seek Attention</a>
+                     <a href="" class="btn btn-sm btn-danger" ng-click="inviteOnline(patientInfo)">Invite Online</a>
                  </div>
              </div>
 
@@ -126,8 +126,8 @@
         <button ng-click="getInitialComplaint()" class="btn btn-simple btn-sm">
             Initial Complaint
         </button>
-        <button ng-click="createNewSession()" class="btn btn-simple btn-sm">
-            new
+        <button ng-click="createNewSession()" class="btn btn-info btn-sm">
+        New Session
         </button>
     </div>
     <div>
@@ -137,8 +137,8 @@
             <button class="btn btn-neutral btn-sm" style="position: absolute;top: 5px; right: 4px" ng-click="viewTreatmentSession(recentSession)">Continue With Treatment</button>
         </article>-->
        
-        <h6 style="margin-top: 35px">Folders</h6>  
-        <table class="table-responsiv table no-mobile-item-display" style="width: 100%">
+        <h6 style="margin-top: 35px">Sessions</h6>  
+        <table class="table-responsiv table no-mobile-item-display" style="width: 100%" ng-if="sessionData.length > 0">
             <thead>
                 <th style="width: 20%">Date created</th>
                 <th style="width: 45%">Complaint</th>
@@ -161,6 +161,7 @@
                 <hr>
             </table>
         </div>
+        <p class="text-warning" ng-if="sessionData.length == 0">No treatment sessions or folders was created at this time</p>
         <!--<article ng-repeat = "session in sessionData" ng-click="viewTreatmentSession(session)" style='padding: 10px; cursor:pointer;margin-bottom: 10px;box-shadow: 1px 5px 5px rgba(0,0,0,0.5);color:#fff;position: relative;' class="bg-warning">
             <span style="display: block;">{{session.date | date : "mediumDate" }}</span> <span style="" ng-bind-html="session.diagnosis.presenting_complain || 'Empty'"></span> <small style="float:right">Last modified: {{session.last_modified | date : "mediumDate"}}</small>
             <button class="btn btn-neutral btn-sm" style="position: absolute;top: 5px; right: 4px" ng-click="viewTreatmentSession(session)">Continue With Treatment</button>
@@ -416,7 +417,7 @@
         </div>
         <div  class="arrange-p">
             <!--<textarea class="form-control p-1" placeholder="Complain" ng-model="treatment.complain"></textarea>-->
-            <label><span>{{drugList.length + 1}} </span> Reason for the above prescription (optional)</label><!--</span> Diagnosis ( Provisional or Final ) </label>-->
+            <label><span>{{drugList.length + 1}} </span> Reason / Description for the prescription above (optional)</label><!--</span> Diagnosis ( Provisional or Final ) </label>-->
             <div class="pl-2">
                 <textarea class="form-control p-1"  placeholder="write..." ng-model="treatment.provisionalDiagnosis"></textarea>
             </div>
@@ -629,23 +630,31 @@
 <section ng-if="isTreatmentSession" ng-controller="inTreatmentController">
     <div class="medical-record-Area card p-1">
         <div style="position: relative;">
-             <h5>In Treatment Session <small style="float: right;font-size: 14px"> <b>Last modified:</b> <span am-time-ago="sessionData.last_modified"></span></small></h5>
+             <h5>Treatment Session <small style="float: right;font-size: 14px"> <span am-time-ago="sessionData.last_modified"></span></small></h5>
              
         </div>
         <div style="">
           <!-- <span style="font-size:1.2em; font-weight:300;">This session was intiated on {{sessionData.date | date : "mediumDate"}}, <br> Through <b>{{sessionData.typeOfSession}}</b></span>-->
            <!--<button class="btn btn-simple" ng-click="clerk()" ng-class="{'bg-info text-white': true}">clerking</button> -->         
-           <button class="btn btn-simple" ng-click="subSession()" ng-class="{'bg-info text-white': isSubNote}">Continuation entry</button> 
-           <button class="btn btn-simple" ng-click="investView()" ng-class="{'bg-info text-white': isInvestigation}">Investigation</button>
-           <button class="btn btn-simple" ng-click="peView()" ng-class="{'bg-info text-white': isPE}">Physical Examination Entry</button>
-           <button class="btn btn-simple" ng-click="reportView()" ng-class="{'bg-info text-white': isReportView}">Write Report</button>
-           <button class="btn btn-simple" ng-click="FollowUpsView()" ng-class="{'bg-info text-white': (isMain || isSubView)}">Follow-ups</button>
+           <button class="btn btn-neutral" ng-click="subSession()" ng-class="{'bg-info text-white': isSubNote}" style="font-size: 16px">Continue</button>&nbsp;&nbsp; 
+          
+           <button class="btn btn-neutral" ng-click="FollowUpsView()" ng-class="{'bg-info text-white': (isMain || isSubView)}" style="font-size:16px">Previous Follow-up</button>
+
+           
+           <!--<button class="btn btn-simple" ng-click="reportView()" ng-class="{'bg-info text-white': isReportView}">Write Report</button>-->
         </div>
         <hr>
         <div style="padding-top: 10px" ng-if="isFollowups || isMain">
-            <button ng-repeat="j in sessionData.diagnosis.sub_session" class="btn btn-simple btn-sm"  ng-class="{'bg-info text-white': j.status}" ng-click="sub(j,sessionData.diagnosis.sub_session)">{{(j.sub_session_id === 'main') ? 'Main' : 'Follow up'}} <span ng-if="!j.date">( {{ sessionData.date | date : "fullDate" }} ) </span><span ng-if="j.date">( {{ j.date | date : 'fullDate'}} )</span></button>
+            <a href="" ng-repeat="j in sessionData.diagnosis.sub_session" style="">
+                <button  class="btn btn-neutral btn-sm"  ng-class="{'bg-info text-white': j.status}" ng-click="sub(j,sessionData.diagnosis.sub_session)">{{(j.sub_session_id === 'main') ? 'Main' : 'Follow up'}} <span ng-if="!j.date">( {{ sessionData.date | date : "fullDate" }} ) </span><span ng-if="j.date">( {{ j.date | date : 'fullDate'}} )</span></button>
+            </a>
         </div>
-        <hr class="bg-simple"> 
+        <div ng-if="isSubNote">
+           <button class="btn btn-simple" ng-click="takeNote()" ng-class="{'bg-info text-white': isNote}">Take a note</button>
+           <button class="btn btn-simple" ng-click="investView()" ng-class="{'bg-info text-white': isInvestigation}"> Request Investigation</button>
+           <button class="btn btn-simple" ng-click="peView()" ng-class="{'bg-info text-white': isPE}">Physical Examination Findings</button>
+          
+        </div>
         <form ng-if="isClerk">
             <div ng-if="isMain">
                 <div class="col-md-12  col-sm-12 col-xs-12 form-group">
@@ -663,7 +672,7 @@
                     </span>
                    
                    <div class="collapse" id="collapseExample">
-                      <textarea class="form-control inc-height" placeholder="Write.." ng-model="edit.presenting_complain"></textarea>
+                      <textarea class="form-control inc-height" placeholder="Write.." ng-model="edit.presenting_complain" ng-keyup="autoExpand($event)" id="textarea"></textarea>
                   </div>
                 </div>
 
@@ -679,7 +688,7 @@
                     <span ng-bind-html="sessionData.diagnosis.history_of_presenting_complain">
                      </span>
                    <div class="collapse" id="historu">
-                      <textarea class="form-control inc-height" placeholder="Write.." ng-model="sessionData.diagnosis.history_of_presenting_complain"></textarea>
+                      <textarea class="form-control inc-height" placeholder="Write.." ng-model="sessionData.diagnosis.history_of_presenting_complain" ng-keyup="autoExpand($event)" id="textarea"></textarea >
                   </div>
                 </div>
 
@@ -695,7 +704,7 @@
                        
                 </span>
                    <div class="collapse" id="past">
-                        <textarea class="form-control inc-height" placeholder="Write.." ng-model="edit.past_medical_history"></textarea>
+                        <textarea class="form-control inc-height" placeholder="Write.." ng-model="edit.past_medical_history" ng-keyup="autoExpand($event)" id="textarea"></textarea>
                   </div>
                   </div>
 
@@ -711,7 +720,7 @@
                        
                     </span>
                    <div class="collapse" id="drug">
-                        <textarea class="form-control inc-height" placeholder="Write.." ng-model="edit.drug_history"></textarea>
+                        <textarea class="form-control inc-height" placeholder="Write.." ng-model="edit.drug_history" ng-keyup="autoExpand($event)" id="textarea"></textarea>
                   </div>
                   </div>
 
@@ -727,7 +736,7 @@
                     <span ng-bind-html="sessionData.diagnosis.social_history">
                     </span>
                    <div class="collapse" id="social">
-                        <textarea class="form-control inc-height" placeholder="Write.." ng-model="edit.social_history"></textarea>
+                        <textarea class="form-control inc-height" placeholder="Write.." ng-model="edit.social_history" ng-keyup="autoExpand($event)" id="textarea"></textarea>
                   </div>
                   </div> 
                   </div>
@@ -745,7 +754,7 @@
                        
                     </span>
                    <div class="collapse" id="family">
-                        <textarea class="form-control inc-height" placeholder="Write.." ng-model="edit.family_history"></textarea>
+                        <textarea class="form-control inc-height" placeholder="Write.." ng-model="edit.family_history" ng-keyup="autoExpand($event)" id="textarea"></textarea>
                   </div>
                   </div>
 
@@ -762,7 +771,7 @@
                        
                     </span>
                    <div class="collapse" id="summary">
-                        <textarea class="form-control inc-height" placeholder="Write.." ng-model="edit.summary"></textarea>
+                        <textarea class="form-control inc-height" placeholder="Write.." ng-model="edit.summary" ng-keyup="autoExpand($event)" id="textarea"></textarea>
                   </div>
                   </div>
 
@@ -778,52 +787,66 @@
                     <span ng-bind-html="sessionData.diagnosis.provisional_diagnosis">                       
                     </span>
                    <div class="collapse" id="provisional">
-                        <textarea class="form-control inc-height" placeholder="Write.." ng-model="edit.provisional_diagnosis"></textarea>
+                        <textarea class="form-control inc-height" placeholder="Write.." ng-model="edit.provisional_diagnosis" ng-keyup="autoExpand($event)" id="textarea"></textarea>
                   </div>
                   </div>
               </div>
 
-              <div class="col-md-12 col-sm-12 col-xs-12 form-group" ng-if="isSubNote && !isMain">                   
-                   <label for="firstname">Note </label><br>
-                   <textarea class="form-control" placeholder="Write..." style="height: 200px" ng-model="edit.sub_note"></textarea>          
+              <div class="form-group" ng-if="isNote">                   
+                   <label for="firstname">Take note: </label><br>
+                   <textarea class="form-control" placeholder="Write..." ng-model="edit.sub_note" ng-keyup="autoExpand($event)" id="textarea"></textarea>          
               </div>
               
               <div class="clearfix"></div>
               <!--physical examination-->
                <!--<h5 class="" style="font-weight:300;">Physical Examination Entry</h5>-->
-              <div ng-if="!isMain && isPE"> <!-- break by ng if-->
+              <div ng-if="!isMain && isPE" class="pl-0"> <!-- break by ng if-->
                   <div class="col-md-12  col-sm-12 col-xs-12 form-group">
-                  <h5 class="" style="font-weight:300;">Physical Examination Entry</h5><br>
-                    <label for="firstname"> General Examination</label><br>
-                    <span ng-bind-html="sessionData.diagnosis.general_examination"></span>
-                  <textarea class="form-control" placeholder="Write.." ng-model="edit.general_examination"></textarea>
+                  <!--<h5 class="" style="font-weight:300;">Physical Examination Entry</h5><br>-->
+                    <label for="firstname"> General Examination:</label><br>
+                    <blockquote ng-bind-html="sessionData.diagnosis.general_examination" class="pt-0"></blockquote>
+                  <textarea class="form-control" placeholder="Write.." ng-model="edit.general_examination" ng-keyup="autoExpand($event)" id="textarea"></textarea>
                   </div>
 
                   <div class="col-md-12  col-sm-12 col-xs-12 form-group">
-                    <label for="firstname"> Systemic Examination</label><br>
-                    <span ng-bind-html="sessionData.diagnosis.systemic_examination"></span>
-                    <textarea class="form-control" placeholder="Write.."  ng-model="edit.systemic_examination"></textarea>
+                    <label for="firstname"> Systemic Examination:</label><br>
+                    <blockquote ng-bind-html="sessionData.diagnosis.systemic_examination" class="pt-0"></blockquote>
+                    <textarea class="form-control" placeholder="Write.."  ng-model="edit.systemic_examination" ng-keyup="autoExpand($event)" id="textarea"></textarea>
                   </div>
 
                    <div class="col-md-12  col-sm-12 col-xs-12 form-group">
-                    <label for="firstname">Diagnosis</label><br>
-                    <span ng-bind-html="sessionData.diagnosis.final_diagnosis"></span>
-                    <textarea class="form-control" placeholder="Write.." ng-model="edit.final_diagnosis"></textarea>
+                    <label for="firstname">Diagnosis:</label><br>
+                    <blockquote ng-bind-html="sessionData.diagnosis.final_diagnosis" class="pt-0"></blockquote>
+                    <textarea class="form-control" placeholder="Write.." ng-model="edit.final_diagnosis" ng-keyup="autoExpand($event)" id="textarea"></textarea>
                   </div>
                           
               </div>
                <div class="col-md-12  col-sm-12 col-xs-12 form-group" ng-if="!isMain && isReportView"> <!-- break by ng if-->
-                <h5 class="" style="font-weight:300;">Medical Report</h5> 
-                <label>Write report based on overall findings</label>
+                <i class="fa fa-times p-2 text-muted" style="float: right;font-size: 18px;" ng-click="close()"></i>
+                <!--<label>Final Diagnosis:</label>
+                <span ng-bind-html="sessionData.diagnosis.final_diagnosis"></span>
+                <input type="text" ng-model="edit.final_diagnosis" placeholder="Write..." class="form-control"><br>-->
+                <h6>Write report based on overall findings below:</h6>
                 <span ng-bind-html="sessionData.diagnosis.medical_report"></span>
-                <textarea class="form-control" placeholder="Write.." style="height: 300px" ng-model="edit.medical_report"></textarea>
-              </div>         
+                <textarea class="form-control" placeholder="Write.."  ng-model="edit.medical_report" ng-keyup="autoExpand($event)" id="textarea"></textarea><br>
 
+                 <button ng-click="saveChanges()" ng-if="isChanges" class="btn btn-primary"> <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i>{{(loading) ? "" : "Save changes"}}</button>&nbsp;&nbsp;
+                <i class="fa fa-check  text-success" style="font-size: 18px" ng-if="updateMsg"> {{updateMsg}}</i>
+              </div>         
+              <hr>
                <div ng-if="isSubView"> <!-- break by ng if-->
-                  <h6>Follow-up on {{subDate | date : "fullDate"}}</h6><br>
-                  <!--<label>Note: </label><br>-->
-                  <span ng-bind-html="subNote" style="margin-top: -20px"></span>
-                  <h6 ng-if="subTests">Investigation Requested: </h6>              
+                  <label class="mr-2">Follow-Up on {{subRecord.date | date : "fullDate"}} 
+                   
+                  </label> <a href="" ng-if="!medReport.report" class="btn btn-success btn-sm" ng-click="reportView()" style="font-size: 14px"> &nbsp;<i class="fa fa-pencil"></i> Write report</a>
+                  
+                  <hr>
+                  <div>
+                      <label>Note:</label>
+                      <blockquote ng-bind-html="subRecord.note" class="pt-0"></blockquote>
+                  </div>
+
+                  <div>
+                    <label ng-if="subTests">Investigation Requested: </label>             
                     <div ng-repeat="test in subTests | orderBy: '-sent_date'" class="pb-1">
                       <div style="" ng-if="test.center_name">
                          <strong> Ran by : </strong>{{test.center_name}}                          
@@ -845,7 +868,7 @@
                       </div>
                      
                       <div>  
-                        <label style="border-bottom: 2px solid orange">Investigation</label> 
+                        <label>Investigation: </label> 
                         <div class="pl-1" ng-if="test.ranTest.length > 0">
                             <span ng-repeat="rantest in test.ranTest" style="display: block;padding-top: 3px"><span ng-if="rantest.sn"> {{rantest.sn}}) </span> {{rantest.name}} </span>
                         </div>
@@ -854,7 +877,7 @@
                         </ol>           
                       </div>
                       <div class="pt-1">
-                          <label  style="border-bottom: 2px solid orange">Report</label>
+                          <label>Report:</label>
                       </div>
                       <div ng-if="test.conclusion !== 'Pending'" >
                           <div ng-repeat = "result in test.report">                        
@@ -871,17 +894,42 @@
                           <strong> <i class="fa fa-file-o"></i> {{test.files.length}} files  attached&nbsp;&nbsp;&nbsp; <a href="" ng-if="test.files.length > 0">view</a></strong>
                       </div>
                         <hr class="text-muted">
+                    </div>
                   </div>
+                  <div>
+                      <label>General Examination:</label>
+                      <blockquote ng-bind-html="subRecord.general" class="pt-0"></blockquote>
+                  </div>
+                  <div>
+                      <label>Systemic Examination:</label>
+                      <blockquote ng-bind-html="subRecord.systemic" class="pt-0"></blockquote>
+                  </div>
+                  <div>
+                      <label>Final Diagnosis:</label>
+                      <blockquote ng-bind-html="subRecord.diagnosis" class="pt-0"></blockquote>
+                  </div>
+                  <div ng-if="medReport.report">
+                      <label>Report:</label>
+                      <blockquote ng-bind-html="medReport.report" class="pt-0"></blockquote>
+                  </div>
+                  
+
+                  <!--<div form-group" ng-if="isReportView"> 
+                   
+                    <label>Final Diagnosis:</label>
+                    <span ng-bind-html="sessionData.diagnosis.final_diagnosis"></span>
+                    <input type="text" ng-model="edit.final_diagnosis" placeholder="Write..." class="form-control"><br>
+                    <label>Write report based on overall findings:</label>
+                    <span ng-bind-html="sessionData.diagnosis.medical_report"></span>
+                    <textarea class="form-control" placeholder="Write.." style="height: 300px" ng-model="edit.medical_report" ng-keyup="autoExpand($event)" id="textarea"></textarea>
+                  </div>-->     
                   <div ng-if="loading">
                       <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange" ng-if="loading"></i>
                   </div>
-
-
-              
-               </div>       
+               </div>     
 
                <div style="text-align: right; margin: 20px 20px 0 0;" ng-if="!isSubView">
-                <button ng-click="saveChanges()" ng-if="isChanges && !updateMsg" class="btn btn-primary"> <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i>{{(loading) ? "" : "Save changes"}}</button>&nbsp;&nbsp;
+                <button ng-click="saveChanges()" ng-if="isChanges" class="btn btn-primary"> <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i>{{(loading) ? "" : "Save changes"}}</button>&nbsp;&nbsp;
                 <i class="fa fa-check  text-success" style="font-size: 18px" ng-if="updateMsg"> {{updateMsg}}</i>
               </div>
             </form>
@@ -890,22 +938,22 @@
             <div class="clearfix"></div>
            
 
-            <div class="col-md-12 col-sm-12 col-xs-12" ng-if="isInvestigation">             
-                <h6>Investigation</h6><br>
+            <div ng-if="isInvestigation" style="margin-top: -40px">             
+                <h6>Investigation</h6>
                 <button class="btn btn-neutral btn-sm"  ng-click="newLab()"><i class="fa fa-pencil"></i> New Laboratory Request</button>
                 <button class="btn btn-neutral btn-sm"  ng-click="newRadio()" style="margin-right: 5px"><i class="fa fa-pencil"></i> New Radiology Request</button>
-                <a href="" class="btn btn-neutral btn-sm" ng-click="laboratory()">Laboratory Reports </a>
-                <a href="" class="btn btn-neutral btn-sm" ng-click="radiology()">Radiology Reports</a>
+                <a href="" class="btn btn-neutral btn-sm" ng-click="laboratory()">Previous Laboratory</a>
+                <a href="" class="btn btn-neutral btn-sm" ng-click="radiology()">Previous Radiology</a>
                 <hr>
             </div>
 
 
             <div class="p-2" ng-if="isLab && !isSubView">
                 <h6>Laboratory Report(s)</h6>
-                 <div ng-repeat="test in testResult | orderBy: '-sent_date'" class="pb-2">
-                      <div style="text-align: center">
-                         <h5 class="mt-2 mb-1">{{test.center_name}}</h5> 
-                         <div>{{test.center_address}} {{test.center_city}} {{test.center_country}}</div>
+                 <div ng-repeat="test in testResult | orderBy: '-sent_date'" class="pb-1">
+                      <div ng-if="test.center_name">
+                         <label class="mt-2 mb-1">Center name: </label> <span>{{test.center_name}}</span><br>
+                         <label>Address: </label> <span>{{test.center_address}} {{test.center_city}} {{test.center_country}}</span>
                       </div>
                    
                       <div> 
@@ -916,7 +964,7 @@
                       </div>
                      
                       <div>  
-                        <label style="border-bottom: 2px solid orange">Investigation</label> 
+                        <label>Investigations:</label><br>
                         <div class="pl-1" ng-if="test.ranTest.length > 0">
                             <span ng-repeat="rantest in test.ranTest" style="display: block;padding-top: 3px"><span ng-if="rantest.sn"> {{rantest.sn}}) </span> {{rantest.name}} </span>
                         </div>
@@ -925,7 +973,7 @@
                         </div>                     
                       </div>
                       <div class="pt-1">
-                          <label  style="border-bottom: 2px solid orange">Report</label>
+                          <label>Report:</label><br>
                           <p style="margin-top: 50px" ng-if="test.conclusion === 'Pending'">Awaiting investigation reports</p>
                           <div ng-if="test.conclusion !== 'Pending'" >
                             <div ng-repeat = "result in test.report">                        
@@ -947,10 +995,10 @@
 
             <div class="p-2" ng-if="isScan && !isSubView">
                 <h6>Radiology Report(s)</h6>                
-                  <div ng-repeat="test in testResult | orderBy: '-sent_date'" class="pb-2">
-                      <div style="text-align: center">
-                         <h5 class="mt-2 mb-0">{{test.center_name}}</h5> 
-                         <div>{{test.center_address}} {{test.center_city}} {{test.center_country}}</div>
+                  <div ng-repeat="test in testResult | orderBy: '-sent_date'" class="pb-1">
+                      <div ng-if="test.center_name">
+                         <label class="mt-2 mb-1">Center name: </label> <span>{{test.center_name}}</span><br>
+                         <label>Address: </label> <span>{{test.center_address}} {{test.center_city}} {{test.center_country}}</span>
                       </div>
                    
                       <div> 
@@ -961,7 +1009,7 @@
                       </div>
                      
                       <div>  
-                        <label style="border-bottom: 2px solid orange">Investigation</label> 
+                        <label>Investigation: </label> <br>
                         <div class="pl-1" ng-if="test.ranTest.length > 0">
                             <span ng-repeat="rantest in test.ranTest" style="display: block;padding-top: 3px"><span ng-if="rantest.sn"> {{rantest.sn}}) </span> {{rantest.name}} </span>
                         </div>
@@ -970,7 +1018,7 @@
                         </ol>           
                       </div>
                       <div class="pt-1">
-                          <label  style="border-bottom: 2px solid orange">Report</label>
+                          <label>Report: </label><br>
                           <p style="margin-top: 50px" ng-if="test.conclusion === 'Pending'">Awaiting investigation reports</p>
                           <div ng-if="test.conclusion !== 'Pending'" >
                             <div ng-repeat = "result in test.report">                        
@@ -998,7 +1046,7 @@
             <div class="p-2" ng-if="isNewLab && !isSubView" ng-controller="investigationController">
                 <section ng-show="!isSearchToSend">  
                     <h6>New Laboratory Test </h6><br>
-                    <table style="width: 78%">
+                    <!-- <table style="width: 100%">
                      
                         <thead>
                             <th style="width: 5%"></th>
@@ -1012,34 +1060,43 @@
                             </td>                                                              
                         </tbody>
                                               
-                    </table>
+                    </table>-->
+                    <div>
+                       <label>Test name: </label>
+                    </div>
+                    <div ng-repeat="lab in TestList">
+                        <label>{{lab.sn}} </label><br>
+                        <input  type="text" placeholder="Enter test name"  ng-model="test.name" uib-typeahead="test.name for test in tests | filter:$viewValue | limitTo:15" class="form-control" >
+                        {{getTest(test.name)}} 
+                    </div>
+
                     <div style="text-align: right">
-                        <i class="fa fa-plus btn btn-simple round" style="font-size:16px;color:green;padding: 10px; cursor:pointer; margin-right: 5px" title="Add field" ng-click="addTest()"></i>
-                            <i class="fa fa-minus btn btn-simple round" style="font-size:16px;color:green;padding: 10px; cursor:pointer; margin-right: 5px" title="Remove last field" ng-click="removeTest()"></i>
+                        <i class="fa fa-plus" style="font-size:14px;margin-right: 10px;cursor: pointer;" title="Add field" ng-click="addTest()"> Add</i>
+                            <i class="fa fa-minus" style="font-size: 14px;cursor: pointer;" title="Remove last field" ng-click="removeTest()"> Remove</i>
+                    </div>
+                    
+                    <div>
+                        <label>Indication:</label>
+                        <textarea  placeholder="Write.." ng-model="treatment.indication" class="form-control pl-2" ng-keyup="autoExpand($event)" id="textarea"></textarea>
                     </div>
                     <div>
-                        <div>
-                            <label>Indication:</label>
-                            <textarea  style="width: 80%;height: 120px;" placeholder="Write.." ng-model="treatment.indication" class="form-control pl-2"></textarea>
-                        </div>
-                        <div>
-                            <label>Clinical Summary:</label>
-                            <textarea style="width: 80%;height: 120px" placeholder="Write.." ng-model="treatment.clinical_summary" class="form-control pl-2"></textarea>
-                        </div>
-                         <div ng-if="patientInfo.gender === 'female'">
-                            <label>LMP:</label>
-                            <textarea style="width: 80%;height: 120px" placeholder="Write.." ng-model="treatment.lmp" class="form-control pl-2"></textarea>
-                        </div>
-                         <div ng-if="patientInfo.gender === 'female'">
-                            <label>Parity:</label>
-                            <textarea style="width: 80%;height: 120px" placeholder="Write.." ng-model="treatment.parity" class="form-control pl-2"></textarea>
-                        </div>
+                        <label>Clinical Summary:</label>
+                        <textarea placeholder="Write.." ng-model="treatment.clinical_summary" class="form-control pl-2" ng-keyup="autoExpand($event)" id="textarea"></textarea>
                     </div>
+                     <div ng-if="patientInfo.gender === 'female'">
+                        <label>LMP:</label>
+                        <textarea  placeholder="Write.." ng-model="treatment.lmp" class="form-control pl-2" ng-keyup="autoExpand($event)" id="textarea"></textarea>
+                    </div>
+                     <div ng-if="patientInfo.gender === 'female'">
+                        <label>Parity:</label>
+                        <textarea  placeholder="Write.." ng-model="treatment.parity" class="form-control pl-2" ng-keyup="autoExpand($event)" id="textarea"></textarea>
+                    </div>
+                    
                     
                     <div>
                         <!--<button class="btn btn-success" bg-click="sendToPatient()">to Patient</button>-->
                         <div>
-                            <button class="btn btn-success" ng-click="sendToLab()">continue</button>
+                            <button class="btn btn-success" ng-click="sendToLab()">Continue</button>
                         </div>
                     </div>
                 </section>
@@ -1088,51 +1145,56 @@
 
                 -->
 
-                <div ng-if="isSearchToSend">
-                    <a href="" ng-click="goBack()"><i class="fa fa-arrow-left"></i> Back</a> 
-                    <div>
-                       <form>
-                           <input type="text" name="city" ng-model="treatment.city" placeholder="City" class="form-control" style="width: 40%;display: inline-block;">
-                           <input type="text" name="country" ng-model="treatment.country" placeholder="Country" class="form-control" style="width: 40%;display: inline-block;">
-                           <input type="button" ng-click="changeOption()" class="btn btn-primary" value="search">
-                       </form>
-                       <hr>
-                       <div class="row ">
-                            <div class="col-sm-12 col-md-7 col-lg-7" style="padding-left: 0">
-                                <div style="padding-left: 0">
-                                    <input type="text" name="" ng-model="filterResult" placeholder="Filter centers" class="form-control">
-                               </div>
-                               <div style="overflow-y: auto; height: 400px;padding-left:0 ">                                 
+                <div ng-if="isSearchToSend" style="margin-top: -15px">                    
+                    
+                   <a href="" ng-click="goBack()"><i class="fa fa-arrow-left"></i> Back</a> 
+                  
+                 
+                   <section class="row">
+                        <section class="col-sm-12 col-md-7 col-lg-7 p-1">
+                            <form ng-submit="changeOption()">
+                               <input type="text" ng-model="treatment.city" placeholder="City" class="form-control" uib-typeahead="city for city in cities | filter:$viewValue | limitTo:15" style="display: inline-block;width: 70%">
+                               <!--<input type="text" name="country" ng-model="treatment.country" placeholder="Country" class="form-control" style="width: 40%;display: inline-block;">-->
+                               <input type="submit" class="btn btn-primary btn-sm" value="Search">
+                           </form>
+                           <hr>
+                           <label ng-if="searchResult.length > 0">Choose a center below</label><br>
+                           <section ng-if="searchResult.length > 5">
+                                <input type="text" name="" ng-model="filterResult" placeholder="Filter centers" class="form-control">
+                           </section>
+                                                      
 
-                                   <div ng-repeat="center in searchResult | filter: filterResult" style="padding:10px;border-bottom: 1px solid rgba(0,0,0,0.1)">
-                                       <a href="" ng-click="selected(center)">{{center.name}}<span style="display: block">{{center.address}},{{center.city}},{{center.country}}</span></a>
-                                   </div> 
+                           <section ng-repeat="center in searchResult | filter: filterResult" style="padding:10px;border-bottom: 1px solid rgba(0,0,0,0.1)">
+                               <a href="" ng-click="selected(center)" style="font-weight: 400;color: green"><b>{{center.name}}</b><br><span>{{center.address}},{{center.city}},{{center.country}}</span></a>
+                           </section>
+                           <section style="text-align: center;">
+                            <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange;font-size: 24px;margin-top: 35px" ng-if="loading"></i>   
+                            </section>                          
+                            
+                        </section>
+                        <section class="col-sm-12 col-md-5 col-lg-5 p-1">
 
-                                    <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange;font-size: 24px;margin-top: 35px" ng-if="loading"></i>                              
-                                </div>
+                           <h6 style="background-color: #d7dde4;padding: 10px">Selected Center</h6>
+                            
+                           <section  style="line-height: 30px;">
+                                    <strong style="display: block;margin-top: 5px;">{{pickedCenter.name}}</strong>
+                                    <span style="display: block"><i class="fa fa-globe" ng-if="pickedCenter.address"></i> {{pickedCenter.address}} {{pickedCenter.city}} {{pickedCenter.country}}</span>
+                                    <span style="display: block;margin-bottom: 5px"><i class="fa fa-phone" ng-if="pickedCenter.phone"></i> {{pickedCenter.phone}}</span>
+                            </section>
+                            <p ng-if="!pickedCenter" class="text-danger" style="text-align: center;padding: 10px">none</p>
+
+                            <h6 style="padding: 7px;background-color: #d7dde4;padding: 10px">Availability <small class="updateInfo" ng-class="{'text-danger': status === 'Not Updated!'}">{{status}}</small></h6>
+                            
+                            <a href="" ng-repeat="d in TestList" style="display: block;margin-top: 10px;padding-left: 5px">
+                                <span ng-class="{'notAvail': d.available === false}">{{d.name}} &nbsp;<span style="font-size: 8px" ng-if="d.available === true">available</span></span>
+                            </a>
+
+                            <div style="padding: 20px;text-align: center;">
+                                <button class="btn btn-success form-control" ng-click="sendTest()" ng-if="pickedCenter"> <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="isLoading"></i> {{(isLoading) ? "" : (message) ? message : 'Send'}}</button>
                             </div>
-                            <div class="col-sm-12 col-md-5 col-lg-5" style="padding: 2px">
-
-                                <div style="background-color: #d7dde4;padding: 3px 7px 5px"><b>Selected Center</b></div>
-                                
-                               <div class="pl-2" style="line-height: 30px">
-                                        <strong style="display: block;margin-top: 5px">{{pickedCenter.name}}</strong>
-                                        <span style="display: block"><i class="fa fa-globe" ng-if="pickedCenter.address"></i> {{pickedCenter.address}} {{pickedCenter.city}} {{pickedCenter.country}}</span>
-                                        <span style="display: block;margin-bottom: 5px"><i class="fa fa-phone" ng-if="pickedCenter.phone"></i> {{pickedCenter.phone}}</span>
-                                </div>
-
-                                <div style="padding: 7px;background-color: #d7dde4;"> <b>Investigation Availability</b> <small class="updateInfo" ng-class="{'text-danger': status === 'Not Updated!'}">{{status}}</small></div>
-                                
-                                <span ng-repeat="d in TestList" style="display: block;margin-top: 10px;padding-left: 5px">
-                                    <span ng-class="{'notAvail': d.available === false}">{{d.name}} &nbsp;<span style="font-size: 8px" ng-if="d.available === true">available</span></span>
-                                </span>
-
-                                <div style="padding: 20px;text-align: center;">
-                                    <button class="btn btn-success form-control" ng-click="sendTest()" ng-if="pickedCenter"> <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="isLoading"></i> {{(isLoading) ? "" : (message) ? message : 'Send'}}</button>
-                                </div>
-                            </div>                               
-                       </div>                           
-                    </div>
+                        </section>                              
+                   </section>                           
+                    
                 </div>     
             </div> 
 
@@ -1141,7 +1203,7 @@
              <div class="p-2" ng-if="isNewRadio && !isSubView" ng-controller="investigationController">
                 <section ng-show="!isSearchToSend">             
                     <h6>New Radiology Test</h6><br>
-                    <table style="width: 78%">
+                    <!--<table style="width: 78%">
                      
                         <thead>
                             <th style="width: 5%"></th>
@@ -1155,29 +1217,39 @@
                             </td>                                                              
                         </tbody>
                                               
-                    </table>
+                    </table>-->
+                    <div>
+                       <label>Test name: </label>
+                    </div>
+                    <div ng-repeat="lab in TestList">
+                        <label>{{lab.sn}} </label><br>
+                        <input  type="text" placeholder="Enter test name"  ng-model="test.name" uib-typeahead="test.name for test in tests | filter:$viewValue | limitTo:15" class="form-control" >
+                        {{getTest(test.name)}} 
+                    </div>
+
                     <div style="text-align: right">
-                        <i class="fa fa-plus btn btn-simple round" style="font-size:16px;color:green;padding: 10px; cursor:pointer; margin-right: 5px" title="Add field" ng-click="addTest()"></i>
-                            <i class="fa fa-minus btn btn-simple round" style="font-size:16px;color:green;padding: 10px; cursor:pointer; margin-right: 5px" title="Remove last field" ng-click="removeTest()"></i>
+                        <i class="fa fa-plus" style="font-size:14px;margin-right: 10px;cursor: pointer;" title="Add field" ng-click="addTest()"> Add</i>
+                            <i class="fa fa-minus" style="font-size: 14px;cursor: pointer;" title="Remove last field" ng-click="removeTest()"> Remove</i>
+                    </div>
+                    
+                    
+                    <div>
+                        <label>Indication:</label>
+                        <textarea  placeholder="Write.." ng-model="treatment.indication" class="form-control pl-2" ng-keyup="autoExpand($event)" id="textarea"></textarea>
                     </div>
                     <div>
-                        <div>
-                            <label>Indication:</label>
-                            <textarea  style="width: 80%;height: 120px;" placeholder="Write.." ng-model="treatment.indication" class="form-control pl-2"></textarea>
-                        </div>
-                        <div>
-                            <label>Clinical Summary:</label>
-                            <textarea style="width: 80%;height: 120px" placeholder="Write.." ng-model="treatment.clinical_summary" class="form-control pl-2"></textarea>
-                        </div>
-                         <div ng-if="patientInfo.gender === 'female'">
-                            <label>LMP:</label>
-                            <textarea style="width: 80%;height: 120px" placeholder="Write.." ng-model="treatment.lmp" class="form-control pl-2"></textarea>
-                        </div>
-                         <div ng-if="patientInfo.gender === 'female'">
-                            <label>Parity:</label>
-                            <textarea style="width: 80%;height: 120px" placeholder="Write.." ng-model="treatment.parity" class="form-control pl-2"></textarea>
-                        </div>
+                        <label>Clinical Summary:</label>
+                        <textarea  placeholder="Write.." ng-model="treatment.clinical_summary" class="form-control pl-2" ng-keyup="autoExpand($event)" id="textarea"></textarea>
                     </div>
+                     <div ng-if="patientInfo.gender === 'female'">
+                        <label>LMP:</label>
+                        <textarea  placeholder="Write.." ng-model="treatment.lmp" class="form-control pl-2" ng-keyup="autoExpand($event)" id="textarea"></textarea>
+                    </div>
+                     <div ng-if="patientInfo.gender === 'female'">
+                        <label>Parity:</label>
+                        <textarea  placeholder="Write.." ng-model="treatment.parity" class="form-control pl-2" ng-keyup="autoExpand($event)" id="textarea"></textarea>
+                    </div>
+                   
 
                     <div>
                         <!--<button class="btn btn-success" bg-click="sendToPatient()">to Patient</button>-->
@@ -1187,9 +1259,10 @@
                     </div>
 
                 </section>
-                <div ng-if="isSearchToSend">
+
+                <div ng-if="isSearchToSend" style="margin-top: -15px">
                     <a href="" ng-click="goBack()"><i class="fa fa-arrow-left"></i> Back</a> 
-                    <div>
+                    <!--<div>
                        <form>
                            <input type="text" name="city" ng-model="treatment.city" placeholder="City" class="form-control" style="width: 40%;display: inline-block;">
                            <input type="text" name="country" ng-model="treatment.country" placeholder="Country" class="form-control" style="width: 40%;display: inline-block;">
@@ -1231,7 +1304,51 @@
                                 </div>
                             </div>                               
                        </div>                           
-                    </div>
+                    </div>-->
+                     <section class="row">
+                        <section class="col-sm-12 col-md-7 col-lg-7 p-1">
+                            <form ng-submit="changeOption()">
+                               <input type="text" ng-model="treatment.city" placeholder="City" class="form-control" uib-typeahead="city for city in cities | filter:$viewValue | limitTo:15" style="display: inline-block;width: 70%">
+                               <!--<input type="text" name="country" ng-model="treatment.country" placeholder="Country" class="form-control" style="width: 40%;display: inline-block;">-->
+                               <input type="submit" class="btn btn-primary btn-sm" value="Search">
+                           </form>
+                           <hr>
+                           <label ng-if="searchResult.length > 0">Choose a center below</label><br>
+                           <section ng-if="searchResult.length > 5">
+                                <input type="text" name="" ng-model="filterResult" placeholder="Filter centers" class="form-control">
+                           </section>
+                                                      
+
+                           <section ng-repeat="center in searchResult | filter: filterResult" style="padding:10px;border-bottom: 1px solid rgba(0,0,0,0.1)">
+                               <a href="" ng-click="selected(center)" style="font-weight: 400;color: green"><b>{{center.name}}</b><br><span>{{center.address}},{{center.city}},{{center.country}}</span></a>
+                           </section>
+                           <section style="text-align: center;">
+                            <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange;font-size: 24px;margin-top: 35px" ng-if="loading"></i>   
+                            </section>                          
+                            
+                        </section>
+                        <section class="col-sm-12 col-md-5 col-lg-5 p-1">
+
+                           <h6 style="background-color: #d7dde4;padding: 10px">Selected Center</h6>
+                            
+                           <section  style="line-height: 30px;">
+                                    <strong style="display: block;margin-top: 5px;">{{pickedCenter.name}}</strong>
+                                    <span style="display: block"><i class="fa fa-globe" ng-if="pickedCenter.address"></i> {{pickedCenter.address}} {{pickedCenter.city}} {{pickedCenter.country}}</span>
+                                    <span style="display: block;margin-bottom: 5px"><i class="fa fa-phone" ng-if="pickedCenter.phone"></i> {{pickedCenter.phone}}</span>
+                            </section>
+                            <p ng-if="!pickedCenter" class="text-danger" style="text-align: center;padding: 10px">none</p>
+
+                            <h6 style="padding: 7px;background-color: #d7dde4;padding: 10px">Availability <small class="updateInfo" ng-class="{'text-danger': status === 'Not Updated!'}">{{status}}</small></h6>
+                            
+                            <a href="" ng-repeat="d in TestList" style="display: block;margin-top: 10px;padding-left: 5px">
+                                <span ng-class="{'notAvail': d.available === false}">{{d.name}} &nbsp;<span style="font-size: 8px" ng-if="d.available === true">available</span></span>
+                            </a>
+
+                            <div style="padding: 20px;text-align: center;">
+                                <button class="btn btn-success form-control" ng-click="sendTest()" ng-if="pickedCenter"> <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="isLoading"></i> {{(isLoading) ? "" : (message) ? message : 'Send'}}</button>
+                            </div>
+                        </section>                              
+                   </section>                         
                 </div>     
             </div>        
 

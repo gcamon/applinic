@@ -251,7 +251,7 @@
                                             
                                           
                                             <label style="font-weight:bold;font-size: 14px" class="text-capitalize">Management Plan? </label>
-                                            <textarea class="form-control" style="padding: 10px" cols="6" ng-model="user.introductory"></textarea>
+                                            <textarea class="form-control" style="padding: 10px" cols="6" ng-model="user.introductory" ng-keyup="autoExpand($event)" id="textarea"></textarea>
                                             <div class="p-2"></div>
                                             
                                             <div class="pt-2">

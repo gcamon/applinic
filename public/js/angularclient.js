@@ -4818,8 +4818,8 @@ app.controller("selectedAppointmentController",["$scope","$rootScope","$location
 
 
 app.controller("inTreatmentController",["$scope","$http","localManager","$location","$rootScope",
-  "templateService","$document","ModalService","Drugs","$filter",
-  function($scope,$http,localManager,$location,$rootScope,templateService,$document,ModalService,Drugs,$filter){
+  "templateService","$document","ModalService","Drugs","$filter","moment",
+  function($scope,$http,localManager,$location,$rootScope,templateService,$document,ModalService,Drugs,$filter,moment){
 
   $scope.sessionData = localManager.getValue("heldSessionData");
 
@@ -4900,11 +4900,12 @@ app.controller("inTreatmentController",["$scope","$http","localManager","$locati
   }
 
   $scope.subSession = function() {
+    if(input.check <= 1) { // this value is used below in watchers to check and prompt users to save changes made.
     $scope.isSubNote = true;
     $scope.isClerk = true;
     $scope.isMain = false;
     $scope.isSubView = false;
-    $scope.isInvestigation = true;
+    //$scope.isInvestigation = true;
     $scope.isPE = false;
     $scope.isReportView = false;
     $scope.isFollowups = false;
@@ -4913,12 +4914,19 @@ app.controller("inTreatmentController",["$scope","$http","localManager","$locati
     $scope.isScan = false;
     $scope.isNewRadio = false;
     $scope.isNewLab = false; 
+    $scope.isNote = false;
+    $scope.updateMsg = "";
+    $scope.edit = {};
+    } else {
+      alert("Please save changes before you can proceed.")
+    }
 
   }
 
   $scope.isClerk = true;
 
   $scope.clerk = function() {
+    if(input.check <= 1) { // this value is used below in watchers to check and prompt users to save changes made.
     $scope.isFollowups = false;
     $scope.isSubNote = false;
     $scope.isClerk = true;
@@ -4929,67 +4937,129 @@ app.controller("inTreatmentController",["$scope","$http","localManager","$locati
     $scope.isLab = false;
     $scope.isScan = false;
     $scope.isNewRadio = false;
-    $scope.isNewLab = false; 
+    $scope.isNewLab = false;
+    $scope.isNote = false;
+    $scope.updateMsg = "";
+    $scope.edit = {};
+    } else {
+      alert("Please save changes before you can proceed.")
+    }
+
   }
 
   $scope.FollowUpsView = function() {
-    $scope.isFollowups = true;
-    $scope.isSubNote = false;
-    $scope.isClerk = true;
-    $scope.isPE = false;
-    $scope.isReportView = false;
-    $scope.isMain = true;
-    $scope.isInvestigation = false;
-    $scope.isLab = false;
-    $scope.isScan = false;
-    $scope.isNewRadio = false;
-    $scope.isNewLab = false; 
+    if(input.check <= 1) { // this value is used below in watchers to check and prompt users to save changes made.
+      $scope.isFollowups = true;
+      $scope.isSubNote = false;
+      $scope.isClerk = true;
+      $scope.isPE = false;
+      $scope.isReportView = false;
+      $scope.isMain = true;
+      $scope.isInvestigation = false;
+      $scope.isLab = false;
+      $scope.isScan = false;
+      $scope.isNewRadio = false;
+      $scope.isNewLab = false; 
+      $scope.updateMsg = "";
+      $scope.isNote = false;
+      $scope.edit = {};
+    } else {
+      alert("Please save changes before you can proceed.")
+    }
   }
 
   $scope.investView = function(){
-    $scope.isInvestigation = true;
-    $scope.isFollowups = false;
-    $scope.isSubNote = false;
-    $scope.isClerk = true;
-    $scope.isPE = false;
-    $scope.isReportView = false;
-    $scope.isMain = false;
-    $scope.isSubView = false;
-    $scope.isLab = false;
-    $scope.isScan = false;
-    $scope.isNewRadio = false;
-    $scope.isNewLab = false; 
+    if(input.check <= 1) { // this value is used below in watchers to check and prompt users to save changes made.
+      $scope.isInvestigation = true;
+      $scope.isFollowups = false;
+      //$scope.isSubNote = false;
+      $scope.isClerk = true;
+      $scope.isPE = false;
+      $scope.isReportView = false;
+      $scope.isMain = false;
+      $scope.isSubView = false;
+      $scope.isLab = false;
+      $scope.isScan = false;
+      $scope.isNewRadio = false;
+      $scope.isNewLab = false; 
+      $scope.isNote = false;
+      $scope.updateMsg = "";
+    } else {
+      alert("Please save changes before you can proceed.")
+    }
+  }
+
+  $scope.takeNote = function(){
+    if(input.check <= 1) { // this value is used below in watchers to check and prompt users to save changes made.
+      $scope.isNote = true;
+      $scope.isPE = false;
+      $scope.isInvestigation = false;
+      $scope.isFollowups = false;
+      //$scope.isSubNote = false;
+      $scope.isClerk = true;
+      $scope.isMain = false;
+      $scope.isSubView = false;
+      $scope.isLab = false;
+      $scope.isScan = false;
+      $scope.isNewRadio = false;
+      $scope.isNewLab = false; 
+      $scope.isReportView = false;
+      $scope.updateMsg = "";
+      $scope.edit = {};
+    } else {
+      alert("Please save changes before you can proceed.")
+    }
   }
 
   $scope.reportView = function(){
+    /*if(input.check <= 1) { // this value is used below in watchers to check and prompt users to save changes made.
+      $scope.isReportView = true;
+      $scope.isPE = false;
+      $scope.isInvestigation = false;
+      $scope.isFollowups = false;
+      $scope.isSubNote = false;
+      $scope.isClerk = true;
+      $scope.isMain = false;
+      $scope.isSubView = false;
+      $scope.isLab = false;
+      $scope.isScan = false;
+      $scope.isNewRadio = false;
+      $scope.isNewLab = false; 
+      $scope.isNote = false;
+      $scope.updateMsg = "";
+    } else {
+      alert("Please save changes before you can proceed.")
+    }*/
     $scope.isReportView = true;
-    $scope.isPE = false;
-    $scope.isInvestigation = false;
-    $scope.isFollowups = false;
-    $scope.isSubNote = false;
-    $scope.isClerk = true;
-    $scope.isMain = false;
-    $scope.isSubView = false;
-    $scope.isLab = false;
-    $scope.isScan = false;
-    $scope.isNewRadio = false;
-    $scope.isNewLab = false; 
+  }
+
+  $scope.close = function() {
+    $scope.isReportView = false;
+    $scope.edit = {};
+    input.check = 0;
   }
 
 
   $scope.peView = function(){
-    $scope.isPE = true;
-    $scope.isReportView = false;
-    $scope.isInvestigation = false;
-    $scope.isFollowups = false;
-    $scope.isSubNote = false;
-    $scope.isClerk = true;
-    $scope.isMain = false;
-    $scope.isSubView = false;
-    $scope.isLab = false;
-    $scope.isScan = false;
-    $scope.isNewRadio = false;
-    $scope.isNewLab = false; 
+    if(input.check <= 1) { // this value is used below in watchers to check and prompt users to save changes made.
+      $scope.isPE = true;
+      $scope.isReportView = false;
+      $scope.isInvestigation = false;
+      $scope.isFollowups = false;
+      //$scope.isSubNote = false;
+      $scope.isClerk = true;
+      $scope.isMain = false;
+      $scope.isSubView = false;
+      $scope.isLab = false;
+      $scope.isScan = false;
+      $scope.isNewRadio = false;
+      $scope.isNewLab = false; 
+      $scope.isNote = false;
+      $scope.updateMsg = "";
+      $scope.edit = {};
+    } else {
+      alert("Please save changes before you can proceed.");
+    }
   }
 
   
@@ -5022,6 +5092,8 @@ app.controller("inTreatmentController",["$scope","$http","localManager","$locati
     $scope.isSubNote = false;
     $scope.isSubView = true;
     item.status = true;
+    $scope.isFollowups = true;
+   // $scope.edit = {};
     getContinuationData(item.sub_session_id)
     
   }
@@ -5037,11 +5109,12 @@ app.controller("inTreatmentController",["$scope","$http","localManager","$locati
   function getContinuationData(id) {
     var subList = $scope.sessionData.diagnosis.sub_session;
     //var testList = $scope.sessionData.diagnosis.laboratory_test_results.concat($scope.sessionData.diagnosis.radiology_test_results);
-    
+    $scope.subId = id;
     var elementPos = subList.map(function(x){return x.sub_session_id}).indexOf(id);
-    if(elementPos)
+    /*if(elementPos)
       $scope.subDate =  subList[elementPos].date;
-      $scope.subNote = subList[elementPos].note;
+      $scope.subNote = subList[elementPos].note;*/
+    $scope.subRecord = subList[elementPos]; 
     $scope.loading = true;
     $http.put("/user/doctor/get-scan-result",{
       id : $scope.sessionData.session_id
@@ -5058,15 +5131,27 @@ app.controller("inTreatmentController",["$scope","$http","localManager","$locati
             allTests.push(testList[i]);
           }
         }
-
-        $scope.loading = false;
-        
-        $scope.subTests = allTests;
-        console.log(allTests)
-       
+        $scope.loading = false;        
+        $scope.subTests = allTests;       
       })
-    })
+    });
+    console.log($scope.subRecord);
+    $scope.getReportForSub(id)
 
+  }
+
+  $scope.getReportForSub = function(id) {
+    $http({
+      method  : 'GET',
+      url     : "/user/doctor/get-report?sessionId=" 
+      + $scope.sessionData.session_id + "&patientId=" + $scope.sessionData.patient_id 
+      + "&subSessionId=" + id,
+      headers : {'Content-Type': 'application/json'} 
+      })
+    .success(function(res) {
+      console.log(res)
+      $scope.medReport = res;
+    });           
   }
   
  function investigation(url)  {
@@ -5322,36 +5407,55 @@ app.controller("inTreatmentController",["$scope","$http","localManager","$locati
     }
   }*/
 
-  var check = 0;// scope watch count to show save changes button on ui this is bcos newVal is set when the controller is initialized.
+  var input = {
+    check : 0
+  }// scope watch count to show save changes button on ui this is bcos newVal is set when the controller is initialized.
   //when count is 2 the watch should display the save changes button on the ui.
   
-  $scope.$watch("edit",function(newVal,oldVal){
-    check++;
+  $scope.$watch("edit",function(newVal,oldVal){  
     if($scope.updateMsg)
       $scope.updateMsg = "";
 
-    if(check > 1) 
+    if(input.check > 0) 
       $scope.isChanges = true;
+
+    input.check++;    
   },true);
 
   $scope.saveChanges = function () {    
-  
+    input.check = 1;
     var filter = {};
 
     for(var i in $scope.edit) {
       if($scope.edit.hasOwnProperty(i) && typeof $scope.edit[i] !== "object" && $scope.edit[i] !== "" && $scope.edit[i] !== undefined) {
-        filter[i] = ($scope.edit[i]) ? (!$scope.isSubNote) ? "<br><font color='green' weight='bold'> " +
+        filter[i] = ($scope.edit[i]) ? (!lessThan24HourAgo()) ? "<br><font color='green' weight='bold'> " +
          edit.date + " </font>:  " + $scope.edit[i] : "<br><font color='grey' weight='bold'> &nbsp;" +
           $scope.edit[i] + "</font>" : "";
       }
     }
 
     filter.session_id = $scope.sessionData.session_id;
-
-    if($scope.isSubNote) {
-      filter.subSession = true;
+   
+    filter.subSession = true;
+    if(!$scope.edit.medical_report) {
       filter.sub_session_id = $rootScope.sub_session_id;
+    } else {
+      if($scope.subId) {
+        filter.sub_session_id = $scope.subId;
+      } else {
+        filter.sub_session_id = $rootScope.sub_session_id;
+      }
     }
+    /*} else {
+      if($scope.sessionData.diagnosis.sub_session.length > 0) {
+        var prevSub = $scope.sessionData.diagnosis.sub_session[$scope.sessionData.diagnosis.sub_session.length - 1];
+        var prevSubId = prevSub.sub_session_id;
+        filter.sub_session_id = prevSubId;
+      } else {
+        filter.sub_session_id = $rootScope.sub_session_id;
+      }
+    }*/
+    
 
     filter.patient_id = patient.id;
     $scope.loading = true;
@@ -5364,13 +5468,36 @@ app.controller("inTreatmentController",["$scope","$http","localManager","$locati
     .success(function(data) {
       $scope.loading = false;
       if(data.success)
-        if(data.subSession)
-          $scope.sessionData.diagnosis.sub_session.push(data.subSession);
-        $scope.updateMsg = "Changes saved successfully!!!" ;
-        //alert("Changes saved successfully!!!");
-      if(data.error)
-        alert("Oops! Error occured. Changes not saved!,Try again");
+        if(data.subSession) {
+          //$scope.sessionData.diagnosis.sub_session.push(data.subSession);
+          var elem = $scope.sessionData.diagnosis.sub_session.map(function(x){return x.sub_session_id}).indexOf(data.subSession.sub_session_id)
+          if($scope.sessionData.diagnosis.sub_session[elem]){
+            if(data.subSession.note)
+              $scope.sessionData.diagnosis.sub_session[elem].note = data.subSession.note;
+            if(data.subSession.general)
+              $scope.sessionData.diagnosis.sub_session[elem].general = data.subSession.general;
+            if(data.subSession.systemic)
+              $scope.sessionData.diagnosis.sub_session[elem].systemic = data.subSession.systemic;
+            if(data.subSession.diagnosis)
+              $scope.sessionData.diagnosis.sub_session[elem].diagnosis = data.subSession.diagnosis;
+          } else {
+            if(!$scope.edit.medical_report) {
+              $scope.sessionData.diagnosis.sub_session.push(data.subSession)
+            } else {
+              $scope.getReportForSub($scope.subId)
+            }
+          }
+
+          $scope.updateMsg = "saved!" ;
+          $scope.isChanges = false;
+        } else {
+          alert("Oops! Error occured. Changes not saved!,Try again");
+        }               
     });         
+  }
+
+  var lessThan24HourAgo = function(date) {
+    return moment(date).isAfter(moment().subtract(24, 'hours'));
   }
 
 
@@ -5378,7 +5505,7 @@ app.controller("inTreatmentController",["$scope","$http","localManager","$locati
     var text = "";
     var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz01234567899966600555777222";
 
-      for( var i=0; i < 16; i++ )
+      for( var i=0; i < 20; i++ )
           text += possible.charAt(Math.floor(Math.random() * possible.length));
       return text;
   }
@@ -11572,7 +11699,6 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
     var p = angular.element(document.createElement('p'));
     var small = angular.element(document.createElement('small'));
     var fileElem;
-    console.log(data);
     switch(data.fileType){
       case 'image':        
         fileElem = angular.element(document.createElement('img'));
@@ -11580,7 +11706,6 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
         fileElem[0].alt = "loading image...";
         fileElem[0].style.maxWidth = "280px";
         fileElem[0].style.height = "220px";
-        //fileElem[0]["data-ng-click"] = $scope.create;
         imageArg = "imageClickEvt('" + data.url + "')";
         fileElem.attr('ng-click', imageArg);
         $compile(fileElem[0])($scope);
@@ -19200,8 +19325,10 @@ app.controller("emScanTestController",["$scope","$location","$http","$window","t
 
 }]);
 
-app.controller("topHeaderController",["$scope","$rootScope","$window","$location","$resource","localManager","mySocket","templateService","$timeout","$document","ModalService",
-  function($scope,$rootScope,$window,$location,$resource,localManager,mySocket,templateService, $timeout, $document, ModalService){
+app.controller("topHeaderController",["$scope","$rootScope","$window","$location","$resource",
+  "localManager","mySocket","templateService","$timeout","$document","ModalService", "cities",
+  function($scope,$rootScope,$window,$location,$resource,localManager,mySocket,templateService,
+   $timeout, $document, ModalService,cities){
 
 
 
@@ -19258,6 +19385,8 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
     }
     
   }
+
+  $rootScope.cities = cities;
 
   console.log(localManager.getValue("resolveUser"));
   
@@ -19455,6 +19584,16 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
       /// Reset the timeout
       TimeOut_Thread = $timeout(function(){ LogoutByTimer() } , TimeOutTimerValue);
   }
+
+  $rootScope.autoExpand = function(e) {
+        var element = typeof e === 'object' ? e.target : document.getElementById(e);
+        var scrollHeight = element.scrollHeight -60; // replace 60 by the sum of padding-top and padding-bottom
+        element.style.height =  scrollHeight + "px";    
+  };
+  
+ /* function expand() {
+    $scope.autoExpand('TextArea');
+  }*/
 
 }]);
 

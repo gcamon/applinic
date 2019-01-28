@@ -110,6 +110,8 @@
                     display: none;
                   }
 
+                  
+
                  
 
                 @media screen and (max-width: 1024px) {
@@ -977,36 +979,36 @@
                            
                             <div class="form-group">
                                 <label>Complaint: </label>
-                                <textarea class="form-control"  placeholder="write.." ng-model="patient.complain" ></textarea>
+                                <textarea class="form-control"  placeholder="write.." ng-model="patient.complain" ng-keyup="autoExpand($event)" id="textarea"></textarea>
                             </div>
 
                             <div class="form-group">
                                 <label>History of the complaint: </label>
-                                <textarea class="form-control" placeholder="write.." ng-model="patient.historyOfComplain"></textarea>
+                                <textarea class="form-control" placeholder="write.." ng-model="patient.historyOfComplain" ng-keyup="autoExpand($event)" id="textarea"></textarea>
                             </div>
                             <div class="form-group">
                                 <label>Past medical/Surgical history: </label>
-                                <textarea class="form-control" placeholder="write.." ng-model="patient.pastMedicalHistory"></textarea>
+                                <textarea class="form-control" placeholder="write.." ng-model="patient.pastMedicalHistory" ng-keyup="autoExpand($event)" id="textarea"></textarea>
                             </div>
                             <div class="form-group">
                                 <label>Social history: </label>
-                                <textarea class="form-control" placeholder="write.." ng-model="patient.socialHistory"></textarea>
+                                <textarea class="form-control" placeholder="write.." ng-model="patient.socialHistory" ng-keyup="autoExpand($event)" id="textarea"></textarea>
                             </div>
                             <div class="form-group">
                                 <label>Family history: </label>
-                                <textarea class="form-control" placeholder="write.." ng-model="patient.familyHistory"></textarea>
+                                <textarea class="form-control" placeholder="write.." ng-model="patient.familyHistory" ng-keyup="autoExpand($event)" id="textarea"></textarea>
                             </div>
                             <div class="form-group">
                                 <label>Drug history: </label>
-                                <textarea class="form-control" placeholder="write.." ng-model="patient.drugHistory"></textarea>
+                                <textarea class="form-control" placeholder="write.." ng-model="patient.drugHistory" ng-keyup="autoExpand($event)" id="textarea"></textarea>
                             </div>
                             <div class="form-group">
                                 <label>Summary: </label>
-                                <textarea class="form-control" placeholder="write.." ng-model="patient.summary"></textarea>
+                                <textarea class="form-control" placeholder="write.." ng-model="patient.summary" ng-keyup="autoExpand($event)" id="textarea"></textarea>
                             </div>
                             <div class="form-group">
                                 <label>Provisional Diagnosis: </label>
-                                <textarea class="form-control" placeholder="write.." ng-model="patient.provisionalDiagnosis"></textarea>
+                                <textarea class="form-control" placeholder="write.." ng-model="patient.provisionalDiagnosis" ng-keyup="autoExpand($event)" id="textarea"></textarea>
                             </div>
                         </fieldset>
                     </form>
