@@ -145,7 +145,7 @@
                 <th style="width: 20%">Last modified</th>
                 <th style="width: 15%">Action</th>
             </thead>
-            <tbody ng-repeat = "session in sessionData" ng-click="viewTreatmentSession(session)" ng-if="session">
+            <tbody ng-repeat = "session in sessionData" ng-click="viewTreatmentSession(session)" ng-if="session.date">
                 <td style="width: 20%">{{session.date | date : "mediumDate" }}</td>
                 <td style="width: 45%" ng-bind-html="session.diagnosis.presenting_complain || 'Empty'"></td>
                 <td style="width: 20%">{{session.last_modified | date : "mediumDate"}}</td>
