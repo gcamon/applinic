@@ -35,8 +35,9 @@
 	   	<input type="text" class="form-control" id="City" placeholder=" Enter Amount" ng-model="pay.amount" style="font-size: 14px!important">
 	   	<span style="color:red;display: block;">{{errorMsg}}</span>
 	  </div>
-	  <div class="mt-1" ng-if="isTransfer===true">
-	    <button class="btn btn-success" ng-click="confirm()"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i> {{(loading) ? "" : ' Send'}}</button>
+	  <div class="mt-1" ng-if="isTransfer">
+	    <button class="btn btn-success" ng-click="confirm()" ng-if="!loading">Send</button>
+	    <span ng-if="loading">Processing...</span>
 	  </div>
 </div>
 

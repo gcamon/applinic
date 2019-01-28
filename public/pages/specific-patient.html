@@ -422,7 +422,7 @@
         </div>
         <div  class="arrange-p">
             <!--<textarea class="form-control p-1" placeholder="Complain" ng-model="treatment.complain"></textarea>-->
-            <label><span>{{drugList.length + 1}} </span> Reason / Description for the prescription above (optional)</label><!--</span> Diagnosis ( Provisional or Final ) </label>-->
+            <label><span>{{drugList.length + 1}} </span> Reason / Description for the prescription(s) above (optional)</label><!--</span> Diagnosis ( Provisional or Final ) </label>-->
             <div class="pl-2">
                 <textarea class="form-control p-1"  placeholder="write..." ng-model="treatment.provisionalDiagnosis" ng-keyup="autoExpand($event)" id="textarea"></textarea>
             </div>
@@ -451,7 +451,7 @@
                                      
                 </div>
                 <div>
-                    <label>Diagnosis:</label>
+                    <label>Description:</label>
                      <small style="display: block;padding: 10px 0"> {{prescription.provisional_diagnosis || "N/A"}}</small>
                 </div>
                 <div>
