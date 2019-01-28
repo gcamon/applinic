@@ -19270,7 +19270,7 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
 
   $rootScope.autoExpand2 = function(e) {
         var element = typeof e === 'object' ? e.target : document.getElementById(e);
-        var scrollHeight = element.scrollHeight - 5; // replace 60 by the sum of padding-top and padding-bottom
+        var scrollHeight = element.scrollHeight - 1; // replace 60 by the sum of padding-top and padding-bottom
         element.style.height =  scrollHeight + "px";    
   };
   
