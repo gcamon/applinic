@@ -132,8 +132,8 @@
           </div>--> 
         </div> 
        <!-- Nav tabs -->
-       <div class="pl-3">
-        <h6 class="ml-2 pl-3 pt-3">Please select your user category below</h6>
+       <div class="pl-3 hidden-md-down">
+        <h6 class="ml-2 pl-3 pt-3">I AM A:</h6>
         <span class="inst ml-2 pl-3"></span>
         <ul class="nav nav-tabs ml-2" role="tablist">
           <li class="nav-item">
@@ -153,6 +153,34 @@
           </li>
           
         </ul>
+        </div>
+
+        <div class="pl-3 hidden-md-up">
+          <div class="dropdown">
+<div class="dropdown-backdrop"></div>
+<button class="btn btn-warning btn-block dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        Select Account Type
+    </button>
+    <div class="dropdown-menu col-md-12 p-0 mt-0" aria-labelledby="dropdownMenuButton">
+
+
+
+            <a class="dropdown-item"  href="" ng-click="userType('Patient','patient-signup')" ng-class="{'active': user.typeOfUser === 'Patient'}">I Am a Patient</a>
+    
+            <a class="dropdown-item"  href="" ng-click="userType('Doctor','doctor-signup')" ng-class="{'active': user.typeOfUser === 'Doctor'}">I Am a Doctor</a>
+          </li> 
+    
+            <a class="dropdown-item" ng-click="userType('Special Center','special-center-signup')"  href="" ng-class="{'active': user.typeOfUser === 'Special Center'}">I Am a Special Center</a>
+       
+            <a class="dropdown-item" ng-click="userType('Pharmacy','pharmacy-signup')"  href="" ng-class="{'active': user.typeOfUser === 'Pharmacy'}">I Am a Pharmaceutical Center</a>
+       
+            <a class="dropdown-item" ng-click="userType('Diagnostic','diagnostic-signup')" href="" ng-class="{'active': user.typeOfUser === 'Diagnostic'}">I Am a Diagnostic center</a>
+       
+
+
+         <!-- ngIf: checkLogIn -->
+    </div>
+</div>
         </div>
 
     <!-- Tab panes -->

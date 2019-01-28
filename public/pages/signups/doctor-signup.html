@@ -143,17 +143,14 @@
   </div>-->
   <div class="col-md-6 col-sm-12" style="position: relative;">
    <!--<small class='fa fa-arrow-right' style="font-size:10px;color:blue;padding-left: 10px;position: absolute; left: 0;top:10px" ng-if="isNext3"></small>-->
-    <input type="text" class="form-control" placeholder="City" ng-model="user.city" required>
-    <!--<select class="custom-select form-control col-md-12" ng-model="user.city"  ng-cloak ng-if="isEdit === false" >
-      <option value="" selected disabled >{{status2}}</option>
-      <option ng-repeat="city in cities" value="{{city.name}}">{{city.name}}</option>
-      <option value="edit">_Other</option>
-    </select>-->
+    
+     <input type="text" class="form-control" placeholder="City" uib-typeahead="city for city in cities | filter:$viewValue | limitTo:10" ng-model="user.city" required>
+  
     <span class="text-danger" style="font-size: 10px;display: inline-block;margin:-60px 0 0 10px;float: left;">{{cityMessage}}</span> 
   </div>
 
 
-  <div class="row col-md-12">
+  
    <div  class="col-md-6 col-sm-12" style="position: relative;">
   
       <input type="number"  style="position:absolute; top:19px; background:transparent;  left:35px; border: none; width: 55px; outline:0;"  placeholder="{{user.callingCode || 'Code'}}" ng-model= "user.callingCode">
@@ -169,7 +166,7 @@
  </div>
  
  
-</div>
+
 
 <div class="col-md-12">
 <hr></div>

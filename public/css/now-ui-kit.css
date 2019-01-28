@@ -1954,8 +1954,12 @@ body {
 .nav-tabs > .nav-item > .nav-link:hover {
   background-color: transparent; }
 .nav-tabs > .nav-item > .nav-link.active {
-  border: 1px solid #B8B8B8;
-  border-radius: 30px; }
+  border: 1px solid #71BA51;
+  color:#333;
+  font-size: 16px;
+  box-shadow: 0px 5px 25px 0px rgba(0, 0, 0, 0.2);
+  transition: .3s;
+  border-radius: 5px; }
 .nav-tabs > .nav-item > .nav-link i.now-ui-icons {
   font-size: 14px;
   position: relative;

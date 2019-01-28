@@ -113,7 +113,7 @@
 
   <div class="col-md-6 col-sm-12" style="position: relative;">
   
-    <input type="text" class="form-control" placeholder="City" ng-model="user.city"  ng-cloak >
+   <input type="text" class="form-control" placeholder="City" uib-typeahead="city for city in cities | filter:$viewValue | limitTo:10" ng-model="user.city" required>
   
     <span class="text-danger" style="font-size: 10px;display: inline-block;margin:-60px 0 0 10px;float: left;">{{cityMessage}}</span> 
   </div>
@@ -146,7 +146,7 @@
   </div>-->
   
 
-  <div class="row col-md-12">
+ 
    <div  class="col-md-6 col-sm-12" style="position: relative;">
   
       <input type="number"  style="position:absolute; top:19px; background:transparent;  left:35px; border: none; width: 55px; outline:0;"  placeholder="{{user.callingCode || 'Code'}}" ng-model= "user.callingCode">
@@ -162,7 +162,7 @@
  </div>
  
  
-</div>
+
 
 <div class="col-md-12">
 <hr></div>

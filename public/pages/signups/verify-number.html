@@ -16,9 +16,10 @@
 			</div>
 </section>-->
 
-<div style="width: 85%;margin: 30px auto">
+<div class="col-md-5 ml-auto mr-auto">
 	
-	<form>
+	<div class="card">
+		<form>
 		<div  ng-if="!success">
 			<p class="text-success">{{verifyInfo}}</p>
 			<p class="text-danger">{{error}}</p>
@@ -28,12 +29,12 @@
 				If you did not receive SMS, get the verification pin via phone call. &nbsp;&nbsp;
 				<a href="" ng-click="call(resend)"><i class="fa fa-phone"></i> Call Now!</a>
 			</p> 
-			<p style="text-align: center;font-size: 14px" ng-if="showCallingMsg">{{showCallingMsg}}</p>
+			<p class="text-center" style="font-size: 14px" ng-if="showCallingMsg">{{showCallingMsg}}</p>
 		</div>
 		<div ng-if="!success">
 			<input type="text" placeholder="Enter verification pin" ng-model="verify.pin" class="form-control">
         </div>
-        <div style="text-align: center;" ng-if="!success">
+        <div class="text-center;" ng-if="!success">
 			<button class="btn btn-danger" ng-click="sendForm()" ng-if="!loading && !success">
         	<span class="sr-only">Loading...</span> Verify</button> 
         	<span ng-if="loading"><i class="fa fa-spinner fa-pulse fa-1x fa-fw text-info"  ng-if="loading"></i> verifying...</span>
@@ -43,4 +44,5 @@
     		<a href="/login" class="btn btn-success btn-lg">Log In</a>
     	</div>
 	</form>
+	</div>
 </div>

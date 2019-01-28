@@ -1974,9 +1974,10 @@ app.service("getCountryService",["$resource",function($resource){
 }]);
 
 app.controller('signupController',["$scope","$http","$location","$window","templateService",
-  "$resource","$rootScope","localManager","userSignUpService","phoneVerifyService","getCountryService",'phoneCallService',"$timeout",
+  "$resource","$rootScope","localManager","userSignUpService","phoneVerifyService","getCountryService",
+  'phoneCallService',"$timeout","cities",
   function($scope,$http,$location,$window,templateService,$resource,$rootScope,localManager,
-    userSignUpService,phoneVerifyService,getCountryService,phoneCallService,$timeout) {
+    userSignUpService,phoneVerifyService,getCountryService,phoneCallService,$timeout,cities) {
 
   var signUp = userSignUpService; //$resource('/user/signup',null,{userSignup:{method:"POST"},emailCheck:{method:"PUT"}});
   $scope.countries = localManager.getValue("countries") || getCountries();
@@ -1985,7 +1986,7 @@ app.controller('signupController',["$scope","$http","$location","$window","templ
   $scope.status2 = "City/Town";
   $scope.status3 = "LGA/Region";
   
-  
+  $scope.cities = cities;
 
   $scope.getRoute = function(type){
     $location.path(type);
