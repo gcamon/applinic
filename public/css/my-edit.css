@@ -611,13 +611,13 @@ box-shadow: 0 15px 30px 0 rgba(0,0,0,0.11),
   }
 
 
-  /*.p-1 div {
+  .p-1 div {
     padding: 0!important;
   }
 
   .p-2 div {
     padding: 0!important;
-  }*/
+  }
 
   .card {
   box-shadow: 0 4px 8px 0 rgba(0,0,0,.12), 0 2px 4px 0 rgba(0,0,0,.08); 
