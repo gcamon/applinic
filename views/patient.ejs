@@ -547,7 +547,7 @@
                             <div class="col-md-12 col-sm-12 col-xs-12" ng-controller="balanceController">                                    
   
                                 <div class="row"> 
-                                    <div class="col-sm-12 col-md-8 col-lg-8 hidden-md-down">  
+                                    <div class="col-sm-12 col-md-7 col-lg-7 hidden-md-down">  
                                         <!--<a class="btn btn-simple round"  href="#/help"><i class="fa fa-question-circle"></i>
                                         <span style="color:red">Need Help?</span>
                                         </a>-->
@@ -566,23 +566,19 @@
                                           <span  class="hidden-md-down text-danger">Laboratory</span>
                                         </a>
                                          <a class="btn btn-simple round ml-1"  href="#/scan-search" ><i class="fa fa-search"></i>
-                                          <span class="text-success" ">Radiology</span>
+                                          <span class="hidden-md-down text-danger">Radiology</span>
                                         </a>
                                     </div>
 
                                     <div class="col-sm-12 col-md-12 hidden-md-up dropdown" style="position: relative;"> 
-                                         <div class="btn btn-simple btn-block mt-2 round mob-art" style="font-size: 14px;" >
-                                             <a href="#/need-specialist" class="text-muted text-danger"  id="navbarDropdownMenuLink23" style="margin-left: -15px"> <i class="fa fa-user-md"></i> Need a Doctor</a> 
-                                                                            
+                                        <div class="btn btn-simple btn-block mt-2 round mob-art" style="font-size: 14px;" >
+                                             <a href="#/need-specialist" class="text-muted text-danger"  id="navbarDropdownMenuLink23" style="margin-left: -15px"> <i class="fa fa-user-md"></i> Need a Doctor</a>                                                                    
                                         </div>
                                         <div class="btn btn-simple btn-block mt-2 round mob-art" style="font-size: 14px;" >
-                                             <a href="" class="text-muted dropdown-toggle "  id="navbarDropdownMenuLink23" data-toggle="dropdown" ng-click="getAccess('qs')" style="margin-left: -15px"> <i class="fa fa-search"></i>  Quick Searches </a> 
-                                                                            
+                                            <a href="" class="text-muted dropdown-toggle "  id="navbarDropdownMenuLink23" data-toggle="dropdown" ng-click="getAccess('qs')" style="margin-left: -15px"> <i class="fa fa-search"></i>  Quick Searches </a>                                                                  
                                         </div>
 
-                                        
-
-                                        <div class="dropdown-menu dropdown-menu-right p-2"  aria-labelledby="navbarDropdownMenuLink23" id="accessBody1" style="line-height: 30px;font-size: 16px">                                            
+                                        <div class="dropdown-menu dropdown-menu-right p-2"  aria-labelledby="navbarDropdownMenuLink23" id="accessBody1" style="line-height: 30px;font-size: 16px">                                       
                                             <h5 class="p-0 m-0">
                                                 <i class="fa fa-times" style="float: right;" ng-click="closeAccDiv('qs')"></i>
                                             </h5>
@@ -603,7 +599,7 @@
                                          <a class="btn btn-simple round ml-1"  href="#/scan-search" ng-click="closeAccDiv('qs')"><i class="fa fa-search"></i>
                                           <span class="text-danger" ">Radiology</span>
                                         </a>
-                                         </div>
+                                        </div>
                                     </div>
                                 
 
@@ -616,7 +612,7 @@
                                         </a> 
                                     </div> 
 
-                                    <div class="col-sm-12 col-md-1 col-lg-1 dropdown" style="position: relative;"> 
+                                    <div class="col-sm-12 col-md-2 col-lg-2 dropdown" style="position: relative;"> 
                                         <article class="btn btn-neutral mob-art" style="font-size: 14px;" >
                                             <!--<strong style="float: left;">MRA Key: </strong>
                                             <span style="width: 110px;float: left;padding-left: 2px" title="Your Medical Record Access Key is {{checkLogIn.mrak}}" class="ellipsis">{{(copy) ? "Copied!" : checkLogIn.mrak}}</span> &nbsp;  
@@ -628,7 +624,7 @@
 
                                         
 
-                                        <div class="dropdown-menu dropdown-menu-right p-2"  aria-labelledby="navbarDropdownMenuLink2" id="accessBody" style="line-height: 30px;font-size: 16px">                                            
+                                        <div class="dropdown-menu dropdown-menu-right p-2"  aria-labelledby="navbarDropdownMenuLink2" id="accessBody" style="line-height: 30px;font-size: 16px;width: 400px">                                            
                                             <h5 class="p-0 m-0">Medical Record Access
                                                 <i class="fa fa-times" style="float: right;" ng-click="closeAccDiv()"></i>
                                             </h5>
