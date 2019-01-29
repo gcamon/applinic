@@ -406,7 +406,7 @@
                                                 </div>
                                                 <div class="body-col">                                                
                                                     <p style=""> <span class="accent" ng-cloak>{{chat.name}}</span>
-                                                        <span style="display:block" class="ellipsis">{{chat.messages[chat.messages.length - 1].received || chat.messages[chat.messages.length - 1].sent}} <small am-time-ago="chat.messages[chat.messages.length - 1].time || chat.messages[chat.messages.length - 1].received" style="display:block" ng-cloak></small></span> 
+                                                        <span style="display:block;width: 400px" class="ellipsis">{{chat.messages[chat.messages.length - 1].received || chat.messages[chat.messages.length - 1].sent}} <small am-time-ago="chat.messages[chat.messages.length - 1].time || chat.messages[chat.messages.length - 1].received" style="display:block" ng-cloak></small></span> 
                                                     </p>
                                                 </div>
                                             </a>
@@ -543,7 +543,7 @@
     <!-- End Navbar -->
      <div class="clearfix"></div>
             <div class="app" id="app">
-                <header class="container text-center" style="background:#fff; border-bottom:1px solid #f2f2f2; min-height:70px; line-height:70px; padding:5px;position:relative;z-index: 2">
+                <header class="container-fluid" style="background:#fff; border-bottom:1px solid #f2f2f2; min-height:70px; line-height:70px;position:relative;z-index: 2">
                             <div class="col-md-12 col-sm-12 col-xs-12" ng-controller="balanceController">                                    
   
                                 <div class="row"> 
@@ -556,16 +556,16 @@
                                         <span class="hidden-md-down text-danger">Need a Doctor?</span>
                                         </a>
 
-                                        <a class="btn btn-simple round ml-1"  href="#/find-specialist" ><i class="fa fa-search"></i>
+                                        <a class="btn btn-simple round ml-0"  href="#/find-specialist" ><i class="fa fa-search"></i>
                                           <span  class="hidden-md-down text-danger">Specialists</span>
                                         </a>
-                                         <a class="btn btn-simple round ml-1"  href="#/drug" ><i class="fa fa-search"></i>
+                                         <a class="btn btn-simple round ml-0"  href="#/drug" ><i class="fa fa-search"></i>
                                           <span  class="hidden-md-down text-danger">Drugs</span>
                                         </a>
-                                         <a class="btn btn-simple round ml-1"  href="#/search-test" ><i class="fa fa-search"></i>
+                                         <a class="btn btn-simple round ml-0"  href="#/search-test" ><i class="fa fa-search"></i>
                                           <span  class="hidden-md-down text-danger">Laboratory</span>
                                         </a>
-                                         <a class="btn btn-simple round ml-1"  href="#/scan-search" ><i class="fa fa-search"></i>
+                                         <a class="btn btn-simple round ml-0"  href="#/scan-search" ><i class="fa fa-search"></i>
                                           <span class="hidden-md-down text-danger">Radiology</span>
                                         </a>
                                     </div>
