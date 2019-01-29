@@ -71,6 +71,25 @@
               margin-top: 60px!important;
             }
 
+            #textarea {
+              height:auto;
+              color:#999;
+              font-weight:400;
+              padding: 5px;
+              font-family:'Ubuntu', Helvetica, Arial, sans-serif;
+              width:100%;
+              background:#fff;
+              border-radius:3px;
+              line-height:2em;
+              border:none;
+              box-shadow:0px 0px 5px 1px rgba(0,0,0,0.1);                    
+              -webkit-transition: height 2s ease;
+              -moz-transition: height 2s ease;
+              -ms-transition: height 2s ease;
+              -o-transition: height 2s ease;
+              transition: height 2s ease;
+            }
+
             @media screen and (max-width: 960px) {
              
               .complaint-main {
@@ -251,7 +270,7 @@
                                             
                                           
                                             <label style="font-weight:bold;font-size: 14px" class="text-capitalize">Management Plan? </label>
-                                            <textarea class="form-control" style="padding: 10px" cols="6" ng-model="user.introductory" ng-keyup="autoExpand($event)" id="textarea"></textarea>
+                                            <textarea class="form-control" ng-model="user.introductory" ng-keyup="autoExpand($event)" id="textarea"></textarea>
                                             <div class="p-2"></div>
                                             
                                             <div class="pt-2">
@@ -260,7 +279,7 @@
                                             </div>
                                             <div class="clearfix"></div>
                                             <div class="pb-2">
-                                                <small>Your charge : </small>
+                                                <small>Your charge: </small>
                                                 <input type="number" class="form-control input-lg" placeholder="Enter amount" ng-model="user.amount">      
                                             </div>
                                             <div class="mt-1 mb-2">
