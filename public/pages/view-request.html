@@ -36,8 +36,8 @@
 			
 		
 		<div  class="" style="margin-top: 30px">
-			<button class="btn btn-success" ng-click="sendAcceptanceVerification()">accept</button>
-			<button class="btn btn-danger" ng-click = "decline(reqInfo.message_id)">decline</button>			
+			<button class="btn btn-success" ng-click="sendAcceptanceVerification()" ng-if="!loading">Accept</button><span ng-if="loading">Processing...</span>
+			<button class="btn btn-danger" ng-click = "decline(reqInfo.message_id)">Decline</button>			
 		</div>
 		<div  class="pl-1 mt-1" ng-if="fundWallet">
 			<a href="#/wallet" style="color:#fff" class="btn btn-info">Fund your wallet now!</a>

@@ -145,7 +145,12 @@ app.config(['$paystackProvider','$routeProvider',
 
   .when("/granted-request/:id",{
     templateUrl: '/assets/pages/view-request.html',
-    controller: 'patientViewRequestController'
+    controller: 'patientViewRequestController',
+    resolve: {
+      path: function($location,$rootScope){
+        $rootScope.path = $location.path();
+      }
+    }
   })
 
   .when("/rejected-request/:id",{
@@ -225,12 +230,22 @@ app.config(['$paystackProvider','$routeProvider',
 
  .when("/patient-prescriptions",{
   templateUrl: "/assets/pages/patient-view-prescriptions.html",
-  controller: 'prescriptionTemplateController'
+  controller: 'prescriptionTemplateController',
+   resolve: {
+    path: function($location,$rootScope){
+      $rootScope.path = $location.path();
+    }
+  }
  })
 
  .when("/patient-prescriptions/:id",{
   templateUrl: "/assets/pages/patient-view-prescriptions.html",
-  controller: 'prescriptionTemplateController'
+  controller: 'prescriptionTemplateController',
+  resolve: {
+    path: function($location,$rootScope){
+      $rootScope.path = $location.path();  
+    }
+  }
  })
 
  .when("/patient-prescriptions/em",{
@@ -7610,7 +7625,7 @@ app.controller("patientViewRequestController",["$scope","$location","$http","$ro
       time: timeStamp,
       old_time: time
     }
-
+    $scope.loading = true;
     var count = 0;
     if(phoneCall){
       count++;
@@ -7626,6 +7641,8 @@ app.controller("patientViewRequestController",["$scope","$location","$http","$ro
         if(data.success){
           $location.path("/user-otp");
         }
+
+        $scope.loading = false;
       });
     }
   }
@@ -7714,9 +7731,9 @@ app.controller("walletController",["$scope","$http","$rootScope","$location","Mo
   $scope.pay.mode = "";
   $scope.pay.pin = "";
 
-  $scope.goBack = function () {
+  /*$scope.goBack = function () {
     $location.path(localManager.getValue("currentPageForPatients"))
-  }
+  }*/
 
   $scope.$watch("pay.mode",function(newVal,oldVal){
     if(newVal){
@@ -9225,16 +9242,15 @@ app.service("patientMedViewController",function(){
 });
 
 app.controller("prescriptionTemplateController",["$scope","$rootScope","$location","$http","templateService",
-  "localManager","patientMedViewController","$timeout",
-  function($scope,$rootScope,$location,$http,templateService,localManager,patientMedViewController,$timeout){
-    
+  "localManager","patientMedViewController","$timeout","path",
+  function($scope,$rootScope,$location,$http,templateService,localManager,patientMedViewController,$timeout,path){
     var prescriptionObjs = (templateService.holdPrescriptions.length > 0) ? templateService.holdPrescriptions : localManager.getValue("holdPrescriptions");
-    
+  
     $scope.prescriptionRecordsResult = prescriptionObjs;
 
     var hasBeenSentTo = {};
 
-    $rootScope.path = $location.path();
+    //$rootScope.path = $location.path();
 
     $http({
       method  : 'GET',
@@ -9360,8 +9376,8 @@ app.controller("trackedPrescriptionController",["$scope","$rootScope","$location
   $scope.presInfo = templateService.holdPrescriptionForTrackRecord;
   $scope.trackedPrescription = templateService.holdTrackRecord;
   //$rootScope.goBack = $rootScope.back;
-
-  $rootScope.path = $location.path() //localManager.setValue('currentPageForPatients',$location.path());
+ 
+  //$rootScope.path = $location.path() //localManager.setValue('currentPageForPatients',$location.path());
 
   //this fn is invoked when patient wish to forward prescription by himself to a phamarcy.
   $scope.forwardPrescription = function (prescription) {       
