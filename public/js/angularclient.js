@@ -6476,9 +6476,9 @@ app.service("findSpecialistService",["$resource",function($resource){
   return $resource("/user/find-specialist",null,{refer:{method: "PUT"}});
 }]);
 
-app.controller("referRequestController",["$scope","$http","ModalService","requestManager","cities",
+app.controller("referRequestController",["$scope","$http","ModalService","requestManager",
   "templateService","deleteFactory","$rootScope","$location","$resource","findSpecialistService",
-  function($scope,$http,ModalService,requestManager,cities,templateService,
+  function($scope,$http,ModalService,requestManager,templateService,
     deleteFactory,$rootScope,$location,$resource,findSpecialistService){
 
     var source = findSpecialistService;//$resource("/user/find-specialist",null,{refer:{method: "PUT"}});
@@ -6496,9 +6496,7 @@ app.controller("referRequestController",["$scope","$http","ModalService","reques
       });
     } 
 
-    //$scope.findSpecialist();
-
-    $scope.cities = cities;
+    $scope.findSpecialist();
 
     $http({
       method  : 'GET',
@@ -6521,6 +6519,9 @@ app.controller("referRequestController",["$scope","$http","ModalService","reques
       }
     }); 
 
+
+    console.log($rootScope.data);
+
     $scope.refer = function(doc) {
       doc.loading = true;
       $rootScope.data.receiverId = doc.user_id;
@@ -6532,7 +6533,6 @@ app.controller("referRequestController",["$scope","$http","ModalService","reques
           $rootScope.data = null
         }
       })
-
     }
 
 
@@ -11477,6 +11477,7 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
     patient.firstname = $scope.patientInfo.firstname;
     patient.lastname = $scope.patientInfo.lastname;
     patient.gender = $scope.patientInfo.gender;
+    patient.phone = $scope.patientInfo.phone;
     patient.age = $scope.patientInfo.age;
     patient.address = $scope.patientInfo.address;
     patient.city = $scope.patientInfo.city;
@@ -12650,7 +12651,49 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
       }
     }
 
+   
+    $scope.referToAnother = function(){
+      $rootScope.data = {
+        date: + new Date(),
+        message_id: Math.floor(Math.random() * 99999999),
+        sender_age: patient.age,
+        sender_firstname: patient.firstname,
+        sender_gender: patient.gender,
+        sender_id: patient.patient_id,
+        sender_phone: patient.phone,
+        sender_email: patient.email,
+        sender_lastname: patient.lastname,
+        sender_location: patient.city + " " +  patient.country,
+        sender_profile_pic_url: patient.patient_profile_pic_url,
+        sender_title: patient.title,
+        type: "consultation",
+        isLaterRef: "yes"
+      }  
 
+      ModalService.showModal({
+          templateUrl: 'redirect-request.html',
+          controller: "referRequestController"
+        }).then(function(modal) {
+          modal.element.modal();
+          modal.close.then(function(result) {               
+        });
+      });
+    }
+
+    /*
+date: "1547987169970"
+message_id: 8499218039
+sender_age: "30 - 39 years (adult)"
+sender_firstname: "Nnaji"
+sender_gender: "Male"
+sender_id: "chidiebere187432"
+sender_lastname: "Chidiebere"
+sender_location: "Enugu Nigeria"
+sender_profile_pic_url: "/download/profile_pic/nopic"
+type: "consultation"
+_id: "5c4468e145e2f50a18b2949b"
+
+    */
     function reqModal(patientObj) {
       templateService.holdForSpecificPatient = patientObj
       ModalService.showModal({

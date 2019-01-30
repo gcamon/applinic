@@ -1260,23 +1260,66 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
         res.send("Unauthorized access!")
       }
     })
+  
 
-    router.get("/user/find-specialist",function(req,res){
+    //dcotor refering patient to another doctor from doctor's dashboard
+    router.get("/user/find-specialist",function(req,res){     
       if(req.user) {
-        req.query.type = "Doctor";     
+        console.log(req.query)
+       /* req.query.type = "Doctor";     
         model.user.find(req.query,{profile_pic_url:1, 
           firstname: 1,title: 1,lastname:1,user_id:1,_id:0,work_place:1,address:1,city:1,country:1,phone:1,specialty:1},function(err,list){
             if(err) throw err;
             res.json(list)
-        })
+        })*/
+        var first4 = req.query.specialty.substring(0,4);
+        var str = new RegExp(first4.replace(/\s+/g,"\\s+"), "gi");              
+        if(req.query.city) {
+          var criteria = {$text : {$search : req.query.specialty},city:req.query.city}
+        } else {
+          var criteria = {$text : {$search : req.query.specialty}}
+        }
+
+        model.user.find(criteria,{firstname:1,lastname:1,work_place:1,city:1,country:1,address:1,
+          specialty:1,_id:0,profile_pic_url:1,education:1,user_id:1,title:1,name: 1,profile_url:1},
+          function(err,data){
+          if(err) {        
+            res.send([]);
+          } else {   
+            if(data.length == 0){
+              var criteria = (req.query.city) ? {specialty: { $regex: str, $options: 'i' },type:"Doctor",city: req.query.city} : 
+              {specialty: { $regex: str, $options: 'i' },type:"Doctor"};
+
+              model.user.find(criteria,{firstname:1,lastname:1,work_place:1,city:1,country:1,address:1,
+              specialty:1,_id:0,profile_pic_url:1,education:1,user_id:1,title:1,name:1,profile_url:1},
+              function(err,data2){
+                if(err) throw err;
+                res.json(data2);
+              })
+            } else {
+              res.json(data);
+            }  
+          }
+        });
+
       } else {
         res.end("unauthorized access!");
       }
     });
 
-    router.put("/user/find-specialist",function(req,res){
-
+    router.put("/user/find-specialist",function(req,res){     
       if(req.user) {
+         console.log(req.body);
+
+        if(req.body.isLaterRef) {
+          var pos = req.user.doctor_patients_list.map(function(x){if(x){return x.patient_id}}).indexOf(req.body.sender_id)
+          if(pos !== -1) {
+            req.body.message = req.user.doctor_patients_list[pos].initial_complaint.complaint;
+            req.body.files = req.user.doctor_patients_list[pos].initial_complaint.files;
+          }
+          
+        }
+
         var requestData = {};
         for(var item in req.body){
           if(req.body.hasOwnProperty(item) && item !== "receiverId") {
@@ -1288,7 +1331,9 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
           delete requestData._id;
 
       
-        model.user.findOne({user_id:req.body.receiverId},{doctor_notification:1,presence:1,set_presence:1,phone:1}).exec(function(err,data){
+        model.user.findOne({user_id:req.body.receiverId},{doctor_notification:1,presence:1,
+          set_presence:1,phone:1,title:1,firstname:1,lastname:1,email:1,user_id:1,city:1,country:1,specialty:1})
+        .exec(function(err,data){
           if (err) {
             return res.status(400).send({
                 message: errorHandler.getErrorMessage(err)
@@ -1301,24 +1346,120 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
             if(data.presence === true && data.set_presence.general === true && req.body.type === "consultation"){           
               io.sockets.to(req.body.receiverId).emit("receive consultation request",{status: "success"});
 
-            } else if(req.body.type === "consultation" && data.set_presence.general === false || data.presence === false) {
+            } //else if(req.body.type === "consultation" && data.set_presence.general === false || data.presence === false) {
 
-              var msgBody = req.user.title + " " + req.user.firstname + " " + req.user.lastname + " sends consultation request! Visit http://applinic.com/user/doctor";
+          
+            //}
 
-              var phoneNunber =  data.phone;            
+          var msgBody = req.user.title + " " + req.user.firstname + " " + req.user.lastname + 
+          " sent a consultation request! visit https://applinic.com/user/doctor to attend.";
 
-              sms.messages.create(
-                {
-                  to: phoneNunber,
-                  from: '+16467985692',
-                  body: msgBody,
-                }
-              ) 
-
+          var phoneNunber = data.phone;   
+          
+          sms.messages.create(
+            {
+              to: phoneNunber || "",
+              from: '+16467985692',
+              body: msgBody,
             }
+          )
+          .then(
+            function(call){
+              console.log(call);
+            },
+            function(err) {
+              console.log(err)
+            }
+          );
 
-            data.save(function(err,info){});
-            res.send({status:"notified"});
+          sms.calls 
+          .create({
+            url: "https://applinic.com/voicenotification?firstname=" + data.lastname + "&&title=" + data.title,
+            to: phoneNunber || "",
+            from: '+16467985692',
+          })
+          .then(
+            function(call){
+              console.log(call.sid);
+            },
+            function(err) {
+              console.log(err)
+            }
+          );
+
+          //} else if(data.presence  && data.set_presence.general  && req.body.type === "question"){  
+          if(data.presence  && data.set_presence.general  && req.body.type === "question") {      
+            io.sockets.to(req.body.receiverId).emit("receive consultation request",{status: "success",type:"question"});
+          }
+
+
+          model.user.findOne({user_id: req.body.sender_id},{title:1,email:1,phone:1})
+          .exec(function(err,patient){
+            if(err) throw err;
+            if(patient) {
+              var consult = new model.consult({
+                patient_name: patient.title + " " + req.body.sender_firstname + " " + req.body.sender_lastname,
+                doctor_name: data.title + " " + data.firstname,
+                id: requestData.message_id,
+                date: + new Date(),
+                doctor_phone: data.phone,
+                doctor_email: data.email,
+                doctor_id: data.user_id,
+                patient_phone: patient.phone,
+                patient_email: patient.email,
+                patient_id: req.body.sender_id,
+                doctor_specialty: data.specialty,
+                patient_city: req.body.sender_location,
+                doctor_city: data.city,
+                message: req.body.message,
+                files: (req.body.files) ? req.body.files : null
+              });
+
+              consult.save(function(err,info){});       
+
+              var transporter = nodemailer.createTransport({
+                host: "mail.privateemail.com",
+                port: 465,
+                auth: {
+                  user: "info@applinic.com",
+                  pass: process.env.EMAIL_PASSWORD
+                }
+              });
+
+              var mailOptions = {
+                from: 'Applinic info@applinic.com',
+                to: data.email,//'ede.obinna27@gmail.com',//data.email
+                subject: 'Consultation Request from a Patient',
+                html: '<table><tr><th><h3  style="background-color:#85CE36; color: #fff; padding: 30px"><img src="https://applinic.com/assets/images/applinic1.png" style="width: 250px; height: auto"/><br/><span>Healthcare... anywhere, anytime.</span></h3></th></tr><tr><td style="font-family: Arial, Helvetica, sans-serif; font-size: 14px;"><b> Dear ' + data.title + " " + data.firstname + 
+                ",</b><br><br> You received a consultation request from a patient.<br><br>" 
+                + req.body.sender_title + " " + req.body.sender_lastname + " " + req.body.sender_firstname
+                + " has just submitted a consultation request to you on Applinic<br><br>"
+                + "Please click the link below to sign in to respond to her request.<br><br>"
+                + "URL: https://applinic.com/user/doctor <br><br>"
+                + "When you log in, click the notification message icon on top of your dashboard to see the request.<br>" 
+                + "Select the message to open, review and respond to the request.<br><br>"
+                + "For ease of usage, you may download the Applinic mobile application on google play store if you use an android phone." 
+                + "<a href='https://play.google.com/store/apps/details?id=com.farelandsnigeria.applinic'>Click here </a> to do so now.<br><br>"
+                + "For inquiries please call customer support on +2349080045678<br><br>"
+                + "Thank you for using Applinic<br><br>"
+                + "<b>Applinic Team</b></td></tr></table>"
+
+              };
+
+              transporter.sendMail(mailOptions, function(error, info){
+                if (error) {
+                  console.log(error);
+                } else {
+                  console.log('Email sent: ' + info.response);
+                }
+              });
+
+              patient.save(function(err,info){})
+            }
+          });
+
+          data.save(function(err,info){});
+          res.send({status:"notified"});
           } else {
             res.end("error 404 occured!")
           }
@@ -1534,7 +1675,7 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
           
           sms.messages.create(
             {
-              to: phoneNunber,
+              to: phoneNunber || "",
               from: '+16467985692',
               body: msgBody,
             }
@@ -2338,7 +2479,8 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
             type: 1,
             presence:1,
             title:1,
-            phone:1
+            phone:1,
+            email:1
 
         }
 
