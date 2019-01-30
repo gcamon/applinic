@@ -1,32 +1,34 @@
 
 <section class="card">
 	<header style="position: relative;">
-		<h4 class="p-1"> 
+		<h4 class="pl-1 pt-1"> 
 		<i class="fa fa-motorcycle"></i> Courier Services <span style="font-size: 16px;display: inline-block;">( {{courierRequests.length}} requests )</span> <br><span style="font-size: 14px;"></span>
 		<!--<a href="{{fieldagentUrl}}" target="_blank" style="font-size: 14px"> {{fieldagentUrl}}</a>-->
 		</h4>
-		 <input type="text" placeholder="Filter"  style="position: absolute;right: 0;top:10px" ng-model="search">
+		
 		<!--<input type="text" placeholder="Filter" class="form-control">-->
 
-		<div class="card p-2" style="">
+		<div class="row p-2">
+			<div class="col-md-6 pb-2">
+				<button class="btn-courier" ng-click="current()" style="margin-bottom: 4px" ng-class="{'orange-bg': selected1}">New Requests</button>
+				<button class="btn-courier" ng-click="ready()" style="" ng-class="{'orange-bg': selected}">Ready for Delivery</button>
+				<button class="btn-courier" ng-click="completed()" ng-class="{'orange-bg': selected2}"> Completed/Delivered</button>
+			
+				</div>
 			<div class="col-md-6">
-			<button class="btn-courier" ng-click="current()" style="margin-right:5px" ng-class="{'orange-bg': selected1}">New Requests</button>
-			<button class="btn-courier" ng-click="ready()" style="margin-right:5px" ng-class="{'orange-bg': selected}">Ready for Delivery</button>
-			<button class="btn-courier" ng-click="completed()" ng-class="{'orange-bg': selected2}"> Completed/Delivered</button>
-		
-			</div>
-			<div class="col-md-6" style="text-align: right;">
-				<a href="" ng-click="addFieldAgent()" class="btn btn-simple btn-sm"><i class="fa fa-plus"></i> Field agent</a>&nbsp;&nbsp;&nbsp;
-				<a href="" ng-click="manageFieldAgent()" class="btn btn-simple btn-sm"><i class="fa fa-wrench"></i> Manage agents</a>&nbsp;&nbsp;&nbsp;
-				<a href="" ng-click="refresh()" class="btn btn-simple btn-sm"><i class="fa fa-refresh"></i> Refresh</a>
-			</div>
+				<a href="" ng-click="addFieldAgent()" class="btn btn-neutral btn-sm"><i class="fa fa-plus"></i> Field agent</a>
+				<a href="" ng-click="manageFieldAgent()" class="btn btn-neutral btn-sm"><i class="fa fa-wrench"></i> Manage agents</a>
+				<a href="" ng-click="refresh()" class="btn btn-neutral btn-sm"><i class="fa fa-refresh"></i> Refresh</a>
+			</div>	
 		</div>
 		<!--<a href="/bicboy/judepharmacy6768/y2kisawesome">Field agent</a>-->
 	</header>
 
-	<hr>
-
-	<div ng-repeat="request in courierRequests | filter: search | orderBy: '-date'" style="padding: 20px;line-height: 32px" id="{{request._id}}">
+	<div class="col-md-6">
+	 	<input type="text" placeholder="Filter" class="form-control" ng-model="search">
+	</div>
+	<div class="clearfix p-0"></div>
+	<div ng-repeat="request in courierRequests | filter: search | orderBy: '-date'" style="padding: 10px 20px;line-height: 32px" id="{{request._id}}">
 		<div class="col-sm-12 col-md-2 col-lg-2" style="line-height: 25px" ng-if="request.attended && request.is_paid">
 			<h6 style="text-decoration: underline;">Payment Details</h6>
 			<p class="text-primary"><i class="fa fa-check-circle"></i> Payment was made successfully!</p>
@@ -40,12 +42,12 @@
 				Total: <b>{{getTotal(request.delivery_charge,request.total_cost)}}</b>
 			</div>
 			<hr>
-			<p ng-if="!request.completed"><small>You won't be credited until delivery of the package/drugs is confirmed by the patient.<a href="">Learn more</a></small></p>
+			<p ng-if="!request.completed"><small>You will be credited if the receipt of the package is confirmed.</small></p>
 		</div>
 
 		<div class="col-sm-12 col-md-7 col-lg-7">
 		<h6 style="text-decoration: underline;">Prescription detail</h6>
-			<table class="table table-striped table-responsive">
+			<table class="table table-striped table-responsive no-mobile-item-display">
 				<tr>
 					<thead>
 						<th>S/N</th>
@@ -67,6 +69,17 @@
 					</tbody>
 				</tr>
 			</table>
+			<div class="mobile-item-display">				    		
+	    		<table class="table" ng-repeat="prescription in request.prescription_body">
+	    		    <thead><th>sn: </th> <td>{{prescription.sn}}</td></thead>
+	    		    <thead><th>Cost: </th> <td>{{(!prescription.cost) ? "N/A" : toCurrency(prescription.cost)}}</td></thead>
+	    			<thead><th>Drug: </th> <td>{{prescription.drug_name}}</td></thead>
+	    			<thead><th>Dosage: </th> <td>{{prescription.dosage}}</td></thead>
+	    			<thead><th>Frequency: </th> <td>{{prescription.frequency}}</td></thead>
+	    			<thead><th>Duration: </th> <td>{{prescription.duration}}</td></thead>
+	    			<hr>
+	    		</table>
+	    	</div>
 			<!--<div ng-if="request.total_cost"> <strong>Total:</strong> {{toCurrency(request.total_cost)}}</div>-->
 		</div>
 		<!--<div class="col-sm-12 col-md-3 col-lg-3" style="line-height: 25px" ng-if="request.attended && request.completed">

@@ -20,31 +20,37 @@
 </div>-->
 
 
-<div class="container card p-2">
-	<div class="">
-		<h3 class="p-0">Update Inventory <a class="btn btn-danger btn-sm" href="#/pharmacy/off-service" style="float: right;"> See unavailable drugs in your center</a></h3>
-		<p>Please unmark any drug you don't have in stock below.Do remember to save your changes.</p>
-	</div>
-	
-	<div class="">
-
-		<div class="text-muted">
-			<input type="text" class="form-control" ng-model="ava" name="" placeholder="Filter list by drug name" style="width: 70%">
-		</div>
-
-		<div>
-			<span class="text-danger">*</span> <span>drug(s) you added</span>
-			<button class="btn btn-success btn-sm" ng-click="saveSelection()" style="float: right;">Save changes</button>
-		</div>
-		<div class="clearfix"></div>
+<div class="card p-2">
 		<div class="">
-			<div ng-repeat="drug in allDrugs2 | filter: ava | orderBy: 'name'" style="display: inline-block;width: 48%;padding-right: 2px;word-wrap: break-word;float: left;">
+			<h4 class="p-0">Update Inventory 
+			</h4>
+			
+			<p>Please unmark any drug you don't have in stock below.Do remember to save your changes.</p>
+		</div>
+		
+		<a class="btn btn-neutral btn-sm" href="#/pharmacy/off-service" style="float: right;"> See unavailable drugs in your center</a>
+	
+		<div class="row">
+			<div class="col-md-9 pr-1">
+					<input type="text" class="form-control" ng-model="ava" name="" placeholder="Filter list by drug name">
+				<span class="text-danger">*</span> <span>drug(s) you added</span>
+			</div>
+
+			<div class="col-md-2">					
+				<button class="btn btn-success btn-sm" style="margin-top: 7px;" ng-click="saveSelection()">Save changes</button>
+					
+			</div>
+		</div>
+		
+		
+		<div>
+			<div ng-repeat="drug in allDrugs2 | filter: ava | orderBy: 'name'" style="display: inline-block;width: 48%;padding-right: 3px;word-wrap: break-word;float: left;">
 			<!--<input type="checkbox" ng-model="drug.val"><span></span>-->
 				<label class="custom-control custom-checkbox">   <input type="checkbox" class="custom-control-input" ng-model="drug.val">   <span class="custom-control-indicator"></span>   <span class="custom-control-description font-1_1">{{drug.name}} <sup class="text-danger">{{(checkLogIn.user_id === drug.center_id) ? "*": ""}}</sup></span> </label>
 		  </div>
-		  <div>
-				<button class="btn btn-success btn-sm pull-right" ng-click="saveSelection()">Save changes</button>
-			</div>
+		  <div style="text-align: right;">
+				<button class="btn btn-success btn-sm" ng-click="saveSelection()">Save changes</button>
+		  </div>
 		</div>
 
 		<!--<div>
@@ -61,6 +67,6 @@
 		
 
 
-	</div>
+	
 </div>
 

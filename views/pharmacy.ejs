@@ -6,7 +6,7 @@
         <meta http-equiv="x-ua-compatible" content="ie=edge">
         <title> Applinic</title>
         <meta name="description" content="">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+         <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no' name='viewport'/>
         <link rel="apple-touch-icon" href="apple-touch-icon.png">
          <link rel="icon" type="image/png" href="/assets/images/icons/favicon.png">
         <!-- Place favicon.ico in the root directory -->
@@ -104,6 +104,7 @@
                   }
                 }
 
+            
 
           </style>
           <script src="/assets/js/vendor2.js"></script>
@@ -134,7 +135,7 @@
                     </div>
                    
                     <div class="header-block header-block-nav" ng-controller = "createRoomController">
-                        <ul class="nav-profile" ng-controller="topHeaderController">
+                        <ul class="nav-profile header-Pharma" ng-controller="topHeaderController">
                             <li class="notifications new"> <a href="" data-toggle="dropdown">
                     <i class="fa fa-bell"></i>
                     <sup>
@@ -291,7 +292,7 @@
             <div class="app" id="app">
                 <header class="container text-center" style="background:#fff; border-left:1px solid #f2f2f2; min-height:70px; line-height:70px; padding:5px;" ng-controller="pharmacyCenterDashboardController">
                     <div class="col-md-8 col-sm-12 col-lg-8">
-                       <ul class="nav nav-tabs" role="tablist">  
+                       <ul class="nav nav-tabs p-sm-0" role="tablist">  
                           <!--<li class="nav-item">
                             <a  class="btn btn-simple round mr-1"  href="#/help" ><i class="fa fa-question-circle"></i>
                                 <span style="color:red">Need help</span>
@@ -299,22 +300,22 @@
                           </li>-->
                          
                           <li class="nav-item">
-                            <a class="btn btn-simple round mr-1"  href="#/rendered-services"><i class="fa fa-file-text"></i>
-                                <span style="color:red">Work History</span></a>
+                            <a class="btn btn-simple round mr-1" title="Work History"  href="#/rendered-services"><i class="fa fa-file-text"></i>
+                                <span class="hidden-md-down" style="color:red">Work History</span></a>
                           </li>
 
                           <li class="nav-item" ng-cloak>
-                            <a class="btn btn-simple round mr-1"  href="" disabled="disabled" style="cursor: no-drop;" ng-if="checkLogIn.courier_access !== true"><i class="fa fa-motorcycle"> </i>
-                            <span style="color:red">Courier Services</span></a>
+                            <a class="btn btn-simple round mr-1" title="Courier Services" href="" disabled="disabled" style="cursor: no-drop;" ng-if="checkLogIn.courier_access !== true"><i class="fa fa-motorcycle"> </i>
+                            <span class="hidden-md-down" style="color:red">Courier Services</span></a>
                             </a>
-                            <a class="btn btn-simple round mr-1"  href="#/courier-requests" ng-if="checkLogIn.courier_access"><i class="fa fa-motorcycle"> </i>
-                            <span style="color:red">Courier Services</span></a>
+                            <a class="btn btn-simple round mr-1" title="Courier Services"  href="#/courier-requests" ng-if="checkLogIn.courier_access"><i class="fa fa-motorcycle"> </i>
+                            <span class="hidden-md-down" style="color:red">Courier Services</span></a>
                             </a>
                           </li>
 
                            <li class="nav-item">
-                            <a class="btn btn-simple round mr-1"  href="#/referred-patients" ><i class="fa fa-user"></i>
-                                        <span style="color:red">Find Prescription</span></a>
+                            <a class="btn btn-simple round mr-1" title="Find Prescription" href="#/referred-patients" ><i class="fa fa-user"></i>
+                                        <span class="hidden-md-down" style="color:red">Find Prescription</span></a>
                           </li>
                           
                         </ul>

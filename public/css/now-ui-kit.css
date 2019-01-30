@@ -3515,6 +3515,9 @@ Created using IcoMoon - icomoon.io
   color: #FFFFFF; }
 
 @media screen and (max-width: 991px) {
+  .p-sm-0{
+    padding: 0 !important;
+  }
   .navbar-collapse {
     position: fixed;
     display: block;

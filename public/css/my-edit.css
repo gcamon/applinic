@@ -557,6 +557,44 @@ font-weight: 300 !important;
   transition: height 2s ease;
   }
   
+@media screen and (max-width: 991px) {
+  .p-sm-0{
+    padding: 0 !important;
+  }
+
+  .header-Pharma {
+    margin-left: 25vh !important;
+  }
+
+   .header-Pharma .menuOne{
+      margin-left: -29vh !important;
+    }
+
+    .header-Pharma .menuTwo{
+          margin-left: -35.8vh !important;
+    }
+
+     .header-Pharma .menuThree{
+          margin-left: -41.8vh !important;
+    }
+
+     .header-Pharma .menuFour{
+      margin-left: -49.8vh !important;
+    }
+
+     .header-Pharma .menuFive{
+      margin-left: -34.8vh !important;
+    }
+
+      .header-Pharma .menuSix{
+      margin-left: -36.8vh !important;
+    }
+}
+
+
+
+
+
 
 @media screen and (min-height: 960px) {
   .view-animate-container {

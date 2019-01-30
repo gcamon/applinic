@@ -875,7 +875,7 @@
 
                   <div>
                     <label ng-if="subTests">Investigation Requested: </label>             
-                    <div ng-repeat="test in subTests | orderBy: '-sent_date'" class="pb-1">
+                    <div ng-repeat="test in subTests | orderBy: '-sent_date'" class="pt-1">
                       <div style="" ng-if="test.center_name">
                          <strong> Ran by : </strong>{{test.center_name}}                          
                       </div>
@@ -883,18 +883,24 @@
                       <div ng-if="test.center_name">
                          <strong> Address : </strong> {{test.center_address}} {{test.center_city}} {{test.center_country}}   
                       </div>
-
+                      <br>
+                    
                       <div ng-if="test.center_name">
                           <strong>Phone : </strong> {{test.center_phone}}
                       </div>
-
+                      <br>
+                    
                       <div> 
                         <strong> Sent : </strong> {{test.sent_date | date: "mediumDate"}} ( <span am-time-ago="test.sent_date"></span> )
                       </div>
+
+                      <br>
+                    
                       <div>
                         <strong> Received : </strong> {{test.receive_date | date: "mediumDate"}} ( <span am-time-ago="test.receive_date"></span> )
                       </div>
-                     
+                     <br>
+                    
                       <div>  
                         <label>Investigation: </label> 
                         <div class="pl-1" ng-if="test.ranTest.length > 0">
@@ -905,7 +911,7 @@
                         </ol>           
                       </div>
                       <div class="pt-1">
-                          <label>Report:</label>
+                          <label>Result:</label>
                       </div>
                       <div ng-if="test.conclusion !== 'Pending'" >
                           <div ng-repeat = "result in test.report">                        
@@ -1001,7 +1007,7 @@
                         </div>                     
                       </div>
                       <div class="pt-1">
-                          <label>Report:</label><br>
+                          <label>Result:</label><br>
                           <p style="margin-top: 50px" ng-if="test.conclusion === 'Pending'">Awaiting investigation reports</p>
                           <div ng-if="test.conclusion !== 'Pending'" >
                             <div ng-repeat = "result in test.report">                        
@@ -1046,7 +1052,7 @@
                         </ol>           
                       </div>
                       <div class="pt-1">
-                          <label>Report: </label><br>
+                          <label>Result: </label><br>
                           <p style="margin-top: 50px" ng-if="test.conclusion === 'Pending'">Awaiting investigation reports</p>
                           <div ng-if="test.conclusion !== 'Pending'" >
                             <div ng-repeat = "result in test.report">                        
