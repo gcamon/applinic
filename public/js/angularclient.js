@@ -10772,28 +10772,48 @@ app.controller('adminPWRCtrl',["$scope","$rootScope","$location",
   }
 }]); 
 
-app.controller('adminPWRDetailCtrl',["$scope","$rootScope","adminPWRService",
-  function($scope,$rootScope,adminPWRService){
+app.controller('adminPWRDetailCtrl',["$scope","$rootScope","adminPWRService","ModalService",
+  function($scope,$rootScope,adminPWRService,ModalService){
 
   $scope.del = function(id) {
-    $scope.loading = true;
-    adminPWRService.delete({id: id},function(res){
-      $scope.loading = false;
-      if(res.status) {
-        alert(res.message);
-        var elem = $rootScope.pwr.map(function(x){if(x) return x._id}).indexOf(id);
-        if(elem !== -1) {
-          $rootScope.pwr.splice(elem,1);
+    var check = confirm("You want to delete compalint?")
+    if(check) {
+      $scope.loading = true;
+      adminPWRService.delete({id: id},function(res){
+        $scope.loading = false;
+        if(res.status) {
+          alert(res.message);
+          var elem = $rootScope.pwr.map(function(x){if(x) return x._id}).indexOf(id);
+          if(elem !== -1) {
+            $rootScope.pwr.splice(elem,1);
+          }
+        } else {
+          alert(res.message)
         }
-      } else {
-        alert(res.message)
-      }
-    })
+      })
+    }
   }
 
   $scope.refer = function(complaint) {
-
+    $rootScope.user = {
+      message: complaint.description,
+      files: complaint.files,
+      patient_id: complaint.patient_id,
+      id: + Math.floor(Math.random() * 9999999999),
+      patient_city: complaint.patient_city,
+      patient_name: complaint.name
+    }
+    console.log(complaint)
+    ModalService.showModal({
+      templateUrl: 'admin-refer-another.html',
+      controller: "adminReferToAnotherModalCtrl"
+    }).then(function(modal) {
+      modal.element.modal();
+      modal.close.then(function(result) {});
+    });
   }
+
+ 
 }]); 
 
 

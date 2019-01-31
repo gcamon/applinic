@@ -3,7 +3,7 @@
 <div class="p-2" style="">
 	<h3>PWR Complaint ( {{complaint.complaint_id}} )</h3>
 	<div class="col-md-5 pull-right">
-		<button class="btn btn-info btn-sm">Refer to another</button>&nbsp;
+		<button class="btn btn-info btn-sm" ng-click="refer(complaint)">Refer to another</button>&nbsp;
 		<button class="btn btn-simple btn-sm" ng-click="del(complaint._id)" ng-if="!loading">Delete</button><span ng-if="loading">deleting...</span>
 	</div>
 	<div class="clearfix"></div>

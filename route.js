@@ -1773,8 +1773,7 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
         if(req.user.type == "admin") {
           console.log(req.body)
           model.user.findOne({user_id: req.body.patient_id}).exec(function(err,patient){
-            req.user = patient;         
-            
+            req.user = patient;        
             var requestData = {
               sender_firstname: req.user.firstname,
               sender_lastname : req.user.lastname,
