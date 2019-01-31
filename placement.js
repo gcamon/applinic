@@ -10,7 +10,7 @@ function placementRoute(model,sms,io,nodemailer){
 	router.post("/user/help",function(req,res){
 		console.log(req.body)
 		if(req.user){		
-			model.user.findOne({user_id: req.body.userId},{age:1,gender:1,city:1,country:1},function(err,user){
+			model.user.findOne({user_id: req.body.userId},{age:1,gender:1,city:1,country:1,email:1,phone:1,title:1,lastname:1},function(err,user){
 				var random = parseInt(Math.floor(Math.random() * 999999) + " " + Math.floor(Math.random() * 999999));
 		  	var complain_id = "#" + random;
 		    var preferredCity = req.body.city || user.city;
@@ -25,7 +25,11 @@ function placementRoute(model,sms,io,nodemailer){
 		      patient_country: user.country,
 	        gender: user.gender,
 	        preferred_city: preferredCity,
-		      isview: false
+		      isview: false,
+		      deleted: false,
+		      phone: user.phone,
+		      email: user.email,
+		      name: user.title + " " + user.lastname
       	});
 
 	      

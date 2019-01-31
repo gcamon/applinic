@@ -7891,7 +7891,7 @@ router.get("/user/rating/:id",function(req,res){
 
 router.get("/user/admin/get-user-details",function(req,res){
   if(req.user){
-    if(req.query.item && req.user.type == 'admin'){
+    if(req.query.item && req.user.type === 'admin'){
        var criteria = { $or: [{ phone : req.query.item},{user_id: req.query.item},{email : req.query.item}]};
        model.user.find(criteria,function(err,data){
         if(err) throw err;
@@ -7907,7 +7907,7 @@ router.get("/user/admin/get-user-details",function(req,res){
 
 router.get('/user/admin/get-consultations',function(req,res){
   if(req.user){
-    if(req.user.type == 'admin'){
+    if(req.user.type === 'admin' && req.user.admin){
       model.consult.find({},function(err,data){
         if(err) throw err;
         res.json(data);
@@ -7922,7 +7922,7 @@ router.get('/user/admin/get-consultations',function(req,res){
 
 router.delete('/user/admin/get-consultations',function(req,res){
   if(req.user){
-    if(req.user.type == 'admin'){
+    if(req.user.type === 'admin'){
       model.consult.findById(req.query.id)
       .exec(function(err,data){
         if(err) throw err;
@@ -7940,10 +7940,51 @@ router.delete('/user/admin/get-consultations',function(req,res){
 });
 
 
+router.get('/user/admin/pwr',function(req,res){
+  if(req.user){
+    if(req.user.type === 'admin'){
+      model.help.find({})
+      .exec(function(err,data){
+        if(err) throw err;
+        res.json(data);
+      })
+    } else {
+      res.end("unauthorized access!");
+    }
+  } else {
+    res.end("unauthorized access!");
+  }
+});
+
+router.delete('/user/admin/pwr',function(req,res){
+  if(req.user){
+  
+    if(req.user.type === 'admin' && req.user.admin){
+      model.help.findById(req.query.id)
+      .exec(function(err,data){        
+        if(data){
+          data.remove(function(err,info){
+            if(err) throw err;
+            res.json({status:true,message: "Complaint deteted!"})
+          });         
+        } else {
+          res.json({status:false, message: "Error ocurred, try again"})
+        }
+      })
+    } else {
+      res.end("unauthorized access!");
+    }
+  } else {
+    res.end("unauthorized access!");
+  }
+});
+
+
+
 
 router.get('/user/admin/scrolls',function(req,res){
   if(req.user){
-    if(req.user.type == 'admin'){
+    if(req.user.type === 'admin'){
       model.scroll.find({deleted: false},function(err,data){
         if(err) throw err;
         res.json(data);
@@ -7959,7 +8000,7 @@ router.get('/user/admin/scrolls',function(req,res){
 
 router.get('/user/admin/get-courier',function(req,res){
   if(req.user){
-    if(req.user.type == 'admin'){
+    if(req.user.type === 'admin'){
       model.courier.findById(req.query.id)
       .exec(function(err,data) {
         if(err) throw err;
@@ -7972,6 +8013,9 @@ router.get('/user/admin/get-courier',function(req,res){
     res.end("unauthorized access!");
   }
 });
+
+
+
 
 
 

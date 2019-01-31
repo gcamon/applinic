@@ -1,0 +1,43 @@
+
+<a href="#{{path}}"><i class="fa fa-arrow-left"></i> back</a>
+<div class="p-2" style="">
+	<h3>PWR Complaint ( {{complaint.complaint_id}} )</h3>
+	<div class="col-md-5 pull-right">
+		<button class="btn btn-info btn-sm">Refer to another</button>&nbsp;
+		<button class="btn btn-simple btn-sm" ng-click="del(complaint._id)" ng-if="!loading">Delete</button><span ng-if="loading">deleting...</span>
+	</div>
+	<div class="clearfix"></div>
+	<div style="line-height: 32px">
+		<h6>Patient Info</h6>
+		<strong>Name : </strong> <span>{{complaint.name}}</span><br>
+		<strong>Age :</strong> <span>{{complaint.age}}</span><br>
+		<strong>Phone : </strong> <span>{{complaint.phone}}</span><br>
+		<strong>Email : </strong> <span>{{complaint.email}}</span><br>
+		<strong>Location : </strong> <span>{{complaint.patient_city}} {{complaint.patient_country}}</span><br>
+		<strong>ID : </strong> <span>{{complaint.patient_id}}</span>
+	</div>
+	<hr>
+	<div>
+		<h6>Complaint</h6>
+		<span>Symptoms: <b ng-repeat="j in complaint.symptoms">{{j}},</b></span>
+		<p ng-bind-html="complaint.description"></p>
+	</div>
+	<hr>
+	<div>
+		<h6>Responses</h6>
+		<div ng-repeat="k in complaint.response" class="row">
+			<div class="col-md-2">			
+				<img src="{{k.doctor_profile_pic_url}}" style="max-width: 120px; height: auto">
+			</div>
+			<div class="col-md-5">
+				<a href="" style="line-height: 25px;padding-bottom: 10px">
+					<span><b>{{k.doctor_name}}</b></span><br>
+					<span>{{k.doctor_specialty}}</span><br>
+					<span>{{toCurrency(k.fee)}}</span><br>
+					<span am-time-ago="k.date"></span>
+				</a>
+			</div>
+		</div>
+	</div>
+
+</div>

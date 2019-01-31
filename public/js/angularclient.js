@@ -742,6 +742,22 @@ app.config(['$paystackProvider','$routeProvider',
     controller: "adminScrollCtrl"
  })
 
+.when("/pwr",{
+    templateUrl: "/assets/pages/utilities/pwr.html",
+    controller: "adminPWRCtrl",
+    resolve: {
+      path: function($location,$rootScope){
+        $rootScope.path = $location.path();  
+      }
+    }
+})
+
+.when("/complaint-details",{
+  templateUrl: "/assets/pages/utilities/pwr-details.html",
+  controller: "adminPWRDetailCtrl"
+})
+
+
 }]);
 
 
@@ -10019,11 +10035,16 @@ app.factory("adminDoctorsService",["$resource",function($resource){
   return $resource('/user/getAllDoctor',null,{verify:{method: "PUT"}});
 }])
 
+app.factory("adminPWRService",["$resource",function($resource){
+  return $resource('/user/admin/pwr',null,{update:{method: "PUT"}});
+}])
+
 app.controller("adminCreateRoomController",["$scope","localManager","mySocket","$rootScope",
   "templateService","$resource","ModalService","adminDoctorsService","$http","$location",
-  "cashOutControllerService","adminConsultationService","adminScrollService",
+  "cashOutControllerService","adminConsultationService","adminScrollService","adminPWRService",
   function($scope,localManager,mySocket,$rootScope,templateService,$resource,
-    ModalService,adminDoctorsService,$http,$location,cashOutControllerService,adminConsultationService,adminScrollService){
+    ModalService,adminDoctorsService,$http,$location,cashOutControllerService,
+    adminConsultationService,adminScrollService,adminPWRService){
   var user = localManager.getValue("resolveUser");  
   mySocket.emit('join',{userId: user.user_id});
 
@@ -10109,12 +10130,25 @@ app.controller("adminCreateRoomController",["$scope","localManager","mySocket","
 
   adminConsultationService.query(function(data){
     $rootScope.consultations = data;
-  })
+  });
 
   adminScrollService.query(function(data){
     
     $rootScope.scrollList = data;
-  })
+  });
+
+
+  function pwr() {
+    adminPWRService.query(function(data){
+      $rootScope.pwr = data;
+    })
+  }
+
+  pwr();
+
+  $rootScope.$on("getPWR",function(i,j){
+    pwr();
+  });
 
   /*$scope.view = function(id) {
     templateService.holdId = id;
@@ -10724,6 +10758,42 @@ app.controller('adminScrollCtrl',["$scope","$rootScope","adminScrollService","Mo
     //note this should refund the requester, delete the scroll, delete both reqester and center courier notifications
   }
 
+}]); 
+
+app.controller('adminPWRCtrl',["$scope","$rootScope","$location",
+  function($scope,$rootScope,$location){
+  $scope.refresh = function() {
+    $rootScope.$broadcast("getPWR",true);
+  }
+
+  $scope.viewDetails = function(complaint) {
+    $rootScope.complaint = complaint;
+    $location.path('complaint-details');
+  }
+}]); 
+
+app.controller('adminPWRDetailCtrl',["$scope","$rootScope","adminPWRService",
+  function($scope,$rootScope,adminPWRService){
+
+  $scope.del = function(id) {
+    $scope.loading = true;
+    adminPWRService.delete({id: id},function(res){
+      $scope.loading = false;
+      if(res.status) {
+        alert(res.message);
+        var elem = $rootScope.pwr.map(function(x){if(x) return x._id}).indexOf(id);
+        if(elem !== -1) {
+          $rootScope.pwr.splice(elem,1);
+        }
+      } else {
+        alert(res.message)
+      }
+    })
+  }
+
+  $scope.refer = function(complaint) {
+
+  }
 }]); 
 
 

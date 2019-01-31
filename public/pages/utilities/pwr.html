@@ -1,0 +1,33 @@
+<div class="p-2" style="">
+	<h3>Patients' Waiting Room ( {{pwr.length}} )</h3>
+
+	<div class="col-md-5">
+		<input type="text" placeholder="Filter by complaint ID" ng-model="filter" class="form-control" style="padding: 5px">
+	</div>
+	<a href="" style="float: right;" ng-click="refresh()"><i class="fa fa-refresh p-2" ></i></a>
+	<div class="clearfix"></div>
+	<div>
+		<table class="table">
+			<thead>
+				<th>ID</th>
+				<th>Date</th>
+				<th>name</th>
+				
+				<th>City</th>
+				<th>Phone</th>
+				<th>Responses</th>
+				<th>Action</th>
+			</thead>
+			<tbody  ng-repeat="i in pwr | orderBy: '-sent_date' | filter : filter">
+				<td>{{i.complaint_id}}</td>
+				<td class="text-success"><b><span am-time-ago="i.sent_date"></span></b></td>
+				<td>{{i.name}}</td>
+				<td>{{i.city}}</td>
+				<td>{{i.phone}}</td>
+				<td class="text-danger"><b>{{i.response.length}} {{(i.response.length > 1) ? "doctors" : "doctor" }}</b></td>
+				<td><a href="" class="btn btn-success btn-sm" ng-click="viewDetails(i)">details</a></td>
+			</tbody>
+		</table>
+	</div>
+
+</div>

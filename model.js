@@ -628,7 +628,11 @@ var myModel = function () {
 		preferred_city: String,
 		isview: Boolean,
 		response: Array,
-		files: Array
+		files: Array,
+		deleted: Boolean,
+		phone: String,
+		email: String,
+		name: String,
 	},{
 		collections: "helpinfos"
 	});
