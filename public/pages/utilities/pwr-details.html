@@ -15,17 +15,18 @@
 		<strong>Email : </strong> <span>{{complaint.email}}</span><br>
 		<strong>Location : </strong> <span>{{complaint.patient_city}} {{complaint.patient_country}}</span><br>
 		<strong>ID : </strong> <span>{{complaint.patient_id}}</span>
+		<strong>Date sent : </strong> <span>{{complaint.sent_date | date : "fullDate"}} (<span am-time-ago="complaint.sent_date"></span>)</span>
 	</div>
 	<hr>
 	<div>
 		<h6>Complaint</h6>
-		<span>Symptoms: <b ng-repeat="j in complaint.symptoms">{{j}},</b></span>
+		<!--<span>Symptoms: <b ng-repeat="j in complaint.symptoms">{{j}},</b></span>-->
 		<p ng-bind-html="complaint.description"></p>
 	</div>
 	<hr>
 	<div>
 		<h6>Responses</h6>
-		<div ng-repeat="k in complaint.response" class="row">
+		<div ng-repeat="k in complaint.response" class="row pb-">
 			<div class="col-md-2">			
 				<img src="{{k.doctor_profile_pic_url}}" style="max-width: 120px; height: auto">
 			</div>
@@ -33,7 +34,7 @@
 				<a href="" style="line-height: 25px;padding-bottom: 10px">
 					<span><b>{{k.doctor_name}}</b></span><br>
 					<span>{{k.doctor_specialty}}</span><br>
-					<span>{{toCurrency(k.fee)}}</span><br>
+					<span>{{(k.fee) ? toCurrency(k.fee) : "Amount not specified"}}</span><br>
 					<span am-time-ago="k.date"></span>
 				</a>
 			</div>

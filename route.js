@@ -6166,7 +6166,6 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
 
 router.post("/user/need-help",function(req,res){
   if(req.user) {
-    console.log(req.body)
      var help = new model.needHelp({
         user_id: req.user.user_id,
         message: req.body.description,
@@ -7387,7 +7386,7 @@ router.post("/user/response/patients-histories",function(req,res){
             return;
           }
 
-          req.body.doctor_name = data.title + " " + data.firstname + " " + data.lastname;
+          req.body.doctor_name = (data.lastname) ? (data.title + " " + data.firstname + " " + data.lastname ) : data.name;
           req.body.doctor_profile_pic_url = data.profile_pic_url;
           req.body.doctor_profile_url = data.profile_url;
           req.body.doctor_specialty = data.specialty;
