@@ -3849,7 +3849,7 @@ app.controller("bookingDocModalController",["$scope","templateService","$http","
         $scope.patient.history += '<blockquote>' + str + "</blockquote>";
 
         if($scope.patient.period) {
-           $scope.patient.history += "<br>The symptom(s) has lasted for " +  $scope.patient.period +
+           $scope.patient.history += "<br>The symptom(s) have lasted for " +  $scope.patient.period +
             " till date.<br>";
         }
 
@@ -17837,7 +17837,7 @@ function($scope,$location,$window,$http,templateService,localManager,templateUrl
        
 
         if($scope.user.period) {
-           $scope.user.description += "<br>Symptom(s) has lasted for " +  $scope.user.period +
+           $scope.user.description += "<br>Symptom(s) have lasted for " +  $scope.user.period +
             " till date.<br>";
         }
 
