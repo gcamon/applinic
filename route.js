@@ -1770,7 +1770,7 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
 
     router.post("/user/admin/redirect-consultation",function(req,res){
       if(req.user) {
-        if(req.user.type == "admin") {
+        if(req.user.type === "admin") {
           console.log(req.body)
           model.user.findOne({user_id: req.body.patient_id}).exec(function(err,patient){
             req.user = patient;        

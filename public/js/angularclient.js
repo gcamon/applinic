@@ -3905,7 +3905,7 @@ app.controller("bookingDocModalController",["$scope","templateService","$http","
       }
 
       if($scope.patient.other) {
-         $scope.patient.history += "Other issues this patient had was also explained below: <br>" +
+         $scope.patient.history += "Other issues this patient had were also explained below: <br>" +
          "<blockquote>" + $scope.patient.otherIssue + "</blockquote>";
       }
 
@@ -17900,7 +17900,7 @@ function($scope,$location,$window,$http,templateService,localManager,templateUrl
       }
 
       if($scope.user.other) {
-         $scope.user.description += "Other issues this patient had was also explained below: <br>" +
+         $scope.user.description += "Other issues this patient had were also explained below: <br>" +
          "<blockquote>" + $scope.user.otherIssue + "</blockquote>";
       }
 
