@@ -662,9 +662,11 @@
            <!--<button class="btn btn-simple" ng-click="clerk()" ng-class="{'bg-info text-white': true}">clerking</button> -->
            <a href="" ng-click="viewSession()"><i class="fa fa-arrow-left"></i> Back to sessions</a>  &nbsp;&nbsp; 
             <br><br>     
-           <button class="btn btn-neutral" ng-click="subSession()" ng-class="{'bg-info text-white': isSubNote}" style="font-size: 16px">Continue</button>&nbsp;&nbsp; 
+           
           
-           <button class="btn btn-neutral" ng-click="FollowUpsView()" ng-class="{'bg-info text-white': (isMain || isSubView)}" style="font-size:16px">Previous Follow-up</button>
+           <button class="btn btn-neutral" ng-click="FollowUpsView()" ng-class="{'bg-info text-white': (isMain || isSubView)}" style="font-size:16px">Previous Consultation(s)</button>&nbsp;&nbsp;  
+
+           <button class="btn btn-neutral" ng-click="subSession()" ng-class="{'bg-info text-white': isSubNote}" style="font-size: 16px">Continue</button>
 
 
            
@@ -674,13 +676,15 @@
         <hr>
         <div style="padding-top: 10px" ng-if="isFollowups || isMain">
             <a href="" ng-repeat="j in sessionData.diagnosis.sub_session" style="">
-                <button  class="btn btn-neutral btn-sm"  ng-class="{'bg-info text-white': j.status}" ng-click="sub(j,sessionData.diagnosis.sub_session)">{{(j.sub_session_id === 'main') ? 'Main' : 'Follow up'}} <span ng-if="!j.date">( {{ sessionData.date | date : "fullDate" }} ) </span><span ng-if="j.date">( {{ j.date | date : 'fullDate'}} )</span></button>
+                <button  class="btn btn-neutral btn-sm"  ng-class="{'bg-info text-white': j.status}" ng-click="sub(j,sessionData.diagnosis.sub_session)">{{(j.sub_session_id === 'main') ? 'Initial Clerking' : 'Consultation on'}} <span ng-if="!j.date">( {{ sessionData.date | date : "fullDate" }} ) </span><span ng-if="j.date">( {{ j.date | date : 'fullDate'}} )</span></button>
             </a>
         </div>
         <div ng-if="isSubNote">
-           <button class="btn btn-simple" ng-click="takeNote()" ng-class="{'bg-info text-white': isNote}">Take a note</button>
-           <button class="btn btn-simple" ng-click="investView()" ng-class="{'bg-info text-white': isInvestigation}"> Request Investigation</button>
-           <button class="btn btn-simple" ng-click="peView()" ng-class="{'bg-info text-white': isPE}">Physical Examination Findings</button>
+           <button class="btn btn-neutral" ng-click="takeNote()" ng-class="{'bg-info text-white': isNote}">Continuation Sheet</button>
+            <button class="btn btn-neutral" ng-click="peView()" ng-class="{'bg-info text-white': isPE}">Physical Examination</button>
+
+           <button class="btn btn-neutral" ng-click="investView()" ng-class="{'bg-info text-white': isInvestigation}"> Request Investigation</button>
+          
           
         </div>
         <form ng-if="isClerk">
@@ -863,7 +867,7 @@
               </div>         
               <hr>
                <div ng-if="isSubView"> <!-- break by ng if-->
-                  <label class="mr-2">Follow-Up on {{subRecord.date | date : "fullDate"}} 
+                  <label class="mr-2">Consultation on {{subRecord.date | date : "fullDate"}} 
                    
                   </label> <a href="" ng-if="!medReport.report" class="btn btn-success btn-sm" ng-click="reportView()" style="font-size: 14px"> &nbsp;<i class="fa fa-pencil"></i> Write report</a>
                   
@@ -873,6 +877,19 @@
                       <blockquote ng-bind-html="subRecord.note" class="pt-0"></blockquote>
                   </div>
 
+                 
+                  <div>
+                      <label>General Examination:</label>
+                      <blockquote ng-bind-html="subRecord.general" class="pt-0"></blockquote>
+                  </div>
+                  <div>
+                      <label>Systemic Examination:</label>
+                      <blockquote ng-bind-html="subRecord.systemic" class="pt-0"></blockquote>
+                  </div>
+                  <div>
+                      <label>Diagnosis:</label>
+                      <blockquote ng-bind-html="subRecord.diagnosis" class="pt-0"></blockquote>
+                  </div>
                   <div>
                     <label ng-if="subTests">Investigation Requested: </label>             
                     <div ng-repeat="test in subTests | orderBy: '-sent_date'" class="pt-1">
@@ -930,20 +947,8 @@
                         <hr class="text-muted">
                     </div>
                   </div>
-                  <div>
-                      <label>General Examination:</label>
-                      <blockquote ng-bind-html="subRecord.general" class="pt-0"></blockquote>
-                  </div>
-                  <div>
-                      <label>Systemic Examination:</label>
-                      <blockquote ng-bind-html="subRecord.systemic" class="pt-0"></blockquote>
-                  </div>
-                  <div>
-                      <label>Final Diagnosis:</label>
-                      <blockquote ng-bind-html="subRecord.diagnosis" class="pt-0"></blockquote>
-                  </div>
                   <div ng-if="medReport.report">
-                      <label>Report:</label>
+                      <label>Medical Report:</label>
                       <blockquote ng-bind-html="medReport.report" class="pt-0"></blockquote>
                   </div>
                   
