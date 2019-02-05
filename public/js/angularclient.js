@@ -4814,10 +4814,24 @@ app.controller("inTreatmentController",["$scope","$http","localManager","$locati
       $scope.isScan = false;
       $scope.isNewRadio = false;
       $scope.isNewLab = false; 
+      $scope.isClerk = false;
+      $scope.isMain = false;
+      $scope.isSubView = false;
+      $scope.isFollowups = false;
     } else {
       $scope.isLab = false;
     }
+    returnToMain($scope.sessionData.diagnosis.sub_session)
    } 
+
+   function returnToMain(sess){
+    for(var i = 0; i < sess.length; i++){
+      if(sess[i].sub_session_id == 'main')
+          sess[i].status = true;
+      else  
+         sess[i].status = false;
+    }
+   }
 
    $scope.newLab = function() {
     //$location.path('/lab');
@@ -4848,9 +4862,15 @@ app.controller("inTreatmentController",["$scope","$http","localManager","$locati
       $scope.isLab = false;
       $scope.isNewRadio = false;
       $scope.isNewLab = false; 
+      $scope.isClerk = false;
+      $scope.isMain = false
+      $scope.isSubView = false;
+      $scope.isFollowups = false;
     } else {
       $scope.isScan = false;
     }
+
+    returnToMain($scope.sessionData.diagnosis.sub_session)
   } 
 
   $scope.newRadio = function() {
@@ -4867,7 +4887,8 @@ app.controller("inTreatmentController",["$scope","$http","localManager","$locati
 
     if($scope.isSubNote) {
       $rootScope.isSubNote = true;
-    }       
+    }
+    returnToMain($scope.sessionData.diagnosis.sub_session)       
   }
 
   $scope.subSession = function() {
@@ -4876,6 +4897,8 @@ app.controller("inTreatmentController",["$scope","$http","localManager","$locati
     $scope.isClerk = true;
     $scope.isMain = false;
     $scope.isSubView = false;
+    $scope.isLab = false;
+    $scope.isScan = false;
     //$scope.isInvestigation = true;
     $scope.isPE = false;
     $scope.isReportView = false;
@@ -4892,7 +4915,7 @@ app.controller("inTreatmentController",["$scope","$http","localManager","$locati
     //} else {
      // alert("Please save changes before you can proceed.")
     //}
-
+    returnToMain($scope.sessionData.diagnosis.sub_session)
   }
 
   $scope.isClerk = true;
@@ -4901,6 +4924,8 @@ app.controller("inTreatmentController",["$scope","$http","localManager","$locati
     if(input.check <= 1) { // this value is used below in watchers to check and prompt users to save changes made.
     $scope.isFollowups = false;
     $scope.isSubNote = false;
+    $scope.isLab = false;
+    $scope.isScan = false;
     $scope.isClerk = true;
     $scope.isMain = true;
     $scope.isPE = false;
@@ -4913,6 +4938,7 @@ app.controller("inTreatmentController",["$scope","$http","localManager","$locati
     $scope.isNote = false;
     $scope.updateMsg = "";
     $scope.edit = {};
+
     } else {
       alert("Please save changes before you can proceed.")
     }
@@ -4939,6 +4965,8 @@ app.controller("inTreatmentController",["$scope","$http","localManager","$locati
    // } else {
    //   alert("Please save changes before you can proceed.")
    // }
+
+    returnToMain($scope.sessionData.diagnosis.sub_session)
   }
 
   $scope.investView = function(){
@@ -5056,7 +5084,10 @@ app.controller("inTreatmentController",["$scope","$http","localManager","$locati
       sanitize(arr);
       $scope.isMain = true;
       item.status = true;
-      $scope.isSubView = false;
+      $scope.isClerk = true;
+      $scope.isSubView = false;   
+      $scope.isLab = false;
+      $scope.isScan = false;  
       return;
     } 
 
@@ -5065,8 +5096,11 @@ app.controller("inTreatmentController",["$scope","$http","localManager","$locati
     $scope.isSubNote = false;
     $scope.isSubView = true;
     item.status = true;
+    $scope.isClerk = true;
     $scope.isFollowups = true;
    // $scope.edit = {};
+
+    $scope.selectedSub = item.status
     getContinuationData(item.sub_session_id)
     
   }
@@ -5137,7 +5171,8 @@ app.controller("inTreatmentController",["$scope","$http","localManager","$locati
       headers : {'Content-Type': 'application/json'} 
       })
     .success(function(data) {
-      if(data.result){               
+      if(data.result){   
+        console.log(data.result)            
         $scope.testResult = data.result;
       } else {
         $scope.message = "No test result for this patient";
@@ -12234,6 +12269,7 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
     $scope.isLaboratory = true;
     $scope.isRadiology = false;    
     $scope.laboratoryTests = $scope.medicalRecordHistory.medical_records.laboratory_test;
+    console.log($scope.laboratoryTests)
   }
 
    
@@ -14675,8 +14711,8 @@ app.controller("labTestControler",["$scope","$location","$http","templateService
     if (newVal !== null) {
       for(var k = 0; k < newVal.length; k++) {        
        if(oldVal.length > 0 && newVal[k].added) {
-        totalCost.sum -= oldVal[k].amount;
-        totalCost.sum += newVal[k].amount;
+        totalCost.sum -= (oldVal[k]) ? oldVal[k].amount : 0;
+        totalCost.sum += (newVal[k]) ? newVal[k].amount : 0;
         toNaira(totalCost.sum);
        } 
 
@@ -14833,6 +14869,24 @@ app.controller("labTestControler",["$scope","$location","$http","templateService
     $location.path("/laboratory/view-test/" + random);   
   }
 
+
+
+  //for entering of lab test report
+
+  $scope.createInputList = function(test) {
+    if(!test.list)
+      test.list = [{}];
+  }
+
+  $scope.addReport = function(reportInput) {
+    reportInput.list.push({})
+  }
+
+  $scope.removeReport = function(reportInput) {
+    if(reportInput.list.length > 1)
+      reportInput.list.pop()
+  }
+
   
 
   $scope.previewTestResult = function(refInfo){
@@ -14850,15 +14904,16 @@ app.controller("labTestControler",["$scope","$location","$http","templateService
       $scope.hasPreviewed = false;
       $scope.errorList = [];
       refInfo.laboratory.test_to_run = $scope.testReport;
-      refInfo.laboratory.test_to_run.forEach(function(test){
-        if(!test.data) {
-          $scope.errorList.push(test.name);
+      /*refInfo.laboratory.test_to_run.forEach(function(test){
+        if(test.list) {
+          if(!test.list[0].r_name || test.list[0].r_range)
+            $scope.errorList.push(test.name);
         }
-      });
+      });*/
 
       $scope.$watch("errorList",function(newVal,oldVal){
         if( $scope.errorList.length > 0 ) { 
-          $scope.incomplete = "Please enter report for " + '" ' + $scope.errorList[0] + ' " below.';
+          $scope.incomplete = "Please enter complete report for " + '" ' + $scope.errorList[0] + ' " below.';
         } else if($scope.lab.conclusion !== undefined) {             
           $scope.incomplete = "";
           $scope.isPreview = true;
@@ -14886,11 +14941,11 @@ app.controller("labTestControler",["$scope","$location","$http","templateService
       url;
 
   $scope.sendTestResult = function(refInfo){ 
-    theStringTests = combineTest($scope.testReport);
-    converToStr = theStringTests.join();
+    //theStringTests = combineTest($scope.testReport);
+    //converToStr = theStringTests.join();
+    var reportSheet = combineTest($scope.testReport);
     date = + new Date();
-
-    refInfo.laboratory.report = converToStr;
+    refInfo.laboratory.report = reportSheet;
     refInfo.laboratory.test_ran = $scope.testReport;
     refInfo.laboratory.conclusion = $scope.lab.conclusion;
     refInfo.laboratory.test_to_run = holdInitialTestToRun;
@@ -14916,6 +14971,7 @@ app.controller("labTestControler",["$scope","$location","$http","templateService
         msg = "Success!!! Test report sent to patient";
       }
       $scope.loading = true;
+      console.log(refInfo)
       report = $resource(url,null,{sendReport:{method: "PUT"}});
       report.sendReport(refInfo,function(response){
         if(response.status === "success") {
@@ -14941,10 +14997,12 @@ app.controller("labTestControler",["$scope","$location","$http","templateService
 
   function combineTest(testArray) {
     var report = [];
-    var val;
     testArray.forEach(function(test){
-      val = "" +  test.name + ":"  + " " + test.data;
-      report.push(val)
+      //val = "" +  test.name + ":"  + " " + test.data;
+      report.push({
+        name: test.name,
+        report_sheet: test.list
+      })
     });
     return report;
   }
@@ -15921,6 +15979,23 @@ app.controller("radioTestControler",["$scope","$location","$http","templateServi
     $location.path("/radiology/view-test/" + random);   
   }
 
+
+  //for entering of radio test report
+
+  /*$scope.createInputList = function(test) {
+    if(!test.list)
+      test.list = [{}];
+  }
+
+  $scope.addReport = function(reportInput) {
+    reportInput.list.push({})
+  }
+
+  $scope.removeReport = function(reportInput) {
+    if(reportInput.list.length > 1)
+      reportInput.list.pop()
+  }*/
+
   
 
   $scope.previewTestResult = function(refInfo){
@@ -15944,11 +16019,11 @@ app.controller("radioTestControler",["$scope","$location","$http","templateServi
     $scope.hasPreviewed = false;
     $scope.errorList = [];
     refInfo.radiology.test_to_run = $scope.testReport;
-    refInfo.radiology.test_to_run.forEach(function(test){
+    /*refInfo.radiology.test_to_run.forEach(function(test){
       if(!test.data) {
         $scope.errorList.push(test.name);
       }
-    });
+    });*/
 
     $scope.$watch("errorList",function(newVal,oldVal){
       if( $scope.errorList.length > 0 ) {
@@ -15981,11 +16056,12 @@ app.controller("radioTestControler",["$scope","$location","$http","templateServi
       report,
       url;
   $scope.sendTestResult = function(refInfo){ 
-    theStringTests = combineTest($scope.testReport);
-    converToStr = theStringTests.join();
+    /*theStringTests = combineTest($scope.testReport);
+    converToStr = theStringTests.join();*/
+    var reportSheet = combineTest($scope.testReport);
     date = + new Date();
 
-    refInfo.radiology.report = converToStr;
+    refInfo.radiology.report = reportSheet;
     refInfo.radiology.test_ran = $scope.testReport;
     refInfo.radiology.conclusion = $scope.lab.conclusion;
     refInfo.radiology.test_to_run = holdInitialTestToRun;
@@ -16106,10 +16182,12 @@ app.controller("radioTestControler",["$scope","$location","$http","templateServi
 
   function combineTest(testArray) {
     var report = [];
-    var val;
     testArray.forEach(function(test){
-      val = "" +  test.name + ":"  + " " + test.data;
-      report.push(val)
+      //val = "" +  test.name + ":"  + " " + test.data;
+      report.push({
+        name: test.name,
+        report_sheet: test.data
+      })
     });
     return report;
   }

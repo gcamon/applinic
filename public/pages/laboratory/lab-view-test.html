@@ -1,31 +1,13 @@
 
-<div class="col-sm-12 col-md-12 col-lg-12 card-center-1">
+<div class="card-center-1">
 	<!--<header style="padding: 10px; font-size: 18px;font-weight: bold;"><i class="fa fa-arrow-left" style="cursor: pointer" ng-click="refresh()" ng-if="refInfo.laboratory.test_to_run.length > 0"> &nbsp;Back</i></header>-->
 	<div class="row">
 		
-	<!--<header  class="col-sm-12 col-md-3 clo-lg-3" ng-if="!reportSuccess">
-		<div class="card"  style="text-align: center">
-			<img src="{{refInfo.laboratory.patient_profile_pic_url}}" style="max-width: 100%; max-height: auto;">
-			<div>
-				<strong>{{refInfo.laboratory.patient_firstname}} {{refInfo.laboratory.patient_lastname}}</strong> 
-				<span style="display: block"> (Patient)</span>
-			</div>
-			<hr>
-			<div style="padding: 5px;text-align: left;">
-				<span>{{refInfo.laboratory.patient_address}}</span>
-			</div>	
-			<hr>
-			<div style="padding: 5px;text-align: left;">
-				<span> Age | &nbsp;{{refInfo.laboratory.patient_age}}</span>  
-				<span style="display:block;padding-top: 20px">Sex | &nbsp;{{refInfo.laboratory.patient_gender}}</span> 
-				<span style="display:block;padding-top: 20px">phone | &nbsp;{{refInfo.laboratory.patient_phone}}</span> 
-			</div>	
-		</div>
-	</header>-->
+	
 	
 	<div ng-if="refInfo.laboratory.test_to_run.length > 0" class="col-sm-12 col-md-12 clo-lg-12">
 		<div class="row">
-			<div class="col-sm-12 col-md-12 col-lg-12 card pt-2" ng-if="hasSent && !isPreview" style="position: relative;">
+			<div class="col-sm-12 col-md-12 col-lg-12  card pt-2" ng-if="hasSent && !isPreview" style="position: relative;">
 				<div style="display: inline-block;float: left">
 					<img src="{{refInfo.laboratory.patient_profile_pic_url}}" style="max-width: 150px; max-height: 150px;">
 				</div>
@@ -82,7 +64,7 @@
 
 				
 				<div class="col-sm-12 card" style="padding:20px" ng-if="!isPreview">					
-					<div class="mb-0 mt-0 pl-0 font-1_2"  style="display: inline-block;padding-bottom: 5px"><b>Tests To Run</b></div>
+					<div class="mb-0 mt-0 pl-0 font-1_2"  style="display: inline-block;padding-bottom: 5px"><b>Tests</b></div>
     				<div class="mt-1"  ng-repeat = "test in refInfo.laboratory.test_to_run" >
 						<label class="custom-control custom-checkbox">
 		    				<input type="checkbox" ng-model="test.select"  class="custom-control-input">
@@ -138,7 +120,7 @@
                      		<p class="bg-warning p-1 text-danger" ng-if="otpError">{{otpError}}</p>
 							<p class="text-muted">{{otpMsg}} </p>
 							<p>
-					            Cannot receive SMS?  <a href="" ng-click="sendBill(refInfo.laboratory.patient_id,resend)">Re-send OTP via SMS</a> <b> or </b> Try making a phone call to get the OTP code<br>
+					            Cannot receive SMS?  <a href="" ng-click="sendBill(refInfo.laboratory.patient_id,resend)">Re-send OTP via SMS</a> <b> or </b> try making a phone call to get the OTP code<br>
 					            <a href="" ng-click="call(refInfo.laboratory.patient_id,resend)" class="text-danger"><i class="fa fa-phone"></i> Call now!</a>
 					        </p> 	
 					        <p style="font-size: 14px" ng-if="showCallingMsg">{{showCallingMsg}}</p>		
@@ -154,20 +136,14 @@
 							
 										
 						</div>
-						<!--<div class="p-2 col-md-3">
-							<p class="text-success">Amount: {{str}}</p>
-							
-							<div>
-								<a href="" ng-click="sendBill(refInfo.laboratory.patient_id,resend)"><i class="fa fa-refresh"></i> Resend OTP</a>
-							</div>
-						</div>-->
+						
                      </article>
 
                      <article ng-if="refInfo.laboratory.is_paid || paymentStatus">
                      	<div class="p-2">
                      		<i class="fa fa-check-circle" style="font-size: 42px;color: #85CE36;float: left;"></i>
                      		<aside style="padding: 20px;display: inline-block;margin-top: -20px">
-	                     		<strong style="">Payment has been made for this service successfully!</strong>
+	                     		<strong style="">Payment for the test(s) was successfully!</strong>
 	                     		<span style="display: block;"><b>Amount Paid:</b> {{paymentDetail.amount}}</span> 
 	                     		<span ><b>Date:</b> {{paymentDetail.date | date: "mediumDate"}} ( <span am-time-ago="paymentDetail.date"></span> ) </span>
 	                     		<span style="display: block;"><b>Time:</b> {{paymentDetail.date | date: "shortTime"}}</span>
@@ -184,7 +160,7 @@
 				<!-- for accordion <div ng-if="isResult" id="collapseSix" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingSix">-->
 				<div  ng-if="isResult && refInfo.laboratory.is_paid || paymentStatus" class="card p-2">
 					<div style=""  ng-if="!isPreview">
-						<div class="mb-0 mt-0 pl-0 font-1_2"  style="border-bottom: 4px solid #85CE36;display: inline-block;padding-bottom: 5px"><b>Specimen Collected</b></div>
+						<div class="mb-0 mt-0 pl-0 font-1_2"  style="display: inline-block;padding-bottom: 5px"><b>Specimen Collected</b></div>
 						<ul style="list-style: none;">
 							<li ng-repeat="item in specimen" style="display: inline-block;padding: 20px;float: left">
 								<input type="checkbox" name="" ng-model="item.status">
@@ -197,19 +173,55 @@
 					
 					<p style="text-align:right; text-decoration: underline" ng-if="isRefresh"><button ng-click="refresh()" class="fa fa-refresh"> Refresh</button></p>
 					
-						
+					<div class="clearfix"></div>
 					<div ng-if="!isPreview">
-					<div class="mb-0 mt-0 pl-0 pt-2 font-1_2"  style="border-bottom: 4px solid #85CE36;display: inline-block;padding-bottom: 5px"><b>Report Entry</b></div>
+					<div class="mb-0 mt-0 pl-0 pt-2 font-1_2"  style="display: inline-block;padding-bottom: 5px"><b>Report Entry</b></div>
 					<form>
 						<div class="row">
 						<p class="danger-mine pl-1" ng-if=" incomplete && incomplete !== ''">{{incomplete}}</p>
-						<div class="form-group col-md-12 col-lg-12 col-sm-12" ng-repeat="report in testReport">
-							<label class="font-1_1 pt-1">{{report.name}} Test Report:</label>
-							<textarea placeholder="Write..."  class="form-control"  ng-model="report.data" required= "required" style="height: 250px"></textarea>						
+						<div class="form-group">
+							<label class="font-1_1 pt-1 text-danger"></label>
+							<!--<textarea placeholder="Write..."  class="form-control"  ng-model="report.data" required= "required" style="height: 250px"></textarea>-->
+							<table class="table">
+								<thead>
+									<th>Name</th>
+									<th>TUM</th>
+									<th>Result</th>
+									<th>Range</th>
+									<th>Units</th>
+									<th>Flag</th>
+								</thead>
+							</table>
+							<div ng-repeat="report in testReport">	
+								{{createInputList(report)}}
+								<table>
+									<thead>
+										<th></th>
+										<th></th>
+										<th></th>
+										<th></th>
+										<th></th>
+										<th></th>
+									</thead>
+									<caption style="caption-side: top;" class="text-danger"><span class="text-muted">{{report.sn}})</span> {{report.name}}:</caption>
+									<tbody ng-repeat="i in report.list">
+										<td><input type="text" name="" placeholder="Enter name" ng-model="i.r_name" class="form-control"></td>
+										<td><input type="text" name="" placeholder="Enter TUM" ng-model="i.r_tum" class="form-control"></td>
+										<td><input type="text" name="" placeholder="Enter result" ng-model="i.r_result" class="form-control"></td>
+										<td><input type="text" name="" placeholder="Enter range" ng-model="i.r_range" class="form-control"></td>
+										<td><input type="text" name="" placeholder="Enter units" ng-model="i.r_unit" class="form-control"></td>
+										<td><input type="text" name="" placeholder="Enter flag" ng-model="i.r_flag" class="form-control"></td>
+									</tbody>
+								</table>
+								<div style="text-align: right;">
+									<a href="" ng-click="addReport(report)"><i class="fa fa-plus"></i> Add</a>&nbsp;&nbsp;
+									<a href="" ng-click="removeReport(report)"><i class="fa fa-minus"></i> Remove</a>
+								</div>
+							</div>					
 						</div>
 						<div class="form-group col-md-6 col-md-12 col-lg-12 col-sm-12">
-						<label class="font-1_1">CONCLUSION:</label>
-						<textarea  class="form-control" placeholder="Write..." required ng-model="lab.conclusion" style="height: 200px"></textarea>
+						<label class="font-1_1 text-danger">CONCLUSION:</label>
+						<textarea  class="form-control" placeholder="Write..." required ng-model="lab.conclusion"  ng-keyup="autoExpand($event)" id="textarea"></textarea>
 						</div>
 						
 						</div>							
@@ -268,7 +280,29 @@
 							<hr class="bg-warning">
 							<h6 class="pb-1">Findings: </h6>
 							
-							<div class="text-success pl-1 font-1_1 m-0 pt-1" ng-repeat="picked in preTest"><b class="text-danger">{{picked.name}}: </b> <span style="display: block;padding: 20px;">{{picked.data}}</span></div>
+							<div class="text-success pl-1 font-1_1 m-0 pt-1" ng-repeat="picked in preTest">
+								<b class="text-danger">{{picked.name}}: </b> <br>
+								<!--<span style="display: block;padding: 20px;">{{picked.data}}</span>-->
+								<table class="table">
+									<thead>
+										<th>Name</th>
+										<th>TUM</th>
+										<th>Result</th>
+										<th>Range</th>
+										<th>Unit</th>
+										<th>Flag</th>
+									</thead>
+									<caption style="caption-side: top;" class="text-danger"><span class="text-muted"></span></caption>
+									<tbody ng-repeat="j in picked.list">
+										<td>{{j.r_name || 'none'}}</td>
+										<td>{{j.r_tum || 'none'}}</td>
+										<td>{{j.r_result || 'none'}}</td>
+										<td>{{j.r_range || 'none'}}</td>
+										<td>{{j.r_unit || 'none'}}</td>
+										<td>{{j.r_flag || 'none'}}</td>
+									</tbody>
+								</table>
+							</div>
 							<div class="text-success pl-1 font-1_1 pt-1"><b class="text-danger">Conclusion: </b> <span style="display: block;padding: 20px;">{{lab.conclusion}}</span></div>
 							<hr class="bg-warning">
 							<div class="text-info pt-1 pl-1 pb-0" style="text-transform:uppercase;" id="noFooter"><b>Total cost of service(s): </b> {{paymentDetail.amount || str}}</div>

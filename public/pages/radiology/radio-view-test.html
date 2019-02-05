@@ -104,7 +104,7 @@
                 <div style="list-style:none;font-size:16px" id="collapseSeven" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingSeven"> -->
                 <div style="padding: 20px" class="card" ng-if="!isPreview">
                 	<article ng-if="!otpMsg && !paymentStatus">
-	                	<div class="mb-0 mt-0 pl-0 font-1_2"  style="border-bottom: 4px solid #85CE36;display: inline-block;padding-bottom: 5px"><b>Compute Cost</b></div>
+	                	<div class="mb-0 mt-0 pl-0 font-1_2"  style="display: inline-block;padding-bottom: 5px"><b>Compute Cost</b></div>
                 	 <p class="danger-mine" ng-if="compute && compute !== '' ">{{compute}}</p>                            
                      <table class="table table-responsive">
                     
@@ -157,7 +157,7 @@
                      	<div class="p-2">
                      		<i class="fa fa-check-circle" style="font-size: 42px;color: #85CE36;float: left;"></i>
                      		<aside style="padding: 20px;display: inline-block;margin-top: -20px">
-	                     		<strong style="">Payment has been made for this service successfully!</strong>
+	                     		<strong style="">Payment was made for this investigation(s) successfully!</strong>
 	                     		<span style="display: block;"><b>Amount Paid:</b> {{paymentDetail.amount}}</span> 
 	                     		<span ><b>Date:</b> {{paymentDetail.date | date: "mediumDate"}} ( <span am-time-ago="paymentDetail.date"></span> ) </span>
 	                     		<span style="display: block;"><b>Time:</b> {{paymentDetail.date | date: "shortTime"}}</span>
@@ -188,17 +188,17 @@
 					
 						
 					<div ng-if="!isPreview">
-					<div class="mb-0 mt-0 pl-0 pt-2 font-1_2"  style="border-bottom: 4px solid #85CE36;display: inline-block;padding-bottom: 5px"><b>Report Entry</b></div>
+					<div class="mb-0 mt-0 pl-0 pt-2 font-1_2"  style="display: inline-block;padding-bottom: 5px"><b>Findings</b></div>
 					<form>
 						<div class="row">
 						<p class="danger-mine pl-1" ng-if=" incomplete && incomplete !== ''">{{incomplete}}</p>
 						<div class="form-group col-md-12 col-lg-12 col-sm-12" ng-repeat="report in testReport">
-							<label class="font-1_1 pt-1">{{report.name}} Test Report:</label>
-							<textarea placeholder="Write..."  class="form-control"  ng-model="report.data" required= "required" style="height: 250px"></textarea>						
+							<label class="font-1_1 pt-1">{{report.name}}:</label>
+							<textarea placeholder="Write..."  class="form-control" ng-model="report.data" required= "required" ng-keyup="autoExpand($event)" id="textarea"></textarea>						
 						</div>
 						<div class="form-group col-md-6 col-md-12 col-lg-12 col-sm-12">
 						<label class="font-1_1 mt-2">CONCLUSION:</label>
-						<textarea  class="form-control" placeholder="Write..." required ng-model="lab.conclusion" style="height: 200px"></textarea>
+						<textarea  class="form-control" placeholder="Write..." required ng-model="lab.conclusion" ng-keyup="autoExpand($event)" id="textarea"></textarea>
 						</div>
 						
 						</div>							
@@ -207,7 +207,7 @@
 					</div>
 
 					<div ng-if="!isPreview" >	
-						<div class="mt-2 pl-0 mb-2 font-1_2"  style="border-bottom: 4px solid #85CE36;display: inline-block;padding-bottom: 5px"><b>Add Radiology Imagery</b></div>
+						<div class="mt-2 pl-0 mb-2 font-1_2"  style="display: inline-block;padding-bottom: 5px"><b>Add image</b></div>
 						<div class="col-sm-12 col-md-12 col-lg-12">	
 							<div>						
 								

@@ -4085,8 +4085,9 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
     router.put("/user/doctor/get-test-result",function(req,res){
         if(req.user){   
           console.log(req.body)      
-          model.user.findOne({user_id: req.user.user_id},{doctor_patient_session:1}).exec(function(err,data){
-            if(err) throw err;
+          //model.user.findOne({user_id: req.user.user_id},{doctor_patient_session:1}).exec(function(err,data){
+           // if(err) throw err;
+           var data = req.user;
             var elementPos = data.doctor_patient_session.map(function(x) {return x.session_id; }).indexOf(req.body.id);
             var objectFound = data.doctor_patient_session[elementPos];
             var sentObjArr = [];
@@ -4095,7 +4096,7 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
             
             while(objectFound.diagnosis.laboratory_test_results.length > count) {             
               var ranTest = [];
-              var testAndReport = [];
+             
               var objectArr = objectFound.diagnosis.laboratory_test_results.map(function(x) {return x });              
               var objFound = objectArr[count];
              
@@ -4104,14 +4105,16 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
                   ranTest.push(objFound.test_to_run[i]);
                 }
               }
-              var splitReport = objFound.report.split(",");                            
+
+              var testAndReport = objFound.report
+              /*var splitReport = objFound.report;//objFound.report.split(",");                            
               for(var j = 0; j < splitReport.length; j++) {
                 var testObj = {};
-                var seperateTestAndReport = splitReport[j].split(":");
-                testObj['test'] = seperateTestAndReport[0];
-                testObj['report'] = seperateTestAndReport[1];
+                var seperateTestAndReport = splitReport[j];
+                testObj['test'] = seperateTestAndReport.name;
+                testObj['report'] = seperateTestAndReport.report_sheet;
                 testAndReport.push(testObj);                
-              }
+              }*/
               
               
               objFound.refinedReport = testAndReport;
@@ -4121,6 +4124,8 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
               var newObjToSend = {};
               newObjToSend.report = testAndReport;
               newObjToSend.ranTest = ranTest;
+              newObjToSend.indication =  objFound.indication;
+              newObjToSend.type = "laboratory";
               newObjToSend.test_to_run = objFound.test_to_run;
               newObjToSend.conclusion = objFound.conclusion;
               newObjToSend.receive_date = objFound.receive_date;
@@ -4129,6 +4134,7 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
               newObjToSend.center_address = objFound.center_address;
               newObjToSend.center_city = objFound.center_city;
               newObjToSend.center_country = objFound.center_country;
+              newObjToSend.center_email = objFound.center_email;
               newObjToSend.center_phone = objFound.center_phone;
               newObjToSend.sub_session_id = objFound.sub_session_id;
 
@@ -4136,7 +4142,7 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
             }
             
             res.json({result:sentObjArr});
-          });
+          //});
         } else {
           res.end("Unauthorized access!")
         }
@@ -4164,14 +4170,16 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
                   ranTest.push(objFound.test_to_run[i]);
                 }
               }
-              var splitReport = objFound.report.split(",");                            
+
+              var testAndReport = objFound.report;
+              /*var splitReport = objFound.report.split(",");                            
               for(var j = 0; j < splitReport.length; j++) {
                 var testObj = {};
                 var seperateTestAndReport = splitReport[j].split(":");
                 testObj['test'] = seperateTestAndReport[0];
                 testObj['report'] = seperateTestAndReport[1];
                 testAndReport.push(testObj);                
-              }
+              }*/
               
               
               objFound.refinedReport = testAndReport;
@@ -4181,6 +4189,8 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
               var newObjToSend = {};
               newObjToSend.report = testAndReport;
               newObjToSend.ranTest = ranTest;
+              newObjToSend.indication =  objFound.indication;
+              newObjToSend.type = "radiology"
               newObjToSend.test_to_run = objFound.test_to_run;
               newObjToSend.conclusion = objFound.conclusion;
               newObjToSend.receive_date = objFound.receive_date;
@@ -7464,7 +7474,7 @@ router.post("/user/response/patients-histories",function(req,res){
                   + "has accepted your consultation request. Click the link below to log in and see his response.<br><br>"
                   + "URL: https://applinic.com/user/patient<br><br>"
                   + "Thank you for using Applinic.<br><br>"
-                  + "For ease of usage, you may download the Applinic mobile application on google play store if you use an android phone." 
+                  + "For ease of usage, you may download the Applinic mobile application on google play store if you use an android phone. " 
                   + "<a href='https://play.google.com/store/apps/details?id=com.farelandsnigeria.applinic'>Click here </a> to do so now.<br><br>"
                   + "For inquiries please call customer support on +2349080045678<br><br>"
                   + "Thank you for using Applinic.<br></br><br>"

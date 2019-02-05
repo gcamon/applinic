@@ -293,11 +293,12 @@ var myModel = function () {
 		referral_title: String,
 		sent_date: String,
 		receive_date: String,
-		report: String,
+		report: Array,//String,
 		conclusion: String,
 		session_id: String,
 		files: Array,
 		history: String,
+		indication: String,
 		payment_acknowledgement: Boolean //use to check if patient have actually paid for a service.
 	});
 	
@@ -390,7 +391,7 @@ var myModel = function () {
 	var testResultSchema = Schema({ //note received date will be set as pending if the test has not returned. other be updated to date when returned
 		receive_date: String,
 		test_to_run: Array,
-		report: String,
+		report: Array,//String,
 		conclusion: String,
 		sent_date: String,
 		test_ran_by: String,
@@ -401,7 +402,10 @@ var myModel = function () {
 		center_country: String,
 		center_phone: String,
 		center_profile_pic_url: String,
-		sub_session_id: String
+		sub_session_id: String,
+		indication: String,
+		clinical_summary: String,
+		center_email: String
 
 	});
 

@@ -122,22 +122,30 @@
     <div>
         <h5 style="">Treatment sessions</h5>
     </div>    
-    <div style="">
-        <button ng-click="getInitialComplaint()" class="btn btn-neutral" style="font-size: 14px">
-            View initial complaint
-        </button>
-        <button ng-click="createNewSession()" class="btn btn-neutral" style="font-size: 14px">
-           Create new session
-        </button>
+    <div class="row">
+        <div class="col-md-7 col-lg-7">
+            <button ng-click="getInitialComplaint()" class="text-danger btn btn-round btn-simple" style="font-size: 14px">
+                View initial complaint
+            </button>
+            <button ng-click="createNewSession()" class="text-danger btn btn-round btn-simple" style="font-size: 14px">
+               Create new session
+            </button>
+            <hr>
+        </div>
+        <div class="col-md-5 col-lg-5">
+             <!--<a href="" class="text-success btn btn-round btn-simple"  ng-click="writePrescription()"><i class="icon-Pills"></i> Drug</a> &nbsp;&nbsp;-->
+        </div>
     </div>
-    <div>
+
+    <h6 class="pl-2"><a href="" ng-click="viewSession()" style="text-decoration: underline!important;"><i class="fa fa-folder-open text-warning"></i> Sessions</a></h6> <br>
+    <div>    
     <!--<h6>Most recent</h6>
         <article  style='padding: 10px; cursor:pointer;margin-bottom: 10px;box-shadow: 1px 5px 5px rgba(0,0,0,0.5);color:#fff;position: relative;' class="bg-warning" ng-click="viewTreatmentSession(recentSession)" ng-if="recentSession.diagnosis || recentSession.date">
             <span style="display: block;">{{recentSession.date | date : "mediumDate" }}</span> <span style="padding-left: 20p" ng-bind-html="recentSession.diagnosis.presenting_complain || 'Empty'"></span> <small style="float:right">Last modified: {{recentSession.last_modified | date : "mediumDate"}}</small>
             <button class="btn btn-neutral btn-sm" style="position: absolute;top: 5px; right: 4px" ng-click="viewTreatmentSession(recentSession)">Continue With Treatment</button>
         </article>-->
        
-        <h6 style="margin-top: 35px"><i class="fa fa-folder-open text-warning"></i> Sessions</h6>  
+        
         <table class="table-responsiv table no-mobile-item-display" style="width: 100%" ng-if="sessionData.length > 0">
             <thead>
                 <th style="width: 20%">Date created</th>
@@ -169,11 +177,110 @@
             <button class="btn btn-neutral btn-sm" style="position: absolute;top: 5px; right: 4px" ng-click="viewTreatmentSession(session)">Continue With Treatment</button>
         </article>-->
     </div>
+  
     <div style="position:absolute;top:150px;left: 300px;text-align: center" ng-if="loading">
         <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange;font-size: 24px"></i>
     </div>
 </div>
 </section>
+
+
+<!--- view all session laboratory requested -->
+<section ng-if="isToViewAllSessionLab" class="card p-1">
+    <h6>All Laboratory Tests from Sessions</h6>
+    <div ng-repeat="test in testResult | orderBy: '-sent_date'" class="pb-1">
+          <div ng-if="test.center_name">
+             <label class="mt-2 mb-1">Center name: </label> <span>{{test.center_name}}</span><br>
+             <label>Address: </label> <span>{{test.center_address}} {{test.center_city}} {{test.center_country}}</span>
+          </div>
+          <div>
+               <strong>Type: </strong> <span>{{test.type}}</span>
+          </div>
+          <div>
+               <strong>Phone: </strong> <span>{{test.center_phone}}</span>
+          </div>
+          <div> 
+            <strong>Date sent: </strong> {{test.sent_date | date: "mediumDate"}} ( <span am-time-ago="test.sent_date"></span> )
+          </div>
+          <div>
+            <strong>Date received: </strong> {{test.receive_date | date: "mediumDate"}} <span ng-if="test.receive_date !== 'Pending'">( <span am-time-ago="test.receive_date"></span> )</span>
+          </div><br>
+         
+          <div>  
+            <label>Investigations:</label><br>
+            <div class="pl-1" ng-if="test.ranTest.length > 0">
+                <span ng-repeat="rantest in test.ranTest" style="display: block;padding-top: 3px"><span ng-if="rantest.sn"> {{rantest.sn}}) </span> {{rantest.name}} </span>
+            </div>
+            <div class="pl-1" ng-if="test.ranTest.length === 0">
+                <span ng-repeat="i in test.test_to_run" style="display: block;padding-top: 3px"><span ng-if="rantest.sn"> {{i.sn}}) </span> {{i.name}} </span>
+            </div>                     
+          </div>
+          <div>
+              <strong>Indication: </strong> <span>{{test.indication}}</span>
+          </div>
+          <div class="pt-1">
+              <label>Result:</label><br>
+              <p style="margin-top: 50px" ng-if="test.conclusion === 'Pending'">Awaiting investigation reports</p>
+              <div ng-if="test.conclusion !== 'Pending'" >
+                <!--<div ng-repeat = "result in test.report">                        
+                    <strong style="display: block;padding: 5px 15px">{{result.test}}:</strong>
+                    <p style="padding: 10px 20px;word-wrap: break-word;">{{result.report}}</p>
+                </div>-->
+                <div>   
+                <!--<table class="table">
+                    <thead class="bg-info text-white">
+                        <th style="width: 19%">Name</th>
+                        <th style="width: 18%">TUM</th>
+                        <th style="width: 18%">Result</th>
+                        <th style="width: 18%">Range</th>
+                        <th style="width: 18%">Units</th>
+                        <th style="width: 18%">Flag</th>
+                    </thead>
+                </table>-->
+                <!--<strong style="display: block;padding: 5px 15px"></strong>-->
+                <!--<p style="padding: 10px 20px;word-wrap: break-word;">{{result.report}}</p>-->
+                <table class="table" ng-repeat = "result in test.report" ng-if="!result.report">
+                     <thead class="bg-info text-white">
+                        <th style="width: 19%">Name</th>
+                        <th style="width: 18%">TUM</th>
+                        <th style="width: 18%">Result</th>
+                        <th style="width: 18%">Range</th>
+                        <th style="width: 18%">Units</th>
+                        <th style="width: 18%">Flag</th>
+                    </thead>
+                    <caption style="caption-side: top;color:darkRed">{{result.name}}:</caption>
+                     <tbody ng-repeat="k in result.report_sheet">
+                        <td style="width: 19%">{{k.r_name}}</td>
+                        <td style="width: 18%">{{k.r_tum}}</td>
+                        <td style="width: 18%">{{k.r_result}}</td>
+                        <td style="width: 18%">{{k.r_range}}</td>
+                        <td style="width: 18%">{{k.r_unit}}</td>
+                        <td style="width: 18%">{{k.r_flag}}</td>
+                    </tbody>                              
+                </table>
+              </div>
+              <div style="padding: 5px 5px;word-wrap: break-word;" ng-repeat="result in test.report">               
+                <blockquote ng-if="result.report">
+                    {{result.report}}
+                </blockquote>
+              </div>
+                <div class="pt-1">
+                    <label style="padding: 5px 5px">Conclusion:</label>
+                    <blockquote style="padding: 10px;word-wrap: break-word;">{{test.conclusion}}</blockquote>
+                </div>
+              </div>
+          </div>
+          
+          
+        <hr>
+      </div>
+</section>
+
+<!--- view all session laboratory requested -->
+<section ng-if="isToViewAllSessionRadio" class="card p-1">
+    <h6>All Radiology Tests from Sessions</h6>
+</section>
+
 
 <!-- view medical record-->
 <section ng-if="isToSeeRecord">
@@ -182,10 +289,10 @@
             <h5 class="">Medical Record</h5>
         </div>        
         <div class="btn-group" ng-if="medicalRecordHistory.status">&nbsp;&nbsp;
-            <button class="btn btn-neutral" ng-click="viewDiagnosis()">Medical Reports</button>&nbsp;&nbsp;
-            <button class="btn btn-neutral" ng-click="viewPreviousPrescriptions()">Pharmaceutical</button>&nbsp;&nbsp;
-            <button class="btn btn-neutral" ng-click="viewPreviousRadiology()" >Radiology</button>&nbsp;&nbsp;
-            <button class="btn btn-neutral" ng-click="viewPreviousLaboratory()">Laboratory</button>
+            <button class="btn btn-success" ng-click="viewDiagnosis()">Medical Reports</button>&nbsp;&nbsp;
+            <button class="btn btn-success" ng-click="viewPreviousPrescriptions()">Pharmaceutical</button>&nbsp;&nbsp;
+            <button class="btn btn-success" ng-click="viewPreviousRadiology()" >Radiology</button>&nbsp;&nbsp;
+            <button class="btn btn-success" ng-click="viewPreviousLaboratory()">Laboratory</button>
         </div>
         <div ng-if="!medicalRecordHistory.status" style="text-align: center">
             <div class="text-danger">{{failureMsg }}</div>
@@ -284,24 +391,25 @@
                 <input type="text" ng-model="search" class="form-control" placeholder="Filter list by test name, center name or anything">
             </div>
             <div ng-repeat="test in radiologyTests | filter: search | orderBy: '-sent_date'" class="table card" style="margin-bottom: 20px;">
-                <div>                  
-                    <strong class="text-primary">{{test.center_name}}</strong>
-                    <small style="display: block">{{test.center_address}} {{test.center_city}} {{test.center_country}}</small>  
-                    <small><i class="fa fa-phone"></i> {{test.center_phone}}</small>
-               
-                    <small><b>Date</b>: {{test.sent_date | date : "mediumDate"}}</small>                    
+                  <div>                  
+                    <strong class="text-primary">{{test.center_name}}</strong><br>
+                    <span>{{test.center_address}} {{test.center_city}} {{test.center_country}}</span><br>
+                    <span><i class="fa fa-phone"></i> {{test.center_phone}}</span>               
                 </div>
-                <div class="table table-hover table-responsive">
-                    <div>
-                        <strong>Investigations</strong><br>
-                        <ol>
-                            <li ng-repeat= "i in test.test_to_run">{{i.name}}</li>
-                        </ol>
-                    </div>  
-
-                   <div>
+                <div>
+                    <span><b>Date</b>: {{test.sent_date | date : "mediumDate"}}</span>   
+                </div>
+                <div>
+                    <strong>Indication :</strong> <span>{{test.indication}}</span>
+                </div>
+                <div>                   
+                    <strong>Investigations</strong><br>
+                    <ol>
+                        <li ng-repeat= "i in test.test_to_run">{{i.name}}</li>
+                    </ol>
+                   <!--<div>
                          <strong>Report</strong>
-                         <div ng-repeat= "i in test.test_to_run">                         
+                         <div ng-repeat= "i in test.test_to_run" ng-if="i.data">                         
                              <blockquote>
                                 <label class="text-muted">{{i.name}} :</label>
                                 <span>{{i.data}} </span> 
@@ -309,8 +417,42 @@
                              </blockquote>
                              
                          </div>
-                    </div>       
-                
+                    </div>-->
+                    <!--<div>   
+                        <table class="table">
+                            <thead class="bg-info text-white">
+                                <th style="width: 19%">Name</th>
+                                <th style="width: 18%">TUM</th>
+                                <th style="width: 18%">Result</th>
+                                <th style="width: 18%">Range</th>
+                                <th style="width: 18%">Units</th>
+                                <th style="width: 18%">Flag</th>
+                            </thead>
+                        </table>
+                      
+                        <table class="table" ng-repeat= "result in test.report">
+                            <caption style="caption-side: top;color:darkRed">{{result.name}}:</caption>
+                            <tbody ng-repeat="k in result.report_sheet">
+                                <td style="width: 19%">{{k.r_name}}</td>
+                                <td style="width: 18%">{{k.r_tum}}</td>
+                                <td style="width: 18%">{{k.r_result}}</td>
+                                <td style="width: 18%">{{k.r_range}}</td>
+                                <td style="width: 18%">{{k.r_unit}}</td>
+                                <td style="width: 18%">{{k.r_flag}}</td>
+                            </tbody>                              
+                        </table>
+                    </div>-->
+                    <div>
+                        <div ng-repeat= "i in test.test_to_run" ng-if="i.data">                         
+                             <blockquote>
+                                <label class="text-muted">{{i.name}} :</label>
+                                <span>{{i.data}} </span> 
+                                <span ng-if="!i.data">Awaiting report</span>                         
+                             </blockquote>
+                             
+                         </div>
+                    </div>
+                     
                     <div>                         
                         <strong>Conclusion</strong>
                         <blockquote>{{test.conclusion}}</blockquote>
@@ -331,23 +473,26 @@
             </div>
             <div ng-repeat="test in laboratoryTests  | filter: search | orderBy: '-sent_date'" class="table card" style="margin-bottom: 20px">
                 <div>                  
-                    <strong class="text-primary">{{test.center_name}}</strong>
-                    <small style="display: block">{{test.center_address}} {{test.center_city}} {{test.center_country}}</small>  
-                    <small><i class="fa fa-phone"></i> {{test.center_phone}}</small>
-               
-                    <small><b>Date</b>: {{test.sent_date | date : "mediumDate"}}</small>                    
+                    <strong class="text-primary">{{test.center_name}}</strong><br>
+                    <span>{{test.center_address}} {{test.center_city}} {{test.center_country}}</span><br>
+                    <span><i class="fa fa-phone"></i> {{test.center_phone}}</span>               
                 </div>
-                <div class="table-respnsive">
-                    <div>
-                        <strong>Investigations</strong><br>
-                        <ol>
-                            <li ng-repeat= "i in test.test_to_run">{{i.name}}</li>
-                        </ol>
-                    </div>  
+                <div>
+                    <span><b>Date</b>: {{test.sent_date | date : "mediumDate"}}</span>   
+                </div>
+                <div>
+                    <strong>Indication :</strong> <span>{{test.indication}}</span>
+                </div>
+                <div>                   
+                    <strong>Investigations</strong><br>
+                    <ol>
+                        <li ng-repeat= "i in test.test_to_run">{{i.name}}</li>
+                    </ol>
+                    
 
-                    <div >
+                    <!--<div>
                          <strong>Report</strong>
-                         <div ng-repeat= "i in test.test_to_run">                         
+                         <div ng-repeat= "i in test.test_to_run" ng-if="i.data">                         
                              <blockquote>
                                 <label class="text-muted">{{i.name}} :</label>
                                 <span>{{i.data}} </span> 
@@ -355,7 +500,41 @@
                              </blockquote>
                              
                          </div>
-                    </div>       
+                    </div>-->
+
+                    <div>   
+                        <!--<table class="table">
+                            <thead class="bg-info text-white">
+                                <th style="width: 19%">Name</th>
+                                <th style="width: 18%">TUM</th>
+                                <th style="width: 18%">Result</th>
+                                <th style="width: 18%">Range</th>
+                                <th style="width: 18%">Units</th>
+                                <th style="width: 18%">Flag</th>
+                            </thead>
+                        </table>-->
+                        <!--<strong style="display: block;padding: 5px 15px"></strong>-->
+                        <!--<p style="padding: 10px 20px;word-wrap: break-word;">{{result.report}}</p>-->
+                        <table class="table" ng-repeat= "result in test.report">
+                            <thead class="bg-info text-white">
+                                <th style="width: 19%">Name</th>
+                                <th style="width: 18%">TUM</th>
+                                <th style="width: 18%">Result</th>
+                                <th style="width: 18%">Range</th>
+                                <th style="width: 18%">Units</th>
+                                <th style="width: 18%">Flag</th>
+                            </thead>
+                            <caption style="caption-side: top;color:darkRed">{{result.name}}:</caption>
+                            <tbody ng-repeat="k in result.report_sheet">
+                                <td style="width: 19%">{{k.r_name}}</td>
+                                <td style="width: 18%">{{k.r_tum}}</td>
+                                <td style="width: 18%">{{k.r_result}}</td>
+                                <td style="width: 18%">{{k.r_range}}</td>
+                                <td style="width: 18%">{{k.r_unit}}</td>
+                                <td style="width: 18%">{{k.r_flag}}</td>
+                            </tbody>                              
+                        </table>
+                    </div>
                 
                     <div>                         
                         <strong>Conclusion</strong>
@@ -424,7 +603,7 @@
             <!--<textarea class="form-control p-1" placeholder="Complain" ng-model="treatment.complain"></textarea>-->
             <label><span>{{drugList.length + 1}} </span> Instructions / explanations for prescription(s) above (optional)</label><!--</span> Diagnosis ( Provisional or Final ) </label>-->
             <div class="pl-2">
-                <textarea class="form-control p-1"  placeholder="Write - for eg. Take Ibuprofen only after meals" ng-model="treatment.provisionalDiagnosis" ng-keyup="autoExpand($event)" id="textarea"></textarea>
+                <textarea class="form-control p-1"  placeholder="For eg. Take Ibuprofen only after meals" ng-model="treatment.provisionalDiagnosis" ng-keyup="autoExpand($event)" id="textarea"></textarea>
             </div>
         </div>
         <div class="pt-1"> 
@@ -560,7 +739,7 @@
 <!-- prescribe based on lab result -->
 
 <section ng-if="isToViewLabPrescriptionReq">
-    <h5 class="card p-1">Lab Result Inbox</h5>
+    <h5 class="card p-1">Laboratory Result for Prescription Request</h5>
     <div class="medical-record-Area card p-1">
     <section ng-repeat="test in labPrescriptionReq | orderBy: '-date_sent'" style="border-bottom: 1px solid #000; margin-bottom: 10px">
         <span ng-if="test.attended || theAttended.length > 0"  class="sentto">
@@ -571,26 +750,51 @@
         </span>
         <div style="text-align:center">
             <strong class="font-1_2">{{test.center_name}} </strong>
-            <span style="display:block;color:#000;font-size:12px">{{test.center_address}} {{test.cente_city}} {{test.center_country}}</span>         
-            <span style="display: block">{{test.center_phone}}</span>
-            <span am-time-ago="test.date_sent" class="text-info"></span>
+            <span style="display:block;">{{test.center_address}} {{test.cente_city}} {{test.center_country}}</span>        
+            <span style="display: block">{{test.center_phone}}</span>            
         </div>
         <div class="pb-1">
-            <strong>Date  Received: </strong> {{test.receive_date | date: 'mediumDate'}}
+            <strong>Date Requested: </strong> {{test.date_sent | date: 'mediumDate'}} ( <span am-time-ago="test.date_sent" class="text-info"></span> )
+        </div>
+        <div>
+            <strong>Indication: </strong> <span>{{test.indication}}</span>
         </div>
        
          <div class="pb-1">
            <strong>Investigation Result</strong> 
         </div>                   
-        <div>                        
-            <article ng-repeat="report in test.test_result"> 
-                <h6>{{report.name}} :</h6>  
-                <p style="padding: 20px; background-color: lightyellow;word-wrap: break-word;">{{report.data}}</p>
+        <div>                      
+            <article> 
+                <!--<h6>{{test.name}} :</h6>  
+                <p style="padding: 20px; background-color: lightyellow;word-wrap: break-word;">{{test.data}}</p>-->            
+                <div>   
+                    <table class="table">
+                        <thead class="bg-info text-white">
+                            <th style="width: 19%">Name</th>
+                            <th style="width: 18%">TUM</th>
+                            <th style="width: 18%">Result</th>
+                            <th style="width: 18%">Range</th>
+                            <th style="width: 18%">Units</th>
+                            <th style="width: 18%">Flag</th>
+                        </thead>
+                    </table>
+                    <table class="table" ng-repeat="result in test.test_result">
+                        <caption style="caption-side: top;color:darkRed">{{result.name}}:</caption>
+                        <tbody ng-repeat="k in result.list">
+                            <td style="width: 19%">{{k.r_name}}</td>
+                            <td style="width: 18%">{{k.r_tum}}</td>
+                            <td style="width: 18%">{{k.r_result}}</td>
+                            <td style="width: 18%">{{k.r_range}}</td>
+                            <td style="width: 18%">{{k.r_unit}}</td>
+                            <td style="width: 18%">{{k.r_flag}}</td>
+                        </tbody>                              
+                    </table>
+                </div>
             </article>
         </div>
         <div>
-            <h6>Conclusion :</h6> 
-            <p style="padding: 20px; background-color: lightyellow;word-wrap: break-word;">{{test.conclusion}}</p>
+            <label style="color: darkRed;margin-left: 5px">Conclusion :</label>
+            <p style="padding: 5px 5px; background-color: lightyellow;word-wrap: break-word;">{{test.conclusion}}</p>
         </div>
         <div style="text-align: right">
             <i class="fa fa-file-image-o" title="View X-Ray files associated with this test result" ng-if="test.files.length > 0"
@@ -608,7 +812,7 @@
  <!-- prescribe based on lab result -->
 
 <section ng-if="isToViewRadPrescriptionReq">
-    <h5 class="card p-1">Radio Result Inbox</h5>
+    <h5 class="card p-1">Radiology Result for prescription Request</h5>
     <div class="medical-record-Area ">
     <section ng-repeat="test in radioPrescriptionReq | orderBy: '-date_sent'" style="margin-bottom: 10px" class=" card p-1">
         <span ng-if="test.attended"  class="sentto">
@@ -618,27 +822,52 @@
             </ul>
         </span>
         <div style="text-align:center">
-        <strong class="font-1_2">{{test.center_name}} </strong>
-        <span style="display:block;color:#000;font-size:12px">{{test.center_address}} {{test.cente_city}} {{test.center_country}}</span>         
-        <span style="display: block">{{test.center_phone}}</span>
-        <span am-time-ago="test.date_sent" class="text-info"></span>
+            <strong class="font-1_2">{{test.center_name}} </strong>
+            <span style="display:block;">{{test.center_address}} {{test.cente_city}} {{test.center_country}}</span>        
+            <span style="display: block">{{test.center_phone}}</span>            
         </div>
-       <div class="pb-1">
-            <strong>Date  Received: </strong> {{test.receive_date | date: 'mediumDate'}}
+        <div class="pb-1">
+            <strong>Date Requested: </strong> {{test.date_sent | date: 'mediumDate'}} ( <span am-time-ago="test.date_sent" class="text-info"></span> )
+        </div>
+        <div>
+            <strong>Indication: </strong> <span>{{test.indication}}</span>
         </div>
        
          <div class="pb-1">
-           <strong>Investigation Result</strong> 
-        </div>                   
+           <strong>Findings</strong> 
+        </div>            
                           
-        <div>                        
-            <article ng-repeat="report in test.test_result"> 
-                <label>{{report.name}} :</label>
-                <p style="padding: 20px; background-color: lightyellow;word-wrap: break-word;">{{report.data}}</p>
+        <div>                      
+            <article ng-repeat="result in test.test_result"> 
+                <label>{{result.name}} :</label><br>
+                <blockquote style="padding: 20px; background-color: lightyellow;word-wrap: break-word;">{{result.data}}</blockquote>          
+               <!-- <div>   
+                    <table class="table">
+                        <thead class="bg-info text-white">
+                            <th style="width: 19%">Name</th>
+                            <th style="width: 18%">TUM</th>
+                            <th style="width: 18%">Result</th>
+                            <th style="width: 18%">Range</th>
+                            <th style="width: 18%">Units</th>
+                            <th style="width: 18%">Flag</th>
+                        </thead>
+                    </table>
+                    <table class="table" ng-repeat="result in test.test_result">
+                        <caption style="caption-side: top;color:darkRed">{{result.name}}:</caption>
+                        <tbody ng-repeat="k in result.list">
+                            <td style="width: 19%">{{k.r_name}}</td>
+                            <td style="width: 18%">{{k.r_tum}}</td>
+                            <td style="width: 18%">{{k.r_result}}</td>
+                            <td style="width: 18%">{{k.r_range}}</td>
+                            <td style="width: 18%">{{k.r_unit}}</td>
+                            <td style="width: 18%">{{k.r_flag}}</td>
+                        </tbody>                              
+                    </table>
+                </div>-->
             </article>
         </div>
         <div>
-            <label>Conclusion :</label> 
+            <label style="color: darkRed;margin-left: 5px">Conclusion :</label> 
             <p style="padding: 20px; background-color: lightyellow;word-wrap: break-word;">{{test.conclusion}}</p>
         </div>
         <div style="text-align: right">
@@ -657,38 +886,49 @@
              <h5>Treatment Session <small style="float: right;font-size: 14px"> <span am-time-ago="sessionData.last_modified"></span></small></h5>
              
         </div>
-        <div style="">
+        <div class="row">
           <!-- <span style="font-size:1.2em; font-weight:300;">This session was intiated on {{sessionData.date | date : "mediumDate"}}, <br> Through <b>{{sessionData.typeOfSession}}</b></span>-->
            <!--<button class="btn btn-simple" ng-click="clerk()" ng-class="{'bg-info text-white': true}">clerking</button> -->
-           <a href="" ng-click="viewSession()"><i class="fa fa-arrow-left"></i> Back to sessions</a>  &nbsp;&nbsp; 
-            <br><br>     
-           
           
-           <button class="btn btn-neutral" ng-click="FollowUpsView()" ng-class="{'bg-info text-white': (isMain || isSubView)}" style="font-size:16px">Previous Consultation(s)</button>&nbsp;&nbsp;  
+            <a href="" ng-click="viewSession()"><i class="fa fa-arrow-left"></i> Back to sessions</a>  &nbsp;&nbsp; 
+                <br><br>     
+            <div class="col-md-6 col-lg-6">  
+              
+               <button class="btn btn-simple btn-round  btn-sm" ng-click="FollowUpsView()" ng-class="{'bg-info text-white': (isMain || isSubView)}" style="font-size:16px">Previous Consultation(s)</button>&nbsp;&nbsp;  
 
-           <button class="btn btn-neutral" ng-click="subSession()" ng-class="{'bg-info text-white': isSubNote}" style="font-size: 16px">Continue</button>
+               <button class="btn btn-simple btn-round  btn-sm text-danger" ng-click="subSession()" ng-class="{'bg-info text-white': isSubNote}" style="font-size: 16px">Continue</button>
+           </div>
 
+           <div class="col-md-6 col-lg-6">
+                 <a href="" class="text-success btn btn-round btn-simple"  ng-click="writePrescription()"><i class="icon-Pills"></i> Prescribe</a>&nbsp;&nbsp;
+                  <a href="" class="text-success btn btn-round btn-simple" ng-click="laboratory()"><i class="fa fa-flask"></i> Laboratory</a>&nbsp;&nbsp;
+                 <a href="" class="text-success btn btn-round btn-simple" ng-click="radiology()"><i class="fa fa-file-image-o"></i> Radiology</a>
+           </div>
 
            
            <!--<button class="btn btn-simple" ng-click="reportView()" ng-class="{'bg-info text-white': isReportView}">Write Report</button>-->
         </div>
-        <p style="text-align: right;padding-top: 15px"><a href="" class="text-danger" ng-click="writePrescription()"><i class="icon-Pills"></i> Write prescription</a></p>
+      
         <hr>
         <div style="padding-top: 10px" ng-if="isFollowups || isMain">
             <a href="" ng-repeat="j in sessionData.diagnosis.sub_session" style="">
-                <button  class="btn btn-neutral btn-sm"  ng-class="{'bg-info text-white': j.status}" ng-click="sub(j,sessionData.diagnosis.sub_session)">{{(j.sub_session_id === 'main') ? 'Initial Clerking' : 'Consultation on'}} <span ng-if="!j.date">( {{ sessionData.date | date : "fullDate" }} ) </span><span ng-if="j.date">( {{ j.date | date : 'fullDate'}} )</span></button>
+                <button  class="btn btn-simple btn-sm btn-round"  ng-class="{'bg-info text-white': j.status}" ng-click="sub(j,sessionData.diagnosis.sub_session)">{{(j.sub_session_id === 'main') ? 'Initial Clerking' : 'Consultation on'}} <span ng-if="!j.date"> {{ sessionData.date | date : "fullDate" }}  </span><span ng-if="j.date"> {{ j.date | date : 'fullDate'}} </span></button>
             </a>
         </div>
         <div ng-if="isSubNote">
-           <button class="btn btn-neutral" ng-click="takeNote()" ng-class="{'bg-info text-white': isNote}">Continuation Sheet</button>
-            <button class="btn btn-neutral" ng-click="peView()" ng-class="{'bg-info text-white': isPE}">Physical Examination</button>
+           <button class="btn btn-success" ng-click="takeNote()" ng-class="{'bg-info text-white': isNote}">Continuation Sheet</button>
+            <button class="btn btn-success" ng-click="peView()" ng-class="{'bg-info text-white': isPE}">Physical Examination</button>
 
-           <button class="btn btn-neutral" ng-click="investView()" ng-class="{'bg-info text-white': isInvestigation}"> Request Investigation</button>
+           <button class="btn btn-success" ng-click="investView()" ng-class="{'bg-info text-white': isInvestigation}"> Request Investigation</button>
           
           
         </div>
         <form ng-if="isClerk">
             <div ng-if="isMain">
+                <div>
+                    <label>Initial Clerking on {{ sessionData.date | date : "fullDate" }}</label>
+                </div>
+                <hr>
                 <div class="col-md-12  col-sm-12 col-xs-12 form-group">
                     <label class="col-md-12 p-0" style="display:block;" for="firstname">
                         <div class="col-sm-9 p-0 pull-left"  style="font-size:1.2em; font-weight:500;">Complaint </div> 
@@ -894,32 +1134,32 @@
                     <label ng-if="subTests">Investigation Requested: </label>             
                     <div ng-repeat="test in subTests | orderBy: '-sent_date'" class="pt-1">
                       <div style="" ng-if="test.center_name">
-                         <strong> Ran by : </strong>{{test.center_name}}                          
+                         <strong> Center name : </strong>{{test.center_name}}                          
+                      </div>
+
+                      <div style="" ng-if="test.center_name">
+                         <strong> Type : </strong>{{test.type || "Laboratory"}}                          
                       </div>
                     
                       <div ng-if="test.center_name">
                          <strong> Address : </strong> {{test.center_address}} {{test.center_city}} {{test.center_country}}   
-                      </div>
-                      <br>
+                      </div>                  
                     
                       <div ng-if="test.center_name">
-                          <strong>Phone : </strong> {{test.center_phone}}
+                          <strong>Center phone number : </strong> {{test.center_phone}}
                       </div>
-                      <br>
-                    
+                      
                       <div> 
-                        <strong> Sent : </strong> {{test.sent_date | date: "mediumDate"}} ( <span am-time-ago="test.sent_date"></span> )
+                        <strong>Date sent : </strong> {{test.sent_date | date: "mediumDate"}} ( <span am-time-ago="test.sent_date"></span> )
                       </div>
-
-                      <br>
                     
                       <div>
-                        <strong> Received : </strong> {{test.receive_date | date: "mediumDate"}} ( <span am-time-ago="test.receive_date"></span> )
+                        <strong>Date received : </strong> {{test.receive_date | date: "mediumDate"}} ( <span am-time-ago="test.receive_date"></span> )
                       </div>
                      <br>
                     
                       <div>  
-                        <label>Investigation: </label> 
+                        <label>Investigation(s): </label> 
                         <div class="pl-1" ng-if="test.ranTest.length > 0">
                             <span ng-repeat="rantest in test.ranTest" style="display: block;padding-top: 3px"><span ng-if="rantest.sn"> {{rantest.sn}}) </span> {{rantest.name}} </span>
                         </div>
@@ -927,17 +1167,48 @@
                             <li ng-repeat="i in test.test_to_run" style="padding: 3px 4px"><span ng-if="rantest.sn"> {{i.sn}}) </span> {{i.name}} </li>
                         </ol>           
                       </div>
-                      <div class="pt-1">
-                          <label>Result:</label>
+                      <div>
+                           <label>Indication: </label> <span>{{test.indication}}</span> <br>  
                       </div>
+                      <div class="pt-1">
+                          <label>Findings:</label>
+                      </div>
+                     
                       <div ng-if="test.conclusion !== 'Pending'" >
-                          <div ng-repeat = "result in test.report">                        
-                            <strong style="display: block;padding: 5px 15px">{{result.test}}:</strong>
-                            <p style="padding: 10px 20px;word-wrap: break-word;">{{result.report}}</p>
+                          <div ng-if="test.type !== 'radiology'">   
+                            <!--<table class="table">
+                               
+                            </table>-->
+                            <!--<strong style="display: block;padding: 5px 15px"></strong>-->
+                            <!--<p style="padding: 10px 20px;word-wrap: break-word;">{{result.report}}</p>-->
+                            <table class="table" ng-repeat = "result in test.report" ng-if="!result.report">
+                                <thead class="bg-info text-white">
+                                    <th style="width: 19%">Name</th>
+                                    <th style="width: 18%">TUM</th>
+                                    <th style="width: 18%">Result</th>
+                                    <th style="width: 18%">Range</th>
+                                    <th style="width: 18%">Units</th>
+                                    <th style="width: 18%">Flag</th>
+                                </thead>
+                                <caption style="caption-side: top;color:darkRed">{{result.name}}:</caption>
+                                 <tbody ng-repeat="k in result.report_sheet">
+                                    <td style="width: 19%">{{k.r_name}}</td>
+                                    <td style="width: 18%">{{k.r_tum}}</td>
+                                    <td style="width: 18%">{{k.r_result}}</td>
+                                    <td style="width: 18%">{{k.r_range}}</td>
+                                    <td style="width: 18%">{{k.r_unit}}</td>
+                                    <td style="width: 18%">{{k.r_flag}}</td>
+                                </tbody>                              
+                            </table>
+                          </div>
+                          <div style="padding: 10px 20px;word-wrap: break-word;" ng-repeat="result in test.test_to_run" ng-if="test.type === 'radiology'">                                                      
+                            <blockquote ng-if="result.data">
+                                <label style="padding: 5px 5px;" class="text-muted">{{result.name}} :</label> {{result.data}}
+                            </blockquote>
                           </div>
                           <div class="pt-1">
-                            <label style="padding: 5px 15px">Conclusion:</label>
-                            <p style="padding: 10px 20px;word-wrap: break-word;">{{test.conclusion}}</p>
+                            <label style="padding: 5px 5px;color: darkRed">Conclusion:</label>
+                            <blockquote style="padding: 10px 20px;word-wrap: break-word;">{{test.conclusion}}</blockquote>
                           </div>
                       </div>
                       <p style="padding: 10px 20px " ng-if="test.conclusion === 'Pending'">Awaiting investigation report.</p>
@@ -977,12 +1248,12 @@
             <div class="clearfix"></div>
            
 
-            <div ng-if="isInvestigation" style="margin-top: -40px">             
+            <div ng-if="isInvestigation" style="margin-top:-10px">             
                 <h6>Investigation</h6>
-                <button class="btn btn-neutral btn-sm"  ng-click="newLab()"><i class="fa fa-pencil"></i> New Laboratory Request</button>
-                <button class="btn btn-neutral btn-sm"  ng-click="newRadio()" style="margin-right: 5px"><i class="fa fa-pencil"></i> New Radiology Request</button>
-                <a href="" class="btn btn-neutral btn-sm" ng-click="laboratory()">Previous Laboratory</a>
-                <a href="" class="btn btn-neutral btn-sm" ng-click="radiology()">Previous Radiology</a>
+                <button class="btn btn-simple text-danger btn-sm btn-round"  ng-click="newLab()"><i class="fa fa-pencil"></i> New Laboratory Request</button>
+                <button class="btn btn-simple text-danger btn-sm btn-round"  ng-click="newRadio()" style="margin-right: 5px"><i class="fa fa-pencil"></i> New Radiology Request</button>
+                <a href="" class="btn btn-simple text-danger btn-sm btn-round" ng-click="laboratory()">Previous Laboratory</a>
+                <a href="" class="btn btn-simple text-danger btn-sm btn-round" ng-click="radiology()">Previous Radiology</a>
                 <hr>
             </div>
 
@@ -994,13 +1265,18 @@
                          <label class="mt-2 mb-1">Center name: </label> <span>{{test.center_name}}</span><br>
                          <label>Address: </label> <span>{{test.center_address}} {{test.center_city}} {{test.center_country}}</span>
                       </div>
-                   
-                      <div> 
-                        <strong> Sent: </strong> {{test.sent_date | date: "mediumDate"}} ( <span am-time-ago="test.sent_date"></span> )
+                      <div>
+                           <strong>Type: </strong> <span>{{test.type}}</span>
                       </div>
                       <div>
-                        <strong> Recieved: </strong> {{test.receive_date | date: "mediumDate"}} <span ng-if="test.receive_date !== 'Pending'">( <span am-time-ago="test.receive_date"></span> )</span>
+                           <strong>Phone: </strong> <span>{{test.center_phone}}</span>
                       </div>
+                      <div> 
+                        <strong>Date sent: </strong> {{test.sent_date | date: "mediumDate"}} ( <span am-time-ago="test.sent_date"></span> )
+                      </div>
+                      <div>
+                        <strong>Date received: </strong> {{test.receive_date | date: "mediumDate"}} <span ng-if="test.receive_date !== 'Pending'">( <span am-time-ago="test.receive_date"></span> )</span>
+                      </div><br>
                      
                       <div>  
                         <label>Investigations:</label><br>
@@ -1011,17 +1287,58 @@
                             <span ng-repeat="i in test.test_to_run" style="display: block;padding-top: 3px"><span ng-if="rantest.sn"> {{i.sn}}) </span> {{i.name}} </span>
                         </div>                     
                       </div>
+                      <div>
+                          <strong>Indication: </strong> <span>{{test.indication}}</span>
+                      </div>
                       <div class="pt-1">
                           <label>Result:</label><br>
                           <p style="margin-top: 50px" ng-if="test.conclusion === 'Pending'">Awaiting investigation reports</p>
                           <div ng-if="test.conclusion !== 'Pending'" >
-                            <div ng-repeat = "result in test.report">                        
+                            <!--<div ng-repeat = "result in test.report">                        
                                 <strong style="display: block;padding: 5px 15px">{{result.test}}:</strong>
                                 <p style="padding: 10px 20px;word-wrap: break-word;">{{result.report}}</p>
-                            </div>
+                            </div>-->
+                            <div>   
+                            <!--<table class="table">
+                                <thead class="bg-info text-white">
+                                    <th style="width: 19%">Name</th>
+                                    <th style="width: 18%">TUM</th>
+                                    <th style="width: 18%">Result</th>
+                                    <th style="width: 18%">Range</th>
+                                    <th style="width: 18%">Units</th>
+                                    <th style="width: 18%">Flag</th>
+                                </thead>
+                            </table>-->
+                            <!--<strong style="display: block;padding: 5px 15px"></strong>-->
+                            <!--<p style="padding: 10px 20px;word-wrap: break-word;">{{result.report}}</p>-->
+                            <table class="table" ng-repeat = "result in test.report" ng-if="!result.report">
+                                 <thead class="bg-info text-white">
+                                    <th style="width: 19%">Name</th>
+                                    <th style="width: 18%">TUM</th>
+                                    <th style="width: 18%">Result</th>
+                                    <th style="width: 18%">Range</th>
+                                    <th style="width: 18%">Units</th>
+                                    <th style="width: 18%">Flag</th>
+                                </thead>
+                                <caption style="caption-side: top;color:darkRed">{{result.name}}:</caption>
+                                 <tbody ng-repeat="k in result.report_sheet">
+                                    <td style="width: 19%">{{k.r_name}}</td>
+                                    <td style="width: 18%">{{k.r_tum}}</td>
+                                    <td style="width: 18%">{{k.r_result}}</td>
+                                    <td style="width: 18%">{{k.r_range}}</td>
+                                    <td style="width: 18%">{{k.r_unit}}</td>
+                                    <td style="width: 18%">{{k.r_flag}}</td>
+                                </tbody>                              
+                            </table>
+                          </div>
+                          <div style="padding: 5px 5px;word-wrap: break-word;" ng-repeat="result in test.report">               
+                            <blockquote ng-if="result.report">
+                                {{result.report}}
+                            </blockquote>
+                          </div>
                             <div class="pt-1">
-                                <label style="padding: 5px 15px">Conclusion:</label>
-                                <p style="padding: 10px 20px;word-wrap: break-word;">{{test.conclusion}}</p>
+                                <label style="padding: 5px 5px">Conclusion:</label>
+                                <blockquote style="padding: 10px;word-wrap: break-word;">{{test.conclusion}}</blockquote>
                             </div>
                           </div>
                       </div>
@@ -1039,14 +1356,18 @@
                          <label class="mt-2 mb-1">Center name: </label> <span>{{test.center_name}}</span><br>
                          <label>Address: </label> <span>{{test.center_address}} {{test.center_city}} {{test.center_country}}</span>
                       </div>
-                   
+                      <div>
+                          <strong> Type: </strong> <span>{{test.type}}</span>
+                      </div>
+                      <div>
+                           <strong>Phone: </strong> <span>{{test.center_phone}}</span>
+                      </div>
                       <div> 
                         <strong> Sent: </strong> {{test.sent_date | date: "mediumDate"}} ( <span am-time-ago="test.sent_date"></span> )
                       </div>
                       <div>
-                        <strong> Recieved: </strong> {{test.receive_date | date: "mediumDate"}}  <span ng-if="test.receive_date !== 'Pending'">( <span am-time-ago="test.receive_date"></span> )</span>
-                      </div>
-                     
+                        <strong>Date received: </strong> {{test.receive_date | date: "mediumDate"}} <span ng-if="test.receive_date !== 'Pending'">( <span am-time-ago="test.receive_date"></span> )</span>
+                      </div><br>
                       <div>  
                         <label>Investigation: </label> <br>
                         <div class="pl-1" ng-if="test.ranTest.length > 0">
@@ -1055,16 +1376,25 @@
                         <ol class="pl-2" ng-if="test.ranTest.length === 0">
                             <li ng-repeat="i in test.test_to_run" style="padding: 3px 4px"><span ng-if="rantest.sn"> {{i.sn}}) </span> {{i.name}} </li>
                         </ol>           
+                      </div><br>
+                      <div>
+                          <strong>Indication: </strong> <span>{{test.indication}}</span>
                       </div>
                       <div class="pt-1">
                           <label>Result: </label><br>
                           <p style="margin-top: 50px" ng-if="test.conclusion === 'Pending'">Awaiting investigation reports</p>
                           <div ng-if="test.conclusion !== 'Pending'" >
-                            <div ng-repeat = "result in test.report">                        
+                            <!--<div ng-repeat = "result in test.report">                        
                                 <strong style="display: block;padding: 5px 15px">{{result.test}}:</strong>
                                 <p style="padding: 10px 20px;word-wrap: break-word;">{{result.report}}</p>
-                            </div>
-                            <div class="pt-1">
+                            </div>-->
+                          
+                         <div style="padding: 10px 20px;word-wrap: break-word;" ng-repeat="result in test.test_to_run">                                                  
+                            <blockquote ng-if="result.data">
+                                <label style="padding: 5px 5px" class="text-muted">{{result.name}} :</label> {{result.data}}
+                            </blockquote>
+                          </div>
+                          <div class="pt-1">
                                 <label style="padding: 5px 15px">Conclusion:</label>
                                 <p style="padding: 10px 20px;word-wrap: break-word;">{{test.conclusion}}</p>
                             </div>

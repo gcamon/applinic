@@ -701,14 +701,14 @@ var basicPaymentRoute = function(model,sms,io,paystack,client,nodemailer){
 				                  subject: 'Consultation Fee Paid',
 				                  html: '<table><tr><th><h3  style="background-color:#85CE36; color: #fff; padding: 30px"><img src="https://applinic.com/assets/images/applinic1.png" style="width: 250px; height: auto"/><br/><span>Healthcare... anywhere, anytime.</span></h3></th></tr><tr><td style="font-family: Arial, Helvetica, sans-serif; font-size: 14px;"><b>Dear ' + data.lastname + ",</b><br><br>"
 				                  + req.user.title + " " + req.user.lastname 
-				                  + "has paid your consultation fee and now added to the list of your patients.<br><br>" 
+				                  + " has paid your consultation fee and now added to the list of your patients.<br><br>" 
 				                  + "Details of Payment:<br><br>"
-				                  + "Amount paid: " + amount + "<br>"
+				                  + "Amount paid: " + req.user.currencyCode + " " + amount + "<br>"
 				                  + "Date: " + new Date() + "<br>"
-				                  + "Click the link below to log in and attend your patient(s).<br><br>"
+				                  + "Click the link below to log in and attend to your patient(s).<br><br>"
 				                  + "URL: https://applinic.com/user/doctor<br><br>"
 				                  + "Thank you for using Applinic.<br><br>"
-				                  + "For ease of usage, you may download the Applinic mobile application on google play store if you use an android phone." 
+				                  + "For ease of usage, you may download the Applinic mobile application on google play store if you use an android phone. " 
 				                  + "<a href='https://play.google.com/store/apps/details?id=com.farelandsnigeria.applinic'>Click here </a> to do so now.<br><br>"
 				                  + "For inquiries please call customer support on +2349080045678<br><br>"
 				                  + "Thank you for using Applinic.<br></br><br>"
@@ -863,8 +863,8 @@ var basicPaymentRoute = function(model,sms,io,paystack,client,nodemailer){
   router.put("/user/laboratory/test-result/session-update",function(req,res){
     //note that sms will be sent to patient and doctor when a lab test result is available.
     if(req.user) {
-
-    updateSession();   
+  
+    	updateSession();   
 
       function updateSession() {       
         model.user.findOne({"doctor_patient_session.session_id": req.body.laboratory.session_id},{doctor_patient_session:1,title:1,firstname:1,lastname:1}).exec(function(err,data){
@@ -872,8 +872,7 @@ var basicPaymentRoute = function(model,sms,io,paystack,client,nodemailer){
           var elementPos = data.doctor_patient_session.map(function(x) {return x.session_id }).indexOf(req.body.laboratory.session_id);
   
           if(elementPos !== -1) {
-	          var	objectFound = data.doctor_patient_session[elementPos];       
-	 
+	          var objectFound = data.doctor_patient_session[elementPos];    
 	          var pos = objectFound.diagnosis.laboratory_test_results.map(function(x) { return x.test_id;}).indexOf(req.body.laboratory.test_id);
 	          var theObj = objectFound.diagnosis.laboratory_test_results[pos];         
 	          theObj.receive_date = req.body.laboratory.date;
@@ -886,6 +885,7 @@ var basicPaymentRoute = function(model,sms,io,paystack,client,nodemailer){
 	          theObj.center_city = req.user.city;
 	          theObj.center_country = req.user.country;
 	          theObj.center_phone = req.user.phone;
+	          theObj.indication = req.body.laboratory.indication;
 	          theObj.center_profile_pic_url =  req.user.profile_pic_url;
        	 }
            
@@ -922,6 +922,7 @@ var basicPaymentRoute = function(model,sms,io,paystack,client,nodemailer){
 	          objectFound.sent_date = req.body.date || objectFound.sent_date;
 	          objectFound.test_ran_by = req.user.name;
 	          objectFound.receive_date = req.body.laboratory.date;
+	          objectFound.indication = req.body.laboratory.indication;
 	          objectFound.payment_acknowledgement = true;
         	
 
@@ -1035,6 +1036,8 @@ var basicPaymentRoute = function(model,sms,io,paystack,client,nodemailer){
           objectFound.receive_date = req.body.laboratory.date;
           objectFound.payment_acknowledgement = true;
           objectFound.history = req.body.history;
+          objectFound.indication = req.body.laboratory.indication;
+
 
 
           var random = randos.genRef(8);
@@ -1201,7 +1204,7 @@ var basicPaymentRoute = function(model,sms,io,paystack,client,nodemailer){
     if(req.user) {  	
       
       updateSession();
-
+      console.log(req.body)
       function updateSession() { 
         model.user.findOne({"doctor_patient_session.session_id": req.body.radiology.session_id},{doctor_patient_session:1,firstname:1,lastname:1,title:1,phone:1})
        .exec(function(err,data){
@@ -1222,7 +1225,9 @@ var basicPaymentRoute = function(model,sms,io,paystack,client,nodemailer){
 	          theObj.center_address = req.user.address;
 	          theObj.center_city = req.user.city;
 	          theObj.center_country = req.user.country;
+	          theObj.indication = req.body.radiology.indication;
 	          theObj.center_phone = req.user.phone;
+	          theObj.center_phone = req.body.radiology.indication;
 	          theObj.center_profile_pic_url =  req.user.profile_pic_url;
 	          theObj.files = req.body.radiology.filesUrl;
 
@@ -1256,6 +1261,7 @@ var basicPaymentRoute = function(model,sms,io,paystack,client,nodemailer){
 	          objectFound.receive_date = req.body.radiology.date;
 	          objectFound.payment_acknowledgement = true;
 	          objectFound.files = req.body.radiology.filesUrl;
+	          objectFound.indication = req.body.radiology.indication;
 
 	          //var random = Math.floor(Math.random() * 999999);
 	          data.patient_notification.unshift({
@@ -1341,9 +1347,9 @@ var basicPaymentRoute = function(model,sms,io,paystack,client,nodemailer){
     //this route is like above only it only updates the patient scan test on the patient dashboard. this is used for patient on em profile and 
     //patient who requested test without doctors approval.
     router.put("/user/radiology/test-result/patient-scan-update",function(req,res){
-    	console.log(req.body);
+    	
 	    if(req.user) {
-
+	    	console.log(req.body)
 	      updatePatient();
 
 	      function updatePatient() {
@@ -1364,6 +1370,7 @@ var basicPaymentRoute = function(model,sms,io,paystack,client,nodemailer){
 			        objectFound.sent_date = req.body.date || objectFound.sent_date;
 			        objectFound.receive_date = req.body.radiology.date;
 			        objectFound.payment_acknowledgement = true;
+			        objectFound.indication = req.body.radiology.indication;
 			        objectFound.files = req.body.radiology.filesUrl;
 		    		}
 
