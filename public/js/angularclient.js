@@ -10690,14 +10690,14 @@ app.controller('adminConsultationRequestCtrl',["$scope","$rootScope","adminConsu
       adminConsultationService.delete({id: id},function(res){
         var elemPos = $rootScope.consultations.map(function(x){return x._id}).indexOf(id);
         if(elemPos !== -1) {
-          $rootScope.consultations.splice(elemPos,1);
+          $rootScope.consultations.splice(elemPos,1); // one hour before can be redirected
         }
       })
   }
 
 
   $scope.lessThanOneHourAgo = function(date) {
-    return moment(date).isAfter(moment().subtract(24, 'hours'));
+    return moment(date).isAfter(moment().subtract(1, 'hours'));
   }
 
 }]); 
