@@ -92,9 +92,21 @@
                 }
 
 
-                 .view-animate-container {
+                .capture {
+                  width:100%!important;
+                  height: 320px!important;
+                }
+
+                .video {
+                  width: 0;
+                  height: 0
+                }
+
+                .view-animate-container {
                     position:relative;  
                     background:white;  
+                }
+                }
                 /*max-height:1000px;*/
                 background: transparent !important;
                    /*overflow-y: auto;
@@ -1491,11 +1503,11 @@
                                </div>
                                 <div class="pb-1" ng-if="patient.other">
                                      
-                                    <label class="text-muted">What is your reason for seeing a doctor?</label>
+                                    <label class="text-muted">What other issues do you have for seeing the doctor?</label>
                                     <div class="text-info">{{otherMsg}}</div>
                                     <textarea class="form-control pl-1" placeholder="write..." ng-model="patient.otherIssue" ng-keyup="autoExpand($event)" id="textarea"></textarea>
                                </div>
-                                <div class="pb-1" ng-if="patient.personal">
+                               <div class="pb-1" ng-if="patient.personal">
                                      
                                     <label class="text-muted">Why do you need a personal doctor?</label>
                                     <div class="text-info">{{personalMsg}}</div>

@@ -1621,9 +1621,9 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
     });
 
     //route for qusetions and requsts from patients to a doctor through the modal
-    router.put("/user/patient/doctor/connection",function(req,res){
+    router.post("/user/patient/doctor/connection",function(req,res){
       if(req.user){    
-        console.log(req.body)
+       
         req.body.sender_firstname = req.user.firstname;
         req.body.sender_lastname = req.user.lastname;
         req.body.sender_profile_pic_url = req.user.profile_pic_url;
@@ -1632,6 +1632,7 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
         req.body.sender_age = req.user.age;
         req.body.sender_gender = req.user.gender;
         req.body.sender_location = req.user.city + " " + req.user.country;
+        var random = genHash(10);
         if(req.files){
           req.body.files = [];
           var fileUrl;
@@ -1648,20 +1649,28 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
           }
 
         }
-        
-        var requestData = {};
-        for(var item in req.body){
-          if(req.body.hasOwnProperty(item) && item !== "receiverId") {
-              requestData[item] = req.body[item];
+      
+        //loop below was giving errors therefore commented
+
+        /*for(var key in req.body){
+          console.log(key)
+          if(req.body.hasOwnProperty(key) && key !== "receiverId") {
+              requestData[key] = req.body[key];
           }
-        }
-        
+        }*/
+
         model.user.findOne({user_id:req.body.receiverId},
           {doctor_notification:1,presence:1,set_presence:1,phone:1,firstname:1,title:1,user_id:1,email:1,specialty:1,city:1,country:1})
         .exec(function(err,data){
           if(err) throw err;
 
+          delete req.body.receiverId;
+
+          var requestData = req.body;
+
           data.doctor_notification.push(requestData);
+
+          req.body.receiverId = data.user_id;
 
           if(data.presence && data.set_presence.general && req.body.type === "consultation"){           
             io.sockets.to(req.body.receiverId).emit("receive consultation request",{status: "success"});

@@ -48,12 +48,27 @@ app.config(['$paystackProvider','$routeProvider',
 
   .when("/list",{
     templateUrl: '/assets/pages/list-doctors.html',
-    controller: 'listController'
+    controller: 'listController',
+    resolve: {
+      path: function($location,$rootScope){
+        $rootScope.path = $location.path();
+      }
+    }
   })
 
   .when("/list/:num",{
     templateUrl: '/assets/pages/list-doctors.html',
-    controller: 'listController'
+    controller: 'listController',
+    resolve: {
+      path: function($location,$rootScope){
+        $rootScope.path = $location.path();
+      }
+    }
+  })
+
+  .when("/consult-specialist",{
+    templateUrl: '/assets/pages/patient/selected-doc.html',
+    controller: 'bookingDocController'    
   })
 
   .when("/faq",{
@@ -609,7 +624,12 @@ app.config(['$paystackProvider','$routeProvider',
 
 .when("/view-response/:complaintId",{
   templateUrl: "/assets/pages/utilities/view-response.html",
-  controller: 'PatientViewResponseController'
+  controller: 'PatientViewResponseController',
+  resolve: {
+    path: function($location,$rootScope){
+      $rootScope.path = $location.path();  
+    }
+  }
 })
 
  .when("/courier",{
@@ -2910,13 +2930,13 @@ app.controller("docProfileViewController",["$scope","$rootScope","$resource","$l
 
   
    $scope.profileBook = function() {
-     modalCall("request.html","bookingDocModalController");
+     modalCall("request.html","bookingDocController");
    }
 
 
    //to be implemented later. Note for asking questions has been implimmented half way but left to be complted later
    $scope.profileAsk = function() {
-     modalCall("question.html","bookingDocModalController");
+     modalCall("question.html","bookingDocController");
    }
 
 
@@ -3620,7 +3640,8 @@ app.controller('listController',["$scope","$location","$window","localManager",
      if(checkIsLoggedIn.isLoggedIn) {
       //make a modal call
       if(type === "book") {
-        modalCall("selected-doc.html","bookingDocModalController")
+        //modalCall("selected-doc.html","bookingDocController")
+        $location.path('consult-specialist');
       } else if(type === "ask") {
         //$rootScope.holdcenter set above as doctor for the modal to use 
         $rootScope.holdcenter.id = $rootScope.holdcenter.user_id;
@@ -3686,9 +3707,11 @@ app.controller('bookController',["$scope","$http","$location","$window","localMa
      if(checkIsLoggedIn.isLoggedIn) {
       //make a modal call
       if(type === "book") {
-        modalCall("selected-doc.html","bookingDocModalController")
+        alert("jsdjs")
+        //modalCall("selected-doc.html","bookingDocController")
+        $location.path('consult-specialist');
       } else if(type === "ask") {
-        modalCall("question.html","bookingDocModalController")
+        modalCall("question.html","bookingDocController")
       }
      } else {
       modalCall('login.html',"loginController");
@@ -3712,13 +3735,13 @@ app.controller('bookController',["$scope","$http","$location","$window","localMa
                       
 }]);
 
-app.controller("bookingDocModalController",["$scope","templateService","$http","mySocket","localManager","symptomsFactory",
+app.controller("bookingDocController",["$scope","templateService","$http","mySocket","localManager","symptomsFactory",
   function($scope,templateService,$http,mySocket,localManager,symptomsFactory){
   $scope.docInfo = templateService.holdForSpecificDoc;
   $scope.isViewDoc = true;
 
   $scope.patient = {};
-
+  $scope.patient.sick = true;
   
   var list = [{sn:"a"}];
   var symptom; 
@@ -3832,7 +3855,6 @@ app.controller("bookingDocModalController",["$scope","templateService","$http","
     }
 
     $scope.sendRequest();
-
   }
 
  
@@ -3857,7 +3879,7 @@ app.controller("bookingDocModalController",["$scope","templateService","$http","
           $scope.patient.history += "Brief history of the sickness was stated as it is: <br>" +
            "<blockquote>" + $scope.patient.how + ".</blockquote>";
         }
-       
+
       } 
 
       if($scope.patient.pregnant) {
@@ -3896,7 +3918,7 @@ app.controller("bookingDocModalController",["$scope","templateService","$http","
 
 
       if($scope.patient.hasMedicated) {
-         $scope.patient.history += "This patient has tried other medications or self medications but the complaints persisted."
+         $scope.patient.history += "This patient have tried other medications or self medications but the complaints persisted."
       }
 
       if($scope.patient.personal) {
@@ -3909,21 +3931,82 @@ app.controller("bookingDocModalController",["$scope","templateService","$http","
          "<blockquote>" + $scope.patient.otherIssue + "</blockquote>";
       }
 
-
-      //alert($scope.patient.history)
-
       var user = localManager.getValue("resolveUser");
 
       if($scope.docInfo.user_id !== user.user_id) {
 
-       var random = parseInt(Math.floor(Math.random() * 999999) + "" + Math.floor(Math.random() * 99999));     
-       $scope.patient.type = "consultation";      
-       $scope.patient.message_id = random;
-       $scope.patient.date = + new Date();
-       $scope.patient.receiverId = $scope.docInfo.user_id;
-       
-      
-        $http({
+        var random = parseInt(Math.floor(Math.random() * 999999) + "" + Math.floor(Math.random() * 99999));     
+        $scope.patient.type = "consultation";      
+        $scope.patient.message_id = random;
+        $scope.patient.symptoms = list;
+        $scope.patient.date = + new Date();
+        $scope.patient.receiverId = $scope.docInfo.user_id;
+
+        var data = $scope.patient;
+
+        console.log(data)
+        var fd = new FormData();
+        
+        for(var key in data){
+          if(key !== "symptoms" && data.hasOwnProperty(key))
+            fd.append(key,data[key]);
+        };
+
+
+        for(var i = 0; i < data.symptoms.length; i++){
+          if(data.symptoms[i].name)
+            fd.append("symptoms", data.symptoms[i].name);
+        }
+
+
+        if($scope.blobs && $scope.files) {
+          var files = $scope.files.concat($scope.blobs);
+        } else if($scope.blobs) {
+          var files = $scope.blobs;
+        } else if($scope.files) {
+          var files = $scope.files;
+        }
+
+
+        if(files){
+          if(files.length <= 5){
+            for(var key in files){
+              if(files[key].size <= 8388608 && files.hasOwnProperty(key)) {    
+                fd.append("images",files[key]);          
+              } else {
+                alert("Error: Complain NOT sent! Reason: One of the file size is greater than 8mb");
+                return;
+              }
+            };
+            sizeOk();
+          } else {
+            alert("Error: Complain NOT sent! Reason: You can't upload more than 5 files with this complaint.");
+          }
+
+        } else {
+          if($scope.patient.description) {
+            sizeOk();
+          } else {
+            alert('Please write your complain')
+          }
+        }
+
+
+        function sizeOk(){
+          var xhr = new XMLHttpRequest()
+          xhr.upload.addEventListener("progress", uploadProgress, false);
+          xhr.addEventListener("load", uploadComplete, false);
+          xhr.addEventListener("error", uploadFailed, false);
+          xhr.addEventListener("abort", uploadCanceled, false);
+         
+          xhr.open("POST", "/user/patient/doctor/connection");
+          xhr.send(fd);
+          $scope.progressVisible = false;
+          player.srcObject.getVideoTracks().forEach(function(track) { track.stop()});
+        }
+
+        //original
+        /*$http({
           method  : 'PUT',
           url     : "/user/patient/doctor/connection",
           data : $scope.patient,
@@ -3934,15 +4017,288 @@ app.controller("bookingDocModalController",["$scope","templateService","$http","
             if(data.status) {             
               $scope.status = "Your request was sent successfully!";
             }
-            //$scope.isViewDoc = false;
-            //$scope.isToConfirm = false;
-            //use settime out to clear the textfieeld and the response message
-        });
+        });*/
       } else {
         alert("Booking failed! Reason: You cannot book yourself.")
       }
         
+   }
+
+
+
+   function uploadProgress(evt) {
+      $scope.progressVisible = true;
+      $scope.$apply(function(){
+          if (evt.lengthComputable) {
+            
+              $scope.progress = Math.round(evt.loaded * 100 / evt.total)
+              if($scope.progress === 100) {
+                $scope.statusMsg = "Your complaint has been queued in PWR successfully! Doctors will respond soon.";
+              }
+              
+          } else {
+              $scope.progress = 'unable to compute'
+          }
+      })
+  }
+
+
+  function uploadComplete(evt) {       
+     $scope.$apply(function(){
+      $scope.userData = JSON.parse(evt.target.responseText);
+     
+    })
+       
+  }
+
+  function uploadFailed(evt) {
+    alert("There was an error attempting to upload the file.");
+  }
+
+  function uploadCanceled(evt) {
+    $scope.$apply(function(){
+      $scope.progressVisible = false
+    })
+    alert("The upload has been canceled by the user or the browser dropped the connection.")
+  }
+
+
+
+  //take photo logic
+  var a = angular.element(document.getElementById('player2'));
+  var b = angular.element(document.getElementById('capture2'));
+  var c = angular.element(document.getElementById('canvasArea2'));
+  var player = a[0]; //document.getElementById('player2');
+  var captureButton = b[0]; //document.getElementById('capture2');
+  var canvasArea = c[0]; //document.getElementById('canvasArea2');
+  
+
+  captureButton.hasEvent = false;
+  $scope.blobs = [];
+  $scope.isCapture = false;
+  $scope.takePhoto = function() {    
+    $scope.isCapture = true;
+
+   
+  
+    var canvas;
+    var canvasId;
+    var iconClose;
+   
+    //var context = canvas.getContext('2d');
+    
+    
+    constraints = {
+      video: { width: 480, height: 280 }
+    };
+
+    captureButton.style.visibility = "visible";
+    player.height = 330;    
+      if(!captureButton.hasEvent)
+      captureButton.addEventListener('click', function() { 
+        if($scope.blobs.length <= 5) {    
+          canvas = document.createElement('canvas');
+          iconClose = document.createElement('i');
+          iconClose.className = "fa fa-times ml-1 videoPicDelete";
+          iconClose.style.marginTop = "-85px";
+          iconClose.style.marginRight = "20px";
+          iconClose.style.color = "red";         
+          canvas.className = "image-fit";
+          canvas.id = Math.floor(Math.random() * 9999999).toString();
+          iconClose.id = Math.floor(Math.random() * 99999).toString();
+          context = canvas.getContext('2d');
+          context.drawImage(player, 0, 0, canvas.width, canvas.height);
+
+
+          templateService.playAudio(5);
+          canvasArea.append(canvas);
+          canvasArea.append(iconClose);
+          //Stop all video streams.
+          //player.srcObject.getVideoTracks().forEach(track => track.stop());
+          getImage(canvas.id);
+          var elemCanvas = document.getElementById(canvas.id);
+          var elemI = document.getElementById(iconClose.id);
+          document.getElementById(iconClose.id).addEventListener('click',function(){
+            canvasArea.removeChild(elemCanvas);
+            canvasArea.removeChild(elemI);
+            removeFromBlobList(elemCanvas.id)
+          });  
+          captureButton.hasEvent = true;  
+        } else {
+          alert("Maximum number of pictures has exceeded! Please delete some and continue")
+        } 
+      });
+    
+
+    /*
+   getUserMedia = navigator.mozGetUserMedia.bind(navigator);
+  navigator.getUserMedia = getUserMedia;
+    */
+
+    var getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
+    // Attach the video stream to the video element and autoplay.
+
+    var media = getUserMedia.bind(navigator);
+
+    var onSuccess = function(stream) {
+      player.srcObject = stream;      
+    };
+
+    var onError = function(error) {
+      console.log(error);
+    };
+
+    media(constraints,onSuccess,onError);
+
+
+
+   
+  }
+
+  $scope.closeCam = function() {
+    $scope.isCapture = false;
+    player.srcObject.getVideoTracks().forEach(function(track) {track.stop()});
+  }
+
+  function getImage(canvas) {
+    try {
+    var img = new Image();
+    var Pic = document.getElementById(canvas).toDataURL("image/png");
+    Pic = Pic.replace(/^data:image\/(png|jpg);base64,/, "")
+    
+    //img.sizes();
+    //img.name();
+    //img.src = Pic;
+    if(window.atob) {
+      var blobBin = window.atob(Pic);
+      var array = [];
+      for(var i = 0; i < blobBin.length; i++) {
+          array.push(blobBin.charCodeAt(i));
+      }
+
+      var file = new Blob([new Uint8Array(array)], {type: 'image/png'});      
+      file.id = canvas;
+      $scope.blobs.push(file);
+    } else {
+      alert("Oops! Seems your browser does not support this for now.Please choose an existing file.")
     }
+
+    } catch(e) {
+      alert(e.mess)
+     
+    }
+
+  }
+
+  function removeFromBlobList(id) {
+    for(var i = 0; i < $scope.blobs.length; i++) {
+      if($scope.blobs[i].id === id) {
+        $scope.blobs.splice(i,1);
+      }
+    }
+  }
+
+   /*
+
+    var fd = new FormData();
+    
+    for(var key in data){
+      if(key !== "symptoms" && data.hasOwnProperty(key))
+        fd.append(key,data[key]);
+    };
+
+    for(var i = 0; i < data.symptoms.length; i++){
+      if(data.symptoms[i].name)
+        fd.append("symptoms", data.symptoms[i].name);
+    }
+
+    //validate the files picked.
+     //= ($scope.blobs && $scope.files) ? $scope.files.concat($scope.blobs) : $scope.blobs;
+    if($scope.blobs && $scope.files) {
+     var files = $scope.files.concat($scope.blobs);
+    } else if($scope.blobs) {
+     var files = $scope.blobs;
+    } else if($scope.files) {
+     var files = $scope.files;
+    }
+
+    if(files){
+      if(files.length <= 5){
+        for(var key in files){
+          if(files[key].size <= 8388608 && files.hasOwnProperty(key)) {    
+            fd.append("images",files[key]);          
+          } else {
+            alert("Error: Complain NOT sent! Reason: One of the file size is greater than 8mb");
+            return;
+          }
+        };
+        sizeOk();
+      } else {
+        alert("Error: Complain NOT sent! Reason: You can't upload more than 5 files with this complaint.");
+      }
+
+    } else {
+      if($scope.user.description) {
+        sizeOk();
+      } else {
+        alert('Please write your complain')
+      }
+    }
+
+    function sizeOk(){
+     
+
+      var xhr = new XMLHttpRequest()
+      xhr.upload.addEventListener("progress", uploadProgress, false);
+      xhr.addEventListener("load", uploadComplete, false);
+      xhr.addEventListener("error", uploadFailed, false);
+      xhr.addEventListener("abort", uploadCanceled, false);
+     
+      xhr.open("POST", "/user/help");
+      xhr.send(fd);
+      $scope.progressVisible = false;
+      player.srcObject.getVideoTracks().forEach(function(track) { track.stop()});
+    }
+  }
+
+
+  function uploadProgress(evt) {
+      $scope.progressVisible = true;
+      $scope.$apply(function(){
+          if (evt.lengthComputable) {
+            
+              $scope.progress = Math.round(evt.loaded * 100 / evt.total)
+              if($scope.progress === 100) {
+                $scope.statusMsg = "Your complaint has been queued in PWR successfully! Doctors will respond soon.";
+              }
+              
+          } else {
+              $scope.progress = 'unable to compute'
+          }
+      })
+  }
+
+
+  function uploadComplete(evt) {       
+     $scope.$apply(function(){
+      $scope.userData = JSON.parse(evt.target.responseText);
+     
+    })
+       
+  }
+
+  function uploadFailed(evt) {
+    alert("There was an error attempting to upload the file.");
+  }
+
+  function uploadCanceled(evt) {
+    $scope.$apply(function(){
+      $scope.progressVisible = false
+    })
+    alert("The upload has been canceled by the user or the browser dropped the connection.")
+  }
+
+   */
 
    $scope.getAnswer = function() {
      if(Object.keys($scope.patient).length > 0){
@@ -3955,7 +4311,7 @@ app.controller("bookingDocModalController",["$scope","templateService","$http","
        $scope.patient.receiverId = $scope.docInfo.user_id;
 
         $http({
-            method  : 'PUT',
+            method  : 'POST',
             url     : "/user/patient/doctor/connection",
             data : $scope.patient,
             headers : {'Content-Type': 'application/json'} 
@@ -6435,13 +6791,28 @@ app.controller("requestController",["$scope","ModalService","requestManager","te
           controller: "referRequestController"
       }).then(function(modal) {
           modal.element.modal();
-          modal.close.then(function(result) {
-             
+          modal.close.then(function(result) {             
       });
     });
   }
 
+  $scope.viewFile = function(file){
+    if(file.type == 'image/jpg' || file.type == 'image/jpeg' || file.type == 'image/png'){
+      $rootScope.file = file;
+      ModalService.showModal({
+          templateUrl: 'image-viewer.html',
+          controller: "viewerModalController"
+        }).then(function(modal) {
+          modal.element.modal();
+          modal.close.then(function(result) {             
+        });
+      });
+    } 
+  }
+
 }]);
+
+app.controller("viewerModalController",["$scope",function($scope){}])
 
 
 // inside the above modal doctor compiles acceptance object and send to paitent
@@ -6601,7 +6972,7 @@ app.controller('welcomeController',["$scope","$rootScope","templateService","loc
       templateService.holdForSpecificDoc = data;
       ModalService.showModal({
         templateUrl: "selected-doc.html",
-        controller: "bookingDocModalController"
+        controller: "bookingDocController"
       }).then(function(modal) {
         modal.element.modal();
         modal.close.then(function(result) {
@@ -18038,7 +18409,7 @@ function($scope,$location,$window,$http,templateService,localManager,templateUrl
       }
 
     } else {
-      if($scope.user.description && $scope.user.description !== undefined) {
+      if($scope.user.description) {
         sizeOk();
       } else {
         alert('Please write your complain')
@@ -18046,16 +18417,6 @@ function($scope,$location,$window,$http,templateService,localManager,templateUrl
     }
 
     function sizeOk(){
-      /*$http.post("/user/help",fd,{
-        transformRequest: angular.identity,
-        headers: {"Content-Type":undefined}
-      })
-      .success(function(response){
-        alert("Complaint sent successfully! Doctors will respond soon")
-      });    
-      //multiData.sendPic("/user/help",$scope.user);
-      */
-
       var xhr = new XMLHttpRequest()
       xhr.upload.addEventListener("progress", uploadProgress, false);
       xhr.addEventListener("load", uploadComplete, false);
@@ -18073,16 +18434,16 @@ function($scope,$location,$window,$http,templateService,localManager,templateUrl
   function uploadProgress(evt) {
       $scope.progressVisible = true;
       $scope.$apply(function(){
-          if (evt.lengthComputable) {
+        if (evt.lengthComputable) {
+          
+            $scope.progress = Math.round(evt.loaded * 100 / evt.total)
+            if($scope.progress === 100) {
+              $scope.statusMsg = "Your complaint has been queued in PWR successfully! Doctors will respond soon.";
+            }
             
-              $scope.progress = Math.round(evt.loaded * 100 / evt.total)
-              if($scope.progress === 100) {
-                $scope.statusMsg = "Your complaint has been queued in PWR successfully! Doctors will respond soon.";
-              }
-              
-          } else {
-              $scope.progress = 'unable to compute'
-          }
+        } else {
+            $scope.progress = 'unable to compute'
+        }
       })
   }
 
@@ -18113,7 +18474,7 @@ function($scope,$location,$window,$http,templateService,localManager,templateUrl
   
   captureButton.hasEvent = false;
   $scope.blobs = [];
-
+  $scope.isCapture = false;
   $scope.takePhoto = function() {    
     $scope.isCapture = true;
 
@@ -18194,6 +18555,7 @@ function($scope,$location,$window,$http,templateService,localManager,templateUrl
   }
 
   $scope.closeCam = function() {
+    $scope.isCapture = false;
     player.srcObject.getVideoTracks().forEach(function(track) {track.stop()});
   }
 

@@ -1,0 +1,332 @@
+          <div class="card-center-1">
+              <a href="#{{path}}" class="btn btn-neutral"><i class="fa fa-arrow-left"></i> Back</a>
+          </div>
+          <section class="card card-center-1 p-2">                          
+              <div class="row">
+                  <div class=" col-md-3 col-sm-12">
+                      <img alt="image description" height="120" ng-src="{{docInfo.profile_pic_url}}" class="image-fit"> 
+                  </div>
+                  <div class="col-md-9 col-sm-12 pl-1 pr-0">
+                      <div class=""><b>{{docInfo.title}} {{docInfo.firstname}} {{docInfo.lastname}}</b></div>
+                       <div class="">{{docInfo.specialty}}</div>
+                       <div>Works at <span class="">{{docInfo.work_place}}</span> <span>{{docInfo.address}} {{docInfo.city}} {{docInfo.country}}</span></div>
+                      <div><span class="">{{docInfo.experience + " years experience"}}</span></div>
+                           
+                      <ul class="nav">        
+                          <li ng-repeat = "i in docInfo.office_hour "><span>{{i.day}}</span>, <span>from {{i.from}}</span> <span>to {{i.to}}</span></li> 
+                      </ul>
+                  </div>
+              </div>
+              <hr>
+              <div>
+                  <div>                      
+                     <form class="pt-1">
+                         <div class="pb-1">
+                             <label>Why do yo want to consult {{docInfo.title}} {{docInfo.firstname}}?</label>
+                             <div class="row">
+                                 <div class="col-sm-12 col-md-5 col-lg-5">
+                                     <div>                        
+                                       <label class="custom-control custom-checkbox">
+                                          I am sick.
+                                         <input type="checkbox" class="custom-control-input" ng-model="patient.sick">
+                                          <span class="custom-control-indicator"></span>
+                                          <span class="custom-control-description" style="opacity:0;"></span>
+                                        </label> 
+                                     </div>
+                                     <div>                                    
+                                       <label class="custom-control custom-checkbox">
+                                          I am pregrant.
+                                         <input type="checkbox" class="custom-control-input" ng-model="patient.pregnant" >
+                                          <span class="custom-control-indicator"></span>
+                                          <span class="custom-control-description" style="opacity:0;"></span>
+                                        </label> 
+                                     </div>
+                                      <div>
+                                        <label class="custom-control custom-checkbox">
+                                          I want to get pregnant.
+                                         <input type="checkbox" class="custom-control-input" ng-model="patient.getPregnant">
+                                          <span class="custom-control-indicator"></span>
+                                          <span class="custom-control-description" style="opacity:0;"></span>
+                                        </label> 
+                                     </div>
+                                      <div>                                    
+                                       <label class="custom-control custom-checkbox">
+                                          I had an accident.
+                                         <input type="checkbox" class="custom-control-input" ng-model="patient.accident" >
+                                          <span class="custom-control-indicator"></span>
+                                          <span class="custom-control-description" style="opacity:0;"></span>
+                                        </label> 
+                                     </div>
+                                      <div>                                    
+                                       <label class="custom-control custom-checkbox">
+                                          I had stroke.
+                                         <input type="checkbox" class="custom-control-input" ng-model="patient.stroke" >
+                                          <span class="custom-control-indicator"></span>
+                                          <span class="custom-control-description" style="opacity:0;"></span>
+                                        </label> 
+                                     </div>
+                                 </div>                                  
+
+                            
+                                 <div class="col-sm-12 col-md-6 col-lg-6">
+                                     <div>
+                                        <label class="custom-control custom-checkbox">
+                                          I am having eye problem.
+                                         <input type="checkbox" class="custom-control-input" ng-model="patient.eye">
+                                          <span class="custom-control-indicator"></span>
+                                          <span class="custom-control-description" style="opacity:0;"></span>
+                                        </label> 
+                                     </div>
+                                     <div>
+                                        <label class="custom-control custom-checkbox">
+                                          I am having ear problem.
+                                         <input type="checkbox" class="custom-control-input" ng-model="patient.ear">
+                                          <span class="custom-control-indicator"></span>
+                                          <span class="custom-control-description" style="opacity:0;"></span>
+                                        </label> 
+                                     </div>
+                                     <div>
+                                        <label class="custom-control custom-checkbox">
+                                          I am having teeth problem.
+                                         <input type="checkbox" class="custom-control-input" ng-model="patient.teeth">
+                                          <span class="custom-control-indicator"></span>
+                                          <span class="custom-control-description" style="opacity:0;"></span>
+                                        </label> 
+                                     </div>
+                                      <div>
+                                        <label class="custom-control custom-checkbox">
+                                          I need a personal doctor
+                                         <input type="checkbox" class="custom-control-input" ng-model="patient.personal">
+                                          <span class="custom-control-indicator"></span>
+                                          <span class="custom-control-description" style="opacity:0;"></span>
+                                        </label> 
+                                     </div>
+                                     <div>                                    
+                                       <label class="custom-control custom-checkbox">
+                                          Other
+                                         <input type="checkbox" class="custom-control-input" ng-model="patient.other" >
+                                          <span class="custom-control-indicator"></span>
+                                          <span class="custom-control-description" style="opacity:0;"></span>
+                                        </label> 
+                                     </div>
+                                 </div>
+                             </div>
+                            
+                         </div>
+                         <hr>
+                         <div ng-if="patient.sick" class="pb-1">
+                             <label class="text-muted">what are your complaints?</label>
+                             <div class="text-danger">{{sympMsg}}</div>
+                             <div class="pb-1">
+                                 <div ng-repeat="i in symptomsList" style="position: relative;padding-bottom: 5px">           
+                                      <input  type="text" placeholder="Enter symptom" ng-model="name" uib-typeahead="name for name in symptoms | filter:$viewValue | limitTo:15" class="form-control" style="width:90%">
+                                      <i class="fa fa-times text-muted" style="cursor: pointer;position: absolute;bottom: 10px;right: 20px" ng-click="remove(i.sn)" ng-if="i.sn !== 'a'"></i>
+                                      {{getSymptom(name)}}
+                                  </div>
+                                  <div style="text-align: right;margin: 5px 30px 0"> 
+                                      <a href="" class="fa fa-plus text-muted" ng-click="add()"> Add</a> 
+                                  </div>
+                             </div>
+                             <label class="text-muted">How long have you been experiencing the above symptom(s)?</label>
+                             <div class="pb-1">
+                               <select class="form-control" style="width:90%" ng-model="patient.period">
+                                   <option value="" selected="selected" disabled="disabled">_select</option>
+                                   <option style="font-size: 14px">few days ago</option>
+                                   <option style="font-size: 14px">one week</option>
+                                   <option style="font-size: 14px">two weeks</option>
+                                   <option style="font-size: 14px">a month</option>
+                                   <option style="font-size: 14px">two months</option>
+                                   <option style="font-size: 14px">about six months</option>
+                                   <option style="font-size: 14px">about a year</option>
+                                   <option style="font-size: 14px">more than a year</option>
+                                   <option style="font-size: 14px">over two years</option>
+                                   <option style="font-size: 14px">many years</option>
+                               </select>
+                             </div>
+                             <label class="text-muted">How do you feel right now?</label>
+                             <div class="pb-1">
+                                 <textarea class="form-control pl-1" ng-model="patient.how" ng-keyup="autoExpand($event)" id="textarea"></textarea>
+                             </div>
+                             <label class="text-muted">Did you use any medication or try self medication before now?</label>
+                             <div class="pb-1">
+                                  <label class="custom-control custom-radio">
+                                      Yes
+                                     <input type="radio" value="yes" class="custom-control-input" ng-model="patient.hasMedicated">
+                                      <span class="custom-control-indicator"></span>
+                                      <span class="custom-control-description" style="opacity:0;"></span>
+                                  </label> <br>
+                                   <label class="custom-control custom-radio">
+                                      No.
+                                     <input type="radio" value="no" class="custom-control-input" ng-model="patient.hasMedicated">
+                                      <span class="custom-control-indicator"></span>
+                                      <span class="custom-control-description" style="opacity:0;"></span>
+                                  </label> 
+                             </div>
+                         </div>
+                         <div ng-if="patient.pregnant" class="pb-1">
+                             <label class="text-muted">How long has the pregnancy been?</label>
+                             <div class="text-danger">{{pregMsg}}</div>
+                             <div>
+                                 <select ng-model="patient.duration" class="form-control" style="width: 90%">
+                                     <option value="" selected="selected">_select</option>
+                                     <option style="font-size: 14px" > a month</option>
+                                     <option style="font-size: 14px" >less than 2 months</option>
+                                     <option style="font-size: 14px" >less than 3 months</option>
+                                     <option style="font-size: 14px" >less than 4 months</option>
+                                     <option style="font-size: 14px" >less than 5 months</option>
+                                     <option style="font-size: 14px" >less than 6 months</option>
+                                     <option style="font-size: 14px" >above 6 months</option>
+                                     <option style="font-size: 14px" >9 months</option>
+                                 </select>
+                             </div>                                   
+                         </div>
+                         <div class="pb-1" ng-if="patient.getPregnant">
+
+                            <label class="text-muted">When was your last menstruation ?</label>
+                            <div class="text-danger">{{lmpMsg}}</div>
+                            <select class="form-control" style="width:90%" ng-model="patient.lmp">
+                                <option value="" selected="selected" disabled="disabled">_select</option>
+                                <option style="font-size: 14px">few days ago</option>
+                                <option style="font-size: 14px">one week ago</option>
+                                <option style="font-size: 14px">two weeks ago</option>
+                                <option style="font-size: 14px">last month</option>
+                                <option style="font-size: 14px">two months ago</option>
+                                <option style="font-size: 14px">three months ago</option>
+                                <option style="font-size: 14px">about six months ago</option>
+                                <option style="font-size: 14px">about a year ago</option>
+                                <option style="font-size: 14px">two years ago</option>
+                                <option style="font-size: 14px">over two years ago</option>
+                                <option style="font-size: 14px">I am in menopause</option>
+                            </select>
+                            
+                            <div class="pt-1">
+                              <label class="text-muted">What complaint do you have for pregnancy ? <span class="text-muted"></span></label>
+                                <div class="text-danger">{{getPregnantMsg}}</div>
+                                <textarea class="form-control pl-1" ng-model="patient.getPregIssue" placeholder="write..." ng-keyup="autoExpand($event)" id="textarea"></textarea>
+                            </div>
+                          </div>
+                         <div class="pb-1" ng-if="patient.accident">
+                               
+                              <label class="text-muted">Where did you sustain injuries? <span class="text-muted">(e.g I had a car accident and i broke my leg )</span></label>
+                              <div class="text-danger">{{accMsg}}</div>
+                              <textarea class="form-control pl-1" ng-model="patient.injuries" placeholder="write..." ng-keyup="autoExpand($event)" id="textarea"></textarea>
+                         </div> 
+                        
+                         <div class="pb-1" ng-if="patient.stroke">
+                               
+                              <label class="text-muted">Where did you sustain paralysis?</label>
+                              <div class="text-danger">{{paraMsg}}</div>
+                              <textarea class="form-control pl-1" placeholder="write..." ng-model="patient.paralysis" ng-keyup="autoExpand($event)" id="textarea"></textarea>
+                         </div>
+
+                         <div class="pb-1" ng-if="patient.eye">
+                             
+                              <label class="text-muted">What is wrong with your eye?</label>
+                               <div class="text-danger">{{eyeMsg}}</div>
+                              <textarea class="form-control pl-1" placeholder="write..." ng-model="patient.eyeIssue" ng-keyup="autoExpand($event)" id="textarea"></textarea>
+                         </div>
+
+                         <div class="pb-1" ng-if="patient.ear">
+                              
+                              <label class="text-muted">What is wrong with your ear?</label>
+                               <div class="text-danger">{{earMsg}}</div>
+                              <textarea class="form-control pl-1" placeholder="write..." ng-model="patient.earIssue" ng-keyup="autoExpand($event)" id="textarea"></textarea>
+                         </div> 
+                         <div class="pb-1" ng-if="patient.teeth">
+                               
+                              <label class="text-muted">What is wrong with you teeth?</label>
+                              <div class="text-danger">{{teeMsg}}</div>
+                              <textarea class="form-control pl-1" placeholder="write..." ng-model="patient.teethIssue" ng-keyup="autoExpand($event)" id="textarea"></textarea>
+                         </div>
+                          <div class="pb-1" ng-if="patient.other">
+                               
+                              <label class="text-muted">What other issues do you have for seeing the doctor?</label>
+                              <div class="text-danger">{{otherMsg}}</div>
+                              <textarea class="form-control pl-1" placeholder="write..." ng-model="patient.otherIssue" ng-keyup="autoExpand($event)" id="textarea"></textarea>
+                        </div>
+                        <div class="pb-1" ng-if="patient.personal">
+                               
+                              <label class="text-muted">Why do you need a personal doctor?</label>
+                              <div class="text-danger">{{personalMsg}}</div>
+                              <textarea class="form-control pl-1" placeholder="write..." ng-model="patient.personalIssue" ng-keyup="autoExpand($event)" id="textarea"></textarea>
+                        </div>
+
+
+                        <section>  
+                          <div>
+                            <br>
+                            <label style="color: grey">Do you have an PDF, image or video associated with the complaint ?</label><br>
+                            <span class="text-muted" style="font-size:.85em;">Not more than 6 files is allowed. File size should be less than 8mb.You can upload PDF, image or video. (On desktop, hold ctrl key to select multiple files)</span><br><br>
+                            
+                             <input type="file" id="file" class=""  file-model = "files" multiple="multiple"> 
+                             <b style="display: block;padding: 15px 10px">Or</b> 
+
+                             <button ng-click="takePhoto()" class="btn btn-sm btn-danger">Take Photo</button>
+                            
+                           
+                          </div>
+                          <div> 
+                            <div id="canvasArea2" style="max-width: 420px;height: auto;margin: 0 auto">
+                              <!--<canvas id="canvas" width=150 height=120></canvas>-->
+                            </div> 
+                            
+                            <div class="clearfix"></div>
+                            <hr>         
+                            <div style="text-align: center">
+                              <div style="text-align: left;" ng-if="isCapture">
+                                <a href="" ng-click="closeCam()" class="btn btn-sm btn-neutral">Close Camera</a>
+                              </div>
+                             
+                          
+                              <video id="player2" autoplay class="video" ng-class="{'capture': isCapture}"></video>
+                           
+                             
+                              <div style="width: 40%;margin: 5px auto" ng-hide="!isCapture">
+                                <button id="capture2" class="btn-danger  btn" style="visibility: hidden;">Capture</button>  
+                              </div>
+                            </div>    
+                             
+                          </div>
+                        </section>                                                                                                         
+                     </form>                              
+                                          
+                     
+                      <!--<div style="text-align: right;">
+                          <button class="btn btn-success" ng-click="validate()" ng-if="patient.sick || patient.pregnant || patient.personal || patient.stroke || patient.ear || patient.eye || patient.teeth || patient.accident || patient.getPregnant || patient.other" ng-hide="status"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i> {{(loading) ? '' : 'Send consultation request'}}</button>
+                      </div>
+                     
+                      <div class="p-2" ng-if="status">
+                      <i class="fa fa-check" style="color: green;font-size: 18px" ng-if="status"> {{status}} </i>
+                         
+                      <button class="btn btn-simple text-muted" disabled="disabled" ng-hide="patient.sick || patient.pregnant || patient.personal || patient.stroke || patient.ear || patient.eye || patient.teeth || patient.accident || patient.getPregnant || patient.other">send consultation request</button>        
+                      </div>-->
+
+
+                    <div style="margin-top: 20px">
+                      <i class="fa fa-check pull-right font-1_4" style="color: #7dbb00" ng-if="statusMsg"> sent!</i>  
+                      <button class="btn btn-success pull-right" style="background-color: #7dbb00" ng-click="validate()" ng-if="!statusMsg">{{(progress) ? progress + '% sending...'  : 'Send Consultation Request'}}</button>
+                    </div>
+              </div>
+               
+
+              <!--<div class="col-md-12" ng-if="isToConfirm">
+                     <hr>
+                  <h4>You want to send Consultation request to
+                  </h4>                                                                              
+                  <form class="">                        
+                  <div class="row mt-1">
+                      <div class="col-md-3">
+                          <img ng-src="{{docInfo.profile_pic_url}}" style="height:120px;max-width: 120px;"/>
+                      </div>
+                      <div class="col-lg-9">
+                          <div>Dr. {{docInfo.firstname}} {{docInfo.lastname}}</div>
+                          <span style="display:block;">{{docInfo.specialty}}</span>
+                      </div>
+                  <p>Note: consultation fees will apply if your request is granted. </p>                                 
+                  <button class="btn btn-success pull-right" ng-click="sendRequest()">Continue</button>
+                  </div>
+                  </form>
+              </div>-->
+          </div> 
+      </section>
+    

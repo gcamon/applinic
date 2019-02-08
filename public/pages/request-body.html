@@ -15,7 +15,7 @@
 	        </div>
 	    </div>-->
 	    
-	<h4 class="p-1">Consultation</h4>
+	<h4 class="p-1">Consultation Request</h4>
 	<div class="row">
 		<div class="col-md-3 p-2">
         	<img ng-src="{{data.sender_profile_pic_url}}" class="img-responsive" style="height: auto;max-width: 200px; object-fit: contain">
@@ -29,14 +29,22 @@
 			<div><span style=""><b>Date received:</b> {{data.date | amCalendar}}</span></div>
 			</div>
         </div>
-	
 	</div>
 	<div class="p-1">				
 		<p style="display: block;padding: 10px 0">Dear {{checkLogIn.title}} {{checkLogIn.firstname}},<br>
 		<span>{{data.sender_firstname}} {{data.sender_lastname}} requested for your consultation. Below are the details of the request:</span></p>
-		<p style="" ng-bind-html="data.message"></p>
+		<p style="" ng-bind-html="data.message"></p>		
 	</div>	   
-
+	<div class="p-1" ng-if="data.files.length > 0">
+		<label>Attached files</label><br>
+		<section href="" class="text-success"  ng-repeat="j in data.files" style="display: inline-block;">
+			<a href="" ng-click="viewFile(j)">
+				<img src="{{j.path}}" style="max-width: 180px;height: auto;padding-right: 15px" ng-if="j.type == 'image/jpg' || j.type == 'image/jpeg' || j.type == 'image/png'">
+			</a>
+			<a href="{{'https://drive.google.com/viewerng/viewer?embedded=true&url=' + j.external_link}}" target="_blank" ng-if="j.type == 'application/pdf'" style="font-size: 18px"><i class="fa fa-file"></i> view PDF</a>
+			<a href="" ng-if="j.type == 'video/ogg' || j.type == 'video/mp4'"><i class="fa fa-video-camera"></i> Watch video</a>
+		</section>
+	</div>
 
 	<div class="p-1">Regards, <span style="display:block"><b>Applinic Management</b></span></div>
 

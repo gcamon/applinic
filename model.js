@@ -213,7 +213,8 @@ var myModel = function () {
 		sender_age: String,
 		sender_gender: String,
 		sender_location: String,
-		sender_profile_pic_url: String
+		sender_profile_pic_url: String,
+		files: Array
 	});
 
 	var periodSchema = Schema({

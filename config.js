@@ -26,8 +26,8 @@ function genHash(count) {
 
 
 aws.config.update({
-    secretAccessKey: process.env.AMAZON_SECRET_KEY,
-    accessKeyId: process.env.AMAZON_ACCESS_KEY,
+    secretAccessKey: process.env.AMAZON_SECRET_KEY || "vR7L6HZeuhfBL6Ru/qkDJFvs6dXXItoEgKK0b8kX",
+    accessKeyId: process.env.AMAZON_ACCESS_KEY || "AKIAJ3M4K5MFLD2QTCNQ",
     region: 'us-east-1'
 });
  
@@ -94,7 +94,7 @@ var configuration = function (app,model) {
 		    },
 		    key: function (req, file, cb) {
 		    	console.log(file)
-		    	var user = (req.user) ? req.user.user_id + genHash(6): genHash(14);
+		    	var user = (req.user) ? req.user.user_id + genHash(8): genHash(14);
 		    	var getMime;
 
 		    	if(file.originalname === 'blob'){

@@ -18,17 +18,21 @@
                 
                     <h6 style="text-transform: capitalize;">{{i.title}} {{i.firstname}} {{i.lastname}}</h6>
                     <div>{{i.specialty}}</div>
-                    <div><i class="fa fa-globe"></i> <b>{{i.work_place}}</b> | <em>{{i.address}}  {{i.city}}, {{i.country || "N/A"}}</em></div>
+                    <div><i class="fa fa-globe"></i> <b>{{i.work_place}}</b> | <em>{{i.address}}  {{i.city}}, {{i.country || "N/A"}}</em>
+                    </div>
+                    <div>
+                         <a href="{{i.profile_url}}" class="text-info" title="View {{i.firstname}} profile"><i class="fa fa-folder-o"></i> View profile</a>
+
+                    </div>
                 
             </section>            
             <div class="clearfix"></div>     
-            <section class="pl-1 pt-1">                                       
+            <section class="pl-1 pt-1">                                      
             
-                    <a href="{{i.profile_url}}" class="text-muted" title="View {{i.firstname}} profile"><i class="fa fa-user-md"></i> profile</a> &nbsp;
+                   
+                    <a href="" class="btn btn-neutral" ng-click="ask(i)" title="send chat message" style="margin-bottom: 10px;font-size: 14px"><i class="fa fa-comment-o"></i> message</a>                             
 
-                    <a href="" class="text-muted" ng-click="ask(i)" title="send chat message" style="margin-bottom: 10px"><i class="fa fa-comment-o"></i> message</a>&nbsp;                               
-
-                    <a href="" class="text-danger" ng-click="consultation(i)" ng-if="checkLogIn.typeOfUser === 'Patient'">consult now!</a>
+                    <a href="" class="btn btn-neutral"  style="font-size: 14px" ng-click="consultation(i)" ng-if="checkLogIn.typeOfUser === 'Patient'"><i class="fa fa-user-md"></i> Consult now!</a>
             </section>
             <hr>       
         </section> 

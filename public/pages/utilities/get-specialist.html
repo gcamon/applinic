@@ -257,38 +257,36 @@
   </div>
 </section>
 <section>	
-	<div>
-    <br>
-		<label style="color: grey">Do you have an image or video associated with the complaint ?</label>
-		
-		 <input type="file" id="file" class=""  file-model = "files" multiple="multiple"> 
-		 <b style="display: block;padding: 15px 10px">Or</b> 
+	  <div>
+        <br>
+        <label style="color: grey">Do you have an PDF, image or video associated with the complaint ?</label><br>
+        <span class="text-muted" style="font-size:.85em;">Not more than 6 files is allowed. File size should be less than 8mb.You can upload PDF, image or video. (hold ctrl key to select multiple files)</span><br><br>
 
-		 <button ng-click="takePhoto()" class="btn btn-sm btn-danger">Take Photo</button>
-		
-		<div class="pt-2"><i class="fa fa-warning">&nbsp;</i> <span class="text-muted" style="font-size:.85em;">Not more than 6 files is allowed.File size must be less than 8mb.Type jpeg,jpg,png,mp3,mp4</span></div>
+         <input type="file" id="file" class=""  file-model = "files" multiple="multiple"> 
+         <b style="display: block;padding: 15px 10px">Or</b> 
 
-	</div>
-	<div> 
-		<div id="canvasArea" class="card">
+         <button ng-click="takePhoto()" class="btn btn-sm btn-danger">Take Photo</button>
+      </div>
+	  <div> 
+		<div id="canvasArea" style="max-width: 310px;height: auto;margin: 0 auto">
 			<!--<canvas id="canvas" width=150 height=120></canvas>-->
 		</div> 
     
 		<div class="clearfix"></div>
 		<hr>         
-		<div style="text-align: center">
-			<div style="text-align: left;" ng-if="isCapture">
-				<a href="" ng-click="closeCam()" class="btn btn-sm btn-neutral">Close Camera</a>
-			</div>
+		 <div style="text-align: center">
+        <div style="text-align: left;" ng-if="isCapture">
+          <a href="" ng-click="closeCam()" class="btn btn-sm btn-neutral">Close Camera</a>
+        </div>
+       
+    
+        <video id="player" autoplay class="video" ng-class="{'capture': isCapture}"></video>
      
-	
-      <video id="player" autoplay style="width:100%;height:auto;"></video>
-   
-     
-			<div style="width: 40%;margin: 5px auto">
-			 	<button id="capture" class="btn-danger  btn" style="visibility: hidden;">Capture</button>  
-			</div>
-		</div>		
+       
+        <div style="width: 40%;margin: 5px auto" ng-hide="!isCapture">
+          <button id="capture" class="btn-danger  btn" style="visibility: hidden;">Capture</button>  
+        </div>
+    </div>    
 		 
 	</div>
 </section>
