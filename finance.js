@@ -942,7 +942,7 @@ var basicPaymentRoute = function(model,sms,io,paystack,client,nodemailer){
 	          if(data.presence === true){
 	            io.sockets.to(data.user_id).emit("notification",{status:true})
 	          } else {
-	            var msgBody = "New laboratory test result received! Visit http://applinic.com/login";
+	            var msgBody = "Laboratory test result received! Visit http://applinic.com/user/patient";
 	            var phoneNunber =  data.phone;
 	             sms.messages.create(
 	              {
@@ -1053,7 +1053,7 @@ var basicPaymentRoute = function(model,sms,io,paystack,client,nodemailer){
           if(data.presence === true){
             io.sockets.to(data.user_id).emit("notification",{status:true});
           } else {
-            var msgBody = "New laboratory test result received! Visit http://applinic.com/login"
+            var msgBody = "Laboratory test result received! Visit http://applinic.com/user/patient"
             var phoneNunber =  data.phone;
             sms.messages.create(
               {
@@ -1228,6 +1228,7 @@ var basicPaymentRoute = function(model,sms,io,paystack,client,nodemailer){
 	          theObj.indication = req.body.radiology.indication;
 	          theObj.center_phone = req.user.phone;
 	          theObj.center_phone = req.body.radiology.indication;
+	          theObj.acc = req.body.radiology.acc;
 	          theObj.center_profile_pic_url =  req.user.profile_pic_url;
 	          theObj.files = req.body.radiology.filesUrl;
 
@@ -1262,6 +1263,7 @@ var basicPaymentRoute = function(model,sms,io,paystack,client,nodemailer){
 	          objectFound.payment_acknowledgement = true;
 	          objectFound.files = req.body.radiology.filesUrl;
 	          objectFound.indication = req.body.radiology.indication;
+	          objectFound.acc = req.body.radiology.acc;
 
 	          //var random = Math.floor(Math.random() * 999999);
 	          data.patient_notification.unshift({
@@ -1276,7 +1278,7 @@ var basicPaymentRoute = function(model,sms,io,paystack,client,nodemailer){
 	          if(data.presence === true){
 	            io.sockets.to(data.user_id).emit("notification",{status:true});
 	          } else {
-	            var msgBody = "New radiology test result received! Visit http://applinic.com/login"
+	            var msgBody = "Radiology test result received! Visit http://applinic.com/user/patient"
 	            var phoneNunber =  data.phone;
 	            sms.messages.create(
 	              {
@@ -1372,6 +1374,7 @@ var basicPaymentRoute = function(model,sms,io,paystack,client,nodemailer){
 			        objectFound.payment_acknowledgement = true;
 			        objectFound.indication = req.body.radiology.indication;
 			        objectFound.files = req.body.radiology.filesUrl;
+			        objectFound.acc = req.body.radiology.acc;
 		    		}
 
 		        var random = randos.genRef(8);
@@ -1387,7 +1390,7 @@ var basicPaymentRoute = function(model,sms,io,paystack,client,nodemailer){
 		        if(data.presence === true){
 		          io.sockets.to(data.user_id).emit("notification",{status:true})
 		        } else {
-		          var msgBody = "Your radiology test result received! Visit http://applinic.com/login";
+		          var msgBody = "Your radiology test result received! Visit https://applinic.com/user/patient";
 		          var phoneNunber =  data.phone;
 		          sms.messages.create(
 	              {

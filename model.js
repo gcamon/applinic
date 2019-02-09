@@ -300,6 +300,7 @@ var myModel = function () {
 		files: Array,
 		history: String,
 		indication: String,
+		acc: String,
 		payment_acknowledgement: Boolean //use to check if patient have actually paid for a service.
 	});
 	
@@ -406,7 +407,8 @@ var myModel = function () {
 		sub_session_id: String,
 		indication: String,
 		clinical_summary: String,
-		center_email: String
+		center_email: String,
+		acc: String
 
 	});
 

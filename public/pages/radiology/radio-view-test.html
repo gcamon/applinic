@@ -43,41 +43,37 @@
 				<hr>
 
 				<div class="col-sm-12 " style="padding:20px" ng-if="!isPreview">
-					 <div class="mb-0 mt-0 pl-0 font-1_2" style="display: inline-block;padding-bottom: 5px"><b>Clinical Summary </b></div>
-					<p class="pt-1 pb-1" style="font-size:1em;text-indent: 15px;margin-bottom: 10px" ng-if="refInfo.radiology.clinical_summary">
-						<em>{{refInfo.radiology.clinical_summary}}
-						</em>
-					</p>
+					<label>Clinical Summary:</label><br>
+					<span class="pt-1 pb-1" style="font-size:1em;text-indent: 15px;margin-bottom: 10px" ng-if="refInfo.radiology.clinical_summary">
+						{{refInfo.radiology.clinical_summary}}
+					</span>
 				</div>
 
 				<div class="col-sm-12 " style="padding:20px" ng-if="!isPreview">
-					 <div class="mb-0 mt-0 pl-0 font-1_2"  style="display: inline-block;padding-bottom: 5px"><b>Indication </b></div>
-					<p class="pt-1 pb-1" style="font-size:1em;text-indent: 15px;margin-bottom: 10px" ng-if="refInfo.radiology.indication">
-						<em>{{refInfo.radiology.indication}}
-						</em>
-					</p>
+					<label>Indication:</label><br>
+					<span class="pt-1 pb-1" style="font-size:1em;text-indent: 15px;margin-bottom: 10px" ng-if="refInfo.radiology.indication">
+						{{refInfo.radiology.indication}}
+					</span>
 				</div>
 
 				<div class="col-sm-12 " style="padding:20px" ng-if="!isPreview && refInfo.radiology.patient_gender === 'female'">
-					 <div class="mb-0 mt-0 pl-0 font-1_2"  style="display: inline-block;padding-bottom: 5px"><b>Parity</b></div>
-					<p class="pt-1 pb-1" style="font-size:1em;text-indent: 15px;margin-bottom: 10px" ng-if="refInfo.radiology.parity">
-						<em>{{refInfo.radiology.parity}}
-						</em>
-					</p>
+					<label>Parity:</label><br>
+					<span class="pt-1 pb-1" style="font-size:1em;text-indent: 15px;margin-bottom: 10px" ng-if="refInfo.radiology.parity">
+						{{refInfo.radiology.parity}}
+					</span>
 				</div>
 
 				<div class="col-sm-12 " style="padding:20px" ng-if="!isPreview && refInfo.radiology.patient_gender === 'female'">
-					 <div class="mb-0 mt-0 pl-0 font-1_2"  style="display: inline-block;padding-bottom: 5px"><b>LMP </b></div>
-					<p class="pt-1 pb-1" style="font-size:1em;text-indent: 15px;margin-bottom: 10px" ng-if="refInfo.radiology.lmp">
-						<em>{{refInfo.radiology.lmp}}
-						</em>
-					</p>
+					<label>LMP: </label><br>
+					<span class="pt-1 pb-1" style="font-size:1em;text-indent: 15px;margin-bottom: 10px" ng-if="refInfo.radiology.lmp">
+						{{refInfo.radiology.lmp}}
+					</span>
 				</div>
 					
 		
 		
 				<div class="col-sm-12 card" style="padding:20px" ng-if="!isPreview">					
-					<div class="mb-0 mt-0 pl-0 font-1_2"  style="display: inline-block;padding-bottom: 5px"><b>Tests To Run</b></div>
+					<div class="mb-0 mt-0 pl-0 font-1_2"  style="display: inline-block;padding-bottom: 5px"><b>Tests</b></div>
     				<div class="mt-1"  ng-repeat = "test in refInfo.radiology.test_to_run" >
 						<label class="custom-control custom-checkbox">
 		    				<input type="checkbox" ng-model="test.select"  class="custom-control-input">
@@ -157,7 +153,7 @@
                      	<div class="p-2">
                      		<i class="fa fa-check-circle" style="font-size: 42px;color: #85CE36;float: left;"></i>
                      		<aside style="padding: 20px;display: inline-block;margin-top: -20px">
-	                     		<strong style="">Payment was made for this investigation(s) successfully!</strong>
+	                     		<strong style="">Payment for the investigation(s) was successfully!</strong>
 	                     		<span style="display: block;"><b>Amount Paid:</b> {{paymentDetail.amount}}</span> 
 	                     		<span ><b>Date:</b> {{paymentDetail.date | date: "mediumDate"}} ( <span am-time-ago="paymentDetail.date"></span> ) </span>
 	                     		<span style="display: block;"><b>Time:</b> {{paymentDetail.date | date: "shortTime"}}</span>
@@ -188,15 +184,22 @@
 					
 						
 					<div ng-if="!isPreview">
-					<div class="mb-0 mt-0 pl-0 pt-2 font-1_2"  style="display: inline-block;padding-bottom: 5px"><b>Findings</b></div>
+					<div class="mb-0 mt-0 pl-0 pt-2 font-1_2"  style="display: inline-block;padding-bottom: 5px"><b>Report Entry:</b></div>
 					<form>
 						<div class="row">
-						<p class="danger-mine pl-1" ng-if=" incomplete && incomplete !== ''">{{incomplete}}</p>
+
+						<p class="text-danger pl-1" ng-if=" incomplete && incomplete !== ''">{{incomplete}}</p>
+
+						<div class="form-group col-md-12 col-lg-12 col-sm-12">
+							<label class="font-1_1 pt-1">ACC:</label><br>
+							<input type="text" placeholder="Enter accession number" ng-model="lab.acc" class="form-control">
+						</div>
+						
 						<div class="form-group col-md-12 col-lg-12 col-sm-12" ng-repeat="report in testReport">
 							<label class="font-1_1 pt-1">{{report.name}}:</label>
 							<textarea placeholder="Write..."  class="form-control" ng-model="report.data" required= "required" ng-keyup="autoExpand($event)" id="textarea"></textarea>						
 						</div>
-						<div class="form-group col-md-6 col-md-12 col-lg-12 col-sm-12">
+						<div class="form-group col-md-12 col-md-12 col-lg-12 col-sm-12">
 						<label class="font-1_1 mt-2">CONCLUSION:</label>
 						<textarea  class="form-control" placeholder="Write..." required ng-model="lab.conclusion" ng-keyup="autoExpand($event)" id="textarea"></textarea>
 						</div>
@@ -236,12 +239,13 @@
 							  	<p ng-if="progress && progress !== 100" class="danger-mine">{{uploadStatus}}</p>
 								
 							</form>
-							<div ng-if="radio.type === 'dicom'" style="background-color: rgba(0,0,0,0.3);padding: 10px;color: #fff">							
-								<p> From Network Settings on MODALITY or DICOM VIEWER, Enter the following under <br><b>PACS Destinations:</b> <em style="display: block;">AE Title = APPLINIC</em> <em style="display:block"> IP address = 192.234.646.78</em>						
+							<div ng-if="radio.type === 'dicom'" style="background-color: rgba(0,0,0,0.3);padding: 10px;color: #fff">	
+								<p>Oops! This service is not availble at the moment. Please try next time as our team is working on it.</p>						
+								<!--<p> From Network Settings on MODALITY or DICOM VIEWER, Enter the following under <br><b>PACS Destinations:</b> <em style="display: block;">AE Title = APPLINIC</em> <em style="display:block"> IP address = 192.234.646.78</em>						
 								Save settings then select study from Worklist and send to APPLINIC cloud services. Viewing by your radiologist, physician and other third party require OTP.
 
 								<em style="display:block;padding-top: 20px">Set <b>Accession Number</b> for these investigations to <b>{{dicomPath}}</b> before sending to APPLINIC cloud services.</em>
-								</p>
+								</p>-->
 							</div>
 							
 						</div>
@@ -292,6 +296,9 @@
 							<ul>
 								<li ng-repeat = "test in refInfo.radiology.test_to_run"">{{test.name}}</li>
 							</ul>
+
+							<h6>Accession Number: </h6>
+							<p style="padding:10px 20px">{{lab.acc}}</p>
 							<!--<hr class="bg-warning">
 							<h6>Specimen collected:</h6>
 							<ul>
@@ -304,7 +311,7 @@
 							<div class="text-success pl-1 font-1_1 pt-1"><b class="text-danger">Conclusion: </b> <span style="display: block;padding: 20px;background-color: #d7dde;">{{lab.conclusion}}</span></div>
 							<div ng-if="files.length > 0">{{files.length}}files attached</div>
 							<hr class="bg-simple">
-							<div class="text-info pt-1 pl-1 pb-0" style="text-transform:uppercase;" id="noFooter"><b>Total cost of service(s): </b> {{paymentDetail.amount || str}}</div>
+							<div class="pt-1 pl-1 pb-0" style="text-transform:uppercase;" id="noFooter"><b>Total cost of service(s): </b> {{paymentDetail.amount || str}}</div>
 						</div>
 
 						<div class="pl-1 pb-1">

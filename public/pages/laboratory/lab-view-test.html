@@ -21,45 +21,42 @@
 				</div>
 				<div class="clearfix"></div>
 				<hr>
-				<div class="col-sm-12 " style="padding:20px" ng-if="!isPreview">
-					 <div class="mb-0 mt-0 pl-0 font-1_2" style="display: inline-block;padding-bottom: 5px"><b>Clinical Summary </b></div>
-					<p class="pt-1 pb-1" style="font-size:1em;text-indent: 15px;margin-bottom: 10px" ng-if="refInfo.laboratory.clinical_summary">
-						<em>{{refInfo.laboratory.clinical_summary}}
-						</em>
-					</p>
+				<div class="col-sm-12" style="padding:20px" ng-if="!isPreview">
+				    <label>Clinical Summary: </label><br>
+					<span class="pt-1 pb-1" style="" ng-if="refInfo.laboratory.clinical_summary">
+						{{refInfo.laboratory.clinical_summary}}
+					</span>
 				</div>
 
 				<div class="col-sm-12 " style="padding:20px" ng-if="!isPreview">
-					 <div class="mb-0 mt-0 pl-0 font-1_2"  style="display: inline-block;padding-bottom: 5px"><b>Indication </b></div>
-					<p class="pt-1 pb-1" style="font-size:1em;text-indent: 15px;margin-bottom: 10px" ng-if="refInfo.laboratory.indication">
-						<em>{{refInfo.laboratory.indication}}
-						</em>
-					</p>
+					<label>Indication: </label> <br>
+					<span class="pt-1 pb-1" style="font-size:1em;text-indent: 15px;margin-bottom: 10px" ng-if="refInfo.laboratory.indication">
+						{{refInfo.laboratory.indication}}						
+					</span>
 				</div>
 
 				<div class="col-sm-12 " style="padding:20px" ng-if="!isPreview && refInfo.laboratory.patient_gender === 'female'">
-					 <div class="mb-0 mt-0 pl-0 font-1_2"  style="display: inline-block;padding-bottom: 5px"><b>Parity</b></div>
-					<p class="pt-1 pb-1" style="font-size:1em;text-indent: 15px;margin-bottom: 10px" ng-if="refInfo.laboratory.parity">
-						<em>{{refInfo.laboratory.parity}}
-						</em>
-					</p>
+					<label>Parity:</label><br>
+					<span class="pt-1 pb-1" style="font-size:1em;text-indent: 15px;margin-bottom: 10px" ng-if="refInfo.laboratory.parity">
+						{{refInfo.laboratory.parity}}						
+					</span>
 				</div>
 
 				<div class="col-sm-12 " style="padding:20px" ng-if="!isPreview && refInfo.laboratory.patient_gender === 'female'">
-					 <div class="mb-0 mt-0 pl-0 font-1_2"  style="display: inline-block;padding-bottom: 5px"><b>LMP </b></div>
-					<p class="pt-1 pb-1" style="font-size:1em;text-indent: 15px;margin-bottom: 10px" ng-if="refInfo.laboratory.lmp">
-						<em>{{refInfo.laboratory.lmp}}
-						</em>
-					</p>
+					<label>LMP: </label><br>
+					<span class="pt-1 pb-1" style="font-size:1em;text-indent: 15px;margin-bottom: 10px" ng-if="refInfo.laboratory.lmp">
+						{{refInfo.laboratory.lmp}}
+						
+					</span>
 				</div>
 
 
 
 				<div class="col-sm-12 " style="padding:20px" ng-if="!isPreview">
-					 <div class="mb-0 mt-0 pl-0 font-1_2"  style="display: inline-block;padding-bottom: 5px"><b>Referring Physician</b></div>
-					<p class="pt-1 pb-1" style="font-size:1em;text-indent: 15px;margin-bottom: 10px">
+					<label>Referring Physician:</label><br>
+					<span class="pt-1 pb-1" style="font-size:1em;text-indent: 15px;margin-bottom: 10px">
 						{{refInfo.referral_title}} {{refInfo.referral_firstname}} {{refInfo.referral_lastname}}
-					</p>
+					</span>
 				</div>										
 
 				
@@ -76,7 +73,7 @@
 					
 		
 			
-				<p style="padding:30px"><i class="fa fa-warning text-danger"></i>  If <strong>any</strong> of the tests to run services above is <b>not</b> available in your center please <b>uncheck it (if checked)</b> and <a href="" style="color: blue;font-size:16px;text-decoration: unset;" ng-click="redirectTest()"> refer to another center.</a> Unchecked test is regarded as <b>not</b> available service in your center.</p>
+				<p style="padding:30px"><i class="fa fa-warning text-danger"></i>  If <strong>any</strong> of the tests above is <b>not</b> available in your center please <b>uncheck it ( if checked )</b> and <a href="" style="color: blue;font-size:16px;text-decoration: unset;" ng-click="redirectTest()"> refer to another center.</a> Unchecked test is regarded as <b>not</b> available service in your center.</p>
 				
 
 		</div>
@@ -208,9 +205,9 @@
 										<td><input type="text" name="" placeholder="Enter name" ng-model="i.r_name" class="form-control"></td>
 										<td><input type="text" name="" placeholder="Enter TUM" ng-model="i.r_tum" class="form-control"></td>
 										<td><input type="text" name="" placeholder="Enter result" ng-model="i.r_result" class="form-control"></td>
-										<td><input type="text" name="" placeholder="Enter range" ng-model="i.r_range" class="form-control"></td>
-										<td><input type="text" name="" placeholder="Enter units" ng-model="i.r_unit" class="form-control"></td>
-										<td><input type="text" name="" placeholder="Enter flag" ng-model="i.r_flag" class="form-control"></td>
+										<td><input type="text" name="range" placeholder="Enter range" ng-model="i.r_range" class="form-control"></td>
+										<td><input type="text" name="unit" placeholder="Enter units" ng-model="i.r_unit" class="form-control"></td>
+										<td><input type="text" name="flag" placeholder="Enter flag" ng-model="i.r_flag" class="form-control"></td>
 									</tbody>
 								</table>
 								<div style="text-align: right;">

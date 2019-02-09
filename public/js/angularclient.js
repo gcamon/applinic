@@ -11250,6 +11250,9 @@ app.controller("cashOutController",["$scope","$rootScope","$resource","cashOutCo
 
   user.query(function(data){
     $scope.bankDetails = data;
+    if(data.length > 0) {
+      $scope.bankDetail.acc = data[0].acc_no;
+    }
   });
 
   var cashOut = cashOutControllerService; 
@@ -14848,6 +14851,9 @@ app.controller("labTestControler",["$scope","$location","$http","templateService
       var holdInitialTestToRun = testArr;
       $scope.refInfo = objectFound;
     } else {
+      objectFound.laboratory.test_to_run.forEach(function(test){
+        test.select = true;
+      })
       var holdInitialTestToRun = objectFound.laboratory.test_to_run;
       $scope.refInfo = objectFound;
     }
@@ -15936,6 +15942,9 @@ app.controller("radioTestControler",["$scope","$location","$http","templateServi
       var holdInitialTestToRun = testArr;
       $scope.refInfo = objectFound;
     } else {
+      objectFound.radiology.test_to_run.forEach(function(item){
+        item.select = true;
+      })
       var holdInitialTestToRun = objectFound.radiology.test_to_run;
       $scope.refInfo = objectFound;
     }
@@ -16389,11 +16398,11 @@ app.controller("radioTestControler",["$scope","$location","$http","templateServi
     $scope.hasPreviewed = false;
     $scope.errorList = [];
     refInfo.radiology.test_to_run = $scope.testReport;
-    /*refInfo.radiology.test_to_run.forEach(function(test){
+    refInfo.radiology.test_to_run.forEach(function(test){
       if(!test.data) {
         $scope.errorList.push(test.name);
       }
-    });*/
+    });
 
     $scope.$watch("errorList",function(newVal,oldVal){
       if( $scope.errorList.length > 0 ) {
@@ -16432,6 +16441,7 @@ app.controller("radioTestControler",["$scope","$location","$http","templateServi
     date = + new Date();
 
     refInfo.radiology.report = reportSheet;
+    refInfo.radiology.acc = $scope.lab.acc;
     refInfo.radiology.test_ran = $scope.testReport;
     refInfo.radiology.conclusion = $scope.lab.conclusion;
     refInfo.radiology.test_to_run = holdInitialTestToRun;
