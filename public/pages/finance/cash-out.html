@@ -39,6 +39,7 @@
 	</div>
 	<p class="p-3" ng-if="bankDetails.length == 0">No bank account was added.<a href="#/bank-details">Add one now!</a></p>
 	<hr>
+	<p>Tips: You cannot leave a zero amount in your wallet.</p>
 	<form ng-submit="auth(resend)" class="row" ng-if="!isVerify">
 		<div class="col-md-12 form-group">
 		    <label for="bname">Amount to cash out: <b>{{str}}</b></label>

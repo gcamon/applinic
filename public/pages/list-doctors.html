@@ -23,17 +23,15 @@
                 <a href="{{i.profile_url}}" class="text-info" title="View {{i.firstname}} profile"><i class="fa fa-folder-o"></i> profile</a>                         
             </section>            
                  
-            <section class="pl-1 pt-1 col-md-7">   
-                    <a href="" class="btn btn-simple text-danger" ng-click="ask(i)" title="send chat message"><i class="fa fa-comment-o"></i> message</a>                             
-
-                    <a href="" class="btn btn-simple text-danger" ng-click="consultation(i)" ng-if="checkLogIn.typeOfUser === 'Patient'"><i class="fa fa-user-md"></i> Consult now!</a>
+            <section class="pt-1 col-md-7">   
+                <a href="" class="btn btn-simple text-danger" ng-click="ask(i)" title="send chat message"><i class="fa fa-comment-o"></i> message</a>                            
+                <a href="" class="btn btn-simple text-danger" ng-click="consultation(i)" ng-if="checkLogIn.typeOfUser === 'Patient'"><i class="fa fa-user-md"></i> Consult now!</a>
             </section>
             <div class="clearfix"></div>
             <hr>       
         </section> 
 
         <div class="tg-btnarea">
-            <!--<a class="tg-btn" href="#" ng-if="data">load more</a>-->
             <div class="info-div" ng-show="isNotFound">
                 <p class="alert alert-warning">Oops! No match found based on your search criteria.<br>
                 Try again..</p>           

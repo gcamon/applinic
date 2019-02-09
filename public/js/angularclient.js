@@ -11312,14 +11312,13 @@ app.controller("cashOutController",["$scope","$rootScope","$resource","cashOutCo
       $scope.loading = true;
       var otp = paymentVerificationService; 
       otp.verify(sendObj,function(data){
-        $scope.loading = false;
-        $scope.isVerify = true;
+        $scope.loading = false;      
         if(data.success){
           $scope.otpMsg = "One Time Pin was sent to your phone. Use the pin to verify is you."
+          $scope.isVerify = true;
         } else {
           alert(data.message);
-        }
-        
+        }      
       });
     }
   }
