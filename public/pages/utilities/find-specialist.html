@@ -1,9 +1,9 @@
 
  <div class="card card-center-1 p-1">
  <form>
-     <h3 class=" mb-0" style="">Find Doctor</h3><br>
-     <div class="">
-        <label for="lastname">Search Options </label>
+     <h4 class=" mb-0" style=""><i class="fa fa-user-md"></i> Find Doctor</h4><br>
+     <div class="col-md-5">
+        <label for="lastname">Search options: </label>
         <select class="custom-select form-control" ng-model="user.creteria" style="font-size: 14px!important">
           <option selected value="doctorname">Find by name (default)</option>
           <option value="specialty">City &amp; Doctor's Specialty</option>
@@ -11,15 +11,15 @@
           <option value="disease">Find by disease</option>
         </select>
      </div>
-    <hr>
+      <div class="clearfix"></div>
       <div class="form-group" ng-if="isName === true">
-        <label for="lastname" class="pl-0">Doctor's name</label>
+        <label for="lastname" class="pl-0">Doctor's name:</label>
         <!--<input type="text" class="form-control" placeholder="e.g Dr Ede or Ede" ng-model="user.name" style="font-size: 14px!important">-->
         <input type="text" class="form-control" placeholder="e.g Dr Ede or Ede"  id=""  uib-typeahead="name.name for name in names | filter:$viewValue | limitTo:15" ng-model="user.name" style="font-size: 14px!important">
       </div>
 
        <div class="form-group" ng-if="isSpecialty === true">
-           <label for="lastname">City </label>
+           <label for="lastname">City: </label>
         <input type="text" class="form-control" placeholder="Enter city name"    uib-typeahead="city for city in cities | filter:$viewValue | limitTo:15" ng-model="user.city" style="font-size: 14px!important">
         {{getCity(city)}} 
       </div>
@@ -28,17 +28,17 @@
 
 
       <div class="form-group" ng-if="isSpecialty === true">
-          <label for="specialty">Specialty </label>
+          <label for="specialty">Specialty: </label>
            <input type="text" class="form-control" placeholder="Enter specialty"  id=""  uib-typeahead="specialty for specialty in allSpecialties | filter:$viewValue | limitTo:15" ng-model="user.specialty" style="font-size: 14px!important">
       </div>
 
       <div class="form-group" ng-if="isDoctorId === true">
-          <label for="doctorId">Doctor's ID</label>
+          <label for="doctorId">Doctor's ID:</label>
         <input type="text" class="form-control"  placeholder="Enter Doctor's ID" ng-model="user.doctorId" style="font-size: 14px!important">
       </div>
 
       <div class="form-group" ng-if="isDisease === true">
-        <label for="disease">Find by disease</label>
+        <label for="disease">Find by disease: </label>
         <!--<input type="text" class="form-control"  placeholder="Enter disease eg Malaria" ng-model="user.disease" style="font-size: 14px!important">-->
          <input type="text" class="form-control" placeholder="Enter e.g sickle cell"    uib-typeahead="disease for disease in diseases | filter:$viewValue | limitTo:15" ng-model="user.disease" style="font-size: 14px!important">
       </div>

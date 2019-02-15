@@ -29,6 +29,28 @@
               body {
                 background-color: #f0f3f6;
               }
+
+              .mobile-item-display {
+                    display: none;
+               }
+
+
+               @media screen and (max-width: 720px) {
+                 
+
+                  .no-mobile-item-display {
+                    display: none;
+                  }
+
+                .table{
+                   border: none!important;
+                }
+
+
+                 .mobile-item-display {
+                    display: block;
+                  }
+              }
           </style>
           <script src="/assets/js/vendor2.js"></script>
           <script type="text/javascript" src="/assets/js/source.js"></script>
@@ -55,7 +77,7 @@
         </div>
         <main class="container" ng-controller="filedAgentController" ng-cloak >
          <% for (var i = agent.couriers.length-1; i >= 0; i--) { %>
-            <div class="pb-1 card row" id="<%= agent.couriers[i]._id %>">        
+            <div class="pb-1 card row mobile-item-display" id="<%= agent.couriers[i]._id %>">        
             <span style="float: right;padding: 10px 20px"  class="text-muted" am-time-ago="'<%= agent.couriers[i].delivery_start_date %>'"></span>
             <div class="col-sm-12 col-md-3 col-lg-3">
                 <h6 style="text-decoration: underline;padding: 10px 0">Patient details</h6>
@@ -110,6 +132,19 @@
                 </div> 
             </div>
            </div>
+
+           <div class="mobile-item-display">
+            <% for(var j = 0; j < agent.couriers[i].prescription_body.length; j++) { %>                            
+                <table class="table card">
+                    <thead><th>sn: </th> <td><%= agent.couriers[i].prescription_body[j].sn %></td></thead>
+                    <thead><th>Name: </th> <td><%= agent.couriers[i].prescription_body[j].drug_name %></td></thead>
+                    <thead><th>Cost: </th> <td>{{('<%= agent.couriers[i].prescription_body[j].cost %>') ? <%= agent.couriers[i].prescription_body[j].cost %>:""}}</td></thead>
+                    <thead><th>Doage: </th> <td><%= agent.couriers[i].prescription_body[j].dosage %></td></thead>
+                    <thead><th>Frequency: </th> <td><%= agent.couriers[i].prescription_body[j].frequency %></td></thead>
+                    <thead><th>Duration: </th> <td><%= agent.couriers[i].prescription_body[j].duration %></td></thead>                   
+                </table>
+            <% } %>
+            </div>
         <% } %>
         </main>
                     

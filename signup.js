@@ -77,7 +77,7 @@ var signupRoute = function(model,sms,geonames,paystack,io,nodemailer) {
 
 
 					User.ewallet = {
-						available_amount: (req.body.typeOfUser === "Patient") ? 5000 : 0,
+						available_amount: (req.body.typeOfUser === "Patient") ? 1000 : 0,
 						transaction: []
 					}
 

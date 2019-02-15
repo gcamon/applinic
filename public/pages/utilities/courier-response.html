@@ -1,5 +1,9 @@
+
+<div class="card-center-1" ng-if="path">
+	<a href="#/courier" class="btn btn-simple"><i class="fa fa-arrow-left"></i> Back</a>
+</div>
 <div class="card p-2  card-center-1" style="position: relative;" ng-if="courierResponse">
-	<h5>Courier Order </h5>
+	<h5><i class="fa fa-bicycle"></i> Courier Order </h5>
 	<!--<span style="position: absolute;top: 20px;right: 20px">Order ID: {{courierResponse.request_id}}</span>-->
 	<hr>
 	<div>
@@ -25,7 +29,7 @@
 	<div>
 		Address: {{courierResponse.center_address}}
 	</div>
-	<div ng-if="courierResponse.is_paid">
+	<div>
 		Phone: {{courierResponse.center_phone}}
 	</div>
 	<hr>

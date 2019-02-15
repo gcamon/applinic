@@ -381,7 +381,12 @@ app.config(['$paystackProvider','$routeProvider',
 
  .when("/pharmacy/drug-search/result",{
   templateUrl: "/assets/pages/utilities/drug-search-result.html",
-  controller: 'drugSearchResultController'
+  controller: 'drugSearchResultController',
+  resolve: {
+    path: function($location,$rootScope){
+      $rootScope.path = $location.path();  
+    }
+  }
  })
 
  .when("/drug/selected-pharmacy",{
@@ -634,7 +639,7 @@ app.config(['$paystackProvider','$routeProvider',
 
  .when("/courier",{
   templateUrl: "/assets/pages/utilities/courier.html",
-  controller: 'courierController'
+  controller: 'courierController',
  })
 
  .when("/courier-response/:id",{
@@ -18801,8 +18806,8 @@ app.controller("courierResponseCtrl",["$scope","$rootScope","courierResponseServ
 
 }]);
 
-app.controller("courierController",["$scope","$rootScope","$location","$http","localManager","Drugs","cities",
-function($scope,$rootScope,$location,$http,localManager,Drugs,cities){
+app.controller("courierController",["$scope","$rootScope","$location","$http","localManager","Drugs","cities","courierResponseService",
+function($scope,$rootScope,$location,$http,localManager,Drugs,cities,courierResponseService){
   $rootScope.back = (!$rootScope.back) ? $rootScope.currPath : ($rootScope.back || localManager.getValue("currentPageForPatients") );
   $scope.user = {}//$rootScope.selectedPrescription;
 
@@ -18928,6 +18933,8 @@ function($scope,$rootScope,$location,$http,localManager,Drugs,cities){
             $scope.status = 'Courier request sent!';         
             $rootScope.$broadcast("new courier order",{status:true});
 
+            getCourier(data.id);
+
             if($rootScope.holdPresDataForCourier) {
               var url = "/user/drug-search/pharmacy/referral";
               $http({
@@ -18943,6 +18950,7 @@ function($scope,$rootScope,$location,$http,localManager,Drugs,cities){
               });
 
             }
+
           } else {
             alert("OOps! something went wrong while sending your request. Try again")
           }
@@ -18957,6 +18965,54 @@ function($scope,$rootScope,$location,$http,localManager,Drugs,cities){
       },3000);
     }
   }
+
+
+  function getCourier(id) {
+    var courierResponse = courierResponseService;
+    courierResponse.get({id: id},function(data){
+      console.log(data)
+      $rootScope.courierResponse = data;
+      var pt = '/courier-response/' + Math.floor(Math.random() * 99999999);
+      $location.path(pt);
+    });
+  }
+
+
+  /*
+var courierResponse = courierResponseService;
+
+  function getCourier() {
+    courierResponse.query(function(data){
+      $rootScope.courierResponseList = data;
+      $scope.unRead = data[0];
+     
+    });
+  }
+
+  mySocket.on("courier billed",function(res){
+    getCourier();
+  });
+
+  mySocket.on("new courier order",function(res){
+    getCourier();
+  });
+
+
+  $rootScope.$on('new courier order',function(status,res){
+     getCourier();
+  })
+
+  var pt;
+
+  $scope.viewResponse = function(item) {
+    $rootScope.courierResponse = item;
+    pt = '/courier-response/' + Math.floor(Math.random() * 99999999);
+    $location.path(pt);
+  }
+
+  getCourier();
+
+  */
 
 }]);
 

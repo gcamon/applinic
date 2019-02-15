@@ -42,30 +42,30 @@
 <div class="card card-center-1 p-1">
 	<h3 class="pl-1 pb-0 font-1_4">Find {{type}} Tests</h3> 
 		
-    <div>
+    <div class="col-md-5">
 		<label for="lastname">Search Option </label>
-		<select class="custom-select form-control" value="search.category" ng-model="search.category">
+		<select class="custom-select form-control"  ng-model="search.category">
 			  <!--<option selected>{{search.category}}</option>-->
-			  <option value = "Test Name">Test Name (default)</option>
+			  <option selected value = "Test Name">Test Name (default)</option>
 			  <option>Reference number</option>
 		</select>
 	</div>
-	<hr>
+	<div class="clearfix"></div>
 	<div>	
-	   <label for="City">City </label>
+	   <label for="City">City: </label>
 	   <input  type="text" placeholder="Enter city name" ng-model="city" uib-typeahead="city for city in cities | filter:$viewValue | limitTo:15" class="form-control">		
 		{{getCity(city)}} 
 	</div>
 	<div ng-if="notRef">
 		
-		<label for="City">Test name </label>	
-		<div style="position: relative;" ng-repeat="i in testList">				
+		<label for="City">Test name: </label>	
+		<section style="position: relative;" ng-repeat="i in testList">				
 				
 			<input  type="text" placeholder="Enter test name" ng-model="test.name" uib-typeahead="test.name for test in tests | filter:$viewValue | limitTo:15" class="form-control">
 			{{getTest(test.name)}} 
 			<i class="fa fa-times text-muted" style="cursor: pointer;position: absolute;right:10px;bottom: 10px" ng-click="remove(i.sn)" ng-if="i.sn !== 'a'"></i>				
 					
-		</div>
+		</section>
 
 		<div style="text-align:right">
 			<i class="fa fa-plus text-muted" style="cursor: pointer;" ng-click="add(test.name)"> Add</i> 
@@ -79,7 +79,7 @@
 	<div  ng-if="isRef">
 	
 		<div>
-		 	<label for="City">Reference Number </label>
+		 	<label for="City">Reference Number: </label>
 			<input type="number" placeholder="Enter Ref NO" ng-model="user.refId" class="form-control">
 			
 			<button ng-click="findWithRef(user.refId)" class="btn btn-info mt-2" ><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i>{{(loading) ? "" : 'Find'}} </button>				

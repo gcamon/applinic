@@ -6678,12 +6678,19 @@ router.put("/user/scan-search/radiology/referral",function(req,res){
 //for patient getting requested courier services
 router.get("/user/courier-response",function(req,res){
   if(req.user){
-    model.courier.find({user_id: req.user.user_id})
-    .sort('new')
-    .exec(function(err,data){
-      if(err) throw err;
-      res.json(data);
-    })
+    console.log(req.query)
+    if(req.query.id)
+      model.courier.findOne({request_id: req.query.id},function(err,data){
+        if(err) throw err;
+        res.json(data);
+      })
+    else 
+      model.courier.find({user_id: req.user.user_id})
+      .sort('new')
+      .exec(function(err,data){
+        if(err) throw err;
+        res.json(data);
+      })
   } else {
     res.end("unauthorized access!")
   }
@@ -6750,7 +6757,7 @@ router.post("/user/courier",function(req,res){
     req.body.completed = false;
     req.body.deleted = false;
     req.body.new = 0;
-    req.body.request_id = randos.genRef(10);
+    req.body.request_id = randos.genRef(8);
     req.body.center_name = req.body.centerInfo.name;
     req.body.center_address = req.body.centerInfo.address;
     req.body.center_phone =  req.body.centerInfo.phone;
@@ -6779,8 +6786,7 @@ router.post("/user/courier",function(req,res){
         } 
         patient.save(function(err,info){});
       })
-
-    res.send({status:true,message:"Sent successfully! Admin will contact you soon for cost and billing.",status: true});
+    res.send({status:true,message:"Sent successfully!",status: true,id: req.body.request_id});
   } else {
     res.send("unauthorized access!");
   }
