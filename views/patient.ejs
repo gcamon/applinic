@@ -361,12 +361,15 @@
                              <li class="notifications new"> <a href="" data-toggle="dropdown">
                     <i class="fa fa-motorcycle"></i>
                     <sup>
-                      <span class="counter" ng-if="courierResponseList.length > 0" ng-cloak>{{(courierResponseList.length <= 100) ? courierResponseList.length : "99+"}}</span>
+                      <span class="counter btn-danger" ng-if="isReady" style="border-radius: 10px;width: 8px;height: 8px;display: inline-block;"  ng-cloak></span>
+                      <!--<span class="counter" ng-if="courierResponseList.length > 0" ng-cloak>{{(courierResponseList.length <= 100) ? courierResponseList.length : "99+"}}</span>-->
                     </sup>
                   </a>
-                                <div class="dropdown-menu notifications-dropdown-menu menuFour" style="max-height: 400px;overflow-y: auto;" ng-controller = "createRoomController">
+                                <div class="dropdown-menu notifications-dropdown-menu menuFour" style="max-height: 400px;overflow-y: auto;max-width: 300px" ng-controller = "createRoomController">
                                     <ul class="notifications-container noti-style">
-                                        <li> <h5 style="text-align: center">Courier Notifications</h5> </li>
+                                        <li> <h5 style="text-align: center">Courier Notifications</h5>
+                                       
+                                        </li>
                                         <li ng-repeat = "j in courierResponseList | orderBy : '-date'" class="msg-drp-list" style="position: relative;" ng-click= "viewResponse(j)">
                                             <a href="" class="notification-item">
                                                 <div class="body-col">

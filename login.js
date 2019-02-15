@@ -86,7 +86,8 @@ router.get('/user/dashboard',function(req,res){
         city_grade: req.user.city_grade,
         currencyCode: req.user.currencyCode,
         mrak: req.user.mrak,
-        courier_charge: req.user.courier_charge
+        courier_charge: req.user.courier_charge,
+        field_agents: req.user.field_agents
       });
     }
   } else {

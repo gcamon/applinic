@@ -1144,7 +1144,8 @@
                     <span style="display: block;font-size: 16px;">{{request.address}} ( {{request.city}} )</span>
                     <!--<span style="display: block;font-size: 16px;"> phone 1 : {{request.phone1}}, phone 2 : {{request.phone2}} </span>-->
                 </h5> 
-                <p style="background-color:orange;color:#fff;padding:10px;text-align:center" ng-if="message">{{message}}</p>
+                <p style="color:green;padding:10px;text-align:center" ng-if="message">{{message}}</p>
+                <label>Compute Cost:</label>
                 <div ng-repeat="pres in request.prescription_body" class="courier-cost">
                     <label style="width: 40%;word-break: break-all;padding-right: 10px">{{pres.drug_name}} <span ng-if="pres.dosage" style="display: inline-block;">( {{pres.dosage}} )</span>:
                     </label>
@@ -1159,7 +1160,15 @@
                    <b>Total : </b> <span style="color: green">{{str}}</span> <!--&nbsp;&nbsp;(Includes delivery charge)--><br><br>
                    <b>You'll receive :</b> <span style="color: green">{{receivable}}</span> &nbsp;&nbsp;( includes {{checkLogIn.city_grade + '%'}} discount )
                 </div>
-                <span class="text-danger">{{error}}</span>
+                <span class="text-danger">{{error}}</span><br><br>
+                <label>Select agent for delivery:</label>
+                <div ng-repeat="j in agents">
+                  <label class="custom-control custom-radio">
+                     <input type="radio" class="custom-control-input" ng-model="request.agentId" value="{{j.id}}">
+                     <span class="custom-control-indicator"></span>
+                     <span class="custom-control-description">{{j.names}} &nbsp;&nbsp;&nbsp;{{j.phone}} </span>
+                  </label>
+                </div>
                 <div style="text-align: right;padding: 20px">
                     <button class="btn btn-success" ng-click="sendBilling()"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i> {{(loading) ? "" : "Send billing"}}</button>
                 </div>          

@@ -7519,9 +7519,15 @@ app.controller("patientNotificationController",["$scope","$location","$http","$w
     courierResponse.query(function(data){
       $rootScope.courierResponseList = data;
       $scope.unRead = data[0];
-      
+      data.forEach(function(item){
+        if(!item.is_paid && item.attended) {
+          $scope.isReady = true;
+        }
+      })
     });
   }
+
+
 
   mySocket.on("courier billed",function(res){
     getCourier();
@@ -7539,6 +7545,9 @@ app.controller("patientNotificationController",["$scope","$location","$http","$w
   var pt;
 
   $scope.viewResponse = function(item) {
+    if(!item.is_paid && item.attended)
+      $scope.isReady = false;
+
     $rootScope.courierResponse = item;
     pt = '/courier-response/' + Math.floor(Math.random() * 99999999);
     $location.path(pt);
@@ -17205,9 +17214,10 @@ app.controller("drugSearchResultController",["$scope","$location","$rootScope","
 
       var presId = Math.floor(Math.random() * 99999999);
       var refId = parseInt(Math.floor(Math.random() * 9999) + "" + Math.floor(Math.random() * 9999));
-
+     
       $rootScope.holdPresDataForCourier = { 
         name: center.name,
+        email: center.email,
         address: center.address,
         city: center.city,
         country: center.country,
@@ -18786,6 +18796,19 @@ app.controller("courierResponseCtrl",["$scope","$rootScope","courierResponseServ
         courier.is_paid = response.status;
         $scope.otpMsg = "";
         $rootScope.$broadcast("debit",{status:true});
+        var assign = {
+          agent_id: $rootScope.courierResponse.agentId,
+          courierId: courier._id
+        }
+        $http.put("/user/agent-delivery",assign)
+        .success(function(resp){
+          if(resp.status){
+            var msg = "Your drug delivery has been initiated! " + resp.message;
+            alert(msg);
+          } else {
+            alert(res.message)
+          }
+        })
       } else {
         $scope.otpMsg = response.message;
       }
@@ -18978,41 +19001,7 @@ function($scope,$rootScope,$location,$http,localManager,Drugs,cities,courierResp
   }
 
 
-  /*
-var courierResponse = courierResponseService;
-
-  function getCourier() {
-    courierResponse.query(function(data){
-      $rootScope.courierResponseList = data;
-      $scope.unRead = data[0];
-     
-    });
-  }
-
-  mySocket.on("courier billed",function(res){
-    getCourier();
-  });
-
-  mySocket.on("new courier order",function(res){
-    getCourier();
-  });
-
-
-  $rootScope.$on('new courier order',function(status,res){
-     getCourier();
-  })
-
-  var pt;
-
-  $scope.viewResponse = function(item) {
-    $rootScope.courierResponse = item;
-    pt = '/courier-response/' + Math.floor(Math.random() * 99999999);
-    $location.path(pt);
-  }
-
-  getCourier();
-
-  */
+ 
 
 }]);
 
@@ -19254,6 +19243,8 @@ app.controller("selectedCourierRequestController",["$scope","$rootScope","$http"
   var snStr;
 
   $scope.deliveryCharge = $rootScope.checkLogIn.courier_charge || 1000;
+
+  $scope.agents = $rootScope.checkLogIn.field_agents;
  
   $scope.$watch("request.prescription_body",function(newVal,oldVal){
     if(newVal){
@@ -19289,10 +19280,10 @@ app.controller("selectedCourierRequestController",["$scope","$rootScope","$http"
    $scope.receivable = $rootScope.toCurrency(amt);
   }
 
+  $scope.request.agentId = ($scope.agents[1]) ? $scope.agents[1].id : ($scope.agents.length > 0) ? $scope.agents[0].id : "";
+
   $scope.sendBilling = function() { 
     $scope.loading = true; 
-
-    
 
     if($scope.request.delivery_charge > 0 ) {
       $rootScope.aCourierRequest.attended = true;

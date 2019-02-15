@@ -75,6 +75,7 @@ var myModel = function () {
 		center_country: String,
 		center_phone: Number, 
 		profile_url: String,
+		center_email: String,
 		user_id: String,
 		unavailable_services: [service_objSchema],
 		type: String
@@ -758,6 +759,7 @@ var myModel = function () {
 		total_cost: String,
 		firstname: String,
 		address: String,
+		email: String,
 		prescription_body: Array,
 		city: String,
 		phone1: String,
@@ -771,6 +773,7 @@ var myModel = function () {
 		center_name: String,
 		center_address: String,
 		center_phone: String,
+		center_email: String,
 		date: Number, //use date to find refers to date the request was made or initiated
 		otp: String,
 		receipt_date: Number,
@@ -788,7 +791,8 @@ var myModel = function () {
 		on_delivery: Boolean,
 		delivery_msg: String,
 		delivery_start_date: Date,
-		center_charge: String
+		center_charge: String,
+		agentId: String
 	},{
 		collections: "courierinfos"
 	});

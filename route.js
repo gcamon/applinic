@@ -2346,7 +2346,7 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
     //gets center details for profile edit
     router.get("/user/getcenter-details",function(req,res){
       if(req.user){
-        model.user.findOne({user_id: req.user.user_id},{name:1,address:1,city:1,country:1},function(err,center){
+        model.user.findOne({user_id: req.user.user_id},{name:1,address:1,city:1,country:1,email:1},function(err,center){
           if(err){
             throw err;
             res.end("error")
@@ -2369,7 +2369,8 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
               center_city: req.body.city,
               center_name: req.body.name,
               center_address: req.body.address,
-              center_country: req.body.country
+              center_country: req.body.country,
+              center_email: req.body.email
             }},function(err,info){})
           } else {
             res.send({status: false})
@@ -2377,7 +2378,7 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
         });
         
       } else {
-        res.end("unauthorized access")
+        res.end("unauthorized access");
       }
     })
 
@@ -5904,7 +5905,7 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
       console.log(req.body);
       var criteria = (req.body.city) ? {type:"Pharmacy",center_city:req.body.city} : {type: "Pharmacy"};
       model.services.find(criteria,
-        {center_name:1,center_city:1,center_address:1,center_country:1,center_phone:1,user_id:1,unavailable_services:1,_id:0},function(err,data){
+        {center_name:1,center_city:1,center_address:1,center_country:1,center_phone:1,user_id:1,unavailable_services:1,_id:0,center_email:1},function(err,data){
         if(err) throw err;
         var newListToSend = [];        
         var sendObj = {};
@@ -5927,6 +5928,7 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
               centerInfo.center_id = data[count].user_id;
               centerInfo.center_address = data[count].center_address;
               centerInfo.center_phone = data[count].center_phone;
+              centerInfo.center_email = data[count].center_email;
               centerInfo.drugFound = listOfDrugs[i].name;  
               centerInfo.addBy = (elements[count][el]) ? elements[count][el].center_id : undefined;// the id of center that added the drugs           
               foundDrug.push(centerInfo)               
@@ -5949,7 +5951,8 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
               filter[sendObj[i][j].center_id].city = sendObj[i][j].center_city;
               filter[sendObj[i][j].center_id].country = sendObj[i][j].center_country;
               filter[sendObj[i][j].center_id].id = sendObj[i][j].center_id;
-               filter[sendObj[i][j].center_id].phone = sendObj[i][j].center_phone;
+              filter[sendObj[i][j].center_id].phone = sendObj[i][j].center_phone;
+              filter[sendObj[i][j].center_id].email = sendObj[i][j].center_email;
               filter[sendObj[i][j].center_id].str = sendObj[i][j].drugFound;
               filter[sendObj[i][j].center_id].addBy = sendObj[i][j].addBy;
             } else {
@@ -6678,7 +6681,6 @@ router.put("/user/scan-search/radiology/referral",function(req,res){
 //for patient getting requested courier services
 router.get("/user/courier-response",function(req,res){
   if(req.user){
-    console.log(req.query)
     if(req.query.id)
       model.courier.findOne({request_id: req.query.id},function(err,data){
         if(err) throw err;
@@ -6741,7 +6743,7 @@ router.delete("/user/courier-response",function(req,res){
 });
 
 
-//for patient creating new courier request. note is defferent from the above route
+//for patient creating new courier request. note is different from the above route
 router.post("/user/courier",function(req,res){
   if(req.user) {
     var date = + new Date();
@@ -6757,6 +6759,7 @@ router.post("/user/courier",function(req,res){
     req.body.completed = false;
     req.body.deleted = false;
     req.body.new = 0;
+    req.body.email = req.user.email;
     req.body.request_id = randos.genRef(8);
     req.body.center_name = req.body.centerInfo.name;
     req.body.center_address = req.body.centerInfo.address;
@@ -6787,6 +6790,57 @@ router.post("/user/courier",function(req,res){
         patient.save(function(err,info){});
       })
     res.send({status:true,message:"Sent successfully!",status: true,id: req.body.request_id});
+
+    model.user.findOne({user_id: req.body.center_id},function(err,center){
+      if(err) throw err;
+      sms.calls 
+      .create({
+        url: "https://applinic.com/voicenotification?firstname=" + req.user.lastname + "&&title=" + req.user.title + "&&type=" + "courier",
+        to: center.phone || "",
+        from: '+16467985692',
+      })
+      .then(
+        function(call){
+          console.log(call.sid);
+        },
+        function(err) {
+          console.log(err)
+        }
+      );
+
+      var transporter = nodemailer.createTransport({
+        host: "mail.privateemail.com",
+        port: 465,
+        auth: {
+          user: "info@applinic.com",
+          pass: process.env.EMAIL_PASSWORD
+        }
+      });
+
+      var mailOptions = {
+        from: 'Applinic info@applinic.com',
+        to: center.email,//center.email,//result.email,//req.body.email || 'ede.obinna27@gmail.com',
+        subject: 'Drug Delivery Request',
+        html: '<table><tr><th><h3  style="background-color:#85CE36; color: #fff; padding: 30px"><img src="https://applinic.com/assets/images/applinic1.png" style="width: 250px; height: auto"/><br/><span>Healthcare... anywhere, anytime.</span></h3></th></tr><tr><td style="font-family: Arial, Helvetica, sans-serif; font-size: 14px;"><b>Dear ' + center.name + ",</b><br><br>"
+        + "You have new drug delivery request from: <br><br>Name: " + req.user.title + " " + req.user.lastname + "<br> Address: " + req.user.address + ", " + req.user.city + "<br><br>Please follow the link to attend to the request.<br><br>"
+        + "URL: https://applinic.com/login<br><br> Always check out the motorcycle icon on top of your applinic account dashboard for current courier requests<br><br>"
+        + "Thank you for using Applinic.<br><br>"
+        + "For ease of usage, you may download the Applinic mobile application on google play store if you use an android phone. " 
+        + "<a href='https://play.google.com/store/apps/details?id=com.farelandsnigeria.applinic'>Click here </a> to do so now.<br><br>"
+        + "For inquiries please call customer support on +2349080045678<br><br>"
+        + "Thank you for using Applinic.<br></br><br>"
+        + "<b>Applinic Team</b></td></tr></table>"
+      };
+
+      transporter.sendMail(mailOptions, function(error, info){
+        if (error) {
+          console.log(error);
+        } else {
+          console.log('Email sent: ' + info.response);
+        }
+      });
+    })
+   
   } else {
     res.send("unauthorized access!");
   }
@@ -6807,7 +6861,7 @@ router.get("/user/courier-centers",function(req,res){
 router.put("/user/courier-update",function(req,res){
   if(req.user){
     if(req.body.prescription_body){
-      model.courier.findOne({_id: req.body._id,center_id: req.body.center_id}).exec(function(err,user){
+      model.courier.findById(req.body._id).exec(function(err,user){
         if(user) { //user.verified !== true
           var random1 = randos.genRef(3);
           var random2 = randos.genRef(3);
@@ -6826,6 +6880,7 @@ router.put("/user/courier-update",function(req,res){
           user.city_grade = req.user.city_grade;
           user.isPaid = false;
           user.new = 1;
+          user.agentId = req.body.agentId;
           user.center_charge = req.user.courier_commission;
 
           var count = 0;
@@ -6834,7 +6889,7 @@ router.put("/user/courier-update",function(req,res){
           var capture;
         
           var currency = (req.user.currencyCode) ? req.user.currencyCode : "NGN";
-          var msgBody = "Applinic Courier Request\nStatus : Acknowledged\nPayment OTP: " + password  +
+          var msgBody = "Applinic Courier Request\nStatus : Acknowledged " +
            "\nCost of drugs: " + currency + "" + req.body.total_cost.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") +
             "\nDelivery charge: " + currency + "" + req.body.delivery_charge.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") +
              "\nCenter : " + req.user.name + "\n" + req.user.address + "," + req.user.city + "," + req.user.country + "\n" + req.user.phone;
@@ -6857,6 +6912,44 @@ router.put("/user/courier-update",function(req,res){
             },
             callBack
           );
+
+
+          var transporter = nodemailer.createTransport({
+            host: "mail.privateemail.com",
+            port: 465,
+            auth: {
+              user: "info@applinic.com",
+              pass: process.env.EMAIL_PASSWORD
+            }
+          });
+
+          var mailOptions = {
+            from: 'Applinic info@applinic.com',
+            to: user.email,//center.email,//result.email,//req.body.email || 'ede.obinna27@gmail.com',
+            subject: 'Billing for drugs delivery received',
+            html: '<table><tr><th><h3  style="background-color:#85CE36; color: #fff; padding: 30px"><img src="https://applinic.com/assets/images/applinic1.png" style="width: 250px; height: auto"/><br/><span>Healthcare... anywhere, anytime.</span></h3></th></tr><tr><td style="font-family: Arial, Helvetica, sans-serif; font-size: 14px;"><b>Hello ' + user.firstname + ",</b><br><br>"
+            + "Here is the details of drugs ordered for delivery:<br><br>"
+            + "Status : Acknowledged:<br> Cost of drugs: " +  currency + "" + req.body.total_cost.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + "<br>"
+            + "Delivery charge: " + currency + "" + req.body.delivery_charge.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + "<br>"
+            + "Center : " + req.user.name + "\n" + req.user.address + "," + req.user.city + "," + req.user.country + "<br>" 
+            + "Phone: " + req.user.phone + "<br><br>"
+            + "<a href='https://applinic.com/login'>Log in now</a> to pay and get instant delivery! <br><br> Always check the motorcycle icon on top of your applinic account dashboard for current courier requests<br><br>"
+            + "Thank you for using Applinic.<br><br>"
+            + "For ease of usage, you may download the Applinic mobile application on google play store if you use an android phone. " 
+            + "<a href='https://play.google.com/store/apps/details?id=com.farelandsnigeria.applinic'>Click here </a> to do so now.<br><br>"
+            + "For inquiries please call customer support on +2349080045678<br><br>"
+            + "Thank you for using Applinic.<br></br><br>"
+            + "<b>Applinic Team</b></td></tr></table>"
+          };
+
+          transporter.sendMail(mailOptions, function(error, info){
+            if (error) {
+              console.log(error);
+            } else {
+              console.log('Email sent: ' + info.response);
+            }
+          });
+
 
           user.save(function(err,info){});
 
@@ -7114,6 +7207,40 @@ router.put("/user/agent-delivery",function(req,res){
 
             courier.save(function(err,info){});
             res.json({status: true,message: message});
+
+
+            var transporter = nodemailer.createTransport({
+              host: "mail.privateemail.com",
+              port: 465,
+              auth: {
+                user: "info@applinic.com",
+                pass: process.env.EMAIL_PASSWORD
+              }
+            });
+
+            var mailOptions = {
+              from: 'Applinic info@applinic.com',
+              to: agent.email,//result.email,//req.body.email || 'ede.obinna27@gmail.com',
+              subject: 'Order Ready for Delivery',
+              html: '<table><tr><th><h3  style="background-color:#85CE36; color: #fff; padding: 30px"><img src="https://applinic.com/assets/images/applinic1.png" style="width: 250px; height: auto"/><br/><span>Healthcare... anywhere, anytime.</span></h3></th></tr><tr><td style="font-family: Arial, Helvetica, sans-serif; font-size: 14px;"><b>Hello ' + agent.firstname + " " + agent.lastname + ",</b><br><br>"
+              + "You new order for delivery at " + courier.address + ", " + courier.city + "<br><br>"
+              + "Your login details:<br><br>Email" + agent.email + "<br>Password:" + agent.password + "<br><br>"
+              + "<a href='https://applinic.com/login'>Log in to view order now!</a><br><br>"
+              + "Thank you for using Applinic.<br><br>"
+              + "For ease of usage, you may download the Applinic mobile application on google play store if you use an android phone. " 
+              + "<a href='https://play.google.com/store/apps/details?id=com.farelandsnigeria.applinic'>Click here </a> to do so now.<br><br>"
+              + "For inquiries please call customer support on +2349080045678<br><br>"
+              + "Thank you for using Applinic.<br></br><br>"
+              + "<b>Applinic Team</b></td></tr></table>"
+            };
+
+            transporter.sendMail(mailOptions, function(error, info){
+              if (error) {
+                console.log(error);
+              } else {
+                console.log('Email sent: ' + info.response);
+              }
+            });
           } else {
            res.send({message: "Error: Courier record not found!",status:false})
           }
@@ -8874,7 +9001,11 @@ router.post("/twiliovoicemsg",function(req,res){
 
 router.post("/voicenotification",function(req,res){
   var twiml = new Voice();
-  var textToSay = (req.query.type) ? "Hello " + req.query.title + " , " + req.query.firstname + " , " 
+  var textToSay;
+  if(req.query.type == 'courier')
+    textToSay = "You have received a drug delivery request, Please log in to your app linic dot com account and attend to the request, Thank you.";
+  else
+    textToSay = (req.query.type) ? "Hello " + req.query.title + " , " + req.query.firstname + " , " 
   + ", a doctor just responded to your complaint.Please go to your dashboard on app linic for more details , Thank you."
    :  "Hello " + req.query.title + " , " + req.query.firstname + " , " +  
   " You have new consultation request. Please log on to your app linic dot com account and attend to the patient. Thank you" 

@@ -1,6 +1,6 @@
 
-<section class="card">
-	<header style="position: relative;">
+<section>
+	<header style="position: relative;" class="card">
 		<h4 class="pl-1 pt-1"> 
 		<i class="fa fa-motorcycle"></i> Courier Services <span style="font-size: 16px;display: inline-block;">( {{courierRequests.length}} requests )</span> <br><span style="font-size: 14px;"></span>
 		<!--<a href="{{fieldagentUrl}}" target="_blank" style="font-size: 14px"> {{fieldagentUrl}}</a>-->
@@ -9,26 +9,26 @@
 		<!--<input type="text" placeholder="Filter" class="form-control">-->
 
 		<div class="row p-2">
-			<div class="col-md-6 pb-2">
+			<div class="col-md-7">
 				<button class="btn-courier" ng-click="current()" style="margin-bottom: 4px" ng-class="{'orange-bg': selected1}">New Requests</button>
-				<button class="btn-courier" ng-click="ready()" style="" ng-class="{'orange-bg': selected}">Ready for Delivery</button>
-				<button class="btn-courier" ng-click="completed()" ng-class="{'orange-bg': selected2}"> Completed/Delivered</button>
+				<button class="btn-courier" ng-click="ready()" style="" ng-class="{'orange-bg': selected}">On Delivery</button>
+				<button class="btn-courier" ng-click="completed()" ng-class="{'orange-bg': selected2}"> Completed</button>
 			
 				</div>
-			<div class="col-md-6">
+			<div class="col-md-5">
 				<a href="" ng-click="addFieldAgent()" class="btn btn-neutral btn-sm"><i class="fa fa-plus"></i> Field agent</a>
 				<a href="" ng-click="manageFieldAgent()" class="btn btn-neutral btn-sm"><i class="fa fa-wrench"></i> Manage agents</a>
 				<a href="" ng-click="refresh()" class="btn btn-neutral btn-sm"><i class="fa fa-refresh"></i> Refresh</a>
 			</div>	
+		</div>	
+		<div class="col-md-5" ng-if="courierRequests.length > 4">
+			<input type="text" placeholder="Filter list of requests" class="form-control" ng-model="search">
 		</div>
-		<!--<a href="/bicboy/judepharmacy6768/y2kisawesome">Field agent</a>-->
+		
 	</header>
 
-	<div class="col-md-6">
-	 	<input type="text" placeholder="Filter" class="form-control" ng-model="search">
-	</div>
 	<div class="clearfix p-0"></div>
-	<div ng-repeat="request in courierRequests | filter: search | orderBy: '-date'" style="padding: 10px 20px;line-height: 32px" id="{{request._id}}">
+	<div ng-repeat="request in courierRequests | filter: search | orderBy: '-date'" class="card" style="padding: 10px 20px;line-height: 32px" id="{{request._id}}">
 		<div class="col-sm-12 col-md-2 col-lg-2" style="line-height: 25px" ng-if="request.attended && request.is_paid">
 			<h6 style="text-decoration: underline;">Payment Details</h6>
 			<p class="text-primary"><i class="fa fa-check-circle"></i> Payment was made successfully!</p>
@@ -136,8 +136,8 @@
 
 			<div style="margin-top:10px" >
 				<hr>		
-				<button ng-click="courierBilling(request)" ng-class="{'btn btn-success' : request.attended == true}" class="btn btn-info" ng-if="!request.is_paid">{{(request.verified) ? "Re-send billing" : "Bill patient"}}</button> &nbsp;
-				<button ng-click="decline(request)"  class="btn btn-danger" ng-if="!request.verified"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff;" ng-if="request.loading"></i>{{(request.loading) ? "" : "Decline"}}</button>
+				<button ng-click="courierBilling(request)" ng-class="{'btn btn-success' : request.attended == true}" class="btn btn-simple text-danger" ng-if="!request.is_paid">{{(request.verified) ? "Re-send billing" : "Bill patient"}}</button> &nbsp;
+				<button ng-click="decline(request)"  class="btn btn-simple text-danger" ng-if="!request.verified"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff;" ng-if="request.loading"></i>{{(request.loading) ? "" : "Decline"}}</button>
 			</div>		
 		</div>
 		<div class="clearfix"></div>
