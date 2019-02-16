@@ -867,7 +867,8 @@ var basicPaymentRoute = function(model,sms,io,paystack,client,nodemailer){
     	updateSession();   
 
       function updateSession() {       
-        model.user.findOne({"doctor_patient_session.session_id": req.body.laboratory.session_id},{doctor_patient_session:1,title:1,firstname:1,lastname:1}).exec(function(err,data){
+        model.user.findOne({"doctor_patient_session.session_id": req.body.laboratory.session_id},{doctor_patient_session:1,title:1,firstname:1,lastname:1,email:1})
+        .exec(function(err,data){
           if(err) throw err;
           var elementPos = data.doctor_patient_session.map(function(x) {return x.session_id }).indexOf(req.body.laboratory.session_id);
   
@@ -887,7 +888,45 @@ var basicPaymentRoute = function(model,sms,io,paystack,client,nodemailer){
 	          theObj.center_phone = req.user.phone;
 	          theObj.indication = req.body.laboratory.indication;
 	          theObj.center_profile_pic_url =  req.user.profile_pic_url;
-       	 }
+       	  }
+
+       	  var transporter = nodemailer.createTransport({
+            host: "mail.privateemail.com",
+            port: 465,
+            auth: {
+              user: "info@applinic.com",
+              pass: process.env.EMAIL_PASSWORD
+            }
+          });
+
+          var mailOptions = {
+            from: 'Applinic info@applinic.com',
+            to: "ede.obinna27@gmail.com",//data.email,
+            subject: 'Laboratory Result Ready',
+            html: '<table><tr><th><h3 style="background-color:#85CE36; color: #fff; padding: 30px"><img src="https://applinic.com/assets/images/applinic1.png" style="width: 250px; height: auto"/><br/><span>Healthcare... anywhere, anytime.</span></h3></th></tr><tr><td style="font-family: Arial, Helvetica, sans-serif; font-size: 14px;"><b>Hello ' + data.title + " " + data.lastname + ",</b><br><br>"
+ 						+ req.user.name + " sent the result of investigations requested by you for the patient:<br><br>"
+ 						+ "<b>Name:</b> " + objectFound.patient_firstname + " " + objectFound.patient_lastname + "<br>"
+            + "<b>Session ID:</b> " + objectFound.session_id  + "<br><br>" 
+          	+ "Please <a href='https://applinic.com/login'>log in to your account</a> and continue treatment with the patient<br><br>"
+          	+ "You can find the treament session in which these tests was referred through the following steps:<br><br>"
+          	+ " - Inside your account look for the patient by name in 'My Patients' menu.<br>"
+          	+ " - Click on the patient and select 'Treatment Session' under management then choose session or filter by session ID you wish to continue with.<br><br>"
+            + "Thank you for using Applinic.<br><br>"
+            + "For ease of usage, you may download the Applinic mobile application on google play store if you use an android phone. " 
+            + "<a href='https://play.google.com/store/apps/details?id=com.farelandsnigeria.applinic'>Click here </a> to do so now.<br><br>"
+            + "For inquiries please call customer support on +2349080045678 or email us at support@applinic.com<br><br>"
+            + "Thank you for using Applinic.<br></br><br>"
+            + "<b>Applinic Team</b></td></tr></table>"
+          };
+
+          transporter.sendMail(mailOptions, function(error, info){
+            if (error) {
+              console.log(error);
+            } else {
+              console.log('Email sent: ' + info.response);
+            }
+          });
+
            
           
           //the doctors session for a patient is updated, and patient dashboard is called for update.
@@ -898,7 +937,7 @@ var basicPaymentRoute = function(model,sms,io,paystack,client,nodemailer){
             } else {  
             	updatePatient(); 
               //updateTheCenter();  
-              updateCenter(data)  
+              updateCenter(data);  
                        
             }
           });        

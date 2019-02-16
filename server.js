@@ -15,7 +15,7 @@ var express = require('express'),
   nodemailer = require('nodemailer'),
   
   //infobip = require('infobip-node'),
-
+ 
 
   //infobip = require('infobip'),
 
@@ -116,7 +116,6 @@ http.listen(port,function(){
 var startDate = moment().startOf('week');//day week month
 var endDate = startDate.clone().endOf('week');
 console.log(startDate, "" , endDate)
-
 
 
 /*sms.messages.create(

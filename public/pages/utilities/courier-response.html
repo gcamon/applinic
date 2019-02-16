@@ -1,36 +1,39 @@
 
 <div class="card-center-1" ng-if="path">
-	<a href="#/courier" class="btn btn-simple"><i class="fa fa-arrow-left"></i> Back</a>
+	<a href="#/courier" class="btn btn-simple" ng-if="path"><i class="fa fa-arrow-left"></i> Back</a>
 </div>
 <div class="card p-2  card-center-1" style="position: relative;" ng-if="courierResponse">
 	<h5><i class="fa fa-motorcycle"></i> Courier Order </h5>
 	<!--<span style="position: absolute;top: 20px;right: 20px">Order ID: {{courierResponse.request_id}}</span>-->
 	<hr>
 	<div>
-		Status:  <span style="font-weight: bold" ng-class="{'text-danger': !courierResponse.attended,'text-info': courierResponse.attended,'text-success':courierResponse.completed,'text-warning':courierResponse.is_paid}">{{(!courierResponse.verified || !courierResponse.attended) ? 'Pending' : (!courierResponse.is_paid && courierResponse.attended) ? 'Ready': (courierResponse.is_paid && !courierResponse.completed) ? 'On Delivery' : (courierResponse.completed) ? "Received" : ""}}</span> 
+		<label>Status:</label>  <span style="font-weight: bold" ng-class="{'text-danger': !courierResponse.attended,'text-info': courierResponse.attended,'text-success':courierResponse.completed,'text-warning':courierResponse.is_paid}">{{(!courierResponse.verified || !courierResponse.attended) ? 'Pending' : (!courierResponse.is_paid && courierResponse.attended) ? 'Ready': (courierResponse.is_paid && !courierResponse.completed) ? 'On Delivery' : (courierResponse.completed) ? "Received" : ""}}</span> 
+	</div>
+	<div ng-if="!courierResponse.verified || !courierResponse.attended">
+		<label>Description:</label> Cost of delivery has not been calculated or billed.
 	</div>
 	<div>
-		Order Date: {{courierResponse.date | date: "fullDate"}}
+		<label>Order Date:</label> {{courierResponse.date | date: "fullDate"}}
 	</div>
 	<div>
-		Order Time: {{courierResponse.date | date: "mediumTime"}}
+		<label>Order Time:</label> {{courierResponse.date | date: "mediumTime"}}
 	</div>
 	<div>
-		Phone Numbers: {{courierResponse.phone1}} {{courierResponse.phone2}}
+		<label>Phone Numbers:</label> {{courierResponse.phone1}} {{courierResponse.phone2}}
 	</div>
 	<div>
-		Delivery Address: {{courierResponse.address}}
+		<label>Delivery Address:</label> {{courierResponse.address}}
 	</div>
 	<hr>
 	<h6>Dispatch Center</h6>
 	<div>
-		Name: {{courierResponse.center_name}}
+		<label>Name:</label> {{courierResponse.center_name}}
 	</div>
 	<div>
-		Address: {{courierResponse.center_address}}
+		<label>Address:</label> {{courierResponse.center_address}}
 	</div>
 	<div>
-		Phone: {{courierResponse.center_phone}}
+		<label>Phone:</label> {{courierResponse.center_phone}}
 	</div>
 	<hr>
 	<h6>Drug(s) Ordered</h6>
