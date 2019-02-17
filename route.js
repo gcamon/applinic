@@ -6144,15 +6144,17 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
           //send sms to the patient for the ntification of prescription
           var msgBody = "Your prescription was sent to " +  "\n" + pharmacy.name + "\n" + pharmacy.address +
           ", " + pharmacy.city + ", " + pharmacy.country + "\nreference number is " +
-          " " + ref_id + "\nfor more details Visit https://applinic.com/user/patient";
+          " " + ref_id + "\nfor more details login https://applinic.com/login";
           var phoneNunber =  user.phone;
-          sms.messages.create(
-            {
-              to: phoneNunber,
-              from: '+16467985692',
-              body: msgBody,
-            }
-          ) 
+
+          if(!req.body.initViaCourier)
+            sms.messages.create(
+              {
+                to: phoneNunber,
+                from: '+16467985692',
+                body: msgBody,
+              }
+            ) 
 
           pharmacy.referral.push(refObj);
 
@@ -7037,12 +7039,12 @@ router.get("/user/field-agent/:centerId/:agentId",function(req,res){
       if(err) throw err;
       if(center){
         var agentId = req.params.centerId + "/" + req.params.agentId;
-        console.log(agentId)
         model.agent.findOne({userId: agentId})
         .exec(function(err,agent){
           if(err) throw err;
           if(agent){
             if(req.user.user_id === agent.userId || agent.center_id === req.user.user_id) {
+              console.log(agent)
               res.render("field-agent",{agent: agent});
             } else {
               res.send({Error: "Field agent not authentication failed!"});
@@ -7078,7 +7080,7 @@ router.post("/user/field-agent",function(req,res){
       if(!data) {
         var agentId = req.user.user_id + "/" + genHash(12);
         var password = genHash(8);
-        var url = "https://" + req.host + "/user/field-agent/" + agentId;
+        var url = "https://" + req.hostname + "/user/field-agent/" + agentId;
         var agent = new model.agent({
           password: password,
           userId: agentId,
@@ -7170,10 +7172,13 @@ router.delete("/user/field-agent",function(req,res){
   if(req.user){
     model.agent.remove({_id: req.query.id});
     var elemPos = req.user.field_agents.map(function(x){return x.id.toString()}).indexOf(req.query.id)
-    console.log(elemPos)
     if(elemPos !== -1){    
-      //var phone = req.user.field_agents[elemPos].phone;
-      //req.user.remove({phone: phone});
+      model.user.findOne({user_id: req.query.id},function(err,agent){
+        if(err) throw err;
+        if(agent) {
+          agent.remove(function(err,info){})
+        }
+      })
       req.user.field_agents.splice(elemPos,1);
       req.user.save(function(){});
     }

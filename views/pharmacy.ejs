@@ -1143,35 +1143,39 @@
             <div class="modal-header">            
                 <button type="button" class="close" ng-click="close('Cancel')" data-dismiss="modal" aria-hidden="true">&times;</button>         
             </div>
-            <div class="modal-body" style="padding: 0 20px;margin-bottom: 20px">   
-                <h5 style="border-bottom: 1px solid grey">{{request.title}} {{request.firstname}} {{request.lastname}} 
-                    <span style="display: block;font-size: 16px;">{{request.address}} ( {{request.city}} )</span>
+            <div class="modal-body">   
+                <div>
+                    <h5>{{request.title}} {{request.firstname}} {{request.lastname}} </h5>
+                    <span>{{request.address}}  {{request.city}} </span><br>
+                    <span>{{request.phone1}} {{request.phone2}}</span>
                     <!--<span style="display: block;font-size: 16px;"> phone 1 : {{request.phone1}}, phone 2 : {{request.phone2}} </span>-->
-                </h5> 
+                </div><br> 
                 <p style="color:green;padding:10px;text-align:center" ng-if="message">{{message}}</p>
-                <label>Compute Cost:</label>
-                <div ng-repeat="pres in request.prescription_body" class="courier-cost">
-                    <label style="width: 40%;word-break: break-all;padding-right: 10px">{{pres.drug_name}} <span ng-if="pres.dosage" style="display: inline-block;">( {{pres.dosage}} )</span>:
-                    </label>
-                    <input type="number" placeholder="{{pres.cost}}" ng-model="pres.cost">                   
+                <h6>Compute Cost :</h6>
+                <div ng-repeat="pres in request.prescription_body" class="row">
+                    <div class="col-md-6">
+                      <label style="padding:0 10px;color: green">{{pres.drug_name}} <span ng-if="pres.dosage" style="display: inline-block;"> {{pres.dosage}} </span> :
+                      </label>
+                    </div>
+                    <div class="col-md-4">
+                      <input type="number" placeholder="{{pres.cost}}" ng-model="pres.cost" class="form-control">    
+                    </div>               
                 </div> 
-                <!--<div>
-                   <p class="text-danger">{{deliveryChargeMsg}}</p>
-                    <label style="width: 40%;word-break: break-all;padding-right: 10px">Delivery charge:  <span  style="display: inline-block;"></span></label>
-                    <input type="number" placeholder="{{deliveryCharge}}" ng-model="deliveryCharge">
-                </div>-->
-                <div style="padding: 10px;font-size: 14px">
-                   <b>Total : </b> <span style="color: green">{{str}}</span> <!--&nbsp;&nbsp;(Includes delivery charge)--><br><br>
+               
+                <div style="font-size: 14px">
+                   <b>Total : </b> <span style="color: green">{{str}}</span> <br>
                    <b>You'll receive :</b> <span style="color: green">{{receivable}}</span> &nbsp;&nbsp;( includes {{checkLogIn.city_grade + '%'}} discount )
                 </div>
-                <span class="text-danger">{{error}}</span><br><br>
-                <label>Select agent for delivery:</label>
-                <div ng-repeat="j in agents">
-                  <label class="custom-control custom-radio">
-                     <input type="radio" class="custom-control-input" ng-model="request.agentId" value="{{j.id}}">
-                     <span class="custom-control-indicator"></span>
-                     <span class="custom-control-description">{{j.names}} &nbsp;&nbsp;&nbsp;{{j.phone}} </span>
-                  </label>
+                <p class="text-danger">{{error}}</p>
+                <div>
+                  <h6>Select agent for delivery :</h6>
+                  <div ng-repeat="j in agents">
+                    <label class="custom-control custom-radio">
+                       <input type="radio" class="custom-control-input" ng-model="request.agentId" value="{{j.id}}">
+                       <span class="custom-control-indicator"></span>
+                       <span class="custom-control-description">{{j.names}} &nbsp;&nbsp;&nbsp;{{j.phone}} </span>
+                    </label>
+                  </div>
                 </div>
                 <div style="text-align: right;padding: 20px">
                     <button class="btn btn-success" ng-click="sendBilling()"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i> {{(loading) ? "" : "Send billing"}}</button>

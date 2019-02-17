@@ -30,7 +30,7 @@
 	<div class="clearfix p-0"></div>
 	<div ng-repeat="request in courierRequests | filter: search | orderBy: '-date'" class="card" style="padding: 10px 20px;line-height: 32px" id="{{request._id}}">
 		<div class="col-sm-12 col-md-2 col-lg-2" style="line-height: 25px" ng-if="request.attended && request.is_paid">
-			<h6 style="text-decoration: underline;">Payment Details</h6>
+			<h6>Payment Details</h6>
 			<p class="text-primary"><i class="fa fa-check-circle"></i> Payment was made successfully!</p>
 			<div>
 				Amount: <b>{{toCurrency(request.total_cost)}}</b>
@@ -46,7 +46,7 @@
 		</div>
 
 		<div class="col-sm-12 col-md-7 col-lg-7">
-		<h6 style="text-decoration: underline;">Prescription detail</h6>
+		<h6>Prescription detail</h6>
 			<table class="table table-striped table-responsive no-mobile-item-display">
 				<tr>
 					<thead>
@@ -95,7 +95,7 @@
 
 
 		<div class="col-sm-12 col-md-3 col-lg-3" ng-if="courierRequests.length > 0">
-		<h6 style="text-decoration: underline;">Sender details</h6>
+		<h6>Sender details</h6>
 			<div>
 				<i class="fa fa-user"> {{request.title}} {{request.firstname}} {{request.lastname}}</i>
 			</div>
