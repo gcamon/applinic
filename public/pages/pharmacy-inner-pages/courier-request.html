@@ -28,7 +28,7 @@
 	</header>
 
 	<div class="clearfix p-0"></div>
-	<div ng-repeat="request in courierRequests | filter: search | orderBy: '-date'" class="card" style="padding: 10px 20px;line-height: 32px" id="{{request._id}}">
+	<div ng-repeat="request in courierRequests | filter: search | orderBy: '-date'" class="card" style="padding: 10px;line-height: 32px" id="{{request._id}}">
 		<div class="col-sm-12 col-md-2 col-lg-2" style="line-height: 25px" ng-if="request.attended && request.is_paid">
 			<h6>Payment Details</h6>
 			<p class="text-primary"><i class="fa fa-check-circle"></i> Payment was made successfully!</p>
@@ -71,12 +71,12 @@
 			</table>
 			<div class="mobile-item-display">				    		
 	    		<table class="table" ng-repeat="prescription in request.prescription_body">
-	    		    <thead><th>sn: </th> <td>{{prescription.sn}}</td></thead>
-	    		    <thead><th>Cost: </th> <td>{{(!prescription.cost) ? "N/A" : toCurrency(prescription.cost)}}</td></thead>
-	    			<thead><th>Drug: </th> <td>{{prescription.drug_name}}</td></thead>
-	    			<thead><th>Dosage: </th> <td>{{prescription.dosage}}</td></thead>
-	    			<thead><th>Frequency: </th> <td>{{prescription.frequency}}</td></thead>
-	    			<thead><th>Duration: </th> <td>{{prescription.duration}}</td></thead>
+	    		    <thead><td><label>sn:</label> {{prescription.sn}}</td></thead>
+	    		    <thead><td><label>Cost:</label> {{(!prescription.cost) ? "N/A" : toCurrency(prescription.cost)}}</td></thead>
+	    			<thead><td><label>Drug:</label> {{prescription.drug_name}}</td></thead>
+	    			<thead><td><label>Dosage:</label> {{prescription.dosage}}</td></thead>
+	    			<thead><td><label>Frequency:</label> {{prescription.frequency}}</td></thead>
+	    			<thead><td><label>Duration:</label> {{prescription.duration}}</td></thead>
 	    			<hr>
 	    		</table>
 	    	</div>

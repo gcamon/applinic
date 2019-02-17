@@ -85,12 +85,12 @@
 	    	</div>
 	    	<div class="mobile-item-display">				    		
 	    		<table class="table" ng-repeat="prescription in docInfo.prescription_body">
-	    		    <thead><th>sn: </th> <td>{{prescription.sn}}</td></thead>
-	    			<thead><th>Name: </th> <td>{{prescription.drug_name}}</td></thead>
-	    			<thead><th>Dosage: </th> <td>{{prescription.dosage}}</td></thead>
-	    			<thead><th>Frequency: </th> <td>{{prescription.frequency}}</td></thead>
-	    			<thead><th>Duration: </th> <td>{{prescription.duration}}</td></thead>
-	    			<thead><th>Select: </th> <td><label class="custom-control custom-checkbox">
+	    		    <thead><td><label>sn:</label> {{prescription.sn}}</td></thead>
+	    			<thead><td><label>Name:</label> {{prescription.drug_name}}</td></thead>
+	    			<thead><td><label>Dosage:</label> {{prescription.dosage}}</td></thead>
+	    			<thead><td><label>Frequency:</label> {{prescription.frequency}}</td></thead>
+	    			<thead><td><label>Duration:</label> {{prescription.duration}}</td></thead>
+	    			<thead><td><label>Select:</label> <label class="custom-control custom-checkbox">
 								   <input type="checkbox" class="custom-control-input" ng-model= "prescription.picked" >
 								  	<span class="custom-control-indicator"></span>
 								  	<span class="custom-control-description" style="opacity:0;">.</span>

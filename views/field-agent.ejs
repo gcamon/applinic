@@ -121,12 +121,12 @@
                 <section class="mobile-item-display">
                     <% for(var j = 0; j < agent.couriers[i].prescription_body.length; j++) { %>                            
                         <table class="table card">
-                            <thead><th>sn: </th> <td><%= agent.couriers[i].prescription_body[j].sn %></td></thead>
-                            <thead><th>Name: </th> <td><%= agent.couriers[i].prescription_body[j].drug_name %></td></thead>
-                            <thead><th>Cost: </th> <td>{{('<%= agent.couriers[i].prescription_body[j].cost %>') ? <%= agent.couriers[i].prescription_body[j].cost %>:""}}</td></thead>
-                            <thead><th>Doage: </th> <td><%= agent.couriers[i].prescription_body[j].dosage %></td></thead>
-                            <thead><th>Frequency: </th> <td><%= agent.couriers[i].prescription_body[j].frequency %></td></thead>
-                            <thead><th>Duration: </th> <td><%= agent.couriers[i].prescription_body[j].duration %></td></thead>                   
+                            <thead><td><label>sn: </label> <%= agent.couriers[i].prescription_body[j].sn %></td></thead>
+                            <thead><td><label>Name: </label> <%= agent.couriers[i].prescription_body[j].drug_name %></td></thead>
+                            <thead><td><label>Cost: </label> {{('<%= agent.couriers[i].prescription_body[j].cost %>') ? <%= agent.couriers[i].prescription_body[j].cost %>:""}}</td></thead>
+                            <thead><td><label>Dosage: </label> <%= agent.couriers[i].prescription_body[j].dosage %></td></thead>
+                            <thead><td><label>Frequency: </label> <%= agent.couriers[i].prescription_body[j].frequency %></td></thead>
+                            <thead><td><label>Duration: </label> <%= agent.couriers[i].prescription_body[j].duration %></td></thead>                   
                         </table>
                     <% } %>
                 </section>
