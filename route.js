@@ -7228,8 +7228,8 @@ router.put("/user/agent-delivery",function(req,res){
               to: agent.email,//result.email,//req.body.email || 'ede.obinna27@gmail.com',
               subject: 'Order Ready for Delivery',
               html: '<table><tr><th><h3  style="background-color:#85CE36; color: #fff; padding: 30px"><img src="https://applinic.com/assets/images/applinic1.png" style="width: 250px; height: auto"/><br/><span>Healthcare... anywhere, anytime.</span></h3></th></tr><tr><td style="font-family: Arial, Helvetica, sans-serif; font-size: 14px;"><b>Hello ' + agent.firstname + " " + agent.lastname + ",</b><br><br>"
-              + "You new order for delivery at " + courier.address + ", " + courier.city + "<br><br>"
-              + "Your login details:<br><br>Email" + agent.email + "<br>Password:" + agent.password + "<br><br>"
+              + "You have new order for delivery at " + courier.address + ", " + courier.city + "<br><br>"
+              + "Your login details:<br><br>Email: " + agent.email + "<br>Password: " + agent.password + "<br><br>"
               + "<a href='https://applinic.com/login'>Log in to view order now!</a><br><br>"
               + "Thank you for using Applinic.<br><br>"
               + "For ease of usage, you may download the Applinic mobile application on google play store if you use an android phone. " 
