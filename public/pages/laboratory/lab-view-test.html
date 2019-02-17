@@ -160,8 +160,14 @@
 						<div class="mb-0 mt-0 pl-0 font-1_2"  style="display: inline-block;padding-bottom: 5px"><b>Specimen Collected</b></div>
 						<ul style="list-style: none;">
 							<li ng-repeat="item in specimen" style="display: inline-block;padding: 20px;float: left">
-								<input type="checkbox" name="" ng-model="item.status">
-								<span>{{item.name}}</span>
+								<!--<input type="checkbox" name="" ng-model="item.status">
+								<span>{{item.name}}</span>-->
+
+								<label class="custom-control custom-checkbox">
+				    				<input type="checkbox" ng-model="item.status"  class="custom-control-input">
+				    				<span class="custom-control-indicator"></span>
+				    				<span class="custom-control-description">{{item.name}}</span>
+		    					</label>
 							</li>
 						</ul>
 					</div>
@@ -179,7 +185,7 @@
 						<div class="form-group">
 							<label class="font-1_1 pt-1 text-danger"></label>
 							<!--<textarea placeholder="Write..."  class="form-control"  ng-model="report.data" required= "required" style="height: 250px"></textarea>-->
-							<table class="table">
+							<!--<table class="table">
 								<thead>
 									<th>Name</th>
 									<th>TUM</th>
@@ -188,10 +194,10 @@
 									<th>Units</th>
 									<th>Flag</th>
 								</thead>
-							</table>
+							</table>-->
 							<div ng-repeat="report in testReport">	
 								{{createInputList(report)}}
-								<table>
+								<!--<table>
 									<thead>
 										<th></th>
 										<th></th>
@@ -209,17 +215,71 @@
 										<td><input type="text" name="unit" placeholder="Enter units" ng-model="i.r_unit" class="form-control"></td>
 										<td><input type="text" name="flag" placeholder="Enter flag" ng-model="i.r_flag" class="form-control"></td>
 									</tbody>
-								</table>
-								<div style="text-align: right;">
+								</table>-->
+								<section class="p-1">
+									<h6 class="text-danger"><span>{{report.sn}}) </span> {{report.name}} report entry:</h6><br>
+									<section ng-repeat="i in report.list" class="p-1">
+										<div class="row">
+											<div class="col-md-2">
+												<label>Name:</label>
+											</div>
+											<div class="col-md-8">
+												<input type="text" name="" placeholder="Enter name" ng-model="i.r_name" class="form-control">
+											</div>
+										</div>
+										<div class="row">
+											<div class="col-md-2">
+												<label>TUM:</label>
+											</div>
+											<div class="col-md-8">
+												<input type="text" name="" placeholder="Enter TUM" ng-model="i.r_tum" class="form-control">
+											</div>
+										</div>
+										<div class="row">
+											<div class="col-md-2">
+												<label>Result:</label>
+											</div>
+											<div class="col-md-8">
+												<input type="text" name="" placeholder="Enter result" ng-model="i.r_result" class="form-control">
+											</div>
+										</div>
+										<div class="row">
+											<div class="col-md-2">
+												<label>Range:</label>
+											</div>
+											<div class="col-md-8">
+												<input type="text" name="range" placeholder="Enter range" ng-model="i.r_range" class="form-control">
+											</div>
+										</div>
+										<div class="row">
+											<div class="col-md-2">
+												<label>Unit:</label>
+											</div>
+											<div class="col-md-8">
+												<input type="text" name="unit" placeholder="Enter units" ng-model="i.r_unit" class="form-control">
+											</div>
+										</div>
+										<div class="row">
+											<div class="col-md-2">
+												<label>Flag:</label>
+											</div>
+											<div class="col-md-8">
+												<input type="text" name="flag" placeholder="Enter flag" ng-model="i.r_flag" class="form-control">
+											</div>
+										</div>
+										<hr>
+									</section>
+								</section>
+								<section style="text-align: right;padding-right: 20px">
 									<a href="" ng-click="addReport(report)"><i class="fa fa-plus"></i> Add</a>&nbsp;&nbsp;
 									<a href="" ng-click="removeReport(report)"><i class="fa fa-minus"></i> Remove</a>
-								</div>
+								</section>
 							</div>					
 						</div>
-						<div class="form-group col-md-6 col-md-12 col-lg-12 col-sm-12">
-						<label class="font-1_1 text-danger">CONCLUSION:</label>
-						<textarea  class="form-control" placeholder="Write..." required ng-model="lab.conclusion"  ng-keyup="autoExpand($event)" id="textarea"></textarea>
-						</div>
+						<section class="pl-2 pr-2">
+							<label class="text-danger">CONCLUSION:</label>
+							<textarea  class="form-control pl-1" placeholder="Write..." required ng-model="lab.conclusion"  ng-keyup="autoExpand($event)" id="textarea"></textarea>
+						</section>
 						
 						</div>							
 							

@@ -901,10 +901,10 @@ var basicPaymentRoute = function(model,sms,io,paystack,client,nodemailer){
 
           var mailOptions = {
             from: 'Applinic info@applinic.com',
-            to: "ede.obinna27@gmail.com",//data.email,
-            subject: 'Laboratory Result Ready',
+            to: data.email,
+            subject: 'Laboratory Result Received',
             html: '<table><tr><th><h3 style="background-color:#85CE36; color: #fff; padding: 30px"><img src="https://applinic.com/assets/images/applinic1.png" style="width: 250px; height: auto"/><br/><span>Healthcare... anywhere, anytime.</span></h3></th></tr><tr><td style="font-family: Arial, Helvetica, sans-serif; font-size: 14px;"><b>Hello ' + data.title + " " + data.lastname + ",</b><br><br>"
- 						+ req.user.name + " sent the result of investigations requested by you for the patient:<br><br>"
+ 						+ "<b>" + req.user.name + "</b>" + "have sent the result of laboratory investigations you requested for the patient:<br><br>"
  						+ "<b>Name:</b> " + objectFound.patient_firstname + " " + objectFound.patient_lastname + "<br>"
             + "<b>Session ID:</b> " + objectFound.session_id  + "<br><br>" 
           	+ "Please <a href='https://applinic.com/login'>log in to your account</a> and continue treatment with the patient<br><br>"
@@ -947,7 +947,7 @@ var basicPaymentRoute = function(model,sms,io,paystack,client,nodemailer){
 
       function updatePatient() {
         //here patient test result is updated.
-        model.user.findOne({user_id: req.body.laboratory.patient_id},{medical_records: 1,patient_notification:1,user_id:1,presence:1,phone:1})
+        model.user.findOne({user_id: req.body.laboratory.patient_id},{medical_records: 1,patient_notification:1,user_id:1,presence:1,phone:1,email:1,title:1,firstname:1,lastname:1})
         .exec(function(err,data){
 
           if(err) throw err;
@@ -963,10 +963,6 @@ var basicPaymentRoute = function(model,sms,io,paystack,client,nodemailer){
 	          objectFound.receive_date = req.body.laboratory.date;
 	          objectFound.indication = req.body.laboratory.indication;
 	          objectFound.payment_acknowledgement = true;
-        	
-
-
-	          //var random = Math.floor(Math.random() * 999999);
 
 	          data.patient_notification.unshift({
 	            type:"laboratory",
@@ -981,7 +977,7 @@ var basicPaymentRoute = function(model,sms,io,paystack,client,nodemailer){
 	          if(data.presence === true){
 	            io.sockets.to(data.user_id).emit("notification",{status:true})
 	          } else {
-	            var msgBody = "Laboratory test result received! Visit http://applinic.com/user/patient";
+	            var msgBody = "Laboratory test result received! login http://applinic.com/login";
 	            var phoneNunber =  data.phone;
 	             sms.messages.create(
 	              {
@@ -991,6 +987,38 @@ var basicPaymentRoute = function(model,sms,io,paystack,client,nodemailer){
 	              }
 	            ) 
 	          }
+	          var transporter = nodemailer.createTransport({
+	            host: "mail.privateemail.com",
+	            port: 465,
+	            auth: {
+	              user: "info@applinic.com",
+	              pass: process.env.EMAIL_PASSWORD
+	            }
+          	});
+
+	          var mailOptions = {
+	            from: 'Applinic info@applinic.com',
+	            to: data.email,
+	            subject: 'Laboratory Result Received',
+	            html: '<table><tr><th><h3 style="background-color:#85CE36; color: #fff; padding: 30px"><img src="https://applinic.com/assets/images/applinic1.png" style="width: 250px; height: auto"/><br/><span>Healthcare... anywhere, anytime.</span></h3></th></tr><tr><td style="font-family: Arial, Helvetica, sans-serif; font-size: 14px;"><b>Hello ' + data.title + " " + data.lastname + ",</b><br><br>"
+	 						+ "<b>" + req.user.name + "</b>" + " have sent the result of investigations requested by your doctor:<br><br>"
+	 						+ "<b>Name:</b> " + data.firstname + " " + data.lastname + "<br><br>"
+	          	+ "<a href='https://applinic.com/login'>log in to your account</a> to view the result. Check in notification bell icon for latest updates<br><br>"
+	            + "Thank you for using Applinic.<br><br>"
+	            + "For ease of usage, you may download the Applinic mobile application on google play store if you use an android phone. " 
+	            + "<a href='https://play.google.com/store/apps/details?id=com.farelandsnigeria.applinic'>Click here </a> to do so now.<br><br>"
+	            + "For inquiries please call customer support on +2349080045678 or email us at support@applinic.com<br><br>"
+	            + "Thank you for using Applinic.<br></br><br>"
+	            + "<b>Applinic Team</b></td></tr></table>"
+          	};
+
+	          transporter.sendMail(mailOptions, function(error, info){
+	            if (error) {
+	              console.log(error);
+	            } else {
+	              console.log('Email sent: ' + info.response);
+	            }
+	          });
 
 	          data.save(function(err,info){
 	            if(err) { 
@@ -1062,7 +1090,7 @@ var basicPaymentRoute = function(model,sms,io,paystack,client,nodemailer){
      updatePatient();
 
       function updatePatient() {
-        model.user.findOne({user_id: req.body.laboratory.patient_id},{medical_records:1,patient_notification:1,user_id:1,presence:1,phone:1,firstname:1,lastname:1,title:1})
+        model.user.findOne({user_id: req.body.laboratory.patient_id},{medical_records:1,patient_notification:1,user_id:1,presence:1,phone:1,firstname:1,lastname:1,title:1,email:1})
         .exec(function(err,data){
           if(err) throw err;
          
@@ -1092,7 +1120,7 @@ var basicPaymentRoute = function(model,sms,io,paystack,client,nodemailer){
           if(data.presence === true){
             io.sockets.to(data.user_id).emit("notification",{status:true});
           } else {
-            var msgBody = "Laboratory test result received! Visit http://applinic.com/user/patient"
+            var msgBody = "Laboratory test result received! login http://applinic.com/login"
             var phoneNunber =  data.phone;
             sms.messages.create(
               {
@@ -1102,6 +1130,39 @@ var basicPaymentRoute = function(model,sms,io,paystack,client,nodemailer){
               }
             ) 
           }
+
+           transporter = nodemailer.createTransport({
+	            host: "mail.privateemail.com",
+	            port: 465,
+	            auth: {
+	              user: "info@applinic.com",
+	              pass: process.env.EMAIL_PASSWORD
+	            }
+          	});
+
+	          var mailOptions = {
+	            from: 'Applinic info@applinic.com',
+	            to: data.email,
+	            subject: 'Laboratory Result Received',
+	            html: '<table><tr><th><h3 style="background-color:#85CE36; color: #fff; padding: 30px"><img src="https://applinic.com/assets/images/applinic1.png" style="width: 250px; height: auto"/><br/><span>Healthcare... anywhere, anytime.</span></h3></th></tr><tr><td style="font-family: Arial, Helvetica, sans-serif; font-size: 14px;"><b>Hello ' + data.title + " " + data.lastname + ",</b><br><br>"
+	 						+ "<b>" + req.user.name + "</b>" + " have sent the result of investigations you requested:<br><br>"
+	 						+ "<b>Name:</b> " + data.firstname + " " + data.lastname + "<br><br>"
+	          	+ "<a href='https://applinic.com/login'>log in to your account</a> to view the result. Check in notification bell icon for latest updates<br><br>"
+	            + "Thank you for using Applinic.<br><br>"
+	            + "For ease of usage, you may download the Applinic mobile application on google play store if you use an android phone. " 
+	            + "<a href='https://play.google.com/store/apps/details?id=com.farelandsnigeria.applinic'>Click here </a> to do so now.<br><br>"
+	            + "For inquiries please call customer support on +2349080045678 or email us at support@applinic.com<br><br>"
+	            + "Thank you for using Applinic.<br></br><br>"
+	            + "<b>Applinic Team</b></td></tr></table>"
+          	};
+
+	          transporter.sendMail(mailOptions, function(error, info){
+	            if (error) {
+	              console.log(error);
+	            } else {
+	              console.log('Email sent: ' + info.response);
+	            }
+	          });
 
           data.save(function(err,info){
             if(err) res.send({status: "error"}); 
@@ -1245,7 +1306,7 @@ var basicPaymentRoute = function(model,sms,io,paystack,client,nodemailer){
       updateSession();
       console.log(req.body)
       function updateSession() { 
-        model.user.findOne({"doctor_patient_session.session_id": req.body.radiology.session_id},{doctor_patient_session:1,firstname:1,lastname:1,title:1,phone:1})
+        model.user.findOne({"doctor_patient_session.session_id": req.body.radiology.session_id},{doctor_patient_session:1,firstname:1,lastname:1,title:1,phone:1,email:1})
        .exec(function(err,data){
           if(err) throw err;
           if(data) {
@@ -1271,6 +1332,43 @@ var basicPaymentRoute = function(model,sms,io,paystack,client,nodemailer){
 	          theObj.center_profile_pic_url =  req.user.profile_pic_url;
 	          theObj.files = req.body.radiology.filesUrl;
 
+	          var transporter = nodemailer.createTransport({
+	            host: "mail.privateemail.com",
+	            port: 465,
+	            auth: {
+	              user: "info@applinic.com",
+	              pass: process.env.EMAIL_PASSWORD
+	            }
+          	});
+
+	          var mailOptions = {
+	            from: 'Applinic info@applinic.com',
+	            to: data.email,
+	            subject: 'Radiology Result Received',
+	            html: '<table><tr><th><h3 style="background-color:#85CE36; color: #fff; padding: 30px"><img src="https://applinic.com/assets/images/applinic1.png" style="width: 250px; height: auto"/><br/><span>Healthcare... anywhere, anytime.</span></h3></th></tr><tr><td style="font-family: Arial, Helvetica, sans-serif; font-size: 14px;"><b>Hello ' 
+	            + data.title + " " + data.lastname + ",</b><br><br>"
+	 						+ "<b>" + req.user.name + "</b>" + " have sent the result of radiology investigations you requested for the patient:<br><br>"
+	 						+ "<b>Name:</b> " + objectFound.patient_firstname + " " + objectFound.patient_lastname + "<br>"
+              + "<b>Session ID:</b> " + objectFound.session_id  + "<br><br>" 
+	          	+ "Please <a href='https://applinic.com/login'>log in to your account</a> and continue treatment with the patient<br><br>"
+	          	+ "You can find the treament session in which these tests was referred through the following steps:<br><br>"
+	          	+ " - Inside your account look for the patient by name in 'My Patients' menu.<br>"
+	          	+ " - Click on the patient and select 'Treatment Session' under management then choose session or filter by session ID you wish to continue with.<br><br>"
+	            + "Thank you for using Applinic.<br><br>"
+	            + "For ease of usage, you may download the Applinic mobile application on google play store if you use an android phone. " 
+	            + "<a href='https://play.google.com/store/apps/details?id=com.farelandsnigeria.applinic'>Click here </a> to do so now.<br><br>"
+	            + "For inquiries please call customer support on +2349080045678 or email us at support@applinic.com<br><br>"
+	            + "Thank you for using Applinic.<br></br><br>"
+	            + "<b>Applinic Team</b></td></tr></table>"
+          	};
+
+	          transporter.sendMail(mailOptions, function(error, info){
+	            if (error) {
+	              console.log(error);
+	            } else {
+	              console.log('Email sent: ' + info.response);
+	            }
+	          });
 
 	          data.save(function(err,info){
 	            if(err) res.send({status: "error"});         
@@ -1287,7 +1385,7 @@ var basicPaymentRoute = function(model,sms,io,paystack,client,nodemailer){
 
       function updatePatient() {         
         //here patient test result is updated.
-        model.user.findOne({user_id: req.body.radiology.patient_id},{medical_records: 1,patient_notification:1,user_id:1,presence:1,phone:1})
+        model.user.findOne({user_id: req.body.radiology.patient_id},{medical_records: 1,patient_notification:1,user_id:1,presence:1,phone:1,email:1,title:1,firstname:1,lastname:1})
         .exec(function(err,data){
           if(err) throw err;
           var elementPos = data.medical_records.radiology_test.map(function(x) {return x.session_id; }).indexOf(req.body.radiology.session_id);
@@ -1317,7 +1415,7 @@ var basicPaymentRoute = function(model,sms,io,paystack,client,nodemailer){
 	          if(data.presence === true){
 	            io.sockets.to(data.user_id).emit("notification",{status:true});
 	          } else {
-	            var msgBody = "Radiology test result received! Visit http://applinic.com/user/patient"
+	            var msgBody = "Radiology test result received! login http://applinic.com/login"
 	            var phoneNunber =  data.phone;
 	            sms.messages.create(
 	              {
@@ -1328,6 +1426,40 @@ var basicPaymentRoute = function(model,sms,io,paystack,client,nodemailer){
 	            ) 
 	          }
 
+
+	          var transporter = nodemailer.createTransport({
+	            host: "mail.privateemail.com",
+	            port: 465,
+	            auth: {
+	              user: "info@applinic.com",
+	              pass: process.env.EMAIL_PASSWORD
+	            }
+          	});
+
+	          var mailOptions = {
+	            from: 'Applinic info@applinic.com',
+	            to: data.email,
+	            subject: 'Radiology Result Received',
+	            html: '<table><tr><th><h3 style="background-color:#85CE36; color: #fff; padding: 30px"><img src="https://applinic.com/assets/images/applinic1.png" style="width: 250px; height: auto"/><br/><span>Healthcare... anywhere, anytime.</span></h3></th></tr><tr><td style="font-family: Arial, Helvetica, sans-serif; font-size: 14px;"><b>Hello ' + data.title + " " + data.lastname + ",</b><br><br>"
+	 						+ "<b>" + req.user.name + "</b>" + " have sent the result of radiology investigations requested by your doctor:<br><br>"
+	          	+ "Kindly <a href='https://applinic.com/login'>log in to your account</a> to view the result. Check in notification bell icon for latest updates<br><br>"
+	            + "Thank you for using Applinic.<br><br>"
+	            + "For ease of usage, you may download the Applinic mobile application on google play store if you use an android phone. " 
+	            + "<a href='https://play.google.com/store/apps/details?id=com.farelandsnigeria.applinic'>Click here </a> to do so now.<br><br>"
+	            + "For inquiries please call customer support on +2349080045678 or email us at support@applinic.com<br><br>"
+	            + "Thank you for using Applinic.<br></br><br>"
+	            + "<b>Applinic Team</b></td></tr></table>"
+          	};
+
+	          transporter.sendMail(mailOptions, function(error, info){
+	            if (error) {
+	              console.log(error);
+	            } else {
+	              console.log('Email sent: ' + info.response);
+	            }
+	          });
+
+	          
 	          data.save(function(err,info){
 	            if(err) res.send({status: "error"});           
 	            res.send({status: "success"});
@@ -1390,7 +1522,7 @@ var basicPaymentRoute = function(model,sms,io,paystack,client,nodemailer){
     router.put("/user/radiology/test-result/patient-scan-update",function(req,res){
     	
 	    if(req.user) {
-	    	console.log(req.body)
+	 
 	      updatePatient();
 
 	      function updatePatient() {
@@ -1429,7 +1561,7 @@ var basicPaymentRoute = function(model,sms,io,paystack,client,nodemailer){
 		        if(data.presence === true){
 		          io.sockets.to(data.user_id).emit("notification",{status:true})
 		        } else {
-		          var msgBody = "Your radiology test result received! Visit https://applinic.com/user/patient";
+		          var msgBody = "Your radiology test result received! login https://applinic.com/login";
 		          var phoneNunber =  data.phone;
 		          sms.messages.create(
 	              {
@@ -1439,6 +1571,40 @@ var basicPaymentRoute = function(model,sms,io,paystack,client,nodemailer){
 	              }
             	  ) 
 		        }
+
+
+		        var transporter = nodemailer.createTransport({
+	            host: "mail.privateemail.com",
+	            port: 465,
+	            auth: {
+	              user: "info@applinic.com",
+	              pass: process.env.EMAIL_PASSWORD
+	            }
+          	});
+
+	          var mailOptions = {
+	            from: 'Applinic info@applinic.com',
+	            to: data.email,
+	            subject: 'Radiology Result Received',
+	            html: '<table><tr><th><h3 style="background-color:#85CE36; color: #fff; padding: 30px"><img src="https://applinic.com/assets/images/applinic1.png" style="width: 250px; height: auto"/><br/><span>Healthcare... anywhere, anytime.</span></h3></th></tr><tr><td style="font-family: Arial, Helvetica, sans-serif; font-size: 14px;"><b>Hello ' + data.title + " " + data.lastname + ",</b><br><br>"
+	 						+ "<b>" + req.user.name + "</b>" + " have sent the result of radiology investigations you requested:<br><br>"
+	 						+ "<b>Name:</b> " + data.firstname + " " + data.lastname + "<br><br>"
+	          	+ "<a href='https://applinic.com/login'>log in to your account</a> to view the result. Check in notification bell icon for latest updates<br><br>"
+	            + "Thank you for using Applinic.<br><br>"
+	            + "For ease of usage, you may download the Applinic mobile application on google play store if you use an android phone. " 
+	            + "<a href='https://play.google.com/store/apps/details?id=com.farelandsnigeria.applinic'>Click here </a> to do so now.<br><br>"
+	            + "For inquiries please call customer support on +2349080045678 or email us at support@applinic.com<br><br>"
+	            + "Thank you for using Applinic.<br></br><br>"
+	            + "<b>Applinic Team</b></td></tr></table>"
+          	};
+
+	          transporter.sendMail(mailOptions, function(error, info){
+	            if (error) {
+	              console.log(error);
+	            } else {
+	              console.log('Email sent: ' + info.response);
+	            }
+	          });
 
 		        data.save(function(err,info){
 		          if(err) res.send({status: "error"});           
