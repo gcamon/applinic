@@ -2,6 +2,7 @@
 
 var app = angular.module('myApp',["ngRoute","ngAnimate","angularModalService","angularMoment",'ui.bootstrap',
   'angular-clipboard',"ngResource","btford.socket-io","ngTouch",'ngPrint','paystack','ngSanitize','summernote']);
+//htmlToPdfSave
 
 app.run(['$rootScope',function($rootScope){
 
@@ -9749,6 +9750,7 @@ app.controller("prescriptionTemplateController",["$scope","$rootScope","$locatio
     }
 
 
+
     $scope.id = {};
 
     
@@ -18204,6 +18206,7 @@ function($scope,$location,$window,$http,templateService,localManager,templateUrl
 
 
   $scope.validate = function() {
+    $scope.loading = true;
     $scope.sympMsg = "";
     $scope.pregMsg = "";
     $scope.accMsg = "";
@@ -18475,7 +18478,7 @@ function($scope,$location,$window,$http,templateService,localManager,templateUrl
   function uploadComplete(evt) {       
      $scope.$apply(function(){
       $scope.userData = JSON.parse(evt.target.responseText);
-     
+      $scope.loading = false;
     })
        
   }
@@ -19648,9 +19651,9 @@ app.controller("emScanTestController",["$scope","$location","$http","$window","t
 }]);
 
 app.controller("topHeaderController",["$scope","$rootScope","$window","$location","$resource",
-  "localManager","mySocket","templateService","$timeout","$document","ModalService", "cities",
+  "localManager","mySocket","templateService","$timeout","$document","ModalService", "cities","$filter",
   function($scope,$rootScope,$window,$location,$resource,localManager,mySocket,templateService,
-   $timeout, $document, ModalService,cities){
+   $timeout, $document, ModalService,cities,$filter){
 
 
 
@@ -19908,22 +19911,95 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
   }
 
   $rootScope.autoExpand = function(e) {
-        var element = typeof e === 'object' ? e.target : document.getElementById(e);
-        var scrollHeight = element.scrollHeight - 60; // replace 60 by the sum of padding-top and padding-bottom
-        element.style.height =  scrollHeight + "px";    
+    var element = typeof e === 'object' ? e.target : document.getElementById(e);
+    var scrollHeight = element.scrollHeight - 60; // replace 60 by the sum of padding-top and padding-bottom
+    element.style.height =  scrollHeight + "px";    
   };
 
   $rootScope.autoExpand2 = function(e) {
-        var element = typeof e === 'object' ? e.target : document.getElementById(e);
-        var scrollHeight = element.scrollHeight - 1; // replace 60 by the sum of padding-top and padding-bottom
-        element.style.height =  scrollHeight + "px";    
+    var element = typeof e === 'object' ? e.target : document.getElementById(e);
+    var scrollHeight = element.scrollHeight - 1; // replace 60 by the sum of padding-top and padding-bottom
+    element.style.height =  scrollHeight + "px";    
   };
-  
- /* function expand() {
-    $scope.autoExpand('TextArea');
-  }*/
+
+  //sending prescription/lab/radio to an email
+  $rootScope.email = function(docInfo,type) {
+    $rootScope.emailData = {}
+    $rootScope.emailData.type = type;
+    switch (type) {
+      case 'pharmacy':
+        if(docInfo.doctor_work_place) {
+          $rootScope.emailData.htmlTemp = "<h3 style='text-align:center'>" 
+          + docInfo.patient_firstname + " " + docInfo.patient_lastname + "<br><span style='font-size:14px'>Age: " + docInfo.patient_age 
+          + "</span><br> <span style='font-size:14px'> Gender: " + docInfo.patient_gender + "</span></h3> <br><div><br><b>Prescribed By: </b> " + 
+          "<span> " + docInfo.title + " " + docInfo.doctor_firstname + " " + docInfo.doctor_lastname 
+          + "</span><br><br><b>Place of Work :</b>" 
+          + "<span> " + docInfo.doctor_work_place + "</span><br><br>" 
+          + "<b>Specialty : </b><span>" + docInfo.doctor_specialty + "</span><br><br>" 
+          + "<b>Date of prescription : </b><span>" + $filter('amCalendar')(docInfo.date) + "</span><br><br>"       
+          + "<span>Profile URL: </span> " + "https://applinic.com" + docInfo.doctor_profile_url + "<br><br>"
+          + "<b>Address: </b> <span>" 
+          + docInfo.doctor_address + "</span><br><br><b>Prescription ID: </b><span>" + docInfo.prescriptionId
+          + "</span><br><br><b>Description: </b><span>" + docInfo.provisional_diagnosis
+          + "</span><br><br>" 
+          + "<table><tr><th style='font-size: 14px;padding:2px'>S/N</th><th style='font-size: 14px;padding:5px'>Drug</th><th style='font-size: 14px;padding:5px'>Dosage</th><th style='font-size: 14px;padding:5px'>Frequency</th><th style='font-size: 14px;padding:5px'>Duration</th></tr>" 
+          + createItemTable(docInfo.prescription_body) + "</table><br><br>" 
+          + "<div style='font-size: 14px'>The above prescription(s) was written in Applinic Online Healthcare Application.<br><br><a href='https://applinic.com/signup'>Create an account for free </a> and enjoy our utilities for writting, receiving and sharing prescriptions with friends or collegues.<br><br>We keep records of your prescription history and it's safe with us.<br><br> For enquiries please call customer support on +2349080045678</div>"
+       } else{
+           $rootScope.emailData.htmlTemp = "<h3 style='text-align:center'>" 
+          + docInfo.patient_firstname + " " + docInfo.patient_lastname + "<br><span style='font-size:14px'>Age: " + docInfo.patient_age 
+          + "</span><br> <span style='font-size:14px'> Gender: " + docInfo.patient_gender + "</span></h3> <br><div><br><b>Prescribed By: </b> " + 
+           "<span>"+ docInfo.title + " " + docInfo.doctor_firstname + " " + docInfo.doctor_lastname 
+          + "<br><br> <b>Date of prescription : </b><span>" + $filter('amCalendar')(docInfo.date) + "</span><br><br>" 
+          + "<span style='color:red'>Info: This prescrition may have been wriiten by <b>Non Professional</b></span><br><br>"
+          + "<table><tr><th style='font-size: 14px;padding:2px'>S/N</th><th style='font-size: 14px;padding:5px'>Drug</th><th style='font-size: 14px;padding:5px'>Dosage</th><th style='font-size: 14px;padding:5px'>Frequency</th><th style='font-size: 14px;padding:5px'>Duration</th></tr>" 
+          + createItemTable(docInfo.prescription_body) + "</table><br><br>" 
+          + "<div style='font-size: 14px'>The above prescription(s) was written in Applinic Online Healthcare Application." 
+          + "<br><br><a href='https://applinic.com/signup'>Create an account for free </a> and enjoy our utilities for writting, receiving and sharing prescriptions with friends or collegues.<br><br>We keep records of your prescription history and it's safe with us.<br><br> For enquiries please call customer support on +2349080045678</div>"
+        }
+      break;
+    }
+
+    ModalService.showModal({
+      templateUrl: 'email-modal.html',
+      controller: "emailModalCtrl"
+    }).then(function(modal) {
+      modal.element.modal();
+      $rootScope.closeModal = modal;
+      modal.close.then(function(result) {
+        
+      });
+    });       
+
+    console.log($rootScope.htmlTemp)
+  }
+
+  function createItemTable(arr) {
+    var str = "";
+    arr.forEach(function(item){
+      str += "<tr><td style='font-size: 14px;padding:1px'>" + item.sn + "</td>" + "<td style='font-size: 12px;padding:5px'>" + item.drug_name + "</td>" + "<td style='font-size: 14px;padding:5px'>" + item.dosage 
+      + "</td>" + "<td style='font-size: 14px;padding:5px'>" + item.frequency + "</td>" + "<td style='font-size: 14px;padding:5px'>" + item.duration + "</td></tr>"
+    });
+
+    return str;
+  }
 
 }]);
+
+app.controller("emailModalCtrl",["$scope","$rootScope","$http",function($scope,$rootScope,$http){
+  $scope.sendMail = function() {
+    $scope.loading = true;
+    $rootScope.emailData.recepient = $scope.recepientEmail;
+    $http.post("/user/share/email",$rootScope.emailData)
+    .success(function(res){
+      $scope.loading = false;
+      if(res.status)
+        $scope.msg = "Prescription sent to " + $scope.recepientEmail;
+      else
+        $scope.msg = res.message;
+    })
+  }
+}])
 
 //logs user out if no action was taken
 app.controller("timeOutModalController",["$scope","$rootScope","$timeout","$window",function($scope,$rootScope,$timeout,$window){

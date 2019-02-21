@@ -65,7 +65,6 @@ Wallet.prototype.credit = function(model,receiver,amount,io,cb){
 					reference_number: self.reference_number || uuid.v1()
 				}
 
-				console.log(transacObj);
 
 				if(data.presence && !self.reference_number) {
 					io.sockets.to(data.user_id).emit("fund received",{status: true,message: "Payment received from " + names})

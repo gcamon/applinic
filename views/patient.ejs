@@ -189,6 +189,22 @@
                 height: 180px;
                 }
 
+                table {  
+                    font-family: arial, sans-serif;  
+                    border-collapse: collapse;  
+                    width: 100%;  
+                }  
+          
+                td, th {  
+                    border: 1px solid #dddddd;  
+                    text-align: left;  
+                    padding: 8px;  
+                }  
+          
+                tr:nth-child(even) {  
+                    background-color: #dddddd;  
+                }  
+
           </style>
     </head>
 
@@ -2258,7 +2274,28 @@
            
           </div>
         </div>
-     </script>     
+     </script> 
+
+    <script type="text/ng-template" id="email-modal.html">
+         <div class="modal fade">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header"> 
+                 <h6>Forward Prescription to Email</h6>   
+                 <button type="button" class="close" ng-click="close('Cancel')" data-dismiss="modal" aria-hidden="true">&times;</button>  
+              </div>
+              <div class="modal-body">  
+                <p style="text-align: center;color: green">{{msg}}</p>              
+                <form ng-submit="sendMail()">
+                  <label>Enter Recepient Email Address: </label>  <br>  
+                  <input type="email" name="" ng-model="recepientEmail" class="form-control" placeholder="Email"><br>
+                  <input type="submit" value="Send" class="btn btn-info" ng-if="!loading">
+                  <span ng-if="loading">Sending...</span>
+                </form>
+              </div>           
+          </div>
+        </div>
+     </script>         
   
   
 
@@ -2286,6 +2323,9 @@
     <script type="text/javascript" src="/assets/js/angular-paystack/dist/angular-paystack.js"></script>
     <script type="text/javascript" src="/assets/js/angular-sanitize.min.js"></script>
     <script src="/assets/js/bower_components/angular-summernote/dist/angular-summernote.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.debug.js" integrity="sha384-NaWTHo/8YCBYJ59830LTz/P4aQZK1sS0SneOgAvhsIl3zBu8r9RevNg5lHCHAuQ/" crossorigin="anonymous"></script>
+   <script src="https://cdn.rawgit.com/niklasvh/html2canvas/0.5.0-alpha2/dist/html2canvas.min.js"></script>
+   <script src="/assets/js/saveHtmlToPdf.js"></script>
 
      <!-- Start of LiveChat (www.livechatinc.com) code -->
     <script type="text/javascript">

@@ -6874,7 +6874,7 @@ router.put("/user/courier-update",function(req,res){
           user.otp = password;
           user.attended = true;
           user.verification_date = + new Date();
-          user.delivery_charge = req.body.delivery_charge || 1000;
+          user.delivery_charge = req.body.delivery_charge || 500;
           user.center_id = req.user.user_id;
           user.user_id = req.body.user_id;
           user.prescription_body = req.body.prescription_body;
@@ -9067,6 +9067,48 @@ router.get("/user/admin/commissions",function(req,res){
 
 router.get("/user/dicom-viewer",function(req,res){
   res.render("dicom-viewer");
+});
+
+router.post("/dicom-response",function(req,res){
+  console.log("post webhook url", req.body, req.query)
+})
+
+router.get("/dicom-response",function(req,res){
+  console.log("get webhook url", req.body, req.query)
+})
+
+
+router.post("/user/share/email",function(req,res){
+  if(req.user){
+    console.log(req.body)
+     var transporter = nodemailer.createTransport({
+      host: "mail.privateemail.com",
+      port: 465,
+      auth: {
+        user: "info@applinic.com",
+        pass: process.env.EMAIL_PASSWORD
+      }
+    });
+
+    var mailOptions = {
+      from: 'Applinic info@applinic.com',
+      to: req.body.recepient,
+      subject: 'Patient Prescription',
+      html: req.body.htmlTemp
+    };
+
+    transporter.sendMail(mailOptions, function(error, info){
+      if (error) {
+        res.json({status:false,message:"Error occured while sending email. Try again."})
+      } else {
+        console.log('Email sent: ' + info.response);
+        res.json({status: true})
+      }
+    });
+    
+  } else {
+    res.end("unauthorized access")
+  }
 })
 
 

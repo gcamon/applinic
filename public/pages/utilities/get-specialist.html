@@ -3,7 +3,7 @@
     <div class="card card-center-1 p-1">
     <h4 style="margin-top: 2px">Need a Doctor?</h4>
  <div class="font-1_0">Fill your complaints below for the right specialist to contact you at the Patient Waiting Room (PWR).</div>
- <p class="p-2 text-center" ng-if="statusMsg" style="color: #000;background-color: orange;text-align: center;font-size: 14px">{{statusMsg}}</p>
+ <p class="p-2 text-center" ng-if="statusMsg" style="color:green;text-align: center;font-size: 14px">{{statusMsg}}</p>
  <div>
  <label class="font-1_2 pt-2">Why do you need a doctor? </label>
  </div>
@@ -319,9 +319,9 @@
 </div>
 
 <div class="clearfix"></div>
-<div style="margin-top: 20px">
+<div style="margin: 20px">
 	<i class="fa fa-check pull-right font-1_4" style="color: #7dbb00" ng-if="statusMsg"> sent!</i>	
-	<button class="btn btn-success pull-right" style="background-color: #7dbb00" ng-click="validate()" ng-if="!statusMsg">{{(progress) ? progress + '% sending...'  : 'Submit Complaint'}}</button>
+	<button class="btn btn-success pull-right" style="background-color: #7dbb00" ng-click="validate()" ng-if="!statusMsg && !loading">{{(progress) ? progress + '% sending...'  : 'Submit Complaint'}}</button>
 </div>
 
 </div>
