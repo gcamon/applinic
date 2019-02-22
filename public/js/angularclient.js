@@ -19936,17 +19936,17 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
           "<span> " + docInfo.title + " " + docInfo.doctor_firstname + " " + docInfo.doctor_lastname 
           + "</span><br><br><b>Place of Work :</b>" 
           + "<span> " + docInfo.doctor_work_place + "</span><br><br>" 
+           + "<b>Address: </b> <span>" + docInfo.doctor_address + ", " + docInfo.doctor_city + "</span><br><br>"
           + "<b>Specialty : </b><span>" + docInfo.doctor_specialty + "</span><br><br>" 
           + "<b>Date of prescription : </b><span>" + $filter('amCalendar')(docInfo.date) + "</span><br><br>"       
           + "<span>Profile URL: </span> " + "https://applinic.com" + docInfo.doctor_profile_url + "<br><br>"
-          + "<b>Address: </b> <span>" 
-          + docInfo.doctor_address + "</span><br><br><b>Prescription ID: </b><span>" + docInfo.prescriptionId
+          + "</span><br><br><b>Prescription ID: </b><span>" + docInfo.prescriptionId
           + "</span><br><br><b>Description: </b><span>" + docInfo.provisional_diagnosis
           + "</span><br><br>" 
           + "<table><tr><th style='font-size: 14px;padding:2px'>S/N</th><th style='font-size: 14px;padding:5px'>Drug</th><th style='font-size: 14px;padding:5px'>Dosage</th><th style='font-size: 14px;padding:5px'>Frequency</th><th style='font-size: 14px;padding:5px'>Duration</th></tr>" 
           + createItemTable(docInfo.prescription_body) + "</table><br><br>" 
           + "<a href='https://applinic.com' style='text-decoration:none'><img src='https://applinic.com/assets/images/icons/favicon.png' style='width:32px;height:auto'> <b>Applinic</b></a><br>"
-          + "<div style='font-size: 14px'>The above prescription(s) was written in Applinic Online Healthcare Application.<br><br><a href='https://applinic.com/signup' style='text-decoration:none'>Create an account for free" +
+          + "<div style='font-size: 14px'>The above prescription(s) was written in www.applinic.com (Online Healthcare Application).<br><br><a href='https://applinic.com/signup' style='text-decoration:none'>Create an account for free" +
            "</a> and enjoy our services for writting, receiving and sharing prescriptions with friends or collegues.<br><br>We keep records of your prescription history and it's safe with us.<br><br> For enquiries please call customer support on +2349080045678</div>"
        } else {
            $rootScope.emailData.htmlTemp = "<h3 style='text-align:center'>" 
@@ -19959,7 +19959,7 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
           + "<table><tr><th style='font-size: 14px;padding:2px'>S/N</th><th style='font-size: 14px;padding:5px'>Drug</th><th style='font-size: 14px;padding:5px'>Dosage</th><th style='font-size: 14px;padding:5px'>Frequency</th><th style='font-size: 14px;padding:5px'>Duration</th></tr>" 
           + createItemTable(docInfo.prescription_body) + "</table><br><br>" 
           + "<a href='https://applinic.com' style='text-decoration:none'><img src='https://applinic.com/assets/images/icons/favicon.png' style='width:32px;height:auto'> <b>Applinic</b></a><br>"
-          + "<div style='font-size: 14px'>The above prescription(s) was written in Applinic Online Healthcare Application." 
+          + "<div style='font-size: 14px'>The above prescription(s) was written in www.applinic.com (Online Healthcare Application)." 
           + "<br><br><a href='https://applinic.com/signup' style='text-decoration:none'>Create an account for free </a> and enjoy our services for writting, receiving and sharing prescriptions with friends or collegues.<br><br>We keep records of your prescription history and it's safe with us.<br><br> For enquiries please call customer support on +2349080045678</div>"
       }
       break;
@@ -19985,7 +19985,7 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
           + createReportTests(docInfo.report,'laboratory') + "<br>"
           + "<b>CONCLUSION: </b> <br><span style='color:green'>" + docInfo.conclusion + "<br><br>"
           + "<a href='https://applinic.com' style='text-decoration:none'><img src='https://applinic.com/assets/images/icons/favicon.png' style='width:32px;height:auto'> <b>Applinic</b></a><br>"
-          + "<div style='font-size: 14px'>The above Investigation(s) was written in Applinic Online Healthcare Application.<br><br><a href='https://applinic.com/signup' style='text-decoration:none'>Create an account for free" +  
+          + "<div style='font-size: 14px'>The above Investigation(s) was written in www.applinic.com (Online Healthcare Application).<br><br><a href='https://applinic.com/signup' style='text-decoration:none'>Create an account for free" +  
           "</a> and enjoy our services for writting, receiving and sharing investigation with friends or collegues.<br><br>We keep records of your laboratory history and it's safe with us.<br><br> For enquiries please call customer support on +2349080045678</div>"
       break;
     }
