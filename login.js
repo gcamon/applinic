@@ -66,6 +66,8 @@ router.get('/user/dashboard',function(req,res){
       res.json({
         isLoggedIn: true,
         name: req.user.name,
+        age: req.user.age,
+        gender: req.user.gender,
         specialty: req.user.specialty,
         typeOfUser: req.user.type,
         firstname: req.user.firstname,

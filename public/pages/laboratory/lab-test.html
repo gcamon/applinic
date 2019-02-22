@@ -17,7 +17,7 @@
 	<div>-->
 	<div class="pl-0 card-center-1">
 		<div class="col-md-8 pl-0">
-				<input type="text" name="" placeholder="Filter by test name, center name, date sent, date received, etc" ng-model="filterResult" class="form-control">
+			<input type="text" name="" placeholder="Filter by test name, center name, date sent, date received, etc" ng-model="filterResult" class="form-control">
 		</div>
 	</div>
 	<div ng-if="!isViewSingle">
@@ -90,8 +90,8 @@
     				</article>
 
 
-    				<table class="table" ng-if="testRan.report_sheet">
-	                    <thead class="bg-info text-white">
+    				<table class="table table-striped" ng-if="testRan.report_sheet">
+	                    <thead>
 	                        <th style="width: 19%">Name</th>
 	                        <th style="width: 18%">TUM</th>
 	                        <th style="width: 18%">Result</th>
@@ -126,11 +126,12 @@
 
 				<div class="row">
     				<div class="col-sm-12 col-md-12 col-lg-12" style="padding: 10px 15px 0;position: relative;text-align: right;">
-    					<div>  
-    						<i class="fa fa-user-md btn btn-info" aria-hidden="true" style="font-size: 18px;margin-right:15p;cursor:pointer;padding: 5px 15px" title="Prescription request by test result" ng-click="sendDocTest(test)" ng-if="test.conclusion !== 'Pending'"></i>
-							<i class="fa fa-user-md btn btn-simple" aria-hidden="true" style="color:#ccc;font-size: 18px;margin-right:15p;cursor:pointer;padding: 5px 15px" title="Prescription request by test result"  ng-if="test.conclusion === 'Pending'"></i>  						
+    					<div>
+    						<a href="" style="font-size: 18px" title="Share via email" ng-click="email(test,'Laboratory')""><i class="fa fa-share-alt btn btn-neutral"></i></a>  
+    						<a href="" style="font-size: 18px;"> <i class="fa fa-user-md btn btn-info btn-sm" aria-hidden="true"  title="Send to your doctor for prescription" ng-click="sendDocTest(test)" ng-if="test.conclusion !== 'Pending'"></i></a>
+							<a href="" style="color:#ccc;font-size: 18px"> <i class="fa fa-user-md btn btn-simple btn-sm" aria-hidden="true"  title="Send to your doctor for prescription"  ng-if="test.conclusion === 'Pending'"></i> </a> 						
 		    				<!--<i ng-print  print-element-id="{{test.ref_id}}" class="fa fa-print btn btn-danger" aria-hidden="true" style="font-size: 18px;margin-right:15p;cursor:pointer;padding: 5px 15px" title="Print this lab investigation"></i>-->
-		    				<i class="fa fa-share btn btn-success" aria-hidden="true" style="font-size:18px;margin-right:20p;cursor:pointer;padding: 5px 15px" title="Forward this investigation to another center" ng-click="forwardTest(test,'Laboratory')"></i>
+		    				<a href="" style="font-size:18px;"><i class="fa fa-share btn btn-warning btn-sm" aria-hidden="true"  title="Forward to another center to re-run test" ng-click="forwardTest(test,'Laboratory')"></i></a>
 		    				
 	    				</div>
     				</div>
@@ -212,8 +213,8 @@
     				</article>
 
 
-    				<table class="table" ng-if="testRan.report_sheet">
-	                    <thead class="bg-info text-white">
+    				<table class="table table-striped" ng-if="testRan.report_sheet">
+	                    <thead>
 	                        <th style="width: 19%">Name</th>
 	                        <th style="width: 18%">TUM</th>
 	                        <th style="width: 18%">Result</th>

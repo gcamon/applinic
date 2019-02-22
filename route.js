@@ -9093,7 +9093,7 @@ router.post("/user/share/email",function(req,res){
     var mailOptions = {
       from: 'Applinic info@applinic.com',
       to: req.body.recepient,
-      subject: 'Patient Prescription',
+      subject:'Patient ' + req.body.type ,
       html: req.body.htmlTemp
     };
 

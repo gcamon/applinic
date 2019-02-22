@@ -19926,8 +19926,9 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
   $rootScope.email = function(docInfo,type) {
     $rootScope.emailData = {}
     $rootScope.emailData.type = type;
+    console.log(docInfo)
     switch (type) {
-      case 'pharmacy':
+      case 'Prescription':
         if(docInfo.doctor_work_place) {
           $rootScope.emailData.htmlTemp = "<h3 style='text-align:center'>" 
           + docInfo.patient_firstname + " " + docInfo.patient_lastname + "<br><span style='font-size:14px'>Age: " + docInfo.patient_age 
@@ -19944,21 +19945,77 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
           + "</span><br><br>" 
           + "<table><tr><th style='font-size: 14px;padding:2px'>S/N</th><th style='font-size: 14px;padding:5px'>Drug</th><th style='font-size: 14px;padding:5px'>Dosage</th><th style='font-size: 14px;padding:5px'>Frequency</th><th style='font-size: 14px;padding:5px'>Duration</th></tr>" 
           + createItemTable(docInfo.prescription_body) + "</table><br><br>" 
-          + "<div style='font-size: 14px'>The above prescription(s) was written in Applinic Online Healthcare Application.<br><br><a href='https://applinic.com/signup'>Create an account for free </a> and enjoy our utilities for writting, receiving and sharing prescriptions with friends or collegues.<br><br>We keep records of your prescription history and it's safe with us.<br><br> For enquiries please call customer support on +2349080045678</div>"
-       } else{
+          + "<a href='https://applinic.com' style='text-decoration:none'><img src='https://applinic.com/assets/images/icons/favicon.png' style='width:32px;height:auto'> <b>Applinic</b></a><br>"
+          + "<div style='font-size: 14px'>The above prescription(s) was written in Applinic Online Healthcare Application.<br><br><a href='https://applinic.com/signup' style='text-decoration:none'>Create an account for free" +
+           "</a> and enjoy our services for writting, receiving and sharing prescriptions with friends or collegues.<br><br>We keep records of your prescription history and it's safe with us.<br><br> For enquiries please call customer support on +2349080045678</div>"
+       } else {
            $rootScope.emailData.htmlTemp = "<h3 style='text-align:center'>" 
           + docInfo.patient_firstname + " " + docInfo.patient_lastname + "<br><span style='font-size:14px'>Age: " + docInfo.patient_age 
           + "</span><br> <span style='font-size:14px'> Gender: " + docInfo.patient_gender + "</span></h3> <br><div><br><b>Prescribed By: </b> " + 
            "<span>"+ docInfo.title + " " + docInfo.doctor_firstname + " " + docInfo.doctor_lastname 
           + "<br><br> <b>Date of prescription : </b><span>" + $filter('amCalendar')(docInfo.date) + "</span><br><br>" 
-          + "<span style='color:red'>Info: This prescrition may have been wriiten by <b>Non Professional</b></span><br><br>"
+          + "<b>Prescription ID: </b><span>" + docInfo.prescriptionId + "<br><br>"
+          + "<span style='color:red'>Info: This prescrition may have been written by <b>Non Professional</b></span><br><br>"
           + "<table><tr><th style='font-size: 14px;padding:2px'>S/N</th><th style='font-size: 14px;padding:5px'>Drug</th><th style='font-size: 14px;padding:5px'>Dosage</th><th style='font-size: 14px;padding:5px'>Frequency</th><th style='font-size: 14px;padding:5px'>Duration</th></tr>" 
           + createItemTable(docInfo.prescription_body) + "</table><br><br>" 
+          + "<a href='https://applinic.com' style='text-decoration:none'><img src='https://applinic.com/assets/images/icons/favicon.png' style='width:32px;height:auto'> <b>Applinic</b></a><br>"
           + "<div style='font-size: 14px'>The above prescription(s) was written in Applinic Online Healthcare Application." 
-          + "<br><br><a href='https://applinic.com/signup'>Create an account for free </a> and enjoy our utilities for writting, receiving and sharing prescriptions with friends or collegues.<br><br>We keep records of your prescription history and it's safe with us.<br><br> For enquiries please call customer support on +2349080045678</div>"
-        }
+          + "<br><br><a href='https://applinic.com/signup' style='text-decoration:none'>Create an account for free </a> and enjoy our services for writting, receiving and sharing prescriptions with friends or collegues.<br><br>We keep records of your prescription history and it's safe with us.<br><br> For enquiries please call customer support on +2349080045678</div>"
+      }
+      break;
+
+      case "Laboratory":
+         $rootScope.emailData.htmlTemp = "<h3 style='text-align:center'>" 
+          + docInfo.center_name + "<br><span style='font-size:14px'>" + docInfo.center_address + ", " 
+          + docInfo.center_city + ", " + docInfo.center_country
+          + "</span><br> <span style='font-size:14px'>" + docInfo.center_phone + "<span><br><span> https://applinic/user/profile/view/" + docInfo.center_id
+          + "</span></h3>"  + "<br><b>Patient Name: </b><span>" + $rootScope.checkLogIn.title + " " 
+          + $rootScope.checkLogIn.firstname + " " + $rootScope.checkLogIn.lastname 
+          + "<br></span><b>Patient Age: </b><span>" + $rootScope.checkLogIn.age 
+          + "<br></span><b>Gender: </b><span>" + $rootScope.checkLogIn.gender + "</span>"
+          + "<br><div><br><b>Referring Physician: </b> " + 
+          "<span> " + docInfo.referral_title + " " + docInfo.referral_firstname + " " + docInfo.referral_lastname 
+          + "</span><br><br><b>Date Requested : </b><span>" + $filter('amCalendar')(docInfo.sent_date) + "</span><br><br>"       
+          + "<span>Doctor Profile URL: </span> " + "https://applinic/user/profile/view/" + docInfo.referral_id + "<br><br>"
+          + "</span><b>Test Referrence NO: </b><span>" + docInfo.ref_id + "</span><br><br>"
+          + "</span><b>Indication: </b><span>" + docInfo.indication + "</span><br><br>"
+          + "<b>Investigation(s) Requested: </b> <br>" 
+          + "<ol>" + listInvestigations(docInfo.test_to_run) + "</ol><br><br>"
+          + "<b>Result: </b><br>"
+          + createReportTests(docInfo.report,'laboratory') + "<br>"
+          + "<b>CONCLUSION: </b> <br><span style='color:green'>" + docInfo.conclusion + "<br><br>"
+          + "<a href='https://applinic.com' style='text-decoration:none'><img src='https://applinic.com/assets/images/icons/favicon.png' style='width:32px;height:auto'> <b>Applinic</b></a><br>"
+          + "<div style='font-size: 14px'>The above Investigation(s) was written in Applinic Online Healthcare Application.<br><br><a href='https://applinic.com/signup' style='text-decoration:none'>Create an account for free" +  
+          "</a> and enjoy our services for writting, receiving and sharing investigation with friends or collegues.<br><br>We keep records of your laboratory history and it's safe with us.<br><br> For enquiries please call customer support on +2349080045678</div>"
       break;
     }
+
+
+    /*
+    $$hashKey: "object:495"
+    center_address: "12 Ebony Paint Rd"
+    center_city: "Enugu"
+    center_country: "Nigeria"
+    center_id: "heriLab1609"
+    center_name: "Heritage"
+    center_phone: "+2348096462317"
+    conclusion: "sdssdds dssddssddssdsd"
+    files: []
+    patient_id: "chidiebere187432"
+    payment_acknowledgement: true
+    receive_date: "1549356728166"
+    ref_id: 267169
+    referral_firstname: "Ede"
+    referral_id: "gcamon840253"
+    referral_lastname: "Obinna"
+    referral_title: "Dr"
+    report: (3) [{…}, {…}, {…}]
+    sent_date: "1549354806661"
+    session_id: "951edda0-2919-11e9-8e0c-b5489926f5de"
+    test_to_run: (3) [{…}, {…}, {…}]
+    type: "laboratory"
+    _id: "5c5947375d327054404ff2ea"
+    */
 
     ModalService.showModal({
       templateUrl: 'email-modal.html',
@@ -19984,10 +20041,46 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
     return str;
   }
 
+  function listInvestigations(arr) {
+    var str = ""
+    arr.forEach(function(item) {
+      str += "<li><b>" + item.name + "</b></li>";
+    })
+
+    return str;
+  }
+
+  function createReportTests(arr,type) {
+   
+    if(type == "laboratory")
+      var str = "";
+      //arr.forEach(function(itemName){  
+      for(var j = 0; j < arr.length; j++) { 
+        var itemName = arr[j];
+        str += "<div style='color: red'>" + itemName.name + ": </div>"  
+        + "<table><thead><th style='font-size: 14px;padding:5px'>Name</th><th style='font-size: 14px;padding:5px'>TUM</th><th style='font-size: 14px;padding:5px'>Result</th><th style='font-size: 14px;padding:5px'>Range</th><th style='font-size: 14px;padding:5px'>Units</th><th style='font-size: 14px;padding:5px'>Flag</th></thead>";
+        for(var i = 0; i <  itemName.report_sheet.length; i++) {
+          var test = itemName.report_sheet[i];
+          if(test) {           
+            str += "<tbody><td style='font-size: 14px;padding:5px'>" + test.r_name + "</td><td style='font-size: 14px;padding:5px'>" + test.r_tum + "</td><td style='font-size: 14px;padding:5px'>" 
+            + test.r_result + "</td><td style='font-size: 14px;padding:5px'>" + test.r_range + "</td><td style='font-size: 14px;padding:5px'>" + test.r_unit + "</td><td style='font-size: 14px;padding:5px'>" + test.r_flag + "</td></tbody>";
+          }
+        }
+        str += "</table><br>"
+      }
+      //})
+     return str
+  }
+
 }]);
 
 app.controller("emailModalCtrl",["$scope","$rootScope","$http",function($scope,$rootScope,$http){
   $scope.sendMail = function() {
+    if(!$scope.recepientEmail){
+      alert('Please enter recepient email.')
+      return;
+    }
+
     $scope.loading = true;
     $rootScope.emailData.recepient = $scope.recepientEmail;
     $http.post("/user/share/email",$rootScope.emailData)
