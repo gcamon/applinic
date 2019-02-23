@@ -2082,7 +2082,6 @@ app.controller('signupController',["$scope","$http","$location","$window","templ
 
 
   $scope.userType = function(type,path) {
-    $("#dpc").removeClass("dropdown-menu");
     $location.path(path);
     $scope.user.typeOfUser = type;
   }
@@ -14235,6 +14234,10 @@ app.controller("pharmacyViewPrescriptionController",["$scope","$location","templ
   //use to load data if has not been modified or if page is refreshed to restore default.
   $rootScope.refData = localManager.getValue("pharmacyData");
 
+  for(var i = 0; i < $rootScope.refData.pharmacy.prescription_body.length; i++) {
+    $rootScope.refData.pharmacy.prescription_body[i].picked = true;
+  }
+
 
   //check payment
   var billAuth = billingAuthService; //$resource("/user/center/billing-verification",null,{verify: {method: "PUT"}})
@@ -14403,6 +14406,12 @@ app.controller("pharmacyViewPrescriptionController",["$scope","$location","templ
   var count = 0;
   // sending billing to patient which otp will be send to patient informing the patient the toal cost of the bill.
   $rootScope.sendBill = function(patientId,oldTime,phoneCall) {
+
+    if(totalCost.sum < 1) {
+      alert("Total cost cannot be 0 amount");
+      return;
+    }
+
     var center = localManager.getValue('resolveUser');
     var time = + new Date();
     $rootScope.resend = time; //sets th old time in case otp  is resend to delete the formal otp sent by thsame user.
@@ -14425,9 +14434,11 @@ app.controller("pharmacyViewPrescriptionController",["$scope","$location","templ
 
     } else {
       var otp = paymentVerificationService; 
+      $scope.loading = true;
       otp.verify(sendObj,function(data){
         if(data.success){
           alert(data.message);
+          $scope.loading = false;
           $rootScope.refData.amount = $scope.str; // holds the amount to pay for the otp template that will come next 
           $rootScope.refData.rawAmount = totalCost.sum;
           $rootScope.refData.isSearchDrugRef = true;//use to check if precription from search drug utility was in use so that missing fields may be updated
@@ -14447,6 +14458,7 @@ app.controller("pharmacyViewPrescriptionController",["$scope","$location","templ
   }
 
   $scope.newPayment = function() {
+    $scope.isOTP = false;
     $rootScope.refData.pharmacy.is_paid = false;
     $rootScope.refData.pharmacy.detail = {};
   }
@@ -17366,18 +17378,16 @@ app.controller("searchSelectedCenterController",["$scope","$location","$window",
     .success(function(data) {      
       if(data.error) {
         alert(data.error);
-        $scope.isEMP = true;
+        //$scope.isEMP = true;
       } else {
-        if(!courier) {
-          
+        //if(!courier) {          
           $scope.isContent = false;
           $scope.isSent = true;
           $scope.result = data.ref_id;
-        } else {
-          $location.path('courier')
-        }
+        //} else {
+          //$location.path('courier')
+        //}
       }
-
       $scope.loading = false;
     });
   }
