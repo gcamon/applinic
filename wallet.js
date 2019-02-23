@@ -225,7 +225,7 @@ Wallet.prototype.billing = function(model,billingInfo,reciever,sms,io){
 				if(elemPos !== -1){
 					drugList[elemPos].payment_acknowledgement = true;
 				}
-				var msgBody = "Your Applinic was account debited" + "\nAmount: NGN"  + amount + 
+				var msgBody = "Your Applinic account was debited" + "\nAmount: NGN"  + amount + 
 				"\nActivity: Payment for drugs\n(You received 5% discount for paying through the app.)";
 				var phoneNunber =  debitor.phone;
 				sms.messages.create(
@@ -250,7 +250,7 @@ Wallet.prototype.billing = function(model,billingInfo,reciever,sms,io){
 				if(elemPos !== -1)
 					record[elemPos].payment_acknowledgement = true;
 				
-				var msgBody = "Your Applinic was account debited" + "\nAmount: NGN"  + amount + 
+				var msgBody = "Your Applinic account was debited" + "\nAmount: NGN"  + amount + 
 				"\nActivity: Payment for " + billingInfo.type + " test" + "\n(You get 5% discount for paying through the app.)";
 				var phoneNunber =  debitor.phone;
 				sms.messages.create(

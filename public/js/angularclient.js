@@ -18206,7 +18206,6 @@ function($scope,$location,$window,$http,templateService,localManager,templateUrl
 
 
   $scope.validate = function() {
-    $scope.loading = true;
     $scope.sympMsg = "";
     $scope.pregMsg = "";
     $scope.accMsg = "";
@@ -18300,7 +18299,7 @@ function($scope,$location,$window,$http,templateService,localManager,templateUrl
   }
 
   var sendComplait  = function(){
-
+    $scope.loading = true;
     $scope.user.description = "";
     if($scope.user.sick) {        
         var str = "";
