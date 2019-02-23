@@ -2082,6 +2082,7 @@ app.controller('signupController',["$scope","$http","$location","$window","templ
 
 
   $scope.userType = function(type,path) {
+    $("#dpc").removeClass("dropdown-menu");
     $location.path(path);
     $scope.user.typeOfUser = type;
   }
