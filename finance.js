@@ -1131,6 +1131,15 @@ var basicPaymentRoute = function(model,sms,io,paystack,client,nodemailer){
             ) 
           }
 
+          var transporter = nodemailer.createTransport({
+            host: "mail.privateemail.com",
+            port: 465,
+            auth: {
+              user: "info@applinic.com",
+              pass: process.env.EMAIL_PASSWORD
+            }
+      	  });
+
            transporter = nodemailer.createTransport({
 	            host: "mail.privateemail.com",
 	            port: 465,
@@ -1339,7 +1348,7 @@ var basicPaymentRoute = function(model,sms,io,paystack,client,nodemailer){
 	              user: "info@applinic.com",
 	              pass: process.env.EMAIL_PASSWORD
 	            }
-          	});
+          	  });
 
 	          var mailOptions = {
 	            from: 'Applinic info@applinic.com',
