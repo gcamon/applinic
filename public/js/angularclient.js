@@ -20257,6 +20257,19 @@ app.controller("patientWaitingRoomController",["$scope","$resource","$location",
       }
   };*/
 
+  $scope.imageClickEvt = function(imgUrl){
+    $rootScope.imgUrl = imgUrl;
+    ModalService.showModal({
+        templateUrl: 'image-modal.html',
+        controller: "imageModalController"
+    }).then(function(modal) {
+        modal.element.modal();
+        modal.close.then(function(result) {
+          
+        });
+    });     
+  }
+
   $scope.sendRequest = function(){
     var date = + new Date();
     $scope.loading = true;

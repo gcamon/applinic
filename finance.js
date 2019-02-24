@@ -1581,15 +1581,14 @@ var basicPaymentRoute = function(model,sms,io,paystack,client,nodemailer){
             	  ) 
 		        }
 
-
 		        var transporter = nodemailer.createTransport({
-	            host: "mail.privateemail.com",
-	            port: 465,
-	            auth: {
-	              user: "info@applinic.com",
-	              pass: process.env.EMAIL_PASSWORD
-	            }
-          	});
+		            host: "mail.privateemail.com",
+		            port: 465,
+		            auth: {
+		              user: "info@applinic.com",
+		              pass: process.env.EMAIL_PASSWORD
+		            }
+          	    });
 
 	          var mailOptions = {
 	            from: 'Applinic info@applinic.com',
@@ -1605,7 +1604,7 @@ var basicPaymentRoute = function(model,sms,io,paystack,client,nodemailer){
 	            + "For inquiries please call customer support on +2349080045678 or email us at support@applinic.com<br><br>"
 	            + "Thank you for using Applinic.<br></br><br>"
 	            + "<b>Applinic Team</b></td></tr></table>"
-          	};
+          	  };
 
 	          transporter.sendMail(mailOptions, function(error, info){
 	            if (error) {

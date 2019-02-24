@@ -249,9 +249,9 @@
                                         <p class="pt-1" ng-bind-html= "patient.description"></p>
                                         <h6 style="font-weight:bold;" ng-if="patient.files.length > 0">Attached file(s)</h6><hr/>
                                         <div class="card" ng-if="patient.files.length > 0" ng-repeat="file in patient.files" >
-                                            <div  ng-if="file.type === 'image'" style="width: auto;height:auto;margin:5px auto">
+                                            <a href=""  ng-if="file.type === 'image'" style="margin:5px" ng-click="imageClickEvt(file.url)">
                                             <img src="{{file.url}}"  ng-click="viewFile()"  style="max-width: 480px;max-height:280px;margin-right:10px" class="img-responsive">
-                                            </div>
+                                            </a>
                                             
                                             <video style="width:100%;height: auto;" controls
                                               poster="https://archive.org/download/WebmVp8Vorbis/webmvp8.gif" ng-if="file.type === 'video'"  class="img-responsive>  
@@ -270,7 +270,7 @@
                                             
                                           
                                             <label style="font-weight:bold;font-size: 14px" class="text-capitalize">Management Plan? </label>
-                                            <textarea class="form-control" ng-model="user.introductory" ng-keyup="autoExpand($event)" id="textarea"></textarea>
+                                            <textarea class="form-control" ng-model="user.introductory" ng-keyup="autoExpand($event)" id="textarea" placeholder="Write..."></textarea>
                                             <div class="p-2"></div>
                                             
                                             <div class="pt-2">
@@ -358,6 +358,22 @@
         </div>
       </div>
    </script>
+   <script type="text/ng-template" id="image-modal.html">
+         <div class="modal fade">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">             
+                <h4>Image</h4>
+                <button type="button" class="close" ng-click="close('Cancel')" data-dismiss="modal" aria-hidden="true">&times;</button>           
+                       
+            </div>
+            <div class="modal-body">                
+              <img src="{{imgUrl}}" style="width: auto; height: auto;" alt="image">
+            </div>
+           
+          </div>
+        </div>
+     </script>
         <script src="/assets/js/vendor/jquery-library.js"></script>
         <script src="/assets/js/vendor/bootstrap.min.js"></script>
        
