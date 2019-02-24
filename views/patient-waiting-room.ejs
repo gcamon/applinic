@@ -14,9 +14,9 @@
         
         
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-        
+         <link rel="stylesheet" href="/assets/css/vendor.css">
         <link rel="stylesheet" href="/assets/css/now-ui-kit2.css">
-        <link rel="stylesheet" href="/assets/css/bootstrap.min.css">
+        <!--<link rel="stylesheet" href="/assets/css/bootstrap.min.css">-->
         <!--<link rel="stylesheet" href="assets/css/app.css">-->
         <link rel="stylesheet" href="/assets/css/main.css">
         <link rel="icon" type="image/png" href="/assets/images/icons/favicon.png">
@@ -34,13 +34,7 @@
          <noscript>
           <META HTTP-EQUIV="Refresh" CONTENT="0;URL=/assets/show-error.html">
       </noscript>
-         <!--<script type="text/javascript">
-            $(document).ready(function(){
-                $("html").niceScroll({cursorcolor:"#ccc",cursorwidth:"10px"});
-                $("#main").niceScroll("#complaint",{cursorcolor:"#ccc"});
-                $("#complain-in-view").niceScroll({cursorcolor:"#ccc",cursorwidth:"10px"});
-            })
-        </script>-->
+      
          <!-- Global site tag (gtag.js) - Google Analytics -->
         <script async src="https://www.googletagmanager.com/gtag/js?id=UA-128083647-1"></script>
         <script>
@@ -124,18 +118,15 @@
               
                 <div class="container" style="position: relative;">
                     <nav class="row">
-                        <div class="col-sm-6 col-md-2 col-lg-2 pb-2 pt-3">
-                            
-                            <!--<a href="" ng-href="{{back}}" class="nav-link btn btn-simple btn-sm" style="color:#555!important;float: left;">
-                              <b> &larr; Back</b>
-                            </a> &nbsp;-->
-
+                        <div class="col-sm-6 col-md-2 col-lg-2">                            
+                          
+                              <br>
                               <a class="brand text-success" href="/" style="text-decoration: none;">
                                 <div class="text-muted"> <span class="l l1"></span> <span class="l l2"></span> <span class="l l3"></span> <span class="l l4"></span> <span class="l l5"></span> </div> <b>Applinic</b> </a>  
                                                 
                         </div>  
-                         <div class="col-sm-12 col-md-8 col-lg-8 pb-2 pt-3">
-                           <h5><b>Patients' Waiting Room</b> &nbsp;</h5>
+                         <div class="col-sm-12 col-md-8 col-lg-8">
+                           <h5 class="mt-1"><b>Patients' Waiting Room</b> &nbsp;</h5>
                         </div>                                     
                     </nav>
                     <a class="btn btn-simple text-danger btn-sm"  href="" ng-click="logout()" style="position: absolute;top: 15px;right: 0">
@@ -320,7 +311,6 @@
             <!--************************************
                             Footer End
             *************************************-->
-        </div>
         <!--************************************
                         Wrapper End
         *************************************-->
@@ -363,16 +353,18 @@
          <div class="modal fade">
           <div class="modal-dialog">
             <div class="modal-content">
-              <div class="modal-header">             
-                <h4>Image</h4>
-                <button type="button" class="close" ng-click="close('Cancel')" data-dismiss="modal" aria-hidden="true">&times;</button>           
+              <div class="modal-heade"> 
+
+                <a href  style="font-size: 22px;color: red" class="close" ng-click="close('Cancel')" data-dismiss="modal" aria-hidden="true">&times;</a>           
                        
-            </div>
-            <div class="modal-body">                
-              <img src="{{imgUrl}}" style="width: auto; height: auto;" alt="image">
+             </div>
+
+            <div style="text-align: center;">                
+              <img src="{{imgUrl}}" style="width: 100%; height: auto;" alt="image">
             </div>
            
           </div>
+        </div>
         </div>
      </script>
         <!--<script src="/assets/js/vendor/jquery-library.js"></script>
@@ -385,11 +377,11 @@
         <script src="/assets/js/jquery-ui.js"></script>
         
         
-        <script src="/assets/js/jquery.nicescroll.js"></script>
+        <!--<script src="/assets/js/jquery.nicescroll.js"></script>-->
        
         
         <script src="/assets/js/angularAnimate.js"></script>
-        
+        <script src="/assets/js/modalService.js"></script>
         
         <script src="/assets/js/moment.min.js"></script>
         <script src="/assets/js/angular-touch.min.js"></script>
@@ -399,7 +391,7 @@
         <script src="/assets/js/angular-clipboard.js"></script>
         <script src="/assets/js/ngresource.js"></script> 
           <script src="/assets/js/ngPrint.js"></script>
-          <script src="/assets/js/modalService.js"></script>
+          
         <script type="text/javascript" src="/assets/js/angular-paystack/dist/angular-paystack.min.js"></script>
          <script type="text/javascript" src="/assets/js/angular-sanitize.min.js"></script>
          <script src="/assets/js/bower_components/angular-summernote/dist/angular-summernote.js"></script>
