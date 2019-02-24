@@ -17,12 +17,13 @@
         
         <link rel="stylesheet" href="/assets/css/now-ui-kit2.css">
         <link rel="stylesheet" href="/assets/css/bootstrap.min.css">
-        <link rel="stylesheet" href="assets/css/app.css">
+        <!--<link rel="stylesheet" href="assets/css/app.css">-->
         <link rel="stylesheet" href="/assets/css/main.css">
         <link rel="icon" type="image/png" href="/assets/images/icons/favicon.png">
         
-        <script src="/assets/js/vendor/jquery-library.js"></script>
-         <script type="text/javascript" src="/assets/js/source.js"></script>
+        <!--<script src="/assets/js/vendor/jquery-library.js"></script>-->
+        <script src="/assets/js/vendor2.js"></script>
+        <script type="text/javascript" src="/assets/js/source.js"></script>
         <script type="text/javascript" src="/assets/js/jquery.nicescroll.js"></script>
         <script type="text/javascript">
           var Opera = (navigator.userAgent.match(/Opera|OPR\//) ? true : false);
@@ -250,7 +251,7 @@
                                         <h6 style="font-weight:bold;" ng-if="patient.files.length > 0">Attached file(s)</h6><hr/>
                                         <div class="card" ng-if="patient.files.length > 0" ng-repeat="file in patient.files" >
                                             <a href=""  ng-if="file.type === 'image'" style="margin:5px" ng-click="imageClickEvt(file.url)">
-                                              <img src="{{file.url}}"  style="max-width: 480px;max-height:280px;margin-right:10px" class="img-responsive">
+                                            <img src="{{file.url}}"  ng-click="viewFile()"  style="max-width: 480px;max-height:280px;margin-right:10px" class="img-responsive">
                                             </a>
                                             
                                             <video style="width:100%;height: auto;" controls
@@ -374,7 +375,7 @@
           </div>
         </div>
      </script>
-       <!-- <script src="/assets/js/vendor/jquery-library.js"></script>
+        <!--<script src="/assets/js/vendor/jquery-library.js"></script>
         <script src="/assets/js/vendor/bootstrap.min.js"></script>-->
        
         <script type="text/javascript" src="/assets/js/angularclient.js"></script>
@@ -382,7 +383,8 @@
         <script src="/socket.io/socket.io.js"></script>   
         <script src="/assets/js/socket.min.js"></script>
         <script src="/assets/js/jquery-ui.js"></script>
-       
+        
+        
         <script src="/assets/js/jquery.nicescroll.js"></script>
        
         
