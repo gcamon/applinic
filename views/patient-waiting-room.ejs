@@ -250,7 +250,7 @@
                                         <h6 style="font-weight:bold;" ng-if="patient.files.length > 0">Attached file(s)</h6><hr/>
                                         <div class="card" ng-if="patient.files.length > 0" ng-repeat="file in patient.files" >
                                             <a href=""  ng-if="file.type === 'image'" style="margin:5px" ng-click="imageClickEvt(file.url)">
-                                            <img src="{{file.url}}"  ng-click="viewFile()"  style="max-width: 480px;max-height:280px;margin-right:10px" class="img-responsive">
+                                              <img src="{{file.url}}"  style="max-width: 480px;max-height:280px;margin-right:10px" class="img-responsive">
                                             </a>
                                             
                                             <video style="width:100%;height: auto;" controls
@@ -374,22 +374,20 @@
           </div>
         </div>
      </script>
-        <script src="/assets/js/vendor/jquery-library.js"></script>
-        <script src="/assets/js/vendor/bootstrap.min.js"></script>
+       <!-- <script src="/assets/js/vendor/jquery-library.js"></script>
+        <script src="/assets/js/vendor/bootstrap.min.js"></script>-->
        
         <script type="text/javascript" src="/assets/js/angularclient.js"></script>
         <script type="text/javascript" src="/assets/js/ngroute.js"></script>
         <script src="/socket.io/socket.io.js"></script>   
         <script src="/assets/js/socket.min.js"></script>
         <script src="/assets/js/jquery-ui.js"></script>
-        <!--<script src="http://maps.google.com/maps/api/js?sensor=false"></script>
-        <script src="/assets/js/map/jquery.gomap.js"></script>-->
-        
+       
         <script src="/assets/js/jquery.nicescroll.js"></script>
        
         
         <script src="/assets/js/angularAnimate.js"></script>
-        <script src="/assets/js/modalService.js"></script>
+        
         
         <script src="/assets/js/moment.min.js"></script>
         <script src="/assets/js/angular-touch.min.js"></script>
@@ -399,6 +397,7 @@
         <script src="/assets/js/angular-clipboard.js"></script>
         <script src="/assets/js/ngresource.js"></script> 
           <script src="/assets/js/ngPrint.js"></script>
+          <script src="/assets/js/modalService.js"></script>
         <script type="text/javascript" src="/assets/js/angular-paystack/dist/angular-paystack.min.js"></script>
          <script type="text/javascript" src="/assets/js/angular-sanitize.min.js"></script>
          <script src="/assets/js/bower_components/angular-summernote/dist/angular-summernote.js"></script>
