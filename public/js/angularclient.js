@@ -20197,8 +20197,9 @@ app.service("patientWaitingRoomService",["$resource",function($resource){
   return $resource("/user/response/patients-histories/:batch",null,{respond:{method: "POST"}});
 }]);
 
-app.controller("patientWaitingRoomController",["$scope","$resource","$location","$routeParams","mySocket","patientWaitingRoomService","$rootScope",
-  function($scope,$resource,$location,$routeParams,mySocket,patientWaitingRoomService,$rootScope){
+app.controller("patientWaitingRoomController",["$scope","$resource","$location","$routeParams",
+  "mySocket","patientWaitingRoomService","$rootScope","ModalService",
+  function($scope,$resource,$location,$routeParams,mySocket,patientWaitingRoomService,$rootScope,ModalService){
   var complaints = patientWaitingRoomService; //$resource("/user/response/patients-histories/:batch",null,{respond:{method: "POST"}});
   complaints.query({batch:1},function(data){
     $scope.complaints = data;
