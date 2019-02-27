@@ -5877,14 +5877,16 @@ app.controller("investigationController",["$scope","$http","labTests","scanTests
     $rootScope.treatment = ($rootScope.treatment) ? $rootScope.treatment : {};
     $scope.isSearchToSend = false;
 
+    
+
     $scope.treatment.city = patient.city;
     $scope.treatment.country = patient.country;
+
 
     $scope.lab = function() {
       $scope.isNewLab = true;
       $scope.isNewRadio = false;
       
-
       var test_name;
       var index;
 
@@ -6031,8 +6033,7 @@ app.controller("investigationController",["$scope","$http","labTests","scanTests
               patient.sub_session_id = $rootScope.sub_session_id;
               $rootScope.isSubNote = false;
            }
-          
-          
+
           $http({
           method  : 'POST',
           url     : "/user/doctor/send-test",
@@ -12490,6 +12491,8 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
     $scope.isToViewSession = false;  
     $scope.isTreatmentSession = false;   
     $scope.isOutPatientBilling = false;
+     $scope.isToLabReport = false;
+      $scope.isToRadioReport = false
   }
 
   $scope.appointment = function(patientObj){
@@ -12524,6 +12527,8 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
     $scope.isOutPatientBilling = true;
     $scope.inMainBill = true;
     $scope.isPreviewBill = false;
+     $scope.isToLabReport = false;
+      $scope.isToRadioReport = false
   }
 
   $scope.billList = [];
@@ -12612,6 +12617,8 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
     $scope.isToViewSession = false;     
     $scope.isTreatmentSession = false;
     $scope.isOutPatientBilling = false;
+     $scope.isToLabReport = false;
+      $scope.isToRadioReport = false
     if(!$scope.medicalRecordHistory)
       getMedicalHistory("/user/get-medical-record");
     
@@ -12663,7 +12670,7 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
 
    
 
-    var getPatientMedicationByDoctor = function(url){
+  var getPatientMedicationByDoctor = function(url){
       if(!$scope.medicalRecordHistory) {
         var getMedication = getPatientMedicationByDoctorService //$resource(url);
         var sendObj = {patientId:patient.id}
@@ -12953,6 +12960,8 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
       $scope.isChat = false;
       $scope.isTreatmentSession = false;
       $scope.isOutPatientBilling = false;
+       $scope.isToLabReport = false;
+      $scope.isToRadioReport = false
     }
 
     $scope.viewTreatmentSession = function (session) {
@@ -12982,62 +12991,141 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
       });
     }
 
-    $scope.getInitialComplaint = function() {
-      ModalService.showModal({
-          templateUrl: 'quickViewInitialComplaint.html',
-          controller: "fromModalSessionController"
-      }).then(function(modal) {
-          modal.element.modal();
-          modal.close.then(function(result){});
-      });
+  $scope.getInitialComplaint = function() {
+    ModalService.showModal({
+        templateUrl: 'quickViewInitialComplaint.html',
+        controller: "fromModalSessionController"
+    }).then(function(modal) {
+        modal.element.modal();
+        modal.close.then(function(result){});
+    });
+  }
+
+  $scope.viewLabPrescriptionRequest = function () {
+    $scope.isToSeeRecord = false;
+    $scope.isToPrescribe = false;
+    $scope.isToViewLabPrescriptionReq = true;
+    $scope.isToViewRadPrescriptionReq = false;
+    $scope.isToViewSession = false; 
+    $scope.isChat = false;
+    $scope.isSearchToSend = false; 
+    $scope.isToViewSession = false;  
+    $scope.isTreatmentSession = false;  
+    $scope.isOutPatientBilling = false; 
+     $scope.isToLabReport = false;
+    $scope.isToRadioReport = false
+  }
+
+  $scope.viewLabReport = function () {
+    $scope.isToSeeRecord = false;
+    $scope.isToPrescribe = false;
+    $scope.isToViewLabPrescriptionReq = false;
+    $scope.isToViewRadPrescriptionReq = false;
+    $scope.isToViewSession = false; 
+    $scope.isChat = false;
+    $scope.isSearchToSend = false; 
+    $scope.isToViewSession = false;  
+    $scope.isTreatmentSession = false;  
+    $scope.isOutPatientBilling = false; 
+    $scope.isToRadioReport = false;
+    $scope.isToLabReport = true;
+    investigation("/user/doctor/get-test-result");    
+  }
+
+  $scope.viewRadioReport = function () {
+    $scope.isToSeeRecord = false;
+    $scope.isToPrescribe = false;
+    $scope.isToViewLabPrescriptionReq = false;
+    $scope.isToViewRadPrescriptionReq = false;
+    $scope.isToViewSession = false; 
+    $scope.isChat = false;
+    $scope.isSearchToSend = false; 
+    $scope.isToViewSession = false;  
+    $scope.isTreatmentSession = false;  
+    $scope.isOutPatientBilling = false; 
+    $scope.isToLabReport = false;
+    $scope.isToRadioReport = true;
+    investigation("/user/doctor/get-scan-result");
+  }
+
+
+  $scope.viewRadioPrescriptionRequest = function () {
+    $scope.isToSeeRecord = false;
+    $scope.isToPrescribe = false;
+    $scope.isToViewLabPrescriptionReq = false;
+    $scope.isToViewRadPrescriptionReq = true;
+    $scope.isToViewSession = false;
+    $scope.isChat = false;
+    $scope.isSearchToSend = false; 
+    $scope.isToViewSession = false;
+    $scope.isTreatmentSession = false; 
+    $scope.isOutPatientBilling = false;
+    $scope.isToLabReport = false;
+    $scope.isToRadioReport = false;    
+  }
+
+  var sessionList = [];
+
+
+  function investigation(url)  {
+    var sendObj = {
+      docId: $rootScope.checkLogIn.user_id
     }
-
-    $scope.viewLabPrescriptionRequest = function () {
-      $scope.isToSeeRecord = false;
-      $scope.isToPrescribe = false;
-      $scope.isToViewLabPrescriptionReq = true;
-      $scope.isToViewRadPrescriptionReq = false;
-      $scope.isToViewSession = false; 
-      $scope.isChat = false;
-      $scope.isSearchToSend = false; 
-      $scope.isToViewSession = false;  
-      $scope.isTreatmentSession = false;  
-      $scope.isOutPatientBilling = false; 
-    }
-
-    $scope.viewRadioPrescriptionRequest = function () {
-      $scope.isToSeeRecord = false;
-      $scope.isToPrescribe = false;
-      $scope.isToViewLabPrescriptionReq = false;
-      $scope.isToViewRadPrescriptionReq = true;
-      $scope.isToViewSession = false;
-      $scope.isChat = false;
-      $scope.isSearchToSend = false; 
-      $scope.isToViewSession = false;
-      $scope.isTreatmentSession = false; 
-      $scope.isOutPatientBilling = false;
-    }
-
-    var sessionList = [];
-
-
-
-    function loadSession() {
-      $scope.loading = true;
-      var getSession = getSessionService;//$resource("/user/doctor/get-patient-sessions");
-      var sendObj = {patient_id:patient.id}
-      getSession.query(sendObj,function(data){
-        $scope.loading = false; 
-        //$rootScope.recentSession = data[0];
-        $rootScope.sessionData = data;
-        if(data.length > 0)
-          templateService.holdId = data[0].patient_id;
+    $scope.loading = true;
+    $scope.isResults = true;
+    $http({
+      method  : 'PUT',
+      url     : url,
+      data    : sendObj,
+      headers : {'Content-Type': 'application/json'} 
       })
-      
+    .success(function(data) {        
+      console.log(data)   
+      $scope.loading = false;         
+      $scope.testResult = data;
+    });            
+  }
+
+
+  function loadSession() {
+    $scope.loading = true;
+    var getSession = getSessionService;//$resource("/user/doctor/get-patient-sessions");
+    var sendObj = {patient_id:patient.id}
+    getSession.query(sendObj,function(data){
+      $scope.loading = false; 
+      //$rootScope.recentSession = data[0];
+      $rootScope.sessionData = data;
+      if(data.length > 0)
+        templateService.holdId = data[0].patient_id;
+    })
+    
+  }
+
+
+  $scope.requestNewLab = function() {
+    if(!$scope.isNewLab) {
+      $scope.isResults = false;
+      $scope.isNewLab = true;
+      $rootScope.flag = 'lab';
+    } else {      
+      $scope.isNewLab = false;
+      $scope.viewLabReport()
     }
+  }
+
+  $scope.requestNewRadio = function() {
+    if(!$scope.isNewRadio) {
+      $scope.isResults = false;
+      $scope.isNewRadio = true;
+      $rootScope.flag = undefined;
+    } else {      
+      $scope.isNewRadio = false;
+      $scope.viewRadioReport();
+    }
+  }
 
 
-    //this filters the prescriptionb reequest based 0on the type of request whether lab test or radio test ia accompanied with the request
+  //this filters the prescriptionb reequest based 0on the type of request whether lab test or radio test ia accompanied with the request
     templateService.labPrescriptionReq = [];
     templateService.radioPrescriptionReq = [];
     
@@ -15274,6 +15362,11 @@ app.controller("labTestControler",["$scope","$location","$http","templateService
     $location.path("/laboratory/view-test/" + random);   
   }
 
+  $scope.newPayment = function() {
+    $scope.otpMsg = null;
+    $scope.paymentStatus = false;
+  }
+
 
 
   //for entering of lab test report
@@ -16385,6 +16478,12 @@ app.controller("radioTestControler",["$scope","$location","$http","templateServi
 
     var random = Math.floor(Math.random() * 100);
     $location.path("/radiology/view-test/" + random);   
+  }
+
+
+  $scope.newPayment = function() {
+    $scope.otpMsg = null;
+    $scope.paymentStatus = false;
   }
 
 

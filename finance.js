@@ -311,7 +311,7 @@ var basicPaymentRoute = function(model,sms,io,paystack,client,nodemailer){
 										data.remove(function(){});
 										createNew();
 									}  else {
-										res.send({message: "This OTP session has been used and expired! Transaction canceled."})
+										res.send({message: "This OTP session has been used and expired! Please refresh the page and continue."})
 									}
 								})
 								/*model.otpSchema.remove({time:req.body.old_time},function(err){

@@ -166,11 +166,11 @@
 
                                             <a href="" class="notification-item" ng-click="viewNote(note.ref_id)">
                                                 <div class="img-col">
-                                                    <div class="img" style="background-image: url({{note.sender_profile_pic_url}})"></div>
+                                                    <img class="img" src="{{note.sender_profile_pic_url}}">
                                                 </div>
                                                 <div class="body-col">
-                                                    <p> <span class="accent">{{note.sender_firstname}} {{note.sender_lastname}}</span> <span style="display: block;">{{note.message}} </span>
-                                                    <small class="accent" style="display: block" am-time-ago="note.sent_date"></small></p>
+                                                  <p> <span class="accent">{{note.sender_firstname}} {{note.sender_lastname}}</span> <span style="display: block;">{{note.message}} </span>
+                                                  <small class="accent" style="display: block" am-time-ago="note.sent_date"></small></p>
                                                 </div>
                                             </a>
                                         </li>                                        

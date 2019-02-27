@@ -111,7 +111,7 @@
                      	<strong style="display: block;" class="text-success">You'll receive : {{commissionedAmount}} &nbsp;<span style="font-weight: normal;">( platform {{checkLogIn.city_grade}}% discount applied )</span></strong>
                      	<button class="btn btn-danger" style="float: right;" ng-click="sendBill(refInfo.laboratory.patient_id,resend)" ng-if="grabRawAmount > 0"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i> Request Payment </button>
                      </div>
-                     </article>	
+                    </article>	
                     <article ng-if="otpMsg">
                      	<div  class="p-2 col-md-12" class="text-center text-success font-1">
                      		<p class="bg-warning p-1 text-danger" ng-if="otpError">{{otpError}}</p>
@@ -138,6 +138,8 @@
 
                      <article ng-if="refInfo.laboratory.is_paid || paymentStatus">
                      	<div class="p-2">
+                     		<a href="" ng-click="newPayment()" style="float: right;color:green">Request new payment</a>
+                     		<div class="clearfix"></div>
                      		<i class="fa fa-check-circle" style="font-size: 42px;color: #85CE36;float: left;"></i>
                      		<aside style="padding: 20px;display: inline-block;margin-top: -20px">
 	                     		<strong style="">Payment for the test(s) was successfully!</strong>

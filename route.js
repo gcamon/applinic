@@ -4098,6 +4098,8 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
           //model.user.findOne({user_id: req.user.user_id},{doctor_patient_session:1}).exec(function(err,data){
            // if(err) throw err;
            var data = req.user;
+
+           if(req.body.id) {
             var elementPos = data.doctor_patient_session.map(function(x) {return x.session_id; }).indexOf(req.body.id);
             var objectFound = data.doctor_patient_session[elementPos];
             var sentObjArr = [];
@@ -4152,6 +4154,9 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
             }
             
             res.json({result:sentObjArr});
+          } else {
+            res.json(data.doctor_patient_session);
+          }
           //});
         } else {
           res.end("Unauthorized access!")
@@ -4160,8 +4165,11 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
     //doctors finds the patient's scan if any
     router.put("/user/doctor/get-scan-result",function(req,res){/////////////////////////////
         if(req.user){
-          model.user.findOne({user_id: req.user.user_id},{doctor_patient_session:1}).exec(function(err,data){
-            if(err) throw err;
+          //model.user.findOne({user_id: req.user.user_id},{doctor_patient_session:1}).exec(function(err,data){
+            //if(err) throw err;
+            var data = req.user;
+
+            if(req.body.id) {
             var elementPos = data.doctor_patient_session.map(function(x) {return x.session_id; }).indexOf(req.body.id);
             var objectFound = data.doctor_patient_session[elementPos];
             var sentObjArr = [];
@@ -4219,7 +4227,11 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
 
             res.json({result:sentObjArr})
 
-          });
+          } else {
+            res.json(data.doctor_patient_session)
+          }
+
+         // });
         } else {
           res.end("Unauthorized access!")
         }
@@ -4264,9 +4276,21 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
         var testId = randos.genRef(8); 
         var date = + new Date();     
         model.user.findOne({user_id: req.body.user_id},
-          {diagnostic_center_notification:1,referral:1,address:1,name:1,city:1,country:1,phone:1,user_id:1,presence:1}).exec(function(err,result){                  
+          {diagnostic_center_notification:1,referral:1,address:1,name:1,city:1,country:1,phone:1,user_id:1,presence:1,email:1,profile_pic_url:1})
+        .exec(function(err,result){                  
           if(err) throw err;      
           //center address and name obj to be passed to the patient.
+          req.body.session_id = (!req.body.session_id) ?
+           (req.user.doctor_patient_session[0]) ?
+           req.user.doctor_patient_session[0].session_id : uuid.v1() : req.body.session_id
+
+          req.body.center_name = result.name;
+          req.body.center_address = result.address;
+          req.body.center_city = result.city;
+          req.body.center_phone = result.phone;
+          req.body.center_email = result.email;
+          req.body.center_profile_pic_url = result.profile_pic_url;
+
           var centerObj = {
             name: result.name,
             address: result.address,
@@ -4309,6 +4333,52 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
               doctor_profile_url: req.user.profile_url
             }                         
           }
+
+
+          /*
+  address: "13 Chezoka Estate Garriki"
+age: "30 - 39 years (adult)"
+city: "Enugu"
+clinical_summary: "fdfdfdf"
+country: "Nigeria"
+date: 1551250154553
+email: "chidiebere@gmail.com"
+firstname: "Nnaji"
+gender: "Male"
+history: undefined
+indication: "ffdfdfd"
+lab_test_list: (2) [{…}, {…}]
+laboratory:
+patient_age: "30 - 39 years (adult)"
+patient_gender: "Male"
+__proto__: Object
+lastname: "Chidiebere"
+lmp: undefined
+medical_records: {radiology_test: Array(8), laboratory_test: Array(20), prescription: Array(0), diagnosis: Array(0)}
+noUpdate: true
+parity: undefined
+patient_address: "13 Chezoka Estate Garriki"
+patient_firstname: "Nnaji"
+patient_id: "chidiebere187432"
+patient_lastname: "Chidiebere"
+patient_profilePic: "/download/profile_pic/nopic"
+patient_title: "Mr"
+phone: "+2348064245255"
+presence: false
+profile_pic_url: "/download/profile_pic/nopic"
+session_id: undefined
+title: "Mr"
+treatment:
+patient_id: "chidiebere187432"
+session_id: undefined
+typeOfSession: ""
+__proto__: Object
+type: "Patient"
+typeOfSession: ""
+user_id: "heriLab1609"
+_id: "5c16660cba74dc0288ecfad9"
+
+          */
 
           //this is notification for the center.
           var refNotification = {
@@ -4423,9 +4493,17 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
             report: "Pending",
             test_id: testId,
             conclusion: "Pending",
-            sub_session_id: req.body.sub_session_id
+            sub_session_id: req.body.sub_session_id,
+            indication: req.body.indication,
+            test_ran_by: req.body.center_name,
+            center_address: req.body.center_address,
+            center_city: req.body.center_city,
+            center_phone: req.body.center_phone,
+            center_email: req.body.center_email,
+            center_profile_pic_url: req.body.center_profile_pic_url
           }  
 
+          
           model.user.findOne({user_id: req.user.user_id},{doctor_patient_session:1}).exec(function(err,data){
 
             if(err) throw err;           
@@ -4712,9 +4790,21 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
           var testId = randos.genRef(8); 
           var date = + new Date();   
          model.user.findOne({user_id: req.body.user_id},{
-          diagnostic_center_notification:1,referral:1,address:1,name:1,city:1,country:1,phone:1,user_id:1,presence:1})        
+          diagnostic_center_notification:1,referral:1,address:1,name:1,city:1,country:1,phone:1,user_id:1,presence:1,email:1,profile_pic_url:1})        
         .exec(function(err,result){
           if(err) throw err;        
+
+          req.body.session_id = (!req.body.session_id) ?
+           (req.user.doctor_patient_session[0]) ?
+           req.user.doctor_patient_session[0].session_id : uuid.v1() : req.body.session_id
+
+
+          req.body.center_name = result.name;
+          req.body.center_address = result.address;
+          req.body.center_city = result.city;
+          req.body.center_phone = result.phone;
+          req.body.center_email = result.email;
+          req.body.center_profile_pic_url = result.profile_pic_url;
 
           //center address and name obj to be passed to the patient.
           var centerObj = {
@@ -4867,7 +4957,14 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
             report: "Pending",
             test_id: testId,
             conclusion: "Pending",
-            sub_session_id: req.body.sub_session_id
+            sub_session_id: req.body.sub_session_id,
+            indication: req.body.indication,
+            test_ran_by: req.body.center_name,
+            center_address: req.body.center_address,
+            center_city: req.body.center_city,
+            center_phone: req.body.center_phone,
+            center_email: req.body.center_email,
+            center_profile_pic_url: req.body.center_profile_pic_url
           }          
 
           model.user.findOne({user_id: req.user.user_id},{doctor_patient_session:1}).exec(function(err,data){

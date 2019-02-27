@@ -151,6 +151,8 @@
 
                      <article ng-if="refInfo.radiology.is_paid || paymentStatus">
                      	<div class="p-2">
+                     		<a href="" ng-click="newPayment()" style="float: right;color:green">Request new payment</a>
+                     		<div class="clearfix"></div>
                      		<i class="fa fa-check-circle" style="font-size: 42px;color: #85CE36;float: left;"></i>
                      		<aside style="padding: 20px;display: inline-block;margin-top: -20px">
 	                     		<strong style="">Payment for the investigation(s) was successfully!</strong>
@@ -190,17 +192,17 @@
 
 						<p class="text-danger pl-1" ng-if=" incomplete && incomplete !== ''">{{incomplete}}</p>
 
-						<div class="form-group col-md-12 col-lg-12 col-sm-12">
+						<div class="col-md-16 col-lg-6">
 							<label class="font-1_1 pt-1">ACC:</label><br>
 							<input type="text" placeholder="Enter accession number" ng-model="lab.acc" class="form-control">
 						</div>
 						
 						<div class="form-group col-md-12 col-lg-12 col-sm-12" ng-repeat="report in testReport">
-							<label class="font-1_1 pt-1">{{report.name}}:</label>
+							<label class="font-1_1 pt-1 text-danger">{{report.name}}:</label>
 							<textarea placeholder="Write..."  class="form-control" ng-model="report.data" required= "required" ng-keyup="autoExpand($event)" id="textarea"></textarea>						
 						</div>
 						<div class="form-group col-md-12 col-md-12 col-lg-12 col-sm-12">
-						<label class="font-1_1 mt-2">CONCLUSION:</label>
+						<label class="font-1_1 mt-2 text-danger">CONCLUSION:</label>
 						<textarea  class="form-control" placeholder="Write..." required ng-model="lab.conclusion" ng-keyup="autoExpand($event)" id="textarea"></textarea>
 						</div>
 						
