@@ -4155,7 +4155,13 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
             
             res.json({result:sentObjArr});
           } else {
-            res.json(data.doctor_patient_session);
+            var newArr = [];
+            data.doctor_patient_session.forEach(function(item){
+              if(item.patient_id === req.body.patientId){
+                newArr.push(item);
+              }
+            })
+            res.json(newArr);
           }
           //});
         } else {
@@ -4228,7 +4234,13 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
             res.json({result:sentObjArr})
 
           } else {
-            res.json(data.doctor_patient_session)
+            var newArr = [];
+            data.doctor_patient_session.forEach(function(item){
+              if(item.patient_id === req.body.patientId){
+                newArr.push(item);
+              }
+            })
+            res.json(newArr);
           }
 
          // });

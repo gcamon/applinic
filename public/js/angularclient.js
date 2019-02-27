@@ -13069,7 +13069,7 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
 
   function investigation(url)  {
     var sendObj = {
-      docId: $rootScope.checkLogIn.user_id
+      patientId: patient.id
     }
     $scope.loading = true;
     $scope.isResults = true;
