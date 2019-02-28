@@ -30,9 +30,10 @@
 <div class="col-md-12 col-lg-12 col-sm-12">
 	<div class="row">		
 		<div class="col-md-12 col-lg-12 col-sm-12">			
-			<h3 class="p-0">Find Prescription</h3>	
-			<button class="btn btn-danger btn-sm" style="cursor: pointer;float: right;;margin-top: -60px" ng-click="showOption()">option</button>
-		</div>		
+			<h4 class="p-0">Find Prescription</h4>
+			<button class="btn btn-danger btn-sm" style="cursor: pointer;float: right;;margin-top: -60px" ng-click="showOption()">Toggle option</button>
+		</div>	
+		<div class="clearfix"></div>	
 	</div>	
     <div class="row">
 		<form class="col-md-12 col-lg-12 col-sm-12" ng-if="isNotOption" style="">
@@ -51,18 +52,20 @@
 			<button type="submit" class="btn btn-success"  ng-click="findPrescription()" style="">Find</button>
 		</form>
     </div>
-	<div  style="cursor:pointer;max-height: 400px;overflow-y: auto;padding-top: 30px" ng-if="foundData[0].ref_id">	
-		<div ng-repeat="item in foundData | orderBy: '-date'">	
-	        <div class="p-0" style="display: inline-block;float: left;">
-	        	<img  ng-src="{{item.pharmacy.patient_profile_pic_url}}" style="max-width:120px; max-height: 120px">
+    <br>
+	<div  ng-if="foundData[0].ref_id">	
+		<div ng-repeat="item in foundData | orderBy: '-date'" class="row">	
+	        <div class="col-md-2">
+	        	<img src="{{item.pharmacy.patient_profile_pic_url}}" style="max-width:120px; max-height: 120px">
 	        </div>
-			<div class="pl-1 ellipsis" style="display: inline-block;float: left;width: 60%;position: relative;padding-bottom: 15px"> 
+			<div class="col-md-7"> 
 				<strong class="">{{item.pharmacy.patient_firstname}} {{item.pharmacy.patient_lastname}}</strong><br>				
 				<span class="">Ref No: {{item.ref_id}}</span><br>
-				<span am-Time-Ago = "item.date"></span><br>
-				<button class="btn btn-danger" style="position: absolute;right: 5px;bottom: 10px;padding: 5px 7px;" ng-click="viewPatientPrescription(item)">view prescription</button>
+				<span am-Time-Ago = "item.date"></span>				
 			</div>  
-			<div class="clearfix"></div>
+			<div class="col-md-2 pt-2">
+				<button class="btn btn-simple btn-sm"  ng-click="viewPatientPrescription(item)">view prescription</button>
+			</div>
 		</div>     
 	</div>
 	<div ng-if="loading" style="padding-top: 50px;width: 60%;text-align: center;">

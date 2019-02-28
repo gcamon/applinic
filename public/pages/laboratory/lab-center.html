@@ -1,9 +1,9 @@
 <div class="container">
 	<div class="card card-center-1 p-2">
-		<h3 class="p-0">
+		<h4 class="p-0">
 		Find Laboratory Center 
-		<button class="btn btn-danger btn-sm" style="float: right;" ng-click="options()">toggle option</button>
-		</h3>	
+		<button class="btn btn-neutral btn-sm" style="float: right;" ng-click="options()">toggle option</button>
+		</h4>	
 		<div ng-if="isName">
 			<label>Find by center name: </label>	
 			<form class="row">
@@ -11,7 +11,7 @@
 		        	<!--<input type="text"  class="form-control" placeholder="Enter center name" ng-model="service.name">-->
 		        	  <input type="text" class="form-control"  placeholder="Enter center name" ng-model="service.name" uib-typeahead="item.name for item in centers | filter:$viewValue | limitTo:15">
 		        </div>
-		        <div class="col-md-3 p-0">        
+		        <div class="col-md-3">        
 		        	<button type="submit" ng-click="findCenter('Laboratory')" class="btn btn-success"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i>{{(loading) ? "" : 'Find'}}</button>	
 		        </div>
 			</form>
@@ -22,25 +22,29 @@
 		        <div class="col-md-8">
 		        	<input type="text" name="" class="form-control" placeholder="Enter center name" ng-model="service.city">
 		        </div>
-		        <div class="col-md-3 p-0">        
+		        <div class="col-md-3">        
 		        	<button type="submit" ng-click="findCenter('Laboratory')" class="btn btn-success"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i>{{(loading) ? "" : 'Find'}}</button>	
 		        </div>
 			</form>
 		</div>
-	    <div class="clearfix"></div>
-	    <hr>
-	    <div ng-if="listOfCenter.length > 1">
-			<input type="text" name="" placeholder="filter result" class="form-control" ng-model="filterResult" style="width: 80%">
-		</div>
-		<div class="clearfix"></div>
-		<div ng-repeat = "center in listOfCenter | filter: filterResult" class="p-1" style="max-height: 700px;overflow-y: auto;position: relative;">
-			<strong style="display: block;width: 90%" class="ellipsis">{{center.name}}</strong>
-			<span class="font-1_1 ellipsis" style="display: block;width: 90%">{{center.address}} {{center.city}} {{center.country}}</span>
-			<span class="font-1_1 ellipsis" style="display: block;width: 90%">{{center.phone}}</span>  
-			<i class="fa fa-comment btn btn-success btn-sm" style="position: absolute;bottom: 5px;right: 35px" title="send message to {{center.name}}" ng-click="sendChat(center)"></i>
-			<span class="online" style="position: absolute;bottom: 15px;right: 0px" ng-if="center.presence"></span>
-			<span class="online" style="position: absolute;bottom: 15px;right: 0px;background-color: #ccc" ng-if="!center.presence"></span>
-		</div>
+	    <div class="clearfix"></div><br>
+	   
+	    <section ng-if="listOfCenter.length > 1" class="col-md-6" style="padding-left: 0">
+	    	<label>Found ({{listOfCenter.length}})</label><br>
+			<input type="text" name="" placeholder="filter result" class="form-control" ng-model="filterResult">
+		</section>
+
+		<div class="clearfix"></div><br>
+		<section ng-repeat = "center in listOfCenter | filter: filterResult"  style="position: relative;padding: 10px 0;border-bottom: 1px solid #eee">
+			<article>
+				<strong  class="ellipsis">{{center.name}}</strong><br>
+				<span class="">{{center.address}} {{center.city}} {{center.country}}</span><br>
+				<span class="">{{center.phone}}</span>  
+				<span class="online" style="" ng-if="center.presence"></span>
+				<span class="online" style="background-color: #ccc" ng-if="!center.presence"></span>
+			</article>			
+			<i class="fa fa-comment btn btn-simple btn-sm" style="position: absolute;right: 20px;bottom: 0" title="send message to {{center.name}}" ng-click="sendChat(center)"></i>
+		</section>
 		<div ng-if="listOfCenter.length === 0">
 			<p style="text-align: center;color: red">No match was found!</p>
 		</div>

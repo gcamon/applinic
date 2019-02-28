@@ -17180,15 +17180,17 @@ function($scope,$location,$window,templateService,localManager,Drugs,searchtests
     if( elementPos !== -1) {
       var objList = objFound.prescription_body;
       for(var i = 0; i < objList.length; i++) {
-        var elemPos = Drugs.map(function(x){return x.name}).indexOf(objList[i].drug_name);
-        if(elemPos === -1){
-          alert(objList[i].drug_name + " not found");
+        //var elemPos = Drugs.map(function(x){return x.name}).indexOf(objList[i].drug_name);
+        //if(elemPos === -1){
+          //alert(objList[i].drug_name + " not found");
 
-          return;
-        } else {
-          var found = Drugs[elemPos];
-          sendObj.drugList.push(found);        
-        }
+          //return;
+       // } else {
+        
+        sendObj.drugList.push({
+          name: objList[i].drug_name
+        });        
+        //}
         
       }
 

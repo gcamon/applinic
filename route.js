@@ -5879,7 +5879,7 @@ _id: "5c16660cba74dc0288ecfad9"
           } else {
             res.send(data.test_list);
           }
-         console.log(data)
+  
         });
 
       } else {
@@ -5937,7 +5937,6 @@ _id: "5c16660cba74dc0288ecfad9"
               res.send({message: "Error occured while saving service. Please try again"});
               console.log(err);
             } else {
-              console.log(result)
               result.test_list.push(test);
               res.send({message: "Service updated successfully!"});
             }
