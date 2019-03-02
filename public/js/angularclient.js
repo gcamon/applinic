@@ -20219,16 +20219,18 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
   $rootScope.$on("users presence",function(info,response){
     switch(response.type) {
       case 'patientList':
+        var invert = _.invert(response.sockets);
         response.data.forEach(function(item){
-          if(_.invert(response.sockets)[item.patient_id]){
+          if(invert[item.patient_id]){
             item.presence = true;
           } 
         })
       break;
       case 'doctorList':
         console.log(response.sockets)
+        var invert = _.invert(response.sockets);
         response.data.forEach(function(item){
-          if(_.invert(response.sockets)[item.doctor_id]){
+          if(invert[item.doctor_id]){
             item.presence = true;
           } 
         })
