@@ -20223,7 +20223,9 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
         response.data.forEach(function(item){
           if(invert[item.patient_id]){
             item.presence = true;
-          } 
+          } else {
+            item.presence = false;
+          }
         })
       break;
       case 'doctorList':
@@ -20232,7 +20234,9 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
         response.data.forEach(function(item){
           if(invert[item.doctor_id]){
             item.presence = true;
-          } 
+          } else {
+            item.presence = false;
+          }
         })
       break;
       default:
