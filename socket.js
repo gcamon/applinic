@@ -20,7 +20,7 @@ module.exports = function(model,io,streams,sms) {
 	    socket.on('join', function (data) {
 	    	user.isPresent = true; //use to check presence of user without hitting the database.
 	      socket.join(data.userId);
-	     	connects[socket.id] = data.userId;
+	      connects[socket.id] = data.userId;
 	     	//this will be reviewd later in terms of performance on the client.
 	    });
 

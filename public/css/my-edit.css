@@ -261,6 +261,11 @@ textarea.form-control {
   z-index: -1
 }
 
+.invite a {
+  margin: 10px 5px;
+  color: darkRed!important
+}
+
 
 /* typeahead dropdown */
 .dropdown-menu>.active>a, 

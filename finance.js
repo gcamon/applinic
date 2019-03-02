@@ -643,7 +643,8 @@ var basicPaymentRoute = function(model,sms,io,paystack,client,nodemailer){
                           	complaint_date: req.body.sendObj.original_complaint_date,
                           	date_received: req.body.date,
                           	files: req.body.sendObj.files
-                          }
+                          },
+                          date: + new Date()
                         });
 
                         var consultId = (req.body.sendObj) ? parseInt(req.body.sendObj.message_id) : undefined;

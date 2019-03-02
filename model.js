@@ -253,6 +253,7 @@ var myModel = function () {
 
 	var patient_briefSchema = Schema({
 		patient_firstname: String,
+		date: Number,
 		patient_lastname: String,
 		patient_id: String,
 		patient_profile_pic_url: String,
@@ -268,7 +269,7 @@ var myModel = function () {
     	complaint_date: String,
     	date_received: Number,
     	files: Array
-    }
+    	}
 	});
 	//this holds records for lab,prescription and scan for the patient
 	var diagnosisSchema = Schema({

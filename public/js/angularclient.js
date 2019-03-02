@@ -1,7 +1,8 @@
 (function() {
 
 var app = angular.module('myApp',["ngRoute","ngAnimate","angularModalService","angularMoment",'ui.bootstrap',
-  'angular-clipboard',"ngResource","btford.socket-io","ngTouch",'ngPrint','paystack','ngSanitize','summernote']);
+  'angular-clipboard',"ngResource","btford.socket-io","ngTouch",'ngPrint','paystack','ngSanitize','summernote',
+  'xen3r0.underscorejs']);
 //htmlToPdfSave
 
 app.run(['$rootScope',function($rootScope){
@@ -600,6 +601,11 @@ app.config(['$paystackProvider','$routeProvider',
  .when("/procedure",{
   templateUrl:"/assets/pages/utilities/skill-procedure.html",
   controller: 'resultController'
+ })
+
+ .when("/invite",{
+    templateUrl:"/assets/pages/utilities/invitation.html",
+    controller: 'invitationCtrl'
  })
 
  .when("/help",{
@@ -10109,8 +10115,9 @@ app.controller("selectedCenterController",["$scope","$location","$http","templat
 
 //this controller handles patient's doctors on the right corner of the patient profile page. it locates each doctors details when clicked.
 //note this controller is used both by doctors dashboard and patient dashboard.
-app.controller("checkingOutDoctorPatientController",["$scope","$location","$rootScope","$http","$interval","templateService","localManager","mySocket",
-function($scope,$location,$rootScope,$http,$interval,templateService,localManager,mySocket){
+app.controller("checkingOutDoctorPatientController",["$scope","$location","$rootScope","$http",
+  "$interval","templateService","localManager","mySocket","$interval",
+function($scope,$location,$rootScope,$http,$interval,templateService,localManager,mySocket,$interval){
   function getList(url,type) {
      $http({
       method  : 'GET',
@@ -10118,16 +10125,42 @@ function($scope,$location,$rootScope,$http,$interval,templateService,localManage
       headers : {'Content-Type': 'application/json'} 
     })
     .success(function(data) {
-      if(type === "patient") {
-        
-        $rootScope.patientsDoctorList = data;
-      } else if(type === "doctor"){
-       
-        $rootScope.patientList = data;
+      if(type === "patient") {        
+        $rootScope.patientsDoctorList = data;        
+        getDoctorsRealTime($rootScope.patientsDoctorList);
+
+        $interval(function(){
+          getDoctorsRealTime($rootScope.patientsDoctorList); 
+        },150000) //2 and half minutes
+
+      } else if(type === "doctor"){       
+        $rootScope.patientList = data;       
+        getPatientsRealTime($rootScope.patientList);
+
+        $interval(function(){
+          getPatientsRealTime($rootScope.patientList) 
+        },150000) //2 and half minutes
       }
 
     });
   }
+
+  function getDoctorsRealTime(list) {
+    mySocket.emit("check presence",{status: true},function(res){
+      $rootScope.$broadcast("users presence",{type: 'doctorList',data: list,sockets: res});         
+    })
+  }
+
+  function getPatientsRealTime(list) {
+    //_.invert(hash))[1]
+    // returns the current sockets of online users and _.iverts inverts the keys/values
+    //use to check online presence
+    mySocket.emit("check presence",{status: true},function(res){      
+      $rootScope.$broadcast("users presence",{type: 'patientList',data: list,sockets: res});         
+    })
+  }
+
+
   $scope.filter = {}
 
   localManager.setValue("hasChat",true);
@@ -19762,9 +19795,9 @@ app.controller("emScanTestController",["$scope","$location","$http","$window","t
 }]);
 
 app.controller("topHeaderController",["$scope","$rootScope","$window","$location","$resource",
-  "localManager","mySocket","templateService","$timeout","$document","ModalService", "cities","$filter",
+  "localManager","mySocket","templateService","$timeout","$document","ModalService", "cities","$filter","_",
   function($scope,$rootScope,$window,$location,$resource,localManager,mySocket,templateService,
-   $timeout, $document, ModalService,cities,$filter){
+   $timeout, $document, ModalService,cities,$filter,_){
 
 
 
@@ -20182,6 +20215,28 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
       //})
      return str
   }
+
+  $rootScope.$on("users presence",function(info,response){
+    switch(response.type) {
+      case 'patientList':
+        response.data.forEach(function(item){
+          if(_.invert(response.sockets)[item.patient_id]){
+            item.presence = true;
+          } 
+        })
+      break;
+      case 'doctorList':
+        console.log(response.sockets)
+        response.data.forEach(function(item){
+          if(_.invert(response.sockets)[item.doctor_id]){
+            item.presence = true;
+          } 
+        })
+      break;
+      default:
+      break;
+    }
+  })
 
 }]);
 
@@ -21224,6 +21279,62 @@ app.controller("bankDetailsCtrl",["$scope","bankDetailsService",function($scope,
     })
   }
 
+}]);
+
+
+app.controller("invitationCtrl",["$scope","$http","$rootScope","ModalService",function($scope,$http,$rootScope,ModalService){
+    $scope.invite = {};
+
+    $scope.someone = function(type){
+      $scope.invite.type = type;
+    }
+
+    $scope.inviteFn = function() {
+      $scope.msg = "";
+      $scope.existingUser = false;
+      if(!$scope.invite.recepient){
+        alert("Please enter email or phone number of the recepient");
+        return;
+      }
+
+      if($rootScope.checkLogIn.email == $scope.invite.recepient){
+        alert("Please you cannot invite yourself.");
+        return;
+      }
+
+       if($rootScope.checkLogIn.phone == $scope.invite.recepient){
+        alert("Please you cannot invite yourself.");
+        return;
+      }
+
+      $scope.loading = true;
+
+      $http.post("/user/invitation",$scope.invite)
+      .success(function(res){
+        $scope.msg = res.message;
+        $scope.loading = false;
+        $scope.existingUser = (res.user && res.type == 'Patient') ? true : false;
+        $scope.userToAdd = $scope.invite.recepient;
+      })
+    }
+
+    $scope.addPatient = function() {
+      $scope.loading = true;
+      $scope.msg = "";
+
+      $http.post("/user/doctor/add-patient",{user: $scope.userToAdd})
+      .success(function(res){
+        $scope.msg = res.message;
+        $scope.loading = false;
+        $scope.existingUser = false;
+        $rootScope.patientList.unshift(res.patient)
+      })
+    }
+
+    $scope.refresh = function() {
+      $scope.msg = "";
+      $scope.existingUser = false;
+    }
 }]);
 
 

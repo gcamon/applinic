@@ -7842,7 +7842,7 @@ router.get("/user/patient/get-my-doctors",function(req,res){
  //this route get all the doctor's patients to include which patient is online or not.
  router.get("/user/doctor/my-online-patients",function(req,res){
     if(req.user){
-      model.user.find({"accepted_doctors.doctor_id":req.user.user_id,type:"Patient"},
+      /*model.user.find({"accepted_doctors.doctor_id":req.user.user_id,type:"Patient"},
         {user_id:1,_id:0,firstname:1,lastname:1,presence:1,profile_pic_url:1},function(err,data){
         if(err) throw err;
         var sendList = [];
@@ -7863,7 +7863,8 @@ router.get("/user/patient/get-my-doctors",function(req,res){
           } 
           res.json(sendList);
         
-      })
+      })*/
+      res.json(req.user.doctor_patients_list)
     } else {
       res.end("Unauthorized access!!")
     }
@@ -9069,9 +9070,189 @@ router.get("/user/doctor/initial-complaint",function(req,res){
     }
     res.json(complaints);
   } else {
-    res.end("unauthorized access")
+    res.end("unauthorized access");
   }
 });
+
+router.post("/user/invitation",function(req,res){
+  if(req.user) {
+    var msgBody;
+    var intRegex = /[0-9 -()+]+$/;
+    var emailReg = /^\w+([\.-]?\w+)+@\w+([\.:]?\w+)+(\.[a-zA-Z0-9]{2,3})+$/;
+    var names = (req.user.lastname) ? req.user.title + " " + req.user.lastname : req.user.name;
+    var work = (req.user.work_place) ? "at " + req.user.work_place : "on Applinic";
+
+    model.user.findOne({$or: [{ phone : req.body.recepient},{email: req.body.recepient}]})
+    .exec(function(err,user){
+      if(err) throw err;
+      if(!user) {
+        if(emailReg.test(req.body.recepient)){
+          sendEmail()
+        } else if(intRegex.test(req.body.recepient)){
+          sendSMS()
+        } else {
+          res.json({status:false,message:"Invalid recepient email address or phone number"})
+          return;
+        }
+      } else {
+        var names = user.title + " " + user.lastname + " " + user.firstname;
+        res.json({
+          status: false,
+          user: true,
+          message: names + ' is already in Applinic',
+          type: user.type
+        })
+      }
+    })
+   
+
+
+    function sendEmail() {
+      switch(req.body.type) {
+        case 'Patient':
+          msgBody = '<table><tr><th><h3  style="background-color:#85CE36; color: #fff; padding: 30px"><img src="https://applinic.com/assets/images/applinic1.png" style="width: 250px; height: auto"/><br/><span>Healthcare... anywhere, anytime.</span></h3></th></tr><tr><td style="font-family: Arial, Helvetica, sans-serif; font-size: 16px;">'  
+          + "<br><br> <b>Invitation to join Applinic</b><br><br><b>" + names + ",</b> " + "a " + req.user.type + " " + work
+          + "<br> invites you to join Applinic for your medical appointments, consultations, investigations and prescriptions.<br><br>" 
+          + "This will enable you save your medical records for future use and also get discounts on medical services.<br><br>" 
+          + "Click the button below to register now for free.<br><br> <div style='text-align:center;padding-top:15px'> <a href='https://applinic.com/signup?ref=" + req.user.user_id + "&&id=" + uuid.v1()
+          + "&&type=Patient'style='padding: 20px;background-color:green;color:#fff;border-radius:4px'>Join now!</a></div>" 
+          + "<br><br> <b>Applinic Team</b></td></tr></table>"
+        break;
+        case 'Doctor':
+          msgBody = '<table><tr><th><h3  style="background-color:#85CE36; color: #fff; padding: 30px"><img src="https://applinic.com/assets/images/applinic1.png" style="width: 250px; height: auto"/><br/><span>Healthcare... anywhere, anytime.</span></h3></th></tr><tr><td style="font-family: Arial, Helvetica, sans-serif; font-size: 16px;">'  
+          + "<br><br> <b>Invitation to join Applinic</b><br><br><b>" + names + ",</b> " + "a " + req.user.type + " " + work
+          + "<br> invites you to join Applinic for your medical appointments, consultations, investigations and prescriptions.<br><br>" 
+          + "This will enable you save, access and manage patient medical record online and also communicate with your patient anywhere, anytime.<br><br>" 
+          + "Click the button below to register now for free.<br><br> <div style='text-align:center;padding-top:15px'> <a href='https://applinic.com/signup?ref=" + req.user.user_id + "&&id=" + uuid.v1()
+          + "&&type=Doctor'style='padding: 20px;background-color:green;color:#fff;border-radius:4px'>Join now!</a></div>" 
+          + "<br><br> <b>Applinic Team</b></td></tr></table>"
+        break;
+        case 'Pharmacy':
+          msgBody = '<table><tr><th><h3 style="background-color:#85CE36; color: #fff; padding: 30px"><img src="https://applinic.com/assets/images/applinic1.png" style="width: 250px; height: auto"/><br/><span>Healthcare... anywhere, anytime.</span></h3></th></tr><tr><td style="font-family: Arial, Helvetica, sans-serif; font-size: 16px;">'  
+          + "<br><br> <b>Invitation to join Applinic</b><br><br><b>" + names + ",</b> " + "a " + req.user.type + " " + work
+          + "<br> invites you to join Applinic so that patients' prescriptions can be referred to your center.<br><br>" 
+          + "This will enable you grow your business and receive prescription order online.<br><br>" 
+          + "Click the button below to register now for free.<br><br> <div style='text-align:center;padding-top:15px'> <a href='https://applinic.com/signup?ref=" + req.user.user_id + "&&id=" + uuid.v1()
+          + "&&type=Center'style='padding: 20px;background-color:green;color:#fff;border-radius:4px'>Join now!</a></div>" 
+          + "<br><br> <b>Applinic Team</b></td></tr></table>"
+        break;
+        default:
+           msgBody = '<table><tr><th><h3 style="background-color:#85CE36; color: #fff; padding: 30px"><img src="https://applinic.com/assets/images/applinic1.png" style="width: 250px; height: auto"/><br/><span>Healthcare... anywhere, anytime.</span></h3></th></tr><tr><td style="font-family: Arial, Helvetica, sans-serif; font-size: 16px;">'  
+          + "<br><br> <b>Invitation to join Applinic</b><br><br><b>" + names + ",</b> " + "a " + req.user.type + " " + work
+          + "<br> invites you to join Applinic so that patients' investigations can be referred to your center.<br><br>" 
+          + "This will enable you grow your business and receive investigation requests online.<br><br>" 
+          + "Click the button below to register now for free.<br><br> <div style='text-align:center;padding-top:15px'> <a href='https://applinic.com/signup?ref=" + req.user.user_id + "&&id=" + uuid.v1()
+          + "&&type=Center'style='padding: 20px;background-color:green;color:#fff;border-radius:4px'>Join now!</a></div>" 
+          + "<br><br> <b>Applinic Team</b></td></tr></table>"
+        break;
+      }
+
+      var transporter = nodemailer.createTransport({
+        host: "mail.privateemail.com",
+        port: 465,
+        auth: {
+          user: "info@applinic.com",
+          pass: process.env.EMAIL_PASSWORD
+        }
+      });
+
+      var mailOptions = {
+        from: 'Applinic info@applinic.com',
+        to: req.body.recepient,
+        subject: 'Invitation from ' + req.user.title + " " + req.user.lastname,
+        html: msgBody
+      };
+
+      transporter.sendMail(mailOptions, function(error, info){
+        if (error) {
+          console.log(error);
+          res.json({status:false,message:"Error occured while sending email. Please check the email is correct and try again."})
+
+        } else {
+          console.log('Email sent: ' + info.response);
+          res.json({status:true,message: "invitation sent!"});
+        }
+      });
+    }
+
+    function sendSMS() {
+      var msgBody = names + ", a " + req.user.type + " " 
+      + work  + "\nsent an invitation to join Applinic. click the link below to register now for free!\n" 
+      + "https://applinic.com/signup?ref=" + req.user.user_id + "&&id=" + uuid.v1();
+
+      var phoneNunber =  req.body.recepient;
+      
+      sms.messages.create(
+        {
+          to: phoneNunber,
+          from: '+16467985692',
+          body: msgBody,
+        },
+        function(err,response){
+          if(err) {
+            console.log(err)
+            res.json({status: false,message:"Error occured while sending invitation. Please check the phone number and try again."})
+          }
+
+          if(response){
+            res.json({status:true,message: "invitation sent!"});
+          }
+      }) 
+    }
+
+  } else {
+    res.end("unauthorized access!");
+  }
+});
+
+router.post("/user/doctor/add-patient",function(req,res){
+  if(req.user){
+    if(req.user.type == 'Doctor'){
+      model.user.findOne({$or: [{ phone : req.body.user,type:'Patient'},{email: req.body.user,type:'Patient'}]})
+      .exec(function(err,user){
+        if(err) throw err;
+        if(user){
+          var elemPos = req.user.doctor_patients_list.map(function(x){return x.patient_id}).indexOf(user.user_id);
+          if(elemPos == -1) {
+            var patient = {            
+              patient_profile_pic_url: user.profile_pic_url,
+              patient_id: user.user_id,
+              patient_lastname: user.lastname,
+              patient_firstname: user.firstname,
+              date: + new Date()
+            }
+            req.user.doctor_patients_list.unshift(patient);  
+            console.log(req.user.doctor_patients_list)
+            req.user.save(function(err,info){
+              if(err) throw err;
+              res.json({status:true,message: "Success! Patient added to your account",patient: patient});
+            });      
+          } else {
+            res.json({status: false, messaage: "Patient already exists in your account!"})
+          }
+        } else {
+          res.json({status: false, message: "Patient not found!"});
+        }
+      });     
+    } else {
+      res.json({status: false, message: "You are not allowed to use this service."});
+    }
+  } else {
+    res.end("unauthorized access!");
+  }
+})
+
+
+
+/*
+
+ initial_complaint: { files: [], date_received: 1548109407141 },
+    _id: 5c46465fb68f5b2f1c60c56a,
+    patient_profile_pic_url: '/download/profile_pic/nopic',
+    patient_id: 'chidiebere187432',
+    patient_lastname: 'Chidiebere',
+    patient_firstname: 'Nnaji'
+
 
 router.get('/test',function(req,res){
   console.log(req.query)
@@ -9091,7 +9272,7 @@ router.get('/test',function(req,res){
       res.send({error: true, message:"Error occured while trying to call the destination. Please try again"})
     }
   )
-});
+});*/
 
 
 router.post("/twiliovoicemsg",function(req,res){
@@ -9138,12 +9319,12 @@ router.post("/inviteonlinecall",function(req,res){
 
 
 
-router.post('/mamavoice',function(req,res){ 
+/*router.post('/mamavoice',function(req,res){ 
   var twiml = new Voice();
   twiml.play('http://nelsonarum.com/assets/campaign-audio.mp3');
   res.type('text/xml');
   res.send(twiml.toString());
-});
+});*/
 
 
 

@@ -188,7 +188,6 @@ var b = "ede".replace(/\s+/g, '');
 console.log("obinna".substring(0,2))
 
 
-
 /*
 var transporter = nodemailer.createTransport({
   service: "gmail",

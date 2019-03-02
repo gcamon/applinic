@@ -577,8 +577,15 @@
                         <a class="btn btn-simple round mr-0" style="color:red;margin-left:10px" href="/user/patients/waiting-room" target="_blank"><i class="fa fa-user"></i>
                                     <span>   Patients Waiting Room</span> <i class="fa fa-external-link" style="color: #ccc"></i></a>
 
+
+                        <a class="btn btn-simple round mr-0" style="color:red;margin-left:10px" href="#/invite"><i class="fa fa-user-plus"></i>
+                                    <span>Invite Someone</span></a>
+                                    
+
                          <a class="btn btn-simple round mr-0" style="color:red;margin-left:10px" href="#/my-skills"><i class="fa fa-user-md"></i>
                                     <span> My Skills &amp; Procedures</span></a>
+
+                      
                      
                         <!--<a class="nav-link"  href=""  class="btn btn-primary" data-toggle="modal" data-target="#exampleModalLong">-->
                         
@@ -1951,7 +1958,7 @@
                  <input type="number" Placeholder=" ( e.g +2347053****48 )" ng-model="data.phone" class="form-control" required="required" style="cursor:normal">
                 </div>
                 <div ng-if="typeOfSearch === 'pharmacy'">
-                  <label>Provisional Diagnosis *: <span class="text-danger">{{provisionalMsg}}</span></label>
+                  <label>Instructions / explanations for prescription(s) *: <span class="text-danger">{{provisionalMsg}}</span></label>
                   <textarea class="form-control pl-1" placeholder="Write..." ng-model="data.provisional_diagnosis" required="required"> </textarea>
                 </div>
                 <div ng-if='typeOfSearch === "diagnostic"'>
@@ -2298,7 +2305,7 @@
         
 
        
-        
+      
         <script type="text/javascript" src="/assets/js/angularclient.js"></script>
         <script type="text/javascript" src="/assets/js/ngroute.js"></script>
         <script src="/socket.io/socket.io.js"></script>   
@@ -2326,6 +2333,10 @@
          <script src="/assets/js/ngPrint.js"></script>
         <script type="text/javascript" src="/assets/js/angular-paystack/dist/angular-paystack.min.js"></script>
         <script type="text/javascript" src="/assets/js/angular-sanitize.min.js"></script>
+        <script type="text/javascript" src="/assets/js/underscore-min.js"></script>
+        <script type="text/javascript" src="/assets/js/angular-underscore.js"></script>
+
+        
 
          <!-- Start of LiveChat (www.livechatinc.com) code -->
         <script type="text/javascript">
