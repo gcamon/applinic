@@ -20229,7 +20229,6 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
         })
       break;
       case 'doctorList':
-        console.log(response.sockets)
         var invert = _.invert(response.sockets);
         response.data.forEach(function(item){
           if(invert[item.doctor_id]){
