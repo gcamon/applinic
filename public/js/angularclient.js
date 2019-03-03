@@ -1688,11 +1688,11 @@ app.controller('loginController',["$scope","$http","$location","$window","$resou
          //user joins a room in socket.io and intantiayes his own socket
           switch(data.typeOfUser) {
             case "Patient":
-              createAwareness(data)
+              //createAwareness(data)
               $window.location.href = "/user/patient";   
             break;
             case "Doctor":
-              createAwareness(data)
+              //createAwareness(data)
              $window.location.href = "/user/doctor";   
             break;
             case "Pharmacy":
@@ -1726,19 +1726,7 @@ app.controller('loginController',["$scope","$http","$location","$window","$resou
     }
   }
 
-  //this updates the current availability of user in real time.
-  function createAwareness(data) {
-    mySocket.emit("set presence",{status:"online",userId:data.user_id},function(response){
-      if(response.status === true){
-        if(data.typeOfUser === "Doctor"){
-          mySocket.emit("doctor connect",{userId:data.user_id});
-        } else if(data.typeOfUser === "Patient") {
-          mySocket.emit("patient connect",data);
-        }
-      }
-    });                                  
-    
-  }
+ 
 
   $scope.close = function(result) {
     close(result,500);
@@ -10281,7 +10269,37 @@ app.controller("presenceSocketController",["$rootScope","$scope","$window","mySo
      });
   }
 
-  
+  $rootScope.$on("users presence",function(info,response){
+    switch(response.type) {
+      case 'patientList':        
+        var invert = _.invert(response.sockets);
+        response.data.forEach(function(item){
+          if(invert[item.patient_id]){
+            item.presence = true;
+            $rootScope.patientAvailability = item.presence;
+          } else {
+            item.presence = false;
+            $rootScope.patientAvailability = false
+          }
+        })
+      break;
+      case 'doctorList':  
+        console.log(response)      
+        var invert = _.invert(response.sockets);
+        response.data.forEach(function(item){
+          if(invert[item.doctor_id]){
+            item.presence = true;
+            $rootScope.dispalyPresence = true;
+          } else {
+            item.presence = false;
+            $rootScope.dispalyPresence = false;
+          }
+        })
+      break;
+      default:
+      break;
+    }
+  })
 
   
   $scope.user = {};
@@ -20216,32 +20234,24 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
      return str
   }
 
-  $rootScope.$on("users presence",function(info,response){
-    switch(response.type) {
-      case 'patientList':
-        var invert = _.invert(response.sockets);
-        response.data.forEach(function(item){
-          if(invert[item.patient_id]){
-            item.presence = true;
-          } else {
-            item.presence = false;
-          }
-        })
-      break;
-      case 'doctorList':
-        var invert = _.invert(response.sockets);
-        response.data.forEach(function(item){
-          if(invert[item.doctor_id]){
-            item.presence = true;
-          } else {
-            item.presence = false;
-          }
-        })
-      break;
-      default:
-      break;
-    }
-  })
+
+  //this updates the current availability of user in real time.
+  /*function createAwareness(data) {
+    mySocket.emit("set presence",{status:"online",userId:data.user_id},function(response){
+      if(response.status === true){
+        if(data.typeOfUser === "Doctor"){
+          mySocket.emit("doctor connect",{userId:data.user_id},function(res){
+
+          });
+        } else if(data.typeOfUser === "Patient") {
+          mySocket.emit("patient connect",data,function(res){
+            console.log(res,"==>>>>>>>>")
+            $rootScope.$broadcast("users presence",{type: 'patientList',data: $rootScope.patientList,sockets: res});
+          });
+        }
+      }
+    });                                  
+  }*/
 
 }]);
 

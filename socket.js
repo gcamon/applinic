@@ -437,8 +437,8 @@ module.exports = function(model,io,streams,sms) {
 	    	})
 	    });
 
-			socket.on("patient connect",function(data){
-				model.user.find({"doctor_patients_list.patient_id": data.user_id,type:"Doctor"},{user_id:1},function(err,list){
+		/*socket.on("patient connect",function(data){
+			model.user.find({"doctor_patients_list.patient_id": data.user_id,type:"Doctor"},{user_id:1},function(err,list){
 	    		if(err) throw err;
 	    		var status = {presence: true,patient:data};
 	    		user.isPresent = true;
@@ -446,9 +446,9 @@ module.exports = function(model,io,streams,sms) {
 	    			io.sockets.to(user.user_id).emit("patient presence",status);
 	    		})
 	    	});
-	    });
+	    });*/
 
-	    socket.on("patient disconnect",function(data){
+	    socket.on("patient disconnect",function(data,cb){
 	    	model.user.find({"doctor_patients_list.patient_id": data.user_id,type:"Doctor"},{user_id:1},function(err,list){
 	    		if(err) throw err;
 	    		var status = {presence: false,patient:data};
@@ -458,6 +458,19 @@ module.exports = function(model,io,streams,sms) {
 	    		});
 	    	})
 	    });
+
+	    socket.on("patient connect",function(data,cb){
+	    	/*model.user.find({user_id: data.user_id,type:'Patient'},{user_id:1,accepted_doctors:1},function(err,user){
+	    		if(err) throw err;
+	    		var status = {presence: false,patient:data};
+	    		user.isPresent = false;
+	    		list.forEach(function(user){	    			
+	    			io.sockets.to(user.user_id).emit("patient presence",status);
+	    		});
+	    	})*/
+	    	console.log(data)
+	    	cb(connects)
+	    })
 
 	    //
 			//video logic this will be moved to a new server

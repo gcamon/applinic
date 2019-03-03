@@ -696,7 +696,7 @@
                                             </form>
                                         </li>-->
                                         <li style="padding: 5px 10px 0 0"><input type="" ng-model="patient.firstname" class="form-control" placeholder="filter name"></li>
-                                        <li ng-repeat="patient in patientList | filter : patient.firstname || patient.lastname" style="margin-left: -15px">
+                                        <li ng-repeat="patient in patientList | filter : patient.firstname | orderBy: presence" style="margin-left: -15px">
                                            <a href="" style="position: relative;" ng-click="userPatient(patient.patient_id)" ng-cloak> 
                                                 <img ng-src="{{patient.patient_profile_pic_url}}" class="img-responsive" style="width:32px;height:32px;margin-right: 5px;display: inline-block;" alt="image description"> <small>
                                                  {{patient.title}} {{patient.patient_firstname}}</small><small ng-if="patient.presence === true" class="online" style="margin-right: 15px"></small><small ng-if="patient.presence !== true" class="online" style="background-color: grey;margin-right: 15px"></small>
