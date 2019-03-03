@@ -1688,11 +1688,11 @@ app.controller('loginController',["$scope","$http","$location","$window","$resou
          //user joins a room in socket.io and intantiayes his own socket
           switch(data.typeOfUser) {
             case "Patient":
-              //createAwareness(data)
+              createAwareness(data)
               $window.location.href = "/user/patient";   
             break;
             case "Doctor":
-              //createAwareness(data)
+              createAwareness(data)
              $window.location.href = "/user/doctor";   
             break;
             case "Pharmacy":
@@ -1724,6 +1724,22 @@ app.controller('loginController',["$scope","$http","$location","$window","$resou
     } else {
       $scope.error = "Oops! Seems you are having trouble login. Please contact us."
     }
+  }
+
+
+
+  //this updates the current availability of user in real time.
+  function createAwareness(data) {
+    mySocket.emit("set presence",{status:"online",userId:data.user_id},function(response){
+      if(response.status === true){
+        if(data.typeOfUser === "Doctor"){
+          mySocket.emit("doctor connect",{userId:data.user_id});
+        } else if(data.typeOfUser === "Patient") {
+          mySocket.emit("patient connect",data);
+        }
+      }
+    });                                  
+    
   }
 
  
@@ -10101,118 +10117,6 @@ app.controller("selectedCenterController",["$scope","$location","$http","templat
 
 }]);
 
-//this controller handles patient's doctors on the right corner of the patient profile page. it locates each doctors details when clicked.
-//note this controller is used both by doctors dashboard and patient dashboard.
-app.controller("checkingOutDoctorPatientController",["$scope","$location","$rootScope","$http",
-  "$interval","templateService","localManager","mySocket","$interval",
-function($scope,$location,$rootScope,$http,$interval,templateService,localManager,mySocket,$interval){
-  function getList(url,type) {
-     $http({
-      method  : 'GET',
-      url     : url, 
-      headers : {'Content-Type': 'application/json'} 
-    })
-    .success(function(data) {
-      if(type === "patient") {        
-        $rootScope.patientsDoctorList = data;        
-        getDoctorsRealTime($rootScope.patientsDoctorList);
-
-        $interval(function(){
-          getDoctorsRealTime($rootScope.patientsDoctorList); 
-        },150000) //2 and half minutes
-
-      } else if(type === "doctor"){       
-        $rootScope.patientList = data;       
-        getPatientsRealTime($rootScope.patientList);
-
-        $interval(function(){
-          getPatientsRealTime($rootScope.patientList) 
-        },60000) //2 and half minutes
-      }
-
-    });
-  }
-
-  function getDoctorsRealTime(list) {
-    mySocket.emit("check presence",{status: true},function(res){
-      $rootScope.$broadcast("users presence",{type: 'doctorList',data: list,sockets: res});         
-    })
-  }
-
-  function getPatientsRealTime(list) {
-    //_.invert(hash))[1]
-    // returns the current sockets of online users and _.iverts inverts the keys/values
-    //use to check online presence
-    mySocket.emit("check presence",{status: true},function(res){      
-      $rootScope.$broadcast("users presence",{type: 'patientList',data: list,sockets: res});         
-    })
-  }
-
-
-  $scope.filter = {}
-
-  localManager.setValue("hasChat",true);
-
-  var user = localManager.getValue("resolveUser");
-
-  if(user.typeOfUser === "Patient") {
-   //$interval(getAtInterval,300000)
-    getList("/user/patient/get-my-doctors","patient");
-    $scope.userDoctor = function(id){
-      var callerId = templateService.holdPatientIdForCommunication;
-      localManager.setValue("receiver",id);
-      localManager.setValue('caller',callerId); 
-      templateService.holdIdForSpecificDoc = id;      
-      var page = "/patient-doctor/treatment/" + id;
-      localManager.setValue("holdPageForHandler",page);
-      localManager.setValue("currentPageForPatients",page);
-      $location.path(page);
-      mySocket.removeAllListeners("new_msg");
-
-     $("#app").removeClass("sidebar-open");
-
-      //remove queue of received messages if any
-      var elemPos = $rootScope.patientsDoctorList.map(function(x){return x.doctor_id}).indexOf(id);
-      if(elemPos !== -1 && $rootScope.patientsDoctorList[elemPos].hasOwnProperty("queueLen"))
-        $rootScope.patientsDoctorList[elemPos].queueLen = 0;
-    }
-
-  } else if(user.typeOfUser === "Doctor") {
-
-    getList("/user/doctor/my-online-patients","doctor");
-    $scope.userPatient = function(id){
-      $("#app").removeClass("sidebar-open");
-      var callerId = templateService.holdDoctorIdForCommunication;
-      localManager.setValue("receiver",id);
-      localManager.setValue('caller',callerId);    
-      templateService.holdIdForSpecificPatient = id;
-      var page = "/doctor-patient/treatment/" + id;
-      localManager.setValue("holdPageForHandler",page);
-      localManager.setValue("currentPage",page);
-      $location.path(page);
-      mySocket.removeAllListeners("new_msg");
-
-      mySocket.on("acceptance notification",function(data){
-        data.type = "acceptance notification";
-        templateService.playAudio(1);
-        $rootScope.sender = data;
-        $scope.isReceivedRequest = true;
-        $timeout(function(){
-          $scope.isReceivedRequest = false;
-        },10000);
-        $rootScope.$broadcast('get notification',{status: true});
-        getList("/user/doctor/my-online-patients","doctor");
-      });
-
-      //remove queue of received messages if any
-      var elemPos = $rootScope.patientList.map(function(x){return x.patient_id}).indexOf(id);
-      if(elemPos !== -1 && $rootScope.patientList[elemPos].hasOwnProperty("queueLen"))
-        $rootScope.patientList[elemPos].queueLen = 0;
-    }
-  }
-
-}]);
-
 
 app.controller("createRoomController",["$scope","localManager","mySocket","$rootScope","templateService","$location",
   function($scope,localManager,mySocket,$rootScope,templateService,$location){
@@ -10223,8 +10127,6 @@ app.controller("createRoomController",["$scope","localManager","mySocket","$root
   var getCurrentPage = localManager.getValue("currentPageForPatients") || localManager.getValue("currentPage");
   var getHandlerPage = localManager.getValue("holdPageForHandler");
   mySocket.emit('join',{userId: user.user_id});
-
-  
 
 }]);
 
@@ -10239,16 +10141,17 @@ app.controller("presenceSocketController",["$rootScope","$scope","$window","mySo
    if(person.typeOfUser === "Patient"){
      //patients  see doctors as the log in
      mySocket.on("doctor presence",function(data){
-      var elemPos = $rootScope.patientsDoctorList.map(function(x){return x.doctor_id}).indexOf(data.doctor_id);
-      var found = $rootScope.patientsDoctorList[elemPos];
-      found.presence = data.presence;
-      $rootScope.dispalyPresence = data.presence;          
+      //var elemPos = $rootScope.patientsDoctorList.map(function(x){return x.doctor_id}).indexOf(data.doctor_id);
+      //var found = $rootScope.patientsDoctorList[elemPos];
+      //found.presence = data.presence;
+      //$rootScope.dispalyPresence = data.presence;  
+      $rootScope.$broadcast("users presence",{type: 'doctorList',data: $rootScope.patientsDoctorList ,sockets: data.connects});         
      });
    } else if(person.typeOfUser === "Doctor") {
    //doctors see patients the log in. doctors can only see logged in patients but not all the patients at once.
    // this could be modified later as to control the number of patients in the doctor's dashboard.
     mySocket.on("patient presence",function(data){
-      var elemPos = $rootScope.patientList.map(function(x){return x.patient_id}).indexOf(data.patient.user_id);
+      /*var elemPos = $rootScope.patientList.map(function(x){return x.patient_id}).indexOf(data.patient.user_id);
       var found = $rootScope.patientList[elemPos];
       if(elemPos === -1 && data.presence){
         var patient = {
@@ -10264,42 +10167,12 @@ app.controller("presenceSocketController",["$rootScope","$scope","$window","mySo
         found.presence = data.presence;
         $rootScope.dispalyPresence = data.presence;
         $rootScope.patientAvailability = data.presence;  
-      }
+      }*/
+
+      $rootScope.$broadcast("users presence",{type: 'patientList',data: $rootScope.patientList ,sockets: data.connects});
       
      });
   }
-
-  $rootScope.$on("users presence",function(info,response){
-    switch(response.type) {
-      case 'patientList':        
-        var invert = _.invert(response.sockets);
-        response.data.forEach(function(item){
-          if(invert[item.patient_id]){
-            item.presence = true;
-            $rootScope.patientAvailability = item.presence;
-          } else {
-            item.presence = false;
-            $rootScope.patientAvailability = false
-          }
-        })
-      break;
-      case 'doctorList':  
-        console.log(response)      
-        var invert = _.invert(response.sockets);
-        response.data.forEach(function(item){
-          if(invert[item.doctor_id]){
-            item.presence = true;
-            $rootScope.dispalyPresence = true;
-          } else {
-            item.presence = false;
-            $rootScope.dispalyPresence = false;
-          }
-        })
-      break;
-      default:
-      break;
-    }
-  })
 
   
   $scope.user = {};
@@ -10450,6 +10323,119 @@ app.controller("presenceSocketController",["$rootScope","$scope","$window","mySo
       }
     }
   });
+
+}]);
+
+
+//this controller handles patient's doctors on the right corner of the patient profile page. it locates each doctors details when clicked.
+//note this controller is used both by doctors dashboard and patient dashboard.
+app.controller("checkingOutDoctorPatientController",["$scope","$location","$rootScope","$http",
+  "$interval","templateService","localManager","mySocket","$interval",
+function($scope,$location,$rootScope,$http,$interval,templateService,localManager,mySocket,$interval){
+  function getList(url,type) {
+     $http({
+      method  : 'GET',
+      url     : url, 
+      headers : {'Content-Type': 'application/json'} 
+    })
+    .success(function(data) {
+      if(type === "patient") {        
+        $rootScope.patientsDoctorList = data;        
+        getDoctorsRealTime($rootScope.patientsDoctorList);
+
+        $interval(function(){
+          getDoctorsRealTime($rootScope.patientsDoctorList); 
+        },150000) //2 and half minutes
+
+      } else if(type === "doctor"){       
+        $rootScope.patientList = data;       
+        getPatientsRealTime($rootScope.patientList);
+
+        $interval(function(){
+          getPatientsRealTime($rootScope.patientList) 
+        },60000) //2 and half minutes
+      }
+
+    });
+  }
+
+  function getDoctorsRealTime(list) {
+    mySocket.emit("check presence",{status: true},function(res){
+      $rootScope.$broadcast("users presence",{type: 'doctorList',data: list,sockets: res});         
+    })
+  }
+
+  function getPatientsRealTime(list) {
+    //_.invert(hash))[1]
+    // returns the current sockets of online users and _.iverts inverts the keys/values
+    //use to check online presence
+    mySocket.emit("check presence",{status: true},function(res){      
+      $rootScope.$broadcast("users presence",{type: 'patientList',data: list,sockets: res});         
+    })
+  }
+
+
+  $scope.filter = {}
+
+  localManager.setValue("hasChat",true);
+
+  var user = localManager.getValue("resolveUser");
+
+  if(user.typeOfUser === "Patient") {
+   //$interval(getAtInterval,300000)
+    getList("/user/patient/get-my-doctors","patient");
+    $scope.userDoctor = function(id){
+      var callerId = templateService.holdPatientIdForCommunication;
+      localManager.setValue("receiver",id);
+      localManager.setValue('caller',callerId); 
+      templateService.holdIdForSpecificDoc = id;      
+      var page = "/patient-doctor/treatment/" + id;
+      localManager.setValue("holdPageForHandler",page);
+      localManager.setValue("currentPageForPatients",page);
+      $location.path(page);
+      mySocket.removeAllListeners("new_msg");
+
+     $("#app").removeClass("sidebar-open");
+
+      //remove queue of received messages if any
+      var elemPos = $rootScope.patientsDoctorList.map(function(x){return x.doctor_id}).indexOf(id);
+      if(elemPos !== -1 && $rootScope.patientsDoctorList[elemPos].hasOwnProperty("queueLen"))
+        $rootScope.patientsDoctorList[elemPos].queueLen = 0;
+    }
+
+  } else if(user.typeOfUser === "Doctor") {
+
+    getList("/user/doctor/my-online-patients","doctor");
+    $scope.userPatient = function(id){
+      $("#app").removeClass("sidebar-open");
+      var callerId = templateService.holdDoctorIdForCommunication;
+      localManager.setValue("receiver",id);
+      localManager.setValue('caller',callerId);    
+      templateService.holdIdForSpecificPatient = id;
+      var page = "/doctor-patient/treatment/" + id;
+      localManager.setValue("holdPageForHandler",page);
+      localManager.setValue("currentPage",page);
+      $location.path(page);
+      mySocket.removeAllListeners("new_msg");
+
+      mySocket.on("acceptance notification",function(data){
+        data.type = "acceptance notification";
+        templateService.playAudio(1);
+        $rootScope.sender = data;
+        $scope.isReceivedRequest = true;
+        $timeout(function(){
+          $scope.isReceivedRequest = false;
+        },10000);
+        $rootScope.$broadcast('get notification',{status: true});
+        getList("/user/doctor/my-online-patients","doctor");
+      });
+
+      //remove queue of received messages if any
+      var elemPos = $rootScope.patientList.map(function(x){return x.patient_id}).indexOf(id);
+      if(elemPos !== -1 && $rootScope.patientList[elemPos].hasOwnProperty("queueLen"))
+        $rootScope.patientList[elemPos].queueLen = 0;
+    }
+  }
 
 }]);
 
@@ -11494,7 +11480,7 @@ app.controller("myDoctorController",["$scope","$location","$http","$window","$ro
         presence: data.presence,
         user_id: data.user_id
       }
-      $rootScope.dispalyPresence = data.presence;
+      //$rootScope.dispalyPresence = data.presence;
      localManager.setValue("doctorInfoforCommunication", holdData);
     });
 
@@ -12061,7 +12047,7 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
     }
     templateService.holdForSpecificPatient = $scope.patientInfo;
     localManager.setValue("patientInfoForCommunication", holdData);    
-    $rootScope.patientAvailability = $scope.patientInfo.presence;
+    //$rootScope.patientAvailability = $scope.patientInfo.presence;
   })
 
 
@@ -19951,7 +19937,7 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
       }
     });*/
 
-    if($scope.checkLogIn.typeOfUser === "Patient")
+    /*if($scope.checkLogIn.typeOfUser === "Patient")
       mySocket.emit("check presence",{status: true},function(res){
         $rootScope.$broadcast("users presence",{type: 'doctorList',data: $rootScope.patientsDoctorList,sockets: res});         
       })
@@ -19959,7 +19945,7 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
     if($scope.checkLogIn.typeOfUser === "Doctor")
       mySocket.emit("check presence",{status: true},function(res){
         $rootScope.$broadcast("users presence",{type: 'patientList',data: $rootScope.patientList,sockets: res});         
-      })
+      })*/
 
     $window.location.href = "/user/logout";
     destroyStorage();
@@ -20162,33 +20148,6 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
       break;
     }
 
-
-    /*
-    $$hashKey: "object:495"
-    center_address: "12 Ebony Paint Rd"
-    center_city: "Enugu"
-    center_country: "Nigeria"
-    center_id: "heriLab1609"
-    center_name: "Heritage"
-    center_phone: "+2348096462317"
-    conclusion: "sdssdds dssddssddssdsd"
-    files: []
-    patient_id: "chidiebere187432"
-    payment_acknowledgement: true
-    receive_date: "1549356728166"
-    ref_id: 267169
-    referral_firstname: "Ede"
-    referral_id: "gcamon840253"
-    referral_lastname: "Obinna"
-    referral_title: "Dr"
-    report: (3) [{…}, {…}, {…}]
-    sent_date: "1549354806661"
-    session_id: "951edda0-2919-11e9-8e0c-b5489926f5de"
-    test_to_run: (3) [{…}, {…}, {…}]
-    type: "laboratory"
-    _id: "5c5947375d327054404ff2ea"
-    */
-
     ModalService.showModal({
       templateUrl: 'email-modal.html',
       controller: "emailModalCtrl"
@@ -20245,23 +20204,37 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
   }
 
 
-  //this updates the current availability of user in real time.
-  /*function createAwareness(data) {
-    mySocket.emit("set presence",{status:"online",userId:data.user_id},function(response){
-      if(response.status === true){
-        if(data.typeOfUser === "Doctor"){
-          mySocket.emit("doctor connect",{userId:data.user_id},function(res){
-
-          });
-        } else if(data.typeOfUser === "Patient") {
-          mySocket.emit("patient connect",data,function(res){
-            console.log(res,"==>>>>>>>>")
-            $rootScope.$broadcast("users presence",{type: 'patientList',data: $rootScope.patientList,sockets: res});
-          });
-        }
-      }
-    });                                  
-  }*/
+  $rootScope.$on("users presence",function(info,response){
+    switch(response.type) {
+      case 'patientList':        
+        var invert = _.invert(response.sockets);
+        response.data.forEach(function(item){
+          if(invert[item.patient_id]){
+            item.presence = true;
+            $rootScope.patientAvailability = item.presence;
+          } else {
+            item.presence = false;
+            $rootScope.patientAvailability = false
+          }
+        })
+      break;
+      case 'doctorList':  
+        console.log(response)      
+        var invert = _.invert(response.sockets);
+        response.data.forEach(function(item){
+          if(invert[item.doctor_id]){
+            item.presence = true;
+            $rootScope.dispalyPresence = true;
+          } else {
+            item.presence = false;
+            $rootScope.dispalyPresence = false;
+          }
+        })
+      break;
+      default:
+      break;
+    }
+  })
 
 }]);
 

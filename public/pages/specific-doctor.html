@@ -42,8 +42,8 @@
                     <div class="top-bar row">
                         <div class="col-md-3 col-sm-3 col-lg-3 col-xs-5">
                           <!--<button class="btn btn-simple text-danger" style="font-size: 16px" ng-click="chatLive()">Chat</button> &nbsp;&nbsp; -->
-                            <span  ng-cloak style="font-size: 12px;color:green"><b>{{docInfo.title}} {{docInfo.firstname}}</b> is <em ng-if="typing">{{typing}}</em> 
-                                <em ng-if="dispalyPresence && !typing" ng-cloak>Online</em>
+                            <span  ng-cloak style="font-size: 12px;color:green"><b>{{docInfo.title}} {{docInfo.firstname}}</b> is <em ng-if="typing">{{typing}}</em>
+                                <em ng-if="dispalyPresence" ng-cloak>{{(!typing) ? 'Online' : 'Online'}}</em>
                                 <em ng-if="!dispalyPresence" ng-cloak style="color:red">Offline</em>
                             </span>
                         </div>
