@@ -10127,7 +10127,7 @@ function($scope,$location,$rootScope,$http,$interval,templateService,localManage
 
         $interval(function(){
           getPatientsRealTime($rootScope.patientList) 
-        },150000) //2 and half minutes
+        },60000) //2 and half minutes
       }
 
     });
@@ -19941,7 +19941,7 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
   $rootScope.complain = {};
 
   $rootScope.logout = function(){
-    mySocket.emit("set presence",{status:"offline",userId:$scope.checkLogIn.user_id},function(response){
+    /*mySocket.emit("set presence",{status:"offline",userId:$scope.checkLogIn.user_id},function(response){
       if(response.status === false){
         if($scope.checkLogIn.typeOfUser === "Doctor"){
           mySocket.emit("doctor disconnect",{userId:$scope.checkLogIn.user_id});
@@ -19949,7 +19949,17 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
           mySocket.emit("patient disconnect",$scope.checkLogIn);
         }
       }
-    });
+    });*/
+
+    if($scope.checkLogIn.typeOfUser === "Patient")
+      mySocket.emit("check presence",{status: true},function(res){
+        $rootScope.$broadcast("users presence",{type: 'doctorList',data: $rootScope.patientsDoctorList,sockets: res});         
+      })
+
+    if($scope.checkLogIn.typeOfUser === "Doctor")
+      mySocket.emit("check presence",{status: true},function(res){
+        $rootScope.$broadcast("users presence",{type: 'patientList',data: $rootScope.patientList,sockets: res});         
+      })
 
     $window.location.href = "/user/logout";
     destroyStorage();
