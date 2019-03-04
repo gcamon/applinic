@@ -10390,7 +10390,7 @@ function($scope,$location,$rootScope,$http,$interval,templateService,localManage
         id:id,
         status: status
       });
-      $rootScope.dispalyPresence = true;
+      $rootScope.dispalyPresence = status;
       localManager.setValue("receiver",id);
       localManager.setValue('caller',callerId); 
       templateService.holdIdForSpecificDoc = id;      
@@ -10417,7 +10417,7 @@ function($scope,$location,$rootScope,$http,$interval,templateService,localManage
         id:id,
         status: status
       });
-      $rootScope.patientAvailability = true;
+      $rootScope.patientAvailability = status;
       var callerId = templateService.holdDoctorIdForCommunication;
       localManager.setValue("receiver",id);
       localManager.setValue('caller',callerId);    
