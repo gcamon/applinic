@@ -12047,7 +12047,7 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
     }
     templateService.holdForSpecificPatient = $scope.patientInfo;
     localManager.setValue("patientInfoForCommunication", holdData);    
-    //$rootScope.patientAvailability = $scope.patientInfo.presence;
+    $rootScope.patientAvailability = $scope.patientInfo.presence;
   })
 
 
@@ -20205,16 +20205,19 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
 
 
   $rootScope.$on("users presence",function(info,response){
+    var on = true;
+    var off = false;
     switch(response.type) {
-      case 'patientList':        
+      case 'patientList':  
+        console.log(response)      
         var invert = _.invert(response.sockets);
         response.data.forEach(function(item){
           if(invert[item.patient_id]){
-            item.presence = true;
-            $rootScope.patientAvailability = true;
+            item.presence = on;
+            $rootScope.patientAvailability = on;
           } else {
-            item.presence = false;
-            $rootScope.patientAvailability = false
+            item.presence = off;
+            $rootScope.patientAvailability = off;
           }
         })
       break;
@@ -20223,11 +20226,11 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
         var invert = _.invert(response.sockets);
         response.data.forEach(function(item){
           if(invert[item.doctor_id]){
-            item.presence = true;
-            $rootScope.dispalyPresence = true;
+            item.presence = on;
+            $rootScope.dispalyPresence = on;
           } else {
-            item.presence = false;
-            $rootScope.dispalyPresence = false;
+            item.presence = off;
+            $rootScope.dispalyPresence = off;
           }
         })
       break;
