@@ -20211,7 +20211,7 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
         response.data.forEach(function(item){
           if(invert[item.patient_id]){
             item.presence = true;
-            $rootScope.patientAvailability = item.presence;
+            $rootScope.patientAvailability = true;
           } else {
             item.presence = false;
             $rootScope.patientAvailability = false
