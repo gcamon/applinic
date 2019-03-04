@@ -10384,8 +10384,13 @@ function($scope,$location,$rootScope,$http,$interval,templateService,localManage
   if(user.typeOfUser === "Patient") {
    //$interval(getAtInterval,300000)
     getList("/user/patient/get-my-doctors","patient");
-    $scope.userDoctor = function(id){
+    $scope.userDoctor = function(id,status){
       var callerId = templateService.holdPatientIdForCommunication;
+      localManager.setValue("availablility",{
+        id:id,
+        status: status
+      });
+      $rootScope.dispalyPresence = true;
       localManager.setValue("receiver",id);
       localManager.setValue('caller',callerId); 
       templateService.holdIdForSpecificDoc = id;      
@@ -10406,8 +10411,13 @@ function($scope,$location,$rootScope,$http,$interval,templateService,localManage
   } else if(user.typeOfUser === "Doctor") {
 
     getList("/user/doctor/my-online-patients","doctor");
-    $scope.userPatient = function(id){
+    $scope.userPatient = function(id,status){
       $("#app").removeClass("sidebar-open");
+      localManager.setValue("availablility",{
+        id:id,
+        status: status
+      });
+      $rootScope.patientAvailability = true;
       var callerId = templateService.holdDoctorIdForCommunication;
       localManager.setValue("receiver",id);
       localManager.setValue('caller',callerId);    
@@ -11484,6 +11494,10 @@ app.controller("myDoctorController",["$scope","$location","$http","$window","$ro
      localManager.setValue("doctorInfoforCommunication", holdData);
     });
 
+
+    var avail = localManager.getValue("availablility") || {id: doctor.id};
+    $rootScope.dispalyPresence = avail.status;
+
     $scope.videoRequest = function(type,docObj){
       //$window.location.href = "/patient/call";
       docObj.type = type;
@@ -12011,11 +12025,17 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
   var path = localManager.getValue("currentPage") || $location.path();
   var arr = path.split("/");  
   var userId = arr[arr.length-1];
+
+  
+  
   
   var sessionId = genId(); //parseInt(Math.floor(Math.random() * 9999999) + "" + Math.floor(Math.random() * 999999));
   patient.id = templateService.holdIdForSpecificPatient || userId;
   $rootScope.holdId =  patient.id;
   var user = localManager.getValue("resolveUser");
+
+  var avail = localManager.getValue("availablility") || {id : patient.id};
+  $rootScope.patientAvailability  = avail.status;
 
   $scope.frequencies = ["OD","BD","TDS","QDS"];
   $scope.durations = ["1 day","2 days","3 days", "5 days", "7 days","1 week", "2 weeks", "3 weeks", "1 month", "2 months","3 months","4 months","6 months"]
@@ -19985,6 +20005,7 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
     localManager.removeItem('holdMessages');
     localManager.removeItem('holdId');
     localManager.removeItem("adminFoundUser");
+    localManager.removeItem("availablility");
   }
 
   var inviteCount = 0;
@@ -20202,20 +20223,26 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
      return str
   }
 
+
   $rootScope.$on("users presence",function(info,response){
     var on = true;
     var off = false;
+    var inView = (localManager.getValue('availablility')) ? localManager.getValue('availablility') : {};
     switch(response.type) {
       case 'patientList':        
         var invert = _.invert(response.sockets);
         response.data.forEach(function(item){
           if(invert[item.patient_id]){
             item.presence = on;
-            $rootScope.patientAvailability = item.presence;            
+
+            if(inView.id === item.patient_id)
+              $rootScope.patientAvailability = on;            
           } else {
-            console.log("how far")
-            //$rootScope.patientAvailability = off;
             item.presence = off;
+
+            if(inView.id === item.patient_id)
+              $rootScope.patientAvailability = off;
+            
           }
         })
       break;
@@ -20225,10 +20252,12 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
         response.data.forEach(function(item){
           if(invert[item.doctor_id]){
             item.presence = on;
-            $rootScope.dispalyPresence = item.presence;
+            if(inView.id === item.doctor_id)
+              $rootScope.dispalyPresence = on;
           } else {
             item.presence = off;
-            //$rootScope.dispalyPresence = off;
+            if(inView.id === item.doctor_id)
+              $rootScope.dispalyPresence = off;
           }
         })
       break;
