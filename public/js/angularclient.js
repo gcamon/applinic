@@ -12047,7 +12047,7 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
     }
     templateService.holdForSpecificPatient = $scope.patientInfo;
     localManager.setValue("patientInfoForCommunication", holdData);    
-    $rootScope.patientAvailability = $scope.patientInfo.presence;
+    //$rootScope.patientAvailability = $scope.patientInfo.presence;
   })
 
 
@@ -20208,16 +20208,20 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
     var on = true;
     var off = false;
     switch(response.type) {
-      case 'patientList':  
-        console.log(response)      
+      case 'patientList':        
         var invert = _.invert(response.sockets);
         response.data.forEach(function(item){
           if(invert[item.patient_id]){
+            console.log(item, "====> socket id ==>", invert[item.patient_id])
             item.presence = on;
-            $rootScope.patientAvailability = on;
+            $scope.$apply(function(){
+              $rootScope.patientAvailability = on;
+            })            
           } else {
             item.presence = off;
-            $rootScope.patientAvailability = off;
+            $scope.$apply(function(){
+              $rootScope.patientAvailability = off;
+            })      
           }
         })
       break;
