@@ -118,8 +118,8 @@
                         <input type="file" style="position: absolute;left: 2px;top: 0" id="file" file-model-chat="files">
                     </div>
                     <div class="mt-3 pb-2" style="position: relative;">
-                        <textarea contenteditable="true" class="chat-text-area" ng-model="user.text2"  ng-keypress="getkeys($event)" placeholder="Type a message..." ng-keyup="autoExpand2($event)" id="textarea2"> <span class="textout" >{{typeMessage}}</span> </textarea>
-                        <button type="submit" class="fa fa-send chat-btn text-warning"></button>
+                        <textarea contenteditable="true" class="chat-text-area" ng-model="user.text2"  ng-keypress="getkeys($event)" placeholder="Type a message..." ng-keyup="autoExpand2($event)" id="textarea2" style="box-shadow: none!important;"> <span class="textout" >{{typeMessage}}</span> </textarea>
+                        <button type="submit" class="chat-btn btn btn-neutral text-warning"><i class="fa fa-send"></i></button>
                     </div>
                     <div class="clearfix"></div>
                 </form>
