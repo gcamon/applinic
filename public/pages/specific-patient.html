@@ -84,8 +84,8 @@
 
                         <span ng-cloak style="font-size: 12px;color: green">{{patientInfo.title}} {{patientInfo.firstname}} is 
                             <em ng-if="typing">{{typing}}</em> 
-                            <em ng-if="dispalyPresence && !typing" ng-cloak>Online</em>
-                            <em ng-if="!dispalyPresence" ng-cloak style="color:red">Offline</em>
+                            <em ng-if="patientAvailability" ng-cloak>Online</em>
+                            <em ng-if="!patientAvailability" ng-cloak style="color:red">Offline</em>
                         </span>
                     </div>
                     <div class="col-md-9 col-sm-9 col-lg-9" style="text-align: right;">

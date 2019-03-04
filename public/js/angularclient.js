@@ -12047,7 +12047,6 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
     }
     templateService.holdForSpecificPatient = $scope.patientInfo;
     localManager.setValue("patientInfoForCommunication", holdData);    
-    //$rootScope.patientAvailability = $scope.patientInfo.presence;
   })
 
 
@@ -20203,7 +20202,7 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
      return str
   }
 
-
+  $rootScope.patientAvailability = false;
   $rootScope.$on("users presence",function(info,response){
     var on = true;
     var off = false;
@@ -20212,12 +20211,11 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
         var invert = _.invert(response.sockets);
         response.data.forEach(function(item){
           if(invert[item.patient_id]){
-            console.log(item, "====> socket id ==>", invert[item.patient_id])
-            item.presence = on;
-            $rootScope.dispalyPresence = on;
+            $rootScope.patientAvailability = on;
+            item.presence = on;            
           } else {
+            $rootScope.patientAvailability = off;
             item.presence = off;
-            $rootScope.dispalyPresence = off;
           }
         })
       break;
