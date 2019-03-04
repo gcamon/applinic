@@ -20202,7 +20202,6 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
      return str
   }
 
-  $rootScope.patientAvailability = false;
   $rootScope.$on("users presence",function(info,response){
     var on = true;
     var off = false;
@@ -20211,10 +20210,11 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
         var invert = _.invert(response.sockets);
         response.data.forEach(function(item){
           if(invert[item.patient_id]){
-            $rootScope.patientAvailability = on;
-            item.presence = on;            
+            item.presence = on;
+            $rootScope.patientAvailability = item.presence;            
           } else {
-            $rootScope.patientAvailability = off;
+            console.log("how far")
+            //$rootScope.patientAvailability = off;
             item.presence = off;
           }
         })
@@ -20225,10 +20225,10 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
         response.data.forEach(function(item){
           if(invert[item.doctor_id]){
             item.presence = on;
-            $rootScope.dispalyPresence = on;
+            $rootScope.dispalyPresence = item.presence;
           } else {
             item.presence = off;
-            $rootScope.dispalyPresence = off;
+            //$rootScope.dispalyPresence = off;
           }
         })
       break;
