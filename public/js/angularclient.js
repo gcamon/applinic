@@ -20214,14 +20214,10 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
           if(invert[item.patient_id]){
             console.log(item, "====> socket id ==>", invert[item.patient_id])
             item.presence = on;
-            $scope.$apply(function(){
-              $rootScope.patientAvailability = on;
-            })            
+            $rootScope.dispalyPresence = on;
           } else {
             item.presence = off;
-            $scope.$apply(function(){
-              $rootScope.patientAvailability = off;
-            })      
+            $rootScope.dispalyPresence = off;
           }
         })
       break;
