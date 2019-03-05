@@ -1013,14 +1013,14 @@
                    <textarea class="form-control p-1" placeholder="Write..." ng-model="data.lmp"></textarea>
                  </div>
                  <div ng-if='typeOfSearch === "diagnostic"'>
-                   <label>Parity ( female ):</label>
+                    <label>Parity ( female ):</label>
                     <textarea class="form-control p-1" placeholder="Write..." ng-model="data.parity"></textarea>
                  </div>
 
                 <div class="pb-3">
                     <input type="button" value="Cancel" ng-click="cancel()" class="btn btn-danger" ng-if="checkLogIn.typeOfUser === 'Patient'">
                     
-                    <button type="button" ng-click="send('someone')" class="btn btn-danger"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i>{{(loading) ? "" : 'Send'}}</button>
+                    <button type="button" ng-click="send('someone')" class="btn btn-danger"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i>{{(!loading) ? "Send" : ""}}</button>
                     
                     <!--<input type="button" value="New Person Form" ng-click="emp()" class="btn btn-simple" ng-if="isEMP">-->
                 </div>

@@ -17916,6 +17916,7 @@ app.controller("testSearchSelectedCenterController",["$scope","$location","$wind
   
 
   function send(data,url) {
+    $scope.loading = true;
      $http({
       method  : 'PUT',
       url     : url,
@@ -17931,6 +17932,8 @@ app.controller("testSearchSelectedCenterController",["$scope","$location","$wind
         $scope.isSent = true;
         $scope.result = data.ref_id;
       }
+
+      $scope.loading = false;
     });
   }
 
@@ -18272,6 +18275,7 @@ app.controller("scanSearchSelectedCenterController",["$scope","$location","$wind
   
 
   function send(data,url) {
+    $scope.loading = true;
      $http({
       method  : 'PUT',
       url     : url,
@@ -18287,6 +18291,8 @@ app.controller("scanSearchSelectedCenterController",["$scope","$location","$wind
         $scope.isSent = true;
         $scope.result = data.ref_id;
       }
+
+      $scope.loading = false;
     });
   }
 

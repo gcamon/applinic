@@ -209,7 +209,7 @@ var signupRoute = function(model,sms,geonames,paystack,io,nodemailer) {
 						var getRandomNumber = randos.genRef(6);
 						toStr = username + getRandomNumber;
 					} else {
-						var getRandomNumber = randos.genRef(8);
+						var getRandomNumber = randos.genRef(10);
 						toStr = getRandomNumber.toString();
 					}			
 					return toStr;					
