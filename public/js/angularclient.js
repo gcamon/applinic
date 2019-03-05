@@ -10345,7 +10345,7 @@ function($scope,$location,$rootScope,$http,$interval,templateService,localManage
 
         $interval(function(){
           getDoctorsRealTime($rootScope.patientsDoctorList); 
-        },150000) //2 and half minutes
+        },60000) //1 min
 
       } else if(type === "doctor"){       
         $rootScope.patientList = data;       
@@ -10353,25 +10353,27 @@ function($scope,$location,$rootScope,$http,$interval,templateService,localManage
 
         $interval(function(){
           getPatientsRealTime($rootScope.patientList) 
-        },60000) //2 and half minutes
+        },60000) //1 min
       }
 
     });
   }
 
-  function getDoctorsRealTime(list) {
+  function getDoctorsRealTime(list) {   
     mySocket.emit("check presence",{status: true},function(res){
       $rootScope.$broadcast("users presence",{type: 'doctorList',data: list,sockets: res});         
     })
+             
   }
 
   function getPatientsRealTime(list) {
     //_.invert(hash))[1]
     // returns the current sockets of online users and _.iverts inverts the keys/values
-    //use to check online presence
-    mySocket.emit("check presence",{status: true},function(res){      
-      $rootScope.$broadcast("users presence",{type: 'patientList',data: list,sockets: res});         
-    })
+    //use to check online presence   
+    mySocket.emit("check presence",{status: true},function(res){
+      $rootScope.$broadcast("users presence",{type: 'patientList',data: list,sockets: res});
+    });       
+    
   }
 
 
@@ -19818,9 +19820,9 @@ app.controller("emScanTestController",["$scope","$location","$http","$window","t
 }]);
 
 app.controller("topHeaderController",["$scope","$rootScope","$window","$location","$resource",
-  "localManager","mySocket","templateService","$timeout","$document","ModalService", "cities","$filter","_",
+  "localManager","mySocket","templateService","$timeout","$document","ModalService", "cities","$filter","_","$interval",
   function($scope,$rootScope,$window,$location,$resource,localManager,mySocket,templateService,
-   $timeout, $document, ModalService,cities,$filter,_){
+   $timeout, $document, ModalService,cities,$filter,_,$interval){
 
 
 
@@ -20223,6 +20225,21 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
      return str
   }
 
+  function getAllconnectedSockets() {
+    //gets all connected sockets for every 1 min
+    mySocket.emit("check presence",{status: true},function(res){
+      $rootScope.sockets = res;
+      //$rootScope.$broadcast("users presence",{type: 'chatList',data:$rootScope.chatsList,sockets: res});         
+    })
+  }
+
+  getAllconnectedSockets();
+
+  //gets connected sockets every 1 min
+  $interval(function(){
+    getAllconnectedSockets()
+  },60000)
+
 
   $rootScope.$on("users presence",function(info,response){
     var on = true;
@@ -20246,8 +20263,7 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
           }
         })
       break;
-      case 'doctorList':  
-        console.log(response)      
+      case 'doctorList':     
         var invert = _.invert(response.sockets);
         response.data.forEach(function(item){
           if(invert[item.doctor_id]){
@@ -20258,6 +20274,16 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
             item.presence = off;
             if(inView.id === item.doctor_id)
               $rootScope.dispalyPresence = off;
+          }
+        })
+      break;
+      case 'chatList':
+        var invert = _.invert(response.sockets);
+        response.data.forEach(function(item){
+          if(invert[item.partnerId]){
+            item.status = on;            
+          } else {
+            item.status = off;
           }
         })
       break;
@@ -20480,9 +20506,10 @@ app.controller("patientWaitingRoomController",["$scope","$resource","$location",
 
 
 //for chats in modal and centers dashboard use for 
-app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatService", "templateService","$filter","ModalService",
-  "$location","deviceCheckService","$compile",
-  function($scope, $rootScope, mySocket,chatService,templateService,$filter,ModalService,$location,deviceCheckService,$compile){
+app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatService", "templateService","$filter",
+  "ModalService","$location","deviceCheckService","$compile","$interval",
+  function($scope, $rootScope, mySocket,chatService,templateService,$filter,ModalService,$location,
+    deviceCheckService,$compile,$interval){
     var user = $rootScope.checkLogIn || {};
     $rootScope.allChats = $rootScope.chatsList; // rootScope can be used instead   
     $scope.center = $rootScope.holdcenter || {id : templateService.holdId}; //sometimes is not center but individual
@@ -20500,8 +20527,18 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
       }
     }
 
+    function getUsersOnline() {     
+      $rootScope.$broadcast("users presence",{type: 'chatList',data:$rootScope.chatsList,sockets: $rootScope.sockets});         
+    }
+
+    getUsersOnline();
+
+    $interval(function(){
+      getUsersOnline()
+    },61000) // 1 min and some secs
 
 
+    
     if($rootScope.holdcenter) {
       initChatSingle();
     } else {
@@ -20552,7 +20589,7 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
     }
 
     // checks to see who is online when chat div loads
-    mySocket.emit("check presence",{},function(connects){
+   /* mySocket.emit("check presence",{},function(connects){
       var chat;
       for(var i = 0; i < $rootScope.chatsList.length; i++) {
         for(var j in connects){            
@@ -20565,7 +20602,7 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
           }
         }
       }
-    });
+    });*/
     //checks to see when user is online or offline
     mySocket.on("real time presence",function(connects){
         var chat;
