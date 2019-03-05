@@ -564,8 +564,12 @@ span.dates {
     position: absolute;right: 25px;top: 0;padding: 0;background-color: transparent;
   }
 
+  .cht-body {
+    padding: 10px 0;
+  }
+
   .cht-body:hover {
-    background-color: #B8B8B8;
+    background-color: #eee;
     color: #fff!important;
   }
 

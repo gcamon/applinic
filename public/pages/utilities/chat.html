@@ -6,16 +6,15 @@
 				<hr>
 				<div class="ellipsis hidden-md-down" style="max-height: 600px; overflow-y: auto">
 					<div ng-repeat="chat in chatsList | orderBy : '-realTime'" ng-click="viewChat(chat)" class="pl-1 cht-body" ng-if="chat.partnerId !== checkLogIn.user_id">
-						<img src="{{chat.profilePic}}" style="float: left;max-height:72px;max-width:62px">			
-						<a href="" class="chat-header-text ellipsis" ng-class="{'chat-header-text-new' : !chat.is_read}" style="font-size: 12px;display: inline-block;padding-left: 10px;width: 90%;position: relative;">
+						<img src="{{chat.profilePic}}" style="float: left;height:auto;width:62px">			
+						<a href="" class="ellipsis" ng-class="{'chat-header-text-new' : !chat.is_read}" style="display: inline-block;padding-left: 10px;width: 85%;position: relative;">
 							<strong style="display: block;" >{{chat.name}}</strong>
 							<span style="display: block;">( {{chat.partnerType}} )</span>
 							 <span style="display:block;" class="ellipsis">{{(!chat.typing) ? (chat.messages[chat.messages.length - 1].received || chat.messages[chat.messages.length - 1].sent ) : chat.typing }} 
 							 <small style="display:block;" am-time-ago="chat.messages[chat.messages.length - 1].time  || chat.messages[chat.messages.length - 1].received" ng-cloak></small></span> 
-							 <span style="position: absolute;bottom: 0;right: 10px"><span ng-if="chat.status" class="online" style="background-color: #85CE36"></span><span ng-if="!chat.status" class="online" style="background-color: #ccc;"></span></span>
+							 <span style="position: absolute;bottom: 0;right: 15px"><span ng-if="chat.status" class="online" style="background-color: #85CE36"></span><span ng-if="!chat.status" class="online" style="background-color: #ccc;"></span></span>
 							 <!--<i class="fa fa-comment-o" style="position: absolute;top:3px;right:5px" ng-if="chat.isUnRead"></i>-->
-						</a>
-						<hr class="bg-muted">
+						</a><br>
 					</div> <!--<time  am-time-ago="i.sent_date" style="position: absolute;right: 0;top:2px;font-size: 12px"></time>-->
 				</div>
 
@@ -31,7 +30,6 @@
 							 <span style="position: absolute;bottom: 0;right: 2px"><span ng-if="chat.status" class="online" style="background-color: #85CE36"></span><span ng-if="!chat.status" class="online" style="background-color: #ccc;"></span></span>
 							 <!--<i class="fa fa-comment-o" style="position: absolute;top:3px;right:5px" ng-if="chat.isUnRead"></i>-->
 						</a>
-						<hr class="bg-muted">
 					</div> <!--<time  am-time-ago="i.sent_date" style="position: absolute;right: 0;top:2px;font-size: 12px"></time>-->
 				</div>
 
