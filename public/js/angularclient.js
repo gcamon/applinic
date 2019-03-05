@@ -20535,7 +20535,7 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
 
     $interval(function(){
       getUsersOnline()
-    },61000) // 1 min and some secs
+    },60009) // 1 min and some secs
 
 
     
