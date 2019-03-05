@@ -12,7 +12,7 @@
 							<span style="display: block;">( {{chat.partnerType}} )</span>
 							 <span style="display:block;" class="ellipsis">{{(!chat.typing) ? (chat.messages[chat.messages.length - 1].received || chat.messages[chat.messages.length - 1].sent ) : chat.typing }} 
 							 <small style="display:block;" am-time-ago="chat.messages[chat.messages.length - 1].time  || chat.messages[chat.messages.length - 1].received" ng-cloak></small></span> 
-							 <span style="position: absolute;bottom: 0;right: 2px"><span ng-if="chat.status" class="online" style="background-color: #85CE36"></span><span ng-if="!chat.status" class="online" style="background-color: #ccc;"></span></span>
+							 <span style="position: absolute;bottom: 0;right: 10px"><span ng-if="chat.status" class="online" style="background-color: #85CE36"></span><span ng-if="!chat.status" class="online" style="background-color: #ccc;"></span></span>
 							 <!--<i class="fa fa-comment-o" style="position: absolute;top:3px;right:5px" ng-if="chat.isUnRead"></i>-->
 						</a>
 						<hr class="bg-muted">
