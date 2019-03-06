@@ -37,8 +37,7 @@ var signupRoute = function(model,sms,geonames,paystack,io,nodemailer) {
 				});
 
 				function createUser() {
-					console.log(req.body)
-
+					
 					if(req.body.agree === true && userphone.testuserPhone) {					
 						var uid = genId(req.body.username);
 						var referral_link = "/referral/" + uid + "/signup";
@@ -295,7 +294,7 @@ var signupRoute = function(model,sms,geonames,paystack,io,nodemailer) {
 						}
 
 						function saveUser() {
-							console.log(User)
+							//console.log(User)
 							User.save(function(err){
 								console.log("user saved");
 								if(err) throw err;	
