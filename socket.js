@@ -461,6 +461,7 @@ module.exports = function(model,io,streams,sms) {
 	    		list.forEach(function(user){	    			
 	    			io.sockets.to(user.user_id).emit("patient presence",status);
 	    		})
+	    		
 	    	})
 	    });
 

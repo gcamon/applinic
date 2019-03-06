@@ -37,6 +37,8 @@ var signupRoute = function(model,sms,geonames,paystack,io,nodemailer) {
 				});
 
 				function createUser() {
+					console.log(req.body)
+
 					if(req.body.agree === true && userphone.testuserPhone) {					
 						var uid = genId(req.body.username);
 						var referral_link = "/referral/" + uid + "/signup";
@@ -101,9 +103,157 @@ var signupRoute = function(model,sms,geonames,paystack,io,nodemailer) {
 	            name: req.body.firstname,
 	            main: true
 						});
-
 						//medical record access key
 						User.mrak = uuid.v1();
+					}
+
+					if(req.body.invitationId){
+						model.invite.findOne({id: req.body.invitationId})
+						.exec(function(err,invite){
+							if(err) throw err;
+							if(invite){
+								model.user.findOne({user_id: invite.referral_id})
+								.exec(function(err,referral){
+									if(err) throw err;
+									if(referral){
+										if(req.body.typeOfUser === "Patient" && invite.type === req.body.typeOfUser) {
+											User.accepted_doctors.push({
+												doctor_id: referral.user_id,
+												date_of_acceptance: + new Date(),
+												doctor_firstname: referral.name,
+												doctor_lastname:  referral.lastname,
+												doctor_profile_pic_url: referral.profile_pic_url,
+												service_access: true,
+												doctor_specialty: referral.specialty					
+											});
+
+											referral.doctor_patients_list.push({
+												patient_firstname: User.firstname,
+												date: + new Date(),
+												patient_lastname: User.lastname,
+												patient_id: User.user_id,
+												patient_profile_pic_url: User.profile_pic_url,
+												patient_address: User.address,
+												patient_city: User.city,
+												Patient_country: User.country,
+												patient_gender: User.gender,
+												patient_age: User.age,
+												presence: false,
+												initial_complaint: {
+										    	complaint: "This patient was added through invitation. No complaint was recorded.",
+										    	complaint_date: + new Date(),
+										    	date_received: + new Date(),
+										    }
+											});
+
+											var transporter = nodemailer.createTransport({
+											  host: "mail.privateemail.com",
+											  port: 465,
+											  auth: {
+											    user: "info@applinic.com",
+											    pass: process.env.EMAIL_PASSWORD
+											  }
+											});
+
+											var mailOptions = {
+											  from: 'Applinic info@applinic.com',
+											  to: referral.email,//referral.email,
+											  subject: 'New Doctor Added to Your Account',
+											  html: '<table><tr><th><h3  style="background-color:#85CE36; color: #fff; padding: 30px"><img src="https://applinic.com/assets/images/applinic1.png" style="width: 250px; height: auto"/><br/><span>Healthcare... anywhere, anytime.</span></h3></th></tr><tr><td style="font-family: Arial, Helvetica, sans-serif;"><b>Dear ' 
+											  + referral.title + " " + referral.lastname 
+											  + ",<br><br>" + User.title + " " + User.lastname + " " + User.firstname + ", a Patient was added to your account in response to your invitation."
+											  + "<br><br> Please <a href='https://applinic.com/login'>log in </a> to manage your patient."
+											  + "<br><br> <b>Applinic Team</b></td></tr></table>"
+											};
+                     
+											transporter.sendMail(mailOptions, function(error, info){
+											  if (error) {
+											    console.log(error);
+											  } else {
+											    console.log('Email sent: ' + info.response);
+											  }
+											});
+
+											invite.remove(function(){});
+											referral.save(function(){});
+											saveUser();
+
+										} else if(req.body.typeOfUser === "Doctor" && invite.type === req.body.typeOfUser){
+
+											referral.accepted_doctors.push({
+												doctor_id: User.user_id,
+												date_of_acceptance: + new Date(),
+												doctor_firstname: User.firstname,
+												doctor_lastname:  User.lastname,
+												doctor_name: User.name,
+												doctor_profile_pic_url: User.profile_pic_url,
+												service_access: true,
+												doctor_specialty: User.specialty					
+											});
+
+											referral.doctor_patients_list.push({
+												patient_firstname: referral.firstname,
+												date: + new Date(),
+												patient_lastname: referral.lastname,
+												patient_id: referral.user_id,
+												patient_profile_pic_url: referral.profile_pic_url,
+												patient_address: referral.address,
+												patient_city: referral.city,
+												Patient_country: referral.country,
+												patient_gender: referral.gender,
+												patient_age: referral.age,
+												presence: false,
+												initial_complaint: {
+										    	complaint: "This patient was added through invitation. No complaint was recorded.",
+										    	complaint_date: + new Date(),
+										    	date_received: + new Date(),
+										    }
+											});
+
+											var transporter = nodemailer.createTransport({
+											  host: "mail.privateemail.com",
+											  port: 465,
+											  auth: {
+											    user: "info@applinic.com",
+											    pass: process.env.EMAIL_PASSWORD
+											  }
+											});
+
+											var mailOptions = {
+											  from: 'Applinic info@applinic.com',
+											  to: referral.email,//req.body.email || 'ede.obinna27@gmail.com',
+											  subject: 'New Doctor Added to Your Account',
+											  html: '<table><tr><th><h3  style="background-color:#85CE36; color: #fff; padding: 30px"><img src="https://applinic.com/assets/images/applinic1.png" style="width: 250px; height: auto"/><br/><span>Healthcare... anywhere, anytime.</span></h3></th></tr><tr><td style="font-family: Arial, Helvetica, sans-serif;"><b>Dear '
+											  + referral.title + " " + referral.lastname  
+											  + ",<br><br>" + User.title + " " + User.lastname + " " + User.firstname + " was added to your account in response to your invitation."
+											  + "<br><br> Please <a href='https://applinic.com/login'>log in </a> for more details."
+											  + "<br><br> <b>Applinic Team</b></td></tr></table>"
+											};
+
+											transporter.sendMail(mailOptions, function(error, info){
+											  if (error) {
+											    console.log(error);
+											  } else {
+											    console.log('Email sent: ' + info.response);
+											  }
+											});
+
+											invite.remove(function(){});
+											referral.save(function(){});
+											saveUser();
+
+										} else {
+											saveUser()
+										}								
+									}
+								})
+							} else {
+								saveUser()
+							}
+						});
+
+					} else {
+						saveUser()
 					}
 
 
@@ -144,6 +294,7 @@ var signupRoute = function(model,sms,geonames,paystack,io,nodemailer) {
 							User.courier_access_password = uuid.v1();			
 						}
 
+						function saveUser() {
 							console.log(User)
 							User.save(function(err){
 								console.log("user saved");
@@ -194,7 +345,9 @@ var signupRoute = function(model,sms,geonames,paystack,io,nodemailer) {
 								});
 
 								return done(null,User);
-							});			
+							});		
+
+						}	//user saves
 
 						} else {
 							res.send({error: "Email already in use. Please find another one"});
@@ -310,7 +463,7 @@ var signupRoute = function(model,sms,geonames,paystack,io,nodemailer) {
 
 	})
 
-	//check to see if a user with a phone number already exist
+	
 	router.get('/user/signup',function(req,res){
 
 		if(req.query.phone){

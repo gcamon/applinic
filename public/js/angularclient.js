@@ -2055,15 +2055,42 @@ app.controller('signupController',["$scope","$http","$location","$window","templ
   
   $scope.cities = cities;
 
+  var currency = {};
+
+  $scope.user = {};
+
+  
+
+
   $scope.getRoute = function(type){
     $location.path(type);
     $rootScope.auser = type;
   }
 
-  var currency = {};
-
-  $scope.user = {};
-
+  var count = 0;
+  $scope.referredType = function(type,id) {
+    count++;
+    if(count <= 1 && type) {
+      $rootScope.invitationId = id;
+      switch(type){
+        case "Patient":
+          $scope.userType(type,'patient-signup')
+        break;
+        case "Doctor":
+          $scope.userType('Doctor','doctor-signup')
+        break;
+        case "Pharmacy":
+          $scope.userType('Pharmacy','pharmacy-signup')
+        break;
+        case "Special Center":
+          $scope.userType('Special Center','special-center-signup')
+        break;
+        default:
+          $scope.userType('Diagnostic','diagnostic-signup')
+        break;
+      }
+    }
+  }
 
   switch($location.path()) {
     case '/':
@@ -2280,20 +2307,17 @@ app.controller('signupController',["$scope","$http","$location","$window","templ
       }
 
     function finalValidation() {
-
       if(data.agree === true) {        
         if($scope.user.callingCode){        
-          //var phoneNumber = "+" + $scope.user.callingCode.toString() + $scope.user.phone.toString();
           data.phone = phoneNumber;
           data.username = data.username.replace(/\s+/g, '');
           $rootScope.formData = data;
+          $rootScope.formData.invitationId = $rootScope.invitationId;
           sendDetail();
         } else {
           $scope.numberError = "Invalid number format";
           return;
         }
-
-       
 
         function sendDetail() {
           $scope.loading = true;
@@ -2315,10 +2339,6 @@ app.controller('signupController',["$scope","$http","$location","$window","templ
       }
     } 
   }
-
-  
-
-
 
   var reqObj;
   function getCountries() {

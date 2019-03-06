@@ -261,7 +261,7 @@ var myModel = function () {
 		patient_city: String,
 		Patient_country: String,
 		patient_gender: String,
-		patient_age: Number,
+		patient_age: String,
 		patient_body_weight: String,
 		presence: Boolean,
 		initial_complaint: {
@@ -953,6 +953,13 @@ var myModel = function () {
 		}
 	});
 
+	var inviteSchema = Schema({
+	   referral_id: String,
+	   id: String,
+	   date: Number,
+	   type: String
+	})
+
 	
 	/*var callingSchema = Schema({
 		calling_code: {
@@ -999,6 +1006,7 @@ var myModel = function () {
 	models.scroll = mongoose.model("scrollinfos",mediScroll);
 	models.agent = mongoose.model("fieldagentinfos",fieldAgentSchema);
 	models.consult = mongoose.model("consultinfos",consultSchema);
+	models.invite = mongoose.model("inviteinfo",inviteSchema);
 	//models.calling_code = mongoose.model("callingcodeinfos",callingSchema)
 	
 	return models		
