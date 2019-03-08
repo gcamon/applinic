@@ -5887,11 +5887,11 @@ _id: "5c16660cba74dc0288ecfad9"
               test.save(function(err,info){});
               res.send([{}]);
             } else {
-              var elemPos = data.test_list.map(function(x){return x.name}).indexOf("OBINNA SIT DOWN DRUG")
+              /*var elemPos = data.test_list.map(function(x){return x.name}).indexOf("OBINNA SIT DOWN DRUG")
               if(elemPos !== -1){
                 data.test_list.splice(elemPos,1)
                 data.save(function(err,info){})
-              }
+              }*/
               res.send(data.test_list);
             }
     
