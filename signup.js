@@ -286,6 +286,11 @@ var signupRoute = function(model,sms,geonames,paystack,io,nodemailer) {
 								User.city_grade = 10;
 							}	
 
+							User.stock_update = {
+								type: req.body.typeOfUser,
+								status: false
+							}
+
 						}		
 
 						if(req.body.typeOfUser === "Pharmacy") {
@@ -437,7 +442,8 @@ var signupRoute = function(model,sms,geonames,paystack,io,nodemailer) {
 				//res.send({message:"Phone Verification Pin sent to " + req.body.phone + " (use " + genPin + " to complete registration)"});
 				if(!err) {
 					//res.send({message:"Phone Verification Pin sent to " + req.body.phone + " (use " + genPin + " to complete registration)"});
-					res.send({message:"Phone Verification Pin sent to " + req.body.phone + " (enter pin below  to complete registration)"})
+					res.send({message:"Phone Verification Pin sent to " + req.body.phone + " .Enter pin below  to complete registration ( " 
+						+ genPin + " )"})
 				} else {
 					res.send({message:err.message,error: true});
 				}

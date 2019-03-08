@@ -62,7 +62,8 @@ router.get('/user/dashboard',function(req,res){
       }
     });
 
-    function normalUser() {          
+    function normalUser() {  
+      //console.log(req.user.stock_update)        
       res.json({
         isLoggedIn: true,
         name: req.user.name,
@@ -89,7 +90,8 @@ router.get('/user/dashboard',function(req,res){
         currencyCode: req.user.currencyCode,
         mrak: req.user.mrak,
         courier_charge: req.user.courier_charge,
-        field_agents: req.user.field_agents
+        field_agents: req.user.field_agents,
+        stock_update: req.user.stock_update
       });
     }
   } else {

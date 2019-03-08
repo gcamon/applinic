@@ -55,6 +55,19 @@ function createVoiceText(title){
   return tm;
 }
 
+
+Array.prototype.diff = function(arr2) {
+  var ret = [];
+  this.sort();
+  arr2.sort();
+  for(var i = 0; i < this.length; i += 1) {
+    if(arr2.indexOf( this[i].name ) === -1){
+        ret.push( this[i] );
+    }
+  }
+  return ret;
+};
+
 console.log(createVoiceText(2345))
 
 function genHash(count) {
@@ -5885,16 +5898,20 @@ _id: "5c16660cba74dc0288ecfad9"
     });
 
     router.post("/user/dynamic-service",function(req,res){
-      if(req.user && req.body && req.user.type !== "Doctor" || req.user.type !== "Patient"){
-        model.services.findOne({user_id:req.user.user_id}).exec(function(err,user){
-          if(err) throw err;
-          if(!user){
-            createUser();
-            updateDynaService();
-          } else {
-            updateDynaService();
-          }
-        });
+      if(req.user && req.body){
+        if(req.user.type !== "Doctor" || req.user.type !== "Patient")
+          model.services.findOne({user_id:req.user.user_id}).exec(function(err,user){
+            if(err) throw err;
+            if(!user){
+              createUser();
+              updateDynaService();
+            } else {
+              updateDynaService();
+            }
+          });
+        else
+          res.json({message: "You are not authorized to add service",status:false});
+
         var date = + new Date();
         function createUser() {
           var user = new model.services({
@@ -5916,14 +5933,14 @@ _id: "5c16660cba74dc0288ecfad9"
           });
         }
 
-
         function updateDynaService() {
-          var date = + new Date();
+          //var date = + new Date();
           var random = randos.genRef(6);
           var testId = randos.genRef(8);
+
           var test = {
             center_id: req.user.user_id,
-            date: date,
+            date_created: date,
             name: req.body.name,
             id: testId,
             val: true
@@ -5933,18 +5950,94 @@ _id: "5c16660cba74dc0288ecfad9"
             if(err) {
               res.send({message: "Error occured while saving service. Please try again"});
               console.log(err);
-            } else {
-              result.test_list.push(test);
-              res.send({message: "Service updated successfully!"});
             }
-            result.save(function(){
-             console.log("saved!")
-            })
+
+            if(result) {
+              result.test_list.push(test);             
+
+              console.log(test)
+              result.save(function(){
+               console.log("saved!");
+              })
+
+
+              //mark the updator to prevent modal showing in the client
+             /* model.user.findOne({user_id: req.user.user_id})
+              .exec(function(err,user){
+                if(!user.stock_update.status) {
+                  user.stock_update.status = false
+                  user.save(function(err,info){})
+                }
+              })*/
+
+
+              model.user.updateMany({"stock_update.status": false,type: req.user.type},
+                {$set:{"stock_update.type":req.user.type,"stock_update.status": true,"stock_update.last_updated":date}},
+                function(err,info){
+                  console.log("error", err)
+                  console.log("info", info)
+              });
+
+              model.services.find({type: req.user.type})
+              .exec(function(err,data){
+                if(err) throw err;
+                data.forEach(function(item){
+                  if(item.user_id !== req.user.user_id) {
+                    test.val = false;
+                    item.unavailable_services.push(test);
+                    item.save(function(){})
+                  }
+                });
+
+                res.send({message: "Service updated successfully!"});
+              })
+
+
+             
+
+            } else {
+              res.send({message: "Error. service not found"});
+            }
+            
+
           });
         }
 
       } else {
-        res.send("unauthorized access!")
+        res.send("unauthorized access!");
+      }
+    });
+
+
+    router.put("/user/dynamic-service",function(req,res){
+      if(req.user) {
+        console.log(req.body)
+        
+        model.services.findOne({type: req.user.type,user_id: req.user.user_id})
+        .exec(function(err,data){
+          if(err) throw err;
+          var elemPos;
+          if(data) {
+            req.body.forEach(function(item){
+              elemPos = data.unavailable_services.map(function(x){return x.id}).indexOf(item.id);
+              if(elemPos !== -1){
+                data.unavailable_services.splice(elemPos,1);
+                data.save(function(err,info){});
+                model.user.findOne({user_id: req.user.user_id})
+                .exec(function(err,user){
+                  user.stock_update.status = false;
+                  user.save(function(err,info){})
+                })
+              }
+            });
+            res.json({status:true,message: "Service successfully updated!"})
+         } else {
+           res.json({status: false,message:"Service not found, service not updated."})
+         }
+          
+        });
+      } else {
+        res.end("unauthorized access!");
       }
     })
 
@@ -6010,8 +6103,10 @@ _id: "5c16660cba74dc0288ecfad9"
       console.log(req.body);
       var criteria = (req.body.city) ? {type:"Pharmacy",center_city:req.body.city} : {type: "Pharmacy"};
       model.services.find(criteria,
-        {center_name:1,center_city:1,center_address:1,center_country:1,center_phone:1,user_id:1,unavailable_services:1,_id:0,center_email:1},function(err,data){
+        {center_name:1,center_city:1,center_address:1,center_country:1,center_phone:1,user_id:1,
+        unavailable_services:1,_id:0,center_email:1},function(err,data){
         if(err) throw err;
+
         var newListToSend = [];        
         var sendObj = {};
         var listOfDrugs = req.body.drugList;        
@@ -6067,18 +6162,6 @@ _id: "5c16660cba74dc0288ecfad9"
           }
         }
         
-        Array.prototype.diff = function(arr2) {
-          var ret = [];
-          this.sort();
-          arr2.sort();
-          for(var i = 0; i < this.length; i += 1) {
-            if(arr2.indexOf( this[i].name ) === -1){
-                ret.push( this[i] );
-            }
-          }
-          return ret;
-        };
-
         var sub = {};
          sub['full'] = [];
          sub['less'] = [];
@@ -6097,7 +6180,8 @@ _id: "5c16660cba74dc0288ecfad9"
         res.send(sub)
       })
 
-    });
+  });
+
 
   router.put("/user/drug-search/pharmacy/referral",function(req,res){
    if(req.user){
@@ -6377,7 +6461,7 @@ router.put("/user/laboratory/search/find-tests",function(req,res){
       }
      
 
-      Array.prototype.diff = function(arr2) {
+      /*Array.prototype.diff = function(arr2) {
         var ret = [];
         this.sort();
         arr2.sort();
@@ -6387,7 +6471,7 @@ router.put("/user/laboratory/search/find-tests",function(req,res){
             }
         }
         return ret;
-      };
+      };*/
 
       var sub = {};
       sub['full'] = []
@@ -6611,7 +6695,7 @@ router.put("/user/radiology/search/find-tests",function(req,res){
     }
    
 
-    Array.prototype.diff = function(arr2) {
+   /* Array.prototype.diff = function(arr2) {
       var ret = [];
       this.sort();
       arr2.sort();
@@ -6621,7 +6705,7 @@ router.put("/user/radiology/search/find-tests",function(req,res){
           }
       }
       return ret;
-    };
+    };*/
 
     var sub = {};
     sub['full'] = []
@@ -8728,7 +8812,7 @@ router.get("/general/homepage-search",function(req,res){
             }
           }
           
-          Array.prototype.diff = function(arr2) {
+          /*Array.prototype.diff = function(arr2) {
             var ret = [];
             this.sort();
             arr2.sort();
@@ -8738,7 +8822,7 @@ router.get("/general/homepage-search",function(req,res){
               }
             }
             return ret;
-          };
+          };*/
 
           var sub = {};
            sub['full'] = [];
@@ -8881,7 +8965,7 @@ router.get("/general/homepage-search",function(req,res){
       }
      
 
-      Array.prototype.diff = function(arr2) {
+      /*Array.prototype.diff = function(arr2) {
         var ret = [];
         this.sort();
         arr2.sort();
@@ -8891,7 +8975,7 @@ router.get("/general/homepage-search",function(req,res){
             }
         }
         return ret;
-      };
+      };*/
 
       var sub = {};
       sub['full'] = []

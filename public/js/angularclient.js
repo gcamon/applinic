@@ -17113,7 +17113,7 @@ function($scope,$location,$window,templateService,localManager,labTests,searchte
 }]);
 
 app.service("dynamicService",["$resource",function($resource){
-  return $resource("/user/dynamic-service",null,{createService:{"method": "POST"}});
+  return $resource("/user/dynamic-service",null,{createService:{"method": "POST"},updateService: {method: "PUT"}});
 }]);
 
 
@@ -17323,11 +17323,18 @@ app.controller("drugSearchResultController",["$scope","$location","$rootScope","
     var strArr = str.split(",");
     for(var i = 0; i < strArr.length; i++){
       if(by)
-        newStr += "@" + strArr[i] + "* ";
+        newStr += "<span>@" + strArr[i] + " </span>";
       else 
-         newStr += "@" + strArr[i] + " ";
+         newStr += "<span>@" + strArr[i] + " </span> ";
     }
     return newStr;
+  }
+
+  $scope.addedBy = function(by){
+    if(by)
+      return true
+    else
+      return false
   }
 
   $scope.notStr = function(arr) {
@@ -19845,10 +19852,12 @@ app.controller("emScanTestController",["$scope","$location","$http","$window","t
 
 }]);
 
+
 app.controller("topHeaderController",["$scope","$rootScope","$window","$location","$resource",
-  "localManager","mySocket","templateService","$timeout","$document","ModalService", "cities","$filter","_","$interval",
+  "localManager","mySocket","templateService","$timeout","$document","ModalService",
+   "cities","$filter","_","$interval","dynamicService",
   function($scope,$rootScope,$window,$location,$resource,localManager,mySocket,templateService,
-   $timeout, $document, ModalService,cities,$filter,_,$interval){
+   $timeout, $document, ModalService,cities,$filter,_,$interval,dynamicService){
 
 
 
@@ -20316,7 +20325,58 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
       default:
       break;
     }
-  })
+  });
+
+  if($rootScope.checkLogIn.typeOfUser === "Pharmacy" || $rootScope.checkLogIn.typeOfUser === "Laboratory" 
+    || $rootScope.checkLogIn.typeOfUser === "Patient") {
+    dynamicService.query(function(data){
+     
+      if($rootScope.checkLogIn.stock_update){
+        if($rootScope.checkLogIn.stock_update.status){
+          $rootScope.dynaServices = data;
+          ModalService.showModal({
+              templateUrl: 'stock-modal.html',
+              controller: "stockModalController"
+          }).then(function(modal) {
+              modal.element.modal();
+              modal.close.then(function(result) {
+                
+              });
+          });     
+        }
+      }
+    })
+  }
+
+}]);
+
+app.controller("stockModalController",["$scope","$rootScope","dynamicService","localManager",
+  function($scope,$rootScope,dynamicService,localManager){
+
+  $scope.updateStock = function() {
+    console.log($rootScope.dynaServices)
+    var sendArr = [];
+    $rootScope.dynaServices.forEach(function(item){
+      if(item.picked){
+        sendArr.push(item)
+      }
+    })
+    $scope.loading = true;
+    dynamicService.updateService(sendArr,function(response){
+      if(response){
+        $rootScope.checkLogIn.stock_update.status = false;
+        localManager.setValue("resolveUser",$rootScope.checkLogIn)
+        $scope.msg = response.message;
+      }
+
+      $scope.loading = false;
+    })
+  }
+
+  $scope.notNow = function() {
+    $rootScope.checkLogIn.stock_update.status = false;
+    localManager.setValue("resolveUser",$rootScope.checkLogIn)
+  }
 
 }]);
 

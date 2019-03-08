@@ -1380,6 +1380,37 @@
         </div>
      </script>
 
+     <script type="text/ng-template" id="stock-modal.html">
+        <div class="modal fade">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">            
+                <h5>Stock Update</h5>
+                <button type="button" class="close"  data-dismiss="modal" aria-hidden="true">&times;</button>          
+            </div>
+            <div class="modal-body">                
+              <p>Please take a moment to go through the newly added item(s).<br>
+               <b>Tick</b> anyone <b>available</b> in your center.</p>
+               <hr>
+               <form>
+                 <div ng-repeat="j in dynaServices" ng-if="j.date_created >= checkLogIn.stock_update.last_updated">
+                    <label class="custom-control custom-checkbox">
+                     <input type="checkbox" class="custom-control-input" ng-model= "j.picked" >
+                      <span class="custom-control-indicator"></span>
+                      <span class="custom-control-description">{{j.name}}</span>
+                    </label>                   
+                 </div>
+              </form>
+              <div style="text-align: right;">
+                <p>{{msg}}</p>
+                <button class="btn btn-success" ng-click="updateStock()"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i> {{(loading) ? "" : "Done, save"}}</button> &nbsp; 
+                <button class="btn btn-neutral" ng-click="notNow(modal)" data-dismiss="modal">No, later</button>
+              </div>
+            </div>
+          </div>
+        </div>
+     </script>
+
 
 
 

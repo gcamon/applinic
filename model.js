@@ -60,7 +60,7 @@ var myModel = function () {
 
 
 	var service_objSchema = Schema({
-		date_created : String,
+		date_created : Number,
 		center_id: String,
 		name: String,
 		val: Boolean,
@@ -512,6 +512,13 @@ var myModel = function () {
 	})
 
 
+	var updateSchema = Schema({
+		type: String,
+		status: Boolean,
+		last_updated: Number,
+	});
+
+
 //end for session
 	var userSchema = Schema({	  
 		firstname: String,
@@ -608,7 +615,9 @@ var myModel = function () {
 		courier_commission: Number,
 		disease_tag: String,
 		bank_details: Array,
-		field_agents: Array
+		field_agents: Array,
+		updated: Date,
+		stock_update: updateSchema
 	},{
 		collections: "userinfos"
 	})
@@ -620,7 +629,6 @@ var myModel = function () {
 		phone: String
 	})
 	
-
 	//for patient waiting room
 	var helpSchema = Schema({
 		helpType: String,
