@@ -21,25 +21,24 @@
 
 
 <div class="card p-2">
-		<div class="">
-			<h4 class="p-0">Update Inventory 
-			</h4>
-			
-			<p>Please unmark any drug you don't have in stock below.Do remember to save your changes.</p>
+		<div>
+			<h4 class="p-0">Update Inventory <a class="btn btn-primary btn-sm" href="#/pharmacy/off-service" style="float: right;font-size: 14px"> See unavailable drugs in your center</a></h4>
+			<div class="clearfix"></div>			
+			<span>Please unmark any drug you don't have in stock below. Do remember to save your changes.</span>
 		</div>
 		
-		<a class="btn btn-neutral btn-sm" href="#/pharmacy/off-service" style="float: right;"> See unavailable drugs in your center</a>
+		
 	
 		<div class="row">
-			<div class="col-md-9 pr-1">
-					<input type="text" class="form-control" ng-model="ava" name="" placeholder="Filter list by drug name">
+			<div class="col-md-6 pr-1">
+					<input type="text" class="form-control" ng-model="ava" name="" placeholder="Filter list by drug name"><br>
 				<span class="text-danger">*</span> <span>drug(s) you added</span>
 			</div>
 
-			<div class="col-md-2">					
+			<div class="col-md-6" style="text-align: right;">					
 				<button class="btn btn-success btn-sm" style="margin-top: 7px;" ng-click="saveSelection()">Save changes</button>
 					
-			</div>
+			</div><br>
 		</div>
 		
 		
@@ -48,6 +47,8 @@
 			<!--<input type="checkbox" ng-model="drug.val"><span></span>-->
 				<label class="custom-control custom-checkbox">   <input type="checkbox" class="custom-control-input" ng-model="drug.val">   <span class="custom-control-indicator"></span>   <span class="custom-control-description font-1_1">{{drug.name}} <sup class="text-danger">{{(checkLogIn.user_id === drug.center_id) ? "*": ""}}</sup></span> </label>
 		  </div>
+		  <div class="clearfix"></div>
+		  <p class="mt-4" style="font-size: 18px;text-align: center;"> <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange" ng-if="loading"></i> </p>
 		  <div style="text-align: right;">
 				<button class="btn btn-success btn-sm" ng-click="saveSelection()">Save changes</button>
 		  </div>

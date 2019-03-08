@@ -1529,7 +1529,7 @@ app.controller("pharmacyDrugServicesUpdateController",["$scope","$http","$locati
     }*/
 
     var resource = dynamicService; //$resource("/user/dynamic-service");
-
+    $scope.loading = true;
     $http({
       method  : 'GET',
       url     : "/user/pharmacy/not-ran-services",        
@@ -1539,7 +1539,7 @@ app.controller("pharmacyDrugServicesUpdateController",["$scope","$http","$locati
       $scope.notService = response;
       resource.query({type:"Pharmacy"},function(data){
         $rootScope.allDrugs2 = data;
-      
+        $scope.loading = false;
         var elemPos;
         for(var i = 0; i < $scope.notService.length; i++) {
           elemPos = $rootScope.allDrugs2.map(function(x){return x.id}).indexOf($scope.notService[i].id);
