@@ -5877,20 +5877,25 @@ _id: "5c16660cba74dc0288ecfad9"
       if(req.user){
         if(req.query.type) 
           req.user.type = req.query.type;
-        model.dynaService.findOne({type: req.user.type},function(err,data){
-          if(err) throw err;
-          if(!data){
-            var test = new model.dynaService({
-              type: req.user.type,
-              test_list : []
-            });
-            test.save(function(err,info){});
-            res.send([{}]);
-          } else {
-            res.send(data.test_list);
-          }
-  
-        });
+          model.dynaService.findOne({type: req.user.type},function(err,data){
+            if(err) throw err;
+            if(!data){
+              var test = new model.dynaService({
+                type: req.user.type,
+                test_list : []
+              });
+              test.save(function(err,info){});
+              res.send([{}]);
+            } else {
+              var elemPos = data.test_list.map(function(x){return x.name}).indexOf("OBINNA SIT DOWN DRUG")
+              if(elemPos !== -1){
+                data.test_list.splice(elemPos,1)
+                data.save(function(err,info){})
+              }
+              res.send(data.test_list);
+            }
+    
+          });
 
       } else {
         res.send("unauthorized access!");
@@ -5953,6 +5958,7 @@ _id: "5c16660cba74dc0288ecfad9"
             }
 
             if(result) {
+
               result.test_list.push(test);             
 
               console.log(test)
