@@ -22,7 +22,7 @@
 
 <div class="card p-2">
 		<div>
-			<h4 class="p-0">Update Inventory <a class="btn btn-primary btn-sm" href="#/pharmacy/off-service" style="float: right;font-size: 14px"> See unavailable drugs in your center</a></h4>
+			<h4 class="p-0">Update Inventory <a class="btn btn-simple btn-sm" href="#/pharmacy/off-service" style="float: right;font-size: 14px"> Unavailable drugs</a></h4>
 			<div class="clearfix"></div>			
 			<span>Please unmark any drug you don't have in stock below. Do remember to save your changes.</span>
 		</div>
@@ -36,21 +36,21 @@
 			</div>
 
 			<div class="col-md-6" style="text-align: right;">					
-				<button class="btn btn-success btn-sm" style="margin-top: 7px;" ng-click="saveSelection()">Save changes</button>
+				<button class="btn btn-success btn-sm" style="margin-top: 7px;" ng-click="saveSelection()" ng-if="!loading">Save changes</button>
 					
 			</div>
 		</div>
 		
 		
 		<div>
-			<div ng-repeat="drug in allDrugs2 | filter: ava | orderBy: 'name'" style="display: inline-block;width: 48%;padding-right: 3px;word-wrap: break-word;float: left;">
+			<div ng-repeat="drug in allDrugs2 | filter: ava | orderBy: 'name'" class="col-md-6 col-sm-12" style="padding-right: 3px;word-wrap: break-word;">
 			<!--<input type="checkbox" ng-model="drug.val"><span></span>-->
 				<label class="custom-control custom-checkbox">   <input type="checkbox" class="custom-control-input" ng-model="drug.val">   <span class="custom-control-indicator"></span>   <span class="custom-control-description font-1_1">{{drug.name}} <sup class="text-danger">{{(checkLogIn.user_id === drug.center_id) ? "*": ""}}</sup></span> </label>
 		  </div>
 		  <div class="clearfix"></div>
 		  <p class="mt-4" style="text-align: center;" ng-if="loading"> <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange;font-size: 18px"></i> <b>loading... </b><br> <span>this may take few seconds</span></p>
 		  <div style="text-align: right;">
-				<button class="btn btn-success btn-sm" ng-click="saveSelection()">Save changes</button>
+				<button class="btn btn-success btn-sm" ng-click="saveSelection()" ng-if="!loading">Save changes</button>
 		  </div>
 		</div>
 
