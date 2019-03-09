@@ -5892,7 +5892,7 @@ _id: "5c16660cba74dc0288ecfad9"
                 data.test_list.splice(elemPos,1)
                 data.save(function(err,info){})
               }*/
-              res.send(data.test_list);
+              res.json(data.test_list);
             }
     
           });

@@ -1397,11 +1397,12 @@ app.controller("radioTestServicesUpdateController",["$scope","$http","$location"
       count++
     }
 
-
-    var resource = dynamicService; //$resource("/user/dynamic-service");
-    resource.query({type:"Radiology"},function(data){
-      $rootScope.tests7 = data;
-    });
+    if(!$rootScope.tests7) {
+      var resource = dynamicService; //$resource("/user/dynamic-service");
+      resource.query({type:"Radiology"},function(data){
+        $rootScope.tests7 = data;
+      });
+    }
 
     $scope.tests1 = scanTests.listInfo1;
     $scope.tests2 = scanTests.listInfo2;
@@ -1527,28 +1528,30 @@ app.controller("pharmacyDrugServicesUpdateController",["$scope","$http","$locati
       })
       count++
     }*/
-
-    var resource = dynamicService; //$resource("/user/dynamic-service");
-    $scope.loading = true;
-    $http({
-      method  : 'GET',
-      url     : "/user/pharmacy/not-ran-services",        
-      headers : {'Content-Type': 'application/json'} 
-     })
-    .success(function(response) {
-      $scope.notService = response;
-      resource.query({type:"Pharmacy"},function(data){
-        $rootScope.allDrugs2 = data;
-        $scope.loading = false;
-        var elemPos;
-        for(var i = 0; i < $scope.notService.length; i++) {
-          elemPos = $rootScope.allDrugs2.map(function(x){return x.id}).indexOf($scope.notService[i].id);
-          if(elemPos !== -1){
-            $rootScope.allDrugs2[elemPos].val = false;
+    if(!$rootScope.allDrugs2) {
+      var resource = dynamicService; //$resource("/user/dynamic-service");
+      $scope.loading = true;
+      $http({
+        method  : 'GET',
+        url     : "/user/pharmacy/not-ran-services",        
+        headers : {'Content-Type': 'application/json'} 
+       })
+      .success(function(response) {
+        $scope.notService = response;
+        resource.query({type:"Pharmacy"},function(data){
+          $rootScope.allDrugs2 = data;
+          $scope.loading = false;
+          var elemPos;
+          for(var i = 0; i < $scope.notService.length; i++) {
+            elemPos = $rootScope.allDrugs2.map(function(x){return x.id}).indexOf($scope.notService[i].id);
+            if(elemPos !== -1){
+              $rootScope.allDrugs2[elemPos].val = false;
+            }
           }
-        }
+        });
       });
-    });
+
+    }
 
     $scope.allDrugs = Drugs;
 
@@ -20328,7 +20331,7 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
   });
 
   if($rootScope.checkLogIn.typeOfUser === "Pharmacy" || $rootScope.checkLogIn.typeOfUser === "Laboratory" 
-    || $rootScope.checkLogIn.typeOfUser === "Patient") {
+    || $rootScope.checkLogIn.typeOfUser === "Radiology") {
     dynamicService.query(function(data){
      
       if($rootScope.checkLogIn.stock_update){
