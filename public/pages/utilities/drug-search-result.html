@@ -23,41 +23,46 @@
 			
 				<div class="col-md-7 col-lg-7">
 				<small ng-bind-html='getStr(center.str,center.addBy)'></small> 
-				<button ng-if="addedBy(center.addBy)" style="padding: 2px 8px; font-size: 10px;border: none;border-radius: 2px" class="bg-success">most likely</button><br>
+				<br>
 				<strong class="font-1_2">{{center.name}}</strong>
 				<address style="margin-bottom: 5px">{{center.address}}
 					<span>{{center.city}}</span>
 					<span>{{center.country}}</span>
 				</address>		
-				<i class="fa fa-phone" style="display: block;">{{center.phone}}</i>
+				<i class="fa fa-phone">{{center.phone}}</i> &nbsp;
+				<b ng-if="center.status" class="text-primary">online</b> <span ng-if="!center.status" class="text-danger">offline</span>
 				</div>
 				<br>
 				<div class="col-md-5 col-lg-5 p-1">
-					<i class="fa fa-user btn btn-simple btn-sm text-primary" style="cursor:pointer;" title="View {{center.name}} profile" ng-click="toViewProfile(center.id)"></i> <i class="fa fa-comment btn btn-simple btn-sm text-primary" style="cursor:pointer;" title="Send chat message to {{center.name}} " ng-click="sendChat(center)"></i> 
-					 <i class="fa fa-motorcycle btn btn-simple btn-sm text-primary" style="cursor:pointer;" title="request courier service " ng-click="courier(center)" ng-if="checkLogIn.typeOfUser !== 'Pharmacy'"> </i>
-					<i class="fa fa-share btn btn-simple btn-sm text-primary" style="cursor:pointer;" title="Forward to {{center.name}}" ng-click="toForward(center)"></i>
+					<i class="fa fa-user btn btn-simple btn-sm" style="cursor:pointer;" title="View {{center.name}} profile" ng-click="toViewProfile(center.id)"></i> <i class="fa fa-comment btn btn-warning btn-sm" style="cursor:pointer;" title="Send chat message to {{center.name}} " ng-click="sendChat(center,center.str)"></i> 
+					 <i class="fa fa-motorcycle btn btn-primary btn-sm" style="cursor:pointer;" title="request courier delivery " ng-click="courier(center)" ng-if="checkLogIn.typeOfUser !== 'Pharmacy'"> </i>
+					<i class="fa fa-share btn btn-danger btn-sm" style="cursor:pointer;" title="Forward to {{center.name}}" ng-click="toForward(center)"></i>
 				</div> 
 				
 			
 		</section>
 		<section class="p-1 row" ng-repeat="center in drugResult.less | filter : drugFilter.name | orderBy: 'addBy'">
 				<div class="col-md-7 col-lg-7">
-					<small ng-bind-html='getStr(center.str,center.addBy)'></small> <button ng-if="addedBy(center.addBy)" style="padding: 2px 8px; font-size: 10px;border: none;border-radius: 2px" class="bg-success">most likely</button>
+					<small ng-bind-html='getStr(center.str,center.addBy)'></small> 
 					  <small style="text-decoration:line-through">{{notStr(center.notFound)}}</small><br>
 					<strong class="font-1_2">{{center.name}}</strong>
 					<address style="margin-bottom: 5px">{{center.address}}
 						<span>{{center.city}}</span>
 						<span>{{center.country}}</span>
 					</address>					
-					<i class="fa fa-phone" style="display: block;">  {{center.phone}}</i>
+					<i class="fa fa-phone">  {{center.phone}}</i>
+					<b ng-if="center.status" class="text-primary">online</b> <span  ng-if="!center.status" class="text-danger">offline</span>
 				</div>
 				<br>
-				<div class="col-md-5 col-lg-5 p-1"><i class="fa fa-user btn btn-simple btn-sm text-primary" style="cursor:pointer;" title="View {{center.name}} profile" ng-click="toViewProfile(center.id)"></i> <i class="fa fa-comment btn btn-simple btn-sm text-primary" style="cursor:pointer;" title="Send chat message to {{center.name}} " ng-click="sendChat(center)"></i> 
-					<i class="fa fa-motorcycle btn btn-simple btn-sm text-primary" style="cursor:pointer;" title="request courier service " ng-click="courier(center)" ng-if="checkLogIn.typeOfUser !== 'Pharmacy'"></i>
-					 <i class="fa fa-share btn btn-simple btn-sm text-primary" style="cursor:pointer;" title="Forward to {{center.name}}" ng-click="toForward(center)"></i>
+				<div class="col-md-5 col-lg-5 p-1"><i class="fa fa-user btn btn-simple btn-sm" style="cursor:pointer;" title="View {{center.name}} profile" ng-click="toViewProfile(center.id)"></i> <i class="fa fa-comment btn btn-warning btn-sm" style="cursor:pointer;" title="Send chat message to {{center.name}} " ng-click="sendChat(center,center.str)"></i> 
+					<i class="fa fa-motorcycle btn btn-primary btn-sm" style="cursor:pointer;" title="request courier delivery" ng-click="courier(center)" ng-if="checkLogIn.typeOfUser !== 'Pharmacy'"></i>
+					 <i class="fa fa-share btn btn-danger btn-sm" style="cursor:pointer;" title="Forward to {{center.name}}" ng-click="toForward(center)"></i>
 				</div> 
 				<div class="clearfix"></div>
 			
 		</section>
 	</div>
+</div>
+<div style="height: 200px">
+	
 </div>

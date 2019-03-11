@@ -88,12 +88,14 @@ module.exports = function(model,io,streams,sms) {
 	      		});
 	      		model.user.findOne({user_id: data.partnerId},function(err,partner){
 	      			if(err) throw err;
-	      			newChat.userId = data.userId; //user.user_id;
-	      			newChat.partnerId = data.partnerId;
-	      			newChat.name = partner.name || partner.firstname; // this refers the the parner name not the owner  of this chat
-	      			newChat.profilePic = partner.profile_pic_url;
-	      			newChat.partnerType = partner.type;
-	      			newChat.save(function(err,info){});
+	      			if(partner) {
+		      			newChat.userId = data.userId; //user.user_id;
+		      			newChat.partnerId = data.partnerId;
+		      			newChat.name = partner.name || partner.firstname; // this refers the the parner name not the owner  of this chat
+		      			newChat.profilePic = partner.profile_pic_url;
+		      			newChat.partnerType = partner.type;
+		      			newChat.save(function(err,info){});
+	      			}
 	      		});
 	      		cb({status: true});	      		
 	      	} else {

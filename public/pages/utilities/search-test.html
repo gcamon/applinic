@@ -72,7 +72,7 @@
 		</div>
     	<div class="clearfix"></div>
 		<span ng-if="notRef">
-			<button ng-click="findTest(test.name)" class="btn btn-info" > <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i>{{(loading) ? "" : 'Find'}}</button>
+			<button ng-click="findTest(test.name)" class="btn btn-info" > <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="isLoading"></i>{{(isLoading) ? "" : 'Find'}}</button>
 		</span>
 		
 	</div>
@@ -82,7 +82,7 @@
 		 	<label for="City">Reference Number: </label>
 			<input type="number" placeholder="Enter Ref NO" ng-model="user.refId" class="form-control">
 			
-			<button ng-click="findWithRef(user.refId)" class="btn btn-info mt-2" ><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i>{{(loading) ? "" : 'Find'}} </button>				
+			<button ng-click="findWithRef(user.refId)" class="btn btn-info mt-2" ><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="isLoading"></i>{{(isLoading) ? "" : 'Find'}} </button>				
 		</div>	
 		
 	</div>

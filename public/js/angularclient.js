@@ -17043,7 +17043,8 @@ app.directive('autoComplete', function($timeout) {
 
 /*** for additional utilities like search for drug of lab test etc.*/
 
-app.service("searchtestservice",["$window","$http","templateService","$location",function($window,$http,templateService,$location){
+app.service("searchtestservice",["$window","$http","templateService","$location","$rootScope",
+  function($window,$http,templateService,$location,$rootScope){
   this.goBack = function(type){
     switch(type){
       case "Patient":
@@ -17074,7 +17075,8 @@ app.service("searchtestservice",["$window","$http","templateService","$location"
       data    : data,
       headers : {'Content-Type': 'application/json'} 
       })
-    .success(function(data) {      
+    .success(function(data) {   
+      $rootScope.isLoading = false;   
       if(data.full.length !== 0 || data.less.length !== 0){
         templateService.holdSearchResult = data;      
         $location.path(path)
@@ -17301,7 +17303,7 @@ function($scope,$location,$window,templateService,localManager,Drugs,searchtests
   }
 
   function send(data){
-    $scope.loading = false;
+    $scope.isLoading = true;
     $rootScope.genRefId = parseInt(Math.floor(Math.random() * 9999) + "" + Math.floor(Math.random() * 9999));
     searchtestservice.find(data,"/user/pharmacy/search/find-drugs","/pharmacy/drug-search/result")
   }
@@ -17317,8 +17319,6 @@ app.controller("drugSearchResultController",["$scope","$location","$rootScope","
   function($scope,$location,$rootScope,$resource,templateService,localManager,ModalService,centerProfileService){
   $scope.drugResult = templateService.holdSearchResult; 
 
- 
-
   $scope.criteria = templateService.holdList;
   $scope.drugFilter = {};
   $scope.getStr = function(str,by){
@@ -17326,7 +17326,7 @@ app.controller("drugSearchResultController",["$scope","$location","$rootScope","
     var strArr = str.split(",");
     for(var i = 0; i < strArr.length; i++){
       if(by)
-        newStr += "<span>@" + strArr[i] + " </span>";
+        newStr += "<span>@" + strArr[i] + "* </span>";
       else 
          newStr += "<span>@" + strArr[i] + " </span> ";
     }
@@ -17349,7 +17349,7 @@ app.controller("drugSearchResultController",["$scope","$location","$rootScope","
     return newStr;
   }
 
-  
+  $rootScope.$broadcast("users presence",{type: 'searchList',data: templateService.holdSearchResult ,sockets: $rootScope.sockets}); 
 
   $scope.toViewProfile = function(centerId){
     templateService.holdId = centerId;
@@ -17461,9 +17461,9 @@ app.controller("drugSearchResultController",["$scope","$location","$rootScope","
 
   }
 
- 
-
-  $scope.sendChat = function(center) {
+  $scope.sendChat = function(center,items) {
+    $rootScope.searchItems = items;
+    $rootScope.searchItemType = "drug(s)";
     $rootScope.holdcenter = center;
     ModalService.showModal({
           templateUrl: 'quick-chat.html',
@@ -17778,7 +17778,7 @@ function($scope,$location,$window,templateService,localManager,labTests,searchte
   }
 
   function send(data){
-    $scope.loading = false;
+    $scope.isLoading = true;
     $rootScope.genRefId = parseInt(Math.floor(Math.random() * 9999) + "" + Math.floor(Math.random() * 9999));
     searchtestservice.find(data,"/user/laboratory/search/find-tests","/laboratory/test-search/result")
   }
@@ -17794,11 +17794,14 @@ app.controller("testSearchResultController",["$scope","$location","$rootScope","
   $scope.testResult = templateService.holdSearchResult;
   $scope.criteria = templateService.holdList;
   $scope.testFilter = {};
-  $scope.getStr = function(str){
+  $scope.getStr = function(str,by){
     var newStr = "";
     var strArr = str.split(",");
     for(var i = 0; i < strArr.length; i++){
-      newStr += "@" + strArr[i] + " "
+      if(by)
+        newStr += "<span>@" + strArr[i] + "* </span> ";
+      else
+        newStr += "<span>@" + strArr[i] + " </span> ";
     }
     return newStr;
   }
@@ -17811,6 +17814,8 @@ app.controller("testSearchResultController",["$scope","$location","$rootScope","
 
     return newStr;
   }
+
+  $rootScope.$broadcast("users presence",{type: 'searchList',data: templateService.holdSearchResult ,sockets: $rootScope.sockets}); 
 
   $scope.back = "#/search-test";
 
@@ -17854,7 +17859,9 @@ app.controller("testSearchResultController",["$scope","$location","$rootScope","
     }
   }
 
-  $scope.sendChat = function(center) {
+  $scope.sendChat = function(center,items) {
+    $rootScope.searchItems = items;
+    $rootScope.searchItemType = "investigation(s)";
     $rootScope.holdcenter = center;
     ModalService.showModal({
           templateUrl: 'quick-chat.html',
@@ -18139,6 +18146,7 @@ function($scope,$location,$window,templateService,localManager,scanTests,
   }
 
   function send(data){
+    $rootScope.isLoading = true;
     $rootScope.genRefId = parseInt(Math.floor(Math.random() * 9999) + "" + Math.floor(Math.random() * 9999));
     searchtestservice.find(data,"/user/radiology/search/find-tests","/radiology/scan-search/result")
   }
@@ -18151,11 +18159,14 @@ app.controller("scanSearchResultController",["$scope","$location","$rootScope","
   $scope.testResult = templateService.holdSearchResult;
   $scope.criteria = templateService.holdList;
   $scope.testFilter = {};
-  $scope.getStr = function(str){
+  $scope.getStr = function(str,by){
     var newStr = "";
     var strArr = str.split(",");
     for(var i = 0; i < strArr.length; i++){
-      newStr += "@" + strArr[i] + " "
+      if(by)
+        newStr += "<span>@" + strArr[i] + "*</span> "
+      else 
+        newStr += "<span>@" + strArr[i] + "</span> "
     }
     return newStr;
   }
@@ -18172,6 +18183,7 @@ app.controller("scanSearchResultController",["$scope","$location","$rootScope","
   $scope.back = "#/scan-search";
 
 
+  $rootScope.$broadcast("users presence",{type: 'searchList',data: templateService.holdSearchResult ,sockets: $rootScope.sockets}); 
 
   $scope.toViewProfile = function(centerId){
     var resource = centerProfileService;
@@ -18213,7 +18225,9 @@ app.controller("scanSearchResultController",["$scope","$location","$rootScope","
     }
   }
 
-  $scope.sendChat = function(center) {
+  $scope.sendChat = function(center,items) {
+    $rootScope.searchItems = items;
+    $rootScope.searchItemType = "investigation(s)";
     $rootScope.holdcenter = center;
     ModalService.showModal({
           templateUrl: 'quick-chat.html',
@@ -20326,6 +20340,16 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
         })
       break;
       default:
+        var list = response.data.full.concat(response.data.less);
+        var invert = _.invert(response.sockets);
+        list.forEach(function(item){
+          if(invert[item.id]){
+            item.status = on;            
+          } else {
+            item.status = off;
+          }
+        })
+        console.log(list)
       break;
     }
   });
@@ -20637,9 +20661,7 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
     mySocket.removeAllListeners("new_msg"); // incase if this listener is registered twice
 
     
-    $scope.viewChat = function(chat) {
-     
-
+    $scope.viewChat = function(chat) {    
       $scope.partner = chat;
       var base = document.getElementById('base'); 
       var msgDiv = document.getElementById("sentmessage");
@@ -20649,9 +20671,6 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
         chat.is_read = true;
         mySocket.emit("seen chat",{id: chat._id})
       }
-
-
-     
       //use to control different chat data in the general chat body inner div
       chatBodyCb(function(){
         initChat()
@@ -20666,6 +20685,9 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
       base.appendChild(msgDiv)
       cb()
     }
+
+    if($rootScope.searchItems)
+      $scope.messageBody = "Requesting for the following  " + $rootScope.searchItemType + ":  " + $rootScope.searchItems;
     
     $scope.sendChatSingle = function(partnerId){
       $scope.loading = true;
