@@ -16,7 +16,7 @@
             </div>
 
             <section class="col-lg-8 col-md-8 col-sm-9 pl-1">                
-                <b style="text-transform: capitalize;">{{i.title}} {{i.firstname}} {{i.lastname}}</b><br>
+                <b style="text-transform: capitalize;font-size: 18px">{{i.title}} {{i.firstname}} {{i.lastname}}</b><br>
                 <span><b><i class="fa fa-user-md"></i> Specialty | </b> {{i.specialty}}</span><br>
                 <span><i class="fa fa-globe"></i> <b>{{i.work_place}}</b> | <address>{{i.address}}  {{i.city}}, {{i.country || "N/A"}}</em><br>
                 <b><i class="fa fa-clock-o"></i> Office Hours | </b> <span ng-repeat="j in i.office_hour">{{j.day}} {{j.from | date : "shortTime"}} - {{j.to | date : "shortTime"}}  </span> <span ng-if="i.office_hour.length == 0">Not specified</span>
