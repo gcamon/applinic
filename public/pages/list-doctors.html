@@ -17,9 +17,9 @@
 
             <section class="col-lg-8 col-md-8 col-sm-9 pl-1">                
                 <b style="text-transform: capitalize;">{{i.title}} {{i.firstname}} {{i.lastname}}</b><br>
-                <span>{{i.specialty}}</span><br>
-                <span><i class="fa fa-globe"></i> <b>{{i.work_place}}</b> | <em>{{i.address}}  {{i.city}}, {{i.country || "N/A"}}</em><br>
-                <b><i class="fa fa-clock-o"></i> Office Hours | </b> <em ng-repeat="j in i.office_hour">{{j.day}} {{j.from | date : "shortTime"}} - {{j.to | date : "shortTime"}}  </em> <em ng-if="i.office_hour.length == 0">Not specified</em>
+                <span><b><i class="fa fa-user-md"></i> Specialty | </b> {{i.specialty}}</span><br>
+                <span><i class="fa fa-globe"></i> <b>{{i.work_place}}</b> | <address>{{i.address}}  {{i.city}}, {{i.country || "N/A"}}</em><br>
+                <b><i class="fa fa-clock-o"></i> Office Hours | </b> <span ng-repeat="j in i.office_hour">{{j.day}} {{j.from | date : "shortTime"}} - {{j.to | date : "shortTime"}}  </span> <span ng-if="i.office_hour.length == 0">Not specified</span>
                 <br> <br>
                 <!--<a href="{{i.profile_url}}" class="btn btn-simple text-danger btn-sm" title="View {{i.firstname}} profile"><i class="fa fa-folder-o"></i> profile</a>-->
                  <a href="" class="btn btn-primary btn-sm" ng-click="consultation(i)" ng-if="checkLogIn.typeOfUser === 'Patient'"><!--<i class="fa fa-user-md"></i>--> Consult me</a> 
