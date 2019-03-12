@@ -3713,6 +3713,10 @@ app.controller('listController',["$scope","$location","$window","localManager",
   
   }
 
+  console.log($scope.searchResult)
+
+  $rootScope.$broadcast("users presence",{type: 'searchDocList',data: $scope.searchResult ,sockets: $rootScope.sockets});
+
   localManager.setValue("currentPageForPatients","/list");
                       
 }]);
@@ -20339,7 +20343,19 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
           }
         })
       break;
+      case "searchDocList":
+        //online presense for doctors search results.
+        var invert = _.invert(response.sockets);
+        response.data.forEach(function(item){
+          if(invert[item.user_id]){
+            item.status = on;            
+          } else {
+            item.status = off;
+          }
+        })
+      break;
       default:
+        // online presence for pharmacy and diagnostic enter search results
         var list = response.data.full.concat(response.data.less);
         var invert = _.invert(response.sockets);
         list.forEach(function(item){
@@ -20349,7 +20365,6 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
             item.status = off;
           }
         })
-        console.log(list)
       break;
     }
   });

@@ -1092,7 +1092,7 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
     
   router.get("/user/patient/find-doctor",function(req,res){
       if(req.user){
-        console.log(req.query)
+       
         var criteria;
         var str;
 
@@ -1108,7 +1108,7 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
             }
 
             model.user.find(criteria,{firstname:1,lastname:1,work_place:1,city:1,country:1,address:1,
-              specialty:1,_id:0,profile_pic_url:1,education:1,user_id:1,title:1,name: 1,profile_url:1},
+              specialty:1,_id:0,profile_pic_url:1,education:1,user_id:1,title:1,name: 1,profile_url:1,office_hour:1},
               function(err,data){
               if(err) {        
                 res.send({error:"status 500",full:[]});
@@ -1120,7 +1120,7 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
                   {name: { $regex: str, $options: 'i' },type:"Doctor"};
 
                   model.user.find(criteria,{firstname:1,lastname:1,work_place:1,city:1,country:1,address:1,
-                  specialty:1,_id:0,profile_pic_url:1,education:1,user_id:1,title:1,name:1,profile_url:1},
+                  specialty:1,_id:0,profile_pic_url:1,education:1,user_id:1,title:1,name:1,profile_url:1,office_hour:1},
                   function(err,data2){
                     if(err) throw err;
                     res.json(data2);
@@ -1145,7 +1145,7 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
             }
 
             model.user.find(criteria,{firstname:1,lastname:1,work_place:1,city:1,country:1,address:1,
-              specialty:1,_id:0,profile_pic_url:1,education:1,user_id:1,title:1,name: 1,profile_url:1},
+              specialty:1,_id:0,profile_pic_url:1,education:1,user_id:1,title:1,name: 1,profile_url:1,office_hour:1},
               function(err,data){
               if(err) {        
                 res.send([]);
@@ -1155,7 +1155,7 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
                   {specialty: { $regex: str, $options: 'i' },type:"Doctor"};
 
                   model.user.find(criteria,{firstname:1,lastname:1,work_place:1,city:1,country:1,address:1,
-                  specialty:1,_id:0,profile_pic_url:1,education:1,user_id:1,title:1,name:1,profile_url:1},
+                  specialty:1,_id:0,profile_pic_url:1,education:1,user_id:1,title:1,name:1,profile_url:1,office_hour:1},
                   function(err,data2){
                     if(err) throw err;
                     res.json(data2);
@@ -1170,7 +1170,7 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
           case "doctorId":
             var criteria = {user_id: req.query.user_id}
             model.user.find(criteria,{firstname:1,lastname:1,work_place:1,city:1,country:1,address:1,
-              specialty:1,_id:0,profile_pic_url:1,education:1,user_id:1,title:1,name:1,profile_url:1},function(err,data){
+              specialty:1,_id:0,profile_pic_url:1,education:1,user_id:1,title:1,name:1,profile_url:1,office_hour:1},function(err,data){
                 if(err) throw err;
                 res.json(data);
             });
@@ -1189,7 +1189,7 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
             }
             //var byDisease = {"skills.disease": { $regex: str, $options: 'i' },type:"Doctor",city:req.query.city};
             model.user.find(criteria,{firstname:1,lastname:1,work_place:1,city:1,country:1,address:1,
-            specialty:1,_id:0,profile_pic_url:1,education:1,user_id:1,title:1,name:1,profile_url:1},function(err,data){
+            specialty:1,_id:0,profile_pic_url:1,education:1,user_id:1,title:1,name:1,profile_url:1,office_hour:1},function(err,data){
               if(err) {
                 res.send({error:"status 500",full:[]});
               } else {
@@ -1200,7 +1200,7 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
                   { "skills.disease" : { $regex: str, $options: 'i' },type:"Doctor"}
 
                   model.user.find(criteria,{firstname:1,lastname:1,work_place:1,city:1,country:1,address:1,
-                  specialty:1,_id:0,profile_pic_url:1,education:1,user_id:1,title:1,name:1,skills:1,profile_url:1},
+                  specialty:1,_id:0,profile_pic_url:1,education:1,user_id:1,title:1,name:1,skills:1,profile_url:1,office_hour:1},
                   function(err,data2){
                     if(err) throw err;
                     res.json(data2);
@@ -1217,7 +1217,7 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
             var criteria = { $or: [{disease_tag : { $regex: str, $options: 'i' },type:"Doctor",title:"SC",city:req.query.city},
             {specialty : { $regex: str, $options: 'i' },type:"Doctor",title:"SC",city:req.query.city}]};
             model.user.find(criteria,{firstname:1,lastname:1,work_place:1,city:1,country:1,address:1,
-            specialty:1,_id:0,profile_pic_url:1,education:1,user_id:1,title:1,name:1,profile_url:1},function(err,data){
+            specialty:1,_id:0,profile_pic_url:1,education:1,user_id:1,title:1,name:1,profile_url:1,office_hour:1},function(err,data){
               if(err) {
                 res.send({error:"status 500",full:[]});
               } else {
@@ -1227,7 +1227,7 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
                   var criteria = (req.query.city) ? { disease_tag : { $regex: str, $options: 'i'},type:"Doctor",title:"SC",city:req.query.city} : 
                   { disease_tag : { $regex: str, $options: 'i' },type:"Doctor",title:"SC"};
                   model.user.find(criteria,{firstname:1,lastname:1,work_place:1,city:1,country:1,address:1,
-                    specialty:1,_id:0,profile_pic_url:1,education:1,user_id:1,title:1,name:1,skills:1,profile_url:1},
+                    specialty:1,_id:0,profile_pic_url:1,education:1,user_id:1,title:1,name:1,skills:1,profile_url:1,office_hour:1},
                     function(err,data2){
                       if(err) throw err;
                       res.json(data2);
