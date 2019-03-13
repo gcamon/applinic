@@ -1,0 +1,21 @@
+<div class="card card-center-1 p-1">
+	<h4 class=" mb-1" style="">Manage Patients</h4>
+	<pre>{{patientList}}</pre>
+	<div class="row" ng-repeat="j in patientList">
+		<div class="col-md-2 col-lg-2 p-1">
+			<img src="{{j.patient_profile_pic_url}}" style="width: 100%;max-height: 320px">
+		</div>
+		<div class="col-md-4 col-lg-3 p-1">
+			<b>{{j.patient_title}} {{j.patient_lastname}} {{j.patient_firstname}}</b><br>
+			<span>{{j.patient_age}}</span><br>
+			<span>{{j.patient_gender}}</span><br>
+		</div>
+		<div class="col-md-2 col-lg-3 p-1">
+			<span>{{j.patient_address}}</span><br>
+			<span>{{j.patient_city}} {{j.Patient_country}}</span><br>
+		</div>
+		<div class="col-md-2 col-lg-2 p-1">
+			
+		</div>
+	</div>
+</div>

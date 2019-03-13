@@ -160,6 +160,16 @@ app.config(['$paystackProvider','$routeProvider',
     controller: 'requestController'
   })
 
+  .when("/manage-patients",{
+    templateUrl: '/assets/pages/doctor/manage-patients.html',
+    controller: 'checkingOutDoctorPatientController',
+    resolve: {
+      path: function($location,$rootScope){
+        $rootScope.path = $location.path();
+      }
+    }
+  })
+
   .when("/granted-request/:id",{
     templateUrl: '/assets/pages/view-request.html',
     controller: 'patientViewRequestController',
@@ -3296,6 +3306,7 @@ app.controller('resultController',["$scope","$rootScope","$http","$location","$r
   $scope.find = function (skill) {
     
     if(skill === 'special-center'){
+      $scope.loading = true;
       var sendObj = {};
       sendObj.item = $scope.user.item;
       sendObj.type = 'special-center';
@@ -21314,7 +21325,9 @@ app.controller("findCenterController",["$scope","$http","$rootScope","ModalServi
       .success(function(data) {              
         if(data) {
           $scope.loading = false;
-          $scope.listOfCenter = data;                          
+          $scope.listOfCenter = data;  
+          //centers use searchDocList for real time presence in the topheadercontroller thesame with doctors
+          $rootScope.$broadcast("users presence",{type: 'searchDocList',data: $scope.listOfCenter ,sockets: $rootScope.sockets});                        
         } 
         $scope.service.name = "";
       });                          

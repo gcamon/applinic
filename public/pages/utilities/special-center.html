@@ -1,17 +1,11 @@
 <div class="card card-center-1 p-1">
- <form style="width: 70%;margin: 0 auto">
-     <h3 class=" mb-0" style="">Find Special Center</h3><br>    
-    
-    
-
+<h4 class=" mb-1" style="">Find Special Center</h4>
+ <form>
        <div class="form-group">
            <label for="lastname">City </label>
         <input type="text" class="form-control" placeholder="Enter city name" name="states"   uib-typeahead="city for city in cities | filter:$viewValue | limitTo:15" ng-model="user.city" style="font-size: 14px!important">
         {{getCity(city)}} 
       </div>
-
-
-
 
       <div class="form-group">
           <label for="specialty">Specialty or Disease keywords (e.g bone fracture or kidney failure or sickle cell)</label>

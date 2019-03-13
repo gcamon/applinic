@@ -37,13 +37,14 @@
 		<div class="clearfix"></div><br>
 		<section ng-repeat = "center in listOfCenter | filter: filterResult"  style="position: relative;padding: 10px 0;border-bottom: 1px solid #eee">
 			<article>
-				<strong  class="ellipsis">{{center.name}}</strong><br>
-				<span class="">{{center.address}} {{center.city}} {{center.country}}</span><br>
-				<span class="">{{center.phone}}</span>  
-				<span class="online" style="" ng-if="center.presence"></span>
-				<span class="online" style="background-color: #ccc" ng-if="!center.presence"></span>
+				<strong class="ellipsis">{{center.name}}</strong><br>
+				<span>{{center.address}} {{center.city}} {{center.country}}</span><br>
+				<span>{{center.email}}</span><br>
+				<span>{{center.phone}}</span>  
+				<span class="online" style="" ng-if="center.status"></span>
+				<span class="online" style="background-color: #ccc" ng-if="!center.status"></span>
 			</article>			
-			<i class="fa fa-comment btn btn-simple btn-sm" style="position: absolute;right: 20px;bottom: 0" title="send message to {{center.name}}" ng-click="sendChat(center)"></i>
+			<i class="fa fa-comment btn btn-primary btn-sm" style="position: absolute;right: 20px;bottom: 0" title="send message to {{center.name}}" ng-click="sendChat(center)"></i>
 		</section>
 		<div ng-if="listOfCenter.length === 0">
 			<p style="text-align: center;color: red">No match was found!</p>

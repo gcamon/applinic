@@ -8717,7 +8717,6 @@ router.get("/user/family-normal/:userId/:memberId",function(req,res){
 
 router.get('/user/find-center',function(req,res){
   if(req.user){
-    console.log(req.query);
     var str;
     var criteria;
     if(req.query.name) {
@@ -8726,10 +8725,11 @@ router.get('/user/find-center',function(req,res){
     } else {
       criteria = {city: req.query.city,type:req.query.type};
     }
-    model.user.find(criteria,{name:1,address:1,city:1,country:1,phone:1,user_id:1,profile_pic_url:1,presence:1},function(err,result){
+    model.user.find(criteria,{name:1,address:1,city:1,country:1,phone:1,user_id:1,profile_pic_url:1,presence:1,email:1},function(err,result){
       if(err) throw err;
       res.json(result);
-    });
+    })
+    .limit(200);
   } else {
     res.end("unauthorized access!");
   }
