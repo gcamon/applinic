@@ -1,13 +1,14 @@
 <div class="card card-center-1 p-1">
 	<h4 class=" mb-1" style="">Manage Patients</h4>
-	<div class="row" ng-repeat="j in patientList">
+	<div class="row" ng-repeat="j in patientList | orderBy: '-presence'">
 		<div class="col-md-2 col-lg-2 p-1">
-			<img src="{{j.patient_profile_pic_url}}" style="width: 100%;max-height: 320px">
+			<a href="">
+				<img src="{{j.patient_profile_pic_url}}" style="width: 100%;max-height: 320px">
+			</a>
 		</div>
 		<div class="col-md-4 col-lg-3 p-1">
 			<b>{{j.patient_title}} {{j.patient_lastname}} {{j.patient_firstname}}</b><br>
-			<span>{{j.patient_age}}</span><br>
-			<span>{{j.patient_gender}}</span><br>
+			<b class="text-primary" ng-if="j.presence">Online</b><span class="text-muted" ng-if="!j.presence">Offline</span>
 		</div>
 		<div class="col-md-2 col-lg-3 p-1">
 			<span>{{j.patient_address}}</span><br>
