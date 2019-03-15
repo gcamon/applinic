@@ -3,7 +3,7 @@
 	<div>
 		<input type="text" name="" placeholder="filter by name" ng-model="person" class="form-control">
 	</div>
-	<div class="row" ng-repeat="j in patientList | orderBy: '-presence'">
+	<div class="row" ng-repeat="j in patientList | orderBy: '-presence' | filter : person">
 		<div class="col-md-2 col-lg-2 p-1">
 			<a href="">
 				<img src="{{j.patient_profile_pic_url}}" style="width: 100%;max-height: 320px">
