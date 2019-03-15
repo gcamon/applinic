@@ -10388,6 +10388,7 @@ function($scope,$location,$rootScope,$http,$interval,templateService,localManage
       } else if(type === "doctor"){       
         $rootScope.patientList = data;       
         getPatientsRealTime($rootScope.patientList);
+        setAppointment($rootScope.patientList)
 
         $interval(function(){
           getPatientsRealTime($rootScope.patientList) 
@@ -10487,11 +10488,25 @@ function($scope,$location,$rootScope,$http,$interval,templateService,localManage
     }
   }
 
+
+  
+  function setAppointment(list) {
+    var elm;
+    if($rootScope.appointmentList)
+      list.forEach(function(patient){
+        elm = $rootScope.appointmentList.map(function(x){return x.patient_id}).indexOf(patient.patient_id);
+        if(elm !== -1){
+          patient.appointment_date = $rootScope.appointmentList[elm].date;
+          patient.appointment_time = $rootScope.appointmentList[elm].time;
+        }
+      })
+  }
+
 }]);
 
 app.controller("redirectModal",["$rootScope","$window",function($rootScope,$window){
   $window.location.href = $rootScope.controlUrl //redirects to video call page
-}])
+}]);
 
 app.controller("videoInitController",["$scope","$window","localManager","mySocket","templateService",
   function($scope,$window,localManager,mySocket,templateService){

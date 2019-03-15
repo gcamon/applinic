@@ -389,7 +389,7 @@ var signupRoute = function(model,sms,geonames,paystack,io,nodemailer) {
 	    if (!user) {	
 	      	res.send({error:true,message: "User phone number not active or wrong verification pin!"});
 	    } else {
-    		/*var msgBody = "Applinic login details Email " + req.body.email + " Password " + req.body.password;
+    		var msgBody = "Applinic login details Email " + req.body.email + " Password " + req.body.password;
 				var phoneNunber = (req.body.phone[0] !== "+") ? "+" + req.body.phone : req.body.phone;
 			
 				function callBack(err,info){
@@ -398,14 +398,13 @@ var signupRoute = function(model,sms,geonames,paystack,io,nodemailer) {
 				}
 
 				//sms.message.sendSms('Applinic',phoneNunber,msgBody,callBack); //"2348096461927"	    	
-    		console.log(msgBody)
     		sms.messages.create(
 				  {
 				    to: phoneNunber,
 				    from: '+16467985692',
 				    body: msgBody
 				  }
-				) */
+				) 
 				res.send({error: false,message: "Success! Account created."}); 	
 	    }
 	  })(req, res, next)
@@ -418,7 +417,6 @@ var signupRoute = function(model,sms,geonames,paystack,io,nodemailer) {
 			phone: req.body.phone,
 			pin: genPin
 		});
-		console.log(req.body)
 		var date = new Date()
 		testPhone.expirationDate = new Date(date.getTime() + 300000);
 		testPhone.expirationDate.expires  = 60 * 60; // 1 hour before deleted from database.

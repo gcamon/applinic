@@ -3551,6 +3551,7 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
           req.body.appointment.lastname = names.lastname;         
           req.body.appointment.typeOfSession = req.body.typeOfSession;
           req.body.appointment.doctorId = req.user.user_id;
+          req.body.appointment.patient_id = req.body.patient_id;
           var ap = new model.appointment(req.body.appointment)
           ap.save(function(err){
             if(err) throw err;
