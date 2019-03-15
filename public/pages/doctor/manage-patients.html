@@ -13,7 +13,7 @@
 			<b>{{j.patient_title}} {{j.patient_lastname}} {{j.patient_firstname}}</b><br>
 			<b class="text-primary" ng-if="j.presence">Online</b><span class="text-muted" ng-if="!j.presence">Offline</span>
 		</div>
-		<div class="col-md-4 col-lg-4 p-1">
+		<div class="col-md-3 col-lg-3 p-1">
 			<article ng-if="j.appointment_date">
 				<label><i class="fa fa-calendar text-primary"></i> Appointment</label><br>
 				<span>{{j.appointment_date | date : 'fullDate'}}</span><br>
@@ -23,7 +23,8 @@
 		<div class="col-md-2 col-lg-2 p-1">
 			
 		</div>
-		<div class="col-md-1 col-lg-1 p-1 pull-right">
+		<div class="col-md-2 col-lg-2 p-1 pull-right">
+			<a href="" class="text-primary"><i class="fa fa-trash font-1_4" title="Remove this patient"></i></a>&nbsp;
 			<button class="btn btn-primary round btn-sm" ng-click="userPatient(j.patient_id,j.presence)"><i class="fa fa-arrow-right font-1_2"  title="view E-treatment"></i></button><br><br>
 		</div>
 		<div class="clearfix"></div>
