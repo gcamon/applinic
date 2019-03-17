@@ -10488,6 +10488,15 @@ function($scope,$location,$rootScope,$http,$interval,templateService,localManage
     }
   }
 
+  mySocket.on("remove in list",function(data) {
+    if($rootScope.patientsDoctorList) {
+      var pos = $rootScope.patientsDoctorList.map(function(x){return x.doctor_id}).indexOf(data.doctorId);
+      if($rootScope.patientsDoctorList[pos]){
+        $rootScope.patientsDoctorList.splice(pos,1)
+      }
+    }
+  })
+
 
   
   function setAppointment(list) {
@@ -10500,6 +10509,35 @@ function($scope,$location,$rootScope,$http,$interval,templateService,localManage
           patient.appointment_time = $rootScope.appointmentList[elm].time;
         }
       })
+  }
+
+
+  $scope.removePatient = function(patient){
+    ///user/doctor/my-patients
+    var message = "You want to remove "  
+    + patient.patient_lastname + " " + patient.patient_firstname + " from your management list";
+
+    var check = confirm(message)
+
+    if(check) {
+      patient.isLoading = true;
+      $http({
+        method  : 'PUT',
+        data    : {patientId: patient.patient_id},
+        url     : "/user/doctor/my-patients", 
+        headers : {'Content-Type': 'application/json'} 
+      })
+      .success(function(data) {
+        alert(data.message)
+        if(data.status) {
+          var elemPos = $rootScope.patientList.map(function(x){return x.patient_id}).indexOf(patient.patient_id);
+          if(elemPos !== -1) {
+            $rootScope.patientList.splice(elemPos,1)
+          }
+        }
+        patient.isLoading = false;
+      });
+    }
   }
 
 }]);

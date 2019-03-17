@@ -7985,6 +7985,50 @@ router.get("/user/patient/get-my-doctors",function(req,res){
     }
   });
 
+
+  router.put("/user/doctor/my-patients",function(req,res){
+    if(req.user){
+      console.log(req.body)
+      model.user.findOne({user_id:req.body.patientId,type:"Patient"})
+      .exec(function(err,data){
+        if(err) throw err;
+        if(data) {
+          var index = data.accepted_doctors.map(function(x){return x.doctor_id}).indexOf(req.user.user_id)
+          if(data.accepted_doctors[index]){
+            //data.accepted_doctors.splice(index,1)
+            data.accepted_doctors[index].deleted = true;
+            data.save(function(err,info){
+              console.log("Doctor removed");
+              updateDocList()
+            })
+          }  else {
+             res.json({status: false, message: "Your are not in the patient's list"})
+          }
+        } else {
+          res.json({status: false, message: "Patient not found"})
+        }
+      });
+
+      function updateDocList() {
+        var elemPos = req.user.doctor_patients_list.map(function(x){return x.patient_id}).indexOf(req.body.patientId);
+        if(req.user.doctor_patients_list[elemPos]){
+          //req.user.doctor_patients_list.splice(elemPos,1)
+          req.user.doctor_patients_list[elemPos].deleted = true;
+          req.user.save(function(err,info){
+            if(err) throw err;
+            console.log("Doctor list updated!")
+            io.sockets.to(req.body.patientId).emit("remove in list",{doctorId: req.user.user_id})
+          })
+          res.json({status: true,message: "Patient removed successfully."})
+        } else {
+          res.json({status: false, message: "Error occure, Patient not removed from your account"})
+        }
+      }
+    } else {
+      res.end("Unauthorized access!!")
+    }
+  });
+
  
 
 /*
@@ -9322,27 +9366,59 @@ router.post("/user/doctor/add-patient",function(req,res){
         if(err) throw err;
         if(user){
           var elemPos = req.user.doctor_patients_list.map(function(x){return x.patient_id}).indexOf(user.user_id);
-          if(elemPos == -1) {
-            var patient = {            
-              patient_profile_pic_url: user.profile_pic_url,
-              patient_id: user.user_id,
-              patient_lastname: user.lastname,
-              patient_firstname: user.firstname,
-              date: + new Date()
-            }
-            req.user.doctor_patients_list.unshift(patient);  
-            console.log(req.user.doctor_patients_list)
-            req.user.save(function(err,info){
-              if(err) throw err;
-              res.json({status:true,message: "Success! Patient added to your account",patient: patient});
-            });      
-          } else {
-            res.json({status: false, messaage: "Patient already exists in your account!"})
+          var patient = {            
+            patient_profile_pic_url: user.profile_pic_url,
+            patient_id: user.user_id,
+            patient_lastname: user.lastname,
+            patient_firstname: user.firstname,
+            date: + new Date(),
+            deleted: false
           }
+          
+          if(elemPos == -1) {           
+            req.user.doctor_patients_list.unshift(patient);  
+          
+          } else {
+            req.user.doctor_patients_list[elemPos].deleted = false;
+            
+          }
+
+          req.user.save(function(err,info){
+            if(err) throw err;
+            res.json({status:true,message: "Success! Patient added to your account",patient: patient});
+            addToPatient()
+          }); 
+
         } else {
           res.json({status: false, message: "Patient not found!"});
         }
-      });     
+
+        function addToPatient() {
+          var indexPos = user.accepted_doctors.map(function(x){return x.doctor_id}).indexOf(req.user.user_id)
+          if(indexPos !== -1) {
+            user.accepted_doctors[indexPos].deleted = false;
+          } else {
+            user.accepted_doctors.unshift({
+              doctor_id: req.user.user_id,
+              date_of_acceptance: + new Date(),
+              doctor_firstname: req.user.firstname,
+              doctor_lastname: req.user.lastname,
+              doctor_profile_pic_url: req.user.profile_pic_url,
+              service_access: true,
+              doctor_specialty: req.user.specialty,
+              work_place: req.user.work_place,
+              office_hour:req.user.office_hour,
+              deleted: false  
+            })
+          }
+          user.save(function(err,info){
+            if(err) throw err;
+            console.log("Patient's doctor list updated")
+          })
+        } 
+      });  
+
+
     } else {
       res.json({status: false, message: "You are not allowed to use this service."});
     }

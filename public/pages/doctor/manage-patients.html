@@ -3,7 +3,7 @@
 	<div>
 		<input type="text" name="" placeholder="filter by name" ng-model="person" class="form-control">
 	</div>
-	<div class="row" ng-repeat="j in patientList | orderBy: '-presence' | filter : person">
+	<div class="row" ng-repeat="j in patientList | orderBy: '-presence' | filter : person" ng-if="!j.deleted">
 		<div class="col-md-2 col-lg-2 p-1">
 			<a href="" ng-click="userPatient(j.patient_id,j.presence)">
 				<img src="{{j.patient_profile_pic_url}}" style="width: 100%;max-height: 320px"/>
@@ -24,7 +24,7 @@
 			
 		</div>
 		<div class="col-md-2 col-lg-2 p-1 pull-right">
-			<a href="" class="text-primary"><i class="fa fa-trash font-1_4" title="Remove this patient"></i></a>&nbsp;
+			<a href="" class="text-primary" ng-click="removePatient(j)"><i class="fa fa-trash font-1_4" title="Remove this patient" ng-if="!j.isLoading"></i><span ng-if="j.isLoading">deleting...</span></a>&nbsp;
 			<button class="btn btn-primary round btn-sm" ng-click="userPatient(j.patient_id,j.presence)"><i class="fa fa-arrow-right font-1_2"  title="view E-treatment"></i></button><br><br>
 		</div>
 		<div class="clearfix"></div>

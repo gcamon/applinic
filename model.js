@@ -248,7 +248,8 @@ var myModel = function () {
 		doctor_specialty: String,
 		work_place: String,
 		office_hour:[periodSchema],
-		presence: Boolean		
+		presence: Boolean,
+		deleted: Boolean	
 	});
 
 	var patient_briefSchema = Schema({
@@ -269,7 +270,8 @@ var myModel = function () {
     	complaint_date: String,
     	date_received: Number,
     	files: Array
-    	}
+    	},
+    	deleted: Boolean
 	});
 	//this holds records for lab,prescription and scan for the patient
 	var diagnosisSchema = Schema({
