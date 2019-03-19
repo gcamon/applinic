@@ -520,6 +520,24 @@ var myModel = function () {
 		last_updated: Number,
 	});
 
+	var patientHistorySchema = Schema({
+		last_modified: Number,
+		height: String,
+		weight: String,
+		medication: String,
+		allergies: String,
+		lifestyle: Array,
+		last_visited: Date,
+		blood_pressure: String,
+		blood_sugar: String,
+		visitation_purpose: String,
+		health_problems: Array,
+		bp_date: Number,
+		bs_date: Number,
+		bp_chart: Array,
+		bs_chart: Array
+	})
+
 
 //end for session
 	var userSchema = Schema({	  
@@ -619,7 +637,8 @@ var myModel = function () {
 		bank_details: Array,
 		field_agents: Array,
 		updated: Date,
-		stock_update: updateSchema
+		stock_update: updateSchema,
+		patient_history: patientHistorySchema
 	},{
 		collections: "userinfos"
 	})

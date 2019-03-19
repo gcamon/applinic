@@ -9374,7 +9374,7 @@ router.post("/user/doctor/add-patient",function(req,res){
             date: + new Date(),
             deleted: false
           }
-          
+
           if(elemPos == -1) {           
             req.user.doctor_patients_list.unshift(patient);  
           
@@ -9545,12 +9545,11 @@ router.get("/user/dicom-viewer",function(req,res){
 
 router.post("/dicom-response",function(req,res){
   console.log("post webhook url", req.body, req.query)
-})
+});
 
 router.get("/dicom-response",function(req,res){
   console.log("get webhook url", req.body, req.query)
-})
-
+});
 
 router.post("/user/share/email",function(req,res){
   if(req.user){
@@ -9581,18 +9580,98 @@ router.post("/user/share/email",function(req,res){
     });
     
   } else {
-    res.end("unauthorized access")
+    res.end("unauthorized access");
   }
-})
+});
 
+router.get("/user/patient/medical-history",function(req,res){
+  if(req.user){
+    model.user.findOne({user_id: req.query.patientId})
+    .exec(function(err,data){
+      if(err) throw err;
+      console.log(data.patient_history)
+      var data = data.patient_history || {}
+      res.json(data);
+    })
+  } else {
+    res.end("Unauthorized access");
+  }
+});
+
+router.put("/user/patient/medical-history",function(req,res){
+  if(req.user){  
+    console.log(req.body) 
+    model.user.findOne({user_id: req.body.patientId})
+    .exec(function(err,patient){
+      if(err) throw err;
+      patient.patient_history.lifestyle = req.body.lifestyle;
+      patient.patient_history.height = req.body.height; 
+      patient.patient_history.weight = req.body.weight;
+      patient.patient_history.medication = req.body.medication;
+      patient.patient_history.allergies = req.body.allergies;
+      patient.patient_history.last_visited = req.body.last_visited;
+      patient.patient_history.visitation_purpose = req.body.visitation_purpose;
+      patient.patient_history.last_modified = + new Date();
+      patient.patient_history.health_problems = req.body.health_problems;
+
+      /*
+    last_modified: Number,
+    height: String,
+    weight: String,
+    medication: String,
+    allergies: String,
+    lifestyle: Array,
+    last_visited: Date,
+    blood_pressure: String,
+    blood_sugar: String,
+    visitation_purpose: String,
+    health_problems: Array,
+    bp_date: Number,
+    bs_date: Number,
+
+
+
+    { lifestyle:
+   [ { tobacco: true, report: 'Smokes or use tobacco' },
+     { substances: true, report: 'Takes social substances' } ],
+  health_problems: [ 'Asthma', 'Cancer', 'Diabetes', 'Ulcer' ],
+  height: '1.7m',
+  weight: '95kg',
+  blood_pressure: 'sdds',
+  blood_sugar: 'sdsd',
+  medication: 'panadol',
+  allergies: 'cold',
+  last_visited: '2019-03-13T23:00:00.000Z',
+  visitation_purpose: 'dsdssdds' }
+      */
+
+      patient.patient_history.bp_chart.push({
+        value: req.body.blood_pressure,
+        date: + new Date(),
+        unit: req.body.bp_unit
+      })
+
+      patient.patient_history.bs_chart.push({
+        value: req.body.blood_sugar,
+        date: + new Date(),
+        unit: req.body.bs_unit
+      })
+
+      patient.save(function(err,info){
+        if(err) throw err;
+        console.log("history saved")
+        res.json({status:true,message:"Record saved successfully"});
+      })
+      //res.json(patient.patient_history);
+    });
+  } else {
+    res.end("Unauthorized access");
+  }
+});
 
 /*router.get("/test-page",function(req,res){
   res.sendFile(path.join(__dirname + '/test.html'))
 })*/
-
-
-
-
 
 }
 

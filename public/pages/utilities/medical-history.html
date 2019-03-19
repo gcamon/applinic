@@ -1,0 +1,147 @@
+<div class="card card-center-1 p-1">
+	<h4 class=" mb-1" style="">Medical History</h4>
+	<p>Please take a moment to complete the form below so that physicians will understand your health better.</p>
+	<form ng-submit="save()">
+		<section class="col-md-9">
+			<div>
+				<label>Height:</label><br>
+				<input type="text" name="" class="form-control" placeholder="your height" ng-model="history.height">
+			</div><br>
+			<div>
+				<label>Weight:</label><br>
+				<input type="text" name="" class="form-control" placeholder="your weight" ng-model="history.weight">
+			</div><br>
+			<div>
+				<label>Blood Pressure:</label><br>
+				<input type="text" name="" class="form-control" placeholder="Enter BP value" ng-model="history.blood_pressure">
+			</div><br>
+			<div>
+				<label>Blood Sugar (Fasting):</label><br>
+				<input type="text" name="" class="form-control" placeholder="Enter blood sugar value" ng-model="history.blood_sugar">
+			</div><br>
+			<div>
+				<label>Medication:</label><br>
+				<input type="text" name="" class="form-control" placeholder="Frequent medication" ng-model="history.medication">
+			</div><br>
+			<div>
+				<label>Allergies:</label><br>
+				<input type="text" name="" class="form-control" placeholder="Enter allergies" ng-model="history.allergies">
+			</div><br>
+			<div>
+				<label>Which of the following Life Style do you live?</label><br>
+				<label class="custom-control custom-checkbox">
+	             <input type="checkbox" class="custom-control-input" ng-model="lifeStyle.tobacco">
+	              <span class="custom-control-indicator"></span>
+	              <span class="custom-control-description">I smoke/use tobacco</span>
+	            </label><br>
+	            <label class="custom-control custom-checkbox">
+	             <input type="checkbox" class="custom-control-input" ng-model="lifeStyle.alcohol">
+	              <span class="custom-control-indicator"></span>
+	              <span class="custom-control-description">I drink alcohol regularly</span>
+	            </label><br>     
+	            <label class="custom-control custom-checkbox">
+	             <input type="checkbox" class="custom-control-input" ng-model="lifeStyle.substances">
+	              <span class="custom-control-indicator"></span>
+	              <span class="custom-control-description">I use any social substances</span>
+	            </label><br>     
+	            <label class="custom-control custom-checkbox">
+	             <input type="checkbox" class="custom-control-input" ng-model="lifeStyle.sports">
+	              <span class="custom-control-indicator"></span>
+	              <span class="custom-control-description">I do any sports regularly</span>
+	            </label>         
+			</div><br>
+
+			<div>
+				<label>When was the last time you visited a doctor?</label><br>
+				<input type="date" name="" class="form-control" placeholder="Write" ng-model="history.last_visited">
+			</div><br>
+			<div>
+				<label>For what purpose?</label><br>
+				<textarea class="form-control pl-1" ng-keyup="autoExpand($event)" id="textarea" ng-model="history.visitation_purpose" style="color: #000"></textarea>
+			</div><br>
+
+			<div>
+				<label>Do you have any health problems below?</label><br>
+				<label class="custom-control custom-checkbox">
+	             <input type="checkbox" class="custom-control-input" ng-model="healthProblems.Anxiety">
+	              <span class="custom-control-indicator"></span>
+	              <span class="custom-control-description">Anxiety</span>
+	            </label><br>  
+	            <label class="custom-control custom-checkbox">
+	             <input type="checkbox" class="custom-control-input" ng-model="healthProblems.Arrhythmias">
+	              <span class="custom-control-indicator"></span>
+	              <span class="custom-control-description">Arrhythmias</span>
+	            </label><br> 
+	            <label class="custom-control custom-checkbox">
+	             <input type="checkbox" class="custom-control-input" ng-model="healthProblems.Asthma">
+	              <span class="custom-control-indicator"></span>
+	              <span class="custom-control-description">Asthma</span>
+	            </label><br>    
+	            <label class="custom-control custom-checkbox">
+	             <input type="checkbox" class="custom-control-input" ng-model="healthProblems.Co_PD">
+	              <span class="custom-control-indicator"></span>
+	              <span class="custom-control-description">Co PD</span>
+	            </label><br>  
+	            <label class="custom-control custom-checkbox">
+	             <input type="checkbox" class="custom-control-input" ng-model="healthProblems.Cancer">
+	              <span class="custom-control-indicator"></span>
+	              <span class="custom-control-description">Cancer</span>
+	            </label><br>   
+	            <label class="custom-control custom-checkbox">
+	             <input type="checkbox" class="custom-control-input" ng-model="healthProblems.Depression">
+	              <span class="custom-control-indicator"></span>
+	              <span class="custom-control-description">Depression</span>
+	            </label><br> 
+	            <label class="custom-control custom-checkbox">
+	             <input type="checkbox" class="custom-control-input" ng-model="healthProblems.Diabetes">
+	              <span class="custom-control-indicator"></span>
+	              <span class="custom-control-description">Diabetes</span>
+	            </label><br>  
+	            <label class="custom-control custom-checkbox">
+	             <input type="checkbox" class="custom-control-input" ng-model="healthProblems.Ecclema">
+	              <span class="custom-control-indicator"></span>
+	              <span class="custom-control-description">Ecclema</span>
+	            </label><br>      
+	            <label class="custom-control custom-checkbox">
+	             <input type="checkbox" class="custom-control-input" ng-model="healthProblems.Arthritis">
+	              <span class="custom-control-indicator"></span>
+	              <span class="custom-control-description">Arthritis</span>
+	            </label><br>    
+	            <label class="custom-control custom-checkbox">
+	             <input type="checkbox" class="custom-control-input" ng-model="healthProblems.Ulcer">
+	              <span class="custom-control-indicator"></span>
+	              <span class="custom-control-description">Ulcer</span>
+	            </label><br>    
+	            <label class="custom-control custom-checkbox">
+	             <input type="checkbox" class="custom-control-input" ng-model="healthProblems.Glaucoma">
+	              <span class="custom-control-indicator"></span>
+	              <span class="custom-control-description">Glaucoma</span>
+	            </label><br>   
+	            <label class="custom-control custom-checkbox">
+	             <input type="checkbox" class="custom-control-input" ng-model="healthProblems.Tubaculosis">
+	              <span class="custom-control-indicator"></span>
+	              <span class="custom-control-description">Tubaculosis</span>
+	            </label><br>   
+	            <label class="custom-control custom-checkbox">
+	             <input type="checkbox" class="custom-control-input" ng-model="healthProblems.Sickle_Cell_Anaemia">
+	              <span class="custom-control-indicator"></span>
+	              <span class="custom-control-description">Sickle Cell Anaemia</span>
+	            </label><br>    
+	            <label class="custom-control custom-checkbox">
+	             <input type="checkbox" class="custom-control-input" ng-model="healthProblems.other">
+	              <span class="custom-control-indicator"></span>
+	              <span class="custom-control-description">Other</span>
+	            </label><br>    
+	            <textarea  type="text" placeholder="Enter other health problems" class="form-control pl-1" ng-model="healthProblems.otherIssue" ng-if="healthProblems.other" ng-keyup="autoExpand($event)" id="textarea" style="color: #000"></textarea>                                                         
+			</div>			
+		</section>
+		<div class="clearfix"></div>
+		<section style="text-align: center;">
+			<span>{{msg}}</span><br>
+			<input type="submit" name="" value="Save" class="btn btn-primary btn-lg" ng-if="!loading"><b ng-if="loading">Saving...</b>
+		</section>		
+	</form>
+</div>
+<div style="height: 200px">
+	
+</div>

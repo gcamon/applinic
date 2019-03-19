@@ -799,6 +799,10 @@ app.config(['$paystackProvider','$routeProvider',
   controller: "adminPWRDetailCtrl"
 })
 
+.when("/medical-history",{
+  templateUrl: "/assets/pages/utilities/medical-history.html",
+  controller: "medHistoryCtrl"
+})
 
 }]);
 
@@ -1207,6 +1211,99 @@ app.directive("loading",["$http",function($http){
 //laboratory
 app.service("labProfileEditService",["$resource",function($resource){
   return $resource("/user/getcenter-details",null,{updateInfo:{method:"PUT"}});
+}]);
+
+app.service("patientMedHistory",["$resource",function($resource){
+  return $resource("/user/patient/medical-history",null,{update: {method: "PUT"}});
+}]);
+
+app.controller("medHistoryCtrl",["$scope","$rootScope","patientMedHistory",
+  function($scope,$rootScope,patientMedHistory){
+
+  $scope.history = {};
+  $scope.lifeStyle = {}
+  $scope.healthProblems = {};
+
+  patientMedHistory.get({patientId: $rootScope.checkLogIn.user_id},function(data){
+    console.log(data);
+  })
+
+  $scope.history.lifestyle = [];
+  $scope.history.health_problems = [];
+
+  $scope.save = function() {
+    $scope.loading = true;
+    console.log($scope.history,"==>",$scope.lifeStyle,"tttt>>",$scope.healthProblems)
+   
+    for(var i in $scope.lifeStyle) {
+      if($scope.lifeStyle.hasOwnProperty(i)){
+        if($scope.lifeStyle[i]) {
+          switch(i) {
+            case 'tobacco':
+              $scope.history.lifestyle.push({
+                tobacco: $scope.lifeStyle[i],
+                report: "Smokes or use tobacco"
+              })
+            break;
+            case 'alcohol':
+              $scope.history.lifestyle.push({
+                alcohol: $scope.lifeStyle[i],
+                report: "Drinks alcohol reqularly"
+              })
+            break;
+            case 'substances':
+              $scope.history.lifestyle.push({
+                substances: $scope.lifeStyle[i],
+                report: "Takes social substances"
+              })
+            break;
+            case 'sports':
+              $scope.history.lifestyle.push({
+                sports: $scope.lifeStyle[i],
+                report: "Does sports regualarly"
+              })
+            break;
+            default:
+            break
+          }
+        }
+      }
+    }
+
+    for(var j in $scope.healthProblems){
+      if($scope.healthProblems.hasOwnProperty(j)){
+        if($scope.healthProblems[j]){
+          if(j == "other"){
+            $scope.history.health_problems.push($scope.healthProblems.otherIssue);
+          }
+          else {
+            if(j !== "otherIssue")
+              $scope.history.health_problems.push(j);
+          }
+        }
+      }
+    }
+
+    console.log($scope.history)
+    patientMedHistory.update($scope.history,function(response){
+      $scope.loading = false;
+      $scope.msg = response.message;
+      console.log(response);
+    })
+  }
+
+  /*$scope.$watch("history.blood_pressure",function(oldVal,newVal){
+    if(oldVal) {
+      $scope.history.bp_date = + new Date();
+    }
+  })
+
+  $scope.$watch("history.blood_sugar",function(oldVal,newVal){
+    if(oldVal) {
+      $scope.history.bs_date = + new Date();
+    }
+  })*/
+
 }]);
 
 app.controller("labProfileEdit",["$scope","$resource","$location","$window","ModalService",
