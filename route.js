@@ -1323,13 +1323,13 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
 
         if(req.body.isLaterRef) {
           var pos = req.user.doctor_patients_list.map(function(x){if(x){return x.patient_id}}).indexOf(req.body.sender_id)
-          if(pos !== -1) {
+          if(pos !== -1 && !req.body.message) {
             req.body.message = req.user.doctor_patients_list[pos].initial_complaint.complaint;
             req.body.files = req.user.doctor_patients_list[pos].initial_complaint.files;
           }
           
         }
-
+        
         var requestData = {};
         for(var item in req.body){
           if(req.body.hasOwnProperty(item) && item !== "receiverId") {

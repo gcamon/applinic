@@ -7051,9 +7051,9 @@ app.service("findSpecialistService",["$resource",function($resource){
 }]);
 
 app.controller("referRequestController",["$scope","$http","ModalService","requestManager",
-  "templateService","deleteFactory","$rootScope","$location","$resource","findSpecialistService",
+  "templateService","deleteFactory","$rootScope","$location","$resource","findSpecialistService","$filter",
   function($scope,$http,ModalService,requestManager,templateService,
-    deleteFactory,$rootScope,$location,$resource,findSpecialistService){
+    deleteFactory,$rootScope,$location,$resource,findSpecialistService,$filter){
 
     var source = findSpecialistService;//$resource("/user/find-specialist",null,{refer:{method: "PUT"}});
     $scope.search = {};
@@ -7071,6 +7071,8 @@ app.controller("referRequestController",["$scope","$http","ModalService","reques
     } 
 
     $scope.findSpecialist();
+
+    $scope.isInitial = true;
 
     $http({
       method  : 'GET',
@@ -7093,10 +7095,64 @@ app.controller("referRequestController",["$scope","$http","ModalService","reques
       }
     }); 
 
+    $scope.continue = function() {
+      $scope.isInitial = false;
+      $scope.isSearch = true;
+    }
 
-    console.log($rootScope.data);
+    $scope.back = function() {
+      $scope.isInitial = true;
+      $scope.isSearch = false;
+      $scope.isReview = false;
+    }
+
 
     $scope.refer = function(doc) {
+      $scope.doc = doc;
+      var date = + new Date();
+      console.log($rootScope.patientInfo)
+      var msg = "<div><b>" 
+      + $rootScope.checkLogIn.name + "</b><br> " 
+      + $rootScope.checkLogIn.specialty + "<br> " 
+      + $rootScope.checkLogIn.city + "<br><br> <b>TO</b> <br><br><b> " 
+      + doc.name + "</b><br> " 
+      + doc.specialty + "<br> " 
+      + doc.city + "<br><br><label>Referral Date: </label> " 
+      + $filter('date')(date,'mediumDate') + " at " + $filter('date')(date,'shortTime') + "<br><br>" 
+      + "<p style='text-indent: 10px'>We hereby refer to you this patient:</p><br><label>Patient Name: </label> " 
+      + $rootScope.patientInfo.title + " " 
+      + $rootScope.patientInfo.firstname 
+      + " " + $rootScope.patientInfo.lastname 
+      + "<br><label>Age: </label> " 
+      + $rootScope.patientInfo.age 
+      + "<br><label>Gender: </label> " 
+      + $rootScope.patientInfo.gender + "<br><label>City: </label> " 
+      + $rootScope.patientInfo.city + "<br><br>" 
+      + "<p>With the following presenting complaints</p><p>" + $scope.search.initial 
+      + "</p><br><p>" + $scope.search.howFar 
+      + "</p><br><p>Kindly take over the expert management</p>" 
+      + "<label>Sincerely yours</label><br><label>" + $rootScope.checkLogIn.name
+      + "</label></div>"
+
+      $rootScope.data.message = msg;
+
+      /*doc.loading = true;
+      $rootScope.data.receiverId = doc.user_id;
+      source.refer($rootScope.data,function(response){
+        doc.loading = false;
+        if(response.status) {
+          doc.msg = "request sent!";
+          $rootScope.$broadcast("consultation attended",{status:true,id: $rootScope.data.message_id});
+          $rootScope.data = null
+        }
+      })*/
+      $scope.isSearch = false;
+      $scope.isReview = true;
+      console.log(msg)
+    }
+
+    $scope.send = function() {
+      var doc = $scope.doc;
       doc.loading = true;
       $rootScope.data.receiverId = doc.user_id;
       source.refer($rootScope.data,function(response){
