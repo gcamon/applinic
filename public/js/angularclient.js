@@ -7153,7 +7153,10 @@ app.controller("referRequestController",["$scope","$http","ModalService","reques
       + sender
       + "</label><br><span>" + $rootScope.checkLogIn.specialty + "</span><br></div>"
 
+      $rootScope.data.isLaterRef = "yes";
+
       $rootScope.data.message = msg;
+
 
       /*doc.loading = true;
       $rootScope.data.receiverId = doc.user_id;
@@ -7169,6 +7172,8 @@ app.controller("referRequestController",["$scope","$http","ModalService","reques
       $scope.isReview = true;
     }
 
+   
+
     $scope.send = function() {
       var doc = $scope.doc;
       doc.loading = true;
@@ -7178,7 +7183,6 @@ app.controller("referRequestController",["$scope","$http","ModalService","reques
         if(response.status) {
           doc.msg = "Referral sent!";
           $rootScope.$broadcast("consultation attended",{status:true,id: $rootScope.data.message_id});
-          //$rootScope.data = null
         } else {
           doc.msg = "Oops! Something went wrong. Please try again";
         }

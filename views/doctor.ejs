@@ -1894,9 +1894,8 @@
               <div ng-if="isSearch">
                 <div class="pl-2">
 
-                    <a href="" ng-click="back()" ><i class="fa fa-arrow-left"></i></a><br>
+                    <a href="" ng-click="edit()" ><i class="fa fa-arrow-left"></i></a><br>
                     
-                                           
                     <div style="float: left;padding-right: 15px">
                     <!--<input type="" name="" placeholder="{{search.city || 'City'}}" ng-model="search.city" class="form-control">--> 
                     <input type="text" class="form-control"  type="text" placeholder="Enter city name" ng-model="search.city" uib-typeahead="city for city in cities | filter:$viewValue | limitTo:15">
@@ -1932,7 +1931,7 @@
                 </div>
               </div>
               <div class="p-2" ng-if="isReview">
-                <a href="" ng-click="back()" ><i class="fa fa-arrow-left"></i></a><br>
+                <a href="" ng-click="back()" ><i class="fa fa-arrow-left"></i></a>
                 <a href="" ng-click="edit()" class="btn btn-simple btn-sm" style="float: right;"><i class="fa fa-pencil"></i> Edit</a>
                 <div class="clearfix"></div>
                 <section ng-bind-html="data.message"></section>
