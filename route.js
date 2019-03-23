@@ -1319,14 +1319,16 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
 
     router.put("/user/find-specialist",function(req,res){     
       if(req.user) {
-         console.log(req.body);
+        console.log(req.body);
 
         if(req.body.isLaterRef) {
           var pos = req.user.doctor_patients_list.map(function(x){if(x){return x.patient_id}}).indexOf(req.body.sender_id)
           if(pos !== -1 && !req.body.message) {
             req.body.message = req.user.doctor_patients_list[pos].initial_complaint.complaint;
-            req.body.files = req.user.doctor_patients_list[pos].initial_complaint.files;
           }
+
+          if(pos !== -1)
+            req.body.files = req.user.doctor_patients_list[pos].initial_complaint.files;
           
         }
         

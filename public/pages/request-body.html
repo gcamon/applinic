@@ -14,27 +14,31 @@
 				<div><b>Location:</b> {{data.sender_location}}</div>
 	        </div>
 	    </div>-->
-	    
-	<h4 class="p-1">Consultation Request</h4>
-	<div class="row">
-		<div class="col-md-3 p-2">
-        	<img ng-src="{{data.sender_profile_pic_url}}" class="img-responsive" style="height: auto;max-width: 200px; object-fit: contain">
-        </div>
-        <div class="col-md-9 p-2">
-        	<div class="pl-1">
-        	<div><b>Name:</b> {{data.sender_firstname}} {{data.sender_lastname}}</div>
-        	<div><b>gender:</b> {{data.sender_gender}}</div>
-			<div><b>Age:</b> {{data.sender_age}}</div>			
-			<div><b>Location:</b> {{data.sender_location}}</div>
-			<div><span style=""><b>Date received:</b> {{data.date | amCalendar}}</span></div>
-			</div>
-        </div>
-	</div>
-	<div class="p-1">				
-		<p style="display: block;padding: 10px 0">Dear {{checkLogIn.title}} {{checkLogIn.firstname}},<br>
-		<span>{{data.sender_firstname}} {{data.sender_lastname}} requested for your consultation. Below are the details of the request:</span></p>
-		<p style="" ng-bind-html="data.message"></p>		
-	</div>	   
+	 <h4 class="p-1">Consultation Request</h4>
+	 <section ng-if="!data.isLaterRef">
+		<div class="row">
+			<div class="col-md-3 p-2">
+	        	<img ng-src="{{data.sender_profile_pic_url}}" class="img-responsive" style="height: auto;max-width: 200px; object-fit: contain">
+	        </div>
+	        <div class="col-md-9 p-2">
+	        	<div class="pl-1">
+	        	<div><b>Name:</b> {{data.sender_firstname}} {{data.sender_lastname}}</div>
+	        	<div><b>gender:</b> {{data.sender_gender}}</div>
+				<div><b>Age:</b> {{data.sender_age}}</div>			
+				<div><b>Location:</b> {{data.sender_location}}</div>
+				<div><span style=""><b>Date received:</b> {{data.date | amCalendar}}</span></div>
+				</div>
+	        </div>
+		</div>
+		<div class="p-1">				
+			<p style="display: block;padding: 10px 0">Dear {{checkLogIn.title}} {{checkLogIn.firstname}},<br>
+			<span>{{data.sender_firstname}} {{data.sender_lastname}} requested for your consultation. Below are the details of the request:</span></p>
+			<p style="" ng-bind-html="data.message"></p>		
+		</div>	
+	</section>  
+	<section ng-if="data.isLaterRef" class="p-2">
+		<article ng-bind-html="data.message"></article>
+	</section>
 	<div class="p-1" ng-if="data.files.length > 0">
 		<label>Attached files</label><br>
 		<section href="" class="text-success"  ng-repeat="j in data.files" style="display: inline-block;">
@@ -46,7 +50,7 @@
 		</section>
 	</div>
 
-	<div class="p-1">Regards, <span style="display:block"><b>Applinic Management</b></span></div>
+	<div class="p-1" ng-if="!data.isLaterRef">Regards, <span style="display:block"><b>Applinic Management</b></span></div>
 
 	<div class="p-1">
 	<button class="btn btn-success btn-sm" ng-click="accept()">Accept</button>
