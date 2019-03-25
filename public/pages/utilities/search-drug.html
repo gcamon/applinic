@@ -16,7 +16,7 @@
                 
             </div>
            <div class="clearfix"></div>
-        <form>
+        <form class="col-md-10" ng-submit="findDrug(drug.name)" ng-if="notRef">
           <div>         
             
              <label for="City">City: </label><br>
@@ -27,7 +27,7 @@
 
           </div>
 
-          <div ng-if="notRef">           
+          <div >           
                 <label> Drug name: </label>
                 <section class="form-group" style="position: relative" ng-repeat="i in drugList">                
                                     
@@ -45,20 +45,31 @@
 
             
             <div class="pl-0">
-              <button class="btn btn-info" ng-click="findDrug(drug.name)"> <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="isLoading"></i>{{(isLoading) ? "" : 'Find'}}</button>
+              <input type="submit" class="btn btn-info"  value="Find" ng-if="!isLoading"> <span><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange;font-size: 18px" ng-if="isLoading"></i></span>
             </div>            
-         </div>
-         <div ng-if="isRef">
-             
-              <label style="padding-left: 4px">Prescription ID</label>
-              <section>
-                <input placeholder="Enter Prescription ID" ng-model="user.refId" class="form-control">
-              </section>
-               <div class="clearfix"></div>
-              <div class="pl-0">
-              <button class="btn btn-info " ng-click="findWithRef(user.refId)"> <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="isLoading"></i>{{(isLoading) ? "" : 'Find'}}</button>
-              </div>
-        </div>
+          </div>
+         </form>
+        <form class="col-md-10" ng-submit="findWithRef(user.refId)" ng-if="isRef">
+          <div>         
+            
+             <label for="City">City: </label><br>
+           
+             <input type="text" class="form-control"  placeholder="Enter city name" ng-model="city" uib-typeahead="city for city in cities | filter:$viewValue | limitTo:15">
+             {{getCity(city)}}
+            
+
+          </div>
+           <div >               
+                <label style="padding-left: 4px">Prescription ID</label>
+                <section>
+                  <input placeholder="Enter Prescription ID" ng-model="user.refId" class="form-control">
+                </section>
+                 <div class="clearfix"></div>
+                <div class="pl-0">
+                <!--<button class="btn btn-info " ng-click="findWithRef(user.refId)"> <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="isLoading"></i>{{(isLoading) ? "" : 'Find'}}</button>-->
+                 <input type="submit" class="btn btn-info"  value="Find" ng-if="!isLoading"> <span><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange;font-size: 18px" ng-if="isLoading"></i></span>
+                </div>
+          </div>
         </form>
 
  </div>
