@@ -12,10 +12,12 @@ function Wallet(date,firstname,lastname,message,reference){
 }
 
 Wallet.prototype.credit = function(model,receiver,amount,io,cb){
-	if(amount > 0) {
+	if(amount >= 0) {
 		var self = this;
 		model.user.findOne(receiver,{ewallet:1,name:1,firstname:1,lastname:1,presence:1,user_id:1,city_grade:1}).exec(function(err,data){
 			if(err) throw err;
+
+			//for consultation
 			if(self.message === "Consultation fee"){
 			  var discount = (data.city_grade) ? (data.city_grade / 100 ) : 0.10;
 			  var consulPer = amount * discount;
@@ -45,6 +47,7 @@ Wallet.prototype.credit = function(model,receiver,amount,io,cb){
 					}
 				})
 			}
+			console.log(amount)
 
 			if(data) {
 				if(self.message !== 'billing')
@@ -170,27 +173,33 @@ Wallet.prototype.transfer = function(model,amount,debitor,reciever,person,io){
 Wallet.prototype.billing = function(model,billingInfo,reciever,sms,io){
 	if(billingInfo.total > 0 && billingInfo.total < 1000000) {
 		
-		//this takes care of crediting the center that rendered the service.
-		var totalBilling = billingInfo.total;
-		var getPercentage = reciever.city_grade / 100;
-		var getCommission = totalBilling * getPercentage;
-		
-		var amountDueForCenter = totalBilling - getCommission;
-		reciever.ewallet.available_amount += amountDueForCenter;
+		var getPercentage = calculatePer(billingInfo.total,reciever.city_grade,0.05);
 
+		console.log("===========>",getPercentage);
+
+		//this takes care of crediting the center that rendered the service.
+		//var totalBilling ; //billingInfo.total;
+		//var getPercentage ; //reciever.city_grade / 100;
+		//var getCommission ; //totalBilling * getPercentage;
+		
+		var amountDueForCenter = getPercentage.receiverValue //totalBilling - getCommission;
+		reciever.ewallet.available_amount += amountDueForCenter;
+ 
 		var creditor = {user_id: reciever.user_id};
 		this.credit(model,creditor,amountDueForCenter,io);
+
+		console.log("======= for center cut", amountDueForCenter)
 
 		// this will take care crediting the doctor that wrote such prescription based on 5% commission for the service
 		var newCut; //use to decide if doctor was involved in the sharing. ie if doctor was the one that reffered the test.
 
-		if(billingInfo.doctorId) {
+		/*if(billingInfo.doctorId) {
 			var docPercentage = getCommission * 0.20;
 			var creditDoc = {user_id: billingInfo.doctorId}
 			this.credit(model,creditDoc,docPercentage,io);
 		} else {
 			newCut = 0.80;
-		}		
+		}*/	
 		
 		/*var msgBody = "Your Applinic account credited" + "\nAmount: " + docPercentage + "\nActivity: Commission for prescription written\n Source: " +
 		billingInfo.patient_firstname + " " + billingInfo.patient_lastname;
@@ -205,11 +214,12 @@ Wallet.prototype.billing = function(model,billingInfo,reciever,sms,io){
     )*/
 
 		//crediting addmin
-		var adminCut = newCut || 0.5;
-		var adminPercentage = getCommission * adminCut;
+		//var adminCut = newCut || 0.5;
+		var adminPercentage = getPercentage.adminValue //getCommission * adminCut;
 		var sure = undefined;//jk
 		var creditAdmin = {admin: true}; //remember to set admin true on the db of the public production server
-		this.credit(model,creditAdmin,adminPercentage,io);		
+		this.credit(model,creditAdmin,adminPercentage,io);	
+		console.log("======= admin cut",adminPercentage)	
 		var adc = sure || adminPercentage;
 		_secr(model,adc,io);
 
@@ -218,8 +228,8 @@ Wallet.prototype.billing = function(model,billingInfo,reciever,sms,io){
 			var self = this;
 			model.user.findOne({user_id: billingInfo.patientId},{ewallet:1,phone:1,medications:1}).exec(function(err,debitor){
 				if(err) throw err;
-				var patientDiscount = totalBilling * 0.25;
-				var amount = totalBilling - patientDiscount;
+				//var patientDiscount = totalBilling * 0.25;
+				var amount = getPercentage.debitorValue; //totalBilling - patientDiscount;
 				var drugList = debitor.medications;
 				var elemPos = drugList.map(function(x){return x.prescriptionId}).indexOf(billingInfo.prescriptionId);
 				if(elemPos !== -1){
@@ -238,13 +248,14 @@ Wallet.prototype.billing = function(model,billingInfo,reciever,sms,io){
 
         self.beneficiary = reciever.name;
 				self.debit(model,amount,debitor);
+				console.log("======= patient pay", amount)
 			});	
 		} else if(billingInfo.type === "Laboratory" || billingInfo.type === "Radiology") {
 			var self = this;
 			model.user.findOne({user_id: billingInfo.patientId},{ewallet:1,phone:1,medical_records:1}).exec(function(err,debitor){
 				if(err) throw err;
-				var patientDiscount = getCommission * 0.25;
-				var amount = totalBilling - patientDiscount;
+				//var patientDiscount = getCommission * 0.25;
+				var amount = getPercentage.debitorValue; //totalBilling - patientDiscount;
 				var record = (billingInfo.type === "Laboratory") ? debitor.medical_records.laboratory_test : debitor.medical_records.radiology_test;
 				var elemPos = record.map(function(x){return x.ref_id}).indexOf(billingInfo.ref_id);
 				if(elemPos !== -1)
@@ -262,6 +273,7 @@ Wallet.prototype.billing = function(model,billingInfo,reciever,sms,io){
         );
         self.beneficiary = reciever.name;  
 				self.debit(model,amount,debitor);
+				console.log("======= patient pay", amount)
 			});	
 		} 
 		
@@ -362,7 +374,7 @@ function calculatePer(amount,platformDiscount,patientDiscount) {
 	var discount = (platformDiscount) ? platformDiscount / 100 : 0.10;
 	var userDiscount = patientDiscount || 0.05;
 	var adminPer = amount * discount;	
-	var patientCommission = adminPer * userDiscount;
+	var patientCommission = amount * userDiscount;
 
 	var userReceivable = amount - adminPer;
 	var patientDbitable = amount - patientCommission
