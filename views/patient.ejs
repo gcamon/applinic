@@ -2055,34 +2055,34 @@
                <button type="button" class="close" ng-click="close('Cancel')" data-dismiss="modal" aria-hidden="true" style="color:red;font-size: 32px;z-index: 3">&times;</button>
               </div>          
              
-              <div class="modal-body">
+              <div class="modal-body" style="padding: 10px">
               
-<div ng-if="isContent" class="p-1">
-    <p style="padding: 20px 10px;color:grey">    
+<section ng-if="isContent" class="p-1">
+    <section style="padding: 20px 10px;color:grey">    
     <strong>Forwarding:</strong>
         <span class="font-1_1 mb-0" style="font-style: italic;">{{data.str}}</span>
-    </p>
+    </section>
     <hr>
-    <div>
+    <section>
         <b>TO</b>
-    </div>
-    <div>
+    </section>
+    <section>
         <h5>{{data.name}}</h5>
         <span>{{data.address}}</span>
         <span>{{data.city}}</span>
         <span>{{data.country}}</span>
-    </div>
+    </section>
     <!--<div style="margin-left: 20px;margin-top: -15px;border-bottom:1px solid rgba(0,0,0,0.2)"><div class="star-rating">
         <span  ng-cloak > 
         <div class="star-rating"  star-rating rating-value="data.rating.current" max="data.rating.max"></div>
         </span>
         </div>
     </div>-->
-    <div>
+    <section>
         <button class="btn btn-info" ng-class="{'dismiss': user.someone}" ng-click="someone('inperson')" ng-if="checkLogIn.typeOfUser == 'Patient' && !isToSomeOne"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i>{{(loading) ? "" : 'Forward on my behalf'}}</button>
 
         <button class="btn btn-success"  ng-click="someone()" ng-if="checkLogIn.typeOfUser === 'Patient' && !isToSomeOne">Forward on behalf of someone else</button>
-    </div>
+    </section>
     <section ng-if="isToSomeOne || checkLogIn.typeOfUser !== 'Patient'">
          <form ng-submit="send('someone')">
               <section ng-if="checkLogIn.typeOfUser !== 'Doctor'">
@@ -2194,7 +2194,7 @@
                 </div>            
         </form>
     </section>
-</div>
+</section>
 <div ng-if="isSent" class="p-1">
     <h5 class=" text-success"  style="text-align:center"> Sent successfully!!!</h5>
     <div class="m-0"><strong class="font-1-1"> center name: </strong><em>{{data.name}}</em> </div> 
