@@ -6227,153 +6227,149 @@ _id: "5c16660cba74dc0288ecfad9"
         referral:1,diagnostic_center_notification:1,city:1,name:1,country:1,center_phone:1,address:1,user_id:1,presence:1,phone:1})
         .exec(function(err,pharmacy){         
           if(err) throw err;
-
-           var ref_id;
-
-          if(req.body.ref_id){            
-            ref_id = req.body.ref_id;
-          }  else {        
-            ref_id = randos.genRef(6);
-          }
-         
-          req.body.patient_profile_pic_url = user.profile_pic_url;
-         //req.body.age = user.age;
-          var firstname =  user.firstname || user.name;
-
-          req.body.patient_firstname = firstname;
-          req.body.patient_lastname = user.lastname;
-          req.body.patient_city = user.city;
-          req.body.patient_country = user.country;
-          req.body.patient_address = user.address;
-          req.body.patient_age = user.age;
-          req.body.patient_gender = user.gender;
-          req.body.patient_address = user.address;
-          req.body.patient_id = user.user_id;
-          req.body.is_paid = 0;
-          req.body.detail = {
-            amount: 0,
-            date: null
-          };      
           
+          if(pharmacy) {
 
-          var refObj = {
-            ref_id: ref_id,
-            referral_firstname: req.user.firstname || req.user.name,
-            referral_lastname: req.user.lastname,
-            referral_title: req.user.title,
-            referral_id: req.user.user_id,    
-            date: req.body.sent_date,
-            pharmacy: req.body
-          };
+            var ref_id;
 
-          var pharmacyNotification = {
-            sender_firstname: firstname,
-            sender_lastname: user.lastname,
-            sender_title : user.title,
-            sent_date: req.body.sent_date,
-            ref_id: ref_id,
-            note_id: ref_id,
-            sender_profile_pic_url: user.profile_pic_url,
-            message: 'Hi, I need your services'
-          };
-
-          if(pharmacy.presence === true && !req.body.initViaCourier){
-            io.sockets.to(pharmacy.user_id).emit("center notification",pharmacyNotification)
-          } 
-          /*else {
-            var msgBody = "You have new  request! Visit http://applinic.com/user/pharmacy"
-            var phoneNunber =  pharmacy.phone;
-             sms.messages.create(
-              {
-                to: phoneNunber,
-                from: '+16467985692',
-                body: msgBody,
-              }
-            ) 
-          }*/          
-          var preObj = {              
-            provisional_diagnosis: req.body.provisional_diagnosis,
-            date: req.body.sent_date,
-            prescriptionId: req.body.prescriptionId,
-            doctor_firstname: (req.user.firstname || req.user.name),
-            title: req.user.title,
-            doctor_lastname: req.user.lastname,
-            doctor_address: req.user.address,   
-            doctor_id: (req.user.type == "Doctor") ? req.user.user_id : "",
-            doctor_work_place: (req.user.type == "Doctor") ?  req.user.work_place : "",
-            doctor_city: (req.user.type == "Doctor") ? req.user.city : "",
-            doctor_country: (req.user.type == "Doctor") ? req.user.country : "",
-            lab_analysis: req.body.lab_analysis,
-            scan_analysis: req.body.scan_analysis,
-            doctor_profile_pic_url: (req.user.type == "Doctor") ? req.user.profile_pic_url : "",
-            patient_id : req.body.patient_id || user.user_id,
-            patient_profile_pic_url: req.body.patient_profile_pic_url || user.profile_pic_url,
-            patient_firstname: req.body.firstname || user.firstname,
-            patient_lastname: req.body.lastname || user.lastname,
-            patient_address: req.body.address || user.address,
-            patient_gender: req.body.gender || user.gender,
-            patient_age: req.body.age || user.age,
-            patient_city: req.body.city || user.city,
-            patient_country: req.body.country || user.country,
-            prescription_body: req.body.prescription_body,
-            ref_id: ref_id
-          }
-
-          console.log(preObj)
-          
-          var track_record = {
-            date: req.body.sent_date,
-            center_name: pharmacy.name,
-            address: pharmacy.address,
-            ref_id: ref_id,
-            city: pharmacy.city,
-            country: pharmacy.country,
-            phone: pharmacy.phone,
-            prescriptionId: req.body.prescriptionId
-          };
-
-          if(!req.body.ref_id || req.body.initViaCourier){
-            user.medications.push(preObj);
-          }
-          
-          user.prescription_tracking.unshift(track_record);
+            if(req.body.ref_id){            
+              ref_id = req.body.ref_id;
+            }  else {        
+              ref_id = randos.genRef(6);
+            }
            
+            req.body.patient_profile_pic_url = user.profile_pic_url;
+           //req.body.age = user.age;
+            var firstname =  user.firstname || user.name;
 
-          //send sms to the patient for the ntification of prescription
-          var msgBody = "Your prescription was sent to " +  "\n" + pharmacy.name + "\n" + pharmacy.address +
-          ", " + pharmacy.city + ", " + pharmacy.country + "\nreference number is " +
-          " " + ref_id + "\nfor more details login https://applinic.com/login";
-          var phoneNunber =  user.phone;
+            req.body.patient_firstname = firstname;
+            req.body.patient_lastname = user.lastname;
+            req.body.patient_city = user.city;
+            req.body.patient_country = user.country;
+            req.body.patient_address = user.address;
+            req.body.patient_age = user.age;
+            req.body.patient_gender = user.gender;
+            req.body.patient_address = user.address;
+            req.body.patient_id = user.user_id;
+            req.body.is_paid = 0;
+            req.body.detail = {
+              amount: 0,
+              date: null
+            };      
+            
 
-          if(!req.body.initViaCourier)
-            sms.messages.create(
-              {
-                to: phoneNunber,
-                from: '+16467985692',
-                body: msgBody,
-              }
-            ) 
+            var refObj = {
+              ref_id: ref_id,
+              referral_firstname: req.user.firstname || req.user.name,
+              referral_lastname: req.user.lastname,
+              referral_title: req.user.title,
+              referral_id: req.user.user_id,    
+              date: req.body.sent_date,
+              pharmacy: req.body
+            };
 
-          pharmacy.referral.push(refObj);
+            var pharmacyNotification = {
+              sender_firstname: firstname,
+              sender_lastname: user.lastname,
+              sender_title : user.title,
+              sent_date: req.body.sent_date,
+              ref_id: ref_id,
+              note_id: ref_id,
+              sender_profile_pic_url: user.profile_pic_url,
+              message: 'Hi, I need your services'
+            };
 
-          if(!req.body.initViaCourier) {
-            pharmacy.diagnostic_center_notification.unshift(pharmacyNotification);
+            if(pharmacy.presence === true && !req.body.initViaCourier){
+              io.sockets.to(pharmacy.user_id).emit("center notification",pharmacyNotification)
+            } 
+           
+            var preObj = {              
+              provisional_diagnosis: req.body.provisional_diagnosis,
+              date: req.body.sent_date,
+              prescriptionId: req.body.prescriptionId,
+              doctor_firstname: (req.user.firstname || req.user.name),
+              title: req.user.title,
+              doctor_lastname: req.user.lastname,
+              doctor_address: req.user.address,   
+              doctor_id: (req.user.type == "Doctor") ? req.user.user_id : "",
+              doctor_work_place: (req.user.type == "Doctor") ?  req.user.work_place : "",
+              doctor_city: (req.user.type == "Doctor") ? req.user.city : "",
+              doctor_country: (req.user.type == "Doctor") ? req.user.country : "",
+              lab_analysis: req.body.lab_analysis,
+              scan_analysis: req.body.scan_analysis,
+              doctor_profile_pic_url: (req.user.type == "Doctor") ? req.user.profile_pic_url : "",
+              patient_id : req.body.patient_id || user.user_id,
+              patient_profile_pic_url: req.body.patient_profile_pic_url || user.profile_pic_url,
+              patient_firstname: req.body.firstname || user.firstname,
+              patient_lastname: req.body.lastname || user.lastname,
+              patient_address: req.body.address || user.address,
+              patient_gender: req.body.gender || user.gender,
+              patient_age: req.body.age || user.age,
+              patient_city: req.body.city || user.city,
+              patient_country: req.body.country || user.country,
+              prescription_body: req.body.prescription_body,
+              ref_id: ref_id
+            }
+
+           
+            
+            var track_record = {
+              date: req.body.sent_date,
+              center_name: pharmacy.name,
+              address: pharmacy.address,
+              ref_id: ref_id,
+              city: pharmacy.city,
+              country: pharmacy.country,
+              phone: pharmacy.phone,
+              prescriptionId: req.body.prescriptionId
+            };
+
+            if(!req.body.ref_id || req.body.initViaCourier){
+              user.medications.push(preObj);
+            }
+            
+            user.prescription_tracking.unshift(track_record);
+             
+
+            //send sms to the patient for the ntification of prescription
+            var msgBody = "Your prescription was sent to " +  "\n" + pharmacy.name + "\n" + pharmacy.address +
+            ", " + pharmacy.city + ", " + pharmacy.country + "\nreference number is " +
+            " " + ref_id + "\nfor more details login https://applinic.com/login";
+            var phoneNunber =  user.phone;
+
+            if(!req.body.initViaCourier) {
+              sms.messages.create(
+                {
+                  to: phoneNunber,
+                  from: '+16467985692',
+                  body: msgBody,
+                }
+              ) 
+            }
+
+            pharmacy.referral.push(refObj);
+
+            if(!req.body.initViaCourier) {
+              pharmacy.diagnostic_center_notification.unshift(pharmacyNotification);
+            } else {
+              if(pharmacy.presence === true)
+                io.sockets.to(pharmacy.user_id).emit("receiver courier",{subType: true,message: "You have new courier request."});
+            }
+
+            pharmacy.save(function(err,info){
+              if(err) throw err;
+            });
+
+
+            user.save(function(err,info){
+              if(err) throw err;
+              console.log("patient saved")
+            });
+
+            res.json({success:true,ref_id: ref_id}); 
           } else {
-            if(pharmacy.presence === true)
-              io.sockets.to(pharmacy.user_id).emit("receiver courier",{subType: true,message: "You have new courier request."});
+            res.json({success:false}); 
           }
-
-          pharmacy.save(function(err,info){
-            if(err) throw err;
-          });
-
-
-          user.save(function(err,info){
-            if(err) throw err;
-            console.log("patient saved")
-          });
-
-          res.send({success:true,ref_id: ref_id}); 
         });
            
       }
