@@ -180,7 +180,11 @@
 					
 					<div class="clearfix"></div>
 					<div ng-if="!isPreview">
-					<div class="mb-0 mt-0 pl-0 pt-2 font-1_2"  style="display: inline-block;padding-bottom: 5px"><b>Report Entry</b></div>
+					<div class="mb-0 mt-0 pl-0 pt-2 font-1_2"  style="display: inline-block;padding-bottom: 5px">
+						<b>Report Entry:</b><br>
+						<span>Please enter result 'Name' below if applicable. For example, Full Blood Count test can have a result name for haemoglobin, MCHC etc.</span>
+					</div>
+
 					<form>
 						<div class="row">
 						<p class="danger-mine pl-1" ng-if=" incomplete && incomplete !== ''">{{incomplete}}</p>
@@ -223,10 +227,10 @@
 									<section ng-repeat="i in report.list" class="p-1">
 										<div class="row">
 											<div class="col-md-2">
-												<label>Name:</label>
+												<label>Name (optional):</label>
 											</div>
 											<div class="col-md-8">
-												<input type="text" name="" placeholder="Enter name" ng-model="i.r_name" class="form-control">
+												<input type="text" name="" placeholder="e.g haemoglobin" ng-model="i.r_name" class="form-control">
 											</div>
 										</div>
 										<div class="row">

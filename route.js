@@ -3219,7 +3219,7 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
               var presList = [];
              // var elementPos = data.referral.map(function(x) {return x.phone; }).indexOf(req.body.phone);
              // var objectFound = data.referral[elementPos];
-              var phone = "+" + req.body.phone;
+              var phone = req.body.phone;
               for(var i = 0; i < data.referral.length; i++) {
                 if(data.referral[i].pharmacy.patient_phone === phone) {
                   presList.push(data.referral[i]);

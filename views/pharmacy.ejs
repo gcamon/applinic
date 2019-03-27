@@ -917,7 +917,7 @@
         <b>TO</b>
     </div>
     <div>
-        <strong style="display: block">{{data.name}}</strong>
+        <h5>{{data.name}}</h5>
         <span>{{data.address}}</span>
         <span>{{data.city}}</span>
         <span>{{data.country}}</span>
@@ -929,48 +929,119 @@
         </div>
     </div>-->
     <div>
-        <button class="btn btn-info" ng-class="{'dismiss': user.someone}" ng-click="send('inperson')" ng-if="checkLogIn.typeOfUser == 'Patient'">Forward on my behalf</button>
+        <!--<button class="btn btn-info" ng-class="{'dismiss': user.someone}" ng-click="send('inperson')" ng-if="checkLogIn.typeOfUser === 'Patient'">Forward on my behalf</button>-->
         <!--<button class="btn btn-info"  ng-click="someone()">Forward on behalf of someone else</button>-->
     </div>
-    <div ng-if="isToSomeOne || checkLogIn.typeOfUser !== 'Patient'">
-        <form>
-            <p>The phone number patient is using on applinic.com</p>
-            <div>
+    <section>
+         <form ng-submit="send('someone')">
+              <section ng-if="checkLogIn.typeOfUser !== 'Doctor' && checkLogIn.typeOfUser !== 'Pharmacy'">
+                  <div>
+                      <label>Add Description and Quantity: </label>
+                   </div>
+
+                  <div class="row" ng-repeat="j in foundDrugArr">
+                    <div>
+                      <span>{{j.drug_name}}</span>
+                      <a href="" ng-click="returnMain(j)" style="float: right;"> <i class="fa fa-refresh"></i></a>
+                    </div>
+                    <div class="clearfix"></div>
+                    <div class="col-sm-12 col-md-5">                    
+                      <select ng-model="j.dosage" class="form-control"  ng-if="j.dosage !== 'dosage'">
+                        <option value="" disabled="disabled" selected="selected">_select description</option>
+                        <option>tablets</option>
+                        <option>caplets</option>
+                        <option>capsule</option>
+                        <option>packet</option>
+                        <option>bottle</option>
+                        <option>sachet</option>
+                        <option>dosage</option>
+                      </select>
+                      <input type="text" ng-model="j.other" placeholder="e.g 500mg"  class="form-control" ng-if="j.dosage === 'dosage'">
+                    </div>
+                    <div class="col-sm-12 col-md-5">
+                      <input type="number" ng-model="j.quantity" placeholder="quantity" class="form-control">
+                      &nbsp;                    
+                    </div>
+                  </div>
+              </section>
+              <section ng-if="checkLogIn.typeOfUser === 'Doctor' || checkLogIn.typeOfUser === 'Pharmacy'">
+                  <div>
+                    <label>Prescription: </label>
+                  </div>
+                 <!--<table class="table-respnsive table-striped no-mobile-item-display">       
+                    <thead>
+                        <th class="tbm-0">&nbsp;</th>
+                        <th class="tbm-1"> Drug Name </th>
+                        <th class="tbm-2"> Dosage </th>
+                        <th class="tbm-3"> Frequency </th>
+                        <th class="tbm-4"> Duration </th>
+                    </thead>
+                
+                    <tbody ng-repeat="prescription in foundDrugArr">                                
+                       
+                        <td class="tbm-1"><input  type="text" placeholder="Enter drug name" ng-model="prescription.drug_name" uib-typeahead="drug.name for drug in drugs | filter:$viewValue | limitTo:15" class="form-control">
+                        </td>
+                        <td class="tbm-2"><input name="dose" type="text" ng-model="prescription.dosage" placeholder="Enter dosage" class="form-control"></td>
+                       
+                        <td class="tbm-1"><input  type="text" placeholder="Enter frequency" ng-model="prescription.frequency" uib-typeahead="f for f in frequencies | filter:$viewValue | limitTo:15" class="form-control">
+                        </td>
+                        
+                        <td class="tbm-1"><input  type="text" placeholder="Enter duration" ng-model="prescription.duration" uib-typeahead="d for d in durations | filter:$viewValue | limitTo:15" class="form-control" style="">
+                        </td>
+                    </tbody>                             
+                </table>-->
+                <div>                            
+                  <table class="table" ng-repeat="prescription in foundDrugArr">
+                      <thead><th>sn: </th> <td>{{prescription.sn}}</td></thead>
+                      <thead><th>Drug name: </th> <td><input  type="text" placeholder="Enter drug name" ng-model="prescription.drug_name" uib-typeahead="drug.name for drug in drugs | filter:$viewValue | limitTo:15" class="form-control"></td></thead>
+                      <thead><th>Dosage: </th> <td><input type="text" name="dose" ng-model="prescription.dosage" placeholder="Enter dosage" class="form-control"></td></thead>
+                      <thead><th>Frequency: </th> <td><input  type="text" placeholder="Enter frequency" ng-model="prescription.frequency" uib-typeahead="f for f in frequencies | filter:$viewValue | limitTo:15" class="form-control"></td></thead>
+                      <thead><th>Duration: </th> <td><input  type="text" placeholder="Enter duration" ng-model="prescription.duration" uib-typeahead="d for d in durations | filter:$viewValue | limitTo:15" class="form-control" style=""></td></thead>
+                      <hr class="bg-warning">
+                  </table>
+                </div>
+              </section>
+            
+          
                 <div>
-                 <label>Patient's phone number *: <span class="text-danger">{{phoneMsg}}</span></label>
-                 <input type="number" Placeholder=" ( e.g +2347053****48 )" ng-model="data.phone" class="form-control" required="required" style="cursor:normal">
+                 
+                 <label>Patient's phone number *: <i class="fa fa-question-circle tip"><span>This is the phone number patient registered with on applinic.com</span></i><br>
+                 <span class="text-danger">{{phoneMsg}}</span></label>
+                 <input type="number" Placeholder="Enter receiver phone" ng-model="data.phone" class="form-control" required="required" style="cursor:normal">
                 </div>
                 <div ng-if="typeOfSearch === 'pharmacy'">
-                  <label>Provisional Diagnosis *: <span class="text-danger">{{provisionalMsg}}</span></label>
-                  <textarea class="form-control pl-1" placeholder="Write..." ng-model="data.provisional_diagnosis" required="required"> </textarea>
+                  <label>Instructions / explanations for prescription(s): <span class="text-danger">{{provisionalMsg}}</span></label>
+                  <textarea class="form-control pl-1" placeholder="Write..." ng-model="data.provisional_diagnosis"  ng-keyup="autoExpand($event)" id="textarea"> </textarea>
                 </div>
                 <div ng-if='typeOfSearch === "diagnostic"'>
-                  <label>Clinical Summary *: <span class="text-danger">{{summuryMsg}}</span></label></label>
-                   <textarea class="form-control p-1" placeholder="Write..." ng-model="data.clinical_summary" required="required"></textarea>
+                  <label>Clinical Summary *: <span class="text-danger">{{summuryMsg}}</span></label>
+                   <textarea class="form-control p-1" placeholder="Write..." ng-model="data.clinical_summary" required="required" ng-keyup="autoExpand($event)" id="textarea"></textarea>
                  </div>
                  <div ng-if='typeOfSearch === "diagnostic"'>
-                   <label>Indication *: <span class="text-danger">{{indictionMsg}}</span></label></label>
-                   <textarea class="form-control p-1" placeholder="Write..." ng-model="data.indication" required="required"></textarea>
+                   <label>Indication *: <span class="text-danger">{{indictionMsg}}</span></label>
+                   <textarea class="form-control p-1" placeholder="Write..." ng-model="data.indication" required="required" ng-keyup="autoExpand($event)" id="textarea"></textarea>
                  </div>
                  <div ng-if='typeOfSearch === "diagnostic"'>
                    <label>LMP ( female ):</label>
-                   <textarea class="form-control p-1" placeholder="Write..." ng-model="data.lmp"></textarea>
+                   <textarea class="form-control p-1" placeholder="Write..." ng-model="data.lmp" ng-keyup="autoExpand($event)" id="textarea"></textarea>
                  </div>
                  <div ng-if='typeOfSearch === "diagnostic"'>
                    <label>Parity ( female ):</label>
-                    <textarea class="form-control p-1" placeholder="Write..." ng-model="data.parity"></textarea>
+                    <textarea class="form-control p-1" placeholder="Write..." ng-model="data.parity" ng-keyup="autoExpand($event)" id="textarea"></textarea>
                  </div>
+
+                
 
                 <div class="pb-3">
                     <input type="button" value="Cancel" ng-click="cancel()" class="btn btn-danger" ng-if="checkLogIn.typeOfUser === 'Patient'">
                     
-                    <button type="button" ng-click="send('someone')" class="btn btn-danger"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i>{{(loading) ? "" : 'Send'}}</button>
+                    <input type="submit"  class="btn btn-danger" value="Send" ng-if="!loading">
+                    <i class="fa fa-spinner fa-pulse fa-1x fa-fw text-warning" style="font-size: 18px" ng-if="loading"></i>
                     
                     <!--<input type="button" value="New Person Form" ng-click="emp()" class="btn btn-simple" ng-if="isEMP">-->
-                </div>
-            </div>
+                </div>            
         </form>
-    </div>
+    </section>
 </div>
 <div ng-if="isSent" class="p-1">
     <h5 class=" text-success"  style="text-align:center"> Sent successfully!!!</h5>
@@ -978,7 +1049,8 @@
     <div class="m-0"><strong class="font-1-1"> center location: </strong><em>{{data.address}}, {{data.city}}, {{data.country}}</em> </div> 
     <div class="mb-1"><span class="font-1-2" style="color:red"> Ref No:  </span><em>{{result}}</em> </div> 
     <div class="font-1-1">Plesae take note of the center name and 
-        reference number above because it will be used to easily locate and identify this prescriptions.
+        reference number above because it will be used to easy 
+        location and identification respectively
     </div>
 </div>
   

@@ -824,8 +824,8 @@ var basicPaymentRoute = function(model,sms,io,paystack,client,nodemailer){
 
 								
 								model.otpSchema.remove({otp:req.body.otp},function(err,info){});
-
-								res.send({message: "Transaction successful! Your account is credited.",balance:center.ewallet.available_amount,status:true});	
+								var roundNum = Math.round(center.ewallet.available_amount)
+								res.send({message: "Transaction successful! Your account is credited.",balance:roundNum,status:true});	
 								if(req.body.prescriptionBody) {
 									updatePatient();
 								}				

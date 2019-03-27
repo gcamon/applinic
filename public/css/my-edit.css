@@ -57,6 +57,35 @@ textarea.form-control {
   height: 200px
 }
 
+
+
+.tip {
+    text-decoration: none;
+    font-size: 18px
+}
+.tip:hover {
+    cursor: help;
+    position: relative
+}
+.tip span {
+    display: none
+}
+.tip:hover span {
+    border: #c0c0c0 1px dotted;
+    padding: 5px 20px 5px 5px;
+    display: block;
+    z-index: 100;
+    background-color: #000;
+    color: #fff;
+    left: 0px;
+    margin: 10px;
+    width: 250px;
+    position: absolute;
+    top: 10px;
+    text-decoration: none;
+    text-transform: initial!important;
+}
+
 .form-control {
   font-size: 0.95em!important;
   border: 1px solid powderblue;

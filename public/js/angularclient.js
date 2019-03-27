@@ -7066,7 +7066,7 @@ app.controller("referRequestController",["$scope","$http","ModalService","reques
       $scope.loading = true;
       source.query($scope.search,function(data){
         $scope.loading = false;
-        $scope.searchResult = data;
+        $scope.searchResults = data;
       });
     } 
 
@@ -12308,7 +12308,7 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
   $rootScope.patientAvailability  = avail.status;
 
   $scope.frequencies = ["OD","BD","TDS","QDS"];
-  $scope.durations = ["1 day","2 days","3 days", "5 days", "7 days","1 week", "2 weeks", "3 weeks", "1 month", "2 months","3 months","4 months","6 months"]
+  $scope.durations = ["1 day","2 days","3 days", "5 days","6 days", "7 days","1 week", "2 weeks", "3 weeks", "1 month", "2 months","3 months","4 months","6 months"]
 
   var getPatientData = myPatientControllerService //$resource("/user/doctor/specific-patient");
   getPatientData.get(patient,function(data){  
@@ -14750,7 +14750,8 @@ app.controller("pharmacyViewPrescriptionController",["$scope","$location","templ
             name: newVal[i].drug_name,
             amount: 0,
             id: newVal[i].sn,
-            added: true
+            added: true,
+            dosage: (newVal[i].dosage) ? newVal[i].dosage : ""
           }
           drugForPay.pickedDrugs.push(selectedDrug);
           newVal[i].added = true;
@@ -14822,47 +14823,49 @@ app.controller("pharmacyViewPrescriptionController",["$scope","$location","templ
   $rootScope.sendBill = function(patientId,oldTime,phoneCall) {
 
     if(totalCost.sum < 1) {
-      alert("Total cost cannot be 0 amount");
-      return;
+      var check = confirm("You did not compute the cost of drugs and the total cost is 0. Do you want to continue?");
     }
 
-    var center = localManager.getValue('resolveUser');
-    var time = + new Date();
-    $rootScope.resend = time; //sets th old time in case otp  is resend to delete the formal otp sent by thsame user.
-    $rootScope.resendPatientId = patientId;
-    var sendObj = {
-      amount : totalCost.sum,
-      userId: patientId,
-      time: time,
-      old_time: oldTime
-    }
-
-    if(phoneCall) {
-      count++;
-      if(count <= 5) {
-        phoneCallService(sendObj,'/user/payment/verification','POST'); 
-        $rootScope.showCallingMsg = "This patient will receive a phone call in just a moment. Please enter the pin heard from the voice call below...";
-      } else {
-        alert("Sorry, you have exceeded call limit. Please contact us for assistance.");
+    if(check) {
+      var center = localManager.getValue('resolveUser');
+      var time = + new Date();
+      $rootScope.resend = time; //sets th old time in case otp  is resend to delete the formal otp sent by thsame user.
+      $rootScope.resendPatientId = patientId;
+      var sendObj = {
+        amount : totalCost.sum,
+        userId: patientId,
+        time: time,
+        old_time: oldTime
       }
 
-    } else {
-      var otp = paymentVerificationService; 
-      $scope.loading = true;
-      otp.verify(sendObj,function(data){
-        if(data.success){
-          alert(data.message);
-          $scope.loading = false;
-          $rootScope.refData.amount = $scope.str; // holds the amount to pay for the otp template that will come next 
-          $rootScope.refData.rawAmount = totalCost.sum;
-          $rootScope.refData.isSearchDrugRef = true;//use to check if precription from search drug utility was in use so that missing fields may be updated
-          $scope.isOTP = true;
-          //$location.path("/billing-otp");
+      if(phoneCall) {
+        count++;
+        if(count <= 5) {
+          phoneCallService(sendObj,'/user/payment/verification','POST'); 
+          $rootScope.showCallingMsg = "This patient will receive a phone call in just a moment. Please enter the pin heard from the voice call below...";
         } else {
-          alert(data.message);
+          alert("Sorry, you have exceeded call limit. Please contact us for assistance.");
         }
-        
-      });
+
+      } else {
+        var otp = paymentVerificationService; 
+        $scope.loading = true;
+        otp.verify(sendObj,function(data){
+          if(data.success){
+            alert(data.message);
+            $scope.loading = false;
+            $rootScope.refData.amount = $scope.str; // holds the amount to pay for the otp template that will come next 
+            $rootScope.refData.rawAmount = totalCost.sum;
+            $rootScope.refData.isSearchDrugRef = true;//use to check if precription from search drug utility was in use so that missing fields may be updated
+            $scope.isOTP = true;
+            //$location.path("/billing-otp");
+          } else {
+            alert(data.message);
+          }
+          
+        });
+      }
+
     }
     
   }
@@ -14917,8 +14920,8 @@ app.controller("checkingOutPatientController",["$scope","$location","templateSer
 //for pharmacists,laboratory,radiologist use this controller
 //works just like referredPatientController. pharmacy center search for a patient with ref_id or phone number of the patient as search criteria.
 //Object is returned from the backend and displayed on lab-view-test.html template.
-app.controller("referredPatientsController",["$scope","$location","$http","templateService","localManager",
-  function($scope,$location,$http,templateService,localManager) {
+app.controller("referredPatientsController",["$scope","$location","$http","templateService","localManager","$rootScope",
+  function($scope,$location,$http,templateService,localManager,$rootScope) {
   $scope.patient = {};
 
   $scope.isNotOption = true;
@@ -14940,6 +14943,7 @@ app.controller("referredPatientsController",["$scope","$location","$http","templ
         $scope.patient.criteria = "refIdCriteria";       
       } else if($scope.patient.phone) {
         $scope.patient.criteria = "phoneCriteria";
+        $scope.patient.phone = $rootScope.setPhone($scope.patient.phone);
       }
       typeOfSearch($scope.patient);
     } else {
@@ -14952,7 +14956,8 @@ app.controller("referredPatientsController",["$scope","$location","$http","templ
     
 
   var typeOfSearch = function(criteria) { 
-    $scope.loading = true;  
+    $scope.loading = true; 
+
     $http({
           method  : 'PUT',
           url     : "/user/pharmacy/find-patient/prescription",
@@ -15610,8 +15615,8 @@ app.controller("labTestControler",["$scope","$location","$http","templateService
   /////////////////////////////////////////////////////
 
 
-   $scope.specimen = [{name: "Blood",status: false},
-    {name: "Urine",status: false},{name: "Stool",status: false},
+   $scope.specimen = [{name: "Blood",status: false},{name: "Sperm",status: false},
+    {name: "Urine",status: false},{name: "Stool",status: false},{name: "Vaginal Fluid",status: false},
     {name: "Semen",status: false},{name: "Saliver",status: false},{name: "Mucus",status: false}]
 
 
@@ -17560,12 +17565,29 @@ app.service("centerProfileService",["$resource",function($resource){
 }]);
 
 app.controller("drugSearchResultController",["$scope","$location","$rootScope","$resource",
-  "templateService","localManager","ModalService","centerProfileService",
-  function($scope,$location,$rootScope,$resource,templateService,localManager,ModalService,centerProfileService){
+  "templateService","localManager","ModalService","centerProfileService","$rootScope",
+  function($scope,$location,$rootScope,$resource,templateService,localManager,ModalService,centerProfileService,$rootScope){
   $scope.drugResult = templateService.holdSearchResult; 
 
   $scope.criteria = templateService.holdList;
   $scope.drugFilter = {};
+  
+  var searchStr = $scope.drugResult.full[0] || $scope.drugResult.less[0];
+  $rootScope.foundDrugArr = [];
+
+
+
+  if(searchStr){
+    var arr = searchStr.str.split(',')
+    var count = 1
+    arr.forEach(function(item){
+      $rootScope.foundDrugArr.push({
+        drug_name: item,
+        sn: count
+      })
+      count++;
+    })
+  }
   $scope.getStr = function(str,by){
     var newStr = "";
     var strArr = str.split(",");
@@ -17588,7 +17610,7 @@ app.controller("drugSearchResultController",["$scope","$location","$rootScope","
   $scope.notStr = function(arr) {
     var newStr = "";
     for(var i = 0; i < arr.length; i++){
-      newStr += "@" + arr[i].name + " "
+      newStr += "@" + arr[i].name + " ";
     }
 
     return newStr;
@@ -17726,8 +17748,9 @@ app.controller("viewCenterProfileController",["$scope","$resource","$rootScope",
   $rootScope.center = $rootScope.center;
 }]);
 
-app.controller("searchSelectedCenterController",["$scope","$location","$window","$http","templateService","localManager","ModalService",
-"$rootScope",function($scope,$location,$window,$http,templateService,localManager,ModalService,$rootScope){
+app.controller("searchSelectedCenterController",["$scope","$location","$window","$http","templateService",
+"localManager","ModalService","$rootScope",
+function($scope,$location,$window,$http,templateService,localManager,ModalService,$rootScope){
   $scope.data = templateService.holdTheCenterToFowardPrescriptionTo;
   $scope.user = {};
 
@@ -17750,6 +17773,15 @@ app.controller("searchSelectedCenterController",["$scope","$location","$window",
   }
 
 
+  $scope.returnMain = function(item) {
+    item.dosage = "";
+    item.other = undefined;
+    item.quantity = 0;
+  }
+
+
+  $scope.frequencies = ["OD","BD","TDS","QDS"];
+  $scope.durations = ["1 day","2 days","3 days", "5 days","6 days", "7 days","1 week", "2 weeks", "3 weeks", "1 month", "2 months","3 months","4 months","6 months"]
 
   $scope.isContent = true;
 
@@ -17762,11 +17794,13 @@ app.controller("searchSelectedCenterController",["$scope","$location","$window",
           $scope.phoneMsg = "Enter patient's phone number";
           return;
         }
+        
+        $scope.data.phone = $rootScope.setPhone($scope.data.phone)
 
-        if(!$scope.data.provisional_diagnosis) {
+        /*if(!$scope.data.provisional_diagnosis) {
           $scope.provisionalMsg = "Enter description";
           return;
-        }
+        }*/
       }
     }
 
@@ -17786,14 +17820,14 @@ app.controller("searchSelectedCenterController",["$scope","$location","$window",
     $scope.data.user_id = $scope.data.id;
     $scope.data.sent_date = date;
 
-    var drugArr = $scope.data.str.split(",");    
+    var drugArr = $rootScope.foundDrugArr;//$scope.data.str.split(",");    
     for(var i = 0; i < drugArr.length; i++){
       var drugObj = {};
-      drugObj.sn = i + 1;
-      drugObj.drug_name = drugArr[i];
-      drugObj.dosage = "";
-      drugObj.frequency = "";
-      drugObj.duration = "";
+      drugObj.sn = drugArr[i].sn;
+      drugObj.drug_name = drugArr[i].drug_name;
+      drugObj.dosage = (drugArr[i].quantity) ? ( drugArr[i].dosage + " ( " + drugArr[i].quantity + " )") : (drugArr[i].other) ? drugArr[i].other : drugArr[i].dosage;
+      drugObj.frequency = (drugArr[i].frequency) ? drugArr[i].frequency : "";
+      drugObj.duration = (drugArr[i].duration) ? drugArr[i].duration : "";
       drugArr[i] = drugObj;
     }
     $scope.data.prescription_body = drugArr;
@@ -19322,6 +19356,8 @@ function($scope,$rootScope,$location,$http,localManager,Drugs,cities,courierResp
 
   $scope.returnMain = function(item) {
     item.dosage = "";
+    item.other = undefined;
+    item.quantity = 0;
   }
 
   $http.get("/user/courier-centers")
@@ -20154,6 +20190,25 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
     } 
   }
 
+  $rootScope.setPhone = function(phoneNumber) {
+    if(phoneNumber) {
+      var val = (typeof phoneNumber == 'number') ? phoneNumber.toString() : phoneNumber;
+      var subNum = val.substring(0,2)
+      if(subNum !== "+2" && subNum !== "23"){
+        var toNum = parseInt(val);
+        if(typeof toNum == 'number'){
+          val = "+234" + phoneNumber;
+        }
+      } 
+
+      if(val.substring(0,1) !== "+"){
+        val = "+" + val;
+      }
+
+      return val;
+    }
+  }
+
   $scope.$watch('online', function(newStatus) { 
     $rootScope.onlineStatus = newStatus;
     $rootScope.acknowledged = false;
@@ -20403,7 +20458,6 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
   $rootScope.email = function(docInfo,type) {
     $rootScope.emailData = {}
     $rootScope.emailData.type = type;
-    console.log(docInfo)
     switch (type) {
       case 'Prescription':
         if(docInfo.doctor_work_place) {
@@ -20445,7 +20499,7 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
          $rootScope.emailData.htmlTemp = "<h3 style='text-align:center'>" 
           + docInfo.center_name + "<br><span style='font-size:14px'>" + docInfo.center_address + ", " 
           + docInfo.center_city + ", " + docInfo.center_country
-          + "</span><br> <span style='font-size:14px'>" + docInfo.center_phone + "<span><br><span> https://applinic/user/profile/view/" + docInfo.center_id
+          + "</span><br> <span style='font-size:14px'>" + docInfo.center_phone + "<span><br><span> https://applinic.com/user/profile/view/" + docInfo.center_id
           + "</span></h3>"  + "<br><b>Patient Name: </b><span>" + $rootScope.checkLogIn.title + " " 
           + $rootScope.checkLogIn.firstname + " " + $rootScope.checkLogIn.lastname 
           + "<br></span><b>Patient Age: </b><span>" + $rootScope.checkLogIn.age 
@@ -20453,14 +20507,14 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
           + "<br><div><br><b>Referring Physician: </b> " + 
           "<span> " + docInfo.referral_title + " " + docInfo.referral_firstname + " " + docInfo.referral_lastname 
           + "</span><br><br><b>Date Requested : </b><span>" + $filter('amCalendar')(docInfo.sent_date) + "</span><br><br>"       
-          + "<span>Doctor Profile URL: </span> " + "https://applinic/user/profile/view/" + docInfo.referral_id + "<br><br>"
+          + "<span>Doctor Profile URL: </span> " + "https://applinic.com/user/profile/view/" + docInfo.referral_id + "<br><br>"
           + "</span><b>Test Referrence NO: </b><span>" + docInfo.ref_id + "</span><br><br>"
-          + "</span><b>Indication: </b><span>" + docInfo.indication + "</span><br><br>"
+          + "</span><b>Indication: </b><span>" + ((docInfo.indication) ? docInfo.indication : 'N/A') + "</span><br><br>"
           + "<b>Investigation(s) Requested: </b> <br>" 
           + "<ol>" + listInvestigations(docInfo.test_to_run) + "</ol><br><br>"
           + "<b>Result: </b><br>"
           + createReportTests(docInfo.report,'laboratory') + "<br>"
-          + "<b>CONCLUSION: </b> <br><span style='color:green'>" + docInfo.conclusion + "<br><br>"
+          + "<b>CONCLUSION: </b> <br><span>" + docInfo.conclusion + "<br><br>"
           + "<a href='https://applinic.com' style='text-decoration:none'><img src='https://applinic.com/assets/images/icons/favicon.png' style='width:32px;height:auto'> <b>Applinic</b></a><br>"
           + "<div style='font-size: 14px'>The above Investigation(s) was written in www.applinic.com (Online Healthcare Application).<br><br><a href='https://applinic.com/signup' style='text-decoration:none'>Create an account for free" +  
           "</a> and enjoy our services for writting, receiving and sharing investigation with friends or collegues.<br><br>We keep records of your laboratory history and it's safe with us.<br><br> For enquiries please call customer support on +2349080045678</div>"
@@ -20487,7 +20541,6 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
       str += "<tr><td style='font-size: 14px;padding:1px'>" + item.sn + "</td>" + "<td style='font-size: 12px;padding:5px'>" + item.drug_name + "</td>" + "<td style='font-size: 14px;padding:5px'>" + item.dosage 
       + "</td>" + "<td style='font-size: 14px;padding:5px'>" + item.frequency + "</td>" + "<td style='font-size: 14px;padding:5px'>" + item.duration + "</td></tr>"
     });
-
     return str;
   }
 
@@ -20495,8 +20548,7 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
     var str = ""
     arr.forEach(function(item) {
       str += "<li><b>" + item.name + "</b></li>";
-    })
-
+    });
     return str;
   }
 
@@ -20512,8 +20564,8 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
         for(var i = 0; i <  itemName.report_sheet.length; i++) {
           var test = itemName.report_sheet[i];
           if(test) {           
-            str += "<tbody><td style='font-size: 14px;padding:5px'>" + test.r_name + "</td><td style='font-size: 14px;padding:5px'>" + test.r_tum + "</td><td style='font-size: 14px;padding:5px'>" 
-            + test.r_result + "</td><td style='font-size: 14px;padding:5px'>" + test.r_range + "</td><td style='font-size: 14px;padding:5px'>" + test.r_unit + "</td><td style='font-size: 14px;padding:5px'>" + test.r_flag + "</td></tbody>";
+            str += "<tbody><td style='font-size: 14px;padding:5px'>" + ((test.r_name) ? test.r_name : "-") + "</td><td style='font-size: 14px;padding:5px'>" + ((test.r_tum) ? test.r_tum : "-")  + "</td><td style='font-size: 14px;padding:5px'>" 
+            + ((test.r_result) ? test.r_result : "-") + "</td><td style='font-size: 14px;padding:5px'>" + ((test.r_range) ? test.r_range : "-")  + "</td><td style='font-size: 14px;padding:5px'>" + ((test.r_unit) ? test.r_unit : "-")  + "</td><td style='font-size: 14px;padding:5px'>" + ((test.r_flag) ? test.r_flag : "-") + "</td></tbody>";
           }
         }
         str += "</table><br>"

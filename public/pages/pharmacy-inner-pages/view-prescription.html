@@ -17,16 +17,16 @@
 				<div><strong>{{refData.pharmacy.patient_gender}}</strong></div>
 			</div>
 			<div class="clearfix"></div>		
-			<h6 class="text-muted pb-1" style="margin-top: 20px">Reference Details</h6>
+			<h6 class="pb-1" style="margin-top: 20px">Reference Details:</h6>
 			<ul class="nav font-1_1" style="line-height: 30px">
 				<li style="font-weight: bold;">Referred by:  <span style="font-weight: 300">{{refData.referral_title}} {{refData.referral_firstname}} {{refData.referral_lastname}} </span></li>
 				<li style="font-weight: bold;">Received:  <span am-time-ago="refData.date" style="font-weight: 300;"></span></li>
 				<!--<li><strong>Time </strong>| {{refData.date | date: "mediumTime"}}</li>-->
 				<li style="font-weight: bold;">Reference number: <span class="text-danger" style="font-weight: 300;">{{refData.ref_id}}</span></li>
 			</ul>
-			<h6 class="text-muted pb-1 mt-2">Prescription Details</h6>
-			<p><strong>Please untick drug(s) you don't have.</strong> If dosage, frquency and duration fields are missing you can add them based on the drugs you already administered.
-				<strong>Unticked drug </strong> is regarded as NOT available in your center<span> which you can <strong>refer to another </strong> center.</span></p>	
+			<h6 class="pb-1 mt-2">Prescription Details: <i class="fa fa-question-circle tip"><span>Initially, all drugs are ticked as available in your center. You can untick any drug that is not available and forward to another center. You can add dosage, frequency and duration if such values are missing. </span></i></h6>
+			<!--<p><strong>Please untick drug(s) you don't have.</strong> If dosage, frquency and duration fields are missing you can add them based on the drugs you already administered.
+				<strong>Unticked drug </strong> is regarded as NOT available in your center<span> which you can <strong>refer to another </strong> center.</span></p-->
 				<!--<div style="text-align: right;">
 				<a href="" ng-click="refresh()"style="color:orange"><i class="fa fa-refresh"></i> Refresh</a>	
 				</div-->		
@@ -38,16 +38,16 @@
 						<th><strong>Dosage</strong></th>
 						<th><strong>Frequency</strong></th>
 						<th><strong>Duration</strong></th>
-						<th>Tick</th>
+						<th>&nbsp;</th>
 					</thead>
 				</tr>
 				<tr>
 					<tbody ng-repeat="prescription in refData.pharmacy.prescription_body">											
 						<td ng-if="!prescription.unavail">{{prescription.sn}}</td>
 						<td  ng-if="!prescription.unavail">{{prescription.drug_name}}</td><!-- 	ng-class="{strike: prescription.picked}" -->				
-						<td  ng-if="!prescription.unavail">{{prescription.dosage}}<input type="text" name="dosage" ng-model="prescription.dosage" class="form-control" ng-if="!refData.pharmacy.doctor_id"></td>
-						<td  ng-if="!prescription.unavail">{{prescription.frequency}}<input type="text" name="dosage" ng-model="prescription.frequency" class="form-control" ng-if="!refData.pharmacy.doctor_id"></td>
-						<td  ng-if="!prescription.unavail">{{prescription.duration}}<input type="text" name="dosage" ng-model="prescription.duration" class="form-control" ng-if="!refData.pharmacy.doctor_id"></td>
+						<td  ng-if="!prescription.unavail">{{prescription.dosage}}<input type="text" name="dosage" ng-model="prescription.dosage" class="form-control" ng-if="!refData.pharmacy.doctor_id && !prescription.dosage"></td>
+						<td  ng-if="!prescription.unavail">{{prescription.frequency}}<input type="text" name="dosage" ng-model="prescription.frequency" class="form-control" ng-if="!refData.pharmacy.doctor_id && !prescription.frequency"></td>
+						<td  ng-if="!prescription.unavail">{{prescription.duration}}<input type="text" name="dosage" ng-model="prescription.duration" class="form-control" ng-if="!refData.pharmacy.doctor_id && !prescription.duration"></td>
 						<td ng-if="!prescription.unavail">
 						<div>
 					<label class="custom-control custom-checkbox">
@@ -81,7 +81,7 @@
 			
 			<div style="list-style:none;font-size:14px" ng-if="!refData.pharmacy.is_paid">
                 <div>  
-                	<h6 class="text-muted pb-1 mt-2">Compute Cost:</h6>
+                	<h6 class="pb-1 mt-2">Compute Cost:</h6>
                      <table class="table">
                      	<tr>
                      		<thead ng-if="isFilled === true">
@@ -91,7 +91,7 @@
                      	</tr>
                      	<tr>
                      		<tbody ng-repeat = "j in drugsForSurchage">
-                     			<td style="width: 55%;padding:10px;color: orange;font-weight: bold;">{{j.name}}</td>
+                     			<td style="width: 55%;padding:10px;color: green;font-weight: bold;">{{j.name}} {{(j.dosage) ? j.dosage : ""}}</td>
                      			<td><input type="number" ng-model="j.amount" style="padding:10px" class="form-control"></td>
                      		</tbody>
                      	</tr>
@@ -106,7 +106,7 @@
             </div>
 			<div style="margin-top: 20px; margin-bottom: 30px">
 				<!--<button  class="btn btn-simple" disabled="disabled" style="cursor: no-drop;" ng-if="isFilled !== true">Request Payment</button>-->
-				<button class="btn btn-success btn-sm" ng-click="sendBill(refData.pharmacy.patient_id)" ng-if="isFilled && !isOTP && !refData.pharmacy.is_paid && !loading">Request Payment</button> <span ng-if="loading">Sending...</span>&nbsp;&nbsp;
+				<button class="btn btn-danger btn-sm" ng-click="sendBill(refData.pharmacy.patient_id)" ng-if="isFilled && !isOTP && !refData.pharmacy.is_paid && !loading">Request Payment</button> <span ng-if="loading">Sending...</span>&nbsp;&nbsp;
 				<!--<button class="btn btn-info btn-sm" ng-click="toList(refData.pharmacy.patient_firstname,refData.pharmacy.patient_lastname,refData.pharmacy.patient_profile_pic_url,refData.ref_id,refData.date)" ng-if="allNote.length !== 0 && isFilled !== true">Add to attendance list</button>-->
 				<button class="btn btn-neutral btn-sm" ng-click="toAnotherPharmacy()" ng-if="isForwardable === true">Refer to another <i class="fa fa-arrow-right"></i></button> 
 				

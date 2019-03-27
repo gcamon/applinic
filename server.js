@@ -41,6 +41,8 @@ var express = require('express'),
 
   var client = {}; //= new infobip('Farelands', 'icui4cuok');
 
+  var a = "+2345474"
+  console.log(a.substring(0,2))
   //client.sender.source = ""; //use numbers only for voice
   //client.sender.destinaton.push('+2348096461927');
 

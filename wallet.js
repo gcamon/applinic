@@ -248,7 +248,6 @@ Wallet.prototype.billing = function(model,billingInfo,reciever,sms,io){
 
         self.beneficiary = reciever.name;
 				self.debit(model,amount,debitor);
-				console.log("======= patient pay", amount)
 			});	
 		} else if(billingInfo.type === "Laboratory" || billingInfo.type === "Radiology") {
 			var self = this;
