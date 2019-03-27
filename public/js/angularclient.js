@@ -12784,14 +12784,6 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
 
 ////////////////////
 
-
-
-
-
-
-
-     
-
   var viewed = false;
 
   $scope.videoRequest = function(type,patientObj){
@@ -14822,52 +14814,51 @@ app.controller("pharmacyViewPrescriptionController",["$scope","$location","templ
   // sending billing to patient which otp will be send to patient informing the patient the toal cost of the bill.
   $rootScope.sendBill = function(patientId,oldTime,phoneCall) {
 
+
     if(totalCost.sum < 1) {
       var check = confirm("You did not compute the cost of drugs and the total cost is 0. Do you want to continue?");
+      if(!check)
+        return;
     }
 
-    if(check) {
-      var center = localManager.getValue('resolveUser');
-      var time = + new Date();
-      $rootScope.resend = time; //sets th old time in case otp  is resend to delete the formal otp sent by thsame user.
-      $rootScope.resendPatientId = patientId;
-      var sendObj = {
-        amount : totalCost.sum,
-        userId: patientId,
-        time: time,
-        old_time: oldTime
-      }
-
-      if(phoneCall) {
-        count++;
-        if(count <= 5) {
-          phoneCallService(sendObj,'/user/payment/verification','POST'); 
-          $rootScope.showCallingMsg = "This patient will receive a phone call in just a moment. Please enter the pin heard from the voice call below...";
-        } else {
-          alert("Sorry, you have exceeded call limit. Please contact us for assistance.");
-        }
-
-      } else {
-        var otp = paymentVerificationService; 
-        $scope.loading = true;
-        otp.verify(sendObj,function(data){
-          if(data.success){
-            alert(data.message);
-            $scope.loading = false;
-            $rootScope.refData.amount = $scope.str; // holds the amount to pay for the otp template that will come next 
-            $rootScope.refData.rawAmount = totalCost.sum;
-            $rootScope.refData.isSearchDrugRef = true;//use to check if precription from search drug utility was in use so that missing fields may be updated
-            $scope.isOTP = true;
-            //$location.path("/billing-otp");
-          } else {
-            alert(data.message);
-          }
-          
-        });
-      }
-
-    }
     
+    var center = localManager.getValue('resolveUser');
+    var time = + new Date();
+    $rootScope.resend = time; //sets th old time in case otp  is resend to delete the formal otp sent by thsame user.
+    $rootScope.resendPatientId = patientId;
+    var sendObj = {
+      amount : totalCost.sum,
+      userId: patientId,
+      time: time,
+      old_time: oldTime
+    }
+
+    if(phoneCall) {
+      count++;
+      if(count <= 5) {
+        phoneCallService(sendObj,'/user/payment/verification','POST'); 
+        $rootScope.showCallingMsg = "This patient will receive a phone call in just a moment. Please enter the pin heard from the voice call below...";
+      } else {
+        alert("Sorry, you have exceeded call limit. Please contact us for assistance.");
+      }
+
+    } else {
+      var otp = paymentVerificationService; 
+      $scope.loading = true;
+      otp.verify(sendObj,function(data){
+        if(data.success){
+          alert(data.message);
+          $rootScope.refData.amount = $scope.str; // holds the amount to pay for the otp template that will come next 
+          $rootScope.refData.rawAmount = totalCost.sum;
+          $rootScope.refData.isSearchDrugRef = true;//use to check if precription from search drug utility was in use so that missing fields may be updated
+          $scope.isOTP = true;
+          //$location.path("/billing-otp");
+        } else {
+          alert(data.message);
+        }
+        $scope.loading = false;
+      });
+    }    
   }
 
   $scope.call = function(patientId,oldTime) {
@@ -17796,7 +17787,7 @@ function($scope,$location,$window,$http,templateService,localManager,ModalServic
 
   $scope.send = function (type){
 
-    if( $rootScope.checkLogIn.typeOfUser !== 'Patient') {
+    /*if( $rootScope.checkLogIn.typeOfUser !== 'Patient') {
 
       if($scope.mode !== 'inperson') {
         if(!$scope.data.phone) {
@@ -17804,11 +17795,20 @@ function($scope,$location,$window,$http,templateService,localManager,ModalServic
           return;
         }
 
-        /*if(!$scope.data.provisional_diagnosis) {
-          $scope.provisionalMsg = "Enter description";
-          return;
-        }*/
+      
       }
+    }*/
+
+    if($scope.mode !== 'inperson') {
+      if(!$scope.data.phone) {
+        $scope.phoneMsg = "Enter recipient's phone number";
+        return;
+      }
+
+      /*if(!$scope.data.provisional_diagnosis) {
+        $scope.provisionalMsg = "Enter description";
+        return;
+      }*/
     }
 
     //if not to someone then phone number is not needed.

@@ -1974,9 +1974,13 @@
         <span>{{data.city}}</span>
         <span>{{data.country}}</span>
     </section>
-  
+     <section>
+        <button class="btn btn-info" ng-class="{'dismiss': user.someone}" ng-click="someone('inperson')" ng-if="checkLogIn.typeOfUser == 'Patient' || checkLogIn.typeOfUser == 'Doctor' && !isToSomeOne"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i>{{(loading) ? "" : 'Forward on my behalf'}}</button>
+
+        <button class="btn btn-success"  ng-click="someone()" ng-if="checkLogIn.typeOfUser === 'Patient' || checkLogIn.typeOfUser == 'Doctor' && !isToSomeOne">Forward on behalf of someone else</button>
+    </section>
    
-    <section>
+    <section ng-if="isToSomeOne">
          <form ng-submit="send('someone')">
               <section ng-if="checkLogIn.typeOfUser !== 'Doctor'">
                   <div>
@@ -2051,13 +2055,13 @@
               </section>
             
           
-                <div>                 
+                <div  ng-if="user.someone">                 
                    <label>Recipient's phone number *: <i class="fa fa-question-circle tip"><span>The phone number this recipient registered with on applinic</span></i><br>
                    <span class="text-danger">{{phoneMsg}}</span></label>
                    <input type="number" Placeholder="Enter receiver phone" ng-model="data.phone" class="form-control" required="required" style="cursor:normal">
                 </div>
                 <div ng-if="typeOfSearch === 'pharmacy'">
-                  <label>Instructions / explanations for prescription(s): <span class="text-danger">{{provisionalMsg}}</span></label>
+                  <label>Instructions / Explanations for prescription(s): <span class="text-danger">{{provisionalMsg}}</span></label>
                   <textarea class="form-control pl-1" placeholder="Write..." ng-model="data.provisional_diagnosis" ng-keyup="autoExpand($event)" id="textarea"> </textarea>
                 </div>
                 <div ng-if='typeOfSearch === "diagnostic"'>
@@ -2080,10 +2084,12 @@
                 
 
                 <div class="pb-3">
-                    <input type="button" value="Cancel" ng-click="cancel()" class="btn btn-danger" ng-if="checkLogIn.typeOfUser === 'Patient'">
+                   
                     
                     <input type="submit"  class="btn btn-danger" value="Send" ng-if="!loading">
                     <i class="fa fa-spinner fa-pulse fa-1x fa-fw text-warning" style="font-size: 18px" ng-if="loading"></i>
+
+                    <input type="button" value="Cancel" ng-click="cancel()" class="btn btn-neutral" ng-if="!loading">
                     
                     <!--<input type="button" value="New Person Form" ng-click="emp()" class="btn btn-simple" ng-if="isEMP">-->
                 </div>            

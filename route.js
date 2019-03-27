@@ -6196,7 +6196,7 @@ _id: "5c16660cba74dc0288ecfad9"
    if(req.user){
     console.log(req.body);
     var phone = parseInt(req.body.line) || parseInt(req.body.phone);
-    var person = (req.body.type == 'inperson') ? {user_id: req.user.user_id,type:"Patient"} : {phone: "+" + phone,type:"Patient"}
+    var person = (req.body.type == 'inperson') ? {user_id: req.user.user_id} : {phone: "+" + phone}
     model.user.findOne(person,
       {
         firstname:1,
@@ -6227,7 +6227,7 @@ _id: "5c16660cba74dc0288ecfad9"
         referral:1,diagnostic_center_notification:1,city:1,name:1,country:1,center_phone:1,address:1,user_id:1,presence:1,phone:1})
         .exec(function(err,pharmacy){         
           if(err) throw err;
-          
+
           if(pharmacy) {
 
             var ref_id;
