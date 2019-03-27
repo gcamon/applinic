@@ -2079,8 +2079,9 @@
         </div>
     </div>-->
     <div>
-        <button class="btn btn-info" ng-class="{'dismiss': user.someone}" ng-click="send('inperson')" ng-if="checkLogIn.typeOfUser == 'Patient'"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i>{{(loading) ? "" : 'Forward on my behalf'}}</button>
-        <button class="btn btn-success"  ng-click="someone()" ng-if="checkLogIn.typeOfUser === 'Patient'">Forward on behalf of someone else</button>
+        <button class="btn btn-info" ng-class="{'dismiss': user.someone}" ng-click="someone('inperson')" ng-if="checkLogIn.typeOfUser == 'Patient' && !isToSomeOne"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i>{{(loading) ? "" : 'Forward on my behalf'}}</button>
+
+        <button class="btn btn-success"  ng-click="someone()" ng-if="checkLogIn.typeOfUser === 'Patient' && !isToSomeOne">Forward on behalf of someone else</button>
     </div>
     <section ng-if="isToSomeOne || checkLogIn.typeOfUser !== 'Patient'">
          <form ng-submit="send('someone')">
@@ -2153,7 +2154,7 @@
               </section>
             
           
-                <div>
+                <div ng-if="user.someone">
                  
                  <label>Recipient's phone number *: <i class="fa fa-question-circle tip"><span>The phone number this recipient registered with on applinic</span></i><br>
                  <span class="text-danger">{{phoneMsg}}</span></label>
@@ -2183,11 +2184,12 @@
                 
 
                 <div class="pb-3">
-                    <input type="button" value="Cancel" ng-click="cancel()" class="btn btn-danger" ng-if="checkLogIn.typeOfUser === 'Patient'">
+                   
                     
                     <input type="submit"  class="btn btn-danger" value="Send" ng-if="!loading">
-                    <i class="fa fa-spinner fa-pulse fa-1x fa-fw text-warning" style="font-size: 18px" ng-if="loading"></i>
+                    <i class="fa fa-spinner fa-pulse fa-1x fa-fw text-warning" style="font-size: 18px" ng-if="loading"></i>&nbsp;
                     
+                     <input type="button" value="Cancel" ng-click="cancel()" class="btn btn-neutral" ng-if="checkLogIn.typeOfUser === 'Patient' && !loading">
                     <!--<input type="button" value="New Person Form" ng-click="emp()" class="btn btn-simple" ng-if="isEMP">-->
                 </div>            
         </form>

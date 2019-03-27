@@ -17756,9 +17756,16 @@ function($scope,$location,$window,$http,templateService,localManager,ModalServic
 
   $scope.data.phone = $rootScope.checkLogIn.phone;
 
-  $scope.someone = function(){
-    $scope.user.someone = true;
+  $scope.someone = function(type){
+    $scope.mode = type;
     $scope.isToSomeOne = true;
+    if(!type) {
+      $scope.user.someone = true;
+    } else {
+      $scope.user.someone = false;
+      if($scope.data.phone)
+        $scope.data.phone = undefined;
+    }
   }
 
   if($rootScope.checkLogIn.typeOfUser !== 'Patient') {
@@ -17779,6 +17786,8 @@ function($scope,$location,$window,$http,templateService,localManager,ModalServic
     item.quantity = 0;
   }
 
+ 
+
 
   $scope.frequencies = ["OD","BD","TDS","QDS"];
   $scope.durations = ["1 day","2 days","3 days", "5 days","6 days", "7 days","1 week", "2 weeks", "3 weeks", "1 month", "2 months","3 months","4 months","6 months"]
@@ -17789,13 +17798,11 @@ function($scope,$location,$window,$http,templateService,localManager,ModalServic
 
     if( $rootScope.checkLogIn.typeOfUser !== 'Patient') {
 
-      if(type !== 'inperson') {
+      if($scope.mode !== 'inperson') {
         if(!$scope.data.phone) {
-          $scope.phoneMsg = "Enter patient's phone number";
+          $scope.phoneMsg = "Enter recipient's phone number";
           return;
         }
-        
-        $scope.data.phone = $rootScope.setPhone($scope.data.phone)
 
         /*if(!$scope.data.provisional_diagnosis) {
           $scope.provisionalMsg = "Enter description";
@@ -17803,6 +17810,9 @@ function($scope,$location,$window,$http,templateService,localManager,ModalServic
         }*/
       }
     }
+
+    //if not to someone then phone number is not needed.
+    $scope.data.phone = (!$scope.mode) ? $rootScope.setPhone($scope.data.phone) : undefined;
 
     $scope.provisionalMsg = "";
     $scope.phoneMsg = "";
@@ -17815,7 +17825,7 @@ function($scope,$location,$window,$http,templateService,localManager,ModalServic
     }    
 
     var date = new Date();
-    $scope.data.type = type;
+    $scope.data.type = ($scope.data.phone) ? 'someone' : 'inperson';
     $scope.data.prescriptionId = random;
     $scope.data.user_id = $scope.data.id;
     $scope.data.sent_date = date;

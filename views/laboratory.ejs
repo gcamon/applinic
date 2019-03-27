@@ -1094,11 +1094,12 @@
                 
 
                 <div class="pb-3">
-                    <input type="button" value="Cancel" ng-click="cancel()" class="btn btn-danger" ng-if="checkLogIn.typeOfUser === 'Patient'">
+                   
                     
                     <input type="submit"  class="btn btn-danger" value="Send" ng-if="!loading">
                     <i class="fa fa-spinner fa-pulse fa-1x fa-fw text-warning" style="font-size: 18px" ng-if="loading"></i>
                     
+                     <input type="button" value="Cancel" ng-click="cancel()" class="btn btn-neutral" ng-if="checkLogIn.typeOfUser === 'Patient'">
                     <!--<input type="button" value="New Person Form" ng-click="emp()" class="btn btn-simple" ng-if="isEMP">-->
                 </div>            
         </form>
