@@ -61,24 +61,29 @@ textarea.form-control {
 
 .tip {
     text-decoration: none;
-    font-size: 18px
+    font-size: 18px;
 }
 .tip:hover {
-    cursor: help;
-    position: relative
+    cursor: pointer;
+    position: relative;
+    overflow-wrap: break-word;
 }
 .tip span {
     display: none
 }
 .tip:hover span {
-    border: #c0c0c0 1px dotted;
-    padding: 5px 20px 5px 5px;
+    font-family: inherit;
+    /*border: #c0c0c0 1px dotted;*/
+    padding: 13px;
     display: block;
     z-index: 100;
-    background-color: #000;
-    color: #fff;
+    background-color: #FFFFCC;
+    color: #000;
+    line-height: 20px;
+    font-size: 16px;
+    border-radius: 5px;
     left: 0px;
-    margin: 10px;
+    margin: 20px;
     width: 250px;
     position: absolute;
     top: 10px;

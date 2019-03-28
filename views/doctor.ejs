@@ -200,8 +200,8 @@
                    
                     <div class="header-block header-block-nav">
                         <ul class="nav-profile">
-                            <li class="notifications new"> <a href="" data-toggle="dropdown" title="notifications for newly added patients">
-                    <i class="fa fa-bell-o"></i>
+                            <li class="notifications new"> <a href="" data-toggle="dropdown">
+                    <i class="fa fa-bell-o tip"><span><b>Notification</b><br> Here you receive notification <br>for the following activities:<br> > Newly added patient to your <br>account,<br>> The result of an investigation<br> you referred to diagnostic centers<br> on behalf of your patients</span></i>
                     <sup>
                       <span class="counter" ng-if="docNotification.length > 0 " ng-cloak>{{docNotification.length}}</span>
                     </sup>
@@ -233,8 +233,8 @@
                                 </div>
                             </li>
 
-                               <li class="notifications new"> <a href="" data-toggle="dropdown" title="consultation requests">
-                    <i class="fa fa-envelope-o"></i>
+                               <li class="notifications new"> <a href="" data-toggle="dropdown">
+                    <i class="fa fa-envelope-o tip"> <span><b>Consultation Request</b><br> All consultation requests and <br> referrals from patients and<br> physicians respectively comes in here.</span></i>
                     <sup>
                       <span class="counter" ng-if="<%= person.doctor_notification.length %> > 0 " ng-cloak>{{consultationLen}}</span>
                     </sup>
@@ -267,8 +267,8 @@
                                 </div>
                             </li>
 
-                              <li class="notifications new"> <a href="" data-toggle="dropdown" title="prescription requests">
-                    <i class="icon-Pills"></i>
+                              <li class="notifications new"> <a href="" data-toggle="dropdown">
+                    <i class="icon-Pills tip"> <span><b>Prescription Request</b><br> Sometimes, your patient may <br>need you to prescribe <br> a drug based on an <br> investigation result i.e<br> (investigation you did not refer).<br> Such requests comes in here</span></i>
                     <sup>
                       <span class="counter" ng-if="isNew" ng-cloak>{{len}}</span>
                     </sup>
@@ -301,8 +301,8 @@
                                 </div>
                             </li>
 
-                               <li class="notifications new"> <a href="" data-toggle="dropdown" title="appointment requests">
-                    <i class="fa fa-calendar"></i>
+                               <li class="notifications new"> <a href="" data-toggle="dropdown">
+                    <i class="fa fa-calendar tip"> <span><b>Appointment Requests</b><br> Patients sometimes might want<br> to meet with you in person. <br> Such request comes in here.</span></i>
                     <sup>
                       <span class="counter" ng-if="inPersonRequestLen > 0 " ng-cloak>{{inPersonRequestLen}}</span>
                     </sup>
@@ -335,8 +335,8 @@
                                     </footer>
                                 </div>
                             </li>
-                            <li class="notifications new"> <a href="" data-toggle="dropdown" title="Drug delivery services">
-                    <i class="fa fa-motorcycle"></i>
+                            <li class="notifications new"> <a href="" data-toggle="dropdown">
+                    <i class="fa fa-motorcycle tip">  <span><b>Delivery Requests</b><br> Here is your drug delivery requests. <br> When a request status is <b class="text-info">Ready</b><br> it means the bill for the items<br> requested is received. You are<br> <b>REQUIRED</b> to pay the bill <br> before delivery will start.</span></i>
                     <sup>
                       <span class="counter" ng-if="courierResponseList.length > 0" ng-cloak>{{courierResponseList.length}}</span>
                     </sup>
@@ -411,17 +411,21 @@
                           </a> </li>
                                         </ul>
                                     </footer>
+
+
+                                    <i class="fa fa-question-circle tip"></i>
                                 </div>
                             </li>-->
-                             <li class="notifications new"> <a href="" ng-click = "loadChats()" data-toggle="dropdown" title="public chats with patients, health care providers and colleagues">
-                    <i class="fa fa-comment" ></i>
+                             <li class="notifications new"> <a href="" ng-click = "loadChats()" data-toggle="dropdown">
+                    <i class="fa fa-comment tip"> 
+                    <span><b>Chats</b><br>This is where you chat with your <br> online patients, doctors, diagnostic <br>and phamarceutical centers.<br>If you have an unread message,<br> red indicator shows on top <br>of this icon.</span></i>
                     <sup>
                       <span class="counter btn-danger" ng-if="showIndicator" style="border-radius: 10px;width: 8px;height: 8px;display: inline-block;"  ng-cloak></span>
                     </sup>
                   </a>
                                 <div class="dropdown-menu notifications-dropdown-menu menuSix" style="max-height: 400px;overflow-y: auto;">
                                     <ul class="notifications-container noti-style">
-                                        <li> <h6 style="text-align: center">Chats</h6> </li>
+                                        <li> <h6 style="text-align: center">Chats </h6> </li>
                                         <!--<li ng-repeat = "chat in chatsList" ng-click= "viewChat(chat.chat_id)" style="height: 80px;overflow:hidden">
                                             <a href="" class="notification-item">
                                                 <div class="img-col">
@@ -528,9 +532,9 @@
                     </a> </div>
                             </li>
 
-                             <li class="dropdown sarch">
-                                <a href="" class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown">
-                                    <i class="fa fa-search text-warning" aria-hidden="true"></i> Searches
+                             <li class="dropdown">
+                                <a href="" class="dropdown-toggle btn btn-primary text-white round mr-0 prf" id="navbarDropdownMenuLink" data-toggle="dropdown" style="font-size: 16px;padding: 8px 12px">
+                                    <i class="fa fa-search text-white" aria-hidden="true"></i> Searches
                                 </a>
                                 <div class="okd dropdown-menu dropdown-menu-right" style="line-height: 35px" aria-labelledby="navbarDropdownMenuLink">
                                    <a class="dropdown-item" href="#/find-specialist"><i class="fa fa-search text-warning" aria-hidden="true"></i> Doctor</a>
@@ -558,7 +562,7 @@
      <div class="clearfix"></div>
             <div class="app" id="app">
                 <header class="container mobile-center" style="background:#fff; border-left:1px solid #f2f2f2; min-height:70px; line-height:70px; padding:5px;" ng-controller="presenceSocketController">
-                            <div class="col-md-12 col-sm-12 col-xs-12" >
+                            <div class="col-md-12 col-sm-12 col-xs-12">
                                
                                   <div class="col-md-12"> 
                                   <label class="custom-control custom-radio">
@@ -579,17 +583,27 @@
 
 
                         <a class="btn btn-simple round mr-0" style="color:red;margin-left:10px" href="#/invite"><i class="fa fa-user-plus"></i>
-                                    <span>Invite</span></a>
+                                    <span>Invite Someone</span></a>
 
                          <a class="btn btn-simple round mr-0" style="color:red;margin-left:10px" href="#/manage-patients"><i class="fa fa-users"></i>
                                     <span> My Patients</span></a>
                                     
 
-                         <a class="btn btn-simple round mr-0" style="color:red;margin-left:10px" href="#/my-skills"><i class="fa fa-user-md"></i>
-                                    <span> My Skills &amp; Procedures</span></a>
+                       <!--<a class="btn btn-simple round mr-0 dropdown-toggle" style="color:red;margin-left:10px" href="" id="navbarDropdownMenuLink2" data-toggle="dropdown"><i class="fa fa-search"></i>
+                                    <span>Find Service</span></a>
 
                        
-
+                        <div class="dropdown-menu" style="line-height: 35px;position: absolute; top: 70px;right: 100px" aria-labelledby="navbarDropdownMenuLink2">
+                           <a class="dropdown-item" href="#/find-specialist"><i class="fa fa-search text-warning" aria-hidden="true"></i> Doctor</a>
+                            <a class="dropdown-item" href="#/special-center"><i class="fa fa-search text-warning" aria-hidden="true"></i> Special Center</a>
+                            <a class="dropdown-item" href="#/pharmacy-in"><i class="fa fa-search text-warning" aria-hidden="true"></i> Pharmaceutical Center</a>
+                             <a class="dropdown-item" href="#/laboratory-in"><i class="fa fa-search text-warning" aria-hidden="true"></i> Laboratory Center</a>
+                              <a class="dropdown-item" href="#/radiology-in"><i class="fa fa-search text-warning" aria-hidden="true"></i> Radiology Center</a>
+                            <a class="dropdown-item" href="#/drug"><i class="fa fa-search text-warning" aria-hidden="true"></i> Drug</a>
+                            <a class="dropdown-item" href="#/scan-search"><i class="fa fa-search text-warning" aria-hidden="true"></i> Radiology Test</a>
+                            <a class="dropdown-item" href="#/search-test"><i class="fa fa-search text-warning" aria-hidden="true"></i> Laboratory Test</a>
+                            <a class="dropdown-item" href="#/procedure"><i class="fa fa-search text-warning" aria-hidden="true"></i> Skills &amp; Procedures</a>
+                        </div>-->
                       
                      
                         <!--<a class="nav-link"  href=""  class="btn btn-primary" data-toggle="modal" data-target="#exampleModalLong">-->
@@ -769,6 +783,9 @@
                                 </a> </li>
                                        
                                     </ul>
+                                </li>
+                                <li>
+                                  <a href="#/my-skills"><i class="fa fa-folder"></i> My skills &amp; Procedures</a>
                                 </li>
                                  <li> 
                                     <a href="">
@@ -2101,9 +2118,8 @@
     <div class="m-0"><strong class="font-1-1"> center name: </strong><em>{{data.name}}</em> </div> 
     <div class="m-0"><strong class="font-1-1"> center location: </strong><em>{{data.address}}, {{data.city}}, {{data.country}}</em> </div> 
     <div class="mb-1"><span class="font-1-2" style="color:red"> Ref No:  </span><em>{{result}}</em> </div> 
-    <div class="font-1-1">Plesae take note of the center name and 
-        reference number above because it will be used to easy 
-        location and identification respectively
+    <div class="font-1-1">Please take note of the center name and 
+        reference number above. You will use the reference number to find this prescription at the center.
     </div>
 </div>
   
