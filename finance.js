@@ -239,12 +239,14 @@ var basicPaymentRoute = function(model,sms,io,paystack,client,nodemailer){
 			});
 
 			function creditUser(amount) {
-				model.user.findOne({user_id:req.user.user_id},{firstname:1,lastname:1,user_id:1},function(err,data){				
+				model.user.findOne({user_id:req.user.user_id},{firstname:1,lastname:1,user_id:1,name:1},function(err,data){				
 					if(err){
 						res.send("Error occured! account not credited!");
 					} else {
 						var date = + new Date();
 						var reciever = {user_id: data.user_id};
+						data.firstname = (data.lastname) ? data.firstname : data.name;
+						data.lastname = (data.lastname) ? data.lastname : "";
 						var pay = new Wallet(date,data.firstname,data.lastname,"Account top-up (Paystack)",req.body.reference);
 						pay.credit(model,reciever,amount,io,function(currBalnce){
 							res.send({message:"Your account has been credited successfully!",balance:currBalnce});

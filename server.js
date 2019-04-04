@@ -41,8 +41,7 @@ var express = require('express'),
 
   var client = {}; //= new infobip('Farelands', 'icui4cuok');
 
-  var a = "+2345474"
-  console.log(a.substring(0,2))
+ 
   //client.sender.source = ""; //use numbers only for voice
   //client.sender.destinaton.push('+2348096461927');
 
@@ -170,7 +169,22 @@ transporter.sendMail(mailOptions, function(error, info){
   }
 });*/
 
-
+model.user.find({type: "Doctor"},function(err,data){
+  console.log(data)
+  data.forEach(function(item){
+    /****create user paystack account****/
+    paystack.customer.create({
+      first_name: item.firstname || item.name,
+      last_name: item.lastname || "applinic_user",
+      email: item.email,
+      phone: item.phone,
+      metadata: {
+        user_id: item.user_id,
+        createdAt: new Date()
+      }
+    });
+  })
+})
 
 
 

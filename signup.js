@@ -82,18 +82,20 @@ var signupRoute = function(model,sms,geonames,paystack,io,nodemailer) {
 						transaction: []
 					}
 
+					
+					/****create user paystack account****/
+					paystack.customer.create({
+					  first_name: req.body.firstname,
+					  last_name: req.body.lastname,
+					  email: req.body.email,
+					  phone: req.body.phone,
+					  metadata: {
+					    user_id: uid,
+					    createdAt: new Date()
+					  }
+					});
+
 					if(req.body.typeOfUser === "Patient"){
-						/****create user paystack account****/
-						paystack.customer.create({
-						  first_name: req.body.firstname,
-						  last_name: req.body.lastname,
-						  email: req.body.email,
-						  phone: req.body.phone,
-						  metadata: {
-						    user_id: uid,
-						    createdAt: new Date()
-						  }
-						});
 
 						//family account
 						User.family_accounts.unshift({
