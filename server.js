@@ -169,10 +169,10 @@ transporter.sendMail(mailOptions, function(error, info){
   }
 });*/
 
-model.user.find({type: "Doctor"},function(err,data){
+/*model.user.find({type: "Doctor"},function(err,data){
   console.log(data)
   data.forEach(function(item){
-    /****create user paystack account****/
+   
     paystack.customer.create({
       first_name: item.firstname || item.name,
       last_name: item.lastname || "applinic_user",
@@ -184,7 +184,7 @@ model.user.find({type: "Doctor"},function(err,data){
       }
     });
   })
-})
+})*/
 
 
 
