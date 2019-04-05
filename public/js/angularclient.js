@@ -8571,10 +8571,14 @@ app.controller("walletController",["$scope","$http","$rootScope","$location","Mo
         $scope.paystackLoad = ""; 
         $rootScope.paystatusMsg = data.message;*/
         alert(data.message)
-        window.location.href = dashbard;
+        //window.location.href = dashbard;
+        var round = Math.round(data.balance)
+        var format = "NGN" + round.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        $rootScope.balance = format;
+
       } else {
         alert(data.message);
-        window.location.href = dashbard;              
+        //window.location.href = dashbard;              
       }
     });
   }
