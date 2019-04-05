@@ -90,17 +90,17 @@
 
 <div class="card card-center-1 p-2">
 	<h4 class="mb-1 p-0">Fund wallet</h4>
-	<form>
+	<form class="col-md-6">
 		<label class="font-1-1">Choose payment method: </label>
 		<select ng-model="pay.mode" class="form-control">
-			<option class="font-1-3">Pay with Card/Bank Account</option>
+			<option selected="selected">Pay with Card/Bank Account</option>
 			<!--<option>Pay with USSD</option>
 			<option>Pay through Bank Deposit</option>
 			<option>Voucher</option>-->
 		</select>
 	</form>
-	
-	<div ng-if="isATM" class="mt-2">
+	<div class="clearfix"></div>
+	<div ng-if="isATM" class="mt-2 col-md-6">
 		
 		<form>
 			<label> {{pay.mode}} </label>
@@ -119,7 +119,7 @@
 		        reference="reference"
 		        metadata="metadata"
 		        callback="callback"
-		        close="close" class="btn btn-success"  ng-click="status()" id="paystackBtn"> 
+		        close="close" class="btn btn-success" id="paystackBtn"> 
 			</paystack-pay-button>&nbsp; <!--<i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange" ng-if="paystackLoad"></i> {{paystackLoad}}-->
 				<!--<input type="button" value="Confirm" ng-click="interswitch()" class="btn btn-success">-->
 			</div>

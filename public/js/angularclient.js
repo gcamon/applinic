@@ -8391,8 +8391,8 @@ app.controller("walletController",["$scope","$http","$rootScope","$location","Mo
   $scope.viewInvoice = false;
   var user = localManager.getValue("resolveUser");
   $scope.pay = {};
-  $scope.pay.mode = "";
   $scope.pay.pin = "";
+  $scope.pay.mode = "Pay with Card/Bank Account";
 
   /*$scope.goBack = function () {
     $location.path(localManager.getValue("currentPageForPatients"))
@@ -8490,6 +8490,8 @@ app.controller("walletController",["$scope","$http","$rootScope","$location","Mo
 
   $scope.pay.amount = 0;
 
+
+
   //status check
 
   $scope.status = function() {   
@@ -8509,13 +8511,16 @@ app.controller("walletController",["$scope","$http","$rootScope","$location","Mo
       }
     ]
   };
+
+ 
   
   //Javascript function that is called when the payment is successful 
   $scope.callback = function (response) {    
       delete $scope.paystackLoad;
-      $scope.$apply(function(){
-        $scope.reference = genRef();
-      }); 
+      $scope.paystackLoad = "Loading Paystack...";
+      //$scope.$apply(function(){
+        //$scope.reference = genRef();
+     // }); 
       if(response) {
         verifyTransaction(response);        
       }
@@ -8537,6 +8542,27 @@ app.controller("walletController",["$scope","$http","$rootScope","$location","Mo
       headers : {'Content-Type': 'application/json'} 
       })
     .success(function(data) {
+      var dashbard;
+      switch(customer.typeOfUser) {
+        case "Doctor":
+          dashbard = "/user/doctor";
+        break;
+        case "Patient":
+          dashbard = "/user/patient";
+        break;
+        case "Laboratory":
+          dashbard = "/user/laboratory";
+        break;
+        case "Radiology":
+          dashbard = "/user/radiology";
+        break;
+        case "Pharmacy":
+          dashbard = "/user/pharmacy";
+        break;
+        default:
+        break
+      }
+
       if(!data.error) {
         /*var whole = Math.round(data.balance);
         var format = "NGN" + whole.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -8545,10 +8571,10 @@ app.controller("walletController",["$scope","$http","$rootScope","$location","Mo
         $scope.paystackLoad = ""; 
         $rootScope.paystatusMsg = data.message;*/
         alert(data.message)
-        window.location.href = "/user/patient";
+        window.location.href = dashbard;
       } else {
         alert(data.message);
-        window.location.href = "/user/patient";              
+        window.location.href = dashbard;              
       }
     });
   }
@@ -8562,6 +8588,8 @@ app.controller("walletController",["$scope","$http","$rootScope","$location","Mo
         text += possible.charAt(Math.floor(Math.random() * possible.length));
       return text;
   }
+
+ 
 
 
   

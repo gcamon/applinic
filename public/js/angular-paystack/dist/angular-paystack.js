@@ -143,7 +143,7 @@
                                     key: options.key,
                                     email: scope.email,
                                     amount: scope.amount * 100,
-                                    ref: scope.reference,
+                                    ref: genRef(),//scope.reference,
                                     metadata: scope.metadata,
                                     callback: function (response) {
                                         console.log("Payment callback received");
@@ -167,6 +167,15 @@
                 };
             }
         ]);
+
+
+        function genRef() {
+            var text = "";
+            var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0001112333344467888999666005557772229999";
+              for( var i=0; i < 26; i++ )
+                text += possible.charAt(Math.floor(Math.random() * possible.length));
+              return text;
+        }
 
     }).call(this);
 
