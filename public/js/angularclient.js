@@ -4550,12 +4550,12 @@ app.controller("docNotificationController",["$scope","$location","$resource","$i
         
         $scope.name = templateService.getfirstname;
         $scope.total = data.doctor_notification.length;        
-        $scope.consultation = filter.consultation;
+        $rootScope.consultation = filter.consultation;
 
         $rootScope.docNotification = filter.acceptance; //remember to concat for video and audio requests
         $rootScope.videoRequest = (!localManager.getValue("videoCallerList")) ? localManager.getValue("videoCallerList") : null;
         $rootScope.audioRequest = (!localManager.getValue("audioCallerList")) ? localManager.getValue("audioCallerList") : null;
-        $scope.inPersonRequest =  filter["Meet In-person"] || [];//(!localManager.getValue("meetInPersonList")) ? localManager.getValue("meetInPersonList") : null;
+        $rootScope.inPersonRequest =  filter["Meet In-person"] || [];//(!localManager.getValue("meetInPersonList")) ? localManager.getValue("meetInPersonList") : null;
         $scope.inPersonRequestLen = $scope.inPersonRequest.length;
         
 
@@ -4563,7 +4563,7 @@ app.controller("docNotificationController",["$scope","$location","$resource","$i
           $scope.consultationLen = filter.consultation.length;
 
       
-        $scope.view = function(patient){
+        $rootScope.view = function(patient){
           random = Math.floor(Math.random() * 999999);          
           requestManager.set(patient);
           $location.path("/patient-request/" + random);
@@ -4788,7 +4788,7 @@ app.controller("docNotificationController",["$scope","$location","$resource","$i
 
 
 
-  $scope.viewApp = function(id,msgId) {
+  $rootScope.viewApp2 = function(id,msgId) {
     var deleteFn = new deleteFactory(msgId,"doctor_notification");
     deleteFn.deleteItem("/user/doctor/deleteAppRequest","Appointment request deleted");
     $scope.inPersonRequestLen--;
@@ -4842,7 +4842,7 @@ app.controller("docNotificationController",["$scope","$location","$resource","$i
 
   $rootScope.loadChats();
 
-  $scope.viewChat = function(partnerId) {
+  $rootScope.viewChat = function(partnerId) {
     templateService.holdId = partnerId;
     $location.path("/general-chat");
     $scope.showIndicator = false;
@@ -4876,7 +4876,7 @@ app.controller("docNotificationController",["$scope","$location","$resource","$i
 
   var pt;
 
-  $scope.viewResponse = function(item) {
+  $rootScope.viewResponse = function(item) {
     $rootScope.courierResponse = item;
     pt = '/courier-response/' + Math.floor(Math.random() * 99999999);
     $location.path(pt);

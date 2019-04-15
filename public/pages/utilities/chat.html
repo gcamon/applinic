@@ -12,7 +12,7 @@
 						<img src="{{chat.profilePic}}" style="float: left;height:75px;width:62px">			
 						<a href="" class="chat-header-text ellipsis" ng-class="{'chat-header-text-new' : !chat.is_read}" style="display: inline-block;padding-left: 10px;width: 85%;position: relative;">
 							<strong style="display: block;" >{{chat.name}}</strong>
-							<span style="display: block;">( {{chat.partnerType}} )</span>
+							<span style="display: block;">{{chat.partnerType}}</span>
 							 <span style="display:block;" class="ellipsis">{{(!chat.typing) ? (chat.messages[chat.messages.length - 1].received || chat.messages[chat.messages.length - 1].sent ) : chat.typing }} 
 							 <small style="display:block;" am-time-ago="chat.messages[chat.messages.length - 1].time  || chat.messages[chat.messages.length - 1].received" ng-cloak></small></span> 
 							 <span style="position: absolute;bottom: 0;right: 20px"><span ng-if="chat.status" class="online" style="background-color: #85CE36"></span><span ng-if="!chat.status" class="online" style="background-color: #ccc;"></span></span>
@@ -29,7 +29,7 @@
 						<img src="{{chat.profilePic}}" style="float: left;height:75px;width:62px">			
 						<a href="" class="chat-header-text ellipsis" ng-class="{'chat-header-text-new' : !chat.is_read}" style="font-size: 12px;display: inline-block;padding-left: 10px;width: 85%;position: relative;">
 							<strong style="display: block;" >{{chat.name}}</strong>
-							<span style="display: block;">( {{chat.partnerType}} )</span>
+							<span style="display: block;">{{chat.partnerType}}</span>
 							 <span style="display:block;" class="ellipsis">{{(!chat.typing) ? (chat.messages[chat.messages.length - 1].received || chat.messages[chat.messages.length - 1].sent ) : chat.typing }} 
 							 <small style="display:block;" am-time-ago="chat.messages[chat.messages.length - 1].time  || chat.messages[chat.messages.length - 1].received" ng-cloak></small></span> 
 							 <span style="position: absolute;bottom: 0;right: 20px"><span ng-if="chat.status" class="online" style="background-color: #85CE36"></span><span ng-if="!chat.status" class="online" style="background-color: #ccc;"></span></span>
@@ -47,7 +47,7 @@
 	                    <div class="col-md-5 col-sm-5 col-lg-5 col-xs-5">
 	                    	<img src="{{partner.profilePic}}" style="float: left;max-height: 42px;width:42px">	
 	                      <!--<button class="btn btn-simple text-danger" style="font-size: 16px" ng-click="chatLive()">Chat</button> &nbsp;&nbsp;-->
-	                        <span class="ellipsis" style="display:inline-block;font-size: 12px;padding: 3px 5px" ng-cloak><b>{{partner.name}} ( {{partner.partnerType}} )</b>&nbsp;
+	                        <span class="ellipsis" style="display:inline-block;font-size: 12px;padding: 3px 5px" ng-cloak><b>{{partner.name}} - {{partner.partnerType}} </b>&nbsp;
 	                        	<span style="display: block;">
 	                            <em ng-if="partner.typing" style="font-size: 12px;color: green"><small>{{partner.typing}}</small></em> 
 	                            <em ng-if="partner.status && !partner.typing" style="font-size: 12px;color: green" ng-cloak>Online</em>
