@@ -208,7 +208,7 @@
 <!-- for doctor dashboard -->
 
 <div class="card-center-1 p-2" ng-if="checkLogIn.typeOfUser === 'Doctor'">
-	<label class="text-muted">Hi, {{(checkLogIn.title) ? (checkLogIn.title !== "SC") ? checkLogIn.title : "" : ""}} {{checkLogIn.lastname}} {{checkLogIn.name}}</label><br>
+	<label class="text-muted">Hi, {{(checkLogIn.title) ? (checkLogIn.title !== "SC") ? checkLogIn.title : "" : ""}} {{checkLogIn.lastname || checkLogIn.name}}</label><br>
 	<div class="card p-2"  ng-if="consultation.length > 0">
 		<div>
 			<label class="text-muted p-1"><i class="fa fa-envelope"></i> Consultation Requests</label><br>
