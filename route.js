@@ -4475,7 +4475,7 @@ _id: "5c16660cba74dc0288ecfad9"
               note_id: testId,
               ref_id: random,
               session_id:req.body.session_id,
-              message: "You have unread pending lab test"
+              message: "You have unread pending laboratory test"
             };
 
             if(record.presence === true) {
@@ -4941,7 +4941,7 @@ _id: "5c16660cba74dc0288ecfad9"
               note_id: testId,
               ref_id: random,
               session_id:req.body.session_id,
-              message: "You have unread pending radio test"
+              message: "You have unread pending radiology test"
             }
 
             if(record.presence === true)
@@ -7836,7 +7836,8 @@ router.post("/user/response/patients-histories",function(req,res){
                 patient.firstname + " " + patient.lastname;
               }
               patient.save(function(err,info){});
-              var message = info || "Thanks for responding " + req.user.title + " " + req.user.firstname + ". Your proposal has been sent to patient.";
+              var message = info || "Thanks for responding " + req.user.title + " " + req.user.firstname 
+              + ". Your proposal has been sent to the patient.";
               res.send({message: message}); 
               found.save(function(err,info){       
               });
@@ -7850,7 +7851,8 @@ router.post("/user/response/patients-histories",function(req,res){
         });
 
     } else {
-      res.json({Error: "403",error: "You are not verified or authorized to respond to patients' complaint. Please contact admin for more details"});
+      res.json({Error: "403",
+        error: "You are not yet verified. Only verified doctors on the platform can respond to patients' complaint. Please contact admin for verification"});
     }
 
   } else {

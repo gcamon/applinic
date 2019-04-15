@@ -1,5 +1,8 @@
 
 <div>
+	<div class="card-center-1">
+		<a href="#{{path}}" class="btn btn-simple"><i class="fa fa-arrow-left"></i> Back</a>
+	</div>
     <div class="card card-center-1 p-2">
     <h5 class="mt-0">Complaint</h5>
 	<section class="patient-view-complain" style="line-height: 32px">
@@ -51,8 +54,9 @@
 			</span>
 
 			<span style="display: block;padding-top: 10px">
-			
-				<a href="" ng-click="acceptDoc(doc)" ng-if="!holdDocInView.hasComplete" class="btn btn-info btn-sm"><b>Accept</b></a> <i class="fa fa-check" ng-if="holdDocInView.hasComplete"> {{holdDocInView.hasComplete}}</i>&nbsp;&nbsp;
+				<a href="" ng-click="acceptWithZeroFee(doc)" ng-if="!holdDocInView.hasComplete && doc.fee == 0 && !doc.loading" class="btn btn-info btn-sm"><b>Accept</b></a> <i class="fa fa-check" ng-if="holdDocInView.hasComplete && doc.fee == 0"> {{holdDocInView.hasComplete}}</i><span ng-if="doc.loading">Processing...</span>&nbsp;&nbsp;
+
+				<a href="" ng-click="acceptDoc(doc)" ng-if="!holdDocInView.hasComplete && doc.fee > 0" class="btn btn-info btn-sm"><b>Accept</b></a> <i class="fa fa-check" ng-if="holdDocInView.hasComplete && doc.fee > 0"> {{holdDocInView.hasComplete}}</i>&nbsp;&nbsp;
 				<!--<a href="" ng-click="declineDoc(doc.doctor_user_id)" class="btn btn-simple btn-sm" style="color: red;">Decline</a>&nbsp;&nbsp;-->
 				<a href="" ng-click="viewDocProfile(doc.doctor_user_id)" style="color: blue;">View profile</a> 
 			</span>

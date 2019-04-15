@@ -111,6 +111,26 @@ textarea.form-control {
   overflow: hidden;
 }
 
+.text-normal {
+  color: #000!important;
+}
+
+.landing-ul {
+  max-height: 400px;
+  overflow-y: auto; 
+  list-style: none;
+}
+
+.landing {
+  padding: 5px!important;
+}
+
+.landing:hover {
+  background-color: #d7dde4;
+}
+
+
+
 .view-animate {
   padding:10px 0;
   /*height: 600px;to view removed later*/

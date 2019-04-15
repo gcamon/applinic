@@ -252,7 +252,6 @@ var basicPaymentRoute = function(model,sms,io,paystack,client,nodemailer){
 							res.send({message:"Your account has been credited successfully!",balance:currBalnce});
 						});				
 						
-						
 					}				
 				});	
 			}	
@@ -540,31 +539,39 @@ var basicPaymentRoute = function(model,sms,io,paystack,client,nodemailer){
 			return;
 		}
 		console.log(req.body)
-		if(req.user && req.body && req.body.userId !== req.user.user_id && req.body.otp && req.user.type === "Patient"){
-			model.otpSchema.findOne({otp:req.body.otp}).exec(function(err,data){
-				if(err) throw err;
-				
-				if(!data){
-					res.send({message:"Confirmation failed! Transaction canceled.",success: true})
-				} else {			
-				console.log(data)		
-					//check is is the right otp for a user
-					if(data.user_id === req.user.user_id) {
-						//do the actual transaction. success!
-						model.user.findOne({user_id: req.user.user_id},{ewallet:1,firstname:1,lastname:1,name:1}).exec(function(err,debitor){
-							var name = req.user.firstname || req.user.name;
-							var msg = req.body.message || "Consultation fee";
-							var pay = new Wallet(req.body.date,name,req.user.lastname,msg);
-							//note firstname or lastname of patient may change.
-							pay.consultation(model,data.amount,debitor,req.body.userId,io);
-							createConnection(debitor,data.amount);
-						});	
-						data.remove(function(){});			
-					} else {
-						res.send({message: "This OTP is not for this user"});
+		if(req.body.userId !== req.user.user_id && req.user.type === "Patient"){
+			if(!req.body.otp && req.body.amount == 0){
+					model.user.findOne({user_id: req.user.user_id},{ewallet:1,firstname:1,lastname:1,name:1})
+					.exec(function(err,debitor){
+						createConnection(debitor,req.body.amount);
+					});	
+			} else {
+				model.otpSchema.findOne({otp:req.body.otp}).exec(function(err,data){
+					if(err) throw err;
+					
+					if(!data){
+						res.send({message:"Confirmation failed! Transaction canceled.",success: true})
+					} else {			
+					console.log(data)		
+						//check is is the right otp for a user
+						if(data.user_id === req.user.user_id) {
+							//do the actual transaction. success!
+							model.user.findOne({user_id: req.user.user_id},{ewallet:1,firstname:1,lastname:1,name:1}).exec(function(err,debitor){
+								var name = req.user.firstname || req.user.name;
+								var msg = req.body.message || "Consultation fee";
+								var pay = new Wallet(req.body.date,name,req.user.lastname,msg);
+								//note firstname or lastname of patient may change.
+								pay.consultation(model,data.amount,debitor,req.body.userId,io);
+								createConnection(debitor,data.amount);
+							});	
+							data.remove(function(){});			
+						} else {
+							res.send({message: "This OTP is not for this user"});
+						}
 					}
-				}
-			})
+				})
+
+			}
 		
 			function createConnection(debitor,amount){
 				var DocObj = {					
@@ -745,7 +752,7 @@ var basicPaymentRoute = function(model,sms,io,paystack,client,nodemailer){
                   function removeFromWaitingRoom(){
                   	model.help.remove({complaint_id:req.body.sendObj.compaintId},function(err,info){
                   	});
-                  	res.send({message: msgInfo,balance:debitor.ewallet.available_amount});
+                  	res.send({message: msgInfo,balance:debitor.ewallet.available_amount,status:true});
                     console.log("note deleted");                        		                   
                   }
 

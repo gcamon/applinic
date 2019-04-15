@@ -1,6 +1,6 @@
 
 <div class="card-center-1" ng-if="path">
-	<a href="#/courier" class="btn btn-simple" ng-if="path"><i class="fa fa-arrow-left"></i> Back</a>
+	<a href="#{{path}}" class="btn btn-simple" ng-if="path"><i class="fa fa-arrow-left"></i> Back</a>
 </div>
 <div class="card p-2  card-center-1" style="position: relative;" ng-if="courierResponse">
 	<h5><i class="fa fa-motorcycle"></i> Courier Order <i class="tip fa fa-question-circle"><span>When you request for drug delivery, the dispatch pharmaceutical center receives and computes the cost of drugs you requested. The bill for the items will be sent to you which triggers <b class="text-info">Ready</b> status. You are required to pay the bill to automatically initiate the delivery process, the status will change to <b class="text-warning">On Delivery</b>. Please give the <b>order ID (below the payment history)</b> to the delivery agent when you have confirmed the receipt of the requested items. The status turns <b>Complete</b> when tranaction is successful</span></i></h5>

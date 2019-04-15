@@ -1,0 +1,205 @@
+<div class="card-center-1 p-2" ng-if="checkLogIn.typeOfUser === 'Patient'">
+	<label class="text-muted">Hi, {{(checkLogIn.title) ? checkLogIn.title : ""}} {{checkLogIn.lastname}}</label><br>
+	<div class="card p-2"  ng-if="allMsg.length > 0">		
+		<div>
+			<label class="text-muted p-1"><i class="fa fa-envelope"></i> Messages</label><br>
+			<ul class="landing-ul">
+				<li  ng-repeat = "msg in allMsg | orderBy: '-date'" class="landing">
+                    <div class="notification-item"  class="msg-drp-list" ng-click= "viewBill(msg.message_id)" ng-if="msg.category === 'outPatientBilling' && msg.category !== 'need_doctor'" style="cursor: pointer;">
+                        <div class="img-col">
+                            <div class="img fa fa-user-md" style="font-size: 28px"></div>
+                        </div>
+                        <div class="body-col">
+                            <p> <span class="accent" ng-cloak>{{msg.firstname}}</span> <span style="display:block">{{msg.message}}</span> <small am-time-ago="msg.date" style="display:block" ng-cloak></small> </p>
+                        </div>
+                    </div>
+                    <div class="notification-item" ng-click= "viewResponse1(msg.user_id,msg.complaint_id)" ng-if="msg.category === 'need_doctor' && msg.category !== 'outPatientBilling' " style="cursor: pointer;">
+                        <!--<div class="img-col">
+                            <div class="img fa fa-user-md"></div>
+                        </div>-->
+                        <div class="body-col">
+                            <p> <span class="accent" ng-cloak>Ref {{msg.complaint_id}}</span> <span style="display:block">{{msg.message}}</span> <small am-time-ago="msg.date" style="display:block" ng-cloak></small> </p>
+                        </div>
+                    </div>
+                    <div class="notification-item" ng-click= "viewMessage(msg.user_id,msg)" ng-if="msg.category !== 'need_doctor' && msg.category !== 'outPatientBilling'" style="cursor: pointer;">
+                        <div class="img-col">
+                            <div class="img" style="background-image: url({{msg.profile_pic_url}})"></div>
+                        </div>
+                        <div class="body-col">
+                            <p> <span class="accent" ng-cloak>{{msg.title}} {{msg.firstname}} {{msg.lastname}}</span> <span style="display:block" ng-class="{'text-danger': msg.reason}" ng-cloak>{{msg.message}}</span> <small style="display:block" am-time-ago="msg.date" ng-cloak></small></p>
+                        </div>
+                    </div>
+                </li>
+			</ul>
+		</div>
+	</div>
+
+	<div class="card p-2"  ng-if="courierResponseList.length > 0">
+		
+		<div>
+			<label class="text-muted p-1"><i class="fa fa-motorcycle"></i> Courier Notifications</label><br>
+			<ul class="landing-ul">
+				<li ng-repeat = "j in courierResponseList | orderBy : '-date'" class="landing" style="position: relative;" ng-click= "viewResponse(j)">
+	                <a href="" class="notification-item text-normal">
+	                    <div class="body-col">
+	                        <p> <span class="accent" ng-cloak>Drug Delivery Request {{j.request_id}}</span>
+	                            <span style="display:block"></span>
+	                            <span>{{j.date | date: 'fullDate'}} (<span am-time-ago="j.date"></span>)</span>
+	                           
+	                        </p>
+	                    </div>
+	                                                          
+	                </a>                                            
+	                  <span style="position: absolute;top: 3px;right: 5px;font-size: 12px" ng-class="{'text-danger': !j.attended,'text-info':j.attended,'text-success':j.completed,'text-warning':j.is_paid}">{{(!j.verified || !j.attended) ? 'Pending' : (!j.is_paid && j.attended) ? 'Ready': (j.is_paid && !j.completed) ? 'On Delivery' : (j.completed) ? "Received" : ""}}</span>
+	               
+
+	            </li>                     
+			</ul>
+		</div>
+	</div>
+	<div class="card p-2"  ng-if="allApp.length > 0">		
+		<div>
+			<label class="text-muted p-1"><i class="fa fa-calendar"></i> Appointments</label><br>
+			<ul class="landing-ul">
+				 <li ng-repeat = "app in allApp" class="landing" ng-click= "viewAppointment(app.session_id)">
+
+                    <a href="" class="notification-item text-normal">
+                        <div class="img-col">
+                            <div class="img" style="background-image: url({{app.profilePic}})"></div>
+                        </div>
+                        <div class="body-col">
+                            <p> <span class="accent" ng-cloak>{{app.title}} {{app.firstname}} {{app.lastname}}</span>
+                                <span style="display:block">Hi, you have an appointment with me.</span>
+                                <span>{{app.date | date: 'fullDate'}} (<b am-time-ago="app.date"></b>)</span>
+                            </p>
+                        </div>
+                    </a>
+                </li>            
+			</ul>
+		</div>
+	</div>
+
+	<div class="card p-2"  ng-if="allNote.length > 0">		
+		<div>
+			<label class="text-muted p-1"><i class="fa fa-bell"></i> Notifications</label><br>
+			<ul class="landing-ul">
+				 <li ng-repeat = "note in allNote | orderBy: '-date'" class="landing">
+                    <a href="" class="notification-item text-normal" ng-if="note.type === 'laboratory'" ng-click="viewNoteLab(note.ref_id)">
+                        <!--<div class="img-col">
+                            <div class="img icon-lab"></div>
+                        </div>-->
+                        <div class="body-col">
+                            <p><i class="fa fa-flask"></i> <span class="accent" ng-cloak>{{note.message}}</span><br><small am-time-ago="note.date"></small></p>
+                        </div>
+                    </a>
+
+                    <a href="" class="notification-item text-normal" ng-if="note.type === 'radiology'" ng-click="viewNoteRadio(note.ref_id)">
+                        <!--<div class="img-col">
+                            <div class="img fa fa-flask"></div>
+                        </div>-->
+                        <div class="body-col">
+                            <p><i class="fa fa-image"></i> <span class="accent" ng-cloak>{{note.message}}</span><br><small am-time-ago="note.date"></small></p>
+                        </div>
+                    </a>
+
+                    <a href="" class="notification-item text-normal" ng-if="note.type === 'pharmacy'" ng-click="viewNotePharmacy(note.note_id)">
+                        <!--<div class="img-col">
+                            <div class="img icon-pill"></div>
+                        </div>-->
+                        <div class="body-col">
+                            <p><i class="icon-Pills"></i> <span class="accent" ng-cloak>{{note.message}}</span><br><small am-time-ago="note.date"></small> </p>
+                        </div>
+                    </a>
+
+                </li>                           
+			</ul>
+		</div>
+	</div>
+	<div class="card p-2" ng-if="chatsList.length > 0">		
+		<div>
+			<label class="text-muted p-1"><i class="fa fa-comment"></i> Chats</label><br>
+			<ul class="landing-ul">
+				 <li ng-repeat = "chat in chatsList | orderBy : '-realTime'" ng-click= "viewChat(chat.partnerId)"  class="landing">
+                    <!--<a href="" class="notification-item text-normal">
+                        <div class="img-col">
+                            <img src="{{chat.profilePic}}" class="img">
+                        </div>
+                        <div class="body-col">                                                
+                            <p style=""> 
+                            	<span class="accent" ng-cloak>{{chat.name}}</span>
+                                <span style="display:block;width: 400px" class="ellipsis">{{chat.messages[chat.messages.length - 1].received || chat.messages[chat.messages.length - 1].sent}} <small am-time-ago="chat.messages[chat.messages.length - 1].time || chat.messages[chat.messages.length - 1].received" style="display:block" ng-cloak></small></span> 
+                            </p>
+                        </div>
+                    </a>-->
+                    <img src="{{chat.profilePic}}" style="float: left;height:75px;width:62px">			
+					<a href="" class="chat-header-text ellipsis" ng-class="{'chat-header-text-new' : !chat.is_read}" style="display: inline-block;padding-left: 10px;width: 85%;position: relative;">
+						<strong style="display: block;" >{{chat.name}}</strong>
+						<span style="display: block;">( {{chat.partnerType}} )</span>
+						 <span style="display:block;" class="ellipsis">{{(!chat.typing) ? (chat.messages[chat.messages.length - 1].received || chat.messages[chat.messages.length - 1].sent ) : chat.typing }} 
+						 <small style="display:block;" am-time-ago="chat.messages[chat.messages.length - 1].time  || chat.messages[chat.messages.length - 1].received" ng-cloak></small></span> 
+						 <span style="position: absolute;bottom: 0;right: 20px"><span ng-if="chat.status" class="online" style="background-color: #85CE36"></span><span ng-if="!chat.status" class="online" style="background-color: #ccc;"></span></span>
+						 <!--<i class="fa fa-comment-o" style="position: absolute;top:3px;right:5px" ng-if="chat.isUnRead"></i>-->
+					</a>
+					<div class="clearfix"></div>
+                </li>
+			</ul>
+		</div>
+	</div>
+	<div class="card p-2">
+		<div>
+			<h6 class="text-muted p-1">Quick Guide</h6>
+			<ul  style="list-style: none;">
+				<li>
+					<label><i class="fa fa-envelope"></i> Messages</label><br>
+					<p>All consultation requests/complaints you send and its responses from doctors are keep in messages.</p>
+				</li>
+				<li>
+					<label><i class="fa fa-bell"></i> Notifications</label><br>
+					<p>You'll receive notifications when you have new laboratory, radiology investigations to do and when the results are available. You will also receive prescription notification when a physician had written one for you.</p>
+				</li>
+				<li>
+					<label><i class="fa fa-calendar"></i> Appointment </label><br>
+					<p>In-person meeting appointments from your doctors are kept in this place.</p>
+				</li>
+				<li>
+					<label><i class="fa fa-motorcycle"></i> Drug Delivery Requests (Courier) </label><br>
+					<p>When you request for drug delivery to you current location, details/updates on the requests can be seen here.</p>
+				</li>
+				<li>
+					<label><i class="fa fa-comment"></i> Chats </label><br>
+					<p>Here you receive and send messages to diagnostic, pharmaceutical centers on applinic including other patients or your doctors.</p>
+				</li>
+			</ul>
+		</div>
+	</div>
+	<!--<div class="card p-2">
+		<div>
+			<h6 class="text-muted p-1">Quick Guide - Searches and Utilities</h6>
+			<ul  style="list-style: none;">
+				<li>
+					<label><i class="fa fa-envelope"></i> How do I buy a drug on applinic?</label><br>
+					<p>
+						Pharmaceutical centers register on applinic just like patients and doctors do. Applinic mandates these centers to update their stock inventory before the centers can show in search result when users search for drugs.<br>
+						If you want to buy a drug in applinic, you search for the drug(s) by clicking <i class="fa fa-lens"></i> Drug then enter the names of the drugs. Use "+ add" to create more input fields. While you type the name of a drug, the system will show pop-up of list of drug names relative to what you are typing.This list are drugs pulled from our database. Please check the names of drugs on the list and click on any similar to what you wanted to input.
+					</p>
+				</li>
+				<li>
+					<label><i class="fa fa-bell"></i> Notifications</label><br>
+					<p>You'll receive notifications when you have new laboratory, radiology investigations to do and when the results are available. You will also receive prescription notification when a physician had written one for you.</p>
+				</li>
+				<li>
+					<label><i class="fa fa-calendar"></i> Appointment </label><br>
+					<p>In-person meeting appointments from your doctors are kept in this place.</p>
+				</li>
+				<li>
+					<label><i class="fa fa-motorcycle"></i> Drug Delivery Requests (Courier) </label><br>
+					<p>When you request for drug delivery to you current location, details/updates on the requests can be seen here.</p>
+				</li>
+				<li>
+					<label><i class="fa fa-comment"></i> Chats </label><br>
+					<p>Here you receive and send messages to diagnostic, pharmaceutical centers on applinic including other patients or your doctors.</p>
+				</li>
+			</ul>
+		</div>
+	</div>-->
+</div>

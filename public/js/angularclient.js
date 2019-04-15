@@ -44,8 +44,13 @@ app.config(['$paystackProvider','$routeProvider',
   $routeProvider
 
   .when("/",{
-    templateUrl: '/assets/pages/result-page.html',
-    controller: 'resultController'
+    templateUrl: '/assets/pages/utilities/landing-update.html',
+    controller: 'resultController',
+    resolve: {
+      path: function($location,$rootScope){
+        $rootScope.path = $location.path();
+      }
+    }
   })
 
   .when("/list",{
@@ -173,11 +178,11 @@ app.config(['$paystackProvider','$routeProvider',
   .when("/granted-request/:id",{
     templateUrl: '/assets/pages/view-request.html',
     controller: 'patientViewRequestController',
-    resolve: {
+    /*resolve: {
       path: function($location,$rootScope){
         $rootScope.path = $location.path();
       }
-    }
+    }*/
   })
 
   .when("/rejected-request/:id",{
@@ -647,16 +652,16 @@ app.config(['$paystackProvider','$routeProvider',
 .when("/view-response/:complaintId",{
   templateUrl: "/assets/pages/utilities/view-response.html",
   controller: 'PatientViewResponseController',
+})
+
+.when("/courier",{
+  templateUrl: "/assets/pages/utilities/courier.html",
+  controller: 'courierController',
   resolve: {
     path: function($location,$rootScope){
       $rootScope.path = $location.path();  
     }
   }
-})
-
- .when("/courier",{
-  templateUrl: "/assets/pages/utilities/courier.html",
-  controller: 'courierController',
  })
 
  .when("/courier-response/:id",{
@@ -4504,7 +4509,7 @@ app.controller("inDoctorDashboardController",["$scope","$location","$http","loca
     }
    
     
-    $location.path(localManager.getValue("currentPage") || "/welcome");
+    $location.path(localManager.getValue("currentPage") || "/");
     //highlits modal to fill in new patient basic information.
     
 
@@ -7264,7 +7269,7 @@ app.controller("inPatientDashboardController",["$scope","$location","templateSer
   function($scope,$location,templateService,localManager,ModalService){
 
  if(localManager.getValue("resolveUser")) {
-    $location.path(localManager.getValue("currentPageForPatients") || "/welcome");
+    $location.path(localManager.getValue("currentPageForPatients") || "/");
   } 
 
 }]);
@@ -7430,14 +7435,14 @@ app.controller("patientNotificationController",["$scope","$location","$http","$w
   function getNotification() {
     var note = patientNotificationService; 
     note.query(function(data){
-      $scope.allNote = data;
+      $rootScope.allNote = data;
       $rootScope.noteLen = data.length; 
     })
     $rootScope.$broadcast("fetRecord",{status: true});
   }
              
     
-  $scope.viewNoteLab = function(id){
+  $rootScope.viewNoteLab = function(id){
     $scope.isView = true;
     var absPath;
     var data = templateService.holdAllLabTest;
@@ -7451,11 +7456,12 @@ app.controller("patientNotificationController",["$scope","$location","$http","$w
         absPath = "/patient/laboratory-test/" + id;
       }
     }     
-    deleteByRefId(id,"/user/delete-one/refId");
+   
     $location.path(absPath);
+    deleteByRefId(id,"/user/delete-one/refId");
   }
 
-  $scope.viewNoteRadio = function(id){   
+  $rootScope.viewNoteRadio = function(id){   
     $scope.isView = true;
     var absPath; 
     var data = templateService.holdAllRadioTest;
@@ -7470,11 +7476,11 @@ app.controller("patientNotificationController",["$scope","$location","$http","$w
         absPath = "/patient/radiology-test/" + id;
       }
     }
-    deleteByRefId(id,"/user/delete-one/refId");
     $location.path(absPath);
+    deleteByRefId(id,"/user/delete-one/refId");
   }
 
-  $scope.viewNotePharmacy = function(id){
+  $rootScope.viewNotePharmacy = function(id){
     var prescriptions = templateService.holdPrescriptions;
      $http({
       method  : 'GET',
@@ -7506,7 +7512,7 @@ app.controller("patientNotificationController",["$scope","$location","$http","$w
       var len = data.length;
       if(len > 0){
         $rootScope.msgLen = templateService.holdMsgLen(len);   
-        $scope.allMsg = data;
+        $rootScope.allMsg = data;
         templateService.holdMsg = data;
       }  
     })
@@ -7516,7 +7522,7 @@ app.controller("patientNotificationController",["$scope","$location","$http","$w
     $scope.msgLen = 0
   }
 
-  $scope.viewBill = function(id){
+  $rootScope.viewBill = function(id){
     if(id){
       templateService.holdId = id;
       var temp = "/outpatient-billing/" + id;
@@ -7524,7 +7530,7 @@ app.controller("patientNotificationController",["$scope","$location","$http","$w
     }
   }
 
-  $scope.viewMessage = function(id,msg){    
+  $rootScope.viewMessage = function(id,msg){    
     templateService.holdId = id;
     templateService.message_id = msg.message_id;
     if(!msg.reason) {
@@ -7536,7 +7542,7 @@ app.controller("patientNotificationController",["$scope","$location","$http","$w
 
  
 
-  $scope.viewResponse1 = function(doctorId,complaintId){
+  $rootScope.viewResponse1 = function(doctorId,complaintId){
     var sendObj = {
       doctorId: doctorId,
       complaintId: complaintId
@@ -7561,14 +7567,14 @@ app.controller("patientNotificationController",["$scope","$location","$http","$w
       if(len > 0) {
         $rootScope.appLen = templateService.holdAppLen(len);             
         templateService.holdAppointmentData = data; 
-        $scope.allApp = data;
+        $rootScope.allApp = data;
       }   
     })
     
   }
   
 
-  $scope.viewAppointment = function(sessionId){
+  $rootScope.viewAppointment = function(sessionId){
     templateService.holdId = sessionId;
     $location.path("/p/selected-appointment/" + sessionId); 
   }
@@ -7733,7 +7739,7 @@ app.controller("patientNotificationController",["$scope","$location","$http","$w
 
   $rootScope.loadChats();
 
-  $scope.viewChat = function(partnerId) {
+  $rootScope.viewChat = function(partnerId) {
     templateService.holdId = partnerId;
     $location.path("/general-chat");
     $scope.showIndicator = false;
@@ -7771,7 +7777,7 @@ app.controller("patientNotificationController",["$scope","$location","$http","$w
 
   var pt;
 
-  $scope.viewResponse = function(item) {
+  $rootScope.viewResponse = function(item) {
     if(!item.is_paid && item.attended)
       $scope.isReady = false;
 
@@ -7869,8 +7875,8 @@ app.service("getPersonProfileService",["$resource",function($resource){
 
 
 app.controller("PatientViewResponseController",["$scope","$rootScope","$resource",
-  "templateService","ModalService","getPersonProfileService",
-  function($scope,$rootScope,$resource,templateService,ModalService,getPersonProfileService){
+  "templateService","ModalService","getPersonProfileService","consultationAccptanceService",
+  function($scope,$rootScope,$resource,templateService,ModalService,getPersonProfileService,consultationAccptanceService){
 
   
   $scope.responders = templateService.holdData;
@@ -7899,6 +7905,74 @@ app.controller("PatientViewResponseController",["$scope","$rootScope","$resource
     });    
   }
 
+  $scope.acceptWithZeroFee = function(doc) {
+    /*$rootScope.patientsDoctorList.forEach(function(person){
+      if(person.doctor_id === doc.doctor_user_id) {
+        alert("This doctor already exist in your account.");
+        return;
+      } else {
+        alert("sjhjdshjds")
+        acceptDoc();
+      }
+    });*/
+
+    var elemPos = $rootScope.patientsDoctorList.map(function(x){if(x) return x.doctor_id}).indexOf(doc.doctor_user_id);
+
+    if(elemPos == -1){
+      acceptDoc();
+    } else {
+      alert("This doctor already exist in your account.");
+    }
+
+    function acceptDoc() {
+      $scope.docInfo = doc;
+      doc.loading = true;
+      var payObj = {
+        amount: 0,
+        //otp: newStr,
+        date: + new Date(),
+        message: "Consultation fee",
+        userId: $scope.docInfo.doctor_user_id,
+        sendObj: {
+          doctor_id: $scope.docInfo.doctor_user_id,
+          date_of_acceptance: $scope.docInfo.date,
+          doctor_firstname: $scope.docInfo.doctor_name,
+          doctor_lastname:  $scope.docInfo.lastname,
+          doctor_name: $scope.docInfo.doctor_name,
+          doctor_profile_pic_url: $scope.docInfo.doctor_profile_pic_url,
+          service_access: true,
+          doctor_specialty: $scope.docInfo.doctor_specialty,
+          compaintId: templateService.holdData.complaint_id,
+          user_id: $scope.docInfo.doctor_user_id,
+          original_complaint: templateService.holdData.description,
+          original_complaint_date: templateService.holdData.sent_date,
+          files: templateService.holdData.files || templateService.holdData.file
+        }
+      }
+
+    
+      consultationAccptanceService.confirmed(payObj,function(response){
+        if(response.status) {
+          alert("Success! You have just received a new doctor in your account.");
+          $rootScope.patientsDoctorList.push({
+            doctor_id: $scope.docInfo.doctor_user_id,
+            date_of_acceptance: $scope.docInfo.date,
+            doctor_firstname: $scope.docInfo.doctor_name,
+            doctor_lastname:  $scope.docInfo.lastname,
+            doctor_name: $scope.docInfo.doctor_name,
+            doctor_profile_pic_url: $scope.docInfo.doctor_profile_pic_url,
+            service_access: true,
+            doctor_specialty: $scope.docInfo.doctor_specialty,
+          })
+        } else{
+          alert("Oops! Error just happened please try again.")
+        }
+        doc.loading = false;
+      });
+    }
+
+  }
+
   $scope.acceptDoc = function(doc){
     //var resource = getPersonProfileService; //$resource("/user/get-person-profile/:personId",{personId:docId});
     //templateService.holdDocInView = resource.get({personId:docId},function(){});
@@ -7907,15 +7981,15 @@ app.controller("PatientViewResponseController",["$scope","$rootScope","$resource
     //templateService.holdDocInView.fee = inNaira;
     //templateService.holdDocInView.intro = intro;
     var elemPos = $rootScope.patientsDoctorList.map(function(x){if(x) return x.doctor_id}).indexOf(doc.doctor_user_id);
-    if(elemPos !== -1) {
+    if(elemPos === -1) {
       $rootScope.holdDocInView = doc;
       ModalService.showModal({
-          templateUrl: "acceptance-notification.html",
-          controller: "PatientViewResponseModalController"
+        templateUrl: "acceptance-notification.html",
+        controller: "PatientViewResponseModalController"
       }).then(function(modal) {
-          modal.element.modal();
-          modal.close.then(function(result) {
-          });
+        modal.element.modal();
+        modal.close.then(function(result) {
+        });
       }); 
     } else {
       alert("You have already accepted " + doc.doctor_name)
@@ -8230,9 +8304,9 @@ app.controller("pendingRadioTestController",["$scope","templateService","$window
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //patient acknowledgee doctors reply and send confirmation to the backend to be save in both doctors box and patient box.
 app.controller("patientViewRequestController",["$scope","$location","$http","$rootScope","templateService","ModalService",
-  "deleteFactory","localManager","walletService","paymentVerificationService","phoneCallService",
+  "deleteFactory","localManager","walletService","paymentVerificationService","phoneCallService","consultationAccptanceService",
   function($scope,$location,$http,$rootScope,templateService,ModalService,deleteFactory,
-    localManager,walletService,paymentVerificationService,phoneCallService){
+    localManager,walletService,paymentVerificationService,phoneCallService,consultationAccptanceService){
  var id = templateService.holdId;
 
  localManager.setValue("currentPageForPatients",$location.path())
@@ -8269,6 +8343,66 @@ app.controller("patientViewRequestController",["$scope","$location","$http","$ro
       $scope.reqInfo = msgData[i];
     }
   }
+
+
+  $scope.acceptWithZeroFee = function(msgId) {
+
+    /*$rootScope.patientsDoctorList.forEach(function(doc){
+      if(doc.doctor_id == $scope.reqInfo.user_id) {
+        alert("This doctor already exist in your account.")
+      } else {
+        createConnection()
+      }
+    })*/
+
+    var elemPos = $rootScope.patientsDoctorList.map(function(x){if(x) return x.doctor_id}).indexOf($scope.reqInfo.user_id);
+
+    if(elemPos == -1){
+      createConnection();
+    } else {
+      alert("This doctor already exist in your account.");
+    }
+
+
+    function createConnection() {
+      $scope.loading = true;
+      var docObj = $scope.reqInfo;
+      var timeStamp = + new Date();
+      docObj.date_of_acceptance = timeStamp;
+
+      docObj.message_id = msgId;
+      var payObj = {
+        amount: 0,
+        //otp: newStr,
+        date: timeStamp,
+        message: "Consultation fee",
+        userId: $scope.reqInfo.user_id,
+        sendObj: docObj
+      }
+
+      consultationAccptanceService.confirmed(payObj,function(response){
+        if(response.status){
+          alert("Success! New doctor added to your account.");
+          $rootScope.patientsDoctorList.push({
+            doctor_id: docObj.user_id,
+            date_of_acceptance: docObj.date_of_acceptance,
+            doctor_firstname: docObj.firstname || docObj.doctor_firstname,
+            doctor_lastname:  docObj.lastname || docObj.doctor_lastname,
+            doctor_name: docObj.name || docObj.doctor_name,
+            doctor_profile_pic_url: docObj.profile_pic_url || docObj.doctor_profile_pic_url,
+            service_access: true,
+            doctor_specialty: docObj.specialty || docObj.doctor_specialty,
+          })
+
+          $scope.loading = false;
+        }
+        else {
+          alert("Oops! Something went wrong. Please try again.")
+        }
+      });
+    }
+  }
+
 
     
   
@@ -8541,27 +8675,7 @@ app.controller("walletController",["$scope","$http","$rootScope","$location","Mo
       data    : data,
       headers : {'Content-Type': 'application/json'} 
       })
-    .success(function(data) {
-      var dashbard;
-      switch(customer.typeOfUser) {
-        case "Doctor":
-          dashbard = "/user/doctor";
-        break;
-        case "Patient":
-          dashbard = "/user/patient";
-        break;
-        case "Laboratory":
-          dashbard = "/user/laboratory";
-        break;
-        case "Radiology":
-          dashbard = "/user/radiology";
-        break;
-        case "Pharmacy":
-          dashbard = "/user/pharmacy";
-        break;
-        default:
-        break
-      }
+    .success(function(data) {    
 
       if(!data.error) {
         /*var whole = Math.round(data.balance);
@@ -8896,9 +9010,19 @@ getTransactions();
             $rootScope.msgLen--;
           //$location.path(templateService.holdCurrentPage);
           
-          updateDocList.query(null,function(data){            
-            $rootScope.patientsDoctorList = data;
-          });
+          //updateDocList.query(null,function(data){            
+            //$rootScope.patientsDoctorList = data;
+          //});
+          $rootScope.patientsDoctorList.push({
+            doctor_id: templateService.sendObj.user_id,
+            date_of_acceptance: templateService.sendObj.date_of_acceptance,
+            doctor_firstname: templateService.sendObj.firstname || templateService.sendObj.doctor_firstname,
+            doctor_lastname:  templateService.sendObj.lastname || templateService.sendObj.doctor_lastname,
+            doctor_name: templateService.sendObj.name || templateService.sendObj.doctor_name,
+            doctor_profile_pic_url: templateService.sendObj.profile_pic_url || templateService.sendObj.doctor_profile_pic_url,
+            service_access: true,
+            doctor_specialty: templateService.sendObj.specialty || templateService.sendObj.doctor_specialty,
+          })
         }
       });
     }
@@ -19406,6 +19530,7 @@ function($scope,$rootScope,$location,$http,localManager,Drugs,cities,courierResp
   .success(function(response){
     $scope.centerList = response ||  [];
     $scope.user.city = $rootScope.checkLogIn.city;
+    $scope.user.location = $rootScope.checkLogIn.address;
   });
  
   $scope.sendRequest = function(){
@@ -19418,19 +19543,19 @@ function($scope,$rootScope,$location,$http,localManager,Drugs,cities,courierResp
     }
 
     if($scope.user.phone1) {
-      if($scope.user.phone1.slice(0,1) != "+") {
+      /*if($scope.user.phone1.slice(0,1) != "+") {
         $scope.phoneMsg = "Phone number format incorrect!";
         return;
-      }
+      }*/
     } else {
       $scope.user.phone1 = $rootScope.checkLogIn.phone;
     }
 
     if($scope.user.phone2) {
-       if($scope.user.phone2.slice(0,1) != "+") {
+       /*if($scope.user.phone2.slice(0,1) != "+") {
         $scope.phoneMsg = "Phone number format incorrect!";
         return;
-      }
+      }*/
 
     } else {
       $scope.user.phone2 = $rootScope.checkLogIn.phone;
@@ -20962,6 +21087,20 @@ app.controller("patientWaitingRoomController",["$scope","$resource","$location",
       $scope.loading = false
     })
   }
+
+  $scope.consultFee = {};
+  $scope.consultFee.con = 'no'
+  $scope.$watch("consultFee.con",function(newVal,oldVal){
+    if(newVal) {
+      if(newVal == 'yes') {
+        $scope.showConDiv = true;
+      } else {
+        $scope.user.amount = 0;
+        $scope.str = "";
+        $scope.showConDiv = false;
+      }
+    }
+  })
 
 
 

@@ -1,8 +1,10 @@
 
 <div class="container">
+<div class="card-center-1">
+	<a href="#{{path}}" class="btn btn-simple"><i class="fa fa-arrow-left"></i> Back</a>
+</div>
 <div class="card card-center-1 p-1">
 	<div ng-if="isRequest === true">	
-			
 		
 		<div class="col-md-12 col-lg-12">
 			<img ng-src="{{reqInfo.profile_pic_url}}" style="max-width: 45px; max-height: 45px;float: left">
@@ -22,7 +24,7 @@
 
 			<label>Response to above complaint: </label>
 			<p class="p-2"> {{reqInfo.response}}</p>
-			<p style="font-style: italic"><strong>{{reqInfo.inNaira}} </strong>consultation fee amount will be deducted from your wallet if you accept treatment from this doctor.</p>
+			<p style="font-style: italic" ng-if="reqInfo.consultation_fee > 0"><strong>{{reqInfo.inNaira}} </strong>consultation fee amount will be deducted from your wallet if you accept treatment from this doctor.</p>
 			<!--<a href="#/consultation-fee" class="btn btn-link text-info font-1_1">Tell me more about consultation fee</a>
 			<a href="#/wallet" class="btn btn-link text-info font-1_1">Tell me more about my wallet</a>-->
 
@@ -36,7 +38,8 @@
 			
 		
 		<div  class="" style="margin-top: 30px">
-			<button class="btn btn-success" ng-click="sendAcceptanceVerification()" ng-if="!loading">Accept</button><span ng-if="loading">Processing...</span>
+			<button class="btn btn-success" ng-click="acceptWithZeroFee(reqInfo.message_id)" ng-if="!loading && reqInfo.consultation_fee == 0">Accept</button>
+			<button class="btn btn-success" ng-click="sendAcceptanceVerification()" ng-if="!loading && reqInfo.consultation_fee > 0">Accept</button><span ng-if="loading">Processing...</span>
 			<button class="btn btn-danger" ng-click = "decline(reqInfo.message_id)">Decline</button>			
 		</div>
 		<div  class="pl-1 mt-1" ng-if="fundWallet">

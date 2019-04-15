@@ -215,7 +215,7 @@
                         <ul class="nav-profile">
                             <li class="notifications new"> 
                             <a href="" data-toggle="dropdown">
-                                <i class="fa fa-bell-o"></i>
+                                <i class="fa fa-bell"></i>
                                 <sup>
                                   <span class="counter" ng-if="noteLen > 0 " ng-cloak>{{(noteLen <= 100) ? noteLen : "99+" }}</span>
                                 </sup>
@@ -223,7 +223,7 @@
                                 <div class="dropdown-menu notifications-dropdown-menu menuOne" style="max-height: 400px;overflow-y: auto;">
                                     <ul class="notifications-container noti-style">
                                         <li><h6 style="text-align: center">Notification(s)</h6></li>
-                                        <li ng-repeat = "note in allNote">
+                                        <li ng-repeat = "note in allNote | orderBy: '-date'">
                                             <div  class="notification-item" ng-if="note.type === 'laboratory'" style="display:inline-block;cursor:pointer;" ng-click="viewNoteLab(note.ref_id)">
                                                 <div class="img-col">
                                                     <div class="img icon-lab"></div>
@@ -264,7 +264,7 @@
                             </li>
 
                                <li class="notifications new"> <a href="" data-toggle="dropdown" ng-click="hideLen()">
-                    <i class="fa fa-envelope-o"></i>
+                    <i class="fa fa-envelope"></i>
                     <sup>
                       <span class="counter" ng-if=" msgLen > 0 " ng-cloak>{{(msgLen <= 100) ? msgLen : "99+"}}</span>
                     </sup>
@@ -318,11 +318,11 @@
                                                 </div>
                                             </div>
                                         </li>
-                                        <% for(var i = userInfo.patient_mail.length -1; i >= 0; i--) { %>                                                          
+                                       <!--<% for(var i = userInfo.patient_mail.length -1; i >= 0; i--) { %>                                                          
                                         <div>{{getData("<%= userInfo.patient_mail[i].doctor_firstname%>","<%= userInfo.patient_mail[i].doctor_lastname %>","<%= userInfo.patient_mail[i].date %>","<%= userInfo.patient_mail[i].doctor_profile_pic_url %>","<%= userInfo.patient_mail[i].consultation_fee %>","<%= userInfo.firstname %>","<%= userInfo.ewallet.available_amount %>","<%= userInfo.patient_mail[i].doctor_id %>","<%= userInfo.patient_mail[i].service_access %>","<%= userInfo.patient_mail[i].doctor_specialty %>","<%= userInfo.patient_mail[i].message %>")}}
                                         </div>                                                
                                             
-                                        <% } %>
+                                        <% } %>-->
                                     </ul>
                                     <footer>
                                         <ul>
@@ -382,7 +382,7 @@
                                         <li ng-repeat = "j in courierResponseList | orderBy : '-date'" class="msg-drp-list" style="position: relative;" ng-click= "viewResponse(j)">
                                             <a href="" class="notification-item">
                                                 <div class="body-col">
-                                                    <p> <span class="accent" ng-cloak>Courier Request {{j.request_id}}</span>
+                                                    <p> <span class="accent" ng-cloak>Drug Delivery Request {{j.request_id}}</span>
                                                         <span style="display:block"></span>
                                                         <span>{{j.date | date: 'fullDate'}} (<span am-time-ago="j.date"></span>)</span>
                                                        
@@ -775,7 +775,7 @@
                                   
 
                                 
-                                <li class="active"> <a href="#/welcome"  class="h"> <!-- ng-click="dashboardhome()" -->
+                                <li class="active"> <a href="#/"  class="h"> <!-- ng-click="dashboardhome()" -->
                             <i class="fa fa-home"></i>Patient's Dashboard
                         </a> </li>
 
@@ -937,6 +937,10 @@
                                     </a>                                       
                                 </li>                                                    
                             </ul>
+                            <div style="position: absolute;bottom: 0;left: 20px">
+                              <a href="#/welcome" class="text-white"><i class="fa fa-info-circle"></i> Getting Started</a><br><br>
+                              <a href="" ng-click="logout()" class="text-white"> <i class="fa fa-sign-out"></i> Log Out</a>
+                            </div>
                         </nav>
                     </div>
                  </aside>

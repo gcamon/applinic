@@ -261,20 +261,36 @@
                                         <form class="complaint-view-charge">                                          
                                             
                                           
-                                            <label style="font-weight:bold;font-size: 14px" class="text-capitalize">Management Plan? </label>
+                                            <label style="font-weight:bold;font-size: 14px" class="text-capitalize">Management Plan:</label>
                                             <textarea class="form-control" ng-model="user.introductory" ng-keyup="autoExpand($event)" id="textarea" placeholder="Write..."></textarea>
-                                            <div class="p-2"></div>
+                                            <div class="p-2 clearfix"></div>
+
+                                            <div>
+                                             <label style="font-weight:bold;font-size: 14px" class="text-capitalize">Include Consultation Fee: </label><br><br>
+                                             <label class="custom-control custom-radio">
+                                              <input id="radio2" name="radio" type="radio" value="yes" ng-model="consultFee.con" class="custom-control-input" class="doc-presence-normal">
+                                              <div class="custom-control-indicator"></div>
+                                              <div class="custom-control-description">Yes</div>
+                                            </label><br>
+
+                                            <label class="custom-control custom-radio">
+                                              <input id="radio2" name="radio" type="radio" value="no" ng-model="consultFee.con" class="custom-control-input"  class="doc-presence-normal">
+                                              <div class="custom-control-indicator"></div>
+                                              <div class="custom-control-description">No, not now</div>
+                                            </label><br>
+
+                                            </div>
                                             
-                                            <div class="pt-2">
+                                            <div class="pt-2" ng-if="showConDiv">
                                                 <label style="font-weight:bold;font-size: 14px">Consultation Fee </label> 
                                                 &nbsp;&nbsp;( <small>{{checkLogIn.city_grade}}% discount for consultation applied</small> )         
                                             </div>
                                             <div class="clearfix"></div>
-                                            <div class="pb-2">
+                                            <div class="pb-2" ng-if="showConDiv">
                                                 <small>Your charge: </small>
                                                 <input type="number" class="form-control input-lg" placeholder="Enter amount" ng-model="user.amount">      
                                             </div>
-                                            <div class="mt-1 mb-2">
+                                            <div class="mt-1 mb-2" ng-if="showConDiv">
                                                 <small>You'll receive : {{str}} </small>
                                             </div>
 
