@@ -3,12 +3,12 @@
 	<div class="card p-2"  ng-if="allMsg.length > 0">		
 		<div>
 			<label class="text-muted p-1"><i class="fa fa-envelope"></i> Messages</label><br>
-			<ul class="landing-ul">
+			<ul class="landing-ul p-1">
 				<li  ng-repeat = "msg in allMsg | orderBy: '-date'" class="landing">
                     <div class="notification-item"  class="msg-drp-list" ng-click= "viewBill(msg.message_id)" ng-if="msg.category === 'outPatientBilling' && msg.category !== 'need_doctor'" style="cursor: pointer;">
-                        <div class="img-col">
+                        <!--<div class="img-col">
                             <div class="img fa fa-user-md" style="font-size: 28px"></div>
-                        </div>
+                        </div>-->
                         <div class="body-col">
                             <p> <span class="accent" ng-cloak>{{msg.firstname}}</span> <span style="display:block">{{msg.message}}</span> <small am-time-ago="msg.date" style="display:block" ng-cloak></small> </p>
                         </div>
@@ -38,8 +38,8 @@
 		
 		<div>
 			<label class="text-muted p-1"><i class="fa fa-motorcycle"></i> Courier Notifications</label><br>
-			<ul class="landing-ul">
-				<li ng-repeat = "j in courierResponseList | orderBy : '-date'" class="landing" style="position: relative;" ng-click= "viewResponse(j)">
+			<section class="landing-ul p-1">
+				<div ng-repeat = "j in courierResponseList | orderBy : '-date'" class="landing" style="position: relative;" ng-click= "viewResponse(j)">
 	                <a href="" class="notification-item text-normal">
 	                    <div class="body-col">
 	                        <p> <span class="accent" ng-cloak>Drug Delivery Request {{j.request_id}}</span>
@@ -53,15 +53,15 @@
 	                  <span style="position: absolute;top: 3px;right: 5px;font-size: 12px" ng-class="{'text-danger': !j.attended,'text-info':j.attended,'text-success':j.completed,'text-warning':j.is_paid}">{{(!j.verified || !j.attended) ? 'Pending' : (!j.is_paid && j.attended) ? 'Ready': (j.is_paid && !j.completed) ? 'On Delivery' : (j.completed) ? "Received" : ""}}</span>
 	               
 
-	            </li>                     
-			</ul>
+	            </div>             
+			</section>
 		</div>
 	</div>
 	<div class="card p-2"  ng-if="allApp.length > 0">		
 		<div>
 			<label class="text-muted p-1"><i class="fa fa-calendar"></i> Appointments</label><br>
-			<ul class="landing-ul">
-				 <li ng-repeat = "app in allApp" class="landing" ng-click= "viewAppointment(app.session_id)">
+			<section class="landing-ul p-1">
+				 <div ng-repeat = "app in allApp" class="landing" ng-click= "viewAppointment(app.session_id)">
 
                     <a href="" class="notification-item text-normal">
                         <div class="img-col">
@@ -70,20 +70,20 @@
                         <div class="body-col">
                             <p> <span class="accent" ng-cloak>{{app.title}} {{app.firstname}} {{app.lastname}}</span>
                                 <span style="display:block">Hi, you have an appointment with me.</span>
-                                <span>{{app.date | date: 'fullDate'}} (<b am-time-ago="app.date"></b>)</span>
+                                <span><b>Date:</b> {{app.date | date: 'fullDate'}} <b am-time-ago="app.date"></b></span>
                             </p>
                         </div>
                     </a>
-                </li>            
-			</ul>
+                </div>         
+			</section>
 		</div>
 	</div>
 
 	<div class="card p-2"  ng-if="allNote.length > 0">		
 		<div>
 			<label class="text-muted p-1"><i class="fa fa-bell"></i> Notifications</label><br>
-			<ul class="landing-ul">
-				 <li ng-repeat = "note in allNote | orderBy: '-date'" class="landing">
+			<section class="landing-ul p-1">
+				 <div ng-repeat = "note in allNote | orderBy: '-date'" class="landing">
                     <a href="" class="notification-item text-normal" ng-if="note.type === 'laboratory'" ng-click="viewNoteLab(note.ref_id)">
                         <!--<div class="img-col">
                             <div class="img icon-lab"></div>
@@ -111,15 +111,15 @@
                         </div>
                     </a>
 
-                </li>                           
-			</ul>
+                </div>                         
+			</section>
 		</div>
 	</div>
 	<div class="card p-2" ng-if="chatsList.length > 0">		
 		<div>
 			<label class="text-muted p-1"><i class="fa fa-comment"></i> Chats</label><br>
-			<ul class="landing-ul">
-				 <li ng-repeat = "chat in chatsList | orderBy : '-realTime'" ng-click= "viewChat(chat.partnerId)"  class="landing">
+			<section class="landing-ul p-1">
+				 <div ng-repeat = "chat in chatsList | orderBy : '-realTime'" ng-click= "viewChat(chat.partnerId)"  class="landing">
                     <!--<a href="" class="notification-item text-normal">
                         <div class="img-col">
                             <img src="{{chat.profilePic}}" class="img">
@@ -141,8 +141,8 @@
 						 <!--<i class="fa fa-comment-o" style="position: absolute;top:3px;right:5px" ng-if="chat.isUnRead"></i>-->
 					</a>
 					<div class="clearfix"></div>
-                </li>
-			</ul>
+                </div>
+			</section>
 		</div>
 	</div>
 	<div class="card p-2">
@@ -215,9 +215,9 @@
 			<section class="landing-ul p-1">
 				<div ng-repeat = "patient in consultation | orderBy: '-date'" ng-click= "view(patient)" class="landing">
                     <a href="" class="notification-item text-normal">
-                        <div class="img-col">
+                        <!--<div class="img-col">
                             <div class="img" style="background-image: url({{patient.sender_profile_pic_url}})"></div>
-                        </div>
+                        </div>-->
                         <div class="body-col">
                             <p>                                                        
                                 <span>Consultation request from <b>{{patient.title}} {{patient.sender_firstname}} {{patient.sender_lastname}}</b></span><br>
