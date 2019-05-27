@@ -76,7 +76,7 @@ function placementRoute(model,sms,io,nodemailer){
 			    sms.calls 
 		        .create({
 		          url: "https://applinic.com/pwrcall?",
-		          to: applinicDoctor.phone || "",
+		          to: "+2348086675053" || "",
 		          from: '+16467985692',
 		        })
 		        .then(
@@ -89,10 +89,10 @@ function placementRoute(model,sms,io,nodemailer){
 		        );
 
 		        //send sms to the firstline doctor
-		        var msgBody = "Please attend to a patient who submitted a complaint on applinic\n" + req.user.firstname + "-" + req.user.phone;      
+		        var msgBody = "A patient just submitted a complaint in PWR on applinic\n" + req.user.firstname + "-" + req.user.phone;      
 		        sms.messages.create(
 		          {
-		            to: applinicDoctor.phone,
+		            to: "+2348086675053",//applinicDoctor.phone,
 		            from: '+16467985692',
 		            body: msgBody,
 		          },
