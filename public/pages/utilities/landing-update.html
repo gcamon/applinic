@@ -1,11 +1,12 @@
-<div class="card-center-1 p-2" ng-if="checkLogIn.typeOfUser === 'Patient'">
-	<label class="text-muted">Hi, {{(checkLogIn.title) ? checkLogIn.title : ""}} {{checkLogIn.lastname}}</label><br>
-	<div class="card p-2"  ng-if="allMsg.length > 0">		
+<div class="card-center-1 " ng-if="checkLogIn.typeOfUser === 'Patient'">
+	<h4 class="text-muted">Hi, {{(checkLogIn.title) ? checkLogIn.title : ""}} {{checkLogIn.lastname}}</h4><br>
+
+	<div class="card p-1"  ng-if="allMsg.length > 0">		
 		<div>
-			<label class="text-muted p-1"><i class="fa fa-envelope"></i> Messages</label><br>
-			<ul class="landing-ul p-1">
+			<h6 class="text-muted "><i class="fa fa-envelope"></i> Messages</h6><br>
+			<ul class="landing-ul ">
 				<li  ng-repeat = "msg in allMsg | orderBy: '-date'" class="landing">
-                    <div class="notification-item"  class="msg-drp-list" ng-click= "viewBill(msg.message_id)" ng-if="msg.category === 'outPatientBilling' && msg.category !== 'need_doctor'" style="cursor: pointer;">
+                    <div class="notification-item msg-drp-list" ng-click= "viewBill(msg.message_id)" ng-if="msg.category === 'outPatientBilling' && msg.category !== 'need_doctor'" style="cursor: pointer;">
                         <!--<div class="img-col">
                             <div class="img fa fa-user-md" style="font-size: 28px"></div>
                         </div>-->
@@ -34,11 +35,11 @@
 		</div>
 	</div>
 
-	<div class="card p-2"  ng-if="courierResponseList.length > 0">
+	<div class="card p-1"  ng-if="courierResponseList.length > 0">
 		
 		<div>
-			<label class="text-muted p-1"><i class="fa fa-motorcycle"></i> Courier Notifications</label><br>
-			<section class="landing-ul p-1">
+			<h6 class="text-muted "><i class="fa fa-motorcycle"></i> Courier Notifications</h6><br>
+			<section class="landing-ul ">
 				<div ng-repeat = "j in courierResponseList | orderBy : '-date'" class="landing" style="position: relative;" ng-click= "viewResponse(j)">
 	                <a href="" class="notification-item text-normal">
 	                    <div class="body-col">
@@ -57,10 +58,10 @@
 			</section>
 		</div>
 	</div>
-	<div class="card p-2"  ng-if="allApp.length > 0">		
+	<div class="card p-1"  ng-if="allApp.length > 0">		
 		<div>
-			<label class="text-muted p-1"><i class="fa fa-calendar"></i> Appointments</label><br>
-			<section class="landing-ul p-1">
+			<h6 class="text-muted "><i class="fa fa-calendar"></i> Appointments</h6><br>
+			<section class="landing-ul ">
 				 <div ng-repeat = "app in allApp" class="landing" ng-click= "viewAppointment(app.session_id)">
 
                     <a href="" class="notification-item text-normal">
@@ -79,10 +80,10 @@
 		</div>
 	</div>
 
-	<div class="card p-2"  ng-if="allNote.length > 0">		
+	<div class="card p-1"  ng-if="allNote.length > 0">		
 		<div>
-			<label class="text-muted p-1"><i class="fa fa-bell"></i> Notifications</label><br>
-			<section class="landing-ul p-1">
+			<h6 class="text-muted "><i class="fa fa-bell"></i> Notifications</h6><br>
+			<section class="landing-ul ">
 				 <div ng-repeat = "note in allNote | orderBy: '-date'" class="landing">
                     <a href="" class="notification-item text-normal" ng-if="note.type === 'laboratory'" ng-click="viewNoteLab(note.ref_id)">
                         <!--<div class="img-col">
@@ -115,10 +116,10 @@
 			</section>
 		</div>
 	</div>
-	<div class="card p-2" ng-if="chatsList.length > 0">		
+	<div class="card p-1" ng-if="chatsList.length > 0">		
 		<div>
-			<label class="text-muted p-1"><i class="fa fa-comment"></i> Chats</label><br>
-			<section class="landing-ul p-1">
+			<h6 class="text-muted "><i class="fa fa-comment"></i> Chats</h6><br>
+			<section class="landing-ul ">
 				 <div ng-repeat = "chat in chatsList | orderBy : '-realTime'" ng-click= "viewChat(chat.partnerId)"  class="landing">
                     <!--<a href="" class="notification-item text-normal">
                         <div class="img-col">
@@ -131,13 +132,13 @@
                             </p>
                         </div>
                     </a>-->
-                    <img src="{{chat.profilePic}}" style="float: left;height:75px;width:62px;margin-bottom: 5px"">			
-					<a href="" class="chat-header-text ellipsis" ng-class="{'chat-header-text-new' : !chat.is_read}" style="display: inline-block;padding: 5px 10px;position: relative;width: 75%">
+                    <img src="{{chat.profilePic}}" style="float: left;height:auto;max-width:45px;margin-bottom: 5px"">			
+					<a href="" class="chat-header-text ellipsis" ng-class="{'chat-header-text-new' : !chat.is_read}" style="display: inline-block;padding: 5px 10px;position: relative;width: 75%;font-size: 14px">
 						<strong style="display: block;" >{{chat.name}}</strong>
 						<span style="display: block;">( {{chat.partnerType}} )</span>
-						 <span style="display:block;" class="ellipsis">{{(!chat.typing) ? (chat.messages[chat.messages.length - 1].received || chat.messages[chat.messages.length - 1].sent ) : chat.typing }} 
+						 <span style="display:block" class="ellipsis">{{(!chat.typing) ? (chat.messages[chat.messages.length - 1].received || chat.messages[chat.messages.length - 1].sent ) : chat.typing }} 
 						 <small style="display:block;" am-time-ago="chat.messages[chat.messages.length - 1].time  || chat.messages[chat.messages.length - 1].received" ng-cloak></small></span> 
-						 <span style="position: absolute;bottom: 0;right: 20px"><span ng-if="chat.status" class="online" style="background-color: #85CE36"></span><span ng-if="!chat.status" class="online" style="background-color: #ccc;"></span></span>
+						 <span style="position: absolute;bottom: 10px;right: 20px"><span ng-if="chat.status" class="online" style="background-color: #85CE36"></span><span ng-if="!chat.status" class="online" style="background-color: #ccc;"></span></span>
 						 <!--<i class="fa fa-comment-o" style="position: absolute;top:3px;right:5px" ng-if="chat.isUnRead"></i>-->
 					</a>
 					<div class="clearfix"></div>
@@ -145,58 +146,58 @@
 			</section>
 		</div>
 	</div>
-	<!--<div class="card p-2">
+	<!--<div class="card p-1">
 		<div>
-			<h6 class="text-muted p-1">Quick Guide</h6>
+			<h6 class="text-muted ">Quick Guide</h6>
 			<ul  style="list-style: none;">
 				<li>
-					<label><i class="fa fa-envelope"></i> Messages</label><br>
+					<h5><i class="fa fa-envelope"></i> Messages</h5><br>
 					<p>All consultation requests/complaints you send and its responses from doctors are kept in messages.</p>
 				</li>
 				<li>
-					<label><i class="fa fa-bell"></i> Notifications</label><br>
+					<h5><i class="fa fa-bell"></i> Notifications</h5><br>
 					<p>You'll receive notifications when you have new laboratory, radiology investigations to do and when the results are available. You will also receive prescription notification when a physician had written one for you.</p>
 				</li>
 				<li>
-					<label><i class="fa fa-calendar"></i> Appointment </label><br>
+					<h5><i class="fa fa-calendar"></i> Appointment </h5><br>
 					<p>In-person meeting appointments from your doctors are kept in this place.</p>
 				</li>
 				<li>
-					<label><i class="fa fa-motorcycle"></i> Drug Delivery Requests (Courier) </label><br>
+					<h5><i class="fa fa-motorcycle"></i> Drug Delivery Requests (Courier) </h5><br>
 					<p>When you request for drug delivery to you current location, details/updates on the requests can be seen here.</p>
 				</li>
 				<li>
-					<label><i class="fa fa-comment"></i> Chats </label><br>
+					<h5><i class="fa fa-comment"></i> Chats </h5><br>
 					<p>Here you receive and send messages to diagnostic, pharmaceutical centers on applinic including other patients or your doctors.</p>
 				</li>
 			</ul>
 		</div>
 	</div>-->
-	<!--<div class="card p-2">
+	<!--<div class="card p-1">
 		<div>
-			<h6 class="text-muted p-1">Quick Guide - Searches and Utilities</h6>
+			<h6 class="text-muted ">Quick Guide - Searches and Utilities</h6>
 			<ul  style="list-style: none;">
 				<li>
-					<label><i class="fa fa-envelope"></i> How do I buy a drug on applinic?</label><br>
+					<h5><i class="fa fa-envelope"></i> How do I buy a drug on applinic?</h5><br>
 					<p>
 						Pharmaceutical centers register on applinic just like patients and doctors do. Applinic mandates these centers to update their stock inventory before the centers can show in search result when users search for drugs.<br>
 						If you want to buy a drug in applinic, you search for the drug(s) by clicking <i class="fa fa-lens"></i> Drug then enter the names of the drugs. Use "+ add" to create more input fields. While you type the name of a drug, the system will show pop-up of list of drug names relative to what you are typing.This list are drugs pulled from our database. Please check the names of drugs on the list and click on any similar to what you wanted to input.
 					</p>
 				</li>
 				<li>
-					<label><i class="fa fa-bell"></i> Notifications</label><br>
+					<h5><i class="fa fa-bell"></i> Notifications</h5><br>
 					<p>You'll receive notifications when you have new laboratory, radiology investigations to do and when the results are available. You will also receive prescription notification when a physician had written one for you.</p>
 				</li>
 				<li>
-					<label><i class="fa fa-calendar"></i> Appointment </label><br>
+					<h5><i class="fa fa-calendar"></i> Appointment </h5><br>
 					<p>In-person meeting appointments from your doctors are kept in this place.</p>
 				</li>
 				<li>
-					<label><i class="fa fa-motorcycle"></i> Drug Delivery Requests (Courier) </label><br>
+					<h5><i class="fa fa-motorcycle"></i> Drug Delivery Requests (Courier) </h5><br>
 					<p>When you request for drug delivery to you current location, details/updates on the requests can be seen here.</p>
 				</li>
 				<li>
-					<label><i class="fa fa-comment"></i> Chats </label><br>
+					<h5><i class="fa fa-comment"></i> Chats </h5><br>
 					<p>Here you receive and send messages to diagnostic, pharmaceutical centers on applinic including other patients or your doctors.</p>
 				</li>
 			</ul>
@@ -207,12 +208,12 @@
 
 <!-- for doctor dashboard -->
 
-<div class="card-center-1 p-2" ng-if="checkLogIn.typeOfUser === 'Doctor'">
-	<label class="text-muted">Hi, {{(checkLogIn.title) ? (checkLogIn.title !== "SC") ? checkLogIn.title : "" : ""}} {{checkLogIn.lastname || checkLogIn.name}}</label><br>
-	<div class="card p-2"  ng-if="consultation.length > 0">
+<div class="card-center-1 " ng-if="checkLogIn.typeOfUser === 'Doctor'">
+	<h6 class="text-muted">Hi, {{(checkLogIn.title) ? (checkLogIn.title !== "SC") ? checkLogIn.title : "" : ""}} {{checkLogIn.lastname || checkLogIn.name}}</h6><br>
+	<div class="card p-1"  ng-if="consultation.length > 0">
 		<div>
-			<label class="text-muted p-1"><i class="fa fa-envelope"></i> Consultation Requests</label><br>
-			<section class="landing-ul p-1">
+			<h5 class="text-muted "><i class="fa fa-envelope"></i> Consultation Requests</h5><br>
+			<section class="landing-ul ">
 				<div ng-repeat = "patient in consultation | orderBy: '-date'" ng-click= "view(patient)" class="landing">
                     <a href="" class="notification-item text-normal">
                         <!--<div class="img-col">
@@ -230,10 +231,10 @@
 		</div>
 	</div>
 
-	<div class="card p-2"  ng-if="docNotification.length > 0">
+	<div class="card p-1"  ng-if="docNotification.length > 0">
 		<div>
-			<label class="text-muted p-1"><i class="fa fa-bell"></i> Notifications</label><br>
-			<section class="landing-ul p-1">
+			<h6 class="text-muted "><i class="fa fa-bell"></i> Notifications</h6><br>
+			<section class="landing-ul ">
 				<div ng-repeat = "note in docNotification" class="landing">
 	                <a href="{{'#/doctor-patient/treatment/' + note.sender_id}}" class="notification-item text-normal" ng-click="delMsg(note.message_id)">
 	                    <div class="img-col">                                                    
@@ -250,10 +251,10 @@
 			</section>
 		</div>
 	</div>
-	<div class="card p-2"  ng-if="courierResponseList.length > 0">
+	<div class="card p-1"  ng-if="courierResponseList.length > 0">
 		<div>
-			<label class="text-muted p-1"><i class="fa fa-motorcycle"></i> Drug Delivery Requests</label><br>
-			<section class="landing-ul p-1">				
+			<h6 class="text-muted "><i class="fa fa-motorcycle"></i> Drug Delivery Requests</h6><br>
+			<section class="landing-ul ">				
                 <div ng-repeat = "j in courierResponseList | orderBy : '-date'" class="msg-drp-list landing" style="position: relative;" ng-click= "viewResponse(j)">
                     <a href="" class="notification-item text-normal">
                         <div class="body-col">
@@ -271,10 +272,10 @@
 			</section>
 		</div>
 	</div>
-	<div class="card p-2"  ng-if="chatsList.length > 0">
+	<div class="card p-1"  ng-if="chatsList.length > 0">
 		<div>
-			<label class="text-muted p-1"><i class="fa fa-comment"></i> Chats</label><br>
-			<section class="landing-ul p-1">				
+			<h6 class="text-muted "><i class="fa fa-comment"></i> Chats</h6><br>
+			<section class="landing-ul ">				
 	           <div ng-repeat = "chat in chatsList | orderBy : '-realTime'" ng-click= "viewChat(chat.partnerId)" class="landing">
 	               
                     <img src="{{chat.profilePic}}" style="float: left;height:75px;width:62px;margin-bottom: 5px">			
@@ -293,10 +294,10 @@
 		</div>
 	</div>
 
-	<div class="card p-2"  ng-if="inPersonRequest.length > 0">
+	<div class="card p-1"  ng-if="inPersonRequest.length > 0">
 		<div>
-			<label class="text-muted p-1"><i class="fa fa-motorcycle"></i> In-Person Meeting Requests</label><br>
-			<section class="landing-ul p-1">				
+			<h6 class="text-muted "><i class="fa fa-motorcycle"></i> In-Person Meeting Requests</h6><br>
+			<section class="landing-ul ">				
                <div ng-repeat = "patient in inPersonRequest | orderBy: '-date'" class="landing">
 	                <a href="" class="notification-item" ng-click="viewApp2(patient.sender_id,patient.message_id)">
 	                    <div class="img-col">

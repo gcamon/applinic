@@ -8,7 +8,6 @@ function placementRoute(model,sms,io,nodemailer){
 
 	//user sends help and the new help object is instantiated and saved to the data base.
 	router.post("/user/help",function(req,res){
-		console.log(req.body)
 		if(req.user){		
 			model.user.findOne({user_id: req.body.userId},{age:1,gender:1,city:1,country:1,email:1,phone:1,title:1,lastname:1},function(err,user){
 				var random = parseInt(Math.floor(Math.random() * 999999) + " " + Math.floor(Math.random() * 999999));
@@ -70,6 +69,41 @@ function placementRoute(model,sms,io,nodemailer){
 		      if(err) throw err;
 		      console.log("saved")
 		    });
+
+
+		    model.user.findOne({email: "info@applinic.com"})
+		    .exec(function(err,applinicDoctor){
+			    sms.calls 
+		        .create({
+		          url: "https://applinic.com/pwrcall?",
+		          to: applinicDoctor.phone || "",
+		          from: '+16467985692',
+		        })
+		        .then(
+		          function(call){
+		            console.log(call.sid);
+		          },
+		          function(err) {
+		            console.log(err)
+		          }
+		        );
+
+		        //send sms to the firstline doctor
+		        var msgBody = "Please attend to a patient who submitted a complaint on applinic\n" + req.user.firstname + "-" + req.user.phone;      
+		        sms.messages.create(
+		          {
+		            to: applinicDoctor.phone,
+		            from: '+16467985692',
+		            body: msgBody,
+		          },
+		          callBack
+		        );
+
+		        function callBack(err,response){              
+		          console.log(response)
+		        }   
+
+	    	});
 
 		    //note sms will always be sent to premium users when ever a patient tables a complaint.
 		    res.send({status:true});

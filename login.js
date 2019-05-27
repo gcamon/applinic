@@ -114,7 +114,7 @@ router.get("/user/admin",function(req,res){
 });
 
 router.get('/failed',function(req,res){        
-    res.send(false);
+    res.json({status: false,message: "Authentication failed."});
 })
 
 // Change password routes

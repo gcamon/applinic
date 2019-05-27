@@ -1,6 +1,6 @@
 <div>
 	<div>
-		<a href="#{{path}}" class="btn btn-simple"><i class="fa fa-arrow-left"></i> Back</a>
+		<a href="#{{path}}" class="btn btn-simple btn-sm"><i class="fa fa-arrow-left"></i> Back</a>
 	</div>
 	<div class="card">
 		<div class="row">
@@ -9,13 +9,13 @@
 				<hr>
 				<div class="ellipsis hidden-md-down" style="max-height: 600px; overflow-y: auto">
 					<div ng-repeat="chat in chatsList | orderBy : '-realTime'" ng-click="viewChat(chat)" class="pl-1 cht-body" ng-if="chat.partnerId !== checkLogIn.user_id">
-						<img src="{{chat.profilePic}}" style="float: left;height:75px;width:62px">			
+						<img src="{{chat.profilePic}}" style="float: left;height:52px;width:42px">			
 						<a href="" class="chat-header-text ellipsis" ng-class="{'chat-header-text-new' : !chat.is_read}" style="display: inline-block;padding-left: 10px;width: 85%;position: relative;">
-							<strong style="display: block;" >{{chat.name}}</strong>
-							<span style="display: block;">{{chat.partnerType}}</span>
-							 <span style="display:block;" class="ellipsis">{{(!chat.typing) ? (chat.messages[chat.messages.length - 1].received || chat.messages[chat.messages.length - 1].sent ) : chat.typing }} 
-							 <small style="display:block;" am-time-ago="chat.messages[chat.messages.length - 1].time  || chat.messages[chat.messages.length - 1].received" ng-cloak></small></span> 
-							 <span style="position: absolute;bottom: 0;right: 20px"><span ng-if="chat.status" class="online" style="background-color: #85CE36"></span><span ng-if="!chat.status" class="online" style="background-color: #ccc;"></span></span>
+							<strong style="font-size: 14px;">{{chat.name}}</strong><br>
+							<span style="font-size: 12px;">{{chat.partnerType}}</span><br>
+							 <span style="font-size: 12px;" class="ellipsis">{{(!chat.typing) ? (chat.messages[chat.messages.length - 1].received || chat.messages[chat.messages.length - 1].sent ) : chat.typing }}</span><br>
+							 <small am-time-ago="chat.messages[chat.messages.length - 1].time  || chat.messages[chat.messages.length - 1].received" ng-cloak></small></span>
+							 <span style="position: absolute;bottom: 50px;right: 20px"><span ng-if="chat.status" class="online" style="background-color: #85CE36"></span><span ng-if="!chat.status" class="online" style="background-color: #ccc;"></span></span>
 							 <!--<i class="fa fa-comment-o" style="position: absolute;top:3px;right:5px" ng-if="chat.isUnRead"></i>-->
 						</a>
 						<div class="clearfix"></div>
@@ -45,21 +45,23 @@
 				<div class="panel panel-default">
 	                <div class="top-bar" style="border-bottom:1px solid rgba(0,0,0,0.2);box-shadow:0px 5px 5px #ccc">
 	                    <div class="col-md-5 col-sm-5 col-lg-5 col-xs-5">
-	                    	<img src="{{partner.profilePic}}" style="float: left;max-height: 42px;width:42px">	
-	                      <!--<button class="btn btn-simple text-danger" style="font-size: 16px" ng-click="chatLive()">Chat</button> &nbsp;&nbsp;-->
-	                        <span class="ellipsis" style="display:inline-block;font-size: 12px;padding: 3px 5px" ng-cloak><b>{{partner.name}} - {{partner.partnerType}} </b>&nbsp;
-	                        	<span style="display: block;">
-	                            <em ng-if="partner.typing" style="font-size: 12px;color: green"><small>{{partner.typing}}</small></em> 
-	                            <em ng-if="partner.status && !partner.typing" style="font-size: 12px;color: green" ng-cloak>Online</em>
-	                            <em ng-if="!partner.status && !partner.typing" ng-cloak style="color:red;font-size: 12px">Offline</em>
-	                            </span>
-	                        </span>
+	                    	<a href="{{'/user/profile/view/' + partner.partnerId}}" target="_blank" style="display: block;">
+		                    	<img src="{{partner.profilePic}}" style="float: left;max-height: 42px;width:42px">	
+		                      <!--<button class="btn btn-simple text-danger" style="font-size: 16px" ng-click="chatLive()">Chat</button> &nbsp;&nbsp;-->
+		                        <span class="ellipsis" style="display:inline-block;font-size: 12px;padding: 3px 5px" ng-cloak><b>{{partner.name}} - {{partner.partnerType}} </b>&nbsp;
+		                        	<span style="display: block;">
+		                            <em ng-if="partner.typing" style="font-size: 12px;color: green"><small>{{partner.typing}}</small></em> 
+		                            <em ng-if="partner.status && !partner.typing" style="font-size: 12px;color: green" ng-cloak>Online</em>
+		                            <em ng-if="!partner.status && !partner.typing" ng-cloak style="color:red;font-size: 12px">Offline</em>
+		                            </span>
+		                        </span>
+	                        </a>
 	                    </div>
 	                    <div class="col-md-7 col-lg-7 col-sm-7 col-xs-7 " style="text-align: right;">
 	                    	<!--<object type="application/pdf" src="https://s3.amazonaws.com/applinic-files/1541107583724MIRASYD.pdf" width="200px" height="300px"></object>-->
 	                    	<div ng-if="checkLogIn.typeOfUser === 'Patient' || checkLogIn.typeOfUser === 'Doctor'">
 	                    		<small><a href="" class="ellipsis" ng-if="partner.partnerType === 'Doctor' && checkLogIn.typeOfUser !== 'Doctor'"  ng-click="chatPrivate(partner)">Single Chat</a>
-	                    		<a href="" class="ellipsis" ng-if="partner.partnerType === 'Patient'"  ng-click="chatPrivate(partner)">Manage Patient</a>
+	                    		<a href="" class="btn btn-info btn-sm" ng-if="partner.partnerType === 'Patient'"  ng-click="chatPrivate(partner)">Manage Patient</a>
 	                    		</small>
 	                    	</div>
 	                    </div>

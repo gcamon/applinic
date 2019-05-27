@@ -11893,12 +11893,13 @@ app.controller("myDoctorController",["$scope","$location","$http","$window","$ro
   function($scope,$location,$http,$window,$rootScope,templateService,$filter,$compile,localManager,ModalService,mySocket,
     $timeout,deviceCheckService){
     
-  var doctor = {};
-  var savePath = (localManager.getValue("currentPageForPatients")) ? localManager.getValue("currentPageForPatients") : $location.path();
-  var arr = savePath.split("/");  
-  var userId = arr[arr.length-1];
-  doctor.id = templateService.holdIdForSpecificDoc || userId;
-  var user = localManager.getValue("resolveUser");
+    var doctor = {};
+    var savePath = $location.path(); //(localManager.getValue("currentPageForPatients")) ?
+     //localManager.getValue("currentPageForPatients") : $location.path();
+    var arr = savePath.split("/");  
+    var userId = arr[arr.length-1];
+    doctor.id = templateService.holdIdForSpecificDoc || userId;
+    var user = localManager.getValue("resolveUser");
 
     $http({
       method  : 'PUT',
@@ -11907,17 +11908,19 @@ app.controller("myDoctorController",["$scope","$location","$http","$window","$ro
       headers : {'Content-Type': 'application/json'} 
       })
     .success(function(data) {
-      $scope.docInfo = data;
-       var holdData = {
-        profilePic: data.profile_pic_url,
-        firstname: data.firstname,
-        lastname: data.lastname,
-        title: data.title,
-        presence: data.presence,
-        user_id: data.user_id
+      $scope.docInfo = data || $rootScope.tempDoctor;
+      if(data) {
+        var holdData = {
+          profilePic: $scope.docInfo.profile_pic_url,
+          firstname: $scope.docInfo.firstname,
+          lastname: $scope.docInfo.lastname,
+          title: $scope.docInfo.title,
+          presence: $scope.docInfo.presence,
+          user_id: $scope.docInfo.user_id
+        }
+        //$rootScope.dispalyPresence = data.presence;
+        localManager.setValue("doctorInfoforCommunication", holdData);
       }
-      //$rootScope.dispalyPresence = data.presence;
-     localManager.setValue("doctorInfoforCommunication", holdData);
     });
 
 
@@ -11936,8 +11939,7 @@ app.controller("myDoctorController",["$scope","$location","$http","$window","$ro
       reqModal(docObj);
     }
 
-    $scope.inPersonRequest = function(type,docObj){
-      
+    $scope.inPersonRequest = function(type,docObj){      
       docObj.type = type;
       reqModal(docObj);
     }
@@ -11985,15 +11987,6 @@ app.controller("myDoctorController",["$scope","$location","$http","$window","$ro
 
   mySocket.removeAllListeners("new_msg"); // incase if this listener is registered already
  
-  mySocket.emit('init chat',{userId: user.user_id,partnerId: doctor.id},function(data){
-    //$rootScope.message1 = messages || [];    
-    for(var i = 0; i < data.messages.length; i++) {        
-      chats(data.messages[i]);
-    }
-  });
-  
-
-
 
   $scope.getkeys = function (event) {
     if(!deviceCheckService.getDeviceType()) {
@@ -12044,6 +12037,22 @@ app.controller("myDoctorController",["$scope","$location","$http","$window","$ro
       $scope.user.text1 = "";
     }
   }
+
+
+  mySocket.emit('init chat',{userId: user.user_id,partnerId: doctor.id},function(data){
+    //$rootScope.message1 = messages || [];    
+    if(data.messages.length > 0) {
+      for(var i = 0; i < data.messages.length; i++) {        
+        chats(data.messages[i]);
+      }
+    } else {
+      //send something to the doctor.
+      $scope.user.text1 = "Hello doctor";
+      $scope.sendChat1();      
+    }
+    
+    
+  });
 
  
 
@@ -18823,11 +18832,14 @@ app.controller("helpController2",["$scope","$location","$http",function($scope,$
 }]);
 
 app.controller("helpController",["$scope","$location","$window","$http","templateService","localManager","templateUrlFactory",
-  "symptomsFactory","cities","multiData","ModalService",
-function($scope,$location,$window,$http,templateService,localManager,templateUrlFactory,symptomsFactory,cities,multiData,ModalService){
+  "symptomsFactory","cities","multiData","ModalService","$rootScope",
+function($scope,$location,$window,$http,templateService,localManager,templateUrlFactory,symptomsFactory,
+  cities,multiData,ModalService,$rootScope){
  
   $scope.user =  {};
   var patient = localManager.getValue("resolveUser");
+
+  $scope.isPWR = true;
   
   $scope.pageUrl  = templateUrlFactory.getUrl();
   
@@ -18836,6 +18848,38 @@ function($scope,$location,$window,$http,templateService,localManager,templateUrl
   var list = [{sn:"a"}];
   var symptom; 
   var index = 0;
+
+
+
+  /* this route gets first line doctors for easy access by patients to  just communicate without filling a form */
+  $http({
+    method  : 'GET',
+    url     : "/user/firstline-doctors", //firstline doctors refers to doctors that attends to patients with any consultation
+    //requests for treatment. Examples are doctors applinic employed for attending to patients.
+    headers : {'Content-Type': 'application/json'} 
+  })
+  .success(function(data) {   
+    $scope.firstlineDoctors = data;
+  });
+
+  $scope.continue = function(doc) {
+    doc.loading = true;
+    $http({
+      method  : 'POST',
+      url     : "/user/firstline-doctors",
+      data    : doc,
+      headers : {'Content-Type': 'application/json'} 
+    })
+    .success(function(data) { 
+      var path = "/patient-doctor/treatment/" + doc.user_id;
+      doc.loading = false;
+      $location.path(path);
+    });
+
+    $rootScope.tempDoctor = doc;
+  }
+
+
 
   $scope.getCity = function(city){
     thisCity = city;
@@ -18853,6 +18897,7 @@ function($scope,$location,$window,$http,templateService,localManager,templateUrl
     }
   }
 
+
   $scope.symptoms = symptomsFactory;
 
   $scope.symptomsList = list;
@@ -18868,6 +18913,20 @@ function($scope,$location,$window,$http,templateService,localManager,templateUrl
     index--;
     var remove = list.splice(sn,1);
   }
+
+  
+  
+  $scope.choose = function(type){
+    if(type == "pwr") {
+      $scope.isPWR = true;
+      $scope.isLive = false;
+    }
+    else {
+      $scope.isLive = true;
+      $scope.isPWR = false;
+    }
+  }
+
 
 
   $scope.validate = function() {

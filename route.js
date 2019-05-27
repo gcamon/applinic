@@ -2576,7 +2576,8 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
               user_id:1,
               presence:1,
               phone:1,
-              type:1
+              type:1,
+              name: 1
           }
           model.user.findOne({ user_id: req.body.id},projection,function(err,data){
             if(err) throw err;
@@ -7888,7 +7889,7 @@ router.get("/user/get-person-profile",function(req,res){
 
 router.get("/user/patient/get-my-doctors",function(req,res){
   if(req.user) {   
-    model.user.find({"doctor_patients_list.patient_id": req.user.user_id,type:"Doctor"},
+    /*model.user.find({"doctor_patients_list.patient_id": req.user.user_id,type:"Doctor"},
       {
         user_id:1,
         firstname:1,
@@ -7918,10 +7919,11 @@ router.get("/user/patient/get-my-doctors",function(req,res){
           
           count++
         }       
-        res.send(sendList);
-        console.log(sendList)
-      });      
-    });
+        
+      }); 
+
+    });*/
+    res.json(req.user.accepted_doctors);
   } else {
     res.send("Unauthorized access!")
   }
@@ -8135,8 +8137,6 @@ router.post("/user/:id/communication-request",function(req,res){
           var url = "/user/get-response/" + req.body.sender_id;     
           res.send({checkUrl: url,free:trues});
         } else {
-          console.log("see user");
-          console.log(user);
           user.watch_list.push({
             sender_firstname: req.body.sender_firstname,
             sender_lastname: req.body.sender_lastname,
@@ -8504,7 +8504,7 @@ router.get("/user/chats",function(req,res){
       res.json(chats);
     })
   } else {
-    res.end("unautorized access!");
+    res.end("unauthorized access!");
   }
 });
 
@@ -9413,7 +9413,7 @@ router.post("/user/doctor/add-patient",function(req,res){
           }
           user.save(function(err,info){
             if(err) throw err;
-            console.log("Patient's doctor list updated")
+            console.log("Patient's doctor list updated");
           })
         } 
       });  
@@ -9425,40 +9425,7 @@ router.post("/user/doctor/add-patient",function(req,res){
   } else {
     res.end("unauthorized access!");
   }
-})
-
-
-
-/*
-
- initial_complaint: { files: [], date_received: 1548109407141 },
-    _id: 5c46465fb68f5b2f1c60c56a,
-    patient_profile_pic_url: '/download/profile_pic/nopic',
-    patient_id: 'chidiebere187432',
-    patient_lastname: 'Chidiebere',
-    patient_firstname: 'Nnaji'
-
-
-router.get('/test',function(req,res){
-  console.log(req.query)
-  sms.calls 
-  .create({
-    url: "https://applinic.com/mamavoice",
-    to: req.query.phone,
-    from: '+16467985692',
-  })
-  .then(
-    function(call){
-      console.log(call.sid);
-      res.send({message:"Phone call initiated",success:true,time_stamp:req.body.time}) 
-    },
-    function(err) {
-      console.log(err)
-      res.send({error: true, message:"Error occured while trying to call the destination. Please try again"})
-    }
-  )
-});*/
-
+});
 
 router.post("/twiliovoicemsg",function(req,res){
   //var arr = req.query.pin.split('');
@@ -9497,6 +9464,14 @@ router.post("/inviteonlinecall",function(req,res){
   var twiml = new Voice();
   console.log(req.query)
   var textToSay = "Hi " + req.query.receiver + " , " + req.query.sender + " , a " + req.query.type + " , wants to have a chat with you on app linic .com, Please log in now to attend. Thank you."
+  twiml.say({ voice: 'man',language: 'en-gb' },textToSay);
+  res.type('text/xml');
+  res.send(twiml.toString());
+});
+
+router.post("/pwrcall",function(req,res){
+  var twiml = new Voice();
+  var textToSay = "Hi doc, a patient, submitted a com plaint in patient , waiting , room , on applinic. Please , log on , and , attend."
   twiml.say({ voice: 'man',language: 'en-gb' },textToSay);
   res.type('text/xml');
   res.send(twiml.toString());
@@ -9668,6 +9643,67 @@ router.put("/user/patient/medical-history",function(req,res){
     res.end("Unauthorized access");
   }
 });
+
+
+router.get("/user/firstline-doctors",function(req,res){
+  if(req.user){
+    model.user.find({isFirstline: true},{user_id:1,name:1,specialty:1,work_place:1,address:1,
+      city:1,profile_pic_url:1,verified:1,phone:1})
+    .exec(function(err,data){
+      res.json(data);
+    });
+  } else {
+    res.end("Unauthorized access");
+  }
+});
+
+router.post("/user/firstline-doctors",function(req,res){
+  if(req.user){
+    model.user.findOne({user_id: req.body.user_id})
+    .exec(function(err,doc){
+      if(err) throw err;
+      if(doc) {
+        //send a robo call to selected firstline doctor
+        sms.calls 
+        .create({
+          url: "https://applinic.com/inviteonlinecall?receiver=" + "doctor" + "&&sender=" 
+          + req.user.lastname + "&&type=" + req.user.type,
+          to: req.body.phone || "",
+          from: '+16467985692',
+        })
+        .then(
+          function(call){
+            console.log(call.sid);
+          },
+          function(err) {
+            console.log(err)
+          }
+        );
+
+        //send sms to the firstline doctor
+        var msgBody = "Please attend to this patient via chat on applinic\n" + req.user.title 
+        + " " + req.user.firstname + "\n" + req.user.phone;        
+        sms.messages.create(
+          {
+            to: req.body.phone,
+            from: '+16467985692',
+            body: msgBody,
+          },
+          callBack
+        );
+
+        function callBack(err,response){              
+          console.log(response)
+        }   
+      }       
+    })
+    res.json({status: true});
+
+  } else {
+    res.end("Unauthorized access");
+  }
+});
+
 
 /*router.get("/test-page",function(req,res){
   res.sendFile(path.join(__dirname + '/test.html'))

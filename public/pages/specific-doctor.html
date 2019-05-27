@@ -1,12 +1,8 @@
 
-
-<div style="height:5px"></div>
                 
-<div class="container target">
-    
-    <div class="row">       
+<div class="card card-center-1"> 
         
-        <div class="col-sm-12 col-md-3 col-lg-3">
+        <!--<div class="col-sm-12 col-md-3 col-lg-3">
             <div class="row">
                 <div class="col-sm-12"  style="background:rgba(255,255,255, .8)">
                     <div class=" text-center userpe"><a href="">
@@ -23,29 +19,34 @@
                             <div><a ng-href= "{{docInfo.profile_url}}">view doctor's profile</a></div>
 
                      </div>
-                     <!-- <div class="pt-2">
-                         <a href="" class="btn btn-sm btn-danger" ng-click="inviteOnline(docInfo)">Seek Attention</a>
-                     </div>-->
+                     
                     <div class="clearfix"></div>
         
                 </div>
             </div>
-        </div>
+        </div>-->
             <!--left col-->
              
           
         
-        <div class="col-sm-12 col-md-9 col-lg-9" contenteditable="false">
+        <div class="col-sm-12 col-md-12 col-lg-12" contenteditable="false">
            <div>
               <div class="p-0">
                 <div class="panel panel-default">
                     <div class="top-bar row">
                         <div class="col-md-3 col-sm-3 col-lg-3 col-xs-5">
                           <!--<button class="btn btn-simple text-danger" style="font-size: 16px" ng-click="chatLive()">Chat</button> &nbsp;&nbsp; -->
-                            <span  ng-cloak style="font-size: 12px;color:green"><b>{{docInfo.title}} {{docInfo.firstname}}</b> is <em ng-if="typing">{{typing}}</em>
-                                <em ng-if="dispalyPresence && !typing" ng-cloak>Online</em>
-                                <em ng-if="!dispalyPresence" ng-cloak style="color:red">Offline</em>
-                            </span>
+                            <a href="{{'/user/profile/view/' + docInfo.user_id}}" target="_blank" class="row" style="display: block;">
+                                <div class="col-md-3">
+                                    <img src="{{docInfo.profile_pic_url}}" style="max-width: 72px;height: auto;">
+                                </div>
+                                <div class="col-md-9">
+                                    <span  ng-cloak style="font-size: 12px;color:green"><b>{{docInfo.name}}</b> <br> <em ng-if="typing">{{typing}}</em>
+                                        <em ng-if="dispalyPresence && !typing" ng-cloak>Online</em>
+                                        <em ng-if="!dispalyPresence" ng-cloak style="color:red">Offline</em>
+                                    </span>
+                                </div>
+                            </a>
                         </div>
                         <div class="col-md-9 col-sm-9 col-lg-9 col-xs-7" style="text-align: right;">
                              <a class="ick" href="" style="padding-right:15px" ng-click="deleteChat()" title="Delete chat"><span class="fa fa-trash-o"></span></a>
@@ -86,7 +87,7 @@
         </div>
  
         </div>
-</div>
+
 </div>
 
 
