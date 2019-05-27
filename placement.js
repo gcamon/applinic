@@ -76,7 +76,7 @@ function placementRoute(model,sms,io,nodemailer){
 			    sms.calls 
 		        .create({
 		          url: "https://applinic.com/pwrcall?",
-		          to: "+2348086675053" || "",
+		          to: "+2348064245256" || "",
 		          from: '+16467985692',
 		        })
 		        .then(
@@ -92,7 +92,7 @@ function placementRoute(model,sms,io,nodemailer){
 		        var msgBody = "A patient just submitted a complaint in PWR on applinic\n" + req.user.firstname + "-" + req.user.phone;      
 		        sms.messages.create(
 		          {
-		            to: "+2348086675053",//applinicDoctor.phone,
+		            to: "+2348064245256",//applinicDoctor.phone,
 		            from: '+16467985692',
 		            body: msgBody,
 		          },
