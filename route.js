@@ -9471,7 +9471,7 @@ router.post("/inviteonlinecall",function(req,res){
 
 router.post("/pwrcall",function(req,res){
   var twiml = new Voice();
-  var textToSay = "Hi doc, a patient, submitted a com plaint in patient , waiting , room , on applinic. Please , log on , and , attend."
+  var textToSay = "Hi doc, a patient, submitted a complaint in patient waiting room , on applinic. Please  log on  and  attend."
   twiml.say({ voice: 'man',language: 'en-gb' },textToSay);
   res.type('text/xml');
   res.send(twiml.toString());
