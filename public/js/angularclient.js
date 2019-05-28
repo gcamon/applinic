@@ -18849,8 +18849,6 @@ function($scope,$location,$window,$http,templateService,localManager,templateUrl
   var symptom; 
   var index = 0;
 
-
-
   /* this route gets first line doctors for easy access by patients to  just communicate without filling a form */
   $http({
     method  : 'GET',
@@ -18862,24 +18860,31 @@ function($scope,$location,$window,$http,templateService,localManager,templateUrl
     $scope.firstlineDoctors = data;
   });
 
+  var checkPresence;
+
   $scope.continue = function(doc) {
-    doc.loading = true;
-    $http({
-      method  : 'POST',
-      url     : "/user/firstline-doctors",
-      data    : doc,
-      headers : {'Content-Type': 'application/json'} 
-    })
-    .success(function(data) { 
+    $rootScope.sockets 
+    checkPresence = _.invert($rootScope.sockets);
+    if(checkPresence[doc.user_id]) {
+      doc.loading = true;
+      $http({
+        method  : 'POST',
+        url     : "/user/firstline-doctors",
+        data    : doc,
+        headers : {'Content-Type': 'application/json'} 
+      })
+      .success(function(data) { 
+        var path = "/patient-doctor/treatment/" + doc.user_id;
+        doc.loading = false;
+        $location.path(path);
+      });      
+    } else {
       var path = "/patient-doctor/treatment/" + doc.user_id;
-      doc.loading = false;
       $location.path(path);
-    });
+    }
 
     $rootScope.tempDoctor = doc;
   }
-
-
 
   $scope.getCity = function(city){
     thisCity = city;
@@ -18897,7 +18902,6 @@ function($scope,$location,$window,$http,templateService,localManager,templateUrl
     }
   }
 
-
   $scope.symptoms = symptomsFactory;
 
   $scope.symptomsList = list;
@@ -18914,8 +18918,6 @@ function($scope,$location,$window,$http,templateService,localManager,templateUrl
     var remove = list.splice(sn,1);
   }
 
-  
-  
   $scope.choose = function(type){
     if(type == "pwr") {
       $scope.isPWR = true;
@@ -18926,8 +18928,6 @@ function($scope,$location,$window,$http,templateService,localManager,templateUrl
       $scope.isPWR = false;
     }
   }
-
-
 
   $scope.validate = function() {
     $scope.sympMsg = "";
@@ -19199,7 +19199,7 @@ function($scope,$location,$window,$http,templateService,localManager,templateUrl
 
 
   function uploadComplete(evt) {       
-     $scope.$apply(function(){
+    $scope.$apply(function(){
       $scope.userData = JSON.parse(evt.target.responseText);
       $scope.loading = false;
     })

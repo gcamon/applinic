@@ -29,7 +29,7 @@
 
 <section  ng-show="isLive"><br>
   <h5 style="margin-top: 2px">live Physician</h5>
-  <p class="font-1_0">Choose a physician to explain your health issues to: </p>  
+  <p class="font-1_0">Choose a physician who you can explain your health issues to: </p>  
   <hr>
   <div>
     <a href="" style="display: block;" ng-click="continue(d)" class="row p-2 bottom-border" ng-repeat="d in firstlineDoctors">
@@ -40,8 +40,8 @@
         <label>{{d.name}}</label><br>
         <span>{{d.specialty}}</span>  <br>
         <span>{{d.work_place}} | {{d.address}} {{d.city}}</span><br>
-        <span ng-if="d.verified" title="Qualification verified"> <i class="fa fa-certificate"></i> verified</span>
-    
+        <span ng-if="d.verified" title="Qualification verified"> <i class="fa fa-certificate"></i> verified</span><br>
+        <span ng-if="d.loading"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange" ></i> connecting...</span>    
       </div>
       <!--<div class="col-md-2">
         <button class="btn btn-primary btn-sm" ng-click="continue(d)" ng-if="!d.loading"><i class="fa fa-arrow-right"></i></button>
