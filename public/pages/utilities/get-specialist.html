@@ -22,36 +22,39 @@
     </ul>-->
 
 <div>
-  <button ng-click="choose('pwr')" class="btn btn-info btn-sm">Fill your complaints</button> &nbsp;&nbsp; Or &nbsp;&nbsp;
-  <button ng-click="choose('live')" class="btn btn-info btn-sm">Chat with live physician</button>
+  <button ng-click="choose('pwr')" class="btn  btn-sm" ng-class="{'btn-info': isPWR }">Fill your complaints</button> &nbsp;&nbsp; Or &nbsp;&nbsp;
+  <button ng-click="choose('live')" class="btn btn-sm" ng-class="{'btn-info': isLive }">Chat with live physician</button>
 </div>
 
 
-<section class="" ng-show="isLive"><br>
-  <h4>live Physician</h4>
-  <p>Choose a physician to talk to:</p>
+<section  ng-show="isLive"><br>
+  <h5 style="margin-top: 2px">live Physician</h5>
+  <p class="font-1_0">Choose a physician to explain your health issues to: </p>  
   <hr>
-  <div class="row pt-2 pl-1 bottom-border" ng-repeat="d in firstlineDoctors">
-    <div class="col-md-2">
-      <img ng-src="{{d.profile_pic_url}}" style="max-width: 120px;height: auto;">
-    </div>
-    <div class="col-md-7">
-      <label>{{d.name}}</label><br>
-      <span>{{d.specialty}}</span> <span ng-if="d.verified" title="Qualification verified"> <i class="fa fa-certificate text-danger"></i></span> <br>
-      <address>{{d.work_place}} | {{d.address}} {{d.city}}</address>
-  
-    </div>
-    <div class="col-md-2">
-      <button class="btn btn-primary btn-sm" ng-click="continue(d)" ng-if="!d.loading"><i class="fa fa-arrow-right"></i></button>
-      <span><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange" ng-if="d.loading"></i></span>
-      <br>
-    </div>
+  <div>
+    <a href="" style="display: block;" ng-click="continue(d)" class="row p-2 bottom-border" ng-repeat="d in firstlineDoctors">
+      <div class="col-md-2">
+        <img ng-src="{{d.profile_pic_url}}" style="max-height: 220px">
+      </div>
+      <div class="col-md-10">
+        <label>{{d.name}}</label><br>
+        <span>{{d.specialty}}</span>  <br>
+        <span>{{d.work_place}} | {{d.address}} {{d.city}}</span><br>
+        <span ng-if="d.verified" title="Qualification verified"> <i class="fa fa-certificate"></i> verified</span>
+    
+      </div>
+      <!--<div class="col-md-2">
+        <button class="btn btn-primary btn-sm" ng-click="continue(d)" ng-if="!d.loading"><i class="fa fa-arrow-right"></i></button>
+        <span><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange" ng-if="d.loading"></i></span>
+        <br>
+      </div>-->
+    </a>
   </div>
   <div style="text-align: center;" ng-if="!firstlineDoctors"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange"></i></div>
 </section>
 
 <section class="" ng-show="isPWR"><br>
- <h4 style="margin-top: 2px">Complaint</h4>
+ <h5 style="margin-top: 2px">Complaint</h5>
  <p class="font-1_0">Fill your complaints below for the right specialist to contact you at the Patient Waiting Room (PWR).</p>
 
  <div>
