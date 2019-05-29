@@ -18839,7 +18839,7 @@ function($scope,$location,$window,$http,templateService,localManager,templateUrl
   $scope.user =  {};
   var patient = localManager.getValue("resolveUser");
 
-  $scope.isPWR = true;
+  //$scope.isPWR = true;
   
   $scope.pageUrl  = templateUrlFactory.getUrl();
   
@@ -18863,9 +18863,8 @@ function($scope,$location,$window,$http,templateService,localManager,templateUrl
   var checkPresence;
 
   $scope.continue = function(doc) {
-    $rootScope.sockets 
     checkPresence = _.invert($rootScope.sockets);
-    if(checkPresence[doc.user_id]) {
+    if(!checkPresence[doc.user_id]) {
       doc.loading = true;
       $http({
         method  : 'POST',
@@ -22017,12 +22016,17 @@ app.controller("invitationCtrl",["$scope","$http","$rootScope","ModalService",fu
 
     $scope.inviteFn = function() {
       $scope.msg = "";
+
       $scope.existingUser = false;
+
+
+
       if(!$scope.invite.recepient){
         alert("Please enter email or phone number of the recepient");
         return;
       }
 
+      
       if($rootScope.checkLogIn.email == $scope.invite.recepient){
         alert("Please you cannot invite yourself.");
         return;
@@ -22032,6 +22036,12 @@ app.controller("invitationCtrl",["$scope","$http","$rootScope","ModalService",fu
         alert("Please you cannot invite yourself.");
         return;
       }
+
+      if($scope.invite.recepient.indexOf('+') == -1 || $scope.invite.recepient.indexOf("+2") == -1){
+        var newSlice = $scope.invite.recepient.slice(1);
+        $scope.invite.recepient = "+234" + newSlice;
+      }
+
 
       $scope.loading = true;
 
@@ -22047,7 +22057,6 @@ app.controller("invitationCtrl",["$scope","$http","$rootScope","ModalService",fu
     $scope.addPatient = function() {
       $scope.loading = true;
       $scope.msg = "";
-
       $http.post("/user/doctor/add-patient",{user: $scope.userToAdd})
       .success(function(res){
         $scope.msg = res.message;

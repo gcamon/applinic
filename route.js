@@ -9208,6 +9208,7 @@ router.get("/user/doctor/initial-complaint",function(req,res){
 
 router.post("/user/invitation",function(req,res){
   if(req.user) {
+    console.log(req.body);
     var msgBody;
     var intRegex = /[0-9 -()+]+$/;
     var emailReg = /^\w+([\.-]?\w+)+@\w+([\.:]?\w+)+(\.[a-zA-Z0-9]{2,3})+$/;

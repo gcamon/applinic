@@ -13,7 +13,7 @@
 	<form ng-submit="inviteFn()" class="col-md-6" ng-if="invite.type">
 		<h6>Invite a {{invite.type}}</h6><br>
 		<label>Enter email or phone number of recepient:</label><br>
-		<input type="text" placeholder="Enter email or phone(e.g +23480563*****)" ng-model="invite.recepient" class="form-control"><br>
+		<input type="text" placeholder="Enter email or phone" ng-model="invite.recepient" class="form-control"><br>
 		<p style="color: green">{{msg}}</p>
 		<section ng-if="existingUser && checkLogIn.typeOfUser == 'Doctor' && invite.type =='Patient'">
 		<a href=""  class="btn btn-success btn-sm" ng-click="addPatient()" ng-if='!loading'> Add to your account</a><span ng-if='loading'>Processing...</span> &nbsp;&nbsp; <a href="" class="btn btn-neutral btn-sm" ng-click="refresh()">No, thanks</a>
