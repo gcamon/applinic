@@ -9649,7 +9649,7 @@ router.put("/user/patient/medical-history",function(req,res){
 router.get("/user/firstline-doctors",function(req,res){
   if(req.user){
     model.user.find({isFirstline: true},{user_id:1,name:1,specialty:1,work_place:1,address:1,
-      city:1,profile_pic_url:1,verified:1,phone:1})
+      city:1,profile_pic_url:1,verified:1,phone:1,email:1})
     .exec(function(err,data){
       res.json(data);
     });
@@ -9660,6 +9660,7 @@ router.get("/user/firstline-doctors",function(req,res){
 
 router.post("/user/firstline-doctors",function(req,res){
   if(req.user){
+    console.log(req.body)
     model.user.findOne({user_id: req.body.user_id})
     .exec(function(err,doc){
       if(err) throw err;
@@ -9686,7 +9687,7 @@ router.post("/user/firstline-doctors",function(req,res){
         + " " + req.user.firstname + "\n" + req.user.phone;        
         sms.messages.create(
           {
-            to: req.body.phone,
+            to: req.body.phone || "",
             from: '+16467985692',
             body: msgBody,
           },
@@ -9695,7 +9696,31 @@ router.post("/user/firstline-doctors",function(req,res){
 
         function callBack(err,response){              
           console.log(response)
-        }   
+        }
+
+        var transporter = nodemailer.createTransport({
+          host: "mail.privateemail.com",
+          port: 465,
+          auth: {
+            user: "info@applinic.com",
+            pass: process.env.EMAIL_PASSWORD
+          }
+        });
+
+        var mailOptions = {
+          from: 'Applinic info@applinic.com',
+          to: req.body.email,
+          subject:'Patient Chat Request',
+          html: "<div style='font-size:18px'><b>Hello doctor</b>, <br><br> A patient wants to have a chat with you. <br> Kindly login to attend. <br><br> https://applinic.com/login <br><br> Thank you!</div>"
+        };
+
+        transporter.sendMail(mailOptions, function(error, info){
+          if (error) {
+            console.log(err)
+          } else {
+            console.log('Email sent: ' + info.response);
+          }
+        });
       }       
     })
     res.json({status: true});

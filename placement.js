@@ -76,7 +76,7 @@ function placementRoute(model,sms,io,nodemailer){
 			    sms.calls 
 		        .create({
 		          url: "https://applinic.com/pwrcall?",
-		          to: "+2348086675053" || "",
+		          to: "+2349092469137" || "",
 		          from: '+16467985692',
 		        })
 		        .then(
@@ -101,7 +101,10 @@ function placementRoute(model,sms,io,nodemailer){
 
 		        function callBack(err,response){              
 		          console.log(response)
-		        }   
+		        }  
+
+
+		         
 
 	    	});
 
