@@ -63,34 +63,7 @@ padding:10px 10px;
                 </a>
             </div>
             <div class="collapse navbar-collapse justify-content-end" id="navigation" data-nav-image="assets/img/blurblue-image-1.jpg">
-                <ul class="navbar-nav" style="width: 90%; margin: 0 auto;" ng-cloak>
-                    <li class="nav-item" style="color: #fff">
-                       
-                        <input type="radio" value="radio" ng-model="invest.type"> <span>Radiology<span>
-                           
-                    </li>
-
-                     <li class="nav-item" style="color: #fff">
-                        
-                        <input type="radio" value="lab" ng-model="invest.type"> <span>Laboratory</span>
-                           
-                    </li>
-
-                    <li class="nav-item" ng-if="invest.type == 'radio'">
-                        
-                        <input type="text" placeholder="Enter Study ID or Accession No. or Reference No." style="width: 300px;padding:3px 5px;border-radius: 3px;border:none" ng-model="invest.id"> <button class="btn btn-neutral" style="padding:5px;font-size:18px" ng-click="findInvestigation()"><i class="fa fa-search"></i></button>
-                           
-                    </li>
-
-                    <li class="nav-item" ng-if="invest.type == 'lab'">
-                        
-                        <input type="text" placeholder="Enter Test Reference No." style="width: 300px;padding:3px 5px;border-radius: 3px;border:none" ng-model="invest.id"> <button class="btn btn-neutral" style="padding:5px;font-size:18px" ng-click="findInvestigation()"><i class="fa fa-search"></i></button>
-                           
-                    </li>
-                    
-                    
-                    
-                    </ul>
+               
                    
 
 <div class="dropdown hidden-md-down">

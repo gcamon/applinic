@@ -95,7 +95,30 @@
 <div class="wrapper" style="height:90px;"></div>
 <div class="container">
 
+    <div>     
+        <input type="radio" value="radio" ng-model="invest.type"> <span>Radiology<span>&nbsp;&nbsp;
+           
+        <input type="radio" value="lab" ng-model="invest.type"> <span>Laboratory</span>
+        <br>
+           
+        <div class="nav-item" ng-if="invest.type == 'radio'" ng-cloak>
+            
+            <input type="text" placeholder="Enter Study ID or Accession No. or Reference No." class="col-md-10" ng-model="invest.id"> &nbsp;<button class="btn btn-danger"  style="padding: 9px 15px" ng-click="findInvestigation()"><i class="fa fa-search"></i> Find</button>
+               
+        </div>
+
+        <div class="nav-item" ng-if="invest.type == 'lab'" ng-cloak>
+            
+            <input type="text" placeholder="Enter Test Reference No." class="col-md-10" ng-model="invest.id"> &nbsp;<button class="btn btn-danger" style="padding: 9px 15px" ng-click="findInvestigation()"><i class="fa fa-search"></i> Find</button>
+               
+        </div>
+    </div>
+    <div class="clearfix"></div>
+    <br>
+
     <div  class="row p-2" style="font-size: 14px;">  
+
+        
 
         <div class="col-md-7">
 
