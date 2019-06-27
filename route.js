@@ -6804,7 +6804,7 @@ router.put("/user/scan-search/radiology/referral",function(req,res){
           port: req.body.onlinePacs.port,
           aetitle: req.body.onlinePacs.aetitle,
           accession_number: accNo,
-          study_link: "http://" + req.body.onlinePacs.ip_address + ":8080/weasis-pacs-connector/viewer?accessionNumber=" + accNo,
+          study_link: req.body.onlinePacs.ip_address + ":8080/weasis-pacs-connector/viewer?accessionNumber=" + accNo,
           deleted: false,
           ref_id: req.body.ref_id,
         });

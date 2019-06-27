@@ -2197,9 +2197,9 @@ router.post("/user/dicom-details",function(req,res){
 		    port: req.body.onlinePacs.port,
 		    aetitle: req.body.onlinePacs.aetitle,
 		    accession_number: rados,
-		    study_link: (req.body.isAcc) ? ("http://" + req.body.onlinePacs.ip_address + 
-		    ":8080/weasis-pacs-connector/viewer?accessionNumber=" + rados) : ("http://" + req.body.onlinePacs.ip_address + 
-		    ":8080/weasis-pacs-connector/viewer?studyID=" + req.body.studyID),
+		    study_link: (req.body.isAcc) ? (req.body.onlinePacs.ip_address + 
+		    ":8080/weasis-pacs-connector/viewer?accessionNumber=" + rados) : (req.body.onlinePacs.ip_address + 
+		    ":8080/weasis-pacs-connector/viewer?patientID=" + req.body.studyID),
 		    study_type: req.body.type,
 		    deleted: false
 		  });
@@ -2244,7 +2244,7 @@ router.post("/user/dicom-details",function(req,res){
 
           var mailOptions = {
             from: 'Applinic info@applinic.com',
-            to: req.body.patientEmail,
+            to: req.body.patientEmail || "support@applinic.com",
             subject: 'Radiology Dicom Study Uploaded',
             html: '<table><tr><tr><td>Hello,<br><br>Your study with ' 
             +  tp  + " <b>" + (rados || req.body.studyID) + '</b> was uploaded to Applinic Online PACs Server '
