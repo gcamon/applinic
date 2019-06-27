@@ -22308,7 +22308,7 @@ app.controller("dicomCtrl",["$rootScope","$scope","$location","$resource","$http
       case'CAPEHS':
         cost = $rootScope.toCurrency(250);
         $scope.station.amount = 250;
-        if($scope.availableAmount < $scope.station.amount){
+        if($scope.availableAmount > $scope.station.amount){
           alert("You have insufficient fund for this service. Please fund your wallet.");
           return;
         }
@@ -22369,7 +22369,9 @@ app.controller("dicomCtrl",["$rootScope","$scope","$location","$resource","$http
   $scope.newAcc = function() {
     $scope.isSuccess = false;
     $scope.accNo = "";
-    $scope.station = {}
+    $scope.station.patientName = "";
+    $scope.station.patientPhone = "";
+    $scope.station.patientEmail = "";
   }
 
 }]);
