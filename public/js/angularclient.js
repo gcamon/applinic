@@ -815,7 +815,7 @@ app.config(['$paystackProvider','$routeProvider',
 })
 
 .when("/import",{
-  templateUrl: "/assets/pages/utilities/import-dicom.html",
+  templateUrl: "/assets/pages/utilities/link-dicom.html",
   controller: "dicomCtrl"
 })
 
@@ -22007,6 +22007,7 @@ app.controller("dicomCtrl",["$rootScope","$scope","$location","$resource","$http
 
   $scope.station = {}
   $scope.station.center = $rootScope.checkLogIn;
+  $scope.station.locate = "patientID"
   $scope.test = {};
   $scope.contact = {};
 
@@ -22328,7 +22329,7 @@ app.controller("dicomCtrl",["$rootScope","$scope","$location","$resource","$http
 
     $scope.station.cost = cost;
 
-    var msg = "Adding Existing DICOM link Study ID will cost you " + cost + " . Do you wish to continue?";
+    var msg = "Adding Existing DICOM Study will cost you " + cost + " . Do you wish to continue?";
     var check = confirm(msg)
     if(check) {
       $scope.loading = true;
@@ -22344,11 +22345,26 @@ app.controller("dicomCtrl",["$rootScope","$scope","$location","$resource","$http
           $scope.isSuccess = true;
           $scope.studyNum = data.studyId; 
           $rootScope.$broadcast("debit",{});
+        } else {
+          alert(data.message)
         }
       }); 
     }
 
   }
+
+  var count = 0;
+  $scope.$watch("station.locate",function(newVal,oldVal){
+    count++;
+    switch(newVal){
+      case 'studyID':
+        $scope.station.patientID = "";
+      break;
+      case 'patientID':
+        $scope.station.studyID = "";
+      break;
+    }
+  })
 
   $scope.newAcc = function() {
     $scope.isSuccess = false;

@@ -2179,93 +2179,110 @@ router.post("/user/dicom-details",function(req,res){
 				rados = null;
 			}
 
-		  var study = new model.study({
-		    patient_name: req.body.patientName,
-		    patient_id: "",
-		    study_id: req.body.studyID || "",
-		    center_id: req.user.user_id,
-		    center_name: req.user.name,
-		    center_address: req.user.address,
-		    center_city: req.user.city,
-		    center_country: req.user.country,
-		    center_phone: req.user.phone,
-		    center_email: req.user.email,
-		    created: date,
-		    patient_phone: req.body.patientPhone,
-		    email: req.body.patientEmail,
-		    ip_address: req.body.onlinePacs.ip_address,
-		    port: req.body.onlinePacs.port,
-		    aetitle: req.body.onlinePacs.aetitle,
-		    accession_number: rados,
-		    study_link: (req.body.isAcc) ? (req.body.onlinePacs.ip_address + 
-		    ":8080/weasis-pacs-connector/viewer?accessionNumber=" + rados) : (req.body.onlinePacs.ip_address + 
-		    ":8080/weasis-pacs-connector/viewer?patientID=" + req.body.studyID),
-		    study_type: req.body.type,
-		    deleted: false
-		  });
+			var id = req.body.studyID || req.body.patientID;
+
+			var criteria = { study_id : id};
+			model.study.find(criteria)
+			.exec(function(err,result){
+				if(err) throw err;
+				if(result.length == 0){
+					createStudy()
+				} else {
+					res.json({status: false,message:"Study or Patient ID already exist."});
+				}
+			})
+
+			function createStudy() {
+				var locate = (req.body.studyID) ? ('studyUID=' + req.body.studyID) : ('patientID=' + req.body.patientID);
+
+			  var study = new model.study({
+			    patient_name: req.body.patientName,
+			    patient_id: "",
+			    study_id: req.body.studyID || req.body.patientID,
+			    center_id: req.user.user_id,
+			    center_name: req.user.name,
+			    center_address: req.user.address,
+			    center_city: req.user.city,
+			    center_country: req.user.country,
+			    center_phone: req.user.phone,
+			    center_email: req.user.email,
+			    created: date,
+			    patient_phone: req.body.patientPhone,
+			    email: req.body.patientEmail,
+			    ip_address: req.body.onlinePacs.ip_address,
+			    port: req.body.onlinePacs.port,
+			    aetitle: req.body.onlinePacs.aetitle,
+			    accession_number: rados,
+			    study_link: (req.body.isAcc) ? (req.body.onlinePacs.ip_address + 
+			    ":8080/weasis-pacs-connector/viewer?accessionNumber=" + rados) : (req.body.onlinePacs.ip_address + 
+			    ":8080/weasis-pacs-connector/viewer?" + locate),
+			    study_type: req.body.type,
+			    deleted: false
+			  });
 
 
-		  study.save(function(err,info){
-		  	if(err){
-		  		throw err;
-		  		res.end("error occured");
-		  	} else {
-		  		var msg = (rados || req.body.studyID) + " - dicom study upload";
-				  var pay = new Wallet(date,req.user.name,"",msg,rados);
-				  pay.dicom(model,req.body.amount,req.user,io);
-				  res.json({acc_no: rados,status:true,studyId: req.body.studyID});	
+			  study.save(function(err,info){
+			  	if(err){
+			  		throw err;
+			  		res.end("error occured");
+			  	} else {			  		
+			  		var msg = (rados || id) + " - dicom study upload";
+					  var pay = new Wallet(date,req.user.name,"",msg,rados);
+					  pay.dicom(model,req.body.amount,req.user,io);
+					  res.json({acc_no: rados,status:true,studyId: id});	
 
-				  var tp = (req.body.isAcc) ? "Accession Number" : "Study ID";
-				  var msgBody = "Your radiology dicom study with\n" + tp + " " + (rados || req.body.studyID) 
-				  + " has been upload to applinic online PACS server.\n" 
-				  + "You can share or use this number to view the study on windows or Mac PCs.\nVisit https://applinic.com";
-					sms.messages.create(
-            {
-              to: req.body.patientPhone,//req.body.patientPhone,
-              from: '+16467985692',
-              body: msgBody,
-            },
-            callBack
-          );
+					  var tp = (req.body.isAcc) ? "Accession Number" : "Study ID";
+					  var msgBody = "Your radiology dicom study with\n" + tp + " " + (rados || id) 
+					  + " has been upload to applinic online PACS server.\n" 
+					  + "You can share or use this number to view the study on windows or Mac PCs.\nVisit https://applinic.com";
+						sms.messages.create(
+	            {
+	              to: req.body.patientPhone,//req.body.patientPhone,
+	              from: '+16467985692',
+	              body: msgBody,
+	            },
+	            callBack
+	          );
 
-          var transporter = nodemailer.createTransport({
-            host: "mail.privateemail.com",
-            port: 465,
-            auth: {
-              user: "info@applinic.com",
-              pass: process.env.EMAIL_PASSWORD
-            }
-          });
+	          var transporter = nodemailer.createTransport({
+	            host: "mail.privateemail.com",
+	            port: 465,
+	            auth: {
+	              user: "info@applinic.com",
+	              pass: process.env.EMAIL_PASSWORD
+	            }
+	          });
 
-          var cp = (req.body.isAcc) ? rados  : req.body.studyID;
+	          var cp = (req.body.isAcc) ? rados  : id;
 
-          var mailOptions = {
-            from: 'Applinic info@applinic.com',
-            to: req.body.patientEmail || "support@applinic.com",
-            subject: 'Radiology Dicom Study Uploaded',
-            html: '<table><tr><tr><td>Hello,<br><br>Your study with ' 
-            +  tp  + " <b>" + (rados || req.body.studyID) + '</b> was uploaded to Applinic Online PACs Server '
-            + 'by ' + req.user.name + '. You can share or use this number to view the study on windows or Mac PCs.' 
-            + '<br><br><div style="text-align: center"><a href="https://applinic.com/investigation/result?type=radio&id=' 
-            + cp + '" style="padding:10px;background-color:red;color:#fff">Click to view study</a></div></td></tr></table>'
-          };
+	          var mailOptions = {
+	            from: 'Applinic info@applinic.com',
+	            to: req.body.patientEmail || "support@applinic.com",
+	            subject: 'Radiology Dicom Study Uploaded',
+	            html: '<table><tr><tr><td>Hello,<br><br>Your study with ' 
+	            +  tp  + " <b>" + (rados || id) + '</b> was uploaded to Applinic Online PACs Server '
+	            + 'by ' + req.user.name + '. You can share or use this number to view the study on windows or Mac PCs.' 
+	            + '<br><br><div style="text-align: center"><a href="https://applinic.com/investigation/result?type=radio&id=' 
+	            + cp + '" style="padding:10px;background-color:red;color:#fff">Click to view study</a></div></td></tr></table>'
+	          };
 
-          transporter.sendMail(mailOptions, function(error, info){
-            if (error) {
-              console.log(error);
-            } else {
-              console.log('Email sent: ' + info.response);
-            }
-          });		  
-		  	}
-		  	
-		  });
+	          transporter.sendMail(mailOptions, function(error, info){
+	            if (error) {
+	              console.log(error);
+	            } else {
+	              console.log('Email sent: ' + info.response);
+	            }
+	          });		  
+			  	}
+			  	
+			  });
 
-		  function callBack(err,info) {
-		  	if(err){
-		  		console.log(err)
-		  	}
-		  }
+			  function callBack(err,info) {
+			  	if(err){
+			  		console.log(err)
+			  	}
+			  }
+			}
 	  } else {
 	  	res.end("Unauthorized Access");
 	  }

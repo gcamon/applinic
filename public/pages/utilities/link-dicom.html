@@ -14,9 +14,27 @@
 		<label>Patient's Phone Number: </label><br>
 		<input type="text" name="" placeholder="Phone" ng-model="station.patientPhone" required class="form-control"><br>
 		<label>Patient's Email Address (If any): </label><br>
-		<input type="text" name="" placeholder="Email" ng-model="station.patientEmail" required class="form-control"><br>
-		<label>Study ID: </label><br>
-		<input type="text" name="" placeholder="Study ID" required class="form-control" ng-model="station.studyID"><br>
+		<input type="text" name="" placeholder="Email" ng-model="station.patientEmail" required class="form-control"><br>		
+		<label>Locate Study With:</label><br>
+		<label class="custom-control custom-radio">
+			<input type="radio" value="patientID" ng-model="station.locate" class="custom-control-input">
+			<span class="custom-control-indicator"></span>
+			<span class="custom-control-description font-1_1"> <b>Patient ID</b></span>
+		</label>&nbsp;&nbsp;
+		<label class="custom-control custom-radio">
+			<input type="radio" value="studyID" ng-model="station.locate" class="custom-control-input">
+			<span class="custom-control-indicator"></span>
+			<span class="custom-control-description font-1_1"> <b>Study Instance UID</b></span>
+		</label><br><br>
+		<div ng-if="station.locate == 'studyID'">
+			<label>Study Instance UID: </label><br>
+			<input type="text" name="" placeholder="Study Instance UID" required class="form-control" ng-model="station.studyID"><br>
+		</div>
+		<div ng-if="station.locate == 'patientID'">
+			<label>Patient ID: </label><br>
+			<input type="text" name="" placeholder="Patient ID" required class="form-control" ng-model="station.patientID"><br>
+		</div>
+
 		<div style="text-align: right;">
 			<input type="submit" name="" value="Link Study" class="btn btn-danger" ng-if="!loading">
 			<span ng-if="loading">Processing...</span>
@@ -26,7 +44,7 @@
 	<div ng-if="isSuccess">
 		<h5>Success! Study added to applinic</h5>
 		<!--<p> Please enter the Accession Number below in your work station for the study before capturing.</p>-->
-		<label>Study ID:</label><br>
+		<label>{{station.locate}}:</label><br>
 		<b style="font-size: 18px">{{studyNum}}</b>
 		<p>Enter our remote DICOM details below in your PACs server for transfering.</p>
 		<label>Logical Name: </label> <span>Applinic</span><br>
