@@ -134,6 +134,10 @@
             <% } %>
           </div>
 
+          <% if(result.length == 0) { %>
+            <p class="text-danger" style="text-align: center;padding-top: 20px"> Study not found! Please make sure your input is correct and search again.</p>
+          <% } %>
+
         </div>
         <div class="col-md-5">
           <h4 class="display-5">Cannot View Dicom Image?</h4><br>

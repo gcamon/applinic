@@ -2204,9 +2204,6 @@ router.post("/user/dicom-details",function(req,res){
 		    deleted: false
 		  });
 
-		  console.log(req.body);
-
-		  console.log(study);
 
 		  study.save(function(err,info){
 		  	if(err){
