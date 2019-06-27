@@ -3286,36 +3286,37 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
     router.put("/user/laboratory/find-patient/lab-test",function(req,res){
       if(req.user){     
         console.log(req.body)
-        model.user.findOne({user_id:req.user.user_id},{referral:1},function(err,data){
-          if (err) throw err;           
-            switch(req.body.criteria) {
-              case "refIdCriteria":
-                var toNum = parseInt(req.body.ref_id);                
-                var elementPos = data.referral.map(function(x) {return x.ref_id; }).indexOf(toNum);
-                var objectFound = data.referral[elementPos];
-                if(objectFound === undefined) {
-                 res.send([]);
-                } else {
-                  res.json([objectFound]);
-                }
-                break;
+        //model.user.findOne({user_id:req.user.user_id},{referral:1},function(err,data){      
+        //if (err) throw err; 
+          var data = req.user;          
+          switch(req.body.criteria) {
+            case "refIdCriteria":
+              var toNum = parseInt(req.body.ref_id);                
+              var elementPos = data.referral.map(function(x) {return x.ref_id; }).indexOf(toNum);
+              var objectFound = data.referral[elementPos];
+              if(objectFound === undefined) {
+               res.send([]);
+              } else {
+                res.json([objectFound]);
+              }
+              break;
 
               case "phoneCriteria":
-                var phone = "+" + req.body.phone;
-                var sendArr = [];
-                for(var i = 0; i < data.referral.length; i++){
-                  if(data.referral[i].laboratory.patient_phone === phone) {
-                    sendArr.push(data.referral[i]);
-                  }
+              var phone = req.body.phone;
+              var sendArr = [];
+              for(var i = 0; i < data.referral.length; i++){
+                if(data.referral[i].laboratory.patient_phone === phone) {
+                  sendArr.push(data.referral[i]);
                 }
-                res.json(sendArr);                 
-                break;
+              }
+              res.json(sendArr);                 
+              break;
 
               default:
-                res.send([]);
-                break;
-            } 
-        });
+              res.send([]);
+              break;
+          } 
+        //});
       } else {
         res.end("Unauthorized access");
       }
@@ -4814,6 +4815,7 @@ _id: "5c16660cba74dc0288ecfad9"
         if(req.user) { 
           var random = randos.genRef(6);
           var testId = randos.genRef(8); 
+          var accNo = randos.genRef(8);
           var date = + new Date();   
          model.user.findOne({user_id: req.body.user_id},{
           diagnostic_center_notification:1,referral:1,address:1,name:1,city:1,country:1,phone:1,user_id:1,presence:1,email:1,profile_pic_url:1})        
@@ -4847,7 +4849,8 @@ _id: "5c16660cba74dc0288ecfad9"
             referral_firstname: req.user.firstname,
             referral_lastname: req.user.lastname,
             referral_title: req.user.title,
-            referral_id: req.user.user_id,    
+            referral_id: req.user.user_id, 
+            acc_no: accNo,   
             date: req.body.date,        
             radiology: {
               history: req.body.history,
@@ -4868,6 +4871,7 @@ _id: "5c16660cba74dc0288ecfad9"
               lmp: req.body.treatment.lmb || req.body.lmb,
               parity: req.body.treatment.parity || req.body.parity,
               attended: false,
+              acc_no: accNo,
               title: req.user.title,
               doctor_firstname: req.user.firstname,
               doctor_lastname: req.user.lastname,
@@ -4929,6 +4933,7 @@ _id: "5c16660cba74dc0288ecfad9"
               referral_firstname: req.user.firstname,
               referral_lastname: req.user.lastname,
               referral_title: req.user.title,
+              acc_no: accNo,
               sent_date: req.body.date,
               session_id: req.body.session_id,
               test_id: testId,
@@ -6733,23 +6738,79 @@ router.put("/user/radiology/search/find-tests",function(req,res){
 });
 
 router.put("/user/scan-search/radiology/referral",function(req,res){
-    if(req.user){  
-      console.log(req.body)
+  if(req.user){  
+    console.log(req.body)
     var phone = req.body.line  || req.body.phone;
-    var person = (req.body.type === 'inperson') ? {user_id: req.user.user_id,type:"Patient"} : {phone: "+" + phone, type: 'Patient'};
-    model.user.findOne(person,{firstname:1,lastname:1,title:1,profile_pic_url:1,city:1,country:1,name:1,age:1,user_id:1,medical_records:1,phone:1})
+    var recepient;
+
+    if(req.body.recepient) {
+      var intRegex = /[0-9 -()+]+$/;
+      var emailReg = /^\w+([\.-]?\w+)+@\w+([\.:]?\w+)+(\.[a-zA-Z0-9]{2,3})+$/;
+
+      if(emailReg.test(req.body.recepient)){
+        recepient = {email: req.body.recepient, type:"Patient"}
+      } else {
+        var num = parseInt(req.body.recepient)
+        if(intRegex.test(num)) {
+          recepient = {patient: "+" + num, type:"Patient"}
+        }
+      }
+    } else {
+      if(req.body.phone.indexOf('+') == -1 || req.body.phone.indexOf("234") == -1){
+        recepient = {phone: "+234" + req.body.phone.slice(1), type: 'Patient'}
+      } else {
+        recepient = {phone: req.body.phone.slice(1), type: 'Patient'} 
+      }
+    }
+     
+    var person = (req.body.type === 'inperson') ? {user_id: req.user.user_id,type:"Patient"} : recepient;
+    model.user.findOne(person,{firstname:1,lastname:1,title:1,profile_pic_url:1,city:1,country:1,name:1,age:1,user_id:1,medical_records:1,phone:1,gender:1})
     .exec(function(err,user){
 
       if(err) throw err;
 
       if(user) {
         req.body.ref_id = randos.genRef(6);
-        model.user.findOne({user_id: req.body.user_id},{
-          diagnostic_center_notification:1,referral:1,address:1,name:1,city:1,country:1,phone:1,user_id:1,presence:1,age:1,gender:1})
+        var accNo = randos.genRef(8);
+
+        model.user.findOne({user_id: req.body.user_id})
         .exec(function(err,result){
         var firstname = user.firstname || user.name;
 
         try{
+
+         //creates accession number for the study
+        var acc = new model.accession({
+          id: accNo,
+          centerId: req.user.user_id,
+          date: new Date()
+        });
+
+        var study = new model.study({
+          patient_name: user.firstname + " " + user.lastname,
+          patient_id: user.user_id,
+          study_id: accNo,
+          center_id: result.user_id,
+          center_name: result.name,
+          center_address: result.address,
+          center_city: result.city,
+          center_country: result.country,
+          center_phone: result.phone,
+          center_email: result.email,
+          created: new Date(),
+          patient_phone: user.phone,
+          email: user.email,
+          ip_address: req.body.onlinePacs.ip_address,
+          port: req.body.onlinePacs.port,
+          aetitle: req.body.onlinePacs.aetitle,
+          accession_number: accNo,
+          study_link: "http://" + req.body.onlinePacs.ip_address + ":8080/weasis-pacs-connector/viewer?accessionNumber=" + accNo,
+          deleted: false,
+          ref_id: req.body.ref_id,
+        });
+
+        acc.save(function(err,info){});
+        study.save(function(err,info){});    
 
         var refObj = {
           ref_id: req.body.ref_id,
@@ -6757,9 +6818,10 @@ router.put("/user/scan-search/radiology/referral",function(req,res){
           referral_lastname: (req.user.type !== "Patient") ? null : user.lastname,
           referral_title: (req.user.type !== "Patient") ? null : user.title,
           referral_id: (req.user.type !== "Patient") ? req.user.user_id : user.user_id,    
-          date: req.body.sent_date,            
+          date: req.body.sent_date,
+          acc_no: accNo,            
           radiology: {
-            test_to_run : req.body.test_to_run,
+            test_to_run: req.body.test_to_run,
             patient_age: user.age,
             patient_gender: user.gender,
             patient_firstname: user.firstname,
@@ -6772,11 +6834,15 @@ router.put("/user/scan-search/radiology/referral",function(req,res){
             clinical_summary: req.body.clinical_summary,
             indication: req.body.indication,
             lmp: req.body.lmp,
+            acc_no: accNo,
+            study_link: "http://" + req.body.onlinePacs.ip_address + ":8080/weasis-pacs-connector/viewer?accessionNumber=" + accNo,
             test_id: randos.genRef(8),
             parity: req.body.parity,
             attended: false
           }             
         }
+
+        console.log(study);
 
         var refNotification = {
           sender_firstname: firstname,
@@ -6791,8 +6857,10 @@ router.put("/user/scan-search/radiology/referral",function(req,res){
 
         if(result.presence === true){
           io.sockets.to(result.user_id).emit("center notification",refNotification)
-        } /*else {
-          var msgBody = "You have new test request! Visit https://applinic.com/login"
+        } 
+
+        if(!req.body.isSelfRequest){
+          var msgBody = "You have new investigation request! Visit https://applinic.com/login"
           var phoneNunber =  result.phone;
           sms.messages.create(
             {
@@ -6800,15 +6868,15 @@ router.put("/user/scan-search/radiology/referral",function(req,res){
               from: '+16467985692',
               body: msgBody,
             }
-          ) 
-        }*/
-
+          )
+        }
         
         var refPos = result.referral.map(function(x){return x.ref_id}).indexOf(req.body.ref_id);
 
         if(refPos === -1){
           result.referral.push(refObj);
-          //remember sms will be sent to the patient
+          //remember sms / email will be sent to the patient
+
           //this populates the patient medical record
          
             var recordObj = {
@@ -6825,6 +6893,8 @@ router.put("/user/scan-search/radiology/referral",function(req,res){
               referral_lastname: user.lastname,
               referral_title: user.title,
               sent_date: req.body.sent_date,
+              acc_no: accNo,
+              study_link: "http://" + req.body.onlinePacs.ip_address + ":8080/weasis-pacs-connector/viewer?accessionNumber=" + accNo,
               session_id: req.body.session_id,
               report: "Pending",
               conclusion: "Pending"
@@ -6835,7 +6905,7 @@ router.put("/user/scan-search/radiology/referral",function(req,res){
                 throw err;
                 res.end('500: Internal server error')
               }
-              res.json({success:true,ref_id:req.body.ref_id});
+              res.json({success:true,ref_id:req.body.ref_id,refObj: refObj});
             });
 
             result.diagnostic_center_notification.unshift(refNotification);
@@ -6860,7 +6930,7 @@ router.put("/user/scan-search/radiology/referral",function(req,res){
       })
    
       } else {
-       res.send({error:"The person using this Investigations does not exist or not a patient. Make sure the number was typed correctly."})
+       res.send({error:"The person using these investigations does not exist or not a patient. Make sure the number was typed correctly."})
       }
     });
 
@@ -9234,7 +9304,12 @@ router.post("/user/invitation",function(req,res){
           status: false,
           user: true,
           message: names + ' is already in Applinic',
-          type: user.type
+          type: user.type,
+          names: names,
+          age: user.age,
+          gender: user.gender,
+          profile_pic_url: user.profile_pic_url,
+          patientId: user.user_id
         })
       }
     })
@@ -9519,13 +9594,7 @@ router.get("/user/dicom-viewer",function(req,res){
   res.render("dicom-viewer");
 });
 
-router.post("/dicom-response",function(req,res){
-  console.log("post webhook url", req.body, req.query)
-});
 
-router.get("/dicom-response",function(req,res){
-  console.log("get webhook url", req.body, req.query)
-});
 
 router.post("/user/share/email",function(req,res){
   if(req.user){
@@ -9730,10 +9799,60 @@ router.post("/user/firstline-doctors",function(req,res){
   }
 });
 
+router.get("/api/dicom-details",function(req,res){
+  model.dicom.findOne({aetitle: "DCM4CHEE"})
+  .exec(function(err,data){
+    res.json({
+      ip_address: "188.166.66.29",
+      port: 11112,
+      aetitle: "DCM4CHEE",
+      cost: 1000,
+      status: "beta"
+    });
+  })
+});
 
-/*router.get("/test-page",function(req,res){
-  res.sendFile(path.join(__dirname + '/test.html'))
-})*/
+router.get("/investigation/result",function(req,res){
+  switch(req.query.type) {
+    case 'radio':
+      model.study.find({accession_number: req.query.id})
+      .exec(function(err,data){
+        console.log(data)
+        if(err) throw err;
+        if(data.length == 0) {
+          model.study.find({study_id: req.query.id})
+          .exec(function(err,data){
+            if(err) throw err;
+            if(data.length == 0) {
+                var toInt = parseInt(req.query.id)
+                var intRegex = /[0-9 -()+]+$/;
+                if(intRegex.test(toInt)){
+                  model.study.find({ref_id: toInt})
+                  .exec(function(err,data){
+                    if(err) throw err;               
+                    res.render("investigation-result",{result:data});
+                  })
+                } else {
+                  res.render("investigation-result",{result:[]})
+                }
+            } else {
+              res.render("investigation-result",{result:data});
+            }
+          })
+        } else {
+          res.render("investigation-result",{result:data});
+        }
+      })
+    break;
+    case 'lab':
+      res.render("investigation-result",{result:[]})
+    break;
+    default:
+      res.render("investigation-result",{result:[]})
+    break;
+  }
+  //res.render("investigation-result");
+});
 
 }
 

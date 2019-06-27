@@ -31,9 +31,16 @@
     
     </ul>-->
 
-<div>
-  <button ng-click="choose('pwr')" class="btn  btn-sm" ng-class="{'btn-info': isPWR }">Fill Your Complaints</button> &nbsp;&nbsp; Or &nbsp;&nbsp;
-  <button ng-click="choose('live')" class="btn btn-sm" ng-class="{'btn-info': isLive }">Chat live with a Physician</button>
+<div class="row">
+  <div class="col-md-3">
+    <button ng-click="choose('pwr')" class="btn  btn-sm" ng-class="{'btn-info': isPWR }">Fill Your Complaints</button>
+  </div>
+   <div class="col-md-1">
+      <span>Or</span>
+   </div>
+   <div class="col-md-2">
+      <button ng-click="choose('live')" class="btn  btn-sm" ng-class="{'btn-info': isLive }">Chat live with a Physician</button>
+  </div>
 </div>
 
 
@@ -42,12 +49,11 @@
   <p class="font-1_0">Choose a physician who you can explain your health issues to: </p>  
   <hr>
   <div>
-    <a href="" style="display: block;" ng-click="continue(d)" class="row p-2 bottom-border" ng-repeat="d in firstlineDoctors">
-      <div class="col-md-2">
+    <a href="" style="display: block;" ng-click="continue(d)" class="row p-1 bottom-border" ng-repeat="d in firstlineDoctors">
+      <div class="col-md-2 pt-1">
         <img ng-src="{{d.profile_pic_url}}" style="max-height: 220px">
       </div>
-      <div class="col-md-10">
-      <br>
+      <div class="col-md-10 pt-1">
         <label>{{d.name}}</label><br>
         <span>{{d.specialty}}</span>  <br>
         <span>{{d.work_place}} | {{d.address}} {{d.city}}</span><br>
@@ -64,7 +70,7 @@
   <div style="text-align: center;" ng-if="!firstlineDoctors"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange"></i></div>
 </section>
 
-<section class="hiddenForm col-md-10" ng-class="{'showForm': isPWR}"><br>
+<section class="hiddenForm col-md-12" ng-class="{'showForm': isPWR}"><br>
  <h5 style="margin-top: 2px">Complaint</h5>
  <p class="font-1_0">Fill your complaints below for the right specialist to contact you at the Patient Waiting Room (PWR).</p>
 

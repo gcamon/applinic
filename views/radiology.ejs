@@ -321,12 +321,16 @@
      <div class="clearfix"></div>
             <div class="app" id="app">
                 <header class="container text-center" style="background:#fff; border-left:1px solid #f2f2f2; line-height:70px; padding:5px;" ng-controller="radioCenterDashboardController">
-                    <div class="col-md-8 col-sm-12 col-lg-8">
+                    <div class="col-md-10  col-lg-10">
                        <ul class="nav nav-tabs" role="tablist">  
                             <!--<li class="nav-item">
                             <a class="btn btn-simple round mr-1"  href="#/help" ><i class="fa fa-question-circle"></i>
                                         <span style="color:red">Need help</span></a>
                           </li>-->
+                           <li class="nav-item">
+                              <a class="btn btn-simple round mr-1" href="#/invite"><i class="fa fa-user-plus"></i>
+                                    <span style="color:red">Invite Someone</span></a>
+                          </li>  
                           <li class="nav-item">
                             <a class="btn btn-simple round mr-1"  href="#/referral/radiology-test"><i class="fa fa-user"></i>
                                         <span style="color:red">Find Investigation Request</span></a>
@@ -336,24 +340,32 @@
                                 <span style="color:red">Add Patient</span></a>
                           </li>-->
                           <li class="nav-item">
-                            <a class="btn btn-simple round mr-1"  href="#/rendered-services"><i class="fa fa-file-text"></i>
+                            <a class="btn btn-simple round mr-1"  href="#/dicom-services"><i class="fa fa-file-text"></i>
+                                <span style="color:red">Create Study</span></a>
+                          </li>
+
+                          <li class="nav-item">                     
+                            
+                             <a class="btn btn-simple round mr-1"  href="#/rendered-services"><i class="fa fa-file-text"></i>
                                 <span style="color:red">Work History</span></a>
                           </li>
 
-                           <li class="nav-item">
-                              <a class="btn btn-simple round mr-0" style="color:red;margin-left:10px" href="#/invite"><i class="fa fa-user-plus"></i>
-                                    <span>Invite Someone</span></a>
+                            <li class="nav-item">                     
+                            
+                             <a class="btn btn-simple round mr-0"  href="#/import"><i class="fa fa-link"></i>
+                                <span style="color:red">Link Dicom Studies</span></a>
                           </li>
+                          
                         </ul>
                     </div>
 
          
 
 
-                    <div class="col-md-4 col-lg-4 col-sm-12" ng-controller="balanceController">  
+                    <div class="col-md-2 col-lg-2 col-sm-12" ng-controller="balanceController">  
                         <a href="#/transactions" class="btn btn-info btn-sm header-btn">
                             <i class="fa fa-money"></i>
-                            <span ng-cloak>MediPay Balance |  {{balance}} </span>
+                            <span ng-cloak>{{balance}} </span>
                         </a>  
                     </div>
                 </header>
@@ -508,6 +520,21 @@
                                 </li>                                       
                             </ul>
                         </li>
+                        <li>
+                          
+                          <a  href="#/rendered-services" class=""><i class="fa fa-file-text"></i> Work History</a>
+                         
+                        </li>
+                         <li>
+                          
+                          <a  href="#/work-list" class=""><i class="fa fa-file-text"></i> Work List</a>
+                         
+                        </li>
+                        <li>
+                          
+                          <a  href="#/import" class=""><i class="fa fa-file-text"></i> Import Dicom Studies</a>
+                         
+                        </li>
                          <li> 
                                     <a href="">
                             <i class="fa fa-question-circle"></i> Help &amp; Support
@@ -531,6 +558,8 @@
                     </ul>
                      <div style="position: absolute;bottom: 0;left: 20px">
                         <a href="#/welcome" class="text-white"><i class="fa fa-info-circle"></i> Getting Started</a><br><br>
+                       
+                       
                         <a href="" ng-click="logout()" class="text-white"> <i class="fa fa-sign-out"></i> Log Out</a>
                       </div>
                 </nav>
@@ -1197,7 +1226,7 @@
                  
                  <label>Recipient's phone number *: <i class="fa fa-question-circle tip"><span>The phone number this recipient registered with on applinic</span></i><br>
                  <span class="text-danger">{{phoneMsg}}</span></label>
-                 <input type="number" Placeholder="Enter receiver phone" ng-model="data.phone" class="form-control" required="required" style="cursor:normal">
+                 <input type="text" Placeholder="Enter receiver phone" ng-model="data.phone" class="form-control" required="required" style="cursor:normal">
                 </div>
                 <div ng-if="typeOfSearch === 'pharmacy'">
                   <label>Instructions / explanations for prescription(s): <span class="text-danger">{{provisionalMsg}}</span></label>
@@ -1235,11 +1264,11 @@
 </div>
 <div ng-if="isSent" class="p-1">
     <h5 class=" text-success"  style="text-align:center"> Sent successfully!!!</h5>
-    <div class="m-0"><strong class="font-1-1"> center name: </strong><em>{{data.name}}</em> </div> 
-    <div class="m-0"><strong class="font-1-1"> center location: </strong><em>{{data.address}}, {{data.city}}, {{data.country}}</em> </div> 
+    <div class="m-0"><strong class="font-1-1"> Center name: </strong><em>{{data.name}}</em> </div> 
+    <div class="m-0"><strong class="font-1-1"> Center location: </strong><em>{{data.address}}, {{data.city}}, {{data.country}}</em> </div> 
     <div class="mb-1"><span class="font-1-2" style="color:red"> Ref No:  </span><em>{{result}}</em> </div> 
     <div class="font-1-1">Please take note of the center name and 
-        reference number above. You will use the reference number to find this prescription at the center.
+        reference number above. You will use the reference number to find the investigations at the center.
     </div>
 </div>
   

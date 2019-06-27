@@ -40,39 +40,38 @@
 					<i class="fa fa-check-circle" style="font-size: 42px;color: #85CE36;position: absolute; top: 65px; right: 40px;" ng-if="refInfo.radiology.is_paid || paymentStatus"></i>
 				</div>
 				<div class="clearfix"></div>
-				<hr>
 
-				<div class="col-sm-12 " style="padding:20px" ng-if="!isPreview">
+				<div class="col-sm-6 " style="padding:20px" ng-if="!isPreview">
 					<label>Clinical Summary:</label><br>
 					<span class="pt-1 pb-1" style="font-size:1em;text-indent: 15px;margin-bottom: 10px" ng-if="refInfo.radiology.clinical_summary">
 						{{refInfo.radiology.clinical_summary}}
 					</span>
 				</div>
 
-				<div class="col-sm-12 " style="padding:20px" ng-if="!isPreview">
+				<div class="col-sm-6 " style="padding:20px" ng-if="!isPreview">
 					<label>Indication:</label><br>
 					<span class="pt-1 pb-1" style="font-size:1em;text-indent: 15px;margin-bottom: 10px" ng-if="refInfo.radiology.indication">
 						{{refInfo.radiology.indication}}
 					</span>
 				</div>
 
-				<div class="col-sm-12 " style="padding:20px" ng-if="!isPreview && refInfo.radiology.patient_gender === 'female'">
+				<div class="col-sm-6" style="padding:20px" ng-if="!isPreview && refInfo.radiology.patient_gender === 'female'">
 					<label>Parity:</label><br>
 					<span class="pt-1 pb-1" style="font-size:1em;text-indent: 15px;margin-bottom: 10px" ng-if="refInfo.radiology.parity">
 						{{refInfo.radiology.parity}}
 					</span>
 				</div>
 
-				<div class="col-sm-12 " style="padding:20px" ng-if="!isPreview && refInfo.radiology.patient_gender === 'female'">
+				<div class="col-sm-6" style="padding:20px" ng-if="!isPreview && refInfo.radiology.patient_gender === 'female'">
 					<label>LMP: </label><br>
 					<span class="pt-1 pb-1" style="font-size:1em;text-indent: 15px;margin-bottom: 10px" ng-if="refInfo.radiology.lmp">
 						{{refInfo.radiology.lmp}}
 					</span>
 				</div>
 					
+				<div class="clearfix"></div>
 		
-		
-				<div class="col-sm-12 card" style="padding:20px" ng-if="!isPreview">					
+				<div class="card" style="padding:20px" ng-if="!isPreview">					
 					<div class="mb-0 mt-0 pl-0 font-1_2"  style="display: inline-block;padding-bottom: 5px"><b>Tests</b></div>
     				<div class="mt-1"  ng-repeat = "test in refInfo.radiology.test_to_run" >
 						<label class="custom-control custom-checkbox">
@@ -184,51 +183,41 @@
 					
 					<p style="text-align:right; text-decoration: underline" ng-if="isRefresh"><button ng-click="refresh()" class="fa fa-refresh"> Refresh</button></p>
 					
-						
-					<div ng-if="!isPreview">
-					<div class="mb-0 mt-0 pl-0 pt-2 font-1_2"  style="display: inline-block;padding-bottom: 5px"><b>Report Entry:</b></div>
-					<form>
-						<div class="row">
-
-						<p class="text-danger pl-1" ng-if=" incomplete && incomplete !== ''">{{incomplete}}</p>
-
-						<div class="col-md-16 col-lg-6">
-							<label class="font-1_1 pt-1">ACC:</label><br>
-							<input type="text" placeholder="Enter accession number" ng-model="lab.acc" class="form-control">
-						</div>
-						
-						<div class="form-group col-md-12 col-lg-12 col-sm-12" ng-repeat="report in testReport">
-							<label class="font-1_1 pt-1 text-danger">{{report.name}}:</label>
-							<textarea placeholder="Write..."  class="form-control" ng-model="report.data" required= "required" ng-keyup="autoExpand($event)" id="textarea"></textarea>						
-						</div>
-						<div class="form-group col-md-12 col-md-12 col-lg-12 col-sm-12">
-						<label class="font-1_1 mt-2 text-danger">CONCLUSION:</label>
-						<textarea  class="form-control" placeholder="Write..." required ng-model="lab.conclusion" ng-keyup="autoExpand($event)" id="textarea"></textarea>
-						</div>
-						
-						</div>							
-							
-					</form>			
-					</div>
-
 					<div ng-if="!isPreview" >	
-						<div class="mt-2 pl-0 mb-2 font-1_2"  style="display: inline-block;padding-bottom: 5px"><b>Add image</b></div>
+						<div class="mt-2 pl-0 mb-2 font-1_2"  style="display: inline-block;padding-bottom: 5px"><b>Add Image</b></div>
 						<div class="col-sm-12 col-md-12 col-lg-12">	
 							<div>						
-								
-								<label class="custom-control custom-radio">
-				    				<input type="radio" value="jpeg" ng-model="radio.type" class="custom-control-input">
-				    				<span class="custom-control-indicator"></span>
-				    				<span class="custom-control-description font-1_1"><b> Upload JPEG, PNG, etc images</b> ( Not standard for radiology viewing and reporting ) </span>
-		    					</label>
-		    					<div></div>
 		    					<label class="custom-control custom-radio">
 				    				<input type="radio" value="dicom" ng-model="radio.type" class="custom-control-input">
 				    				<span class="custom-control-indicator"></span>
 				    				<span class="custom-control-description font-1_1"> <b>Upload Standard DICOM Images to Applinic cloud services</b>( Standard for Radiology Viewing and Reporting ) </span>
+		    					</label><br>
+		    					<label class="custom-control custom-radio">
+				    				<input type="radio" value="jpeg" ng-model="radio.type" class="custom-control-input">
+				    				<span class="custom-control-indicator"></span>
+				    				<span class="custom-control-description font-1_1"><b> Upload JPEG, PNG, etc images</b> ( Not standard for radiology viewing and reporting ) </span>
 		    					</label>
 								<hr>
 							</div>						
+							
+							<div ng-if="radio.type === 'dicom'  || radio.type !== 'jpeg'" style="background-color: rgba(0,0,0,0.6);padding: 10px;color: #fff">
+								<label>1) Use the accession number below for the study in your work station:</label>
+								<h5><b>{{refInfo.radiology.acc_no}}</b></h5>
+
+								<label>2) Add our online PACs server details below to your local PACs server before transfering</label>
+								<span><b>Logical Name:</b> <span>Applinic</span></span><br>
+								<span><b>AE Title:</b> <span>{{dicomDetails.aetitle}}</span></span><br>
+								<span><b>IP Address:</b> <span>{{dicomDetails.ip_address}}</span></span><br>
+								<span><b>Port:</b> <span>{{dicomDetails.port}}</span></span><br><br>
+
+								<p style="background-color: #d7dde4;color: rgba(0,0,0,0.6);padding: 10px"><i class="fa fa-info-circle"></i> Add our online PACs server details above to your local PACs server before transfering. Do note that the above accession number should be included in study work station <b>before</b> capturing. The accession number will be used to remotely access the study from our online PACs.</p>						
+								<!--<p> From Network Settings on MODALITY or DICOM VIEWER, Enter the following under <br><b>PACS Destinations:</b> <em style="display: block;">AE Title = APPLINIC</em> <em style="display:block"> IP address = 192.234.646.78</em>						
+								Save settings then select study from Worklist and send to APPLINIC cloud services. Viewing by your radiologist, physician and other third party require OTP.
+
+								<em style="display:block;padding-top: 20px">Set <b>Accession Number</b> for these investigations to <b>{{dicomPath}}</b> before sending to APPLINIC cloud services.</em>
+								</p>-->
+							</div>
+
 							<form enctype="multipart/form-data" ng-if="radio.type === 'jpeg'">
 								<input type="file" name="file" id="file" file-model = "radio.scanImage" multiple="multiple">
 								<!--<button class="btn btn-simple" ng-click="upload()">Upload image</button>-->
@@ -241,21 +230,42 @@
 							  	<p ng-if="progress && progress !== 100" class="danger-mine">{{uploadStatus}}</p>
 								
 							</form>
-							<div ng-if="radio.type === 'dicom'" style="background-color: rgba(0,0,0,0.3);padding: 10px;color: #fff">	
-								<p>Oops! This service is not availble at the moment. Please try next time as our team is working on it.</p>						
-								<!--<p> From Network Settings on MODALITY or DICOM VIEWER, Enter the following under <br><b>PACS Destinations:</b> <em style="display: block;">AE Title = APPLINIC</em> <em style="display:block"> IP address = 192.234.646.78</em>						
-								Save settings then select study from Worklist and send to APPLINIC cloud services. Viewing by your radiologist, physician and other third party require OTP.
-
-								<em style="display:block;padding-top: 20px">Set <b>Accession Number</b> for these investigations to <b>{{dicomPath}}</b> before sending to APPLINIC cloud services.</em>
-								</p>-->
-							</div>
 							
 						</div>
 						
-						<div class="clearfix"></div>
-						<div class="form-group col-md-12 col-sm-12" ng-if="isFilled === true" style="margin-top:30px">
-	                 		<button class="btn btn-info" style="float: right;" ng-click="previewTestResult(refInfo)">Preview</button>
-	                 	</div>		
+						
+					</div>
+					<div class="clearfix"></div>
+					<hr>
+					<div ng-if="!isPreview">
+					<div class="mb-0 mt-0 pl-0 pt-2 font-1_2"  style="display: inline-block;padding-bottom: 5px"><b>Report Entry:</b></div>
+					<form>
+						<div class="row">
+
+						<p class="text-danger pl-1" ng-if=" incomplete && incomplete !== ''">{{incomplete}}</p>
+
+						<!--<div class="col-md-16 col-lg-6">
+							<label class="font-1_1 pt-1">ACC:</label><br>
+							<input type="text" placeholder="Enter accession number" ng-model="lab.acc" class="form-control">
+						</div>-->
+						
+						<div class="form-group col-md-12 col-lg-12 col-sm-12" ng-repeat="report in testReport">
+							<label class="font-1_1 pt-1">{{report.name}}:</label>
+							<textarea placeholder="Write..."  class="form-control" ng-model="report.data" required= "required" ng-keyup="autoExpand($event)" id="textarea"></textarea>						
+						</div>
+						<div class="form-group col-md-12 col-md-12 col-lg-12 col-sm-12">
+						<label class="font-1_1 mt-2">CONCLUSION:</label>
+						<textarea  class="form-control" placeholder="Write..." required ng-model="lab.conclusion" ng-keyup="autoExpand($event)" id="textarea"></textarea>
+						</div>
+						
+						</div>							
+							
+					</form>
+
+					<div class="clearfix"></div>
+					<div class="form-group col-md-12 col-sm-12" ng-if="isFilled === true" style="margin-top:30px">
+                 		<button class="btn btn-info" style="float: right;" ng-click="previewTestResult(refInfo)">Preview</button>
+                 	</div>					
 					</div>
 
 					
@@ -285,6 +295,8 @@
 									<b>Gender:</b> {{refInfo.radiology.patient_gender}}<br>
 									<b>Date: </b>{{reportDate | date: "mediumDate"}}<br>
 									<b>Ref NO:</b> {{refInfo.ref_id}} <br>
+									<b>Accession NO:</b> {{refInfo.acc_no}} <br>
+									<a href="" ng-click="opnejnlp(refInfo.radiology.study_link)" class="text-danger" ng-if="refInfo.radiology.acc_no">View Dicom Study</a>
 								</div>
 							</aside>
 							<div class="clearfix"></div>				
@@ -300,7 +312,7 @@
 							</ul>
 
 							<h6>Accession Number: </h6>
-							<p style="padding:10px 20px">{{lab.acc}}</p>
+							<p style="padding:10px 20px">{{refInfo.acc_no}}</p>
 							<!--<hr class="bg-warning">
 							<h6>Specimen collected:</h6>
 							<ul>

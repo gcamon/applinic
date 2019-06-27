@@ -448,7 +448,7 @@ var basicPaymentRoute = function(model,sms,io,paystack,client,nodemailer){
 							var name = req.user.firstname || req.user.name;
 							var pay = new Wallet(req.body.date,name,req.user.lastname,req.body.message);
 							pay.payment(model,data.amount,debitor,req.user.user_id,io);
-							res.send({message: "Transaction successful! Your account is credited."});
+							res.send({message: "Transaction successful! Your account was credited."});
 						});						
 						data.remove(function(){});
 					} else {
@@ -1658,13 +1658,14 @@ var basicPaymentRoute = function(model,sms,io,paystack,client,nodemailer){
 				res.redirect("/login");
 			}
 
-    });
+  });
 
 
 	router.get("/user/:userId/transactions",function(req,res){
 		if(req.user){
-			model.user.findOne({user_id:req.params.userId},{ewallet:1},function(err,data){
-				if(err) throw err;				
+			model.user.findOne({user_id:req.user.user_id},{ewallet:1},function(err,data){
+				if(err) throw err;
+				console.log(data.ewallet.transaction)				
 				var foundList = data.ewallet.transaction.map(function(x){
 					if(x.date >= parseInt(req.query.from) && x.date <= parseInt(req.query.to)) {						
 						return x;
@@ -2017,112 +2018,7 @@ router.put("/user/field-agent",function(req,res){
 		} else {
 			res.send({status: false, message: "You are not allowed to confirm this transaction."});
 		}
-	})
-  /*
-
-
-
-
-
- The work history maybe added to the record for courier type of work history
-
-  if(req.body.otp) {
-    
-    for(var i = 0; i < req.body.otp.length; i++) {
-      str += req.body.otp[i];
-      if(i == 2)
-          str += " ";
-    }
-
-  } else {
-  	res.send({message: "Wrong or invalid OTP"});
-  	return;
-  }
-  
-  console.log(req.body);
-
-   model.courier.findOne({verified: true,otp: str,verified: true, attended: true,center_id: req.body.center_id,_id:req.body._id}).exec(function(err,data){
-     if(err) throw err;
-     if(data){
-      var toNum = parseInt(data.total_cost);
-      model.user.findOne({user_id: req.body.user_id},{ewallet:1,medications:1},function(err,patient){
-        if(err) throw err;
-        if(patient) {   
-	        if(patient.ewallet.available_amount >= toNum) {        	
-	          transect();
-	          var elemPos = patient.medications.map(function(x){return x.prescriptionId}).indexOf(req.body.prescriptionId);
-	          if(elemPos != -1){
-	            var found = patient.medications[elemPos];            
-	            model.user.findOne({user_id: req.body.center_id},{service_details:1})
-	            .exec(function(err,center){
-	              if(err) throw err;
-	              center.service_details.push({
-	                type: "pharmacy",
-	                prescriptionDate_date: found.date,
-	                provisional_diagnosis: found.provisional_diagnosis,
-	                patient_names: found.patient_firstname + " " + found.patient_lastname,
-	                patient_phone: found.patient_phone,
-	                patient_age: found.patient_age,
-	                patient_gender: found.patient_gender,
-	                patient_profile_pic_url: found.patient_profile_pic_url,
-	                amount: req.body.total_cost,
-	                date: req.body.verification_date,
-	                prescriptionBody: req.body.prescription_body,
-	                doctor_names: found.title + " " + found.doctor_firstname + " " + found.doctor_lastname,
-	                ref_id: found.ref_id,
-	                doctor_work_place: found.doctor_work_place,
-	                doctor_specialty: found.doctor_specialty,
-	                doctor_city: found.doctor_city,
-	                doctor_country: found.doctor_country,
-	                doctor_profile_url: found.doctor_profile_url,
-	                doctor_address: found.doctor_address
-	              });
-
-		            center.save(function(err,info){
-			            console.log("service details saved!");
-			          });
-
-	            });
-
-	           
-
-	          }
-	        } else {
-	          res.send({message: 'Transaction canceled! Reason: Patient has insufficient fund to pay for this service.'})
-	        }
-	    } else {
-	    	res.send({message: "Oops! Patient not found. Transaction canceled!"});
-	    }
-      });
-
-      function transect() {
-        var receiveDate = + new Date();
-        data.receipt_date = receiveDate;
-        data.completed = true;
-        data.otp = genId();
-        var pay = new Wallet(receiveDate,req.body.firstname,req.body.lastname,"courier billing");
-        pay.courier(model,req.body.center_id,req.body.user_id,toNum,io,data.delivery_charge,req.body.city_grade,sms) //user_id refers to the patient,center_id refers to the center,toNum refrs to amount
-        var per = toNum * (req.body.city_grade / 100);
-        var receivable = toNum - per;
-        io.sockets.to(data.center_id).emit("completed courier",{receipt_date:receiveDate,city:data.city,date:data.date})
-        io.sockets.to(data.center_id).emit("fund received",{message: "Your MediPay account was credited! Payment made through courier service.",status:true})
-        data.save(function(){});
-        res.send({receipt_date: receiveDate,message: "Transactions successful!"});
-      }
-
-     } else {
-       res.send({message: "Wrong or invalid OTP"});
-     }
-   });
-
-    function genId() {
-		var text = "";
-		var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrs!$%&_-tuvwxyz01234567899966600555777222";
-
-	    for( var i=0; i < 16; i++ )
-	        text += possible.charAt(Math.floor(Math.random() * possible.length));
-	    return text;
-	 }*/
+	});
 	  
 });
 
@@ -2263,6 +2159,121 @@ router.put("/user/outpatient-billing",function(req,res){
 		res.end("Unauthorized access!");
 	}
 })
+
+
+router.post("/user/dicom-details",function(req,res){
+		if(req.user) {
+			var rados;
+			if(req.body.isAcc) {
+			  rados = randos.genRef(8);
+			  var date = new Date();
+			  var acc = new model.accession({
+			    id: rados,
+			    centerId: req.body.center.user_id,
+			    date: date
+			  });
+
+			  acc.save(function(err,info){});
+
+			} else {
+				rados = null;
+			}
+
+		  var study = new model.study({
+		    patient_name: req.body.patientName,
+		    patient_id: "",
+		    study_id: req.body.studyID || "",
+		    center_id: req.user.user_id,
+		    center_name: req.user.name,
+		    center_address: req.user.address,
+		    center_city: req.user.city,
+		    center_country: req.user.country,
+		    center_phone: req.user.phone,
+		    center_email: req.user.email,
+		    created: date,
+		    patient_phone: req.body.patientPhone,
+		    email: req.body.patientEmail,
+		    ip_address: req.body.onlinePacs.ip_address,
+		    port: req.body.onlinePacs.port,
+		    aetitle: req.body.onlinePacs.aetitle,
+		    accession_number: rados,
+		    study_link: (req.body.isAcc) ? ("http://" + req.body.onlinePacs.ip_address + 
+		    ":8080/weasis-pacs-connector/viewer?accessionNumber=" + rados) : ("http://" + req.body.onlinePacs.ip_address + 
+		    ":8080/weasis-pacs-connector/viewer?studyID=" + req.body.studyID),
+		    study_type: req.body.type,
+		    deleted: false
+		  });
+
+		  console.log(req.body);
+
+		  console.log(study);
+
+		  study.save(function(err,info){
+		  	if(err){
+		  		throw err;
+		  		res.end("error occured");
+		  	} else {
+		  		var msg = (rados || req.body.studyID) + " - dicom study upload";
+				  var pay = new Wallet(date,req.user.name,"",msg,rados);
+				  pay.dicom(model,req.body.amount,req.user,io);
+				  res.json({acc_no: rados,status:true,studyId: req.body.studyID});	
+
+				  var tp = (req.body.isAcc) ? "Accession Number" : "Study ID";
+				  var msgBody = "Your radiology dicom study with\n" + tp + " " + (rados || req.body.studyID) 
+				  + " has been upload to applinic online PACS server.\n" 
+				  + "You can share or use this number to view the study on windows or Mac PCs.\nVisit https://applinic.com";
+					sms.messages.create(
+            {
+              to: req.body.patientPhone,//req.body.patientPhone,
+              from: '+16467985692',
+              body: msgBody,
+            },
+            callBack
+          );
+
+          var transporter = nodemailer.createTransport({
+            host: "mail.privateemail.com",
+            port: 465,
+            auth: {
+              user: "info@applinic.com",
+              pass: process.env.EMAIL_PASSWORD
+            }
+          });
+
+          var cp = (req.body.isAcc) ? rados  : req.body.studyID;
+
+          var mailOptions = {
+            from: 'Applinic info@applinic.com',
+            to: req.body.patientEmail,
+            subject: 'Radiology Dicom Study Uploaded',
+            html: '<table><tr><tr><td>Hello,<br><br>Your study with ' 
+            +  tp  + " <b>" + (rados || req.body.studyID) + '</b> was uploaded to Applinic Online PACs Server '
+            + 'by ' + req.user.name + '. You can share or use this number to view the study on windows or Mac PCs.' 
+            + '<br><br><div style="text-align: center"><a href="https://applinic.com/investigation/result?type=radio&id=' 
+            + cp + '" style="padding:10px;background-color:red;color:#fff">Click to view study</a></div></td></tr></table>'
+          };
+
+          transporter.sendMail(mailOptions, function(error, info){
+            if (error) {
+              console.log(error);
+            } else {
+              console.log('Email sent: ' + info.response);
+            }
+          });		  
+		  	}
+		  	
+		  });
+
+		  function callBack(err,info) {
+		  	if(err){
+		  		console.log(err)
+		  	}
+		  }
+	  } else {
+	  	res.end("Unauthorized Access");
+	  }
+	  
+	});
 
 /*
 	 user_id: user.user_id,//this id refers to the debitors id. the person whose account will be debited.

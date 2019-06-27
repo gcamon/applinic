@@ -306,6 +306,8 @@ var myModel = function () {
 		history: String,
 		indication: String,
 		acc: String,
+		acc_no: String,
+		study_link: String,
 		payment_acknowledgement: Boolean //use to check if patient have actually paid for a service.
 	});
 	
@@ -336,6 +338,8 @@ var myModel = function () {
 		doctor_lastname: String,
 		doctor_id: String,
 		doctor_phone: Number,
+		acc_no: String,
+		study_link: String,
 		is_paid: Boolean,
 		detail: {
 			amount: String,
@@ -356,7 +360,8 @@ var myModel = function () {
 		referral_firstname: String,
 		referral_lastname: String,
 		referral_title: String,
-		referral_id: String,		
+		referral_id: String,
+		acc_no: String,
 		date: String,
 		type_of_test: String,		
 		laboratory: center_refSchema,
@@ -413,8 +418,9 @@ var myModel = function () {
 		indication: String,
 		clinical_summary: String,
 		center_email: String,
-		acc: String
-
+		acc: String,
+		acc_no: String,
+		study_link: String
 	});
 
 	var subSession = Schema({
@@ -988,28 +994,48 @@ var myModel = function () {
 	   id: String,
 	   date: Number,
 	   type: String
+	});
+
+	var studySchema = Schema({
+		patient_name: String,
+		patient_id: String,
+		study_id: String,
+		center_id: String,
+		center_name: String,
+		center_address: String,
+		center_city: String,
+		center_country: String,
+		center_phone: String,
+		center_email: String,
+		age: String,
+		created: Date,
+		phone: String,
+		email: String,
+	  ip_address: String,
+	  port: Number,
+	  aetitle: String,
+	  accession_number: String,
+	  study_link: String,
+	  deleted: Boolean,
+	  ref_id: Number,
+	  study_type: String
+	});
+
+	var dicomSchema = Schema({
+		ip_address: String,
+		port: Number,
+		aetitle: String,
+		cost: Number,
+		status: String
+	})
+
+	var accessionSchema = Schema({
+		id: Number,
+		centerId: String,
+		date: Date
 	})
 
 	
-	/*var callingSchema = Schema({
-		calling_code: {
-			countryCode: String
-		}
-	},{
-		collections: "callingcodeinfos"
-	})*/
-
-
-
-	/*var callRequestSchema = Schema({
-		message_id: String,
-		type: String,
-		request: Array,
-		date: String
-	},{
-		collections: "requestinfos"
-	});*/
-
 	//models
 	var models = {};
 	models.user = mongoose.model('userinfos', userSchema);
@@ -1037,6 +1063,9 @@ var myModel = function () {
 	models.agent = mongoose.model("fieldagentinfos",fieldAgentSchema);
 	models.consult = mongoose.model("consultinfos",consultSchema);
 	models.invite = mongoose.model("inviteinfo",inviteSchema);
+	models.dicom = mongoose.model("dicominfo",dicomSchema);
+	models.study = mongoose.model("studyinfo",studySchema);
+	models.accession = mongoose.model("accessioninfo",accessionSchema);
 	//models.calling_code = mongoose.model("callingcodeinfos",callingSchema)
 	
 	return models		

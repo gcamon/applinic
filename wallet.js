@@ -3,7 +3,7 @@ var _secr = require("./secr");
 var uuid = require("uuid");
 
 function Wallet(date,firstname,lastname,message,reference){
-	this.date = date;
+	this.date = + new Date();
 	this.firstname = firstname;
 	this.lastname = lastname;
 	this.message = message;
@@ -366,6 +366,17 @@ Wallet.prototype.courier = function(model,receiverId,debitor,amount,io,delivery_
 	var adc = sure || adminCredit;
 	_secr(model,adc,io);
 	console.log("admin credit: " + adminCredit);
+}
+
+Wallet.prototype.dicom = function(model,amount,user,io) {
+	var admin = {admin: true}; 
+	this.credit(model,admin,amount,io);		
+	console.log("admin credit: " + amount);
+
+	this.beneficiary = "Applinic";
+
+	this.debit(model,amount,user,0);
+	//model,amount,debitor,discount
 }
 
 

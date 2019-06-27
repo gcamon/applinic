@@ -50,7 +50,7 @@ padding:10px 10px;
      margin-bottom:30px;
  }
 </style>
-<nav class="navbar navbar-toggleable-md bg-primary fixed-top">
+<nav class="navbar navbar-toggleable-md bg-primary fixed-top" >
         <div class="container">
             <div class="navbar-translate">
                 <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navigation" aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation">
@@ -63,19 +63,37 @@ padding:10px 10px;
                 </a>
             </div>
             <div class="collapse navbar-collapse justify-content-end" id="navigation" data-nav-image="assets/img/blurblue-image-1.jpg">
-               <ul class="navbar-nav">
-                    <!--<li class="nav-item">
-                        <a class="nav-link" href="/">
-                            <p>Home</p>
-                           </a>
-                    </li>-->
+                <ul class="navbar-nav" style="width: 90%; margin: 0 auto;" ng-cloak>
+                    <li class="nav-item" style="color: #fff">
+                       
+                        <input type="radio" value="radio" ng-model="invest.type"> <span>Radiology<span>
+                           
+                    </li>
+
+                     <li class="nav-item" style="color: #fff">
+                        
+                        <input type="radio" value="lab" ng-model="invest.type"> <span>Laboratory</span>
+                           
+                    </li>
+
+                    <li class="nav-item" ng-if="invest.type == 'radio'">
+                        
+                        <input type="text" placeholder="Enter Study ID or Accession No. or Reference No." style="width: 300px;padding:3px 5px;border-radius: 3px;border:none" ng-model="invest.id"> <button class="btn btn-neutral" style="padding:5px;font-size:18px" ng-click="findInvestigation()"><i class="fa fa-search"></i></button>
+                           
+                    </li>
+
+                    <li class="nav-item" ng-if="invest.type == 'lab'">
+                        
+                        <input type="text" placeholder="Enter Test Reference No." style="width: 300px;padding:3px 5px;border-radius: 3px;border:none" ng-model="invest.id"> <button class="btn btn-neutral" style="padding:5px;font-size:18px" ng-click="findInvestigation()"><i class="fa fa-search"></i></button>
+                           
+                    </li>
+                    
                     
                     
                     </ul>
                    
 
-
-              <div class="dropdown hidden-md-down">
+<div class="dropdown hidden-md-down">
 <button class="btn btn-warning btn-block dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         START
     </button>
@@ -107,7 +125,9 @@ padding:10px 10px;
         <a class="dropdown-item" href="/contact">Contact Us</a>
         <a href="" class="dropdown-item" ng-click="logout()" ng-if="checkLogIn"> Log out</a>
     </div>
-                         
-                     </div>
+
+
+
+            </div>
         </div>
     </nav>

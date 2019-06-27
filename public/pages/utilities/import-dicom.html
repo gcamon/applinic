@@ -1,0 +1,45 @@
+<div class="card p-2 card-center-1">
+	<h4 class="pt-0 pl-0">Link DICOM Study</h4>
+	<hr>
+	<p style="background-color: #d7dde4;padding: 10px">You will have to tranfer the study from CD/File System in your local PACs server (e.g K-PACS) to Applinic Remote DICOM PACs server ( If you have not done that already ). The Remote PACs Details will be shown after you have completed the fields below and click 'link study' button.</p>
+	<form class="col-md-10" ng-submit="addStudy()" ng-if="!isSuccess">
+		<label>Type Of Study: </label><br>
+		<select class="form-control" ng-model="station.type" required>
+			<option value="CT/MRI" selected="selected">CT/MRI/PET/SPECT - {{toCurrency(1000)}}</option>
+			<option value="SI">Special Investigations/Mammography - {{toCurrency(500)}}</option>
+			<option value="CAPEHS">Chest/Abdomen/Pelvis/Extremeties/Head/Spine - {{toCurrency(250)}}</option>
+		</select>
+		<label>Patient Names:</label><br>
+		<input type="text" name="" placeholder="Name" required class="form-control" ng-model="station.patientName"><br>
+		<label>Patient's Phone Number: </label><br>
+		<input type="text" name="" placeholder="Phone" ng-model="station.patientPhone" required class="form-control"><br>
+		<label>Patient's Email Address (If any): </label><br>
+		<input type="text" name="" placeholder="Email" ng-model="station.patientEmail" required class="form-control"><br>
+		<label>Study ID: </label><br>
+		<input type="text" name="" placeholder="Study ID" required class="form-control" ng-model="station.studyID"><br>
+		<div style="text-align: right;">
+			<input type="submit" name="" value="Link Study" class="btn btn-danger" ng-if="!loading">
+			<span ng-if="loading">Processing...</span>
+		</div>
+	</form>
+
+	<div ng-if="isSuccess">
+		<h5>Success! Study added to applinic</h5>
+		<!--<p> Please enter the Accession Number below in your work station for the study before capturing.</p>-->
+		<label>Study ID:</label><br>
+		<b style="font-size: 18px">{{studyNum}}</b>
+		<p>Enter our remote DICOM details below in your PACs server for transfering.</p>
+		<label>Logical Name: </label> <span>Applinic</span><br>
+		<label>AE Title: </label> <span>{{dicomDetails.aetitle}}</span><br>
+		<label>IP Address: </label> <span>{{dicomDetails.ip_address}}</span><br>
+		<label>Port: </label> <span>{{dicomDetails.port}}</span><br>
+		<br>
+		<span>For those that have already added these details in their PACs server, please note that IP address of our remote dicom PACs server can change with time. Please always take note of the above IP Address.</span>
+		<div style="text-align: right;">
+			<i class="fa fa-plus btn btn-simple" ng-click="newAcc()"> return</i>
+		</div>
+	</div>	
+</div>
+<div style="height: 200px"></div>
+
+

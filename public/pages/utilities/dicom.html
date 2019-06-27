@@ -1,0 +1,160 @@
+<div class="card p-2 card-center-1">
+	<h4 class="pt-0 pl-0">Create Study</h4>
+	<hr>
+	<div>
+		<!--<label class="custom-control custom-radio">
+          Applinic patient
+         <input type="radio" class="custom-control-input"  ng-model="user.sick">
+          <span class="custom-control-indicator"></span>
+          <span class="custom-control-description" style="opacity:0;"></span>
+        </label>&nbsp;&nbsp;&nbsp;&nbsp;
+        <label class="custom-control custom-radio">
+          Other
+         <input type="radio" class="custom-control-input" ng-model="user.sick">
+          <span class="custom-control-indicator"></span>
+          <span class="custom-control-description" style="opacity:0;"></span>
+        </label> -->
+        <a href="" class="btn btn-neutral" ng-class="{'bg-info text-white': isAppPatient}" ng-click="choose('our')"> Applinic Patient</a>&nbsp;&nbsp;&nbsp;
+
+        <a href="" class="btn btn-neutral" ng-class="{'bg-info text-white': isOther}" ng-click="choose('other')">Non Applinic Patient</a>&nbsp;&nbsp;&nbsp;
+
+        <!--<a href="" class="btn btn-simple text-danger" ng-class="{'btn-info': isOther}" ng-click="choose('existing')">Import Dicom Study</a>-->
+	</div>
+	<hr>
+	<div ng-if="isAppPatient" class="col-md-10">
+		<header ng-if="patient.patientId">
+			<span><b>{{patient.names}}</b> | {{patient.gender}} | {{patient.age}}</span><br>
+			<span ng-repeat="j in TestList" class="mr-1">{{j.name}}</span>
+
+		</header><br>
+		
+		<section ng-if="isFindPatient">
+				<p style="background-color: #d7dde4;padding: 10px">This will automatically generate accession number which you will add to your work station for the study before capturing.</p>
+			<!--<p>Please note that payment must be completed before <b>accession number</b> and our online PACs details will be provided for this study.</p>-->
+			<form ng-submit="findPatient()">
+				<label>&nbsp; Patient's phone or email:</label><br>
+				<input type="text" name=""  placeholder="phone number or email" class="form-control" ng-model="contact.recepient">&nbsp;
+				<input type="submit" name="" value="Find" class="btn btn-info btn-sm">
+			</form>	
+			<div>
+				<div style="text-align: center;">
+					<i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange;font-size: 24px;margin-top: 10px" ng-if="loading"></i>
+				</div>
+				<div ng-if="patient.patientId && patient.type == 'Patient'" class="p-2 row">
+					<div class="col-md-3">
+						<img src="{{patient.profile_pic_url}}">
+					</div>
+					<div class="col-md-7">
+						<label>{{patient.names}}</label><br>
+						<span>{{patient.gender}}</span><br>
+						<span>{{patient.age}}</span>
+					</div>
+				</div>
+				<p style="text-align: center;" ng-if="!patient.patientId && msg && patient.type !== 'Patient'" class="text-muted">Patient not found!</p>
+				<div class="clearfix"></div>
+				<div style="text-align: right;" ng-if="patient.patientId && patient.type == 'Patient'">
+					<a href="" class="text-info" ng-click="next('2')">Next <i class="fa fa-arrow-right"></i></a>
+				</div>
+			</div>		
+		</section>
+		<section ng-if="isAddTest">
+			<label>Add Investigations</label>
+			<div>
+				<span ng-repeat="t in TestList" class="btn btn-simple text-danger mr-1"><span>{{t.name}}</span>&nbsp;&nbsp; <i class="fa fa-times " style="cursor: pointer;" ng-click="removeTest(t.tid)"></i></span>
+			</div><br>
+			<form ng-submit="addTest()">			
+				<input type="text" name="" ng-model="test.name" placeholder="Enter investigation" uib-typeahead="test.name for test in tests | filter:$viewValue | limitTo:50" class="form-control" >&nbsp;
+				<input type="submit" name="" value="+ Add" class="btn btn-info btn-sm">
+			</form>
+			<div class="clearfix"></div>
+			<div style="text-align: right;" ng-if="patient.patientId && TestList.length > 0">
+				<br>
+				<a href="" style="float: left;" ng-click="next('1')"><i class="fa fa-arrow-left"></i> previous</a>
+				<a href="" class="text-info" ng-click="next('3')">Next <i class="fa fa-arrow-right"></i></a>
+			</div>
+		</section>
+		<section ng-if="isTestDetails">
+			<label>Reason for Investigations</label>
+			<form ng-submit="createStudy()">
+				<div>
+		          <label>Clinical Summary *: </label>
+		           <textarea class="form-control p-1" placeholder="Write..." ng-model="patient.clinical_summary" required="required" ng-keyup="autoExpand($event)" id="textarea"></textarea>
+		         </div>
+		         <div>
+		           <label>Indication *: </label>
+		           <textarea class="form-control p-1" placeholder="Write..." ng-model="patient.indication" required="required" ng-keyup="autoExpand($event)" id="textarea"></textarea>
+		         </div>
+		         <div>
+		           <label>LMP ( female ):</label>
+		           <textarea class="form-control p-1" placeholder="Write..." ng-model="patient.lmp" ng-keyup="autoExpand($event)" id="textarea"></textarea>
+		         </div>
+		         <div>
+		           <label>Parity ( female ):</label>
+		            <textarea class="form-control p-1" placeholder="Write..." ng-model="patient.parity" ng-keyup="autoExpand($event)" id="textarea"></textarea>
+		         </div>
+		         <div style="text-align: right;" ng-if="patient.patientId && TestList.length > 0">
+		         <br>
+		         	<a href="" style="float: left;" ng-click="next('2')"><i class="fa fa-arrow-left"></i> previous</a>
+					<input type="submit" name="" value="Continue to payment / report" class="btn btn-danger" ng-if="!loading">
+					<span ng-if="loading">Processing...</span>
+				</div>
+			</form>
+		</section>
+	</div>
+	<div class="clearfix"></div>	
+	<div ng-if="isOther">	
+		<!--<label>Step 1: </label> <span>Enter Study Details.</span><br>
+		<label>Step 2: </label> <span>Generate Accession Number for the study.</span>-->
+		<p style="background-color: #d7dde4;padding: 10px">This will generate accession number which you will add to your work station for the study before capturing.</p>
+		<div class="clearfix"></div>
+		<form class="col-md-10" ng-submit="genAccession()" ng-if="!isSuccess">
+			<label>Type Of Study: </label><br>
+			<select class="form-control" ng-model="station.type" required>
+				<option value="CT/MRI" selected="selected">CT/MRI/PET/SPECT - {{toCurrency(1000)}}</option>
+				<option value="SI">Special Investigations/Mammography - {{toCurrency(500)}}</option>
+				<option value="CAPEHS">Chest/Abdomen/Pelvis/Extremeties/Head/Spine - {{toCurrency(250)}}</option>
+			</select>
+			<label>Patient Names: </label><br>
+			<input type="text" name="" class="form-control" placeholder="Names" ng-model="station.patientName" required>
+			<label>Patient Phone Number:</label><br>
+			<input type="text" name="" class="form-control" placeholder="Phone number" ng-model="station.patientPhone" required><br>
+			<label>Patient Email:</label><br>
+			<input type="email" name="" class="form-control" placeholder="Email" ng-model="station.patientEmail"><br>
+			<div class="clearfix"></div>
+			<div style="text-align: right;">
+				<input type="submit" value="Generate Accession Number" class="btn btn-danger" ng-if="!loading">
+				<span ng-if="loading">Processing...</span>
+			</div>
+		</form>	
+		<div ng-if="isSuccess">
+			<h5>Success:</h5>
+			<p> Please enter the Accession Number below in your work station for the study before capturing.</p>
+			<label>Accession Number:</label><br>
+			<b style="font-size: 18px">{{accNo}}</b>
+			<br>
+			<p>Enter our remote DICOM details below in your PACs server for transfering.</p>
+			<label>Logical Name: </label> <span>Applinic</span><br>
+			<label>AE Title: </label> <span>{{dicomDetails.aetitle}}</span><br>
+			<label>IP Address: </label> <span>{{dicomDetails.ip_address}}</span><br>
+			<label>Port: </label> <span>{{dicomDetails.port}}</span><br>
+			<br>
+			<span>For those that already have these details in their PACs server, IP address of our remote dicom PACs server can change with time. Please always take note of the above IP Address.</span>
+			<div style="text-align: right;">
+				<i class="fa fa-plus btn btn-simple" ng-click="newAcc()"> return</i>
+			</div>
+		</div>	
+		<!--<div class="col-md-5">
+		ng-click="genAccession()
+			<label>2) Remote PACs Server Details:</label>
+			<ul style="list-style: none;">
+				<li><label>Name:</label> Applinic</li>
+				<li><label>AE Title:</label> {{dicomDetails.aetitle}}</li>
+				<li><label>IP Address:</label> {{dicomDetails.ip_address}}</li>
+				<li><label>Port Number:</label> {{dicomDetails.port}}</li>
+			</ul>
+		</div>-->
+	</div>
+</div>
+<div style="height: 200px"></div>
+
+

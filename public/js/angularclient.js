@@ -809,6 +809,18 @@ app.config(['$paystackProvider','$routeProvider',
   controller: "medHistoryCtrl"
 })
 
+.when("/dicom-services",{
+  templateUrl: "/assets/pages/utilities/dicom.html",
+  controller: "dicomCtrl"
+})
+
+.when("/import",{
+  templateUrl: "/assets/pages/utilities/import-dicom.html",
+  controller: "dicomCtrl"
+})
+
+
+
 }]);
 
 
@@ -15377,11 +15389,15 @@ app.controller("labReferredPatientsController",["$scope","$location","$http","te
       $scope.patient.criteria = "refIdCriteria";       
     } else if($scope.patient.phone) {
       $scope.patient.criteria = "phoneCriteria";
+      if($scope.patient.phone.indexOf('+') == -1 || $scope.patient.phone.indexOf('+2') == -1) {
+        var newSlice = $scope.patient.phone.slice(1);
+        $scope.patient.phone = "+234" + newSlice;
+      }
+
     }
 
     if(Object.keys($scope.patient).length > 0) {
       typeOfSearch($scope.patient);
-
     } else {
       alert("Please enter search criteria in the text field")
       return;
@@ -16558,6 +16574,15 @@ app.controller("radioTestControler",["$scope","$location","$http","templateServi
       $scope.refInfo = objectFound;
     }
 
+    $http({
+    method  : 'GET',
+    url     : "/api/dicom-details",
+    headers : {'Content-Type': 'application/json'} 
+    })
+    .success(function(data) {              
+      $scope.dicomDetails = data;
+    }); 
+
     fill(objectFound)
 
 
@@ -16869,7 +16894,8 @@ app.controller("radioTestControler",["$scope","$location","$http","templateServi
   }
 
 
-  $scope.getFolderPath = function(){
+   //$scope.dicomPath = $scope.getFolderPath();
+  /*$scope.getFolderPath = function(){
     var str = ""; 
     var letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
     var d = + new Date();
@@ -16882,13 +16908,12 @@ app.controller("radioTestControler",["$scope","$location","$http","templateServi
     }
     return $scope.refInfo.radiology.patient_firstname + "_" + id + "_" +  str;
     
-  }
+  }*/
 
   $scope.radio = {
     type : "dicom"
   }
 
-  $scope.dicomPath = $scope.getFolderPath();
 
   var billAuth = billingAuthService; //$resource("/user/center/billing-verification",null,{verify: {method: "PUT"}})
   billAuth.get({refId: $scope.refInfo.ref_id},function(data){
@@ -20388,6 +20413,8 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
     $window.location.href = "/login";
   }
 
+
+
   
 
   $rootScope.toCurrency = function(amount) {
@@ -20907,6 +20934,13 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
       }
     })
   }
+
+
+  //for viewing jnlp dicom weasis viewer as java web start launcher
+  $rootScope.opnejnlp = function(link) {
+    window.location.href = "jnlp://" + link;
+  }
+
 
 }]);
 
@@ -21966,6 +22000,407 @@ app.controller("workHistoryModalController",["$rootScope","$scope","$location","
   
 }]);
 
+app.controller("dicomCtrl",["$rootScope","$scope","$location","$resource","$http",
+  "dynamicService","scanTests","localManager","getBalanceService",
+  function($rootScope,$scope,$location,$resource,$http,dynamicService,scanTests,localManager,getBalanceService){
+  $scope.isNew = true;
+
+  $scope.station = {}
+  $scope.station.center = $rootScope.checkLogIn;
+  $scope.test = {};
+  $scope.contact = {};
+
+  var user = localManager.getValue("resolveUser");
+
+  var allTests = scanTests.listInfo1.concat(scanTests.listInfo2,scanTests.listInfo3,scanTests.listInfo4,scanTests.listInfo5,
+  scanTests.listInfo6);
+
+  var resource = dynamicService;
+  resource.query({type:"Radiology"},function(data){
+    $scope.tests = allTests.concat(data);
+  });
+
+  $scope.isAppPatient = true;
+  $scope.choose = function(type){
+    switch(type){
+      case 'our':
+        $scope.isAppPatient = true;
+        $scope.isOther = false;
+      break;
+      case 'other':
+        $scope.isAppPatient = false;
+        $scope.isOther = true;
+      break;
+    }
+  }
+
+
+  $scope.findPatient = function() {
+
+    if(!$scope.contact.recepient){
+      alert("Please enter email or phone number of the recepient");
+      return;
+    }
+
+    if($rootScope.checkLogIn.email == $scope.contact.recepient){
+      alert("Please you cannot use yourself.");
+      return;
+    }
+
+    if($rootScope.checkLogIn.phone == $scope.contact.recepient){
+      alert("Please you cannot use yourself.");
+      return;
+    }
+
+    var intRegex = /[0-9 -()+]+$/;
+    if(intRegex.test($scope.contact.recepient)) {
+      if($scope.contact.recepient.indexOf('+') == -1 || $scope.contact.recepient.indexOf("234") == -1){
+        var newSlice = $scope.contact.recepient.slice(1);
+        $scope.contact.recepient = "+234" + newSlice;
+      }
+    } else {
+      alert("Please enter valid phone number");
+      return;
+    }
+
+    $scope.loading = true;
+
+    $http.post("/user/invitation",$scope.contact)
+    .success(function(res){
+      console.log(res)
+      $scope.msg = res.message;
+      $scope.loading = false;
+      $scope.existingUser = (res.user && res.type == 'Patient') ? true : false;
+      $scope.patient = res
+    })
+
+
+  }
+
+  $scope.TestList = [];
+
+  var count = {};
+  count.num = 1;
+
+  $scope.addTest = function(){
+    if($scope.test.name) {
+      var testObj = {};
+      testObj.name = $scope.test.name;
+      testObj.val = true;
+      testObj.select = true;
+      testObj.sn = count.num++;
+      testObj.tid = Math.floor(Math.random() * 999999);
+      $scope.TestList.push(testObj);
+      $scope.test.name = "";
+      updateSN()
+    }
+  }
+
+  $scope.removeTest = function(id) {
+    if($scope.TestList.length > 0){
+      var elemPos = $scope.TestList.map(function(x){return x.tid}).indexOf(id);
+      $scope.TestList.splice(elemPos, 1);
+      updateSN()
+    }
+  }
+
+
+  var updateSN = function() {
+    for(var i = 0; i < $scope.TestList.length; i++) {
+      $scope.TestList[i].sn = i + 1;
+    }
+  }
+
+
+  var totalCost = {};
+  var amt;
+  
+
+  $scope.$watch('TestList',function(newVal,oldVal){
+    totalCost.sum = 0;
+    $scope.TestList.forEach(function(item){
+      if(item.amount){
+        totalCost.sum += item.amount;
+        toNaira(totalCost.sum)  
+      }    
+    })
+  },true)
+
+
+  function toNaira(val){
+     $scope.str = "NGN" + val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+     $scope.grabRawAmount = val;
+     $scope.commissionedAmount = "NGN" + ( val - (val * ($rootScope.checkLogIn.city_grade / 100))).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+     //$scope.total = "NGN" + ( val - (val * ($rootScope.checkLogIn.city_grade / 100)) + $scope.dicomDetails.cost).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  }
+
+  $scope.isFindPatient = true;
+
+  $scope.next = function(val) {
+    switch(val) {
+      case '1':
+        $scope.isFindPatient = true;
+        $scope.isAddTest = false;
+        $scope.isTestDetails = false;
+      break;
+      case '2':
+        $scope.isFindPatient = false;
+        $scope.isAddTest = true;
+        $scope.isTestDetails = false;
+      break;
+      case '3':
+        $scope.isFindPatient = false;
+        $scope.isAddTest = false;
+        $scope.isTestDetails = true;
+      break
+    }
+  }
+
+
+  $scope.createStudy = function() {
+    var conTest = "";
+
+    $scope.TestList.forEach(function(item){
+      conTest += item.name + ","
+    });
+
+    var sendObj = {
+      name: $rootScope.checkLogIn.name,
+      address: $rootScope.checkLogIn.address,
+      city: $rootScope.checkLogIn.city,
+      country: $rootScope.checkLogIn.country,
+      id: $rootScope.checkLogIn.user_id,
+      recepient: $scope.contact.recepient,
+      str: conTest,
+      status:true,
+      clinical_summary: $scope.patient.clinical_summary,
+      indication: $scope.patient.indication,
+      lmp: $scope.patient.lmp,
+      parity: $scope.patient.parity,
+      type: 'someone',
+      //ref_id: Math.floor(Math.random() * 9999999),
+      user_id: $rootScope.checkLogIn.user_id,
+      sent_date: new Date(),
+      isSelfRequest: true,
+      test_to_run: $scope.TestList,
+      onlinePacs: $scope.dicomDetails
+    }
+
+    $scope.loading = true;
+    $http({
+      method  : 'PUT',
+      url     : "/user/scan-search/radiology/referral",
+      data    : sendObj,
+      headers : {'Content-Type': 'application/json'} 
+      })
+    .success(function(data) { 
+      $scope.loading = false;             
+      if(data.success) {
+        localManager.setValue("radiologyData",data.refObj)
+        $location.path('/radiology/view-test/' + data.ref_id);
+      } else {
+        alert("Oops! Something went wrong please try again.")
+      }
+    }); 
+  }
+
+  $http({
+    method  : 'GET',
+    url     : "/api/dicom-details",
+    headers : {'Content-Type': 'application/json'} 
+    })
+  .success(function(data) {              
+    $scope.dicomDetails = data;
+    $scope.station.onlinePacs = data
+  }); 
+
+  var amount = getBalanceService;
+  var wallet = amount.get({userId: user.user_id},function(data){
+    console.log(data)
+    $scope.availableAmount = data.balance;
+  });
+
+  $scope.genAccession = function() {
+    var cost;
+    switch($scope.station.type) {
+      case'CT/MRI':
+        cost = $rootScope.toCurrency(1000);
+        $scope.station.amount = 1000;
+        if($scope.availableAmount < $scope.station.amount){
+          alert("You have insufficient fund for this service. Please fund your wallet.");
+          return;
+        }
+      break;
+      case'SI':
+        cost = $rootScope.toCurrency(500);
+        $scope.station.amount = 500;
+         if($scope.availableAmount < $scope.station.amount){
+          alert("You have insufficient fund for this service. Please fund your wallet.");
+          return;
+        }
+      break;
+      case'CAPEHS':
+        cost = $rootScope.toCurrency(250);
+        $scope.station.amount = 250;
+        if($scope.availableAmount < $scope.station.amount){
+          alert("You have insufficient fund for this service. Please fund your wallet.");
+          return;
+        }
+      break;
+    }
+
+
+    var intRegex = /[0-9 -()+]+$/;
+    if(intRegex.test($scope.station.patientPhone)) {
+      if($scope.station.patientPhone.indexOf('+') == -1 || $scope.station.patientPhone.indexOf("234") == -1){
+        var newSlice = $scope.station.patientPhone.slice(1);
+        $scope.station.patientPhone = "+234" + newSlice;
+      }
+    } else {
+      alert("Please enter valid phone number");
+      return;
+    }
+
+    $scope.station.cost = cost;
+    $scope.station.isAcc = true;
+
+    var msg = "Generating accession number will cost you " + cost + ". Do you wish to continue?";
+    var check = confirm(msg)
+    if(check) {
+      $scope.loading = true;
+      $http({
+        method  : 'POST',
+        url     : "/user/dicom-details",
+        data    : $scope.station,
+        headers : {'Content-Type': 'application/json'} 
+        })
+      .success(function(data) {              
+        $scope.loading = false;
+        if(data.status){
+          $scope.isSuccess = true;
+          $scope.accNo = data.acc_no; 
+          $rootScope.$broadcast("debit",{});
+        }
+      }); 
+    }
+  }
+
+  $scope.addStudy = function() {
+    var cost;
+    switch($scope.station.type) {
+      case'CT/MRI':
+        cost = $rootScope.toCurrency(1000);
+        $scope.station.amount = 1000;
+        if($scope.availableAmount < $scope.station.amount){
+          alert("You have insufficient fund for this service. Please fund your wallet.");
+          return;
+        }
+      break;
+      case'SI':
+        cost = $rootScope.toCurrency(500);
+        $scope.station.amount = 500;
+         if($scope.availableAmount < $scope.station.amount){
+          alert("You have insufficient fund for this service. Please fund your wallet.");
+          return;
+        }
+      break;
+      case'CAPEHS':
+        cost = $rootScope.toCurrency(250);
+        $scope.station.amount = 250;
+        if($scope.availableAmount > $scope.station.amount){
+          alert("You have insufficient fund for this service. Please fund your wallet.");
+          return;
+        }
+      break;
+    }
+
+
+    var intRegex = /[0-9 -()+]+$/;
+    if(intRegex.test($scope.station.patientPhone)) {
+      if($scope.station.patientPhone.indexOf('+') == -1 || $scope.station.patientPhone.indexOf("234") == -1){
+        var newSlice = $scope.station.patientPhone.slice(1);
+        $scope.station.patientPhone = "+234" + newSlice;
+      }
+    } else {
+      alert("Please enter valid phone number");
+      return;
+    }
+
+    $scope.station.cost = cost;
+
+    var msg = "Adding Existing DICOM link Study ID will cost you " + cost + " . Do you wish to continue?";
+    var check = confirm(msg)
+    if(check) {
+      $scope.loading = true;
+      $http({
+        method  : 'POST',
+        url     : "/user/dicom-details",
+        data    : $scope.station,
+        headers : {'Content-Type': 'application/json'} 
+        })
+      .success(function(data) {              
+        $scope.loading = false;
+        if(data.status){
+          $scope.isSuccess = true;
+          $scope.studyNum = data.studyId; 
+          $rootScope.$broadcast("debit",{});
+        }
+      }); 
+    }
+
+  }
+
+  $scope.newAcc = function() {
+    $scope.isSuccess = false;
+    $scope.accNo = "";
+    $scope.station = {}
+  }
+
+}]);
+
+
+app.controller("investigationSearchCtrl",["$scope","$rootScope","$window","$http","$timeout",
+  function($scope,$rootScope,$window,$http,$timeout){
+  $scope.invest = {};
+
+  $scope.invest.type = 'radio';
+
+  $scope.findInvestigation = function() {
+    var url = "/investigation/result?type=" + $scope.invest.type + "&id=" + $scope.invest.id;
+    $window.location.href = url;
+  }
+
+  $http({
+    method  : 'GET',
+    url     : "/api/dicom-details",
+    headers : {'Content-Type': 'application/json'} 
+    })
+  .success(function(data) {              
+    $scope.dicomDetails = data;
+    $scope.dcmserver = "http://" + $scope.dicomDetails.ip_address + ":8080";
+  }); 
+
+  $scope.supported = false;
+
+  $scope.copy = "";
+
+  $scope.success = function (id) {
+    $scope.copy = 'Copied!';
+    $timeout(function(){
+      $scope.copy = "";
+    },2000)
+  };
+
+  $scope.openjnlp = function(link) {
+    window.location.href = "jnlp://" + link;
+  }
+
+
+}]);
+
+
+//investigationResultsCtrl
+
 app.service("bankDetailsService",["$resource",function($resource){
   return $resource("/user/bank-details",null,{update:{method: "PUT"},create:{method:'POST'}});
 }]);
@@ -22037,7 +22472,7 @@ app.controller("invitationCtrl",["$scope","$http","$rootScope","ModalService",fu
         return;
       }
 
-      if($scope.invite.recepient.indexOf('+') == -1 || $scope.invite.recepient.indexOf("+2") == -1){
+      if($scope.invite.recepient.indexOf('+') == -1 || $scope.invite.recepient.indexOf("234") == -1){
         var newSlice = $scope.invite.recepient.slice(1);
         $scope.invite.recepient = "+234" + newSlice;
       }
@@ -22080,6 +22515,8 @@ app.service("homePageDynamicService",["$resource",function($resource){
 app.service("homepageSearchService",["$resource",function($resource){
   return $resource("/general/homepage-search");
 }]);
+
+
 
 app.controller("hompageController",["$scope","scanTests","cities","labTests","Drugs","$http",
   "ModalService","$rootScope","homePageDynamicService","skillService",

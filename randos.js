@@ -20,7 +20,7 @@ var LAST_NAMES = [
     'Zimmerman'
 ];
 
-var possible = "0011223344556677889911223344556677889900";
+var possible = "0011223344556677889911223344556677889900123456789";
 
 function randomUsername() {
     function rando(arr) {
