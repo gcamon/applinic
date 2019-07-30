@@ -1000,6 +1000,7 @@ var myModel = function () {
 		patient_name: String,
 		patient_id: String,
 		study_id: String,
+		study_uid: String,
 		center_id: String,
 		center_name: String,
 		center_address: String,
@@ -1016,6 +1017,8 @@ var myModel = function () {
 	  aetitle: String,
 	  accession_number: String,
 	  study_link: String,
+	  study_link2: String,
+	  study_link_mobile: String,
 	  deleted: Boolean,
 	  ref_id: Number,
 	  study_type: String
@@ -1024,9 +1027,14 @@ var myModel = function () {
 	var dicomSchema = Schema({
 		ip_address: String,
 		port: Number,
+		dns: String,
 		aetitle: String,
 		cost: Number,
-		status: String
+		status: String,
+		center_id: String,
+		center_name: String,
+		username: String,
+		password: String
 	})
 
 	var accessionSchema = Schema({

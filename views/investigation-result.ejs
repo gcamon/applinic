@@ -103,13 +103,13 @@
            
         <div class="nav-item" ng-if="invest.type == 'radio'" ng-cloak>
             
-            <input type="text" placeholder="Enter Study ID or Accession No. or Reference No." class="col-md-10" ng-model="invest.id"> &nbsp;<button class="btn btn-danger"  style="padding: 9px 15px" ng-click="findInvestigation()"><i class="fa fa-search"></i> Find</button>
+            <input type="text" placeholder="Enter Patient ID or Study ID" class="col-md-10" ng-model="invest.id"> &nbsp;<button class="btn btn-danger"  style="padding: 9px 15px" ng-click="findInvestigation()"><i class="fa fa-search"></i> Find</button>
                
         </div>
 
         <div class="nav-item" ng-if="invest.type == 'lab'" ng-cloak>
             
-            <input type="text" placeholder="Enter Test Reference No." class="col-md-10" ng-model="invest.id"> &nbsp;<button class="btn btn-danger" style="padding: 9px 15px" ng-click="findInvestigation()"><i class="fa fa-search"></i> Find</button>
+            <input type="text" placeholder="Enter Test Reference No" class="col-md-10" ng-model="invest.id"> &nbsp;<button class="btn btn-danger" style="padding: 9px 15px" ng-click="findInvestigation()"><i class="fa fa-search"></i> Find</button>
                
         </div>
     </div>
@@ -127,23 +127,33 @@
             <% for(var i = 0; i < result.length; i++) { %>              
                <div style="font-size: 18px;border-bottom: 1px solid #eee" class="p-1">
                  <b><%= result[i].patient_name %></b><br>
-                 <span><%= result[i].accession_number %></span>  <span><%= result[i].study_id %></span> <span><%= result[i].ref_id %></span>
-                 <a href="" ng-click="openjnlp('<%= result[i].study_link %>')" style="float: right;font-size: 32px;color: rgba(0,0,0,0.7);" title="Open and view in dicom viewer"><i class="fa fa-eye"></i></a>
+                 <span><%= result[i].accession_number %></span>  <span><%= result[i].study_id %></span> <span><%= result[i].ref_id %></span>                
                </div>
-               <div class="clearfix"></div>
+               <div class="col-md-5" ng-if="!isMobileDevice" ng-cloak> 
+                  <p>View with oviyam DICOM viewer. <br> Has few tools for analysis. <br> It is web based <br> No installations needed</p>              
+                  <a href="<%= result[i].study_link2 %>" target="_blank" style="font-size: 32px;color: rgba(0,0,0,0.7);" title="Open and view in dicom viewer"><i class="fa fa-eye"></i></a>
+               </div>
+               <div class="col-md-5" ng-if="!isMobileDevice" ng-cloak> 
+                  <p>View with weasis DICOM viewer. <br> Has more tools for analysis and reporting.<br> Requires JAVA Installed on PC</p>              
+                  <a href="" ng-click="openjnlp('<%= result[i].study_link %>')" style="font-size: 32px;color: rgba(0,0,0,0.7);" title="Open and view in dicom viewer"><i class="fa fa-eye"></i></a>
+               </div>
+               <div ng-if="isMobileDevice" ng-cloak>
+                  <p>View with oviyam DICOM viewer. <br> Has few tools for analysis. <br> No installations needed</p>              
+                  <a href="<%= result[i].study_link_mobile %>" target="_blank" style="font-size: 32px;color: rgba(0,0,0,0.7);" title="Open and view in dicom viewer"><i class="fa fa-eye"></i></a>
+               </div>
             <% } %>
           </div>
 
           <% if(result.length == 0) { %>
-            <p class="text-danger" style="text-align: center;padding-top: 20px"> Study not found! Please make sure your input is correct and search again.</p>
+            <p class="text-danger" style="text-align: center;padding-top: 20px"> Request not found! Please make sure your input is correct and search again.</p>
           <% } %>
 
         </div>
-        <div class="col-md-5">
+        <div class="col-md-5" ng-if="!isMobileDevice">
           <h4 class="display-5">Cannot View Dicom Image?</h4><br>
           <h5><b>Windows:</b></h5>
           <ol>
-            <li>Download and Install <b>JAVA</b> <a href="https://www.java.com/en/" target="_blank">from here</a>  for the version of your operating system if you do not have java already innstalled in your PC. ( This can only be done once for your PC and you don't have to do this anytime you want to use our dicom viewer.)</li>
+            <li>If you do not have <b>JAVA</b> already installed in your PC, download and install for the version of your operating system <a href="https://www.java.com/en/" target="_blank">from here.</a> ( This can only be done once for your PC and you don't have to do this anytime you want to use our dicom viewer )</li>
             <li>
                 After you have successfully installed JAVA, you need to update Java security.
                 <ul>

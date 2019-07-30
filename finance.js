@@ -2162,10 +2162,11 @@ router.put("/user/outpatient-billing",function(req,res){
 
 
 router.post("/user/dicom-details",function(req,res){
+		console.log(req.body);
 		if(req.user) {
 			var rados;
 			if(req.body.isAcc) {
-			  rados = randos.genRef(8);
+			  rados = "app/" + randos.genRef(8);
 			  var date = new Date();
 			  var acc = new model.accession({
 			    id: rados,
@@ -2179,7 +2180,7 @@ router.post("/user/dicom-details",function(req,res){
 				rados = null;
 			}
 
-			var id = req.body.studyID || req.body.patientID;
+			var id = req.body.patientID || req.body.studyID ;
 
 			var criteria = { study_id : id};
 			model.study.find(criteria)
@@ -2194,11 +2195,16 @@ router.post("/user/dicom-details",function(req,res){
 
 			function createStudy() {
 				var locate = (req.body.studyID) ? ('studyUID=' + req.body.studyID) : ('patientID=' + req.body.patientID);
+				var ovyWeb = "https://" + req.body.onlinePacs.dns + "/oviyam2/viewer.html?" + locate;
+				var ovyMob = "http://" + req.body.onlinePacs.ip_address + ":8080/ioviyam2/home.html";
+				var centerUser = req.body.onlinePacs.username;
+				var centerPassword = req.body.onlinePacs.password;
 
 			  var study = new model.study({
 			    patient_name: req.body.patientName,
-			    patient_id: "",
-			    study_id: req.body.studyID || req.body.patientID,
+			    patient_id: req.body.patientID || rados,
+			    study_id: req.body.patientID || rados,
+			    study_uid: req.body.studyID,
 			    center_id: req.user.user_id,
 			    center_name: req.user.name,
 			    center_address: req.user.address,
@@ -2216,6 +2222,8 @@ router.post("/user/dicom-details",function(req,res){
 			    study_link: (req.body.isAcc) ? (req.body.onlinePacs.ip_address + 
 			    ":8080/weasis-pacs-connector/viewer?accessionNumber=" + rados) : (req.body.onlinePacs.ip_address + 
 			    ":8080/weasis-pacs-connector/viewer?" + locate),
+			    study_link2: ovyWeb,
+			    study_link_mobile: ovyMob,
 			    study_type: req.body.type,
 			    deleted: false
 			  });
@@ -2229,15 +2237,17 @@ router.post("/user/dicom-details",function(req,res){
 			  		var msg = (rados || id) + " - dicom study upload";
 					  var pay = new Wallet(date,req.user.name,"",msg,rados);
 					  pay.dicom(model,req.body.amount,req.user,io);
-					  res.json({acc_no: rados,status:true,studyId: id});	
+					  var auth = id || rados;
+					  res.json({acc_no: rados,status:true,studyId: auth});	
 
-					  var tp = (req.body.isAcc) ? "Accession Number" : "Study ID";
-					  var msgBody = "Your radiology dicom study with\n" + tp + " " + (rados || id) 
-					  + " has been upload to applinic online PACS server.\n" 
-					  + "You can share or use this number to view the study on windows or Mac PCs.\nVisit https://applinic.com";
+					  var tp = "Patient ID";
+					  var msgBody = "Your radiology dicom study with " + tp + " " + (rados || id) 
+					  + " has been uploaded to Applinic online PACS server.\n" 
+					  + "You can share or use the above Patient ID to view the study on your smart phone.\nKindly visit " + ovyMob
+					  + "\nusername: " + centerUser + "\npassword: " + centerPassword;
 						sms.messages.create(
 	            {
-	              to: req.body.patientPhone,//req.body.patientPhone,
+	              to: req.body.patientPhone,
 	              from: '+16467985692',
 	              body: msgBody,
 	            },
@@ -2259,10 +2269,12 @@ router.post("/user/dicom-details",function(req,res){
 	            from: 'Applinic info@applinic.com',
 	            to: req.body.patientEmail || "support@applinic.com",
 	            subject: 'Radiology Dicom Study Uploaded',
-	            html: '<table><tr><tr><td>Hello,<br><br>Your study with ' 
-	            +  tp  + " <b>" + (rados || id) + '</b> was uploaded to Applinic Online PACs Server '
-	            + 'by ' + req.user.name + '. You can share or use this number to view the study on windows or Mac PCs.' 
-	            + '<br><br><div style="text-align: center"><a href="https://applinic.com/investigation/result?type=radio&id=' 
+	            html: '<table><tr><tr><td style="line-height: 25px">Hello,<br><br>Your study with ' 
+	            +  tp  + " <b>" + (rados || id) + '</b> has been uploaded to Applinic Online PACs Server '
+	            + 'by ' + req.user.name + '. You can share or use the ID to view the study.<br>' 
+	            + 'username: ' + centerUser + "<br>password: " + centerPassword
+	            + '<br><br><div style="text-align: center">'
+	            + '<br><a href="https://applinic.com/investigation/result?type=radio&id=' 
 	            + cp + '" style="padding:10px;background-color:red;color:#fff">Click to view study</a></div></td></tr></table>'
 	          };
 

@@ -456,15 +456,14 @@ padding:10px 10px;
         <div class="clearfix"></div>
 
 
-        <div class="container offset-md-1 topUp m-top" style="background-color: #fff; position: absolute;bottom:0;max-height: 200px;border-top-left-radius:2px;border-top-right-radius: 2px;padding: 15px;z-index: 2"
-            ng-controller="hompageController">
+        <div class="container offset-md-1 topUp m-top" style="background-color: #fff; position: absolute;bottom:0;max-height: 200px;border-top-left-radius:2px;border-top-right-radius: 2px;z-index: 2"
+            >
 
-            <form ng-cloak>
+            <!--<form ng-cloak>
                 <div class="row">
                     <div class="col-md-4">
                         <div class="form-group">
-                            <!--<input type="text" class="form-control" ng-model="category" style="padding: 15px 10px" name="states"  placeholder="Category" uib-typeahead="category for category in categories | filter:$viewValue | limitTo:15">
-                        <span ng-cloak>{{getCategory(category)}}</span>-->
+                          
                             <select class="form-control" style="height:47px;" ng-model="user.category">
                                 <option value="" disabled selected>Search category</option>
                                 <option>Doctor</option>
@@ -481,7 +480,7 @@ padding:10px 10px;
 
                     <div class="col-md-4">
                         <div class="form-group">
-                            <!--<input type="text" class="form-control" ng-model="item" style="padding: 15px 10px" placeholder="Drug / Test / Specialty">-->
+                           
                             <input type="text" class="form-control" ng-model="user.item" style="padding: 15px 10px"
                                 name="" placeholder="{{itemName}}" uib-typeahead="item.name for item in itemList | filter:$viewValue | limitTo:15">
                         </div>
@@ -491,7 +490,7 @@ padding:10px 10px;
                         <div class="form-group">
                             <input type="text" class="form-control" style="padding: 15px 10px" name="" type="text"
                                 placeholder="City" ng-model="user.city" uib-typeahead="city for city in cities | filter:$viewValue | limitTo:15">
-                            <!--<span ng-cloak>{{getCity(city)}}</span>-->
+                            
                         </div>
                     </div>
                     <div class="col-md-1" style="padding-top: 10px">
@@ -504,67 +503,199 @@ padding:10px 10px;
                         </button>
                     </div>
                 </div>
-            </form>
+            </form>-->
 
-        </div>
-    </div>
+             <div class="card card-shado">
+    <ul class="nav nav-tabs " id="myTab" role="tablist">
+  <li class="nav-item">
+    <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Diagnostic Report </a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Search</a>
+  </li>
+
+</ul>
+<div class="tab-content p-3" id="myTabContent" ng-controller="investigationSearchCtrl">
+  <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+    <div class="row">
+      <div class="col-md-3 ">
+      <div class="pt-2">
+
+       <span>   
+         <input type="radio" name="options" value="radio" ng-model="invest.type" autocomplete="off"> &nbsp;
+        <label for="option2">Radiology</label>
+        </span>
+        
+   &nbsp;     &nbsp;   
+        <span>
+          
+             <input type="radio" name="options" value="lab" ng-model="invest.type" autocomplete="off">
+      &nbsp;   <label for="option1">Laboratory</label>
+          
+        </span>
+
+  
 
 
-
-
-    <!-- <div class="section">
-    <div class="container pl-5 pr-5">
-        <div class="h4 title text-center">MEET A DOCTOR</div>
-<div class="separator separator-primary"></div>
-
-<div class="container all">
-        <div class="row">
-
-<div class="col-md-4 col-sm-6 pl-5 pr-5  col-xs-12">
-    <div class="card">
-        <div class="card-block text-center" style="position:relative">
-           
-            <div class="p-2">
-                <img src="/assets/images/speech-bubble.png" height="100">
-            </div>
-             <div class="h6">Live Chat</div>
-
-        </div>
-    </div>
 </div>
+      </div>
+      
+  
+      
 
+    
+    <div class="col-md-7" ng-cloak>
+       <div ng-if="invest.type == 'radio'">
+          <input class="form-control" type="text" placeholder="Enter Patient ID of Study" ng-model="invest.id"/>
+      </div>
+      <div ng-if="invest.type == 'lab'">
+          <input class="form-control" type="text" placeholder="Enter Test Reference No" ng-model="invest.id"/>
+      </div>
+    </div>
+    
+    <div class="col-md-2 mt-2">
+       <button class="btn btn-danger btn-block" ng-click="findInvestigation()">
+                            <i class="fa fa-search"></i>
+                        </button>
+    </div>
+      
+      
+    </div>
+  </div>
+  
+  
+  <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab" ng-controller="hompageController">
+    
+    <div class="row">
+      <div class="col-md-3">
+        <select class="form-control" style="" ng-model="user.category">
+            <option value="" disabled selected>Select Category</option>
+            <option>Doctor</option>
+            <option>Pharmacy</option>
+            <option>Laboratory</option>
+            <option>Radiology</option>
+            <option>Disease</option>
+            <option>Special Center</option>
+            <option>Skills &amp; Procedures</option>
+        </select>
+      </div>
+      
+        <div class="col-md-4">
+         <input type="text" class="form-control" ng-model="user.item" style=""
+         name="" placeholder="{{itemName}}" uib-typeahead="item.name for item in itemList | filter:$viewValue | limitTo:15">
+      </div>
+      
+        <div class="col-md-4">
+         <input type="text" class="form-control" style="" name="" type="text"
+         placeholder="City" ng-model="user.city" uib-typeahead="city for city in cities | filter:$viewValue | limitTo:15">
+      </div>
+      <div class="col-md-1 mt-2">
+        <button class="btn btn-danger btn-block" ng-click="search()">
+                            <i class="fa fa-search"></i>
+                        </button>
+      </div>
+    </div>
+    
+  </div>
 
+</div>
+  </div>
 
-<div class="col-md-4 pl-5 pr-5 col-sm-6 col-xs-12">
-    <div class="card">
-        <div class="card-block  text-center">
-
-            <div class="">
-                <img src="/assets/images/meeting.png" height="118">
-            </div>
-            <div class="h6">IN-PERSON MEETING</div>
 
         </div>
     </div>
+
+
+
+    <!--  test -->
+
+    <!--<div class="container ml-auto mr-auto">
+  
+  
+  <div class="card card-shadow mt-4">
+    <ul class="nav nav-tabs " id="myTab" role="tablist">
+  <li class="nav-item">
+    <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Diagnostic Report </a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Search</a>
+  </li>
+
+</ul>
+<div class="tab-content p-3" id="myTabContent">
+  <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+    <div class="row">
+      <div class="col-md-3 ">
+      <div class="pt-2">
+
+       <span>   
+         <input type="radio" name="options" id="option2" autocomplete="off"> &nbsp;
+        <label for="option2">Radiology</label>
+        </span>
+        
+   &nbsp;     &nbsp;   
+        <span>
+          
+             <input type="radio" name="options" id="option1" autocomplete="off" checked>
+      &nbsp;   <label for="option1">Laboratory</label>
+          
+        </span>
+
+  
+
+
 </div>
+      </div>
+      
+  
+      
 
-
-
-<div class="col-md-4 col-sm-6 pl-5 pr-5 col-xs-12">
-    <div class="card">
-        <div class="card-block  text-center">
-           
-            <div class="p-2">
-<img src="/assets/images/video-chat.png" height="100">
-            </div>
-<div class="h6">Video call</div>
-        </div>
+    
+    <div class="col-md-7">
+ 
+      <input type="text" class="form-control" placeholder="Search with Accession ID or " />
     </div>
-</div>
-</div>
-        </div>
+    
+    <div class="col-md-2">
+      <button class="btn btn-success">Search</button>
     </div>
+      
+      
+    </div>
+  </div>
+  
+  
+  <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+    
+    <div class="row">
+      <div class="col-md-3">
+        <select class="form-control custom-select">
+          <option>Doctor</option>
+          </select>
+      </div>
+      
+        <div class="col-md-4">
+        <input class="form-control" type="text" placeholder="Drug">
+      </div>
+      
+        <div class="col-md-4">
+        <input class="form-control" type="text" placeholder="City">
+      </div>
+      <div class="col-md-1">
+        <button class="btn btn-success">view</option>
+      </div>
+    </div>
+    
+  </div>
+
+</div>
+  </div>
+  
+  
 </div>-->
+
+
+
 
 
 

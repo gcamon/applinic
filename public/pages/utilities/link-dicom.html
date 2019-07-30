@@ -24,11 +24,11 @@
 		<label class="custom-control custom-radio">
 			<input type="radio" value="studyID" ng-model="station.locate" class="custom-control-input">
 			<span class="custom-control-indicator"></span>
-			<span class="custom-control-description font-1_1"> <b>Study Instance UID</b></span>
+			<span class="custom-control-description font-1_1"> <b>Study UID</b></span>
 		</label><br><br>
 		<div ng-if="station.locate == 'studyID'">
-			<label>Study Instance UID: </label><br>
-			<input type="text" name="" placeholder="Study Instance UID" required class="form-control" ng-model="station.studyID"><br>
+			<label>Study ID: </label><br>
+			<input type="text" name="" placeholder="Study UID" required class="form-control" ng-model="station.studyID"><br>
 		</div>
 		<div ng-if="station.locate == 'patientID'">
 			<label>Patient ID: </label><br>

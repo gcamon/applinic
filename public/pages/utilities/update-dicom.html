@@ -1,0 +1,32 @@
+<div class="card p-2 card-center-1">
+	<h4 class="pt-0 pl-0">DICOM Service</h4>
+	<form class="col-md-5" ng-submit="createService()">
+		<h4>New Service</h4>
+		<label>IP Address*:</label><br>
+		<input type="text" name="" class="form-control" placeholder="IP Address" ng-model="station.ip_address" required>
+		<br><br>
+		<label>Host name*: </label><br>
+		<input type="text" name="" class="form-control" placeholder="hostname" ng-model="station.hostname" required>
+		<br><br>
+		<label>AE Title*: </label><br>
+		<input type="text" name="" class="form-control" placeholder="AE Title" ng-model="station.aetitle" required>
+		<br><br>
+		<label>Center Name: </label><br>
+		<input type="text" name="" class="form-control" placeholder="Center Name" ng-model="station.center_name">
+		<br><br>
+		<label>Center ID*: </label><br>
+		<input type="text" name="" class="form-control" placeholder="Center ID" ng-model="station.centerId" required>
+		<br><br>
+		<label>Center Username*: </label><br>
+		<input type="text" name="" class="form-control" placeholder="Username" ng-model="station.username" required>
+		<br><br>
+		<label>Center password*: </label><br>
+		<input type="text" name="" class="form-control" placeholder="Password" ng-model="station.password" required>
+		<br><br>
+		<input type="submit" name="" value="submit" class="btn btn-danger" ng-if="!loading">
+		<span ng-if="loading">Sending...</span>
+	</form>
+</div>
+
+
+

@@ -819,6 +819,12 @@ app.config(['$paystackProvider','$routeProvider',
   controller: "dicomCtrl"
 })
 
+.when("/dicom-update",{
+  templateUrl: "/assets/pages/utilities/update-dicom.html",
+  controller: "dicomCtrl"
+})
+
+
 
 
 }]);
@@ -22205,12 +22211,14 @@ app.controller("dicomCtrl",["$rootScope","$scope","$location","$resource","$http
     }); 
   }
 
+  var user = $rootScope.checkLogIn.user_id || "";
   $http({
     method  : 'GET',
-    url     : "/api/dicom-details",
+    url     : "/api/dicom-details?centerId=" + user,
     headers : {'Content-Type': 'application/json'} 
     })
-  .success(function(data) {              
+  .success(function(data) {  
+    console.log(data)            
     $scope.dicomDetails = data;
     $scope.station.onlinePacs = data
   }); 
@@ -22233,16 +22241,16 @@ app.controller("dicomCtrl",["$rootScope","$scope","$location","$resource","$http
         }
       break;
       case'SI':
-        cost = $rootScope.toCurrency(500);
-        $scope.station.amount = 500;
+        cost = $rootScope.toCurrency(700);
+        $scope.station.amount = 700;
          if($scope.availableAmount < $scope.station.amount){
           alert("You have insufficient fund for this service. Please fund your wallet.");
           return;
         }
       break;
       case'CAPEHS':
-        cost = $rootScope.toCurrency(250);
-        $scope.station.amount = 250;
+        cost = $rootScope.toCurrency(350);
+        $scope.station.amount = 350;
         if($scope.availableAmount < $scope.station.amount){
           alert("You have insufficient fund for this service. Please fund your wallet.");
           return;
@@ -22265,7 +22273,7 @@ app.controller("dicomCtrl",["$rootScope","$scope","$location","$resource","$http
     $scope.station.cost = cost;
     $scope.station.isAcc = true;
 
-    var msg = "Generating accession number will cost you " + cost + ". Do you wish to continue?";
+    var msg = "Generating Patient ID will cost you " + cost + ". Do you wish to continue?";
     var check = confirm(msg)
     if(check) {
       $scope.loading = true;
@@ -22299,7 +22307,7 @@ app.controller("dicomCtrl",["$rootScope","$scope","$location","$resource","$http
       break;
       case'SI':
         cost = $rootScope.toCurrency(500);
-        $scope.station.amount = 500;
+        $scope.station.amount = 700;
          if($scope.availableAmount < $scope.station.amount){
           alert("You have insufficient fund for this service. Please fund your wallet.");
           return;
@@ -22307,7 +22315,7 @@ app.controller("dicomCtrl",["$rootScope","$scope","$location","$resource","$http
       break;
       case'CAPEHS':
         cost = $rootScope.toCurrency(250);
-        $scope.station.amount = 250;
+        $scope.station.amount = 350;
         if($scope.availableAmount < $scope.station.amount){
           alert("You have insufficient fund for this service. Please fund your wallet.");
           return;
@@ -22374,11 +22382,29 @@ app.controller("dicomCtrl",["$rootScope","$scope","$location","$resource","$http
     $scope.station.patientEmail = "";
   }
 
+  $scope.createService = function() {
+    $scope.loading = true;
+    $http({
+      method  : 'POST',
+      url     : "/user/dicom-service",
+      data    : $scope.station,
+      headers : {'Content-Type': 'application/json'} 
+      })
+    .success(function(data) {              
+      $scope.loading = false;
+      if(data.status){
+        alert(data.message)
+      } else {
+        alert(data.message)
+      }
+    }); 
+  }
+
 }]);
 
 
-app.controller("investigationSearchCtrl",["$scope","$rootScope","$window","$http","$timeout",
-  function($scope,$rootScope,$window,$http,$timeout){
+app.controller("investigationSearchCtrl",["$scope","$rootScope","$window","$http","$timeout","deviceCheckService",
+  function($scope,$rootScope,$window,$http,$timeout,deviceCheckService){
   $scope.invest = {};
 
   $scope.invest.type = 'radio';
@@ -22408,6 +22434,9 @@ app.controller("investigationSearchCtrl",["$scope","$rootScope","$window","$http
       $scope.copy = "";
     },2000)
   };
+
+  $scope.isMobileDevice = deviceCheckService.getDeviceType();
+ 
 
   $scope.openjnlp = function(link) {
     window.location.href = "jnlp://" + link;

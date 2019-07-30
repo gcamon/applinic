@@ -9800,16 +9800,97 @@ router.post("/user/firstline-doctors",function(req,res){
 });
 
 router.get("/api/dicom-details",function(req,res){
-  model.dicom.findOne({aetitle: "DCM4CHEE"})
+  model.dicom.findOne({center_id: req.query.centerId})
   .exec(function(err,data){
-    res.json({
-      ip_address: "188.166.66.29",
-      port: 11112,
-      aetitle: "DCM4CHEE",
-      cost: 1000,
-      status: "beta"
-    });
+    if(data) {
+      res.json(data);
+    } else {
+      res.json({
+        ip_address: "157.230.115.193",
+        dns: "dicom.applinic.com",
+        port: 11112,
+        aetitle: "applinic",
+        cost: 1000,
+        status: "beta",
+        center_id: req.body.centerId || "",
+        center_name: "Applinic",
+        username: "user",
+        password: "1234"
+      });
+    }
   })
+});
+
+router.post("/user/dicom-service",function(req,res){
+  if(req.user) {
+    if(req.user.type == "admin") {
+      model.dicom.findOne({aetitle: req.body.aetitle})
+      .exec(function(err,result){
+        if(err) throw err;
+        if(result){
+          res.json({message: "Oops! Center with AE Title DICOM service already exist.",status:false})
+        } else {
+          create()
+        }
+      })
+
+      function create() {
+        var dcm = new model.dicom({
+          ip_address: req.body.ip_address,
+          dns: req.body.hostname,
+          port: 11112,
+          aetitle: req.body.aetitle,
+          cost: 1000,
+          status: "beta",
+          center_id: req.body.centerId || "",
+          center_name: req.body.center_name,
+          username: req.body.username,
+          password: req.body.password
+        });
+
+        dcm.save(function(err,info){
+        if(err) throw err;
+          res.json({message: "Service created successfully",status: true});
+        });
+      }
+    } else {
+      res.json({message: "Permission denied.",status:false});
+    }
+  } else {
+    res.end("Unauthorized Access!")
+  }
+});
+
+router.put("/user/dicom-service",function(req,res){
+  if(req.user) {
+    if(req.user.type == "admin") {
+      model.dicom.findOne({aetitle: req.body.aetitle})
+      .exec(function(err,data){
+        if(err) throw err;
+        if(data){
+
+        } else {
+          res.json({message: "Resource not found"})
+        }
+      })
+    } else {
+      res.json({message: "Permission denied."})
+    }
+  } else {
+    res.end("Unauthorized Access!")
+  }
+});
+
+router.delete("/user/dicom-service",function(req,res){
+  if(req.user) {
+    if(req.user.type == "admin") {
+    
+    } else {
+      res.json({message: "Permission denied."})
+    }
+  } else {
+    res.end("Unauthorized Access!")
+  }
 });
 
 router.get("/investigation/result",function(req,res){
@@ -9852,6 +9933,10 @@ router.get("/investigation/result",function(req,res){
     break;
   }
   //res.render("investigation-result");
+});
+
+router.get("/Studyshare&Teleradiology",function(req,res){
+  res.render('teleradiology')
 });
 
 }
