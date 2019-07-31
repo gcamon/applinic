@@ -22224,7 +22224,7 @@ app.controller("dicomCtrl",["$rootScope","$scope","$location","$resource","$http
   }); 
 
   var amount = getBalanceService;
-  var wallet = amount.get({userId: user.user_id},function(data){
+  var wallet = amount.get({userId: user},function(data){
     console.log(data)
     $scope.availableAmount = data.balance;
   });
@@ -22315,7 +22315,7 @@ app.controller("dicomCtrl",["$rootScope","$scope","$location","$resource","$http
         }
       break;
       case'CAPEHS':
-        cost = $rootScope.toCurrency(250);
+        cost = $rootScope.toCurrency(350);
         $scope.station.amount = 350;
         if($scope.availableAmount < $scope.station.amount){
           alert("You have insufficient fund for this service. Please fund your wallet.");
