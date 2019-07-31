@@ -5,9 +5,13 @@
 	<form class="col-md-10" ng-submit="addStudy()" ng-if="!isSuccess">
 		<label>Type Of Study: </label><br>
 		<select class="form-control" ng-model="station.type" required>
-			<option value="CT/MRI" selected="selected">CT/MRI/PET/SPECT - {{toCurrency(1000)}}</option>
+			<!--<option value="CT/MRI" selected="selected">CT/MRI/PET/SPECT - {{toCurrency(1000)}}</option>
 			<option value="SI">Special Investigations/Mammography - {{toCurrency(500)}}</option>
-			<option value="CAPEHS">Chest/Abdomen/Pelvis/Extremeties/Head/Spine - {{toCurrency(250)}}</option>
+			<option value="CAPEHS">Chest/Abdomen/Pelvis/Extremeties/Head/Spine - {{toCurrency(250)}}</option>-->
+
+			<option value="CT/MRI" selected="selected">CT/MRI/PET/SPECT - {{toCurrency(1000)}}</option>
+				<option value="SI">MULITPLE ROUTINE VIEWS, CONTRAST STUDIES AND MAMMOGRAPHY - {{toCurrency(700)}}</option>
+				<option value="CAPEHS">SINGLE AP OR LATERAL OR OTHER VIEW OF SKULL/SPINE/CHEST/ABDOMEN/PELVIS/EXTREMETIES - {{toCurrency(350)}}</option>
 		</select>
 		<label>Patient Names:</label><br>
 		<input type="text" name="" placeholder="Name" required class="form-control" ng-model="station.patientName"><br>

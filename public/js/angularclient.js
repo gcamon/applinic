@@ -22285,6 +22285,7 @@ app.controller("dicomCtrl",["$rootScope","$scope","$location","$resource","$http
         })
       .success(function(data) {              
         $scope.loading = false;
+        console.log(data)
         if(data.status){
           $scope.isSuccess = true;
           $scope.accNo = data.acc_no; 

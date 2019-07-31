@@ -2162,11 +2162,11 @@ router.put("/user/outpatient-billing",function(req,res){
 
 
 router.post("/user/dicom-details",function(req,res){
-		console.log(req.body);
+
 		if(req.user) {
 			var rados;
 			if(req.body.isAcc) {
-			  rados = "app/" + randos.genRef(8);
+			  rados = "APP/" + randos.genRef(8);
 			  var date = new Date();
 			  var acc = new model.accession({
 			    id: rados,
@@ -2176,11 +2176,13 @@ router.post("/user/dicom-details",function(req,res){
 
 			  acc.save(function(err,info){});
 
+			  req.body.patientID = rados
+
 			} else {
 				rados = null;
 			}
 
-			var id = req.body.patientID || req.body.studyID ;
+			var id =  req.body.studyID || req.body.patientID;
 
 			var criteria = { study_id : id};
 			model.study.find(criteria)
@@ -2191,7 +2193,7 @@ router.post("/user/dicom-details",function(req,res){
 				} else {
 					res.json({status: false,message:"Study or Patient ID already exist."});
 				}
-			})
+			});
 
 			function createStudy() {
 				var locate = (req.body.studyID) ? ('studyUID=' + req.body.studyID) : ('patientID=' + req.body.patientID);
@@ -2202,8 +2204,8 @@ router.post("/user/dicom-details",function(req,res){
 
 			  var study = new model.study({
 			    patient_name: req.body.patientName,
-			    patient_id: req.body.patientID || rados,
-			    study_id: req.body.patientID || rados,
+			    patient_id: req.body.patientID,
+			    study_id: req.body.patientID,
 			    study_uid: req.body.studyID,
 			    center_id: req.user.user_id,
 			    center_name: req.user.name,
