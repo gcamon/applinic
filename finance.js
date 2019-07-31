@@ -2221,15 +2221,12 @@ router.post("/user/dicom-details",function(req,res){
 			    port: req.body.onlinePacs.port,
 			    aetitle: req.body.onlinePacs.aetitle,
 			    accession_number: rados,
-			    study_link: (req.body.isAcc) ? (req.body.onlinePacs.ip_address + 
-			    ":8080/weasis-pacs-connector/viewer?accessionNumber=" + rados) : (req.body.onlinePacs.ip_address + 
-			    ":8080/weasis-pacs-connector/viewer?" + locate),
+			    study_link: req.body.onlinePacs.ip_address + ":8080/weasis-pacs-connector/viewer?" + locate,
 			    study_link2: ovyWeb,
 			    study_link_mobile: ovyMob,
 			    study_type: req.body.type,
 			    deleted: false
 			  });
-
 
 			  study.save(function(err,info){
 			  	if(err){
@@ -2242,8 +2239,8 @@ router.post("/user/dicom-details",function(req,res){
 					  var auth = id || rados;
 					  res.json({acc_no: rados,status:true,studyId: auth});	
 
-					  var tp = "Patient ID";
-					  var msgBody = "Your radiology dicom study with " + tp + " " + (rados || id) 
+					  var tp = "PatientID '";
+					  var msgBody = "Your radiology dicom study with " + tp + "' " + (rados || id) 
 					  + " has been uploaded to Applinic online PACS server.\n" 
 					  + "You can share or use the above Patient ID to view the study on your smart phone.\nKindly visit " + ovyMob
 					  + "\nusername: " + centerUser + "\npassword: " + centerPassword;
