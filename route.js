@@ -9896,7 +9896,7 @@ router.delete("/user/dicom-service",function(req,res){
 router.get("/investigation/result",function(req,res){
   switch(req.query.type) {
     case 'radio':
-      model.study.find({accession_number: req.query.id})
+      model.study.find({study_uid: req.query.id})
       .exec(function(err,data){
         console.log(data)
         if(err) throw err;

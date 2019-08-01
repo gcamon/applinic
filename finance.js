@@ -2184,7 +2184,8 @@ router.post("/user/dicom-details",function(req,res){
 
 			var id =  req.body.studyID || req.body.patientID;
 
-			var criteria = { study_id : id};
+			var criteria = {$or: [{ study_id : id},{study_uid: id}]};//{ study_id : id};
+
 			model.study.find(criteria)
 			.exec(function(err,result){
 				if(err) throw err;

@@ -31,7 +31,7 @@
 			<span class="custom-control-description font-1_1"> <b>Study UID</b></span>
 		</label><br><br>
 		<div ng-if="station.locate == 'studyID'">
-			<label>Study ID: </label><br>
+			<label>Study UID: (Something that looks like 1.2.392.200036.9125.234554....)</label><br>
 			<input type="text" name="" placeholder="Study UID" required class="form-control" ng-model="station.studyID"><br>
 		</div>
 		<div ng-if="station.locate == 'patientID'">
@@ -56,7 +56,7 @@
 		<label>IP Address: </label> <span>{{dicomDetails.ip_address}}</span><br>
 		<label>Port: </label> <span>{{dicomDetails.port}}</span><br>
 		<br>
-		<span>For those that have already added these details in their PACs server, please note that IP address of our remote dicom PACs server can change with time. Please always take note of the above IP Address.</span>
+		<span>For those that have already added these details in their PACs server, please note that IP address of our remote DICOM PACs server can change with time. Please always take note of the above IP Address.</span>
 		<div style="text-align: right;">
 			<i class="fa fa-plus btn btn-simple" ng-click="newAcc()"> return</i>
 		</div>
