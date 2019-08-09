@@ -29,11 +29,11 @@
 		</header><br>
 		
 		<section ng-if="isFindPatient">
-				<p style="background-color: #d7dde4;padding: 10px">This will automatically generate accession number which you will add to your work station for the study before capturing.</p>
+				<p style="background-color: #d7dde4;padding: 10px">This will automatically generate 'Patient ID' which you will add to your work station for the study before capturing.</p>
 			<!--<p>Please note that payment must be completed before <b>accession number</b> and our online PACs details will be provided for this study.</p>-->
 			<form ng-submit="findPatient()">
-				<label>&nbsp; Patient's phone or email:</label><br>
-				<input type="text" name=""  placeholder="phone number or email" class="form-control" ng-model="contact.recepient">&nbsp;
+				<label>&nbsp; Patient's Phone or Email:</label><br>
+				<input type="text" name=""  placeholder="Phone Number or Email" class="form-control" ng-model="contact.recepient">&nbsp;
 				<input type="submit" name="" value="Find" class="btn btn-info btn-sm">
 			</form>	
 			<div>

@@ -308,7 +308,8 @@ var myModel = function () {
 		acc: String,
 		acc_no: String,
 		study_link: String,
-		payment_acknowledgement: Boolean //use to check if patient have actually paid for a service.
+		payment_acknowledgement: Boolean, //use to check if patient have actually paid for a service.
+		created: Date
 	});
 	
 	//this holds the sent test to ba ran by the laboratory center

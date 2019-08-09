@@ -1347,7 +1347,7 @@ var basicPaymentRoute = function(model,sms,io,paystack,client,nodemailer){
 	          theObj.indication = req.body.radiology.indication;
 	          theObj.center_phone = req.user.phone;
 	          theObj.center_phone = req.body.radiology.indication;
-	          theObj.acc = req.body.radiology.acc;
+	          theObj.acc = req.body.radiology.acc; //refers to the Patient ID of the dicom image e.g "APP/3623662"
 	          theObj.center_profile_pic_url =  req.user.profile_pic_url;
 	          theObj.files = req.body.radiology.filesUrl;
 
@@ -2166,7 +2166,7 @@ router.post("/user/dicom-details",function(req,res){
 		if(req.user) {
 			var rados;
 			if(req.body.isAcc) {
-			  rados = "APP/" + randos.genRef(8);
+			  rados = "A" + randos.genRef(8);
 			  var date = new Date();
 			  var acc = new model.accession({
 			    id: rados,
@@ -2192,14 +2192,14 @@ router.post("/user/dicom-details",function(req,res){
 				if(result.length == 0){
 					createStudy()
 				} else {
-					res.json({status: false,message:"Study or Patient ID already exist."});
+					res.json({status: false,message:"Study ID already exist."});
 				}
 			});
 
 			function createStudy() {
 				var locate = (req.body.studyID) ? ('studyUID=' + req.body.studyID) : ('patientID=' + req.body.patientID);
 				var ovyWeb = "https://" + req.body.onlinePacs.dns + "/oviyam2/viewer.html?" + locate;
-				var ovyMob = "http://" + req.body.onlinePacs.ip_address + ":8080/ioviyam2/home.html";
+				var ovyMob = "http://" + req.body.onlinePacs.ip_address + ":8080/ioviyam2/home.html#Seriespage?" + locate;
 				var centerUser = req.body.onlinePacs.username;
 				var centerPassword = req.body.onlinePacs.password;
 
@@ -2226,7 +2226,8 @@ router.post("/user/dicom-details",function(req,res){
 			    study_link2: ovyWeb,
 			    study_link_mobile: ovyMob,
 			    study_type: req.body.type,
-			    deleted: false
+			    deleted: false,
+			    created: new Date()
 			  });
 
 			  study.save(function(err,info){
@@ -2240,7 +2241,7 @@ router.post("/user/dicom-details",function(req,res){
 					  var auth = id || rados;
 					  res.json({acc_no: rados,status:true,studyId: auth});	
 
-					  var tp = "PatientID '";
+					  var tp = (req.body.studyID) ? "Study Instance ID '" : "PatientID '";
 					  var msgBody = "Your radiology dicom study with " + tp + "' " + (rados || id) 
 					  + " has been uploaded to Applinic online PACS server.\n" 
 					  + "You can share or use the above Patient ID to view the study on your smart phone.\nKindly visit " + ovyMob
