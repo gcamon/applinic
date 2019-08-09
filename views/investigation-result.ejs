@@ -114,8 +114,8 @@
                  
               <div class="nav-item" ng-if="invest.type == 'radio'" ng-cloak>
                   
-                  <input type="text" placeholder="Enter Patient ID or Study ID" class="col-md-10" ng-model="invest.id">
-                 <input type="submit" value="Find" class="btn btn-danger btn-lg" style="padding: 10px 15px">
+                  <input type="text" placeholder="Enter Patient ID or Study Instance UID or Test Reference No" class="col-md-10" ng-model="invest.id">
+                 <input type="submit" value="Find" class="btn btn-danger btn-lg" style="padding: 10px 15px;">
                      
               </div>
 
@@ -126,11 +126,9 @@
                      
               </div>
           </form>
-
-
-
-          <h4 class="display-5 pl-2">Search Result</h4>
-          <div class="card p-2">
+          <br>
+          <h5>Search Result</h5>
+          <div class="card p-2">            
             <% for(var i = 0; i < result.length; i++) { %>              
                <div style="font-size: 18px;border-bottom: 1px solid #eee" class="p-1">
                  <b><%= result[i].patient_name %></b><br>
@@ -156,7 +154,7 @@
           <% } %>
 
         </div>
-        <section class="col-md-5 p-2" ng-if="!isMobileDevice">
+        <section class="col-md-5 p-2" ng-if="!isMobileDevice" ng-cloak>
           <h4 class="display-5">Cannot View Dicom Image in Option 2?</h4>
           <h6><b>Windows</b></h6>
           <ol>

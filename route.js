@@ -9939,6 +9939,10 @@ router.get("/Studyshare&Teleradiology",function(req,res){
   res.render('teleradiology')
 });
 
+router.get("/dicom-mobile",function(req,res){
+  res.redirect('http://157.230.115.193:8080/ioviyam2/home.html');
+});
+
 }
 
 module.exports = basicRoute;
