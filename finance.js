@@ -2199,7 +2199,7 @@ router.post("/user/dicom-details",function(req,res){
 			function createStudy() {
 				var locate = (req.body.studyID) ? ('studyUID=' + req.body.studyID) : ('patientID=' + req.body.patientID);
 				var ovyWeb = "https://" + req.body.onlinePacs.dns + "/oviyam2/viewer.html?" + locate;
-				var ovyMob = "http://" + req.body.onlinePacs.ip_address + ":8080/ioviyam2/home.html#Seriespage?" + locate;
+				var ovyMob = "http://" + req.body.onlinePacs.ip_address + ":8080/ioviyam2/home.html?" + locate;
 				var centerUser = req.body.onlinePacs.username;
 				var centerPassword = req.body.onlinePacs.password;
 
@@ -2241,11 +2241,13 @@ router.post("/user/dicom-details",function(req,res){
 					  var auth = id || rados;
 					  res.json({acc_no: rados,status:true,studyId: auth});	
 
+					  var redirectLink = "https://applinic.com/dicom-mobile?id=" + study._id;
+
 					  var tp = (req.body.studyID) ? "Study Instance ID '" : "PatientID '";
 					  var msgBody = "Your radiology dicom study with " + tp + "' " + (rados || id) 
 					  + " has been uploaded to Applinic online PACS server.\n" 
-					  + "You can share or use the above Patient ID to view the study on your smart phone.\nKindly visit " + ovyMob
-					  + "\nusername: " + centerUser + "\npassword: " + centerPassword;
+					  + "You can share or use the above Patient ID to view the study on your smart phone.\nKindly visit " + redirectLink
+					  + "\nLog in with \nusername: " + centerUser + "\npassword: " + centerPassword;
 						sms.messages.create(
 	            {
 	              to: req.body.patientPhone,

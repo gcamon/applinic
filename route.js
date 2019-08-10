@@ -9940,7 +9940,22 @@ router.get("/Studyshare&Teleradiology",function(req,res){
 });
 
 router.get("/dicom-mobile",function(req,res){
-  res.redirect('http://157.230.115.193:8080/ioviyam2/home.html');
+  //IP address of client will vary so study should map on the right client workspace 
+  //using query strings Id to create link of study for mobile viewer.
+  if(req.query.id){
+    model.study.findById(req.query.id)
+    .exec(function(err,result){
+      if(err) throw err;
+      if(result){
+        var ovyMob = "http://" + result.ip_address + ":8080/ioviyam2/home.html";
+        res.redirect(ovyMob);
+      } else {
+        res.end("Patient study link not accurate or does not exist.")
+      }
+    })
+  } else {
+    res.redirect('http://157.230.115.193:8080/ioviyam2/home.html');
+  }
 });
 
 }
