@@ -16582,7 +16582,7 @@ app.controller("radioTestControler",["$scope","$location","$http","templateServi
 
     $http({
     method  : 'GET',
-    url     : "/api/dicom-details",
+    url     : "/api/dicom-details?centerId=" + $rootScope.checkLogIn.user_id,
     headers : {'Content-Type': 'application/json'} 
     })
     .success(function(data) {              
@@ -16925,7 +16925,9 @@ app.controller("radioTestControler",["$scope","$location","$http","templateServi
   billAuth.get({refId: $scope.refInfo.ref_id},function(data){
     $scope.paymentStatus = data.payment; 
     $scope.paymentDetail = data.detail || {};
-  })
+  });
+
+  $scope.refInfo.radiology.studyId = "A" + Math.floor(Math.random() * 9999) + "" + Math.floor(Math.random() * 999);
 
   $scope.verifyPay = function(refInfo) {
     if($scope.lab.otp && $scope.lab.otp !== "") {
@@ -17104,6 +17106,8 @@ app.controller("radioTestControler",["$scope","$location","$http","templateServi
       patient_lastname: refInfo.radiology.patient_lastname,
       ref_id: refInfo.ref_id
     }
+
+    refInfo.onlinePacs = $scope.dicomDetails;
 
      if(refInfo.radiology.session_id) {
         url = "/user/radiology/test-result/session-update";
@@ -22060,13 +22064,16 @@ app.controller("dicomCtrl",["$rootScope","$scope","$location","$resource","$http
     }
 
     var intRegex = /[0-9 -()+]+$/;
+    var emailReg = /^\w+([\.-]?\w+)+@\w+([\.:]?\w+)+(\.[a-zA-Z0-9]{2,3})+$/;
     if(intRegex.test($scope.contact.recepient)) {
       if($scope.contact.recepient.indexOf('+') == -1 || $scope.contact.recepient.indexOf("234") == -1){
         var newSlice = $scope.contact.recepient.slice(1);
         $scope.contact.recepient = "+234" + newSlice;
       }
+    } else if(emailReg.test($scope.contact.recepient)) {
+
     } else {
-      alert("Please enter valid phone number");
+      alert("Please enter valid email or phone number");
       return;
     }
 
@@ -22206,7 +22213,7 @@ app.controller("dicomCtrl",["$rootScope","$scope","$location","$resource","$http
         localManager.setValue("radiologyData",data.refObj)
         $location.path('/radiology/view-test/' + data.ref_id);
       } else {
-        alert("Oops! Something went wrong please try again.")
+        alert(data.message)
       }
     }); 
   }

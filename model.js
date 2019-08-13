@@ -309,7 +309,8 @@ var myModel = function () {
 		acc_no: String,
 		study_link: String,
 		payment_acknowledgement: Boolean, //use to check if patient have actually paid for a service.
-		created: Date
+		created: Date,
+		study_id: String
 	});
 	
 	//this holds the sent test to ba ran by the laboratory center
@@ -454,8 +455,8 @@ var myModel = function () {
 		final_diagnosis: String,
 		files: Array,
 		treatment_plan: String,
-		sub_session: [subSession]
-
+		sub_session: [subSession],
+    study_id: String
 	});
 
 	var sessionSchema = Schema({

@@ -6752,7 +6752,7 @@ router.put("/user/scan-search/radiology/referral",function(req,res){
       } else {
         var num = parseInt(req.body.recepient)
         if(intRegex.test(num)) {
-          recepient = {patient: "+" + num, type:"Patient"}
+          recepient = {phone: "+" + num, type:"Patient"}
         }
       }
     } else {
@@ -6762,7 +6762,8 @@ router.put("/user/scan-search/radiology/referral",function(req,res){
         recepient = {phone: req.body.phone.slice(1), type: 'Patient'} 
       }
     }
-     
+
+
     var person = (req.body.type === 'inperson') ? {user_id: req.user.user_id,type:"Patient"} : recepient;
     model.user.findOne(person,{firstname:1,lastname:1,title:1,profile_pic_url:1,city:1,country:1,name:1,age:1,user_id:1,medical_records:1,phone:1,gender:1})
     .exec(function(err,user){
@@ -6771,7 +6772,7 @@ router.put("/user/scan-search/radiology/referral",function(req,res){
 
       if(user) {
         req.body.ref_id = randos.genRef(6);
-        var accNo = randos.genRef(8);
+        var accNo = randos.genRef(7);
 
         model.user.findOne({user_id: req.body.user_id})
         .exec(function(err,result){
@@ -6786,9 +6787,17 @@ router.put("/user/scan-search/radiology/referral",function(req,res){
           date: new Date()
         });
 
+        //create a dicom Study for viewing.
+        var locate = ('patientID=' + accNo);
+        var ovyWeb = "https://" + req.body.onlinePacs.dns + "/oviyam2/viewer.html?" + locate;
+
+        var ovyMob = "http://" + req.body.onlinePacs.ip_address + ":8080/ioviyam2/home.html?" + locate;
+        var centerUser = req.body.onlinePacs.username;
+        var centerPassword = req.body.onlinePacs.password;
+
         var study = new model.study({
           patient_name: user.firstname + " " + user.lastname,
-          patient_id: user.user_id,
+          patient_id: accNo,
           study_id: accNo,
           center_id: result.user_id,
           center_name: result.name,
@@ -6804,8 +6813,10 @@ router.put("/user/scan-search/radiology/referral",function(req,res){
           port: req.body.onlinePacs.port,
           aetitle: req.body.onlinePacs.aetitle,
           accession_number: accNo,
-          study_link: req.body.onlinePacs.ip_address + ":8080/weasis-pacs-connector/viewer?accessionNumber=" + accNo,
+          study_link: req.body.onlinePacs.ip_address + ":8080/weasis-pacs-connector/viewer?patientID=" + accNo,
           deleted: false,
+          study_link2: ovyWeb,
+          study_link_mobile: ovyMob,
           ref_id: req.body.ref_id,
         });
 
@@ -6835,10 +6846,11 @@ router.put("/user/scan-search/radiology/referral",function(req,res){
             indication: req.body.indication,
             lmp: req.body.lmp,
             acc_no: accNo,
-            study_link: "http://" + req.body.onlinePacs.ip_address + ":8080/weasis-pacs-connector/viewer?accessionNumber=" + accNo,
+            study_link: "http://" + req.body.onlinePacs.ip_address + ":8080/weasis-pacs-connector/viewer?patientID=" + accNo,
             test_id: randos.genRef(8),
             parity: req.body.parity,
-            attended: false
+            attended: false,
+            study_id: study._id
           }             
         }
 
@@ -6894,7 +6906,7 @@ router.put("/user/scan-search/radiology/referral",function(req,res){
               referral_title: user.title,
               sent_date: req.body.sent_date,
               acc_no: accNo,
-              study_link: "http://" + req.body.onlinePacs.ip_address + ":8080/weasis-pacs-connector/viewer?accessionNumber=" + accNo,
+              study_link: "http://" + req.body.onlinePacs.ip_address + ":8080/weasis-pacs-connector/viewer?patientID=" + accNo,
               session_id: req.body.session_id,
               report: "Pending",
               conclusion: "Pending"
@@ -6930,7 +6942,7 @@ router.put("/user/scan-search/radiology/referral",function(req,res){
       })
    
       } else {
-       res.send({error:"The person using these investigations does not exist or not a patient. Make sure the number was typed correctly."})
+       res.send({message:"The person using these investigations does not exist or not a patient. Make sure the number was typed correctly."})
       }
     });
 
@@ -9415,6 +9427,7 @@ router.post("/user/invitation",function(req,res){
 
     function createInvite() {
       //create and save invitation for identifying who the registrant belongs to
+      //so that when the invitee registers in future it will automatically be added to the requester
       var invite = new model.invite({
         referral_id: req.user.user_id,
         id: uid,

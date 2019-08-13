@@ -1321,16 +1321,107 @@ var basicPaymentRoute = function(model,sms,io,paystack,client,nodemailer){
 	//updating radiology result in doctor's treatment page with patient.
   router.put("/user/radiology/test-result/session-update",function(req,res){      
     if(req.user) {  	
-      
+      console.log(req.body);
+
+
+      //create a dicom Study for viewing.
+      var locate = ('patientID=' + req.body.radiology.studyId);
+      var ovyWeb = "https://" + req.body.onlinePacs.dns + "/oviyam2/viewer.html?" + locate;
+
+			var ovyMob = "http://" + req.body.onlinePacs.ip_address + ":8080/ioviyam2/home.html?" + locate;
+			var centerUser = req.body.onlinePacs.username;
+			var centerPassword = req.body.onlinePacs.password;
+      var dcm = new model.study({
+      	patient_name: req.body.radiology.patient_firstname + " " + req.body.radiology.lastname,
+		    patient_id: req.body.radiology.studyId,
+		    study_id: req.body.radiology.studyId,
+		    center_id: req.user.user_id,
+		    center_name: req.user.name,
+		    center_address: req.user.address,
+		    center_city: req.user.city,
+		    center_country: req.user.country,
+		    center_phone: req.user.phone,
+		    center_email: req.user.email,
+		    patient_phone: req.body.radiology.patient_phone,
+		    email: req.body.radiology.patient_email,
+		    ip_address: req.body.onlinePacs.ip_address,
+		    port: req.body.onlinePacs.port,
+		    aetitle: req.body.onlinePacs.aetitle,
+		    study_link: req.body.onlinePacs.ip_address + ":8080/weasis-pacs-connector/viewer?" + locate,
+		    study_link2: ovyWeb,
+		    study_link_mobile: ovyMob,
+		    deleted: false,
+		    created: new Date()
+      });
+
       updateSession();
-      console.log(req.body)
+
       function updateSession() { 
         model.user.findOne({"doctor_patient_session.session_id": req.body.radiology.session_id},{doctor_patient_session:1,firstname:1,lastname:1,title:1,phone:1,email:1})
        .exec(function(err,data){
           if(err) throw err;
           if(data) {
-	          var elementPos = data.doctor_patient_session.map(function(x) {return x.session_id; }).indexOf(req.body.radiology.session_id);
-	          var objectFound = data.doctor_patient_session[elementPos];     
+          	var elementPos = data.doctor_patient_session.map(function(x) {return x.session_id; }).indexOf(req.body.radiology.session_id);
+      			var objectFound = data.doctor_patient_session[elementPos];
+	          /*
+							var locate = (req.body.studyID) ? ('studyUID=' + req.body.studyID) : ('patientID=' + req.body.patientID);
+				var ovyWeb = "https://" + req.body.onlinePacs.dns + "/oviyam2/viewer.html?" + locate;
+				var ovyMob = "http://" + req.body.onlinePacs.ip_address + ":8080/ioviyam2/home.html?" + locate;
+				var centerUser = req.body.onlinePacs.username;
+				var centerPassword = req.body.onlinePacs.password;
+
+			  var study = new model.study({
+			    patient_name: req.body.patientName,
+			    patient_id: req.body.patientID,
+			    study_id: req.body.patientID,
+			    study_uid: req.body.studyID,
+			    center_id: req.user.user_id,
+			    center_name: req.user.name,
+			    center_address: req.user.address,
+			    center_city: req.user.city,
+			    center_country: req.user.country,
+			    center_phone: req.user.phone,
+			    center_email: req.user.email,
+			    created: date,
+			    patient_phone: req.body.patientPhone,
+			    email: req.body.patientEmail,
+			    ip_address: req.body.onlinePacs.ip_address,
+			    port: req.body.onlinePacs.port,
+			    aetitle: req.body.onlinePacs.aetitle,
+			    accession_number: rados,
+			    study_link: req.body.onlinePacs.ip_address + ":8080/weasis-pacs-connector/viewer?" + locate,
+			    study_link2: ovyWeb,
+			    study_link_mobile: ovyMob,
+			    study_type: req.body.type,
+			    deleted: false,
+			    created: new Date()
+			  });
+
+
+
+
+
+			   doctor_id: 'gcamon840253',
+     doctor_lastname: 'Obinna',
+     doctor_firstname: 'Ede',
+     title: 'Dr',
+     attended: false,
+     clinical_summary: 'ssddsffdfdfd',
+     indication: 'sddsfdffd',
+     patient_address: '13 Chezoka Estate Garriki',
+     test_id: 98515796,
+     patient_id: 'chidiebere187432',
+     session_id: '951edda0-2919-11e9-8e0c-b5489926f5de',
+     patient_phone: '+2348064245255',
+     patient_title: 'Mr',
+     patient_profile_pic_url: '/download/profile_pic/nopic',
+     patient_lastname: 'Chidiebere',
+     patient_firstname: 'Nnaji',
+     patient_gender: 'Male',
+     patient_age: '30 - 39 years (adult)' },
+
+
+	          */
 
 	          //the doctors session for a patient is updated, and patient dashboard is called for update.
 	          var pos = objectFound.diagnosis.radiology_test_results.map(function(x) { return x.test_id;}).indexOf(req.body.radiology.test_id)
@@ -1350,6 +1441,7 @@ var basicPaymentRoute = function(model,sms,io,paystack,client,nodemailer){
 	          theObj.acc = req.body.radiology.acc; //refers to the Patient ID of the dicom image e.g "APP/3623662"
 	          theObj.center_profile_pic_url =  req.user.profile_pic_url;
 	          theObj.files = req.body.radiology.filesUrl;
+	          theObj.study_id = dcm._id; // _id of the dicom study
 
 	          var transporter = nodemailer.createTransport({
 	            host: "mail.privateemail.com",
@@ -1369,8 +1461,11 @@ var basicPaymentRoute = function(model,sms,io,paystack,client,nodemailer){
 	 						+ "<b>" + req.user.name + "</b>" + " have sent the result of radiology investigations you requested for the patient:<br><br>"
 	 						+ "<b>Name:</b> " + objectFound.patient_firstname + " " + objectFound.patient_lastname + "<br>"
               + "<b>Session ID:</b> " + objectFound.session_id  + "<br><br>" 
+              + "Patient ID of study: " + req.body.radiology.studyId + "<br><br>"
+              + "Study Link: " + ovyWeb + "<br><br>"
+              + "Study Link Mobile: " + "https://applinic.com/dicom-mobile?id=" + dcm._id + "<br><br>"
 	          	+ "Please <a href='https://applinic.com/login'>log in to your account</a> and continue treatment with the patient<br><br>"
-	          	+ "You can find the treament session in which these tests was referred through the following steps:<br><br>"
+	          	+ "You can find the treament session in which these test was referred through the following steps:<br><br>"
 	          	+ " - Inside your account look for the patient by name in 'My Patients' menu.<br>"
 	          	+ " - Click on the patient and select 'Treatment Session' under management then choose session or filter by session ID you wish to continue with.<br><br>"
 	            + "Thank you for using Applinic.<br><br>"
@@ -1389,12 +1484,18 @@ var basicPaymentRoute = function(model,sms,io,paystack,client,nodemailer){
 	            }
 	          });
 
+	          // save study
+	          dcm.save(function(err,info){})
+
+	          //save report
 	          data.save(function(err,info){
 	            if(err) res.send({status: "error"});         
 	            updatePatient();
 	            //updateTheCenter();
 	            updateCenter(data)
 	          });
+
+
 
       	   } else {
       	   	 res.send({status:"error"})
@@ -1420,6 +1521,7 @@ var basicPaymentRoute = function(model,sms,io,paystack,client,nodemailer){
 	          objectFound.files = req.body.radiology.filesUrl;
 	          objectFound.indication = req.body.radiology.indication;
 	          objectFound.acc = req.body.radiology.acc;
+	          objectFound.study_id = dcm._id;
 
 	          //var random = Math.floor(Math.random() * 999999);
 	          data.patient_notification.unshift({
@@ -1433,18 +1535,20 @@ var basicPaymentRoute = function(model,sms,io,paystack,client,nodemailer){
 
 	          if(data.presence === true){
 	            io.sockets.to(data.user_id).emit("notification",{status:true});
-	          } else {
-	            var msgBody = "Radiology test result received! login http://applinic.com/login"
-	            var phoneNunber =  data.phone;
-	            sms.messages.create(
-	              {
-	                to: phoneNunber,
-	                from: '+16467985692',
-	                body: msgBody,
-	              }
-	            ) 
-	          }
+	          } 
 
+            var msgBody = "Radiology test result received! login http://applinic.com/login" 
+            + "\nPatient ID of study: " + req.body.radiology.studyId
+            + "\nStudy Link Mobile: " + "https://applinic.com/dicom-mobile?id=" + dcm._id
+            var phoneNunber =  data.phone;
+            sms.messages.create(
+              {
+                to: phoneNunber,
+                from: '+16467985692',
+                body: msgBody,
+              }
+            ) 
+	          
 
 	          var transporter = nodemailer.createTransport({
 	            host: "mail.privateemail.com",
@@ -1460,8 +1564,11 @@ var basicPaymentRoute = function(model,sms,io,paystack,client,nodemailer){
 	            to: data.email,
 	            subject: 'Radiology Result Received',
 	            html: '<table><tr><th><h3 style="background-color:#85CE36; color: #fff; padding: 30px"><img src="https://applinic.com/assets/images/applinic1.png" style="width: 250px; height: auto"/><br/><span>Healthcare... anywhere, anytime.</span></h3></th></tr><tr><td style="font-family: Arial, Helvetica, sans-serif; font-size: 14px;"><b>Hello ' + data.title + " " + data.lastname + ",</b><br><br>"
-	 						+ "<b>" + req.user.name + "</b>" + " have sent the result of radiology investigations requested by your doctor:<br><br>"
-	          	+ "Kindly <a href='https://applinic.com/login'>log in to your account</a> to view the result. Check in notification bell icon for latest updates<br><br>"
+	 						+ "<b>" + req.user.name + "</b>" + " have sent the result of radiology investigations requested by your doctor<br><br>"
+	 						+ "Patient ID of study: " + req.body.radiology.studyId + "<br><br>"
+              + "Study Link: " + ovyWeb + "<br><br>"
+              + "Study Link Mobile: " + "https://applinic.com/dicom-mobile?id=" + dcm._id + "<br><br>"
+	          	+ "Kindly <a href='https://applinic.com/login'>log in to your account</a> to view the report. Check in notification bell icon for latest updates<br><br>"
 	            + "Thank you for using Applinic.<br><br>"
 	            + "For ease of usage, you may download the Applinic mobile application on google play store if you use an android phone. " 
 	            + "<a href='https://play.google.com/store/apps/details?id=com.farelandsnigeria.applinic'>Click here </a> to do so now.<br><br>"
@@ -1541,12 +1648,43 @@ var basicPaymentRoute = function(model,sms,io,paystack,client,nodemailer){
     router.put("/user/radiology/test-result/patient-scan-update",function(req,res){
     	
 	    if(req.user) {
+	    	console.log(req.body)
+	    	//create a dicom Study for viewing.
+        var locate = ('patientID=' + req.body.radiology.studyId);
+        var ovyWeb = "https://" + req.body.onlinePacs.dns + "/oviyam2/viewer.html?" + locate;
+
+				var ovyMob = "http://" + req.body.onlinePacs.ip_address + ":8080/ioviyam2/home.html?" + locate;
+				var centerUser = req.body.onlinePacs.username;
+				var centerPassword = req.body.onlinePacs.password;
+
+        var dcm = new model.study({
+        	patient_name: req.body.radiology.patient_firstname + " " + req.body.radiology.lastname,
+			    patient_id: req.body.radiology.studyId,
+			    study_id: req.body.radiology.studyId,
+			    center_id: req.user.user_id,
+			    center_name: req.user.name,
+			    center_address: req.user.address,
+			    center_city: req.user.city,
+			    center_country: req.user.country,
+			    center_phone: req.user.phone,
+			    center_email: req.user.email,
+			    patient_phone: req.body.radiology.patient_phone,
+			    email: req.body.radiology.patient_email,
+			    ip_address: req.body.onlinePacs.ip_address,
+			    port: req.body.onlinePacs.port,
+			    aetitle: req.body.onlinePacs.aetitle,
+			    study_link: req.body.onlinePacs.ip_address + ":8080/weasis-pacs-connector/viewer?" + locate,
+			    study_link2: ovyWeb,
+			    study_link_mobile: ovyMob,
+			    deleted: false,
+			    created: new Date()
+        });   
 	 
 	      updatePatient();
 
 	      function updatePatient() {
 		      model.user.findOne({user_id: req.body.radiology.patient_id},
-		      	{medical_records: 1,patient_notification:1,user_id:1,presence:1,phone:1,firstname:1,lastname:1,title:1})
+		      	{medical_records: 1,patient_notification:1,user_id:1,presence:1,phone:1,firstname:1,lastname:1,title:1,email:1})
 		   		.exec(function(err,data){
 		        if(err) {
 		        	throw err;
@@ -1565,6 +1703,7 @@ var basicPaymentRoute = function(model,sms,io,paystack,client,nodemailer){
 			        objectFound.indication = req.body.radiology.indication;
 			        objectFound.files = req.body.radiology.filesUrl;
 			        objectFound.acc = req.body.radiology.acc;
+			        objectFound.study_id = dcm._id; // _id of the dicom study
 		    		}
 
 		        var random = randos.genRef(8);
@@ -1579,17 +1718,21 @@ var basicPaymentRoute = function(model,sms,io,paystack,client,nodemailer){
 
 		        if(data.presence === true){
 		          io.sockets.to(data.user_id).emit("notification",{status:true})
-		        } else {
-		          var msgBody = "Your radiology test result received! login https://applinic.com/login";
-		          var phoneNunber =  data.phone;
-		          sms.messages.create(
-	              {
-	                to: phoneNunber,
-	                from: '+16467985692',
-	                body: msgBody,
-	              }
-            	  ) 
-		        }
+		        } 
+
+	          var msgBody = "Radiology test result received!" 
+            + "\nPatient ID of study: " + req.body.radiology.studyId 
+            + "\nStudy Link Mobile: https://applinic.com/dicom-mobile?id=" + dcm._id;
+
+	          var phoneNunber =  data.phone;
+	          sms.messages.create(
+              {
+                to: phoneNunber,
+                from: '+16467985692',
+                body: msgBody,
+              }
+          	) 
+		        
 
 		        var transporter = nodemailer.createTransport({
 		            host: "mail.privateemail.com",
@@ -1604,10 +1747,14 @@ var basicPaymentRoute = function(model,sms,io,paystack,client,nodemailer){
 	            from: 'Applinic info@applinic.com',
 	            to: data.email,
 	            subject: 'Radiology Result Received',
-	            html: '<table><tr><th><h3 style="background-color:#85CE36; color: #fff; padding: 30px"><img src="https://applinic.com/assets/images/applinic1.png" style="width: 250px; height: auto"/><br/><span>Healthcare... anywhere, anytime.</span></h3></th></tr><tr><td style="font-family: Arial, Helvetica, sans-serif; font-size: 14px;"><b>Hello ' + data.title + " " + data.lastname + ",</b><br><br>"
+	            html: '<table><tr><th><h3 style="background-color:#85CE36; color: #fff; padding: 30px"><img src="https://applinic.com/assets/images/applinic1.png" style="width: 250px; height: auto"/><br/><span>Healthcare... anywhere, anytime.</span></h3></th></tr><tr><td style="font-family: Arial, Helvetica, sans-serif; font-size: 14px;"><b>Hello ' 
+	            + data.title + " " + data.lastname + ",</b><br><br>"
 	 						+ "<b>" + req.user.name + "</b>" + " have sent the result of radiology investigations you requested:<br><br>"
 	 						+ "<b>Name:</b> " + data.firstname + " " + data.lastname + "<br><br>"
-	          	+ "<a href='https://applinic.com/login'>log in to your account</a> to view the result. Check in notification bell icon for latest updates<br><br>"
+	 						+ "Patient ID of study: " + req.body.radiology.studyId + "<br><br>"
+              + "Study Link: " + ovyWeb + "<br><br>"
+              + "Study Link Mobile: " + "https://applinic.com/dicom-mobile?id=" + dcm._id + "<br><br>"
+	          	+ "<a href='https://applinic.com/login'>log in to your account</a> to view the report. Check in notification bell icon for latest updates<br><br>"
 	            + "Thank you for using Applinic.<br><br>"
 	            + "For ease of usage, you may download the Applinic mobile application on google play store if you use an android phone. " 
 	            + "<a href='https://play.google.com/store/apps/details?id=com.farelandsnigeria.applinic'>Click here </a> to do so now.<br><br>"
@@ -1624,6 +1771,10 @@ var basicPaymentRoute = function(model,sms,io,paystack,client,nodemailer){
 	            }
 	          });
 
+	          //save study for viewing
+	          dcm.save(function(err,info){})
+
+	          //save report.
 		        data.save(function(err,info){
 		          if(err) res.send({status: "error"});           
 		          updateCenter(data)
@@ -2243,8 +2394,8 @@ router.post("/user/dicom-details",function(req,res){
 
 					  var redirectLink = "https://applinic.com/dicom-mobile?id=" + study._id;
 
-					  var tp = (req.body.studyID) ? "Study Instance ID '" : "PatientID '";
-					  var msgBody = "Your radiology dicom study with " + tp + "' " + (rados || id) 
+					  var tp = (req.body.studyID) ? "Study Instance ID '" : "PatientID ";
+					  var msgBody = "Your radiology dicom study with '" + tp + "' " + (rados || id) 
 					  + " has been uploaded to Applinic online PACS server.\n" 
 					  + "You can share or use the above Patient ID to view the study on your smart phone.\nKindly visit " + redirectLink
 					  + "\nLog in with \nusername: " + centerUser + "\npassword: " + centerPassword;
@@ -2271,7 +2422,7 @@ router.post("/user/dicom-details",function(req,res){
 	          var mailOptions = {
 	            from: 'Applinic info@applinic.com',
 	            to: req.body.patientEmail || "support@applinic.com",
-	            subject: 'Radiology Dicom Study Uploaded',
+	            subject: 'Radiology DICOM Study Uploaded',
 	            html: '<table><tr><tr><td style="line-height: 25px">Hello,<br><br>Your study with ' 
 	            +  tp  + " <b>" + (rados || id) + '</b> has been uploaded to Applinic Online PACs Server '
 	            + 'by ' + req.user.name + '. You can share or use the ID to view the study.<br>' 

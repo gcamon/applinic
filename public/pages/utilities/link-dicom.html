@@ -3,7 +3,7 @@
 	<hr>
 	<p style="background-color: #d7dde4;padding: 10px">You will have to tranfer the study from CD/File System in your local PACs server (e.g K-PACS) to Applinic Remote DICOM PACs server ( If you have not done that already ). The Remote PACs Details will be shown after you have completed the fields below and click 'link study' button.</p>
 	<form class="col-md-10" ng-submit="addStudy()" ng-if="!isSuccess">
-		<label>Type Of Study: </label><br>
+		<label>Type of Study: </label><br>
 		<select class="form-control" ng-model="station.type" required>
 			<!--<option value="CT/MRI" selected="selected">CT/MRI/PET/SPECT - {{toCurrency(1000)}}</option>
 			<option value="SI">Special Investigations/Mammography - {{toCurrency(500)}}</option>
