@@ -13,6 +13,8 @@ var express = require('express'),
   paystack = require('paystack')(process.env.PAYSTACK_SECRET_KEY),   
   moment = require('moment'),
   nodemailer = require('nodemailer'),
+  topdf = require("./topdf"),
+ 
   
   //infobip = require('infobip-node'),
  
@@ -117,6 +119,11 @@ http.listen(port,function(){
 var startDate = moment().startOf('week');//day week month
 var endDate = startDate.clone().endOf('week');
 console.log(startDate, "" , endDate)
+
+
+//var html = "<div style='padding:20px;background-color:green'><img src='https://applinic.com/assets/images/applinic1.png'><h1 style='text-align:center;color:blue'>Heloo PDF are you working alone?</h1></div>";
+//var pdfPath = topdf(html);
+//console.log(pdfPath);
 
 
 /*sms.messages.create(

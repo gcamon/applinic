@@ -310,7 +310,8 @@ var myModel = function () {
 		study_link: String,
 		payment_acknowledgement: Boolean, //use to check if patient have actually paid for a service.
 		created: Date,
-		study_id: String
+		study_id: String,
+		pdf_report: String
 	});
 	
 	//this holds the sent test to ba ran by the laboratory center
@@ -1023,7 +1024,8 @@ var myModel = function () {
 	  study_link_mobile: String,
 	  deleted: Boolean,
 	  ref_id: Number,
-	  study_type: String
+	  study_type: String,
+	  pdf_report: String
 	});
 
 	var dicomSchema = Schema({

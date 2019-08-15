@@ -6,6 +6,7 @@ var http = require("http");
 var path = require("path");
 var Wallet = require("./wallet");
 var randos = require("./randos");
+var topdf = require("./topdf");
 
  
 
@@ -1645,41 +1646,11 @@ var basicPaymentRoute = function(model,sms,io,paystack,client,nodemailer){
   
     //this route is like above only it only updates the patient scan test on the patient dashboard. this is used for patient on em profile and 
     //patient who requested test without doctors approval.
-    router.put("/user/radiology/test-result/patient-scan-update",function(req,res){
+  router.put("/user/radiology/test-result/patient-scan-update",function(req,res){
     	
 	    if(req.user) {
 	    	console.log(req.body)
-	    	//create a dicom Study for viewing.
-        var locate = ('patientID=' + req.body.radiology.studyId);
-        var ovyWeb = "https://" + req.body.onlinePacs.dns + "/oviyam2/viewer.html?" + locate;
 
-				var ovyMob = "http://" + req.body.onlinePacs.ip_address + ":8080/ioviyam2/home.html?" + locate;
-				var centerUser = req.body.onlinePacs.username;
-				var centerPassword = req.body.onlinePacs.password;
-
-        var dcm = new model.study({
-        	patient_name: req.body.radiology.patient_firstname + " " + req.body.radiology.lastname,
-			    patient_id: req.body.radiology.studyId,
-			    study_id: req.body.radiology.studyId,
-			    center_id: req.user.user_id,
-			    center_name: req.user.name,
-			    center_address: req.user.address,
-			    center_city: req.user.city,
-			    center_country: req.user.country,
-			    center_phone: req.user.phone,
-			    center_email: req.user.email,
-			    patient_phone: req.body.radiology.patient_phone,
-			    email: req.body.radiology.patient_email,
-			    ip_address: req.body.onlinePacs.ip_address,
-			    port: req.body.onlinePacs.port,
-			    aetitle: req.body.onlinePacs.aetitle,
-			    study_link: req.body.onlinePacs.ip_address + ":8080/weasis-pacs-connector/viewer?" + locate,
-			    study_link2: ovyWeb,
-			    study_link_mobile: ovyMob,
-			    deleted: false,
-			    created: new Date()
-        });   
-	 
 	      updatePatient();
 
 	      function updatePatient() {
@@ -1690,6 +1661,52 @@ var basicPaymentRoute = function(model,sms,io,paystack,client,nodemailer){
 		        	throw err;
 		        	res.end("server error");
 		        }
+
+		        if(!data){
+		        	res.json({error: "Something went wrong. Seems patient was not found!"});
+		        	return;
+		        } 
+		        //create pdf form of the report
+		        var html = "<div style='padding:20px;background-color:#000'>" 
+		        + "<img src='https://applinic.com/assets/images/applinic1.png'>"
+		        + "<h1 style='text-align:center;color:blue'>Heloo PDF are you working alone?</h1></div>";		        						
+						var pdfName = topdf(html);
+						var pdfPath = '/report/' + pdfName;
+						req.body.pdf_report = pdfPath;
+
+
+			    	//create a dicom Study for viewing.
+		        var locate = ('patientID=' + req.body.radiology.studyId);
+		        var ovyWeb = "https://" + req.body.onlinePacs.dns + "/oviyam2/viewer.html?" + locate;
+
+						var ovyMob = "http://" + req.body.onlinePacs.ip_address + ":8080/ioviyam2/home.html?" + locate;
+						var centerUser = req.body.onlinePacs.username;
+						var centerPassword = req.body.onlinePacs.password;
+
+		        var dcm = new model.study({
+		        	patient_name: req.body.radiology.patient_firstname + " " + req.body.radiology.lastname,
+					    patient_id: req.body.radiology.studyId,
+					    study_id: req.body.radiology.studyId,
+					    center_id: req.user.user_id,
+					    center_name: req.user.name,
+					    center_address: req.user.address,
+					    center_city: req.user.city,
+					    center_country: req.user.country,
+					    center_phone: req.user.phone,
+					    center_email: req.user.email,
+					    patient_phone: req.body.radiology.patient_phone,
+					    email: req.body.radiology.patient_email,
+					    ip_address: req.body.onlinePacs.ip_address,
+					    port: req.body.onlinePacs.port,
+					    aetitle: req.body.onlinePacs.aetitle,
+					    study_link: req.body.onlinePacs.ip_address + ":8080/weasis-pacs-connector/viewer?" + locate,
+					    study_link2: ovyWeb,
+					    study_link_mobile: ovyMob,
+					    deleted: false,
+					    created: new Date(),
+					    pdf_report: pdfPath
+		        });   
+		       
 
 		        var elementPos = data.medical_records.radiology_test.map(function(x) {return x.ref_id}).indexOf(req.body.ref_id);
 		        var objectFound = data.medical_records.radiology_test[elementPos];
@@ -1704,6 +1721,7 @@ var basicPaymentRoute = function(model,sms,io,paystack,client,nodemailer){
 			        objectFound.files = req.body.radiology.filesUrl;
 			        objectFound.acc = req.body.radiology.acc;
 			        objectFound.study_id = dcm._id; // _id of the dicom study
+			        objectFound.pdf_report = pdfPath;
 		    		}
 
 		        var random = randos.genRef(8);
@@ -1731,17 +1749,16 @@ var basicPaymentRoute = function(model,sms,io,paystack,client,nodemailer){
                 from: '+16467985692',
                 body: msgBody,
               }
-          	) 
-		        
+          	);		        
 
 		        var transporter = nodemailer.createTransport({
-		            host: "mail.privateemail.com",
-		            port: 465,
-		            auth: {
-		              user: "info@applinic.com",
-		              pass: process.env.EMAIL_PASSWORD
-		            }
-          	    });
+	            host: "mail.privateemail.com",
+	            port: 465,
+	            auth: {
+	              user: "info@applinic.com",
+	              pass: process.env.EMAIL_PASSWORD
+	            }
+          	});
 
 	          var mailOptions = {
 	            from: 'Applinic info@applinic.com',

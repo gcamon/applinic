@@ -303,6 +303,12 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
     res.download(file); // Set disposition and send it.
   });
 
+  router.get("/report/:filename",function(req,res){
+    var file = __dirname + "/pdf/" + req.params.filename;
+    res.download(file); // Set disposition and send it.
+  });
+
+
   router.get("/user/cam/:userId/:controlId",function(req,res){
     if(req.user){ //check to see if the param exist in database
       model.user.findOne({user_id:req.params.userId},function(err,data){
