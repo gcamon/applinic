@@ -132,7 +132,8 @@
             <% for(var i = 0; i < result.length; i++) { %>              
                <div style="font-size: 18px;border-bottom: 1px solid #eee" class="p-1">
                  <b><%= result[i].patient_name %></b><br>
-                 <span><%= result[i].accession_number %></span>  <span><%= result[i].study_id %></span> <span><%= result[i].ref_id %></span>                
+                 <span><%= result[i].accession_number %></span>  <span><%= result[i].study_id %></span> <span><%= result[i].ref_id %></span>&nbsp;   
+                 <a href="<%= 'https://drive.google.com/viewerng/viewer?embedded=true&url=https://applinic.com' + <%= result[i].pdf_report %>"><i class="fa fa-file-pdf"></i></a>             
                </div>
                <div class="col-md-5" ng-if="!isMobileDevice" ng-cloak> 
                   <p><b>Option 1:</b> <br>View with Web DICOM viewer. <br> Has few tools for analysis. <br> It is web based. <br> No installations needed.</p>              
@@ -146,6 +147,7 @@
                   <p>View with Web Moble DICOM viewer. <br> Has few tools for analysis. <br> Requires Patient ID of the study for search.<br> No installations needed.</p>              
                   <a href="<%= result[i].study_link_mobile %>" class="btn btn-simple btn-lg" target="_blank" title="Open and view in dicom viewer"><i class="fa fa-eye text-info" style="font-size: 20px"></i></a>
                </div>
+
             <% } %>
           </div>
 
