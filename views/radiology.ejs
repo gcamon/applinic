@@ -1127,16 +1127,15 @@
               <div class="modal-body" style="padding: 10px">
               
 <div ng-if="isContent" class="p-1">
-    <p style="padding: 20px 10px;color:grey">    
-    <strong>Forwarding:</strong>
-        <span class="font-1_1 mb-0" style="font-style: italic;">{{data.str}}</span>
-    </p>
-    <hr>
+    <div>    
+      <label>Forwarding:</label><br>
+      <span class="font-1_1 mb-0" style="font-style: italic;">{{data.str}}</span>
+    </div>   
     <div>
         <b>TO</b>
     </div>
     <div>
-        <h5>{{data.name}}</h5>
+        <label>{{data.name}}</label><br>
         <span>{{data.address}}</span>
         <span>{{data.city}}</span>
         <span>{{data.country}}</span>

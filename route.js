@@ -6755,20 +6755,35 @@ router.put("/user/scan-search/radiology/referral",function(req,res){
 
       if(emailReg.test(req.body.recepient)){
         recepient = {email: req.body.recepient, type:"Patient"}
+
       } else {
-        var num = parseInt(req.body.recepient)
-        if(intRegex.test(num)) {
-          recepient = {phone: "+" + num, type:"Patient"}
+
+        if(intRegex.test(req.body.recepient)) {
+          if(req.body.recepient[0] == '0'){
+            var fix = req.body.recepient.slice(1);
+            req.body.recepient = "+234" + fix;
+          } else if(req.body.recepient[0] !== '+') {
+            req.body.recepient = "+" + req.body.recepient;
+          } else {
+
+          }
+          
         }
+
+        recepient = {phone: req.body.recepient, type: 'Patient'} 
       }
-    } else {
+
+    }
+
+    /* else if(req.body.phone) {
       if(req.body.phone.indexOf('+') == -1 || req.body.phone.indexOf("234") == -1){
         recepient = {phone: "+234" + req.body.phone.slice(1), type: 'Patient'}
       } else {
         recepient = {phone: req.body.phone.slice(1), type: 'Patient'} 
       }
-    }
+    }*/
 
+    console.log(req.body.recepient);
 
     var person = (req.body.type === 'inperson') ? {user_id: req.user.user_id,type:"Patient"} : recepient;
     model.user.findOne(person,{firstname:1,lastname:1,title:1,profile_pic_url:1,city:1,country:1,name:1,age:1,user_id:1,medical_records:1,phone:1,gender:1})
@@ -6786,79 +6801,115 @@ router.put("/user/scan-search/radiology/referral",function(req,res){
 
         try{
 
-         //creates accession number for the study
-        var acc = new model.accession({
-          id: accNo,
-          centerId: req.user.user_id,
-          date: new Date()
-        });
+        if(!req.body.isCommonSearch) { //start of if isCommonSearch          
+           //creates accession number for the study
+          var acc = new model.accession({
+            id: accNo,
+            centerId: req.user.user_id,
+            date: new Date()
+          });
 
-        //create a dicom Study for viewing.
-        var locate = ('patientID=' + accNo);
-        var ovyWeb = "https://" + req.body.onlinePacs.dns + "/oviyam2/viewer.html?" + locate;
+          //create a dicom Study for viewing.
+          var locate = ('patientID=' + accNo);
+          var ovyWeb = "https://" + req.body.onlinePacs.dns + "/web/viewer.html?" + locate;
 
-        var ovyMob = "http://" + req.body.onlinePacs.ip_address + ":8080/ioviyam2/home.html?" + locate;
-        var centerUser = req.body.onlinePacs.username;
-        var centerPassword = req.body.onlinePacs.password;
+          var ovyMob = "http://" + req.body.onlinePacs.ip_address + ":8080/applinic-dicom/home.html?" + locate;
+          var centerUser = req.body.onlinePacs.username;
+          var centerPassword = req.body.onlinePacs.password;
 
-        var study = new model.study({
-          patient_name: user.firstname + " " + user.lastname,
-          patient_id: accNo,
-          study_id: accNo,
-          center_id: result.user_id,
-          center_name: result.name,
-          center_address: result.address,
-          center_city: result.city,
-          center_country: result.country,
-          center_phone: result.phone,
-          center_email: result.email,
-          created: new Date(),
-          patient_phone: user.phone,
-          email: user.email,
-          ip_address: req.body.onlinePacs.ip_address,
-          port: req.body.onlinePacs.port,
-          aetitle: req.body.onlinePacs.aetitle,
-          accession_number: accNo,
-          study_link: req.body.onlinePacs.ip_address + ":8080/weasis-pacs-connector/viewer?patientID=" + accNo,
-          deleted: false,
-          study_link2: ovyWeb,
-          study_link_mobile: ovyMob,
-          ref_id: req.body.ref_id,
-        });
-
-        acc.save(function(err,info){});
-        study.save(function(err,info){});    
-
-        var refObj = {
-          ref_id: req.body.ref_id,
-          referral_firstname: (req.user.type !== "Patient") ? req.user.name : firstname,
-          referral_lastname: (req.user.type !== "Patient") ? null : user.lastname,
-          referral_title: (req.user.type !== "Patient") ? null : user.title,
-          referral_id: (req.user.type !== "Patient") ? req.user.user_id : user.user_id,    
-          date: req.body.sent_date,
-          acc_no: accNo,            
-          radiology: {
-            test_to_run: req.body.test_to_run,
-            patient_age: user.age,
-            patient_gender: user.gender,
-            patient_firstname: user.firstname,
-            patient_lastname: user.lastname,
-            patient_profile_pic_url: user.profile_pic_url,
-            patient_title: user.title,
+          var study = new model.study({
+            patient_name: user.firstname + " " + user.lastname,
+            patient_id: accNo,
+            study_id: accNo,
+            center_id: result.user_id,
+            center_name: result.name,
+            center_address: result.address,
+            center_city: result.city,
+            center_country: result.country,
+            center_phone: result.phone,
+            center_email: result.email,
+            created: new Date(),
             patient_phone: user.phone,
-            session_id: req.body.session_id,
-            patient_id: user.user_id,
-            clinical_summary: req.body.clinical_summary,
-            indication: req.body.indication,
-            lmp: req.body.lmp,
-            acc_no: accNo,
-            study_link: "http://" + req.body.onlinePacs.ip_address + ":8080/weasis-pacs-connector/viewer?patientID=" + accNo,
-            test_id: randos.genRef(8),
-            parity: req.body.parity,
-            attended: false,
-            study_id: study._id
-          }             
-        }
+            email: user.email,
+            ip_address: req.body.onlinePacs.ip_address,
+            port: req.body.onlinePacs.port,
+            aetitle: req.body.onlinePacs.aetitle,
+            accession_number: accNo,
+            study_link: req.body.onlinePacs.ip_address + ":8080/weasis-pacs-connector/viewer?patientID=" + accNo,
+            deleted: false,
+            study_link2: ovyWeb,
+            study_link_mobile: ovyMob,
+            ref_id: req.body.ref_id,
+          });
+
+          acc.save(function(err,info){});
+          study.save(function(err,info){});
+
+          var refObj = {
+            ref_id: req.body.ref_id,
+            referral_firstname: (req.user.type !== "Patient") ? req.user.name : firstname,
+            referral_lastname: (req.user.type !== "Patient") ? null : user.lastname,
+            referral_title: (req.user.type !== "Patient") ? null : user.title,
+            referral_id: (req.user.type !== "Patient") ? req.user.user_id : user.user_id,    
+            date: req.body.sent_date,
+            acc_no: accNo,            
+            radiology: {
+              test_to_run: req.body.test_to_run,
+              patient_age: user.age,
+              patient_gender: user.gender,
+              patient_firstname: user.firstname,
+              patient_lastname: user.lastname,
+              patient_profile_pic_url: user.profile_pic_url,
+              patient_title: user.title,
+              patient_phone: user.phone,
+              session_id: req.body.session_id,
+              patient_id: user.user_id,
+              clinical_summary: req.body.clinical_summary,
+              indication: req.body.indication,
+              lmp: req.body.lmp,
+              acc_no: accNo,
+              study_link: "http://" + req.body.onlinePacs.ip_address + ":8080/weasis-pacs-connector/viewer?patientID=" + accNo,
+              test_id: randos.genRef(8),
+              parity: req.body.parity,
+              attended: false,
+              study_id: study._id
+            }             
+          }
+
+        } else {
+
+          var refObj = {
+            ref_id: req.body.ref_id,
+            referral_firstname: (req.user.type !== "Patient") ? req.user.name : firstname,
+            referral_lastname: (req.user.type !== "Patient") ? null : user.lastname,
+            referral_title: (req.user.type !== "Patient") ? null : user.title,
+            referral_id: (req.user.type !== "Patient") ? req.user.user_id : user.user_id,    
+            date: req.body.sent_date,
+            //acc_no: accNo,            
+            radiology: {
+              test_to_run: req.body.test_to_run,
+              patient_age: user.age,
+              patient_gender: user.gender,
+              patient_firstname: user.firstname,
+              patient_lastname: user.lastname,
+              patient_profile_pic_url: user.profile_pic_url,
+              patient_title: user.title,
+              patient_phone: user.phone,
+              session_id: req.body.session_id,
+              patient_id: user.user_id,
+              clinical_summary: req.body.clinical_summary,
+              indication: req.body.indication,
+              lmp: req.body.lmp,
+              //acc_no: accNo,
+              //study_link: "http://" + req.body.onlinePacs.ip_address + ":8080/weasis-pacs-connector/viewer?patientID=" + accNo,
+              test_id: randos.genRef(8),
+              parity: req.body.parity,
+              attended: false
+              //study_id: study._id
+            }             
+          }
+
+        }// end of is isCommonSearch
 
         console.log(study);
 
@@ -6911,8 +6962,8 @@ router.put("/user/scan-search/radiology/referral",function(req,res){
               referral_lastname: user.lastname,
               referral_title: user.title,
               sent_date: req.body.sent_date,
-              acc_no: accNo,
-              study_link: "http://" + req.body.onlinePacs.ip_address + ":8080/weasis-pacs-connector/viewer?patientID=" + accNo,
+             //acc_no: accNo,
+             // study_link: "http://" + req.body.onlinePacs.ip_address + ":8080/weasis-pacs-connector/viewer?patientID=" + accNo,
               session_id: req.body.session_id,
               report: "Pending",
               conclusion: "Pending"
@@ -6929,7 +6980,41 @@ router.put("/user/scan-search/radiology/referral",function(req,res){
             result.diagnostic_center_notification.unshift(refNotification);
             result.save(function(err,info){
               if(err) throw err;          
-            });  
+            });
+
+            var transporter = nodemailer.createTransport({
+              host: "mail.privateemail.com",
+              port: 465,
+              auth: {
+                user: "info@applinic.com",
+                pass: process.env.EMAIL_PASSWORD
+              }
+            });
+
+            var mailOptions = {
+              from: 'Applinic info@applinic.com',
+              to: result.email,
+              subject: 'New Investigation Request',
+              html: '<table><tr><th><h3 style="background-color:#85CE36; color: #fff; padding: 30px"><img src="https://applinic.com/assets/images/applinic1.png" style="width: 250px; height: auto"/><br/><span>Healthcare... anywhere, anytime.</span></h3></th></tr><tr><td style="font-family: Arial, Helvetica, sans-serif; font-size: 14px;"><b>Hello ' 
+              + result.name + ",</b><br><br>"
+              + "You have new investigation request to execute in your diagnostic center."  
+             // + "The patient might visit you with a reference number to the investigation<br>"
+              + "Please <a href='https://applinic.com/login'> log in </a> and attend to the patient when present."
+              + "For ease of usage, you may download the Applinic mobile application on google play store if you use an android phone. " 
+              + "<a href='https://play.google.com/store/apps/details?id=com.farelandsnigeria.applinic'>Click here </a> to do so now.<br><br>"
+              + "For inquiries please call customer support on +2349080045678 or email us at support@applinic.com<br><br>"
+              + "Thank you for using Applinic.<br></br><br>"
+              + "<b>Applinic Team</b></td></tr></table>"
+            };
+
+            transporter.sendMail(mailOptions, function(error, info){
+              if (error) {
+                console.log(error);
+              } else {
+                console.log('Email sent: ' + info.response);
+              }
+            });
+
           
         } else {
            res.json({success:true,ref_id:req.body.ref_id});
@@ -6948,7 +7033,7 @@ router.put("/user/scan-search/radiology/referral",function(req,res){
       })
    
       } else {
-       res.send({message:"The person using these investigations does not exist or not a patient. Make sure the number was typed correctly."})
+       res.send({error:true,message:"The person using these investigations does not exist or not a patient. Make sure the number was typed correctly."})
       }
     });
 
@@ -9966,14 +10051,14 @@ router.get("/dicom-mobile",function(req,res){
     .exec(function(err,result){
       if(err) throw err;
       if(result){
-        var ovyMob = "http://" + result.ip_address + ":8080/ioviyam2/home.html";
+        var ovyMob = "http://" + result.ip_address + ":8080/applinic-dicom/home.html";
         res.redirect(ovyMob);
       } else {
         res.end("Patient study link not accurate or does not exist.")
       }
     })
   } else {
-    res.redirect('http://157.230.115.193:8080/ioviyam2/home.html');
+    res.redirect('http://157.230.115.193:8080/applinic-dicom/home.html');
   }
 });
 

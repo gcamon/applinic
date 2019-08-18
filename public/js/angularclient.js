@@ -18734,9 +18734,15 @@ app.controller("scanSearchSelectedCenterController",["$scope","$location","$wind
 "$rootScope",function($scope,$location,$window,$http,templateService,localManager,ModalService,$rootScope){
   $scope.data = templateService.holdTheCenterToFowardPrescriptionTo;//holds thssame for lab and scan
   $scope.user = {};
-  $scope.someone = function(){
-    $scope.user.someone = true;
+  $scope.someone = function(type){
+    if(type !== 'inperson') {
+      $scope.user.someone = true;     
+    } else {
+      $scope.user.someone = false;
+    }
+
     $scope.isToSomeOne = true;
+    
   }
 
   $scope.back = "#/radiology/scan-search/result";
@@ -18754,7 +18760,9 @@ app.controller("scanSearchSelectedCenterController",["$scope","$location","$wind
     $scope.data.phone = "";
   }
 
-  $scope.send = function (type){  
+  $scope.send = function (){  
+    var type = ($scope.user.someone) ? "someone" : "inperson";
+    $scope.data.recepient = ($scope.user.someone) ? $scope.data.phone : null;
 
     if(type !== 'inperson') {
       if(!$scope.data.phone) {
@@ -18792,6 +18800,9 @@ app.controller("scanSearchSelectedCenterController",["$scope","$location","$wind
     $scope.data.sent_date = date;
     $scope.data.session_id = labData.session_id;
 
+    //use to seperate search from create study search i center dashboard. The later needs to create dicom study.
+    $scope.data.isCommonSearch = true;
+
     var testArr = $scope.data.str.split(",");    
     for(var i = 0; i < testArr.length; i++){
       var testObj = {};
@@ -18817,8 +18828,9 @@ app.controller("scanSearchSelectedCenterController",["$scope","$location","$wind
       })
     .success(function(data) {      
       if(data.error) {
-        alert(data.error);
-        $scope.isEMP = true;
+        var msg = data.message || data.error;
+        alert(msg);
+        //$scope.isEMP = true;
       } else {
         $scope.isContent = false;
         $scope.isSent = true;

@@ -120,6 +120,8 @@ var startDate = moment().startOf('week');//day week month
 var endDate = startDate.clone().endOf('week');
 console.log(startDate, "" , endDate)
 
+var gee = "gcamoemaster";
+console.log(gee.slice(1))
 
 //var html = "<div style='padding:20px;background-color:green'><img src='https://applinic.com/assets/images/applinic1.png'><h1 style='text-align:center;color:blue'>Heloo PDF are you working alone?</h1></div>";
 //var pdfPath = topdf(html);

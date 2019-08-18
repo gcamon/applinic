@@ -1327,9 +1327,9 @@ var basicPaymentRoute = function(model,sms,io,paystack,client,nodemailer){
 
       //create a dicom Study for viewing.
       var locate = ('patientID=' + req.body.radiology.studyId);
-      var ovyWeb = "https://" + req.body.onlinePacs.dns + "/oviyam2/viewer.html?" + locate;
+      var ovyWeb = "https://" + req.body.onlinePacs.dns + "/web/viewer.html?" + locate;
 
-			var ovyMob = "http://" + req.body.onlinePacs.ip_address + ":8080/ioviyam2/home.html?" + locate;
+			var ovyMob = "http://" + req.body.onlinePacs.ip_address + ":8080/applinic-dicom/home.html?" + locate;
 			var centerUser = req.body.onlinePacs.username;
 			var centerPassword = req.body.onlinePacs.password;
       var dcm = new model.study({
@@ -1366,8 +1366,8 @@ var basicPaymentRoute = function(model,sms,io,paystack,client,nodemailer){
       			var objectFound = data.doctor_patient_session[elementPos];
 	          /*
 							var locate = (req.body.studyID) ? ('studyUID=' + req.body.studyID) : ('patientID=' + req.body.patientID);
-				var ovyWeb = "https://" + req.body.onlinePacs.dns + "/oviyam2/viewer.html?" + locate;
-				var ovyMob = "http://" + req.body.onlinePacs.ip_address + ":8080/ioviyam2/home.html?" + locate;
+				var ovyWeb = "https://" + req.body.onlinePacs.dns + "/web/viewer.html?" + locate;
+				var ovyMob = "http://" + req.body.onlinePacs.ip_address + ":8080/applinic-dicom/home.html?" + locate;
 				var centerUser = req.body.onlinePacs.username;
 				var centerPassword = req.body.onlinePacs.password;
 
@@ -1665,21 +1665,23 @@ var basicPaymentRoute = function(model,sms,io,paystack,client,nodemailer){
 		        if(!data){
 		        	res.json({error: "Something went wrong. Seems patient was not found!"});
 		        	return;
-		        } 
-		        //create pdf form of the report
+		        } 		
+
+
+		          	 //create pdf form of the report
 		        var html = "<div style='padding:20px;background-color:#000'>" 
 		        + "<img src='https://applinic.com/assets/images/applinic1.png'>"
 		        + "<h1 style='text-align:center;color:blue'>Heloo PDF are you working alone?</h1></div>";		        						
 						var pdfName = topdf(html);
 						var pdfPath = '/report/' + pdfName;
-						req.body.pdf_report = pdfPath;
+						req.body.pdf_report = pdfPath;       
 
 
 			    	//create a dicom Study for viewing.
 		        var locate = ('patientID=' + req.body.radiology.studyId);
-		        var ovyWeb = "https://" + req.body.onlinePacs.dns + "/oviyam2/viewer.html?" + locate;
+		        var ovyWeb = "https://" + req.body.onlinePacs.dns + "/web/viewer.html?" + locate;
 
-						var ovyMob = "http://" + req.body.onlinePacs.ip_address + ":8080/ioviyam2/home.html?" + locate;
+						var ovyMob = "http://" + req.body.onlinePacs.ip_address + ":8080/applinic-dicom/home.html?" + locate;
 						var centerUser = req.body.onlinePacs.username;
 						var centerPassword = req.body.onlinePacs.password;
 
@@ -1811,16 +1813,17 @@ var basicPaymentRoute = function(model,sms,io,paystack,client,nodemailer){
 		      			req.body.receiver_phone = receiver.phone;
 		      			center.service_details.unshift(req.body);
 		      			center.save(function(err,info){
-		      				if(err) throw err;
-		      				res.send({status: "success"});
+		      				if(err) throw err;		      				
 		      				console.log("service details saved!");
 		      			});
+
+		      			res.json({status: "success"});
 		      		} else {
 		      			res.end("something went wrong!");
 		      		}
 		      	})
 		      }
-		   }
+		    }
 
 			} else {
 				res.redirect("/login");
@@ -2366,8 +2369,8 @@ router.post("/user/dicom-details",function(req,res){
 
 			function createStudy() {
 				var locate = (req.body.studyID) ? ('studyUID=' + req.body.studyID) : ('patientID=' + req.body.patientID);
-				var ovyWeb = "https://" + req.body.onlinePacs.dns + "/oviyam2/viewer.html?" + locate;
-				var ovyMob = "http://" + req.body.onlinePacs.ip_address + ":8080/ioviyam2/home.html?" + locate;
+				var ovyWeb = "https://" + req.body.onlinePacs.dns + "/web/viewer.html?" + locate;
+				var ovyMob = "http://" + req.body.onlinePacs.ip_address + ":8080/applinic-dicom/home.html?" + locate;
 				var centerUser = req.body.onlinePacs.username;
 				var centerPassword = req.body.onlinePacs.password;
 
