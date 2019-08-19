@@ -1706,10 +1706,10 @@ var basicPaymentRoute = function(model,sms,io,paystack,client,nodemailer){
 					    study_link_mobile: ovyMob,
 					    deleted: false,
 					    created: new Date(),
-					    pdf_report: pdfPath
-		        });   
+					    pdf_report: pdfPath,
+					    ref_id: req.body.ref_id
+		        });  
 		       
-
 		        var elementPos = data.medical_records.radiology_test.map(function(x) {return x.ref_id}).indexOf(req.body.ref_id);
 		        var objectFound = data.medical_records.radiology_test[elementPos];
 		        if(objectFound) {    
@@ -1741,6 +1741,7 @@ var basicPaymentRoute = function(model,sms,io,paystack,client,nodemailer){
 		        } 
 
 	          var msgBody = "Radiology test result received!" 
+	          + "\nReport Reference No: " + req.body.ref_id
             + "\nPatient ID of study: " + req.body.radiology.studyId 
             + "\nStudy Link Mobile: https://applinic.com/dicom-mobile?id=" + dcm._id;
 

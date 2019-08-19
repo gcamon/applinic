@@ -133,20 +133,20 @@
             <% for(var i = 0; i < result.length; i++) { %>              
                <div style="font-size: 18px;border-bottom: 1px solid #eee" class="p-1">
                  <b><%= result[i].patient_name %></b><br>
-                 <span><%= result[i].accession_number %></span>  <span><%= result[i].study_id %></span> <span><%= result[i].ref_id %></span>&nbsp;   
-                 <a href="<%= 'https://drive.google.com/viewerng/viewer?embedded=true&url=https://applinic.com' + result[i].pdf_report %>"><i class="fa fa-file-pdf-o"></i></a>             
+                 <a href="<%= 'https://drive.google.com/viewerng/viewer?embedded=true&url=https://applinic.com' + result[i].pdf_report %>" title="View test report pdf" class="text-info" target="_blank"> <span><%= result[i].study_id %></span> <span><%= result[i].ref_id %></span>&nbsp;   
+                 <i class="fa fa-file-pdf-o" ng-if="'<%= result[i].pdf_report %>'"></i></a>             
                </div>
                <div class="col-md-5" ng-if="!isMobileDevice" ng-cloak> 
                   <p><b>Option 1:</b> <br>View with Web DICOM viewer. <br> Has few tools for analysis. <br> It is web based. <br> No installations needed.</p>              
-                  <a href="<%= result[i].study_link2 %>" class="btn btn-simple btn-lg" target="_blank" title="Open and view in dicom viewer"><i class="fa fa-eye text-info" style="font-size: 20px"></i></a>
+                  <a href="<%= result[i].study_link2 %>" class="btn btn-simple btn-lg" target="_blank" title="View in dicom viewer"><i class="fa fa-eye text-info" style="font-size: 20px"></i></a>
                </div>
                <div class="col-md-5" ng-if="!isMobileDevice" ng-cloak> 
                   <p><b>Option 2: </b><br> View with weasis DICOM viewer. <br> Has more tools for analysis and reporting.<br> Requires JAVA Installed on PC.</p>              
-                  <a href="" class="btn btn-simple btn-lg" ng-click="openjnlp('<%= result[i].study_link %>')" title="Open and view in dicom viewer"><i class="fa fa-eye text-info" style="font-size: 20px"></i></a>
+                  <a href="" class="btn btn-simple btn-lg" ng-click="openjnlp('<%= result[i].study_link %>')" title="View in dicom viewer"><i class="fa fa-eye text-info" style="font-size: 20px"></i></a>
                </div>
                <div ng-if="isMobileDevice" ng-cloak>
                   <p>View with Web Moble DICOM viewer. <br> Has few tools for analysis. <br> Requires Patient ID of the study for search.<br> No installations needed.</p>              
-                  <a href="<%= result[i].study_link_mobile %>" class="btn btn-simple btn-lg" target="_blank" title="Open and view in dicom viewer"><i class="fa fa-eye text-info" style="font-size: 20px"></i></a>
+                  <a href="<%= result[i].study_link_mobile %>" class="btn btn-simple btn-lg" target="_blank" title="View in dicom viewer"><i class="fa fa-eye text-info" style="font-size: 20px"></i></a>
                </div>
 
             <% } %>

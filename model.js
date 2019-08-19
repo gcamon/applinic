@@ -1025,7 +1025,8 @@ var myModel = function () {
 	  deleted: Boolean,
 	  ref_id: Number,
 	  study_type: String,
-	  pdf_report: String
+	  pdf_report: String,
+	  ref_id: String
 	});
 
 	var dicomSchema = Schema({

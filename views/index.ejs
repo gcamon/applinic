@@ -516,7 +516,7 @@ padding:10px 10px;
 
     </ul>
 <div class="tab-content p-3" id="myTabContent" ng-controller="investigationSearchCtrl">
-  <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+  <div class="tab-pane fade " id="home" role="tabpanel" aria-labelledby="home-tab">
     <div class="row">
       <div class="col-md-3 ">
       <div class="pt-2">
@@ -564,9 +564,9 @@ padding:10px 10px;
   </div>
   
   
-  <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab" ng-controller="hompageController">
+  <div class="tab-pane fade show active" id="profile" role="tabpanel" aria-labelledby="profile-tab" ng-controller="hompageController">
     
-    <div class="row">
+    <div class="row" ng-cloak>
       <div class="col-md-3">
         <select class="form-control" style="" ng-model="user.category">
             <option value="" disabled selected>Select Category</option>
