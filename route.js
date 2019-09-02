@@ -23,6 +23,8 @@ var options = {
 
 //var token = require("./twilio");
 var randos = require("./randos");
+var topdf = require("./topdf");
+
 
 function createNewsLink(title){
   var str = "";
@@ -10009,17 +10011,21 @@ router.get("/investigation/result",function(req,res){
           .exec(function(err,data){
             if(err) throw err;
             if(data.length == 0) {
-                var toInt = parseInt(req.query.id)
-                var intRegex = /[0-9 -()+]+$/;
-                if(intRegex.test(toInt)){
-                  model.study.find({ref_id: toInt})
+                //var toInt = parseInt(req.query.id)
+                //var intRegex = /[0-9 -()+]+$/;
+                //if(intRegex.test(toInt)){
+                  model.study.find({ref_id: req.query.id})
                   .exec(function(err,data){
-                    if(err) throw err;               
-                    res.render("investigation-result",{result:data});
+                    if(err) throw err; 
+                    if(data.length == 1) {           
+                      res.render("investigation-result",{result:data});
+                    } else {
+                      res.render("investigation-result",{result:[]});
+                    }
                   })
-                } else {
-                  res.render("investigation-result",{result:[]})
-                }
+                //} else {
+                //  res.render("investigation-result",{result:[]})
+               // }
             } else {
               res.render("investigation-result",{result:data});
             }
@@ -10030,7 +10036,23 @@ router.get("/investigation/result",function(req,res){
       })
     break;
     case 'lab':
-      res.render("investigation-result",{result:[]})
+      model.study.find({ref_id: req.query.id})
+      .exec(function(err,data){
+        if(err) throw err;
+        if(data.length == 1) {
+          model.study.find({ref_id: req.query.id})
+          .exec(function(err,data){
+            if(err) throw err; 
+            if(data.length == 1) {           
+              res.render("investigation-result",{result:data});
+            } else {
+              res.render("investigation-result",{result:[]});
+            }
+          })
+        } else {
+          res.render("investigation-result",{result:[]});
+        }
+      })
     break;
     default:
       res.render("investigation-result",{result:[]})
@@ -10061,6 +10083,264 @@ router.get("/dicom-mobile",function(req,res){
     res.redirect('http://157.230.115.193:8080/applinic-dicom/home.html');
   }
 });
+
+router.get("/report-template/:reporterId/:study_id",function(req,res){
+  //params and query strings @reporterId @studyId;
+  model.study.findById(req.params.study_id)
+  .exec(function(err,study){
+    if(err) throw err;
+    if(study){
+      var details = {
+        study: study
+      }
+      model.user.findOne({user_id: study.center_id})
+      .exec(function(err,center){
+        if(err) throw err;
+        if(center){
+          var elemPos = center.reporters.map(function(x){return x.id.toString()}).indexOf(req.params.reporterId);
+          if(elemPos !== -1) {
+            details.reporter = center.reporters[elemPos];
+            details.study.center_profile_pic_url = "https://applinic.com" + center.profile_pic_url;
+           
+            model.template.findOne({center_id: study.center_id,type:"Radiology"})
+            .exec(function(err,temp){
+              if(err) throw err;
+              if(temp){
+                details.template = temp;
+                res.render('report-template',details);
+              } else {
+                model.template.findOne({center_id:"none",type: "Radiology"})
+                .exec(function(err,tempDefault){
+                  if(err) throw err;
+                  details.template = tempDefault;
+                  res.render('report-template',details);
+                });
+              }
+            })            
+          } else {
+            //if the reporterId params not in center's reporters array
+            res.json({Error: true, message: "Radiologist ID not recognized or authorized for this study."})
+          }
+        } else {
+          res.json({Error: true, message: "Centre for such study does not exist"})
+        }
+      })
+      //res.render('report-template');
+    } else {
+      res.json({status: "404", message: "Study not found or does not exist."})
+    }
+  })
+
+  /*
+{ _id: 5d63faafb2db96274c31b318,
+  patient_name: 'John Obi',
+  patient_id: 'ENED/2723/19',
+  study_id: 'ENED/2723/19',
+  study_uid: '',
+  center_id: 'emma scan155072',
+  center_name: 'Emma Radiology Center',
+  center_address: '13 iwobi street GRA, Trans-Ekulu',
+  center_city: 'Enugu',
+  center_country: 'Nigeria',
+  center_phone: '+2348096462317',
+  center_email: 'emma@gmail.com',
+  created: 2019-08-26T15:28:47.003Z,
+  email: 'ede.obinna27@gmail.com',
+  patient_age: '30 years',
+  patient_sex: 'Male',
+  ip_address: '157.230.115.193',
+  port: 11112,
+  aetitle: 'ened-561653',
+  accession_number: null,
+  study_link: '157.230.115.193:8080/weasis-pacs-connector/viewer?patientID=ENED/2723/19',
+  study_link2: 'https://ened.applinic.com/web/viewer.html?patientID=ENED/2723/19',
+  study_link_mobile: 'http://157.230.115.193:8080/applinic-dicom/home.html?patientID=ENED/2723/19',
+  study_type: 'CAPEHS',
+  study_name: 'Chest and Abdominal X-Ray',
+  deleted: false,
+  __v: 0,
+  pdf_report: [] }
+
+  */
+});
+
+router.post("/report-template",function(req,res){
+    console.log(req.body)
+    model.template.findOne({center_id: req.body.center_id,type: req.body.type})
+    .exec(function(err,result){
+    if(err) throw err;
+    if(!result) {
+      var temp = new model.template(req.body)
+      temp.save(function(err,info){
+        if(err) throw err;
+        res.json({message: "Template created successfully"});
+      })
+    } else {
+      res.json({message: "Template already exist"});
+    }
+
+   })
+});
+
+router.put("/report-template",function(req,res){
+  //res.render('report-template');
+  console.log(req.body);
+  model.study.findById(req.body._id)
+  .exec(function(err,study){
+    if(err) throw err;
+    if(study){
+      model.user.findOne({user_id: req.body.centerId})
+      .exec(function(err,center){
+        study.summary = req.body.summary || "";
+        study.findings = req.body.findings || "";
+        study.conclusion = req.body.conclusion || "";
+        study.advise = req.body.advise || "";
+        study.save(function(err,info){
+          if(err) throw err;
+          if(info){
+            res.json({status: true, message: "Report uploaded successfully."});
+            var pdfName = topdf(req.body.html);
+            var pdfPath = '/report/' + pdfName;
+            study.pdf_report.unshift({
+              pathname: pdfPath,
+              created: new Date()
+            });
+            console.log(study.pdf_report);
+          } else {
+            res.json({error: true,message: "Oops! Error occured and study was not saved."});
+          }
+        })
+      });
+    } else {
+      res.json({Error: true, message: "Study does not exist"});
+    }
+  })
+}); //pdf_report
+
+/*
+var pdfName = topdf(html);
+            var pdfPath = '/report/' + pdfName;
+
+
+            req.body.service_date = + new Date();
+                req.body.receiver = receiver.title + " " + receiver.firstname + " " + receiver.lastname;
+                req.body.receiver_phone = receiver.phone;
+                center.service_details.unshift(req.body);
+                center.save(function(err,info){
+                  if(err) throw err;                  
+                  console.log("service details saved!");
+                });
+
+
+                "ref_id" : 49441112,
+                        "referral_firstname" : "Emma Radiology Center",
+                        "referral_lastname" : null,
+                        "referral_title" : null,
+                        "referral_id" : "emma scan155072",
+                        "date" : "2018-04-30T15:08:20.389Z",
+                        "radiology" : {
+                                "patient_firstname" : "Ekube",
+                                "patient_lastname" : "Bobby",
+                                "patient_profile_pic_url" : "/download/profile_pic/nopic",
+                                "patient_title" : "Mr",
+                                "patient_phone" : "+2348096461927",
+                                "patient_id" : "bobosky2636",
+                                "clinical_summary" : "Hello",
+                                "indication" : "Coming",
+                                "lmp" : "sddsd",
+                                "test_id" : 62347623,
+                                "parity" : "sddssd",
+                                "attended" : false,
+                                "_id" : "5ae7316414e783475814dbc6",
+                                "test_to_run" : [
+                                        {
+                                                "name" : "Skull X-ray (FXR)  (2 View)",
+                                                "sn" : 1,
+                                                "select" : true,
+                                                "added" : true,
+                                                "data" : "sasa"
+                                        },
+                                        {
+                                                "name" : "Intravenous Urography (IVU)",
+                                                "sn" : 2,
+                                                "select" : true,
+                                                "added" : true,
+                                                "data" : "sasasaas"
+                                        }
+                                ],
+                                "report" : "Skull X-ray (FXR)  (2 View): sasa,Intravenous Urography (IVU): sasasaas",
+                                "test_ran" : [
+                                        {
+                                                "name" : "Skull X-ray (FXR)  (2 View)",
+                                                "sn" : 1,
+                                                "select" : true,
+                                                "added" : true,
+                                                "data" : "sasa"
+                                        },
+                                        {
+                                                "name" : "Intravenous Urography (IVU)",
+                                                "sn" : 2,
+                                                "select" : true,
+                                                "added" : true,
+                                                "data" : "sasasaas"
+                                        }
+                                ],
+                                "conclusion" : "sasasa",
+                                "date" : 1525103244136
+                        },
+                        "_id" : "5ae7316414e783475814dbc5",
+                        "payObj" : {
+                                "total" : 0,
+                                "doctorId" : "admin",
+                                "type" : "Radiology",
+                                "patientId" : "bobosky2636",
+                                "patient_firstname" : "Ekube",
+                                "patient_lastname" : "Bobby",
+                                "ref_id" : 49441112
+                        },
+                        "service_date" : 1525103245324
+                }
+        ]
+}
+*/
+
+router.post("/user/reporting-radiologist",function(req,res){
+  if(req.user) {
+    model.user.findOne({user_id: req.user.user_id})
+    .exec(function(err,data){
+      if(err) throw err;
+      if(data) {
+        req.body.id = randos.genRef(8);
+        data.reporters.push(req.body);
+        data.save(function(err,inf){
+          if(err) throw err;
+          res.json({message: "Radiologist added successfully.",status: true})
+        });
+      } else {
+        res.end("User not found");
+      }
+    })
+  } else {
+    res.end("unauthorized access");
+  }
+});
+
+router.get("/user/reporting-radiologist",function(req,res){
+  if(req.user) {
+    var radiologists = req.user.reporters || [];
+    res.json(radiologists);
+  } else {
+    res.end("unauthorized access");
+  }
+});
+
+/*router.get("/lab/report-template/:_id",function(req,res){
+  //params and query strings @reporterId @studyId @refId
+  // if the study was done in applinic initially it will have a query string of @refId;
+  res.render('report-template');
+});*/
+
+
 
 }
 

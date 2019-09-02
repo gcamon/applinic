@@ -311,7 +311,7 @@ var myModel = function () {
 		payment_acknowledgement: Boolean, //use to check if patient have actually paid for a service.
 		created: Date,
 		study_id: String,
-		pdf_report: String
+		pdf_report: Array
 	});
 	
 	//this holds the sent test to ba ran by the laboratory center
@@ -648,7 +648,8 @@ var myModel = function () {
 		field_agents: Array,
 		updated: Date,
 		stock_update: updateSchema,
-		patient_history: patientHistorySchema
+		patient_history: patientHistorySchema,
+		reporters: Array
 	},{
 		collections: "userinfos"
 	})
@@ -1012,6 +1013,7 @@ var myModel = function () {
 		center_phone: String,
 		center_email: String,
 		age: String,
+		gender: String,
 		created: Date,
 		phone: String,
 		email: String,
@@ -1025,8 +1027,18 @@ var myModel = function () {
 	  deleted: Boolean,
 	  ref_id: Number,
 	  study_type: String,
-	  pdf_report: String,
-	  ref_id: String
+	  pdf_report: Array,
+	  ref_id: String,
+	  type: String,
+	  patient_sex: String,
+	  patient_age: String,
+	  study_name: String,
+	  study_date: Date,
+	  referring_physician: String,
+	  conclusion: String,
+	  findings: String,
+	  summary: String,
+	  advise: String
 	});
 
 	var dicomSchema = Schema({
@@ -1040,13 +1052,24 @@ var myModel = function () {
 		center_name: String,
 		username: String,
 		password: String
-	})
+	});
 
 	var accessionSchema = Schema({
 		id: Number,
 		centerId: String,
 		date: Date
+	});
+
+	var reportTemplateSchema = Schema({
+		center_id: String,
+		email: String,
+		phone: String,
+		template: String,
+		created: Date,
+		description: String, //name of the owner of template
+		type: String
 	})
+
 
 	
 	//models
@@ -1079,6 +1102,7 @@ var myModel = function () {
 	models.dicom = mongoose.model("dicominfo",dicomSchema);
 	models.study = mongoose.model("studyinfo",studySchema);
 	models.accession = mongoose.model("accessioninfo",accessionSchema);
+	models.template = mongoose.model("templateinfo",reportTemplateSchema);
 	//models.calling_code = mongoose.model("callingcodeinfos",callingSchema)
 	
 	return models		

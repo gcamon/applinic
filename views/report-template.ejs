@@ -1,0 +1,224 @@
+
+<!doctype html>
+<!--[if lt IE 7]>		<html class="no-js lt-ie9 lt-ie8 lt-ie7" lang=""> <![endif]-->
+<!--[if IE 7]>			<html class="no-js lt-ie9 lt-ie8" lang=""> <![endif]-->
+<!--[if IE 8]>			<html class="no-js lt-ie9" lang=""> <![endif]-->
+<!--[if gt IE 8]><!-->	<html class="no-js" lang=""> <!--<![endif]-->
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>Report Template</title>
+	<meta name="description" content="">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="apple-touch-icon" href="apple-touch-icon.png">
+	<!--<link rel="stylesheet" href="/assets/css/bootstrap.min.css">-->
+	<!--<link rel="stylesheet" href="/assets/css/normalize.css">
+	<link rel="stylesheet" href="/assets/css/font-awesome.min.css">
+	<link rel="stylesheet" href="/assets/css/icomoon.css">
+	<link rel="stylesheet" href="/assets/css/owl.theme.css">
+	<link rel="stylesheet" href="/assets/css/owl.carousel.css">
+	<link rel="stylesheet" href="/assets/css/prettyPhoto.css">
+	<link rel="stylesheet" href="/assets/css/main.css">
+	<link rel="stylesheet" href="/assets/css/transitions.css">
+	<link rel="stylesheet" href="/assets/css/color.css">
+	<link rel="stylesheet" href="/assets/css/responsive.css">-->
+	<script src="/assets/js/vendor/modernizr-2.8.3-respond-1.4.2.min.js"></script>
+     <script src="/assets/js/vendor2.js"></script>
+        <script type="text/javascript" src="/assets/js/source.js"></script>
+
+	<style type="text/css">
+		body {
+			background-color: #999999; 
+		}
+
+		#main {
+			width: 68%;
+			margin: 20px auto;
+			background: #fff;
+			padding: 20px;
+			border: 2px solid grey;
+		}
+
+        h6 {
+            font-size: 18px
+        }
+
+        .btn {
+            padding: 10px 15px;
+            color: #fff;
+            border-radius: 5px;
+            background-color: darkRed;
+            border: none;
+        }
+	</style>
+</head>
+<body ng-app = "myApp" class="ng-cloak">
+	<!--[if lt IE 8]>
+		<p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+	<![endif]-->
+	<!--************************************
+			Wrapper Start
+	*************************************-->
+	<div id="wrapper">
+	   <div id="main" ng-controller="templatectrl">
+           
+	   	   <div id="tempfield">               
+              <%- template.template %>
+	   	   </div>
+
+           
+	   	   <hr>
+           <span>Please verify that the above entries are correct before submitting the reoport.</span><br><br>
+	   	   <div style="text-align: right;">
+	   	   	 <button class="btn btn-danger" id="submit" ng-click="getTempData()" ng-show="!loading">Submit</button>
+             <span ng-show="loading">Please wait, processing...</span>
+	   	   </div>
+            {{getdata('<%= study.patient_name %>','<%= study.patient_id %>','<%= study.study_date %>','<%= study.patient_age %>','<%= study.patient_sex %>','<%= study.referring_physician %>','<%= study.study_name %>','<%= study.study_date %>','<%= reporter.name %>','<%= reporter.designation %>','<%= reporter.email %>','<%= study.study_link2 %>', '<%= study.summary %>', '<%= study.findings %>', '<%= study.conclusion %>', '<%= study.advise %>','<%= study.center_name %>','<%= study.center_address %>','<%= study.center_city %>','<%= study.center_country %>','<%= study.center_phone %>','<%= study.center_email %>','<%= study.center_profile_pic_url %>','<%= study._id %>','<%= study.center_id %>','<%= template.center_id %>')}}
+	   </div>
+       <!--
+
+            <table style="display: table;border-spacing: 2px;border-collapse: collapse">
+                    <tr>                                        
+                        <th style="text-align: left;width: 10%">
+                           <img src="https://www.nfh.org.ng/image/nfh.jpg" style="max-width: 120px;height: auto;" id='img'>
+                        </th>
+                        <th style="padding-left: 12px;text-align: left;width: 50%">
+                            <h2 id="center_name" style="font-size: 28px;margin:5px 0">Niger Foundation Hospital</h2>
+                            <h4 style="margin: 5px 0;font-size: 24px">and Diagnostic Centre</h4>
+                            <address style="font-weight: normal;">
+                              <span id="center_address">5 Presidential Close, Independence Layout</span><br>
+                              <span>P.O Box 4206, Enugu, Nigeria</span><br>
+                              <span id="center_phone">Tel: 07065693009 &nbsp;&nbsp;email: info@nfh.org.ng</span>                 
+                            </address>
+                        </th>                                   
+                        <th style="vertical-align: bottom;text-align: left;width: 40%">
+                            <h4 style="text-indent:70px;font-size: 20px;margin: 5px 0"><b>RADIOLOGY REPORT</b></h4>
+                        </th>
+                    </tr>                               
+               </table>
+              
+                <div style="padding-top: 20px;">
+                  <section style="border: 1px solid #000;">
+                    <b style="display: inline-block;border-right: 1px solid #000;padding: 10px;width: 98px">Name:</b>
+                    <span style="display: inline-block;width: 405px;font-size: 14px" contenteditable="true" id="name">{{patient.names}}</span>
+                    <b style="display: inline-block;border-left: 1px solid #000; border-right: 1px solid #000; padding: 10px;width: 79px">Folder No:</b>
+                    <span style="display: inline-block;font-size: 14px" contenteditable="true" id="studyId">{{patient.patientId}}</span>
+                 
+                  </section>
+               </div>
+               <div>
+                    <section style="border: 1px solid #000;border-top: none;">
+                        <b style="display: inline-block;border-right: 1px solid #000;padding: 10px;width: 98px">Age:</b>
+                        <span style="display: inline-block;width: 120px;font-size: 14px" contenteditable="true" id="age">{{patient.age}}</span>
+                        <b style="display: inline-block;border-left: 1px solid #000; border-right: 1px solid #000; padding: 10px">Sex:</b>
+                        <span style="display: inline-block;width: 105px;font-size: 14px" contenteditable="true" id="gender">{{patient.sex}}</span>
+                        <b style="display: inline-block;border-left: 1px solid #000; border-right: 1px solid #000; padding: 10px;width: 64px">Doctor:</b>
+                        <span style="display: inline-block;font-size: 14px" contenteditable="true" id="referrer">{{patient.doctor}}</span>
+                    </section>
+               </div>
+               <div>
+                 <section style="border: 1px solid #000;border-top: none;">
+                    <b style="display: inline-block;border-right: 1px solid #000;padding: 10px;width: 98px">Examination:</b>
+                    <span style="display: inline-block;font-size: 14px;width: 405px;" contenteditable="true" id="investigation">{{patient.studyName}}</span>
+                    <b style="display: inline-block;border-left: 1px solid #000; border-right: 1px solid #000; padding: 10px">Date:</b>
+                    <span style="display: inline-block;font-size: 14px" contenteditable="true" id="date">{{patient.studyDate | date: 'mediumDate'}}</span>
+                 </section>
+               </div>
+               <div style="margin-top: 15px;">
+                 <h6 style="font-size: 18px;margin: 10px 0"><b>Clinical Summary</b></h6>
+                 <div style="border: 1px solid #000; min-height: 70px;padding: 10px 20px;line-height: 20px" contenteditable="true" id="summary" ng-bind="patient.summary">                  
+                 </div>
+               </div>
+               <div style="margin-top: 15px;">
+                 <h6 style="font-size: 18px;margin: 10px 0"><b>Findings</b></h6>
+                 <div style="border: 1px solid #000; min-height: 70px;padding: 10px 20px;line-height: 20px" contenteditable="true" id="findings" ng-bind="patient.findings">                
+                 </div>
+               </div>
+               <div style="margin-top: 15px;">
+                 <h6 style="font-size: 18px;margin: 10px 0"><b>Conclusion</b></h6>
+                 <div style="border: 1px solid #000; min-height: 70px;padding: 10px 20px;line-height: 20px" contenteditable="true" id="conclusion" ng-bind="patient.conclusion">                
+                 </div>
+               </div>
+               <div style="margin-top: 15px;">
+                 <h6 style="font-size: 18px;margin: 10px 0"><b>Further Advice/Investigation</b></h6>
+                 <div style="border: 1px solid #000; min-height: 70px;padding: 10px 20px;line-height: 20px" contenteditable="true" id="advise" ng-bind="patient.advise">                
+                 </div>
+               </div>
+
+               <table style="margin-top:10px;border-collapse: collapse">
+                 <tr>
+                    <td>
+                        <h6 style="font-size: 18px;margin: 10px 0">Report By:</h6>
+
+                        <b id="reporter_name">{{patient.reporter}}</b><br>
+                        <span id="reporter_type">{{patient.reporterDesignation}}</span><br>
+                        <span id="reporter_email">{{patient.reporterEmail}}</span>
+                    </td>
+                    
+                 </tr>
+               </table>
+               <br>
+               <table>
+                   <tr>
+                       <td style="width: 750px;">
+                           <h6 style="font-size: 18px;margin: 10px 0">Study's DICOM viewer link:</h6>
+                           <a href="{{patient.studyLink}}" target="_blank">{{patient.studyLink}}</a>
+                       </td>
+                       <td style="vertical-align: bottom;text-align: right;">
+                            <img src="https://applinic.com/assets/images/img/applinic.png" style="width: 120px;height: auto;">
+                        </td>
+                   </tr>
+               </table>
+
+       -->
+
+	</div>
+
+	<script src="/assets/js/vendor/jquery-library.js"></script>
+
+	<script type="text/javascript">
+		/*$(document).ready(function() {
+          //$("#name")[0].innerHTML = '<%= study.patient_name %>'; 
+          var a = $('#studyId');
+          console.log(a);
+           
+          $("#submit").click(function() {
+          	var hml = $('#tempfield').html();  
+            //console.log(hml)        
+          });
+        });*/
+	</script>
+
+	
+		
+	
+	<script src="/assets/js/app.js"></script>
+        
+        
+    <script type="text/javascript" src="/assets/js/angularclient.js"></script>
+    <script type="text/javascript" src="/assets/js/ngroute.js"></script>
+    <script src="/socket.io/socket.io.js"></script>   
+    <script src="/assets/js/socket.min.js"></script>
+        
+       
+        
+    <script src="/assets/js/angularAnimate.js"></script>
+    <script src="/assets/js/modalService.js"></script>
+    <script src="/assets/js/angular-touch.min.js"></script>
+    <!--<script src="/assets/js/angular-carousel.js"></script>-->
+    <script src="/assets/js/moment.min.js"></script>
+    <script src="/assets/js/angular-moment.min.js"></script>
+    <script src="/assets/js/ui-bootstrap-tpls.js"></script>
+    <script src="/assets/js/angular-clipboard.js"></script>
+    <script src="/assets/js/ngresource.js"></script>
+    <script src="/assets/js/ngPrint.js"></script>
+    <script type="text/javascript" src="/assets/js/angular-paystack/dist/angular-paystack.js"></script>
+    <script type="text/javascript" src="/assets/js/angular-sanitize.min.js"></script>
+    <script src="/assets/js/bower_components/angular-summernote/dist/angular-summernote.js"></script>
+    <script type="text/javascript" src="/assets/js/underscore-min.js"></script>
+    <script type="text/javascript" src="/assets/js/angular-underscore.js"></script>
+  
+
+    
+</body>
+</html>

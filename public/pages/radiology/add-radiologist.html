@@ -1,0 +1,23 @@
+
+<div class="card p-2 card-center-1">
+	<h4>Add Radiologist <span style="display: block;font-size: 14px">The radiologist who reports studies for your centre.</span></h4>
+
+	<form ng-submit="addRadiologist()">
+		<label>Names of Radiologist *:</label><br>
+		<input type="text" name="" placeholder="Full name" ng-model="radiologist.name" class="form-control" required><br>
+		<label>Email of Radiologist * ( Valid email address of radiologist ):</label><br>
+		<input type="email" name="" placeholder="Email" ng-model="radiologist.email" class="form-control" required><br>
+		<label>Phone Number of Radiologist:</label><br>
+		<input type="text" name="" placeholder="Phone number" ng-model="radiologist.phone" class="form-control"><br>
+		<label>Designation of Radiologist *:</label><br>
+		<select ng-model="radiologist.designation" class="form-control" required>
+			<option>Consultant Radiologist</option>
+			<option>Chief Radiologist</option>
+			<option>Radiologist</option>
+			<option>Physician</option>
+		</select><br>
+		<input type="submit" name="" value="Submit" class="btn btn-danger" ng-if="!loading">
+		<span ng-if="loading"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange" ng-if="loading"></i></span>
+	</form>
+</div>
+

@@ -1,0 +1,22 @@
+<div class="p-2" style="">
+	<h3>Add Template</h3>
+	<form style="width: 49%;" ng-submit="sendTemplate()">
+		<label><b>Center Name:</b></label><br>
+		<input type="text" class="form-control" ng-model="center.description" required><br><br>
+		<label><b>Center ID:</b></label><br>
+		<input type="text" class="form-control" ng-model="center.center_id" required><br><br>
+		<label><b>Email:</b></label><br>
+		<input type="text" class="form-control" ng-model="center.email" required><br><br>
+		<label><b>Phone:</b></label><br>
+		<input type="text" class="form-control" ng-model="center.phone"><br><br>
+		<label><b>Type:</b></label><br>
+		<select ng-model="center.type" required>
+			<option value="Radiology" selected="selected">Radiology</option>
+			<option value="Laboratory">Laboratory</option>
+		</select><br><br>
+		<label><b>Template (Minified HTML code):</b></label><br>
+		<textarea ng-model="center.template" class="form-control" required></textarea><br><br>
+		<input type="submit" value="submit" class="btn btn-danger">
+	</form>
+</div>
+

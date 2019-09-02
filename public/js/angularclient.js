@@ -824,11 +824,17 @@ app.config(['$paystackProvider','$routeProvider',
   controller: "dicomCtrl"
 })
 
+.when("/template-update",{
+  templateUrl: "/assets/pages/utilities/temp-update.html",
+  controller: "tempCtrl"
+})
 
-
+.when("/add-radiologist",{
+  templateUrl: "/assets/pages/radiology/add-radiologist.html",
+  controller: "addRadiologistCtrl"
+})
 
 }]);
-
 
 
 app.service('templateService',[function(){
@@ -22043,6 +22049,17 @@ app.controller("dicomCtrl",["$rootScope","$scope","$location","$resource","$http
     $scope.tests = allTests.concat(data);
   });
 
+  $http({
+    method  : 'GET',
+    url     : "/user/reporting-radiologist",
+    headers : {'Content-Type': 'application/json'} 
+    })
+  .success(function(data) {   
+     $scope.radiologists = data;
+  }); 
+
+  
+
   $scope.isAppPatient = true;
   $scope.choose = function(type){
     switch(type){
@@ -22078,10 +22095,15 @@ app.controller("dicomCtrl",["$rootScope","$scope","$location","$resource","$http
     var intRegex = /[0-9 -()+]+$/;
     var emailReg = /^\w+([\.-]?\w+)+@\w+([\.:]?\w+)+(\.[a-zA-Z0-9]{2,3})+$/;
     if(intRegex.test($scope.contact.recepient)) {
-      if($scope.contact.recepient.indexOf('+') == -1 || $scope.contact.recepient.indexOf("234") == -1){
+      if($scope.contact.recepient[0] == '0'){
         var newSlice = $scope.contact.recepient.slice(1);
         $scope.contact.recepient = "+234" + newSlice;
       }
+
+      if($scope.contact.recepient[0] == '2'){
+        $scope.contact.recepient = "+" + $scope.contact.recepient;
+      } 
+
     } else if(emailReg.test($scope.contact.recepient)) {
 
     } else {
@@ -22346,10 +22368,15 @@ app.controller("dicomCtrl",["$rootScope","$scope","$location","$resource","$http
 
     var intRegex = /[0-9 -()+]+$/;
     if(intRegex.test($scope.station.patientPhone)) {
-      if($scope.station.patientPhone.indexOf('+') == -1 || $scope.station.patientPhone.indexOf("234") == -1){
+      if($scope.station.patientPhone[0] == '0'){
         var newSlice = $scope.station.patientPhone.slice(1);
         $scope.station.patientPhone = "+234" + newSlice;
       }
+
+      if($scope.station.patientPhone[0] == '2'){
+        $scope.station.patientPhone = "+" + $scope.station.patientPhone;
+      }
+
     } else {
       alert("Please enter valid phone number");
       return;
@@ -22400,6 +22427,9 @@ app.controller("dicomCtrl",["$rootScope","$scope","$location","$resource","$http
     $scope.station.patientName = "";
     $scope.station.patientPhone = "";
     $scope.station.patientEmail = "";
+    $scope.station.patientSex = "";
+    $scope.station.patientAge = "";
+    $scope.station.studyName = "";
   }
 
   $scope.createService = function() {
@@ -22773,6 +22803,143 @@ app.controller("homePageModalController",["$scope","$rootScope","homepageSearchS
       }
     }
 }]);
+
+app.controller("tempCtrl",["$scope","$http",function($scope,$http){
+  $scope.center = {};
+  $scope.sendTemplate = function() {
+    $scope.loading = true;
+    $http({
+      method  : 'POST',
+      url     : "/report-template",
+      data    : $scope.center,
+      headers : {'Content-Type': 'application/json'} 
+      })
+    .success(function(data) {              
+      $scope.loading = false;
+      if(data.status){
+        alert(data.message)
+      } else {
+        alert(data.message)
+      }
+    }); 
+  }
+}]);
+
+
+app.controller("addRadiologistCtrl",["$scope","$http",function($scope,$http){
+  $scope.radiologist = {};
+
+  $scope.addRadiologist = function() {
+      $scope.loading = true;
+      if($scope.radiologist.phone){
+        if($scope.radiologist.phone[0] == '0'){
+          var ext = $scope.radiologist.phone.slice(1);
+          $scope.radiologist.phone = "+234" +  ext;
+        }
+
+        if($scope.radiologist.phone[0] == '2') {
+          $scope.radiologist.phone = "+" + $scope.radiologist.phone;
+        }
+      }
+
+      $http({
+        method  : 'POST',
+        url     : "/user/reporting-radiologist",
+        data    : $scope.radiologist, //forms user object
+        headers : {'Content-Type': 'application/json'} 
+       })
+      .success(function(response) {
+         console.log(response)
+         if(response.status) {
+           alert(response.message)
+         } else {
+           alert(response.message)
+         }  
+
+         $scope.loading = false;      
+      });          
+  }
+}]);
+
+
+app.controller("templatectrl",["$scope","$http","$filter",function($scope,$http,$filter){
+  $scope.patient = {};
+  var s = angular.element(document.getElementById('summary'));
+  var f = angular.element(document.getElementById('findings'));
+  var c = angular.element(document.getElementById('conclusion'));
+  var a = angular.element(document.getElementById('advise'));
+  var img = angular.element(document.getElementById('img'));
+  $scope.getdata = function(patientNames,patientId,studyDate,patientAge,
+    patientSex,referringPhysician, studyName, studyDate, reporterName, reporterDesignation, 
+    reporterEmail,studyLink,summary,findings,conclusion,advise,centerName,
+     centerAddress, centerCity, centerCountry, centerPhone, centerEmail, centerProfilePic, _id,centerId,templateId){
+    $scope.patient.names = patientNames;
+    $scope.patient.patientId = patientId;
+    $scope.patient.studyDate = + new Date(studyDate);//studyDate;//$filter('date')(studyDate, 'EEE, MMM d, y');
+    $scope.patient.age = patientAge;
+    $scope.patient.sex = patientSex;
+    $scope.patient.doctor = referringPhysician;
+    $scope.patient.studyName = studyName;
+    $scope.patient.reporter = reporterName;
+    $scope.patient.reporterDesignation = reporterDesignation;
+    $scope.patient.reporterEmail = reporterEmail;
+    $scope.patient.centerName = centerName;
+    $scope.patient.centerAddress = centerAddress;
+    $scope.patient.centerCity = centerCity;
+    $scope.patient.centerCountry = centerCountry;
+    $scope.patient.centerPhone = centerPhone;
+    $scope.patient.centerEmail = centerEmail;
+    $scope.patient.centerProfilePic = centerProfilePic;
+    $scope.patient._id = _id;
+    $scope.patient.centerId = centerId;
+    $scope.patient.studyLink = studyLink;
+    s[0].innerText = summary || "";
+    f[0].innerText = findings || "";
+    c[0].innerText = conclusion || "";
+    a[0].innerText = advise || "";
+    if(templateId === 'none' || undefined || null)
+      img[0].src = centerProfilePic;
+  }
+  
+  $scope.getTempData = function() {
+    //var a = angular.element(document.getElementById('conclusion'));
+    var hml = angular.element(document.getElementById('tempfield'));
+    //console.log(hml.html())
+    //alert(a[0].innerText)
+    $scope.loading = true;
+    $scope.patient.summary = s[0].innerText;
+    $scope.patient.findings = f[0].innerText;
+    $scope.patient.conclusion = c[0].innerText;
+    $scope.patient.advise = a[0].innerText;
+    $scope.patient.html = hml.html();
+    console.log($scope.patient);
+    $http({
+      method  : 'PUT',
+      url     : "/report-template",
+      data    : $scope.patient, //forms user object
+      headers : {'Content-Type': 'application/json'} 
+     })
+    .success(function(response) {
+       $scope.loading = false;
+       if(response.status) {
+         alert(response.message)
+       } else {
+         alert(response.message)
+       }  
+
+       $scope.loading = false;      
+    });   
+  }
+
+  /*
+  '<%= study.patient_name %>','<%= study.patient_id %>','<%= study.study_date %>',
+  '<%= study.patient_age %>','<%= study.patient_sex %>','<%= study.referring_physician %>','<%= study.study_name %>',
+  '<%= study.study_date %>','<%= reporter.name %>','<%= reporter.designation %>','<%= reporter.email %>'
+  */
+}])
+
+
+
 
 
 /*app.controller("forgotPasswordModalController",["$scope",function($scope){

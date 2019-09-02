@@ -3,22 +3,37 @@
 	<hr>
 	<p style="background-color: #d7dde4;padding: 10px">You will have to tranfer the study from CD/File System in your local PACs server (e.g K-PACS) to Applinic Remote DICOM PACs server ( If you have not done that already ). The Remote PACs Details will be shown after you have completed the fields below and click 'link study' button.</p>
 	<form class="col-md-10" ng-submit="addStudy()" ng-if="!isSuccess">
-		<label>Type of Study: </label><br>
-		<select class="form-control" ng-model="station.type" required>
-			<!--<option value="CT/MRI" selected="selected">CT/MRI/PET/SPECT - {{toCurrency(1000)}}</option>
-			<option value="SI">Special Investigations/Mammography - {{toCurrency(500)}}</option>
-			<option value="CAPEHS">Chest/Abdomen/Pelvis/Extremeties/Head/Spine - {{toCurrency(250)}}</option>-->
-
-			<option value="CT/MRI" selected="selected">CT/MRI/PET/SPECT - {{toCurrency(1000)}}</option>
-				<option value="SI">MULITPLE ROUTINE VIEWS, CONTRAST STUDIES AND MAMMOGRAPHY - {{toCurrency(700)}}</option>
-				<option value="CAPEHS">SINGLE AP OR LATERAL OR OTHER VIEW OF SKULL/SPINE/CHEST/ABDOMEN/PELVIS/EXTREMETIES - {{toCurrency(350)}}</option>
-		</select>
+		
 		<label>Patient Names:</label><br>
 		<input type="text" name="" placeholder="Name" required class="form-control" ng-model="station.patientName"><br>
 		<label>Patient's Phone Number: </label><br>
 		<input type="text" name="" placeholder="Phone" ng-model="station.patientPhone" required class="form-control"><br>
 		<label>Patient's Email Address (If any): </label><br>
-		<input type="text" name="" placeholder="Email" ng-model="station.patientEmail" required class="form-control"><br>		
+		<input type="text" name="" placeholder="Email" ng-model="station.patientEmail" required class="form-control"><br>
+		<label>Patient's Age: </label><br>
+		<input type="text" name="" placeholder="Patient age" ng-model="station.patientAge"  class="form-control"><br>
+		<label>Patient's Sex: </label><br>
+		<select ng-model="station.patientSex" required class="form-control">
+			<option value="" selected="true" disabled="disabled">_select</option>
+			<option value="Male"> Male</option>
+			<option value="Female"> Female</option>
+		</select><br>
+		<label>Name of Study (investigation) *:</label><br>
+		<input type="text" name="" placeholder="Name" required class="form-control" ng-model="station.studyName"><br>	
+		<label>Date study was done *:</label><br>
+		<input type="date" name="" placeholder="Date of study" required class="form-control" ng-model="station.studyDate"><br>
+		<label>Referring Physician :</label><br>
+		<input type="text" name="" placeholder="Referring physician" required class="form-control" ng-model="station.referringPhysician"><br>
+		<label>Type of Study: </label><br>
+		<select class="form-control" ng-model="station.type" required>
+			<!--<option value="CT/MRI" selected="selected">CT/MRI/PET/SPECT - {{toCurrency(1000)}}</option>
+			<option value="SI">Special Investigations/Mammography - {{toCurrency(500)}}</option>
+			<option value="CAPEHS">Chest/Abdomen/Pelvis/Extremeties/Head/Spine - {{toCurrency(250)}}</option>-->
+			<option value="" selected="true" disabled="disabled">_select</option>
+			<option value="CT/MRI" selected="selected">CT/MRI/PET/SPECT - {{toCurrency(1000)}}</option>
+				<option value="SI">MULITPLE ROUTINE VIEWS, CONTRAST STUDIES and MAMMOGRAPHY - {{toCurrency(700)}}</option>
+				<option value="CAPEHS">SINGLE AP or LATERAL or OTHER VIEW of SKULL/SPINE/CHEST/ABDOMEN/PELVIS/EXTREMETIES - {{toCurrency(350)}}</option>
+		</select><br>
 		<label>Locate Study With:</label><br>
 		<label class="custom-control custom-radio">
 			<input type="radio" value="patientID" ng-model="station.locate" class="custom-control-input">
@@ -38,6 +53,11 @@
 			<label>Patient ID: </label><br>
 			<input type="text" name="" placeholder="Patient ID" required class="form-control" ng-model="station.patientID"><br>
 		</div>
+		<label>Choose who writes the report:</label><br>
+		<select ng-model="station.reporter" class="form-control" required="required">
+			<option value="" disabled="disabled" selected="true">_select</option>
+			<option value="{{j.id}}" ng-repeat="j in radiologists" style="font-weight: bold;">{{j.name}} - {{j.designation}}</span>  </option>
+		</select><br>
 
 		<div style="text-align: right;">
 			<input type="submit" name="" value="Link Study" class="btn btn-danger" ng-if="!loading">
@@ -49,7 +69,7 @@
 		<h5>Success! Study added to applinic</h5>
 		<!--<p> Please enter the Accession Number below in your work station for the study before capturing.</p>-->
 		<label>{{station.locate}}:</label><br>
-		<b style="font-size: 18px">{{studyNum}}</b>
+		<b style="font-size: 18px">{{studyNum}}</b><br>
 		<p>Enter our remote DICOM details below in your PACs server for transfering.</p>
 		<label>Logical Name: </label> <span>Applinic</span><br>
 		<label>AE Title: </label> <span>{{dicomDetails.aetitle}}</span><br>

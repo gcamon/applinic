@@ -1364,66 +1364,7 @@ var basicPaymentRoute = function(model,sms,io,paystack,client,nodemailer){
           if(data) {
           	var elementPos = data.doctor_patient_session.map(function(x) {return x.session_id; }).indexOf(req.body.radiology.session_id);
       			var objectFound = data.doctor_patient_session[elementPos];
-	          /*
-							var locate = (req.body.studyID) ? ('studyUID=' + req.body.studyID) : ('patientID=' + req.body.patientID);
-				var ovyWeb = "https://" + req.body.onlinePacs.dns + "/web/viewer.html?" + locate;
-				var ovyMob = "http://" + req.body.onlinePacs.ip_address + ":8080/applinic-dicom/home.html?" + locate;
-				var centerUser = req.body.onlinePacs.username;
-				var centerPassword = req.body.onlinePacs.password;
-
-			  var study = new model.study({
-			    patient_name: req.body.patientName,
-			    patient_id: req.body.patientID,
-			    study_id: req.body.patientID,
-			    study_uid: req.body.studyID,
-			    center_id: req.user.user_id,
-			    center_name: req.user.name,
-			    center_address: req.user.address,
-			    center_city: req.user.city,
-			    center_country: req.user.country,
-			    center_phone: req.user.phone,
-			    center_email: req.user.email,
-			    created: date,
-			    patient_phone: req.body.patientPhone,
-			    email: req.body.patientEmail,
-			    ip_address: req.body.onlinePacs.ip_address,
-			    port: req.body.onlinePacs.port,
-			    aetitle: req.body.onlinePacs.aetitle,
-			    accession_number: rados,
-			    study_link: req.body.onlinePacs.ip_address + ":8080/weasis-pacs-connector/viewer?" + locate,
-			    study_link2: ovyWeb,
-			    study_link_mobile: ovyMob,
-			    study_type: req.body.type,
-			    deleted: false,
-			    created: new Date()
-			  });
-
-
-
-
-
-			   doctor_id: 'gcamon840253',
-     doctor_lastname: 'Obinna',
-     doctor_firstname: 'Ede',
-     title: 'Dr',
-     attended: false,
-     clinical_summary: 'ssddsffdfdfd',
-     indication: 'sddsfdffd',
-     patient_address: '13 Chezoka Estate Garriki',
-     test_id: 98515796,
-     patient_id: 'chidiebere187432',
-     session_id: '951edda0-2919-11e9-8e0c-b5489926f5de',
-     patient_phone: '+2348064245255',
-     patient_title: 'Mr',
-     patient_profile_pic_url: '/download/profile_pic/nopic',
-     patient_lastname: 'Chidiebere',
-     patient_firstname: 'Nnaji',
-     patient_gender: 'Male',
-     patient_age: '30 - 39 years (adult)' },
-
-
-	          */
-
+	       
 	          //the doctors session for a patient is updated, and patient dashboard is called for update.
 	          var pos = objectFound.diagnosis.radiology_test_results.map(function(x) { return x.test_id;}).indexOf(req.body.radiology.test_id)
 	          var theObj = objectFound.diagnosis.radiology_test_results[pos];         
@@ -1674,7 +1615,7 @@ var basicPaymentRoute = function(model,sms,io,paystack,client,nodemailer){
 		        + "<h1 style='text-align:center;color:blue'>Heloo PDF are you working alone?</h1></div>";		        						
 						var pdfName = topdf(html);
 						var pdfPath = '/report/' + pdfName;
-						req.body.pdf_report = pdfPath;       
+						      
 
 
 			    	//create a dicom Study for viewing.
@@ -1706,9 +1647,16 @@ var basicPaymentRoute = function(model,sms,io,paystack,client,nodemailer){
 					    study_link_mobile: ovyMob,
 					    deleted: false,
 					    created: new Date(),
-					    pdf_report: pdfPath,
-					    ref_id: req.body.ref_id
-		        });  
+					    //pdf_report: pdfPath,
+					    ref_id: req.body.ref_id,
+					    type: "radiology"
+		        });
+
+		        dcm.pdf_report.unshift({
+		        	pathname: pdfPath,
+		        	created: new Date()
+		        });
+		        req.body.pdf_report = dcm.pdf_report; 
 		       
 		        var elementPos = data.medical_records.radiology_test.map(function(x) {return x.ref_id}).indexOf(req.body.ref_id);
 		        var objectFound = data.medical_records.radiology_test[elementPos];
@@ -1723,7 +1671,7 @@ var basicPaymentRoute = function(model,sms,io,paystack,client,nodemailer){
 			        objectFound.files = req.body.radiology.filesUrl;
 			        objectFound.acc = req.body.radiology.acc;
 			        objectFound.study_id = dcm._id; // _id of the dicom study
-			        objectFound.pdf_report = pdfPath;
+			        objectFound.pdf_report = dcm.pdf_report;//pdfPath;
 		    		}
 
 		        var random = randos.genRef(8);
@@ -2334,7 +2282,7 @@ router.put("/user/outpatient-billing",function(req,res){
 
 
 router.post("/user/dicom-details",function(req,res){
-
+		console.log(req.body)
 		if(req.user) {
 			var rados;
 			if(req.body.isAcc) {
@@ -2390,6 +2338,8 @@ router.post("/user/dicom-details",function(req,res){
 			    created: date,
 			    patient_phone: req.body.patientPhone,
 			    email: req.body.patientEmail,
+			    patient_age: req.body.patientAge || "",
+			    patient_sex: req.body.patientSex || "",
 			    ip_address: req.body.onlinePacs.ip_address,
 			    port: req.body.onlinePacs.port,
 			    aetitle: req.body.onlinePacs.aetitle,
@@ -2398,8 +2348,15 @@ router.post("/user/dicom-details",function(req,res){
 			    study_link2: ovyWeb,
 			    study_link_mobile: ovyMob,
 			    study_type: req.body.type,
+			    study_name: req.body.studyName,
 			    deleted: false,
-			    created: new Date()
+			    created: new Date(),
+			    study_date: req.body.studyDate,
+			    referring_physician: req.body.referringPhysician
+			    //conclusion: req.body.conclusion,
+				  //findings: req.body.findings,
+				  //summary: req.body.summary,
+				  //advise: req.body.advise
 			  });
 
 			  study.save(function(err,info){
@@ -2459,7 +2416,45 @@ router.post("/user/dicom-details",function(req,res){
 	            } else {
 	              console.log('Email sent: ' + info.response);
 	            }
-	          });		  
+	          });
+
+	          // send email and sms to the reporting radiologists with links to the dicom viewer, 
+	          //mobile viewer and center template. If center has no template use default template.
+	          
+	          var elemPos = req.user.reporters.map(function(x){return x.id.toString()}).indexOf(req.body.reporter);
+	          if(elemPos !== -1) {
+	          	var found = req.user.reporters[elemPos];
+	          	var webView = "https://dicom.applinic.com/web/viewer.html?" + locate;
+	          	var mobileView = "https://applinic.com/dicom-mobile?id=" + study._id;
+	          	var tempLink = "https://applinic.com/report-template/" + req.body.reporter + "/" + study._id;
+
+		          var mailOptions = {
+		            from: 'Applinic info@applinic.com',
+		            to: found.email || "support@applinic.com",
+		            subject: 'Radiology Report ' + study._id,
+		            html: '<table><tr><tr><td style="line-height: 25px">Hi, please write report for the study below:<br><br>'
+		            + 'Investigation: ' + req.body.studyName + "<br><br>"
+		            + 'Ref: ' + study._id + "<br><br>"
+		            + tp + ": " + (rados || id) + '<br><br>'
+		            + "Web viewer DICOM url:<br> " + webView + "<br>"
+		            + "Mobile device DICOM viewer url: <br> " + mobileView + "<br>"
+		            + "Report template url: <br>" + tempLink + "<br><br>"
+		            + "Center Name: " + req.user.name + "<br>"
+		            + "Address: " + req.user.address + ", " + req.user.city + ", " + req.user.country + "<br><br>"
+		            + "Thank you!" 
+		            + '</td></tr></table>'
+		          };
+
+		          transporter.sendMail(mailOptions, function(error, info){
+		            if (error) {
+		              console.log(error);
+		            } else {
+		              console.log('Email sent: ' + info.response);
+		            }
+		          });
+
+	          }
+
 			  	}
 			  	
 			  });
