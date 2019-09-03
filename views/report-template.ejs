@@ -62,14 +62,24 @@
 	<div id="wrapper">
 	   <div id="main" ng-controller="templatectrl">
            
-	   	   <div id="tempfield">               
+	   	   <div id="tempfield" ng-hide="isReportPDF">               
               <%- template.template %>
 	   	   </div>
-
+           <div ng-show="isReportPDF">
+               <form ng-cloak ng-submit="emailReport()" style="text-align: center;margin-top: 20px">
+                   <label><b>Send the report PDF to an email below:</b> </label><br><br>
+                   <input type="email" name="" ng-model="recepient.email" placeholder="Recepient email address" style="padding: 10px;width: 60%" required><br><br>
+                   
+                    <input type="submit" name="" value="Send report" ng-show="!loading" class="btn btn-danger" ng-show="!loading"> <span ng-show="loading">Sending...</span>
+               </form><br>
+               <div style="margin: 10px 0;text-align: right;">
+                   <a href="" ng-click="backToReport()">Back to report template</a>&nbsp;&nbsp;&nbsp; <a href="{{'https://drive.google.com/viewerng/viewer?embedded=true&url=https://applinic.com' + pdfLink}}" target="_blank">View/Print report PDF</a>
+               </div>
+           </div>
            
-	   	   <hr>
-           <span>Please verify that the above entries are correct before submitting the reoport.</span><br><br>
-	   	   <div style="text-align: right;">
+	   	   <hr><br>
+          
+	   	   <div style="text-align: right;" ng-hide="isReportPDF">
 	   	   	 <button class="btn btn-danger" id="submit" ng-click="getTempData()" ng-show="!loading">Submit</button>
              <span ng-show="loading">Please wait, processing...</span>
 	   	   </div>

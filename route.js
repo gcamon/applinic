@@ -10183,8 +10183,6 @@ router.post("/report-template",function(req,res){
 });
 
 router.put("/report-template",function(req,res){
-  //res.render('report-template');
-  console.log(req.body);
   model.study.findById(req.body._id)
   .exec(function(err,study){
     if(err) throw err;
@@ -10197,15 +10195,14 @@ router.put("/report-template",function(req,res){
         study.advise = req.body.advise || "";
         study.save(function(err,info){
           if(err) throw err;
-          if(info){
-            res.json({status: true, message: "Report uploaded successfully."});
+          if(info){            
             var pdfName = topdf(req.body.html);
             var pdfPath = '/report/' + pdfName;
             study.pdf_report.unshift({
               pathname: pdfPath,
               created: new Date()
             });
-            console.log(study.pdf_report);
+            res.json({status: true, message: "Report uploaded successfully.",report_pdf: pdfPath});
           } else {
             res.json({error: true,message: "Oops! Error occured and study was not saved."});
           }
@@ -10215,9 +10212,51 @@ router.put("/report-template",function(req,res){
       res.json({Error: true, message: "Study does not exist"});
     }
   })
-}); //pdf_report
+}); 
+
+router.post("/email-report",function(req,res){
+
+  var transporter = nodemailer.createTransport({
+    host: "mail.privateemail.com",
+    port: 465,
+    auth: {
+      user: "info@applinic.com",
+      pass: process.env.EMAIL_PASSWORD
+    }
+  });
+
+  var mailOptions = {
+    from: 'Applinic info@applinic.com',
+    to: req.body.email || "support@applinic.com",
+    subject: 'Complete Radiology Report for study ' + req.body._id,
+    html: '<table><tr><tr><td style="line-height: 25px">Here is the written radiology PDF report for the patient"s study below:<br><br>'
+    + 'Patient: ' + req.body.patientName + "<br>"
+    + 'Investigation: ' + req.body.studyName + "<br>"
+    + 'Ref: ' + req.body._id + "<br>"
+    + "Web viewer DICOM url: <br>" + req.body.studyLink + "<br><br>"
+    + "Report PDF: <br>" + req.body.pdfLink + "<br><br>"
+    + "Reported by: " + req.body.reporter + "<br>"
+    + '</td></tr></table>'
+  };
+
+  transporter.sendMail(mailOptions, function(error, info){
+    if (error) {
+      console.log(error);
+      res.json({status: false, message: "Oops! Error occured while sending email. Please try again."})
+    } else {
+      console.log('Email sent: ' + info.response);
+      res.json({status: true, message: "Report sent successfully."})
+    }
+  });
+})
 
 /*
+$scope.recepient.pdfLink = $scope.pdfLink;
+    $scope.recepient.patientName = $scope.patient.names;
+    $scope.recepient.studyName = $scope.patient.studyName;
+    $scope.recepient.studyLink = $scope.patient.studyLink
+
+
 var pdfName = topdf(html);
             var pdfPath = '/report/' + pdfName;
 

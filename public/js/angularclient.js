@@ -22864,6 +22864,7 @@ app.controller("addRadiologistCtrl",["$scope","$http",function($scope,$http){
 
 app.controller("templatectrl",["$scope","$http","$filter",function($scope,$http,$filter){
   $scope.patient = {};
+  $scope.recepient = {};
   var s = angular.element(document.getElementById('summary'));
   var f = angular.element(document.getElementById('findings'));
   var c = angular.element(document.getElementById('conclusion'));
@@ -22912,7 +22913,7 @@ app.controller("templatectrl",["$scope","$http","$filter",function($scope,$http,
     $scope.patient.conclusion = c[0].innerText;
     $scope.patient.advise = a[0].innerText;
     $scope.patient.html = hml.html();
-    console.log($scope.patient);
+    $scope.recepient.email = $scope.patient.centerEmail;
     $http({
       method  : 'PUT',
       url     : "/report-template",
@@ -22923,6 +22924,38 @@ app.controller("templatectrl",["$scope","$http","$filter",function($scope,$http,
        $scope.loading = false;
        if(response.status) {
          alert(response.message)
+         $scope.isReportPDF = true;
+         $scope.pdfLink = response.report_pdf;
+       } else {
+         alert(response.message)
+       }  
+
+       $scope.loading = false;      
+    });   
+  }
+
+  $scope.backToReport = function() {
+    $scope.isReportPDF = false;
+  }
+
+  $scope.emailReport = function() {
+    $scope.recepient.pdfLink = "https://applinic.com" + $scope.pdfLink;
+    $scope.recepient.patientName = $scope.patient.names;
+    $scope.recepient.studyName = $scope.patient.studyName;
+    $scope.recepient.studyLink = $scope.patient.studyLink;
+    $scope.recepient._id = $scope.patient._id;
+    $scope.recepient.reporter = $scope.patient.reporter;
+    $scope.loading = true;
+    $http({
+      method  : 'POST',
+      url     : "/email-report",
+      data    :  $scope.recepient, //forms user object
+      headers : {'Content-Type': 'application/json'} 
+     })
+    .success(function(response) {
+       $scope.loading = false;
+       if(response.status) {
+         alert(response.message)        
        } else {
          alert(response.message)
        }  
