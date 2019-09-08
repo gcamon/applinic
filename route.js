@@ -10131,37 +10131,7 @@ router.get("/report-template/:reporterId/:study_id",function(req,res){
     }
   })
 
-  /*
-{ _id: 5d63faafb2db96274c31b318,
-  patient_name: 'John Obi',
-  patient_id: 'ENED/2723/19',
-  study_id: 'ENED/2723/19',
-  study_uid: '',
-  center_id: 'emma scan155072',
-  center_name: 'Emma Radiology Center',
-  center_address: '13 iwobi street GRA, Trans-Ekulu',
-  center_city: 'Enugu',
-  center_country: 'Nigeria',
-  center_phone: '+2348096462317',
-  center_email: 'emma@gmail.com',
-  created: 2019-08-26T15:28:47.003Z,
-  email: 'ede.obinna27@gmail.com',
-  patient_age: '30 years',
-  patient_sex: 'Male',
-  ip_address: '157.230.115.193',
-  port: 11112,
-  aetitle: 'ened-561653',
-  accession_number: null,
-  study_link: '157.230.115.193:8080/weasis-pacs-connector/viewer?patientID=ENED/2723/19',
-  study_link2: 'https://ened.applinic.com/web/viewer.html?patientID=ENED/2723/19',
-  study_link_mobile: 'http://157.230.115.193:8080/applinic-dicom/home.html?patientID=ENED/2723/19',
-  study_type: 'CAPEHS',
-  study_name: 'Chest and Abdominal X-Ray',
-  deleted: false,
-  __v: 0,
-  pdf_report: [] }
-
-  */
+ 
 });
 
 router.post("/report-template",function(req,res){
@@ -10183,6 +10153,7 @@ router.post("/report-template",function(req,res){
 });
 
 router.put("/report-template",function(req,res){
+  console.log(req.body)
   model.study.findById(req.body._id)
   .exec(function(err,study){
     if(err) throw err;
@@ -10198,11 +10169,46 @@ router.put("/report-template",function(req,res){
           if(info){            
             var pdfName = topdf(req.body.html);
             var pdfPath = '/report/' + pdfName;
+            var emailPDFPath = "https://applinic.com" + pdfPath;
             study.pdf_report.unshift({
               pathname: pdfPath,
               created: new Date()
             });
-            res.json({status: true, message: "Report uploaded successfully.",report_pdf: pdfPath});
+           
+            var transporter = nodemailer.createTransport({
+              host: "mail.privateemail.com",
+              port: 465,
+              auth: {
+                user: "info@applinic.com",
+                pass: process.env.EMAIL_PASSWORD
+              }
+            });
+
+            var mailOptions = {
+              from: 'Applinic info@applinic.com',
+              to: req.body.email || "support@applinic.com",
+              subject: 'Complete Radiology Report for study ' + req.body._id,
+              html: '<table><tr><tr><td style="line-height: 25px">Hi, please find the <b>Radiology Report</b> PDF for the patient"s study below:<br><br>'
+              + 'Patient: ' + req.body.names + "<br>"
+              + 'Investigation: ' + req.body.studyName + "<br>"
+              + 'Ref: ' + req.body._id + "<br>"
+              + "Reported by: " + req.body.reporter + "<br><br>"
+              + "Web viewer DICOM url: <br>" + req.body.studyLink + "<br>"
+              + "Report PDF: <br><img src='" + emailPDFPath + "'><br><br>"
+              + "<b>Applinic Team</b><br>"
+              + '</td></tr></table>'
+            };
+
+            transporter.sendMail(mailOptions, function(error, info){
+              if (error) {
+                console.log(error);
+                res.json({status: false, message: "Oops! Error occured while sending email. Please try again."})
+              } else {
+                console.log('Email sent: ' + info.response);
+                res.json({status: true, message: "Report sent successfully.",report_pdf: pdfPath});
+              }
+            });
+            
           } else {
             res.json({error: true,message: "Oops! Error occured and study was not saved."});
           }
@@ -10215,39 +10221,68 @@ router.put("/report-template",function(req,res){
 }); 
 
 router.post("/email-report",function(req,res){
+  console.log(req.body)
+  model.study.findById(req.body._id)
+  .exec(function(err,study){
+    if(err) throw err;
+    if(study){
+      var reportLink = 'https://applinic.com/report-template/' + req.body.experReporter.id + "/" + req.body._id;
+      study.summary = req.body.summary || "";
+      study.findings = req.body.findings || "";
+      study.conclusion = req.body.conclusion || "";
+      study.advise = req.body.advise || "";
+      study.save(function(err,info){
+        if(err) throw err;
+        if(info){
+          var transporter = nodemailer.createTransport({
+            host: "mail.privateemail.com",
+            port: 465,
+            auth: {
+              user: "info@applinic.com",
+              pass: process.env.EMAIL_PASSWORD
+            }
+          });
 
-  var transporter = nodemailer.createTransport({
-    host: "mail.privateemail.com",
-    port: 465,
-    auth: {
-      user: "info@applinic.com",
-      pass: process.env.EMAIL_PASSWORD
-    }
-  });
+          var mailOptions = {
+            from: 'Applinic info@applinic.com',
+            to: req.body.experReporter.email || "support@applinic.com",
+            subject: 'Review Investigation Report for study ' + req.body._id,
+            html: '<table><tr><tr><td style="line-height: 25px">Sir, <br> Kindly review and edit the report written by <b>' 
+            + req.body.reporter + '</b>. See details and report template URL below:<br><br>'
+            + 'Patient: ' + req.body.names + "<br>"
+            + 'Investigation: ' + req.body.studyName + "<br>"
+            + 'Ref: ' + req.body._id + "<br>"
+            + '<b>Forwarded by</b>: <br>' + req.body.reporter 
+            + "<br>Designation: " + req.body.reporterDesignation
+            + '<br>Email: ' + req.body.reporterEmail + "<br><br>"
+            + "Web DICOM viewer url: <br>" + req.body.studyLink + "<br>"
+            + "Report Template URL: <br>" + reportLink + "<br><br>"
+            + "Applinic Team"
+            + '</td></tr></table>'
+          };
 
-  var mailOptions = {
-    from: 'Applinic info@applinic.com',
-    to: req.body.email || "support@applinic.com",
-    subject: 'Complete Radiology Report for study ' + req.body._id,
-    html: '<table><tr><tr><td style="line-height: 25px">Here is the written radiology PDF report for the patient"s study below:<br><br>'
-    + 'Patient: ' + req.body.patientName + "<br>"
-    + 'Investigation: ' + req.body.studyName + "<br>"
-    + 'Ref: ' + req.body._id + "<br>"
-    + "Web viewer DICOM url: <br>" + req.body.studyLink + "<br><br>"
-    + "Report PDF: <br>" + req.body.pdfLink + "<br><br>"
-    + "Reported by: " + req.body.reporter + "<br>"
-    + '</td></tr></table>'
-  };
+          transporter.sendMail(mailOptions, function(error, info){
+            if (error) {
+              console.log(error);
+              res.json({status: false, message: "Oops! Error occured while sending email. Please try again."})
+            } else {
+              console.log('Email sent: ' + info.response);
+              res.json({status: true, message: "Report sent successfully."})
+            }
+          });
 
-  transporter.sendMail(mailOptions, function(error, info){
-    if (error) {
-      console.log(error);
-      res.json({status: false, message: "Oops! Error occured while sending email. Please try again."})
+        } else {
+          res.json({status: false, message: "Something went wrong. Please try again."})
+        }
+      })
+
     } else {
-      console.log('Email sent: ' + info.response);
-      res.json({status: true, message: "Report sent successfully."})
+      res.json({status: false, message: "Study with ID not found."})
     }
-  });
+  })
+ 
+
+  
 })
 
 /*
@@ -10372,6 +10407,20 @@ router.get("/user/reporting-radiologist",function(req,res){
     res.end("unauthorized access");
   }
 });
+
+
+router.get("/api/reporting-radiologist",function(req,res){
+  model.user.findOne({user_id: req.query.centerId})
+  .exec(function(err,result){
+    if(err) throw err;
+    if(result) {
+      res.json(result.reporters);
+    } else {
+      res.json([]);
+    }
+  }); 
+});
+
 
 /*router.get("/lab/report-template/:_id",function(req,res){
   //params and query strings @reporterId @studyId @refId

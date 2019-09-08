@@ -12,9 +12,8 @@
 		<label>Designation of Radiologist *:</label><br>
 		<select ng-model="radiologist.designation" class="form-control" required>
 			<option>Consultant Radiologist</option>
-			<option>Chief Radiologist</option>
-			<option>Radiologist</option>
-			<option>Physician</option>
+			<option>Senior Registrar</option>
+			<option>Registrar</option>
 		</select><br>
 		<input type="submit" name="" value="Submit" class="btn btn-danger" ng-if="!loading">
 		<span ng-if="loading"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange" ng-if="loading"></i></span>

@@ -7,21 +7,14 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>Report Template</title>
+	<title>Applinic - Report Template</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="apple-touch-icon" href="apple-touch-icon.png">
-	<!--<link rel="stylesheet" href="/assets/css/bootstrap.min.css">-->
-	<!--<link rel="stylesheet" href="/assets/css/normalize.css">
-	<link rel="stylesheet" href="/assets/css/font-awesome.min.css">
-	<link rel="stylesheet" href="/assets/css/icomoon.css">
-	<link rel="stylesheet" href="/assets/css/owl.theme.css">
-	<link rel="stylesheet" href="/assets/css/owl.carousel.css">
-	<link rel="stylesheet" href="/assets/css/prettyPhoto.css">
-	<link rel="stylesheet" href="/assets/css/main.css">
-	<link rel="stylesheet" href="/assets/css/transitions.css">
-	<link rel="stylesheet" href="/assets/css/color.css">
-	<link rel="stylesheet" href="/assets/css/responsive.css">-->
+     <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+     <link rel="stylesheet" href="/assets/css/font-awesome.min.css">
+	<!--<link rel="stylesheet" href="/assets/css/vendor.css"> -->        
+         
 	<script src="/assets/js/vendor/modernizr-2.8.3-respond-1.4.2.min.js"></script>
      <script src="/assets/js/vendor2.js"></script>
         <script type="text/javascript" src="/assets/js/source.js"></script>
@@ -50,6 +43,144 @@
             background-color: darkRed;
             border: none;
         }
+
+        
+      .modal-open {
+  overflow: hidden;
+}
+
+.modal {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1050;
+  display: none;
+  overflow: hidden;
+  outline: 0;
+}
+
+.modal.fade .modal-dialog {
+  -webkit-transition: -webkit-transform .3s ease-out;
+  transition: -webkit-transform .3s ease-out;
+  -o-transition: -o-transform .3s ease-out;
+  transition: transform .3s ease-out;
+  transition: transform .3s ease-out, -webkit-transform .3s ease-out, -o-transform .3s ease-out;
+  -webkit-transform: translate(0, -25%);
+      -ms-transform: translate(0, -25%);
+       -o-transform: translate(0, -25%);
+          transform: translate(0, -25%);
+}
+
+.modal.in .modal-dialog {
+  -webkit-transform: translate(0, 0);
+      -ms-transform: translate(0, 0);
+       -o-transform: translate(0, 0);
+          transform: translate(0, 0);
+}
+
+.modal-open .modal {
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.modal-dialog {
+  position: relative;
+  width: auto;
+  margin: 10px;
+}
+
+.modal-content {
+  position: relative;
+  background-color: #fff;
+  -webkit-background-clip: padding-box;
+          background-clip: padding-box;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 0.3rem;
+  outline: 0;
+}
+
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1040;
+  background-color: #000;
+}
+
+.modal-backdrop.fade {
+  opacity: 0;
+}
+
+.modal-backdrop.in {
+  opacity: 0.5;
+}
+
+.modal-header {
+  padding: 15px;
+  /*border-bottom: 1px solid #e5e5e5;*/
+}
+
+.modal-header::after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+.modal-header .close {
+  margin-top: -2px;
+}
+
+.modal-title {
+  margin: 0;
+  line-height: 1.5;
+}
+
+.modal-body {
+  position: relative;
+  padding: 15px;
+}
+
+.modal-footer {
+  padding: 15px;
+  text-align: right;
+  border-top: 1px solid #e5e5e5;
+}
+
+.modal-footer::after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+.modal-scrollbar-measure {
+  position: absolute;
+  top: -9999px;
+  width: 50px;
+  height: 50px;
+  overflow: scroll;
+}
+
+@media (min-width: 576px) {
+  .modal-dialog {
+    max-width: 600px;
+    margin: 30px auto;
+  }
+  .modal-sm {
+    max-width: 300px;
+  }
+}
+
+@media (min-width: 992px) {
+  .modal-lg {
+    max-width: 900px;
+  }
+}
+
+
 	</style>
 </head>
 <body ng-app = "myApp" class="ng-cloak">
@@ -59,13 +190,13 @@
 	<!--************************************
 			Wrapper Start
 	*************************************-->
-	<div id="wrapper">
+	<div>
 	   <div id="main" ng-controller="templatectrl">
            
 	   	   <div id="tempfield" ng-hide="isReportPDF">               
               <%- template.template %>
 	   	   </div>
-           <div ng-show="isReportPDF">
+           <!--<div ng-show="isReportPDF">
                <form ng-cloak ng-submit="emailReport()" style="text-align: center;margin-top: 20px">
                    <label><b>Send the report PDF to an email below:</b> </label><br><br>
                    <input type="email" name="" ng-model="recepient.email" placeholder="Recepient email address" style="padding: 10px;width: 60%" required><br><br>
@@ -75,13 +206,12 @@
                <div style="margin: 10px 0;text-align: right;">
                    <a href="" ng-click="backToReport()">Back to report template</a>&nbsp;&nbsp;&nbsp; <a href="{{'https://drive.google.com/viewerng/viewer?embedded=true&url=https://applinic.com' + pdfLink}}" target="_blank">View/Print report PDF</a>
                </div>
-           </div>
+           </div>-->
            
 	   	   <hr><br>
           
 	   	   <div style="text-align: right;" ng-hide="isReportPDF">
-	   	   	 <button class="btn btn-danger" id="submit" ng-click="getTempData()" ng-show="!loading">Submit</button>
-             <span ng-show="loading">Please wait, processing...</span>
+	   	   	 <button class="btn btn-danger" id="submit" ng-click="getTempData()">Save</button>
 	   	   </div>
             {{getdata('<%= study.patient_name %>','<%= study.patient_id %>','<%= study.study_date %>','<%= study.patient_age %>','<%= study.patient_sex %>','<%= study.referring_physician %>','<%= study.study_name %>','<%= study.study_date %>','<%= reporter.name %>','<%= reporter.designation %>','<%= reporter.email %>','<%= study.study_link2 %>', '<%= study.summary %>', '<%= study.findings %>', '<%= study.conclusion %>', '<%= study.advise %>','<%= study.center_name %>','<%= study.center_address %>','<%= study.center_city %>','<%= study.center_country %>','<%= study.center_phone %>','<%= study.center_email %>','<%= study.center_profile_pic_url %>','<%= study._id %>','<%= study.center_id %>','<%= template.center_id %>')}}
 	   </div>
@@ -182,7 +312,59 @@
 
        -->
 
+     
+
 	</div>
+    <script type="text/ng-template" id="tempaltedecisionmodal.html">
+        <div class="modal fade">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close"  data-dismiss="modal" aria-hidden="true" style="float: right;cursor: pointer;">&times;</button>              
+                <h2 style="clear: both;">Where to submit to?</h2>
+               
+                       
+            </div>
+            <div class="modal-body" style="margin-top: 0;padding-top: 0">               
+               <!--<a href="" ng-click="toEdit()" style="padding: 10px; color: #fff; background-color: green;border: none;text-decoration: none;border-radius: 5px"></a> &nbsp;&nbsp;&nbsp;&nbsp;
+               <a href="" ng-click="toCenter()" style="padding: 10px; color: #fff; background-color: green;border: 
+               none;text-decoration: none;border-radius: 5px"></a>-->
+               <div>
+                   <input type="radio" name="" ng-model="recepient.toEmail" value="center"><b style="color: blue;font-size: 18px">Submit straight to Hospital/Centre</b> &nbsp;&nbsp;&nbsp;&nbsp;
+                   <input type="radio" name="" ng-model="recepient.toEmail" value="expert"><b style="color: blue;font-size: 18px">Submit for Review/Edit</b>
+               </div>
+               <div ng-if="recepient.toEmail == 'center'">
+                   <h3>Submit to your Center</h3>
+                   <form ng-submit="toCenter()" ng-hide="reportPDF">
+                       <label><b>Email of recepient:</b></label><br><br>
+                       <input type="email" name="" style="padding:10px; width: 80%" placeholder="Email" ng-model="recepient.email"><br><br>
+                       <input type="submit" name="" value="Send" ng-show="!loading" class="btn btn-danger">
+                       <span ng-show="loading">Sending report...</span>
+                   </form>
+                   <div ng-show="reportPDF">
+                       <p style="color: green; font-size: 18px"><i class="fa fa-check-circle"></i> {{msg}}</p>
+                       <a href="{{'https://drive.google.com/viewerng/viewer?embedded=true&url=https://applinic.com' + reportPDF}}" target="_blank" style="text-decoration: none;"><i class="fa fa-file-pdf-o" style="font-size: 22px;color: orange;"></i> View/Print report PDF</a>
+                   </div>
+               </div>
+               <div ng-if="recepient.toEmail == 'expert'">
+                    <h3>Submit to an expert for Review/Edit</h3>
+                    <form ng-submit="toExpert()">
+                       <label><b>Choose a Radiologist:</b></label><br><br>
+                       <select style="width: 80%;padding: 10px" ng-model='recepient.radiologistId'>
+                           <option value="" disabled="disabled" selected="true">_Select</option>
+                           <option value="{{j.id}}" ng-repeat="j in reporters">{{j.name}} - {{j.designation}}</option>
+                       </select><br><br>
+                       <!--<label><b>Email of recepient:</b></label><br><br>
+                       <input type="email" name="" style="padding:10px; width: 80%" placeholder="Email" ng-model="submit.email">
+                       <br><br>-->
+                       <input type="submit" name="" value="Send" ng-show="!loading" class="btn btn-danger">
+                       <span ng-show="loading">Sending report...</span>
+                    </form>
+               </div>
+            </div>
+          </div>
+        </div>
+    </script>
 
 	<script src="/assets/js/vendor/jquery-library.js"></script>
 
@@ -199,9 +381,8 @@
         });*/
 	</script>
 
-	
-		
-	
+   
+
 	<script src="/assets/js/app.js"></script>
         
         
