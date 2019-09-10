@@ -10193,7 +10193,7 @@ router.put("/report-template",function(req,res){
               + 'Ref: ' + req.body._id + "<br>"
               + "Reported by: " + req.body.reporter + "<br><br>"
               + "Web viewer DICOM url: <br>" + req.body.studyLink + "<br>"
-              + "Report PDF: <br><img src='" + emailPDFPath + "'/><br><br>"
+              + "Report PDF: <br><img src=" + emailPDFPath + "/><br><br>"
               + "<b>Applinic Team</b><br>"
               + '</td></tr></table>'
             };
