@@ -10192,10 +10192,15 @@ router.put("/report-template",function(req,res){
               + 'Investigation: ' + req.body.studyName + "<br>"
               + 'Ref: ' + req.body._id + "<br>"
               + "Reported by: " + req.body.reporter + "<br><br>"
-              + "Web viewer DICOM url: <br>" + req.body.studyLink + "<br>"
-              + "Report PDF: <br><img src=" + emailPDFPath + "/><br><br>"
+              + "Web DICOM viewer url: <br>" + req.body.studyLink + "<br><br>"
+              //+ "Report PDF: <br><img src='" + emailPDFPath + "'/><br><br>"
               + "<b>Applinic Team</b><br>"
-              + '</td></tr></table>'
+              + '</td></tr></table>',
+              attachments:[{
+                  filename: pdfName,
+                  content: new Buffer(FILE_CONTENT, 'base64'),
+                  contentType: 'application/pdf'
+              }]
             };
 
             transporter.sendMail(mailOptions, function(error, info){
