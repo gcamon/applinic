@@ -2282,7 +2282,6 @@ router.put("/user/outpatient-billing",function(req,res){
 
 
 router.post("/user/dicom-details",function(req,res){
-		console.log(req.body)
 		if(req.user) {
 			var rados;
 			if(req.body.isAcc) {
@@ -2398,7 +2397,7 @@ router.post("/user/dicom-details",function(req,res){
 	          var cp = (req.body.isAcc) ? rados  : id;
 
 	          var mailOptions = {
-	            from: 'Applinic info@applinic.com',
+	            from: 'Applinic Healthcare info@applinic.com',
 	            to: req.body.patientEmail || "support@applinic.com",
 	            subject: 'Radiology DICOM Study Uploaded',
 	            html: '<table><tr><tr><td style="line-height: 25px">Hello,<br><br>Your study with ' 
@@ -2429,7 +2428,7 @@ router.post("/user/dicom-details",function(req,res){
 	          	var tempLink = "https://applinic.com/report-template/" + req.body.reporter + "/" + study._id;
 
 		          var mailOptions = {
-		            from: 'Applinic info@applinic.com',
+		            from: 'Applinic Healthcare info@applinic.com',
 		            to: found.email || "support@applinic.com",
 		            subject: 'Radiology Report ' + study._id,
 		            html: '<table><tr><tr><td style="line-height: 25px">Hi, please write report for the study below:<br><br>'
@@ -2441,7 +2440,7 @@ router.post("/user/dicom-details",function(req,res){
 		            + "Report template url: <br>" + tempLink + "<br><br>"
 		            + "Center Name: " + req.user.name + "<br>"
 		            + "Address: " + req.user.address + ", " + req.user.city + ", " + req.user.country + "<br><br>"
-		            + "Thank you!" 
+		            + "Thank you! <br><br> <b>Applinic Team</b>" 
 		            + '</td></tr></table>'
 		          };
 

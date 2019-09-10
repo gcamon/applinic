@@ -10153,7 +10153,6 @@ router.post("/report-template",function(req,res){
 });
 
 router.put("/report-template",function(req,res){
-  console.log(req.body)
   model.study.findById(req.body._id)
   .exec(function(err,study){
     if(err) throw err;
@@ -10185,16 +10184,16 @@ router.put("/report-template",function(req,res){
             });
 
             var mailOptions = {
-              from: 'Applinic info@applinic.com',
+              from: 'Applinic Healthcare info@applinic.com',
               to: req.body.email || "support@applinic.com",
               subject: 'Complete Radiology Report for study ' + req.body._id,
-              html: '<table><tr><tr><td style="line-height: 25px">Hi, please find the <b>Radiology Report</b> PDF for the patient"s study below:<br><br>'
+              html: '<table><tr><tr><td style="line-height: 25px">Hi, please find the <b>Radiology Report</b> PDF for the study below:<br><br>'
               + 'Patient: ' + req.body.names + "<br>"
               + 'Investigation: ' + req.body.studyName + "<br>"
               + 'Ref: ' + req.body._id + "<br>"
               + "Reported by: " + req.body.reporter + "<br><br>"
               + "Web viewer DICOM url: <br>" + req.body.studyLink + "<br>"
-              + "Report PDF: <br><img src='" + emailPDFPath + "'><br><br>"
+              + "Report PDF: <br><img src='" + emailPDFPath + "'/><br><br>"
               + "<b>Applinic Team</b><br>"
               + '</td></tr></table>'
             };
@@ -10208,7 +10207,7 @@ router.put("/report-template",function(req,res){
                 res.json({status: true, message: "Report sent successfully.",report_pdf: pdfPath});
               }
             });
-            
+
           } else {
             res.json({error: true,message: "Oops! Error occured and study was not saved."});
           }
@@ -10221,7 +10220,6 @@ router.put("/report-template",function(req,res){
 }); 
 
 router.post("/email-report",function(req,res){
-  console.log(req.body)
   model.study.findById(req.body._id)
   .exec(function(err,study){
     if(err) throw err;
@@ -10244,7 +10242,7 @@ router.post("/email-report",function(req,res){
           });
 
           var mailOptions = {
-            from: 'Applinic info@applinic.com',
+            from: 'Applinic Healthcare info@applinic.com',
             to: req.body.experReporter.email || "support@applinic.com",
             subject: 'Review Investigation Report for study ' + req.body._id,
             html: '<table><tr><tr><td style="line-height: 25px">Sir, <br> Kindly review and edit the report written by <b>' 
