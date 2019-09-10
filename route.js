@@ -24,6 +24,8 @@ var options = {
 //var token = require("./twilio");
 var randos = require("./randos");
 var topdf = require("./topdf");
+var pdf = require('html-pdf');
+
 
 
 function createNewsLink(title){
@@ -10166,52 +10168,70 @@ router.put("/report-template",function(req,res){
         study.save(function(err,info){
           if(err) throw err;
           if(info){            
-            var pdfName = topdf(req.body.html);
-            var pdfPath = '/report/' + pdfName;
-            var emailPDFPath = "https://applinic.com" + pdfPath;
-            study.pdf_report.unshift({
-              pathname: pdfPath,
-              created: new Date()
-            });
-           
-            var transporter = nodemailer.createTransport({
-              host: "mail.privateemail.com",
-              port: 465,
-              auth: {
-                user: "info@applinic.com",
-                pass: process.env.EMAIL_PASSWORD
-              }
-            });
+            //var pdfName = topdf(req.body.html);
 
-            var mailOptions = {
-              from: 'Applinic Healthcare info@applinic.com',
-              to: req.body.email || "support@applinic.com",
-              subject: 'Complete Radiology Report for study ' + req.body._id,
-              html: '<table><tr><tr><td style="line-height: 25px">Hi, please find the <b>Radiology Report</b> PDF for the study below:<br><br>'
-              + 'Patient: ' + req.body.names + "<br>"
-              + 'Investigation: ' + req.body.studyName + "<br>"
-              + 'Ref: ' + req.body._id + "<br>"
-              + "Reported by: " + req.body.reporter + "<br><br>"
-              + "Web DICOM viewer url: <br>" + req.body.studyLink + "<br><br>"
-              //+ "Report PDF: <br><img src='" + emailPDFPath + "'/><br><br>"
-              + "<b>Applinic Team</b><br>"
-              + '</td></tr></table>',
-              attachments:[{
-                filename: pdfName,
-                content: new Buffer(__dirname + '/pdf/' + pdfName , 'base64'),
-                contentType: 'application/pdf'
-              }]
-            };
+            //var options = { format: 'Letter' };
+            var dt = + new Date();
+            var pdfName = dt + "-" + Math.floor(Math.random() * 999) + '.pdf';
+            var filePath = './pdf/' + pdfName;
+ 
+            pdf.create(req.body.html).toFile(filePath, function(err, file) { //start of toFile
+              if (err) return console.log(err);                        
 
-            transporter.sendMail(mailOptions, function(error, info){
-              if (error) {
-                console.log(error);
-                res.json({status: false, message: "Oops! Error occured while sending email. Please try again."})
-              } else {
-                console.log('Email sent: ' + info.response);
-                res.json({status: true, message: "Report sent successfully.",report_pdf: pdfPath});
-              }
-            });
+              var pdfPath = '/report/' + pdfName;
+              var emailPDFPath = "https://applinic.com" + pdfPath;
+            
+
+              study.pdf_report.unshift({
+                pathname: pdfPath,
+                created: new Date()
+              });
+             
+              var transporter = nodemailer.createTransport({
+                host: "mail.privateemail.com",
+                port: 465,
+                auth: {
+                  user: "info@applinic.com",
+                  pass: process.env.EMAIL_PASSWORD
+                }
+              });
+
+              var FILE_CONTENT = fs.readFileSync(file.filename, 'base64');
+              var buf = Buffer.from(FILE_CONTENT, 'base64')
+              console.log(buf)
+             
+
+              var mailOptions = {
+                from: 'Applinic Healthcare info@applinic.com',
+                to: req.body.email || "support@applinic.com",
+                subject: 'Complete Radiology Report for study ' + req.body._id,
+                html: '<table><tr><tr><td style="line-height: 25px">Hi, please find the <b>Radiology Report</b> PDF for the study below:<br><br>'
+                + 'Patient: ' + req.body.names + "<br>"
+                + 'Investigation: ' + req.body.studyName + "<br>"
+                + 'Ref: ' + req.body._id + "<br>"
+                + "Reported by: " + req.body.reporter + "<br><br>"
+                + "Web DICOM viewer url: <br>" + req.body.studyLink + "<br><br>"
+                //+ "Report PDF: <br><img src='" + emailPDFPath + "'/><br><br>"
+                + "<b>Applinic Team</b><br>"
+                + '</td></tr></table>',
+                attachments:[{
+                  filename: pdfName,
+                  content: buf,
+                  contentType: 'application/pdf'
+                }]
+              };
+
+              transporter.sendMail(mailOptions, function(error, info){
+                if (error) {
+                  console.log(error);
+                  res.json({status: false, message: "Oops! Error occured while sending email. Please try again."})
+                } else {
+                  console.log('Email sent: ' + info.response);
+                  res.json({status: true, message: "Report sent successfully.",report_pdf: pdfPath});
+                }
+              });
+
+            }) //end of toFile
 
           } else {
             res.json({error: true,message: "Oops! Error occured and study was not saved."});
