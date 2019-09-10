@@ -10197,9 +10197,9 @@ router.put("/report-template",function(req,res){
               + "<b>Applinic Team</b><br>"
               + '</td></tr></table>',
               attachments:[{
-                  filename: pdfName,
-                  content: new Buffer(FILE_CONTENT, 'base64'),
-                  contentType: 'application/pdf'
+                filename: pdfName,
+                content: new Buffer(__dirname + '/pdf/' + pdfName , 'base64'),
+                contentType: 'application/pdf'
               }]
             };
 
