@@ -9914,7 +9914,7 @@ router.get("/api/dicom-details",function(req,res){
       res.json(data);
     } else {
       res.json({
-        ip_address: "157.230.115.193",
+        ip_address: "167.71.149.196",
         dns: "dicom.applinic.com",
         port: 11112,
         aetitle: "applinic",
@@ -10082,7 +10082,7 @@ router.get("/dicom-mobile",function(req,res){
       }
     })
   } else {
-    res.redirect('http://157.230.115.193:8080/applinic-dicom/home.html');
+    res.redirect('http://167.71.149.196:8080/applinic-dicom/home.html');
   }
 });
 
@@ -10308,98 +10308,7 @@ router.post("/email-report",function(req,res){
   
 })
 
-/*
-$scope.recepient.pdfLink = $scope.pdfLink;
-    $scope.recepient.patientName = $scope.patient.names;
-    $scope.recepient.studyName = $scope.patient.studyName;
-    $scope.recepient.studyLink = $scope.patient.studyLink
 
-
-var pdfName = topdf(html);
-            var pdfPath = '/report/' + pdfName;
-
-
-            req.body.service_date = + new Date();
-                req.body.receiver = receiver.title + " " + receiver.firstname + " " + receiver.lastname;
-                req.body.receiver_phone = receiver.phone;
-                center.service_details.unshift(req.body);
-                center.save(function(err,info){
-                  if(err) throw err;                  
-                  console.log("service details saved!");
-                });
-
-
-                "ref_id" : 49441112,
-                        "referral_firstname" : "Emma Radiology Center",
-                        "referral_lastname" : null,
-                        "referral_title" : null,
-                        "referral_id" : "emma scan155072",
-                        "date" : "2018-04-30T15:08:20.389Z",
-                        "radiology" : {
-                                "patient_firstname" : "Ekube",
-                                "patient_lastname" : "Bobby",
-                                "patient_profile_pic_url" : "/download/profile_pic/nopic",
-                                "patient_title" : "Mr",
-                                "patient_phone" : "+2348096461927",
-                                "patient_id" : "bobosky2636",
-                                "clinical_summary" : "Hello",
-                                "indication" : "Coming",
-                                "lmp" : "sddsd",
-                                "test_id" : 62347623,
-                                "parity" : "sddssd",
-                                "attended" : false,
-                                "_id" : "5ae7316414e783475814dbc6",
-                                "test_to_run" : [
-                                        {
-                                                "name" : "Skull X-ray (FXR)  (2 View)",
-                                                "sn" : 1,
-                                                "select" : true,
-                                                "added" : true,
-                                                "data" : "sasa"
-                                        },
-                                        {
-                                                "name" : "Intravenous Urography (IVU)",
-                                                "sn" : 2,
-                                                "select" : true,
-                                                "added" : true,
-                                                "data" : "sasasaas"
-                                        }
-                                ],
-                                "report" : "Skull X-ray (FXR)  (2 View): sasa,Intravenous Urography (IVU): sasasaas",
-                                "test_ran" : [
-                                        {
-                                                "name" : "Skull X-ray (FXR)  (2 View)",
-                                                "sn" : 1,
-                                                "select" : true,
-                                                "added" : true,
-                                                "data" : "sasa"
-                                        },
-                                        {
-                                                "name" : "Intravenous Urography (IVU)",
-                                                "sn" : 2,
-                                                "select" : true,
-                                                "added" : true,
-                                                "data" : "sasasaas"
-                                        }
-                                ],
-                                "conclusion" : "sasasa",
-                                "date" : 1525103244136
-                        },
-                        "_id" : "5ae7316414e783475814dbc5",
-                        "payObj" : {
-                                "total" : 0,
-                                "doctorId" : "admin",
-                                "type" : "Radiology",
-                                "patientId" : "bobosky2636",
-                                "patient_firstname" : "Ekube",
-                                "patient_lastname" : "Bobby",
-                                "ref_id" : 49441112
-                        },
-                        "service_date" : 1525103245324
-                }
-        ]
-}
-*/
 
 router.post("/user/reporting-radiologist",function(req,res){
   if(req.user) {
