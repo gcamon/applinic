@@ -10198,12 +10198,16 @@ router.put("/report-template",function(req,res){
 
               var FILE_CONTENT = fs.readFileSync(file.filename, 'base64');
               var buf = Buffer.from(FILE_CONTENT, 'base64')
-              console.log(buf)
-             
+
+              var emailArr = [req.body.email];
+
+              if(study.referring_physician_email) {
+                emailArr.push(study.referring_physician_email);
+              }
 
               var mailOptions = {
                 from: 'Applinic Healthcare info@applinic.com',
-                to: req.body.email || "support@applinic.com",
+                to: emailArr || "support@applinic.com", //req.body.email
                 subject: 'Complete Radiology Report for study ' + req.body._id,
                 html: '<table><tr><tr><td style="line-height: 25px">Hi, please find the <b>Radiology Report</b> PDF for the study below:<br><br>'
                 + 'Patient: ' + req.body.names + "<br>"

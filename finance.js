@@ -2351,7 +2351,10 @@ router.post("/user/dicom-details",function(req,res){
 			    deleted: false,
 			    created: new Date(),
 			    study_date: req.body.studyDate,
-			    referring_physician: req.body.referringPhysician
+			    referring_physician: req.body.referringPhysician,
+			    summary: req.body.clinicalSummaryIndication,
+			    referring_physician_email: req.body.referringPhysicianEmail || "",
+			    referring_physician_phone: req.body.referringPhysicianPhone || ""
 			    //conclusion: req.body.conclusion,
 				  //findings: req.body.findings,
 				  //summary: req.body.summary,

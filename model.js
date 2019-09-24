@@ -1038,7 +1038,9 @@ var myModel = function () {
 	  conclusion: String,
 	  findings: String,
 	  summary: String,
-	  advise: String
+	  advise: String,
+	  referring_physician_email: String,
+		referring_physician_phone: String
 	});
 
 	var dicomSchema = Schema({
