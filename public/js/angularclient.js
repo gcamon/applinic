@@ -22873,6 +22873,7 @@ app.controller("templatectrl",["$scope","$http","$filter","ModalService","$rootS
   var a = angular.element(document.getElementById('advise'));
   var img = angular.element(document.getElementById('img'));
 
+
   $scope.getdata = function(patientNames,patientId,studyDate,patientAge,
     patientSex,referringPhysician, studyName, studyDate, reporterName, reporterDesignation, 
     reporterEmail,studyLink,summary,findings,conclusion,advise,centerName,
@@ -22911,16 +22912,17 @@ app.controller("templatectrl",["$scope","$http","$filter","ModalService","$rootS
   
   $scope.getTempData = function() {
     $scope.isModalLaod = true;
-    //var a = angular.element(document.getElementById('conclusion'));
-    var hml = angular.element(document.getElementById('tempfield'));
-    //console.log(hml.html())
-    //alert(a[0].innerText)
+  
+    $rootScope.addForLinux = angular.element(document.getElementsByClassName('ui-linux'));
+    $rootScope.hml = angular.element(document.getElementById('tempfield'));
+
+
     $scope.loading = true;
     $scope.patient.summary = s[0].innerText;
     $scope.patient.findings = f[0].innerText;
     $scope.patient.conclusion = c[0].innerText;
     $scope.patient.advise = a[0].innerText;
-    $scope.patient.html = hml.html();
+    //$scope.patient.html = hml.html();
 
 
     $rootScope.templateReportDetails = $scope.patient;
@@ -23003,6 +23005,14 @@ function($scope,$http,$rootScope){
 
     $rootScope.templateReportDetails.email = $scope.recepient.email;
     $scope.loading = true;
+
+    for(var i = 0; i < $rootScope.addForLinux.length; i++) {
+      $rootScope.addForLinux[i].style.zoom = 0.55;
+    }
+
+    $rootScope.templateReportDetails.html = $rootScope.hml.html();
+
+    console.log($rootScope.addForLinux);
     $http({
       method  : 'PUT',
       url     : "/report-template",
