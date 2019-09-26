@@ -13,7 +13,7 @@
 
 
 <!---- default minifield ---------->
-<table style="display: table;border-spacing: 2px;border-collapse: collapse"><tr><th style="text-align: left;width: 10%" class="ui-linux"> <img src="" style="max-width: 98px; height: auto;" id='img'></th><th style="padding-left: 12px;text-align: left;width: 50%" class="ui-linux"><h2 id="center_name" style="font-size: 28px;margin:10px 0">{{patient.centerName}}</h2> <address style="font-weight: normal;"> <span id="center_address">{{patient.centerAddress}}</span><br> <span>{{patient.centerCity}}, {{patient.centerCountry}}</span><br> <span id="center_phone">Tel: {{patient.centerPhone}}, {{patient.centerEmail}}</span> </address></th><th style="vertical-align: bottom;text-align: left;width: 40%;zoom: 0.55" class="ui-linux"><h4 style="text-indent:70px;font-size: 22px;margin: 5px 0"><b>RADIOLOGY REPORT</b></h4></th></tr></table><div style="padding-top: 20px;"> <section style="border: 1px solid #000" class="ui-linux"> <b style="display: inline-block;border-right: 1px solid #000;padding: 10px;width: 98px">Name:</b> <span style="display: inline-block;width: 405px;font-size: 14px" contenteditable="true" id="name">{{patient.names}}</span> <b style="display: inline-block;border-left: 1px solid #000; border-right: 1px solid #000; padding: 10px;width: 79px">Folder No:</b> <span style="display: inline-block;font-size: 14px" contenteditable="true" id="studyId">{{patient.patientId}}</span> </section></div><div> <section style="border: 1px solid #000;border-top: none" class="ui-linux"> <b style="display: inline-block;border-right: 1px solid #000;padding: 10px;width: 98px">Age:</b> <span style="display: inline-block;width: 120px;font-size: 14px" contenteditable="true" id="age">{{patient.age}}</span> <b style="display: inline-block;border-left: 1px solid #000; border-right: 1px solid #000; padding: 10px">Sex:</b> <span style="display: inline-block;width: 105px;font-size: 14px" contenteditable="true" id="gender">{{patient.sex}}</span> <b style="display: inline-block;border-left: 1px solid #000; border-right: 1px solid #000; padding: 10px;width: 64px">Doctor:</b> <span style="display: inline-block;font-size: 14px" contenteditable="true" id="referrer">{{patient.doctor}}</span> </section></div><div> <section style="border: 1px solid #000;border-top: none" class="ui-linux"> <b style="display: inline-block;border-right: 1px solid #000;padding: 10px;width: 98px">Examination:</b> <span style="display: inline-block;font-size: 14px;width: 405px;" contenteditable="true" id="investigation">{{patient.studyName}}</span> <b style="display: inline-block;border-left: 1px solid #000; border-right: 1px solid #000; padding: 10px">Date:</b> <span style="display: inline-block;font-size: 14px" contenteditable="true" id="date">{{patient.studyDate | date: 'mediumDate'}}</span> </section></div><div style="margin-top: 15px" class="ui-linux"><h6 style="font-size: 18px;margin: 10px 0"><b>Clinical Summary</b></h6><div style="border: 1px solid #000; min-height: 70px;padding: 10px 20px;line-height: 20px" contenteditable="true" id="summary" ng-bind="patient.summary"></div></div><div style="margin-top: 15px" class="ui-linux"><h6 style="font-size: 18px;margin: 10px 0"><b>Findings</b></h6><div style="border: 1px solid #000; min-height: 70px;padding: 10px 20px;line-height: 20px" contenteditable="true" id="findings" ng-bind="patient.findings"></div></div><div style="margin-top: 15px" class="ui-linux"><h6 style="font-size: 18px;margin: 10px 0"><b>Conclusion</b></h6><div style="border: 1px solid #000; min-height: 70px;padding: 10px 20px;line-height: 20px" contenteditable="true" id="conclusion" ng-bind="patient.conclusion"></div></div><div style="margin-top: 15px" class="ui-linux"><h6 style="font-size: 18px;margin: 10px 0"><b>Further Advice/Investigation</b></h6><div style="border: 1px solid #000; min-height: 70px;padding: 10px 20px;line-height: 20px" contenteditable="true" id="advise" ng-bind="patient.advise"></div></div><table style="margin-top:10px;border-collapse: collapse"><tr><td class="ui-linux"><h6 style="font-size: 18px;margin: 10px 0">Report by:</h6><b id="reporter_name">{{patient.reporter}}</b><br> <span id="reporter_type">{{patient.reporterDesignation}}</span><br> <span id="reporter_email">{{patient.reporterEmail}}</span></td></tr></table> <br><table><tr><td style="width: 750px" class="ui-linux"><h6 style="font-size: 18px;margin: 10px 0">Study's DICOM viewer link:</h6> <a href="{{patient.studyLink}}" target="_blank">{{patient.studyLink}}</a></td><td style="vertical-align: bottom;text-align: right" class="ui-linux"> <img src="https://applinic.com/assets/images/img/applinic.png" style="width: 120px;height: auto;"></td></tr></table>
+<table style="display: table;border-spacing: 2px;border-collapse: collapse"><tr><th style="text-align: left;width: 10%" class="ui-linux"> <img src="" style="max-width: 98px; height: auto;" id='img'></th><th style="padding-left: 12px;text-align: left;width: 50%" class="ui-linux"><h2 id="center_name" style="font-size: 28px;margin:10px 0">{{patient.centerName}}</h2> <address style="font-weight: normal;"> <span id="center_address">{{patient.centerAddress}}</span><br> <span>{{patient.centerCity}}, {{patient.centerCountry}}</span><br> <span id="center_phone">Tel: {{patient.centerPhone}}, {{patient.centerEmail}}</span> </address></th><th style="vertical-align: bottom;text-align: left;width: 40%;zoom: 0.55" class="ui-linux"><h4 style="text-indent:70px;font-size: 22px;margin: 5px 0"><b>RADIOLOGY REPORT</b></h4></th></tr></table><div style="padding-top: 20px;"> <section style="border: 1px solid #000" class="ui-linux"> <b style="display: inline-block;border-right: 1px solid #000;padding: 10px;width: 98px">Name:</b> <span style="display: inline-block;width: 405px;font-size: 14px" contenteditable="true" id="name">{{patient.names}}</span> <b style="display: inline-block;border-left: 1px solid #000; border-right: 1px solid #000; padding: 10px;width: 79px">ID:</b> <span style="display: inline-block;font-size: 14px" contenteditable="true" id="studyId">{{patient.patientId}}</span> </section></div><div> <section style="border: 1px solid #000;border-top: none" class="ui-linux"> <b style="display: inline-block;border-right: 1px solid #000;padding: 10px;width: 98px">Age:</b> <span style="display: inline-block;width: 120px;font-size: 14px" contenteditable="true" id="age">{{patient.age}}</span> <b style="display: inline-block;border-left: 1px solid #000; border-right: 1px solid #000; padding: 10px">Sex:</b> <span style="display: inline-block;width: 105px;font-size: 14px" contenteditable="true" id="gender">{{patient.sex}}</span> <b style="display: inline-block;border-left: 1px solid #000; border-right: 1px solid #000; padding: 10px;width: 64px">Doctor:</b> <span style="display: inline-block;font-size: 14px" contenteditable="true" id="referrer">{{patient.doctor}}</span> </section></div><div> <section style="border: 1px solid #000;border-top: none" class="ui-linux"> <b style="display: inline-block;border-right: 1px solid #000;padding: 10px;width: 98px">Examination:</b> <span style="display: inline-block;font-size: 14px;width: 405px;" contenteditable="true" id="investigation">{{patient.studyName}}</span> <b style="display: inline-block;border-left: 1px solid #000; border-right: 1px solid #000; padding: 10px">Date:</b> <span style="display: inline-block;font-size: 14px" contenteditable="true" id="date">{{patient.studyDate | date: 'mediumDate'}}</span> </section></div><div style="margin-top: 15px" class="ui-linux"><h6 style="font-size: 18px;margin: 10px 0"><b>Clinical Summary</b></h6><div style="border: 1px solid #000; min-height: 70px;padding: 10px 20px;line-height: 20px" contenteditable="true" id="summary" ng-bind="patient.summary"></div></div><div style="margin-top: 15px" class="ui-linux"><h6 style="font-size: 18px;margin: 10px 0"><b>Findings</b></h6><div style="border: 1px solid #000; min-height: 70px;padding: 10px 20px;line-height: 20px" contenteditable="true" id="findings" ng-bind="patient.findings"></div></div><div style="margin-top: 15px" class="ui-linux"><h6 style="font-size: 18px;margin: 10px 0"><b>Conclusion</b></h6><div style="border: 1px solid #000; min-height: 70px;padding: 10px 20px;line-height: 20px" contenteditable="true" id="conclusion" ng-bind="patient.conclusion"></div></div><div style="margin-top: 15px" class="ui-linux"><h6 style="font-size: 18px;margin: 10px 0"><b>Further Advice/Investigation</b></h6><div style="border: 1px solid #000; min-height: 70px;padding: 10px 20px;line-height: 20px" contenteditable="true" id="advise" ng-bind="patient.advise"></div></div><table style="margin-top:10px;border-collapse: collapse"><tr><td class="ui-linux"><h6 style="font-size: 18px;margin: 10px 0">Report by:</h6><b id="reporter_name">{{patient.reporter}}</b><br> <span id="reporter_type">{{patient.reporterDesignation}}</span><br> <span id="reporter_email">{{patient.reporterEmail}}</span></td></tr></table> <br><table><tr><td style="width: 750px" class="ui-linux"><h6 style="font-size: 18px;margin: 10px 0">Study's DICOM viewer link:</h6> <a href="{{patient.studyLink}}" target="_blank">{{patient.studyLink}}</a></td><td style="vertical-align: bottom;text-align: right" class="ui-linux"> <img src="https://applinic.com/assets/images/img/applinic.png" style="width: 120px;height: auto;"></td></tr></table>
 <!------------ default template --------------------->
  
          <table style="display: table;border-spacing: 2px;border-collapse: collapse">
@@ -113,10 +113,10 @@
 <!-- custom template e. Niger Foundation ---->
 <table style="display: table;border-spacing: 2px;border-collapse: collapse">
                     <tr>                                        
-                        <th style="text-align: left;width: 10%">
+                        <th style="text-align: left;width: 10%" class="ui-linux">
                            <img src="https://www.nfh.org.ng/image/nfh.jpg" style="max-width: 120px;height: auto;" id='img'>
                         </th>
-                        <th style="padding-left: 12px;text-align: left;width: 50%">
+                        <th style="padding-left: 12px;text-align: left;width: 50%" class="ui-linux">
                             <h2 id="center_name" style="font-size: 28px;margin:5px 0">Niger Foundation Hospital</h2>
                             <h4 style="margin: 5px 0;font-size: 24px">and Diagnostic Centre</h4>
                             <address style="font-weight: normal;">
@@ -125,14 +125,14 @@
                               <span id="center_phone">Tel: 07065693009 &nbsp;&nbsp;email: info@nfh.org.ng</span>                 
                             </address>
                         </th>                                   
-                        <th style="vertical-align: bottom;text-align: left;width: 40%">
+                        <th style="vertical-align: bottom;text-align: left;width: 40%" class="ui-linux">
                             <h4 style="text-indent:70px;font-size: 20px;margin: 5px 0"><b>RADIOLOGY REPORT</b></h4>
                         </th>
                     </tr>                               
                </table>
 	   	   	  
                 <div style="padding-top: 20px;">
-                  <section style="border: 1px solid #000;">
+                  <section style="border: 1px solid #000;" class="ui-linux">
                     <b style="display: inline-block;border-right: 1px solid #000;padding: 10px;width: 98px">Name:</b>
                     <span style="display: inline-block;width: 405px;font-size: 14px" contenteditable="true" id="name">{{patient.names}}</span>
                     <b style="display: inline-block;border-left: 1px solid #000; border-right: 1px solid #000; padding: 10px;width: 79px">Folder No:</b>
@@ -142,7 +142,7 @@
                   </section>
                </div>
                <div>
-                    <section style="border: 1px solid #000;border-top: none;">
+                    <section style="border: 1px solid #000;border-top: none;" class="ui-linux">
                         <b style="display: inline-block;border-right: 1px solid #000;padding: 10px;width: 98px">Age:</b>
                         <span style="display: inline-block;width: 120px;font-size: 14px" contenteditable="true" id="age">{{patient.age}}</span>
                         <b style="display: inline-block;border-left: 1px solid #000; border-right: 1px solid #000; padding: 10px">Sex:</b>
@@ -152,29 +152,29 @@
                     </section>
                </div>
                <div>
-                 <section style="border: 1px solid #000;border-top: none;">
+                 <section style="border: 1px solid #000;border-top: none;" class="ui-linux">
                     <b style="display: inline-block;border-right: 1px solid #000;padding: 10px;width: 98px">Examination:</b>
                     <span style="display: inline-block;font-size: 14px;width: 405px;" contenteditable="true" id="investigation">{{patient.studyName}}</span>
                     <b style="display: inline-block;border-left: 1px solid #000; border-right: 1px solid #000; padding: 10px">Date:</b>
                     <span style="display: inline-block;font-size: 14px" contenteditable="true" id="date">{{patient.studyDate | date: 'mediumDate'}}</span>
                  </section>
                </div>
-               <div style="margin-top: 15px;">
+               <div style="margin-top: 15px;" class="ui-linux">
                  <h6 style="font-size: 18px;margin: 10px 0"><b>Clinical Summary</b></h6>
                  <div style="border: 1px solid #000; min-height: 70px;padding: 10px 20px;line-height: 20px" contenteditable="true" id="summary" ng-bind="patient.summary">                  
                  </div>
                </div>
-               <div style="margin-top: 15px;">
+               <div style="margin-top: 15px;" class="ui-linux">
                  <h6 style="font-size: 18px;margin: 10px 0"><b>Findings</b></h6>
                  <div style="border: 1px solid #000; min-height: 70px;padding: 10px 20px;line-height: 20px" contenteditable="true" id="findings" ng-bind="patient.findings">                
                  </div>
                </div>
-               <div style="margin-top: 15px;">
+               <div style="margin-top: 15px;" class="ui-linux">
                  <h6 style="font-size: 18px;margin: 10px 0"><b>Conclusion</b></h6>
                  <div style="border: 1px solid #000; min-height: 70px;padding: 10px 20px;line-height: 20px" contenteditable="true" id="conclusion" ng-bind="patient.conclusion">                
                  </div>
                </div>
-               <div style="margin-top: 15px;">
+               <div style="margin-top: 15px;" class="ui-linux">
                  <h6 style="font-size: 18px;margin: 10px 0"><b>Further Advice/Investigation</b></h6>
                  <div style="border: 1px solid #000; min-height: 70px;padding: 10px 20px;line-height: 20px" contenteditable="true" id="advise" ng-bind="patient.advise">                
                  </div>
@@ -182,7 +182,7 @@
 
                <table style="margin-top:10px;border-collapse: collapse">
                  <tr>
-                    <td>
+                    <td class="ui-linux">
                         <h6 style="font-size: 18px;margin: 10px 0">Report by:</h6>
 
                         <b id="reporter_name">{{patient.reporter}}</b><br>
@@ -195,11 +195,11 @@
                <br>
                <table>
                    <tr>
-                       <td style="width: 750px;">
+                       <td style="width: 750px;" class="ui-linux">
                            <h6 style="font-size: 18px;margin: 10px 0">Study's DICOM viewer link:</h6>
                            <a href="{{patient.studyLink}}" target="_blank">{{patient.studyLink}}</a>
                        </td>
-                       <td style="vertical-align: bottom;text-align: right;">
+                       <td style="vertical-align: bottom;text-align: right;" class="ui-linux">
                             <img src="https://applinic.com/assets/images/img/applinic.png" style="width: 120px;height: auto;">
                         </td>
                    </tr>

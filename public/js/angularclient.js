@@ -23007,7 +23007,7 @@ function($scope,$http,$rootScope){
     $scope.loading = true;
 
     for(var i = 0; i < $rootScope.addForLinux.length; i++) {
-      $rootScope.addForLinux[i].style.zoom = 0.55;
+      $rootScope.addForLinux[i].style.zoom = 0.50;
     }
 
     $rootScope.templateReportDetails.html = $rootScope.hml.html();
