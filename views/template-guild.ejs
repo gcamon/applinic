@@ -36,50 +36,50 @@
                </table>
                 <div style="padding-top: 20px;">
                   <section style="border: 1px solid #000" class="ui-linux">
-                    <b style="display: inline-block;border-right: 1px solid #000;padding: 10px;width: 98px">Name:</b>
+                    <b style="display: inline-block;border-right: 1px solid grey;padding: 10px;width: 105px">Name:</b>
                     <span style="display: inline-block;width: 405px;font-size: 14px" contenteditable="true" id="name">{{patient.names}}</span>
-                    <b style="display: inline-block;border-left: 1px solid #000; border-right: 1px solid #000; padding: 10px;width: 79px">Folder No:</b>
+                    <b style="display: inline-block;border-left: 1px solid grey; border-right: 1px solid grey; padding: 10px;width: 89px" >ID:</b>
                     <span style="display: inline-block;font-size: 14px" contenteditable="true" id="studyId">{{patient.patientId}}</span>
-                    <!--<b style="display: inline-block;border-left: 1px solid #000; border-right: 1px solid #000; padding: 10px">Date:</b>
+                    <!--<b style="display: inline-block;border-left: 1px solid grey; border-right: 1px solid grey; padding: 10px">Date:</b>
                     <span style="display: inline-block;width: 150px;font-size: 14px" contenteditable="true" id="date">{{patient.studyDate | date: 'mediumDate'}}</span>-->
                   </section>
                </div>
                <div>
-                    <section style="border: 1px solid #000;border-top: none" class="ui-linux">
-                        <b style="display: inline-block;border-right: 1px solid #000;padding: 10px;width: 98px">Age:</b>
+                    <section style="border: 1px solid grey;border-top: none" class="ui-linux">
+                        <b style="display: inline-block;border-right: 1px solid grey;padding: 10px;width: 105px">Age:</b>
                         <span style="display: inline-block;width: 120px;font-size: 14px" contenteditable="true" id="age">{{patient.age}}</span>
-                        <b style="display: inline-block;border-left: 1px solid #000; border-right: 1px solid #000; padding: 10px">Sex:</b>
+                        <b style="display: inline-block;border-left: 1px solid grey; border-right: 1px solid grey; padding: 10px">Sex:</b>
                         <span style="display: inline-block;width: 105px;font-size: 14px" contenteditable="true" id="gender">{{patient.sex}}</span>
-                        <b style="display: inline-block;border-left: 1px solid #000; border-right: 1px solid #000; padding: 10px;width: 64px">Doctor:</b>
+                        <b style="display: inline-block;border-left: 1px solid grey; border-right: 1px solid grey; padding: 10px;width: 64px">Doctor:</b>
                         <span style="display: inline-block;font-size: 14px" contenteditable="true" id="referrer">{{patient.doctor}}</span>
                     </section>
                </div>
                <div>
-                 <section style="border: 1px solid #000;border-top: none" class="ui-linux">
-                    <b style="display: inline-block;border-right: 1px solid #000;padding: 10px;width: 98px">Examination:</b>
+                 <section style="border: 1px solid grey;border-top: none" class="ui-linux">
+                    <b style="display: inline-block;border-right: 1px solid grey;padding: 10px;width: 105px">Examination:</b>
                     <span style="display: inline-block;font-size: 14px;width: 405px;" contenteditable="true" id="investigation">{{patient.studyName}}</span>
-                    <b style="display: inline-block;border-left: 1px solid #000; border-right: 1px solid #000; padding: 10px">Date:</b>
+                    <b style="display: inline-block;border-left: 1px solid grey; border-right: 1px solid grey; padding: 10px">Date:</b>
                     <span style="display: inline-block;font-size: 14px" contenteditable="true" id="date">{{patient.studyDate | date: 'mediumDate'}}</span>
                  </section>
                </div>
                <div style="margin-top: 15px" class="ui-linux">
                  <h6 style="font-size: 18px;margin: 10px 0"><b>Clinical Summary</b></h6>
-                 <div style="border: 1px solid #000; min-height: 70px;padding: 10px 20px;line-height: 20px" contenteditable="true" id="summary" ng-bind="patient.summary">                  
+                 <div style="border: 1px solid grey; min-height: 70px;padding: 10px 20px;line-height: 20px" contenteditable="true" id="summary" ng-bind="patient.summary">                  
                  </div>
                </div>
                <div style="margin-top: 15px" class="ui-linux">
                  <h6 style="font-size: 18px;margin: 10px 0"><b>Findings</b></h6>
-                 <div style="border: 1px solid #000; min-height: 70px;padding: 10px 20px;line-height: 20px" contenteditable="true" id="findings" ng-bind="patient.findings">                
+                 <div style="border: 1px solid grey; min-height: 70px;padding: 10px 20px;line-height: 20px" contenteditable="true" id="findings" ng-bind="patient.findings">                
                  </div>
                </div>
                <div style="margin-top: 15px" class="ui-linux">
                  <h6 style="font-size: 18px;margin: 10px 0"><b>Conclusion</b></h6>
-                 <div style="border: 1px solid #000; min-height: 70px;padding: 10px 20px;line-height: 20px" contenteditable="true" id="conclusion" ng-bind="patient.conclusion">                
+                 <div style="border: 1px solid grey; min-height: 70px;padding: 10px 20px;line-height: 20px" contenteditable="true" id="conclusion" ng-bind="patient.conclusion">                
                  </div>
                </div>
                <div style="margin-top: 15px" class="ui-linux">
                  <h6 style="font-size: 18px;margin: 10px 0"><b>Further Advice/Investigation</b></h6>
-                 <div style="border: 1px solid #000; min-height: 70px;padding: 10px 20px;line-height: 20px" contenteditable="true" id="advise" ng-bind="patient.advise">                
+                 <div style="border: 1px solid grey; min-height: 70px;padding: 10px 20px;line-height: 20px" contenteditable="true" id="advise" ng-bind="patient.advise">                
                  </div>
                </div>
 
