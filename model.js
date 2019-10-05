@@ -1040,7 +1040,9 @@ var myModel = function () {
 	  summary: String,
 	  advise: String,
 	  referring_physician_email: String,
-		referring_physician_phone: String
+		referring_physician_phone: String,
+		attended: Boolean,
+		assigned_radiologist_id: String
 	});
 
 	var dicomSchema = Schema({

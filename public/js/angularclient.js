@@ -22970,6 +22970,16 @@ app.controller("templatectrl",["$scope","$http","$filter","ModalService","$rootS
     $scope.isReportPDF = false;
   }
 
+  $scope.otherStudies = function() {
+    ModalService.showModal({
+      templateUrl: 'otherStudiesModal.html',
+      controller: "otherStudiesModalController"
+    }).then(function(modal) {
+      modal.element.modal();
+      modal.close.then(function(result) {});
+    });
+  }
+
   
  
 }]);
@@ -23053,7 +23063,6 @@ function($scope,$http,$rootScope){
         } else {
           alert(response.message)
         } 
-        $scope.loading = false;      
       });
     } else {
       alert("Radiologist was not selected or does not exist.");
@@ -23061,6 +23070,42 @@ function($scope,$http,$rootScope){
   }
 
 }]);
+
+app.controller("otherStudiesModalController",["$scope","$http",function($scope,$http){
+    var path = window.location.toString();
+    var v = path.split('/');
+    var reporterID = v[v.length -2];
+    var study = $scope.currStudy = v[v.length -1];
+    var std = {};
+    var attention;
+
+    function getStudy() {
+      $scope.loading = true;
+      $http({
+        method  : 'GET',
+        url     : "/radiologist-studies?reporterID=" + reporterID + "&&study_ID=" + study + "&&isUnattended=" + attention,
+        headers : {'Content-Type': 'application/json'} 
+      })
+      .success(function(result) {
+        $scope.studies = result;
+        $scope.loading = false;
+      });
+    }
+
+    $scope.$watch("std.description",function(newVal,oldVal){
+      if(!newVal){
+        std.description = true;
+        attention = "yes";
+      } else if(newVal == "unattended") {        
+        attention = "yes";
+      } else {
+        attention = "no"
+      }      
+      getStudy();
+    });
+
+
+}])
 
 
 

@@ -10165,6 +10165,7 @@ router.put("/report-template",function(req,res){
         study.findings = req.body.findings || "";
         study.conclusion = req.body.conclusion || "";
         study.advise = req.body.advise || "";
+        study.attended = true;
         study.save(function(err,info){
           if(err) throw err;
           if(info){            
@@ -10310,6 +10311,16 @@ router.post("/email-report",function(req,res){
  
 
   
+})
+
+router.get("/radiologist-studies",function(req,res){
+  var criteria = (req.query.isUnattended == "yes") ?
+   {assigned_radiologist_id: req.query.reporterID,attended: false} : {assigned_radiologist_id: req.query.reporterID}
+  model.study.find(criteria)
+  .exec(function(err,data){
+    if(err) throw err;
+    res.json(data);
+  })
 })
 
 

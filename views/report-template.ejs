@@ -164,6 +164,15 @@
   overflow: scroll;
 }
 
+.studie {
+  padding: 10px 0 0;
+  text-transform: capitalize!important;
+}
+
+.studie a {
+  text-decoration: none;
+}
+
 @media (min-width: 576px) {
   .modal-dialog {
     max-width: 600px;
@@ -191,11 +200,12 @@
 			Wrapper Start
 	*************************************-->
 	<div>
-	   <div id="main" ng-controller="templatectrl">
+	   <div id="main" ng-controller="templatectrl" style="position: relative;">
            
-	   	   <div id="tempfield" ng-hide="isReportPDF">               
+	   	   <div id="tempfield" ng-hide="isReportPDF" >               
               <%- template.template %>
 	   	   </div>
+         <button style="position: absolute;top:10px; right: 20px" ng-click="otherStudies()" >Other studies</button>
            <!--<div ng-show="isReportPDF">
                <form ng-cloak ng-submit="emailReport()" style="text-align: center;margin-top: 20px">
                    <label><b>Send the report PDF to an email below:</b> </label><br><br>
@@ -365,6 +375,41 @@
           </div>
         </div>
     </script>
+    <script type="text/ng-template" id="otherStudiesModal.html">
+        <div class="modal fade">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close"  data-dismiss="modal" aria-hidden="true" style="float: right;cursor: pointer;">&times;</button>              
+                <h2 style="clear: both;">Other Studies</h2>
+                <div>
+                  <input type="radio" name="" ng-model="std.description" value="unattended"><label>Unattended</label>&nbsp;&nbsp;&nbsp;
+                  <input type="radio" name="" ng-model="std.description" value="all"><label>All</label>
+                  <span style="float: right;">( {{studies.length}} )</span>
+                </div>
+                <div style="clear: both;"></div>
+                <hr>     
+            </div>
+            <div class="modal-body" style="margin-top: 0;padding-top: 0">   
+              <div>
+                <div ng-repeat="j in studies | orderBy: '-study_date'" class="studie">
+                  <a href="{{'https://applinic.com/report-template/' + j.assigned_radiologist_id + '/' + j._id}}" ng-if="j._id !== currStudy">
+                    <b>{{j.patient_name}}</b>&nbsp;
+                    ( <span>{{j.patient_sex}}</span> )&nbsp;&nbsp;
+                    <span>{{j.study_name}}</span>&nbsp;&nbsp;&nbsp;&nbsp;
+                    <span>{{j.study_date | date : 'mediumDate'}}</span> | 
+                    <span>{{j.study_date | date : 'shortTime'}}</span>
+                  </a>
+                </div>
+              </div>            
+              <div style="text-align: center;padding:20px 0" ng-hide="!loading">
+                 <span>Loading...</span>
+              </div>
+            </div>
+          </div>
+        </div>
+    </script>
+
 
 	<script src="/assets/js/vendor/jquery-library.js"></script>
 
