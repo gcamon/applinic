@@ -214,7 +214,7 @@
                     <div class="header-block header-block-nav" ng-controller="patientNotificationController">
                         <ul class="nav-profile">
                             <li class="notifications new"> 
-                            <a href="" data-toggle="dropdown">
+                            <a href="" data-toggle="dropdown" title="This shows a notice when you have received prescription from physician, investigation requests/results from centers and other information">
                                 <i class="fa fa-bell"></i>
                                 <sup>
                                   <span class="counter" ng-if="noteLen > 0 " ng-cloak>{{(noteLen <= 100) ? noteLen : "99+" }}</span>
@@ -263,7 +263,7 @@
                                 </div>
                             </li>
 
-                               <li class="notifications new"> <a href="" data-toggle="dropdown" ng-click="hideLen()">
+                               <li class="notifications new"> <a href="" data-toggle="dropdown" ng-click="hideLen()" title="Here is the doctors response to your Consultation Requests or Complaint you sent anytime.">
                     <i class="fa fa-envelope"></i>
                     <sup>
                       <span class="counter" ng-if=" msgLen > 0 " ng-cloak>{{(msgLen <= 100) ? msgLen : "99+"}}</span>
@@ -334,7 +334,7 @@
                                 </div>
                             </li>
 
-                               <li class="notifications new"> <a href="" data-toggle="dropdown">
+                               <li class="notifications new"> <a href="" data-toggle="dropdown" title="Here is where you see notifications on 'Appointment Schedules' from your doctor to meet in-person at their offices">
                     <i class="fa fa-calendar"></i>
                     <sup>
                       <span class="counter" ng-if="appLen > 0 " ng-cloak>{{(appLen <= 100) ? appLen : "99+"}}</span>
@@ -367,7 +367,7 @@
                                     </footer>
                                 </div>
                             </li>
-                             <li class="notifications new"> <a href="" data-toggle="dropdown">
+                             <li class="notifications new"> <a href="" data-toggle="dropdown" title="Here is where you receive drug delivery status notifications for courier requests">
                     <i class="fa fa-motorcycle"></i>
                     <sup>
                       <span class="counter btn-danger" ng-if="isReady" style="border-radius: 10px;width: 8px;height: 8px;display: inline-block;"  ng-cloak></span>
@@ -415,7 +415,7 @@
                                 </div>
                             </li>
                              <!--<li class="notifications new"> <a href="" ng-click = "viewChat2(chatsList)" data-toggle="dropdown">-->
-                             <li class="notifications new"> <a href="" ng-click="viewChat2(chatsList)">
+                             <li class="notifications new"> <a href="" ng-click="viewChat2(chatsList)" title="Messages from doctors, centers, colleagues and others">
                               <i class="fa fa-comments" ></i>
                               <sup>
                                 <span class="counter btn-danger" ng-if="showIndicator !== false" style="border-radius: 10px;width: 8px;height: 8px;display: inline-block;"  ng-cloak></span>
