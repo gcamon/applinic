@@ -10137,7 +10137,6 @@ router.get("/report-template/:reporterId/:study_id",function(req,res){
 });
 
 router.post("/report-template",function(req,res){
-    console.log(req.body)
     model.template.findOne({center_id: req.body.center_id,type: req.body.type})
     .exec(function(err,result){
     if(err) throw err;

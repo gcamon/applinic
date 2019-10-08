@@ -1,23 +1,69 @@
+<style type="text/css">
+	.cp {
+		display: inline-block;
+	}
+
+	.cp-1 {
+		float: left;
+		position: relative;
+	}
+
+	.cp-1 > span {
+		display: block;
+		width: 15px;
+		height: 15px;
+		border-radius: 1px;
+	}
+
+	.cp-2 {
+		padding: 5px;
+		padding-left: 10px;
+		content: ""
+	}
+
+	.cp-2 > span {
+		font-size: 12px;
+		color: #fff
+	}
+
+	.bg-black {
+		background-color: rgba(0,0,0,0.5);
+	}
+</style>
+
 <div>
 	<div>
 		<a href="#{{path}}" class="btn btn-simple btn-sm"><i class="fa fa-arrow-left"></i> Back</a>
 	</div>
 	<div class="card">
 		<div class="row">
-			<div class="col-sm-12 col-md-4 col-lg-4 pl-2" >
-				<h4 class="p-1">Chats</h4>
-				<hr>
-				<div class="ellipsis hidden-md-down" style="max-height: 600px; overflow-y: auto">
-					<div ng-repeat="chat in chatsList | orderBy : '-realTime'" ng-click="viewChat(chat)" class="pl-1 cht-body" ng-if="chat.partnerId !== checkLogIn.user_id">
-						<img src="{{chat.profilePic}}" style="float: left;height:52px;width:42px">			
-						<a href="" class="chat-header-text ellipsis" ng-class="{'chat-header-text-new' : !chat.is_read}" style="display: inline-block;padding-left: 10px;width: 85%;position: relative;">
-							<strong style="font-size: 14px;">{{chat.name}}</strong><br>
-							<span style="font-size: 12px;">{{chat.partnerType}}</span><br>
-							 <span style="font-size: 12px;" class="ellipsis">{{(!chat.typing) ? (chat.messages[chat.messages.length - 1].received || chat.messages[chat.messages.length - 1].sent ) : chat.typing }}</span><br>
-							 <small am-time-ago="chat.messages[chat.messages.length - 1].time  || chat.messages[chat.messages.length - 1].received" ng-cloak></small></span>
-							 <span style="position: absolute;bottom: 50px;right: 20px"><span ng-if="chat.status" class="online" style="background-color: #85CE36"></span><span ng-if="!chat.status" class="online" style="background-color: #ccc;"></span></span>
+			<div class="col-sm-12 col-md-4 col-lg-4" style="background-color: #4f5f6f">
+				<h5 class="pt-1 text-white">Messages</h5>
+				<div>
+					<input type="text" name="" placeholder="Search chats" class="form-control" ng-model="ft">
+				</div>
+				<div class="ellipsis hidden-md-down" style="max-height: 530px; overflow-y: auto">
+					<div ng-repeat="chat in chatsList | orderBy : '-realTime' | filter: ft" ng-click="viewChat(chat)" class="cht-body" ng-if="chat.partnerId !== checkLogIn.user_id">
+									
+						<a href="" class="chat-header-text ellipsis" ng-class="{'chat-header-text-new' : !chat.is_read,'bg-black': chat.partnerId == partner.partnerId}" style="display: block;position: relative;">
+							<div class="cp cp-1" style="height:62px;width:62px;border-radius: 62px;border:1px solid #4f5f6f;overflow: hidden;text-align: center;vertical-align: middle;">
+								<img src="{{chat.profilePic}}" style="">
+								<span></span>
+							</div>
+							<div class="cp cp-2">
+								<strong style="font-size: 12px;display: block;padding: 0; color: #85CE36;width: 220px;" class="ellipsis">{{chat.name}}</strong>
+								<span style="font-size: 12px;display: block;width: 220px" class="ellipsis"><!--<span ng-show="chat.partnerType">{{chat.partnerType}}:</span>--> 
+								 <span style="font-size: 12px;">{{(!chat.typing) ? (chat.messages[chat.messages.length - 1].received || chat.messages[chat.messages.length - 1].sent ) : chat.typing }}</span></span>
+
+								 <span ng-if="chat.status" class="online" style="background-color: #85CE36;float: none;"></span>
+								 <span ng-if="!chat.status" class="online" style="background-color: #ccc;float: none;"></span>
+
+								 <span am-time-ago="chat.messages[chat.messages.length - 1].time  || chat.messages[chat.messages.length - 1].received" ng-cloak style="color: #ccc"></span>
+								 <!--<span style="position: absolute;bottom: 50px;right: 20px"><span ng-if="chat.status" class="online" style="background-color: #85CE36"></span><span ng-if="!chat.status" class="online" style="background-color: #ccc;"></span></span>-->
+							 </div>
 							 <!--<i class="fa fa-comment-o" style="position: absolute;top:3px;right:5px" ng-if="chat.isUnRead"></i>-->
 						</a>
+						
 						<div class="clearfix"></div>
 
 					</div> <!--<time  am-time-ago="i.sent_date" style="position: absolute;right: 0;top:2px;font-size: 12px"></time>-->
@@ -25,16 +71,25 @@
 
 
 				<div class="ellipsis hidden-md-up" style="max-height: 220px; border-bottom: 1px solid #ccc; margin-bottom: 5px; overflow-y: auto">
-					<div ng-repeat="chat in chatsList | orderBy : '-realTime'" ng-click="viewChat(chat)" class="pl-1 cht-body" ng-if="chat.partnerId !== checkLogIn.user_id">
-						<img src="{{chat.profilePic}}" style="float: left;height:75px;width:62px">			
-						<a href="" class="chat-header-text ellipsis" ng-class="{'chat-header-text-new' : !chat.is_read}" style="font-size: 12px;display: inline-block;padding-left: 10px;width: 85%;position: relative;">
-							<strong style="display: block;" >{{chat.name}}</strong>
-							<span style="display: block;">{{chat.partnerType}}</span>
-							 <span style="display:block;" class="ellipsis">{{(!chat.typing) ? (chat.messages[chat.messages.length - 1].received || chat.messages[chat.messages.length - 1].sent ) : chat.typing }} 
-							 <small style="display:block;" am-time-ago="chat.messages[chat.messages.length - 1].time  || chat.messages[chat.messages.length - 1].received" ng-cloak></small></span> 
-							 <span style="position: absolute;bottom: 0;right: 20px"><span ng-if="chat.status" class="online" style="background-color: #85CE36"></span><span ng-if="!chat.status" class="online" style="background-color: #ccc;"></span></span>
-							 <!--<i class="fa fa-comment-o" style="position: absolute;top:3px;right:5px" ng-if="chat.isUnRead"></i>-->
-						</a>
+					<div ng-repeat="chat in chatsList | orderBy : '-realTime' | filter: ft" ng-click="viewChat(chat)" class="pl-1 cht-body" ng-if="chat.partnerId !== checkLogIn.user_id">
+						<div class="cp cp-1" style="height:62px;width:62px;border-radius: 62px;border:1px solid #4f5f6f;overflow: hidden;text-align: center;vertical-align: middle;">
+							<img src="{{chat.profilePic}}">	
+						</div>
+						<div class="cp cp-2">		
+							<a href="" class="chat-header-text ellipsis" ng-class="{'chat-header-text-new' : !chat.is_read}" style="display: block;position: relative;">
+								<strong style="font-size: 12px;display: block;padding: 0;color: #85CE36" class="ellipsis">{{chat.name}}</strong>
+								<span style="font-size: 12px;display: block;" class="ellipsis"><!--<span ng-show="chat.partnerType">{{chat.partnerType}}:</span>-->
+								 <span style="font-size: 12px">{{(!chat.typing) ? (chat.messages[chat.messages.length - 1].received || chat.messages[chat.messages.length - 1].sent ) : chat.typing }}</span></span>
+
+								 <span ng-if="chat.status" class="online" style="background-color: #85CE36;float: none;"></span>
+								 <span ng-if="!chat.status" class="online" style="background-color: #ccc;float: none;"></span>
+								 
+								 <span am-time-ago="chat.messages[chat.messages.length - 1].time  || chat.messages[chat.messages.length - 1].received" ng-cloak style="color: #ccc"></span>
+
+								 <!--<span style="position: absolute;bottom: 0;right: 20px"><span ng-if="chat.status" class="online" style="background-color: #85CE36"></span><span ng-if="!chat.status" class="online" style="background-color: #ccc;"></span></span>-->
+								 <!--<i class="fa fa-comment-o" style="position: absolute;top:3px;right:5px" ng-if="chat.isUnRead"></i>-->
+							</a>
+						</div>
 						<span class="clearfix"></span>
 					</div> <!--<time  am-time-ago="i.sent_date" style="position: absolute;right: 0;top:2px;font-size: 12px"></time>-->
 				</div>
@@ -44,21 +99,26 @@
 			<div class="col-sm-12 col-md-8 col-lg-8">
 				<div class="panel panel-default">
 	                <div class="top-bar" style="border-bottom:1px solid rgba(0,0,0,0.2);box-shadow:0px 5px 5px #ccc">
-	                    <div class="col-md-5 col-sm-5 col-lg-5 col-xs-5">
+	                    <div class="col-md-5 col-sm-5 col-lg-6 pl-0">
 	                    	<a href="{{'/user/profile/view/' + partner.partnerId}}" target="_blank" style="display: block;">
-		                    	<img src="{{partner.profilePic}}" style="float: left;max-height: 42px;width:42px">	
+	                    		<div class="cp cp-1" style="height:62px;width:62px;border-radius: 62px;border:1px solid #85CE36;overflow: hidden;text-align: center;vertical-align: middle;">
+		                    		<img src="{{partner.profilePic}}">
+		                    	</div>	
 		                      <!--<button class="btn btn-simple text-danger" style="font-size: 16px" ng-click="chatLive()">Chat</button> &nbsp;&nbsp;-->
-		                        <span class="ellipsis" style="display:inline-block;font-size: 12px;padding: 3px 5px" ng-cloak><b>{{partner.name}} - {{partner.partnerType}} </b>&nbsp;
-		                        	<span style="display: block;">
-		                            <em ng-if="partner.typing" style="font-size: 12px;color: green"><small>{{partner.typing}}</small></em> 
-		                            <em ng-if="partner.status && !partner.typing" style="font-size: 12px;color: green" ng-cloak>Online</em>
-		                            <em ng-if="!partner.status && !partner.typing" ng-cloak style="color:red;font-size: 12px">Offline</em>
-		                            </span>
-		                        </span>
+		                        <div class="cp cp-2">
+			                        <span class="ellipsis" style="display:inline-block;width:180px;font-size: 14px;padding-top:3px;color: #85CE36" ng-cloak><b>{{partner.name}}<!--{{partner.partnerType}}--> </b>&nbsp;
+			                        	<span style="display: block;">
+			                            <em ng-if="partner.typing" style="font-size: 12px;color: green"><small>{{partner.typing}}</small></em> 
+			                            <em ng-if="partner.status && !partner.typing" style="font-size: 12px;color: green" ng-cloak>Online</em>
+			                            <em ng-if="!partner.status && !partner.typing" ng-cloak style="color:orange;font-size: 12px"><!--{{lastSeen(partner)}}--> Offline</em>
+			                            </span>
+			                        </span>
+		                        </div>
 	                        </a>
 	                    </div>
-	                    <div class="col-md-7 col-lg-7 col-sm-7 col-xs-7 " style="text-align: right;">
+	                    <div class="col-md-6 col-lg-6 col-sm-6" style="text-align: right;">
 	                    	<!--<object type="application/pdf" src="https://s3.amazonaws.com/applinic-files/1541107583724MIRASYD.pdf" width="200px" height="300px"></object>-->
+
 	                    	<div ng-if="checkLogIn.typeOfUser === 'Patient' || checkLogIn.typeOfUser === 'Doctor'">
 	                    		<small><a href="" class="ellipsis" ng-if="partner.partnerType === 'Doctor' && checkLogIn.typeOfUser !== 'Doctor'"  ng-click="chatPrivate(partner)">Single Chat</a>
 	                    		<a href="" class="btn btn-info btn-sm" ng-if="partner.partnerType === 'Patient'"  ng-click="chatPrivate(partner)">Manage Patient</a>
@@ -87,14 +147,16 @@
 			                <textarea contenteditable="true" style="padding-top: 30px;word-break: normal;padding-right: 30px" ng-model="user.text1"  ng-keypress="getkeys($event)" placeholder="Type a message..."> <span class="textout" >{{typeMessage}}</span> </textarea>
 			                <button type="submit" class="btn btn-neutral btn-sm fa fa-send chat-send-btn csbg" style="font-size: 25px"></button>-->
 
-			                 <div style="position: relative;">
-		                        <input type="file" style="position: absolute;left: 2px;top: 0" id="file" file-model-chat="files">
-		                    </div>
-		                    <div class="mt-3 pb-2" style="position: relative;">
-		                        <textarea contenteditable="true" class="chat-text-area" ng-model="user.text1"  ng-keypress="getkeys($event)" placeholder="Type a message..." ng-keyup="autoExpand2($event)" id="textarea2" style="box-shadow: none!important;"> <span class="textout" >{{typeMessage}}</span> </textarea>
+			               
+		                    <div class="mt-1 pb-2" style="position: relative;">
+		                        <textarea contenteditable="true" class="chat-text-area" ng-model="user.text1"  placeholder="Type a message..."  id="textarea2" ng-keypress="getkeys($event)" style="box-shadow: none!important;"> <span class="textout" >{{typeMessage}}</span> </textarea>
 		                        <button type="submit" class="chat-btn btn btn-neutral text-warning"><i class="fa fa-send"></i></button>
 		                    </div>
 		                    <div class="clearfix"></div>
+		                    <hr>
+		                    <div style="position: relative;">
+		                        <input type="file" id="file" file-model-chat="files">
+		                    </div>
 		                </form>
 
 		             
@@ -104,7 +166,7 @@
 			</div>
 		</div>		
 	</div>
-	<div style="height: 300px">
-		
+
+	<div style="height: 300px">	
 	</div>
 </div>

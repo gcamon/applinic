@@ -4542,9 +4542,10 @@ app.controller("inDoctorDashboardController",["$scope","$location","$http","loca
 //sends a request to get all notifications for the logged in doctor and also filters the result.
 
 app.controller("docNotificationController",["$scope","$location","$resource","$interval","localManager","templateService",
-  "requestManager","mySocket","$rootScope","$timeout","ModalService","chatService","deleteFactory","courierResponseService",
+  "requestManager","mySocket","$rootScope","$timeout","ModalService","chatService",
+  "deleteFactory","courierResponseService","$filter",
   function($scope,$location,$resource,$interval,localManager,templateService,requestManager,
-    mySocket,$rootScope,$timeout,ModalService,chatService,deleteFactory,courierResponseService){
+    mySocket,$rootScope,$timeout,ModalService,chatService,deleteFactory,courierResponseService,$filter){
     var getPerson = localManager.getValue("resolveUser");
     localManager.removeItem("callOptionMany");// removes call many if any was set before call page was redirected to
     var getRequestInTime = $resource("/user/doctor/:userId/get-all-request",{userId:getPerson.user_id});
@@ -4866,7 +4867,22 @@ app.controller("docNotificationController",["$scope","$location","$resource","$i
 
   $rootScope.loadChats();
 
-  $rootScope.viewChat = function(partnerId) {
+  $scope.viewChat2 = function(list) {   
+     if(list) {
+      var byRecent = $filter('orderBy')(list,'-realTime');
+      templateService.holdId = byRecent[0].partnerId;   
+      
+      if(templateService.holdId) {
+        $location.path("/general-chat");
+      } else {
+        alert("You have no messages yet.")
+      }
+      $scope.showIndicator = false;
+    }
+  }
+
+
+  $rootScope.viewChat = function(partnerId,list) {
     templateService.holdId = partnerId;
     $location.path("/general-chat");
     $scope.showIndicator = false;
@@ -7343,10 +7359,12 @@ app.service("getAppointmentServce",["$resource",function($resource){
 //to store then templateService. Note patient prescription  is not amonge the data filtered so far.
 app.controller("patientNotificationController",["$scope","$location","$http","$window","$rootScope","$resource","chatService",
   "templateService","localManager","deleteFactory","mySocket","$timeout","medicaRecordFactory","patientNotificationService",
-  "getMedicalHistoryService","chatHistoryService","getResponseService","getMessagesService","getAppointmentServce","courierResponseService",
+  "getMedicalHistoryService","chatHistoryService","getResponseService","getMessagesService",
+  "getAppointmentServce","courierResponseService","$filter",
   function($scope,$location,$http, $window,$rootScope,$resource,chatService,templateService,localManager,
     deleteFactory,mySocket,$timeout,medicaRecordFactory,patientNotificationService,
-    getMedicalHistoryService,chatHistoryService,getResponseService,getMessagesService,getAppointmentServce,courierResponseService){
+    getMedicalHistoryService,chatHistoryService,getResponseService,getMessagesService,
+    getAppointmentServce,courierResponseService,$filter){
   
   var filter = {};
   
@@ -7762,6 +7780,20 @@ app.controller("patientNotificationController",["$scope","$location","$http","$w
   }
 
   $rootScope.loadChats();
+
+   $scope.viewChat2 = function(list) {   
+     if(list) {
+      var byRecent = $filter('orderBy')(list,'-realTime');
+      templateService.holdId = byRecent[0].partnerId;   
+      
+      if(templateService.holdId) {
+        $location.path("/general-chat");
+      } else {
+        alert("You have no messages yet.")
+      }
+      $scope.showIndicator = false;
+    }
+  }
 
   $rootScope.viewChat = function(partnerId) {
     templateService.holdId = partnerId;
@@ -14666,9 +14698,10 @@ app.service("viewNoteService",["$resource",function($resource){
 }]);
 
 app.controller("pharmacyCenterNotificationController",["$scope","$location","$resource","$window","templateService","deleteFactory",
-  "localManager","chatService","$rootScope","mySocket","pharmacyCenterNotificationControllerService","addNoteService","viewNoteService","$http",
+  "localManager","chatService","$rootScope","mySocket","pharmacyCenterNotificationControllerService",
+  "addNoteService","viewNoteService","$http","$filter",
   function($scope,$location,$resource,$window,templateService,deleteFactory,localManager,chatService,
-    $rootScope,mySocket,pharmacyCenterNotificationControllerService,addNoteService,viewNoteService,$http){
+    $rootScope,mySocket,pharmacyCenterNotificationControllerService,addNoteService,viewNoteService,$http,$filter){
 
   var notification = pharmacyCenterNotificationControllerService; //$resource("/user/center/get-notification");
 
@@ -14756,10 +14789,18 @@ app.controller("pharmacyCenterNotificationController",["$scope","$location","$re
 
   $rootScope.loadChats();
 
-  $scope.viewChat = function(partnerId) {
-    templateService.holdId = partnerId;
-    $location.path("/general-chat");
-    $scope.showIndicator = false;
+  $scope.viewChat = function(list) {   
+    if(list) {
+      var byRecent = $filter('orderBy')(list,'-realTime');
+      templateService.holdId = byRecent[0].partnerId;   
+      
+      if(templateService.holdId) {
+        $location.path("/general-chat");
+      } else {
+        alert("You have no messages yet.")
+      }
+      $scope.showIndicator = false;
+    }
   }
 
   $scope.showIndicator = false;
@@ -15210,9 +15251,11 @@ app.service("labNoteService",["$resource",function($resource){
 
 
 app.controller("labCenterNotificationController",["$scope","$location","$resource","$window","templateService",
-  "localManager","$http","chatService","labCenterNotificationService","labNoteService","deleteFactory","courierResponseService",
+  "localManager","$http","chatService","labCenterNotificationService","labNoteService",
+  "deleteFactory","courierResponseService","$filter",
   "$rootScope","mySocket",function($scope,$location,$resource,$window,templateService,
-    localManager,$http,chatService,labCenterNotificationService,labNoteService,deleteFactory,courierResponseService,$rootScope,mySocket){
+    localManager,$http,chatService,labCenterNotificationService,labNoteService,deleteFactory,
+    courierResponseService,$filter,$rootScope,mySocket){
 
 
   function getNotification() {
@@ -15326,10 +15369,18 @@ app.controller("labCenterNotificationController",["$scope","$location","$resourc
 
   $rootScope.loadChats();
 
-  $scope.viewChat = function(partnerId) {
-    templateService.holdId = partnerId;
-    $location.path("/general-chat");
-    $scope.showIndicator = false;
+  $scope.viewChat = function(list) {
+    if(list) {
+      var byRecent = $filter('orderBy')(list,'-realTime');
+      templateService.holdId = byRecent[0].partnerId;   
+      
+      if(templateService.holdId) {
+        $location.path("/general-chat");
+      } else {
+        alert("You have no messages yet.")
+      }
+      $scope.showIndicator = false;
+    }
   }
 
   $scope.showIndicator = false;
@@ -16309,9 +16360,10 @@ app.service("radioTestsService",["$resource",function($resource){
 
 app.controller("radioCenterNotificationController",["$scope","$location","$http","$window","templateService",
   "localManager","$resource","$rootScope","mySocket","chatService","radioNotificationService",
-  "radioTestsService","deleteFactory","courierResponseService",
+  "radioTestsService","deleteFactory","courierResponseService","$filter",
   function($scope,$location,$http,$window,templateService,localManager,$resource,
-    $rootScope,mySocket,chatService,radioNotificationService,radioTestsService,deleteFactory,courierResponseService) {
+    $rootScope,mySocket,chatService,radioNotificationService,radioTestsService,
+    deleteFactory,courierResponseService,$filter) {
 
   var notification = radioNotificationService; //$resource("/user/center/get-notification",null,{updateStatus:{method:'PUT'}});
   var radioTests = radioTestsService; //$resource( "/user/radiology/get-referral",null,{sendObj:{method:"PUT"}});
@@ -16435,10 +16487,18 @@ app.controller("radioCenterNotificationController",["$scope","$location","$http"
   }
   $rootScope.loadChats();
 
-  $scope.viewChat = function(partnerId) {
-    templateService.holdId = partnerId;
-    $location.path("/general-chat");
-     $scope.showIndicator = false;
+  $scope.viewChat = function(list) {   
+    if(list) {
+      var byRecent = $filter('orderBy')(list,'-realTime');
+      templateService.holdId = byRecent[0].partnerId;   
+      
+      if(templateService.holdId){
+        $location.path("/general-chat");
+      } else {
+        alert("You have no messages yet.")
+      }
+      $scope.showIndicator = false;
+    }
   }
 
 

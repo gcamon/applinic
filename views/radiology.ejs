@@ -153,7 +153,7 @@
                    
                     <div class="header-block header-block-nav" ng-controller = "createRoomController">
                         <ul class="nav-profile" ng-controller="topHeaderController">
-                            <li class="notifications new"> <a href="" data-toggle="dropdown">
+                            <li class="notifications new"> <a href="" data-toggle="dropdown" title="Investigation requests notification from physician, patients, centers and colleagues">
                     <i class="fa fa-bell-o"></i>
                     <sup>
                       <span class="counter" ng-if="noteLen > 0 " ng-cloak>{{noteLen}}</span>
@@ -230,23 +230,24 @@
                             </li>                                         
 
 
-                              <li class="notifications new"> <a href="" ng-click = "loadChats()" data-toggle="dropdown" ng-controller="presenceSocketController">
-                              <i class="fa fa-comment" ></i>
+                              <!--<li class="notifications new"> <a href="" ng-click = "" data-toggle="dropdown" ng-controller="presenceSocketController">-->
+                              <li class="notifications new"> <a href="" ng-click = "viewChat(chatsList)" ng-controller="presenceSocketController" title="Messages from patients, centers, doctors and colleagues"> 
+                              <i class="fa fa-comments" ></i>
                               <sup>
                                 <span class="counter btn-danger" ng-if="showIndicator !== false" style="border-radius: 10px;width: 8px;height: 8px;display: inline-block;"  ng-cloak></span>
                               </sup>
                             </a>
-                                <div class="dropdown-menu notifications-dropdown-menu menuThree" style="max-height: 400px;overflow-y: auto;">
+                                <div class="dropdown-menu notifications-dropdown-menu menuThree" style="max-height: 400px;overflow-y: auto;max-width: 480px;">
                                     <ul class="notifications-container noti-style">
-                                        <li> <h6 style="text-align: center">Chats</h6> </li>
-                                        <li ng-repeat = "chat in chatsList | orderBy : '-realTime'" ng-click= "viewChat(chat.partnerId)" style="height: 80px;overflow:hidden">
-                                            <a href="" class="notification-item">
+                                        <li> <h5 style="text-align: center">Messages</h5> </li>
+                                        <li ng-repeat = "chat in chatsList | orderBy : '-realTime'" ng-click= "viewChat(chat.partnerId)" style="height: 80px;overflow:hidden;" class="ellipsis">
+                                            <a href="" class="notification-item" style="display: block;">
                                                 <div class="img-col">
                                                     <div class="img" style="background-image: url({{chat.profilePic}})"></div>
                                                 </div>
                                                 <div class="body-col">                                                
                                                     <p style=""> <span class="accent" ng-cloak>{{chat.name}}</span>
-                                                        <span style="display:block" class="ellipsis">{{chat.messages[chat.messages.length - 1].received || chat.messages[chat.messages.length - 1].sent}} <small style="display:block" am-time-ago="chat.messages[chat.messages.length - 1].time" ng-cloak></small></span> 
+                                                        <span style="display:block">{{chat.messages[chat.messages.length - 1].received || chat.messages[chat.messages.length - 1].sent}} <small style="display:block" am-time-ago="chat.messages[chat.messages.length - 1].time" ng-cloak></small></span> 
                                                     </p>
                                                 </div>
                                             </a>

@@ -154,7 +154,7 @@
                    
                     <div class="header-block header-block-nav" ng-controller = "createRoomController">
                         <ul class="nav-profile header-Pharma" ng-controller="topHeaderController">
-                            <li class="notifications new"> <a href="" data-toggle="dropdown">
+                            <li class="notifications new"> <a href="" data-toggle="dropdown" title="Notification for drug prescription requests from patients, doctors and colleagues">
                     <i class="fa fa-bell"></i>
                     <sup>
                       <span class="counter" ng-if="noteLen > 0 " ng-cloak>{{noteLen}}</span>
@@ -216,8 +216,10 @@
                                     </footer>
                                 </div>
                             </li>
-                             <li class="notifications new"> <a href="" ng-click = "loadChats()" data-toggle="dropdown" ng-controller="presenceSocketController">
-                              <i class="fa fa-comment" ></i>
+                             <!--<li class="notifications new"> <a href="" ng-click = "loadChats()" data-toggle="dropdown" ng-controller="presenceSocketController">-->
+                             <li class="notifications new"> <a href="" ng-click = "viewChat(chatsList)"  ng-controller="presenceSocketController" title="Messages from patients, centers, doctors and colleagues">
+
+                              <i class="fa fa-comments" ></i>
                               <sup>
                                 <span class="counter btn-danger" ng-if="showIndicator !== false" style="border-radius: 10px;width: 8px;height: 8px;display: inline-block;"  ng-cloak></span>
                               </sup>

@@ -32,20 +32,20 @@
 			border: 2px solid grey;
 		}
 
-        h6 {
-            font-size: 18px
-        }
+    h6 {
+        font-size: 18px
+    }
 
-        .btn {
-            padding: 10px 15px;
-            color: #fff;
-            border-radius: 5px;
-            background-color: darkRed;
-            border: none;
-        }
+    .btn {
+        padding: 10px 15px;
+        color: #fff;
+        border-radius: 5px;
+        background-color: darkRed;
+        border: none;
+    }
 
-        
-      .modal-open {
+    
+  .modal-open {
   overflow: hidden;
 }
 
@@ -388,11 +388,12 @@
                   <span style="float: right;">( {{studies.length}} )</span>
                 </div>
                 <div style="clear: both;"></div>
-                <hr>     
+                  
             </div>
             <div class="modal-body" style="margin-top: 0;padding-top: 0">   
-              <div>
-                <div ng-repeat="j in studies | orderBy: '-study_date'" class="studie">
+                   
+                <input type="text" name="" placeholder="filter result" ng-model="filter" style="padding: 5px;">
+                <div ng-repeat="j in studies | orderBy: '-study_date' | filter: filter" class="studie">
                   <a href="{{'https://applinic.com/report-template/' + j.assigned_radiologist_id + '/' + j._id}}" ng-if="j._id !== currStudy">
                     <b>{{j.patient_name}}</b>&nbsp;
                     ( <span>{{j.patient_sex}}</span> )&nbsp;&nbsp;
@@ -401,7 +402,7 @@
                     <span>{{j.study_date | date : 'shortTime'}}</span>
                   </a>
                 </div>
-              </div>            
+                     
               <div style="text-align: center;padding:20px 0" ng-hide="!loading">
                  <span>Loading...</span>
               </div>
