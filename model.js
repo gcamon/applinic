@@ -649,7 +649,8 @@ var myModel = function () {
 		updated: Date,
 		stock_update: updateSchema,
 		patient_history: patientHistorySchema,
-		reporters: Array
+		reporters: Array,
+		dicom_enterprise: Boolean
 	},{
 		collections: "userinfos"
 	})

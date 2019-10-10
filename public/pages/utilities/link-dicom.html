@@ -4,38 +4,38 @@
 	<p style="background-color: #d7dde4;padding: 10px">'Link DICOM Study' enables you connect a study uploaded to Applinic online DICOM PACs server to its web and mobile viewer (If you have not done that already) for remote sharing, viewing and reporting of studies with Applinic default or your center's template. The Remote PACS details will be shown after you have completed the fields below and clicked the 'Link Study' button.</p>
 	<form class="col-md-10" ng-submit="addStudy()" ng-if="!isSuccess">
 		
-		<label>Patient Names *:</label><br>
+		<label>Patient Names *</label><br>
 		<input type="text" name="" placeholder="Name" required class="form-control" ng-model="station.patientName"><br>
-		<label>Patient's Phone Number *: </label><br>
+		<label>Patient's Phone Number * </label><br>
 		<input type="text" name="" placeholder="Phone" ng-model="station.patientPhone" required class="form-control"><br>
-		<label>Patient's Email Address (If any): </label><br>
+		<label>Patient's Email Address (If any) </label><br>
 		<input type="text" name="" placeholder="Email" ng-model="station.patientEmail" class="form-control"><br>
-		<label>Patient's Age *: </label><br>
+		<label>Patient's Age * </label><br>
 		<input type="text" name="" placeholder="Patient age" ng-model="station.patientAge" required class="form-control"><br>
-		<label>Patient's Sex *: </label><br>
+		<label>Patient's Sex * </label><br>
 		<select ng-model="station.patientSex" required class="form-control">
 			<option value="" selected="true" disabled="disabled">_select</option>
 			<option value="Male"> Male</option>
 			<option value="Female"> Female</option>
 		</select><br>
 		<hr>
-		<label>Name of Study (investigation) *:</label><br>
+		<label>Name of Study (investigation) *</label><br>
 		<input type="text" name="" placeholder="Name" required class="form-control" ng-model="station.studyName"><br>
-		<label>Indication/Clinical Summary *:</label><br>
+		<label>Indication/Clinical Summary *</label><br>
 		<textarea placeholder="Write..." required class="form-control pl-1" ng-model="station.clinicalSummaryIndication" style="height: 70px!important"></textarea><br>	
-		<label>Date study was done *:</label><br>
+		<label>Date study was done *</label><br>
 		<input type="date" name="" placeholder="Date of study" required class="form-control" ng-model="station.studyDate"><br>
-		<label>Type of Study *: </label><br>
-		<select class="form-control" ng-model="station.type" required>
+		<label ng-if="!station.dicom_enterprise">Type of Study * </label><br>
+		<select class="form-control" ng-model="station.type" required ng-if="!station.dicom_enterprise">
 			<!--<option value="CT/MRI" selected="selected">CT/MRI/PET/SPECT - {{toCurrency(1000)}}</option>
 			<option value="SI">Special Investigations/Mammography - {{toCurrency(500)}}</option>
 			<option value="CAPEHS">Chest/Abdomen/Pelvis/Extremeties/Head/Spine - {{toCurrency(250)}}</option>-->
 			<option value="" selected="true" disabled="disabled">_select</option>
-			<option value="CT/MRI" selected="selected">CT/MRI/PET/SPECT - {{toCurrency(1000)}}</option>
-				<option value="SI">Multiple Routine Views, Contrast Studies and Mammography - {{toCurrency(700)}}</option>
-				<option value="CAPEHS">Single AP or Lateral or Other View of Skull/Spine/Chest/Abdomen/Pelvis/Extremeties - {{toCurrency(350)}}</option>
+			<option value="CT/MRI" selected="selected">CT/MRI/PET/SPECT - {{toCurrency(750)}}</option>
+				<option value="SI">Multiple Routine Views, Contrast Studies and Mammography - {{toCurrency(500)}}</option>
+				<option value="CAPEHS">Single AP or Lateral or Other View of Skull/Spine/Chest/Abdomen/Pelvis/Extremeties - {{toCurrency(250)}}</option>
 		</select><br>
-		<label>Locate Study With *:</label><br>
+		<label>Locate Study With *</label><br>
 		<label class="custom-control custom-radio">
 			<input type="radio" value="patientID" ng-model="station.locate" class="custom-control-input">
 			<span class="custom-control-indicator"></span>
@@ -47,15 +47,15 @@
 			<span class="custom-control-description font-1_1"> <b>Study UID</b></span>
 		</label><br><br>
 		<div ng-if="station.locate == 'studyID'">
-			<label>Study UID: (Something that looks like 1.2.392.200036.9125.234554....)</label><br>
+			<label>Study UID (Something that looks like 1.2.392.200036.9125.234554....)</label><br>
 			<input type="text" name="" placeholder="Study UID" required class="form-control" ng-model="station.studyID"><br>
 		</div>
 		<div ng-if="station.locate == 'patientID'">
-			<label>Patient ID: </label><br>
+			<label>Patient ID </label><br>
 			<input type="text" name="" placeholder="Patient ID" required class="form-control" ng-model="station.patientID"><br>
 		</div>
 		<hr>
-		<label>Referring Physician *:</label><br>
+		<label>Referring Physician *</label><br>
 		<input type="text" name="" placeholder="Physician names" required class="form-control" ng-model="station.referringPhysician">
 		<!--<div class="col-md-6 p-0">
 			<input type="text" name="" class="form-control" placeholder="Phone number" ng-model="station.referringPhysicianPhone">
@@ -66,7 +66,7 @@
 
 		<div class="clearfix"></div><br>
 
-		<label>Choose who writes the report *:</label><br>
+		<label>Choose who writes the report *</label><br>
 		<select ng-model="station.reporter" class="form-control" required="required">
 			<option value="" disabled="disabled" selected="true">_select</option>
 			<option value="{{j.id}}" ng-repeat="j in radiologists" style="font-weight: bold;">{{j.name}} - {{j.designation}}</span>  </option>

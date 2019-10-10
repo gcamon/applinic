@@ -22115,7 +22115,8 @@ app.controller("dicomCtrl",["$rootScope","$scope","$location","$resource","$http
     headers : {'Content-Type': 'application/json'} 
     })
   .success(function(data) {   
-     $scope.radiologists = data;
+     $scope.radiologists = data.reporters;
+     $scope.station.dicom_enterprise = data.package;
   }); 
 
   
@@ -22332,31 +22333,38 @@ app.controller("dicomCtrl",["$rootScope","$scope","$location","$resource","$http
 
   $scope.genAccession = function() {
     var cost;
-    switch($scope.station.type) {
-      case'CT/MRI':
-        cost = $rootScope.toCurrency(1000);
-        $scope.station.amount = 1000;
-        if($scope.availableAmount < $scope.station.amount){
-          alert("You have insufficient fund for this service. Please fund your wallet.");
-          return;
-        }
-      break;
-      case'SI':
-        cost = $rootScope.toCurrency(700);
-        $scope.station.amount = 700;
-         if($scope.availableAmount < $scope.station.amount){
-          alert("You have insufficient fund for this service. Please fund your wallet.");
-          return;
-        }
-      break;
-      case'CAPEHS':
-        cost = $rootScope.toCurrency(350);
-        $scope.station.amount = 350;
-        if($scope.availableAmount < $scope.station.amount){
-          alert("You have insufficient fund for this service. Please fund your wallet.");
-          return;
-        }
-      break;
+    if(!$scope.station.dicom_enterprise) {
+
+      switch($scope.station.type) {
+        case'CT/MRI':
+          cost = $rootScope.toCurrency(750);
+          $scope.station.amount = 750;
+          if($scope.availableAmount < $scope.station.amount){
+            alert("You have insufficient fund for this service. Please fund your wallet.");
+            return;
+          }
+        break;
+        case'SI':
+          cost = $rootScope.toCurrency(500);
+          $scope.station.amount = 500;
+           if($scope.availableAmount < $scope.station.amount){
+            alert("You have insufficient fund for this service. Please fund your wallet.");
+            return;
+          }
+        break;
+        case'CAPEHS':
+          cost = $rootScope.toCurrency(250);
+          $scope.station.amount = 250;
+          if($scope.availableAmount < $scope.station.amount){
+            alert("You have insufficient fund for this service. Please fund your wallet.");
+            return;
+          }
+        break;
+      }
+
+    } else {
+      $scope.station.amount = 0;
+      cost = 0;
     }
 
 
@@ -22398,31 +22406,36 @@ app.controller("dicomCtrl",["$rootScope","$scope","$location","$resource","$http
 
   $scope.addStudy = function() {
     var cost;
-    switch($scope.station.type) {
-      case'CT/MRI':
-        cost = $rootScope.toCurrency(1000);
-        $scope.station.amount = 1000;
-        if($scope.availableAmount < $scope.station.amount){
-          alert("You have insufficient fund for this service. Please fund your wallet.");
-          return;
-        }
-      break;
-      case'SI':
-        cost = $rootScope.toCurrency(500);
-        $scope.station.amount = 700;
-         if($scope.availableAmount < $scope.station.amount){
-          alert("You have insufficient fund for this service. Please fund your wallet.");
-          return;
-        }
-      break;
-      case'CAPEHS':
-        cost = $rootScope.toCurrency(350);
-        $scope.station.amount = 350;
-        if($scope.availableAmount < $scope.station.amount){
-          alert("You have insufficient fund for this service. Please fund your wallet.");
-          return;
-        }
-      break;
+    if(!$scope.station.dicom_enterprise) {
+      switch($scope.station.type) {
+        case'CT/MRI':
+          cost = $rootScope.toCurrency(750);
+          $scope.station.amount = 750;
+          if($scope.availableAmount < $scope.station.amount){
+            alert("You have insufficient fund for this service. Please fund your wallet.");
+            return;
+          }
+        break;
+        case'SI':
+          cost = $rootScope.toCurrency(500);
+          $scope.station.amount = 500;
+           if($scope.availableAmount < $scope.station.amount){
+            alert("You have insufficient fund for this service. Please fund your wallet.");
+            return;
+          }
+        break;
+        case'CAPEHS':
+          cost = $rootScope.toCurrency(250);
+          $scope.station.amount = 250;
+          if($scope.availableAmount < $scope.station.amount){
+            alert("You have insufficient fund for this service. Please fund your wallet.");
+            return;
+          }
+        break;
+      }
+    } else {
+      $scope.station.amount = 0;
+      cost = 0;
     }
 
 

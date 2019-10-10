@@ -9957,8 +9957,13 @@ router.post("/user/dicom-service",function(req,res){
         });
 
         dcm.save(function(err,info){
-        if(err) throw err;
+          if(err) throw err;
           res.json({message: "Service created successfully",status: true});
+          model.user.findOne({user_id: req.body.centerId})
+          .exec(function(err,center){
+            center.dicom_enterprise = true;
+            center.save(function(err,info){});
+          })
         });
       }
     } else {
@@ -10348,7 +10353,7 @@ router.post("/user/reporting-radiologist",function(req,res){
 router.get("/user/reporting-radiologist",function(req,res){
   if(req.user) {
     var radiologists = req.user.reporters || [];
-    res.json(radiologists);
+    res.json({reporters: radiologists, package: req.user.dicom_enterprise});
   } else {
     res.end("unauthorized access");
   }

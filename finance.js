@@ -2346,7 +2346,7 @@ router.post("/user/dicom-details",function(req,res){
 			    study_link: req.body.onlinePacs.ip_address + ":8080/weasis-pacs-connector/viewer?" + locate,
 			    study_link2: ovyWeb,
 			    study_link_mobile: ovyMob,
-			    study_type: req.body.type,
+			    study_type: req.body.type || "",
 			    study_name: req.body.studyName,
 			    deleted: false,
 			    created: new Date(),
