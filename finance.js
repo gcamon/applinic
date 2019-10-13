@@ -2317,7 +2317,7 @@ router.post("/user/dicom-details",function(req,res){
 
 			function createStudy() {
 				var locate = (req.body.studyID) ? ('studyUID=' + req.body.studyID) : ('patientID=' + req.body.patientID);
-				var ovyWeb = "https://" + req.body.onlinePacs.dns + "/web/viewer.html?" + locate;
+				var ovyWeb = "https://applinic.com/dcm?id=" + id; //"https://" + req.body.onlinePacs.dns + "/web/viewer.html?" + locate;
 				var ovyMob = "http://" + req.body.onlinePacs.ip_address + ":8080/applinic-dicom/home.html?" + locate;
 				var centerUser = req.body.onlinePacs.username;
 				var centerPassword = req.body.onlinePacs.password;
@@ -2428,7 +2428,7 @@ router.post("/user/dicom-details",function(req,res){
 	          var elemPos = req.user.reporters.map(function(x){return x.id.toString()}).indexOf(req.body.reporter);
 	          if(elemPos !== -1) {
 	          	var found = req.user.reporters[elemPos];
-	          	var webView = "https://dicom.applinic.com/web/viewer.html?" + locate;
+	          	var webView = "https://applinic.com/dcm?id=" + id; //"https://dicom.applinic.com/web/viewer.html?" + locate;
 	          	var mobileView = "https://applinic.com/dicom-mobile?id=" + study._id;
 	          	var tempLink = "https://applinic.com/report-template/" + req.body.reporter + "/" + study._id;
 

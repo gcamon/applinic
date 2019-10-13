@@ -385,7 +385,7 @@
                 <div>
                   <input type="radio" name="" ng-model="std.description" value="unattended"><label>Unattended</label>&nbsp;&nbsp;&nbsp;
                   <input type="radio" name="" ng-model="std.description" value="all"><label>All</label>
-                  <span style="float: right;">( {{studies.length}} )</span>
+                  <span style="float: right;">( {{studies.length - 1}} )</span>
                 </div>
                 <div style="clear: both;"></div>
                   
@@ -393,16 +393,17 @@
             <div class="modal-body" style="margin-top: 0;padding-top: 0">   
                    
                 <input type="text" name="" placeholder="filter result" ng-model="filter" style="padding: 5px;">
-                <div ng-repeat="j in studies | orderBy: '-study_date' | filter: filter" class="studie">
-                  <a href="{{'https://applinic.com/report-template/' + j.assigned_radiologist_id + '/' + j._id}}" ng-if="j._id !== currStudy">
-                    <b>{{j.patient_name}}</b>&nbsp;
-                    ( <span>{{j.patient_sex}}</span> )&nbsp;&nbsp;
-                    <span>{{j.study_name}}</span>&nbsp;&nbsp;&nbsp;&nbsp;
-                    <span>{{j.study_date | date : 'mediumDate'}}</span> | 
-                    <span>{{j.study_date | date : 'shortTime'}}</span>
-                  </a>
-                </div>
-                     
+                <ol>
+                  <li ng-repeat="j in studies | orderBy: '-study_date' | filter: filter" class="studie" ng-if="j._id !== currStudy">
+                    <a href="{{'https://applinic.com/report-template/' + j.assigned_radiologist_id + '/' + j._id}}" >
+                      <b>{{j.patient_name}}</b>&nbsp;
+                      ( <span>{{j.patient_sex}}</span> )&nbsp;&nbsp;
+                      <span>{{j.study_name}}</span>&nbsp;&nbsp;&nbsp;&nbsp;
+                      <span>{{j.study_date | date : 'mediumDate'}}</span> | 
+                      <span>{{j.study_date | date : 'shortTime'}}</span>
+                    </a>
+                  </li>
+                </ol>   
               <div style="text-align: center;padding:20px 0" ng-hide="!loading">
                  <span>Loading...</span>
               </div>

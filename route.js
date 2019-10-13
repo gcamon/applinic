@@ -6815,7 +6815,7 @@ router.put("/user/scan-search/radiology/referral",function(req,res){
 
           //create a dicom Study for viewing.
           var locate = ('patientID=' + accNo);
-          var ovyWeb = "https://" + req.body.onlinePacs.dns + "/web/viewer.html?" + locate;
+          var ovyWeb = "https://applinic.com/dcm?id=" + accNo;//"https://" + req.body.onlinePacs.dns + "/web/viewer.html?" + locate;
 
           var ovyMob = "http://" + req.body.onlinePacs.ip_address + ":8080/applinic-dicom/home.html?" + locate;
           var centerUser = req.body.onlinePacs.username;
@@ -9915,7 +9915,9 @@ router.get("/api/dicom-details",function(req,res){
     } else {
       res.json({
         ip_address: "167.71.149.196",
-        dns: "dicom.applinic.com",
+        dns: "dicom.applinic.com", 
+        // this was changed to this on 13 oct, 2019 since the sub domain nginx connection was having issues
+        //dicom.applinic.com
         port: 11112,
         aetitle: "applinic",
         cost: 1000,
@@ -10088,6 +10090,26 @@ router.get("/dicom-mobile",function(req,res){
     })
   } else {
     res.redirect('http://167.71.149.196:8080/applinic-dicom/home.html');
+  }
+});
+
+router.get("/dcm",function(req,res){
+  //IP address of client will vary so study should map on the right client workspace 
+  //using query strings Id to create link of study for mobile viewer.
+  if(req.query.id){
+    model.study.findOne({$or:[{patient_id : req.query.id},{study_uid: req.query.id}]})
+    .exec(function(err,result){
+      if(err) throw err;
+      if(result){
+        var locate = (result.patient_id) ? ("patientID=" + result.patient_id) : ("studyUID=" + result.study_uid);
+        var ovyWeb = "http://" + result.ip_address + ":8080/web/viewer.html?" + locate;
+        res.redirect(ovyWeb);
+      } else {
+        res.end("Patient study link not accurate or does not exist.")
+      }
+    })
+  } else {
+    res.redirect('http://167.71.149.196:8080/web/viewer.html');
   }
 });
 
