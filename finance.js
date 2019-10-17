@@ -2410,8 +2410,8 @@ router.post("/user/dicom-details",function(req,res){
 	            + 'by ' + req.user.name + '. You can share or use the ID to view the study.<br>' 
 	            + 'username: ' + centerUser + "<br>password: " + centerPassword
 	            + '<br><br><div style="text-align: center">'
-	            + '<br><a href="https://applinic.com/investigation/result?type=radio&id=' 
-	            + cp + '" style="padding:10px;background-color:red;color:#fff">Click to view study</a></div></td></tr></table>'
+	            + '<br><a href="' 
+	            + ovyWeb + '" style="padding:10px;background-color:red;color:#fff">Click to view study</a></div></td></tr></table>'
 	          };
 
 	          transporter.sendMail(mailOptions, function(error, info){

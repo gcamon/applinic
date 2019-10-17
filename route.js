@@ -10109,7 +10109,8 @@ router.get("/dcm",function(req,res){
       }
     })
   } else {
-    res.redirect('http://167.71.149.196:8080/web/viewer.html');
+    var link = 'http://167.71.149.196:8080/web/viewer.html?patientID=' + req.query.id;
+    res.redirect(link);
   }
 });
 
