@@ -2356,7 +2356,8 @@ router.post("/user/dicom-details",function(req,res){
 			    referring_physician_email: req.body.referringPhysicianEmail || "",
 			    referring_physician_phone: req.body.referringPhysicianPhone || "",
 			    attended: false,
-			    assigned_radiologist_id: req.body.reporter
+			    assigned_radiologist_id: req.body.reporter,
+			    remark: req.body.remark || ""
 			    //conclusion: req.body.conclusion,
 				  //findings: req.body.findings,
 				  //summary: req.body.summary,

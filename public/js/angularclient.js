@@ -22944,13 +22944,15 @@ app.controller("templatectrl",["$scope","$http","$filter","ModalService","$rootS
   var f = angular.element(document.getElementById('findings'));
   var c = angular.element(document.getElementById('conclusion'));
   var a = angular.element(document.getElementById('advise'));
+  var r = angular.element(document.getElementById('remark'));
   var img = angular.element(document.getElementById('img'));
 
 
   $scope.getdata = function(patientNames,patientId,studyDate,patientAge,
     patientSex,referringPhysician, studyName, studyDate, reporterName, reporterDesignation, 
     reporterEmail,studyLink,summary,findings,conclusion,advise,centerName,
-    centerAddress, centerCity, centerCountry, centerPhone, centerEmail, centerProfilePic, _id,centerId,templateId){
+    centerAddress, centerCity, centerCountry, centerPhone, centerEmail, centerProfilePic,
+     _id,centerId,templateId,remark){
     if(!$scope.isModalLaod) {
       $scope.patient.names = patientNames;
       $scope.patient.patientId = patientId;
@@ -22975,6 +22977,7 @@ app.controller("templatectrl",["$scope","$http","$filter","ModalService","$rootS
       s[0].innerText = summary || "";
       f[0].innerText = findings || "";
       c[0].innerText = conclusion || "";
+      r[0].innerText = remark || "";
       a[0].innerText = advise || "";
       if(templateId === 'none' || undefined || null)
         img[0].src = centerProfilePic;
