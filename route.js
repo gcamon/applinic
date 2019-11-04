@@ -10126,10 +10126,10 @@ router.get("/report-template/:reporterId/:study_id",function(req,res){
       model.user.findOne({user_id: study.center_id})
       .exec(function(err,center){
         if(err) throw err;
-        if(center){
-          var elemPos = center.reporters.map(function(x){return x.id.toString()}).indexOf(req.params.reporterId);
+        if(center && typeof study.assigned_radiologist_id !== 'string'){
+          var elemPos = study.assigned_radiologist_id.map(function(x){return x.id.toString()}).indexOf(req.params.reporterId);
           if(elemPos !== -1) {
-            details.reporter = center.reporters[elemPos];
+            details.reporter = study.assigned_radiologist_id[elemPos];
             details.study.center_profile_pic_url = "https://applinic.com" + center.profile_pic_url;
            
             model.template.findOne({center_id: study.center_id,type:"Radiology"})
@@ -10149,13 +10149,38 @@ router.get("/report-template/:reporterId/:study_id",function(req,res){
             })            
           } else {
             //if the reporterId params not in center's reporters array
-            res.json({Error: true, message: "Radiologist ID not recognized or authorized for this study."})
+            res.json({Error: true, message: "Radiologist ID not recognized or not authorized for reporting this study."})
           }
         } else {
           res.json({Error: true, message: "Centre for such study does not exist"})
         }
       })
-      //res.render('report-template');
+    } else if(center) {
+
+      var elemPos = center.reporters.map(function(x){return x.id.toString()}).indexOf(req.params.reporterId);
+      if(elemPos !== -1) {
+        details.reporter = center.reporters[elemPos];
+        details.study.center_profile_pic_url = "https://applinic.com" + center.profile_pic_url;
+       
+        model.template.findOne({center_id: study.center_id,type:"Radiology"})
+        .exec(function(err,temp){
+          if(err) throw err;
+          if(temp){
+            details.template = temp;
+            res.render('report-template',details);
+          } else {
+            model.template.findOne({center_id:"none",type: "Radiology"})
+            .exec(function(err,tempDefault){
+              if(err) throw err;
+              details.template = tempDefault;
+              res.render('report-template',details);
+            });
+          }
+        })
+      } else {
+        res.json({Error: true, message: "Radiologist ID not recognized or not authorized for reporting this study."})
+      }            
+      
     } else {
       res.json({status: "404", message: "Study not found or does not exist."})
     }
@@ -10335,20 +10360,30 @@ router.post("/email-report",function(req,res){
       res.json({status: false, message: "Study with ID not found."})
     }
   })
- 
-
   
 })
 
 router.get("/radiologist-studies",function(req,res){
+  var reporterId = (req.query.reporterID) ? parseInt(req.query.reporterID) : null;
   var criteria = (req.query.isUnattended == "yes") ?
-   {assigned_radiologist_id: req.query.reporterID,attended: false} : {assigned_radiologist_id: req.query.reporterID}
+   {"assigned_radiologist_id.id": reporterId,attended: false} : {"assigned_radiologist_id.id": reporterId}
   model.study.find(criteria)
   .exec(function(err,data){
     if(err) throw err;
+    console.log(data)
     res.json(data);
   })
 })
+
+
+router.get("/user/reporting-radiologist",function(req,res){
+  if(req.user) {
+    var radiologists = req.user.reporters || [];
+    res.json({reporters: radiologists, package: req.user.dicom_enterprise});
+  } else {
+    res.end("unauthorized access");
+  }
+});
 
 
 
@@ -10373,14 +10408,58 @@ router.post("/user/reporting-radiologist",function(req,res){
   }
 });
 
-router.get("/user/reporting-radiologist",function(req,res){
+router.put("/user/reporting-radiologist",function(req,res){
   if(req.user) {
-    var radiologists = req.user.reporters || [];
-    res.json({reporters: radiologists, package: req.user.dicom_enterprise});
+    model.user.findOne({user_id: req.user.user_id})
+    .exec(function(err,data){
+      if(err) throw err;
+      if(data) {
+        var elem = data.reporters.map(function(x){return x.id}).indexOf(req.body.id);
+        if(elem !== -1) {
+          data.reporters.splice(elem,1)
+          data.reporters.push(req.body);
+        } else if (req.body.id && req.body.name) {
+          data.reporters.push(req.body);
+        }
+
+        data.save(function(err,inf){
+          if(err) throw err;
+          res.json({message: "Radiologist updated successfully.",status: true, radiologist: req.body})
+        });
+      } else {
+        res.end("User not found");
+      }
+    })
   } else {
     res.end("unauthorized access");
   }
 });
+
+router.delete("/user/reporting-radiologist",function(req,res){
+  if(req.user) {
+    model.user.findOne({user_id: req.user.user_id})
+    .exec(function(err,data){
+      if(err) throw err;
+      if(data) {
+        var elem = data.reporters.map(function(x){return x.id}).indexOf(req.body.id);
+        if(elem !== -1) {
+          data.reporters.splice(elem,1)
+        }
+       
+        data.save(function(err,inf){
+          if(err) throw err;
+          res.json({message: "Radiologist deleted successfully.",status: true})
+        });
+      } else {
+        res.end("User not found");
+      }
+    })
+  } else {
+    res.end("unauthorized access");
+  }
+});
+
+
 
 
 router.get("/api/reporting-radiologist",function(req,res){

@@ -13,7 +13,7 @@
 	<link rel="apple-touch-icon" href="apple-touch-icon.png">
      <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
      <link rel="stylesheet" href="/assets/css/font-awesome.min.css">
-	<!--<link rel="stylesheet" href="/assets/css/vendor.css"> -->        
+	     
          
 	<script src="/assets/js/vendor/modernizr-2.8.3-respond-1.4.2.min.js"></script>
      <script src="/assets/js/vendor2.js"></script>
@@ -205,7 +205,7 @@
 	   	   <div id="tempfield" ng-hide="isReportPDF" >               
               <%- template.template %>
 	   	   </div>
-         <button style="position: absolute;top:10px; right: 20px" ng-click="otherStudies()" >Other studies</button>
+         <button style="position: absolute;top:10px; right: 20px" ng-click="otherStudies()" class="btn btn-info">Studies</button>
            <!--<div ng-show="isReportPDF">
                <form ng-cloak ng-submit="emailReport()" style="text-align: center;margin-top: 20px">
                    <label><b>Send the report PDF to an email below:</b> </label><br><br>
@@ -381,7 +381,8 @@
             <div class="modal-content">
               <div class="modal-header">
                 <button type="button" class="close"  data-dismiss="modal" aria-hidden="true" style="float: right;cursor: pointer;">&times;</button>              
-                <h2 style="clear: both;">Other Studies</h2>
+                <h2 style="clear: both;">Studies</h2>
+                <br>
                 <div>
                   <input type="radio" name="" ng-model="std.description" value="unattended"><label>Unattended</label>&nbsp;&nbsp;&nbsp;
                   <input type="radio" name="" ng-model="std.description" value="all"><label>All</label>
@@ -390,12 +391,29 @@
                 <div style="clear: both;"></div>
                   
             </div>
-            <div class="modal-body" style="margin-top: 0;padding-top: 0">   
-                   
-                <input type="text" name="" placeholder="filter result" ng-model="filter" style="padding: 5px;">
-                <ol>
+            <div class="modal-body" style="margin-top: 0;padding-top: 0;">   
+                <div style="margin-bottom: 20px">
+                  <input type="text" name="" placeholder="filter result" ng-model="filter" style="padding: 5px;">
+                </div>
+                <table style="width: 100%">
+                  <thead style="text-align: left">
+                    <th style="width: 45px">Name</th>
+                    <th style="width: 10px">Sex</th>
+                    <th style="width: 20px">Type</th>
+                    <th style="width: 20px">Study Date</th>
+                    <th style="width: 5px"></th>
+                  </thead>
+                  <tbody ng-repeat="j in studies | orderBy: '-study_date' | filter: filter" class="studie" ng-if="j._id !== currStudy">
+                    <td style="width: 40px;padding-top: 10px;word-wrap: break-word;"><b>{{j.patient_name}}</b></td>
+                    <td style="width: 10px;padding-top: 10px"><span>{{j.patient_sex}}</span></td>
+                    <td style="width: 20px;padding-top: 10px;word-break: break-all;"><span>{{j.study_name}}</span></td>
+                    <td style="width: 20px;padding-top: 10px"><span>{{j.study_date | date : 'mediumDate'}}</td>
+                    <td style="width: 10px;padding-top: 10px;text-align: right;"><a href="{{getLink(j)}}" class="p-1"><i class="fa fa-eye"></i></a></td>
+                  </tbody>
+                </table>
+                <!--<ol>
                   <li ng-repeat="j in studies | orderBy: '-study_date' | filter: filter" class="studie" ng-if="j._id !== currStudy">
-                    <a href="{{'https://applinic.com/report-template/' + j.assigned_radiologist_id + '/' + j._id}}" >
+                    <a href="{{getLink(j)}}" >
                       <b>{{j.patient_name}}</b>&nbsp;
                       ( <span>{{j.patient_sex}}</span> )&nbsp;&nbsp;
                       <span>{{j.study_name}}</span>&nbsp;&nbsp;&nbsp;&nbsp;
@@ -403,7 +421,7 @@
                       <span>{{j.study_date | date : 'shortTime'}}</span>
                     </a>
                   </li>
-                </ol>   
+                </ol>--> 
               <div style="text-align: center;padding:20px 0" ng-hide="!loading">
                  <span>Loading...</span>
               </div>

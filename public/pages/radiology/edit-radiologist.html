@@ -1,0 +1,42 @@
+
+<div class="card p-2 card-center-1">
+	<h4>Edit Radiologists </h4>
+	<div class="col-md-8">
+		<form ng-submit="sendEdit()">
+			<label>Name:</label><br>
+			<input type="text"  class="form-control" ng-model="radiologist1.name" placeholder="Names"><br>
+			<label>Phone:</label><br>
+			<input type="text"  class="form-control" ng-model="radiologist1.phone" placeholder="08xxxxxxxxx"><br>
+			<label>Email:</label><br>
+			<input type="email"  class="form-control" ng-model="radiologist1.email" placeholder="Email"><br>
+			<label>Designation:</label><br>
+			<input type="text" class="form-control" ng-model="radiologist1.designation" placeholder="Designation"><br>
+			<input type="submit" value="Update" class="btn btn-info btn-sm" ng-show="!loading">
+			<span ng-show="loading">Updating...</span>
+		</form>
+	</div>
+	<div class="clearfix"></div><br>
+	<hr>
+	<h5>Radiologists in your center</h5>
+	<div class="row pb-2" ng-repeat="r in radiologists">
+		<div class="col-md-9">
+			<div class="col-md-7">
+				<span>{{r.name}}</span> 
+			</div>
+			<div class="col-md-5">
+				<span>{{r.phone}}</span>
+			</div>
+		</div>
+		<div class="col-md-3">
+			<i class="fa fa-pencil text-info btn btn-sm btn-neutral" ng-click="edit(r.id)"></i> &nbsp;
+			<i class="fa fa-trash-o btn btn-sm btn-neutral text-info" ng-click="delete(r)" ng-show="!r.loading"></i>
+			<span ng-show="r.loading">Deleting...</span>
+		</div>
+		<div class="clearfix"></div>
+	</div>
+	<div style="text-align: center;" class="mt-2" ng-show="loading">
+		<span>Loading...</span>
+	</div>
+	
+</div>
+

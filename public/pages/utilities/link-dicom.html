@@ -72,12 +72,22 @@
 		<div class="clearfix"></div><br>
 
 		<label>Choose who writes the report *</label><br>
-		<select ng-model="station.reporter" class="form-control" required="required">
+		<!--<select ng-model="station.reporter" class="form-control" required="required">
 			<option value="" disabled="disabled" selected="true">_select</option>
 			<option value="{{j.id}}" ng-repeat="j in radiologists" style="font-weight: bold;">{{j.name}} - {{j.designation}}</span>  </option>
-		</select><br>
+		</select>-->
+		<div ng-repeat="j in radiologists">
+            <label class="custom-control custom-checkbox">
+              {{j.name}} - <span style="font-weight: normal;">{{j.designation}}</span>
+             <input type="checkbox" class="custom-control-input" ng-model="j.selected">
+              <span class="custom-control-indicator"></span>
+              <span class="custom-control-description" style="opacity:0;"></span>
+            </label> 
+        </div>
+		<div ng-show="radiologists.length == 0">You have not added radiologists for your center. <a href="#/add-radiologist" class="text-primary">Add one now?</a>
+		</div>
 
-		<div style="text-align: right;">
+		<div class="mt-2">
 			<input type="submit" name="" value="Link Study" class="btn btn-danger" ng-if="!loading">
 			<span ng-if="loading">Processing...</span>
 		</div>
@@ -86,7 +96,7 @@
 	<div ng-if="isSuccess">
 		<h5>Success! Study added to applinic</h5>
 		<!--<p> Please enter the Accession Number below in your work station for the study before capturing.</p>-->
-		<label>{{station.locate}}:</label><br>
+		<!--<label>{{station.locate}}:</label><br>-->
 		<b style="font-size: 18px">{{studyNum}}</b><br>
 		<p>Enter our remote DICOM details below in your PACs server for transfering.</p>
 		<label>Logical Name: </label> <span>Applinic</span><br>

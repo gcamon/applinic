@@ -1,8 +1,9 @@
 
 <div class="card p-2 card-center-1">
+	<a href="{{toImport}}" ng-show="toImport"><i class="fa fa-arrow-left"></i></a><br>
 	<h4>Add Radiologist <span style="display: block;font-size: 14px">The radiologist who reports studies for your centre.</span></h4>
 
-	<form ng-submit="addRadiologist()">
+	<form ng-submit="addRadiologist()" class="col-md-8">
 		<label>Names of Radiologist *:</label><br>
 		<input type="text" name="" placeholder="Full name" ng-model="radiologist.name" class="form-control" required><br>
 		<label>Email of Radiologist * ( Valid email address of radiologist ):</label><br>
@@ -11,6 +12,7 @@
 		<input type="text" name="" placeholder="Phone number" ng-model="radiologist.phone" class="form-control"><br>
 		<label>Designation of Radiologist *:</label><br>
 		<select ng-model="radiologist.designation" class="form-control" required>
+			<option value="" selected disabled>_Select</option>
 			<option>Consultant Radiologist</option>
 			<option>Senior Registrar</option>
 			<option>Registrar</option>

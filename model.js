@@ -1043,7 +1043,7 @@ var myModel = function () {
 	  referring_physician_email: String,
 		referring_physician_phone: String,
 		attended: Boolean,
-		assigned_radiologist_id: String,
+		assigned_radiologist_id: Array,
 		remark: String
 	});
 

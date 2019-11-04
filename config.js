@@ -69,9 +69,9 @@ var configuration = function (app,model) {
 	app.use(bodyParser.json());
 	//app.use(multer({dest: './uploads'}).any());
 
-	//var multer = require('multer');
+	var multer = require('multer');
 
-	/*var storage = multer.diskStorage({
+	var storage = multer.diskStorage({
 	  destination: function (req, file, cb) {
 	    cb(null, './uploads')
 	  },
@@ -80,9 +80,9 @@ var configuration = function (app,model) {
 	  }
 	})
 
-	var upload = multer({ storage: storage });*/
+	var upload = multer({ storage: storage });
 
-	var s3 = new aws.S3();
+	/*var s3 = new aws.S3();
 
 	var upload = multer({
     storage: multerS3({
@@ -105,7 +105,7 @@ var configuration = function (app,model) {
 		      cb(null, storageName)
 		    }
     })
-	});
+	});*/
 
 	app.use(upload.any())
 	

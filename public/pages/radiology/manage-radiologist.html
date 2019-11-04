@@ -1,0 +1,26 @@
+
+<div class="card p-2 card-center-1">
+	<h4>Manage Radiologists </h4>
+	<hr>
+	<div class="row pb-2" ng-repeat="r in radiologists">
+		<div class="col-md-9">
+			<div class="col-md-7">
+				<span>{{r.name}}</span> 
+			</div>
+			<div class="col-md-5">
+				<span>{{r.phone}}</span>
+			</div>
+		</div>
+		<div class="col-md-3">
+			<i class="fa fa-pencil text-info btn btn-sm btn-neutral" ng-click="edit(r.id)"></i> &nbsp;
+			<i class="fa fa-trash-o btn btn-sm btn-neutral text-info" ng-click="delete(r)" ng-show="!r.loading"></i>
+			<span ng-show="r.loading">Deleting...</span>
+		</div>
+		<div class="clearfix"></div>
+	</div>
+	<div style="text-align: center;" class="mt-2" ng-show="loading">
+		<span>Loading...</span>
+	</div>
+	
+</div>
+

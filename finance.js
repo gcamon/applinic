@@ -2356,7 +2356,7 @@ router.post("/user/dicom-details",function(req,res){
 			    referring_physician_email: req.body.referringPhysicianEmail || "",
 			    referring_physician_phone: req.body.referringPhysicianPhone || "",
 			    attended: false,
-			    assigned_radiologist_id: req.body.reporter,
+			    assigned_radiologist_id: req.body.reporters,
 			    remark: req.body.remark || ""
 			    //conclusion: req.body.conclusion,
 				  //findings: req.body.findings,
@@ -2426,24 +2426,29 @@ router.post("/user/dicom-details",function(req,res){
 	          // send email and sms to the reporting radiologists with links to the dicom viewer, 
 	          //mobile viewer and center template. If center has no template use default template.
 	          
-	          var elemPos = req.user.reporters.map(function(x){return x.id.toString()}).indexOf(req.body.reporter);
-	          if(elemPos !== -1) {
-	          	var found = req.user.reporters[elemPos];
-	          	var webView = "https://applinic.com/dcm?id=" + id; //"https://dicom.applinic.com/web/viewer.html?" + locate;
-	          	var mobileView = "https://applinic.com/dicom-mobile?id=" + study._id;
-	          	var tempLink = "https://applinic.com/report-template/" + req.body.reporter + "/" + study._id;
+	          //var elemPos = req.user.reporters.map(function(x){return x.id.toString()}).indexOf(req.body.reporter);
+	         // if(elemPos !== -1) {
+
+	         	var tempLink;
+	          var reporterEmail;
+
+	          var webView = "https://applinic.com/dcm?id=" + id; //"https://dicom.applinic.com/web/viewer.html?" + locate;
+	          var mobileView = "https://applinic.com/dicom-mobile?id=" + study._id;
+	         
+
+	          function radioEmail(tempLink,email) {	          	
 
 		          var mailOptions = {
 		            from: 'Applinic Healthcare info@applinic.com',
-		            to: found.email || "support@applinic.com",
+		            to: email || "support@applinic.com",
 		            subject: 'Radiology Report ' + study._id,
 		            html: '<table><tr><tr><td style="line-height: 25px">Hi, please write report for the study below:<br><br>'
 		            + 'Investigation: ' + req.body.studyName + "<br><br>"
 		            + 'Ref: ' + study._id + "<br><br>"
 		            + tp + ": " + (rados || id) + '<br><br>'
-		            + "Web viewer DICOM url:<br> " + webView + "<br>"
-		            + "Mobile device DICOM viewer url: <br> " + mobileView + "<br>"
-		            + "Report template url: <br>" + tempLink + "<br><br>"
+		            + "<b>Web viewer DICOM url:</b><br> " + webView + "<br>"
+		            + "<b>Mobile device DICOM viewer url:</b> <br> " + mobileView + "<br>"
+		            + "<b>Report template url:</b> <br>" + tempLink + "<br><br>"
 		            + "Center Name: " + req.user.name + "<br>"
 		            + "Address: " + req.user.address + ", " + req.user.city + ", " + req.user.country + "<br><br>"
 		            + "Thank you! <br><br> <b>Applinic Team</b>" 
@@ -2458,6 +2463,15 @@ router.post("/user/dicom-details",function(req,res){
 		            }
 		          });
 
+	          }
+
+
+	          if(req.body.reporters) {
+	          	req.body.reporters.forEach(function(reporter){
+	          		tempLink = "https://applinic.com/report-template/" + reporter.id + "/" + study._id;
+	          		reporterEmail = reporter.email;
+	          		radioEmail(tempLink,reporterEmail)
+	          	})	          	
 	          }
 
 			  	}

@@ -834,6 +834,16 @@ app.config(['$paystackProvider','$routeProvider',
   controller: "addRadiologistCtrl"
 })
 
+.when("/manage-radiologist",{
+  templateUrl: "/assets/pages/radiology/manage-radiologist.html",
+  controller: "addRadiologistCtrl"
+})
+
+.when("/edit-radiologist",{
+  templateUrl: "/assets/pages/radiology/edit-radiologist.html",
+  controller: "addRadiologistCtrl"
+})
+
 }]);
 
 
@@ -22093,11 +22103,12 @@ app.controller("dicomCtrl",["$rootScope","$scope","$location","$resource","$http
   function($rootScope,$scope,$location,$resource,$http,dynamicService,scanTests,localManager,getBalanceService){
   $scope.isNew = true;
 
-  $scope.station = {}
-  $scope.station.center = $rootScope.checkLogIn;
-  $scope.station.locate = "patientID"
+  $rootScope.station = ($rootScope.station) ? $rootScope.station : {};
+  $rootScope.station.center = $rootScope.checkLogIn;
+  $rootScope.station.locate = "patientID";
   $scope.test = {};
   $scope.contact = {};
+  $rootScope.toImport = "#/import";
 
   var user = localManager.getValue("resolveUser");
 
@@ -22116,12 +22127,11 @@ app.controller("dicomCtrl",["$rootScope","$scope","$location","$resource","$http
     })
   .success(function(data) {   
      $scope.radiologists = data.reporters;
-     $scope.station.dicom_enterprise = data.package;
+     $rootScope.station.dicom_enterprise = data.package;
   }); 
 
-  
-
   $scope.isAppPatient = true;
+
   $scope.choose = function(type){
     switch(type){
       case 'our':
@@ -22134,7 +22144,6 @@ app.controller("dicomCtrl",["$rootScope","$scope","$location","$resource","$http
       break;
     }
   }
-
 
   $scope.findPatient = function() {
 
@@ -22322,7 +22331,7 @@ app.controller("dicomCtrl",["$rootScope","$scope","$location","$resource","$http
   .success(function(data) {  
     console.log(data)            
     $scope.dicomDetails = data;
-    $scope.station.onlinePacs = data
+    $rootScope.station.onlinePacs = data
   }); 
 
   var amount = getBalanceService;
@@ -22333,29 +22342,29 @@ app.controller("dicomCtrl",["$rootScope","$scope","$location","$resource","$http
 
   $scope.genAccession = function() {
     var cost;
-    if(!$scope.station.dicom_enterprise) {
+    if(!$rootScope.station.dicom_enterprise) {
 
-      switch($scope.station.type) {
+      switch($rootScope.station.type) {
         case'CT/MRI':
           cost = $rootScope.toCurrency(750);
-          $scope.station.amount = 750;
-          if($scope.availableAmount < $scope.station.amount){
+          $rootScope.station.amount = 750;
+          if($scope.availableAmount < $rootScope.station.amount){
             alert("You have insufficient fund for this service. Please fund your wallet.");
             return;
           }
         break;
         case'SI':
           cost = $rootScope.toCurrency(500);
-          $scope.station.amount = 500;
-           if($scope.availableAmount < $scope.station.amount){
+          $rootScope.station.amount = 500;
+           if($scope.availableAmount < $rootScope.station.amount){
             alert("You have insufficient fund for this service. Please fund your wallet.");
             return;
           }
         break;
         case'CAPEHS':
           cost = $rootScope.toCurrency(250);
-          $scope.station.amount = 250;
-          if($scope.availableAmount < $scope.station.amount){
+          $rootScope.station.amount = 250;
+          if($scope.availableAmount < $rootScope.station.amount){
             alert("You have insufficient fund for this service. Please fund your wallet.");
             return;
           }
@@ -22363,24 +22372,24 @@ app.controller("dicomCtrl",["$rootScope","$scope","$location","$resource","$http
       }
 
     } else {
-      $scope.station.amount = 0;
+      $rootScope.station.amount = 0;
       cost = 0;
     }
 
 
     var intRegex = /[0-9 -()+]+$/;
-    if(intRegex.test($scope.station.patientPhone)) {
-      if($scope.station.patientPhone.indexOf('+') == -1 || $scope.station.patientPhone.indexOf("234") == -1){
-        var newSlice = $scope.station.patientPhone.slice(1);
-        $scope.station.patientPhone = "+234" + newSlice;
+    if(intRegex.test($rootScope.station.patientPhone)) {
+      if($rootScope.station.patientPhone.indexOf('+') == -1 || $rootScope.station.patientPhone.indexOf("234") == -1){
+        var newSlice = $rootScope.station.patientPhone.slice(1);
+        $rootScope.station.patientPhone = "+234" + newSlice;
       }
     } else {
       alert("Please enter valid phone number");
       return;
     }
 
-    $scope.station.cost = cost;
-    $scope.station.isAcc = true;
+    $rootScope.station.cost = cost;
+    $rootScope.station.isAcc = true;
 
     var msg = "Generating Patient ID will cost you " + cost + ". Do you wish to continue?";
     var check = confirm(msg)
@@ -22389,7 +22398,7 @@ app.controller("dicomCtrl",["$rootScope","$scope","$location","$resource","$http
       $http({
         method  : 'POST',
         url     : "/user/dicom-details",
-        data    : $scope.station,
+        data    : $rootScope.station,
         headers : {'Content-Type': 'application/json'} 
         })
       .success(function(data) {              
@@ -22406,48 +22415,48 @@ app.controller("dicomCtrl",["$rootScope","$scope","$location","$resource","$http
 
   $scope.addStudy = function() {
     var cost;
-    if(!$scope.station.dicom_enterprise) {
-      switch($scope.station.type) {
+    if(!$rootScope.station.dicom_enterprise) {
+      switch($rootScope.station.type) {
         case'CT/MRI':
           cost = $rootScope.toCurrency(750);
-          $scope.station.amount = 750;
-          if($scope.availableAmount < $scope.station.amount){
+          $rootScope.station.amount = 750;
+          if($scope.availableAmount < $rootScope.station.amount){
             alert("You have insufficient fund for this service. Please fund your wallet.");
             return;
           }
         break;
         case'SI':
           cost = $rootScope.toCurrency(500);
-          $scope.station.amount = 500;
-           if($scope.availableAmount < $scope.station.amount){
+          $rootScope.station.amount = 500;
+           if($scope.availableAmount < $rootScope.station.amount){
             alert("You have insufficient fund for this service. Please fund your wallet.");
             return;
           }
         break;
         case'CAPEHS':
           cost = $rootScope.toCurrency(250);
-          $scope.station.amount = 250;
-          if($scope.availableAmount < $scope.station.amount){
+          $rootScope.station.amount = 250;
+          if($scope.availableAmount < $rootScope.station.amount){
             alert("You have insufficient fund for this service. Please fund your wallet.");
             return;
           }
         break;
       }
     } else {
-      $scope.station.amount = 0;
+      $rootScope.station.amount = 0;
       cost = 0;
     }
 
 
     var intRegex = /[0-9 -()+]+$/;
-    if(intRegex.test($scope.station.patientPhone)) {
-      if($scope.station.patientPhone[0] == '0'){
-        var newSlice = $scope.station.patientPhone.slice(1);
-        $scope.station.patientPhone = "+234" + newSlice;
+    if(intRegex.test($rootScope.station.patientPhone)) {
+      if($rootScope.station.patientPhone[0] == '0'){
+        var newSlice = $rootScope.station.patientPhone.slice(1);
+        $rootScope.station.patientPhone = "+234" + newSlice;
       }
 
-      if($scope.station.patientPhone[0] == '2'){
-        $scope.station.patientPhone = "+" + $scope.station.patientPhone;
+      if($rootScope.station.patientPhone[0] == '2'){
+        $rootScope.station.patientPhone = "+" + $rootScope.station.patientPhone;
       }
 
     } else {
@@ -22455,7 +22464,21 @@ app.controller("dicomCtrl",["$rootScope","$scope","$location","$resource","$http
       return;
     }
 
-    $scope.station.cost = cost;
+    $rootScope.station.reporters = [];
+
+    for(var k = 0; k < $scope.radiologists.length; k++){
+      if($scope.radiologists[k].selected) {      
+        $rootScope.station.reporters.push($scope.radiologists[k]);
+      }
+    }
+
+    if($rootScope.station.reporters.length == 0) {
+      alert("No reporting radiologist was selected. Please select who writes the study's report.");
+      return;
+    }
+
+  
+    $rootScope.station.cost = cost;
 
     var msg = "Adding Existing DICOM Study will cost you " + cost + " . Do you wish to continue?";
     var check = confirm(msg)
@@ -22464,7 +22487,7 @@ app.controller("dicomCtrl",["$rootScope","$scope","$location","$resource","$http
       $http({
         method  : 'POST',
         url     : "/user/dicom-details",
-        data    : $scope.station,
+        data    : $rootScope.station,
         headers : {'Content-Type': 'application/json'} 
         })
       .success(function(data) {              
@@ -22486,10 +22509,10 @@ app.controller("dicomCtrl",["$rootScope","$scope","$location","$resource","$http
     count++;
     switch(newVal){
       case 'studyID':
-        $scope.station.patientID = "";
+        $rootScope.station.patientID = "";
       break;
       case 'patientID':
-        $scope.station.studyID = "";
+        $rootScope.station.studyID = "";
       break;
     }
   })
@@ -22497,12 +22520,13 @@ app.controller("dicomCtrl",["$rootScope","$scope","$location","$resource","$http
   $scope.newAcc = function() {
     $scope.isSuccess = false;
     $scope.accNo = "";
-    $scope.station.patientName = "";
-    $scope.station.patientPhone = "";
-    $scope.station.patientEmail = "";
-    $scope.station.patientSex = "";
-    $scope.station.patientAge = "";
-    $scope.station.studyName = "";
+    $rootScope.station.patientName = "";
+    $rootScope.station.patientPhone = "";
+    $rootScope.station.patientEmail = "";
+    $rootScope.station.patientSex = "";
+    $rootScope.station.patientAge = "";
+    $rootScope.station.studyName = "";
+    $rootScope.station.clinicalSummaryIndication = "";
   }
 
   $scope.createService = function() {
@@ -22510,7 +22534,7 @@ app.controller("dicomCtrl",["$rootScope","$scope","$location","$resource","$http
     $http({
       method  : 'POST',
       url     : "/user/dicom-service",
-      data    : $scope.station,
+      data    : $rootScope.station,
       headers : {'Content-Type': 'application/json'} 
       })
     .success(function(data) {              
@@ -22523,6 +22547,7 @@ app.controller("dicomCtrl",["$rootScope","$scope","$location","$resource","$http
     }); 
   }
 
+ 
 }]);
 
 
@@ -22899,39 +22924,134 @@ app.controller("tempCtrl",["$scope","$http",function($scope,$http){
 }]);
 
 
-app.controller("addRadiologistCtrl",["$scope","$http",function($scope,$http){
+app.controller("addRadiologistCtrl",["$scope","$http","$location","$rootScope",
+  function($scope,$http,$location,$rootScope){
   $scope.radiologist = {};
+  $scope.loading = true;
+  $http({
+    method  : 'GET',
+    url     : "/user/reporting-radiologist",
+    headers : {'Content-Type': 'application/json'} 
+    })
+  .success(function(data) {   
+     $scope.radiologists = data.reporters;
+     $scope.loading = false;
+     console.log(data)
+  }); 
 
   $scope.addRadiologist = function() {
-      $scope.loading = true;
-      if($scope.radiologist.phone){
-        if($scope.radiologist.phone[0] == '0'){
-          var ext = $scope.radiologist.phone.slice(1);
-          $scope.radiologist.phone = "+234" +  ext;
-        }
-
-        if($scope.radiologist.phone[0] == '2') {
-          $scope.radiologist.phone = "+" + $scope.radiologist.phone;
-        }
+    $scope.loading = true;
+    if($scope.radiologist.phone){
+      if($scope.radiologist.phone[0] == '0'){
+        var ext = $scope.radiologist.phone.slice(1);
+        $scope.radiologist.phone = "+234" +  ext;
       }
 
-      $http({
-        method  : 'POST',
-        url     : "/user/reporting-radiologist",
-        data    : $scope.radiologist, //forms user object
-        headers : {'Content-Type': 'application/json'} 
-       })
-      .success(function(response) {
-         console.log(response)
-         if(response.status) {
-           alert(response.message)
-         } else {
-           alert(response.message)
-         }  
+      if($scope.radiologist.phone[0] == '2') {
+        $scope.radiologist.phone = "+" + $scope.radiologist.phone;
+      }
+    }
 
-         $scope.loading = false;      
-      });          
+    $http({
+      method  : 'POST',
+      url     : "/user/reporting-radiologist",
+      data    : $scope.radiologist, //forms user object
+      headers : {'Content-Type': 'application/json'} 
+     })
+    .success(function(response) {
+       console.log(response)
+       if(response.status) {
+         alert(response.message)
+       } else {
+         alert(response.message)
+       }  
+
+       $scope.loading = false;      
+    });          
   }
+
+  $scope.edit = function(id) {
+    var ls = $scope.radiologists || [];
+    var elem = ls.map(function(x){return x.id}).indexOf(id);
+    if(elem !== -1) {
+      $rootScope.radiologist1 = $scope.radiologists[elem] || {};
+      $location.path('edit-radiologist');
+    }
+  }
+
+  $scope.delete = function(radiologist) {
+    if(radiologist)
+      var check = confirm("Do you want to delete " + radiologist.name);
+
+    if(!check) 
+      return;
+
+    var id = radiologist.id;
+    radiologist.loading = true;
+    var ls = $scope.radiologists || [];
+    var elem = ls.map(function(x){return x.id}).indexOf(id);
+    if(elem != -1) {
+      $http({
+      method  : 'DELETE',
+      url     : "/user/reporting-radiologist",
+      data    : $rootScope.radiologist1, //forms user object
+      headers : {'Content-Type': 'application/json'} 
+    })
+    .success(function(response) {
+      if(response.status) {
+        alert(response.message)
+        var elem = $scope.radiologists.map(function(x){return x.id}).indexOf(id);
+        if(elem !== -1) {         
+          if($scope.radiologists[elem].id === radiologist.id){
+            $rootScope.radiologist1 = {};
+          }
+
+          $scope.radiologists.splice(elem,1);
+        }
+      } else {
+        alert("Oops! something went wrong. Please try again.")
+      }
+      radiologist.loading = false;      
+    });          
+      
+    }
+  }
+
+  $scope.sendEdit = function() {
+   
+    if(!$rootScope.radiologist1.id) {
+      alert("Oops! Seems this radiologist has been deleted or does not exist.")
+      return;
+    }
+
+    $scope.loading = true;
+
+    $http({
+      method  : 'PUT',
+      url     : "/user/reporting-radiologist",
+      data    : $rootScope.radiologist1, //forms user object
+      headers : {'Content-Type': 'application/json'} 
+    })
+    .success(function(response) {
+      console.log(response)
+      if(response.status) {
+        alert(response.message)
+        var elem = $scope.radiologists.map(function(x){return x.id}).indexOf($rootScope.radiologist1.id);
+        if(elem !== -1) {
+          $scope.radiologists.splice(elem,1);
+          $scope.radiologists.push($rootScope.radiologist1)
+        } else if(response.radiologist){
+          $scope.radiologists.push(response.radiologist)
+        }
+      } else {
+       alert(response.message)
+      }
+
+     
+      $scope.loading = false;      
+    });          
+  }
+
 }]);
 
 
@@ -23154,6 +23274,12 @@ app.controller("otherStudiesModalController",["$scope","$http",function($scope,$
     var study = $scope.currStudy = v[v.length -1];
     var std = {};
     var attention;
+    var qlink;
+
+    $scope.getLink = function(study) {
+      qlink = 'https://applinic.com/report-template/' + reporterID + '/' + study._id;
+      return qlink;
+    }
 
     function getStudy() {
       $scope.loading = true;
