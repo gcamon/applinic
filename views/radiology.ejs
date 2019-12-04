@@ -127,6 +127,10 @@
                   }
                 }
 
+               
+
+               
+
 
           </style>
 
@@ -533,7 +537,12 @@
                         </li>-->
                         <li>
                           
-                          <a  href="#/import" class=""><i class="fa fa-link"></i> Link Dicom Studies</a>
+                          <a  href="#/import" class=""><i class="fa fa-link"></i> Link DICOM Studies</a>
+                         
+                        </li>
+                        <li>
+                          
+                          <a  href="#/linked" class=""><i class="fa fa-eye"></i> View Linked Studies</a>
                          
                         </li>
                         <li>
@@ -1569,6 +1578,195 @@
                 <button class="btn btn-success" ng-click="updateStock()"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i> {{(loading) ? "" : "Done, save"}}</button> &nbsp; 
                 <button class="btn btn-neutral" ng-click="notNow(modal)" data-dismiss="modal">No, later</button>
               </div>
+            </div>
+          </div>
+        </div>
+     </script>
+
+      <script type="text/ng-template" id="manageDICOMModal.html">
+        <div class="modal fade">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">                       
+                   
+            </div>
+            <div class="modal-body">
+               <button type="button" class="close"  data-dismiss="modal" aria-hidden="true" style="position: absolute;top: -15px;right: 20px">&times;</button> 
+              <section ng-show="clickedAction == 'details'">     
+              <div class="row">  
+
+                <h5 class="p-1 bg-primary text-white">Patient Info</h5>
+                <div class="col-md-9">
+                  <div >
+                    <label>Patient Names: </label>
+                    <span>{{studyLinked.patient_name}}</span>
+                  </div>
+                  <div >
+                    <label>Patient Age: </label>
+                    <span>{{studyLinked.patient_age}}</span>
+                  </div>
+                  <div>
+                    <label>Patient Sex: </label>
+                    <span>{{studyLinked.patient_sex}}</span>
+                  </div>
+                  <div>
+                    <label>Patient Phone: </label>
+                    <span>{{studyLinked.patient_phone}}</span>
+                  </div>
+
+                   <div>
+                    <label>Patient Email: </label>
+                    <span>{{studyLinked.email}}</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+              <h5 class="p-1 bg-primary text-white">Study Info</h5>
+              <div class="col-md-9">                  
+                  <div>
+                    <label>Study Name: </label>
+                    <blockquote class="pl-2">{{studyLinked.study_name}}</blockquote>
+                  </div>
+                  <div>
+                    <label>Study ID / Patient ID: </label>
+                    <blockquote class="pl-2">{{studyLinked.patient_id}}</blockquote>
+                  </div>
+                  <div>
+                    <label>Indication/History: </label>
+                    <blockquote class="pl-2">{{studyLinked.summary}}</blockquote>
+                  </div>
+                 
+                  <div>
+                    <label>Referring Physician: </label>
+                    <blockquote class="pl-2">{{studyLinked.referring_physician}}</blockquote>
+                  </div>
+
+                  <div>
+                    <label>Referring Physician Email: </label>
+                    <blockquote class="pl-2">{{studyLinked.referring_physician_email}}</blockquote>
+                  </div>
+
+                  <div ng-show="studyLinked.referring_physician_phone">
+                    <label>Referring Physician Phone: </label>
+                    <blockquote class="pl-2">{{studyLinked.referring_physician_phone}}</blockquote>
+                  </div>
+                  <div>
+                    <label>Study Date: </label>
+                    <blockquote class="pl-2">{{studyLinked.study_date | date : 'fullDate'}}</blockquote>
+                  </div>
+                  <div ng-show="studyLinked.remark">
+                    <label>Radiographer's Remark: </label>
+                    <blockquote class="pl-2">{{studyLinked.remark}}</blockquote>
+                  </div>
+                  <div>
+                    <label>Reporting radiologist(s): </label>
+                    <ol>
+                      <li ng-repeat="r in studyLinked.assigned_radiologist_id">
+                        <b>{{r.name}}</b><br>
+                        <span>{{r.designation}}</span><br>
+                        <span>{{r.email}}</span><br>
+                        <span>{{r.phone}}</span><br>
+                      </li>
+                    </ol>
+                  </div>
+                </div>
+              </div>
+              </section>
+              <section ng-show="clickedAction == 'edit'">
+                <h5 class="p-1 bg-primary text-white">Edit</h5>
+                <div class="row">
+                  <div class="col-md-9">
+                    <form ng-submit="updateStudy()">
+                      <div>
+                        <label>Patient Names: </label><br>
+                        <input type="text" class="form-control" ng-model="studyLinked.patient_name">
+                      </div>
+                      <div class="pt-2">
+                        <label>Patient Age: </label><br>
+                        <input type="text" class="form-control" ng-model="studyLinked.patient_age">
+                      </div>
+                      <div  class="pt-2">
+                        <label>Patient Sex: </label><br>
+                        <input type="text" class="form-control" ng-model="studyLinked.patient_sex">
+                      </div>
+                      <div class="pt-2">
+                        <label>Patient Phone: </label><br>
+                        <input type="text" class="form-control" ng-model="studyLinked.patient_phone"><span>
+                      </div>
+
+                       <div class="pt-2">
+                        <label>Patient Email: </label><br>
+                        <input type="text" class="form-control" ng-model="studyLinked.email">
+                      </div>
+
+
+                      <div class="pt-2">
+                        <label>Study Name: </label><br>
+                        <input type="text" ng-model="studyLinked.study_name" class="form-control">
+                      </div>
+                      <div class="pt-2">
+                        <label>Study ID / Patient ID: </label><br>
+                        <input type="text" ng-model="studyLinked.patient_id" class="form-control">
+                      </div>
+                      <div class="pt-2">
+                        <label>Indication/History: </label><br>
+                        <textarea ng-model="studyLinked.summary" class="form-control p-1" style="max-height: 100px"></textarea>
+                      </div>
+                 
+                      <div class="pt-2">
+                        <label>Referring Physician: </label><br>
+                        <input type="text" ng-model="studyLinked.referring_physician" class="form-control">
+                      </div>
+
+                      <div class="pt-2">
+                        <label>Referring Physician Email: </label><br>
+                        <input type="text" ng-model="studyLinked.referring_physician_email" class="form-control">
+                      </div>
+
+                      <div class="pt-2">
+                        <label>Referring Physician Phone: </label><br>
+                        <input type="text" ng-model="studyLinked.referring_physician_phone" class="form-control">
+                      </div>
+
+                      <div class="pt-2">
+                        <label>Study Date: </label><br>
+                        <input type="date" ng-model="studyLinked.study_date" class="form-control"> <date>{{studyLinked.study_date | date : 'mediumDate'}}</date>
+                      </div>
+
+                      <div class="pt-2">
+                        <label>Radiographer's Remark: </label><br>
+                        <textarea ng-model="studyLinked.remark" class="form-control p-1"  style="max-height: 100px"></textarea>
+                      </div>
+
+                      <div class="pt-2">
+                        <input type="submit" value="Update" class="btn btn-lg btn-primary" name="" ng-show="!loading">
+                        <span class="text-info" ng-show="loading">Updating...</span>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </section>
+
+              <section ng-show="clickedAction == 'reassign'">
+                <h6>Re-assign study to another radiologist(s)</h6>
+                <hr>
+                <form ng-submit="assign()">
+                  <div ng-repeat="j in radiologists">
+                    <label class="custom-control custom-checkbox">
+                      {{j.name}} - <span style="font-weight: normal;">{{j.designation}}</span>
+                      <input type="checkbox" class="custom-control-input" ng-model="j.selected">
+                      <span class="custom-control-indicator"></span>
+                      <span class="custom-control-description" style="opacity:0;"></span>
+                    </label> 
+                  </div><br>
+                  <div>
+                    <input type="submit" name="" class="btn btn-danger" ng-show="!loading">
+                    <span ng-show="loading">Re-assigning...</span>
+                  </div>
+                </form>
+              </section>
+              
             </div>
           </div>
         </div>

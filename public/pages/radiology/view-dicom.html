@@ -1,0 +1,80 @@
+
+<style type="text/css">
+	.popup {
+		display: inline-block;
+		position: absolute;
+		right: -150px;
+		top: 25px;
+		width: 220px;
+		background-color: #d7dde4;
+		border: 1px solid grey;
+		padding: 10px;
+		border-radius: 8px;
+		z-index: 9999
+	}
+</style>
+
+<div class="card p-2 card-center-1">
+	<h4>Linked Studies</h4>
+	<form class="row" ng-submit="getStudy()">
+		<div class="col-md-4">
+			<label> From </label>
+			<input type="date" name="" class="form-control" ng-model="study.from">
+		</div>
+		<div class="col-md-4">
+			<label> To </label> 
+			<input type="date" name="" class="form-control" ng-model="study.to">
+		</div>
+
+		<div class="col-md-4">
+			<input type="text" name="" class="form-control" placeholder="Patient ID" ng-model="study.patientID">
+		</div>
+
+		<div class="col-md-4">
+			<input type="text" name="" class="form-control" placeholder="Patient name" ng-model="study.patientName">
+		</div>
+
+		<div class="col-md-4">
+			<input type="submit" name="" value="Search" class="btn btn-info btn-sm">&nbsp;
+			<input type="button" name="" value="Clear" class="btn btn-simple btn-sm" ng-click="clear()">
+		</div>
+	</form>
+	<!--<div class="col-md-4 pl-0 ml-0">
+		<input type="text" name="" placeholder="filter" class="form-control">
+	</div>
+	<div class="clearfix"></div>-->
+	<hr>
+	<div>	
+		<div style="text-align: right;">
+			<input type="text" name="" placeholder="filter list" ng-model="filter">
+		</div>	
+		<table>
+			<thead>
+				<th>Patient Name</th>
+				<th>Study ID</th>
+				<th>Study Type</th>
+				<th>Study Date</th>
+			</thead>
+			<tbody ng-repeat="study in linkedStudies | orderBy : '-study_date' | filter : filter" style="line-height: 25px">
+				<td>{{study.patient_name}}</td>
+				<td>{{study.patient_id}}</td>
+				<td>{{study.study_name}}</td>
+				<td style="position: relative;"><span>{{study.study_date | date: 'mediumDate'}}</span> <i class="fa fa-ellipsis-h text-muted" style="float: right;padding: 2px 1px;cursor: pointer;" title="Manage study" ng-click="popup(study)"></i>
+					<div ng-class="{'popup': study.isManage == true}" ng-if="study.isManage">
+					  <div style="position: absolute;top:4px;right: 10px" ng-click="closePop(study)"><i class="fa fa-times text-info"></i></div>
+					  <a href="" class="form-control" ng-click="details(study)"> View Details </a>
+					  <a href="" class="form-control" ng-click="edit(study)"> Edit Study </a>
+					  <a href="" class="form-control" ng-click="reAssign(study)">Re-assign Study</a>
+					  <a href="" class="text-danger form-control" ng-click="delete(study)">Delete Study</a>
+					</div>
+				</td>
+			</tbody>
+		</table>
+		<div style="text-align: center;padding-top: 20px" ng-show="loading">
+			<span class="text-warning">Loading...</span>
+		</div>		
+	</div>
+	
+</div>
+<div style="height: 300px"></div>
+

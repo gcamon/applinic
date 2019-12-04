@@ -844,6 +844,11 @@ app.config(['$paystackProvider','$routeProvider',
   controller: "addRadiologistCtrl"
 })
 
+.when("/linked",{
+  templateUrl: "/assets/pages/radiology/view-dicom.html",
+  controller: "viewLinkedDicomCtrl"
+})
+
 }]);
 
 
@@ -22480,6 +22485,7 @@ app.controller("dicomCtrl",["$rootScope","$scope","$location","$resource","$http
   
     $rootScope.station.cost = cost;
 
+
     var msg = "Adding Existing DICOM Study will cost you " + cost + " . Do you wish to continue?";
     var check = confirm(msg)
     if(check) {
@@ -22546,9 +22552,157 @@ app.controller("dicomCtrl",["$rootScope","$scope","$location","$resource","$http
       }
     }); 
   }
-
  
 }]);
+
+//14/11/2019
+app.service("dicomStudyService",["$resource",function($resource){
+  return $resource("/user/dicom-service",null,{update:{method: "PUT"},create:{method:'POST'}});
+}]);
+
+app.controller("viewLinkedDicomCtrl",["$scope","$http","moment","dicomStudyService","ModalService","$rootScope",
+  function($scope,$http,moment,dicomStudyService,ModalService,$rootScope){
+  $scope.study = {};
+  $scope.study.from = new Date();
+  $scope.study.to = new Date();
+
+  $scope.getStudy = function() {
+    $scope.loading = true;
+    dicomStudyService.query($scope.study,function(data){
+      $scope.linkedStudies = data;
+      $scope.loading = false
+    });
+  }
+
+  $scope.clear = function() {
+    $scope.study = {}
+  }
+
+
+  $scope.popup = function(study) {
+    $scope.linkedStudies.forEach(function(std){
+      if(std.isManage) {
+        std.isManage = false;
+      } else if(std._id == study._id){
+        study.isManage = true;
+      }
+    })
+    /*if(!study.isManage) {
+      study.isManage = true;
+    } else {
+      study.isManage = false;
+    }*/
+    //study.isManage = true;
+  }
+
+  $scope.closePop = function(study) {
+    study.isManage = false;
+  }
+
+  $scope.details = function(study) {
+    $rootScope.clickedAction = 'details';
+    $rootScope.studyLinked = study;
+    study.isManage = false;
+    ModalService.showModal({
+      templateUrl: 'manageDICOMModal.html',
+      controller: 'dicomModalCtrl'
+    }).then(function(modal) {
+      modal.element.modal();
+      modal.close.then(function(result) {             
+      });
+    });
+  }
+
+  $scope.edit = function(study) {
+    $rootScope.clickedAction = 'edit';
+    $rootScope.studyLinked = study;
+    study.isManage = false;
+    ModalService.showModal({
+      templateUrl: 'manageDICOMModal.html',
+      controller: 'dicomModalCtrl'
+    }).then(function(modal) {
+      modal.element.modal();
+      modal.close.then(function(result) {             
+      });
+    });
+  }
+
+  $scope.reAssign = function(study) {
+    $rootScope.clickedAction = 'reassign';
+    $rootScope.studyLinked = study;
+    study.isManage = false;
+    ModalService.showModal({
+      templateUrl: 'manageDICOMModal.html',
+      controller: 'dicomModalCtrl'
+    }).then(function(modal) {
+      modal.element.modal();
+      modal.close.then(function(result) {             
+      });
+    });
+  }
+
+  $scope.delete = function(study) {
+    $rootScope.clickedAction = 'delete';
+    $rootScope.studyLinked = {};
+  }
+
+}])
+
+app.controller("dicomModalCtrl",["$scope","dicomStudyService","$rootScope","$http",
+  function($scope,dicomStudyService,$rootScope,$http){
+
+    $scope.updateStudy = function(){
+      $scope.loading = true;
+      $http({
+        method  : 'PUT',
+        url     : "/user/dicom-details",
+        data    : $rootScope.studyLinked,
+        headers : {'Content-Type': 'application/json'} 
+      })
+      .success(function(data) {              
+        $scope.loading = false; 
+        alert(data.message)  
+      }); 
+    }
+
+    $http({
+      method  : 'GET',
+      url     : "/user/reporting-radiologist",
+      headers : {'Content-Type': 'application/json'} 
+    })
+    .success(function(data) {  
+      var elemPos;
+      $rootScope.studyLinked.assigned_radiologist_id.forEach(function(item){
+        elemPos = data.reporters.map(function(x){return x.id}).indexOf(item.id)
+        if(elemPos !== -1){
+          data.reporters[elemPos].selected = true;
+        }
+      }) 
+      $scope.radiologists = data.reporters;
+    }); 
+
+    $scope.assign = function() {
+      $scope.loading = true;
+      $rootScope.studyLinked.assigned_radiologist_id = [];
+      for(var i = 0; i < $scope.radiologists.length; i++){
+        if($scope.radiologists[i].selected){
+          $rootScope.studyLinked.assigned_radiologist_id.push($scope.radiologists[i])
+        }
+      }
+
+      $http({
+        method  : 'POST',
+        url     : "/user/reassign-study",
+        data    : $rootScope.studyLinked,
+        headers : {'Content-Type': 'application/json'} 
+      })
+      .success(function(data) {              
+        $scope.loading = false; 
+        alert(data.message)  
+      }); 
+    }
+    
+}])
 
 
 app.controller("investigationSearchCtrl",["$scope","$rootScope","$window","$http","$timeout","deviceCheckService",

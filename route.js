@@ -9931,6 +9931,62 @@ router.get("/api/dicom-details",function(req,res){
   })
 });
 
+
+router.put("/user/dicom-details",function(req,res){
+  if(req.user){
+    model.study.update({_id: req.body._id},req.body,null, function(err,info) {
+      if(info)
+        res.json({status: true, message: "Study updated successfully"});
+      else 
+        res.send({message: "Error occured. Try again"})
+    })
+    
+  } else {
+    res.send({message: "Error occured. Try again"})
+  }
+})
+
+
+router.get("/user/dicom-service",function(req,res){
+  if(req.user) {
+    //note this converts the startdate to ISO date which is on UTC and it time zone is at 0;
+    var dt;
+    var startDate;
+    var endDate;
+    var criteria = {};
+    if(Object.keys(req.query).length > 0) {
+
+      if(req.query.from) {
+        dt = new Date(req.query.from);   
+        dt.setHours(dt.getHours() - 24);
+        startDate = dt.toISOString();
+        endDate = new Date(req.query.to);
+        criteria['study_date'] = {$gt: startDate,$lt: endDate};
+      }
+
+      if(req.query.patientID) {
+        criteria['patient_id'] = req.query.patientID;
+      }
+
+      if(req.query.patientName) {
+        criteria['patient_name'] = req.query.patientName;
+      }
+
+    } 
+
+    console.log(criteria)
+   
+    model.study.find(criteria)
+    .exec(function(err,data){
+      if(err) throw err;
+      res.json(data);
+    });    
+
+  } else {
+    res.end("Unauthorized access.");
+  }
+})
+
 router.post("/user/dicom-service",function(req,res){
   if(req.user) {
     if(req.user.type == "admin") {
