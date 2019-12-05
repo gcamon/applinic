@@ -2434,8 +2434,8 @@ router.post("/user/dicom-details",function(req,res){
 	            + "<b> Desktop Dicom Viewer URL:  " 
 	            +	webView + "<br> Mobile Device DICOM Viewer URL: " + mobileView + "<br>" 
 	            + 'username: ' + centerUser + "<br>password: " + centerPassword + '<br>'
-	            +  tp  + " <b>" + (rados || id) +
-	            + '<br><br> <p><a href="www.applinic.com/signup">Create an account</a> with us and enjoy easy access to patients and medical records at all time. </p> <b>Applinic Team</b> </td></tr></table>'
+	            +  tp  + ": <b>" + (rados || id) 
+	            + '</b><br><br> <p><a href="www.applinic.com/signup">Create an account</a> with us and enjoy easy access to patients and medical records at all time. </p> <b>Applinic Team</b> </td></tr></table>'
 	          };
 
 	          transporter.sendMail(mailOptions, function(error, info){
@@ -2446,13 +2446,14 @@ router.post("/user/dicom-details",function(req,res){
 	            }
 	          });
 
-	          transporter.sendMail(mailOptions2, function(error, info){
-	            if (error) {
-	              console.log(error);
-	            } else {
-	              console.log('Email sent: ' + info.response);
-	            }
-	          });
+	          if(req.body.referringPhysicianEmail)
+		          transporter.sendMail(mailOptions2, function(error, info){
+		            if (error) {
+		              console.log(error);
+		            } else {
+		              console.log('Email sent: ' + info.response);
+		            }
+		          });
 
 	          // send email and sms to the reporting radiologists with links to the dicom viewer, 
 	          //mobile viewer and center template. If center has no template use default template.
