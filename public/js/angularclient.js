@@ -6329,9 +6329,11 @@ app.controller("investigationController",["$scope","$http","labTests","scanTests
         $scope.isSearchToSend = false;
       }
 
+      var updatedRadioTestList;
+
       $scope.$watch("TestList",function(newVal,oldVal){
-        patient.lab_test_list = newVal;// adds prescription body to the prescription object as the doctor 
-      //prepares to send it to the back end.
+        //patient.lab_test_list = newVal;
+        updateRadioTestList = newVal;
       },true);  
 
       $scope.pickedCenter = null;
@@ -6379,32 +6381,50 @@ app.controller("investigationController",["$scope","$http","labTests","scanTests
       }
 
       $scope.sendTest = function () {
-        $scope.isLoading = true;
-         patient.radiology = {};
-         patient.radiology.patient_gender = patient.gender;
-         patient.history = $scope.treatment.history;
-         patient.radiology.patient_age = patient.age;
-         patient.patient_address = patient.address;
-         patient.patient_firstname = patient.firstname;
-         patient.patient_lastname = patient.lastname;
-         patient.patient_profilePic = patient.patient_profile_pic_url;
-         patient.patient_title = patient.title;
-         patient.clinical_summary = $scope.treatment.clinical_summary;
-         patient.indication = $scope.treatment.indication;
-         patient.lmp = $scope.treatment.lmp;
-         patient.parity = $scope.treatment.parity;
-         patient.session_id = $rootScope.session;
-         patient.date = + new Date(); 
-         patient.noUpdate = true;
-         patient.typeOfSession = "";
-         patient.treatment = $rootScope.treatment;
+         if(updateRadioTestList.length >= 1 ) {
+           $scope.isLoading = true;
+           patient.radiology = {};
+           patient.radiology.patient_gender = patient.gender;
+           patient.history = $scope.treatment.history;
+           patient.radiology.patient_age = patient.age;
+           patient.patient_address = patient.address;
+           patient.patient_firstname = patient.firstname;
+           patient.patient_lastname = patient.lastname;
+           patient.patient_profilePic = patient.patient_profile_pic_url;
+           patient.patient_title = patient.title;
+           patient.clinical_summary = $scope.treatment.clinical_summary;
+           patient.indication = $scope.treatment.indication;
+           patient.lmp = $scope.treatment.lmp;
+           patient.parity = $scope.treatment.parity;
+           patient.session_id = $rootScope.session;
+           patient.date = + new Date(); 
+           patient.noUpdate = true;
+           patient.typeOfSession = "";
+           patient.treatment = $rootScope.treatment;
 
-         if($rootScope.isSubNote) {
-            patient.subSession = true;
-            patient.sub_session_id = $rootScope.sub_session_id;
-            $rootScope.isSubNote = false;
-         }
+           if($rootScope.isSubNote) {
+              patient.subSession = true;
+              patient.sub_session_id = $rootScope.sub_session_id;
+              $rootScope.isSubNote = false;
+           }        
           
+          $scope.indexSent = 0;
+         
+          sendAsSingleTest($scope.indexSent)
+
+        } else {
+          alert("You have not selected or written an investigation.")
+        }
+
+      }
+
+      
+
+      var sendAsSingleTest = function(count) {
+
+        patient.lab_test_list = [updateRadioTestList[count]];
+        count++;
+
         $http({
           method  : 'POST',
           url     : "/user/doctor/radiology/send-test",
@@ -6412,11 +6432,17 @@ app.controller("investigationController",["$scope","$http","labTests","scanTests
           headers : {'Content-Type': 'application/json'} 
           })
         .success(function(data) {
-          $scope.isLoading = false;
+          
           if(data) { 
-            $scope.message = "Investigations sent!"  
+            if(updateRadioTestList.length == count) {
+              $scope.isLoading = false;
+              $scope.message = "Investigations sent!"; 
+            } else {
+              sendAsSingleTest(count);
+            }
           } else {
-            alert("Error: Investigation not sent!")
+            var msg = "Error: Investigation not sent!";
+            alert(msg)
           }
 
         });
@@ -13634,7 +13660,6 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
       headers : {'Content-Type': 'application/json'} 
       })
     .success(function(data) {        
-      console.log(data)   
       $scope.loading = false;         
       $scope.testResult = data;
     });            
@@ -13837,20 +13862,7 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
       });
     }
 
-    /*
-date: "1547987169970"
-message_id: 8499218039
-sender_age: "30 - 39 years (adult)"
-sender_firstname: "Nnaji"
-sender_gender: "Male"
-sender_id: "chidiebere187432"
-sender_lastname: "Chidiebere"
-sender_location: "Enugu Nigeria"
-sender_profile_pic_url: "/download/profile_pic/nopic"
-type: "consultation"
-_id: "5c4468e145e2f50a18b2949b"
-
-    */
+  
     function reqModal(patientObj) {
       templateService.holdForSpecificPatient = patientObj
       ModalService.showModal({
@@ -13861,6 +13873,22 @@ _id: "5c4468e145e2f50a18b2949b"
         modal.close.then(function(result) {
            
         });
+      });
+    }
+
+    $scope.viewReportAndDCM = function(test) {
+      test.isReportDCM = true;
+      console.log(test)
+      test.loading = true;
+      $http({
+        method  : 'GET',
+        url     : "/user/study-reports?stdId=" + test.study_ref_id,
+        headers : {'Content-Type': 'application/json'} 
+        })
+      .success(function(data) { 
+        console.log(data)
+        test.loading = false;
+        test.reportDetails = data;
       });
     }
 
@@ -17428,6 +17456,38 @@ app.controller("radioTestControler",["$scope","$location","$http","templateServi
 
     getResource();
   }
+
+
+  $scope.connectStudy = function() {
+    if(!$rootScope.station)
+      $rootScope.station = {};
+    var indication = $scope.refInfo.radiology.indication;
+    var summary = $scope.refInfo.radiology.clinical_summary
+
+    $rootScope.station.patientName = ($scope.refInfo.radiology.patient_title) ?
+     ($scope.refInfo.radiology.patient_title + " " + $scope.refInfo.radiology.patient_firstname +
+      " " + $scope.refInfo.radiology.patient_lastname) : ( $scope.refInfo.radiology.patient_firstname +
+      " " + $scope.refInfo.radiology.patient_lastname) ;
+
+    $rootScope.station.patientAge = $scope.refInfo.radiology.patient_age;
+    $rootScope.station.patientSex = $scope.refInfo.radiology.patient_gender;
+    $rootScope.station.patientPhone = $scope.refInfo.radiology.patient_phone;
+    $rootScope.station.patientEmail = $scope.refInfo.radiology.email;
+    $rootScope.station.studyName = $scope.refInfo.radiology.test_to_run[0].name;
+    $rootScope.station.clinicalSummaryIndication = indication + " " + summary;
+    $rootScope.station.referringPhysician = ($scope.refInfo.referral_title) ?
+     ($scope.refInfo.referral_title + " " + $scope.refInfo.referral_firstname + " " + $scope.refInfo.referral_lastname):
+     $scope.refInfo.referral_firstname + " " + $scope.refInfo.referral_lastname;
+    $rootScope.station.referringPhysicianEmail = $scope.refInfo.referral_email;
+    $rootScope.station.referringPhysicianPhone = $scope.refInfo.referral_phone;
+    $rootScope.station.isUserConnectLinking = true;
+    $rootScope.station.patientData = $scope.refInfo;
+
+    $location.path("import")
+  }
+
+
+  
 
   function toTitleCase(str)
   {

@@ -104,7 +104,7 @@
 
         
 
-        <div class="col-md-7">
+        <div class="col-md-6">
 
 
           <form class="p-2" ng-submit="findInvestigation()">     
@@ -128,19 +128,28 @@
               </div>
           </form>
           <br>
-          <h5>Search Result</h5>
-          <div class="card p-2">            
+          <h6>Search Result:</h6>
+          <div class="p-2">            
             <% for(var i = 0; i < result.length; i++) { %>              
-               <div style="font-size: 18px;border-bottom: 1px solid #eee" class="p-1">
-                 <b><%= result[i].patient_name %></b><br>                 
-                <span><%= result[i].study_id %></span> <span><%= result[i].ref_id %></span>
-                <% for(var j = 0; j < result[i].pdf_report.length;j++) { %>
+               <div style="border-bottom: 1px solid #eee" class="p-1">
+                <b><%= result[i].patient_name %></b><br>                 
+                <span><%= result[i].study_id %></span> 
+                <span><%= result[i].ref_id %></span>
+                <!--<% for(var j = 0; j < result[i].pdf_report.length;j++) { %>
                  <a href="<%= 'https://drive.google.com/viewerng/viewer?embedded=true&url=https://applinic.com' + result[i].pdf_report[j] %>" title="View test report pdf" class="text-info" target="_blank">&nbsp;   
                  <i class="fa fa-file-pdf-o" ng-if="'<%= result[i].pdf_report[j] %>'"></i></a> 
-                <% } %>            
+                <% } %> -->
+
+                <span ng-if="isMobileDevice" ng-cloak style="float: right;">                        
+                  <a href="<%= result[i].study_link_mobile %>" target="_blank" title="View in dicom viewer"><i class="fa fa-eye text-muted" style="font-size: 20px"></i></a>
+                </span>
+
+                <span ng-if="!isMobileDevice" ng-cloak style="float: right;">    
+                  <a href="<%= result[i].study_link2 %>" target="_blank" title="View in dicom viewer"><i class="fa fa-eye text-muted" style="font-size: 20px"></i></a>
+                </span>           
                </div>
-               <% if(result[i].type == 'radiology') { %>
-               <div class="col-md-5" ng-if="!isMobileDevice" ng-cloak> 
+              
+               <!--<div class="col-md-5" ng-if="!isMobileDevice" ng-cloak> 
                   <p><b>Option 1:</b> <br>View with Web DICOM viewer. <br> Has few tools for analysis. <br> It is web based. <br> No installations needed.</p>              
                   <a href="<%= result[i].study_link2 %>" class="btn btn-simple btn-lg" target="_blank" title="View in dicom viewer"><i class="fa fa-eye text-info" style="font-size: 20px"></i></a>
                </div>
@@ -151,9 +160,10 @@
                <div ng-if="isMobileDevice" ng-cloak>
                   <p>View with Web Moble DICOM viewer. <br> Has few tools for analysis. <br> Requires Patient ID of the study for search.<br> No installations needed.</p>              
                   <a href="<%= result[i].study_link_mobile %>" class="btn btn-simple btn-lg" target="_blank" title="View in dicom viewer"><i class="fa fa-eye text-info" style="font-size: 20px"></i></a>
-               </div>
-               <% } %>
+               </div>-->
+              
 
+            
             <% } %>
           </div>
 
@@ -162,7 +172,7 @@
           <% } %>
 
         </div>
-        <section class="col-md-5 p-2" ng-if="!isMobileDevice" ng-cloak>
+        <!--<section class="col-md-5 p-2" ng-if="!isMobileDevice" ng-cloak>
           <h4 class="display-5">Cannot View Dicom Image in Option 2?</h4>
           <h6><b>Windows</b></h6>
           <ol>
@@ -182,7 +192,7 @@
             <li>That is just all you need to do. Do note that this is only required to be done once. You can then be viewing dicom images with no other installations again.</li>
           </ol>
 
-        </section>
+        </section>-->
     </div>
 </div>
 <div class="clearfix"></div>

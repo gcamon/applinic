@@ -1379,7 +1379,7 @@ var basicPaymentRoute = function(model,sms,io,paystack,client,nodemailer){
 	          theObj.center_country = req.user.country;
 	          theObj.indication = req.body.radiology.indication;
 	          theObj.center_phone = req.user.phone;
-	          theObj.center_phone = req.body.radiology.indication;
+	          //theObj.center_phone = req.body.radiology.indication;
 	          theObj.acc = req.body.radiology.acc; //refers to the Patient ID of the dicom image e.g "APP/3623662"
 	          theObj.center_profile_pic_url =  req.user.profile_pic_url;
 	          theObj.files = req.body.radiology.filesUrl;
@@ -1427,7 +1427,7 @@ var basicPaymentRoute = function(model,sms,io,paystack,client,nodemailer){
 	          });
 
 	          // save study
-	          dcm.save(function(err,info){})
+	          //dcm.save(function(err,info){})
 
 	          //save report
 	          data.save(function(err,info){
@@ -2359,11 +2359,15 @@ router.post("/user/dicom-details",function(req,res){
 			    attended: false,
 			    assigned_radiologist_id: req.body.reporters,
 			    remark: req.body.remark || ""
-			    //conclusion: req.body.conclusion,
-				  //findings: req.body.findings,
-				  //summary: req.body.summary,
-				  //advise: req.body.advise
 			  });
+
+			  study.study_link_mobile = "https://applinic.com/dicom-mobile?id=" + study._id
+
+			  if(req.body.isUserConnectLinking) {
+			  	study.isUserConnectLinking = true;			  
+			  	// keep the referral details. Works for existing patients in the platform
+			    study.referral_detail_dump.push(req.body.patientData); 
+			  }
 
 			  study.save(function(err,info){
 			  	if(err){

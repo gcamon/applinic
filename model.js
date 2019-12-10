@@ -320,6 +320,7 @@ var myModel = function () {
 		patient_firstname: String,
 		age: String,
 		gender: String,
+		patient_email: String,
 		history: String,
 		patient_lastname: String,
 		patient_profile_pic_url: String,
@@ -364,6 +365,8 @@ var myModel = function () {
 		referral_lastname: String,
 		referral_title: String,
 		referral_id: String,
+		referral_email: String,
+		referral_phone: String,
 		acc_no: String,
 		date: String,
 		type_of_test: String,		
@@ -423,7 +426,8 @@ var myModel = function () {
 		center_email: String,
 		acc: String,
 		acc_no: String,
-		study_link: String
+		study_link: String,
+		study_ref_id: String
 	});
 
 	var subSession = Schema({
@@ -432,7 +436,8 @@ var myModel = function () {
 		general: String,
 		systemic: String,
 		diagnosis: String,
-		sub_session_id: String
+		sub_session_id: String,
+		study_ref_id: String
 	});
 
 	var docDignosisSchema = Schema({
@@ -457,7 +462,7 @@ var myModel = function () {
 		files: Array,
 		treatment_plan: String,
 		sub_session: [subSession],
-    study_id: String
+    	study_id: String
 	});
 
 	var sessionSchema = Schema({
@@ -1044,7 +1049,9 @@ var myModel = function () {
 		referring_physician_phone: String,
 		attended: Boolean,
 		assigned_radiologist_id: Array,
-		remark: String
+		remark: String,
+		isUserConnectLinking: Boolean, //this is used to know if linking is from exist patient in the platform
+		referral_detail_dump: Array //dump the patient existing patient referral object
 	});
 
 	var dicomSchema = Schema({

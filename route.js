@@ -4853,12 +4853,14 @@ _id: "5c16660cba74dc0288ecfad9"
             phone: result.phone,
             id: result.user_id
           }
-
+          
           var refObj = {
             ref_id: random,
             referral_firstname: req.user.firstname,
             referral_lastname: req.user.lastname,
             referral_title: req.user.title,
+            referral_email: req.user.email,
+            referral_phone: req.user.phone,
             referral_id: req.user.user_id, 
             acc_no: accNo,   
             date: req.body.date,        
@@ -4927,7 +4929,8 @@ _id: "5c16660cba74dc0288ecfad9"
 
         var tellPatient = function(centerInfo){
           //remember sms will be sent to the patient
-          model.user.findOne({user_id: req.body.patient_id},{medical_records: 1,user_id:1,patient_notification:1,presence:1,phone:1})
+          model.user.findOne({user_id: req.body.patient_id},
+            {medical_records: 1,user_id:1,patient_notification:1,presence:1,phone:1})
           .exec(function(err,record){            
             if(err) throw err;     
             var recordObj = {
@@ -4963,7 +4966,7 @@ _id: "5c16660cba74dc0288ecfad9"
             if(record.presence === true)
               io.sockets.to(record.user_id).emit("notification",{status:true,message: "You have new unread test to run."});
           
-            var msgBody = "Your test was referred to " + centerInfo.name + "\n@ " + centerInfo.address + " " + centerInfo.city + " " +
+            var msgBody = "Your investigation was referred to " + centerInfo.name + "\n@ " + centerInfo.address + " " + centerInfo.city + " " +
             centerInfo.country + "\nBy " + req.user.name + "\nTest Ref NO is " + req.body.ref_id + "\nFor more details visit https://applinic.com/user/patient"
             var phoneNunber =  record.phone;
             sms.messages.create(
@@ -4974,7 +4977,6 @@ _id: "5c16660cba74dc0288ecfad9"
               }
             ) 
         
-
             record.patient_notification.unshift(noteObj);
             record.medical_records.radiology_test.unshift(recordObj);
             record.save(function(err,info){
@@ -10069,10 +10071,9 @@ router.get("/investigation/result",function(req,res){
     case 'radio':
       model.study.find({study_uid: req.query.id})
       .exec(function(err,data){
-        console.log(data)
         if(err) throw err;
         if(data.length == 0) {
-          model.study.find({study_id: req.query.id})
+          model.study.find({patient_id: req.query.id})
           .exec(function(err,data){
             if(err) throw err;
             if(data.length == 0) {
@@ -10092,6 +10093,7 @@ router.get("/investigation/result",function(req,res){
                 //  res.render("investigation-result",{result:[]})
                // }
             } else {
+              console.log(data)
               res.render("investigation-result",{result:data});
             }
           })
@@ -10274,12 +10276,12 @@ router.put("/report-template",function(req,res){
         study.conclusion = req.body.conclusion || "";
         study.advise = req.body.advise || "";
         study.attended = true;
-        study.save(function(err,info){
-          if(err) throw err;
-          if(info){            
-            //var pdfName = topdf(req.body.html);
 
-            //var options = { format: 'Letter' };
+
+       
+
+                  
+           
             var dt = + new Date();
             var pdfName = dt + "-" + Math.floor(Math.random() * 999) + '.pdf';
             var filePath = './pdf/' + pdfName;
@@ -10314,6 +10316,8 @@ router.put("/report-template",function(req,res){
                 emailArr.push(study.referring_physician_email);
               }
 
+              var mob = "https://applinic.com/dicom-mobile?id=" + study._id;
+
               var mailOptions = {
                 from: 'Applinic Healthcare info@applinic.com',
                 to: emailArr || "support@applinic.com", //req.body.email
@@ -10321,9 +10325,11 @@ router.put("/report-template",function(req,res){
                 html: '<table><tr><tr><td style="line-height: 25px">Hi, please find the <b>Radiology Report</b> PDF for the study below:<br><br>'
                 + 'Patient: ' + req.body.names + "<br>"
                 + 'Investigation: ' + req.body.studyName + "<br>"
+                + 'Patiend ID of Study: ' + study.patient_id + "<br>"
                 + 'Ref: ' + req.body._id + "<br>"
-                + "Reported by: " + req.body.reporter + "<br><br>"
-                + "Web DICOM viewer url: <br>" + req.body.studyLink + "<br><br>"
+                + "Reported by: " + req.body.reporter + "<br><br>"               
+                + "Mobile DICOM viewer url: <br>" + study.study_link_mobile + "<br>"
+                + "Web DICOM viewer url: <br>" + mob + "<br><br>"
                 //+ "Report PDF: <br><img src='" + emailPDFPath + "'/><br><br>"
                 + "<b>Applinic Team</b><br>"
                 + '</td></tr></table>',
@@ -10344,17 +10350,237 @@ router.put("/report-template",function(req,res){
                 }
               });
 
+              //////////////////
+
+          /*
+          //from req.body
+          names: 'Mr Chibuzor Ede',
+  patientId: '326732',
+  studyDate: 1575932400000,
+  age: '30 - 39 years (adult)',
+  sex: 'Male',
+  doctor: 'DR Ani Emeka',
+  studyName: 'Chest X-ray (CXR)  1 view',
+  reporter: 'Dr. Ede Obinna',
+  reporterDesignation: 'Consultant Radiologist',
+  reporterEmail: 'ede.obinna27@gmail.com',
+  centerName: 'Emma Radiology Center',
+  centerAddress: '13 iwobi street GRA, Trans-Ekulu',
+  centerCity: 'Enugu',
+  centerCountry: 'Nigeria',
+  centerPhone: '+2348096462317',
+  centerEmail: 'emma@gmail.com',
+  centerProfilePic: 'https://applinic.com/download/profile_pic/5db73c6f3f013765fef598531500957b',
+  _id: '5def9744813d08397cfcebeb',
+  centerId: 'emma scan155072',
+  studyLink: 'https://applinic.com/dcm?id=326732',
+  summary: 'ddds Summary: dsdsds',
+  findings: 'sddsds',
+  conclusion: 'sddds',
+  advise: 'sddssds',
+  email: 'ede.obinna27@gmail.com',
+
+
+
+
+  { _id: '5def4fe7c25e92299453356b',
+  radiology:
+   { studyId: 'A725846',
+     test_to_run: [ [Object] ],
+     _id: '5def4fe7c25e92299453356c',
+     doctor_id: 'emyakatras3778',
+     doctor_lastname: 'Emeka',
+     doctor_firstname: 'Ani',
+     title: 'DR',
+     acc_no: '46390878',
+     attended: false,
+     clinical_summary: 'dsdsds',
+     indication: 'ddds',
+     patient_address: '12 chezoka Estate',
+     test_id: 98439212,
+     patient_id: 'chibuzor468616',
+     session_id: 'Pu0yna5v2AX5PK2O0j',
+     patient_phone: '+2348064245256',
+     patient_title: 'Mr',
+     patient_profile_pic_url: 'https://applinic-files.s3.amazonaws.com/chibuzor46861661s1ep0idgl._sl1500__1.jpg',
+     patient_lastname: 'Ede',
+     patient_firstname: 'Chibuzor',
+     patient_gender: 'Male',
+     patient_age: '30 - 39 years (adult)' },
+  date: '1575964644759',
+  acc_no: '46390878',
+  referral_id: 'emyakatras3778',
+  referral_title: 'DR',
+  referral_lastname: 'Emeka',
+  referral_firstname: 'Ani',
+  ref_id: 869776 }
+
+          */
+
+          if(study.isUserConnectLinking && study.referral_detail_dump[0]) {
+            req.body.radiology = study.referral_detail_dump[0];
+            model.user.findOne({"doctor_patient_session.session_id": req.body.radiology.session_id},
+              {doctor_patient_session:1,title:1,firstname:1,lastname:1,email:1}).exec(function(err,data){
+              if(err) throw err;
+              var elementPos = data.doctor_patient_session.map(function(x) {return x.session_id }).indexOf(req.body.radiology.radiology.session_id);
+  
+              if(elementPos !== -1) {
+                var objectFound = data.doctor_patient_session[elementPos];    
+                var pos = objectFound.diagnosis.radiology_test_results.map(function(x) { return x.test_id;}).indexOf(req.body.radiology.radiology.test_id);
+  
+                if(objectFound.diagnosis.radiology_test_results[pos]) {
+                  var theObj = objectFound.diagnosis.radiology_test_results[pos];         
+                  theObj.receive_date = + new Date();
+                  theObj.test_to_run = req.body.radiology.radiology.test_to_run;
+                  theObj.report = req.body.radiology.radiology.report;
+                  theObj.conclusion = req.body.conclusion;
+                  theObj.sent_date = req.body.date;
+                  theObj.test_ran_by = req.body.centerName;
+                  theObj.center_address = req.body.centerAddress;
+                  theObj.center_city = req.body.centerCity;
+                  theObj.center_country = req.body.centerCountry;
+                  theObj.center_phone = req.body.centerPhone;
+                  theObj.indication = req.body.indication;
+                  //theObj.center_profile_pic_url =  req.user.profile_pic_url;
+                  theObj.study_ref_id = study._id;
+                }
+
+                
+              } 
+
+
+              data.save(function(err,info){
+                if(err) {
+                  res.send({status: "error"});
+                } else { 
+                  //updatePatient()
+                }
+              });               
+
+            });
+
+            
+
+          } //end of if
+
+          function updatePatient() {         
+                //here patient test result is updated.
+                model.user.findOne({user_id: req.body.radiology.patient_id},{medical_records: 1,patient_notification:1,user_id:1,presence:1,phone:1,email:1,title:1,firstname:1,lastname:1})
+                .exec(function(err,data){
+                  if(err) throw err;
+                  var elementPos = data.medical_records.radiology_test.map(function(x) {return x.session_id; }).indexOf(req.body.radiology.session_id);
+                  var objectFound = data.medical_records.radiology_test[elementPos]; 
+
+                  if(objectFound) {         
+                    objectFound.report = req.body.radiology.report || objectFound.report;
+                    objectFound.conclusion = req.body.radiology.conclusion || objectFound.conclusion;
+                    objectFound.test_to_run = req.body.radiology.test_to_run || objectFound.test_to_run;
+                    objectFound.sent_date = req.body.date || objectFound.sent_date;
+                    objectFound.receive_date = req.body.radiology.date;
+                    objectFound.payment_acknowledgement = true;
+                    objectFound.files = req.body.radiology.filesUrl;
+                    objectFound.indication = req.body.radiology.indication;
+                    objectFound.acc = req.body.radiology.acc;
+                    objectFound.study_id = dcm._id;
+
+                    //var random = Math.floor(Math.random() * 999999);
+                    data.patient_notification.unshift({
+                      type:"radiology",
+                      date: req.body.radiology.date,
+                      note_id: req.body.radiology.test_id,
+                      ref_id: req.body.ref_id,
+                      session_id:req.body.radiology.session_id,
+                      message: "Radiology test result received."
+                    });
+
+                    if(data.presence === true){
+                      io.sockets.to(data.user_id).emit("notification",{status:true});
+                    } 
+
+                    var msgBody = "Radiology test result received! login http://applinic.com/login" 
+                    + "\nPatient ID of study: " + req.body.radiology.studyId
+                    + "\nStudy Link Mobile: " + "https://applinic.com/dicom-mobile?id=" + dcm._id
+                    var phoneNunber =  data.phone;
+                    sms.messages.create(
+                      {
+                        to: phoneNunber,
+                        from: '+16467985692',
+                        body: msgBody,
+                      }
+                    ) 
+                    
+
+                    var transporter = nodemailer.createTransport({
+                      host: "mail.privateemail.com",
+                      port: 465,
+                      auth: {
+                        user: "info@applinic.com",
+                        pass: process.env.EMAIL_PASSWORD
+                      }
+                    });
+
+                    var mailOptions = {
+                      from: 'Applinic info@applinic.com',
+                      to: data.email,
+                      subject: 'Radiology Result Received',
+                      html: '<table><tr><th><h3 style="background-color:#85CE36; color: #fff; padding: 30px"><img src="https://applinic.com/assets/images/applinic1.png" style="width: 250px; height: auto"/><br/><span>Healthcare... anywhere, anytime.</span></h3></th></tr><tr><td style="font-family: Arial, Helvetica, sans-serif; font-size: 14px;"><b>Hello ' + data.title + " " + data.lastname + ",</b><br><br>"
+                      + "<b>" + req.user.name + "</b>" + " have sent the result of radiology investigations requested by your doctor<br><br>"
+                      + "Patient ID of study: " + req.body.radiology.studyId + "<br><br>"
+                      + "Study Link: " + ovyWeb + "<br><br>"
+                      + "Study Link Mobile: " + "https://applinic.com/dicom-mobile?id=" + dcm._id + "<br><br>"
+                      + "Kindly <a href='https://applinic.com/login'>log in to your account</a> to view the report. Check in notification bell icon for latest updates<br><br>"
+                      + "Thank you for using Applinic.<br><br>"
+                      + "For ease of usage, you may download the Applinic mobile application on google play store if you use an android phone. " 
+                      + "<a href='https://play.google.com/store/apps/details?id=com.farelandsnigeria.applinic'>Click here </a> to do so now.<br><br>"
+                      + "For inquiries please call customer support on +2349080045678 or email us at support@applinic.com<br><br>"
+                      + "Thank you for using Applinic.<br></br><br>"
+                      + "<b>Applinic Team</b></td></tr></table>"
+                    };
+
+                    transporter.sendMail(mailOptions, function(error, info){
+                      if (error) {
+                        console.log(error);
+                      } else {
+                        console.log('Email sent: ' + info.response);
+                      }
+                    });
+
+                    
+                    data.save(function(err,info){
+                      if(err) res.send({status: "error"});           
+                      res.send({status: "success"});
+                    });
+
+                  } else {
+                    res.end("error: 404")
+                  }
+                });
+          }
+
+
+
+
+              /////////////
+
+
+
+            study.save(function(err,info){})
+
             }) //end of toFile
 
-          } else {
-            res.json({error: true,message: "Oops! Error occured and study was not saved."});
-          }
-        })
+          
+          
       });
+
+
+
     } else {
       res.json({Error: true, message: "Study does not exist"});
     }
+
+
   })
+
 }); 
 
 router.post("/email-report",function(req,res){
@@ -10529,6 +10755,21 @@ router.get("/api/reporting-radiologist",function(req,res){
     }
   }); 
 });
+
+router.get("/user/study-reports",function(req,res){
+  if(req.user){
+    model.study.findById(req.query.stdId)
+    .exec(function(err,study){
+      if(err) throw err;
+      if(study)
+        res.json(study)
+      else 
+        res.json({})
+    })
+  } else {
+    res.end("unauthorized access")
+  }
+})
 
 
 /*router.get("/lab/report-template/:_id",function(req,res){

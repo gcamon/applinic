@@ -65,14 +65,17 @@
 					  <a href="" class="form-control" ng-click="details(study)"> View Details </a>
 					  <a href="" class="form-control" ng-click="edit(study)"> Edit Study </a>
 					  <a href="" class="form-control" ng-click="reAssign(study)">Re-assign Study</a>
-					  <a href="" class="text-danger form-control" ng-click="delete(study)">Delete Study</a>
+					  <!--<a href="" class="text-danger form-control" ng-click="delete(study)">Delete Study</a>-->
 					</div>
 				</td>
 			</tbody>
 		</table>
 		<div style="text-align: center;padding-top: 20px" ng-show="loading">
 			<span class="text-warning">Loading...</span>
-		</div>		
+		</div>	
+		<div style="text-align: center;padding-top: 20px" ng-show="linkedStudies.length == 0">
+			<span class="text-muted">Study not found!</span>
+		</div>			
 	</div>
 	
 </div>
