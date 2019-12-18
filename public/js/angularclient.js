@@ -13648,6 +13648,7 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
 
 
   function investigation(url)  {
+
     var sendObj = {
       patientId: patient.id
     }
@@ -13671,8 +13672,8 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
     var getSession = getSessionService;//$resource("/user/doctor/get-patient-sessions");
     var sendObj = {patient_id:patient.id}
     getSession.query(sendObj,function(data){
+      console.log(data)
       $scope.loading = false; 
-      //$rootScope.recentSession = data[0];
       $rootScope.sessionData = data;
       if(data.length > 0)
         templateService.holdId = data[0].patient_id;
@@ -13878,7 +13879,6 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
 
     $scope.viewReportAndDCM = function(test) {
       test.isReportDCM = true;
-      console.log(test)
       test.loading = true;
       $http({
         method  : 'GET',
@@ -13886,7 +13886,6 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
         headers : {'Content-Type': 'application/json'} 
         })
       .success(function(data) { 
-        console.log(data)
         test.loading = false;
         test.reportDetails = data;
       });
@@ -14098,7 +14097,8 @@ app.controller("fromModalSessionController",["$scope","$http","$window","localMa
       $scope.loading = true;
       var getSession = getSessionService;//$resource("/user/doctor/get-patient-sessions");     
       getSession.query($scope.patient,function(data){
-        $scope.loading = false;       
+        $scope.loading = false; 
+        console.log(data)      
         //$rootScope.recentSession = data[0];
         $rootScope.sessionData = data;
         if(data.length > 0)
@@ -14106,7 +14106,6 @@ app.controller("fromModalSessionController",["$scope","$http","$window","localMa
       })
       
     }
-
 
     var connectObj = {
       presenting_complain: $scope.patient.complain,
@@ -22701,6 +22700,20 @@ app.controller("viewLinkedDicomCtrl",["$scope","$http","moment","dicomStudyServi
     });
   }
 
+  $scope.share = function(study) {
+    $rootScope.clickedAction = 'share';
+    $rootScope.studyLinked = study;
+    study.isManage = false;
+    ModalService.showModal({
+      templateUrl: 'manageDICOMModal.html',
+      controller: 'dicomModalCtrl'
+    }).then(function(modal) {
+      modal.element.modal();
+      modal.close.then(function(result) {             
+      });
+    });
+  }
+
   $scope.delete = function(study) {
     $rootScope.clickedAction = 'delete';
     $rootScope.studyLinked = {};
@@ -22760,6 +22773,26 @@ app.controller("dicomModalCtrl",["$scope","dicomStudyService","$rootScope","$htt
         $scope.loading = false; 
         alert(data.message)  
       }); 
+    }
+
+    $scope.shareStudy = function() {
+      $scope.loading = true;
+      if($scope.shareStudyEmail){
+        var splt = $scope.shareStudyEmail.split(" ");
+        $rootScope.studyLinked.sharingRecipientEmail = splt;
+        $http({
+          method  : 'POST',
+          url     : "/user/sharing-study",
+          data    : $rootScope.studyLinked,
+          headers : {'Content-Type': 'application/json'} 
+        })
+        .success(function(data) {              
+          $scope.loading = false; 
+          alert(data.message)  
+        }); 
+      } else {
+        alert("Please enter valid recipient email address");
+      }
     }
     
 }])
@@ -23390,7 +23423,9 @@ app.controller("templatectrl",["$scope","$http","$filter","ModalService","$rootS
     });
   }
 
-  
+  $rootScope.closeTemp = function() {
+    $rootScope.isPreIframe = false;
+  }
  
 }]);
 
@@ -23432,7 +23467,7 @@ function($scope,$http,$rootScope){
 
     $rootScope.templateReportDetails.html = $rootScope.hml.html();
 
-    console.log($rootScope.addForLinux);
+  
     $http({
       method  : 'PUT',
       url     : "/report-template",

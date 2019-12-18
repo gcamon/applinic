@@ -427,7 +427,8 @@ var myModel = function () {
 		acc: String,
 		acc_no: String,
 		study_link: String,
-		study_ref_id: String
+		study_ref_id: String,
+		patient_id_of_study: String
 	});
 
 	var subSession = Schema({
@@ -477,7 +478,8 @@ var myModel = function () {
 		prescription_id: Number,
 		typeOfSession: String,
 		conversations: conversationSchema,
-		diagnosis: docDignosisSchema
+		diagnosis: docDignosisSchema,
+		doctor_id: String
 	});
 
 	var requestSchema = Schema({
@@ -1116,6 +1118,7 @@ var myModel = function () {
 	models.study = mongoose.model("studyinfo",studySchema);
 	models.accession = mongoose.model("accessioninfo",accessionSchema);
 	models.template = mongoose.model("templateinfo",reportTemplateSchema);
+	models.session = mongoose.model("sessioninfo",sessionSchema);
 	//models.calling_code = mongoose.model("callingcodeinfos",callingSchema)
 	
 	return models		

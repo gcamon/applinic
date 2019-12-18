@@ -1749,7 +1749,7 @@
               </section>
 
               <section ng-show="clickedAction == 'reassign'">
-                <h6>Re-assign study to another radiologist(s)</h6>
+                <h6>Re-assign: {{studyLinked.patient_name}} ( {{studyLinked.study_name}} )</h6>
                 <hr>
                 <form ng-submit="assign()">
                   <div ng-repeat="j in radiologists">
@@ -1761,8 +1761,23 @@
                     </label> 
                   </div><br>
                   <div>
-                    <input type="submit" name="" class="btn btn-danger" ng-show="!loading">
+                    <input type="submit" value="Assign" name="" class="btn btn-danger" ng-show="!loading">
                     <span ng-show="loading">Re-assigning...</span>
+                  </div>
+                </form>
+              </section>
+
+               <section ng-show="clickedAction == 'share'">
+                <h6>Share: {{studyLinked.patient_name}} ( {{studyLinked.study_name}} ) </h6>
+                <hr>
+                <form ng-submit="shareStudy()">
+                  <div>
+                    <label>Enter recipient(s) email address: </label>
+                    <input type="text" name="" placeholder="Seperate multiple email with space" class="form-control" ng-model="shareStudyEmail">
+                  </div><br>
+                  <div>
+                    <input type="submit" value="Share" name="" class="btn btn-danger" ng-show="!loading">
+                    <span ng-show="loading">Sharing...</span>
                   </div>
                 </form>
               </section>

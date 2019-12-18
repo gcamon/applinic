@@ -568,13 +568,13 @@
 
 <section  ng-if="isToPrescribe">
     <div class="medical-record-Area card p-1 table" style="">
-        <div>
+        <div class="col-md-10 pl-0">
              <h5>Write Prescription</h5>            
         </div>  
-        <div style="text-align: right;">
+        <div class="col-md-2">
              <a href="" ng-click="viewSession()"><i class="fa fa-folder-open text-warning"></i> View sessions</a>
         </div> 
-       
+        <div class="clearfix"></div>
         <table class="table-respnsive table-striped no-mobile-item-display">       
             <thead>
                 <th class="tbm-0">&nbsp;</th>
@@ -609,15 +609,15 @@
             </table>
         </div>
         
-        <div style="text-align: right;margin-bottom: 20px">
-            <i class="fa fa-plus text-muted" style="cursor:pointer; margin-right: 10px" title="Add field" ng-click="addDrug()"> Add</i>
-                <i class="fa fa-minus text-muted" style="cursor:pointer" title="Remove last field" ng-click="removeDrug()"> Remove</i>
+        <div style="text-align: right;margin: 10px 0">
+            <i class="fa fa-plus btn btn-neutral" style="cursor:pointer; margin-right: 10px" title="Add field" ng-click="addDrug()"></i>
+                <i class="fa fa-minus btn btn-neutral" style="cursor:pointer" title="Remove last field" ng-click="removeDrug()"></i>
         </div>
-        <div  class="arrange-p">
+        <div  class="arrange-p" style="padding-left: 15px">
             <!--<textarea class="form-control p-1" placeholder="Complain" ng-model="treatment.complain"></textarea>-->
-            <label><span>{{drugList.length + 1}} </span> Instructions / explanations for prescription(s) above (optional)</label><!--</span> Diagnosis ( Provisional or Final ) </label>-->
-            <div class="pl-2">
-                <textarea class="form-control p-1"  placeholder="For eg. Take Ibuprofen only after meals" ng-model="treatment.provisionalDiagnosis" ng-keyup="autoExpand($event)" id="textarea"></textarea>
+            <label>{{drugList.length + 1}}&nbsp;&nbsp;Instructions / explanations for prescription(s) above (optional)</label><!--</span> Diagnosis ( Provisional or Final ) </label>-->
+            <div>
+                <textarea class="form-control p-1" name="drug intake guide" placeholder="For eg. Take Ibuprofen only after meals" ng-model="treatment.provisionalDiagnosis" ng-keyup="autoExpand($event)" id="textarea"></textarea>
             </div>
         </div>
         <div class="pt-1"> 
@@ -873,12 +873,64 @@
 
 
 <section ng-if="isToLabReport">
-    <h5 class="card p-1">Laboratory <span style="float: right;font-size: 14px"><a href="" ng-click="requestNewLab()" class="btn btn-neutral btn-sm">{{(!isNewLab) ? 'Request new' : 'View reports'}}</a> <a href="" ng-click="writePrescription()" class="btn btn-neutral btn-sm">Prescribe</a></span></h5>
+    <h5 class="card p-1">Laboratory <span style="float: right;font-size: 14px"><a href="" ng-click="requestNewLab()" class="btn btn-simple">{{(!isNewLab) ? 'Request new' : 'View reports'}}</a> <a href="" ng-click="writePrescription()" class="btn btn-simple">Prescribe</a></span></h5>
     <p ng-if="!testResult || loading" style="text-align: center;padding: 20px;font-size: 18px"> <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange" ng-if="loading"></i> </p>
     <div class="medical-record-Area" ng-repeat="j in testResult" ng-if="isResults">
    
      <div ng-repeat="test in j.diagnosis.laboratory_test_results | orderBy: '-sent_date'" class="p-1 card" ng-if="j.diagnosis.laboratory_test_results.length > 0">
-          <div style="text-align: center;">
+
+             <table>
+                <tbody>
+                    <tr>
+                        <td>Diagnostic Center Name: </td>
+                        <td>{{test.test_ran_by}}</td>
+                    </tr>
+                    <tr>
+                        <td>Address: </td>
+                        <td>{{test.center_address}} {{test.center_city}} {{test.center_country}}</td>
+                    </tr>
+                    <tr>
+                        <td>Center Phone: </td>
+                        <td>{{test.center_phone}}</td>
+                    </tr>
+                      <tr>
+                        <td>Investigation(s) Requested: </td>
+                        <td> <span ng-repeat="rantest in test.test_to_run" style="display: block;padding-top: 3px" >{{rantest.name}} &nbsp;&nbsp;<span ng-if="!rantest.select && test.receive_date != 'Pending'" class="text-danger">not available</span></span> </td>
+                    </tr>
+
+                    <tr>
+                        <td>Date sent: </td>
+                        <td>{{test.sent_date | date: "mediumDate"}} ( <span am-time-ago="test.sent_date"></span> )</td>
+                    </tr>
+                     <tr>
+                        <td>Date Received: </td>
+                        <td>{{test.receive_date | date: "mediumDate"}} <span ng-if="test.receive_date !== 'Pending'">( <span am-time-ago="test.receive_date"></span> )</span></td>
+                    </tr>
+                    <tr>
+                        <td>Indication/Summary: </td>
+                        <td><span>{{test.indication || 'N/A'}}</span></td>
+                    </tr>
+                  
+                    <tr>
+                        <td>Status: </td>
+                        <td>
+                            <span ng-if="test.conclusion == 'Pending'" class="text-danger"> Awaiting test result</span>
+                            <span ng-if="test.conclusion !== 'Pending'" ng-click="viewReportAndDCM(test)" class="text-primary">Available</span>
+                        </td>
+                    </tr>
+                    <tr ng-if="test.conclusion !== 'Pending'">
+                        <td>Investigation Report:</td>
+                        <td> <a href="{{'https://drive.google.com/viewerng/viewer?embedded=true&url=https://applinic.com' + test.report}}" class="text-primary" target="_blank"><i class="fa fa-file"></i> View test result</a></td>
+                    </tr>
+                </tbody>
+            </table>
+
+
+
+
+
+
+         <!--<div style="text-align: center;">
              <label>{{test.test_ran_by}}</label><br>
              <span>{{test.center_address}} {{test.center_city}} {{test.center_country}}</span><br>
              <span>{{test.center_phone}}</span>
@@ -948,7 +1000,7 @@
                     <blockquote style="padding: 10px;word-wrap: break-word;">{{test.conclusion}}</blockquote>
                 </div>
               </div>
-          </div>
+          </div>-->
           
           
         <hr>
@@ -962,25 +1014,39 @@
                 <section ng-show="!isSearchToSend">  
                     <h6>New Laboratory Test </h6><br>
                    
-                    <div>
+                    <!--<div>
                        <label>Test name: </label>
                     </div>
                     <div ng-repeat="lab in TestList">
                         <label>{{lab.sn}} </label><br>
                         <input  type="text" placeholder="Enter test name"  ng-model="test.name" uib-typeahead="test.name for test in tests | filter:$viewValue | limitTo:15" class="form-control" >
                         {{getTest(test.name)}} 
-                    </div>
+                    </div>-->
+                    <table class="table-striped">
+                      <tbody>
+                          <tr ng-repeat="lab in TestList">
+                            <td style="width: 5%">
+                              <label>{{lab.sn}} </label>
+                            </td>
+                            <td>
+                              <input  type="text" placeholder="Enter test name"  ng-model="test.name" uib-typeahead="test.name for test in tests | filter:$viewValue | limitTo:15" class="form-control" >
+                              {{getTest(test.name)}} 
+                            </td>
+                          </tr>
+                      </tbody>
+                    </table>
 
                     <div style="text-align: right">
-                        <i class="fa fa-plus" style="font-size:14px;margin-right: 10px;cursor: pointer;" title="Add field" ng-click="addTest()"> Add</i>
-                            <i class="fa fa-minus" style="font-size: 14px;cursor: pointer;" title="Remove last field" ng-click="removeTest()"> Remove</i>
+                        <i class="fa fa-plus btn btn-neutral" style="font-size:14px;margin-right: 10px;cursor: pointer;" title="Add field" ng-click="addTest()"></i>
+                            <i class="fa fa-minus btn btn-neutral" style="font-size: 14px;cursor: pointer;" title="Remove last field" ng-click="removeTest()"></i>
                     </div>
                     
-                    <div>
+                    
+                    <div class="pb-1">
                         <label>Indication:</label>
                         <textarea  placeholder="Write.." ng-model="treatment.indication" class="form-control pl-2" ng-keyup="autoExpand($event)" id="textarea"></textarea>
                     </div>
-                    <div>
+                    <div class="pb-1">
                         <label>Clinical Summary:</label>
                         <textarea placeholder="Write.." ng-model="treatment.clinical_summary" class="form-control pl-2" ng-keyup="autoExpand($event)" id="textarea"></textarea>
                     </div>
@@ -1028,7 +1094,10 @@
                            </section>
                            <section style="text-align: center;">
                             <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange;font-size: 24px;margin-top: 35px" ng-if="loading"></i>   
-                            </section>                          
+                            </section> 
+                            <section ng-show="searchResult.length == 0" style="text-align: center;">
+                                <p>No center was found based on search criteria.</p>
+                            </section>                        
                             
                         </section>
                         <section class="col-sm-12 col-md-5 col-lg-5 p-1">
@@ -1060,14 +1129,15 @@
 </section>
 
 <section ng-if="isToRadioReport">   
-    <h5 class="card p-1">Radiology <span style="float: right;font-size: 14px"><a href="" ng-click="requestNewRadio()" class="btn btn-neutral btn-sm">{{(!isNewRadio) ? 'Request new' : 'View reports'}}</a> <a href="" ng-click="writePrescription()" class="btn btn-neutral btn-sm">Prescribe</a></span></h5>
+    <h5 class="card p-1">Radiology <span style="float: right;font-size: 14px"><a href="" ng-click="requestNewRadio()" class="btn btn-simple">{{(!isNewRadio) ? 'Request new' : 'View reports'}}</a> <a href="" ng-click="writePrescription()" class="btn btn-simple">Prescribe</a></span></h5>
 
     <p ng-if="!testResult || loading" style="text-align: center;padding: 20px;font-size: 18px"> <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange" ng-if="loading"></i></p>
 
      <div class="medical-record-Area" ng-repeat="k in testResult" ng-if="isResults">
          <div ng-repeat="test in k.diagnosis.radiology_test_results | orderBy: '-sent_date'" class="p-1 card" ng-if="k.diagnosis.radiology_test_results.length > 0">
+
             <table>
-                <tbody ng-repeat="test in k.diagnosis.radiology_test_results | orderBy: '-sent_date'" class="p-1 card" ng-if="k.diagnosis.radiology_test_results.length > 0">
+                <tbody>
                     <tr>
                         <td>Diagnostic Center Name: </td>
                         <td>{{test.test_ran_by}}</td>
@@ -1084,6 +1154,12 @@
                         <td>Investigation Requested: </td>
                         <td> <span ng-repeat="rantest in test.test_to_run" style="display: block;padding-top: 3px" >{{rantest.name}} &nbsp;&nbsp;<span ng-if="!rantest.select && test.receive_date != 'Pending'" class="text-danger">not available</span></span> </td>
                     </tr>
+
+                    <tr>
+                        <td>Patient ID of Study: </td>
+                        <td>{{test.patient_id_of_study || "N/A"}}</td>
+                    </tr>
+
                     <tr>
                         <td>Date sent: </td>
                         <td>{{test.sent_date | date: "mediumDate"}} ( <span am-time-ago="test.sent_date"></span> )</td>
@@ -1096,23 +1172,29 @@
                         <td>Indication/Summary: </td>
                         <td><span>{{test.indication || 'N/A'}}</span></td>
                     </tr>
+                  
+                    <tr ng-if="test.reportDetails.study_link2 !== 'undefined'">
+                        <td>DICOM viewer links</td>
+                        <td>                          
+                           <a href="{{test.reportDetails.study_link_mobile}}" class="text-info">View in Mobile/Tablet devices</a><br>
+                           <a href="{{test.reportDetails.study_link2}}" class="text-info">View in Desktop or Laptops</a><br>
+                          
+                        </td>
+                    </tr>
                     <tr>
                         <td>Status: </td>
                         <td>
                             <span ng-if="test.conclusion == 'Pending'" class="text-danger"> Awaiting study report</span>
-                            <button class="btn btn-primary" ng-if="test.conclusion !== 'Pending'" ng-click="viewReportAndDCM(test)">Available, see report and image</button>
+                            <button class="btn btn-info dropdown-toggle" ng-if="test.conclusion !== 'Pending'" ng-click="viewReportAndDCM(test)">Available, see report</button>
                         </td>
                     </tr>
-                    <tr ng-if="test.isReportDCM">
-                        <td>Study Report & DICOM viewer links</td>
-                        <td>                          
-                           <a href="{{test.reportDetails.study_link_mobile}}">View in Mobile/Tablet devices</a><br>
-                           <a href="{{test.reportDetails.study_link2}}">View in Desktop or Laptops</a><br>
-                           <a href="{{test.reportDetails.pdf_report[0].pathname}}">View Reports PDF</a>*
-                        </td>
+                    <tr ng-show="test.isReportDCM">
+                        <td>Study Report:</td>
+                        <td> <a href="{{'https://drive.google.com/viewerng/viewer?embedded=true&url=https://applinic.com' + test.reportDetails.pdf_report[0].pathname}}" class="text-danger" target="_blank"><i class="fa fa-file"></i> View Study Report</a></td>
                     </tr>
                 </tbody>
             </table>
+
              <hr>
          </div>
      <!--<div ng-repeat="test in k.diagnosis.radiology_test_results | orderBy: '-sent_date'" class="p-1 card" ng-if="k.diagnosis.radiology_test_results.length > 0">
@@ -1185,7 +1267,7 @@
      <!-- new lab request -->
     <section ng-if="isNewRadio" ng-controller="investigationController">
         <div class="p-2 card">
-                <section ng-show="!isSearchToSend" class="col-md-10">  
+                <section ng-show="!isSearchToSend">  
                     <h6>New Radiology Investigation Request </h6><br>
                    
                     <div>

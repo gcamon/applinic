@@ -6,7 +6,7 @@
 		right: -150px;
 		top: 25px;
 		width: 220px;
-		background-color: #d7dde4;
+		background-color: #fff;
 		border: 1px solid grey;
 		padding: 10px;
 		border-radius: 8px;
@@ -58,14 +58,14 @@
 			<tbody ng-repeat="study in linkedStudies | orderBy : '-study_date' | filter : filter" style="line-height: 25px">
 				<td>{{study.patient_name}}</td>
 				<td>{{study.patient_id}}</td>
-				<td>{{study.study_name}}</td>
+				<td>{{study.study_name}} <span ng-show="study.pdf_report.length > 0" class="text-danger">*</span></td>
 				<td style="position: relative;"><span>{{study.study_date | date: 'mediumDate'}}</span> <i class="fa fa-ellipsis-h text-muted" style="float: right;padding: 2px 1px;cursor: pointer;" title="Manage study" ng-click="popup(study)"></i>
-					<div ng-class="{'popup': study.isManage == true}" ng-if="study.isManage">
+					<div ng-class="{'popup': study.isManage == true}" ng-if="study.isManage" style="line-height: 35px">
 					  <div style="position: absolute;top:4px;right: 10px" ng-click="closePop(study)"><i class="fa fa-times text-info"></i></div>
-					  <a href="" class="form-control" ng-click="details(study)"> View Details </a>
-					  <a href="" class="form-control" ng-click="edit(study)"> Edit Study </a>
-					  <a href="" class="form-control" ng-click="reAssign(study)">Re-assign Study</a>
-					  <!--<a href="" class="text-danger form-control" ng-click="delete(study)">Delete Study</a>-->
+					  <a href=""  ng-click="details(study)"><i class="fa fa-file-o"></i> View Details </a><br>
+					  <a href=""  ng-click="edit(study)"><i class="fa fa-pencil"></i> Edit Study </a><br>
+					  <a href=""  ng-click="reAssign(study)"><i class="fa fa-link"></i> Re-assign Study</a><br>
+					  <a href=""  ng-click="share(study)"><i class="fa fa-share"></i> Share Study</a>
 					</div>
 				</td>
 			</tbody>

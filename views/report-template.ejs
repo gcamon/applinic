@@ -7,7 +7,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>Applinic - Report Template</title>
+	<title>Applinic - Radiology Report Template</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -25,7 +25,7 @@
 		}
 
 		#main {
-			width: 68%;
+			width: 70%;
 			margin: 20px auto;
 			background: #fff;
 			padding: 20px;
@@ -199,9 +199,13 @@
 	<!--************************************
 			Wrapper Start
 	*************************************-->
-	<div>
-	   <div id="main" ng-controller="templatectrl" style="position: relative;">
-           
+  
+    <button style="position: fixed;right: 5px;top: 5px" ng-click="closeTemp()">X</button> 
+  
+  
+	 <div style="margin-top: 50px" ng-controller="templatectrl">
+	   <div id="main"  style="position: relative;">
+        
 	   	   <div id="tempfield" ng-hide="isReportPDF" >               
               <%- template.template %>
 	   	   </div>
@@ -325,6 +329,7 @@
      
 
 	</div>
+  
     <script type="text/ng-template" id="tempaltedecisionmodal.html">
         <div class="modal fade">
           <div class="modal-dialog">

@@ -7,6 +7,7 @@ var path = require("path");
 var Wallet = require("./wallet");
 var randos = require("./randos");
 var topdf = require("./topdf");
+var fs = require('fs');
 
  
 
@@ -869,22 +870,31 @@ var basicPaymentRoute = function(model,sms,io,paystack,client,nodemailer){
 		}
 	});
 
+ 
+router.put("/user/laboratory/test-result/session-update2",function(req,res){
+	if(req.user){
+
+	} else {
+		res.end("Unauthorized access.")
+	}
+});
+
 
   //this route handles test result sent by a laboratory to update existing doctor/patient session that initiated such test request.
-  router.put("/user/laboratory/test-result/session-update",function(req,res){
+router.put("/user/laboratory/test-result/session-update",function(req,res){
     //note that sms will be sent to patient and doctor when a lab test result is available.
     if(req.user) {
   
     	updateSession();   
 
       function updateSession() {       
-        model.user.findOne({"doctor_patient_session.session_id": req.body.laboratory.session_id},{doctor_patient_session:1,title:1,firstname:1,lastname:1,email:1})
+        model.session.findOne({session_id: req.body.laboratory.session_id})
         .exec(function(err,data){
           if(err) throw err;
-          var elementPos = data.doctor_patient_session.map(function(x) {return x.session_id }).indexOf(req.body.laboratory.session_id);
+          //var elementPos = data.doctor_patient_session.map(function(x) {return x.session_id }).indexOf(req.body.laboratory.session_id);
   
-          if(elementPos !== -1) {
-	          var objectFound = data.doctor_patient_session[elementPos];    
+          if(data) {
+	          var objectFound = data;    
 	          var pos = objectFound.diagnosis.laboratory_test_results.map(function(x) { return x.test_id;}).indexOf(req.body.laboratory.test_id);
 	          var theObj = objectFound.diagnosis.laboratory_test_results[pos];         
 	          theObj.receive_date = req.body.laboratory.date;
@@ -2361,7 +2371,8 @@ router.post("/user/dicom-details",function(req,res){
 			    remark: req.body.remark || ""
 			  });
 
-			  study.study_link_mobile = "https://applinic.com/dicom-mobile?id=" + study._id
+			  study.study_link_mobile = "https://applinic.com/dicom-mobile?id=" + study._id;
+			  study.study_link2 += "&key=" + study._id
 
 			  if(req.body.isUserConnectLinking) {
 			  	study.isUserConnectLinking = true;			  
@@ -2409,7 +2420,7 @@ router.post("/user/dicom-details",function(req,res){
 	          	         	var tempLink;
 	          var reporterEmail;
 
-	          var webView = "https://applinic.com/dcm?id=" + id; //"https://dicom.applinic.com/web/viewer.html?" + locate;
+	          var webView = "https://applinic.com/dcm?id=" + id + "&key=" + study._id; //"https://dicom.applinic.com/web/viewer.html?" + locate;
 	          var mobileView = "https://applinic.com/dicom-mobile?id=" + study._id;
 
 	          var mailOptions = {
@@ -2576,7 +2587,7 @@ router.post("/user/reassign-study",function(req,res){
 	   	var tempLink;
 	    var reporterEmail;
 
-	    var webView = "https://applinic.com/dcm?id=" + id; //"https://dicom.applinic.com/web/viewer.html?" + locate;
+	    var webView = "https://applinic.com/dcm?id=" + id + "&key=" + study._id; //"https://dicom.applinic.com/web/viewer.html?" + locate;
 	    var mobileView = "https://applinic.com/dicom-mobile?id=" + study._id;
 	   
 
@@ -2636,6 +2647,96 @@ router.post("/user/reassign-study",function(req,res){
 	} else {
 		res.end("unathorized access")
 	}
+})
+
+router.post("/user/sharing-study",function(req,res){
+	if(req.user){
+		var id = req.body.patient_id || req.body.study_uid;
+		var filteredEmailList = [];
+		var emailReg = /^\w+([\.-]?\w+)+@\w+([\.:]?\w+)+(\.[a-zA-Z0-9]{2,3})+$/;
+		var webView = "https://applinic.com/dcm?id=" + id + "&key=" + req.body._id;
+	  var mobileView = "https://applinic.com/dicom-mobile?id=" + req.body._id;
+
+
+	  for(var i = 0; i < req.body.sharingRecipientEmail.length; i++){
+	   	if(emailReg.test(req.body.sharingRecipientEmail[i])){
+	   		filteredEmailList.push(req.body.sharingRecipientEmail[i]);
+	   	}
+	  }
+
+	  /*
+		var emailReg = /^\w+([\.-]?\w+)+@\w+([\.:]?\w+)+(\.[a-zA-Z0-9]{2,3})+$/;
+
+      if(emailReg.test(req.body.recepient)){
+        recepient = {email: req.body.recepient, type:"Patient"}
+	  */
+
+	  if(filteredEmailList.length > 0) {
+	    var transporter = nodemailer.createTransport({
+	      host: "mail.privateemail.com",
+	      port: 465,
+	      auth: {
+	        user: "info@applinic.com",
+	        pass: process.env.EMAIL_PASSWORD
+	      }
+	    });
+
+	    var mailOptions = {
+        from: 'Applinic Healthcare info@applinic.com',
+        to: filteredEmailList || "support@applinic.com",
+        subject: req.body.patient_name + " " + req.body.study_name + " Radiology Result",
+        html: '<table><tr><tr><td style="line-height: 25px">Hello sir, here is the patient study shared with you.<br><br>'
+        + 'Investigation: ' + req.body.study_name + "<br><br>"
+        + 'Ref: ' + req.body._id + "<br><br>"
+        + "Patient Name : " + req.body.patient_name + "<br><br>"
+        + "Patient ID of Study: "  + req.body.patient_id + '<br><br>'
+        + "<b>Web viewer DICOM url:</b><br> " + webView + "<br>"
+        + "<b>Mobile device DICOM viewer url:</b> <br>" + mobileView + "<br>"
+        + "Center Name: " + req.user.name + "<br>"
+        + "Address: " + req.user.address + ", " + req.user.city + ", " + req.user.country + "<br><br>"
+        + "Thank you! <br><br> <b>Applinic Team</b>" 
+        + '</td></tr></table>'
+      };
+
+
+      var fileFromLink = (req.body.pdf_report.length > 0) ? req.body.pdf_report[0].pathname.split('/') : [];
+	    var pdfName = fileFromLink[fileFromLink.length - 1];
+
+	    if(pdfName) {
+	    	var filePath = './pdf/' + pdfName;
+	    	var FILE_CONTENT = fs.readFileSync(filePath, 'base64');
+	    	var buf = Buffer.from(FILE_CONTENT, 'base64');
+
+	    	var attachment = [{
+          	filename: pdfName,
+          	content: buf,
+          	contentType: 'application/pdf'
+      		}]
+
+      	mailOptions.attachments = attachment;
+
+      }
+
+
+      transporter.sendMail(mailOptions, function(error, info){
+        if (error) {
+          console.log(error);
+          res.json({message: "Error occured while sending email. Please check and try again."})
+        } else {
+          console.log('Email sent: ' + info.response);
+          res.json({message: "Good! Study was shared successfully."})
+        }
+      });
+
+  	} else {
+  		res.json({message: "Error: Seems you have entered wrong recipient email address."})
+  	}
+
+
+	} else {
+		res.end("unathorized access")
+	}
+
 })
 
 /*

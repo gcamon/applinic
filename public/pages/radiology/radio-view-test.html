@@ -38,6 +38,21 @@
 						</td>
 					</tr>
 
+					<tr ng-show="refInfo.radiology.indication !== 'undefined'">
+						<td>Indication / Summary: </td>
+						<td><p>{{refInfo.radiology.indication}}</p> <p>{{refInfo.radiology.clinical_summary}}</p></td>
+					</tr>
+
+					<tr ng-if ="refInfo.radiology.parity">
+						<td>Parity: </td>
+						<td>{{refInfo.radiology.parity}}</td>
+					</tr>
+
+					<tr ng-if ="refInfo.radiology.lmp">
+						<td>LMP: </td>
+						<td>{{refInfo.radiology.lmp}}</td>
+					</tr>
+
 					<tr>
 						<td>Referring Physician: </td>
 						<td><span ng-show="refInfo.radiology.doctor_firstname">{{refInfo.radiology.title}} {{refInfo.radiology.doctor_firstname}} {{refInfo.radiology.doctor_lastname}}</span> <span ng-show="!refInfo.radiology.doctor_firstname">Other</span></td>
@@ -55,7 +70,7 @@
 			<br>
 			<div class="row">
 				<div class="col-md-6">
-					<p> If you have already captured this patient and uploaded study to Applinic Online PACs server, move to next step ( link the study ).</p><br>
+					<p> If you have already captured this patient and uploaded study to Applinic Online PACs server, move to next step ( link the study ).</p>
 					<button name="" class="btn btn-primary btn-sm" ng-click="connectStudy()">Proceed to link this study</button>				
 				</div>
 				<div>

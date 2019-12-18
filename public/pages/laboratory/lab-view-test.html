@@ -7,7 +7,7 @@
 	
 	<div ng-if="refInfo.laboratory.test_to_run.length > 0" class="col-sm-12 col-md-12 clo-lg-12">
 		<div class="row">
-			<div class="col-sm-12 col-md-12 col-lg-12  card pt-2" ng-if="hasSent && !isPreview" style="position: relative;">
+			<!--<div class="col-sm-12 col-md-12 col-lg-12  card pt-2" ng-if="hasSent && !isPreview" style="position: relative;">
 				<div style="display: inline-block;float: left">
 					<img src="{{refInfo.laboratory.patient_profile_pic_url}}" style="max-width: 150px; max-height: 150px;">
 				</div>
@@ -76,7 +76,82 @@
 				<p style="padding:30px"><i class="fa fa-warning text-danger"></i>  If <strong>any</strong> of the tests above is <b>not</b> available in your center please <b>uncheck it ( if checked )</b> and <a href="" style="color: blue;font-size:16px;text-decoration: unset;" ng-click="redirectTest()"> refer to another center.</a> Unchecked test is regarded as <b>not</b> available service in your center.</p>
 				
 
+		</div>-->
+
+		<div class="card p-2">
+		<h4>Investigation Request</h4>
+		<div>
+			<table>
+				<tbody class="p-1">
+					<tr>
+						<td style="width: 30%">Patient Name: </td>
+						<td style="width: 60%">{{refInfo.laboratory.patient_title}} {{refInfo.laboratory.patient_firstname}} {{refInfo.laboratory.patient_lastname}}</td>
+					</tr>
+					<tr>
+						<td>Gender: </td>
+						<td>{{refInfo.laboratory.patient_gender}}</td>
+					</tr>
+					<tr>
+						<td>Age: </td>
+						<td>{{refInfo.laboratory.patient_age}}</td>
+					</tr>
+					<tr>
+						<td>Phone: </td>
+						<td>{{refInfo.laboratory.patient_phone}}</td>
+					</tr>
+					<tr>
+						<td>Investigation(s) Requested: </td>
+						<td>
+							<div class="mt-1"  ng-repeat = "test in refInfo.laboratory.test_to_run" >
+								<label class="custom-control custom-checkbox">
+				    				<input type="checkbox" ng-model="test.select"  class="custom-control-input">
+				    				<span class="custom-control-indicator"></span>
+				    				<span class="custom-control-description">{{test.name}}</span>
+		    					</label>
+		    				</div>
+						</td>
+					</tr>
+
+					<tr ng-show="refInfo.laboratory.indication !== 'undefined'">
+						<td>Indication / Summary: </td>
+						<td><p>{{refInfo.laboratory.indication}}</p> <p>{{refInfo.laboratory.clinical_summary}}</p></td>
+					</tr>
+
+					<!--<tr ng-show="refInfo.laboratory.clinical_summary !== 'undefined'">
+						<td>Clinical Summary: </td>
+						<td>{{refInfo.laboratory.clinical_summary}}</td>
+					</tr>-->
+
+					<tr ng-if ="refInfo.laboratory.parity">
+						<td>Parity: </td>
+						<td>{{refInfo.laboratory.parity}}</td>
+					</tr>
+
+					<tr ng-if ="refInfo.laboratory.lmp">
+						<td>LMP: </td>
+						<td>{{refInfo.laboratory.lmp}}</td>
+					</tr>
+
+					<tr>
+						<td>Referring Physician: </td>
+						<td><span>{{refInfo.referral_title}} {{refInfo.referral_firstname}} {{refInfo.referral_lastname}}</span></td>
+					</tr>
+					<tr>
+						<td>Reference Number: </td>
+						<td>{{refInfo.ref_id}}</td>
+					</tr>
+					<tr>
+						<td>Time of Referral: </td>
+						<td>{{refInfo.date | date : 'mediumDate'}} ( <span style="color: darkRed" am-time-ago="refInfo.date"></span> )</td>
+					</tr>
+				</tbody>
+			</table>
+			
+			<div class="">
+				<!--<p style="padding:10px 0"><i class="fa fa-warning text-danger"></i>  If <strong>any</strong> investigation(s) services above is <b>not</b> available in your center please <b>uncheck it ( if checked )</b> and <a href="" style="color: blue;font-size:16px;text-decoration: unset;" ng-click="redirectTest()"> refer to another center.</a></p>-->
+			</div>
 		</div>
+	</div>
 
 		<div class="row" ng-if="!reportSuccess">
 			<div class="col-sm-12 col-md-12 col-lg-12" ng-if="hasSent">
@@ -222,7 +297,7 @@
 										<td><input type="text" name="flag" placeholder="Enter flag" ng-model="i.r_flag" class="form-control"></td>
 									</tbody>
 								</table>-->
-								<section class="p-1">
+								<section class="pl-1">
 									<h6 class="text-danger"><span>{{report.sn}}) </span> {{report.name}} report entry:</h6><br>
 									<section ng-repeat="i in report.list" class="p-1">
 										<div class="row">
@@ -276,9 +351,9 @@
 										<hr>
 									</section>
 								</section>
-								<section style="text-align: right;padding-right: 20px">
-									<a href="" ng-click="addReport(report)"><i class="fa fa-plus"></i> Add</a>&nbsp;&nbsp;
-									<a href="" ng-click="removeReport(report)"><i class="fa fa-minus"></i> Remove</a>
+								<section style="text-align: right;" class="p-0">
+									<i class="fa fa-plus btn btn-neutral text-muted" ng-click="addReport(report)"></i>&nbsp;
+									<i class="fa fa-minus btn btn-neutral text-muted" ng-show="report.list.length > 1" ng-click="removeReport(report)"></i>
 								</section>
 							</div>					
 						</div>
@@ -294,7 +369,7 @@
 
 				
 					<div class="form-group col-md-12 col-sm-12" ng-if="isFilled === true && !isPreview" style="margin-top:30px">
-                 	<button class="btn btn-success" ng-click="previewTestResult(refInfo)">Preview</button>
+                 	<button class="btn btn-success" ng-click="previewTestResult(refInfo)" onclick="closeIframe()" id="prvBtn">Preview</button>
                  	</div>		
 				</div>
             </div>
@@ -497,6 +572,33 @@
 	<p style="text-align:center;font-size:18px;color:green;" class="card">Test report sent succesfully!</p>
 </div>
 <div style="height: 300px"></div>
+
+<iframe src="http://localhost:3001/report-template/62875651/5df653b5f9fe72390025b17a" style="position: fixed;top: 5px;left: 5px;width: 700px;height: 650px;display: block;z-index: 999999;border: 2px solid grey"  id="iframeTag">Oops! Your browser does not support iframe. User modern browser like Chrome or Firefox or IE 10 above</iframe>
+<div  id="innerDivTemp" style="position: fixed;top: 5px;left: 660px;width: 700px;height: 650px;display: block;z-index: 999999;">
+	
+</div>
+
+<script type="text/javascript">
+	var iframe = document.getElementById('iframeTag')
+	var count = 0;
+	var prevBtn = document.getElementById("prvBtn");
+
+	var tempDiv = document.getElementById('innerDivTemp');
+
+	iframe.style.visibility = "hidden";
+	tempDiv.style.visibility = "hidden";
+
+	tempDiv.addEventListener('click',function(){	 
+	    iframe.style.visibility = "hidden";
+	    tempDiv.style.visibility = "hidden";
+	  
+	},false)
+
+	function closeIframe(){
+		iframe.style.visibility = "visible";
+	    tempDiv.style.visibility = "visible";
+	}
+</script>
 
 
 
