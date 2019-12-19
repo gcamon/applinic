@@ -22794,6 +22794,8 @@ app.controller("dicomModalCtrl",["$scope","dicomStudyService","$rootScope","$htt
         alert("Please enter valid recipient email address");
       }
     }
+
+   
     
 }])
 

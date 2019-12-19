@@ -369,7 +369,7 @@
 
 				
 					<div class="form-group col-md-12 col-sm-12" ng-if="isFilled === true && !isPreview" style="margin-top:30px">
-                 	<button class="btn btn-success" ng-click="previewTestResult(refInfo)" onclick="closeIframe()" id="prvBtn">Preview</button>
+                 	<button class="btn btn-success" ng-click="previewTestResult(refInfo)" onclick="openIframe()" id="prvBtn">Preview</button>
                  	</div>		
 				</div>
             </div>
@@ -580,8 +580,8 @@
 
 <script type="text/javascript">
 	var iframe = document.getElementById('iframeTag')
-	var count = 0;
-	var prevBtn = document.getElementById("prvBtn");
+	//var count = 0;
+	//var prevBtn = document.getElementById("prvBtn");
 
 	var tempDiv = document.getElementById('innerDivTemp');
 
@@ -594,7 +594,7 @@
 	  
 	},false)
 
-	function closeIframe(){
+	function openIframe(){
 		iframe.style.visibility = "visible";
 	    tempDiv.style.visibility = "visible";
 	}
