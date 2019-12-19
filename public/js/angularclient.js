@@ -22795,7 +22795,12 @@ app.controller("dicomModalCtrl",["$scope","dicomStudyService","$rootScope","$htt
       }
     }
 
-   
+    $scope.getPdfLink = function(study){
+      var link = 'https://drive.google.com/viewerng/viewer?embedded=true&url=https://applinic.com' 
+      + study.pdf_report[0].pathname;
+      return link;
+    }
+
     
 }])
 
