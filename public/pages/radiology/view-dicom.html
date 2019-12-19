@@ -66,8 +66,8 @@
 					  <a href=""  ng-click="edit(study)"><i class="fa fa-pencil"></i> Edit Study </a><br>
 					  <a href=""  ng-click="reAssign(study)"><i class="fa fa-link"></i> Re-assign Study</a><br>
 					  <a href=""  ng-click="share(study)"><i class="fa fa-share"></i> Share Study</a><br>
-					  <a href="{{'https://applinic.com/dcm?id=' + study.patient_id + '&key=' + study._id}}"><i class="fa fa-image"></i> DICOM Viewer</a><br>
-					  <a href=""  onclick="openPdfIframe()"><span ng-show="study.pdf_report.length > 0"><i class="fa fa-file"></i> Report PDF</span></a>
+					  <a href="{{'https://applinic.com/dcm?id=' + study.patient_id + '&key=' + study._id}}" target="_blank"><i class="fa fa-image"></i> DICOM Viewer</a><br>
+					  <a href="{{'https://drive.google.com/viewerng/viewer?embedded=true&url=https://applinic.com' + study.pdf_report[0].pathname}}" target="_blank"><span ng-show="study.pdf_report.length > 0"><i class="fa fa-file"></i> Report PDF</span></a>
 					</div>
 				</td>
 			</tbody>
@@ -83,16 +83,14 @@
 </div>
 <div style="height: 300px"></div>
 
-<iframe ng-src="https://drive.google.com/viewerng/viewer?embedded=true&url=https://applinic.com' + study.pdf_report[0].pathname" style="position: fixed;top: 5px;left: 5px;width: 700px;height: 650px;display: block;z-index: 999999;border: 2px solid grey"  id="iframeTag">Oops! Your browser does not support iframe. User modern browser like Chrome or Firefox or IE 10 above</iframe>
+<!--<iframe ng-src="https://drive.google.com/viewerng/viewer?embedded=true&url=https://applinic.com' + study.pdf_report[0].pathname" style="position: fixed;top: 5px;left: 5px;width: 700px;height: 650px;display: block;z-index: 999999;border: 2px solid grey"  id="iframeTag">Oops! Your browser does not support iframe. User modern browser like Chrome or Firefox or IE 10 above</iframe>
 <div  id="innerDivTemp" style="position: fixed;top: 5px;left: 660px;width: 700px;height: 650px;display: block;z-index: 999999;">
 	
-</div>
+</div>-
 
 <script type="text/javascript">
 	var iframe = document.getElementById('iframeTag')
-	//var count = 0;
-	//var prevBtn = document.getElementById("prvBtn");
-
+	
 	var tempDiv = document.getElementById('innerDivTemp');
 
 	iframe.style.visibility = "hidden";
@@ -108,5 +106,5 @@
 		iframe.style.visibility = "visible";
 	    tempDiv.style.visibility = "visible";
 	}
-</script>
+</script>-->
 
