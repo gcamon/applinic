@@ -10095,9 +10095,9 @@ router.get("/user/dicom-service",function(req,res){
         criteria['patient_name'] = req.query.patientName;
       }
 
-    } 
+    }
 
-    console.log(criteria)
+    criteria.center_id = req.user.user_id; 
    
     model.study.find(criteria)
     .exec(function(err,data){
@@ -10833,6 +10833,35 @@ router.get("/user/study-reports",function(req,res){
     })
   } else {
     res.end("unauthorized access")
+  }
+})
+
+router.get("/laboratory/report-template",function(req,res){
+  
+    res.render("lab-report-template")
+ 
+})
+
+router.get("/entry/doc-details/dshjhdfhsdgsd",function(req,res){
+  
+    res.render("doc-entry")
+ 
+})
+
+router.post("/entry/doc-details/dshjhdfhsdgsd",function(req,res){
+  if(req.body){
+    req.body.forEach(function(doc){
+      if(doc.fx_number && doc.name) {
+        doc.created = new Date();
+        var regDoctor = new model.doc_entry(doc)
+        regDoctor.save(function(err,info){
+          if(err) throw err;
+        })
+      }
+    })
+    res.json({message: "Entries saved successfully!",status: true})
+  } else {
+    res.json({message: "No entries"})
   }
 })
 

@@ -67,7 +67,7 @@
 					  <a href=""  ng-click="reAssign(study)"><i class="fa fa-link"></i> Re-assign Study</a><br>
 					  <a href=""  ng-click="share(study)"><i class="fa fa-share"></i> Share Study</a><br>
 					  <a href="{{'https://applinic.com/dcm?id=' + study.patient_id + '&key=' + study._id}}" target="_blank"><i class="fa fa-image"></i> DICOM Viewer</a><br>
-					  <a href="{{'https://drive.google.com/viewerng/viewer?embedded=true&url=https://applinic.com' + study.pdf_report[0].pathname}}" target="_blank"><span ng-show="study.pdf_report.length > 0"><i class="fa fa-file"></i> Report PDF</span></a>
+					  <a href="{{'https://drive.google.com/viewerng/viewer?embedded=true&url=https://applinic.com' + study.pdf_report[0].pathname}}" target="_blank"><span ng-show="study.pdf_report.length > 0"><i class="fa fa-file"></i> Report PDF</span></a>															
 					</div>
 				</td>
 			</tbody>

@@ -15559,9 +15559,10 @@ app.service("toCenterService",["$resource",function($resource){
 
 app.controller("labTestControler",["$scope","$location","$http","templateService","localManager",
   "ModalService","labTests","$resource","$rootScope","cities","paymentVerificationService","billingAuthService",
-  "searchTestService","toCenterService","phoneCallService",
+  "searchTestService","toCenterService","phoneCallService","reportFormFactory",
   function($scope,$location,$http,templateService,localManager,ModalService,labTests,$resource,$rootScope,
-    cities,paymentVerificationService,billingAuthService,searchTestService,toCenterService,phoneCallService) {
+    cities,paymentVerificationService,billingAuthService,searchTestService,
+    toCenterService,phoneCallService,reportFormFactory) {
    
    
     var objectFound = localManager.getValue("laboratoryData");
@@ -15977,15 +15978,29 @@ app.controller("labTestControler",["$scope","$location","$http","templateService
 
 
 
+   /*   new implementation 22/12/2019 */
+
+  var reportFormList =  reportFormFactory;
+
   //for entering of lab test report
 
-  $scope.createInputList = function(test) {
-    if(!test.list)
-      test.list = [{}];
-  }
+  $scope.pickedForm = {};
+
+  /*$scope.createInputList = function(test) {
+    if(!test.list) {
+      test.list = reportFormList[0].fields//[{}];
+    }
+  }*/
 
   $scope.addReport = function(reportInput) {
-    reportInput.list.push({})
+    reportInput.list.push({
+          r_name: "",
+          r_tum: "",
+          r_result: "",
+          r_range: "",
+          r_unit: "",
+          r_flag: ""
+        })
   }
 
   $scope.removeReport = function(reportInput) {
@@ -15993,23 +16008,119 @@ app.controller("labTestControler",["$scope","$location","$http","templateService
       reportInput.list.pop()
   }
 
-  
 
-  $scope.previewTestResult = function(refInfo){
-      
-       $scope.compute = "";
-      $scope.incomplete = "";
-      $scope.uploadStatus = "";
-      $scope.reportDate = + new Date();
+  $scope.$watch('pickedForm.form',function(newVal,oldVal){
+    if(newVal){
+      var sptArr = newVal.split('-');
+      var elemPos = $scope.testReport.map(function(x){return x.name}).indexOf(sptArr[2]);
+      var test = $scope.testReport[elemPos];
+      switch(sptArr[0]){
+        case '0':
+          test.isRange = true;
+          test.isAntigen = false;
+          test.isQualitative = false;
+          test.isOther = false;
+        break;
+        case '1':
+          test.isAntigen = true;
+          test.isRange = false;
+          test.isQualitative = false;
+          test.isOther = false;
+        break;
+        case '2':
+          test.isAntigen = false;
+          test.isRange = false;
+          test.isOther = false;
+          test.isQualitative = true;
+        break;
+        default:
+          test.isAntigen = false;
+          test.isRange = false;
+          test.isQualitative = false;
+          test.isOther = true
+        break;
+      }
 
-     if($scope.grabRawAmount === 0 || !$scope.grabRawAmount) {
+      if(test){
+
+        test.list = (localManager.getValue(reportFormList[parseInt(sptArr[1])].name)) ?
+        localManager.getValue(reportFormList[parseInt(sptArr[1])].name) : reportFormList[parseInt(sptArr[1])].fields;
+        
+        //localManager.removeItem(reportFormList[parseInt(sptArr[1])].name)
+
+        for(var j = 0; j < test.list.length; j++){
+          if(!test.list[j].common_name)
+            test.list[j].common_name = reportFormList[parseInt(sptArr[1])].name;
+        }
+
+        $scope.watchThisList = test.list;
+        var rangeArr;
+        var rg1;
+        var rg2
+        $scope.$watch("watchThisList",function(newVal,oldVal){
+          if(oldVal){
+            newVal.forEach(function(item){
+              if(item.r_range){
+        
+                rangeArr = item.r_range.split("-")
+                rg1 = (rangeArr[0]) ? parseInt(rangeArr[0]) : 0;
+                rg2 = (rangeArr[rangeArr.length - 1]) ? parseInt(rangeArr[rangeArr.length - 1]) : 0;
+                if(item.r_result < rg1){
+                  item.r_flag = "Low";
+                } else if(item.r_result > rg2 && item.r_result > rg1){
+                  item.r_flag = "High";
+                } else if(item.r_result >= rg1 && item.r_result <= rg2) {
+                  item.r_flag = "Normal";
+                } else {
+                  item.r_flag = "Range or Value incorrect";
+                }
+              }
+            })
+          }
+        },true)
+      }
+    }
+  })
+
+  $scope.previewTestResult = function(refInfo){  
+   
+    var testList = refInfo.laboratory.test_to_run;
+    var originalName;
+    testList.forEach(function(test){
+      if(test.list){
+        var localTests = [];
+        for(var i = 0; i < test.list.length; i++){
+          if(test.list[i].r_range !== '' || test.list[i].r_range !== undefined){
+            originalName = test.list[i].common_name
+            localTests.push({
+              r_name: test.list[i].r_name,
+              r_tum: "",
+              r_result: 0,
+              r_range: test.list[i].r_range,
+              r_unit: test.list[i].r_unit,
+              r_flag: "",
+              common_name: originalName
+            })
+            //persist the original storage on localstorage.
+            // this could be modified to persist at the backend later
+            localManager.setValue(originalName,localTests)
+          }
+        }
+      }
+    })
+    $scope.compute = "";
+    $scope.incomplete = "";
+    $scope.uploadStatus = "";
+    $scope.reportDate = + new Date();
+
+    if($scope.grabRawAmount === 0 || !$scope.grabRawAmount) {
       $scope.grabRawAmount = 0;
       $scope.compute = "Warning: Zero amount is billed for this service";
-     }
+    }
 
-      $scope.hasPreviewed = false;
-      $scope.errorList = [];
-      refInfo.laboratory.test_to_run = $scope.testReport;
+    $scope.hasPreviewed = false;
+    $scope.errorList = [];
+    refInfo.laboratory.test_to_run = $scope.testReport;
       /*refInfo.laboratory.test_to_run.forEach(function(test){
         if(test.list) {
           if(!test.list[0].r_name || test.list[0].r_range)
@@ -16017,7 +16128,7 @@ app.controller("labTestControler",["$scope","$location","$http","templateService
         }
       });*/
 
-      $scope.$watch("errorList",function(newVal,oldVal){
+      /*$scope.$watch("errorList",function(newVal,oldVal){
         if( $scope.errorList.length > 0 ) { 
           $scope.incomplete = "Please enter complete report for " + '" ' + $scope.errorList[0] + ' " below.';
         } else if($scope.lab.conclusion !== undefined) {             
@@ -16028,9 +16139,13 @@ app.controller("labTestControler",["$scope","$location","$http","templateService
           $scope.incomplete = "Write your conclusion based on the test reports";
         }        
         
-      });
+      });*/
 
-      $scope.preTest = $scope.testReport;
+      //$scope.preTest = $scope.testReport;
+
+      //this function added here due to modification made for report template
+
+      $scope.sendTestResult(refInfo)
     
   }
 
@@ -16047,8 +16162,7 @@ app.controller("labTestControler",["$scope","$location","$http","templateService
       url;
 
   $scope.sendTestResult = function(refInfo){ 
-    //theStringTests = combineTest($scope.testReport);
-    //converToStr = theStringTests.join();
+
     var reportSheet = combineTest($scope.testReport);
     date = + new Date();
     refInfo.laboratory.report = reportSheet;
@@ -16077,19 +16191,20 @@ app.controller("labTestControler",["$scope","$location","$http","templateService
         msg = "Success!!! Test report sent to patient";
       }
       $scope.loading = true;
-      console.log(refInfo)
       report = $resource(url,null,{sendReport:{method: "PUT"}});
       report.sendReport(refInfo,function(response){
         if(response.status === "success") {
-          alert(msg);
+          /*alert(msg);
           if($scope.unRantest.length > 0) {
             templateService.holdUnranTest = $scope.unRantest;
             forwardUnRanTest($scope.unRantest);          
           }
-          $scope.reportSuccess = true;
+          $scope.reportSuccess = true;*/
+          $scope.reportSuccess2 = true;
           localManager.removeItem("history")
-        } else {
+          $scope.reportTemp = response.reportTemp;
 
+        } else {
           alert("Error ocurred while sending your report. Please try again.");
           $scope.error = "Error ocurred while sending your report. Please try again."
           //$scope.edit()
@@ -23566,6 +23681,70 @@ app.controller("otherStudiesModalController",["$scope","$http",function($scope,$
 }])
 
 
+app.controller("docDirectoryEntryCtrl",["$scope","$http",function($scope,$http){
+  
+  $scope.pageFields = "10";
+  var toNum;
+
+
+
+  $scope.add = function() {
+    /*var lastEntry = $scope.docList[$scope.docList.length -1]
+    if(!lastEntry.name || !lastEntry.fx_number){
+      alert("Full name or fellowship number fields cannot be empty")
+      return;
+    } else {
+      
+    }*/   
+    $scope.docList.push({});
+  }
+
+  $scope.remove = function(doc){
+    if($scope.docList.length > 1){
+      var elemPos = $scope.docList.map(function(x){return x.fx_number}).indexOf(doc.fx_number)
+      if(elemPos != -1){
+        $scope.docList.splice(elemPos,1)
+      }
+    }
+  }
+
+  $scope.saveList = function(){
+    var check = confirm("Please verify all entries are correct! Do you wish to continue?")
+    if(check){
+      $scope.loading = true;
+      $http({
+        method  : 'POST',
+        url     : "/entry/doc-details/dshjhdfhsdgsd",
+        data    : $scope.docList || [], //forms user object
+        headers : {'Content-Type': 'application/json'} 
+       })
+      .success(function(data) {
+       if(data) {
+        alert(data.message)
+        if(data.status == true){
+          multpleFields();
+        }
+       }
+        $scope.loading = false;
+      }); 
+    }         
+  }
+
+  $scope.$watch('pageFields',function(newVal,oldVal){
+    multpleFields();
+  })
+
+  var multpleFields = function(count) {
+    $scope.docList = [];
+    toNum = parseInt($scope.pageFields);
+    while(toNum > 0){
+      $scope.add();
+      toNum--
+    }
+  }
+}])
+
+
 
 
 
@@ -24115,6 +24294,939 @@ app.factory("symptomsFactory",function(){
   return allSymptoms;
 });
 
+app.factory("reportFormFactory",function(){
+  var formFactory = [
+    {
+      form: 0,
+      name: "Renal Function Test",
+      type: "result-range",
+      fields: [
+        {
+          r_name: "Sodium",
+          r_tum: "",
+          r_result: 0.0,
+          r_range: "",
+          r_unit: "mmol/L",
+          r_flag: ""
+        },
+        {
+          r_name: "Potassium",
+          r_tum: "",
+          r_result: 0.0,
+          r_range: "",
+          r_unit: "mmol/L",
+          r_flag: ""
+        },
+        {
+          r_name: "Bicarbonate",
+          r_tum: "",
+          r_result: 0.0,
+          r_range: "",
+          r_unit: "mmol/L",
+          r_flag: ""
+        },
+        {
+          r_name: "Chloride",
+          r_tum: "",
+          r_result: 0.0,
+          r_range: "",
+          r_unit: "mmol/L",
+          r_flag: ""
+        },
+        {
+          r_name: "Urea",
+          r_tum: "",
+          r_result: 0.0,
+          r_range: "",
+          r_unit: "mmol/L",
+          r_flag: ""
+        },
+        {
+          r_name: "Creatinine",
+          r_tum: "",
+          r_result: 0.0,
+          r_range: "",
+          r_unit: "μmol/L",
+          r_flag: ""
+        }
+      ]
+    },
+    {
+      form: 1,
+      name: "Lipid Profile",
+      type: "result-range",
+      fields: [
+        {
+          r_name: "Total-Cholesterol",
+          r_tum: "",
+          r_result: 0.0,
+          r_range: "",
+          r_unit: "mmol/L",
+          r_flag: ""
+        },
+        {
+          r_name: "HDL-Cholesterol",
+          r_tum: "",
+          r_result: 0.0,
+          r_range: "",
+          r_unit: "mmol/L",
+          r_flag: ""
+        },
+        {
+          r_name: "LDL-Cholesterol",
+          r_tum: "",
+          r_result: 0.0,
+          r_range: "",
+          r_unit: "mmol/L",
+          r_flag: ""
+        },
+        {
+          r_name: "VLDL-Cholesterol",
+          r_tum: "",
+          r_result: 0.0,
+          r_range: "",
+          r_unit: "mmol/L",
+          r_flag: ""
+        },
+        {
+          r_name: "Triglycerides",
+          r_tum: "",
+          r_result: 0.0,
+          r_range: "",
+          r_unit: "mmol/L",
+          r_flag: ""
+        },
+      ]
+    },
+    {
+      form: 2,
+      name: "Liver Function Test",
+      type: "result-range",
+      fields: [
+        {
+          r_name: "Total Bilirubin",
+          r_tum: "",
+          r_result: 0.0,
+          r_range: "",
+          r_unit: "mmol/L",
+          r_flag: ""
+        },
+        {
+          r_name: "Conj Bilirubin",
+          r_tum: "",
+          r_result: 0.0,
+          r_range: "",
+          r_unit: "mmol/L",
+          r_flag: ""
+        },
+        {
+          r_name: "Alkaline Phos",
+          r_tum: "",
+          r_result: 0.0,
+          r_range: "",
+          r_unit: "iu/L",
+          r_flag: ""
+        },
+        {
+          r_name: "Aspartate Trans",
+          r_tum: "",
+          r_result: 0.0,
+          r_range: "",
+          r_unit: "iu/L",
+          r_flag: ""
+        },
+        {
+          r_name: "Alanine Trans",
+          r_tum: "",
+          r_result: 0.0,
+          r_range: "",
+          r_unit: "iu/L",
+          r_flag: ""
+        }
+      ]
+    },
+    {
+      form: 3,
+      name: "Blood Sugar",
+      type: "result-range",
+      fields: [
+        {
+          r_name: "Fasting Blood Sugar",
+          r_tum: "",
+          r_result: 0.0,
+          r_range: "",
+          r_unit: "mmol/L",
+          r_flag: ""
+        },
+        {
+          r_name: "Random",
+          r_tum: "",
+          r_result: 0.0,
+          r_range: "",
+          r_unit: "mmol/L",
+          r_flag: ""
+        }
+      ]
+    },
+    {
+      form: 4,
+      name: "Haematology Result",
+      type: "result-range",
+      fields: [
+        {
+          r_name: "HB",
+          r_tum: "",
+          r_result: 0.0,
+          r_range: "",
+          r_unit: "g/dl",
+          r_flag: ""
+        },
+        {
+          r_name: "PCV",
+          r_tum: "",
+          r_result: 0.0,
+          r_range: "",
+          r_unit: "%",
+          r_flag: ""
+        },
+        {
+          r_name: "MCHC",
+          r_tum: "",
+          r_result: 0.0,
+          r_range: "",
+          r_unit: "",
+          r_flag: ""
+        },
+        {
+          r_name: "MCV",
+          r_tum: "",
+          r_result: 0.0,
+          r_range: "",
+          r_unit: "",
+          r_flag: ""
+        },
+        {
+          r_name: "Red Cell Count",
+          r_tum: "",
+          r_result: 0.0,
+          r_range: "",
+          r_unit: "x10^12/L",
+          r_flag: ""
+        },
+        {
+          r_name: "White Cell Count",
+          r_tum: "",
+          r_result: 0.0,
+          r_range: "",
+          r_unit: "x10^9/L",
+          r_flag: ""
+        },
+        {
+          r_name: "Genotype",
+          r_tum: "",
+          r_result: 0.0,
+          r_range: "",
+          r_unit: "",
+          r_flag: ""
+        },
+        {
+          r_name: "Blood Group",
+          r_tum: "",
+          r_result: 0.0,
+          r_range: "",
+          r_unit: "",
+          r_flag: ""
+        },
+        {
+          r_name: "Retics Count",
+          r_tum: "",
+          r_result: 0.0,
+          r_range: "",
+          r_unit: "",
+          r_flag: ""
+        },
+        {
+          r_name: "ESR",
+          r_tum: "",
+          r_result: 0.0,
+          r_range: "",
+          r_unit: "mm/1st Hr (Westergreen)",
+          r_flag: ""
+        }
+        ,
+        {
+          r_name: "Platelet Count",
+          r_tum: "",
+          r_result: 0.0,
+          r_range: "",
+          r_unit: "",
+          r_flag: ""
+        }
+        ,
+        {
+          r_name: "WBC-T",
+          r_tum: "",
+          r_result: 0.0,
+          r_range: "",
+          r_unit: "/mm3",
+          r_flag: ""
+        },
+        {
+          r_name: "Neut",
+          r_tum: "",
+          r_result: 0.0,
+          r_range: "",
+          r_unit: "%",
+          r_flag: ""
+        },
+        {
+          r_name: "Eos",
+          r_tum: "",
+          r_result: 0.0,
+          r_range: "",
+          r_unit: "%",
+          r_flag: ""
+        },
+        {
+          r_name: "Baso",
+          r_tum: "",
+          r_result: 0.0,
+          r_range: "",
+          r_unit: "%",
+          r_flag: ""
+        },
+        {
+          r_name: "Lymph",
+          r_tum: "",
+          r_result: 0.0,
+          r_range: "",
+          r_unit: "%",
+          r_flag: ""
+        },
+        {
+          r_name: "Mono",
+          r_tum: "",
+          r_result: 0.0,
+          r_range: "",
+          r_unit: "%",
+          r_flag: ""
+        }
+      ]
+    },
+    {
+      form: 5,
+      name: "Widal Test",
+      type: "Antigen",
+      fields: [
+        {
+          r_name: "Sal. Typhi",
+          r_tum: "",
+          r_result_O: "<20",
+          r_result_H: "<20",
+          r_range: "",
+          r_unit: "",
+          r_flag: ""
+        },
+        {
+          r_name: "Sal. Paratyphi A",
+          r_tum: "",
+          r_result_O: "<20",
+          r_result_H: "<20",
+          r_range: "",
+          r_unit: "",
+          r_flag: ""
+        },
+        {
+          r_name: "Sal. Paratyphi B",
+          r_tum: "",
+          r_result_O: "<20",
+          r_result_H: "<20",
+          r_range: "",
+          r_unit: "",
+          r_flag: ""
+        },
+        {
+          r_name: "Sal. Paratyphi C",
+          r_tum: "",
+          r_result_O: "<20",
+          r_result_H: "<20",
+          r_range: "",
+          r_unit: "",
+          r_flag: ""
+        },
+        {
+          r_name: "Brucella Abortus",
+          r_tum: "",
+          r_result: "",
+          r_range: "",
+          r_unit: "",
+          r_flag: ""
+        },
+        {
+          r_name: "Comment",
+          r_tum: "",
+          r_result: "",
+          r_range: "",
+          r_unit: "",
+          r_flag: ""
+        },
+        {
+          r_name: "Significant Titre",
+          r_tum: "",
+          r_result: "",
+          r_titre: "",
+          r_range: "",
+          r_unit: "",
+          r_flag: ""
+        }
+
+
+      ]
+    },
+    {
+      form: 6,
+      name: "HIV Screening Test",
+      type: "Qualitative",
+      fields: [
+        {
+          r_name: "For Antibodies to Human Immunodeficiency Virus 1 & 2",
+          r_tum: "",
+          r_result: "",
+          r_range: "",
+          r_unit: "",
+          r_flag: ""
+        }
+      ]
+    },
+    {
+      form: 7,
+      name: "Urinalysis",
+      type: "Qualitative",
+      fields: [
+        {
+          r_name: "Appearance",
+          r_tum: "",
+          r_result: "",
+          r_range: "",
+          r_unit: "",
+          r_flag: ""
+        },
+        {
+          r_name: "Protein",
+          r_tum: "",
+          r_result: "",
+          r_range: "",
+          r_unit: "",
+          r_flag: ""
+        },
+        {
+          r_name: "Glucose",
+          r_tum: "",
+          r_result: "",
+          r_range: "",
+          r_unit: "",
+          r_flag: ""
+        },
+        {
+          r_name: "Ketone",
+          r_tum: "",
+          r_result: "",
+          r_range: "",
+          r_unit: "",
+          r_flag: ""
+        },
+        {
+          r_name: "Urobilinogen",
+          r_tum: "",
+          r_result: "",
+          r_range: "",
+          r_unit: "",
+          r_flag: ""
+        },
+        {
+          r_name: "Nitrite",
+          r_tum: "",
+          r_result: "",
+          r_range: "",
+          r_unit: "",
+          r_flag: ""
+        },
+        {
+          r_name: "Bile",
+          r_tum: "",
+          r_result: "",
+          r_range: "",
+          r_unit: "",
+          r_flag: ""
+        },
+        {
+          r_name: "Ascorbic Acid",
+          r_tum: "",
+          r_result: "",
+          r_range: "",
+          r_unit: "",
+          r_flag: ""
+        },
+        {
+          r_name: "PH",
+          r_tum: "",
+          r_result: "",
+          r_range: "",
+          r_unit: "",
+          r_flag: ""
+        },
+        {
+          r_name: "WBC",
+          r_tum: "",
+          r_result: "",
+          r_range: "",
+          r_unit: "/HPF",
+          r_flag: ""
+        },
+        {
+          r_name: "RBC",
+          r_tum: "",
+          r_result: "",
+          r_range: "",
+          r_unit: "",
+          r_flag: ""
+        },
+        {
+          r_name: "Casts",
+          r_tum: "",
+          r_result: "",
+          r_range: "",
+          r_unit: "",
+          r_flag: ""
+        },
+        {
+          r_name: "Others",
+          r_tum: "",
+          r_result: "",
+          r_range: "",
+          r_unit: "",
+          r_flag: ""
+        }
+      ]
+    },
+    {
+      form: 8,
+      name: "Faeces",
+      type: "Qualitative",
+      fields: [
+        {
+          r_name: "Appearance",
+          r_tum: "",
+          r_result: "",
+          r_range: "",
+          r_unit: "",
+          r_flag: ""
+        },
+        {
+          r_name: "Protozoa",
+          r_tum: "",
+          r_result: "",
+          r_range: "",
+          r_unit: "",
+          r_flag: ""
+        },
+        {
+          r_name: "Ova",
+          r_tum: "",
+          r_result: "",
+          r_range: "",
+          r_unit: "",
+          r_flag: ""
+        },
+        {
+          r_name: "Cyst",
+          r_tum: "",
+          r_result: "",
+          r_range: "",
+          r_unit: "",
+          r_flag: ""
+        },
+        {
+          r_name: "WBC",
+          r_tum: "",
+          r_result: "",
+          r_range: "",
+          r_unit: "",
+          r_flag: ""
+        },
+        {
+          r_name: "RBC",
+          r_tum: "",
+          r_result: "",
+          r_range: "",
+          r_unit: "",
+          r_flag: ""
+        },
+        {
+          r_name: "Occult Blood",
+          r_tum: "",
+          r_result: "",
+          r_range: "",
+          r_unit: "",
+          r_flag: ""
+        },
+        {
+          r_name: "Others",
+          r_tum: "",
+          r_result: "",
+          r_range: "",
+          r_unit: "",
+          r_flag: ""
+        }
+      ]
+    },
+    {
+      form: 9,
+      name: "Semen Analysis",
+      type: "Qualitative",
+      fields: [
+        {
+          r_name: "Appearance",
+          r_tum: "",
+          r_result: "",
+          r_range: "",
+          r_unit: "",
+          r_flag: ""
+        },
+        {
+          r_name: "Time Produced",
+          r_tum: "",
+          r_result: "",
+          r_range: "",
+          r_unit: "",
+          r_flag: ""
+        },
+        {
+          r_name: "Time Received",
+          r_tum: "",
+          r_result: "",
+          r_range: "",
+          r_unit: "",
+          r_flag: ""
+        },
+        {
+          r_name: "Time Examined",
+          r_tum: "",
+          r_result: "",
+          r_range: "",
+          r_unit: "",
+          r_flag: ""
+        },
+        {
+          r_name: "Volume",
+          r_tum: "",
+          r_result: "",
+          r_range: "",
+          r_unit: "ml",
+          r_flag: ""
+        },
+        {
+          r_name: "Motile",
+          r_tum: "",
+          r_result: "",
+          r_range: "",
+          r_unit: "",
+          r_flag: ""
+        },
+        {
+          r_name: "Actively Motile",
+          r_tum: "",
+          r_result: "",
+          r_range: "",
+          r_unit: "",
+          r_flag: ""
+        },
+        {
+          r_name: "Total Count",
+          r_tum: "",
+          r_result: "",
+          r_range: "",
+          r_unit: "",
+          r_flag: ""
+        },
+        {
+          r_name: "Morphology",
+          r_tum: "",
+          r_result: "",
+          r_range: "",
+          r_unit: "",
+          r_flag: ""
+        },
+        {
+          r_name: "Pus Cells",
+          r_tum: "",
+          r_result: "",
+          r_range: "",
+          r_unit: "",
+          r_flag: ""
+        }
+      ]
+    },
+    {
+      form: 10,
+      name: "HVS Microscopy",
+      type: "Qualitative",
+      fields: [
+        {
+          r_name: "Pus Cell",
+          r_tum: "",
+          r_result: "",
+          r_range: "",
+          r_unit: "/HPF",
+          r_flag: ""
+        },
+        {
+          r_name: "RBS'S",
+          r_tum: "",
+          r_result: "",
+          r_range: "",
+          r_unit: "",
+          r_flag: ""
+        },
+        {
+          r_name: "T. Vaginalis",
+          r_tum: "",
+          r_result: "",
+          r_range: "",
+          r_unit: "",
+          r_flag: ""
+        },
+        {
+          r_name: "Yeast Cells",
+          r_tum: "",
+          r_result: "",
+          r_range: "",
+          r_unit: "",
+          r_flag: ""
+        },
+        {
+          r_name: "Others",
+          r_tum: "",
+          r_result: "",
+          r_range: "",
+          r_unit: "",
+          r_flag: ""
+        }
+      ]
+    },
+    {
+      form: 11,
+      name: "Hbs/HCV/VDRL",
+      type: "Qualitative",
+      fields: [
+        {
+          r_name: "Hbs Ag",
+          r_tum: "",
+          r_result: "",
+          r_range: "",
+          r_unit: "",
+          r_flag: ""
+        },
+        {
+          r_name: "HCV",
+          r_tum: "",
+          r_result: "",
+          r_range: "",
+          r_unit: "",
+          r_flag: ""
+        },
+        {
+          r_name: "VDRL",
+          r_tum: "",
+          r_result: "",
+          r_range: "",
+          r_unit: "",
+          r_flag: ""
+        }
+      ]
+    },
+    {
+      form: 12,
+      name: "Pregnancy Test",
+      type: "Qualitative",
+      fields: [
+        {
+          r_name: "Pregnancy Test",
+          r_tum: "",
+          r_result: "",
+          r_range: "",
+          r_unit: "",
+          r_flag: ""
+        }
+      ]
+    },
+    {
+      form: 13,
+      name: "Female Hormonal Essay",
+      type: "result-range",
+      fields: [
+        {
+          r_name: "FSH",
+          r_tum: "",
+          r_result: "",
+          r_range: "",
+          r_unit: "miU/ml",
+          r_flag: ""
+        },
+        {
+          r_name: "LH",
+          r_tum: "",
+          r_result: "",
+          r_range: "",
+          r_unit: "miU/ml",
+          r_flag: ""
+        },
+        {
+          r_name: "PRL",
+          r_tum: "",
+          r_result: "",
+          r_range: "",
+          r_unit: "ng/ml",
+          r_flag: ""
+        },
+        {
+          r_name: "PRG",
+          r_tum: "",
+          r_result: "",
+          r_range: "",
+          r_unit: "ng/ml",
+          r_flag: ""
+        },
+        {
+          r_name: "E",
+          r_tum: "",
+          r_result: "",
+          r_range: "",
+          r_unit: "pg/ml",
+          r_flag: ""
+        },
+        {
+          r_name: "Testesterone",
+          r_tum: "",
+          r_result: "",
+          r_range: "",
+          r_unit: "ng/ml",
+          r_flag: ""
+        },
+        {
+          r_name: "TSH",
+          r_tum: "",
+          r_result: "",
+          r_range: "",
+          r_unit: "μIU/ml",
+          r_flag: ""
+        }
+      ]
+    },
+    {
+      form: 14,
+      name: "Male Hormonal Essay",
+      type: "result-range",
+      fields: [
+        {
+          r_name: "FSH",
+          r_tum: "",
+          r_result: "",
+          r_range: "",
+          r_unit: "miU/ml",
+          r_flag: ""
+        },
+        {
+          r_name: "LH",
+          r_tum: "",
+          r_result: "",
+          r_range: "",
+          r_unit: "miU/ml",
+          r_flag: ""
+        },
+        {
+          r_name: "PRL",
+          r_tum: "",
+          r_result: "",
+          r_range: "",
+          r_unit: "ng/ml",
+          r_flag: ""
+        },
+        {
+          r_name: "PRG",
+          r_tum: "",
+          r_result: "",
+          r_range: "",
+          r_unit: "ng/ml",
+          r_flag: ""
+        },
+        {
+          r_name: "Testesterone",
+          r_tum: "",
+          r_result: "",
+          r_range: "",
+          r_unit: "ng/ml",
+          r_flag: ""
+        },
+        {
+          r_name: "TSH",
+          r_tum: "",
+          r_result: "",
+          r_range: "",
+          r_unit: "μIU/ml",
+          r_flag: ""
+        }
+      ]
+    },
+    {
+      form: 15,
+      name: "PSA Report",
+      type: "result-range",
+      fields: [
+        {
+          r_name: "Total PSA",
+          r_tum: "",
+          r_result: "",
+          r_range: "",
+          r_unit: "ng/ml",
+          r_flag: ""
+        },
+        {
+          r_name: "Free PSA",
+          r_tum: "",
+          r_result: "",
+          r_range: "",
+          r_unit: "ng/ml",
+          r_flag: ""
+        },
+        {
+          r_name: "% Free PSA",
+          r_tum: "",
+          r_result: "",
+          r_range: "",
+          r_unit: "%",
+          r_flag: ""
+        }
+      ]
+    },
+    {
+      form: 16,
+      name: "Other Laboratory Result",
+      type: "result-range",
+      fields: [
+        {
+          r_name: "",
+          r_tum: "",
+          r_result: "",
+          r_range: "",
+          r_unit: "",
+          r_flag: ""
+        }
+      ]
+    }
+  ]
+  return formFactory;
+})
 
 })() //end of IIFE
 

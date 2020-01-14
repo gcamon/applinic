@@ -1,4 +1,23 @@
+<style type="text/css">
+	textarea {
+		width: 350px;
+		height: 20px;
+		border: none;
+		border-bottom: 2px dotted #000;
+		padding: 0 5px;
+	}
 
+	input {
+		border: none;
+		height: 35px;
+		display: block;
+		background-color: inherit;
+	}
+
+	.hide-tb {
+		display: none;
+	}
+</style>
 <div class="card-center-1">
 	<!--<header style="padding: 10px; font-size: 18px;font-weight: bold;"><i class="fa fa-arrow-left" style="cursor: pointer" ng-click="refresh()" ng-if="refInfo.laboratory.test_to_run.length > 0"> &nbsp;Back</i></header>-->
 	<div class="row">
@@ -163,7 +182,7 @@
                 </h6>                 
                 <div style="list-style:none;font-size:16px" id="collapseSeven" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingSeven"> -->
                 <div style="padding: 30px" class="card" ng-if="!isPreview">
-               	 <article ng-if="!otpMsg && !paymentStatus">
+               	    <article ng-if="!otpMsg && !paymentStatus">
                 	<div class="mb-0 mt-0 pl-0 font-1_2"  style="border-bottom: 4px solid #85CE36;display: inline-block;padding-bottom: 5px"><b>Compute Cost</b></div>
                 	 <p class="danger-mine" ng-if="compute && compute !== '' ">{{compute}}</p>                            
                      <table class="table table-responsive">
@@ -187,7 +206,7 @@
                      	<button class="btn btn-danger" style="float: right;" ng-click="sendBill(refInfo.laboratory.patient_id,resend)" ng-if="grabRawAmount > 0"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i> Request Payment </button>
                      </div>
                     </article>	
-                    <article ng-if="otpMsg">
+                    <article ng-if="otpMsg" >
                      	<div  class="p-2 col-md-12" class="text-center text-success font-1">
                      		<p class="bg-warning p-1 text-danger" ng-if="otpError">{{otpError}}</p>
 							<p class="text-muted">{{otpMsg}} </p>
@@ -233,12 +252,11 @@
 				
 				<!-- for accordion <div ng-if="isResult" id="collapseSix" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingSix">-->
 				<div  ng-if="isResult && refInfo.laboratory.is_paid || paymentStatus" class="card p-2">
-					<div style=""  ng-if="!isPreview">
+					<!--<div style=""  ng-if="!isPreview">
 						<div class="mb-0 mt-0 pl-0 font-1_2"  style="display: inline-block;padding-bottom: 5px"><b>Specimen Collected</b></div>
 						<ul style="list-style: none;">
 							<li ng-repeat="item in specimen" style="display: inline-block;padding: 20px;float: left">
-								<!--<input type="checkbox" name="" ng-model="item.status">
-								<span>{{item.name}}</span>-->
+								
 
 								<label class="custom-control custom-checkbox">
 				    				<input type="checkbox" ng-model="item.status"  class="custom-control-input">
@@ -247,7 +265,7 @@
 		    					</label>
 							</li>
 						</ul>
-					</div>
+					</div>-->
 
 				
 					
@@ -255,29 +273,144 @@
 					
 					<div class="clearfix"></div>
 					<div ng-if="!isPreview">
-					<div class="mb-0 mt-0 pl-0 pt-2 font-1_2"  style="display: inline-block;padding-bottom: 5px">
+					<!--<div class="mb-0 mt-0 pl-0 pt-2 font-1_2"  style="display: inline-block;padding-bottom: 5px">
 						<b>Report Entry:</b><br>
 						<span>Please enter result 'Name' below if applicable. For example, Full Blood Count test can have a result name for haemoglobin, MCHC etc.</span>
-					</div>
+					</div>-->
 
-					<form>
+					<!--<form>
 						<div class="row">
 						<p class="danger-mine pl-1" ng-if=" incomplete && incomplete !== ''">{{incomplete}}</p>
 						<div class="form-group">
-							<label class="font-1_1 pt-1 text-danger"></label>
-							<!--<textarea placeholder="Write..."  class="form-control"  ng-model="report.data" required= "required" style="height: 250px"></textarea>-->
-							<!--<table class="table">
-								<thead>
-									<th>Name</th>
-									<th>TUM</th>
-									<th>Result</th>
-									<th>Range</th>
-									<th>Units</th>
-									<th>Flag</th>
-								</thead>
-							</table>-->
-							<div ng-repeat="report in testReport">	
-								{{createInputList(report)}}
+							<label class="font-1_1 pt-1 text-danger"></label>-->
+						
+
+							<div ng-repeat="report in testReport" class="pb-2">
+								<h6 class="text-muted pt-1 pb-1">
+								<span>{{report.sn}}) </span> {{report.name}} result entry:</h6>									
+								<div class="col-md-5 pl-0">									
+									<select class="form-control" ng-model="pickedForm.form">
+										<option value="" selected disabled>_Select report format</option>
+										<option value="{{'0-0-' + report.name}}">Renal Function</option>
+										<option value="{{'0-1-' + report.name}}">Lipid Profile</option>
+										<option value="{{'0-2-' + report.name}}">Liver Function Test</option>
+										<option value="{{'0-3-' + report.name}}">Blood Sugar</option>
+										<option value="{{'0-4-' + report.name}}">Haematology Result</option>
+										<option value="{{'1-5-' + report.name}}">Widal Test Antigen </option>
+										<option value="{{'2-6-' + report.name}}">HIV Screening Test</option>
+										<option value="{{'2-7-' + report.name}}">Urinalysis </option>
+										<option value="{{'2-8-' + report.name}}">Faeces</option>
+										<option value="{{'2-9-' + report.name}}">Semen Analysis</option>
+										<option value="{{'2-10-' + report.name}}">HVS Microscopy</option>
+										<option value="{{'2-11-' + report.name}}">Hbs/HCV/VDRL</option>
+										<option value="{{'2-12-' + report.name}}">Pregnancy Test</option>
+										<option value="{{'0-13-' + report.name}}">Female Hormonal Essay</option>
+										<option value="{{'0-14-' + report.name}}">Male Hormonal Essay</option>
+										<option value="{{'0-15-' + report.name}}">PSA Report</option>
+										<option value="{{'3-16-' + report.name}}">Other</option>
+									</select>
+								</div>
+								<div class="clearfix"></div>
+								<br>
+								<div ng-show="report.isRange">
+									<table class="table-responsive">
+										<thead>
+											<tr>
+												<th>&nbsp;</th>
+												<th>Result</th>
+												<th>Range</th>
+												<th>Unit</th>
+												<th>Flag</th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr ng-repeat="i in report.list">
+												<td><label><input type="text"  ng-model="i.r_name" ng-class="{'text-danger': i.r_flag !== 'Normal' && i.r_flag !== '' }"></label></td>
+												<td><input type="number"  ng-model="i.r_result" ng-class="{'text-danger': i.r_flag !== 'Normal' && i.r_flag !== '' }"></td>
+												<td><input type="text"  ng-model="i.r_range" ng-class="{'text-danger': i.r_flag !== 'Normal' && i.r_flag !== '' }"></td>
+												<td><input type="text"  ng-model="i.r_unit" ng-class="{'text-danger': i.r_flag !== 'Normal' && i.r_flag !== '' }"></td>
+												<td><input type="text"  ng-model="i.r_flag" ng-class="{'text-danger': i.r_flag !== 'Normal' && i.r_flag !== '' }"></td>
+											</tr>			
+											
+										</tbody>
+									</table>
+								</div>
+								<div ng-show="report.isAntigen">
+									<table>
+										<thead>
+											<tr>
+												<th>&nbsp;</th>
+												<th>O. (Antigen)</th>											
+												<th>H. (Antigen)</th>
+											</tr>
+										</thead>
+										<tbody ng-repeat="i in report.list">
+											<tr ng-if="i.r_result_O">
+												<td><label><input type="text"  ng-model="i.r_name"></label></td>
+												<td><input type="text"  ng-model="i.r_result_O"></td>
+												<td><input type="text"  ng-model="i.r_result_H"></td>
+												<!--<td contenteditable="true">{{i.r_unit}}</td>
+												<td contenteditable="true">{{i.r_flag}}</td>-->
+											</tr>
+											<tr ng-if="i.r_name == 'Brucella Abortus'">
+												<td>
+													<labeL>{{i.r_name}}: </labeL><br>
+													<textarea ng-model="i.r_result" style="width: 250px"></textarea>
+												</td>
+												<!--<td contenteditable="true">{{i.r_result}}</td>-->
+											</tr>
+											<tr ng-if="i.r_name == 'Comment'">
+												<td>
+													<labeL>{{i.r_name}}: </labeL><br>
+													<textarea ng-model="i.r_result" style="width: 250px"></textarea>
+												</td>
+											</tr>		
+											<tr ng-if="i.r_name == 'Significant Titre'">
+												<td>
+													<labeL>{{i.r_name}}: </labeL><br>
+													<textarea ng-model="i.r_result" style="width: 250px" placeholder="eg. >= 80"></textarea>
+												</td>
+											</tr>												
+										</tbody>
+									</table>
+								</div>
+								<div ng-show="report.isQualitative">
+									<form ng-repeat="i in report.list" class="row p-1">
+										<div class="col-md-2">
+											<label contenteditable="true">{{i.r_name}}: </label>
+										</div>
+										<div class="col-md-8">
+											<textarea ng-model="i.r_result"></textarea>
+											<span contenteditable="true">{{i.r_unit}}</span>
+										</div>
+									</form>
+								</div>
+								<div ng-show="report.isOther">
+									<table class="table-responsive">
+										<thead>
+											<tr>
+												<th>Name</th>
+												<th>Result</th>
+												<th>Range</th>
+												<th>Unit</th>
+												<th>Flag</th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr ng-repeat="i in report.list">
+												<td><label><input type="text"  ng-model="i.r_name"></label></td>
+												<td><input type="number"  ng-model="i.r_result"></td>
+												<td><input type="text"  ng-model="i.r_range"></td>
+												<td><input type="text"  ng-model="i.r_unit"></td>
+												<td><input type="text"  ng-model="i.r_flag"></td>
+											</tr>											
+										</tbody>
+									</table>
+									<section style="text-align: right;" class="p-0">
+										<i class="fa fa-plus btn btn-neutral text-muted" ng-click="addReport(report)"></i>&nbsp;
+										<i class="fa fa-minus btn btn-neutral text-muted" ng-show="report.list.length > 1" ng-click="removeReport(report)"></i>
+									</section>
+								</div>
 								<!--<table>
 									<thead>
 										<th></th>
@@ -297,7 +430,7 @@
 										<td><input type="text" name="flag" placeholder="Enter flag" ng-model="i.r_flag" class="form-control"></td>
 									</tbody>
 								</table>-->
-								<section class="pl-1">
+								<!--<section class="pl-1">
 									<h6 class="text-danger"><span>{{report.sn}}) </span> {{report.name}} report entry:</h6><br>
 									<section ng-repeat="i in report.list" class="p-1">
 										<div class="row">
@@ -356,21 +489,28 @@
 									<i class="fa fa-minus btn btn-neutral text-muted" ng-show="report.list.length > 1" ng-click="removeReport(report)"></i>
 								</section>
 							</div>					
-						</div>
-						<section class="pl-2 pr-2">
+						</div>-->
+						<!--<section class="p-1">
 							<label class="text-danger">CONCLUSION:</label>
 							<textarea  class="form-control pl-1" placeholder="Write..." required ng-model="lab.conclusion"  ng-keyup="autoExpand($event)" id="textarea"></textarea>
-						</section>
+						</section>-->
 						
-						</div>							
+						<!--</div>							
 							
-					</form>			
+					</form>	-->	
+
 					</div>
 
 				
-					<div class="form-group col-md-12 col-sm-12" ng-if="isFilled === true && !isPreview" style="margin-top:30px">
-                 	<button class="btn btn-success" ng-click="previewTestResult(refInfo)" onclick="openIframe()" id="prvBtn">Preview</button>
-                 	</div>		
+					<!--<div ng-if="isFilled === true && !isPreview" style="margin-top:30px">
+                 	   <button class="btn btn-success" ng-click="previewTestResult(refInfo)" onclick="openIframe()" id="prvBtn">Preview</button>
+                 	</div>-->
+                 	<div ng-if="isFilled === true && !isPreview" style="margin-top:30px">
+                 	   <button class="btn btn-success" ng-click="previewTestResult(refInfo)" ng-show="!loading">Submit</button>
+                 	   <span ng-show="loading" class="text-muted">Submitting... Please wait!</span>
+                 	   &nbsp;&nbsp;
+                 	   <button class="btn btn-simple" ng-show="reportSuccess2" onclick="openIframe()" id="prvBtn">View Report</button>
+                 	</div>	
 				</div>
             </div>
 
@@ -573,10 +713,8 @@
 </div>
 <div style="height: 300px"></div>
 
-<iframe src="http://localhost:3001/report-template/62875651/5df653b5f9fe72390025b17a" style="position: fixed;top: 5px;left: 5px;width: 700px;height: 650px;display: block;z-index: 999999;border: 2px solid grey"  id="iframeTag">Oops! Your browser does not support iframe. User modern browser like Chrome or Firefox or IE 10 above</iframe>
-<div  id="innerDivTemp" style="position: fixed;top: 5px;left: 660px;width: 700px;height: 650px;display: block;z-index: 999999;">
-	
-</div>
+<iframe src="{{reportTemp}}" style="position: fixed;top: 5px;left: 5px;width: 700px;height: 650px;display: block;z-index: 999999;border: 2px solid grey"  id="iframeTag">Oops! Your browser does not support iframe. User modern browser like Chrome or Firefox or IE 10 above</iframe>
+<div  id="innerDivTemp" style="position: fixed;top: 5px;left: 660px;width: 700px;height: 650px;display: block;z-index: 999999;"></div>
 
 <script type="text/javascript">
 	var iframe = document.getElementById('iframeTag')

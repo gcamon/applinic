@@ -1,0 +1,123 @@
+
+<!doctype html>
+<!--[if lt IE 7]>		<html class="no-js lt-ie9 lt-ie8 lt-ie7" lang=""> <![endif]-->
+<!--[if IE 7]>			<html class="no-js lt-ie9 lt-ie8" lang=""> <![endif]-->
+<!--[if IE 8]>			<html class="no-js lt-ie9" lang=""> <![endif]-->
+<!--[if gt IE 8]><!-->	<html class="no-js" lang=""> <!--<![endif]-->
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>Applinic - Radiology Report Template</title>
+	<meta name="description" content="">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="apple-touch-icon" href="apple-touch-icon.png">
+    
+	 
+         
+	 <link rel="stylesheet" href="/assets/css/vendor.css">
+         <link rel="stylesheet" href="/assets/css/app.css">
+          <link rel="stylesheet" href="/assets/css/now-ui-kit2.css">
+          <link rel="stylesheet" href="/assets/css/font-awesome.min.css">
+         
+            <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+
+
+              <script src="/assets/js/vendor2.js"></script>
+          <script type="text/javascript" src="/assets/js/source.js"></script>
+
+	<style type="text/css">
+	 
+
+    
+
+	</style>
+</head>
+<body ng-app = "myApp" class="ng-cloak">
+	<!--[if lt IE 8]>
+		<p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+	<![endif]-->
+	<!--************************************
+			Wrapper Start
+	*************************************-->
+  
+	<div ng-controller="docDirectoryEntryCtrl">
+	   <div class="container-fluid p-3 mt-3">
+            <h3>Registered Consultants Entry</h3>
+            <form class="row" ng-submit="saveList()">
+                <div style="width: 95%;text-align: right;margin-bottom: 10px">
+                    <select ng-model="pageFields">
+                        <option selected="selected" value="10" >10</option>
+                        <option value="20">20</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                        <option value="200">200</option>
+                        <option value="500">500</option>
+                    </select>
+                </div>
+                <table class="table-striped">
+                        <caption class="text-info">Fields: {{docList.length}}</caption>
+                        <tr>
+                            <th>Full Name</th>
+                            <th>Phone</th>
+                            <th>Email</th>
+                            <th>Faculty</th>
+                            <th>Fellow Number</th>
+                            <th>Address</th>
+                            <th>Year of Fellowship</th>
+                            <th>&nbsp;</th>
+                        </tr>
+                  
+                        <tr ng-repeat="doc in docList">
+                            <td><input type="text" name="" ng-model="doc.name"></td>
+                            <td><input type="text" name="" ng-model="doc.phone"></td>
+                            <td><input type="text" name="" ng-model="doc.email"></td>
+                            <td><input type="text" name="" ng-model="doc.specialty"></td>
+                            <td><input type="text" name="" ng-model="doc.fx_number"></td>
+                            <td><input type="text" name="" ng-model="doc.address"></td>
+                            <td><input type="text" name="" ng-model="doc.year_of_fellowship"></td>
+                            <td ng-hide="docList.length == 1"><i class="fa fa-times text-muted" ng-click="remove(doc)"></i></td>
+                        </tr>
+                    
+                </table>
+                <div style="width: 95%;text-align: right;margin-top: 10px">
+                    <i class="fa fa-plus btn btn-sm btn-simple" ng-click="add()"> Field</i>
+                </div>
+                <div class="clearfix"></div>
+                <input type="submit" name="" value="Save list" class="btn btn-info" ng-show="!loading">
+                <span ng-show="loading">Saving... Please wait!</span>
+            </form>
+       </div>
+    </div>   	 
+
+   
+
+	<script src="/assets/js/app.js"></script>
+        
+        
+    <script type="text/javascript" src="/assets/js/angularclient.js"></script>
+    <script type="text/javascript" src="/assets/js/ngroute.js"></script>
+    <script src="/socket.io/socket.io.js"></script>   
+    <script src="/assets/js/socket.min.js"></script>
+        
+       
+        
+    <script src="/assets/js/angularAnimate.js"></script>
+    <script src="/assets/js/modalService.js"></script>
+    <script src="/assets/js/angular-touch.min.js"></script>
+    <!--<script src="/assets/js/angular-carousel.js"></script>-->
+    <script src="/assets/js/moment.min.js"></script>
+    <script src="/assets/js/angular-moment.min.js"></script>
+    <script src="/assets/js/ui-bootstrap-tpls.js"></script>
+    <script src="/assets/js/angular-clipboard.js"></script>
+    <script src="/assets/js/ngresource.js"></script>
+    <script src="/assets/js/ngPrint.js"></script>
+    <script type="text/javascript" src="/assets/js/angular-paystack/dist/angular-paystack.js"></script>
+    <script type="text/javascript" src="/assets/js/angular-sanitize.min.js"></script>
+    <script src="/assets/js/bower_components/angular-summernote/dist/angular-summernote.js"></script>
+    <script type="text/javascript" src="/assets/js/underscore-min.js"></script>
+    <script type="text/javascript" src="/assets/js/angular-underscore.js"></script>
+  
+
+    
+</body>
+</html>

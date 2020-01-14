@@ -1085,8 +1085,20 @@ var myModel = function () {
 		type: String
 	})
 
+	var docEntrySchema = Schema({
+		name: String,
+		email: String,
+		phone: String,
+		spacialty: String,
+		created: Date,
+		fx_number: String, //fellowship number
+		address: String,
+		year_of_fellowship: String
+	})
 
-	
+
+
+
 	//models
 	var models = {};
 	models.user = mongoose.model('userinfos', userSchema);
@@ -1119,6 +1131,7 @@ var myModel = function () {
 	models.accession = mongoose.model("accessioninfo",accessionSchema);
 	models.template = mongoose.model("templateinfo",reportTemplateSchema);
 	models.session = mongoose.model("sessioninfo",sessionSchema);
+	models.doc_entry = mongoose.model("docEntryinfos",docEntrySchema);
 	//models.calling_code = mongoose.model("callingcodeinfos",callingSchema)
 	
 	return models		

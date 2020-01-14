@@ -871,17 +871,19 @@ var basicPaymentRoute = function(model,sms,io,paystack,client,nodemailer){
 	});
 
  
-router.put("/user/laboratory/test-result/session-update2",function(req,res){
+router.put("/user/laboratory/test-result/session-update",function(req,res){
 	if(req.user){
-
+		console.log(req.body)
+		res.json({status: "success",reportTemp: "http://localhost:3001/report-template/62875651/5df653b5f9fe72390025b17a"})
+		return;
 	} else {
 		res.end("Unauthorized access.")
 	}
 });
 
 
-  //this route handles test result sent by a laboratory to update existing doctor/patient session that initiated such test request.
-router.put("/user/laboratory/test-result/session-update",function(req,res){
+//this route handles test result sent by a laboratory to update existing doctor/patient session that initiated such test request.
+router.put("/user/laboratory/test-result/session-update2",function(req,res){
     //note that sms will be sent to patient and doctor when a lab test result is available.
     if(req.user) {
   
