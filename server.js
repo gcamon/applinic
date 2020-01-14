@@ -34,7 +34,7 @@ var express = require('express'),
   placement = require("./placement"),
   mySocket = require("./socket"),
   streams = require("./streams")(),
-  port = process.env.PORT || 3009;
+  port = process.env.PORT || 3001;
 
   /*var ExpressPeerServer = require('peer').ExpressPeerServer;
   var Geonames = require("geonames.js");
