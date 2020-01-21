@@ -9960,7 +9960,6 @@ router.get("/user/firstline-doctors",function(req,res){
 
 router.post("/user/firstline-doctors",function(req,res){
   if(req.user){
-    console.log(req.body)
     model.user.findOne({user_id: req.body.user_id})
     .exec(function(err,doc){
       if(err) throw err;
@@ -9968,7 +9967,7 @@ router.post("/user/firstline-doctors",function(req,res){
         //send a robo call to selected firstline doctor
         if(doc.email === "applinic@gmail.com"){
           doc.email = "info@applinic.com";
-          doc.phone = "+2349080045678";
+          //doc.phone = "+2349080045678";
         }
 
         sms.calls 
@@ -10878,10 +10877,13 @@ router.post("/entry/doc-details/dshjhdfhsdgsd",function(req,res){
       }
       count++;
     }
+
     res.json({message: "Entries saved successfully!",status: true});
+
   } else {
     res.json({message: "No entries. Nothing was saved"})
   }
+
 })
 
 
