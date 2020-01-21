@@ -10854,9 +10854,11 @@ router.get("/entry/doc-details/dshjhdfhsdgsd",function(req,res){
 })
 
 router.post("/entry/doc-details/dshjhdfhsdgsd",function(req,res){
-  if(req.body){
+  if(req.body.length > 0){    
+    var count = 0;
     var regDoctor;
-    req.body.forEach(function(doc){
+    var doc;
+    /*req.body.forEach(function(doc){
       if(doc.fx_number && doc.name) {
         doc.created = new Date();
         regDoctor = new model.doc_entry(doc)
@@ -10864,8 +10866,20 @@ router.post("/entry/doc-details/dshjhdfhsdgsd",function(req,res){
           if(err) throw err;
         })
       }
-    })
-    res.json({message: "Entries saved successfully!",status: true})
+    })*/   
+    while(count < req.body.length){
+      doc = req.body[count];
+      if(doc.fx_number && doc.name) {
+        doc.created = new Date();
+        regDoctor = new model.doc_entry(doc)
+        regDoctor.save(function(err,info){
+          if(err) throw err;
+        })
+        console.log(regDoctor.name + " save successfully")
+      }
+      count++;
+    }
+    res.json({message: "Entries saved successfully!",status: true});
   } else {
     res.json({message: "No entries. Nothing was saved"})
   }
