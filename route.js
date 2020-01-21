@@ -10875,7 +10875,6 @@ router.post("/entry/doc-details/dshjhdfhsdgsd",function(req,res){
         regDoctor.save(function(err,info){
           if(err) throw err;
         })
-        console.log(regDoctor.name + " save successfully")
       }
       count++;
     }
