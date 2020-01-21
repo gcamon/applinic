@@ -9966,11 +9966,16 @@ router.post("/user/firstline-doctors",function(req,res){
       if(err) throw err;
       if(doc) {
         //send a robo call to selected firstline doctor
+        if(doc.email === "applinic@gmail.com"){
+          doc.email = "info@applinic.com";
+          doc.phone = "+2349080045678";
+        }
+
         sms.calls 
         .create({
           url: "https://applinic.com/inviteonlinecall?receiver=" + "doctor" + "&&sender=" 
           + req.user.lastname + "&&type=" + req.user.type,
-          to: req.body.phone || "",
+          to: doc.phone || "",
           from: '+16467985692',
         })
         .then(
@@ -9987,7 +9992,7 @@ router.post("/user/firstline-doctors",function(req,res){
         + " " + req.user.firstname + "\n" + req.user.phone;        
         sms.messages.create(
           {
-            to: req.body.phone || "",
+            to: doc.phone || "",
             from: '+16467985692',
             body: msgBody,
           },
@@ -10009,7 +10014,7 @@ router.post("/user/firstline-doctors",function(req,res){
 
         var mailOptions = {
           from: 'Applinic info@applinic.com',
-          to: req.body.email,
+          to: doc.email,
           subject:'Patient Chat Request',
           html: "<div style='font-size:18px'><b>Hello doctor</b>, <br><br> A patient wants to have a chat with you. <br> Kindly login to attend. <br><br> https://applinic.com/login <br><br> Thank you!</div>"
         };
