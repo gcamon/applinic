@@ -70,19 +70,19 @@
 
 				<div class="ellipsis hidden-md-up" style="max-height: 220px; border-bottom: 1px solid #ccc; margin-bottom: 5px; overflow-y: auto">
 					<div ng-repeat="chat in chatsList | orderBy : '-realTime' | filter: ft" ng-click="viewChat(chat)" class="pl-1 cht-body" ng-if="chat.partnerId !== checkLogIn.user_id">
-						<div class="cp cp-1" style="height:62px;width:62px;border-radius: 62px;border:1px solid #4f5f6f;overflow: hidden;text-align: center;vertical-align: middle;">
+						<div class="cp cp-1" style="height:62px;width:62px;border-radius: 62px;overflow: hidden;text-align: center;vertical-align: middle;">
 							<img src="{{chat.profilePic}}">	
 						</div>
 						<div class="cp cp-2">		
 							<a href="" class="chat-header-text ellipsis" ng-class="{'chat-header-text-new' : !chat.is_read}" style="display: block;position: relative;">
-								<strong style="font-size: 12px;display: block;padding: 0;color: #85CE36" class="ellipsis">{{chat.name}}</strong>
-								<span style="font-size: 12px;display: block;" class="ellipsis"><!--<span ng-show="chat.partnerType">{{chat.partnerType}}:</span>-->
+								<strong style="font-size: 12px;display: block;padding: 0;" class="ellipsis">{{chat.name}}</strong>
+								<span style="font-size: 12px;display: block;" class="ellipsis text-muted"><!--<span ng-show="chat.partnerType">{{chat.partnerType}}:</span>-->
 								 <span style="font-size: 12px">{{(!chat.typing) ? (chat.messages[chat.messages.length - 1].received || chat.messages[chat.messages.length - 1].sent ) : chat.typing }}</span></span>
 
-								 <span ng-if="chat.status" class="online" style="background-color: #85CE36;float: none;"></span>
-								 <span ng-if="!chat.status" class="online" style="background-color: #ccc;float: none;"></span>
+								 <!--<span ng-if="chat.status" class="online" style="background-color: #85CE36;float: none;"></span>
+								 <span ng-if="!chat.status" class="online" style="background-color: #ccc;float: none;"></span>-->
 								 
-								 <span am-time-ago="chat.messages[chat.messages.length - 1].time  || chat.messages[chat.messages.length - 1].received" ng-cloak style="color: #ccc"></span>
+								 <small am-time-ago="chat.messages[chat.messages.length - 1].time  || chat.messages[chat.messages.length - 1].received" ng-cloak style="color: #ccc"></small>
 
 								 <!--<span style="position: absolute;bottom: 0;right: 20px"><span ng-if="chat.status" class="online" style="background-color: #85CE36"></span><span ng-if="!chat.status" class="online" style="background-color: #ccc;"></span></span>-->
 								 <!--<i class="fa fa-comment-o" style="position: absolute;top:3px;right:5px" ng-if="chat.isUnRead"></i>-->

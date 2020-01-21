@@ -44,12 +44,11 @@ module.exports = function(model,io,streams,sms) {
 	  
 	    //creat chat enable process for the user and the receiver
   		socket.on("init chat",function(data,cb){
-  			console.log("initttt chatttt")
   			var chatId = data.userId + "/" + data.partnerId; //creates chat id for the user and a partner to be saved in the database.
 	      model.chats.findOne({chat_id:chatId},function(err,chat){
-	      	if(err) throw err;
-	      	if(!chat){
-	      		var date = + new Date();    		
+	      	if(err) throw err;	      	
+	      	if(!chat){	  
+	      		var date = + new Date();      		  		
 	      		var newChat = new model.chats({
 	      			status: false,
 	      			date_created: date,
@@ -60,14 +59,14 @@ module.exports = function(model,io,streams,sms) {
 	      		model.user.findOne({user_id: data.partnerId},function(err,partner){
 	      			if(err) throw err;
 	      			if(partner) {
-		      			newChat.userId = data.userId; //user.user_id;
+		      			newChat.userId = data.userId;//user.user_id;
 		      			newChat.partnerId = data.partnerId;
-		      			newChat.name = partner.name || partner.firstname; // this refers the the parner name not the owner  of this chat
+		      			newChat.name = partner.name || partner.firstname;// this refers the the parner name not the owner  of this chat
 		      			newChat.profilePic = partner.profile_pic_url;
 		      			newChat.partnerType = partner.type;
 		      			newChat.save(function(err,info){});
 	      			} else {
-	      				console.log("Partner does not exist")
+	      				console.log("Partner does not exist");
 	      			}
 	      		});
 	      		cb({messages:[]});	      		
@@ -109,12 +108,11 @@ module.exports = function(model,io,streams,sms) {
   		})
 
 	    socket.on("send message",function(data,cb){
-	    	console.log(data);
 	    	var date = + new Date();
 	    	data.date = date.toString();
 	    	data.id = data.date;
 	      cb(data);
-	       model.user.findOne({user_id: data.to},{set_presence:1},function(err,Obj){
+	      model.user.findOne({user_id: data.to},{set_presence:1},function(err,Obj){
 	       	if(err) throw err;
 	       	var checkBlocked = Obj.set_presence.particular.indexOf(data.from);	       	
 	       	if(checkBlocked === -1){	       		
@@ -147,9 +145,10 @@ module.exports = function(model,io,streams,sms) {
 	    		}
 	    	});
 
-	    	model.chats.findOne({chat_id: otherId},{messages:1}).exec(function(err,chats){
+	    	model.chats.findOne({chat_id: otherId},{messages:1,realTime:1}).exec(function(err,chats){
 	    		if(err) throw err;
-	    		var msg = {}	  
+	    		var msg = {}
+	    		var date = + new Date();  	  
 	    		msg.received = (data.fileType) ? data.fileType : data.message;
 	    		msg.time = data.date;
       		msg.id = data.date;
@@ -157,13 +156,13 @@ module.exports = function(model,io,streams,sms) {
       		msg.fileType = data.fileType;	
       		msg.mimeType = data.mimeType;
 	    		if(chats) {	
-	    			chats.is_read = false;  // added to check when a chat is read.  		    		
+	    			chats.is_read = false;  // added to check when a chat is read. 
+	    			chats.realTime = date; 		    		
 		    		chats.messages.push(msg);
 		    		chats.save(function(err,info){
 		    			if(err) throw err;		    			
 		    		});
-	    		} else {
-	    			var date = + new Date();    		
+	    		} else {	    			  		
 	      		var newChat = new model.chats({
 	      			status: false,
 	      			date_created: date,
@@ -211,7 +210,7 @@ module.exports = function(model,io,streams,sms) {
 		    		msg.isSent = false;
 	      		msg.isReceived = false;
 	      		msg.id = data.date;	
-	      		chats.realTime = + new Date();
+	      		chats.realTime = date;
 		    		chats.messages.push(msg);
 		    		chats.save(function(err,info){
 		    			if(err) throw err;		    		
@@ -221,23 +220,24 @@ module.exports = function(model,io,streams,sms) {
 
 	    	model.chats.findOne({chat_id: otherId},{messages:1,realTime:1}).exec(function(err,chats){
 	    		if(err) throw err;
-	    		var msg = {}	  
+	    		var msg = {}	
 	    		msg.received = data.message;
 	    		msg.time = data.date;
       		msg.id = data.date;	
 	    		if(chats) {	
-	    			chats.realTime = + new Date();
+	    			chats.realTime = date;
 	    			chats.is_read = false; // added to check when a chat is read.  			
 		    		chats.messages.push(msg);
 		    		chats.save(function(err,info){
 		    			if(err) throw err;		    			
 		    		});
 	    		} else {
-	    			var date = + new Date();    		
+	    			var date = date;    		
 	      		var newChat = new model.chats({
 	      			status: false,
 	      			date_created: date,
 	      			chat_id: otherId,
+	      			realTime: date,
 	      			type:"chat",
 	      		});
 	      		model.user.findOne({user_id: data.from},function(err,user){
