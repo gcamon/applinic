@@ -325,15 +325,18 @@
 										</thead>
 										<tbody>
 											<tr ng-repeat="i in report.list">
-												<td><label><input type="text"  ng-model="i.r_name" ng-class="{'text-danger': i.r_flag !== 'Normal' && i.r_flag !== '' }"></label></td>
+												<td><label><input type="text"  ng-model="i.r_name" ng-class="{'text-danger': i.r_flag !== 'Normal' && i.r_flag !== '' }" placeholder="edit title"></label></td>
 												<td><input type="number"  ng-model="i.r_result" ng-class="{'text-danger': i.r_flag !== 'Normal' && i.r_flag !== '' }"></td>
 												<td><input type="text"  ng-model="i.r_range" ng-class="{'text-danger': i.r_flag !== 'Normal' && i.r_flag !== '' }"></td>
 												<td><input type="text"  ng-model="i.r_unit" ng-class="{'text-danger': i.r_flag !== 'Normal' && i.r_flag !== '' }"></td>
 												<td><input type="text"  ng-model="i.r_flag" ng-class="{'text-danger': i.r_flag !== 'Normal' && i.r_flag !== '' }"></td>
-											</tr>			
-											
+											</tr>		
 										</tbody>
 									</table>
+									<section style="text-align: right;" class="p-0">
+										<i class="fa fa-plus btn btn-neutral text-muted" ng-click="addReport(report)"></i>&nbsp;
+										<i class="fa fa-minus btn btn-neutral text-muted" ng-show="report.list.length > 1" ng-click="removeReport(report)"></i>
+									</section>
 								</div>
 								<div ng-show="report.isAntigen">
 									<table>
@@ -377,13 +380,17 @@
 								<div ng-show="report.isQualitative">
 									<form ng-repeat="i in report.list" class="row p-1">
 										<div class="col-md-2">
-											<label contenteditable="true">{{i.r_name}}: </label>
+											<label contenteditable="true">{{i.r_name || "edit title"}} : </label>
 										</div>
 										<div class="col-md-8">
 											<textarea ng-model="i.r_result"></textarea>
 											<span contenteditable="true">{{i.r_unit}}</span>
 										</div>
 									</form>
+									<section style="text-align: right;" class="p-0">
+										<i class="fa fa-plus btn btn-neutral text-muted" ng-click="addReport(report)"></i>&nbsp;
+										<i class="fa fa-minus btn btn-neutral text-muted" ng-show="report.list.length > 1" ng-click="removeReport(report)"></i>
+									</section>
 								</div>
 								<div ng-show="report.isOther">
 									<table class="table-responsive">
@@ -398,7 +405,7 @@
 										</thead>
 										<tbody>
 											<tr ng-repeat="i in report.list">
-												<td><label><input type="text"  ng-model="i.r_name"></label></td>
+												<td><label><input type="text"  ng-model="i.r_name" placeholder="edit title"></label></td>
 												<td><input type="number"  ng-model="i.r_result"></td>
 												<td><input type="text"  ng-model="i.r_range"></td>
 												<td><input type="text"  ng-model="i.r_unit"></td>
@@ -509,7 +516,7 @@
                  	   <button class="btn btn-success" ng-click="previewTestResult(refInfo)" ng-show="!loading">Submit</button>
                  	   <span ng-show="loading" class="text-muted">Submitting... Please wait!</span>
                  	   &nbsp;&nbsp;
-                 	   <button class="btn btn-simple" ng-show="reportSuccess2" onclick="openIframe()" id="prvBtn">View Report</button>
+                 	   <button class="btn btn-simple" ng-show="reportSuccess2" ng-click="openIframe()" id="prvBtn">View Report</button>
                  	</div>	
 				</div>
             </div>
@@ -732,10 +739,10 @@
 	  
 	},false)
 
-	function openIframe(){
+	/*function openIframe(){
 		iframe.style.visibility = "visible";
 	    tempDiv.style.visibility = "visible";
-	}
+	}*/
 </script>
 
 

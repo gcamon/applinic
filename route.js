@@ -10853,10 +10853,22 @@ router.get("/entry/doc-details/dshjhdfhsdgsd",function(req,res){
 })
 
 router.post("/entry/doc-details/dshjhdfhsdgsd",function(req,res){
-  if(req.body.length > 0){    
+  //if(req.body.length > 0){    
     var count = 0;
     var regDoctor;
     var doc;
+
+    doc = req.body;
+    if(doc.fx_number && doc.name) {
+      doc.created = new Date();
+      regDoctor = new model.doc_entry(doc)
+      regDoctor.save(function(err,info){
+        if(err) throw err;
+        res.json({message: "Entries saved successfully!",status: true,doc:req.body});
+      })
+    } else {
+      res.json({message: "No entries. Nothing was saved"})
+    }
     /*req.body.forEach(function(doc){
       if(doc.fx_number && doc.name) {
         doc.created = new Date();
@@ -10865,9 +10877,9 @@ router.post("/entry/doc-details/dshjhdfhsdgsd",function(req,res){
           if(err) throw err;
         })
       }
-    })*/   
+    })  
     while(count < req.body.length){
-      doc = req.body[count];
+      doc = req.body;
       if(doc.fx_number && doc.name) {
         doc.created = new Date();
         regDoctor = new model.doc_entry(doc)
@@ -10876,13 +10888,12 @@ router.post("/entry/doc-details/dshjhdfhsdgsd",function(req,res){
         })
       }
       count++;
-    }
+    }*/
+    
 
-    res.json({message: "Entries saved successfully!",status: true});
-
-  } else {
-    res.json({message: "No entries. Nothing was saved"})
-  }
+  //} else {
+   // res.json({message: "No entries. Nothing was saved"})
+  //}
 
 })
 

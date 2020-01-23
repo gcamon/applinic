@@ -16203,6 +16203,7 @@ app.controller("labTestControler",["$scope","$location","$http","templateService
           $scope.reportSuccess2 = true;
           localManager.removeItem("history")
           $scope.reportTemp = response.reportTemp;
+          $scope.openIframe();
 
         } else {
           alert("Error ocurred while sending your report. Please try again.");
@@ -16212,6 +16213,31 @@ app.controller("labTestControler",["$scope","$location","$http","templateService
 
         $scope.loading = false;
       });
+
+
+      var iframe = angular.element(document.getElementById('iframeTag'))
+      //var count = 0;
+      //var prevBtn = document.getElementById("prvBtn");
+
+      var tempDiv = angular.element(document.getElementById('innerDivTemp'));
+
+
+      iframe[0].style.visibility = "hidden";
+      tempDiv[0].style.visibility = "hidden";
+
+     /* tempDiv[0].addEventListener('click',function(){   
+        iframe[0].style.visibility = "hidden";
+        tempDiv[0].style.visibility = "hidden";
+        
+      },false)
+      */
+
+      $scope.openIframe = function(){
+        iframe[0].style.visibility = "visible";
+        tempDiv[0].style.visibility = "visible";
+      }
+
+      
 
   }
 
@@ -23709,24 +23735,40 @@ app.controller("docDirectoryEntryCtrl",["$scope","$http",function($scope,$http){
   }
 
   $scope.saveList = function(){
-    var check = confirm("Please verify all entries are correct! Do you wish to continue?")
+    var check = confirm("Please verify all entries are correct! Do you wish to continue?");
+    var elem;
     if(check){
       $scope.loading = true;
-      $http({
-        method  : 'POST',
-        url     : "/entry/doc-details/dshjhdfhsdgsd",
-        data    : $scope.docList || [], //forms user object
-        headers : {'Content-Type': 'application/json'} 
-       })
-      .success(function(data) {
-       if(data) {
-        alert(data.message)
-        if(data.status == true){
-          multpleFields();
+      $scope.docList.forEach(function(doc){
+        if(doc.fx_number && doc.name) {
+          $http({
+            method  : 'POST',
+            url     : "/entry/doc-details/dshjhdfhsdgsd",
+            data    : doc,
+            headers : {'Content-Type': 'application/json'} 
+           })
+          .success(function(data) {
+          
+            if(data.status){
+              //multpleFields();
+              elem = $scope.docList.map(function(x){return x.fx_number}).indexOf(data.doc.fx_number);
+              if(elem !== -1){
+                $scope.docList.splice(elem,1)
+              }
+            } else {
+              $scope.loading = false;
+            } 
+
+            if($scope.docList.length == 0) {
+              $scope.loading = false;
+              multpleFields(); 
+            }      
+            
+          }); 
+        } else {
+          $scope.loading = false;
         }
-       }
-        $scope.loading = false;
-      }); 
+      })
     }         
   }
 
@@ -23734,7 +23776,7 @@ app.controller("docDirectoryEntryCtrl",["$scope","$http",function($scope,$http){
     multpleFields();
   })
 
-  var multpleFields = function(count) {
+  var multpleFields = function() {
     $scope.docList = [];
     toNum = parseInt($scope.pageFields);
     while(toNum > 0){
@@ -24798,15 +24840,15 @@ app.factory("reportFormFactory",function(){
           r_range: "",
           r_unit: "",
           r_flag: ""
-        },
-        {
+        }
+        /*{
           r_name: "Others",
           r_tum: "",
           r_result: "",
           r_range: "",
           r_unit: "",
           r_flag: ""
-        }
+        }*/
       ]
     },
     {
@@ -24869,15 +24911,15 @@ app.factory("reportFormFactory",function(){
           r_range: "",
           r_unit: "",
           r_flag: ""
-        },
-        {
+        }
+        /*{
           r_name: "Others",
           r_tum: "",
           r_result: "",
           r_range: "",
           r_unit: "",
           r_flag: ""
-        }
+        }*/
       ]
     },
     {
@@ -25003,7 +25045,8 @@ app.factory("reportFormFactory",function(){
           r_range: "",
           r_unit: "",
           r_flag: ""
-        },
+        }
+        /*
         {
           r_name: "Others",
           r_tum: "",
@@ -25011,7 +25054,7 @@ app.factory("reportFormFactory",function(){
           r_range: "",
           r_unit: "",
           r_flag: ""
-        }
+        }*/
       ]
     },
     {
