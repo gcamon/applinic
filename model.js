@@ -1096,6 +1096,21 @@ var myModel = function () {
 		year_of_fellowship: String
 	})
 
+	var labStoreSchema = Schema({
+		center_id: String,
+		lab_data: Array,
+		ref_id: String,
+		center_pic: String,
+	    center_name: String,
+	    center_address: String,
+	    center_email: String,
+	    center_phone: String,
+	    center_city: String,
+	    center_country: String,
+	    id_by: String
+	})
+
+
 
 
 
@@ -1132,6 +1147,7 @@ var myModel = function () {
 	models.template = mongoose.model("templateinfo",reportTemplateSchema);
 	models.session = mongoose.model("sessioninfo",sessionSchema);
 	models.doc_entry = mongoose.model("docEntryinfos",docEntrySchema);
+	models.lab_store = mongoose.model("labstoreinfos",labStoreSchema);
 	//models.calling_code = mongoose.model("callingcodeinfos",callingSchema)
 	
 	return models		

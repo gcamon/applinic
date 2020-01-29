@@ -12,6 +12,7 @@ var uuid = require("uuid");
 var moment = require('moment');
 var salt = require('./salt');
 var Voice = require('twilio').twiml.VoiceResponse;
+var mongoose = require("mongoose");
 var options = {
   host: "global.xirsys.net",
   path: "/_turn/www.applinic.com",
@@ -10840,16 +10841,27 @@ router.get("/user/study-reports",function(req,res){
   }
 })
 
-router.get("/laboratory/report-template",function(req,res){
-  
-    res.render("lab-report-template")
- 
+router.get("/lab-template/:temp/:labData",function(req,res){
+  if(mongoose.Types.ObjectId.isValid(req.params.labData)){
+    model.lab_store.findById(req.params.labData)
+    .exec(function(err,labData){
+      if(err) throw err;
+      if(labData){
+        labData.moment = moment;
+        res.render("lab-report-template",labData) 
+        console.log(labData)
+      } else {
+        res.end("Template not found!")
+      }
+    })
+  } else {
+    res.end("Error: record not found or invalid")
+  }
+    
 })
 
-router.get("/entry/doc-details/dshjhdfhsdgsd",function(req,res){
-  
-    res.render("doc-entry")
- 
+router.get("/entry/doc-details/dshjhdfhsdgsd",function(req,res){  
+  res.render("doc-entry")
 })
 
 router.post("/entry/doc-details/dshjhdfhsdgsd",function(req,res){

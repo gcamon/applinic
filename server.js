@@ -116,8 +116,8 @@ http.listen(port,function(){
     console.log('listening on *: ' + port);
 });
 
-var startDate = moment().startOf('week');//day week month
-var endDate = startDate.clone().endOf('week');
+//var startDate = moment().startOf('week');//day week month
+//var endDate = startDate.clone().endOf('week');
 
 
 var gee = "gcamoemaster";

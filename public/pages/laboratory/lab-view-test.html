@@ -513,10 +513,10 @@
                  	   <button class="btn btn-success" ng-click="previewTestResult(refInfo)" onclick="openIframe()" id="prvBtn">Preview</button>
                  	</div>-->
                  	<div ng-if="isFilled === true && !isPreview" style="margin-top:30px">
-                 	   <button class="btn btn-success" ng-click="previewTestResult(refInfo)" ng-show="!loading">Submit</button>
+                 	   <button class="btn btn-success" ng-click="previewTestResult(refInfo)" ng-show="!loading">Save/Preview</button>
                  	   <span ng-show="loading" class="text-muted">Submitting... Please wait!</span>
                  	   &nbsp;&nbsp;
-                 	   <button class="btn btn-simple" ng-show="reportSuccess2" ng-click="openIframe()" id="prvBtn">View Report</button>
+                 	   <button class="btn btn-simple btn-sm" ng-show="reportSuccess2" ng-click="openIframe()" id="prvBtn"><i class="fa fa-refresh"></i></button>
                  	</div>	
 				</div>
             </div>
@@ -720,8 +720,8 @@
 </div>
 <div style="height: 300px"></div>
 
-<iframe src="{{reportTemp}}" style="position: fixed;top: 5px;left: 5px;width: 700px;height: 650px;display: block;z-index: 999999;border: 2px solid grey"  id="iframeTag">Oops! Your browser does not support iframe. User modern browser like Chrome or Firefox or IE 10 above</iframe>
-<div  id="innerDivTemp" style="position: fixed;top: 5px;left: 660px;width: 700px;height: 650px;display: block;z-index: 999999;"></div>
+<iframe  style="position: fixed;top: 5px;left: 5px;width: 700px;height: 650px;display: block;z-index: 999999;border: 2px solid grey"  id="iframeTag" ng-hide="hideFrame">Oops! Your browser does not support iframe. User modern browser like Chrome or Firefox or IE 10 above</iframe>
+<div  id="innerDivTemp" ng-hide="hideFrame" style="position: fixed;top: 5px;left: 660px;width: 700px;height: 650px;display: block;z-index: 999999;"></div>
 
 <script type="text/javascript">
 	var iframe = document.getElementById('iframeTag')
@@ -733,11 +733,11 @@
 	iframe.style.visibility = "hidden";
 	tempDiv.style.visibility = "hidden";
 
-	tempDiv.addEventListener('click',function(){	 
+	/*tempDiv.addEventListener('click',function(){	 
 	    iframe.style.visibility = "hidden";
 	    tempDiv.style.visibility = "hidden";
 	  
-	},false)
+	},false)*/
 
 	/*function openIframe(){
 		iframe.style.visibility = "visible";

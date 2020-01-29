@@ -312,10 +312,11 @@ var basicPaymentRoute = function(model,sms,io,paystack,client,nodemailer){
 								model.otpSchema.findOne({time:req.body.old_time},function(err,data){
 									if(data) {
 										data.remove(function(){});
-										createNew();
-									}  else {
-										res.send({message: "This OTP session has been used and expired! Please refresh the page and continue."})
-									}
+										//createNew();
+									}  //else {
+										//res.send({message: "This OTP session has been used and expired! Please refresh the page and continue."})
+									//}
+									createNew();
 								})
 								/*model.otpSchema.remove({time:req.body.old_time},function(err){
 									if(err) throw err;
@@ -872,10 +873,50 @@ var basicPaymentRoute = function(model,sms,io,paystack,client,nodemailer){
 
  
 router.put("/user/laboratory/test-result/session-update",function(req,res){
-	if(req.user){
-		console.log(req.body)
-		res.json({status: "success",reportTemp: "http://localhost:3001/report-template/62875651/5df653b5f9fe72390025b17a"})
-		return;
+	if(req.user){		
+		//console.log(req.body.laboratory.report[0].report_sheet)
+		model.template.findOne({center_id: req.user.user_id,type: "Laboratory"})
+		.exec(function(err,data){
+			if(err) throw err;
+			var tempLink;
+			if(!data){
+				tempLink = "http://" + req.headers.host + "/lab-template/default";
+			} else {
+				tempLink = "http://" + req.headers.host + "/lab-template/" + data.center_id;
+			}
+			model.lab_store.findOne({id_by: req.body.laboratory._id})
+			.exec(function(err,result){
+				if(err) throw err;
+				if(result){
+					tempLink += "/" + result._id;
+					result.lab_data.unshift(req.body)
+					result.save(function(err,info){});
+				} else {
+					var newTemp = new model.lab_store({
+						center_id: req.user.user_id,
+						ref_id: req.body.ref_id,
+						center_pic: req.user.profile_pic_url,
+				    center_name: req.user.name,
+				    center_address: req.user.address,
+				    center_email: req.user.email,
+				    center_phone: req.user.phone,
+				    center_city: req.user.city,
+				    center_country: req.user.country,
+				    id_by: req.body.laboratory._id,
+				    report_date: + new Date()
+					})
+
+					tempLink += "/" + newTemp._id
+
+					newTemp.lab_data.push(req.body)
+					newTemp.save(function(err,info){
+						if(err) throw err;
+					})
+				}
+				console.log(tempLink)
+				res.json({status: "success",reportTemp: tempLink});
+			})
+		})
 	} else {
 		res.end("Unauthorized access.")
 	}

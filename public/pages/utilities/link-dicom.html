@@ -29,18 +29,16 @@
 		<label>Radiographer's Remark</label><br>
 		<textarea placeholder="Write..." class="form-control pl-1" ng-model="station.remark" style="height: 70px!important"></textarea><br>
 		
-		<label>Date study was done *</label><br>
+		<label>Date of Study *</label><br>
 		<input type="date" name="" placeholder="Date of study" required class="form-control" ng-model="station.studyDate"><br>
-		<label ng-if="!station.dicom_enterprise">Type of Study * </label><br>
+		<!--<label ng-if="!station.dicom_enterprise">Type of Study * </label><br>
 		<select class="form-control" ng-model="station.type" required ng-if="!station.dicom_enterprise">
-			<!--<option value="CT/MRI" selected="selected">CT/MRI/PET/SPECT - {{toCurrency(1000)}}</option>
-			<option value="SI">Special Investigations/Mammography - {{toCurrency(500)}}</option>
-			<option value="CAPEHS">Chest/Abdomen/Pelvis/Extremeties/Head/Spine - {{toCurrency(250)}}</option>-->
+			
 			<option value="" selected="true" disabled="disabled">_select</option>
 			<option value="CT/MRI" selected="selected">CT/MRI/PET/SPECT - {{toCurrency(750)}}</option>
 				<option value="SI">Multiple Routine Views, Contrast Studies and Mammography - {{toCurrency(500)}}</option>
 				<option value="CAPEHS">Single AP or Lateral or Other View of Skull/Spine/Chest/Abdomen/Pelvis/Extremeties - {{toCurrency(250)}}</option>
-		</select><br>
+		</select><br>-->
 		<label>Locate Study With *</label><br>
 		<label class="custom-control custom-radio">
 			<input type="radio" value="patientID" ng-model="station.locate" class="custom-control-input">

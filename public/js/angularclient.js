@@ -482,8 +482,22 @@ app.config(['$paystackProvider','$routeProvider',
  })
 
  .when("/laboratory/view-test/:id",{
-   templateUrl:"/assets/pages/laboratory/lab-view-test.html",
-   controller: 'labTestControler'
+  templateUrl:"/assets/pages/laboratory/lab-view-test.html",
+  controller: 'labTestControler',
+  resolve: {
+    path: function($location,$rootScope){
+      var iframe = document.getElementById('iframeTag');
+
+      var tempDiv = document.getElementById('innerDivTemp');
+      if(iframe) {
+        iframe.style.visibility = "hidden";
+        tempDiv.style.visibility = "hidden";
+        $rootScope.hideFrame = true;
+      }
+
+
+    }
+  }
  })
 
  .when("/laboratory/find-laboratory",{
@@ -16008,7 +16022,11 @@ app.controller("labTestControler",["$scope","$location","$http","templateService
       reportInput.list.pop()
   }
 
-
+ 
+  $scope.strCount = 0;
+  //the numer of test form watch will be limited by the length of this list
+  var strArray = ["a","b","c","d","e","f","g","h","i","j","k","l","m","o","p","q","r","s","t","u","v","w","x","z"]
+  $scope.watchThisList = {};
   $scope.$watch('pickedForm.form',function(newVal,oldVal){
     if(newVal){
       var sptArr = newVal.split('-');
@@ -16052,32 +16070,41 @@ app.controller("labTestControler",["$scope","$location","$http","templateService
           if(!test.list[j].common_name)
             test.list[j].common_name = reportFormList[parseInt(sptArr[1])].name;
         }
-
-        $scope.watchThisList = test.list;
+                
+        
+        $scope.watchThisList[strArray[$scope.strCount]] = test.list;    
+        var objList = Object.getOwnPropertyNames($scope.watchThisList);
+        var str = "watchThisList." + objList[$scope.strCount];  
+        $scope.strCount++;
         var rangeArr;
         var rg1;
         var rg2
-        $scope.$watch("watchThisList",function(newVal,oldVal){
-          if(oldVal){
-            newVal.forEach(function(item){
-              if(item.r_range){
-        
-                rangeArr = item.r_range.split("-")
-                rg1 = (rangeArr[0]) ? parseInt(rangeArr[0]) : 0;
-                rg2 = (rangeArr[rangeArr.length - 1]) ? parseInt(rangeArr[rangeArr.length - 1]) : 0;
-                if(item.r_result < rg1){
-                  item.r_flag = "Low";
-                } else if(item.r_result > rg2 && item.r_result > rg1){
-                  item.r_flag = "High";
-                } else if(item.r_result >= rg1 && item.r_result <= rg2) {
-                  item.r_flag = "Normal";
-                } else {
-                  item.r_flag = "Range or Value incorrect";
+
+        theWatch(str);
+
+        function theWatch(watch) {
+          $scope.$watch(watch,function(newVal,oldVal){
+            if(newVal){
+              newVal.forEach(function(item){
+                if(item.r_range){        
+                  rangeArr = item.r_range.split("-")
+                  rg1 = (rangeArr[0]) ? parseInt(rangeArr[0]) : 0;
+                  rg2 = (rangeArr[rangeArr.length - 1]) ? parseInt(rangeArr[rangeArr.length - 1]) : 0;
+                  if(item.r_result < rg1){
+                    item.r_flag = "Low";
+                  } else if(item.r_result > rg2 && item.r_result > rg1){
+                    item.r_flag = "High";
+                  } else if(item.r_result >= rg1 && item.r_result <= rg2) {
+                    item.r_flag = "Normal";
+                  } else {
+                    item.r_flag = "Range or Value incorrect";
+                  }
                 }
-              }
-            })
-          }
-        },true)
+              })
+            }
+          },true)
+        }
+        
       }
     }
   })
@@ -16090,7 +16117,7 @@ app.controller("labTestControler",["$scope","$location","$http","templateService
       if(test.list){
         var localTests = [];
         for(var i = 0; i < test.list.length; i++){
-          if(test.list[i].r_range !== '' || test.list[i].r_range !== undefined){
+          if(test.list[i].r_range !== '' || test.list[i].r_range !== undefined && test.isRange == true){
             originalName = test.list[i].common_name
             localTests.push({
               r_name: test.list[i].r_name,
@@ -16103,6 +16130,7 @@ app.controller("labTestControler",["$scope","$location","$http","templateService
             })
             //persist the original storage on localstorage.
             // this could be modified to persist at the backend later
+            //localManager.removeItem(originalName)
             localManager.setValue(originalName,localTests)
           }
         }
@@ -16156,13 +16184,16 @@ app.controller("labTestControler",["$scope","$location","$http","templateService
   
 
   var theStringTests,
-      converToStr,
-      date,
-      report,
-      url;
+    converToStr,
+    date,
+    report,
+    url;
 
+  
+ 
   $scope.sendTestResult = function(refInfo){ 
-
+    console.log($scope.testReport)
+    $rootScope.hideFrame = false;
     var reportSheet = combineTest($scope.testReport);
     date = + new Date();
     refInfo.laboratory.report = reportSheet;
@@ -16183,74 +16214,75 @@ app.controller("labTestControler",["$scope","$location","$http","templateService
       ref_id: refInfo.ref_id
     }
 
-     if(refInfo.laboratory.session_id) {
+      if(refInfo.laboratory.session_id) {
         url = "/user/laboratory/test-result/session-update";
         msg = "SUCCESS!!! Test result sent to Dr " + refInfo.referral_firstname + " " + refInfo.referral_lastname;
       } else {
-        url = "/user/laboratory/test-result/patient-test-update"
+        url = "/user/laboratory/test-result/patient-test-update";
         msg = "Success!!! Test report sent to patient";
       }
       $scope.loading = true;
       report = $resource(url,null,{sendReport:{method: "PUT"}});
       report.sendReport(refInfo,function(response){
-        if(response.status === "success") {
-          /*alert(msg);
-          if($scope.unRantest.length > 0) {
-            templateService.holdUnranTest = $scope.unRantest;
-            forwardUnRanTest($scope.unRantest);          
-          }
-          $scope.reportSuccess = true;*/
+        if(response.status === "success") {         
           $scope.reportSuccess2 = true;
-          localManager.removeItem("history")
           $scope.reportTemp = response.reportTemp;
-          $scope.openIframe();
-
+          localManager.removeItem("history")
+          $scope.openIframe(response.reportTemp);
         } else {
           alert("Error ocurred while sending your report. Please try again.");
-          $scope.error = "Error ocurred while sending your report. Please try again."
-          //$scope.edit()
+          $scope.error = "Error ocurred while sending your report. Please try again.";
         }
 
         $scope.loading = false;
       });
 
 
-      var iframe = angular.element(document.getElementById('iframeTag'))
-      //var count = 0;
-      //var prevBtn = document.getElementById("prvBtn");
+      var iframe = angular.element(document.getElementById('iframeTag'));
 
       var tempDiv = angular.element(document.getElementById('innerDivTemp'));
+         
 
 
       iframe[0].style.visibility = "hidden";
       tempDiv[0].style.visibility = "hidden";
 
-     /* tempDiv[0].addEventListener('click',function(){   
-        iframe[0].style.visibility = "hidden";
-        tempDiv[0].style.visibility = "hidden";
-        
-      },false)
-      */
+    
 
-      $scope.openIframe = function(){
+      $scope.openIframe = function(link){
+        iframe[0].src = link || $scope.reportTemp;
         iframe[0].style.visibility = "visible";
         tempDiv[0].style.visibility = "visible";
       }
 
-      
+      tempDiv[0].addEventListener('click',function(){   
+        iframe[0].style.visibility = "hidden";
+        tempDiv[0].style.visibility = "hidden";
+      },false) 
 
   }
 
 
   function combineTest(testArray) {
     var report = [];
+    var form;
     testArray.forEach(function(test){
-      //val = "" +  test.name + ":"  + " " + test.data;
+      if(test.isQualitative == true){
+        form = "qualitative";
+      } else if(test.isRange == true){
+        form = "range";
+      } else if(test.isAntigen == true){
+        form = "antigen";
+      } else {
+        form = "range";
+      }
       report.push({
         name: test.name,
+        format: form,
         report_sheet: test.list
       })
     });
+
     return report;
   }
 
@@ -22646,6 +22678,14 @@ app.controller("dicomCtrl",["$rootScope","$scope","$location","$resource","$http
             return;
           }
         break;
+        default:
+          cost = $rootScope.toCurrency(500);
+          $rootScope.station.amount = 500;
+          if($scope.availableAmount < $rootScope.station.amount){
+            alert("You have insufficient fund for this service. Please fund your wallet.");
+            return;
+          }
+        break;
       }
     } else {
       $rootScope.station.amount = 0;
@@ -22686,8 +22726,8 @@ app.controller("dicomCtrl",["$rootScope","$scope","$location","$resource","$http
     $rootScope.station.cost = cost;
 
 
-    var msg = "Adding Existing DICOM Study will cost you " + cost + " . Do you wish to continue?";
-    var check = confirm(msg)
+    var msg = "Linking this study will cost you " + cost + " . Do you wish to continue?";
+    var check = (cost == 0) ? true : confirm(msg)
     if(check) {
       $scope.loading = true;
       $http({
