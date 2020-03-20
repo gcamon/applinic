@@ -70,6 +70,22 @@
             }
 
 
+            .popup2 {
+                display: inline-block;
+                position: absolute;
+                right: -40px;
+                bottom: -100px;
+                width: 220px;
+                color: #fff;
+                background-color: #eee;
+                border: 1px solid grey;
+                padding: 10px;
+                border-radius: 8px;
+                z-index: 9
+            }
+
+
+
               .title{
                   font-weight: 300;
               }
@@ -201,7 +217,7 @@
                     <div class="header-block header-block-nav">
                         <ul class="nav-profile">
                             <li class="notifications new"> <a href="" data-toggle="dropdown">
-                    <i class="fa fa-bell tip"><span><b>Notification</b><br> Here you receive notification <br>for the following activities:<br> > Newly added patient to your <br>account,<br>> The result of an investigation<br> you referred to diagnostic centers<br> on behalf of your patients. <br> > Video call requests <br>from your applinic patients.</span></i>
+                    <i class="fa fa-bell tip"><!--<span><b>Notification</b><br> Here you receive notification <br>for the following activities:<br> > Newly added patient to your <br>account,<br>> The result of an investigation<br> you referred to diagnostic centers<br> on behalf of your patients. <br> > Video call requests <br>from your applinic patients.</span>--></i>
                     <sup>
                       <span class="counter" ng-if="docNotification.length > 0 " ng-cloak>{{docNotification.length}}</span>
                     </sup>
@@ -234,7 +250,7 @@
                             </li>
 
                                <li class="notifications new"> <a href="" data-toggle="dropdown">
-                    <i class="fa fa-envelope tip"> <span><b>Consultation Request</b><br> All consultation requests and <br> referrals from patients and<br> physicians respectively comes in here.</span></i>
+                    <i class="fa fa-envelope tip"> <!--<span><b>Consultation Request</b><br> All consultation requests and <br> referrals from patients and<br> physicians respectively comes in here.</span>--></i>
                     <sup>
                       <span class="counter" ng-if="<%= person.doctor_notification.length %> > 0 " ng-cloak>{{consultationLen}}</span>
                     </sup>
@@ -268,7 +284,7 @@
                             </li>
 
                               <li class="notifications new"> <a href="" data-toggle="dropdown">
-                    <i class="icon-Pills tip"> <span><b>Prescription Request</b><br> Sometimes, your patient may <br>need you to prescribe <br> a drug based on an <br> investigation result i.e<br> (investigation you did not refer).<br> Such requests come in here</span></i>
+                    <i class="icon-Pills tip"> <!--<span><b>Prescription Request</b><br> Sometimes, your patient may <br>need you to prescribe <br> a drug based on an <br> investigation result i.e<br> (investigation you did not refer).<br> Such requests come in here</span>--></i>
                     <sup>
                       <span class="counter" ng-if="isNew" ng-cloak>{{len}}</span>
                     </sup>
@@ -302,7 +318,7 @@
                             </li>
 
                                <li class="notifications new"> <a href="" data-toggle="dropdown">
-                    <i class="fa fa-calendar tip"> <span><b>Appointment Requests</b><br> Patients sometimes might want<br> to meet with you in person. <br> Such request comes in here.</span></i>
+                    <i class="fa fa-calendar tip"> <!--<span><b>Appointment Requests</b><br> Patients sometimes might want<br> to meet with you in person. <br> Such request comes in here.</span>--></i>
                     <sup>
                       <span class="counter" ng-if="inPersonRequestLen > 0 " ng-cloak>{{inPersonRequestLen}}</span>
                     </sup>
@@ -336,7 +352,7 @@
                                 </div>
                             </li>
                             <li class="notifications new"> <a href="" data-toggle="dropdown">
-                    <i class="fa fa-motorcycle tip">  <span><b>Delivery Requests</b><br> Here is your drug delivery requests. <br> When a request status is <b class="text-info">Ready</b><br> it means the bill for the items<br> requested is received. You are<br> <b>REQUIRED</b> to pay the bill <br> before delivery will start.</span></i>
+                    <i class="fa fa-motorcycle tip">  <!--<span><b>Delivery Requests</b><br> Here is your drug delivery requests. <br> When a request status is <b class="text-info">Ready</b><br> it means the bill for the items<br> requested is received. You are<br> <b>REQUIRED</b> to pay the bill <br> before delivery will start.</span>--></i>
                     <sup>
                       <span class="counter" ng-if="courierResponseList.length > 0" ng-cloak>{{courierResponseList.length}}</span>
                     </sup>
@@ -419,7 +435,7 @@
                              <!--<li class="notifications new"> <a href="" data-toggle="dropdown">-->
                              <li class="notifications new"> <a href="" ng-click="viewChat2(chatsList)">
                     <i class="fa fa-comments tip"> 
-                    <span><b>Chats</b><br>This is where you chat with your <br> online patients, doctors, diagnostic <br>and phamarceutical centers.<br>If you have an unread message,<br> red indicator shows on top <br>of this icon.</span></i>
+                   <!-- <span><b>Chats</b><br>This is where you chat with your <br> online patients, doctors, diagnostic <br>and phamarceutical centers.<br>If you have an unread message,<br> red indicator shows on top <br>of this icon.</span>--></i>
                     <sup>
                       <span class="counter btn-danger" ng-if="showIndicator" style="border-radius: 10px;width: 8px;height: 8px;display: inline-block;"  ng-cloak></span>
                     </sup>
@@ -566,7 +582,7 @@
                             <div class="col-md-12 col-sm-12 col-xs-12">
                                
                                   <div class="col-md-12"> 
-                                  <label class="custom-control custom-radio">
+                                  <!--<label class="custom-control custom-radio">
                       <input id="radio2" name="radio" type="radio" value="online" ng-model="user.presence" class="custom-control-input" ng-class="{'doc-presense':isOnline === true}" class="doc-presence-normal">
                       <div class="custom-control-indicator"></div>
                       <div class="custom-control-description" style="margin-top:-20px; display:block;">Online</div>
@@ -577,7 +593,7 @@
                       <input id="radio2" name="radio" type="radio" value="offline" ng-model="user.presence" class="custom-control-input" ng-class="{'doc-presense2':isOnline === false}" class="doc-presence-normal">
                       <div class="custom-control-indicator"></div>
                       <div class="custom-control-description" style="margin-top:-20px; display:block;">Busy</div>
-                    </label>
+                    </label>-->
                                                           
                         <a class="btn btn-simple round mr-0" style="color:red;margin-left:10px" href="/user/patients/waiting-room" target="_blank"><i class="fa fa-user"></i>
                                     <span>   Patients Waiting Room</span> <i class="fa fa-external-link" style="color: #ccc"></i></a>
@@ -587,7 +603,10 @@
                                     <span>Invite Someone</span></a>
 
                          <a class="btn btn-simple round mr-0" style="color:red;margin-left:10px" href="#/manage-patients"><i class="fa fa-users"></i>
-                                    <span> My Patients</span></a>
+                                    <span> Manage Patients</span></a>
+
+                        <a class="btn btn-simple round mr-0" style="color:red;margin-left:10px" href="#/consultation-messages"><i class="fa fa-envelope"></i>
+                                    <span ng-cloak> Consultation Requests <span ng-show="consultation.length > 0"> ( {{consultation.length}} )</span></span></a>
                                     
 
                        <!--<a class="btn btn-simple round mr-0 dropdown-toggle" style="color:red;margin-left:10px" href="" id="navbarDropdownMenuLink2" data-toggle="dropdown"><i class="fa fa-search"></i>
@@ -744,7 +763,7 @@
                                     <a href="" ng-cloak>
                                         <i class="fa fa-calendar">
                                         </i>
-                                        Appointment ( {{appointmentList.length}} )
+                                        Appointment <span ng-show="appointmentList.length > 0">( {{appointmentList.length}} )</span>
                                         <i class="fa arrow">
                                         </i>
                                     </a>
@@ -759,9 +778,36 @@
                                         </li>
                                        
                                     </ul>
+                                </li>                               
+                                
+                                <li>
+                                  <a href="">
+                                    <i class="fa fa-bar-chart"></i> Services
+                                    <i class="fa arrow"></i>
+                                  </a>
+                                  <ul>
+                                    <li>
+                                      <a href="#/laboratory-out" class="h">
+                                        <i class="fa fa-pencil"></i> Request Laboratory
+                                      </a>
+                                    </li>
+                                     <li>
+                                      <a href="#/radiology-out" class="h"><i class="fa fa-pencil"></i> Request Radiology</a>
+                                    </li>
+                                    <li>
+                                      <a href="#/prescription-out" class="h"><i class="icon-Pills"></i> Write Prescription</a>
+                                    </li>
+                                  </ul>
+                                </li>                                 
+                                
+                                <li>
+                                  <a href="#/manage-patients" class="h"><i class="fa fa-users"></i> Manage Patients</a>
                                 </li>
-                               
-                                <li> 
+                                 <li>
+                                  <a href="#/my-skills" class="h"><i class="fa fa-folder-open"></i> My skills &amp; Procedures</a>
+                                </li>
+
+                                   <li> 
                                     <a href="">
                             <i class="fa fa-money"></i> Payment &amp; Wallet
                             <i class="fa arrow"></i>
@@ -785,9 +831,8 @@
                                        
                                     </ul>
                                 </li>
-                                <li>
-                                  <a href="#/my-skills"><i class="fa fa-folder"></i> My skills &amp; Procedures</a>
-                                </li>
+
+
                                  <li> 
                                     <a href="">
                             <i class="fa fa-question-circle"></i> Help &amp; Support
@@ -1014,7 +1059,8 @@
               </div>
 
               
-              <div class="modal-body">                                                   
+              <div class="modal-body" style="position: relative;">  
+                    <button class="btn btn-neutral text-warning" ng-click="clearCrackedData()" style="position: absolute;right: 10px;top: 10px"><i class="fa fa-refresh"></i></button>
                     <form class="tg-form-modal tg-form-signin">                        
                         <fieldset>
                            
@@ -1778,12 +1824,12 @@
      </script>
 
      
-      <script type="text/ng-template" id="granted-request.html">
+      <script type="text/ng-template" id="consultation-fee.html">
          <div class="modal fade">
           <div class="modal-dialog">
             <div class="modal-content">
               <div class="modal-header">
-               <h5>Consultation Acceptance
+               <h5>Consultation Fee 
                 <i ng-click="close('No')" class="fa fa-times" data-dismiss="modal" style="float: right;cursor: pointer;"></i>  
                </h5>
                
@@ -1792,13 +1838,13 @@
               <div class="modal-body">                
                 <div><b>Patient name: </b> {{data.sender_firstname}} {{data.sender_lastname}} </div>
                 <!--<p style="text-align: center">{{data.firstname}} {{data.lastname}}</p>-->
-                <form class="pt-1">
-                    <div>
+                <form class="pt-1 col-md-9" ng-submit="sendFee()">
+                    <!--<div>
                         <label>Your Response</label>
                         <textarea placeholder="write..." ng-model="user.response" class="form-control pl-1" ng-keyup="autoExpand($event)" id="textarea">
                         </textarea>
-                    </div>
-                    <div>
+                    </div>-->
+                    <div >
                         <label> Your consultation fee below ({{checkLogIn.city_grade}}% discount applied)</label>
                         <input type="number" placeholder="Enter amount.*" ng-model="user.fee" class="form-control" required>
                     </div>
@@ -1806,10 +1852,19 @@
                         <label>You'll receive : {{total}}</label>
                     </div>
                     <div class="pt-1">
-                        <button class="btn btn-primary" ng-hide="acceptanceMsg" ng-click="sendAcceptance()"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i> {{(loading) ? '' : 'Submit'}}</button>
-                        <i class="fa fa-check test-success" ng-if="acceptanceMsg"> {{acceptanceMsg}}</i>
+                        <input type="submit" class="btn btn-primary" ng-hide="acceptanceMsg" ng-show="!loading"><i class="fa fa-spinner fa-pulse fa-1x fa-fw text-warning" ng-if="loading"></i>
+                        <i class="fa fa-check text-primary" ng-if="acceptanceMsg"> {{acceptanceMsg}}</i>
                     </div>
                 </form>
+                <div class="clearfix"></div>
+                <hr>
+                <div class="pl-1" ng-if="patient" style="overflow-y: auto;height: 200px">
+                  <h5>Fee History</h5>
+                  <div ng-repeat="fee in patient.fee_history" >
+                    <p><label ng-class="{'text-primary': fee.tag == 'Payment', 'text-danger': fee.tag == 'Sent' }">{{fee.tag}}:</label> &nbsp;{{fee.body}}</p>                 
+                  </div>                 
+                </div>
+                <p style="text-align: center;color:orange;padding-top: 20px" ng-show="!patient">Fee history loading..</p>
               </div>
               <!--<div class="modal-footer">
                 <button type="button" ng-click="close('No')" class="btn btn-default" data-dismiss="modal">Close</button>                
@@ -1985,29 +2040,28 @@
               <div class="modal-body" style="padding: 10px">
               
 <section ng-if="isContent" class="p-1">
-    <section style="padding: 20px 10px;color:grey">    
-    <strong>Forwarding:</strong>
-        <span class="font-1_1 mb-0" style="font-style: italic;">{{data.str}}</span>
+    <section>    
+        <span class="font-1_1 mb-0" style="font-style: italic;">@{{data.str}}</span>
     </section>
-    <hr>
     <section>
         <b>TO</b>
     </section>
     <section>
-        <h5>{{data.name}}</h5>
+        <label style="display: block;margin-bottom: 0">{{data.name}}</label>
         <span>{{data.address}}</span>
         <span>{{data.city}}</span>
         <span>{{data.country}}</span>
     </section>
-     <section>
-        <button class="btn btn-info" ng-class="{'dismiss': user.someone}" ng-click="someone('inperson')" ng-if="checkLogIn.typeOfUser == 'Patient' || checkLogIn.typeOfUser == 'Doctor' && !isToSomeOne"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i>{{(loading) ? "" : 'Forward on my behalf'}}</button>
+    <br>
+     <section ng-show="!isNewPatient">
+        <button class="btn btn-info" ng-class="{'dismiss': user.someone}" ng-click="someone('inperson')" ng-if="checkLogIn.typeOfUser == 'Patient'"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i>{{(loading) ? "" : 'Forward on my behalf'}}</button>
 
         <button class="btn btn-success"  ng-click="someone()" ng-if="checkLogIn.typeOfUser === 'Patient' || checkLogIn.typeOfUser == 'Doctor' && !isToSomeOne">Forward on behalf of someone else</button>
     </section>
    
     <section ng-if="isToSomeOne">
          <form ng-submit="send('someone')">
-              <section ng-if="checkLogIn.typeOfUser !== 'Doctor'">
+              <section ng-show="checkLogIn.typeOfUser !== 'Doctor' && typeOfSearch === 'pharmacy'">
                   <div>
                       <label>Add Description and Quantity: </label>
                    </div>
@@ -2037,9 +2091,9 @@
                     </div>
                   </div>
               </section>
-              <section ng-if="checkLogIn.typeOfUser === 'Doctor'">
+              <section ng-if="checkLogIn.typeOfUser === 'Doctor' && typeOfSearch === 'pharmacy'">
                   <div>
-                    <label>Prescription: </label>
+                    <label>Complete Prescription: </label>
                   </div>
                  <!--<table class="table-respnsive table-striped no-mobile-item-display">       
                     <thead>
@@ -2063,7 +2117,7 @@
                         </td>
                     </tbody>                             
                 </table>-->
-                <div>                            
+                <div ng-show="typeOfSearch === 'pharmacy'">                            
                   <table class="table" ng-repeat="prescription in foundDrugArr">
                       <thead><th>sn: </th> <td>{{prescription.sn}}</td></thead>
                       <thead><th>Drug name: </th> <td><input  type="text" placeholder="Enter drug name" ng-model="prescription.drug_name" uib-typeahead="drug.name for drug in drugs | filter:$viewValue | limitTo:15" class="form-control"></td></thead>
@@ -2081,13 +2135,14 @@
             
           
                 <div  ng-if="user.someone">                 
-                   <label>Recipient's phone number *: <i class="fa fa-question-circle tip"><span>The phone number this recipient registered with on applinic</span></i><br>
+                   <label>Recipient's phone number *: <!--<i class="fa fa-question-circle tip"><span>The phone number this recipient registered with on applinic</span></i><br>-->
                    <span class="text-danger">{{phoneMsg}}</span></label>
-                   <input type="number" Placeholder="Enter receiver phone" ng-model="data.phone" class="form-control" required="required" style="cursor:normal">
+                   <input type="text" Placeholder="Enter receiver phone" ng-model="user.patient_phone" class="form-control" required="required" style="cursor:normal">
                 </div>
+                <br>
                 <div ng-if="typeOfSearch === 'pharmacy'">
                   <label>Instructions / Explanations for prescription(s): <span class="text-danger">{{provisionalMsg}}</span></label>
-                  <textarea class="form-control pl-1" placeholder="Write..." ng-model="data.provisional_diagnosis" ng-keyup="autoExpand($event)" id="textarea"> </textarea>
+                  <textarea class="form-control pl-1" placeholder="Write..." ng-model="data.explanation" ng-keyup="autoExpand($event)" id="textarea"> </textarea>
                 </div>
                 <div ng-if='typeOfSearch === "diagnostic"'>
                   <label>Clinical Summary *: <span class="text-danger">{{summuryMsg}}</span></label>
@@ -2120,14 +2175,45 @@
                 </div>            
         </form>
     </section>
+    <section ng-show="isNewPatient">
+      <div>
+        <a href="" ng-click="cancel()"><i class="fa fa-arrow-left"></i> Back </a>
+      </div>
+      <p class="pt-1 pb-1 text-danger">Patient with the phone number ( {{user.patient_phone}} ) does not exist in Applinic but you can proceed after quickly creating a dummy account for this patient. Details and reference to this investigation(s) will be sent to the patient via SMS.</p>
+      <form ng-submit="createPatient()">
+        <label>Title</label><br>
+        <select ng-model="data.patient_title" required>
+          <option>Mr</option>
+          <option>Mrs</option>
+          <option>Master</option>
+          <option>Miss</option>
+          <option>Dr</option>
+          <option>Prof</option>
+        </select><br><br>
+ 
+        <label>Firstname</label><br>
+        <input type="text" name="" class="form-control" ng-model="data.patient_firstname" required><br>
+        <label>Lastname</label><br>
+        <input type="text" name="" class="form-control" ng-model="data.patient_lastname" required><br>
+        <label>Gender</label><br>
+        <select  class="form-control" ng-model="data.patient_gender" required>
+          <option>Male</option>
+          <option>Female</option>
+        </select><br>
+        <label>Date of Birth</label><br>
+        <input type="date" name="" class="form-control" ng-model="data.dob" required><br>
+        <input type="submit" name="" class="btn btn-info" value="Continue" ng-show="!loading"> <span ng-show="loading">Processing...</span>
+      </form>
+    </section>
 </section>
 <div ng-if="isSent" class="p-1">
     <h5 class=" text-success"  style="text-align:center"> Sent successfully!!!</h5>
-    <div class="m-0"><strong class="font-1-1"> center name: </strong><em>{{data.name}}</em> </div> 
-    <div class="m-0"><strong class="font-1-1"> center location: </strong><em>{{data.address}}, {{data.city}}, {{data.country}}</em> </div> 
+    <div class="m-0"><strong class="font-1-1"> Patient name: </strong><em>{{user.patient_names}}</em> </div> 
+    <div class="m-0"><strong class="font-1-1"> Center name: </strong><em>{{data.name}}</em> </div> 
+    <div class="m-0"><strong class="font-1-1"> Center location: </strong><em>{{data.address}}, {{data.city}}, {{data.country}}</em> </div> 
     <div class="mb-1"><span class="font-1-2" style="color:red"> Ref No:  </span><em>{{result}}</em> </div> 
     <div class="font-1-1">Please take note of the center name and 
-        reference number above. You will use the reference number to find this prescription at the center.
+        reference number above. You will use the reference number at the center.
     </div>
 </div>
   

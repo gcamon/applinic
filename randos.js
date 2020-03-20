@@ -1,3 +1,4 @@
+
 var ADJECTIVES = [
     'Abrasive', 'Brash', 'Callous', 'Daft', 'Eccentric', 'Fiesty', 'Golden',
     'Holy', 'Ignominious', 'Joltin', 'Killer', 'Luscious', 'Mushy', 'Nasty',
@@ -20,7 +21,7 @@ var LAST_NAMES = [
     'Zimmerman'
 ];
 
-var possible = "0011223344556677889911223344556677889900123456789";
+var possible = "001122334455667788991122334455667788990012345678936855004492";
 
 function randomUsername() {
     function rando(arr) {

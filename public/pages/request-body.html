@@ -5,29 +5,18 @@
 </div>
 <div class="card card-center-1" ng-if="data">	
   
-	    <!--<div class="col-md-4 col-lg-4 col-sm-12">    	
-	    	<div>
-	        	<img ng-src="{{data.sender_profile_pic_url}}" class="img-responsive" style="height: auto;max-width: 300px">
-	        </div>
-	        <div style="line-height: 35px">
-	        	<div><b>Name:</b> {{data.sender_firstname}} {{data.sender_lastname}}</div>
-	        	<div><b>gender:</b> {{data.sender_gender}}</div>
-				<div><b>Age:</b> {{data.sender_age}}</div>			
-				<div><b>Location:</b> {{data.sender_location}}</div>
-	        </div>
-	    </div>-->
-	 <h4 class="p-1">Consultation Request</h4>
-	 <section ng-if="!data.isLaterRef">
+	<h4 class="p-1">Consultation Request</h4>
+	<section ng-if="!data.isLaterRef">
 		<div class="row">
-			<div class="col-md-3 p-2">
-	        	<img ng-src="{{data.sender_profile_pic_url}}" class="img-responsive" style="height: auto;max-width: 200px; object-fit: contain">
+			<div class="col-md-2 pl-2">
+	        	<img ng-src="{{data.sender_profile_pic_url}}" class="img-responsive" style="height: 120px;object-fit: contain">
 	        </div>
-	        <div class="col-md-9 p-2">
+	        <div class="col-md-9">
 	        	<div class="pl-1">
-	        	<div><b>Name:</b> {{data.sender_firstname}} {{data.sender_lastname}}</div>
-	        	<div><b>gender:</b> {{data.sender_gender}}</div>
-				<div><b>Age:</b> {{data.sender_age}}</div>			
-				<div><b>Location:</b> {{data.sender_location}}</div>
+	        	<div><label>{{data.sender_firstname}} {{data.sender_lastname}}</label></div>
+	        	<div>{{data.sender_gender}}</div>
+				<div>{{data.sender_age}}</div>			
+				<div>{{data.sender_location}}</div>
 				<div><span style=""><b>Date received:</b> {{data.date | amCalendar}}</span></div>
 				</div>
 	        </div>
@@ -51,13 +40,16 @@
 			<a href="" ng-if="j.type == 'video/ogg' || j.type == 'video/mp4'"><i class="fa fa-video-camera"></i> Watch video</a>
 		</section>
 	</div>
+	<p></p>
 
 	<div class="p-1" ng-if="!data.isLaterRef">Regards, <span style="display:block"><b>Applinic Management</b></span></div>
 
 	<div class="p-1">
-	<button class="btn btn-success btn-sm" ng-click="accept()">Accept</button>
-	<button class="btn btn-danger btn-sm" ng-click="decline()">Decline</button>
-	<button class="btn btn-info btn-sm" ng-click="referToAnother()">Refer</button>
+		<!--<button class="btn btn-success btn-sm" ng-click="accept()">Accept</button>-->
+		<button class="btn btn-neutral btn-sm" ng-click="decline()">Decline</button>
+		<button class="btn btn-neutral btn-sm" ng-click="referToAnother()">Refer to a physician</button>
+		 <button class="btn btn-info btn-sm" ng-click="acceptOnce(data)" ng-show="!data.loading">Accept</button>&nbsp;&nbsp; <button class="btn btn-neutral btn-sm" ng-show="data.loading"><i class="fa fa-spinner fa-pulse fa-1x fa-fw"></i></button>
+		
 	</div>
 </div>
 

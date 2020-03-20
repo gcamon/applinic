@@ -8,6 +8,8 @@ var Wallet = require("./wallet");
 var randos = require("./randos");
 var topdf = require("./topdf");
 var fs = require('fs');
+var pdf = require('html-pdf');
+
 
  
 
@@ -288,9 +290,8 @@ var basicPaymentRoute = function(model,sms,io,paystack,client,nodemailer){
 	});
 
 	router.post("/user/payment/verification",function(req,res){
-		console.log(req.body)
 		if(req.user) {
-
+			console.log(req.body)
 			if(req.body.userId !== req.user.user_id || req.body.isCashOutVerify){
 				//generate otp for confirmation. the debitor's id is sent from the request including the amount.
 				//request is obj of the debitor's id, amount to debit ie the person paying for the service.
@@ -346,9 +347,7 @@ var basicPaymentRoute = function(model,sms,io,paystack,client,nodemailer){
 
 					      console.log(otp)
 					      var callBack = function(err,responseData){
-					      	console.log(responseData);
 									if(err) {
-										console.log(err);
 										res.send({message:"Oops! Error occured while sending OTP.Please resend",success:true,time_stamp:req.body.time}) 
 									} else {								
 										res.send({message:"One time pin was sent to this patient via SMS. Enter the pin to confirm payment",success:true,time_stamp:req.body.time}) 
@@ -597,7 +596,11 @@ var basicPaymentRoute = function(model,sms,io,paystack,client,nodemailer){
               patient_mail: 1,
               firstname:1,
               lastname:1,
-              profile_pic_url:1                
+              profile_pic_url:1,
+              gender: 1,
+              city: 1,
+              phone: 1,
+              age:1             
             }
           )
           .exec(
@@ -650,6 +653,9 @@ var basicPaymentRoute = function(model,sms,io,paystack,client,nodemailer){
                           patient_lastname: result.lastname,
                           patient_id: req.user.user_id,
                           patient_profile_pic_url: result.profile_pic_url,
+                          patient_gender: result.gender,
+                          patient_city: result.city,
+                          patient_age: result.age,
                           initial_complaint: {
                           	complaint: req.body.sendObj.original_complaint,
                           	complaint_date: req.body.sendObj.original_complaint_date,
@@ -786,7 +792,8 @@ var basicPaymentRoute = function(model,sms,io,paystack,client,nodemailer){
 					res.send({message:"Confirmation failed! Transaction canceled."});					
 				} else {			
 						if(data.user_id === req.body.patientId && data.senderId === req.user.user_id) {					
-							model.user.findOne({user_id:req.user.user_id},{ewallet:1,user_id:1,city_grade:1,type:1,email:1,referral:1,service_details:1,name:1}).exec(function(err,center){				
+							model.user.findOne({user_id:req.user.user_id},{ewallet:1,user_id:1,city_grade:1,type:1,email:1,referral:1,service_details:1,name:1})
+							.exec(function(err,center){				
 								if(err) throw err;
 
 								if(!center){
@@ -794,53 +801,57 @@ var basicPaymentRoute = function(model,sms,io,paystack,client,nodemailer){
 									return;
 								}
 
-								var elementPos = center.referral.map(function(x){return x.ref_id}).indexOf(req.body.refId);
-								var found = center.referral[elementPos];
-
-								if(found) {
-									found.pharmacy.is_paid = true;
-									found.pharmacy.detail.amount = req.body.total;
-									found.pharmacy.detail.date = req.body.date;								
-
-									center.service_details.unshift({
-										type: "pharmacy",
-										prescriptionDate_date: found.pharmacy.date,
-										provisional_diagnosis: found.pharmacy.provisional_diagnosis,
-										patient_names: found.pharmacy.patient_firstname + " " + found.pharmacy.patient_lastname,
-										patient_phone: found.pharmacy.patient_phone,
-										patient_age: found.pharmacy.patient_age,
-										patient_gender: found.pharmacy.patient_gender,
-										patient_profile_pic_url: found.pharmacy.patient_profile_pic_url,
-										amount: req.body.total,
-										date: req.body.date,
-										prescriptionBody: req.body.prescriptionBody,
-										doctor_names: (found.pharmacy.doctor_firstname) ? found.pharmacy.title + " " + found.pharmacy.doctor_firstname + " " + found.pharmacy.doctor_lastname : 'This prescriptions was not prescribed by a doctor',
-										ref_id: found.ref_id,
-										doctor_work_place: found.pharmacy.doctor_work_place,
-										doctor_specialty: found.pharmacy.doctor_specialty,
-										doctor_city: found.pharmacy.doctor_city,
-										doctor_country: found.pharmacy.doctor_country,
-										doctor_profile_url: found.pharmacy.doctor_profile_url,
-										doctor_address: found.pharmacy.doctor_address
-									});
-								}
-							
-								center.save(function(err,info){
+								//var elementPos = center.referral.map(function(x){return x.ref_id}).indexOf(req.body.refId);
+								//var found = center.referral[elementPos];
+								model.referral.findOne({ref_id: req.body.refId,center_id: center.user_id})
+								.exec(function(err,found){
 									if(err) throw err;
-									console.log(err);
-									console.log("billing is paid and saved!");
-								});
 
-								var pay = new Wallet(req.body.date,req.body.patient_firstname,req.body.patient_lastname,"billing");
-								pay.billing(model,req.body,center,sms,io);
+									if(found) {
+										found.pharmacy.is_paid = true;
+										found.pharmacy.detail.amount = req.body.total;
+										found.pharmacy.detail.date = req.body.date;								
 
+										center.service_details.unshift({
+											type: "pharmacy",
+											prescriptionDate_date: found.pharmacy.date,
+											provisional_diagnosis: found.pharmacy.provisional_diagnosis,
+											patient_names: found.pharmacy.patient_firstname + " " + found.pharmacy.patient_lastname,
+											patient_phone: found.pharmacy.patient_phone,
+											patient_age: found.pharmacy.patient_age,
+											patient_gender: found.pharmacy.patient_gender,
+											patient_profile_pic_url: found.pharmacy.patient_profile_pic_url,
+											amount: req.body.total,
+											date: req.body.date,
+											prescriptionBody: req.body.prescriptionBody,
+											doctor_names: (found.pharmacy.doctor_firstname) ? found.pharmacy.title + " " + found.pharmacy.doctor_firstname + " " + found.pharmacy.doctor_lastname : 'This prescriptions was not prescribed by a doctor',
+											ref_id: found.ref_id,
+											doctor_work_place: found.pharmacy.doctor_work_place,
+											doctor_specialty: found.pharmacy.doctor_specialty,
+											doctor_city: found.pharmacy.doctor_city,
+											doctor_country: found.pharmacy.doctor_country,
+											doctor_profile_url: found.pharmacy.doctor_profile_url,
+											doctor_address: found.pharmacy.doctor_address
+										});
+									}
 								
-								model.otpSchema.remove({otp:req.body.otp},function(err,info){});
-								var roundNum = Math.round(center.ewallet.available_amount)
-								res.send({message: "Transaction successful! Your account is credited.",balance:roundNum,status:true});	
-								if(req.body.prescriptionBody) {
-									updatePatient();
-								}				
+									center.save(function(err,info){
+										if(err) throw err;
+										console.log(err);
+										console.log("billing is paid and saved!");
+									});
+
+									var pay = new Wallet(req.body.date,req.body.patient_firstname,req.body.patient_lastname,"billing");
+									pay.billing(model,req.body,center,sms,io);
+
+									
+									model.otpSchema.remove({otp:req.body.otp},function(err,info){});
+									var roundNum = Math.round(center.ewallet.available_amount)
+									res.send({message: "Transaction successful! Your account is credited.",balance:roundNum,status:true});	
+									if(req.body.prescriptionBody) {
+										updatePatient();
+									}	
+								})			
 							});
 
 							function updatePatient() {
@@ -872,13 +883,14 @@ var basicPaymentRoute = function(model,sms,io,paystack,client,nodemailer){
 	});
 
  
-router.put("/user/laboratory/test-result/session-update",function(req,res){
+router.post("/user/laboratory/test-result/preview",function(req,res){
 	if(req.user){		
-		//console.log(req.body.laboratory.report[0].report_sheet)
 		model.template.findOne({center_id: req.user.user_id,type: "Laboratory"})
 		.exec(function(err,data){
 			if(err) throw err;
+			//console.log(req.body)
 			var tempLink;
+			var date = new Date();
 			if(!data){
 				tempLink = "http://" + req.headers.host + "/lab-template/default";
 			} else {
@@ -888,7 +900,8 @@ router.put("/user/laboratory/test-result/session-update",function(req,res){
 			.exec(function(err,result){
 				if(err) throw err;
 				if(result){
-					tempLink += "/" + result._id;
+					tempLink += "/" + result._id + "/" + req.body.count;
+					result.report_date =  date;
 					result.lab_data.unshift(req.body)
 					result.save(function(err,info){});
 				} else {
@@ -903,34 +916,51 @@ router.put("/user/laboratory/test-result/session-update",function(req,res){
 				    center_city: req.user.city,
 				    center_country: req.user.country,
 				    id_by: req.body.laboratory._id,
-				    report_date: + new Date()
+				    report_date:  date
 					})
 
-					tempLink += "/" + newTemp._id
+					tempLink += "/" + newTemp._id + "/" + req.body.count;
 
 					newTemp.lab_data.push(req.body)
 					newTemp.save(function(err,info){
 						if(err) throw err;
 					})
 				}
-				console.log(tempLink)
+
 				res.json({status: "success",reportTemp: tempLink});
 			})
 		})
 	} else {
-		res.end("Unauthorized access.")
+		res.end("Unauthorized access.");
 	}
 });
 
 
 //this route handles test result sent by a laboratory to update existing doctor/patient session that initiated such test request.
-router.put("/user/laboratory/test-result/session-update2",function(req,res){
+router.put("/user/laboratory/test-result/session-update",function(req,res){
     //note that sms will be sent to patient and doctor when a lab test result is available.
+   
     if(req.user) {
-  
-    	updateSession();   
+    	var dt = + new Date();
+      var pdfName = dt + "-" + Math.floor(Math.random() * 999999) + '.pdf';
+      var filePath = './pdf/' + pdfName;
+      var pdfPath;
+      var emailPDFPath;
+      var FILE_CONTENT;
+      var buf;
 
-      function updateSession() {       
+      console.log(req.body)
+
+      pdf.create(req.body.htm).toFile(filePath, function(err, file) { //start of toFile
+      	if (err) return console.log(err);  
+        pdfPath = '/report/' + pdfName;
+      	emailPDFPath = "https://applinic.com" + pdfPath;
+      	FILE_CONTENT = fs.readFileSync(file.filename, 'base64');
+        buf = Buffer.from(FILE_CONTENT, 'base64')                   
+    		updateSession();   
+    	})
+
+      function updateSession() {     
         model.session.findOne({session_id: req.body.laboratory.session_id})
         .exec(function(err,data){
           if(err) throw err;
@@ -952,6 +982,7 @@ router.put("/user/laboratory/test-result/session-update2",function(req,res){
 	          theObj.center_phone = req.user.phone;
 	          theObj.indication = req.body.laboratory.indication;
 	          theObj.center_profile_pic_url =  req.user.profile_pic_url;
+	          theObj.lab_pdf_report.unshift({date: dt,pdf_report:pdfPath});
        	  }
 
        	  var transporter = nodemailer.createTransport({
@@ -965,7 +996,7 @@ router.put("/user/laboratory/test-result/session-update2",function(req,res){
 
           var mailOptions = {
             from: 'Applinic info@applinic.com',
-            to: data.email,
+            to: req.body.laboratory.doctor_email || "info@applinic.com",
             subject: 'Laboratory Result Received',
             html: '<table><tr><th><h3 style="background-color:#85CE36; color: #fff; padding: 30px"><img src="https://applinic.com/assets/images/applinic1.png" style="width: 250px; height: auto"/><br/><span>Healthcare... anywhere, anytime.</span></h3></th></tr><tr><td style="font-family: Arial, Helvetica, sans-serif; font-size: 14px;"><b>Hello ' + data.title + " " + data.lastname + ",</b><br><br>"
  						+ "<b>" + req.user.name + "</b>" + "have sent the result of laboratory investigations you requested for the patient:<br><br>"
@@ -978,9 +1009,14 @@ router.put("/user/laboratory/test-result/session-update2",function(req,res){
             + "Thank you for using Applinic.<br><br>"
             + "For ease of usage, you may download the Applinic mobile application on google play store if you use an android phone. " 
             + "<a href='https://play.google.com/store/apps/details?id=com.farelandsnigeria.applinic'>Click here </a> to do so now.<br><br>"
-            + "For inquiries please call customer support on +2349080045678 or email us at support@applinic.com<br><br>"
+            + "For inquiries please call customer support on +2349080045678 or email us at info@applinic.com<br><br>"
             + "Thank you for using Applinic.<br></br><br>"
-            + "<b>Applinic Team</b></td></tr></table>"
+            + "<b>Applinic Team</b></td></tr></table>",
+            attachments:[{
+              filename: pdfName,
+              content: buf,
+              contentType: 'application/pdf'
+            }]
           };
 
           transporter.sendMail(mailOptions, function(error, info){
@@ -1011,7 +1047,8 @@ router.put("/user/laboratory/test-result/session-update2",function(req,res){
 
       function updatePatient() {
         //here patient test result is updated.
-        model.user.findOne({user_id: req.body.laboratory.patient_id},{medical_records: 1,patient_notification:1,user_id:1,presence:1,phone:1,email:1,title:1,firstname:1,lastname:1})
+        model.user.findOne({user_id: req.body.laboratory.patient_id},
+        {medical_records: 1,patient_notification:1,user_id:1,presence:1,phone:1,email:1,title:1,firstname:1,lastname:1})
         .exec(function(err,data){
 
           if(err) throw err;
@@ -1026,6 +1063,7 @@ router.put("/user/laboratory/test-result/session-update2",function(req,res){
 	          objectFound.test_ran_by = req.user.name;
 	          objectFound.receive_date = req.body.laboratory.date;
 	          objectFound.indication = req.body.laboratory.indication;
+	          objectFound.lab_pdf_report.unshift({date:dt,pdf_report: pdfPath})
 	          objectFound.payment_acknowledgement = true;
 
 	          data.patient_notification.unshift({
@@ -1073,7 +1111,12 @@ router.put("/user/laboratory/test-result/session-update2",function(req,res){
 	            + "<a href='https://play.google.com/store/apps/details?id=com.farelandsnigeria.applinic'>Click here </a> to do so now.<br><br>"
 	            + "For inquiries please call customer support on +2349080045678 or email us at support@applinic.com<br><br>"
 	            + "Thank you for using Applinic.<br></br><br>"
-	            + "<b>Applinic Team</b></td></tr></table>"
+	            + "<b>Applinic Team</b></td></tr></table>",
+	            attachments:[{
+	              filename: pdfName,
+	              content: buf,
+	              contentType: 'application/pdf'
+	            }]
           	};
 
 	          transporter.sendMail(mailOptions, function(error, info){
@@ -1098,48 +1141,37 @@ router.put("/user/laboratory/test-result/session-update2",function(req,res){
         });
       }
 
-       function updateCenter(receiver) {
+      function updateCenter(receiver) {
       	model.user.findOne({user_id: req.user.user_id},{service_details:1}).exec(function(err,center){
       		if(err) {
         		throw err;
 	        	res.end("server error");
 	        }
-      		if(center) {
-      		
+      		if(center) {      		
       			req.body.service_date = + new Date();
       			req.body.receiver = receiver.title + " " + receiver.firstname + " " + receiver.lastname;
       			req.body.receiver_phone = receiver.phone;
+      			req.body.lab_pdf_report = pdfPath;
       			center.service_details.unshift(req.body);
       			center.save(function(err,info){
       				if(err) throw err;
       				console.log("service details saved!");
+      			});
+
+      			model.referral.findOne({ref_id: req.body.ref_id,center_id: req.user.user_id})
+      			.exec(function(err,ref){
+      				if(err) throw err;
+      				if(ref){
+	      				ref.laboratory.lab_pdf_report.unshift({date:dt,pdf_report: pdfPath});
+	      				ref.save(function(err,info){})
+      				}
       			})
       		} else {
       			res.end("something went wrong!");
       		}
       	})
       }
-
-
       
-
-      /*function updateTheCenter() {
-        model.user.findOne({user_id: req.user.user_id},{referral:1,ewallet:1,user_id:1,city_grade:1,type:1,email:1}).exec(function(err,center){
-          if(err) throw err;            
-          var elementPos = center.referral.map(function(x) {          	
-          	return x.ref_id
-          }).indexOf(req.body.ref_id);
-          
-          var objectFound = center.referral[elementPos];
-          objectFound.laboratory.attended = true; // this makes a lab that has been sent to a doctor and no longer on the pending list of front end
-
-          var pay = new Wallet(req.body.date,req.body.laboratory.patient_firstname,req.body.laboratory.patient_lastname,"billing");
-          pay.billing(model,req.body.payObj,center,sms,io);
-          model.otpSchema.remove({otp:req.body.otp},function(err,info){});              
-          res.send({message: "Transaction successful! Your account is credited.",balance:center.ewallet.available_amount,status: "success"});
-          center.save(function(err,info){})
-        });
-      }*/
     } else {
       res.end("Unauthorized access");
     }
@@ -1289,26 +1321,103 @@ router.put("/user/laboratory/test-result/session-update2",function(req,res){
   router.get("/user/center/billing-verification",function(req,res){
   	if(req.user){
   		var center = req.user; //uuuu
-  		var refId = (typeof req.query.refId === "string") ? parseInt(req.query.refId) : req.query.refId;	
-			var elementPos = center.referral.map(function(x){return x.ref_id.toString()}).indexOf(refId.toString());
-      var objectFound = center.referral[elementPos];
-      if(objectFound) {
-      	if(req.user.type === "Radiology") {
-      		res.send({payment: objectFound.radiology.is_paid,detail:objectFound.radiology.detail});
-      	} else if(req.user.type === "Laboratory"){
-      		res.send({payment: objectFound.laboratory.is_paid,detail:objectFound.laboratory.detail});
-      	} else if(req.user.type === "Pharmacy"){ 
-      		res.send({payment: objectFound.pharmacy.is_paid,detail:objectFound.pharmacy.detail});
-      	}
-      } else {
-      	res.send({payment: false});
-      }
+  		var refId = (typeof req.query.refId === "string") ? parseInt(req.query.refId) : req.query.refId;
+  		model.referral.findOne({ref_id: refId,center_id: center.user_id})	
+  		.exec(function(err,objectFound){			
+				//var elementPos = center.referral.map(function(x){return x.ref_id.toString()}).indexOf(refId.toString());
+	      //var objectFound = center.referral[elementPos];
+	      if(err) throw err;
+	      if(objectFound) {
+	      	if(req.user.type === "Radiology") {
+	      		res.send({payment: objectFound.radiology.is_paid,detail:objectFound.radiology.detail});
+	      	} else if(req.user.type === "Laboratory"){
+	      		res.send({payment: objectFound.laboratory.is_paid,detail:objectFound.laboratory.detail});
+	      	} else if(req.user.type === "Pharmacy"){ 
+	      		res.send({payment: objectFound.pharmacy.is_paid,detail:objectFound.pharmacy.detail});
+	      	}
+	      } else {
+	      	res.send({payment: false});
+	      }
+      })
   	} else {
   		res.end("Unauthorized access");
   	}
 
   });
 
+  //this route takes care of center paying for patient billing from their own ewallet
+  router.post("/user/center/billing-verification",function(req,res){
+  	if(req.user){
+  		if(req.user.type  !== "Patient"){
+  			model.user.findOne({user_id: req.user.user_id},{ewallet:1,user_id:1,city_grade:1,type:1,email:1,name:1})
+        .exec(function(err,center){	
+        	if(err) throw err;
+        	if(center){
+        		var type = (req.user.type === "Radiology") ? req.body.radiology : req.body.laboratory;
+        		if(req.body.payObj.total <= center.ewallet.available_amount) {
+	        		model.referral.findOne({ref_id: req.body.ref_id,center_id: center.user_id})
+			        .exec(function(err,objectFound){
+			          if(err) throw err;
+
+			          if(objectFound) {
+				          if(req.user.type === "Radiology") {
+				          	objectFound.radiology.is_paid = true;
+				          	objectFound.radiology.detail.amount = type.strAmount;
+				          	objectFound.radiology.detail.date = + new Date();
+
+				          } else if(req.user.type === "Laboratory") {
+				          	objectFound.laboratory.is_paid = true;
+				          	objectFound.laboratory.detail.amount = type.strAmount;
+				          	objectFound.laboratory.detail.date = + new Date();
+				          }
+				         
+				          var pay = new Wallet(req.body.date,req.user.name,req.user.lastname,"billing");
+				          //pay.billing(model,req.body.payObj,center,sms,io);
+				          //model.otpSchema.remove({otp:type.v_pin},function(err,info){});
+				          var confirmPay = pay.billPaymentByCenter(model,req.body.payObj.total,center,io);
+
+				          if(confirmPay){
+
+				        		center.save(function(err,info){
+				        			if(err) {
+				        				res.send({message: "Transaction Incomplete",error: true})
+				        			} else {
+				        				var detail = (req.user.type === 'Radiology') ? objectFound.radiology.detail : objectFound.laboratory.detail;
+				        				res.json({message: "Transaction successful! Your account is credited.",balance:center.ewallet.available_amount,status: "success",payment:true,detail:detail});
+				        			}
+
+				        		});
+
+				        		objectFound.save(function(err,info){
+					          	if(err) throw err;
+					          	console.log("payment details saved")
+					          });
+
+			        		} else {
+			        			res.json({error: true, message: "Oops! It seems you have insufficient fund to continue with this payment. Please add money to your wallet."})
+			        		}
+				         
+			        	} else {
+			        		res.end("unexpected error occured!");
+			        	}
+			        })
+		      	} else {
+		      		res.json({error: true, message: "You have insufficient fund to complete this transaction. Please ADD money to your wallet."})
+		      	}
+        	} else {
+        		res.json({error: true, message: "Center not found!."})
+        	}
+        });
+
+  		} else {
+  			res.json({error: true, message: "This user not allowed for this service."})
+  		}
+  	} else {
+  		res.json({error: true, message: "User out of session."})
+  	}
+  })
+
+  //this route takes care of patients paying for their billing themselves.
   router.put("/user/center/billing-verification",function(req,res){
   	if(req.user){
   		var type = (req.user.type === "Radiology") ? req.body.radiology : req.body.laboratory;
@@ -1321,41 +1430,53 @@ router.put("/user/laboratory/test-result/session-update2",function(req,res){
           } else {                          
             if(data.user_id === type.patient_id && data.senderId === req.user.user_id) {         
               //updateSession();
-              model.user.findOne({user_id: req.user.user_id},{referral:1,ewallet:1,user_id:1,city_grade:1,type:1,email:1}).exec(function(err,center){
+              model.user.findOne({user_id: req.user.user_id},{referral:1,ewallet:1,user_id:1,city_grade:1,type:1,email:1})
+              .exec(function(err,center){
               	if(err) {
               		res.send({message: "Error occured"})
               	} else {
-              		var elementPos = center.referral.map(function(x){return x.ref_id}).indexOf(req.body.ref_id)
-              		var objectFound = center.referral[elementPos];
+              		//var elementPos = center.referral.map(function(x){return x.ref_id}).indexOf(req.body.ref_id)
+              		//var objectFound = center.referral[elementPos];
 				          //objectFound.radiology.attended = true; // this makes a lab that has been sent to a doctor and no longer on the pending list of front end
-				          
-				          if(objectFound) {
-					          if(req.user.type === "Radiology") {
-					          	objectFound.radiology.is_paid = true;
-					          	objectFound.radiology.detail.amount = type.strAmount;
-					          	objectFound.radiology.detail.date = + new Date();
+				          model.referral.findOne({ref_id: req.body.ref_id,center_id: center.user_id})
+				          .exec(function(err,objectFound){
+					          if(err) throw err;
+					        
+					          if(objectFound) {
+						          if(req.user.type === "Radiology") {
+						          	objectFound.radiology.is_paid = true;
+						          	objectFound.radiology.detail.amount = type.strAmount;
+						          	objectFound.radiology.detail.date = + new Date();
 
-					          } else if(req.user.type === "Laboratory") {
-					          	objectFound.laboratory.is_paid = true;
-					          	objectFound.laboratory.detail.amount = type.strAmount;
-					          	objectFound.laboratory.detail.date = + new Date();
-					          }
-					         
-					          var pay = new Wallet(req.body.date,type.patient_firstname,type.patient_lastname,"billing");
-					          pay.billing(model,req.body.payObj,center,sms,io);
-					          model.otpSchema.remove({otp:type.v_pin},function(err,info){});              
-	              		center.save(function(err,info){
-	              			if(err) {
-	              				res.send({message: "Transaction Incomplete",status: false})
-	              			} else {
-	              				var detail = (req.user.type === 'Radiology') ? objectFound.radiology.detail : objectFound.laboratory.detail;
-	              				res.send({message: "Transaction successful! Your account is credited.",balance:center.ewallet.available_amount,status: "success",payment:true,detail:detail});
-	              			}
+						          } else if(req.user.type === "Laboratory") {
+						          	objectFound.laboratory.is_paid = true;
+						          	objectFound.laboratory.detail.amount = type.strAmount;
+						          	objectFound.laboratory.detail.date = + new Date();
+						          }
 
-	              		})
-	              	} else {
-	              		res.end("unexpected error occured!");
-	              	}
+						         
+						          var pay = new Wallet(req.body.date,type.patient_firstname,type.patient_lastname,"billing");
+						          pay.billing(model,req.body.payObj,center,sms,io);
+						          model.otpSchema.remove({otp:type.v_pin},function(err,info){});              
+		              		center.save(function(err,info){
+		              			if(err) {
+		              				res.send({message: "Transaction Incomplete",status: false})
+		              			} else {
+		              				var detail = (req.user.type === 'Radiology') ? objectFound.radiology.detail : objectFound.laboratory.detail;
+		              				res.send({message: "Transaction successful! Your account is credited.",balance:center.ewallet.available_amount,status: "success",payment:true,detail:detail});
+		              			}
+
+		              		})
+
+		              		objectFound.save(function(err,info){
+						          	if(err) throw err;
+						          	console.log("payment details saved")
+						          });
+						         
+		              	} else {
+		              		res.end("unexpected error occured!");
+		              	}
+	                })
               	}
               })
             }
@@ -1375,7 +1496,7 @@ router.put("/user/laboratory/test-result/session-update2",function(req,res){
 	//updating radiology result in doctor's treatment page with patient.
   router.put("/user/radiology/test-result/session-update",function(req,res){      
     if(req.user) {  	
-      console.log(req.body);
+  
 
 
       //create a dicom Study for viewing.
@@ -1643,8 +1764,7 @@ router.put("/user/laboratory/test-result/session-update2",function(req,res){
   router.put("/user/radiology/test-result/patient-scan-update",function(req,res){
     	
 	    if(req.user) {
-	    	console.log(req.body)
-
+	    
 	      updatePatient();
 
 	      function updatePatient() {
@@ -1838,7 +1958,6 @@ router.put("/user/laboratory/test-result/session-update2",function(req,res){
 		if(req.user){
 			model.user.findOne({user_id:req.user.user_id},{ewallet:1},function(err,data){
 				if(err) throw err;
-				console.log(data.ewallet.transaction)				
 				var foundList = data.ewallet.transaction.map(function(x){
 					if(x.date >= parseInt(req.query.from) && x.date <= parseInt(req.query.to)) {						
 						return x;
@@ -2757,7 +2876,6 @@ router.post("/user/sharing-study",function(req,res){
       		}]
 
       	mailOptions.attachments = attachment;
-
       }
 
 
@@ -2775,6 +2893,79 @@ router.post("/user/sharing-study",function(req,res){
   		res.json({message: "Error: Seems you have entered wrong recipient email address."})
   	}
 
+
+	} else {
+		res.end("unathorized access")
+	}
+
+})
+
+router.post("/user/sharing-labtest",function(req,res){
+	if(req.user){
+		var id = req.body.patient_id || req.body.study_uid;
+		var filteredEmailList = [];
+		var emailReg = /^\w+([\.-]?\w+)+@\w+([\.:]?\w+)+(\.[a-zA-Z0-9]{2,3})+$/;
+		//var webView = "https://applinic.com/dcm?id=" + id + "&key=" + req.body._id;
+	  //var mobileView = "https://applinic.com/dicom-mobile?id=" + req.body._id;
+
+	  for(var i = 0; i < req.body.sharingRecipientEmail.length; i++){
+	   	if(emailReg.test(req.body.sharingRecipientEmail[i])){
+	   		filteredEmailList.push(req.body.sharingRecipientEmail[i]);
+	   	}
+	  }
+
+	  if(filteredEmailList.length > 0) {
+	    var transporter = nodemailer.createTransport({
+	      host: "mail.privateemail.com",
+	      port: 465,
+	      auth: {
+	        user: "info@applinic.com",
+	        pass: process.env.EMAIL_PASSWORD
+	      }
+	    });
+
+	    var mailOptions = {
+        from: 'Applinic Healthcare info@applinic.com',
+        to: filteredEmailList || "info@applinic.com",
+        subject: req.body.laboratory.patient_firstname + " " + req.body.laboratory.patient_lastname + " Laboratory Test Result",
+        html: '<table><tr><tr><td style="line-height: 25px">Hello, here is the patient laboratory test result shared with you.<br><br>'
+        + 'Please find the attached test result PDF file.' + "<br><br>"
+        + "To learn more on what we offer in Healthcare services. Visit www.applinic.com <br>"       
+        + "Thank you! <br><br> <b>Applinic Team</b>" 
+        + '</td></tr></table>'
+      };
+
+
+      var fileFromLink = (req.body.laboratory.lab_pdf_report.length > 0) ? req.body.laboratory.lab_pdf_report[0].pdf_report.split('/') : [];
+	    var pdfName = fileFromLink[fileFromLink.length - 1];
+
+	    if(pdfName) {
+	    	var filePath = './pdf/' + pdfName;
+	    	var FILE_CONTENT = fs.readFileSync(filePath, 'base64');
+	    	var buf = Buffer.from(FILE_CONTENT, 'base64');
+
+	    	var attachment = [{
+        	filename: pdfName,
+        	content: buf,
+        	contentType: 'application/pdf'
+    		}]
+
+      	mailOptions.attachments = attachment;
+      }
+
+      transporter.sendMail(mailOptions, function(error, info){
+        if (error) {
+          console.log(error);
+          res.json({message: "Error occured while sending email. Please check and try again."})
+        } else {
+          console.log('Email sent: ' + info.response);
+          res.json({message: "Good! Study was shared successfully."})
+        }
+      });
+
+  	} else {
+  		res.json({message: "Error: Seems you have entered wrong recipient email address."})
+  	}
 
 	} else {
 		res.end("unathorized access")

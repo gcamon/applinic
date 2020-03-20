@@ -613,11 +613,11 @@
             <i class="fa fa-plus btn btn-neutral" style="cursor:pointer; margin-right: 10px" title="Add field" ng-click="addDrug()"></i>
                 <i class="fa fa-minus btn btn-neutral" style="cursor:pointer" title="Remove last field" ng-click="removeDrug()"></i>
         </div>
-        <div  class="arrange-p" style="padding-left: 15px">
+        <div>
             <!--<textarea class="form-control p-1" placeholder="Complain" ng-model="treatment.complain"></textarea>-->
-            <label>{{drugList.length + 1}}&nbsp;&nbsp;Instructions / explanations for prescription(s) above (optional)</label><!--</span> Diagnosis ( Provisional or Final ) </label>-->
+            <label>Instructions / explanations for prescription(s) above (optional)</label><!--</span> Diagnosis ( Provisional or Final ) </label>-->
             <div>
-                <textarea class="form-control p-1" name="drug intake guide" placeholder="For eg. Take Ibuprofen only after meals" ng-model="treatment.provisionalDiagnosis" ng-keyup="autoExpand($event)" id="textarea"></textarea>
+                <textarea class="form-control p-1" name="drug intake guide" placeholder="For eg. Take Ibuprofen only after meals" ng-model="treatment.explanation" ng-keyup="autoExpand($event)" id="textarea"></textarea>
             </div>
         </div>
         <div class="pt-1"> 
@@ -645,7 +645,7 @@
                 </div>
                 <div>
                     <label>Description:</label>
-                     <small style="display: block;padding: 10px 0"> {{prescription.provisional_diagnosis || "N/A"}}</small>
+                     <small style="display: block;padding: 10px 0"> {{prescription.explanation || "N/A"}}</small>
                 </div>
                 <div>
                     <label>Date of Prescription:</label>
@@ -873,7 +873,7 @@
 
 
 <section ng-if="isToLabReport">
-    <h5 class="card p-1">Laboratory <span style="float: right;font-size: 14px"><a href="" ng-click="requestNewLab()" class="btn btn-simple">{{(!isNewLab) ? 'Request new' : 'View reports'}}</a> <a href="" ng-click="writePrescription()" class="btn btn-simple">Prescribe</a></span></h5>
+    <h5 class="card p-1">Laboratory <span style="float: right;font-size: 14px"><a href="" ng-click="requestNewLab()" class="btn btn-neutral">{{(!isNewLab) ? 'Request new' : 'View reports'}}</a> <a href="" ng-click="writePrescription()" class="btn btn-neutral">Prescribe</a></span></h5>
     <p ng-if="!testResult || loading" style="text-align: center;padding: 20px;font-size: 18px"> <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange" ng-if="loading"></i> </p>
     <div class="medical-record-Area" ng-repeat="j in testResult" ng-if="isResults">
    
@@ -882,44 +882,47 @@
              <table>
                 <tbody>
                     <tr>
-                        <td>Diagnostic Center Name: </td>
-                        <td>{{test.test_ran_by}}</td>
+                        <td><label>Center Name:</label> </td>
+                        <td><h5>{{test.test_ran_by}}</h5></td>
                     </tr>
                     <tr>
-                        <td>Address: </td>
+                        <td><label>Address:</label> </td>
                         <td>{{test.center_address}} {{test.center_city}} {{test.center_country}}</td>
                     </tr>
                     <tr>
-                        <td>Center Phone: </td>
-                        <td>{{test.center_phone}}</td>
+                        <td><label>Contact:</label> </td>
+                        <td><label>Phone:</label> {{test.center_phone}}  <label>Email:</label> {{ test.center_email}}</td>
                     </tr>
                       <tr>
-                        <td>Investigation(s) Requested: </td>
+                        <td><label>Investigation(s) Requested:</label> </td>
                         <td> <span ng-repeat="rantest in test.test_to_run" style="display: block;padding-top: 3px" >{{rantest.name}} &nbsp;&nbsp;<span ng-if="!rantest.select && test.receive_date != 'Pending'" class="text-danger">not available</span></span> </td>
                     </tr>
 
                     <tr>
-                        <td>Date sent: </td>
+                        <td><label>Date sent:</label> </td>
                         <td>{{test.sent_date | date: "mediumDate"}} ( <span am-time-ago="test.sent_date"></span> )</td>
                     </tr>
                      <tr>
-                        <td>Date Received: </td>
+                        <td><label>Date Received:</label> </td>
                         <td>{{test.receive_date | date: "mediumDate"}} <span ng-if="test.receive_date !== 'Pending'">( <span am-time-ago="test.receive_date"></span> )</span></td>
                     </tr>
                     <tr>
-                        <td>Indication/Summary: </td>
-                        <td><span>{{test.indication || 'N/A'}}</span></td>
+                        <td><label>Indication/Summary:</label> </td>
+                        <td>
+                          <span>{{test.indication || 'N/A'}}</span><br>
+                          <span>{{test.clinical_summary || 'N/A'}}</span>
+                        </td>
                     </tr>
                   
                     <tr>
-                        <td>Status: </td>
+                        <td><label>Status:</label> </td>
                         <td>
                             <span ng-if="test.conclusion == 'Pending'" class="text-danger"> Awaiting test result</span>
                             <span ng-if="test.conclusion !== 'Pending'" ng-click="viewReportAndDCM(test)" class="text-primary">Available</span>
                         </td>
                     </tr>
                     <tr ng-if="test.conclusion !== 'Pending'">
-                        <td>Investigation Report:</td>
+                        <td><label>Investigation Report:</label></td>
                         <td> <a href="{{'https://drive.google.com/viewerng/viewer?embedded=true&url=https://applinic.com' + test.report}}" class="text-primary" target="_blank"><i class="fa fa-file"></i> View test result</a></td>
                     </tr>
                 </tbody>
@@ -950,9 +953,9 @@
             <div class="pl-1">
                 <span ng-repeat="rantest in test.test_to_run" style="display: block;padding-top: 3px" ><span ng-if="rantest.sn"> {{rantest.sn}}) </span> {{rantest.name}} &nbsp;&nbsp;<span ng-if="!rantest.select && test.receive_date != 'Pending'" class="text-danger">not available</span></span> 
             </div>
-            <!--<div class="pl-1" ng-if="test.ranTest.length === 0">
+            <div class="pl-1" ng-if="test.ranTest.length === 0">
                 <span ng-repeat="i in test.test_to_run" style="display: block;padding-top: 3px"><span ng-if="rantest.sn"> {{i.sn}}) </span> {{i.name}} </span>
-            </div>-->                   
+            </div>                  
           </div>
           <div>
               <strong>Indication: </strong> <span>{{test.indication || 'N/A'}}</span>
@@ -1011,7 +1014,7 @@
     <!-- new lab request -->
     <section ng-if="isNewLab" ng-controller="investigationController">
         <div class="p-2 card">
-                <section ng-show="!isSearchToSend">  
+                <section ng-show="!isSearchToSend" class="col-md-10">  
                     <h6>New Laboratory Test </h6><br>
                    
                     <!--<div>
@@ -1067,7 +1070,7 @@
                         </div>
                     </div>
                 </section>
-
+                <div class="clearfix"></div>
        
 
                 <div ng-if="isSearchToSend" style="margin-top: -15px">                    
@@ -1267,7 +1270,7 @@
      <!-- new lab request -->
     <section ng-if="isNewRadio" ng-controller="investigationController">
         <div class="p-2 card">
-                <section ng-show="!isSearchToSend">  
+                <section ng-show="!isSearchToSend" class="col-md-10">  
                     <h6>New Radiology Investigation Request </h6><br>
                    
                     <div>
@@ -1319,7 +1322,7 @@
                     </div>
                 </section>
 
-       
+                <div class="clearfix"></div>
 
                 <div ng-if="isSearchToSend" style="margin-top: -15px">                    
                     

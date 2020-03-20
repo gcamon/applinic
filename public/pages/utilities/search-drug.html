@@ -4,9 +4,9 @@
     <div class="card card-center-1 p-1">
         
            
-      <h4 class="p-0 font-1_4"><i class="icon-Pills text-success"></i> Find Drug  <i class="fa fa-question-circle tip"><span>This will search for drug(s) name you entered in all registered and verified pharmaceutical stores on applinic in ascending order of availability. By default your city is used but you can search in other cities or simply keep the city field empty to search in all cities in the country. Also you can search for multiple drugs at once by clicking the '+ add' to add more fields.You can search with prescription ID when such option is available.</span></i></h4>
-            
-            <div class="col-md-5" ng-if="checkLogIn.typeOfUser === 'Patient'">
+      <h4 class="p-0 font-1_4">Find Drugs  <i class="fa fa-question-circle tip text-primary"><span>This will search for drug(s) name you entered in all registered and verified pharmaceutical stores on applinic in ascending order of availability. By default your city is used but you can search in other cities or simply keep the city field empty to search in all cities in the country. Also you can search for multiple drugs at once by clicking the '+' to add more fields.You can search with prescription ID when such option is available.</span></i></h4>
+            <br>
+            <div class="col-md-7" ng-if="checkLogIn.typeOfUser === 'Patient'">
                 
                 <label for="lastname">Search options:</label><br>
                 <select class="custom-select form-control" ng-model="search.category">
@@ -16,62 +16,64 @@
                 
             </div>
            <div class="clearfix"></div>
-        <form class="col-md-10" ng-submit="findDrug(drug.name)" ng-if="notRef">
-          <div>         
-            
-             <label for="City">City: </label><br>
-           
-             <input type="text" class="form-control"  placeholder="Enter city name" ng-model="city" uib-typeahead="city for city in cities | filter:$viewValue | limitTo:15">
-             {{getCity(city)}}
-            
+           <div class="col-md-8">
+              <form ng-submit="findDrug(drug.name)" ng-if="notRef">
+              <div>         
+                
+                 <label for="City">City: </label><br>
+               
+                 <input type="text" class="form-control"  placeholder="Enter city name" ng-model="city" uib-typeahead="city for city in cities | filter:$viewValue | limitTo:15">
+                 {{getCity(city)}}
+                
 
-          </div>
-
-          <div >           
-                <label> Drug name: </label>
-                <section class="form-group" style="position: relative" ng-repeat="i in drugList">                
-                                    
-                      <input type="text" class="form-control" stid="age"  type="text" placeholder="Enter drug name" ng-model="drug.name" uib-typeahead="drug.name for drug in drugs | filter:$viewValue | limitTo:15">
-                       {{getDrug(drug.name)}} 
-                      <i class="fa fa-times text-muted" style="cursor: pointer;position: absolute;right:10px;bottom: 10px" ng-click="remove(i.sn)" ng-if="i.sn !== 'a'"></i>
-                    
-                </section>
-           
-          
-             <div class="clearfix"></div>
-              <div style="text-align: right;" ng-if="notRef">
-                <i class="fa fa-plus" style="cursor: pointer;" ng-click="add(drug.name)"> Add</i> 
-             </div>
-
+              </div>
+              <br>
+              <div>           
+                  <label> Drug name: </label>
+                  <section class="form-group" style="position: relative" ng-repeat="i in drugList">                
+                                      
+                        <input type="text" class="form-control" stid="age"  type="text" placeholder="Enter drug name" ng-model="drug.name" uib-typeahead="drug.name for drug in drugs | filter:$viewValue | limitTo:15">
+                         {{getDrug(drug.name)}} 
+                        <i class="fa fa-times text-muted" style="cursor: pointer;position: absolute;right:10px;bottom: 10px" ng-click="remove(i.sn)" ng-if="i.sn !== 'a'"></i>
+                      
+                  </section>
+             
             
-            <div class="pl-0">
-              <input type="submit" class="btn btn-info"  value="Find" ng-if="!isLoading"> <span><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange;font-size: 18px" ng-if="isLoading"></i></span>
-            </div>            
-          </div>
-         </form>
-        <form class="col-md-10" ng-submit="findWithRef(user.refId)" ng-if="isRef">
-          <div>         
-            
-             <label for="City">City: </label><br>
-           
-             <input type="text" class="form-control"  placeholder="Enter city name" ng-model="city" uib-typeahead="city for city in cities | filter:$viewValue | limitTo:15">
-             {{getCity(city)}}
-            
+               <div class="clearfix"></div>
+                <div style="text-align: right;" ng-if="notRef">
+                  <i class="fa fa-plus btn btn-neutral" style="cursor: pointer;" ng-click="add(drug.name)"></i> 
+               </div>
 
-          </div>
-           <div >               
-                <label style="padding-left: 4px">Prescription ID</label>
-                <section>
-                  <input placeholder="Enter Prescription ID" ng-model="user.refId" class="form-control">
-                </section>
-                 <div class="clearfix"></div>
-                <div class="pl-0">
-                <!--<button class="btn btn-info " ng-click="findWithRef(user.refId)"> <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="isLoading"></i>{{(isLoading) ? "" : 'Find'}}</button>-->
-                 <input type="submit" class="btn btn-info"  value="Find" ng-if="!isLoading"> <span><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange;font-size: 18px" ng-if="isLoading"></i></span>
-                </div>
-          </div>
-        </form>
+              
+              <div class="pl-0">
+                <input type="submit" class="btn btn-info"  value="Find" ng-if="!isLoading"> <span><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange;font-size: 18px" ng-if="isLoading"></i></span>
+              </div>            
+            </div>
+           </form>
+          <form  ng-submit="findWithRef(user.refId)" ng-if="isRef">
+            <div>         
+              
+               <label for="City">City: </label><br>
+             
+               <input type="text" class="form-control"  placeholder="Enter city name" ng-model="city" uib-typeahead="city for city in cities | filter:$viewValue | limitTo:15">
+               {{getCity(city)}}
+              
 
+            </div>
+            <br>
+             <div >               
+                  <label style="padding-left: 4px">Prescription ID</label>
+                  <section>
+                    <input placeholder="Enter Prescription ID" ng-model="user.refId" class="form-control">
+                  </section>
+                   <div class="clearfix"></div>
+                  <div class="pl-0">
+                  <!--<button class="btn btn-info " ng-click="findWithRef(user.refId)"> <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="isLoading"></i>{{(isLoading) ? "" : 'Find'}}</button>-->
+                   <input type="submit" class="btn btn-info"  value="Find" ng-if="!isLoading"> <span><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange;font-size: 18px" ng-if="isLoading"></i></span>
+                  </div>
+            </div>
+          </form>
+        </div>
  </div>
  <div style="height: 300px"></div>
  

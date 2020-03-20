@@ -19,8 +19,9 @@
 	}
 </style>
 <div class="card-center-1">
-	<!--<header style="padding: 10px; font-size: 18px;font-weight: bold;"><i class="fa fa-arrow-left" style="cursor: pointer" ng-click="refresh()" ng-if="refInfo.laboratory.test_to_run.length > 0"> &nbsp;Back</i></header>-->
-	<div class="row">
+	<div>
+	<a href="{{'#/referral/laboratory-test'}}" ><i class="fa fa-arrow-left btn-sm" style="cursor: pointer" ng-if="refInfo.laboratory.test_to_run.length > 0"> &nbsp;Back</i></a>
+	</div>
 		
 	
 	
@@ -103,23 +104,23 @@
 			<table>
 				<tbody class="p-1">
 					<tr>
-						<td style="width: 30%">Patient Name: </td>
+						<td style="width: 30%"><h5>Patient Name</h5> </td>
 						<td style="width: 60%">{{refInfo.laboratory.patient_title}} {{refInfo.laboratory.patient_firstname}} {{refInfo.laboratory.patient_lastname}}</td>
 					</tr>
 					<tr>
-						<td>Gender: </td>
+						<td><label>Gender</label> </td>
 						<td>{{refInfo.laboratory.patient_gender}}</td>
 					</tr>
 					<tr>
-						<td>Age: </td>
+						<td><label>Age</label> </td>
 						<td>{{refInfo.laboratory.patient_age}}</td>
 					</tr>
 					<tr>
-						<td>Phone: </td>
+						<td><label>Phone</label> </td>
 						<td>{{refInfo.laboratory.patient_phone}}</td>
 					</tr>
 					<tr>
-						<td>Investigation(s) Requested: </td>
+						<td><label>Investigation(s) Requested</label> </td>
 						<td>
 							<div class="mt-1"  ng-repeat = "test in refInfo.laboratory.test_to_run" >
 								<label class="custom-control custom-checkbox">
@@ -132,7 +133,7 @@
 					</tr>
 
 					<tr ng-show="refInfo.laboratory.indication !== 'undefined'">
-						<td>Indication / Summary: </td>
+						<td><label>Indication / Summary</label> </td>
 						<td><p>{{refInfo.laboratory.indication}}</p> <p>{{refInfo.laboratory.clinical_summary}}</p></td>
 					</tr>
 
@@ -142,32 +143,53 @@
 					</tr>-->
 
 					<tr ng-if ="refInfo.laboratory.parity">
-						<td>Parity: </td>
+						<td><label>Parity</label> </td>
 						<td>{{refInfo.laboratory.parity}}</td>
 					</tr>
 
 					<tr ng-if ="refInfo.laboratory.lmp">
-						<td>LMP: </td>
+						<td><label>LMP</label> </td>
 						<td>{{refInfo.laboratory.lmp}}</td>
 					</tr>
 
 					<tr>
-						<td>Referring Physician: </td>
-						<td><span>{{refInfo.referral_title}} {{refInfo.referral_firstname}} {{refInfo.referral_lastname}}</span></td>
+						<td><label>Requested By</label> </td>
+						<td><span>{{(refInfo.referral_title) ? refInfo.referral_title : ""}} {{ (refInfo.referral_firstname) ? refInfo.referral_firstname : ""}} {{(refInfo.referral_lastname) ? refInfo.referral_lastname : ""}}</span><br>
+						<span><label>Email </label> {{refInfo.referral_email}} <label>Phone </label> {{refInfo.referral_phone}}</span>
+						</td>
+					</tr>
+					<tr ng-show="refInfo.laboratory.title">
+						<td><label>Referring Physician</label> </td>
+						<td>{{refInfo.laboratory.title}} {{refInfo.laboratory.doctor_firstname}} {{refInfo.laboratory.doctor_lastname}} </td>
 					</tr>
 					<tr>
-						<td>Reference Number: </td>
+						<td><label>Reference Number</label> </td>
 						<td>{{refInfo.ref_id}}</td>
 					</tr>
 					<tr>
-						<td>Time of Referral: </td>
+						<td><label>Date Requested</label> </td>
 						<td>{{refInfo.date | date : 'mediumDate'}} ( <span style="color: darkRed" am-time-ago="refInfo.date"></span> )</td>
 					</tr>
 				</tbody>
 			</table>
 			
-			<div class="">
+			<div style="position: relative;min-height: 20px">
+		    	<hr>
 				<!--<p style="padding:10px 0"><i class="fa fa-warning text-danger"></i>  If <strong>any</strong> investigation(s) services above is <b>not</b> available in your center please <b>uncheck it ( if checked )</b> and <a href="" style="color: blue;font-size:16px;text-decoration: unset;" ng-click="redirectTest()"> refer to another center.</a></p>-->
+				
+				<div class="pl-2 pt-1" ng-show="refInfo.redirect_to.length > 0">
+					<label>Forwarded Test Details:</label>
+					<div>
+						<div ng-repeat="j in refInfo.redirect_to" class="pb-1">
+							<span style="font-style: italic;" class="text-muted"><span ng-repeat="k in j.referredTests"> {{k.name}} </span></span><br>
+						    <span><b>Center Name:</b> {{j.name}}</span><br>
+						    <span><b>Ref No:</b> {{j.ref_id}}</span><br>
+						    <span><b>Location:</b> {{j.address}} {{j.city}} {{j.country}}</span><br>
+						    <span><b>Phone:</b> {{j.phone}}</span>
+						</div>
+					</div>
+				</div><br>
+				<a href="" class="btn btn-neutral btn-sm" style="position: absolute;right: 10px;bottom: 0" title="Refer test(s) to a center" ng-click="forwardUnRanTest(refInfo)"><i class="fa fa-share" ng-show="!loading"></i><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:white;font-size: 20px" ng-show="loading"></i></a>
 			</div>
 		</div>
 	</div>
@@ -182,7 +204,7 @@
                 </h6>                 
                 <div style="list-style:none;font-size:16px" id="collapseSeven" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingSeven"> -->
                 <div style="padding: 30px" class="card" ng-if="!isPreview">
-               	    <article ng-if="!otpMsg && !paymentStatus">
+               	    <article ng-show="(!otpMsg && !paymentStatus) || !refInfo.laboratory.is_paid">
                 	<div class="mb-0 mt-0 pl-0 font-1_2"  style="border-bottom: 4px solid #85CE36;display: inline-block;padding-bottom: 5px"><b>Compute Cost</b></div>
                 	 <p class="danger-mine" ng-if="compute && compute !== '' ">{{compute}}</p>                            
                      <table class="table table-responsive">
@@ -201,9 +223,11 @@
                      	</tr>
                      </table>
                      <div>
-                     	<strong class="text-success">Total : <em>{{str}}</em></strong>
-                     	<strong style="display: block;" class="text-success">You'll receive : {{commissionedAmount}} &nbsp;<span style="font-weight: normal;">( platform {{checkLogIn.city_grade}}% discount applied )</span></strong>
-                     	<button class="btn btn-danger" style="float: right;" ng-click="sendBill(refInfo.laboratory.patient_id,resend)" ng-if="grabRawAmount > 0"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i> Request Payment </button>
+                     	<strong class="text-success">Total: <em>{{str}}</em></strong>
+                     	<strong style="display: block;" class="text-success">You'll receive: {{commissionedAmount}} &nbsp;<span style="font-weight: normal;">( Platform {{checkLogIn.city_grade}}% discount applied )</span>
+                     	</strong><br>
+                     	<label ng-show="grabRawAmount > 0">Who pays the bill?</label><br>
+                     	<button class="btn btn-success"  ng-click="sendBill(refInfo.laboratory.patient_id,resend)" ng-show="grabRawAmount > 0"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-show="loading"></i> Patient's E-Wallet </button> &nbsp;&nbsp;&nbsp;<button class="btn btn-success" ng-show="grabRawAmount > 0" ng-click="centerVerifyPay(refInfo)"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-show="refInfo.loading"></i>{{(refInfo.loading) ? "" : "Center's E-Wallet" }}</button>
                      </div>
                     </article>	
                     <article ng-if="otpMsg" >
@@ -211,18 +235,18 @@
                      		<p class="bg-warning p-1 text-danger" ng-if="otpError">{{otpError}}</p>
 							<p class="text-muted">{{otpMsg}} </p>
 							<p>
-					            Cannot receive SMS?  <a href="" ng-click="sendBill(refInfo.laboratory.patient_id,resend)">Re-send OTP via SMS</a> <b> or </b> try making a phone call to get the OTP code<br>
+					            Cannot receive SMS?  <a href="" ng-click="sendBill(refInfo.laboratory.patient_id,resend)">Re-send OTP via SMS</a> <b> or </b> try Phone call to get the OTP code<br>
 					            <a href="" ng-click="call(refInfo.laboratory.patient_id,resend)" class="text-danger"><i class="fa fa-phone"></i> Call now!</a>
 					        </p> 	
 					        <p style="font-size: 14px" ng-if="showCallingMsg">{{showCallingMsg}}</p>		
 							<div>
-								<input type="text" class="form-control" placeholder="Enter OTP you sent to this patient" ng-model="lab.otp" ng-if="grabRawAmount > 0">
+								<input type="text" class="form-control" placeholder="Enter OTP sent to this patient" ng-model="lab.otp" ng-if="grabRawAmount > 0">
 							</div>
 							<div style="padding-left: 5px;text-align: center;">
 								<button class="btn btn-success" ng-click="verifyPay(refInfo)"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i>  Confirm</button>
 							</div>
 							<p class="text-success">Amount: {{str}}</p>
-							<p ng-if="grabRawAmount <= 0"><span class="text-danger">Report will not be sent, patient is not billed for the service(s)</span>
+							<p ng-if="grabRawAmount <= 0"><span class="text-danger">Patient not billed for this service(s)</span>
 							</p>	
 							
 										
@@ -230,13 +254,13 @@
 						
                      </article>
 
-                     <article ng-if="refInfo.laboratory.is_paid || paymentStatus">
+                     <article ng-show="refInfo.laboratory.is_paid && paymentStatus">
                      	<div class="p-2">
                      		<a href="" ng-click="newPayment()" style="float: right;color:green">Request new payment</a>
                      		<div class="clearfix"></div>
                      		<i class="fa fa-check-circle" style="font-size: 42px;color: #85CE36;float: left;"></i>
                      		<aside style="padding: 20px;display: inline-block;margin-top: -20px">
-	                     		<strong style="">Payment for the test(s) was successfully!</strong>
+	                     		<strong style="">Payment for the test(s) was successful!</strong>
 	                     		<span style="display: block;"><b>Amount Paid:</b> {{paymentDetail.amount}}</span> 
 	                     		<span ><b>Date:</b> {{paymentDetail.date | date: "mediumDate"}} ( <span am-time-ago="paymentDetail.date"></span> ) </span>
 	                     		<span style="display: block;"><b>Time:</b> {{paymentDetail.date | date: "shortTime"}}</span>
@@ -286,8 +310,8 @@
 						
 
 							<div ng-repeat="report in testReport" class="pb-2">
-								<h6 class="text-muted pt-1 pb-1">
-								<span>{{report.sn}}) </span> {{report.name}} result entry:</h6>									
+								<h6 class="pt-1 pb-1">
+								<!--<span>{{report.sn}}) </span>--> {{report.name}} result entry:</h6>									
 								<div class="col-md-5 pl-0">									
 									<select class="form-control" ng-model="pickedForm.form">
 										<option value="" selected disabled>_Select report format</option>
@@ -326,7 +350,7 @@
 										<tbody>
 											<tr ng-repeat="i in report.list">
 												<td><label><input type="text"  ng-model="i.r_name" ng-class="{'text-danger': i.r_flag !== 'Normal' && i.r_flag !== '' }" placeholder="edit title"></label></td>
-												<td><input type="number"  ng-model="i.r_result" ng-class="{'text-danger': i.r_flag !== 'Normal' && i.r_flag !== '' }"></td>
+												<td><input type="text"  ng-model="i.r_result" ng-class="{'text-danger': i.r_flag !== 'Normal' && i.r_flag !== '' }"></td>
 												<td><input type="text"  ng-model="i.r_range" ng-class="{'text-danger': i.r_flag !== 'Normal' && i.r_flag !== '' }"></td>
 												<td><input type="text"  ng-model="i.r_unit" ng-class="{'text-danger': i.r_flag !== 'Normal' && i.r_flag !== '' }"></td>
 												<td><input type="text"  ng-model="i.r_flag" ng-class="{'text-danger': i.r_flag !== 'Normal' && i.r_flag !== '' }"></td>
@@ -406,7 +430,7 @@
 										<tbody>
 											<tr ng-repeat="i in report.list">
 												<td><label><input type="text"  ng-model="i.r_name" placeholder="edit title"></label></td>
-												<td><input type="number"  ng-model="i.r_result"></td>
+												<td><input type="text"  ng-model="i.r_result"></td>
 												<td><input type="text"  ng-model="i.r_range"></td>
 												<td><input type="text"  ng-model="i.r_unit"></td>
 												<td><input type="text"  ng-model="i.r_flag"></td>
@@ -506,14 +530,61 @@
 							
 					</form>	-->	
 
-					</div>
 
-				
+					</div>
+					<div >
+						<h6 class="pt-1 pb-1">
+							Digitally signed by: &nbsp;&nbsp;&nbsp;&nbsp;<a href="" style="font-size: 12px;font-weight: normal;text-transform: capitalize;color: blue" ng-click="openSigneeForm()" class="btn btn-simple btn-sm btn-round">add</a>
+						</h6>
+						<div >							
+							<label class="custom-control custom-radio" ng-repeat = " i in signees">
+								<input type="radio" value="{{i.id}}" ng-model="pathology.signee" class="custom-control-input">
+								<span class="custom-control-indicator"></span>
+								<span class="custom-control-description font-1_1"> <b>{{i.name }}</b> &nbsp;&nbsp;<a href class="fa fa-trash" ng-click="deleteSignee(i)" style="font-weight: normal;"></a> &nbsp;&nbsp;&nbsp;&nbsp;</span>
+							</label>
+							<!--<label class="custom-control custom-radio">
+								<input type="radio" value="studyID" ng-model="pathology.signee" class="custom-control-input">
+								<span class="custom-control-indicator"></span>
+								<span class="custom-control-description font-1_1"> <b>Study UID</b></span>
+							</label>-->
+						</div>
+						<hr>
+						<form style="border: 2px solid grey;padding: 5px" ng-submit="createSignees()" ng-show="isToFillSignee" class="col-md-6">
+							<h6>Pathologist/Lab Scientist &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-times" ng-click="openSigneeForm()"></i></h6>
+
+							<label>Prefix</label><br>
+							<select class="form-control" ng-model="pathology.prefix">
+								<option>Mr</option>
+								<option>Mrs</option>
+								<option>Dr</option>
+								<option>Prof</option>
+							</select><br>
+
+							<label>Full Name:</label><br>
+							<input type="text" name="" class="form-control" ng-model="pathology.name"><br>
+
+							<label>Designation:</label><br>
+							<select class="form-control" ng-model="pathology.designation">
+								<option>Medical Laboratory Scientist</option>
+								<option>Consultant Pathologist</option>
+							</select><br>
+
+							<label>Suffix</label><br>
+							<input type="text" name="" placeholder="e.g BSc,MSc,MBBS" class="form-control" ng-model="pathology.suffix"><br>
+
+							<div style="text-align: right;">
+								<input type="submit" name="" value="add" class="btn btn-info btn-sm" ng-show="!pathology.loading"><span ng-show="pathology.loading">Adding... wait.</span>
+							</div>
+						</form>
+
+					</div>	
+
+					<div class="clearfix"></div>
 					<!--<div ng-if="isFilled === true && !isPreview" style="margin-top:30px">
                  	   <button class="btn btn-success" ng-click="previewTestResult(refInfo)" onclick="openIframe()" id="prvBtn">Preview</button>
                  	</div>-->
                  	<div ng-if="isFilled === true && !isPreview" style="margin-top:30px">
-                 	   <button class="btn btn-success" ng-click="previewTestResult(refInfo)" ng-show="!loading">Save/Preview</button>
+                 	   <button class="btn btn-success" ng-click="previewTestResult(refInfo)" ng-show="!loading">Preview</button>
                  	   <span ng-show="loading" class="text-muted">Submitting... Please wait!</span>
                  	   &nbsp;&nbsp;
                  	   <button class="btn btn-simple btn-sm" ng-show="reportSuccess2" ng-click="openIframe()" id="prvBtn"><i class="fa fa-refresh"></i></button>

@@ -1,4 +1,7 @@
-<div class="card card-center-1 p-2">
+
+
+
+<!--<div class="card card-center-1 p-2">
 	<h4 class=" mb-1" style="">Manage Patients</h4>
 	<div>
 		<input type="text" name="" placeholder="filter by name" ng-model="person" class="form-control">
@@ -20,8 +23,7 @@
 				<span>{{j.appointment_time | date : 'shortTime'}} </span><br>
 			</article>
 		</div>
-		<div class="col-md-2 col-lg-2 p-1">
-			
+		<div class="col-md-2 col-lg-2 p-1">	
 		</div>
 		<div class="col-md-2 col-lg-2 p-1 pull-right">
 			<a href="" class="text-primary" ng-click="removePatient(j)"><i class="fa fa-trash font-1_4" title="Remove this patient" ng-if="!j.isLoading"></i><span ng-if="j.isLoading">deleting...</span></a>&nbsp;
@@ -30,4 +32,50 @@
 		<div class="clearfix"></div>
 		<hr>
 	</div>
+</div>-->
+<div class="p-2">
+		<div style="position: relative;">
+			<h5>My Patients ( {{patientList.length}} )</h5>
+			<input type="text" name="" style="position: absolute;right: 30px;top:5px" placeholder=" Search" ng-model="person">
+		</div>
+		<div class="col-md-4 p-1" ng-repeat="j in patientList | orderBy: '-presence' | filter : person" ng-if="!j.deleted" >
+			<div class="card row">				
+				<div class="col-md-5">
+					<a href="" ng-click="userPatient(j.patient_id,j.presence)">
+						<img src="{{j.patient_profile_pic_url}}" style="width: auto;max-height: 150px"/>
+					</a>
+				</div>
+				<div class="pt-1 pb-1 col-md-7" style="min-height: 110px;max-height: 140px;">
+					<div class="ellipsis">
+						<b class="text-muted">{{j.patient_title}} {{j.patient_lastname}} {{j.patient_firstname}}</b>
+					</div>
+					<div class="text-muted">
+						<span>{{j.patient_gender || 'Male'}}</span><br>
+						<span><i class="fa fa-map-marker text-info" ng-show="j.presence"></i><span> <i class="fa fa-map-marker" ng-show="!j.presence"></i></span> {{j.patient_city || "Enugu"}}</span><br>
+						
+					</div>					
+				</div>				
+				<div class="clearfix"></div>
+				<div style="position: relative;" class="pl-1 pb-1">
+					<!--<span class="text-muted" ng-show="j.appointment_date"> <span class="text-info">   In-person meeting </span> <span am-time-ago="j.appointment_date"></span><span> &nbsp;{{j.appointment_time | date : 'shortTime'}}</span><br></span>
+					<span class="text-muted" ng-show="j.activity.labCount > 0"><span class="text-info"> >  1 new </span> Laboratory Result<br></span>
+					<span class="text-muted" ng-show="j.activity.radioCount > 0"><span class="text-info"> >  2 new </span> Radiology Result</span>-->
+					<i class="fa fa-ellipsis-v text-muted" style="position: absolute;right: 15px;bottom: 5px;cursor: pointer;padding: 5px" title="Manage Patient" ng-click="popup(j)"></i>								
+				
+					<div ng-class="{'popup2': j.isManage == true}" ng-if="j.isManage" style="line-height: 35px">
+					  <div style="position: absolute;top:4px;right: 10px" ng-click="closePop(j)"><i class="fa fa-times text-info"></i></div>
+					  <a href=""  ng-click="userPatient(j.patient_id,j.presence)"><i class="fa fa-folder-open text-warning"></i> Go to E-Treatment </a><br>				 
+					  <a href=""  ng-click="consultationFee(j)"><i class="fa fa-money text-success"></i> Consultation Fee</a><br>
+					  <a href=""  ng-click=""><i class="fa fa-calendar text-success"></i> Appointments</a><br>
+					  <!--<a href=""  ng-click=""><i class="fa fa-video-camera text-success"></i> Video Chat</a><br>-->
+					  <!--<a href=""  ng-click=""><i class="fa fa-warning text-muted"></i> Block Patient</a><br>-->
+					  <a href=""  ng-click="removePatient(j)"><i class="fa fa-times text-danger"></i> Remove Patient</a>
+					  <!--<a href=""  ng-click="share(test)" ng-show="test.laboratory.lab_pdf_report.length > 0"><i class="fa fa-share"></i> Share Test Result <br>	</a>				 					 
+					  <a href="{{'https://drive.google.com/viewerng/viewer?embedded=true&url=https://applinic.com' + test.laboratory.lab_pdf_report[0].pdf_report}}" target="_blank" ng-show="test.laboratory.lab_pdf_report.length > 0"><span><i class="fa fa-file"></i> View Result PDF</span><br></a>-->
+																	
+					</div>
+				</div>
+			</div>			
+		</div>
+		<p ng-show="patientList.length == 0" style="text-align: center;padding: 20px;font-weight: bold;">You have no patient to manage yet.</p>
 </div>

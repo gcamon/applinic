@@ -10,7 +10,18 @@ var http = require("http");
 var uuid = require('uuid');
 var randos = require("./randos");
 
-
+function genId(username) {
+	var getFirstLetter;
+	var toStr;
+	if(username) {
+		var getRandomNumber = randos.genRef(7);
+		toStr = username + getRandomNumber;
+	} else {
+		var getRandomNumber = randos.genRef(10);
+		toStr = getRandomNumber.toString();
+	}			
+	return toStr;					
+}
 
 var signupRoute = function(model,sms,geonames,paystack,io,nodemailer) {
 	passport.use('signup', new LocalStrategy({
@@ -20,10 +31,23 @@ var signupRoute = function(model,sms,geonames,paystack,io,nodemailer) {
 	},
 	function(req,email,password,done){
 		process.nextTick(function(){	
-			model.user.findOne({email:email},function(err,user){
+			model.user.findOne({$or: [{ phone : req.body.phone},{email: email}]},function(err,user){
 			if(err) return done(err);
 			if(user){
-				return done(null, false, req.flash('signupMessage', 'Email has already been used please find another one'));	
+				if(user.email){
+					return done(null, false, req.flash('signupMessage', 'Email has already been used please find another one'));	
+				} else {
+					var userphone = {};
+					model.verifyPhone.findOne({phone:req.body.phone,pin:req.body.v_pin},function(err,data){					
+						if(err) throw err;
+						if(data){
+							userphone.testuserPhone = true;
+							createUser();
+						} else {
+							return done(null, false, req.flash('signupMessage', 'Please you have to agree to our terms and conditions'));
+						}
+					});
+				}
 			} else {
 				var userphone = {};
 				model.verifyPhone.findOne({phone:req.body.phone,pin:req.body.v_pin},function(err,data){					
@@ -36,53 +60,59 @@ var signupRoute = function(model,sms,geonames,paystack,io,nodemailer) {
 					}
 				});
 
-				function createUser() {
+			}
+
+			function createUser() {
 					
-					if(req.body.agree === true && userphone.testuserPhone) {					
-						var uid = genId(req.body.username);
+					if(req.body.agree === true && userphone.testuserPhone) {
+
+						var uid = (user) ? user.user_id : genId(req.body.username);
+
 						var referral_link = "/referral/" + uid + "/signup";
+
+						var phone = (user) ? user.phone : req.body.phone;
+
+						var date = (user) ? user.date : new Date();
+						
 						var User = new model.user({
-						email: req.body.email,
-						user_id: uid,
-	          password: salt.createHash(password),
-	          phone: req.body.phone,
-	          admin: false,
-	          date: new Date(),
-	          country: req.body.countryName,
-	          type: (req.body.typeOfUser === "Special Center") ? "Doctor" : req.body.typeOfUser,
-	          city: req.body.city,
-	          firstname: req.body.firstname,
-	          lastname: req.body.lastname,
-	          username: req.body.username,
-						address: req.body.address,
-						gender: req.body.gender,
-						title: (req.body.typeOfUser === "Special Center") ? "SC" : req.body.title,
-						age: req.body.age,
-						state: req.body.state,
-						region: req.body.region,
-						currencyCode: req.body.currencyCode,
-						specialty: req.body.specialty,
-						profile_url: "/user/profile/view/" + uid,
-						profile_pic_url: "/download/profile_pic/nopic",
-						work_place: req.body.work_place,
-						name: (req.body.typeOfUser === "Special Center") ? req.body.firstname : req.body.name,
-						verified: false,
-						rating: {
-							votes:20,
-							current: 1,
-							max: 5
-						},
-						ref_link: referral_link					
+							email: req.body.email,
+							user_id: uid,
+		          password: salt.createHash(password),
+		          phone: phone,
+		          admin: false,
+		          date: date,
+		          country: req.body.countryName,
+		          type: (req.body.typeOfUser === "Special Center") ? "Doctor" : req.body.typeOfUser,
+		          city: req.body.city,
+		          firstname: req.body.firstname,
+		          lastname: req.body.lastname,
+		          username: req.body.username,
+							address: req.body.address,
+							gender: req.body.gender,
+							title: (req.body.typeOfUser === "Special Center") ? "SC" : req.body.title,
+							age: req.body.age,
+							state: req.body.state,
+							region: req.body.region,
+							currencyCode: req.body.currencyCode,
+							specialty: req.body.specialty,
+							profile_url: "/user/profile/view/" + uid,
+							profile_pic_url: "/download/profile_pic/nopic",
+							work_place: req.body.work_place,
+							name: (req.body.typeOfUser === "Special Center") ? req.body.firstname : req.body.name,
+							verified: false,
+							rating: {
+								votes:20,
+								current: 1,
+								max: 5
+							},
+							ref_link: referral_link					
 					});
-
-
 
 					User.ewallet = {
 						available_amount: (req.body.typeOfUser === "Patient") ? 1000 : 0,
 						transaction: []
 					}
 
-					
 					/****create user paystack account****/
 					paystack.customer.create({
 					  first_name: req.body.firstname,
@@ -96,7 +126,6 @@ var signupRoute = function(model,sms,geonames,paystack,io,nodemailer) {
 					});
 
 					if(req.body.typeOfUser === "Patient"){
-
 						//family account
 						User.family_accounts.unshift({
 							status: true,
@@ -247,34 +276,18 @@ var signupRoute = function(model,sms,geonames,paystack,io,nodemailer) {
 											saveUser()
 										}								
 									}
-								})
+								}) //end of find with user invite.referral_id 
 							} else {
 								saveUser()
 							}
-						});
+						}); //end of invite find method
 
 					} else {
 						saveUser()
-					}
+					} //end of if req.body.invitationId
 
 
-						/*cities are capture for record purposes.Note country of the user if is saved for the user form 
-						the data optained from quering the geooname.*/
-						/*if(req.body.typeOfUser !== "Patient") {
-							var criteria = {geonameId: req.body.geonameId,"cities.city": req.body.city}
-							model.geonames.findOne(criteria,{cities:1}).exec(function(err,data){
-								if(err) throw err;
-								if(!data){
-									var geoObj = {
-										state: req.body.state,
-										city: req.body.city
-									}
-									data.cities.push(geoObj);
-								}
-								data.save(function(){});
-							})
-						}*/
-
+					
 						if(req.body.typeOfUser === "Doctor"){
 							User.name = (req.body.lastname) ? req.body.title + " " + req.body.lastname + " " + req.body.firstname.slice(0,1).toUpperCase() : req.body.title + " " + req.body.firstname;
 							User.city_grade = 10;
@@ -358,23 +371,10 @@ var signupRoute = function(model,sms,geonames,paystack,io,nodemailer) {
 						} else {
 							res.send({error: "Email already in use. Please find another one"});
 						}
-					}
+					
 				}//end of function creatuser
 
-				function genId(username) {
-					var getFirstLetter;
-					var toStr;
-					if(username) {
-						var getRandomNumber = randos.genRef(6);
-						toStr = username + getRandomNumber;
-					} else {
-						var getRandomNumber = randos.genRef(10);
-						toStr = getRandomNumber.toString();
-					}			
-					return toStr;					
-				}
-
-				//model.verifyPhone.remove({phone:req.body.phone,pin:req.body.v_pin},function(err,a){});
+				
 			})			
 		})
 	}));
@@ -424,7 +424,6 @@ var signupRoute = function(model,sms,geonames,paystack,io,nodemailer) {
 		testPhone.expirationDate.expires  = 60 * 60; // 1 hour before deleted from database.
 
 		testPhone.save(function(err,info){});
-		console.log(testPhone)
 		var msgBody = "Your Phone Verification Pin for Applinic is: " + genPin;
 		var phoneNunber = (req.body.phone[0] !== "+") ? "+" + req.body.phone : req.body.phone;
 		//sms.message.sendSms('Appclinic',phoneNunber,msgBody,callBack); //"2348096461927" "2349092469137"
@@ -471,15 +470,16 @@ var signupRoute = function(model,sms,geonames,paystack,io,nodemailer) {
 	
 	router.get('/user/signup',function(req,res){
 
-		if(req.query.phone){
-			
+		if(req.query.phone){			
 			model.user.findOne({phone:req.query.phone},function(err,userData){
 				if(err) throw err;
 				if(!userData){		
 					console.log(req.query);
 					res.send({error: false,errorMsg: ""});
-				} else {
-					res.send({error: true,errorMsg: "User with this phone number already exist!"})
+				} else if(!userData.password && !userData.email) {
+					res.send({error: false,errorMsg: ""});
+			  } else {
+					res.send({error: true,errorMsg: "User with this phone number already exist!"});
 				}
 			});
 			return;
@@ -517,7 +517,12 @@ var signupRoute = function(model,sms,geonames,paystack,io,nodemailer) {
 	router.get("/user/existing-user",function(req,res){
 		var phone = "+" + req.query.phone;
 		var type = (req.query.type === "laboratory") ? "laboratory" : "radiology";
-		model.user.findOne({user_id: req.user.user_id},{referral:1}).exec(function(err,result){
+		var str = (type == "laboratory") ? "laboratory.patient_phone" : "radiology.patient_phone";
+		var criteria = {};
+		criteria[str] = phone;
+		criteria["center_id"] = req.user.user_id;
+
+		/*model.user.findOne({user_id: req.user.user_id},{referral:1}).exec(function(err,result){
 			if(err) throw err;
 			if(result){
 				var elemPos = result.referral.map(function(x){return x[type].patient_phone}).indexOf(phone);
@@ -531,7 +536,17 @@ var signupRoute = function(model,sms,geonames,paystack,io,nodemailer) {
 			} else {
 				res.end({error:"Something went wrong"});
 			}				
-		});  
+		});*/
+
+		model.referral.findOne(criteria)
+		.exec(function(err,result){
+			if(err) throw err;
+			if(result){
+				res.json({error:"Person to add is already your patient!"});
+			} else {
+				createPatient(result);
+			}
+		})
 
 		function createPatient(result) {
 
@@ -541,6 +556,8 @@ var signupRoute = function(model,sms,geonames,paystack,io,nodemailer) {
 				if(data){
 					var refId = randos.genRef(6);
 					var date = + new Date();
+					var date2 = new Date();
+
 					
 					var sendObj = {
 						firstname: data.firstname,
@@ -576,7 +593,12 @@ var signupRoute = function(model,sms,geonames,paystack,io,nodemailer) {
 					refObj.ref_id = refId;
 		      refObj.referral_firstname = req.user.name;
 		      refObj.referral_id = req.user.user_id;  
-		      refObj.date = date;
+					refObj.referral_email = req.user.email;
+					refObj.referral_phone = req.user.phone;
+		      refObj.date = date2;
+		      refObj.center_id = req.user.user_id
+					refObj.deleted = false
+					
 
 		      if(req.query.type === "laboratory") {
 			      refObj.laboratory = {
@@ -589,6 +611,7 @@ var signupRoute = function(model,sms,geonames,paystack,io,nodemailer) {
 			        patient_age: data.age,
 			        patient_phone: data.phone,
 			        patient_id: data.user_id,
+			        test_id: ref_id,
 			        attended: false,
 			      }	     
 
@@ -613,9 +636,9 @@ var signupRoute = function(model,sms,geonames,paystack,io,nodemailer) {
 
 
 		    	
-					result.referral.push(refObj); 
+					var ref = new referral(refObj); 
 
-					result.save(function(err,info){
+					ref.save(function(err,info){
 		        if(err) throw err;
 		      });
 
@@ -921,7 +944,81 @@ var signupRoute = function(model,sms,geonames,paystack,io,nodemailer) {
 	  })
 	});
 
-	
+	router.get("/user/out/get-patients",function(req,res){
+		if(req.user){
+			model.user.findOne({phone:req.query.phone},
+				{user_id:1,firstname:1,lastname:1,title:1,age:1,gender:1,city:1,type:1,profile_pic_url:1,address:1,phone:1})
+			.exec(function(err,result){
+				if(err) throw err;
+				if(result){
+					if(result.type == "Patient"){
+						res.json(result);
+					} else {
+						res.json({error:true, message: "Phone number belongs to a existing user who is not a patient."})
+					}
+				}
+				else {
+					res.json({});
+				}
+			})
+		} else {
+			res.end("unauthorized access");
+		}
+	})
+
+	router.post("/user/out/create-patients",function(req,res){
+		if(req.user){
+			console.log(req.body)
+			model.user.findOne({phone:req.body.patient_phone,type: "Patient"})
+			.exec(function(err,result){
+				if(err) throw err;
+				if(!result){
+					if(req.body.patient_firstname){
+
+						var str = req.body.patient_firstname.replace(/\s/g, "");
+						var uid = genId(str);
+
+						// check to see if user_id already existed.
+						model.user.findOne({user_id: uid})
+						.exec(function(err,user){
+							if(err) throw err;
+							if(!user){
+								var newPatient = {
+									firstname: req.body.patient_firstname,
+									lastname: req.body.patient_lastname,
+									title: req.body.patient_title,
+									gender: req.body.patient_gender,
+									age: req.body.patient_age,
+									user_id: uid,
+									phone: req.body.patient_phone,
+									date: new Date(),
+									type: "Patient",
+									profile_pic_url: "/download/profile_pic/nopic"
+								}
+
+								var outPatient = new model.user(newPatient);
+								outPatient.save(function(err,info){
+									if(err) throw err;
+									res.json({success: true,patient: newPatient});
+								})
+
+							} else {
+								// if user_id already existed client should resend the request.
+								res.json({retry: true});
+							}
+						})
+					} else {
+						res.json({error: true,message: "Oops! Something went wrong while creating patient\"s account"});
+					}			
+				}	else{
+					res.json({error: true,message: "User with this patient\'s phone number already exist."});
+				}
+			});
+		} else {
+			res.end("unauthorized access")
+		}
+	});
+
  
 }
 

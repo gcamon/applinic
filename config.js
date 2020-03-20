@@ -66,7 +66,7 @@ var configuration = function (app,model) {
 	app.use(passport.session());
 	app.use(flash());		
 	app.use(bodyParser.urlencoded({ extended: false }));
-	app.use(bodyParser.json());
+	app.use(bodyParser.json({limit: '50mb'}));
 	//app.use(multer({dest: './uploads'}).any());
 
 	var multer = require('multer');
@@ -170,7 +170,6 @@ var configuration = function (app,model) {
 				//user.save(function(){})	
 				//console.log(user)
 				if(user) {
-					console.log(user.family_accounts)
 					if(user.family_flag && user.type === "Patient") {
 					  //var elePos = user.family_accounts.map(function(x){return x.status}).indexOf(true);
 					  for(var j = 0; j < user.family_accounts.length; j++) {

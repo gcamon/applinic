@@ -2,6 +2,9 @@
 
 <div class="card-center-1">
 <!--<header style="padding: 0 10px 10px; font-size: 18px;font-weight: bold;"><i class="fa fa-arrow-left" style="cursor: pointer" ng-click="refresh()" ng-if="refInfo.radiology.test_to_run.length > 0"> &nbsp;Back</i></header>-->
+	<div class="pl-0">
+	<a href="{{'#/referral/radiology-test'}}" ><i class="fa fa-arrow-left btn-sm" style="cursor: pointer" ng-if="refInfo.radiology.test_to_run.length > 0"> &nbsp;Back</i></a>
+	</div>
 	<div class="row">
 
 	<div class="card p-2">
@@ -10,23 +13,23 @@
 			<table>
 				<tbody class="p-1">
 					<tr>
-						<td style="width: 30%">Patient Name: </td>
+						<td style="width: 30%"><labeL>Patient Name</labeL> </td>
 						<td style="width: 60%">{{refInfo.radiology.patient_title}} {{refInfo.radiology.patient_firstname}} {{refInfo.radiology.patient_lastname}}</td>
 					</tr>
 					<tr>
-						<td>Gender: </td>
+						<td><labeL>Gender</labeL> </td>
 						<td>{{refInfo.radiology.patient_gender}}</td>
 					</tr>
 					<tr>
-						<td>Age: </td>
+						<td><label>Age </label></td>
 						<td>{{refInfo.radiology.patient_age}}</td>
 					</tr>
 					<tr>
-						<td>Phone: </td>
+						<td><label>Phone</label> </td>
 						<td>{{refInfo.radiology.patient_phone}}</td>
 					</tr>
 					<tr>
-						<td>Investigation Requested: </td>
+						<td><label>Investigation Requested</label> </td>
 						<td>
 							<div class="mt-1"  ng-repeat = "test in refInfo.radiology.test_to_run" >
 								<label class="custom-control custom-checkbox">
@@ -39,35 +42,53 @@
 					</tr>
 
 					<tr ng-show="refInfo.radiology.indication !== 'undefined'">
-						<td>Indication / Summary: </td>
+						<td><label>Indication / Summary</label> </td>
 						<td><p>{{refInfo.radiology.indication}}</p> <p>{{refInfo.radiology.clinical_summary}}</p></td>
 					</tr>
 
 					<tr ng-if ="refInfo.radiology.parity">
-						<td>Parity: </td>
+						<td><label>Parity</label> </td>
 						<td>{{refInfo.radiology.parity}}</td>
 					</tr>
 
 					<tr ng-if ="refInfo.radiology.lmp">
-						<td>LMP: </td>
+						<td><label>LMP</label> </td>
 						<td>{{refInfo.radiology.lmp}}</td>
 					</tr>
 
 					<tr>
-						<td>Referring Physician: </td>
-						<td><span ng-show="refInfo.radiology.doctor_firstname">{{refInfo.radiology.title}} {{refInfo.radiology.doctor_firstname}} {{refInfo.radiology.doctor_lastname}}</span> <span ng-show="!refInfo.radiology.doctor_firstname">Other</span></td>
+						<td><label>Referring Physician</label> </td>
+						<td><span ng-show="refInfo.radiology.doctor_firstname">{{refInfo.radiology.title}} {{refInfo.radiology.doctor_firstname}} {{refInfo.radiology.doctor_lastname}}</span> <span ng-show="!refInfo.radiology.doctor_firstname">Other</span>
+						<br>
+						<span><label>Email </label> {{refInfo.referral_email}} <label>Phone </label> {{refInfo.referral_phone}}</span>
+						</td>
 					</tr>
 					<tr>
-						<td>Reference Number: </td>
+						<td><label>Reference Number</label> </td>
 						<td>{{refInfo.ref_id}}</td>
 					</tr>
 					<tr>
-						<td>Time of Referral: </td>
+						<td><label>Time of Request</label> </td>
 						<td><span style="color: darkRed" am-time-ago="refInfo.date"></span></td>
 					</tr>
 				</tbody>
 			</table>
-			<br>
+			<div style="position: relative;margin-top: 20px">
+		    	
+				<div class="pl-2 pt-1" ng-show="refInfo.redirect_to.length > 0">
+					<label>Forwarded Test Details:</label>
+					<div>
+						<div ng-repeat="j in refInfo.redirect_to" class="pb-1">
+							<span style="font-style: italic;" class="text-muted"><span ng-repeat="k in j.referredTests"> {{k.name}} </span></span><br>
+						    <span><b>Center Name:</b> {{j.name}}</span><br>
+						    <span><b>Ref No:</b> {{j.ref_id}}</span><br>
+						    <span><b>Location:</b> {{j.address}} {{j.city}} {{j.country}}</span><br>
+						    <span><b>Phone:</b> {{j.phone}}</span>
+						</div>
+					</div>
+				</div><br>
+				<a href="" class="btn btn-neutral btn-sm" style="position: absolute;right: 10px;bottom: 0" title="Refer study to a center" ng-click="forwardUnRanTest(refInfo)"><i class="fa fa-share" ng-show="!loading"></i><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:white;font-size: 20px" ng-show="loading"></i></a>
+			</div>
 			<div class="row">
 				<div class="col-md-6">
 					<p> If you have already captured this patient and uploaded study to Applinic Online PACs server, move to next step ( link the study ).</p>

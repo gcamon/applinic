@@ -5,7 +5,7 @@ var uuid = require("uuid");
 function Wallet(date,firstname,lastname,message,reference){
 	this.date = + new Date();
 	this.firstname = firstname;
-	this.lastname = lastname;
+	this.lastname = lastname || "";
 	this.message = message;
 	this.result = false;
 	this.reference_number = reference;
@@ -47,7 +47,6 @@ Wallet.prototype.credit = function(model,receiver,amount,io,cb){
 					}
 				})
 			}
-			console.log(amount)
 
 			if(data) {
 				if(self.message !== 'billing')
@@ -145,6 +144,27 @@ Wallet.prototype.payment = function(model,amount,debitor,reciever_id,io){
 	//debit the user of the service
 	this.debit(model,amount,debitor);
 	
+}
+
+//debitor is a user model,creditor is key value pairs, amount is integer.
+Wallet.prototype.billPaymentByCenter = function(model,amount,debitor,io){
+	var creditor = {admin: true};
+	var commission = amount * (debitor.city_grade / 100);
+
+	var amountToBeDebited = commission;
+
+	console.log("total: ",amount," commission: ", commission, " debit: ", amountToBeDebited)
+
+	if(debitor.ewallet.available_amount < amountToBeDebited){
+		return false;
+	}
+
+	this.credit(model,creditor,commission,io);
+
+	//debit the center for the service
+	this.debit(model,amountToBeDebited,debitor);
+	
+	return true;
 }
 
 Wallet.prototype.consultation = function(model,amount,debitor,reciever_id,io){

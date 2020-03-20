@@ -38,56 +38,60 @@
 </div>-->
 
 
-<div>
+
 <div class="card card-center-1 p-1">
-	<h3 class="pl-1 pb-0 font-1_4">Find {{type}} Tests</h3> 
+	<h4 class="pl-1 pb-0 font-1_4">Find {{type}} Tests  <i class="fa fa-question-circle tip text-primary"><span>Here you search for tests available in laboratory centers currently registered in "Applinic". By default, your city is used as the first criteria. You can use "Search options" to switch between test name or reference number criteria modes. Please note this will only search for services available in centers registered in the platform. You can search for multiple tests at once by using "+" below the test name input.</span></i></h4> 
 		
-    <div class="col-md-5">
-		<label for="lastname">Search Option </label>
-		<select class="custom-select form-control"  ng-model="search.category">
+    <div class="col-md-7">
+		<label for="lastname">Search options:  </label>
+		<select class="custom-select"  ng-model="search.category">
 			  <!--<option selected>{{search.category}}</option>-->
-			  <option selected value = "Test Name">Test Name (default)</option>
+			  <option selected value="Test Name">Test Name (default)</option>
 			  <option>Reference number</option>
 		</select>
 	</div>
 	<div class="clearfix"></div>
-	<div>	
-	   <label for="City">City: </label>
-	   <input  type="text" placeholder="Enter city name" ng-model="city" uib-typeahead="city for city in cities | filter:$viewValue | limitTo:15" class="form-control">		
-		{{getCity(city)}} 
-	</div>
-	<div ng-if="notRef">
-		
-		<label for="City">Test name: </label>	
-		<section style="position: relative;" ng-repeat="i in testList">				
-				
-			<input  type="text" placeholder="Enter test name" ng-model="test.name" uib-typeahead="test.name for test in tests | filter:$viewValue | limitTo:15" class="form-control">
-			{{getTest(test.name)}} 
-			<i class="fa fa-times text-muted" style="cursor: pointer;position: absolute;right:10px;bottom: 10px" ng-click="remove(i.sn)" ng-if="i.sn !== 'a'"></i>				
-					
-		</section>
-
-		<div style="text-align:right">
-			<i class="fa fa-plus text-muted" style="cursor: pointer;" ng-click="add(test.name)"> Add</i> 
+	<br>
+	<div class="col-md-8">
+		<div>	
+		   <label for="City">City: </label>
+		   <input  type="text" placeholder="Enter city name" ng-model="city" uib-typeahead="city for city in cities | filter:$viewValue | limitTo:15" class="form-control">		
+			{{getCity(city)}} 
 		</div>
-    	<div class="clearfix"></div>
-		<span ng-if="notRef">
-			<button ng-click="findTest(test.name)" class="btn btn-info" > <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="isLoading"></i>{{(isLoading) ? "" : 'Find'}}</button>
-		</span>
-		
-	</div>
-	<div  ng-if="isRef">
-	
-		<div>
-		 	<label for="City">Reference Number: </label>
-			<input type="number" placeholder="Enter Ref NO" ng-model="user.refId" class="form-control">
+		<br>
+		<div ng-if="notRef">
 			
-			<button ng-click="findWithRef(user.refId)" class="btn btn-info mt-2" ><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="isLoading"></i>{{(isLoading) ? "" : 'Find'}} </button>				
-		</div>	
+			<label for="City">Test name: </label>	
+			<section style="position: relative;" ng-repeat="i in testList">				
+					
+				<input  type="text" placeholder="Enter test name" ng-model="test.name" uib-typeahead="test.name for test in tests | filter:$viewValue | limitTo:15" class="form-control">
+				{{getTest(test.name)}} 
+				<i class="fa fa-times text-muted" style="cursor: pointer;position: absolute;right:10px;bottom: 10px" ng-click="remove(i.sn)" ng-if="i.sn !== 'a'"></i>				
+						
+			</section>
+
+			<div style="text-align:right">
+				<i class="fa fa-plus  btn btn-neutral" style="cursor: pointer;" ng-click="add(test.name)"> </i> 
+			</div>
+	    	<div class="clearfix"></div>
+			<span ng-if="notRef">
+				<button ng-click="findTest(test.name)" class="btn btn-info" > <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="isLoading"></i>{{(isLoading) ? "" : 'Find'}}</button>
+			</span>
+			
+		</div>
+		<div  ng-if="isRef">
 		
+			<div>
+			 	<label for="City">Reference Number: </label>
+				<input type="number" placeholder="Enter Ref NO" ng-model="user.refId" class="form-control">
+				
+				<button ng-click="findWithRef(user.refId)" class="btn btn-info mt-2" ><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="isLoading"></i>{{(isLoading) ? "" : 'Find'}} </button>				
+			</div>	
+			
+		</div>
 	</div>
 </div>
 <div style="height: 300px"></div>
-</div>
+
 
 

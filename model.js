@@ -83,6 +83,8 @@ var myModel = function () {
 		collections: "centerservices"
 	});
 
+
+
 	var mailSchema = Schema({
 		firstname: String,
 		message_id: String,
@@ -143,15 +145,15 @@ var myModel = function () {
 		address: String,
 		city:String,
 		country: String,
-		ref_id: Number,
+		ref_id: String,
 		phone: String,
 		prescriptionId: Number
 	});
 
 	var prescriptionSchema = Schema({
-		prescriptionId: Number,
+		prescriptionId: String,
 		provisional_diagnosis: String,
-		date: String,
+		date: Date,
 		doctor_experience: Number,	
 		doctor_firstname: String,
 		doctor_lastname: String,
@@ -179,13 +181,14 @@ var myModel = function () {
 		patient_city: String,
 		patient_country: String,
 		prescription_body: [prescriptionBodySchema],
-		ref_id: Number,
+		ref_id: String,
 		eligible: Boolean,
 		is_paid: Boolean,
 		detail: {
 			amount: String,
 			date: String
 		},
+		explanation: String,
 		payment_acknowledgement: Boolean // use to check if patient have actually paid for a prescription through our app.
 		//if false, prescription will be deleted after one month it was created.
 	});
@@ -233,7 +236,7 @@ var myModel = function () {
 	var patient_noteSchema = Schema({
 		date: String,
 		note_id: Number,
-		ref_id: Number,
+		ref_id: String,
 		session_id: String,
 		type: String,
 		message: String
@@ -241,7 +244,8 @@ var myModel = function () {
 
 	var doc_briefSchema = Schema({
 		doctor_id: String,
-		date_of_acceptance: String,
+		doctor_title: String,
+		date_of_acceptance: Date,
 		doctor_firstname: String,
 		doctor_lastname: String,
 		doctor_profile_pic_url: String,
@@ -255,24 +259,32 @@ var myModel = function () {
 
 	var patient_briefSchema = Schema({
 		patient_firstname: String,
-		date: Number,
+		date: Date,
 		patient_lastname: String,
 		patient_id: String,
 		patient_profile_pic_url: String,
 		patient_address: String,
 		patient_city: String,
-		Patient_country: String,
+		patient_country: String,
 		patient_gender: String,
 		patient_age: String,
+		patient_phone: String,
 		patient_body_weight: String,
 		presence: Boolean,
 		initial_complaint: {
     	complaint: String,
     	complaint_date: String,
-    	date_received: Number,
+    	date_received: Date,
     	files: Array
-    	},
-    	deleted: Boolean
+    },
+    deleted: Boolean,
+    activity: {
+    	isNew: Boolean,
+    	labCount: Number,
+    	radioCount: Number
+    },
+    isBlocked: Boolean,
+    fee_history: Array
 	});
 	//this holds records for lab,prescription and scan for the patient
 	var diagnosisSchema = Schema({
@@ -292,14 +304,14 @@ var myModel = function () {
 		center_country: String,
 		center_id: String,
 		patient_id: String,
-		ref_id: Number,
+		ref_id: String,
 		referral_firstname: String,
 		referral_id: String,
 		referral_lastname: String,
 		referral_title: String,
 		sent_date: String,
 		receive_date: String,
-		report: Array,//String,
+		report: Array,
 		conclusion: String,
 		session_id: String,
 		files: Array,
@@ -311,7 +323,8 @@ var myModel = function () {
 		payment_acknowledgement: Boolean, //use to check if patient have actually paid for a service.
 		created: Date,
 		study_id: String,
-		pdf_report: Array
+		pdf_report: Array,
+		lab_pdf_report: Array
 	});
 	
 	//this holds the sent test to ba ran by the laboratory center
@@ -341,6 +354,7 @@ var myModel = function () {
 		doctor_firstname: String,
 		doctor_lastname: String,
 		doctor_id: String,
+		doctor_email: String,
 		doctor_phone: Number,
 		acc_no: String,
 		study_link: String,
@@ -348,7 +362,8 @@ var myModel = function () {
 		detail: {
 			amount: String,
 			date: String
-		}
+		},
+		lab_pdf_report: Array
 	});
 
 	var drug_refSchema = Schema({
@@ -360,7 +375,7 @@ var myModel = function () {
 	});
 
 	var refSchema = Schema({
-		ref_id: Number,
+		ref_id: String,
 		referral_firstname: String,
 		referral_lastname: String,
 		referral_title: String,
@@ -368,11 +383,14 @@ var myModel = function () {
 		referral_email: String,
 		referral_phone: String,
 		acc_no: String,
-		date: String,
+		date: Date,
 		type_of_test: String,		
 		laboratory: center_refSchema,
 		radiology: center_refSchema,
-		pharmacy: prescriptionSchema
+		pharmacy: prescriptionSchema,
+		center_id: String,
+		deleted: Boolean,
+		redirect_to: Array 
 	});
 
 	var appointment_schema = Schema({
@@ -394,7 +412,7 @@ var myModel = function () {
 		sender_lastname: String,
 		sender_title : String,
 		sent_date: String,
-		ref_id: Number,
+		ref_id: String,
 		note_id: Number,
 		sender_profile_pic_url: String,
 		message: String,
@@ -428,7 +446,8 @@ var myModel = function () {
 		acc_no: String,
 		study_link: String,
 		study_ref_id: String,
-		patient_id_of_study: String
+		patient_id_of_study: String,
+		lab_pdf_report: Array
 	});
 
 	var subSession = Schema({
@@ -463,12 +482,12 @@ var myModel = function () {
 		files: Array,
 		treatment_plan: String,
 		sub_session: [subSession],
-    	study_id: String
+    study_id: String
 	});
 
 	var sessionSchema = Schema({
-		date: String,
-		last_modified: String,
+		date: Date,
+		last_modified: Date,
 		session_id: String,
 		patient_id: String,
 		profilePic: String,
@@ -498,7 +517,7 @@ var myModel = function () {
 	    test_result: Array,
 	    files: Array,
 	    date_sent: String,
-	    ref_id: Number
+	    ref_id: String
 	});
 
 	
@@ -657,7 +676,8 @@ var myModel = function () {
 		stock_update: updateSchema,
 		patient_history: patientHistorySchema,
 		reporters: Array,
-		dicom_enterprise: Boolean
+		dicom_enterprise: Boolean,
+		report_signees: Array
 	},{
 		collections: "userinfos"
 	})
@@ -1032,7 +1052,7 @@ var myModel = function () {
 	  study_link2: String,
 	  study_link_mobile: String,
 	  deleted: Boolean,
-	  ref_id: Number,
+	  ref_id: String,
 	  study_type: String,
 	  pdf_report: Array,
 	  ref_id: String,
@@ -1101,18 +1121,26 @@ var myModel = function () {
 		lab_data: Array,
 		ref_id: String,
 		center_pic: String,
-	    center_name: String,
-	    center_address: String,
-	    center_email: String,
-	    center_phone: String,
-	    center_city: String,
-	    center_country: String,
-	    id_by: String
-	})
+    center_name: String,
+    center_address: String,
+    center_email: String,
+    center_phone: String,
+    center_city: String,
+    center_country: String,
+    id_by: String,
+    report_date: Date
+	});
 
 
-
-
+	var consultationFeeSchema = Schema({
+		status: String,
+		is_paid: Boolean,
+		amount: Number,
+		doctor_id: String,
+		patient_id: String,
+		date: Date,
+		commission: Number
+	});
 
 	//models
 	var models = {};
@@ -1148,6 +1176,8 @@ var myModel = function () {
 	models.session = mongoose.model("sessioninfo",sessionSchema);
 	models.doc_entry = mongoose.model("docEntryinfos",docEntrySchema);
 	models.lab_store = mongoose.model("labstoreinfos",labStoreSchema);
+	models.referral = mongoose.model("referralinfos",refSchema);	
+	models.consultationFee = mongoose.model("consultationfeeinfos",consultationFeeSchema);
 	//models.calling_code = mongoose.model("callingcodeinfos",callingSchema)
 	
 	return models		

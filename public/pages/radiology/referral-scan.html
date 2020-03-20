@@ -1,6 +1,6 @@
 
 
-<div>
+<!--<div>
     <div class="card card-center-1 p-2">
 <div class="col-sm-12 col-md-12 col-lg-12">
 	<div class="row">		
@@ -40,9 +40,7 @@
 </form>
 
 	<div ng-repeat="test in tests | orderBy : '-date'" class="col-sm-12 pl-0 pt-1" style="cursor:pointer;position: relative;">
-		<!--<img ng-src="{{test.radiology.patient_profile_pic_url}}" style="width:82px; height: 82px">
-		<span class="font-1_1">{{test.radiology.patient_firstname}} {{test.radiology.patient_lastname}}</span></br>
-		<span>{{test.ref_id}}</span>-->
+		
 			<div class="p-0" style="display: inline-block;float: left;">
 	        	<img  ng-src="{{test.radiology.patient_profile_pic_url}}" style="max-width:120px; max-height: 120px">
 	        </div>
@@ -61,4 +59,154 @@
 	</div>
 </div>
     </div>
+</div>-->
+
+<div class="card p-2 card-center-1">
+	<h4>Investigation Requests</h4>
+	<form class="row" ng-submit="searchTests()">
+		<div class="col-md-4">
+			<label> From </label>
+			<input type="date" name="" class="form-control" ng-model="patient.from">
+		</div>
+		<div class="col-md-4">
+			<label> To </label> 
+			<input type="date" name="" class="form-control" ng-model="patient.to">
+		</div>
+
+		<div class="col-md-4">
+			<input type="text" name="" class="form-control" placeholder="Reference Number" ng-model="patient.refId">
+		</div>
+
+		<div class="col-md-4">
+			<input type="text" name="" class="form-control" placeholder="Patient's Phone Number" ng-model="patient.patienPhone">
+		</div>
+
+		<div class="col-md-4">
+			<input type="submit" name="" value="Search" class="btn btn-info btn-sm">&nbsp;
+			<input type="button" name="" value="Clear" class="btn btn-simple btn-sm" ng-click="clear()">
+		</div>
+	</form>
+	<!--<div class="col-md-4 pl-0 ml-0">
+		<input type="text" name="" placeholder="filter" class="form-control">
+	</div>
+	<div class="clearfix"></div>-->
+	<hr>
+	<div>	
+		<div style="text-align: right;">
+			<input type="text" name="" placeholder="filter list" ng-model="filterList">
+		</div>	
+		<table>
+			<thead>
+				<th>Patient Name</th>
+				<th>Reference No.</th>
+				<th>Patient Phone</th>
+				<th>Study Requested</th>
+				<th>Time</th>
+			</thead>
+			<tbody ng-repeat="test in requestList | date : '-date' | filter : filterList" style="line-height: 25px" ng-show="test.radiology.test_to_run.length > 0">
+				<td>{{test.radiology.patient_firstname}} {{test.radiology.patient_lastname}}</td>
+				<td>{{test.ref_id}}</td>
+				<td>{{test.radiology.patient_phone}}</td>
+				<td>
+					
+					<div ng-repeat="k in test.radiology.test_to_run"><small> - {{k.name}}</small></div>
+					
+					<div style="text-align: right;">
+						<a href="{{'https://drive.google.com/viewerng/viewer?embedded=true&url=https://applinic.com' + study.lab_pdf_report[0].pdf_report}}" target="_blank">
+							<i ng-show="test.radiology.pdf_report.length > 0" class="fa fa-file text-danger"></i>
+						</a>
+					</div>
+				</td>
+				<td style="position: relative;"><span am-time-ago="test.date "></span><br><br> <i class="fa fa-ellipsis-h text-muted" style="float: right;padding: 2px 1px;cursor: pointer;" title="Manage test" ng-click="popup(test)"></i>
+					<div ng-class="{'popup': test.isManage == true}" ng-if="test.isManage" style="line-height: 35px">
+					  <div style="position: absolute;top:4px;right: 10px" ng-click="closePop(test)"><i class="fa fa-times text-info"></i></div>
+					  <a href=""  ng-click="viewLabTest(test)"><i class="fa fa-gear"></i> Attend to Request </a><br>				 
+					  <a href=""  ng-click="forwardUnRanTest(test)"><i class="fa fa-link"></i> Refer to a Center</a><br>
+					  <a href=""  ng-click="share(test)" ng-show="test.radiology.pdf_report.length > 0"><i class="fa fa-share"></i> Share Test Result <br>	</a>				 					 
+					  <a href="{{'https://drive.google.com/viewerng/viewer?embedded=true&url=https://applinic.com' + test.radiology.pdf_report[0].pdf_report}}" target="_blank" ng-show="test.radiology.pdf_report.length > 0"><span><i class="fa fa-file"></i> View Result</span><br></a>
+					  <!--<a href="" class="text-danger"  ng-click="delete(test)"><i class="fa fa-times"></i> Delete Request</a><br> -->													
+					</div>
+				</td>
+			</tbody>
+		</table>
+		<div style="text-align: center;padding-top: 20px" ng-show="loading">
+			<span class="text-warning">Loading...</span>
+		</div>	
+		<div style="text-align: center;padding-top: 20px" ng-show="requestList.length == 0">
+			<span class="text-muted">Study not found!</span>
+		</div>			
+	</div>
+	
 </div>
+<div style="height: 300px"></div>
+
+
+
+
+
+
+
+
+
+<!--<div class="card card-center-1 p-2">
+	<div class="row">		
+		
+		<div class="col-sm-6 col-md-8 col-lg-8">
+			<h3 class="p-0">Investigation Request</h3>
+		</div>
+		<div class="col-sm-6 col-md-4 col-lg-4">
+			<button class="pl-1 btn btn-simple text-info btn-sm" style="margin-top: 10px;" ng-click="showOption()">{{(isNotOption) ? 'Find with phone number' : 'Find with reference number'}}</button>				
+		</div>
+	</div>
+	<div>
+		<br>	
+		<form ng-if="isNotOption" ng-submit="findTest()">
+				<div>
+					<label style="padding: 10px 5px">Test reference Number (default):</label><br>
+				</div>
+	        
+	            <div class="col-md-8 p-0">                
+					<input type="text" class="form-control" placeholder="Enter reference number" ng-model="patient.ref_id" />	
+	        	</div>
+	        	<div class="col-md-4 pl-0" style="padding-top: 3px">
+					<button type="submit" class="btn btn-info">Find</button>
+				</div>
+	        
+		</form>
+
+		<form ng-if="isOption" ng-submit="findTest()">
+	         
+	         	<div>
+	         		<label style="padding: 10px 5px">Patient Phone Number:</label>
+	         	</div>
+	            <div class="col-md-8 p-0">                
+					<input type="text"  class="form-control" placeholder="Enter patient phone number" ng-model="patient.phone" />				
+				</div>
+				<div class="col-md-4 pl-0" style="padding-top: 3px">
+					<button type="submit" class="btn btn-info" >Find</button>
+				</div>
+		        </div>
+		</form>
+	</div>
+<div class="clearfix"></div>
+<hr>
+<h6 ng-if="tests.length > 0">Results ( {{tests.length}} )</h6>
+<div ng-repeat="test in tests | orderBy : '-date'" class="pl-0 pt-1 row" style="cursor:pointer;position: relative;" ng-if="tests.length > 0">
+	
+		<div class="col-md-3">
+        	<img  ng-src="{{test.radiology.patient_profile_pic_url}}">
+        </div>
+		<div class="col-md-7" style="position: relative;"> 
+			<strong class="">{{test.radiology.patient_firstname}} {{test.radiology.patient_lastname}}</strong><br>				
+			<span class="">Ref No: {{test.ref_id}}</span><br>
+			<span am-Time-Ago = "test.date"></span>
+			<button class="btn btn-info" style="position: absolute;right: 5px;bottom: 10px;padding: 5px 7px;" ng-click="viewLabTest(test)">view test</button>
+		</div>  
+		<div class="clearfix"></div>
+</div>
+    
+	<div class="mt-1 text-white" ng-class="{'text-danger' : tests.length === 0 }" ng-if="tests.length === 0">{{error}}</div>
+	<div ng-if="loading"  style="width: 70%;text-align: center;padding-top: 20px">
+		<i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange;font-size: 20px" ng-if="loading"></i>
+	</div>
+</div>-->

@@ -1,0 +1,115 @@
+<div class="card p-2 card-center-1">
+	<h4>Laboratory Investigation </h4>
+	
+	<form class="col-md-10" style="line-height: 25px" ng-show="isNewLab" ng-submit="validatePatient()">  
+       	<div>
+        	<label>Patient's Phone Number *</label> &nbsp;<i class="fa fa-question-circle tip text-primary"><span>This should be the number patient used to register in 'Applinic'. But you can proceed if the number is not yet registered by adding few details about the patient to enable system create record for the patient. However, details and reference to the test(s) will be sent to the patient via SMS.</span></i><br>
+    		<input type="text" name="" class="form-control" ng-model="treatment.patient_phone" required uib-typeahead="p.patient_phone for p in patientList | filter:$viewValue | limitTo:15">
+    		<span class="text-danger">{{phoneError}}</span><br>
+        </div>
+        <div>
+        	<label>Investigation(s) ( {{TestList.length}} ) *</label>
+        </div>
+        <div ng-repeat="lab in TestList">
+             
+             <span class="text-danger">{{invMsg}}</span>
+            <input  type="text" placeholder="Enter test name"  ng-model="test.name" uib-typeahead="test.name for test in tests | filter:$viewValue | limitTo:15" class="form-control" >
+            {{getTest(test.name)}} 
+        </div>
+        <div style="text-align: right">
+            <i class="fa fa-plus btn btn-neutral" style="font-size:14px;margin-right: 10px;cursor: pointer;" title="Add field" ng-click="addTest()"></i>
+                <i class="fa fa-minus btn btn-neutral" style="font-size: 14px;cursor: pointer;" title="Remove last field" ng-click="removeTest()" ng-show="TestList.length > 1"> </i>
+        </div>        
+        <div>
+            <label>Indication *</label>
+            <textarea  placeholder="Write.." ng-model="treatment.indication" class="form-control pl-2" ng-keyup="autoExpand($event)" id="textarea" required></textarea>
+        </div>
+        <br>
+        <div>
+            <label>Clinical Summary *</label>
+            <textarea placeholder="Write.." ng-model="treatment.clinical_summary" class="form-control pl-2" ng-keyup="autoExpand($event)" id="textarea" required></textarea>
+        </div>
+        <br>
+       
+        <div>
+            <label>LMP: ( Female )</label>
+            <textarea  placeholder="Write.." ng-model="treatment.lmp" class="form-control pl-2" ng-keyup="autoExpand($event)" id="textarea"></textarea>
+        </div>
+         <div>
+            <label>Parity: ( Female ) </label>
+            <textarea  placeholder="Write.." ng-model="treatment.parity" class="form-control pl-2" ng-keyup="autoExpand($event)" id="textarea"></textarea>
+        </div>    
+        <br>
+        <div>
+            <input type="submit" class="btn btn-success" value="Continue" ng-show="!loading"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange" ng-show="loading"> </i>
+        </div>
+        
+    </form>
+    <div class="clearfix"></div>   
+    <section class="col-md-10" ng-show="isNewPatient">
+    	<div>
+    		<a href="" ng-click="goBack()"><i class="fa fa-arrow-left"></i> Back </a>
+    	</div>
+    	<p class="pt-1 pb-1 text-danger">Patient with the phone number was not found but you can proceed after quickly creating a dummy account for this patient. Details and reference to this investigation(s) will be sent to the patient via SMS.</p>
+    	<form ng-submit="createPatient()">
+    		<label>Title</label><br>
+    		<select ng-model="treatment.patient_title" required>
+    			<option>Mr</option>
+    			<option>Mrs</option>
+    			<option>Master</option>
+    			<option>Miss</option>
+    			<option>Dr</option>
+    			<option>Prof</option>
+    		</select><br><br>
+ 
+    		<label>Firstname</label><br>
+    		<input type="text" name="" class="form-control" ng-model="treatment.patient_firstname" required><br>
+    		<label>Lastname</label><br>
+    		<input type="text" name="" class="form-control" ng-model="treatment.patient_lastname" required><br>
+    		<label>Gender</label><br>
+    		<select  class="form-control" ng-model="treatment.patient_gender" required>
+    			<option>Male</option>
+    			<option>Female</option>
+    		</select><br>
+    		<label>Date of Birth</label><br>
+    		<input type="date" name="" class="form-control" ng-model="treatment.dob" required><br>
+    		<input type="submit" name="" class="btn btn-info" value="Continue" ng-show="!loading"> <span ng-show="loading">Processing...</span>
+    	</form>
+    </section>
+    <section ng-show="isSearchToSend" class="col-md-10">
+    	<div>
+    		<a href="" ng-click="goBack()"><i class="fa fa-arrow-left"></i> Back </a>
+    	</div><br>
+    	<form ng-submit="findLabs()">
+    		<div class="col-md-8 col-sm-8 col-xs-8 pl-0 ml-0">
+    			<input type="text" name="" ng-model="city" class="form-control">
+    		</div>
+    		<div class="col-md-2 col-sm-3 col-xs-3 pl-0 ml-0">
+    			<input type="submit" name="" value="Search" class="btn btn-info">
+    		</div>
+    	</form>
+    	<div class="clearfix"></div>
+    	<hr>
+    	<div>
+    		<div>
+    			<label>Patient: <span class="text-muted">{{treatment.patient_title}} {{treatment.patient_firstname}} {{treatment.patient_lastname}}</span></label>
+    		</div>
+    		<div ng-show="searchResult.length > 2">
+    			<input type="text" name="" placeholder=" Filter list" ng-model="item">
+    		</div>
+    		<div ng-repeat='j in searchResult | filter: item' style="position: relative;" class="pt-1 pb-1">
+    			<label>{{j.name}}</label><br>
+    			<span>{{j.address}} {{j.city}} {{j.country}}</span><br>
+    			<span>{{j.phone}}</span>
+    			<span style="position: absolute;bottom: 5px;right: 5px">
+    				<button class="btn btn-sm btn-warning" ng-click="sendTest(j)" ng-show="!j.isSent">{{(j.loading) ? 'Sending...' : 'Send'}}</button><i class="fa fa-check btn btn-sm btn-neutral" style="color: #85CE36" ng-show="j.isSent"></i>
+    			</span>
+    		</div>
+    	</div>
+    	<div ng-show="loading" class="mt-2" style="text-align: center;">
+    		<i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange"> </i>
+    	</div>
+    </section>
+   
+	
+</div>

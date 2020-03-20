@@ -18,13 +18,13 @@ var options = {
   path: "/_turn/www.applinic.com",
   method: "PUT",
   headers: {
-      "Authorization": "Basic " + new Buffer("gcamon:406b470c-2ddf-11e8-9c83-538c56484774").toString("base64")
+      "Authorization": Buffer.from("gcamon:406b470c-2ddf-11e8-9c83-538c56484774", 'base64') //"Basic " +  Buffer("gcamon:406b470c-2ddf-11e8-9c83-538c56484774").toString("base64")
   }
 };
 
 //var token = require("./twilio");
 var randos = require("./randos");
-var topdf = require("./topdf");
+//var topdf = require("./topdf");
 var pdf = require('html-pdf');
 
 
@@ -1286,7 +1286,6 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
     //dcotor refering patient to another doctor from doctor's dashboard
     router.get("/user/find-specialist",function(req,res){     
       if(req.user) {
-        console.log(req.query)
        /* req.query.type = "Doctor";     
         model.user.find(req.query,{profile_pic_url:1, 
           firstname: 1,title: 1,lastname:1,user_id:1,_id:0,work_place:1,address:1,city:1,country:1,phone:1,specialty:1},function(err,list){
@@ -2044,7 +2043,6 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
 
     router.put("/user/doctor/acceptance",function(req,res){
          if(req.user){ 
-          console.log(req.body)
              model.user.findOne(
                 {
                     user_id: req.body.patientId
@@ -2092,7 +2090,7 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
                       } //else {
 
                       var msgBody = req.user.title + " " + req.user.firstname + " " + req.user.lastname +
-                       " accepted your consultation request! Go to dashboard https://applinic.com/user/patient to view details";
+                       " accepted your consultation request! Go to dashboard https://applinic.com/user/patient for more details";
                       var phoneNunber =  result.phone;                  
 
                       sms.messages.create(
@@ -2101,23 +2099,22 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
                           from: '+16467985692',
                           body: msgBody,
                         }
-                      ) 
-                      //}
-
-                      sms.calls 
-                        .create({
-                          url: "https://applinic.com/voicenotification?firstname=" + req.user.lastname + "&&title=" + req.user.title,
-                          to: phoneNunber || "",
-                          from: '+16467985692',
-                        })
-                        .then(
-                          function(call){
-                            console.log(call.sid);
-                          },
-                          function(err) {
-                            console.log(err)
-                          }
                       );
+                    
+                      sms.calls 
+                      .create({
+                        url: "https://applinic.com/voicenotification?firstname=" + req.user.lastname + "&&title=" + req.user.title,
+                        to: phoneNunber || "",
+                        from: '+16467985692',
+                      })
+                      .then(
+                        function(call){
+                          console.log(call.sid);
+                        },
+                        function(err) {
+                          console.log(err);
+                        }
+                      )
 
                       var transporter = nodemailer.createTransport({
                         host: "mail.privateemail.com",
@@ -2423,11 +2420,11 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
     //this route gets the individual prescription for a patient 
     router.get("/user/pharmacy/get-referral",function(req,res){
       if(req.user){
-        var toNum = parseInt(req.query.refId)
-        model.user.findOne({user_id:req.user.user_id},{referral:1,_id:0},function(err,data){
+        var toNum = req.query.refId;
+        model.referral.findOne({center_id:req.user.user_id,ref_id: toNum},function(err,found){
           if(err) throw err;          
-          var elemPos = data.referral.map(function(x){return x.ref_id}).indexOf(toNum);
-          var found = data.referral[elemPos]
+          //var elemPos = data.referral.map(function(x){return x.ref_id}).indexOf(toNum);
+          //var found = data.referral[elemPos]
           res.send(found);
         });
       } else {
@@ -2437,7 +2434,7 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
     //this route gets all referral for a pharmacy.
     router.put("/user/pharmacy/get-referral",function(req,res){
       if(req.user){
-        model.user.findOne({user_id:req.user.user_id},{referral:1,_id:0},function(err,data){
+        model.referral.find({center_id:req.user.user_id},function(err,data){
           if(err) throw err;
           if(data) {
             var list = [];
@@ -2446,8 +2443,8 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
             for(var i = 0; i < req.body.length; i++){
               toStr = req.body[i].ref_id.toString();
               if(!filter.hasOwnProperty(toStr)){
-                var elemPos = data.referral.map(function(x){return x.ref_id}).indexOf(req.body[i].ref_id);
-                var found = data.referral[elemPos];
+                var elemPos = data.map(function(x){return x.ref_id}).indexOf(req.body[i].ref_id);
+                var found = data[elemPos];
                 list.push(found);
                 filter[toStr] = "";
               }
@@ -2601,7 +2598,9 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
     router.get("/user/patient/getAllPharmacy",function(req,res){
       //gets all pharmacy in the database based on patient's location.
       if(req.user){
-        var creteria = (req.query.city) ? {type:"Pharmacy",city:req.query.city,country:req.query.country} : {type:"Pharmacy",city:req.user.city};
+        var param = (req.query.city) ? req.query.city : req.user.city;
+        var str = new RegExp(param.replace(/\s+/g,"\\s+"), "gi");
+        var criteria = {type:"Pharmacy",city:{ $regex: str, $options: 'i' }};
         var projection = {
             name: 1,
             address: 1,
@@ -2613,10 +2612,12 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
             type:1,
             phone:1,
         }
-        model.user.find(creteria,projection,function(err,data){ //remenber to replace "Enugu" with req.user.city
+
+        model.user.find(criteria,projection,function(err,data){ //remenber to replace "Enugu" with req.user.city
           if(err) throw err;
           res.send(data);
         });
+
       } else {
         res.end("Unauthorized access!");
       }
@@ -2807,16 +2808,20 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
        
       if(req.user){ 
 
-            var date = + new Date();
+            var date = new Date();
+
             var ref_id;
             if(req.body.ref_id) {
               ref_id = req.body.ref_id;
             } else {
               ref_id = randos.genRef(6);
             }
+
+            req.body.prescriptionId = randos.genRef(12);
             
             var preObj = {              
-              provisional_diagnosis: req.body.provisional_diagnosis || req.body.treatment.provisionalDiagnosis,
+              provisional_diagnosis: req.body.provisional_diagnosis,
+              explanation: req.body.explanation,
               date: date,
               prescriptionId: req.body.prescriptionId,
               title: req.user.title,
@@ -2907,11 +2912,20 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
             }
         });
 
-         function savePatient(pharmacy) {
+        function savePatient(pharmacy) {
             model.user.findOne(
-              {user_id: req.body.patient_id},{patient_notification:1,firstname:1,lastname:1,prescription_tracking:1,medications:1,phone:1,user_id:1}
+              {user_id: req.body.patient_id},
+              {patient_notification:1,firstname:1,lastname:1,prescription_tracking:1,
+                medications:1,phone:1,user_id:1,accepted_doctors:1}
               ).exec(function(err,data){
-              if(err) throw err;             
+              if(err) throw err;   
+
+              if(!data) {
+                res.json({error: true, message: 'Something went wrong. Please try again'});
+                return;
+              }
+
+              req.body.holdPatientData = data;          
               
               data.patient_notification.unshift({
                 type:"pharmacy",
@@ -2936,10 +2950,25 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
               data.medications.unshift(preObj);
               data.prescription_tracking.unshift(track_record);
 
+              var docPos = data.accepted_doctors.map(function(x){return x.doctor_id}).indexOf(req.user.user_id);
+              if(docPos == -1){
+                if(req.user.type === "Doctor")
+                  data.accepted_doctors.unshift({
+                    doctor_id: req.user.user_id,
+                    doctor_title: req.user.title,
+                    date_of_acceptance: date,
+                    doctor_firstname: req.user.firstname,
+                    doctor_lastname: req.user.lastname,
+                    doctor_profile_pic_url: req.user.profile_pic_url,                  
+                    doctor_specialty: req.user.specialty,
+                    work_place: req.user.work_place,
+                  })
+              }
+
               data.save(function(err,info){
                 if(err) throw err;
                 io.sockets.to(data.user_id).emit("notification",{status:true});
-                console.log("patient notified");            
+                        
               });
 
               preObj.patient_phone = data.phone;
@@ -2950,6 +2979,25 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
                 if(err) throw err;             
                 console.log("prescription saved");                                         
               });
+
+              var msgBody = req.user.title + " " + req.user.firstname + " " + req.user.lastname 
+              +  " has written some prescriptions for you which was forwarded to " 
+              + pharmacy.name + " at " + pharmacy.address + ", " + pharmacy.city + ". Please show " 
+              + "this Ref No - " +  ref_id + " to the center. To view the prescription " 
+              + "or to share it with another physician please log into your account or create one at www.applinic.com/signup"
+              var phoneNunber =  data.phone;              
+              sms.messages.create(
+                {
+                  to: phoneNunber,
+                  from: '+16467985692',
+                  body: msgBody,
+                },
+                callBack
+              ) 
+
+              function callBack(eer, status) {
+                if(err) console.log(err);
+              }
 
             });           
 
@@ -2965,22 +3013,45 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
             }); 
           }
 
-          if(req.body.typeOfSession === "video chat" && req.body.treatment.complain || req.body.treatment.provisionalDiagnosis) {
-            model.user.findOne({user_id: req.user.user_id},{doctor_patient_session:1}).exec(function(err,record){
+          if(req.body.typeOfSession === "video chat" && req.body.treatment.complain) {
+            model.session.findOne({session_id: req.body.session_id})
+            .exec(function(err,record){
               if(err) throw err;
-              var elemPos = record.doctor_patient_session.map(function(x){return x.session_id}).indexOf(req.body.session_id);
-              if(elemPos === -1) {
+              
+              if(!record) {                
                 req.body.patient_firstname = req.body.firstname;
                 req.body.patient_lastname = req.body.lastname;
                 req.body.patient_username = req.body.username;
-                req.body.date = + new Date();
-                record.doctor_patient_session.unshift(req.body);
-                record.doctor_patient_session[0].diagnosis = req.body.treatment;
+                req.body.date = date;
+                var sess = new model.session(req.body);
+                sess.diagnosis = req.body.treatment;
+                sess.save(function(err,info){console.log("new session created")});
               }
 
-              record.save(function(err,info){});
             });
-          }     
+          }
+
+          var patientPos = req.user.doctor_patients_list.map(function(x){return x.patient_id}).indexOf(req.body.patient_id);
+          if(patientPos == -1){
+            req.user.doctor_patients_list.unshift({
+              date: date,
+              patient_lastname: req.body.lastname,
+              patient_firstname: req.body.firstname,
+              patient_id: req.body.patient_id,
+              patient_profile_pic_url: req.body.patient_profile_pic_url,
+              patient_address: req.body.address || "N/A",
+              patient_city: req.body.city,
+              patient_country: req.body.country,
+              patient_gender: req.body.gender,
+              patient_age: req.body.age,
+              patient_phone: req.body.phone
+            })
+
+            req.user.save(function(err,info){
+              if(err) throw err;
+              console.log("patient save in doctors list")
+            })  
+          }
      
       } else {
         res.end("Unauthorized Access");
@@ -3216,7 +3287,7 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
           var data = req.user;
           switch(req.body.criteria) {
             case "refIdCriteria":
-              var toNum = parseInt(req.body.ref_id);                
+              var toNum = req.body.ref_id;               
 
               var elementPos = data.referral.map(function(x) {return x.ref_id}).indexOf(toNum);
               var objectFound = data.referral[elementPos];
@@ -3294,67 +3365,55 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
       }
     });
 
-    router.put("/user/laboratory/find-patient/lab-test",function(req,res){
-      if(req.user){     
-        console.log(req.body)
-        //model.user.findOne({user_id:req.user.user_id},{referral:1},function(err,data){      
-        //if (err) throw err; 
-          var data = req.user;          
-          switch(req.body.criteria) {
-            case "refIdCriteria":
-              var toNum = parseInt(req.body.ref_id);                
-              var elementPos = data.referral.map(function(x) {return x.ref_id; }).indexOf(toNum);
-              var objectFound = data.referral[elementPos];
-              if(objectFound === undefined) {
-               res.send([]);
-              } else {
-                res.json([objectFound]);
-              }
-              break;
+    router.get("/user/laboratory/find-patient/lab-test",function(req,res){
+      if(req.user){ 
 
-              case "phoneCriteria":
-              var phone = req.body.phone;
-              var sendArr = [];
-              for(var i = 0; i < data.referral.length; i++){
-                if(data.referral[i].laboratory.patient_phone === phone) {
-                  sendArr.push(data.referral[i]);
-                }
-              }
-              res.json(sendArr);                 
-              break;
 
-              default:
-              res.send([]);
-              break;
-          } 
-        //});
+        var criteria = {center_id: req.user.user_id};
+
+        if(req.query.from){           
+          var startDate = moment(req.query.from).startOf('day'); // set to 12:00 am today
+          var endDate = moment(req.query.to).endOf('day'); // set to 23:59 pm off date range
+          criteria['date'] = {$gt: startDate,$lt: endDate};
+        }
+
+        if(req.query.refId) {
+          var intRegex = /[0-9 -()+]+$/;
+          if(intRegex.test(req.query.refId))
+            criteria['ref_id'] = req.query.refId;
+        }
+
+        if(req.query.patienPhone) {
+          criteria['laboratory.patient_phone'] = req.query.patienPhone;
+        }
+
+        model.referral.find(criteria)
+        .exec(function(err,referralList){
+          if(err) throw err;
+          res.json(referralList)
+        })
+
       } else {
         res.end("Unauthorized access");
       }
+      
     });
 
 
   
     router.get("/user/laboratory/get-referral",function(req,res){
       if(req.user){
-        var toNum = parseInt(req.query.refId)
-        model.user.findOne({user_id:req.user.user_id},{referral:1,_id:0},function(err,data){
-          if(err) throw err;          
-          var elemPos = data.referral.map(function(x){return x.ref_id}).indexOf(toNum);
-          var found = data.referral[elemPos]
-          res.send(found);
-          console.log(found)
+        var toNum = req.query.refId;
+        model.referral.findOne({ref_id: toNum,center_id: req.user.user_id})
+        .exec(function(err,found){ 
+          //var elemPos = data.referral.map(function(x){return x.ref_id}).indexOf(toNum);
+          //var found = data.referral[elemPos]         
+          if(err) throw err;
+          res.send(found);               
         });
       } else {
         res.redirect("/login")
       }
-      /*if(req.user){
-        model.user.findOne({user_id:req.user.user_id},{referral:1,_id:0},function(err,data){
-          res.send(data.referral);
-        })
-      } else {
-        res.end("Unauthorized access")
-      }*/
 
     })
 
@@ -3362,7 +3421,7 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
     //this route gets all referral for a laboratory.
     router.put("/user/laboratory/get-referral",function(req,res){
       if(req.user){
-        model.user.findOne({user_id:req.user.user_id},{referral:1,_id:0},function(err,data){
+        model.referral.find({center_id:req.user.user_id},function(err,data){
           if(err) throw err;
           if(data) {
             var list = [];
@@ -3371,8 +3430,8 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
             for(var i = 0; i < req.body.length; i++){
               toStr = req.body[i].ref_id.toString();
               if(!filter.hasOwnProperty(toStr)){
-                var elemPos = data.referral.map(function(x){return x.ref_id}).indexOf(req.body[i].ref_id);
-                var found = data.referral[elemPos];
+                var elemPos = data.map(function(x){return x.ref_id}).indexOf(req.body[i].ref_id);
+                var found = data[elemPos];
                 list.push(found);
                 filter[toStr] = "";
               }
@@ -3390,14 +3449,19 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
 
     router.get("/user/radiology/get-referral", function(req,res){
       if(req.user){
-        var toNum = parseInt(req.query.refId)
-        model.user.findOne({user_id:req.user.user_id},{referral:1,_id:0},function(err,data){
+        var toNum = req.query.refId;
+        model.referral.findOne({ref_id: toNum,center_id: req.user.user_id})
+        .exec(function(err,found){
+          if(err) throw err;          
+          res.json(found);
+        })
+        /*model.user.findOne({user_id:req.user.user_id},{referral:1,_id:0},function(err,data){
           if(err) throw err;          
           var elemPos = data.referral.map(function(x){return x.ref_id}).indexOf(toNum);
           var found = data.referral[elemPos]
           res.send(found);
           console.log(found)
-        });
+        });*/
       } else {
         res.redirect("/login")
       }
@@ -3413,7 +3477,7 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
     //this route gets all referral for a laboratory.
     router.put("/user/radiology/get-referral",function(req,res){
       if(req.user){
-        model.user.findOne({user_id:req.user.user_id},{referral:1,_id:0},function(err,data){
+         model.referral.find({center_id:req.user.user_id},function(err,data){
           if(err) throw err;
           if(data) {
             var list = [];
@@ -3422,8 +3486,8 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
             for(var i = 0; i < req.body.length; i++){
               toStr = req.body[i].ref_id.toString();
               if(!filter.hasOwnProperty(toStr)){
-                var elemPos = data.referral.map(function(x){return x.ref_id}).indexOf(req.body[i].ref_id);
-                var found = data.referral[elemPos];
+                var elemPos = data.map(function(x){return x.ref_id}).indexOf(req.body[i].ref_id);
+                var found = data[elemPos];
                 list.push(found);
                 filter[toStr] = "";
               }
@@ -3522,7 +3586,9 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
           provisional_diagnosis: req.body.provisionalDiagnosis,
         }
 
-        var getPatientInfo = {}         
+        var getPatientInfo = {}   
+
+        req.body.doctor_id = req.user.user_id;      
 
         /****************Note text messages or email will be sent to notify patients of the appointment ***********/
 
@@ -3582,14 +3648,15 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
         }
 
 
-        model.user.findOne({user_id:req.body.patient_id},{profile_pic_url:1,firstname:1,lastname:1,name:1},function(err,result){            
+        model.user.findOne({user_id:req.body.patient_id})
+        .exec(function(err,result){            
           if(err) throw err; 
           console.log(result) 
           if(result) {        
             getPatientInfo.firstname = result.firstname;
             getPatientInfo.lastname = result.lastname;
             getPatientInfo.profilePic = result.profile_pic_url;
-            getPatientInfo.patient_username = result.name;
+            getPatientInfo.patient_username = result.name || "";
 
             //create session Note; video chat initiation of sessions comes with session id from the client
             if(!req.body.session_id){
@@ -3604,18 +3671,20 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
         });
 
          //save the newly created session to he database.
-        var queryObj = (req.body.user_id) ? {user_id:req.body.user_id} : {user_id:req.user.user_id};
+        //var queryObj = (req.body.user_id) ? {user_id:req.body.user_id} : {user_id:req.user.user_id};
 
         function newSession(){         
-          model.user.findOne(queryObj,{doctor_patient_session:1}).exec(function(err,result){
-           if(err) throw err;             
+          //model.user.findOne(queryObj,{doctor_patient_session:1}).exec(function(err,result){
+          //if(err) throw err; 
+
            req.body.session_id = session_id;
-           result.doctor_patient_session.unshift(req.body);
-           result.doctor_patient_session[0].diagnosis = connectObj;
-           result.doctor_patient_session[0].patient_firstname = getPatientInfo.firstname;
-           result.doctor_patient_session[0].patient_lastname = getPatientInfo.lastname;
-           result.doctor_patient_session[0].patient_username = getPatientInfo.username;
-           result.doctor_patient_session[0].profilePic = getPatientInfo.profilePic;
+           var result = new model.session(req.body)  
+           //result.doctor_patient_session.unshift(req.body);
+           result.diagnosis = connectObj;
+           result.patient_firstname = getPatientInfo.firstname;
+           result.patient_lastname = getPatientInfo.lastname;
+           result.patient_username = getPatientInfo.username;
+           result.profilePic = getPatientInfo.profilePic;
            
             result.save(function(err,info){
               if(err) throw err;
@@ -3630,15 +3699,17 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
                 res.send({status:"success"});
               }            
             });
-          });
+         // });
         }
 
         function updateSession() {
-          model.user.findOne(queryObj,{doctor_patient_session:1}).exec(function(err,record){
-            if(err) throw err;
-            var elementPos = record.doctor_patient_session.map(function(x){return x.session_id}).indexOf(req.body.session_id)              
-            if(elementPos !== -1) {
-              var objFound = record.doctor_patient_session[elementPos];    
+          //model.user.findOne(queryObj,{doctor_patient_session:1}).exec(function(err,record){
+            //if(err) throw err;
+            //var elementPos = record.doctor_patient_session.map(function(x){return x.session_id}).indexOf(req.body.session_id)
+          model.session.findOne({session_id: req.body.session_id})
+          .exec(function(err,objFound){
+            if(objFound) {
+              //var objFound = record.doctor_patient_session[elementPos];    
               objFound.last_modified = + new Date();
               objFound.diagnosis.presenting_complain = (objFound.diagnosis.presenting_complain ) ? objFound.diagnosis.presenting_complain + " " + req.body.complain : req.body.complain;
               objFound.diagnosis.history_of_presenting_complain = (objFound.diagnosis.history_of_presenting_complain) ? objFound.diagnosis.history_of_presenting_complain + " " + req.body.historyOfComplain : req.body.historyOfComplain; 
@@ -3649,23 +3720,29 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
               objFound.diagnosis.notes = (objFound.diagnosis.notes) ? objFound.diagnosis.notes + " " + req.body.notes : req.body.notes;
               objFound.diagnosis.summary = (objFound.diagnosis.summary) ? objFound.diagnosis.summary + " " + req.body.summary : req.body.summary;
               objFound.diagnosis.provisional_diagnosis = (objFound.diagnosis.provisional_diagnosis) ? objFound.diagnosis.provisional_diagnosis + " " + req.body.provisionalDiagnosis : req.body.provisionalDiagnosis;
-              console.log("=========", objFound);
-            } else {             
-              record.doctor_patient_session.unshift(req.body);
-              record.doctor_patient_session[0].diagnosis = connectObj;
-              record.doctor_patient_session[0].patient_firstname = getPatientInfo.firstname;
-              record.doctor_patient_session[0].patient_lastname = getPatientInfo.lastname;
-              record.doctor_patient_session[0].patient_username = getPatientInfo.username;
-              record.doctor_patient_session[0].profilePic = getPatientInfo.profilePic;
-             
+              
+              objFound.save(function(err,info){
+                if(err) throw err;
+                console.log("session updated!"); 
+                res.send({status:"success"});
+              });
+
+            } else { 
+              var record = new model.session(req.body)             
+              //record.doctor_patient_session.unshift(req.body);
+              record.diagnosis = connectObj;
+              record.patient_firstname = getPatientInfo.firstname;
+              record.patient_lastname = getPatientInfo.lastname;
+              record.patient_username = getPatientInfo.username;
+              record.profilePic = getPatientInfo.profilePic;
+
+              record.save(function(err,info){
+                if(err) throw err;
+                console.log("session updated!"); 
+                res.send({status:"success"});
+              }) 
             }
             
-            record.save(function(err,info){
-              if(err) throw err;
-              console.log("session updated!"); 
-              res.send({status:"success"});
-            }) 
-           
           });
         }
       } else {
@@ -3906,7 +3983,7 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
     //doctor updates changes doctor made when consulting the patient. based on the patient presenting complain and others
     router.put("/user/doctor/session-update/save-changes",function(req,res){
       if(req.user){
-       console.log(req.body)
+      
         //save changes in the treatment session to the database
         model.session.findOne({session_id: req.body.session_id})
         .exec(function(err,objectFound){
@@ -4366,8 +4443,12 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
 
     router.get("/user/doctor/find-laboratory",function(req,res){
       if(req.user){
-        model.user.find({type: "Laboratory",city: req.user.city,country: req.user.country},
-          {name:1,address:1,user_id:1,city:1,country:1,profile_pic_url:1,type:1},
+        //var city = (req.query.city) ? req.query.city : req.user.city;
+        req.query.city = (req.query.city) ? req.query.city : req.user.city;
+        var str = new RegExp(req.query.city.replace(/\s+/g,"\\s+"), "gi"); 
+        var criteria = {city: { $regex: str, $options: 'i' },type:"Laboratory"}
+        model.user.find(criteria,
+          {name:1,address:1,user_id:1,city:1,country:1,profile_pic_url:1,type:1,phone:1},
           function(err,data){
           if(err) throw err;
           res.send(data);
@@ -4385,7 +4466,7 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
             req.body.city = req.user.city;
 
           model.user.find({type: "Laboratory",city: req.body.city,country: req.body.country},
-            {name:1,address:1,user_id:1,city:1,country:1,profile_pic_url:1,type:1},
+            {name:1,address:1,user_id:1,city:1,country:1,profile_pic_url:1,type:1,phone:1},
             function(err,data){
             if(err) throw err;
             res.send(data);
@@ -4394,26 +4475,68 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
           res.end("Unauthorized access!")
         }
     });
+
+
     
     //this route takes care doctor sending new test to a laboratory.
     router.post("/user/doctor/send-test",function(req,res){
-        if(req.user) {  
-        var random = randos.genRef(6);
+      if(req.user) {  
+       
+        var random = randos.genRef(7);
         var testId = randos.genRef(8); 
-        var date = + new Date();     
+        var date = + new Date(); 
+
+        if(req.body.isOutPatientReq){
+          req.body.treatment = {};
+          //req.body.date = new Date();
+          req.body.user_id = req.body.centerDetails.user_id;
+          req.body.patient_id = req.body.patientDetails.user_id;
+          req.body.patient_firstname = req.body.patientDetails.firstname; 
+          req.body.patient_lastname = req.body.patientDetails.lastname;
+          req.body.patient_title = req.body.patientDetails.title;
+          req.body.phone = req.body.patientDetails.phone;
+          req.body.patient_address = req.body.patientDetails.address;
+          req.body.patient_city = req.body.patientDetails.city
+          req.body.patient_profilePic = req.body.patientDetails.profile_pic_url
+          req.body.laboratory = {
+            patient_age: req.body.patientDetails.age,
+            patient_gender: req.body.patientDetails.gender,
+            profile_pic_url: req.body.patientDetails.profile_pic_url
+          }
+
+          var elemPos = req.user.doctor_patients_list.map(function(x){return x.patient_id}).indexOf(req.body.patient_id);
+          if(elemPos == -1){
+            req.user.doctor_patients_list.unshift({
+              date: date,
+              patient_lastname: req.body.patient_lastname,
+              patient_firstname: req.body.patient_firstname,
+              patient_id: req.body.patient_id,
+              patient_profile_pic_url: req.body.patient_profilePic,
+              patient_address: req.body.patient_address || "N/A",
+              patient_city: req.body.patient_city,
+              patient_country: req.body.patientDetails.country || 'Nigeria',
+              patient_gender: req.body.patientDetails.gender,
+              patient_age: req.body.patientDetails.age,
+              patient_phone: req.body.patientDetails.phone
+            })
+
+            req.user.save(function(err,info){
+              if(err) throw err;
+              console.log("patient save in doctors list")
+            })
+          }
+
+
+        }
+
         model.user.findOne({user_id: req.body.user_id},
-          {diagnostic_center_notification:1,referral:1,address:1,name:1,city:1,country:1,phone:1,user_id:1,presence:1,email:1,profile_pic_url:1})
+        {diagnostic_center_notification:1,referral:1,address:1,name:1,city:1,country:1,phone:1,user_id:1,presence:1,email:1,profile_pic_url:1})
         .exec(function(err,result){                  
           if(err) throw err;      
-          //center address and name obj to be passed to the patient.
-          
-
+        
           model.session.find({doctor_id: req.user.user_id, patient_id: req.body.patient_id})
           .exec(function(err,sessions){
             if(err) throw err;
-
-            //req.body.session_id = (!req.body.session_id) ? (sessions.length ) ? sessions[sessions.length - 1].session_id 
-            //: uuid.v1() : req.body.session_id;
 
             if(!req.body.session_id && sessions.length > 0) {
               req.body.session_id = sessions[sessions.length - 1].session_id;
@@ -4423,8 +4546,9 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
 
            
 
-            if(req.body._id)
-                  delete req.body._id
+            if(req.body._id){
+              delete req.body._id
+            }
 
 
             req.body.center_name = result.name;
@@ -4448,8 +4572,11 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
               referral_firstname: req.user.firstname,
               referral_lastname: req.user.lastname,
               referral_title: req.user.title,
-              referral_id: req.user.user_id,    
-              date: req.body.date,        
+              referral_id: req.user.user_id, 
+              referral_email: req.user.email,
+              referral_phone: req.user.phone,   
+              date: req.body.date || new Date(),  
+              center_id: result.user_id,      
               laboratory: {
                 history: req.body.history,             
                 patient_age: req.body.laboratory.patient_age,
@@ -4473,6 +4600,7 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
                 doctor_firstname: req.user.firstname,
                 doctor_lastname: req.user.lastname,
                 doctor_id: req.user.user_id,
+                doctor_email: req.user.email,
                 doctor_profile_url: req.user.profile_url
               }                         
             }
@@ -4494,22 +4622,16 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
 
             if(result.presence){
               io.sockets.to(result.user_id).emit("center notification",refNotification);
-            } /*else {
-              var msgBody = "You have new test request! Visit http://applinic.com/login"
-              var phoneNunber =  result.phone;
-             
-
-              sms.messages.create(
-                {
-                  to: phoneNunber,
-                  from: '+16467985692',
-                  body: msgBody,
-                }
-              ) 
-            }*/
+            }
 
 
-            result.referral.push(refObj);
+            //result.referral.push(refObj);
+            var referral = new model.referral(refObj);
+            referral.save(function(err,info){
+              if(err) throw err;
+              console.log("referral saved")
+            })
+
             result.diagnostic_center_notification.unshift(refNotification);
 
             result.save(function(err,info){
@@ -4522,7 +4644,8 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
 
         var tellPatient = function(centerInfo){
           //remember sms will be sent to the patient
-          model.user.findOne({user_id: req.body.patient_id},{medical_records: 1,user_id:1,patient_notification:1,presence:1,phone:1})
+          model.user.findOne({user_id: req.body.patient_id},{medical_records: 1,
+            user_id:1,patient_notification:1,presence:1,phone:1,accepted_doctors:1})
           .exec(function(err,record){            
             if(err) throw err;     
             var recordObj = {
@@ -4560,7 +4683,7 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
             } else {     
               var name = (req.user.firstname) ?  req.user.title + " " + req.user.firstname : req.user.name   
               var msgBody = "Your laboratory test was referred to " + centerInfo.name + "\n@ " + centerInfo.address + " " + centerInfo.city + " " +
-              centerInfo.country + "\nBy " + name + "\nTest Ref NO is " + req.body.random + "\nFor more details visit https://applinic.com/user/patient"
+              centerInfo.country + "\nBy " + name + "\nTest Ref No" + random + "\nFor more details visit https://applinic.com/user/patient"
               var phoneNunber =  record.phone;             
               sms.messages.create(
                 {
@@ -4573,6 +4696,23 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
 
             record.patient_notification.unshift(noteObj);
             record.medical_records.laboratory_test.unshift(recordObj);
+
+            if(req.user.type == "Doctor" && req.body.isOutPatientReq){
+              var docPos = record.accepted_doctors.map(function(x){return x.doctor_id}).indexOf(req.user.user_id);
+              if(docPos == -1){
+                record.accepted_doctors.unshift({
+                  doctor_id: req.user.user_id,
+                  doctor_title: req.user.title,
+                  date_of_acceptance: date,
+                  doctor_firstname: req.user.firstname,
+                  doctor_lastname: req.user.lastname,
+                  doctor_profile_pic_url: req.user.profile_pic_url,                  
+                  doctor_specialty: req.user.specialty,
+                  work_place: req.user.work_place,
+                })
+              }
+            }
+
             record.save(function(err,info){
               if(err) {
                 throw err;
@@ -4597,6 +4737,7 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
             conclusion: "Pending",
             sub_session_id: req.body.sub_session_id,
             indication: req.body.indication,
+            clinical_summary: req.body.clinical_summary,
             test_ran_by: req.body.center_name,
             center_address: req.body.center_address,
             center_city: req.body.center_city,
@@ -4690,97 +4831,121 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
     });
 
     //this route takes care of  un ran test which was forwarded to another center by a center.
-    router.post("/user/center/send-test",function(req,res){   
-        model.user.findOne({user_id: req.body.user_id},{
-          diagnostic_center_notification:1,referral:1,address:1,name:1,city:1,country:1,phone:1,user_id:1,presence:1})
+    router.post("/user/center/send-test",function(req,res){
+      if(req.user) { 
+
+        var originalRef = req.body.ref_id;
+        req.body.ref_id = randos.genRef(6);
+        req.body.date = new Date();
+        var originalTest = req.body.laboratory.test_to_run;
+        var referredTest = [];
+        var unRefered = [];
+
+        model.user.findOne({user_id: req.body.user_id,type: "Laboratory"},
+        {diagnostic_center_notification:1,referral:1,address:1,name:1,city:1,country:1,phone:1,user_id:1,presence:1})
         .exec(function(err,result){
-          if(err) throw err;      
+          if(err) throw err; 
 
-          //center address and name obj to be passed to the patient.
-          var centerObj = {
-            name: result.name,
-            address: result.address,
-            city: result.city,
-            country: result.country,
-            phone: result.phone,
-            id: result.user_id
-          }
+          if(result) {          
 
-          var refObj = {
-            ref_id: req.body.ref_id,
-            referral_firstname: req.user.firstname,
-            referral_lastname: req.user.lastname,
-            referral_title: req.user.title,
-            referral_id: req.user.user_id,    
-            date: req.body.date,            
-            laboratory: {              
-              history: req.body.laboratory.history,
-              patient_age: req.body.laboratory.patient_age,
-              patient_gender: req.body.laboratory.patient_gender,
-              test_to_run : req.body.laboratory.test_to_run,
-              patient_firstname: req.body.laboratory.patient_firstname,
-              patient_lastname: req.body.laboratory.patient_lastname,
-              patient_profile_pic_url: req.body.laboratory.patient_profilePic,
-              patient_title: req.body.laboratory.patient_title,
-              patient_phone: req.body.laboratory.phone,
-              session_id: req.body.laboratory.session_id,
-              patient_id: req.body.laboratory.patient_id,
-              patient_address: req.body.laboratory.patient_address,
-              indication: req.body.laboratory.indication,
-              clinical_summary: req.body.laboratory.clinical_summary,
-              lmp: req.body.laboratory.lmb,
-              parity: req.body.laboratory.parity,
-              attended: false,
-              title: req.body.title,
-              doctor_firstname: req.body.laboratory.doctor_firstname,
-              doctor_lastname: req.body.laboratory.doctor_lastname,
-              doctor_id: req.body.laboratory.doctor_id,
-              doctor_profile_url: req.body.laboratory.doctor_profile_url,
-            }             
-          }
-
-          //this is notification for the center.
-          var refNotification = {
-            sender_firstname: req.user.firstname,
-            sender_lastname: req.user.lastname,
-            sender_title : req.user.title,
-            sent_date: req.body.date,
-            ref_id: req.body.ref_id,
-            note_id: req.body.ref_id,
-            sender_profile_pic_url: req.user.profile_pic_url,
-            message: "Please run the test for my patient"
-          }
-
-
-          if(result.presence){
-            io.sockets.to(result.user_id).emit("center notification",refNotification)
-          } /*else {
-            var msgBody = "You have new test request! Visit http://applinic.com/login"
-            var phoneNunber =  result.phone;
-            sms.messages.create(
-              {
-                to: phoneNunber,
-                from: '+16467985692',
-                body: msgBody,
+            for(var i = 0; i < originalTest.length; i++){
+              if(originalTest[i].select == true){
+                referredTest.push(originalTest[i]);
+              } else {
+                unRefered.push(originalTest[i])
               }
-            ) 
-          }*/
+            }
 
-          result.referral.push(refObj);
-          result.diagnostic_center_notification.unshift(refNotification);
+            //center address and name obj to be passed to the patient.
+            var centerObj = {
+              name: result.name,
+              address: result.address,
+              city: result.city,
+              country: result.country,
+              phone: result.phone,
+              id: result.user_id
+            }
 
-          result.save(function(err,info){
-            if(err) throw err;            
-          });
-          tellPatient(centerObj);
+            var refObj = {
+              ref_id: req.body.ref_id,
+              referral_firstname: req.user.firstname || req.user.name,
+              referral_lastname: req.user.lastname || "",
+              referral_title: req.user.title || "",
+              referral_id: req.user.user_id,
+              referral_email: req.user.email,
+              referral_phone: req.user.phone,    
+              date: req.body.date,
+              center_id: result.user_id,             
+              laboratory: {              
+                history: req.body.laboratory.history,
+                patient_age: req.body.laboratory.patient_age,
+                patient_gender: req.body.laboratory.patient_gender,
+                test_to_run : referredTest,//req.body.laboratory.test_to_run,
+                patient_firstname: req.body.laboratory.patient_firstname,
+                patient_lastname: req.body.laboratory.patient_lastname,
+                patient_profile_pic_url: req.body.laboratory.patient_profilePic,
+                patient_title: req.body.laboratory.patient_title,
+                patient_phone: req.body.laboratory.patient_phone,
+                session_id: req.body.laboratory.session_id,
+                patient_id: req.body.laboratory.patient_id,
+                patient_address: req.body.laboratory.patient_address,
+                indication: req.body.laboratory.indication,
+                clinical_summary: req.body.laboratory.clinical_summary,
+                lmp: req.body.laboratory.lmb,
+                parity: req.body.laboratory.parity,
+                attended: false,
+                title: req.body.title,
+                doctor_firstname: req.body.laboratory.doctor_firstname,
+                doctor_lastname: req.body.laboratory.doctor_lastname,
+                doctor_id: req.body.laboratory.doctor_id,
+                doctor_email: req.body.laboratory.doctor_email,
+                doctor_profile_url: req.body.laboratory.doctor_profile_url,
+                test_id: req.body.laboratory.test_id
+              }             
+            }
+
+            //this is notification for the center.
+            var refNotification = {
+              sender_firstname: req.user.firstname,
+              sender_lastname: req.user.lastname,
+              sender_title : req.user.title,
+              sent_date: req.body.date,
+              ref_id: req.body.ref_id,
+              note_id: req.body.ref_id,
+              sender_profile_pic_url: req.user.profile_pic_url,
+              message: "Please run the test for my patient"
+            }
+
+
+            if(result.presence){
+              io.sockets.to(result.user_id).emit("center notification",refNotification)
+            } 
+
+            //result.referral.push(refObj);
+            var referral = new model.referral(refObj);
+            referral.save(function(err,info){
+              if(err) throw err;
+              console.log("referral saved")
+            })
+            result.diagnostic_center_notification.unshift(refNotification);
+
+            result.save(function(err,info){
+              if(err) throw err;            
+            });
+            tellPatient(centerObj);
+          } else {
+            res.json({error: true,message: "Center not found!"})
+          }
         });
 
         var tellPatient = function(centerInfo){
           //remember sms will be sent to the patient
-          model.user.findOne({user_id: req.body.laboratory.patient_id},{medical_records: 1,user_id:1}).exec(function(err,record){
+          model.user.findOne({user_id: req.body.laboratory.patient_id},{medical_records: 1,
+            user_id:1,phone:1,accepted_doctors:1})
+          .exec(function(err,record){
             if(err) throw err;     
             var recordObj = {
-              test_to_run: req.body.laboratory.test_to_run,
+              test_to_run: referredTest,//req.body.laboratory.test_to_run,
               center_address: centerInfo.address,
               center_city: centerInfo.city,
               center_country: centerInfo.country,
@@ -4799,8 +4964,9 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
               conclusion: "Pending"
             }
 
-            if(record.presence)
+            if(record.presence){
               io.sockets.to(record.user_id).emit("notification",{status:true,message: "You have new unread test to run."});
+            }
           
             var msgBody = "Your test was referred to " + centerInfo.name + "\n@ " + centerInfo.address + " " + centerInfo.city + " " +
             centerInfo.country + "\nBy " + req.user.name + "\nTest Ref NO is " + req.body.ref_id + "\nFor more details visit https://applinic.com/user/patient"
@@ -4811,9 +4977,7 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
                 from: '+16467985692',
                 body: msgBody,
               }
-            ) 
-        
-
+            )        
 
             record.medical_records.laboratory_test.unshift(recordObj);
 
@@ -4822,20 +4986,64 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
                 throw err;
                 res.end('500: Internal server error')
               }
-              res.json({success:true,ref_no:req.body.ref_id});
+              
+
+              model.referral.findOne({ref_id: originalRef,center_id: req.user.user_id})
+              .exec(function(err,ref){
+                if(err) throw err;
+                if(ref){
+                  centerInfo.referredTests = referredTest;
+                  centerInfo.ref_id = req.body.ref_id;
+                  ref.redirect_to.push(centerInfo);
+                  //ref.laboratory.test_to_run = unRefered;;
+                  ref.save(function(err,info){});
+                  res.json({success:true,ref_no:req.body.ref_id,redirect_to: ref.redirect_to});
+                } else {
+                  res.json({success:true,ref_no:req.body.ref_id,redirect_to: []});
+                }
+              })
+
             });
 
           });
         }
+
+      } else {
+        res.end({error: true, message: "Out of session"})
+      }
     });
 
 
     //radiology continued
 
-    router.put("/user/radiology/find-patient/scan-test",function(req,res){
+    router.get("/user/radiology/find-patient/scan-test",function(req,res){
       if(req.user){  
-      console.log(req.body)   
-        model.user.findOne({user_id:req.user.user_id},{referral:1},function(err,data){
+
+        var criteria = {center_id: req.user.user_id};
+
+        if(req.query.from){           
+          var startDate = moment(req.query.from).startOf('day'); // set to 12:00 am today
+          var endDate = moment(req.query.to).endOf('day'); // set to 23:59 pm off date range
+          criteria['date'] = {$gt: startDate,$lt: endDate};
+        }
+
+        if(req.query.refId) {
+          var intRegex = /[0-9 -()+]+$/;
+          if(intRegex.test(req.query.refId))
+            criteria['ref_id'] = req.query.refId;
+        }
+
+        if(req.query.patienPhone) {
+          criteria['radiology.patient_phone'] = req.query.patienPhone;
+        }
+
+        model.referral.find(criteria)
+        .exec(function(err,referralList){
+          if(err) throw err;
+          res.json(referralList)
+        });
+
+        /*model.user.findOne({user_id:req.user.user_id},{referral:1},function(err,data){
             if (err) throw err;           
               switch(req.body.criteria) {
                 case "refIdCriteria":
@@ -4865,7 +5073,7 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
                   res.send([]);
                   break;
               } 
-        });
+        });*/
       } else {
         res.end("Unauthorized access");
       }
@@ -4875,8 +5083,11 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
 //doctor activities for radiology centers.
   router.get("/user/doctor/find-radiology",function(req,res){
       if(req.user){
-        model.user.find({type: "Radiology",city: req.user.city,country: req.user.country},
-          {name:1,address:1,user_id:1,city:1,country:1,profile_pic_url:1,type:1},
+        req.query.city = (req.query.city) ? req.query.city : req.user.city;
+        var str = new RegExp(req.query.city.replace(/\s+/g,"\\s+"), "gi"); 
+        var criteria = {city: { $regex: str, $options: 'i' },type:"Radiology"}
+        model.user.find(criteria,
+          {name:1,address:1,user_id:1,city:1,country:1,profile_pic_url:1,type:1,email:1,phone:1},
           function(err,data){
           if(err) throw err;
           res.send(data);
@@ -4907,10 +5118,55 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
     //this route takes care doctor sending new test to a radiology.
     router.post("/user/doctor/radiology/send-test",function(req,res){  
         if(req.user) { 
-          var random = randos.genRef(6);
+          var random = randos.genRef(7);
           var testId = randos.genRef(8); 
           var accNo = randos.genRef(8);
           var date = + new Date();
+
+
+        if(req.body.isOutPatientReq){
+          req.body.treatment = {};
+          //req.body.date = new Date();
+          req.body.user_id = req.body.centerDetails.user_id;
+          req.body.patient_id = req.body.patientDetails.user_id;
+          req.body.patient_firstname = req.body.patientDetails.firstname; 
+          req.body.patient_lastname = req.body.patientDetails.lastname;
+          req.body.patient_title = req.body.patientDetails.title;
+          req.body.phone = req.body.patientDetails.phone;
+          req.body.patient_address = req.body.patientDetails.address;
+          req.body.patient_city = req.body.patientDetails.city
+          req.body.patient_profilePic = req.body.patientDetails.profile_pic_url
+          req.body.radiology = {
+            patient_age: req.body.patientDetails.age,
+            patient_gender: req.body.patientDetails.gender,
+            profile_pic_url: req.body.patientDetails.profile_pic_url
+          }
+
+          var elemPos = req.user.doctor_patients_list.map(function(x){return x.patient_id}).indexOf(req.body.patient_id);
+          if(elemPos == -1){
+            req.user.doctor_patients_list.unshift({
+              date: date,
+              patient_lastname: req.body.patient_lastname,
+              patient_firstname: req.body.patient_firstname,
+              patient_id: req.body.patient_id,
+              patient_profile_pic_url: req.body.patient_profilePic,
+              patient_address: req.body.patient_address || "N/A",
+              patient_city: req.body.patient_city,
+              patient_country: req.body.patientDetails.country || 'Nigeria',
+              patient_gender: req.body.patientDetails.gender,
+              patient_age: req.body.patientDetails.age,
+              patient_phone: req.body.patientDetails.phone
+            })
+
+            req.user.save(function(err,info){
+              if(err) throw err;
+              console.log("patient save in doctors list")
+            })
+          }
+
+
+        }
+
           
          model.user.findOne({user_id: req.body.user_id},{
           diagnostic_center_notification:1,referral:1,address:1,name:1,city:1,country:1,phone:1,user_id:1,presence:1,email:1,profile_pic_url:1})        
@@ -4931,6 +5187,12 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
               } else {
                 req.body.session_id = (req.body.session_id) ? req.body.session_id : uuid.v1();
               }
+
+
+              if(req.body._id){
+                delete req.body._id
+              }
+
               
             
               req.body.center_name = result.name;
@@ -4959,7 +5221,8 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
                 referral_phone: req.user.phone,
                 referral_id: req.user.user_id, 
                 acc_no: accNo,   
-                date: req.body.date,        
+                date: req.body.date || new Date(),  
+                center_id: result.user_id,      
                 radiology: {
                   history: req.body.history,
                   patient_age: req.body.radiology.patient_age,              
@@ -5014,7 +5277,12 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
                   }
                 ) 
               */
-              result.referral.push(refObj);
+              //result.referral.push(refObj);
+              var referral = new model.referral(refObj);
+              referral.save(function(err,info){
+                if(err) throw err;
+                console.log("referral saved")
+              })
               result.diagnostic_center_notification.unshift(refNotification);
 
               result.save(function(err,info){
@@ -5027,7 +5295,7 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
         var tellPatient = function(centerInfo){
           //remember sms will be sent to the patient
           model.user.findOne({user_id: req.body.patient_id},
-            {medical_records: 1,user_id:1,patient_notification:1,presence:1,phone:1})
+            {medical_records: 1,user_id:1,patient_notification:1,presence:1,phone:1,accepted_doctors:1})
           .exec(function(err,record){            
             if(err) throw err;     
             var recordObj = {
@@ -5063,8 +5331,8 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
             if(record.presence === true)
               io.sockets.to(record.user_id).emit("notification",{status:true,message: "You have new unread test to run."});
           
-            var msgBody = "Your investigation was referred to " + centerInfo.name + "\n@ " + centerInfo.address + " " + centerInfo.city + " " +
-            centerInfo.country + "\nBy " + req.user.name + "\nTest Ref NO is " + req.body.ref_id + "\nFor more details visit https://applinic.com/user/patient"
+            var msgBody = "Your radiology test was referred to " + centerInfo.name + "\n@ " + centerInfo.address + " " + centerInfo.city + " " +
+            centerInfo.country + "\nBy " + req.user.name + "\nTest Ref No " + random + "\nFor more details visit https://applinic.com/user/patient"
             var phoneNunber =  record.phone;
             sms.messages.create(
               {
@@ -5076,6 +5344,22 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
         
             record.patient_notification.unshift(noteObj);
             record.medical_records.radiology_test.unshift(recordObj);
+
+            if(req.user.type === "Doctor" && req.body.isOutPatientReq){
+              var docPos = record.accepted_doctors.map(function(x){return x.doctor_id}).indexOf(req.user.user_id);
+              if(docPos === -1){
+                record.accepted_doctors.unshift({
+                  doctor_id: req.user.user_id,
+                  doctor_title: req.user.title,
+                  date_of_acceptance: date,
+                  doctor_firstname: req.user.firstname,
+                  doctor_lastname: req.user.lastname,
+                  doctor_profile_pic_url: req.user.profile_pic_url,                  
+                  doctor_specialty: req.user.specialty,
+                  work_place: req.user.work_place,
+                })
+              }
+            }
             record.save(function(err,info){
               if(err) {
                 throw err;
@@ -5089,7 +5373,6 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
         }
 
         var updateSession = function(session_id) {
-
           var testResult = {
             test_to_run: req.body.lab_test_list,
             receive_date: "Pending",
@@ -5201,91 +5484,118 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
     //this route takes care of  un ran test which was forwarded to another center by a center.
     router.post("/user/center/radiology/send-test",function(req,res){ 
       if(req.user) {
-        model.user.findOne({user_id: req.body.user_id},{diagnostic_center_notification:1,referral:1,address:1,name:1,city:1,country:1,phone:1,user_id:1})
+
+        var originalRef = req.body.ref_id;
+        req.body.ref_id = randos.genRef(6);
+        req.body.date = new Date();
+        var originalTest = req.body.radiology.test_to_run;
+        var referredTest = [];
+        var unRefered = [];
+
+        model.user.findOne({user_id: req.body.user_id},
+        {diagnostic_center_notification:1,referral:1,address:1,name:1,city:1,country:1,phone:1,user_id:1,presence:1})
         .exec(function(err,result){
-          if(err) throw err;         
+          if(err) throw err; 
 
-          //center address and name obj to be passed to the patient.
-          var centerObj = {
-            name: result.name,
-            address: result.address,
-            city: result.city,
-            country: result.country,
-            phone: result.phone,
-            id: result.user_id
-          }
+          if(result) {          
 
-          var refObj = {
-            ref_id: req.body.ref_id,
-            referral_firstname: req.user.firstname,
-            referral_lastname: req.user.lastname,
-            referral_title: req.user.title,
-            referral_id: req.user.user_id,    
-            date: req.body.date,            
-            radiology: {
-              history: req.body.radiology.history,
-              patient_age: req.body.radiology.patient_age,
-              patient_gender: req.body.radiology.patient_gender,
-              test_to_run : req.body.radiology.test_to_run,
-              patient_firstname: req.body.radiology.patient_firstname,
-              patient_lastname: req.body.radiology.patient_lastname,
-              patient_profile_pic_url: req.body.radiology.patient_profilePic,
-              patient_title: req.body.radiology.patient_title,
-              patient_phone: req.body.radiology.phone,
-              session_id: req.body.radiology.session_id,
-              patient_id: req.body.radiology.patient_id,
-              attended: false,
-              title: req.body.title,
-              doctor_firstname: req.body.radiology.doctor_firstname,
-              doctor_lastname: req.body.radiology.doctor_lastname,
-              doctor_id: req.body.radiology.doctor_id,
-              doctor_profile_url: req.body.radiology.doctor_profile_url
-            }             
-          }
-
-
-       
-          //this is notification for the center.
-          var refNotification = {
-            sender_firstname: req.user.firstname,
-            sender_lastname: req.user.lastname,
-            sender_title : req.user.title,
-            sent_date: req.body.date,
-            ref_id: req.body.ref_id,
-            note_id: req.body.ref_id,
-            sender_profile_pic_url: req.user.profile_pic_url,
-            message: "Please run the test for my patient"
-          }
-
-          if(result.presence === true){
-            io.sockets.to(result.user_id).emit("center notification",refNotification);
-          } else {
-            var msgBody = "You have new test request! Visit http://applinic.com/user/radiology"
-            var phoneNunber =  result.phone;
-             sms.messages.create(
-              {
-                to: phoneNunber,
-                from: '+16467985692',
-                body: msgBody,
+            for(var i = 0; i < originalTest.length; i++){
+              if(originalTest[i].select == true){
+                referredTest.push(originalTest[i]);
+              } else {
+                unRefered.push(originalTest[i])
               }
-            ) 
+            }
+
+            //center address and name obj to be passed to the patient.
+            var centerObj = {
+              name: result.name,
+              address: result.address,
+              city: result.city,
+              country: result.country,
+              phone: result.phone,
+              id: result.user_id
+            }
+
+            var refObj = {
+              ref_id: req.body.ref_id,
+              referral_firstname: req.user.firstname || req.user.name,
+              referral_lastname: req.user.lastname || "",
+              referral_title: req.user.title || "",
+              referral_id: req.user.user_id,
+              referral_email: req.user.email,
+              referral_phone: req.user.phone,    
+              date: req.body.date,
+              center_id: result.user_id,             
+              radiology: {              
+                history: req.body.radiology.history,
+                patient_age: req.body.radiology.patient_age,
+                patient_gender: req.body.radiology.patient_gender,
+                test_to_run : referredTest,//req.body.laboratory.test_to_run,
+                patient_firstname: req.body.radiology.patient_firstname,
+                patient_lastname: req.body.radiology.patient_lastname,
+                patient_profile_pic_url: req.body.radiology.patient_profilePic,
+                patient_title: req.body.radiology.patient_title,
+                patient_phone: req.body.radiology.patient_phone,
+                session_id: req.body.radiology.session_id,
+                patient_id: req.body.radiology.patient_id,
+                patient_address: req.body.radiology.patient_address,
+                indication: req.body.radiology.indication,
+                clinical_summary: req.body.radiology.clinical_summary,
+                lmp: req.body.radiology.lmb,
+                parity: req.body.radiology.parity,
+                attended: false,
+                title: req.body.title,
+                doctor_firstname: req.body.radiology.doctor_firstname,
+                doctor_lastname: req.body.radiology.doctor_lastname,
+                doctor_id: req.body.radiology.doctor_id,
+                doctor_email: req.body.radiology.doctor_email,
+                doctor_profile_url: req.body.radiology.doctor_profile_url,
+                test_id: req.body.radiology.test_id
+              }             
+            }
+
+            //this is notification for the center.
+            var refNotification = {
+              sender_firstname: req.user.firstname,
+              sender_lastname: req.user.lastname,
+              sender_title : req.user.title,
+              sent_date: req.body.date,
+              ref_id: req.body.ref_id,
+              note_id: req.body.ref_id,
+              sender_profile_pic_url: req.user.profile_pic_url,
+              message: "Please run the test for my patient"
+            }
+
+
+            if(result.presence){
+              io.sockets.to(result.user_id).emit("center notification",refNotification)
+            } 
+
+            //result.referral.push(refObj);
+            var referral = new model.referral(refObj);
+            referral.save(function(err,info){
+              if(err) throw err;
+              console.log("referral saved")
+            })
+            result.diagnostic_center_notification.unshift(refNotification);
+
+            result.save(function(err,info){
+              if(err) throw err;            
+            });
+            tellPatient(centerObj);
+          } else {
+            res.json({error: true,message: "Center not found!"})
           }
-
-          result.referral.push(refObj);
-          result.diagnostic_center_notification.unshift(refNotification);
-
-          result.save(function(err,info){
-            if(err) throw err;            
-          });
-          tellPatient(centerObj);
         });
 
         var tellPatient = function(centerInfo){
           //remember sms will be sent to the patient
-          model.user.findOne({user_id: req.body.radiology.patient_id},{medical_records: 1,user_id:1,presence:1}).exec(function(err,record){
+          model.user.findOne({user_id: req.body.radiology.patient_id},{medical_records: 1,user_id:1,phone:1})
+          .exec(function(err,record){
             if(err) throw err;     
             var recordObj = {
-              test_to_run: req.body.radiology.test_to_run,
+              test_to_run: referredTest,//req.body.laboratory.test_to_run,
               center_address: centerInfo.address,
               center_city: centerInfo.city,
               center_country: centerInfo.country,
@@ -5296,6 +5606,7 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
               ref_id: req.body.ref_id,
               referral_firstname: req.user.firstname,
               referral_lastname: req.user.lastname,
+              referral_id: req.user.user_id,
               referral_title: req.user.title,
               sent_date: req.body.date,
               session_id: req.body.session_id,
@@ -5303,38 +5614,54 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
               conclusion: "Pending"
             }
 
-
-            if(record.presence === true)
+            if(record.presence){
               io.sockets.to(record.user_id).emit("notification",{status:true,message: "You have new unread test to run."});
+            }
           
             var msgBody = "Your test was referred to " + centerInfo.name + "\n@ " + centerInfo.address + " " + centerInfo.city + " " +
-            centerInfo.country + "\nBy " + req.user.name + "\nTest Ref NO is " + req.body.ref_id + "\nFor more details visit https://applinic.com/user/patient"
+            centerInfo.country + "\nBy " + req.user.name + "\nTest Ref NO " + req.body.ref_id + "\nFor more details visit https://applinic.com/user/patient"
             var phoneNunber =  record.phone;
-             sms.messages.create(
+            sms.messages.create(
               {
                 to: phoneNunber,
                 from: '+16467985692',
                 body: msgBody,
               }
-            ) 
-        
- 
+            )        
+
             record.medical_records.radiology_test.unshift(recordObj);
+
             record.save(function(err,info){
               if(err) {
                 throw err;
-                res.end('500: Internal server error');
+                res.end('500: Internal server error')
               }
-              res.json({success:true,ref_no:req.body.ref_id});
+              
+
+              model.referral.findOne({ref_id: originalRef,center_id: req.user.user_id})
+              .exec(function(err,ref){
+                if(err) throw err;
+                if(ref){
+                  centerInfo.referredTests = referredTest;
+                  centerInfo.ref_id = req.body.ref_id;
+                  ref.redirect_to.push(centerInfo);
+                  //ref.laboratory.test_to_run = unRefered;
+                  ref.save(function(err,info){});
+                  res.json({success:true,ref_no:req.body.ref_id,redirect_to: ref.redirect_to});
+                } else {
+                  res.json({success:true,ref_no:req.body.ref_id,redirect_to: []}); //test_to_run:unRefered
+                }
+              })
+
             });
 
           });
         }
 
       } else {
-        res.end("Unauthorized access!");
+        res.end({error: true, message: "Out of session"})
       }
-      
+
     });  
 
     router.put("/user/doctor/treatment-plan",function(req,res){
@@ -5403,8 +5730,9 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
 
     router.put("/user/patient/get-centers",function(req,res){
       if(req.user) {
-        console.log(req.body)
-        var date = + new Date();
+        
+        var date = new Date();
+        req.body.refId = req.body.refId.toString();
         var refObj = {
           ref_id: req.body.refId,
           referral_firstname: req.user.firstname,
@@ -5416,13 +5744,13 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
 
         var toLower = req.body.type.toLowerCase(); // the lower case was how it saved in the database.
 
-        model.user.findOne({user_id:req.body.oldCenterId},{referral:1},function(err,data){
+        model.referral.findOne({ref_id:req.body.refId},function(err,data){
           if(err) throw err;
           if(data) {
-            var refList = data.referral;
-            var elemPos = refList.map(function(x){return x.ref_id}).indexOf(req.body.refId);
-            if(elemPos !== -1){
-              var found = refList[elemPos];
+            //var refList = data;
+            //var elemPos = refList.map(function(x){return x.ref_id}).indexOf(req.body.refId);
+            //if(elemPos !== -1){
+              var found = data;
               
               /*
               note: when patient refers his test to another center, the ref no i retained, the session that sent the test will be acknowledged
@@ -5453,10 +5781,7 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
             } else {
               res.send({message: "Reference number could not be found"});
             }
-          } else {
-            res.send({message: "Oops! something went wrong."})
-          }
-        })
+          })
 
 
         function newCenter(found) {
@@ -5640,7 +5965,6 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
         model.user.findOne({user_id: req.user.user_id},{diagnostic_center_notification:1}).exec(function(err,data){
           if(err) throw err;
           req.body.forEach(function(note){
-            console.log(note)
             var elementPos = data.diagnostic_center_notification.map(function(x) {return x.ref_id; }).indexOf(note.ref_id);                      
             data.diagnostic_center_notification.splice(elementPos,1); 
             data.save(function(err,info){
@@ -6334,9 +6658,8 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
 
   router.put("/user/drug-search/pharmacy/referral",function(req,res){
    if(req.user){
-    console.log(req.body);
-    var phone = parseInt(req.body.line) || parseInt(req.body.phone);
-    var person = (req.body.type == 'inperson') ? {user_id: req.user.user_id} : {phone: "+" + phone}
+    var phone = req.body.line || req.body.phone;
+    var person = (req.body.type == 'inperson') ? {user_id: req.user.user_id} : {phone: phone}
     model.user.findOne(person,
       {
         firstname:1,
@@ -6352,16 +6675,21 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
         phone:1,
         address:1,
         gender: 1,
-        user_id: 1
+        user_id: 1,
+        accepted_doctors:1
       })
     .exec(function(err,user){     
       if(err) throw err;
       if(!user && req.body.phone !== undefined) {
-        res.send({
-          error: "User not found. Please ensure this person was registered with this "  + req.body.phone + " or user is not a patient."});
-        /*user.save(function(err,info){
-          if(err) throw err;
-        })*/
+        /*res.json({
+          message: "User not found. Please ensure this person was registered with this "  
+          + req.body.phone + " or user is not a patient.",error:true});*/
+        if(req.user.type !== "Doctor"){
+          res.send({message:"The user with phone number does not exist.",error:true});
+        } else {
+          res.json({isNewPatient: true})
+        }
+
       } else {
         model.user.findOne({user_id: req.body.user_id},{
         referral:1,diagnostic_center_notification:1,city:1,name:1,country:1,center_phone:1,address:1,user_id:1,presence:1,phone:1})
@@ -6375,7 +6703,7 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
             if(req.body.ref_id){            
               ref_id = req.body.ref_id;
             }  else {        
-              ref_id = randos.genRef(6);
+              ref_id = randos.genRef(7);
             }
            
             req.body.patient_profile_pic_url = user.profile_pic_url;
@@ -6405,6 +6733,7 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
               referral_title: req.user.title,
               referral_id: req.user.user_id,    
               date: req.body.sent_date,
+              center_id: pharmacy.user_id,
               pharmacy: req.body
             };
 
@@ -6425,6 +6754,7 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
            
             var preObj = {              
               provisional_diagnosis: req.body.provisional_diagnosis,
+              explanation: req.body.explanation,
               date: req.body.sent_date,
               prescriptionId: req.body.prescriptionId,
               doctor_firstname: (req.user.firstname || req.user.name),
@@ -6469,6 +6799,22 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
             }
             
             user.prescription_tracking.unshift(track_record);
+
+            if(req.user.type === "Doctor"){
+              var docPos = user.accepted_doctors.map(function(x){return x.doctor_id}).indexOf(req.user.user_id);
+              if(docPos == -1){
+                user.accepted_doctors.unshift({
+                  doctor_id: req.user.user_id,
+                  doctor_title: req.user.title,
+                  date_of_acceptance: date,
+                  doctor_firstname: req.user.firstname,
+                  doctor_lastname: req.user.lastname,
+                  doctor_profile_pic_url: req.user.profile_pic_url,                  
+                  doctor_specialty: req.user.specialty,
+                  work_place: req.user.work_place,
+                });
+              }
+            }
              
 
             //send sms to the patient for the ntification of prescription
@@ -6487,7 +6833,13 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
               ) 
             }
 
-            pharmacy.referral.push(refObj);
+            //pharmacy.referral.push(refObj);
+            
+            var referral = new model.referral(refObj);
+            referral.save(function(err,info){
+              if(err) throw err;
+              console.log("referral saved");
+            }); 
 
             if(!req.body.initViaCourier) {
               pharmacy.diagnostic_center_notification.unshift(pharmacyNotification);
@@ -6506,10 +6858,37 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
               console.log("patient saved")
             });
 
-            res.json({success:true,ref_id: ref_id}); 
+            res.json({success:true,ref_id: ref_id,
+              patient:{firstname:req.body.patient_firstname,
+                title: req.body.patient_title,lastname: req.body.patient_lastname}}); 
+
+             //add patient to doctor list if does not exist
+            var elemPos = req.user.doctor_patients_list.map(function(x){return x.patient_id}).indexOf(user.user_id);
+            if(elemPos == -1){
+              req.user.doctor_patients_list.unshift({
+                date: req.body.sent_date,
+                patient_lastname: user.lastname,
+                patient_firstname: user.firstname,
+                patient_id: user.user_id,
+                patient_profile_pic_url: user.profile_pic_url,
+                patient_address: user.address || "N/A",
+                patient_city: user.city,
+                patient_country: user.country || 'Nigeria',
+                patient_gender: user.gender,
+                patient_age: user.age,
+                patient_phone: user.phone
+              })
+
+              req.user.save(function(err,info){
+                if(err) throw err;
+                console.log("patient save in doctors list")
+              })
+            }
+            
           } else {
-            res.json({success:false}); 
+            res.json({success:false,message:"Something went wrong."}); 
           }
+
         });
            
       }
@@ -6645,83 +7024,111 @@ router.put("/user/laboratory/search/find-tests",function(req,res){
 
 router.put("/user/test-search/laboratory/referral",function(req,res){
     if(req.user){  
-    console.log(req.body)
     var phone = req.body.line  || req.body.phone;
-    var person = (req.body.type === 'inperson') ? {user_id: req.user.user_id,type:"Patient"} : {phone: "+" + phone, type: 'Patient'};
-    model.user.findOne(person,{firstname:1,lastname:1,title:1,profile_pic_url:1,city:1,country:1,name:1,age:1,user_id:1,medical_records:1,phone:1})
+    var person = (req.body.type === 'inperson') ? {user_id: req.user.user_id} : {phone: phone};
+    model.user.findOne(person,{firstname:1,lastname:1,title:1,profile_pic_url:1,city:1,country:1,name:1,age:1,user_id:1,medical_records:1,phone:1,type:1,gender:1,address:1})
     .exec(function(err,user){
 
       if(err) throw err;
 
-      if(user) {
-        req.body.ref_id = randos.genRef(6);
-        model.user.findOne({user_id: req.body.user_id},{
-          diagnostic_center_notification:1,referral:1,address:1,name:1,city:1,country:1,phone:1,user_id:1,presence:1,age:1,gender:1})
-        .exec(function(err,result){
-        var firstname = user.firstname || user.name;
+      if(user) {        
 
-        try{
+        if(user.type == "Patient"){
 
-        var refObj = {
-          ref_id: req.body.ref_id,
-          referral_firstname: (req.user.type !== "Patient") ? req.user.name : firstname,
-          referral_lastname: (req.user.type !== "Patient") ? null : user.lastname,
-          referral_title: (req.user.type !== "Patient") ? null : user.title,
-          referral_id: (req.user.type !== "Patient") ? req.user.user_id : user.user_id,    
-          date: req.body.sent_date,            
-          laboratory: {
-            test_to_run : req.body.test_to_run,
-            patient_age: user.age,
-            patient_gender: user.gender,
-            patient_firstname: user.firstname,
-            patient_lastname: user.lastname,
-            patient_profile_pic_url: user.profile_pic_url,
-            patient_title: user.title,
-            patient_phone: user.phone,
-            session_id: req.body.session_id,
-            patient_id: user.user_id,
-            clinical_summary: req.body.clinical_summary,
-            indication: req.body.indication,
-            lmp: req.body.lmp,
-            test_id: randos.genRef(8),
-            parity: req.body.parity,
-            attended: false
-          }             
-        }
+          req.body.ref_id = randos.genRef(7);
+          req.body.session_id = uuid.v1();
+          var testId = randos.genRef(8);
+          var isDoctor = (req.user.type === "Doctor") ? true : false;
 
-        var refNotification = {
-          sender_firstname: firstname,
-          sender_lastname: user.lastname,
-          sender_title : user.title,
-          sent_date: req.body.sent_date,
-          ref_id: req.body.ref_id,
-          note_id: req.body.ref_id,
-          sender_profile_pic_url: user.profile_pic_url,
-          message: "Hi, I need your services"
-        }
+          model.user.findOne({user_id: req.body.user_id},{
+            diagnostic_center_notification:1,referral:1,address:1,name:1,city:1,country:1,phone:1,user_id:1,presence:1,age:1,profile_pic_url:1,email:1})
+          .exec(function(err,result){
+          var firstname = user.firstname || user.name;
 
-        if(result.presence === true){
-          io.sockets.to(result.user_id).emit("center notification",refNotification)
-        } /*else {
-          var msgBody = "You have new test request! Visit https://applinic.com/login"
-          var phoneNunber =  result.phone;
-          sms.messages.create(
-            {
-              to: phoneNunber,
-              from: '+16467985692',
-              body: msgBody,
-            }
-          ) 
-        }*/
+          try{
 
-        
-        var refPos = result.referral.map(function(x){return x.ref_id}).indexOf(req.body.ref_id);
+          var refObj = {
+            ref_id: req.body.ref_id,
+            referral_firstname: (req.user.type !== "Patient") ? req.user.name : firstname,
+            referral_lastname: (req.user.type !== "Patient") ? null : user.lastname,
+            referral_title: (req.user.type !== "Patient") ? null : user.title,
+            referral_id: (req.user.type !== "Patient") ? req.user.user_id : user.user_id, 
+            referral_id: req.user.user_id, 
+            referral_email: req.user.email,
+            referral_phone: req.user.phone,      
+            date: req.body.sent_date,  
+            center_id: result.user_id,          
+            laboratory: {
+              test_to_run : req.body.test_to_run,
+              patient_age: user.age,
+              patient_gender: user.gender,
+              patient_firstname: user.firstname,
+              patient_lastname: user.lastname,
+              patient_profile_pic_url: user.profile_pic_url,
+              patient_title: user.title,
+              patient_phone: user.phone,
+              session_id: req.body.session_id,
+              patient_id: user.user_id,
+              clinical_summary: req.body.clinical_summary,
+              indication: req.body.indication,
+              lmp: req.body.lmp,
+              test_id: testId,
+              parity: req.body.parity,
+              attended: false,
+              title: req.user.title,
+              doctor_firstname: (isDoctor) ? req.user.firstname : '',
+              doctor_lastname: (isDoctor) ? req.user.lastname : '',
+              doctor_id: (isDoctor) ? req.user.user_id : '',
+              doctor_email: (isDoctor) ? req.user.email : '',
+              doctor_profile_url: (isDoctor) ? req.user.profile_url : ''
+            }             
+          }
 
-        if(refPos === -1){
-          result.referral.push(refObj);
-          //remember sms will be sent to the patient
-          //this populates the patient medical record
          
+
+            var refNotification = {
+              sender_firstname: firstname,
+              sender_lastname: user.lastname,
+              sender_title : user.title,
+              sent_date: req.body.sent_date,
+              ref_id: req.body.ref_id,
+              note_id: req.body.ref_id,
+              sender_profile_pic_url: user.profile_pic_url,
+              message: "Hi, I need your services"
+            }
+
+            if(result.presence === true){
+              io.sockets.to(result.user_id).emit("center notification",refNotification)
+            }
+
+          
+            //var refPos = result.referral.map(function(x){return x.ref_id}).indexOf(req.body.ref_id);
+            var referral = new model.referral(refObj);
+            referral.save(function(err,info){
+              if(err) throw err;
+              var sender = (req.user.type == "Doctor" || req.user.type == "Patient") ? (req.user.title + " " + req.user.lastname) : req.user.name
+              var msgBody = "Your laboratory test request was sent to " + result.name + " at " +
+               result.address + ", " + result.city + " " + result.country + "\nBy " + sender + "\n" + "Ref No " + req.body.ref_id; 
+              var phoneNunber =  user.phone;
+              sms.messages.create(
+                {
+                  to: phoneNunber,
+                  from: '+16467985692',
+                  body: msgBody,
+                },
+                callBack
+              ) 
+            });
+
+            var callBack = function(err,info) {
+              if(err) {
+                console.log(err);
+              } else {
+                console.log(info);
+              }
+            }
+           
+           
             var recordObj = {
               test_to_run: req.body.test_to_run,
               center_address: req.body.address,
@@ -6740,13 +7147,30 @@ router.put("/user/test-search/laboratory/referral",function(req,res){
               report: "Pending",
               conclusion: "Pending"
             }
+
             user.medical_records.laboratory_test.unshift(recordObj);
+            if(req.user.type === "Doctor"){
+              var docPos = user.accepted_doctors.map(function(x){return x.doctor_id}).indexOf(req.user.user_id);
+              if(docPos == -1){
+                user.accepted_doctors.unshift({
+                  doctor_id: req.user.user_id,
+                  doctor_title: req.user.title,
+                  date_of_acceptance: new Date(),
+                  doctor_firstname: req.user.firstname,
+                  doctor_lastname: req.user.lastname,
+                  doctor_profile_pic_url: req.user.profile_pic_url,                  
+                  doctor_specialty: req.user.specialty,
+                  work_place: req.user.work_place,
+                });
+              }
+            }
+             
             user.save(function(err,info){
               if(err) {
                 throw err;
                 res.end('500: Internal server error')
               }
-              res.json({success:true,ref_id:req.body.ref_id});
+               res.json({success:true,ref_id:req.body.ref_id,refObj: refObj});
             });
 
             result.diagnostic_center_notification.unshift(refNotification);
@@ -6754,25 +7178,104 @@ router.put("/user/test-search/laboratory/referral",function(req,res){
               if(err) throw err;          
             });  
           
+            /*user.save(function(err,info){
+              if(err) throw err;
+              console.log("saved!")
+            })*/
+
+            if(isDoctor) {
+
+              var complainObj = {}
+
+              /*req.body.profilePic = user.profile_pic_url;
+              req.body.last_modified = req.body.sent_date;
+              req.body.doctor_id = req.user.user_id;*/
+
+              //data.doctor_patient_session.unshift(req.body);
+
+              var record = new model.session({
+                date: req.body.sent_date,
+                profilePic: user.profile_pic_url,
+                last_modified: req.body.sent_date,
+                doctor_id: req.user.user_id,
+                session_id: req.body.session_id,
+                patient_id: user.user_id,
+                patient_firstname: user.firstname,
+                patient_lastname: user.lastname,
+                typeOfSession: "In-person"
+              });
+
+              record.diagnosis =  complainObj; 
+
+              var testResult = {
+                test_to_run: req.body.test_to_run,
+                receive_date: "Pending",
+                sent_date: req.body.sent_date,
+                report: "Pending",
+                test_id: testId,
+                conclusion: "Pending",
+                sub_session_id: "",
+                indication: req.body.indication,
+                clinical_summary: req.body.clinical_summary,
+                test_ran_by: result.name,
+                center_address: result.address,
+                center_city: result.city,
+                center_phone: result.phone,
+                center_email: result.email,
+                center_profile_pic_url: result.profile_pic_url
+              }  
+
+              record.diagnosis.laboratory_test_results.unshift(testResult);
+              
+              record.save(function(err,info){
+                if(err) throw err;
+                console.log("session created!")
+              });
+
+              //add patient to doctor list if does not exist
+              var elemPos = req.user.doctor_patients_list.map(function(x){return x.patient_id}).indexOf(user.user_id);
+              if(elemPos == -1){
+                req.user.doctor_patients_list.unshift({
+                  date: req.body.sent_date,
+                  patient_lastname: user.lastname,
+                  patient_firstname: user.firstname,
+                  patient_id: user.user_id,
+                  patient_profile_pic_url: user.profile_pic_url,
+                  patient_address: user.address || "N/A",
+                  patient_city: user.city,
+                  patient_country: user.country || 'Nigeria',
+                  patient_gender: user.gender,
+                  patient_age: user.age,
+                  patient_phone: user.phone
+                })
+
+                req.user.save(function(err,info){
+                  if(err) throw err;
+                  console.log("patient save in doctors list")
+                })
+              }
+            }
+
+           } catch(e){
+              console.log(e.message)
+            }
+
+          })
+
+          } else {
+            res.json({message:"User not a patient.",error:true});
+          }// end of if user is a patient
+     
         } else {
-           res.json({success:true,ref_id:req.body.ref_id});
-        }  
-        
-    
-        user.save(function(err,info){
-          if(err) throw err;
-          console.log("saved!")
-        })
 
-       } catch(e){
-          console.log(e.message)
-        }
+          if(req.user.type !== "Doctor"){
+            res.json({message:"The user with phone number does not exist or not a patient.",error:true});
+          } else {
+            res.json({isNewPatient: true})
+          }
 
-      })
-   
-      } else {
-       res.send({error:"The person using this Investigations does not exist or not a patient. Make sure the number was typed correctly."})
-      }
+        } // end of if user
+      
     });
 
   } else {
@@ -6873,7 +7376,7 @@ router.put("/user/radiology/search/find-tests",function(req,res){
 
 router.put("/user/scan-search/radiology/referral",function(req,res){
   if(req.user){  
-    console.log(req.body)
+
     var phone = req.body.line  || req.body.phone;
     var recepient;
 
@@ -6898,184 +7401,231 @@ router.put("/user/scan-search/radiology/referral",function(req,res){
           
         }
 
-        recepient = {phone: req.body.recepient, type: 'Patient'} 
+        recepient = {phone: req.body.recepient} 
       }
 
+    } else {
+      recepient = {phone: phone}
     }
 
-    /* else if(req.body.phone) {
-      if(req.body.phone.indexOf('+') == -1 || req.body.phone.indexOf("234") == -1){
-        recepient = {phone: "+234" + req.body.phone.slice(1), type: 'Patient'}
-      } else {
-        recepient = {phone: req.body.phone.slice(1), type: 'Patient'} 
-      }
-    }*/
 
-    console.log(req.body.recepient);
+    var isDoctor = (req.user.type === "Doctor") ? true : false;
 
-    var person = (req.body.type === 'inperson') ? {user_id: req.user.user_id,type:"Patient"} : recepient;
-    model.user.findOne(person,{firstname:1,lastname:1,title:1,profile_pic_url:1,city:1,country:1,name:1,age:1,user_id:1,medical_records:1,phone:1,gender:1})
+    var person = (req.body.type === 'inperson') ? {user_id: req.user.user_id} : recepient;
+
+    model.user.findOne(person,
+      {firstname:1,lastname:1,title:1,profile_pic_url:1,city:1,country:1,
+      name:1,age:1,user_id:1,medical_records:1,phone:1,type:1,gender:1,address:1})
     .exec(function(err,user){
 
       if(err) throw err;
 
       if(user) {
-        req.body.ref_id = randos.genRef(6);
-        var accNo = randos.genRef(7);
 
-        model.user.findOne({user_id: req.body.user_id})
-        .exec(function(err,result){
-        var firstname = user.firstname || user.name;
+        if(user.type == "Patient"){
+          req.body.ref_id = randos.genRef(7);
+          var accNo = randos.genRef(7);
+          var testId = randos.genRef(8);
 
-        try{
+          model.user.findOne({user_id: req.body.user_id})
+          .exec(function(err,result){
 
-        if(!req.body.isCommonSearch) { //start of if isCommonSearch          
-           //creates accession number for the study
-          var acc = new model.accession({
-            id: accNo,
-            centerId: req.user.user_id,
-            date: new Date()
-          });
+            var firstname = user.firstname || user.name;
 
-          //create a dicom Study for viewing.
-          var locate = ('patientID=' + accNo);
-          var ovyWeb = "https://applinic.com/dcm?id=" + accNo;//"https://" + req.body.onlinePacs.dns + "/web/viewer.html?" + locate;
-
-          var ovyMob = "http://" + req.body.onlinePacs.ip_address + ":8080/applinic-dicom/home.html?" + locate;
-          var centerUser = req.body.onlinePacs.username;
-          var centerPassword = req.body.onlinePacs.password;
-
-          var study = new model.study({
-            patient_name: user.firstname + " " + user.lastname,
-            patient_id: accNo,
-            study_id: accNo,
-            center_id: result.user_id,
-            center_name: result.name,
-            center_address: result.address,
-            center_city: result.city,
-            center_country: result.country,
-            center_phone: result.phone,
-            center_email: result.email,
-            created: new Date(),
-            patient_phone: user.phone,
-            email: user.email,
-            ip_address: req.body.onlinePacs.ip_address,
-            port: req.body.onlinePacs.port,
-            aetitle: req.body.onlinePacs.aetitle,
-            accession_number: accNo,
-            study_link: req.body.onlinePacs.ip_address + ":8080/weasis-pacs-connector/viewer?patientID=" + accNo,
-            deleted: false,
-            study_link2: ovyWeb,
-            study_link_mobile: ovyMob,
-            ref_id: req.body.ref_id,
-          });
-
-          acc.save(function(err,info){});
-          study.save(function(err,info){});
-
-          var refObj = {
-            ref_id: req.body.ref_id,
-            referral_firstname: (req.user.type !== "Patient") ? req.user.name : firstname,
-            referral_lastname: (req.user.type !== "Patient") ? null : user.lastname,
-            referral_title: (req.user.type !== "Patient") ? null : user.title,
-            referral_id: (req.user.type !== "Patient") ? req.user.user_id : user.user_id,    
-            date: req.body.sent_date,
-            acc_no: accNo,            
-            radiology: {
-              test_to_run: req.body.test_to_run,
-              patient_age: user.age,
-              patient_gender: user.gender,
-              patient_firstname: user.firstname,
-              patient_lastname: user.lastname,
-              patient_profile_pic_url: user.profile_pic_url,
-              patient_title: user.title,
-              patient_phone: user.phone,
-              session_id: req.body.session_id,
-              patient_id: user.user_id,
-              clinical_summary: req.body.clinical_summary,
-              indication: req.body.indication,
-              lmp: req.body.lmp,
-              acc_no: accNo,
-              study_link: "http://" + req.body.onlinePacs.ip_address + ":8080/weasis-pacs-connector/viewer?patientID=" + accNo,
-              test_id: randos.genRef(8),
-              parity: req.body.parity,
-              attended: false,
-              study_id: study._id
-            }             
-          }
-
-        } else {
-
-          var refObj = {
-            ref_id: req.body.ref_id,
-            referral_firstname: (req.user.type !== "Patient") ? req.user.name : firstname,
-            referral_lastname: (req.user.type !== "Patient") ? null : user.lastname,
-            referral_title: (req.user.type !== "Patient") ? null : user.title,
-            referral_id: (req.user.type !== "Patient") ? req.user.user_id : user.user_id,    
-            date: req.body.sent_date,
-            //acc_no: accNo,            
-            radiology: {
-              test_to_run: req.body.test_to_run,
-              patient_age: user.age,
-              patient_gender: user.gender,
-              patient_firstname: user.firstname,
-              patient_lastname: user.lastname,
-              patient_profile_pic_url: user.profile_pic_url,
-              patient_title: user.title,
-              patient_phone: user.phone,
-              session_id: req.body.session_id,
-              patient_id: user.user_id,
-              clinical_summary: req.body.clinical_summary,
-              indication: req.body.indication,
-              lmp: req.body.lmp,
-              //acc_no: accNo,
-              //study_link: "http://" + req.body.onlinePacs.ip_address + ":8080/weasis-pacs-connector/viewer?patientID=" + accNo,
-              test_id: randos.genRef(8),
-              parity: req.body.parity,
-              attended: false
-              //study_id: study._id
-            }             
-          }
-
-        }// end of is isCommonSearch
-
-        console.log(study);
-
-        var refNotification = {
-          sender_firstname: firstname,
-          sender_lastname: user.lastname,
-          sender_title : user.title,
-          sent_date: req.body.sent_date,
-          ref_id: req.body.ref_id,
-          note_id: req.body.ref_id,
-          sender_profile_pic_url: user.profile_pic_url,
-          message: "Hi, I need your services"
-        }
-
-        if(result.presence === true){
-          io.sockets.to(result.user_id).emit("center notification",refNotification)
-        } 
-
-        if(!req.body.isSelfRequest){
-          var msgBody = "You have new investigation request! Visit https://applinic.com/login"
-          var phoneNunber =  result.phone;
-          sms.messages.create(
-            {
-              to: phoneNunber,
-              from: '+16467985692',
-              body: msgBody,
-            }
-          )
-        }
-        
-        var refPos = result.referral.map(function(x){return x.ref_id}).indexOf(req.body.ref_id);
-
-        if(refPos === -1){
-          result.referral.push(refObj);
-          //remember sms / email will be sent to the patient
-
-          //this populates the patient medical record
          
+
+            if(!req.body.isCommonSearch) { //start of if isCommonSearch          
+             //creates accession number for the study
+              var acc = new model.accession({
+                id: accNo,
+                centerId: req.user.user_id,
+                date: new Date()
+              });
+
+              //create a dicom Study for viewing.
+              var locate = ('patientID=' + accNo);
+              var ovyWeb = "https://applinic.com/dcm?id=" + accNo;//"https://" + req.body.onlinePacs.dns + "/web/viewer.html?" + locate;
+
+              var ovyMob = "http://" + req.body.onlinePacs.ip_address + ":8080/applinic-dicom/home.html?" + locate;
+              var centerUser = req.body.onlinePacs.username;
+              var centerPassword = req.body.onlinePacs.password;
+
+              var study = new model.study({
+                patient_name: user.firstname + " " + user.lastname,
+                patient_id: accNo,
+                study_id: accNo,
+                center_id: result.user_id,
+                center_name: result.name,
+                center_address: result.address,
+                center_city: result.city,
+                center_country: result.country,
+                center_phone: result.phone,
+                center_email: result.email,
+                created: new Date(),
+                patient_phone: user.phone,
+                email: user.email,
+                ip_address: req.body.onlinePacs.ip_address,
+                port: req.body.onlinePacs.port,
+                aetitle: req.body.onlinePacs.aetitle,
+                accession_number: accNo,
+                study_link: req.body.onlinePacs.ip_address + ":8080/weasis-pacs-connector/viewer?patientID=" + accNo,
+                deleted: false,
+                study_link2: ovyWeb,
+                study_link_mobile: ovyMob,
+                ref_id: req.body.ref_id,
+              });
+
+              acc.save(function(err,info){});
+              study.save(function(err,info){});
+
+              var refObj = {
+                ref_id: req.body.ref_id,
+                referral_firstname: (req.user.type !== "Patient") ? req.user.name : firstname,
+                referral_lastname: (req.user.type !== "Patient") ? null : user.lastname,
+                referral_title: (req.user.type !== "Patient") ? null : user.title,
+                referral_id: (req.user.type !== "Patient") ? req.user.user_id : user.user_id,    
+                referral_id: req.user.user_id, 
+                referral_email: req.user.email,
+                referral_phone: req.user.phone,      
+                date: req.body.sent_date,  
+                center_id: result.user_id,          
+                acc_no: accNo,            
+                radiology: {
+                  test_to_run: req.body.test_to_run,
+                  patient_age: user.age,
+                  patient_gender: user.gender,
+                  patient_firstname: user.firstname,
+                  patient_lastname: user.lastname,
+                  patient_profile_pic_url: user.profile_pic_url,
+                  patient_title: user.title,
+                  patient_phone: user.phone,
+                  session_id: req.body.session_id,
+                  patient_id: user.user_id,
+                  clinical_summary: req.body.clinical_summary,
+                  indication: req.body.indication,
+                  lmp: req.body.lmp,
+                  acc_no: accNo,
+                  study_link: "http://" + req.body.onlinePacs.ip_address + ":8080/weasis-pacs-connector/viewer?patientID=" + accNo,
+                  test_id: testId,
+                  parity: req.body.parity,
+                  attended: false,
+                  study_id: study._id,
+                  title: req.user.title,
+                  doctor_firstname: (isDoctor) ? req.user.firstname : '',
+                  doctor_lastname: (isDoctor) ? req.user.lastname : '',
+                  doctor_id: (isDoctor) ? req.user.user_id : '',
+                  doctor_email: (isDoctor) ? req.user.email : '',
+                  doctor_profile_url: (isDoctor) ? req.user.profile_url : ''
+                }             
+              }
+
+            } else {
+
+            var refObj = {
+              ref_id: req.body.ref_id,
+              referral_firstname: (req.user.type !== "Patient") ? req.user.name : firstname,
+              referral_lastname: (req.user.type !== "Patient") ? null : user.lastname,
+              referral_title: (req.user.type !== "Patient") ? null : user.title,
+              referral_id: (req.user.type !== "Patient") ? req.user.user_id : user.user_id,    
+              date: req.body.sent_date,
+              referral_email: req.user.email,
+              referral_phone: req.user.phone,      
+              date: req.body.sent_date,  
+              center_id: result.user_id,          
+              //acc_no: accNo,            
+              radiology: {
+                test_to_run: req.body.test_to_run,
+                patient_age: user.age,
+                patient_gender: user.gender,
+                patient_firstname: user.firstname,
+                patient_lastname: user.lastname,
+                patient_profile_pic_url: user.profile_pic_url,
+                patient_title: user.title,
+                patient_phone: user.phone,
+                session_id: req.body.session_id,
+                patient_id: user.user_id,
+                clinical_summary: req.body.clinical_summary,
+                indication: req.body.indication,
+                lmp: req.body.lmp,
+                //acc_no: accNo,
+                //study_link: "http://" + req.body.onlinePacs.ip_address + ":8080/weasis-pacs-connector/viewer?patientID=" + accNo,
+                test_id: testId,
+                parity: req.body.parity,
+                attended: false,
+                title: req.user.title,
+                doctor_firstname: (isDoctor) ? req.user.firstname : '',
+                doctor_lastname: (isDoctor) ? req.user.lastname : '',
+                doctor_id: (isDoctor) ? req.user.user_id : '',
+                doctor_email: (isDoctor) ? req.user.email : '',
+                doctor_profile_url: (isDoctor) ? req.user.profile_url : ''
+                //study_id: study._id
+              }             
+            }
+
+          }// end of is isCommonSearch
+
+         
+
+          var refNotification = {
+            sender_firstname: firstname,
+            sender_lastname: user.lastname,
+            sender_title : user.title,
+            sent_date: req.body.sent_date,
+            ref_id: req.body.ref_id,
+            note_id: req.body.ref_id,
+            sender_profile_pic_url: user.profile_pic_url,
+            message: "Hi, I need your services"
+          }
+
+          if(result.presence === true){
+            io.sockets.to(result.user_id).emit("center notification",refNotification)
+          } 
+
+          /*if(!req.body.isSelfRequest){
+            var msgBody = "You have new investigation request! Visit https://applinic.com/login"
+            var phoneNunber =  result.phone;
+            sms.messages.create(
+              {
+                to: phoneNunber,
+                from: '+16467985692',
+                body: msgBody,
+              }
+            )
+          }*/
+          
+          //var refPos = result.referral.map(function(x){return x.ref_id}).indexOf(req.body.ref_id);
+
+         // if(refPos === -1){
+            //result.referral.push(refObj);
+            //remember sms / email will be sent to the patient
+
+            //this populates the patient medical record
+
+            var referral = new model.referral(refObj);
+            referral.save(function(err,info){
+              if(err) throw err;
+              var sender = (req.user.type == "Doctor" || req.user.type == "Patient") ? (req.user.title + " " + req.user.lastname) : req.user.name;
+              var msgBody = "Your radiology investigation request was sent to " + result.name + " at " +
+               result.address + ", " + result.city + " " + result.country + "\nBy " + sender + "\n" + "Ref No " + req.body.ref_id; 
+              var phoneNunber =  user.phone;
+              sms.messages.create(
+                {
+                  to: phoneNunber,
+                  from: '+16467985692',
+                  body: msgBody,
+                },
+                callBack
+              ) 
+            });
+
+            var callBack = function(err,info) {
+              if(err) {
+                console.log(err);
+              } else {
+                console.log(info);
+              }
+            }
+           
             var recordObj = {
               test_to_run: req.body.test_to_run,
               center_address: req.body.address,
@@ -7097,6 +7647,22 @@ router.put("/user/scan-search/radiology/referral",function(req,res){
               conclusion: "Pending"
             }
             user.medical_records.radiology_test.unshift(recordObj);
+            if(req.user.type === "Doctor"){
+              var docPos = user.accepted_doctors.map(function(x){return x.doctor_id}).indexOf(req.user.user_id);
+              if(docPos == -1){
+                user.accepted_doctors.unshift({
+                  doctor_id: req.user.user_id,
+                  doctor_title: req.user.title,
+                  date_of_acceptance: new Date(),
+                  doctor_firstname: req.user.firstname,
+                  doctor_lastname: req.user.lastname,
+                  doctor_profile_pic_url: req.user.profile_pic_url,                  
+                  doctor_specialty: req.user.specialty,
+                  work_place: req.user.work_place,
+                });
+              }
+            }
+             
             user.save(function(err,info){
               if(err) {
                 throw err;
@@ -7110,7 +7676,7 @@ router.put("/user/scan-search/radiology/referral",function(req,res){
               if(err) throw err;          
             });
 
-            var transporter = nodemailer.createTransport({
+            /*var transporter = nodemailer.createTransport({
               host: "mail.privateemail.com",
               port: 465,
               auth: {
@@ -7125,7 +7691,7 @@ router.put("/user/scan-search/radiology/referral",function(req,res){
               subject: 'New Investigation Request',
               html: '<table><tr><th><h3 style="background-color:#85CE36; color: #fff; padding: 30px"><img src="https://applinic.com/assets/images/applinic1.png" style="width: 250px; height: auto"/><br/><span>Healthcare... anywhere, anytime.</span></h3></th></tr><tr><td style="font-family: Arial, Helvetica, sans-serif; font-size: 14px;"><b>Hello ' 
               + result.name + ",</b><br><br>"
-              + "You have new investigation request to execute in your diagnostic center."  
+              + "You have new investigation request"  
              // + "The patient might visit you with a reference number to the investigation<br>"
               + "Please <a href='https://applinic.com/login'> log in </a> and attend to the patient when present."
               + "For ease of usage, you may download the Applinic mobile application on google play store if you use an android phone. " 
@@ -7141,27 +7707,99 @@ router.put("/user/scan-search/radiology/referral",function(req,res){
               } else {
                 console.log('Email sent: ' + info.response);
               }
-            });
+            });*/
 
+            
+          /*} else {
+             res.json({success:true,ref_id:req.body.ref_id});
+          }  */
           
+      
+            /*user.save(function(err,info){
+              if(err) throw err;
+              console.log("saved!")
+            });*/
+
+            if(isDoctor) {
+
+              var complainObj = {};
+
+              var record = new model.session({
+                date: req.body.sent_date,
+                profilePic: user.profile_pic_url,
+                last_modified: req.body.sent_date,
+                doctor_id: req.user.user_id,
+                session_id: req.body.session_id,
+                patient_id: user.user_id,
+                patient_firstname: user.firstname,
+                patient_lastname: user.lastname,
+                typeOfSession: "In-person"
+              });
+
+              record.diagnosis =  complainObj; 
+
+              var testResult = {
+                test_to_run: req.body.test_to_run,
+                receive_date: "Pending",
+                sent_date: req.body.sent_date,
+                report: "Pending",
+                test_id: testId,
+                conclusion: "Pending",
+                sub_session_id: "",
+                indication: req.body.indication,
+                clinical_summary: req.body.clinical_summary,
+                test_ran_by: result.name,
+                center_address: result.address,
+                center_city: result.city,
+                center_phone: result.phone,
+                center_email: result.email,
+                center_profile_pic_url: result.profile_pic_url
+              }  
+
+              record.diagnosis.radiology_test_results.unshift(testResult);
+              
+              record.save(function(err,info){
+                if(err) throw err;
+                console.log("session created!")
+              });
+
+              //add patient to doctor list if does not exist
+              var elemPos = req.user.doctor_patients_list.map(function(x){return x.patient_id}).indexOf(user.user_id);
+              if(elemPos == -1){
+                req.user.doctor_patients_list.unshift({
+                  date: req.body.sent_date,
+                  patient_lastname: user.lastname,
+                  patient_firstname: user.firstname,
+                  patient_id: user.user_id,
+                  patient_profile_pic_url: user.profile_pic_url,
+                  patient_address: user.address || "N/A",
+                  patient_city: user.city,
+                  patient_country: user.country || 'Nigeria',
+                  patient_gender: user.gender,
+                  patient_age: user.age,
+                  patient_phone: user.phone
+                })
+
+                req.user.save(function(err,info){
+                  if(err) throw err;
+                  console.log("patient save in doctors list")
+                })
+              }
+            }
+
+          });
+
         } else {
-           res.json({success:true,ref_id:req.body.ref_id});
-        }  
-        
-    
-        user.save(function(err,info){
-          if(err) throw err;
-          console.log("saved!")
-        })
-
-       } catch(e){
-          console.log(e.message)
-        }
-
-      })
+          res.send({message:"User found not a patient.",error:true})
+        } // end of if user is a patient
    
       } else {
-       res.send({error:true,message:"The person using these investigations does not exist or not a patient. Make sure the number was typed correctly."})
+
+        if(req.user.type !== "Doctor"){
+          res.send({message:"The user with phone number does not exist.",error:true});
+        } else {
+          res.json({isNewPatient: true})
+        }
       }
     });
 
@@ -7777,8 +8415,6 @@ router.get("/user/logout",function(req,res){
     if(req.user){
       model.user.findOne({email: req.user.email,password: req.user.password},{presence:1,firstname:1,set_presence:1,family_accounts:1,family_flag:1})
       .exec(function(err,data){
-        console.log(req.user.email + " " + req.user.phone)
-        console.log(data)
         if(data) {
           data.presence = false;
           data.set_presence.general = false;
@@ -8291,7 +8927,6 @@ router.get("/user/patient/get-my-doctors",function(req,res){
 
   router.put("/user/doctor/my-patients",function(req,res){
     if(req.user){
-      console.log(req.body)
       model.user.findOne({user_id:req.body.patientId,type:"Patient"})
       .exec(function(err,data){
         if(err) throw err;
@@ -8546,7 +9181,8 @@ router.get('/user/getAllPharmarcy',function(req,res){
 
 router.get('/user/getAllLaboratory',function(req,res){
   if(req.user){
-    var criteria = (req.query.city) ? {city: req.query.city,country:req.query.country,type:"Laboratory"} : {type:"Laboratory"};
+    var str = new RegExp(req.query.city.replace(/\s+/g,"\\s+"), "gi"); 
+    var criteria = (req.query.city) ? {city: { $regex: str, $options: 'i' },type:"Laboratory"} : {type:"Laboratory"};
     model.user.find(criteria,{name:1,address:1,user_id:1,city:1,country:1,phone:1,_id:1,email:1,verified:1},function(err,data){
       if(err) throw err;
       if(!req.query.city) {
@@ -8554,7 +9190,7 @@ router.get('/user/getAllLaboratory',function(req,res){
       } else {
         res.send(data);
       }
-    })
+    }).limit(5000)
   } else {
     res.redirect("/login")
   }
@@ -8562,7 +9198,8 @@ router.get('/user/getAllLaboratory',function(req,res){
 
 router.get('/user/getAllRadiology',function(req,res){
   if(req.user){
-    var criteria = (req.query.city) ? {city: req.query.city,country:req.query.country,type:"Radiology"} : {type:"Radiology"};
+    var str = new RegExp(req.query.city.replace(/\s+/g,"\\s+"), "gi"); 
+    var criteria = (req.query.city) ? {city: { $regex: str, $options: 'i' },type:"Radiology"} : {type:"Radiology"};
     model.user.find(criteria,{name:1,address:1,user_id:1,city:1,country:1,phone:1,_id:1,email:1,verified:1},function(err,data){
       if(err) throw err;
       if(!req.query.city) {
@@ -8570,7 +9207,7 @@ router.get('/user/getAllRadiology',function(req,res){
       } else {
         res.send(data);
       }
-    });
+    }).limit(5000)
   } else {
     res.redirect("/login")
   }
@@ -9669,7 +10306,8 @@ router.post("/user/invitation",function(req,res){
 router.post("/user/doctor/add-patient",function(req,res){
   if(req.user){
     if(req.user.type == 'Doctor'){
-      model.user.findOne({$or: [{ phone : req.body.user,type:'Patient'},{email: req.body.user,type:'Patient'}]})
+      model.user.findOne({$or: [{ phone : req.body.user,type:'Patient'},
+        {email: req.body.user,type:'Patient'},{user_id: req.body.sender_id,type:'Patient'}]})
       .exec(function(err,user){
         if(err) throw err;
         if(user){
@@ -9679,7 +10317,13 @@ router.post("/user/doctor/add-patient",function(req,res){
             patient_id: user.user_id,
             patient_lastname: user.lastname,
             patient_firstname: user.firstname,
-            date: + new Date(),
+            patient_address: user.address,
+            patient_city: user.city,
+            patient_country: user.country,
+            patient_gender: user.gender,
+            patient_age: user.age,
+            patient_phone: user.phone,
+            date: new Date(),
             deleted: false
           }
 
@@ -9687,13 +10331,12 @@ router.post("/user/doctor/add-patient",function(req,res){
             req.user.doctor_patients_list.unshift(patient);  
           
           } else {
-            req.user.doctor_patients_list[elemPos].deleted = false;
-            
+            req.user.doctor_patients_list[elemPos].deleted = false; 
           }
 
           req.user.save(function(err,info){
             if(err) throw err;
-            res.json({status:true,message: "Success! Patient added to your account",patient: patient});
+            res.json({status:true,message: "Success! Patient added to your account. To see all your patients click on 'Manage Patients' button",patient: patient});
             addToPatient()
           }); 
 
@@ -9708,7 +10351,8 @@ router.post("/user/doctor/add-patient",function(req,res){
           } else {
             user.accepted_doctors.unshift({
               doctor_id: req.user.user_id,
-              date_of_acceptance: + new Date(),
+              doctor_title: req.user.title,
+              date_of_acceptance: new Date(),
               doctor_firstname: req.user.firstname,
               doctor_lastname: req.user.lastname,
               doctor_profile_pic_url: req.user.profile_pic_url,
@@ -9722,7 +10366,54 @@ router.post("/user/doctor/add-patient",function(req,res){
           user.save(function(err,info){
             if(err) throw err;
             console.log("Patient's doctor list updated");
-          })
+          });
+
+          var transporter = nodemailer.createTransport({
+            host: "mail.privateemail.com",
+            port: 465,
+            auth: {
+              user: "info@applinic.com",
+              pass: process.env.EMAIL_PASSWORD
+            }
+          });
+
+          var body = "<div style='font-size:18px'><b>Hello" + user.firstname + "</b>, <br><br> " 
+          + req.user.title + " " + req.user.firstname + " " + req.user.lastname 
+          + " from Applinic Healthcare has accepted your consultation <br>"
+          + "request. You can now request his attention at anytime <br>"
+          + "by chat, audio or video call or appointment request from your account by <br>"
+          + "clicking 'My Doctors', finding him and sending the request."
+          + "Kindly login to https://applinic.com/login<br>" 
+          + "<br><br>Thank you! <br><br> Applinic Team</div>"
+
+          var mailOptions = {
+            from: 'Applinic info@applinic.com',
+            to: user.email,
+            subject:'Consultation Accepted!',
+            html: body
+          };
+
+          transporter.sendMail(mailOptions, function(error, info){
+            if (error) {
+              console.log(err)
+            } else {
+              console.log('Email sent: ' + info.response);
+            }
+          });
+
+          var msgBody = user.firstname + ", " + req.user.title + " " 
+          + req.user.firstname + " " + req.user.lastname 
+          + " has accepted your consultation request.\nKindly login to https://applinic.com/login"
+          + " to have a chat with the doctor.";
+
+          var phoneNunber = user.phone;
+          sms.messages.create(
+            {
+              to: phoneNunber,
+              from: '+16467985692',
+              body: msgBody,
+            }
+          ) 
         } 
       });  
 
@@ -10085,10 +10776,12 @@ router.get("/user/dicom-service",function(req,res){
     if(Object.keys(req.query).length > 0) {
 
       if(req.query.from) {
-        dt = new Date(req.query.from);   
+       /* dt = new Date(req.query.from);   
         dt.setHours(dt.getHours() - 24);
         startDate = dt.toISOString();
-        endDate = new Date(req.query.to);
+        endDate = new Date(req.query.to);*/
+        startDate = moment(req.query.from).startOf('day'); // set to 12:00 am today
+        endDate = moment(req.query.to).endOf('day'); // set to 23:59 pm off date range
         criteria['study_date'] = {$gt: startDate,$lt: endDate};
       }
 
@@ -10416,7 +11109,7 @@ router.put("/report-template",function(req,res){
         study.attended = true;
            
             var dt = + new Date();
-            var pdfName = dt + "-" + Math.floor(Math.random() * 999) + '.pdf';
+            var pdfName = dt + "-" + Math.floor(Math.random() * 999999) + '.pdf';
             var filePath = './pdf/' + pdfName;
  
             pdf.create(req.body.html).toFile(filePath, function(err, file) { //start of toFile
@@ -10722,7 +11415,6 @@ router.get("/radiologist-studies",function(req,res){
   model.study.find(criteria)
   .exec(function(err,data){
     if(err) throw err;
-    console.log(data)
     res.json(data);
   })
 })
@@ -10841,7 +11533,8 @@ router.get("/user/study-reports",function(req,res){
   }
 })
 
-router.get("/lab-template/:temp/:labData",function(req,res){
+
+router.get("/lab-template/:temp/:labData/:count",function(req,res){
   if(mongoose.Types.ObjectId.isValid(req.params.labData)){
     model.lab_store.findById(req.params.labData)
     .exec(function(err,labData){
@@ -10849,7 +11542,6 @@ router.get("/lab-template/:temp/:labData",function(req,res){
       if(labData){
         labData.moment = moment;
         res.render("lab-report-template",labData) 
-        console.log(labData)
       } else {
         res.end("Template not found!")
       }
@@ -10908,6 +11600,118 @@ router.post("/entry/doc-details/dshjhdfhsdgsd",function(req,res){
   //}
 
 })
+
+router.get("/user/lab-report/signees",function(req,res){
+  if(req.user) {
+    res.json(req.user.report_signees)
+  } else {
+    res.json({error: true, message: "Not in session or not logged in."})
+  }
+})
+
+router.post("/user/lab-report/signees",function(req,res){
+  if(req.user) {
+    model.user.findOne({user_id: req.user.user_id})
+    .exec(function(err,user){
+      if(err) throw err;
+      user.report_signees.push(req.body);
+      user.save(function(err,info){
+        if(err) throw err;
+        res.json({success: true})
+      })
+    })
+  } else {
+    res.json({error: true, message: "Not in session or not logged in."});
+  }
+})
+
+router.delete("/user/lab-report/signees",function(req,res){
+  if(req.user){
+    model.user.findOne({user_id: req.user.user_id})
+    .exec(function(err,user){
+      var elemPos = user.report_signees.map(function(x){return x.id}).indexOf(req.query.id)
+      if(elemPos !== -1) {
+        user.report_signees.splice(elemPos,1);
+        user.save(function(err,info){
+          if(err) throw err;
+          res.json({success: true})
+        })
+      } else {
+        res.json({error: true, message: "Pathologist or Scientist does not exist"});
+      }
+    });   
+  } else {
+    res.json({error: true, message: "Not in session or not logged in."});
+  }
+});
+
+
+router.post("/user/doctor/consultation-fee",function(req,res){
+  if(req.user) {
+
+    var date = new Date();
+
+    console.log(req.body)
+
+    var consultFee = new model.consultationFee({
+      status: 'Pending',
+      is_paid: false,
+      amount: req.body.consultation_fee,
+      doctor_id: req.user.user_id,
+      patient_id: req.body.patientId,
+      date: date,
+      commission: req.body.commission
+    })
+
+   
+
+    var elemPos = req.user.doctor_patients_list.map(function(x){return x.patient_id}).indexOf(req.body.patientId);
+    var patient;
+    if(elemPos !== -1){
+      patient = req.user.doctor_patients_list[elemPos] || {};
+      patient.fee_history.unshift(req.body.message)
+      req.user.save(function(err,info){
+        if(err) throw err;
+        console.log("fee history saved on doc patients' list")
+      })
+    }
+
+    consultFee.save(function(err,info){
+      if(err) throw err;
+      res.json({status: true,patient: patient});
+
+      var msgBody = "Hello " + patient.patient_firstname + ", " + req.user.title 
+      + " " + req.user.firstname + " " + req.user.lastname
+      + "\nhereby requests the fees for his consultation and medical services."
+      + "\nThe total amount is " + req.body.message.strAmt
+      + "\nKindly fund your Applinic account and settle the payment."     
+      + "\nhttps://applinic.com/login";
+
+      var phoneNunber =  "+2348064245256";//req.body.patient_phone;
+      
+      sms.messages.create(
+        {
+          to: phoneNunber,
+          from: '+16467985692',
+          body: msgBody,
+        },
+        callBack
+       ) 
+
+       function callBack(err,info) {
+        if(err) console.log(err);
+       }
+
+    });
+
+  } else {
+    res.json({error: true, message: "Session has expired! Please longin again."});
+  }
+})
+
+
+
+
 
 
 /*router.get("/lab/report-template/:_id",function(req,res){
