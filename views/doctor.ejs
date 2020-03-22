@@ -770,7 +770,7 @@
                                     <ul style="max-height: 500px;overflow-y:auto;" ng-cloak>
                                         <li style="padding: 5px 10px 0 0;position: relative;"><input type="text" placeholder="filter by name" class="form-control" ng-model="p" style="width: 80%"><i class="fa fa-refresh" style="color:#fff;position: absolute;top:20px;right:10px;cursor: pointer;" ng-click="refresh()"></i></li>
                                         <li ng-repeat="k in appointmentList | filter : p | orderBy: 'date'" >
-                                            <a href=""  ng-click="viewAppointment(k.session_id)">
+                                            <a href=""  ng-click="viewAppointment(k.session_id)" class="h">
                                             <span>{{k.firstname}} {{k.lastname}}
                                             <span style="display:block">{{k.date  | date : "mediumDate"}}</span> <span style="display:block">{{k.time | date: "mediumTime" }}</span> 
                                             </span>
@@ -2269,7 +2269,7 @@
         </div>
      </script>
 
-       <script type="text/ng-template" id='quick-chat.html'>
+    <script type="text/ng-template" id='quick-chat.html'>
        <div class="modal fade">
         <div class="modal-dialog">
           <div class="modal-content">
@@ -2296,6 +2296,47 @@
                
             </div>
             
+          </div>
+        </div>
+      </div>
+   </script>
+
+    <script type="text/ng-template" id='appointment-modal.html'>
+       <div class="modal fade">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="p-1">
+            <div style="position: relative;">
+                <button type="button" class="close" ng-click="close('Yes')" data-dismiss="modal" style="position: absolute;right: 15px;top: 5px" >&times;</button>      
+            </div>
+            <div class="modal-body pl-1">
+              <img src="{{patientForAppointmentDetails.patient_profile_pic_url}}" style="width: 75px;height:auto;float: left;">  
+              <div style="display: inline-block;padding-left: 20px">          
+                <label class="mb-0 pb-0"> {{patientForAppointmentDetails.patient_title}} 
+                  {{patientForAppointmentDetails.patient_firstname}} {{patientForAppointmentDetails.patient_lastname}}
+                </label><br>
+                <span>{{patientForAppointmentDetails.patient_age}}</span><br>
+                <span>{{patientForAppointmentDetails.patient_phone}}</span> 
+              </div>  
+            </div>
+            <div class="pl-1" style="position: relative;">
+              <label class="text-primary">Appointments</label>
+              <i class="fa fa-calendar btn btn-neutral" style="position: absolute;right: 0;top:-15px;font-size: 18px" title="Give new appointment" ng-click="bookAppointment()"></i>
+            </div>
+            <section style="max-height: 400px;overflow-y: auto;">
+              <div ng-repeat='app in patientAppointments | orderBy : "date"' class="pl-1" style="margin: 15px 0;border-bottom: 1px solid rgba(0,0,0,0.2);position: relative;">             
+                <label>Date:</label> <span>{{app.date | date: "fullDate"}}</span> &nbsp;&nbsp;&nbsp;
+                <label>Time: </label> <span>{{app.time | date: 'shortTime'}}</span> &nbsp;&nbsp;&nbsp;
+                <label>Offset: </label> <span am-time-ago='app.date'></span> &nbsp;&nbsp;&nbsp;
+                <span style="display: inline-block;"><label>Venue: </label> <span>{{app.address}}</span></span>
+                <span style="position: absolute;right: 0;bottom: 5px;cursor: pointer;font-weight: normal;">
+                  <i class="fa fa-trash text-muted btn btn-neutral btn-sm"  title="Delete appointment" ng-click="markAttended(app)" ng-if="!app.loading"></i>
+                  <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange" ng-if="app.loading"></i>
+                </span>
+              </div>
+            </section>
+            <p style="text-align: center;margin-top: 20px"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange" ng-if="loading"></i></p>
+            <p class="mt-2" style="text-align: center;" ng-show="patientAppointments.length == 0">No appointment history yet.</p>
           </div>
         </div>
       </div>

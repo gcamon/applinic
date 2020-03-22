@@ -3570,8 +3570,6 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
     router.post("/user/doctor/patient-session",function(req,res){
       if(req.user){ 
 
-        console.log(req.body)
-
         var session_id = uuid.v1() //parseInt(Math.floor(Math.random() * 999999) + "" + Math.floor(Math.random() * 999999));
         
         var connectObj = {
@@ -3594,13 +3592,15 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
 
         // if there is appointment save appointment to the data base
         if(req.body.appointment){
+           console.log("Appointment reqObj:", req.body.appointment)
+
           var getNames = {
             firstname : req.body.appointment.firstname,
             lastname: req.body.appointment.lastname,
             patient_id: req.body.patient_id
           }
 
-          
+         
 
           var createAddress = req.user.address + "," + req.user.city + "," + req.user.country; 
           req.body.appointment.firstname = req.user.firstname;
@@ -3609,19 +3609,26 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
           req.body.appointment.title = req.user.title;
           req.body.appointment.profilePic = req.user.profile_pic_url;
           req.body.appointment.session_id = session_id; 
-          req.body.appointment.attended = false; 
-          model.user.findOne({user_id:req.body.patient_id},{appointment:1,profile_pic_url:1,firstname:1,lastname:1,name:1}).exec(function(err,result){            
-            if(err) throw err;
-            result.appointment.unshift(req.body.appointment);
-            getPatientInfo.firstname = result.firstname;
-            getPatientInfo.lastname = result.lastname;
-            getPatientInfo.profilePic = result.profile_pic_url;
-            getPatientInfo.patient_username = result.name;
-            result.save(function(err,info){
-              if(err) throw err;
-              if(info)
-                tellDoctor(getNames);
-            });
+          req.body.appointment.attended = false;
+          
+          model.user.findOne({user_id:req.body.patient_id,type:"Patient"},
+            {appointment:1,profile_pic_url:1,firstname:1,lastname:1,name:1,phone:1}).exec(function(err,result){            
+            if(err) throw err;            
+            if(result){
+              result.appointment.unshift(req.body.appointment);
+              getPatientInfo.firstname = result.firstname;
+              getPatientInfo.lastname = result.lastname;
+              getPatientInfo.profilePic = result.profile_pic_url;
+              getPatientInfo.patient_username = result.name;
+              getPatientInfo.phone = result.phone;
+              result.save(function(err,info){
+                if(err) throw err;
+                if(info)
+                  tellDoctor(getNames);
+              });
+            } else {
+              res.json({error:true,message:"Patient was not found."})
+            }
           });
         }
 
@@ -3633,11 +3640,26 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
           req.body.appointment.typeOfSession = req.body.typeOfSession;
           req.body.appointment.doctorId = req.user.user_id;
           req.body.appointment.patient_id = req.body.patient_id;
+          req.body.appointment.attended = false;
+
           var ap = new model.appointment(req.body.appointment)
           ap.save(function(err){
             if(err) throw err;
             console.log("appointment saved!")
-          })
+            var msgBody = "Hello " + getPatientInfo.firstname + ", " + req.user.title + " " + req.user.firstname
+            + " from Applinic Healthcare has Scheduled an In-Person meeting appointment with you on " 
+            + req.body.appointment.strDate + "\nTime is " 
+            + req.body.appointment.strTime + "\nVenue is " + req.body.appointment.address + "\nKindly login https://applinic.com/login to find out more from your doctor."
+            var phoneNunber = getPatientInfo.phone || "+2348064245256";             
+            sms.messages.create(
+              {
+                to: phoneNunber,
+                from: '+16467985692',
+                body: msgBody,
+              }
+            )
+          });
+
           //req.body.appointment.profilePic = req.body.appointment.profilePic;        
          /* model.user.findOne({user_id: req.user.user_id},{appointment:1}).exec(function(err,result){
             result.appointment.unshift(req.body.appointment);
@@ -3651,7 +3673,6 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
         model.user.findOne({user_id:req.body.patient_id})
         .exec(function(err,result){            
           if(err) throw err; 
-          console.log(result) 
           if(result) {        
             getPatientInfo.firstname = result.firstname;
             getPatientInfo.lastname = result.lastname;
@@ -3755,16 +3776,21 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
 
     router.get("/user/doctor/appointment/view",function(req,res){
       if(req.user) {
-        var startDate = moment().year(req.query.year).month(req.query.month).startOf("month");
-        var endDate = startDate.clone().endOf('month');
+        //var startDate = moment().year(req.query.year).month(req.query.month).startOf("month");
+       // var endDate = startDate.clone().endOf('month');
 
-        model.appointment.find({doctorId: req.user.user_id, date: {$gt: startDate,$lt: endDate},attended:false},function(err,data){
+        var criteria = (req.query.patientId) ? {doctorId: req.user.user_id,patient_id: req.query.patientId,attended:false} :
+        {doctorId: req.user.user_id,attended:false};
+
+        model.appointment.find(criteria)
+         .exec(function(err,data){
           if(err) throw err;
           res.json(data);
         })
       } else {
         res.end("unauthorized access!");
       }
+
     })
 
 
@@ -3772,7 +3798,7 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
       if(req.user){
         var appointmentId;
         if(req.body.id) {
-          appointmentId = req.body.id.toString();
+          appointmentId = req.body.id;
         }
 
         model.appointment.findOne({doctorId: req.user.user_id,session_id:appointmentId,attended: false},function(err,data){
@@ -3792,7 +3818,7 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
       if(req.user){
         var appointmentId;
         if(req.body.id) {
-          appointmentId = req.body.id.toString();
+          appointmentId = req.body.id;
         }
 
         model.appointment.findOne({doctorId: req.user.user_id,session_id:appointmentId,attended: false})
@@ -3801,7 +3827,20 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
           if(data){
             data.attended = true;
             data.save(function(err,info){
-              console.log("appointment marked attended!")
+              console.log("appointment marked attended!",req.body)
+              if(req.body.isFromModal){
+                var msgBody = "Hello " + req.body.patientName + ", " + req.user.title + " " + req.user.firstname
+                + " from Applinic Healthcare has CANCELED your appointment which was scheduled on " + req.body.date + "by " 
+                + req.body.time + "\nKindly login https://applinic.com/login to find more from your doctor."
+                var phoneNunber =  req.body.phone || "+2348064245256";             
+                sms.messages.create(
+                  {
+                    to: phoneNunber,
+                    from: '+16467985692',
+                    body: msgBody,
+                  }
+                )
+              }
             });
             res.send({status: true,message:"marked!"})
           } else {
@@ -3818,7 +3857,7 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
      /* for patient appointment logic */
     router.get("/user/patient/appointment/view",function(req,res){
       if(req.user){
-        res.send(req.user.appointment);
+        res.json(req.user.appointment);
       } else {
         res.end("Unauthorized access");
       }
@@ -3827,22 +3866,26 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
     // will be modified later
     router.post("/user/doctor/get-session",function(req,res){
       if(req.user){
-        model.user.findOne({"doctor_patient_session.session_id": req.body.sessionId},{doctor_patient_session:1},function(err,data){
+        model.session.findOne({session_id: req.body.sessionId},function(err,objectFound){
           if(err) throw err;
-          var elementPos = data.doctor_patient_session.map(function(x) {return x.session_id; }).indexOf(req.body.sessionId);
-          var objectFound = data.doctor_patient_session[elementPos];
-          var sessionData = {
-            typeOfSession: objectFound.typeOfSession,
-            session_id: objectFound.session_id,
-            patient_id: objectFound.patient_id,
-            diagnosis: objectFound.diagnosis,
-            date: objectFound.date,
-            last_modified: objectFound.last_modified,
-            patient_firstname: objectFound.patient_firstname,
-            patient_lastname: objectFound.patient_lastname,
-            profilePic: objectFound.profilePic
-          }          
-          res.send(sessionData);         
+          //var elementPos = data.doctor_patient_session.map(function(x) {return x.session_id; }).indexOf(req.body.sessionId);
+          //var objectFound = data.doctor_patient_session[elementPos];
+          if(objectFound){
+            var sessionData = {
+              typeOfSession: objectFound.typeOfSession,
+              session_id: objectFound.session_id,
+              patient_id: objectFound.patient_id,
+              diagnosis: objectFound.diagnosis,
+              date: objectFound.date,
+              last_modified: objectFound.last_modified,
+              patient_firstname: objectFound.patient_firstname,
+              patient_lastname: objectFound.patient_lastname,
+              profilePic: objectFound.profilePic
+            }          
+            res.json(sessionData);  
+          } else {
+            res.json({})
+          }     
         });
       } else {
         res.end("Unauthorized access");
@@ -3851,11 +3894,9 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
 
     router.get("/user/doctor/get-patient-sessions",function(req,res){ 
       if(req.user){
-        console.log(req.query)
         model.session.find({doctor_id: req.user.user_id, patient_id: req.query.patient_id})
         .exec(function(err,sessions){
           if(err) throw err;
-          console.log(sessions);
           res.json(sessions)
         })
         /*var list = req.user.doctor_patient_session;
@@ -11651,8 +11692,6 @@ router.post("/user/doctor/consultation-fee",function(req,res){
 
     var date = new Date();
 
-    console.log(req.body)
-
     var consultFee = new model.consultationFee({
       status: 'Pending',
       is_paid: false,
@@ -11661,9 +11700,32 @@ router.post("/user/doctor/consultation-fee",function(req,res){
       patient_id: req.body.patientId,
       date: date,
       commission: req.body.commission
-    })
+    });
 
-   
+    model.user.findOne({user_id: req.body.patientId,type: "Patient"})
+    .exec(function(err,patient){
+      if(err) throw err;
+      if(patient){
+        var mail = patient.patient_mail;
+        req.body.service_access = true;
+        var random = randos.genRef(8);
+        mail.push({
+          message_id: random.toString(),
+          user_id: req.user.user_id,
+          firstname: req.user.firstname,
+          lastname: req.user.lastname,
+          title: req.user.title,
+          message: "Consultation Fee Invoice",
+          date: date,
+          consultation_fee: req.body.consultation_fee,
+          profile_pic_url: req.user.profile_pic_url,
+          profile_url: req.user.profile_url,
+          specialty: req.user.specialty,
+          consultationFeeId: consultFee._id
+        });
+        patient.save(function(err,info){});
+      }
+    })
 
     var elemPos = req.user.doctor_patients_list.map(function(x){return x.patient_id}).indexOf(req.body.patientId);
     var patient;
@@ -11687,7 +11749,7 @@ router.post("/user/doctor/consultation-fee",function(req,res){
       + "\nKindly fund your Applinic account and settle the payment."     
       + "\nhttps://applinic.com/login";
 
-      var phoneNunber =  "+2348064245256";//req.body.patient_phone;
+      var phoneNunber =  req.body.patient_phone || "+2348064245256";
       
       sms.messages.create(
         {
@@ -11701,7 +11763,6 @@ router.post("/user/doctor/consultation-fee",function(req,res){
        function callBack(err,info) {
         if(err) console.log(err);
        }
-
     });
 
   } else {

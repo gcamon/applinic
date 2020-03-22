@@ -5413,26 +5413,21 @@ app.controller("selectedAppointmentController",["$scope","$rootScope","$location
         headers : {'Content-Type': 'application/json'} 
         })
       .success(function(data) {
-        if(data){
-          //data.patientInfo = templateService.holdAppointmentData;        
-          //localManager.setValue("heldSessionData",data);
+        if(data){         
           $scope.loading = false;
           templateService.holdIdForSpecificPatient = data.patient_id;
           $location.path("/doctor-patient/treatment/" + data.patient_id)
-          //$window.location.href = "/user/treatment";
         } else {
           alert("error occurred while trying to get this session")
         }              
       });
     }
 
-   
-
     $scope.$watch('isAttended',function(oldVal,newVal){
       if($scope.isAttended) {
         markAttended($scope.sessionInfo.session_id)
       }
-    })
+    });
 
     var markAttended = function(sessionId){
       var session = {
@@ -5457,6 +5452,87 @@ app.controller("selectedAppointmentController",["$scope","$rootScope","$location
     }
 }]);
 
+
+app.controller("selectedAppointmentModalCtrl",["$scope","$rootScope","$location",
+  "$http","docAppointmentViewService","ModalService","templateService","$filter",
+  function($scope,$rootScope,$location,$http,docAppointmentViewService,ModalService,templateService,$filter){
+    var appointment = docAppointmentViewService;
+    var dt = new Date();  
+    var month = dt.getMonth() + 1;
+    var year = dt.getFullYear();
+
+    //console.log($rootScope.appointmentList)
+    $scope.loading = true;
+    $http.get("/user/doctor/appointment/view",{params:
+      {patientId: $rootScope.patientForAppointmentDetails.patient_id,year:year,month: month}})
+    .success(function(data){
+      $scope.loading = false;
+      $scope.patientAppointments = data;
+    })
+
+    /*$scope.$watch('isAttended',function(oldVal,newVal){
+      if($scope.isAttended) {
+        markAttended($scope.sessionInfo.session_id)
+      }
+    });*/
+
+    $scope.markAttended = function(app){
+      var check = confirm("You want to cancel the appointment");
+
+      if(!check){
+        return;
+      }
+
+      app.loading = true;
+      
+      var date = $filter('date')(app.date, 'fullDate');
+      var time = $filter('date')(app.time, 'shortTime')
+
+      var sessionId = app.session_id;
+      var session = {
+        id: sessionId,
+        date: date,
+        time: time,
+        patientName: $rootScope.patientForAppointmentDetails.patient_firstname,
+        isFromModal: true,
+        phone: $rootScope.patientForAppointmentDetails.patient_phone
+      }
+
+      appointment.mark(session,function(data){
+        app.loading = false;
+        if(data.status){
+          var list = $rootScope.appointmentList;
+          var elemPost = list.map(function(x){return x.session_id}).indexOf(sessionId);
+
+          if(list[elemPost]){
+            list.splice(elemPost,1)
+          }
+
+          var list2 = $scope.patientAppointments
+          elemPost = list2.map(function(x){return x.session_id}).indexOf(sessionId);
+          if(list2[elemPost]){
+            list2.splice(elemPost,1)
+          }
+        }
+             
+      });
+    }
+
+    $scope.bookAppointment = function(){
+      templateService.holdId = $rootScope.patientForAppointmentDetails.patient_id
+      //sets id of the patient for the appointmentModal controller to use.
+      //make sure templateSevice is always iniatialize elsewhere.
+      ModalService.showModal({
+          templateUrl: 'calender-template.html',
+          controller: 'appointmentModalController'
+      }).then(function(modal) {
+          modal.element.modal();
+          modal.close.then(function(result) {             
+          });
+      });
+    
+    }
+}]);
 
 
 app.controller("inTreatmentController",["$scope","$http","localManager","$location","$rootScope",
@@ -7203,7 +7279,7 @@ app.controller("consultationFeePaymentctrl",["$scope","$rootScope","$http","$fil
     consultationFee.date = date; 
     consultationFee.commission = commission;
     consultationFee.patient_phone = $scope.patient.patient_phone;
-    var msg =  "Consultation Fee payment notice sent on " + $filter('date')(date, 'EEE, MMM d, y') + " amount " + $scope.withOutComm;    
+    var msg =  "Consultation Fee invoice sent on " + $filter('date')(date, 'EEE, MMM d, y') + " amount " + $scope.withOutComm;    
     consultationFee.consultation_fee = $scope.user.fee;   
     consultationFee.message = {tag: 'Sent',body: msg,rawAmount:raw,strAmt: $scope.withOutComm};
 
@@ -11118,7 +11194,6 @@ function($scope,$location,$rootScope,$http,ModalService,$interval,templateServic
 
 
   $scope.removePatient = function(patient){
-    ///user/doctor/my-patients
     var message = "You want to remove "  
     + patient.patient_lastname + " " + patient.patient_firstname + " from your management list";
 
@@ -11175,6 +11250,18 @@ function($scope,$location,$rootScope,$http,ModalService,$interval,templateServic
       });
     });
    
+  }
+
+  $scope.appointments = function(patient){
+     $rootScope.patientForAppointmentDetails = patient;
+     ModalService.showModal({
+        templateUrl: 'appointment-modal.html',
+        controller: "selectedAppointmentModalCtrl"
+      }).then(function(modal) {
+        modal.element.modal();
+        modal.close.then(function(result) {            
+      });
+    });
   }
 
 
@@ -14092,8 +14179,8 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
 
 }]);  
   
-app.controller("appointmentModalController",["$scope","$rootScope","$http","moment","templateService","mySocket",
-  function($scope,$rootScope,$http,moment,templateService,mySocket){
+app.controller("appointmentModalController",["$scope","$rootScope","$http","moment","templateService","mySocket","$filter",
+  function($scope,$rootScope,$http,moment,templateService,mySocket,$filter){
     
     $scope.day = moment();
 
@@ -14173,6 +14260,10 @@ app.controller("appointmentModalController",["$scope","$rootScope","$http","mome
       $scope.treatment.appointment.title = "";
       $scope.treatment.appointment.date = $scope.dd._d;
 
+      $scope.treatment.appointment.strDate = $filter('date')($scope.treatment.appointment.date, 'fullDate');
+      $scope.treatment.appointment.strTime = $filter('date')($scope.treatment.appointment.time, 'shortTime')
+
+    
 
       //this will take care of differrent object populating the data variable.
       if(data.hasOwnProperty("patientInfo")) {
@@ -14219,6 +14310,12 @@ app.controller("appointmentModalController",["$scope","$rootScope","$http","mome
         })
       .success(function(response) {   
         $scope.loading = false;
+
+        if(response.error) {
+          alert("Error occured while booking appointment.")
+          return;
+        } 
+
         if(response) {
          
           alert("Appointment booked, patient will be notified.")

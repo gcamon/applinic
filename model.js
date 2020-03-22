@@ -92,7 +92,7 @@ var myModel = function () {
 		lastname: String,
 		specialty: String,
 		user_id: String,
-		date: String,
+		date: Date,
 		consultation_fee: Number,
     service_access: String,
     profile_pic_url: String,
@@ -110,7 +110,8 @@ var myModel = function () {
 			lastname: String,
 			specialty: String,
 			user_id: String
-		}
+		},
+		consultationFeeId: String
 	});
 
 	var AwardSchema = Schema({
