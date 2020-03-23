@@ -2321,13 +2321,14 @@
             </div>
             <div class="pl-1" style="position: relative;">
               <label class="text-primary">Appointments</label>
-              <i class="fa fa-calendar btn btn-neutral" style="position: absolute;right: 0;top:-15px;font-size: 18px" title="Give new appointment" ng-click="bookAppointment()"></i>
+              <img src="/assets/images/icons/calendar-tear.gif" height="20" width="20" style="position: absolute;right: 4px;top:-12px;font-size: 18px"  title="Give new appointment" ng-click="bookAppointment()">
+              <!--<i class="fa fa-calendar btn btn-neutral" style="position: absolute;right: 0;top:-15px;font-size: 18px" title="Give new appointment" ng-click="bookAppointment()"></i>-->
             </div>
             <section style="max-height: 400px;overflow-y: auto;">
-              <div ng-repeat='app in patientAppointments | orderBy : "date"' class="pl-1" style="margin: 15px 0;border-bottom: 1px solid rgba(0,0,0,0.2);position: relative;">             
+              <div ng-repeat='app in patientAppointments | orderBy : "-created"' class="pl-1" style="margin: 15px 0;border-bottom: 1px solid rgba(0,0,0,0.2);position: relative;">             
                 <label>Date:</label> <span>{{app.date | date: "fullDate"}}</span> &nbsp;&nbsp;&nbsp;
-                <label>Time: </label> <span>{{app.time | date: 'shortTime'}}</span> &nbsp;&nbsp;&nbsp;
-                <label>Offset: </label> <span am-time-ago='app.date'></span> &nbsp;&nbsp;&nbsp;
+                <label>Time: </label> <span>{{app.time | date: 'shortTime'}}</span> <br>
+               <!-- <label>Offset: </label> <span am-time-ago="app.date"></span> &nbsp;&nbsp;&nbsp;-->
                 <span style="display: inline-block;"><label>Venue: </label> <span>{{app.address}}</span></span>
                 <span style="position: absolute;right: 0;bottom: 5px;cursor: pointer;font-weight: normal;">
                   <i class="fa fa-trash text-muted btn btn-neutral btn-sm"  title="Delete appointment" ng-click="markAttended(app)" ng-if="!app.loading"></i>

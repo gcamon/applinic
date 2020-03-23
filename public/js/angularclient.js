@@ -5216,6 +5216,10 @@ app.controller("docAppointmentController",["$scope","$rootScope","$location","te
     })
   }
 
+  $rootScope.$on("doc new appointment",function(e,a){
+    getAppoint()
+  })
+
  
 
 }]);
@@ -5519,7 +5523,8 @@ app.controller("selectedAppointmentModalCtrl",["$scope","$rootScope","$location"
     }
 
     $scope.bookAppointment = function(){
-      templateService.holdId = $rootScope.patientForAppointmentDetails.patient_id
+      templateService.holdId = $rootScope.patientForAppointmentDetails.patient_id;
+      templateService.holdBriefForSpecificPatient = $rootScope.patientForAppointmentDetails;
       //sets id of the patient for the appointmentModal controller to use.
       //make sure templateSevice is always iniatialize elsewhere.
       ModalService.showModal({
@@ -11264,7 +11269,49 @@ function($scope,$location,$rootScope,$http,ModalService,$interval,templateServic
     });
   }
 
+  $scope.refresh = function() {
+    ptApp()
+  }
 
+
+  
+  function ptApp() {
+    $rootScope.appointmentList.forEach(function(p){
+      //if(!checkDueAppointment(p.date,p.time)){
+        var ptPos = $rootScope.patientList.map(function(x){return x.patient_id}).indexOf(p.patient_id)
+        if($rootScope.patientList[ptPos]){
+          $rootScope.patientList[ptPos].isNewAppointment = true;
+          if(checkDueAppointment(p.date,p.time))
+            $rootScope.patientList[ptPos].appDate = checkDueAppointment(p.date,p.time);
+        }
+      //} 
+    })
+  }
+
+  var d,
+      t,
+      hr,
+      stMin;
+
+  function checkDueAppointment(dt,time) {
+    d = new Date(dt)
+    t = new Date(time);    
+    hr = d.getHours() + t.getHours();
+    stMin = d.getMinutes() + t.getMinutes();;
+    d.setHours(hr);
+    d.setMinutes(stMin)
+    return checkIsInTime(d);//moment().isBefore(moment(d).subtract(0, 'hours'));
+  }
+
+  function checkIsInTime(d) {
+    var time = moment().isBefore(moment(d).subtract(0, 'hours'))
+    return (time) ? d : null;
+  }
+
+  setTimeout(function(){
+    ptApp()
+  },3000)
+  
 }]);
 
 app.controller("redirectModal",["$rootScope","$window",function($rootScope,$window){
@@ -14320,6 +14367,8 @@ app.controller("appointmentModalController",["$scope","$rootScope","$http","mome
          
           alert("Appointment booked, patient will be notified.")
           mySocket.emit("realtime appointment notification",{to:data.patient_id})
+
+          $rootScope.$broadcast("doc new appointment",{data});
           
         }  
       });

@@ -955,7 +955,8 @@ var myModel = function () {
 		typeOfSession: String,
 		profilePic: String,
 		doctorId: String,
-		attended: Boolean
+		attended: Boolean,
+		created: Date
 	},{
 		collections: "appointmentinfos"
 	});

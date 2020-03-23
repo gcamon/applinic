@@ -33,19 +33,25 @@
 		<hr>
 	</div>
 </div>-->
-<div class="p-2">
-		<div style="position: relative;">
-			<h5>My Patients ( {{patientList.length}} )</h5>
-			<input type="text" name="" style="position: absolute;right: 30px;top:5px" placeholder=" Search" ng-model="person">
-		</div>
-		<div class="col-md-4 p-1" ng-repeat="j in patientList | orderBy: '-presence' | filter : person" ng-if="!j.deleted" >
+<div class="">
+		<section class="col-md-12 pl-0 ml-0">
+			<div class="col-md-8 pl-0 ml-0">
+				<span class="btn btn-neutral"><i class="fa fa-users text-danger"></i> {{patientList.length}}</span>  &nbsp;&nbsp;&nbsp;&nbsp;
+				<i class="fa fa-refresh btn btn-neutral" ng-click="refresh()"></i>
+			</div>
+			<div class="col-md-4 pl-0 ml-0">				
+				<input type="text" name=""  placeholder=" Search" ng-model="person" class="form-control">
+			</div>
+		</section>
+		<div class="clearfix"></div>
+		<div class="col-md-4 p-1" ng-repeat="j in patientList | orderBy: 'appDate' | filter : person" ng-if="!j.deleted" >
 			<div class="card row">				
-				<div class="col-md-5">
+				<div class="col-md-5 col-sm-5 col-xs-5 pl-1 pt-1">
 					<a href="" ng-click="userPatient(j.patient_id,j.presence)">
-						<img src="{{j.patient_profile_pic_url}}" style="width: auto;max-height: 150px"/>
+						<img src="{{j.patient_profile_pic_url}}" style="width: auto;max-height: 170px"/>
 					</a>
 				</div>
-				<div class="pt-1 pb-1 col-md-7" style="min-height: 110px;max-height: 140px;">
+				<div class="pt-2 pb-1 col-md-7 col-sm-7 col-xs-7 pl-1" style="min-height: 110px;max-height: 140px;">
 					<div class="ellipsis">
 						<b class="text-muted">{{j.patient_title}} {{j.patient_lastname}} {{j.patient_firstname}}</b>
 					</div>
@@ -53,7 +59,15 @@
 						<span>{{j.patient_gender || 'Male'}}</span><br>
 						<span><i class="fa fa-map-marker text-info" ng-show="j.presence"></i><span> <i class="fa fa-map-marker" ng-show="!j.presence"></i></span> {{j.patient_city || "Enugu"}}</span><br>
 						
-					</div>					
+					</div>	
+					<div>
+						<a href="" ng-click="appointments(j)" ng-if="j.isNewAppointment" title="In-person meeting appointment with this patient">
+							<!--<img src="/assets/images/icons/calendar-tear.gif" width = "13" height = "13">&nbsp;-->
+							<i class="fa fa-clock-o text-primary" aria-hidden="true"></i>&nbsp;
+							<span class="text-danger" style="font-size: 12px">{{j.appDate | amCalendar }}</span>
+						</a>
+						<a href="" ng-if="!j.isNewAppointment" style="height: 13px">&nbsp;</a><br>
+					</div>				
 				</div>				
 				<div class="clearfix"></div>
 				<div style="position: relative;" class="pl-1 pb-1">
@@ -62,7 +76,7 @@
 					<span class="text-muted" ng-show="j.activity.radioCount > 0"><span class="text-info"> >  2 new </span> Radiology Result</span>-->
 					<i class="fa fa-ellipsis-v text-muted" style="position: absolute;right: 15px;bottom: 5px;cursor: pointer;padding: 5px" title="Manage Patient" ng-click="popup(j)"></i>								
 				
-					<div ng-class="{'popup2': j.isManage == true}" ng-if="j.isManage" style="line-height: 35px">
+					<div ng-class="{'popup2': j.isManage == true}" ng-if="j.isManage" style="line-height: 35px;padding: 5px">
 					  <div style="position: absolute;top:4px;right: 10px" ng-click="closePop(j)"><i class="fa fa-times text-info"></i></div>
 					  <a href=""  ng-click="userPatient(j.patient_id,j.presence)"><i class="fa fa-folder-open text-warning"></i> Go to E-Treatment </a><br>				 
 					  <a href=""  ng-click="consultationFee(j)"><i class="fa fa-money text-success"></i> Consultation Fee</a><br>

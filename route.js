@@ -3641,6 +3641,7 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
           req.body.appointment.doctorId = req.user.user_id;
           req.body.appointment.patient_id = req.body.patient_id;
           req.body.appointment.attended = false;
+          req.body.appointment.created = new Date();
 
           var ap = new model.appointment(req.body.appointment)
           ap.save(function(err){
