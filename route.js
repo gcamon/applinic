@@ -313,6 +313,11 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
     res.download(file); // Set disposition and send it.
   });
 
+  router.get("/chat-files/:filename",function(req,res){
+    var file = __dirname + "/uploads/" + req.params.filename;
+    res.download(file); // Set disposition and send it.
+  });
+
 
   router.get("/user/cam/:userId/:controlId",function(req,res){
     if(req.user){ //check to see if the param exist in database

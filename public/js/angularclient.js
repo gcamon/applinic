@@ -2829,8 +2829,8 @@ app.directive("fileModelChat",["$parse","$rootScope",function($parse,$rootScope)
               $rootScope.imageFiles()
             } else {
               modelSetter(scope.$parent, values[0]); //remember to check for help controller ie need a doctor
-              
-              $rootScope.imageFile()
+              //console.log(scope.$parent)
+              $rootScope.imageFile(scope.$parent.files)
             }
             
           });
@@ -22826,7 +22826,7 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
         //$rootScope.message1.push(msg);      
         msg.userId = user.user_id;
         msg.partnerId = $scope.partner.partnerId; 
-        msg.id = data.date//genId();
+        msg.id = data.date//genId()
 
 
         var elPos = $rootScope.chatsList.map(function(x){return x.partnerId}).indexOf($scope.partner.partnerId);
@@ -22872,8 +22872,18 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
     var item = angular.element(document.createElement('an-item'));
     var breaker = angular.element(document.createElement('div'));
     var p = angular.element(document.createElement('p'));
-    var small = angular.element(document.createElement('small'));
+    var small = angular.element(document.createElement('span'));
     var fileElem;
+
+    //new implementations as of 24th March changing chat design
+
+    var item1 = angular.element(document.createElement('div'));
+    var item2 = angular.element(document.createElement('div'));
+    var item3 = angular.element(document.createElement('div'));
+    var item4 = angular.element(document.createElement('div'));
+    var img = angular.element(document.createElement('img'));
+
+    // end of new item added
     
     switch(data.fileType){
       case 'image':        
@@ -22915,7 +22925,7 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
           a[0].style.fontSize = "32px";
           a[0].className = "fa fa-file";
           a[0].innerHTML += "";
-          a[0].style.color = (data.sent) ? "#eee" : "yellow";
+          a[0].style.color = (data.sent) ? "#eee" : "#05728f";
           a[0].target = "_blank";
           a[0].style.margin = "20px 0";
           a[0].title = "View file";
@@ -22972,29 +22982,73 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
    
    
     small[0].id = data.id;
+    small[0].className = "time_date";
+    small[0].style.color = "rgba(0,0,0,0.5)"
     //var time = ($filter('amTimeAgo')(data.time) === 'a few seconds ago') ? 'Now' : $filter('amTimeAgo')(data.time);
     small[0].innerHTML += $filter('amCalendar')(data.time);
     //small[0].innerHTML += (data.sent) ? "&nbsp;&nbsp;" + $filter('amTimeAgo')(data.time) : "&nbsp;&nbsp;" + $filter('amTimeAgo')(data.time);     
     
     breaker[0].style.display = "block";
-    breaker[0].style.textAlign = (data.sent) ? "right" : "left";
+    //breaker[0].style.textAlign = (data.sent) ? "right" : "left";
     
-    item[0].appendChild(p[0]);
-
-    if(fileElem)
-      item[0].appendChild(fileElem[0]);
+    //item[0].appendChild(p[0]);
 
     
-    item[0].appendChild(small[0]);
+
+    //new code 
+    if(data.sent){
+      item1[0].className = "outgoing_msg";
+      item2[0].className = "sent_msg";
+     
+      item1[0].appendChild(item2[0]);
+      if(fileElem){
+        p[0].appendChild(fileElem[0]);
+      }
+
+      item2[0].appendChild(p[0]);
+      item2[0].appendChild(small[0]);
+
+    } else {
+      img[0].src = "https://ptetutorials.com/images/user-profile.png";
+      item1[0].className = "incoming_msg";
+      item2[0].className = "incoming_msg_img";
+      item3[0].className = "received_msg";
+      item4[0].className = "received_withd_msg";
+      item2[0].appendChild(img[0]);
+      
+
+      if(fileElem){
+        p[0].appendChild(fileElem[0]);
+      }
+
+      item4[0].appendChild(p[0]);
+      item4[0].appendChild(small[0]);
+
+      item3[0].appendChild(item4[0])
+      
+      item1[0].style['margin-top'] = "20px";
+      
+      item1[0].appendChild(item2[0]);
+      item1[0].appendChild(item3[0]);
+      //item1[0].appendChild(item4[0]);
+    }
+
+   
+
+  
+    // end of new code
 
 
-    breaker[0].appendChild(item[0]);
+    //item1[0].appendChild(small[0]);
+
+
+    breaker[0].appendChild(item1[0]);
     
    
-    item[0].style.display = "inline-block";
+    /*item[0].style.display = "inline-block";
     item[0].style.maxWidth = (deviceCheckService.getDeviceType()) ? "90%" : "70%";
     item[0].className = (data.sent) ? "talk-bubble tri-right right-top talktext msg_sent bg-info" : "talk-bubble tri-right left-top talktext";
-    item[0].style.whiteSpace = "pre-line";
+    item[0].style.whiteSpace = "pre-line";*/
     container[0].appendChild(breaker[0]);
     base[0].scrollTop = sentmessage.scrollHeight;
   }
@@ -23119,9 +23173,10 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
 
   var img = {};
   var progress = {};
+  dlArray = [];
   //for single file upload
-  $rootScope.imageFile = function() {
-    
+  $rootScope.imageFile = function(file) {   
+    $scope.files = file;
     if($scope.files.size <= 31457280) { // 30mb max size
     var file = $scope.files,
       fileReader = new FileReader(),
@@ -23130,10 +23185,14 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
     fileReader.readAsArrayBuffer(slice); 
     img[file.name] = file.name;
 
+    //set up a deletable array of ids so that after upload indcator shows it deletes after uploads
+    dlArray.push(Math.floor(Math.random() * 999999));
+
       //incase listener is registered twice.
     var evt1 = "request slice upload " + file.name;
     var evt2 = "end upload " + file.name;
     var evt3 = "upload error " + file.name;
+
 
 
     mySocket.removeAllListeners(evt1);
@@ -23149,28 +23208,51 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
     var span = angular.element(document.createElement('span'));
 
     breaker[0].style.display = "block";
-    breaker[0].style.textAlign =  "right";
+    //breaker[0].style.textAlign =  "right";
     p[0].style.display = "inline-block";
 
-   // p[0].className = "fa fa-upload";
-    p[0].innerHTML += file.name + "\n Uploading... ";
+
+    var item1 = angular.element(document.createElement('div'));
+    var item2 = angular.element(document.createElement('div'));
+    var item3 = angular.element(document.createElement('div'));
+    var item4 = angular.element(document.createElement('div'));
+    var progressBar = angular.element(document.createElement("div"));
+    var innerBar = angular.element(document.createElement("div"));
+
+
+    small[0].style.display = "block";
+    small[0].style.marginTop = "5px";
+
+
+  
+    p[0].innerHTML += file.name;
+    small[0].id = file.name;
+    //p[0].id = file.name;
+    //item[0].appendChild(p[0]);
+
+    //item[0].appendChild(span[0]);
     
-    item[0].appendChild(p[0]);
+    //item[0].appendChild(small[0]);
+    item1[0].className = "outgoing_msg";
+    item2[0].className = "sent_msg";
+   
+    item1[0].appendChild(item2[0]);
+   
 
-    item[0].appendChild(span[0]);
-    
-    item[0].appendChild(small[0]);
+    item2[0].appendChild(p[0]);
+    item2[0].appendChild(span[0]);
+    item2[0].appendChild(small[0]);
 
-    breaker[0].id = file.name;
-
-
-    breaker[0].appendChild(item[0]);
+    breaker[0].id = dlArray[0];
 
 
-    item[0].style.display = "inline-block";
+    breaker[0].appendChild(item1[0]);
+
+
+    /*item[0].style.display = "inline-block";
     item[0].style.maxWidth = (deviceCheckService.getDeviceType()) ? "90%" : "70%";
     item[0].className =  "talk-bubble tri-right right-top talktext msg_sent bg-info";
-    item[0].style.whiteSpace = "pre-line";
+    item[0].style.whiteSpace = "pre-line";*/
     container[0].appendChild(breaker[0]);
   
     base[0].scrollTop = sentmessage.scrollHeight;
@@ -23193,11 +23275,10 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
      //keep sending slice
     mySocket.on(evt1,function(data){ 
       var place = data.currentSlice * 100000, 
-          slice = file.slice(place, place + Math.min(100000, file.size - place));  
+        slice = file.slice(place, place + Math.min(100000, file.size - place)); 
       
-
       ele2 = document.getElementById(img[data.name]);     
-      ele2.children[0].childNodes[1].innerHTML = "" + Math.round(fnProgress(place)) + "%";
+      ele2.innerHTML = "Uploading... " + Math.round(fnProgress(place)) + "%";
       fileReader.readAsArrayBuffer(slice); 
     });
 
@@ -23233,8 +23314,11 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
         }
 
         chats(msg);
-        var ele = document.getElementById(img[file.name]);
+        //var ele = document.getElementById(img[file.name]);
+        //ele.style.display = "none";
+        var ele = document.getElementById(dlArray[0])//document.getElementById(img[file.name]);
         ele.style.display = "none";
+        dlArray.splice(0,1);
         delete img[file.name];
         
         mySocket.emit("isSent",msg,function(status){          
@@ -23248,8 +23332,9 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
     })
 
     mySocket.on(evt3,function(res){
-      var ele = document.getElementById(img[file.name]);
+      var ele = document.getElementById(dlArray[0])//document.getElementById(img[file.name]);
       ele.style.display = "none";
+      dlArray.splice(0,1);
       delete img[file.name];
       alert("Error occured while uploading " + file.name);
     })

@@ -2,6 +2,7 @@
 
 var uuid = require("uuid");
 var AWS = require('aws-sdk');
+var fs = require('fs');
 
 AWS.config.update({
     accessKeyId: process.env.AMAZON_ACCESS_KEY,
@@ -333,10 +334,10 @@ module.exports = function(model,io,streams,sms) {
 
 	  	socket.on("slice upload",function(data){
 	  		if (!files[data.name]) { 
-	        files[data.name] = Object.assign({}, struct, data); 
-	        files[data.name].data = []; 
+		        files[data.name] = Object.assign({}, struct, data); 
+		        files[data.name].data = []; 
 		    }
-		    console.log(data);
+		   
 
 		   	var evt1 = "request slice upload " + data.name;
     		var evt2 = "end upload " + data.name;
@@ -349,8 +350,32 @@ module.exports = function(model,io,streams,sms) {
 		    files[data.name].slice++;
 		    
 		    if (files[data.name].slice * 100000 >= files[data.name].size) { 
+
+		    	
+
+				// The absolute path of the new file with its name
+				var fileResource = Date.now() + "-" + data.name;
+				var filepath = "./uploads/" + fileResource ;
+
+				var fileBuffer = Buffer.concat(files[data.name].data);
+
+				// Save with a buffer as content from a base64 image
+				fs.writeFile(filepath, fileBuffer, (err) => {
+				    if (err) {
+				    	console.log(err);
+				    	socket.emit(evt3,{status:false});
+				    	return;
+				    }
+
+				    var fileUrl = "/chat-files/" + fileResource;		        		
+		        	socket.emit(evt2,{url: fileUrl,fileType: data.fileType,mimeType: data.type});
+
+				    console.log("The file was succesfully saved!");
+				}); 
+
+
 		        //do something with the data 
-		        var fileBuffer = Buffer.concat(files[data.name].data); 
+		        /*var fileBuffer = Buffer.concat(files[data.name].data); 
 		        
 		        //then save the file to amazon s3 stoarge of save locally to server.
 		        var fileResource = Date.now() + data.name;
@@ -366,7 +391,9 @@ module.exports = function(model,io,streams,sms) {
 		        		var fileUrl = "https://s3.amazonaws.com/applinic-files/" + fileResource;		        		
 		        		socket.emit(evt2,{url: fileUrl,fileType: data.fileType,mimeType: data.type});
 		        	} 
-		        })
+		        })*/
+
+
 
 		        delete files[data.name];
 
@@ -376,7 +403,7 @@ module.exports = function(model,io,streams,sms) {
 		            name: data.name
 		        }); 
 		    } 
-	    	console.log(fileBuffer)
+	    	//console.log(fileBuffer)
 	    });
 
 //https://s3.amazonaws.com/applinic-files/

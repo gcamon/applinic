@@ -1,133 +1,292 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--<link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+
+<html>
+<head>
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" type="text/css" rel="stylesheet"
+
+</head>
+<body>-->
 <style type="text/css">
-	.cp {
-		display: inline-block;
-	}
+	.container{max-width:1170px; margin:auto;}
+img{ max-width:100%;}
+.inbox_people {
+  background: #f8f8f8 none repeat scroll 0 0;
+  float: left;
+  overflow: hidden;
+  width: 35%; border-right:1px solid #c4c4c4;
+}
+.inbox_msg {
+  border: 1px solid #c4c4c4;
+  clear: both;
+  overflow: hidden;
+}
+.top_spac{ margin: 20px 0 0;}
 
-	.cp-1 {
-		float: left;
-		position: relative;
-	}
 
-	.cp-1 > span {
-		display: block;
-		width: 15px;
-		height: 15px;
-		border-radius: 1px;
-	}
+.recent_heading {float: left; width:40%;}
+.srch_bar {
+  display: inline-block;
+  text-align: right;
+  width: 60%; padding:
+}
+.headind_srch{ padding:10px 29px 10px 20px; overflow:hidden; border-bottom:1px solid #c4c4c4;}
 
-	.cp-2 {
-		padding: 5px;
-		padding-left: 10px;
-		content: ""
-	}
+.recent_heading h4 {
+  color: #05728f;
+  font-size: 21px;
+  margin: auto;
+}
+.srch_bar input{ border:1px solid #cdcdcd; border-width:0 0 1px 0; width:80%; padding:2px 0 4px 6px; background:none;}
+.srch_bar .input-group-addon button {
+  background: rgba(0, 0, 0, 0) none repeat scroll 0 0;
+  border: medium none;
+  padding: 0;
+  color: #707070;
+  font-size: 18px;
+}
+.srch_bar .input-group-addon { margin: 0 0 0 -27px;}
 
-	.cp-2 > span {
-		font-size: 12px;
-		color: #fff
-	}
+.chat_ib h5{ font-size:15px; color:#464646; margin:0 0 8px 0;}
+.chat_ib h5 span{ font-size:13px; float:right;}
+.chat_ib p{ font-size:14px; color:#989898; margin:auto}
+.chat_img {
+  float: left;
+  width: 11%;
+}
+.chat_ib {
+  float: left;
+  padding: 0 0 0 15px;
+  width: 88%;
+}
 
-	.bg-black {
-		background-color: rgba(0,0,0,0.5);
-	}
+.chat_people{ overflow:hidden; clear:both;}
+.chat_list {
+  border-bottom: 1px solid #c4c4c4;
+  margin: 0;
+  padding: 18px 16px 10px;
+}
+.inbox_chat { height: 450px; overflow-y: scroll;}
+
+.active_chat{ background:#ebebeb;}
+
+.incoming_msg_img {
+  display: inline-block;
+  width: 6%;
+}
+.received_msg {
+  display: inline-block;
+  padding: 0 0 0 10px;
+  vertical-align: top;
+  width: 92%;
+ }
+ .received_withd_msg p {
+  background: #ebebeb none repeat scroll 0 0;
+  border-radius: 3px;
+  color: #646464;
+  font-size: 14px;
+  margin: 0;
+  padding: 5px 10px 5px 12px;
+  width: 100%;
+}
+.time_date {
+  color: #747474;
+  display: block;
+  font-size: 12px;
+  margin: 8px 0 0;
+}
+.received_withd_msg { width: 57%;}
+.mesgs {
+  float: left;
+  padding: 30px 15px 0 25px;
+  width: 65%;
+  overflow-y: auto;
+  max-height: 600px;
+}
+
+ .sent_msg p {
+  background: #05728f none repeat scroll 0 0;
+  border-radius: 3px;
+  font-size: 14px;
+  margin: 0; color:#fff;
+  padding: 5px 10px 5px 12px;
+  width:100%;
+}
+.outgoing_msg{ overflow:hidden; margin:26px 0 26px;}
+.sent_msg {
+  float: right;
+  width: 46%;
+}
+.input_msg_write input {
+  background: rgba(0, 0, 0, 0) none repeat scroll 0 0;
+  border: medium none;
+  color: #4c4c4c;
+  font-size: 15px;
+  min-height: 48px;
+  width: 100%;
+}
+
+.type_msg {border-top: 1px solid #c4c4c4;position: relative;}
+.msg_send_btn {
+  background: #05728f none repeat scroll 0 0;
+  border: medium none;
+  border-radius: 50%;
+  color: #fff;
+  cursor: pointer;
+  font-size: 17px;
+  height: 33px;
+  position: absolute;
+  right: 0;
+  top: 11px;
+  width: 33px;
+}
+.messaging { padding: 0 0 50px 0;}
+.msg_history {
+  height: 416px;
+  overflow-y: auto;
+}
+
+.progress-bar {
+  width: 100%;
+  background-color: grey;
+}
+
+.inner-bar {
+  width: 0;
+  height: 30px;
+  background-color: #4CAF50;
+  text-align: center; /* To center it horizontally (if you want) */
+  line-height: 30px; /* To center it vertically */
+  color: white;
+}
 </style>
 
-<div>
-	<a href="#{{path}}" class="btn btn-neutral"><i class="fa fa-arrow-left"></i> Back</a>
-	<div class="card">
-		<div class="row">
-			<div class="col-sm-12 col-md-4 col-lg-4">				
-				<h5 class="text-muted pt-1 pl-1">Messages</h5>
-				
-				<input type="text" name="" placeholder="Search chats" class="form-control" ng-model="ft">
-				
-				<div class="ellipsis hidden-md-down" style="max-height: 530px; overflow-y: auto">
-					<div ng-repeat="chat in chatsList | orderBy : '-realTime' | filter: ft" ng-click="viewChat(chat)" class="cht-body" ng-if="chat.partnerId !== checkLogIn.user_id">
-									
-						<a href="" class="chat-header-text ellipsis" ng-class="{'chat-header-text-new' : !chat.is_read,'bg-default': chat.partnerId == partner.partnerId}" style="display: block;position: relative;">
-							<div class="cp cp-1" style="height:62px;width:62px;border-radius: 62px;overflow: hidden;text-align: center;vertical-align: middle;">
-								<img src="{{chat.profilePic}}" class="img-responsive" style="display: block;min-height: 62px;width: auto;">
-								<span></span>
-							</div>
-							<div class="cp cp-2">
-								<strong style="font-size: 12px;display: block;padding: 0; width: 220px;" class="ellipsis">{{chat.name}}</strong>
-								<span style="font-size: 12px;display: block;width: 220px;" class="ellipsis text-muted"><!--<span ng-show="chat.partnerType">{{chat.partnerType}}:</span>--> 
-								 <span style="font-size: 12px;">{{(!chat.typing) ? (chat.messages[chat.messages.length - 1].received || chat.messages[chat.messages.length - 1].sent ) : chat.typing }}</span></span>
-
-								<!-- <span ng-if="chat.status" class="online" style="background-color: #85CE36;float: none;"></span>
-								 <span ng-if="!chat.status" class="online" style="background-color: #ccc;float: none;"></span>-->
-
-								 <small am-time-ago="chat.messages[chat.messages.length - 1].time  || chat.messages[chat.messages.length - 1].received" ng-cloak  class="text-muted"></small>
-								 <!--<span style="position: absolute;bottom: 50px;right: 20px"><span ng-if="chat.status" class="online" style="background-color: #85CE36"></span><span ng-if="!chat.status" class="online" style="background-color: #ccc;"></span></span>-->
-							 </div>
-							 <!--<i class="fa fa-comment-o" style="position: absolute;top:3px;right:5px" ng-if="chat.isUnRead"></i>-->
-						</a>
-						
-						<div class="clearfix"></div>
-
-					</div> <!--<time  am-time-ago="i.sent_date" style="position: absolute;right: 0;top:2px;font-size: 12px"></time>-->
-				</div>
+<div class="container">
+<!--<a href="#{{path}}" class="btn btn-neutral"><i class="fa fa-arrow-left"></i> Back</a>-->
+<div class="messaging">
+      <div class="inbox_msg">
+        <div class="inbox_people">
+          <div class="headind_srch">
+            <div class="recent_heading">
+              <h4>Messages</h4>
+            </div>
+            <div class="srch_bar">
+              <div class="stylish-input-group">
+                <input type="text" class="search-bar"  placeholder="Search" ng-model="ft">
+                <!--<span class="input-group-addon">
+                <button type="button"> <i class="fa fa-search" aria-hidden="true"></i> </button>
+                </span>--> </div> <!-- active_chat -->
+            </div>
+          </div>
+          <div class="inbox_chat">
+            <div class="chat_list " ng-class="{'text-success' : !chat.is_read,'active_chat': chat.partnerId == partner.partnerId}" ng-repeat="chat in chatsList | orderBy : '-realTime' | filter: ft" ng-click="viewChat(chat)">
+              <div class="chat_people" >
+             
+                <div class="chat_img"> <img src="{{chat.profilePic}}" alt="sunil"> </div>
+                <div class="chat_ib">
+                  <h5>{{chat.name}} <span class="chat_date" >{{ (chat.messages[chat.messages.length - 1].time  || chat.messages[chat.messages.length - 1].received ) | amCalendar}}</span></h5>
+                  <p class="ellipsis">{{(!chat.typing) ? (chat.messages[chat.messages.length - 1].received || chat.messages[chat.messages.length - 1].sent ) : chat.typing }}</p>
+                </div>
+              </div>
+            </div>
+            <!--
 
 
-				<div class="ellipsis hidden-md-up" style="max-height: 220px; border-bottom: 1px solid #ccc; margin-bottom: 5px; overflow-y: auto">
-					<div ng-repeat="chat in chatsList | orderBy : '-realTime' | filter: ft" ng-click="viewChat(chat)" class="pl-1 cht-body" ng-if="chat.partnerId !== checkLogIn.user_id">
-						<div class="cp cp-1" style="height:62px;width:62px;border-radius: 62px;overflow: hidden;text-align: center;vertical-align: middle;">
-							<img src="{{chat.profilePic}}">	
-						</div>
-						<div class="cp cp-2">		
-							<a href="" class="chat-header-text ellipsis" ng-class="{'chat-header-text-new' : !chat.is_read}" style="display: block;position: relative;">
-								<strong style="font-size: 12px;display: block;padding: 0;" class="ellipsis">{{chat.name}}</strong>
-								<span style="font-size: 12px;display: block;" class="ellipsis text-muted"><!--<span ng-show="chat.partnerType">{{chat.partnerType}}:</span>-->
-								 <span style="font-size: 12px">{{(!chat.typing) ? (chat.messages[chat.messages.length - 1].received || chat.messages[chat.messages.length - 1].sent ) : chat.typing }}</span></span>
 
-								 <!--<span ng-if="chat.status" class="online" style="background-color: #85CE36;float: none;"></span>
-								 <span ng-if="!chat.status" class="online" style="background-color: #ccc;float: none;"></span>-->
-								 
-								 <small am-time-ago="chat.messages[chat.messages.length - 1].time  || chat.messages[chat.messages.length - 1].received" ng-cloak style="color: #ccc"></small>
+            -->
+            <!--<div class="chat_list">
+              <div class="chat_people">
+                <div class="chat_img"> <img src="https://ptetutorials.com/images/user-profile.png" alt="sunil"> </div>
+                <div class="chat_ib">
+                  <h5>Sunil Rajput <span class="chat_date">Dec 25</span></h5>
+                  <p>Test, which is a new approach to have all solutions 
+                    astrology under one roof.</p>
+                </div>
+              </div>
+            </div>
+            <div class="chat_list">
+              <div class="chat_people">
+                <div class="chat_img"> <img src="https://ptetutorials.com/images/user-profile.png" alt="sunil"> </div>
+                <div class="chat_ib">
+                  <h5>Sunil Rajput <span class="chat_date">Dec 25</span></h5>
+                  <p>Test, which is a new approach to have all solutions 
+                    astrology under one roof.</p>
+                </div>
+              </div>
+            </div>
+            <div class="chat_list">
+              <div class="chat_people">
+                <div class="chat_img"> <img src="https://ptetutorials.com/images/user-profile.png" alt="sunil"> </div>
+                <div class="chat_ib">
+                  <h5>Sunil Rajput <span class="chat_date">Dec 25</span></h5>
+                  <p>Test, which is a new approach to have all solutions 
+                    astrology under one roof.</p>
+                </div>
+              </div>
+            </div>
+            <div class="chat_list">
+              <div class="chat_people">
+                <div class="chat_img"> <img src="https://ptetutorials.com/images/user-profile.png" alt="sunil"> </div>
+                <div class="chat_ib">
+                  <h5>Sunil Rajput <span class="chat_date">Dec 25</span></h5>
+                  <p>Test, which is a new approach to have all solutions 
+                    astrology under one roof.</p>
+                </div>
+              </div>
+            </div>
+            <div class="chat_list">
+              <div class="chat_people">
+                <div class="chat_img"> <img src="https://ptetutorials.com/images/user-profile.png" alt="sunil"> </div>
+                <div class="chat_ib">
+                  <h5>Sunil Rajput <span class="chat_date">Dec 25</span></h5>
+                  <p>Test, which is a new approach to have all solutions 
+                    astrology under one roof.</p>
+                </div>
+              </div>
+            </div>
+            <div class="chat_list">
+              <div class="chat_people">
+                <div class="chat_img"> <img src="https://ptetutorials.com/images/user-profile.png" alt="sunil"> </div>
+                <div class="chat_ib">
+                  <h5>Sunil Rajput <span class="chat_date">Dec 25</span></h5>
+                  <p>Test, which is a new approach to have all solutions 
+                    astrology under one roof.</p>
+                </div>
+              </div>
+            </div>-->
 
-								 <!--<span style="position: absolute;bottom: 0;right: 20px"><span ng-if="chat.status" class="online" style="background-color: #85CE36"></span><span ng-if="!chat.status" class="online" style="background-color: #ccc;"></span></span>-->
-								 <!--<i class="fa fa-comment-o" style="position: absolute;top:3px;right:5px" ng-if="chat.isUnRead"></i>-->
-							</a>
-						</div>
-						<span class="clearfix"></span>
-					</div> <!--<time  am-time-ago="i.sent_date" style="position: absolute;right: 0;top:2px;font-size: 12px"></time>-->
-				</div>
-
-
-			</div>
-			<div class="col-sm-12 col-md-8 col-lg-8">
-				<div class="panel panel-default">
-	                <div class="top-bar" style="border-bottom:1px solid rgba(0,0,0,0.2);box-shadow:0px 5px 5px #ccc">
-	                    <div class="col-md-5 col-sm-5 col-lg-6 pl-0">
-	                    	<a href="{{'/user/profile/view/' + partner.partnerId}}" target="_blank" style="display: block;">
-	                    		<div class="cp cp-1" style="height:62px;width:62px;border-radius: 62px;border:1px solid #85CE36;overflow: hidden;text-align: center;vertical-align: middle;">
-		                    		<img src="{{partner.profilePic}}" style="display: block;min-height: 62px;width: auto;">
-		                    	</div>	
-		                      <!--<button class="btn btn-simple text-danger" style="font-size: 16px" ng-click="chatLive()">Chat</button> &nbsp;&nbsp;-->
-		                        <div class="cp cp-2">
-			                        <span class="ellipsis" style="display:inline-block;width:180px;font-size: 14px;padding-top:3px;color: #85CE36" ng-cloak><b>{{partner.name}}<!--{{partner.partnerType}}--> </b>&nbsp;
-			                        	<span style="display: block;">
-			                            <em ng-if="partner.typing" style="font-size: 12px;color: green"><small>{{partner.typing}}</small></em> 
-			                            <em ng-if="partner.status && !partner.typing" style="font-size: 12px;color: green" ng-cloak>Online</em>
-			                            <em ng-if="!partner.status && !partner.typing" ng-cloak style="color:orange;font-size: 12px"><!--{{lastSeen(partner)}}--> Offline</em>
-			                            </span>
-			                        </span>
-		                        </div>
-	                        </a>
-	                    </div>
-	                    <div class="col-md-6 col-lg-6 col-sm-6" style="text-align: right;">
-	                    	<!--<object type="application/pdf" src="https://s3.amazonaws.com/applinic-files/1541107583724MIRASYD.pdf" width="200px" height="300px"></object>-->
-
-	                    	<div ng-if="checkLogIn.typeOfUser === 'Patient' || checkLogIn.typeOfUser === 'Doctor'">
-	                    		<small><a href="" class="ellipsis" ng-if="partner.partnerType === 'Doctor' && checkLogIn.typeOfUser !== 'Doctor'"  ng-click="chatPrivate(partner)">Single Chat</a>
-	                    		<a href="" class="btn btn-info btn-sm" ng-if="partner.partnerType === 'Patient'"  ng-click="chatPrivate(partner)">Manage Patient</a>
-	                    		</small>
-	                    	</div>
-	                    </div>
-	                </div>
-
-
-					<!-- removable div-->
-		            <div ng-if="isChat || isChat === undefined">
+            <!--
+ <div ng-if="isChat || isChat === undefined">
 		               
 		                <div class="panel-body msg_container_base bg-default" id="base" style="height: 360px">
 
@@ -140,10 +299,7 @@
 		                </div>
 
 		                
-		                <form class="panel-footer" ng-submit="sendChat1()" style="position: relative;">
-			                <!--<input type="file" style="position: absolute;left: 2px;top: 0" id="file" file-model-chat="files">
-			                <textarea contenteditable="true" style="padding-top: 30px;word-break: normal;padding-right: 30px" ng-model="user.text1"  ng-keypress="getkeys($event)" placeholder="Type a message..."> <span class="textout" >{{typeMessage}}</span> </textarea>
-			                <button type="submit" class="btn btn-neutral btn-sm fa fa-send chat-send-btn csbg" style="font-size: 25px"></button>-->
+		              
 
 			               
 		                    <div class="mt-1 pb-2" style="position: relative;">
@@ -159,12 +315,141 @@
 
 		             
 		            </div>
-	    		</div>
-				
-			</div>
-		</div>		
-	</div>
 
-	<div style="height: 300px">	
-	</div>
-</div>
+            -->
+          </div>
+        </div>
+        <div class="mesgs" ng-if="isChat || isChat === undefined" style="position: relative;">
+        	<div style="position: absolute;left: 25px;top: 5px">
+	        	 <span class="ellipsis" ng-cloak><b>{{partner.name}}<!--{{partner.partnerType}}--> </b>&nbsp;
+	            	<span>
+	                <em ng-if="partner.typing" style="font-size: 12px;color: green"><small>{{partner.typing}}</small></em> 
+	                <em ng-if="partner.status && !partner.typing" style="font-size: 12px;color: green" ng-cloak>Online</em>
+	                <em ng-if="!partner.status && !partner.typing" ng-cloak style="color:orange;font-size: 12px"><!--{{lastSeen(partner)}}--> Offline</em>
+	                </span>
+	            </span>
+            </div>
+            <div ng-if="checkLogIn.typeOfUser === 'Patient' || checkLogIn.typeOfUser === 'Doctor'" style="position: absolute;right: 25px;top: 5px">            	
+            	<label for="file-input">
+				  <i class="fa fa-paperclip" aria-hidden="true" style="font-size: 18px"></i>
+				</label>&nbsp;&nbsp;&nbsp; <input type="file" class="file-input hide" name="file-input" id="file-input" file-model-chat="files">
+				  
+        		<small><!--<a href="" class="ellipsis" ng-if="partner.partnerType === 'Doctor' && checkLogIn.typeOfUser !== 'Doctor'"  ng-click="chatPrivate(partner)">Single Chat</a>-->
+        		<a href="" class="text-success" ng-if="partner.partnerType === 'Patient'"  ng-click="chatPrivate(partner)">Manage Patient</a>
+        		</small>
+        	</div>
+
+          	<div class="msg_history msg_container_base" id="base">
+
+          	<div id="sentmessage">
+	            <!--<div class="incoming_msg">
+	              <div class="incoming_msg_img"> <img src="https://ptetutorials.com/images/user-profile.png" alt="sunil"> </div>
+	              <div class="received_msg">
+	                <div class="received_withd_msg">
+	                  <p>Test which is a new approach to have all
+	                    solutions</p>
+	                  <span class="time_date"> 11:01 AM    |    June 9</span></div>
+	              </div>
+	            </div>
+	            <div class="outgoing_msg">
+	              <div class="sent_msg">
+	                <p>Test which is a new approach to have all
+	                  solutions</p>
+	                <span class="time_date"> 11:01 AM    |    June 9</span> </div>
+	            </div>-->         
+            </div>
+            <div style="position: absolute;top:170px;right:320px" ng-if="loading">
+            	<i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff;font-size: 32px" ></i>
+            </div>
+
+
+          
+
+		                
+
+           
+            <!--<div class="incoming_msg">
+              <div class="incoming_msg_img"> <img src="https://ptetutorials.com/images/user-profile.png" alt="sunil"> </div>
+              <div class="received_msg">
+                <div class="received_withd_msg">
+                  <p>Test, which is a new approach to have</p>
+                  <span class="time_date"> 11:01 AM    |    Yesterday</span></div>
+              </div>
+            </div>
+            <div class="outgoing_msg">
+              <div class="sent_msg">
+                <p>Apollo University, Delhi, India Test</p>
+                <span class="time_date"> 11:01 AM    |    Today</span> </div>
+            </div>
+            <div class="incoming_msg">
+              <div class="incoming_msg_img"> <img src="https://ptetutorials.com/images/user-profile.png" alt="sunil"> </div>
+              <div class="received_msg">
+                <div class="received_withd_msg">
+                  <p>We work directly with our designers and suppliers,
+                    and sell direct to you, which means quality, exclusive
+                    products, at a price anyone can afford.</p>
+                  <span class="time_date"> 11:01 AM    |    Today</span></div>
+              </div>
+            </div>-->
+          </div>
+          <form class="type_msg" ng-submit="sendChat1()">
+            <div class="input_msg_write">
+              <input type="text" class="write_msg" placeholder="Type a message" ng-model="user.text1" />
+              <button type="submit" class="msg_send_btn"><i class="fa fa-paper-plane-o" aria-hidden="true"></i></button>
+              <!--<button type="submit" class="msg_send_btn"><i class="fa fa-paperclip" aria-hidden="true"></i></button>-->
+            </div>
+          </form>
+        </div>
+      </div>
+      
+      
+    
+      
+    </div>
+    </div>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
