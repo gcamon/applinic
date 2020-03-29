@@ -165,6 +165,1027 @@
 		</div>		
 	</div>
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	///////////////////////////////////////
+
+
+
+
+	<!doctype html>
+<html class="no-js" lang="en">
+
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title> Applinic</title>
+        <meta name="description" content="">
+        <meta content='width=device-width, initial-scale=0.9, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no' name='viewport'/>
+        <link rel="apple-touch-icon" href="apple-touch-icon.png">
+         <link rel="icon" type="image/png" href="/assets/images/icons/favicon.png">
+        <!-- Place favicon.ico in the root directory -->
+        
+        <!--<link rel="stylesheet" href="/assets/css/bootstrap.css">-->
+        <link rel="stylesheet" href="/assets/css/vendor.css">
+         <link rel="stylesheet" href="/assets/css/app.css">
+          <link rel="stylesheet" href="/assets/css/now-ui-kit2.css">
+          <link rel="stylesheet" href="/assets/css/chat.css">
+          <link rel="stylesheet" href="/assets/css/font-awesome.min.css">
+          <link rel="stylesheet" href="/assets/css/my-edit.css">
+         <!-- <link rel="stylesheet" href="/assets/css/ngPrint.css">-->
+          <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+             <noscript>
+          <META HTTP-EQUIV="Refresh" CONTENT="0;URL=/assets/show-error.html">
+      </noscript>
+
+
+          <script type="text/javascript" src="/assets/js/vendor2.js"></script>
+          <script type="text/javascript" src="/assets/js/source.js"></script>
+
+   
+    <style type="text/css">
+           body {
+                font-family: 'Open Sans', sans-serif;
+             }
+              .title{
+                  font-weight: 300;
+              }
+              .view-animate-container {
+                    position:relative;  
+                    background:white;  
+                /*max-height:1000px;*/
+                background: transparent !important;
+                   /*overflow-y: auto;
+                  overflow-x: hidden;*/
+                  width: 1000px;
+                      margin-left: 50px
+
+              }
+              
+            .popup {
+                display: inline-block;
+                position: absolute;
+                right: -150px;
+                top: 25px;
+                width: 220px;
+                background-color: #fff;
+                border: 1px solid grey;
+                padding: 10px;
+                border-radius: 8px;
+                z-index: 9
+            }
+
+
+
+           
+
+                @media screen and (max-width: 1024px) {
+                    .text-center a {
+                        margin-left: 20px;
+                    }
+
+
+                    .view-animate-container {
+                   
+                    background: transparent !important;
+                   
+                    width: auto;
+                    margin-left: 0px
+
+                  }
+
+               
+                  .header .header-block-nav .notifications a {
+                    padding-right: 9px;
+                  }
+
+                 .header .header-block-nav>ul>li>a {
+                    padding: 0 10px;
+                    color: #4f5f6f;
+                  }
+                }
+
+                @media screen and (max-width: 720px) {
+                  .brand {
+                    display: none!important;
+                  }
+
+                 .prf {
+                    display: none!important;
+                  }
+
+                  .sarch {
+                    display: none!important;
+                  }
+
+                   .table th, .table td{
+                      border: none!important;
+                    }
+
+
+            
+
+                  li {
+                    border-right: none;
+                  }
+                }
+
+             
+
+                /************************************ for mobile **********************************/
+.truncate-text {
+  width: 135px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.truncate-message {
+  width: 200px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  outline: 0;
+}
+body {
+  background-color: #F9F9F9;
+  font-family: 'Fira Sans', sans-serif;
+  font-size: 1em;
+  color: #4F4F4F;
+  overflow-y: hidden;
+}
+button {
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+.chat__left__bubble,
+.chat__right__bubble {
+  font-size: 0.9em;
+  padding: 8px;
+  border-radius: 6px;
+  word-break: break-all;
+}
+.chat__left__bubble {
+  float: left;
+  position: relative;
+  border-bottom-left-radius: 0;
+  color: hsl(162, 100%, 7%);
+  background-color: hsl(163, 100%, 40%);
+}
+.chat__left__bubble:after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: -5px;
+  width: 10px;
+  height: 10px;
+  border-top-left-radius: 8px;
+  background-color: hsl(163, 100%, 40%);
+}
+.chat__right__bubble {
+  float: right;
+  position: relative;
+  border-bottom-right-radius: 0;
+  color: hsl(342, 100%, 95%);
+  background-color: hsl(343, 100%, 40%);
+}
+.chat__right__bubble:after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  right: -5px;
+  width: 10px;
+  height: 10px;
+  border-top-right-radius: 8px;
+  background-color: hsl(343, 100%, 40%);
+}
+.chat__mask--minimize {
+  height: 40px !important;
+}
+.chat__list--active {
+  transform: translateX(50%) !important;
+}
+.chat__notification--active {
+  opacity: 1 !important;
+  transform: translateX(40px);
+}
+.chat__item--new {
+  color: #F2830C;
+  font-weight: 700;
+}
+.close__chat {
+  display: none !important;
+}
+.main__container {
+  height: 100vh;
+}
+.main__container .chat__mask {
+  width: 300px;
+  height: 400px;
+  display: flex;
+  margin-left: -20px;
+  flex-direction: row-reverse;
+  
+  
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px;
+  transition: height 300ms cubic-bezier(0.79, 0.14, 0.15, 0.86);
+  transition-delay: 100ms;
+  box-shadow: 0 0 5px #f2f2f2;
+  animation: appear 1s ease-in 0s;
+  background-color: #f2f2f2;
+}
+@media (max-width: 500px) {
+  .main__container .chat__mask {
+    width: 100vw;
+    height: 100vh;
+    margin-right: initial;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+  }
+}
+.main__container .chat__mask .chat__container {
+  width: 600px;
+  display: flex;
+  flex-direction: row;
+  transition: transform 300ms cubic-bezier(0.79, 0.14, 0.15, 0.86);
+  transition-delay: 100ms;
+}
+@media (max-width: 500px) {
+  .main__container .chat__mask .chat__container {
+    height: 100vh;
+    width: auto;
+  }
+}
+.main__container .chat__mask .chat__container .list__view,
+.main__container .chat__mask .chat__container .conversation__view {
+  width: 300px;
+  height: 400px;
+  display: flex;
+  flex-flow: column;
+}
+@media (max-width: 500px) {
+  .main__container .chat__mask .chat__container .list__view,
+  .main__container .chat__mask .chat__container .conversation__view {
+    width: 100vw;
+    height: 100vh;
+  }
+}
+.main__container .chat__mask .chat__container .list__view .list__view__header {
+  height: 40px;
+  line-height: 1.1em;
+  background-color: #3a4651;
+  cursor: pointer;
+}
+.main__container .chat__mask .chat__container .list__view .list__view__header .header__list__icon,
+.main__container .chat__mask .chat__container .list__view .list__view__header .header__list__title {
+  display: inline-block;
+}
+.main__container .chat__mask .chat__container .list__view .list__view__header .header__list__icon {
+  padding: 10px 10px 6px 10px;
+  vertical-align: middle;
+}
+.main__container .chat__mask .chat__container .list__view .list__view__header .header__list__icon svg {
+  width: 20px;
+  height: 20px;
+}
+.main__container .chat__mask .chat__container .list__view .list__view__header .header__list__icon svg path {
+  fill: #FFFFFF;
+}
+.main__container .chat__mask .chat__container .list__view .list__view__header .header__list__title {
+  font-size: 1.2em;
+  color: #f2f2f2;
+  vertical-align: middle;
+}
+.main__container .chat__mask .chat__container .list__view .list__view__body {
+  position: relative;
+  padding: 15px;
+  overflow: hidden;
+  overflow-y: auto;
+}
+.main__container .chat__mask .chat__container .list__view .list__view__body .list__view__list {
+  list-style-type: none;
+}
+.main__container .chat__mask .chat__container .list__view .list__view__body .list__view__list .list__item {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  margin-bottom: 10px;
+  background-color: #FFFFFF;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 300ms ease-in-out;
+}
+.main__container .chat__mask .chat__container .list__view .list__view__body .list__view__list .list__item:hover,
+.main__container .chat__mask .chat__container .list__view .list__view__body .list__view__list .list__item:focus {
+  box-shadow: 0px 3px 6px #A8A8A8;
+}
+.main__container .chat__mask .chat__container .list__view .list__view__body .list__view__list .list__item .item__information .item__user {
+  display: block;
+  font-weight: 700;
+  width: 200px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.main__container .chat__mask .chat__container .list__view .list__view__body .list__view__list .list__item .item__information .item__message {
+  display: block;
+  width: 200px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.main__container .chat__mask .chat__container .list__view .list__view__body .list__view__list .list__item .item__close {
+  cursor: pointer;
+  padding: 10px;
+  border-radius: 6px;
+  transition: all 300ms ease-in-out;
+}
+.main__container .chat__mask .chat__container .list__view .list__view__body .list__view__list .list__item .item__close:focus,
+.main__container .chat__mask .chat__container .list__view .list__view__body .list__view__list .list__item .item__close:hover {
+  background-color: rgba(68, 68, 68, 0.2);
+}
+.main__container .chat__mask .chat__container .list__view .list__view__body .list__view__list .list__item .item__close svg {
+  width: 16px;
+  height: 16px;
+}
+.main__container .chat__mask .chat__container .list__view .list__view__body .list__view__list .list__item .item__close svg path {
+  fill: #4F4F4F;
+}
+.main__container .chat__mask .chat__container .conversation__view {
+  display: flex;
+  flex-flow: column;
+  justify-content: space-between;
+}
+.main__container .chat__mask .chat__container .conversation__view .conversation__view__header {
+  min-height: 40px;
+  background-color: #3a4651;
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+}
+.main__container .chat__mask .chat__container .conversation__view .conversation__view__header .list__view__link {
+  padding: 10px 9px 6px 10px;
+  border-right: 1px solid #f2f2f2;
+}
+.main__container .chat__mask .chat__container .conversation__view .conversation__view__header .list__view__link svg {
+  width: 20px;
+  height: 20px;
+}
+.main__container .chat__mask .chat__container .conversation__view .conversation__view__header .list__view__link svg path {
+  fill: #FFFFFF;
+}
+.main__container .chat__mask .chat__container .conversation__view .conversation__view__header .conversation__new__message {
+  opacity: 0;
+  position: absolute;
+  left: -40px;
+  background-color: #F2830C;
+  border-right: 1px solid #f2f2f2;
+  padding: 9px 9px 8px 11px;
+  transition: all 300ms ease-in-out;
+}
+.main__container .chat__mask .chat__container .conversation__view .conversation__view__header .conversation__new__message:hover,
+.main__container .chat__mask .chat__container .conversation__view .conversation__view__header .conversation__new__message:focus {
+  background-color: #a7a7a7;
+}
+.main__container .chat__mask .chat__container .conversation__view .conversation__view__header .conversation__new__message svg {
+  width: 20px;
+  height: 20px;
+}
+.main__container .chat__mask .chat__container .conversation__view .conversation__view__header .conversation__new__message svg path {
+  fill: #FFFFFF;
+}
+.main__container .chat__mask .chat__container .conversation__view .conversation__view__header .conversation__user__info {
+  padding: 8px 8px 8px 10px;
+  cursor: pointer;
+}
+@media (max-width: 500px) {
+  .main__container .chat__mask .chat__container .conversation__view .conversation__view__header .conversation__user__info {
+    position: absolute;
+    left: 45px;
+  }
+}
+.main__container .chat__mask .chat__container .conversation__view .conversation__view__header .conversation__user__info .conversation__user__status {
+  display: inline-block;
+  vertical-align: middle;
+  width: 10px;
+  height: 10px;
+  background-color: #15e928;
+  border-radius: 20px;
+  margin-right: 5px;
+}
+.main__container .chat__mask .chat__container .conversation__view .conversation__view__header .conversation__user__info .conversation__user__name {
+  font-size: 1.2em;
+  color: #f2f2f2;
+  display: inline-block;
+  vertical-align: middle;
+  width: 135px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.main__container .chat__mask .chat__container .conversation__view .conversation__view__header .conversation__view__actions {
+  display: flex;
+}
+.main__container .chat__mask .chat__container .conversation__view .conversation__view__header .conversation__view__actions .conversation__actions__videocall,
+.main__container .chat__mask .chat__container .conversation__view .conversation__view__header .conversation__view__actions .conversation__actions__close {
+  transition: all 300ms ease-in-out;
+}
+.main__container .chat__mask .chat__container .conversation__view .conversation__view__header .conversation__view__actions .conversation__actions__videocall:hover,
+.main__container .chat__mask .chat__container .conversation__view .conversation__view__header .conversation__view__actions .conversation__actions__close:hover,
+.main__container .chat__mask .chat__container .conversation__view .conversation__view__header .conversation__view__actions .conversation__actions__videocall:focus,
+.main__container .chat__mask .chat__container .conversation__view .conversation__view__header .conversation__view__actions .conversation__actions__close:focus {
+  background-color: rgba(255, 255, 255, 0.5);
+}
+.main__container .chat__mask .chat__container .conversation__view .conversation__view__header .conversation__view__actions .conversation__actions__videocall {
+  padding: 7px 9px;
+}
+.main__container .chat__mask .chat__container .conversation__view .conversation__view__header .conversation__view__actions .conversation__actions__videocall svg {
+  width: 22px;
+  height: 22px;
+}
+.main__container .chat__mask .chat__container .conversation__view .conversation__view__header .conversation__view__actions .conversation__actions__videocall svg path {
+  fill: #FFFFFF;
+}
+.main__container .chat__mask .chat__container .conversation__view .conversation__view__header .conversation__view__actions .conversation__actions__close {
+  padding: 7px 12px;
+}
+
+.main__container .chat__mask .chat__container .conversation__view .conversation__view__header .conversation__view__actions .conversation__actions__close2 {
+  padding: 7px 12px;
+}
+.main__container .chat__mask .chat__container .conversation__view .conversation__view__header .conversation__view__actions .conversation__actions__close svg {
+  width: 16px;
+  height: 16px;
+}
+.main__container .chat__mask .chat__container .conversation__view .conversation__view__header .conversation__view__actions .conversation__actions__close svg path {
+  fill: #FFFFFF;
+}
+.main__container .chat__mask .chat__container .conversation__view .conversation__view__body {
+  height: 100%;
+  padding: 15px;
+  overflow: hidden;
+  overflow-y: auto;
+}
+.main__container .chat__mask .chat__container .conversation__view .conversation__view__body .conversation__view__bubbles {
+  margin-bottom: 5px;
+}
+.main__container .chat__mask .chat__container .conversation__view .conversation__view__body .conversation__view__bubbles:before,
+.main__container .chat__mask .chat__container .conversation__view .conversation__view__body .conversation__view__bubbles:after {
+  content: '';
+  display: table;
+  clear: both;
+}
+.main__container .chat__mask .chat__container .conversation__view .conversation__view__write {
+  min-height: 50px;
+  text-align: center;
+  padding: 10px 0;
+  background-color: #f2f2f2;
+}
+.main__container .chat__mask .chat__container .conversation__view .conversation__view__write .chat__conversation__input {
+  height: 30px;
+  width: 85%;
+  display: inline-block;
+  vertical-align: middle;
+  font-size: 0.9em;
+  margin-right: 5px;
+  border-style: none;
+  padding: 5px;
+  border-radius: 6px;
+  caret-color: #cc003a;
+  font-family: 'Fira Sans', sans-serif;
+  transition: all 300ms ease-in-out;
+  box-shadow: inset 0 0 2px #4F4F4F;
+  border: 1px solid #f2f2f2;
+}
+.main__container .chat__mask .chat__container .conversation__view .conversation__view__write .chat__conversation__input:hover,
+.main__container .chat__mask .chat__container .conversation__view .conversation__view__write .chat__conversation__input:focus {
+  border-color: #F2830C;
+  border-width: 2px;
+}
+.main__container .chat__mask .chat__container .conversation__view .conversation__view__write .chat__conversation__send {
+  display: inline-block;
+  vertical-align: sub;
+  transition: all 300ms ease-in-out;
+  border-radius: 20px;
+}
+@media (max-width: 500px) {
+  .main__container .chat__mask .chat__container .conversation__view .conversation__view__write .chat__conversation__send {
+    padding: 0;
+  }
+}
+.main__container .chat__mask .chat__container .conversation__view .conversation__view__write .chat__conversation__send:hover,
+.main__container .chat__mask .chat__container .conversation__view .conversation__view__write .chat__conversation__send:focus {
+  transform: rotate(-90deg);
+}
+.main__container .chat__mask .chat__container .conversation__view .conversation__view__write .chat__conversation__send:hover svg path,
+.main__container .chat__mask .chat__container .conversation__view .conversation__view__write .chat__conversation__send:focus svg path {
+  fill: #F2830C;
+}
+.main__container .chat__mask .chat__container .conversation__view .conversation__view__write .chat__conversation__send svg {
+  width: 15px;
+  height: 15px;
+}
+.main__container .chat__mask .chat__container .conversation__view .conversation__view__write .chat__conversation__send svg path {
+  fill: #4F4F4F;
+}
+
+@keyframes appear {
+  1% {
+    transform: translateY(30px);
+    opacity: 0;
+  }
+  25% {
+    transform: translateY(-15px);
+  }
+  65% {
+    transform: translateY(10px);
+    opacity: 1;
+  }
+  80% {
+    transform: translateY(-5px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+</style>
+
+</head>
+
+  <body ng-app="myApp">
+
+  <div ng-controller="topHeaderController">
+    
+  </div>
+
+  <div ng-controller = "createRoomController">
+    
+  </div>
+
+   <!-- Main container -->
+  <div class="main__container pl-1 pr-2 pb-1 mb-1" ng-controller="generalChatController">
+    
+
+    <!-- Mask -->
+    <div class="chat__mask" >
+
+      <!-- List and conversation container -->
+      <div class="chat__container">
+
+        <!-- List view -->
+        <section class="list__view">
+
+          <!-- List header -->
+          <header class="list__view__header">
+            <span class="header__list__icon">
+              <svg viewBox="79.229 169.229 453.543 453.543">
+                <path d="M79.229,562.299c0-25.048,20.306-45.354,45.354-45.354c25.048,0,45.354,20.307,45.354,45.354
+                c0,25.049-20.306,45.354-45.354,45.354C99.534,607.653,79.229,587.348,79.229,562.299z M124.583,275.055
+                c25.048,0,45.354-20.306,45.354-45.354c0-25.048-20.306-45.354-45.354-45.354c-25.049,0-45.354,20.306-45.354,45.354
+                C79.229,254.75,99.534,275.055,124.583,275.055z M124.583,441.354c25.048,0,45.354-20.306,45.354-45.354
+                c0-25.048-20.306-45.354-45.354-45.354c-25.049,0-45.354,20.306-45.354,45.354C79.229,421.049,99.534,441.354,124.583,441.354z         M275.764,259.937h226.771c16.699,0,30.236-13.537,30.236-30.236c0-16.699-13.537-30.236-30.236-30.236H275.764
+                c-16.699,0-30.236,13.538-30.236,30.236C245.528,246.4,259.065,259.937,275.764,259.937z M275.764,426.236h226.771
+                c16.699,0,30.236-13.537,30.236-30.236c0-16.699-13.537-30.236-30.236-30.236H275.764c-16.699,0-30.236,13.538-30.236,30.236  C245.528,412.699,259.065,426.236,275.764,426.236z M275.764,592.535h226.771c16.699,0,30.236-13.537,30.236-30.236
+                s-13.537-30.235-30.236-30.235H275.764c-16.699,0-30.236,13.536-30.236,30.235S259.065,592.535,275.764,592.535z"/>
+              </svg>
+            </span>
+            <span class="header__list__title">Conversations</span>
+          </header>
+
+          <!-- List body -->
+          <section class="list__view__body">
+            <ul class="list__view__list">
+              <li class="list__item" ng-class="{'text-success' : !chat.is_read,'active_chat': chat.partnerId == partner.partnerId}" ng-repeat="chat in chatsList | orderBy : '-realTime' | filter: ft" ng-click="viewChat(chat,true)">
+                <div class="chat_img"> 
+                  <img src="{{chat.profilePic}}" alt="image"> 
+                </div>
+                <div class="item__information">
+
+                  <span class="item__user">{{chat.name}}</span>
+                  <span class="item__message">{{(!chat.typing) ? (chat.messages[chat.messages.length - 1].received || chat.messages[chat.messages.length - 1].sent ) : chat.typing }}</span>
+                  <!--<small class="item__message">{{ (chat.messages[chat.messages.length - 1].time  || chat.messages[chat.messages.length - 1].received ) | amCalendar}}</small>-->
+                </div>
+                 <span id="head"></span>
+               
+              </li>
+             
+            </ul>
+          </section>
+        </section>
+
+        <!-- Conversation view -->
+        <section class="conversation__view">
+
+          <!-- Header -->
+          <header class="conversation__view__header">
+            <button class="list__view__link" title="Go to chat list">
+                <svg viewBox="79.229 169.229 453.543 453.543">
+                  <path d="M79.229,562.299c0-25.048,20.306-45.354,45.354-45.354c25.048,0,45.354,20.307,45.354,45.354
+                  c0,25.049-20.306,45.354-45.354,45.354C99.534,607.653,79.229,587.348,79.229,562.299z M124.583,275.055
+                  c25.048,0,45.354-20.306,45.354-45.354c0-25.048-20.306-45.354-45.354-45.354c-25.049,0-45.354,20.306-45.354,45.354
+                  C79.229,254.75,99.534,275.055,124.583,275.055z M124.583,441.354c25.048,0,45.354-20.306,45.354-45.354
+                  c0-25.048-20.306-45.354-45.354-45.354c-25.049,0-45.354,20.306-45.354,45.354C79.229,421.049,99.534,441.354,124.583,441.354z         M275.764,259.937h226.771c16.699,0,30.236-13.537,30.236-30.236c0-16.699-13.537-30.236-30.236-30.236H275.764
+                  c-16.699,0-30.236,13.538-30.236,30.236C245.528,246.4,259.065,259.937,275.764,259.937z M275.764,426.236h226.771
+                  c16.699,0,30.236-13.537,30.236-30.236c0-16.699-13.537-30.236-30.236-30.236H275.764c-16.699,0-30.236,13.538-30.236,30.236  C245.528,412.699,259.065,426.236,275.764,426.236z M275.764,592.535h226.771c16.699,0,30.236-13.537,30.236-30.236
+                  s-13.537-30.235-30.236-30.235H275.764c-16.699,0-30.236,13.536-30.236,30.235S259.065,592.535,275.764,592.535z"/>
+                </svg>
+            </button>
+            <button class="conversation__new__message" title="New message">
+              <svg viewBox="267.703 307.625 16 18.386">
+              <g><path d="M278.954,322.634c0.444,1.011-0.015,2.191-1.026,2.633c-1.011,0.444-2.19-0.015-2.633-1.026
+                  c-0.119-0.271-0.167-0.553-0.164-0.83l3.324-1.457C278.661,322.136,278.834,322.365,278.954,322.634z"/>
+                  <path d="M268.688,317.353c-0.938-2.361-0.46-4.61,0.941-6.082c-0.058-0.089-0.115-0.171-0.159-0.273c-0.444-1.01,0.015-2.187,1.026-2.63c1.011-0.443,2.189,0.018,2.633,1.027c0.042,0.096,0.065,0.195,0.09,0.293
+                  c2.101-0.042,4.175,1.236,5.258,3.412c0,0,1.605,3.686,3.368,3.979c0.054,0.003,1,0.027,1.288,0.715c0.271,0.652-0.287,1.525-1.262,1.945l-10.548,4.546c-0.973,0.419-2.047,0.25-2.278-0.417c-0.227-0.657,0.272-1.269,0.319-1.323C270.36,321.016,268.688,317.353,268.688,317.353z"/></g>
+              </svg>
+            </button>
+            <section class="conversation__user__info">
+              <span class="conversation__user__status" ng-if="partner.status && !partner.typing"></span>            
+              <span class="conversation__user__name" style="font-size: 14px">{{partner.name}}</span>
+            </section>
+            <div class="conversation__view__actions">
+              <!--<button class="conversation__actions__close" title="Close conversation">
+                <i class="fa fa-paperclip" style="color:#fff"></i>
+              </button>-->
+              <label for="file-input" class="conversation__actions__close2" title="Close conversation">
+                <i class="fa fa-paperclip" aria-hidden="true" style="font-size: 18px;color:#fff"></i>
+              </label>&nbsp;&nbsp;&nbsp; <input type="file" class="file-input hide" name="file-input" id="file-input" file-model-chat="files">
+              <!--<button class="conversation__actions__videocall" title="Start videocall">
+              <svg viewBox="0 0 24 22">
+                <path d="M16,16c0,1.1-0.9,2-2,2H2c-1.1,0-2-0.9-2-2V8c0-1.1,0.9-2,2-2h12c1.1,0,2,0.9,2,2V16z M24,6l-6,4.2v3.6l6,4.2V6z"/>
+              </svg>
+              </button>-->
+              <!--<button class="conversation__actions__close" title="Close conversation">
+                <i class="fa fa-calendar" style="color:#fff"></i>
+              </button>-->
+              <!--<button class="conversation__actions__close" title="Close conversation">
+                <i class="fa fa-trash" style="color:#fff"></i>
+              </button>-->
+            </div>
+          </header>
+
+          <!-- Conversation -->
+          <section class="conversation__view__body" id="base2">
+            <!--<div class="conversation__view__bubbles" id="sentmessage">
+              <p class="chat__left__bubble">How are you?</p>
+            </div>-->
+            <div id="sentmessage2" class="conversation__view__bubbles">
+              
+            </div>
+          </section>
+          <form class="conversation__view__write" ng-submit="sendChat1()">
+            <input id="chat__input" type="text" ng-model="user.text1" value="" name="writeMessage" placeholder="Type a message" class="chat__conversation__input">
+            <button type="submit" class="chat__conversation__send" title="Send message">
+              <svg viewBox="-2 0 20 30">
+                <path d="M5,3l3.1-3L20,12L8.1,24L5,21l9-9L5,3z"/>
+              </svg>
+            </button>
+           
+          </form>
+        
+        </section>
+      </div>
+    </div>
+  </div>
+
+
+
+
+  <script src="/assets/js/app.js"></script>
+  <script src="/assets/js/now-ui-kit.js"></script>
+ 
+  
+  <script type="text/javascript" src="/assets/js/angularclient.js"></script>
+  <script type="text/javascript" src="/assets/js/ngroute.js"></script>
+  <script src="/socket.io/socket.io.js"></script>   
+  <script src="/assets/js/socket.min.js"></script>
+  <script src="/assets/js/jquery-ui.js"></script>
+
+
+  
+  <!--<script src="/assets/js/main.js"></script>-->
+  <script src="/assets/js/angular-touch.min.js"></script>
+  <script src="/assets/js/angularAnimate.js"></script>
+
+ <script src="/assets/js/modalService.js"></script>
+  <script src="/assets/js/moment.min.js"></script>     
+  <script src="/assets/js/angular-moment.min.js"></script>
+  <script src="/assets/js/angucomplete-alt.min.js"></script> 
+
+  <script src="/assets/js/ui-bootstrap-tpls.js"></script>
+  <script src="/assets/js/angular-clipboard.js"></script>
+  <script src="/assets/js/ngresource.js"></script>
+  <script src="/assets/js/ngPrint.js"></script>
+  <script type="text/javascript" src="/assets/js/angular-paystack/dist/angular-paystack.js"></script>
+  <script type="text/javascript" src="/assets/js/angular-sanitize.min.js"></script>
+  <script src="/assets/js/bower_components/angular-summernote/dist/angular-summernote.js"></script>
+  <script type="text/javascript" src="/assets/js/underscore-min.js"></script>
+
+  <script type="text/javascript"> 
+// List icon by Gregor Cresnar from the Noun Project
+// Notification icon by Yo! Baba from the Noun Project
+// Other icons provided by Freepik.
+
+$(document).ready(function() {
+
+  // Minimize of the chat window.
+  $('.conversation__user__info, .list__view__header').on('click', function(){
+    $('.chat__mask').toggleClass('chat__mask--minimize');
+  });
+
+  function sendMessage() {
+    
+    var newMessage = $('#chat__input').val();
+    // If input is empty and tries to send message, prevent sending.
+    if (newMessage == '') {
+      return false;
+    } else {
+      // Add to conversation.
+      $('<article class="conversation__view__bubbles"><p class="chat__right__bubble">' + newMessage + '</p></article>').appendTo('.conversation__view__body');
+      // Add message as last message received in the chat list.
+      $('#chatID-1 .item__message').html('<span class=".item__message">' + newMessage + '</span');
+      // Clear input.
+      $('#chat__input').val('');
+    }
+  }
+
+  $('.chat__conversation__send').on('click', function() {
+    //sendMessage();
+  });
+
+  $('#chat__input').keypress(function(e) {
+    if(e.which == 13) {
+      //sendMessage();
+    }
+  });
+
+  // Show new message notification after x seconds.
+  function newMessage() {
+    $('.conversation__new__message').addClass('chat__notification--active');
+    $('#chatID-2 .item__user').addClass('chat__item--new');
+  }
+  //setTimeout(newMessage, 4000);
+
+  // Go to list view on new message notification.
+  $('.conversation__new__message').on('click', function() {
+    $('.chat__container').addClass('chat__list--active');
+    $('.conversation__new__message').removeClass('chat__notification--active');
+  });
+
+  // Go to list view on chat list link.
+  $('.list__view__link').on('click', function() {
+    $('.chat__container').addClass('chat__list--active');
+  });
+
+  // Click to go to the conversation.
+  $('#chatID-1').on('click', function() {
+    $('.chat__container').removeClass('chat__list--active');
+  });
+
+  // Remove notification classes.
+  $('#chatID-2').on('click', function() {
+    $('#chatID-2').addClass('close__chat');
+  });
+
+  // Click to close chat conversation from the list.
+  $('.item__close').on('click', function() {
+    $(this).parent().addClass('close__chat');
+  });
+
+  // Click to close chat window altogether.
+  $('.conversation__actions__close').on('click', function() {
+    $('.chat__mask').addClass('close__chat');
+  });
+
+  $('.conversation__actions__close2').on('click', function() {
+    //$('.chat__mask').addClass('close__chat');
+  });
+
+})
+</script>
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	   var item1 = angular.element(document.createElement('div'));
+    var item2 = angular.element(document.createElement('div'));
+    var item3 = angular.element(document.createElement('div'));
+    var item4 = angular.element(document.createElement('div'));
+    var img = angular.element(document.createElement('img'));
+
+    // end of new item added
+    
+    switch(data.fileType){
+      case 'image':        
+        fileElem = angular.element(document.createElement('img'));
+        fileElem[0].src = data.url;
+        fileElem[0].alt = "loading image...";
+        fileElem[0].style.maxWidth = "280px";
+        fileElem[0].style.height = "220px";
+        //fileElem[0]["data-ng-click"] = $scope.create;
+        imageArg = "imageClickEvt('" + data.url + "')";
+        fileElem.attr('ng-click', imageArg);
+        $compile(fileElem[0])($scope);
+        
+      break;
+      case 'audio':
+        fileElem = angular.element(document.createElement('audio'));
+        fileElem[0].src = data.url;
+        fileElem[0].controls = true;
+      break;
+      case "video":
+         fileElem = angular.element(document.createElement('video'));
+        var sourceElem = angular.element(document.createElement('source'));
+        sourceElem[0].src = data.url; //"/assets/daddy_home.mp4";
+        //sourceElem[0].type = data.type;
+        fileElem[0].append(sourceElem[0]);
+        fileElem[0].style.maxWidth = "280px";
+        fileElem[0].style.height = "220px";
+        fileElem[0].controls = true;
+      break;
+      case 'application':
+        if(data.mimeType == "application/pdf") {
+          fileElem = angular.element(document.createElement('div'));
+          //var embed = angular.element(document.createElement('embed'));
+          var a = angular.element(document.createElement('a'));
+          a[0].href = "https://drive.google.com/viewerng/viewer?embedded=true&url=" + data.url;
+          a[0].style.cursor = "pointer";
+          a[0].style.display = "block";
+          a[0].style.textAlign = "center";
+          a[0].style.fontSize = "32px";
+          a[0].className = "fa fa-file";
+          a[0].innerHTML += "";
+          a[0].style.color = (data.sent) ? "#eee" : "#05728f";
+          a[0].target = "_blank";
+          a[0].style.margin = "20px 0";
+          a[0].title = "View file";
+          
+          fileElem[0].appendChild(a[0]);
+
+          data.fileType = "pdf";
+          
+        } else {
+          fileElem = angular.element(document.createElement('a'));
+          fileElem[0].href = data.url;
+          fileElem[0].style.display = "block";
+          fileElem[0].style.color = "#fff";
+          fileElem[0].style.fontSize = "18px";
+          fileElem[0].style.padding = "10px 0";
+          fileElem[0].className = "fa fa-download";
+          fileElem[0].innerHTML += " download word document.";
+          data.fileType = "";
+        }
+      break;
+      case 'text':
+           fileElem = angular.element(document.createElement('div'));
+          //var embed = angular.element(document.createElement('embed'));
+          var a = angular.element(document.createElement('a'));
+          a[0].href = "https://drive.google.com/viewerng/viewer?embedded=true&url=" + data.url;
+          a[0].style.cursor = "pointer";
+          a[0].style.display = "block";
+          a[0].style.textAlign = "center";
+          a[0].style.fontSize = "32px";
+          a[0].className = "fa fa-file";
+          a[0].innerHTML += "";
+          a[0].style.color = "#eee";
+          a[0].target = "_blank";
+          a[0].style.margin = "20px 0";
+          a[0].title = "View file";
+         
+          fileElem[0].appendChild(a[0]);
+
+          data.fileType = "txt";
+      break;
+      default:
+      break;
+    }
+
+    p[0].style.display = "block";
+    small[0].style.display = "block";
+    small[0].style.marginTop = "5px";
+    small[0].style.color = "#ccc";
+    if(!fileElem) {
+      p[0].innerHTML += (data.sent) ? data.sent : data.received; 
+    } else {
+      p[0].innerHTML += data.fileType;
+    }
+   
+   
+    small[0].id = data.id;
+    small[0].className = "time_date";
+    small[0].style.color = "rgba(0,0,0,0.5)"
+    //var time = ($filter('amTimeAgo')(data.time) === 'a few seconds ago') ? 'Now' : $filter('amTimeAgo')(data.time);
+    small[0].innerHTML += $filter('amCalendar')(data.time);
+    //small[0].innerHTML += (data.sent) ? "&nbsp;&nbsp;" + $filter('amTimeAgo')(data.time) : "&nbsp;&nbsp;" + $filter('amTimeAgo')(data.time);     
+    
+    breaker[0].style.display = "block";
+    //breaker[0].style.textAlign = (data.sent) ? "right" : "left";
+    
+    //item[0].appendChild(p[0]);
+
+    //new code 
+    if(data.sent){
+      item1[0].className = "outgoing_msg";
+      item2[0].className = "sent_msg";
+     
+      item1[0].appendChild(item2[0]);
+      if(fileElem){
+        p[0].appendChild(fileElem[0]);
+      }
+
+      item2[0].appendChild(p[0]);
+      item2[0].appendChild(small[0]);
+
+    } else {
+      img[0].src = "https://ptetutorials.com/images/user-profile.png";
+      item1[0].className = "incoming_msg";
+      item2[0].className = "incoming_msg_img";
+      item3[0].className = "received_msg";
+      item4[0].className = "received_withd_msg";
+      item2[0].appendChild(img[0]);
+      
+
+      if(fileElem){
+        p[0].appendChild(fileElem[0]);
+      }
+
+      item4[0].appendChild(p[0]);
+      item4[0].appendChild(small[0]);
+
+      item3[0].appendChild(item4[0])
+      
+      item1[0].style['margin-top'] = "20px";
+      
+      item1[0].appendChild(item2[0]);
+      item1[0].appendChild(item3[0]);
+      //item1[0].appendChild(item4[0]);
+    }
+
+   
+
+  
+    // end of new code
+
+
+    //item1[0].appendChild(small[0]);
+
+
+    breaker[0].appendChild(item1[0]);
+    
+   
+    /*item[0].style.display = "inline-block";
+    item[0].style.maxWidth = (deviceCheckService.getDeviceType()) ? "90%" : "70%";
+    item[0].className = (data.sent) ? "talk-bubble tri-right right-top talktext msg_sent bg-info" : "talk-bubble tri-right left-top talktext";
+    item[0].style.whiteSpace = "pre-line";*/
+    container[0].appendChild(breaker[0]);
+    base[0].scrollTop = sentmessage.scrollHeight;
+
 	<div style="height: 300px">	
 	</div>
 </div>

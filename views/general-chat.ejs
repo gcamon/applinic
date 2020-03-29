@@ -1,0 +1,376 @@
+<!doctype html>
+<!--[if lt IE 7]>       <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang=""> <![endif]-->
+<!--[if IE 7]>          <html class="no-js lt-ie9 lt-ie8" lang=""> <![endif]-->
+<!--[if IE 8]>          <html class="no-js lt-ie9" lang=""> <![endif]-->
+<!--[if gt IE 8]><!-->  <html class="no-js" lang=""> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Applinic</title>
+        <meta name="description" content="">
+       <meta content='width=device-width, initial-scale=0.9, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no' name='viewport'/>
+        <link rel="apple-touch-icon" href="apple-touch-icon.png">
+        
+        
+       
+         <link rel="stylesheet" href="/assets/css/vendor.css">
+         <link rel="stylesheet" href="/assets/css/app.css">
+          <link rel="stylesheet" href="/assets/css/now-ui-kit2.css">
+           <link rel="stylesheet" href="/assets/css/chat.css">
+          <link rel="stylesheet" href="/assets/css/font-awesome.min.css">
+          <link rel="stylesheet" href="/assets/css/my-edit.css">
+          <link rel="stylesheet" href="/assets/css/ngPrint.css">
+          <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+
+         <link rel="stylesheet" href="/assets/css/mobile-web-ui.css">
+        
+        <!--<script src="/assets/js/vendor/jquery-library.js"></script>-->
+        <script src="/assets/js/vendor2.js"></script>
+        <script type="text/javascript" src="/assets/js/source.js"></script>
+        <script type="text/javascript" src="/assets/js/jquery.nicescroll.js"></script>
+       
+         <noscript>
+          <META HTTP-EQUIV="Refresh" CONTENT="0;URL=/assets/show-error.html">
+      </noscript>
+
+
+       <style type="text/css">
+              body {
+                font-family: 'Open Sans', sans-serif;
+             }
+
+            blockquote {
+                /*text-indent: 20px;*/
+                padding: 15px 5px 5px;
+                background-color: lightYellow;
+                font-style: normal;
+
+            }
+
+             .pagination li{
+                border-radius: 30px;
+             }
+
+             .complaint-main {
+              margin-bottom:30px!important;
+              margin-top: 60px!important;
+            }
+
+            #textarea {
+              height:auto;
+              color:rgba(0,0,0,0.7);
+              font-weight:400;
+              padding: 5px;
+              font-family:'Ubuntu', Helvetica, Arial, sans-serif;
+              width:100%;
+              background:#fff;
+              border-radius:3px;
+              line-height:2em;
+              border:none;
+              box-shadow:0px 0px 5px 1px rgba(0,0,0,0.1);                    
+              -webkit-transition: height 2s ease;
+              -moz-transition: height 2s ease;
+              -ms-transition: height 2s ease;
+              -o-transition: height 2s ease;
+              transition: height 2s ease;
+            }
+
+            @media screen and (max-width: 960px) {
+             
+              .complaint-main {
+                  margin-top: 100px!important;
+              }
+
+            }
+
+            @media screen and (max-width: 720px) {
+               .card {
+                width: auto;
+               }   
+            }
+
+        </style>
+
+
+        
+    </head>
+    <body ng-app= "myApp">
+        <!--[if lt IE 8]>
+                <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+        <![endif]-->
+        <!--************************************
+                        Wrapper Start
+        *************************************-->
+        
+            <!--************************************
+                            Header Start
+            *************************************-->
+
+         <span ng-controller = "createRoomController"></span>
+
+         <div ng-controller="presenceSocketController"></div>
+
+         <header id="header" class="container-fluid"  ng-controller="topHeaderController">
+        </header>
+
+        
+   <!-- Main container -->
+  <div class="main__container pl-1 pr-2 pb-1 mb-1" ng-controller="generalChatController">
+    
+
+    <!-- Mask -->
+    <div class="chat__mask">
+
+      <!-- List and conversation container -->
+      <div class="chat__container">
+
+        <!-- List view -->
+        <section class="list__view">
+
+          <!-- List header -->
+          <header class="list__view__header">
+            <span class="header__list__icon">
+              <svg viewBox="79.229 169.229 453.543 453.543">
+                <path d="M79.229,562.299c0-25.048,20.306-45.354,45.354-45.354c25.048,0,45.354,20.307,45.354,45.354
+                c0,25.049-20.306,45.354-45.354,45.354C99.534,607.653,79.229,587.348,79.229,562.299z M124.583,275.055
+                c25.048,0,45.354-20.306,45.354-45.354c0-25.048-20.306-45.354-45.354-45.354c-25.049,0-45.354,20.306-45.354,45.354
+                C79.229,254.75,99.534,275.055,124.583,275.055z M124.583,441.354c25.048,0,45.354-20.306,45.354-45.354
+                c0-25.048-20.306-45.354-45.354-45.354c-25.049,0-45.354,20.306-45.354,45.354C79.229,421.049,99.534,441.354,124.583,441.354z         M275.764,259.937h226.771c16.699,0,30.236-13.537,30.236-30.236c0-16.699-13.537-30.236-30.236-30.236H275.764
+                c-16.699,0-30.236,13.538-30.236,30.236C245.528,246.4,259.065,259.937,275.764,259.937z M275.764,426.236h226.771
+                c16.699,0,30.236-13.537,30.236-30.236c0-16.699-13.537-30.236-30.236-30.236H275.764c-16.699,0-30.236,13.538-30.236,30.236  C245.528,412.699,259.065,426.236,275.764,426.236z M275.764,592.535h226.771c16.699,0,30.236-13.537,30.236-30.236
+                s-13.537-30.235-30.236-30.235H275.764c-16.699,0-30.236,13.536-30.236,30.235S259.065,592.535,275.764,592.535z"/>
+              </svg>
+            </span>
+            <span class="header__list__title">Conversations</span>
+          </header>
+
+          <!-- List body -->
+          <section class="list__view__body">
+            <div>
+              <input type="text" class="form-control" name="" placeholder="Search" ng-model="ft">
+            </div>
+            <ul class="list__view__list">
+              <li class="list__item" ng-class="{'text-success' : !chat.is_read,'active_chat': chat.partnerId == partner.partnerId}" ng-repeat="chat in chatsList | orderBy : '-realTime' | filter: ft" ng-click="viewChat(chat,true)">
+                <div class="chat_img pt-1"> 
+                  <img src="{{chat.profilePic}}" alt="image"> 
+                </div>
+                <div class="item__information mb-1" style="position: relative;">
+
+                  <span class="item__user">{{chat.name}}</span>
+                  <span class="item__message">{{(!chat.typing) ? (chat.messages[chat.messages.length - 1].received || chat.messages[chat.messages.length - 1].sent ) : chat.typing }}</span>
+                  <small style="position: absolute;bottom: -20px;left: 0">{{ (chat.messages[chat.messages.length - 1].time  || chat.messages[chat.messages.length - 1].received ) | amCalendar}}</small>
+                  <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange;position: absolute;top:5px;right: 0" ng-show="chat.loading"></i>
+                </div>
+                
+               
+              </li>
+              <div style="height: 30px"></div>
+            </ul>
+          </section>
+        </section>
+
+        <!-- Conversation view -->
+        <section class="conversation__view">
+
+          <!-- Header -->
+          <header class="conversation__view__header">
+            <button class="list__view__link" title="Go to chat list">
+                <svg viewBox="79.229 169.229 453.543 453.543">
+                  <path d="M79.229,562.299c0-25.048,20.306-45.354,45.354-45.354c25.048,0,45.354,20.307,45.354,45.354
+                  c0,25.049-20.306,45.354-45.354,45.354C99.534,607.653,79.229,587.348,79.229,562.299z M124.583,275.055
+                  c25.048,0,45.354-20.306,45.354-45.354c0-25.048-20.306-45.354-45.354-45.354c-25.049,0-45.354,20.306-45.354,45.354
+                  C79.229,254.75,99.534,275.055,124.583,275.055z M124.583,441.354c25.048,0,45.354-20.306,45.354-45.354
+                  c0-25.048-20.306-45.354-45.354-45.354c-25.049,0-45.354,20.306-45.354,45.354C79.229,421.049,99.534,441.354,124.583,441.354z         M275.764,259.937h226.771c16.699,0,30.236-13.537,30.236-30.236c0-16.699-13.537-30.236-30.236-30.236H275.764
+                  c-16.699,0-30.236,13.538-30.236,30.236C245.528,246.4,259.065,259.937,275.764,259.937z M275.764,426.236h226.771
+                  c16.699,0,30.236-13.537,30.236-30.236c0-16.699-13.537-30.236-30.236-30.236H275.764c-16.699,0-30.236,13.538-30.236,30.236  C245.528,412.699,259.065,426.236,275.764,426.236z M275.764,592.535h226.771c16.699,0,30.236-13.537,30.236-30.236
+                  s-13.537-30.235-30.236-30.235H275.764c-16.699,0-30.236,13.536-30.236,30.235S259.065,592.535,275.764,592.535z"/>
+                </svg>
+            </button>
+            <button class="conversation__new__message" title="New message">
+              <svg viewBox="267.703 307.625 16 18.386">
+              <g><path d="M278.954,322.634c0.444,1.011-0.015,2.191-1.026,2.633c-1.011,0.444-2.19-0.015-2.633-1.026
+                  c-0.119-0.271-0.167-0.553-0.164-0.83l3.324-1.457C278.661,322.136,278.834,322.365,278.954,322.634z"/>
+                  <path d="M268.688,317.353c-0.938-2.361-0.46-4.61,0.941-6.082c-0.058-0.089-0.115-0.171-0.159-0.273c-0.444-1.01,0.015-2.187,1.026-2.63c1.011-0.443,2.189,0.018,2.633,1.027c0.042,0.096,0.065,0.195,0.09,0.293
+                  c2.101-0.042,4.175,1.236,5.258,3.412c0,0,1.605,3.686,3.368,3.979c0.054,0.003,1,0.027,1.288,0.715c0.271,0.652-0.287,1.525-1.262,1.945l-10.548,4.546c-0.973,0.419-2.047,0.25-2.278-0.417c-0.227-0.657,0.272-1.269,0.319-1.323C270.36,321.016,268.688,317.353,268.688,317.353z"/></g>
+              </svg>
+            </button>
+            <section class="conversation__user__info" ng-cloak>
+              <span class="conversation__user__status" ng-if="partner.status && !partner.typing"></span>            
+              <span class="conversation__user__name" style="font-size: 14px">{{partner.name}}</span>
+            </section>
+            <div class="conversation__view__actions">
+              <!--<button class="conversation__actions__close" title="Close conversation">
+                <i class="fa fa-paperclip" style="color:#fff"></i>
+              </button>-->
+              <label for="file-input" class="conversation__actions__close2" title="Close conversation">
+                <i class="fa fa-paperclip" aria-hidden="true" style="font-size: 18px;color:#fff"></i>
+              </label>&nbsp;&nbsp;&nbsp; <input type="file" class="file-input hide" name="file-input" id="file-input" file-model-chat="files">
+              <!--<button class="conversation__actions__videocall" title="Start videocall">
+              <svg viewBox="0 0 24 22">
+                <path d="M16,16c0,1.1-0.9,2-2,2H2c-1.1,0-2-0.9-2-2V8c0-1.1,0.9-2,2-2h12c1.1,0,2,0.9,2,2V16z M24,6l-6,4.2v3.6l6,4.2V6z"/>
+              </svg>
+              </button>-->
+              <!--<button class="conversation__actions__close" title="Close conversation">
+                <i class="fa fa-calendar" style="color:#fff"></i>
+              </button>-->
+              <!--<button class="conversation__actions__close" title="Close conversation">
+                <i class="fa fa-trash" style="color:#fff"></i>
+              </button>-->
+            </div>
+          </header>
+
+          <!-- Conversation -->
+          <section class="conversation__view__body" id="base">
+            <!--<div class="conversation__view__bubbles" id="sentmessage">
+              <p class="chat__left__bubble">How are you?</p>
+            </div>-->
+            <div id="sentmessage" class="conversation__view__bubbles">
+              
+            </div>
+          </section>
+          <form class="conversation__view__write" ng-submit="sendChat1()">
+            <input id="chat__input" type="text" ng-model="user.text1" value="" name="writeMessage" placeholder="Type a message" class="chat__conversation__input">
+            <button type="submit" class="chat__conversation__send" title="Send message">
+              <svg viewBox="-2 0 20 30">
+                <path d="M5,3l3.1-3L20,12L8.1,24L5,21l9-9L5,3z"/>
+              </svg>
+            </button>
+           
+          </form>
+        
+        </section>
+      </div>
+    </div>
+  </div>
+
+
+   <script type="text/ng-template" id="image-modal.html">
+         <div class="modal fade">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">             
+                <label>Image</label>
+                <button type="button" class="close" ng-click="close('Cancel')" data-dismiss="modal" aria-hidden="true">&times;</button>           
+                       
+            </div>
+            <div class="modal-body">                
+              <img src="{{imgUrl}}" style="width: auto; height: auto;" alt="image">
+            </div>
+           
+          </div>
+        </div>
+     </script>
+
+          
+    
+       
+        <script type="text/javascript" src="/assets/js/angularclient.js"></script>
+        <script type="text/javascript" src="/assets/js/ngroute.js"></script>
+        <script src="/socket.io/socket.io.js"></script>   
+        <script src="/assets/js/socket.min.js"></script>
+        <script src="/assets/js/jquery-ui.js"></script>
+        
+        
+        <!--<script src="/assets/js/jquery.nicescroll.js"></script>-->
+       
+        
+        <script src="/assets/js/angularAnimate.js"></script>
+        <script src="/assets/js/modalService.js"></script>
+        
+        <script src="/assets/js/moment.min.js"></script>
+        <script src="/assets/js/angular-touch.min.js"></script>
+        <script src="/assets/js/angular-moment.min.js"></script>
+        <script src="/assets/js/angucomplete-alt.min.js"></script> 
+        <script src="/assets/js/ui-bootstrap-tpls.js"></script>
+        <script src="/assets/js/angular-clipboard.js"></script>
+        <script src="/assets/js/ngresource.js"></script> 
+          <script src="/assets/js/ngPrint.js"></script>
+          
+        <script type="text/javascript" src="/assets/js/angular-paystack/dist/angular-paystack.min.js"></script>
+         <script type="text/javascript" src="/assets/js/angular-sanitize.min.js"></script>
+         <script src="/assets/js/bower_components/angular-summernote/dist/angular-summernote.js"></script>
+         <script type="text/javascript" src="/assets/js/underscore-min.js"></script>
+        <script type="text/javascript" src="/assets/js/angular-underscore.js"></script>
+
+  <script type="text/javascript">
+    $(document).ready(function() {
+
+        // Minimize of the chat window.
+        $('.conversation__user__info, .list__view__header').on('click', function(){
+          $('.chat__mask').toggleClass('chat__mask--minimize');
+        });
+
+        function sendMessage() {
+          
+          var newMessage = $('#chat__input').val();
+          // If input is empty and tries to send message, prevent sending.
+          if (newMessage == '') {
+            return false;
+          } else {
+            // Add to conversation.
+            $('<article class="conversation__view__bubbles"><p class="chat__right__bubble">' + newMessage + '</p></article>').appendTo('.conversation__view__body');
+            // Add message as last message received in the chat list.
+            $('#chatID-1 .item__message').html('<span class=".item__message">' + newMessage + '</span');
+            // Clear input.
+            $('#chat__input').val('');
+          }
+        }
+
+        $('.chat__conversation__send').on('click', function() {
+          //sendMessage();
+        });
+
+        $('#chat__input').keypress(function(e) {
+          if(e.which == 13) {
+            //sendMessage();
+          }
+        });
+
+        // Show new message notification after x seconds.
+        function newMessage() {
+          $('.conversation__new__message').addClass('chat__notification--active');
+          $('#chatID-2 .item__user').addClass('chat__item--new');
+        }
+        //setTimeout(newMessage, 4000);
+
+        // Go to list view on new message notification.
+        $('.conversation__new__message').on('click', function() {
+          $('.chat__container').addClass('chat__list--active');
+          $('.conversation__new__message').removeClass('chat__notification--active');
+        });
+
+        // Go to list view on chat list link.
+        $('.list__view__link').on('click', function() {
+          $('.chat__container').addClass('chat__list--active');
+        });
+
+        // Click to go to the conversation.
+        $('#chatID-1').on('click', function() {
+          $('.chat__container').removeClass('chat__list--active');
+        });
+
+        // Remove notification classes.
+        $('#chatID-2').on('click', function() {
+          $('#chatID-2').addClass('close__chat');
+        });
+
+        // Click to close chat conversation from the list.
+        $('.item__close').on('click', function() {
+          $(this).parent().addClass('close__chat');
+        });
+
+        // Click to close chat window altogether.
+        $('.conversation__actions__close').on('click', function() {
+          $('.chat__mask').addClass('close__chat');
+        });
+
+        $('.conversation__actions__close2').on('click', function() {
+          //$('.chat__mask').addClass('close__chat');
+        });
+
+      })
+
+    </script>
+       
+  </body>
+</html>

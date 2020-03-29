@@ -4641,9 +4641,10 @@ app.controller("inDoctorDashboardController",["$scope","$location","$http","loca
 
 app.controller("docNotificationController",["$scope","$location","$resource","$interval","localManager","templateService",
   "requestManager","mySocket","$rootScope","$timeout","ModalService","chatService",
-  "deleteFactory","courierResponseService","$filter","$http",
+  "deleteFactory","courierResponseService","$filter","$http","deviceCheckService",
   function($scope,$location,$resource,$interval,localManager,templateService,requestManager,
-    mySocket,$rootScope,$timeout,ModalService,chatService,deleteFactory,courierResponseService,$filter,$http){
+    mySocket,$rootScope,$timeout,ModalService,chatService,deleteFactory,courierResponseService,
+    $filter,$http,deviceCheckService){
     var getPerson = localManager.getValue("resolveUser");
     localManager.removeItem("callOptionMany");// removes call many if any was set before call page was redirected to
     var getRequestInTime = $resource("/user/doctor/:userId/get-all-request",{userId:getPerson.user_id});
@@ -4986,18 +4987,23 @@ app.controller("docNotificationController",["$scope","$location","$resource","$i
 
   $rootScope.loadChats();
 
-  $scope.viewChat2 = function(list) {   
-     if(list) {
+  $scope.viewChat2 = function(list) {  
+    if(list) {
       var byRecent = $filter('orderBy')(list,'-realTime');
       templateService.holdId = byRecent[0].partnerId;   
-      
-      if(templateService.holdId) {
+      if(deviceCheckService.getDeviceType()){
+        localManager.setValue("holdIdForChat",templateService.holdId);
+        localManager.setValue("holdChatList",list)
+        window.location.targer = "_blank";
+        window.location.href = "/user/chat/general";
+      } else if(templateService.holdId) {
         $location.path("/general-chat");
       } else {
         alert("You have no messages yet.")
       }
       $scope.showIndicator = false;
     }
+    
   }
 
 
@@ -7657,11 +7663,11 @@ app.service("getAppointmentServce",["$resource",function($resource){
 app.controller("patientNotificationController",["$scope","$location","$http","$window","$rootScope","$resource","chatService",
   "templateService","localManager","deleteFactory","mySocket","$timeout","medicaRecordFactory","patientNotificationService",
   "getMedicalHistoryService","chatHistoryService","getResponseService","getMessagesService",
-  "getAppointmentServce","courierResponseService","$filter",
+  "getAppointmentServce","courierResponseService","$filter","deviceCheckService",
   function($scope,$location,$http, $window,$rootScope,$resource,chatService,templateService,localManager,
     deleteFactory,mySocket,$timeout,medicaRecordFactory,patientNotificationService,
     getMedicalHistoryService,chatHistoryService,getResponseService,getMessagesService,
-    getAppointmentServce,courierResponseService,$filter){
+    getAppointmentServce,courierResponseService,$filter,deviceCheckService){
   
   var filter = {};
   
@@ -8079,11 +8085,15 @@ app.controller("patientNotificationController",["$scope","$location","$http","$w
   $rootScope.loadChats();
 
    $scope.viewChat2 = function(list) {   
-     if(list) {
+    if(list) {
       var byRecent = $filter('orderBy')(list,'-realTime');
       templateService.holdId = byRecent[0].partnerId;   
-      
-      if(templateService.holdId) {
+      if(deviceCheckService.getDeviceType()){
+        localManager.setValue("holdIdForChat",templateService.holdId);
+        localManager.setValue("holdChatList",list)
+        window.location.targer = "_blank";
+        window.location.href = "/user/chat/general";
+      } else if(templateService.holdId) {
         $location.path("/general-chat");
       } else {
         alert("You have no messages yet.")
@@ -10844,8 +10854,8 @@ app.controller("selectedCenterController",["$scope","$location","$http","templat
 
 app.controller("createRoomController",["$scope","localManager","mySocket","$rootScope","templateService","$location",
   function($scope,localManager,mySocket,$rootScope,templateService,$location){
-  var user = localManager.getValue("resolveUser");
 
+  var user = localManager.getValue("resolveUser");
   $rootScope.chatStatus = localManager.getValue("hasChat");
 
   var getCurrentPage = localManager.getValue("currentPageForPatients") || localManager.getValue("currentPage");
@@ -15082,9 +15092,10 @@ app.service("viewNoteService",["$resource",function($resource){
 
 app.controller("pharmacyCenterNotificationController",["$scope","$location","$resource","$window","templateService","deleteFactory",
   "localManager","chatService","$rootScope","mySocket","pharmacyCenterNotificationControllerService",
-  "addNoteService","viewNoteService","$http","$filter",
+  "addNoteService","viewNoteService","$http","$filter","deviceCheckService",
   function($scope,$location,$resource,$window,templateService,deleteFactory,localManager,chatService,
-    $rootScope,mySocket,pharmacyCenterNotificationControllerService,addNoteService,viewNoteService,$http,$filter){
+    $rootScope,mySocket,pharmacyCenterNotificationControllerService,
+    addNoteService,viewNoteService,$http,$filter,deviceCheckService){
 
   var notification = pharmacyCenterNotificationControllerService; //$resource("/user/center/get-notification");
 
@@ -15176,8 +15187,12 @@ app.controller("pharmacyCenterNotificationController",["$scope","$location","$re
     if(list) {
       var byRecent = $filter('orderBy')(list,'-realTime');
       templateService.holdId = byRecent[0].partnerId;   
-      
-      if(templateService.holdId) {
+      if(deviceCheckService.getDeviceType()){
+        localManager.setValue("holdIdForChat",templateService.holdId);
+        localManager.setValue("holdChatList",list)
+        window.location.targer = "_blank";
+        window.location.href = "/user/chat/general";
+      } else if(templateService.holdId) {
         $location.path("/general-chat");
       } else {
         alert("You have no messages yet.")
@@ -15185,6 +15200,8 @@ app.controller("pharmacyCenterNotificationController",["$scope","$location","$re
       $scope.showIndicator = false;
     }
   }
+
+
 
   $scope.showIndicator = false;
 
@@ -15636,9 +15653,9 @@ app.service("labNoteService",["$resource",function($resource){
 app.controller("labCenterNotificationController",["$scope","$location","$resource","$window","templateService",
   "localManager","$http","chatService","labCenterNotificationService","labNoteService",
   "deleteFactory","courierResponseService","$filter",
-  "$rootScope","mySocket",function($scope,$location,$resource,$window,templateService,
+  "$rootScope","mySocket","deviceCheckService",function($scope,$location,$resource,$window,templateService,
     localManager,$http,chatService,labCenterNotificationService,labNoteService,deleteFactory,
-    courierResponseService,$filter,$rootScope,mySocket){
+    courierResponseService,$filter,$rootScope,mySocket,deviceCheckService){
 
 
   function getNotification() {
@@ -15756,8 +15773,12 @@ app.controller("labCenterNotificationController",["$scope","$location","$resourc
     if(list) {
       var byRecent = $filter('orderBy')(list,'-realTime');
       templateService.holdId = byRecent[0].partnerId;   
-      
-      if(templateService.holdId) {
+      if(deviceCheckService.getDeviceType()){
+        localManager.setValue("holdIdForChat",templateService.holdId);
+        localManager.setValue("holdChatList",list)
+        window.location.targer = "_blank";
+        window.location.href = "/user/chat/general";
+      } else if(templateService.holdId) {
         $location.path("/general-chat");
       } else {
         alert("You have no messages yet.")
@@ -17379,10 +17400,10 @@ app.service("radioTestsService",["$resource",function($resource){
 
 app.controller("radioCenterNotificationController",["$scope","$location","$http","$window","templateService",
   "localManager","$resource","$rootScope","mySocket","chatService","radioNotificationService",
-  "radioTestsService","deleteFactory","courierResponseService","$filter",
+  "radioTestsService","deleteFactory","courierResponseService","$filter","deviceCheckService",
   function($scope,$location,$http,$window,templateService,localManager,$resource,
     $rootScope,mySocket,chatService,radioNotificationService,radioTestsService,
-    deleteFactory,courierResponseService,$filter) {
+    deleteFactory,courierResponseService,$filter,deviceCheckService) {
 
   var notification = radioNotificationService; //$resource("/user/center/get-notification",null,{updateStatus:{method:'PUT'}});
   var radioTests = radioTestsService; //$resource( "/user/radiology/get-referral",null,{sendObj:{method:"PUT"}});
@@ -17507,11 +17528,15 @@ app.controller("radioCenterNotificationController",["$scope","$location","$http"
   $rootScope.loadChats();
 
   $scope.viewChat = function(list) {   
-    if(list) {
+   if(list) {
       var byRecent = $filter('orderBy')(list,'-realTime');
       templateService.holdId = byRecent[0].partnerId;   
-      
-      if(templateService.holdId){
+      if(deviceCheckService.getDeviceType()){
+        localManager.setValue("holdIdForChat",templateService.holdId);
+        localManager.setValue("holdChatList",list)
+        window.location.targer = "_blank";
+        window.location.href = "/user/chat/general";
+      } else if(templateService.holdId) {
         $location.path("/general-chat");
       } else {
         alert("You have no messages yet.")
@@ -21867,8 +21892,6 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
   function($scope,$rootScope,$window,$location,$resource,localManager,mySocket,templateService,
    $timeout, $document, ModalService,cities,$filter,_,$interval,dynamicService){
 
-
-
   if(!localManager.getValue("resolveUser")) {
     $window.location.href = "/login";
   }
@@ -22290,6 +22313,7 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
     //gets all connected sockets for every 1 min
     mySocket.emit("check presence",{status: true},function(res){
       $rootScope.sockets = res;
+      localManager.setValue("connectedSockets",res)
       //$rootScope.$broadcast("users presence",{type: 'chatList',data:$rootScope.chatsList,sockets: res});         
     })
   }
@@ -22661,15 +22685,19 @@ app.controller("patientWaitingRoomController",["$scope","$resource","$location",
 
 //for chats in modal and centers dashboard use for 
 app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatService", "templateService","$filter",
-  "ModalService","$location","deviceCheckService","$compile","$interval",
+  "ModalService","$location","deviceCheckService","$compile","$interval","$http","localManager",
   function($scope, $rootScope, mySocket,chatService,templateService,$filter,ModalService,$location,
-    deviceCheckService,$compile,$interval){
+    deviceCheckService,$compile,$interval,$http,localManager){
     var user = $rootScope.checkLogIn || {};
+    templateService.holdId = templateService.holdId || localManager.getValue("holdIdForChat");
+    $rootScope.chatsList = $rootScope.chatsList || localManager.getValue("holdChatList");
     $rootScope.allChats = $rootScope.chatsList; // rootScope can be used instead   
-    $scope.center = $rootScope.holdcenter || {id : templateService.holdId}; //sometimes is not center but individual
+    $scope.center = ($rootScope.holdcenter || {id : templateService.holdId}); //sometimes is not center but individual
+    $rootScope.sockets = $rootScope.sockets || localManager.getValue('connectedSockets');//connectedSockets
     $scope.isSent = false;
     var elemPos;
 
+   
     var currView = $location.path();
 
     if($rootScope.chatsList) {
@@ -22680,7 +22708,8 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
         $scope.partner = {}
       }
     }
-
+  
+    console.log("sockets:" , $rootScope.sockets, templateService.holdId, $scope.partner, $rootScope.chatsList)
     function getUsersOnline() {     
       $rootScope.$broadcast("users presence",{type: 'chatList',data:$rootScope.chatsList,sockets: $rootScope.sockets});         
     }
@@ -22702,7 +22731,8 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
     mySocket.removeAllListeners("new_msg"); // incase if this listener is registered twice
 
     
-    $scope.viewChat = function(chat) {    
+    $scope.viewChat = function(chat,isMobWebList) {   
+
       $scope.partner = chat;
       var base = document.getElementById('base'); 
       var msgDiv = document.getElementById("sentmessage");
@@ -22712,6 +22742,11 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
         chat.is_read = true;
         mySocket.emit("seen chat",{id: chat._id})
       }
+
+      if(isMobWebList) {
+        $('.chat__container').removeClass('chat__list--active');
+      } 
+      
       //use to control different chat data in the general chat body inner div
       chatBodyCb(function(){
         initChat()
@@ -22867,6 +22902,12 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
   }
 
   function chats(data) {
+
+    if(deviceCheckService.getDeviceType()){
+      mobileWeb(data);
+      return;
+    }
+
     var base = angular.element(document.getElementById('base')); 
     var container = angular.element(document.getElementById('sentmessage'));      
     var item = angular.element(document.createElement('an-item'));
@@ -23053,6 +23094,172 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
     base[0].scrollTop = sentmessage.scrollHeight;
   }
 
+  
+
+  function mobileWeb(data) {
+    var base = angular.element(document.getElementById('base')); 
+    var container = angular.element(document.getElementById('sentmessage'));      
+    var breaker = angular.element(document.createElement('div'));
+    var article = angular.element(document.createElement('article'));
+    var p = angular.element(document.createElement('p'));
+    var small = angular.element(document.createElement('span'));
+    var fileElem;
+
+    //new implementations as of 24th March changing chat design
+
+    //var item1 = angular.element(document.createElement('div'));
+    //var item2 = angular.element(document.createElement('div'));
+    
+    var img = angular.element(document.createElement('img'));
+
+    // end of new item added
+    
+    switch(data.fileType){
+      case 'image':        
+        fileElem = angular.element(document.createElement('img'));
+        fileElem[0].src = data.url;
+        fileElem[0].alt = "loading image...";
+        fileElem[0].style.maxWidth = "280px";
+        fileElem[0].style.height = "220px";
+        //fileElem[0]["data-ng-click"] = $scope.create;
+        imageArg = "imageClickEvt('" + data.url + "')";
+        fileElem.attr('ng-click', imageArg);
+        $compile(fileElem[0])($scope);
+        
+      break;
+      case 'audio':
+        fileElem = angular.element(document.createElement('audio'));
+        fileElem[0].src = data.url;
+        fileElem[0].controls = true;
+      break;
+      case "video":
+         fileElem = angular.element(document.createElement('video'));
+        var sourceElem = angular.element(document.createElement('source'));
+        sourceElem[0].src = data.url; //"/assets/daddy_home.mp4";
+        //sourceElem[0].type = data.type;
+        fileElem[0].append(sourceElem[0]);
+        fileElem[0].style.maxWidth = "280px";
+        fileElem[0].style.height = "220px";
+        fileElem[0].controls = true;
+      break;
+      case 'application':
+        if(data.mimeType == "application/pdf") {
+          fileElem = angular.element(document.createElement('div'));
+          //var embed = angular.element(document.createElement('embed'));
+          var a = angular.element(document.createElement('a'));
+          a[0].href = "https://drive.google.com/viewerng/viewer?embedded=true&url=" + data.url;
+          a[0].style.cursor = "pointer";
+          a[0].style.display = "block";
+          a[0].style.textAlign = "center";
+          a[0].style.fontSize = "32px";
+          a[0].className = "fa fa-file";
+          a[0].innerHTML += "";
+          a[0].style.color = (data.sent) ? "#eee" : "#05728f";
+          a[0].target = "_blank";
+          a[0].style.margin = "20px 0";
+          a[0].title = "View file";
+          
+          fileElem[0].appendChild(a[0]);
+
+          data.fileType = "pdf";
+          
+        } else {
+          fileElem = angular.element(document.createElement('a'));
+          fileElem[0].href = data.url;
+          fileElem[0].style.display = "block";
+          fileElem[0].style.color = "#fff";
+          fileElem[0].style.fontSize = "18px";
+          fileElem[0].style.padding = "10px 0";
+          fileElem[0].className = "fa fa-download";
+          fileElem[0].innerHTML += " download word document.";
+          data.fileType = "";
+        }
+      break;
+      case 'text':
+           fileElem = angular.element(document.createElement('div'));
+          //var embed = angular.element(document.createElement('embed'));
+          var a = angular.element(document.createElement('a'));
+          a[0].href = "https://drive.google.com/viewerng/viewer?embedded=true&url=" + data.url;
+          a[0].style.cursor = "pointer";
+          a[0].style.display = "block";
+          a[0].style.textAlign = "center";
+          a[0].style.fontSize = "32px";
+          a[0].className = "fa fa-file";
+          a[0].innerHTML += "";
+          a[0].style.color = "#eee";
+          a[0].target = "_blank";
+          a[0].style.margin = "20px 0";
+          a[0].title = "View file";
+         
+          fileElem[0].appendChild(a[0]);
+
+          data.fileType = "txt";
+      break;
+      default:
+      break;
+    }
+
+
+   
+    //small[0].style.display = "block";
+    small[0].style.marginTop = "5px";
+   
+    if(!fileElem) {
+      p[0].innerHTML += (data.sent) ? data.sent : data.received; 
+    } else {
+      p[0].innerHTML += data.fileType;
+    }
+   
+   
+    small[0].id = data.id;
+    small[0].className = "time_date";
+    small[0].style.color = "rgba(0,0,0,0.2)";
+    
+    small[0].innerHTML += $filter('amCalendar')(data.time);
+
+    breaker[0].style.textAlign = "center";
+    breaker[0].style.padding = "2px 0";
+    breaker[0].appendChild(small[0]);
+    article[0].className = "conversation__view__bubbles"; 
+    
+    
+    //breaker[0].style.display = "block";    
+
+    //new code 
+    if(data.sent){
+     
+      if(fileElem){
+        p[0].appendChild(fileElem[0]);
+      }
+
+       
+      p[0].className = "chat__right__bubble";
+   
+      article[0].appendChild(breaker[0]);
+    
+      article[0].appendChild(p[0]);
+      //article[0].appendChild(small[0]);
+      container[0].appendChild(article[0]);
+
+    } else { 
+
+      if(fileElem){
+        p[0].appendChild(fileElem[0]);
+      } 
+
+      p[0].className = "chat__left__bubble";
+      //container[0].className = "conversation__view__bubbles";
+      article[0].appendChild(breaker[0]);
+      article[0].appendChild(p[0]);
+      //container[0].appendChild(breaker[0]);
+      container[0].appendChild(article[0]);
+      //container[0].appendChild(small[0]);
+    }
+
+    base[0].scrollTop = sentmessage.scrollHeight;
+
+  }
+
   var elPos;
 
   mySocket.on("new_msg", function(data) {
@@ -23174,6 +23381,7 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
   var img = {};
   var progress = {};
   dlArray = [];
+
   //for single file upload
   $rootScope.imageFile = function(file) {   
     $scope.files = file;
@@ -23346,7 +23554,9 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
   }
 
 
- 
+  var lessThan24HourAgo = function(date) {
+    return moment(date).isAfter(moment().subtract(24, 'hours'));
+  }
 
 
 

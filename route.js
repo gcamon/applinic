@@ -9228,7 +9228,7 @@ router.get('/user/getAllPharmarcy',function(req,res){
 
 router.get('/user/getAllLaboratory',function(req,res){
   if(req.user){
-    var str = new RegExp(req.query.city.replace(/\s+/g,"\\s+"), "gi"); 
+    var str = (req.query.city) ? new RegExp(req.query.city.replace(/\s+/g,"\\s+"), "gi") : ""; 
     var criteria = (req.query.city) ? {city: { $regex: str, $options: 'i' },type:"Laboratory"} : {type:"Laboratory"};
     model.user.find(criteria,{name:1,address:1,user_id:1,city:1,country:1,phone:1,_id:1,email:1,verified:1},function(err,data){
       if(err) throw err;
@@ -9245,7 +9245,7 @@ router.get('/user/getAllLaboratory',function(req,res){
 
 router.get('/user/getAllRadiology',function(req,res){
   if(req.user){
-    var str = new RegExp(req.query.city.replace(/\s+/g,"\\s+"), "gi"); 
+    var str = (req.query.city) ? (new RegExp(req.query.city.replace(/\s+/g,"\\s+"), "gi")) : ""; 
     var criteria = (req.query.city) ? {city: { $regex: str, $options: 'i' },type:"Radiology"} : {type:"Radiology"};
     model.user.find(criteria,{name:1,address:1,user_id:1,city:1,country:1,phone:1,_id:1,email:1,verified:1},function(err,data){
       if(err) throw err;
@@ -11773,6 +11773,15 @@ router.post("/user/doctor/consultation-fee",function(req,res){
 
   } else {
     res.json({error: true, message: "Session has expired! Please longin again."});
+  }
+});
+
+
+router.get("/user/chat/general",function(req,res){
+  if(req.user){
+    res.render("general-chat")
+  } else {
+    res.end("unauthorized access.")
   }
 })
 
