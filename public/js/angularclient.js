@@ -23202,6 +23202,8 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
 
    
     //small[0].style.display = "block";
+    p[0].style.fontSize = "16px";
+    p[0].style.wordBreak = "break-word";
     small[0].style.marginTop = "5px";
    
     if(!fileElem) {
@@ -23213,7 +23215,7 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
    
     small[0].id = data.id;
     small[0].className = "time_date";
-    small[0].style.color = "rgba(0,0,0,0.2)";
+    small[0].style.color = "rgba(0,0,0,0.4)";
     
     small[0].innerHTML += $filter('amCalendar')(data.time);
 
@@ -23341,7 +23343,21 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
   }
 
 
-  $scope.chatPrivate = function(chat) {
+  $scope.chatPrivate = function(chat,isMobileView) {
+
+    if(isMobileView) {
+      var who = (chat.partnerType === "Patient") ? true : false;
+      if(who){
+        var split = chat.chat_id.split("/");
+        var id = split[split.length - 1];
+        var path = "/doctor-patient/treatment/" + id;
+        localManager.setValue("currentPage",path)
+        window.location.href = "/user/doctor";
+      }
+
+      return;
+    }
+
     if(chat.partnerType === "Doctor") {
 
       var split = chat.chat_id.split("/");

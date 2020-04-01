@@ -41,7 +41,8 @@ button {
   position: relative;
   border-bottom-left-radius: 0;
   color: hsl(162, 100%, 7%);
-  background-color: hsl(163, 100%, 40%);
+  background-color: #fff/*hsl(163, 100%, 40%)*/;
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,.12), 0 2px 4px 0 rgba(0,0,0,.08);
 }
 .chat__left__bubble:after {
   content: '';
@@ -51,14 +52,16 @@ button {
   width: 10px;
   height: 10px;
   border-top-left-radius: 8px;
-  background-color: hsl(163, 100%, 40%);
+  background-color: #fff /*hsl(163, 100%, 40%)*/;
+
 }
 .chat__right__bubble {
   float: right;
   position: relative;
   border-bottom-right-radius: 0;
-  color: hsl(342, 100%, 95%);
-  background-color: hsl(343, 100%, 40%);
+  color: #fff/*hsl(342, 100%, 95%);*/;
+  background-color: hsl(163, 100%, 40%)/*#05728f hsl(343, 100%, 40%)*/;
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,.12), 0 2px 4px 0 rgba(0,0,0,.08);
 }
 .chat__right__bubble:after {
   content: '';
@@ -68,7 +71,7 @@ button {
   width: 10px;
   height: 10px;
   border-top-right-radius: 8px;
-  background-color: hsl(343, 100%, 40%);
+  background-color: hsl(163, 100%, 40%)/*#05728f hsl(343, 100%, 40%)*/;
 }
 .chat__mask--minimize {
   height: 40px !important;
