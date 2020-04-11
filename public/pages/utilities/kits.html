@@ -1,0 +1,53 @@
+<div class="p-2 col-md-6" style="">
+	<h3>Add Kits</h3>
+	<form ng-submit="sendKit()">
+		<div>
+			<label>Type:</label><br>
+			<select  class="form-control" ng-model="kit.type" required>
+				<option selected value="" disabled>_Select</option>
+				<option value="Drug">Drug</option>
+				<option value="Laboratory">Laboratory</option>
+				<option value="Radiology">Radiology</option>
+			</select>
+		</div>	
+		<br>
+		<div>
+			<label>Disease:</label><br>
+			<input type="text" name="" style="text-transform: capitalize;" placeholder="example Malaria"  class="form-control" ng-model="kit.disease" required>
+		</div>
+		<br>
+		<div>
+			<label>Kit Name: </label><br>
+			<input type="text" name="" style="text-transform: capitalize;" placeholder="example Anti Malaria" class="form-control" ng-model="kit.name" required>
+		</div>
+		<br>
+		<div>
+			<label>Prescription Note (Optional): </label><br>
+			<textarea class="form-control" ng-model="kit.note" style="height: 80px"></textarea>
+		</div>
+		<br>
+		<div>
+			<label>Kit Content: </label><br>
+			<div style="position: relative;" ng-repeat="i in drugList">
+				 <input type="text" class="form-control p-2" stid="age"  type="text" placeholder="Enter drug name" ng-model="i.drug_name" uib-typeahead="drug.name for drug in drugs | filter:$viewValue | limitTo:15">
+				
+                  <input type="text" ng-model="i.dosage" placeholder="Dosage"  class="form-control p-2">
+
+                  <input type="text" ng-model="i.frequency" placeholder="Frequency"  class="form-control p-2">
+
+                  <input type="text" ng-model="i.duration" placeholder="Duration"  class="form-control p-2">
+	      
+	            <i class="fa fa-times text-muted" style="cursor: pointer;position: absolute;right:10px;bottom: 10px" ng-click="remove(i.sn)" ng-if="i.sn !== 1"></i>
+	            <hr>
+	            <br>
+            </div>
+            <div style="text-align: right;">
+            	<i class="btn btn-neutral fa fa-plus" ng-click="addDrug()"></i>
+            </div>
+		</div>
+		<br>
+		<div>
+			<input type="submit" value="Submit" class="btn btn-info">
+		</div>
+	</form>
+</div>

@@ -7,9 +7,27 @@
     text-decoration: underline;
 }
 
+ .block {
+        display: block;
+    }
 
+.line-height {
+  line-height: 30px
+}
 
+.list-tabs {
+  width: 60px;float: left;margin-right: 80px
+}
 
+.relate {
+  position: relative;
+}
+
+.ab-bottom {
+  position: absolute;
+  right: 5px;
+  bottom: -20px
+}
 /* my ng animate style */
 
 .logo {

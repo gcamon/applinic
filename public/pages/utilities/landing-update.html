@@ -1,323 +1,171 @@
-<div class="card-center-1 " ng-if="checkLogIn.typeOfUser === 'Patient'">
-	<h4 class="text-muted">Hi, {{(checkLogIn.title) ? checkLogIn.title : ""}} {{checkLogIn.lastname}}</h4><br>
+<style type="text/css">
+	.text-center {
+		text-align: center;
+	}
+	.text-right {
+		text-align: right;
+	}
+</style>
 
-	<div class="card p-1"  ng-if="allMsg.length > 0">		
-		<div>
-			<h6 class="text-muted "><i class="fa fa-envelope"></i> Messages</h6><br>
-			<ul class="landing-ul ">
-				<li  ng-repeat = "msg in allMsg | orderBy: '-date'" class="landing">
-                    <div class="notification-item msg-drp-list" ng-click= "viewBill(msg.message_id)" ng-if="msg.category === 'outPatientBilling' && msg.category !== 'need_doctor'" style="cursor: pointer;">
-                        <!--<div class="img-col">
-                            <div class="img fa fa-user-md" style="font-size: 28px"></div>
-                        </div>-->
-                        <div class="body-col">
-                            <p> <span class="accent" ng-cloak>{{msg.firstname}}</span> <span style="display:block">{{msg.message}}</span> <small am-time-ago="msg.date" style="display:block" ng-cloak></small> </p>
-                        </div>
-                    </div>
-                    <div class="notification-item" ng-click= "viewResponse1(msg.user_id,msg.complaint_id)" ng-if="msg.category === 'need_doctor' && msg.category !== 'outPatientBilling' " style="cursor: pointer;">
-                        <!--<div class="img-col">
-                            <div class="img fa fa-user-md"></div>
-                        </div>-->
-                        <div class="body-col">
-                            <p> <span class="accent" ng-cloak>Ref {{msg.complaint_id}}</span> <span style="display:block">{{msg.message}}</span> <small am-time-ago="msg.date" style="display:block" ng-cloak></small> </p>
-                        </div>
-                    </div>
-                    <div class="notification-item" ng-click= "viewMessage(msg.user_id,msg)" ng-if="msg.category !== 'need_doctor' && msg.category !== 'outPatientBilling'" style="cursor: pointer;">
-                        <div class="img-col">
-                            <div class="img" style="background-image: url({{msg.profile_pic_url}})"></div>
-                        </div>
-                        <div class="body-col">
-                            <p> <span class="accent" ng-cloak>{{msg.title}} {{msg.firstname}} {{msg.lastname}}</span> <span style="display:block" ng-class="{'text-danger': msg.reason}" ng-cloak>{{msg.message}}</span> <small style="display:block" am-time-ago="msg.date" ng-cloak></small></p>
-                        </div>
-                    </div>
-                </li>
-			</ul>
-		</div>
-	</div>
+<div class="" ng-if="checkLogIn.typeOfUser === 'Patient'">
 
-	<div class="card p-1"  ng-if="courierResponseList.length > 0">
-		
-		<div>
-			<h6 class="text-muted "><i class="fa fa-motorcycle"></i> Courier Notifications</h6><br>
-			<section class="landing-ul ">
-				<div ng-repeat = "j in courierResponseList | orderBy : '-date'" class="landing" style="position: relative;" ng-click= "viewResponse(j)">
-	                <a href="" class="notification-item text-normal">
-	                    <div class="body-col">
-	                        <p> <span class="accent" ng-cloak>Drug Delivery Request {{j.request_id}}</span>
-	                            <span style="display:block"></span>
-	                            <span>{{j.date | date: 'fullDate'}} (<span am-time-ago="j.date"></span>)</span>
-	                           
-	                        </p>
-	                    </div>
-	                                                          
-	                </a>                                            
-	                  <span style="position: absolute;top: 3px;right: 5px;font-size: 12px" ng-class="{'text-danger': !j.attended,'text-info':j.attended,'text-success':j.completed,'text-warning':j.is_paid}">{{(!j.verified || !j.attended) ? 'Pending' : (!j.is_paid && j.attended) ? 'Ready': (j.is_paid && !j.completed) ? 'On Delivery' : (j.completed) ? "Received" : ""}}</span>
-	               
+	<div class="col-md-4 col-sm-6 col-xs-12">
+        <div class="card">          
+            <div class="p-2" style="background-color: #f2f2f2;text-align: center;">
+                <img src="/assets/images/finddoctor.png" style="width: 32px;height:auto;">
+            </div>
+            <div class="h6 pt-1 text-center">Chat with our Stand-by Doctors</div>
+            <div class="text-muted p-2 home-pallete-content">
+             	These are qualified and verified doctors who you can contact quickly to explain your health issues.
+            </div> 
+            <div class="text-right">
+            	<button class="btn btn-neutral" ng-click="sendChatSingle()">Chat now!</button>
+            </div>        
+        </div>
+    </div>
+    <div class="col-md-4 col-sm-6 col-xs-12">
+        <div class="card">            
 
-	            </div>             
-			</section>
-		</div>
-	</div>
-	<div class="card p-1"  ng-if="allApp.length > 0">		
-		<div>
-			<h6 class="text-muted "><i class="fa fa-calendar"></i> Appointments</h6><br>
-			<section class="landing-ul ">
-				 <div ng-repeat = "app in allApp" class="landing" ng-click= "viewAppointment(app.session_id)">
+            <div class="p-2" style="background-color: #f2f2f2;text-align: center;">
+                <img src="/assets/images/finddoctor.png" style="width: 32px;height:auto;">
+            </div>
+            <div class="h6 text-center pt-1">Consult a Physician</div>
+            <div class="text-muted p-2 home-pallete-content">
+            	Write your complaint and submit to a Physician / Consultant of your choice for consultation.
+            </div>
+            <div class="text-right">
+            	<a href="#/consult-specialist/default" class="btn btn-neutral">Consult a physician now!</a>
+            </div>       
+        </div>
+    </div>
+    <div class="col-md-4 col-sm-6 col-xs-12">
+        <div class="card">            
 
-                    <a href="" class="notification-item text-normal">
-                        <div class="img-col">
-                            <div class="img" style="background-image: url({{app.profilePic}})"></div>
-                        </div>
-                        <div class="body-col">
-                            <p> <span class="accent" ng-cloak>{{app.title}} {{app.firstname}} {{app.lastname}}</span>
-                                <span style="display:block">Hi, you have an appointment with me.</span>
-                                <span><b>Date:</b> {{app.date | date: 'fullDate'}} <b am-time-ago="app.date"></b></span>
-                            </p>
-                        </div>
-                    </a>
-                </div>         
-			</section>
-		</div>
-	</div>
+            <div class="p-2" style="background-color: #f2f2f2;text-align: center;">
+                <img src="/assets/images/finddoctor.png" style="width: 32px;height:auto;">
+            </div>
+            <div class="h6 text-center pt-1">Buy Drugs and Kits</div>
+            <div class="text-muted p-2 home-pallete-content">Buy your routine drugs and kits from certified pharmaceutical centers closest to you in the city.
+            </div>
+            <div class="text-right">
+            	<a href="#/drugs-and-kits" class="btn btn-neutral">Buy drugs and kits now!</a>
+            </div>       
+        </div>
+    </div>
+    <div class="col-md-4 col-sm-6 col-xs-12">
+        <div class="card">            
 
-	<div class="card p-1"  ng-if="allNote.length > 0">		
-		<div>
-			<h6 class="text-muted "><i class="fa fa-bell"></i> Notifications</h6><br>
-			<section class="landing-ul ">
-				 <div ng-repeat = "note in allNote | orderBy: '-date'" class="landing">
-                    <a href="" class="notification-item text-normal" ng-if="note.type === 'laboratory'" ng-click="viewNoteLab(note.ref_id)">
-                        <!--<div class="img-col">
-                            <div class="img icon-lab"></div>
-                        </div>-->
-                        <div class="body-col">
-                            <p><i class="fa fa-flask"></i> <span class="accent" ng-cloak>{{note.message}}</span><br><small am-time-ago="note.date"></small></p>
-                        </div>
-                    </a>
+            <div class="p-2" style="background-color: #f2f2f2;text-align: center;">
+                <img src="/assets/images/finddoctor.png" style="width: 32px;height:auto;">
+            </div>
+            <div class="h6 text-center pt-1">My Appointment with doctors</div>
+            <div class="text-muted p-2 home-pallete-content">
+               See all in-person meeting schedules you have with your doctors in their respective consulting offices.
+            </div>
+            <br><br>
+             <div class="text-right">
+            	<button class="btn btn-neutral">View appointment schedules!</button>
+            </div>       
+        </div>
+    </div>
+     <div class="col-md-4 col-sm-6 col-xs-12">
+        <div class="card">            
 
-                    <a href="" class="notification-item text-normal" ng-if="note.type === 'radiology'" ng-click="viewNoteRadio(note.ref_id)">
-                        <!--<div class="img-col">
-                            <div class="img fa fa-flask"></div>
-                        </div>-->
-                        <div class="body-col">
-                            <p><i class="fa fa-image"></i> <span class="accent" ng-cloak>{{note.message}}</span><br><small am-time-ago="note.date"></small></p>
-                        </div>
-                    </a>
+            <div class="p-2" style="background-color: #f2f2f2;text-align: center;">
+                <img src="/assets/images/finddoctor.png" style="width: 32px;height:auto;">
+            </div>
+            <div class="h6 text-center pt-1">Do Lab Test</div>
+            <div class="text-muted p-2 home-pallete-content">
+            	We have certified laboratory centers in the platform where you can forward your lab test request and get the report in your account which you can share with your physicians.
+            </div>
+            <div class="text-right">
+            	<button class="btn btn-neutral">View lab test optios!</button>
+            </div>       
+        </div>
+    </div>
+    <div class="col-md-4 col-sm-6 col-xs-12">
+        <div class="card">           
 
-                    <a href="" class="notification-item text-normal" ng-if="note.type === 'pharmacy'" ng-click="viewNotePharmacy(note.note_id)">
-                        <!--<div class="img-col">
-                            <div class="img icon-pill"></div>
-                        </div>-->
-                        <div class="body-col">
-                            <p><i class="icon-Pills"></i> <span class="accent" ng-cloak>{{note.message}}</span><br><small am-time-ago="note.date"></small> </p>
-                        </div>
-                    </a>
+            <div class="p-2" style="background-color: #f2f2f2;text-align: center;">
+                <img src="/assets/images/finddoctor.png" style="width: 32px;height:auto;">
+            </div>
+            <div class="h6 text-center pt-1">X-ray / CT / MRI</div>
+            <div class="text-muted p-2 home-pallete-content">
+            	We have certified radiology centers where you can run your test and view the images and report in your account and you can share with your physicians.
+            </div>
+            <div class="text-right">
+            	<button class="btn btn-neutral">Go to X-ray / CT / MRI!</button>
+            </div>       
+        </div>
+    </div>
+    <div class="col-md-4 col-sm-6 col-xs-12">
+        <div class="card">            
 
-                </div>                         
-			</section>
-		</div>
-	</div>
-	<div class="card p-1" ng-if="chatsList.length > 0">		
-		<div>
-			<h6 class="text-muted "><i class="fa fa-comment"></i> Chats</h6><br>
-			<section class="landing-ul ">
-				 <div ng-repeat = "chat in chatsList | orderBy : '-realTime'" ng-click= "viewChat(chat.partnerId)"  class="landing">
-                    <!--<a href="" class="notification-item text-normal">
-                        <div class="img-col">
-                            <img src="{{chat.profilePic}}" class="img">
-                        </div>
-                        <div class="body-col">                                                
-                            <p style=""> 
-                            	<span class="accent" ng-cloak>{{chat.name}}</span>
-                                <span style="display:block;width: 400px" class="ellipsis">{{chat.messages[chat.messages.length - 1].received || chat.messages[chat.messages.length - 1].sent}} <small am-time-ago="chat.messages[chat.messages.length - 1].time || chat.messages[chat.messages.length - 1].received" style="display:block" ng-cloak></small></span> 
-                            </p>
-                        </div>
-                    </a>-->
-                    <img src="{{chat.profilePic}}" style="float: left;height:auto;max-width:45px;margin-bottom: 5px"">			
-					<a href="" class="chat-header-text ellipsis" ng-class="{'chat-header-text-new' : !chat.is_read}" style="display: inline-block;padding: 5px 10px;position: relative;width: 75%;font-size: 14px">
-						<strong style="display: block;" >{{chat.name}}</strong>
-						<span style="display: block;">( {{chat.partnerType}} )</span>
-						 <span style="display:block" class="ellipsis">{{(!chat.typing) ? (chat.messages[chat.messages.length - 1].received || chat.messages[chat.messages.length - 1].sent ) : chat.typing }} 
-						 <small style="display:block;" am-time-ago="chat.messages[chat.messages.length - 1].time  || chat.messages[chat.messages.length - 1].received" ng-cloak></small></span> 
-						 <span style="position: absolute;bottom: 10px;right: 20px"><span ng-if="chat.status" class="online" style="background-color: #85CE36"></span><span ng-if="!chat.status" class="online" style="background-color: #ccc;"></span></span>
-						 <!--<i class="fa fa-comment-o" style="position: absolute;top:3px;right:5px" ng-if="chat.isUnRead"></i>-->
-					</a>
-					<div class="clearfix"></div>
-                </div>
-			</section>
-		</div>
-	</div>
-	<!--<div class="card p-1">
-		<div>
-			<h6 class="text-muted ">Quick Guide</h6>
-			<ul  style="list-style: none;">
-				<li>
-					<h5><i class="fa fa-envelope"></i> Messages</h5><br>
-					<p>All consultation requests/complaints you send and its responses from doctors are kept in messages.</p>
-				</li>
-				<li>
-					<h5><i class="fa fa-bell"></i> Notifications</h5><br>
-					<p>You'll receive notifications when you have new laboratory, radiology investigations to do and when the results are available. You will also receive prescription notification when a physician had written one for you.</p>
-				</li>
-				<li>
-					<h5><i class="fa fa-calendar"></i> Appointment </h5><br>
-					<p>In-person meeting appointments from your doctors are kept in this place.</p>
-				</li>
-				<li>
-					<h5><i class="fa fa-motorcycle"></i> Drug Delivery Requests (Courier) </h5><br>
-					<p>When you request for drug delivery to you current location, details/updates on the requests can be seen here.</p>
-				</li>
-				<li>
-					<h5><i class="fa fa-comment"></i> Chats </h5><br>
-					<p>Here you receive and send messages to diagnostic, pharmaceutical centers on applinic including other patients or your doctors.</p>
-				</li>
-			</ul>
-		</div>
-	</div>-->
-	<!--<div class="card p-1">
-		<div>
-			<h6 class="text-muted ">Quick Guide - Searches and Utilities</h6>
-			<ul  style="list-style: none;">
-				<li>
-					<h5><i class="fa fa-envelope"></i> How do I buy a drug on applinic?</h5><br>
-					<p>
-						Pharmaceutical centers register on applinic just like patients and doctors do. Applinic mandates these centers to update their stock inventory before the centers can show in search result when users search for drugs.<br>
-						If you want to buy a drug in applinic, you search for the drug(s) by clicking <i class="fa fa-lens"></i> Drug then enter the names of the drugs. Use "+ add" to create more input fields. While you type the name of a drug, the system will show pop-up of list of drug names relative to what you are typing.This list are drugs pulled from our database. Please check the names of drugs on the list and click on any similar to what you wanted to input.
-					</p>
-				</li>
-				<li>
-					<h5><i class="fa fa-bell"></i> Notifications</h5><br>
-					<p>You'll receive notifications when you have new laboratory, radiology investigations to do and when the results are available. You will also receive prescription notification when a physician had written one for you.</p>
-				</li>
-				<li>
-					<h5><i class="fa fa-calendar"></i> Appointment </h5><br>
-					<p>In-person meeting appointments from your doctors are kept in this place.</p>
-				</li>
-				<li>
-					<h5><i class="fa fa-motorcycle"></i> Drug Delivery Requests (Courier) </h5><br>
-					<p>When you request for drug delivery to you current location, details/updates on the requests can be seen here.</p>
-				</li>
-				<li>
-					<h5><i class="fa fa-comment"></i> Chats </h5><br>
-					<p>Here you receive and send messages to diagnostic, pharmaceutical centers on applinic including other patients or your doctors.</p>
-				</li>
-			</ul>
-		</div>
-	</div>-->
+            <div class="p-2" style="background-color: #f2f2f2;text-align: center;">
+                <img src="/assets/images/finddoctor.png" style="width: 32px;height:auto;">
+            </div>
+            <div class="h6 text-center pt-1">Ultra Sound Scan</div>
+            <div class="text-muted p-2 home-pallete-content">
+            	We also have certified radiology centers where you can run your scan and view the images and report in your account and you can share with your physicians. 
+            </div>
+            <div class="text-right">
+            	<button class="btn btn-neutral">Go to Ultra Sound!</button>
+            </div>       
+        </div>
+    </div>
+     <div class="col-md-4 col-sm-6 col-xs-12">
+        <div class="card">            
+
+            <div class="p-2" style="background-color: #f2f2f2;text-align: center;">
+                <img src="/assets/images/finddoctor.png" style="width: 32px;height:auto;">
+            </div>
+            <div class="h6 text-center pt-1">My Prescriptions</div>
+            <div class="text-muted p-2 home-pallete-content">
+            	We keep records of all the drugs you had taken and prescriptions that was prescribed on your 
+            	behalf by your doctors.
+            </div>
+            <br>
+            <div class="text-right">
+            	<button class="btn btn-neutral">View prescriptions!</button>
+            </div>       
+        </div>
+     </div>
+     <div class="col-md-4 col-sm-6 col-xs-12">
+        <div class="card">            
+
+            <div class="p-2" style="background-color: #f2f2f2;text-align: center;">
+                <img src="/assets/images/finddoctor.png" style="width: 32px;height:auto;">
+            </div>
+            <div class="h6 text-center pt-1">My Lab Test Results</div>
+            <div class="text-muted p-2 home-pallete-content">
+            	We keep records of all your laboratory test requests sent to diagnostic centers and the accompanied results which you can view or share anytime.
+            </div>
+            <br>
+            <div class="text-right">
+            	<button class="btn btn-neutral">View lab tests!</button>
+            </div>       
+        </div>
+    </div>
+    <div class="col-md-4 col-sm-6 col-xs-12">
+        <div class="card">            
+
+            <div class="p-2" style="background-color: #f2f2f2;text-align: center;">
+                <img src="/assets/images/finddoctor.png" style="width: 32px;height:auto;">
+            </div>
+            <div class="h6 text-center pt-1">My radiology images and Reports</div>
+            <div class="text-muted p-2 home-pallete-content">
+            	We keep records of all your radiology study requests sent to diagnostic centers and the accompanied DICOM images and report which you can view or share anytime.
+            </div>
+            <div class="text-right">
+            	<button class="btn btn-neutral">View studies and reports!</button>
+            </div>       
+        </div>
+    </div>
+
+
+
 </div>
-
-
-<!-- for doctor dashboard -->
-
-<div class="card-center-1 " ng-if="checkLogIn.typeOfUser === 'Doctor'">
-	<h6 class="text-muted">Hi, {{(checkLogIn.title) ? (checkLogIn.title !== "SC") ? checkLogIn.title : "" : ""}} {{checkLogIn.lastname || checkLogIn.name}}</h6><br>
-	<div class="card p-1"  ng-if="consultation.length > 0">
-		<div>
-			<h5 class="text-muted "><i class="fa fa-envelope"></i> Consultation Requests</h5><br>
-			<section class="landing-ul ">
-				<div ng-repeat = "patient in consultation | orderBy: '-date'" ng-click= "view(patient)" class="landing">
-                    <a href="" class="notification-item text-normal">
-                        <!--<div class="img-col">
-                            <div class="img" style="background-image: url({{patient.sender_profile_pic_url}})"></div>
-                        </div>-->
-                        <div class="body-col">
-                            <p>                                                        
-                                <span>Consultation request from <b>{{patient.title}} {{patient.sender_firstname}} {{patient.sender_lastname}}</b></span><br>
-                                <span am-time-ago="patient.date"></span>
-                            </p>                                                  
-                        </div>
-                    </a>
-                </div>  
-			</section>
-		</div>
-	</div>
-
-	<div class="card p-1"  ng-if="docNotification.length > 0">
-		<div>
-			<h6 class="text-muted "><i class="fa fa-bell"></i> Notifications</h6><br>
-			<section class="landing-ul ">
-				<div ng-repeat = "note in docNotification" class="landing">
-	                <a href="{{'#/doctor-patient/treatment/' + note.sender_id}}" class="notification-item text-normal" ng-click="delMsg(note.message_id)">
-	                    <div class="img-col">                                                    
-	                        <div class="img" style="background-image: url({{note.sender_profile_pic_url}})"></div>
-	                    </div>
-	                    <div class="body-col" ng-if="note.type == 'acceptance'">                                                    
-	                        <p> <span class="accent">{{note.message}}</span><br><small am-time-ago ="note.date"></small></p>
-	                    </div>
-	                     <div class="body-col" ng-if="note.type == 'video'">                                                    
-	                        <p> <i class="fa fa-video-camera"></i> <span class="accent">{{note.message}}</span><br><small am-time-ago ="note.date"></small></p>
-	                    </div>
-	                </a>
-	            </div>            
-			</section>
-		</div>
-	</div>
-	<div class="card p-1"  ng-if="courierResponseList.length > 0">
-		<div>
-			<h6 class="text-muted "><i class="fa fa-motorcycle"></i> Drug Delivery Requests</h6><br>
-			<section class="landing-ul ">				
-                <div ng-repeat = "j in courierResponseList | orderBy : '-date'" class="msg-drp-list landing" style="position: relative;" ng-click= "viewResponse(j)">
-                    <a href="" class="notification-item text-normal">
-                        <div class="body-col">
-                            <p> <span class="accent" ng-cloak>Courier Request {{j.request_id}}</span>
-                                <span style="display:block"></span>
-                                <span>{{j.date | date: 'fullDate'}} - <span am-time-ago="j.date"></span></span>
-                               
-                            </p>
-                        </div>
-                                                              
-                    </a>                                            
-                      <span style="position: absolute;top: 3px;right: 5px;font-size: 12px" ng-class="{'text-danger': !j.attended,'text-info':j.attended,'text-success':j.completed,'text-warning':j.is_paid}">{{(!j.verified || !j.attended) ? 'Pending' : (!j.is_paid && j.attended) ? 'Ready': (j.is_paid && !j.completed) ? 'On Delivery' : (j.completed) ? "Received" : ""}}</span>
-                </div>              
-	                 
-			</section>
-		</div>
-	</div>
-	<div class="card p-1"  ng-if="chatsList.length > 0">
-		<div>
-			<h6 class="text-muted "><i class="fa fa-comment"></i> Chats</h6><br>
-			<section class="landing-ul ">				
-	           <div ng-repeat = "chat in chatsList | orderBy : '-realTime'" ng-click= "viewChat(chat.partnerId)" class="landing">
-	               
-                    <img src="{{chat.profilePic}}" style="float: left;height:75px;width:62px;margin-bottom: 5px">			
-					<a href="" class="chat-header-text ellipsis" ng-class="{'chat-header-text-new' : !chat.is_read}" style="display: inline-block;padding: 5px 10px;position: relative;width: 70%">
-						<strong style="display: block;" >{{chat.name}}</strong>
-						<span style="display: block;" class="text-muted">{{chat.partnerType}}</span>
-						 <span style="display:block;" class="ellipsis">{{(!chat.typing) ? (chat.messages[chat.messages.length - 1].received || chat.messages[chat.messages.length - 1].sent ) : chat.typing }} 
-						 <small style="display:block;" am-time-ago="chat.messages[chat.messages.length - 1].time  || chat.messages[chat.messages.length - 1].received" ng-cloak></small></span> 
-						 <span style="position: absolute;bottom: 0;right: 20px"><span ng-if="chat.status" class="online" style="background-color: #85CE36"></span><span ng-if="!chat.status" class="online" style="background-color: #ccc;"></span></span>
-						 <!--<i class="fa fa-comment-o" style="position: absolute;top:3px;right:5px" ng-if="chat.isUnRead"></i>-->
-					</a>
-					<div class="clearfix"></div>
-	                
-	            </div>	                 
-			</section>
-		</div>
-	</div>
-
-	<div class="card p-1"  ng-if="inPersonRequest.length > 0">
-		<div>
-			<h6 class="text-muted "><i class="fa fa-motorcycle"></i> In-Person Meeting Requests</h6><br>
-			<section class="landing-ul ">				
-               <div ng-repeat = "patient in inPersonRequest | orderBy: '-date'" class="landing">
-	                <a href="" class="notification-item" ng-click="viewApp2(patient.sender_id,patient.message_id)">
-	                    <div class="img-col">
-	                        <div class="img" style="background-image: url({{patient.sender_profile_pic_url}})"></div>
-	                    </div>
-	                    <div class="body-col">
-	                        <p> 
-	                        <span>
-	                        {{patient.sender_firstname}} {{patient.sender_lastname}} wants to meet with you in office
-	                        Please click to go to e-treatment when you can use appointmet calendar.
-	                        </span><br>                    
-	                        <span am-time-ago="patient.date"></span>
-	                            <!--<button ng-click="viewApp(patient.sender_id,patient.firstname,patient.lastname,patient.profile_pic_url)" style="font-size: 12px;margin-top: 2px;float:right;color:#fff">Respond</button>. -->
-	                        </p>
-	                    </div>
-	                </a>
-	            </div>          
-	                 
-			</section>
-		</div>
-	</div>
+<div class="clearfix"></div>
+<div style="height: 200px">
 	
 </div>

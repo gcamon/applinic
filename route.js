@@ -1114,11 +1114,12 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
 
         switch(req.query.type){
           case "doctorname":
-            var first4 = (req.query.name.substring(0,2) !== 'Dr' || req.query.name.substring(0,2) !== 'Prof' || req.query.name.substring(0,2) !== 'Dr.') ? req.query.name.substring(0,5) : req.query.name;
+            var first4 = (req.query.name.substring(0,2) !== 'Dr' || req.query.name.substring(0,2) !== 'Prof' ||
+             req.query.name.substring(0,3) !== 'Dr.') ? req.query.name.substring(0,5) : req.query.name;
             var str = new RegExp(first4.replace(/\s+/g,"\\s+"), "gi");              
                
             if(req.query.city) {
-              var criteria = {name: req.query.name,city:req.query.city}             
+              var criteria = {name: req.query.name,city:req.query.city};             
             } else {
               var criteria = {name: req.query.name};
             }
@@ -1193,9 +1194,7 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
           break;
 
           case "disease":
-
-            var str = new RegExp(req.query.disease.replace(/\s+/g,"\\s+"), "gi");  
-
+            var str = new RegExp(req.query.disease.replace(/\s+/g,"\\s+"), "gi");
             if(req.query.city) {            
               var criteria = { $or: [{ "skills.skill" : { $regex: str, $options: 'i' },type:"Doctor",city:req.query.city},
               {"skills.disease": { $regex: str, $options: 'i' },type:"Doctor",city:req.query.city}]};
@@ -1279,6 +1278,32 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
             });
           break;
           default:
+            criteria = {
+              type: "Doctor"
+            };
+
+            if(req.query.city){
+              var c = new RegExp(req.query.city.replace(/\s+/g,"\\s+"), "gi");
+              criteria['city'] = { $regex: c, $options: 'i' };
+            } 
+
+            if(req.query.specialty) {
+              var s = new RegExp(req.query.specialty.replace(/\s+/g,"\\s+"), "gi");
+              criteria['specialty'] = { $regex: s, $options: 'i' };
+            } 
+
+            if(req.query.doctorname) {
+              var d = new RegExp(req.query.doctorname.replace(/\s+/g,"\\s+"), "gi");
+              criteria['name'] = { $regex: d, $options: 'i' };
+            } 
+
+            model.user.find(criteria,{user_id:1,firstname:1,title:1,
+              work_place:1,profile_pic_url:1,address:1,lastname:1,profile_url:1,specialty:1,city:1,country:1,verified:1})
+            .limit(500)
+            .exec(function(err,data){
+              if(err) throw err;
+              res.json(data);
+            })
           break;
         }
        
@@ -1687,7 +1712,8 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
         }*/
 
         model.user.findOne({user_id:req.body.receiverId},
-          {doctor_notification:1,presence:1,set_presence:1,phone:1,firstname:1,title:1,user_id:1,email:1,specialty:1,city:1,country:1})
+          {doctor_notification:1,presence:1,set_presence:1,phone:1,firstname:1,title:1,
+            user_id:1,email:1,specialty:1,city:1,country:1})
         .exec(function(err,data){
           if(err) throw err;
 
@@ -2621,7 +2647,7 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
         model.user.find(criteria,projection,function(err,data){ //remenber to replace "Enugu" with req.user.city
           if(err) throw err;
           res.send(data);
-        });
+        }).limit(500);
 
       } else {
         res.end("Unauthorized access!");
@@ -2651,6 +2677,7 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
     router.put("/user/patient/pharmacy/referral-by-patient",function(req,res){
       //this route handle patients sending his prescription to a pharmacy by himself.Therefore the prescription obj already exist. justs to
       //add the prescription object to the chosen pharmacy.
+   
       if(req.user){
         model.user.findOne(
           {
@@ -2668,6 +2695,7 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
           }).exec(function(err,pharmacy){
             
             var date = new Date();
+
             var ref_id;
             if(req.body.ref_id) {
               ref_id = req.body.ref_id;
@@ -2683,6 +2711,10 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
               referral_title: title,
               referral_id: req.body.id,    
               date: date,
+              referral_id: req.user.user_id,
+              referral_email: req.user.email,
+              referral_phone: req.user.phone,
+              center_id: req.body.user_id,
               pharmacy: req.body
             }
 
@@ -2715,7 +2747,8 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
               });
             });
 
-            pharmacy.referral.push(refObj);
+            //pharmacy.referral.push(refObj);
+
             pharmacy.diagnostic_center_notification.unshift(pharmacyNotification);
 
             if(pharmacy.presence === true){
@@ -2725,6 +2758,26 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
             pharmacy.save(function(err,info){
               if(err) throw err;              
             });
+
+            var referral = new model.referral(refObj)
+            referral.save(function(err,info){
+              if(err) throw err;
+             
+              var msgBody = "Your prescription was sent to " +  "\n" + pharmacy.name + "\n" + pharmacy.address +
+              ", " + pharmacy.city + ", " + pharmacy.country + "\nreference number is " +
+              " " + ref_id + "\nfor more details login https://applinic.com/login";
+              var phoneNunber = req.user.phone;
+
+              sms.messages.create(
+                {
+                  to: phoneNunber,
+                  from: '+16467985692',
+                  body: msgBody,
+                }
+              );              
+
+              console.log("referral saved");
+            })
 
             res.send({success:true,ref_id: ref_id}); 
           });
@@ -7929,8 +7982,10 @@ router.delete("/user/courier-response",function(req,res){
 //for patient creating new courier request. note is different from the above route
 router.post("/user/courier",function(req,res){
   if(req.user) {
-    var date = + new Date();
-    console.log(req.body)
+    var date = new Date();
+    if(!req.body.refId){
+      req.body.refId = randos.genRef(7);
+    }
     req.body.firstname = req.user.name || req.user.firstname;
     req.body.lastname = (!req.user.name) ? req.user.lastname : "";
     req.body.title = (req.user.type !== "Doctor") ? req.user.title : "";
@@ -7952,8 +8007,24 @@ router.post("/user/courier",function(req,res){
     courier.save(function(err,info){
       //io.sockets.to("couriergroup").emit("receiver courier",req.body);
       //io.sockets.to(req.user.user_id).emit("new courier order",{status:true});
+      if(err) throw err;
       io.sockets.to(req.body.center_id).emit("receiver courier",req.body);
     });
+
+    var refObj = {
+      ref_id: req.body.ref_id,
+      referral_firstname: req.user.firstname,
+      referral_lastname: req.user.lastname,
+      referral_title: req.user.title || "",
+      referral_id: req.user.user_id,    
+      date: date,
+      referral_email: req.user.email,
+      referral_phone: req.user.phone,
+      center_id: req.body.centerInfo.user_id,
+      pharmacy: req.body
+    }
+
+    //var referral = new model.referral({})
 
     if(req.user.type == "Patient")
       model.user.findOne({user_id:req.user.user_id},{prescription_tracking:1}).exec(function(err,patient){
@@ -7972,7 +8043,24 @@ router.post("/user/courier",function(req,res){
         } 
         patient.save(function(err,info){});
       })
-    res.send({status:true,message:"Sent successfully!",status: true,id: req.body.request_id});
+
+    var ref = new model.referral(refObj) 
+    ref.save(function(err,info){
+      if(err) throw err;
+      var msgBody = "Your home delivery confirmation pin is " + req.body.request_id +
+      "\nPlease give out to the delivery agent when you have confirmed receipt of the package." +
+      "\nPlease note that you have to make payment before delivery is initiated.\nGo to your account https://applinic.com/login"
+      sms.messages.create(
+        {
+          to: req.user.phone,
+          from: '+16467985692',
+          body: msgBody,
+        }
+      )
+
+    });
+
+    res.send({status:true,message:"Sent successfully!",success: true,id: req.body.request_id});
 
     model.user.findOne({user_id: req.body.center_id},function(err,center){
       if(err) throw err;
@@ -8072,12 +8160,13 @@ router.put("/user/courier-update",function(req,res){
           var capture;
         
           var currency = (req.user.currencyCode) ? req.user.currencyCode : "NGN";
-          var msgBody = "Applinic Courier Request\nStatus : Acknowledged " +
+          var msgBody = "Home Delivery Request\nStatus : Acknowledged " +
            "\nCost of drugs: " + currency + "" + req.body.total_cost.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") +
             "\nDelivery charge: " + currency + "" + req.body.delivery_charge.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") +
-             "\nCenter : " + req.user.name + "\n" + req.user.address + "," + req.user.city + "," + req.user.country + "\n" + req.user.phone;
+             "\nCenter : " + req.user.name + "\n" + req.user.address + "," + req.user.city + "," 
+             + req.user.country + "\n" + req.user.phone;
           
-          var phoneNunber = req.body.phone1 || req.body.phone2; //"+2348064245256"; 
+          var phoneNunber = req.body.phone1 || req.body.phone2; 
 
           var callBack = function(err,info) {
             if(err) {
@@ -8087,14 +8176,14 @@ router.put("/user/courier-update",function(req,res){
             }
           }
 
-          sms.messages.create(
+          /*sms.messages.create(
             {
               to: phoneNunber,
               from: '+16467985692',
               body: msgBody,
             },
             callBack
-          );
+          );*/
 
 
           var transporter = nodemailer.createTransport({
@@ -9755,7 +9844,8 @@ router.get('/user/find-center',function(req,res){
     } else {
       criteria = {city: req.query.city,type:req.query.type};
     }
-    model.user.find(criteria,{name:1,address:1,city:1,country:1,phone:1,user_id:1,profile_pic_url:1,presence:1,email:1},function(err,result){
+    model.user.find(criteria,{name:1,address:1,city:1,country:1,phone:1,user_id:1,
+      profile_pic_url:1,presence:1,email:1},function(err,result){
       if(err) throw err;
       res.json(result);
     })
@@ -11783,11 +11873,41 @@ router.get("/user/chat/general",function(req,res){
   } else {
     res.end("unauthorized access.")
   }
+});
+
+router.get("/user/drug-kits",function(req,res){ 
+  if(req.user){
+    console.log(req.query)
+    model.kits.find({type: req.query.type, name: req.query.name})
+    .exec(function(err,kits){
+      if(err) throw err;
+      res.json(kits);
+    })
+
+  } else {
+    res.end("unathorized access!");
+  }
+});
+
+router.post("/user/drug-kits",function(req,res){ 
+  if(req.user.admin){
+    console.log(req.body);
+    model.kits.find({})
+    .exec(function(err,data){
+      if(err) throw err
+      req.body.package = data.length;
+      req.body.created = new Date();
+      var kit = new model.kits(req.body)
+      kit.save(function(err,info){
+        if(err) throw err;
+        console.log("kit created and saved!");
+        res.json({status: true, message: "kit created and saved successfully."})
+      })
+    })    
+  } else {
+    res.end("unathorized access!")
+  }
 })
-
-
-
-
 
 
 /*router.get("/lab/report-template/:_id",function(req,res){

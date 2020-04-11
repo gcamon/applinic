@@ -844,16 +844,16 @@ var myModel = function () {
 		center_address: String,
 		center_phone: String,
 		center_email: String,
-		date: Number, //use date to find refers to date the request was made or initiated
+		date: Date, //use date to find refers to date the request was made or initiated
 		otp: String,
-		receipt_date: Number,
-		verification_date: Number,
+		receipt_date: Date,
+		verification_date: Date,
 		completed: Boolean,
 		delivery_charge: Number,
 		deleted: Boolean,
 		currencyCode: String,
 		city_grade: Number,
-		prescriptionId: Number,
+		prescriptionId: String,
 		is_paid: Boolean,
 		new: Number,
 		dispute: Boolean,
@@ -1144,6 +1144,37 @@ var myModel = function () {
 		commission: Number
 	});
 
+	var chatKeySchema = Schema({
+		key: String,
+		date: Date
+	});
+
+	var kitsSchema = Schema({
+		package: Number,
+    content: Array,
+    type: String,
+    disease: String,
+    name: String,
+    age: String,
+    created: Date,
+    note: String
+    //doctorId: String 
+	})
+
+	/*_id: "njds884943",
+        package: 1,
+        content: [{drug_name: "Camosunate tabs",dosage:"",frequency: "", duration: ""},
+        {drug_name:"Panadol",dosage:"2 tabs",frequency: "thrice daily", duration: "" },
+        {drug_name:"Vitamin Capsule",dosage:"1",frequency: "daily", duration: "" }],
+        type: "Drug",
+        disease: "Malaria",
+        name: "Anti Malaria",
+        age: "18",
+        created: new Date(),
+        note: "Please eat enough food before taking and drink enough water",
+        doctorId: "sdhjd"   
+	});*/
+
 	//models
 	var models = {};
 	models.user = mongoose.model('userinfos', userSchema);
@@ -1180,6 +1211,9 @@ var myModel = function () {
 	models.lab_store = mongoose.model("labstoreinfos",labStoreSchema);
 	models.referral = mongoose.model("referralinfos",refSchema);	
 	models.consultationFee = mongoose.model("consultationfeeinfos",consultationFeeSchema);
+	models.chat_key = mongoose.model("chatKeyinfos",chatKeySchema);
+	models.kits = mongoose.model("kitinfos",kitsSchema); 
+	//models.chat_file = mongoose.model("chatFileinfos",chatFileSchema);
 	//models.calling_code = mongoose.model("callingcodeinfos",callingSchema)
 	
 	return models		

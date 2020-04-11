@@ -3,6 +3,7 @@
 var uuid = require("uuid");
 var AWS = require('aws-sdk');
 var fs = require('fs');
+var uuid = require("uuid");
 
 AWS.config.update({
     accessKeyId: process.env.AMAZON_ACCESS_KEY,
@@ -13,7 +14,21 @@ var s3 = new AWS.S3();
 var connects = {};
 
 
-module.exports = function(model,io,streams,sms) {    
+module.exports = function(model,io,streams,sms) {  
+	/*var chatDB = {};
+	var chatUUID = uuid.v1();
+	var key = model.chat_key({
+		key: chatUUID,
+		date: new Date()
+	})
+
+	key.save(function(err,info){
+		if(err) throw err;
+		console.log("Chat temp key initialized")
+	});*/
+
+
+
   io.sockets.on('connection', function(socket){  	   
 	    console.log('a user connected');
 	    var user = {};
@@ -367,7 +382,8 @@ module.exports = function(model,io,streams,sms) {
 				    	return;
 				    }
 
-				    var fileUrl = "/chat-files/" + fileResource;		        		
+				    var fileUrl = "/chat-files/" + fileResource;
+
 		        	socket.emit(evt2,{url: fileUrl,fileType: data.fileType,mimeType: data.type});
 
 				    console.log("The file was succesfully saved!");

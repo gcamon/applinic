@@ -1,19 +1,27 @@
 <div class="card p-2 card-center-1" >
         <div>
-            <div class="col-md-7">
-                <h5 class="text-muted">Consultation Requests ( {{consultation.length}} )</h5>
-                <input type="text" name="" placeholder=" Search list" ng-model="consults" class="form-control">                
+            <div class="h6 pt-1 text-center">
+                Consultation Requests ( {{consultation.length}} )               
+            </div>
+            <div class="col-md-6">
+                <input type="text" name="" placeholder=" Search list" ng-model="consults" class="form-control"> 
             </div>
             <div class="clearfix"></div>
-            <div class="col-md-8 mt-2" ng-repeat="j in consultation | orderBy: '-date' | filter : consults" style="position: relative;">               
-                <img src="{{j.sender_profile_pic_url}}" style="height: 75px;width: 75px">                
-                <div style="position: absolute;right: 30px; top: 11px">
-                   <span style="display: block;"><label style="width: 120px;float: left;" class="ellipsis">{{j.sender_firstname}} {{j.sender_lastname}}</label>&nbsp;&nbsp;
-                   <span am-time-ago="j.date" class="text-muted"></span></span>
-                   <button class="btn btn-neutral btn-sm" ng-click= "view(j)">View details</button>&nbsp;&nbsp;
-                   <button class="btn btn-info btn-sm" ng-click="acceptOnce(j)" ng-show="!j.loading">Accept</button>&nbsp;&nbsp; <button class="btn btn-neutral btn-sm" ng-show="j.loading"><i class="fa fa-spinner fa-pulse fa-1x fa-fw"></i></button>
+            <div style="border-bottom: 1px solid rgba(0,0,0,0.1);line-height: 30px;padding: 10px 0;margin-bottom: 5px" ng-repeat="j in consultation | orderBy: '-date' | filter : consults"> 
+                <div class="col-md-3 col-xs-4">              
+                    <img src="{{j.sender_profile_pic_url}}" style="height: 75px;width: auto;"> 
+                </div>               
+                <div class="col-md-9 col-xs-8">
+                    <div>
+                        <label  class="ellipsis block pb-0 mb-0">{{j.sender_firstname}} {{j.sender_lastname}}</label>
+                        <span am-time-ago="j.date" class="text-muted"></span><br>
+                        <a href="" class="text-danger" ng-click= "view(j)">View details</button>&nbsp;&nbsp;
+                       <button class="btn btn-info btn-sm" ng-click="acceptOnce(j)" ng-show="!j.loading">Accept</button>&nbsp;&nbsp; <button class="btn btn-neutral btn-sm" ng-show="j.loading"><i class="fa fa-spinner fa-pulse fa-1x fa-fw"></i></button>
+                    </div>
+                  
 
-                </div>                
+                </div>
+                <div class="clearfix"></div>         
             </div>
             <p ng-show="consultation.length == 0" style="text-align: center;padding-top: 30px">You have no consultation requests at the moment</p>            
         </div>	

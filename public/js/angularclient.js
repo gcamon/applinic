@@ -88,6 +88,11 @@ app.config(['$paystackProvider','$routeProvider',
     controller: 'bookingDocController'    
   })
 
+  .when("/consult-specialist/default",{
+    templateUrl: '/assets/pages/patient/selected-doc2.html',
+    controller: 'bookingDocController'    
+  })
+
   .when("/faq",{
     templateUrl: "/assets/pages/utilities/faq.html",
     controller: "supportController"
@@ -808,6 +813,11 @@ app.config(['$paystackProvider','$routeProvider',
     controller: "adminCommissionRequestCtrl"
  })
 
+ .when("/add-kits",{
+    templateUrl: "/assets/pages/utilities/kits.html",
+    controller: "adminAddKitCtrl"
+ })
+
  .when("/scroll",{
     templateUrl: "/assets/pages/utilities/scroll.html",
     controller: "adminScrollCtrl"
@@ -888,11 +898,12 @@ app.config(['$paystackProvider','$routeProvider',
   controller: "prescriptionOutCtrl"
 })
 
+.when("/drugs-and-kits",{
+  templateUrl: "/assets/pages/utilities/drugs-and-kits.html",
+  controller: "drugsAndKitsCtrl"
+})
+
 }])
-
-
-
-
 
 
 app.service('templateService',[function(){
@@ -2132,6 +2143,8 @@ app.controller('loginController',["$scope","$http","$location","$window","$resou
     localManager.removeItem('mainAccount');
     localManager.removeItem('holdMessages');
     localManager.removeItem('holdId');
+    localManager.removeItem("holdIdForChat");
+    localManager.removeItem("holdChatList");
   }
   
 }]);
@@ -3118,6 +3131,8 @@ function($scope,$rootScope,skillCommentsService,$sce,skillService,$http,localMan
     localManager.removeItem('mainAccount');
     localManager.removeItem('holdMessages');
     localManager.removeItem('holdId');
+    localManager.removeItem("holdIdForChat");
+    localManager.removeItem("holdChatList");
   }
 
   if(user) {
@@ -3412,9 +3427,11 @@ app.service("skillProcedureService",["$resource",function($resource){
 
 
 app.controller('resultController',["$scope","$rootScope","$http","$location","$resource",
-  "localManager","cities","templateService","templateUrlFactory","patientfindDoctorService","skillProcedureService",
+  "localManager","cities","templateService","templateUrlFactory","patientfindDoctorService",
+  "skillProcedureService","mySocket","$filter","deviceCheckService",
   function($scope,$rootScope,$http,$location,$resource,localManager,
-    cities,templateService,templateUrlFactory,patientfindDoctorService,skillProcedureService) {
+    cities,templateService,templateUrlFactory,patientfindDoctorService,
+    skillProcedureService,mySocket,$filter,deviceCheckService) {
   $scope.user = {};
   $scope.user.type = "Doctor";
   $scope.user.city = $rootScope.checkLogIn.city;
@@ -3686,10 +3703,6 @@ app.controller('resultController',["$scope","$rootScope","$http","$location","$r
    //search($scope.user,"/user/find-group");
   }
 
-  
-
- 
-
  
   $scope.user.creteria = "doctorname";
   $scope.$watch("user.creteria",function(newVal,oldVal){
@@ -3714,11 +3727,52 @@ app.controller('resultController',["$scope","$rootScope","$http","$location","$r
       $scope.isName = false;
       $scope.isDisease = true;
     }
-  })                              
+  });
+
+  $http({
+    method  : 'GET',
+    url     : "/user/firstline-doctors", //firstline doctors refers to doctors that attends to patients with any consultation
+    //requests for treatment. Examples are doctors applinic employed for attending to patients.
+    headers : {'Content-Type': 'application/json'} 
+  })
+  .success(function(data) {   
+    $scope.firstlineDoctors = data || [];
+    console.log(data)
+  });
+ 
+
+
+  $scope.sendChatSingle = function(){
+    var messageBody = "hello doc";
+    var partnerId;
+    var doc =  $scope.firstlineDoctors[Math.floor(Math.random() *  ($scope.firstlineDoctors.length - 1))];
+    partnerId = (doc) ? doc.user_id : "";
+    mySocket.emit("send message general",{to: partnerId,message:messageBody,from: $rootScope.checkLogIn.user_id},
+      function(data){ 
+      var list = $rootScope.chatsList;
+      if(list) {
+        var byRecent = $filter('orderBy')(list,'-realTime');
+        templateService.holdId = byRecent[0].partnerId;   
+        if(deviceCheckService.getDeviceType()){
+          localManager.setValue("holdIdForChat",byRecent[0].partnerId);
+          localManager.setValue("holdChatList",list);
+          window.location.href = "/user/chat/general";
+        } else if(templateService.holdId) {
+          $location.path("/general-chat");
+        } else {
+          alert("You have no messages yet.")
+        }
+        $scope.showIndicator = false;
+      }
+    })  
+    $scope.loading = true;
+  }
+
 }]);
 
 //another controller for login. it is a modal controller found in the home page ie "doctore signup"
-app.controller("homeDoctorSignupController",["$scope","ModalService","templateService",function($scope,ModalService,templateService){
+app.controller("homeDoctorSignupController",["$scope","ModalService","templateService",
+  function($scope,ModalService,templateService){
    $scope.docSignup = function(){
     templateService.singleForm = true;
       ModalService.showModal({
@@ -4013,8 +4067,9 @@ app.controller('bookController',["$scope","$http","$location","$window","localMa
                       
 }]);
 
-app.controller("bookingDocController",["$scope","templateService","$http","mySocket","localManager","symptomsFactory",
-  function($scope,templateService,$http,mySocket,localManager,symptomsFactory){
+app.controller("bookingDocController",["$scope","templateService","$http","mySocket","$rootScope",
+  "localManager","symptomsFactory","patientfindDoctorService",
+  function($scope,templateService,$http,mySocket,$rootScope,localManager,symptomsFactory,patientfindDoctorService){
   $scope.docInfo = templateService.holdForSpecificDoc;
   $scope.isViewDoc = true;
 
@@ -4050,6 +4105,35 @@ app.controller("bookingDocController",["$scope","templateService","$http","mySoc
   $scope.remove = function(sn){
     index--;
     var remove = list.splice(sn,1);
+  }
+
+  $scope.searchObj = {};
+  $scope.searchObj.city = localManager.getValue('resolveUser').city;
+  var fetchDoctors = patientfindDoctorService;
+  $scope.isComplaint = true;
+
+  $scope.back = function() {
+    $scope.isSearchToSend = false;
+    $scope.isComplaint = true;
+  }
+
+  $scope.continue = function() {
+    $scope.isSearchToSend = true;
+    $scope.isComplaint = false;
+    if(!$rootScope.doctorList)
+      $scope.find();
+  }
+
+  $scope.find = function() {
+    $scope.loading = true;
+    fetchDoctors.query($scope.searchObj,function(data){           
+      if(data.length > 0) {
+        $rootScope.doctorList = data;
+      } else {
+        alert("No result found base on the search criteria!");
+      }
+      $scope.loading = false;
+    }); 
   }
 
   $scope.validate = function() {
@@ -4132,12 +4216,14 @@ app.controller("bookingDocController",["$scope","templateService","$http","mySoc
       }
     }
 
-    $scope.sendRequest();
+    //$scope.sendRequest();
+    $scope.continue();
   }
 
  
-  $scope.sendRequest = function() {
-    $scope.loading = true
+  $scope.sendRequest = function(doc) {
+      doc.loading = true;
+      $scope.docInfo = doc;
       $scope.patient.history = "";
       if($scope.patient.sick) {
         $scope.patient.history =  "I am sick. I am having the following symptoms:"
@@ -4222,7 +4308,7 @@ app.controller("bookingDocController",["$scope","templateService","$http","mySoc
 
         var data = $scope.patient;
 
-        console.log(data)
+    
         var fd = new FormData();
         
         for(var key in data){
@@ -4280,7 +4366,8 @@ app.controller("bookingDocController",["$scope","templateService","$http","mySoc
           xhr.open("POST", "/user/patient/doctor/connection");
           xhr.send(fd);
           $scope.progressVisible = false;
-          player.srcObject.getVideoTracks().forEach(function(track) { track.stop()});
+          if(player.srcObject)
+            player.srcObject.getVideoTracks().forEach(function(track) { track.stop()});
         }
 
         //original
@@ -4324,7 +4411,9 @@ app.controller("bookingDocController",["$scope","templateService","$http","mySoc
   function uploadComplete(evt) {       
      $scope.$apply(function(){
       $scope.userData = JSON.parse(evt.target.responseText);
-     
+      $scope.docInfo.loading = false;
+      $scope.docInfo.isSent = true;
+      alert("Consultation request sent! The doctor will be notified. Please contact us if you did not receive any response from the doctor within 12 hours")
     })
        
   }
@@ -4476,108 +4565,7 @@ app.controller("bookingDocController",["$scope","templateService","$http","mySoc
     }
   }
 
-   /*
-
-    var fd = new FormData();
-    
-    for(var key in data){
-      if(key !== "symptoms" && data.hasOwnProperty(key))
-        fd.append(key,data[key]);
-    };
-
-    for(var i = 0; i < data.symptoms.length; i++){
-      if(data.symptoms[i].name)
-        fd.append("symptoms", data.symptoms[i].name);
-    }
-
-    //validate the files picked.
-     //= ($scope.blobs && $scope.files) ? $scope.files.concat($scope.blobs) : $scope.blobs;
-    if($scope.blobs && $scope.files) {
-     var files = $scope.files.concat($scope.blobs);
-    } else if($scope.blobs) {
-     var files = $scope.blobs;
-    } else if($scope.files) {
-     var files = $scope.files;
-    }
-
-    if(files){
-      if(files.length <= 5){
-        for(var key in files){
-          if(files[key].size <= 8388608 && files.hasOwnProperty(key)) {    
-            fd.append("images",files[key]);          
-          } else {
-            alert("Error: Complain NOT sent! Reason: One of the file size is greater than 8mb");
-            return;
-          }
-        };
-        sizeOk();
-      } else {
-        alert("Error: Complain NOT sent! Reason: You can't upload more than 5 files with this complaint.");
-      }
-
-    } else {
-      if($scope.user.description) {
-        sizeOk();
-      } else {
-        alert('Please write your complain')
-      }
-    }
-
-    function sizeOk(){
-     
-
-      var xhr = new XMLHttpRequest()
-      xhr.upload.addEventListener("progress", uploadProgress, false);
-      xhr.addEventListener("load", uploadComplete, false);
-      xhr.addEventListener("error", uploadFailed, false);
-      xhr.addEventListener("abort", uploadCanceled, false);
-     
-      xhr.open("POST", "/user/help");
-      xhr.send(fd);
-      $scope.progressVisible = false;
-      player.srcObject.getVideoTracks().forEach(function(track) { track.stop()});
-    }
-  }
-
-
-  function uploadProgress(evt) {
-      $scope.progressVisible = true;
-      $scope.$apply(function(){
-          if (evt.lengthComputable) {
-            
-              $scope.progress = Math.round(evt.loaded * 100 / evt.total)
-              if($scope.progress === 100) {
-                $scope.statusMsg = "Your complaint has been queued in PWR successfully! Doctors will respond soon.";
-              }
-              
-          } else {
-              $scope.progress = 'unable to compute'
-          }
-      })
-  }
-
-
-  function uploadComplete(evt) {       
-     $scope.$apply(function(){
-      $scope.userData = JSON.parse(evt.target.responseText);
-     
-    })
-       
-  }
-
-  function uploadFailed(evt) {
-    alert("There was an error attempting to upload the file.");
-  }
-
-  function uploadCanceled(evt) {
-    $scope.$apply(function(){
-      $scope.progressVisible = false
-    })
-    alert("The upload has been canceled by the user or the browser dropped the connection.")
-  }
-
-   */
-
+ 
    $scope.getAnswer = function() {
      if(Object.keys($scope.patient).length > 0){
       var random = parseInt(Math.floor(Math.random() * 999999) + "" + Math.floor(Math.random() * 99999));
@@ -7612,7 +7600,7 @@ app.controller("inPatientDashboardController",["$scope","$location","templateSer
   function($scope,$location,templateService,localManager,ModalService){
 
  if(localManager.getValue("resolveUser")) {
-    $location.path(localManager.getValue("currentPageForPatients") || "/welcome");
+    $location.path(localManager.getValue("currentPageForPatients") || "/");
   } 
 
 }]);
@@ -22350,17 +22338,18 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
       break;
       case 'doctorList':     
         var invert = _.invert(response.sockets);
-        response.data.forEach(function(item){
-          if(invert[item.doctor_id]){
-            item.presence = on;
-            if(inView.id === item.doctor_id)
-              $rootScope.dispalyPresence = on;
-          } else {
-            item.presence = off;
-            if(inView.id === item.doctor_id)
-              $rootScope.dispalyPresence = off;
-          }
-        })
+        if(response.data)
+          response.data.forEach(function(item){
+            if(invert[item.doctor_id]){
+              item.presence = on;
+              if(inView.id === item.doctor_id)
+                $rootScope.dispalyPresence = on;
+            } else {
+              item.presence = off;
+              if(inView.id === item.doctor_id)
+                $rootScope.dispalyPresence = off;
+            }
+          })
       break;
       case 'chatList':
         var invert = _.invert(response.sockets);
@@ -23320,10 +23309,85 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
     if(tpPos !== -1){
       $rootScope.chatsList[tpPos].typing = data.message;      
       $scope.partner.typing = data.message;
+      if(deviceCheckService.getDeviceType()){
+        if(data.message !== "" && data.message !== undefined) {
+          showTypingForMobile(data);
+        } else {
+          $scope.partnerIsTying = false;
+          deleteTypingStatus();
+        }
+      }
     }
     //$scope.partner.typing = data.message;
     //$scope.typing = data;
   });
+
+  $scope.partnerIsTying = false;
+
+  function showTypingForMobile(data) {
+
+    if(!$scope.partnerIsTying) {
+      var base = angular.element(document.getElementById('base')); 
+      var container = angular.element(document.getElementById('sentmessage'));      
+      var breaker = angular.element(document.createElement('div'));
+      var article = angular.element(document.createElement('article'));
+      var p = angular.element(document.createElement('p'));
+      var small = angular.element(document.createElement('span'));
+
+       //small[0].style.display = "block";
+      p[0].style.fontSize = "16px";
+      p[0].style.fontStyle = "italic";
+      p[0].style.color = "rgba(0,0,0,0.5)";
+      p[0].className = "text-muted";
+      small[0].style.marginTop = "5px";
+     
+   
+      p[0].innerHTML += data.message; 
+
+      var id =  "typing_" + Math.floor(Math.random() * 999999);
+
+      article[0].id = id;
+      $scope.typingStatusId = id;
+    
+     
+     
+      //small[0].id = data.id;
+      //small[0].className = "time_date";
+      //small[0].style.color = "rgba(0,0,0,0.4)";
+      
+      //small[0].innerHTML += $filter('amCalendar')(data.time);
+
+      breaker[0].style.textAlign = "center";
+      breaker[0].style.padding = "2px 0";
+      //breaker[0].appendChild(small[0]);
+      article[0].className = "conversation__view__bubbles"; 
+      
+      
+      //breaker[0].style.display = "block";    
+
+      //new code 
+      
+     
+      p[0].className = "chat__left__bubble";
+      //container[0].className = "conversation__view__bubbles";
+      article[0].appendChild(breaker[0]);
+      article[0].appendChild(p[0]);
+      //container[0].appendChild(breaker[0]);
+      container[0].appendChild(article[0]);
+      //container[0].appendChild(small[0]);
+      
+
+      base[0].scrollTop = sentmessage.scrollHeight;
+
+      $scope.partnerIsTying = true;
+    }
+  }
+
+  var deleteTypingStatus = function() {
+    var ele = document.getElementById($scope.typingStatusId)//document.getElementById(img[file.name]);
+    if(ele)
+      ele.style.display = "none";
+  }
 
   $scope.videoRequest = function(type,docObj){
     docObj.type = type;
@@ -25783,6 +25847,226 @@ app.controller("prescriptionOutCtrl",["$scope","$rootScope","$http","localManage
     })
   }
 
+
+}])
+
+
+app.controller("drugsAndKitsCtrl",["$scope","$rootScope","$http","ModalService","localManager",
+  function($scope,$rootScope,$http,ModalService,localManager){
+    $scope.drug = {};
+    $scope.drug.package = "";
+    $scope.drug.city = $rootScope.checkLogIn.city || "";
+
+    localManager.setValue("currentPageForPatients","/drugs-and-kits");
+
+    $scope.isSelected = "Anti Malaria";
+
+    function getKit(type,name) {
+      $http.get("/user/drug-kits",{params:{type:type,name:name}})
+      .success(function(data){
+        $scope.drug.package = (data[0]) ? data[0]._id : "";
+        $scope.kits = data || [];
+      });
+    }
+
+    $scope.selectedKit = function(type,name){
+      $scope.isSelected = name;
+      //kit.isSelected = true;
+      getKit(type,name);
+    }
+
+
+    $scope.find = function(){
+      $scope.loading =  true;
+      $http.get("/user/patient/getAllPharmacy",{params:{city:$scope.drug.city,type:'Pharmacy'}})
+      .success(function(centers){
+        $scope.centers = centers
+        $scope.loading = false;
+      })
+    }
+
+    $scope.find();
+    getKit("Drug",'Anti Malaria');
+
+    var elem;
+
+    $scope.$watch("drug.package",function(newVal,oldVal){
+      if(newVal){
+        elem = $scope.kits.map(function(x){return x._id}).indexOf(newVal);
+        if(elem !== -1){
+          $scope.selectedPackage = $scope.kits[elem];
+        }
+      }
+    });
+
+
+  $scope.sendChat = function(center) {
+    if($scope.selectedPackage) {
+      $rootScope.searchItems = "";
+      $scope.selectedPackage.content.forEach(function(item){
+        $rootScope.searchItems += item.drug_name + ", "
+      })
+     
+      $rootScope.searchItemType = "drug(s)";     
+      $rootScope.holdcenter = center;
+      $rootScope.holdcenter.id = center.user_id;
+      ModalService.showModal({
+            templateUrl: 'quick-chat.html',
+            controller: 'generalChatController'
+        }).then(function(modal) {
+            modal.element.modal();
+            modal.close.then(function(result) {             
+            });
+      });
+
+    }
+  }
+
+  var sendObj;
+
+  $scope.forwardDrug = function(center) {
+    var presId = Math.floor(Math.random() * 99999) + "" + Math.floor(Math.random() * 99999);
+    var url;
+    var method;
+    if($scope.drug.courier){
+      alert("courier");
+      sendObj = {
+        city: $rootScope.checkLogIn.city,
+        location: $rootScope.checkLogIn.address,
+        center_id: center.user_id,
+        phone1: $rootScope.checkLogIn.phone,
+        phone2: $rootScope.checkLogIn.phone,
+        address: $rootScope.checkLogIn.address,
+        prescriptionId: presId,
+        refId: null,
+        prescription_body : $scope.selectedPackage.content,
+        centerInfo: center,
+      }
+
+      url = "/user/courier";
+      method = "POST";
+
+    } else {
+
+      sendObj = {
+        prescription_body : $scope.selectedPackage.content,    
+        user_id : center.user_id,
+        provisional_diagnosis: $scope.selectedPackage.disease,
+        explanation: $scope.selectedPackage.name + " self medication package",
+        date: new Date(),
+        prescriptionId: presId,
+        title: '',
+        doctor_specialty: "",
+        doctor_profile_url: '',
+        doctor_firstname: '',
+        doctor_address: '',
+        doctor_id: '',
+        doctor_city: '',
+        doctor_country: '',
+        doctor_profile_pic_url: '',
+        patient_id: $rootScope.checkLogIn.user_id || "",
+        patient_profile_pic_url: $rootScope.checkLogIn.profile_pic_url,
+        patient_firstname: $rootScope.checkLogIn.firstname,
+        patient_lastname: $rootScope.checkLogIn.lastname,
+        patient_address: $rootScope.checkLogIn.address,
+        patient_gender: $rootScope.checkLogIn.gender,
+        patient_age: $rootScope.checkLogIn.age,
+        patient_city: $rootScope.checkLogIn.city,
+        patient_country: $rootScope.checkLogIn.country,
+        is_paid: false,
+        sender: "patient"
+      }
+
+      url = "/user/patient/pharmacy/referral-by-patient";
+      method = "PUT";
+    }
+
+    center.loading = true;
+
+    $http({
+      method  : method,
+      url     : url, 
+      data    : sendObj,
+      headers : {'Content-Type': 'application/json'} 
+      })
+    .success(function(data) {
+      if(data.success){   
+        center.success = true;
+      } else {          
+        alert("Prescription not sent! Some error occured. Please try again shortly.");
+      }
+      center.loading = false;
+    });
+  } 
+
+}])
+
+app.controller('adminAddKitCtrl',["$scope","$http","Drugs","dynamicService",
+  function($scope,$http,Drugs,dynamicService){
+
+  $scope.kit = {};
+
+  var testList = [{sn:1}];
+
+
+  var resource = dynamicService; //$resource("/user/dynamic-service");
+  resource.query({type:"Pharmacy"},function(data){
+    $scope.drugs = Drugs.concat(data);
+  });
+
+  //$scope.drugs = Drugs;
+   
+  var drug = {};
+  var count = {};
+  count.num = 1;
+  drug.sn = count.num;
+  $scope.drugList = [drug]; 
+
+  $scope.addDrug = function(){  
+    var newDrug = {};         
+    count.num++;
+    newDrug.sn = count.num;
+    $scope.drugList.push(newDrug);
+  }
+
+  $scope.remove = function(id){ 
+    if($scope.drugList.length > 1){
+      var elementPos = $scope.drugList.map(function(x){return x.sn}).indexOf(id);
+      if($scope.drugList[elementPos]){
+        var objfound = $scope.drugList.splice(elementPos,1);
+        count.num = 1;
+        $scope.drugList.forEach(function(item){
+          item.sn =  count.num;
+          count.num++;
+        })
+      }
+    }
+  }
+
+  $scope.sendKit = function() {
+    $scope.loading = true;
+    $scope.kit.content = $scope.drugList;
+    $http({
+      method  : "POST",
+      url     : "/user/drug-kits", 
+      data    : $scope.kit,
+      headers : {'Content-Type': 'application/json'} 
+      })
+    .success(function(data) {
+      if(data.status){
+        alert(data.message)
+      }
+      $scope.loading = false;
+    });
+  }
+
+  $scope.$watch("kit.type",function(oldVal,newVal){
+    if(oldVal == "Drug"){
+      $scope.kit.content = drugList;
+    } else {
+      $scope.kit.content = testList;
+    }
+  });
 
 }])
 
