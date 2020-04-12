@@ -11895,7 +11895,7 @@ router.post("/user/drug-kits",function(req,res){
     model.kits.find({})
     .exec(function(err,data){
       if(err) throw err
-      req.body.package = data.length;
+      req.body.package = data.length + 1;
       req.body.created = new Date();
       var kit = new model.kits(req.body)
       kit.save(function(err,info){

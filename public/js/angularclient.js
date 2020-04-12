@@ -25851,8 +25851,8 @@ app.controller("prescriptionOutCtrl",["$scope","$rootScope","$http","localManage
 }])
 
 
-app.controller("drugsAndKitsCtrl",["$scope","$rootScope","$http","ModalService","localManager",
-  function($scope,$rootScope,$http,ModalService,localManager){
+app.controller("drugsAndKitsCtrl",["$scope","$rootScope","$http","ModalService","localManager","dynamicService",
+  function($scope,$rootScope,$http,ModalService,localManager,dynamicService){
     $scope.drug = {};
     $scope.drug.package = "";
     $scope.drug.city = $rootScope.checkLogIn.city || "";
@@ -25861,9 +25861,21 @@ app.controller("drugsAndKitsCtrl",["$scope","$rootScope","$http","ModalService",
 
     $scope.isSelected = "Anti Malaria";
 
+    $scope.dosageList = ["caplets","capsule","packet","bottle","sachet","tablets"]
+
+
+    var resource = dynamicService; 
+    resource.query({type:"Pharmacy"},function(data){
+      $scope.drugs = data;
+    });
+
     function getKit(type,name) {
       $http.get("/user/drug-kits",{params:{type:type,name:name}})
       .success(function(data){
+        $scope.selectedPackage = {}; 
+        if($scope.isSelected == 'Other')  
+          $scope.selectedPackage.content = [{sn:1}];   
+
         $scope.drug.package = (data[0]) ? data[0]._id : "";
         $scope.kits = data || [];
       });
@@ -25873,6 +25885,32 @@ app.controller("drugsAndKitsCtrl",["$scope","$rootScope","$http","ModalService",
       $scope.isSelected = name;
       //kit.isSelected = true;
       getKit(type,name);
+    }
+
+    var count = {};
+    count.num = 1;
+   
+    $scope.addDrug = function(){  
+      var newDrug = {};         
+      count.num++;
+      newDrug.sn = count.num;
+      $scope.selectedPackage.content.push(newDrug);
+    }
+
+    $scope.remove = function(id){ 
+      if($scope.selectedPackage.content.length > 1){
+        /*var elementPos = $scope.selectedPackage.content.map(function(x){return x.sn}).indexOf(id);
+        if($scope.selectedPackage.content[elementPos]){
+          var objfound = $scope.selectedPackage.content.splice(elementPos,1);
+          count.num = 1;
+          $scope.selectedPackage.content.forEach(function(item){
+            item.sn =  count.num;
+            count.num++;
+          })
+        }*/
+        $scope.selectedPackage.content.pop();
+        count.num--;
+      }
     }
 
 
@@ -25919,17 +25957,24 @@ app.controller("drugsAndKitsCtrl",["$scope","$rootScope","$http","ModalService",
             });
       });
 
+    } else {
+      alert("Error: No kit or Drug was selected.")
     }
   }
 
   var sendObj;
 
   $scope.forwardDrug = function(center) {
+
+    if(!$scope.selectedPackage.content){
+      alert("Error: No kit or Drug was selected.");
+      return;
+    }
+
     var presId = Math.floor(Math.random() * 99999) + "" + Math.floor(Math.random() * 99999);
     var url;
     var method;
     if($scope.drug.courier){
-      alert("courier");
       sendObj = {
         city: $rootScope.checkLogIn.city,
         location: $rootScope.checkLogIn.address,

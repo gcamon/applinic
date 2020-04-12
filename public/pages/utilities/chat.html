@@ -712,14 +712,19 @@ button {
 	                </span>
 	            </span>
             </div>
-            <div ng-if="checkLogIn.typeOfUser === 'Patient' || checkLogIn.typeOfUser === 'Doctor'" style="position: absolute;right: 25px;top: 5px">            	
+            <div ng-if="checkLogIn.typeOfUser === 'Patient' || checkLogIn.typeOfUser === 'Doctor'" style="position: absolute;right: 25px;top: 5px"> 
+            	
             	<label for="file-input">
-				  <i class="fa fa-paperclip" aria-hidden="true" style="font-size: 18px"></i>
-				</label>&nbsp;&nbsp;&nbsp; <input type="file" class="file-input hide" name="file-input" id="file-input" file-model-chat="files">
+				  <i class="fa fa-paperclip" aria-hidden="true" style="font-size: 18px;cursor: pointer;" title="Attach a file"></i>
+				</label>&nbsp;&nbsp;&nbsp; <input type="file" class="file-input hide" name="file-input" id="file-input" file-model-chat="files">&nbsp;&nbsp;
+
+				<a href="" title="Make video call">
+            		<i class="fa fa-video-camera"></i>
+            	</a> &nbsp;&nbsp;&nbsp;          	
 				  
-        		<small><!--<a href="" class="ellipsis" ng-if="partner.partnerType === 'Doctor' && checkLogIn.typeOfUser !== 'Doctor'"  ng-click="chatPrivate(partner)">Single Chat</a>-->
-        		<a href="" class="text-success" ng-if="partner.partnerType === 'Patient'"  ng-click="chatPrivate(partner)">Manage Patient</a>
-        		</small>
+        		<!--<a href="" class="ellipsis" ng-if="partner.partnerType === 'Doctor' && checkLogIn.typeOfUser !== 'Doctor'"  ng-click="chatPrivate(partner)">Single Chat</a>-->
+        		<a href="" class="text-success text-danger " style="font-size: 14px;" ng-if="partner.partnerType === 'Patient'"  ng-click="chatPrivate(partner)" title="Go to e-treatment to generate bill for treatment or consultation, refer to a spacialist, write prescription, request diagnostic investigation or view medical records, etc." >Manage Patient</a>
+        		
         	</div>
 
           	<div class="msg_history msg_container_base" id="base">
