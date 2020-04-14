@@ -4465,57 +4465,7 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
               }
               
             })
-           /* var elementPos = data.doctor_patient_session.map(function(x) {return x.session_id; }).indexOf(req.body.id);
-            var objectFound = data.doctor_patient_session[elementPos] ;
-            var sentObjArr = [];
-            var count = 0;
-            
-
-            
-            while(objectFound.diagnosis.radiology_test_results.length > count) {             
-              var ranTest = [];
-              var testAndReport = [];
-              var objectArr = objectFound.diagnosis.radiology_test_results.map(function(x) {return x });              
-              var objFound = objectArr[count];
-             
-              for(var i = 0; i < objFound.test_to_run.length; i++) {                
-                if(objFound.test_to_run[i].select === true){
-                  ranTest.push(objFound.test_to_run[i]);
-                }
-              }
-
-              var testAndReport = objFound.report;
-             
-              
-              
-              objFound.refinedReport = testAndReport;
-              objFound.ranTest = ranTest;
-              count++;
-              
-              var newObjToSend = {};
-              newObjToSend.report = testAndReport;
-              newObjToSend.ranTest = ranTest;
-              newObjToSend.indication =  objFound.indication;
-              newObjToSend.type = "radiology"
-              newObjToSend.test_to_run = objFound.test_to_run;
-              newObjToSend.conclusion = objFound.conclusion;
-              newObjToSend.receive_date = objFound.receive_date;
-              newObjToSend.sent_date = objFound.sent_date;
-              newObjToSend.center_name = objFound.test_ran_by;
-              newObjToSend.center_address = objFound.center_address;
-              newObjToSend.center_city = objFound.center_city;
-              newObjToSend.center_country = objFound.center_country;
-              newObjToSend.center_phone = objFound.center_phone;
-              newObjToSend.files = objFound.files;
-              newObjToSend.sub_session_id = objFound.sub_session_id;
-
-              sentObjArr.push(newObjToSend);
-
-            }
-
-            res.json({result:sentObjArr})
-
-            */
+          
 
           } else {
             var newArr = [];
@@ -11657,6 +11607,11 @@ router.get("/api/reporting-radiologist",function(req,res){
 
 router.get("/user/study-reports",function(req,res){
   if(req.user){
+    if(!req.query.stdId){
+      res.json({})
+      return
+    }
+
     model.study.findById(req.query.stdId)
     .exec(function(err,study){
       if(err) throw err;

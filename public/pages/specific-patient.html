@@ -1180,25 +1180,43 @@
                         <td>Indication/Summary: </td>
                         <td><span>{{test.indication || 'N/A'}}</span></td>
                     </tr>
-                  
-                    <tr ng-if="test.reportDetails.study_link2 !== 'undefined'">
+                    
+                    <!--<tr ng-if="test.reportDetails.study_link2 !== 'undefined'">
                         <td>DICOM viewer links</td>
                         <td>                          
                            <a href="{{test.reportDetails.study_link_mobile}}" class="text-info">View in Mobile/Tablet devices</a><br>
                            <a href="{{test.reportDetails.study_link2}}" class="text-info">View in Desktop or Laptops</a><br>
                           
                         </td>
-                    </tr>
+                    </tr>-->
                     <tr>
                         <td>Status: </td>
                         <td>
                             <span ng-if="test.conclusion == 'Pending'" class="text-danger"> Awaiting study report</span>
-                            <button class="btn btn-info dropdown-toggle" ng-if="test.conclusion !== 'Pending'" ng-click="viewReportAndDCM(test)">Available, see report</button>
+                            <span ng-if="test.conclusion !== 'Pending'" class="text-primary">Report Recieved</span>
                         </td>
                     </tr>
-                    <tr ng-show="test.isReportDCM">
-                        <td>Study Report:</td>
-                        <td> <a href="{{'https://drive.google.com/viewerng/viewer?embedded=true&url=https://applinic.com' + test.reportDetails.pdf_report[0].pathname}}" class="text-danger" target="_blank"><i class="fa fa-file"></i> View Study Report</a></td>
+                    <tr >
+                        <td>DICOM Viewer / Report:</td>
+                        <td> 
+
+                          <div>
+                            <button class="btn btn-info dropdown-toggle" ng-click="viewReportAndDCM(test)">DICOM Viewer and Study Report</button>
+                          </div>
+                          <ul style="list-style: none;line-height: 30px">
+                            <li>
+                                <a ng-show="test.reportDetails.study_link_mobile" href="{{test.reportDetails.study_link_mobile}}" class="text-primary" target="_blank">View in Mobile/Tablet devices</a>
+                            </li>
+
+                            <li>
+                                <a  ng-show="test.reportDetails.study_link2" href="{{test.reportDetails.study_link2}}" class="text-primary" target="_blank">View in Desktop or Laptops</a>
+                            </li>
+
+                            <li ng-show="test.reportDetails.pdf_report[0]">
+                                <a  href="{{'https://drive.google.com/viewerng/viewer?embedded=true&url=https://applinic.com' + test.reportDetails.pdf_report[0].pathname}}" class="text-danger" target="_blank"><i class="fa fa-file"></i> View Study Report</a>
+                            </li>
+                          </ul>
+                        </td>
                     </tr>
                 </tbody>
             </table>

@@ -14207,6 +14207,7 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
         headers : {'Content-Type': 'application/json'} 
         })
       .success(function(data) { 
+        
         test.loading = false;
         test.reportDetails = data;
       });
