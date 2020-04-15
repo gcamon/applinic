@@ -2454,165 +2454,229 @@ router.put("/user/outpatient-billing",function(req,res){
 
 
 router.post("/user/dicom-details",function(req,res){
-		if(req.user) {
-			var rados;
-			if(req.body.isAcc) {
-			  rados = "A" + randos.genRef(8);
-			  var date = new Date();
-			  var acc = new model.accession({
-			    id: rados,
-			    centerId: req.body.center.user_id,
-			    date: date
-			  });
+	if(req.user) {
+		var rados;
+		if(req.body.isAcc) {
+		  rados = "A" + randos.genRef(8);
+		  var date = new Date();
+		  var acc = new model.accession({
+		    id: rados,
+		    centerId: req.body.center.user_id,
+		    date: date
+		  });
 
-			  acc.save(function(err,info){});
+		  acc.save(function(err,info){});
 
-			  req.body.patientID = rados
+		  req.body.patientID = rados
 
+		} else {
+			rados = null;
+		}
+
+		var id =  req.body.studyID || req.body.patientID;
+
+		var criteria = {$or: [{ study_id : id},{study_uid: id}]};//{ study_id : id};
+
+		model.study.find(criteria)
+		.exec(function(err,result){
+			if(err) throw err;
+			if(result.length == 0){
+				createStudy()
 			} else {
-				rados = null;
+				res.json({status: false,message:"Study ID already exist."});
 			}
+		});
 
-			var id =  req.body.studyID || req.body.patientID;
 
-			var criteria = {$or: [{ study_id : id},{study_uid: id}]};//{ study_id : id};
+		function createStudy() {
+			var locate = (req.body.studyID) ? ('studyUID=' + req.body.studyID) : ('patientID=' + req.body.patientID);
+			var ovyWeb = "https://applinic.com/dcm?id=" + id; //"https://" + req.body.onlinePacs.dns + "/web/viewer.html?" + locate;
+			var ovyMob = "http://" + req.body.onlinePacs.ip_address + ":8080/applinic-dicom/home.html?" + locate;
+			var centerUser = req.body.onlinePacs.username;
+			var centerPassword = req.body.onlinePacs.password;
 
-			model.study.find(criteria)
-			.exec(function(err,result){
-				if(err) throw err;
-				if(result.length == 0){
-					createStudy()
-				} else {
-					res.json({status: false,message:"Study ID already exist."});
-				}
-			});
+		  var study = new model.study({
+		    patient_name: req.body.patientName,
+		    patient_id: req.body.patientID,
+		    study_id: req.body.patientID,
+		    study_uid: req.body.studyID,
+		    center_id: req.user.user_id,
+		    center_name: req.user.name,
+		    center_address: req.user.address,
+		    center_city: req.user.city,
+		    center_country: req.user.country,
+		    center_phone: req.user.phone,
+		    center_email: req.user.email,
+		    created: date,
+		    patient_phone: req.body.patientPhone,
+		    email: req.body.patientEmail,
+		    patient_age: req.body.patientAge || "",
+		    patient_sex: req.body.patientSex || "",
+		    ip_address: req.body.onlinePacs.ip_address,
+		    port: req.body.onlinePacs.port,
+		    aetitle: req.body.onlinePacs.aetitle,
+		    accession_number: rados,
+		    study_link: req.body.onlinePacs.ip_address + ":8080/weasis-pacs-connector/viewer?" + locate,
+		    study_link2: ovyWeb,
+		    study_link_mobile: ovyMob,
+		    study_type: req.body.type || "",
+		    study_name: req.body.studyName,
+		    deleted: false,
+		    created: new Date(),
+		    study_date: req.body.studyDate,
+		    referring_physician: req.body.referringPhysician,
+		    summary: req.body.clinicalSummaryIndication,
+		    referring_physician_email: req.body.referringPhysicianEmail || "",
+		    referring_physician_phone: req.body.referringPhysicianPhone || "",
+		    attended: false,
+		    assigned_radiologist_id: req.body.reporters,
+		    remark: req.body.remark || ""
+		  });
 
-	
-			function createStudy() {
-				var locate = (req.body.studyID) ? ('studyUID=' + req.body.studyID) : ('patientID=' + req.body.patientID);
-				var ovyWeb = "https://applinic.com/dcm?id=" + id; //"https://" + req.body.onlinePacs.dns + "/web/viewer.html?" + locate;
-				var ovyMob = "http://" + req.body.onlinePacs.ip_address + ":8080/applinic-dicom/home.html?" + locate;
-				var centerUser = req.body.onlinePacs.username;
-				var centerPassword = req.body.onlinePacs.password;
+		  study.study_link_mobile = "https://applinic.com/dicom-mobile?id=" + study._id;
+		  study.study_link2 += "&key=" + study._id;
 
-			  var study = new model.study({
-			    patient_name: req.body.patientName,
-			    patient_id: req.body.patientID,
-			    study_id: req.body.patientID,
-			    study_uid: req.body.studyID,
-			    center_id: req.user.user_id,
-			    center_name: req.user.name,
-			    center_address: req.user.address,
-			    center_city: req.user.city,
-			    center_country: req.user.country,
-			    center_phone: req.user.phone,
-			    center_email: req.user.email,
-			    created: date,
-			    patient_phone: req.body.patientPhone,
-			    email: req.body.patientEmail,
-			    patient_age: req.body.patientAge || "",
-			    patient_sex: req.body.patientSex || "",
-			    ip_address: req.body.onlinePacs.ip_address,
-			    port: req.body.onlinePacs.port,
-			    aetitle: req.body.onlinePacs.aetitle,
-			    accession_number: rados,
-			    study_link: req.body.onlinePacs.ip_address + ":8080/weasis-pacs-connector/viewer?" + locate,
-			    study_link2: ovyWeb,
-			    study_link_mobile: ovyMob,
-			    study_type: req.body.type || "",
-			    study_name: req.body.studyName,
-			    deleted: false,
-			    created: new Date(),
-			    study_date: req.body.studyDate,
-			    referring_physician: req.body.referringPhysician,
-			    summary: req.body.clinicalSummaryIndication,
-			    referring_physician_email: req.body.referringPhysicianEmail || "",
-			    referring_physician_phone: req.body.referringPhysicianPhone || "",
-			    attended: false,
-			    assigned_radiologist_id: req.body.reporters,
-			    remark: req.body.remark || ""
-			  });
+		  if(req.body.isUserConnectLinking) {
+		  	study.isUserConnectLinking = true;			  
+		  	// keep the referral details. Works for existing patients in the platform
+		    study.referral_detail_dump.push(req.body.patientData); 
 
-			  study.study_link_mobile = "https://applinic.com/dicom-mobile?id=" + study._id;
-			  study.study_link2 += "&key=" + study._id
+		    // keep the referral so that doctor can see it study before report is written
+		    model.session.findOne({session_id: req.body.patientData.radiology.session_id}).exec(function(err,objectFound){
+		    	if(err) throw err;
+		    	if(objectFound) {
+		    		var pos = objectFound.diagnosis.radiology_test_results.map(function(x) { return x.test_id;})
+		    		.indexOf(req.body.patientData.radiology.test_id);
 
-			  if(req.body.isUserConnectLinking) {
-			  	study.isUserConnectLinking = true;			  
-			  	// keep the referral details. Works for existing patients in the platform
-			    study.referral_detail_dump.push(req.body.patientData); 
-			  }
+		    		if(objectFound.diagnosis.radiology_test_results[pos]) {
+              var theObj = objectFound.diagnosis.radiology_test_results[pos];         
+              theObj.study_ref_id = study._id;
+              theObj.patient_id_of_study = study.patient_id;
+            } 
 
-			  study.save(function(err,info){
-			  	if(err){
-			  		throw err;
-			  		res.end("error occured");
-			  	} else {			  		
-			  		var msg = (rados || id) + " - dicom study upload";
-					  var pay = new Wallet(date,req.user.name,"",msg,rados);
-					  pay.dicom(model,req.body.amount,req.user,io);
-					  var auth = id || rados;
-					  res.json({acc_no: rados,status:true,studyId: auth});	
+            objectFound.save(function(err,info){
+            	if(err) throw err;            	
+            })            
+		    	}
+		    });
+		  }
 
-					  var redirectLink = "https://applinic.com/dicom-mobile?id=" + study._id;
+		  study.save(function(err,info){
+		  	if(err){
+		  		throw err;
+		  		res.end("error occured");
+		  	} else {			  		
+		  		var msg = (rados || id) + " - dicom study upload";
+				  var pay = new Wallet(date,req.user.name,"",msg,rados);
+				  pay.dicom(model,req.body.amount,req.user,io);
+				  var auth = id || rados;
+				  res.json({acc_no: rados,status:true,studyId: auth});	
 
-					  var tp = (req.body.studyID) ? "Study Instance ID '" : "PatientID ";
-					  var msgBody = "Your radiology dicom study with '" + tp + "' " + (rados || id) 
-					  + " has been uploaded to Applinic online PACS server.\n" 
-					  + "You can share or use the above Patient ID to view the study on your smart phone.\nKindly visit " + redirectLink
-					  + "\nLog in with \nusername: " + centerUser + "\npassword: " + centerPassword;
-						sms.messages.create(
-	            {
-	              to: req.body.patientPhone,
-	              from: '+16467985692',
-	              body: msgBody,
-	            },
-	            callBack
-	          );
+				  var redirectLink = "https://applinic.com/dicom-mobile?id=" + study._id;
 
-	          var transporter = nodemailer.createTransport({
-	            host: "mail.privateemail.com",
-	            port: 465,
-	            auth: {
-	              user: "info@applinic.com",
-	              pass: process.env.EMAIL_PASSWORD
+				  var tp = (req.body.studyID) ? "Study Instance ID '" : "PatientID ";
+				  var msgBody = "Your radiology dicom study with '" + tp + "' " + (rados || id) 
+				  + " has been uploaded to Applinic online PACS server.\n" 
+				  + "You can share or use the above Patient ID to view the study on your smart phone.\nKindly visit " + redirectLink
+				  + "\nLog in with \nusername: " + centerUser + "\npassword: " + centerPassword;
+					sms.messages.create(
+            {
+              to: req.body.patientPhone,
+              from: '+16467985692',
+              body: msgBody,
+            },
+            callBack
+          );
+
+          var transporter = nodemailer.createTransport({
+            host: "mail.privateemail.com",
+            port: 465,
+            auth: {
+              user: "info@applinic.com",
+              pass: process.env.EMAIL_PASSWORD
+            }
+          });
+
+          var cp = (req.body.isAcc) ? rados  : id;
+          	         	var tempLink;
+          var reporterEmail;
+
+          var webView = "https://applinic.com/dcm?id=" + id + "&key=" + study._id; //"https://dicom.applinic.com/web/viewer.html?" + locate;
+          var mobileView = "https://applinic.com/dicom-mobile?id=" + study._id;
+
+          var mailOptions = {
+            from: 'Applinic Healthcare info@applinic.com',
+            to: req.body.patientEmail || "support@applinic.com",
+            subject: 'Radiology DICOM Study Uploaded',
+            html: '<table><tr><tr><td style="line-height: 25px">Hello,<br><br>Your study with ' 
+            +  tp  + " <b>" + (rados || id) + '</b> has been uploaded to Applinic Online PACs Server '
+            + 'by ' + req.user.name + '. You can share or use the ID to view the study.<br>' 
+            + 'username: ' + centerUser + "<br>password: " + centerPassword
+            + '<br><br><div style="text-align: center">'
+            + '<br><a href="' 
+            + ovyWeb + '" style="padding:10px;background-color:red;color:#fff">Click to view study</a></div></td></tr></table>'
+          };
+
+          var mailOptions2 = {
+            from: 'Applinic Healthcare info@applinic.com',
+            to: req.body.referringPhysicianEmail || "support@applinic.com",
+            subject: 'Radiology DICOM Study Uploaded for your patient',
+            html: '<table><tr><tr><td style="line-height: 25px">Hello Doc,<br><br>The Investigation ( <b>' + req.body.studyName + '</b> ) ' 
+            + 'you requested for the patient - <b>' + req.body.patientName + '</b> with ' 
+            +  tp  + " <b>" + (rados || id) + '</b> has been uploaded to Applinic Online PACs Server.<br>' 
+            + 'The written report of this study will be email to you as soon as it has been submitted ' 
+            + 'by the reporting radiologist(s).<br>'
+            + 'Uploaded by ' + req.user.name + '.<br> You can view the study with DICOM viewer using the URLs below.<br>' 
+            + "<b> Desktop Dicom Viewer URL:  " 
+            +	webView + "<br> Mobile Device DICOM Viewer URL: " + mobileView + "<br>" 
+            + 'username: ' + centerUser + "<br>password: " + centerPassword + '<br>'
+            +  tp  + ": <b>" + (rados || id) 
+            + '</b><br><br> <p><a href="www.applinic.com/signup">Create an account</a> with us and enjoy easy access to patients and medical records at all time. </p> <b>Applinic Team</b> </td></tr></table>'
+          };
+
+          transporter.sendMail(mailOptions, function(error, info){
+            if (error) {
+              console.log(error);
+            } else {
+              console.log('Email sent: ' + info.response);
+            }
+          });
+
+          if(req.body.referringPhysicianEmail)
+	          transporter.sendMail(mailOptions2, function(error, info){
+	            if (error) {
+	              console.log(error);
+	            } else {
+	              console.log('Email sent: ' + info.response);
 	            }
 	          });
 
-	          var cp = (req.body.isAcc) ? rados  : id;
-	          	         	var tempLink;
-	          var reporterEmail;
+          // send email and sms to the reporting radiologists with links to the dicom viewer, 
+          //mobile viewer and center template. If center has no template use default template.
+          
+          //var elemPos = req.user.reporters.map(function(x){return x.id.toString()}).indexOf(req.body.reporter);
+         // if(elemPos !== -1) {
 
-	          var webView = "https://applinic.com/dcm?id=" + id + "&key=" + study._id; //"https://dicom.applinic.com/web/viewer.html?" + locate;
-	          var mobileView = "https://applinic.com/dicom-mobile?id=" + study._id;
+
+         
+
+          function radioEmail(tempLink,email) {	          	
 
 	          var mailOptions = {
 	            from: 'Applinic Healthcare info@applinic.com',
-	            to: req.body.patientEmail || "support@applinic.com",
-	            subject: 'Radiology DICOM Study Uploaded',
-	            html: '<table><tr><tr><td style="line-height: 25px">Hello,<br><br>Your study with ' 
-	            +  tp  + " <b>" + (rados || id) + '</b> has been uploaded to Applinic Online PACs Server '
-	            + 'by ' + req.user.name + '. You can share or use the ID to view the study.<br>' 
-	            + 'username: ' + centerUser + "<br>password: " + centerPassword
-	            + '<br><br><div style="text-align: center">'
-	            + '<br><a href="' 
-	            + ovyWeb + '" style="padding:10px;background-color:red;color:#fff">Click to view study</a></div></td></tr></table>'
-	          };
-
-	          var mailOptions2 = {
-	            from: 'Applinic Healthcare info@applinic.com',
-	            to: req.body.referringPhysicianEmail || "support@applinic.com",
-	            subject: 'Radiology DICOM Study Uploaded for your patient',
-	            html: '<table><tr><tr><td style="line-height: 25px">Hello Doc,<br><br>The Investigation ( <b>' + req.body.studyName + '</b> ) ' 
-	            + 'you requested for the patient - <b>' + req.body.patientName + '</b> with ' 
-	            +  tp  + " <b>" + (rados || id) + '</b> has been uploaded to Applinic Online PACs Server.<br>' 
-	            + 'The written report of this study will be email to you as soon as it has been submitted ' 
-	            + 'by the reporting radiologist(s).<br>'
-	            + 'Uploaded by ' + req.user.name + '.<br> You can view the study with DICOM viewer using the URLs below.<br>' 
-	            + "<b> Desktop Dicom Viewer URL:  " 
-	            +	webView + "<br> Mobile Device DICOM Viewer URL: " + mobileView + "<br>" 
-	            + 'username: ' + centerUser + "<br>password: " + centerPassword + '<br>'
-	            +  tp  + ": <b>" + (rados || id) 
-	            + '</b><br><br> <p><a href="www.applinic.com/signup">Create an account</a> with us and enjoy easy access to patients and medical records at all time. </p> <b>Applinic Team</b> </td></tr></table>'
+	            to: email || "support@applinic.com",
+	            subject: 'Radiology Report ' + study._id,
+	            html: '<table><tr><tr><td style="line-height: 25px">Hi, please write report for the study below:<br><br>'
+	            + 'Investigation: ' + req.body.studyName + "<br><br>"
+	            + 'Ref: ' + study._id + "<br><br>"
+	            + tp + ": " + (rados || id) + '<br><br>'
+	            + "<b>Web viewer DICOM url:</b><br> " + webView + "<br>"
+	            + "<b>Mobile device DICOM viewer url:</b> <br> " + mobileView + "<br>"
+	            + "<b>Report template url:</b> <br>" + tempLink + "<br><br>"
+	            + "Center Name: " + req.user.name + "<br>"
+	            + "Address: " + req.user.address + ", " + req.user.city + ", " + req.user.country + "<br><br>"
+	            + "Thank you! <br><br> <b>Applinic Team</b>" 
+	            + '</td></tr></table>'
 	          };
 
 	          transporter.sendMail(mailOptions, function(error, info){
@@ -2623,77 +2687,32 @@ router.post("/user/dicom-details",function(req,res){
 	            }
 	          });
 
-	          if(req.body.referringPhysicianEmail)
-		          transporter.sendMail(mailOptions2, function(error, info){
-		            if (error) {
-		              console.log(error);
-		            } else {
-		              console.log('Email sent: ' + info.response);
-		            }
-		          });
-
-	          // send email and sms to the reporting radiologists with links to the dicom viewer, 
-	          //mobile viewer and center template. If center has no template use default template.
-	          
-	          //var elemPos = req.user.reporters.map(function(x){return x.id.toString()}).indexOf(req.body.reporter);
-	         // if(elemPos !== -1) {
+          }
 
 
-	         
+          if(req.body.reporters) {
+          	req.body.reporters.forEach(function(reporter){
+          		tempLink = "https://applinic.com/report-template/" + reporter.id + "/" + study._id;
+          		reporterEmail = reporter.email;
+          		radioEmail(tempLink,reporterEmail)
+          	})	          	
+          }
 
-	          function radioEmail(tempLink,email) {	          	
+		  	}
+		  	
+		  });
 
-		          var mailOptions = {
-		            from: 'Applinic Healthcare info@applinic.com',
-		            to: email || "support@applinic.com",
-		            subject: 'Radiology Report ' + study._id,
-		            html: '<table><tr><tr><td style="line-height: 25px">Hi, please write report for the study below:<br><br>'
-		            + 'Investigation: ' + req.body.studyName + "<br><br>"
-		            + 'Ref: ' + study._id + "<br><br>"
-		            + tp + ": " + (rados || id) + '<br><br>'
-		            + "<b>Web viewer DICOM url:</b><br> " + webView + "<br>"
-		            + "<b>Mobile device DICOM viewer url:</b> <br> " + mobileView + "<br>"
-		            + "<b>Report template url:</b> <br>" + tempLink + "<br><br>"
-		            + "Center Name: " + req.user.name + "<br>"
-		            + "Address: " + req.user.address + ", " + req.user.city + ", " + req.user.country + "<br><br>"
-		            + "Thank you! <br><br> <b>Applinic Team</b>" 
-		            + '</td></tr></table>'
-		          };
-
-		          transporter.sendMail(mailOptions, function(error, info){
-		            if (error) {
-		              console.log(error);
-		            } else {
-		              console.log('Email sent: ' + info.response);
-		            }
-		          });
-
-	          }
-
-
-	          if(req.body.reporters) {
-	          	req.body.reporters.forEach(function(reporter){
-	          		tempLink = "https://applinic.com/report-template/" + reporter.id + "/" + study._id;
-	          		reporterEmail = reporter.email;
-	          		radioEmail(tempLink,reporterEmail)
-	          	})	          	
-	          }
-
-			  	}
-			  	
-			  });
-
-			  function callBack(err,info) {
-			  	if(err){
-			  		console.log(err)
-			  	}
-			  }
-			}
+		  function callBack(err,info) {
+		  	if(err){
+		  		console.log(err)
+		  	}
+		  }
+		}
 	  } else {
 	  	res.end("Unauthorized Access");
 	  }
 	  
-	});
+});
 
 
 router.post("/user/reassign-study",function(req,res){

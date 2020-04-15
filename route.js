@@ -10669,37 +10669,6 @@ router.put("/user/patient/medical-history",function(req,res){
       patient.patient_history.last_modified = + new Date();
       patient.patient_history.health_problems = req.body.health_problems;
 
-      /*
-    last_modified: Number,
-    height: String,
-    weight: String,
-    medication: String,
-    allergies: String,
-    lifestyle: Array,
-    last_visited: Date,
-    blood_pressure: String,
-    blood_sugar: String,
-    visitation_purpose: String,
-    health_problems: Array,
-    bp_date: Number,
-    bs_date: Number,
-
-
-
-    { lifestyle:
-   [ { tobacco: true, report: 'Smokes or use tobacco' },
-     { substances: true, report: 'Takes social substances' } ],
-  health_problems: [ 'Asthma', 'Cancer', 'Diabetes', 'Ulcer' ],
-  height: '1.7m',
-  weight: '95kg',
-  blood_pressure: 'sdds',
-  blood_sugar: 'sdsd',
-  medication: 'panadol',
-  allergies: 'cold',
-  last_visited: '2019-03-13T23:00:00.000Z',
-  visitation_purpose: 'dsdssdds' }
-      */
-
       patient.patient_history.bp_chart.push({
         value: req.body.blood_pressure,
         date: + new Date(),
@@ -11615,10 +11584,12 @@ router.get("/user/study-reports",function(req,res){
     model.study.findById(req.query.stdId)
     .exec(function(err,study){
       if(err) throw err;
-      if(study)
+      if(study){
         res.json(study)
-      else 
+        
+      } else {
         res.json({})
+      }
     })
   } else {
     res.end("unauthorized access")

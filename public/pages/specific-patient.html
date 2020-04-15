@@ -1147,37 +1147,37 @@
             <table>
                 <tbody>
                     <tr>
-                        <td>Diagnostic Center Name: </td>
+                        <td><label>Diagnostic Center Name:</label> </td>
                         <td>{{test.test_ran_by}}</td>
                     </tr>
                     <tr>
-                        <td>Address: </td>
+                        <td><label>Address:</label> </td>
                         <td>{{test.center_address}} {{test.center_city}} {{test.center_country}}</td>
                     </tr>
                     <tr>
-                        <td>Center Phone: </td>
+                        <td><label>Center Phone:</label> </td>
                         <td>{{test.center_phone}}</td>
                     </tr>
                       <tr>
-                        <td>Investigation Requested: </td>
+                        <td><label>Investigation Requested:</label> </td>
                         <td> <span ng-repeat="rantest in test.test_to_run" style="display: block;padding-top: 3px" >{{rantest.name}} &nbsp;&nbsp;<span ng-if="!rantest.select && test.receive_date != 'Pending'" class="text-danger">not available</span></span> </td>
                     </tr>
 
                     <tr>
-                        <td>Patient ID of Study: </td>
+                        <td><label>Patient ID of Study:</label> </td>
                         <td>{{test.patient_id_of_study || "N/A"}}</td>
                     </tr>
 
                     <tr>
-                        <td>Date sent: </td>
+                        <td><label>Date sent:</label> </td>
                         <td>{{test.sent_date | date: "mediumDate"}} ( <span am-time-ago="test.sent_date"></span> )</td>
                     </tr>
                      <tr>
-                        <td>Date Received: </td>
+                        <td><label>Date Received:</label> </td>
                         <td>{{test.receive_date | date: "mediumDate"}} <span ng-if="test.receive_date !== 'Pending'">( <span am-time-ago="test.receive_date"></span> )</span></td>
                     </tr>
                     <tr>
-                        <td>Indication/Summary: </td>
+                        <td><label>Indication/Summary:</label> </td>
                         <td><span>{{test.indication || 'N/A'}}</span></td>
                     </tr>
                     
@@ -1190,14 +1190,14 @@
                         </td>
                     </tr>-->
                     <tr>
-                        <td>Status: </td>
+                        <td><label>Status:</label> </td>
                         <td>
                             <span ng-if="test.conclusion == 'Pending'" class="text-danger"> Awaiting study report</span>
                             <span ng-if="test.conclusion !== 'Pending'" class="text-primary">Report Recieved</span>
                         </td>
                     </tr>
                     <tr >
-                        <td>DICOM Viewer / Report:</td>
+                        <td><label>DICOM Viewer / Report:</label></td>
                         <td> 
 
                           <div>
@@ -1205,15 +1205,15 @@
                           </div>
                           <ul style="list-style: none;line-height: 30px">
                             <li>
-                                <a ng-show="test.reportDetails.study_link_mobile" href="{{test.reportDetails.study_link_mobile}}" class="text-primary" target="_blank">View in Mobile/Tablet devices</a>
+                                <a ng-show="test.reportDetails.study_link_mobile" href="{{test.reportDetails.study_link_mobile}}"  target="_blank" class="text-danger">View Study in DICOM viewer (Mobile / Tablet devices)</a>
                             </li>
 
                             <li>
-                                <a  ng-show="test.reportDetails.study_link2" href="{{test.reportDetails.study_link2}}" class="text-primary" target="_blank">View in Desktop or Laptops</a>
+                                <a  ng-show="test.reportDetails.study_link2" href="{{test.reportDetails.study_link2}}"  target="_blank" class="text-danger">View Study in DICOM viewer (Desktop / Laptops)</a>
                             </li>
 
                             <li ng-show="test.reportDetails.pdf_report[0]">
-                                <a  href="{{'https://drive.google.com/viewerng/viewer?embedded=true&url=https://applinic.com' + test.reportDetails.pdf_report[0].pathname}}" class="text-danger" target="_blank"><i class="fa fa-file"></i> View Study Report</a>
+                                <a  href="{{'https://drive.google.com/viewerng/viewer?embedded=true&url=https://applinic.com' + test.reportDetails.pdf_report[0].pathname}}" class="text-danger" target="_blank"><i class="fa fa-file"></i> View Report (PDF Viewer)</a>
                             </li>
                           </ul>
                         </td>
@@ -1223,70 +1223,6 @@
 
              <hr>
          </div>
-     <!--<div ng-repeat="test in k.diagnosis.radiology_test_results | orderBy: '-sent_date'" class="p-1 card" ng-if="k.diagnosis.radiology_test_results.length > 0">
-          <div style="text-align: center;">
-             <label>{{test.test_ran_by}}</label><br>
-             <span>{{test.center_address}} {{test.center_city}} {{test.center_country}}</span><br>
-             <span>{{test.center_phone}}</span>
-          </div>
-          <div>
-               <strong>Type: </strong> <span>Radiology Investigation</span>
-          </div>
-          <div> 
-            <strong>Date sent: </strong> {{test.sent_date | date: "mediumDate"}} ( <span am-time-ago="test.sent_date"></span> )
-          </div>
-          <div>
-            <strong>Date received: </strong> {{test.receive_date | date: "mediumDate"}} <span ng-if="test.receive_date !== 'Pending'">( <span am-time-ago="test.receive_date"></span> )</span>
-          </div><br>
-         
-          <div>  
-            <label>Investigation Requested:</label><br>
-            <div class="pl-1">
-                <span ng-repeat="rantest in test.test_to_run" style="display: block;padding-top: 3px" ><span ng-if="rantest.sn"> {{rantest.sn}}) </span> {{rantest.name}} &nbsp;&nbsp;<span ng-if="!rantest.select && test.receive_date != 'Pending'" class="text-danger">not available</span></span> 
-            </div>
-          
-          </div>
-          <div>
-              <strong>Indication: </strong> <span>{{test.indication || 'N/A'}}</span>
-          </div>
-          <div ng-if="test.lmp">
-              <strong>LMP: </strong> <span>{{test.lmp}}</span>
-          </div>
-          <div ng-if="test.parity">
-              <strong>Parity: </strong> <span>{{test.parity}}</span>
-          </div>
-          <div>
-              <label>Findings:</label>
-          </div>
-         
-
-          <div ng-if="test.test_result" ng-if="test.conclusion != 'Pending'">                      
-            <article ng-repeat="result in test.test_result"> 
-                <label style="color: darkRed">{{result.name}} :</label><br>
-                <blockquote style="padding: 20px; background-color: lightyellow;word-wrap: break-word;">{{result.data}}</blockquote>
-            </article>
-          </div>
-          <div ng-if="test.report" ng-if="test.conclusion != 'Pending'">
-            <article ng-repeat="result in test.report"> 
-                <label style="color: darkRed;">{{result.name}} :</label><br>
-                <blockquote style="padding: 20px; background-color: lightyellow;word-wrap: break-word;">{{result.report_sheet}}</blockquote>
-            </article>
-          </div>
-          <div ng-if="test.conclusion != 'Pending'">
-            <label style="color: darkRed;margin-left: 5px">Conclusion :</label> 
-            <p style="padding: 20px; background-color: lightyellow;word-wrap: break-word;">{{test.conclusion}}</p>
-          </div>
-          <div style="text-align: right">
-            <i class="fa fa-file-image-o font-1_4 text-primary" title="View files associated with this test result" ng-if="test.files.length > 0"
-            style="cursor:pointer;margin:20px 10px 0;" ng-click="viewFile(test.files,test.test_result)"> {{test.files.length}} file(s)</i>
-          </div>
-          <div>
-            <p ng-if="test.conclusion == 'Pending'" class="text-danger"><b> Awaiting test report</b></p>
-          </div>
-          
-          
-        <hr>
-      </div>-->
   
     </div>
 

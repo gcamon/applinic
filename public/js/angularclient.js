@@ -13984,6 +13984,7 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
     .success(function(data) {        
       $scope.loading = false;         
       $scope.testResult = data;
+      console.log($scope.testResult)
     });            
   }
 
@@ -14207,7 +14208,7 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
         headers : {'Content-Type': 'application/json'} 
         })
       .success(function(data) { 
-        
+
         test.loading = false;
         test.reportDetails = data;
       });
@@ -24068,15 +24069,13 @@ app.controller("dicomCtrl",["$rootScope","$scope","$location","$resource","$http
     url     : "/api/dicom-details?centerId=" + user,
     headers : {'Content-Type': 'application/json'} 
     })
-  .success(function(data) {  
-    console.log(data)            
+  .success(function(data) {              
     $scope.dicomDetails = data;
     $rootScope.station.onlinePacs = data
   }); 
 
   var amount = getBalanceService;
   var wallet = amount.get({userId: user},function(data){
-    console.log(data)
     $scope.availableAmount = data.balance;
   });
 
@@ -24143,7 +24142,7 @@ app.controller("dicomCtrl",["$rootScope","$scope","$location","$resource","$http
         })
       .success(function(data) {              
         $scope.loading = false;
-        console.log(data)
+       
         if(data.status){
           $scope.isSuccess = true;
           $scope.accNo = data.acc_no; 
