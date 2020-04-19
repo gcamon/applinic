@@ -3743,7 +3743,7 @@ app.controller('resultController',["$scope","$rootScope","$http","$location","$r
 
 
   $scope.sendChatSingle = function(){
-    var messageBody = "hello doc";
+    var messageBody = "Hello doc";
     var partnerId;
     var doc =  $scope.firstlineDoctors[Math.floor(Math.random() *  ($scope.firstlineDoctors.length - 1))];
     partnerId = (doc) ? doc.user_id : "";
