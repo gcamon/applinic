@@ -4954,12 +4954,10 @@ app.controller("docNotificationController",["$scope","$location","$resource","$i
     $scope.showIndicator = data;
   });
 
-  
-
-
    // to be modified later suit general
-  $rootScope.loadChats = function() {
+  /*$rootScope.loadChats = function() {
     $scope.loading = true;
+    var date = + new Date();
     $rootScope.chatsList = chatService.chats();
     $rootScope.chatsList.$promise.then(function(result){
       $scope.loading = false;
@@ -4967,15 +4965,17 @@ app.controller("docNotificationController",["$scope","$location","$resource","$i
       for(var i = 0; i < result.length; i++) {
         if(!result[i].is_read) {
           $scope.showIndicator = true;
-          break;
         }
+        result.realTime = date;
       }
     });
   }
 
-  $rootScope.loadChats();
 
-  $scope.viewChat2 = function(list) {  
+  $rootScope.loadChats();*/
+
+  $scope.viewChat2 = function() {  
+    var list = $rootScope.chatsList;
     if(list) {
       var byRecent = $filter('orderBy')(list,'-realTime');
       templateService.holdId = byRecent[0].partnerId;   
@@ -8055,7 +8055,7 @@ app.controller("patientNotificationController",["$scope","$location","$http","$w
   }*/
 
     // to be modified later suit general
-  $rootScope.loadChats = function() {
+  /*$rootScope.loadChats = function() {
     $scope.loading = true;
     $rootScope.chatsList = chatService.chats();
     $rootScope.chatsList.$promise.then(function(result){
@@ -8070,9 +8070,10 @@ app.controller("patientNotificationController",["$scope","$location","$http","$w
     });
   }
 
-  $rootScope.loadChats();
+  $rootScope.loadChats();*/
 
-   $scope.viewChat2 = function(list) {   
+   $scope.viewChat2 = function(list) {  
+    var list = $rootScope.chatsList; 
     if(list) {
       var byRecent = $filter('orderBy')(list,'-realTime');
       templateService.holdId = byRecent[0].partnerId;   
@@ -10854,13 +10855,14 @@ app.controller("createRoomController",["$scope","localManager","mySocket","$root
 
 
 //controls online presence icon to show who is online or offline. Note for doctors only ppatients that are online are displayed.
-app.controller("presenceSocketController",["$rootScope","$scope","$window","mySocket","localManager","ModalService","templateService",
-  function($rootScope,$scope,$window,mySocket,localManager,ModalService,templateService){
+app.controller("presenceSocketController",["$rootScope","$scope","$window","mySocket","localManager",
+  "ModalService","templateService","$interval",
+  function($rootScope,$scope,$window,mySocket,localManager,ModalService,templateService,$interval){
    
    var person = localManager.getValue("resolveUser");
    JSON.stringify(window.localStorage.setItem("user",person));// just to save person to local storage;
 
-   if(person.typeOfUser === "Patient"){
+   /*if(person.typeOfUser === "Patient"){
      //patients  see doctors as the log in
      mySocket.on("doctor presence",function(data){
       //var elemPos = $rootScope.patientsDoctorList.map(function(x){return x.doctor_id}).indexOf(data.doctor_id);
@@ -10889,12 +10891,27 @@ app.controller("presenceSocketController",["$rootScope","$scope","$window","mySo
         found.presence = data.presence;
         $rootScope.dispalyPresence = data.presence;
         $rootScope.patientAvailability = data.presence;  
-      }*/
+      }
 
       $rootScope.$broadcast("users presence",{type: 'patientList',data: $rootScope.patientList ,sockets: data.connects});
       
      });
+  }*/
+
+  function getUsersOnline() {
+    if(person.typeOfUser === "Patient"){
+      $rootScope.$broadcast("users presence",{type: 'doctorList',data: $rootScope.patientsDoctorList ,sockets: $rootScope.sockets});
+    } else if(person.typeOfUser == "Doctor"){
+      $rootScope.$broadcast("users presence",{type: 'patientList',data: $rootScope.patientList ,sockets: $rootScope.sockets});
+    }
   }
+
+  getUsersOnline();
+
+  $interval(function(){
+    console.log("patientList: ", $rootScope.patientList)
+    getUsersOnline()
+  },30000) // 1 min and some secs
 
   
   $scope.user = {};
@@ -12880,10 +12897,12 @@ app.service("outPatientBillingService",["$resource",function($resource){
 //similar the mydoctorController
 app.controller("myPatientController",["$scope","$http","$location","$window","$rootScope","templateService","localManager","$filter",
   "ModalService","Drugs","mySocket","$resource","deviceCheckService","myPatientControllerService","outPatientBillingService",
-  "getPatientMedicationByDoctorService","getMedicalHistoryService","drugNotRanService","getAllPharmacyService","getSessionService",'$compile',
+  "getPatientMedicationByDoctorService","getMedicalHistoryService","drugNotRanService","getAllPharmacyService",
+  "getSessionService",'$compile',"$interval",
   function($scope,$http,$location,$window,$rootScope,templateService,localManager,$filter,ModalService,
     Drugs,mySocket,$resource,deviceCheckService,myPatientControllerService,outPatientBillingService,
-    getPatientMedicationByDoctorService,getMedicalHistoryService,drugNotRanService,getAllPharmacyService,getSessionService,$compile){
+    getPatientMedicationByDoctorService,getMedicalHistoryService,drugNotRanService,getAllPharmacyService,
+    getSessionService,$compile,$interval){
 
   var patient = {}; //patient obj.
   
@@ -12977,6 +12996,10 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
 
  /* if($rootScope.chatStatus !== true)
     mySocket.emit('join',{userId: user.user_id}); */
+
+
+
+ //Please note that patient and doctor online presence is controlled by "Presence socket controller"
   
   function initChat() {
     mySocket.emit('init chat',{userId: user.user_id,partnerId: patient.id},function(data){
@@ -15156,7 +15179,7 @@ app.controller("pharmacyCenterNotificationController",["$scope","$location","$re
   }
 
 
-  $rootScope.loadChats = function() {
+  /*$rootScope.loadChats = function() {
     $scope.loading = true;
     $rootScope.chatsList = chatService.chats();
     $rootScope.chatsList.$promise.then(function(result){
@@ -15171,9 +15194,10 @@ app.controller("pharmacyCenterNotificationController",["$scope","$location","$re
     });
   }
 
-  $rootScope.loadChats();
+  $rootScope.loadChats();*/
 
-  $scope.viewChat = function(list) {   
+  $scope.viewChat = function() { 
+    var list = $rootScope.chatsList;  
     if(list) {
       var byRecent = $filter('orderBy')(list,'-realTime');
       templateService.holdId = byRecent[0].partnerId;   
@@ -15742,7 +15766,7 @@ app.controller("labCenterNotificationController",["$scope","$location","$resourc
     $rootScope.noteLen++;
   });
 
-   $rootScope.loadChats = function() {
+   /*$rootScope.loadChats = function() {
     $scope.loading = true;
     $rootScope.chatsList = chatService.chats();
     $rootScope.chatsList.$promise.then(function(result){
@@ -15757,9 +15781,10 @@ app.controller("labCenterNotificationController",["$scope","$location","$resourc
     });
   }
 
-  $rootScope.loadChats();
+  $rootScope.loadChats();*/
 
-  $scope.viewChat = function(list) {
+  $scope.viewChat = function() {
+    var list = $rootScope.chatsList;
     if(list) {
       var byRecent = $filter('orderBy')(list,'-realTime');
       templateService.holdId = byRecent[0].partnerId;   
@@ -17501,7 +17526,7 @@ app.controller("radioCenterNotificationController",["$scope","$location","$http"
     $rootScope.noteLen++;
   });
 
-  $rootScope.loadChats = function() {
+  /*$rootScope.loadChats = function() {
     $scope.loading = true;
     $rootScope.chatsList = chatService.chats();
     $rootScope.chatsList.$promise.then(function(result){
@@ -17515,9 +17540,10 @@ app.controller("radioCenterNotificationController",["$scope","$location","$http"
       }
     });
   }
-  $rootScope.loadChats();
+  $rootScope.loadChats();*/
 
-  $scope.viewChat = function(list) {   
+  $scope.viewChat = function() { 
+   var list = $rootScope.chatsList;  
    if(list) {
       var byRecent = $filter('orderBy')(list,'-realTime');
       templateService.holdId = byRecent[0].partnerId;   
@@ -21878,17 +21904,13 @@ app.controller("emScanTestController",["$scope","$location","$http","$window","t
 
 app.controller("topHeaderController",["$scope","$rootScope","$window","$location","$resource",
   "localManager","mySocket","templateService","$timeout","$document","ModalService",
-   "cities","$filter","_","$interval","dynamicService",
+   "cities","$filter","_","$interval","dynamicService","chatService",
   function($scope,$rootScope,$window,$location,$resource,localManager,mySocket,templateService,
-   $timeout, $document, ModalService,cities,$filter,_,$interval,dynamicService){
+   $timeout, $document, ModalService,cities,$filter,_,$interval,dynamicService,chatService){
 
   if(!localManager.getValue("resolveUser")) {
     $window.location.href = "/login";
   }
-
-
-
-  
 
   $rootScope.toCurrency = function(amount) {
     if(amount) {
@@ -22008,7 +22030,7 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
       $rootScope.$broadcast("unattendedMsg",true);   
       templateService.playAudio(2);
     } else {
-      elemPos = $rootScope.chatsList.map(function(x){return x.chat_id}).indexOf(data.chatId)
+      elemPos = $rootScope.chatsList.map(function(x){return x.chat_id}).indexOf(data.chatId);
       if(elemPos !== -1) {
         $rootScope.chatsList[elemPos].isUnRead = true;
       } else {
@@ -22256,8 +22278,6 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
         
       });
     });       
-
-    console.log($rootScope.htmlTemp)
   }
 
   function createItemTable(arr) {
@@ -22308,13 +22328,26 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
     })
   }
 
-  getAllconnectedSockets();
 
-  //gets connected sockets every 1 min
-  $interval(function(){
-    getAllconnectedSockets()
-  },60000)
 
+  $rootScope.loadChats = function() {
+    $scope.loading = true;
+    var date = + new Date();
+    $rootScope.chatsList = chatService.chats();
+    $rootScope.chatsList.$promise.then(function(result){
+      $scope.loading = false;
+      $rootScope.chatsList = result;
+      for(var i = 0; i < result.length; i++) {
+        if(!result[i].is_read) {
+          $scope.showIndicator = true;
+        }
+        //result[i].realTime = date;
+      }
+    });
+  }
+
+  if(localManager.getValue("resolveUser"))
+    $rootScope.loadChats();
 
   $rootScope.$on("users presence",function(info,response){
     var on = true;
@@ -22410,11 +22443,21 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
     })
   }
 
+  getAllconnectedSockets();
+  //gets connected sockets every 1 min
+  $interval(function(){
+    getAllconnectedSockets()
+  },60000)
+
+
 
   //for viewing jnlp dicom weasis viewer as java web start launcher
   $rootScope.opnejnlp = function(link) {
     window.location.href = "jnlp://" + link;
   }
+
+
+  
 
 
 }]);
@@ -22423,7 +22466,6 @@ app.controller("stockModalController",["$scope","$rootScope","dynamicService","l
   function($scope,$rootScope,dynamicService,localManager){
 
   $scope.updateStock = function() {
-    console.log($rootScope.dynaServices)
     var sendArr = [];
     $rootScope.dynaServices.forEach(function(item){
       if(item.picked){
@@ -22696,23 +22738,16 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
       if(elemPos !== -1){
         $scope.partner = $rootScope.chatsList[elemPos];   
       } else {
-        $scope.partner = {}
+        $scope.partner = {};
       }
     }
   
-    console.log("sockets:" , $rootScope.sockets, templateService.holdId, $scope.partner, $rootScope.chatsList)
     function getUsersOnline() {     
       $rootScope.$broadcast("users presence",{type: 'chatList',data:$rootScope.chatsList,sockets: $rootScope.sockets});         
     }
 
-    getUsersOnline();
-
-    $interval(function(){
-      getUsersOnline()
-    },60009) // 1 min and some secs
 
 
-    
     if($rootScope.holdcenter) {
       initChatSingle();
     } else {
@@ -22781,29 +22816,30 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
         }
       }
     });*/
+
+    
+
     //checks to see when user is online or offline
-    mySocket.on("real time presence",function(connects){
-        var chat;
-        for(var i = 0; i < $rootScope.chatsList.length; i++) {
-          for(var j in connects){            
-            if(connects.hasOwnProperty(j)){
-              chat = ( $rootScope.chatsList[i].partnerId === connects[j] ) ? $rootScope.chatsList[i] : null;
-              if(chat) { 
-                chat.status = true; 
-                break;                 
-              } else {
-                $rootScope.chatsList[i].status = false;  
-              }
+    /*mySocket.on("real time presence",function(connects){
+      var chat;
+      for(var i = 0; i < $rootScope.chatsList.length; i++) {
+        for(var j in connects){            
+          if(connects.hasOwnProperty(j)){
+            chat = ( $rootScope.chatsList[i].partnerId === connects[j] ) ? $rootScope.chatsList[i] : null;
+            if(chat) { 
+              chat.status = true; 
+              break;                 
+            } else {
+              $rootScope.chatsList[i].status = false;  
             }
           }
         }
-    });
+      }
+    });*/
 
     //for modal sending one-way chat message.
     function initChatSingle() {
-      mySocket.emit('init chat single',{userId: user.user_id,partnerId: $scope.center.id},function(data){
-       
-      });
+      mySocket.emit('init chat single',{userId: user.user_id,partnerId: $scope.center.id},function(data){});
     }
 
     //for general chats two-way messaging
@@ -22817,6 +22853,14 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
          $scope.loading = false;        
       });
     }
+
+
+    getUsersOnline();
+
+    $interval(function(){
+      getUsersOnline()
+    },3000) // less 30 secs
+
 
   //chat logic
 
@@ -22848,16 +22892,16 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
         msg.time = data.date;
         msg.sent = data.message;
         msg.isSent = false;
-        msg.isReceived = false;
-        //$rootScope.message1.push(msg);      
+        msg.isReceived = false;    
         msg.userId = user.user_id;
         msg.partnerId = $scope.partner.partnerId; 
-        msg.id = data.date//genId()
+        msg.id = data.date;
 
 
         var elPos = $rootScope.chatsList.map(function(x){return x.partnerId}).indexOf($scope.partner.partnerId);
         if(elPos !== -1) {
           $rootScope.chatsList[elPos].is_read = true;
+          $rootScope.chatsList[elPos].realTime = date;
           $rootScope.chatsList[elPos].messages.push(msg);
         }
 
@@ -22870,7 +22914,6 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
             elem[0].innerHTML += "";            
           }
         });
-        //mySocket.emit("save message",msg);//this saves the message as one mark
       });
       $scope.user.text1 = "";
     }
@@ -23003,6 +23046,7 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
     }
 
     p[0].style.display = "block";
+    p[0].style.wordBreak = "break-word";
     small[0].style.display = "block";
     small[0].style.marginTop = "5px";
     small[0].style.color = "#ccc";
@@ -23015,7 +23059,7 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
    
     small[0].id = data.id;
     small[0].className = "time_date";
-    small[0].style.color = "rgba(0,0,0,0.5)"
+    small[0].style.color = "rgba(0,0,0,0.5)";
     //var time = ($filter('amTimeAgo')(data.time) === 'a few seconds ago') ? 'Now' : $filter('amTimeAgo')(data.time);
     small[0].innerHTML += $filter('amCalendar')(data.time);
     //small[0].innerHTML += (data.sent) ? "&nbsp;&nbsp;" + $filter('amTimeAgo')(data.time) : "&nbsp;&nbsp;" + $filter('amTimeAgo')(data.time);     
@@ -23263,6 +23307,12 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
       mySocket.emit("chat in-view",data); // use to reset a chat that has been read at the backend as read in db
     }
 
+    var elemPos = $rootScope.chatsList.map(function(x){return x.partnerId}).indexOf(data.from);
+    if(elemPos !== -1) {
+      $rootScope.chatsList[elemPos].realTime = data.realtime;
+      $rootScope.chatsList[elemPos].messages[$rootScope.chatsList[elemPos].messages.length -1].msg = data.message;
+    }
+
     var date = + new Date();
     var msg = {};
     msg.time = data.date;
@@ -23270,10 +23320,12 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
     msg.url = data.url;
     msg.fileType = data.fileType;
     msg.mimeType = data.mimeType;  
+
     if(data.from === $scope.partner.partnerId) {     
       msg.userId = user.user_id;
       msg.partnerId = $scope.partner.partnerId; 
       msg.id = data.date;//genId();
+
       //msg.url = response.url;
       //msg.fileType = response.fileType;
       //msg.mimeType = response.mimeType;           
@@ -23282,18 +23334,18 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
     } else {     
       //$rootScope.$broadcast("unattendedMsg",true);   
       templateService.playAudio(2);
-      var elemPos = $rootScope.chatsList.map(function(x){return x.partnerId}).indexOf(data.from);
+      //var elemPos = $rootScope.chatsList.map(function(x){return x.partnerId}).indexOf(data.from);
       if(elemPos !== -1) {
         $rootScope.chatsList[elemPos].is_read = false;
         $rootScope.chatsList[elemPos].messages.push(msg);       
       } else {
         $rootScope.loadChats();
       }
-    }
-   
+    }   
     mySocket.emit("msg received",{to: data.from,id:data.date});
   });
 
+  //$scope.$watch("chatsList.messages",function(oldVal,newVal){},true)
 
   $scope.$watch("user.text1",function(newVal,oldVal){
     if(newVal !== "" && newVal !== undefined){      
@@ -23303,14 +23355,13 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
     }
   });
 
-  var tpPos;
+  
 
   mySocket.on("typing", function(data) {
-    tpPos = $rootScope.chatsList.map(function(x){return x.partnerId}).indexOf(data.from);
-    
+    var tpPos = $rootScope.chatsList.map(function(x){return x.partnerId}).indexOf(data.from);    
     if(tpPos !== -1){
       $rootScope.chatsList[tpPos].typing = data.message;      
-      $scope.partner.typing = data.message;
+      //$scope.partner.typing = data.message;
       if(deviceCheckService.getDeviceType()){
         if(data.message !== "" && data.message !== undefined) {
           showTypingForMobile(data);
@@ -23600,6 +23651,7 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
         var elPos = $rootScope.chatsList.map(function(x){return x.partnerId}).indexOf($scope.partner.partnerId);
         if(elPos !== -1) {
           $rootScope.chatsList[elPos].is_read = true;
+          $rootScope.chatsList[elemPos].realTime = date;
           $rootScope.chatsList[elPos].messages.push(msg);
         }
 
@@ -26113,6 +26165,77 @@ app.controller('adminAddKitCtrl',["$scope","$http","Drugs","dynamicService",
     }
   });
 
+}]);
+
+app.controller("covid19Ctrl",["$scope","localManager","$http","ModalService",
+  function($scope,localManager,$http,ModalService){    
+    $scope.covidChat = function() {
+      ModalService.showModal({
+          templateUrl: 'covid-chat-body.html',
+          controller: "covidModalController"
+      }).then(function(modal) {
+          modal.element.modal();
+          modal.close.then(function(result) {
+           
+          });
+      });
+    }
+}]);
+
+app.controller("covidModalController",["$scope","localManager","$http","ModalService","$rootScope",
+  function($scope,localManager,$http,ModalService,$rootScope){  
+    $scope.covidUser = {};
+    $scope.covidUser.isCovid19 = true;
+
+    $scope.testPhone = function() {
+      $scope.loading = true;
+      var num = testNumber($scope.covidUser.phone);
+
+      if(num) {      
+        if($scope.covidUser.phone.indexOf('+') == -1) {
+          var newSlice = $scope.covidUser.phone.slice(1);
+          $scope.covidUser.phone = "+234" + newSlice;
+        }
+
+        $http({
+          method  : 'PUT',
+          url     : "/user/verify-phone-number",
+          data    : $scope.covidUser,
+          headers : {'Content-Type': 'application/json'} 
+        })
+        .success(function(response) {
+          if(response.status){
+            $rootScope.isVerified = true;
+            $rootScope.isNewUser = response.isNewUser;
+            $scope.isVerificationSent = true;
+          } else {
+            alert("Oops! Error occured while sending verification pin via SMS")
+          }         
+          $scope.loading = false;
+        });
+        
+      } else {
+        alert("Phone number is incorrect or empty!");
+      }
+    }
+
+    $scope.createAccount = function() {      
+      $scope.covidUser.patient_age = calculate_age(new Date($scope.covidUser.dob)) + " years";
+      $scope.covidUser.patient_phone = $scope.covidUser.phone;
+      $http({
+        method  : 'POST',
+        url     : "/user/out/create-patients",
+        data    : $scope.covidUser,
+        headers : {'Content-Type': 'application/json'} 
+      })
+      .success(function(response) {
+         
+      });
+    }
+
+    $scope.verifyPhoneActive = function() {
+      alert("verifyPhoneActive")
+    }
 }])
 
 

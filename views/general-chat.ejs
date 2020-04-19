@@ -106,7 +106,7 @@
                             Header Start
             *************************************-->
 
-         <span ng-controller = "createRoomController"></span>
+         <div ng-controller = "createRoomController"></div>
 
          <div ng-controller="presenceSocketController"></div>
 
@@ -158,7 +158,10 @@
 
                   <span class="item__user">{{chat.name}}</span>
                   <span class="item__message">{{(!chat.typing) ? (chat.messages[chat.messages.length - 1].received || chat.messages[chat.messages.length - 1].sent ) : chat.typing }}</span>
-                  <small style="position: absolute;bottom: -20px;left: 0">{{ (chat.messages[chat.messages.length - 1].time  || chat.messages[chat.messages.length - 1].received ) | amCalendar}}</small>
+                  <small style="position: absolute;bottom: -20px;left: 0">{{ (chat.messages[chat.messages.length - 1].time  || chat.messages[chat.messages.length - 1].received ) | amCalendar}}
+                  </small>
+                  <span class="online" ng-show="chat.status" style="position: absolute;right: 5px;bottom: -20px"></span>
+                  <span class="offline" ng-show="!chat.status" style="position: absolute;right: 5px;bottom: -20px"></span>  
                   <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange;position: absolute;top:5px;right: 0" ng-show="chat.loading"></i>
                 </div>
                 

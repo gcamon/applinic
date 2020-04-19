@@ -413,12 +413,25 @@ var signupRoute = function(model,sms,geonames,paystack,io,nodemailer) {
 	});
 
 	router.put("/user/verify-phone-number",function(req,res){
-		var genPin = randos.genRef(6);			
+		var genPin = randos.genRef(6);	
+		
+		if(req.body.isCovid19){
+			model.user.findOne({phone: req.body.phone})
+			.exec(function(err,user){
+				if(err) throw err;
+				if(!user){
+					req.body.isNewUser = true;
+				} else {
+					req.body.isNewUser = false;
+				}
+			})
+		}		
 
 		var testPhone = new model.verifyPhone({
 			phone: req.body.phone,
 			pin: genPin
 		});
+
 		var date = new Date()
 		testPhone.expirationDate = new Date(date.getTime() + 300000);
 		testPhone.expirationDate.expires  = 60 * 60; // 1 hour before deleted from database.
@@ -442,7 +455,7 @@ var signupRoute = function(model,sms,geonames,paystack,io,nodemailer) {
 				if(!err) {
 					//res.send({message:"Phone Verification Pin sent to " + req.body.phone + " (use " + genPin + " to complete registration)"});
 					res.send({message:"Phone Verification Pin sent to " + req.body.phone + " .Enter pin below  to complete registration ( " 
-						+ genPin + " )"})
+						+ genPin + " )",isNewUser: req.body.isNewUser, status: true})
 				} else {
 					res.send({message:err.message,error: true});
 				}
@@ -968,7 +981,6 @@ var signupRoute = function(model,sms,geonames,paystack,io,nodemailer) {
 
 	router.post("/user/out/create-patients",function(req,res){
 		if(req.user){
-			console.log(req.body)
 			model.user.findOne({phone:req.body.patient_phone,type: "Patient"})
 			.exec(function(err,result){
 				if(err) throw err;
@@ -1014,6 +1026,54 @@ var signupRoute = function(model,sms,geonames,paystack,io,nodemailer) {
 					res.json({error: true,message: "User with this patient\'s phone number already exist."});
 				}
 			});
+
+		} else if(req.body.isCovid19) {
+			model.user.findOne({phone:req.body.patient_phone})
+			.exec(function(err,result){
+				if(err) throw err;
+				if(!result){
+					if(req.body.patient_firstname){
+
+						var str = req.body.patient_firstname.replace(/\s/g, "");
+						var uid = genId(str);
+
+						// check to see if user_id already existed.
+						model.user.findOne({user_id: uid})
+						.exec(function(err,user){
+							if(err) throw err;
+							if(!user){
+								var newPatient = {
+									firstname: req.body.patient_firstname,
+									lastname: req.body.patient_lastname,
+									title: req.body.patient_title,
+									gender: req.body.patient_gender,
+									age: req.body.patient_age,
+									user_id: uid,
+									phone: req.body.patient_phone,
+									date: new Date(),
+									type: "Patient",
+									profile_pic_url: "/download/profile_pic/nopic"
+								}
+
+								var outPatient = new model.user(newPatient);
+								outPatient.save(function(err,info){
+									if(err) throw err;
+									res.json({success: true,patient: newPatient});
+								})
+
+							} else {
+								// if user_id already existed client should resend the request.
+								res.json({retry: true});
+							}
+						})
+					} else {
+						res.json({error: true,message: "Oops! Something went wrong while creating patient\"s account"});
+					}			
+				}	else{
+					res.json({error: true,message: "User with this patient\'s phone number already exist."});
+				}
+			});
+
 		} else {
 			res.end("unauthorized access")
 		}

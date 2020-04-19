@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="en"  ng-app="myApp">
+
+<head>
+    <meta charset="utf-8" />
+    <noscript>
+      <META HTTP-EQUIV="Refresh" CONTENT="0;URL=/assets/show-error.html">
+    </noscript>
+
+    <link rel="apple-touch-icon" sizes="76x76" href="/assets/images/apple-icon.png">
+    <link rel="icon" type="image/png" href="/assets/images/favicon.png">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <title>APPLINIC - Covid-19</title>
+    <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no' name='viewport' />
+    <!--     Fonts and icons     -->
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700,200" rel="stylesheet" />
+    <!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" />-->
+    <link rel="stylesheet" href="/assets/css/vendor.css">
+    <link rel="icon" type="image/png" href="/assets/images/icons/favicon.png">
+    <!-- CSS Files -->
+    <link href="/assets/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="/assets/css/now-ui-kit.css" rel="stylesheet" />
+    <link href="/assets/css/my-edit.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+    <!-- CSS Just for demo purpose, don't include it in your project -->
+      <link rel="stylesheet" href="/assets/css/chat.css">
+        <link rel="stylesheet" href="/assets/css/my-edit.css" rel="stylesheet">
+   
+    <!--<link rel="stylesheet" href="/assets/css/main.css">-->
+    <script src="assets/js/core/jquery.3.2.1.min.js" type="text/javascript"></script>
+    <script type="text/javascript" src="/assets/js/source.js"></script>
+
+    <script type="text/javascript">
+        var Opera = (navigator.userAgent.match(/Opera|OPR\//) ? true : false);
+        if(Opera){
+          window.location.href = "/assets/show-error.html";
+        }
+    </script>
+    
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-128083647-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-128083647-1');
+    </script>
+
+    
+    <style>
+      body {
+          font-family: 'Montserrat', sans-serif;
+      }
+
+      .card{
+          margin-top: 30px;
+          box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      }
+
+      .nav-link {
+          color: #555;
+          display: block;
+          font-size: 1em;
+          font-weight: 600;
+          padding: .5rem 1rem;
+      }
+
+      .btn-secondary {
+        background: #f2f2f2;
+        color: #333;
+      }
+
+
+  
+.inbox_people {
+  background: #f8f8f8 none repeat scroll 0 0;
+  float: left;
+  overflow: hidden;
+  width: 35%; border-right:1px solid #c4c4c4;
+}
+.inbox_msg {
+  border: 1px solid #c4c4c4;
+  clear: both;
+  overflow: hidden;
+}
+.top_spac{ margin: 20px 0 0;}
+
+
+.recent_heading {float: left; width:40%;}
+.srch_bar {
+  display: inline-block;
+  text-align: right;
+  width: 60%; padding:
+}
+.headind_srch{ padding:10px 29px 10px 20px; overflow:hidden; border-bottom:1px solid #c4c4c4;}
+
+.recent_heading h4 {
+  color: #05728f;
+  font-size: 21px;
+  margin: auto;
+}
+.srch_bar input{ border:1px solid #cdcdcd; border-width:0 0 1px 0; width:80%; padding:2px 0 4px 6px; background:none;}
+.srch_bar .input-group-addon button {
+  background: rgba(0, 0, 0, 0) none repeat scroll 0 0;
+  border: medium none;
+  padding: 0;
+  color: #707070;
+  font-size: 18px;
+}
+.srch_bar .input-group-addon { margin: 0 0 0 -27px;}
+
+.chat_ib h5{ font-size:15px; color:#464646; margin:0 0 8px 0;}
+.chat_ib h5 span{ font-size:13px; float:right;}
+.chat_ib p{ font-size:14px; color:#989898; margin:auto}
+.chat_img {
+  float: left;
+  width: 11%;
+}
+.chat_ib {
+  float: left;
+  padding: 0 0 0 15px;
+  width: 88%;
+}
+
+.chat_people{ overflow:hidden; clear:both;}
+.chat_list {
+  border-bottom: 1px solid #c4c4c4;
+  margin: 0;
+  padding: 18px 16px 10px;
+}
+.inbox_chat { height: 450px; overflow-y: scroll;}
+
+.active_chat{ background:#ebebeb;}
+
+.incoming_msg_img {
+  display: inline-block;
+  width: 6%;
+}
+.received_msg {
+  display: inline-block;
+  padding: 0 0 0 10px;
+  vertical-align: top;
+  width: 92%;
+ }
+ .received_withd_msg p {
+  background: #ebebeb none repeat scroll 0 0;
+  border-radius: 3px;
+  color: #646464;
+  font-size: 14px;
+  margin: 0;
+  padding: 5px 10px 5px 12px;
+  width: 100%;
+}
+.time_date {
+  color: #747474;
+  display: block;
+  font-size: 12px;
+  margin: 8px 0 0;
+}
+.received_withd_msg { width: 57%;}
+.mesgs {
+  float: left;
+  padding: 30px 15px 0 25px;
+  width: 65%;
+  overflow-y: auto;
+  max-height: 600px;
+}
+
+ .sent_msg p {
+  background: #05728f none repeat scroll 0 0;
+  border-radius: 3px;
+  font-size: 14px;
+  margin: 0; color:#fff;
+  padding: 5px 10px 5px 12px;
+  width:100%;
+}
+.outgoing_msg{ overflow:hidden; margin:26px 0 26px;}
+.sent_msg {
+  float: right;
+  width: 46%;
+}
+.input_msg_write input {
+  background: rgba(0, 0, 0, 0) none repeat scroll 0 0;
+  border: medium none;
+  color: #4c4c4c;
+  font-size: 15px;
+  min-height: 48px;
+  width: 100%;
+}
+
+.type_msg {border-top: 1px solid #c4c4c4;position: relative;}
+.msg_send_btn {
+  background: #05728f none repeat scroll 0 0;
+  border: medium none;
+  border-radius: 50%;
+  color: #fff;
+  cursor: pointer;
+  font-size: 17px;
+  height: 33px;
+  position: absolute;
+  right: 0;
+  top: 11px;
+  width: 33px;
+}
+.messaging { padding: 0 0 50px 0;}
+.msg_history {
+  height: 416px;
+  overflow-y: auto;
+}
+
+.progress-bar {
+  width: 100%;
+  background-color: grey;
+}
+
+.inner-bar {
+  width: 0;
+  height: 30px;
+  background-color: #4CAF50;
+  text-align: center; /* To center it horizontally (if you want) */
+  line-height: 30px; /* To center it vertically */
+  color: white;
+}
+  </style>
+  </head>
+  <body>
+
+  <% include ./inner/nav1 %>
+
+  <div class="clearfix"></div>
+  <div class="wrapper" style="height:120px;"></div>
+ 
+  <main class="container p-2" style="">
+
+        <h4><img src="/assets/images/covid-19.png" height="72" width="72" /> covid-19</h4>
+
+        <p class="p-2">
+          There are several things you should do to avoid being infected. Covid-19 can be transmitted
+          through inhalation of droplets and microdroplets or aerosols which are body fluids containing
+          the microorganisms released into the atmosphere by carriers who cough, sneeze, scream, shout
+          or sing aloud. <br/><br/> Some of the heavier ones (droplets) drop on the floor while a few lighter ones
+          (microdroplets or aerosols) remain floating in the air for a while and can be easily inhaled by
+          those who are not covered. <br/>Touching surfaces – handrails, door knobs, objects which have been
+          touched and contaminated by carriers can also lead to cross infection especially when we pick or
+          rub our nose, eyes and face with the contaminated hand, hence the need to regularly wash our
+          hands with soap and water or sanitize them.
+        </p>
+
+
+  
+        <div style="padding: 20px!important" ng-controller="covid19Ctrl">
+        <!-- Button trigger modal -->
+        <button type="button" class="btn btn-primary mb-1" ng-click="covidChat()">
+            Chat with COVID-19 Doctor Now
+        </button>
+                   
+            <!-- Button trigger modal -->
+        <button type="button" class="btn btn-info mb-1" data-toggle="modal" data-target="#Covid19">
+            Take a COVID-19 Screening Test
+          </button>
+          
+          <!-- Modal -->
+          <div class="modal fade" id="Covid19"  tabindex="-1" role="dialog" aria-labelledby="Covid19" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content" >
+              
+                <div class="modal-body" >
+                    <div id="my-embedded-typeform"
+                    style="width: 100%; height: 510px;"></div>
+                </div>
+            
+              </div>
+            </div>
+          </div>         
+
+
+              <!-- Button trigger modal -->
+        <!--<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#Staying">
+            Staying Safe and Healthy
+          </button>
+
+            
+            <div class="modal fade" id="Staying" tabindex="-1" role="dialog" aria-labelledby="Staying" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="exampleModalLabel">Staying Safe and Healthy</h5>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div class="modal-body">
+                        Are you sick but don’t want to go hospital? Never mind. You can be managed from home if it is
+                        not an emergency.
+                        <br/>  <br/>
+                        Most uncomplicated infectious illnesses such as malaria, typhoid fever, Diarrhea, food
+                        poisoning, Sexually Transmitted Infections (STIs) and chronic medical conditions such as,
+                        hypertension, Diabetes Mellitus, angina pectoris, arthritis, migraine and many others can be
+                        managed from home and do not necessarily require hospital visits if they are not complicated.
+                        You can chat with your doctors to seek counsel or advise on how to manage your health
+                        conditions or to replenish your medications.
+                        <br/><br/>
+                        If you do not have a doctor or need a new one, you can find one on this platform.
+                        Click Chat with doctor to discuss your complaints for online management via instant chat or
+                        video call. 
+                        <br/>  <br/>
+                        <button class="btn btn-info">Chat with Doctor Now</button>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                  </div>
+                </div>
+              </div>-->
+
+                <!-- Button trigger modal -->
+        <a href="#tips" type="button" class="btn btn-primary mb-1" >
+            <!--Avoiding Hospital Visit?-->
+            Avoiding Hospital Visit?
+        </a>
+
+           
+
+                <!-- Button trigger modal -->
+        <a type="button" class="btn btn-secondary mb-1" href=" https://www.covidvisualizer.com/" target="_blank">
+            Know the Global Statistics <i class="fa fa-external-link"></i>
+        </a>
+
+    </div>
+    <br>
+    <div>
+      <h6 class="p-2">Staying Safe and Healthy:</h6>
+      <p class="p-2">
+        Are you sick but don’t want to go hospital? Never mind. You can be managed from home if it is
+        not an emergency.
+        <br/>  <br/>
+        Most uncomplicated infectious illnesses such as malaria, typhoid fever, Diarrhea, food
+        poisoning, Sexually Transmitted Infections (STIs) and chronic medical conditions such as,
+        hypertension, Diabetes Mellitus, angina pectoris, arthritis, migraine and many others can be
+        managed from home and do not necessarily require hospital visits if they are not complicated.
+        You can chat with your doctors to seek counsel or advise on how to manage your health
+        conditions or to replenish your medications.
+        <br/><br/>
+        If you do not have a doctor or need a new one, you can find one on this platform.
+        Click Chat with doctor to discuss your complaints for online management via instant chat or
+        video call. 
+        <br/>  <br/>
+        <button class="btn btn-info">Chat with Doctor Now</button>
+      </p>
+    </div>
+
+
+    <br>
+    <div class="p-2 mt-2 mb-4"><a id="tips"></a>
+      <h6 class="p-2">Avoiding Hospital Visit?</h6>
+      <div class="row">
+        <div class="col-3 pl-1">
+          <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+            <a class="nav-link active" id="v-pills-home-tab" data-toggle="pill" href="#v-pills-home" role="tab" aria-controls="v-pills-home" aria-selected="true"> Staying at home</a>
+            <a class="nav-link" id="v-pills-profile-tab" data-toggle="pill" href="#v-pills-profile" role="tab" aria-controls="v-pills-profile" aria-selected="false"> Leaving the home</a>
+            <a class="nav-link" id="v-pills-messages-tab" data-toggle="pill" href="#v-pills-messages" role="tab" aria-controls="v-pills-messages" aria-selected="false"> Wear a Mask </a>
+            <a class="nav-link" id="v-pills-settings-tab" data-toggle="pill" href="#v-pills-settings" role="tab" aria-controls="v-pills-settings" aria-selected="false">  Hand Wash</a>
+            <a class="nav-link" id="v-pills-Nostrils-tab" data-toggle="pill" href="#v-pills-Nostrils" role="tab" aria-controls="v-pills-Nostrils" aria-selected="false"> Avoid Touching Your Face, Eyes and Nostrils </a>
+            <!--<a class="nav-link" id="v-pills-handwash-tab" data-toggle="pill" href="#v-pills-handwash" role="tab" aria-controls="v-pills-handwash" aria-selected="false">  Hand Wash</a>
+
+            <a class="nav-link" id="v-pills-Socialdistancing-tab" data-toggle="pill" href="#v-pills-settings" role="tab" aria-controls="v-pills-Socialdistancing" aria-selected="false">  Hand Wash</a>
+            <a class="nav-link" id="v-pills-sneeze-tab" data-toggle="pill" href="#v-pills-Nostrils" role="tab" aria-controls="v-pills-sneeze" aria-selected="false"> Avoid Touching Your Face, Eyes and Nostrils </a>
+            <a class="nav-link" id="v-pills-covid19-tab" data-toggle="pill" href="#v-pills-handwash" role="tab" aria-controls="v-pills-covid19" aria-selected="false">  Hand Wash</a>-->
+            
+        </div>
+        </div>
+        <div class="col-9 p-1">
+            <!--There are several things you should do to avoid being infected. Covid-19 can be transmitted
+            through inhalation of droplets and microdroplets or aerosols which are body fluids containing
+            the microorganisms released into the atmosphere by carriers who cough, sneeze, scream, shout
+            or sing aloud. <br/><br/> Some of the heavier ones (droplets) drop on the floor while a few lighter ones
+            (microdroplets or aerosols) remain floating in the air for a while and can be easily inhaled by
+            those who are not covered. <br/>Touching surfaces – handrails, door knobs, objects which have been
+            touched and contaminated by carriers can also lead to cross infection especially when we pick or
+            rub our nose, eyes and face with the contaminated hand, hence the need to regularly wash our
+            hands with soap and water or sanitize them. Some of the things you can do to avoid being
+            infected include:-->
+          <div class="tab-content" style="margin-top: -40px" id="v-pills-tabContent">
+            <div class="tab-pane fade show active" id="v-pills-home" role="tabpanel" aria-labelledby="v-pills-home-tab">
+                <div class="card card-body" style="padding: 15px!important">
+                    Staying at home is the best measure to avoid being infected. Work from home, shop from home,
+                    bank from home, socialize from home and do all you can from home. The virus is outside if it’s
+                    not already in your home. 
+                    <br/><br/>
+                    Associating with people who do not have symptoms does not mean
+                    they cannot infect you because a good number of the infected persons don’t have any
+                    symptoms. Apart from getting infected when you go out, you can also infect others unknown to
+                    you that you are healthy carrier so your safest bet is to stay at home.
+                </div> 
+            </div>
+
+
+            <div class="tab-pane fade" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab">
+                <div class="card card-body" style="padding: 15px!important">
+                    Leaving the home is risky and not advisable. If you must leave home, then use a face mask and
+    your hand sanitizer; maintain 6ft or 2m from people around you. Avoid those who cough or
+    sneeze and cover your mouth with a disposable tissue or back of elbow if you have to cough or
+    
+    sneeze.  <br/><br/> Use of disposable tissue for coughing is preferable to handkerchief so you can trash it
+    immediately after use.
+                </div>
+            </div>
+
+            <div class="tab-pane fade" id="v-pills-messages" role="tabpanel" aria-labelledby="v-pills-messages-tab">
+                <div class="card card-body" style="padding: 15px!important">
+                    If you must leave home wear a mask to avoid getting infected or infecting others. If you must
+                    wear a mask, be sure of the source. If you are not sure of the source of the mask then you are
+                    safer with a home-made mask because of allegations that some masks have tested positive in
+                    some countries. <br/>
+                    
+                </div>
+            </div>
+
+
+            <div class="tab-pane fade" id="v-pills-settings" role="tabpanel" aria-labelledby="v-pills-settings-tab">
+                <div class="card card-body" style="padding: 15px!important">
+                    Washing your hands regularly with soap and water is very safe and reduces your likelihood of
+        infecting yourself or those around you. In the absence of water and soap use your hand
+        sanitizers regularly especially when going outside.
+                </div>
+            </div>
+
+
+            <div class="tab-pane fade" id="v-pills-Nostrils" role="tabpanel" aria-labelledby="v-pills-Nostrils-tab">
+                <div class="card card-body" style="padding: 15px!important">
+                    The essence of the regular hand wash is to avoid infecting others and yourself. The commonest
+                    way you can infect yourself is by introducing the virus into your respiratory system through
+                    picking or touching your nose or touching your eyes with contaminated hands.  <br/> <br/>Your hands can
+                    get contaminated from shaking another contaminated hand, holding or touching an object or
+                    surface that is contaminated. Please do not touch door knobs, rails or other hard surfaces to
+                    avoid infecting them or being infected. Viruses remain alive on surfaces for many hours.
+                </div>
+            </div>
+
+
+            <div class="tab-pane fade" id="v-pills-handwash" role="tabpanel" aria-labelledby="v-pills-handwash-tab">
+                <div class="card card-body" style="padding: 15px!important">
+                    Washing your hands regularly with soap and water is very safe and reduces your likelihood of
+        infecting yourself or those around you. In the absence of water and soap use your hand
+        sanitizers regularly especially when going outside.
+                </div>
+            </div>
+
+
+            <div class="tab-pane fade" id="v-pills-Socialdistancing" role="tabpanel" aria-labelledby="v-pills-Socialdistancing-tab">
+                <div class="card card-body" style="padding: 15px!important">
+                    A distance of 1-2m or 6 feet is recommended for association or communication with others because 
+                    COVID-19 virus is highly infective, more than previous Coronaviruses that went before it - 
+                    SARS and MERS.  <br/>
+                    Social distancing is required whether sitting or standing. Healthy habits
+                </div>
+            </div>
+
+
+            <div class="tab-pane fade" id="v-pills-sneeze" role="tabpanel" aria-labelledby="v-pills-sneeze-tab">
+                <div class="card card-body" style="padding: 15px!important">
+                    If yes please remain indoors and avoid close contact with family members. 
+                    Using disposable tissues is better than handkerchiefs so you can trash them after each sneeze 
+                    or cough.  <br/>
+                    Avoid cold drinks and ice creams because the virus multiplies faster in cold temperatures.
+                </div>
+            </div>
+
+
+            <div class="tab-pane fade" id="v-pills-covid19" role="tabpanel" aria-labelledby="v-pills-handwash-tab">
+                <div class="card card-body" style="padding: 15px!important">
+                    Covid-19 is a viral diseases and the best way to protect yourself in addition to the tips above is to 
+                    boost your immunity. <br/> Your immune system is your body’s best way of fighting viruses. Fruits and vegetables 
+                    boost the immune system especially those rich in vitamins C, A, D and E and Zinc. Oranges, pineapples,
+                     water melons and lemons are rich in vitamin C while fish oils are rich in vitamins A and E.
+                </div>
+            </div>
+
+
+          </div>
+        </div>
+      </div>
+
+      </div>
+
+
+  </main>
+
+  <div class="clearfix"></div>
+  <% include ./inner/footer %>
+    
+  <script src="https://embed.typeform.com/embed.js" type="text/javascript"></script>
+  <script type="text/javascript">  
+    const embedElement = document.querySelector('#my-embedded-typeform') // NOTE: `.target-dom-node` is the target DOM element from your website or web app
+    typeformEmbed.makeWidget(
+      embedElement,
+      'https://junniepat.typeform.com/to/G8w7PB', // NOTE: Replace with your typeform URL
+      {
+        hideHeaders: true,
+        hideFooter: true,
+        opacity: 75,
+        height: 500, 
+        buttonText: "Take the survey!", 
+        onSubmit: function (event) { 
+          console.log(event)
+          console.log('Typeform successfully submitted')
+        }
+      }
+    )
+
+  </script>
+
+  
+
+  <script type="text/ng-template" id="covid-chat-body.html">       
+    <div class="modal fade">
+      <div class="modal-dialog">
+        <div class="modal-content" style="width: 900px; margin-left: -205px;">
+          <div class="modal-header">
+            <!--<label>covid-19</label>-->
+          </div>
+          <div class="modal-body">
+
+            <form style="width: 60%;margin: 0 auto; padding: 20px" ng-submit="testPhone()" ng-if="!isVerificationSent && !isVerified">
+              <div>
+                <label>Please enter phone number</label><br>
+                <input type="text" name="" placeholder="Enter phone number" value="Continue" class="form-control" ng-model="covidUser.phone" required>
+              </div>
+             
+              <div class="text-center">
+                <input type="submit" name="" class="btn btn-danger" value="Continue" ng-if="!loading">
+                <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color: orange" ng-show="loading"></i>
+              </div>
+            </form>
+            <form style="width: 60%;margin: 0 auto;border: 1px solid rgba(0,0,0,0.2);padding: 20px" ng-submit="createAccount()" ng-if="isNewUser && isVerified">
+                <p>
+                  Please quickly fill the details below and continue.
+                </p>
+                <div>
+                  <label>Title:</label><br>
+                  <select class="form-control mt-0" ng-model="covidUser.patient_title" required>
+                    <option>Mr.</option>
+                    <option>Mrs.</option>
+                    <option>Master</option>
+                    <option>Miss</option>
+                    <option>Dr.</option>
+                    <option>Prof.</option>
+                    <option>Engr.</option>
+                  </select>
+                </div>
+                <div>
+                  <label>First name:</label><br>
+                  <input type="text" name="" class="form-control mt-0" ng-model="covidUser.patient_firstname" required>
+                </div>
+
+                 <div>
+                  <label>Last name:</label><br>
+                  <input type="text" name="" class="form-control mt-0" ng-model="covidUser.patient_lastname" required>
+                </div>
+                 <div>
+                  <label>Date of Birth:</label><br>
+                  <input type="date" name="" class="form-control mt-0" ng-model="covidUser.dob" required>
+                </div>
+
+                <div>
+                  <label>Gender:</label><br>                  
+                  <select class="form-control mt-0" ng-model="covidUser.patient_gender" required>
+                    <option value="" disabled selected>_select</option>
+                    <option>Male</option>
+                    <option>Female</option>
+                  </select>
+                </div>
+
+                <!--<div>
+                  <label>Email:</label><br>
+                  <input type="text" name="" class="form-control mt-0" ng-model="covidUser.email">
+                </div>
+
+                <div>
+                  <label>Password:</label><br>
+                  <input type="password" name="" class="form-control mt-0" ng-model="covidUser.password" required>
+                </div>
+
+                <div>
+                  <label>Confirm Password:</label><br>
+                  <input type="password" name="" class="form-control mt-0" ng-model="covidUser.password2" required>
+                </div>-->
+                <br>
+                <div>
+                  <button class="btn btn-primary">Continue</button>
+                </div>
+
+              </form>
+
+              <form style="width: 60%;margin: 0 auto;border: 1px solid rgba(0,0,0,0.2);padding: 20px" ng-submit="verifyPhoneActive()" ng-if="isVerifyPin">
+                <p>Please enter PIN sent to this "" to verify your phone number is active and move on to Chat with covid-19 doctors. </p>
+                <div class="text-center">
+                  <input type="text" name="" placeholder="Enter pin" class="form-control" ng-model="covidUser.pin"><br>
+                  <input type="submit" name="" value="Verify and continue to Chat" class="btn btn-info">
+                </div>
+              </form>
+
+            <!-- chat body -->
+            <div class="messaging" ng-if="isVerified && !isNewUser">
+              <div class="inbox_msg">
+                <div class="inbox_people">
+                  <div class="headind_srch">
+                    <div class="recent_heading">
+                      <label>Doctors</label>
+                    </div>
+                    <div class="srch_bar">
+                      <!--<div class="stylish-input-group">
+                        <input type="text" class="search-bar"  placeholder="Search" ng-model="ft">
+                       </div>--> 
+                    </div>
+                  </div>
+                  <div class="inbox_chat">
+                    <div class="chat_list " ng-class="{'text-success' : !chat.is_read,'active_chat': chat.partnerId == partner.partnerId}" ng-repeat="chat in chatsList | orderBy : '-realTime' | filter: ft" ng-click="viewChat(chat)">
+                      <div class="chat_people" >
+                     
+                        <div class="chat_img"> <img src="{{chat.profilePic}}" alt="image"> </div>
+                        <div class="chat_ib">
+                          <h5>{{chat.name}} <span class="chat_date" >{{ (chat.messages[chat.messages.length - 1].time  || chat.messages[chat.messages.length - 1].received ) | amCalendar}}</span></h5>
+                          <p class="ellipsis">{{(!chat.typing) ? (chat.messages[chat.messages.length - 1].received || chat.messages[chat.messages.length - 1].sent ) : chat.typing }}</p>
+                        </div>
+                      </div>
+                    </div>
+                
+                
+                  </div>
+                </div>
+                <div class="mesgs" ng-if="isChat || isChat === undefined" style="position: relative;">
+                  <div style="position: absolute;left: 25px;top: 5px">
+                     <span class="ellipsis" ng-cloak><b>{{partner.name}}<!--{{partner.partnerType}}--> </b>&nbsp;
+                        <span>
+                          <em ng-if="partner.typing" style="font-size: 12px;color: green"><small>{{partner.typing}}</small></em> 
+                          <em ng-if="partner.status && !partner.typing" style="font-size: 12px;color: green" ng-cloak>Online</em>
+                          <em ng-if="!partner.status && !partner.typing" ng-cloak style="color:orange;font-size: 12px"><!--{{lastSeen(partner)}}--> Offline</em>
+                          </span>
+                      </span>
+                    </div>
+                    <div ng-if="checkLogIn.typeOfUser === 'Patient' || checkLogIn.typeOfUser === 'Doctor'" style="position: absolute;right: 25px;top: 5px"> 
+                      
+                      <label for="file-input">
+                  <i class="fa fa-paperclip" aria-hidden="true" style="font-size: 18px;cursor: pointer;" title="Attach a file"></i>
+                </label>&nbsp;&nbsp;&nbsp; <input type="file" class="file-input hide" name="file-input" id="file-input" file-model-chat="files">&nbsp;&nbsp;
+
+                <a href="" title="Make video call">
+                        <i class="fa fa-video-camera"></i>
+                      </a> &nbsp;&nbsp;&nbsp;           
+                  
+                    <!--<a href="" class="ellipsis" ng-if="partner.partnerType === 'Doctor' && checkLogIn.typeOfUser !== 'Doctor'"  ng-click="chatPrivate(partner)">Single Chat</a>-->
+                    <a href="" class="text-success text-danger " style="font-size: 14px;" ng-if="partner.partnerType === 'Patient'"  ng-click="chatPrivate(partner)" title="Go to e-treatment to generate bill for treatment or consultation, refer to a spacialist, write prescription, request diagnostic investigation or view medical records, etc." >Manage Patient</a>
+                    
+                  </div>
+
+                    <div class="msg_history msg_container_base" id="base">
+
+                    <div id="sentmessage">
+                      
+                    </div>
+                    <div style="position: absolute;top:170px;right:320px" ng-if="loading">
+                      <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff;font-size: 32px" ></i>
+                    </div>
+
+
+                 
+                  </div>
+                  <form class="type_msg" ng-submit="sendChat1()">
+                    <div class="input_msg_write">
+                      <input type="text" class="write_msg" placeholder="Type a message" ng-model="user.text1" />
+                      <button type="submit" class="msg_send_btn"><i class="fa fa-paper-plane-o" aria-hidden="true"></i></button>
+                      <!--<button type="submit" class="msg_send_btn"><i class="fa fa-paperclip" aria-hidden="true"></i></button>-->
+                    </div>
+                  </form>
+                </div>
+              </div>      
+            </div>
+          </div>
+         
+        </div>
+      </div>
+    </div>
+  </script>
+
+
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <!--<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>-->
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+
+     <script src="assets/js/core/tether.min.js" type="text/javascript"></script>
+    <script src="assets/js/core/bootstrap.min.js" type="text/javascript"></script>
+    <!--  Plugin for Switches, full documentation here: http://www.jque.re/plugins/version3/bootstrap.switch/ -->
+    <script src="assets/js/plugins/bootstrap-switch.js"></script>
+    <!--  Plugin for the Sliders, full documentation here: http://refreshless.com/nouislider/ -->
+    <script src="assets/js/plugins/nouislider.min.js" type="text/javascript"></script>
+    <!--  Plugin for the DatePicker, full documentation here: https://github.com/uxsolutions/bootstrap-datepicker -->
+    <script src="assets/js/plugins/bootstrap-datepicker.js" type="text/javascript"></script>
+    <!-- Control Center for Now Ui Kit: parallax effects, scripts for the example pages etc -->
+    <script src="assets/js/now-ui-kit.js" type="text/javascript"></script>
+    <script src="/assets/js/app.js"></script>
+
+
+    <script type="text/javascript" src="/assets/js/angularclient.js"></script>
+    <script type="text/javascript" src="/assets/js/ngroute.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/assets/js/socket.min.js"></script>
+
+
+
+    <script src="/assets/js/angularAnimate.js"></script>
+    <script src="/assets/js/modalService.js"></script>
+    <script src="/assets/js/angular-touch.min.js"></script>
+    <!--<script src="/assets/js/angular-carousel.js"></script>-->
+    <script src="/assets/js/moment.min.js"></script>
+    <script src="/assets/js/angular-moment.min.js"></script>
+    <script src="/assets/js/ui-bootstrap-tpls.js"></script>
+    <script src="/assets/js/angular-clipboard.js"></script>
+    <script src="/assets/js/ngresource.js"></script>
+    <script src="/assets/js/ngPrint.js"></script>
+    <script type="text/javascript" src="/assets/js/angular-paystack/dist/angular-paystack.min.js"></script>
+    <script type="text/javascript" src="/assets/js/angular-sanitize.min.js"></script>
+    <script src="/assets/js/bower_components/angular-summernote/dist/angular-summernote.js"></script>
+    <script type="text/javascript" src="/assets/js/underscore-min.js"></script>
+<script type="text/javascript" src="/assets/js/angular-underscore.js"></script>
+
+
+  </body>
+</html>

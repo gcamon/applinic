@@ -787,7 +787,7 @@ var myModel = function () {
 		chat_id: String,
 		partnerId: String,
 		type: String,
-		realTime: String,
+		realTime: Number,
 		messages: Array,
 		date_created: String,
 		is_read: Boolean

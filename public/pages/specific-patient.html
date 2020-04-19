@@ -86,8 +86,8 @@
 
                         <span ng-cloak style="font-size: 12px;color: green">{{patientInfo.title}} {{patientInfo.firstname}} is 
                             <em ng-if="typing">{{typing}}</em> 
-                            <em ng-if="patientAvailability && !typing" ng-cloak>Online</em>
-                            <em ng-if="!patientAvailability" ng-cloak style="color:red">Offline</em>
+                            <em ng-if="patientInfo.presence && !typing" ng-cloak>Online</em>
+                            <em ng-if="!patientInfo.presence" ng-cloak style="color:red">Offline</em>
                         </span>
                     </div>
                     <div class="col-md-9 col-sm-9 col-lg-9" style="text-align: right;">
@@ -620,7 +620,7 @@
         </div>
         <div>
             <!--<textarea class="form-control p-1" placeholder="Complain" ng-model="treatment.complain"></textarea>-->
-            <label>Instructions / explanations for prescription(s) above (optional)</label><!--</span> Diagnosis ( Provisional or Final ) </label>-->
+            <label>Instructions / Explanations for prescription(s) above (optional)</label><!--</span> Diagnosis ( Provisional or Final ) </label>-->
             <div>
                 <textarea class="form-control p-1" name="drug intake guide" placeholder="For eg. Take Ibuprofen only after meals" ng-model="treatment.explanation" ng-keyup="autoExpand($event)" id="textarea"></textarea>
             </div>

@@ -11835,6 +11835,14 @@ router.post("/user/drug-kits",function(req,res){
   }
 })
 
+router.get("/covid-19",function(req,res){
+  res.render("covid-19")
+})
+
+router.get("/covid-19",function(req,res){
+  res.render("covid-19")
+})
+
 
 /*router.get("/lab/report-template/:_id",function(req,res){
   //params and query strings @reporterId @studyId @refId

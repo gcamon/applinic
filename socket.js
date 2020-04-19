@@ -27,16 +27,16 @@ module.exports = function(model,io,streams,sms) {
 		console.log("Chat temp key initialized")
 	});*/
 
-
-
   io.sockets.on('connection', function(socket){  	   
 	    console.log('a user connected');
+	    console.log(socket)
 	    var user = {};
 
 	    socket.on('join', function (data) {
 	    	user.isPresent = true; //use to check presence of user without hitting the database.
 	      socket.join(data.userId);
 	      connects[socket.id] = data.userId;
+	      console.log(connects)
 	     	//this will be reviewd later in terms of performance on the client.
 	    });
 
@@ -48,7 +48,6 @@ module.exports = function(model,io,streams,sms) {
 
 	    socket.on('courier join', function (data) {
 	      socket.join(data.id);      
-	      console.log("room created for courier service");
 	    });
 
 	    /**secr****/
@@ -127,16 +126,17 @@ module.exports = function(model,io,streams,sms) {
 	    	var date = + new Date();
 	    	data.date = date.toString();
 	    	data.id = data.date;
+	    	data.realtime = date;
 	      cb(data);
-	      model.user.findOne({user_id: data.to},{set_presence:1},function(err,Obj){
-	       	if(err) throw err;
-	       	var checkBlocked = Obj.set_presence.particular.indexOf(data.from);	       	
-	       	if(checkBlocked === -1){	       		
-	       		if(Obj.set_presence.general === true) {		       			          			
+	      //model.user.findOne({user_id: data.to},{set_presence:1},function(err,Obj){
+	       	//if(err) throw err;
+	       	//var checkBlocked = Obj.set_presence.particular.indexOf(data.from);	       	
+	       	//if(checkBlocked === -1){	       		
+	       		//if(Obj.set_presence.general === true) {		       			          			
 	       			io.sockets.to(data.to).emit('new_msg',data);
-	       		}
-	       	}	       	
-	       });
+	       		//}
+	       	//}	       	
+	       //});
 	      //save chats
 	      var chatId = data.from + "/" + data.to;
 	    	var otherId = data.to + "/" + data.from;
@@ -211,6 +211,7 @@ module.exports = function(model,io,streams,sms) {
 	    	data.id = data.date;
 	    	data.chatId = chatId;
 	    	data.opponentId = otherId;
+
 	      cb(data);
 
 	      io.sockets.to(data.to).emit('new_msg',data);	       	
@@ -713,8 +714,7 @@ module.exports = function(model,io,streams,sms) {
     });
 
     //this is used to call a user via twiml to log in and conversate with the partner
-    socket.on('invite online',function(data,cb){
-    	console.log(data)    	
+    socket.on('invite online',function(data,cb){  	
 
     	sms.calls 
         .create({
@@ -751,9 +751,10 @@ module.exports = function(model,io,streams,sms) {
 
     function leave() {
       console.log('-- ' + socket.id + ' left --');
+      console.log(connects);
       delete connects[socket.id];
       io.sockets.emit("real time presence",connects);
-      console.log(connects);
+     
       //io.sockets.emit("real time presence",{socketId: socket.id,status: false})
       //streams.removeStream(socket.id);
     }	
