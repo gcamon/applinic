@@ -161,7 +161,7 @@
                   <small style="position: absolute;bottom: -20px;left: 0">{{ (chat.messages[chat.messages.length - 1].time  || chat.messages[chat.messages.length - 1].received ) | amCalendar}}
                   </small>
                   <span class="online" ng-show="chat.status" style="position: absolute;right: 5px;bottom: -20px"></span>
-                  <span class="offline" ng-show="!chat.status" style="position: absolute;right: 5px;bottom: -20px"></span>  
+                  <span class="online" ng-show="!chat.status" style="position: absolute;right: 5px;bottom: -20px;background-color:#eee"></span>  
                   <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange;position: absolute;top:5px;right: 0" ng-show="chat.loading"></i>
                 </div>
                 

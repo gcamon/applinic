@@ -183,8 +183,8 @@ img{ max-width:100%;}
                 <div class="chat_ib" style="position: relative;">
                   <h5>{{chat.name}} <span class="chat_date" >{{ (chat.messages[chat.messages.length - 1].time  || chat.messages[chat.messages.length - 1].received ) | amCalendar}}</span></h5>
                   <p class="ellipsis">{{(!chat.typing) ? (chat.messages[chat.messages.length - 1].msg || chat.messages[chat.messages.length - 1].received || chat.messages[chat.messages.length - 1].sent ) : chat.typing }}</p>
-                  <span style="position: absolute;right: 5px; bottom: 0px" class="online" ng-show="chat.status"></span>
-                  <span style="position: absolute;right: 5px; bottom: 0px" class="offline" ng-show="!chat.status"></span>
+                  <span style="position: absolute;right: 0px; bottom: 0px" class="online" ng-show="chat.status" title="Online"></span>
+                  <span style="position: absolute;right: 0px; bottom: 0px;background-color: #ccc" title="Offline" class="online" ng-show="!chat.status"></span>
                 </div>
               </div>
             </div>

@@ -29,7 +29,6 @@ module.exports = function(model,io,streams,sms) {
 
   io.sockets.on('connection', function(socket){  	   
 	    console.log('a user connected');
-	    console.log(socket)
 	    var user = {};
 
 	    socket.on('join', function (data) {
