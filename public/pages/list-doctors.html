@@ -3,10 +3,14 @@
          <a href="" ng-click="goBack()"><i class="fa fa-arrow-left btn btn-simple"> &nbsp;Back</i></a>
   </div>
   <div class="card card-center-1 p-2">
-    <h4 class="p-0">Search Result</h4>
-    <input type="text" placeholder="Filter by place of work or doctor's name or specialty" ng-model="list.work_place" class="form-control">
+    <div class="col-md-8 p-0 m-0">
+      <h4 class="p-0 h6">Search Result</h4>
+      <br>
+      <input type="text" placeholder="Filter by place of work or doctor's name or specialty" ng-model="list.work_place" class="form-control">
+    </div>
+    <div class="clearfix"></div>
     <div>        
-        <hr>  
+       
         <section class="pb-1 row" ng-repeat="i in searchResult | filter: list.work_place | orderBy : '-status'">              
             
             <div class="col-lg-3 col-md-3 col-sm-3 col-xs-4 p-1">

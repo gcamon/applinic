@@ -1114,14 +1114,16 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
 
         switch(req.query.type){
           case "doctorname":
-            var first4 = (req.query.name.substring(0,2) !== 'Dr' || req.query.name.substring(0,2) !== 'Prof' ||
-             req.query.name.substring(0,3) !== 'Dr.') ? req.query.name.substring(0,5) : req.query.name;
-            var str = new RegExp(first4.replace(/\s+/g,"\\s+"), "gi");              
-               
+            var docName = (req.query.name) ? req.query.name : "";
+            var str = new RegExp(docName.replace(/\s+/g,"\\s+"), "gi");  
+            var criteria;
             if(req.query.city) {
-              var criteria = {name: req.query.name,city:req.query.city};             
+              ///var criteria = {name: req.query.name,city:req.query.city};
+              criteria = {$or: [{ name : { $regex: str, $options: 'i' },type:"Doctor", city: req.query.city },
+              {firstname: { $regex: str, $options: 'i' },type:"Doctor",city: req.query.city }]};                         
             } else {
-              var criteria = {name: req.query.name};
+              criteria = {$or: [{ name : { $regex: str, $options: 'i' },type:"Doctor"},
+              {firstname: { $regex: str, $options: 'i' },type:"Doctor" }]};            
             }
 
             model.user.find(criteria,{firstname:1,lastname:1,work_place:1,city:1,country:1,address:1,
@@ -1130,9 +1132,11 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
               if(err) {        
                 res.send({error:"status 500",full:[]});
                 return;
-              } else {   
-                //res.render('list-view',{data: data})
-                if(data.length == 0){
+              } else {  
+                
+                res.json(data);
+                
+                /*if(data.length == 0){
                   var criteria = (req.query.city) ? {name: { $regex: str, $options: 'i' },type:"Doctor",city: req.query.city} : 
                   {name: { $regex: str, $options: 'i' },type:"Doctor"};
 
@@ -1143,11 +1147,7 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
                     res.json(data2);
                     return;
                   })
-                } else {
-                  res.json(data);
-                  return;
-                }   
-                
+                } */                
               }
             });
             
