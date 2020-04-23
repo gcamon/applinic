@@ -3764,7 +3764,7 @@ app.controller('resultController',["$scope","$rootScope","$http","$location","$r
       docPhone = (doc) ? doc.phone : "+2348096461927";
     }
 
-    var noteMsg = $rootScope.checkLogIn.firstname + " with " +
+    var noteMsg = $rootScope.checkLogIn.firstname  + " a " + $rootScope.checkLogIn.typeOfUser  +
     " wants to chat with you on Applinic Healthcare. Please login now.";
 
     if($rootScope.chatReqCount <= 1 ){

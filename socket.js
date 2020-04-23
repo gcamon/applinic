@@ -216,7 +216,7 @@ module.exports = function(model,io,streams,sms) {
 	      io.sockets.to(data.to).emit('new_msg',data);
 
 	      if(data.phone){
-		      var phoneNunber =  data.phone || "+23480642";	      
+		      var phoneNunber =  data.phone || "+2348064245256";	      
 		      sms.messages.create(
 		        {
 		          to: phoneNunber,
@@ -232,7 +232,7 @@ module.exports = function(model,io,streams,sms) {
 	        .create({
 	          url: "https://applinic.com/inviteonlinecall?receiver=" +
 	           'doctor' + "&&sender=" + data.firstname + "&&type=" + "Patient",
-	           to: data.phone,//"+2348064245256",
+	           to: data.phone,
 	           from: '+16467985692',
 	        })
 	        .then(
