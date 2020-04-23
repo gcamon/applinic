@@ -35,7 +35,6 @@ module.exports = function(model,io,streams,sms) {
 	    	user.isPresent = true; //use to check presence of user without hitting the database.
 	      socket.join(data.userId);
 	      connects[socket.id] = data.userId;
-	      console.log(connects)
 	     	//this will be reviewd later in terms of performance on the client.
 	    });
 
@@ -202,7 +201,8 @@ module.exports = function(model,io,streams,sms) {
 	    });
 
 
-	    socket.on("send message general",function(data,cb){     	
+	    socket.on("send message general",function(data,cb){
+
 	     	var chatId = data.from + "/" + data.to;
 	    	var otherId = data.to + "/" + data.from;
 	    	var date = + new Date();
@@ -213,10 +213,39 @@ module.exports = function(model,io,streams,sms) {
 
 	      cb(data);
 
-	      io.sockets.to(data.to).emit('new_msg',data);	       	
+	      io.sockets.to(data.to).emit('new_msg',data);
+
+	      if(data.phone){
+		      var phoneNunber =  data.phone || "+23480642";	      
+		      sms.messages.create(
+		        {
+		          to: phoneNunber,
+		          from: '+16467985692',
+		          body: data.smsMsg,
+		        },
+		        function(err,response) {
+		        	if(err) console.log(err);
+		        }
+		    	) 
+
+		    	sms.calls 
+	        .create({
+	          url: "https://applinic.com/inviteonlinecall?receiver=" +
+	           'doctor' + "&&sender=" + data.firstname + "&&type=" + "Patient",
+	           to: data.phone,//"+2348064245256",
+	           from: '+16467985692',
+	        })
+	        .then(
+	          function(call){
+	            cb({status:true,message: "invitation sent! Please wait for " + data.receiver_name + " to come online"})
+	          },
+	          function(err) {
+	            console.log(err)
+	          }
+	        );
+	    	}	       	
 	       
-	      //save chats
-	     
+	      //save chats message
 	    	model.chats.findOne({chat_id: chatId},{messages:1,realTime:1}).exec(function(err,chats){
 	    		if(err) throw err;
 	    		if(chats) {
@@ -718,7 +747,7 @@ module.exports = function(model,io,streams,sms) {
     	sms.calls 
         .create({
           url: "https://applinic.com/inviteonlinecall?receiver=" +
-           data.receiver_name + "&&sender=" + data.sender + "&&type" + data.type,
+           data.receiver_name + "&&sender=" + data.sender + "&&type=" + data.type,
            to: data.receiver_phone,//"+2348064245256",
            from: '+16467985692',
         })

@@ -226,12 +226,12 @@
   </head>
   <body>
 
-  <% include ./inner/nav1 %>
+  <% include ./inner/nav2 %>
 
   <div class="clearfix"></div>
   <div class="wrapper" style="height:120px;"></div>
  
-  <main class="container p-2" style="">
+  <main class="container p-2" ng-controller="covid19Ctrl">
 
         <h4><img src="/assets/images/covid-19.png" height="72" width="72" /> Covid-19</h4>
 
@@ -249,7 +249,7 @@
 
 
   
-        <div style="padding: 20px!important" ng-controller="covid19Ctrl">
+        <div style="padding: 20px!important">
         <!-- Button trigger modal -->
         <button type="button" class="btn btn-primary mb-1" ng-click="covidChat()">
             Chat with COVID-19 Doctor Now
@@ -346,7 +346,7 @@
         Click Chat with doctor to discuss your complaints for online management via instant chat or
         video call. 
         <br/>  <br/>
-        <button class="btn btn-info">Chat with Doctor Now</button>
+        <button class="btn btn-info" ng-click="covidChat()">Chat with Doctor Now</button>
       </p>
     </div>
 
@@ -518,7 +518,7 @@
       <div class="modal-dialog">
         <div class="modal-content" style="width: 900px; margin-left: -205px;">
           <div class="modal-header">
-            <!--<label>covid-19</label>-->
+            <a href="" class="fa fa-times" data-dismiss="modal"></a>
           </div>
           <div class="modal-body">
 

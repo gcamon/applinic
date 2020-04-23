@@ -3737,17 +3737,44 @@ app.controller('resultController',["$scope","$rootScope","$http","$location","$r
   })
   .success(function(data) {   
     $scope.firstlineDoctors = data || [];
-    console.log(data)
+    $rootScope.$broadcast("users presence",{type: 'firstLine',data: $scope.firstlineDoctors ,sockets: $rootScope.sockets});
   });
  
-
+  $rootScope.chatReqCount = 0;
 
   $scope.sendChatSingle = function(){
+
     var messageBody = "Hello doc";
     var partnerId;
-    var doc =  $scope.firstlineDoctors[Math.floor(Math.random() *  ($scope.firstlineDoctors.length - 1))];
-    partnerId = (doc) ? doc.user_id : "";
-    mySocket.emit("send message general",{to: partnerId,message:messageBody,from: $rootScope.checkLogIn.user_id},
+    var docPhone;
+
+    //Here the $scope.firstlineDoctors already has been checked in the users presence broadcasted above for online and set 
+    //presence property to true;
+    for(var i = 0; i < $scope.firstlineDoctors.length; i++){
+      if($scope.firstlineDoctors[i].presence){
+        partnerId = $scope.firstlineDoctors[i].user_id;
+        docPhone = $scope.firstlineDoctors[i].phone;
+        break;
+      }
+    }
+
+    if(!partnerId){
+      var doc = $scope.firstlineDoctors[Math.floor(Math.random() *  ($scope.firstlineDoctors.length - 1))];
+      partnerId = (doc) ? doc.user_id : ""; 
+      docPhone = (doc) ? doc.phone : "+2348096461927";
+    }
+
+    var noteMsg = $rootScope.checkLogIn.firstname + " with " +
+    " wants to chat with you on Applinic Healthcare. Please login now.";
+
+    if($rootScope.chatReqCount <= 1 ){
+      var msgObj = {to: partnerId,message:messageBody,from: $rootScope.checkLogIn.user_id,
+        smsMsg: noteMsg,phone: docPhone,firstname: $rootScope.checkLogIn.firstname}
+    } else {
+      var msgObj = {to: partnerId,message:messageBody,from: $rootScope.checkLogIn.user_id}
+    }
+
+    mySocket.emit("send message general",msgObj,
       function(data){ 
       var list = $rootScope.chatsList;
       if(list) {
@@ -3760,12 +3787,15 @@ app.controller('resultController',["$scope","$rootScope","$http","$location","$r
         } else if(templateService.holdId) {
           $location.path("/general-chat");
         } else {
-          alert("You have no messages yet.")
+          alert("You have no messages yet.");
         }
         $scope.showIndicator = false;
       }
-    })  
+    });
+
     $scope.loading = true;
+
+    $rootScope.chatReqCount++;
   }
 
 }]);
@@ -4002,8 +4032,7 @@ app.controller('listController',["$scope","$location","$window","localManager",
   
   }
 
-  console.log($scope.searchResult)
-
+  
   $rootScope.$broadcast("users presence",{type: 'searchDocList',data: $scope.searchResult ,sockets: $rootScope.sockets});
 
   localManager.setValue("currentPageForPatients","/list");
@@ -11084,7 +11113,7 @@ function($scope,$location,$rootScope,$http,ModalService,$interval,templateServic
 
         $interval(function(){
           getDoctorsRealTime($rootScope.patientsDoctorList); 
-        },60000) //1 min
+        },30000) // less 1 min
 
       } else if(type === "doctor"){       
         $rootScope.patientList = data;       
@@ -11093,7 +11122,7 @@ function($scope,$location,$rootScope,$http,ModalService,$interval,templateServic
 
         $interval(function(){
           getPatientsRealTime($rootScope.patientList) 
-        },60000) //1 min
+        },30000) //less 1 min
       }
 
     });
@@ -11107,9 +11136,6 @@ function($scope,$location,$rootScope,$http,ModalService,$interval,templateServic
   }
 
   function getPatientsRealTime(list) {
-    //_.invert(hash))[1]
-    // returns the current sockets of online users and _.iverts inverts the keys/values
-    //use to check online presence   
     mySocket.emit("check presence",{status: true},function(res){
       $rootScope.$broadcast("users presence",{type: 'patientList',data: list,sockets: res});
     });       
@@ -22385,6 +22411,14 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
                 $rootScope.dispalyPresence = off;
             }
           })
+      break;
+      case 'firstLine':
+        var invert = _.invert(response.sockets);
+        if(response.data)
+          response.data.forEach(function(item){
+            if(invert[item.user_id])
+              item.presence = on;
+          });
       break;
       case 'chatList':
         var invert = _.invert(response.sockets);

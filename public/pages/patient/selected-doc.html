@@ -18,13 +18,13 @@
                   </div>
               </div>
               <hr>
-              <div>
+              <div class="col-md-10">
                   <div>                      
                      <form class="pt-1">
                          <div class="pb-1">
                              <label>Why do yo want to consult {{docInfo.title}} {{docInfo.firstname}}?</label>
                              <div class="row">
-                                 <div class="col-sm-12 col-md-5 col-lg-5">
+                                 <div class="col-sm-12 col-md-6 col-lg-6">
                                      <div>                        
                                        <label class="custom-control custom-checkbox">
                                           I am sick.
@@ -113,23 +113,23 @@
                              </div>
                             
                          </div>
-                         <hr>
+                       
                          <div ng-if="patient.sick" class="pb-1">
                              <label class="text-muted">what are your complaints?</label>
                              <div class="text-danger">{{sympMsg}}</div>
                              <div class="pb-1">
                                  <div ng-repeat="i in symptomsList" style="position: relative;padding-bottom: 5px">           
-                                      <input  type="text" placeholder="Enter symptom" ng-model="name" uib-typeahead="name for name in symptoms | filter:$viewValue | limitTo:15" class="form-control" style="width:90%">
+                                      <input  type="text" placeholder="Enter symptom" ng-model="name" uib-typeahead="name for name in symptoms | filter:$viewValue | limitTo:15" class="form-control">
                                       <i class="fa fa-times text-muted" style="cursor: pointer;position: absolute;bottom: 10px;right: 20px" ng-click="remove(i.sn)" ng-if="i.sn !== 'a'"></i>
                                       {{getSymptom(name)}}
                                   </div>
                                   <div style="text-align: right;margin: 5px 30px 0"> 
-                                      <a href="" class="fa fa-plus text-muted" ng-click="add()"> Add</a> 
+                                      <a href="" class="fa fa-plus btn btn-neutral" ng-click="add()"></a> 
                                   </div>
                              </div>
                              <label class="text-muted">How long have you been experiencing the above symptom(s)?</label>
                              <div class="pb-1">
-                               <select class="form-control" style="width:90%" ng-model="patient.period">
+                               <select class="form-control" ng-model="patient.period">
                                    <option value="" selected="selected" disabled="disabled">_select</option>
                                    <option style="font-size: 14px">few days ago</option>
                                    <option style="font-size: 14px">one week</option>
@@ -167,7 +167,7 @@
                              <label class="text-muted">How long has the pregnancy been?</label>
                              <div class="text-danger">{{pregMsg}}</div>
                              <div>
-                                 <select ng-model="patient.duration" class="form-control" style="width: 90%">
+                                 <select ng-model="patient.duration" class="form-control">
                                      <option value="" selected="selected">_select</option>
                                      <option style="font-size: 14px" > a month</option>
                                      <option style="font-size: 14px" >less than 2 months</option>
@@ -184,7 +184,7 @@
 
                             <label class="text-muted">When was your last menstruation ?</label>
                             <div class="text-danger">{{lmpMsg}}</div>
-                            <select class="form-control" style="width:90%" ng-model="patient.lmp">
+                            <select class="form-control" ng-model="patient.lmp">
                                 <option value="" selected="selected" disabled="disabled">_select</option>
                                 <option style="font-size: 14px">few days ago</option>
                                 <option style="font-size: 14px">one week ago</option>

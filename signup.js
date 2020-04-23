@@ -439,7 +439,6 @@ var signupRoute = function(model,sms,geonames,paystack,io,nodemailer) {
 		testPhone.save(function(err,info){});
 		var msgBody = "Your Phone Verification Pin for Applinic is: " + genPin;
 		var phoneNunber = (req.body.phone[0] !== "+") ? "+" + req.body.phone : req.body.phone;
-		//sms.message.sendSms('Appclinic',phoneNunber,msgBody,callBack); //"2348096461927" "2349092469137"
 		if(!req.body.isPhoneCall) {
 			sms.messages.create(
 			  {
@@ -487,7 +486,6 @@ var signupRoute = function(model,sms,geonames,paystack,io,nodemailer) {
 			model.user.findOne({phone:req.query.phone},function(err,userData){
 				if(err) throw err;
 				if(!userData){		
-					console.log(req.query);
 					res.send({error: false,errorMsg: ""});
 				} else if(!userData.password && !userData.email) {
 					res.send({error: false,errorMsg: ""});
@@ -1036,7 +1034,6 @@ var signupRoute = function(model,sms,geonames,paystack,io,nodemailer) {
 
 						var str = req.body.patient_firstname.replace(/\s/g, "");
 						var uid = genId(str);
-
 						// check to see if user_id already existed.
 						model.user.findOne({user_id: uid})
 						.exec(function(err,user){
