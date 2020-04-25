@@ -7438,11 +7438,13 @@ app.controller("referRequestController",["$scope","$http","ModalService","reques
     deleteFactory,$rootScope,$location,$resource,findSpecialistService,$filter){
 
     var source = findSpecialistService;//$resource("/user/find-specialist",null,{refer:{method: "PUT"}});
-    $scope.search = {};
+    $scope.search = $rootScope.holdSearchText || {};
     $scope.search.city = $rootScope.checkLogIn.city;
     $scope.search.specialty = $rootScope.checkLogIn.specialty;
     var spArr = [];
     var filter = {};
+
+    $rootScope.holdSearchText = $scope.search;
 
     $scope.findSpecialist = function() {
       $scope.loading = true;
