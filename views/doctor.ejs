@@ -1805,7 +1805,7 @@
                     <li style="margin-bottom:10px;" ng-if="docInfo.type === 'Meet In-Person'"><b> step 3: </b>If the response includes acceptance to meet you in person, your appointment list will be updated indicating the time and venue of appointment with {{docInfo.title}} {{docInfo.firstname}} {{docInfo.lastname}}.</li>  
                                  
                 </ul>
-                <b>Do you have any complain to back up this request? <b ng-click="yes()" style="cursor:pointer;color:green;text-decoration:underline">YES</b> 
+                <!--<b>Do you have any complain to back up this request? <b ng-click="yes()" style="cursor:pointer;color:green;text-decoration:underline">YES</b>-->
                 <form ng-if= "isYes === true">
                     <textarea ng-model="user.complain" placeholder="Briefly write your complain" class="form-control" style="height:100px; padding:5px;"></textarea>
                 </form>
@@ -2018,7 +2018,7 @@
                 <section ng-bind-html="data.message"></section>
                 <div style="text-align: center;">
                   <span class="text-primary">{{doc.msg}}</span><br>
-                  <button class="btn btn-info btn-lg" ng-if="!doc.loading" ng-click="send()">Send</button><br> <b ng-if="doc.loading"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange" ></i> Sending...</b>
+                  <button class="btn btn-info btn-lg" ng-if="!doc.loading && !doc.isSent" ng-click="send()">Send</button><br> <b ng-if="doc.loading"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange" ></i> Sending...</b>
                 </div>
               </div>
              

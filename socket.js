@@ -260,6 +260,33 @@ module.exports = function(model,io,streams,sms) {
 		    		chats.save(function(err,info){
 		    			if(err) throw err;		    		
 		    		});
+	    		} else {
+	    			var date = date; 
+	    			var msg = {}	
+		    		msg.sent = data.message || "Hello";
+		    		msg.time = data.date;
+	      		msg.id = data.date;	   		
+	      		var newChat = new model.chats({
+	      			status: false,
+	      			date_created: date,
+	      			chat_id: chatId,
+	      			realTime: date,
+	      			type:"chat",
+	      		});
+	      		model.user.findOne({user_id: data.to},function(err,user){
+	      			if(err) throw err;
+	      			if(user) {
+		      			newChat.userId = data.from;
+		      			newChat.partnerId = user.user_id;
+		      			//newChat.realTime = date;
+		      			newChat.name = user.name || user.title + " " + user.firstname;
+		      			newChat.profilePic = user.profile_pic_url;
+		      			newChat.partnerType = user.type;
+		      			newChat.is_read = (!data.presence) ? false : true; // added to check when a chat is read.
+		      			newChat.messages.push(msg)
+		      			newChat.save(function(err,info){});
+	      			}
+	      		});	      		
 	    		}
 	    	});
 
@@ -290,7 +317,7 @@ module.exports = function(model,io,streams,sms) {
 	      			if(user) {
 		      			newChat.userId = data.to;
 		      			newChat.partnerId = user.user_id;
-		      			newChat.realTime = date;
+		      			//newChat.realTime = date;
 		      			newChat.name = user.name || user.title + " " + user.firstname;
 		      			newChat.profilePic = user.profile_pic_url;
 		      			newChat.partnerType = user.type;
@@ -612,8 +639,7 @@ module.exports = function(model,io,streams,sms) {
 					} else if(user.presence) {
 						io.sockets.to(req.to).emit("receive invitation request",{message: senderNames + " wants to have video conference with you!",from: req.from,controlId:req.controlId});
 						cb({message:"Video call request sent to " + names})
-					} else {
-						
+					} else {						
 						var msg = names + " is currently not available.Your request is qeued for attendance."
 		    		cb({message: msg});
 					}
@@ -632,10 +658,9 @@ module.exports = function(model,io,streams,sms) {
 			*/
 
 			socket.on("conversation invitation acceptance",function(details,cb){
-				//will be modified to accomadate other chosen time							
+				//will be modified to accomadate other chosen time					
 				model.control.findOne({controlId: details.controlId}).exec(function(err,control){
 					if(err) throw err;
-					console.log(details);
 					if(control) {
 						streams.addStream(socket.id, details.name, details.controlId,model,details.userId);						
 						cb({controlUrl: control.controlUrl});
@@ -658,6 +683,7 @@ module.exports = function(model,io,streams,sms) {
 					default:
 					break;
 				}
+
 			});
 
 			function genRemoteId() {
@@ -763,7 +789,7 @@ module.exports = function(model,io,streams,sms) {
 
         var msgBody = "Hi, " + data.receiver_name + "," + "\nYour " + data.type + "- " + data.sender 
         + " wants to have a chat with you on Applinic. Please log in https://applinic.com/login to attend. You can download the app in play store for android"
-	    var phoneNunber =  req.body.phone;	      
+	    //var phoneNunber =  req.body.phone;	      
 	        sms.messages.create(
 	        {
 	          to: data.receiver_phone,

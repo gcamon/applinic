@@ -91,7 +91,7 @@
 					camera.stream = stream;
 					$rootScope.$broadcast('cameraIsOn',true);
 				})
-				.catch(Error('Failed to get access to local media.'));
+				.catch(alert('Failed to gain access to the device camera.'));
 		  };
     	camera.stop = function(){
     		return new Promise(function(resolve, reject){			
@@ -140,7 +140,7 @@
 
 		function getStreamById(id) {
 		    for(var i=0; i<rtc.remoteStreams.length;i++) {
-		    	if (rtc.remoteStreams[i].id === id) {return rtc.remoteStreams[i];}
+		    	if (rtc.remoteStreams[i].id === id) {return rtc.remoteStreams[i]}
 		    }
 		}
 		
@@ -166,7 +166,8 @@
 			      	return stream.userId !== user.user_id;
 			    });
 
-					
+			    console.log(streams)
+
 			    // get former state
 			    //starts from one for remote streams
 			    if(rtc.remoteStreams.length == 0) { 
@@ -253,7 +254,6 @@
 	$rootScope.connectionStatus = false; // use to check when stream is available;
 		
     controllerSocket.on("reload streams",function(data){
-    	console.log(data)
     
   		$rootScope.message = "Partner stream is now available.";
 
@@ -349,10 +349,6 @@
 		
 		}
 
-		/*
-			Invite Logic
-		*/
-
 		$scope.invite = {}
 		$scope.findInvitee = false;
 
@@ -424,7 +420,6 @@
 		});
 
 		localStream.getControlId = function(id){
-			console.log(id)
 			saveControlId.id = id;		
 		}
 

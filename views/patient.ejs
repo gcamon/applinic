@@ -55,6 +55,21 @@
                   font-weight: 300;
               }
 
+              .popup2 {
+                display: inline-block;
+                position: absolute;
+                right: -40px;
+                bottom: -100px;
+                width: 220px;
+                color: #fff;
+                background-color: #eee;
+                border: 1px solid grey;
+                padding: 10px;
+                border-radius: 8px;
+                z-index: 9
+            }
+
+
                 .nav-link a {
                     color:red;
                 }
@@ -342,14 +357,13 @@
                                 <div class="dropdown-menu notifications-dropdown-menu menuThree" style="max-height: 400px;overflow-y: auto;" ng-controller = "createRoomController">
                                     <ul class="notifications-container noti-style">
                                         <li> <h6 style="text-align: center">Appointment(s)</h6> </li>
-                                        <li ng-repeat = "app in allApp" class="msg-drp-list" ng-click= "viewAppointment(app.session_id)">
-
+                                        <li ng-repeat = "app in allApp | orderBy: '-date'" class="msg-drp-list" ng-click= "viewAppointment(app.session_id)">
                                             <a href="" class="notification-item">
                                                 <div class="img-col">
-                                                    <div class="img" style="background-image: url({{app.profilePic}})"></div>
+                                                  <div class="img" style="background-image: url({{app.profilePic}})"></div>
                                                 </div>
                                                 <div class="body-col">
-                                                    <p> <span class="accent" ng-cloak>{{app.title}} {{app.firstname}} {{app.lastname}}</span>
+                                                    <p> <span class="accent" ng-cloak>{{app.patient_title}} {{app.patient_firstname}} {{app.patient_lastname}}</span>
                                                         <span style="display:block">Hi, you have an appointment with me.</span>
                                                         <span>{{app.date | date: 'fullDate'}} (<b am-time-ago="app.date"></b>)</span>
                                                     </p>
@@ -573,7 +587,7 @@
                             <div class="col-md-12 col-sm-12 col-xs-12" ng-controller="balanceController">                                    
   
                                 <div class="row"> 
-                                    <div class="col-sm-12 col-md-7 col-lg-7 hidden-md-down">  
+                                    <div class="col-sm-12 col-md-8 col-lg-8 hidden-md-down">  
                                         <!--<a class="btn btn-simple round"  href="#/help"><i class="fa fa-question-circle"></i>
                                         <span style="color:red">Need Help?</span>
                                         </a>-->
@@ -581,6 +595,10 @@
                                         <!--<a class="btn btn-simple round"  href="#/need-specialist" ><i class="fa fa-user-md"></i>
                                         <span class="hidden-md-down text-danger">Need a Doctor?</span>
                                         </a>-->
+
+                                        <a class="btn btn-simple round"  href="#/my-doctors" ><i class="fa fa-users"></i>
+                                        <span class="hidden-md-down text-danger">My Doctors</span>
+                                        </a>
 
                                         <a class="btn btn-simple round"  href="#/" ><i class="fa fa-user-md"></i>
                                           <span class="hidden-md-down text-danger">Services</span>
@@ -603,7 +621,7 @@
                                          <a class="btn btn-simple round ml-0"  href="#/search-test" ><i class="fa fa-search"></i>
                                           <span  class="hidden-md-down text-danger">Laboratory</span>
                                         </a>
-                                         <a class="btn btn-simple round ml-0"  href="#/scan-search" ><i class="fa fa-search"></i>
+                                        <a class="btn btn-simple round ml-0"  href="#/scan-search" ><i class="fa fa-search"></i>
                                           <span class="hidden-md-down text-danger">Radiology</span>
                                         </a>
 
@@ -626,7 +644,9 @@
                                             <!--<a class="btn btn-simple round"  href="#/need-specialist" ><i class="fa fa-user-md"></i>
                                         <span class="text-danger">Need a Doctor?</span>
                                         </a>-->
-
+                                        <a class="btn btn-simple round ml-1"  href="#/my-doctors" ng-click="closeAccDiv('qs')"><i class="fa fa-search"></i>
+                                          <span  class="text-danger">My Doctors</span>
+                                        </a>
                                         <a class="btn btn-simple round ml-1"  href="#/find-specialist" ng-click="closeAccDiv('qs')"><i class="fa fa-search"></i>
                                           <span  class="text-danger">Specialists</span>
                                         </a>
@@ -646,9 +666,9 @@
                                 <!--<a class="btn btn-simple round ml-1"  href="#/create-family-account" ><i class="fa fa-users"></i>
                                     <span style="color:red">Create Family Account</span>
                                 </a>-->
-                                    <div class="col-sm-12 col-md-3 col-lg-3"> 
+                                    <div class="col-sm-12 col-md-2 col-lg-2"> 
                                         <a href="#/transactions" class="btn btn-info btn-sm header-btn" style=""><i class="fa fa-money"></i>
-                                        <span ng-cloak>Balance | <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i> {{(loading) ? "" : balance}}</span>
+                                        <span ng-cloak><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i> {{(loading) ? "" : balance}}</span>
                                         </a> 
                                     </div> 
 
@@ -800,7 +820,7 @@
                             </div>
                         </form></li> -->
 
-                                <li ng-controller="checkingOutDoctorPatientController"> 
+                                <!--<li ng-controller="checkingOutDoctorPatientController"> 
                                     <a href="">
                                         <i class="fa fa-user-md"></i> My Doctors
                                         <i class="fa arrow"></i>
@@ -817,28 +837,16 @@
                                                 <i class="fa fa-comment" style="top:25px;display:inline-block;position:absolute;left: 25px;color:#d2ed88;text-shadow:0px 2px 1px rgba(79,98,35,0.7);font-size: 10px" ng-if="i.queueLen > 0"></i>
                                                 <strong ng-if="i.queueLen > 0" style="top:10px;display:inline-block;position:absolute;left: 25px;font-size: 10px;color:#d16d1c;border-radius:5px;padding:1px 7px;text-align:center" ng-cloak>{{i.queueLen}}</strong>  
                                             </a>
-                                            <!--<img src="/assets/images/icons/online.png" ng-if="i.presence === true" style="float:right;margin-top:5px">
-                                            <img src="/assets/images/icons/offline2.png" ng-if="i.presence !== true" style="float:right;margin-top:5px">-->
+                                            
                                             
                                         </li>                                         
                                     </ul>
-                                </li>
-                                <!--<li> 
-                                    <a href="">
-                                        <i class="fa fa-bar-chart"></i>Treatment
-                                    <i class="fa arrow"></i>
-                                    </a>
-                                    <ul>
-                                        <% for(var k = 0; k < 1; k++) { %>
-                                            <li ng-click="viewTreatment()" style="padding: 5px 2px; cursor: pointer">        
-                                                <a href="">
-                                                   
-                                                </a>                                                                        
-                                            </li>
-                                        <% } %>                
-                                       
-                                    </ul>
                                 </li>-->
+                                <li ng-controller="checkingOutDoctorPatientController"> 
+                                    <a href="#/my-doctors" class="h">
+                                        <i class="fa fa-user-md"></i>My Doctors
+                                    </a>                                 
+                                </li>
                                 <li ng-cloak> 
                                     <a href="">
                                         <i class="icon-Pills"></i> Prescription ( {{totalPrescription}} )
@@ -1799,6 +1807,45 @@
       </div>
    </script>
 
+ 
+
+
+   <!-- quick appointment modal -->
+   <script type="text/ng-template" id='appointment-modal-view.html'>
+       <div class="modal fade">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="p-2">
+            <div style="position: relative;">
+                <h4 class="h6">My appointment</h4> 
+                <button type="button" class="close" ng-click="close('Yes')" data-dismiss="modal" style="position: absolute;top: -10px;right: 5px">&times;</button>      
+            </div>
+
+            <div class="modal-body">
+              <div ng-show="appointment.date">
+                <div>
+                  <span><strong>Appointment with</strong> : {{appointment.title}} {{appointment.firstname}} {{appointment.lastname}} </span>
+                </div>
+                <div>
+                  <span><strong>Appointment type </strong> : Meet-In-Person appointment</span>
+                </div>
+                <div>
+                  <span><strong>Date of appointment </strong> : {{appointment.date | date : "fullDate"}}</span> ( <span am-time-ago="appointment.date"></span> )
+                </div>
+                <div>
+                  <span><strong>Time of appointment </strong> : {{appointment.time | date : "mediumTime"}}</span>
+                </div>
+                <div>
+                  <span><strong>Vanue of appointment </strong> : {{appointment.address}}</span>
+                </div>  
+              </div>
+              <p ng-show="!appointment" class="text-center text-danger">You have no pending In-Person meeting appointment with this doctor.</p>       
+            </div>            
+          </div>
+        </div>
+      </div>
+   </script>
+
    <!-- quick chat modal -->
    <script type="text/ng-template" id='quick-chat.html'>
        <div class="modal fade">
@@ -2037,7 +2084,7 @@
               <div class="modal-body"  style="line-height: 30px">
                
                 <ul class="nav mb-1">
-                    <li style="margin-bottom:10px;"><b>Step 1: </b> Your request for {{docInfo.type}} will be send to {{docInfo.title}} {{docInfo.title.firstname}} {{docInfo.lastname}}</li>
+                    <li style="margin-bottom:10px;"><b>Step 1: </b> Your request for {{docInfo.type}} will be send to {{docInfo.title}} {{docInfo.firstname}} {{docInfo.lastname}}</li>
                     <li style="margin-bottom:10px;"><b>step 2: </b> If {{docInfo.title}} {{docInfo.title.firstname}} {{docInfo.lastname}} responds you will be notified.</li>
                     <li style="margin-bottom:10px;" ng-if="docInfo.type !== 'Meet In-Person'"><b> step 3: </b> If the response includes an acceptance to communicate with you, the system will automatically redirect you to {{docInfo.type}} page and creates a connection between you and {{docInfo.title}} {{docInfo.title.firstname}} {{docInfo.lastname}}.</li>
                     <li style="margin-bottom:10px;" ng-if="docInfo.type === 'Meet In-Person'"><b> step 3: </b>If the response includes acceptance to meet you in person, your appointment list <span class="fa fa-calendar"></span> will be updated indicating the time and venue of appointment with {{docInfo.title}} {{docInfo.firstname}} {{docInfo.lastname}}.</li>  

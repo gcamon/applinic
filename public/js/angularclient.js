@@ -83,6 +83,16 @@ app.config(['$paystackProvider','$routeProvider',
     }
   })
 
+  .when("/my-doctors",{
+    templateUrl: '/assets/pages/patient/my-doctors.html',
+    controller: 'manageDoctorsListCtr',
+    resolve: {
+      path: function($location,$rootScope){
+        $rootScope.path = $location.path();
+      }
+    }
+  })
+
   .when("/consult-specialist",{
     templateUrl: '/assets/pages/patient/selected-doc.html',
     controller: 'bookingDocController'    
@@ -3428,10 +3438,10 @@ app.service("skillProcedureService",["$resource",function($resource){
 
 app.controller('resultController',["$scope","$rootScope","$http","$location","$resource",
   "localManager","cities","templateService","templateUrlFactory","patientfindDoctorService",
-  "skillProcedureService","mySocket","$filter","deviceCheckService",
+  "skillProcedureService","mySocket","$filter","deviceCheckService","chatService",
   function($scope,$rootScope,$http,$location,$resource,localManager,
     cities,templateService,templateUrlFactory,patientfindDoctorService,
-    skillProcedureService,mySocket,$filter,deviceCheckService) {
+    skillProcedureService,mySocket,$filter,deviceCheckService,chatService) {
   $scope.user = {};
   $scope.user.type = "Doctor";
   $scope.user.city = $rootScope.checkLogIn.city;
@@ -3774,28 +3784,35 @@ app.controller('resultController',["$scope","$rootScope","$http","$location","$r
       var msgObj = {to: partnerId,message:messageBody,from: $rootScope.checkLogIn.user_id}
     }
 
+    $scope.loading = true;
+
     mySocket.emit("send message general",msgObj,
       function(data){ 
-      var list = $rootScope.chatsList;
-      if(list) {
-        var byRecent = $filter('orderBy')(list,'-realTime');
-        templateService.holdId = byRecent[0].partnerId;   
+
+      $rootScope.chatsList = chatService.chats();
+      $rootScope.chatsList.$promise.then(function(result){
+
+        $scope.loading = false;
+
+        $rootScope.chatsList = result;
+
+        //var byRecent = $filter('orderBy')(list,'-realTime');
+        templateService.holdId = partnerId;//byRecent[0].partnerId;   
         if(deviceCheckService.getDeviceType()){
-          localManager.setValue("holdIdForChat",byRecent[0].partnerId);
-          localManager.setValue("holdChatList",list);
+          localManager.setValue("holdIdForChat",partnerId);
+          localManager.setValue("holdChatList",$rootScope.chatsList);
           window.location.href = "/user/chat/general";
         } else if(templateService.holdId) {
           $location.path("/general-chat");
         } else {
           alert("You have no messages yet.");
         }
-        $scope.showIndicator = false;
-      }
+      })
+
+      $rootScope.chatReqCount++;
+      
     });
 
-    $scope.loading = true;
-
-    $rootScope.chatReqCount++;
   }
 
 }]);
@@ -5011,7 +5028,7 @@ app.controller("docNotificationController",["$scope","$location","$resource","$i
       if(deviceCheckService.getDeviceType()){
         localManager.setValue("holdIdForChat",templateService.holdId);
         localManager.setValue("holdChatList",list)
-        window.location.targer = "_blank";
+        window.location.target = "_blank";
         window.location.href = "/user/chat/general";
       } else if(templateService.holdId) {
         $location.path("/general-chat");
@@ -7547,6 +7564,7 @@ app.controller("referRequestController",["$scope","$http","ModalService","reques
         doc.loading = false;
         if(response.status) {
           doc.msg = "Referral sent!";
+          doc.isSent = true;
           $rootScope.$broadcast("consultation attended",{status:true,id: $rootScope.data.message_id});
         } else {
           doc.msg = "Oops! Something went wrong. Please try again";
@@ -8028,7 +8046,7 @@ app.controller("patientNotificationController",["$scope","$location","$http","$w
   })
 
   mySocket.on("calling",function(data){
-    var decide = confirm(data.callerFirstname + " " + data.callerLastname  + " wants to have video chat with you now!!!");
+    var decide = confirm(data.callerFirstname + " " + data.callerLastname  + " wants to have video chat with you now.");
     if(decide){
       localManager.setValue("caller",data.receiver);
       localManager.setValue("receiver",data.caller);
@@ -11031,6 +11049,8 @@ app.controller("presenceSocketController",["$rootScope","$scope","$window","mySo
     }
   });
 
+
+  //for invitation through the video call page
   mySocket.on("receive invitation request",function(data){
     templateService.playAudio(1);
     setTimeout(function(){
@@ -11098,8 +11118,9 @@ app.controller("presenceSocketController",["$rootScope","$scope","$window","mySo
 //this controller handles patient's doctors on the right corner of the patient profile page. it locates each doctors details when clicked.
 //note this controller is used both by doctors dashboard and patient dashboard.
 app.controller("checkingOutDoctorPatientController",["$scope","$location","$rootScope","$http","ModalService",
-  "$interval","templateService","localManager","mySocket","$interval",
-function($scope,$location,$rootScope,$http,ModalService,$interval,templateService,localManager,mySocket,$interval){
+  "$interval","templateService","localManager","mySocket","$interval","chatService","deviceCheckService","profileDataService",
+function($scope,$location,$rootScope,$http,ModalService,$interval,templateService,
+  localManager,mySocket,$interval,chatService,deviceCheckService,profileDataService){
   function getList(url,type) {
      $http({
       method  : 'GET',
@@ -11314,6 +11335,87 @@ function($scope,$location,$rootScope,$http,ModalService,$interval,templateServic
     ptApp()
   }
 
+
+  $scope.viewChat2 = function(patientId) { 
+    var messageBody = "Hello!";
+    var partnerId = patientId;
+    $scope.loading = true;
+
+    var msgObj = {to: partnerId,message:messageBody,from: $rootScope.checkLogIn.user_id};
+
+    mySocket.emit("send message general",msgObj,
+      function(data){ 
+      //var list = $rootScope.chatsList;
+
+      $rootScope.chatsList = chatService.chats();
+      $rootScope.chatsList.$promise.then(function(result){
+
+        $scope.loading = false;
+
+        $rootScope.chatsList = result;
+
+        //var byRecent = $filter('orderBy')($rootScope.chatsList,'-realTime');
+        templateService.holdId = partnerId;//byRecent[0].partnerId;   
+        if(deviceCheckService.getDeviceType()){
+          localManager.setValue("holdIdForChat",partnerId);
+          localManager.setValue("holdChatList",$rootScope.chatsList);
+          window.location.href = "/user/chat/general";
+        } else if(templateService.holdId) {
+          $location.path("/general-chat");
+        } 
+      });
+    });
+  }
+
+
+  $scope.videoChat = function(patientObj) {
+    var source = profileDataService;   
+    source.get({userId: patientObj.patient_id },function(data) {
+      data.type = 'Video Call';
+      templateService.holdForSpecificPatient = data;
+      ModalService.showModal({
+        templateUrl: 'sending-communication-request.html',
+        controller: "videoInitController"
+      }).then(function(modal) {
+        modal.element.modal();
+        modal.close.then(function(result) {
+           
+        });
+      });
+    });   
+  }
+
+  $scope.referToAnother = function(p){
+    var source = profileDataService; 
+    $scope.isRefloading = true;   
+    source.get({userId: p.patient_id },function(patient) {
+      $rootScope.data = {
+        date: + new Date(),
+        message_id: Math.floor(Math.random() * 99999999),
+        sender_age: patient.age,
+        sender_firstname: patient.firstname,
+        sender_gender: patient.gender,
+        sender_id: patient.user_id,
+        sender_phone: patient.phone,
+        sender_email: patient.email,
+        sender_lastname: patient.lastname,
+        sender_location: patient.city + " " +  patient.country,
+        sender_profile_pic_url: patient.patient_profile_pic_url,
+        sender_title: patient.title,
+        type: "consultation",
+        isLaterRef: "yes"
+      }  
+      $scope.isRefloading = false;
+      ModalService.showModal({
+          templateUrl: 'redirect-request.html',
+          controller: "referRequestController"
+        }).then(function(modal) {
+          modal.element.modal();
+          modal.close.then(function(result) {               
+        });
+      });
+    })
+  }
 
   
   function ptApp() {
@@ -12365,7 +12467,6 @@ app.directive('nop', function(){
         }
     }
 });
-
 
 //doctor's id is paased to this controller for ajax call;
 app.controller("myDoctorController",["$scope","$location","$http","$window","$rootScope","templateService","$filter",'$compile',
@@ -13876,8 +13977,6 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
         $scope.searchResult = list;
       })
     }
-
-   
 
     $scope.sendDrug = function() {
       $scope.loading = true;
@@ -22770,7 +22869,7 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
     if($rootScope.chatsList) {
       var elemPos = $rootScope.chatsList.map(function(x){return x.partnerId}).indexOf(templateService.holdId)
       if(elemPos !== -1){
-        $scope.partner = $rootScope.chatsList[elemPos];   
+        $scope.partner = $rootScope.chatsList[elemPos]; 
       } else {
         $scope.partner = {};
       }
@@ -26270,7 +26369,169 @@ app.controller("covidModalController",["$scope","localManager","$http","ModalSer
     $scope.verifyPhoneActive = function() {
       alert("verifyPhoneActive")
     }
+}]);
+
+
+app.controller("manageDoctorsListCtr",["$scope","$location","$rootScope","$http","ModalService",
+  "$interval","templateService","localManager","mySocket","$interval","deviceCheckService",
+  "profileDataService","chatService","$filter",
+function($scope,$location,$rootScope,$http,ModalService,$interval,templateService,
+  localManager,mySocket,$interval,deviceCheckService,profileDataService,chatService,$filter){
+ 
+
+  $scope.removePatient = function(doctor){
+    var message = "You want to remove "  
+    + doctor.doctor_lastname + " " + doctor.doctor_firstname + " from your management list?";
+
+    var check = confirm(message)
+
+    if(check) {
+      doctor.isLoading = true;
+      $http({
+        method  : 'PUT',
+        data    : {doctorId: doctor.doctor_id},
+        url     : "/user/patient/my-doctors", 
+        headers : {'Content-Type': 'application/json'} 
+      })
+      .success(function(data) {
+        //alert(data.message)
+        if(data.status) {
+          var elemPos = $rootScope.patientsDoctorList.map(function(x){return x.doctor_id}).indexOf(doctor.doctor_id);
+          if(elemPos !== -1) {
+            $rootScope.patientsDoctorList.splice(elemPos,1)
+          }
+        }
+        doctor.isLoading = false;
+      });
+    }
+  }
+
+  $scope.popup = function(doctor){
+    $rootScope.patientsDoctorList.forEach(function(item){
+      if(item.isManage)
+        item.isManage = false
+    })
+    doctor.isManage = true;
+  }
+
+  $scope.closePop = function(doctor){
+    doctor.isManage = false;
+  }
+
+  $scope.videoChat = function(docObj) {
+    var source = profileDataService;    
+    source.get({userId: docObj.doctor_id },function(data) {
+      data.type = 'Video Call';
+      $rootScope.docInfo = data;
+      templateService.holdForSpecificDoc = data;
+      ModalService.showModal({
+        templateUrl: 'sending-communication-request.html',
+        controller: "videoInitController"
+      }).then(function(modal) {
+        modal.element.modal();
+        modal.close.then(function(result) {
+           
+        });
+      });
+    });   
+  }
+
+
+  $scope.viewChat2 = function(doctorId) { 
+    var messageBody = "Hello!";
+    var partnerId = doctorId;
+    $scope.loading = true;
+
+    var msgObj = {to: partnerId,message:messageBody,from: $rootScope.checkLogIn.user_id};
+
+    mySocket.emit("send message general",msgObj,
+      function(data){ 
+      //var list = $rootScope.chatsList;
+
+      $rootScope.chatsList = chatService.chats();
+      $rootScope.chatsList.$promise.then(function(result){
+
+        $scope.loading = false;
+
+        $rootScope.chatsList = result;
+
+        //var byRecent = $filter('orderBy')($rootScope.chatsList,'-realTime');
+        templateService.holdId = partnerId;//byRecent[0].partnerId;   
+        if(deviceCheckService.getDeviceType()){
+          localManager.setValue("holdIdForChat",partnerId);
+          localManager.setValue("holdChatList",$rootScope.chatsList);
+          window.location.href = "/user/chat/general";
+        } else if(templateService.holdId) {
+          $location.path("/general-chat");
+        } 
+      });
+    });
+  }
+
+  $scope.appointments = function(sessionId){
+     templateService.holdId = sessionId;
+     ModalService.showModal({
+        templateUrl: 'appointment-modal-view.html',
+        controller: "selectedAppointmentControllerForPatient"
+      }).then(function(modal) {
+        modal.element.modal();
+        modal.close.then(function(result) {            
+      });
+    });
+  }
+
+  $scope.refresh = function() {
+    //ptApp()
+    $http.get("/user/patient/appointment/view")
+    .success(function(data){
+      $rootScope.allApp = data;
+      ptApp();
+    })
+  }
+
+
+  
+  function ptApp() {
+    $rootScope.allApp.forEach(function(p){
+      //if(!checkDueAppointment(p.date,p.time)){
+        var ptPos = $rootScope.patientsDoctorList.map(function(x){return x.doctor_id}).indexOf(p.doctorId)
+        if($rootScope.patientsDoctorList[ptPos]){
+          $rootScope.patientsDoctorList[ptPos].isNewAppointment = true;
+          $rootScope.patientsDoctorList[ptPos].sessionId = p.session_id;
+          if(checkDueAppointment(p.date,p.time))
+            $rootScope.patientsDoctorList[ptPos].appDate = checkDueAppointment(p.date,p.time);
+        }
+      //} 
+    })
+  }
+
+  var d,
+      t,
+      hr,
+      stMin;
+
+  function checkDueAppointment(dt,time) {
+    d = new Date(dt)
+    t = new Date(time);    
+    hr = d.getHours() + t.getHours();
+    stMin = d.getMinutes() + t.getMinutes();;
+    d.setHours(hr);
+    d.setMinutes(stMin)
+    return checkIsInTime(d);//moment().isBefore(moment(d).subtract(0, 'hours'));
+  }
+
+  function checkIsInTime(d) {
+    var time = moment().isBefore(moment(d).subtract(0, 'hours'))
+    return (time) ? d : null;
+  }
+
+  setTimeout(function(){
+    ptApp()
+  },3000)
+  
 }])
+
+
 
 
 function testNumber(str) {

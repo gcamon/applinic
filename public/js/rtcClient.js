@@ -14,25 +14,19 @@ var PeerManager = (function (name) {
               "username": "applinicvideo",
               "credential": "zajawekihascome",
             },
-            {"url":"stun:w3.xirsys.com"},
-            {"username":"d9e8091c-2e0a-11e8-b899-820ee5d51a5e",
-            "url":"turn:w3.xirsys.com:80?transport=udp",
-            "credential":"d9e80994-2e0a-11e8-a497-b30dd1ef5383"},
-            {"username":"d9e8091c-2e0a-11e8-b899-820ee5d51a5e",
-            "url":"turn:w3.xirsys.com:3478?transport=udp",
-            "credential":"d9e80994-2e0a-11e8-a497-b30dd1ef5383"},
-            {"username":"d9e8091c-2e0a-11e8-b899-820ee5d51a5e",
-            "url":"turn:w3.xirsys.com:80?transport=tcp",
-            "credential":"d9e80994-2e0a-11e8-a497-b30dd1ef5383"},
-            {"username":"d9e8091c-2e0a-11e8-b899-820ee5d51a5e",
-            "url":"turn:w3.xirsys.com:3478?transport=tcp",
-            "credential":"d9e80994-2e0a-11e8-a497-b30dd1ef5383"},
-            {"username":"d9e8091c-2e0a-11e8-b899-820ee5d51a5e",
-            "url":"turns:w3.xirsys.com:443?transport=tcp",
-            "credential":"d9e80994-2e0a-11e8-a497-b30dd1ef5383"},
-            {"username":"d9e8091c-2e0a-11e8-b899-820ee5d51a5e",
-            "url":"turns:w3.xirsys.com:5349?transport=tcp",
-            "credential":"d9e80994-2e0a-11e8-a497-b30dd1ef5383"}
+            {"url":"stun:ws-turn6-back.xirsys.com"},
+            {"username":"llq4pliAZuN_YDAPijAVBDAzqNRWPssFYbcEH4tCvc9OZ3xXIEt7g8a1H-5LopNMAAAAAF6hnClnY2Ftb24=",
+            "url":"turn:ws-turn6-back.xirsys.com:80?transport=udp","credential":"ce4e6a1c-8568-11ea-a7d0-b6ffbd990704"},
+            {"username":"llq4pliAZuN_YDAPijAVBDAzqNRWPssFYbcEH4tCvc9OZ3xXIEt7g8a1H-5LopNMAAAAAF6hnClnY2Ftb24=",
+            "url":"turn:ws-turn6-back.xirsys.com:3478?transport=udp","credential":"ce4e6a1c-8568-11ea-a7d0-b6ffbd990704"},
+            {"username":"llq4pliAZuN_YDAPijAVBDAzqNRWPssFYbcEH4tCvc9OZ3xXIEt7g8a1H-5LopNMAAAAAF6hnClnY2Ftb24=",
+            "url":"turn:ws-turn6-back.xirsys.com:80?transport=tcp","credential":"ce4e6a1c-8568-11ea-a7d0-b6ffbd990704"},
+            {"username":"llq4pliAZuN_YDAPijAVBDAzqNRWPssFYbcEH4tCvc9OZ3xXIEt7g8a1H-5LopNMAAAAAF6hnClnY2Ftb24=",
+            "url":"turn:ws-turn6-back.xirsys.com:3478?transport=tcp","credential":"ce4e6a1c-8568-11ea-a7d0-b6ffbd990704"},
+            {"username":"llq4pliAZuN_YDAPijAVBDAzqNRWPssFYbcEH4tCvc9OZ3xXIEt7g8a1H-5LopNMAAAAAF6hnClnY2Ftb24=",
+            "url":"turns:ws-turn6-back.xirsys.com:443?transport=tcp","credential":"ce4e6a1c-8568-11ea-a7d0-b6ffbd990704"},
+            {"username":"llq4pliAZuN_YDAPijAVBDAzqNRWPssFYbcEH4tCvc9OZ3xXIEt7g8a1H-5LopNMAAAAAF6hnClnY2Ftb24=",
+            "url":"turns:ws-turn6-back.xirsys.com:5349?transport=tcp","credential":"ce4e6a1c-8568-11ea-a7d0-b6ffbd990704"}
           ]
         },
         peerConnectionConstraints: {
@@ -101,13 +95,15 @@ var PeerManager = (function (name) {
       attachMediaStream(peer.remoteVideoEl, event.stream);
       peer.videoDiv.appendChild(peer.captionElement);
       peer.videoDiv.appendChild(peer.remoteVideoEl);
-      remoteVideosContainer.appendChild(peer.videoDiv)
+      remoteVideosContainer.appendChild(peer.videoDiv);
       //remoteVideosContainer.appendChild(peer.remoteVideoEl);
     };
+
     peer.pc.onremovestream = function(event) {
       peer.remoteVideoEl.src = '';
       remoteVideosContainer.removeChild(peer.remoteVideoEl);
     };
+
     peer.pc.oniceconnectionstatechange = function(event) {
       switch(
       (  event.srcElement // Chrome

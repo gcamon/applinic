@@ -1133,7 +1133,7 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
                 res.send({error:"status 500",full:[]});
                 return;
               } else {  
-                
+
                 res.json(data);
                 
                 /*if(data.length == 0){
@@ -1624,6 +1624,8 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
           phone:1,
           country:1,
           city:1,
+          age: 1,
+          gender:1,
           experience:1,
           work_place:1,
           address:1,
@@ -3650,7 +3652,6 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
 
         // if there is appointment save appointment to the data base
         if(req.body.appointment){
-           console.log("Appointment reqObj:", req.body.appointment)
 
           var getNames = {
             firstname : req.body.appointment.firstname,
@@ -3668,8 +3669,49 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
           req.body.appointment.profilePic = req.user.profile_pic_url;
           req.body.appointment.session_id = session_id; 
           req.body.appointment.attended = false;
-          
+          req.body.appointment.last_meeting = req.body.date;
+          req.body.appointment.patient_firstname = req.body.appointment.firstname;
+          req.body.appointment.patient_lastname = req.body.appointment.lastname;
+          req.body.appointment.patient_title = req.body.appointment.title;
+          req.body.appointment.typeOfSession = req.body.typeOfSession;
+          req.body.appointment.doctorId = req.user.user_id;
+          req.body.appointment.patient_id = req.body.patient_id;
+          req.body.appointment.attended = false;
+          req.body.appointment.created = new Date();
+
           model.user.findOne({user_id:req.body.patient_id,type:"Patient"},
+          {profile_pic_url:1,firstname:1,lastname:1,name:1,phone:1})
+          .exec(function(err,result){   
+
+            getPatientInfo.firstname = result.firstname;
+            getPatientInfo.lastname = result.lastname;
+            getPatientInfo.profilePic = result.profile_pic_url;
+            getPatientInfo.patient_username = result.name;
+            getPatientInfo.phone = result.phone;
+            
+
+            var ap = new model.appointment(req.body.appointment);
+
+            ap.save(function(err){
+              if(err) throw err;
+              console.log("appointment saved!")
+              var msgBody = "Hello " + getPatientInfo.firstname + ", " + req.user.title + " " + req.user.firstname
+              + " from Applinic Healthcare has Scheduled an In-Person meeting appointment with you on " 
+              + req.body.appointment.strDate + "\nTime is " 
+              + req.body.appointment.strTime + "\nVenue is " + req.body.appointment.address + "\nKindly login https://applinic.com/login to find out more from your doctor."
+              var phoneNunber = getPatientInfo.phone || "+2348064245256";             
+              sms.messages.create(
+                {
+                  to: phoneNunber,
+                  from: '+16467985692',
+                  body: msgBody,
+                }
+              )
+            });
+          })
+
+
+          /*model.user.findOne({user_id:req.body.patient_id,type:"Patient"},
             {appointment:1,profile_pic_url:1,firstname:1,lastname:1,name:1,phone:1}).exec(function(err,result){            
             if(err) throw err;            
             if(result){
@@ -3687,10 +3729,10 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
             } else {
               res.json({error:true,message:"Patient was not found."})
             }
-          });
+          });*/
         }
 
-        var tellDoctor = function(names){
+        /*var tellDoctor = function(names){
           req.body.appointment.session_id = req.body.session_id || session_id;                          
           req.body.appointment.last_meeting = req.body.date;
           req.body.appointment.firstname = names.firstname;
@@ -3718,15 +3760,7 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
               }
             )
           });
-
-          //req.body.appointment.profilePic = req.body.appointment.profilePic;        
-         /* model.user.findOne({user_id: req.user.user_id},{appointment:1}).exec(function(err,result){
-            result.appointment.unshift(req.body.appointment);
-            result.save(function(err,info){
-              if(err) throw err;                       
-            });
-          });*/
-        }
+        }*/
 
 
         model.user.findOne({user_id:req.body.patient_id})
@@ -3886,7 +3920,6 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
           if(data){
             data.attended = true;
             data.save(function(err,info){
-              console.log("appointment marked attended!",req.body)
               if(req.body.isFromModal){
                 var msgBody = "Hello " + req.body.patientName + ", " + req.user.title + " " + req.user.firstname
                 + " from Applinic Healthcare has CANCELED your appointment which was scheduled on " + req.body.date + "by " 
@@ -3916,7 +3949,12 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
      /* for patient appointment logic */
     router.get("/user/patient/appointment/view",function(req,res){
       if(req.user){
-        res.json(req.user.appointment);
+        //res.json(req.user.appointment);
+        model.appointment.find({patient_id: req.user.user_id})
+        .exec(function(err,app){
+          if(err) throw err;
+          res.json(app);
+        })
       } else {
         res.end("Unauthorized access");
       }
@@ -4227,19 +4265,48 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
         
         // if there is an accompanied appointment object, save and notify both the patient and doctor
         function saveAppointment() {
-          var getNames = {
+          /*var getNames = {
             firstname : req.body.appointment.firstname,
             lastname: req.body.appointment.lastname,
             patient_id: req.body.patient_id
-          }
+          }*/
+          model.user.findOne({user_id: req.body.patient_id})
+          .exec(function(err,patient){
+            if(err) throw err;
 
-          req.body.appointment.session_id = req.body.session_id;
-          req.body.appointment.firstname = req.user.firstname;
-          req.body.appointment.lastname = req.user.lastname;
-          req.body.appointment.address = req.body.appointment.address || req.user.address;
-          req.body.appointment.title = req.user.title;
-          req.body.appointment.profilePic = req.user.profile_pic_url;   
-          model.user.findOne({user_id:req.body.patient_id},{appointment:1}).exec(function(err,result){            
+            req.body.appointment.session_id = req.body.session_id;
+            req.body.appointment.firstname = req.user.firstname;
+            req.body.appointment.lastname = req.user.lastname;
+            req.body.appointment.address = req.body.appointment.address || req.user.address;
+            req.body.appointment.title = req.user.title;
+            req.body.appointment.last_meeting = req.body.date;
+            req.body.appointment.typeOfSession = sessionType.name;
+            req.body.appointment.profilePic = req.user.profile_pic_url;
+            req.body.appointment.patient_title = patient.title;
+            req.body.appointment.patient_firstname = patient.firstname;
+            req.body.appointment.patient_lastname = patient.lastname;
+            req.body.appointment.doctorId = req.user.user_id;
+            req.body.appointment.patient_id = patient.user_id;
+
+
+            var appointment = new model.appointment(req.body.appointment);
+
+            appointment.save(function(err,info){
+              if(err) throw err;
+              //tellDoctor(getNames);
+            });
+
+            console.log(appointment, "shgsdhhgsghs")
+
+            if(req.body.typeOfSession === "In-person meeting") {
+              res.json({success: "success",session_id:req.body.session_id})
+            } else {
+              res.send("success");
+            }                    
+
+          })
+         
+          /*model.user.findOne({user_id:req.body.patient_id},{appointment:1}).exec(function(err,result){            
             if(err) throw err;
             var elementPos = result.appointment.map(function(x){return x.session_id}).indexOf(req.body.session_id)
             var foundObj = result.appointment.splice(elementPos,1);
@@ -4249,15 +4316,16 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
               if(info)
                 tellDoctor(getNames);
             });
-          });   
+          });*/  
 
-          var tellDoctor = function(names){
+          /*var tellDoctor = function(names){
                  
             req.body.appointment.last_meeting = req.body.date;
             req.body.appointment.firstname = names.firstname;
             req.body.appointment.lastname = names.lastname;         
             req.body.appointment.typeOfSession = sessionType.name,
-            req.body.appointment.profilePic = req.body.appointment.profilePic;        
+            req.body.appointment.profilePic = req.body.appointment.profilePic; 
+            
             model.user.findOne({user_id: req.user.user_id},{appointment:1}).exec(function(err,result){
               if(err) throw err;
               var elementPos = result.appointment.map(function(x){return x.session_id}).indexOf(req.body.session_id)
@@ -4272,7 +4340,7 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
                 }                                   
               });
             });
-          }
+          }*/
         }
 
       } else {
@@ -9019,12 +9087,27 @@ router.get("/user/patient/get-my-doctors",function(req,res){
         if(data) {
           var index = data.accepted_doctors.map(function(x){return x.doctor_id}).indexOf(req.user.user_id)
           if(data.accepted_doctors[index]){
-            //data.accepted_doctors.splice(index,1)
             data.accepted_doctors[index].deleted = true;
+
+            var msgBody = req.user.title + " " + req.user.firstname + " " + req.user.lastname 
+            + " removed you from the management list.";
+
+            var phoneNunber =  patient.phone || "+2348096461927";
+            
+            sms.messages.create(
+              {
+                to: phoneNunber,
+                from: '+16467985692',
+                body: msgBody,
+              },
+              function(err,response){
+                console.log(err)
+              }) 
+
             data.save(function(err,info){
-              console.log("Doctor removed");
               updateDocList()
-            })
+            });
+
           }  else {
              res.json({status: false, message: "Your are not in the patient's list"})
           }
@@ -9045,7 +9128,7 @@ router.get("/user/patient/get-my-doctors",function(req,res){
           })
           res.json({status: true,message: "Patient removed successfully."})
         } else {
-          res.json({status: false, message: "Error occure, Patient not removed from your account"})
+          res.json({status: false, message: "Error occured, Patient not removed from your account"})
         }
       }
     } else {
@@ -9053,20 +9136,76 @@ router.get("/user/patient/get-my-doctors",function(req,res){
     }
   });
 
- 
+  router.put('/user/patient/my-doctors',function(req,res){
+    if(req.user){
+      model.user.findOne({user_id: req.body.doctorId,type: "Doctor"})
+      .exec(function(err,doc){
+        if(err) throw err;
 
-/*
-{ doctor_id: '161792665',
-  date_of_acceptance: '1493908992172',
-  doctor_firstname: 'Ani',
-  doctor_lastname: 'Emeka',
-  doctor_profile_pic_url: '/download/profile_pic/39e81110c0ed5fb9acefbd2402734
-b',
-  service_access: 'true',
-  doctor_specialty: 'Aerospace Medicine',
-  _id: 590b3e1707b36d582b4340ab,
-  office_hour: [] },
-*/
+        if(doc) {
+          var elemPos = doc.doctor_patients_list.map(function(x){return x.patient_id}).indexOf(req.user.user_id);
+          if(elemPos !== -1){
+            doc.doctor_patients_list.splice(elemPos,1)
+            doc.save(function(err,info){
+              if(err) throw err;
+
+              var transporter = nodemailer.createTransport({
+                host: "mail.privateemail.com",
+                port: 465,
+                auth: {
+                  user: "info@applinic.com",
+                  pass: process.env.EMAIL_PASSWORD
+                }
+              });
+
+              var sex = (req.user.gender == 'Male') ? "his" : "her";
+
+              var mailOptions = {
+                from: 'Applinic info@applinic.com',
+                to: 'ede.obinna27@gmail.com',//doc.email || info@applinic.com,
+                subject: 'Patient Removed You!',
+                html: '<table><tr></th></tr><tr><td>Dear ' 
+                + doc.title + ' ' + doc.firstname + "<br><br>Your patient - " + req.user.title + ' ' 
+                + req.user.firstname + " " + req.user.lastname + "<br> removed you from " + sex + " management list.<br><br> "
+                + "Please contact the patient - " + req.user.phone + " for more details <br>"
+                + "Thank you for using Applinic.<br></br><br>"
+                + "<b>Applinic Team</b></td></tr></table>"
+              };
+
+              transporter.sendMail(mailOptions, function(error, info){
+                if (error) {
+                  console.log(error);
+                } else {
+                  console.log('Email sent: ' + info.response);
+                }
+              });
+              res.json({status: true,message: "Doctor removed successfully."})
+              updatePatientList();
+            })
+          } else {
+            res.json({status: false,message: "Error occured, Doctor not removed from your account"})
+          }
+        }
+      })
+
+      function updatePatientList() {        
+        var index = req.user.accepted_doctors.map(function(x){return x.doctor_id}).indexOf(req.body.doctorId)
+        if(req.user.accepted_doctors[index]){
+          req.user.accepted_doctors.splice(index,1)
+          req.user.save(function(err,info){
+            if(err) throw err;
+            console.log("doctor removed from list successfully!");
+          })
+        }
+      }
+
+
+    } else {
+      res.end("Unauthorized Access!")
+    }
+
+  })
+
 
 /** this route gets all the request sent by patient for a doctor. The response is an object with properties like
 doctor_notification, doctor_prescriptionRequest,doctor_mail,inPerson_appointment, chat_request,video_call_request,audio_call_request.

@@ -956,7 +956,10 @@ var myModel = function () {
 		profilePic: String,
 		doctorId: String,
 		attended: Boolean,
-		created: Date
+		created: Date,
+		patient_title: String,
+		patient_firstname: String,
+		patient_lastname: String 
 	},{
 		collections: "appointmentinfos"
 	});
