@@ -9123,7 +9123,6 @@ router.get("/user/patient/get-my-doctors",function(req,res){
           req.user.doctor_patients_list[elemPos].deleted = true;
           req.user.save(function(err,info){
             if(err) throw err;
-            console.log("Doctor list updated!")
             io.sockets.to(req.body.patientId).emit("remove in list",{doctorId: req.user.user_id})
           })
           res.json({status: true,message: "Patient removed successfully."})

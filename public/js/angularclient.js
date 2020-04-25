@@ -10905,8 +10905,8 @@ app.controller("createRoomController",["$scope","localManager","mySocket","$root
 
 //controls online presence icon to show who is online or offline. Note for doctors only ppatients that are online are displayed.
 app.controller("presenceSocketController",["$rootScope","$scope","$window","mySocket","localManager",
-  "ModalService","templateService","$interval",
-  function($rootScope,$scope,$window,mySocket,localManager,ModalService,templateService,$interval){
+  "ModalService","templateService","$interval","deviceCheckService",
+  function($rootScope,$scope,$window,mySocket,localManager,ModalService,templateService,$interval,deviceCheckService){
    
    var person = localManager.getValue("resolveUser");
    JSON.stringify(window.localStorage.setItem("user",person));// just to save person to local storage;
@@ -10957,12 +10957,11 @@ app.controller("presenceSocketController",["$rootScope","$scope","$window","mySo
 
   getUsersOnline();
 
-  $interval(function(){
-    console.log("patientList: ", $rootScope.patientList)
-    getUsersOnline()
-  },30000) // 1 min and some secs
+  if(deviceCheckService.getDeviceType())
+    $interval(function(){
+      getUsersOnline()
+    },30000) // 1 min and some secs
 
-  
   $scope.user = {};
   // setting user presence online or offline.
   $scope.user.presence = "online";
@@ -11421,16 +11420,17 @@ function($scope,$location,$rootScope,$http,ModalService,$interval,templateServic
 
   
   function ptApp() {
-    $rootScope.appointmentList.forEach(function(p){
-      //if(!checkDueAppointment(p.date,p.time)){
-        var ptPos = $rootScope.patientList.map(function(x){return x.patient_id}).indexOf(p.patient_id)
-        if($rootScope.patientList[ptPos]){
-          $rootScope.patientList[ptPos].isNewAppointment = true;
-          if(checkDueAppointment(p.date,p.time))
-            $rootScope.patientList[ptPos].appDate = checkDueAppointment(p.date,p.time);
-        }
-      //} 
-    })
+    if($rootScope.appointmentList);
+      $rootScope.appointmentList.forEach(function(p){
+        //if(!checkDueAppointment(p.date,p.time)){
+          var ptPos = $rootScope.patientList.map(function(x){return x.patient_id}).indexOf(p.patient_id)
+          if($rootScope.patientList[ptPos]){
+            $rootScope.patientList[ptPos].isNewAppointment = true;
+            if(checkDueAppointment(p.date,p.time))
+              $rootScope.patientList[ptPos].appDate = checkDueAppointment(p.date,p.time);
+          }
+        //} 
+      })
   }
 
   var d,
@@ -13024,8 +13024,9 @@ app.service("outPatientBillingService",["$resource",function($resource){
 }]);
 
 //similar the mydoctorController
-app.controller("myPatientController",["$scope","$http","$location","$window","$rootScope","templateService","localManager","$filter",
-  "ModalService","Drugs","mySocket","$resource","deviceCheckService","myPatientControllerService","outPatientBillingService",
+app.controller("myPatientController",["$scope","$http","$location","$window","$rootScope","templateService","localManager",
+  "$filter","ModalService","Drugs","mySocket","$resource","deviceCheckService",
+  "myPatientControllerService","outPatientBillingService",
   "getPatientMedicationByDoctorService","getMedicalHistoryService","drugNotRanService","getAllPharmacyService",
   "getSessionService",'$compile',"$interval",
   function($scope,$http,$location,$window,$rootScope,templateService,localManager,$filter,ModalService,
@@ -14335,7 +14336,19 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
       });
     }
 
-  
+    $rootScope.patientOnlineStatus = null;
+
+    function getPatientsRealTime() {
+      mySocket.emit("check presence",{status: true},function(res){
+        $rootScope.$broadcast("users presence",{type: 'patient',data: patient, sockets: res});
+      });      
+      
+    }
+
+    $interval(function(){
+      getPatientsRealTime() 
+    },30000) //less 1 min
+
     function reqModal(patientObj) {
       templateService.holdForSpecificPatient = patientObj
       ModalService.showModal({
@@ -22480,26 +22493,30 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
     var on = true;
     var off = false;
     var inView = (localManager.getValue('availablility')) ? localManager.getValue('availablility') : {};
+    var invert;
     switch(response.type) {
-      case 'patientList':        
-        var invert = _.invert(response.sockets);
-        response.data.forEach(function(item){
-          if(invert[item.patient_id]){
-            item.presence = on;
+      case 'patientList':  
+        if(response.data) {     
+          invert = _.invert(response.sockets);
+          response.data.forEach(function(item){
+            if(invert[item.patient_id]){
+              item.presence = on;
 
-            if(inView.id === item.patient_id)
-              $rootScope.patientAvailability = on;            
-          } else {
-            item.presence = off;
+              if(inView.id === item.patient_id)
+                $rootScope.patientAvailability = on;            
+            } else {
+              item.presence = off;
 
-            if(inView.id === item.patient_id)
-              $rootScope.patientAvailability = off;
-            
-          }
-        })
+              if(inView.id === item.patient_id)
+                $rootScope.patientAvailability = off;
+              
+            }
+          })
+        }
       break;
+
       case 'doctorList':     
-        var invert = _.invert(response.sockets);
+        invert = _.invert(response.sockets);
         if(response.data)
           response.data.forEach(function(item){
             if(invert[item.doctor_id]){
@@ -22514,7 +22531,7 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
           })
       break;
       case 'firstLine':
-        var invert = _.invert(response.sockets);
+        invert = _.invert(response.sockets);
         if(response.data)
           response.data.forEach(function(item){
             if(invert[item.user_id])
@@ -22522,7 +22539,7 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
           });
       break;
       case 'chatList':
-        var invert = _.invert(response.sockets);
+        invert = _.invert(response.sockets);
         response.data.forEach(function(item){
           if(invert[item.partnerId]){
             item.status = on;            
@@ -22533,7 +22550,7 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
       break;
       case "searchDocList":
         //online presense for doctors search results.
-        var invert = _.invert(response.sockets);
+        invert = _.invert(response.sockets);
         response.data.forEach(function(item){
           if(invert[item.user_id]){
             item.status = on;            
@@ -22542,10 +22559,17 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
           }
         })
       break;
+      case 'patient':
+        invert = _.invert(response.sockets);      
+        if(invert[response.data.patient_id])
+          $rootScope.patientOnlineStatus = on;
+        else
+          $rootScope.patientOnlineStatus = off;
+      break;
       default:
         // online presence for pharmacy and diagnostic enter search results
         var list = response.data.full.concat(response.data.less);
-        var invert = _.invert(response.sockets);
+        invert = _.invert(response.sockets);
         list.forEach(function(item){
           if(invert[item.id]){
             item.status = on;            

@@ -84,10 +84,10 @@
                         <!--<button class="btn btn-success btn-sm" style="font-size: 16px" ng-click="chatLive()">
                         <i class="fa fa-comment"></i> </button>&nbsp;&nbsp;&nbsp;-->
 
-                        <span ng-cloak style="font-size: 12px;color: green">{{patientInfo.title}} {{patientInfo.firstname}} is 
+                        <span ng-cloak style="font-size: 14px;color: green">{{patientInfo.title}} {{patientInfo.firstname}} is 
                             <em ng-if="typing">{{typing}}</em> 
-                            <em ng-if="patientInfo.presence && !typing" ng-cloak>Online</em>
-                            <em ng-if="!patientInfo.presence" ng-cloak style="color:red">Offline</em>
+                            <em ng-if="patientOnlineStatus" && !typing" ng-cloak>Online</em>
+                            <em ng-if="patientOnlineStatus == false" ng-cloak style="color:red">Offline</em>
                         </span>
                     </div>
                     <div class="col-md-9 col-sm-9 col-lg-9" style="text-align: right;">
