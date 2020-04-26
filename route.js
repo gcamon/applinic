@@ -11981,13 +11981,12 @@ router.get("/covid-19",function(req,res){
 
 router.post("/user/import-patient",function(req,res){
   if(req.user){
-    console.log(req.body)
     if(req.user.admin) {
-      model.user.findOne({phone: req.body.phone})
+      model.user.findOne({phone: req.body.phone,type: "Patient"})
       .exec(function(err,patient){
         if(err) throw err;
         if(patient){
-            model.user.findOne({phone: req.body.doctorPhone})
+            model.user.findOne({phone: req.body.doctorPhone,type: "Doctor"})
             .exec(function(err,doctor){
               if(err) throw err;
               if(doctor){

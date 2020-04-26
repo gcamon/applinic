@@ -26361,6 +26361,16 @@ app.controller("adminAddToListCtrl",["$scope","$http",function($scope,$http){
       return;
     }
 
+    if($scope.subject.phone.indexOf('+') == -1) {
+      var newSlice = $scope.subject.phone.slice(1);
+      $scope.subject.phone = "+234" + newSlice;
+    }
+
+    if($scope.subject.doctorPhone.indexOf('+') == -1) {
+      var newSlice = $scope.subject.doctorPhone.slice(1);
+      $scope.subject.doctorPhone = "+234" + newSlice;
+    }
+
     $scope.loading = true;
     $http({
       method  : "POST",
@@ -26368,10 +26378,8 @@ app.controller("adminAddToListCtrl",["$scope","$http",function($scope,$http){
       data    : $scope.subject,
       headers : {'Content-Type': 'application/json'} 
       })
-    .success(function(data) {
-     
+    .success(function(data) {     
       alert(data.message)
-   
       $scope.loading = false;
     });
   }
