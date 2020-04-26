@@ -831,6 +831,11 @@ app.config(['$paystackProvider','$routeProvider',
     controller: "adminAddKitCtrl"
  })
 
+ .when("/add-to-list",{
+    templateUrl: "/assets/pages/utilities/add-to-list.html",
+    controller: "adminAddToListCtrl"
+ })
+
  .when("/scroll",{
     templateUrl: "/assets/pages/utilities/scroll.html",
     controller: "adminScrollCtrl"
@@ -26342,6 +26347,35 @@ app.controller('adminAddKitCtrl',["$scope","$http","Drugs","dynamicService",
   });
 
 }]);
+
+app.controller("adminAddToListCtrl",["$scope","$http",function($scope,$http){
+
+  $scope.subject = {};
+
+
+
+  $scope.addPatient = function(){
+
+    if(!$scope.subject.phone || !$scope.subject.doctorPhone){
+      alert("Please complete the fields below");
+      return;
+    }
+
+    $scope.loading = true;
+    $http({
+      method  : "POST",
+      url     : "/user/import-patient", 
+      data    : $scope.subject,
+      headers : {'Content-Type': 'application/json'} 
+      })
+    .success(function(data) {
+     
+      alert(data.message)
+   
+      $scope.loading = false;
+    });
+  }
+}])
 
 app.controller("covid19Ctrl",["$scope","localManager","$http","ModalService",
   function($scope,localManager,$http,ModalService){    

@@ -1,0 +1,13 @@
+
+
+<div class="p-2" style="width: 50%">
+	<h5>Add Patient to a Doctor Management List</h5>
+	<form ng-submit="addPatient()">
+		<label>Patient Phone</label><br>
+		<input type="text" name="" class="form-control" ng-model="subject.phone"><br><br>
+	    <label>Doctor Phone</label><br>
+		<input type="text" name="" class="form-control" ng-model="subject.doctorPhone"><br><br>
+		<input type="submit" name="" value="Add" class="btn btn-danger" ng-show="!loading">
+		<span ng-show="loading">Adding...</span>
+	</form>
+</div>

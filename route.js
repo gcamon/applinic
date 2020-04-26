@@ -11979,6 +11979,80 @@ router.get("/covid-19",function(req,res){
   res.render("covid-19")
 })
 
+router.post("/user/import-patient",function(req,res){
+  if(req.user){
+    console.log(req.body)
+    if(req.user.admin) {
+      model.user.findOne({phone: req.body.phone})
+      .exec(function(err,patient){
+        if(err) throw err;
+        if(patient){
+            model.user.findOne({phone: req.body.doctorPhone})
+            .exec(function(err,doctor){
+              if(err) throw err;
+              if(doctor){
+                var elemPos = patient.accepted_doctors.map(function(x){return x.doctor_id}).indexOf(doctor.user_id)
+                if(elemPos == -1) {
+                  patient.accepted_doctors.unshift({
+                    doctor_id: doctor.user_id,
+                    date_of_acceptance: + new Date(),
+                    doctor_firstname: doctor.name,
+                    doctor_lastname:  doctor.lastname,
+                    doctor_profile_pic_url: doctor.profile_pic_url,
+                    service_access: true,
+                    doctor_specialty: doctor.specialty          
+                  });
+                }
+                var elemPos2 = doctor.doctor_patients_list.map(function(x){return x.patient_id}).indexOf(patient.user_id)
+                if(elemPos2 == -1) {
+                  doctor.doctor_patients_list.unshift({
+                    patient_firstname: patient.firstname,
+                    date: + new Date(),
+                    patient_lastname: patient.lastname,
+                    patient_id: patient.user_id,
+                    patient_profile_pic_url: patient.profile_pic_url,
+                    patient_address: patient.address,
+                    patient_city: patient.city,
+                    Patient_country: patient.country,
+                    patient_gender: patient.gender,
+                    patient_age: patient.age,
+                    presence: false,
+                    initial_complaint: {
+                      complaint: "This patient was added through invitation. No complaint was recorded.",
+                      complaint_date: + new Date(),
+                      date_received: + new Date(),
+                    }
+                  });
+                }
+
+                patient.save(function(err,info){
+                  if(err) throw err;
+                  console.log("Doctor added to patient list")
+                });
+
+                doctor.save(function(err,info){
+                  if(err) throw err;
+                   console.log("Patient added to doctor list");
+                   res.json({status: true,message: 'Success!'})
+                });
+
+              } else {
+                res.json({status: false, message: "Doctor not found"})
+              }
+            })
+        } else {
+          res.json({status: false, message: "Patient not found"})
+        }
+      });
+
+    } else {
+      res.json({status: false, message: "You have no permission to do this."})
+    }
+  } else {
+    res.end("Unauthorized Access")
+  }
+})
+
 
 /*router.get("/lab/report-template/:_id",function(req,res){
   //params and query strings @reporterId @studyId @refId
