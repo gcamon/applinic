@@ -137,17 +137,20 @@ var signupRoute = function(model,sms,geonames,paystack,io,nodemailer) {
 						User.mrak = uuid.v1();
 					}
 
+					
 					if(req.body.invitationId){
 						model.invite.findOne({id: req.body.invitationId})
 						.exec(function(err,invite){
 							if(err) throw err;
+							
 							if(invite){
 								model.user.findOne({user_id: invite.referral_id})
 								.exec(function(err,referral){
 									if(err) throw err;
+									
 									if(referral){
 										if(req.body.typeOfUser === "Patient" && invite.type === req.body.typeOfUser) {
-											User.accepted_doctors.push({
+											User.accepted_doctors.unshift({
 												doctor_id: referral.user_id,
 												date_of_acceptance: + new Date(),
 												doctor_firstname: referral.name,
@@ -157,7 +160,7 @@ var signupRoute = function(model,sms,geonames,paystack,io,nodemailer) {
 												doctor_specialty: referral.specialty					
 											});
 
-											referral.doctor_patients_list.push({
+											referral.doctor_patients_list.unshift({
 												patient_firstname: User.firstname,
 												date: + new Date(),
 												patient_lastname: User.lastname,
@@ -173,7 +176,7 @@ var signupRoute = function(model,sms,geonames,paystack,io,nodemailer) {
 										    	complaint: "This patient was added through invitation. No complaint was recorded.",
 										    	complaint_date: + new Date(),
 										    	date_received: + new Date(),
-										    }
+										    	}
 											});
 
 											var transporter = nodemailer.createTransport({
@@ -204,13 +207,19 @@ var signupRoute = function(model,sms,geonames,paystack,io,nodemailer) {
 											  }
 											});
 
-											invite.remove(function(){});
-											referral.save(function(){});
+											invite.remove(function(err,info){
+												console.log(err)
+												console.log("patient added to doctor list")
+											});
+											referral.save(function(err,info){
+												if(err) throw err;
+												console.log("reerral operation saved well")
+											});
 											saveUser();
 
 										} else if(req.body.typeOfUser === "Doctor" && invite.type === req.body.typeOfUser){
 
-											referral.accepted_doctors.push({
+											referral.accepted_doctors.unshift({
 												doctor_id: User.user_id,
 												date_of_acceptance: + new Date(),
 												doctor_firstname: User.firstname,
@@ -221,7 +230,7 @@ var signupRoute = function(model,sms,geonames,paystack,io,nodemailer) {
 												doctor_specialty: User.specialty					
 											});
 
-											referral.doctor_patients_list.push({
+											referral.doctor_patients_list.unshift({
 												patient_firstname: referral.firstname,
 												date: + new Date(),
 												patient_lastname: referral.lastname,

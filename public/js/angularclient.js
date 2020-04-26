@@ -2332,8 +2332,7 @@ app.controller('signupController',["$scope","$http","$location","$window","templ
 
   var count = 0;
   $scope.referredType = function(type,id) {
-    count++;
-    if(count <= 1 && type) {
+    if(!$rootScope.invitationId && type) {
       $rootScope.invitationId = id;
       switch(type){
         case "Patient":

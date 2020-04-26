@@ -10371,13 +10371,14 @@ router.get("/user/doctor/initial-complaint",function(req,res){
 
 router.post("/user/invitation",function(req,res){
   if(req.user) {
-    console.log(req.body);
     var msgBody;
     var intRegex = /[0-9 -()+]+$/;
     var emailReg = /^\w+([\.-]?\w+)+@\w+([\.:]?\w+)+(\.[a-zA-Z0-9]{2,3})+$/;
     var names = (req.user.lastname) ? req.user.title + " " + req.user.lastname : req.user.name;
     var work = (req.user.work_place) ? "at " + req.user.work_place : "on Applinic";
     var uid = uuid.v1();
+
+    console.log(req.user.user_id + "/" + uid)
 
     model.user.findOne({$or: [{ phone : req.body.recepient},{email: req.body.recepient}]})
     .exec(function(err,user){
@@ -10416,8 +10417,8 @@ router.post("/user/invitation",function(req,res){
           + "<br><br> <b>Invitation to join Applinic</b><br><br><b>" + names + ",</b> " + "a " + req.user.type + " " + work
           + "<br> invites you to join Applinic for your medical appointments, consultations, investigations and prescriptions.<br><br>" 
           + "This will enable you save your medical records for future use and also get discounts on medical services.<br><br>" 
-          + "Click the button below to register now for free.<br><br> <div style='text-align:center;padding-top:15px'> <a href='https://applinic.com/signup?ref=" + req.user.user_id + "&&id=" + uid
-          + "&&type=Patient'style='padding: 20px;background-color:green;color:#fff;border-radius:4px'>Join now!</a></div>" 
+          + "Click the button below to register now for free.<br><br> <div style='text-align:center;padding-top:15px'> <a href='https://applinic.com/signup?ref=" + req.user.user_id + "&id=" + uid
+          + "&type=Patient'style='padding: 20px;background-color:green;color:#fff;border-radius:4px'>Join now!</a></div>" 
           + "<br><br> <b>Applinic Team</b></td></tr></table>"
         break;
         case 'Doctor':
@@ -10425,8 +10426,8 @@ router.post("/user/invitation",function(req,res){
           + "<br><br> <b>Invitation to join Applinic</b><br><br><b>" + names + ",</b> " + "a " + req.user.type + " " + work
           + "<br> invites you to join Applinic for your medical appointments, consultations, investigations and prescriptions.<br><br>" 
           + "This will enable you save, access and manage patient medical record online and also communicate with your patient anywhere, anytime.<br><br>" 
-          + "Click the button below to register now for free.<br><br> <div style='text-align:center;padding-top:15px'> <a href='https://applinic.com/signup?ref=" + req.user.user_id + "&&id=" + uid
-          + "&&type=Doctor'style='padding: 20px;background-color:green;color:#fff;border-radius:4px'>Join now!</a></div>" 
+          + "Click the button below to register now for free.<br><br> <div style='text-align:center;padding-top:15px'> <a href='https://applinic.com/signup?ref=" + req.user.user_id + "&id=" + uid
+          + "&type=Doctor'style='padding: 20px;background-color:green;color:#fff;border-radius:4px'>Join now!</a></div>" 
           + "<br><br> <b>Applinic Team</b></td></tr></table>"
         break;
         case 'Pharmacy':
@@ -10434,8 +10435,8 @@ router.post("/user/invitation",function(req,res){
           + "<br><br> <b>Invitation to join Applinic</b><br><br><b>" + names + ",</b> " + "a " + req.user.type + " " + work
           + "<br> invites you to join Applinic so that patients' prescriptions can be referred to your center.<br><br>" 
           + "This will enable you grow your business and receive prescription order online.<br><br>" 
-          + "Click the button below to register now for free.<br><br> <div style='text-align:center;padding-top:15px'> <a href='https://applinic.com/signup?ref=" + req.user.user_id + "&&id=" + uid
-          + "&&type=Pharmacy'style='padding: 20px;background-color:green;color:#fff;border-radius:4px'>Join now!</a></div>" 
+          + "Click the button below to register now for free.<br><br> <div style='text-align:center;padding-top:15px'> <a href='https://applinic.com/signup?ref=" + req.user.user_id + "&id=" + uid
+          + "&type=Pharmacy'style='padding: 20px;background-color:green;color:#fff;border-radius:4px'>Join now!</a></div>" 
           + "<br><br> <b>Applinic Team</b></td></tr></table>"
         break;
         default:
@@ -10443,8 +10444,8 @@ router.post("/user/invitation",function(req,res){
           + "<br><br> <b>Invitation to join Applinic</b><br><br><b>" + names + ",</b> " + "a " + req.user.type + " " + work
           + "<br> invites you to join Applinic so that patients' investigations can be referred to your center.<br><br>" 
           + "This will enable you grow your business and receive investigation requests online.<br><br>" 
-          + "Click the button below to register now for free.<br><br> <div style='text-align:center;padding-top:15px'> <a href='https://applinic.com/signup?ref=" + req.user.user_id + "&&id=" + uid
-          + "&&type=Center'style='padding: 20px;background-color:green;color:#fff;border-radius:4px'>Join now!</a></div>" 
+          + "Click the button below to register now for free.<br><br> <div style='text-align:center;padding-top:15px'> <a href='https://applinic.com/signup?ref=" + req.user.user_id + "&id=" + uid
+          + "&type=Center'style='padding: 20px;background-color:green;color:#fff;border-radius:4px'>Join now!</a></div>" 
           + "<br><br> <b>Applinic Team</b></td></tr></table>"
         break;
       }
@@ -10471,7 +10472,6 @@ router.post("/user/invitation",function(req,res){
           res.json({status:false,message:"Error occured while sending email. Please check the email is correct and try again."})
 
         } else {
-          console.log('Email sent: ' + info.response);
           res.json({status:true,message: "invitation sent!"});
           if(req.body.type == "Patient" || req.body.type == "Doctor")
             createInvite()
@@ -10482,7 +10482,7 @@ router.post("/user/invitation",function(req,res){
     function sendSMS() {
       var msgBody = names + ", a " + req.user.type + " " 
       + work  + "\nsent an invitation to join Applinic. click the link below to register now for free!\n" 
-      + "https://applinic.com/signup?ref=" + req.user.user_id + "&&id=" + uid + "&&type=" + req.body.type;
+      + "https://applinic.com/signup?ref=" + req.user.user_id + "&id=" + uid + "&type=" + req.body.type;
 
       var phoneNunber =  req.body.recepient;
       
@@ -10517,8 +10517,6 @@ router.post("/user/invitation",function(req,res){
       });
 
       invite.save(function(){});
-
-      console.log(invite)
     }
     
 
