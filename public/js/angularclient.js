@@ -1,5 +1,8 @@
 (function() {
 
+window.isPageLoad = true;
+
+
 var app = angular.module('myApp',["ngRoute","ngAnimate","angularModalService","angularMoment",'ui.bootstrap',
   'angular-clipboard',"ngResource","btford.socket-io","ngTouch",'ngPrint','paystack','ngSanitize','summernote',
   'xen3r0.underscorejs']);
@@ -10890,15 +10893,28 @@ app.controller("selectedCenterController",["$scope","$location","$http","templat
 }]);
 
 
-app.controller("createRoomController",["$scope","localManager","mySocket","$rootScope","templateService","$location",
-  function($scope,localManager,mySocket,$rootScope,templateService,$location){
+app.controller("createRoomController",["$scope","localManager","mySocket","$rootScope",
+  "templateService","$location",function($scope,localManager,mySocket,$rootScope,templateService,$location){
 
   var user = localManager.getValue("resolveUser");
   $rootScope.chatStatus = localManager.getValue("hasChat");
 
   var getCurrentPage = localManager.getValue("currentPageForPatients") || localManager.getValue("currentPage");
   var getHandlerPage = localManager.getValue("holdPageForHandler");
-  mySocket.emit('join',{userId: user.user_id});
+
+
+  // this was muted on  26 April 2020. for using the ping users solution below.
+  //mySocket.emit('join',{userId: user.user_id});
+
+  //implemented on 26 April 2020. the check and keep users alive in the socket connections incase they are disconnected
+  // due to network failure.
+  var invert;
+  mySocket.on("ping users",function(sockets){
+    invert = _.invert(sockets);
+    if(!invert[user.user_id]){
+      mySocket.emit('join',{userId: user.user_id});
+    } 
+  })
 
 }]);
 
@@ -10911,6 +10927,8 @@ app.controller("presenceSocketController",["$rootScope","$scope","$window","mySo
    var person = localManager.getValue("resolveUser");
    JSON.stringify(window.localStorage.setItem("user",person));// just to save person to local storage;
 
+
+ 
    /*if(person.typeOfUser === "Patient"){
      //patients  see doctors as the log in
      mySocket.on("doctor presence",function(data){

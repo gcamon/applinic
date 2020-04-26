@@ -206,11 +206,6 @@ placement(model,sms,io,nodemailer);
 mySocket(model,io,streams,sms);
 
 
-
-
-
-
-
 /*
 var transporter = nodemailer.createTransport({
   service: "gmail",

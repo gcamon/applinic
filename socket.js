@@ -14,28 +14,19 @@ var s3 = new AWS.S3();
 var connects = {};
 
 
+
 module.exports = function(model,io,streams,sms) {  
-	/*var chatDB = {};
-	var chatUUID = uuid.v1();
-	var key = model.chat_key({
-		key: chatUUID,
-		date: new Date()
-	})
 
-	key.save(function(err,info){
-		if(err) throw err;
-		console.log("Chat temp key initialized")
-	});*/
 
-  io.sockets.on('connection', function(socket){  	   
+io.sockets.on('connection', function(socket){  	   
 	    console.log('a user connected');
 	    var user = {};
 
 	    socket.on('join', function (data) {
 	    	user.isPresent = true; //use to check presence of user without hitting the database.
-	      socket.join(data.userId);
-	      connects[socket.id] = data.userId;
+	      socket.join(data.userId);	     
 	     	//this will be reviewd later in terms of performance on the client.
+	     	connects[socket.id] = data.userId;
 	    });
 
 	    //for pwr join a room for real time update
@@ -708,9 +699,23 @@ module.exports = function(model,io,streams,sms) {
 			});
 
 
+		io.sockets.emit("ping users",connects);
+
+		/*// the conditional statement checks to see if server restart and prevents the users joining room multiple times
+		//since hen server starts users refreshes the client and joins room autoomatically.
+		if(serverStartCount > 1) {
+			//ping to see if a user has been disconnected and rejoins the user to a room
+			io.sockets.emit("ping users",connects);
+		}
+
+		serverStartCount++; // use to checked if the user was disconnected due to server restart or connection loss through
+		//the client.
+		*/
+
 		//webrtc data transfer logic
 		console.log('-- ' + socket.id + ' joined --');
     socket.emit('id', socket.id);
+
 
     socket.on('message', function (details,cb) {
       var othersocket = io.sockets.connected[details.to];
@@ -735,7 +740,7 @@ module.exports = function(model,io,streams,sms) {
 
     socket.on('readyToStream', function(options,cb) {
       console.log('-- ' + socket.id + ' is ready to stream --');
-      console.log(options);
+     
       //search database to see which control this socket belong to.
       streams.addStream(socket.id, options.name, options.controlId,model,options.userId,options.profile_pic_url,options.type,options.specialty);
       //socket.join(options.controlId); //create a room for common sites using one control.
@@ -802,13 +807,11 @@ module.exports = function(model,io,streams,sms) {
 	    ) 
     })
 
-
     function leave() {
       console.log('-- ' + socket.id + ' left --');
       console.log(connects);
       delete connects[socket.id];
-      io.sockets.emit("real time presence",connects);
-     
+      //io.sockets.emit("real time presence",connects);     
       //io.sockets.emit("real time presence",{socketId: socket.id,status: false})
       //streams.removeStream(socket.id);
     }	
