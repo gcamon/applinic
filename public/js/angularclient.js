@@ -3561,6 +3561,7 @@ app.controller('resultController',["$scope","$rootScope","$http","$location","$r
   $scope.cities = cities;
   templateUrlFactory.setUrl();
   var data = patientfindDoctorService;//$resource("/user/patient/find-doctor");
+
   $scope.find = function (skill) {
     
     if(skill === 'special-center'){
@@ -4735,7 +4736,9 @@ app.controller("docNotificationController",["$scope","$location","$resource","$i
         };
 
         $rootScope.acceptOnce = function(patient) {
+          
           patient.loading = true;
+          patient.isAcceptanceAlone = true;
           $http({
             method  : 'POST',
             url     : "/user/doctor/add-patient",

@@ -1646,10 +1646,14 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
           office_hour:1,
         },function(err,data){
           if(err) throw err;
-          model.skills.find({user_id: data.user_id,deleted:false},function(err,result){
-            data.skills = result;
-            res.send(data);
-          });          
+          if(data){
+            model.skills.find({user_id: data.user_id,deleted:false},function(err,result){
+              data.skills = result;
+              res.send(data);
+            })
+          } else {
+            res.send([]);          
+          }
         });
       
     });
@@ -8662,7 +8666,6 @@ router.delete("/user/delete-one/refId", function(req,res){ //this route is also 
 
 router.delete("/user/delete-one/noteId", function(req,res){ //this route is also used by diagnostic centers to delete viewed notification
   if(req.user){
-    console.log(req.body)
     var projection = {};
     projection[req.body.dest] = 1;
     var del = new deleteItem(req.body.item,req.user.user_id);
@@ -8675,7 +8678,6 @@ router.delete("/user/delete-one/noteId", function(req,res){ //this route is also
 
 router.delete("/user/delete-one/msgId", function(req,res){ //this route is also used by diagnostic centers to delete viewed notification
   if(req.user){
-    console.log(req.body)
     var projection = {};
     projection[req.body.dest] = 1;
     var del = new deleteItem(req.body.item,req.user.user_id);
@@ -8688,7 +8690,6 @@ router.delete("/user/delete-one/msgId", function(req,res){ //this route is also 
 
 router.delete("/user/patient/delete-one/noteId", function(req,res){
   if(req.user){
-    console.log(req.body)
     var projection = {};
     projection[req.body.dest] = 1;
     var del = new deleteItem(req.body.item,req.user.user_id);
@@ -10529,8 +10530,10 @@ router.post("/user/invitation",function(req,res){
 router.post("/user/doctor/add-patient",function(req,res){
   if(req.user){
     if(req.user.type == 'Doctor'){
-      model.user.findOne({$or: [{ phone : req.body.user,type:'Patient'},
-        {email: req.body.user,type:'Patient'},{user_id: req.body.sender_id,type:'Patient'}]})
+      var criteria = (req.body.isAcceptanceAlone) ? {user_id: req.body.sender_id,type:'Patient'} :
+      {$or: [{ phone : req.body.user,type:'Patient'},
+        {email: req.body.user,type:'Patient'},{user_id: req.body.sender_id,type:'Patient'}]}
+      model.user.findOne(criteria)
       .exec(function(err,user){
         if(err) throw err;
         if(user){
@@ -10553,13 +10556,13 @@ router.post("/user/doctor/add-patient",function(req,res){
           if(elemPos == -1) {           
             req.user.doctor_patients_list.unshift(patient);  
           
-          } else {
-            req.user.doctor_patients_list[elemPos].deleted = false; 
-          }
+          } //else {
+            //req.user.doctor_patients_list[elemPos].deleted = false; 
+          //}
 
           req.user.save(function(err,info){
             if(err) throw err;
-            res.json({status:true,message: "Success! Patient added to your account. To see all your patients click on 'Manage Patients' button",patient: patient});
+            res.json({status:true,message: "Success! Patient added to your account. To see all your patients go to 'My Patients' ",patient: patient});
             addToPatient()
           }); 
 
@@ -10569,9 +10572,7 @@ router.post("/user/doctor/add-patient",function(req,res){
 
         function addToPatient() {
           var indexPos = user.accepted_doctors.map(function(x){return x.doctor_id}).indexOf(req.user.user_id)
-          if(indexPos !== -1) {
-            user.accepted_doctors[indexPos].deleted = false;
-          } else {
+          if(indexPos == -1) {           
             user.accepted_doctors.unshift({
               doctor_id: req.user.user_id,
               doctor_title: req.user.title,
@@ -10585,7 +10586,10 @@ router.post("/user/doctor/add-patient",function(req,res){
               office_hour:req.user.office_hour,
               deleted: false  
             })
-          }
+          } //else {
+            //user.accepted_doctors[indexPos].deleted = false;
+          //}
+
           user.save(function(err,info){
             if(err) throw err;
             console.log("Patient's doctor list updated");
