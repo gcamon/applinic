@@ -48,7 +48,8 @@
 		<!--<button class="btn btn-success btn-sm" ng-click="accept()">Accept</button>-->
 		<button class="btn btn-neutral btn-sm" ng-click="decline()">Decline</button>
 		<button class="btn btn-neutral btn-sm" ng-click="referToAnother()">Refer to a physician</button>
-		 <button class="btn btn-info btn-sm" ng-click="acceptOnce(data)" ng-show="!data.loading">Accept</button>&nbsp;&nbsp; <button class="btn btn-neutral btn-sm" ng-show="data.loading"><i class="fa fa-spinner fa-pulse fa-1x fa-fw"></i></button>
+		 <button class="btn btn-info btn-sm" ng-click="acceptOnce(data)" ng-show="!data.loading && !data.isSuccess">Accept</button>&nbsp;&nbsp; <button class="btn btn-neutral btn-sm" ng-show="data.loading && !data.isSuccess"><i class="fa fa-spinner fa-pulse fa-1x fa-fw"></i></button>
+		 <span ng-show="data.isSuccess" class="text-primary">accepted!</span>
 		
 	</div>
 </div>

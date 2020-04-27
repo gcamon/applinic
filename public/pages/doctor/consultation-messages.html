@@ -3,8 +3,9 @@
             <div class="h6 pt-1 text-center">
                 Consultation Requests ( {{consultation.length}} )               
             </div>
-            <div class="col-md-6">
-                <input type="text" name="" placeholder=" Search list" ng-model="consults" class="form-control"> 
+            <br>
+            <div class="col-md-6 pl-0 ml-0">
+                <input type="text" name="" placeholder=" Search list" ng-model="consults" class="form-control" ng-show="consultation.length > 5"> 
             </div>
             <div class="clearfix"></div>
             <div style="border-bottom: 1px solid rgba(0,0,0,0.1);line-height: 30px;padding: 10px 0;margin-bottom: 5px" ng-repeat="j in consultation | orderBy: '-date' | filter : consults"> 
@@ -15,8 +16,9 @@
                     <div>
                         <label  class="ellipsis block pb-0 mb-0">{{j.sender_firstname}} {{j.sender_lastname}}</label>
                         <span am-time-ago="j.date" class="text-muted"></span><br>
-                        <a href="" class="text-danger" ng-click= "view(j)">View details</button>&nbsp;&nbsp;
-                       <button class="btn btn-info btn-sm" ng-click="acceptOnce(j)" ng-show="!j.loading">Accept</button>&nbsp;&nbsp; <button class="btn btn-neutral btn-sm" ng-show="j.loading"><i class="fa fa-spinner fa-pulse fa-1x fa-fw"></i></button>
+                        <a href="" class="text-danger" ng-click= "viewConsult(j)">View details</a>&nbsp;&nbsp;
+                       <button class="btn btn-info btn-sm" ng-click="acceptOnce(j)" ng-show="!j.loading && !j.isSuccess">Accept</button>&nbsp;&nbsp; <button class="btn btn-neutral btn-sm" ng-show="j.loading && !j.isSuccess"><i class="fa fa-spinner fa-pulse fa-1x fa-fw"></i></button>
+                       <span ng-show="j.isSuccess" class="text-primary">accepted!</span>
                     </div>
                   
 

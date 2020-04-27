@@ -4729,14 +4729,14 @@ app.controller("docNotificationController",["$scope","$location","$resource","$i
           $scope.consultationLen = filter.consultation.length;
 
       
-        $rootScope.view = function(patient){
+        $rootScope.viewConsult = function(patient){
           random = Math.floor(Math.random() * 99999999);          
           requestManager.set(patient);
           $location.path("/patient-request/" + random);
         };
 
         $rootScope.acceptOnce = function(patient) {
-          
+
           patient.loading = true;
           patient.isAcceptanceAlone = true;
           $http({
@@ -4847,18 +4847,18 @@ app.controller("docNotificationController",["$scope","$location","$resource","$i
   $rootScope.$on('consultation attended',function(env,data){
     var elemPos = $scope.consultation.map(function(x){return x.message_id}).indexOf(data.id);
     if(elemPos !== -1){
-      $scope.consultation.splice(elemPos,1)
+      $scope.consultation.splice(elemPos,1);
     }
 
     if(data.status){
-      deleteByMsgId(data.id,"doctor_notification")
+      deleteByMsgId(data.id,"doctor_notification");
     }
   })
 
   function deleteByMsgId(id,field) {
     var msg = "Notification deleted";
     var del = new deleteFactory(id,field);
-    del.deleteItem("/user/delete-one/msgId","");//deletes notification once it is viewed.
+    del.deleteItem("/user/delete-one/msgId","");
     if($scope.consultationLen > 0)
       $scope.consultationLen--;    
   }
