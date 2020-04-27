@@ -80,7 +80,6 @@ var PeerManager = (function (name) {
   //peer are kept. The remark where this happened in "jj".
   function addPeer(remoteId,name) {
     var peer = new Peer(config.peerConnectionConfig, config.peerConnectionConstraints, name);
-    console.log("checking out peer object")
     peer.pc.onicecandidate = function(event) {
       if (event.candidate) {
         send('candidate', remoteId, {
@@ -267,13 +266,14 @@ var Peer = function (pcConfig, pcConstraints,name) {
   //this.name = name //refers to the remote user name
   this.pc = new RTCPeerConnection(pcConfig, pcConstraints);
   this.remoteVideoEl = document.createElement('video');
-  this.videoDiv = document.createElement('div');
+  this.videoDiv = document.createElement('section');
+  this.videoDiv.className = "col-md-6 col-lg-6";
   this.videoDiv.style.border = "2px solid #d9edf7";
   this.videoDiv.style.display = "inline-block";
   this.videoDiv.style.padding = "8px 8px 0 8px";
-  this.remoteVideoEl.style.width = "auto";
-  this.remoteVideoEl.style.height = "250px";
-  this.remoteVideoEl.style.width = "auto";
+  this.remoteVideoEl.style.width = "100%";
+  //this.remoteVideoEl.style.height = "268px";
+  //this.remoteVideoEl.style.width = "auto";
   
   this.remoteVideoEl.controls = true;
   this.remoteVideoEl.autoplay = true;
@@ -284,3 +284,6 @@ var Peer = function (pcConfig, pcConstraints,name) {
   this.captionElement.style.textAlign = "center";
   this.captionElement.innerHTML = name;
 }
+
+
+//width:100%;height:268px

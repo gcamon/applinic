@@ -6,7 +6,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Applinic video</title>
+    <title>Applinic Video</title>
     <meta name="description" content="">
     <meta content='width=device-width, initial-scale=0.9, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no' name='viewport'/>
     <base href="/" />
@@ -64,19 +64,19 @@
 </head>
 <body style="overflow-x: hidden;">
     <main class="container-fluid" style="padding: 0;margin: 0" ng-cloak>
-        <header  style="margin-bottom: 3px;background-color:#fff; box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.15); padding: 10px 30px" ng-controller="LocalStreamController as localStream" class="row">
-            <div class="col-sm-12 col-md-5 col-lg-5"> 
-                <div style="text-align: center;padding-top: 15px">               
-                    <a  href="" ng-click="goToDashbaord()" class="text-danger btn btn-simple"> <i class="fa fa-arrow-left"></i> Back</a>
+        <header  style="margin-bottom: 3px;background-color:#fff; padding: 10px 30px" ng-controller="LocalStreamController as localStream" class="row">
+            <div class="col-md-6 col-lg-6"> 
+                <div style="padding-top: 10px">               
+                    <a  href="" ng-click="goToDashbaord()" class="text-danger"> <i class="fa fa-arrow-left"></i> Back</a>
                     <span ng-cloak>{{localStream.getControlId('<%= person.controlId %>')}}</span>
                     <!--Appear as: <input ng-model="localStream.name" class="form-control" style="width: 50%;display: inline-block;"/>-->
                     <a href ng-click="localStream.toggleCam()" class="btn btn-danger btn-sm" style="color:#fff;float: right">{{ (localStream.cameraIsOn === true) ? 'Streaming... ( disconnect )' : localStream.cameraStatus }}</a>  
                 </div>              
             </div>
-            <div  class="col-sm-12 col-md-7 col-lg-7">
-                <div style="position: relative;width: 80%;margin: 0 auto">
+            <div  class="col-md-6 col-lg-6">
+                <div>
                     <!--<a href=""><i class="fa fa-camera" ng-click="streamControl()"> videos</i></a>&nbsp;&nbsp;-->
-                    <select ng-model="invite.type" class="form-control" style="width: 50%;display: inline-block;">
+                    <select ng-model="invite.type" class="form-control" style="width: 50%;">
                         <option value="" selected="selected" disabled="disabled"><i class="fa fa-user text-danger"></i> Invite</option>
                         <option value="Doctor"><i class="fa fa-user"></i> Invite a Doctor</option>
                         <option value="Patient"><i class="fa fa-user"></i> Invite a Patient</option>
@@ -136,9 +136,9 @@
             
             
             <div class="col-sm-12 col-md-2 col-lg-2 card" style="margin-top:10px;">
-                <div style="padding: 10px 15px 0;color:green; border-bottom: 1px solid #ccc"><b>Remote Stream</b></div> 
-                <hr>              
-                
+                <div style="padding: 10px 15px 0;color:green; border-bottom: 1px solid #ccc"><b>Remote Stream</b></div>
+                <p class="p-1" ng-show="rtc.remoteStreams.length > 0"><small>'Click' on button below to Open / Close partner(s) video stream</small></p>
+                <hr>    
                 <div ng-repeat="stream in rtc.remoteStreams"  style="font-size: 14px;margin-top: 10px;padding-left: 20px">
                   <a  href="" ng-click="rtc.view(stream)" class="" style="padding: 5px 10px;font-size: 12px" id="{{stream.id}}"><i class="fa fa-video-camera text-muted"></i> &nbsp;<b>{{(stream.isPlaying === false) ? stream.name + '( view )' : stream.name + ' ( hide )'}}</b></a>
                     <!--<button ng-click="rtc.view(stream)" class="btn btn-info btn-sm" style="padding: 5px 10px;font-size: 12px" id="{{stream.id}}">{{stream.name}}</button>-->
@@ -194,10 +194,32 @@
             </div>
 
             <div class="col-sm-12 col-md-7 col-lg-7" style="margin-top:10px;padding: 0">
-                <div style="width: 90%;margin: 0 auto" id="remoteVideosContainer">                    
-                    <div style="display: inline-block;padding: 8px 8px 0 8px;border:2px solid #d9edf7;margin-top: 10px">
-                        <p style="text-align: center;padding: 4px;color: orange;background-color: #d9edf7">You</p>
-                        <video id="localVideo" muted="muted" autoplay="true" style="width:auto;height:240px;margin-top: -4px"></video>
+                <div style="width: 95%;margin: 0 auto" id="remoteVideosContainer">                    
+                    <div style="padding: 15px 8px 0 8px;border:2px solid #d9edf7;margin-top: 10px" class="row">
+                        <!--<p style="text-align: center;padding: 4px;color: orange;background-color: #d9edf7">You</p>
+                        <video id="localVideo" muted="muted" autoplay="true" style="width:auto;height:240px;margin-top: -4px"></video>-->
+                        <section class="col-md-6 col-lg-6 col-sm-6 col-xs-6">
+                           <p style="text-align: center;padding: 4px;color: orange;background-color: #d9edf7">Your Cam</p>
+                           <video id="localVideo" autoplay="true" muted="muted" style="width:100%;margin-top: -4px"></video>  
+                        </section> 
+                       <!--<section class="col-md-6 col-lg-6 col-sm-6 col-xs-6">
+                           <p style="text-align: center;padding: 4px;color: orange;background-color: #d9edf7">Your Cam</p>
+                           <div style="width:100%;height:268px;margin-top: -4px;border: 1px solid red">
+                               zzxzx
+                           </div>
+                       </section>
+                        <section class="col-md-6 col-lg-6 col-sm-6 col-xs-6">
+                           <p style="text-align: center;padding: 4px;color: orange;background-color: #d9edf7">Your Cam</p>
+                           <div style="width:100%;height:268px;margin-top: -4px;border: 1px solid red">
+                               zxxz
+                           </div>
+                       </section>    
+                       <section class="col-md-6 col-lg-6 col-sm-6 col-xs-6">
+                           <p style="text-align: center;padding: 4px;color: orange;background-color: #d9edf7">Your Cam</p>
+                           <div style="width:100%;height:268px;margin-top: -4px;border: 1px solid red">
+                               zxzzx
+                           </div>
+                       </section>-->
                     </div>                   
                     <!--<div  style="display: inline-block;padding: 8px 8px 0 8px;">
                         

@@ -153,14 +153,14 @@ span.dates {
 </head>
 <body style="overflow-x: hidden;">
     <main class="container-fluid"  style="margin: 0;padding: 0" ng-cloak>        
-        <header style="margin-bottom: 3px;background-color: #d9edf7;padding: 0px 30px 5px" ng-controller="LocalStreamController as localStream" class="row">
+        <header style="margin-bottom: 3px;padding: 0px 30px 5px" ng-controller="LocalStreamController as localStream" class="row">
             <div class="col-sm-12 col-md-9 col-lg-9 pt-1">
                  <!--<a href="" style="color: orange"><b>Applinic</b></a>-->
-                 <a href="" ng-click="goToDashbaord()" class="btn btn-simple text-danger" style="text-decoration: none;"><i class="fa fa-arrow-left"></i> Back</a>&nbsp;&nbsp;&nbsp;
+                 <a href="" ng-click="goToDashbaord()" class="text-danger " style="text-decoration: none;"><i class="fa fa-arrow-left"></i> Back</a>&nbsp;&nbsp;&nbsp;
                  <span ng-cloak style="font-size: 10px">{{localStream.getControlId('<%= person.controlId %>')}}</span>
                  
                 <!--Appear as: <input ng-model="localStream.name" class="form-control" style="width: 50%;display: inline-block;"/>-->
-                <a href ng-click="localStream.toggleCam()" class="btn btn-danger text-white" style="text-decoration: none;">{{ (localStream.cameraIsOn === true) ? 'Streaming... ( disconnect )' : localStream.cameraStatus }}</a>
+                <a href ng-click="localStream.toggleCam()" class="btn btn-danger text-white btn-sm" style="text-decoration: none;">{{ (localStream.cameraIsOn === true) ? 'Streaming... ( disconnect )' : localStream.cameraStatus }}</a>
 
                 <div style="display: inline-block;margin-left: 30px">
                     <small class="text-danger" style="display: inline-block;font-weight: bold;margin-top: 10px">{{(connectionStatus === true) ? message : "Waiting for partner..."}}</small>
@@ -298,21 +298,43 @@ span.dates {
                 </div> -->
                 <div class="row">
                     <ul style="" class="col-sm-12 col-md-3 col-lg-3 card pl-2">
-                        <li style="float: left;padding: 10px;"><b>Remote Stream</b></li>
-                        <li ng-repeat="stream in rtc.remoteStreams" style="padding: 10px 10px;float: left;">
-                            <a  href="" ng-click="rtc.view(stream)" class="" style="padding: 5px 10px;font-size: 12px" id="{{stream.id}}"><i class="fa fa-video-camera text-muted"></i> &nbsp;<b>{{(stream.isPlaying === false) ? stream.name + '( view )' : stream.name + ' ( hide )'}}</b>
+                        <li class="pl-1">
+                            <b>Remote Stream</b><br>
+                            <p><small>'Click' on button below to Open / Close partner(s) video stream</small></p>
+                        </li>
+                        <li style="padding: 5px 10px;">                       
+                            <a  href="" ng-click="rtc.view(stream)" class="btn btn-info" style="font-size: 14px;margin-right: 5px" ng-repeat="stream in rtc.remoteStreams" id="{{stream.id}}"><i class="fa fa-video-camera"></i> &nbsp;<b>{{(stream.isPlaying === false) ? stream.name + '( view )' : stream.name + ' ( hide )'}}</b>
                             </a>
                         </li>
                     </ul>
                 
 
-                    <div style="" id="remoteVideosContainer" class="col-sm-12 col-md-9 col-lg-9">
-                        <div style="display: inline-block; padding: 8px 8px 0 8px;border:2px solid #d9edf7"> 
-                           <p style="text-align: center;padding: 4px;color: orange;background-color: #d9edf7">Your Cam</p>
-                           <video id="localVideo" autoplay="true" muted="muted" style="width:auto;height:250px;margin-top: -4px"></video>       
-                        </div>                   
-                        <!--<div  style="border:2px solid #d9edf7;display: inline-block; padding: 8px 8px 0 8px;">               
-                        </div>-->                
+                    <div style=""  class="col-sm-12 col-md-9 col-lg-9">
+                        <div id="remoteVideosContainer" style="width: 95%;margin: 0 auto">
+                            <div style="padding: 0px 8px 0 8px;border:2px solid #d9edf7" class="row">
+                               <!--<p style="text-align: center;padding: 4px;color: orange;background-color: #d9edf7">Your Cam</p>
+                               <video id="localVideo" autoplay="true" muted="muted" style="width:auto;height:250px;margin-top: -4px"></video>-->
+                                <section class="col-md-6 col-lg-6">
+                                   <p style="text-align: center;padding: 4px;color: orange;background-color: #d9edf7">Your Cam</p>
+                                   <video id="localVideo" autoplay="true" muted="muted" style="width:100%;margin-top: -4px"></video>  
+                                </section> 
+                                <!--<section class="col-md-6 col-lg-6">
+                                    <div style="height: 268px;border: 1px solid red">
+                                        ddsds
+                                    </div>
+                                </section>
+                                <section class="col-md-6 col-lg-6">
+                                    <div style="height: 268px;border: 1px solid red">
+                                        ddsds
+                                    </div>
+                                </section>
+                                <section class="col-md-6 col-lg-6">
+                                    <div style="height: 268px;border: 1px solid red">
+                                        ddsds
+                                    </div>
+                                </section>-->
+                            </div>                   
+                        </div>          
                     </div> 
                 </div>             
             </div>
@@ -330,7 +352,7 @@ span.dates {
                 <div style="text-align: center;padding: 10px" ng-if="!session">
                     <button class="btn btn-success" ng-click="chechSession()">Manage Patient/Clerking</button>
                 </div>
-                <div ng-if="session">
+                <div ng-if="session" class="p-1">
 
                     <form style="max-height: 800px;overflow-y: auto"> 
                             <div id="accordion">
