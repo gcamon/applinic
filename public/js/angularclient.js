@@ -22940,6 +22940,12 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
 
     mySocket.removeAllListeners("new_msg"); // incase if this listener is registered twice
 
+
+    if(deviceCheckService.getDeviceType()){
+      // switchesm to chat list for mobile views 
+      $('.chat__container').addClass('chat__list--active');
+    }
+
     
     $scope.viewChat = function(chat,isMobWebList) {   
 
@@ -23835,7 +23841,7 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
         var elPos = $rootScope.chatsList.map(function(x){return x.partnerId}).indexOf($scope.partner.partnerId);
         if(elPos !== -1) {
           $rootScope.chatsList[elPos].is_read = true;
-          $rootScope.chatsList[elemPos].realTime = date;
+          $rootScope.chatsList[elPos].realTime = date;
           $rootScope.chatsList[elPos].messages.push(msg);
         }
 

@@ -129,7 +129,7 @@
 
           <!-- List header -->
           <header class="list__view__header bg-primary">
-            <span class="header__list__icon">
+            <span class="header__list__icon" ng-click="viewChat(chatsList[0],true)">
               <svg viewBox="79.229 169.229 453.543 453.543">
                 <path d="M79.229,562.299c0-25.048,20.306-45.354,45.354-45.354c25.048,0,45.354,20.307,45.354,45.354
                 c0,25.049-20.306,45.354-45.354,45.354C99.534,607.653,79.229,587.348,79.229,562.299z M124.583,275.055
@@ -206,7 +206,7 @@
                 <i class="fa fa-paperclip" style="color:#fff"></i>
               </button>-->
               <label for="file-input" class="conversation__actions__close2" title="Close conversation">
-                <i class="fa fa-paperclip" aria-hidden="true" style="font-size: 18px;color:#fff"></i>
+                <i class="fa fa-camera" aria-hidden="true" style="font-size: 18px;color:#fff"></i>
               </label>&nbsp;&nbsp;&nbsp; <input type="file" class="file-input hide" name="file-input" id="file-input" file-model-chat="files">
 
 
@@ -243,9 +243,10 @@
           <form class="conversation__view__write" ng-submit="sendChat1()">
             <input id="chat__input" type="text" ng-model="user.text1" value="" name="writeMessage" placeholder="Type a message" class="chat__conversation__input">
             <button type="submit" class="chat__conversation__send" title="Send message">
-              <svg viewBox="-2 0 20 30">
+              <!--<svg viewBox="-2 0 20 30">
                 <path d="M5,3l3.1-3L20,12L8.1,24L5,21l9-9L5,3z"/>
-              </svg>
+              </svg>-->
+              <button style="padding: 6px 7px;border: none;margin-left: -7px;border-radius: 3px" class="bg-info">send</button>
             </button>
            
           </form>
