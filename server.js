@@ -105,9 +105,9 @@ client.SMS.send(message,function(err, response){
   }*/
 
  
-var options = {
+/*var options = {
   debug: true
-}
+}*/
 
 //app.use('/call',ExpressPeerServer(http,options));
 
@@ -269,6 +269,34 @@ var httpreq = https.request(options, function(httpres) {
       });
 });
 httpreq.end();*/
+
+
+let o = {
+      format: "urls"
+};
+
+let bodyString = JSON.stringify(o);
+let https = require("https");
+let options = {
+      host: "global.xirsys.net",
+      path: "/_turn/applinic.com",
+      method: "PUT",
+      headers: {
+          "Authorization": "Basic " + Buffer.from("gcamon:9b47acd8-899f-11ea-88f9-0242ac150006").toString("base64"),
+          "Content-Type": "application/json",
+          "Content-Length": bodyString.length
+      }
+};
+let httpreq = https.request(options, function(httpres) {
+      let str = "";
+      httpres.on("data", function(data){ str += data; });
+      httpres.on("error", function(e){ console.log("error: ",e); });
+      httpres.on("end", function(){ 
+          console.log("ICE List: ", str);
+      });
+});
+httpreq.on("error", function(e){ console.log("request error: ",e); });
+httpreq.end();
 
 /*const accountSid = 'AC79f290154f4c4236a3811054e2c5e2b7';
 const authToken = 'your_auth_token';

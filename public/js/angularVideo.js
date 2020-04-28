@@ -475,7 +475,6 @@
       headers : {'Content-Type': 'application/json'} 
       })
     .success(function(data) {      
-      console.log(data);
       $scope.loading = false;
       $scope.sessions = data;
     });
