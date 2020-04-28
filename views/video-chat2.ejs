@@ -139,8 +139,8 @@
                 <div style="padding: 10px 15px 0;color:green; border-bottom: 1px solid #ccc"><b>Remote Stream</b></div>
                 <p class="p-1" ng-show="rtc.remoteStreams.length > 0"><small>'Click' on button below to Open / Close partner(s) video stream</small></p>
                 <hr>    
-                <div ng-repeat="stream in rtc.remoteStreams"  style="font-size: 14px;margin-top: 10px;padding-left: 20px">
-                  <a  href="" ng-click="rtc.view(stream)" class="" style="padding: 5px 10px;font-size: 12px" id="{{stream.id}}"><i class="fa fa-video-camera text-muted"></i> &nbsp;<b>{{(stream.isPlaying === false) ? stream.name + '( view )' : stream.name + ' ( hide )'}}</b></a>
+                <div ng-repeat="stream in rtc.remoteStreams" style="padding: 5px 10px;">
+                  <a  href="" ng-click="rtc.view(stream)" class="btn btn-info" style="font-size: 14px;margin-right: 5px" id="{{stream.id}}"><i class="fa fa-video-camera text-muted"></i> &nbsp;<b>{{(stream.isPlaying === false) ? stream.name + '( view )' : stream.name + ' ( hide )'}}</b></a>
                     <!--<button ng-click="rtc.view(stream)" class="btn btn-info btn-sm" style="padding: 5px 10px;font-size: 12px" id="{{stream.id}}">{{stream.name}}</button>-->
                     <!--<span>{{stream.name}}</span>-->
                     <!--<button ng-click="rtc.call(stream)"><a>Call</a></button>-->

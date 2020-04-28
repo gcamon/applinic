@@ -178,11 +178,8 @@
 				    	rtc.remoteStreams.push(streams[i]);
 
 				    	//modified on 28/04/2020
-				    	alert("first stream auto start");
 				    	rtc.view(streams[i]);
 				    	break;
-
-				    	//rtc.view(streams[i])
 				    }		
 			  	} else {
 			  		if(streams.length > 0) {
@@ -194,11 +191,15 @@
 				  			rtc.remoteStreams.splice(elePo,1);
 				  			streams[streams.length - 1].isPlaying = false;
 				  			rtc.remoteStreams.push(streams[streams.length - 1]);
-				  			rtc.view(streams[streams.length - 1])
 				  		}
+
+				  		//modified on 28/04/2020
+				  		rtc.view(streams[streams.length - 1])
 			  		}
 			  		//rtc.view(streams[i]);
 			  	}
+
+			  	console.log("streams: ", streams)
 
 			    $rootScope.connections = streams;
 			    //rtc.remoteStreams = streams;

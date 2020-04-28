@@ -300,7 +300,7 @@ span.dates {
                     <ul style="" class="col-sm-12 col-md-3 col-lg-3 card pl-2">
                         <li class="pl-1">
                             <b>Remote Stream</b><br>
-                            <p class="text-danger">Toggle partner(s) video stream</p>
+                            <p class="text-danger">'Click' on button below to Open / Close partner(s) video stream</p>
                         </li>
                         <li style="padding: 5px 10px;">                       
                             <a  href="" ng-click="rtc.view(stream)" class="btn btn-info" style="font-size: 14px;margin-right: 5px" ng-repeat="stream in rtc.remoteStreams" id="{{stream.id}}"><i class="fa fa-video-camera"></i> &nbsp;<b>{{(stream.isPlaying === false) ? stream.name + '( view )' : stream.name + ' ( hide )'}}</b>
