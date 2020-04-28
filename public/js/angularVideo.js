@@ -91,7 +91,7 @@
 					camera.stream = stream;
 					$rootScope.$broadcast('cameraIsOn',true);
 				})
-				.catch(alert('Failed to gain access to the device camera.'));
+				.catch(Error('Failed to gain access to the device camera.'));
 		  };
     	camera.stop = function(){
     		return new Promise(function(resolve, reject){			
@@ -166,7 +166,7 @@
 			      	return stream.userId !== user.user_id;
 			    });
 
-			    console.log(streams)
+			
 
 			    // get former state
 			    //starts from one for remote streams
@@ -176,7 +176,13 @@
 				    	//streams[i].isPlaying = (!!stream) ? stream.isPLaying : false;
 				    	streams[i].isPlaying = false;			    	
 				    	rtc.remoteStreams.push(streams[i]);
-				    	//rtc.view(streams[i]);
+
+				    	//modified on 28/04/2020
+				    	alert("first stream auto start");
+				    	rtc.view(streams[i]);
+				    	break;
+
+				    	//rtc.view(streams[i])
 				    }		
 			  	} else {
 			  		if(streams.length > 0) {
@@ -188,6 +194,7 @@
 				  			rtc.remoteStreams.splice(elePo,1);
 				  			streams[streams.length - 1].isPlaying = false;
 				  			rtc.remoteStreams.push(streams[streams.length - 1]);
+				  			rtc.view(streams[streams.length - 1])
 				  		}
 			  		}
 			  		//rtc.view(streams[i]);
@@ -293,8 +300,6 @@
     		})
     	},3000);
     	
-  		//alert(info.message);  		
-  		console.log(info)
   	});
 
   	controllerSocket.on('new prescription',function(info){
@@ -311,7 +316,6 @@
     			$rootScope.message = "";
     		})
     	},3000);		
-  		console.log(info);
   	});
 	  
 
