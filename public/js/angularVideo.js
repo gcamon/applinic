@@ -178,8 +178,8 @@
 				    	rtc.remoteStreams.push(streams[i]);
 
 				    	//modified on 28/04/2020
-				    	rtc.view(streams[i]);
-				    	break;
+				    	//rtc.view(streams[i]);
+				    	//break;
 				    }		
 			  	} else {
 			  		if(streams.length > 0) {
@@ -194,7 +194,7 @@
 				  		}
 
 				  		//modified on 28/04/2020
-				  		rtc.view(streams[streams.length - 1])
+				  		//rtc.view(streams[streams.length - 1])
 			  		}
 			  		//rtc.view(streams[i]);
 			  	}
