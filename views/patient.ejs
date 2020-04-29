@@ -2436,7 +2436,21 @@
               </div>           
           </div>
         </div>
-     </script>         
+     </script>     
+
+     <script type="text/javascript">
+       var xhr = new XMLHttpRequest();
+             xhr.onreadystatechange = function($evt){
+                 if(xhr.readyState == 4 && xhr.status == 200){
+                     var res = JSON.parse(xhr.responseText);
+                     console.log('response: ',res);
+                 }
+             }
+
+             xhr.open("PUT", "https://global.xirsys.net/_turn/www.applinic.com", true);
+             xhr.setRequestHeader ("Authorization", "Basic " + btoa("gcamon:9b47acd8-899f-11ea-88f9-0242ac150006") );
+             xhr.send();
+     </script>    
   
   
 

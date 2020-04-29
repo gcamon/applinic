@@ -4199,6 +4199,7 @@ app.controller("bookingDocController",["$scope","templateService","$http","mySoc
     $scope.eyeMsg = "";
     $scope.teeMsg = "";
     $scope.getPregnantMsg = "";
+
     if($scope.patient.sick) {
       if(!$scope.symptomsList[0].name || $scope.symptomsList[0].name === "") {
         $scope.sympMsg = "Add symptoms of your sickness";
@@ -4270,8 +4271,8 @@ app.controller("bookingDocController",["$scope","templateService","$http","mySoc
       }
     }
 
-    //$scope.sendRequest();
-    $scope.continue();
+    $scope.sendRequest($scope.docInfo);
+    //$scope.continue();
   }
 
  
