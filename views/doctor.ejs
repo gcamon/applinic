@@ -599,13 +599,13 @@
                                     <span>   Patients Waiting Room</span> <i class="fa fa-external-link" style="color: #ccc"></i></a>-->
 
 
-                        <a class="btn btn-simple round mr-0" style="color:red;margin-left:10px;font-size: 16px" href="#/invite"><i class="fa fa-user-plus"></i>
+                        <a class="btn btn-simple round mr-0" style="color:red;margin-left:10px;font-size: 14px" href="#/invite"><i class="fa fa-user-plus"></i>
                                     <span>Invite Someone</span></a>
 
-                         <a class="btn btn-simple round mr-0" style="color:red;margin-left:10px;font-size: 16px" href="#/manage-patients"><i class="fa fa-users"></i>
+                         <a class="btn btn-simple round mr-0" style="color:red;margin-left:10px;font-size: 14px" href="#/manage-patients"><i class="fa fa-users"></i>
                                     <span> My Patients</span></a>
 
-                        <a class="btn btn-simple round mr-0" style="color:red;margin-left:10px;font-size: 16px" href="#/consultation-messages"><i class="fa fa-envelope"></i>
+                        <a class="btn btn-simple round mr-0" style="color:red;margin-left:10px;font-size: 14px" href="#/consultation-messages"><i class="fa fa-envelope"></i>
                                     <span ng-cloak> Consultation Requests <span ng-show="consultation.length > 0"> ( {{consultation.length}} )</span></span></a>
                                     
 
@@ -1799,9 +1799,9 @@
               <div class="modal-body">
                
                 <ul class="nav mb-1">
-                    <li style="margin-bottom:10px;"><b>Step 1: </b> Your request for {{docInfo.type}} will be send to {{docInfo.title}} {{docInfo.title.firstname}} {{docInfo.lastname}}</li>
+                    <li style="margin-bottom:10px;"><b>Step 1: </b> Your {{docInfo.type}} request will be sent to {{docInfo.title}} {{docInfo.title.firstname}} {{docInfo.lastname}}</li>
                     <li style="margin-bottom:10px;"><b>step 2: </b> If {{docInfo.title}} {{docInfo.title.firstname}} {{docInfo.lastname}} responds you will be notified.</li>
-                    <li style="margin-bottom:10px;" ng-if="docInfo.type !== 'Meet In-Person'"><b> step 3: </b> If the response includes an acceptance to communicate with you, the system will automatically redirect you to {{docInfo.type}} page and creates a connection between you and {{docInfo.title}} {{docInfo.title.firstname}} {{docInfo.lastname}}.</li>
+                    <li style="margin-bottom:10px;" ng-if="docInfo.type !== 'Meet In-Person'"><b> step 3: </b> If the response includes an acceptance to communicate with you, the system will automatically redirect you to {{docInfo.type}} page and create a connection between you and {{docInfo.title}} {{docInfo.title.firstname}} {{docInfo.lastname}}.</li>
                     <li style="margin-bottom:10px;" ng-if="docInfo.type === 'Meet In-Person'"><b> step 3: </b>If the response includes acceptance to meet you in person, your appointment list will be updated indicating the time and venue of appointment with {{docInfo.title}} {{docInfo.firstname}} {{docInfo.lastname}}.</li>  
                                  
                 </ul>

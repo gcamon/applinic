@@ -6928,7 +6928,7 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
                 user.accepted_doctors.unshift({
                   doctor_id: req.user.user_id,
                   doctor_title: req.user.title,
-                  date_of_acceptance: date,
+                  date_of_acceptance: new Date(),
                   doctor_firstname: req.user.firstname,
                   doctor_lastname: req.user.lastname,
                   doctor_profile_pic_url: req.user.profile_pic_url,                  

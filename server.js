@@ -251,7 +251,7 @@ transporter.sendMail(mailOptions, function(error, info){
 //var mask = cardnumber.substring(7, cardnumber.length - 2).replace(/\d/g,"*");
 //console.log(first4 + mask + last5);
 
-var https = require("https");
+/*var https = require("https");
 var options = {
       host: "global.xirsys.net",
       path: "/_turn/www.applinic.com",
@@ -268,7 +268,7 @@ var httpreq = https.request(options, function(httpres) {
           console.log("ICE List: ", str);
       });
 });
-httpreq.end();
+httpreq.end();*/
 
 
 /*let o = {
