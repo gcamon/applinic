@@ -257,7 +257,7 @@ var options = {
       path: "/_turn/www.applinic.com",
       method: "PUT",
       headers: {
-          "Authorization": "Basic " + new Buffer("gcamon:406b470c-2ddf-11e8-9c83-538c56484774").toString("base64")
+          "Authorization": "Basic " + new Buffer("gcamon:9b47acd8-899f-11ea-88f9-0242ac150006").toString("base64")
       }
 };
 var httpreq = https.request(options, function(httpres) {
@@ -271,7 +271,7 @@ var httpreq = https.request(options, function(httpres) {
 httpreq.end();*/
 
 
-/*let o = {
+let o = {
       format: "urls"
 };
 
@@ -279,7 +279,7 @@ let bodyString = JSON.stringify(o);
 let https = require("https");
 let options = {
       host: "global.xirsys.net",
-      path: "/_turn/applinic.com",
+      path: "/_turn/www.applinic.com",
       method: "PUT",
       headers: {
           "Authorization": "Basic " + Buffer.from("gcamon:9b47acd8-899f-11ea-88f9-0242ac150006").toString("base64"),
@@ -313,7 +313,7 @@ client.messages.create(
   (err, message) => {
     console.log(message.sid);
   }
-);*/
+);
 
 //sms.message.sendSms('Appclinic',phoneNunber,msgBody,callBack); //"2348096461927" "2349092469137"
 
