@@ -296,7 +296,7 @@ let httpreq = https.request(options, function(httpres) {
       });
 });
 httpreq.on("error", function(e){ console.log("request error: ",e); });
-httpreq.end();*/
+httpreq.end();
 
 /*const accountSid = 'AC79f290154f4c4236a3811054e2c5e2b7';
 const authToken = 'your_auth_token';
