@@ -298,27 +298,7 @@ let httpreq = https.request(options, function(httpres) {
 httpreq.on("error", function(e){ console.log("request error: ",e); });
 httpreq.end();
 
-/*const accountSid = 'AC79f290154f4c4236a3811054e2c5e2b7';
-const authToken = 'your_auth_token';
-
-// require the Twilio module and create a REST client
-const client = require('twilio')(accountSid, authToken);
-
-client.messages.create(
-  {
-    to: '+15558675310',
-    from: '+15017122661',
-    body: 'This is the ship that made the Kessel Run in fourteen parsecs?',
-  },
-  (err, message) => {
-    console.log(message.sid);
-  }
-);
-
-//sms.message.sendSms('Appclinic',phoneNunber,msgBody,callBack); //"2348096461927" "2349092469137"
-
-
-              //sms.message.sendSms('Appclinic',phoneNunber,msgBody,callBack); //"2348096461927"        
+   
 
 
 
