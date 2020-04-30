@@ -18,7 +18,14 @@ var PeerManager = (function (name,iceServer) {
           {"username":"n0i0S8ExiEhokJVs32NMLerc5IyvHKiXdj9r8EvUvVN_T-UeTLNRezstVV_SFZTBAAAAAF6qco5nY2Ftb24=",
           "url":"turns:eu-turn1.xirsys.com:443?transport=tcp","credential":"4cb219a0-8aad-11ea-8785-169b39aff842"},
           {"username":"n0i0S8ExiEhokJVs32NMLerc5IyvHKiXdj9r8EvUvVN_T-UeTLNRezstVV_SFZTBAAAAAF6qco5nY2Ftb24=",
-          "url":"turns:eu-turn1.xirsys.com:5349?transport=tcp","credential":"4cb219a0-8aad-11ea-8785-169b39aff842"}]
+          "url":"turns:eu-turn1.xirsys.com:5349?transport=tcp","credential":"4cb219a0-8aad-11ea-8785-169b39aff842"},
+          {url: "stun:stun.l.google.com:19305"},
+          {url: "stun:stun1.l.google.com:19305"},
+          {url: "stun:stun2.l.google.com:19305"},
+          {url: "stun:stun3.l.google.com:19305"},
+          {url: "stun:stun4.l.google.com:19305"},
+          {url: "stun:stun.services.mozilla.com"}
+          ]
         },
         peerConnectionConstraints: {
           optional: [
