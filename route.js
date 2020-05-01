@@ -12048,6 +12048,11 @@ router.post("/user/import-patient",function(req,res){
   } else {
     res.end("Unauthorized Access")
   }
+});
+
+
+router.get('/video',function(req,res){
+  res.render("tokbox-video")
 })
 
 
