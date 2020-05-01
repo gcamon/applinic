@@ -335,7 +335,12 @@ app.config(['$paystackProvider','$routeProvider',
 //for pharmacy
  .when("/referred-patients",{
   templateUrl: "/assets/pages/referred-patients-list.html",
-  controller: 'referredPatientsController'
+  controller: 'referredPatientsController',
+  resolve: {
+    path: function($location,$rootScope){
+      $rootScope.path = $location.path();  
+    }
+  }
  })
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -919,6 +924,11 @@ app.config(['$paystackProvider','$routeProvider',
 .when("/drugs-and-kits",{
   templateUrl: "/assets/pages/utilities/drugs-and-kits.html",
   controller: "drugsAndKitsCtrl"
+})
+
+.when("/subscriptions",{
+  templateUrl: "/assets/pages/utilities/plan.html",
+  controller: "planCtrl"
 })
 
 }])
@@ -15723,7 +15733,8 @@ app.controller("checkingOutPatientController",["$scope","$location","templateSer
 //Object is returned from the backend and displayed on lab-view-test.html template.
 app.controller("referredPatientsController",["$scope","$location","$http","templateService","localManager","$rootScope",
   function($scope,$location,$http,templateService,localManager,$rootScope) {
-  $scope.patient = {};
+
+  /*$scope.patient = {};
 
   $scope.isNotOption = true;
 
@@ -15753,10 +15764,10 @@ app.controller("referredPatientsController",["$scope","$location","$http","templ
     }
 
   
-  }
+  }*/
     
 
-  var typeOfSearch = function(criteria) { 
+  /*var typeOfSearch = function(criteria) { 
     $scope.loading = true; 
 
     $http({
@@ -15776,7 +15787,39 @@ app.controller("referredPatientsController",["$scope","$location","$http","templ
 
           $scope.loading = false;
       });
+  }*/
+
+  
+
+
+  if($rootScope.queryObj){
+    $scope.patient = (Object.keys($rootScope.queryObj).length > 0) ? $rootScope.queryObj : {from: new Date(), to: new Date()};
+  } else {
+    $scope.patient = {};
+    $scope.patient.from = new Date();
+    $scope.patient.to = new Date();
   }
+
+
+  $scope.searchTests = function() {
+    if($scope.patient.patienPhone){
+      if($scope.patient.patienPhone.indexOf('+') == -1 || $scope.patient.patienPhone.indexOf('+2') == -1) {
+        var newSlice = $scope.patienPhone.phone.slice(1);
+        $scope.patient.patienPhone = "+234" + newSlice;
+      }
+    }
+
+    $scope.loading = true;
+
+    $http.get("/user/pharmacy/find-patient/prescription",{params: $scope.patient})
+    .success(function(data){
+      $scope.requestList = data;
+      $scope.loading = false;
+    })
+
+    $rootScope.queryObj = $scope.patient;
+  }
+
 
   $scope.viewPatientPrescription = function(patient){
     templateService.holdId = patient.ref_id;
@@ -15785,6 +15828,28 @@ app.controller("referredPatientsController",["$scope","$location","$http","templ
     localManager.setValue("pharmacyData",patient); 
     $location.path(pageUrl);    
   }
+
+
+  $scope.clear = function(){
+    $scope.patient = {};
+    $rootScope.queryObj = null;
+  }
+
+  var testPointer;
+  $scope.popup = function(pres) {
+    //testPointer.isManage = false;
+    pres.isManage = true; 
+    //testPointer = test;      
+  }
+
+  $scope.closePop = function(pres) {
+    pres.isManage = false;
+  }
+
+
+  localManager.setValue("currPageForPharmacy",$location.path());
+  $scope.searchTests();
+
 
 }]);
 
@@ -26624,6 +26689,10 @@ function($scope,$location,$rootScope,$http,ModalService,$interval,templateServic
     ptApp()
   },3000)
   
+}]);
+
+app.controller('planCtrl',["$scope","$http",function($scope,$http){
+
 }])
 
 

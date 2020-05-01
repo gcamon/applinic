@@ -1,9 +1,11 @@
-<div class="container">
-    <div class="card card-center-1 p-2">
-<div class="col-sm-12 col-md-12 col-lg-12" >
-	<div>
-		<h3 class="p-0" style="padding: 0">Patient Prescription</h3>
-	</div>
+
+<div class="card-center-1">
+	<a href="#{{path || '/referred-patients'}}" class="btn btn-neutral"><i class="fa fa-arrow-left"></i> Back</a>
+</div>
+
+<div class="card card-center-1 p-2">
+<div >
+	
 	<div class="row">
 		
 		<div class="col-md-12 col-lg-12 col-sm-12  pt-1">
@@ -17,12 +19,12 @@
 				<div><strong>{{refData.pharmacy.patient_gender}}</strong></div>
 			</div>
 			<div class="clearfix"></div>		
-			<h6 class="pb-1" style="margin-top: 20px">Reference Details:</h6>
+			<hr>
 			<ul class="nav font-1_1" style="line-height: 30px">
-				<li style="font-weight: bold;">Referred by:  <span style="font-weight: 300">{{refData.referral_title}} {{refData.referral_firstname}} {{refData.referral_lastname}} </span></li>
-				<li style="font-weight: bold;">Received:  <span am-time-ago="refData.date" style="font-weight: 300;"></span></li>
+				<li style="font-weight: bold;">Referred By :  <span style="font-weight: 300">{{refData.referral_title}} {{refData.referral_firstname}} {{refData.referral_lastname}} </span></li>
+				<li style="font-weight: bold;">Date Received :  <span am-time-ago="refData.date" style="font-weight: 300;"></span></li>
 				<!--<li><strong>Time </strong>| {{refData.date | date: "mediumTime"}}</li>-->
-				<li style="font-weight: bold;">Reference number: <span class="text-danger" style="font-weight: 300;">{{refData.ref_id}}</span></li>
+				<li style="font-weight: bold;">Reference No: <span class="text-danger" style="font-weight: 300;">{{refData.ref_id}}</span></li>
 			</ul>
 			<h6 class="pb-1 mt-2">Prescription Details: <i class="fa fa-question-circle tip"><span>Initially, all drugs are ticked as available in your center. You can untick any drug that is not available and forward to another center. You can add dosage, frequency and duration if such values are missing. </span></i></h6>
 			<!--<p><strong>Please untick drug(s) you don't have.</strong> If dosage, frquency and duration fields are missing you can add them based on the drugs you already administered.
@@ -33,11 +35,11 @@
 			<table class="table table-striped no-mobile-item-display">				
 				<tr>
 					<thead>
-						<th><strong>S/N</strong></th>
-						<th><strong>Drug name</strong></th>
-						<th><strong>Dosage</strong></th>
-						<th><strong>Frequency</strong></th>
-						<th><strong>Duration</strong></th>
+						<th><label>S/N</label></th>
+						<th><label>Drug name</label></th>
+						<th><label>Dosage</label></th>
+						<th><label>Frequency</label></th>
+						<th><label>Duration</label></th>
 						<th>&nbsp;</th>
 					</thead>
 				</tr>
@@ -174,7 +176,6 @@
 		</div>
 	</div>
 </div>
-	</div>
 </div>
 
 

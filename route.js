@@ -3347,7 +3347,6 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
     //this router takes call of pahrmacy search for a patient prescription from the data base;
     router.put("/user/pharmacy/find-patient/prescription",function(req,res){
        if(req.user){    
-         console.log(req.body);
           var data = req.user;
           switch(req.body.criteria) {
             case "refIdCriteria":
@@ -3385,48 +3384,43 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
               break
           }            
 
-        /*model.user.findOne({user_id:req.user.user_id},{referral:1},function(err,data){
-            if (err) throw err;           
-              switch(req.body.criteria) {
-                case "refIdCriteria":
-                  var toNum = parseInt(req.body.ref_id);                
-   
-                  var elementPos = data.referral.map(function(x) {return x.ref_id; }).indexOf(toNum);
-                  var objectFound = data.referral[elementPos];
-                  
-                  if(objectFound === undefined) {
-                   res.send({error: "Patient prescription not found"})
-                  } else {
-                    res.send({data: [objectFound]});
-                  }
-                  break;
-
-                case "phoneCriteria":
-                  var presList = [];
-                 // var elementPos = data.referral.map(function(x) {return x.phone; }).indexOf(req.body.phone);
-                 // var objectFound = data.referral[elementPos];
-                  var phone = "+" + req.body.phone;
-                  for(var i = 0; i < data.referral.length; i++) {
-                    if(data.referral[i].pharmacy.patient_phone === phone) {
-                      presList.push(data.referral[i]);
-                    }
-                  }
-
-                  if(presList.length === 0) {
-                    res.send({error: "Patient prescription not found"})
-                  } else {
-                    res.send({data: presList});
-                  }
-                    break;
-
-                default:
-                  res.send({error: "Please enter search creteria"});
-                  break
-              }            
-        });*/
       } else {
         res.end("Unauthorized access");
       }
+    });
+
+
+    router.get("/user/pharmacy/find-patient/prescription",function(req,res){
+      if(req.user){ 
+
+        var criteria = {center_id: req.user.user_id};
+
+        if(req.query.from){           
+          var startDate = moment(req.query.from).startOf('day'); // set to 12:00 am today
+          var endDate = moment(req.query.to).endOf('day'); // set to 23:59 pm off date range
+          criteria['date'] = {$gt: startDate,$lt: endDate};
+        }
+
+        if(req.query.refId) {
+          var intRegex = /[0-9 -()+]+$/;
+          if(intRegex.test(req.query.refId))
+            criteria['ref_id'] = req.query.refId;
+        }
+
+        if(req.query.patienPhone) {
+          criteria['pharmacy.patient_phone'] = req.query.patienPhone;
+        }
+
+        model.referral.find(criteria)
+        .exec(function(err,referralList){
+          if(err) throw err;
+          res.json(referralList)
+        })
+
+      } else {
+        res.end("Unauthorized access");
+      }
+      
     });
 
     router.get("/user/laboratory/find-patient/lab-test",function(req,res){
