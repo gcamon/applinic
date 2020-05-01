@@ -15460,9 +15460,11 @@ app.controller("pharmacyViewPrescriptionController",["$scope","$location","templ
   //use to load data if has not been modified or if page is refreshed to restore default.
   $rootScope.refData = localManager.getValue("pharmacyData");
 
-  for(var i = 0; i < $rootScope.refData.pharmacy.prescription_body.length; i++) {
-    $rootScope.refData.pharmacy.prescription_body[i].picked = true;
-  }
+
+  if($rootScope.refData.pharmacy)
+    for(var i = 0; i < $rootScope.refData.pharmacy.prescription_body.length; i++) {
+      $rootScope.refData.pharmacy.prescription_body[i].picked = true;
+    }
 
 
   //check payment
