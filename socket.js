@@ -3,7 +3,6 @@
 var uuid = require("uuid");
 var AWS = require('aws-sdk');
 var fs = require('fs');
-var uuid = require("uuid");
 
 AWS.config.update({
     accessKeyId: process.env.AMAZON_ACCESS_KEY,
@@ -580,19 +579,25 @@ io.sockets.on('connection', function(socket){
 
 				model.user.findOne({user_id:req.to},{set_presence:1,firstname:1,title:1,type:1,name:1},function(err,user){
 					if(err) throw err;
-					var names = user.name || user.title + " " + user.firstname;
-					if(user.set_presence.general && user.type === "Doctor") {
-						//{type:req.type,message:req.message,time:req.time}
-						io.sockets.to(req.to).emit("receive request",{message: req.title + " " + 
-							req.name + " wants to have video chat with you!",from: req.from});
-						cb({message:"Video call request has been sent to " + names})
-					} else if(user.type === "Patient") {
-						io.sockets.to(req.to).emit("receive request",{message: req.title + " " + 
-							req.name + " wants to have video chat with you!",from: req.from});
-						cb({message:"Video call request has been sent to " + names})
+					if(user) {
+						var names = user.name || user.title + " " + user.firstname;
+						var tokId = genRemoteId();
+						if(user.type === "Doctor") {
+							//{type:req.type,message:req.message,time:req.time}
+							io.sockets.to(req.to).emit("receive request",{message: req.title + " " + 
+								req.name + " wants to have video chat with you!",from: req.from});
+							cb({message:"Video call request has been sent to " + names})
+						} else if(user.type === "Patient") {
+							io.sockets.to(req.to).emit("receive request",{message: req.title + " " + 
+								req.name + " wants to have video chat with you!",from: req.from});
+							cb({message:"Video call request has been sent to " + names})
+						} else {
+							var msg = names + " is currently not available.Your request has been qeued for attendance.";
+			    			cb({message: msg});
+						}
 					} else {
-						var msg = names + " is currently not available.Your request has been qeued for attendance.";
-		    		cb({message: msg});
+						var msg = "Partner is not in Applinic";
+			    		cb({message: msg});
 					}
 				});			
 			});
@@ -621,18 +626,30 @@ io.sockets.on('connection', function(socket){
 			socket.on("convsersation invitation signaling",function(req,cb){
 				model.user.findOne({user_id:req.to},{set_presence:1,firstname:1,title:1,type:1,presence:1,name:1},function(err,user){
 					if(err) throw err;
-					var names = user.name || user.title + " " + user.firstname;
-					var senderNames = req.name ||  req.firstname;
-					if(user.set_presence.general && user.presence) {
-						//{type:req.type,message:req.message,time:req.time}
-						io.sockets.to(req.to).emit("receive invitation request",{message: senderNames + " wants to have video conference with you!",from: req.from,controlId:req.controlId});
-						cb({message:"Video call request sent to " + names})
-					} else if(user.presence) {
-						io.sockets.to(req.to).emit("receive invitation request",{message: senderNames + " wants to have video conference with you!",from: req.from,controlId:req.controlId});
-						cb({message:"Video call request sent to " + names})
-					} else {						
-						var msg = names + " is currently not available.Your request is qeued for attendance."
-		    		cb({message: msg});
+
+					if(user){
+						var names = user.name || user.title + " " + user.firstname;
+						var senderNames = req.name ||  req.firstname;
+
+						if(user.presence) {
+							//{type:req.type,message:req.message,time:req.time}
+							io.sockets.to(req.to).emit("receive invitation request",
+								{message: senderNames + " wants to have video conference with you!",
+								from: req.from,controlId:req.controlId});
+							cb({message:"Video call request sent to " + names})
+						} else if(user.presence) {
+							io.sockets.to(req.to).emit("receive invitation request",
+								{message: senderNames + " wants to have video conference with you!",
+								from: req.from,controlId:req.controlId});
+							cb({message:"Video call request sent to " + names})
+						} else {						
+							var msg = names + " is currently not available.Your request is qeued for attendance."
+			    		cb({message: msg});
+						}
+
+					} else {
+						var msg = "Partner not in Applinic"
+			    		cb({message: msg});
 					}
 
 				});			
@@ -664,12 +681,15 @@ io.sockets.on('connection', function(socket){
 				//will be modified to accomadate other chosen time							
 				switch(details.time){
 					case "now":
-					  var controlId = genRemoteId();
+					    var controlId = genRemoteId();
 						var createUrl = "/user/cam/" + details.patientId + "/" + controlId;
-						saveControlControl(createUrl,controlId,details);						
+						saveControlControl(createUrl,controlId,details);
+
+						var tkboxVUrl = "/user/video?roomId=" + controlId //for tokbox room ID
+
 						io.sockets.to(details.to).emit("video call able",{controlUrl: createUrl,message: details.title +
-						" " + details.name + " is waiting to have video conference with you!"});
-						cb({controlUrl: createUrl});
+						" " + details.name + " is waiting to have video conference with you!",tokBoxVideoURL: tkboxVUrl});
+						cb({controlUrl: createUrl,tokBoxVideoURL: tkboxVUrl});
 					break;
 					default:
 					break;

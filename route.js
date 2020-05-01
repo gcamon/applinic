@@ -12051,9 +12051,21 @@ router.post("/user/import-patient",function(req,res){
 });
 
 
-router.get('/video',function(req,res){
-  res.render("tokbox-video")
+router.get('/user/video',function(req,res){
+  if(req.user) {
+     var script = "https://tokbox.com/embed/embed/ot-embed.js?embedId=1cf8b23e-3a59-4012-a2ac-8fff36468112&room=" +
+     req.query.roomId;
+    if(req.user.type == "Doctor"){
+      res.render("tokbox-video",{tokBox: script})
+    } else {
+      res.render("tokbox-video2")
+    }
+  } else {
+    res.redirect('login')
+  }
+  
 })
+
 
 
 

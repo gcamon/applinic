@@ -11069,6 +11069,7 @@ app.controller("presenceSocketController",["$rootScope","$scope","$window","mySo
             //localManager.setValue("userId",data.from);
 
             $rootScope.controlUrl = response.controlUrl;
+            $rootScope.tokBoxUrl = response.tokBoxVideoURL;
             ModalService.showModal({
               templateUrl: 'redirect-modal.html',
                 controller: 'redirectModal'
@@ -11137,6 +11138,7 @@ app.controller("presenceSocketController",["$rootScope","$scope","$window","mySo
       var decide = confirm(response.message);
       if(decide){
          $rootScope.controlUrl = response.controlUrl;
+         $rootScope.tokBoxUrl = response.tokBoxVideoURL;
          ModalService.showModal({
           templateUrl: 'redirect-modal.html',
               controller: 'redirectModal'
@@ -11496,7 +11498,7 @@ function($scope,$location,$rootScope,$http,ModalService,$interval,templateServic
 }]);
 
 app.controller("redirectModal",["$rootScope","$window",function($rootScope,$window){
-  $window.location.href = $rootScope.controlUrl //redirects to video call page
+  $window.location.href = $rootScope.tokBoxUrl;//$rootScope.controlUrl //redirects to video call page
 }]);
 
 app.controller("videoInitController",["$scope","$window","localManager","mySocket","templateService",
