@@ -22972,9 +22972,9 @@ app.controller("patientWaitingRoomController",["$scope","$resource","$location",
 
 //for chats in modal and centers dashboard use for 
 app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatService", "templateService","$filter",
-  "ModalService","$location","deviceCheckService","$compile","$interval","$http","localManager",
+  "ModalService","$location","deviceCheckService","$compile","$interval","$http","localManager","profileDataService",
   function($scope, $rootScope, mySocket,chatService,templateService,$filter,ModalService,$location,
-    deviceCheckService,$compile,$interval,$http,localManager){
+    deviceCheckService,$compile,$interval,$http,localManager,profileDataService){
     var user = $rootScope.checkLogIn || {};
     templateService.holdId = templateService.holdId || localManager.getValue("holdIdForChat");
     $rootScope.chatsList = $rootScope.chatsList || localManager.getValue("holdChatList");
@@ -23957,6 +23957,24 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
   //for multiple file upload
   $rootScope.imageFiles = function() {
     alert("the file dey come many oooo")
+  }
+
+
+  $scope.videoChat = function(partner) {
+    var source = profileDataService;   
+    source.get({userId: partner.partnerId},function(data) {
+      data.type = 'Video Call';
+      templateService.holdForSpecificPatient = data;
+      ModalService.showModal({
+        templateUrl: 'sending-communication-request.html',
+        controller: "videoInitController"
+      }).then(function(modal) {
+        modal.element.modal();
+        modal.close.then(function(result) {
+           
+        });
+      });
+    });   
   }
 
 
