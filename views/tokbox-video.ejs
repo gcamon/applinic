@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" ng-app = "rtcVideo">
 
 <head>
     <meta charset="utf-8" />
@@ -20,6 +20,9 @@
       <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
     <!-- CSS Just for demo purpose, don't include it in your project -->
     <link href="/assets/css/demo.css" rel="stylesheet" />
+
+    <script src="/assets/js/vendor/jquery-library.js"></script>
+    <script type="text/javascript" src="/assets/js/angular-source.js"></script>
 
     <style>
          body {
@@ -91,20 +94,129 @@
 
 </head>
 
-<body style="overflow-x:hidden;">
+<body style="overflow-x:hidden;position: relative;" ng-controller="VideoDiagnosisController">
     <!-- Navbar -->
     <% include ./inner/nav3 %>
 
     <!-- End Navbar -->
-    <div id="otEmbedContainer" style="width:100%; height:660px; border: 2px solid red;"></div>
+    <div id="otEmbedContainer" style="width:100%; height:660px;"></div>
     <!--<script src="https://tokbox.com/embed/embed/ot-embed.js?embedId=1cf8b23e-3a59-4012-a2ac-8fff36468112&room=DEFAULT_ROOM"></script>  -->   
     <script src="<%= tokBox %>"></script>  
+
+    <div style="position: absolute;right: 0; top: 70px;width: 350px;padding:10px;overflow-y: auto;" class="card" ng-show="isManage" ng-cloak>
+      <section>
+        <a href="" style="float: right;" ng-click="closeSideBar()"><i  class="fa fa-times"></i></a>
+        <div class="clearfix"></div>
+        <form>
+         <div id="accordion">
+              <label style="color: #fff; font-size: 14px;padding:5px">
+                  <a class="collapsed dropdown-toggle" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTen" aria-expanded="false" aria-controls="collapseTen" style="font-size: 14px;text-decoration:underline">Presenting Complaint</a>
+              </label>                 
+              <div id="collapseTen" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTen">
+                  <textarea placeholder="write..." ng-model="treatment.complain" class="form-control" required></textarea>
+              </div>
+          </div>
+          <div id="accordion">
+              <label style="color: #fff; font-size: 14px;padding:5px">
+                  <a class="collapsed dropdown-toggle" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseNine" aria-expanded="false" aria-controls="collapseNine" style="font-size: 14px;text-decoration:underline">History of Presenting Complaint</a>
+              </label>                 
+              <div id="collapseNine" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingNine">
+                  <textarea placeholder="write..." class="form-control" ng-model="treatment.historyOfComplain"></textarea>
+              </div>
+          </div>
+
+          <div id="accordion">
+              <label style="color: #fff; font-size: 14px;padding:5px">
+                  <a class="collapsed dropdown-toggle" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseEight" aria-expanded="false" aria-controls="collapseEight" style="font-size: 14px;text-decoration:underline">Past Medical History</a>
+              </label>                
+              <div id="collapseEight" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingEight">
+                   <textarea placeholder="write..." class="form-control" ng-model="treatment.pastMedicalHistory"></textarea>
+              </div>
+          </div>
+          
+          <div id="accordion">
+              <label style="color: #fff; font-size: 14px;padding:5px">
+                  <a class="collapsed dropdown-toggle" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseSeven" aria-expanded="false" aria-controls="collapseSeven" style="font-size: 14px;text-decoration:underline">Family History</a>
+              </label>               
+              <div id="collapseSeven" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingSeven">
+                   <textarea placeholder="write..." class="form-control" ng-model="treatment.familyHistory"></textarea>
+              </div>
+          </div>
+
+          <div id="accordion">
+              <label style="color: #fff; font-size: 14px;padding:5px">
+                  <a class="collapsed dropdown-toggle" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseSix" aria-expanded="false" aria-controls="collapseSix" style="font-size: 14px;text-decoration:underline">Social History</a>
+              </label>                 
+              <div  id="collapseSix" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingSix">
+                   <textarea placeholder="write..." class="form-control" ng-model="treatment.socialHistory"></textarea>
+              </div>
+          </div>
+
+          <div id="accordion">
+              <label style="color: #fff; font-size: 14px;padding:5px">
+                  <a class="collapsed dropdown-toggle" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseFive" aria-expanded="false" aria-controls="collapseFive" style="font-size: 14px;text-decoration:underline">Drug History</a>
+              </label>                
+              <div id="collapseFive" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFive">
+                    <textarea placeholder="write..." class="form-control" ng-model="treatment.drugHistory"></textarea>
+              </div>
+          </div>
+          
+          <div id="accordion">
+              <label style="color: #fff; font-size: 14px;padding:5px">
+                  <a class="collapsed dropdown-toggle" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseFour" aria-expanded="false" aria-controls="collapseFour" style="font-size: 14px;text-decoration:underline">Summary</a>
+              </label>                
+              <div  id="collapseFour" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFour">
+                    <textarea placeholder="write..." class="form-control" ng-model="treatment.summary"></textarea>
+              </div>
+          </div>                       
+          
+           <div id="accordion">
+              <label style="color: #fff; font-size: 14px;padding:5px">
+                  <a class="collapsed dropdown-toggle" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapsetwelve" aria-expanded="false" aria-controls="collapseTwelve" style="font-size: 14px;text-decoration:underline">Notes</a>
+              </label>                
+              <div id="collapsetwelve" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwelve">
+                    <textarea placeholder="write..." class="form-control" ng-model="treatment.notes" required></textarea>
+              </div>
+          </div>
+
+          <div id="accordion">
+              <label style="color: #fff; font-size: 14px;padding:5px">
+                  <a class="collapsed dropdown-toggle" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree" style="font-size: 14px;text-decoration:underline">Provisional Diagnosis<span style="color: #000">*</span></a>
+              </label>                 
+              <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+                    <textarea placeholder="write..." class="form-control" ng-model="treatment.provisionalDiagnosis" required></textarea>
+              </div>
+          </div> 
+        </form>
+      </section>
+      <section>
+        
+      </section>
+    </div>
 
     <div style="height: 300px"></div>
 
    
     <div class="clearfix"></div>
     <% include ./inner/footer %>
+
+   
+
+    <script type="text/javascript" src="/socket.io/socket.io.js"></script>
+    <script type="text/javascript" src="/assets/js/adapter.js"></script>
+    <script type="text/javascript" src="/assets/js/rtcClient.js"></script>
+    <!--<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular.min.js">
+    </script>-->
+     <script src="/assets/js/vendor2.js"></script>
+   
+    <script src="/assets/js/ngresource.js"></script>
+    
+     <script src="/assets/js/moment.min.js"></script>  
+    <script src="/assets/js/angular-moment.min.js"></script>
+    <script type="text/javascript" src="/assets/js/angularVideo.js"></script>
+
+    <script src="/assets/js/ui-bootstrap-tpls.js"></script>
+    <script src="/assets/js/modalService.js"></script>
 </body>
 
 

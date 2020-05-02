@@ -1,21 +1,21 @@
 (function(){
-	var app = angular.module('rtcVideo', ["ngResource","angularModalService","angularMoment",'ui.bootstrap'],
-		function($locationProvider){$locationProvider.html5Mode(true);}
+  var app = angular.module('rtcVideo', ["ngResource","angularModalService","angularMoment",'ui.bootstrap'],
+    function($locationProvider){$locationProvider.html5Mode(true);}
     );
 
 
-		var storage = window.localStorage.getItem("resolveUser");
-		var user = JSON.parse(storage);
+    var storage = window.localStorage.getItem("resolveUser");
+    var user = JSON.parse(storage);
 
 
-		var names = user.name || user.title + " " + user.firstname;
-		
-		var client = new PeerManager(names);
-		var mediaConfig = {
+    var names = user.name || user.title + " " + user.firstname;
+    
+    var client = new PeerManager(names);
+    var mediaConfig = {
         audio:true,
         video: {
-					mandatory: {},
-					optional: []
+          mandatory: {},
+          optional: []
         }
     };
 
@@ -26,426 +26,426 @@
     var mediaConfig = {
         audio:true,
         video: {
-        	width: {max: 500},
-        	height: {max: 500}
+          width: {max: 500},
+          height: {max: 500}
         }
     };
 
     */
 
     
-		//var user = JSON.parse(storage)
+    //var user = JSON.parse(storage)
 
     app.factory("localManager",["$window",function($window){
-		  return {
-		    setValue: function(key, value) {
-		      $window.localStorage.setItem(key, JSON.stringify(value));
-		    },
-		    getValue: function(key) {       
-		      return JSON.parse($window.localStorage.getItem(key)); 
-		    },
-		    removeItem: function(key) {
-		      $window.localStorage.removeItem(key);
-		    }
-		  };
-		}]);
+      return {
+        setValue: function(key, value) {
+          $window.localStorage.setItem(key, JSON.stringify(value));
+        },
+        getValue: function(key) {       
+          return JSON.parse($window.localStorage.getItem(key)); 
+        },
+        removeItem: function(key) {
+          $window.localStorage.removeItem(key);
+        }
+      };
+    }]);
 
-		app.service("templateService",[function(){
-			this.playAudio = function(track){
-		    switch(track){
-		      case 1:
-		        audio('/assets/audio/demonstrative.mp3');
-		      break;
-		      case 2:
-		        audio('/assets/audio/whatsappweb.mp3');
-		      break;
-		      case 3:
-		        audio('/assets/audio/gets-in-the-way.mp3');
-		      break;
-		      case 4:
-		        audio('/assets/audio/cute.mp3');
-		      break;
-		      default:
-		        audio('/assets/audio/tweet.mp3');
-		      break
-		    }
-		    
-		  }
+    app.service("templateService",[function(){
+      this.playAudio = function(track){
+        switch(track){
+          case 1:
+            audio('/assets/audio/demonstrative.mp3');
+          break;
+          case 2:
+            audio('/assets/audio/whatsappweb.mp3');
+          break;
+          case 3:
+            audio('/assets/audio/gets-in-the-way.mp3');
+          break;
+          case 4:
+            audio('/assets/audio/cute.mp3');
+          break;
+          default:
+            audio('/assets/audio/tweet.mp3');
+          break
+        }
+        
+      }
 
-		  var audio = function(trackurl){
-		    var audio = new Audio(trackurl);
-		    audio.play();
-		  }
+      var audio = function(trackurl){
+        var audio = new Audio(trackurl);
+        audio.play();
+      }
 
-		}]);
+    }]);
 
-		/* Please DO NOT DELETED THE COMMENTED CODES, COULD BE USEFUL IN FUTURE */
+    /* Please DO NOT DELETED THE COMMENTED CODES, COULD BE USEFUL IN FUTURE */
 
     /* app.factory('camera', ['$rootScope', '$window', function($rootScope, $window){
-    	var camera = {};
-    	camera.preview = $window.document.getElementById('localVideo');
-    	//Get the camera stream and attach to be passed onto a web element
-    	camera.start = function(){
-				return requestUserMedia(mediaConfig)
-				.then(function(stream){						
-					attachMediaStream(camera.preview, stream);
-					client.setLocalStream(stream);
-					camera.stream = stream;
-					$rootScope.$broadcast('cameraIsOn',true);
-				})
-				.catch(Error('Failed to gain access to the device camera.'));
-		  };
-    	camera.stop = function(){
-    		return new Promise(function(resolve, reject){			
-				try {
-					//camera.stream.stop() no longer works
-					
-					var track =  camera.stream.getTracks();
+      var camera = {};
+      camera.preview = $window.document.getElementById('localVideo');
+      //Get the camera stream and attach to be passed onto a web element
+      camera.start = function(){
+        return requestUserMedia(mediaConfig)
+        .then(function(stream){           
+          attachMediaStream(camera.preview, stream);
+          client.setLocalStream(stream);
+          camera.stream = stream;
+          $rootScope.$broadcast('cameraIsOn',true);
+        })
+        .catch(Error('Failed to gain access to the device camera.'));
+      };
+      camera.stop = function(){
+        return new Promise(function(resolve, reject){     
+        try {
+          //camera.stream.stop() no longer works
+          
+          var track =  camera.stream.getTracks();
           for( var i = 0; i < track.length; i++ ){
-	          track[i].stop();
-	        }
-					camera.preview.src = '';
-					resolve();
-				} catch(error) {
-					reject(error);
-				}
-    		})
-    		.then(function(result){
-    			$rootScope.$broadcast('cameraIsOn',false);
-    		});	
-			};
-			return camera;
+            track[i].stop();
+          }
+          camera.preview.src = '';
+          resolve();
+        } catch(error) {
+          reject(error);
+        }
+        })
+        .then(function(result){
+          $rootScope.$broadcast('cameraIsOn',false);
+        }); 
+      };
+      return camera;
     }]);
 
 
 
 
-	app.controller('RemoteStreamsController', ["$scope","$rootScope",'camera', '$location', '$http','$window',"templateService",
-	 function($scope,$rootScope,camera, $location, $http, $window,templateService){
-		var rtc = this;
-		rtc.remoteStreams = [];
-		//var name = user.title + " " + user.firstname; //gets name of doctor in this case
+  app.controller('RemoteStreamsController', ["$scope","$rootScope",'camera', '$location', '$http','$window',"templateService",
+   function($scope,$rootScope,camera, $location, $http, $window,templateService){
+    var rtc = this;
+    rtc.remoteStreams = [];
+    //var name = user.title + " " + user.firstname; //gets name of doctor in this case
 
-		function getStreamById(id) {
-		    for(var i=0; i<rtc.remoteStreams.length;i++) {
-		    	if (rtc.remoteStreams[i].id === id) {return rtc.remoteStreams[i]}
-		    }
-		}
-		
+    function getStreamById(id) {
+        for(var i=0; i<rtc.remoteStreams.length;i++) {
+          if (rtc.remoteStreams[i].id === id) {return rtc.remoteStreams[i]}
+        }
+    }
+    
 
-		rtc.siteLink = function(controlId){
-			
-			control.controlId = controlId;
-				//join a room
-    	client.controlJoin(controlId,names); 
-			return $window.location.host + "/user/cam/" + controlId;
-		}
+    rtc.siteLink = function(controlId){
+      
+      control.controlId = controlId;
+        //join a room
+      client.controlJoin(controlId,names); 
+      return $window.location.host + "/user/cam/" + controlId;
+    }
 
-		rtc.loadData = function () {
-			// get list of streams from the server		
-		
-			var url = '/user/streams.json/' + control.controlId;
-			
-			$http.get(url).success(function(data){
-				// filter own stream
-					
-				  var streams = data.filter(function(stream) {							
-			      	//return stream.id !== client.getId();
-			      	return stream.userId !== user.user_id;
-			    });
+    rtc.loadData = function () {
+      // get list of streams from the server    
+    
+      var url = '/user/streams.json/' + control.controlId;
+      
+      $http.get(url).success(function(data){
+        // filter own stream
+          
+          var streams = data.filter(function(stream) {              
+              //return stream.id !== client.getId();
+              return stream.userId !== user.user_id;
+          });
 
-			
+      
 
-			    // get former state
-			    //starts from one for remote streams
-			    if(rtc.remoteStreams.length == 0) { 
-				    for(var i=0; i < streams.length; i++) {
-				    	//var stream = getStreamById(streams[i].id);
-				    	//streams[i].isPlaying = (!!stream) ? stream.isPLaying : false;
-				    	streams[i].isPlaying = false;			    	
-				    	rtc.remoteStreams.push(streams[i]);
+          // get former state
+          //starts from one for remote streams
+          if(rtc.remoteStreams.length == 0) { 
+            for(var i=0; i < streams.length; i++) {
+              //var stream = getStreamById(streams[i].id);
+              //streams[i].isPlaying = (!!stream) ? stream.isPLaying : false;
+              streams[i].isPlaying = false;           
+              rtc.remoteStreams.push(streams[i]);
 
-				    	//modified on 28/04/2020
-				    	rtc.view(streams[i]);
-				    	break;
-				    }		
-			  	} else {
-			  		if(streams.length > 0) {
-				  		var elePo = rtc.remoteStreams.map(function(x){return x.userId}).indexOf(streams[streams.length - 1].userId);
-				  		if(elePo === -1) {				  			
-				  			streams[streams.length - 1].isPlaying = false;
-				  			rtc.remoteStreams.push(streams[streams.length - 1]);
-				  		} else {
-				  			rtc.remoteStreams.splice(elePo,1);
-				  			streams[streams.length - 1].isPlaying = false;
-				  			rtc.remoteStreams.push(streams[streams.length - 1]);
-				  		}
+              //modified on 28/04/2020
+              rtc.view(streams[i]);
+              break;
+            }   
+          } else {
+            if(streams.length > 0) {
+              var elePo = rtc.remoteStreams.map(function(x){return x.userId}).indexOf(streams[streams.length - 1].userId);
+              if(elePo === -1) {                
+                streams[streams.length - 1].isPlaying = false;
+                rtc.remoteStreams.push(streams[streams.length - 1]);
+              } else {
+                rtc.remoteStreams.splice(elePo,1);
+                streams[streams.length - 1].isPlaying = false;
+                rtc.remoteStreams.push(streams[streams.length - 1]);
+              }
 
-				  		//modified on 28/04/2020
-				  		rtc.view(streams[streams.length - 1])
-			  		}
-			  		//rtc.view(streams[i]);
-			  	}
+              //modified on 28/04/2020
+              rtc.view(streams[streams.length - 1])
+            }
+            //rtc.view(streams[i]);
+          }
 
-			  	console.log("streams: ", streams)
+          console.log("streams: ", streams)
 
-			    $rootScope.connections = streams;
-			    //rtc.remoteStreams = streams;
-			});
-		};
+          $rootScope.connections = streams;
+          //rtc.remoteStreams = streams;
+      });
+    };
 
-		rtc.view = function(stream){
-			client.peerInit(stream.id,stream.name);
-			stream.isPlaying = !stream.isPlaying;
-		};
+    rtc.view = function(stream){
+      client.peerInit(stream.id,stream.name);
+      stream.isPlaying = !stream.isPlaying;
+    };
 
-		rtc.call = function(stream){
-			//If json isn't loaded yet, construct a new stream 
-			//This happens when you load <serverUrl>/<socketId> : 
-			//it calls socketId immediatly.
-			
-			if(!stream.id){
-				stream = {id: stream, isPlaying: false};
-				rtc.remoteStreams.push(stream);
-			}
-			if(camera.isOn){
-				client.toggleLocalStream(stream.id);
-				if(stream.isPlaying){
-					client.peerRenegociate(stream.id);
-				} else {
-					client.peerInit(stream.id);
-				}
-				stream.isPlaying = !stream.isPlaying;
-			} else {
-				camera.start()
-				.then(function(result) {
-					client.toggleLocalStream(stream.id);
-					if(stream.isPlaying){
-						client.peerRenegociate(stream.id);
-					} else {
-						client.peerInit(stream.id);
-					}
-					stream.isPlaying = !stream.isPlaying;
-				})
-				.catch(function(err) {
-					console.log(err);
-				});
-			}
-		};	
+    rtc.call = function(stream){
+      //If json isn't loaded yet, construct a new stream 
+      //This happens when you load <serverUrl>/<socketId> : 
+      //it calls socketId immediatly.
+      
+      if(!stream.id){
+        stream = {id: stream, isPlaying: false};
+        rtc.remoteStreams.push(stream);
+      }
+      if(camera.isOn){
+        client.toggleLocalStream(stream.id);
+        if(stream.isPlaying){
+          client.peerRenegociate(stream.id);
+        } else {
+          client.peerInit(stream.id);
+        }
+        stream.isPlaying = !stream.isPlaying;
+      } else {
+        camera.start()
+        .then(function(result) {
+          client.toggleLocalStream(stream.id);
+          if(stream.isPlaying){
+            client.peerRenegociate(stream.id);
+          } else {
+            client.peerInit(stream.id);
+          }
+          stream.isPlaying = !stream.isPlaying;
+        })
+        .catch(function(err) {
+          console.log(err);
+        });
+      }
+    };  
 
 
 
-	$rootScope.connectionStatus = false; // use to check when stream is available;
-		
+  $rootScope.connectionStatus = false; // use to check when stream is available;
+    
     controllerSocket.on("reload streams",function(data){
     
-  		$rootScope.message = "Partner stream is now available.";
+      $rootScope.message = "Partner stream is now available.";
 
-  		$rootScope.connectionStatus = data.status;
+      $rootScope.connectionStatus = data.status;
 
-  		setTimeout(function(){
-    		$scope.$apply(function(){
-    			$rootScope.message = "";
-    		})
-  		},3500);
-    	
-    	
-   		//var decide = confirm($rootScope.message);
-    	if(data.status) {
-    		rtc.loadData();
-    	} else {
-    		alert("Video call aborted!");
-    		//send emit to stop video to the other peer.
-    	}
-    	
+      setTimeout(function(){
+        $scope.$apply(function(){
+          $rootScope.message = "";
+        })
+      },3500);
+      
+      
+      //var decide = confirm($rootScope.message);
+      if(data.status) {
+        rtc.loadData();
+      } else {
+        alert("Video call aborted!");
+        //send emit to stop video to the other peer.
+      }
+      
     })
 
-  	rtc.investigations = [];
-  	rtc.prescriptions = [];
+    rtc.investigations = [];
+    rtc.prescriptions = [];
     controllerSocket.on('new investigation',function(info){
-    	templateService.playAudio(2);
-    	$scope.$apply(function(){
-    		rtc.investigations.unshift(info);
-    		$rootScope.message = "New test receive...";
+      templateService.playAudio(2);
+      $scope.$apply(function(){
+        rtc.investigations.unshift(info);
+        $rootScope.message = "New test receive...";
 
-    	});
+      });
 
-    	
-    	setTimeout(function(){
-    		$scope.$apply(function(){
-    			$rootScope.message = "";
-    		})
-    	},3000);
-    	
-  	});
+      
+      setTimeout(function(){
+        $scope.$apply(function(){
+          $rootScope.message = "";
+        })
+      },3000);
+      
+    });
 
-  	controllerSocket.on('new prescription',function(info){
-    	templateService.playAudio(2);
-    	$scope.$apply(function(){
-    		rtc.prescriptions.unshift(info);
-    		$rootScope.message = "New test receive...";
-    	})    	
-  		//alert(info.message);  
-  		
+    controllerSocket.on('new prescription',function(info){
+      templateService.playAudio(2);
+      $scope.$apply(function(){
+        rtc.prescriptions.unshift(info);
+        $rootScope.message = "New test receive...";
+      })      
+      //alert(info.message);  
+      
 
-    	setTimeout(function(){
-    		$scope.$apply(function(){
-    			$rootScope.message = "";
-    		})
-    	},3000);		
-  	});
-	  
+      setTimeout(function(){
+        $scope.$apply(function(){
+          $rootScope.message = "";
+        })
+      },3000);    
+    });
+    
 
-	}]);
+  }]);
 
-	app.controller('LocalStreamController',['camera','$rootScope', '$scope', 'localManager','$window','$location','$http',
-	 function(camera,$rootScope, $scope, localManager,$window, $location, $http){
-		var localStream = this;
-		
-		localStream.name = user.title + " " + user.firstname + " " + user.lastname  || 'Guest';
-		localStream.link = '';
-		localStream.cameraIsOn = false;
-		localStream.cameraStatus = "Loading...";
+  app.controller('LocalStreamController',['camera','$rootScope', '$scope', 'localManager','$window','$location','$http',
+   function(camera,$rootScope, $scope, localManager,$window, $location, $http){
+    var localStream = this;
+    
+    localStream.name = user.title + " " + user.firstname + " " + user.lastname  || 'Guest';
+    localStream.link = '';
+    localStream.cameraIsOn = false;
+    localStream.cameraStatus = "Loading...";
 
-		localStream.connections = $rootScope.connections;
+    localStream.connections = $rootScope.connections;
 
-		$scope.goToDashbaord = function(){	//remember to change the for the videoserver to point to applinic main
-			switch(user.typeOfUser) {
-				case "Doctor":
-						window.location.href = "/user/doctor";
-				break;
-				case "Patient":
-						window.location.href = "/user/patient";
-				break;
-				case "Pharmacy":
-						window.location.href = "/user/pharmacy";
-				break;
-				case "Laboratory":
-						window.location.href = "/user/laboratory";
-				break;
-				case "Radiology":
-						window.location.href = "/user/radiology";
-				break;
-			}		
-		
-		}
+    $scope.goToDashbaord = function(){  //remember to change the for the videoserver to point to applinic main
+      switch(user.typeOfUser) {
+        case "Doctor":
+            window.location.href = "/user/doctor";
+        break;
+        case "Patient":
+            window.location.href = "/user/patient";
+        break;
+        case "Pharmacy":
+            window.location.href = "/user/pharmacy";
+        break;
+        case "Laboratory":
+            window.location.href = "/user/laboratory";
+        break;
+        case "Radiology":
+            window.location.href = "/user/radiology";
+        break;
+      }   
+    
+    }
 
-		$scope.invite = {}
-		$scope.findInvitee = false;
+    $scope.invite = {}
+    $scope.findInvitee = false;
 
-		$scope.$watch("invite.type",function(newVal,oldVal){
-			if(newVal){
-				$scope.findInvitee = true;
-			}
+    $scope.$watch("invite.type",function(newVal,oldVal){
+      if(newVal){
+        $scope.findInvitee = true;
+      }
 
-			switch(newVal) {
-				case "Doctor": 
-					$scope.inviteInfo = "Enter Doctor's name e.g Dr Ede Obinna" 
-				break;
-				case "Patient": 
-					$scope.inviteInfo = "Enter patient's firstname e.g Obinna" 
-				break;
-				default:
-				 $scope.inviteInfo = "Enter center name" 
-				break
-			}
-		})
+      switch(newVal) {
+        case "Doctor": 
+          $scope.inviteInfo = "Enter Doctor's name e.g Dr Ede Obinna" 
+        break;
+        case "Patient": 
+          $scope.inviteInfo = "Enter patient's firstname e.g Obinna" 
+        break;
+        default:
+         $scope.inviteInfo = "Enter center name" 
+        break
+      }
+    })
 
-		$scope.closeInvite = function() {
-			$scope.findInvitee = false;
-		}
+    $scope.closeInvite = function() {
+      $scope.findInvitee = false;
+    }
 
-		$scope.getInvitee = function() {
-			$scope.loading = true;
-			$http({
-	      method  : 'GET',
-	      url     : "/user/getInvitee" + "?name=" + $scope.invite.name + "&type=" + $scope.invite.type,
-	      data    : $scope.invite,
-	      headers : {'Content-Type': 'application/json'} 
-	      })
-	    .success(function(data) {
-	    	$scope.loading = false;
-	    	$scope.inviteeList = data;
-	    });         
-		}
+    $scope.getInvitee = function() {
+      $scope.loading = true;
+      $http({
+        method  : 'GET',
+        url     : "/user/getInvitee" + "?name=" + $scope.invite.name + "&type=" + $scope.invite.type,
+        data    : $scope.invite,
+        headers : {'Content-Type': 'application/json'} 
+        })
+      .success(function(data) {
+        $scope.loading = false;
+        $scope.inviteeList = data;
+      });         
+    }
 
-		$scope.userId = user.user_id;
-		var saveControlId = {};
+    $scope.userId = user.user_id;
+    var saveControlId = {};
 
-		$scope.sendInvitation = function(id) {
-			 controllerSocket.emit("convsersation invitation signaling",
-			 	{to: id,from: user.user_id,controlId:saveControlId.id,name: user.name,firstname: user.firstname},function(data){
-			 	$scope.$apply(function(){
-			 		$scope.deliveryMsg = "sent!";
-			 		alert(data.message)
-			 	});	      
-	    })
-		}
+    $scope.sendInvitation = function(id) {
+       controllerSocket.emit("convsersation invitation signaling",
+        {to: id,from: user.user_id,controlId:saveControlId.id,name: user.name,firstname: user.firstname},function(data){
+        $scope.$apply(function(){
+          $scope.deliveryMsg = "sent!";
+          alert(data.message)
+        });       
+      })
+    }
 
-		//when invitation was rejected.
-		controllerSocket.on("call reject",function(res){
-			alert(res.message)
-		});
+    //when invitation was rejected.
+    controllerSocket.on("call reject",function(res){
+      alert(res.message)
+    });
 
-		var path = $location.path();
-		var newPath = path + "/local-streams";
-		$scope.allLocalStreams = function() {
-			$location.path(newPath);
-		}
+    var path = $location.path();
+    var newPath = path + "/local-streams";
+    $scope.allLocalStreams = function() {
+      $location.path(newPath);
+    }
 
-		$scope.$on('cameraIsOn', function(event,data) {
-  		$scope.$apply(function() {
-	    	localStream.cameraIsOn = data;
-	    	localStream.cameraStatus = "Connect";
-	    });
-		});
+    $scope.$on('cameraIsOn', function(event,data) {
+      $scope.$apply(function() {
+        localStream.cameraIsOn = data;
+        localStream.cameraStatus = "Connect";
+      });
+    });
 
-		localStream.getControlId = function(id){
-			saveControlId.id = id;		
-		}
+    localStream.getControlId = function(id){
+      saveControlId.id = id;    
+    }
 
-		localStream.toggleCam = function(){
-			if(localStream.cameraIsOn){
-				localManager.removeItem("username");
-				camera.stop()
-				.then(function(result){
-					client.send('leave');
-	    		client.setLocalStream(null);
-				})
-				.catch(function(err) {
-					console.log(err);
-				});
-			} else {
-				camera.start()
-				.then(function(result) {
-					localStream.link = $window.location.host + '/' + client.getId();
-					if(localManager.getValue("username") !== "Guest" || localManager.getValue("username") !== ""){
-						localManager.setValue("username",localStream.name);
-					}				
-					client.send('readyToStream', { 
-						name: user.name || user.title + " " + user.firstname,
-						controlId: saveControlId.id,
-						userId: user.user_id,
-						profile_pic_url: user.profile_pic_url,
-						type: user.typeOfUser,
-						specialty: user.specialty
-					});
-				})
-				.catch(function(err) {
-					console.log(err);
-				});
-			}
-		};
+    localStream.toggleCam = function(){
+      if(localStream.cameraIsOn){
+        localManager.removeItem("username");
+        camera.stop()
+        .then(function(result){
+          client.send('leave');
+          client.setLocalStream(null);
+        })
+        .catch(function(err) {
+          console.log(err);
+        });
+      } else {
+        camera.start()
+        .then(function(result) {
+          localStream.link = $window.location.host + '/' + client.getId();
+          if(localManager.getValue("username") !== "Guest" || localManager.getValue("username") !== ""){
+            localManager.setValue("username",localStream.name);
+          }       
+          client.send('readyToStream', { 
+            name: user.name || user.title + " " + user.firstname,
+            controlId: saveControlId.id,
+            userId: user.user_id,
+            profile_pic_url: user.profile_pic_url,
+            type: user.typeOfUser,
+            specialty: user.specialty
+          });
+        })
+        .catch(function(err) {
+          console.log(err);
+        });
+      }
+    };
 
-		localStream.toggleCam();
+    localStream.toggleCam();
 
-	}]);*/
+  }]);*/
 
-	app.controller("chooseSessionController",["$scope","$http","$rootScope",function($scope,$http,$rootScope){
-		
-		//$rootScope.holdPatientData saved when VideoDiagnosisController initialized
-		$scope.loading = true;
-		$http({
+  app.controller("chooseSessionController",["$scope","$http","$rootScope",function($scope,$http,$rootScope){
+    
+    //$rootScope.holdPatientData saved when VideoDiagnosisController initialized
+    $scope.loading = true;
+    $http({
       method  : 'GET',
       url     : "/user/doctor/get-patient-sessions?patient_id=" + $rootScope.holdPatientData.id, 
       headers : {'Content-Type': 'application/json'} 
@@ -455,24 +455,24 @@
       $scope.sessions = data;
     });
 
-   	$scope.getSession = function(sess) {
-   		if(sess) {
-   			$rootScope.session = sess.session_id;
-   		} else {
-   			$rootScope.session = genHash(18);
-   		}
-   	}
+    $scope.getSession = function(sess) {
+      if(sess) {
+        $rootScope.session = sess.session_id;
+      } else {
+        $rootScope.session = genHash(18);
+      }
+    }
 
-	}]);
-
-
-	app.service("patientService",["$resource",function($resource){
-		return $resource("/user/doctor/specific-patient");
-	}]);
+  }]);
 
 
-	app.controller("VideoDiagnosisController",["$rootScope","$scope","$window","$http","localManager","Drugs","$resource",
-		"ModalService","patientService",
+  app.service("patientService",["$resource",function($resource){
+    return $resource("/user/doctor/specific-patient");
+  }]);
+
+
+  app.controller("VideoDiagnosisController",["$rootScope","$scope","$window","$http","localManager","Drugs","$resource",
+    "ModalService","patientService",
   function($rootScope,$scope,$window,$http,localManager,Drugs,$resource,ModalService,patientService){
 
 
@@ -520,87 +520,87 @@
    
 
   $scope.investigation = function(){
-  	if($rootScope.treatment.complain && $rootScope.treatment.provisionalDiagnosis) {  
-	  	if($scope.patientInfo.error) { // check to see if patient is for the doctor.
-	  		alert("Not allowed: Not your patient.");
-	  		return;
-	  	}
-	  	ModalService.showModal({
-	        templateUrl: 'investigation.html',
-	        controller: "investigationController"
-	    }).then(function(modal) {
-	        modal.element.modal();
-	        modal.close.then(function(result) {
-	        	          
-	        });
-	    });
-  	} else {
-  		alert("Presenting Complaint and Provisional Diagnosis fields cannot be empty!")
-  	}
+    if($rootScope.treatment.complain && $rootScope.treatment.provisionalDiagnosis) {  
+      if($scope.patientInfo.error) { // check to see if patient is for the doctor.
+        alert("Not allowed: Not your patient.");
+        return;
+      }
+      ModalService.showModal({
+          templateUrl: 'investigation.html',
+          controller: "investigationController"
+      }).then(function(modal) {
+          modal.element.modal();
+          modal.close.then(function(result) {
+                      
+          });
+      });
+    } else {
+      alert("Presenting Complaint and Provisional Diagnosis fields cannot be empty!")
+    }
 
   
   }
 
 
   $scope.treamentPlan = function() {
-  	if($rootScope.treatment.complain && $rootScope.treatment.provisionalDiagnosis) {  
-	  	if($scope.patientInfo.error) { //check to see if patient if for the doctor
-	  		alert("Not allowed: Not your patient.");
-	  		return;
-	  	}
-	  	ModalService.showModal({
-	      templateUrl: 'treatment-plan.html',
-	      controller: "treatmentPlanController"
-	    }).then(function(modal) {
-	      modal.element.modal();
-	      modal.close.then(function(result) { 
-	      	             
-	      });
-	    });
+    if($rootScope.treatment.complain && $rootScope.treatment.provisionalDiagnosis) {  
+      if($scope.patientInfo.error) { //check to see if patient if for the doctor
+        alert("Not allowed: Not your patient.");
+        return;
+      }
+      ModalService.showModal({
+        templateUrl: 'treatment-plan.html',
+        controller: "treatmentPlanController"
+      }).then(function(modal) {
+        modal.element.modal();
+        modal.close.then(function(result) { 
+                       
+        });
+      });
     } else {
-    	alert("Presenting Complaint and Provisional Diagnosis fields cannot be empty!")
+      alert("Presenting Complaint and Provisional Diagnosis fields cannot be empty!")
     }
    
   }
 
   $scope.prescription = function() {
-  	if($rootScope.treatment.complain && $rootScope.treatment.provisionalDiagnosis) {  
-	  	if($scope.patientInfo.error) {
-	  		alert("Not allowed: Not your patient.");
-	  		return;
-	  	}
-	  	ModalService.showModal({
-	      templateUrl: 'prescription.html',
-	      controller: "prescriptionController"
-	    }).then(function(modal) {
-	      modal.element.modal();
-	      modal.close.then(function(result) { 
-	      	             
-	      });
-	    });
+    if($rootScope.treatment.complain && $rootScope.treatment.provisionalDiagnosis) {  
+      if($scope.patientInfo.error) {
+        alert("Not allowed: Not your patient.");
+        return;
+      }
+      ModalService.showModal({
+        templateUrl: 'prescription.html',
+        controller: "prescriptionController"
+      }).then(function(modal) {
+        modal.element.modal();
+        modal.close.then(function(result) { 
+                       
+        });
+      });
     } else {
-    	alert("Presenting Complaint and Provisional Diagnosis fields cannot be empty!");
+      alert("Presenting Complaint and Provisional Diagnosis fields cannot be empty!");
     }
 
   }
 
   $scope.appointment = function() {
-  	if($rootScope.treatment.complain && $rootScope.treatment.provisionalDiagnosis) {  
-	  	if($scope.patientInfo.error) {
-	  		alert("Not allowed: Not your patient.");
-	  		return;
-	  	}
-	  	ModalService.showModal({
-	        templateUrl: 'calender-template.html',
-	        controller: 'appointmentModalController'
-	    }).then(function(modal) {
-	        modal.element.modal();
-	        modal.close.then(function(result) { 
-	             
-	        });
-	    });
+    if($rootScope.treatment.complain && $rootScope.treatment.provisionalDiagnosis) {  
+      if($scope.patientInfo.error) {
+        alert("Not allowed: Not your patient.");
+        return;
+      }
+      ModalService.showModal({
+          templateUrl: 'calender-template.html',
+          controller: 'appointmentModalController'
+      }).then(function(modal) {
+          modal.element.modal();
+          modal.close.then(function(result) { 
+               
+          });
+      });
     } else {
-    	alert("Presenting Complaint and Provisional Diagnosis fields cannot be empty!");
+      alert("Presenting Complaint and Provisional Diagnosis fields cannot be empty!");
     }
 
 
@@ -698,53 +698,43 @@
     
 
      // use to select session where entries would be saved.
-	  $scope.chechSession = function() {
-		  if(!$rootScope.session) {
-				ModalService.showModal({
-		        templateUrl: 'sessionsList.html',
-		        controller: "chooseSessionController"
-		    }).then(function(modal) {
-		        modal.element.modal();
-		        modal.close.then(function(result) {});
-		    });
-		  } 
-		}
+    $scope.chechSession = function() {
+      if(!$rootScope.session) {
+        ModalService.showModal({
+            templateUrl: 'sessionsList.html',
+            controller: "chooseSessionController"
+        }).then(function(modal) {
+            modal.element.modal();
+            modal.close.then(function(result) {});
+        });
+      } 
+    }
 
 
     
     $rootScope.submitSession = function(){
-    	if($rootScope.treatment.complain && $rootScope.treatment.provisionalDiagnosis) {  
-	      var date = new Date();
-	      $scope.loading = true;
-	      $rootScope.treatment.date = date;      
-	      $rootScope.treatment.patient_id = patient.id;
-	      $rootScope.treatment.session_id = $rootScope.session;
-	      $rootScope.treatment.typeOfSession = "video chat";      
-	      $http({
-	        method  : 'POST',
-	        url     : "/user/doctor/patient-session",
-	        data    : $rootScope.treatment,
-	        headers : {'Content-Type': 'application/json'} 
-	        })
-	      .success(function(data) {	      	
-	        if(data) {  
-	        	$scope.loading = false;
-	          $scope.message = "Entry saved successfully!!!";
-	        }
-	      });
-    	} else {    		
-    		alert("Presenting Complaint and Provisional Diagnosis fields cannot be empty!")
-    	}
-    }
-
-    $rootScope.isManage = false;
-
-    $scope.managePatient = function(){
-    	$rootScope.isManage = true;
-    }
-
-    $scope.closeSideBar = function(){
-    	$rootScope.isManage = false;
+      if($rootScope.treatment.complain && $rootScope.treatment.provisionalDiagnosis) {  
+        var date = new Date();
+        $scope.loading = true;
+        $rootScope.treatment.date = date;      
+        $rootScope.treatment.patient_id = patient.id;
+        $rootScope.treatment.session_id = $rootScope.session;
+        $rootScope.treatment.typeOfSession = "video chat";      
+        $http({
+          method  : 'POST',
+          url     : "/user/doctor/patient-session",
+          data    : $rootScope.treatment,
+          headers : {'Content-Type': 'application/json'} 
+          })
+        .success(function(data) {         
+          if(data) {  
+            $scope.loading = false;
+            $scope.message = "Entry saved successfully!!!";
+          }
+        });
+      } else {        
+        alert("Presenting Complaint and Provisional Diagnosis fields cannot be empty!")
+      }
     }
 
 }]);
@@ -753,371 +743,371 @@
 app.controller("investigationController",["$scope","$http","labTests","scanTests","$rootScope","$resource","cities","medicalRecordService",
   function($scope,$http,labTests,scanTests,$rootScope,$resource,cities,medicalRecordService){
 
-  	var patient = $rootScope.holdPatientData;
-  	$scope.isLab = false;
-  	$scope.isRadio = false;
-  	$scope.isInitial = true;
-   	$scope.isSearchToSend = false;
-   	$rootScope.treatment = ($rootScope.treatment) ? $rootScope.treatment : {};
-   	$scope.cities = cities;
+    var patient = $rootScope.holdPatientData;
+    $scope.isLab = false;
+    $scope.isRadio = false;
+    $scope.isInitial = true;
+    $scope.isSearchToSend = false;
+    $rootScope.treatment = ($rootScope.treatment) ? $rootScope.treatment : {};
+    $scope.cities = cities;
 
-  	$scope.lab = function() {
-  		$scope.isLab = true;
-  		$scope.isRadio = false;
-  		$scope.isHistory = false;	
+    $scope.lab = function() {
+      $scope.isLab = true;
+      $scope.isRadio = false;
+      $scope.isHistory = false; 
 
-  		var test_name;
-  		var index;
+      var test_name;
+      var index;
 
-  		$scope.getTest = function (test) {
-  			test_name = test;
-  			if($scope.TestList.length === 1)
-	        $scope.TestList[0].name = test;
-	      if( $scope.TestList.length > 1)
-	        $scope.TestList[index].name = test;
-  		}
+      $scope.getTest = function (test) {
+        test_name = test;
+        if($scope.TestList.length === 1)
+          $scope.TestList[0].name = test;
+        if( $scope.TestList.length > 1)
+          $scope.TestList[index].name = test;
+      }
 
-  	
-  		$scope.tests = labTests.listInfo.concat(labTests.listInfo2,labTests.listInfo3,labTests.listInfo4,labTests.listInfo5,labTests.listInfo6,labTests.listInfo7);
+    
+      $scope.tests = labTests.listInfo.concat(labTests.listInfo2,labTests.listInfo3,labTests.listInfo4,labTests.listInfo5,labTests.listInfo6,labTests.listInfo7);
 
-  		$http({
-	      method  : "GET",
-	      url     : "/user/getSpecialTests", //gets special tests from backend     
-	      headers : {'Content-Type': 'application/json'} 
-	      })
-	    .success(function(response) {   
-	      $scope.tests = $scope.tests.concat(response);
-	    });
-
-
-  		$scope.TestList = [{
-	  	  sn: 1,
-				name: ""
-			}];
-
-			var count = {};
-			count.num = 1;
+      $http({
+        method  : "GET",
+        url     : "/user/getSpecialTests", //gets special tests from backend     
+        headers : {'Content-Type': 'application/json'} 
+        })
+      .success(function(response) {   
+        $scope.tests = $scope.tests.concat(response);
+      });
 
 
-  		$scope.addTest = function(){
-  			var testObj = {};
-  			count.num++;
-  			testObj.sn = count.num;
-  			$scope.TestList.push(testObj);
-  			index = $scope.TestList.length - 1;
-  		}
+      $scope.TestList = [{
+        sn: 1,
+        name: ""
+      }];
 
-  		$scope.removeTest = function() {
-  			if(count.num > 1){
-        	$scope.TestList.pop();
-	        count.num--;
-	      }
-  		}
+      var count = {};
+      count.num = 1;
 
-  		$scope.sendToLab = function () {  			
-  			$scope.isInitial = false;
-      	$scope.isSearchToSend = true;
-  			getLaboratories();
-  		}
 
-  		$scope.sendToPatient = function () {
-  			toPatient()
-  		}
+      $scope.addTest = function(){
+        var testObj = {};
+        count.num++;
+        testObj.sn = count.num;
+        $scope.TestList.push(testObj);
+        index = $scope.TestList.length - 1;
+      }
 
-  		$scope.changeOption = function() {
-  			getLaboratories();
-  		}
+      $scope.removeTest = function() {
+        if(count.num > 1){
+          $scope.TestList.pop();
+          count.num--;
+        }
+      }
 
-  		$scope.goBack = function() {
-  			$scope.isInitial = true;
-  			$scope.isSearchToSend = false;
-  		}
+      $scope.sendToLab = function () {        
+        $scope.isInitial = false;
+        $scope.isSearchToSend = true;
+        getLaboratories();
+      }
 
-  		$scope.$watch("TestList",function(newVal,oldVal){
-	      patient.lab_test_list = newVal;// adds prescription body to the prescription object as the doctor 
-	    //prepares to send it to the back end.
-	    },true);  
+      $scope.sendToPatient = function () {
+        toPatient()
+      }
 
-  		$scope.pickedCenter = null;
-  		$rootScope.treatment.session_id = $rootScope.session; // id to identify prescription in a session if one is written.
-	    $rootScope.treatment.patient_id = patient.id;
-	    $rootScope.treatment.typeOfSession = "video chat";
+      $scope.changeOption = function() {
+        getLaboratories();
+      }
 
-	    $scope.selected = function(center) {
-	    	$scope.pickedCenter = center;
-	    	if($scope.message) 
-	    		$scope.message = null;
+      $scope.goBack = function() {
+        $scope.isInitial = true;
+        $scope.isSearchToSend = false;
+      }
 
-	    	var source = $resource("/user/laboratory/not-ran-services");
+      $scope.$watch("TestList",function(newVal,oldVal){
+        patient.lab_test_list = newVal;// adds prescription body to the prescription object as the doctor 
+      //prepares to send it to the back end.
+      },true);  
 
-	    	source.query({centerId: center.user_id},function(data) { 
-	    		if(data.error){
-	    			$sccope.status = "Not Updated!";
-	    			return;
-	    		}
+      $scope.pickedCenter = null;
+      $rootScope.treatment.session_id = $rootScope.session; // id to identify prescription in a session if one is written.
+      $rootScope.treatment.patient_id = patient.id;
+      $rootScope.treatment.typeOfSession = "video chat";
 
-	    		$scope.status = "Updated!";
-	    		var elemPos;
-	    		for(var i = 0; i < $scope.TestList.length; i++) {
-	    			$scope.TestList[i].available = true;
-	    			elemPos = data.map(function(x){return x.name}).indexOf($scope.TestList[i].name)
-	    			if(elemPos !== -1) {
-	    				$scope.TestList[i].available = false;
-	    			}
-	    		}
+      $scope.selected = function(center) {
+        $scope.pickedCenter = center;
+        if($scope.message) 
+          $scope.message = null;
 
-	    		patient.user_id = center.user_id // id is the id of the laboratory
-	    	});
-	    }
+        var source = $resource("/user/laboratory/not-ran-services");
 
-	    $rootScope.treatment.city = patient.city;
-    	$rootScope.treatment.country = patient.country;
+        source.query({centerId: center.user_id},function(data) { 
+          if(data.error){
+            $sccope.status = "Not Updated!";
+            return;
+          }
 
-	    function getLaboratories() {
-	    	var source = $resource("/user/getAllLaboratory")
-	    	source.query({city:$scope.treatment.city,country:$scope.treatment.country},function(list){
-	    		console.log(list)
-	    		$scope.searchResult = list;
-	    	});
-	    }
+          $scope.status = "Updated!";
+          var elemPos;
+          for(var i = 0; i < $scope.TestList.length; i++) {
+            $scope.TestList[i].available = true;
+            elemPos = data.map(function(x){return x.name}).indexOf($scope.TestList[i].name)
+            if(elemPos !== -1) {
+              $scope.TestList[i].available = false;
+            }
+          }
 
-	    $scope.sendTest = function () {
-		     patient.laboratory = {};
-		     patient.laboratory.patient_gender = patient.gender;
-		     patient.history = $scope.treatment.history;
-		     patient.laboratory.patient_age = patient.age;
-		     patient.patient_address = patient.address;
-		     patient.patient_firstname = patient.firstname;
-		     patient.patient_lastname = patient.lastname;
-		     patient.patient_profilePic = patient.patient_profile_pic_url || patient.profile_pic_url;
-		     patient.patient_title = patient.title;
-		     patient.session_id = $rootScope.session;
-		     patient.patient_id = patient.id;
-		     patient.date = + new Date(); 
-		     patient.noUpdate = true,
-		     patient.typeOfSession = "Video chat";
-		     patient.treatment = $rootScope.treatment;
-		    	
-	    	$http({
+          patient.user_id = center.user_id // id is the id of the laboratory
+        });
+      }
+
+      $rootScope.treatment.city = patient.city;
+      $rootScope.treatment.country = patient.country;
+
+      function getLaboratories() {
+        var source = $resource("/user/getAllLaboratory")
+        source.query({city:$scope.treatment.city,country:$scope.treatment.country},function(list){
+          console.log(list)
+          $scope.searchResult = list;
+        });
+      }
+
+      $scope.sendTest = function () {
+         patient.laboratory = {};
+         patient.laboratory.patient_gender = patient.gender;
+         patient.history = $scope.treatment.history;
+         patient.laboratory.patient_age = patient.age;
+         patient.patient_address = patient.address;
+         patient.patient_firstname = patient.firstname;
+         patient.patient_lastname = patient.lastname;
+         patient.patient_profilePic = patient.patient_profile_pic_url || patient.profile_pic_url;
+         patient.patient_title = patient.title;
+         patient.session_id = $rootScope.session;
+         patient.patient_id = patient.id;
+         patient.date = + new Date(); 
+         patient.noUpdate = true,
+         patient.typeOfSession = "Video chat";
+         patient.treatment = $rootScope.treatment;
+          
+        $http({
         method  : 'POST',
         url     : "/user/doctor/send-test",
         data    : patient,
         headers : {'Content-Type': 'application/json'} 
         })
-	      .success(function(data) {
-	        if(data) {   
-	          $scope.message = "Investigations sent!" 
-		        controllerSocket.emit("new test",{
-		        	center:$scope.pickedCenter,
-		        	testList:patient.lab_test_list,
-		        	ref_id: data.ref_no,
-		        	to:patient.id,
-		        	controlId: control.controlId,
-		        	by: data.by,
-		        	type: "Laboratory Test"
-		        });
-		      } else {
-		      	alert("Error: Investigation not sent!");
-		      }
-	      });
-	    }
+        .success(function(data) {
+          if(data) {   
+            $scope.message = "Investigations sent!" 
+            controllerSocket.emit("new test",{
+              center:$scope.pickedCenter,
+              testList:patient.lab_test_list,
+              ref_id: data.ref_no,
+              to:patient.id,
+              controlId: control.controlId,
+              by: data.by,
+              type: "Laboratory Test"
+            });
+          } else {
+            alert("Error: Investigation not sent!");
+          }
+        });
+      }
 
-	    function toPatient() {
-	    	patient.provisional_diagnosis = $rootScope.treatment.provisionalDiagnosis;
-	    	pattient.prescriptionBody = testList
-	    }
-	    
-  	};
+      function toPatient() {
+        patient.provisional_diagnosis = $rootScope.treatment.provisionalDiagnosis;
+        pattient.prescriptionBody = testList
+      }
+      
+    };
 
-  	$scope.radio = function() {
-  		$scope.isLab = false;
-  		$scope.isRadio = true;
-  		$scope.isHistory = false;  	
-  		
+    $scope.radio = function() {
+      $scope.isLab = false;
+      $scope.isRadio = true;
+      $scope.isHistory = false;   
+      
 
-  		var test_name;
-  		var index;
-  		$scope.getTest = function (test) {
-  			test_name = test;
-  			if($scope.TestList.length === 1)
-	        $scope.TestList[0].name = test;
-	      if( $scope.TestList.length > 1)
-	        $scope.TestList[index].name = test;
-  		} 		
+      var test_name;
+      var index;
+      $scope.getTest = function (test) {
+        test_name = test;
+        if($scope.TestList.length === 1)
+          $scope.TestList[0].name = test;
+        if( $scope.TestList.length > 1)
+          $scope.TestList[index].name = test;
+      }     
 
-  	
-  		$scope.tests = scanTests.listInfo1.concat(scanTests.listInfo2,scanTests.listInfo3,scanTests.listInfo4,scanTests.listInfo5,scanTests.listInfo6);
-
-
-  		$http({
-	      method  : "GET",
-	      url     : "/user/getSpecialTestsRadio", //gets special tests from backend     
-	      headers : {'Content-Type': 'application/json'} 
-	      })
-	    .success(function(response) {   
-	      $scope.tests = $scope.tests.concat(response);
-	    });
-  		
-  		$scope.TestList = [{
-	  	  sn: 1,
-				name: ""
-			}];
-
-			var count = {};
-			count.num = 1;
+    
+      $scope.tests = scanTests.listInfo1.concat(scanTests.listInfo2,scanTests.listInfo3,scanTests.listInfo4,scanTests.listInfo5,scanTests.listInfo6);
 
 
-  		$scope.addTest = function(){
-  			var testObj = {};
-  			count.num++;
-  			testObj.sn = count.num;
-  			$scope.TestList.push(testObj);
-  			index = $scope.TestList.length - 1;
-  		}
+      $http({
+        method  : "GET",
+        url     : "/user/getSpecialTestsRadio", //gets special tests from backend     
+        headers : {'Content-Type': 'application/json'} 
+        })
+      .success(function(response) {   
+        $scope.tests = $scope.tests.concat(response);
+      });
+      
+      $scope.TestList = [{
+        sn: 1,
+        name: ""
+      }];
 
-  		$scope.removeTest = function() {
-  			if(count.num > 1){
-        	$scope.TestList.pop();
-	        count.num--;
-	      }
-  		}
-
-  		$scope.sendToRad = function () {  			
-  			$scope.isInitial = false;
-      	$scope.isSearchToSend = true;
-  			getRadiologies();
-  		}
-
-  		$scope.sendToPatient = function () {
-  			console.log($scope.TestList)
-  		}
+      var count = {};
+      count.num = 1;
 
 
-  		$scope.changeOption = function() {
-  			getRadiologies();
-  		}
+      $scope.addTest = function(){
+        var testObj = {};
+        count.num++;
+        testObj.sn = count.num;
+        $scope.TestList.push(testObj);
+        index = $scope.TestList.length - 1;
+      }
 
-  		$scope.goBack = function() {
-  			$scope.isInitial = true;
-  			$scope.isSearchToSend = false;
-  		}
+      $scope.removeTest = function() {
+        if(count.num > 1){
+          $scope.TestList.pop();
+          count.num--;
+        }
+      }
 
-  		$scope.$watch("TestList",function(newVal,oldVal){
-	      patient.lab_test_list = newVal;// adds prescription body to the prescription object as the doctor 
-	    //prepares to send it to the back end.
-	    },true);  
+      $scope.sendToRad = function () {        
+        $scope.isInitial = false;
+        $scope.isSearchToSend = true;
+        getRadiologies();
+      }
 
-  		$scope.pickedCenter = null;
-  		$rootScope.treatment.session_id = $rootScope.session; // id to identify prescription in a session if one is written.
-	    $rootScope.treatment.patient_id = patient.id;
-	    $rootScope.treatment.typeOfSession = "video chat";
+      $scope.sendToPatient = function () {
+        console.log($scope.TestList)
+      }
 
-	    $scope.selected = function(center) {
-	    	$scope.pickedCenter = center;
-	    	if($scope.message) 
-	    		$scope.message = null;
 
-	    	var source = $resource("/user/radiology/not-ran-services")
-	    	source.query({centerId: center.user_id},function(data) { 
-	    		if(data.error){
-	    			$sccope.status = "Not Updated!";
-	    			return;
-	    		}
+      $scope.changeOption = function() {
+        getRadiologies();
+      }
 
-	    		$scope.status = "Updated!";
-	    		var elemPos;
-	    		for(var i = 0; i < $scope.TestList.length; i++) {
-	    			$scope.TestList[i].available = true;
-	    			elemPos = data.map(function(x){return x.name}).indexOf($scope.TestList[i].name)
-	    			if(elemPos !== -1) {
-	    				$scope.TestList[i].available = false;
-	    			}
-	    		}
+      $scope.goBack = function() {
+        $scope.isInitial = true;
+        $scope.isSearchToSend = false;
+      }
 
-	    		patient.user_id = center.user_id // id is the id of the laboratory
-	    		console.log(data)
-	    		console.log($scope.TestList);
-	    	})
-	    }
+      $scope.$watch("TestList",function(newVal,oldVal){
+        patient.lab_test_list = newVal;// adds prescription body to the prescription object as the doctor 
+      //prepares to send it to the back end.
+      },true);  
 
-	    $rootScope.treatment.city = patient.city;
-    	$rootScope.treatment.country = patient.country;
+      $scope.pickedCenter = null;
+      $rootScope.treatment.session_id = $rootScope.session; // id to identify prescription in a session if one is written.
+      $rootScope.treatment.patient_id = patient.id;
+      $rootScope.treatment.typeOfSession = "video chat";
 
-	    function getRadiologies() {
-	    	var source = $resource("/user/getAllRadiology")
-	    	source.query({city:$scope.treatment.city,country:$scope.treatment.country},function(list){
-	    		console.log(list)
-	    		$scope.searchResult = list;
-	    	})
-	    }
+      $scope.selected = function(center) {
+        $scope.pickedCenter = center;
+        if($scope.message) 
+          $scope.message = null;
 
-	    $scope.sendTest = function () {
-		     patient.radiology = {};
-		     patient.radiology.patient_gender = patient.gender;
-		     patient.history = $scope.treatment.history;
-		     patient.radiology.patient_age = patient.age;
-		     patient.patient_firstname = patient.firstname;
-		     patient.patient_lastname = patient.lastname;
-		     patient.patient_profilePic = patient.patient_profile_pic_url || patient.profile_pic_url;
-		     patient.patient_title = patient.title;
-		     patient.session_id = $rootScope.session;
-		     patient.patient_id = patient.id;
-		     patient.date = + new Date(); 
-		     patient.noUpdate = true,
-		     patient.typeOfSession = "Video chat"
-		     patient.treatment = $rootScope.treatment
-		    	
-		    $http({
-	        method  : 'POST',
-	        url     : "/user/doctor/radiology/send-test",
-	        data    : patient,
-	        headers : {'Content-Type': 'application/json'} 
-	        })
-	      .success(function(data) {
-	        if(data) { 
-	        	$scope.message = "Investigations sent!"  
-		        controllerSocket.emit("new test",{
-		        	center:$scope.pickedCenter,
-		        	testList:patient.lab_test_list,
-		        	ref_id: data.ref_no,
-		        	to:patient.id,
-		        	controlId: control.controlId,
-		        	by: data.by,
-		        	type: "Radiology Test"
-		        });
-		      } else {
-		      	alert("Error: Investigation not sent!")
-		      }
+        var source = $resource("/user/radiology/not-ran-services")
+        source.query({centerId: center.user_id},function(data) { 
+          if(data.error){
+            $sccope.status = "Not Updated!";
+            return;
+          }
 
-	      });
-	    }
-  	}
+          $scope.status = "Updated!";
+          var elemPos;
+          for(var i = 0; i < $scope.TestList.length; i++) {
+            $scope.TestList[i].available = true;
+            elemPos = data.map(function(x){return x.name}).indexOf($scope.TestList[i].name)
+            if(elemPos !== -1) {
+              $scope.TestList[i].available = false;
+            }
+          }
 
-  	$scope.isHistory = false;
-  	$scope.getHistory = function(arg) {
-  		//var type = (arg === "Lab") ? {type: "laboratory"} : {type: "radiology"};
-  		$scope.arg = arg;
-  		switch(arg) {
-				case "Lab":
-						$scope.isLab = false;
-						$scope.isHistory = true;  	
-				break;
-				case "Radio":
-					$scope.isRadio = false;  
-					$scope.isHistory = true;
-				break;
-				default:
-				break;
-  		}
+          patient.user_id = center.user_id // id is the id of the laboratory
+          console.log(data)
+          console.log($scope.TestList);
+        })
+      }
 
-  		if(!$scope.patientMedicalRecord) {
-	  		var source = medicalRecordService; //$resource("/user/get-medical-record");
-	  		source.get({patientId: patient.id},function(data){
-  				console.log(data);
-  				$scope.patientMedicalRecord = data;
-	  		});
-  		}
-  	}
+      $rootScope.treatment.city = patient.city;
+      $rootScope.treatment.country = patient.country;
+
+      function getRadiologies() {
+        var source = $resource("/user/getAllRadiology")
+        source.query({city:$scope.treatment.city,country:$scope.treatment.country},function(list){
+          console.log(list)
+          $scope.searchResult = list;
+        })
+      }
+
+      $scope.sendTest = function () {
+         patient.radiology = {};
+         patient.radiology.patient_gender = patient.gender;
+         patient.history = $scope.treatment.history;
+         patient.radiology.patient_age = patient.age;
+         patient.patient_firstname = patient.firstname;
+         patient.patient_lastname = patient.lastname;
+         patient.patient_profilePic = patient.patient_profile_pic_url || patient.profile_pic_url;
+         patient.patient_title = patient.title;
+         patient.session_id = $rootScope.session;
+         patient.patient_id = patient.id;
+         patient.date = + new Date(); 
+         patient.noUpdate = true,
+         patient.typeOfSession = "Video chat"
+         patient.treatment = $rootScope.treatment
+          
+        $http({
+          method  : 'POST',
+          url     : "/user/doctor/radiology/send-test",
+          data    : patient,
+          headers : {'Content-Type': 'application/json'} 
+          })
+        .success(function(data) {
+          if(data) { 
+            $scope.message = "Investigations sent!"  
+            controllerSocket.emit("new test",{
+              center:$scope.pickedCenter,
+              testList:patient.lab_test_list,
+              ref_id: data.ref_no,
+              to:patient.id,
+              controlId: control.controlId,
+              by: data.by,
+              type: "Radiology Test"
+            });
+          } else {
+            alert("Error: Investigation not sent!")
+          }
+
+        });
+      }
+    }
+
+    $scope.isHistory = false;
+    $scope.getHistory = function(arg) {
+      //var type = (arg === "Lab") ? {type: "laboratory"} : {type: "radiology"};
+      $scope.arg = arg;
+      switch(arg) {
+        case "Lab":
+            $scope.isLab = false;
+            $scope.isHistory = true;    
+        break;
+        case "Radio":
+          $scope.isRadio = false;  
+          $scope.isHistory = true;
+        break;
+        default:
+        break;
+      }
+
+      if(!$scope.patientMedicalRecord) {
+        var source = medicalRecordService; //$resource("/user/get-medical-record");
+        source.get({patientId: patient.id},function(data){
+          console.log(data);
+          $scope.patientMedicalRecord = data;
+        });
+      }
+    }
 
 }]);
 
@@ -1127,15 +1117,15 @@ app.service("medicalRecordService",["$resource",function($resource){
 
 
 app.controller("prescriptionController",["$rootScope","$scope","$window","$http","cities",
-	"localManager","Drugs","$resource","ModalService","$resource","medicalRecordService",
+  "localManager","Drugs","$resource","ModalService","$resource","medicalRecordService",
   function($rootScope,$scope,$window,$http,cities,localManager,Drugs,$resource,ModalService,$resource,medicalRecordService) {
- 		
-  	var patient = $rootScope.holdPatientData;
-  	$scope.isHistory = false;
+    
+    var patient = $rootScope.holdPatientData;
+    $scope.isHistory = false;
 
-  	$scope.cities = cities;
-  	 //creates drug object for the ng-repeat on the view.
-  	$http({
+    $scope.cities = cities;
+     //creates drug object for the ng-repeat on the view.
+    $http({
       method  : "GET",
       url     : "/user/getDrugs", //gets special drugs from backend     
       headers : {'Content-Type': 'application/json'} 
@@ -1190,7 +1180,7 @@ app.controller("prescriptionController",["$rootScope","$scope","$window","$http"
       patient.treatment = $rootScope.treatment;
       patient.session_id = $rootScope.session;
       patient.ref_id = Math.floor(Math.random() * 9999999);
-	   
+     
       $http({
         method  : 'PUT',
         url     : "/user/patient/forwarded-prescription",
@@ -1198,25 +1188,25 @@ app.controller("prescriptionController",["$rootScope","$scope","$window","$http"
         headers : {'Content-Type': 'application/json'} 
         })
       .success(function(data) { 
-      	console.log(data);   
+        console.log(data);   
         alert(data.message);
         controllerSocket.emit("new drugs",{
-        	drugList:$scope.drugList,
-        	ref_id: patient.ref_id,
-        	to:patient.id,
-        	controlId: control.controlId,
-        	by: data.by,
-        	type: "Prescriptions"
-        });		     
+          drugList:$scope.drugList,
+          ref_id: patient.ref_id,
+          to:patient.id,
+          controlId: control.controlId,
+          by: data.by,
+          type: "Prescriptions"
+        });        
       });
       
     }
 
     /*
- 			enter the drugs to buy if to send to pharmacy. List of pharmacy within the patient's location will be pulled by defult
- 			doctoc selects the center of choice, the selection info div will be updated, indication the stock info of the written drugs
- 			if any drug is if found in the list of unavailabe dtrugs for that center puled from the backend, it will be indicated with line through
- 			stock info will say "updated or not update" depends on if the center have updated their stock.
+      enter the drugs to buy if to send to pharmacy. List of pharmacy within the patient's location will be pulled by defult
+      doctoc selects the center of choice, the selection info div will be updated, indication the stock info of the written drugs
+      if any drug is if found in the list of unavailabe dtrugs for that center puled from the backend, it will be indicated with line through
+      stock info will say "updated or not update" depends on if the center have updated their stock.
     */
 
     $scope.isInitial = true;
@@ -1231,7 +1221,7 @@ app.controller("prescriptionController",["$rootScope","$scope","$window","$http"
     }
 
     $scope.goBack = function() {
-    	$scope.isInitial = true;
+      $scope.isInitial = true;
       $scope.isSearchToSend = false;
     }
     //$rootScope.treatment is defined in videoDiagnosisController
@@ -1240,47 +1230,47 @@ app.controller("prescriptionController",["$rootScope","$scope","$window","$http"
     $rootScope.treatment.country = patient.country;
 
     $scope.changeOption = function() {
-    	getPharmacy()
+      getPharmacy()
     }
 
     $scope.pickedCenter = null;
 
     $scope.selected = function(center) {
-    	$scope.pickedCenter = center;
-    	if($scope.message) 
-    		$scope.message = null;
+      $scope.pickedCenter = center;
+      if($scope.message) 
+        $scope.message = null;
 
-    	var source = $resource("/user/pharmacy/not-ran-services")
-    	source.query({centerId: center.user_id},function(data) { 
-    		if(data.error){
-    			$scope.status = "Not Updated!";
-    			return;
-    		}
+      var source = $resource("/user/pharmacy/not-ran-services")
+      source.query({centerId: center.user_id},function(data) { 
+        if(data.error){
+          $scope.status = "Not Updated!";
+          return;
+        }
 
-    		$scope.status = "Updated!"
-    		var elemPos;
-    		for(var i = 0; i < $scope.drugList.length; i++) {
-    			$scope.drugList[i].available = true;
-    			elemPos = data.map(function(x){return x.name}).indexOf($scope.drugList[i].drug_name)
-    			if(elemPos !== -1) {
-    				$scope.drugList[i].available = false
-    			}
-    		}
+        $scope.status = "Updated!"
+        var elemPos;
+        for(var i = 0; i < $scope.drugList.length; i++) {
+          $scope.drugList[i].available = true;
+          elemPos = data.map(function(x){return x.name}).indexOf($scope.drugList[i].drug_name)
+          if(elemPos !== -1) {
+            $scope.drugList[i].available = false
+          }
+        }
 
-    		patient.user_id = center.user_id // id is the id of the pharmacy
-    	})
+        patient.user_id = center.user_id // id is the id of the pharmacy
+      })
     }
 
     function getPharmacy() {
-    	var source = $resource("/user/patient/getAllPharmacy")
-    	source.query({city:$scope.treatment.city,country:$scope.treatment.country},function(list){
-    		$scope.searchResult = list;
-    	})
+      var source = $resource("/user/patient/getAllPharmacy")
+      source.query({city:$scope.treatment.city,country:$scope.treatment.country},function(list){
+        $scope.searchResult = list;
+      })
     }
 
     $scope.sendDrug = function() {
-    	patient.treatment = $rootScope.treatment;
-    	$http({
+      patient.treatment = $rootScope.treatment;
+      $http({
         method  : 'PUT',
         url     : "/user/patient/pharmacy/referral",
         data    : patient,
@@ -1292,38 +1282,38 @@ app.controller("prescriptionController",["$rootScope","$scope","$window","$http"
         //alert($scope.message);
 
         controllerSocket.emit("new drugs",{
-        	center:$scope.pickedCenter,
-        	drugList:$scope.drugList,
-        	ref_id: data.ref_id,
-        	to:patient.id,
-        	controlId: control.controlId,
-        	by: data.by,
-        	type: "Prescriptions"
-        });		     
+          center:$scope.pickedCenter,
+          drugList:$scope.drugList,
+          ref_id: data.ref_id,
+          to:patient.id,
+          controlId: control.controlId,
+          by: data.by,
+          type: "Prescriptions"
+        });        
        
       });
     }
 
  
     $scope.isHistory = false;
-  	$scope.getHistory = function() {
-  		if($scope.isHistory === false) {
-	  		$scope.isInitial  = false;
-	  		$scope.isSearchToSend = false;
-				$scope.isHistory = true; 
+    $scope.getHistory = function() {
+      if($scope.isHistory === false) {
+        $scope.isInitial  = false;
+        $scope.isSearchToSend = false;
+        $scope.isHistory = true; 
 
-	  		if(!$scope.patientMedicalRecord) {
-		  		var source = medicalRecordService;//$resource("/user/get-medical-record");
-		  		source.get({patientId: patient.id},function(data){
-	  				$scope.patientMedicalRecord = data.prescriptions;
-		  		});
-	  		}
+        if(!$scope.patientMedicalRecord) {
+          var source = medicalRecordService;//$resource("/user/get-medical-record");
+          source.get({patientId: patient.id},function(data){
+            $scope.patientMedicalRecord = data.prescriptions;
+          });
+        }
 
-  	 } else {
-  	 		$scope.isInitial  = true;	  		
-				$scope.isHistory = false; 
-  	 }
-  	}
+     } else {
+        $scope.isInitial  = true;       
+        $scope.isHistory = false; 
+     }
+    }
 
   
 
@@ -1332,13 +1322,13 @@ app.controller("prescriptionController",["$rootScope","$scope","$window","$http"
 app.controller("treatmentPlanController",["$scope","$http","$rootScope",
   function($scope,$http,$rootScope){
 
-		$scope.submitPlan = function() {
-			$rootScope.treatment.patient = $rootScope.holdPatientData;
-			$rootScope.treatment.session_id = $rootScope.session;
-			$rootScope.treatment.typeOfSession = "video chat";
-			$rootScope.treatment.date = + new Date();
+    $scope.submitPlan = function() {
+      $rootScope.treatment.patient = $rootScope.holdPatientData;
+      $rootScope.treatment.session_id = $rootScope.session;
+      $rootScope.treatment.typeOfSession = "video chat";
+      $rootScope.treatment.date = + new Date();
 
-			$http({
+      $http({
         method  : 'PUT',
         url     : "/user/doctor/treatment-plan",
         data    : $rootScope.treatment,
@@ -1348,7 +1338,7 @@ app.controller("treatmentPlanController",["$scope","$http","$rootScope",
         if(data.success)   
           $scope.message = "Treatment Plan saved !!";       
       });
-		}
+    }
 
 
 }]);
@@ -1421,9 +1411,9 @@ app.controller("appointmentModalController",["$scope","$http","$rootScope","mome
         return days;
     }
 
-		 $scope.treatment = $rootScope.treatment;
-		 $scope.treatment.appointment = {};
-		 var data = $rootScope.holdPatientData;
+     $scope.treatment = $rootScope.treatment;
+     $scope.treatment.appointment = {};
+     var data = $rootScope.holdPatientData;
 
     $scope.book = function(){        
       var date = + new Date();
@@ -1436,8 +1426,8 @@ app.controller("appointmentModalController",["$scope","$http","$rootScope","mome
       $scope.treatment.session_id = $rootScope.session;
       $scope.treatment.appointment.profilePic = data.patient_profile_pic_url;
 
-     	sendData($scope.treatment,"/user/doctor/patient-session","POST");  
-     	console.log($scope.treatment)   
+      sendData($scope.treatment,"/user/doctor/patient-session","POST");  
+      console.log($scope.treatment)   
     }
     //sendData($scope.treatment,"/user/doctor/session-update/save-changes","PUT");
     //sendData($scope.treatment,"/user/doctor/patient-session","POST");
