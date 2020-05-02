@@ -12058,7 +12058,7 @@ router.get('/user/video',function(req,res){
     if(req.user.type == "Doctor"){
       res.render("tokbox-video",{tokBox: script})
     } else {
-      res.render("tokbox-video2")
+      res.render("tokbox-video2",{tokBox: script})
     }
   } else {
     res.redirect('login')
