@@ -688,7 +688,8 @@ io.sockets.on('connection', function(socket){
 						var tkboxVUrl = "/user/video?roomId=" + controlId //for tokbox room ID
 
 						io.sockets.to(details.to).emit("video call able",{controlUrl: createUrl,message: details.title +
-						" " + details.name + " is waiting to have video conference with you!",tokBoxVideoURL: tkboxVUrl});
+						" " + details.name + " is waiting to have video conference with you!",
+						tokBoxVideoURL: tkboxVUrl,partnerDetails:details});
 						cb({controlUrl: createUrl,tokBoxVideoURL: tkboxVUrl});
 					break;
 					default:
@@ -783,6 +784,7 @@ io.sockets.on('connection', function(socket){
 
     //doc sent new prescriptions to the room during video chat where all members in the room will see it and ask questions if need be
     socket.on("new drugs",function(data){
+    	console.log("is socket drug:", data)
     	io.sockets.to(data.controlId).emit("new prescription",data);
     });
 

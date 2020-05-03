@@ -66,7 +66,7 @@ padding:10px 10px;
                 <ul class="navbar-nav" style="width: 90%; margin: 0 auto;" ng-cloak>
                     <li class="nav-item" style="color: orange">
                        
-                      <button class="btn btn-simple btn-round">Laboratory</button>
+                      <button class="btn btn-simple btn-round" ng-click="investigation()">Laboratory</button>
                            
                     </li>
 
@@ -78,13 +78,13 @@ padding:10px 10px;
 
                     <li class="nav-item" style="color: orange">
                         
-                       <button class="btn btn-simple btn-round">Prescription</button>
+                       <button class="btn btn-simple btn-round" ng-click="managePatient('prescription')">Prescription</button>
                            
                     </li>
 
                     <li class="nav-item" style="color: orange">
                         
-                       <button class="btn btn-simple btn-round" ng-click="managePatient()">Clerking</button>
+                       <button class="btn btn-simple btn-round" ng-click="managePatient('clerking')">Clerking</button>
                            
                     </li>
                     

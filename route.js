@@ -3077,7 +3077,7 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
             }); 
           }
 
-          if(req.body.typeOfSession === "video chat" && req.body.treatment.complain) {
+          if(req.body.typeOfSession === "video chat") {
             model.session.findOne({session_id: req.body.session_id})
             .exec(function(err,record){
               if(err) throw err;
@@ -3183,6 +3183,7 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
       console.log(req.body);
       var provisionalDiagnosis = (req.body.treatment) ? req.body.treatment.provisionalDiagnosis : null;
       var complain = (req.body.treatment) ? req.body.treatment.complain : null;
+      req.body.ref_id = randos.genRef(7);
       if(req.user){  
         model.user.findOne(
           {
@@ -3272,11 +3273,12 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
           });
         });
 
-        if(req.body.typeOfSession === "video chat" && complain || provisionalDiagnosis) {
-          model.user.findOne({user_id: req.user.user_id},{doctor_patient_session:1}).exec(function(err,record){
+        if(req.body.typeOfSession === "video chat") {
+          model.session.findOne({session_id: req.body.session_id})
+          .exec(function(err,record){
             if(err) throw err;
-            var elemPos = record.doctor_patient_session.map(function(x){return x.session_id}).indexOf(req.body.session_id);
-            if(elemPos === -1) {
+            /*var elemPos = record.map(function(x){return x.session_id}).indexOf(req.body.session_id);
+            if(elemPos !== -1) {
               req.body.patient_firstname = req.body.firstname;
               req.body.patient_lastname = req.body.lastname;
               req.body.patient_username = req.body.username;
@@ -3285,15 +3287,45 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
               record.doctor_patient_session[0].diagnosis = req.body.treatment;
             }
             record.save(function(err,info){});
+            */
+            if(record){
+
+              record.diagnosis = req.body.treatment;
+              record.save(function(err,info){
+                if(err) throw err;
+                console.log("Session save!");
+              });
+
+            } else {
+              var dt = new Date();
+              var sess = new model.session({
+                date: dt,
+                last_modified: dt,
+                session_id: req.body.session_id,
+                patient_id: req.body.patient_id,
+                profilePic: req.body.patient_profile_pic_url,
+                patient_firstname: req.body.firstname,
+                patient_lastname: req.body.lastname,
+                patient_username: req.body.username,
+                prescription_id: req.body.prescriptionId,
+                typeOfSession: req.body.typeOfSession,
+                diagnosis: req.body.treatment,
+                doctor_id: req.user.user_id
+              });
+
+              sess.save(function(err,info){
+                if(err) throw err;
+                console.log("Session save!");
+              });
+            }
           })
         }
-                     
       } else {
-        res.end("unauthorzed")
+        res.end("unauthorzed access")
       }
+
     });
 
-    
     //this route the patient forward his test result to his doctor for prescription.
     router.put("/user/patient/test-result/forward",function(req,res){
       if(req.user) {

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" ng-app = "tokboxvideo">
 
 <head>
     <meta charset="utf-8" />
@@ -20,6 +20,9 @@
       <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
     <!-- CSS Just for demo purpose, don't include it in your project -->
     <link href="/assets/css/demo.css" rel="stylesheet" />
+
+    <script src="/assets/js/vendor/jquery-library.js"></script>
+    <script type="text/javascript" src="/assets/js/angular-source.js"></script>
 
     <style>
          body {
@@ -92,21 +95,276 @@
 </head>
 
 <body style="overflow-x:hidden;position: relative;">
-    <!-- Navbar -->
-    <% include ./inner/nav3 %>
-
+   
     <!-- End Navbar -->
-    <div id="otEmbedContainer" style="width:100%; height:660px;"></div>
+    <div id="otEmbedContainer" style="width:100%; height:660px;border: 1px solid red"></div>
     <!--<script src="https://tokbox.com/embed/embed/ot-embed.js?embedId=1cf8b23e-3a59-4012-a2ac-8fff36468112&room=DEFAULT_ROOM"></script>  -->   
     <script src="<%= tokBox %>"></script>  
 
-    
+    <div ng-controller="VideoDiagnosisController2"> 
+      <!-- Navbar -->
+    <% include ./inner/nav3 %>
+
+    <div style="position: absolute;right: 0; top: 70px;width: 380px;padding:10px;overflow-y: auto;max-height: 600px" class="card" ng-show="isManage"  ng-cloak>
+      <aside class="p-1" style="position: relative;">
+        <div ng-show="!session">
+        <a class="collapsed dropdown-toggle text-info" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapsefifty" aria-expanded="false" aria-controls="collapsefifty">What is Session?</a>
+        <p  id="collapsefifty" class="panel-collapse collapse p-1 text-muted" role="tabpanel" aria-labelledby="headingfifty">Session will keep records of clerks, diagnostic requests/reports and prescriptions given while holding conversation with a patient. You can view sessions in e-case note of the patient through your dashboard. </p>
+        </div>
+        <a href="" style="position: absolute;top: 5px;right: 5px" ng-click="closeSideBar()"><i  class="fa fa-times"></i></a>
+        <div class="clearfix"></div>
+
+        <!-- section for choosing a treatment session -->
+        <br>
+        <section ng-if="!session">
+            <div>              
+                <div>                       
+                    <!--<label class="custom-control custom-radio"  ng-click="getSession()">
+                       <input type="radio" class="custom-control-input"  value="">
+                        <span class="custom-control-indicator"></span>
+                        <span class="custom-control-description">Create new session</span>
+                    </label>-->
+                    <button class="btn btn-primary" ng-click="getSession()">Create new session</button>
+                </div>
+                <br>
+                <div>
+                    <label><b>Or continue from previous session</b></label>
+                </div>
+                <div ng-repeat="j in sessions | orderBy: '-date'" class="p-1">                            
+                    <label class="custom-control custom-radio">
+                       <input type="radio" class="custom-control-input" ng-model="treatment.session" ng-value="j.session_id">
+                        <span class="custom-control-indicator"></span>
+                        <span class="custom-control-description">{{j.diagnosis.presenting_complain}} <span am-time-ago="j.date"></span> </span>
+                    </label>
+                </div>
+                <p class="text-warning" ng-show="sessions.length == 0"> No previous session was found.</p>
+                 <div style="margin: 20px;text-align: center;" ng-if="loading">
+                    <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange" ></i>
+                </div>
+                <div ng-show="sessions.length > 0">
+                    <button class="btn btn-primary" ng-click="continueSession()">Continue a session</button>
+                </div>
+            </div>          
+        </section>
+
+        <!-- section for clerking -->
+        <section ng-if="action == 'clerking' && session">
+         <div id="accordion">
+              <label style="color: #fff;padding:5px">
+                  <a class="collapsed dropdown-toggle" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTen" aria-expanded="false" aria-controls="collapseTen" style="text-decoration:underline">Presenting Complaint</a>
+              </label>                 
+              <div id="collapseTen" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTen">
+                  <textarea placeholder="write..." ng-model="treatment.complain" class="form-control" required></textarea>
+              </div>
+          </div>
+          <div id="accordion">
+              <label style="color: #fff;padding:5px">
+                  <a class="collapsed dropdown-toggle" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseNine" aria-expanded="false" aria-controls="collapseNine" style="text-decoration:underline">History of Presenting Complaint</a>
+              </label>                 
+              <div id="collapseNine" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingNine">
+                  <textarea placeholder="write..." class="form-control" ng-model="treatment.historyOfComplain"></textarea>
+              </div>
+          </div>
+
+          <div id="accordion">
+              <label style="color: #fff;padding:5px">
+                  <a class="collapsed dropdown-toggle" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseEight" aria-expanded="false" aria-controls="collapseEight" style="text-decoration:underline">Past Medical History</a>
+              </label>                
+              <div id="collapseEight" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingEight">
+                   <textarea placeholder="write..." class="form-control" ng-model="treatment.pastMedicalHistory"></textarea>
+              </div>
+          </div>
+          
+          <div id="accordion">
+              <label style="color: #fff;padding:5px">
+                  <a class="collapsed dropdown-toggle" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseSeven" aria-expanded="false" aria-controls="collapseSeven" style="text-decoration:underline">Family History</a>
+              </label>               
+              <div id="collapseSeven" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingSeven">
+                   <textarea placeholder="write..." class="form-control" ng-model="treatment.familyHistory"></textarea>
+              </div>
+          </div>
+
+          <div id="accordion">
+              <label style="color: #fff;padding:5px">
+                  <a class="collapsed dropdown-toggle" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseSix" aria-expanded="false" aria-controls="collapseSix" style="text-decoration:underline">Social History</a>
+              </label>                 
+              <div  id="collapseSix" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingSix">
+                   <textarea placeholder="write..." class="form-control" ng-model="treatment.socialHistory"></textarea>
+              </div>
+          </div>
+
+          <div id="accordion">
+              <label style="color: #fff;padding:5px">
+                  <a class="collapsed dropdown-toggle" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseFive" aria-expanded="false" aria-controls="collapseFive" style="text-decoration:underline">Drug History</a>
+              </label>                
+              <div id="collapseFive" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFive">
+                    <textarea placeholder="write..." class="form-control" ng-model="treatment.drugHistory"></textarea>
+              </div>
+          </div>
+          
+          <div id="accordion">
+              <label style="color: #fff;padding:5px">
+                  <a class="collapsed dropdown-toggle" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseFour" aria-expanded="false" aria-controls="collapseFour" style="text-decoration:underline">Summary</a>
+              </label>                
+              <div  id="collapseFour" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFour">
+                    <textarea placeholder="write..." class="form-control" ng-model="treatment.summary"></textarea>
+              </div>
+          </div>                       
+          
+           <div id="accordion">
+              <label style="color: #fff;padding:5px">
+                  <a class="collapsed dropdown-toggle" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapsetwelve" aria-expanded="false" aria-controls="collapseTwelve" style="text-decoration:underline">Notes</a>
+              </label>                
+              <div id="collapsetwelve" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwelve">
+                    <textarea placeholder="write..." class="form-control" ng-model="treatment.notes" required></textarea>
+              </div>
+          </div>
+
+          <div id="accordion">
+              <label style="color: #fff;padding:5px">
+                  <a class="collapsed dropdown-toggle" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree" style="text-decoration:underline">Provisional Diagnosis<span style="color: #000">*</span></a>
+              </label>                 
+              <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+                    <textarea placeholder="write..." class="form-control" ng-model="treatment.provisionalDiagnosis" required></textarea>
+              </div>
+          </div> 
+          <div>
+            <button class="btn btn-info btn-sm" ng-click="submitSession()" style="float: right;"> <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading" ></i>{{(loading) ? "" : (message) ? message : "Save Changes"}}</button>
+          </div>
+        </section>
+
+        <!-- Prescription section -->
+        <section ng-if="action == 'prescription' && session" ng-controller="prescriptionController">
+             <h4 class="h6"> Prescription </h4>
+           
+            <br>
+            <ol style="line-height: 30px">
+                <li ng-repeat="prescription in drugList">{{prescription.drug_name}} ( {{prescription.dosage}} ) {{prescription.frequency}} {{prescription.duration}} &nbsp;&nbsp;<i class="fa fa-times text-muted" ng-click="removeDrug(prescription.drug_name)"></i></li>
+            </ol>
+            <br>
+            <form ng-submit="addDrug()" style="margin-bottom: 20px">
+                <div>
+                    <label class="col-md-4">Drug:</label>
+                    <input type="text" name="" class="col-md-8" uib-typeahead="drug.name for drug in drugs | filter:$viewValue | limitTo:15" ng-model="drug.drug_name">
+                </div>
+                <div class="clearfix"></div>
+                <div>
+                    <label class="col-md-4">Dosage:</label>
+                    <input type="text" name="" class="col-md-8" ng-model="drug.dosage">
+                </div>
+                <div class="clearfix"></div>
+                <div>
+                    <label class="col-md-4">Frequency:</label>
+                    <input type="text" name="" class="col-md-8" ng-model="drug.frequency">
+                </div>
+                <div class="clearfix"></div>
+                <div>
+                    <label class="col-md-4">Duration:</label>
+                    <input type="text" name="" class="col-md-8" ng-model="drug.duration">
+                </div>
+                <div class="clearfix"></div>
+                
+                <div style="text-align: right;margin-top: 10px">                    
+                    <input type="submit" name="" class="btn btn-info" value="+ Add drug">
+                </div>
+            </form> 
+                  
+            <div ng-if="!isSearchToSend"> 
+                <button ng-click="toPatient()" class="btn btn-success">{{(isLoading1) ? "Sending..." : "To Patient"}} </button>&nbsp;&nbsp;&nbsp;
+                <button ng-click="toPharmacy()" class="btn btn-success">To Pharmacy</button>
+                <br>
+            </div>
+           
+            <div ng-if="isSearchToSend">
+                <div>
+                    <a href="" ng-click="goBack()"><i class="fa fa-arrow-left"></i> Back</a> 
+                </div>
+                <br>
+                <div>
+                   <form>                       
+                       <input type="text" placeholder="Enter city name" ng-model="treatment.city" uib-typeahead="city for city in cities | filter:$viewValue | limitTo:15">                       
+                       <button ng-click="changeOption()" class="btn btn-primary"><i class="fa fa-search"></i></button><br>
+                       <span ng-show="isloading2">Searching...</span>
+                   </form>
+                    
+                    <!--<div style="margin-left:0; margin-top: 10px">
+                        <input type="text" name="" ng-model="filterResult" placeholder="Filter list" style="padding: 2px">
+                    </div>-->
+                    <br>
+                    <div style="overflow-y: auto; height: 500px">
+                       <div ng-repeat="center in searchResult | filter: filterResult" style="padding:10px;position: relative;">
+                           <a href="" ng-click="selected(center)">{{center.name}}<span style="display: block;color: grey">{{center.address}},{{center.city}},{{center.country}}</span></a>
+                           <a href="" class="btn btn-simple btn-sm" ng-click="selected(center)" style="position: absolute;bottom: 0;right: 5px" ng-show="!center.message">{{(center.loading) ? "" : "Send" }}<i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange" ng-show="center.loading"></i></a>
+                           <span ng-show="center.message && !center.loading" style="position: absolute;bottom: 0;right: 5px">{{center.message}}</span>
+                       </div>                               
+                    </div> 
+                   
+                    <!--<div class="col-sm-12 col-md-5" style="padding: 2px">
+                        <h5 style="background-color: rgba(0,0,0,0.5);color:#fff;padding: 3px 7px 5px">Selection Info</h5>
+                        
+                        <p>{{pickedCenter.name}}</p>
+                        <p>{{pickedCenter.address}} {{pickedCenter.city}} {{pickedCenter.country}}</p>
+                        <p>{{pickedCenter.phone}}</p>
+                        <h5 style="padding: 7px;background-color: rgba(0,0,0,0.5);color: #fff">Stock info <b class="updateInfo" ng-class="{'text-danger': status === 'Not Updated!'}">{{status}}</b></h5>
+                        
+                        <ol ng-repeat="d in drugList" style="list-style: none">
+                            <li ng-class="{'notAvail': d.available === false}">{{d.drug_name}} &nbsp;<span style="font-size: 8px" ng-if="d.available === true">available</span></li>
+                        </ol>
+                        <div style="padding: 20px;text-align: center;">
+                            <button class="btn btn-success form-control" ng-click="sendDrug()" ng-if="pickedCenter">{{(message) ? message : 'send'}}</button>
+                        </div>
+                    </div>--> 
+                </div>
+            </div>
+            <hr>
+            <div>
+                <h5 class="h6">Previous Prescription(s)</h5>
+                <div ng-repeat="item in patientMedicalRecord | orderBy: '-date'" class="pb-1" >
+                    <b>Date: </b> <span>{{item.date | date: "mediumDate"}}</span> ( <span am-time-ago="item.date"></span> )<br>
+                    <!--<label><b>Provisoinal Daignosis: </b> </label> <span>{{item.provisonal_diagnosis}}</span>-->
+                    <div ng-repeat="drug in item.prescription_body">
+                        <label>{{drug.sn}} ) {{drug.drug_name}}</label> <span>{{drug.dosage}}</span> <span>{{drug.frequency}}</span> <span>{{drug.duration}}</span>
+                    </div>
+                    <hr>
+                </div>
+                <p class="text-center p-2" ng-show="patientMedicalRecord.length == 0">You have not prescribed for this patient before. But you can ask patient for permission to gain access to medical records where you can find other prescriptions.</p>
+            </div> 
+        </section>
+      </aside>
+
+   
+    </div>
+
+
+
+    </div>
+
+   
 
     <div style="height: 300px"></div>
 
+
+    <!--<div class="clearfix"></div>-->
    
-    <div class="clearfix"></div>
-    <% include ./inner/footer %>
+    <script type="text/javascript" src="/socket.io/socket.io.js"></script>
+    <!--<script type="text/javascript" src="/assets/js/adapter.js"></script>
+    <script type="text/javascript" src="/assets/js/rtcClient.js"></script>-->
+    <!--<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular.min.js">
+    </script>-->
+     <script src="/assets/js/vendor2.js"></script>
+   
+    <script src="/assets/js/ngresource.js"></script>
+     
+     <script src="/assets/js/moment.min.js"></script>  
+    <script src="/assets/js/angular-moment.min.js"></script>
+    <script type="text/javascript" src="/assets/js/my-tokbox-video.js"></script>
+
+    <script src="/assets/js/ui-bootstrap-tpls.js"></script>
+    <script src="/assets/js/modalService.js"></script>
+
+
+
+    
 </body>
 
 

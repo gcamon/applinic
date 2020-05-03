@@ -2173,6 +2173,7 @@ app.controller('loginController',["$scope","$http","$location","$window","$resou
     localManager.removeItem('holdId');
     localManager.removeItem("holdIdForChat");
     localManager.removeItem("holdChatList");
+    localManager.removeItem("partnerDetails");
   }
   
 }]);
@@ -11139,6 +11140,7 @@ app.controller("presenceSocketController",["$rootScope","$scope","$window","mySo
       if(decide){
          $rootScope.controlUrl = response.controlUrl;
          $rootScope.tokBoxUrl = response.tokBoxVideoURL;
+         localManager.setValue("partnerDetails",response.partnerDetails);
          ModalService.showModal({
           templateUrl: 'redirect-modal.html',
               controller: 'redirectModal'
@@ -22342,6 +22344,7 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
     localManager.removeItem('holdId');
     localManager.removeItem("adminFoundUser");
     localManager.removeItem("availablility");
+    localManager.removeItem("partnerDetails");
   }
 
   var inviteCount = 0;
