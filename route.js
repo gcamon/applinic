@@ -11345,6 +11345,8 @@ router.put("/report-template",function(req,res){
                 pathname: pdfPath,
                 created: new Date()
               });
+
+              req.body.pdfPathSave = pdfPath;
              
               var transporter = nodemailer.createTransport({
                 host: "mail.privateemail.com",
@@ -11460,6 +11462,10 @@ router.put("/report-template",function(req,res){
                     objectFound.indication = req.body.radiology.radiology.indication;
                     objectFound.acc = req.body.radiology.radiology.acc;
                     objectFound.study_id = study._id;
+                    objectFound.pdf_report.unshift({
+                      pathname: req.body.pdfPathSave,
+                      created: new Date()
+                    })
 
                     //var random = Math.floor(Math.random() * 999999);
                     data.patient_notification.unshift({

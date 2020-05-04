@@ -337,8 +337,8 @@
 }]);
 
 
-app.controller("labCtrl",["$scope","$http","labTests","scanTests","$rootScope","$resource","cities","medicalRecordService",
-  function($scope,$http,labTests,scanTests,$rootScope,$resource,cities,medicalRecordService){
+app.controller("labCtrl",["$scope","$http","labTests","$rootScope","$resource","cities","medicalRecordService",
+  function($scope,$http,labTests,$rootScope,$resource,cities,medicalRecordService){
 
   	var patient = $rootScope.holdPatientData;
   	$rootScope.treatment = ($rootScope.treatment) ? $rootScope.treatment : {};
@@ -411,61 +411,42 @@ app.controller("labCtrl",["$scope","$http","labTests","scanTests","$rootScope","
     	$scope.pickedCenter = center;
     	patient.user_id = center.user_id;
     	$scope.sendTest(center);
-
-    	/*if($scope.message) 
-    		$scope.message = null;
-
-    	var source = $resource("/user/laboratory/not-ran-services");
-
-    	source.query({centerId: center.user_id},function(data) { 
-    		if(data.error){
-    			$sccope.status = "Not Updated!";
-    			return;
-    		}
-
-    		$scope.status = "Updated!";
-    		var elemPos;
-    		for(var i = 0; i < $scope.TestList.length; i++) {
-    			$scope.TestList[i].available = true;
-    			elemPos = data.map(function(x){return x.name}).indexOf($scope.TestList[i].name)
-    			if(elemPos !== -1) {
-    				$scope.TestList[i].available = false;
-    			}
-    		}
-
-    		patient.user_id = center.user_id // id is the id of the laboratory
-    	});
-    	*/
     }
 
     $rootScope.treatment.city = patient.city;
   	$rootScope.treatment.country = patient.country;
 
     function getLaboratories() {
+    	$scope.isloading2 = true;
     	var source = $resource("/user/getAllLaboratory")
     	source.query({city:$scope.treatment.city,country:$scope.treatment.country},function(list){
-    		console.log(list)
+    		$scope.isloading2 = false;
     		$scope.searchResult = list;
     	});
     }
 
 
     $scope.sendTest = function (center) {
-	     patient.laboratory = {};
-	     patient.laboratory.patient_gender = patient.gender;
-	     patient.history = $scope.treatment.history;
-	     patient.laboratory.patient_age = patient.age;
-	     patient.patient_address = patient.address;
-	     patient.patient_firstname = patient.firstname;
-	     patient.patient_lastname = patient.lastname;
-	     patient.patient_profilePic = patient.patient_profile_pic_url || patient.profile_pic_url;
-	     patient.patient_title = patient.title;
-	     patient.session_id = $rootScope.session;
-	     patient.patient_id = patient.id;
-	     patient.date = + new Date(); 
-	     patient.noUpdate = true,
-	     patient.typeOfSession = "Video chat";
-	     patient.treatment = $rootScope.treatment;
+    	if($rootScope.TestList.length == 0) {
+    		alert("Please add investigations.");
+    		return;
+    	}
+  	 	center.loading = true;
+     	patient.laboratory = {};
+      patient.laboratory.patient_gender = patient.gender;
+      patient.history = $scope.treatment.history;
+      patient.laboratory.patient_age = patient.age;
+      patient.patient_address = patient.address;
+      patient.patient_firstname = patient.firstname;
+      patient.patient_lastname = patient.lastname;
+      patient.patient_profilePic = patient.patient_profile_pic_url || patient.profile_pic_url;
+      patient.patient_title = patient.title;
+      patient.session_id = $rootScope.session;
+      patient.patient_id = patient.id;
+      patient.date = + new Date(); 
+      patient.noUpdate = true,
+      patient.typeOfSession = "Video chat";
+      patient.treatment = $rootScope.treatment;
 	    	
 	  	$http({
 	    method  : 'POST',
@@ -475,13 +456,160 @@ app.controller("labCtrl",["$scope","$http","labTests","scanTests","$rootScope","
 	    })
 	    .success(function(data) {
 	      if(data) {   
-	        $scope.message = "Investigations sent!" 
-	        controllerSocket.emit("new test",{
+	        center.message = "sent!";
+	        center.loading = false;
+	        socket.emit("new test",{
 	        	center:$scope.pickedCenter,
 	        	testList:patient.lab_test_list,
 	        	ref_id: data.ref_no,
 	        	to:patient.id,
-	        	controlId: control.controlId,
+	        	//controlId: control.controlId,
+	        	by: data.by,
+	        	type: "Laboratory Test"
+	        });
+	      } else {
+	      	alert("Error: Investigation not sent!");
+	      }
+	    });
+	  }
+
+    function toPatient() {
+    	patient.provisional_diagnosis = $rootScope.treatment.provisionalDiagnosis;
+    	pattient.prescriptionBody = testList
+    }
+
+		var source = medicalRecordService; 
+		source.get({patientId: patient.id},function(data){
+			$scope.patientMedicalRecord = data;
+		});
+
+}]);
+
+app.controller("radioCtrl",["$scope","$http","scanTests","$rootScope","$resource","cities","medicalRecordService",
+  function($scope,$http,scanTests,$rootScope,$resource,cities,medicalRecordService){
+
+  	var patient = $rootScope.holdPatientData;
+  	$rootScope.treatment = ($rootScope.treatment) ? $rootScope.treatment : {};
+
+  	$scope.inputTests = {};
+
+  	$scope.tests = scanTests.listInfo1.concat(scanTests.listInfo2,scanTests.listInfo3,scanTests.listInfo4,
+  	scanTests.listInfo5,scanTests.listInfo6);
+
+		$http({
+      method  : "GET",
+      url     : "/user/getSpecialTestsRadio",    
+      headers : {'Content-Type': 'application/json'} 
+      })
+    .success(function(response) {   
+      $scope.tests = $scope.tests.concat(response);
+    });
+
+    $rootScope.TestList = ($rootScope.TestList) ? $rootScope.TestList : [];
+
+    var testObj = {};
+    var count = {};
+
+    $scope.addTest = function(){
+			testObj = {};
+			count.num++;
+			testObj.sn = count.num;
+			testObj.name = $scope.inputTests.name;
+			$rootScope.TestList.push(testObj);
+			testObj = {};
+			$scope.inputTests.name = "";
+		}
+
+		$scope.removeTest = function(name) {
+			var elemPos = $rootScope.TestList.map(function(x){return x.name}).indexOf(name);
+			if(elemPos !== -1){
+				$rootScope.TestList.splice(elemPos,1)
+			}
+		}
+
+		$scope.$watch("TestList",function(newVal,oldVal){
+      patient.lab_test_list = newVal;// adds prescription body to the prescription object as the doctor 
+    //prepares to send it to the back end.
+    },true);  
+
+
+  	$scope.sendToLab = function () {  			
+    	$scope.isSearchToSend = true;
+			getRadiologies();
+		}
+
+		$scope.sendToPatient = function () {
+			toPatient()
+		}
+
+		$scope.changeOption = function() {
+			getRadiologies();
+		}
+
+		$scope.goBack = function() {
+			$scope.isSearchToSend = false;
+		}
+
+		$scope.pickedCenter = null;
+		$rootScope.treatment.session_id = $rootScope.session; 
+    $rootScope.treatment.patient_id = patient.id;
+    $rootScope.treatment.typeOfSession = "video chat";
+
+    $scope.selected = function(center) {
+    	$scope.pickedCenter = center;
+    	patient.user_id = center.user_id;
+    	$scope.sendTest(center);
+    }
+
+    $rootScope.treatment.city = patient.city;
+  	$rootScope.treatment.country = patient.country;
+
+    function getRadiologies() {
+    	$scope.isloading2 = true;
+    	var source = $resource("/user/getAllRadiology")
+    	source.query({city:$scope.treatment.city,country:$scope.treatment.country},function(list){
+    		$scope.isloading2 = false;
+    		$scope.searchResult = list;
+    	})
+    }
+
+
+    $scope.sendTest = function (center) {
+    	if($rootScope.TestList.length == 0) {
+    		alert("Please add investigations.");
+    		return;
+    	}
+  	 	patient.radiology = {};
+		   patient.radiology.patient_gender = patient.gender;
+		   patient.history = $scope.treatment.history;
+		   patient.radiology.patient_age = patient.age;
+		   patient.patient_firstname = patient.firstname;
+		   patient.patient_lastname = patient.lastname;
+		   patient.patient_profilePic = patient.patient_profile_pic_url || patient.profile_pic_url;
+		   patient.patient_title = patient.title;
+		   patient.session_id = $rootScope.session;
+		   patient.patient_id = patient.id;
+		   patient.date = + new Date(); 
+		   patient.noUpdate = true,
+		   patient.typeOfSession = "Video chat"
+		   patient.treatment = $rootScope.treatment
+	    	
+	  	$http({
+	    method  : 'POST',
+	    url     : "/user/doctor/radiology/send-test",
+	    data    : patient,
+	    headers : {'Content-Type': 'application/json'} 
+	    })
+	    .success(function(data) {
+	      if(data) {   
+	        center.message = "sent!";
+	        center.loading = false;
+	        socket.emit("new test",{
+	        	center:$scope.pickedCenter,
+	        	testList:patient.lab_test_list,
+	        	ref_id: data.ref_no,
+	        	to:patient.id,
+	        	//controlId: control.controlId,
 	        	by: data.by,
 	        	type: "Laboratory Test"
 	        });
@@ -498,19 +626,14 @@ app.controller("labCtrl",["$scope","$http","labTests","scanTests","$rootScope","
 
 
 
-		if(!$scope.patientMedicalRecord) {
-  		var source = medicalRecordService; 
-  		source.get({patientId: patient.id},function(data){
-				$scope.patientMedicalRecord = data;
-  		});
-		}
+		
+		var source = medicalRecordService; 
+		source.get({patientId: patient.id},function(data){
+			$scope.patientMedicalRecord = data;
+		});
+	
 
 }]);
-
-app.controller("radioCtrl",["$scope","$http","labTests","scanTests","$rootScope","$resource","cities","medicalRecordService",
-  function($scope,$http,labTests,scanTests,$rootScope,$resource,cities,medicalRecordService){
-
-}])
 
 
 
@@ -711,7 +834,8 @@ app.controller("investigationController",["$scope","$http","labTests","scanTests
   		} 		
 
   	
-  		$scope.tests = scanTests.listInfo1.concat(scanTests.listInfo2,scanTests.listInfo3,scanTests.listInfo4,scanTests.listInfo5,scanTests.listInfo6);
+  		$scope.tests = scanTests.listInfo1.concat(scanTests.listInfo2,scanTests.listInfo3,scanTests.listInfo4,
+  			scanTests.listInfo5,scanTests.listInfo6);
 
 
   		$http({
@@ -1121,8 +1245,8 @@ app.controller("treatmentPlanController",["$scope","$http","$rootScope",
 
 }]);
 
-app.controller("appointmentModalController",["$scope","$http","$rootScope","moment",
-  function($scope,$http,$rootScope,moment){
+app.controller("appointmentModalController",["$scope","$http","$rootScope","moment","$filter",
+  function($scope,$http,$rootScope,moment,$filter){
     
     $scope.day = moment();
 
@@ -1193,7 +1317,7 @@ app.controller("appointmentModalController",["$scope","$http","$rootScope","mome
 		 $scope.treatment.appointment = {};
 		 var data = $rootScope.holdPatientData;
 
-    $scope.book = function(){        
+    $scope.book = function(){ 
       var date = + new Date();
       $scope.treatment.date = date;
       $scope.treatment.patient_id = data.patient_id || data.user_id;
@@ -1202,14 +1326,14 @@ app.controller("appointmentModalController",["$scope","$http","$rootScope","mome
       $scope.treatment.appointment.firstname = data.firstname;
       $scope.treatment.appointment.lastname = data.lastname;
       $scope.treatment.session_id = $rootScope.session;
+      $scope.treatment.appointment.strDate = $filter('date')($scope.treatment.appointment.date, 'fullDate');
+      $scope.treatment.appointment.strTime = $filter('date')($scope.treatment.appointment.time, 'shortTime')
       $scope.treatment.appointment.profilePic = data.patient_profile_pic_url;
-
-     	sendData($scope.treatment,"/user/doctor/patient-session","POST");  
-     	console.log($scope.treatment)   
+      sendData($scope.treatment,"/user/doctor/patient-session","POST");  
     }
-    //sendData($scope.treatment,"/user/doctor/session-update/save-changes","PUT");
-    //sendData($scope.treatment,"/user/doctor/patient-session","POST");
+   
     function sendData(data,url,method) {
+    	$scope.loading = true;      
       $http({
         method  : method,
         url     : url,
@@ -1221,15 +1345,12 @@ app.controller("appointmentModalController",["$scope","$http","$rootScope","mome
           $scope.message = "Appointment booked!!";
           //alert("Appointment booked, patient will be notified.");
           //mySocket.emit("realtime appointment notification",{to:data.patient_id});
-        }  
+        } 
+        $scope.loading = false;  
       });
     }
 
 }]);
-
-
-
-
 
 app.factory("Drugs",["$http",function($http){
 

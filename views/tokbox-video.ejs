@@ -76,6 +76,84 @@
         float: left;
       }
 
+
+      .calender-header i {
+        width: 20%;
+        cursor: pointer;
+    }
+
+.calender-header i,.calender-header span {
+    font-size: 24px;
+    display: inline-block;
+}
+
+.calender-header > span {
+    width: 55%;
+}
+
+.week,.indays {
+    text-align: center;
+}
+
+span.day {  
+    display: inline-block;
+    padding: 5px;
+    width: 12.5%;
+    text-align: center;
+    font-size: 16px;
+    margin: 20px 0px 10px;
+}
+
+span.dates {
+    margin-right: 5px;
+    display: inline-block;
+    padding: 5px;
+    width: 13%;
+    text-align: center;
+    font-size: 14px;
+    margin: 20px 0px;
+    border-bottom: 1px solid grey;
+    box-shadow: 1px 2px 3px grey;
+    font-weight: bold;
+}
+
+.different-month {
+    color:#C0C0C0;
+    font-weight: normal!important;
+}
+
+
+
+.today {
+    background:#ccc;
+    color:#fff;
+}
+            
+.different-month {
+    color:#C0C0C0;
+}
+            
+.selected {
+    background:#7dbb00;
+    color:white;
+}
+
+.notAvail {
+    text-decoration: line-through;
+    color:red;
+}
+
+.updateInfo {
+    color: orange;
+    float: right;
+}
+
+.moved {
+  transform: translate(10px); /* Equal to translateX(10px) */
+  background-color: pink;
+}
+
+
         @media screen and (max-width: 750px) {
           .card {
             box-shadow: none!important;
@@ -109,7 +187,7 @@
       <!-- Navbar -->
     <% include ./inner/nav3 %>
 
-    <div style="position: absolute;right: 0; top: 70px;width: 380px;padding:10px;overflow-y: auto;max-height: 600px" class="card" ng-show="isManage"  ng-cloak>
+    <div style="position: absolute;right: 0; top: 70px;width: 380px;padding:10px;overflow-y: auto;max-height: 600px;z-index: 99999" class="card" ng-show="isManage"  ng-cloak>
       <aside class="p-1" style="position: relative;">
         <div ng-show="!session">
         <a class="collapsed dropdown-toggle text-info" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapsefifty" aria-expanded="false" aria-controls="collapsefifty">What is Session?</a>
@@ -295,9 +373,9 @@
                         <input type="text" name="" ng-model="filterResult" placeholder="Filter list" style="padding: 2px">
                     </div>-->
                     <br>
-                    <div style="overflow-y: auto; height: 500px">
+                    <div style="overflow-y: auto; height: 600px;min-height: 300px">
                        <div ng-repeat="center in searchResult | filter: filterResult" style="padding:10px;position: relative;">
-                           <a href="" ng-click="selected(center)">{{center.name}}<span style="display: block;color: grey">{{center.address}},{{center.city}},{{center.country}}</span></a>
+                           <a href="" ng-click="selected(center)"><span class="h6">{{center.name}}</span><span style="display: block;color: grey">{{center.address}},{{center.city}},{{center.country}}</span></a>
                            <a href="" class="btn btn-simple btn-sm" ng-click="selected(center)" style="position: absolute;bottom: 0;right: 5px" ng-show="!center.message">{{(center.loading) ? "" : "Send" }}<i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange" ng-show="center.loading"></i></a>
                            <span ng-show="center.message && !center.loading" style="position: absolute;bottom: 0;right: 5px">{{center.message}}</span>
                        </div>                               
@@ -359,7 +437,7 @@
                         <textarea style="width: 80%;height: 120px" placeholder="Write.." ng-model="treatment.parity" class="form-control pl-2"></textarea>
                     </div>
                 </div>
-                <div>
+                <div ng-show="!isSearchToSend">
                     <!--<button class="btn btn-success" bg-click="sendToPatient()">To Patient</button>-->
                     <button class="btn btn-success" ng-click="sendToLab()">To Center</button>
                 </div>
@@ -377,11 +455,11 @@
                     <!--<div>
                         <input type="text" name="" ng-model="filterResult" placeholder="Filter centers" class="form-control">
                     </div>-->
-                    <div style="overflow-y: auto; height: 600px">
+                    <div style="overflow-y: auto; max-height: 600px;min-height: 300px">
                        <div ng-repeat="center in searchResult | filter: filterResult" style="padding:10px; position: relative;">
-                           <a href="" ng-click="selected(center)">{{center.name}}<span style="display: block">{{center.address}},{{center.city}},{{center.country}}</span></a>
-                            <a href="" class="btn btn-simple btn-sm" ng-click="selected(center)" style="position: absolute;bottom: 0;right: 5px" ng-show="!center.message">{{(center.loading) ? "" : "Send" }}<i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange" ng-show="center.loading"></i></a>
-                           <span ng-show="center.message && !center.loading" style="position: absolute;bottom: 0;right: 5px">{{center.message}}</span>
+                           <a href="" ng-click="selected(center)"><span class="h6">{{center.name}}</span><span style="display: block;color: grey">{{center.address}},{{center.city}},{{center.country}}</span></a>
+                            <a href="" class="btn btn-simple btn-sm" ng-click="selected(center)" style="position: absolute;bottom: 4px;right: 5px" ng-show="!center.message">{{(center.loading) ? "" : "Send" }}<i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange" ng-show="center.loading"></i></a>
+                           <span ng-show="center.message && !center.loading" style="position: absolute;bottom: 4px;right: 5px">{{center.message}}</span>
                        </div>
                        <p ng-if="searchResult.length == 0" style="padding:30px 10px">No center was found!</p>                          
                     </div>
@@ -405,8 +483,122 @@
         <!-- Radiology Section -->
         <section ng-if="action == 'radiology' && session" ng-controller="radioCtrl">
             <div>
-                <h4 class="h6">Radiology</h4>   
+                <h4 class="h6">Radiology</h4> 
+                <div>
+                     <label>Investigation(s): </label>
+                </div>
+                <ol>
+                    <li ng-repeat="lab in TestList" style="position: relative;">
+                        <span>{{lab.name}}</span>
+                        <a href="" style="position: absolute;right: 0;top: 0" ng-click="removeTest(lab.name)"><i class="fa fa-times text-muted"></i></a>
+                    </li>                 
+                </ol>
+                <br>                
+                <form ng-submit="addTest()">
+                    <div style="margin-left: -10px">
+                        <input  type="text" placeholder="Enter test name" class="form-control" ng-model="inputTests.name" uib-typeahead="test.name for test in tests | filter:$viewValue | limitTo:15" class="form-control">
+                    </div>
+                    <div class="text-right">
+                        <button type="submit" class="btn btn-warning" ><i class="fa fa-plus"></i></button>
+                    </div>
+                </form>
+                <div>
+                    <div>
+                        <label>Indication:</label>
+                        <textarea  style="width: 80%;height: 120px;" placeholder="Write.." ng-model="treatment.indication" class="form-control pl-2"></textarea>
+                    </div>
+                    <div>
+                        <label>Clinical Summary:</label>
+                        <textarea style="width: 80%;height: 120px" placeholder="Write.." ng-model="treatment.clinical_summary" class="form-control pl-2"></textarea>
+                    </div>
+                     <div ng-if="patientInfo.gender === 'female'">
+                        <label>LMP:</label>
+                        <textarea style="width: 80%;height: 120px" placeholder="Write.." ng-model="treatment.lmp" class="form-control pl-2"></textarea>
+                    </div>
+                     <div ng-if="patientInfo.gender === 'female'">
+                        <label>Parity:</label>
+                        <textarea style="width: 80%;height: 120px" placeholder="Write.." ng-model="treatment.parity" class="form-control pl-2"></textarea>
+                    </div>
+                </div>
+                <div ng-show="!isSearchToSend">
+                    <!--<button class="btn btn-success" bg-click="sendToPatient()">To Patient</button>-->
+                    <button class="btn btn-success" ng-click="sendToLab()">To Center</button>
+                </div>
+                <hr>
+                <div ng-show="isSearchToSend">
+                    <div>
+                        <a href="" ng-click="goBack()"><i class="fa fa-arrow-left"></i> Back</a> 
+                    </div>
+                    <br>
+                    <form>                              
+                        <input type="text" type="text" placeholder="Enter city name" ng-model="treatment.city" uib-typeahead="city for city in cities | filter:$viewValue | limitTo:15">           
+                        <button ng-click="changeOption()" class="btn btn-primary"><i class="fa fa-search"></i></button><br>
+                       <span ng-show="isloading2">Searching...</span>
+                    </form>
+                    <!--<div>
+                        <input type="text" name="" ng-model="filterResult" placeholder="Filter centers" class="form-control">
+                    </div>-->
+                    <div style="overflow-y: auto; max-height: 600px;min-height: 300px">
+                       <div ng-repeat="center in searchResult | filter: filterResult" style="padding:10px; position: relative;">
+                           <a href="" ng-click="selected(center)"><span class="h6">{{center.name}}</span><span style="display: block;color: grey">{{center.address}},{{center.city}},{{center.country}}</span></a>
+                            <a href="" class="btn btn-simple btn-sm" ng-click="selected(center)" style="position: absolute;bottom: 4px;right: 5px" ng-show="!center.message">{{(center.loading) ? "" : "Send" }}<i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange" ng-show="center.loading"></i></a>
+                           <span ng-show="center.message && !center.loading" style="position: absolute;bottom: 4px;right: 5px">{{center.message}}</span>
+                       </div>
+                       <p ng-if="searchResult.length == 0" style="padding:30px 10px">No center was found!</p>                          
+                    </div>
+                </div>
+                <br>
+                <div>
+                    <h5 class="h6">Previous Radiology Reports</h5>
+                    <div ng-repeat="item in patientMedicalRecord.medical_records.radiology_test" class="pb-1 pt-1 bt-border">
+                        <b>Date: </b> <span>{{item.sent_date | date: "mediumDate"}}</span><br>
+                        <ol>
+                           <li ng-repeat="test in item.test_to_run">{{test.name}}</li>
+                        </ol>
+                        <div ng-show="!item.pdf_report[0]">Report: <span>Pending</span></div>
+                        <div ng-show="item.pdf_report[0]"><a href="{{'https://drive.google.com/viewerng/viewer?embedded=true&url=https://applinic.com' + item.pdf_report[0].pathname}}" target="_blank">View Report (PDF)</a></div>
+                    </div>
+                    <p class="text-center p-2" ng-show="patientMedicalRecord.medical_records.radiology_test.length == 0">You have not requested for an investigation for this patient but you can ask patient for permission to gain access to medical records where you can find other investigations.</p>
+                </div>  
             </div> 
+        </section>
+
+         <!-- Appointment Section -->
+        <section ng-if="action == 'appointment' && session" ng-controller="appointmentModalController">
+            <h4 class="h6">Book In-Person Meeting Appoinment</h4>
+            <br>
+            <div class="calender-header bg-primary text-white" style="text-align: center;">
+                <i class="fa fa-angle-left" ng-click="previous()"></i>
+                <span style="font-size: 24px">{{month.format("MMMM, YYYY")}}</span>
+                <i class="fa fa-angle-right" ng-click="next()"></i>
+            </div>
+            <div class="week" style="line-height: 0.5">
+                <span class="day">Sun</span>
+                <span class="day">Mon</span>
+                <span class="day">Tue</span>
+                <span class="day">Wed</span>
+                <span class="day">Thu</span>
+                <span class="day">Fri</span>
+                <span class="day">Sat</span>
+            </div>
+            
+            <div ng-repeat="week in weeks" class="indays">
+                <span class="dates" ng-class="{ today: day.isToday, 'different-month': !day.isCurrentMonth, selected: day.date.isSame(selected) }" ng-click="select(day)" style="cursor:pointer" ng-repeat="day in week.days">{{day.number}}</span>
+            </div>                        
+            <p class="bg-default" style="font-size:1em; padding:15px;">Picked Date: <em style="color: green">{{dd.format('dddd, MMMM Do YYYY')}}</em><span style="display:block">Picked time: <em style="color: green">{{treatment.appointment.time | date: "mediumTime"}} </em></span>
+                <span>Picked Venue: <em style="color: green">{{treatment.appointment.address}} </em></span>
+            </p>
+
+            <div>
+                <label><b>Time of appointment:</b> <br><input type="time" class="form-control" style="font-size: 14px!important" placeholder="Enter time" ng-model="treatment.appointment.time" style="font-size:.5em;"/></label>
+                <br>
+                <label><b>Venue (If none,defaults to the address in your profile):</b> <br> <input class="form-control" style="font-size: 14px!important" type="address" placeholder="Enter address" ng-model="treatment.appointment.address"></label>
+            </div>
+            <div class="pt-1">
+                  <button  ng-click="book()" class="btn btn-danger" ng-show="!message">{{(loading) ? "booking..." : 'Book'}}</button>
+                  <span>{{message}}</span>
+            </div>
+            </div>
         </section>
 
       </aside>
