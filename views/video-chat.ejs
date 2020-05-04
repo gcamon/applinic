@@ -464,14 +464,13 @@ span.dates {
           <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header" style="border-bottom:1px solid #eee;">
-                     <h4>Investigation</h4>
-                     <i class="fa fa-times" data-dismiss="modal" style="font-size: 18px;position: absolute;top:10px;right: 10px;padding: 10px"></i>    
-                    
+                    <h4>Investigation</h4>
+                    <i class="fa fa-times" data-dismiss="modal" style="font-size: 18px;position: absolute;top:10px;right: 10px;padding: 10px"></i>      
                 </div>
-                 <div style="text-align:center;padding:20px" ng-if="isInitial === true">
+                <div style="text-align:center;padding:20px" ng-if="isInitial === true">
                     <button class="btn btn-neutral" ng-click="lab()">New Laboratory</button>
                     <button class="btn btn-neutral" ng-click="radio()">New Radiology</button>  
-                 </div>                    
+                </div>                    
             
                 <div class="modal-body">
                     <div ng-if="isInitial === true">
@@ -489,7 +488,7 @@ span.dates {
                                 <tbody ng-repeat="lab in TestList">                                                                           
                                     <td style="padding: 5px;width: 5%;">{{lab.sn}}</td>
                                     <td style="width: 90%"><input  type="text" placeholder="Enter test name" class="form-control" ng-model="test.name" uib-typeahead="test.name for test in tests | filter:$viewValue | limitTo:15" class="form-control">
-                                        {{getTest(test.name)}} </td><!--{{getTest(test.name)}}-->
+                                        </td>
                                                                       
                                 </tbody>
                                                      
@@ -518,8 +517,8 @@ span.dates {
                             </div>
 
                             <div>
-                                <!--<button class="btn btn-success" bg-click="sendToPatient()">to Patient</button>-->
-                                <button class="btn btn-success" ng-click="sendToLab()">To Laboratory Center</button>
+                                <!--<button class="btn btn-success" bg-click="sendToPatient()">To Patient</button>-->
+                                <button class="btn btn-success" ng-click="sendToLab()">To Center</button>
                             </div>
                          </div> 
 

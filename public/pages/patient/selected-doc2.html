@@ -285,7 +285,7 @@
               <i class="fa fa-check pull-right font-1_4" style="color: #7dbb00" ng-if="statusMsg"> sent!</i>  
               <button class="btn btn-success pull-right" style="background-color: #7dbb00" ng-click="validate()" ng-if="!statusMsg">{{(progress) ? progress + '% sending...'  : 'Send Consultation Request'}}</button>
             </div>-->
-            <button class="btn btn-info pull-right"  ng-click="validate()">Continue</button>
+            <button class="btn btn-info pull-right"  ng-click="continue()">Continue</button>
             
       </div>
       <div class="p-1" ng-show="isSearchToSend">
