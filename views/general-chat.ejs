@@ -209,12 +209,16 @@
                 <i class="fa fa-paperclip" aria-hidden="true" style="font-size: 18px;color:#fff"></i>
               </label>&nbsp;&nbsp;&nbsp; <input type="file" class="file-input hide" name="file-input" id="file-input" file-model-chat="files">
 
+
+              <a href="" class="conversation__actions__close2" ng-click="videoChat(partner)" ng-show="partner.partnerType === 'Patient' || partner.partnerType === 'Doctor' "><i class="fa fa-video-camera" aria-hidden="true" style="font-size: 18px;color:#fff"></i></a>&nbsp;&nbsp;&nbsp;
+             
+
               <label for="file-input" class="conversation__actions__close2" title="Close conversation">
                 <i class="fa fa-camera" aria-hidden="true" style="font-size: 18px;color:#fff"></i>
               </label>&nbsp;&nbsp;&nbsp; <input type="file" class="file-input hide" name="file-input" id="file-input" file-model-chat="files">
 
 
-              <a href="" class="conversation__actions__close2" ng-if="partner.partnerType === 'Patient'"  ng-click="chatPrivate(partner,true)">
+              <a href="" class="conversation__actions__close2" ng-show="partner.partnerType === 'Patient'"  ng-click="chatPrivate(partner,true)">
                 <i class="fa fa-folder-open" aria-hidden="true" style="font-size: 18px;color:#fff"></i>
               </a>
               
@@ -277,6 +281,56 @@
           </div>
         </div>
      </script>
+
+     <script type="text/ng-template" id="sending-communication-request.html">
+         <div class="modal fade">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                   <h5 class="modal-title">Sending {{docInfo.type}} request takes few steps</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+
+            
+              </div>
+              <div class="modal-body">
+               
+                <ul class="nav mb-1">
+                    <li style="margin-bottom:10px;"><b>Step 1: </b> Your {{docInfo.type}} request will be sent to {{docInfo.title}} {{docInfo.title.firstname}} {{docInfo.lastname}}</li>
+                    <li style="margin-bottom:10px;"><b>step 2: </b> If {{docInfo.title}} {{docInfo.title.firstname}} {{docInfo.lastname}} responds you will be notified.</li>
+                    <li style="margin-bottom:10px;" ng-if="docInfo.type !== 'Meet In-Person'"><b> step 3: </b> If the response includes an acceptance to communicate with you, the system will automatically redirect you to {{docInfo.type}} page and create a connection between you and {{docInfo.title}} {{docInfo.title.firstname}} {{docInfo.lastname}}.</li>
+                    <li style="margin-bottom:10px;" ng-if="docInfo.type === 'Meet In-Person'"><b> step 3: </b>If the response includes acceptance to meet you in person, your appointment list will be updated indicating the time and venue of appointment with {{docInfo.title}} {{docInfo.firstname}} {{docInfo.lastname}}.</li>  
+                                 
+                </ul>
+                <!--<b>Do you have any complain to back up this request? <b ng-click="yes()" style="cursor:pointer;color:green;text-decoration:underline">YES</b>-->
+                <form ng-if= "isYes === true">
+                    <textarea ng-model="user.complain" placeholder="Briefly write your complain" class="form-control" style="height:100px; padding:5px;"></textarea>
+                </form>
+
+                <div>
+                    <!--<button class="btn btn-primary" ng-click="sendCommunictionRequest()" data-dismiss="modal">OK, send {{docInfo.type}} request</button>-->
+                    <button class="btn btn-primary" data-dismiss="modal" ng-click="requestVideoCall(docInfo.user_id)">OK, send {{docInfo.type}} request</button>
+                </div>
+              </div>
+              
+            
+          </div>
+        </div>
+
+     </script>
+
+     <script type="text/ng-template" id="redirect-modal.html">
+        <div class="modal fade">
+          <div class="modal-dialog">
+            <div class="modal-content">
+            <div class="modal-header" style="border-bottom:1px solid #eee;">
+              <div style="width: 80%;margin: 50px auto;text-align: center;font-size: 18px">
+                <p><i class="fa fa-video-camera"></i> &nbsp;&nbsp;Redirecting to video call page... <strong>WAIT!</strong></p>
+              </div>
+          </div>
+        </div>
+     </script> 
 
           
     
