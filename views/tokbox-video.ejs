@@ -187,7 +187,7 @@ span.dates {
       <!-- Navbar -->
     <% include ./inner/nav3 %>
 
-    <div style="position: absolute;right: 0; top: 70px;width: 380px;padding:10px;overflow-y: auto;max-height: 600px;z-index: 99999" class="card" ng-show="isManage"  ng-cloak>
+    <div style="position: absolute;right: 0; top: 70px;width: 420px;padding:10px;overflow-y: auto;max-height: 600px;z-index: 99999" class="card" ng-show="isManage"  ng-cloak>
       <aside class="p-1" style="position: relative;">
         <div ng-show="!session">
         <a class="collapsed dropdown-toggle text-info" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapsefifty" aria-expanded="false" aria-controls="collapsefifty">What is Session?</a>
@@ -347,7 +347,7 @@ span.dates {
                 <div class="clearfix"></div>
                 
                 <div style="text-align: right;margin-top: 10px">                    
-                    <input type="submit" name="" class="btn btn-info" value="+ Add drug">
+                    <button type="submit" name="" class="btn btn-info"><i class="fa fa-plus"></i></button>
                 </div>
             </form> 
                   
@@ -369,9 +369,9 @@ span.dates {
                        <span ng-show="isloading2">Searching...</span>
                    </form>
                     
-                    <!--<div style="margin-left:0; margin-top: 10px">
-                        <input type="text" name="" ng-model="filterResult" placeholder="Filter list" style="padding: 2px">
-                    </div>-->
+                    <div style="margin-left:0; margin-top: 10px" ng-show="searchResult.length > 5">
+                        <input type="text" name="" ng-model="filterResult" placeholder="Filter list" style="padding: 2px;border: none;border-bottom: 1px solid grey">
+                    </div>
                     <br>
                     <div style="overflow-y: auto; height: 600px;min-height: 300px">
                        <div ng-repeat="center in searchResult | filter: filterResult" style="padding:10px;position: relative;">
@@ -452,9 +452,10 @@ span.dates {
                         <button ng-click="changeOption()" class="btn btn-primary"><i class="fa fa-search"></i></button><br>
                        <span ng-show="isloading2">Searching...</span>
                     </form>
-                    <!--<div>
-                        <input type="text" name="" ng-model="filterResult" placeholder="Filter centers" class="form-control">
-                    </div>-->
+                    <br>
+                    <div style="margin-left:0; margin-top: 10px" ng-show="searchResult.length > 5">
+                        <input type="text" name="" ng-model="filterResult" placeholder="Filter centers" class="form-control" style="border: none;border-bottom: 1px solid grey;padding:2px ">
+                    </div>
                     <div style="overflow-y: auto; max-height: 600px;min-height: 300px">
                        <div ng-repeat="center in searchResult | filter: filterResult" style="padding:10px; position: relative;">
                            <a href="" ng-click="selected(center)"><span class="h6">{{center.name}}</span><span style="display: block;color: grey">{{center.address}},{{center.city}},{{center.country}}</span></a>
@@ -488,7 +489,7 @@ span.dates {
                      <label>Investigation(s): </label>
                 </div>
                 <ol>
-                    <li ng-repeat="lab in TestList" style="position: relative;">
+                    <li ng-repeat="lab in TestList2" style="position: relative;">
                         <span>{{lab.name}}</span>
                         <a href="" style="position: absolute;right: 0;top: 0" ng-click="removeTest(lab.name)"><i class="fa fa-times text-muted"></i></a>
                     </li>                 
@@ -535,9 +536,10 @@ span.dates {
                         <button ng-click="changeOption()" class="btn btn-primary"><i class="fa fa-search"></i></button><br>
                        <span ng-show="isloading2">Searching...</span>
                     </form>
-                    <!--<div>
-                        <input type="text" name="" ng-model="filterResult" placeholder="Filter centers" class="form-control">
-                    </div>-->
+                    <br>
+                     <div style="margin-left:0; margin-top: 10px" ng-show="searchResult.length >= 5">
+                        <input type="text" name="" ng-model="filterResult" placeholder="Filter centers" class="form-control" style="border: none;border-bottom: 1px solid grey;padding:2px ">
+                    </div>
                     <div style="overflow-y: auto; max-height: 600px;min-height: 300px">
                        <div ng-repeat="center in searchResult | filter: filterResult" style="padding:10px; position: relative;">
                            <a href="" ng-click="selected(center)"><span class="h6">{{center.name}}</span><span style="display: block;color: grey">{{center.address}},{{center.city}},{{center.country}}</span></a>

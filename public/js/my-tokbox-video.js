@@ -375,7 +375,8 @@ app.controller("labCtrl",["$scope","$http","labTests","$rootScope","$resource","
 		$scope.removeTest = function(name) {
 			var elemPos = $rootScope.TestList.map(function(x){return x.name}).indexOf(name);
 			if(elemPos !== -1){
-				$rootScope.TestList.splice(elemPos,1)
+				$rootScope.TestList.splice(elemPos,1);
+				computeSN($rootScope.TestList)
 			}
 		}
 
@@ -505,7 +506,7 @@ app.controller("radioCtrl",["$scope","$http","scanTests","$rootScope","$resource
       $scope.tests = $scope.tests.concat(response);
     });
 
-    $rootScope.TestList = ($rootScope.TestList) ? $rootScope.TestList : [];
+    $rootScope.TestList2 = ($rootScope.TestList2) ? $rootScope.TestList2 : [];
 
     var testObj = {};
     var count = {};
@@ -515,19 +516,20 @@ app.controller("radioCtrl",["$scope","$http","scanTests","$rootScope","$resource
 			count.num++;
 			testObj.sn = count.num;
 			testObj.name = $scope.inputTests.name;
-			$rootScope.TestList.push(testObj);
+			$rootScope.TestList2.push(testObj);
 			testObj = {};
 			$scope.inputTests.name = "";
 		}
 
 		$scope.removeTest = function(name) {
-			var elemPos = $rootScope.TestList.map(function(x){return x.name}).indexOf(name);
+			var elemPos = $rootScope.TestList2.map(function(x){return x.name}).indexOf(name);
 			if(elemPos !== -1){
-				$rootScope.TestList.splice(elemPos,1)
+				$rootScope.TestList2.splice(elemPos,1)
+				computeSN($rootScope.TestList2)
 			}
 		}
 
-		$scope.$watch("TestList",function(newVal,oldVal){
+		$scope.$watch("TestList2",function(newVal,oldVal){
       patient.lab_test_list = newVal;// adds prescription body to the prescription object as the doctor 
     //prepares to send it to the back end.
     },true);  
@@ -556,9 +558,18 @@ app.controller("radioCtrl",["$scope","$http","scanTests","$rootScope","$resource
     $rootScope.treatment.typeOfSession = "video chat";
 
     $scope.selected = function(center) {
+    	if($rootScope.TestList2.length == 0) {
+    		alert("Please add investigations.");
+    		return;
+    	}
+
     	$scope.pickedCenter = center;
     	patient.user_id = center.user_id;
-    	$scope.sendTest(center);
+    	$rootScope.TestList2.forEach(function(item){
+    		patient.lab_test_list = [];
+    		patient.lab_test_list.push(item);
+    		$scope.sendTest(center);
+    	})
     }
 
     $rootScope.treatment.city = patient.city;
@@ -575,10 +586,7 @@ app.controller("radioCtrl",["$scope","$http","scanTests","$rootScope","$resource
 
 
     $scope.sendTest = function (center) {
-    	if($rootScope.TestList.length == 0) {
-    		alert("Please add investigations.");
-    		return;
-    	}
+    	center.loading = true;
   	 	patient.radiology = {};
 		   patient.radiology.patient_gender = patient.gender;
 		   patient.history = $scope.treatment.history;
@@ -611,7 +619,7 @@ app.controller("radioCtrl",["$scope","$http","scanTests","$rootScope","$resource
 	        	to:patient.id,
 	        	//controlId: control.controlId,
 	        	by: data.by,
-	        	type: "Laboratory Test"
+	        	type: "Radiology Test"
 	        });
 	      } else {
 	      	alert("Error: Investigation not sent!");
@@ -619,14 +627,11 @@ app.controller("radioCtrl",["$scope","$http","scanTests","$rootScope","$resource
 	    });
 	  }
 
-    function toPatient() {
+    function toPatient(testList) {
     	patient.provisional_diagnosis = $rootScope.treatment.provisionalDiagnosis;
-    	pattient.prescriptionBody = testList
+    	pattient.prescriptionBody = testList;
     }
 
-
-
-		
 		var source = medicalRecordService; 
 		source.get({patientId: patient.id},function(data){
 			$scope.patientMedicalRecord = data;
@@ -638,7 +643,7 @@ app.controller("radioCtrl",["$scope","$http","scanTests","$rootScope","$resource
 
 
 
-app.controller("investigationController",["$scope","$http","labTests","scanTests","$rootScope","$resource","cities","medicalRecordService",
+/*app.controller("investigationController",["$scope","$http","labTests","scanTests","$rootScope","$resource","cities","medicalRecordService",
   function($scope,$http,labTests,scanTests,$rootScope,$resource,cities,medicalRecordService){
 
   	var patient = $rootScope.holdPatientData;
@@ -1008,7 +1013,9 @@ app.controller("investigationController",["$scope","$http","labTests","scanTests
   		}
   	}
 
-}]);
+}]);*/
+
+
 
 app.service("medicalRecordService",["$resource",function($resource){
   return $resource("/user/get-medical-record");
@@ -1067,6 +1074,7 @@ app.controller("prescriptionController",["$rootScope","$scope","$window","$http"
       var elemPos = $rootScope.drugList.map(function(x){return x.drug_name}).indexOf(name);
       if(elemPos !== -1){
       	$rootScope.drugList.splice(elemPos,1)
+      	computeSN($rootScope.drugList)
       }
     }
 
@@ -1351,6 +1359,14 @@ app.controller("appointmentModalController",["$scope","$http","$rootScope","mome
     }
 
 }]);
+
+function computeSN(list){
+	var count = 1;
+	list.forEach(function(item) {
+		item.sn = count;
+		count++;
+	})
+}
 
 app.factory("Drugs",["$http",function($http){
 
