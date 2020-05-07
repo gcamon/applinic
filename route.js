@@ -1153,13 +1153,20 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
             
           break;
           case "specialty" :
-            var first4 = req.query.specialty.substring(0,4)
-            var str = new RegExp(first4.replace(/\s+/g,"\\s+"), "gi");              
-            if(req.query.city) {
+            var first5 = req.query.specialty.substring(0,5)
+            var str = new RegExp(first5.replace(/\s+/g,"\\s+"), "gi");              
+            /*if(req.query.city) {
               var criteria = {$text : {$search : req.query.specialty},city:req.query.city}
             } else {
               var criteria = {$text : {$search : req.query.specialty}}
+            }*/
+
+            if(req.query.city) {
+              var criteria = {$text : {$search : first5},city:req.query.city}
+            } else {
+              var criteria = {$text : {$search : first5}}
             }
+
 
             model.user.find(criteria,{firstname:1,lastname:1,work_place:1,city:1,country:1,address:1,
               specialty:1,_id:0,profile_pic_url:1,education:1,user_id:1,title:1,name: 1,profile_url:1,office_hour:1},

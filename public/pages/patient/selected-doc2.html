@@ -307,10 +307,12 @@
             </div>
         </form>
         <div class="clearfix"></div>
-        <hr>
-        <div>
-            <a href=""></a>
+        <div class="pt-2 pl-1">
+          <button class="btn btn-sm btn-neutral round" ng-click="quickFind(j)" ng-repeat="j in specialties"><small>{{j}}</small></button>
         </div>
+        
+        <hr>
+    
         <div style="text-align: right;padding-right: 50px">
             <input type="text" name="" placeholder="filter search result" ng-model="ft">
         </div>

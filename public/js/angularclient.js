@@ -4206,6 +4206,17 @@ app.controller("bookingDocController",["$scope","templateService","$http","mySoc
     }); 
   }
 
+  $scope.quickFind = function(specialty) {
+    $scope.searchObj.specialty = specialty;
+    $scope.searchObj.type = "specialty";
+    $scope.find()
+  }
+
+  $scope.specialties = ["Cardiologist","Gynecologist","General Surgeon",
+  "Pediatrician","Neurologist","Family Physician","Dermatologist","Neurosurgeon","Ophthalmologist",
+  "Orthopedic Surgeon","Dental Surgeon","Urologist","Nephrologists",
+  "ENT Surgeon","Gastroeneterologists","Rheumatologist","Endocrinologists"]
+
   $scope.validate = function() {
     $scope.sympMsg = "";
     $scope.pregMsg = "";

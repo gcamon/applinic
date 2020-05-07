@@ -634,9 +634,15 @@
 
                           <a class="btn btn-simple" style="color:red;margin-left:10px" href="#/consultation-messages"><i class="fa fa-envelope"></i>
                                     <!--<span ng-cloak> <span ng-show="consultation.length > 0"> ( {{consultation.length}} )</span></span>--></a>
-                           <a ng-controller="balanceController" href="#/transactions" class="btn btn-info btn-sm header-btn" style="margin-left: 20px"><i class="fa fa-money"></i>
+                           <!--<a ng-controller="balanceController" href="#/transactions" class="btn btn-info btn-sm header-btn" style="margin-left: 20px"><i class="fa fa-money"></i>
                             <span ng-cloak>{{balance}}</span>
-                          </a>  
+                          </a>-->     
+
+                          <a href="#{{(checkLogIn.title !== 'SC') ? '/subscriptions': '/subscriptions2' }}" class="btn btn-warning" style="padding: 6px;margin-left:10px" ng-show="!accountType.type">Standard</a>
+                          <a href="#{{(checkLogIn.title !== 'SC') ? '/subscriptions': '/subscriptions2' }}" class="btn btn-primary" style="padding: 6px;margin-left:10px" ng-show="accountType.type"><i class="fa fa-certificate"></i> Premium</a>
+
+                        </div> 
+                                   
 
                      </div>
                 </header>
@@ -844,12 +850,6 @@
                                        
                                     </ul>
                                 </li>
-
-                                 <li>
-                                   <a class="h"  href="#{{(checkLogIn.title !== 'SC') ? '/subscriptions': '/subscriptions2' }}">
-                                    <i class="fa fa-file"></i> Subscriptions Plans</a>         
-                              </li>          
-
 
                                  <li> 
                                     <a href="">
