@@ -540,7 +540,7 @@ var basicPaymentRoute = function(model,sms,io,paystack,client,nodemailer){
 			res.send({message: "Session has expired!, refresh and log in"});
 			return;
 		}
-		console.log(req.body)
+		
 		if(req.body.userId !== req.user.user_id && req.user.type === "Patient"){
 			if(!req.body.otp && req.body.amount == 0){
 					model.user.findOne({user_id: req.user.user_id},{ewallet:1,firstname:1,lastname:1,name:1})
@@ -554,11 +554,12 @@ var basicPaymentRoute = function(model,sms,io,paystack,client,nodemailer){
 					if(!data){
 						res.send({message:"Confirmation failed! Transaction canceled.",success: true})
 					} else {			
-					console.log(data)		
+					
 						//check is is the right otp for a user
 						if(data.user_id === req.user.user_id) {
 							//do the actual transaction. success!
-							model.user.findOne({user_id: req.user.user_id},{ewallet:1,firstname:1,lastname:1,name:1}).exec(function(err,debitor){
+							model.user.findOne({user_id: req.user.user_id},{ewallet:1,firstname:1,lastname:1,name:1})
+							.exec(function(err,debitor){
 								var name = req.user.firstname || req.user.name;
 								var msg = req.body.message || "Consultation fee";
 								var pay = new Wallet(req.body.date,name,req.user.lastname,msg);

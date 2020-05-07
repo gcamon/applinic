@@ -19,32 +19,39 @@ Wallet.prototype.credit = function(model,receiver,amount,io,cb){
 
 			//for consultation
 			if(self.message === "Consultation fee"){
-			  var discount = (data.city_grade) ? (data.city_grade / 100 ) : 0.10;
-			  var consulPer = amount * discount;
-			  amount -= consulPer;
-				model.user.findOne({admin: true,user_id:process.env.ADMIN_ID},{ewallet:1}).exec(function(err,admin){
-					if(err) throw err;
-					if(admin) {						
-						admin.ewallet.available_amount += consulPer;
-						var names = self.firstname + " " + self.lastname;
-						var transacObj = {
-							date: self.date,
-							source: names,
-							activity: "Credit",
-							message: self.message,
-							body: {
-								amount: amount,
-								beneficiary: "Admin"
-							},
-							reference_number: self.reference_number || uuid.v1()
-						}
+			  model.plan.findOne({userId:receiver.reciever_id,deleted:false})
+			  .exec(function(err,plan){
+			  	  if(err) throw err;
+			  	  if(!plan) {
+					  var discount = (data.city_grade) ? (data.city_grade / 100 ) : 0.10;
+					  var consulPer = amount * discount;
+					  amount -= consulPer;
+						model.user.findOne({admin: true,user_id:process.env.ADMIN_ID},{ewallet:1}).exec(function(err,admin){
+							if(err) throw err;
+							if(admin) {						
+								admin.ewallet.available_amount += consulPer;
+								var names = self.firstname + " " + self.lastname;
+								var transacObj = {
+									date: self.date,
+									source: names,
+									activity: "Credit",
+									message: self.message,
+									body: {
+										amount: amount,
+										beneficiary: "Admin"
+									},
+									reference_number: self.reference_number || uuid.v1()
+								}
 
-						updateAdminRealTime(admin.ewallet.available_amount);
+								updateAdminRealTime(admin.ewallet.available_amount);
 
-						admin.save(function(err,info){
-							console.log("admin fee paid");
-						});
+								admin.save(function(err,info){
+									console.log("admin fee paid");
+								});
+							}
+						})
 					}
+
 				})
 			}
 
@@ -186,9 +193,9 @@ Wallet.prototype.consultation = function(model,amount,debitor,reciever_id,io){
 
 
 Wallet.prototype.transfer = function(model,amount,debitor,reciever,person,io){	
-		this.credit(model,reciever,amount,io);
-		this.beneficiary = (person.firstname) ? person.firstname + " " + person.lastname : person.name;
-		this.debit(model,amount,debitor);	
+	this.credit(model,reciever,amount,io);
+	this.beneficiary = (person.firstname) ? person.firstname + " " + person.lastname : person.name;
+	this.debit(model,amount,debitor);	
 }
 
 
@@ -198,7 +205,7 @@ Wallet.prototype.billing = function(model,billingInfo,reciever,sms,io){
 		
 		var getPercentage = calculatePer(billingInfo.total,reciever.city_grade,0.05);
 
-		console.log("===========>",getPercentage);
+		
 
 		//this takes care of crediting the center that rendered the service.
 		//var totalBilling ; //billingInfo.total;
