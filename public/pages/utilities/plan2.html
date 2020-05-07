@@ -1,0 +1,128 @@
+<div class="card-center-1">         
+        <div class="card">            
+
+            <div class="p-2" style="background-color: #f2f2f2;text-align: center;">
+                <img src="/assets/images/img/008-doctor-1.png" style="width: 78px;height:auto;">
+            </div>
+            <div class="p-2">
+                <h4 class="h5">
+                    <a>
+                        <strong>Standard Plan </strong><span>-<small> Default Plan</small></span> <br>
+                        <span>Pay As You Go - 10% Consultation Fees</span>
+                    </a>
+                </h4>
+                 <h5 class="h6"><strong>Features:</strong></h5>
+                <ul class="plan-list">
+                    <li>Unlimited Number of Patients</li>
+                    <li>Instant Messaging</li>
+                    <li>Audio Call with Clerking Page</li>
+                    <li>Video call with Clerking Page</li>
+                    <li>E-Case Note</li>
+                    <li>Standard History and Examination Format</li>
+                    <li>E- Prescription with Home Delivery</li>
+                    <li>E- Diagnosis (Requests and Result)</li>
+                    <li>Invite Preferred Pharmacy with One Year Incentive
+                    </li>
+                    <li>Inbuilt Web and Mobile DICOM Viewer for all Radiology Studies including CTs and MRIs</li>
+                    <li>Invite Preferred Diagnostic Center with One Year Incentive </li>
+                    <li>Invite unlimited number of doctors to manage your patients</li>
+                    <li>View patient management of your doctors</li>
+                    <li>View and Cash Out Earnings of Your Doctors </li>
+                    <li>Pay your doctors by internal transfers
+                    </li>
+                    <li>Refer Patient to Other Specialists</li>
+                    <li>Generate Bill for Patient</li>
+                    <li>E-Wallet Cash Out and Funds Transfer</li>
+                </ul>
+                <br>
+                <h4 class="h5">
+                    <a>
+                    <strong>
+                       Premium Plan
+                    </strong><br>
+                    <span>Annual Subscription</span>
+                    </a>
+                </h4>
+                <h5 class="h6"><strong>Features:</strong></h5>
+                <ul class="plan-list ">
+                    <li>All features of Standard Plan
+                    </li>
+                    <li>One Month Free After Upgrade
+                    </li>
+                    <li>Money Back Guarantee Within Two Weeks of Upgrade if Service is Unsatisfactory
+                    </li>                  
+                </ul>
+                <br>
+                <div>
+                    <section ng-show="!accountType.type">
+                        <h5 class="h6 text-danger">Upgrade to Premium!</h5>
+                        <br>
+                        <p><strong>Select your preferred Premium Plan below:</strong></p>
+                        <div class="text-danger">{{msg}}</div>
+                        <label class="custom-control custom-radio">
+                           <input type="radio" class="custom-control-input" ng-model="plan.category" value="12 Months">
+                            <span class="custom-control-indicator"></span>
+                            <span class="custom-control-description">12 MONTHS – $70 (N25, 550) <span am-time-ago="j.date"></span> </span>
+                        </label>
+                        <br>
+                        <label class="custom-control custom-radio">
+                           <input type="radio" class="custom-control-input" ng-model="plan.category" value="6 Months">
+                            <span class="custom-control-indicator"></span>
+                            <span class="custom-control-description">6 MONTHS - $55 (N20, 075) <span am-time-ago="j.date"></span> </span>
+                        </label>
+                         <br>
+                        <label class="custom-control custom-radio">
+                           <input type="radio" class="custom-control-input" ng-model="plan.category" value="3 Months">
+                            <span class="custom-control-indicator"></span>
+                            <span class="custom-control-description">3 MONTHS – $40 (N14, 600) <span am-time-ago="j.date"></span> </span>
+                        </label>
+                         <br>
+                        <label class="custom-control custom-radio">
+                           <input type="radio" class="custom-control-input" ng-model="plan.category" value="1 Months">
+                            <span class="custom-control-indicator"></span>
+                            <span class="custom-control-description">1 MONTH - $25 (N9, 125) <span am-time-ago="j.date"></span> </span>
+                        </label>
+                        <br>
+                        <br>
+                        <div>
+                            <button class="btn btn-danger btn-lg" ng-click="subscribe()" ng-show="!isUpgraded && !loading">Upgrade now!</button>
+                            <span ng-show="loading && !isUpgraded">Upgrading...</span>
+                            <span ng-show="isUpgraded" class="text-primary">{{msg2}}</span>
+                        </div>
+                    </section>
+                    <section ng-show="accountType.type">
+                        <p class="pt-1 text-primary"><b>You are current on {{accountType.subscription}}</b></p>
+                        <label>Plan: </label> <span> {{accountType.type}}</span><br>
+                        <label>Date of Expiration: </label> <span>{{accountType.expirationDate | date : 'mediumDate'}}</span>
+                        <br>
+                        <div>
+                            <button class="btn btn-danger" ng-click="downgrade()" ng-show="!loading2 && accountType.type">Downgrade To Standard Plan</button>
+                            <span ng-show="loading2">Downgrading...</span>
+                        </div>
+                    </section>
+                    <hr>
+                    <div>
+                        <h5 class="h5">GENERAL TERMS AND CONDITIONS </h5>
+                        <h5 class="h6"><strong>Platform Charges</strong></h5>
+                        <p class="terms-info ">
+                            There are two options for payment by physicians and hospitals who use Applinic services depending on preference. They are Annual Subscription charges and Discount Percentages. While annual subscriptions are paid once every twelve (12) months, discount
+                            percentages are ongoing charges paid for using the platform on a pay-as-you-go basis.
+                        </p>
+                        <h5 class="h6"><strong>Subscriptions</strong></h5>
+                        <p class="terms-info ">
+                            Healthcare Providers who desire to subscribe annually for the service pay the fixed amount for one year to use all the services. Applinic management reserve the right to review this amount either direction without prior notice to the customer. The reviews
+                            will not affect existing subscriptions but will take effect at the expiration of the existing subscription when the user intends to renew it.  For now the cost of subscription is $150 (N54,750) per annum for
+                            a corporate hospital account and $70 (N25,550) per annum for a personal physician's account. Tariff plans for less duration are available for both types of providers.
+                        </p>
+                        <h5 class="h6"><strong>Discount Percentages</strong></h5>
+                        <p class="terms-info ">This is charge per consultation fee paid by the patient.  The current rate is Ten Percent (10%) and is deductible each time the patient pays through the Medi-pay wallet. Cash payment for consultation by patients
+                            is prohibited and healthcare providers should discourage this.  If for any reason the patient is unable to pay via the wallet, the hospital or physician may collect cash, while Applinic relies on their integrity
+                            and honesty to remit the money to the platform using the internal Medipay transfer service.  Circumventing, diverting, evading, by-passing and sidestepping of patients’ payments through other channels aside
+                            the platform wallet without making remittances is a violation of the terms of usage of this application and may attract sanctions. The current percentage can be reviewed at anytime without prior notice but a
+                            one month moratorium will be granted to all providers before this takes effect.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>

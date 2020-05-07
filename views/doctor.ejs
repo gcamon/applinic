@@ -212,6 +212,11 @@
                                 <div class="underline"></div>
                             </div>
                         </form>-->
+                        <div style="text-align: right;width: 250px;" ng-show="accountType">
+                          <span>Account Type:</span> 
+                          <a href="#{{(checkLogIn.title !== 'SC') ? '/subscriptions': '/subscriptions2' }}" class="btn btn-warning" style="padding: 6px" ng-show="!accountType.type">Standard</a>
+                          <a href="#{{(checkLogIn.title !== 'SC') ? '/subscriptions': '/subscriptions2' }}" class="btn btn-primary" style="padding: 6px" ng-show="accountType.type"><i class="fa fa-certificate"></i> Premium</a>
+                        </div>
                     </div>
                    
                     <div class="header-block header-block-nav">
@@ -608,8 +613,8 @@
                         <a class="btn btn-simple round mr-0" style="color:red;margin-left:10px;font-size: 14px" href="#/consultation-messages"><i class="fa fa-envelope"></i>
                                     <span ng-cloak> Consultation Requests <span ng-show="consultation.length > 0"> ( {{consultation.length}} )</span></span></a>
                         
-                        <!--<a class="btn btn-simple round mr-0" style="color:red;margin-left:10px;font-size: 14px" href="#/subscriptions"><i class="fa fa-file"></i>
-                                    <span ng-cloak>Subscriptions Plans</span></span></a>-->          
+                        <a class="btn btn-simple round mr-0" style="color:red;margin-left:10px;font-size: 14px" href="#{{(checkLogIn.title !== 'SC') ? '/subscriptions': '/subscriptions2' }}"><i class="fa fa-file"></i>
+                                    <span ng-cloak>Subscriptions Plans</span></span></a>         
 
                       
                       
@@ -723,8 +728,8 @@
 
                                 
                                 <li class="active"> <a href="#/" class="h">
-                            <i class="fa fa-home"></i>Doctor's Dashboard
-                        </a> </li>                       
+                            <i class="fa fa-home"></i> Doctor's Dashboard
+                        </a> </li>           
 
                             
                                 <li> <a href="">
@@ -836,6 +841,11 @@
                                 <li> <a href="#/transactions" class="h">
                                     View Transactions
                                 </a> </li>
+
+                                <li>  
+                                  <a class="h"  href="#{{(checkLogIn.title !== 'SC') ? '/subscriptions': '/subscriptions2' }}">
+                                     Subscriptions Plans</a> 
+                                </li>
                                        
                                     </ul>
                                 </li>

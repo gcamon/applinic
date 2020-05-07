@@ -11438,9 +11438,7 @@ router.put("/report-template",function(req,res){
               }              
 
             });
-
             
-
           } //end of if
 
           function updatePatient() {         

@@ -931,6 +931,11 @@ app.config(['$paystackProvider','$routeProvider',
   controller: "planCtrl"
 })
 
+.when("/subscriptions2",{
+  templateUrl: "/assets/pages/utilities/plan2.html",
+  controller: "planCtrl"
+})
+
 }])
 
 
@@ -5104,6 +5109,11 @@ app.controller("docNotificationController",["$scope","$location","$resource","$i
   }
 
   getCourier();
+
+  $http.get('/user/doctor/subscription')
+  .success(function(account){
+    $rootScope.accountType = account;
+  })
 
 }]);
 
@@ -14501,8 +14511,8 @@ app.controller("appointmentModalController",["$scope","$rootScope","$http","mome
  $scope.treatment.appointment = {};
 
     $scope.book = function(){
-      var data = templateService.holdBriefForSpecificPatient || templateService.holdForSpecificPatient;
-      
+
+      var data = templateService.holdBriefForSpecificPatient || templateService.holdForSpecificPatient;      
       var date = + new Date();
       $scope.treatment.date = date;
       $scope.treatment.patient_id = data.patient_id || data.user_id;
@@ -14512,8 +14522,6 @@ app.controller("appointmentModalController",["$scope","$rootScope","$http","mome
 
       $scope.treatment.appointment.strDate = $filter('date')($scope.treatment.appointment.date, 'fullDate');
       $scope.treatment.appointment.strTime = $filter('date')($scope.treatment.appointment.time, 'shortTime')
-
-    
 
       //this will take care of differrent object populating the data variable.
       if(data.hasOwnProperty("patientInfo")) {
@@ -26716,11 +26724,73 @@ function($scope,$location,$rootScope,$http,ModalService,$interval,templateServic
   
 }]);
 
-app.controller('planCtrl',["$scope","$http",function($scope,$http){
+app.controller('planCtrl',["$scope","$http","$rootScope",function($scope,$http,$rootScope){
 
-}])
+  $scope.plan = {};
 
+  $scope.subscribe = function() {
 
+    $scope.msg = "";
+    switch($scope.plan.category) {
+      case '12 Months':
+        $scope.plan.price = 25550;
+        $scope.plan.duration = "12";
+        $scope.plan.name = "Premium Plan Subscription (12 Months)"; 
+      break;
+      case '6 Months':
+        $scope.plan.price = 20075;
+        $scope.plan.duration = "6";
+        $scope.plan.name = "Premium Plan Subscription (6 Months)";
+      break;
+      case '3 Months':
+        $scope.plan.price = 14600;
+        $scope.plan.duration = "3";
+        $scope.plan.name = "Premium Plan Subscription (3 Months)";
+      break;
+      case '1 Months':
+        $scope.plan.price = 9125;
+        $scope.plan.duration = "1";
+        $scope.plan.name = "Premium Plan Subscription (1 Month)";
+      break;
+      default:
+       $scope.msg = "Please select a subscription plan.";
+       return;
+      break
+    }
+
+    ;
+    $scope.plan.type = "Premium";
+    $scope.loading = true;
+    $http({
+      method  : 'POST',
+      data    : $scope.plan,
+      url     : "/user/doctor/subscription", 
+      headers : {'Content-Type': 'application/json'} 
+    })
+    .success(function(data) {
+      if(data.status){
+        $scope.msg2 = data.message;
+        $scope.isUpgraded = true;
+        $rootScope.accountType = data.plan;
+        $rootScope.$broadcast("debit",{balance:balance});
+      } else {
+        alert(data.message);
+      }
+      $scope.loading = false;
+    });
+  }
+
+  $scope.downgrade = function() {
+    $scope.loading2 = true;
+    $http.delete("/user/doctor/subscription")
+    .success(function(res){
+      alert(res.message)
+      $rootScope.accountType = res.plan;
+      $scope.loading2 = false;
+    })
+  }
+
+}]);
 
 
 function testNumber(str) {

@@ -578,6 +578,7 @@ var myModel = function () {
 
 //end for session
 	var userSchema = Schema({	  
+		account_type: String,
 		firstname: String,
 		username: String,
 		lastname: String,
@@ -1164,6 +1165,22 @@ var myModel = function () {
     //doctorId: String 
 	})
 
+	var planSchema = Schema({
+		expirationDate: {
+			type: Date,
+			expires: Number
+		},		
+		createdAt: {
+			type: Date,
+			expires: Number
+		},
+		date: Date,
+		userId: String,
+		subscription: String,
+		type: String,
+		deleted: Boolean
+	})
+
 	/*_id: "njds884943",
         package: 1,
         content: [{drug_name: "Camosunate tabs",dosage:"",frequency: "", duration: ""},
@@ -1216,6 +1233,7 @@ var myModel = function () {
 	models.consultationFee = mongoose.model("consultationfeeinfos",consultationFeeSchema);
 	models.chat_key = mongoose.model("chatKeyinfos",chatKeySchema);
 	models.kits = mongoose.model("kitinfos",kitsSchema); 
+	models.plan = mongoose.model("planinfos",planSchema); 
 	//models.chat_file = mongoose.model("chatFileinfos",chatFileSchema);
 	//models.calling_code = mongoose.model("callingcodeinfos",callingSchema)
 	

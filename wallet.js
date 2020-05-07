@@ -125,6 +125,9 @@ Wallet.prototype.debit = function(model,amount,debitor,discount){
 	} else if(this.message === "billing"){
 		transacObj.activity = "Debit";
 		transacObj.source = "You";
+	} else if(this.message === "Premium Plan Subscription"){
+		transacObj.activity = "Debit";
+		transacObj.source = "You";
 	} else {
 		transacObj.activity = "Debit";
 	}
@@ -391,12 +394,17 @@ Wallet.prototype.courier = function(model,receiverId,debitor,amount,io,delivery_
 Wallet.prototype.dicom = function(model,amount,user,io) {
 	var admin = {admin: true}; 
 	this.credit(model,admin,amount,io);		
-	console.log("admin credit: " + amount);
+	this.beneficiary = "Applinic";
+	this.debit(model,amount,user,0);
+}
+
+Wallet.prototype.subscription = function(model,amount,user,io,cb) {
+	var admin = {admin: true}; 
+	this.credit(model,admin,amount,io,cb);		
 
 	this.beneficiary = "Applinic";
 
-	this.debit(model,amount,user,0);
-	//model,amount,debitor,discount
+	this.debit(model,amount,user,amount);
 }
 
 

@@ -2990,14 +2990,189 @@ router.post("/user/sharing-labtest",function(req,res){
 		res.end("unathorized access")
 	}
 
-})
+});
+
+router.get("/user/doctor/subscription",function(req,res){
+
+	if(req.user){
+		model.plan.findOne({userId: req.user.user_id,deleted:false})
+		.exec(function(err,account){
+			if(err) throw err;
+			if(account){
+				res.json(account)
+			} else {
+				res.json({});
+			}
+		});
+
+	} else {
+		res.end("Unathorized access");
+	}
+
+});
+
+router.post("/user/doctor/subscription",function(req,res){
+	if(req.user){
+		if(req.body.price <= req.user.ewallet.available_amount){
+			var user = req.user;
+			var firstname = req.user.firstname || req.user.name;
+			var date = + new Date();
+
+			model.plan.findOne({userId: req.user.user_id,deleted: false})
+				.exec(function(err,data){
+					if(err) throw err;
+					if(!data){
+
+						var dt = new Date();
+
+						var planSchema = new model.plan({
+							date: dt,
+							userId: req.user.user_id,
+							subscription: req.body.name,
+							type: req.body.type,
+							deleted: false
+						})
+
+
+
+						switch(req.body.duration) {
+							case '12':
+								planSchema.expirationDate = new Date(dt.getTime() + 3.416e+10);
+								planSchema.expirationDate.expires = 300;	
+							break;
+							case '6':
+								planSchema.expirationDate = new Date(dt.getTime() + 1.84e+10);
+								planSchema.expirationDate.expires = 300;	
+							break;
+							case '3':
+								planSchema.expirationDate = new Date(dt.getTime() + 1.051e+10);
+								planSchema.expirationDate.expires = 300;	
+							break;
+							case '1':
+								planSchema.expirationDate = new Date(dt.getTime() + 5.256e+9);
+								planSchema.expirationDate.expires = 300;	
+							break;
+							default:
+							break;
+						}
+
+
+						var plan = new Wallet(date,firstname,req.user.lastname,req.body.name);
+
+						plan.subscription(model,req.body.price,req.user,io,function(balance){
+							res.json({status: true, message: "Subscription upgrade was successful",plan:planSchema});
+							planSchema.save(function(err,info){
+								if(err) throw err;
+								if(info){
+									console.log("plan upgraded with no issues")
+								}
+							})
+						});
+
+					} else if(data.subscription == req.body.name) {
+
+						res.json({status: false, message: "You have already subscribed to this plan"});
+
+					} else {
+
+						var dt = new Date();
+						data.date = dt;
+						data.subscription = req.body.name;
+						data.type = req.body.name;
+
+						switch(req.body.duration) {
+							case '12':
+								planSchema.expirationDate = new Date(dt.getTime() + 3.416e+10);
+								planSchema.expirationDate.expires = 300;	
+							break;
+							case '6':
+								planSchema.expirationDate = new Date(dt.getTime() + 1.84e+10);
+								planSchema.expirationDate.expires = 300;	
+							break;
+							case '3':
+								planSchema.expirationDate = new Date(dt.getTime() + 1.051e+10);
+								planSchema.expirationDate.expires = 300;	
+							break;
+							case '1':
+								planSchema.expirationDate = new Date(dt.getTime() + 5.256e+9);
+								planSchema.expirationDate.expires = 300;	
+							break;
+							default:
+							break;
+						}
+
+						var plan = new Wallet(date,firstname,req.user.lastname,req.body.name);
+
+						plan.subscription(model,req.body.price,req.user,io,function(balance){
+							res.json({status: true, message: "Subscription upgrade was successful",plan: data});
+							data.save(function(err,info){
+								if(err) throw err;
+								console.log("Account upgraded!")
+							})
+						});
+					}
+
+				})
+
+
+		} else {
+			res.json({status: false, message: "Oops! You have insufficient balance to continue with this upgrade. Please fund your wallet."})
+		}
+	} else {
+		res.send("unathorized Access!");
+	}
+});
+
+router.delete("/user/doctor/subscription",function(req,res){
+	if(req.user){
+		model.plan.findOne({userId: req.user.user_id,deleted:false})
+		.exec(function(err,account){
+			if(err) throw err;
+			if(account){
+				account.deleted = true;
+				account.save(function(err,info){
+					if(err) throw err;
+					console.log("Account partially deleted!");
+					res.json({status: true,message: "Plan downgraded successfully!",plan:{}})
+				})
+			} else {
+				res.json({status: false,
+				 message: "Oops! Something went wrong while processing your request. Maybe the plan does not exist."});
+			}
+		});
+
+	} else {
+		res.end("Unathorized access");
+	}
+
+});
 
 /*
-	 user_id: user.user_id,//this id refers to the debitors id. the person whose account will be debited.
-				        time: req.body.time,
-				        otp: password,
-				        amount: req.body.amount,
-				        senderId: req.user.user_id 
+
+var planSchema = Schema({
+		expirationDate: {
+			type: Date,
+			expires: Number
+		},		
+		createdAt: {
+			type: Date,
+			expires: Number
+		},
+		date: Date,
+		userId: String,
+		subscription: String,
+		amount: String
+	})
+
+ var date = new Date();
+					      otp.expirationDate = new Date(date.getTime() + 300000);
+					      otp.expirationDate.expires = 300;			  
+
+
+category: '12 Months',
+  price: 25550,
+  duration: 12,
+  name: 'Premium Plan Subscription'
 */
 
 
