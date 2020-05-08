@@ -31,7 +31,7 @@
 					<li style="font-weight: bold;">Date Received :  <span am-time-ago="refData.date" style="font-weight: 300;"></span></li>
 					<!--<li><strong>Time </strong>| {{refData.date | date: "mediumTime"}}</li>-->
 					<li style="font-weight: bold;">Reference No: <span class="text-danger" style="font-weight: 300;">{{refData.ref_id}}</span></li>
-					<li><strong style="font-weight: bold;">Prescribed By:</strong><br> 
+					<li ng-show="refData.pharmacy.doctor_id"><strong style="font-weight: bold;">Prescribed By:</strong><br> 
 					<span>{{refData.pharmacy.title}} {{refData.pharmacy.doctor_firstname}} {{refData.pharmacy.doctor_lastname}}</span><br>
 					<span>{{refData.pharmacy.doctor_specialty}}</span><br>
 					<span>{{refData.pharmacy.doctor_address}}, {{refData.pharmacy.doctor_city}}, {{refData.pharmacy.doctor_country}}</span><br>
@@ -118,7 +118,7 @@
                      	</tr>
                      	<tr>
                      		<tbody ng-repeat = "j in drugsForSurchage">
-                     			<td style="width: 55%;padding:10px;color: green;font-weight: bold;">{{j.name}} {{(j.dosage) ? j.dosage : ""}}</td>
+                     			<td style="width: 55%;padding:10px;color: darkRed;font-weight: bold;">{{j.name}} <span ng-show="j.dosage">( {{j.dosage}} )</span></td>
                      			<td><input type="number" ng-model="j.amount" style="padding:10px" class="form-control"></td>
                      		</tbody>
                      	</tr>
