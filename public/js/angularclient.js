@@ -8556,7 +8556,8 @@ app.controller("PatientViewResponseModalController",["$scope","$rootScope","$loc
         $scope.loading = false;
         $scope.msg = data.message;
         if(data.balance) {
-          $rootScope.balance = "NGN " + data.balance.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");          
+          //$rootScope.balance = "NGN " + data.balance.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","); 
+          $rootScope.$broadcast('debit',{status: true})         
           if($rootScope.msgLen > 0)
             $rootScope.msgLen--;
           //$location.path(templateService.holdCurrentPage);
@@ -9045,7 +9046,8 @@ app.controller("walletController",["$scope","$http","$rootScope","$location","Mo
         alert(data.error)
       } else if(data.success){
         alert(data.success);
-        $rootScope.balance = "NGN" + data.balance.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        //$rootScope.balance = "NGN" + data.balance.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        $rootScope.$broadcast('debit',{status: true})
       }
     });
   }
@@ -9129,9 +9131,12 @@ app.controller("walletController",["$scope","$http","$rootScope","$location","Mo
         $rootScope.paystatusMsg = data.message;*/
         alert(data.message)
         //window.location.href = dashbard;
-        var round = Math.round(data.balance)
+
+        /*var round = Math.round(data.balance)
         var format = "NGN" + round.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-        $rootScope.balance = format;
+        $rootScope.balance = format;*/
+
+        $rootScope.$broadcast('debit',{status: true})
 
       } else {
         alert(data.message);
@@ -9196,8 +9201,10 @@ app.controller("walletController",["$scope","$http","$rootScope","$location","Mo
         if(data.error){
           alert(data.error)
         } else if(data.user_id && data.user_id !== user.user_id){ 
-          if(!time) {      
-            var check = confirm("Your want to transfer " + $scope.str + " to " +  data.firstname + " " + data.lastname + "\nThis amount will be debited from your wallet.");
+          if(!time) {  
+            var lastname = data.lastname || ""    
+            var check = confirm("You want to transfer " + $scope.str + " to " +  data.firstname 
+              + " " + lastname + "\nThis amount will be debited from your wallet.");
             if(check){         
               transferFund(data,time,phoneCall);
             } else {
@@ -9293,11 +9300,12 @@ app.controller("walletController",["$scope","$http","$rootScope","$location","Mo
         alert(data.message);
         $scope.loading = false;
         if(data.balance) {
-          $rootScope.balance = "NGN " + data.balance.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+          //$rootScope.balance = "NGN " + data.balance.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
           $scope.isTransfer = true;
           $scope.isOTP = false;
           $scope.isPhone = true;
           $scope.isUserId = false;
+          $rootScope.$broadcast("debit",{status: true})
         }
       });
     }
@@ -9448,7 +9456,8 @@ getTransactions();
         $scope.loading = false;
         alert(data.message);
         if(data.balance) {
-          $rootScope.balance = "NGN" + data.balance.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");          
+          //$rootScope.balance = "NGN" + data.balance.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","); 
+          $rootScope.$broadcast('debit',{status: true})         
           if($rootScope.msgLen > 0)
             $rootScope.msgLen--;
           //$location.path(templateService.holdCurrentPage);
@@ -9541,7 +9550,8 @@ app.controller("billingController",["$scope","$http","$rootScope","$location","M
         bill.sendBill(payObj,function(data){         
           if(data.balance) {
             //templateService.playAudio(2);          
-            $rootScope.balance = "NGN" + data.balance.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            //$rootScope.balance = "NGN" + data.balance.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            $rootScope.$broadcast('debit',{status: true});
             $scope.isPaid = true; 
             $rootScope.refData.pharmacy.is_paid = true; 
             $rootScope.refData.pharmacy.detail = {
@@ -11593,9 +11603,10 @@ app.controller("adminCreateRoomController",["$scope","localManager","mySocket","
   $scope.total = 0;
 
   mySocket.on("income",function(data){
-    var whole = Math.round(data.balance);
+    /*var whole = Math.round(data.balance);
     var format = "NGN" + whole.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-    $rootScope.balance = format;    
+    $rootScope.balance = format;*/
+    $rootScope.$broadcast('debit',{status: true});    
   });
 
   mySocket.on("cash out",function(data){
@@ -12489,9 +12500,10 @@ app.controller("cashOutController",["$scope","$rootScope","$resource","cashOutCo
         $scope.loading = false;
         alert(data.message);
         if(data.balance) {
-          var whole = Math.round(data.balance);
+          /*var whole = Math.round(data.balance);
           var format = "NGN" + whole.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-          $rootScope.balance = format;
+          $rootScope.balance = format;*/
+          $rootScope.$broadcast('debit',{status: true});
           $scope.isSent = true;
         }    
       });
@@ -16644,9 +16656,10 @@ app.controller("labTestControler",["$scope","$location","$http","templateService
           $scope.paymentStatus = response.payment;
           $scope.paymentDetail = response.detail;
           refInfo.laboratory.is_paid = response.payment;
-          var round = Math.round(response.balance)
+          /*var round = Math.round(response.balance)
           var format = "NGN" + round.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-          $rootScope.balance = format;
+          $rootScope.balance = format;*/
+          $rootScope.$broadcast('debit',{status: true})
         } else {
             //$scope.otpError = response.message;
             alert(response.message)
@@ -16699,9 +16712,10 @@ app.controller("labTestControler",["$scope","$location","$http","templateService
           $scope.otpMsg = null;
           $scope.paymentStatus = response.payment;
           $scope.paymentDetail = response.detail;
-          var round = Math.round(response.balance)
+          /*var round = Math.round(response.balance)
           var format = "NGN" + round.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-          $rootScope.balance = format;
+          $rootScope.balance = format;*/
+          $rootScope.$broadcast('debit',{status: true})
         } else {
             $scope.otpError = response.message;
         }
@@ -18436,9 +18450,10 @@ app.controller("radioTestControler",["$scope","$location","$http","templateServi
           $scope.otpMsg = null;
           $scope.paymentStatus = response.payment;
           $scope.paymentDetail = response.detail;
-          var round = Math.round(response.balance)
+          /*var round = Math.round(response.balance)
           var format = "NGN" + round.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-          $rootScope.balance = format;
+          $rootScope.balance = format;*/
+          $rootScope.$broadcast('debit',{status: true})
         } else {
             $scope.otpError = response.message;
         }

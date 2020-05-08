@@ -86,6 +86,15 @@ function genHash(count) {
 
 var basicRoute = function (model,sms,io,streams,client,nodemailer) { 
 
+  var transporter = nodemailer.createTransport({
+    host: "mail.privateemail.com",
+    port: 465,
+    auth: {
+      user: "info@applinic.com",
+      pass: process.env.EMAIL_PASSWORD
+    }
+  })
+
   router.get("/",function(req,res){
     res.render('index',{"message":""});
   });
@@ -1476,14 +1485,14 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
 
               consult.save(function(err,info){});       
 
-              var transporter = nodemailer.createTransport({
+              /*var transporter = nodemailer.createTransport({
                 host: "mail.privateemail.com",
                 port: 465,
                 auth: {
                   user: "info@applinic.com",
                   pass: process.env.EMAIL_PASSWORD
                 }
-              });
+              });*/
 
               var mailOptions = {
                 from: 'Applinic info@applinic.com',
@@ -1796,14 +1805,14 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
 
           consult.save(function(err,info){});       
 
-          var transporter = nodemailer.createTransport({
+          /*var transporter = nodemailer.createTransport({
             host: "mail.privateemail.com",
             port: 465,
             auth: {
               user: "info@applinic.com",
               pass: process.env.EMAIL_PASSWORD
             }
-          });
+          });*/
 
           var mailOptions = {
             from: 'Applinic info@applinic.com',
@@ -1957,14 +1966,14 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
 
                 consult.save(function(err,info){});       
 
-              var transporter = nodemailer.createTransport({
+              /*var transporter = nodemailer.createTransport({
                 host: "mail.privateemail.com",
                 port: 465,
                 auth: {
                   user: "info@applinic.com",
                   pass: process.env.EMAIL_PASSWORD
                 }
-              });
+              });*/
 
               var mailOptions = {
                 from: 'Applinic info@applinic.com',
@@ -2160,14 +2169,14 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
                         }
                       )
 
-                      var transporter = nodemailer.createTransport({
+                      /*var transporter = nodemailer.createTransport({
                         host: "mail.privateemail.com",
                         port: 465,
                         auth: {
                           user: "info@applinic.com",
                           pass: process.env.EMAIL_PASSWORD
                         }
-                      });
+                      });*/
 
                       var mailOptions = {
                         from: 'Applinic info@applinic.com',
@@ -8141,14 +8150,14 @@ router.post("/user/courier",function(req,res){
         }
       );
 
-      var transporter = nodemailer.createTransport({
+      /*var transporter = nodemailer.createTransport({
         host: "mail.privateemail.com",
         port: 465,
         auth: {
           user: "info@applinic.com",
           pass: process.env.EMAIL_PASSWORD
         }
-      });
+      });*/
 
       var mailOptions = {
         from: 'Applinic info@applinic.com',
@@ -8248,14 +8257,14 @@ router.put("/user/courier-update",function(req,res){
           );*/
 
 
-          var transporter = nodemailer.createTransport({
+          /*var transporter = nodemailer.createTransport({
             host: "mail.privateemail.com",
             port: 465,
             auth: {
               user: "info@applinic.com",
               pass: process.env.EMAIL_PASSWORD
             }
-          });
+          });*/
 
           var mailOptions = {
             from: 'Applinic info@applinic.com',
@@ -8546,14 +8555,14 @@ router.put("/user/agent-delivery",function(req,res){
             res.json({status: true,message: message});
 
 
-            var transporter = nodemailer.createTransport({
+            /*var transporter = nodemailer.createTransport({
               host: "mail.privateemail.com",
               port: 465,
               auth: {
                 user: "info@applinic.com",
                 pass: process.env.EMAIL_PASSWORD
               }
-            });
+            });*/
 
             var mailOptions = {
               from: 'Applinic info@applinic.com',
@@ -8930,14 +8939,14 @@ router.post("/user/response/patients-histories",function(req,res){
                   }
                 );
 
-                var transporter = nodemailer.createTransport({
+                /*var transporter = nodemailer.createTransport({
                   host: "mail.privateemail.com",
                   port: 465,
                   auth: {
                     user: "info@applinic.com",
                     pass: process.env.EMAIL_PASSWORD
                   }
-                });
+                });*/
 
                 var mailOptions = {
                   from: 'Applinic info@applinic.com',
@@ -9189,14 +9198,14 @@ router.get("/user/patient/get-my-doctors",function(req,res){
             doc.save(function(err,info){
               if(err) throw err;
 
-              var transporter = nodemailer.createTransport({
+              /*var transporter = nodemailer.createTransport({
                 host: "mail.privateemail.com",
                 port: 465,
                 auth: {
                   user: "info@applinic.com",
                   pass: process.env.EMAIL_PASSWORD
                 }
-              });
+              });*/
 
               var sex = (req.user.gender == 'Male') ? "his" : "her";
 
@@ -10491,14 +10500,14 @@ router.post("/user/invitation",function(req,res){
         break;
       }
 
-      var transporter = nodemailer.createTransport({
+      /*var transporter = nodemailer.createTransport({
         host: "mail.privateemail.com",
         port: 465,
         auth: {
           user: "info@applinic.com",
           pass: process.env.EMAIL_PASSWORD
         }
-      });
+      });*/
 
       var mailOptions = {
         from: 'Applinic info@applinic.com',
@@ -10635,14 +10644,14 @@ router.post("/user/doctor/add-patient",function(req,res){
             console.log("Patient's doctor list updated");
           });
 
-          var transporter = nodemailer.createTransport({
+          /*var transporter = nodemailer.createTransport({
             host: "mail.privateemail.com",
             port: 465,
             auth: {
               user: "info@applinic.com",
               pass: process.env.EMAIL_PASSWORD
             }
-          });
+          });*/
 
           var body = "<div style='font-size:18px'><b>Hello" + user.firstname + "</b>, <br><br> " 
           + req.user.title + " " + req.user.firstname + " " + req.user.lastname 
@@ -10788,15 +10797,15 @@ router.get("/user/dicom-viewer",function(req,res){
 
 router.post("/user/share/email",function(req,res){
   if(req.user){
-    console.log(req.body)
-     var transporter = nodemailer.createTransport({
+   
+     /*var transporter = nodemailer.createTransport({
       host: "mail.privateemail.com",
       port: 465,
       auth: {
         user: "info@applinic.com",
         pass: process.env.EMAIL_PASSWORD
       }
-    });
+    });*/
 
     var mailOptions = {
       from: 'Applinic info@applinic.com',
@@ -10930,14 +10939,14 @@ router.post("/user/firstline-doctors",function(req,res){
           console.log(response)
         }
 
-        var transporter = nodemailer.createTransport({
+        /*var transporter = nodemailer.createTransport({
           host: "mail.privateemail.com",
           port: 465,
           auth: {
             user: "info@applinic.com",
             pass: process.env.EMAIL_PASSWORD
           }
-        });
+        });*/
 
         var mailOptions = {
           from: 'Applinic info@applinic.com',
@@ -11362,14 +11371,14 @@ router.put("/report-template",function(req,res){
 
               req.body.pdfPathSave = pdfPath;
              
-              var transporter = nodemailer.createTransport({
+              /*var transporter = nodemailer.createTransport({
                 host: "mail.privateemail.com",
                 port: 465,
                 auth: {
                   user: "info@applinic.com",
                   pass: process.env.EMAIL_PASSWORD
                 }
-              });
+              });*/
 
               var FILE_CONTENT = fs.readFileSync(file.filename, 'base64');
               var buf = Buffer.from(FILE_CONTENT, 'base64')
@@ -11506,14 +11515,14 @@ router.put("/report-template",function(req,res){
                     ) 
                     
 
-                    var transporter = nodemailer.createTransport({
+                    /*var transporter = nodemailer.createTransport({
                       host: "mail.privateemail.com",
                       port: 465,
                       auth: {
                         user: "info@applinic.com",
                         pass: process.env.EMAIL_PASSWORD
                       }
-                    });
+                    });*/
 
                     var mailOptions = {
                       from: 'Applinic info@applinic.com',
@@ -11599,14 +11608,14 @@ router.post("/email-report",function(req,res){
       study.save(function(err,info){
         if(err) throw err;
         if(info){
-          var transporter = nodemailer.createTransport({
+          /*var transporter = nodemailer.createTransport({
             host: "mail.privateemail.com",
             port: 465,
             auth: {
               user: "info@applinic.com",
               pass: process.env.EMAIL_PASSWORD
             }
-          });
+          });*/
 
           var mailOptions = {
             from: 'Applinic Healthcare info@applinic.com',

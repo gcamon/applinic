@@ -715,14 +715,14 @@ var basicPaymentRoute = function(model,sms,io,paystack,client,nodemailer){
 						              }
 						            ) 
 
-						            var transporter = nodemailer.createTransport({
+						            /*var transporter = nodemailer.createTransport({
 				                  host: "mail.privateemail.com",
 				                  port: 465,
 				                  auth: {
 				                    user: "info@applinic.com",
 				                    pass: process.env.EMAIL_PASSWORD
 				                  }
-				                });
+				                });*/
 
 				                var mailOptions = {
 				                  from: 'Applinic info@applinic.com',
@@ -993,14 +993,14 @@ router.put("/user/laboratory/test-result/session-update",function(req,res){
 	          theObj.lab_pdf_report.unshift({date: dt,pdf_report:pdfPath});
        	  }
 
-       	  var transporter = nodemailer.createTransport({
+       	  /*var transporter = nodemailer.createTransport({
             host: "mail.privateemail.com",
             port: 465,
             auth: {
               user: "info@applinic.com",
               pass: process.env.EMAIL_PASSWORD
             }
-          });
+          });*/
 
           var mailOptions = {
             from: 'Applinic info@applinic.com',
@@ -1100,14 +1100,14 @@ router.put("/user/laboratory/test-result/session-update",function(req,res){
 	            ) 
 	          };
 
-	          var transporter = nodemailer.createTransport({
+	          /*var transporter = nodemailer.createTransport({
 	            host: "mail.privateemail.com",
 	            port: 465,
 	            auth: {
 	              user: "info@applinic.com",
 	              pass: process.env.EMAIL_PASSWORD
 	            }
-          	});
+          	});*/
 
 	          var mailOptions = {
 	            from: 'Applinic info@applinic.com',
@@ -1240,23 +1240,23 @@ router.put("/user/laboratory/test-result/session-update",function(req,res){
             ) 
           }
 
-          var transporter = nodemailer.createTransport({
+          /*var transporter = nodemailer.createTransport({
             host: "mail.privateemail.com",
             port: 465,
             auth: {
               user: "info@applinic.com",
               pass: process.env.EMAIL_PASSWORD
             }
-      	  });
+      	  });*/
 
-           transporter = nodemailer.createTransport({
+           /*transporter = nodemailer.createTransport({
 	            host: "mail.privateemail.com",
 	            port: 465,
 	            auth: {
 	              user: "info@applinic.com",
 	              pass: process.env.EMAIL_PASSWORD
 	            }
-          	});
+          	});*/
 
 	          var mailOptions = {
 	            from: 'Applinic info@applinic.com',
@@ -1572,14 +1572,14 @@ router.put("/user/laboratory/test-result/session-update",function(req,res){
 	          theObj.files = req.body.radiology.filesUrl;
 	          theObj.study_id = dcm._id; // _id of the dicom study
 
-	          var transporter = nodemailer.createTransport({
+	          /*var transporter = nodemailer.createTransport({
 	            host: "mail.privateemail.com",
 	            port: 465,
 	            auth: {
 	              user: "info@applinic.com",
 	              pass: process.env.EMAIL_PASSWORD
 	            }
-          	  });
+          	  });*/
 
 	          var mailOptions = {
 	            from: 'Applinic info@applinic.com',
@@ -1679,14 +1679,14 @@ router.put("/user/laboratory/test-result/session-update",function(req,res){
             ) 
 	          
 
-	          var transporter = nodemailer.createTransport({
+	          /*var transporter = nodemailer.createTransport({
 	            host: "mail.privateemail.com",
 	            port: 465,
 	            auth: {
 	              user: "info@applinic.com",
 	              pass: process.env.EMAIL_PASSWORD
 	            }
-          	});
+          	});*/
 
 	          var mailOptions = {
 	            from: 'Applinic info@applinic.com',
@@ -1888,14 +1888,14 @@ router.put("/user/laboratory/test-result/session-update",function(req,res){
               }
           	);		        
 
-		        var transporter = nodemailer.createTransport({
+		        /*var transporter = nodemailer.createTransport({
 	            host: "mail.privateemail.com",
 	            port: 465,
 	            auth: {
 	              user: "info@applinic.com",
 	              pass: process.env.EMAIL_PASSWORD
 	            }
-          	});
+          	});*/
 
 	          var mailOptions = {
 	            from: 'Applinic info@applinic.com',
@@ -2601,14 +2601,14 @@ router.post("/user/dicom-details",function(req,res){
             callBack
           );
 
-          var transporter = nodemailer.createTransport({
+          /*var transporter = nodemailer.createTransport({
             host: "mail.privateemail.com",
             port: 465,
             auth: {
               user: "info@applinic.com",
               pass: process.env.EMAIL_PASSWORD
             }
-          });
+          });*/
 
           var cp = (req.body.isAcc) ? rados  : id;
           	         	var tempLink;
@@ -2764,14 +2764,14 @@ router.post("/user/reassign-study",function(req,res){
 
 	    */
 
-	    var transporter = nodemailer.createTransport({
+	    /*var transporter = nodemailer.createTransport({
 	      host: "mail.privateemail.com",
 	      port: 465,
 	      auth: {
 	        user: "info@applinic.com",
 	        pass: process.env.EMAIL_PASSWORD
 	      }
-	    });
+	    });*/
 	    // send email and sms to the reporting radiologists with links to the dicom viewer, 
 	    //mobile viewer and center template. If center has no template use default template.
 	    
@@ -2866,14 +2866,14 @@ router.post("/user/sharing-study",function(req,res){
 	  */
 
 	  if(filteredEmailList.length > 0) {
-	    var transporter = nodemailer.createTransport({
+	    /*var transporter = nodemailer.createTransport({
 	      host: "mail.privateemail.com",
 	      port: 465,
 	      auth: {
 	        user: "info@applinic.com",
 	        pass: process.env.EMAIL_PASSWORD
 	      }
-	    });
+	    });*/
 
 	    var mailOptions = {
         from: 'Applinic Healthcare info@applinic.com',
@@ -2947,14 +2947,14 @@ router.post("/user/sharing-labtest",function(req,res){
 	  }
 
 	  if(filteredEmailList.length > 0) {
-	    var transporter = nodemailer.createTransport({
+	    /*var transporter = nodemailer.createTransport({
 	      host: "mail.privateemail.com",
 	      port: 465,
 	      auth: {
 	        user: "info@applinic.com",
 	        pass: process.env.EMAIL_PASSWORD
 	      }
-	    });
+	    });*/
 
 	    var mailOptions = {
         from: 'Applinic Healthcare info@applinic.com',
@@ -3072,15 +3072,14 @@ router.post("/user/doctor/subscription",function(req,res){
 
 						var plan = new Wallet(date,firstname,req.user.lastname,req.body.name);
 
-						plan.subscription(model,req.body.price,req.user,io,function(balance){
+						plan.subscription(model,req.body.price,user,io,function(balance){
 							res.json({status: true, message: "Subscription upgrade was successful",plan:planSchema});
 							planSchema.save(function(err,info){
 								if(err) throw err;
 								if(info){
-									console.log("plan upgraded with no issues")
 									var mailOptions = {
 	                from: 'Applinic info@applinic.com',
-	                to: 'ede.obinna27@gmail.com',//doc.email || info@applinic.com,
+	                to: user.email,//doc.email || info@applinic.com,
 	                subject: 'NOTIFICATION OF ACCOUNT UPGRADE TO PREMIUM PLAN',
 	                html: '<table><tr></th></tr><tr><td style="line-height:25px">Dear ' 
 	                + req.user.name + ",<br><br>You have successfully upgraded your account to " + req.body.type 
@@ -3144,7 +3143,7 @@ router.post("/user/doctor/subscription",function(req,res){
 								
 								var mailOptions = {
 	                from: 'Applinic info@applinic.com',
-	                to: 'ede.obinna27@gmail.com',//doc.email || info@applinic.com,
+	                to: req.user.email,
 	                subject: 'NOTIFICATION OF ACCOUNT UPGRADE TO PREMIUM PLAN',
 	                html: '<table><tr></th></tr><tr><td style="line-height:25px">Dear ' 
 	                + req.user.name + ",<br><br>You have successfully upgraded your account to " + req.body.type 
@@ -3187,7 +3186,32 @@ router.delete("/user/doctor/subscription",function(req,res){
 				account.deleted = true;
 				account.save(function(err,info){
 					if(err) throw err;
-					res.json({status: true,message: "Plan downgraded successfully!",plan:{}})
+					res.json({status: true,message: "Plan downgraded successfully!",plan:{}});
+
+					var mailOptions = {
+            from: 'Applinic info@applinic.com',
+            to: 'ede.obinna27@gmail.com',
+            subject: 'NOTIFICATION OF DOWNGRADE OF YOUR  APPLINIC ACCOUNT',
+            html: '<table><tr></th></tr><tr><td style="line-height:25px">Dear ' 
+            + req.user.name + ",<br><br>You have successfully downgraded your account on Applinic to the Standard Plan." 
+            + "<br>"
+            + "You are now on the Standard plan which is a Pay as You go package that requires 10% service charge per "
+            + "consultation fee paid by patient on the platform. <br>" 
+            + "If you want to continue on this plan, please ignore this mail..<br>" 
+            + "To upgrade to a Premium Plan which charges once per selected period " 
+            + "<a href='https://applinic.com/user/doctor'>log into</a> your dashboard to upgrade." 
+            + "<br><br>"  
+            + "Thank you for using Applinic.<br></br><br>"
+            + "<b>Applinic Team</b></td></tr></table>"
+        	};
+
+          transporter.sendMail(mailOptions, function(error, info){
+            if (error) {
+              console.log(error);
+            } else {
+              console.log('Email sent: ' + info.response);
+            }
+          });
 				})
 			} else {
 				res.json({status: false,

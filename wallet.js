@@ -411,7 +411,7 @@ Wallet.prototype.subscription = function(model,amount,user,io,cb) {
 
 	this.beneficiary = "Applinic";
 
-	this.debit(model,amount,user,amount);
+	this.debit(model,amount,user,0);
 }
 
 
