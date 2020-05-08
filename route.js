@@ -2931,14 +2931,17 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
             var title = (req.user.type === "Doctor") ? req.user.title : ""; 
             var verifyId;
             
-
             var refObj = {
               ref_id: ref_id,
               referral_firstname: req.user.firstname,
               referral_lastname: req.user.lastname,
               referral_title: title,
-              referral_id: req.body.id,    
+              referral_id: req.body.id, 
+              referral_email: req.user.email,
+              referral_phone: req.user.phone,  
+              deleted: false, 
               date: date,
+              center_id: req.body.user_id,
               pharmacy: preObj
             }
 
@@ -3038,17 +3041,20 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
 
               data.save(function(err,info){
                 if(err) throw err;
-                io.sockets.to(data.user_id).emit("notification",{status:true});
+                io.sockets.to(data.user_id).emit("notification",{status:true,isNewDrug: true});
                         
               });
 
               preObj.patient_phone = data.phone;
 
-              pharmacy.referral.push(refObj);
+              var refSchema = new model.referral(refObj)
 
-              pharmacy.save(function(err,info){             
+              //pharmacy.referral.push(refObj);
+
+              refSchema.save(function(err,info){             
                 if(err) throw err;             
-                console.log("prescription saved");                                         
+                console.log("prescription saved");
+                io.sockets.to(req.body.user_id).emit("center notification",{status:true,isNewDrug: true});                                         
               });
 
               var msgBody = req.user.title + " " + req.user.firstname + " " + req.user.lastname 
@@ -6871,6 +6877,7 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
             req.body.patient_country = user.country;
             req.body.patient_address = user.address;
             req.body.patient_age = user.age;
+            req.body.patient_phone = user.phone;
             req.body.patient_gender = user.gender;
             req.body.patient_address = user.address;
             req.body.patient_id = user.user_id;

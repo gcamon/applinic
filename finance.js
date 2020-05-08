@@ -16,6 +16,15 @@ var pdf = require('html-pdf');
 
 var basicPaymentRoute = function(model,sms,io,paystack,client,nodemailer){
 
+	var transporter = nodemailer.createTransport({
+	  host: "mail.privateemail.com",
+	  port: 465,
+	  auth: {
+	    user: "info@applinic.com",
+	    pass: process.env.EMAIL_PASSWORD
+	  }
+	});
+
 	//this route creates the token for use ie creating vouchers
 	router.post("/user/token",function(req,res){
 		if(req.user && req.user.admin !== true){
@@ -3069,6 +3078,27 @@ router.post("/user/doctor/subscription",function(req,res){
 								if(err) throw err;
 								if(info){
 									console.log("plan upgraded with no issues")
+									var mailOptions = {
+	                from: 'Applinic info@applinic.com',
+	                to: 'ede.obinna27@gmail.com',//doc.email || info@applinic.com,
+	                subject: 'NOTIFICATION OF ACCOUNT UPGRADE TO PREMIUM PLAN',
+	                html: '<table><tr></th></tr><tr><td style="line-height:25px">Dear ' 
+	                + req.user.name + ",<br><br>You have successfully upgraded your account to " + req.body.type 
+	                + " Plan for " + req.body.duration + " month(s) with a one bonus.<br>" 
+	                + "This subscription will expire on " +  req.body.expireDate 
+	                + ". Your account will no longer be charged per consultation fee.<br>" 
+	                + "Remember to renew your subscription before then to avoid downgrade to Standard Plan.<br><br>"  
+	                + "Thank you for using Applinic.<br></br><br>"
+	                + "<b>Applinic Team</b></td></tr></table>"
+              		};
+
+	                transporter.sendMail(mailOptions, function(error, info){
+	                  if (error) {
+	                    console.log(error);
+	                  } else {
+	                    console.log('Email sent: ' + info.response);
+	                  }
+	                });
 								}
 							})
 						});
@@ -3111,7 +3141,28 @@ router.post("/user/doctor/subscription",function(req,res){
 							res.json({status: true, message: "Subscription upgrade was successful",plan: data});
 							data.save(function(err,info){
 								if(err) throw err;
-								console.log("Account upgraded!")
+								
+								var mailOptions = {
+	                from: 'Applinic info@applinic.com',
+	                to: 'ede.obinna27@gmail.com',//doc.email || info@applinic.com,
+	                subject: 'NOTIFICATION OF ACCOUNT UPGRADE TO PREMIUM PLAN',
+	                html: '<table><tr></th></tr><tr><td style="line-height:25px">Dear ' 
+	                + req.user.name + ",<br><br>You have successfully upgraded your account to " + req.body.type 
+	                + " Plan for " + req.body.duration + " month(s) with a one bonus.<br>" 
+	                + "This subscription will expire on " +  req.body.expireDate 
+	                + ". Your account will no longer be charged per consultation fee.<br>" 
+	                + "Remember to renew your subscription before then to avoid downgrade to Standard Plan.<br><br>"  
+	                + "Thank you for using Applinic.<br></br><br>"
+	                + "<b>Applinic Team</b></td></tr></table>"
+              	};
+
+                transporter.sendMail(mailOptions, function(error, info){
+                  if (error) {
+                    console.log(error);
+                  } else {
+                    console.log('Email sent: ' + info.response);
+                  }
+                });
 							})
 						});
 					}

@@ -14002,10 +14002,6 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
 
     $scope.pickedCenter = null;
 
-
-
-   
-
     $scope.selected = function(center) {
       $scope.pickedCenter = center;
       if($scope.message) 
@@ -15321,6 +15317,10 @@ app.controller("pharmacyCenterNotificationController",["$scope","$location","$re
     templateService.playAudio(3);
     $rootScope.allNote.push(data);
     $rootScope.noteLen++;
+
+    if(data.isNewDrug){
+      $rootScope.$broadcast('new center data')
+    }
   });
 
   $rootScope.viewNote = function(id){
@@ -15758,64 +15758,6 @@ app.controller("checkingOutPatientController",["$scope","$location","templateSer
 app.controller("referredPatientsController",["$scope","$location","$http","templateService","localManager","$rootScope",
   function($scope,$location,$http,templateService,localManager,$rootScope) {
 
-  /*$scope.patient = {};
-
-  $scope.isNotOption = true;
-
-  $scope.showOption = function(){
-    $scope.error = "";
-     $scope.isNotOption = false;
-     if(!$scope.isOption){
-      $scope.isOption = true;
-     } else {
-      $scope.isNotOption = true;
-      $scope.isOption = false;
-     }
-  }
-
-  $scope.findPrescription = function(){
-    if(Object.keys($scope.patient).length > 0) {      
-      if($scope.patient.ref_id){
-        $scope.patient.criteria = "refIdCriteria";       
-      } else if($scope.patient.phone) {
-        $scope.patient.criteria = "phoneCriteria";
-        $scope.patient.phone = $rootScope.setPhone($scope.patient.phone);
-      }
-      typeOfSearch($scope.patient);
-    } else {
-      alert("Please enter search creteria in the text field")
-      return;
-    }
-
-  
-  }*/
-    
-
-  /*var typeOfSearch = function(criteria) { 
-    $scope.loading = true; 
-
-    $http({
-          method  : 'PUT',
-          url     : "/user/pharmacy/find-patient/prescription",
-          data    : criteria,
-          headers : {'Content-Type': 'application/json'} 
-          })
-        .success(function(response) { 
-          $scope.foundData = []; 
-          $scope.patient = {};             
-          if(response.data) {
-            $scope.foundData = response.data;           
-          } else {
-            $scope.error = response.error;
-          }
-
-          $scope.loading = false;
-      });
-  }*/
-
-  
-
-
   if($rootScope.queryObj){
     $scope.patient = (Object.keys($rootScope.queryObj).length > 0) ? $rootScope.queryObj : {from: new Date(), to: new Date()};
   } else {
@@ -15874,7 +15816,9 @@ app.controller("referredPatientsController",["$scope","$location","$http","templ
   localManager.setValue("currPageForPharmacy",$location.path());
   $scope.searchTests();
 
-
+  $rootScope.$on('new center data',function(a,b){
+    $scope.searchTests();
+  })
 }]);
 
 
@@ -26734,11 +26678,18 @@ function($scope,$location,$rootScope,$http,ModalService,$interval,templateServic
   
 }]);
 
-app.controller('planCtrl',["$scope","$http","$rootScope",function($scope,$http,$rootScope){
+app.controller('planCtrl',["$scope","$http","$rootScope","$filter",
+  function($scope,$http,$rootScope,$filter){
 
   $scope.plan = {};
 
+    var date = new Date()
+    var dt;
+
+    console.log($filter('date')(dt, 'fullDate'));
+
   $scope.subscribe = function() {
+
 
     $scope.msg = "";
     switch($scope.plan.category) {
@@ -26746,21 +26697,29 @@ app.controller('planCtrl',["$scope","$http","$rootScope",function($scope,$http,$
         $scope.plan.price = 25550;
         $scope.plan.duration = "12";
         $scope.plan.name = "Premium Plan Subscription (12 Months)"; 
+        dt = date.getTime() + 3.416e+10;
+        $scope.plan.expireDate = $filter('date')(dt, 'fullDate');
       break;
       case '6 Months':
         $scope.plan.price = 20075;
         $scope.plan.duration = "6";
         $scope.plan.name = "Premium Plan Subscription (6 Months)";
+        dt = date.getTime() + 1.84e+10;
+        $scope.plan.expireDate = $filter('date')(dt, 'fullDate');
       break;
       case '3 Months':
         $scope.plan.price = 14600;
         $scope.plan.duration = "3";
         $scope.plan.name = "Premium Plan Subscription (3 Months)";
+        dt = date.getTime() + 1.051e+10;
+        $scope.plan.expireDate = $filter('date')(dt, 'fullDate');
       break;
       case '1 Months':
         $scope.plan.price = 9125;
         $scope.plan.duration = "1";
         $scope.plan.name = "Premium Plan Subscription (1 Month)";
+        dt = date.getTime() + 5.256e+9;
+        $scope.plan.expireDate = $filter('date')(dt, 'fullDate');
       break;
       default:
        $scope.msg = "Please select a subscription plan.";
