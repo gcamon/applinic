@@ -8,30 +8,55 @@
 	
 	<div class="row">
 		
-		<div class="col-md-12 col-lg-12 col-sm-12  pt-1">
-			<div style="max-height: 120px;max-width: 120px;display: inline-block;float: left">		
-				<img class="img-responsive card" src="{{refData.pharmacy.patient_profile_pic_url}}">
-			</div>	
-			<div style="display: inline-block;float: left;padding-left: 15px">
-				<div><strong>{{refData.pharmacy.patient_firstname}} {{refData.pharmacy.patient_lastname}}</strong></div>
-				<div><strong>{{refData.pharmacy.patient_address}}, {{refData.pharmacy.patient_city}}, {{refData.pharmacy.patient_country}}</strong></div>
-				<div><strong>{{refData.pharmacy.patient_age}}</strong></div>
-				<div><strong>{{refData.pharmacy.patient_gender}}</strong></div>
+		<div class="pt-1 col-md-12" >
+			<div style="position: relative;">
+				<button class="collapsed dropdown-toggle btn btn-simple" role="button" data-toggle="collapse" data-parent="#accordion" href="#{{'test' + refData.ref_id}}" aria-expanded="false" aria-controls="collapsefifty">View Details</button>
+				<span am-time-Ago="refData.date" style="position: absolute;top:5px;right: 20px"></span>
 			</div>
-			<div class="clearfix"></div>		
-			<hr>
-			<ul class="nav font-1_1" style="line-height: 30px">
-				<li style="font-weight: bold;">Referred By :  <span style="font-weight: 300">{{refData.referral_title}} {{refData.referral_firstname}} {{refData.referral_lastname}} </span></li>
-				<li style="font-weight: bold;">Date Received :  <span am-time-ago="refData.date" style="font-weight: 300;"></span></li>
-				<!--<li><strong>Time </strong>| {{refData.date | date: "mediumTime"}}</li>-->
-				<li style="font-weight: bold;">Reference No: <span class="text-danger" style="font-weight: 300;">{{refData.ref_id}}</span></li>
-			</ul>
-			<h6 class="pb-1 mt-2">Prescription Details: <i class="fa fa-question-circle tip"><span>Initially, all drugs are ticked as available in your center. You can untick any drug that is not available and forward to another center. You can add dosage, frequency and duration if such values are missing. </span></i></h6>
-			<!--<p><strong>Please untick drug(s) you don't have.</strong> If dosage, frquency and duration fields are missing you can add them based on the drugs you already administered.
-				<strong>Unticked drug </strong> is regarded as NOT available in your center<span> which you can <strong>refer to another </strong> center.</span></p-->
-				<!--<div style="text-align: right;">
-				<a href="" ng-click="refresh()"style="color:orange"><i class="fa fa-refresh"></i> Refresh</a>	
-				</div-->		
+			<div class="clearfix"></div>
+			<div id="{{'test' + refData.ref_id}}" class="panel-collapse collapse p-1" role="tabpanel" aria-labelledby="headingfifty">
+				<div style="max-height: 120px;max-width: 120px;display: inline-block;float: left">		
+					<img class="img-responsive card" src="{{refData.pharmacy.patient_profile_pic_url}}">
+				</div>	
+				<div style="display: inline-block;float: left;padding-left: 15px">
+					<div><strong>{{refData.pharmacy.patient_firstname}} {{refData.pharmacy.patient_lastname}}</strong></div>
+					<div><strong>{{refData.pharmacy.patient_address}}, {{refData.pharmacy.patient_city}}, {{refData.pharmacy.patient_country}}</strong></div>
+					<div><strong>{{refData.pharmacy.patient_age}}</strong></div>
+					<div><strong>{{refData.pharmacy.patient_gender}}</strong></div>
+				</div>
+				<div class="clearfix"></div>		
+				<hr>
+				<ul class="nav font-1_1" style="line-height: 30px">
+					<li style="font-weight: bold;">Referred By :  <span style="font-weight: 300">{{refData.referral_title}} {{refData.referral_firstname}} {{refData.referral_lastname}} </span></li>
+					<li style="font-weight: bold;">Date Received :  <span am-time-ago="refData.date" style="font-weight: 300;"></span></li>
+					<!--<li><strong>Time </strong>| {{refData.date | date: "mediumTime"}}</li>-->
+					<li style="font-weight: bold;">Reference No: <span class="text-danger" style="font-weight: 300;">{{refData.ref_id}}</span></li>
+					<li><strong style="font-weight: bold;">Prescribed By:</strong><br> 
+					<span>{{refData.pharmacy.title}} {{refData.pharmacy.doctor_firstname}} {{refData.pharmacy.doctor_lastname}}</span><br>
+					<span>{{refData.pharmacy.doctor_specialty}}</span><br>
+					<span>{{refData.pharmacy.doctor_address}}, {{refData.pharmacy.doctor_city}}, {{refData.pharmacy.doctor_country}}</span><br>
+					<span>{{refData.pharmacy.doctor_phone}}</span><br>
+					
+					</li>
+				</ul>
+				<!--<div  ng-if="refData.pharmacy.doctor_id">
+					<h6 class="pb-1 h6">Prescribed by: </h6>
+					<div class="row">
+						<div class="col-sm-6 col-md-2 col-lg-2">			
+							<img class="img-rounded card" src="{{refData.pharmacy.doctor_profile_pic_url}}" style="max-height:120px; max-width:120px">
+						</div>
+						<div class="col-sm-6 col-md-10 col-lg-10" style="line-height: 25px;padding: 10px">								
+							<strong class="font-1_1"> {{refData.pharmacy.title}} {{refData.pharmacy.doctor_firstname}} {{refData.pharmacy.doctor_lastname}}</strong><br>
+							<span class="text-muted">{{refData.pharmacy.doctor_specialty}}</span>
+							<span>{{refData.pharmacy.doctor_phone}}</span><br>
+							<span><strong>{{refData.pharmacy.doctor_work_place}}</strong>| {{refData.pharmacy.doctor_address}}, {{refData.pharmacy.doctor_city}}, {{refData.pharmacy.doctor_country}}</span><br>
+							<a href="{{refData.pharmacy.doctor_profile_url}}">View  profile.</a>						
+						</div>
+					</div>
+				</div-->			
+			</div>	
+			<br>
+			<h6 class="pb-1 mt-2 h6">Prescription Details: <i class="fa fa-question-circle text-primary tip"><span>Initially, all drugs are ticked as available in your center. You can untick any drug that is not available and forward to another center. You can add dosage, frequency and duration if such values are missing. </span></i></h6>	
 			<table class="table table-striped no-mobile-item-display">				
 				<tr>
 					<thead>
@@ -158,21 +183,7 @@
 
 			</div>
 			
-			<div class="prescription-info card" ng-if="refData.pharmacy.doctor_id">
-				<h6 class="text-muted pb-1" style="border-bottom: 1px solid rgba(0,0,0,0.2);">Prescribed by: </h6>
-				<div class="row">
-					<div class="col-sm-6 col-md-2 col-lg-2" style="padding-left: 10pz">			
-						<img class="img-rounded card" src="{{refData.pharmacy.doctor_profile_pic_url}}" style="max-height:120px; max-width:120px">
-					</div>
-					<div class="col-sm-6 col-md-10 col-lg-10" style="line-height: 25px;padding: 10px">								
-						<strong class="font-1_1"> {{refData.pharmacy.title}} {{refData.pharmacy.doctor_firstname}} {{refData.pharmacy.doctor_lastname}}</strong><br>
-						<span class="text-muted">{{refData.pharmacy.doctor_specialty}}</span>
-						<span>{{refData.pharmacy.doctor_phone}}</span><br>
-						<span><strong>{{refData.pharmacy.doctor_work_place}}</strong>| {{refData.pharmacy.doctor_address}}, {{refData.pharmacy.doctor_city}}, {{refData.pharmacy.doctor_country}}</span><br>
-						<a href="{{refData.pharmacy.doctor_profile_url}}">View  profile.</a>						
-					</div>
-				</div>
-			</div>
+			
 		</div>
 	</div>
 </div>
