@@ -14,15 +14,21 @@
 	</div>
 </div>
 </div>-->
-<div class="pl-0 card-center-1 card">
-<h4 class="p-1">Prescriptions</h4>  
-<div class="col-md-8 pl-0">
+<div class="pl-0 card-center-1 card" style="position: relative;">
+<h4 class="p-1 h6">Prescriptions</h4>  
+<div style="position: absolute;right: 15px;top:5px">
 	<input type="text" name="" placeholder="Filter by test name, center name, date sent, date received, etc" ng-model="filterResult" class="form-control">
 </div>
 </div>
 <div style="" class="card card-center-1 mb-1"  ng-repeat="docInfo in prescriptionRecordsResult |filter : filterResult | orderBy: '-date'" id="{{docInfo.prescriptionId}}">	
 <div>
-	<div class="p-1" style="line-height: 30px;" >
+
+	<div class="p-1" style="position: relative;">
+		<button class="collapsed dropdown-toggle btn btn-simple" role="button" data-toggle="collapse" data-parent="#accordion" href="#{{'pres' + docInfo.ref_id}}" aria-expanded="false" aria-controls="collapsefifty">View Details</button>
+		<span am-time-Ago="docInfo.date" style="position: absolute;top:20px;right: 20px"></span>
+	</div>
+
+	<div  style="line-height: 30px;" id="{{'pres' + docInfo.ref_id}}" class="panel-collapse collapse p-1 text-muted" role="tabpanel" aria-labelledby="headingfifty">
 
 		
 			 <!--<img alt="image description" ng-src="{{docInfo.Doctor_profile_pic_url}}" style="max-width: 200px; max-height:200px" class="shadow">-->

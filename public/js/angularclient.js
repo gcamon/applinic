@@ -4212,7 +4212,7 @@ app.controller("bookingDocController",["$scope","templateService","$http","mySoc
     $scope.find()
   }
 
-  $scope.specialties = ["Cardiologist","Gynecologist","General Surgeon",
+  $scope.specialties = ["Cardiologist","Gynecologist","Surgeon",
   "Pediatrician","Neurologist","Family Physician","Dermatologist","Neurosurgeon","Ophthalmologist",
   "Orthopedic Surgeon","Dental Surgeon","Urologist","Nephrologists",
   "ENT Surgeon","Gastroeneterologists","Rheumatologist","Endocrinologists"]
@@ -7760,8 +7760,7 @@ app.controller("patientNotificationController",["$scope","$location","$http","$w
         templateService.holdAllLabTest = data.medical_records.laboratory_test;
         templateService.holdAllRadioTest = data.medical_records.radiology_test;
         localManager.setValue("holdLabData",data.medical_records.laboratory_test);
-        localManager.setValue("holdScanData",data.medical_records.radiology_test);     
-        
+        localManager.setValue("holdScanData",data.medical_records.radiology_test);         
         // this fns checks the list to see if any test is pending for both laboratory and radiology
         checkIsLabPending(data.medical_records.laboratory_test);
         checkIsRadioPending(data.medical_records.radiology_test);
@@ -7773,7 +7772,7 @@ app.controller("patientNotificationController",["$scope","$location","$http","$w
   var checkIsLabPending = function (list) {
     var pendingLab = [];      
     for(var test = 0; test < list.length; test++) {
-      if(list[test].conclusion === "Pending" || list[test].report === "Pending") {
+      if(list[test].conclusion === "Pending") {
         pendingLab.unshift(list[test]);
       }
     }
@@ -7788,7 +7787,7 @@ app.controller("patientNotificationController",["$scope","$location","$http","$w
   var checkIsRadioPending = function (list) {
     var pendingScan = [];      
     for(var test = 0; test < list.length; test++) {
-      if(list[test].conclusion === "Pending" || list[test].report === "Pending") {
+      if(list[test].conclusion === "Pending") {
         pendingScan.unshift(list[test]);
       }
     }

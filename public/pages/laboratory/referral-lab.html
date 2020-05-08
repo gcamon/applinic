@@ -51,7 +51,7 @@
 					<div ng-repeat="k in test.laboratory.test_to_run"><small> - {{k.name}}</small></div>
 					
 					<div style="text-align: right;">
-						<a href="{{'https://drive.google.com/viewerng/viewer?embedded=true&url=https://applinic.com' + study.lab_pdf_report[0].pdf_report}}" target="_blank">
+						<a href="{{'https://drive.google.com/viewerng/viewer?embedded=true&url=https://applinic.com' + test.laboratory.lab_pdf_report[0].pdf_report}}" target="_blank">
 							<i ng-show="test.laboratory.lab_pdf_report.length > 0" class="fa fa-file text-danger"></i>
 						</a>
 					</div>

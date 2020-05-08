@@ -4838,7 +4838,7 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
             } else {     
               var name = (req.user.firstname) ?  req.user.title + " " + req.user.firstname : req.user.name   
               var msgBody = "Your laboratory test was referred to " + centerInfo.name + "\n@ " + centerInfo.address + " " + centerInfo.city + " " +
-              centerInfo.country + "\nBy " + name + "\nTest Ref No" + random + "\nFor more details visit https://applinic.com/user/patient"
+              centerInfo.country + "\nBy " + name + "\nRef No " + random + "\nFor more details visit https://applinic.com/user/patient"
               var phoneNunber =  record.phone;             
               sms.messages.create(
                 {
@@ -7256,7 +7256,7 @@ router.put("/user/test-search/laboratory/referral",function(req,res){
               io.sockets.to(result.user_id).emit("center notification",refNotification)
             }
 
-          
+
             //var refPos = result.referral.map(function(x){return x.ref_id}).indexOf(req.body.ref_id);
             var referral = new model.referral(refObj);
             referral.save(function(err,info){

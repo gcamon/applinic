@@ -10,98 +10,171 @@
       
  
  
-  <div class="pl-0 card-center-1 card">
-    <h5 style="padding:15px;">{{type}}</h5>   
-    <div class="col-md-8 pl-0">
+  <div class="pl-0 card-center-1 card" style="position: relative;">
+    <h5 style="padding:15px;" class="h6">{{type}}</h5>   
+    <div style="position: absolute;right: 15px;top:5px">
         <input type="text" name="" placeholder="Filter by test name, center name, date sent, date received, etc" ng-model="filterResult" class="form-control">
     </div>
   </div>
   <div ng-if="!isViewSingle">
   <section  class="card card-center-1 mb-1" ng-repeat="test in pendingTest | filter : filterResult | orderBy: '-sent_date'" id="{{test.ref_id}}" ng-if="test.conclusion == 'Pending'">    
-     <div class="p-1">
-          <div style="text-align: center;"> 
-          <!--<img src="{{test.center_profile_pic}}" style="max-width:72px; max-height:72px" ng-if="test.center_profile_pic">-->
+     <div class="p-1 mb-1">
+          <!--<div style="text-align: center;"> 
+          <img src="{{test.center_profile_pic}}" style="max-width:72px; max-height:72px" ng-if="test.center_profile_pic">
           <h5><b>{{test.center_name}}</b></h5>
                
                 <i class="fa fa-globe"></i>{{test.center_address}} {{test.center_city}} {{test.center_country}}<br>
                 
                 <i class="fa fa-phone"></i> {{test.center_phone}}<br>        
                 <a href="{{test.center_profile_url}}" title="view profile" ng-if="test.center_profile_url">View profile</a>
-                </div>
+          </div>-->
         
-          <hr>
-          <div style="line-height: 25px;margin-bottom: 5px">
-              <h6 style="">Investigation details:</h6><br>
-              <strong>Referred by:</strong>  <span>{{test.referral_title}} {{test.referral_lastname}} {{test.referral_firstname}}</span><br>
+          <div  style="position: relative;padding-top: 10px">
+            <button class="collapsed dropdown-toggle btn btn-simple" role="button" data-toggle="collapse" data-parent="#accordion" href="#{{'test' + test.ref_id + test.test_id}}" aria-expanded="false" aria-controls="collapsefifty">View Details</button>
+            <span am-time-Ago="test.sent_date" style="position: absolute;top:20px;right: 20px"></span>
+          </div>
+        
+         
+          <div style="line-height: 25px;margin-bottom:5px" id="{{'test' + test.ref_id + test.test_id}}" class="panel-collapse collapse p-1 text-muted" role="tabpanel" aria-labelledby="headingfifty">
+              <strong>Center Name: </strong> <span>{{test.center_name}}</span><br>
+
+              <strong>Center Address: </strong> <span>{{test.center_address}} {{test.center_city}} {{test.center_country}}</span><br>
+              <strong>Center Phone: </strong> <span>{{test.center_phone}}</span><br>
+
+              <strong>Referred by:</strong>  <span>{{test.referral_title}} {{test.referral_lastname}} {{test.referral_firstname || "Not specified"}}</span><br>
+
               <strong>Reference Number:</strong> : <span>{{(test.copy) ? "Copied!" : test.ref_id}}</span> <a href="" clipboard supported="supported" text="test.ref_id" on-copied="success(test)" on-error="fail(err)" title="{{copy}}" class="fa fa-copy text-danger" style="padding: 5px"> Copy</a><br>
 
-              <strong>Date requested:</strong> : <span>{{test.sent_date | date : "mediumDate"}} ( <span am-time-Ago="test.sent_date" ng-if="test.sent_date"></span> )</span>
+              <strong>Date requested:</strong> <span>{{test.sent_date | date : "mediumDate"}} ( <span am-time-Ago="test.sent_date" ng-if="test.sent_date"></span> )</span>
 
               <span ng-if="test.conclusion === 'Pending'"><strong>Status: </strong> <span style="color: red">Awaiting test result</span></span><br>
             <!--<p><strong>Date sent: </strong>{{test.sent_date | date : "mediumDate"}} &nbsp; <strong>Time: </strong>{{test.sent_date | date : "shortTime"}}</p>-->
-            <strong>Date received: </strong> {{test.receive_date | date: "mediumDate" || "Pending"}} ( <span am-time-Ago="test.receive_date" ng-if="test.receive_date"></span>)<br>
+            <strong>Date received: </strong> {{test.receive_date | date: "mediumDate" || "Pending"}} <span am-time-Ago="test.receive_date" ng-if="test.receive_date"></span><br>
 
 
             <strong>Indication: </strong> <span>{{test.indication}}</span>
               
             
           </div>
+          <br>
           <div>
-
             <h6>Test(s) requested:</h6>
-            <ol style="background-color: #d7dde4;line-height: 25px">
+            <br>
+            <ol style="line-height: 25px">
               <li ng-repeat="ranTest in test.test_to_run">
-                <span style="display: inline-block;width: 80%">{{ranTest.name}}</span>
-                <label class="custom-control custom-checkbox" style="">
-                    <input type="checkbox" class="" ng-model= "ranTest.picked" >
+                <label class="custom-control custom-checkbox">
+                    <input type="checkbox" class="custom-control-input" ng-model= "ranTest.picked" >
                     <span class="custom-control-indicator"></span>
-                    <span class="custom-control-description" style="opacity:0;"></span>
-                </label>
+                    <span class="custom-control-description">{{ranTest.name}}</span>
+                </label>               
               </li>                     
             </ol>
 
-          </div>        
+          </div> 
+          <br> 
+          <div>
+            <h6>Test Report: </h6>
+            <p ng-if="test.conclusion == 'Pending'" style=""> No report received at this time</p>
+          </div>      
               
       </div>    
 
-        <div class="p-1">
-          <!--<h6 style="text-decoration: underline;">Investigation Report</h6>
-          <div ng-if="test.report !== 'Pending'" class="patient-tests">
-            <article ng-repeat = "testRan in test.test_to_run">
-              <div><strong>{{testRan.name}}:</strong></div>
-              <p><em>{{testRan.data}}</em></p>                  
-            </article>
-            <div><strong>Conclusion:</strong></div>
-            <p><em>{{test.conclusion}}</em></p>               
-          </div>-->
-          <!--<ul ng-i="test.report !== 'Pending'" style="list-style: none;">             
-          <li>                
-            <li ng-repeat = "testRan in test.test_to_run"><strong>{{testRan.name}} : ccvvcvcvc</strong> <em>{{testRan.data}}</em></li>                
-          </li>
-          <li><strong>Conclusion : </strong> <em>{{test.conclusion}}dffdfddffdfdfdfddffdfd</em></li>
-        </ul>-->
-        <p ng-if="test.conclusion == 'Pending'" style="text-align: center;font-size: 12px;padding: 40px"> No report received at this time</p>
-
-
-       
-        <div  style="padding: 10px 15px 0;position: relative;text-align: right">
+      <div class="p-1">
+         
+        <!--<p ng-if="test.conclusion == 'Pending'" style="text-align: center;font-size: 12px;padding: 40px"> No report received at this time</p>-->
+        <div  style="padding: 0 15px ;position: relative;text-align: right">
           <div>  
-            <i class="fa fa-user-md btn btn-info" aria-hidden="true" style="font-size: 18px;margin-right:0px;cursor:pointer;padding: 5px 15px" title="send test result to your doctor(s)" ng-click="sendDocTest(test)" ng-if="test.conclusion !== 'Pending'"></i>
-          <i class="fa fa-user-md btn btn-simple" aria-hidden="true" style="color:#ccc;font-size: 18px;margin-right:0px;cursor:pointer;padding: 5px 15px" title="send test result to your doctor(s)"  ng-if="test.report === 'Pending'"></i>             
-            <!--<i ng-print  print-element-id="{{test.ref_id}}" class="fa fa-print btn btn-danger" aria-hidden="true" style="font-size: 18px;margin-right:0px;cursor:pointer;padding: 5px 15px" title="Print this lab investigation"></i>-->
-            <i class="fa fa-share btn btn-success" aria-hidden="true" style="font-size:18px;margin-right:0px;cursor:pointer;padding: 5px 15px" title="Forward this investigation to another center" ng-click="forwardTest(test)"></i>
+            <i class="fa fa-user-md btn btn-neutral" aria-hidden="true" style="font-size: 18px;margin-right:0px;cursor:pointer;padding: 5px 15px" title="send test result to your doctor(s)" ng-click="sendDocTest(test)" ng-if="test.conclusion !== 'Pending'"></i>
+          <i class="fa fa-user-md btn btn-neutral" aria-hidden="true" style="color:#ccc;font-size: 18px;margin-right:0px;cursor:pointer;padding: 5px 15px" title="send test result to your doctor(s)"  ng-if="test.report === 'Pending'"></i>             
+        
+            <i class="fa fa-share btn btn-neutral" aria-hidden="true" style="font-size:18px;margin-right:0px;cursor:pointer;padding: 5px 15px" title="Forward this investigation to another center" ng-click="forwardTest(test)"></i>
             
           </div>
         </div>
           
-      </div>      
+      </div>
           
     
   </section>
   </div>
   <div ng-if="isViewSingle">
-  <section style="padding: 30px;" class="row card" ng-repeat="test in singleView | filter : filterResult | orderBy: '-sent_date'" id="{{test.ref_id}}" ng-if="test.report == 'Pending'">    
-      <div class="col-sm-12 col-md-3 col-lg-3">
+  <section style="padding: 30px;" class="row card" ng-repeat="test in singleView | filter : filterResult | orderBy: '-sent_date'" id="{{test.ref_id}}" ng-if="test.conclusion == 'Pending'"> 
+      <div class="p-1 mb-1">
+          <!--<div style="text-align: center;"> 
+          <img src="{{test.center_profile_pic}}" style="max-width:72px; max-height:72px" ng-if="test.center_profile_pic">
+          <h5><b>{{test.center_name}}</b></h5>
+               
+                <i class="fa fa-globe"></i>{{test.center_address}} {{test.center_city}} {{test.center_country}}<br>
+                
+                <i class="fa fa-phone"></i> {{test.center_phone}}<br>        
+                <a href="{{test.center_profile_url}}" title="view profile" ng-if="test.center_profile_url">View profile</a>
+          </div>-->
+        
+          <div  style="position: relative;padding-top: 10px">
+            <button class="collapsed dropdown-toggle btn btn-simple" role="button" data-toggle="collapse" data-parent="#accordion" href="#{{'test' + test.ref_id + test.test_id}}" aria-expanded="false" aria-controls="collapsefifty">View Details</button>
+            <span am-time-Ago="test.sent_date" style="position: absolute;top:20px;right: 20px"></span>
+          </div>
+        
+         
+          <div style="line-height: 25px;margin-bottom:5px" id="{{'test' + test.ref_id + test.test_id}}" class="panel-collapse collapse p-1 text-muted" role="tabpanel" aria-labelledby="headingfifty">
+              <strong>Center Name: </strong> <span>{{test.center_name}}</span><br>
+
+              <strong>Center Address: </strong> <span>{{test.center_address}} {{test.center_city}} {{test.center_country}}</span><br>
+              <strong>Center Phone: </strong> <span>{{test.center_phone}}</span><br>
+
+              <strong>Referred by:</strong>  <span>{{test.referral_title}} {{test.referral_lastname}} {{test.referral_firstname}}</span><br>
+
+              <strong>Reference Number:</strong> : <span>{{(test.copy) ? "Copied!" : test.ref_id}}</span> <a href="" clipboard supported="supported" text="test.ref_id" on-copied="success(test)" on-error="fail(err)" title="{{copy}}" class="fa fa-copy text-danger" style="padding: 5px"> Copy</a><br>
+
+              <strong>Date requested:</strong> <span>{{test.sent_date | date : "mediumDate"}} ( <span am-time-Ago="test.sent_date" ng-if="test.sent_date"></span> )</span>
+
+              <span ng-if="test.conclusion === 'Pending'"><strong>Status: </strong> <span style="color: red">Awaiting test result</span></span><br>
+            <!--<p><strong>Date sent: </strong>{{test.sent_date | date : "mediumDate"}} &nbsp; <strong>Time: </strong>{{test.sent_date | date : "shortTime"}}</p>-->
+            <strong>Date received: </strong> {{test.receive_date | date: "mediumDate" || "Pending"}} <span am-time-Ago="test.receive_date" ng-if="test.receive_date"></span><br>
+
+
+            <strong>Indication: </strong> <span>{{test.indication}}</span>
+              
+            
+          </div>
+          <br>
+          <div>
+            <h6>Test(s) requested:</h6>
+            <br>
+            <ol style="line-height: 25px">
+              <li ng-repeat="ranTest in test.test_to_run">
+                <label class="custom-control custom-checkbox">
+                    <input type="checkbox" class="custom-control-input" ng-model= "ranTest.picked" >
+                    <span class="custom-control-indicator"></span>
+                    <span class="custom-control-description">{{ranTest.name}}</span>
+                </label>               
+              </li>                     
+            </ol>
+
+          </div> 
+          <br> 
+          <div>
+            <h6>Test Report: </h6>
+            <p ng-if="test.conclusion == 'Pending'" style=""> No report received at this time</p>
+          </div>      
+              
+      </div>    
+
+      <div class="p-1">
+         
+        <!--<p ng-if="test.conclusion == 'Pending'" style="text-align: center;font-size: 12px;padding: 40px"> No report received at this time</p>-->
+        <div  style="padding: 0 15px ;position: relative;text-align: right">
+          <div>  
+            <i class="fa fa-user-md btn btn-neutral" aria-hidden="true" style="font-size: 18px;margin-right:0px;cursor:pointer;padding: 5px 15px" title="send test result to your doctor(s)" ng-click="sendDocTest(test)" ng-if="test.conclusion !== 'Pending'"></i>
+          <i class="fa fa-user-md btn btn-neutral" aria-hidden="true" style="color:#ccc;font-size: 18px;margin-right:0px;cursor:pointer;padding: 5px 15px" title="send test result to your doctor(s)"  ng-if="test.report === 'Pending'"></i>             
+        
+            <i class="fa fa-share btn btn-neutral" aria-hidden="true" style="font-size:18px;margin-right:0px;cursor:pointer;padding: 5px 15px" title="Forward this investigation to another center" ng-click="forwardTest(test)"></i>
+            
+          </div>
+        </div>
+          
+      </div>   
+      <!--<div class="col-sm-12 col-md-3 col-lg-3">
         <div class="tg-widget tg-widget-doctor" style="padding: 10px 0px">
          <h6 style="text-decoration: underline;">Investigation by</h6>
       <img src="{{test.center_profile_pic}}" style="max-width:72px; max-height:72px" ng-if="test.center_profile_pic"> <br>
@@ -120,7 +193,7 @@
             <p><strong>Reference Number:</strong> : <span>{{(test.copy) ? "Copied!" : test.ref_id}}</span> <button clipboard supported="supported" text="test.ref_id" on-copied="success(test)" on-error="fail(err)" title="{{copy}}" class="btn btn-info fa fa-copy" style="padding: 5px"> Copy</button></p>
              <p><strong>Date sent:</strong> : <span>{{test.sent_date | date : "mediumDate"}}  ( <span am-time-Ago="test.sent_date" ng-if="test.sent_date"></span> ) </span></p>
               <p ng-if="test.report === 'Pending'"><strong>Status: </strong> <span style="color: red">Awaiting test result</span></p>
-            <!--<p><strong>Date sent: </strong>{{test.sent_date | date : "mediumDate"}} &nbsp; <strong>Time: </strong>{{test.sent_date | date : "shortTime"}}</p>-->
+            
             <p><strong>Date received: </strong>{{test.receive_date | date: "mediumDate" || "Pending"}}  <span am-time-Ago="test.receive_date" ng-if="test.receive_date"></span> </p>
             <div><strong>Test to run:</strong> 
               <ol style="background-color: #d7dde4;line-height: 25px">
@@ -146,12 +219,7 @@
                 <div><strong>Conclusion:</strong></div>
                 <p><em>{{test.conclusion}}</em></p>               
               </div>
-              <!--<ul ng-i="test.report !== 'Pending'" style="list-style: none;">             
-              <li>                
-                <li ng-repeat = "testRan in test.test_to_run"><strong>{{testRan.name}} : ccvvcvcvc</strong> <em>{{testRan.data}}</em></li>                
-              </li>
-              <li><strong>Conclusion : </strong> <em>{{test.conclusion}}dffdfddffdfdfdfddffdfd</em></li>
-            </ul>-->
+            
             <p ng-if="test.report == 'Pending'" style="text-align: center;font-size: 12px;padding: 40px"> No report received a this time</p>
 
 
@@ -169,7 +237,7 @@
               </div>
             </div>      
           </div>
-      </div>
+      </div>-->
   </section>
   </div>
 

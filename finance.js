@@ -950,8 +950,6 @@ router.put("/user/laboratory/test-result/session-update",function(req,res){
       var FILE_CONTENT;
       var buf;
 
-      console.log(req.body)
-
       pdf.create(req.body.htm).toFile(filePath, function(err, file) { //start of toFile
       	if (err) return console.log(err);  
         pdfPath = '/report/' + pdfName;
@@ -1054,17 +1052,20 @@ router.put("/user/laboratory/test-result/session-update",function(req,res){
 
           if(err) throw err;
 
+          /* Please note that req.body.laboratory.conclusion and req.body.laboratory.conclusion 
+          property were not present due to modification in UI.*/
+
           var elementPos = data.medical_records.laboratory_test.map(function(x) {return x.ref_id }).indexOf(req.body.ref_id);
           if(elementPos !== -1) {
 	          var objectFound = data.medical_records.laboratory_test[elementPos];           
-	          objectFound.report = req.body.laboratory.report || objectFound.report;
-	          objectFound.conclusion = req.body.laboratory.conclusion || objectFound.conclusion;
+	          objectFound.report = req.body.laboratory.report || "Not specified";
+	          objectFound.conclusion = req.body.laboratory.conclusion || "Not specified";
 	          objectFound.test_to_run = req.body.laboratory.test_to_run || objectFound.test_to_run;
 	          objectFound.sent_date = req.body.date || objectFound.sent_date;
 	          objectFound.test_ran_by = req.user.name;
 	          objectFound.receive_date = req.body.laboratory.date;
 	          objectFound.indication = req.body.laboratory.indication;
-	          objectFound.lab_pdf_report.unshift({date:dt,pdf_report: pdfPath})
+	          objectFound.lab_pdf_report.unshift({date:dt,pdf_report: pdfPath});
 	          objectFound.payment_acknowledgement = true;
 
 	          data.patient_notification.unshift({
@@ -1074,11 +1075,10 @@ router.put("/user/laboratory/test-result/session-update",function(req,res){
 	            ref_id: req.body.ref_id,
 	            session_id: req.body.laboratory.session_id,
 	            message: "Laboratory test result received."
-	          })
-
+	          });
 	         
 	          if(data.presence === true){
-	            io.sockets.to(data.user_id).emit("notification",{status:true})
+	            io.sockets.to(data.user_id).emit("notification",{status:true});
 	          } else {
 	            var msgBody = "Laboratory test result received! login http://applinic.com/login";
 	            var phoneNunber =  data.phone;
@@ -1089,7 +1089,8 @@ router.put("/user/laboratory/test-result/session-update",function(req,res){
 	                body: msgBody
 	              }
 	            ) 
-	          }
+	          };
+
 	          var transporter = nodemailer.createTransport({
 	            host: "mail.privateemail.com",
 	            port: 465,
@@ -1136,10 +1137,12 @@ router.put("/user/laboratory/test-result/session-update",function(req,res){
 	            	res.send({status: "success"}); 
 	            }         
 	          });
+
         	} else {
-        		res.end("error: 404")
+        		res.end("error: 404");
         	}
         });
+
       }
 
       function updateCenter(receiver) {
@@ -3133,7 +3136,6 @@ router.delete("/user/doctor/subscription",function(req,res){
 				account.deleted = true;
 				account.save(function(err,info){
 					if(err) throw err;
-					console.log("Account partially deleted!");
 					res.json({status: true,message: "Plan downgraded successfully!",plan:{}})
 				})
 			} else {

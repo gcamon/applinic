@@ -15,6 +15,10 @@
   line-height: 30px
 }
 
+.dark-green {
+  color: darkGreen!important;
+}
+
 .list-tabs {
   width: 60px;float: left;margin-right: 80px
 }
