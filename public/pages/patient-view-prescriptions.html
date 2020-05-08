@@ -24,14 +24,14 @@
 <div>
 
 	<div class="p-1" style="position: relative;">
-		<button class="collapsed dropdown-toggle btn btn-simple" role="button" data-toggle="collapse" data-parent="#accordion" href="#{{'pres' + docInfo.ref_id}}" aria-expanded="false" aria-controls="collapsefifty">View Details</button>
+		<button class="collapsed dropdown-toggle btn btn-simple" role="button" data-toggle="collapse" data-parent="#accordion" href="#{{'pres' + docInfo.ref_id + docInfo.prescriptionId}}" aria-expanded="false" aria-controls="collapsefifty">View Details</button>
 		<span am-time-Ago="docInfo.date" style="position: absolute;top:20px;right: 20px"></span>
 	</div>
 
-	<div  style="line-height: 30px;" id="{{'pres' + docInfo.ref_id}}" class="panel-collapse collapse p-1 text-muted" role="tabpanel" aria-labelledby="headingfifty">
+	<div  style="line-height: 30px;" id="{{'pres' + docInfo.ref_id + docInfo.prescriptionId}}" class="panel-collapse collapse p-1" role="tabpanel" aria-labelledby="headingfifty">
 
 		
-			 <!--<img alt="image description" ng-src="{{docInfo.Doctor_profile_pic_url}}" style="max-width: 200px; max-height:200px" class="shadow">-->
+			<!--<img alt="image description" ng-src="{{docInfo.Doctor_profile_pic_url}}" style="max-width: 200px; max-height:200px" class="shadow">-->
 	    
 
 	      
@@ -110,7 +110,6 @@
 		</div>
 		<div class="p-1">
 			<div  style="position: relative;">					
-					
 					
 					<!--<i ng-print  print-element-id="{{docInfo.prescriptionId}}" class="fa fa-print btn btn-success" aria-hidden="true" style="font-size: 18px;margin-right:0px;cursor:pointer;padding: 5px 15px" title="Print this prescription"></i>-->
 					<a href="" style="font-size: 18px;margin-right:0px;" ng-click="email(docInfo,'Prescription')"><i  class="fa fa-share-alt btn btn-success btn-sm" aria-hidden="true"  title="send prescription to an email"></i></a>

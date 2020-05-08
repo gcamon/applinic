@@ -21,10 +21,10 @@
 		</div>
 	</div>-->
 	<div class="pl-0 card-center-1 card" style="position: relative;">
-    <h5 style="padding:15px;" class="h6">Laboratory Reports</h5>   
-    <div style="position: absolute;right: 15px;top:5px">
-       <input type="text" name="" placeholder="Filter by test name, center name, date sent, date received, etc" ng-model="filterResult" class="form-control">
-    </div>
+	    <h5 style="padding:15px;" class="h6">Laboratory Reports</h5>   
+	    <div style="position: absolute;right: 15px;top:5px">
+	       <input type="text" name="" placeholder="Filter by test name, center name, date sent, date received, etc" ng-model="filterResult" class="form-control">
+	    </div>
   	</div>
 	<div ng-if="!isViewSingle">
 	<section  class="card card-center-1 mb-1" ng-repeat="test in labTest | filter : filterResult | orderBy: '-sent_date' " id="{{test.ref_id}}" ng-if="test.conclusion !== 'Pending'">	
@@ -62,8 +62,7 @@
 			            <strong>Date received: </strong> {{test.receive_date | date: "mediumDate" || "Pending"}} <span am-time-Ago="test.receive_date" ng-if="test.receive_date"></span><br>
 
 
-			            <strong>Indication: </strong> <span>{{test.indication}}</span>
-			              
+			            <strong>Indication: </strong> <span>{{test.indication}}</span>		              
 			            
 			        </div>
 			        <br>
@@ -82,7 +81,7 @@
 
 			        </div> 
 			        <br> 
-		    		<div>
+		    		<div ng-show="test.conclusion == 'Pending'">
 			            <h6>Test Report: </h6>
 			            <p ng-if="test.conclusion == 'Pending'" style=""> No report received at this time</p>
 			        </div>      	
@@ -140,7 +139,7 @@
 					</li>
 					<li><strong>Conclusion : </strong> <em>{{test.conclusion}}dffdfddffdfdfdfddffdfd</em></li>
 				</ul>-->
-				<p ng-if="test.report == 'Pending'" style="text-align: center;font-size: 12px;padding: 40px"> No report received at this time</p>
+				<!--<p ng-if="test.report == 'Pending'" style="text-align: center;font-size: 12px;padding: 40px"> No report received at this time</p>-->
 
 
 				<div class="row">
@@ -222,7 +221,7 @@
 
 			        </div> 
 			        <br> 
-		    		<div>
+		    		<div ng-show="test.conclusion == 'Pending'">
 			            <h6>Test Report: </h6>
 			            <p ng-if="test.conclusion == 'Pending'" style=""> No report received at this time</p>
 			        </div>      	
@@ -316,11 +315,11 @@
 		            </div>-->
 
 		            <div  style="position: relative;padding-top: 10px">
-			            <button class="collapsed dropdown-toggle btn btn-simple" role="button" data-toggle="collapse" data-parent="#accordion" href="#{{'test' + test.ref_id + test.test_id}}" aria-expanded="false" aria-controls="collapsefifty">View Details</button>
+			            <button class="collapsed dropdown-toggle btn btn-simple" role="button" data-toggle="collapse" data-parent="#accordion" href="#{{'test' + test.ref_id + test.sent_date}}" aria-expanded="false" aria-controls="collapsefifty">View Details</button>
 			            <span am-time-Ago="test.sent_date" style="position: absolute;top:20px;right: 20px"></span>
 			        </div>
 					<hr>
-					<div style="line-height: 25px;margin-bottom:5px" id="{{'test' + test.ref_id + test.test_id}}" class="panel-collapse collapse p-1" role="tabpanel" aria-labelledby="headingfifty">
+					<div style="line-height: 25px;margin-bottom:5px" id="{{'test' + test.ref_id + test.sent_date}}" class="panel-collapse collapse p-1" role="tabpanel" aria-labelledby="headingfifty">
 			              <strong>Center Name: </strong> <span>{{test.center_name}}</span><br>
 
 			              <strong>Center Address: </strong> <span>{{test.center_address}} {{test.center_city}} {{test.center_country}}</span><br>

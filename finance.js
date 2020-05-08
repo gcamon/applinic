@@ -1632,8 +1632,8 @@ router.put("/user/laboratory/test-result/session-update",function(req,res){
           var objectFound = data.medical_records.radiology_test[elementPos]; 
 
           if(objectFound) {         
-	          objectFound.report = req.body.radiology.report || objectFound.report;
-	          objectFound.conclusion = req.body.radiology.conclusion || objectFound.conclusion;
+	          objectFound.report = req.body.radiology.report || "Not Specified";
+	          objectFound.conclusion = req.body.radiology.conclusion || "Not Specified";
 	          objectFound.test_to_run = req.body.radiology.test_to_run || objectFound.test_to_run;
 	          objectFound.sent_date = req.body.date || objectFound.sent_date;
 	          objectFound.receive_date = req.body.radiology.date;
