@@ -105,10 +105,13 @@
 	    			<hr>
 	    		</table>
 	    	</div>
+	    	<div style="text-align: right;">
+	    		<button class="btn btn-neutral btn-sm" ng-click="toAnotherPharmacy()" ng-if="isForwardable === true">Refer to another <i class="fa fa-arrow-right"></i></button> 
+	    	</div>
 			
 			<div style="list-style:none;font-size:14px" ng-if="!refData.pharmacy.is_paid">
                 <div>  
-                	<h6 class="pb-1 mt-2">Compute Cost:</h6>
+                	<h6 class="pb-1 mt-2" ng-if="isFilled === true">Compute Cost:</h6>
                      <table class="table">
                      	<tr>
                      		<thead ng-if="isFilled === true">
@@ -124,8 +127,8 @@
                      	</tr>
                      </table>
                      <div class="pt-2 pb-2">
-                     	<strong  class="text-success" ng-if="isFilled === true">Total : <em>{{str}}</em></strong>                     	
-                     	<strong style="display: block;" class="text-success" ng-if="isFilled === true">You'll receive : {{commissionedAmount}} &nbsp;<span style="font-weight: normal;">( platform {{checkLogIn.city_grade}}% discount applied )</span></strong>
+                     	<strong  ng-if="isFilled === true">Total : <em>{{str}}</em></strong>                     	
+                     	<strong style="display: block;" ng-if="isFilled === true">You'll receive : {{commissionedAmount}} &nbsp;<span style="font-weight: normal;">( platform {{checkLogIn.city_grade}}% discount applied )</span></strong>
                      </div>
                 </div>
             </div>
@@ -135,7 +138,7 @@
 				<!--<button  class="btn btn-simple" disabled="disabled" style="cursor: no-drop;" ng-if="isFilled !== true">Request Payment</button>-->
 				<button class="btn btn-danger btn-sm" ng-click="sendBill(refData.pharmacy.patient_id)" ng-if="isFilled && !isOTP && !refData.pharmacy.is_paid && !loading">Request Payment</button> <span ng-if="loading">Sending...</span>&nbsp;&nbsp;
 				<!--<button class="btn btn-info btn-sm" ng-click="toList(refData.pharmacy.patient_firstname,refData.pharmacy.patient_lastname,refData.pharmacy.patient_profile_pic_url,refData.ref_id,refData.date)" ng-if="allNote.length !== 0 && isFilled !== true">Add to attendance list</button>-->
-				<button class="btn btn-neutral btn-sm" ng-click="toAnotherPharmacy()" ng-if="isForwardable === true">Refer to another <i class="fa fa-arrow-right"></i></button> 
+				<!--<button class="btn btn-neutral btn-sm" ng-click="toAnotherPharmacy()" ng-if="isForwardable === true">Refer to another <i class="fa fa-arrow-right"></i></button> -->
 				
 				<!--<button class="btn btn-success btn-sm" ng-click="done()">Done</button>
 				<button class="btn btn-default btn-sm" ng-click="toAnotherPharmacy()">Forward unticked drug to a pharmacy</button>
