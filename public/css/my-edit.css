@@ -1016,11 +1016,11 @@ box-shadow: 0 15px 30px 0 rgba(0,0,0,0.11),
         color: orange!important;
     }
 
-    .p-1 {
+    .p-12 {
       padding: 0 10px!important;
     }
 
-    .p-1 div {
+    .p-12 div {
       padding: 7px 10px 0!important
     }
 }

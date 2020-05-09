@@ -9,7 +9,7 @@
 			</div>
 		</section>
 		<div class="clearfix"></div>
-		<div class="col-md-4 p-1" ng-repeat="j in patientsDoctorList | orderBy: 'appDate' | filter : person" ng-if="!j.deleted" >
+		<div class="col-md-4 p-12" ng-repeat="j in patientsDoctorList | orderBy: 'appDate' | filter : person" ng-if="!j.deleted">
 			<div class="card row">				
 				<div class="col-md-4 col-sm-4 col-xs-4 pl-1 pt-1">
 					<a href="{{'/user/profile/view/' + j.doctor_id}}" target="_blank">
