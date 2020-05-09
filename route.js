@@ -11394,7 +11394,7 @@ router.put("/report-template",function(req,res){
               var mailOptions = {
                 from: 'Applinic Healthcare info@applinic.com',
                 to: emailArr || "support@applinic.com", //req.body.email
-                subject: 'Complete Radiology Report for study ' + req.body._id,
+                subject: 'Complete Radiology Report',
                 html: '<table><tr><tr><td style="line-height: 25px">Hi, please find the <b>Radiology Report</b> PDF for the study below:<br><br>'
                 + 'Patient: ' + req.body.names + "<br>"
                 + 'Investigation: ' + req.body.studyName + "<br>"
@@ -11473,16 +11473,19 @@ router.put("/report-template",function(req,res){
                   var objectFound = data.medical_records.radiology_test[elementPos]; 
 
                   if(objectFound) {         
-                    objectFound.report = req.body.radiology.radiology.report || objectFound.report;
-                    objectFound.conclusion = req.body.radiology.radiology.conclusion || objectFound.conclusion;
+                    objectFound.report = req.body.radiology.radiology.report || "Not specified";
+                    objectFound.conclusion = req.body.conclusion || "Not specified";
+                    objectFound.findings = req.body.findings || "Not specified";
+                    objectFound.advise = req.body.advise || "Not specified";
                     objectFound.test_to_run = req.body.radiology.radiology.test_to_run || objectFound.test_to_run;
                     objectFound.sent_date = req.body.date || objectFound.sent_date;
-                    objectFound.receive_date = req.body.radiology.radiology.date;
+                    objectFound.receive_date = req.body.radiology.radiology.date || (+ new Date());
                     objectFound.payment_acknowledgement = true;
                     objectFound.files = req.body.radiology.radiology.filesUrl;
                     objectFound.indication = req.body.radiology.radiology.indication;
                     objectFound.acc = req.body.radiology.radiology.acc;
                     objectFound.study_id = study._id;
+                    objectFound.patient_id_of_study = study.patient_id;
                     objectFound.pdf_report.unshift({
                       pathname: req.body.pdfPathSave,
                       created: new Date()
@@ -11491,7 +11494,7 @@ router.put("/report-template",function(req,res){
                     //var random = Math.floor(Math.random() * 999999);
                     data.patient_notification.unshift({
                       type:"radiology",
-                      date: req.body.radiology.radiology.date,
+                      date: req.body.radiology.radiology.date || (+ new Date()),
                       note_id: req.body.radiology.radiology.test_id,
                       ref_id: req.body.ref_id,
                       session_id:req.body.radiology.radiology.session_id,
@@ -11503,7 +11506,7 @@ router.put("/report-template",function(req,res){
                     } 
 
                     var msgBody = "Radiology test result received! login http://applinic.com/login" 
-                    + "\nPatient ID of study: " + req.body.radiology.radiology.studyId
+                    + "\nPatient ID of study: " + study.patient_id
                     + "\nStudy Link Mobile: " + "https://applinic.com/dicom-mobile?id=" + study._id
                     var phoneNunber =  data.phone;
                     sms.messages.create(

@@ -1,13 +1,6 @@
 
 
-  <div>
-      <!--<ul class="prescription-options col-sm-12 col-md-7 col-lg-7" style="padding-left: 0">     
-        <li ng-click="recent()" ng-class="{highlight: isRecent === true}">most recent</li>
-        <li ng-click="three()" ng-class="{highlight: isThree === true}">last three months</li>
-        <li ng-click="six()" ng-class="{highlight: isSix === true}">last six months</li>
-        <li ng-click="all()" ng-class="{highlight: isAll === true}">all</li>
-      </ul>-->
-      
+ 
  
  
   <div class="pl-0 card-center-1 card" style="position: relative;">
@@ -122,7 +115,7 @@
               <strong>Center Address: </strong> <span>{{test.center_address}} {{test.center_city}} {{test.center_country}}</span><br>
               <strong>Center Phone: </strong> <span>{{test.center_phone}}</span><br>
 
-              <strong>Referred by:</strong>  <span>{{test.referral_title}} {{test.referral_lastname}} {{test.referral_firstname}}</span><br>
+              <strong>Referred by:</strong>  <span>{{test.referral_title}} {{test.referral_lastname}} {{test.referral_firstname || "Not specified"}}</span><br>
 
               <strong>Reference Number:</strong> : <span>{{(test.copy) ? "Copied!" : test.ref_id}}</span> <a href="" clipboard supported="supported" text="test.ref_id" on-copied="success(test)" on-error="fail(err)" title="{{copy}}" class="fa fa-copy text-danger" style="padding: 5px"> Copy</a><br>
 
@@ -173,71 +166,9 @@
           </div>
         </div>
           
-      </div>   
-      <!--<div class="col-sm-12 col-md-3 col-lg-3">
-        <div class="tg-widget tg-widget-doctor" style="padding: 10px 0px">
-         <h6 style="text-decoration: underline;">Investigation by</h6>
-      <img src="{{test.center_profile_pic}}" style="max-width:72px; max-height:72px" ng-if="test.center_profile_pic"> <br>
-      <b>{{test.center_name}} </b>
-            <div style="padding: 5px 0"><i class="fa fa-globe"></i>{{test.center_address}} {{test.center_city}} {{test.center_country}}</div>   
-            <div> <i class="fa fa-phone"></i> {{test.center_phone}} </div>         
-            <a href="{{test.center_profile_url}}" title="view profile" ng-if="test.center_profile_url">View profile</a>
-        </div>
       </div>
-
-
-      <div class="col-sm-12 col-md-9 col-lg-9" style="padding: 10px 10px 0;">         
-        <div class="row">
-            <div class="col-sm-12 col-md-8 col-lg-8"> 
-            <h6 style="text-decoration: underline;">Investigation details</h6>
-            <p><strong>Reference Number:</strong> : <span>{{(test.copy) ? "Copied!" : test.ref_id}}</span> <button clipboard supported="supported" text="test.ref_id" on-copied="success(test)" on-error="fail(err)" title="{{copy}}" class="btn btn-info fa fa-copy" style="padding: 5px"> Copy</button></p>
-             <p><strong>Date sent:</strong> : <span>{{test.sent_date | date : "mediumDate"}}  ( <span am-time-Ago="test.sent_date" ng-if="test.sent_date"></span> ) </span></p>
-              <p ng-if="test.report === 'Pending'"><strong>Status: </strong> <span style="color: red">Awaiting test result</span></p>
-            
-            <p><strong>Date received: </strong>{{test.receive_date | date: "mediumDate" || "Pending"}}  <span am-time-Ago="test.receive_date" ng-if="test.receive_date"></span> </p>
-            <div><strong>Test to run:</strong> 
-              <ol style="background-color: #d7dde4;line-height: 25px">
-                <li ng-repeat="ranTest in test.test_to_run">
-                  <span style="display: inline-block;width: 80%">{{ranTest.name}}</span>
-                  <label class="custom-control custom-checkbox" style="">
-                      <input type="checkbox" class="" ng-model= "ranTest.picked" >
-                      <span class="custom-control-indicator"></span>
-                      <span class="custom-control-description" style="opacity:0;"></span>
-                  </label>
-                </li> 
-              </ol>
-            </div>
-            </div>
-
-            <div class="col-sm-12 col-md-4 col-lg-4" style="">
-              <h6 style="text-decoration: underline;">Investigation Report</h6>
-              <div ng-if="test.report !== 'Pending'" class="patient-tests">
-                <article ng-repeat = "testRan in test.test_to_run">
-                  <div><strong>{{testRan.name}}:</strong></div>
-                  <p><em>{{testRan.data}}</em></p>                  
-                </article>
-                <div><strong>Conclusion:</strong></div>
-                <p><em>{{test.conclusion}}</em></p>               
-              </div>
-            
-            <p ng-if="test.report == 'Pending'" style="text-align: center;font-size: 12px;padding: 40px"> No report received a this time</p>
-
-
-            <div class="row">
-                <div class="col-sm-12 col-md-12 col-lg-12" style="padding: 10px 15px 0;position: relative;text-align: right;">
-                  <div>  
-                    <i class="fa fa-user-md btn btn-info" aria-hidden="true" style="font-size: 18px;margin-right:0px;cursor:pointer;padding: 5px 15px" title="send test result to your doctor(s)" ng-click="sendDocTest(test)" ng-if="test.report !== 'Pending'"></i>
-                  <i class="fa fa-user-md btn btn-simple" aria-hidden="true" style="color:#ccc;font-size: 18px;margin-right:0px;cursor:pointer;padding: 5px 15px" title="send test result to your doctor(s)"  ng-if="test.report === 'Pending'"></i>             
-                    <i ng-print  print-element-id="{{test.ref_id}}" class="fa fa-print btn btn-danger" aria-hidden="true" style="font-size: 18px;margin-right:0px;cursor:pointer;padding: 5px 15px" title="Print this lab investigation"></i>
-                    <i class="fa fa-share btn btn-success" aria-hidden="true" style="font-size:18px;margin-right:0px;cursor:pointer;padding: 5px 15px" title="Forward this investigation to another center" ng-click="forwardTest(test)"></i>
-                    
-                  </div>
-                </div>
-                    
-              </div>
-            </div>      
-          </div>
-      </div>-->
   </section>
   </div>
 
+<div style="height: 300px"></div>
+  

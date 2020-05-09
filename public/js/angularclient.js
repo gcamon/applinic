@@ -4753,8 +4753,9 @@ app.controller("docNotificationController",["$scope","$location","$resource","$i
         $scope.inPersonRequestLen = $scope.inPersonRequest.length;
         
 
-        if(filter.hasOwnProperty("consultation"))
+        if(filter.hasOwnProperty("consultation")){
           $scope.consultationLen = filter.consultation.length;
+        }
 
       
         $rootScope.viewConsult = function(patient){
@@ -7894,7 +7895,7 @@ app.controller("patientNotificationController",["$scope","$location","$http","$w
     if(elementPos !== -1) {
       $rootScope.isViewSingle = true;   // shows single lab tests for
       $rootScope.singleView = [data[elementPos]];
-      if(data[elementPos].report === "Pending"){
+      if(!data[elementPos].pdf_report[0]){
         absPath = "/pending/scan-test/" + id;
       } else {        
         absPath = "/patient/radiology-test/" + id;

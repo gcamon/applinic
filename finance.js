@@ -2678,7 +2678,7 @@ router.post("/user/dicom-details",function(req,res){
 	          var mailOptions = {
 	            from: 'Applinic Healthcare info@applinic.com',
 	            to: email || "support@applinic.com",
-	            subject: 'Radiology Report ' + study._id,
+	            subject: 'Notification to Write Radiology Report' ,
 	            html: '<table><tr><tr><td style="line-height: 25px">Hi, please write report for the study below:<br><br>'
 	            + 'Investigation: ' + req.body.studyName + "<br><br>"
 	            + 'Ref: ' + study._id + "<br><br>"

@@ -314,6 +314,8 @@ var myModel = function () {
 		receive_date: String,
 		report: Array,
 		conclusion: String,
+		findings: String,
+		advise: String,
 		session_id: String,
 		files: Array,
 		history: String,
@@ -325,7 +327,8 @@ var myModel = function () {
 		created: Date,
 		study_id: String,
 		pdf_report: Array,
-		lab_pdf_report: Array
+		lab_pdf_report: Array,
+		patient_id_of_study: String
 	});
 	
 	//this holds the sent test to ba ran by the laboratory center

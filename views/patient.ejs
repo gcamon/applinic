@@ -628,25 +628,27 @@
                                     </div>
 
                                     <div class="col-sm-12 col-md-12 hidden-md-up dropdown" style="position: relative;"> 
-                                        <div>
+                                       
                                              <!--<a href="#/need-specialist" class="text-muted text-danger btn btn-simple btn-block mt-2 round mob-art"  id="navbarDropdownMenuLink23" style="font-size: 14px;"> <i class="fa fa-user-md"></i> Need a Doctor</a> -->
-                                             <a href="#/" class="text-muted text-danger btn btn-simple btn-block mt-2 round mob-art"  id="navbarDropdownMenuLink23" style="font-size: 14px;"> <i class="fa fa-user-md"></i> Healthcare Services</a>                                                                
-                                        </div>
-                                        <div>
-                                            <a href="" class="text-muted dropdown-toggle btn btn-simple btn-block mt-2 round mob-art"  id="navbarDropdownMenuLink23" data-toggle="dropdown" ng-click="getAccess('qs')" style="font-size: 14px"> <i class="fa fa-search"></i>  Quick Searches </a>                                                                  
-                                        </div>
+                                             <a href="#/my-doctors" class="text-muted text-danger btn btn-simple mt-2 round mob-art"  id="navbarDropdownMenuLink23" style="font-size: 14px;"> <i class="fa fa-user-md"></i> My Doctors</a>                                                                
+                                       
+                                       
+                                             <!--<a href="#/need-specialist" class="text-muted text-danger btn btn-simple btn-block mt-2 round mob-art"  id="navbarDropdownMenuLink23" style="font-size: 14px;"> <i class="fa fa-user-md"></i> Need a Doctor</a> -->
+                                             <a href="#/" class="text-muted text-danger btn btn-simple mt-2 round mob-art"  id="navbarDropdownMenuLink23" style="font-size: 14px;"> <i class="fa fa-user-md"></i> Healthcare Services</a>                                                                
+                                       
+                                       
+                                            <a href="" class="text-muted dropdown-toggle btn btn-simple mt-2 round mob-art"  id="navbarDropdownMenuLink23" data-toggle="dropdown" ng-click="getAccess('qs')" style="font-size: 14px"> <i class="fa fa-search"></i>  Quick Searches </a>
 
+                                            <a href="#/transactions" class="btn btn-info btn-sm mt-2 " style=""><i class="fa fa-money"></i>
+                                            <span ng-cloak><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i> {{(loading) ? "" : balance}}</span>
+                                            </a>                                                                   
+                                      
                                         <div class="dropdown-menu dropdown-menu-right p-2"  aria-labelledby="navbarDropdownMenuLink23" id="accessBody1" style="line-height: 30px;font-size: 16px">                                       
                                             <h5 class="p-0 m-0">
                                                 <i class="fa fa-times" style="float: right;" ng-click="closeAccDiv('qs')"></i>
                                             </h5>
                                             <div class="clearfix"></div>
-                                            <!--<a class="btn btn-simple round"  href="#/need-specialist" ><i class="fa fa-user-md"></i>
-                                        <span class="text-danger">Need a Doctor?</span>
-                                        </a>-->
-                                        <a class="btn btn-simple round ml-1"  href="#/my-doctors" ng-click="closeAccDiv('qs')"><i class="fa fa-search"></i>
-                                          <span  class="text-danger">My Doctors</span>
-                                        </a>
+                                          
                                         <a class="btn btn-simple round ml-1"  href="#/find-specialist" ng-click="closeAccDiv('qs')"><i class="fa fa-search"></i>
                                           <span  class="text-danger">Specialists</span>
                                         </a>
@@ -666,14 +668,12 @@
                                 <!--<a class="btn btn-simple round ml-1"  href="#/create-family-account" ><i class="fa fa-users"></i>
                                     <span style="color:red">Create Family Account</span>
                                 </a>-->
-                                    <div class="col-sm-12 col-md-2 col-lg-2"> 
-                                        <a href="#/transactions" class="btn btn-info btn-sm header-btn" style=""><i class="fa fa-money"></i>
-                                        <span ng-cloak><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i> {{(loading) ? "" : balance}}</span>
-                                        </a> 
-                                    </div> 
+                                    
+                                      
+                                   
 
-                                    <div class="col-sm-12 col-md-2 col-lg-2 dropdown" style="position: relative;"> 
-                                        <article class="btn btn-neutral mob-art" style="font-size: 14px;" >
+                                    <div class="dropdown" style="position: relative;"> 
+                                        <article class="btn btn-neutral mob-art" style="font-size: 14px;text-align: right;" >
                                             <!--<strong style="float: left;">MRA Key: </strong>
                                             <span style="width: 110px;float: left;padding-left: 2px" title="Your Medical Record Access Key is {{checkLogIn.mrak}}" class="ellipsis">{{(copy) ? "Copied!" : checkLogIn.mrak}}</span> &nbsp;  
                                             <span class="fa fa-copy text-warning" text="checkLogIn.mrak" style="padding-left: 5px" clipboard  supported="supported" on-copied="success(checkLogIn.mrak)" title="{{copy}}" on-error="fail(err)"> copy</span>-->
