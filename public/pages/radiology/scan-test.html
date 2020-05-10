@@ -80,16 +80,21 @@
 	        		<span style="display: block;">{{test.advise}}</span>
 	        	</blockquote>
 	        	
-
-	        	<div ng-show="test.pdf_report[0]">
-	        		<a href="{{'https://drive.google.com/viewerng/viewer?embedded=true&url=https://applinic.com' + test.pdf_report[0].pathname}}" class="text-danger">Click to view Report in PDF</a>
+	        	<div class="col-md-5 col-lg-5 pl-0 ml-0">
+		        	<div ng-show="test.pdf_report[0]">
+		        		<a href="{{'https://drive.google.com/viewerng/viewer?embedded=true&url=https://applinic.com' + test.pdf_report[0].pathname}}" class="btn btn-simple btn-block" target="_blank">Click to view Report in PDF</a>
+		        	</div>
+		        	<div class="no-mobile-item-display" ng-show="test.patient_id_of_study">
+		        		<a href="{{'/dcm?id=' + test.patient_id_of_study + '&key=' + test.study_id}}" class="btn btn-primary btn-block" target="_blank">Click to view the DICOM image in viewer</a>
+		        	</div>
+		        	<div class="mobile-item-display" ng-show="test.study_id">
+		        		<a href="{{'/dicom-mobile?id=' + test.study_id}}" class="btn btn-primary btn-block" target="_blank">Click to view the DICOM image in viewer</a>
+		        	</div>
 	        	</div>
-	        	<div class="no-mobile-item-display" ng-show="test.patient_id_of_study">
-	        		<a href="{{'/dcm?id=' + test.patient_id_of_study + '&key=' + test.study_id}}" class="text-danger">Click to view the DICOM image in viewer</a>
+	        	<div class="col-md-7 col-lg-7 pl-0 ml-0" style="text-align: right;">
+	        		<i class="fa fa-share btn btn-neutral" aria-hidden="true" style="font-size:18px;margin-right:20p;cursor:pointer;padding: 5px 15px" title="Forward this investigation to another center" ng-click="forwardTest(test,'Radiology')"></i>
 	        	</div>
-	        	<div class="mobile-item-display" ng-show="test.study_id">
-	        		<a href="{{'/dicom-mobile?id=' + test.study_id}}" class="text-danger">Click to view the DICOM image in viewer</a>
-	        	</div>
+	        	<div class="clearfix"></div>
 	        </div>      	
 	</div>		
 
@@ -140,7 +145,7 @@
 					<!--<i class="fa fa-user-md btn btn-neutral" aria-hidden="true" style="font-size: 18px;margin-right:15p;cursor:pointer;padding: 5px 15px" title="Prescription request by test result" ng-click="sendDocTest(test)" ng-if="test.conclusion !== 'Pending'"></i>
 					<i class="fa fa-user-md btn btn-neutral" aria-hidden="true" style="color:#ccc;font-size: 18px;cursor:pointer;padding: 5px 15px" title="Prescription request by test result"  ng-if="test.conclusion === 'Pending'"></i> -->						
     				<!--<i ng-print  print-element-id="{{test.ref_id}}" class="fa fa-print btn btn-danger" aria-hidden="true" style="font-size: 18px;margin-right:15p;cursor:pointer;padding: 5px 15px" title="Print this radio investigation"></i>-->
-    				<i class="fa fa-share btn btn-neutral" aria-hidden="true" style="font-size:18px;margin-right:20p;cursor:pointer;padding: 5px 15px" title="Forward this investigation to another center" ng-click="forwardTest(test,'Radiology')"></i>
+    				<!--<i class="fa fa-share btn btn-neutral" aria-hidden="true" style="font-size:18px;margin-right:20p;cursor:pointer;padding: 5px 15px" title="Forward this investigation to another center" ng-click="forwardTest(test,'Radiology')"></i>-->
     				
 				</div>
 			</div>

@@ -234,7 +234,7 @@
                                   <span class="counter" ng-if="noteLen > 0 " ng-cloak>{{(noteLen <= 100) ? noteLen : "99+" }}</span>
                                 </sup>
                               </a>
-                                <div class="dropdown-menu notifications-dropdown-menu menuOne" style="max-height: 400px;overflow-y: auto;">
+                                <div class="dropdown-menu notifications-dropdown-menu menuOne" style="max-height: 400px;overflow-y: auto;overflow-x: auto;width: 300px">
                                     <ul class="notifications-container noti-style">
                                         <li><h6 style="text-align: center">Notification(s)</h6></li>
                                         <li ng-repeat = "note in allNote | orderBy: '-date'">
@@ -255,8 +255,8 @@
                                                     <p> <span class="accent" ng-cloak>{{note.message}}</span>&nbsp;&nbsp;<small am-time-ago="note.date"></small></p>
                                                 </div>
                                             </div>
-
-                                            <div href="" class="notification-item" ng-if="note.type === 'pharmacy'" style="display:inline-block;cursor:pointer;" ng-click="viewNotePharmacy(note.note_id)">
+                                           
+                                            <div href="" class="notification-item" ng-if="note.type === 'pharmacy'" style="display:inline-block;cursor:pointer;" ng-click="viewNotePharmacy(note.ref_id)">
                                                 <div class="img-col">
                                                     <div class="img icon-pill"></div>
                                                 </div>
@@ -695,10 +695,10 @@
                                              <span style="font-size: 14px;"><b>Key:</b> {{(copy) ? "Copied!" : checkLogIn.mrak}}</span> <span text="checkLogIn.mrak" style="padding-left: 5px" clipboard  supported="supported" on-copied="success(checkLogIn.mrak)" title="{{copy}}" on-error="fail(err)" class="fa fa-copy text-warning"></span><br><br>
                                             <small>Decide who should have access to your medical records</small>
                                             <hr>
-                                            <div style="" class="deny-mobile-btn">
+                                            <!--<div style="" class="deny-mobile-btn">
                                                 <button class="btn btn-sm btn-warning" ng-click="updateAccess('all',$event)" style="float: right;">
                                                 <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="allLoading"></i> {{ (allLoading) ? "" : (allMsg) ? allMsg :'Deny all' }}</button>
-                                            </div>
+                                            </div>-->
                                             <div class="clearfix"></div>
                                             <div style="max-height: 400px;overflow-y: auto;">
                                                 <div ng-repeat="i in accessList" style="position: relative;padding-top: 5px" ng-if="i.userId">
@@ -1189,7 +1189,7 @@
         <script src="https://media.twiliocdn.com/sdk/js/video/releases/1.0.0-beta2/twilio-video.js"></script>
         <script src="https://media.twiliocdn.com/sdk/rtc/js/ip-messaging/v0.10/twilio-ip-messaging.min.js"></script>-->
         
-     </script>
+     <!--</script>
          <script type="text/ng-template" id="question.html" ng-controller="connectController">
          <div class="modal fade">
           <div class="modal-dialog">
@@ -1220,13 +1220,12 @@
                         </form>
               </div>
               <div class="modal-footer">
-                <!--<button type="button" ng-click="close('No')" class="btn btn-default" data-dismiss="modal">No</button>
-                <button type="button" ng-click="close('Yes')" class="btn btn-primary" data-dismiss="modal">Yes</button>-->
+              
               </div>
             </div>
           </div>
         </div>
-     </script>
+     </script>-->
 
      <script type="text/ng-template" id="request.html" ng-controller="connectController">
          <div class="modal fade">
@@ -2459,7 +2458,8 @@
     <script src="/assets/js/app.js"></script>
         
         
-    <script type="text/javascript" src="/assets/js/angularclient.js"></script>
+    <!--<script type="text/javascript" src="/assets/js/angularclient.js"></script>-->
+    <script type="text/javascript" src="/assets/js/patient.angular-client.js"></script>
     <script type="text/javascript" src="/assets/js/ngroute.js"></script>
     <script src="/socket.io/socket.io.js"></script>   
     <script src="/assets/js/socket.min.js"></script>

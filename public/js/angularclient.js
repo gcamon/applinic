@@ -1,6 +1,6 @@
 (function() {
 
-window.isPageLoad = true;
+
 
 
 var app = angular.module('myApp',["ngRoute","ngAnimate","angularModalService","angularMoment",'ui.bootstrap',

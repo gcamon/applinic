@@ -1747,10 +1747,6 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
 
           req.body.receiverId = data.user_id;
 
-          if(data.presence && data.set_presence.general && req.body.type === "consultation"){           
-            io.sockets.to(req.body.receiverId).emit("receive consultation request",{status: "success"});
-
-          } //else if(req.body.type === "consultation" && !data.set_presence.general || !data.presence) {
 
           var msgBody = req.user.title + " " + req.user.firstname + " " + req.user.lastname + 
           " sent a consultation request! visit https://applinic.com/user/doctor to attend.";
@@ -1803,7 +1799,11 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
             files: (req.body.files) ? req.body.files : null
           });
 
-          consult.save(function(err,info){});       
+          consult.save(function(err,info){
+            if(req.body.type === "consultation"){           
+              io.sockets.to(req.body.receiverId).emit("receive consultation request",{status: "success"});
+            }
+          });       
 
           /*var transporter = nodemailer.createTransport({
             host: "mail.privateemail.com",
@@ -1884,10 +1884,7 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
               if(data) {
               data.doctor_notification.push(requestData);
 
-              if(data.presence && data.set_presence.general && req.body.type === "consultation"){           
-                io.sockets.to(req.body.receiverId).emit("receive consultation request",{status: "success"});
-
-              } //else if(req.body.type === "consultation" && !data.set_presence.general || !data.presence) {
+           //else if(req.body.type === "consultation" && !data.set_presence.general || !data.presence) {
 
               var msgBody = req.user.title + " " + req.user.firstname + " " + req.user.lastname + 
               " sent a consultation request! Go to https://applinic.com/user/doctor and check your mail";
@@ -1942,7 +1939,11 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
                       doctorId: data.user_id,
                       city: data.city
                     }
-                    con.save(function(err,info){});
+                    con.save(function(err,info){
+                      if(req.body.type === "consultation"){           
+                        io.sockets.to(req.body.receiverId).emit("receive consultation request",{status: "success"});
+                      } 
+                    });
                   } 
                 })
 
@@ -1964,7 +1965,12 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
                   files: (req.body.files) ? req.body.files : null
                 });
 
-                consult.save(function(err,info){});       
+                consult.save(function(err,info){
+                  if(err) throw err;
+                  if(req.body.type === "consultation"){           
+                    io.sockets.to(req.body.receiverId).emit("receive consultation request",{status: "success"});
+                  } 
+                });       
 
               /*var transporter = nodemailer.createTransport({
                 host: "mail.privateemail.com",
@@ -7073,7 +7079,7 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
 
 router.post("/user/need-help",function(req,res){
   if(req.user) {
-     var help = new model.needHelp({
+     /*var help = new model.needHelp({
         user_id: req.user.user_id,
         message: req.body.description,
         name: (req.user.lastname) ? req.user.title + " " + req.user.firstname + " " + req.user.lastname : req.user.name,
@@ -7087,7 +7093,33 @@ router.post("/user/need-help",function(req,res){
         res.json({status: true});
       }
       
-     })
+    });*/
+
+    var names = req.user.name || ( req.user.title + ' ' + req.user.lastname + ' ' + req.user.firstname)
+
+    var mailOptions = {
+      from: 'Applinic info@applinic.com',
+      to: "info@applinic.com",
+      subject: 'Need Help from ' + names,
+      html: '<table><tr><td style="font-family: Arial, Helvetica, sans-serif; font-size: 14px;"><b>Hello ' 
+      + ",</b><br><br>"
+      + names + " a "  + req.user.type + " on Applinic with phone number " + req.user.phone 
+      + " sends the following comlaint to admin  as qouted below: <br><br>" 
+      + req.body.description
+      + "<br><br>"
+      + "Please attend.<br></br>"
+      + "</td></tr></table>"
+    };
+
+    transporter.sendMail(mailOptions, function(error, info){
+      if (error) {
+        console.log(error);
+        res.json({status: false})
+      } else {
+        console.log('Email sent: ' + info.response);
+        res.json({status: true});
+      }
+    });
 
   } else {
     res.end("unauthorized access!")
