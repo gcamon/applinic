@@ -1,23 +1,23 @@
 <div class="card card-center-1 p-2">
 	<!--<h5 class="p-0">Treatment Bill</h5>-->
 	<header class="pb-1">
-		<div style="display: inline-block;float: left;padding-right: 10px ">
-			<i class="fa fa-user-md" style="font-size: 32px"></i>
-		</div>	
-		<div style="display: inline-block;float: left ">
+		
+		<div>
 			<strong>{{bill.sender_names}}</strong>
 			<span style="display: block;">{{bill.sender_address}}, {{bill.sender_city}}, {{bill.sender_country}}</span>
 		</div>	
 		<div class="clearfix"></div>
 	</header>	
+	<br>
 	<div class="pb-2">
 		<span style=""><b>Received:</b> {{bill.date | date: "fullDate"}}</span>
 		<span style="float: right;"><b>Bill ID: </b>{{bill.bill_id}}</span>
 	</div>
+	<br>
 	<div ng-if="!isOtp">
 		<table class="table-responsive table" style="width: 90%">
 			<thead>
-				<th style="width: 5%">S/N</th>
+				<th style="width: 5%">Sn</th>
 				<th style="width: 6%">Description</th>
 				<th style="width: 20%">Cost</th>
 			</thead>
@@ -26,8 +26,9 @@
 				<td>{{i.description}}</td>
 				<td>{{toCurrency(i.cost)}}</td>
 			</tbody>
-			<caption><b>Total: {{toCurrency(bill.total)}}</b></caption>
+			<caption>Total: {{toCurrency(bill.total)}}</caption>
 		</table>
+		<br>
 		<div ng-if="!bill.payment_acknowledgement.status">
 			<button class="btn btn-info" ng-click="verify()"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i> {{(loading) ? " " : 'Pay now'}}</button> &nbsp;&nbsp;
 			<!--<button class="btn btn-danger">query bill</button>-->
@@ -38,6 +39,7 @@
 			Amount paid was {{toCurrency(bill.total)}}
 		</p>
 	</div>
+	<br>
 	<form ng-if="isOtp">
 		<h6 class="text-info" style="text-align: center;">{{otpMsg}}</h6>
 		<!--<p  style="text-align: center;">OTP sent to {{checkLogIn.phone}} via SMS-->			

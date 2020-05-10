@@ -8071,10 +8071,11 @@ app.controller("patientNotificationController",["$scope","$location","$http","$w
       templateService.playAudio(0);
       data.type = "message";
       $scope.isReceivedRequest = true;
+      getMessages();
       $timeout(function(){
         $scope.isReceivedRequest = false;
       },10000);
-      getMessages();
+     
     }
   });
 

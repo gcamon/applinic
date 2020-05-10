@@ -3,41 +3,41 @@
 </div>
 
 <div class="card card-center-1 p-1">
-	<h4 class="p-0 mt-1">Forwarding Investigation</h4>
+	<h4 class="mt-1 h6">Forwarding Investigation</h4>
 	<ul style="list-style: none;display: inline-block;float: left;font-size: 14px">
 		<li style="float: left; padding: 5px">Investigations: </li>
 		<li style="float: left; padding: 5px" ng-repeat="test in testToRun">@ {{test.name}}</li>
 	</ul>	
 	<div class="clearfix"></div>
 	<hr>
-	<form style="display: inline-block;">
-		<div style="float: left;padding: 10px">
-		<label>Country</label>
-		<input type="" name="country" ng-model="criteria.country" class="form-control" >
+	<form class="p-12">
+		<div class="col-md-5">
+			<label>Country</label>
+			<input type="" name="country" ng-model="criteria.country" class="form-control" >
 		</div>
-		<div style="float: left;padding: 10px">
-		<label>City</label>
-		<input type="" name="country" ng-model="criteria.city" class="form-control" style="float: left;">
+		<div class="col-md-5">
+			<label>City</label>
+			<input type="" name="country" ng-model="criteria.city" class="form-control">
 		</div>
-		<div style="float: left;padding-top: 40px">
-		<label>&nbsp;</label>
-		<input type="button" ng-click="findCenter()" value="Find" class="btn btn-success">
+		<div class="col-md-2">	
+			<div style="height: 32px"></div>		
+			<input type="button" ng-click="findCenter()" value="Find" class="btn btn-success">
 		</div>
 	</form>
-
+	<div class="clearfix"></div>
 	<div>
-		<p style="padding: 5px">Search result ( {{centerLists.length}} ) centers in {{criteria.city}} {{criteria.country}} <span class="text-danger" ng-if="centerLists.length === 0">{{message}}</span> <input type="text" name="address" class="form-control" placeholder="Filter by address or center name" ng-model="criteria.address" style="width: 90%"></p>
-		<div ng-repeat="center in centerLists | filter : criteria.address" style="padding:10px 10px;width: 90%;position: relative;max-height: 800px;overflow-y: auto;">
+		<p style="padding: 5px">Search result ( {{centerLists.length}} ) centers in {{criteria.city}} {{criteria.country}} <span class="text-danger" ng-if="centerLists.length === 0">{{message}}</span> <input type="text" name="address" class="form-control" placeholder="Filter by address or center name" ng-model="criteria.address" style="width: 40%"></p>
+		<div  style="padding:10px 10px;">
 			<!--<img src="{{center.profile_pic_url}}" style="max-width: px; max-height: 75px;float: left;">-->
-			<article style="display: inline-block">
+			<article ng-repeat="center in centerLists | filter : criteria.address" class="p-1" style="position: relative;">
 				<strong style="display: block;">{{center.name}}</strong>
 				<span style="display: block;"><i class="fa fa-globe"></i> {{center.address}} {{center.city}} {{center.country}}</span>
 				<span style="display: block;"><i class="fa fa-phone"></i> {{center.phone}}</span>
-				<a href="" style="position: absolute;right: 55px; bottom: 10px;font-size:18px;padding: 5px 15px" ng-click="sendChat(center)">
-					<i class="fa fa-comment btn btn-sm btn-simple" aria-hidden="true" title="send message to {{center.name}}" ></i>
+				<a href="" style="position: absolute;right: 55px; bottom: 0;font-size:18px;padding: 5px 15px" ng-click="sendChat(center)">
+					<i class="fa fa-comment btn btn-sm btn-neutral" aria-hidden="true" title="send message to {{center.name}}" ></i>
 				</a>
-				<a href="" style="position: absolute;right: 10px; bottom: 10px;font-size:18px;padding: 5px 15px">
-				<i class="fa fa-share btn btn-danger btn-sm" aria-hidden="true"  title="Forward above investigations to {{center.name}}"  ng-click="forwardInvestigtion(center)" ng-if="!center.loading && !center.status"></i>
+				<a href="" style="position: absolute;right: 10px; bottom: 0;font-size:18px;padding: 5px 15px">
+				<i class="fa fa-share btn btn-neutral btn-sm" aria-hidden="true"  title="Forward above investigations to {{center.name}}"  ng-click="forwardInvestigtion(center)" ng-if="!center.loading && !center.status"></i>
 				 <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange" ng-if="center.loading"></i> <span ng-if="center.status">{{ (center.loading) ? '' : 'Sent!' }}</span>
 				</a>
 				

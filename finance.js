@@ -2343,8 +2343,7 @@ router.get("/user/outpatient-billing",function(req,res){
 });
 
 router.post("/user/outpatient-billing",function(req,res){
-	console.log(req.body);
-
+	
 	if(req.user) {
 		var id = genId();
 
@@ -2403,13 +2402,14 @@ router.post("/user/outpatient-billing",function(req,res){
 				patient.patient_mail.push(mailData);
 	  	}
 
-	  	if(patient.presence) {
-	  		io.sockets.to(req.body.patientId).emit("message notification",{status: true});
-	  	}
+	  	
 
 	  	patient.save(function(err,info){
 	  		if(err) throw err;
 	  		console.log("patient's mail saved!");
+	  		if(patient.presence) {
+		  		io.sockets.to(req.body.patientId).emit("message notification",{status: true});
+		  	}
 	  	});
 	  })
 
