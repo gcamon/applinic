@@ -1,8 +1,5 @@
 (function() {
 
-
-
-
 var app = angular.module('myApp',["ngRoute","ngAnimate","angularModalService","angularMoment",'ui.bootstrap',
   'angular-clipboard',"ngResource","btford.socket-io","ngTouch",'ngPrint','paystack','ngSanitize','summernote',
   'xen3r0.underscorejs']);

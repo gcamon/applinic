@@ -50,7 +50,7 @@
 	       <strong>Prescription ID :</strong> <span>{{(docInfo.copy) ? "Copied!" : docInfo.prescriptionId}}</span>
 			<a href="" clipboard supported="supported" text="docInfo.prescriptionId" on-copied="success(docInfo)" on-error="fail(err)" title="{{copy}}" class="fa fa-copy text-danger" style="padding: 5px"> Copy</a><br>	
 
-	       <p style="padding-right:10px;word-wrap: break-word;"><strong>Description</strong> : <span>{{docInfo.provisional_diagnosis}}</span></p>
+	       <p style="padding-right:10px;word-wrap: break-word;" ng-show="docInfo.explanation"><strong>Description</strong> : <span>{{docInfo.explanation}}</span></p>
 
 	       <p style="color:red;padding: 10px 20px 0 0" ng-if="!docInfo.doctor_work_place"><i class="fa fa-warning"></i> This prescription may have been written by non-professional.</p>
 

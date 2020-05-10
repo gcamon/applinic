@@ -1,22 +1,39 @@
 
+(function() {
+
 var app = angular.module('myApp',["ngRoute","ngAnimate","angularModalService","angularMoment",'ui.bootstrap',
   'angular-clipboard',"ngResource","btford.socket-io","ngTouch",'ngPrint','paystack','ngSanitize','summernote',
   'xen3r0.underscorejs']);
 
 app.run(['$rootScope',function($rootScope){
 
- $rootScope.$on('$routeChangeStart',function(){
+ 	$rootScope.$on('$routeChangeStart',function(){
      $rootScope.stateIsLoading = true;
      $rootScope.acknowledged = true;
- });
+ 	});
 
 
-  $rootScope.$on('$routeChangeSuccess',function(){
+  	$rootScope.$on('$routeChangeSuccess',function(){
       $rootScope.stateIsLoading = false;
       $rootScope.acknowledged = true;
- });
+ 	});
 
 }]);
+
+app.run(function($window, $rootScope) {
+    $rootScope.online = navigator.onLine;
+    $window.addEventListener("offline", function() {
+      $rootScope.$apply(function() {
+        $rootScope.online = false;
+      });
+    }, false);
+
+    $window.addEventListener("online", function() {
+      $rootScope.$apply(function() {
+        $rootScope.online = true;
+      });
+    }, false);
+});
 
 
 app.config(['$paystackProvider','$routeProvider',
@@ -3023,6 +3040,12 @@ app.controller("presenceSocketController",["$rootScope","$scope","$window","mySo
   });
 
 }]);
+
+//controller passes data from the page to angular. data from the patient notification box to be used within angular.
+app.controller('patientWelcomeController',["$scope",function($scope){
+
+}]);
+
 
 
 //display the current balance always
@@ -11125,7 +11148,7 @@ app.factory("symptomsFactory",function(){
 });
 
 
-
+})() //end of IIFE
 
 
 
