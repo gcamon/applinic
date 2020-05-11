@@ -313,13 +313,13 @@
 		            <i class="fa fa-phone"></i> {{test.center_phone}}<br>        
 		            <a href="{{test.center_profile_url}}" title="view profile" ng-if="test.center_profile_url">View profile</a>
 		            </div>-->
-
+		           
 		            <div  style="position: relative;padding-top: 10px">
-			            <button class="collapsed dropdown-toggle btn btn-simple" role="button" data-toggle="collapse" data-parent="#accordion" href="#{{'test' + test.ref_id + test.sent_date}}" aria-expanded="false" aria-controls="collapsefifty">View Details</button>
+			            <button class="collapsed dropdown-toggle btn btn-simple" role="button" data-toggle="collapse" data-parent="#accordion" href="#{{'test' + test.ref_id + test._id}}" aria-expanded="false" aria-controls="collapsefifty">View Details</button>
 			            <span am-time-Ago="test.sent_date" style="position: absolute;top:20px;right: 20px"></span>
 			        </div>
 					<hr>
-					<div style="line-height: 25px;margin-bottom:5px" id="{{'test' + test.ref_id + test.sent_date}}" class="panel-collapse collapse p-1" role="tabpanel" aria-labelledby="headingfifty">
+					<div style="line-height: 25px;margin-bottom:5px" id="{{'test' + test.ref_id + test._id}}" class="panel-collapse collapse p-1" role="tabpanel" aria-labelledby="headingfifty">
 			              <strong>Center Name: </strong> <span>{{test.center_name}}</span><br>
 
 			              <strong>Center Address: </strong> <span>{{test.center_address}} {{test.center_city}} {{test.center_country}}</span><br>
@@ -329,7 +329,7 @@
 
 			              <strong>Reference Number:</strong> : <span>{{(test.copy) ? "Copied!" : test.ref_id}}</span> <a href="" clipboard supported="supported" text="test.ref_id" on-copied="success(test)" on-error="fail(err)" title="{{copy}}" class="fa fa-copy text-danger" style="padding: 5px"> Copy</a><br>
 
-			              <strong>Date requested:</strong> <span>{{test.sent_date | date : "mediumDate"}} ( <span am-time-Ago="test.sent_date" ng-if="test.sent_date"></span> )</span>
+			              <strong>Date requested:</strong> <span>{{test.sent_date | date : "mediumDate"}} ( <span am-time-Ago="test.sent_date" ng-if="test.sent_date"></span> )</span><br>
 
 			              <span ng-if="test.conclusion === 'Pending'"><strong>Status: </strong> <span style="color: red">Awaiting test result</span></span><br>
 			            <!--<p><strong>Date sent: </strong>{{test.sent_date | date : "mediumDate"}} &nbsp; <strong>Time: </strong>{{test.sent_date | date : "shortTime"}}</p>-->

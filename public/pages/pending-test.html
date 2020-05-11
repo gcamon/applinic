@@ -102,7 +102,7 @@
                 <i class="fa fa-phone"></i> {{test.center_phone}}<br>        
                 <a href="{{test.center_profile_url}}" title="view profile" ng-if="test.center_profile_url">View profile</a>
           </div>-->
-        
+          <pre>{{test}}</pre>
           <div  style="position: relative;padding-top: 10px">
             <button class="collapsed dropdown-toggle btn btn-simple" role="button" data-toggle="collapse" data-parent="#accordion" href="#{{'test' + test.ref_id + test.test_id}}" aria-expanded="false" aria-controls="collapsefifty">View Details</button>
             <span am-time-Ago="test.sent_date" style="position: absolute;top:20px;right: 20px"></span>

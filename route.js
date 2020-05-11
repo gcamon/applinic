@@ -4854,21 +4854,21 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
               message: "You have unread pending laboratory test"
             };
 
-            if(record.presence === true) {
-              io.sockets.to(record.user_id).emit("notification",{status:true,message: "You have new unread test to run.",type: "laboratory"});
-            } else {     
-              var name = (req.user.firstname) ?  req.user.title + " " + req.user.firstname : req.user.name   
-              var msgBody = "Your laboratory test was referred to " + centerInfo.name + "\n@ " + centerInfo.address + " " + centerInfo.city + " " +
-              centerInfo.country + "\nBy " + name + "\nRef No " + random + "\nFor more details visit https://applinic.com/user/patient"
-              var phoneNunber =  record.phone;             
-              sms.messages.create(
-                {
-                  to: phoneNunber,
-                  from: '+16467985692',
-                  body: msgBody,
-                }
-              ) 
-            }
+            //if(record.presence === true) {
+            io.sockets.to(record.user_id).emit("notification",{status:true,message: "You have new unread test to run.",type: "laboratory"});
+            //} else {     
+            var name = (req.user.firstname) ?  req.user.title + " " + req.user.firstname : req.user.name   
+            var msgBody = "Your laboratory test was referred to " + centerInfo.name + "\n@ " + centerInfo.address + " " + centerInfo.city + " " +
+            centerInfo.country + "\nBy " + name + "\nRef No " + random + "\nFor more details visit https://applinic.com/user/patient"
+            var phoneNunber =  record.phone;             
+            sms.messages.create(
+              {
+                to: phoneNunber,
+                from: '+16467985692',
+                body: msgBody,
+              }
+            ) 
+            
 
             record.patient_notification.unshift(noteObj);
             record.medical_records.laboratory_test.unshift(recordObj);
