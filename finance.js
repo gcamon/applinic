@@ -1358,8 +1358,114 @@ router.put("/user/laboratory/test-result/session-update",function(req,res){
 
   });
 
+
+
+  // this route takes care of the referral paying for the bill to claim discount
+  router.post("/user/referral/billing-verification",function(req,res){
+  	if(req.user) {
+  		if(req.user.type !== 'Patient'){
+  			model.user.findOne({user_id: req.body.referral_id})
+        .exec(function(err,oga){	
+        	if(err) throw err;
+        	if(oga){
+        		var type = req.body.type;
+        		if(req.body.payObj.total <= oga.ewallet.available_amount) {
+	        		model.referral.findOne({ref_id: req.body.ref_id,center_id: req.user.user_id})
+			        .exec(function(err,objectFound){
+			          if(err) throw err;
+
+			          if(objectFound) {
+			          	var details;
+				          if(req.user.type === "Radiology") {
+				          	objectFound.radiology.is_paid = true;
+				          	objectFound.radiology.detail.amount = req.body.radiology.strAmount;;
+				          	objectFound.radiology.detail.date = + new Date();
+				          	details = objectFound.radiology.detail;
+
+				          } else if(req.user.type === "Laboratory") {
+				          	objectFound.laboratory.is_paid = true;
+				          	objectFound.laboratory.detail.amount = req.body.laboratory.strAmount;
+				          	objectFound.laboratory.detail.date = + new Date();
+				          	details = objectFound.laboratory.detail;
+
+				          } else if(req.user.type === "Pharmacy"){
+				          	objectFound.pharmacy.is_paid = true;
+				          	objectFound.pharmacy.detail.amount = req.body.pharmacy.strAmount;;
+				          	objectFound.pharmacy.detail.date = + new Date();
+				          	details = objectFound.pharmacy.detail;
+				          }
+				         	
+
+				          var pay = new Wallet(req.body.date,oga.name,oga.lastname,"billing");
+				          //pay.billing(model,req.body.payObj,center,sms,io);
+				          //model.otpSchema.remove({otp:type.v_pin},function(err,info){});
+				          
+				          pay.billPaymentByReferral(model,req.body.payObj.total,req.user,oga,io,function(balance){
+				          	//if(balance){
+				          	res.json({message: "Transaction successful! Your account is credited.",
+				          	status: "success",payment:true,detail: details});
+				          	//} else {
+				          		//res.send({message: "Transaction Incomplete",error: true})
+				          	//}
+			          	  oga.save(function(err,info){
+					          	if(err) throw err;						          	
+					          });
+
+					        	objectFound.save(function(err,info){
+				          		if(err) throw err;
+				          		console.log("Payment details saved!");
+				         		});
+				          });
+
+
+
+				          /*if(confirmPay){
+
+				        		center.save(function(err,info){
+				        			if(err) {
+				        				res.send({message: "Transaction Incomplete",error: true})
+				        			} else {
+				        				var detail = (req.user.type === 'Radiology') ? objectFound.radiology.detail : objectFound.laboratory.detail;
+				        				res.json({message: "Transaction successful! Your account is credited.",balance:center.ewallet.available_amount,status: "success",payment:true,detail:detail});
+				        			}
+
+				        		});
+
+				        		objectFound.save(function(err,info){
+					          	if(err) throw err;
+					          	console.log("payment details saved")
+					          });
+
+			        		} else {
+			        			res.json({error: true, message: "Oops! It seems you have insufficient fund to continue with this payment. Please add money to your wallet."})
+			        		}*/
+				         
+			        	} else {
+			        		res.end({message:"unexpected error occured!",error: true});
+			        	}
+			        })
+		      	} else {
+		      		res.json({error: true, 
+		      			message: "The referrer chose to pay from his/her wallet but currently have insufficient fund"
+		      			+ " to continue with this transaction. Please contact the referral" +
+		      			 " about this issue or demand him or her funds their wallet. " + oga.phone})
+		      	}
+        	} else {
+        		res.json({error: true, message: "Center not found!."})
+        	}
+        });
+
+  		} else {
+  			res.json({error: true, message: "This user not allowed for this service."})
+  		}
+  	} else {
+  		res.end("unathorized access!")
+  	}
+  })
+
   //this route takes care of center paying for patient billing from their own ewallet
   router.post("/user/center/billing-verification",function(req,res){
+  	
   	if(req.user){
   		if(req.user.type  !== "Patient"){
   			model.user.findOne({user_id: req.user.user_id},{ewallet:1,user_id:1,city_grade:1,type:1,email:1,name:1})
@@ -1382,6 +1488,11 @@ router.put("/user/laboratory/test-result/session-update",function(req,res){
 				          	objectFound.laboratory.is_paid = true;
 				          	objectFound.laboratory.detail.amount = type.strAmount;
 				          	objectFound.laboratory.detail.date = + new Date();
+
+				          } else if(req.user.type === "Pharmacy"){
+				          	objectFound.pharmacy.is_paid = true;
+				          	objectFound.pharmacy.detail.amount = type.strAmount;
+				          	objectFound.pharmacy.detail.date = + new Date();
 				          }
 				         
 				          var pay = new Wallet(req.body.date,req.user.name,req.user.lastname,"billing");
@@ -1396,7 +1507,8 @@ router.put("/user/laboratory/test-result/session-update",function(req,res){
 				        				res.send({message: "Transaction Incomplete",error: true})
 				        			} else {
 				        				var detail = (req.user.type === 'Radiology') ? objectFound.radiology.detail : objectFound.laboratory.detail;
-				        				res.json({message: "Transaction successful! Your account is credited.",balance:center.ewallet.available_amount,status: "success",payment:true,detail:detail});
+				        				res.json({message: "Transaction successful! Your account is credited.",
+				        					balance:center.ewallet.available_amount,status: "success",payment:true,detail:detail});
 				        			}
 
 				        		});

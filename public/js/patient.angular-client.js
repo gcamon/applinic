@@ -10558,11 +10558,11 @@ app.controller("medHistoryCtrl",["$scope","$rootScope","patientMedHistory",
       }
     }
 
-    console.log($scope.history)
+    
     patientMedHistory.update($scope.history,function(response){
       $scope.loading = false;
       $scope.msg = response.message;
-      console.log(response);
+     
     })
   }
 
@@ -10626,6 +10626,20 @@ app.controller('welcomeController',["$scope","$rootScope","templateService","loc
   localManager.removeItem("onreg_held_item");
 
 }]);
+
+
+function testNumber(str) {
+  var intRegex = /[0-9 -()+]+$/;
+  return intRegex.test(str)
+}
+
+function calculate_age(dob) { 
+    var diff_ms = Date.now() - dob.getTime();
+    var age_dt = new Date(diff_ms); 
+  
+    return Math.abs(age_dt.getUTCFullYear() - 1970);
+}
+
 
 
 

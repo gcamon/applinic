@@ -43,18 +43,17 @@
     <!--<span class="tag tag-info pull-right" ng-if="labLen > 0">{{labLen}}</span>-->
 </a>
 
+<a href="" class="grayish" ng-click="viewLabPrescriptionRequest()" ng-class="{'btn-info': isToViewLabPrescriptionReq}">
+  <i class="fa fa-flask text-info"  style="position:relative">
+  </i> Other Laboratory  
+    <span class="tag tag-info pull-right" ng-if="labLen > 0">{{labLen}}</span>
+</a>
+
 <a href="" class="grayish" ng-click="viewRadioReport()" ng-class="{'btn-info': isToViewLabPrescriptionReq}">
   <i class="fa fa-file-image-o text-info"  style="position:relative">
   </i> Radiology  
     <!--<span class="tag tag-info pull-right" ng-if="labLen > 0">{{labLen}}</span>-->
 </a>
-
-<a href="" class="grayish" ng-click="viewLabPrescriptionRequest()" ng-class="{'btn-info': isToViewLabPrescriptionReq}">
-	<i class="fa fa-flask text-info"  style="position:relative">
-	</i> Other Laboratory  
-    <span class="tag tag-info pull-right" ng-if="labLen > 0">{{labLen}}</span>
-</a>
-
 
 <a href="" class="grayish" ng-click="viewRadioPrescriptionRequest()" ng-class="{'btn-info': isToViewRadPrescriptionReq}">
 	<i class="fa fa-flask text-warning" style="position:relative" title="Patient recent radiology test for your prescription">
@@ -625,9 +624,24 @@
                 <textarea class="form-control p-1" name="drug intake guide" placeholder="For eg. Take Ibuprofen only after meals" ng-model="treatment.explanation" ng-keyup="autoExpand($event)" id="textarea"></textarea>
             </div>
         </div>
-        <div class="pt-1"> 
-            <a href="" ng-click="toPatient()" class="btn btn-info btn-sm"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange" ng-if="loading"></i><i class="fa fa-send" ng-if="!loading"></i> {{(loading) ? '' : ' Patient only'}}</a>
-            <a href="" ng-click="toPharmacy()" class="btn btn-info btn-sm"><i class="fa fa-send"></i> Patient / Phamarcy</a>
+        <br>
+        <div>
+          <label>Would you like to pay the bill and claim discount?</label><br><br>
+          <label class="custom-control custom-radio">
+              <input type="radio" class="custom-control-input" ng-model="referral_pays" value="Yes" >
+              <span class="custom-control-indicator"></span>
+              <span class="custom-control-description">Yes</span>
+          </label>&nbsp;&nbsp;&nbsp;&nbsp;
+          <label class="custom-control custom-radio">
+              <input type="radio" class="custom-control-input" ng-model= "referral_pays"  value="No">
+              <span class="custom-control-indicator"></span>
+              <span class="custom-control-description">No</span>
+          </label>     
+        </div>
+        <br>
+        <div class="pt-2"> 
+            <a href="" ng-click="toPatient()" class="btn btn-primary btn-sm"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange" ng-if="loading"></i><i class="fa fa-send" ng-if="!loading"></i> {{(loading) ? '' : ' Patient only'}}</a>
+            <a href="" ng-click="toPharmacy()" class="btn btn-primary btn-sm"><i class="fa fa-send"></i> Patient / Phamarcy</a>
             <a href="" class="btn btn-neutral btn-sm dropdown-toggle" data-toggle="dropdown" ng-click="viewPreviousPrescriptionByDoctor()">{{(isToViewOldPrescription !== true) ? 'Previous Prescriptions' : 'Close Previous Prescriptions' }}</a>  
         </div>                          
         <div class="clearfix">
@@ -878,12 +892,12 @@
 
 
 <section ng-if="isToLabReport">
-    <h5 class="card p-1">Laboratory <span style="float: right;font-size: 14px"><a href="" ng-click="requestNewLab()" class="btn btn-neutral">{{(!isNewLab) ? 'Request new' : 'View reports'}}</a> <a href="" ng-click="writePrescription()" class="btn btn-neutral">Prescribe</a></span></h5>
+    <h5 class="card p-1">Laboratory <span style="float: right;font-size: 14px"><a href="" ng-click="requestNewLab()" class="btn btn-primary">{{(!isNewLab) ? 'Request new' : 'View reports'}}</a> <a href="" ng-click="writePrescription()" class="btn btn-primary">Prescribe</a></span></h5>
     <p ng-if="!testResult || loading" style="text-align: center;padding: 20px;font-size: 18px"> <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange" ng-if="loading"></i> </p>
     <div class="medical-record-Area" ng-repeat="j in testResult" ng-if="isResults">
    
      <div ng-repeat="test in j.diagnosis.laboratory_test_results | orderBy: '-sent_date'" class="p-1 card" ng-if="j.diagnosis.laboratory_test_results.length > 0">
-
+             
              <table>
                 <tbody>
                     <tr>
@@ -904,7 +918,7 @@
                     </tr>
 
                     <tr>
-                        <td><label>Date sent:</label> </td>
+                        <td><label>Date Sent:</label> </td>
                         <td>{{test.sent_date | date: "mediumDate"}} ( <span am-time-ago="test.sent_date"></span> )</td>
                     </tr>
                      <tr>
@@ -922,13 +936,14 @@
                     <tr>
                         <td><label>Status:</label> </td>
                         <td>
+
                             <span ng-if="test.conclusion == 'Pending'" class="text-danger"> Awaiting test result</span>
-                            <span ng-if="test.conclusion !== 'Pending'" ng-click="viewReportAndDCM(test)" class="text-primary">Available</span>
+                            <span ng-if="test.conclusion !== 'Pending'" class="text-primary">Available</span>
                         </td>
                     </tr>
                     <tr ng-if="test.conclusion !== 'Pending'">
-                        <td><label>Investigation Report:</label></td>
-                        <td> <a href="{{'https://drive.google.com/viewerng/viewer?embedded=true&url=https://applinic.com' + test.report}}" class="text-primary" target="_blank"><i class="fa fa-file"></i> View test result</a></td>
+                        <td><label>Report:</label></td>
+                        <td> <a href="{{'https://drive.google.com/viewerng/viewer?embedded=true&url=https://applinic.com' + test.lab_pdf_report[0].pdf_report}}" class="text-primary" target="_blank"><i class="fa fa-file"></i> View test result</a></td>
                     </tr>
                 </tbody>
             </table>
@@ -1066,8 +1081,21 @@
                         <label>Parity:</label>
                         <textarea  placeholder="Write.." ng-model="treatment.parity" class="form-control pl-2" ng-keyup="autoExpand($event)" id="textarea"></textarea>
                     </div>
-                    
-                    
+                    <br>
+                    <div>
+                      <label>Would you like to pay the bill and claim discount?</label><br><br>
+                      <label class="custom-control custom-radio">
+                          <input type="radio" class="custom-control-input" ng-model="referral_pays" value="Yes" >
+                          <span class="custom-control-indicator"></span>
+                          <span class="custom-control-description">Yes</span>
+                      </label>&nbsp;&nbsp;&nbsp;&nbsp;
+                      <label class="custom-control custom-radio">
+                          <input type="radio" class="custom-control-input" ng-model="referral_pays"  value="No">
+                          <span class="custom-control-indicator"></span>
+                          <span class="custom-control-description">No</span>
+                      </label>     
+                    </div>
+                    <br>
                     <div>
                         <!--<button class="btn btn-success" bg-click="sendToPatient()">to Patient</button>-->
                         <div>
@@ -1137,7 +1165,7 @@
 </section>
 
 <section ng-if="isToRadioReport">   
-    <h5 class="card p-1">Radiology <span style="float: right;font-size: 14px"><a href="" ng-click="requestNewRadio()" class="btn btn-simple">{{(!isNewRadio) ? 'Request new' : 'View reports'}}</a> <a href="" ng-click="writePrescription()" class="btn btn-simple">Prescribe</a></span></h5>
+    <h5 class="card p-1">Radiology <span style="float: right;font-size: 14px"><a href="" ng-click="requestNewRadio()" class="btn btn-primary">{{(!isNewRadio) ? 'Request new' : 'View reports'}}</a> <a href="" ng-click="writePrescription()" class="btn btn-primary">Prescribe</a></span></h5>
 
     <p ng-if="!testResult || loading" style="text-align: center;padding: 20px;font-size: 18px"> <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange" ng-if="loading"></i></p>
 
@@ -1165,7 +1193,8 @@
 
                     <tr>
                         <td><label>Patient ID of Study:</label> </td>
-                        <td>{{test.patient_id_of_study || "N/A"}}</td>
+                        <td><span>{{(test.copy) ? "Copied!" : test.patient_id_of_study || "N/A"}} </span>
+                        <a href="" clipboard supported="supported" text="test.patient_id_of_study" on-copied="success(test)" on-error="fail(err)" title="{{copy}}" class="fa fa-copy text-danger" style="padding: 5px"> Copy</a></td>
                     </tr>
 
                     <tr>
@@ -1196,26 +1225,26 @@
                             <span ng-if="test.conclusion !== 'Pending'" class="text-primary">Report Recieved</span>
                         </td>
                     </tr>
-                    <tr >
+                    <tr ng-show="test.conclusion !== 'Pending'">
                         <td><label>DICOM Viewer / Report:</label></td>
                         <td> 
 
                           <div>
                             <button class="btn btn-info dropdown-toggle" ng-click="viewReportAndDCM(test)">DICOM Viewer and Study Report</button>
                           </div>
-                          <ul style="list-style: none;line-height: 30px">
-                            <li>
-                                <a ng-show="test.reportDetails.study_link_mobile" href="{{test.reportDetails.study_link_mobile}}"  target="_blank" class="text-danger">View Study in DICOM viewer (Mobile / Tablet devices)</a>
-                            </li>
+                          <div style="list-style: none;line-height: 30px">
+                            <article class="mobile-item-display">
+                                <a ng-show="test.reportDetails.study_link_mobile" href="{{test.reportDetails.study_link_mobile}}"  target="_blank" class="text-danger">View study images in DICOM viewer</a>
+                            </article>
 
-                            <li>
-                                <a  ng-show="test.reportDetails.study_link2" href="{{test.reportDetails.study_link2}}"  target="_blank" class="text-danger">View Study in DICOM viewer (Desktop / Laptops)</a>
-                            </li>
+                            <article class="no-mobile-item-display">
+                                <a  ng-show="test.reportDetails.study_link2" href="{{test.reportDetails.study_link2}}"  target="_blank" class="text-danger">View study Images in DICOM viewer</a>
+                            </article>
 
-                            <li ng-show="test.reportDetails.pdf_report[0]">
-                                <a  href="{{'https://drive.google.com/viewerng/viewer?embedded=true&url=https://applinic.com' + test.reportDetails.pdf_report[0].pathname}}" class="text-danger" target="_blank"><i class="fa fa-file"></i> View Report (PDF Viewer)</a>
-                            </li>
-                          </ul>
+                            <artticle ng-show="test.reportDetails.pdf_report[0]">
+                                <a  href="{{'https://drive.google.com/viewerng/viewer?embedded=true&url=https://applinic.com' + test.reportDetails.pdf_report[0].pathname}}" class="text-danger" target="_blank">View Report (PDF)</a>
+                            </artticle>
+                          </div>
                         </td>
                     </tr>
                 </tbody>
@@ -1906,6 +1935,22 @@
                         <label>Parity:</label>
                         <textarea  placeholder="Write.." ng-model="treatment.parity" class="form-control pl-2" ng-keyup="autoExpand($event)" id="textarea"></textarea>
                     </div>
+
+                    <br>
+                    <div>
+                      <label>Would you like to pay the bill and claim discount?</label><br><br>
+                      <label class="custom-control custom-radio">
+                          <input type="radio" class="custom-control-input" ng-model="referral_pays" value="Yes" >
+                          <span class="custom-control-indicator"></span>
+                          <span class="custom-control-description">Yes</span>
+                      </label>&nbsp;&nbsp;&nbsp;&nbsp;
+                      <label class="custom-control custom-radio">
+                          <input type="radio" class="custom-control-input" ng-model="referral_pays"  value="No">
+                          <span class="custom-control-indicator"></span>
+                          <span class="custom-control-description">No</span>
+                      </label>     
+                    </div>
+                    <br>
                     
                     
                     <div>

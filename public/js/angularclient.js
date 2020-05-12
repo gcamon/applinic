@@ -15468,7 +15468,12 @@ app.controller("pharmacyCenterNotificationController",["$scope","$location","$re
 
 
 app.service("billingAuthService",["$resource",function($resource){
-  return $resource("/user/center/billing-verification",null,{verify: {method: "PUT"},centerVerify: {method: "POST"}});
+  return $resource("/user/center/billing-verification",null,{verify: {method: "PUT"},
+    centerVerify: {method: "POST"}});
+}]);
+
+app.service("billingAuthService2",["$resource",function($resource){
+  return $resource("/user/referral/billing-verification",null,{referralVerify: {method: "POST"}});
 }]);
 
 app.service("paymentVerificationService",["$resource",function($resource){
@@ -15476,8 +15481,9 @@ app.service("paymentVerificationService",["$resource",function($resource){
 }]);
 
 app.controller("pharmacyViewPrescriptionController",["$scope","$location","templateService",
-  "localManager","$rootScope","$resource","billingAuthService","paymentVerificationService","phoneCallService",
-  function($scope,$location,templateService,localManager,$rootScope,$resource,billingAuthService,paymentVerificationService,phoneCallService){ 
+  "localManager","$rootScope","$resource","billingAuthService","paymentVerificationService","phoneCallService","billingAuthService2",
+  function($scope,$location,templateService,localManager,$rootScope,$resource,billingAuthService,
+    paymentVerificationService,phoneCallService,billingAuthService2){ 
   //var pharmacyData = templateService.holdPharmacyReferralData = localManager.getValue("pharmacyData");  
   var getCurrentPage = localManager.getValue("currPageForPharmacy");
   var getIdOfCurrentPage = getCurrentPage.split("/");
@@ -16246,10 +16252,10 @@ app.service("toCenterService",["$resource",function($resource){
 
 app.controller("labTestControler",["$scope","$location","$http","templateService","localManager",
   "ModalService","labTests","$resource","$rootScope","cities","paymentVerificationService","billingAuthService",
-  "searchTestService","toCenterService","phoneCallService","reportFormFactory","digitalSigneePathologistService",
+  "searchTestService","toCenterService","phoneCallService","reportFormFactory","digitalSigneePathologistService","billingAuthService2",
   function($scope,$location,$http,templateService,localManager,ModalService,labTests,$resource,$rootScope,
     cities,paymentVerificationService,billingAuthService,searchTestService,
-    toCenterService,phoneCallService,reportFormFactory,digitalSigneePathologistService) {
+    toCenterService,phoneCallService,reportFormFactory,digitalSigneePathologistService,billingAuthService2) {
    
    
     var objectFound = localManager.getValue("laboratoryData");
@@ -16649,6 +16655,69 @@ app.controller("labTestControler",["$scope","$location","$http","templateService
 
       refInfo.loading = true;
       billAuth.centerVerify(refInfo,function(response){
+        refInfo.loading = false;
+        if(response.payment){          
+          $scope.otpMsg = null;
+          $scope.paymentStatus = response.payment;
+          $scope.paymentDetail = response.detail;
+          refInfo.laboratory.is_paid = response.payment;
+          /*var round = Math.round(response.balance)
+          var format = "NGN" + round.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+          $rootScope.balance = format;*/
+          $rootScope.$broadcast('debit',{status: true})
+        } else {
+            //$scope.otpError = response.message;
+            alert(response.message)
+        }
+      })
+    }
+  }
+
+ 
+  $scope.referralVerifyPay = function(refInfo) {
+    //if($scope.lab.otp && $scope.lab.otp !== "") {
+      //if($scope.otpError)
+        //$scope.otpError = null;
+
+    var check = confirm("The Platform Discount will be applied.");
+
+    if(check) {
+      var theStringTests = combineTest($scope.testReport);
+      var converToStr = theStringTests.join();
+      var date = + new Date();
+      //var pin = $scope.lab.otp;
+      //var str = "";
+      var count = 0;
+      /*for(var i = 0; i < pin.length; i++){
+        count++;      
+        if(count % 3 === 0) {
+          str += pin[i];
+          str += " ";
+        } else {
+          str += pin[i];
+        }
+      }*/
+
+      var billAuth2 = billingAuthService2;
+
+      //var newStr = str.replace(/\s*$/,"");       
+      refInfo.laboratory.date = date;
+      //refInfo.laboratory.v_pin = newStr;
+      refInfo.laboratory.strAmount = $scope.str;
+      refInfo.payObj = {
+        total: $scope.grabRawAmount,
+        doctorId: refInfo.laboratory.doctor_id || "admin",
+        //this refInfo.referral may be the center's id who will be credited if test was not written by a doctor.it should be modified
+        type: "Laboratory",
+        patientId: refInfo.laboratory.patient_id,
+        doctorPhone: refInfo.laboratory.doctor_phone,
+        patient_firstname: refInfo.laboratory.patient_firstname,
+        patient_lastname: refInfo.laboratory.patient_lastname,
+        ref_id: refInfo.ref_id
+      }
+
+      refInfo.loading = true;
+      billAuth2.referralVerify(refInfo,function(response){
         refInfo.loading = false;
         if(response.payment){          
           $scope.otpMsg = null;

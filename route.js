@@ -2955,6 +2955,7 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
               referral_email: req.user.email,
               referral_phone: req.user.phone,  
               deleted: false, 
+              referral_pays: req.body.referral_pays, 
               date: date,
               center_id: req.body.user_id,
               pharmacy: preObj
@@ -4742,6 +4743,8 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
               phone: result.phone,
               id: result.user_id
             }
+
+            console.log(req.body)
             
             var refObj = {
               ref_id: random,
@@ -4750,7 +4753,8 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
               referral_title: req.user.title,
               referral_id: req.user.user_id, 
               referral_email: req.user.email,
-              referral_phone: req.user.phone,   
+              referral_phone: req.user.phone,
+              referral_pays: req.body.referral_pays,   
               date: req.body.date || new Date(),  
               center_id: result.user_id,      
               laboratory: {
@@ -4777,7 +4781,7 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
                 doctor_lastname: req.user.lastname,
                 doctor_id: req.user.user_id,
                 doctor_email: req.user.email,
-                doctor_profile_url: req.user.profile_url
+                doctor_profile_url: req.user.profile_url,
               }                         
             }
 

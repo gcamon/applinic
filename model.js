@@ -386,6 +386,7 @@ var myModel = function () {
 		referral_id: String,
 		referral_email: String,
 		referral_phone: String,
+		referral_pays: String,
 		acc_no: String,
 		date: Date,
 		type_of_test: String,		

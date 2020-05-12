@@ -14,7 +14,8 @@ function Wallet(date,firstname,lastname,message,reference){
 Wallet.prototype.credit = function(model,receiver,amount,io,cb){
 	if(amount >= 0) {
 		var self = this;
-		model.user.findOne(receiver,{ewallet:1,name:1,firstname:1,lastname:1,presence:1,user_id:1,city_grade:1}).exec(function(err,data){
+		model.user.findOne(receiver,{ewallet:1,name:1,firstname:1,lastname:1,presence:1,user_id:1,city_grade:1})
+		.exec(function(err,data){
 			if(err) throw err;
 
 			//for consultation
@@ -30,7 +31,7 @@ Wallet.prototype.credit = function(model,receiver,amount,io,cb){
 							if(err) throw err;
 							if(admin) {						
 								admin.ewallet.available_amount += consulPer;
-								var names = self.firstname + " " + self.lastname;
+								var names = self.name || (self.firstname + " " + self.lastname);
 								var transacObj = {
 									date: self.date,
 									source: names,
@@ -177,6 +178,28 @@ Wallet.prototype.billPaymentByCenter = function(model,amount,debitor,io){
 	return true;
 }
 
+//debitor is a user model,creditor is key value pairs, amount is integer.
+Wallet.prototype.billPaymentByReferral = function(model,amount,receiver,debitor,io,cb){
+	var getPercentage = calculatePer(amount,receiver.city_grade);
+
+	var amountDueForCenter = getPercentage.receiverValue;
+	this.credit(model,{user_id:receiver.user_id},amountDueForCenter,io);
+
+	var adminPercentage = getPercentage.adminValue;
+	this.credit(model,{admin:true},adminPercentage,io,cb);
+	/*
+model,req.body.payObj,req.user,oga,io
+	*/
+	var debitAmount = getPercentage.debitorValue;
+	//debit the center for the service
+	this.beneficiary = receiver.name;
+	
+	this.debit(model,debitAmount,debitor);
+	
+	return true;
+}
+
+
 Wallet.prototype.consultation = function(model,amount,debitor,reciever_id,io){
 	var creditor = {user_id: reciever_id};
 	//credit the render of the service;
@@ -205,8 +228,6 @@ Wallet.prototype.billing = function(model,billingInfo,reciever,sms,io){
 		
 		var getPercentage = calculatePer(billingInfo.total,reciever.city_grade,0.05);
 
-		
-
 		//this takes care of crediting the center that rendered the service.
 		//var totalBilling ; //billingInfo.total;
 		//var getPercentage ; //reciever.city_grade / 100;
@@ -218,7 +239,7 @@ Wallet.prototype.billing = function(model,billingInfo,reciever,sms,io){
 		var creditor = {user_id: reciever.user_id};
 		this.credit(model,creditor,amountDueForCenter,io);
 
-		console.log("======= for center cut", amountDueForCenter)
+		console.log("======= for center cut", amountDueForCenter);
 
 		// this will take care crediting the doctor that wrote such prescription based on 5% commission for the service
 		var newCut; //use to decide if doctor was involved in the sharing. ie if doctor was the one that reffered the test.
@@ -249,7 +270,7 @@ Wallet.prototype.billing = function(model,billingInfo,reciever,sms,io){
 		var sure = undefined;//jk
 		var creditAdmin = {admin: true}; //remember to set admin true on the db of the public production server
 		this.credit(model,creditAdmin,adminPercentage,io);	
-		console.log("======= admin cut",adminPercentage)	
+		
 		var adc = sure || adminPercentage;
 		_secr(model,adc,io);
 
