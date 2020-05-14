@@ -132,11 +132,22 @@
                      </div>
                 </div>
             </div>
+           
             <div ng-if="!refData.pharmacy.doctor_id && isFilled !== true"><i class="fa fa-warning text-danger"></i> <span> The source of the above prescription is <strong>not trusted!</strong> It may have been prescribed by the patient or non-professional. <strong>Do Enquire</strong> from  this patient about the source before continuing.</span>
             </div>
 			<div style="margin-top: 20px; margin-bottom: 30px">
 				<!--<button  class="btn btn-simple" disabled="disabled" style="cursor: no-drop;" ng-if="isFilled !== true">Request Payment</button>-->
-				<button class="btn btn-danger btn-sm" ng-click="sendBill(refData.pharmacy.patient_id)" ng-if="isFilled && !isOTP && !refData.pharmacy.is_paid && !loading">Request Payment</button> <span ng-if="loading">Sending...</span>&nbsp;&nbsp;
+				<span ng-show="isFilled && !isOTP && !refData.pharmacy.is_paid">
+
+					<button class="btn btn-primary" ng-show="refData.referral_pays == 'Yes' && !loading" ng-click="referralVerifyPay(refData)">
+					  Referral's E-Wallet
+					</button>
+
+					<button class="btn btn-primary" ng-click="sendBill(refData.pharmacy.patient_id)" ng-if="!loading && !refData.referral_pays || refData.referral_pays == 'No'">Patient's E-Wallet</button> 
+
+					<button class="btn btn-primary" ng-click="centerVerifyPay(refData)" ng-if="!loading && !refData.referral_pays || refData.referral_pays == 'No'">Center's E-Wallet</button> <span ng-if="loading">Processing...</span>
+
+				</span>
 				<!--<button class="btn btn-info btn-sm" ng-click="toList(refData.pharmacy.patient_firstname,refData.pharmacy.patient_lastname,refData.pharmacy.patient_profile_pic_url,refData.ref_id,refData.date)" ng-if="allNote.length !== 0 && isFilled !== true">Add to attendance list</button>-->
 				<!--<button class="btn btn-neutral btn-sm" ng-click="toAnotherPharmacy()" ng-if="isForwardable === true">Refer to another <i class="fa fa-arrow-right"></i></button> -->
 				
@@ -181,7 +192,7 @@
 						<div><b>Amount paid: {{refData.pharmacy.detail.amount}}</b></div>
 						<div><b>Date of payment: {{refData.pharmacy.detail.date | date: "mediumDate"}} ( <span am-Time-Ago="refData.pharmacy.detail.date"></span> )</b></div>
 					</article>	
-					<a href="" class="btn btn-sm" style="position: absolute;top:10px;right:10px" ng-click="newPayment()">request new</a>
+					<a href="" class="btn btn-sm" style="position: absolute;top:10px;right:10px" ng-click="newPayment()">Request new</a>
 				</div>
 
 			</div>

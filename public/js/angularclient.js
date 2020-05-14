@@ -15481,8 +15481,8 @@ app.service("paymentVerificationService",["$resource",function($resource){
 }]);
 
 app.controller("pharmacyViewPrescriptionController",["$scope","$location","templateService",
-  "localManager","$rootScope","$resource","billingAuthService","paymentVerificationService","phoneCallService","billingAuthService2",
-  function($scope,$location,templateService,localManager,$rootScope,$resource,billingAuthService,
+  "localManager","$rootScope","$resource","billingAuthService","paymentVerificationService","phoneCallService",
+  "billingAuthService2",function($scope,$location,templateService,localManager,$rootScope,$resource,billingAuthService,
     paymentVerificationService,phoneCallService,billingAuthService2){ 
   //var pharmacyData = templateService.holdPharmacyReferralData = localManager.getValue("pharmacyData");  
   var getCurrentPage = localManager.getValue("currPageForPharmacy");
@@ -15731,7 +15731,176 @@ app.controller("pharmacyViewPrescriptionController",["$scope","$location","templ
     $rootScope.refData.pharmacy.is_paid = false;
     $rootScope.refData.pharmacy.detail = {};
   }
+
+
+  $scope.centerVerifyPay = function(refInfo) {
+    
+    $scope.loading = true;
+
+    refInfo.pharmacy.strAmount = $scope.str;
+
+    var billAuth = billingAuthService;
+
+    refInfo.payObj = {
+      total: totalCost.sum,
+      doctorId: refInfo.pharmacy.doctor_id || "admin",
+      type: "Pharmacy",
+      patientId: refInfo.pharmacy.patient_id,
+      doctorPhone: refInfo.pharmacy.doctor_phone,
+      patient_firstname: refInfo.pharmacy.patient_firstname,
+      patient_lastname: refInfo.pharmacy.patient_lastname,
+      ref_id: refInfo.ref_id
+    }
+
+    billAuth.centerVerify(refInfo,function(response){
+
+      $scope.loading = false;
+      if(response.payment){      
+        alert(response.message);
+        refInfo.pharmacy.detail = response.detail;
+        refInfo.pharmacy.is_paid = response.payment;
+        //refInfo.pharmacy.is_paid = response.payment;
+        $rootScope.$broadcast('debit',{status: true});
+      } else {
+        alert(response.message)
+      }
+
+    })
+  }
+
+  $scope.referralVerifyPay = function(refInfo) {
+    
+    $scope.loading = true;
+
+    refInfo.pharmacy.strAmount = $scope.str;
+
+    var billAuth2 = billingAuthService2;
+
+    refInfo.payObj = {
+      total: totalCost.sum,
+      doctorId: refInfo.pharmacy.doctor_id || "admin",
+      type: "Pharmacy",
+      patientId: refInfo.pharmacy.patient_id,
+      doctorPhone: refInfo.pharmacy.doctor_phone,
+      patient_firstname: refInfo.pharmacy.patient_firstname,
+      patient_lastname: refInfo.pharmacy.patient_lastname,
+      ref_id: refInfo.ref_id
+    }
+
+    billAuth2.referralVerify(refInfo,function(response){
+      $scope.loading = false;
+      if(response.payment){      
+        alert(response.message);
+        refInfo.pharmacy = response.detail;
+        $rootScope.$broadcast('debit',{status: true});
+      } else {
+        alert(response.message)
+      }
+    })
+
+  }
+
+
+
+  /*
+$scope.centerVerifyPay = function(refInfo) {
+
+    var check = confirm("The Platform Discount will be applied.");
+
+    if(check) {
+      var theStringTests = combineTest($scope.testReport);
+      var converToStr = theStringTests.join();
+      var date = + new Date();
+      
+      //var newStr = str.replace(/\s*$/,"");       
+      refInfo.laboratory.date = date;
+      //refInfo.laboratory.v_pin = newStr;
+      refInfo.laboratory.strAmount = $scope.str;
+      refInfo.payObj = {
+        total: $scope.grabRawAmount,
+        doctorId: refInfo.laboratory.doctor_id || "admin",
+        //this refInfo.referral may be the center's id who will be credited if test was not written by a doctor.it should be modified
+        type: "Laboratory",
+        patientId: refInfo.laboratory.patient_id,
+        doctorPhone: refInfo.laboratory.doctor_phone,
+        patient_firstname: refInfo.laboratory.patient_firstname,
+        patient_lastname: refInfo.laboratory.patient_lastname,
+        ref_id: refInfo.ref_id
+      }
+
+      refInfo.loading = true;
+      billAuth.centerVerify(refInfo,function(response){
+        refInfo.loading = false;
+        if(response.payment){          
+          $scope.otpMsg = null;
+          $scope.paymentStatus = response.payment;
+          $scope.paymentDetail = response.detail;
+          refInfo.laboratory.is_paid = response.payment;
+         
+          $rootScope.$broadcast('debit',{status: true})
+        } else {
+            //$scope.otpError = response.message;
+            alert(response.message)
+        }
+      })
+    }
+  }
+
  
+  $scope.referralVerifyPay = function(refInfo) {
+    
+
+    var check = confirm("The Platform Discount will be applied.");
+
+    if(check) {
+      var theStringTests = combineTest($scope.testReport);
+      var converToStr = theStringTests.join();
+      var date = + new Date();
+      //var pin = $scope.lab.otp;
+      //var str = "";
+      var count = 0;
+     
+
+      var billAuth2 = billingAuthService2;
+
+      //var newStr = str.replace(/\s*$/,"");       
+      refInfo.laboratory.date = date;
+      //refInfo.laboratory.v_pin = newStr;
+      refInfo.laboratory.strAmount = $scope.str;
+      refInfo.payObj = {
+        total: $scope.grabRawAmount,
+        doctorId: refInfo.laboratory.doctor_id || "admin",
+        //this refInfo.referral may be the center's id who will be credited if test was not written by a doctor.it should be modified
+        type: "Laboratory",
+        patientId: refInfo.laboratory.patient_id,
+        doctorPhone: refInfo.laboratory.doctor_phone,
+        patient_firstname: refInfo.laboratory.patient_firstname,
+        patient_lastname: refInfo.laboratory.patient_lastname,
+        ref_id: refInfo.ref_id
+      }
+
+      refInfo.loading = true;
+      billAuth2.referralVerify(refInfo,function(response){
+        refInfo.loading = false;
+        if(response.payment){          
+          $scope.otpMsg = null;
+          $scope.paymentStatus = response.payment;
+          $scope.paymentDetail = response.detail;
+          refInfo.laboratory.is_paid = response.payment;
+      
+          $rootScope.$broadcast('debit',{status: true})
+        } else {
+            //$scope.otpError = response.message;
+            alert(response.message)
+        }
+      })
+    }
+  }
+
+  */
+
+
+
 }]);
 
 app.controller("checkingOutPatientController",["$scope","$location","templateService","localManager",
@@ -16614,9 +16783,6 @@ app.controller("labTestControler",["$scope","$location","$http","templateService
   });
 
   $scope.centerVerifyPay = function(refInfo) {
-    //if($scope.lab.otp && $scope.lab.otp !== "") {
-      //if($scope.otpError)
-        //$scope.otpError = null;
 
     var check = confirm("The Platform Discount will be applied.");
 

@@ -1364,6 +1364,8 @@ router.put("/user/laboratory/test-result/session-update",function(req,res){
   router.post("/user/referral/billing-verification",function(req,res){
   	if(req.user) {
   		if(req.user.type !== 'Patient'){
+  			req.body.date = new Date();
+
   			model.user.findOne({user_id: req.body.referral_id})
         .exec(function(err,oga){	
         	if(err) throw err;
@@ -1403,7 +1405,7 @@ router.put("/user/laboratory/test-result/session-update",function(req,res){
 				          pay.billPaymentByReferral(model,req.body.payObj.total,req.user,oga,io,function(balance){
 				          	//if(balance){
 				          	res.json({message: "Transaction successful! Your account is credited.",
-				          	status: "success",payment:true,detail: details});
+				          	status: "success",payment:true, detail: details});
 				          	//} else {
 				          		//res.send({message: "Transaction Incomplete",error: true})
 				          	//}
@@ -1468,31 +1470,38 @@ router.put("/user/laboratory/test-result/session-update",function(req,res){
   	
   	if(req.user){
   		if(req.user.type  !== "Patient"){
+  			req.body.date = new Date();
   			model.user.findOne({user_id: req.user.user_id},{ewallet:1,user_id:1,city_grade:1,type:1,email:1,name:1})
         .exec(function(err,center){	
         	if(err) throw err;
         	if(center){
-        		var type = (req.user.type === "Radiology") ? req.body.radiology : req.body.laboratory;
+        		var type = (req.user.type === "Radiology") ? req.body.radiology : ( req.body.laboratory || req.body.pharmacy);
         		if(req.body.payObj.total <= center.ewallet.available_amount) {
 	        		model.referral.findOne({ref_id: req.body.ref_id,center_id: center.user_id})
 			        .exec(function(err,objectFound){
 			          if(err) throw err;
 
 			          if(objectFound) {
+
+			          	var details;
+
 				          if(req.user.type === "Radiology") {
 				          	objectFound.radiology.is_paid = true;
 				          	objectFound.radiology.detail.amount = type.strAmount;
 				          	objectFound.radiology.detail.date = + new Date();
+				          	details = objectFound.radiology.detail;
 
 				          } else if(req.user.type === "Laboratory") {
 				          	objectFound.laboratory.is_paid = true;
 				          	objectFound.laboratory.detail.amount = type.strAmount;
 				          	objectFound.laboratory.detail.date = + new Date();
+				          	details = objectFound.laboratory.detail;
 
 				          } else if(req.user.type === "Pharmacy"){
 				          	objectFound.pharmacy.is_paid = true;
 				          	objectFound.pharmacy.detail.amount = type.strAmount;
 				          	objectFound.pharmacy.detail.date = + new Date();
+				          	details = objectFound.pharmacy.detail;
 				          }
 				         
 				          var pay = new Wallet(req.body.date,req.user.name,req.user.lastname,"billing");
@@ -1503,19 +1512,17 @@ router.put("/user/laboratory/test-result/session-update",function(req,res){
 				          if(confirmPay){
 
 				        		center.save(function(err,info){
-				        			if(err) {
-				        				res.send({message: "Transaction Incomplete",error: true})
-				        			} else {
-				        				var detail = (req.user.type === 'Radiology') ? objectFound.radiology.detail : objectFound.laboratory.detail;
-				        				res.json({message: "Transaction successful! Your account is credited.",
-				        					balance:center.ewallet.available_amount,status: "success",payment:true,detail:detail});
-				        			}
-
+				        			if(err) throw err;
 				        		});
 
 				        		objectFound.save(function(err,info){
-					          	if(err) throw err;
-					          	console.log("payment details saved")
+					          	if(err) {
+					          		res.send({message: "Transaction Incomplete",error: true});
+					          		return;
+					          	}
+					          	console.log("payment details saved");
+					          	res.json({message: "Transaction successful! Your account is credited.",
+				        			balance:center.ewallet.available_amount,status: "success",payment:true,detail:details});
 					          });
 
 			        		} else {
@@ -1546,6 +1553,7 @@ router.put("/user/laboratory/test-result/session-update",function(req,res){
   router.put("/user/center/billing-verification",function(req,res){
   	if(req.user){
   		var type = (req.user.type === "Radiology") ? req.body.radiology : req.body.laboratory;
+  		req.body.date = new Date();
   		if(type) {
         model.otpSchema.findOne({otp:type.v_pin},function(err,data){
           if(err) throw err;

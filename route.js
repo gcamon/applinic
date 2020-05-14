@@ -286,6 +286,32 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
         data.save(function(err,info){})
       })
     }
+
+    var mailOptions = {
+      from: 'Applinic info@applinic.com',
+      to: "info@applinic.com",
+      subject: 'Message from ' + req.body.names,
+      html: '<table><tr><td style="font-family: Arial, Helvetica, sans-serif; font-size: 14px;"><b>Hello ' 
+      + ",</b><br><br>"
+      + req.body.message
+      + "Sender detail: <br><br>" 
+      + "Name: " + req.body.name
+      + "<br>Email: " + req.body.email
+      + "<br>Phone: " + req.body.phone
+      + "<br><br>"
+      + "Please attend.<br></br>"
+      + "</td></tr></table>"
+    };
+
+    transporter.sendMail(mailOptions, function(error, info){
+      if (error) {
+        console.log(error);
+        res.json({status: false})
+      } else {
+        console.log('Email sent: ' + info.response);
+        res.json({status: true});
+      }
+    });
    
     res.send({status:"success"})
   })
@@ -2893,7 +2919,7 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
       //any data sent to a diagnostic center other than to the patient himself is seens a a referral by this application.
        
       if(req.user){ 
-
+          console.log(req.body)
             var date = new Date();
 
             var ref_id;
@@ -2951,7 +2977,7 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
               referral_firstname: req.user.firstname,
               referral_lastname: req.user.lastname,
               referral_title: title,
-              referral_id: req.body.id, 
+              referral_id: req.user.user_id, 
               referral_email: req.user.email,
               referral_phone: req.user.phone,  
               deleted: false, 

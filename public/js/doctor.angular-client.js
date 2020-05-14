@@ -8643,7 +8643,7 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
     $scope.sendDrug = function() {
       $scope.loading = true;
       patient.treatment = $scope.treatment;
-      patient.referral_pays = $scope.referral_pays;
+      patient.referral_pays = $scope.treatment.referral_pays;
       $http({
         method  : 'PUT',
         url     : "/user/patient/pharmacy/referral",
