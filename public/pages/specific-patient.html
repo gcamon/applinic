@@ -75,6 +75,7 @@
 
 
         <div class="col-sm-12 col-md-9 col-lg-9" contenteditable="false">
+
                        <div class="row">
                           <div class="col-md-12 p-0">
         	<div class="card">
@@ -744,7 +745,7 @@
             </section>                       
         </section>
         
-        <section class="col-sm-12 col-md-5 col-lg-5 p-1">
+        <section class="col-sm-12 col-md-5 col-lg-5 p-1" id="inView">
             <h6 style="background-color: #d7dde4;padding: 10px">Selected Center</h6>                            
             <section  style="line-height: 30px;">
                 <strong style="display: block;margin-top: 5px;">{{pickedCenter.name}}</strong>
@@ -1133,9 +1134,9 @@
                             </section> 
                             <section ng-show="searchResult.length == 0" style="text-align: center;">
                                 <p>No center was found based on search criteria.</p>
-                            </section>                        
-                            
+                            </section>                       
                         </section>
+
                         <section class="col-sm-12 col-md-5 col-lg-5 p-1">
 
                            <h6 style="background-color: #d7dde4;padding: 10px">Selected Center</h6>
@@ -2264,7 +2265,7 @@
             </div>
         </div>
     </div>
-    
+    <a id="inView"></a>
  
 </div>
                          

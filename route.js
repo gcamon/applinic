@@ -294,8 +294,8 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
       html: '<table><tr><td style="font-family: Arial, Helvetica, sans-serif; font-size: 14px;"><b>Hello ' 
       + ",</b><br><br>"
       + req.body.message
-      + "Sender detail: <br><br>" 
-      + "Name: " + req.body.name
+      + "<br><br>Sender details: <br>" 
+      + "Name: " + req.body.names
       + "<br>Email: " + req.body.email
       + "<br>Phone: " + req.body.phone
       + "<br><br>"
