@@ -74,7 +74,7 @@
         
 
 
-        <div class="col-sm-12 col-md-9 col-lg-9" contenteditable="false">
+        <div class="col-sm-12 col-md-9 col-lg-9" contenteditable="false"><a id="inView"></a>
 
                        <div class="row">
                           <div class="col-md-12 p-0">
@@ -745,7 +745,7 @@
             </section>                       
         </section>
         
-        <section class="col-sm-12 col-md-5 col-lg-5 p-1" id="inView">
+        <section class="col-sm-12 col-md-5 col-lg-5 p-1">
             <h6 style="background-color: #d7dde4;padding: 10px">Selected Center</h6>                            
             <section  style="line-height: 30px;">
                 <strong style="display: block;margin-top: 5px;">{{pickedCenter.name}}</strong>
@@ -1137,7 +1137,7 @@
                             </section>                       
                         </section>
 
-                        <section class="col-sm-12 col-md-5 col-lg-5 p-1">
+                        <section class="col-sm-12 col-md-5 col-lg-5 p-1" id="drugSelected">
 
                            <h6 style="background-color: #d7dde4;padding: 10px">Selected Center</h6>
                             
@@ -1315,46 +1315,47 @@
 
                 <div ng-if="isSearchToSend" style="margin-top: -15px">                    
                     
-                   <a href="" ng-click="goBack()"><i class="fa fa-arrow-left"></i> Back</a> 
-                  
-                 
-                   <section class="row">
+                  <a href="" ng-click="goBack()"><i class="fa fa-arrow-left"></i> Back</a>  
+
+                    <section class="row">
                         <section class="col-sm-12 col-md-7 col-lg-7 p-1">
                             <form ng-submit="changeOption()">
-                               <input type="text" ng-model="treatment.city" placeholder="City" class="form-control" uib-typeahead="city for city in cities | filter:$viewValue | limitTo:15" style="display: inline-block;width: 70%">
+                              <input type="text" ng-model="treatment.city" placeholder="City" class="form-control" uib-typeahead="city for city in cities | filter:$viewValue | limitTo:15" style="display: inline-block;width: 70%">
                                <!--<input type="text" name="country" ng-model="treatment.country" placeholder="Country" class="form-control" style="width: 40%;display: inline-block;">-->
-                               <input type="submit" class="btn btn-primary btn-sm" value="Search">
-                           </form>
-                           <hr>
-                           <label ng-if="searchResult.length > 0">Choose a center below</label><br>
-                           <section ng-if="searchResult.length > 5">
-                                <input type="text" name="" ng-model="filterResult" placeholder="Filter centers" class="form-control">
-                           </section>
+                              <input type="submit" class="btn btn-primary btn-sm" value="Search">
+                            </form>
+                            <hr>
+                            <label ng-if="searchResult.length > 0">Choose a center below</label><br>
+
+                            <section ng-if="searchResult.length > 5">
+                              <input type="text" name="" ng-model="filterResult" placeholder="Filter centers" class="form-control">
+                            </section>
                                                       
 
-                           <section ng-repeat="center in searchResult | filter: filterResult" style="padding:10px;border-bottom: 1px solid rgba(0,0,0,0.1)">
-                               <a href="" ng-click="selected(center)" style="font-weight: 400;color: green"><b>{{center.name}}</b><br><span>{{center.address}},{{center.city}},{{center.country}}</span></a>
-                           </section>
-                           <section style="text-align: center;">
-                            <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange;font-size: 24px;margin-top: 35px" ng-if="loading"></i>   
+                            <section ng-repeat="center in searchResult | filter: filterResult" style="padding:10px;border-bottom: 1px solid rgba(0,0,0,0.1)">
+                               <a href="" type="button" data-target="#drugSelected" ng-click="selected(center)" style="font-weight: 400;color: green"><b>{{center.name}}</b><br><span>{{center.address}},{{center.city}},{{center.country}}</span></a>
+                            </section>
+                            <section style="text-align: center;">
+                              <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange;font-size: 24px;margin-top: 35px" ng-if="loading"></i>   
                             </section>                          
                             
                         </section>
-                        <section class="col-sm-12 col-md-5 col-lg-5 p-1">
 
-                           <h6 style="background-color: #d7dde4;padding: 10px">Selected Center</h6>
+                        <section class="col-sm-12 col-md-5 col-lg-5 p-1" id="drugSelected">
+
+                            <h6 style="background-color: #d7dde4;padding: 10px">Selected Center</h6>
                             
-                           <section  style="line-height: 30px;">
-                                    <strong style="display: block;margin-top: 5px;">{{pickedCenter.name}}</strong>
-                                    <span style="display: block"><i class="fa fa-globe" ng-if="pickedCenter.address"></i> {{pickedCenter.address}} {{pickedCenter.city}} {{pickedCenter.country}}</span>
-                                    <span style="display: block;margin-bottom: 5px"><i class="fa fa-phone" ng-if="pickedCenter.phone"></i> {{pickedCenter.phone}}</span>
+                            <section  style="line-height: 30px;">
+                              <strong style="display: block;margin-top: 5px;">{{pickedCenter.name}}</strong>
+                              <span style="display: block"><i class="fa fa-globe" ng-if="pickedCenter.address"></i> {{pickedCenter.address}} {{pickedCenter.city}} {{pickedCenter.country}}</span>
+                              <span style="display: block;margin-bottom: 5px"><i class="fa fa-phone" ng-if="pickedCenter.phone"></i> {{pickedCenter.phone}}</span>
                             </section>
                             <p ng-if="!pickedCenter" class="text-danger" style="text-align: center;padding: 10px">none</p>
 
                             <h6 style="padding: 7px;background-color: #d7dde4;padding: 10px">Availability <small class="updateInfo" ng-class="{'text-danger': status === 'Not Updated!'}">{{status}}</small></h6>
                             
                             <a href="" ng-repeat="d in TestList" style="display: block;margin-top: 10px;padding-left: 5px">
-                                <span ng-class="{'notAvail': d.available === false}">{{d.name}} &nbsp;<span style="font-size: 8px" ng-if="d.available === true">available</span></span>
+                              <span ng-class="{'notAvail': d.available === false}">{{d.name}} &nbsp;<span style="font-size: 8px" ng-if="d.available === true">available</span></span>
                             </a>
 
                             <div style="padding: 20px;text-align: center;">
@@ -2265,7 +2266,7 @@
             </div>
         </div>
     </div>
-    <a id="inView"></a>
+    <div id="inView2"></div>
  
 </div>
                          

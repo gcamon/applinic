@@ -4842,6 +4842,7 @@ app.controller("investigationController",["$scope","$http","labTests","scanTests
     $scope.treatment.city = patient.city;
     $scope.treatment.country = patient.country;
 
+    
 
     $scope.lab = function() {
       $scope.isNewLab = true;
@@ -4927,8 +4928,16 @@ app.controller("investigationController",["$scope","$http","labTests","scanTests
         $rootScope.treatment.typeOfSession = "";
 
         $scope.selected = function(center) {
+          //$location.hash("drugSelected")
+          //$anchorScroll(); 
+
+          var sd = angular.element(document.getElementById('main'));
+          var b = angular.element(document.getElementById('drugSelected'));
           
-          $anchorScroll(); 
+          sd.offset().top + 500;
+          
+
+          console.log(b[0].scrollHeight, sd[0].scrollHeight)
 
           $scope.pickedCenter = center;
           if($scope.message) 
@@ -8225,11 +8234,9 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
     reqModal(patientObj);
   }
 
-  $location.hash('inView');
+  
 
   $scope.writePrescription =function(){ 
-  
-    $anchorScroll();    
     $scope.isToPrescribe = true;
     $scope.isToSeeRecord = false;
     $scope.isToViewLabPrescriptionReq = false;
