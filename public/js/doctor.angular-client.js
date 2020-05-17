@@ -7686,11 +7686,11 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
   "$filter","ModalService","Drugs","mySocket","$resource","deviceCheckService",
   "myPatientControllerService","outPatientBillingService",
   "getPatientMedicationByDoctorService","getMedicalHistoryService","drugNotRanService","getAllPharmacyService",
-  "getSessionService",'$compile',"$interval","$timeout","$anchorScroll",
+  "getSessionService",'$compile',"$interval","$timeout",
   function($scope,$http,$location,$window,$rootScope,templateService,localManager,$filter,ModalService,
     Drugs,mySocket,$resource,deviceCheckService,myPatientControllerService,outPatientBillingService,
     getPatientMedicationByDoctorService,getMedicalHistoryService,drugNotRanService,getAllPharmacyService,
-    getSessionService,$compile,$interval,$timeout,$anchorScroll){
+    getSessionService,$compile,$interval,$timeout){
 
   var patient = {}; //patient obj.
   
@@ -8266,7 +8266,6 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
   //out patient billing logic
 
   $scope.outPatientBilling = function() {
-    $anchorScroll();    
     $scope.isToPrescribe = false;
     $scope.isToSeeRecord = false;
     $scope.isToViewLabPrescriptionReq = false;
@@ -8360,8 +8359,6 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
   }
 
   $scope.viewMedicalHistory = function(){
-    
-    $anchorScroll();    
     $scope.isToSeeRecord = true;
     $scope.isToPrescribe = false;
     $scope.isToViewLabPrescriptionReq = false;
@@ -8625,7 +8622,7 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
     $scope.pickedCenter = null;
 
     $scope.selected = function(center) {
-      $anchorScroll();
+      
       $scope.pickedCenter = center;
       if($scope.message) 
         $scope.message = null;

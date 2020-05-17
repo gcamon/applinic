@@ -791,8 +791,11 @@
                <a href="" ng-click="selected(center)" style="font-weight: 400;color: green"><b>{{center.name}}</b><br><span>{{center.address}},{{center.city}},{{center.country}}</span><br><span>{{center.phone}}</span></a>
             </section>
             <section style="text-align: center;">
-            <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange;font-size: 24px;margin-top: 35px" ng-if="loading"></i>   
-            </section>                       
+            <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange;font-size: 24px;margin-top: 35px" ng-if="isLoading"></i>   
+            </section>
+           
+            <p ng-show="searchResult.length == 0" style="text-align: center;">No center was found based on search criteria.</p>
+                                          
         </section>
         
         <section class="col-sm-12 col-md-5 col-lg-5 p-1" id="selected">
