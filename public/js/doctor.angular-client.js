@@ -4825,6 +4825,7 @@ app.service("getAllRadiologyService",["$resource",function($resource){
   return $resource("/user/getAllRadiology");
 }]);
 
+
 app.controller("investigationController",["$scope","$http","labTests","scanTests",
   "$rootScope","$resource","templateService","labNotRanService","getAllLaboratoryService",
   "radioNotRanService","getAllRadiologyService","$anchorScroll","$location",
@@ -4927,24 +4928,17 @@ app.controller("investigationController",["$scope","$http","labTests","scanTests
         patient.patient_id = patient.patient_id || patient.user_id;
         $rootScope.treatment.typeOfSession = "";
 
+       
         $scope.selected = function(center) {
-          //$location.hash("drugSelected")
-          //$anchorScroll(); 
 
-          var sd = angular.element(document.getElementById('main'));
-          var b = angular.element(document.getElementById('drugSelected'));
-          
-          sd.offset().top + 500;
-          
+        
 
-          console.log(b[0].scrollHeight, sd[0].scrollHeight)
-
+        
+        $anchorScroll();
+      
           $scope.pickedCenter = center;
           if($scope.message) 
             $scope.message = null;
-
-
-         
 
           var source = labNotRanService;//$resource("/user/laboratory/not-ran-services");
 
@@ -7707,6 +7701,8 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
   * @writePrescription,@viewMedicalHistory,@writeNew all controls the html element on the template
   */ 
 
+  $location.hash("selected");
+ 
   var path = localManager.getValue("currentPage") || $location.path();
   var arr = path.split("/");  
   var userId = arr[arr.length-1];
@@ -8629,6 +8625,7 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
     $scope.pickedCenter = null;
 
     $scope.selected = function(center) {
+      $anchorScroll();
       $scope.pickedCenter = center;
       if($scope.message) 
         $scope.message = null;
@@ -8683,7 +8680,7 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
     //other activities
     $scope.viewSession = function () { 
      
-      $anchorScroll();    
+     
       loadSession();
       $scope.isToSeeRecord = false;
       $scope.isToPrescribe = false;
@@ -8741,7 +8738,7 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
 
   $scope.viewLabPrescriptionRequest = function () {
     
-    $anchorScroll();
+    
     $scope.isToSeeRecord = false;
     $scope.isToPrescribe = false;
     $scope.isToViewLabPrescriptionReq = true;
@@ -8758,7 +8755,7 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
 
   $scope.viewLabReport = function () {
     
-    $anchorScroll();
+    
     $scope.isToSeeRecord = false;
     $scope.isToPrescribe = false;
     $scope.isToViewLabPrescriptionReq = false;
@@ -8777,7 +8774,7 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
 
   $scope.viewRadioReport = function () {
    
-    $anchorScroll();
+    
     $scope.isToSeeRecord = false;
     $scope.isToPrescribe = false;
     $scope.isToViewLabPrescriptionReq = false;
@@ -8795,7 +8792,7 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
 
 
   $scope.viewRadioPrescriptionRequest = function () {
-    $anchorScroll();  
+    
     $scope.isToSeeRecord = false;
     $scope.isToPrescribe = false;
     $scope.isToViewLabPrescriptionReq = false;
