@@ -15266,7 +15266,7 @@ app.controller("pharmacyCenterDashboardController",["$scope","$location","templa
      $location.path(localManager.getValue("currPageForPharmacy"));
     } else {
       //$location.path("/referred-patients");
-      $location.path("/welcome");
+      $location.path("/referred-patients");
     }
     $rootScope.attendanceList = localManager.getValue("holdPrescriptionForAttendance") || []; //display patients in attendace list when added
 
