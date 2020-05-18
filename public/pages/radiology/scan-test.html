@@ -6,10 +6,12 @@
 	</div>
 </div>-->
 <div class="pl-0 card-center-1 card" style="position: relative;">
-	    <h5 style="padding:15px;" class="h6">Radiology Reports</h5>   
-	    <div style="position: absolute;right: 15px;top:5px">
-	      <input type="text" name="" placeholder="Filter by test name, center name, date sent, date received, etc" ng-model="filterResult" class="form-control">
-	    </div>
+    <div class="col-md-7">
+    	<h5 style="padding:15px;" class="h6">Radiology Reports</h5>   
+    </div>
+    <div class="col-md-5">
+       <input type="text" name="" placeholder="Filter by test name, center name, date sent, date received, etc" ng-model="filterResult" class="form-control">
+    </div>
 </div>
 <div ng-if="!isViewSingle">
 <section class="card card-center-1 mb-1" ng-repeat="test in labTest | filter : filterResult | orderBy: '-receive_date'" id="{{test.ref_id}}" ng-show="test.pdf_report.length > 0">	
@@ -44,7 +46,7 @@
 
 	              <span ng-if="test.conclusion === 'Pending'"><strong>Status: </strong> <span style="color: red">Awaiting test result</span></span><br>
 	            <!--<p><strong>Date sent: </strong>{{test.sent_date | date : "mediumDate"}} &nbsp; <strong>Time: </strong>{{test.sent_date | date : "shortTime"}}</p>-->
-	            <strong>Date received: </strong> {{test.receive_date | date: "mediumDate" || "Pending"}} <span am-time-Ago="test.receive_date" ng-if="test.receive_date"></span><br>
+	            <strong>Date received: </strong> {{test.receive_date | date: "mediumDate" || "Pending"}} <span ng-show="test.receive_date">( <span am-time-Ago="test.receive_date" ng-if="test.receive_date"></span> )</span><br>
 
 
 	            <strong>Indication: </strong> <span>{{test.indication}}</span><br>
@@ -80,18 +82,18 @@
 	        		<span style="display: block;">{{test.advise}}</span>
 	        	</blockquote>
 	        	
-	        	<div class="col-md-5 col-lg-5 pl-0 ml-0">
-		        	<div ng-show="test.pdf_report[0]">
-		        		<a href="{{'https://drive.google.com/viewerng/viewer?embedded=true&url=https://applinic.com' + test.pdf_report[0].pathname}}" class="btn btn-simple btn-block" target="_blank">Click to view Report in PDF</a>
-		        	</div>
-		        	<div class="no-mobile-item-display" ng-show="test.patient_id_of_study">
-		        		<a href="{{'/dcm?id=' + test.patient_id_of_study + '&key=' + test.study_id}}" class="btn btn-primary btn-block" target="_blank">Click to view the DICOM image in viewer</a>
-		        	</div>
-		        	<div class="mobile-item-display" ng-show="test.study_id">
-		        		<a href="{{'/dicom-mobile?id=' + test.study_id}}" class="btn btn-primary btn-block" target="_blank">Click to view the DICOM image in viewer</a>
-		        	</div>
+	        	
+	        	<div ng-show="test.pdf_report[0]" class="col-md-5 col-lg-5">
+	        		<a href="{{'https://drive.google.com/viewerng/viewer?embedded=true&url=https://applinic.com' + test.pdf_report[0].pathname}}" class="btn btn-simple btn-block" target="_blank">Click to view Report in PDF</a>
 	        	</div>
-	        	<div class="col-md-7 col-lg-7 pl-0 ml-0" style="text-align: right;">
+	        	<div class="no-mobile-item-display col-md-5 col-lg-5" ng-show="test.patient_id_of_study">
+	        		<a href="{{'/dcm?id=' + test.patient_id_of_study + '&key=' + test.study_id}}" class="btn btn-primary btn-block" target="_blank">Click to view the DICOM image in viewer</a>
+	        	</div>
+	        	<div class="mobile-item-display col-md-5 col-lg-5" ng-show="test.study_id">
+	        		<a href="{{'/dicom-mobile?id=' + test.study_id}}" class="btn btn-primary btn-block" target="_blank">Click to view the DICOM image in viewer</a>
+	        	</div>
+	        	
+	        	<div class="col-md-2 col-lg-2 pl-0 ml-0" style="text-align: right;">
 	        		<i class="fa fa-share btn btn-neutral" aria-hidden="true" style="font-size:18px;margin-right:20p;cursor:pointer;padding: 5px 15px" title="Forward this investigation to another center" ng-click="forwardTest(test,'Radiology')"></i>
 	        	</div>
 	        	<div class="clearfix"></div>
@@ -226,23 +228,24 @@
 	        	</blockquote>
 	        	
 
-	        	<div class="col-md-5 col-lg-5 pl-0 ml-0">
-		        	<div ng-show="test.pdf_report[0]">
-		        		<a href="{{'https://drive.google.com/viewerng/viewer?embedded=true&url=https://applinic.com' + test.pdf_report[0].pathname}}" class="btn btn-simple btn-block" target="_blank">Click to view Report in PDF</a>
-		        	</div>
-		        	<div class="no-mobile-item-display" ng-show="test.patient_id_of_study">
-		        		<a href="{{'/dcm?id=' + test.patient_id_of_study + '&key=' + test.study_id}}" class="btn btn-primary btn-block" target="_blank">Click to view the DICOM image in viewer</a>
-		        	</div>
-		        	<div class="mobile-item-display" ng-show="test.study_id">
-		        		<a href="{{'/dicom-mobile?id=' + test.study_id}}" class="btn btn-primary btn-block" target="_blank">Click to view the DICOM image in viewer</a>
-		        	</div>
+	        	<div ng-show="test.pdf_report[0]" class="col-md-5 col-lg-5">
+	        		<a href="{{'https://drive.google.com/viewerng/viewer?embedded=true&url=https://applinic.com' + test.pdf_report[0].pathname}}" class="btn btn-simple btn-block" target="_blank">Click to view Report in PDF</a>
 	        	</div>
-	        	<div class="col-md-7 col-lg-7 pl-0 ml-0" style="text-align: right;">
+	        	<div class="no-mobile-item-display col-md-5 col-lg-5" ng-show="test.patient_id_of_study">
+	        		<a href="{{'/dcm?id=' + test.patient_id_of_study + '&key=' + test.study_id}}" class="btn btn-primary btn-block" target="_blank">Click to view the DICOM image in viewer</a>
+	        	</div>
+	        	<div class="mobile-item-display col-md-5 col-lg-5" ng-show="test.study_id">
+	        		<a href="{{'/dicom-mobile?id=' + test.study_id}}" class="btn btn-primary btn-block" target="_blank">Click to view the DICOM image in viewer</a>
+	        	</div>
+	        	
+	        	<div class="col-md-2 col-lg-2 pl-0 ml-0" style="text-align: right;">
 	        		<i class="fa fa-share btn btn-neutral" aria-hidden="true" style="font-size:18px;margin-right:20p;cursor:pointer;padding: 5px 15px" title="Forward this investigation to another center" ng-click="forwardTest(test,'Radiology')"></i>
 	        	</div>
 	        	<div class="clearfix"></div>
 	        </div>      	
-	</div>		
+	</div>	
+
+		
 
 	<div class="p-1"> 			
 		

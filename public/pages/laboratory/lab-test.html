@@ -21,24 +21,18 @@
 		</div>
 	</div>-->
 	<div class="pl-0 card-center-1 card" style="position: relative;">
-	    <h5 style="padding:15px;" class="h6">Laboratory Reports</h5>   
-	    <div style="position: absolute;right: 15px;top:5px">
+		<div class="col-md-7">
+	    	<h5 style="padding:15px;" class="h6">Laboratory Reports</h5>   
+	    </div>
+	    <div class="col-md-5">
 	       <input type="text" name="" placeholder="Filter by test name, center name, date sent, date received, etc" ng-model="filterResult" class="form-control">
 	    </div>
   	</div>
 	<div ng-if="!isViewSingle">
 	<section  class="card card-center-1 mb-1" ng-repeat="test in labTest | filter : filterResult | orderBy: '-sent_date' " id="{{test.ref_id}}" ng-if="test.conclusion !== 'Pending'">	
 			
-			<div class="p-1">
-					<!--<div style="text-align: center;">	
+			<div class="pb-0 pt-1 pl-1 pr-1">
 					
-					<h5><b>{{test.center_name}}</b></h5>
-		           
-		            <i class="fa fa-globe"></i>{{test.center_address}} {{test.center_city}} {{test.center_country}}<br>
-		           	
-		            <i class="fa fa-phone"></i> {{test.center_phone}}<br>        
-		            <a href="{{test.center_profile_url}}" title="view profile" ng-if="test.center_profile_url">View profile</a>
-		            </div>-->
 
 		            <div  style="position: relative;padding-top: 10px">
 			            <button class="collapsed dropdown-toggle btn btn-simple" role="button" data-toggle="collapse" data-parent="#accordion" href="#{{'test' + test.ref_id + test.test_id}}" aria-expanded="false" aria-controls="collapsefifty">View Details</button>
@@ -59,13 +53,13 @@
 
 			              <span ng-if="test.conclusion === 'Pending'"><strong>Status: </strong> <span style="color: red">Awaiting test result</span></span><br>
 			            <!--<p><strong>Date sent: </strong>{{test.sent_date | date : "mediumDate"}} &nbsp; <strong>Time: </strong>{{test.sent_date | date : "shortTime"}}</p>-->
-			            <strong>Date received: </strong> {{test.receive_date | date: "mediumDate" || "Pending"}} <span am-time-Ago="test.receive_date" ng-if="test.receive_date"></span><br>
+			            <strong>Date received: </strong> {{test.receive_date | date: "mediumDate" || "Pending"}} ( <span am-time-Ago="test.receive_date" ng-if="test.receive_date"></span> )<br>
 
 
 			            <strong>Indication: </strong> <span>{{test.indication}}</span>		              
 			            
 			        </div>
-			        <br>
+			       
 					<div>
 			            <h6>Test(s) requested:</h6>
 			            <br>
@@ -80,14 +74,14 @@
 			            </ol>
 
 			        </div> 
-			        <br> 
+			       
 		    		<div ng-show="test.conclusion == 'Pending'">
 			            <h6>Test Report: </h6>
 			            <p ng-if="test.conclusion == 'Pending'" style=""> No report received at this time</p>
 			        </div>      	
 			</div>		
 			
-    		<div class="p-1">    			
+    		<div class="pt-0 pb-1 pl-1 pr-1">    			
     			<div ng-if="test.report !== 'Pending'" class="patient-tests" ng-repeat = "testRan in test.report">
     				<!--<article ng-repeat = "testRan in test.report">
     					<div><strong>{{testRan.name}}:</strong></div>
@@ -168,16 +162,8 @@
 
 		<div ng-if="isViewSingle">
 		<section  class="card card-center-1 mb-1" ng-repeat="test in singleView | filter : filterResult " id="{{test.ref_id}}" ng-if="test.conclusion !== 'Pending'">		
-			<div class="p-1">
-					<!--<div style="text-align: center;">	
-					
-					<h5><b>{{test.center_name}}</b></h5>
-		           
-		            <i class="fa fa-globe"></i>{{test.center_address}} {{test.center_city}} {{test.center_country}}<br>
-		           	
-		            <i class="fa fa-phone"></i> {{test.center_phone}}<br>        
-		            <a href="{{test.center_profile_url}}" title="view profile" ng-if="test.center_profile_url">View profile</a>
-		            </div>-->
+			<div class="pb-0 pt-1 pl-1 pr-1">
+				
 
 		            <div  style="position: relative;padding-top: 10px">
 			            <button class="collapsed dropdown-toggle btn btn-simple" role="button" data-toggle="collapse" data-parent="#accordion" href="#{{'test' + test.ref_id + test.test_id}}" aria-expanded="false" aria-controls="collapsefifty">View Details</button>
@@ -205,7 +191,7 @@
 			              
 			            
 			        </div>
-			        <br>
+			       
 					<div>
 			            <h6>Test(s) requested:</h6>
 			            <br>
@@ -220,14 +206,14 @@
 			            </ol>
 
 			        </div> 
-			        <br> 
+			      
 		    		<div ng-show="test.conclusion == 'Pending'">
 			            <h6>Test Report: </h6>
 			            <p ng-if="test.conclusion == 'Pending'" style=""> No report received at this time</p>
 			        </div>      	
 			</div>		
 			
-    		<div class="p-1">    			
+    		<div class="pt-0 pb-1 pl-1 pr-1">    			
     			<div ng-if="test.report !== 'Pending'" class="patient-tests" ng-repeat = "testRan in test.report">
     				<!--<article ng-repeat = "testRan in test.report">
     					<div><strong>{{testRan.name}}:</strong></div>
@@ -303,7 +289,7 @@
     		</div>  		
 		</section>
 		<section  class="card card-center-1 mb-1" ng-repeat="test in singleView | filter : filterResult " id="{{test.ref_id}}" ng-if="test.conclusion == 'Pending'">		
-			<div class="p-1">
+			<div class="pb-0 pt-1 pl-1 pr-1">
 					<!--<div style="text-align: center;">	
 					
 					<h5><b>{{test.center_name}}</b></h5>

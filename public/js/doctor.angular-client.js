@@ -3170,7 +3170,7 @@ app.controller('listController',["$scope","$location","$window","localManager",
   }
 
   
-  $rootScope.$broadcast("users presence",{type: 'searchDocList',data: $scope.searchResult ,sockets: $rootScope.sockets});
+  //$rootScope.$broadcast("users presence",{type: 'searchDocList',data: $scope.searchResult ,sockets: $rootScope.sockets});
 
   localManager.setValue("currentPageForPatients","/list");
                       
