@@ -99,12 +99,12 @@
 		</div>-->
 
 		<div class="card p-2">
-		<h4>Investigation Request</h4>
+		<h4 class="h6">Investigation Request</h4>
 		<div>
 			<table>
 				<tbody class="p-1">
 					<tr>
-						<td style="width: 30%"><h5>Patient Name</h5> </td>
+						<td style="width: 30%"><label>Patient Name </label></td>
 						<td style="width: 60%">{{refInfo.laboratory.patient_title}} {{refInfo.laboratory.patient_firstname}} {{refInfo.laboratory.patient_lastname}}</td>
 					</tr>
 					<tr>
@@ -232,7 +232,7 @@
                      	<span ng-show="refInfo.referral_pays == 'No' || !refInfo.referral_pays">
                      		<button class="btn btn-success"  ng-click="sendBill(refInfo.laboratory.patient_id,resend)" ng-show="grabRawAmount > 0"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-show="loading"></i> Patient's E-Wallet </button> &nbsp;&nbsp;&nbsp;<button class="btn btn-success" ng-show="grabRawAmount > 0" ng-click="centerVerifyPay(refInfo)"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-show="refInfo.loading"></i>{{(refInfo.loading) ? "" : "Center's E-Wallet" }}</button>
                      	</span>
-                     	<span ng-show="refInfo.referral_pays == 'Yes' && !refInfo.referral_pays">
+                     	<span ng-show="refInfo.referral_pays == 'Yes'">
                      		<button class="btn btn-success" ng-show="grabRawAmount > 0" ng-click="referralVerifyPay(refInfo)" ><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-show="refInfo.loading"></i>{{(refInfo.loading) ? "" : "Referral's E-Wallet" }}</button>
                      	</span>
                      </div>

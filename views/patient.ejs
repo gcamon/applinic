@@ -627,16 +627,62 @@
 
                                     </div>
 
-                                    <div class="col-sm-12 col-md-12 hidden-md-up dropdown" style="position: relative;">
+                                    <div class="hidden-md-up dropdown p-0" style="position: relative;">
 
-                                            <a href="#/my-doctors" class="text-muted text-danger btn btn-simple mt-2 round mob-art"  id="navbarDropdownMenuLink23" style="font-size: 14px;" href="#/my-doctors" ng-click="closeAccDiv('qs')"><i class="fa fa-users"></i>
+                                          <ul style="list-style: none;display: inline-block;width: 100%;padding:0;text-align: center;margin-top: 12px;margin-bottom: 0" class="ml-0 pl-0">
+                                            <li style="float: left;width: 50%;padding: 12px 5px;border-left: none;" class="btn btn-simple font-1_1"><a href="#/my-doctors" class="text-danger" style="display: block;height: 100%"><i class="fa fa-users"></i> My Doctors</a> </li>
+
+                                            <li style="float: left;width: 50%;padding: 12px 5px;border-left: none;border-right: none;" class="btn btn-simple font-1_1"><a href="#/" class="text-danger" style="display: block;height: 100%"><i class="fa fa-user-md"></i> Services</a></li>
+                                          </ul>
+                                          
+                                          <!--<ul style="list-style: none;display: inline-block;width: 100%;padding:0;text-align: center;margin-top: -20px;" class="ml-0 pl-0">
+                                            <li style="float: left;width: 20%;padding: 10px 5px" class="btn btn-simple text-danger font-1_1 mr-1">
+                                              
+                                                Drug
+                                            </li>
+                                            <li style="float: left;width: 20%;padding: 10px 5px" class="btn btn-simple text-danger font-1_1 mr-2">
+                                                
+                                                Lab
+                                            </li>
+                                            <li style="float: left;width: 20%;padding: 10px 5px" class="btn btn-simple text-danger font-1_1 mr-1">
+                                               
+                                                Radio
+                                            </li>
+                                            <li style="float: left;width: 20%;padding: 10px 5px" class="btn btn-simple text-danger font-1_1 mr-1">
+                                                
+                                                Chart
+                                            </li>
+                                           
+                                          </ul>-->
+
+                                          <ul style="list-style: none;display: inline-block;width: 100%;padding:0;text-align: center;margin-top: -40px;" class="ml-0 pl-0">
+
+                                              <li style="float: left;width: 28%;padding: 10px 5px" class="btn btn-simple text-danger font-1_1 mr-1">
+                                                <a href="" class="text-muted dropdown-toggle"  id="navbarDropdownMenuLink2" data-toggle="dropdown" ng-click="getAccess()" style="display: block;height: 100%">
+                                                   MRA Key
+                                                </a>
+                                              </li>
+
+                                              <li style="float: left;width: 28%;padding: 10px 5px" class="btn btn-simple text-danger font-1_1 mr-1">
+                                              <a href="" data-toggle="dropdown" class="dropdown-toggle" id="navbarDropdownMenuLink23" ng-click="getAccess('qs')" style="display: block;height: 100%"><i class="fa fa-search"></i> </a>
+                                              </li>
+
+                                              <li style="float: left;padding: 10px 5px;width: 35%" class="btn btn-info btn-sm">
+                                                <a href="#/transactions" style="color:#fff;display: block;height: 100%">
+                                                  <span ng-cloak><i class="fa fa-spinner fa-pulse fa-1x fa-fw"  ng-if="loading"></i> {{(loading) ? "" : balance}}</span>
+                                                </a> 
+                                              </li>                                               
+                                          </ul>
+
+                                         
+                                            <!--<a href="#/my-doctors" class="text-muted text-danger btn btn-simple mt-2 round mob-art"  id="navbarDropdownMenuLink23" style="font-size: 14px;"><i class="fa fa-users"></i>
                                             <span  class="text-danger">My Doctors</span>
-                                            </a>
+                                            </a>-->
                                        
                                              <!--<a href="#/need-specialist" class="text-muted text-danger btn btn-simple btn-block mt-2 round mob-art"  id="navbarDropdownMenuLink23" style="font-size: 14px;"> <i class="fa fa-user-md"></i> Need a Doctor</a> -->
-                                             <a href="#/" class="text-muted text-danger btn btn-simple  mt-2 round mob-art"  id="navbarDropdownMenuLink23" style="font-size: 14px;"> <i class="fa fa-user-md"></i> Healthcare Services</a>                                                                
+                                             <!--<a href="#/" class="text-muted text-danger btn btn-simple  mt-2 round mob-art"  id="navbarDropdownMenuLink23" style="font-size: 14px;"> <i class="fa fa-user-md"></i> Healthcare Services</a> -->                                                               
                                        
-                                            <a href="" class="text-muted dropdown-toggle btn btn-simple  mt-2 round mob-art"  id="navbarDropdownMenuLink23" data-toggle="dropdown" ng-click="getAccess('qs')" style="font-size: 14px"> <i class="fa fa-search"></i>  Quick Searches </a>                                                                  
+                                            <!--<a href="" class="text-muted dropdown-toggle btn btn-simple  mt-2 round mob-art"  id="navbarDropdownMenuLink23" data-toggle="dropdown" ng-click="getAccess('qs')" style="font-size: 14px"> <i class="fa fa-search"></i>  Quick Searches </a>  -->                                                                
                                       
 
                                         <div class="dropdown-menu dropdown-menu-right p-2"  aria-labelledby="navbarDropdownMenuLink23" id="accessBody1" style="line-height: 30px;font-size: 16px">                                       
@@ -668,13 +714,13 @@
                                     <span style="color:red">Create Family Account</span>
                                 </a>-->
                                     <div class="col-sm-12 col-md-2 col-lg-2"> 
-                                        <a href="#/transactions" class="btn btn-info btn-sm header-btn" style=""><i class="fa fa-money"></i>
+                                        <a href="#/transactions" class="btn btn-info btn-sm header-btn no-mobile-item-display" style=""><i class="fa fa-money"></i>
                                         <span ng-cloak><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i> {{(loading) ? "" : balance}}</span>
                                         </a> 
                                     </div> 
 
                                     <div class="col-sm-12 col-md-2 col-lg-2 dropdown" style="position: relative;"> 
-                                        <article class="btn btn-neutral mob-art" style="font-size: 14px;" >
+                                        <article class="btn btn-neutral mob-art no-mobile-item-display" style="font-size: 14px;" >
                                             <!--<strong style="float: left;">MRA Key: </strong>
                                             <span style="width: 110px;float: left;padding-left: 2px" title="Your Medical Record Access Key is {{checkLogIn.mrak}}" class="ellipsis">{{(copy) ? "Copied!" : checkLogIn.mrak}}</span> &nbsp;  
                                             <span class="fa fa-copy text-warning" text="checkLogIn.mrak" style="padding-left: 5px" clipboard  supported="supported" on-copied="success(checkLogIn.mrak)" title="{{copy}}" on-error="fail(err)"> copy</span>-->
