@@ -56,7 +56,10 @@
 
 <div class="card p-2 card-center-1">
 	<h4 class="h6">Prescription Requests</h4>
-	<br>
+	<button href="#info" class="collapsed btn-neutral btn dropdown-toggle" role="button"   data-toggle="collapse" data-parent="#accordion" aria-expanded="false" aria-controls="collapsefifty">How do I use this?</button>
+	<p id="info" class="panel-collapse collapse p-1" role="tabpanel" aria-labelledby="headingfifty">
+	<b>Tips:</b> By default, today's date is used for search criteria. You can choose your desired date range for the search or 'Clear' the dates and search with other criteria (Reference or Phone number) singly or in combination with each other. </p>
+	<hr>
 	<form class="row" ng-submit="searchTests()">
 		<div class="col-md-4">
 			<label> From </label>
@@ -130,7 +133,7 @@
 			<span class="text-warning">Loading...</span>
 		</div>	
 		<div style="text-align: center;padding-top: 40px" ng-show="requestList.length == 0">
-			<span class="text-muted">No request(s) found based on the search criteria!</span>
+			<span class="text-muted">No request(s) was found based on the search criteria!</span>
 		</div>		
 	</div>
 	

@@ -701,11 +701,11 @@ app.config(['$paystackProvider','$routeProvider',
 .when("/courier",{
   templateUrl: "/assets/pages/utilities/courier.html",
   controller: 'courierController',
-  resolve: {
+  /*resolve: {
     path: function($location,$rootScope){
       $rootScope.path = $location.path();  
     }
-  }
+  }*/
  })
 
  .when("/courier-response/:id",{
@@ -16017,8 +16017,8 @@ app.controller("labCenterDashboardController",["$scope","$location","$http","tem
     if(currPage) {
       $location.path(currPage);
     } else {
-      //$location.path("/referral/laboratory-test");
-      $location.path("/welcome");
+      $location.path("/referral/laboratory-test");
+      //$location.path("/welcome");
     }
 
     $rootScope.attendanceList = localManager.getValue("holdTestForAttendance") || [];
@@ -17828,10 +17828,10 @@ app.controller("radioCenterDashboardController",["$scope","$location","$http","t
   function($scope,$location,$http,templateService,localManager,ModalService,$rootScope){
     var currPage = localManager.getValue("currPageForRadiology");
     if(currPage) {
-     $location.path(currPage);
+      $location.path(currPage);
     } else {
-     //$location.path("/referral/radiology-test");
-     $location.path("/welcome");
+      $location.path("/referral/radiology-test");
+      //$location.path("/welcome");
     }
 
    $rootScope.attendanceList = localManager.getValue("holdTestForAttendance") || [];

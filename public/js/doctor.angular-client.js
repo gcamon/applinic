@@ -701,11 +701,11 @@ app.config(['$paystackProvider','$routeProvider',
 .when("/courier",{
   templateUrl: "/assets/pages/utilities/courier.html",
   controller: 'courierController',
-  resolve: {
+  /*resolve: {
     path: function($location,$rootScope){
       $rootScope.path = $location.path();  
     }
-  }
+  }*/
  })
 
  .when("/courier-response/:id",{

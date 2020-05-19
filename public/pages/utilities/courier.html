@@ -1,15 +1,15 @@
 
 
 <div>
-<a href="#{{path}}" class="btn btn-simple"><i class="fa fa-arrow-left"> Back</i></a>
+	<a href="#{{path}}" class="btn btn-simple"><i class="fa fa-arrow-left"> Back</i></a>
 </div>
 
  <div class="card p-1" id="track">
    
 	<div>
-		<h4 style="" class="mt-0"><i class="fa fa-motorcycle"></i> Courier Service</h4>
+		<h4 style="" class="mt-0 h6"><i class="fa fa-motorcycle"></i> Courier Service</h4>
 	</div>
-
+	<br>
     <div>		
     	<div class="col-md-7 col-sm-7 col-sm-12">
 	       		<div class="no-mobile-item-display">
@@ -66,9 +66,9 @@
     				<p class="text-muted">Please add dosage and quantity for the drug(s) above</p>    				
     					<section ng-repeat="j in noDosage" style="padding: 5px" ng-if="filteredPres.length == 0">
     						<form class="row">
-	    						<div>
+	    						<div style="position: relative;width: 90%;padding: 5px 10px">
 	    							<label>{{j.drug_name}}</label>
-	    							<a href="" ng-click="returnMain(j)" style="float: right;"> <i class="fa fa-refresh"></i></a>
+	    							<a href="" ng-click="returnMain(j)" style="position: absolute;right: 40px; top: 5px"> <i class="fa fa-refresh"></i></a>
 	    						</div>
     							<div class="col-sm-12 col-md-5">	    							
 	    							<select ng-model="j.dosage" class="form-control"  ng-if="j.dosage !== 'dosage'">
@@ -91,10 +91,10 @@
     					</section>
     					<section ng-repeat="j in noDosage" style="padding-bottom: 5px" ng-if="filteredPres.length > 0">
     						<form class="row" ng-if="j.picked">
-    							<div>
-    								<label>{{j.drug_name}}</label>
-    								<a href="" ng-click="returnMain(j)" style="float: right;"> <i class="fa fa-refresh"></i></a>
-    							</div>
+    							<div style="position: relative;width: 90%;padding: 5px 10px">
+	    							<label>{{j.drug_name}}</label>
+	    							<a href="" ng-click="returnMain(j)" style="position: absolute;right: 40px; top: 5px"> <i class="fa fa-refresh"></i></a>
+	    						</div>
 	    						<div class="col-sm-12 col-md-5">	    							
 	    							<select ng-model="j.dosage" class="col-sm-12 col-md-5" style="padding: 10px;margin-right: 5px" ng-if="j.dosage !== 'dosage'">
 	    								<option value="" disabled="disabled" selected="selected">_select description</option>
