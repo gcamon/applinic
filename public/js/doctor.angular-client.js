@@ -4930,9 +4930,6 @@ app.controller("investigationController",["$scope","$http","labTests","scanTests
 
        
         $scope.selected = function(center) {
-
-        
-
         
         $anchorScroll();
       
@@ -7686,11 +7683,11 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
   "$filter","ModalService","Drugs","mySocket","$resource","deviceCheckService",
   "myPatientControllerService","outPatientBillingService",
   "getPatientMedicationByDoctorService","getMedicalHistoryService","drugNotRanService","getAllPharmacyService",
-  "getSessionService",'$compile',"$interval","$timeout",
+  "getSessionService",'$compile',"$interval","$timeout","$anchorScroll",
   function($scope,$http,$location,$window,$rootScope,templateService,localManager,$filter,ModalService,
     Drugs,mySocket,$resource,deviceCheckService,myPatientControllerService,outPatientBillingService,
     getPatientMedicationByDoctorService,getMedicalHistoryService,drugNotRanService,getAllPharmacyService,
-    getSessionService,$compile,$interval,$timeout){
+    getSessionService,$compile,$interval,$timeout,$anchorScroll){
 
   var patient = {}; //patient obj.
   
@@ -8622,6 +8619,8 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
     $scope.pickedCenter = null;
 
     $scope.selected = function(center) {
+
+      $anchorScroll();
       
       $scope.pickedCenter = center;
       if($scope.message) 
