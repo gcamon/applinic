@@ -1,0 +1,50 @@
+
+
+<div class="card-center-1">
+	<a href="#{{path}}" class="btn btn-neutral btn-sm"><i class="fa fa-arrow-left"></i> Back</a>
+</div>
+<div class="card card-center-1 p-2" style="line-height: 35px">	
+  
+	<h4 class="h6">Consultation Fee Payment Invoice</h4>
+
+	<div>
+		<b>Receiver: </b> <span>{{consultation.sender.title}} {{consultation.sender.firstname}} {{consultation.sender.lastname}}</span>
+	</div>
+
+	<div>
+		<b>Specialty: </b> <span>{{consultation.sender.specialty}}</span>
+	</div>
+	
+	<div>
+		<b>Date Sent: </b> <span>{{consultation.fee.date | date: 'mediumDate'}}</span> ( <span am-time-ago='consultation.fee.date'></span> )
+	</div>
+
+	<div>
+		<b>Invoice ID : </b> <span>{{consultation.fee.invoiceId}}</span>
+	</div>
+	<br>
+	<div ng-show="!consultation.fee.is_paid && consultation.fee">
+		<button class="btn btn-primary btn-lg" ng-show="!loading" ng-click="payFee()">Pay {{consultation.fee.strAmount || consultation.fee.amount}}</button>
+		<i class="fa fa-spinner fa-pulse fa-1x fa-fw" ng-show="loading"></i>&nbsp;
+		<span ng-show="loading">Sending payment...</span>
+	</div>
+	<div ng-show="consultation.fee.is_paid">
+		<hr>
+		<label>Payment Status: </label> <b>Paid</b><br>
+		<label>Amount Paid: </label> <b>{{consultation.fee.strAmount || consultation.fee.amount}}</b><br>
+		<label>Date of Payment: </label> <b>{{consultation.fee.payment_date | date: 'mediumDate'}} ( <span am-time-ago='consultation.fee.payment_date'></span> )</b><br>
+		<p class="text-muted">This transaction has been settled. Payment for this consultation fee was made and received successfully.</p>
+	</div>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+

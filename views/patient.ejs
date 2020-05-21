@@ -315,6 +315,15 @@
                                                     <p> <span class="accent" ng-cloak>{{msg.firstname}}</span> <span style="display:block">{{msg.message}}</span> <small am-time-ago="msg.date" style="display:block" ng-cloak></small> </p>
                                                 </div>
                                             </div>
+
+                                            <div class="notification-item"  class="msg-drp-list" ng-click= "viewConsultationFee(msg.consultationFeeId,msg.message_id)" ng-if="msg.message == 'Consultation Fee'" style="cursor: pointer;">
+                                                <div class="img-col">
+                                                    <div class="img fa fa-user-md" style="font-size: 28px"></div>
+                                                </div>
+                                                <div class="body-col">
+                                                    <p> <span class="accent" ng-cloak>{{msg.firstname}}</span> <span style="display:block">{{msg.message}}</span> <small am-time-ago="msg.date" style="display:block" ng-cloak></small> </p>
+                                                </div>
+                                            </div>
                                             <div class="notification-item" ng-click= "viewResponse1(msg.user_id,msg.complaint_id)" ng-if="msg.category === 'need_doctor' && msg.category !== 'outPatientBilling' " style="cursor: pointer;">
                                                 <div class="img-col">
                                                     <div class="img fa fa-user-md"></div>
@@ -323,14 +332,15 @@
                                                     <p> <span class="accent" ng-cloak>Ref {{msg.complaint_id}}</span> <span style="display:block">{{msg.message}}</span> <small am-time-ago="msg.date" style="display:block" ng-cloak></small> </p>
                                                 </div>
                                             </div>
-                                            <div class="notification-item" ng-click= "viewMessage(msg.user_id,msg)" ng-if="msg.category !== 'need_doctor' && msg.category !== 'outPatientBilling'" style="cursor: pointer;">
+                                            <!--<div class="notification-item" ng-click= "viewMessage(msg.user_id,msg)" ng-if="msg.category !== 'need_doctor' && msg.category !== 'outPatientBilling' && msg.category == 'consultation'" style="cursor: pointer;">
                                                 <div class="img-col">
                                                     <div class="img" style="background-image: url({{msg.profile_pic_url}})"></div>
                                                 </div>
                                                 <div class="body-col">
                                                     <p> <span class="accent" ng-cloak>{{msg.title}} {{msg.firstname}} {{msg.lastname}}</span> <span style="display:block" ng-class="{'text-danger': msg.reason}" ng-cloak>{{msg.message}}</span> <span style="display:block" am-time-ago="msg.date" ng-cloak></span></p>
                                                 </div>
-                                            </div>
+                                            </div>-->
+                                            
                                         </li>
                                        <!--<% for(var i = userInfo.patient_mail.length -1; i >= 0; i--) { %>                                                          
                                         <div>{{getData("<%= userInfo.patient_mail[i].doctor_firstname%>","<%= userInfo.patient_mail[i].doctor_lastname %>","<%= userInfo.patient_mail[i].date %>","<%= userInfo.patient_mail[i].doctor_profile_pic_url %>","<%= userInfo.patient_mail[i].consultation_fee %>","<%= userInfo.firstname %>","<%= userInfo.ewallet.available_amount %>","<%= userInfo.patient_mail[i].doctor_id %>","<%= userInfo.patient_mail[i].service_access %>","<%= userInfo.patient_mail[i].doctor_specialty %>","<%= userInfo.patient_mail[i].message %>")}}

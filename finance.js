@@ -542,8 +542,87 @@ var basicPaymentRoute = function(model,sms,io,paystack,client,nodemailer){
 		}
 	});
 
-	/*this route handles the patient accepting consultation fee. the patient wallet will be debited and doctor's wallet credited slightly*/
+	/*this route handles the patient accepting consultation fee. 
+	the patient wallet will be debited and doctor's wallet credited slightly*/
 	
+	router.put("/user/patient/consultation-fee",function(req,res){
+
+		if(!req.user) {
+			res.send({message: "Session has expired!, refresh and log in"});
+			return;
+		}
+
+		if(req.user.type === "Patient" && req.body.patientId === req.user.user_id){		
+			if(req.body.amount <= req.user.ewallet.available_amount) {
+				model.consultationFee.findById(req.body.consultationFeeId)
+				.exec(function(err,consult){
+					if(err) throw err;
+					if(consult){
+						req.body.message = "Consultation fee";
+						req.body.date = + new Date();
+						var name = req.user.firstname || req.user.name;
+						var pay = new Wallet(req.body.date,name,req.user.lastname,req.body.message);
+						pay.consultation(model,req.body.amount,req.user,req.body.receiver,io,function(balance){						
+							consult.payment_date = new Date();
+							consult.is_paid = true;
+							consult.status = "Paid";
+							consult.save(function(err,info){
+								if(err) throw err;
+								console.log('consultation paid and updated!');
+							});
+
+							res.json({status: true,message: "Payment made successfully!",date:consult.payment_date});
+
+							model.user.findOne({user_id: consult.doctor_id},{doctor_patients_list:1,doctor_notification:1})
+							.exec(function(err,person){
+								var elemPos = person.doctor_patients_list.map(function(x){return x.patient_id}).indexOf(consult.patient_id);
+						    var patient;
+
+						    if(elemPos !== -1){
+
+						      patient = person.doctor_patients_list[elemPos];
+						      patient.fee_history.unshift(req.body.paymentMessage);
+
+						      var names = req.user.title + " " + req.user.firstname + " " + req.user.lastname;
+
+						      person.doctor_notification.unshift({
+						      	sender_id: req.user.user_id,
+										message_id: parseInt(randos.genRef(6)),
+										type: "Consultation fee",
+										date: + new Date(),
+										message: "Payment for consultation fee was successful.",
+										sender_firstname: req.user.firstname,
+										sender_lastname: req.user.lastname,
+										sender_age: "",
+										sender_gender: "",
+										sender_location: "",	
+										sender_profile_pic_url: req.user.profile_pic_url
+						      });
+
+						      person.save(function(err,info){
+						        if(err) throw err;
+						        console.log("fee history saved on doc patients' list");
+						      })
+
+						      io.sockets.to(req.body.patientId).emit("new consultation fee",{status: true,sender: names});
+						    }
+							});
+
+						});
+					} else {
+						res.json({status: false, message: "Consultation Fee Transaction not found!"});
+					}
+				});
+			} else {
+				res.json({success: false, message: 'You have insufficient balance to complete this transaction. Please fund your wallet.',isFund:true})
+			}
+
+		} else {
+			res.send({status:false,message: "Transaction not authorized"});
+		}
+
+	})
+
 	router.post("/user/patient/consultation-acceptance/confirmation",function(req,res){
 		if(!req.user) {
 			res.send({message: "Session has expired!, refresh and log in"});
@@ -680,7 +759,6 @@ var basicPaymentRoute = function(model,sms,io,paystack,client,nodemailer){
 	                        model.consult.remove({id: consultId},function(err,info){
 	                        	if(err) throw err;
 	                        	if(info){
-	                        		console.log(info)
 	                        		console.log("consultation record deleted!");
 	                        	}
 	                        });

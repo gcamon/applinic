@@ -231,11 +231,15 @@ app.config(['$paystackProvider','$routeProvider',
   controller: 'myPatientController'
  })  
 
-
  //wallet route
  .when("/wallet",{
   templateUrl: '/assets/pages/finance/my-wallet.html',
-  controller: 'walletController'
+  controller: 'walletController',
+  resolve: {
+    path: function($location,$rootScope){
+      $rootScope.path = $location.path();
+    }
+  }
  })
 
 
@@ -934,6 +938,16 @@ app.config(['$paystackProvider','$routeProvider',
   controller: "planCtrl"
 })
 
+.when('/consultation-fee/:id',{
+  templateUrl: "/assets/pages/patient/consultation-fee.html",
+  controller: "consultationFeeCtrl",
+  resolve: {
+    path: function($location,$rootScope){
+      $rootScope.path = $location.path();  
+    }
+  }
+})
+
 }])
 
 app.service('templateService',[function(){
@@ -1109,33 +1123,37 @@ app.service('templateService',[function(){
   //holds send Obj for doctor acceptance by the patient
   this.sendObj;
 
+  
+
+  var audio  = new Audio('/assets/audio/ping-bang.wav');
+  var audio2 = audio;
+  var audio3 = new Audio('/assets/audio/gets-in-the-way.mp3');
+  var audio4 = new Audio('/assets/audio/dreamy.wav');
+  var audio5 = new Audio('/assets/audio/camera-shutter-click-01.wav');
+  var audio0 = new Audio('/assets/audio/clunk-notification.wav');
+
   this.playAudio = function(track){
     switch(track){
-      case 1:
-        audio('/assets/audio/ping-bang.wav');
+      case 1: 
+        audio.play();
       break;
       case 2:
-        audio('/assets/audio/ping-bang.wav');
+        audio2.play();
       break;
       case 3:
-        audio('/assets/audio/gets-in-the-way.mp3');
+        audio3.play();
       break;
       case 4:
-        audio('/assets/audio/dreamy.wav');
+        audio4.play();
       break;
-      case 5: 
-        audio('/assets/audio/camera-shutter-click-01.wav');
+       case 5:
+        audio5.play();
       break;
-      default:
-        audio('/assets/audio/clunk-notification.wav');
-      break
+       case 0:
+        audio0.play();
+      break;
     }
     
-  }
-
-  var audio = function(trackurl){
-    var audio = new Audio(trackurl);
-    audio.play();
   }
 
   this.holdBriefForSpecificPatient;
@@ -1976,6 +1994,11 @@ app.controller("patientNotificationController",["$scope","$location","$http","$w
       var temp = "/outpatient-billing/" + id;
       $location.path(temp);
     }
+  }
+
+  $scope.viewConsultationFee = function(id,msgId) {
+    templateService.holdId = id;//this is underscore (_id) of the consult model in the back end;
+    $location.path('/consultation-fee/' + msgId );
   }
 
   $rootScope.viewMessage = function(id,msg){    
@@ -2923,17 +2946,22 @@ app.controller("presenceSocketController",["$rootScope","$scope","$window","mySo
   }
 
   $scope.newPatient = function(){
-
     ModalService.showModal({
-          templateUrl: 'patient-emergency-form.html',
-          controller: 'newPatientModalController'
+        templateUrl: 'patient-emergency-form.html',
+        controller: 'newPatientModalController'
       }).then(function(modal) {
-          modal.element.modal();
-          modal.close.then(function(result) {
-             
+        modal.element.modal();
+        modal.close.then(function(result) {             
       });
     });
   }
+
+  mySocket.on("new consultation fee",function(data){
+    templateService.playAudio(1);
+    var msg = data.sender 
+    + " demands you pay a consultation fee sent to you. Please check your mail in your account and see details.";
+    alert(msg);
+  })
 
   /***** Video Call Logic ********/
   //takes care of receiver accepting the video call 
@@ -9593,13 +9621,13 @@ app.controller("walletController",["$scope","$http","$rootScope","$location","Mo
   var user = localManager.getValue("resolveUser");
   $scope.pay = {};
   $scope.pay.pin = "";
-  $scope.pay.mode = "Pay with Card/Bank Account";
+  $scope.pay.mode2 = "Pay with Card/Bank Account";
 
   /*$scope.goBack = function () {
     $location.path(localManager.getValue("currentPageForPatients"))
   }*/
 
-  $scope.$watch("pay.mode",function(newVal,oldVal){
+  $scope.$watch("pay.mode2",function(newVal,oldVal){
     if(newVal){
       
       switch(newVal) {
@@ -10625,6 +10653,52 @@ app.controller('welcomeController',["$scope","$rootScope","templateService","loc
 
   localManager.removeItem("onreg_held_item");
 
+}]);
+
+app.controller('consultationFeeCtrl',["$scope","$http","templateService","$filter","$rootScope","$location",
+  function($scope,$http,templateService,$filter,$rootScope,$location){
+
+  $http.get('/user/patient/consultation-fee',{params: {id: templateService.holdId}})
+  .success(function(data){
+    //console.log(data)
+    $scope.consultation = data;
+  })
+
+  $scope.payFee = function() {
+    if($scope.consultation){
+      var date = new Date();
+      var msg = "Consultation Fee Payment made on " + $filter('date')(date, 'EEE, MMM d, y') + " amount " + $scope.consultation.fee.strAmount
+      var sendObj = {
+        receiver: $scope.consultation.fee.doctor_id,
+        amount: $scope.consultation.fee.amount,
+        consultationFeeId: $scope.consultation.fee._id,
+        patientId: $scope.consultation.fee.patient_id,
+        paymentMessage: {tag: 'Payment',body: msg}
+      }
+
+      $scope.loading = true;
+
+      $http({
+        method  : 'PUT',
+        url     : "/user/patient/consultation-fee",
+        data    : sendObj,
+        headers : {'Content-Type': 'application/json'} 
+      })
+      .success(function(data) {   
+        if(data.status){
+          $scope.consultation.fee.is_paid = true;
+          $scope.consultation.fee.payment_date = data.date;
+          $rootScope.$broadcast('debit',{status:true});
+        } else if(data.isFund) {
+          alert(data.message);
+          $location.path('wallet');
+        } else {
+          alert(data.message);
+        }
+        $scope.loading = false;
+      });
+    }
+  }
 }]);
 
 

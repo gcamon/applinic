@@ -88,22 +88,40 @@
 	
 </div>-->
 
+<div class="card-center-1">
+	<a href="#{{path}}" class="btn btn-neutral btn-sm"><i class="fa fa-arrow-left"></i> Back</a>
+</div>
+
 <div class="card card-center-1 p-2">
 	<h4 class="mb-1 p-0">Fund wallet</h4>
-	<form class="col-md-6">
+	<!--<form class="col-md-6">
 		<label class="font-1-1">Choose payment method: </label>
 		<select ng-model="pay.mode" class="form-control">
 			<option selected="selected">Pay with Card/Bank Account</option>
-			<!--<option>Pay with USSD</option>
+			<option>Pay with USSD</option>
 			<option>Pay through Bank Deposit</option>
-			<option>Voucher</option>-->
+			<option>Voucher</option>
 		</select>
+	</form>-->
+	<form class="col-md-10">
+		<label class="custom-control custom-radio" style="margin-right: 1rem">
+         <input type="radio" class="custom-control-input" ng-model="pay.mode2" value="Pay with Card/Bank Account">
+          <span class="custom-control-indicator"></span>
+          <span class="custom-control-description">Pay with Card/Bank Account</span>
+        </label>
+        <label class="custom-control custom-radio" style="margin-left: 0;">
+         <input type="radio" class="custom-control-input" ng-model="pay.mode2" value="Pay with USSD">
+          <span class="custom-control-indicator"></span>
+          <span class="custom-control-description">Pay with USSD</span>
+        </label>
 	</form>
+	
 	<div class="clearfix"></div>
 	<div ng-if="isATM" class="mt-2 col-md-6">
 		
 		<form>
-			<label> {{pay.mode}} </label>
+			<h4 class="h6"> {{pay.mode2}} </h4>
+			<br>
 			<div>
 				<input type="number" ng-model="pay.amount" class="form-control" placeholder="Enter amount">
 			</div>
@@ -128,7 +146,7 @@
 	
 	<div ng-if = "isBank">
 		<div class="mt-2 col-md-4 col-sm-12 offset-md-4 offset-sm-0">
-			<h6>{{pay.mode}}</h6>
+			<h6 class="h6">{{pay.mode2}}</h6>
 			<button class="btn btn-info btn-block" ng-click="invoice()">Generate invoice</button>
 		</div><div class="clearfix"></div>
 
@@ -162,9 +180,9 @@
 		</div>			
 	</div>
 
-	<div ng-if="isUSSD">
-		<h6 class="mt-1">{{pay.mode}}</h6>
-		<p>Please use the following USSD code to purchase a voucher pin</p>
+	<div ng-if="isUSSD" class="mt-2">
+		<h6 class="h6">{{pay.mode2}}</h6>
+		<!--<p>Please use the following USSD code to purchase a voucher pin</p>
 		<ul>
 			<li>UBA - *229*2*35# </li>
 			<li>Zenith - *229*2*34# </li>
@@ -177,10 +195,11 @@
 				<small style="display:block;">System will auto submit when the 16 digits pin is completed</small>
 				
 			</form>
-		</div>
+		</div>-->
+		<p>This payment method is NOT available at the moment. Please use the other available method.</p>
 	</div>
-	<div class="mt-2" ng-if="isVoucher">
-		<!--<h6>{{pay.mode}}</h6>-->
+	<!--<div class="mt-2" ng-if="isVoucher">
+		<h6>{{pay.mode2}}</h6>
 		<h6><strong>Enter the voucher pin below</strong></h6>		
 		<div>			
 			<form>
@@ -189,7 +208,7 @@
 				
 			</form>
 		</div>
-	</div>		
+	</div-->	
 </div>
 
 <div class="card card-center-1 p-2" ng-if="paystatusMsg">

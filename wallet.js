@@ -20,7 +20,7 @@ Wallet.prototype.credit = function(model,receiver,amount,io,cb){
 
 			//for consultation
 			if(self.message === "Consultation fee"){
-			  model.plan.findOne({userId:receiver.reciever_id,deleted:false})
+			  model.plan.findOne({userId:receiver.user_id,deleted:false})
 			  .exec(function(err,plan){
 			  	  if(err) throw err;
 			  	  if(!plan) {
@@ -200,12 +200,12 @@ model,req.body.payObj,req.user,oga,io
 }
 
 
-Wallet.prototype.consultation = function(model,amount,debitor,reciever_id,io){
+Wallet.prototype.consultation = function(model,amount,debitor,reciever_id,io,cb){
 	var creditor = {user_id: reciever_id};
 	//credit the render of the service;
-	this.credit(model,creditor,amount,io);
+	this.credit(model,creditor,amount,io,cb);
 	var self = this;
-	model.user.findOne({user_id: reciever_id},{firstname:1,lastname:1,name:1},function(err,person){
+	model.user.findOne({user_id: reciever_id},{firstname:1,lastname:1,name:1,doctor_patients_list:1},function(err,person){
 		if(err) throw err;
 		self.beneficiary =  person.name || person.firstname + " " + person.lastname;
 		//debit the user of the service

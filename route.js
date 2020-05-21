@@ -10697,6 +10697,7 @@ router.post("/user/doctor/add-patient",function(req,res){
               office_hour:req.user.office_hour,
               deleted: false  
             })
+
           } //else {
             //user.accepted_doctors[indexPos].deleted = false;
           //}
@@ -11966,12 +11967,34 @@ router.delete("/user/lab-report/signees",function(req,res){
   }
 });
 
+router.get("/user/patient/consultation-fee",function(req,res){ //this route is also used by patient to get consultation fee
+  if(req.user){
+    model.consultationFee.findById(req.query.id)
+    .exec(function(err,fee){
+      if(err) throw err;
+      if(fee){
+        model.user.findOne({user_id: fee.doctor_id},{title:1,name: 1, profile_pic_url:1, specialty:1,firstname:1,lastname:1})
+        .exec(function(err,doc){
+          if(err) throw err;
+          var sendObj = {
+            fee: fee,
+            sender: doc
+          }
+          res.json(sendObj)
+        });   
+      } else {
+        res.json({})
+      }
+    })
+  } else {
+    res.end("unathorized access!")
+  }
+});
 
 router.post("/user/doctor/consultation-fee",function(req,res){
   if(req.user) {
-
     var date = new Date();
-
+    var id = randos.genRef(10);
     var consultFee = new model.consultationFee({
       status: 'Pending',
       is_paid: false,
@@ -11979,7 +12002,10 @@ router.post("/user/doctor/consultation-fee",function(req,res){
       doctor_id: req.user.user_id,
       patient_id: req.body.patientId,
       date: date,
-      commission: req.body.commission
+      strAmount: req.body.message.strAmt,
+      deleted: false,
+      commission: req.body.commission,
+      invoiceId: id
     });
 
     model.user.findOne({user_id: req.body.patientId,type: "Patient"})
@@ -11995,7 +12021,7 @@ router.post("/user/doctor/consultation-fee",function(req,res){
           firstname: req.user.firstname,
           lastname: req.user.lastname,
           title: req.user.title,
-          message: "Consultation Fee Invoice",
+          message: "Consultation Fee",
           date: date,
           consultation_fee: req.body.consultation_fee,
           profile_pic_url: req.user.profile_pic_url,
@@ -12009,12 +12035,13 @@ router.post("/user/doctor/consultation-fee",function(req,res){
 
     var elemPos = req.user.doctor_patients_list.map(function(x){return x.patient_id}).indexOf(req.body.patientId);
     var patient;
+
     if(elemPos !== -1){
       patient = req.user.doctor_patients_list[elemPos] || {};
       patient.fee_history.unshift(req.body.message)
       req.user.save(function(err,info){
         if(err) throw err;
-        console.log("fee history saved on doc patients' list")
+        console.log("fee history saved on doc patients' list");
       })
     }
 
@@ -12022,8 +12049,9 @@ router.post("/user/doctor/consultation-fee",function(req,res){
       if(err) throw err;
       res.json({status: true,patient: patient});
 
-      var msgBody = "Hello " + patient.patient_firstname + ", " + req.user.title 
-      + " " + req.user.firstname + " " + req.user.lastname
+      var names = req.user.name;
+
+      var msgBody = "Hello " + patient.patient_firstname + ", " + names
       + "\nhereby requests the fees for his consultation and medical services."
       + "\nThe total amount is " + req.body.message.strAmt
       + "\nKindly fund your Applinic account and settle the payment."     
@@ -12043,6 +12071,8 @@ router.post("/user/doctor/consultation-fee",function(req,res){
        function callBack(err,info) {
         if(err) console.log(err);
        }
+
+       io.sockets.to(req.body.patientId).emit("new consultation fee",{status: true,sender: names});
     });
 
   } else {

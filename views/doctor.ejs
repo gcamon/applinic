@@ -278,7 +278,6 @@
                                                 </div>
                                             </a>
                                         </li>
-                                        
                                     </ul>
                                     <footer>
                                         <ul>
@@ -1863,11 +1862,11 @@
                         <textarea placeholder="write..." ng-model="user.response" class="form-control pl-1" ng-keyup="autoExpand($event)" id="textarea">
                         </textarea>
                     </div>-->
-                    <div >
-                        <label> Your consultation fee below ({{checkLogIn.city_grade}}% discount applied)</label>
+                    <div>
+                        <label> Your consultation fee below <span ng-show="!accountType.type">({{checkLogIn.city_grade}}% discount applied)</span></label>
                         <input type="number" placeholder="Enter amount.*" ng-model="user.fee" class="form-control" required>
                     </div>
-                    <div class="pt-1">
+                    <div class="pt-1" ng-show="!accountType.type">
                         <label>You'll receive : {{total}}</label>
                     </div>
                     <div class="pt-1">

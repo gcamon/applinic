@@ -1149,7 +1149,11 @@ var myModel = function () {
 		doctor_id: String,
 		patient_id: String,
 		date: Date,
-		commission: Number
+		strAmount: String,
+		commission: Number,
+		payment_date: Date,
+		deleted: Boolean,
+		invoiceId: String
 	});
 
 	var chatKeySchema = Schema({
