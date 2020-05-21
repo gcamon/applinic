@@ -3085,7 +3085,6 @@ app.controller("referToMeModalController",["$scope","$rootScope","$http",functio
 }]);
 
 
-
 //list all the doctors or others
 app.controller('listController',["$scope","$location","$window","localManager",
   "templateService","templateUrlFactory","ModalService","$rootScope",
@@ -3175,44 +3174,11 @@ app.controller('listController',["$scope","$location","$window","localManager",
   
   //$rootScope.$broadcast("users presence",{type: 'searchDocList',data: $scope.searchResult ,sockets: $rootScope.sockets});
 
-  localManager.setValue("currentPageForPatients","/list");
+  //localManager.setValue("currentPageForPatients","/list");
                       
 }]);
 
-
-
-
 /*** for doctors ***/
-//saves few details about the logged in doctor to a angularjs service so that it can be used in other controllers.
-app.controller("inDoctorDashboardController",["$scope","$location","$http","localManager","templateService","ModalService","$rootScope",
-  function($scope,$location,$http,localManager,templateService,ModalService,$rootScope){
-    //remember that templateservice.getid is used in another controller in case you wish to modify this block to use ajax to fetch data when
-    //doctor's dashboard page loads.
-    /*$scope.getName = function(firstname,lastname,id,pic,specialty){
-      templateService.getfirstname = firstname;
-      templateService.getlastname = lastname;
-      templateService.getid = id;
-      templateService.getpic = pic;
-      templateService.getspecialty = specialty;
-      setId(id,firstname,lastname);
-    }*/
-
-    function setId(id,firstname,lastname){
-      var comObj = {
-        callerId: id,
-        firstname: firstname,
-        lastname: lastname
-      }
-
-      templateService.holdDoctorIdForCommunication = comObj;
-    }
-   
-    
-    $location.path(localManager.getValue("currentPage") || "/welcome");
-    //highlits modal to fill in new patient basic information.
-    
-
-}]);
 
 //sends a request to get all notifications for the logged in doctor and also filters the result.
 
@@ -3230,7 +3196,7 @@ app.controller("docNotificationController",["$scope","$location","$resource","$i
     //sets array to hold requests from patients temporarily.
     //but clears when doctor logs out.
     
-    var getRequest = function() {
+    var getRequest = function(init) {
       var filterList = [];
       var filter = {};
       var filter2 = {};
@@ -3251,7 +3217,18 @@ app.controller("docNotificationController",["$scope","$location","$resource","$i
         
         $scope.name = templateService.getfirstname;
         $scope.total = data.doctor_notification.length;        
-        $rootScope.consultation = filter.consultation;
+        $rootScope.consultation = filter.consultation || [];
+
+        if(init) {
+          if($rootScope.consultation.length > 0){
+            $location.path(localManager.getValue("currentPage") || "/consultation-messages");
+          } else {
+            $location.path(localManager.getValue("currentPage") || "/welcome");
+            //highlits modal to fill in new patient basic information.
+          }
+        }
+
+    
 
         $rootScope.docNotification = filter.acceptance; //remember to concat for video and audio requests
         $rootScope.videoRequest = (!localManager.getValue("videoCallerList")) ? localManager.getValue("videoCallerList") : null;
@@ -3331,13 +3308,11 @@ app.controller("docNotificationController",["$scope","$location","$resource","$i
           $location.path(page);
         }
 
-      });
-
-        
+      });   
     }
 
     
-  getRequest();
+  getRequest('init');
 
  
   $scope.delMsg = function(msgId){
@@ -3615,6 +3590,42 @@ app.controller("docNotificationController",["$scope","$location","$resource","$i
   .success(function(account){
     $rootScope.accountType = account;
   })
+
+}]);
+
+
+
+//saves few details about the logged in doctor to a angularjs service so that it can be used in other controllers.
+app.controller("inDoctorDashboardController",["$scope","$location","$http","localManager",
+  "templateService","ModalService","$rootScope",
+  function($scope,$location,$http,localManager,templateService,ModalService,$rootScope){
+    //remember that templateservice.getid is used in another controller in case you wish to modify this block to use ajax to fetch data when
+    //doctor's dashboard page loads.
+    /*$scope.getName = function(firstname,lastname,id,pic,specialty){
+      templateService.getfirstname = firstname;
+      templateService.getlastname = lastname;
+      templateService.getid = id;
+      templateService.getpic = pic;
+      templateService.getspecialty = specialty;
+      setId(id,firstname,lastname);
+    }*/
+
+    function setId(id,firstname,lastname){
+      var comObj = {
+        callerId: id,
+        firstname: firstname,
+        lastname: lastname
+      }
+
+      templateService.holdDoctorIdForCommunication = comObj;
+    }
+   
+    /*if($rootScope.consultation.length > 0){
+      $location.path(localManager.getValue("currentPage") || "/consultation-messages");
+    } else {
+      $location.path(localManager.getValue("currentPage") || "/welcome");
+    }*/
+    
 
 }]);
 

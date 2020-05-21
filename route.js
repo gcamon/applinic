@@ -9204,7 +9204,7 @@ router.get("/user/patient/get-my-doctors",function(req,res){
             var msgBody = req.user.title + " " + req.user.firstname + " " + req.user.lastname 
             + " removed you from the management list.";
 
-            var phoneNunber =  patient.phone || "+2348096461927";
+            var phoneNunber =  data.phone || "+2348096461927";
             
             sms.messages.create(
               {
@@ -10665,11 +10665,10 @@ router.post("/user/doctor/add-patient",function(req,res){
           }
 
           if(elemPos == -1) {           
-            req.user.doctor_patients_list.unshift(patient);  
-          
-          } //else {
-            //req.user.doctor_patients_list[elemPos].deleted = false; 
-          //}
+            req.user.doctor_patients_list.unshift(patient);     
+          } else if(req.user.doctor_patients_list[elemPos]){
+            req.user.doctor_patients_list[elemPos].deleted = false; 
+          }
 
           req.user.save(function(err,info){
             if(err) throw err;
@@ -10698,9 +10697,9 @@ router.post("/user/doctor/add-patient",function(req,res){
               deleted: false  
             })
 
-          } //else {
-            //user.accepted_doctors[indexPos].deleted = false;
-          //}
+          } else if(user.accepted_doctors[indexPos]) {
+            user.accepted_doctors[indexPos].deleted = false;
+          }
 
           user.save(function(err,info){
             if(err) throw err;

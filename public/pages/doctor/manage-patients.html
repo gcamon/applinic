@@ -100,7 +100,19 @@
 			</div>			
 		</div>
 		<div class="clearfix"></div>
-		<p ng-show="patientList.length == 0" style="text-align: center;padding: 20px;font-weight: bold;">You have no patient to manage yet.</p>
+		<article ng-show="patientList.length > 0" class="card p-2">
+
+		<h6 class="text-danger"><i class="fa fa-user-plus"></i> Invite more patient to your account!</h6><br>
+
+		<p style="line-height: 25px">Click <a href='#/invite' class="text-primary"> <b>"Invite Someone"</b> </a> or icon that looks like this <i class="fa fa-user-plus"></i> on top of this page. You can add your real patients here for your expert and timely management. When you invite someone, Applinic shares your referral link via SMS or Email. Once they register, using your referral link, they will be added to your account in this healthcare platform. Registration is free!</p>
+		</article>
+
+		<article ng-show="patientList.length == 0" class="card p-2">
+
+		<h6 class="text-danger">You have no patient to manage yet.</h6><br>
+
+		<p style="line-height: 25px"> Start inviting your patients to join Applinic. To do this, click <a href='#/invite' class="text-primary"> <b>"Invite Someone"</b> </a> or icon that looks like this <i class="fa fa-user-plus"></i> on top of this page. When you invite someone, Applinic shares your referral link via SMS or Email. Once they register, using your referral link, they will be added to your account in this healthcare platform. Registration is free!</p>
+		</article>
 
 		<div style="height: 300px">
 			
