@@ -2125,6 +2125,10 @@ app.controller("patientNotificationController",["$scope","$location","$http","$w
     }
   });
 
+  $rootScope.$on("message notification",function(data){
+    getMessages();
+  })
+
   mySocket.on("notification",function(data){
     if(data.status){
       templateService.playAudio(0);
@@ -2958,6 +2962,7 @@ app.controller("presenceSocketController",["$rootScope","$scope","$window","mySo
 
   mySocket.on("new consultation fee",function(data){
     templateService.playAudio(1);
+    $rootScope.$broadcast("message notification",{status:true});
     var msg = data.sender 
     + " demands you pay a consultation fee sent to you. Please check your mail in your account and see details.";
     alert(msg);
