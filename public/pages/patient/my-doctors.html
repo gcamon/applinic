@@ -46,7 +46,8 @@
 					<div ng-class="{'popup2': j.isManage == true}" ng-if="j.isManage" style="line-height: 35px;padding: 5px">
 					  <div style="position: absolute;top:4px;right: 10px" ng-click="closePop(j)"><i class="fa fa-times text-info"></i></div>
 					  <a href="{{'/user/profile/view/' + j.doctor_id}}" target="_blank"><i class="fa fa-user-md text-success"></i>  View Profile</a><br>	
-					   <a href=""  ng-click="appointments(j.sessionId)"><i class="fa fa-calendar text-success"></i> In-Person Meeting</a><br>			 
+					   <a href=""  ng-click="appointments(j.sessionId)"><i class="fa fa-calendar text-success"></i> In-Person Meeting</a><br>
+					  <a href="" ng-click="consultationFee(j)"><i class="fa fa-money text-success"></i> Consultation Fees</a><br>					 
 					  <a href=""  ng-click="viewChat2(j.doctor_id)"><i class="fa fa-comments text-success"></i> Chat with Doctor <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange" ng-if="loading"></i> </a><br>
 					  <a href=""  ng-click="videoChat(j)"><i class="fa fa-video-camera text-success"></i> Video Chat</a><br>
 					 

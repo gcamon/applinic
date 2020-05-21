@@ -11968,23 +11968,31 @@ router.delete("/user/lab-report/signees",function(req,res){
 
 router.get("/user/patient/consultation-fee",function(req,res){ //this route is also used by patient to get consultation fee
   if(req.user){
-    model.consultationFee.findById(req.query.id)
-    .exec(function(err,fee){
-      if(err) throw err;
-      if(fee){
-        model.user.findOne({user_id: fee.doctor_id},{title:1,name: 1, profile_pic_url:1, specialty:1,firstname:1,lastname:1})
-        .exec(function(err,doc){
-          if(err) throw err;
-          var sendObj = {
-            fee: fee,
-            sender: doc
-          }
-          res.json(sendObj)
-        });   
-      } else {
-        res.json({})
-      }
-    })
+    if(req.query.isMultiple){
+      model.consultationFee.find({patient_id: req.user.user_id})
+      .exec(function(err,fees){
+        if(err) throw err;
+        res.json(fees)
+      })
+    } else {
+      model.consultationFee.findById(req.query.id)
+      .exec(function(err,fee){
+        if(err) throw err;
+        if(fee){
+          model.user.findOne({user_id: fee.doctor_id},{title:1,name: 1, profile_pic_url:1, specialty:1,firstname:1,lastname:1})
+          .exec(function(err,doc){
+            if(err) throw err;
+            var sendObj = {
+              fee: fee,
+              sender: doc
+            }
+            res.json(sendObj)
+          });   
+        } else {
+          res.json({})
+        }
+      })
+    }
   } else {
     res.end("unathorized access!")
   }

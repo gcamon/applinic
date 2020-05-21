@@ -107,21 +107,21 @@
 		<label class="custom-control custom-radio" style="margin-right: 1rem">
          <input type="radio" class="custom-control-input" ng-model="pay.mode2" value="Pay with Card/Bank Account">
           <span class="custom-control-indicator"></span>
-          <span class="custom-control-description">Pay with Card/Bank Account</span>
+          <span class="custom-control-description">Pay with Card / Bank Account / USSD</span>
         </label>
-        <label class="custom-control custom-radio" style="margin-left: 0;">
+        <!--<label class="custom-control custom-radio" style="margin-left: 0;">
          <input type="radio" class="custom-control-input" ng-model="pay.mode2" value="Pay with USSD">
           <span class="custom-control-indicator"></span>
           <span class="custom-control-description">Pay with USSD</span>
-        </label>
+        </label>-->
 	</form>
 	
 	<div class="clearfix"></div>
 	<div ng-if="isATM" class="mt-2 col-md-6">
 		
 		<form>
-			<h4 class="h6"> {{pay.mode2}} </h4>
-			<br>
+			<!--<h4 class="h6"> {{pay.mode2}} </h4>
+			<br>-->
 			<div>
 				<input type="number" ng-model="pay.amount" class="form-control" placeholder="Enter amount">
 			</div>

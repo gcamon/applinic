@@ -9573,7 +9573,21 @@ function($scope,$location,$rootScope,$http,ModalService,$interval,templateServic
     })
   }
 
-
+  $scope.consultationFee = function(doc) {
+    $http.get("/user/patient/consultation-fee",{params:{isMultiple: true}})
+    .success(function(data){
+      $rootScope.docModalObj = doc;
+      $rootScope.patientConsultationFees = data;
+      ModalService.showModal({
+        templateUrl: 'patient-consult-fee-modal.html',
+        controller: "patientConsultFeeModalCtrl"
+      }).then(function(modal) {
+        modal.element.modal();
+        modal.close.then(function(result) {            
+        });
+      });
+    })
+  }
   
   function ptApp() {
     $rootScope.allApp.forEach(function(p){
@@ -9614,6 +9628,15 @@ function($scope,$location,$rootScope,$http,ModalService,$interval,templateServic
   },3000)
   
 }]);
+
+
+app.controller("patientConsultFeeModalCtrl",["$scope","$http","templateService","$location",
+  function($scope,$http,templateService,$location){
+  $scope.makePayment = function(fee) {
+    templateService.holdId = fee._id;
+    $location.path('consultation-fee/' + 1);
+  }
+}])
 
 
 app.controller("walletController",["$scope","$http","$rootScope","$location","ModalService","requestManager",
@@ -10670,9 +10693,13 @@ app.controller('consultationFeeCtrl',["$scope","$http","templateService","$filte
   })
 
   $scope.payFee = function() {
-    if($scope.consultation){
+
+    var check = confirm("You want to pay the consultation fee below and account will be debited by the amount specified?");
+
+    if($scope.consultation && check){
       var date = new Date();
-      var msg = "Consultation Fee Payment made on " + $filter('date')(date, 'EEE, MMM d, y') + " amount " + $scope.consultation.fee.strAmount
+      var msg = "Consultation Fee Payment made on " 
+      + $filter('date')(date, 'EEE, MMM d, y') + " amount " + $scope.consultation.fee.strAmount
       var sendObj = {
         receiver: $scope.consultation.fee.doctor_id,
         amount: $scope.consultation.fee.amount,
