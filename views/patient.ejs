@@ -2495,7 +2495,7 @@
                   <span ng-class="{'text-danger': fee.status == 'Pending','text-primary': fee.status == 'Paid'}">{{fee.status}}</span>
                   <span ng-show="fee.payment_date"> on {{fee.payment_date | date: 'fullDate'}}</span>
                   <span> amount {{fee.strAmount}}</span>
-                  <button class="btn btn-primary btn-sm" style="position: absolute;right: 5px; bottom: 10px" ng-show="!fee.is_paid" ng-click="makePayment(fee)" class="close" ng-click="close('Cancel')" data-dismiss="modal" aria-hidden="true">Pay</button>
+                  <button class="btn btn-primary btn-sm" style="position: absolute;right: 5px; bottom: 10px" ng-show="!fee.is_paid" ng-click="makePayment(fee)" class="close" data-dismiss="modal" aria-hidden="true">Pay</button>
                 </article>
               </div>
             </div>
