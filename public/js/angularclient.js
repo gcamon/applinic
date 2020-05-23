@@ -16263,6 +16263,22 @@ app.controller("labReferredPatientsController",["$scope","$location","$http","te
     $scope.patient.to = new Date();
   }
 
+
+
+  $scope.today = function() {
+    $scope.patient.from = new Date();
+    $scope.patient.to = new Date();
+    $scope.searchTests();
+  }
+
+  $scope.days7 = function() {
+    var dt = new Date();
+    var days = dt.setDate(dt.getDate() - 7);    
+    $scope.patient.from = new Date(days);
+    $scope.patient.to = new Date();
+    $scope.searchTests();
+  }
+
   
   //$scope.patient.from = new Date();
   //$scope.patient.to = new Date();
@@ -18076,6 +18092,22 @@ app.controller("radioReferredPatientController",["$scope","$location","$http","t
     $scope.patient.from = new Date();
     $scope.patient.to = new Date();
   }
+
+  $scope.today = function() {
+    $scope.patient.from = new Date();
+    $scope.patient.to = new Date();
+    $scope.searchTests();
+  }
+
+  $scope.days7 = function() {
+    var dt = new Date();
+    var days = dt.setDate(dt.getDate() - 7);    
+    $scope.patient.from = new Date(days);
+    $scope.patient.to = new Date();
+    $scope.searchTests();
+  }
+
+
 
   $scope.searchTests = function() {
 

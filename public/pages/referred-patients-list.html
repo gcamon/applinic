@@ -88,9 +88,10 @@
 	</form>
 	<hr>
 	<div class="no-mobile-item-display">	
-		<div style="">
+		<div>
 			<input type="text" name="" placeholder="Filter list" ng-model="filter" class="simple-border">
 		</div>	
+		<br>
 		<table>
 			<thead>
 				<th>Patient Name</th>
@@ -117,8 +118,8 @@
 		<div style="text-align: center;padding-top: 20px" ng-show="loading">
 			<span class="text-warning">Loading...</span>
 		</div>	
-		<div style="text-align: center;padding-top: 40px" ng-show="requestList.length == 0">
-			<span class="text-muted">No request(s) found based on the search criteria!</span>
+		<div style="text-align: center;margin-top: 20px" ng-show="requestList.length == 0">
+			<span class="text-muted">No request(s) found based on the search criteria used!</span>
 		</div>			
 	</div>
 

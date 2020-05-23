@@ -1,17 +1,17 @@
 
 
-<div class="card p-2 card-center-1">
-	<h4>Investigation Requests</h4>
+<div class="card p-1 card-center-1">
+	<h4 class="h6">Laboratory Test Requests</h4>
 	<button href="#info" class="collapsed btn-neutral btn dropdown-toggle" role="button"   data-toggle="collapse" data-parent="#accordion" aria-expanded="false" aria-controls="collapsefifty">How do I use this?</button>
 	<p id="info" class="panel-collapse collapse p-1" role="tabpanel" aria-labelledby="headingfifty">
-	<b>Tips:</b> By default, today's date is used for search criteria. You can choose your desired date range for the search or 'Clear' the dates and search with other criteria (Reference or Phone number) singly or in combination with each other. </p>
+	<b>Tips:</b> By default, today's date is used for search criteria. You can choose your desired date range (From - To) for the search or 'Clear' the dates and search with other criteria (Reference or Phone number) singly or in combination with each other. </p>
 	<hr>
-	<form class="row" ng-submit="searchTests()">
-		<div class="col-md-4">
+	<form class="row p-1" ng-submit="searchTests()">
+		<div class="col-md-4 col-xs-6">
 			<label> From </label>
 			<input type="date" name="" class="form-control" ng-model="patient.from">
 		</div>
-		<div class="col-md-4">
+		<div class="col-md-4 col-xs-6">
 			<label> To </label> 
 			<input type="date" name="" class="form-control" ng-model="patient.to">
 		</div>
@@ -24,9 +24,12 @@
 			<input type="text" name="" class="form-control" placeholder="Patient's Phone Number" ng-model="patient.patienPhone">
 		</div>
 
-		<div class="col-md-4">
+		<div class="col-md-10 pl-1">
+		<br>
 			<input type="submit" name="" value="Search" class="btn btn-info btn-sm">&nbsp;
-			<input type="button" name="" value="Clear" class="btn btn-simple btn-sm" ng-click="clear()">
+			<input type="button" name="" value="Clear" class="btn btn-simple btn-sm" ng-click="clear()">&nbsp;&nbsp;
+			<input type="button" name="" value="Today" class="btn btn-simple btn-sm" ng-click="today()">
+			<input type="button" name="" value="Last 7 days" class="btn btn-simple btn-sm" ng-click="days7()">
 		</div>
 	</form>
 	<!--<div class="col-md-4 pl-0 ml-0">
@@ -35,22 +38,23 @@
 	<div class="clearfix"></div>-->
 	<hr>
 	<div>	
-		<div style="text-align: right;">
-			<input type="text" name="" placeholder="filter list" ng-model="filter">
+		<div>
+			<input type="text" name="" placeholder="Filter list" ng-model="filter" class="simple-border">
 		</div>	
-		<table class="table">
+		<br>
+		<table style="overflow-x: auto;">
 			<thead>
-				<th>Patient Name</th>
-				<th>Reference No.</th>
-				<th>Patient Phone</th>
-				<th>Test(s) Requested</th>
+				<th>Name</th>
+				<th>Ref No.</th>
+				<th>Phone</th>
+				<th class="no-mobile-item-display">Test(s) Requested</th>
 				<th>Time</th>
 			</thead>
 			<tbody ng-repeat="test in requestList | date : '-date' | filter : filter" style="line-height: 25px" ng-show="test.laboratory.test_to_run.length > 0">
 				<td>{{test.laboratory.patient_firstname}} {{test.laboratory.patient_lastname}}</td>
 				<td>{{test.ref_id}}</td>
 				<td>{{test.laboratory.patient_phone}}</td>
-				<td>
+				<td class="no-mobile-item-display">
 					
 					<div ng-repeat="k in test.laboratory.test_to_run"><small> - {{k.name}}</small></div>
 					
@@ -60,7 +64,7 @@
 						</a>
 					</div>
 				</td>
-				<td style="position: relative;"><span am-time-ago="test.date "></span><br><br> <i class="fa fa-ellipsis-h text-muted" style="float: right;padding: 2px 1px;cursor: pointer;" title="Manage test" ng-click="popup(test)"></i>
+				<td style="position: relative;"><span am-time-ago="test.date"></span><br><br> <i class="fa fa-ellipsis-h text-muted" style="float: right;padding: 3px;cursor: pointer;font-size: 22px" title="Manage test" ng-click="popup(test)"></i>
 					<div ng-class="{'popup': test.isManage == true}" ng-if="test.isManage" style="line-height: 35px">
 					  <div style="position: absolute;top:4px;right: 10px" ng-click="closePop(test)"><i class="fa fa-times text-info"></i></div>
 					  <a href=""  ng-click="viewLabTest(test)"><i class="fa fa-gear"></i> Attend to Request </a><br>				 
@@ -75,8 +79,8 @@
 		<div style="text-align: center;padding-top: 20px" ng-show="loading">
 			<span class="text-warning">Loading...</span>
 		</div>	
-		<div style="text-align: center;padding-top: 20px" ng-show="requestList.length == 0">
-			<span class="text-muted">Test not found based on the search criteria!</span>
+		<div style="text-align: center;margin-top: 20px" ng-show="requestList.length == 0">
+			<span class="text-muted">Test not found based on the search criteria used!</span>
 		</div>			
 	</div>
 	
