@@ -58,14 +58,14 @@
 	<h4 class="h6">Prescription Requests</h4>
 	<button href="#info" class="collapsed btn-neutral btn dropdown-toggle" role="button"   data-toggle="collapse" data-parent="#accordion" aria-expanded="false" aria-controls="collapsefifty">How do I use this?</button>
 	<p id="info" class="panel-collapse collapse p-1" role="tabpanel" aria-labelledby="headingfifty">
-	<b>Tips:</b> By default, today's date is used for search criteria. You can choose your desired date range for the search or 'Clear' the dates and search with other criteria (Reference or Phone number) singly or in combination with each other. </p>
+	<b>Tips:</b> By default, today's date is used for search criteria. You can choose your desired date range (From - To) for the search or 'Clear' the dates and search with other criteria (Reference or Phone number) singly or in combination with each other. </p>
 	<hr>
 	<form class="row" ng-submit="searchTests()">
-		<div class="col-md-4">
+		<div class="col-md-4 col-xs-6">
 			<label> From </label>
 			<input type="date" name="" class="form-control" ng-model="patient.from">
 		</div>
-		<div class="col-md-4">
+		<div class="col-md-4 col-xs-6">
 			<label> To </label> 
 			<input type="date" name="" class="form-control" ng-model="patient.to">
 		</div>
@@ -78,15 +78,18 @@
 			<input type="text" name="" class="form-control" placeholder="Patient's Phone Number" ng-model="patient.patienPhone">
 		</div>
 
-		<div class="col-md-4">
+		<div class="col-md-10 pl-1">
+			<br>
 			<input type="submit" name="" value="Search" class="btn btn-info btn-sm">&nbsp;
-			<input type="button" name="" value="Clear" class="btn btn-simple btn-sm" ng-click="clear()">
+			<input type="button" name="" value="Clear" class="btn btn-simple btn-sm" ng-click="clear()">&nbsp;&nbsp;
+			<input type="button" name="" value="Today" class="btn btn-simple btn-sm" ng-click="today()">
+			<input type="button" name="" value="Last 7 days" class="btn btn-simple btn-sm" ng-click="days7()">
 		</div>
 	</form>
 	<hr>
 	<div class="no-mobile-item-display">	
-		<div style="text-align: right;">
-			<input type="text" name="" placeholder="filter list" ng-model="filter">
+		<div style="">
+			<input type="text" name="" placeholder="Filter list" ng-model="filter" class="simple-border">
 		</div>	
 		<table>
 			<thead>
@@ -121,7 +124,7 @@
 
 	<div class="mobile-item-display">
 		<article style="margin-bottom: 10px">
-			<input type="text" name="" placeholder="filter list" ng-model="filter">
+			<input type="text" name="" placeholder="Filter list" ng-model="filter"  class="simple-border">
 		</article>
 		<a href="" style="display: block;border-bottom: 1px solid #eee;padding: 5px 0;position: relative;color: #000"  ng-repeat="pres in requestList | date : '-date' | filter : filter">
 			<label class="pb-0 mb-0"><b>{{pres.pharmacy.patient_firstname}} {{pres.pharmacy.patient_lastname}}</b></label><br>

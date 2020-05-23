@@ -15955,6 +15955,20 @@ app.controller("referredPatientsController",["$scope","$location","$http","templ
     $scope.patient.to = new Date();
   }
 
+  $scope.today = function() {
+    $scope.patient.from = new Date();
+    $scope.patient.to = new Date();
+    $scope.searchTests();
+  }
+
+  $scope.days7 = function() {
+    var dt = new Date();
+    var days = dt.setDate(dt.getDate() - 7);    
+    $scope.patient.from = new Date(days);
+    $scope.patient.to = new Date();
+    $scope.searchTests();
+  }
+
 
   $scope.searchTests = function() {
     if($scope.patient.patienPhone){

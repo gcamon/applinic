@@ -303,18 +303,20 @@
             </div>
            
             <div class="col-md-2">
-                <button type="submit" name="" class="btn btn-success"><i class="fa fa-search"></i></button>
+                <button type="submit" name="" class="btn btn-success btn-block"><i class="fa fa-search"></i></button>
             </div>
         </form>
         <div class="clearfix"></div>
-        <div class="pt-2 pl-1">
-          <button class="btn btn-sm btn-neutral round" ng-click="quickFind(j)" ng-repeat="j in specialties"><small>{{j}}</small></button>
+        <br>
+        <div class="pt-2 pl-1" style="height: 120px;overflow-y: auto;">
+          <label class="text-muted">Popular Specialties</label><br>
+          <button class="btn btn-sm btn-simple round" ng-click="quickFind(j)" ng-repeat="j in specialties"><small>{{j}}</small></button>
         </div>
         
         <hr>
     
-        <div style="text-align: right;padding-right: 50px">
-            <input type="text" name="" placeholder="filter search result" ng-model="ft">
+        <div>
+            <input type="text" name="" placeholder="filter search result" ng-model="ft" style="display: block;border: none;border-bottom: 1px solid grey;  ">
         </div>
         <br>
         <div class="row p-1 mb-1 line-height" ng-repeat="doc in doctorList | filter: ft">
@@ -331,7 +333,7 @@
                     <a href="" class="btn btn-info btn-sm" ng-click="sendRequest(doc)" ng-show="!doc.loading && !doc.isSent">Consult me!</a>
                     <i class="fa fa-spinner fa-pulse fa-1x fa-fw" ng-show="doc.loading && !isSent"></i>
                     <span ng-show="doc.isSent" class="text-warning">Sent!</span>&nbsp;&nbsp;&nbsp;&nbsp;
-                    <span class="text-primary" ng-show="doc.verified"><i class="fa fa-check"></i> verified</span>
+                    <span class="text-primary" ng-show="doc.verified">verified</span>
                 </div>
             </div>
         </div>

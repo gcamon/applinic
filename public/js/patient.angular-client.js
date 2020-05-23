@@ -235,11 +235,11 @@ app.config(['$paystackProvider','$routeProvider',
  .when("/wallet",{
   templateUrl: '/assets/pages/finance/my-wallet.html',
   controller: 'walletController',
-  resolve: {
+ /* resolve: {
     path: function($location,$rootScope){
       $rootScope.path = $location.path();
     }
-  }
+  }*/
  })
 
 

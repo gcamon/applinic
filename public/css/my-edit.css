@@ -15,6 +15,11 @@
   line-height: 30px
 }
 
+.simple-border {
+  border:none;
+  border-bottom: 1px solid #85CE36
+}
+
 .dark-green {
   color: darkGreen!important;
 }
