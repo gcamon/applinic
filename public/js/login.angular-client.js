@@ -376,14 +376,27 @@ app.controller('loginController',["$scope","$http","$location","$window","$resou
       $scope.error = ""; 
       var login = userLoginService; //$resource('/user/login',null,{logPerson:{method:"POST"}});
 
-      destroyStorage()
+      destroyStorage();
+
+      var intRegex = /[0-9 -()+]+$/;
+      //var emailReg = /^\w+([\.-]?\w+)+@\w+([\.:]?\w+)+(\.[a-zA-Z0-9]{2,3})+$/;
+
+      //intRegex.test()
+      //emailReg.test()
+
+      if(intRegex.test($scope.login.username)){
+        $scope.login.isPhoneNumber = true;
+        if($scope.login.username[0] == '0'){
+          var newSlice = $scope.login.username.slice(1);
+          $scope.login.username = "+234" + newSlice;
+        }
+      }
 
       login.logPerson($scope.login,function(data){   
 
       if (data.isLoggedIn) {  
 
           localManager.setValue("resolveUser",data);  
-
           //use to keep track of main user should sub accounts were used in a session. 
           /*if(data.typeOfUser === "Patient")
             localManager.setValue("mainAccount",data);  */  
@@ -420,7 +433,7 @@ app.controller('loginController',["$scope","$http","$location","$window","$resou
           
         } else {   
           $scope.loading = false;      
-          $scope.error = "Email or Password incorrect!"; 
+          $scope.error = "Authentication Failed!"; 
           count++;
         }
       });

@@ -604,7 +604,7 @@ var basicPaymentRoute = function(model,sms,io,paystack,client,nodemailer){
 						        console.log("fee history saved on doc patients' list");
 						      })
 
-						      io.sockets.to(req.body.patientId).emit("new consultation fee",{status: true,sender: names});
+						      io.sockets.to(req.body.receiver).emit("new consultation fee",{status: true,sender: names});
 						    }
 							});
 

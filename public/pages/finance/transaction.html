@@ -19,8 +19,9 @@
 </div>-->
 <div class="clearfix"></div>
 <div style="overflow-x: auto;">
+  
   <table class="table table-bordered" ng-if="transacts.length > 0">
-    <caption><b class="pl-1">Period: {{duration.from}}&nbsp; - &nbsp;{{duration.to}}</b> <i class="fa fa-print" style="float: right;font-size: 22px;color: orange;padding-top: 10px;cursor: pointer;"></i></caption>
+    <caption><b class="pl-1">Period: {{duration.from}}&nbsp; - &nbsp;{{duration.to}}</b> <!--<i class="fa fa-print" style="float: right;font-size: 22px;color: orange;padding-top: 10px;cursor: pointer;"></i>--> <a href="#/wallet" class="btn btn-info btn-sm" style="float: right;">Add Fund</a></caption>
     <thead class="thead-default">
       <tr>      
           <th>Date/time</th>

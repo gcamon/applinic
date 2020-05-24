@@ -662,6 +662,10 @@
                         <nav class="menu" ng-controller="checkingOutDoctorPatientController">
                             <ul class="nav metismenu" id="sidebar-menu">
 
+                                <li class="mobile-item-display"> <a ng-controller="balanceController" href="#/transactions" class="h text-info"><i class="fa fa-money"></i>
+                                    <span ng-cloak>{{balance}}</span>
+                                </a>  </li>
+
                                  <li class="no-show"> <a href="">
                         
                                     <div class="img" style="background-image: url(<%= person.profile_pic_url %>)"> </div> 
@@ -832,7 +836,7 @@
                             <i class="fa arrow"></i>
                                     </a>
                                     <ul>
-                                        <li> <a href="#/wallet">
+                                        <li> <a href="#/wallet" class="h">
                                     Fund Wallet
                                 </a> </li>
 

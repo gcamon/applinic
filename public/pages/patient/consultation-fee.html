@@ -30,7 +30,7 @@
 	</div>
 	<div ng-show="consultation.fee.is_paid">
 		<hr>
-		<label>Payment Status: </label> <b>Paid</b><br>
+		<label>Payment Status: </label> <b class="text-primary">Paid</b><br>
 		<label>Amount Paid: </label> <b>{{consultation.fee.strAmount || consultation.fee.amount}}</b><br>
 		<label>Date of Payment: </label> <b>{{consultation.fee.payment_date | date: 'mediumDate'}} ( <span am-time-ago='consultation.fee.payment_date'></span> )</b><br>
 		<p class="text-muted">This transaction has been settled. Payment for this consultation fee was made and received successfully.</p>

@@ -3550,7 +3550,8 @@ app.controller('resultController',["$scope","$rootScope","$http","$location","$r
       })
     .success(function(data) {              
       if(data){
-        for(var i = 0; i < data.length; i++){
+        console.log(data)
+        /*for(var i = 0; i < data.length; i++){
           if(!filter[data[i].specialty]) {
             filter[data[i].specialty] = 1;
             var keywords = (data[i].skills.length > 0) ? addDisease(data[i]) : data[i].specialty;
@@ -3558,11 +3559,18 @@ app.controller('resultController',["$scope","$rootScope","$http","$location","$r
           } else {
             filter[data[i].specialty]++;
           }
+        }*/
+        var str;
+        for(var i = 0; i < data.length; i++){
+          centerArr.push(data[i].specialty);
+          centerArr.push(data[i].firstname);
         }
+
       }
       $scope.allSpecialCenter = centerArr;
     }); 
   }   
+
 
   function addDisease(item) {
     var str = "";
@@ -9069,7 +9077,7 @@ app.controller("walletController",["$scope","$http","$rootScope","$location","Mo
   //The customer's email address. 
   $scope.email = customer.email;
 
-  $scope.pay.amount = 0;
+  $scope.pay.amount = null;
 
 
 
@@ -25358,7 +25366,7 @@ app.controller("hompageController",["$scope","scanTests","cities","labTests","Dr
         break;
         case 'Special Center':
           $scope.itemList = spArr;
-          $scope.itemName = "Enter keyword ( e.g Kidney failure. )"
+          $scope.itemName = "Enter center name or specialty."
         break;
         case 'Skills & Procedures':
           $scope.itemList = skArr;
