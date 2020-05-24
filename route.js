@@ -2343,7 +2343,8 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
 
 
     router.get("/user/get-specialcenters",function(req,res){      
-      model.user.find({title: "SC", type: "Doctor"},function(err,data){
+      model.user.find({title: "SC", type: "Doctor"},{name:1,firstname:1,user_id:1,specialty:1,disease:1},
+        function(err,data){
         if(err) throw err;
         res.json(data);
       });

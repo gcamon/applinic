@@ -1,19 +1,19 @@
 <div class="card card-center-1 p-1">
-<h4 class=" mb-1" style="">Find Special Center</h4>
- <form>
+<h4 class="mb-1 h6">Find Special Center</h4>
+ <form class="col-md-7">
        <div class="form-group">
            <label for="lastname">City </label>
-        <input type="text" class="form-control" placeholder="Enter city name" name="states"   uib-typeahead="city for city in cities | filter:$viewValue | limitTo:15" ng-model="user.city" style="font-size: 14px!important">
+        <input type="text" class="form-control" placeholder="Enter city name"   uib-typeahead="city for city in cities | filter:$viewValue | limitTo:15" ng-model="user.city" style="font-size: 14px!important">
         {{getCity(city)}} 
       </div>
 
       <div class="form-group">
           <label for="specialty">Specialty or Disease keywords (e.g bone fracture or kidney failure or sickle cell)</label>
-           <input type="text" class="form-control" placeholder="Enter specialty or disease keywords"  uib-typeahead="specialty for specialty in allSpecialCenter | filter:$viewValue | limitTo:15" ng-model="user.item" style="font-size: 14px!important">
+           <input type="text" class="form-control" placeholder="Enter specialty or Center' name"  uib-typeahead="specialty for specialty in allSpecialCenter | filter:$viewValue | limitTo:15" ng-model="user.item" style="font-size: 14px!important">
       </div>
       
       
-      <div class="col-md-12 form-group" style="text-align: center;">
+      <div class="form-group">
         <button type="submit" class="btn btn-info btn-lg" ng-click ="find('special-center')"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color: #fff" ng-if="loading"></i> {{(loading) ? "" : "Find"}}</button>
       </div>
   </form>
