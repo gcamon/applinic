@@ -25,7 +25,7 @@
 	 	<div class="col-md-9 pl-0" style="font-size: 16px;line-height: 30px">	 		
 	 		<select class="form-control" ng-model="drug.kitsList">
 	 			<option value="" disabled selected>_Select</option>
-		 		<option ng-repeat="n in allKits" ng-value="n.name" class="p-2">{{n.name}}</option>
+		 		<option ng-repeat="n in allKits" ng-value="n.name" class="p-2">{{n.disease}}</option>
 		 		<option ng-value="Other">Other</option>
 	 		</select>
 	 	</div>
@@ -45,6 +45,9 @@
 						<span class="custom-control-indicator"></span>
 						<span class="custom-control-description font-1_1"> <b>{{"Package " + kit.package}}</b></span>
 					</label>
+		 		</div>
+		 		<div class="p-1" style="text-align: center;">		 			
+		 			<i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange" ng-show="kitLoading"></i>
 		 		</div>
 		 		<div ng-if="selectedPackage">
 		 			<ul style="line-height: 20px;">

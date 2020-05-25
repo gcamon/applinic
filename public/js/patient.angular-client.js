@@ -8724,9 +8724,12 @@ app.controller("drugsAndKitsCtrl",["$scope","$rootScope","$http","ModalService",
       $scope.allKits = response;
     })
 
+    $scope.kitLoading = true;
+
     function getKit(type,name) {
       $http.get("/drug-kits",{params:{type:type,name:name}})
       .success(function(data){
+        $scope.kitLoading = false;
         $scope.selectedPackage = {}; 
         if($scope.isSelected == 'Other')  
           $scope.selectedPackage.content = [{sn:1}];   
@@ -8735,6 +8738,7 @@ app.controller("drugsAndKitsCtrl",["$scope","$rootScope","$http","ModalService",
         $scope.kits = data || [];
       });
     }
+
 
     $scope.selectedKit = function(type,name){
       $scope.isSelected = name;
