@@ -8785,7 +8785,7 @@ app.controller("drugsAndKitsCtrl",["$scope","$rootScope","$http","ModalService",
     }
 
     $scope.find();
-    getKit("Drug",'Anti Malaria');
+    getKit("Drug",'Malaria');
 
     var elem;
 
