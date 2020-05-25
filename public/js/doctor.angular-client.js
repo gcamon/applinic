@@ -7303,7 +7303,7 @@ function($scope,$location,$rootScope,$http,ModalService,$interval,templateServic
       sender_id: patient.patient_id
     };
     //$scope.docName = templateService.getfirstname;
-
+    $scope.loading2 = true;
     ModalService.showModal({
         templateUrl: 'consultation-fee.html',
         controller: "consultationFeePaymentctrl"

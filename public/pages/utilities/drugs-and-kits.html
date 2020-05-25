@@ -4,8 +4,8 @@
 </div>
 <section class="card-center-1 card p-2">
 	 <div class="h6 pt-1">Buy Drugs &amp; Kits</div>
-	 <div class="pt-1"> 	
-	 	<div class="no-mobile-item-display">
+	 <div> 	
+	 	<!--<div class="no-mobile-item-display">
 	 		<ul style="display: inline-block;list-style: none;" class="nav nav-tabs">
 	 			<li class="list-tabs">
 	 				<button class="btn btn-simple block" ng-click="selectedKit('Drug','Anti Malaria')" ng-class="{'bg-info text-white': isSelected == 'Anti Malaria'}">Anti Malaria Kit</button>
@@ -17,14 +17,26 @@
 	 				<button class="btn btn-simple block" ng-class="{'bg-info text-white': isSelected == 'Other'}" ng-click="selectedKit('Drug','Other')">Other</button>
 	 			</li>	 			
 	 		</ul>
+	 	</div>-->
+	 	<br>
+	 	<div>
+	 		<label>Select Kit: </label>
 	 	</div>
+	 	<div class="col-md-9 pl-0" style="font-size: 16px;line-height: 30px">	 		
+	 		<select class="form-control" ng-model="drug.kitsList">
+	 			<option value="" disabled selected>_Select</option>
+		 		<option ng-repeat="n in allKits" ng-value="n.name" class="p-2">{{n.name}}</option>
+		 		<option ng-value="Other">Other</option>
+	 		</select>
+	 	</div>
+	 	<div class="clearfix"></div>
 	 	<hr>
 	 	<div>
 	 		<section ng-show="isSelected !== 'Other'">
 		 		<label>{{kits[0].name}} Kit Contents:</label>
 		 		<div class="pt-1">
 			 		<blockquote class="p-1">
-			 		<i class="fa fa-warning"></i> Please confirm you have {{kits[0].disease}} before using {{kits[0].name}} medications.  <a href="" class="text-info">Confirm Now!</a>
+			 		<i class="fa fa-warning"></i> Please confirm you have {{kits[0].disease}} before using {{kits[0].name}} medications.  <!--<a href="" class="text-info">Confirm Now!</a>-->
 			 		</blockquote>
 		 		</div>
 		 		<div>
@@ -53,7 +65,7 @@
 	 				</div>
 	 				<div class="col-md-4" style="">
 	 					
-		 				<input type="text" name="" placeholder="Enter dosage" ng-model="d.dosage" class="form-control" uib-typeahead="dose for dose in dosageList | filter:$viewValue | limitTo:15">
+		 				<input type="text" name="" placeholder="Enter Quantity" ng-model="d.dosage" class="form-control" uib-typeahead="dose for dose in dosageList | filter:$viewValue | limitTo:15">
 	 				</div>
 	 			</div>
 	 			
@@ -73,6 +85,11 @@
                   <span class="custom-control-description" style="opacity:0;"></span>
                 </label> 
 	 		</div>
+	 		<div ng-show="drug.courier" class="col-md-9">
+	 			<label>Enter Delivery Address:</label><br>
+	 			<input type="text" name="" ng-model="drug.address" placeholder="Enter your address" class="form-control">
+	 		</div>
+	 		<div class="clearfix"></div>
 	 		<br>
 	 		<div class="pt-1 pb-1">	
 	 			<label>Forward above drug(s) to a center:</label>

@@ -8133,6 +8133,7 @@ router.delete("/user/courier-response",function(req,res){
 //for patient creating new courier request. note is different from the above route
 router.post("/user/courier",function(req,res){
   if(req.user) {
+    console.log(req.body)
     var date = new Date();
     if(!req.body.refId){
       req.body.refId = randos.genRef(7);
@@ -12114,18 +12115,26 @@ router.get("/user/chat/general",function(req,res){
   }
 });
 
-router.get("/user/drug-kits",function(req,res){ 
-  if(req.user){
-    console.log(req.query)
-    model.kits.find({type: req.query.type, name: req.query.name})
+router.get("/drug-kits/all",function(req,res){ 
+  model.kits.find({})
+  .exec(function(err,kits){
+    if(err) throw err;
+    res.json(kits);
+  })
+})
+
+router.get("/drug-kits",function(req,res){ 
+  //if(req.user){
+    var str = new RegExp(req.query.name.replace(/\s+/g,"\\s+"), "gi"); 
+    model.kits.find({type: req.query.type, name: { $regex: str, $options: 'i' }})
     .exec(function(err,kits){
       if(err) throw err;
       res.json(kits);
     })
 
-  } else {
-    res.end("unathorized access!");
-  }
+ // } else {
+ //   res.end("unathorized access!");
+  //}
 });
 
 router.post("/user/drug-kits",function(req,res){ 

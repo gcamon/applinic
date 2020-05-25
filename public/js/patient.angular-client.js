@@ -8703,6 +8703,7 @@ function($scope,$location,$window,templateService,localManager,Drugs,searchtests
 app.controller("drugsAndKitsCtrl",["$scope","$rootScope","$http","ModalService","localManager","dynamicService",
   function($scope,$rootScope,$http,ModalService,localManager,dynamicService){
     $scope.drug = {};
+    $scope.drug.address = $rootScope.checkLogIn.address;
     $scope.drug.package = "";
     $scope.drug.city = $rootScope.checkLogIn.city || "";
 
@@ -8718,8 +8719,13 @@ app.controller("drugsAndKitsCtrl",["$scope","$rootScope","$http","ModalService",
       $scope.drugs = data;
     });
 
+    $http.get("/drug-kits/all")
+    .success(function(response){
+      $scope.allKits = response;
+    })
+
     function getKit(type,name) {
-      $http.get("/user/drug-kits",{params:{type:type,name:name}})
+      $http.get("/drug-kits",{params:{type:type,name:name}})
       .success(function(data){
         $scope.selectedPackage = {}; 
         if($scope.isSelected == 'Other')  
@@ -8735,6 +8741,8 @@ app.controller("drugsAndKitsCtrl",["$scope","$rootScope","$http","ModalService",
       //kit.isSelected = true;
       getKit(type,name);
     }
+
+
 
     var count = {};
     count.num = 1;
@@ -8785,6 +8793,19 @@ app.controller("drugsAndKitsCtrl",["$scope","$rootScope","$http","ModalService",
         }
       }
     });
+
+    $scope.$watch('drug.kitsList',function(newVal,oldVal){
+      if(oldVal){
+        if(newVal == 'Other'){
+          $scope.isSelected = 'Other';
+          getKit('Drug',newVal);
+        } else {
+          $scope.isSelected = newVal
+          getKit('Drug',newVal);
+        }
+        
+      }
+    })
 
 
   $scope.sendChat = function(center) {
