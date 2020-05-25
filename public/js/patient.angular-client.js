@@ -8724,9 +8724,10 @@ app.controller("drugsAndKitsCtrl",["$scope","$rootScope","$http","ModalService",
       $scope.allKits = response;
     })
 
-    $scope.kitLoading = true;
+    
 
     function getKit(type,name) {
+      $scope.kitLoading = true;
       $http.get("/drug-kits",{params:{type:type,name:name}})
       .success(function(data){
         $scope.kitLoading = false;

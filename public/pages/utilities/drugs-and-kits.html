@@ -39,8 +39,8 @@
 			 		<i class="fa fa-warning"></i> Please confirm you have {{kits[0].disease}} before using {{kits[0].name}} medications.  <!--<a href="" class="text-info">Confirm Now!</a>-->
 			 		</blockquote>
 		 		</div>
-		 		<div class="p-1" style="text-align: center;">		 			
-		 			<i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange" ng-show="kitLoading"></i>
+		 		<div class="p-1" style="text-align: center;" ng-if="kitLoading">		 			
+		 			<i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange"></i>
 		 		</div>
 		 		<div>
 		 			<label class="custom-control custom-radio" ng-repeat="kit in kits">
