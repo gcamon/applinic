@@ -8133,7 +8133,6 @@ router.delete("/user/courier-response",function(req,res){
 //for patient creating new courier request. note is different from the above route
 router.post("/user/courier",function(req,res){
   if(req.user) {
-    console.log(req.body)
     var date = new Date();
     if(!req.body.refId){
       req.body.refId = randos.genRef(7);
@@ -12126,7 +12125,7 @@ router.get("/drug-kits/all",function(req,res){
 router.get("/drug-kits",function(req,res){ 
   //if(req.user){
     var str = new RegExp(req.query.name.replace(/\s+/g,"\\s+"), "gi"); 
-    model.kits.find({type: req.query.type, name: { $regex: str, $options: 'i' }})
+    model.kits.find({type: req.query.type, disease: { $regex: str, $options: 'i' }})
     .exec(function(err,kits){
       if(err) throw err;
       res.json(kits);

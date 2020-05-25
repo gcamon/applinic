@@ -25,7 +25,7 @@
 	 	<div class="col-md-9 pl-0" style="font-size: 16px;line-height: 30px">	 		
 	 		<select class="form-control" ng-model="drug.kitsList">
 	 			<option value="" disabled selected>_Select</option>
-		 		<option ng-repeat="n in allKits" ng-value="n.name" class="p-2">{{n.disease}}</option>
+		 		<option ng-repeat="n in allKits" ng-value="n.disease" class="p-2">{{n.disease}}</option>
 		 		<option ng-value="Other">Other</option>
 	 		</select>
 	 	</div>
@@ -33,11 +33,14 @@
 	 	<hr>
 	 	<div>
 	 		<section ng-show="isSelected !== 'Other'">
-		 		<label>{{kits[0].name}} Kit Contents:</label>
+		 		<label><!--{{kits[0].name}}--> Kit Contents</label>
 		 		<div class="pt-1">
 			 		<blockquote class="p-1">
 			 		<i class="fa fa-warning"></i> Please confirm you have {{kits[0].disease}} before using {{kits[0].name}} medications.  <!--<a href="" class="text-info">Confirm Now!</a>-->
 			 		</blockquote>
+		 		</div>
+		 		<div class="p-1" style="text-align: center;">		 			
+		 			<i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange" ng-show="kitLoading"></i>
 		 		</div>
 		 		<div>
 		 			<label class="custom-control custom-radio" ng-repeat="kit in kits">
@@ -46,9 +49,7 @@
 						<span class="custom-control-description font-1_1"> <b>{{"Package " + kit.package}}</b></span>
 					</label>
 		 		</div>
-		 		<div class="p-1" style="text-align: center;">		 			
-		 			<i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange" ng-show="kitLoading"></i>
-		 		</div>
+		 		
 		 		<div ng-if="selectedPackage">
 		 			<ul style="line-height: 20px;">
 		 				<li ng-repeat="d in selectedPackage.content" class="pt-1">
