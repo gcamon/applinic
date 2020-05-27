@@ -26708,19 +26708,40 @@ app.controller('adminAddKitCtrl',["$scope","$http","Drugs","dynamicService",
 
   $scope.$watch("kit.type",function(oldVal,newVal){
     if(oldVal == "Drug"){
-      $scope.kit.content = drugList;
+      $scope.kit.content = $scope.drugList;
     } else {
       $scope.kit.content = testList;
     }
   });
+
+  var filteredList = [];
+
+  $scope.process = function() {
+    $http.get("/drug-kits/all")
+    .success(function(response){
+      $scope.allKits = response;
+      var filter = {};
+      $scope.allKits.forEach(function(item){
+        if(!filter.hasOwnProperty(item.disease)){
+          filter[item.disease] = {};
+          filter[item.disease]['content'] = item.content;
+        } else {         
+          item.content.forEach(function(c){
+            filter[item.disease].content.push(c)
+          }) 
+        }
+      })
+
+      console.log($scope.allKits);
+      console.log(filter)
+    })
+  }
 
 }]);
 
 app.controller("adminAddToListCtrl",["$scope","$http",function($scope,$http){
 
   $scope.subject = {};
-
-
 
   $scope.addPatient = function(){
 

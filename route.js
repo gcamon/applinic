@@ -10504,11 +10504,9 @@ router.post("/user/invitation",function(req,res){
     var msgBody;
     var intRegex = /[0-9 -()+]+$/;
     var emailReg = /^\w+([\.-]?\w+)+@\w+([\.:]?\w+)+(\.[a-zA-Z0-9]{2,3})+$/;
-    var names = (req.user.lastname) ? req.user.title + " " + req.user.lastname : req.user.name;
+    var names = (req.user.lastname) ? (req.user.title + " " + req.user.lastname + " " + req.user.firstname) : req.user.name;
     var work = (req.user.work_place) ? "at " + req.user.work_place : "on Applinic";
     var uid = uuid.v1();
-
-    console.log(req.user.user_id + "/" + uid)
 
     model.user.findOne({$or: [{ phone : req.body.recepient},{email: req.body.recepient}]})
     .exec(function(err,user){
@@ -10592,7 +10590,7 @@ router.post("/user/invitation",function(req,res){
       var mailOptions = {
         from: 'Applinic info@applinic.com',
         to: req.body.recepient,
-        subject: 'Invitation from ' + req.user.title + " " + req.user.lastname,
+        subject: 'Invitation from ' + names,
         html: msgBody
       };
 
@@ -10610,11 +10608,19 @@ router.post("/user/invitation",function(req,res){
     }
 
     function sendSMS() {
-      var msgBody = names + ", a " + req.user.type + " " 
-      + work  + "\nsent an invitation to join Applinic. click the link below to register now for free!\n" 
-      + "https://applinic.com/signup?ref=" + req.user.user_id + "&id=" + uid + "&type=" + req.body.type;
+      if(req.user.type == "Doctor" || req.user.type == "admin"){
+        var title = (req.user.title == 'SC') ? "" : ", a physician at Applinic Telehealth"
+        var msgBody = names + title + " is pleased to inform you he now consults patients"
+        + " online at Applinic platform." 
+        + " Click the link below to register now for free!\n" 
+        + "https://applinic.com/signup?ref=" + req.user.user_id + "&id=" + uid + "&type=" + req.body.type;
+      } else {
+        var msgBody = names + ", a " + req.user.type 
+        + "\nsent an invitation to join Applinic. click the link below to register now for free!\n" 
+        + "https://applinic.com/signup?ref=" + req.user.user_id + "&id=" + uid + "&type=" + req.body.type;
+      }
 
-      var phoneNunber =  req.body.recepient;
+      var phoneNunber = req.body.recepient;
       
       sms.messages.create(
         {
@@ -12138,18 +12144,30 @@ router.get("/drug-kits",function(req,res){
 
 router.post("/user/drug-kits",function(req,res){ 
   if(req.user.admin){
-    console.log(req.body);
-    model.kits.find({})
+    console.log(req.body)
+    var str = new RegExp(req.body.disease.replace(/\s+/g,"\\s+"), "gi"); 
+    model.kits.find({type: req.body.type, disease: { $regex: str, $options: 'i' }})
     .exec(function(err,data){
       if(err) throw err
-      req.body.package = data.length + 1;
-      req.body.created = new Date();
-      var kit = new model.kits(req.body)
-      kit.save(function(err,info){
-        if(err) throw err;
-        console.log("kit created and saved!");
-        res.json({status: true, message: "kit created and saved successfully."})
-      })
+      if(data.length == 0) {
+        req.body.package = data.length + 1;
+        req.body.created = new Date();
+        var kit = new model.kits(req.body)
+        kit.save(function(err,info){
+          if(err) throw err;
+          res.json({status: true, message: "kit created and saved successfully."})
+        })
+      } else {
+        req.body.content.forEach(function(item){
+          data[0].content.push(item);
+        })
+
+        data[0].save(function(err,info){
+          if(err) throw err;
+          console.log("kit updated")
+          res.json({status: true, message: "kit updated successfully"})
+        })
+      }
     })    
   } else {
     res.end("unathorized access!")

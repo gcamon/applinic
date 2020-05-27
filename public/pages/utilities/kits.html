@@ -47,7 +47,9 @@
 		</div>
 		<br>
 		<div>
-			<input type="submit" value="Submit" class="btn btn-info">
+			<input type="submit" value="Submit" class="btn btn-info" ng-show="!loading">
+			<span ng-show="loading">Sending...</span>
 		</div>
 	</form>
+	<button class="btn" ng-click="process()">Process Kits</button>
 </div>

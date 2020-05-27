@@ -1,6 +1,6 @@
 <div class="container card">
   <div class="row">
-    <div class="col-sm-12 col-md-3 col-lg-3">
+    <div class="col-sm-12 col-md-3 col-lg-3 p-2">
       <div>
         <ul class="doc-edit">
           <li ng-click="view('personal')" ng-class="{'selected-edit': type === 'personal'}">Personal Information</li>
@@ -25,7 +25,7 @@
         </footer>
       </div>
     </div>
-    <div class="col-sm-6 col-md-6 col-lg-6">
+    <div class="col-sm-6 col-md-6 col-lg-6 p-2">
       <div ng-if="type === 'personal'">
         <h3>Personal Information</h3>
         <hr>
@@ -256,9 +256,9 @@
         </div>
     </div>
 
-    <div class="col-sm-12 col-md-3 col-lg-3">
+    <div class="col-sm-12 col-md-3 col-lg-3 p-2">
       <h6 style="border-bottom:1px solid rgba(0,0,0,0.4);padding:20px 0">Records</h6>
-      <div ng-if="type === 'personal'" class="rec">        
+      <div ng-if="type === 'personal'" class="rec" style="line-height: 25px">        
           <div>Names : {{docInfo.firstname}} {{docInfo.lastname}}</div>
           <div>Email : {{docInfo.email}} </div>
           <div>Phone : {{docInfo.phone}}</div>
