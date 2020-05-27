@@ -8719,16 +8719,49 @@ app.controller("drugsAndKitsCtrl",["$scope","$rootScope","$http","ModalService",
       $scope.drugs = data;
     });
 
+    var filter = {};
+
     $http.get("/drug-kits/all")
     .success(function(response){
-      $scope.allKits = response;
+      //$scope.allKits = response;
+     
+      response.forEach(function(item){
+        if(!filter.hasOwnProperty(item.disease)){
+          filter[item.disease] = {};
+          filter[item.disease].disease = item.disease;
+          filter[item.disease].name = item.name;
+          filter[item.disease].note = item.note;
+          filter[item.disease].package = item.package || 0;
+          filter[item.disease].type = item.type;
+          filter[item.disease]['content'] = [];//item.content;
+          filter[item.disease]['content'].push({
+            package: item.package,
+            content: item.content 
+          })
+        } else {  
+          //filter[item.disease].name = item.name;
+          //filter[item.disease].package = item.package;
+          //filter[item.disease]['content'] = item.content;
+          filter[item.disease]['content'].push({
+            package: item.package,
+            content: item.content 
+          })    
+         
+        }
+      })
+
+      $scope.allKits = Object.keys(filter);
+      getKit("Drug",'Malaria');
+      //$scope.filteredKits = filter;
     })
+
+
 
     
 
     function getKit(type,name) {
-      $scope.kitLoading = true;
-      $http.get("/drug-kits",{params:{type:type,name:name}})
+      //$scope.kitLoading = true;
+      /*$http.get("/drug-kits",{params:{type:type,name:name}})
       .success(function(data){
         $scope.kitLoading = false;
         $scope.selectedPackage = {}; 
@@ -8737,7 +8770,16 @@ app.controller("drugsAndKitsCtrl",["$scope","$rootScope","$http","ModalService",
 
         $scope.drug.package = (data[0]) ? data[0]._id : "";
         $scope.kits = data || [];
-      });
+      });*/
+
+      if($scope.isSelected == 'Other')  {
+        $scope.selectedPackage.content = [{sn:1}]; 
+      }
+
+      $scope.isNewKit = true;
+
+      $scope.kits = filter[name];
+      
     }
 
 
@@ -8786,29 +8828,27 @@ app.controller("drugsAndKitsCtrl",["$scope","$rootScope","$http","ModalService",
     }
 
     $scope.find();
-    getKit("Drug",'Malaria');
+    //getKit("Drug",'Malaria');
 
     var elem;
 
     $scope.$watch("drug.package",function(newVal,oldVal){
       if(newVal){
-        elem = $scope.kits.map(function(x){return x._id}).indexOf(newVal);
+        $scope.isNewKit = false;
+        elem = $scope.kits.content.map(function(x){ if(x) { return x.package.toString()}}).indexOf(newVal);
         if(elem !== -1){
-          $scope.selectedPackage = $scope.kits[elem];
+          $scope.selectedPackage = $scope.kits.content[elem];
         }
       }
     });
 
-    $scope.$watch('drug.kitsList',function(newVal,oldVal){
-      if(oldVal){
-        if(newVal == 'Other'){
-          $scope.isSelected = 'Other';
-          getKit('Drug',newVal);
-        } else {
-          $scope.isSelected = newVal
-          getKit('Drug',newVal);
-        }
-        
+    $scope.$watch('drug.kitsList',function(newVal,oldVal){    
+      if(newVal == 'Other'){
+        $scope.isSelected = 'Other';
+        getKit('Drug',newVal);
+      } else {
+        $scope.isSelected = newVal
+        getKit('Drug',newVal);
       }
     })
 
@@ -8918,6 +8958,8 @@ app.controller("drugsAndKitsCtrl",["$scope","$rootScope","$http","ModalService",
       center.loading = false;
     });
   } 
+
+
 
 }])
 

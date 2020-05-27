@@ -12144,30 +12144,17 @@ router.get("/drug-kits",function(req,res){
 
 router.post("/user/drug-kits",function(req,res){ 
   if(req.user.admin){
-    console.log(req.body)
-    var str = new RegExp(req.body.disease.replace(/\s+/g,"\\s+"), "gi"); 
-    model.kits.find({type: req.body.type, disease: { $regex: str, $options: 'i' }})
+    model.kits.find({})
     .exec(function(err,data){
       if(err) throw err
-      if(data.length == 0) {
-        req.body.package = data.length + 1;
-        req.body.created = new Date();
-        var kit = new model.kits(req.body)
-        kit.save(function(err,info){
-          if(err) throw err;
-          res.json({status: true, message: "kit created and saved successfully."})
-        })
-      } else {
-        req.body.content.forEach(function(item){
-          data[0].content.push(item);
-        })
-
-        data[0].save(function(err,info){
-          if(err) throw err;
-          console.log("kit updated")
-          res.json({status: true, message: "kit updated successfully"})
-        })
-      }
+      req.body.package = data.length + 1;
+      req.body.created = new Date();
+      var kit = new model.kits(req.body)
+      kit.save(function(err,info){
+        if(err) throw err;
+        console.log("kit created and saved!");
+        res.json({status: true, message: "kit created and saved successfully."})
+      })
     })    
   } else {
     res.end("unathorized access!")
