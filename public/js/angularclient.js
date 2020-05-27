@@ -26724,17 +26724,50 @@ app.controller('adminAddKitCtrl',["$scope","$http","Drugs","dynamicService",
       $scope.allKits.forEach(function(item){
         if(!filter.hasOwnProperty(item.disease)){
           filter[item.disease] = {};
-          filter[item.disease]['content'] = item.content;
-        } else {         
-          item.content.forEach(function(c){
+          filter[item.disease].disease = item.disease;
+          filter[item.disease].name = item.name;
+          filter[item.disease].note = item.note;
+          filter[item.disease].package = item.package || 0;
+          filter[item.disease].type = item.type;
+          filter[item.disease]['content'] = [];//item.content;
+          filter[item.disease]['content'].push({
+            package: item.package,
+            content: item.content 
+          })
+        } else {  
+          //filter[item.disease].name = item.name;
+          //filter[item.disease].package = item.package;
+          //filter[item.disease]['content'] = item.content;
+          filter[item.disease]['content'].push({
+            package: item.package,
+            content: item.content 
+          })    
+          /*item.content.forEach(function(c){
             filter[item.disease].content.push(c)
-          }) 
+          }) */
         }
       })
 
       console.log($scope.allKits);
       console.log(filter)
     })
+  }
+
+  $scope.update = function() {
+    $scope.loading = true;
+    $scope.kit.content = $scope.drugList;
+    $http({
+      method  : "POST",
+      url     : "/user/drug-kits", 
+      data    : $scope.kit,
+      headers : {'Content-Type': 'application/json'} 
+      })
+    .success(function(data) {
+      if(data.status){
+        alert(data.message)
+      }
+      $scope.loading = false;
+    });
   }
 
 }]);
