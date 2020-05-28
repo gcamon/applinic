@@ -8704,6 +8704,7 @@ app.controller("drugsAndKitsCtrl",["$scope","$rootScope","$http","ModalService",
   function($scope,$rootScope,$http,ModalService,localManager,dynamicService){
     $scope.drug = {};
     $scope.drug.address = $rootScope.checkLogIn.address;
+    $scope.drug.phone = $rootScope.checkLogIn.phone;
     $scope.drug.package = "";
     $scope.drug.city = $rootScope.checkLogIn.city || "";
 
@@ -8711,7 +8712,8 @@ app.controller("drugsAndKitsCtrl",["$scope","$rootScope","$http","ModalService",
 
     $scope.isSelected = "Anti Malaria";
 
-    $scope.dosageList = ["caplets","capsule","packet","bottle","sachet","tablets"]
+    $scope.dosageList = ["caplets","capsule","packet","bottle","sachet","tablets","Vial",
+    "Ampoule","Suppository","Syrup","Carton","Ointment","Pints","Pieces","bags"];
 
 
     var resource = dynamicService; 
@@ -8773,12 +8775,17 @@ app.controller("drugsAndKitsCtrl",["$scope","$rootScope","$http","ModalService",
       });*/
 
       if($scope.isSelected == 'Other')  {
-        $scope.selectedPackage.content = [{sn:1}]; 
+        $scope.selectedPackage2 = {};
+        $scope.selectedPackage2.content = [{sn:1}]; 
+        $scope.isSelfCompile = true;
+      } else {
+        $scope.isSelfCompile = false;
       }
 
       $scope.isNewKit = true;
 
       $scope.kits = filter[name];
+      $scope.isJoined = false;
       
     }
 
@@ -8798,11 +8805,11 @@ app.controller("drugsAndKitsCtrl",["$scope","$rootScope","$http","ModalService",
       var newDrug = {};         
       count.num++;
       newDrug.sn = count.num;
-      $scope.selectedPackage.content.push(newDrug);
+      $scope.selectedPackage2.content.push(newDrug);
     }
 
     $scope.remove = function(id){ 
-      if($scope.selectedPackage.content.length > 1){
+      if($scope.selectedPackage2.content.length > 1){
         /*var elementPos = $scope.selectedPackage.content.map(function(x){return x.sn}).indexOf(id);
         if($scope.selectedPackage.content[elementPos]){
           var objfound = $scope.selectedPackage.content.splice(elementPos,1);
@@ -8812,7 +8819,7 @@ app.controller("drugsAndKitsCtrl",["$scope","$rootScope","$http","ModalService",
             count.num++;
           })
         }*/
-        $scope.selectedPackage.content.pop();
+        $scope.selectedPackage2.content.pop();
         count.num--;
       }
     }
@@ -8854,9 +8861,10 @@ app.controller("drugsAndKitsCtrl",["$scope","$rootScope","$http","ModalService",
 
 
   $scope.sendChat = function(center) {
-    if($scope.selectedPackage) {
+    var kit = ($scope.isSelfCompile) ? $scope.selectedPackage2 : $scope.selectedPackage;
+    if(kit) {
       $rootScope.searchItems = "";
-      $scope.selectedPackage.content.forEach(function(item){
+      kit.content.forEach(function(item){
         $rootScope.searchItems += item.drug_name + ", "
       })
      
@@ -8873,7 +8881,7 @@ app.controller("drugsAndKitsCtrl",["$scope","$rootScope","$http","ModalService",
       });
 
     } else {
-      alert("Error: No kit or Drug was selected.")
+      alert("No kit or Drug was selected.")
     }
   }
 
@@ -8881,83 +8889,104 @@ app.controller("drugsAndKitsCtrl",["$scope","$rootScope","$http","ModalService",
 
   $scope.forwardDrug = function(center) {
 
-    if(!$scope.selectedPackage.content){
-      alert("Error: No kit or Drug was selected.");
+    if($scope.selectedPackage || $scope.selectedPackage2){  
+
+    var content = ($scope.isSelfCompile) ? $scope.selectedPackage2.content : $scope.selectedPackage.content;
+
+      if(content.length == 0){
+        alert("No kit or Drug was selected. Please choose a kit or compile your own drug list.");
+        return;
+      }
+
+      var presId = Math.floor(Math.random() * 99999) + "" + Math.floor(Math.random() * 99999);
+      var url;
+      var method;
+      //var content = ($scope.isSelfCompile) ? $scope.selectedPackage2.content : $scope.selectedPackage.content;
+
+      content.forEach(function(item){
+        if(item.quantity && !$scope.isJoined){
+          item.dosage += " - " + item.quantity;
+          $scope.isJoined = true;
+        }
+      })
+
+      console.log(content)
+
+      if($scope.drug.courier){
+        sendObj = {
+          city: $rootScope.checkLogIn.city,
+          location: $scope.drug.address,
+          center_id: center.user_id,
+          phone1: $scope.drug.phone,
+          phone2: $rootScope.checkLogIn.phone,
+          address: $scope.drug.address,
+          prescriptionId: presId,
+          refId: null,
+          prescription_body : content,
+          centerInfo: center,
+        }
+
+        url = "/user/courier";
+        method = "POST";
+
+      } else {
+
+        sendObj = {
+          prescription_body : content,    
+          user_id : center.user_id,
+          provisional_diagnosis: ($scope.isSelfCompile) ? $scope.selectedPackage2.disease :  $scope.selectedPackage.disease,
+          explanation: ($scope.isSelfCompile) ? ($scope.selectedPackage2.name + " self medication package") 
+          : ($scope.selectedPackage.name + " self medication package"),
+          date: new Date(),
+          prescriptionId: presId,
+          title: '',
+          doctor_specialty: "",
+          doctor_profile_url: '',
+          doctor_firstname: '',
+          doctor_address: '',
+          doctor_id: '',
+          doctor_city: '',
+          doctor_country: '',
+          doctor_profile_pic_url: '',
+          patient_id: $rootScope.checkLogIn.user_id || "",
+          patient_profile_pic_url: $rootScope.checkLogIn.profile_pic_url,
+          patient_firstname: $rootScope.checkLogIn.firstname,
+          patient_lastname: $rootScope.checkLogIn.lastname,
+          patient_address: $rootScope.checkLogIn.address,
+          patient_gender: $rootScope.checkLogIn.gender,
+          patient_age: $rootScope.checkLogIn.age,
+          patient_city: $rootScope.checkLogIn.city,
+          patient_country: $rootScope.checkLogIn.country,
+          is_paid: false,
+          sender: "patient"
+        }
+
+        url = "/user/patient/pharmacy/referral-by-patient";
+        method = "PUT";
+      }
+
+      center.loading = true;
+
+      $http({
+        method  : method,
+        url     : url, 
+        data    : sendObj,
+        headers : {'Content-Type': 'application/json'} 
+        })
+      .success(function(data) {
+        if(data.success){   
+          center.success = true;
+        } else {          
+          alert("Prescription not sent! Some error occured. Please try again shortly.");
+        }
+        center.loading = false;
+      });
+    } else {
+      alert("No kit or Drug was selected. Please choose a kit or compile your own drug list.");
       return;
     }
 
-    var presId = Math.floor(Math.random() * 99999) + "" + Math.floor(Math.random() * 99999);
-    var url;
-    var method;
-    if($scope.drug.courier){
-      sendObj = {
-        city: $rootScope.checkLogIn.city,
-        location: $rootScope.checkLogIn.address,
-        center_id: center.user_id,
-        phone1: $rootScope.checkLogIn.phone,
-        phone2: $rootScope.checkLogIn.phone,
-        address: $rootScope.checkLogIn.address,
-        prescriptionId: presId,
-        refId: null,
-        prescription_body : $scope.selectedPackage.content,
-        centerInfo: center,
-      }
-
-      url = "/user/courier";
-      method = "POST";
-
-    } else {
-
-      sendObj = {
-        prescription_body : $scope.selectedPackage.content,    
-        user_id : center.user_id,
-        provisional_diagnosis: $scope.selectedPackage.disease,
-        explanation: $scope.selectedPackage.name + " self medication package",
-        date: new Date(),
-        prescriptionId: presId,
-        title: '',
-        doctor_specialty: "",
-        doctor_profile_url: '',
-        doctor_firstname: '',
-        doctor_address: '',
-        doctor_id: '',
-        doctor_city: '',
-        doctor_country: '',
-        doctor_profile_pic_url: '',
-        patient_id: $rootScope.checkLogIn.user_id || "",
-        patient_profile_pic_url: $rootScope.checkLogIn.profile_pic_url,
-        patient_firstname: $rootScope.checkLogIn.firstname,
-        patient_lastname: $rootScope.checkLogIn.lastname,
-        patient_address: $rootScope.checkLogIn.address,
-        patient_gender: $rootScope.checkLogIn.gender,
-        patient_age: $rootScope.checkLogIn.age,
-        patient_city: $rootScope.checkLogIn.city,
-        patient_country: $rootScope.checkLogIn.country,
-        is_paid: false,
-        sender: "patient"
-      }
-
-      url = "/user/patient/pharmacy/referral-by-patient";
-      method = "PUT";
-    }
-
-    center.loading = true;
-
-    $http({
-      method  : method,
-      url     : url, 
-      data    : sendObj,
-      headers : {'Content-Type': 'application/json'} 
-      })
-    .success(function(data) {
-      if(data.success){   
-        center.success = true;
-      } else {          
-        alert("Prescription not sent! Some error occured. Please try again shortly.");
-      }
-      center.loading = false;
-    });
-  } 
+  }
 
 
 
