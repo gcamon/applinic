@@ -1041,12 +1041,21 @@
                     <div class="col-sm-12 col-md-5">                    
                       <select ng-model="j.dosage" class="form-control"  ng-if="j.dosage !== 'dosage'">
                         <option value="" disabled="disabled" selected="selected">_select description</option>
-                        <option>tablets</option>
+                       <option>tablets</option>
                         <option>caplets</option>
                         <option>capsule</option>
                         <option>packet</option>
                         <option>bottle</option>
                         <option>sachet</option>
+                        <option>vial</option>
+                        <option>ampoule</option>
+                        <option>suppository</option>
+                        <option>syrup</option>
+                        <option>carton</option>
+                        <option>ointment</option>
+                        <option>pints</option>
+                        <option>pieces</option>
+                        <option>bags</option>
                         <option>dosage</option>
                       </select>
                       <input type="text" ng-model="j.other" placeholder="e.g 500mg"  class="form-control" ng-if="j.dosage === 'dosage'">

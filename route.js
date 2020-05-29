@@ -2714,6 +2714,7 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
             user_id: 1,
             type:1,
             phone:1,
+            courier_access:1
         }
 
         model.user.find(criteria,projection,function(err,data){ //remenber to replace "Enugu" with req.user.city

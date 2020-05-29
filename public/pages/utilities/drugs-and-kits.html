@@ -3,7 +3,10 @@
       <a href="#{{path}}" class="btn btn-neutral"><i class="fa fa-arrow-left"></i> Back</a>
 </div>
 <section class="card-center-1 card p-2">
-	 <div class="h6 pt-1">Buy Drugs &amp; Kits</div>
+	 <div class="h6 pt-1" style="position: relative;">
+	 	Buy Drugs &amp; Kits
+	 	<a href="" style="position: absolute;right: 5px;top: 2px" class="btn btn-primary btn-sm" ng-click="selectedKit('Drug','Other')">Write new</a>
+	 </div>
 	 <div> 	
 	 	<!--<div class="no-mobile-item-display">
 	 		<ul style="display: inline-block;list-style: none;" class="nav nav-tabs">
@@ -19,9 +22,10 @@
 	 		</ul>
 	 	</div>-->
 	 	<br>
-	 	<div>
+	 	<div style="">
 	 		<label>Select Kit: </label>
 	 	</div>
+	 	
 	 	<div class="col-md-9 pl-0" style="font-size: 16px;line-height: 30px">	 		
 	 		<select class="form-control" ng-model="drug.kitsList">
 	 			<option value="" disabled selected>_Select</option>
@@ -71,10 +75,12 @@
 		 				<input type="text" name="" placeholder="Enter Description" ng-model="d.dosage" class="form-control" uib-typeahead="dose for dose in dosageList | filter:$viewValue | limitTo:15">
 	 				</div>
 	 				<div  class="col-md-3">
-	 					<input type="number" name="" placeholder="Enter Quantity" ng-model="d.quantity" class="form-control">
+	 					<input type="text" name="" placeholder="Enter Quantity" ng-model="d.quantity" class="form-control">
 	 				</div>
+	 				<div class="clearfix"></div>
+	 				<hr>
 	 			</div>
-	 			<div class="clearfix"></div>
+	 			
 	 			<div style="text-align: right;" class="col-md-12">
 	 				<i class="fa fa-plus btn btn-neutral" ng-click="addDrug()"></i>
 	 				<i class="fa fa-minus btn btn-neutral" ng-show="selectedPackage.content.length > 1" ng-click="remove()"></i>

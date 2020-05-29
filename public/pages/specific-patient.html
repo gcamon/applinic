@@ -21,10 +21,11 @@
                      <sub class="text-muted" style="margin-top:-3px; font-size:1em;">{{patientInfo.gender}}</sub><br>
                     <!--<sub class="text-muted" style="margin-top:-3px; font-size:1em;">{{patientInfo.body_weight}}</sub><br> -->     
                      <sub class="text-muted" style="margin-top:-3px; font-size:1em;">{{patientInfo.city}} {{patientInfo.country}}</sub>
-                 </div>
-                 <div>
-                     <a href="" class="btn btn-sm btn-danger" ng-click="inviteOnline(patientInfo)">Invite Online</a>
-                 </div>
+                </div>
+                <div>
+                    <a href="" class="btn btn-sm btn-danger" ng-click="inviteOnline(patientInfo)">Invite Online</a>
+                    <a href="" class="btn btn-primary btn-sm" ng-click="consultationFee()">Consultation Fees</a>
+                </div>
              </div>
 
             <hr>
@@ -40,7 +41,7 @@
             <a href="" class="grayish" ng-click="viewLabReport()" ng-class="{'btn-info': isToViewLabPrescriptionReq}">
               <i class="fa fa-flask text-info"  style="position:relative">
               </i>My Laboratory  
-                <!--<span class="tag tag-info pull-right" ng-if="labLen > 0">{{labLen}}</span>-->
+              <!--<span class="tag tag-info pull-right" ng-if="labLen > 0">{{labLen}}</span>-->
             </a>
 
             <a href="" class="grayish" ng-click="viewLabPrescriptionRequest()" ng-class="{'btn-info': isToViewLabPrescriptionReq}">
@@ -87,7 +88,7 @@
 
             <button href="#manageCase" class="grayish collapsed" ng-click="viewLabReport()" ng-class="{'btn-info': isToViewLabPrescriptionReq}" data-toggle="collapse" data-parent="#accordion" href="#manageCase" aria-expanded="false" aria-controls="collapsefifty" style="width: 100%;text-align: left;padding: 10px 5px;border: none;">
               <i class="fa fa-flask text-info"  style="position:relative">
-              </i> Laboratory  
+              </i> My Laboratory  
                 <!--<span class="tag tag-info pull-right" ng-if="labLen > 0">{{labLen}}</span>-->
             </button>
 
@@ -99,7 +100,7 @@
 
             <button href="#manageCase" class="grayish collapsed" ng-click="viewRadioReport()" ng-class="{'btn-info': isToViewLabPrescriptionReq}" data-toggle="collapse" data-parent="#accordion" href="#manageCase" aria-expanded="false" aria-controls="collapsefifty" style="width: 100%;text-align: left;padding: 10px 5px;border: none;">
               <i class="fa fa-file-image-o text-info"  style="position:relative">
-              </i> Radiology  
+              </i>My Radiology  
                 <!--<span class="tag tag-info pull-right" ng-if="labLen > 0">{{labLen}}</span>-->
             </button>
 
@@ -677,7 +678,7 @@
         </div>
         <br>
         <div>
-          <label>Would you like to pay the bill and claim discount?</label><br><br>
+          <label>Would you like to pay the bill?</label><br><br>
           <label class="custom-control custom-radio">
               <input type="radio" class="custom-control-input" ng-model="treatment.referral_pays" value="Yes" >
               <span class="custom-control-indicator"></span>

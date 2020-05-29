@@ -7303,7 +7303,7 @@ function($scope,$location,$rootScope,$http,ModalService,$interval,templateServic
       sender_id: patient.patient_id
     };
     //$scope.docName = templateService.getfirstname;
-    $scope.loading2 = true;
+    //$scope.loading2 = true;
     ModalService.showModal({
         templateUrl: 'consultation-fee.html',
         controller: "consultationFeePaymentctrl"
@@ -8367,6 +8367,27 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
       }
      
     })
+  }
+
+  $scope.consultationFee = function(){  
+
+    $rootScope.data = {
+      sender_firstname: patient.firstname,
+      sender_lastname: patient.lastname,
+      sender_id: patient.patient_id
+    };
+    //$scope.docName = templateService.getfirstname;
+    //$scope.loading2 = true;
+    ModalService.showModal({
+        templateUrl: 'consultation-fee.html',
+        controller: "consultationFeePaymentctrl"
+      }).then(function(modal) {
+          modal.element.modal();
+          modal.close.then(function(result) {
+             
+      });
+    });
+   
   }
 
 

@@ -57,8 +57,7 @@
 					</div>
 					<div class="text-muted">
 						<span>{{j.patient_gender || 'Male'}}</span><br>
-						<span><i class="fa fa-map-marker text-info" ng-show="j.presence"></i><span> <i class="fa fa-map-marker" ng-show="!j.presence"></i></span> {{j.patient_city || "Enugu"}}</span><br>
-						
+						<span><i class="fa fa-map-marker text-info" ng-show="j.presence"></i><span> <i class="fa fa-map-marker" ng-show="!j.presence"></i></span> {{j.patient_city || "Enugu"}}</span><br>						
 					</div>	
 					<div>
 						<a href="" ng-click="appointments(j)" ng-if="j.isNewAppointment" title="In-person meeting appointment with this patient">

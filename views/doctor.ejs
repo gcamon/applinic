@@ -2089,7 +2089,7 @@
                    </div>
 
                   <div class="row" ng-repeat="j in foundDrugArr">
-                    <div>
+                    <div class="pl-1">
                       <span>{{j.drug_name}}</span>
                       <a href="" ng-click="returnMain(j)" style="float: right;"> <i class="fa fa-refresh"></i></a>
                     </div>
@@ -2103,6 +2103,15 @@
                         <option>packet</option>
                         <option>bottle</option>
                         <option>sachet</option>
+                        <option>vial</option>
+                        <option>ampoule</option>
+                        <option>suppository</option>
+                        <option>syrup</option>
+                        <option>carton</option>
+                        <option>ointment</option>
+                        <option>pints</option>
+                        <option>pieces</option>
+                        <option>bags</option>
                         <option>dosage</option>
                       </select>
                       <input type="text" ng-model="j.other" placeholder="e.g 500mg"  class="form-control" ng-if="j.dosage === 'dosage'">

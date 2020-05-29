@@ -8825,10 +8825,12 @@ app.controller("drugsAndKitsCtrl",["$scope","$rootScope","$http","ModalService",
     }
 
 
+
     $scope.find = function(){
       $scope.loading =  true;
       $http.get("/user/patient/getAllPharmacy",{params:{city:$scope.drug.city,type:'Pharmacy'}})
       .success(function(centers){
+        console.log(centers)
         $scope.centers = centers
         $scope.loading = false;
       })
@@ -8902,15 +8904,15 @@ app.controller("drugsAndKitsCtrl",["$scope","$rootScope","$http","ModalService",
       var url;
       var method;
       //var content = ($scope.isSelfCompile) ? $scope.selectedPackage2.content : $scope.selectedPackage.content;
-
-      content.forEach(function(item){
-        if(item.quantity && !$scope.isJoined){
-          item.dosage += " - " + item.quantity;
-          $scope.isJoined = true;
+      var checkFilled;
+      content.forEach(function(item){ 
+        if(item.dosage){   
+          checkFilled = item.dosage.split(" ")
+          item.dosage = (checkFilled.length > 1) ? checkFilled[1] : item.dosage;
         }
+        
+        item.dosage = item.quantity + " " + item.dosage;      
       })
-
-      console.log(content)
 
       if($scope.drug.courier){
         sendObj = {
