@@ -8712,8 +8712,8 @@ app.controller("drugsAndKitsCtrl",["$scope","$rootScope","$http","ModalService",
 
     $scope.isSelected = "Anti Malaria";
 
-    $scope.dosageList = ["caplets","capsule","packet","bottle","sachet","tablets","Vial",
-    "Ampoule","Suppository","Syrup","Carton","Ointment","Pints","Pieces","bags"];
+    $scope.dosageList = ["caplets","capsule","packet","bottle","sachet","tablets","vial",
+    "ampoule","suppository","syrup","carton","ointment","pints","pieces","bags"];
 
 
     var resource = dynamicService; 
@@ -8910,7 +8910,7 @@ app.controller("drugsAndKitsCtrl",["$scope","$rootScope","$http","ModalService",
           checkFilled = item.dosage.split(" ")
           item.dosage = (checkFilled.length > 1) ? checkFilled[1] : item.dosage;
         }
-        
+
         item.dosage = item.quantity + " " + item.dosage;      
       })
 
