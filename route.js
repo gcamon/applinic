@@ -8099,7 +8099,6 @@ router.post("/user/courier-response",function(req,res){
 //for patient re-ordering the prescription dosage and quantities or wish to choose another center.
 router.put("/user/courier-response",function(req,res){
   if(req.user){
-    console.log(req.body)
     res.send({})
   } else {
     res.end("unauthorized access!")
