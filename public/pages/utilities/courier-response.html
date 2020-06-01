@@ -1,28 +1,40 @@
 
 <div class="card-center-1" ng-if="path">
-	<a href="#{{path}}" class="btn btn-simple" ng-if="path"><i class="fa fa-arrow-left"></i> Back</a>
+	<a href="#{{path}}" class="btn btn-neutral" ng-if="path"><i class="fa fa-arrow-left"></i> Back</a>
 </div>
-<div class="card p-2  card-center-1" style="position: relative;" ng-if="courierResponse">
-	<h5><i class="fa fa-motorcycle"></i> Courier Order <i class="tip fa fa-question-circle"><span>When you request for drug delivery, the dispatch pharmaceutical center receives and computes the cost of drugs you requested. The bill for the items will be sent to you which triggers <b class="text-info">Ready</b> status. You are required to pay the bill to automatically initiate the delivery process, the status will change to <b class="text-warning">On Delivery</b>. Please give the <b>order ID (below the payment history)</b> to the delivery agent when you have confirmed the receipt of the requested items. The status turns <b>Complete</b> when tranaction is successful</span></i></h5>
+<div class="card p-2  card-center-1 line-height" style="position: relative;" >
+	
+	<h5 style="position:relative;">
+		<i class="fa fa-motorcycle"></i> Courier Order <i class="tip fa fa-question-circle"><span>When you request for drug delivery, the dispatch pharmaceutical center receives and computes the cost of drugs you requested. The bill for the items will be sent to you which triggers <b class="text-info">Ready</b> status. You are required to pay the bill to automatically initiate the delivery process, the status will change to <b class="text-warning">On Delivery</b>. Please give the <b>order ID (below the payment history)</b> to the delivery agent when you have confirmed the receipt of the requested items. The status turns <b>Complete</b> when tranaction is successful</span>
+		</i>
+		<span style="position: absolute;top: 0px; right: 4px;font-size: 16px">{{courierResponse.request_id}}</span>
+	</h5>
 	<!--<span style="position: absolute;top: 20px;right: 20px">Order ID: {{courierResponse.request_id}}</span>-->
+	<div ng-if="courierResponse">
 	<hr>
 	<div>
-		<label>Status:</label>  <span style="font-weight: bold" ng-class="{'text-danger': !courierResponse.attended,'text-info': courierResponse.attended,'text-success':courierResponse.completed,'text-warning':courierResponse.is_paid}">{{(!courierResponse.verified || !courierResponse.attended) ? 'Pending' : (!courierResponse.is_paid && courierResponse.attended) ? 'Ready': (courierResponse.is_paid && !courierResponse.completed) ? 'On Delivery' : (courierResponse.completed) ? "Received" : ""}}</span> 
+		<label class="pb-0 mb-0">Status:</label>  <span style="font-weight: bold" ng-class="{'text-danger': !courierResponse.attended,'text-info': courierResponse.attended,'text-success':courierResponse.completed,'text-warning':courierResponse.is_paid}">{{(!courierResponse.verified || !courierResponse.attended) ? 'Sent' : (!courierResponse.is_paid && courierResponse.attended) ? 'Ready': (courierResponse.is_paid && !courierResponse.completed) ? 'On Delivery' : (courierResponse.completed) ? "Received" : ""}}</span> 
 	</div>
 	<div ng-if="!courierResponse.verified || !courierResponse.attended">
-		<label>Description:</label> Cost of delivery has not been calculated or billed.
+		<label class="pb-0 mb-0">Description:</label> <span>Waiting for the center to calculate and send the cost of the drug(s) for payment. This usually takes less than 5 minutes.</span>
+	</div>
+	<div ng-if="courierResponse.attended && !courierResponse.is_paid">
+		<label class="pb-0 mb-0">Description:</label> <article>The cost of the drug(s) requested is received. Please make payment to initiate delivery. </article>
 	</div>
 	<div>
-		<label>Order Date:</label> {{courierResponse.date | date: "fullDate"}}
+		<label class="pb-0 mb-0">Order Date:</label> <span>{{courierResponse.date | date: "fullDate"}} ( <span am-time-ago="courierResponse.date"></span> )</span>
 	</div>
 	<div>
-		<label>Order Time:</label> {{courierResponse.date | date: "mediumTime"}}
+		<label>Order Time:</label> <span>{{courierResponse.date | date: "mediumTime"}} </span>
 	</div>
 	<div>
-		<label>Phone Numbers:</label> {{courierResponse.phone1}} {{courierResponse.phone2}}
+		<label class="pb-0 mb-0">Phone Numbers:</label> <span>{{courierResponse.phone1}} {{courierResponse.phone2}}</span>
 	</div>
 	<div>
 		<label>Delivery Address:</label> {{courierResponse.address}}
+	</div>
+	<div>
+		<label>Order ID:</label> <b class="text-primary">{{courierResponse.request_id}}</b> 
 	</div>
 	<hr>
 	<h6>Dispatch Center</h6>
@@ -59,18 +71,19 @@
 	<div style="line-height: 35px" ng-if="courierResponse.attended && courierResponse.verified">
 		<h6>Billing</h6>
 		<div>
-			Cost of Drugs : {{toCurrency(courierResponse.total_cost)}}
+			Cost of Drugs : <b>{{toCurrency(courierResponse.total_cost)}}</b>
 		</div>
 		<div>
-			Delivery Charge : {{toCurrency(courierResponse.delivery_charge)}}
+			Delivery Charge : <b>{{toCurrency(courierResponse.delivery_charge)}}</b>
 		</div>
 		<div>
 			Total Billed : <b>{{getTotal(courierResponse.delivery_charge,courierResponse.total_cost)}}</b>
 		</div>
+		<p class="pb-0 mb-0">Don't have enough fund? Quickly <a href="#/wallet" class="text-danger"><b> fund your wallet</b></a> and continue.</p>
 		<div class="pt-1">
 			<p class="text-success">{{otpMsg}}</p>
 		</div>
-		<div class="pt-2" ng-if="!isOtp && !courierResponse.is_paid">
+		<div class="pt-1" ng-if="!isOtp && !courierResponse.is_paid">
 			<button class="btn btn-info" ng-click="pay(resend)" ><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i> {{(loading) ? "" : "Pay Now!"}}</button>&nbsp;&nbsp;&nbsp;
 			<button class="btn btn-neutral" ng-click="reOrder(courierResponse)">Re-order</button>&nbsp;&nbsp;&nbsp;
 			<button class="btn btn-neutral" ng-click="cancel(courierResponse._id)">Cancel Order</button>
@@ -110,15 +123,20 @@
 		<div>
 			Amount Paid for Delivery: <b>{{toCurrency(courierResponse.delivery_charge)}}</b>
 		</div>
-		<div>
+		<!--<div>
 			Order ID: <b>{{courierResponse.request_id}}</b>
-		</div>
+		</div>-->
 		<hr>
 		<p class="text-success">Order ID is required for confirmation of receipt of the package/drugs. Please give out to field agent if you had received the package/drugs.<br><br>
 		If you have any complaint for this service please <a href="" class="text-info" ng-click="sendDispute(courierResponse._id)"> send to us a dispute notification </a> and we'll contact you shortly.
 		</p>
 	</div>
+	</div>
+	<div style="text-align: center;padding: 30px" ng-show="loadingReq">
+		<span class="text-warning">Loading...</span>
+	</div>
 </div>
+
 <div style="height: 200px">
 	
 </div>

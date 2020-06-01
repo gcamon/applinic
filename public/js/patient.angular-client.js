@@ -715,7 +715,12 @@ app.config(['$paystackProvider','$routeProvider',
 
  .when("/courier-response/:id",{
   templateUrl: "/assets/pages/utilities/courier-response.html",
-  controller: "courierResponseCtrl"
+  controller: "courierResponseCtrl",
+  resolve: {
+    path: function($location,$rootScope){
+      $rootScope.path = $location.path();  
+    }
+  }
  })
 
  //display
@@ -2259,6 +2264,11 @@ app.controller("patientNotificationController",["$scope","$location","$http","$w
 
   mySocket.on("courier billed",function(res){
     getCourier();
+    if($rootScope.courierResponse){
+      $rootScope.courierResponse = null;
+    }
+    alert(res._id)
+    $rootScope.getCourierResponse(res._id);
   });
 
   mySocket.on("new courier order",function(res){
@@ -7568,13 +7578,31 @@ app.controller("selectedAppointmentControllerForPatient",["$scope","$location","
     
 }]);
 
-app.controller("courierResponseCtrl",["$scope","$rootScope","courierResponseService","templateService","$location","phoneCallService",
-  "paymentVerificationService","$http",
-  function($scope,$rootScope,courierResponseService,templateService,$location,phoneCallService,paymentVerificationService,$http){
+app.controller("courierResponseCtrl",["$scope","$rootScope","courierResponseService","templateService",
+  "$location","phoneCallService","paymentVerificationService","$http","localManager",
+  function($scope,$rootScope,courierResponseService,templateService,$location,phoneCallService,
+    paymentVerificationService,$http,localManager){
+
+  $rootScope.getCourierResponse = function(courierId) {
+    if(!$rootScope.courierResponse) {
+      var aCourier = localManager.getValue("holdCourierData");
+      var id;
+      if(aCourier){
+        id = (courierId) ? courierId : aCourier._id
+      }
+      $scope.loadingReq = true;
+      var courierResponse = courierResponseService;
+      courierResponse.get({_id: id},function(data){
+        $rootScope.courierResponse = data;
+        $scope.loadingReq = false;
+      });
+    }
+  }
+
+  $rootScope.getCourierResponse()
 
   $scope.reOrder = function(item) {    
-   
-    if(item) {
+    if(item){
       item.prescription_body.forEach(function(drug){
         if(drug.quantity){
           delete drug.quantity;
@@ -7603,6 +7631,7 @@ app.controller("courierResponseCtrl",["$scope","$rootScope","courierResponseServ
           if(elementPos !== -1) {
             $rootScope.courierResponseList.splice(elementPos,1);
             $rootScope.courierResponse = null;
+            localManager.removeItem("holdCourierData");
           }
         } else {
           alert("Order cannot delete! Maybe it has been attended to or does not exists");
@@ -7682,6 +7711,7 @@ app.controller("courierResponseCtrl",["$scope","$rootScope","courierResponseServ
       if(response.status) {
         courier.is_paid = response.status;
         $scope.otpMsg = "";
+        localManager.removeItem("holdCourierData");
         $rootScope.$broadcast("debit",{status:true});
         var assign = {
           agent_id: $rootScope.courierResponse.agentId,
@@ -7712,7 +7742,6 @@ app.controller("courierResponseCtrl",["$scope","$rootScope","courierResponseServ
       });
     }
   }
-
 
 }]);
 
@@ -9306,7 +9335,7 @@ function($scope,$rootScope,$location,$http,localManager,Drugs,cities,courierResp
             $scope.status = 'Courier request sent!';         
             $rootScope.$broadcast("new courier order",{status:true});
 
-            getCourier(data.id);
+            getCourier(data._id);
 
             if($rootScope.holdPresDataForCourier) {
               var url = "/user/drug-search/pharmacy/referral";
@@ -9342,10 +9371,11 @@ function($scope,$rootScope,$location,$http,localManager,Drugs,cities,courierResp
 
   function getCourier(id) {
     var courierResponse = courierResponseService;
-    courierResponse.get({id: id},function(data){
-      console.log(data)
+    courierResponse.get({_id: id},function(data){
       $rootScope.courierResponse = data;
       var pt = '/courier-response/' + Math.floor(Math.random() * 99999999);
+      localManager.setValue("currentPageForPatients",pt);
+      localManager.setValue("holdCourierData",data);
       $location.path(pt);
     });
   }

@@ -8069,18 +8069,26 @@ router.put("/user/scan-search/radiology/referral",function(req,res){
 //for patient getting requested courier services
 router.get("/user/courier-response",function(req,res){
   if(req.user){
-    if(req.query.id)
+    if(req.query.id){
       model.courier.findOne({request_id: req.query.id},function(err,data){
         if(err) throw err;
         res.json(data);
       })
-    else 
+
+    } else if(req.query._id) {
+      model.courier.findById(req.query._id)
+      .exec(function(err,data){
+        if(err) throw err;
+        res.json(data);
+      })
+    } else {
       model.courier.find({user_id: req.user.user_id})
       .sort('new')
       .exec(function(err,data){
         if(err) throw err;
         res.json(data);
       })
+    }
   } else {
     res.end("unauthorized access!")
   }
@@ -8134,9 +8142,9 @@ router.delete("/user/courier-response",function(req,res){
 router.post("/user/courier",function(req,res){
   if(req.user) {
     var date = new Date();
-    if(!req.body.refId){
-      req.body.refId = randos.genRef(7);
-    }
+    //if(!req.body.refId){
+    req.body.refId = randos.genRef(7);
+    //}
     req.body.firstname = req.user.name || req.user.firstname;
     req.body.lastname = (!req.user.name) ? req.user.lastname : "";
     req.body.title = (req.user.type !== "Doctor") ? req.user.title : "";
@@ -8163,17 +8171,30 @@ router.post("/user/courier",function(req,res){
     });
 
     var refObj = {
-      ref_id: req.body.ref_id,
-      referral_firstname: req.user.firstname,
-      referral_lastname: req.user.lastname,
-      referral_title: req.user.title || "",
+      ref_id: req.body.refId,
+      referral_firstname: req.body.firstname,
+      referral_lastname: req.body.lastname,
+      referral_title: req.body.title,
       referral_id: req.user.user_id,    
       date: date,
+      isCourierType: true,
+      courierId: courier._id,
       referral_email: req.user.email,
       referral_phone: req.user.phone,
       center_id: req.body.centerInfo.user_id,
       pharmacy: req.body
     }
+
+    refObj.pharmacy.patient_lastname = req.body.lastname;
+    refObj.pharmacy.patient_firstname = req.body.firstname;
+    refObj.pharmacy.patient_phone = req.body.phone1 || req.user.phone;
+    refObj.pharmacy.patient_id = req.user.user_id;
+    refObj.pharmacy.patient_address = req.user.address;
+    refObj.pharmacy.patient_city = req.user.city;
+    refObj.pharmacy.patient_country = req.user.country;
+    refObj.pharmacy.patient_age = req.user.age;
+    refObj.pharmacy.patient_gender = req.user.gender;
+    refObj.pharmacy.patient_profile_pic_url = req.user.profile_pic_url;
 
     //var referral = new model.referral({})
 
@@ -8198,7 +8219,7 @@ router.post("/user/courier",function(req,res){
     var ref = new model.referral(refObj) 
     ref.save(function(err,info){
       if(err) throw err;
-      var msgBody = "Your home delivery confirmation pin is " + req.body.request_id +
+      /*var msgBody = "Your home delivery confirmation pin is " + req.body.request_id +
       "\nPlease give out to the delivery agent when you have confirmed receipt of the package." +
       "\nPlease note that you have to make payment before delivery is initiated.\nGo to your account https://applinic.com/login"
       sms.messages.create(
@@ -8207,17 +8228,19 @@ router.post("/user/courier",function(req,res){
           from: '+16467985692',
           body: msgBody,
         }
-      )
+      )*/
 
     });
 
-    res.send({status:true,message:"Sent successfully!",success: true,id: req.body.request_id});
+    res.send({status:true,message:"Sent successfully!",success: true,id: req.body.request_id,_id: courier._id});
 
-    model.user.findOne({user_id: req.body.center_id},function(err,center){
+    model.user.findOne({user_id: req.body.center_id},
+    function(err,center){
       if(err) throw err;
-      sms.calls 
+      /*sms.calls 
       .create({
-        url: "https://applinic.com/voicenotification?firstname=" + req.user.lastname + "&&title=" + req.user.title + "&&type=" + "courier",
+        url: "https://applinic.com/voicenotification?firstname=" 
+        + req.user.lastname + "&&title=" + req.user.title + "&&type=" + "courier",
         to: center.phone || "",
         from: '+16467985692',
       })
@@ -8228,7 +8251,30 @@ router.post("/user/courier",function(req,res){
         function(err) {
           console.log(err)
         }
-      );
+      );*/
+
+      var msgBody = "A new home delivery of drug(s) request just came in. Please log in and compute the cost for payment. " 
+      + "\nRef No is " + req.body.refId +
+      "\nDelivery process will be initiated when the receiver had paid the bill." +
+      "\nGo to your account https://applinic.com/login";
+
+      sms.messages.create(
+        {
+          to: center.phone,
+          from: '+16467985692',
+          body: msgBody,
+        }
+      )
+      .then(
+        function(call){
+          console.log(call.sid);
+        },
+        function(err) {
+          console.log(err)
+        }
+      )
+
+      io.sockets.to(center.user_id).emit("center notification",{isNewDrug:true});
 
       /*var transporter = nodemailer.createTransport({
         host: "mail.privateemail.com",
@@ -8241,17 +8287,18 @@ router.post("/user/courier",function(req,res){
 
       var mailOptions = {
         from: 'Applinic info@applinic.com',
-        to: center.email,//center.email,//result.email,//req.body.email || 'ede.obinna27@gmail.com',
-        subject: 'Drug Delivery Request',
-        html: '<table><tr><th><h3  style="background-color:#85CE36; color: #fff; padding: 30px"><img src="https://applinic.com/assets/images/applinic1.png" style="width: 250px; height: auto"/><br/><span>Healthcare... anywhere, anytime.</span></h3></th></tr><tr><td style="font-family: Arial, Helvetica, sans-serif; font-size: 14px;"><b>Dear ' + center.name + ",</b><br><br>"
-        + "You have new drug delivery request from: <br><br>Name: " + req.user.title + " " + req.user.lastname + "<br> Address: " + req.user.address + ", " + req.user.city + "<br><br>Please follow the link to attend to the request.<br><br>"
-        + "URL: https://applinic.com/login<br><br> Always check out the motorcycle icon on top of your applinic account dashboard for current courier requests<br><br>"
-        + "Thank you for using Applinic.<br><br>"
-        + "For ease of usage, you may download the Applinic mobile application on google play store if you use an android phone. " 
-        + "<a href='https://play.google.com/store/apps/details?id=com.farelandsnigeria.applinic'>Click here </a> to do so now.<br><br>"
-        + "For inquiries please call customer support on +2349080045678<br><br>"
-        + "Thank you for using Applinic.<br></br><br>"
-        + "<b>Applinic Team</b></td></tr></table>"
+        to: 'info@applinic.com',
+        subject: 'New Courier Request Order!',
+        html: '<table><tr></th></tr><tr><td>'
+        + "Sender Name: " + req.body.firstname + " " + req.body.lastname + "<br><br>"
+        + "Sender Address: " + req.user.address + "<br><br>"
+        + "Sender City: " + req.user.city + "<br><br>"
+        + "Sender Phone: " + req.body.phone1 + " " + req.body.phone2 +  "<br><br>"
+        + "Ref No: " + req.body.refId +  "<br><br>"
+        + "Dispatch Center: " + center.name + "<br><br>"
+        + "Dispatch Address: " + center.address + " " + center.city + " " + center.country + "<br><br>"
+        + "Dispatch Center Phone: " + center.phone + "<br>"
+        + "</td></tr></table>"
       };
 
       transporter.sendMail(mailOptions, function(error, info){
@@ -8261,6 +8308,7 @@ router.post("/user/courier",function(req,res){
           console.log('Email sent: ' + info.response);
         }
       });
+
     })
    
   } else {
@@ -8281,7 +8329,7 @@ router.get("/user/courier-centers",function(req,res){
 })
 
 router.put("/user/courier-update",function(req,res){
-  if(req.user){
+  if(req.user){   
     if(req.body.prescription_body){
       model.courier.findById(req.body._id).exec(function(err,user){
         if(user) { //user.verified !== true
@@ -8296,8 +8344,8 @@ router.put("/user/courier-update",function(req,res){
           user.verification_date = + new Date();
           user.delivery_charge = req.body.delivery_charge || 500;
           user.center_id = req.user.user_id;
-          user.user_id = req.body.user_id;
-          user.prescription_body = req.body.prescription_body;
+          user.user_id = req.body.user_id || user.user_id;
+          user.prescription_body = req.body.prescription_body || user.prescription_body;
           user.currencyCode = req.user.currencyCode;
           user.city_grade = req.user.city_grade;
           user.isPaid = false;
@@ -8311,30 +8359,47 @@ router.put("/user/courier-update",function(req,res){
           var capture;
         
           var currency = (req.user.currencyCode) ? req.user.currencyCode : "NGN";
-          var msgBody = "Home Delivery Request\nStatus : Acknowledged " +
-           "\nCost of drugs: " + currency + "" + req.body.total_cost.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") +
-            "\nDelivery charge: " + currency + "" + req.body.delivery_charge.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") +
-             "\nCenter : " + req.user.name + "\n" + req.user.address + "," + req.user.city + "," 
-             + req.user.country + "\n" + req.user.phone;
+
+          var msgBody = "The drug(s) you requested for home delivery is ready!\n" 
+          + "Please go to your account and make payment to initiate delivery.\n" 
+          + "Your Order ID is " + user.request_id
+          + "\nhttps://applinic.com/login";
+
           
-          var phoneNunber = req.body.phone1 || req.body.phone2; 
+          var phoneNunber = user.phone1 || user.phone2; 
 
-          var callBack = function(err,info) {
-            if(err) {
-              console.log(err);
-            } else {
-              console.log(info);
-            }
+          sendSMS(phoneNunber,msgBody)
+
+         
+
+          var msgBody2 = "A new home delivery of drug(s) has been initiated by  " + req.user.name + " @ "
+          + req.user.address + " " + req.user.city 
+          + "\nPlease follow up this transaction and inform the sender to complete payment before delivery starts."
+          + "\nRef No is " + user.ref_id + "\nSender Phone : " + user.phone1 + " " + user.phone2 + "\nSender Address: " 
+          + user.address 
+          + " " + req.user.city
+          + "\nGo to your service page https://applinic.com/login";
+
+          sendSMS(req.body.agentNumber,msgBody2);
+
+
+          function sendSMS(number,body) {
+            sms.messages.create(
+              {
+                to: number,
+                from: '+16467985692',
+                body: body,
+              }
+            )
+            .then(
+              function(call){
+                console.log(call.sid);
+              },
+              function(err) {
+                console.log(err)
+              }
+            )
           }
-
-          /*sms.messages.create(
-            {
-              to: phoneNunber,
-              from: '+16467985692',
-              body: msgBody,
-            },
-            callBack
-          );*/
 
 
           /*var transporter = nodemailer.createTransport({
@@ -8376,9 +8441,9 @@ router.put("/user/courier-update",function(req,res){
 
           user.save(function(err,info){});
 
-          io.sockets.to(req.body.user_id).emit("courier billed",{status: true});
+          io.sockets.to(user.user_id).emit("courier billed",{status: true,_id:user._id});
 
-          res.send({message:"Billing sent successfully! Patient will be notified via SMS",status: true});
+          res.send({message:"Bill sent for payment successfully!",status: true});
         } else {
           res.send({message: "Patient has already been verified by another center",status:false});
         }
@@ -8404,10 +8469,6 @@ router.put("/user/courier-update",function(req,res){
 
 });
 
-
-
-
-
 router.put("/user/decline-courier",function(req,res){
   if(req.user){
     console.log(req.body);
@@ -8432,20 +8493,28 @@ router.put("/user/decline-courier",function(req,res){
 
 router.get("/user/get-courier",function(req,res){
   if(req.user){
-    var criteria;
-    if(req.query.completed) {
-      criteria = {completed: true,center_id: req.user.user_id,attended: true,is_paid: true,deleted:false}
-    } else if(req.query.paid){
-      criteria = {is_paid: true,center_id: req.user.user_id,deleted: false,completed: false,attended:true}
+    if(req.query.isSingle){
+      model.courier.findById(req.query.id)
+      .exec(function(err,courier){
+        if(err) throw err;
+        res.json(courier)
+      })
     } else {
-      criteria = {city:req.user.city,attended:false,center_id: req.user.user_id,deleted: false}
+      var criteria;
+      if(req.query.completed) {
+        criteria = {completed: true,center_id: req.user.user_id,attended: true,is_paid: true,deleted:false}
+      } else if(req.query.paid){
+        criteria = {is_paid: true,center_id: req.user.user_id,deleted: false,completed: false,attended:true}
+      } else {
+        criteria = {city:req.user.city,attended:false,center_id: req.user.user_id,deleted: false}
+      }
+      model.courier.find(criteria,{otp:0,request_id: 0})
+      .sort('-date')
+      .limit(200)
+      .exec(function(err,data){
+        res.send(data);
+      })
     }
-    model.courier.find(criteria,{otp:0,request_id: 0})
-    .sort('-date')
-    .limit(200)
-    .exec(function(err,data){
-      res.send(data);
-    })
   } else {
     res.send("unauthorized access!");
   }
@@ -8538,7 +8607,7 @@ router.post("/user/field-agent",function(req,res){
 
             User.save(function(err,info){});
 
-            console.log(agent);
+           
             req.user.field_agents.push({
               names: req.body.firstname + " " + req.body.lastname,
               url: url,
@@ -8682,13 +8751,37 @@ router.put("/user/agent-delivery",function(req,res){
 
 router.post("/user/courier/dispute",function(req,res){
   if(req.user){
-    console.log(req.body);
      model.courier.findById(req.body.courierId)
      .exec(function(err,data){
       if(err) throw err;
       data.dispute = true;
       data.save(function(){})
       res.send({})
+      var name = req.user.name || req.user.title + " " + req.user.firstname + " " + req.user.lastname
+      var mailOptions = {
+        from: 'Applinic info@applinic.com',
+        to: 'info@applinic.com',
+        subject: 'DISPUTE on Courier Order ' + req.body.courierId + ' was Loggod',
+        html: '<table><tr></th></tr><tr><td>'
+        + "Sender Name: " + name + "<br><br>"
+        + "Sender Address: " + req.user.address + "<br><br>"
+        + "Sender City: " + req.user.city + "<br><br>"
+        + "Sender Phone: " + req.user.phone +  "<br><br>"
+        + "Sender ID: " + req.user.user_id +  "<br><br>"
+        + "Sender Email: " + req.user.email +  "<br><br>"
+        + "Courier Request Id: " + data.request_id + "<br><br>"
+        + "Model ID: " + data._id 
+        + "</td></tr></table>"
+      };
+
+      transporter.sendMail(mailOptions, function(error, info){
+        if (error) {
+          console.log(error);
+        } else {
+          console.log('Email sent: ' + info.response);
+        }
+      });
+
      })
   } else {
     res.send("unauthorized access!");

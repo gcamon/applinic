@@ -710,7 +710,12 @@ app.config(['$paystackProvider','$routeProvider',
 
  .when("/courier-response/:id",{
   templateUrl: "/assets/pages/utilities/courier-response.html",
-  controller: "courierResponseCtrl"
+  controller: "courierResponseCtrl",
+  resolve: {
+    path: function($location,$rootScope){
+      $rootScope.path = $location.path();  
+    }
+  }
  })
 
  //display
@@ -15493,8 +15498,9 @@ app.service("paymentVerificationService",["$resource",function($resource){
 
 app.controller("pharmacyViewPrescriptionController",["$scope","$location","templateService",
   "localManager","$rootScope","$resource","billingAuthService","paymentVerificationService","phoneCallService",
-  "billingAuthService2",function($scope,$location,templateService,localManager,$rootScope,$resource,billingAuthService,
-    paymentVerificationService,phoneCallService,billingAuthService2){ 
+  "billingAuthService2","$http",
+  function($scope,$location,templateService,localManager,$rootScope,$resource,billingAuthService,
+    paymentVerificationService,phoneCallService,billingAuthService2,$http){ 
   //var pharmacyData = templateService.holdPharmacyReferralData = localManager.getValue("pharmacyData");  
   var getCurrentPage = localManager.getValue("currPageForPharmacy");
   var getIdOfCurrentPage = getCurrentPage.split("/");
@@ -15508,7 +15514,9 @@ app.controller("pharmacyViewPrescriptionController",["$scope","$location","templ
   //patient which will be used for billingcontroller
   
   //use to load data if has not been modified or if page is refreshed to restore default.
-  $rootScope.refData = localManager.getValue("pharmacyData");
+  $rootScope.refData = localManager.getValue("pharmacyData") || {};
+
+
 
 
   if($rootScope.refData.pharmacy)
@@ -15809,6 +15817,49 @@ app.controller("pharmacyViewPrescriptionController",["$scope","$location","templ
       }
     })
 
+  }
+
+
+  if($rootScope.refData.isCourierType){
+    /*$http.get("/user/get-courier",{params:{id:$rootScope.refData.courierId}})
+    .success(function(aCourierRequest){
+      $scope.request = {}
+    })*/
+
+    $scope.request = {
+      _id: $rootScope.refData.courierId
+    }
+
+    $scope.deliveryCharge = $rootScope.checkLogIn.courier_charge || 1000;
+
+    $scope.agents = $rootScope.checkLogIn.field_agents;
+    $scope.request.agentId = ($scope.agents[1]) ? $scope.agents[1].id : ($scope.agents.length > 0) ? $scope.agents[0].id : "";
+    $scope.request.agentNumber = ($scope.agents[1]) ? $scope.agents[1].phone : ($scope.agents.length > 0) ? $scope.agents[0].phone : "";
+    
+  }
+
+  $scope.billPatient = function() {
+    $scope.loading = true;
+    $scope.request.total_cost = totalCost.sum;
+    $scope.request.delivery_charge = $rootScope.checkLogIn.courier_charge || 1000;
+    $scope.request.prescription_body = $rootScope.refData.pharmacy.prescription_body;
+
+    $http({
+      method  : 'PUT',
+      url     : "/user/courier-update",
+      data    : $scope.request,
+      headers : {'Content-Type': 'application/json'} 
+      })
+    .success(function(data) {  
+      if(data.status) {
+        $scope.message = data.message;  
+      } else {
+        alert(data.message)
+      }
+
+      $scope.loading = false;
+
+    });    
   }
 
 

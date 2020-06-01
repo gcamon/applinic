@@ -135,9 +135,11 @@
            
             <div ng-if="!refData.pharmacy.doctor_id && isFilled !== true"><i class="fa fa-warning text-danger"></i> <span> The source of the above prescription is <strong>not trusted!</strong> It may have been prescribed by the patient or non-professional. <strong>Do Enquire</strong> from  this patient about the source before continuing.</span>
             </div>
-			<div style="margin-top: 20px; margin-bottom: 30px">
+			<div style="margin-top: 10px; margin-bottom: 30px">
 				<!--<button  class="btn btn-simple" disabled="disabled" style="cursor: no-drop;" ng-if="isFilled !== true">Request Payment</button>-->
-				<span ng-show="isFilled && !isOTP && !refData.pharmacy.is_paid">
+				<div ng-show="isFilled && !isOTP && !refData.pharmacy.is_paid && !refData.isCourierType">
+
+				<label>Who pays the bill? </label><br>
 
 					<button class="btn btn-primary" ng-show="refData.referral_pays == 'Yes' && !loading" ng-click="referralVerifyPay(refData)">
 					  Referral's E-Wallet
@@ -145,9 +147,16 @@
 
 					<button class="btn btn-primary" ng-click="sendBill(refData.pharmacy.patient_id)" ng-if="!loading && !refData.referral_pays || refData.referral_pays == 'No'">Patient's E-Wallet</button> 
 
-					<button class="btn btn-primary" ng-click="centerVerifyPay(refData)" ng-if="!loading && !refData.referral_pays || refData.referral_pays == 'No'">Center's E-Wallet</button> <span ng-if="loading">Processing...</span>
+					<button class="btn btn-primary" ng-click="centerVerifyPay(refData)" ng-if="!loading && !refData.referral_pays || refData.referral_pays == 'No'">My Center's E-Wallet</button> <span ng-if="loading">Processing...</span>
 
-				</span>
+				</div>
+				<div ng-show="isFilled && !isOTP && !refData.pharmacy.is_paid && refData.isCourierType">
+					<button class="btn btn-danger" ng-click="billPatient()" ng-show="!loading && !message">Send bill</button>
+					<span ng-show="loading">Sending...</span>
+					<span ng-show="message" class="text-primary"><i class="fa fa-check"></i> {{message}} <br>
+						<small>Once the receiver pays the delivery agent will be notified and come for the package. Your account will be credited when the receiver had confirmed the receipt of the package. Delivery agent number is <b>{{request.agentNumber}}</b></small>
+					</span>
+				</div>
 				<!--<button class="btn btn-info btn-sm" ng-click="toList(refData.pharmacy.patient_firstname,refData.pharmacy.patient_lastname,refData.pharmacy.patient_profile_pic_url,refData.ref_id,refData.date)" ng-if="allNote.length !== 0 && isFilled !== true">Add to attendance list</button>-->
 				<!--<button class="btn btn-neutral btn-sm" ng-click="toAnotherPharmacy()" ng-if="isForwardable === true">Refer to another <i class="fa fa-arrow-right"></i></button> -->
 				

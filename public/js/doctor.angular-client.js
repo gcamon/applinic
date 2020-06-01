@@ -708,9 +708,14 @@ app.config(['$paystackProvider','$routeProvider',
   }*/
  })
 
- .when("/courier-response/:id",{
+.when("/courier-response/:id",{
   templateUrl: "/assets/pages/utilities/courier-response.html",
-  controller: "courierResponseCtrl"
+  controller: "courierResponseCtrl",
+  resolve: {
+    path: function($location,$rootScope){
+      $rootScope.path = $location.path();  
+    }
+  }
  })
 
  //display
@@ -3572,6 +3577,9 @@ app.controller("docNotificationController",["$scope","$location","$resource","$i
 
   mySocket.on("courier billed",function(res){
     getCourier();
+    if($rootScope.courierResponse)
+      $rootScope.courierResponse = null;
+    $rootScope.getCourierResponse(res._id);
   });
 
   mySocket.on("new courier order",function(res){
@@ -11368,9 +11376,28 @@ app.service("courierResponseService",["$resource",function($resource){
   return $resource("/user/courier-response",null,{pay:{method: "POST"},reOder:{method: "PUT"}});
 }])
 
-app.controller("courierResponseCtrl",["$scope","$rootScope","courierResponseService","templateService","$location","phoneCallService",
-  "paymentVerificationService","$http",
-  function($scope,$rootScope,courierResponseService,templateService,$location,phoneCallService,paymentVerificationService,$http){
+app.controller("courierResponseCtrl",["$scope","$rootScope","courierResponseService","templateService",
+  "$location","phoneCallService","paymentVerificationService","$http","localManager",
+  function($scope,$rootScope,courierResponseService,templateService,$location,phoneCallService,
+    paymentVerificationService,$http,localManager){
+
+  $rootScope.getCourierResponse = function(courierId) {
+    if(!$rootScope.courierResponse) {
+      var aCourier = localManager.getValue("holdCourierData");
+      var id;
+      if(aCourier){
+        id = (courierId) ? courierId : aCourier._id;
+      }
+      $scope.loadingReq = true;
+      var courierResponse = courierResponseService;
+      courierResponse.get({_id: id},function(data){
+        $rootScope.courierResponse = data;
+        $scope.loadingReq = false;
+      });
+    }
+  }
+
+  $rootScope.getCourierResponse();
 
   $scope.reOrder = function(item) {    
    
@@ -11403,6 +11430,7 @@ app.controller("courierResponseCtrl",["$scope","$rootScope","courierResponseServ
           if(elementPos !== -1) {
             $rootScope.courierResponseList.splice(elementPos,1);
             $rootScope.courierResponse = null;
+            localManager.removeItem("holdCourierData");
           }
         } else {
           alert("Order cannot delete! Maybe it has been attended to or does not exists");
@@ -11482,6 +11510,7 @@ app.controller("courierResponseCtrl",["$scope","$rootScope","courierResponseServ
       if(response.status) {
         courier.is_paid = response.status;
         $scope.otpMsg = "";
+        localManager.removeItem("holdCourierData");
         $rootScope.$broadcast("debit",{status:true});
         var assign = {
           agent_id: $rootScope.courierResponse.agentId,
@@ -11646,7 +11675,7 @@ function($scope,$rootScope,$location,$http,localManager,Drugs,cities,courierResp
             $scope.status = 'Courier request sent!';         
             $rootScope.$broadcast("new courier order",{status:true});
 
-            getCourier(data.id);
+            getCourier(data._id);
 
             if($rootScope.holdPresDataForCourier) {
               var url = "/user/drug-search/pharmacy/referral";
@@ -11682,26 +11711,20 @@ function($scope,$rootScope,$location,$http,localManager,Drugs,cities,courierResp
 
   function getCourier(id) {
     var courierResponse = courierResponseService;
-    courierResponse.get({id: id},function(data){
-      console.log(data)
+    courierResponse.get({_id: id},function(data){
       $rootScope.courierResponse = data;
       var pt = '/courier-response/' + Math.floor(Math.random() * 99999999);
+      localManager.setValue("currentPage",pt);
+      localManager.setValue("holdCourierData",data);
       $location.path(pt);
     });
   }
 
 }]);
 
-
-
-
-
-
 app.service("fieldAgentService",["$resource",function($resource){
   return $resource("/user/field-agent",null,{update:{method: "PUT"},del:{method:"DELETE"}})
 }])
-
-
 
 app.controller("selectedCourierRequestController",["$scope","$rootScope","$http","mySocket",function($scope,$rootScope,$http,mySocket){
   //this will only allow cebters permitted to render courier services use the feature.

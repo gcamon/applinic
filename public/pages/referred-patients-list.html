@@ -102,12 +102,15 @@
 			</thead>
 			<tbody ng-repeat="pres in requestList | date : '-date' | filter : filter" style="line-height: 25px" ng-show="requestList.length > 0">
 				<td>{{pres.pharmacy.patient_firstname}} {{pres.pharmacy.patient_lastname}}</td>
-				<td>{{pres.ref_id}}</td>
+				<td>
+					<span>{{pres.ref_id}}</span>
+					
+				</td>
 				<td>{{pres.pharmacy.patient_phone}}</td>
 				<td>					
 					<div ng-repeat="k in pres.pharmacy.prescription_body"><small> - {{k.drug_name}} {{k.dosage}}</small></div>
 				</td>
-				<td style="position: relative;"><span am-time-ago="pres.date "></span><br><br> <i class="fa fa-ellipsis-h text-muted" style="float: right;padding: 2px 1px;cursor: pointer;" title="Manage test" ng-click="popup(pres)"></i>
+				<td style="position: relative;"><span am-time-ago="pres.date "></span><br><br><i class="fa fa-motorcycle text-primary" ng-show="pres.isCourierType" ng-click="popup(pres)"></i> <i class="fa fa-ellipsis-h text-muted" style="float: right;padding: 2px 1px;cursor: pointer;font-size: 22px" title="Manage Requests" ng-click="popup(pres)"></i>
 					<div ng-class="{'popup': pres.isManage == true}" ng-if="pres.isManage" style="line-height: 35px">
 					  <div style="position: absolute;top:4px;right: 10px" ng-click="closePop(pres)"><i class="fa fa-times text-info"></i></div>
 					  <a href=""  ng-click="viewPatientPrescription(pres)"><i class="fa fa-gear"></i> Attend to Request </a><br>

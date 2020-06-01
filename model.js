@@ -388,6 +388,8 @@ var myModel = function () {
 		referral_phone: String,
 		referral_pays: String,
 		acc_no: String,
+		isCourierType: Boolean,
+		courierId: String,
 		date: Date,
 		type_of_test: String,		
 		laboratory: center_refSchema,
