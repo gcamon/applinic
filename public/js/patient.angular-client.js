@@ -2267,7 +2267,7 @@ app.controller("patientNotificationController",["$scope","$location","$http","$w
     if($rootScope.courierResponse){
       $rootScope.courierResponse = null;
     }
-    alert(res._id)
+    alert("The cost of drugs you requested for home delivery is ready!")
     $rootScope.getCourierResponse(res._id);
   });
 
@@ -7599,7 +7599,7 @@ app.controller("courierResponseCtrl",["$scope","$rootScope","courierResponseServ
     }
   }
 
-  $rootScope.getCourierResponse()
+  $rootScope.getCourierResponse();
 
   $scope.reOrder = function(item) {    
     if(item){
@@ -7647,8 +7647,8 @@ app.controller("courierResponseCtrl",["$scope","$rootScope","courierResponseServ
 
   var otp = paymentVerificationService;
   var count = 0;
-  $scope.pay = function(oldTime,phoneCall){
-    
+
+  $scope.pay = function(oldTime,phoneCall){    
     var time = + new Date();
     $rootScope.resend = time;
     var sendObj = {
@@ -7677,6 +7677,7 @@ app.controller("courierResponseCtrl",["$scope","$rootScope","courierResponseServ
           $scope.isOtp = true;
         } else {
           alert(data.message);
+          $location.path('wallet');
         }
       })
     }
@@ -9367,7 +9368,6 @@ function($scope,$rootScope,$location,$http,localManager,Drugs,cities,courierResp
       },3000);
     }
   }
-
 
   function getCourier(id) {
     var courierResponse = courierResponseService;

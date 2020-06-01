@@ -8155,12 +8155,14 @@ router.post("/user/courier",function(req,res){
     req.body.attended = false;
     req.body.completed = false;
     req.body.deleted = false;
+    req.body.ref_id = req.body.refId;
     req.body.new = 0;
     req.body.email = req.user.email;
     req.body.request_id = randos.genRef(8);
     req.body.center_name = req.body.centerInfo.name;
     req.body.center_address = req.body.centerInfo.address;
     req.body.center_phone =  req.body.centerInfo.phone;
+    req.body.center_id = req.body.centerInfo.user_id;
 
     var courier = new model.courier(req.body);
     courier.save(function(err,info){
@@ -8295,6 +8297,7 @@ router.post("/user/courier",function(req,res){
         + "Sender City: " + req.user.city + "<br><br>"
         + "Sender Phone: " + req.body.phone1 + " " + req.body.phone2 +  "<br><br>"
         + "Ref No: " + req.body.refId +  "<br><br>"
+        + "Order ID: <b>" + req.body.request_id +  "</b><br><br>"
         + "Dispatch Center: " + center.name + "<br><br>"
         + "Dispatch Address: " + center.address + " " + center.city + " " + center.country + "<br><br>"
         + "Dispatch Center Phone: " + center.phone + "<br>"
@@ -8411,7 +8414,7 @@ router.put("/user/courier-update",function(req,res){
             }
           });*/
 
-          var mailOptions = {
+          /*var mailOptions = {
             from: 'Applinic info@applinic.com',
             to: user.email,//center.email,//result.email,//req.body.email || 'ede.obinna27@gmail.com',
             subject: 'Billing for drugs delivery received',
@@ -8436,7 +8439,7 @@ router.put("/user/courier-update",function(req,res){
             } else {
               console.log('Email sent: ' + info.response);
             }
-          });
+          });*/
 
 
           user.save(function(err,info){});
@@ -8471,7 +8474,6 @@ router.put("/user/courier-update",function(req,res){
 
 router.put("/user/decline-courier",function(req,res){
   if(req.user){
-    console.log(req.body);
     model.courier.findOne({_id: req.body._id,center_id: req.user.user_id},{deleted: 1}).exec(function(err,courier){
       if(err) throw err;
       if(courier)

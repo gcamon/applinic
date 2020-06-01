@@ -145,7 +145,7 @@
 					  Referral's E-Wallet
 					</button>
 
-					<button class="btn btn-primary" ng-click="sendBill(refData.pharmacy.patient_id)" ng-if="!loading && !refData.referral_pays || refData.referral_pays == 'No'">Patient's E-Wallet</button> 
+					<button class="btn btn-primary" ng-click="sendBill(refData.pharmacy.patient_id)" ng-if="!loading && !refData.referral_pays || refData.referral_pays == 'No'">Buyer's E-Wallet</button> 
 
 					<button class="btn btn-primary" ng-click="centerVerifyPay(refData)" ng-if="!loading && !refData.referral_pays || refData.referral_pays == 'No'">My Center's E-Wallet</button> <span ng-if="loading">Processing...</span>
 

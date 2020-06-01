@@ -837,6 +837,7 @@ var myModel = function () {
 		firstname: String,
 		address: String,
 		email: String,
+		ref_id: String,
 		prescription_body: Array,
 		city: String,
 		phone1: String,

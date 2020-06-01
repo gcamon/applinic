@@ -459,7 +459,7 @@ var basicPaymentRoute = function(model,sms,io,paystack,client,nodemailer){
 							var name = req.user.firstname || req.user.name;
 							var pay = new Wallet(req.body.date,name,req.user.lastname,req.body.message);
 							pay.payment(model,data.amount,debitor,req.user.user_id,io);
-							res.send({message: "Transaction successful! Your account was credited."});
+							res.send({message: "Transaction successful!"});
 						});						
 						data.remove(function(){});
 					} else {
@@ -935,7 +935,7 @@ var basicPaymentRoute = function(model,sms,io,paystack,client,nodemailer){
 									
 									model.otpSchema.remove({otp:req.body.otp},function(err,info){});
 									var roundNum = Math.round(center.ewallet.available_amount)
-									res.send({message: "Transaction successful! Your account is credited.",balance:roundNum,status:true});	
+									res.send({message: "Transaction successful!",balance:roundNum,status:true});	
 									if(req.body.prescriptionBody) {
 										updatePatient();
 									}	
@@ -1482,7 +1482,7 @@ router.put("/user/laboratory/test-result/session-update",function(req,res){
 				          
 				          pay.billPaymentByReferral(model,req.body.payObj.total,req.user,oga,io,function(balance){
 				          	//if(balance){
-				          	res.json({message: "Transaction successful! Your account is credited.",
+				          	res.json({message: "Transaction successful!",
 				          	status: "success",payment:true, detail: details});
 				          	//} else {
 				          		//res.send({message: "Transaction Incomplete",error: true})
@@ -1598,8 +1598,8 @@ router.put("/user/laboratory/test-result/session-update",function(req,res){
 					          		res.send({message: "Transaction Incomplete",error: true});
 					          		return;
 					          	}
-					          	console.log("payment details saved");
-					          	res.json({message: "Transaction successful! Your account is credited.",
+					          	
+					          	res.json({message: "Transaction successful!",
 				        			balance:center.ewallet.available_amount,status: "success",payment:true,detail:details});
 					          });
 
@@ -1674,7 +1674,7 @@ router.put("/user/laboratory/test-result/session-update",function(req,res){
 		              				res.send({message: "Transaction Incomplete",status: false})
 		              			} else {
 		              				var detail = (req.user.type === 'Radiology') ? objectFound.radiology.detail : objectFound.laboratory.detail;
-		              				res.send({message: "Transaction successful! Your account is credited.",balance:center.ewallet.available_amount,status: "success",payment:true,detail:detail});
+		              				res.send({message: "Transaction successful!",balance:center.ewallet.available_amount,status: "success",payment:true,detail:detail});
 		              			}
 
 		              		})

@@ -130,11 +130,11 @@
 		<article style="margin-bottom: 10px">
 			<input type="text" name="" placeholder="Filter list" ng-model="filter"  class="simple-border">
 		</article>
-		<a href="" style="display: block;border-bottom: 1px solid #eee;padding: 5px 0;position: relative;color: #000"  ng-repeat="pres in requestList | date : '-date' | filter : filter">
+		<a href="" ng-click="viewPatientPrescription(pres)" style="display: block;border-bottom: 1px solid #eee;padding: 5px 0;position: relative;color: #000;position: relative;"  ng-repeat="pres in requestList | date : '-date' | filter : filter">
 			<label class="pb-0 mb-0"><b>{{pres.pharmacy.patient_firstname}} {{pres.pharmacy.patient_lastname}}</b></label><br>
 			<span>{{pres.ref_id}}</span><br>
 			<span>{{pres.pharmacy.patient_phone}}</span>
-			<i class="fa fa-arrow-right text-primary" ng-click="viewPatientPrescription(pres)" style="position: absolute;right: 5px;bottom: 2px;padding: 10px"></i>
+			<i class="fa fa-motorcycle text-primary"  style="position: absolute;right: 5px;bottom: 2px;padding: 10px"></i>
 		</a>
 		<div style="text-align: center;padding-top: 20px" ng-show="loading">
 			<span class="text-warning">Loading...</span>

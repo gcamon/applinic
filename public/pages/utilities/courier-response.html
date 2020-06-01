@@ -16,7 +16,7 @@
 		<label class="pb-0 mb-0">Status:</label>  <span style="font-weight: bold" ng-class="{'text-danger': !courierResponse.attended,'text-info': courierResponse.attended,'text-success':courierResponse.completed,'text-warning':courierResponse.is_paid}">{{(!courierResponse.verified || !courierResponse.attended) ? 'Sent' : (!courierResponse.is_paid && courierResponse.attended) ? 'Ready': (courierResponse.is_paid && !courierResponse.completed) ? 'On Delivery' : (courierResponse.completed) ? "Received" : ""}}</span> 
 	</div>
 	<div ng-if="!courierResponse.verified || !courierResponse.attended">
-		<label class="pb-0 mb-0">Description:</label> <span>Waiting for the center to calculate and send the cost of the drug(s) for payment. This usually takes less than 5 minutes.</span>
+		<label class="pb-0 mb-0">Description:</label><br> <article>Waiting for the center to calculate and send the cost of the drug(s) for payment. This usually takes less than 5 minutes.</article>
 	</div>
 	<div ng-if="courierResponse.attended && !courierResponse.is_paid">
 		<label class="pb-0 mb-0">Description:</label> <article>The cost of the drug(s) requested is received. Please make payment to initiate delivery. </article>
@@ -31,7 +31,10 @@
 		<label class="pb-0 mb-0">Phone Numbers:</label> <span>{{courierResponse.phone1}} {{courierResponse.phone2}}</span>
 	</div>
 	<div>
-		<label>Delivery Address:</label> {{courierResponse.address}}
+		<label>Delivery Address:</label> <span>{{courierResponse.address}}</span>
+	</div>
+	<div>
+		<label>Ref Number:</label> <span>{{courierResponse.ref_id}}</span>
 	</div>
 	<div>
 		<label>Order ID:</label> <b class="text-primary">{{courierResponse.request_id}}</b> 
@@ -79,7 +82,7 @@
 		<div>
 			Total Billed : <b>{{getTotal(courierResponse.delivery_charge,courierResponse.total_cost)}}</b>
 		</div>
-		<p class="pb-0 mb-0">Don't have enough fund? Quickly <a href="#/wallet" class="text-danger"><b> fund your wallet</b></a> and continue.</p>
+		
 		<div class="pt-1">
 			<p class="text-success">{{otpMsg}}</p>
 		</div>
