@@ -2936,7 +2936,6 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
       //straight to a pharmacy. later the patient will be notified. 
       //this block represents doctor action by forwarding prescription to a pharmacy.
       //any data sent to a diagnostic center other than to the patient himself is seens a a referral by this application.
-       
       if(req.user){ 
           console.log(req.body)
             var date = new Date();
@@ -2949,7 +2948,110 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
             }
 
             req.body.prescriptionId = randos.genRef(12);
-            
+            var reqId = randos.genRef(7);
+
+            var courier;
+
+            if(req.body.courierObj){
+              var firstname = (req.body.referral_pays) ? req.user.firstname : req.body.firstname;
+              var lastname = (req.body.referral_pays) ? req.user.lastname : req.body.lastname;
+              var title = (req.body.referral_pays) ? req.user.title : req.body.title;
+              var pic = (req.body.referral_pays) ? req.user.profile_pic_url : req.body.patient_profile_pic_url;
+              var userId = (req.body.referral_pays) ? req.user.user_id : req.body.patient_id;
+              var optMsg = (req.body.referral_pays) ? "The doctor chose the option to pay the bill." : "";
+              var courierData = {
+                request_id: reqId,
+                verified: false,
+                firstname: firstname,
+                address: req.body.courierObj.address,
+                ref_id: ref_id,
+                prescription_body: req.body.prescriptionBody,
+                city: (req.body.referral_pays) ? req.user.city : req.body.city,
+                phone1: req.body.courierObj.phone1,
+                phone2: req.body.phone,
+                lastname: lastname,
+                title: title,
+                attended: false,
+                profile_pic_url: pic,
+                user_id: userId,
+                center_id: req.body.user_id,
+                center_name: req.body.center_name,
+                center_address: req.body.center_address,
+                center_phone: req.body.center_phone,
+                center_email: req.body.center_email,
+                center_city: req.body.center_city,
+                date: date, //use date to find refers to date the request was made or initiated
+                deleted: false,
+                prescriptionId: req.body.prescriptionId,
+                is_paid: false,
+                new: 0
+              }
+
+              courier = new model.courier(courierData);
+
+              courier.save(function(err,info){
+                if(err) throw err;
+
+                io.sockets.to(req.body.center_id).emit("receiver courier",courierData);
+
+                var msgBody = "A new home delivery of drug(s) request just came in. Please log in and compute the cost for payment. " 
+                + "\nRef No is " + ref_id +
+                "\nDelivery process will be initiated when the receiver had paid the bill." +
+                "\nGo to your account https://applinic.com/login";
+
+                sms.messages.create(
+                  {
+                    to: req.body.center_phone,
+                    from: '+16467985692',
+                    body: msgBody,
+                  }
+                )
+                .then(
+                  function(call){
+                    console.log(call.sid);
+                  },
+                  function(err) {
+                    console.log(err)
+                  }
+                )
+
+                io.sockets.to(req.body.user_id).emit("center notification",{isNewDrug:true});
+
+
+                var mailOptions = {
+                  from: 'Applinic info@applinic.com',
+                  to: 'info@applinic.com',
+                  subject: 'New Courier Request Order!',
+                  html: '<table><tr></th></tr><tr><td>'
+                  + "Sender Name: " + req.user.name + "<br><br>"
+                  + "Sender Address: " + req.user.address + "<br><br>"
+                  + "Sender City: " + req.user.city + "<br><br>"
+                  + "Sender Phone: " + req.user.phone + "<br><br>"
+                  + "Ref No: " + ref_id +  "<br><br>"
+                  + "Order ID: <b>" + reqId +  "</b><br><br>"
+                  + "Dispatch Center: " + req.body.center_name + "<br><br>"
+                  + "Dispatch Address: " + req.body.center_address + " " + req.body.center_city + "<br><br>"                  
+                  + "Dispatch Center Phone: " + req.body.center_phone + "<br><br>"
+                  + "<b>Please note this courier request was made through doctor's e-treatment interface for a patient below:</b><br><br>"
+                  + "Patient name: " + req.body.title + " " + req.body.firstname + " " + req.body.lastname + "<br><br>"
+                  + "Patient ID: " + req.body.patient_id + "<br><br>" 
+                  + "Patient Phone: " + req.body.phone + "<br><br><span style='color: green;font-style:italic'>"
+                  + optMsg + "</span><br>"   
+                  + "</td></tr></table>"
+                };
+
+                transporter.sendMail(mailOptions, function(error, info){
+                  if (error) {
+                    console.log(error);
+                  } else {
+                    console.log('Email sent: ' + info.response);
+                  }
+                });
+
+              });
+
+            }
+
             var preObj = {              
               provisional_diagnosis: req.body.provisional_diagnosis,
               explanation: req.body.explanation,
@@ -3004,6 +3106,11 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
               date: date,
               center_id: req.body.user_id,
               pharmacy: preObj
+            }
+
+            if(req.body.courierObj){
+              refObj.isCourierType = true;
+              refObj.courierId = courier._id;
             }
 
          model.user.findOne(
@@ -3118,11 +3225,20 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
                 io.sockets.to(req.body.user_id).emit("center notification",{status:true,isNewDrug: true});                                         
               });
 
-              var msgBody = req.user.title + " " + req.user.firstname + " " + req.user.lastname 
-              +  " has written some prescriptions for you which was forwarded to " 
-              + pharmacy.name + " at " + pharmacy.address + ", " + pharmacy.city + ". Please show " 
-              + "this Ref No - " +  ref_id + " to the center. To view the prescription " 
-              + "or to share it with another physician please log into your account or create one at www.applinic.com/signup"
+              var msgBody;
+              var names = req.user.name
+              if(!req.body.courierObj){
+                msgBody = names
+                +  " has written some prescriptions for you which was forwarded to " 
+                + pharmacy.name + " at " + pharmacy.address + ", " + pharmacy.city + ". Please show " 
+                + "this Ref No - " +  ref_id + " to the center. To view the prescription " 
+                + "or to share it with another physician please log into your account or create one at www.applinic.com/signup"
+
+              } else {
+                msgBody = names + " has written some prescription and activated home delivery service for you." 
+                + " You may be contacted by our home delivery agent if payment for the prescription is made."
+              }
+
               var phoneNunber =  data.phone;              
               sms.messages.create(
                 {
@@ -8068,6 +8184,7 @@ router.put("/user/scan-search/radiology/referral",function(req,res){
 
 //for patient getting requested courier services
 router.get("/user/courier-response",function(req,res){
+  console.log(req.query)
   if(req.user){
     if(req.query.id){
       model.courier.findOne({request_id: req.query.id},function(err,data){
@@ -8143,6 +8260,7 @@ router.post("/user/courier",function(req,res){
   if(req.user) {
     var date = new Date();
     //if(!req.body.refId){
+    console.log(req.body)
     req.body.refId = randos.genRef(7);
     //}
     req.body.firstname = req.user.name || req.user.firstname;
@@ -8332,7 +8450,7 @@ router.get("/user/courier-centers",function(req,res){
 })
 
 router.put("/user/courier-update",function(req,res){
-  if(req.user){   
+  if(req.user){  
     if(req.body.prescription_body){
       model.courier.findById(req.body._id).exec(function(err,user){
         if(user) { //user.verified !== true
@@ -8444,7 +8562,8 @@ router.put("/user/courier-update",function(req,res){
 
           user.save(function(err,info){});
 
-          io.sockets.to(user.user_id).emit("courier billed",{status: true,_id:user._id});
+          io.sockets.to(user.user_id).emit("courier billed",
+            {status: true,_id:user._id,message: "The cost of drugs you requested for home delivery is ready!"});
 
           res.send({message:"Bill sent for payment successfully!",status: true});
         } else {
@@ -8536,7 +8655,6 @@ router.get("/user/field-agent/:centerId/:agentId",function(req,res){
           if(err) throw err;
           if(agent){
             if(req.user.user_id === agent.userId || agent.center_id === req.user.user_id) {
-              console.log(agent)
               res.render("field-agent",{agent: agent});
             } else {
               res.send({Error: "Field agent not authentication failed!"});
@@ -8553,6 +8671,23 @@ router.get("/user/field-agent/:centerId/:agentId",function(req,res){
     res.end("Unauthorized access!")
   }
 });
+
+router.get("/user/field-agent/get-data",function(req,res){
+  if(req.user){
+    model.agent.findOne({userId: req.query.id})
+    .exec(function(err,agent){
+      if(err) throw err;
+      if(agent){
+        res.json(agent)
+      } else {
+        res.json({})
+      }
+    })
+  } else {
+    res.render("login")
+  }
+
+})
 
 //this gets field agents registered by a center
 router.get("/user/field-agent",function(req,res){
@@ -8604,12 +8739,10 @@ router.post("/user/field-agent",function(req,res){
               phone: req.body.phone,
               user_id: agentId,
               profile_pic_url: "/download/profile_pic/nopic",
-            });
+            })
 
+            User.save(function(err,info){})
 
-            User.save(function(err,info){});
-
-           
             req.user.field_agents.push({
               names: req.body.firstname + " " + req.body.lastname,
               url: url,
@@ -8617,13 +8750,13 @@ router.post("/user/field-agent",function(req,res){
               phone: req.body.phone,
               email: req.body.email,
               password: password
-            });
+            })
 
             req.user.save(function(){});
 
             agent.save(function(err,info){
               if(err) throw err;
-              console.log("agent saved!")
+              console.log("Agent saved!")
             })
 
             sms.messages.create(
@@ -8705,7 +8838,7 @@ router.put("/user/agent-delivery",function(req,res){
             courier.save(function(err,info){});
             res.json({status: true,message: message});
 
-
+            io.sockets.to(agent.userId).emit('delivery start',{status:true})
             /*var transporter = nodemailer.createTransport({
               host: "mail.privateemail.com",
               port: 465,
@@ -8715,7 +8848,7 @@ router.put("/user/agent-delivery",function(req,res){
               }
             });*/
 
-            var mailOptions = {
+            /*var mailOptions = {
               from: 'Applinic info@applinic.com',
               to: agent.email,//result.email,//req.body.email || 'ede.obinna27@gmail.com',
               subject: 'Order Ready for Delivery',
@@ -8737,7 +8870,7 @@ router.put("/user/agent-delivery",function(req,res){
               } else {
                 console.log('Email sent: ' + info.response);
               }
-            });
+            });*/
           } else {
            res.send({message: "Error: Courier record not found!",status:false})
           }

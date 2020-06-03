@@ -75,19 +75,21 @@
         <div class="container pt-1">
             <h5>Agent <%= agent.firstname %>!</h5>
         </div>
-        <main class="container" ng-controller="filedAgentController" ng-cloak>
-             <% for (var i = agent.couriers.length-1; i >= 0; i--) { %>
-            <div class="p-2 card card-center-1" id="<%= agent.couriers[i]._id %>">        
-                <span style="float: right;padding: 10px 20px"  class="text-muted" am-time-ago="'<%= agent.couriers[i].delivery_start_date %>'"></span>
-                <section>
-                    <h6 style="padding: 10px 0">Patient details</h6>
-                    <img src='<%= agent.couriers[i].profile_pic_url %>' style="max-width:180px;height: auto">
-                    <div class="pt-1"><strong><i class="fa fa-user"></i> </strong> <b><%= agent.couriers[i].title %>  <%= agent.couriers[i].firstname %> <%= agent.couriers[i].lastname %></b></div>
-                    <div><strong><i class="fa fa-globe"></i>  </strong> <%= agent.couriers[i].address %>, <%= agent.couriers[i].city %></div>
-                    <div><strong><i class="fa fa-clock-o"></i> </strong> {{<%= agent.couriers[i].date %> | date: 'fullDate'}} </div> 
-                    <div><strong><i class="fa fa-phone"></i> </strong> <%= agent.couriers[i].phone1 %>, <%= agent.couriers[i].phone2 %></div>                  
+        <main class="container" ng-controller="filedAgentController" ng-cloak>            
+            <div class="p-2 card card-center-1 mb-1" ng-repeat="req in courierData.couriers | orderBy: '-delivery_start_date'">        
+                <span style="float: right;padding: 10px 20px"  class="text-muted" am-time-ago="req.delivery_start_date"></span>
+                <h6 style="padding: 10px 0">Patient details</h6>
+                <section>                   
+                    <img src="{{req.profile_pic_url}}" style="max-width:180px;height: auto;float: left;">
+                    <article style="display: inline-block;padding: 0 10px">
+                        <div><strong><i class="fa fa-user"></i> </strong> <b>{{req.title}} {{ req.firstname }} {{req.lastname}} </b></div>
+                        <div><strong><i class="fa fa-globe"></i>  </strong> {{req.address}}, {{req.city}}</div>
+                        <div><strong><i class="fa fa-clock-o"></i> </strong> {{req.date | date: 'mediumDate'}}</div> 
+                        <div><strong><i class="fa fa-phone"></i> </strong> <b>{{req.phone1}}, {{req.phone2}}</b></div> 
+                    </article>                 
                 </section>
                 <hr>
+
                 <section class="no-mobile-item-display">
                     <h6 style="padding: 10px 0">Prescription details</h6>                      
                         <table class="table table-striped table-responsive">
@@ -102,16 +104,16 @@
                                 </thead>                            
                             </tr>
                             <tr>
-                                <% for(var j = 0; j < agent.couriers[i].prescription_body.length; j++) { %>
-                                <tbody>                                   
-                                    <td><%= agent.couriers[i].prescription_body[j].sn %></td>
-                                    <td><%= agent.couriers[i].prescription_body[j].drug_name %></td>
-                                    <td>{{('<%= agent.couriers[i].prescription_body[j].cost %>') ? <%= agent.couriers[i].prescription_body[j].cost %>:""}}</td>
-                                    <td><%= agent.couriers[i].prescription_body[j].dosage %></td>
-                                    <td><%= agent.couriers[i].prescription_body[j].frequency %></td>
-                                    <td><%= agent.couriers[i].prescription_body[j].duration %></td>                                              
+                               
+                                <tbody ng-repeat="d in req.prescription_body">                                   
+                                    <td>{{d.sn}}</td>
+                                    <td>{{d.drug_name}}</td>
+                                    <td>{{(d.cost) ? d.cost :""}}</td>
+                                    <td>{{d.dosage}}</td>
+                                    <td>{{d.frequency}}</td>
+                                    <td>{{d.duration}}</td>                                              
                                 </tbody>
-                                <% } %>
+                               
                         
                             </tr>
                         </table>
@@ -119,104 +121,25 @@
                         
                 </section>
                 <section class="mobile-item-display">
-                    <% for(var j = 0; j < agent.couriers[i].prescription_body.length; j++) { %>                            
-                        <table class="table card">
-                            <thead><td><label>sn: </label> <%= agent.couriers[i].prescription_body[j].sn %></td></thead>
-                            <thead><td><label>Name: </label> <%= agent.couriers[i].prescription_body[j].drug_name %></td></thead>
-                            <thead><td><label>Cost: </label> {{('<%= agent.couriers[i].prescription_body[j].cost %>') ? <%= agent.couriers[i].prescription_body[j].cost %>:""}}</td></thead>
-                            <thead><td><label>Dosage: </label> <%= agent.couriers[i].prescription_body[j].dosage %></td></thead>
-                            <thead><td><label>Frequency: </label> <%= agent.couriers[i].prescription_body[j].frequency %></td></thead>
-                            <thead><td><label>Duration: </label> <%= agent.couriers[i].prescription_body[j].duration %></td></thead>                   
+                                          
+                        <table class="table card" ng-repeat="s in req.prescription_body">
+                            <thead><td><label>sn: </label> {{s.sn}}</td></thead>
+                            <thead><td><label>Name: </label> {{s.drug_name}}</td></thead>
+                            <thead><td><label>Cost: </label> {{(s.cost) ? s.cost :""}}</td></thead>
+                            <thead><td><label>Dosage: </label>{{s.dosage}}</td></thead>
+                            <thead><td><label>Frequency: </label>{{s.frequency}}</td></thead>
+                            <thead><td><label>Duration: </label>{{s.duration}}</td></thead>                   
                         </table>
-                    <% } %>
+                    
                 </section>
-                <div><strong>Total cost : </strong> <%= agent.couriers[i].total_cost %> </div><!-- {{toCurrency('<%= agent.couriers[i].total_cost %>')}}-->
+                <div><strong>Total cost : </strong> {{req.total_cost}} </div>
                 <br>
                 <section>
                     <div>
-                        <button class="btn btn-danger btn-lg" ng-click="attend('<%= agent.couriers[i].firstname %>','<%= agent.couriers[i].lastname %>','<%= agent.couriers[i]._id %>','<%= agent.couriers[i].center_id %>','<%= agent.couriers[i].user_id %>','<%= agent.couriers[i].total_cost %>','<%= agent._id %>')">Confirm Receipt</button>
+                        <button class="btn btn-danger btn-lg" ng-click="attend(req.firstname,req.lastname,req._id,req.center_id,req.user_id,req.total_cost,courierData._id)">Confirm Receipt</button>
                     </div> 
                 </section>
            </div>
-
-          
-        <% } %>
-        </main>
-                    
-        <!--<div class="container" ng-controller="filedAgentController" ng-cloak>
-            <h4>
-                welcome <%= agent.firstname %>
-                
-            </h4>
-            <!--<div class="pb-1" style="width: 70%">
-                 <input type="text" name="" class="form-control" placeholder="Filter by name, phone number, drug, address etc." ng-model="filterValue" style="font-size: 14px!important">                 
-            </div>-->
-            <!--<div class="row pt-1 pr-2">
-                 <div class="col-sm-12 col-md-6 col-lg-6">
-                     <a href="" ng-click="viewVerified()" style="text-transform: uppercase;" class="btn btn-simple" ng-if="!params.isCompleted">view verified requests</a>
-                     <a href="" ng-click="pendingRequest()" style="text-transform: uppercase;" class="btn btn-warning" ng-if="params.isCompleted">view current requests</a>
-                 </div>
-
-                <div class="col-sm-12 col-md-6 col-lg-6 pt-1">
-                 <strong style="float: right;"><span style="text-transform: uppercase;" class="text-danger">{{(params.isCompleted) ? "Verified Requests" : "Current Requests"}}</span> &nbsp;( {{courierList.length}}  patients )</strong>
-                </div>               
-            </div>-->
-
-        <!--<div class="card row p-2" style="padding: 20px 0;position: relative;margin-top: 10px" ng-repeat="patient in courierList | filter: filterValue | orderBy : '-verification_date'" >
-                    <strong style="float: right;color: grey;position: absolute;right: 15px;top:15px" am-time-ago="patient.verification_date"></strong>
-                    <div class="col-sm-12 col-md-3 col-lg-3">
-                        <h6 style="text-decoration: underline;padding: 10px 0">Patient details</h6>
-                        <img src='{{patient.profile_pic_url}}' style="max-width:200px;max-height:200px">
-                        <div><strong><i class="fa fa-user"></i> </strong> {{patient.title}} {{patient.firstname}} {{patient.lastname}}</div>
-                        <div><strong><i class="fa fa-globe"></i>  </strong> {{patient.address}} ( {{patient.city}} )</div>
-                        <div><strong><i class="fa fa-clock-o"></i> </strong> {{patient.date | date: 'fullDate'}}</div> 
-                        <div><strong><i class="fa fa-phone"></i> </strong> {{patient.phone1}}, {{patient.phone2}}</div>                  
-                    </div>
-                    
-                    <div class="col-sm-12 col-md-5 col-lg-5" >
-                        <h6 style="text-decoration: underline;padding: 10px 0">Prescription details</h6>                       
-                         
-                            <table class="table table-striped table-responsive">
-                                <tr>
-                                    <thead>
-                                        <th>S/N</th>
-                                        <th>drug</th>
-                                        <th>cost</th>
-                                        <th>dosage</th>
-                                        <th>frequency</th>
-                                        <th>duration</th>                                   
-                                    </thead>                            
-                                </tr>
-                                <tr>
-                               
-                                    <tbody ng-repeat="pres in patient.prescription_body">                                   
-                                        <td>{{pres.sn }}</td>
-                                        <td>{{pres.drug_name}}</td>
-                                        <td>{{(pres.cost) ? toCurrency(pres.cost,patient):""}}</td>
-                                        <td>{{pres.dosage}}</td>
-                                        <td>{{pres.frequency}}</td>
-                                        <td>{{pres.duration }}</td>                                              
-                                    </tbody>
-                            
-                                </tr>
-                            </table>
-                        
-                            <div><strong>Total cost : </strong> {{toCurrency(patient.total_cost,patient)}}</div>
-                    </div>
-                    <div class="col-sm-12 col-md-4 col-lg-4" style="line-height: 30px">
-                        <h6 style="text-decoration: underline;padding: 10px 0">Payment</h6>
-                        <div ng-cloak ng-if="patient.receipt_date"><strong>Date received : </strong> {{patient.receipt_date | date: "fullDate"}} | {{patient.receipt_date | date: "mediumTime"}}</div>
-                        <div style="text-align: center;">
-                            <input type="text" ng-model="patient.otp" class="form-control" style="font-size: 14px!important" placeholder=" Enter OTP" ng-if="!patient.receipt_date">
-                         <i class="fa fa-check" aria-hidden="true" style="font-size: 25px;padding: 0 10px;color:green" ng-if="patient.receipt_date"></i> <span style="" class="text-danger" ng-if="!patient.receipt_date">{{patient.message}}</span> <span style="color:green" ng-if="patient.receipt_date">{{patient.message}}</span></div> 
-                        <div style="margin-top: 10px;text-align: center;">
-                                <button class="btn btn-success btn-lg" ng-click="confirmPay(patient)" ng-hide="patient.receipt_date"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="patient.isLoading"></i> {{(patient.isLoading) ? "" : "Verify"}}</button>
-                        </div>
-                    </div>
-                   </div>
-                                                              
-        </div>-->
-       
 
         <div style="height: 200px">
             
@@ -242,10 +165,11 @@
                     <div class="pt-1">
                         <input type="text" name="" placeholder="Enter order ID" class="form-control" ng-model="courier.order">
                     </div>
-                    <p class="pt-1" ng-if="courier.status"><i class="fa fa-check text-primary" ng-if="courier.status"></i> {{courier.message}}</p>
-                    <p class="pt-1 text-danger">{{message}}</p>
-                    <div class="pt-1" ng-if="!courier.status">
-                        <button class="btn-info btn" ng-click="verify(courier)"> <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff;" ng-if="loading"></i> {{(loading) ? "" : 'Confirm delivery'}} </button>
+                    <p class="pt-1" ng-show="courier.status"><i class="fa fa-check text-primary"></i> {{courier.message}}</p>
+                    <p class="pt-1 text-danger" ng-show="!courier.status">{{courier.message}}</p>
+                    <div class="pt-1">
+                        <button class="btn-info btn" ng-click="verify(courier)" ng-show="!courier.loading">Confirm delivery</button>
+                        <span ng-show="courier.loading">Verifying order ID... Please wait!"</span>
                     </div>
                 </form> 
             </div>
@@ -260,7 +184,8 @@
     <script src="/assets/js/app.js"></script>
         
         
-    <script type="text/javascript" src="/assets/js/angularclient.js"></script>
+    <!--<script type="text/javascript" src="/assets/js/angularclient.js"></script>-->
+    <script type="text/javascript" src="/assets/js/agent.angular-client.js"></script>
     <script type="text/javascript" src="/assets/js/ngroute.js"></script>
     <script src="/socket.io/socket.io.js"></script>   
     <script src="/assets/js/socket.min.js"></script>

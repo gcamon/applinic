@@ -3577,8 +3577,10 @@ app.controller("docNotificationController",["$scope","$location","$resource","$i
 
   mySocket.on("courier billed",function(res){
     getCourier();
-    if($rootScope.courierResponse)
+    if($rootScope.courierResponse){
       $rootScope.courierResponse = null;
+    }
+    alert(res.message)
     $rootScope.getCourierResponse(res._id);
   });
 
@@ -7725,7 +7727,8 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
     getSessionService,$compile,$interval,$timeout,$anchorScroll){
 
   var patient = {}; //patient obj.
-  
+
+  $scope.treatment = {};
   /*
   * the doctor refreshing the dashboard page will still keep the patient on the current view template
   * so the data to populate the template will be generate through ajax call.
@@ -7779,7 +7782,11 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
       lastname: data.lastname
     }
     templateService.holdForSpecificPatient = $scope.patientInfo;
-    localManager.setValue("patientInfoForCommunication", holdData);    
+    localManager.setValue("patientInfoForCommunication", holdData); 
+
+    //use to hold patient info for courier delivery service option
+    $scope.treatment.phone1 = $rootScope.patientInfo.phone;
+    $scope.treatment.delivery_address = $rootScope.patientInfo.address;   
   })
 
 
@@ -8647,7 +8654,7 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
       //$location.path("/search/pharmacy");
     }
 
-    $scope.treatment = {};
+    
     
     chechIfPrescription = function(data) {
       if(!data)
@@ -8700,6 +8707,11 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
         }
 
         patient.user_id = center.user_id // id is the id of the pharmacy
+        patient.center_name = center.name
+        patient.center_phone = center.phone
+        patient.center_address = center.address
+        patient.center_email = center.email
+        patient.center_city = center.city
       })
     }
 
@@ -8712,10 +8724,25 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
       })
     }
 
+    $scope.treatment.isCourier = "No";
+    $scope.treatment.referral_pays = "No";
+    
+
     $scope.sendDrug = function() {
       $scope.loading = true;
       patient.treatment = $scope.treatment;
       patient.referral_pays = $scope.treatment.referral_pays;
+     
+
+      if($scope.treatment.isCourier === 'Yes'){
+        patient.courierObj = {
+          phone1 : $scope.treatment.phone1,
+          address: $scope.treatment.delivery_address
+        }
+
+        $scope.courMsg = "";
+      }
+
       $http({
         method  : 'PUT',
         url     : "/user/patient/pharmacy/referral",
@@ -8724,8 +8751,18 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
         })
       .success(function(data) {
         $scope.loading = false;
-        if(data.success)   
-          $scope.message = "Prescription sent !!!" ;     
+        if(data.success) {  
+          $scope.message = "Prescription sent !!!" ;  
+          if(patient.courierObj && $scope.treatment.referral_pays === 'Yes'){
+           $scope.courMsg = 'You have requested courier delivery of the prescribed drugs.'
+            + ' Please keep checking the "Motorcycle" icon on top of this dashboard for payment and instant delivery initiation.' 
+            + ' It usually takes less than 5 minutes for the center to send the cost of the drugs for payment and delivery starts.';
+            $rootScope.$broadcast("new courier order",{status:true});
+          } 
+        } else {
+          alert("Some errors occured. Please try again.")
+        }          
+        patient.courierObj = null;
       });
     }
 
@@ -11441,7 +11478,8 @@ app.controller("courierResponseCtrl",["$scope","$rootScope","courierResponseServ
 
   $scope.getTotal = function(val1,val2){
     $scope.sum = parseInt(val1) + parseInt(val2);
-    return $rootScope.checkLogIn.currencyCode + " " + $scope.sum.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    var currency = ($rootScope.checkLogIn.currencyCode) ? $rootScope.checkLogIn.currencyCode : "NGN";
+    return currency + " " + $scope.sum.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   }
 
   var otp = paymentVerificationService;
@@ -11476,6 +11514,7 @@ app.controller("courierResponseCtrl",["$scope","$rootScope","courierResponseServ
           $scope.isOtp = true;
         } else {
           alert(data.message);
+          $location.path('wallet');
         }
       })
     }
@@ -11677,7 +11716,7 @@ function($scope,$rootScope,$location,$http,localManager,Drugs,cities,courierResp
 
             getCourier(data._id);
 
-            if($rootScope.holdPresDataForCourier) {
+            /*if($rootScope.holdPresDataForCourier) {
               var url = "/user/drug-search/pharmacy/referral";
               $http({
                 method  : 'PUT',
@@ -11691,7 +11730,7 @@ function($scope,$rootScope,$location,$http,localManager,Drugs,cities,courierResp
                 }
               });
 
-            }
+            }*/
 
           } else {
             alert("OOps! something went wrong while sending your request. Try again")

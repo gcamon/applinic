@@ -2260,14 +2260,12 @@ app.controller("patientNotificationController",["$scope","$location","$http","$w
     });
   }
 
-
-
   mySocket.on("courier billed",function(res){
     getCourier();
     if($rootScope.courierResponse){
       $rootScope.courierResponse = null;
     }
-    alert("The cost of drugs you requested for home delivery is ready!")
+    alert(res.message)
     $rootScope.getCourierResponse(res._id);
   });
 
@@ -7589,6 +7587,8 @@ app.controller("courierResponseCtrl",["$scope","$rootScope","courierResponseServ
       var id;
       if(aCourier){
         id = (courierId) ? courierId : aCourier._id
+      } else {
+        id = courierId;
       }
       $scope.loadingReq = true;
       var courierResponse = courierResponseService;
@@ -7723,6 +7723,7 @@ app.controller("courierResponseCtrl",["$scope","$rootScope","courierResponseServ
           if(resp.status){
             var msg = "Your drug delivery has been initiated! " + resp.message;
             alert(msg);
+            $rootScope.courierResponse.delivery_msg = resp.message;
           } else {
             alert(res.message)
           }
@@ -8816,13 +8817,11 @@ app.controller("drugsAndKitsCtrl",["$scope","$rootScope","$http","ModalService",
 
       $scope.kits = filter[name];
       $scope.isJoined = false;
-      
     }
 
 
     $scope.selectedKit = function(type,name){
       $scope.isSelected = name;
-      //kit.isSelected = true;
       getKit(type,name);
     }
 
@@ -8860,7 +8859,6 @@ app.controller("drugsAndKitsCtrl",["$scope","$rootScope","$http","ModalService",
       $scope.loading =  true;
       $http.get("/user/patient/getAllPharmacy",{params:{city:$scope.drug.city,type:'Pharmacy'}})
       .success(function(centers){
-        console.log(centers)
         $scope.centers = centers
         $scope.loading = false;
       })
@@ -8877,6 +8875,14 @@ app.controller("drugsAndKitsCtrl",["$scope","$rootScope","$http","ModalService",
         elem = $scope.kits.content.map(function(x){ if(x) { return x.package.toString()}}).indexOf(newVal);
         if(elem !== -1){
           $scope.selectedPackage = $scope.kits.content[elem];
+
+          if($scope.centers){
+            $scope.centers.forEach(function(item){
+              if(item.success == true)
+                item.success = false;
+            })
+          }
+      
         }
       }
     });
@@ -8941,7 +8947,7 @@ app.controller("drugsAndKitsCtrl",["$scope","$rootScope","$http","ModalService",
           item.dosage = (checkFilled.length > 1) ? checkFilled[1] : item.dosage;
         }
 
-        item.dosage = item.quantity + " " + item.dosage;      
+        item.dosage = (item.quantity) ? (item.quantity + " " + item.dosage) : item.dosage;      
       })
 
       if($scope.drug.courier){
@@ -8989,6 +8995,7 @@ app.controller("drugsAndKitsCtrl",["$scope","$rootScope","$http","ModalService",
           patient_age: $rootScope.checkLogIn.age,
           patient_city: $rootScope.checkLogIn.city,
           patient_country: $rootScope.checkLogIn.country,
+          patient_phone: $rootScope.checkLogIn.phone,
           is_paid: false,
           sender: "patient"
         }

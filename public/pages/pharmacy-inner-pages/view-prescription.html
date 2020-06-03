@@ -90,7 +90,7 @@
 			</table>
 			<div class="mobile-item-display">	
 
-	    		<table class="table" ng-repeat="prescription in refData.pharmacy.prescription_body">
+	    		<table class="table line-height" ng-repeat="prescription in refData.pharmacy.prescription_body">
 	    		    <thead ng-if="!prescription.unavail"><td><label>sn:</label> {{prescription.sn}}</td></thead>
 	    		    <thead><td><label>Drug:</label> {{prescription.drug_name}}</td></thead>
 	    			
@@ -121,12 +121,18 @@
                      	</tr>
                      	<tr>
                      		<tbody ng-repeat = "j in drugsForSurchage">
-                     			<td style="width: 55%;padding:10px;color: darkRed;font-weight: bold;">{{j.name}} <span ng-show="j.dosage">( {{j.dosage}} )</span></td>
-                     			<td><input type="number" ng-model="j.amount" style="padding:10px" class="form-control"></td>
+                     			<td style="width: 58%;color: darkRed;font-weight: bold;" class="pt-2">
+                     				<span>{{j.name}} </span>
+                     				<span ng-show="j.dosage">( {{j.dosage}} )</span>
+                     			</td>
+
+                     			<td class="pt-1">
+                     			  <input type="number" ng-model="j.amount" style="padding:10px" class="form-control">
+                     			</td>
                      		</tbody>
                      	</tr>
                      </table>
-                     <div class="pt-2 pb-2">
+                     <div class="pt-2 pb-2 line-height">
                      	<strong  ng-if="isFilled === true">Total : <em>{{str}}</em></strong>                     	
                      	<strong style="display: block;" ng-if="isFilled === true">You'll receive : {{commissionedAmount}} &nbsp;<span style="font-weight: normal;">( platform {{checkLogIn.city_grade}}% discount applied )</span></strong>
                      </div>
@@ -154,7 +160,7 @@
 					<button class="btn btn-danger" ng-click="billPatient()" ng-show="!loading && !message">Send bill</button>
 					<span ng-show="loading">Sending...</span>
 					<span ng-show="message" class="text-primary"><i class="fa fa-check"></i> {{message}} <br>
-						<small>Once the receiver pays the delivery agent will be notified and come for the package. Your account will be credited when the receiver had confirmed the receipt of the package. Delivery agent number is <b>{{request.agentNumber}}</b></small>
+						<small class="text-muted">Once the receiver pays,  the delivery agent will be notified to come for the package. Your account will be credited before the buyer receives the package. Delivery agent number is  <b>{{request.agentNumber}}</b></small>
 					</span>
 				</div>
 				<!--<button class="btn btn-info btn-sm" ng-click="toList(refData.pharmacy.patient_firstname,refData.pharmacy.patient_lastname,refData.pharmacy.patient_profile_pic_url,refData.ref_id,refData.date)" ng-if="allNote.length !== 0 && isFilled !== true">Add to attendance list</button>-->
@@ -194,8 +200,8 @@
 					</div>
 				    <div class="clearfix"></div>
 				</div>
-
-				<div ng-if="refData.pharmacy.is_paid" style="padding: 10px 15px;position: relative;margin-top: 20px;border:1px dashed rgba(0,0,0,0.6)">					
+				<br>
+				<div ng-if="refData.pharmacy.is_paid" style="padding: 10px 15px;position: relative;margin-top: 20px;">					
 					<h5><i class="fa fa-check pb-0" style="color:green"> Payment successful!</i></h5>
 					<article style="font-size: 14px">
 						<div><b>Amount paid: {{refData.pharmacy.detail.amount}}</b></div>

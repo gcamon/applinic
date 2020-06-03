@@ -764,20 +764,48 @@
            <input type="text" name="country" ng-model="treatment.country" class="form-control" style="width: 30%;display: inline-block;">
            <input type="button" ng-click="changeOption()" class="btn btn-primary" value="search">
        </form>-->
-
       
       
        <div class="row">
         <section class="col-sm-12 col-md-7 col-lg-7 p-1">
-           <form ng-submit="changeOption()">
-               <input type="text" ng-model="treatment.city" placeholder="City" class="form-control" uib-typeahead="city for city in cities | filter:$viewValue | limitTo:15" style="display: inline-block;width: 70%">
-             
-               <input type="submit" class="btn btn-primary btn-sm" value="Search">
+            <div class="pt-2">
+               <label>Would you like to use our courier service to deliver the prescribed drugs to this patient or to you?</label><br><br>
+               <label class="custom-control custom-radio">
+                  <input type="radio" class="custom-control-input" ng-model="treatment.isCourier" value="Yes">
+                  <span class="custom-control-indicator"></span>
+                  <span class="custom-control-description">Yes</span>
+              </label>&nbsp;&nbsp;&nbsp;&nbsp;
+              <label class="custom-control custom-radio">
+                  <input type="radio" class="custom-control-input" ng-model="treatment.isCourier"  value="No">
+                  <span class="custom-control-indicator"></span>
+                  <span class="custom-control-description">No</span>
+              </label>     
+           </div>
+           <br>
+           <div ng-show="treatment.isCourier == 'Yes'">
+            <label class="pb-0">Delivery Address:</label><br>
+            <input type="text" name="" ng-model="treatment.delivery_address" placeholder="Enter delivery address" class="form-control">
+            </div>
+            <div ng-show="treatment.isCourier == 'Yes'">
+                <label class="pb-0">We'll call this line:</label><br>
+                <input type="text" name="" ng-model="treatment.phone1" placeholder="Enter your phone number" class="form-control">
+                <br>
+            </div>
+         
+           <label ng-if="searchResult.length > 0">Choose a center below or Search from another city:  </label><span> (Patient's city is used by default)</span><br><br>
+
+           <form ng-submit="changeOption()" class="row">
+            <div class="col-md-8">
+               <input type="text" ng-model="treatment.city" placeholder="City" class="form-control" uib-typeahead="city for city in cities | filter:$viewValue | limitTo:15">
+            </div>
+            <div class="col-md-2">
+               <input type="submit" class="btn btn-primary" value="Search">
+            </div>
+            <div class="clearfix"></div>
            </form>
-           <hr>
-           <label ng-if="searchResult.length > 0">Choose a center below</label><br>
+           <br>
            <section ng-if="searchResult.length > 5">
-                <input type="text" ng-model="filterResult" placeholder="Filter centers" class="form-control">
+                <input type="text" ng-model="filterResult" placeholder="Filter centers" class="simple-border">
            </section>
            <!--<div style="overflow-y: auto; max-height: 400px">
                <div ng-repeat="center in searchResult | filter: filterResult" style="padding:10px;border-bottom: 1px solid rgba(0,0,0,0.1)">
@@ -789,7 +817,7 @@
                </div>                              
             </div>-->
             <section ng-repeat="center in searchResult | filter: filterResult" style="padding:10px;border-bottom: 1px solid rgba(0,0,0,0.1)">
-               <a href="" ng-click="selected(center)" style="font-weight: 400;color: green"><b>{{center.name}}</b><br><span>{{center.address}},{{center.city}},{{center.country}}</span><br><span>{{center.phone}}</span></a>
+               <a href="" ng-click="selected(center)" style="display: block;height: 100%"><b>{{center.name}}</b><br><span>{{center.address}},{{center.city}},{{center.country}}</span><br><span>{{center.phone}}</span></a>
             </section>
             <section style="text-align: center;">
             <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange;font-size: 24px;margin-top: 35px" ng-if="isLoading"></i>   
@@ -815,6 +843,9 @@
             </a>
             <div style="padding: 20px;text-align: center;">
                 <button class="btn btn-danger form-control" ng-click="sendDrug()" ng-if="pickedCenter"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i> {{(message) ? message : (loading) ? '': 'Send'}}</button>
+                <article ng-show="courMsg" class="p-1">
+                    <i class="fa fa-motorcycle text-primary"></i> <span>{{courMsg}}</span>
+                </article>
             </div>
         </section>                             
        </div>                           

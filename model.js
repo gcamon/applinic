@@ -852,6 +852,7 @@ var myModel = function () {
 		center_address: String,
 		center_phone: String,
 		center_email: String,
+		center_city: String,
 		date: Date, //use date to find refers to date the request was made or initiated
 		otp: String,
 		receipt_date: Date,

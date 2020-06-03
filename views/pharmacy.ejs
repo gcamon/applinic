@@ -1267,6 +1267,7 @@
                        <span class="custom-control-description">{{j.names}} &nbsp;&nbsp;&nbsp;{{j.phone}} </span>
                     </label>
                   </div>
+                  <p ng-show="agentLoading" class="text-warning p-2">loading...</p>
                 </div>
                 <div style="text-align: right;padding: 20px">
                     <button class="btn btn-success" ng-click="sendBilling()"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i> {{(loading) ? "" : "Send billing"}}</button>
