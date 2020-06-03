@@ -9015,6 +9015,13 @@ app.controller("drugsAndKitsCtrl",["$scope","$rootScope","$http","ModalService",
       .success(function(data) {
         if(data.success){   
           center.success = true;
+
+          if($scope.drug.courier){
+            alert("You have requested home delivery of the selected kit or drugs."
+            + " Please check motorcycle icon for update on the request.");
+            $rootScope.$broadcast("new courier order",{status:true})
+          }
+
         } else {          
           alert("Prescription not sent! Some error occured. Please try again shortly.");
         }

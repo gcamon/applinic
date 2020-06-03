@@ -8260,7 +8260,6 @@ router.post("/user/courier",function(req,res){
   if(req.user) {
     var date = new Date();
     //if(!req.body.refId){
-    console.log(req.body)
     req.body.refId = randos.genRef(7);
     //}
     req.body.firstname = req.user.name || req.user.firstname;
@@ -8374,10 +8373,10 @@ router.post("/user/courier",function(req,res){
       );*/
 
       var msgBody = "A new home delivery of drug(s) request just came in. Please log in and compute the cost for payment. " 
-      + "\nRef No is " + req.body.refId +
+      + "\nRef No is " + req.body.refId + "\nSender number: " + req.user.phone +
       "\nDelivery process will be initiated when the receiver had paid the bill." +
       "\nGo to your account https://applinic.com/login";
-
+ 
       sms.messages.create(
         {
           to: center.phone,
@@ -8395,6 +8394,8 @@ router.post("/user/courier",function(req,res){
       )
 
       io.sockets.to(center.user_id).emit("center notification",{isNewDrug:true});
+
+     
 
       /*var transporter = nodemailer.createTransport({
         host: "mail.privateemail.com",
