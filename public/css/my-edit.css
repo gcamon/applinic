@@ -1,3 +1,9 @@
+
+option {
+  text-transform: capitalize!important
+}
+
+
 /*** drug search **/
 .side-services a {
 	font-weight: 100;
@@ -5,6 +11,10 @@
     font-size: 22px;
     padding: 10px;
     text-decoration: underline;
+}
+
+.capitalize {
+  text-transform: capitalize!important;
 }
 
  .block {

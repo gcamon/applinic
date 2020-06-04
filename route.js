@@ -2953,12 +2953,12 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
             var courier;
 
             if(req.body.courierObj){
-              var firstname = (req.body.referral_pays) ? req.user.firstname : req.body.firstname;
-              var lastname = (req.body.referral_pays) ? req.user.lastname : req.body.lastname;
-              var title = (req.body.referral_pays) ? req.user.title : req.body.title;
-              var pic = (req.body.referral_pays) ? req.user.profile_pic_url : req.body.patient_profile_pic_url;
-              var userId = (req.body.referral_pays) ? req.user.user_id : req.body.patient_id;
-              var optMsg = (req.body.referral_pays) ? "The doctor chose the option to pay the bill." : "";
+              var firstname = (req.body.referral_pays == 'Yes') ? req.user.firstname : req.body.firstname;
+              var lastname = (req.body.referral_pays == 'Yes') ? req.user.lastname : req.body.lastname;
+              var title = (req.body.referral_pays == 'Yes') ? req.user.title : req.body.title;
+              var pic = (req.body.referral_pays == 'Yes') ? req.user.profile_pic_url : req.body.patient_profile_pic_url;
+              var userId = (req.body.referral_pays == 'Yes') ? req.user.user_id : req.body.patient_id;
+              var optMsg = (req.body.referral_pays == 'Yes') ? "The doctor chose the option to pay the bill." : "";
               var courierData = {
                 request_id: reqId,
                 verified: false,
@@ -2966,7 +2966,7 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
                 address: req.body.courierObj.address,
                 ref_id: ref_id,
                 prescription_body: req.body.prescriptionBody,
-                city: (req.body.referral_pays) ? req.user.city : req.body.city,
+                city: (req.body.referral_pays == 'Yes') ? req.user.city : req.body.city,
                 phone1: req.body.courierObj.phone1,
                 phone2: req.body.phone,
                 lastname: lastname,
@@ -8564,7 +8564,8 @@ router.put("/user/courier-update",function(req,res){
           user.save(function(err,info){});
 
           io.sockets.to(user.user_id).emit("courier billed",
-            {status: true,_id:user._id,message: "The cost of drugs you requested for home delivery is ready!"});
+            {status: true,_id:user._id,message: "The cost of the drugs you requested for home delivery is ready!" 
+            + " Click 'OK' to pay now or 'CANCEL' to pay later by clicking the motorcycle icon on top"});
 
           res.send({message:"Bill sent for payment successfully!",status: true});
         } else {

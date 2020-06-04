@@ -2495,7 +2495,7 @@ router.put("/user/field-agent",function(req,res){
 								courier.receipt_date = + new Date();
 								var toNum = parseInt(courier.total_cost);
 								io.sockets.to(courier.user_id).emit("courier billed",
-									{status:true,_id:courier._id,message: "Success! Delivery agent has confirmed you have received the package."});
+									{status:true,_id:courier._id,message: "Success! Delivery agent has confirmed you have received the package.",isConfirm: true});
 								var pay = new Wallet(courier.receipt_date,courier.firstname,courier.lastname,"courier billing");
         				pay.courier(model,courier.center_id,courier.user_id,toNum,io,courier.delivery_charge,courier.city_grade,sms,courier.center_charge);
 
@@ -2506,7 +2506,7 @@ router.put("/user/field-agent",function(req,res){
 								if(elemPo !== -1){
 									agent.couriers.splice(elemPo,1);
 								}
-								
+
 								agent.save(function(err,info){
 									console.log("courier removed from field agent's list");
 								});

@@ -3577,11 +3577,26 @@ app.controller("docNotificationController",["$scope","$location","$resource","$i
 
   mySocket.on("courier billed",function(res){
     getCourier();
-    if($rootScope.courierResponse){
-      $rootScope.courierResponse = null;
-    }
-    alert(res.message)
-    $rootScope.getCourierResponse(res._id);
+    templateService.playAudio(3);
+    
+    if(res.isConfirm){
+      if($rootScope.courierResponse){
+        $rootScope.courierResponse = null;
+      }
+      alert(res.message);
+      $rootScope.getCourierResponse(res._id);
+    } else {
+      var check = confirm(res.message);
+      if(check) {        
+        if($rootScope.courierResponse){
+          $rootScope.courierResponse = null;
+        }
+        $rootScope.getCourierResponse(res._id);
+        var pt = "/courier-response/" + Math.floor(Math.random() * 99999999);       
+        $location.path(pt);
+      }
+    } 
+   
   });
 
   mySocket.on("new courier order",function(res){
@@ -3607,6 +3622,29 @@ app.controller("docNotificationController",["$scope","$location","$resource","$i
   .success(function(account){
     $rootScope.accountType = account;
   })
+
+
+  $rootScope.getCourierResponse = function(courierId) {
+    if(!$rootScope.courierResponse && !$rootScope.courierId) {
+      var aCourier = localManager.getValue("holdCourierData");
+      var id;
+
+      if(aCourier){
+        id = (courierId) ? courierId : aCourier._id;        
+      } else {
+        id = courierId;
+      }
+
+      $rootScope.courierId = id;
+
+      $rootScope.loadingReq = true;
+      var courierResponse = courierResponseService;
+      courierResponse.get({_id: id},function(data){
+        $rootScope.courierResponse = data;
+        $rootScope.loadingReq = false;
+      });
+    }
+  }
 
 }]);
 
@@ -11418,23 +11456,11 @@ app.controller("courierResponseCtrl",["$scope","$rootScope","courierResponseServ
   function($scope,$rootScope,courierResponseService,templateService,$location,phoneCallService,
     paymentVerificationService,$http,localManager){
 
-  $rootScope.getCourierResponse = function(courierId) {
-    if(!$rootScope.courierResponse) {
-      var aCourier = localManager.getValue("holdCourierData");
-      var id;
-      if(aCourier){
-        id = (courierId) ? courierId : aCourier._id;
-      }
-      $scope.loadingReq = true;
-      var courierResponse = courierResponseService;
-      courierResponse.get({_id: id},function(data){
-        $rootScope.courierResponse = data;
-        $scope.loadingReq = false;
-      });
-    }
-  }
+  
 
   $rootScope.getCourierResponse();
+
+  $rootScope.courierId = null;
 
   $scope.reOrder = function(item) {    
    
