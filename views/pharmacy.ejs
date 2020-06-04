@@ -15,6 +15,7 @@
         <link rel="stylesheet" href="/assets/css/vendor.css">
          <link rel="stylesheet" href="/assets/css/app.css">
           <link rel="stylesheet" href="/assets/css/now-ui-kit2.css">
+          <link rel="stylesheet" href="/assets/css/icomoon.css">
           <link rel="stylesheet" href="/assets/css/font-awesome.min.css">
           <link rel="stylesheet" href="/assets/css/chat.css">
           <link rel="stylesheet" href="/assets/css/my-edit.css">
@@ -311,7 +312,7 @@
      <div class="clearfix"></div>
             <div class="app" id="app">
                 <header class="container text-center" style="background:#fff; border-left:1px solid #f2f2f2; min-height:70px; line-height:70px; padding:5px;" ng-controller="pharmacyCenterDashboardController">
-                    <div class="col-md-8 col-sm-12 col-lg-8">
+                    <div class="col-md-8 col-sm-12 col-lg-8 line-height">
                        <ul class="nav nav-tabs p-sm-0" role="tablist">  
                           <!--<li class="nav-item">
                             <a  class="btn btn-simple round mr-1"  href="#/help" ><i class="fa fa-question-circle"></i>
@@ -320,39 +321,36 @@
                           </li>-->
                          
                           <li class="nav-item">
-                            <a class="btn btn-simple round mr-1" title="Work History"  href="#/rendered-services"><i class="fa fa-file-text"></i>
+                            <a class="btn btn-simple round  text-danger" title="Work History"  href="#/rendered-services"><i class="fa fa-file-text text-primary font-1_1"></i>
                                 <span class="hidden-md-down" style="color:red">Work History</span></a>
                           </li>
 
                           <li class="nav-item" ng-cloak>
-                            <a class="btn btn-simple round mr-1" title="Courier Services" href="" disabled="disabled" style="cursor: no-drop;" ng-if="checkLogIn.courier_access !== true"><i class="fa fa-motorcycle"> </i>
-                            <span class="hidden-md-down" style="color:red">Courier Services</span></a>
+                            <a class="btn btn-simple round  text-danger" title="Courier Services" href="" disabled="disabled" style="cursor: no-drop;" ng-if="checkLogIn.courier_access !== true"><i class="fa fa-motorcycle text-primary font-1_1"> </i>
+                            <span class="hidden-md-down">Courier Services</span></a>
                             </a>
-                            <a class="btn btn-simple round mr-1" title="Courier Services"  href="#/courier-requests" ng-if="checkLogIn.courier_access"><i class="fa fa-motorcycle"> </i>
-                            <span class="hidden-md-down" style="color:red">Courier Services</span></a>
+                            <a class="btn btn-simple round text-danger" title="Courier Services"  href="#/courier-requests" ng-if="checkLogIn.courier_access"><i class="fa fa-motorcycle text-primary font-1_1"> </i>
+                            <span class="hidden-md-down">Courier Services</span></a>
                             </a>
                           </li>
 
                            <li class="nav-item">
-                            <a class="btn btn-simple round mr-1" title="Find Prescription" href="#/referred-patients" ><i class="fa fa-user"></i>
-                                        <span class="hidden-md-down" style="color:red">Find Prescription</span></a>
+                            <a class="btn btn-simple round text-danger" title="Find Prescription" href="#/referred-patients" ><i class="icon-Pills text-primary font-1_1"></i>
+                                        <span class="hidden-md-down" style="color:red">Prescription Requests</span></a>
                           </li>
 
                            <li class="nav-item">
-                              <a class="btn btn-simple round mr-0" style="color:red;margin-left:10px" href="#/invite"><i class="fa fa-user-plus"></i>
-                                    <span>Invite Someone</span></a>
+                              <a class="btn btn-simple round mr-0 text-danger" style="color:red;margin-left:10px" href="#/invite"><i class="fa fa-user-plus text-primary font-1_1"></i>
+                                    <span class="hidden-md-down">Invite Someone</span></a>
                           </li>
                           
                         </ul>
                     </div>
 
-       
-
-
                     <div class="col-md-4 col-lg-4 col-sm-12" ng-controller="balanceController">  
                         <a href="#/transactions" class="btn btn-info btn-sm header-btn">
                             <i class="fa fa-money"></i>
-                            <span ng-cloak>MediPay Balance |  {{balance}} </span>
+                            <span ng-cloak>Balance |  {{balance}} </span>
                         </a>  
                     </div>
                 </header>

@@ -11456,14 +11456,11 @@ app.controller("courierResponseCtrl",["$scope","$rootScope","courierResponseServ
   function($scope,$rootScope,courierResponseService,templateService,$location,phoneCallService,
     paymentVerificationService,$http,localManager){
 
-  
-
   $rootScope.getCourierResponse();
 
   $rootScope.courierId = null;
 
-  $scope.reOrder = function(item) {    
-   
+  $scope.reOrder = function(item) {   
     if(item) {
       item.prescription_body.forEach(function(drug){
         if(drug.quantity){

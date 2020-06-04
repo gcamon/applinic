@@ -100,7 +100,7 @@
 				<th>Prescription(s)</th>
 				<th>Time</th>
 			</thead>
-			<tbody ng-repeat="pres in requestList | date : '-date' | filter : filter" style="line-height: 25px" ng-show="requestList.length > 0">
+			<tbody ng-repeat="pres in requestList | date : '-date' | filter : filter" class="line-height" ng-show="requestList.length > 0">
 				<td>{{pres.pharmacy.patient_firstname}} {{pres.pharmacy.patient_lastname}}</td>
 				<td>
 					<span>{{pres.ref_id}}</span>
@@ -131,9 +131,10 @@
 			<input type="text" name="" placeholder="Filter list" ng-model="filter"  class="simple-border">
 		</article>
 		<a href="" ng-click="viewPatientPrescription(pres)" style="display: block;border-bottom: 1px solid #eee;padding: 5px 0;position: relative;color: #000;position: relative;"  ng-repeat="pres in requestList | date : '-date' | filter : filter">
-			<label class="pb-0 mb-0"><b>{{pres.pharmacy.patient_firstname}} {{pres.pharmacy.patient_lastname}}</b></label><br>
+			<label class="pb-0 mb-0 block ellipsis" style="width: 70%"><b>{{pres.pharmacy.patient_firstname}} {{pres.pharmacy.patient_lastname}}</b></label>
 			<span>{{pres.ref_id}}</span><br>
 			<span>{{pres.pharmacy.patient_phone}}</span>
+			<span am-time-ago="pres.date"  style="position: absolute;top:5px;right: 5px;color: grey"></span>
 			<i class="fa fa-motorcycle text-primary"  style="position: absolute;right: 5px;bottom: 2px;padding: 10px"></i>
 		</a>
 		<div style="text-align: center;padding-top: 20px" ng-show="loading">
