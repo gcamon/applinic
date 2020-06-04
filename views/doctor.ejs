@@ -780,6 +780,7 @@
                                     </ul>
                                 </li>
                                 <li ng-controller="docAppointmentController"> 
+
                                     <a href="" ng-cloak>
                                         <i class="fa fa-calendar">
                                         </i>
@@ -788,10 +789,11 @@
                                         </i>
                                     </a>
                                     <ul style="max-height: 500px;overflow-y:auto;" ng-cloak>
+                                        
                                         <li style="padding: 5px 10px 0 0;position: relative;"><input type="text" placeholder="filter by name" class="form-control" ng-model="p" style="width: 80%"><i class="fa fa-refresh" style="color:#fff;position: absolute;top:20px;right:10px;cursor: pointer;" ng-click="refresh()"></i></li>
                                         <li ng-repeat="k in appointmentList | filter : p | orderBy: 'date'" >
                                             <a href=""  ng-click="viewAppointment(k.session_id)" class="h">
-                                            <span>{{k.firstname}} {{k.lastname}}
+                                            <span>{{k.patient_firstname}} {{k.patient_lastname}}
                                             <span style="display:block">{{k.date  | date : "mediumDate"}}</span> <span style="display:block">{{k.time | date: "mediumTime" }}</span> 
                                             </span>
                                             </a> 

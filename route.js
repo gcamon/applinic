@@ -3879,9 +3879,13 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
             patient_id: req.body.patient_id
           }
 
-         
+         console.log(req.body)
 
           var createAddress = req.user.address + "," + req.user.city + "," + req.user.country; 
+          req.body.appointment.patient_firstname = req.body.appointment.firstname;
+          req.body.appointment.patient_lastname = req.body.appointment.lastname;
+          req.body.appointment.patient_title = req.body.appointment.title;
+
           req.body.appointment.firstname = req.user.firstname;
           req.body.appointment.lastname = req.user.lastname;
           req.body.appointment.address = req.body.appointment.address || createAddress;
@@ -3890,9 +3894,7 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
           req.body.appointment.session_id = session_id; 
           req.body.appointment.attended = false;
           req.body.appointment.last_meeting = req.body.date;
-          req.body.appointment.patient_firstname = req.body.appointment.firstname;
-          req.body.appointment.patient_lastname = req.body.appointment.lastname;
-          req.body.appointment.patient_title = req.body.appointment.title;
+         
           req.body.appointment.typeOfSession = req.body.typeOfSession;
           req.body.appointment.doctorId = req.user.user_id;
           req.body.appointment.patient_id = req.body.patient_id;
