@@ -3879,8 +3879,6 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
             patient_id: req.body.patient_id
           }
 
-         console.log(req.body)
-
           var createAddress = req.user.address + "," + req.user.city + "," + req.user.country; 
           req.body.appointment.patient_firstname = req.body.appointment.firstname;
           req.body.appointment.patient_lastname = req.body.appointment.lastname;

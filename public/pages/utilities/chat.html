@@ -266,7 +266,7 @@ img{ max-width:100%;}
             	</a>           	
 				  
         		<!--<a href="" class="ellipsis" ng-if="partner.partnerType === 'Doctor' && checkLogIn.typeOfUser !== 'Doctor'"  ng-click="chatPrivate(partner)">Single Chat</a>-->
-        		<a href="" class="text-success text-danger " style="font-size: 14px;" ng-if="partner.partnerType === 'Patient'"  ng-click="chatPrivate(partner)" title="Go to e-treatment to generate bill for treatment or consultation, refer to a specialist, write prescription, request diagnostic investigation or view medical records, etc." >Manage Patient</a>
+        		<a href="" class="text-success text-danger " style="font-size: 14px;" ng-if="partner.partnerType === 'Patient' && checkLogIn.typeOfUser === 'Doctor' "  ng-click="chatPrivate(partner)" title="Go to e-treatment to generate bill for treatment or consultation, refer to a specialist, write prescription, request diagnostic investigation or view medical records, etc." >Manage Patient</a>
         		
         	</div>
 
