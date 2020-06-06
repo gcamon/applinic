@@ -17490,6 +17490,7 @@ app.controller("labTestControler",["$scope","$location","$http","templateService
     },false);
 
     var ctrlIframe = function(){
+      alert($scope.reportTemp)
       iframe[0].style.visibility = "visible";
       tempDiv[0].style.visibility = "visible";
       iframe[0].src = $scope.reportTemp;

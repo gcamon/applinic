@@ -8792,9 +8792,9 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
         if(data.success) {  
           $scope.message = "Prescription sent !!!" ;  
           if(patient.courierObj && $scope.treatment.referral_pays === 'Yes'){
-           $scope.courMsg = 'You have requested courier delivery of the prescribed drugs.'
-            + ' Please keep checking the "Motorcycle" icon on top of this dashboard for payment and instant delivery initiation.' 
-            + ' It usually takes less than 5 minutes for the center to send the cost of the drugs for payment and delivery starts.';
+           $scope.courMsg = 'You have requested courier delivery from the pharmacy. Please keep checking'
+            + ' the "motorcycle" icon for your bill for payment to initiate delivery. You will be ' 
+            + ' prompted to fund your account if you don\t have sufficient balance to pay for the order. ';
             $rootScope.$broadcast("new courier order",{status:true});
           } 
         } else {
@@ -11581,7 +11581,8 @@ app.controller("courierResponseCtrl",["$scope","$rootScope","courierResponseServ
         $http.put("/user/agent-delivery",assign)
         .success(function(resp){
           if(resp.status){
-            var msg = "Your drug delivery has been initiated! " + resp.message;
+            var msg = "Your drug delivery has been initiated! " + resp.message 
+            + "to deliver. Please have your order ID ready to show him for confirmation of delivery."
             alert(msg);
           } else {
             alert(res.message)
