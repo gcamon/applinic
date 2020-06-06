@@ -93,9 +93,10 @@
 		<div class="col-md-10 pl-1">
 			<br>
 			<input type="submit" name="" value="Search" class="btn btn-info btn-sm">&nbsp;
-			<input type="button" name="" value="Clear" class="btn btn-simple btn-sm" ng-click="clear()">&nbsp;&nbsp;
-			<input type="button" name="" value="Today" class="btn btn-simple btn-sm" ng-click="today()">
-			<input type="button" name="" value="Last 7 days" class="btn btn-simple btn-sm" ng-click="days7()">
+			<input type="button" name="" value="Clear" class="btn btn-simple btn-sm" ng-class="{'bg-warning text-white': query == 'Clear'}" ng-click="clear()">&nbsp;&nbsp;
+			<input type="button" name="" value="Today" class="btn btn-simple btn-sm" ng-class="{'bg-warning text-white': query == 'Today'}" ng-click="today()">
+			<input type="button" name="" value="Yesterday" class="btn btn-simple btn-sm" ng-class="{'bg-warning text-white': query == 'Yesterday'}" ng-click="yesterday()">
+			<input type="button" name="" value="Last 7 days" class="btn btn-simple btn-sm" ng-class="{'bg-warning text-white': query == 'Last7'}" ng-click="days7()">
 		</div>
 	</form>
 	<hr>

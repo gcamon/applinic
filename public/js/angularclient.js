@@ -16374,17 +16374,28 @@ app.controller("labReferredPatientsController",["$scope","$location","$http","te
   $scope.today = function() {
     $scope.patient.from = new Date();
     $scope.patient.to = new Date();
+    $scope.query = "Today";
     $scope.searchTests();
   }
+
+  $scope.yesterday = function() {
+    var dt = new Date();
+    var days = dt.setDate(dt.getDate() - 1);    
+    $scope.patient.from = new Date(days);
+    $scope.patient.to = new Date();
+     $scope.query = "Yesterday";
+    $scope.searchTests();
+  }
+
 
   $scope.days7 = function() {
     var dt = new Date();
     var days = dt.setDate(dt.getDate() - 7);    
     $scope.patient.from = new Date(days);
     $scope.patient.to = new Date();
+    $scope.query = "Last7";
     $scope.searchTests();
   }
-
   
   //$scope.patient.from = new Date();
   //$scope.patient.to = new Date();
@@ -16424,6 +16435,7 @@ app.controller("labReferredPatientsController",["$scope","$location","$http","te
 
   $scope.clear = function(){
     $scope.patient = {};
+    $scope.query = "Clear";
     $rootScope.queryObj = null;
   }
 
@@ -18247,18 +18259,28 @@ app.controller("radioReferredPatientController",["$scope","$location","$http","t
   $scope.today = function() {
     $scope.patient.from = new Date();
     $scope.patient.to = new Date();
+    $scope.query = "Today";
     $scope.searchTests();
   }
+
+  $scope.yesterday = function() {
+    var dt = new Date();
+    var days = dt.setDate(dt.getDate() - 1);    
+    $scope.patient.from = new Date(days);
+    $scope.patient.to = new Date();
+    $scope.query = "Yesterday";
+    $scope.searchTests();
+  }
+
 
   $scope.days7 = function() {
     var dt = new Date();
     var days = dt.setDate(dt.getDate() - 7);    
     $scope.patient.from = new Date(days);
     $scope.patient.to = new Date();
+    $scope.query = "Last7";
     $scope.searchTests();
   }
-
-
 
   $scope.searchTests = function() {
 
@@ -18287,6 +18309,7 @@ app.controller("radioReferredPatientController",["$scope","$location","$http","t
 
   $scope.clear = function(){
     $scope.patient = {};
+    $scope.query = "Clear";
     $rootScope.queryObj = null;
   }
 
@@ -24655,8 +24678,6 @@ app.controller("workHistoryModalController",["$rootScope","$scope","$location","
      count++;
     
   }
-
-  
 
   $scope.editReport = function(person) {
     var path = (person.laboratory) ? "/laboratory/view-test/" + person.ref_id : "/radiology/view-test/" + person.ref_id;

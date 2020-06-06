@@ -33,7 +33,7 @@
 
 <div class="container">
     <div class="card-center-1">
-		<a ng-href="{{back}}"><i class="fa fa-arrow-left btn btn-simple"> &nbsp;Back</i></a>
+		<a ng-href="{{back}}"><i class="fa fa-arrow-left btn btn-neutral"> &nbsp;Back</i></a>
 	</div>
     <div class="card card-center-1 p-2">
 
@@ -47,10 +47,10 @@
 	</p>-->
 
 	<div class="form-inline">
-		<strong class="font-1_2">Search result for:</strong>
-		<span ng-repeat="test in criteria" style="display:inline-block; padding:10px">{{test.name}}</span> 
+		<!--<strong class="font-1_2">Search result for:</strong>
+		<span ng-repeat="test in criteria" style="display:inline-block; padding:10px">{{test.name}}</span> -->
 		<label style="display:block">
-			<input type="text" class="form-control" placeholder="filter" ng-model="testFilter.name">	
+			<input type="text" class="simple-border" placeholder="filter" ng-model="testFilter.name">	
 		</label>
 	</div>
 	<div>
@@ -65,8 +65,8 @@
 				<i class="fa fa-phone"> {{center.phone}}</i>&nbsp;
 				<!--<b ng-if="center.status" class="text-primary">online</b> <span ng-if="!center.status" class="text-danger">offline</span>-->
 			</div>
-			<br>
-			<div class="col-md-5 col-lg-5 p-1">
+			
+			<div class="col-md-5 col-lg-5" style="text-align: right;">
 			<!--<i class="fa fa-user btn btn-simple btn-sm" style="cursor:pointer;" title="View {{center.name}} profile" ng-click="toViewProfile(center.id)"></i>--> <i class="fa fa-comment btn btn-neutral btn-sm" style="cursor:pointer;" title="Send chat message to {{center.name}} " ng-click="sendChat(center,center.str)"></i> <i class="fa fa-share btn btn-neutral btn-sm" style="cursor:pointer;" title="Forward to {{center.name}}" ng-click="toForward(center)"></i>
 			</div>	
 			
@@ -83,8 +83,8 @@
 				<i class="fa fa-phone">{{center.phone}}</i>&nbsp;
 				<!--<b ng-if="center.status" class="text-primary">online</b> <span ng-if="!center.status" class="text-danger">offline</span>-->
 			</div>
-			<br>
-			<div class="col-md-5 col-lg-5 p-1">
+			
+			<div class="col-md-5 col-lg-5" style="text-align: right;">
 				<!--<i class="fa fa-user btn btn-simple btn-sm" style="cursor:pointer;" title="View {{center.name}} profile" ng-click="toViewProfile(center.id)"></i>--> <i class="fa fa-comment btn btn-neutral btn-sm" style="cursor:pointer;" title="Send chat message to {{center.name}} " ng-click="sendChat(center,center.str)"></i> <i class="fa fa-share btn btn-neutral btn-sm" style="cursor:pointer;" title="Forward to {{center.name}}" ng-click="toForward(center)"></i>
 			</div> 
 				

@@ -25,7 +25,7 @@
 
 <div class="container">
 <div class="card card-center-1 p-2">
-	<h4 class="mb-0 p-0">Cash Out <a href="#/bank-details" style="float: right;" class="btn btn-info btn-sm">Bank Details</a></h4>
+	<h4 class="mb-0 p-0 h6">Cash Out <a href="#/bank-details" style="float: right;" class="btn btn-info btn-sm">Bank Details</a></h4>
 	<hr>
 	<div>
 		<label>Choose Account: </label>
@@ -37,7 +37,7 @@
 		   <span class="custom-control-description">{{j.bank_name}} &nbsp;&nbsp;&nbsp;{{j.acc_no}} &nbsp;&nbsp;&nbsp;{{j.acc_type}}</span>
 		</label>
 	</div>
-	<p class="p-3" ng-if="bankDetails.length == 0">No bank account was added.<a href="#/bank-details">Add one now!</a></p>
+	<p class="p-3" ng-if="bankDetails.length == 0">No bank account was added.<a href="#/bank-details text-info"> Add one now!</a></p>
 	<hr>
 	<p>Tips: You cannot leave a zero amount in your wallet.</p>
 	<form ng-submit="auth(resend)" class="row" ng-if="!isVerify">
