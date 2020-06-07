@@ -993,6 +993,7 @@ router.post("/user/laboratory/test-result/preview",function(req,res){
 					result.lab_data.unshift(req.body)
 					result.save(function(err,info){});
 				} else {
+					
 					var newTemp = new model.lab_store({
 						center_id: req.user.user_id,
 						ref_id: req.body.ref_id,
