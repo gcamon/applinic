@@ -8854,14 +8854,24 @@ app.controller("drugsAndKitsCtrl",["$scope","$rootScope","$http","ModalService",
 
       $scope.isNewKit = true;
 
+      if($scope.drug.package){
+        $scope.drug.package = null;
+      }
+
       $scope.kits = filter[name];
       $scope.isJoined = false;
     }
 
 
     $scope.selectedKit = function(type,name){
-      $scope.isSelected = name;
+      if($scope.isSelected === 'Other'){
+        $scope.isSelected = null;
+      } else {
+        $scope.isSelected = name;
+      }
+
       getKit(type,name);
+      
     }
 
 

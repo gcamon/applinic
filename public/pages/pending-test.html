@@ -4,9 +4,12 @@
  
  
   <div class="pl-0 card-center-1 card" style="position: relative;">
-    <h5 style="padding:15px;" class="h6">{{type}}</h5>   
-    <div style="position: absolute;right: 15px;top:5px">
-        <input type="text" name="" placeholder="Filter by test name, center name, date sent, date received, etc" ng-model="filterResult" class="form-control">
+      
+    <div class="col-md-7">
+        <h5 style="padding:15px 0" class="h6">{{type}}</h5>   
+    </div>
+    <div class="col-md-5 p-1">
+       <input type="text" name="" placeholder="Filter by test name, center name, date sent, date received, etc" ng-model="filterResult" class="simple-border">
     </div>
   </div>
   <div ng-if="!isViewSingle">
@@ -38,7 +41,7 @@
 
               <strong>Reference Number:</strong> : <span>{{(test.copy) ? "Copied!" : test.ref_id}}</span> <a href="" clipboard supported="supported" text="test.ref_id" on-copied="success(test)" on-error="fail(err)" title="{{copy}}" class="fa fa-copy text-danger" style="padding: 5px"> Copy</a><br>
 
-              <strong>Date requested:</strong> <span>{{test.sent_date | date : "mediumDate"}} ( <span am-time-Ago="test.sent_date" ng-if="test.sent_date"></span> )</span>
+              <strong>Date requested:</strong> <span>{{test.sent_date | date : "mediumDate"}} ( <span am-time-Ago="test.sent_date" ng-if="test.sent_date"></span> )</span><br>
 
               <span ng-if="test.conclusion === 'Pending'"><strong>Status: </strong> <span style="color: red">Awaiting test result</span></span><br>
             <!--<p><strong>Date sent: </strong>{{test.sent_date | date : "mediumDate"}} &nbsp; <strong>Time: </strong>{{test.sent_date | date : "shortTime"}}</p>-->
