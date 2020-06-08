@@ -72,13 +72,13 @@
 	 			</div>
 	 			<div ng-repeat="d in selectedPackage2.content">
 	 				<div class="col-md-5">		 				
-		 				<input type="text" name="" class="form-control" placeholder="Enter drug name" ng-model="d.drug_name" uib-typeahead="drug.name for drug in drugs | filter:$viewValue | limitTo:15">
+		 				<input type="text" name="" class="form-control" placeholder="Item name" ng-model="d.drug_name" uib-typeahead="drug.name for drug in drugs | filter:$viewValue | limitTo:15">
 	 				</div>
-	 				<div class="col-md-4" style="">	 					
-		 				<input type="text" name="" placeholder="Enter Description" ng-model="d.dosage" class="form-control" uib-typeahead="dose for dose in dosageList | filter:$viewValue | limitTo:15">
+	 				<div class="col-md-5" style="">	 					
+		 				<input type="text" name="" placeholder="Form eg capsule, tablet, packet etc" ng-model="d.dosage" class="form-control" uib-typeahead="dose for dose in dosageList | filter:$viewValue | limitTo:15">
 	 				</div>
-	 				<div  class="col-md-3">
-	 					<input type="text" name="" placeholder="Enter Quantity" ng-model="d.quantity" class="form-control">
+	 				<div  class="col-md-2">
+	 					<input type="text" name="" placeholder="Quantity" ng-model="d.quantity" class="form-control">
 	 				</div>
 	 				<div class="clearfix"></div>
 	 				<hr>
