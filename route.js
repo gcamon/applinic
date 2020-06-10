@@ -8778,13 +8778,30 @@ router.post("/user/field-agent",function(req,res){
                 console.log(err)
               console.log(info)
             }
-            res.send({message: "Field agent created successfully!",phone: req.body.phone, password: password,status:true})
+            res.json({message: "Field agent created successfully!",phone: req.body.phone, password: password,status:true})
           }
         })
 
+      } else if(data.center_id !== req.user.user_id) {
+
+        req.user.field_agents.push({
+          names: data.firstname + " " + data.lastname,
+          url: data.url,
+          id: data._id,
+          phone: data.phone,
+          email: data.email,
+          password: data.password
+        })
+
+        req.user.save(function(err,info){
+          if(err) throw err;
+           res.json({message: "Field agent created successfully!",phone: data.phone, password: data.password,status:true})
+        });
+
       } else {
-        res.json({message: "User already exists as an agent!", status: false})
+        res.json({message: "Agent with the phone number already exists in your center", status: false});
       }
+      
     });    
 
   } else {
