@@ -2338,7 +2338,8 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
     });
 
     router.get("/user/get-specialties",function(req,res){      
-      model.user.find({type:"Doctor"},{specialty:1,skills:1})
+      model.user.find({type:"Doctor"},
+        {specialty:1,skills:1,_id:1,name:1})
       .limit(500)
       .sort('specialty')
       .exec(function(err,data){
@@ -2996,7 +2997,7 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
 
                 var msgBody = "A new home delivery of drug(s) request just came in. Please log in and compute the cost for payment. " 
                 + "\nRef No is " + ref_id +
-                "\nDelivery process will be initiated when the receiver had paid the bill." +
+                "\nDelivery process will be initiated when the receiver pays the bill." +
                 "\nGo to your account https://applinic.com/login";
 
                 sms.messages.create(
@@ -3020,7 +3021,7 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
 
                 var mailOptions = {
                   from: 'Applinic info@applinic.com',
-                  to: 'info@applinic.com',
+                  to: ['applinicagent@gmail.com','info@applinic.com '],//'info@applinic.com ', 
                   subject: 'New Courier Request Order!',
                   html: '<table><tr></th></tr><tr><td>'
                   + "Sender Name: " + req.user.name + "<br><br>"
@@ -8184,7 +8185,7 @@ router.put("/user/scan-search/radiology/referral",function(req,res){
 
 //for patient getting requested courier services
 router.get("/user/courier-response",function(req,res){
-  console.log(req.query)
+  
   if(req.user){
     if(req.query.id){
       model.courier.findOne({request_id: req.query.id},function(err,data){
@@ -8482,7 +8483,7 @@ router.put("/user/courier-update",function(req,res){
         
           var currency = (req.user.currencyCode) ? req.user.currencyCode : "NGN";
 
-          var msgBody = "The drug(s) you requested for home delivery is ready!\n" 
+          var msgBody = "The bill for the drug(s) you requested for home delivery is ready!\n" 
           + "Please go to your account and make payment to initiate delivery.\n" 
           + "Your Order ID is " + user.request_id
           + "\nhttps://applinic.com/login";
@@ -8492,9 +8493,7 @@ router.put("/user/courier-update",function(req,res){
 
           sendSMS(phoneNunber,msgBody)
 
-         
-
-          var msgBody2 = "A new home delivery of drug(s) has been initiated by  " + req.user.name + " @ "
+          /*var msgBody2 = "A new home delivery of drug(s) has been initiated by  " + req.user.name + " @ "
           + req.user.address + " " + req.user.city 
           + "\nPlease follow up this transaction and inform the sender to complete payment before delivery starts."
           + "\nRef No is " + user.ref_id + "\nSender Phone : " + user.phone1 + " " + user.phone2 + "\nSender Address: " 
@@ -8502,8 +8501,7 @@ router.put("/user/courier-update",function(req,res){
           + " " + req.user.city
           + "\nGo to your service page https://applinic.com/login";
 
-          sendSMS(req.body.agentNumber,msgBody2);
-
+          sendSMS(req.body.agentNumber,msgBody2);*/
 
           function sendSMS(number,body) {
             sms.messages.create(
@@ -10426,30 +10424,88 @@ router.get("/general/homepage-search",function(req,res){
       }
 
   } else if(req.query.category === "Doctor") {
+    console.log(req.query)
+
     if(req.query.item) {  
-      var first4 = (req.query.item.substring(0,2) !== 'Dr' || req.query.item.substring(0,2) !== 'Prof') ? req.query.item.substring(0,5) : req.query.item;
+      var first4 = (req.query.item.substring(0,2) !== 'Dr' || req.query.item.substring(0,2) !== 'Prof') ?
+       req.query.item.substring(0,5) : req.query.item;
       var str = new RegExp(first4.replace(/\s+/g,"\\s+"), "gi");              
       //var criteria = { specialty : { $regex: str, $options: 'i' },type:"Doctor",city:req.query.city};
       //var byDisease = {"skills.disease": { $regex: str, $options: 'i' },type:"Doctor",city:req.query.city};
       if(req.query.city) {
-        var criteria = {$text : {$search : req.query.item},city:req.query.city}
-        /*var criteria = { $or: [{ specialty : { $regex: str, $options: 'i' },type:"Doctor",city:req.query.city},
-        {"skills.disease": { $regex: str, $options: 'i' },type:"Doctor",city:req.query.city}]};*/
+        //var criteria = {$text : {$search : req.query.item},city:req.query.city}
+        var criteria = { $or: [{ specialty : { $regex: str, $options: 'i' },type:"Doctor",city:req.query.city},
+        {name: { $regex: str, $options: 'i' },type:"Doctor",city:req.query.city},
+        { firstname : { $regex: str, $options: 'i' },type:"Doctor",city:req.query.city},
+        { lastname : { $regex: str, $options: 'i' },type:"Doctor",city:req.query.city}]};
+
       } else {
-        var criteria = {$text : {$search : req.query.item}}
-        //var criteria = { $or: [{ specialty : { $regex: str, $options: 'i' },type:"Doctor"},
-        //{"skills.disease": { $regex: str, $options: 'i' },type:"Doctor"}]}; 
+        //var criteria = {$text : {$search : req.query.item}}
+        var criteria = { $or: [{ specialty : { $regex: str, $options: 'i' },type:"Doctor"},
+        {name: { $regex: str, $options: 'i' },type:"Doctor"},{ firstname : { $regex: str, $options: 'i' },type:"Doctor"},
+        { lastname : { $regex: str, $options: 'i' },type:"Doctor"}]}; 
       }
+
     } else {
       var criteria = (req.query.city) ? {type: "Doctor",city:req.query.city} : {type: "Doctor"};
     }
 
+    var sendObjList = {}
+
     model.user.find(criteria,{firstname:1,lastname:1,work_place:1,city:1,country:1,address:1,
+      specialty:1,_id:0,profile_pic_url:1,education:1,user_id:1,title:1,name: 1,profile_url:1,verified:1,experience:1})
+      .limit(200)
+      .exec(function(err,data){
+      if(err) { 
+        res.send({error:"status 500",full:[]});
+
+      } else { 
+        //console.log(data)
+        sendObjList.full = data;
+
+        model.skills.find(criteria)
+        .limit(100)
+        .exec(function(err,data){
+          if(err) {
+            res.send({error:"status 500",full:[]});
+          } else {
+            //if(data.length == 0){
+            var first4 = (req.query.item) ? req.query.item.substring(0,4) : "";
+            str = new RegExp(first4.replace(/\s+/g,"\\s+"), "gi"); 
+            //var criteria = (req.query.city) ? { skill : { $regex: str, $options: 'i' },city:req.query.city,deleted: false} : 
+            //{ disease : { $regex: str, $options: 'i' },deleted: false}
+
+            if(req.query.city){
+              var criteria2 = { $or: [{ skill : { $regex: str, $options: 'i' },city:req.query.city,deleted: false},
+              {disease : { $regex: str, $options: 'i' },deleted: false}]}; 
+            } else {
+               var criteria2 = { $or: [{ skill : { $regex: str, $options: 'i' },deleted: false},
+              {disease : { $regex: str, $options: 'i' },deleted: false}]}; 
+            }
+
+            model.skills.find(criteria2,
+            function(err,data2){
+              if(err) throw err;
+              //sendObjList.concat(data2)
+              sendObjList.sub = data2;
+              res.json(sendObjList);
+            })
+            //} else {
+            //  res.json({full: data});
+            //}   
+          }
+        });
+
+      }
+    })
+    /*model.user.find(criteria,{firstname:1,lastname:1,work_place:1,city:1,country:1,address:1,
       specialty:1,_id:0,profile_pic_url:1,education:1,user_id:1,title:1,name: 1,profile_url:1})
       .limit(100)
       .exec(function(err,data){
-      if(err) {        
+      if(err) { 
+
         res.send({error:"status 500",full:[]});
+
       } else {   
         //res.render('list-view',{data: data})
         if(data.length == 0){
@@ -10461,17 +10517,15 @@ router.get("/general/homepage-search",function(req,res){
           function(err,data2){
             if(err) throw err;
             res.json({full: data2});
-          })
+          });
+
         } else {
           res.json({full: data});
-        }   
-        
+        }
       }
-    });
+    });*/
 
   } else if(req.query.category === "Laboratory" || req.query.category === "Radiology") {
-    console.log(req.query);
-    //for lab and radio search from home page
   
   req.query.testList = [{name: req.query.item}];
 
@@ -12486,6 +12540,11 @@ router.get('/user/video',function(req,res){
     res.redirect('login')
   }
   
+})
+
+
+router.get("/find-doctors",function(req,res){
+  res.render('find-doctor')
 })
 
 

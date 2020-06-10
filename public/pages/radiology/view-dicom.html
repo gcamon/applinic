@@ -15,7 +15,7 @@
 </style>
 
 <div class="card p-2 card-center-1">
-	<h4>Linked Studies</h4>
+	<h4 class="h6">Linked Studies</h4>
 	<form class="row" ng-submit="getStudy()">
 		<div class="col-md-4">
 			<label> From </label>
@@ -33,10 +33,15 @@
 		<div class="col-md-4">
 			<input type="text" name="" class="form-control" placeholder="Patient name" ng-model="study.patientName">
 		</div>
-
-		<div class="col-md-4">
+		<div class="clearfix"></div>
+		<div>
+			<!--<input type="submit" name="" value="Search" class="btn btn-info btn-sm">&nbsp;
+			<input type="button" name="" value="Clear" class="btn btn-simple btn-sm" ng-click="clear()">-->
 			<input type="submit" name="" value="Search" class="btn btn-info btn-sm">&nbsp;
-			<input type="button" name="" value="Clear" class="btn btn-simple btn-sm" ng-click="clear()">
+			<input type="button" name="" value="Clear" class="btn btn-simple btn-sm" ng-class="{'bg-warning text-white': query == 'Clear'}" ng-click="clear()">&nbsp;&nbsp;
+			<input type="button" name="" value="Today" class="btn btn-simple btn-sm" ng-class="{'bg-warning text-white': query == 'Today'}" ng-click="today()">
+			<input type="button" name="" value="Yesterday" class="btn btn-simple btn-sm" ng-class="{'bg-warning text-white': query == 'Yesterday'}" ng-click="yesterday()">
+			<input type="button" name="" value="Last 7 days" class="btn btn-simple btn-sm" ng-class="{'bg-warning text-white': query == 'Last7'}" ng-click="days7()">
 		</div>
 	</form>
 	<!--<div class="col-md-4 pl-0 ml-0">
@@ -45,8 +50,8 @@
 	<div class="clearfix"></div>-->
 	<hr>
 	<div>	
-		<div style="text-align: right;">
-			<input type="text" name="" placeholder="filter list" ng-model="filter">
+		<div>
+			<input type="text" name="" placeholder="filter list" ng-model="filter" class="simple-border">
 		</div>	
 		<table>
 			<thead>

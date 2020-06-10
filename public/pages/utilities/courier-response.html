@@ -111,9 +111,10 @@
 			<input type="text" placeholder="Enter otp" class="form-control" ng-model="user.pin">
 		</div>
 		<div class="clearfix"></div>
-		<div style="text-align: center;">			
+		<div style="text-align: center;" class="col-md-8">			
 			<button class="btn-info btn" ng-click="confirm(courierResponse)"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i> {{(loading) ? "" : "Confirm Payment"}}</button>
 		</div>
+		<div class="clearfix"></div>
 	</div>
 	<hr>
 	<div style="line-height: 25px" ng-if="courierResponse.is_paid && courierResponse.attended && courierResponse.verified">
@@ -137,7 +138,7 @@
 			Order ID: <b>{{courierResponse.request_id}}</b>
 		</div>-->
 		<hr>
-		<p class="text-success">Order ID is required for confirmation of receipt of the package/drugs. Please give out to field agent if you had received the package/drugs.<br><br>
+		<p class="text-success">Your drug delivery has been initiated. {{courierResponse.delivery_msg}}. Please have your order ID ready to show him for confirmation of delivery.<br><br>
 		If you have any complaint for this service please <a href="" class="text-info" ng-click="sendDispute(courierResponse._id)"> send to us a dispute notification </a> and we'll contact you shortly.
 		</p>
 	</div>

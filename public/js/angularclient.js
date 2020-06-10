@@ -21748,6 +21748,7 @@ app.controller("courierResponseCtrl",["$scope","$rootScope","courierResponseServ
           if(resp.status){
             var msg = "Your drug delivery has been initiated! " + resp.message;
             alert(msg);
+            $rootScope.courierResponse.delivery_msg = resp.message;
           } else {
             alert(res.message)
           }
@@ -25156,6 +25157,34 @@ app.controller("viewLinkedDicomCtrl",["$scope","$http","moment","dicomStudyServi
   $scope.study = {};
   $scope.study.from = new Date();
   $scope.study.to = new Date();
+
+
+  $scope.today = function() {
+    $scope.study.from = new Date();
+    $scope.study.to = new Date();
+    $scope.query = "Today";
+    $scope.getStudy();
+  }
+
+  $scope.yesterday = function() {
+    var dt = new Date();
+    var days = dt.setDate(dt.getDate() - 1);    
+    $scope.study.from = new Date(days);
+    $scope.study.to = new Date();
+    $scope.query = "Yesterday";
+    $scope.getStudy();
+  }
+
+  $scope.days7 = function() {
+    var dt = new Date();
+    var days = dt.setDate(dt.getDate() - 7);    
+    $scope.study.from = new Date(days);
+    $scope.study.to = new Date();
+    $scope.query = "Last7";
+    $scope.getStudy();
+  }
+
+
 
   $scope.getStudy = function() {
     $scope.loading = true;

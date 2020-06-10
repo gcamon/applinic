@@ -73,14 +73,24 @@
             </div>
         </header>
         <div class="container pt-1">
-            <h5>Agent <%= agent.firstname %>!</h5>
+            <h5 class="h6 pl-2">Agent <%= agent.firstname %>!</h5>
         </div>
-        <main class="container" ng-controller="filedAgentController" ng-cloak>            
-            <div class="p-2 card card-center-1 mb-1" ng-repeat="req in courierData.couriers | orderBy: '-delivery_start_date'">        
+        <main class="container" ng-controller="filedAgentController" ng-cloak>   
+            <div class="card">
+                <div class="col-md-9 col-xs-9">
+                    <input type="text" placeholder="Filter list" name="" class="form-control" ng-model="ft">
+                </div>
+                <div class="col-md-3 pt-1 col-xs-3 text-right">
+                    <a href="" ng-click="refresh()"> <i class="fa fa-refresh"></i> Refresh </a>
+                </div>
+            </div>  
+            <div class="clearfix"></div>    
+            <p class="p-2 text-warning" ng-if="loading" style="text-align: center;">Loading...</p>   
+            <div class="p-2 card card-center-1 mb-1" ng-repeat="req in courierData.couriers | filter: ft | orderBy: '-delivery_start_date'">        
                 <span style="float: right;padding: 10px 20px"  class="text-muted" am-time-ago="req.delivery_start_date"></span>
-                <h6 style="padding: 10px 0">Patient details</h6>
+                <h6 style="padding: 10px 0">Details</h6>
                 <section>                   
-                    <img src="{{req.profile_pic_url}}" style="max-width:180px;height: auto;float: left;">
+                    <!--<img src="{{req.profile_pic_url}}" style="max-width:180px;height: auto;float: left;">-->
                     <article style="display: inline-block;padding: 0 10px">
                         <div><strong><i class="fa fa-user"></i> </strong> <b>{{req.title}} {{ req.firstname }} {{req.lastname}} </b></div>
                         <div><strong><i class="fa fa-globe"></i>  </strong> {{req.address}}, {{req.city}}</div>

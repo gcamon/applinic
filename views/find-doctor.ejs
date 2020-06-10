@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <title>APPLINIC - Find Doctors</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js"></script>
+
+    <script src="https://kit.fontawesome.com/5d5c57c2c4.js" crossorigin="anonymous"></script>
+    <!--<link rel="stylesheet " href="/assets/css/vendor.css ">
+    <link rel="stylesheet " href="/assets/css/app.css ">
+    <link rel="stylesheet " href="/assets/css/now-ui-kit2.css ">
+    <link rel="stylesheet " href="/assets/css/chat.css ">
+    <link rel="stylesheet " href="/assets/css/font-awesome.min.css ">
+    <link rel="stylesheet " href="/assets/css/my-edit.css ">
+    <link rel="stylesheet " href="/assets/css/ngPrint.css ">-->
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans " rel="stylesheet ">
+    <style>
+        .rating {
+            background-color: #85CE36;
+            padding: 4px 9px;
+            color: #fff;
+        }
+        
+        .avail {
+            color: #85CE36;
+        }
+        
+        .card {
+            border: none;
+            border-bottom: 4px solid #85CE36;
+            padding-bottom: 8px;
+        }
+        
+        .thumbnail {
+            margin: 0 auto;
+        }
+        
+        .thumbnail img {
+            padding-top: 16px;
+        }
+        
+        .video-btn button {
+            /* display: inline; */
+        }
+        
+        .p-6 {
+            padding: 6px !important;
+        }
+        
+        .card-body {
+            padding: 0;
+        }
+        
+        .p-10 {
+            padding: 10px;
+        }
+        
+        .badge {
+            position: relative;
+            bottom: 55px;
+            float: right;
+            right: 10px;
+        }
+        
+        #search-wrap {
+            border: 1px solid grey;
+            position: relative;
+            bottom: 13px;
+            z-index: 9999;
+            display: none;
+        }
+        
+        #location:hover #search-wrap {
+            display: block;
+        }
+        
+        body {
+            /* The image used */
+            background-image: url("/assets/images/bg3.jpg");
+            /* Add the blur effect */
+            /* filter: blur(1px); */
+            /* -webkit-filter: blur(1px); */
+            /* Full height */
+            height: 100%;
+            /* Center and scale the image nicely */
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+        
+        .bg-green {
+            color: #85CE36 !important;
+        }
+        
+        .bg-white {
+            background: #fff;
+        }
+        
+        .side-nav {
+            padding: 10px;
+        }
+        
+        .side-sticky {
+            position: sticky;
+            top: 56px;
+        }
+        
+        .sticky-top {
+            z-index: 10;
+        }
+        
+        #doctors-search label {
+            display: block;
+        }
+        
+        .fas,
+        .fab {
+            color: #85CE36;
+        }
+        
+        .drawer-btn {
+            float: left;
+        }
+        /* drawer */
+        
+        .sidenav {
+            height: 100%;
+            width: 0;
+            position: fixed;
+            z-index: 1;
+            top: 0;
+            left: 0;
+            background-color: #85CE36;
+            overflow-x: hidden;
+            transition: 0.5s;
+            padding-top: 60px;
+        }
+        
+        .sidenav a {
+            padding: 8px 8px 0px 16px;
+            text-decoration: none;
+            font-size: 25px;
+            color: #818181;
+            display: block;
+            transition: 0.3s;
+        }
+        
+        .sidenav a:hover {
+            color: #f1f1f1;
+        }
+        
+        .sidenav .closebtn {
+            position: absolute;
+            top: 0;
+            right: 25px;
+            font-size: 36px;
+            margin-left: 50px;
+        }
+        
+        .sidenav a .fas {
+            color: #fff;
+        }
+
+        .dropdown-menu {
+            width: 93%;
+            padding: 10px;
+            
+        }
+
+        .dropdown-menu a {
+           color: green
+        }
+        
+        #main-wrap {
+            transition: margin-left .5s;
+        }
+        
+        @media screen and (max-height: 450px) {
+            .sidenav {
+                padding-top: 15px;
+            }
+            .sidenav a {
+                font-size: 18px;
+            }
+        }
+        /* Extra small devices (portrait phones, less than 576px) */
+        
+        @media (max-width: 575.98px) {}
+        /* Small devices (landscape phones, less than 768px) */
+        
+        @media (max-width: 767.98px) {
+            .col-md-9 {
+                background-color: honeydew;
+            }
+            .thumbnail {
+                width: 45%;
+            }
+            .thumbnail img {
+                padding-top: 2PX;
+            }
+            .doctors-profile {
+                text-align: center;
+                /*border-bottom: 1px solid;*/
+            }
+            .avail {
+                margin-top: 0 !important;
+            }
+            .card-header {
+                padding: 0.4rem 1.25rem;
+            }
+            .card-header h6:first-child {
+                color: red;
+            }
+            .online {
+                position: absolute;
+                left: 162px;
+            }
+            .form-text {
+                display: none;
+            }
+            #doctors-search .form-group,
+            #doctors-search .form-group label {
+                margin-bottom: 0.1rem;
+            }
+            .drawer-btn {
+                display: none;
+            }
+        }
+        /* Medium devices (tablets, less than 992px) */
+        
+        @media (max-width: 991.98px) {}
+        /* Large devices (desktops, less than 1200px) */
+        
+        @media (max-width: 1199.98px) {}
+    </style>
+
+    <!--<link rel="stylesheet" href="/assets/css/main.css">-->
+    <script src="assets/js/core/jquery.3.2.1.min.js" type="text/javascript"></script>
+    <script type="text/javascript" src="/assets/js/source.js"></script>
+
+    <script type="text/javascript">
+        var Opera = (navigator.userAgent.match(/Opera|OPR\//) ? true : false);
+        if(Opera){
+          window.location.href = "/assets/show-error.html";
+        }
+    </script>
+    
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-128083647-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-128083647-1');
+    </script>
+</head>
+
+<body ng-app="myApp">
+    <section id="main-wrap" ng-controller="hompageController">
+        <!--<div id="mySidenav" class="sidenav">
+            <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+            <a href="#"><span><i class="fas fa-briefcase-medical"></i></span> Book appointment</a>
+            <a href="#"><span><i class="fas fa-clinic-medical"></i></span> Pharmacy</a>
+            <a href="#"><span><i class="fas fa-briefcase-medical"></i></span> Diagnostics</a>
+            <a href="#"><span><i class="fas fa-briefcase-medical"></i></span> Read Health Articles</a>
+            <a href="#"><span><i class="fas fa-briefcase-medical"></i></span> Read Health Articles</a>
+        </div>-->
+       
+        <div  style="background-color: #fff;padding: 15px" ng-controller="investigationSearchCtrl">
+            <form class="row" id="doctors-search" ng-submit="find()">
+                <div class="col-md-2">
+                    <a class="navbar-brand" href="/">
+                        <img src="/assets/images/applinic2.png" alt="Applinic" style="width: 75px;height: auto;">
+                    </a>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group ">
+                        <label for="location1"><span class="mr-2"><i class="fas fa-map-marker-alt"></i></span>Location </label>
+                        <input type="text" name="" class="selectpicker show-tick form-control" ng-model="user.city" uib-typeahead="city for city in cities | filter:$viewValue | limitTo:15">
+                        <!--<select class="selectpicker show-tick" data-live-search="true" data-width="100%" ng-model="user.city">
+                            <option value ="{{city}}" ng-repeat="city in cities">{{city}}</option>
+                            <option data-divider="true"></option>
+                            <option data-tokens="mustard">Abuja</option>
+                            <option data-divider="true"></option>
+                            <option data-tokens="frosting">New Heaven</option>
+                          </select>-->
+                        <small class="form-text text-muted">Please input your closest location.</small>
+                    </div>
+                </div>
+                <!-- 2nd col -->
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="type"><span class="mr-2"><i class="fas fa-stethoscope"></i></span> Doctors Specialty / Name / Disease</label>
+                        <input type="text" name="" class="selectpicker show-tick form-control" ng-model="user.item" uib-typeahead="item for item in dropDownList | filter:$viewValue | limitTo:15">
+                       <!-- <select class="selectpicker show-tick" data-live-search="true" data-width="100%">
+                            <option value ="{{item}}" ng-repeat="item in dropDownList">{{item}}</option>
+                            <option data-divider="true"></option>
+                            <option data-tokens="mustard">Surgeon</option>
+                            <option data-divider="true"></option>
+                            <option data-tokens="frosting">Pediatric Dentist</option>
+                          </select>-->
+                        <small id="doctors" class="form-text text-muted">You can search for specialty, doctor's name or disease.</small>
+                    </div>
+                </div>
+                <div class="col-md-1">
+                    <div class="form-group" style="padding-top: 30px">
+
+                        <input type="submit" name="" value="Search" class="btn btn-success btn-block">
+                    </div>
+                </div>
+               
+            </form>
+        </div>
+        <nav class="navbar navbar-expand-sm bg-success navbar-dark sticky-top" >
+            <!-- <a class="navbar-brand" href="#">Navbar</a> -->
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+             <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class=" container collapse navbar-collapse" id="collapsibleNavbar">
+                <ul class="navbar-nav">
+                    <!--<li class="nav-item">
+                        <div class="dropdown">
+                            <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                              Availability
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                <a class="dropdown-item" href="#">Action</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="#">Another action</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="#">Something else here</a>
+                            </div>
+                        </div>
+                    </li>-->
+                    <!--<li class="nav-item">
+                        <div class="dropdown">
+                            <a class="btn btn-warning dropdown-toggle" href="#" role="button" id="dropdownfilter" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                              All Filters
+                            </a>
+
+                            <div class="dropdown-menu mega-dropdown" aria-labelledby="dropdownfilter">
+                                <div class="d-flex bd-highlight">
+                                    <div class="p-2 flex-fill bd-highlight">
+                                        <p>Gender</p>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" value="option1" checked>
+                                            <label class="form-check-label" for="defaultCheck1">
+                                              Male Doctor
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="exampleRadios" id="exampl" value="option1" checked>
+                                            <label class="form-check-label" for="defaultCheck1">
+                                              Female Doctor
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="p-2 flex-fill bd-highlight">
+                                        <p>Consultation Fee</p>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRos1" value="option1" checked>
+                                            <label class="form-check-label" for="defaultCheck1">
+                                              Free
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="exampleRadios" id="examp" value="option1" checked>
+                                            <label class="form-check-label" for="defaultCheck1">
+                                              1-200
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="p-2 flex-fill bd-highlight">Others</div>
+                                </div>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="#">Another action</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="#">Something else here</a>
+                            </div>
+                        </div>
+                    </li>-->
+                    <!--<li class="nav-item">
+                        <div class="dropdown">
+                            <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownRelevance" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                              Relevance
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="dropdownRelevance">
+                                <a class="dropdown-item" href="#">Action</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="#">Another action</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="#">Something else here</a>
+                            </div>
+                        </div>
+                    </li>-->
+                </ul>
+            </div>
+
+        </nav>
+        <div class="main" style="width:95%; margin: 0 auto; margin-top:30px">
+            <div class="row">
+                <!-- col 9 -->
+                <div class="col-sm-9" ng-cloak>
+                    <div class="card max-width mb-3 bg-white" ng-repeat="doc in searchResultFull">
+                        <div class="row no-gutters">
+                            <div class="col-md-9">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="thumbnail">
+                                            <a href="{{doc.profile_url}}" alt="Profile">
+                                                <img src="{{doc.profile_pic_url}}" class="card-img rounded-circle" alt="...">
+                                                <div class="online text-center text-muted" ng-show="doc.verified">
+                                                    <span><span><i class="fa fa-check-circle"></i></span> Verified </span>
+                                                </div>
+                                                <!--<div class="floating-badge" ng-show="doc.verified">
+                                                    <span class="badge badge-pill badge-secondary" title="Verified"><i class="fas fa-check-circle"></i></span>
+                                                </div>-->
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <div class="doctors-profile p-2">
+                                            <h4 class="pt-2 ellipsis">{{doc.name}}</h4>
+                                            <h6>{{doc.specialty}}</h6>
+                                            <h6>{{(doc.experience) ? (doc.experience + ' years of practice') : ""}}</h6>
+                                            <h6><strong>{{doc.city}}, {{doc.country}}.</strong></h6>
+                                            <div>
+                                                <span>{{doc.work_place}}</span>
+                                            </div>
+                                            <div ng-show="doc.education.length > 0">
+                                                <span ng-repeat="edu in doc.education"> {{edu.certificate + ' '}} </span>
+                                            </div>
+                                            <!--<span class="rating rounded-pill"><span><i class="far fa-thumbs-up"></i></span> 96%</span> <span><a href="#">1352 feedback</a></span>-->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card-body p-6">
+                                    <!--<p class="avail mt-5"><span><i class="fab fa-line"></i></span> Availability Today</p>-->
+                                    <div class="video-btn mt-3 pt-6">
+                                       
+                                        <button type="button" class="btn btn-success" style="margin-bottom: 5px">Send Consultation</button>
+                                       
+                                        <button type="button" class="btn btn-outline-success" style="margin-bottom: 5px"><i class="fa fa-comments"></i> Chat with me &nbsp;&nbsp;</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- 2nd col -->
+                    <!--<div class="card max-width mb-3">
+                        <div class="row no-gutters">
+                            <div class="col-md-9">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="thumbnail">
+                                            <img src="/assets/images/default-avatar.png" class="card-img rounded-circle" alt="...">
+                                            <div class="online text-center">
+                                                <span><span><i class="fab fa-osi"></i></span> Online</span>
+                                            </div>
+                                            <div class="floating-badge">
+                                                <span class="badge badge-pill badge-secondary"><i class="fas fa-check-circle"></i></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <div class="doctors-profile p-6">
+                                            <h4 class="card-header">Dr. M.R. Pujari</h4>
+                                            <h6>Dentist</h6>
+                                            <h6>14yrs experience overall</h6>
+                                            <h6><strong>Abuja, Nigeria .</strong></h6>
+                                            <div style="border-bottom: 1px dotted grey; margin-bottom: 16px">
+                                                <span>32 Smiles Multispeciality Dental Clinic + 15 more
+                                                    ₹200 Consultation fee at clinic</span>
+                                            </div>
+                                            <span class="rating rounded-pill"><span><i class="far fa-thumbs-up"></i></span> 96%</span> <span><a href="#">1352 feedback</a></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card-body p-6">
+                                    <p class="avail mt-5"><span><i class="fab fa-line"></i></span> Availability Today</p>
+                                    <div class="video-btn mt-3">
+                                        <button type="button" class="btn btn-success">Book Appointment</button>
+                                        <button type="button" class="btn btn-outline-success">Video Consultation</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card max-width mb-3">
+                        <div class="row no-gutters">
+                            <div class="col-md-9">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="thumbnail">
+                                            <img src="/assets/images/default-avatar.png" class="card-img rounded-circle" alt="...">
+                                            <div class="online text-center">
+                                                <span><span><i class="fab fa-osi"></i></span> Online</span>
+                                            </div>
+                                            <div class="floating-badge">
+                                                <span class="badge badge-pill badge-secondary"><i class="fas fa-check-circle"></i></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <div class="doctors-profile p-6">
+                                            <h4 class="card-header">Dr. Obinna</h4>
+                                            <h6>Med lab</h6>
+                                            <h6>7yrs experience overall</h6>
+                                            <h6><strong>Enugu, Nigeria .</strong></h6>
+                                            <div style="border-bottom: 1px dotted grey; margin-bottom: 16px">
+                                                <span>32 Smiles Multispeciality Dental Clinic + 15 more
+                                                    ₹200 Consultation fee at clinic</span>
+                                            </div>
+                                            <span class="rating rounded-pill"><span><i class="far fa-thumbs-up"></i></span> 96%</span> <span><a href="#">1352 feedback</a></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card-body p-6">
+                                    <p class="avail mt-5"><span><i class="fab fa-line"></i></span> Availability Today</p>
+                                    <div class="video-btn mt-3">
+                                        <button type="button" class="btn btn-success">Book Appointment</button>
+                                        <button type="button" class="btn btn-outline-success">Video Consultation</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>-->
+                   
+                    <!-- rd col -->
+                    <!--<div class="card max-width mb-3">
+                        <div class="row no-gutters">
+                            <div class="col-md-9">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="thumbnail">
+                                            <img src="/assets/images/default-avatar.png" class="card-img rounded-circle" alt="...">
+                                            <div class="floating-badge">
+                                                <span class="badge badge-pill badge-secondary"><i class="fas fa-check-circle"></i></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <div class="doctors-profile p-6">
+                                            <h4 class="card-header">Dr. Obinna</h4>
+                                            <h6>Med lab</h6>
+                                            <h6>7yrs experience overall</h6>
+                                            <h6><strong>Enugu, Nigeria .</strong></h6>
+                                            <div style="border-bottom: 1px dotted grey; margin-bottom: 16px">
+                                                <span>32 Smiles Multispeciality Dental Clinic + 15 more
+                                                    ₹200 Consultation fee at clinic</span>
+                                            </div>
+                                            <span class="rating rounded-pill"><span><i class="far fa-thumbs-up"></i></span> 96%</span> <span><a href="#">1352 feedback</a></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card-body p-6">
+                                    <p class="avail mt-5"><span><i class="fab fa-line"></i></span> Availability Today</p>
+                                    <div class="video-btn mt-3">
+                                        <button type="button" class="btn btn-success">Book Appointment</button>
+                                        <button type="button" class="btn btn-outline-success">Video Consultation</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>-->
+                </div>
+                <!-- col 4 -->
+                <div class="col-sm-3">
+                    <div class="container side-sticky">
+                        <div class="row">
+                            <section class="bg-white">
+                                <div class="bg-image">
+                                    <div class="">
+                                        <div class="side-nav">
+                                            <h4 class="">Provide current location to see Dentist near you</h4>
+                                            <p>You are seeing results from bangalore. See results near you</p>
+                                            <section>
+                                                <div class="btn-wrap">
+                                                    <button type="button" class="btn btn-outline-success">Current Location</button>
+                                                    <button type="button" class="btn btn-outline-success">Current Location</button>
+                                                    <button type="button" class="btn btn-outline-success">Current Location</button>
+                                                    <button type="button" class="btn btn-outline-success">Current Location</button>
+                                                </div>
+                                            </section>
+                                            <div class="video-btn mt-3">
+                                                <button type="button" class="btn btn-success">Search Location</button>
+                                                <button type="button" class="btn btn-outline-success">Current Location</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="jumbotron text-center" style="margin-bottom:0">
+                <p>Footer</p>
+            </div>
+        </div>
+    </section>
+    <script>
+        function openNav() {
+            document.getElementById("mySidenav").style.width = "300px";
+            document.getElementById("main-wrap").style.marginLeft = "300px";
+            document.body.style.backgroundColor = "rgba(0,0,0,0.6)";
+        }
+
+        function closeNav() {
+            document.getElementById("mySidenav").style.width = "0";
+            document.getElementById("main-wrap").style.marginLeft = "0";
+            document.body.style.backgroundColor = "white";
+        }
+    </script>
+    <script src="assets/js/core/tether.min.js" type="text/javascript"></script>
+    <script src="assets/js/core/bootstrap.min.js" type="text/javascript"></script>
+    <!--  Plugin for Switches, full documentation here: http://www.jque.re/plugins/version3/bootstrap.switch/ -->
+    <script src="assets/js/plugins/bootstrap-switch.js"></script>
+    <!--  Plugin for the Sliders, full documentation here: http://refreshless.com/nouislider/ -->
+    <script src="assets/js/plugins/nouislider.min.js" type="text/javascript"></script>
+    <!--  Plugin for the DatePicker, full documentation here: https://github.com/uxsolutions/bootstrap-datepicker -->
+    <script src="assets/js/plugins/bootstrap-datepicker.js" type="text/javascript"></script>
+    <!-- Control Center for Now Ui Kit: parallax effects, scripts for the example pages etc -->
+    <script src="assets/js/now-ui-kit.js" type="text/javascript"></script>
+    <script src="/assets/js/app.js"></script>
+
+
+    <!--<script type="text/javascript" src="/assets/js/angularclient.js"></script>-->
+    <script type="text/javascript" src="/assets/js/index.angular-client.js"></script>
+    <script type="text/javascript" src="/assets/js/ngroute.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/assets/js/socket.min.js"></script>
+
+
+
+    <script src="/assets/js/angularAnimate.js"></script>
+    <script src="/assets/js/modalService.js"></script>
+    <script src="/assets/js/angular-touch.min.js"></script>
+    <!--<script src="/assets/js/angular-carousel.js"></script>-->
+    
+   
+    <script src="/assets/js/ui-bootstrap-tpls.js"></script>
+    
+    <script src="/assets/js/ngresource.js"></script>
+   
+</body>
+
+</html>

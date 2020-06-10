@@ -373,13 +373,24 @@ app.controller("filedAgentController",["$scope","$rootScope","$http",
  
 
   function getData() {
+    $scope.loading = true;
     $http.get("/user/field-agent/get-data",{params:{id:id}})
     .success(function(data){
+      $scope.loading = false;
+      if(data == "Unauthorized access!"){
+        window.location.href = "/login";
+        return;
+      }
+      
       $rootScope.courierData = data;
     })
   }
 
   getData();
+
+  $scope.refresh = function() {
+    getData();
+  }
   
   $scope.attend = function(firstname,lastname,courierId,creditorId,debitorId,cost,agentId){
     $rootScope.courier = {
