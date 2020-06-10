@@ -8684,7 +8684,7 @@ router.get("/user/field-agent/get-data",function(req,res){
       }
     })
   } else {
-    res.render("login")
+    res.json("Unauthorized access!")
   }
 
 })
