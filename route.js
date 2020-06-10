@@ -8727,7 +8727,7 @@ router.post("/user/field-agent",function(req,res){
         .exec(function(err,result){
           if(err) throw err;
 
-          if(!result){
+          if(result){
             res.json({message: "User with the phone number already exists", status: false});
 
           } else {         
