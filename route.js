@@ -8727,7 +8727,7 @@ router.post("/user/field-agent",function(req,res){
         .exec(function(err,result){
           if(err) throw err;
 
-          if(result){
+          if(!result){
             res.json({message: "User with the phone number already exists", status: false});
 
           } else {         
@@ -8768,7 +8768,7 @@ router.post("/user/field-agent",function(req,res){
               callBack
             ) 
             //infobip sms gateway for second option
-            var msg = "Your applinic.com field agent log in details\nphone " + req.body.phone + "\npassword " + password;
+            //var msg = "Your applinic.com field agent log in details\nphone " + req.body.phone + "\npassword " + password;
 
             //var message = {from: "InfoSMS", to : req.body.phone, text : msg}
             //client.SMS.send(message,callBack);
@@ -8782,7 +8782,7 @@ router.post("/user/field-agent",function(req,res){
           }
         })
 
-      } else if(data.center_id !== req.user.user_id) {
+      } else {
 
         req.user.field_agents.push({
           names: data.firstname + " " + data.lastname,
@@ -8798,10 +8798,10 @@ router.post("/user/field-agent",function(req,res){
            res.json({message: "Field agent created successfully!",phone: data.phone, password: data.password,status:true})
         });
 
-      } else {
-        res.json({message: "Agent with the phone number already exists in your center", status: false});
-      }
-      
+      } //else {
+        //res.json({message: "Agent with the phone number already exists in your center", status: false});
+      //}
+
     });    
 
   } else {
@@ -8812,9 +8812,15 @@ router.post("/user/field-agent",function(req,res){
 //this deletes the field agent by the center
 router.delete("/user/field-agent",function(req,res){
   if(req.user){
-    model.agent.remove({_id: req.query.id});
-    var elemPos = req.user.field_agents.map(function(x){return x.id.toString()}).indexOf(req.query.id)
-    if(elemPos !== -1){    
+    //model.agent.remove({_id: req.query.id});
+    var elemPos = req.user.field_agents.map(function(x){return x.id.toString()}).indexOf(req.query.id);
+
+    if(elemPos !== -1){
+      req.user.field_agents.splice(elemPos,1);
+      req.user.save(function(){});
+    }
+    
+    /*if(elemPos !== -1){    
       model.user.findOne({user_id: req.query.id},function(err,agent){
         if(err) throw err;
         if(agent) {
@@ -8823,7 +8829,7 @@ router.delete("/user/field-agent",function(req,res){
       })
       req.user.field_agents.splice(elemPos,1);
       req.user.save(function(){});
-    }
+    }*/
     res.send({message:"Agent deleted!",status: true});
   } else {
     res.end("unauthorized access!");
