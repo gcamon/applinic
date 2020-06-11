@@ -45,9 +45,9 @@ app.factory("localManager",["$window",function($window){
 
 
 app.controller("hompageController",["$scope","scanTests","cities","labTests","Drugs","$http",
-  "ModalService","$rootScope","homePageDynamicService","skillService","homepageSearchService",
+  "ModalService","$rootScope","homePageDynamicService","skillService","homepageSearchService","localManager",
   function($scope,scanTests,cities,labTests,Drugs,$http,
-  	ModalService,$rootScope,homePageDynamicService,skillService,homepageSearchService){
+  	ModalService,$rootScope,homePageDynamicService,skillService,homepageSearchService,localManager){
 
 
   $scope.cities = cities;
@@ -148,13 +148,36 @@ app.controller("hompageController",["$scope","scanTests","cities","labTests","Dr
     });  
   }
 
+  var user = localManager.getValue("resolveUser");
 
-  $scope.consult = function() {
-  	alert($rootScope.checkLogIn)
+  $scope.consult = function(doc) {
+  	if(!user){
+  	  	$rootScope.holdDoc = doc;
+  	  	ModalService.showModal({
+      		templateUrl: 'auth.html',
+      		controller: 'authModalController'
+     	}).then(function(modal) {
+      		modal.element.modal();
+      		modal.close.then(function(result) {             
+      		});
+      	});
+
+  	} /*else {
+
+	  	ModalService.showModal({
+	  		templateUrl: 'find-doctor-search.html',
+	  		controller: 'findDocPageModalController'
+	 	}).then(function(modal) {
+	  		modal.element.modal();
+	  		modal.close.then(function(result) {             
+	  		});
+	  	});
+  	}*/
+
   }
 
   
-  $scope.itemName = "Drug / Test / Specialty / Disease"
+  $scope.itemName = "Drug / Test / Specialty / Disease";
 
   $scope.$watch('user.category',function(newVal,oldVal){
     if(newVal) {
@@ -203,7 +226,7 @@ app.controller("hompageController",["$scope","scanTests","cities","labTests","Dr
 
 
   $scope.search = function() {    
-    //alert($rootScope.user.city + " " + $rootScope.user.item + " " + $rootScope.user.category)
+    
     ModalService.showModal({
       templateUrl: 'home-page-search.html',
       controller: 'homePageModalController'
@@ -215,6 +238,16 @@ app.controller("hompageController",["$scope","scanTests","cities","labTests","Dr
   }
 
 }]);
+
+app.controller("authModalController",["$scope","$rootScope","homepageSearchService","localManager","$window",
+  function($scope,$rootScope,homepageSearchService,localManager,$window){
+
+}]);
+
+/*app.controller("findDocPageModalController",["$scope","$rootScope","homepageSearchService","localManager","$window",
+  function($scope,$rootScope,homepageSearchService,localManager,$window){
+
+}])*/
 
 app.controller("homePageModalController",["$scope","$rootScope","homepageSearchService","localManager","$window",
   function($scope,$rootScope,homepageSearchService,localManager,$window){

@@ -2960,15 +2960,17 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
               var pic = (req.body.referral_pays == 'Yes') ? req.user.profile_pic_url : req.body.patient_profile_pic_url;
               var userId = (req.body.referral_pays == 'Yes') ? req.user.user_id : req.body.patient_id;
               var optMsg = (req.body.referral_pays == 'Yes') ? "The doctor chose the option to pay the bill." : "";
+              var address = (req.body.courierObj.address) ? req.body.courierObj.address : req.user.address;
+              var callPhone = (req.body.courierObj.phone1) ? req.body.courierObj.phone1 : req.user.phone;
               var courierData = {
                 request_id: reqId,
                 verified: false,
                 firstname: firstname,
-                address: req.body.courierObj.address,
+                address: address,
                 ref_id: ref_id,
                 prescription_body: req.body.prescriptionBody,
                 city: (req.body.referral_pays == 'Yes') ? req.user.city : req.body.city,
-                phone1: req.body.courierObj.phone1,
+                phone1: callPhone,
                 phone2: req.body.phone,
                 lastname: lastname,
                 title: title,
@@ -3025,9 +3027,9 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
                   subject: 'New Courier Request Order!',
                   html: '<table><tr></th></tr><tr><td>'
                   + "Sender Name: " + req.user.name + "<br><br>"
-                  + "Sender Address: " + req.user.address + "<br><br>"
+                  + "Sender Address: " + address + "<br><br>"
                   + "Sender City: " + req.user.city + "<br><br>"
-                  + "Sender Phone: " + req.user.phone + "<br><br>"
+                  + "Sender Phone: " + callPhone + "<br><br>"
                   + "Ref No: " + ref_id +  "<br><br>"
                   + "Order ID: <b>" + reqId +  "</b><br><br>"
                   + "Dispatch Center: " + req.body.center_name + "<br><br>"
@@ -8407,13 +8409,15 @@ router.post("/user/courier",function(req,res){
         }
       });*/
 
+      var address = (req.body.address) ? req.body.address : req.user.address;
+
       var mailOptions = {
         from: 'Applinic info@applinic.com',
         to: ['applinicagent@gmail.com','info@applinic.com '],//'info@applinic.com',
         subject: 'New Courier Request Order!',
         html: '<table><tr></th></tr><tr><td>'
         + "Sender Name: " + req.body.firstname + " " + req.body.lastname + "<br><br>"
-        + "Sender Address: " + req.user.address + "<br><br>"
+        + "Sender Address: " + address + "<br><br>"
         + "Sender City: " + req.user.city + "<br><br>"
         + "Sender Phone: " + req.body.phone1 + " " + req.body.phone2 +  "<br><br>"
         + "Ref No: " + req.body.refId +  "<br><br>"

@@ -12,7 +12,8 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
-
+     <link rel="icon" type="image/png" href="/assets/images/favicon.png">
+     <!--<link rel="stylesheet" href="/assets/css/app.css">-->
     <!-- Latest compiled and minified JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js"></script>
 
@@ -286,7 +287,7 @@
                     </a><br>
                     <a href="/login" class="btn btn-sm btn-simple">Sign In </a>
 
-                    <a href="/signin" class="btn btn-sm btn-simple">Sign Up </a>
+                    <a href="/signup" class="btn btn-sm btn-simple">Sign Up </a>
 
 
                 </div>
@@ -689,6 +690,135 @@
             document.body.style.backgroundColor = "white";
         }
     </script>
+
+     <script type="text/ng-template" id="find-doctor-search.html">
+        <div class="modal fade">
+            <div class="modal-dialog">
+                <div class="modal-content" style="position: absolute; top:10;">
+                    <div class="modal-header" style="position: relative;">
+                        <h4>Hello</h4>
+                    </div>
+                    <div class="modal-body">
+                        <p>Something is right</p>
+                    </div>
+            
+                </div>
+            </div>
+        </div>
+    </script>
+
+    <script type="text/ng-template" id="auth.html">
+        <div class="modal fade">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">                        
+                    </div>
+                    <div class="modal-body">
+                        <h5><b>Tell us who you are!</b></h5>
+                        <br>
+                        <form>                            
+                            <div>
+                                <label><b>Email or Phone Number</b></label><br>
+                                <input type="text" name="" placeholder="Email or Phone" class="form-control" ng-model="person.email">
+                            </div>
+                            
+                            <div class="pt-3">
+                                <label><b>Password</b></label><br>
+                                <input type="password" name="" placeholder="Password" class="form-control" ng-model="person.password">
+                            </div>
+                            <div class="pt-3">
+                                <input type="submit" name="" class="btn btn-danger btn-block">
+                            </div>
+                           
+                            <p class="mt-3">Don't have an account? <a href="">Create one for free!</a></p>
+                        </form>
+
+                        <form>
+                            <div >
+                                <label class="custom-control custom-radio">
+                                  <input type="radio" class="custom-control-input" ng-model="" value="Patient" >
+                                  <span class="custom-control-indicator"></span>
+                                  <span class="custom-control-description">Patient</span>
+                                </label>
+                                <label class="custom-control custom-radio">
+                                  <input type="radio" class="custom-control-input" ng-model=""  value="Doctor">
+                                  <span class="custom-control-indicator"></span>
+                                  <span class="custom-control-description">Doctor</span>
+                                </label> 
+                                <label class="custom-control custom-radio">
+                                  <input type="radio" class="custom-control-input" ng-model=""  value="Pharmacy">
+                                  <span class="custom-control-indicator"></span>
+                                  <span class="custom-control-description">Pharmacy</span>
+                                </label>
+                                <label class="custom-control custom-radio">
+                                  <input type="radio" class="custom-control-input" ng-model=""  value="Diagnostic">
+                                  <span class="custom-control-indicator"></span>
+                                  <span class="custom-control-description">Diagnostic Center</span>
+                                </label> 
+                                <label class="custom-control custom-radio">
+                                  <input type="radio" class="custom-control-input" ng-model=""  value="Special Center">
+                                  <span class="custom-control-indicator"></span>
+                                  <span class="custom-control-description">Special Center</span>
+                                </label>              
+                            </div>
+                            <ul class="nav nav-tabs">
+                                <li class="nav-item"><a href="#" class="nav-link active">Home</a></li>
+                                <li class="nav-item"><a href="#" class="nav-link">Home</a></li>
+                            </ul>
+                            <fieldset>
+                                <div>
+                                    <label><b>Country</b></label><br>
+                                    <input type="text" name="" placeholder="Country" class="form-control" ng-model="person.country">
+                                </div>
+                                <div class="pt-3">
+                                    <label><b>Firstname</b></label><br>
+                                    <input type="text" name="" placeholder="Firstname" class="form-control" ng-model="person.firstname">
+                                </div>
+
+                                 <div class="pt-3">
+                                    <label><b>Lastname</b></label><br>
+                                    <input type="text" name="" placeholder="lastname" class="form-control" ng-model="person.lastname">
+                                </div>
+
+                                <div class="pt-3">
+                                    <label><b>City</b></label><br>
+                                    <input type="text" name="" placeholder="City" class="form-control" ng-model="person.city">
+                                </div>
+
+                                 <div class="pt-3">
+                                    <label><b>Address</b></label><br>
+                                    <input type="text" name="" placeholder="Address" class="form-control" ng-model="person.address">
+                                </div>
+
+                                <div class="pt-3">
+                                    <label><b>Phone Number</b></label><br>
+                                    <input type="text" name="" placeholder="Phone number" class="form-control" ng-model="person.phone">
+                                </div>
+
+                                <div class="pt-3">
+                                    <label><b>Email</b></label><br>
+                                    <input type="text" name="" placeholder="Email or Phone" class="form-control" ng-model="person.email">
+                                </div>
+                                
+                                <div class="pt-3">
+                                    <label><b>Password</b></label><br>
+                                    <input type="password" name="" placeholder="Password" class="form-control" ng-model="person.password">
+                                </div>
+
+                                <div class="pt-3">
+                                    <input type="submit" name="" value="Create" class="btn btn-danger btn-block">
+                                </div>
+                               
+                                <p class="mt-3">I have an account? <a href="">Sign In!</a></p>
+                            </fieldset>
+                        </form>
+                    </div>
+            
+                </div>
+            </div>
+        </div>
+    </script>
+
     <script src="assets/js/core/tether.min.js" type="text/javascript"></script>
     <script src="assets/js/core/bootstrap.min.js" type="text/javascript"></script>
     <!--  Plugin for Switches, full documentation here: http://www.jque.re/plugins/version3/bootstrap.switch/ -->
