@@ -101,7 +101,7 @@ app.controller("hompageController",["$scope","scanTests","cities","labTests","Dr
 
   });*/
 
-  $http({
+  /*$http({
     method  : 'GET',
     url     : "/user/get-diseases",
     headers : {'Content-Type': 'application/json'} 
@@ -120,7 +120,7 @@ app.controller("hompageController",["$scope","scanTests","cities","labTests","Dr
       }
      
     }
-  }); 
+  });*/
 
 
 
@@ -129,6 +129,8 @@ app.controller("hompageController",["$scope","scanTests","cities","labTests","Dr
       if(!filter[data[i].skill]) {
         filter[data[i].skill] = 1;
         skArr.push({name:data[i].skill})
+        $scope.dropDownList.push(data[i].skill)
+        $scope.dropDownList.push(data[i].disease)
       } else {
         filter[data[i].skill]++;
       }
@@ -144,6 +146,11 @@ app.controller("hompageController",["$scope","scanTests","cities","labTests","Dr
       $scope.searchResultFull = response.full;
       $scope.searchResultSub = response.sub;
     });  
+  }
+
+
+  $scope.consult = function() {
+  	alert($rootScope.checkLogIn)
   }
 
   

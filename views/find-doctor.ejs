@@ -283,7 +283,12 @@
                 <div class="col-md-2">
                     <a class="navbar-brand" href="/">
                         <img src="/assets/images/applinic2.png" alt="Applinic" style="width: 75px;height: auto;">
-                    </a>
+                    </a><br>
+                    <a href="/login" class="btn btn-sm btn-simple">Sign In </a>
+
+                    <a href="/signin" class="btn btn-sm btn-simple">Sign Up </a>
+
+
                 </div>
                 <div class="col-md-4">
                     <div class="form-group ">
@@ -296,13 +301,13 @@
                             <option data-divider="true"></option>
                             <option data-tokens="frosting">New Heaven</option>
                           </select>-->
-                        <small class="form-text text-muted">Please input your closest location.</small>
+                        <small class="form-text text-muted">Enter closest location.</small>
                     </div>
                 </div>
                 <!-- 2nd col -->
                 <div class="col-md-4">
                     <div class="form-group">
-                        <label for="type"><span class="mr-2"><i class="fas fa-stethoscope"></i></span> Doctors Specialty / Name / Disease</label>
+                        <label for="type"><span class="mr-2"><i class="fas fa-stethoscope"></i></span> Specialty / Name / Procedure / Disease</label>
                         <input type="text" name="" class="selectpicker show-tick form-control" ng-model="user.item" uib-typeahead="item for item in dropDownList | filter:$viewValue | limitTo:15">
                        <!-- <select class="selectpicker show-tick" data-live-search="true" data-width="100%">
                             <option value ="{{item}}" ng-repeat="item in dropDownList">{{item}}</option>
@@ -311,7 +316,7 @@
                             <option data-divider="true"></option>
                             <option data-tokens="frosting">Pediatric Dentist</option>
                           </select>-->
-                        <small id="doctors" class="form-text text-muted">You can search for specialty, doctor's name or disease.</small>
+                        <small id="doctors" class="form-text text-muted">You can search with specialty, doctor's name, procedure or disease.</small>
                     </div>
                 </div>
                 <div class="col-md-1">
@@ -452,9 +457,59 @@
                                     <!--<p class="avail mt-5"><span><i class="fab fa-line"></i></span> Availability Today</p>-->
                                     <div class="video-btn mt-3 pt-6">
                                        
-                                        <button type="button" class="btn btn-success" style="margin-bottom: 5px">Send Consultation</button>
+                                        <button type="button" class="btn btn-success" style="margin-bottom: 5px" ng-click="consult(doc)">Request Consultation</button>
                                        
-                                        <button type="button" class="btn btn-outline-success" style="margin-bottom: 5px"><i class="fa fa-comments"></i> Chat with me &nbsp;&nbsp;</button>
+                                        <button type="button" class="btn btn-outline-success" style="margin-bottom: 5px" ng-click="chat(doc)"><i class="fa fa-comments"></i> Chat with me &nbsp;&nbsp;</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                   
+                    <div class="card max-width mb-3 bg-white" ng-repeat="doc in searchResultSub">
+                        <div class="row no-gutters">
+                            <div class="col-md-9">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="thumbnail">
+                                            <a href="{{doc.profile_url}}" alt="Profile">
+                                                <img src="{{doc.profile_pic_url}}" class="card-img rounded-circle" alt="">
+                                                <!--<div class="online text-center text-muted" ng-show="doc.verified">
+                                                    <span><span><i class="fa fa-check-circle"></i></span> Verified </span>
+                                                </div>-->
+                                                <!--<div class="floating-badge" ng-show="doc.verified">
+                                                    <span class="badge badge-pill badge-secondary" title="Verified"><i class="fas fa-check-circle"></i></span>
+                                                </div>-->
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <div class="doctors-profile p-2">
+                                            <h4 class="pt-2 ellipsis">{{doc.name}}</h4>
+                                            <h6>{{doc.specialty}}</h6>
+                                            <h6>{{doc.skill}}</h6>
+                                            <h6><strong>{{doc.city}}, {{doc.country}}.</strong></h6>
+                                            <div>
+                                                <span>{{doc.work_place}}</span>
+                                            </div>
+                                            <div>
+                                                <label>Disease: </label>
+                                                <span>{{doc.disease}}</span>
+                                            </div>
+                                            <a href="{{doc.ref_url}}" target="_blank">View Procedure</a>
+                                            <!--<span class="rating rounded-pill"><span><i class="far fa-thumbs-up"></i></span> 96%</span> <span><a href="#">1352 feedback</a></span>-->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card-body p-6">
+                                    <!--<p class="avail mt-5"><span><i class="fab fa-line"></i></span> Availability Today</p>-->
+                                    <div class="video-btn mt-3 pt-6">
+                                       
+                                        <button type="button" class="btn btn-success" style="margin-bottom: 5px" ng-click="consult(doc)">Request Consultation</button>
+                                       
+                                        <button type="button" class="btn btn-outline-success" style="margin-bottom: 5px" ng-click="chat(doc)"><i class="fa fa-comments"></i> Chat with me &nbsp;&nbsp;</button>
                                     </div>
                                 </div>
                             </div>

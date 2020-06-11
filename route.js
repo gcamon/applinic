@@ -8409,7 +8409,7 @@ router.post("/user/courier",function(req,res){
 
       var mailOptions = {
         from: 'Applinic info@applinic.com',
-        to: 'info@applinic.com',
+        to: ['applinicagent@gmail.com','info@applinic.com '],//'info@applinic.com',
         subject: 'New Courier Request Order!',
         html: '<table><tr></th></tr><tr><td>'
         + "Sender Name: " + req.body.firstname + " " + req.body.lastname + "<br><br>"
