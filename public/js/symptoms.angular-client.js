@@ -370,6 +370,8 @@ app.controller("hompageController",["$scope","scanTests","cities","labTests","Dr
     }
   }); 
 
+  
+ 
 
   /*$http({
     method  : 'GET',
@@ -407,7 +409,7 @@ app.controller("hompageController",["$scope","scanTests","cities","labTests","Dr
   });*/
 
 
-  $scope.todashboard = function(type) {
+  $rootScope.todashboard = function(type) {
   	switch(type) {
       case "Patient":
         $window.location.href = "/user/patient";   
@@ -427,12 +429,6 @@ app.controller("hompageController",["$scope","scanTests","cities","labTests","Dr
       case "admin":
         $window.location.href = "/user/admin";
       break;
-      case "Field Agent":
-        $window.location.href = "/user/field-agent/" + data.user_id;
-      break;
-      default:
-        $window.location.href = "/user/view"; 
-      break; 
     }
   }
 
@@ -471,7 +467,6 @@ app.controller("hompageController",["$scope","scanTests","cities","labTests","Dr
   	$scope.loading = true;
   	homepageSearchService.get($rootScope.user,function(response){
       $scope.loading = false; 
-      console.log(response)     
       $scope.searchResultFull = response.full;
       $scope.searchResultSub = response.sub;
     });  
@@ -609,7 +604,7 @@ app.controller("hompageController",["$scope","scanTests","cities","labTests","Dr
     });
   }
 
-  $scope.find();
+  //$scope.find();
 
 }]);
 
@@ -816,6 +811,133 @@ app.controller("investigationSearchCtrl",["$scope","$rootScope","$window","$http
 
 
 }]);
+
+app.controller('symptomsCtrl',["$scope","$rootScope","$http","homepageSearchService",
+	function($scope,$rootScope,$http,homepageSearchService){
+	
+
+  $rootScope.selected = [];
+  var filter = {}
+  $scope.user = {};
+
+  var specialtyFilter = {};
+
+  $scope.$watch("symptomsList",function(newVal,oldVal){
+  	if(newVal)
+	  	newVal.forEach(function(item){
+	  		if(item.picked && !filter[item.Name]){
+	  			$rootScope.selected.push(item)
+	  			filter[item.Name] = 1;
+	  		}
+	  	})
+  },true);
+
+   //crypto
+
+	var uri = "https://sandbox-authservice.priaid.ch/login";
+  var secret_key = "m4TZg78KiAo6y2GJj";
+  var computedHash = CryptoJS.HmacMD5(uri, secret_key);
+  var computedHashString = computedHash.toString(CryptoJS.enc.Base64);   
+  
+  var auth = 'Bearer ' + "ede.obinna27@gmail.com:" + computedHashString;
+  
+
+  $http({
+    method  : 'POST',
+    url     : uri,
+    headers : {'Content-Type': 'application/json','Authorization': auth}
+  })
+  .success(function(res) {     
+  	$scope.token = res.Token;
+  	$scope.getSymptoms();
+  });
+  
+  $scope.getSymptoms = function(token) {
+  	var url = "https://sandbox-healthservice.priaid.ch/symptoms?"
+  	+ "token=" + $scope.token + "&language=en-gb&format=json";
+	  $http.get(url)
+	  .success(function(response){
+	  	$rootScope.symptomsList = response;
+	  });
+  }
+
+
+
+
+  $scope.getResult = function(){
+  	if(!$scope.user.gender || !$scope.user.age){
+  		alert("Please both Gender and Date of birth values are needed.")
+  		return;
+  	}
+
+  	if($rootScope.selected.length == 0){
+  		alert("Please add symptoms you are experiencing.")
+  		return;
+  	}
+
+  	var symptomsIds = [];
+  	$rootScope.selected.forEach(function(item){
+  		symptomsIds.push(item.ID.toString());
+  	});
+
+  	var str = JSON.stringify(symptomsIds);
+
+  	var year = $scope.user.age.getFullYear();
+
+  	var url = 'https://sandbox-healthservice.priaid.ch/diagnosis?symptoms=' + str + 
+  	"&gender=" + $scope.user.gender + "&year_of_birth=" + year + "&token=" + $scope.token
+  	+ "&language=en-gb&format=json";
+  	$scope.loading = true;
+  	$http.get(url)
+  	.success(function(response){
+  		$scope.issues = response;
+  		$scope.loading = false;
+  		$scope.issues.forEach(function(item){
+  			if(!specialtyFilter[item.Specialisation.Name]) {
+  				specialtyFilter[item.Specialisation.Name] = item.Specialisation.Name;
+  				$scope.getSpecialist(item.Specialisation.Name)
+  			}
+  		})
+  	});
+
+  }
+
+  var elemPos;
+
+  $scope.deleteSymptom = function(id) {
+  	elemPos = $rootScope.selected.map(function(x){return x.ID}).indexOf(id);
+  	$rootScope.selected.splice(elemPos,1)
+  	$rootScope.symptomsList.forEach(function(item){
+  		if(item.ID === id){
+  			item.picked = false;
+  			delete filter[item.Name];
+  		}
+  	})
+  }
+
+  $scope.getSpecialist = function(specialty) {
+  	$rootScope.user.item = specialty;
+  	$scope.find()
+  }
+
+  $scope.find = function() {
+  	$rootScope.user.category = "Doctor";
+
+  	if(!$rootScope.user.item){
+  		$rootScope.user.item = 'live-doctors';
+  	}
+
+  	$scope.loading = true;
+  	homepageSearchService.get($rootScope.user,function(response){
+      $scope.loading = false; 
+      console.log(response)
+      $scope.searchResultFull = response.full;
+      $scope.searchResultSub = response.sub;
+    });  
+  }
+
+
+}])
 
 
 app.controller("bookingDocController",["$scope","$http","$rootScope",
