@@ -1,0 +1,1426 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <title>APPLINIC - Find Drugs</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+
+   
+
+   
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
+    <link rel="icon" type="image/png" href="/assets/images/favicon.png">
+
+    <link rel="stylesheet" href="/assets/css/icomoon.css">
+
+   
+    
+     <!--<link rel="stylesheet" href="/assets/css/app.css">-->
+    <!-- Latest compiled and minified JavaScript -->
+    <!--<script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js"></script>-->
+
+    <!--<link rel="stylesheet " href="/assets/css/vendor.css ">
+    <link rel="stylesheet " href="/assets/css/app.css ">
+    <link rel="stylesheet " href="/assets/css/now-ui-kit2.css ">
+    <link rel="stylesheet " href="/assets/css/chat.css ">
+    <link rel="stylesheet " href="/assets/css/font-awesome.min.css ">
+    <link rel="stylesheet " href="/assets/css/my-edit.css ">
+    <link rel="stylesheet " href="/assets/css/ngPrint.css ">-->
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans " rel="stylesheet ">
+    <style>
+
+        html {
+            scroll-behavior: smooth !important;
+        }
+       
+        .rating {
+            background-color: #85CE36;
+            padding: 4px 9px;
+            color: #fff;
+        }
+        
+        .avail {
+            color: #85CE36;
+        }
+        
+        .card {
+            border: none;
+            border-bottom: 4px solid #85CE36;
+            padding-bottom: 8px;
+        }
+        
+        .thumbnail {
+            margin: 0 auto;
+        }
+        
+        .thumbnail img {
+            padding-top: 16px;
+        }
+        
+        .video-btn button {
+            /* display: inline; */
+        }
+
+        .dropdown-item {
+            text-transform: capitalize;
+            font-size: 14px!important;
+            padding: 0!important;
+            white-space: normal;
+        }
+        
+        .p-6 {
+            padding: 6px !important;
+        }
+        
+        .card-body {
+            padding: 0;
+        }
+        
+        .p-10 {
+            padding: 10px;
+        }
+        
+        .badge {
+            position: relative;
+            bottom: 55px;
+            float: right;
+            right: 10px;
+        }
+        
+        #search-wrap {
+            border: 1px solid grey;
+            position: relative;
+            bottom: 13px;
+            z-index: 9999;
+            display: none;
+        }
+        
+        #location:hover #search-wrap {
+            display: block;
+        }
+        
+        body {
+            /* The image used */
+            /* background-image: url("/assets/img/bg4-min.jpg"); */
+            /* Add the blur effect */
+            /* filter: blur(1px); */
+            /* -webkit-filter: blur(1px); */
+            /* Full height */
+            height: 100%;
+            /* Center and scale the image nicely */
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+
+        .capitalize {
+            text-transform: capitalize;
+        }
+        
+        .bg-green {
+            color: #85CE36 !important;
+        }
+        
+        .bg-white {
+            background: #fff;
+        }
+
+        .text-left {
+            text-align: left;
+        }
+        
+        .side-nav {
+            padding: 10px;
+        }
+        
+        .side-sticky {
+            position: sticky;
+            top: 56px;
+        }
+        
+        .sticky-top {
+            z-index: 10;
+        }
+        
+        #doctors-search label {
+            display: block;
+        }
+        
+        .fas,
+        .fab {
+            color: #85CE36;
+        }
+        
+        .drawer-btn {
+            float: left;
+        }
+        /* drawer */
+        
+        .sidenav {
+            height: 100%;
+            width: 0;
+            position: fixed;
+            z-index: 1;
+            top: 0;
+            left: 0;
+            background-color: #85CE36;
+            overflow-x: hidden;
+            transition: 0.5s;
+            padding-top: 60px;
+        }
+        
+        .sidenav a {
+            padding: 8px 8px 0px 16px;
+            text-decoration: none;
+            font-size: 25px;
+            color: #818181;
+            display: block;
+            transition: 0.3s;
+        }
+        
+        .sidenav a:hover {
+            color: #f1f1f1;
+        }
+        
+        .sidenav .closebtn {
+            position: absolute;
+            top: 0;
+            right: 25px;
+            font-size: 36px;
+            margin-left: 50px;
+        }
+        
+        .sidenav a .fas {
+            color: #fff;
+        }
+
+        .dropdown-menu {
+            /*width: 93%;*/
+            padding: 10px;
+            
+        }
+
+        .dropdown-menu a {
+           color: green
+        }
+        
+        
+        #main-wrap {
+            transition: margin-left .5s;
+        }
+        
+        .dropdown-menu {
+            border-radius: 0;
+            border: none;
+        }
+
+        .dropdown a {
+            font-size: 12px;
+            display: block;
+        }
+        
+        .navbar-nav .dropdown-menu {
+            /*position: absolute;
+            float: none;
+            background: #85CE36;
+            top: 43px;*/
+            width: 330px;
+            overflow-y: auto;
+            border: 2px solid #85CE36;
+            word-wrap: break-word;
+        }
+        
+        .bg-aplinic {
+            background-color: #85CE36;
+        }
+        
+        .w-100 {
+            width: 100%;
+        }
+        
+        .panel-heading {
+            border-bottom: 1px solid #ccc;
+        }
+        
+        .panel-heading {
+            padding: 6px 0px;
+        }
+        
+        .panel-title a {
+            padding-left: 6px;
+            color: black;
+        }
+        
+        .panel-body li {
+            padding: 4px 0;
+        }
+        
+        .panel-body li:hover {
+            border-bottom: 1px solid #85CE36;
+        }
+        
+        ul {
+            list-style-type: none;
+            margin-bottom: 0.3rem;
+            margin-top: 0.3rem;
+        }
+        
+        .mt-10 {
+            margin-top: 10px;
+        }
+        
+        .col-sm-4 {
+            border-right: 1px solid #85CE36
+        }
+        
+        .card {
+            /* Add shadows to create the "card" effect */
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+            transition: 0.3s;
+            margin: auto;
+            text-align: center;
+            font-family: arial;
+        }
+        
+        .price {
+            color: grey;
+            font-size: 22px;
+        }
+        
+        .card button {
+            text-align: center;
+            cursor: pointer;
+            max-width: 100%;
+            font-size: 12px;
+        }
+        
+        .card button:hover {
+            opacity: 1 !important;
+            font-size: 14px;
+            color: inherit;
+        }
+        /* On mouse-over, add a deeper shadow */
+        
+        .card:hover {
+            /* box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+             */
+            width: 99%;
+        }
+        
+        a {
+            color: inherit;
+        }
+        
+        a:hover {
+            text-decoration: none;
+        }
+        /* flip card */
+        
+        .flip-card {
+            background-color: transparent;
+            perspective: 1000px;
+            height: 260px;
+        }
+        
+        .flip-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+        }
+        
+        .flip-card:hover .flip-card-inner {
+            transform: rotateY(180deg);
+        }
+        
+        .flip-card-front,
+        .flip-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+        }
+        
+        .flip-card-front {
+            background-color: #bbb;
+            color: black;
+        }
+        
+        .flip-card-back {
+            background-color: #85CE36;
+            color: white;
+            transform: rotateY(180deg);
+        }
+        
+        .flip-card-back h1 {
+            border-bottom: 1px solid;
+        }
+        
+        @media screen and (max-height: 450px) {
+            .sidenav {
+                padding-top: 15px;
+            }
+            .sidenav a {
+                font-size: 18px;
+            }
+        }
+        /* Extra small devices (portrait phones, less than 576px) */
+        
+        @media (max-width: 575.98px) {}
+        /* Small devices (landscape phones, less than 768px) */
+        
+        @media (max-width: 767.98px) {
+            .col-md-9 {
+                background-color: honeydew;
+            }
+            .thumbnail {
+                width: 45%;
+            }
+            .thumbnail img {
+                padding-top: 2PX;
+            }
+            .doctors-profile {
+                text-align: center;
+                border-bottom: 1px solid;
+            }
+            .avail {
+                margin-top: 0 !important;
+            }
+            .card-header {
+                padding: 0.4rem 1.25rem;
+            }
+            .card-header h6:first-child {
+                color: red;
+            }
+            .online {
+                position: absolute;
+                left: 162px;
+            }
+            .form-text {
+                display: none;
+            }
+            #doctors-search .form-group,
+            #doctors-search .form-group label {
+                margin-bottom: 0.1rem;
+            }
+            .drawer-btn {
+                display: none;
+            }
+        }
+        /* Medium devices (tablets, less than 992px) */
+        
+        @media (max-width: 991.98px) {}
+        /* Large devices (desktops, less than 1200px) */
+        
+        @media (max-width: 1199.98px) {}
+    </style>
+
+    <!--<link rel="stylesheet" href="/assets/css/main.css">-->
+    <script src="/assets/js/core/jquery.3.2.1.min.js" type="text/javascript"></script>
+    <script type="text/javascript" src="/assets/js/source.js"></script>
+    <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script type="text/javascript" src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+
+    <script src="https://kit.fontawesome.com/5d5c57c2c4.js" crossorigin="anonymous"></script>
+
+    <script type="text/javascript">
+        var Opera = (navigator.userAgent.match(/Opera|OPR\//) ? true : false);
+        if(Opera){
+          window.location.href = "/assets/show-error.html";
+        }
+    </script>
+    
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-128083647-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-128083647-1');
+    </script>
+</head>
+
+<body ng-app="myApp">
+    <section id="main-wrap" ng-controller="hompageController">
+        <!--<div id="mySidenav" class="sidenav">
+            <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+            <a href="#"><span><i class="fas fa-briefcase-medical"></i></span> Book appointment</a>
+            <a href="#"><span><i class="fas fa-clinic-medical"></i></span> Pharmacy</a>
+            <a href="#"><span><i class="fas fa-briefcase-medical"></i></span> Diagnostics</a>
+            <a href="#"><span><i class="fas fa-briefcase-medical"></i></span> Read Health Articles</a>
+            <a href="#"><span><i class="fas fa-briefcase-medical"></i></span> Read Health Articles</a>
+        </div>-->
+       
+        <div  style="background-color: #fff;padding: 15px">
+            <section class="row" id="doctors-search">
+                <div class="col-md-2 pb-3" ng-cloak>
+                    <a class="navbar-brand" href="/">
+                        <img src="/assets/images/logo.png" alt="Applinic" style="vertical-align: middle;">
+                    </a>
+                    <div ng-show="!checkLogIn.user_id" class="pt-2">
+                        <a href="" ng-click="loginIntOAcc()" class="btn btn-sm btn-simple">Log In </a>&nbsp;&nbsp;
+
+                        <a href="/signup" class="btn btn-sm btn-simple">Sign Up </a>
+                    </div>
+                    <div ng-show="checkLogIn.user_id" class="pt-2">
+                        <a href="" ng-click="todashboard(checkLogIn.typeOfUser)" class="btn btn-simple"><i class="fa fa-arrow-left"></i> Go to dashboard</a>
+                    </div>
+
+                </div>
+                <form class="col-md-8 pb-3" ng-submit="find()">
+                    <div class="row">
+                        <div class="col-md-5 pb-3">
+                            <div class="form-group">
+                                <label for="location1"><span class="mr-2"><i class="fas fa-map-marker-alt"></i></span>Location </label>
+                                <input type="text" name="" placeholder="All cities" class="selectpicker show-tick form-control" ng-model="search.city" uib-typeahead="city for city in cities | filter:$viewValue | limitTo:15">
+                                <!--<select class="selectpicker show-tick" data-live-search="true" data-width="100%" ng-model="user.city">
+                                    <option value ="{{city}}" ng-repeat="city in cities">{{city}}</option>
+                                    <option data-divider="true"></option>
+                                    <option data-tokens="mustard">Abuja</option>
+                                    <option data-divider="true"></option>
+                                    <option data-tokens="frosting">New Heaven</option>
+                                  </select>-->
+                                <small class="form-text text-muted">Enter closest location.</small>
+                            </div>
+                        </div>
+                        <!-- 2nd col -->
+                        <div class="col-md-5">
+                            <div class="form-group">
+                                <label for="type"><span class="mr-2"><i class="icon-Pills text-success"></i></span>Center Name / Drug Name </label>
+                                <input type="text" name="" placeholder="Any" class="selectpicker show-tick form-control" ng-model="search.item" uib-typeahead="item for item in dropDownList | filter:$viewValue | limitTo:15">
+                               <!-- <select class="selectpicker show-tick" data-live-search="true" data-width="100%">
+                                    <option value ="{{item}}" ng-repeat="item in dropDownList">{{item}}</option>
+                                    <option data-divider="true"></option>
+                                    <option data-tokens="mustard">Surgeon</option>
+                                    <option data-divider="true"></option>
+                                    <option data-tokens="frosting">Pediatric Dentist</option>
+                                  </select>-->
+                                <small class="form-text text-muted">You can search for centers's or use drug name and find center that has the drugs closest to you.</small>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group" style="padding-top: 30px">
+                                <input type="submit" name="" value="Search" class="btn btn-success btn-block">
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
+                <div class="col-md-2">
+                    <div class="form-group text-right" style="padding-top: 30px">
+                        <a href="" class="btn btn-outline-danger" ng-click="viewCart()"><span class="mr-2"><i class="fas fa-cart-plus"></i></span> VIEW CART <span ng-cloak>( {{cart.length}} )</span></a>
+                    </div>
+                </div>
+               
+            </section>
+        </div>
+        <nav class="navbar navbar-expand-sm bg-success text-white">           
+            <div class="container-fluid">
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+                 <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="collapsibleNavbar">
+                    <ul class="navbar-nav">
+                       <li class="nav-item">    
+                            <div class="dropdown">                        
+                                <a class="btn nav-link dropdown-toggle text-white" href="" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                  COVID 19 KIT
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                    <a class="dropdown-item" href="" ng-click="getKit('Drug','COVID-19 self-protection kit')">COVID-19 self-protection kit</a>
+                                    <div class="dropdown-divider"></div>
+                                  
+                                </div> 
+                            </div>                           
+                        </li>
+                        <li class="nav-item">
+                            <div class="dropdown">
+                                <a class="btn dropdown-toggle text-white" href="" role="button" id="dropdownRelevance2" data-toggle="dropdown"  aria-expanded="false">
+                                  CHILD HEALTH
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="dropdownRelevance2">
+                                    <a class="dropdown-item" href="" ng-click="getKit('Drug','Antimalarials (kids)')" >Antimalarials (kids) </a>
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item" href="" ng-click="getKit('Drug','Deworming (Children) over 2 years')">Deworming (Children) over 2 years</a>
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item" href="" ng-click="getKit('Drug','Children`s Multivitamins & Immune booster kit')">Children`s Multivitamins & Immune booster kit</a>
+                                    <div class="dropdown-divider"></div>                              
+                                    
+                                    <a class="dropdown-item" href="" ng-click="getKit('Drug','Measles kit Child')">Measles kit Child</a>
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item" href="" ng-click="getKit('Drug','Catarrh/Blocked nose kit Children (6 years plus)')">Catarrh/Blocked nose kit Children (6 years plus)</a>
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item" href="" ng-click="getKit('Drug','Catarrh/Blocked nose kit Children (Under 6 years)')">Catarrh/Blocked nose kit Children (Under 6 years)</a>
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item" href="" ng-click="getKit('Drug','Cough (children)')">Cough (children)</a>
+                                    <div class="dropdown-divider"></div>
+                                     <a class="dropdown-item" href="" ng-click="getKit('Drug','Appetite booster Children')">Appetite booster Children</a>
+                                    <div class="dropdown-divider"></div>
+                                     <a class="dropdown-item" href="" ng-click="getKit('Drug','Asthma Care Kit')">Asthma Care Kit</a>
+                                    <div class="dropdown-divider"></div>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="nav-item">
+                            <div class="dropdown">
+                                <a class="btn dropdown-toggle text-white" href="" role="button" id="dropdownRelevance3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                   RED EYES AND CONJUCTIVITIS
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="dropdownRelevance3">
+                                    <a class="dropdown-item" href="" ng-click="getKit('Drug','Allergic conjunctivitis')">Allergic conjunctivitis</a>
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item" href="" ng-click="getKit('Drug','Bacterial conjunctivitis (with pus-like discharge)')">Bacterial conjunctivitis (with pus-like discharge)</a>
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item" href="" ng-click="getKit('Drug','Red eye (e.g. from injury)')">Red eye (e.g. from injury)</a>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="nav-item">
+                            <div class="dropdown">
+                                <a class="btn dropdown-toggle text-white" href="" role="button" id="dropdownRelevance4" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                   SKIN & HAIR CARE
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="dropdownRelevance4">
+                                    <a class="dropdown-item" href="" ng-click="getKit('Drug','Mild Acne / Pimples')">Mild Acne / Pimples </a>
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item" href="" ng-click="getKit('Drug','Severe Acne / Pimples')">Severe Acne / Pimples</a>
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item" href="" ng-click="getKit('Drug','Measles kit Adult')">Measles kit Adult</a>
+                                     <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item" href="" ng-click="getKit('Drug','Athlete`s feet treatment kit')">Athlete`s feet treatment kit</a>
+                                     <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item" href="" ng-click="getKit('Drug','Eczema kit (tinea versicolor)')">Eczema kit (tinea versicolor)</a>
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item" href="" ng-click="getKit('Drug','Scabies skin infestation')">Scabies skin infestation</a>
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item" href="" ng-click="getKit('Drug','Dandruff kit')">Dandruff kit</a>
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item" href="" ng-click="getKit('Drug','Hair lice kit')">Hair lice kit</a>
+                                    <div class="dropdown-divider"></div>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="nav-item">
+                            <div class="dropdown">
+                                <a class="btn dropdown-toggle text-white" href="" role="button" id="dropdownRelevance5" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                   FERTILITY ISSUES
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="dropdownRelevance5">
+                                    <a class="dropdown-item" href="" ng-click="getKit('Drug','Male Sexual Health kit')">Male Sexual Health kit</a>
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item" href="" ng-click="getKit('Drug','Erectile dysfunction supplement kit')">Erectile dysfunction supplement kit</a>
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item" href="" ng-click="getKit('Drug','Female Reproductive Health kit')">Female Reproductive Health kit</a>
+                                    <div class="dropdown-divider"></div>
+                                     <a class="dropdown-item" href="" ng-click="getKit('Drug','Menopause Care kit')">Menopause Care kit</a>
+                                    <div class="dropdown-divider"></div>
+                                     <a class="dropdown-item" href="" ng-click="getKit('Drug','Prostate Care kit')">Prostate Care kit</a>
+                                    <div class="dropdown-divider"></div>
+                                     <a class="dropdown-item" href="" ng-click="getKit('Drug','General vaginitis kit')">General vaginitis kit</a>
+                                    <div class="dropdown-divider"></div>
+                                     <a class="dropdown-item" href="" ng-click="getKit('Drug','Thrush/Yeast Infection')">Thrush/Yeast Infection</a>
+                                    <div class="dropdown-divider"></div>
+                                   
+                                </div>
+                            </div>
+                        </li>
+                        <li class="nav-item">
+                            <div class="dropdown">
+                                <a class="btn dropdown-toggle text-white" href="" role="button" id="dropdownRelevance6" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                   CONTRACEPTIVES AND FAMILY PLANNING
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="dropdownRelevance6">
+                                    <a class="dropdown-item" href="" ng-click="getKit('Drug','Male Contraceptives')">Male Contraceptives</a>
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item" href="" ng-click="getKit('Drug','Female Contraceptives')">Female Contraceptives</a>
+                                    <div class="dropdown-divider"></div>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="nav-item">
+                            <div class="dropdown">
+                                <a class="btn dropdown-toggle text-white" href="" role="button" id="dropdownRelevance7" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                   ADULT HEALTH
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="dropdownRelevance7">
+                                    <a class="dropdown-item" href="" ng-click="getKit('Drug','Healthy Heart kit')">Healthy Heart kit</a>
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item" href="" ng-click="getKit('Drug','Adult Immune Booster kit')">Adult Immune Booster kit</a>
+                                    <div class="dropdown-divider"></div>
+                                     <a class="dropdown-item" href="" ng-click="getKit('Drug','Diabetes self-care kit')">Diabetes self-care kit </a>
+                                    <div class="dropdown-divider"></div>
+                                     <a class="dropdown-item" href="" ng-click="getKit('Drug','Chronic Fatigue kit')">Chronic Fatigue kit</a>
+                                    <div class="dropdown-divider"></div>
+                                     <a class="dropdown-item" href="" ng-click="getKit('Drug','Stress Kit Women')">Stress Kit Women</a>
+                                    <div class="dropdown-divider"></div>
+                                     <a class="dropdown-item" href="" ng-click="getKit('Drug','Stress Kit Men')">Stress Kit Men</a>
+                                    <div class="dropdown-divider"></div>
+                                     <a class="dropdown-item" href="" ng-click="getKit('Drug','Asthma Care Kit')">Asthma Care Kit </a>
+                                    <div class="dropdown-divider"></div>
+                                     <a class="dropdown-item" href="" ng-click="getKit('Drug','Blood Pressure self-care kit')">Blood Pressure self-care kit</a>
+                                    <div class="dropdown-divider"></div>
+                                     <a class="dropdown-item" href="" ng-click="getKit('Drug','Memory Booster kit')">Memory Booster kit</a>
+                                    <div class="dropdown-divider"></div>
+                                     <a class="dropdown-item" href="" ng-click="getKit('Drug','Osteoarthritis management kit')">Osteoarthritis management kit</a>
+                                    <div class="dropdown-divider"></div>
+                                     <a class="dropdown-item" href="" ng-click="getKit('Drug','Appetite booster Adult')">Appetite booster Adult</a>
+                                    <div class="dropdown-divider"></div>
+                                    
+                                </div>
+                            </div>
+                        </li>
+                         <li class="nav-item">
+                            <div class="dropdown">
+                                <a class="btn dropdown-toggle text-white" href="" role="button" id="dropdownRelevance8" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    WEIGHT AND BEAUTY KIT
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="dropdownRelevance8">
+                                    <a class="dropdown-item" href="" ng-click="getKit('Drug','Radiant Skin, Nail & Hair kit')">Radiant Skin, Nail & Hair kit</a>
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item" href="" ng-click="getKit('Drug','Weight Loss kit')">Weight Loss kit</a>
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item" href="" ng-click="getKit('Drug','Weight gain kit')">Weight gain kit</a>
+                                </div>
+                            </div>
+                        </li>
+                        <!--<li class="nav-item">
+                            <div class="dropdown">
+                                <a class="btn dropdown-toggle text-white" href="#" role="button" id="dropdownRelevance" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    WORM EXPELLANTS
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="dropdownRelevance">
+                                    <a class="dropdown-item" href="#">Deworming (Adults and adolescents)</a>
+                                    <div class="dropdown-divider"></div>                               
+                                </div>
+                            </div>
+                        </li> 
+                        <li class="nav-item">
+                            <div class="dropdown">
+                                <a class="btn dropdown-toggle text-white" href="#" role="button" id="dropdownRelevance" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    COUGH AND SORE THROAT
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="dropdownRelevance">
+                                    <a class="dropdown-item" href="#">Cough (Productive)</a>
+                                    <div class="dropdown-divider"></div>   
+                                    <a class="dropdown-item" href="#">Cough (Dry)</a>
+                                    <div class="dropdown-divider"></div>     
+                                    <a class="dropdown-item" href="#">Sore Throat </a>
+                                    <div class="dropdown-divider"></div>                                 
+                                </div>
+                            </div>
+                        </li>-->
+                    </ul>
+                </div>
+            </div>
+
+           
+        </nav>
+        <div style="height: 7px" class="bg-success"></div>
+        <p class="text-center pt-2" ng-show="loading"><a href="" class="btn btn-neutral bg-white btn-sm">Loading...</a></p>
+        
+         <div class="main" style="width:95%; margin: 0 auto; margin-top:30px">
+            <!--<section>
+                <p><strong>Home</strong> > <span>skin care</span></p>
+            </section>-->
+           
+           
+            <div class="row">
+                <!-- col 4 -->
+                <div class="col-sm-3">
+
+                    <div class="mb-3">
+                        <button class="btn-block btn btn-danger text-white" ng-click='newDrug()'><i class="fa fa-plus"></i> Add New Drug &amp; Kits</button>
+                    </div>
+
+                    <div class="mb-3">
+                        <h4 class="h6"><strong>All Drug Kits</strong></h4>
+                    </div>
+
+                    <div class="container side-sticky" ng-cloak>
+                        <div class="row">
+                            <section class="bg-white w-100">
+                                <div class="bg-image">
+                                    <!-- collapse -->
+                                    <div class="container">
+                                        <div class="panel-group" id="accordion">
+                                            <div class="panel panel-default" ng-repeat="d in allKits">
+                                                <div class="panel-heading">
+                                                    <h5 class="panel-title h6 capitalize">
+                                                        <i class="fas fa-angle-right"></i><!--<a data-toggle="collapse" data-parent="#accordion" href="#kitArea" ng-click="getKit('Drug',d)">{{d}}</a>-->
+                                                        <a href="#kitArea" ng-click="getKit('Drug',d)">{{d}}</a>
+                                                    </h5>
+                                                </div>
+                                                <!--<div id="collapse1" class="panel-collapse collapse in">
+                                                    <ul class="panel-body">
+                                                        <li>Senior Care</li>
+                                                        <li>Women's Care</li>
+                                                    </ul>
+
+                                                </div>-->
+                                            </div>
+
+                                            <div class="panel panel-default pt-4">
+                                                
+                                                <div class="panel-heading">
+                                                    <h5 class="panel-title h6 capitalize">
+                                                        <a href="/find-doctors?s=live-doctors"> Chat with live physicians <i class="fa fa-external-link text-muted"></i></a>
+                                                    </h5>
+                                                </div>
+                                                <div class="panel-heading">
+                                                     <h5 class="panel-title h6 capitalize">
+                                                        <a href="/find-drugs">Find Drug / Buy drugs and kits <i class="fa fa-external-link text-muted"></i></a>
+                                                    </h5>
+                                                </div>
+                                                <div class="panel-heading">
+                                                    <h5 class="panel-title h6 capitalize">
+                                                        <a href=""><b>Symptoms Checker <i class="fa fa-external-link text-muted"></i></b></a>
+                                                    </h5>
+                                                </div>
+                                                <div class="panel-heading">
+                                                    <h5 class="panel-title h6 capitalize">
+                                                        <a href="">Find Laboratory test and centers <i class="fa fa-external-link text-muted"></i></a>
+                                                    </h5>
+                                                </div>
+                                                <div class="panel-heading">
+                                                    <h5 class="panel-title h6 capitalize">
+                                                        <a href="">Find Radiology test and centers <i class="fa fa-external-link text-muted"></i></a>
+                                                    </h5>
+                                                </div>
+                                            </div>
+                                            <!--<div class="panel panel-default">
+                                                <div class="panel-heading">
+                                                    <h5 class="panel-title">
+                                                        <i class="fas fa-angle-right"></i><a data-toggle="collapse" data-parent="#accordion" href="#collapse2">Fitness & Wellness</a>
+                                                    </h5>
+                                                </div>
+                                                <div id="collapse2" class="panel-collapse collapse">
+                                                    <ul class="panel-body">
+                                                        <li>Protein Supplements</li>
+                                                        <li>Mass Gainers</li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                           
+                                            <div class="panel panel-default">
+                                                <div class="panel-heading">
+                                                    <h5 class="panel-title">
+                                                        <i class="fas fa-angle-right"></i><a data-toggle="collapse" data-parent="#accordion" href="#collapse3">Skin Care</a>
+                                                    </h5>
+                                                </div>
+                                                <div id="collapse3" class="panel-collapse collapse">
+                                                    <ul class="panel-body">
+                                                        <li>Acne Care</li>
+                                                        <li>Body And bath</li>
+                                                        <li>Face Wash And Cleansers</li>
+                                                        <li>Skin Care Suppliments</li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="panel panel-default">
+                                                <div class="panel-heading">
+                                                    <h5 class="panel-title">
+                                                        <i class="fas fa-angle-right"></i><a data-toggle="collapse" data-parent="#accordion" href="#collapse4">Hair Care</a>
+                                                    </h5>
+                                                </div>
+                                                <div id="collapse4" class="panel-collapse collapse">
+                                                    <ul class="panel-body">
+                                                        <li>Antidandruff</li>
+                                                        <li>Antihairloss</li>
+                                                    </ul>
+                                                </div>
+                                            </div>-->
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+                        </div>
+                    </div>                   
+                </div>
+                <!-- col 8 -->
+                <div class="col-sm-9">
+                    <!-- shop by category -->
+                    <!--<section>
+                        <h5>Shop by Category</h5>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <a href="#">
+                                    <div class="flip-card">
+                                        <div class="flip-card-inner">
+                                            <div class="flip-card-front">
+                                                <img src="/assets/img/mb5.jpg" alt="Avatar" style="width:100%;">
+                                            </div>
+                                            <div class="flip-card-back bg-aplinic">
+                                                <h1 style="border-bottom: 1px solid;">ACNE CARE</h1>
+                                                <p>Skin care Product</p>
+                                                <p>works on all conditions</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="col-md-4">
+                                <a href="#">
+                                    <div class="flip-card">
+                                        <div class="flip-card-inner">
+                                            <div class="flip-card-front">
+                                                <img src="/assets/img/mb5.jpg" alt="Avatar" style="width:100%;">
+                                            </div>
+                                            <div class="flip-card-back bg-aplinic">
+                                                <h1>ACNE CARE</h1>
+                                                <p>Skin care Product</p>
+                                                <p>works on all conditions</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="col-md-4">
+                                <a href="#">
+                                    <div class="flip-card">
+                                        <div class="flip-card-inner">
+                                            <div class="flip-card-front">
+                                                <img src="/assets/img/mb5.jpg" alt="Avatar" style="width:100%;">
+                                            </div>
+                                            <div class="flip-card-back bg-aplinic">
+                                                <h1>ACNE CARE</h1>
+                                                <p>Skin care Product</p>
+                                                <p>works on all conditions</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </section>-->
+                    <section ng-cloak ng-show="section == 'compose'">
+                        <h4 class="mt-4 h5">New Drug &amp; Kits</h4>
+                        <hr>
+                        <div class="row">
+                            <div class="col-md-5">
+                                <form ng-submit="addComposedItem()">
+                                    <p class="text-danger pb-1">{{drugErrorMsg}}</p>
+                                    <div class="pb-2">
+                                        <label><b>Drug Name</b></label><br>
+                                        <input type="text" name="" placeholder="Enter name" class="selectpicker show-tick form-control" ng-model="compose.item" uib-typeahead="item for item in drugs | filter:$viewValue | limitTo:15" required>
+                                    </div>
+                                    <div class="pb-2">
+                                        <label><b>Description</b></label><br>
+                                        <input type="text" name="" placeholder="Enter descriptions" class="selectpicker show-tick form-control" ng-model="compose.dosage" uib-typeahead="item for item in descriptions | filter:$viewValue | limitTo:15">
+                                    </div>
+                                    <div class="pb-3">
+                                        <label><b>Quantity</b></label><br>
+                                        <input type="text" name="quantity" placeholder="Enter quantity" class="selectpicker show-tick form-control" ng-model="compose.quantity">
+                                    </div>
+                                    <div>
+                                        <button type="submit" class="btn btn-success btn-block"><i class="fa fa-plus"></i> Add</button>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="col-md-7">
+                                <label><b>Contents ( {{composedItems.length}} ) </b></label>
+                                <ol style="max-height: 450px;overflow-y: auto;" class="col-md-11">
+                                    <li class="pb-1" ng-repeat="c in composedItems" style="word-wrap: break-word;">
+                                        <div ng-repeat="drug in c.content" style="position: relative;">
+                                            <label><b>{{drug.drug_name}}</b> </label><br>
+                                            <span>{{drug.dosage}}</span>&nbsp;&nbsp;&nbsp;
+                                            <a href=""  ng-click="delete(c.id)" style="position: absolute;right: 10px;bottom: 12px"><i class="fa fa-trash-o text-danger"></i></a>
+                                        </div>
+                                        <hr>
+                                    </li>
+                                </ol>  
+                                <div class="text-right p-3" ng-show="composedItems.length > 0" class="col-md-10">
+                                    <button class="btn btn-outline-danger btn-sm" ng-click="addComposeToCart()"> <i class="fas fa-cart-plus"></i> {{ (isComposedAdded) ? 'Added!' : 'Add to cart'}}</button>
+                                </div> 
+                                <div class="clearfix"></div>                           
+                            </div>
+                        </div>
+                      
+                    </section>
+                    <a href="#" id="kitArea">
+                    <section ng-cloak ng-show="section == 'kits'">
+                        <h4 class="mt-4 h5" ng-cloak style="text-transform: capitalize;">{{ kits.name + ' Kits'}}</h4>
+                        <div class="row" >
+                            
+                            <div class="col-md-4 mb-2" ng-repeat="k in kits.content">
+                                <div class="card">
+                                    <h6 class="text-left p-2 h6"><b>{{"Package " + k.package}}</b></h6>                                   
+                                    <a href="" ng-click="addToCart(k)">                                        
+                                        <div class="container" style="max-height: 200px!important;overflow-y: auto;">
+                                            <article ng-repeat="val in k.content" >
+                                                <i class="icon-Pills text-success"></i> <b>{{val.drug_name}}</b>
+                                                <p class="prce">{{val.dosage}}, {{val.frequency}} {{val.duration}}</p> 
+                                            </article>
+                                        </div>
+                                        <footer class="text-right text-warning pr-2">
+                                            <button type="button" class="btn btn-outline-success bg-white" ng-show="!k.isAdded"><i class="fa fa-cart-plus" ></i></button>
+                                            <button type="button" class="btn btn-outline-danger bg-white" ng-show="k.isAdded"><i class="fa fa-check"></i> Added!</button>
+                                        </footer>
+                                    </a>
+                                </div>
+                            </div>
+                            <!--<div class="col-md-4">
+                                <div class="card">
+                                    <a href="#">
+                                        <img src="/assets/img/avatar.jpg" alt="Avatar" style="width:100%">
+                                        <div class="container">
+                                            <h5><b>Oilatum Soap Bar 100g</b></h5>
+                                            <p class="prce">$1356.40</p>
+                                            <button type="button" class="btn btn-outline-success bg-white">1 PERSONAl</button>
+                                            <button type="button" class="btn btn-outline-success bg-white">ADD</button>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card">
+                                    <a href="#">
+                                        <img src="/assets/img/avatar.jpg" alt="Avatar" style="width:100%">
+                                        <div class="container">
+                                            <h5><b>Oilatum Soap Bar 100g</b></h5>
+                                            <p class="prce">$1356.40</p>
+                                            <button type="button" class="btn btn-outline-success bg-white">1 PERSONAl</button>
+                                            <button type="button" class="btn btn-outline-success bg-white">ADD</button>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>-->
+                        </div>
+                    </section>
+                    <section style="margin-bottom: 30px;" ng-cloak ng-show="section == 'cartArea' || isCart">
+                        <div class="row">
+                            <div class="col-md-6">                 
+                                <h4 class="mt-4 mb-4 h5" ng-cloak style="text-transform: capitalize;"><i class="fa fa-cart-plus"></i> Cart ( {{cart.length}} ) </h4>
+                            </div>
+
+                            <div class="col-md-6 pt-3 text-right">
+                                <a href="" ng-click="clearCart()" class="btn btn-outline-danger"><i class="fa fa-trash-o"></i> Empty Cart</a>&nbsp;
+                                <a href="" class="btn btn-outline-success" ng-click="find('isCartItemForward')" title="Forward item(s) in the cart to a center" ><i class="fa fa-share"></i> Forward items to center</a>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div ng-repeat="item in cart track by $index" class="mb-2 col-md-4">
+                                <div style="position: relative;" class="card p-3">                                    
+                                    <div ng-repeat="drug in item.content" class="text-left pb-2">
+                                        <b>{{drug.drug_name}}</b><br>
+                                        <span>{{drug.dosage}} </span> &nbsp;&nbsp;&nbsp;
+                                        <span>{{drug.frequency}}</span> &nbsp;&nbsp;
+                                        <span>{{drug.duration}}</span> &nbsp;&nbsp;
+                                    </div>                                    
+                                    <a href=""  ng-click="deleteItemInCart(item)" style="position: absolute;right: 10px;bottom: 12px"><i class="fa fa-trash-o text-danger"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="text-center p-4" ng-show="cart.length == 0"><i class="fa fa-cart-plus"></i> <span>Cart is Empty!</span></p>
+                        <!--<div class="pt-3">
+                            <a href="" class="btn btn-success" ng-click="find()">Forward item(s) to a center</a>
+                        </div>-->
+                    </section>
+                    <div id="searchList"></div>
+                    <hr>
+                    <section ng-show="section == 'search-result'" class="mb-4" ng-cloak >
+                        <h4 class="mt-4 mb-4 h6" ng-cloak style="text-transform: capitalize" ng-show="!isCart">Search result for:  <span style="font-style: italic;">{{user.item || 'Any'}}</span>&nbsp;&nbsp;&nbsp; <a href="" class="fa fa-plus btn btn-outline-success" ng-click="newDrug(user.item)"> Add drug</a></h4>
+                        
+                       
+
+                        <div class="card text-left pb-2 pt-2" style="font-size: 20px;" ng-show="isCart || user.item">
+                            <div>
+                                <label class="custom-control custom-checkbox">
+                                  <input type="checkbox"  ng-model="user.isCourier">
+                                  <span class="custom-control-description" > 
+                                  <span class=""> Check this if you want us to deliver above drug(s) to your location.</span> <i class="fa fa-motorcycle"></i></span>
+                                </label>
+                            </div>
+                            <div ng-if="user.isCourier">
+                                <div class="col-md-5 p-4">
+                                    <label>Enter Delivery Address</label><br>
+                                    <input type="text" name="" class="form-control" ng-model="user.address" placeholder="Enter your current Address">
+                                </div>
+                                <div class="col-md-5 p-4">
+                                    <label>We'll call this line</label><br>
+                                    <input type="text" name="" class="form-control" ng-model="user.phone" placeholder="Enter your phone number">
+                                </div>
+                                <div class="clearfix"></div>
+                            </div>
+                        </div>
+
+                        <div class="card p-2"  ng-show="searchResultFull.length == 0">Oops! No center was found based on the drug searched for. You can forward the drug anyway to any center in the list below or make an enquries for your need.</div>
+
+                        <div class="card pt-2">
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <h6 class="text-left p-2"><b>Choose a center</b></h6>
+                                </div>
+                                <div class="col-md-4">
+                                     <input type="text" name="" placeholder="Filter center" class="form-control " ng-model="fter">
+                                </div>
+                            </div>
+                           
+                        </div>
+                        <div class="card max-width mb-3 bg-white" ng-repeat="center in searchResultFull | filter: fter">
+                            <div class="row no-gutters">
+                                <div class="col-md-9">
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <div class="thumbnail">
+                                                <a href="{{center.profile_url}}" alt="Profile">
+                                                    <img src="{{center.profile_pic_url || '/download/profile_pic/nopic'}}" class="card-img rounded-circle" alt="...">
+                                                    <!--<div class="online text-center text-muted" ng-show="doc.verified">
+                                                        <span><span><i class="fa fa-check-circle"></i></span> Verified </span>
+                                                    </div>-->
+                                                    <!--<div class="floating-badge" ng-show="doc.verified">
+                                                        <span class="badge badge-pill badge-secondary" title="Verified"><i class="fas fa-check-circle"></i></span>
+                                                    </div>-->
+                                                </a>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-8">
+                                            <div class="doctors-profile p-2">
+                                                <h4 class="pt-2 ellipsis">{{center.name}}</h4>
+                                                <h6>{{center.address}}</h6>                                            
+                                                <h6><strong>{{center.city}}, {{center.country}}.</strong></h6>
+                                                <div>
+                                                    <span>{{center.email}}</span>
+                                                </div>
+                                                <div>
+                                                    <span>{{center.center_phone || center.phone}}</span>
+                                                </div>
+                                              
+                                                <!--<span class="rating rounded-pill"><span><i class="far fa-thumbs-up"></i></span> 96%</span> <span><a href="#">1352 feedback</a></span>-->
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="card-body p-6 text-center">
+                                        <!--<p class="avail mt-5"><span><i class="fab fa-line"></i></span> Availability Today</p>-->
+                                        <div class="video-btn mt-3 pt-6">                                       
+                                            <button type="button" class="btn btn-success" style="margin-bottom: 5px" ng-click="forward(center)" ng-show="!center.success"><i class="fa fa-share"></i> {{(center.loading) ? "Forwarding..." : 'Forward to center'}}</button>
+                                            <a href="" class="p-2 text-success" ng-show="center.success"><i class="fa fa-check"></i> Sent!</a>
+                                           
+                                            <button type="button" class="btn btn-outline-success" style="margin-bottom: 5px" ng-click="chat(center)"><i class="fa fa-comments"></i> Leave a message</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </section>
+                </div>
+            </div>
+
+            <!--<div class="jumbotron text-center mt-10" style="margin-bottom:0">
+                <p>Footer</p>
+            </div>-->
+        </div>
+    </section>
+    <div style="height: 200px">
+        
+    </div>
+    <script>
+        function openNav() {
+            document.getElementById("mySidenav").style.width = "300px";
+            document.getElementById("main-wrap").style.marginLeft = "300px";
+            document.body.style.backgroundColor = "rgba(0,0,0,0.6)";
+        }
+
+        function closeNav() {
+            document.getElementById("mySidenav").style.width = "0";
+            document.getElementById("main-wrap").style.marginLeft = "0";
+            document.body.style.backgroundColor = "white";
+        }
+    </script>
+
+    
+
+    <script type="text/ng-template" id="auth.html">
+        <div class="modal fade">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">                        
+                    </div>
+                    <div class="modal-body">
+                        <h5><b>Tell us who you are!</b></h5>
+                       
+                        <form ng-submit="enterAccount()" class="mt-3" ng-show="person.action == 'login'">   
+                            <p  class="text-danger text-center"><b>{{loginMessage}}</b></p> 
+                            <p class="text-success text-center">{{loginSuccess}}</p>                        
+                            <div>
+                                <label><b>Email or Phone Number</b></label><br>
+                                <input type="text" name="" placeholder="Email or Phone" class="form-control" ng-model="person.username" required>
+                            </div>
+                            
+                            <div class="pt-3" style="position: relative;">
+                                <label><b>Password</b></label><br>
+                                <input type="password" name="" placeholder="Password" class="form-control" ng-model="person.password" id="myPass" required>
+                                 <i class="fa fa-eye" style="font-size:20px;position: absolute;bottom: 10px;right:20px;color: grey;cursor: pointer;" onclick="showPass('a')"></i>
+                            </div>
+                            <div class="pt-3">
+                                <button type="submit" name="" class="btn btn-danger btn-block"> <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i> {{(loading) ? "" : "Continue"}}</button>
+                            </div>
+
+                            <p class="mt-3">Forgot password? <a href="">Change password</a></p>                           
+                            <p class="mt-3">Don't have an account? <a href="" ng-click="create()">Create one for free!</a></p>
+                        </form>
+                        <br>
+                        <form ng-show="person.action == 'signup'" ng-submit="create()">
+                           
+                            <ul class="nav nav-tabs">
+                                <li class="nav-item"><a href="#" class="nav-link" ng-class="{'active': person.type == 'Patient'}" ng-click="chooseType('Patient')">Patient</a></li>
+
+                                <li class="nav-item"><a href="#" class="nav-link" ng-class="{'active': person.type == 'Doctor'}" ng-click="chooseType('Doctor')">Doctor</a></li>
+
+                                <li class="nav-item"><a href="#" class="nav-link" ng-class="{'active': person.type == 'Pharmacy'}" ng-click="chooseType('Pharmacy')">Pharmacy</a></li>
+
+                                <li class="nav-item"><a href="#" class="nav-link" ng-click="chooseType('Diagnostic')" ng-class="{'active': person.type == 'Diagnostic'}">Diagnostic Center</a></li>
+
+                                <li class="nav-item"><a href="#" class="nav-link" ng-click="chooseType('Special Center')" ng-class="{'active': person.type == 'Special Center'}">Special Center</a></li>
+                            </ul>
+
+                            <br>
+                            <fieldset>
+                                <!--<div>
+                                    <label><b>Country</b></label><br>
+                                    <input type="text" name="" placeholder="Country" class="form-control" ng-model="person.country">
+                                </div>-->
+
+                               
+
+                                <div class="col-md-4 pl-0 ml-0" ng-if="person.type == 'Patient' || person.type == 'Doctor'">
+                                    <label><b>Title</b></label><br>
+                                    <!--<input type="text" name="" placeholder="title" class="form-control" ng-model="person.title">-->
+                                    <select placeholder="title" class="form-control" ng-model="person.title" required>
+                                        <option value="" disabled selected>_select title</option>                               
+                                        <option>Dr</option>
+                                        <option>Mr</option>
+                                        <option>Mrs</option>
+                                        <option>Miss</option>
+                                        <option>Master</option>
+                                        <option>Chief</option>
+                                        <option>Rev</option>
+                                        <option>Pastor</option>
+                                        <option>Engr</option>
+                                        <option>Barr</option>
+                                        <option>Surv</option>
+                                        <option>Hon</option>
+                                        <option>Ven</option>
+                                        <option>HRH</option>
+                                        <option>Prof</option>
+                                        <option>Justice</option>
+                                    </select>
+                                </div>
+                                <div class="pt-3" ng-if="person.type == 'Patient' || person.type == 'Doctor'" >
+                                    <label><b>Firstname</b></label><br>
+                                    <input type="text" name="" placeholder="firstname" class="form-control" ng-model="person.firstname" required>
+                                </div>
+
+                                <div class="pt-3" ng-if="person.type == 'Patient' || person.type == 'Doctor'">
+                                    <label><b>Lastname</b></label><br>
+                                    <input type="text" name="" placeholder="lastname" class="form-control" ng-model="person.lastname" required>
+                                </div>
+
+                                <div class="pt-3" ng-if="person.type == 'Patient'">
+                                    <label><b>Date of Birth</b></label><br>
+                                    <input type="date" name="" placeholder="date of birth" class="form-control" ng-model="person.dob" required>
+                                </div>
+
+                                <div class="pt-3" ng-if="person.type == 'Patient'">
+                                    <label><b>Sex</b></label><br>
+                                    <!--<input type="text" name="" placeholder="sex" class="form-control" ng-model="person.gender" required>-->
+                                    <select placeholder="sex" class="form-control" ng-model="person.gender" required>
+                                        <option value="" selected disabled>_select</option>
+                                        <option>Male</option>
+                                        <option>Female</option>
+                                    </select>
+                                </div>
+
+
+
+                                <div class="pt-3" ng-if="person.type == 'Diagnostic'">
+                                    <label><b>Diagnostic Type</b></label><br>
+                                    <!--<input type="text" name="" placeholder="diagnostic type" class="form-control" ng-model="person.diagmosticType" required>-->
+                                    <select class="form-control" ng-model="person.diagmosticType" required>
+                                        <option value="" disabled selected>_select</option>
+                                        <option>Laboratory</option>
+                                        <option>Radiology</option>
+                                    </select>
+                                </div>
+
+                                <div class="pt-3" ng-if="person.type !== 'Patient' && person.type !== 'Doctor'">
+                                    <label><b>Center Name</b></label><br>
+                                    <input type="text" name="" placeholder="center name" class="form-control" ng-model="person.name" required>
+                                </div>
+
+
+                                <div class="pt-5">
+                                    <label><b>Phone Number</b></label><br>
+                                    <input type="text" name="" placeholder="phone number" class="form-control" ng-model="person.phone" required>
+                                </div>
+
+                                <div class="pt-3">
+                                    <label><b>City</b></label><br>
+                                     <input type="text" name="" placeholder="city" class="form-control" ng-model="person.city" required uib-typeahead="city for city in cities | filter:$viewValue | limitTo:15">
+                                </div>
+
+                                <div class="pt-3" ng-if="person.type == 'Doctor'">
+                                    <label><b>Place of Work</b></label><br>
+                                    <input type="text" name="" placeholder="place of work" class="form-control" ng-model="person.work_place" required>
+                                </div>
+
+
+                                <div class="pt-3" ng-if="person.type == 'Patient'" >
+                                    <label><b>Address</b></label><br>
+                                    <input type="text" name="" placeholder="address" class="form-control" ng-model="person.address" required>
+                                </div>
+
+                                <div class="pt-3" ng-if="person.type !== 'Patient'">
+                                    <label><b>Center or Place of Work Address</b></label><br>
+                                    <input type="text" name="" placeholder="address" class="form-control" ng-model="person.address" required>
+                                </div>
+
+                               
+
+                                <div class="pt-3">
+                                    <label><b>Email</b></label><br>
+                                    <input type="text" name="" placeholder="email" class="form-control" ng-model="person.email">
+                                </div>
+                                
+                                <div class="pt-3" style="position: relative;">
+                                    <label><b>Password</b></label><br>
+                                    <input type="password" name="" placeholder="password" class="form-control" ng-model="person.password" id="myPass2" required>
+                                    <i class="fa fa-eye text-muted" style="font-size:20px;position: absolute;bottom: 10px;right:20px;color: grey;cursor: pointer;" onclick="showPass('b')"></i>
+                                </div>
+
+                                <div class="pt-3">
+                                    <label class="custom-control custom-checkbox">
+                                      <input type="checkbox"  ng-model="person.agree" required>
+                                      <span class="custom-control-description" style="font-size: 14px;"> I agree with the <a href="/terms" target="_blank" >Terms of Service</a> and <a href="/privacy" target="_blank"> Privacy Policy.</a></span><br>
+                                      <span class="text-danger"></span> 
+                                    </label>
+                                </div>
+
+                                <div class="pt-3">
+                                    <input type="submit" name="" value="Create" class="btn btn-danger btn-block">
+                                </div>
+                               
+                                <p class="mt-3">I have an account? <a href="" ng-click="normalUser()">Sign In!</a></p>
+                            </fieldset>
+                        </form>
+                        <form ng-if="person.action == 'verify'">
+                            <h6>Verify Phone Number</h6>
+                            <div class="pt-3">
+                                <label>Enter the PIN we sent to {{person.phone}} below</label><br>
+                                <input type="text" name="" placeholder="Enter pin" class="form-control" ng-model="person.pin">
+                            </div>                            
+                            <div class="pt-3">
+                                <input type="submit" name="" value="Verify" class="btn btn-success btn-block">
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="modal-footer text-right pt-2">
+                        <button  class="btn btn-danger" ng-click="close('Cancel')" data-dismiss="modal" aria-hidden="true">Close</button>  
+                    </div>
+            
+                </div>
+            </div>
+        </div>
+    </script>
+
+  
+
+     <!-- quick chat modal -->
+   <script type="text/ng-template" id='quick-chat.html'>
+       <div class="modal fade">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="p-2">
+            <div>
+                <b class="font-1_3"><i class="fa fa-comments"></i> Messaging</b>
+                <button type="button" class="close" ng-click="close('Yes')" data-dismiss="modal">&times;</button>      
+            </div>
+            <hr>
+           
+            <div class="modal-body">
+                <header>
+                   <b>{{center.name}}</b>
+                   <span style="display: block;">{{center.address}} {{center.city}} {{center.country}}</span>
+                </header>
+              
+                <div class="pt-3">
+                    <textarea class="form-control p-1" ng-model="messageBody" placeholder="write..." style="min-height: 140px" ng-keyup="autoExpand($event)">
+                    </textarea>
+                </div>
+
+                <div class="pt-2">
+                    <button ng-click="sendChatSingle(center.id,center.user_id)" class="btn btn-danger btn-block" style="position: static;margin-left: 2px"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i> {{(isSent) ? "Message sent!" : 'Send'}}</button>
+                </div>
+               
+            </div>
+            <div class="modal-footer">
+               <p class="p-2" ng-show="isSent">This is one-way messaging. If you want to view replies or continue chatting with this centers, please go to your dashboard and click <i class="fa fa-comments"></i> icon to use our chat interface for two-way messaging.</p>
+            </div>
+            
+          </div>
+        </div>
+      </div>
+   </script>
+
+    <script type="text/javascript">
+      function showPass(elem) {
+        var x = (elem == 'a') ? document.getElementById("myPass") : document.getElementById("myPass2");
+        if (x.type === "password") {
+          x.type = "text";
+        } else {
+          x.type = "password";
+        }
+      }
+    </script>
+
+    <script src="assets/js/core/tether.min.js" type="text/javascript"></script>
+    <script src="assets/js/core/bootstrap.min.js" type="text/javascript"></script>
+    <!--  Plugin for Switches, full documentation here: http://www.jque.re/plugins/version3/bootstrap.switch/ -->
+    <script src="assets/js/plugins/bootstrap-switch.js"></script>
+    <!--  Plugin for the Sliders, full documentation here: http://refreshless.com/nouislider/ -->
+    <script src="assets/js/plugins/nouislider.min.js" type="text/javascript"></script>
+    <!--  Plugin for the DatePicker, full documentation here: https://github.com/uxsolutions/bootstrap-datepicker -->
+    <script src="assets/js/plugins/bootstrap-datepicker.js" type="text/javascript"></script>
+    <!-- Control Center for Now Ui Kit: parallax effects, scripts for the example pages etc -->
+    <script src="assets/js/now-ui-kit.js" type="text/javascript"></script>
+    <script src="/assets/js/app.js"></script>
+
+
+    <!--<script type="text/javascript" src="/assets/js/angularclient.js"></script>-->
+    <script type="text/javascript" src="/assets/js/drug.angular-client.js"></script>
+    <script type="text/javascript" src="/assets/js/ngroute.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/assets/js/socket.min.js"></script>
+
+
+
+    <script src="/assets/js/angularAnimate.js"></script>
+    <script src="/assets/js/modalService.js"></script>
+    <script src="/assets/js/angular-touch.min.js"></script>
+    <!--<script src="/assets/js/angular-carousel.js"></script>-->
+    
+   
+    <script src="/assets/js/ui-bootstrap-tpls.js"></script>
+    
+    <script src="/assets/js/ngresource.js"></script>
+   
+</body>
+
+</html>

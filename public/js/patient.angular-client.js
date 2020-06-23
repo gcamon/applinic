@@ -4139,9 +4139,9 @@ app.controller('infoController',["$scope",function($scope){
 
 }]);
 
-app.controller("bookingDocController",["$scope","templateService","$http","mySocket","$rootScope",
+app.controller("bookingDocController",["$scope","templateService","$http","$rootScope",
   "localManager","symptomsFactory","patientfindDoctorService",
-  function($scope,templateService,$http,mySocket,$rootScope,localManager,symptomsFactory,patientfindDoctorService){
+  function($scope,templateService,$http,$rootScope,localManager,symptomsFactory,patientfindDoctorService){
   $scope.docInfo = templateService.holdForSpecificDoc;
   $scope.isViewDoc = true;
 
@@ -8902,8 +8902,6 @@ app.controller("drugsAndKitsCtrl",["$scope","$rootScope","$http","ModalService",
       }
     }
 
-
-
     $scope.find = function(){
       $scope.loading =  true;
       $http.get("/user/patient/getAllPharmacy",{params:{city:$scope.drug.city,type:'Pharmacy'}})
@@ -8970,6 +8968,7 @@ app.controller("drugsAndKitsCtrl",["$scope","$rootScope","$http","ModalService",
     } else {
       alert("No kit or Drug was selected.")
     }
+
   }
 
   var sendObj;
@@ -8999,7 +8998,23 @@ app.controller("drugsAndKitsCtrl",["$scope","$rootScope","$http","ModalService",
         item.dosage = (item.quantity) ? (item.quantity + " " + item.dosage) : item.dosage;      
       })
 
+     
+  
       if($scope.drug.courier){
+
+        var intRegex = /[0-9 -()+]+$/;
+
+        if(intRegex.test($scope.drug.phone)){
+          if($scope.drug.phone.indexOf('+') == -1) {
+            var newSlice = $scope.drug.phone.slice(1);
+            $scope.drug.phone = "+234" + newSlice;
+          }
+        } else {
+          alert("You selected home delivery option. Please check to see if you entered a valid" +
+          " mobile phone number we can use to contact you while delivering the package.")
+          return;
+        }
+
         sendObj = {
           city: $rootScope.checkLogIn.city,
           location: $scope.drug.address,
@@ -9076,6 +9091,7 @@ app.controller("drugsAndKitsCtrl",["$scope","$rootScope","$http","ModalService",
         }
         center.loading = false;
       });
+      
     } else {
       alert("No kit or Drug was selected. Please choose a kit or compile your own drug list.");
       return;

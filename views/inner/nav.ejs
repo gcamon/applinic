@@ -48,9 +48,11 @@ padding:10px 10px;
  .all .card img{
      margin-bottom:30px;
  }
+
+
 </style>
 
-<nav class="navbar navbar-toggleable-md bg-primary fixed-top  navbar-transparent" color-on-scroll="500">
+<nav class="navbar navbar-toggleable-md bg-white" color-on-scroll="500" style="margin-bottom: 0">
         <div class="container">
             <div class="navbar-translate"><span class="text-warning pull-right mr-5 mt-2 hidden-md-up" style="display:inline-block;text-shadow:1px 1px 1px #85CE36">START</span>
                 <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navigation" aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation" > 
@@ -59,21 +61,26 @@ padding:10px 10px;
                     <span class="navbar-toggler-bar bar3" style="background-color:orange!important;box-shadow:1px 1px 1px #85CE36"></span>
                 </button>
                 <a class="navbar-brand" href="/">
-                    <img src="/assets/images/applinic1.png" alt="Applinic" class="logo">
+                    <img src="/assets/images/logo.png" alt="Applinic">
                 </a>
             </div>
             <div class="collapse navbar-collapse justify-content-end" id="navigation" data-nav-image="assets/img/blurred-image-1.jpg">
-                <!--<ul class="navbar-nav" style="width: 90%; margin: 0 auto;" ng-cloak>
-                    <li class="nav-item" style="color: orange">
-                       
-                        <input type="radio" value="radio" ng-model="invest.type"> <span>Radiology<span>
-                           
+
+                <ul class="navbar-nav  no-mobile-item-display" style="width: 90%; margin: 0 auto;" ng-cloak>
+                    <li class="nav-item" style="margin-left: 20px">   
+                        <a href="/find-doctors?" class="btn btn-simple"> <i class="fa fa-comments"></i> Chat with Live Physician</a> 
                     </li>
 
-                     <li class="nav-item" style="color: orange">
-                        
-                        <input type="radio" value="lab" ng-model="invest.type"> <span>Laboratory</span>
-                           
+                    <li class="nav-item">
+                         <a href="/find-drugs?" class="btn btn-simple"><i class="icon-Pills"></i> Buy Drugs &amp; Kits</a> 
+                    </li>
+
+                    <li class="nav-item">
+                        <i class="fa fa-stethescope"></i> <a href="/covid-19" class="btn btn-simple"><i class="fa fa-search-lens"></i>Covid-19 Screening Test</a> 
+                    </li>
+
+                     <li class="nav-item">
+                        <a href="/symptom-checker" class="btn btn-simple">Symptoms Checker</a> 
                     </li>
 
                     <li class="nav-item" ng-if="invest.type == 'radio'">
@@ -86,17 +93,14 @@ padding:10px 10px;
                         
                         <input type="text" placeholder="Enter Test Reference No." style="width: 300px;padding:5px;border-radius: 3px;border:none" ng-model="invest.id"> <button class="btn btn-neutral" style="padding:5px;font-size:18px" ng-click="findInvestigation()"><i class="fa fa-search"></i></button>
                            
-                    </li>
-                    
-                    
-                    
-                    </ul>-->
+                    </li>                   
+                </ul>
                    
 
 
 <div class="dropdown hidden-md-down">
 <button class="btn btn-warning btn-block dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        START
+        More
     </button>
     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
 <a class="dropdown-item" href="/login">Login</a>
@@ -106,6 +110,13 @@ padding:10px 10px;
         <!--<a class="dropdown-item" href="/signup">Need Doctor</a>
 
         <a class="dropdown-item" href="/signup">Need Help</a>-->
+        
+         <a class="dropdown-item" href="">Find Diagnostic Tests &amp; Centers</a>
+        <a class="dropdown-item" href="/find-doctors">Find Specialists</a>
+        <!--<a class="dropdown-item" href="/find-drugs">Buy Drugs and Kits</a>
+        <a class="dropdown-item" href="/symptom-checker">Symptons Checker</a>
+        <a class="dropdown-item" href="/covid-19">Covid-19 Screening Test</a>-->
+        <!--<a class="dropdown-item" href="/find-laboratory">Find Laboratory Tests </a>-->
 <a class="dropdown-item" href="/how-it-works">How it works</a>
         <a class="dropdown-item" href="/contact">Contact Us</a>
         <a href="/Studyshare&Teleradiology"  class="dropdown-item">Study Share and Teleradiology</a>
@@ -123,6 +134,13 @@ padding:10px 10px;
         <!--<a class="dropdown-item" href="/signup">Need Doctor</a>
 
         <a class="dropdown-item" href="/signup">Need Help</a>-->
+        <a class="dropdown-item" href="/find-doctors">Chat with Live Physicians</a>
+        <a class="dropdown-item" href="/find-doctors">Covid-19 Screening Test</a>
+        <a class="dropdown-item" href="">Find Diagnostic Tests &amp; Centers</a>
+        <a class="dropdown-item" href="/find-doctors">Find Specialists</a>
+        <a class="dropdown-item" href="/find-drugs">Buy Drugs and Kits</a>
+        <a class="dropdown-item" href="/symptom-checker">Symptons Checker</a>
+        
 <a class="dropdown-item" href="/how-it-works">How it works</a>
 <a href="/Studyshare&Teleradiology"  class="dropdown-item">Study Share and Teleradiology</a>
         <a class="dropdown-item" href="/contact">Contact Us</a>

@@ -506,7 +506,8 @@ app.controller('signupController',["$scope","$http","$location","$window","templ
 
   //capitalize the first letter in words like two words city names.
   if($scope.user.city && $scope.user.city !== "") {
-    var capitalize = $scope.user.city.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()});
+    var capitalize = $scope.user.city.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() 
+      + txt.substr(1).toLowerCase()});
     $scope.user.city = capitalize;
   }
 
@@ -535,7 +536,14 @@ app.controller('signupController',["$scope","$http","$location","$window","templ
 
   function checkExistingPhone() {
     if($scope.user.phone) {
-      phoneNumber = "+" + $scope.user.callingCode.toString() + $scope.user.phone.toString();
+      //phoneNumber = "+" + $scope.user.callingCode.toString() + $scope.user.phone.toString();
+      if($scope.user.phone[0] == '0'){
+        var newSlice = $scope.user.phone.slice(1);
+        $scope.user.phone = "+234" + newSlice;
+      }
+
+      phoneNumber = $scope.user.phone;
+
       signUp.get({phone:phoneNumber},function(res){
         if(res.error) {        
           $scope.phoneMessage = res.errorMsg;

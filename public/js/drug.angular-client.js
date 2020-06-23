@@ -316,15 +316,12 @@ app.factory("localManager",["$window",function($window){
   };
 }]);
 
-
-
-
-app.controller("hompageController",["$scope","scanTests","cities","labTests","Drugs","$http",
+app.controller("hompageController",["$scope","cities","Drugs","$http",
   "ModalService","$rootScope","homePageDynamicService",
-  "skillService","homepageSearchService","localManager","$window","templateService","mySocket","$location",
-  function($scope,scanTests,cities,labTests,Drugs,$http,
-  	ModalService,$rootScope,homePageDynamicService,skillService,
-  	homepageSearchService,localManager,$window,templateService,mySocket,$location){
+  "homepageSearchService","localManager","$window","templateService","mySocket","$location","$anchorScroll",
+  function($scope,cities,Drugs,$http,
+  	ModalService,$rootScope,homePageDynamicService,
+  	homepageSearchService,localManager,$window,templateService,mySocket,$location,$anchorScroll){
 
 
   $rootScope.cities = cities;
@@ -337,6 +334,9 @@ app.controller("hompageController",["$scope","scanTests","cities","labTests","Dr
 
   $rootScope.user = {};
 
+  $scope.search = {};
+
+  
 
   var dyna = [];
   var filter = {};
@@ -344,72 +344,23 @@ app.controller("hompageController",["$scope","scanTests","cities","labTests","Dr
   var skArr = [];
   var diArr = [];
 
+
+  $scope.descriptions = ["Caplets","Capsule","Packet","Bottle","Sachet","Tablets","Vial",
+    "Ampoule","Suppository","Syrup","Carton","Ointment","Pints","Pieces","Bags"]
+
+
+  if(localManager.getValue('cart')){
+    $rootScope.cart = localManager.getValue('cart');
+  } else {
+    $rootScope.cart = [];
+    localManager.setValue("cart",$rootScope.cart)
+  }
+
   $scope.dropDownList = [];
 
-  $http({
-    method  : 'GET',
-    url     : "/user/get-specialties",
-    headers : {'Content-Type': 'application/json'} 
-    })
-  .success(function(data) {              
-    if(data){
-      
-      for(var i = 0; i < data.length; i++){
-        if(!filter[data[i].specialty]) {
-          filter[data[i].specialty] = 1;
-          spArr.push({name:data[i].specialty});
-          $scope.dropDownList.push(data[i].specialty)
-          $scope.dropDownList.push(data[i].name)
+  $rootScope.user.category = "Pharmacy";
 
-        } else {
-          filter[data[i].specialty]++;
-        }
-      }
-
-
-    }
-  }); 
-
-  
- 
-
-  /*$http({
-    method  : 'GET',
-    url     : "/user/get-doctors-names",
-    headers : {'Content-Type': 'application/json'} 
-    })
-  .success(function(res) {     
-    
-     for(var i = 0; i < res.length; i++){
-        spArr.push(res[i]);
-        dropDownList.concat()
-     }
-
-  });*/
-
-  /*$http({
-    method  : 'GET',
-    url     : "/user/get-diseases",
-    headers : {'Content-Type': 'application/json'} 
-    })
-  .success(function(data) {              
-    if(data){
-      
-      for(var i = 0; i < data.length; i++){
-        if(!filter[data[i].disease]) {
-          filter[data[i].disease] = 1;
-          diArr.push({name:data[i].disease})
-          $scope.dropDownList.push(data[i].disease)
-        } else {
-          filter[data[i].disease]++;
-        }
-      }
-     
-    }
-  });*/
-
-
-  $rootScope.todashboard = function(type) {
+  $scope.todashboard = function(type) {
   	switch(type) {
       case "Patient":
         $window.location.href = "/user/patient";   
@@ -429,26 +380,15 @@ app.controller("hompageController",["$scope","scanTests","cities","labTests","Dr
       case "admin":
         $window.location.href = "/user/admin";
       break;
+      case "Field Agent":
+        $window.location.href = "/user/field-agent/" + data.user_id;
+      break;
+      default:
+        $window.location.href = "/user/view"; 
+      break; 
     }
   }
 
-
-
-  skillService.query(function(data){
-    for(var i = 0; i < data.length; i++){
-      if(!filter[data[i].skill]) {
-        filter[data[i].skill] = 1;
-        skArr.push({name:data[i].skill})
-        $scope.dropDownList.push(data[i].skill)
-        $scope.dropDownList.push(data[i].disease)
-      } else {
-        filter[data[i].skill]++;
-      }
-    }
-  });   
-
-
-  
 
   var qStr = window.location.search;
   if(qStr) {
@@ -456,31 +396,202 @@ app.controller("hompageController",["$scope","scanTests","cities","labTests","Dr
   	$rootScope.user.item = qVal[qVal.length - 1];
   }
 
+  homePageDynamicService.query($rootScope.user,function(data){
+    var list = Drugs.concat(data);
+    $scope.drugs = [];
+    list.forEach(function(drug){
+      $scope.dropDownList.push(drug.name);
+      $scope.drugs.push(drug.name)
+    });
+  });  
 
-  $scope.find = function() {
-  	$rootScope.user.category = "Doctor";
+  var filter = {};
 
-  	if(!$rootScope.user.item){
-  		$rootScope.user.item = 'live-doctors';
-  	}
+  $http.get("/drug-kits/all")
+  .success(function(response){
+    response.forEach(function(item){
+      if(!filter.hasOwnProperty(item.disease)){
+        filter[item.disease] = {};
+        filter[item.disease].disease = item.disease;
+        filter[item.disease].name = item.name;
+        filter[item.disease].note = item.note;
+        filter[item.disease].package = item.package || 0;
+        filter[item.disease].type = item.type;
+        filter[item.disease]['content'] = [];//item.content;
+        filter[item.disease]['content'].push({
+          package: item.package,
+          content: item.content 
+        })
+      } else {  
+        //filter[item.disease].name = item.name;
+        //filter[item.disease].package = item.package;
+        //filter[item.disease]['content'] = item.content;
+        filter[item.disease]['content'].push({
+          package: item.package,
+          content: item.content 
+        })    
+       
+      }
+    })
 
+    $scope.allKits = Object.keys(filter);
+    
+
+    $scope.getKit("Drug",'Malaria');
+  }) 
+
+  $http.get("/home/getAllPharmarcy")
+  .success(function(response){
+    response.forEach(function(item){
+      $scope.dropDownList.push(item.name);
+    })
+  }) 
+
+  $scope.getKit = function(type,name) {
+    $scope.kits = filter[name];
+    $scope.section = 'kits';
+    //$location.hash('kitArea')
+    //$anchorScroll()
+  } 
+
+
+  $scope.clearCart = function() {
+    $rootScope.cart.splice(0)
+    localManager.setValue("cart",$rootScope.cart)
+  }
+
+
+  var cartElemPos; 
+
+  $scope.addToCart = function(itemObj){
+    //console.log(content);
+    if(!itemObj.isAdded) {
+      itemObj.isAdded = true;
+      itemObj.cartId = Math.floor(Math.random() * 99999999);
+      $rootScope.cart.push({
+        id: itemObj.cartId,
+        content: itemObj.content
+      })
+     
+      localManager.setValue("cart",$rootScope.cart);
+    } else {
+      cartElemPos = $rootScope.cart.map(function(x){return x.id}).indexOf(itemObj.cardId)
+      if(cartElemPos !== -1){
+        $rootScope.cart.splice(cartElemPos,1);
+        localManager.setValue("cart",$rootScope.cart);
+        itemObj.isAdded = false;
+      }
+    }
+  }
+
+  $scope.compose = {}
+
+  $scope.composedItems = [];
+
+  var composeContent;
+  var dosageDescription;
+
+  $scope.newDrug = function(drug) {
+    $scope.section = 'compose';
+    if(drug){
+      $scope.compose.item = drug;
+    }
+  }
+
+  $scope.addComposedItem = function(){
+    $scope.drugErrorMsg = "";
+    if(!$scope.compose.item){
+      $scope.drugErrorMsg = "Drug name field cannot be empty.";
+      return;
+    }
+
+    dosageDescription =  ($scope.compose.quantity) ?  ($scope.compose.quantity + " " + $scope.compose.dosage) 
+    : $scope.compose.dosage; 
+
+    composeContent = [];
+
+    composeContent.push({
+      drug_name: $scope.compose.item,
+      dosage: dosageDescription,
+      frequency: "",
+      duration: ""
+    })
+
+    $scope.composedItems.push({
+      id: Math.floor(Math.random() * 99999999),
+      content: composeContent
+    });
+
+    $scope.isComposedAdded = false;
+  }
+
+  var composeElemPos;
+  $scope.delete = function(itemId){
+    composeElemPos = $scope.composedItems.map(function(x){return x.id}).indexOf(itemId);    
+    $scope.composedItems.splice(composeElemPos,1);
+    $scope.isComposedAdded = false;
+  }
+
+  $scope.addComposeToCart = function(){
+    var combineList = [];
+    $scope.composedItems.forEach(function(item){
+      for(var i = 0; i < item.content.length; i++){
+        combineList.push(item.content[i]);
+      }
+    });
+
+    $scope.isComposedAdded = true;
+   
+    $scope.addToCart({
+      content: combineList
+    })
+
+  }
+
+  $scope.viewCart = function() {
+    $scope.section  = 'cartArea';
+    $anchorScroll()
+  }
+
+  $scope.deleteItemInCart = function(id) {
+    var elemPos = $rootScope.cart.map(function(x){x.id}).indexOf(id);
+    $rootScope.cart.splice(elemPos,1)
+    localManager.setValue("cart",$rootScope.cart);
+  }
+
+  $scope.find = function(isCartItem) {
+    $rootScope.user.item = $scope.search.item;
+    $rootScope.user.city = $scope.search.city;
+    $location.hash('searchList');   
+    $scope.isCart = (isCartItem) ? true : false;
   	$scope.loading = true;
+    $scope.section = "search-result";
+    $rootScope.searchItems = $scope.user.item;
+    $rootScope.searchItemType = "drug";
   	homepageSearchService.get($rootScope.user,function(response){
-      $scope.loading = false; 
+      $scope.loading = false;   
       $scope.searchResultFull = response.full;
       $scope.searchResultSub = response.sub;
-    });  
+      $anchorScroll();
+    });
   }
 
+ 
 
+  $http.get("/user/getuser")
+  .success(function(user){
+    //user = localManager.getValue("resolveUser");
+    if(user.isLoggedIn){
+      $rootScope.user.phone = user.phone;
+      $rootScope.user.address = user.address || user.work_place;
 
-  var user = localManager.getValue("resolveUser");
-
-  if(user) {
-  	mySocket.emit('join',{userId: user.user_id});
-  }
-
-  $rootScope.checkLogIn = user;
+      $rootScope.checkLogIn = user;
+    
+      mySocket.emit('join',{userId: user.user_id});      
+    } else {
+      $rootScope.checkLogIn = {};
+    }
+  })
 
   $scope.loginIntOAcc = function() {
   	ModalService.showModal({
@@ -493,35 +604,129 @@ app.controller("hompageController",["$scope","scanTests","cities","labTests","Dr
   	});
   }
 
-  $scope.consult = function(doc) {
-  	$rootScope.holdDoc = doc;
-  	if(!user){  	  	
-  	  ModalService.showModal({
-      	templateUrl: 'auth.html',
-      	controller: 'authModalController'
-     	}).then(function(modal) {
-    		modal.element.modal();
-    		modal.close.then(function(result) {             
-    		});
-    	});
-  	} else {	  	
+  $scope.forward = function(center) { 	
+   
+    if(!$rootScope.checkLogIn.isLoggedIn){
+      $rootScope.holdCenter = center;
       ModalService.showModal({
-        templateUrl: "selected-doc.html",
-        controller: "bookingDocController"
+        templateUrl: 'auth.html',
+        controller: 'authModalController'
       }).then(function(modal) {
         modal.element.modal();
-        modal.close.then(function(result) {
+        modal.close.then(function(result) {             
         });
       });
-  	}
 
+    } else {    
+
+      var presId = Math.floor(Math.random() * 99999) + "" + Math.floor(Math.random() * 99999);
+      var url;
+      var method;
+
+      var intRegex = /[0-9 -()+]+$/;
+      if(intRegex.test($rootScope.user.phone)){
+        if($rootScope.user.phone.indexOf('+') == -1) {
+          var newSlice = $rootScope.user.phone.slice(1);
+          $rootScope.user.phone = "+234" + newSlice;
+        }       
+      } else {
+        alert("You selected home delivery option. Please check to see if you entered a valid" +
+        " mobile phone number we can use to contact you while delivering the package.")
+        return;
+      }
+
+      $rootScope.cart.forEach(function(cartItem){
+      
+        if($rootScope.user.isCourier){
+
+          url = "/user/courier";
+          method = "POST";    
+
+          sendObj = {
+            city: $rootScope.checkLogIn.city,
+            location: $rootScope.user.address,
+            center_id: center.user_id,
+            phone1: $rootScope.user.phone,
+            phone2: $rootScope.checkLogIn.phone,
+            address: $rootScope.user.address,
+            prescriptionId: presId,
+            refId: null,
+            prescription_body : cartItem.content,
+            centerInfo: center,
+          }
+
+        } else {
+
+          url = "/user/patient/pharmacy/referral-by-patient";
+          method = "PUT";
+
+          sendObj = {
+            prescription_body : cartItem.content,    
+            user_id : center.user_id,
+            provisional_diagnosis: "none",
+            explanation: "none",
+            date: new Date(),
+            prescriptionId: presId,
+            title: '',
+            doctor_specialty: "",
+            doctor_profile_url: '',
+            doctor_firstname: '',
+            doctor_address: '',
+            doctor_id: '',
+            doctor_city: '',
+            doctor_country: '',
+            doctor_profile_pic_url: '',
+            patient_id: $rootScope.checkLogIn.user_id || "",
+            patient_profile_pic_url: $rootScope.checkLogIn.profile_pic_url,
+            patient_firstname: $rootScope.checkLogIn.firstname,
+            patient_lastname: $rootScope.checkLogIn.lastname,
+            patient_address: $rootScope.checkLogIn.address || $rootScope.checkLogIn.work_place,
+            patient_gender: $rootScope.checkLogIn.gender,
+            patient_age: $rootScope.checkLogIn.age,
+            patient_city: $rootScope.checkLogIn.city,
+            patient_country: $rootScope.checkLogIn.country,
+            patient_phone: $rootScope.checkLogIn.phone,
+            is_paid: false,
+            sender: $rootScope.checkLogIn.type
+          }
+        }
+
+        sendItem(sendObj,center,url,method);  
+      })
+    }
+  }
+
+  var sendItem = function(sendObj,center,url,method) {
+    center.loading = true;
+    $http({
+      method  : method,
+      url     : url, 
+      data    : sendObj,
+      headers : {'Content-Type': 'application/json'} 
+      })
+    .success(function(data) {
+      if(data.success){   
+        center.success = true;
+
+        if($rootScope.user.isCourier && !$scope.isCalled){
+          alert("Sent successfully!"
+          + " Please go to your dashboard and check motorcycle icon for update on the home delivery request.");
+          //$rootScope.$broadcast("new courier order",{status:true})
+          $scope.isCalled = true;
+        }
+
+      } else {          
+        alert("Prescription not sent! Error occured. Please try again shortly.");
+      }
+      center.loading = false;
+    });
   }
 
   $rootScope.holdcenter = {};
 
-  $scope.chat = function(doc) {
-  	if(user){ 
-	  	$rootScope.holdcenter = doc;
+  $scope.chat = function(center) {
+  	if($rootScope.checkLogIn.isLoggedIn){ 
+	  	$rootScope.holdcenter = center;
 	  	//templateService.holdId = doc.user_id;
 	    ModalService.showModal({
 	        templateUrl: 'quick-chat.html',
@@ -541,67 +746,6 @@ app.controller("hompageController",["$scope","scanTests","cities","labTests","Dr
     		});
     	});
 	  }
-  }
-
-
-  $scope.itemName = "Drug / Test / Specialty / Disease";
-
-  $scope.$watch('user.category',function(newVal,oldVal){
-    if(newVal) {
-      switch(newVal) {
-        case 'Doctor':
-          $scope.itemList = spArr;
-          $scope.itemName = "Enter specialty or name (e.g Dr Ede)";
-        break;
-        case 'Pharmacy':
-          homePageDynamicService.query($rootScope.user,function(data){
-            $scope.itemList = Drugs.concat(data);
-          });         
-          $scope.itemName = "Enter drug name";
-        break;
-        case "Laboratory":
-          homePageDynamicService.query($rootScope.user,function(data){
-            $scope.itemList = labTests.listInfo.concat(labTests.listInfo2,labTests.listInfo3,
-            labTests.listInfo4,labTests.listInfo5,labTests.listInfo6,labTests.listInfo7,data);
-          });         
-          $scope.itemName = "Enter test name";
-        break;
-        case 'Radiology':
-          homePageDynamicService.query($rootScope.user,function(data){
-            $scope.itemList = scanTests.listInfo1.concat(scanTests.listInfo2,scanTests.listInfo3,
-            scanTests.listInfo4,scanTests.listInfo5,scanTests.listInfo6,data);
-          });        
-          $scope.itemName = "Enter test name";
-        break;
-        case 'Special Center':
-          $scope.itemList = spArr;
-          $scope.itemName = "Enter center name or specialty."
-        break;
-        case 'Skills & Procedures':
-          $scope.itemList = skArr;
-          $scope.itemName = "Enter a skill or disease";
-        break;
-        case 'Disease':
-          $scope.itemList = diArr;
-          $scope.itemName = "Enter a disease";
-        break;
-        default:
-        break;
-      }
-    }
-  })
-
-
-  $scope.search = function() {    
-    
-    ModalService.showModal({
-      templateUrl: 'home-page-search.html',
-      controller: 'homePageModalController'
-    }).then(function(modal) {
-      modal.element.modal();
-      modal.close.then(function(result) {             
-      });
-    });
   }
 
   //$scope.find();
@@ -644,9 +788,10 @@ app.controller("generalChatCtrl",["$scope","$rootScope","mySocket",function($sco
       $scope.messageBody = "Requesting for the following  " + $rootScope.searchItemType + ":  " + $rootScope.searchItems;
     }
     
-    $scope.sendChatSingle = function(partnerId){
+    $scope.sendChatSingle = function(partnerId,partnerId2){
       $scope.loading = true;
-      mySocket.emit("send message general",{to: partnerId,message:$scope.messageBody,from: user.user_id},function(data){ 
+      var pId = (partnerId) ? partnerId : partnerId2;
+      mySocket.emit("send message general",{to: pId,message:$scope.messageBody,from: user.user_id},function(data){ 
         if(data) {
           $scope.loading = false;
           $scope.isSent = true;
@@ -811,133 +956,6 @@ app.controller("investigationSearchCtrl",["$scope","$rootScope","$window","$http
 
 
 }]);
-
-app.controller('symptomsCtrl',["$scope","$rootScope","$http","homepageSearchService",
-	function($scope,$rootScope,$http,homepageSearchService){
-	
-
-  $rootScope.selected = [];
-  var filter = {}
-  $scope.user = {};
-
-  var specialtyFilter = {};
-
-  $scope.$watch("symptomsList",function(newVal,oldVal){
-  	if(newVal)
-	  	newVal.forEach(function(item){
-	  		if(item.picked && !filter[item.Name]){
-	  			$rootScope.selected.push(item)
-	  			filter[item.Name] = 1;
-	  		}
-	  	})
-  },true);
-
-   //crypto
-
-	var uri = "https://sandbox-authservice.priaid.ch/login";
-  var secret_key = "m4TZg78KiAo6y2GJj";
-  var computedHash = CryptoJS.HmacMD5(uri, secret_key);
-  var computedHashString = computedHash.toString(CryptoJS.enc.Base64);   
-  
-  var auth = 'Bearer ' + "ede.obinna27@gmail.com:" + computedHashString;
-  
-
-  $http({
-    method  : 'POST',
-    url     : uri,
-    headers : {'Content-Type': 'application/json','Authorization': auth}
-  })
-  .success(function(res) {     
-  	$scope.token = res.Token;
-  	$scope.getSymptoms();
-  });
-  
-  $scope.getSymptoms = function(token) {
-  	var url = "https://sandbox-healthservice.priaid.ch/symptoms?"
-  	+ "token=" + $scope.token + "&language=en-gb&format=json";
-	  $http.get(url)
-	  .success(function(response){
-	  	$rootScope.symptomsList = response;
-	  });
-  }
-
-
-
-
-  $scope.getResult = function(){
-  	if(!$scope.user.gender || !$scope.user.age){
-  		alert("Please both Gender and Date of birth values are needed.")
-  		return;
-  	}
-
-  	if($rootScope.selected.length == 0){
-  		alert("Please add symptoms you are experiencing.")
-  		return;
-  	}
-
-  	var symptomsIds = [];
-  	$rootScope.selected.forEach(function(item){
-  		symptomsIds.push(item.ID.toString());
-  	});
-
-  	var str = JSON.stringify(symptomsIds);
-
-  	var year = $scope.user.age.getFullYear();
-
-  	var url = 'https://sandbox-healthservice.priaid.ch/diagnosis?symptoms=' + str + 
-  	"&gender=" + $scope.user.gender + "&year_of_birth=" + year + "&token=" + $scope.token
-  	+ "&language=en-gb&format=json";
-  	$scope.loading = true;
-  	$http.get(url)
-  	.success(function(response){
-  		$scope.issues = response;
-  		$scope.loading = false;
-  		$scope.issues.forEach(function(item){
-  			if(!specialtyFilter[item.Specialisation.Name]) {
-  				specialtyFilter[item.Specialisation.Name] = item.Specialisation.Name;
-  				$scope.getSpecialist(item.Specialisation.Name)
-  			}
-  		})
-  	});
-
-  }
-
-  var elemPos;
-
-  $scope.deleteSymptom = function(id) {
-  	elemPos = $rootScope.selected.map(function(x){return x.ID}).indexOf(id);
-  	$rootScope.selected.splice(elemPos,1)
-  	$rootScope.symptomsList.forEach(function(item){
-  		if(item.ID === id){
-  			item.picked = false;
-  			delete filter[item.Name];
-  		}
-  	})
-  }
-
-  $scope.getSpecialist = function(specialty) {
-  	$rootScope.user.item = specialty;
-  	$scope.find()
-  }
-
-  $scope.find = function() {
-  	$rootScope.user.category = "Doctor";
-
-  	if(!$rootScope.user.item){
-  		$rootScope.user.item = 'live-doctors';
-  	}
-
-  	$scope.loading = true;
-  	homepageSearchService.get($rootScope.user,function(response){
-      $scope.loading = false; 
-      console.log(response)
-      $scope.searchResultFull = response.full;
-      $scope.searchResultSub = response.sub;
-    });  
-  }
-
-
-}])
 
 
 app.controller("bookingDocController",["$scope","$http","$rootScope",
@@ -1568,359 +1586,10 @@ function destroyStorage(localManager) {
 
 
 
-app.factory("labTests",function(){
-  var labTestList = {};
-labTestList.listInfo = [{name: "ORAL GLOCOSE TOLERANCE TEST (OGTT)",id:1},{name: "TWO HOURS POSTPRANDIAL (2HPP)",id:2},
-{name: "FASTING BLOOD SUGAR (FBS)",id:3},
-{name: "RANDOM BLOOD SUGAR (RBS)",id:4},{name: "PREGNANCY TEST  ( URINE )",id:5},{name: "SODIUM Na+",id:6},{name: "POTASSIUM K",id:7},
-{name: "ELECTROLYTES",id:8},
-{name: "BICARBONATE HC03",id:9},{name: "CALCIUMS Ca2",id:10},{name: "UREA",id:11},{name: "CREATININE",id:12},{name: "URINE ELECTROLYTES",id:13},
-{name: "KIDNEY FUNCTION TEST(KFT)",id:14},
-{name: "ELECTROLYTE/UREA/CREATININE E/U -Cr",id:15},{name: "IN PHOSPHORUS   ( PO4 )( INORGANIC PHOS)",id:16},
-{name: "B-HCG. ( BLOOD PREGNANCY TEST )",id:7},
-{name: "LFT ( LIVER FUNCTION TEST)",id:18},{name: "SGOT/AST",id:19},{name: "SGPT/ALT",id:20},{name: "ALP (ALKALINE PHOSPHASE)",id:21},
-{name: "TOTAL BILIRUBIN",id:22},{name: "DIRECT BILIRUBIN",id:23},
-{name: "AIBUMIN",id:24},{name: "TOTAL PROTEIN",id:25},{name: "GLOBULIN",id:26},{name: "CHOLESTEROL",id:27},{name: "TRIGLYCERIDES",id:28},
-{name: "URIC ACID",id:29},{name: "GAMMA GT",id:30},
-{name: "LIPID PROFILE",id:31},{name: "LOW DENSITY LIPOPROTEIN",id:32},{name: "HIGH DENSITY LIPOPROTEIN ( HDL )",id:33},
-{name: "KIDNEY STONE ANALYSIS",id:34},{name: "AMYLASE ( TOTAL )",id:35},
-{name: "CREATINE PHOSPHATE KINASE (CK/CPK)",id:36},{name: "ACID PHOSPHATASE",id:37},{name: "PROTEIN ELECTROPHORESIS",id:38},
-{name: "URINALYSIS",id:39},{name: "OCCULT  BLOOD  TEST ( OBT)",id:40},
-{name: "KIDNEY FUNCTION TEST",id:41},{name: "GLYCATED HAEMOGLOBIN ( HBA1C)",id:42},{name: "24 HRS URINE FOR CREATININE/CREATININE CLEARANCE",id:43},
-{name: "PROTEIN/CR. RATIO IN URINE",id:44},
-{name: "MICRO ALBUMIN  IN  URINE",id:45},{name: "D -  DIMER",id:46},{name: "CREATINE  KINASE MYOGLOBLIN  ( C K . MB )",id:47},
-{name: "IRON  FERRITIN",id:48},{name: "PROTEIN IN 24hrs URINE",id:49},
-{name: "PROTEIN  TOTAL IN C S F",id:50},{name: "AMYLASE  ( PANCREATIC )",id:51},{name: "Hs C - REACTIVE  PROTEIN   ( C R P ). QAUNTITATIVE",id:52},
-{name: "CREATININE CLEARANCE",id:53},
-{name: "Astin",id:54},{name: "LDH",id:55},{name: "Inorgnic Phosporus Serum",id:56},{name: "TROPONIN I (QTY)",id:57},{name: "BENCE JONES PROTEIN",id:58},
-{name: "MAGNESIUM",id:59},{name: "BUN",id:60},
-{name: "MYOGLOBIN SERUM/URINE",id:61},{name: "SERUM IRON",id:62},{name: "TROPONIN T (QTY)",id:63},{name: "VITAMIN B 12",id:64},
-{name: "24HRS URINE FOR CREATININE",id:65},{name: "C- PEPTIDE",id:66},
-{name: "C - REACTIVE  PROTEIN   ( C R P ).RAPID",id:67},{name: "VITAMIN D (25 Hydroxyl)",id:68},{name: "VITANIN D (25OH)",id:69},
-{name: "GLOMERULAR FILTERATION RATE (GFR)",id:70},
-{name: "ANA (ANTINUCLEAR ANTIBODIES)",id:71},{name: "GLUCOSE-6-PHOSPHATE DEHYDROGENASE (G-6PD)",id:72},{name: "1 Hrs. After Ingesting Glucose",id:73},
-{name: "2 Hrs. After Ingesting Glucose",id:74},
-{name: "CHLAMYDIA IgM ELISA (Serum)",id:75},{name: "CHLAMYDIA IgM ELSA (Serum)",id:76},{name: "CHLAMYDIA IgM ELISA (SERUM)",id:77},
-{name: "LIPASE",id:78},{name: "Chlamydia IgG (ELISA) SERUM",id:79},
-{name: "Lead",id:90},{name: "Corper",id:91},{name: "Iron metabolism",id:92},{name: "Zinc",id:93},{name: "HPV DNA GENOTYPE",id:94},
-{name: "HPV DNA GENOTYPE",id:95},{name: "Sodium Valproate Level:",id:96},
-{name: "Serum alpha 1 anti-trypsin (AAT)",id:97},{name: "BLOOD PH",id:98},{name: "24HRS URINE CALCIUM",id:99},
-{name: "HOMOCYSTEINE LEVEL IN PLASMA",id:100},
-{name: "URINE TOTAL PROTEIN 24HR",id:101},
-{name: "ANTI LIVER & KIDNEY MICROSOMAL ANTIBODY (ANTI KLM)",id:102}];
-
-
-labTestList.listInfo2 = [{name: "PCV ( PACK CELL VOLUME )",id:103},{name: "HB ( HAEMOGLOBIN )",id:104},{name: "RBC ( RED BLOOD CELL COUNT )",id:105},
-{name: "WBC TOTAL (Abacus 5)",id:106},{name: "FULL BLOOD COUNT (5 part diff)",id:107},{name: "ESR ( ERYTHROCYTE SEDIMENTATION RATE )",id:108},
-{name: "EOSIN COUNT",id:109},
-{name: "PLATELET COUNT",id:110},
-{name: "RETICULOCYTE COUNT",id:111},{name: "SICKLING TEST",id:112},{name: "GENOTYPE TEST",id:113},{name: "BLOOD GROUP",id:114},
-{name: "FULL BLOOD COUNT( MANUAL)",id:115},
-{name: "CLOTTING TIME (CT)",id:116},
-{name: "PROTHROMBIN TIME (PT)",id:117},{name: "GROUPING ,SCREENING & CROSS -MATCHING 1 PINT OF BLOOD",id:118},{name: "CD3/CD4 COUNT ABSOLUTE",id:119},
-{name: "INDIRECT COOMBS TEST",id:120},{name: "WBC  Diff (5parts diff)",id:121},{name: "COAGULATION  PROFILE",id:122},{name: "WBC TOTAL (Manual)",id:123},
-{name: "CD 8 Count",id:124},
-{name: "HIV VIRAL LOAD COUNT",id:125},
-{name: "RHESUS ANTI-BODIES TITRE",id:126},{name: "GROUP ,SCREENING",id:127},{name: "GROUP ,SCREENING & X  MATCH  3  PINT",id:128},
-{name: "ONE  PINT  OF  BLOOD( TRANSFUSION )",id:129},{name: "Group  and save",id:130},{name: "DIRECT  COOMBS TEST",id:131},
-{name: "CEROBROSPINAL FLUID (CSF) CELL COUNT",id:132},
-{name: "WBC DIFF (manual)",id:133},{name: "BLEEDING TIME",id:134},{name: "BLOOD FILM",id:135},{name: "PCV ( PACK CELL VOLUME ) - ADULT",id:136},
-{name: "SCREENING AND X OF DONATED BLOOD(DIALYSIS)",id:137},{name: "ACTIVATED PARTIAL THROMBOPLASTIN TIME APTT (PTTK)",id:138},
-{name: "COMPLEMENT C3 PROTEIN",id:139},{name: "ANTI DNAse B TEST",id:140},
-{name: "ANF ANTI DNA (ds DNA)",id:141},
-
-{name: "COMPLEMENT C4 PROTEIN",id:142},{name: "SCREENING AND X OF DONATED BLOOD(OPD) 1 PINT",id:143},
-{name: "SCREENING AND X OF DONATED BLOOD(OPD ) 2 PINTS",id:144},
-{name: "SCREENING AND X OF DONATED BLOOD( OPD) 3 PINTS",id:145},
-{name: "INR(INTERNATIONAL NORMALISED RATIO)",id:146},{name: "TOTAL IgE",id:147},{name: "CROSS- MATCHING",id:148},{name: "ARTERIAL BLOOD GASES",id:149},
-{name: "RECTICULOCYTE PRODUCTION INDEX",id:150},
-{name: "HIV 1 & 2 ELISA + P24 ANTIGEN",id:151},{name: "ADULT ALLERGY FOOD SCREEN",id:152},{name: "FOLIC ACID (SERIUM)",id:153},
-{name: "FOLIC ACID(SERIUM)",id:154},
-{name: "FIBRINOGEN",id:155},{name: "Phadiatops(Inhalants)",id:156},{name: "HUMAN LYMPHOCYTIC T VIRUS 1 & 2 QUANTIFICATN",id:157},
-{name: "HB Electrophoresis Quantitative",id:158},{name: "Total IgG ASSAY",id:159},{name: "PROTEIN C",id:160},{name: "PROTEIN S",id:161},
-{name: "TOTAL IgA ASSAY",id:162},{name: "TOTAL IgM ASSAY",id:163},{name: "TOTAL IgD ASSAY",id:164},{name: "TOTAL IgG, IgM & IgA ASSAY",id:165},
-{name: "Anti Phospholipids Antibody IgG & IgM",id:166}];
-
-labTestList.listInfo3 = [{name: "PAP SMEAR  FOR CYTOLOGY",id:167},{name: "URINE   CYTOLOGY",id:168},{name: "BLOOD  CYTOLOGY",id:169},
-{name: "ASPIRATE  FOR CYTOLOGY",id:170},{name: "TISSUE   HISTOLOGY",id:171},{name: "BONE   HISTOLOGY",id:172},{name: "SPUTUM  CYTOLOGY",id:173},
-{name: "F N A C( FINE NEEDLE  ASPIRATE FOR CYTOLOGY)",id:174},
-{name: "BUCCAL SMEAR FOR CYTOLOGY",id:175},{name: "TISSUE BIOPSY FOR HISTOLOGY",id:176},{name: "GASTRIC BIOPSY HISTOLOGY",id:177},
-{name: "TISSUE FUNGI ANALYSIS",id:178},{name: "TISSUE AFB ANALYSIS",id:179},
-{name: "TISSUE HISTOLOGY WITH SPECIAL STAINS",id:180}];
-
-labTestList.listInfo4 = [{name: "PSA ( RAPID )",id:181},{name: "B-HCG QUANTITATIVE",id:182},{name: "T3",id:183},
-{name: "T4",id:184},{name: "TSH",id:185},{name: "FSH",id:186},{name: "LH",id:187},
-{name: "H C G (QTY)",id:188},
-{name: "PROGESTERONE",id:189},{name: "PROLACTIN",id:190},{name: "TESTOSTERONE",id:191},
-{name: "OESTROGEN",id:192},{name: "THYRIOD FUNCTION TEST (TFT)",id:193},
-{name: "CORTISOL",id:194},
-{name: "FERTILITY PROFILE",id:195},{name: "OVULATION PROFILE",id:196},{name: "ALFA FETO PROTEIN ( A F P )",id:197},
-
-{name: "TOTAL P S A(QTY)",id:198},{name: "C E A ( CARCINO EMBROYONIC ANTIGEN)",id:199},{name: "CA125",id:200},{name: "CA 15-3",id:201},
-{name: "FREE T4",id:202},
-{name: "THYROGLOBULIN ANTIBODIES",id:203},
-{name: "NT-Pro BNP",id:204},{name: "TSH RECEPTOR ANTIBODIES",id:205},{name: "THYROID PEROXIDASE ANTIBODY",id:206},
-{name: "ACTH",id:207},{name: "HUMAN GROWTH HORMONE",id:208},{name: "FREE T3",id:209},{name: "FREE PSA",id:210},
-{name: "17-OH PROGESTERONE",id:211},{name: "INSULIN QUANTITATIVE",id:212},{name: "DHEA-S",id:213},
-
-{name: "PLASMA FREE METNEPHRINES",id:214},
-{name: "ANDROSTENEDIONE ASSAY",id:215},{name: "MINERALOCORTICOID ASSAY",id:216},{name: "B2- MICROGLOBULIN",id:217},
-{name: "PTH (PARATHYROID HORMONE)",id:218},
-{name: "CA19-9",id:219},
-
-{name: "HLA-B27",id:220},{name: "ANTI - MULLERIAN HORMONE",id:221},{name: "ANTI-PHOSPHOLIPID ANTIBODY",id:222},
-{name: "ANTI-CARDIOLIPIN ANTIBODY",id:223},
-{name: "ANTI-CYCLIC CITRULLINATED PEPTIDE ANTIBODIES(Anti- CCP) Quantitative.",id:224},{name: "SOMATOMEDIN (IGF)",id:225},
-{name: "ANTI DIRUETIC HORMONE (ADH)",id:226},
-{name: "FREE TESTOSTERONE",id:227},
-
-{name: "FREE/TOTAL PSA RATIO",id:228},
-{name: "FREE/TOTAL PSA RATIO",id:229},{name: "ANCA (ANTI CYTOPLASMIC AUTOANTIBODIES)",id:230},
-{name: "AGBM (ANTI BASMENT GLOMERULAR ANTIBPDIES)",id:231},
-{name: "INHIBIN B",id:232},
-{name: "DIHYDROTESTOSTERONE LEVEL",id:233},{name: "SEX CHROMOSOME DETERMINATION",id:234}];
-
-labTestList.listInfo5 = [{name: "MALARIA PARASITE",id:235},{name: "URINE MICROSCOPY",id:236},{name: "URINE M/C/S",id:237},
-{name: "HVS MICROSCOPY",id:238},{name: "HVS M/C/S",id:239},{name: "ENDOCERVICAL SWAB (ECS) M/C/S",id:240},{name: "URETHRAL SWAB (US) M/C/S",id:241},
-{name: "EYE SWAB M/C/S",id:242},
-{name: "THROAT SWAB M/C/S",id:243},{name: "EAR SWAB M/C/S",id:244},{name: "SPUTUM AFB x3",id:245},
-{name: "SPUTUM M/C/S",id:246},{name: "SEMEN ANALYSIS",id:247},
-{name: "SEMEN Analysis/M/C/S",id:248},
-{name: "CSF M/C/S",id:249},{name: "CSF ANALYSIS",id:250},{name: "BLOOD CULTURE",id:251},
-
-{name: "STOOL M/C/S",id:252},{name: "GRAM STAIN",id:253},{name: "VDRL",id:254},{name: "Widal",id:255},{name: "BLOOD FOR MICROFILARIAE",id:256},
-{name: "RHEUMATOID FACTOR (RAPID)",id:257},
-{name: "MANTOUX",id:258},{name: "HEPATITIS B SURFACE   ANTIGEN  (HBs Ag )",id:259},{name: "HEPATITIS C VIRUS ANTIBODY  (H C V RAPID)",id:260},
-{name: "SKIN SNIP FOR MICROFILARIAE",id:261},{name: "ASO TITRE",id:262},{name: "HIV 1",id:263},{name: "HELICOBACTER PYLORI TEST ( H. PYLORI )",id:264},
-{name: "T.B. SEROLOGY IgG/IgM",id:265},{name: "STOOL ANALYSIS/MICROSCOPY",id:266},{name: "SPUTUM  AFB   X I",id:267},
-{name: "ASPIRATE     M / C / S",id:268},
-
-{name: "RHEUMATOID FACTOR  (Quantitative)",id:269},
-{name: "WOUND SWAB    M / C / S",id:270},{name: "BUCCAL SWAB FOR   MYCOLOGY",id:271},{name: "SEMEN  M / C / S",id:272},
-{name: "NASAL  SWAB  M / C / S",id:273},
-{name: "HEPATITIS B Envelope ANTIBODY (HBeAb)",id:274},
-
-{name: "MALARIA PARASITE (Thick and Thin Film)",id:275},{name: "HEPATITIS B Envelope ANTIGEN   (HBeAg)",id:276},
-{name: "HEPATITIS B SURFACE  ANTIBODY ( HBsAb )",id:277},
-{name: "HEPATITIS B CORE ANTIBODY (HbcAb) ELISA/TOTAL",id:278},
-{name: "HEPATITIS B CORE ANTIBODY IgM( HBcAb )",id:279},{name: "HEPATITIS C  VIRUS TEST ( HCV ELISA)",id:280},{name: "CATHETER  TIP M/C/S",id:281},
-{name: "ASPIRATE  FOR  A F B",id:282},
-
-{name: "IUCD M/C /S",id:283},
-{name: "HAEMO (BLOOD) PARASITES",id:284},{name: "Chlamydia Urine (PCR)",id:285},{name: "Chlamydia Urethra Swab",id:286},
-{name: "Chlamydia Cervica Swab",id:287},
-{name: "HEPATITIS A VIRUS (IgM)",id:288},{name: "HERPES SIMPLEX 1,2 VIRUS IgG",id:289},{name: "HERPES SIMPLEX 1,2 VIRUS IgM",id:290},
-{name: "T. PALLIDIUM ELISA IgG",id:291},{name: "RUBELLA VIRUS IgM",id:292},{name: "VARICELLA IgM",id:293},{name: "VARICELLA IgG",id:294},
-{name: "RUBELLA VIRUS IgG",id:295},{name: "CYTOMEGALO VIRUS(CMV) IgG",id:296},{name: "CYTOMEGALO VIRUS (CMV) IgM",id:297},
-{name: "TOXOPLASMA GONDII (TOXO IgG)",id:298},
-{name: "TOXOPLASMA GONDII (TOXO IgM)",id:299},
-
-{name: "HIV 1 AND 2 SCREENING TEST",id:300},{name: "HEPATITIS B SURFACE ANTIBODY ( HBSAB ) ELISA",id:301},
-{name: "HEPATITIS B SURFACE ANTIGEN (HBs Ag ) ELISA",id:302},
-{name: "HEPATITIS B CORE ANTIBODY IgG( HBcAb )",id:303},
-{name: "HEPATITIS B CORE ANTIBODY (HbcAb) TOTAL",id:304},{name: "BREAST LUMP- M/C/S",id:305},{name: "BREAST LUMP M/C/S",id:306},
-{name: "OTHER SWAAB MC/S",id:307},{name: "T.B QUANTIFERON GOLD",id:308},{name: "HIV 1&2 ANTIBODIES",id:309},{name: "HEPATITIS C GENOTYPE",id:310},
-{name: "HEPATITIS  B  PROFILE",id:311},
-
-{name: "ROTAVIRUS/ADENOVIRUS COMBI TEST",id:312},{name: "VEROTOXIN/E.COLI 0157 COMBI TEST",id:313},{name: "PAEDIATRIC ALLERGY FOOD SCREEN",id:314},
-{name: "HERPES SIMPLEX VIRUS I (HSVI) IgG",id:315},{name: "HERPES SIMPLEX VIRUSI (HSV-I)IgM",id:316},
-{name: "HERPES SIMPLEX VIRUSII (HSV-II)IgG",id:317},
-{name: "HERPES SIMPLEX VIRUSII(HSV-II)IgM",id:318},{name: "PCR- HIV QUANTITATIVE",id:319},
-{name: "HAPETITIS B SURFACE ANTIGEN (qHBSAg) QUANTIFICATION",id:320},
-{name: "Skin Scrapping for Fungal test (KOH)",id:321},{name: "Sputum fungal Test (M/C/S)",id:322},
-{name: "CHLAMYDIA IgG ELISA (Serum)",id:323},{name: "Chlamydia IgM (ELISA) SERUM",id:324},{name: "MEASLES IgG/IgM",id:325},
-{name: "MUMPS IgG/IgM",id:326},{name: "SKIN SCRAPPING FOR MYCOLOGY",id:327},{name: "HIV DRUG RESISTANT ASSAY",id:328},
-{name: "HEPATITIS B CORE ANTIBODY IgM ELISA",id:329}];
-
-labTestList.listInfo6 = [{name: "CARBAMAZEPINE-S (TEGRETOL)",id:330},{name: "CANNABIS (blood/urine)",id:331},{name: "COCAINE (Urine )",id:332},
-{name: "OPIATES (Urine )",id:333},{name: "MORPHINE (Urine )",id:334},{name: "BARBITURATES (Urine )",id:335},{name: "AMPHETAMINE (Urine )",id:336},
-{name: "SERUM LEVETIRACETAM",id:337},{name: "BENZOLEDIAZIPAN",id:338},{name: "TACROLIMUS CONCENTRATION IN PLASMA",id:339},
-{name: "AFLATOXIN B1 LEVEL:",id:87},{name: "AFLATOXIN- M1 LEVEL:",id:88},{name: "ALCOHOL (BLOOD)",id:89}];
-
-labTestList.listInfo7 = [{name: "HBV DNA VIRAL LOAD",id:80},{name: "HCV RNA VIRAL LOAD",id:81},{name: "CELLULAR/GENETIC DNA TEST",id:82},
-{name: "HPV DNA TEST",id:83},
-{name: "HLA B27 STATUS",id:84},{name: "ANGIOTENSIN CONVERTING ENZYME (ACE LEVELS)",id:85},{name: "BCR-FGFR1 QUANTITATION",id:86}];
-  
-  
-  return labTestList;
-
-});
 
 //radiology data
 
-app.factory("scanTests",function(){
-var scanTestList = {};
 
-scanTestList.listInfo1 = [{name: "Chest X-ray (CXR)  1 view",price: 1000,id:1},{name: "Skull X-ray (FXR)  (2 View)",price:800,id:2},
-{name: "Pelvic  X-ray (1 view)",id:3},
-{name: "Intravenous Urography (IVU)",id:4},{name: "Barium Swallow (BS)",id:5},{name: "Barium Meal & follow through (BM&FT)",id:6},
-{name: "Retrograde Cystourethrogram(Uretrography)",id:7},{name: "Barium Enema",id:8},
-{name: "POST-NASAL SPACE(P.N.S)  Nasopharnyx (1 View)",id:9},{name: "Shoulder X-Ray (1 view)",id:10},
-{name: "Abdomen X-ray",id:11},{name: "Abdominal (Erect & Supine) X-ray",id:12},{name: "Ankle X-ray (2 Views)",id:13},
-{name: "Calcaneum X-ray (2 Views)",id:14},
-{name: "Neck/Cervical X-ray (2 Views)",id:15},{name: "Coccyx X-ray",id:16},{name: "Elbow joint X-ray (2 Views)",id:17},
-{name: "Femur/Thigh X-ray (2 views)",id:18},{name: "Finger X-ray (2 views)",id:19},{name: "Foot/Toe X-ray (2 Views)",id:20},
-{name: "Hand (Carpal/Metacarpal Bones) X-ray (2 Views)",id:21},{name: "Hip Joint X-ray (2 Views)",id:22},
-{name: "Humerus/Upper Arm X-ray (2 Views)",id:23},
-{name: "Knee X-ray (2 views)",id:24},{name: "Lumbo Sacral Spines X-ray (2 views)",id:25},{name: "Mastoid Air Cells",id:26},
-{name: "Micturating Cystourethrogram",id:27},{name: "Scapula X-ray (2 Views)",id:28},{name: "Sternum X-ray (2 Views)",id:29},
-{name: "Thoracic Inlets X-Ray (2 Views)",id:30},
-{name: "Tibia/Fibula (Leg) X-ray (2 Views)",id:31},{name: "Ulna/Radius (Forearm) X-ray",id:32},{name: "Wrist X-ray (2 views)",id:33},
-{name: "Forearm/Ulna/Radius X-ray (2 views)",id:34},{name: "Jaw Maxilla and Mandibles X-ray (2 Views)",id:35},
-{name: "Clavicular X-Ray (1 View)",id:36},{name: "Sternoclavicular Joints (2 views)",id:37},{name: "Thoracic Vertabrae X-Ray (2 Views)",id:38},
-{name: "Temporomandibular Joint (5 Views)",id:39},{name: "X-ray Paranasal sinuses - OM, OF, LAT.",id:40},
-{name: "CHEST X-RAY(PA and LAT.) 2 VIEWS",id:41},{name: "Ankle X-ray(3views)",id:42},{name: "Foot/Toe X-ray (3Views)",id:43},
-{name: "Fistulogram",id:44},
-{name: "Shoulder X-ray(3viiews)",id:45},{name: "Shoulder X-ray(2views)",id:46},{name: "VENOGRAM",id:47},
-{name: "Occipito-mental(OM) X-ray (1 view)",id:48},
-{name: "Hand X-ray (Carpal/Metacarpal:Both Hands)(4views)",id:49},
-{name: "Foot/Toe X-ray (Both Feet)(4views)",id:50},{name: "Knee X-ray (Both knees) (4views)",id:51},{name: "Ankle X-ray (Both Ankles)(4views)",id:52},
-{name: "Wrist X-ray (Both wrists) (4Views)",id:53},
-{name: "Tibia/Fibula X-ray (Both Legs)(4Views)",id:54},{name: "Femur/Thigh X-ray(Both Femoral/Thighs) (4Views)",id:55},
-{name: "X-ray Reporting Only",id:56},{name: "Myelogram",id:57},{name: "Clavicle X-ray (2 views)",id:58},{name: "Pelvimetry X-ray",id:59},
-{name: "Mastoids",id:60},
-{name: "TEMPORO-MANDIBULAR JOINT(TMJ) X-RAY X-ray 2views",id:61},{name: "Digital X-ray",id:62},{name: "LATERAL SOFT TISSUE (NECK)",id:63},
-{name: "Cervical Spine(Flexion and Extension) 2 Views",id:64},{name: "Retrograde Urethrogram",id:65},{name: "X-Ray CD Reprinting",id:66},
-{name: "HYSTEROSALPINOGRAM -HSG (DISPOSABLE)",id:67},{name: "HYSTEROSALPINOGRAM -HSG (NON-DISPOSABLE)",id:68},
-{name: "PROSTRATE USS",id:69},{name: "Lumbo Sacral Spine X-ray (3 Views)",id:70},
-{name: "Hand/Finger - NHIS",id:71},{name: "Wrist - NHIS",id:72},{name: "Foream - NHIS",id:73},{name: "Elbow - NHIS",id:74},
-{name: "Humerus - NHIS",id:75},{name: "Shoulder - NHIS",id:76},{name: "Clavicle - NHIS",id:77},
-{name: "Foot/Toe - NHIS",id:78},{name: "Ancle-NHIS",id:79},
-{name: "Leg (Tibia/Fibula NHIS",id:80},{name: "Knee -NHIS",id:81},{name: "Hip -NHIS",id:82},{name: "Femur or tThigh -NHIS",id:83},
-{name: "Pelvic -NHIS",id:84},{name: "Chest(PA/AP) - NHIS",id:85},{name: "Chest(PA/Latereal) - NHIS",id:86},
-{name: "Chest For Ribs (Oblique) - NHIS",id:87},{name: "Apical/Lordotic - NHIS",id:88},{name: "Stemum - NHIS",id:89},
-{name: "Thoracic Inlet - NHIS",id:90},
-{name: "Cervical Spine - NHIS",id:91},
-{name: "Lateral Neck(Soft Tissue - NHIS",id:92},{name: "Thoracic Spine - NHIS",id:93},{name: "Thoraco Lumba Spine - NHIS",id:94},
-{name: "Lumbar Spine - NHIS",id:95},{name: "Lumbo Sacral Spine - NHIS",id:96},{name: "Scrum - NHIS",id:97},
-{name: "Sacro Illiac Joint (S.I.J) - NHIS",id:98},
-{name: "Cervical Spine (Oblique) - NHIS",id:99},{name: "Sacro-coccxy - NHIS",id:100},
-{name: "Abdomen(Plain) - NHIS",id:101},{name: "Abdomen(Eract/Supine) - NHIS",id:102},{name: "Abdomen (Pregnancy) - NHIS",id:103},
-{name: "Skule(AP/Lat) - NHIS",id:104},{name: "Skulll(Pa/Lat/Townes) - NHIS",id:105},
-{name: "Mastoids - NHIS",id:106},{name: "Sinuses AP/LNT/OM - NHIS",id:107},{name: "Mandibles (Jaw) - NHIS",id:108},
-{name: "Temporo Mandibular Joints (TM) - NHIS",id:109},{name: "Sella Turcica - NHIS",id:111},{name: "Tangental - NHIS",id:112},
-{name: "Occipito-Mental (OM) - NHIS",id:113},
-{name: "Periapical - NHIS",id:114},{name: "Bitewings - NHIS",id:115},{name: "Panoramic View - NHIS",id:116},{name: "Barium Swallow - NHIS",id:117},
-{name: "Barium Meal/Follow through - NHIS",id:118},{name: "Barium enema - NHIS",id:119},{name: "Intravenus Urography (IVU) - NHIS",id:120},
-{name: "Hysterosalpingogram (HSG) - NHIS",id:121},{name: "Cysto-Urethorgram - NHIS",id:122},{name: "Fistulogram - NHIS",id:123},
-{name: "Myelogram - NHIS",id:124},{name: "Skeletal Survey (Adult) - NHIS",id:125},{name: "Electrocadography - NHIS",id:126},
-{name: "Eletro Encephalography",id:127},{name: "Mycturating Cyto-Urethrogram - NHIS",id:128},{name: "Phlebogram-One Leg - NHIS",id:129},
-{name: "Venogram-One Leg - NHIS",id:130},{name: "Arthrogram - NHIS",id:131},{name: "Sialogram - NHIS",id:132},{name: "Sinogram - NHIS",id:133},
-{name: "MRI Scan - NHIS",id:134},{name: "CT Scan - NHIS",id:135},{name: "Mammography - NHIS",id:136}];
-
-/*******Listing of Ultrasonography *************/    
-
-scanTestList.listInfo2 = [{name: "Obstetric/Gynaecology Scan",id:137},{name: "Female Pelvic Scan - With print out",id:138},
-{name: "Female Pelvic Scan - Without print out",id:139},{name: "Abdominal Scan emphasis - Liver (Hepatobillary) Scan",id:140},
-{name: "Ophthalmic Scan Per Eye",id:141},{name: "ECHOCARDIOGRAPHY(Cardiac Echo)",id:142},{name: "SPIROMETRY TEST",id:143},
-{name: "Doppler Ultrasound Per Region",id:144},{name: "Abdominal Scan",id:145},{name: "Abdominal Scan emphasis - Kidney (Renal Scan)",id:146},
-{name: "Abdominal Scan emphasis - Bowels",id:147},
-{name: "Abdominal Scan emphasis - Pancrease",id:148},{name: "Abdominal Scan emphasis - Spleen",id:149},
-{name: "Scrotal/Testicular Scan",id:150},{name: "Soft Tissue (Breast) scan",id:151},{name: "BREAST SCAN",id:152},
-{name: "TRANSVAGINAL SCAN",id:153},{name: "FONTANELLE USS",id:154},{name: "Folliculometry Scan",id:155},
-{name: "Soft Tissue(Neck/Thyroid etc) Scan",id:156},
-{name: "TRANSRECTAL SCAN",id:157},{name: "THYROID SCAN",id:158},{name: "Soft Tissue(Muscles) Ultrasound",id:159},
-{name: "Soft Tissue(Thigh) Scan",id:160},
-{name: "STRESS ECHOCARDIOGRAPHY(Stress Cardiac Echo)",id:161},{name: "Obstetric - 4D",id:162},{name: "Biophysical Profile - Obstetric",id:163},
-{name: "Ultrasound Print Out Per Sheet",id:164},{name: "Ultrasound Guided Biopsy",id:165},{name: "Abdomino-Pelvic Scan",id:166},
-{name: "SONO-HSG",id:167},{name: "HAND/FINGER (NHIS)",id:168},{name: "Obstetric Scan - NHIS",id:169},{name: "Abdominal Scann - NHIS",id:170},
-{name: "Pelvic Scan - NHIS",id:171},{name: "Breast Scan - NHIS",id:172},{name: "Bladder Scan - NHIS",id:173},
-{name: "Abdominal Pelvic Scan - NHIS",id:174},{name: "Prostate Scan - NHIS",id:175},{name: "Thyroid Scan - NHIS",id:176},
-{name: "Testes/scrotal Scan (each) - NHIS",id:177},{name: "Ovulometry/Tv Scan - NHIS",id:178},{name: "Trans-Fontanellar  (Children) - NHIS",id:179}];
-
-/********************Listing of Computerized Tomography Scan (C.T. SCAN)  **********************/   
-
-
-scanTestList.listInfo3 = [{name: "CT Scan Interpreting Only",id:180},{name: "BRAIN/SKULL C.T.SCAN-PLAIN (P)",id:181},
-{name: "Neck CT Scan (Cervical)-PLAIN",id:182},{name: "CT Scan Sinuses/Nasal Cavity",id:183},{name: "Abdominal/Pelvic CT Scan-PLAIN",id:184},
-{name: "CT Scan Pelvic Girdle (Pelvis)",id:185},{name: "Thoracic Spine CT Scan",id:186},{name: "Chest CT Scan-PLAIN",id:187},
-{name: "CT Scan Femur (thigh) and Related Soft Tissues",id:188},{name: "C.T.SCAN-Angiography Whole Body",id:189},
-{name: "C.T.SCAN-Angiography Regional",id:190},{name: "C.T.SCAN-Angiography (Interventional) Including Introduction of Stents",id:200},
-{name: "C.T.SCAN CD Result Recording Per Plate",id:201},{name: "Hand CT Scan (Fingers Included)",id:202},
-
-{name: "CT Scan Upper Arm (Humerus and Related Soft Tissues)",id:203},{name: "CT Scan Lower Arm (Ulna and Redius and Related Soft Tissues)",id:204},
-{name: "CT Scan Tibia and Fibula and Related Soft Tissues",id:205},{name: "Lumbosacral Spine C.T.SCAN",id:206},
-{name: "BRAIN/SKULL C.T.SCAN-SINGLE CONTRAST (P)",id:207},{name: "ABDOMINAL/PELVIC C.T.SCAN-SINGLE CONTRAST",id:208},
-{name: "ABDOMINAL/PELVIC C.T.SCAN-DOUBLE CONTRAST",id:209},{name: "ABDOMINAL/PELVIC C.T.SCAN-TRIPPLE CONTRAST",id:210},
-{name: "CHEST C.T.SCAN-SINGLE CONTRAST",id:211},{name: "CHEST C.T.SCAN-DOUBLE CONTRAST",id:212},{name: "CHEST C.T.SCAN-TRIPPLE CONTRAST",id:213},
-{name: "KNEE JOINT C.T.SCAN",id:214},{name: "NECK C.T. SCAN (SoftTissue) -Single Contrast",id:215},{name: "ELBOW JOINT C.T.SCAN",id:216},
-{name: "ORBITAL C.T.SCAN",id:217},{name: "C.T.SCAN-PELVIMETRY",id:218},{name: "EAR/MASTOIDS C.T.SCAN",id:219},{name: "C.T.SCAN-MYELOGRAM",id:220},
-{name: "MRI",id:221},
-{name: "MRI REPORTING ONLY",id:222},{name: "ANKLE C.T.SCAN",id:223},{name: "C.T.SCAN-Angiography including Tripple Screen/Cardiac Study",id:224},
-{name: "C.T.SCAN- Perfusion(Specify Organ/Tissue)",id:225},{name: "C.T.SCAN-Colonoscopy(Virtual Colonoscopy)",id:226},
-{name: "C.T.SCAN-Pneumography",id:227},{name: "C.T.SCAN-Calcium Scoring (for increased Specificity of FRAMINGHAM SCORE)",id:228},
-{name: "C.T.SCAN-KUB (Kidney,Ureter & Bladder)",id:229},{name: "C.T.SCAN-Bronchoscopy(Virtual Bronchoscopy)",id:230},
-
-{name: "C.T.SCAN-VENOGRAPHY",id:231},{name: "C.T Scan of the jaws (maxilla and mandibles and related soft tissues",id:232},
-  {name: "CT Scan Paranasal Sinusis",id:233},
-{name: "CT Scan Myelography",id:234},{name: "CT Scan IVU",id:235},{name: "CT Scanogram",id:236},
-{name: "CT Scan Abdomen",id:237},{name: "C.T Scan Facial Bones",id:238},
-{name: "C.T Scan Head and Neck",id:239},{name: "CT-Scan-PELVIMETRY",id:240},{name: "CT CD Reprinting",id:241},
-{name: "ANGIOGRAPHY STUDIES",id:242},{name: "ABDOMINAL/PELVIC C.T. SCAN-DOUBLE/TRIPLE CONTRAST (P)",id:243},
-{name: "ABDOMINAL/PELVIC C.T. SCAN-SINGLE CONTRAST (P)",id:244},
-{name: "ABDOMINAL/PELVIC C.T. SCAN-PLAN (P)",id:245},
-{name: "ANKLE C.T. SCAN (P)",id:246},{name: "S",id:247},{name: "BRAIN/SKULL C.T.SCAN-SINGLE CONTAST",id:248},
-{name: "C. T. SCAN FACIAL BONES (P)",id:249},
-{name: "C. T. SCAN HEAD AND NECK (P)",id:250},{name: "C. T. SCAN OF THE JAWS (MAXILLA AND MANDIBLES) (P)",id:251},
-{name: "C. T. SCAN CD RESULT RECORDING PER PLATE (P)",id:252},{name: "C.T. SCAN REPORTING (P) (P)",id:253},
-{name: "C. T. SCAN-ANGIOGRAPHY (CARDIAC STUDY) (P)",id:254},{name: "C. T. SCAN-ANGIOGRAPHY REGIONAL (P)",id:255},
-
-{name: "C. T. SCAN-ANGIOGRAPHY WHOLE BODY (P)",id:256},
-{name: "C. T. SCAN-CALCIUM SCORING (FOR INCREASED SPECDIFICITY OF FRAMINGHAM SCORE) (P)",id:257},
-{name: "C. T. SCAN-COLONOSCOPY (VIRTUAL COLONOSCOPY) (P)",id:258},{name: "C. T. SCAN-KUB (KIDNEY, URETER & BLADDER) (P)",id:259},
-{name: "CHEST C.T. SCAN-SINGLE CONTRAST (P)",id:260},{name: "CHEST C.T. SCAN-PLAIN (P)",id:261},{name: "CHEST C.T. SCAN-DOUBLE CONTRAST (P)",id:262},
-{name: "CHEST C.T. SCAN-TRIPLE CONTRAST (P)",id:263},{name: "CHEST C.T. SCAN REPORTING (P)",id:264},{name: "C.T. SCAN ABDMEN (P)",id:265},
-{name: "CHEST C.T. SCAN FEMUR (THIGH) AND RELATEED SOFT TISSUES (P)",id:266},{name: "C.T. SCAN INTERPRETING ONLY (P)",id:267},
-{name: "C.T. SCAN IVU (P)",id:268},{name: "C.T. SCAN LOWER ARM (ULNA AND RADIUS AND RELATED SOFT TISSUES) (P)",id:269},
-{name: "C.T. SCAN MYELOGRAPHY (P)",id:270},{name: "C.T. SCAN PELVIC GIRDLE (PELVIS) (P)",id:271},{name: "C.T. SCAN SINUSES/NASAL CAVITY (P)",id:272},
-{name: "C.T. SCAN TIBIA AND FIBULA AND RELATEDE SOFT TISSUES (P)",id:273},{name: "C.T. SCAN UPPER ARM (HUMERUS AND RELATED SOFT TISSUES) (P)",id:274},
-{name: "EAR/MASTODIDS C.T. SCAN (P)",id:275},{name: "ELBOW JOINT C.T. SCAN (P)",id:276},
-{name: "HAND C. T. SCAN (FINGERS INCLUDED) (P)",id:277},{name: "KNEE JOINT C.T. SCAN (P)",id:278},{name: "LUMBO-SACRAL SPINE C.T. SCAN (P)",id:279},
-{name: "NECK C. T. SCAN (SOFT TISSUE) - SINGLE CONTRAST (P)",id:280},{name: "NECK C. T. SCAN (CERVICAL) - PLAIN (P)",id:281},
-{name: "ORBITAL C.T. SCAN (P)",id:282},{name: "THORACIC SPINE S.T. SCAN (P)",id:283},{name: "C.T. HEAD AND NECK (P)",id:284},
-{name: "THORACOLUMBAR CT",id:285},
-{name: "C. T. BRAIN",id:286}]
-
-
-/************** Listing of ECG  ****************/
-
-scanTestList.listInfo4 = [{name: "ECG  12 Lead/Analysis NORMAL ECG @ REST)",id:287},{name: "STRESS ECG(ECG @ EXERCISE)",id:288},
-{name: "HOLTER/AMBULATORY ECG",id:289}];
-
-/**************** Listing of MRI  ************/ 
-
-scanTestList.listInfo5 = [{name: "MRI - ABDOMINO-PELVIC SCAN-SINGLE CONTRAST",id:290},{name: "MRI - ABDOMINO-PELVIC SCAN PLAIN",id:291},
-{name: "MRI - ANKLE SCAN",id:292},{name: "MRI - BRAIN SCAN-PLAIN",id:293},{name: "MRI - BRAIN SCAN-CONTRAST",id:294},
-{name: "MRI - RESULT RECORDING PER PLATE(FPR REPLACEMENT)",id:295},
-{name: "FUNCTIONAL MRI (FMRI)",id:296},{name: "MRI -CERVICAL SPINE",id:297},{name: "MRI - THORACIC SPINE",id:298},
-{name: "MRI - LUMBOSACRAL SPINE",id:299},
-{name: "MRI - ABDOMEN",id:300},
-{name: "MRI - PELVIC",id:301},{name: "MRI - CHEST",id:302},{name: "MRI - EXTREMITIES-KNEES, ANKLES, SHOULDER JOINT",id:303},
-{name: "MRI - ANGIOGRAPHY STUDIES",id:304},{name: "MRI Spectroscopy",id:305},{name: "MRI - Screening One Sequence",id:306},
-{name: "MRI CD Reprinting",id:307},
-{name: "MRI - Chol-Pancreatography",id:308},{name: "MRI -ANGIOGRAPHY STUDIES (PEDIATRIC)",id:309},{name: "MRI CHOL-PANCREATOGRAPHY (PEDIATRIC)",id:310},
-{name: "MRI SCREENING ONE SEQUENCE (PEDIATRIC)",id:311},{name: "MRI -ABDOMINO-PELVIC SCAN-SINGLE-CIBTRAST (PEDIATRIC)",id:312},
-{name: "MRI -ABDOMINO-PELVIC SCAN-PLAIN (MRCP) (PEDIATRIC)",id:313},{name: "MRI -ANKLE SCAN (PEDIATRIC)",id:314},
-{name: "MRI -BRAIN SCAN-PLAIN (PEDIATRIC)",id:315},{name: "MRI -BRAIN SCAN-CONTRAST (ANGIO)",id:316},
-{name: "MRI REPORTING ONLY (PEDIATRIC)",id:317},{name: "MRI RESULT RECORDING PER PLATE (FOR A REPLACEMENT) (PEDIATRIC)",id:318},
-{name: "MRI CD REPRINTING (PEDIATRIC)",id:319},{name: "FUNCTIONAL MRI (FMR)(PEDIATRIC)",id:320},
-{name: "MRI -CERVICAL SPINE(PEDIATRIC)",id:321},{name: "THORACIC SPINE(PEDIATRIC)",id:322},{name: "MRI -LUMBOSACRAL SPINE(PEDIATRIC)",id:323},
-{name: "MRI -ABDOMEN(PEDIATRIC)",id:324},
-{name: "PELVIC SCAN SINGLE CONTRAST(PEDIATRIC)",id:325},{name: "MRI -CHEST(PEDIATRIC)",id:326},
-{name: "MRI -EXTREMITIES-KNEES, ANKLES, SHOULDER JOINT(PEDIATRIC)",id:327},
-{name: "MRI Total Spine (CBN)",id:328},{name: "MRI - LEG",id:329},{name: "MRI BRAIN (P) WITH CONTRAST",id:330},
-{name: "MRI PELVIS PAEDIATRICS",id:331}];
-
-
-/***************** Listing of MAMMOGRAM   ********************/
-
-scanTestList.listInfo6 = [{name: "MAMMOGRAPHY - SINGLE BREAST(ADDITIONAL VIEW)",id:332},
-{name: "MAMMOGRAPHY - SINGLE BREAST(PREVIOUS MASTECTOMY)",id:333},
-{name: "MAMMOGRAPHY WITH STEREOTACTIC BIOPSY",id:334},{name: "MAMMOGRAPHY - BOTH BREASTS (TWO VIEWS)",id:335}];
-
-  
-  return scanTestList;
-});
 
 app.factory("Drugs",function(){
 

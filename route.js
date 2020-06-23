@@ -1739,8 +1739,7 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
 
     //route for qusetions and requsts from patients to a doctor through the modal
     router.post("/user/patient/doctor/connection",function(req,res){
-      if(req.user){    
-       
+      if(req.user){   
         req.body.sender_firstname = req.user.firstname;
         req.body.sender_lastname = req.user.lastname;
         req.body.sender_profile_pic_url = req.user.profile_pic_url;
@@ -1820,9 +1819,9 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
           );
 
           //} else if(data.presence  && data.set_presence.general  && req.body.type === "question"){  
-          if(data.presence  && data.set_presence.general  && req.body.type === "question") {      
+          /*if(data.presence  && data.set_presence.general  && req.body.type === "question") {      
             io.sockets.to(req.body.receiverId).emit("receive consultation request",{status: "success",type:"question"});
-          }
+          }*/
 
           var consult = new model.consult({
             patient_name: req.user.title + " " + req.user.firstname + " " + req.user.lastname,
@@ -1890,9 +1889,8 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
         });
       
       } else {
-        res.redirect("/login");
+        res.send({status:false});
       }
-        
     });
 
     router.post("/user/admin/redirect-consultation",function(req,res){
@@ -2774,7 +2772,7 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
             if(req.body.ref_id) {
               ref_id = req.body.ref_id;
             } else {
-              ref_id = randos.genRef(6);
+              ref_id = randos.genRef(7);
             }
 
             var title = (req.user.type === "Doctor") ? 'Dr.': "";            
@@ -9783,10 +9781,15 @@ router.get('/user/getAllPharmarcy',function(req,res){
     model.user.find({type:"Pharmacy"},function(err,data){
       res.send({count:data.length,data:data});
     })
-  } else {
-    res.redirect("/login")
-  }
+  } 
 });
+
+router.get("/home/getAllPharmarcy",function(req,res){
+  model.user.find({type:"Pharmacy"},{name:1})
+  .exec(function(err,data){
+    res.json(data);
+  })
+})
 
 router.get('/user/getAllLaboratory',function(req,res){
   if(req.user){
@@ -10357,7 +10360,8 @@ router.get("/general/homepage-search",function(req,res){
 
     if(req.query.item) {
       model.services.find(criteria,
-        {center_name:1,center_city:1,center_address:1,center_country:1,center_phone:1,user_id:1,unavailable_services:1,_id:0,profile_url:1},function(err,data){
+        {center_name:1,center_city:1,center_address:1,center_country:1,
+          center_phone:1,user_id:1,unavailable_services:1,_id:0,profile_url:1,profile_pic_url:1},function(err,data){
         if(err) throw err;
         var newListToSend = [];        
         var sendObj = {};
@@ -10441,9 +10445,10 @@ router.get("/general/homepage-search",function(req,res){
           res.send(sub)
         })
       } else {
-        model.user.find(criteria,{address:1,name:1,profile_pic_url:1,city:1,country:1,user_id:1,profile_url:1,title:1},function(err,data){
+        model.user.find(criteria,{address:1,name:1,profile_pic_url:1,city:1,country:1,user_id:1,profile_url:1,title:1,phone:1})
+        .limit(100)
+        .exec(function(err,data){        
           if(err) throw err;
-          console.log(data);
           var sub = {};
           sub['full'] = data;
           res.send(sub)
@@ -10451,9 +10456,13 @@ router.get("/general/homepage-search",function(req,res){
       }
 
   } else if(req.query.category === "Doctor") {
-    console.log(req.query)
+    
+    if(req.query.item === "live-doctors"){
 
-    if(req.query.item) {  
+      var criteria = {isFirstline:true,type: "Doctor"}
+
+    } else if(req.query.item) {  
+
       var first4 = (req.query.item.substring(0,2) !== 'Dr' || req.query.item.substring(0,2) !== 'Prof') ?
        req.query.item.substring(0,5) : req.query.item;
       var str = new RegExp(first4.replace(/\s+/g,"\\s+"), "gi");              
@@ -10480,7 +10489,8 @@ router.get("/general/homepage-search",function(req,res){
     var sendObjList = {}
 
     model.user.find(criteria,{firstname:1,lastname:1,work_place:1,city:1,country:1,address:1,
-      specialty:1,_id:0,profile_pic_url:1,education:1,user_id:1,title:1,name: 1,profile_url:1,verified:1,experience:1})
+      specialty:1,_id:0,profile_pic_url:1,education:1,user_id:1,title:1,name: 1,profile_url:1,
+      verified:1,experience:1,isFirstline:1})
       .limit(200)
       .exec(function(err,data){
       if(err) { 
@@ -10783,6 +10793,7 @@ router.get("/general/homepage-search",function(req,res){
 });
 
 router.get("/dynamic-service",function(req,res){ 
+  //these are drugs added by centers dynamically
   model.dynaService.findOne({type: req.query.category},function(err,data){
     if(err) throw err;
     if(!data){
@@ -10790,7 +10801,6 @@ router.get("/dynamic-service",function(req,res){
     } else {
       res.send(data.test_list);
     }
-   console.log(data)
   });
 });
 
@@ -12567,12 +12577,50 @@ router.get('/user/video',function(req,res){
     res.redirect('login')
   }
   
-})
-
+});
 
 router.get("/find-doctors",function(req,res){
   res.render('find-doctor')
-})
+});
+
+router.get("/find-drugs",function(req,res){
+  res.render('find-drugs')
+});
+
+router.get("/symptom",function(req,res){
+  res.render("symptomchecker")
+});
+
+router.get("/symptom-checker",function(req,res){
+  res.render("symptoms-find")
+});
+
+router.get("/user/getuser",function(req,res){
+  if(req.user){
+    res.json({
+      isLoggedIn: true,
+      name: req.user.name,
+      title: req.user.title,
+      firstname: req.user.firstname,
+      lastname: req.user.lastname,
+      phone: req.user.phone,
+      email: req.user.email,
+      user_id: req.user.user_id,
+      address: req.user.address,
+      work_place: req.user.work_place,
+      city: req.user.city,
+      country: req.user.country,
+      gender: req.user.gender,
+      age: req.user.age,
+      type: req.user.type,
+      profile_pic_url: req.user.profile_pic_url
+    })
+  } else {
+    res.json({isLoggedIn: false})
+  }
+});
+
+
 
 
 
