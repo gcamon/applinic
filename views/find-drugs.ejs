@@ -1038,19 +1038,25 @@
 
                         <div class="card text-left pb-2 pt-2" style="font-size: 20px;" ng-show="isCart || user.item">
                             <div>
-                                <label class="custom-control custom-checkbox">
-                                  <input type="checkbox"  ng-model="user.isCourier">
+                                <h5 class="h6 p-2"> <i class="fa fa-motorcycle"></i> <b>Would you want us to deliver above item(s) to your location?</b> </h5>
+                                <label class="custom-control custom-checkbox" style="display: inline-block;">
+                                  <input type="radio" value="yes"  ng-model="user.isCourier">
                                   <span class="custom-control-description" > 
-                                  <span class=""> Check this if you want us to deliver above drug(s) to your location.</span> <i class="fa fa-motorcycle"></i></span>
+                                  <span style="font-size: 18px"> Yes </span> </span>
+                                </label>
+                                <label class="custom-control custom-checkbox" style="display: inline-block;">
+                                  <input type="radio" value="no"  ng-model="user.isCourier">
+                                  <span class="custom-control-description" > 
+                                  <span style="font-size: 18px"> No </span> </span>
                                 </label>
                             </div>
-                            <div ng-if="user.isCourier">
+                            <div ng-if="user.isCourier === 'yes'">
                                 <div class="col-md-5 p-4">
-                                    <label>Enter Delivery Address</label><br>
-                                    <input type="text" name="" class="form-control" ng-model="user.address" placeholder="Enter your current Address">
+                                    <h6>Enter Delivery Address</h6>
+                                    <input type="text" name="" class="form-control" ng-model="user.address" placeholder="Enter your current location">
                                 </div>
-                                <div class="col-md-5 p-4">
-                                    <label>We'll call this line</label><br>
+                                <div class="col-md-5 pl-4 pb-2">
+                                    <h6>We'll call this line</h6>
                                     <input type="text" name="" class="form-control" ng-model="user.phone" placeholder="Enter your phone number">
                                 </div>
                                 <div class="clearfix"></div>
@@ -1062,7 +1068,7 @@
                         <div class="card pt-2">
                             <div class="row">
                                 <div class="col-md-8">
-                                    <h6 class="text-left p-2"><b>Choose a center</b></h6>
+                                    <h6 class="text-left p-2"><b>Choose a center below</b></h6>
                                 </div>
                                 <div class="col-md-4">
                                      <input type="text" name="" placeholder="Filter center" class="form-control " ng-model="fter">
