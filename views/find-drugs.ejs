@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" ng-app="myApp">
 
 <head>
 
@@ -7,19 +7,23 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-
    
-
    
-    <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
+    
+    
+
+    <script src="https://kit.fontawesome.com/5d5c57c2c4.js" crossorigin="anonymous"></script>
+   
+   <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
+   
     <link rel="icon" type="image/png" href="/assets/images/favicon.png">
 
     <link rel="stylesheet" href="/assets/css/icomoon.css">
 
    
-    
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="/assets/js/source.js"></script>
      <!--<link rel="stylesheet" href="/assets/css/app.css">-->
     <!-- Latest compiled and minified JavaScript -->
     <!--<script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js"></script>-->
@@ -425,13 +429,9 @@
     </style>
 
     <!--<link rel="stylesheet" href="/assets/css/main.css">-->
-    <script src="/assets/js/core/jquery.3.2.1.min.js" type="text/javascript"></script>
-    <script type="text/javascript" src="/assets/js/source.js"></script>
-    <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>-->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-    <script type="text/javascript" src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+    <!--<script src="/assets/js/core/jquery.3.2.1.min.js" type="text/javascript"></script>-->
+    
 
-    <script src="https://kit.fontawesome.com/5d5c57c2c4.js" crossorigin="anonymous"></script>
 
     <script type="text/javascript">
         var Opera = (navigator.userAgent.match(/Opera|OPR\//) ? true : false);
@@ -451,8 +451,64 @@
     </script>
 </head>
 
-<body ng-app="myApp">
-    <section id="main-wrap" ng-controller="hompageController">
+<body ng-controller="hompageController">
+
+     <nav class="navbar navbar-expand-sm bg-white" style="padding-top: 5px">           
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">
+                <img src="/assets/images/logo.png" alt="Applinic" style="vertical-align: middle;">
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbarSingle">
+             <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="collapsibleNavbarSingle">
+                <ul class="navbar-nav">
+                   <li class="nav-item" style="margin-right: 10px">  
+                                              
+                        <a href="/find-doctors" class="btn btn-outline-success nav-link">
+                          Consult a Doctor
+                        </a>
+                        
+                                                 
+                    </li>
+                    <li  class="nav-item" style="margin-right: 10px">
+                        <a href="/find-drugs" class="btn btn-outline-success nav-link active text-white">
+                          Buy Drugs &amp; Kits
+                        </a>
+                    </li>
+                    <li class="nav-item" style="margin-right: 10px">
+                        <a href="/symptom-checker" class="btn btn-outline-success nav-link">
+                          Symptoms Checker
+                        </a>
+                    </li>
+                    <li class="nav-item" style="margin-right: 10px">
+                        <a href="/covid-19" class="btn btn-outline-success nav-link">
+                           Covid-19 Screening Test
+                        </a>
+                    </li>
+                    <li class="nav-item" style="margin-right: 30px">
+                        <a href="/find-doctors" class="btn btn-outline-success nav-link">
+                          Chat with live Physicians
+                        </a>
+                    </li>
+                    <li ng-show="!checkLogIn.user_id" class="nav-item" ng-cloak>
+                        <a ng-click="loginIntOAcc()" class="btn nav-link btn-outline-danger">
+                            Log In 
+                        </a>
+
+                        
+                    </li>
+                    <!--<a href="/signup" class="btn btn-outline-success">Sign Up </a>-->
+                    <li ng-show="checkLogIn.user_id" class="nav-item" ng-cloak>
+                        <a href="" ng-click="todashboard(checkLogIn.typeOfUser)" class="btn btn-outline-success"> Go to dashboard</a>
+                    </li>
+                </ul>
+            </div>
+        </div> 
+    </nav>
+
+    <section id="main-wrap" >
         <!--<div id="mySidenav" class="sidenav">
             <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
             <a href="#"><span><i class="fas fa-briefcase-medical"></i></span> Book appointment</a>
@@ -464,18 +520,18 @@
        
         <div  style="background-color: #fff;padding: 15px">
             <section class="row" id="doctors-search">
-                <div class="col-md-2 pb-3" ng-cloak>
-                    <a class="navbar-brand" href="/">
+                <div class="col-md-1 pb-3" ng-cloak>
+                   <!-- <a class="navbar-brand" href="/">
                         <img src="/assets/images/logo.png" alt="Applinic" style="vertical-align: middle;">
-                    </a>
-                    <div ng-show="!checkLogIn.user_id" class="pt-2">
+                    </a>-->
+                    <!--<div ng-show="!checkLogIn.user_id">
                         <a href="" ng-click="loginIntOAcc()" class="btn btn-sm btn-simple">Log In </a>&nbsp;&nbsp;
 
                         <a href="/signup" class="btn btn-sm btn-simple">Sign Up </a>
-                    </div>
-                    <div ng-show="checkLogIn.user_id" class="pt-2">
+                    </div>-->
+                    <!--<div ng-show="checkLogIn.user_id" class="pt-2">
                         <a href="" ng-click="todashboard(checkLogIn.typeOfUser)" class="btn btn-simple"><i class="fa fa-arrow-left"></i> Go to dashboard</a>
-                    </div>
+                    </div>-->
 
                 </div>
                 <form class="col-md-8 pb-3" ng-submit="find()">
@@ -506,7 +562,7 @@
                                     <option data-divider="true"></option>
                                     <option data-tokens="frosting">Pediatric Dentist</option>
                                   </select>-->
-                                <small class="form-text text-muted">You can search for centers's or use drug name and find center that has the drugs closest to you.</small>
+                                <small class="form-text text-muted">You can search with center's name or drug name.</small>
                             </div>
                         </div>
                         <div class="col-md-2">
@@ -532,17 +588,16 @@
                 </button>
                 <div class="collapse navbar-collapse" id="collapsibleNavbar">
                     <ul class="navbar-nav">
-                       <li class="nav-item">    
-                            <div class="dropdown">                        
-                                <a class="btn nav-link dropdown-toggle text-white" href="" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                  COVID 19 KIT
-                                </a>
-                                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                    <a class="dropdown-item" href="" ng-click="getKit('Drug','COVID-19 self-protection kit')">COVID-19 self-protection kit</a>
-                                    <div class="dropdown-divider"></div>
-                                  
-                                </div> 
-                            </div>                           
+                       <li class="nav-item dropdown">   
+                                                  
+                            <a class="btn nav-link dropdown-toggle text-white" href="" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                              COVID 19 KIT
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <a class="dropdown-item" href="" ng-click="getKit('Drug','COVID-19 self-protection kit')">COVID-19 self-protection kit</a>                                
+                              
+                            </div> 
+                                                     
                         </li>
                         <li class="nav-item">
                             <div class="dropdown">
@@ -999,7 +1054,7 @@
                             </div>-->
                         </div>
                     </section>
-                    <section style="margin-bottom: 30px;" ng-cloak ng-show="section == 'cartArea' || isCart">
+                    <section style="margin-bottom: 30px;background-color: #f5f5f5;padding: 10px" ng-cloak ng-show="section == 'cartArea' || isCart" >
                         <div class="row">
                             <div class="col-md-6">                 
                                 <h4 class="mt-4 mb-4 h5" ng-cloak style="text-transform: capitalize;"><i class="fa fa-cart-plus"></i> Cart ( {{cart.length}} ) </h4>
@@ -1396,17 +1451,18 @@
       }
     </script>
 
-    <script src="assets/js/core/tether.min.js" type="text/javascript"></script>
-    <script src="assets/js/core/bootstrap.min.js" type="text/javascript"></script>
-    <!--  Plugin for Switches, full documentation here: http://www.jque.re/plugins/version3/bootstrap.switch/ -->
-    <script src="assets/js/plugins/bootstrap-switch.js"></script>
-    <!--  Plugin for the Sliders, full documentation here: http://refreshless.com/nouislider/ -->
-    <script src="assets/js/plugins/nouislider.min.js" type="text/javascript"></script>
-    <!--  Plugin for the DatePicker, full documentation here: https://github.com/uxsolutions/bootstrap-datepicker -->
-    <script src="assets/js/plugins/bootstrap-datepicker.js" type="text/javascript"></script>
+
+
+
+   
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+   
+   
     <!-- Control Center for Now Ui Kit: parallax effects, scripts for the example pages etc -->
-    <script src="assets/js/now-ui-kit.js" type="text/javascript"></script>
-    <script src="/assets/js/app.js"></script>
+    <!--<script src="assets/js/now-ui-kit.js" type="text/javascript"></script>
+    <script src="/assets/js/app.js"></script>-->
 
 
     <!--<script type="text/javascript" src="/assets/js/angularclient.js"></script>-->

@@ -637,7 +637,7 @@ app.controller("hompageController",["$scope","cities","Drugs","$http",
 
       $rootScope.cart.forEach(function(cartItem){
       
-        if($rootScope.user.isCourier){
+        if($rootScope.user.isCourier === 'yes'){
 
           url = "/user/courier";
           method = "POST";    
