@@ -8789,6 +8789,7 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
         })
       .success(function(data) {
         $scope.loading = false;
+        console.log(data)
         if(data.success) {  
           $scope.message = "Prescription sent !!!" ;  
           if(patient.courierObj && $scope.treatment.referral_pays === 'Yes'){
