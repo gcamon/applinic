@@ -434,7 +434,7 @@ app.controller("hompageController",["$scope","cities","Drugs","$http",
       }
     })
 
-    $scope.allKits = Object.keys(filter);
+    $rootScope.allKits = Object.keys(filter);
     
 
     $scope.getKit("Drug",'Malaria');
@@ -447,7 +447,7 @@ app.controller("hompageController",["$scope","cities","Drugs","$http",
     })
   }) 
 
-  $scope.getKit = function(type,name) {
+  $rootScope.getKit = function(type,name) {
     $scope.kits = filter[name];
     $scope.section = 'kits';
     //$location.hash('kitArea')
@@ -456,8 +456,30 @@ app.controller("hompageController",["$scope","cities","Drugs","$http",
 
 
   $scope.clearCart = function() {
-    $rootScope.cart.splice(0)
-    localManager.setValue("cart",$rootScope.cart)
+    $rootScope.cart.splice(0);
+    localManager.setValue("cart",$rootScope.cart);
+    $scope.resetSelected();
+  }
+
+  $scope.resetSelected = function(id) {
+    for(k in filter){
+      if(filter.hasOwnProperty(k)){
+        if(id){
+          for(var a = 0; a < filter[k].content.length; a++){ 
+            if(filter[k].content[a].cartId === id){
+              filter[k].content[a].isAdded = false;
+              break;
+            }
+          }
+        } else {
+          for(var a = 0; a < filter[k].content.length; a++){ 
+            if(filter[k].content[a].isAdded){
+              filter[k].content[a].isAdded = false;
+            }
+          }
+        }
+      }
+    }
   }
 
 
@@ -471,11 +493,10 @@ app.controller("hompageController",["$scope","cities","Drugs","$http",
       $rootScope.cart.push({
         id: itemObj.cartId,
         content: itemObj.content
-      })
-     
+      })     
       localManager.setValue("cart",$rootScope.cart);
     } else {
-      cartElemPos = $rootScope.cart.map(function(x){return x.id}).indexOf(itemObj.cardId)
+      cartElemPos = $rootScope.cart.map(function(x){return x.id}).indexOf(itemObj.cartId)
       if(cartElemPos !== -1){
         $rootScope.cart.splice(cartElemPos,1);
         localManager.setValue("cart",$rootScope.cart);
@@ -550,13 +571,16 @@ app.controller("hompageController",["$scope","cities","Drugs","$http",
 
   $scope.viewCart = function() {
     $scope.section  = 'cartArea';
-    $anchorScroll()
+    $anchorScroll();
   }
 
-  $scope.deleteItemInCart = function(id) {
-    var elemPos = $rootScope.cart.map(function(x){x.id}).indexOf(id);
-    $rootScope.cart.splice(elemPos,1)
-    localManager.setValue("cart",$rootScope.cart);
+  $scope.deleteItemInCart = function(item) {      
+    var elemPos = $rootScope.cart.map(function(x){return x.id}).indexOf(item.id);
+    if(elemPos !== -1){
+      $rootScope.cart.splice(elemPos,1)
+      localManager.setValue("cart",$rootScope.cart);
+      $scope.resetSelected(item.id); 
+    }
   }
 
   $scope.find = function(isCartItem) {
@@ -602,6 +626,18 @@ app.controller("hompageController",["$scope","cities","Drugs","$http",
   		modal.close.then(function(result) {             
   		});
   	});
+  }
+
+  $scope.chooseKit = function() {
+    ModalService.showModal({
+      templateUrl: 'choose-kit.html',
+      controller: 'chooseKitModalCtrl'
+    }).then(function(modal) {
+      modal.element.modal();
+      modal.close.then(function(result) {
+        console.log(result)             
+      });
+    });
   }
 
   $scope.forward = function(center) { 	
@@ -751,6 +787,11 @@ app.controller("hompageController",["$scope","cities","Drugs","$http",
   //$scope.find();
 
 }]);
+
+app.controller("chooseKitModalCtrl",['$scope','$rootScope',
+  function($scope,$rootScope){
+
+}])
 
 app.service("chatService",["$resource",function($resource){
 

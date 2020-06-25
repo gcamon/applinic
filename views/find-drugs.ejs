@@ -125,6 +125,11 @@
         .capitalize {
             text-transform: capitalize;
         }
+
+        .block {
+            display: block;
+            height: 100%
+        }
         
         .bg-green {
             color: #85CE36 !important;
@@ -368,6 +373,14 @@
         .flip-card-back h1 {
             border-bottom: 1px solid;
         }
+
+        .no-mobile-item-display {
+            display: block!important;
+        }
+
+        .mobile-item-display {
+            display: none!important;
+        }
         
         @media screen and (max-height: 450px) {
             .sidenav {
@@ -381,7 +394,18 @@
         
         @media (max-width: 575.98px) {}
         /* Small devices (landscape phones, less than 768px) */
-        
+
+        @media screen and (max-width: 699px) {
+
+            .no-mobile-item-display {
+                display: none!important;
+            }
+
+            .mobile-item-display {
+                display: block!important;
+            }
+
+        }
         @media (max-width: 767.98px) {
             .col-md-9 {
                 background-color: honeydew;
@@ -459,7 +483,8 @@
                 <img src="/assets/images/Logo.png" alt="Applinic" style="vertical-align: middle;">
             </a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbarSingle">
-             <span class="navbar-toggler-icon"></span>
+             <!--<span class="navbar-toggler-icon"></span>-->
+             <i class="fa fa-bars text-success"></i>
             </button>
             
             <div class="collapse navbar-collapse" id="collapsibleNavbarSingle">
@@ -534,7 +559,7 @@
                     </div>-->
 
                 </div>
-                <form class="col-md-8 pb-3" ng-submit="find()">
+                <form class="col-md-8 pb-1" ng-submit="find()">
                     <div class="row">
                         <div class="col-md-5 pb-3">
                             <div class="form-group">
@@ -581,10 +606,12 @@
                
             </section>
         </div>
-        <nav class="navbar navbar-expand-sm bg-success text-white">           
+        <!--<div style="height: 7px" class="bg-success"></div>-->
+        <nav class="navbar navbar-expand-sm bg-success">           
             <div class="container-fluid">
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
-                 <span class="navbar-toggler-icon"></span>
+                 <!--<span class="navbar-toggler-icon"></span>-->
+                 <i class="fa fa-bars text-white"></i>
                 </button>
                 <div class="collapse navbar-collapse" id="collapsibleNavbar">
                     <ul class="navbar-nav">
@@ -781,10 +808,10 @@
 
            
         </nav>
-        <div style="height: 7px" class="bg-success"></div>
+       
         <p class="text-center pt-2" ng-show="loading"><a href="" class="btn btn-neutral bg-white btn-sm">Loading...</a></p>
         
-         <div class="main" style="width:95%; margin: 0 auto; margin-top:30px">
+        <div class="main" style="width:95%; margin: 0 auto; margin-top:30px">
             <!--<section>
                 <p><strong>Home</strong> > <span>skin care</span></p>
             </section>-->
@@ -799,16 +826,20 @@
                     </div>
 
                     <div class="mb-3">
+                         <button class="btn-block btn btn-outline-success" ng-click="chooseKit()"><i class="icon-Pills"></i> Choose Drug Kits</button>
+                    </div>
+
+                    <div class="mb-3 no-mobile-item-display">
                         <h4 class="h6"><strong>All Drug Kits</strong></h4>
                     </div>
 
-                    <div class="container side-sticky" ng-cloak>
-                        <div class="row">
+                    <div class="container side-sticky " ng-cloak>
+                        <div class="row no-mobile-item-display" >
                             <section class="bg-white w-100">
                                 <div class="bg-image">
                                     <!-- collapse -->
                                     <div class="container">
-                                        <div class="panel-group" id="accordion">
+                                        <div class="panel-group" id="accordion"  style="height: 800px;overflow-y: auto;">
                                             <div class="panel panel-default" ng-repeat="d in allKits">
                                                 <div class="panel-heading">
                                                     <h5 class="panel-title h6 capitalize">
@@ -825,7 +856,7 @@
                                                 </div>-->
                                             </div>
 
-                                            <div class="panel panel-default pt-4">
+                                            <!--<div class="panel panel-default pt-4">
                                                 
                                                 <div class="panel-heading">
                                                     <h5 class="panel-title h6 capitalize">
@@ -852,7 +883,7 @@
                                                         <a href="">Find Radiology test and centers <i class="fa fa-external-link text-muted"></i></a>
                                                     </h5>
                                                 </div>
-                                            </div>
+                                            </div>-->
                                             <!--<div class="panel panel-default">
                                                 <div class="panel-heading">
                                                     <h5 class="panel-title">
@@ -1006,7 +1037,7 @@
                     </section>
                     <a href="#" id="kitArea">
                     <section ng-cloak ng-show="section == 'kits'">
-                        <h4 class="mt-4 h5" ng-cloak style="text-transform: capitalize;">{{ kits.name + ' Kits'}}</h4>
+                        <h4 class="mt-4 mb-3 h5" ng-cloak style="text-transform: capitalize;"><b>{{ kits.name }}</b></h4>
                         <div class="row" >
                             
                             <div class="col-md-4 mb-2" ng-repeat="k in kits.content">
@@ -1026,6 +1057,7 @@
                                     </a>
                                 </div>
                             </div>
+                            <h5 class="p-4 h6" style="text-align: center!important;" ng-show="!kits">Kit not available!</h5>
                             <!--<div class="col-md-4">
                                 <div class="card">
                                     <a href="#">
@@ -1056,13 +1088,13 @@
                     </section>
                     <section style="margin-bottom: 30px;background-color: #f5f5f5;padding: 10px" ng-cloak ng-show="section == 'cartArea' || isCart" >
                         <div class="row">
-                            <div class="col-md-6">                 
+                            <div class="col-md-7">                 
                                 <h4 class="mt-4 mb-4 h5" ng-cloak style="text-transform: capitalize;"><i class="fa fa-cart-plus"></i> Cart ( {{cart.length}} ) </h4>
                             </div>
 
-                            <div class="col-md-6 pt-3 text-right">
+                            <div class="col-md-5 pt-3 mb-2 text-right">
                                 <a href="" ng-click="clearCart()" class="btn btn-outline-danger"><i class="fa fa-trash-o"></i> Empty Cart</a>&nbsp;
-                                <a href="" class="btn btn-outline-success" ng-click="find('isCartItemForward')" title="Forward item(s) in the cart to a center" ><i class="fa fa-share"></i> Forward items to center</a>
+                                <a href="" class="btn btn-outline-success" ng-click="find('isCartItemForward')" title="Forward item(s) in the cart to a center" ><i class="fa fa-share"></i> To Pharmacy</a>
                             </div>
                         </div>
 
@@ -1093,7 +1125,7 @@
 
                         <div class="card text-left pb-2 pt-2" style="font-size: 20px;" ng-show="isCart || user.item">
                             <div>
-                                <h5 class="h6 p-2"> <i class="fa fa-motorcycle"></i> <b>Would you want us to deliver above item(s) to your location?</b> </h5>
+                                <h5 class="h6 p-2"> <i class="fa fa-motorcycle"></i> <b>Would you want us to deliver above cart item(s) to your location?</b> </h5>
                                 <label class="custom-control custom-checkbox" style="display: inline-block;">
                                   <input type="radio" value="yes"  ng-model="user.isCourier">
                                   <span class="custom-control-description" > 
@@ -1204,7 +1236,6 @@
             document.body.style.backgroundColor = "white";
         }
     </script>
-
     
 
     <script type="text/ng-template" id="auth.html">
@@ -1400,6 +1431,33 @@
             </div>
         </div>
     </script>
+
+      <!-- quick chat modal -->
+   <script type="text/ng-template" id='choose-kit.html'>
+       <div class="modal fade">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="p-2">
+            <div style="position: relative;"> 
+                <h5 class="pt-3">All Drug Kits</h5>               
+                <button type="button" class="close" ng-click="close('Yes')" data-dismiss="modal" style="position: absolute;right: 10px;top: 10px"><i class="fa fa-times"></i></button>      
+            </div>
+            <hr>
+           
+            <div class="modal-body p-3">
+                <div ng-repeat="d in allKits" class="pb-2">                    
+                   <a href="#kitArea" ng-click="getKit('Drug',d)" data-dismiss="modal" class="block"><i class="fas fa-angle-right"></i> <b>{{d}}</b></a>
+                </div>
+            </div>
+               
+            <div class="modal-footer">
+             
+            </div>
+            
+          </div>
+        </div>
+      </div>
+   </script>
 
   
 
