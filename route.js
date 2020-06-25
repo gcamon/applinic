@@ -2935,8 +2935,9 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
       //straight to a pharmacy. later the patient will be notified. 
       //this block represents doctor action by forwarding prescription to a pharmacy.
       //any data sent to a diagnostic center other than to the patient himself is seens a a referral by this application.
+      console.log(req.body)
       if(req.user){ 
-            console.log(req.body)
+
             var date = new Date();
 
             var ref_id;
