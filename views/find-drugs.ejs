@@ -1444,9 +1444,11 @@
                 <button type="button" class="close" ng-click="close('Yes')" data-dismiss="modal" style="position: absolute;right: 10px;top: 10px"><i class="fa fa-times"></i></button>      
             </div>
             <hr>
-           
-            <div class="modal-body p-3">
-                <div ng-repeat="d in allKits" class="pb-2">                    
+            <div class="modal-body p-2">
+                <div class="mb-2">
+                    <input type="text" name="" class="form-control" ng-model="ft" placeholder="Filter kits by name">
+                </div>
+                <div ng-repeat="d in allKits | filter: ft" class="pb-2">                    
                    <a href="#kitArea" ng-click="getKit('Drug',d)" data-dismiss="modal" class="block capitalize"><i class="fas fa-angle-right"></i> <b>{{d}}</b></a>
                 </div>
             </div>
