@@ -2935,7 +2935,6 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
       //straight to a pharmacy. later the patient will be notified. 
       //this block represents doctor action by forwarding prescription to a pharmacy.
       //any data sent to a diagnostic center other than to the patient himself is seens a a referral by this application.
-      console.log(req.body)
       if(req.user){ 
 
             var date = new Date();
@@ -6673,7 +6672,7 @@ var basicRoute = function (model,sms,io,streams,client,nodemailer) {
         model.services.findOne(creteria,{unavailable_services:1,_id:0},function(err,data){
           if(err) throw err;
           if(!data){
-            res.send({error: "service not found"})
+            res.send([])
           } else {
             res.send(data.unavailable_services);
           }

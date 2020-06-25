@@ -8729,7 +8729,7 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
 
       var source = drugNotRanService; //$resource("/user/pharmacy/not-ran-services")
       source.query({centerId: center.user_id},function(data) { 
-        if(data.error){
+        if(data.length == 0){
           $scope.status = "Not Updated!";
           return;
         }
