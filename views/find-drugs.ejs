@@ -822,7 +822,7 @@
                 <div class="col-sm-3">
 
                     <div class="mb-3">
-                        <button class="btn-block btn btn-danger text-white" ng-click='newDrug()'><i class="fa fa-plus"></i> Add New Drug &amp; Kits</button>
+                        <button class="btn-block btn btn-danger text-white" ng-click='newDrug()'><i class="fa fa-plus"></i> Add New Drugs</button>
                     </div>
 
                     <div class="mb-3">
@@ -1015,8 +1015,8 @@
                                     </div>
                                 </form>
                             </div>
-                            <div class="col-md-7">
-                                <label><b>Contents ( {{composedItems.length}} ) </b></label>
+                            <div class="col-md-7 mt-3">
+                                <h6><b>Contents ( {{composedItems.length}} ) </b></h6>
                                 <ol style="max-height: 450px;overflow-y: auto;" class="col-md-11">
                                     <li class="pb-1" ng-repeat="c in composedItems" style="word-wrap: break-word;">
                                         <div ng-repeat="drug in c.content" style="position: relative;">
@@ -1220,7 +1220,8 @@
             </div>-->
         </div>
     </section>
-    <div style="height: 200px">
+    <div style="height: 200px"></div>
+    <div style="height: 50px;background-color: #fff;position: fixed;bottom: 0;width: 100%">
         
     </div>
     <script>
@@ -1446,7 +1447,7 @@
            
             <div class="modal-body p-3">
                 <div ng-repeat="d in allKits" class="pb-2">                    
-                   <a href="#kitArea" ng-click="getKit('Drug',d)" data-dismiss="modal" class="block"><i class="fas fa-angle-right"></i> <b>{{d}}</b></a>
+                   <a href="#kitArea" ng-click="getKit('Drug',d)" data-dismiss="modal" class="block capitalize"><i class="fas fa-angle-right"></i> <b>{{d}}</b></a>
                 </div>
             </div>
                
