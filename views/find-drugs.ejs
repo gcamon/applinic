@@ -641,6 +641,7 @@
                                     
                                     <a class="dropdown-item" href="" ng-click="getKit('Drug','Measles Kit (Children)')">Measles Kit (Children)</a>
                                     <div class="dropdown-divider"></div>
+
                                     <a class="dropdown-item" href="" ng-click="getKit('Drug','Flu/Catarrh/Blocked Nose Kit (Children 6 Years +)')">Flu/Catarrh/Blocked Nose Kit (Children 6 Years +)</a>
                                     <div class="dropdown-divider"></div>
 
@@ -651,7 +652,7 @@
                                     <div class="dropdown-divider"></div>
                                      <a class="dropdown-item" href="" ng-click="getKit('Drug','Appetite Booster Kit (Children)')">Appetite Booster Kit (Children)</a>
                                     <div class="dropdown-divider"></div>
-                                    
+
                                      <a class="dropdown-item" href="" ng-click="getKit('Drug','Asthma Care Kit (Children)')">Asthma Care Kit (Children)</a>
                                     <div class="dropdown-divider"></div>
                                 </div>
@@ -1041,6 +1042,7 @@
                     <a href="#" id="kitArea">
                     <section ng-cloak ng-show="section == 'kits'">
                         <h4 class="mt-4 mb-3 h5" ng-cloak style="text-transform: capitalize;"><b>{{ kits.name }}</b></h4>
+                        <span>{{ kits.name }}</span>
                         <div class="row" >
                             
                             <div class="col-md-4 mb-2" ng-repeat="k in kits.content">
