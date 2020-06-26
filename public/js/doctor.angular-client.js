@@ -8731,16 +8731,15 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
       source.query({centerId: center.user_id},function(data) { 
         if(data.length == 0){
           $scope.status = "Not Updated!";
-          return;
-        }
-
-        $scope.status = "Updated!";
-        var elemPos;
-        for(var i = 0; i < $scope.drugList.length; i++) {
-          $scope.drugList[i].available = true;
-          elemPos = data.map(function(x){return x.name}).indexOf($scope.drugList[i].drug_name)
-          if(elemPos !== -1) {
-            $scope.drugList[i].available = false;
+        } else {
+          $scope.status = "Updated!";
+          var elemPos;
+          for(var i = 0; i < $scope.drugList.length; i++) {
+            $scope.drugList[i].available = true;
+            elemPos = data.map(function(x){return x.name}).indexOf($scope.drugList[i].drug_name)
+            if(elemPos !== -1) {
+              $scope.drugList[i].available = false;
+            }
           }
         }
 
