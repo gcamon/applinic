@@ -410,15 +410,15 @@ app.controller("hompageController",["$scope","cities","Drugs","$http",
   $http.get("/drug-kits/all")
   .success(function(response){
     response.forEach(function(item){
-      if(!filter.hasOwnProperty(item.disease)){
-        filter[item.disease] = {};
-        filter[item.disease].disease = item.disease;
-        filter[item.disease].name = item.name;
-        filter[item.disease].note = item.note;
-        filter[item.disease].package = item.package || 0;
-        filter[item.disease].type = item.type;
-        filter[item.disease]['content'] = [];//item.content;
-        filter[item.disease]['content'].push({
+      if(!filter.hasOwnProperty(item.name)){
+        filter[item.name] = {};
+        filter[item.name].disease = item.disease;
+        filter[item.name].name = item.name;
+        filter[item.name].note = item.note;
+        filter[item.name].package = item.package || 0;
+        filter[item.name].type = item.type;
+        filter[item.name]['content'] = [];//item.content;
+        filter[item.name]['content'].push({
           package: item.package,
           content: item.content 
         })
@@ -426,7 +426,7 @@ app.controller("hompageController",["$scope","cities","Drugs","$http",
         //filter[item.disease].name = item.name;
         //filter[item.disease].package = item.package;
         //filter[item.disease]['content'] = item.content;
-        filter[item.disease]['content'].push({
+        filter[item.name]['content'].push({
           package: item.package,
           content: item.content 
         })    
@@ -437,7 +437,7 @@ app.controller("hompageController",["$scope","cities","Drugs","$http",
     $rootScope.allKits = Object.keys(filter);
     
 
-    $scope.getKit("Drug",'Malaria');
+    $scope.getKit("Drug",'Anti-Malaria Kit');
   }) 
 
   $http.get("/home/getAllPharmarcy")
