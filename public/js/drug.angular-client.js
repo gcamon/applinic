@@ -569,7 +569,8 @@ app.controller("hompageController",["$scope","cities","Drugs","$http",
 
   $scope.viewCart = function() {
     $scope.section  = 'cartArea';
-    $anchorScroll();
+    $location.hash('cartListArea'); 
+    $anchorScroll('cartListArea');
   }
 
   $scope.deleteItemInCart = function(item) {      
@@ -584,7 +585,7 @@ app.controller("hompageController",["$scope","cities","Drugs","$http",
   $scope.find = function(isCartItem) {
     $rootScope.user.item = $scope.search.item;
     $rootScope.user.city = $scope.search.city;
-    $location.hash('searchList');   
+    $location.hash('searchResultArea');   
     $scope.isCart = (isCartItem) ? true : false;
   	$scope.loading = true;
     $scope.section = "search-result";
