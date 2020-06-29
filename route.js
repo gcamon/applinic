@@ -11120,11 +11120,10 @@ router.post("/twiliovoicemsg",function(req,res){
   res.send(twiml)*/
   var twiml = new Voice();
   var splitTxt = createVoiceText(req.query.pin);
-  var textToSay = 'Your, applinic dot com verification code is, '  + splitTxt + ', I repeat, ' + splitTxt + ', again, ' + splitTxt + 'thank you!';
+  var textToSay = 'Your, applinic dot com phone verification pin is, '  + splitTxt + ', I repeat, ' + splitTxt + ', again, ' + splitTxt + 'thank you!';
   twiml.say({ voice: 'man',language: 'en-gb' },textToSay);
   res.type('text/xml');
   res.send(twiml.toString());
- 
 });
 
 router.post("/voicenotification",function(req,res){

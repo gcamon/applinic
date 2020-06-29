@@ -47,8 +47,14 @@
      body {
         font-family: 'Open Sans', sans-serif;
      }
+
     input {color:#333 !important;
-    font-size:.7em !important;}
+    font-size:.5em !important;}
+
+    label {
+      font-weight: bold;
+      color: rgba(0,0,0,0.5);
+    }
 
     .noBorder{
       border:0px;
@@ -75,10 +81,8 @@
 		.form-control::-moz-placeholder { color:rgba(0,0,0,0.5);font-size: 16px }  /* Mozilla Firefox 19+ */
 		.form-control:-ms-input-placeholder { color: #000; font-size: 16px}  /* Internet Explorer 10-11 */
 		.form-control::-ms-input-placeholder { color: #000; font-size: 16px}  /* Microsoft Edge */
-		select {
-			color: rgba(0,0,0,0.5);
-			font-size: 14px
-		}
+	 
+
 
 		strong {
 			font-size: 18px!important
@@ -218,6 +222,17 @@
     </div>
 </body>
 <!--   Core JS Files   -->
+
+<script type="text/javascript">
+  function showPass() {
+    var x = document.getElementById("myPass");
+    if (x.type === "password") {
+      x.type = "text";
+    } else {
+      x.type = "password";
+    }
+  }
+</script>
 <script src="assets/js/core/jquery.3.2.1.min.js" type="text/javascript"></script>
 <script src="assets/js/core/tether.min.js" type="text/javascript"></script>
 <script src="assets/js/core/bootstrap.min.js" type="text/javascript"></script>

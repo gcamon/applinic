@@ -591,6 +591,7 @@ var myModel = function () {
 		user_id: String,
 		password: String,
 		age: String,
+		dob: Date,
 		email: String,
 		gender: String,
 		address: String,

@@ -434,7 +434,9 @@ app.controller("hompageController",["$scope","cities","Drugs","$http",
       }
     })
 
-    $rootScope.allKits = Object.keys(filter);    
+    $rootScope.allKits = Object.keys(filter);
+    console.log($rootScope.allKits)
+    
 
     $scope.getKit("Drug",'anti-malaria kit');
   }) 

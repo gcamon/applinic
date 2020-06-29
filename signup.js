@@ -81,6 +81,7 @@ var signupRoute = function(model,sms,geonames,paystack,io,nodemailer) {
 		          phone: phone,
 		          admin: false,
 		          date: date,
+		          dob: req.body.dob || new Date(),
 		          country: req.body.countryName,
 		          type: (req.body.typeOfUser === "Special Center") ? "Doctor" : req.body.typeOfUser,
 		          city: req.body.city,
@@ -423,7 +424,7 @@ var signupRoute = function(model,sms,geonames,paystack,io,nodemailer) {
 
 	router.put("/user/verify-phone-number",function(req,res){
 		var genPin = randos.genRef(6);	
-		
+		console.log(req.body)
 		if(req.body.isCovid19){
 			model.user.findOne({phone: req.body.phone})
 			.exec(function(err,user){
@@ -462,8 +463,9 @@ var signupRoute = function(model,sms,geonames,paystack,io,nodemailer) {
 				//res.send({message:"Phone Verification Pin sent to " + req.body.phone + " (use " + genPin + " to complete registration)"});
 				if(!err) {
 					//res.send({message:"Phone Verification Pin sent to " + req.body.phone + " (use " + genPin + " to complete registration)"});
-					res.send({message:"Phone Verification Pin sent to " + req.body.phone + " .Enter pin below  to complete registration ( " 
-						+ genPin + " )",isNewUser: req.body.isNewUser, status: true})
+					res.send({message:"Phone Verification Pin sent to " 
+						+ req.body.phone 
+						+ ". Enter pin below  to complete registration.",isNewUser: req.body.isNewUser, status: true})
 				} else {
 					res.send({message:err.message,error: true});
 				}

@@ -3,28 +3,39 @@
     <div class="alert alert-info"><strong>Pharmacy Signup : </strong>Please complete the form below.</div>
       <form class="row" ng-submit="submit('Pharmacy','normal')">
 
-  
+  <div class="col-md-6 mb-2">
+    <label class="pl-2 mb-0 pb-0">Country</label>
+    <select class="custom-select form-control" ng-model="user.country">
+    <option value="" selected>Nigeria</option>
+    <option ng-repeat="country in countries" value="{{country.geonameId}};{{country.countryCode}};{{country.countryName}}">{{country.countryName}}</option>
+    </select>
+    <span class="text-danger" style="font-size: 10px;display: inline-block;margin:-60px 0 0 10px;float: left;">{{countryMessage}}</span> 
+    <span></span>
+  </div>
+      
 
-  <div class="col-md-12 col-sm-12">
-  <input type="text" class="form-control" placeholder="Center Name" ng-model="user.name" required>
+  <div class="col-md-6 mb-2">
+   <label class="pl-2 mb-0 pb-0">Center name</label> 
+  <input type="text" class="form-control"  ng-model="user.name" required>
   <span class="text-danger" style="font-size: 10px;display: inline-block;margin:-60px 0 0 10px;float: left;">{{nameError}}</span>
   </div>
 
  
-  <div class="col-md-6 col-sm-12">
- <input type="text" class="form-control" placeholder="Address" ng-model="user.address" required>
+  <div class="col-md-6 mb-2">
+  <label class="pl-2 mb-0 pb-0">Address</label>
+ <input type="text" class="form-control"  ng-model="user.address" required>
  <span class="text-danger" style="font-size: 10px;display: inline-block;margin:-60px 0 0 10px;float: left;">{{addressMessage}}</span>
   </div>
 
-  <div class="col-md-6 col-sm-12" style="position: relative;">
-  
-    <!--<input type="text" class="form-control" placeholder="Country" ng-model="user.country" >-->
+  <!--<div class="col-md-6" style="position: relative;">
+     <label class="pl-2 mb-0 pb-0">Cou</label>
+   
     <select class="custom-select form-control col-md-12" ng-model="user.country" required >
       <option value="" selected disabled >{{status}}</option>
       <option ng-repeat="country in countries" value="{{country.geonameId}};{{country.countryCode}};{{country.countryName}}">{{country.countryName}}</option>
     </select>
     <span class="text-danger" style="font-size: 10px;display: inline-block;margin:-60px 0 0 10px;float: left;">{{countryMessage}}</span>
-  </div>
+  </div>-->
   <!-- <div class="col-md-6 col-sm-12" style="position: relative;">
    
     <small class='fa fa-arrow-right' style="font-size:10px;color:blue;padding-left: 10px;position: absolute; left: 0;top:10px" ng-if="isNext1"></small>
@@ -42,9 +53,10 @@
       <option ng-repeat="region in regions" value="{{region.geonameId}} {{region.name}}">{{region.name}}</option>
     </select>
   </div>-->
-  <div class="col-md-6 col-sm-12" style="position: relative;">
+  <div class="col-md-6 mb-2" style="position: relative;">
    <!--<small class='fa fa-arrow-right' style="font-size:10px;color:blue;padding-left: 10px;position: absolute; left: 0;top:10px" ng-if="isNext3"></small>-->
-   <input type="text" class="form-control" placeholder="City" uib-typeahead="city for city in cities | filter:$viewValue | limitTo:10" ng-model="user.city" required>
+    <label class="pl-2 mb-0 pb-0">City</label>
+   <input type="text" class="form-control"  uib-typeahead="city for city in cities | filter:$viewValue | limitTo:10" ng-model="user.city" required>
     <!--<select class="custom-select form-control col-md-12" ng-model="user.city"  ng-cloak ng-if="isEdit === false" >
       <option value="" selected disabled >{{status2}}</option>
       <option ng-repeat="city in cities" value="{{city.name}}">{{city.name}}</option>
@@ -53,14 +65,13 @@
     <span class="text-danger" style="font-size: 10px;display: inline-block;margin:-60px 0 0 10px;float: left;">{{cityMessage}}</span> 
   </div>
 
-  <div  class="col-md-6 col-sm-12" style="position: relative;">
-  
-      <input type="number"  style="position:absolute; top:19px; background:transparent;  left:35px; border: none; width: 55px; outline:0;"  placeholder="{{user.callingCode || 'Code'}}" ng-model= "user.callingCode" >
-      <input type="number" string-to-number class="form-control" noBorder" placeholder="Mobile number" ng-model="user.phone" required style="padding-left: 80px">  
-        <span class="text-danger" style="font-size: 10px;display: inline-block;margin:-60px 0 0 10px;float: left;">{{phoneMessage}}</span>
-        <span class="text-danger" style="font-size: 10px;display: inline-block;margin:-60px 0 0 10px;float: left;">{{numberError}}</span>
+   <div  class="col-md-6 mb-2" style="position: relative;">
+       <label class="pl-2 mb-0 pb-0">Phone number</label>
+      <!--<input type="number"  style="position:absolute; top:19px; background:transparent;  left:35px; border: none; width: 55px; outline:0;"  placeholder="{{user.callingCode || 'Code'}}" ng-model= "user.callingCode">-->
+      <input type="text" string-to-number class="form-control"  ng-model="user.phone" required>  
+    <span class="text-danger" style="font-size: 10px;display: inline-block;margin:-60px 0 0 10px;float: left;">{{phoneMessage}}</span>
+    <span class="text-danger" style="font-size: 10px;display: inline-block;margin:-60px 0 0 10px;float: left;">{{numberError}}</span>
  </div>
-
 
  <!--<div  class="col-md-6 col-sm-12">
       <input type="text" class="form-control" placeholder="Address" ng-model="user.address" > 
@@ -75,27 +86,30 @@
 <hr>
 </div>-->
 
-  <div class="col-md-6 col-sm-12">
-  
+  <!--<div class="col-md-6 mb-2">
+    
   <input type="text" class="form-control" placeholder="User Name" ng-model="user.username" required>
   <span class="text-danger" style="font-size: 10px;display: inline-block;margin:-60px 0 0 10px;float: left;">{{usernameMessage}}</span>
-  </div>
-  <div class="col-md-6 col-sm-12">
- <input type="email" class="form-control" placeholder="Email" ng-model="user.email" required>
+  </div>-->
+  <div class="col-md-6 mb-2">
+  <label class="pl-2 mb-0 pb-0">Email</label>
+ <input type="email" class="form-control"  ng-model="user.email" required>
  <span class="text-danger" style="font-size: 10px;display: inline-block;margin:-60px 0 0 10px;float: left;">{{emailMessage}}</span>
   </div>
 
-  <div class="col-md-6 col-sm-12">
-  <input type="password" class="form-control" placeholder="Password" ng-model="user.password" required>
-  <span class="text-danger" style="font-size: 10px;display: inline-block;margin:0px 0 0 10px;float: left;">{{passwordMessage}}</span>
+ <div class="col-md-6 mb-2">
+   <label class="pl-2 mb-0 pb-0">Password</label>
+    <input type="password" class="form-control" id="myPass"  ng-model="user.password" required>
+     <i class="fa fa-eye p-2 text-muted" style="position: absolute;top: 35px;right: 10px;font-size: 18px" onclick="showPass()"></i>
+    <span class="text-danger" style="font-size: 10px;display: inline-block;margin:0px 0 0 10px;float: left;">{{passwordMessage}}</span>
   </div>
-  <div class="col-md-6 col-sm-12">
+  <!--<div class="col-md-6 col-sm-12">
  <input type="password" class="form-control" placeholder="Confirm Password" ng-model="user.password2" required>
  <span class="text-danger" style="font-size: 10px;display: inline-block;margin:-60px 0 0 10px;float: left;">{{passwordError}}</span>
-  </div>
+  </div>-->
 
 
- <div class="col-md-12">
+ <div class="col-md-12 mb-2 pl-1">
 <label class="custom-control custom-checkbox" style="margin-top:20px">
 <small style="font-size:12px;color:green;padding-left: 20px;display: inline-block;" ng-cloak ng-if="usernameInfo">{{agreeInfo}}</small>
   <input type="checkbox"  ng-model="user.agree"  style="width:22px;height:22px">
@@ -108,7 +122,7 @@
 <span class="sr-only">Loading...</span> Create Account</button></div>-->
 <div class="col-md-12">
     <div>
-      <input type="submit" class="btn btn-simple btn-lg" value="Create Account" ng-if="!loading && !isPhoneverify" style="font-size: 18px!important">
+      <input type="submit" class="btn btn-danger btn-lg" value="Create Account" ng-if="!loading && !isPhoneverify" style="font-size: 18px!important">
       <span ng-if="loading"> <i class="fa fa-spinner fa-pulse fa-1x fa-fw text-info" ></i> Processing...</span>
     </div>
 </div>

@@ -338,11 +338,11 @@ app.service('phoneCallService',['$http','mySocket','$rootScope',function($http,m
         data    : data,
         headers : {'Content-Type': 'application/json'} 
       })
-      .success(function(data){      
+      .success(function(response){      
         data.isPhoneCall = false;
         //$rootScope.showCallingMsg = "";
-        if(data.error) {
-          alert(data.message)
+        if(response.error) {
+          alert(response.message)
         }
       })
     }
@@ -501,6 +501,21 @@ app.controller('signupController',["$scope","$http","$location","$window","templ
   $scope.user.state = currency.state;
   $scope.user.region = currency.region;
 
+  if(type === 'Patient'){
+    $scope.user.age = calculate_age(new Date($scope.user.dob)) + " years";
+  }
+
+  if(!$scope.user.username){
+    if($scope.user.email){
+      var em = $scope.user.email.split('@');
+      $scope.user.username = em[0];
+    } else {
+      var name = $scope.user.firstname || $scope.user.name;
+      var em = name.replace(/\s/g, "");
+      $scope.user.username = em;
+    }
+  }
+
 
   
 
@@ -535,11 +550,13 @@ app.controller('signupController',["$scope","$http","$location","$window","templ
   } 
 
   function checkExistingPhone() {
+    $scope.phoneMessage = "";
     if($scope.user.phone) {
       //phoneNumber = "+" + $scope.user.callingCode.toString() + $scope.user.phone.toString();
-      if($scope.user.phone[0] == '0'){
+      if($scope.user.phone[0] !== '+'){
         var newSlice = $scope.user.phone.slice(1);
-        $scope.user.phone = "+234" + newSlice;
+        var code = ('+' + $scope.user.callingCode.toString()) || "+234";
+        $scope.user.phone = code + newSlice;
       }
 
       phoneNumber = $scope.user.phone;
@@ -641,12 +658,12 @@ app.controller('signupController',["$scope","$http","$location","$window","templ
       } else if(typeof data.city !== 'string' || data.city === "") {
         $scope.cityMessage = "Enter your city";
         return;
-      } else if(typeof data.phone !== 'number') {
-        $scope.phoneMessage = "Enter a valid mobile phone number";
-        return;
-      } else if(data.password !== data.password2) {
-        $scope.passwordError = "Password does not match!";
-        return;
+     // } else if(typeof data.phone !== 'number') {
+      //  $scope.phoneMessage = "Enter a valid mobile phone number";
+      //  return;
+     // } else if(data.password !== data.password2) {
+      //  $scope.passwordError = "Password does not match!";
+      //  return;
       } else if(data.agree !== true) {
         $scope.termMessage = "You have to agree to our terms and privacy policy";
         return;
@@ -683,16 +700,17 @@ app.controller('signupController',["$scope","$http","$location","$window","templ
 
     function finalValidation() {
       if(data.agree === true) {        
-        if($scope.user.callingCode){        
+        //if($scope.user.callingCode){        
           data.phone = phoneNumber;
           data.username = data.username.replace(/\s+/g, '');
           $rootScope.formData = data;
           $rootScope.formData.invitationId = $rootScope.invitationId;
+
           sendDetail();
-        } else {
-          $scope.numberError = "Invalid number format";
-          return;
-        }
+        //} else {
+        //  $scope.numberError = "Invalid number format";
+        //  return;
+        //}
 
         function sendDetail() {
           $scope.loading = true;
@@ -726,7 +744,8 @@ app.controller('signupController',["$scope","$http","$location","$window","templ
     });
   }
 
-  
+  $scope.user.country = '2328926;NG;Nigeria';
+
   $scope.$watch("user.country",function(newVal,oldVal){
     if($scope.user.country !== undefined) {
       $scope.status1 = "Loading...";
@@ -736,20 +755,13 @@ app.controller('signupController',["$scope","$http","$location","$window","templ
       var countryCode = arr[1];
       $scope.user.countryName = arr[arr.length-1];
       $scope.user.geonameId = toNum;
-      /*reqObj = $resource("/user/remote/geo-data",{geonameId:toNum,countryCode:countryCode});
-      reqObj.query(function(data){
-        $scope.status1 = "State/Province";
-        $scope.states = data || [];
-        $scope.isNext1 = true;
-        
-      });*/
+     
       getCurrency(toNum);
 
       $.getJSON("/assets/calling_code.json", function(result){
-        $scope.user.callingCode = parseInt(result[countryCode]);
+        $scope.user.callingCode = result[countryCode]; //parseInt(result[countryCode]);
         $scope.numberError = "";
-      });
-      
+      }); 
     }
   });
 
@@ -827,7 +839,7 @@ app.controller("verifyPhoneController",["$rootScope","$scope","$resource","$wind
   }
 
   $scope.call = function(oldTime){
-    phoneCallService({phone: $rootScope.holdPhoneForCall || '2348064245256'},"/user/verify-phone-number",'PUT')
+    phoneCallService({phone: $rootScope.holdPhoneForCall},"/user/verify-phone-number",'PUT')
     $scope.showCallingMsg = "You'll receive a phone call in just a moment. Please enter the pin you hear from the voice call below..."
   }
 
@@ -854,6 +866,17 @@ app.factory("cities",function(){
   return allCities;
 });
 
+function testNumber(str) {
+  var intRegex = /[0-9 -()+]+$/;
+  return intRegex.test(str)
+}
+
+function calculate_age(dob) { 
+    var diff_ms = Date.now() - dob.getTime();
+    var age_dt = new Date(diff_ms); 
+  
+    return Math.abs(age_dt.getUTCFullYear() - 1970);
+}
 
 
 
