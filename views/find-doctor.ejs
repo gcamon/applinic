@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" ng-app="myApp">
 
 <head>
 
@@ -370,8 +370,63 @@
     </script>
 </head>
 
-<body ng-app="myApp">
-    <section id="main-wrap" ng-controller="hompageController">
+<body  ng-controller="hompageController">
+     <nav class="navbar navbar-expand-sm bg-white" style="padding-top: 5px">           
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">
+                <img src="/assets/images/Logo.png" alt="Applinic" style="vertical-align: middle;">
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbarSingle">
+             <!--<span class="navbar-toggler-icon"></span>-->
+             <i class="fa fa-bars text-success"></i>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="collapsibleNavbarSingle">
+                <ul class="navbar-nav">
+                   <li class="nav-item" style="margin-right: 10px">  
+                                              
+                        <a href="/find-doctors" class="btn btn-outline-success active nav-link">
+                          Consult a Doctor
+                        </a>
+                        
+                                                 
+                    </li>
+                    <li  class="nav-item" style="margin-right: 10px">
+                        <a href="/find-drugs" class="btn btn-outline-success nav-link">
+                          Buy Drugs &amp; Kits
+                        </a>
+                    </li>
+                    <li class="nav-item" style="margin-right: 10px">
+                        <a href="/symptom-checker" class="btn btn-outline-success nav-link">
+                          Symptoms Checker
+                        </a>
+                    </li>
+                    <li class="nav-item" style="margin-right: 10px">
+                        <a href="/covid-19" class="btn btn-outline-success nav-link">
+                           Covid-19 Screening Test
+                        </a>
+                    </li>
+                    <li class="nav-item" style="margin-right: 30px">
+                        <a href="/find-doctors" class="btn btn-outline-success nav-link">
+                            Body Parts Issues  Checker
+                        </a>
+                    </li>
+                    <li ng-show="!checkLogIn.user_id" class="nav-item" ng-cloak>
+                        <a ng-click="loginIntOAcc()" class="btn nav-link btn-outline-danger">
+                            Log In 
+                        </a>
+
+                        
+                    </li>
+                    <!--<a href="/signup" class="btn btn-outline-success">Sign Up </a>-->
+                    <li ng-show="checkLogIn.user_id" class="nav-item" ng-cloak>
+                        <a href="" ng-click="todashboard(checkLogIn.typeOfUser)" class="btn btn-danger"> Go to dashboard</a>
+                    </li>
+                </ul>
+            </div>
+        </div> 
+    </nav>
+    <section id="main-wrap">
         <!--<div id="mySidenav" class="sidenav">
             <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
             <a href="#"><span><i class="fas fa-briefcase-medical"></i></span> Book appointment</a>
@@ -384,14 +439,14 @@
         <div  style="background-color: #fff;padding: 15px">
             <form class="row" id="doctors-search" ng-submit="find()">
                 <div class="col-md-2 pb-3" ng-cloak>
-                    <a class="navbar-brand" href="/">
+                    <!--<a class="navbar-brand" href="/">
                         <img src="/assets/images/Logo.png" alt="Applinic" style="vertical-align: middle;">
                     </a>
                     <div ng-show="!checkLogIn.user_id" class="pt-2">
                         <a href="" ng-click="loginIntOAcc()" class="btn btn-sm btn-simple">Log In </a>&nbsp;&nbsp;
 
                         <a href="/signup" class="btn btn-sm btn-simple">Sign Up </a>
-                    </div>
+                    </div>-->
                     <div ng-show="checkLogIn.user_id" class="pt-2">
                         <a href="" ng-click="todashboard(checkLogIn.typeOfUser)" class="btn btn-simple"><i class="fa fa-arrow-left"></i> Go to dashboard</a>
                     </div>
@@ -421,7 +476,7 @@
                 </div>
                 <div class="col-md-1">
                     <div class="form-group" style="padding-top: 30px">
-                        <input type="submit" name="" value="Search" class="btn btn-success btn-block">
+                        <input type="submit" name="" value="Search" class="btn btn-outline-success btn-block">
                     </div>
                 </div>
                
@@ -561,7 +616,7 @@
                                         <button type="button" class="btn btn-success" style="margin-bottom: 5px" ng-click="consult(doc)" ng-show="!doc.isSent"><i class="fa fa-user-md"></i> Send consultation</button>
                                         <a href="" class="p-2 text-success" ng-show="doc.isSent"><i class="fa fa-check"></i> Request sent!</a>
                                        
-                                        <button type="button" class="btn btn-outline-success" style="margin-bottom: 5px" ng-click="chat(doc)"><i class="fa fa-comments"></i> Start Chat</button>
+                                        <button type="button" class="btn btn-outline-success" style="margin-bottom: 5px" ng-click="chat(doc)">&nbsp;&nbsp; <i class="fa fa-comments"></i> Chat with me!&nbsp;&nbsp;</button>
                                     </div>
                                 </div>
                             </div>
@@ -612,7 +667,7 @@
                                         <button type="button" class="btn btn-success" style="margin-bottom: 5px" ng-click="consult(doc)" ng-show="!doc.isSent"><i class="fa fa-user-md"></i> Send Consultation</button>
                                          <a href="" class="p-2 text-success" ng-show="doc.isSent"><i class="fa fa-check"></i> Request sent!</a>
                                        
-                                        <button class="btn btn-outline-success" style="margin-bottom: 5px" ng-click="chat(doc)"><i class="fa fa-comments"></i> Start Chat</button>
+                                        <button class="btn btn-outline-success" style="margin-bottom: 5px" ng-click="chat(doc)">&nbsp;&nbsp; <i class="fa fa-comments"></i> Chat with me! &nbsp;&nbsp;</button>
                                     </div>
                                 </div>
                             </div>
@@ -756,19 +811,19 @@
                                 <div class="bg-image">
                                     <div class="card">
                                         <div class="side-nav">
-                                            <h4 class="h6">Physicians you may need.</h4>
-                                            <p>These are specialties you may be interested in contacting.</p>
+                                            <h4 class="h6"><b>Physicians you may need</b></h4>  
+                                            <hr>                 
                                             <section>
                                                 <div class="">
-                                                    <a href="/find-doctors?s=pediatric" class="btn btn-outline-success btn-sm">Children Specialist</a>
-                                                    <a href="/find-doctors?s=orthopaedic" class="btn btn-outline-success btn-sm">Bone Specialist</a>
-                                                    <a href="/find-doctors?s=gynecologist" class="btn btn-outline-success btn-sm">Female Specialist</a>
-                                                    <a href="/find-doctors?s=surgeon" class="btn btn-outline-success btn-sm">Surgeon</a>
+                                                    <a href="/find-doctors?s=pediatric" class="btn btn-outline-success btn-sm mb-2">Children Specialist</a>
+                                                    <a href="/find-doctors?s=orthopaedic" class="btn btn-outline-success btn-sm mb-2">Bone Specialist</a>
+                                                    <a href="/find-doctors?s=gynecologist" class="btn btn-outline-success btn-sm mb-2">Female/Pregnancy Specialist</a>
+                                                    <a href="/find-doctors?s=surgeon" class="btn btn-outline-success btn-sm mb-2">Surgeon</a>
 
-                                                    <a href="/find-doctors?s=Ophthalmologist" class="btn btn-outline-success btn-sm">Eye Specialist</a>
-                                                    <a href="/find-doctors?s=Dermatologist" class="btn btn-outline-success btn-sm">Skin Care</a>
-                                                    <a href="/find-doctors?s=Neurosurgeon" class="btn btn-outline-success btn-sm">Neurosurgeon</a>
-                                                    <a href="/find-doctors?s=Cardiologist" class="btn btn-outline-success btn-sm">Heart Specialist</a>
+                                                    <a href="/find-doctors?s=Ophthalmologist" class="btn btn-outline-success btn-sm mb-2">Eye Specialist</a>
+                                                    <a href="/find-doctors?s=Dermatologist" class="btn btn-outline-success btn-sm mb-2">Skin Care</a>
+                                                    <a href="/find-doctors?s=Neurosurgeon" class="btn btn-outline-success btn-sm mb-2">Neurosurgeon</a>
+                                                    <a href="/find-doctors?s=Cardiologist" class="btn btn-outline-success btn-sm mb-2">Heart Specialist</a>
                                                      <a href="/find-doctors?s=Nephrologists" class="btn btn-outline-success btn-sm">Ear Specialist</a>
                                                       <a href="/find-doctors?s=Dental" class="btn btn-outline-success btn-sm">Teeth Specialist</a>
                                                 </div>

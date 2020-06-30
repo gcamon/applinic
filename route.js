@@ -8457,121 +8457,130 @@ router.put("/user/courier-update",function(req,res){
   if(req.user){  
     if(req.body.prescription_body){
       model.courier.findById(req.body._id).exec(function(err,user){
-        if(user) { //user.verified !== true
-          var random1 = randos.genRef(3);
-          var random2 = randos.genRef(3);
-          var password = check(random1) + " " + check(random2);
+        if(user) {
+          if(!user.is_paid) {
+            var random1 = randos.genRef(3);
+            var random2 = randos.genRef(3);
+            var password = check(random1) + " " + check(random2);
 
-          user.verified = true;
-          user.total_cost = req.body.total_cost;
-          user.otp = password;
-          user.attended = true;
-          user.verification_date = + new Date();
-          user.delivery_charge = req.body.delivery_charge || 500;
-          user.center_id = req.user.user_id;
-          user.user_id = req.body.user_id || user.user_id;
-          user.prescription_body = req.body.prescription_body || user.prescription_body;
-          user.currencyCode = req.user.currencyCode;
-          user.city_grade = req.user.city_grade;
-          user.isPaid = false;
-          user.new = 1;
-          user.agentId = req.body.agentId;
-          user.center_charge = req.user.courier_commission;
+            user.verified = true;
+            user.total_cost = req.body.total_cost;
+            user.otp = password;
+            user.attended = true;
+            user.verification_date = + new Date();
+            user.delivery_charge = req.body.delivery_charge || 500;
+            user.center_id = req.user.user_id;
+            user.user_id = req.body.user_id || user.user_id;
+            user.prescription_body = req.body.prescription_body || user.prescription_body;
+            user.currencyCode = req.user.currencyCode;
+            user.city_grade = req.user.city_grade;
+            user.is_paid = false;
+            user.new = 1;
+            user.agentId = req.body.agentId;
+            user.center_charge = req.user.courier_commission;
 
-          var count = 0;
-          var presObj = {};
-          presObj.details = "";
-          var capture;
-        
-          var currency = (req.user.currencyCode) ? req.user.currencyCode : "NGN";
-
-          var msgBody = "The bill for the drug(s) you requested for home delivery is ready!\n" 
-          + "Please go to your account and make payment to initiate delivery.\n" 
-          + "Your Order ID is " + user.request_id
-          + "\nhttps://applinic.com/login";
-
+            var count = 0;
+            var presObj = {};
+            presObj.details = "";
+            var capture;
           
-          var phoneNunber = user.phone1 || user.phone2; 
+            var currency = (req.user.currencyCode) ? req.user.currencyCode : "NGN";
 
-          sendSMS(phoneNunber,msgBody)
+            var msgBody = "The bill for the drug(s) you requested for home delivery is ready!\n" 
+            + "Please go to your account and make payment to initiate delivery.\n" 
+            + "Your Order ID is " + user.request_id
+            + "\nhttps://applinic.com/login";
 
-          /*var msgBody2 = "A new home delivery of drug(s) has been initiated by  " + req.user.name + " @ "
-          + req.user.address + " " + req.user.city 
-          + "\nPlease follow up this transaction and inform the sender to complete payment before delivery starts."
-          + "\nRef No is " + user.ref_id + "\nSender Phone : " + user.phone1 + " " + user.phone2 + "\nSender Address: " 
-          + user.address 
-          + " " + req.user.city
-          + "\nGo to your service page https://applinic.com/login";
+            
+            var phoneNunber = user.phone1 || user.phone2; 
 
-          sendSMS(req.body.agentNumber,msgBody2);*/
+            sendSMS(phoneNunber,msgBody)
 
-          function sendSMS(number,body) {
-            sms.messages.create(
-              {
-                to: number,
-                from: '+16467985692',
-                body: body,
+            var msgBody2 = "A new home delivery of drug(s) has been initiated by  " + req.user.name + " @ "
+            + req.user.address + " " + req.user.city 
+            + "\nPlease follow up this transaction and inform the buyer to complete payment before delivery starts."
+            + "\nRef No is " + user.ref_id + "\nSender Phone : " + user.phone1 + " " + user.phone2 + "\nSender Address: " 
+            + user.address 
+            + " " + req.user.city
+            + "\nGo to your service page https://applinic.com/login";
+
+            sendSMS(req.body.agentNumber,msgBody2);
+
+            function sendSMS(number,body) {
+              sms.messages.create(
+                {
+                  to: number,
+                  from: '+16467985692',
+                  body: body,
+                }
+              )
+              .then(
+                function(call){
+                  console.log(call.sid);
+                },
+                function(err) {
+                  console.log(err)
+                }
+              )
+            }
+
+
+            /*var transporter = nodemailer.createTransport({
+              host: "mail.privateemail.com",
+              port: 465,
+              auth: {
+                user: "info@applinic.com",
+                pass: process.env.EMAIL_PASSWORD
               }
-            )
-            .then(
-              function(call){
-                console.log(call.sid);
-              },
-              function(err) {
-                console.log(err)
+            });*/
+
+            /*var mailOptions = {
+              from: 'Applinic info@applinic.com',
+              to: user.email,//center.email,//result.email,//req.body.email || 'ede.obinna27@gmail.com',
+              subject: 'Billing for drugs delivery received',
+              html: '<table><tr><th><h3  style="background-color:#85CE36; color: #fff; padding: 30px"><img src="https://applinic.com/assets/images/applinic1.png" style="width: 250px; height: auto"/><br/><span>Healthcare... anywhere, anytime.</span></h3></th></tr><tr><td style="font-family: Arial, Helvetica, sans-serif; font-size: 14px;"><b>Hello ' + user.firstname + ",</b><br><br>"
+              + "Here is the details of drugs ordered for delivery:<br><br>"
+              + "Status : Acknowledged:<br> Cost of drugs: " +  currency + "" + req.body.total_cost.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + "<br>"
+              + "Delivery charge: " + currency + "" + req.body.delivery_charge.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + "<br>"
+              + "Center : " + req.user.name + "\n" + req.user.address + "," + req.user.city + "," + req.user.country + "<br>" 
+              + "Phone: " + req.user.phone + "<br><br>"
+              + "<a href='https://applinic.com/login'>Log in now</a> to pay and get instant delivery! <br><br> Always check the motorcycle icon on top of your applinic account dashboard for current courier requests<br><br>"
+              + "Thank you for using Applinic.<br><br>"
+              + "For ease of usage, you may download the Applinic mobile application on google play store if you use an android phone. " 
+              + "<a href='https://play.google.com/store/apps/details?id=com.farelandsnigeria.applinic'>Click here </a> to do so now.<br><br>"
+              + "For inquiries please call customer support on +2349080045678<br><br>"
+              + "Thank you for using Applinic.<br></br><br>"
+              + "<b>Applinic Team</b></td></tr></table>"
+            };
+
+            transporter.sendMail(mailOptions, function(error, info){
+              if (error) {
+                console.log(error);
+              } else {
+                console.log('Email sent: ' + info.response);
               }
-            )
+            });*/
+
+
+            user.save(function(err,info){});
+
+            io.sockets.to(user.user_id).emit("courier billed",
+              {status: true,_id:user._id,message: "The cost of the drugs you requested for home delivery is ready!" 
+              + " Click 'OK' to pay now or 'CANCEL' to pay later by clicking the motorcycle icon on top"});
+
+            res.send({message:"Bill sent for payment successfully!",status: true});
+
+          } else {
+            res.send({message: "Payment for this courier order has already been made. Package is already on delivery.",status:false});
           }
 
-
-          /*var transporter = nodemailer.createTransport({
-            host: "mail.privateemail.com",
-            port: 465,
-            auth: {
-              user: "info@applinic.com",
-              pass: process.env.EMAIL_PASSWORD
-            }
-          });*/
-
-          /*var mailOptions = {
-            from: 'Applinic info@applinic.com',
-            to: user.email,//center.email,//result.email,//req.body.email || 'ede.obinna27@gmail.com',
-            subject: 'Billing for drugs delivery received',
-            html: '<table><tr><th><h3  style="background-color:#85CE36; color: #fff; padding: 30px"><img src="https://applinic.com/assets/images/applinic1.png" style="width: 250px; height: auto"/><br/><span>Healthcare... anywhere, anytime.</span></h3></th></tr><tr><td style="font-family: Arial, Helvetica, sans-serif; font-size: 14px;"><b>Hello ' + user.firstname + ",</b><br><br>"
-            + "Here is the details of drugs ordered for delivery:<br><br>"
-            + "Status : Acknowledged:<br> Cost of drugs: " +  currency + "" + req.body.total_cost.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + "<br>"
-            + "Delivery charge: " + currency + "" + req.body.delivery_charge.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + "<br>"
-            + "Center : " + req.user.name + "\n" + req.user.address + "," + req.user.city + "," + req.user.country + "<br>" 
-            + "Phone: " + req.user.phone + "<br><br>"
-            + "<a href='https://applinic.com/login'>Log in now</a> to pay and get instant delivery! <br><br> Always check the motorcycle icon on top of your applinic account dashboard for current courier requests<br><br>"
-            + "Thank you for using Applinic.<br><br>"
-            + "For ease of usage, you may download the Applinic mobile application on google play store if you use an android phone. " 
-            + "<a href='https://play.google.com/store/apps/details?id=com.farelandsnigeria.applinic'>Click here </a> to do so now.<br><br>"
-            + "For inquiries please call customer support on +2349080045678<br><br>"
-            + "Thank you for using Applinic.<br></br><br>"
-            + "<b>Applinic Team</b></td></tr></table>"
-          };
-
-          transporter.sendMail(mailOptions, function(error, info){
-            if (error) {
-              console.log(error);
-            } else {
-              console.log('Email sent: ' + info.response);
-            }
-          });*/
-
-
-          user.save(function(err,info){});
-
-          io.sockets.to(user.user_id).emit("courier billed",
-            {status: true,_id:user._id,message: "The cost of the drugs you requested for home delivery is ready!" 
-            + " Click 'OK' to pay now or 'CANCEL' to pay later by clicking the motorcycle icon on top"});
-
-          res.send({message:"Bill sent for payment successfully!",status: true});
         } else {
+
           res.send({message: "Patient has already been verified by another center",status:false});
         }
+
       });
+      
 
       function check(num) {
         var toStr = num.toString();  
@@ -8627,14 +8636,14 @@ router.get("/user/get-courier",function(req,res){
       if(req.query.completed) {
         criteria = {completed: true,center_id: req.user.user_id,attended: true,is_paid: true,deleted:false}
       } else if(req.query.paid){
-        criteria = {is_paid: true,center_id: req.user.user_id,deleted: false,completed: false,attended:true}
+        criteria = {is_paid: true,center_id: req.user.user_id,deleted: false,attended:true}
       } else {
         criteria = {city:req.user.city,attended:false,center_id: req.user.user_id,deleted: false}
       }
       model.courier.find(criteria,{otp:0,request_id: 0})
-      .sort('-date')
       .limit(200)
       .exec(function(err,data){
+        console.log(data.length)
         res.send(data);
       })
     }

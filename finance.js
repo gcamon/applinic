@@ -2411,7 +2411,6 @@ router.put("/user/settled-cashout",function(req,res){
 
 router.post("/user/courier/payment-confirmation",function(req,res){
 	if(req.user){
-		
 		if(req.body.otp) {
 			model.otpSchema.findOne({otp: req.body.otp})
 			.exec(function(err,data){
@@ -2439,16 +2438,18 @@ router.post("/user/courier/payment-confirmation",function(req,res){
 
 								courier.is_paid = true;
 
-
+								courier.save(function(){
+								  if(err) throw err;
+								  console.log("courier obj updated!")
+								})
+	
 								mediScroll.save(function(){})
 
 								data.remove(function(){});
-
-								courier.save(function(){})
-
+								
 								req.user.save(function(err,info){
 									if(err) throw err;
-									console.log("patient wallet debited!!");
+									console.log("payer wallet debited!!");
 									res.json({message: "Payment made successfully!",status: true})
 								});
 							} else {
