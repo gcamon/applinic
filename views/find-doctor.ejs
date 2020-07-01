@@ -386,7 +386,7 @@
                    <li class="nav-item" style="margin-right: 10px">  
                                               
                         <a href="/find-doctors" class="btn btn-outline-success active nav-link">
-                          Consult a Doctor
+                          Chat with a live Physician
                         </a>
                         
                                                  
@@ -396,21 +396,22 @@
                           Buy Drugs &amp; Kits
                         </a>
                     </li>
-                    <li class="nav-item" style="margin-right: 10px">
-                        <a href="/symptom-checker" class="btn btn-outline-success nav-link">
-                          Symptoms Checker
-                        </a>
-                    </li>
+                  
                     <li class="nav-item" style="margin-right: 10px">
                         <a href="/covid-19" class="btn btn-outline-success nav-link">
                            Covid-19 Screening Test
                         </a>
                     </li>
-                    <li class="nav-item" style="margin-right: 30px">
-                        <a href="/find-doctors" class="btn btn-outline-success nav-link">
-                            Body Parts Issues  Checker
+                    <li class="nav-item" style="margin-right: 10px">
+                        <a href="/symptom-checker" class="btn btn-outline-success nav-link">
+                          Symptoms Checker
                         </a>
                     </li>
+                    <!--<li class="nav-item" style="margin-right: 30px">
+                        <a href="/issue-checker" class="btn btn-outline-success nav-link">
+                            Body Part Issues  Checker
+                        </a>
+                    </li>-->
                     <li ng-show="!checkLogIn.user_id" class="nav-item" ng-cloak>
                         <a ng-click="loginIntOAcc()" class="btn nav-link btn-outline-danger">
                             Log In 
@@ -418,7 +419,7 @@
 
                         
                     </li>
-                    <!--<a href="/signup" class="btn btn-outline-success">Sign Up </a>-->
+                    
                     <li ng-show="checkLogIn.user_id" class="nav-item" ng-cloak>
                         <a href="" ng-click="todashboard(checkLogIn.typeOfUser)" class="btn btn-danger"> Go to dashboard</a>
                     </li>
@@ -447,8 +448,12 @@
 
                         <a href="/signup" class="btn btn-sm btn-simple">Sign Up </a>
                     </div>-->
-                    <div ng-show="checkLogIn.user_id" class="pt-2">
+                    <!--<div ng-show="checkLogIn.user_id" class="pt-2">
                         <a href="" ng-click="todashboard(checkLogIn.typeOfUser)" class="btn btn-simple"><i class="fa fa-arrow-left"></i> Go to dashboard</a>
+                    </div>-->
+                    <div class="pt-4 pl-2">
+                        <a href="" class="btn btn-info" clipboard supported="supported" text="'https://applinic.com/find-doctors'" on-copied="success()" on-error="fail(err)" title="{{copy}}"><i class="fa fa-link"></i> {{copy}}</a>
+                        <!--<a href="" clipboard supported="supported" text="share this page" on-copied="success()" on-error="fail(err)" title="Copy link" class="fa fa-copy text-danger"> </a>-->
                     </div>
                 </div>
                 <div class="col-md-4 pb-3">
@@ -471,12 +476,12 @@
                             <option data-divider="true"></option>
                             <option data-tokens="frosting">Pediatric Dentist</option>
                           </select>-->
-                        <small id="doctors" class="form-text text-muted">You can search with specialty, doctor's name, centers's name, procedure or disease.</small>
+                        <small id="doctors" class="form-text text-muted">You can search with specialty, doctor's name, center's name, procedure or disease.</small>
                     </div>
                 </div>
                 <div class="col-md-1">
                     <div class="form-group" style="padding-top: 30px">
-                        <input type="submit" name="" value="Search" class="btn btn-outline-success btn-block">
+                        <input type="submit" name="" value="Search" class="btn btn-success btn-block">
                     </div>
                 </div>
                
@@ -616,7 +621,7 @@
                                         <button type="button" class="btn btn-success" style="margin-bottom: 5px" ng-click="consult(doc)" ng-show="!doc.isSent"><i class="fa fa-user-md"></i> Send consultation</button>
                                         <a href="" class="p-2 text-success" ng-show="doc.isSent"><i class="fa fa-check"></i> Request sent!</a>
                                        
-                                        <button type="button" class="btn btn-outline-success" style="margin-bottom: 5px" ng-click="chat(doc)">&nbsp;&nbsp; <i class="fa fa-comments"></i> Chat with me!&nbsp;&nbsp;</button>
+                                        <button type="button" class="btn btn-outline-success" style="margin-bottom: 5px" ng-click="chat(doc)"><i class="fa fa-comments"></i> Leave a message</button>
                                     </div>
                                 </div>
                             </div>
@@ -664,10 +669,10 @@
                                     <!--<p class="avail mt-5"><span><i class="fab fa-line"></i></span> Availability Today</p>-->
                                     <div class="video-btn mt-3 pt-6 text-center">
                                        
-                                        <button type="button" class="btn btn-success" style="margin-bottom: 5px" ng-click="consult(doc)" ng-show="!doc.isSent"><i class="fa fa-user-md"></i> Send Consultation</button>
+                                        <button type="button" class="btn btn-success" style="margin-bottom: 5px" ng-click="consult(doc)" ng-show="!doc.isSent"><i class="fa fa-user-md"></i> Send consultation</button>
                                          <a href="" class="p-2 text-success" ng-show="doc.isSent"><i class="fa fa-check"></i> Request sent!</a>
                                        
-                                        <button class="btn btn-outline-success" style="margin-bottom: 5px" ng-click="chat(doc)">&nbsp;&nbsp; <i class="fa fa-comments"></i> Chat with me! &nbsp;&nbsp;</button>
+                                        <button class="btn btn-outline-success" style="margin-bottom: 5px" ng-click="chat(doc)"><i class="fa fa-comments"></i> leave a message</button>
                                     </div>
                                 </div>
                             </div>
@@ -834,7 +839,8 @@
                                                <ul class="pb-3 line-height">
                                                    <li><a href="/find-doctors?s=live-doctors" class="text-success"> Chat with live physicians</a></li>
                                                    <li><a href="/find-drugs" class="text-success">Find Drug / Buy drugs and kits</a></li>
-                                                   <li><a href="/symptom-checker" class="text-success"> Use our <b>symptoms checker</b> to find the right specialist for your health problems for consultation.</a></li>
+                                                   <li><a href="/symptom-checker" class="text-success">Symptoms Checker AI</a></li>
+                                                   <li><a href="/symptom-checker" class="text-success">Body Part Issues Checker AI</a></li>
                                                   <li><a href="/covid-19" class="text-success">Covid-19 Screening Test</a></li>
                                                   <!-- <li><a href="" class="text-success">Find Laboratory test and centers near you.</a></li>
                                                    <li><a href="" class="text-success">Find Radiology test and centers near you.</a></li>-->
@@ -854,6 +860,10 @@
             </div>-->
         </div>
     </section>
+   <div style="height: 200px"></div>
+    <div style="height: 50px;background-color: #fff;position: fixed;bottom: 0;width: 100%;">
+        
+    </div>
     <script>
         function openNav() {
             document.getElementById("mySidenav").style.width = "300px";
@@ -1092,7 +1102,7 @@
                 <div class="modal-body">
                                 
                     <div class="row">
-                        <div class=" col-md-3 col-sm-12">
+                        <div class=" col-md-3 col-sm-12 pr-2">
                             <img alt="image description" height="120" ng-src="{{docInfo.profile_pic_url}}" class="image-fit">  
                         </div>
                         <div class="col-md-9 col-sm-12 pt-2 pl-4">
@@ -1475,7 +1485,7 @@
     <script src="/socket.io/socket.io.js"></script>
     <script src="/assets/js/socket.min.js"></script>
 
-
+    <script src="/assets/js/angular-clipboard.js"></script>
 
     <script src="/assets/js/angularAnimate.js"></script>
     <script src="/assets/js/modalService.js"></script>

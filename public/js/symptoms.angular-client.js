@@ -1,6 +1,6 @@
 
 
-var app = angular.module('myApp',["angularModalService","ngResource",'ui.bootstrap','btford.socket-io']);
+var app = angular.module('myApp',["angularModalService","ngResource",'ui.bootstrap','btford.socket-io','angular-clipboard']);
 
 app.service("homePageDynamicService",["$resource",function($resource){
   return $resource("/dynamic-service");
@@ -592,8 +592,7 @@ app.controller("hompageController",["$scope","scanTests","cities","labTests","Dr
   })
 
 
-  $scope.search = function() {    
-    
+  $scope.search = function() {   
     ModalService.showModal({
       templateUrl: 'home-page-search.html',
       controller: 'homePageModalController'
@@ -604,9 +603,42 @@ app.controller("hompageController",["$scope","scanTests","cities","labTests","Dr
     });
   }
 
-  //$scope.find();
+  
+
+  $scope.supported = false;
+
+  $scope.copy = "Share this page";
+
+
+  $scope.success = function () {    
+    $scope.copy = 'Link copied!';
+    /*$timeout(function(){
+      $scope.copy = "Share this page";
+    },2000);*/
+  };
+
+
+  $scope.fail = function (err) {
+    console.error('Error!', err);
+  };
+
+  $scope.addSymptoms = function() {
+    ModalService.showModal({
+      templateUrl: 'choose-sypmtom.html',
+      controller: 'symptomModalCtrl'
+    }).then(function(modal) {
+      modal.element.modal();
+      modal.close.then(function(result) {             
+      });
+    });
+  }
+
 
 }]);
+
+app.controller("symptomModalCtrl",["$scope",function($scope){
+  
+}])
 
 app.service("chatService",["$resource",function($resource){
 
@@ -769,51 +801,8 @@ app.controller("homePageModalController",["$scope","$rootScope","homepageSearchS
     }
 }]);
 
-
-app.controller("investigationSearchCtrl",["$scope","$rootScope","$window","$http","$timeout","deviceCheckService",
-  function($scope,$rootScope,$window,$http,$timeout,deviceCheckService){
-  $scope.invest = {};
-
-  $scope.invest.type = 'radio';
-
-  $scope.findInvestigation = function() {
-    var url = "/investigation/result?type=" + $scope.invest.type + "&id=" + $scope.invest.id;
-    $window.location.href = url;
-  }
-
-  $http({
-    method  : 'GET',
-    url     : "/api/dicom-details",
-    headers : {'Content-Type': 'application/json'} 
-    })
-  .success(function(data) {              
-    $scope.dicomDetails = data;
-    $scope.dcmserver = "http://" + $scope.dicomDetails.ip_address + ":8080";
-  }); 
-
-  $scope.supported = false;
-
-  $scope.copy = "";
-
-  $scope.success = function (id) {
-    $scope.copy = 'Copied!';
-    $timeout(function(){
-      $scope.copy = "";
-    },2000)
-  };
-
-  $scope.isMobileDevice = deviceCheckService.getDeviceType();
- 
-
-  $scope.openjnlp = function(link) {
-    window.location.href = "jnlp://" + link;
-  }
-
-
-}]);
-
-app.controller('symptomsCtrl',["$scope","$rootScope","$http","homepageSearchService",
-	function($scope,$rootScope,$http,homepageSearchService){
+app.controller('symptomsCtrl',["$scope","$rootScope","$http","homepageSearchService","$location","$anchorScroll",
+	function($scope,$rootScope,$http,homepageSearchService,$location,$anchorScroll){
 	
 
   $rootScope.selected = [];
@@ -821,15 +810,26 @@ app.controller('symptomsCtrl',["$scope","$rootScope","$http","homepageSearchServ
   $scope.user = {};
 
   var specialtyFilter = {};
-
-  $scope.$watch("symptomsList",function(newVal,oldVal){
-  	if(newVal)
+  var sympElem;
+  $rootScope.$watch("symptomsList",function(newVal,oldVal){
+  	if(newVal){
 	  	newVal.forEach(function(item){
 	  		if(item.picked && !filter[item.Name]){
 	  			$rootScope.selected.push(item)
 	  			filter[item.Name] = 1;
-	  		}
+	  		} else {
+          $rootScope.selected.forEach(function(symptom){
+            if(!symptom.picked){
+              sympElem = $rootScope.selected.map(function(x){return x.ID}).indexOf(symptom.ID);
+              if(sympElem !== -1) {
+                delete filter[$rootScope.selected[sympElem].Name]
+                $rootScope.selected.splice(sympElem,1)
+              }
+            }
+          })
+        }
 	  	})
+    }
   },true);
 
    //crypto
@@ -862,9 +862,11 @@ app.controller('symptomsCtrl',["$scope","$rootScope","$http","homepageSearchServ
   }
 
 
+  $location.hash('')
 
 
   $scope.getResult = function(){
+   
   	if(!$scope.user.gender || !$scope.user.age){
   		alert("Please both Gender and Date of birth values are needed.")
   		return;
@@ -880,6 +882,9 @@ app.controller('symptomsCtrl',["$scope","$rootScope","$http","homepageSearchServ
   		symptomsIds.push(item.ID.toString());
   	});
 
+    $location.hash('issuearea')
+    $anchorScroll()
+
   	var str = JSON.stringify(symptomsIds);
 
   	var year = $scope.user.age.getFullYear();
@@ -890,6 +895,7 @@ app.controller('symptomsCtrl',["$scope","$rootScope","$http","homepageSearchServ
   	$scope.loading = true;
   	$http.get(url)
   	.success(function(response){
+     
   		$scope.issues = response;
   		$scope.loading = false;
   		$scope.issues.forEach(function(item){
@@ -916,25 +922,27 @@ app.controller('symptomsCtrl',["$scope","$rootScope","$http","homepageSearchServ
   }
 
   $scope.getSpecialist = function(specialty) {
-  	$rootScope.user.item = specialty;
-  	$scope.find()
+  	//$rootScope.user.item = specialty;
+  	$scope.find(specialty)
   }
 
-  $scope.find = function() {
+  $scope.find = function(item) {
   	$rootScope.user.category = "Doctor";
 
-  	if(!$rootScope.user.item){
-  		$rootScope.user.item = 'live-doctors';
-  	}
+  	//if(item === 'live-doctors'){
+  	$rootScope.user.item = item;
+  	//}
 
   	$scope.loading = true;
+    $rootScope.user.isSymptomReq = true;
   	homepageSearchService.get($rootScope.user,function(response){
       $scope.loading = false; 
-      console.log(response)
       $scope.searchResultFull = response.full;
       $scope.searchResultSub = response.sub;
     });  
   }
+
+
 
 
 }])

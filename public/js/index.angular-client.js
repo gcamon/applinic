@@ -1,6 +1,6 @@
 
 
-var app = angular.module('myApp',["angularModalService","ngResource",'ui.bootstrap','btford.socket-io']);
+var app = angular.module('myApp',["angularModalService","ngResource",'ui.bootstrap','btford.socket-io','angular-clipboard']);
 
 app.service("homePageDynamicService",["$resource",function($resource){
   return $resource("/dynamic-service");
@@ -369,6 +369,24 @@ app.controller("hompageController",["$scope","scanTests","cities","labTests","Dr
 
     }
   }); 
+
+
+  $scope.supported = false;
+
+  $scope.copy = "Share this page";
+
+
+  $scope.success = function () {  	
+    $scope.copy = 'Link copied!';
+    /*$timeout(function(){
+      $scope.copy = "Share this page";
+    },2000);*/
+  };
+
+
+  $scope.fail = function (err) {
+    console.error('Error!', err);
+  };
 
 
   /*$http({

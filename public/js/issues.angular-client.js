@@ -316,12 +316,15 @@ app.factory("localManager",["$window",function($window){
   };
 }]);
 
-app.controller("hompageController",["$scope","cities","Drugs","$http",
+
+
+
+app.controller("hompageController",["$scope","cities","$http",
   "ModalService","$rootScope","homePageDynamicService",
-  "homepageSearchService","localManager","$window","templateService","mySocket","$location","$anchorScroll",
-  function($scope,cities,Drugs,$http,
-  	ModalService,$rootScope,homePageDynamicService,
-  	homepageSearchService,localManager,$window,templateService,mySocket,$location,$anchorScroll){
+  "skillService","homepageSearchService","localManager","$window","templateService","mySocket","$location",
+  function($scope,cities,$http,
+  	ModalService,$rootScope,homePageDynamicService,skillService,
+  	homepageSearchService,localManager,$window,templateService,mySocket,$location){
 
 
   $rootScope.cities = cities;
@@ -334,9 +337,6 @@ app.controller("hompageController",["$scope","cities","Drugs","$http",
 
   $rootScope.user = {};
 
-  $scope.search = {};
-
-  
 
   var dyna = [];
   var filter = {};
@@ -344,23 +344,72 @@ app.controller("hompageController",["$scope","cities","Drugs","$http",
   var skArr = [];
   var diArr = [];
 
-
-  $scope.descriptions = ["Caplets","Capsule","Packet","Bottle","Sachet","Tablets","Vial",
-    "Ampoule","Suppository","Syrup","Carton","Ointment","Pints","Pieces","Bags"]
-
-
-  if(localManager.getValue('cart')){
-    $rootScope.cart = localManager.getValue('cart');
-  } else {
-    $rootScope.cart = [];
-    localManager.setValue("cart",$rootScope.cart)
-  }
-
   $scope.dropDownList = [];
 
-  $rootScope.user.category = "Pharmacy";
+  $http({
+    method  : 'GET',
+    url     : "/user/get-specialties",
+    headers : {'Content-Type': 'application/json'} 
+    })
+  .success(function(data) {              
+    if(data){
+      
+      for(var i = 0; i < data.length; i++){
+        if(!filter[data[i].specialty]) {
+          filter[data[i].specialty] = 1;
+          spArr.push({name:data[i].specialty});
+          $scope.dropDownList.push(data[i].specialty)
+          $scope.dropDownList.push(data[i].name)
 
-  $scope.todashboard = function(type) {
+        } else {
+          filter[data[i].specialty]++;
+        }
+      }
+
+
+    }
+  }); 
+
+  
+ 
+
+  /*$http({
+    method  : 'GET',
+    url     : "/user/get-doctors-names",
+    headers : {'Content-Type': 'application/json'} 
+    })
+  .success(function(res) {     
+    
+     for(var i = 0; i < res.length; i++){
+        spArr.push(res[i]);
+        dropDownList.concat()
+     }
+
+  });*/
+
+  /*$http({
+    method  : 'GET',
+    url     : "/user/get-diseases",
+    headers : {'Content-Type': 'application/json'} 
+    })
+  .success(function(data) {              
+    if(data){
+      
+      for(var i = 0; i < data.length; i++){
+        if(!filter[data[i].disease]) {
+          filter[data[i].disease] = 1;
+          diArr.push({name:data[i].disease})
+          $scope.dropDownList.push(data[i].disease)
+        } else {
+          filter[data[i].disease]++;
+        }
+      }
+     
+    }
+  });*/
+
+
+  $rootScope.todashboard = function(type) {
   	switch(type) {
       case "Patient":
         $window.location.href = "/user/patient";   
@@ -380,15 +429,26 @@ app.controller("hompageController",["$scope","cities","Drugs","$http",
       case "admin":
         $window.location.href = "/user/admin";
       break;
-      case "Field Agent":
-        $window.location.href = "/user/field-agent/" + data.user_id;
-      break;
-      default:
-        $window.location.href = "/user/view"; 
-      break; 
     }
   }
 
+
+
+  skillService.query(function(data){
+    for(var i = 0; i < data.length; i++){
+      if(!filter[data[i].skill]) {
+        filter[data[i].skill] = 1;
+        skArr.push({name:data[i].skill})
+        $scope.dropDownList.push(data[i].skill)
+        $scope.dropDownList.push(data[i].disease)
+      } else {
+        filter[data[i].skill]++;
+      }
+    }
+  });   
+
+
+  
 
   var qStr = window.location.search;
   if(qStr) {
@@ -396,228 +456,31 @@ app.controller("hompageController",["$scope","cities","Drugs","$http",
   	$rootScope.user.item = qVal[qVal.length - 1];
   }
 
-  homePageDynamicService.query($rootScope.user,function(data){
-    var list = Drugs.concat(data);
-    $scope.drugs = [];
-    list.forEach(function(drug){
-      $scope.dropDownList.push(drug.name);
-      $scope.drugs.push(drug.name)
-    });
-  });  
 
-  var filter = {};
+  $scope.find = function() {
+  	$rootScope.user.category = "Doctor";
 
-  $http.get("/drug-kits/all")
-  .success(function(response){
-    response.forEach(function(item){
-      if(!filter.hasOwnProperty(item.name)){
-        filter[item.name] = {};
-        filter[item.name].disease = item.disease;
-        filter[item.name].name = item.name;
-        filter[item.name].note = item.note;
-        filter[item.name].package = item.package || 0;
-        filter[item.name].type = item.type;
-        filter[item.name]['content'] = [];//item.content;
-        filter[item.name]['content'].push({
-          package: item.package,
-          content: item.content 
-        })
-      } else {  
-        //filter[item.disease].name = item.name;
-        //filter[item.disease].package = item.package;
-        //filter[item.disease]['content'] = item.content;
-        filter[item.name]['content'].push({
-          package: item.package,
-          content: item.content 
-        })    
-       
-      }
-    })
+  	if(!$rootScope.user.item){
+  		$rootScope.user.item = 'live-doctors';
+  	}
 
-    $rootScope.allKits = Object.keys(filter);    
-    $scope.getKit("Drug",'anti-malaria kit');
-  }) 
-
-  $http.get("/home/getAllPharmarcy")
-  .success(function(response){
-    response.forEach(function(item){
-      $scope.dropDownList.push(item.name);
-    })
-  }) 
-
-  $rootScope.getKit = function(type,name) {
-    $scope.kits = filter[name];
-    $scope.section = 'kits';
-    //$location.hash('kitArea')
-    //$anchorScroll()
-  } 
-
-
-  $scope.clearCart = function() {
-    $rootScope.cart.splice(0);
-    localManager.setValue("cart",$rootScope.cart);
-    $scope.resetSelected();
-  }
-
-  $scope.resetSelected = function(id) {
-    for(k in filter){
-      if(filter.hasOwnProperty(k)){
-        if(id){
-          for(var a = 0; a < filter[k].content.length; a++){ 
-            if(filter[k].content[a].cartId === id){
-              filter[k].content[a].isAdded = false;
-              break;
-            }
-          }
-        } else {
-          for(var a = 0; a < filter[k].content.length; a++){ 
-            if(filter[k].content[a].isAdded){
-              filter[k].content[a].isAdded = false;
-            }
-          }
-        }
-      }
-    }
-  }
-
-
-  var cartElemPos; 
-
-  $scope.addToCart = function(itemObj){
-    //console.log(content);
-    if(!itemObj.isAdded) {
-      itemObj.isAdded = true;
-      itemObj.cartId = Math.floor(Math.random() * 99999999);
-      $rootScope.cart.push({
-        id: itemObj.cartId,
-        content: itemObj.content
-      })     
-      localManager.setValue("cart",$rootScope.cart);
-    } else {
-      cartElemPos = $rootScope.cart.map(function(x){return x.id}).indexOf(itemObj.cartId)
-      if(cartElemPos !== -1){
-        $rootScope.cart.splice(cartElemPos,1);
-        localManager.setValue("cart",$rootScope.cart);
-        itemObj.isAdded = false;
-      }
-    }
-  }
-
-  $scope.compose = {}
-
-  $scope.composedItems = [];
-
-  var composeContent;
-  var dosageDescription;
-
-  $scope.newDrug = function(drug) {
-    $scope.section = 'compose';
-    if(drug){
-      $scope.compose.item = drug;
-    }
-  }
-
-  $scope.addComposedItem = function(){
-    $scope.drugErrorMsg = "";
-    if(!$scope.compose.item){
-      $scope.drugErrorMsg = "Drug name field cannot be empty.";
-      return;
-    }
-
-    dosageDescription =  ($scope.compose.quantity) ?  ($scope.compose.quantity + " " + $scope.compose.dosage) 
-    : $scope.compose.dosage; 
-
-    composeContent = [];
-
-    composeContent.push({
-      drug_name: $scope.compose.item,
-      dosage: dosageDescription,
-      frequency: "",
-      duration: ""
-    })
-
-    $scope.composedItems.push({
-      id: Math.floor(Math.random() * 99999999),
-      content: composeContent
-    });
-
-    $scope.isComposedAdded = false;
-  }
-
-  var composeElemPos;
-  $scope.delete = function(itemId){
-    composeElemPos = $scope.composedItems.map(function(x){return x.id}).indexOf(itemId);    
-    $scope.composedItems.splice(composeElemPos,1);
-    $scope.isComposedAdded = false;
-  }
-
-  $scope.addComposeToCart = function(){
-    var combineList = [];
-    $scope.composedItems.forEach(function(item){
-      for(var i = 0; i < item.content.length; i++){
-        combineList.push(item.content[i]);
-      }
-    });
-
-    $scope.isComposedAdded = true;
-   
-    $scope.addToCart({
-      content: combineList
-    })
-
-  }
-
-  $scope.viewCart = function() {
-    $scope.section  = 'cartArea';
-    $location.hash('cartListArea'); 
-    $anchorScroll('cartListArea');
-  }
-
-  $scope.deleteItemInCart = function(item) {      
-    var elemPos = $rootScope.cart.map(function(x){return x.id}).indexOf(item.id);
-    if(elemPos !== -1){
-      $rootScope.cart.splice(elemPos,1)
-      localManager.setValue("cart",$rootScope.cart);
-      $scope.resetSelected(item.id); 
-    }
-  }
-
-  $scope.find = function(isCartItem) {
-    $rootScope.user.item = $scope.search.item;
-    $rootScope.user.city = $scope.search.city;
-    $location.hash('searchResultArea');   
-    $scope.isCart = (isCartItem) ? true : false;
   	$scope.loading = true;
-    $scope.section = "search-result";
-    $rootScope.searchItems = $scope.user.item;
-    $rootScope.searchItemType = "drug";
   	homepageSearchService.get($rootScope.user,function(response){
-      $scope.loading = false;   
+      $scope.loading = false; 
       $scope.searchResultFull = response.full;
       $scope.searchResultSub = response.sub;
-      $anchorScroll();
-    });
+    });  
   }
 
- 
-  $rootScope.userLoginService = function() {
-    $http.get("/user/getuser")
-    .success(function(user){
-      //user = localManager.getValue("resolveUser");
-      if(user.isLoggedIn){
-        $rootScope.user.phone = user.phone;
-        $rootScope.user.address = user.address || user.work_place;
 
-        $rootScope.checkLogIn = user;
-      
-        mySocket.emit('join',{userId: user.user_id});      
-      } else {
-        $rootScope.checkLogIn = {};
-      }
-    })
+
+  var user = localManager.getValue("resolveUser");
+
+  if(user) {
+  	mySocket.emit('join',{userId: user.user_id});
   }
 
-  $rootScope.userLoginService();
+  $rootScope.checkLogIn = user;
 
   $scope.loginIntOAcc = function() {
   	ModalService.showModal({
@@ -630,141 +493,35 @@ app.controller("hompageController",["$scope","cities","Drugs","$http",
   	});
   }
 
-  $scope.chooseKit = function() {
-    ModalService.showModal({
-      templateUrl: 'choose-kit.html',
-      controller: 'chooseKitModalCtrl'
-    }).then(function(modal) {
-      modal.element.modal();
-      modal.close.then(function(result) {
-        console.log(result)             
-      });
-    });
-  }
-
-  $scope.forward = function(center) { 	
-   
-    if(!$rootScope.checkLogIn.isLoggedIn){
-      $rootScope.holdCenter = center;
+  $scope.consult = function(doc) {
+  	$rootScope.holdDoc = doc;
+  	if(!user){  	  	
+  	  ModalService.showModal({
+      	templateUrl: 'auth.html',
+      	controller: 'authModalController'
+     	}).then(function(modal) {
+    		modal.element.modal();
+    		modal.close.then(function(result) {             
+    		});
+    	});
+  	} else {	  	
       ModalService.showModal({
-        templateUrl: 'auth.html',
-        controller: 'authModalController'
+        templateUrl: "selected-doc.html",
+        controller: "bookingDocController"
       }).then(function(modal) {
         modal.element.modal();
-        modal.close.then(function(result) {             
+        modal.close.then(function(result) {
         });
       });
+  	}
 
-    } else {    
-
-      var presId = Math.floor(Math.random() * 99999) + "" + Math.floor(Math.random() * 99999);
-      var url;
-      var method;
-
-      var intRegex = /[0-9 -()+]+$/;
-      if(intRegex.test($rootScope.user.phone)){
-        if($rootScope.user.phone.indexOf('+') == -1) {
-          var newSlice = $rootScope.user.phone.slice(1);
-          $rootScope.user.phone = "+234" + newSlice;
-        }       
-      } else {
-        alert("You selected home delivery option. Please check to see if you entered a valid" +
-        " mobile phone number we can use to contact you while delivering the package.")
-        return;
-      }
-
-      $rootScope.cart.forEach(function(cartItem){
-      
-        if($rootScope.user.isCourier === 'yes'){
-
-          url = "/user/courier";
-          method = "POST";    
-
-          sendObj = {
-            city: $rootScope.checkLogIn.city,
-            location: $rootScope.user.address,
-            center_id: center.user_id,
-            phone1: $rootScope.user.phone,
-            phone2: $rootScope.checkLogIn.phone,
-            address: $rootScope.user.address,
-            prescriptionId: presId,
-            refId: null,
-            prescription_body : cartItem.content,
-            centerInfo: center,
-          }
-
-        } else {
-
-          url = "/user/patient/pharmacy/referral-by-patient";
-          method = "PUT";
-
-          sendObj = {
-            prescription_body : cartItem.content,    
-            user_id : center.user_id,
-            provisional_diagnosis: "none",
-            explanation: "none",
-            date: new Date(),
-            prescriptionId: presId,
-            title: '',
-            doctor_specialty: "",
-            doctor_profile_url: '',
-            doctor_firstname: '',
-            doctor_address: '',
-            doctor_id: '',
-            doctor_city: '',
-            doctor_country: '',
-            doctor_profile_pic_url: '',
-            patient_id: $rootScope.checkLogIn.user_id || "",
-            patient_profile_pic_url: $rootScope.checkLogIn.profile_pic_url,
-            patient_firstname: $rootScope.checkLogIn.firstname,
-            patient_lastname: $rootScope.checkLogIn.lastname,
-            patient_address: $rootScope.checkLogIn.address || $rootScope.checkLogIn.work_place,
-            patient_gender: $rootScope.checkLogIn.gender,
-            patient_age: $rootScope.checkLogIn.age,
-            patient_city: $rootScope.checkLogIn.city,
-            patient_country: $rootScope.checkLogIn.country,
-            patient_phone: $rootScope.checkLogIn.phone,
-            is_paid: false,
-            sender: $rootScope.checkLogIn.type
-          }
-        }
-
-        sendItem(sendObj,center,url,method);  
-      })
-    }
-  }
-
-  var sendItem = function(sendObj,center,url,method) {
-    center.loading = true;
-    $http({
-      method  : method,
-      url     : url, 
-      data    : sendObj,
-      headers : {'Content-Type': 'application/json'} 
-      })
-    .success(function(data) {
-      if(data.success){   
-        center.success = true;
-
-        if($rootScope.user.isCourier && !$scope.isCalled){
-          alert("Sent successfully!"
-          + " Please go to your dashboard and check motorcycle icon for update on the home delivery request.");
-          //$rootScope.$broadcast("new courier order",{status:true})
-          $scope.isCalled = true;
-        }
-
-      } else {          
-        alert("Prescription not sent! Error occured. Please try again shortly.");
-      }
-      center.loading = false;
-    });
   }
 
   $rootScope.holdcenter = {};
 
-  $scope.chat = function(center) {
-  	if($rootScope.checkLogIn.isLoggedIn){ 
-	  	$rootScope.holdcenter = center;
+  $scope.chat = function(doc) {
+  	if(user){ 
+	  	$rootScope.holdcenter = doc;
 	  	//templateService.holdId = doc.user_id;
 	    ModalService.showModal({
 	        templateUrl: 'quick-chat.html',
@@ -786,9 +543,21 @@ app.controller("hompageController",["$scope","cities","Drugs","$http",
 	  }
   }
 
-  //$scope.find();
 
-   $scope.supported = false;
+  $scope.search = function() {   
+    ModalService.showModal({
+      templateUrl: 'home-page-search.html',
+      controller: 'homePageModalController'
+    }).then(function(modal) {
+      modal.element.modal();
+      modal.close.then(function(result) {             
+      });
+    });
+  }
+
+  
+
+  $scope.supported = false;
 
   $scope.copy = "Share this page";
 
@@ -805,12 +574,22 @@ app.controller("hompageController",["$scope","cities","Drugs","$http",
     console.error('Error!', err);
   };
 
+  $scope.addSymptoms = function() {
+    ModalService.showModal({
+      templateUrl: 'choose-sypmtom.html',
+      controller: 'symptomModalCtrl'
+    }).then(function(modal) {
+      modal.element.modal();
+      modal.close.then(function(result) {             
+      });
+    });
+  }
+
 
 }]);
 
-app.controller("chooseKitModalCtrl",['$scope','$rootScope',
-  function($scope,$rootScope){
-
+app.controller("symptomModalCtrl",["$scope",function($scope){
+  
 }])
 
 app.service("chatService",["$resource",function($resource){
@@ -849,10 +628,9 @@ app.controller("generalChatCtrl",["$scope","$rootScope","mySocket",function($sco
       $scope.messageBody = "Requesting for the following  " + $rootScope.searchItemType + ":  " + $rootScope.searchItems;
     }
     
-    $scope.sendChatSingle = function(partnerId,partnerId2){
+    $scope.sendChatSingle = function(partnerId){
       $scope.loading = true;
-      var pId = (partnerId) ? partnerId : partnerId2;
-      mySocket.emit("send message general",{to: pId,message:$scope.messageBody,from: user.user_id},function(data){ 
+      mySocket.emit("send message general",{to: partnerId,message:$scope.messageBody,from: user.user_id},function(data){ 
         if(data) {
           $scope.loading = false;
           $scope.isSent = true;
@@ -908,8 +686,7 @@ app.controller("authModalController",["$scope","$rootScope","homepageSearchServi
     		localManager.setValue("resolveUser",data); 
     		var name = data.firstname || data.name;
     		$scope.loginSuccess = "Welcome " + name + "! " + "Close the modal and continue."
-    		//mySocket.emit('join',{userId: data.user_id});
-        $rootScope.userLoginService();
+    		mySocket.emit('join',{userId: data.user_id});
     	} else {
     		$scope.loginMessage = data.message;
     	}
@@ -976,48 +753,151 @@ app.controller("homePageModalController",["$scope","$rootScope","homepageSearchS
     }
 }]);
 
+app.controller('symptomsCtrl',["$scope","$rootScope","$http","homepageSearchService","$location","$anchorScroll",
+	function($scope,$rootScope,$http,homepageSearchService,$location,$anchorScroll){
+	
 
-app.controller("investigationSearchCtrl",["$scope","$rootScope","$window","$http","$timeout","deviceCheckService",
-  function($scope,$rootScope,$window,$http,$timeout,deviceCheckService){
-  $scope.invest = {};
+  $rootScope.selected = [];
+  var filter = {}
+  $scope.user = {};
 
-  $scope.invest.type = 'radio';
+  var specialtyFilter = {};
+  var sympElem;
+  $rootScope.$watch("symptomsList",function(newVal,oldVal){
+  	if(newVal){
+	  	newVal.forEach(function(item){
+	  		if(item.picked && !filter[item.Name]){
+	  			$rootScope.selected.push(item)
+	  			filter[item.Name] = 1;
+	  		} else {
+          $rootScope.selected.forEach(function(symptom){
+            if(!symptom.picked){
+              sympElem = $rootScope.selected.map(function(x){return x.ID}).indexOf(symptom.ID);
+              if(sympElem !== -1) {
+                delete filter[$rootScope.selected[sympElem].Name]
+                $rootScope.selected.splice(sympElem,1)
+              }
+            }
+          })
+        }
+	  	})
+    }
+  },true);
 
-  $scope.findInvestigation = function() {
-    var url = "/investigation/result?type=" + $scope.invest.type + "&id=" + $scope.invest.id;
-    $window.location.href = url;
-  }
+   //crypto
+
+	var uri = "https://sandbox-authservice.priaid.ch/login";
+  var secret_key = "m4TZg78KiAo6y2GJj";
+  var computedHash = CryptoJS.HmacMD5(uri, secret_key);
+  var computedHashString = computedHash.toString(CryptoJS.enc.Base64);   
+  
+  var auth = 'Bearer ' + "ede.obinna27@gmail.com:" + computedHashString;
+  
 
   $http({
-    method  : 'GET',
-    url     : "/api/dicom-details",
-    headers : {'Content-Type': 'application/json'} 
-    })
-  .success(function(data) {              
-    $scope.dicomDetails = data;
-    $scope.dcmserver = "http://" + $scope.dicomDetails.ip_address + ":8080";
-  }); 
-
-  $scope.supported = false;
-
-  $scope.copy = "";
-
-  $scope.success = function (id) {
-    $scope.copy = 'Copied!';
-    $timeout(function(){
-      $scope.copy = "";
-    },2000)
-  };
-
-  $scope.isMobileDevice = deviceCheckService.getDeviceType();
- 
-
-  $scope.openjnlp = function(link) {
-    window.location.href = "jnlp://" + link;
+    method  : 'POST',
+    url     : uri,
+    headers : {'Content-Type': 'application/json','Authorization': auth}
+  })
+  .success(function(res) {     
+  	$scope.token = res.Token;
+  	$scope.getSymptoms();
+  });
+  
+  $scope.getSymptoms = function(token) {
+  	var url = "https://sandbox-healthservice.priaid.ch/issues?"
+  	+ "token=" + $scope.token + "&language=en-gb&format=json";
+	  $http.get(url)
+	  .success(function(response){
+	  	$rootScope.symptomsList = response;
+	  });
   }
 
 
-}]);
+  $location.hash('')
+
+
+  $scope.getResult = function(){
+   
+  	if(!$scope.user.gender || !$scope.user.age){
+  		alert("Please both Gender and Date of birth values are needed.")
+  		return;
+  	}
+
+  	if($rootScope.selected.length == 0){
+  		alert("Please add symptoms you are experiencing.")
+  		return;
+  	}
+
+  	var symptomsIds = [];
+  	$rootScope.selected.forEach(function(item){
+  		symptomsIds.push(item.ID.toString());
+  	});
+
+    $location.hash('issuearea')
+    $anchorScroll()
+
+  	var str = JSON.stringify(symptomsIds);
+
+  	var year = $scope.user.age.getFullYear();
+
+  	var url = 'https://sandbox-healthservice.priaid.ch/diagnosis?symptoms=' + str + 
+  	"&gender=" + $scope.user.gender + "&year_of_birth=" + year + "&token=" + $scope.token
+  	+ "&language=en-gb&format=json";
+  	$scope.loading = true;
+  	$http.get(url)
+  	.success(function(response){
+     
+  		$scope.issues = response;
+  		$scope.loading = false;
+  		$scope.issues.forEach(function(item){
+  			if(!specialtyFilter[item.Specialisation.Name]) {
+  				specialtyFilter[item.Specialisation.Name] = item.Specialisation.Name;
+  				$scope.getSpecialist(item.Specialisation.Name)
+  			}
+  		})
+  	});
+
+  }
+
+  var elemPos;
+
+  $scope.deleteSymptom = function(id) {
+  	elemPos = $rootScope.selected.map(function(x){return x.ID}).indexOf(id);
+  	$rootScope.selected.splice(elemPos,1)
+  	$rootScope.symptomsList.forEach(function(item){
+  		if(item.ID === id){
+  			item.picked = false;
+  			delete filter[item.Name];
+  		}
+  	})
+  }
+
+  $scope.getSpecialist = function(specialty) {
+  	//$rootScope.user.item = specialty;
+  	$scope.find(specialty)
+  }
+
+  $scope.find = function(item) {
+  	$rootScope.user.category = "Doctor";
+
+  	//if(item === 'live-doctors'){
+  	$rootScope.user.item = item;
+  	//}
+
+  	$scope.loading = true;
+    $rootScope.user.isSymptomReq = true;
+  	homepageSearchService.get($rootScope.user,function(response){
+      $scope.loading = false; 
+      $scope.searchResultFull = response.full;
+      $scope.searchResultSub = response.sub;
+    });  
+  }
+
+
+
+
+}])
 
 
 app.controller("bookingDocController",["$scope","$http","$rootScope",
@@ -1649,144 +1529,7 @@ function destroyStorage(localManager) {
 
 
 
-//radiology data
 
-
-
-app.factory("Drugs",function(){
-
-  var listOfDrugs = [{name: "Abilify",id:1},{name: "Acetaminophen",id:2},{name: "Acyclovir",id:3},
-  {name: "Adderall",id:4},{name: "Albuterol",id:5},{name: "Aleve",id:6},{name: "Allopurinol",id:7},
-  {name: "Alprazolam",id:8},{name: "Ambien",id:9},{name: "Amiodarone",id:10},{name: "Amitriptyline",id:11},{name: "Amlodipine",id:12},
-  {name: "Amoxicillin",id:13},{name: "Aricept",id:14},
-  {name: "Aspirin",id:15},{name: "Atenolol",id:6},{name: "Ativan",id:17},{name: "Atorvastatin",id:18},
-  {name: "Augmentin",id:19},{name: "Azithromycin",id:20},
-  {name: "Baclofen",id:21},{name: "Bactrim",id:22},{name: "Bactroban",id:23},{name: "Belsomra",id:24},
-  {name: "Benadryl",id:25},{name: "Benicar",id:26},
-  {name: "Biaxin",id:27},{name: "Bisoprolol",id:28},{name: "Boniva",id:29},{name: "Breo Ellipta",id:30},
-  {name: "Brilinta",id:31},{name: "Brovana",id:32},{name: "Bupropion",id:33},
-  {name: "Buspar",id:34},{name: "Buspirone",id:35},{name: "Butrans",id:36},{name: "Bydureon",id:37},{name: "Byetta",id:38},
-  {name: "Bystolic",id:39},
-  {name: "Cardizem",id:40},{name: "Carvedilol",id:41},{name: "Celebrex",id:42},{name: "Celexa",id:43},{name: "Cephalexin",id:44},
-  {name: "Cetirizine",id:45},
-  {name: "Cialis",id:46},{name: "Cipro",id:47},{name: "Ciprofloxacin",id:48},{name: "Citalopram",id:49},
-  {name: "Claritin",id:50},{name: "Clindamycin",id:51},{name: "Clonazepam",id:52},{name: "Clonidine",id:53},{name: "Coreg",id:54},
-  {name: "Coumadin",id:55},
-  {name: "Cozaar",id:56},{name: "Crestor",id:57},{name: "Cyclobenzaprine",id:58},{name: "Cymbalta",id:59},
-  {name: "Daliresp",id:60},{name: "Depakote",id:61},
-  {name: "Detrol",id:62},{name: "Dexamethasone",id:63},{name: "Dextromethorphan",id:64},{name: "Diazepam",id:65},
-  {name: "Diclofenac",id:66},{name: "Diflucan",id:67},
-  {name: "Digoxin",id:68},{name: "Dilantin",id:69},{name: "Dilaudid",id:70},{name: "Diltiazem",id:71},
-  {name: "Diovan",id:72},{name: " Diphenhydramine",id:73},{name: "Ditropan",id:74},{name: "Doxazosin",id:75},{name: "Doxycycline",id:76},
-  {name: "Dulera",id:77},
-  {name: "DuoNeb",id:78},{name: "Dyazide",id:79},{name: "Effexor",id:80},{name: "Effient",id:81},{name: "Elavil",id:82},
-  {name: "Eligard",id:83},{name: "Eliquis",id:84},
-  {name: "Elocon",id:85},{name: "Enalapril",id:86},{name: "Enbrel",id:87},{name: "Entresto",id:88},{name: "EpiPen",id:89},
-  {name: "Epogen",id:90},
-  {name: "Erythromycin",id:91},{name: "Estrace",id:92},{name: "Estradiol",id:93},{name: "Etodolac",id:94},
-  {name: "Evista",id:95},{name: "Excedrin",id:96},{name: "Exelon",id:97},
-  {name: "Exforge",id:98},{name: "Ezetimibe",id:99},{name: "Famotidine",id:100},{name: "Farxiga",id:101},{name: "Femara",id:102},
-  {name: "Fenofibrate",id:103},
-  {name: "Fentanyl",id:104},{name: "Ferrous Sulfate",id:105},{name: "Fetzima",id:106},{name: "Fioricet",id:107},
-  {name: "Fish Oil",id:108},{name: "Flagyl",id:109},
-  {name: "Flexeril",id:110},{name: "Flomax",id:111},{name: "Flonase",id:112},{name: "Flovent",id:113},
-  {name: "Fluoxetine",id:114},{name: "Focalin",id:115},{name: "Folic Acid",id:116},{name: "Forteo",id:117},
-  {name: "Fosamax",id:118},{name: "Furosemide",id:119},
-  {name: "Furosemide",id:120},{name: "Gabapentin",id:121},{name: "Gammagard",id:122},{name: "Gamunex",id:123},
-  {name: "Garcinia Cambogia",id:124},{name: "Gardasil",id:125},{name: "Gemfibrozil",id:126},
-  {name: "Gemzar",id:127},{name: "Genvoya",id:128},{name: "Geodon",id:129},{name: "Gilenya",id:130},
-  {name: "Gilotrif",id:131},{name: "Gleevec",id:132},{name: "Glipizide",id:133},
-  {name: "Glucophage",id:134},{name: "Glucotrol",id:135},{name: "Glucovance",id:136},{name: "Glyburide",id:137},{name: "Glyxambi",id:138},
-  {name: "Gralise",id:139},{name: "Guaifenesin",id:140},
-  {name: "Halaven",id:141},{name: "Harvoni",id:142},{name: "Havrix",id:143},{name: "Hcg",id:144},{name: "Heparin",id:45},
-  {name: "Herceptin",id:146},{name: "Hetlioz",id:147},
-  {name: "Hizentra",id:148},{name: "Horizant",id:149},{name: "Humalog",id:150},{name: "Humira",id:151},
-  {name: "Humulin",id:152},{name: "Humulin N",id:153},{name: "Hydrochlorothiazide",id:154},
-  {name: "Hydrocodone",id:155},{name: "Hydroxychloroquine",id:156},{name: "Hydroxyzine",id:157},{name: "Hysingla ER",id:158},
-  {name: "Hytrin",id:159},{name: "Hyzaar",id:160},{name: "Ibrance",id:161},
-  {name: "Ibuprofen",id:162},{name: "Imbruvica",id:163},{name: "Imdur",id:164},{name: "Imitrex",id:165},{name: "Imodium",id:166},
-  {name: "Implanon",id:167},{name: "Incruse Ellipta",id:168},{name: "Inderal",id:169},{name: "Injectafer",id:170},
-  {name: "Inlyta",id:171},{name: "Insulin",id:172},{name: "Intelence",id:173},
-  {name: "Intuniv",id:174},{name: "Invega",id:175},{name: "Invokamet",id:176},
-  {name: "Invokana",id:177},{name: "Isentress",id:178},{name: "Isosorbide",id:179},{name: "Istalol",id:180},
-  {name: "Jakafi",id:181},{name: "Jalyn",id:182},{name: "Janumet",id:183},{name: "Januvia",id:184},
-  {name: "Jardiance",id:185},{name: "Jentadueto",id:186},{name: "Jetrea",id:187},
-  {name: "Jevtana",id:188},{name: "Jublia",id:189},{name: "Juvederm",id:190},{name: "Juvisync",id:191},
-  {name: "Juxtapid",id:192},{name: "K-dur",id:193},{name: "Kadcyla",id:194},
-  {name: "Kadian",id:195},{name: "Kalbitor",id:196},{name: "Kaletra",id:197},{name: "Kapidex",id:198},
-  {name: "Kapvay",id:199},{name: "Kazano",id:200},{name: "Keflex",id:201},
-  {name: "Kenalog",id:202},{name: "Keppra",id:203},{name: "Kerydin",id:204},{name: "Keytruda",id:205},{name: "Kineret",id:206},
-  {name: "Klonopin",id:207},
-  {name: "Klor-con",id:208},{name: "Kombiglyze XR",id:209},{name: "Krill Oil",id:210},
-  {name: "Kyprolis",id:211},{name: "Kytril",id:212},{name: "Lamictal",id:213},{name: "Lansoprazole",id:214},
-  {name: "Lasix",id:215},{name: "Latuda",id:216},{name: "Levaquin",id:217},{name: "Levothyroxine",id:218},
-  {name: "Levoxyl",id:219},{name: "Lexapro",id:220},{name: "Lidoderm",id:221},
-  {name: "Linzess",id:222},{name: "Lipitor",id:223},{name: "Lisinopril",id:224},{name: "Lithium",id:225},
-  {name: "Loratadine",id:226},{name: "Lorazepam",id:227},
-  {name: "Losartan",id:228},{name: "Lovenox",id:229},{name: "Lumigan",id:230},{name: "Lupron",id:231},{name: "Lyrica",id:232},{name: "Macrobid",id:233},
-  {name: "Meclizine",id:234},{name: "Melatonin",id:235},{name: "Meloxicam",id:236},{name: "Metformin",id:237},
-  {name: "Methadone",id:238},{name: "Methocarbamol",id:239},{name: "Methotrexate",id:240},{name: "Methylprednisolone",id:241},
-  {name: "Metoclopramide",id:242},{name: "Metoprolol",id:243},
-  {name: "Metronidazole",id:244},{name: "MiraLax",id:245},{name: "Mirapex",id:246},{name: "Mirtazapine",id:247},
-  {name: "Mobic",id:248},{name: "Morphine",id:249},{name: "Motrin",id:250},{name: "Mucinex",id:251},
-  {name: "Naloxone",id:252},{name: "Namenda",id:253},{name: "Naprosyn",id:254},{name: "Naproxen",id:255},{name: "Nasacort",id:256},
-  {name: "Nasonex",id:257},{name: "Neurontin",id:258},{name: "Nexium",id:259},{name: "Niacin",id:260},
-  {name: "Niaspan",id:261},{name: "Nicotine",id:262},{name: "Nifedipine",id:263},{name: "Nitrofurantoin",id:264},{name: "Nizoral",id:265},
-  {name: "Norco",id:266},{name: "Nortriptyline",id:267},{name: "Norvasc",id:268},
-  {name: "NovoLog",id:269},{name: "Nucynta",id:270},{name: "Nuvigil",id:271},{name: "Ofev",id:272},{name: "Omeprazole",id:273},
-  {name: "Omnicef",id:274},{name: "Ondansetron",id:275},{name: "Onfi",id:276},
-  {name: "Onglyza",id:277},{name: "Opana",id:278},{name: "Opdivo",id:279},{name: "Orapred",id:280},{name: "Orencia",id:281},
-  {name: "Orlistat",id:282},{name: "Ortho Tri-Cyclen",id:283},{name: "Orthovisc",id:284},
-  {name: "Oseltamivir",id:285},{name: "Osphena",id:286},{name: "Otezla",id:287},{name: "Oxybutynin",id:289},{name: "Oxycodone",id:290},
-  {name: "Oxycontin",id:291},{name: "Oxytrol",id:292},
-  {name: "Paroxetine",id:293},{name: "Paxil",id:294},{name: "Pepcid",id:295},{name: "Percocet",id:296},{name: "Phenergan",id:297},
-  {name: "Plaquenil",id:298},{name: "Plavix",id:299},{name: "Potassium Chloride",id:300},
-  {name: "Pradaxa",id:301},{name: "Pravachol",id:302},{name: "Pravastatin",id:303},{name: "Prednisone",id:304},
-  {name: "Premarin",id:305},{name: "Prevacid",id:306},{name: "Prilosec",id:307},{name: "Prolia",id:308},{name: "Promethazine",id:309},
-  {name: "Propranolol",id:310},
-  {name: "Protonix",id:311},{name: "Prozac",id:312},{name: "QNASL",id:313},{name: "Qsymia",id:314},{name: "Quillivant XR",id:315},
-  {name: "Qutenza",id:316},{name: "Ramipril",id:317},{name: "Ranexa",id:318},
-  {name: "Ranitidine",id:319},{name: "Rapaflo",id:320},{name: "Reclast",id:321},{name: "Reglan",id:322},{name: "Relafen",id:323},
-  {name: "Remeron",id:324},{name: "Remicade",id:325},{name: "Renvela",id:326},
-  {name: "Requip",id:327},{name: "Restasis",id:328},{name: "Restoril",id:329},{name: "Revlimid",id:330},
-  {name: "Risperdal",id:331},{name: "Risperidone",id:332},{name: "Ritalin",id:333},
-  {name: "Rituxan",id:335},{name: "Robaxin",id:336},{name: "Rocephin",id:337},{name: "Saphris",id:338},
-  {name: "Savella",id:339},{name: "Senna",id:340},{name: "Sensipar",id:341},
-  {name: "Septra",id:342},{name: "Seroquel",id:343},{name: "Sertraline",id:344},{name: "Sildenafil",id:345},
-  {name: "Simbrinza",id:346},{name: "Simvastatin",id:347},{name: "Singulair",id:348},{name: "Skelaxin",id:349},
-  {name: "Soma",id:350},{name: "Spiriva",id:351},{name: "Spironolactone",id:352},{name: "Stiolto Respimat",id:353},
-  {name: "Strattera",id:354},{name: "Suboxone",id:355},{name: "Symbicort",id:356},
-  {name: "Synthroid",id:357},{name: "Tamoxifen",id:357},{name: "Tamsulosin",id:358},
-  {name: "Tegretol",id:359},{name: "Temazepam",id:360},{name: "Terazosin",id:361},{name: "Testosterone",id:362},{name: "Tizanidine",id:363},
-  {name: "Topamax",id:364},{name: "Toprol",id:365},{name: "Toradol",id:366},{name: "Tradjenta",id:367},{name: "Tramadol",id:368},
-  {name: "Travatan",id:369},{name: "Trazodone",id:370},{name: "Triamcinolone",id:371},
-  {name: "Triamterene",id:372},{name: "Tricor",id:373},{name: "Trileptal",id:374},
-  {name: "Trintellix",id:375},{name: "Tylenol",id:376},{name: "Uceris",id:377},{name: "Ulesfia",id:378},{name: "Uloric",id:379},
-  {name: "Ultane",id:380},{name: "Ultracet",id:381},{name: "Ultram",id:382},{name: "Ultresa",id:383},{name: "Uptravi",id:384},
-  {name: "Uroxatral",id:385},{name: "Utibron Neohaler",id:386},
-  {name: "Valacyclovir",id:387},{name: "Valium",id:388},{name: "Valtrex",id:389},{name: "Vancomycin",id:390},
-  {name: "Vasotec",id:391},{name: "Venlafaxine",id:392},{name: "Ventolin",id:393},
-  {name: "Verapamil",id:394},{name: "Vesicare",id:395},{name: "Viagra",id:396},{name: "Vicodin",id:397},
-  {name: "Victoza",id:398},{name: "Viibryd",id:399},{name: "Vimpat",id:400},
-  {name: "Vistaril",id:401},{name: "Vitamin E",id:402},{name: "Voltaren",id:403},{name: "Voltaren Gel",id:404},
-  {name: "Vytorin",id:405},{name: "Vyvanse",id:406},{name: "Warfarin",id:407},
-  {name: "Wellbutrin",id:408},{name: "Wilate",id:409},{name: "Xalatan",id:410},{name: "Xalkori",id:411},
-  {name: "Xanax",id:412},{name: "Xanax XR",id:413},{name: "Xarelto",id:414},
-  {name: "Xeljanz",id:415},{name: "Xeloda",id:416},{name: "Xenazine",id:417},{name: "Xenical",id:418},
-  {name: "Xgeva",id:419},{name: "Xiaflex",id:420},{name: "Xifaxan",id:421},
-  {name: "Xigduo XR",id:422},{name: "Xiidra",id:423},{name: "Xofigo",id:424},{name: "Xolair",id:425},
-  {name: "Xopenex",id:426},{name: "Xtandi",id:427},{name: "Xyrem",id:428},
-  {name: "Xyzal",id:429},{name: "Yasmin",id:430},{name: "Yaz",id:431},{name: "Yervoy",id:432},{name: "Yondelis",id:433},
-  {name: "Yosprala",id:434},{name: "Zanaflex",id:435},
-  {name: "Zantac",id:436},{name: "Zestoretic",id:437},{name: "Zestril",id:438},{name: "Zetia",id:439},
-  {name: "Ziac",id:440},{name: "Zithromax",id:441},{name: "Zocor",id:443},
-  {name: "Zofran",id:444},{name: "Zoloft",id:445},{name: "Zolpidem",id:446},{name: "Zometa",id:447},{name: "Zomig",id:448},
-  {name: "Zostavax",id:449},
-  {name: "Zosyn",id:450},{name: "Zovirax",id:451},{name: "Zyprexa",id:452},{name: "Zyrtec",id:453},
-  {name: "Zytiga",id:454},{name: "Zyvox",id:455}];
-
-  return [];//listOfDrugs;
-});
 
 app.factory("cities",function(){
   var allCities = ["Aba","Abakaliki","Abeokuta","Abonnema","Abuja","Ado Ekiti","Afikpo","Agbor","Agulu","Aku","Akure",

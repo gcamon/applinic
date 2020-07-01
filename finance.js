@@ -2440,7 +2440,7 @@ router.post("/user/courier/payment-confirmation",function(req,res){
 
 								courier.save(function(){
 								  if(err) throw err;
-								  console.log("courier obj updated!")
+
 								})
 	
 								mediScroll.save(function(){})
@@ -2449,7 +2449,7 @@ router.post("/user/courier/payment-confirmation",function(req,res){
 								
 								req.user.save(function(err,info){
 									if(err) throw err;
-									console.log("payer wallet debited!!");
+									
 									res.json({message: "Payment made successfully!",status: true})
 								});
 							} else {

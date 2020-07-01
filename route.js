@@ -8624,6 +8624,7 @@ router.put("/user/decline-courier",function(req,res){
 
 
 router.get("/user/get-courier",function(req,res){
+
   if(req.user){
     if(req.query.isSingle){
       model.courier.findById(req.query.id)
@@ -8641,9 +8642,9 @@ router.get("/user/get-courier",function(req,res){
         criteria = {city:req.user.city,attended:false,center_id: req.user.user_id,deleted: false}
       }
       model.courier.find(criteria,{otp:0,request_id: 0})
+      .sort('-date')
       .limit(200)
-      .exec(function(err,data){
-        console.log(data.length)
+      .exec(function(err,data){       
         res.send(data);
       })
     }
@@ -10490,6 +10491,13 @@ router.get("/general/homepage-search",function(req,res){
         {name: { $regex: str, $options: 'i' },type:"Doctor"},{ firstname : { $regex: str, $options: 'i' },type:"Doctor"},
         { lastname : { $regex: str, $options: 'i' },type:"Doctor"}]}; 
       }
+
+    // this is added to return empty list if the specialists in symptoms checker was not found so as to guild user to 
+    // look for alternative specialists this case firstline doctors.
+    } else if(req.query.isSymptomReq) {
+      //var criteria = (req.query.city) ? {type: "Doctor",city:req.query.city} : {type: "Doctor"};
+      res.json({full:[]});
+      return;
 
     } else {
       var criteria = (req.query.city) ? {type: "Doctor",city:req.query.city} : {type: "Doctor"};
@@ -12601,6 +12609,10 @@ router.get("/symptom",function(req,res){
 
 router.get("/symptom-checker",function(req,res){
   res.render("symptoms-find")
+});
+
+router.get("/issue-checker",function(req,res){
+  res.render("issues-find")
 });
 
 router.get("/user/getuser",function(req,res){

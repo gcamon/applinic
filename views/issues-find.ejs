@@ -3,7 +3,7 @@
 
 <head>
 
-    <title>APPLINIC - Symptom Checker</title>
+    <title>APPLINIC - Health Issues Checker</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
@@ -548,15 +548,15 @@
                         </a>
                     </li>
                     <li class="nav-item" style="margin-right: 10px">
-                        <a href="/symptom-checker" class="btn btn-outline-success active nav-link">
+                        <a href="/symptom-checker" class="btn btn-outline-success nav-link">
                           Symptoms Checker
                         </a>
                     </li>                   
-                   <!-- <li class="nav-item" style="margin-right: 30px">
-                        <a href="/issue-checker" class="btn btn-outline-success nav-link">
-                          Body Part Issues  Checker
+                    <li class="nav-item" style="margin-right: 30px">
+                        <a href="" class="btn btn-outline-success active nav-link">
+                          Health Risk  Checker
                         </a>
-                    </li>-->
+                    </li>
                     <li ng-show="!checkLogIn.user_id" class="nav-item" ng-cloak>
                         <a ng-click="loginIntOAcc()" class="btn nav-link btn-outline-danger">
                             Log In 
@@ -833,7 +833,7 @@
                 <!-- col 4 -->
                 <div class="col-sm-3">
                     <div class="mb-3 no-mobile-item-display">
-                        <h5 class="pl-1"><strong>Select Symptoms</strong></h5>
+                        <h5 class="pl-1"><strong>Select Health Issue</strong></h5>
                     </div>
                     <div class="container side-sticky no-mobile-item-display">
                         <div class="row">
@@ -869,16 +869,16 @@
                     <form class="mb-3" ng-submit="getResult()"> 
                         <h5 class="mb-3 mt-3 pl-1" style="position: relative;">
                             <b>Selection</b>
-                             <a href="" class=" btn btn-outline-danger" ng-click="addSymptoms()" style="position: absolute;right: 10px;bottom: 2px">Add Symptoms</a>
+                             <a href="" class=" btn btn-outline-danger" ng-click="addSymptoms()" style="position: absolute;right: 10px;bottom: 2px">Add Issue</a>
                         </h5>                       
                         <div class="p-4 card">                            
-                            <label class="text-left"><b>Symptoms</b></label>                            
+                            <label class="text-left"><b>Health Risk</b></label>                            
                             <ul style="display: inline-block;list-style: none;margin-bottom: 20px">
                                 <li style="float: left; margin-right: 10px;margin-top: 5px" ng-repeat="s in selected track by $index" class="btn btn-outline-danger">
                                     <b>{{s.Name}}</b>&nbsp;&nbsp;&nbsp;
                                     <a href="" ng-click="deleteSymptom(s.ID)"><i class="fa fa-times"></i></a>
                                 </li>
-                                <li ng-show="selected.length == 0" class="text-muted">Symptoms empty! Add symptoms</li>
+                                <li ng-show="selected.length == 0" class="text-muted">Health issue empty! Add an issue</li>
                             </ul>
                             <div class="pt-2 text-left">
                                 <label><b>Gender</b></label> <br>
@@ -1477,7 +1477,7 @@
 
 
     <!--<script type="text/javascript" src="/assets/js/angularclient.js"></script>-->
-    <script type="text/javascript" src="/assets/js/symptoms.angular-client.js"></script>
+    <script type="text/javascript" src="/assets/js/issues.angular-client.js"></script>
     <script type="text/javascript" src="/assets/js/ngroute.js"></script>
     <script src="/socket.io/socket.io.js"></script>
     <script src="/assets/js/socket.min.js"></script>
