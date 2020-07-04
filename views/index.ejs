@@ -61,7 +61,11 @@
            text-align: center;
            padding:0px;
            min-height:340px;
-        }       
+        }   
+
+        .card{
+            box-shadow: none;border:1px solid #18ce0f;border-radius: inherit!important;
+        }    
 
         .card-title {
             text-transform: uppercase;
@@ -76,6 +80,11 @@
 
         .nav-item > a {
            color: green!important;
+
+        }
+
+        .below-banner-text li > a {
+            font-size: 18px!important
         }
 
 
@@ -96,7 +105,11 @@
         }
 
         .carousel-inner {
-            height:520px;
+            /*height:520px;*/
+        }
+
+        .font_1-4 {
+            font-size: 1em!important;
         }
 
         .carousel-item.active,
@@ -220,7 +233,7 @@
                 right: 0;
                 bottom: 0;
                 padding-top: 55px !important;
-                 min-height:400px;
+                 /*min-height:400px;*/
                  margin-bottom: 80px;
             }
 
@@ -234,7 +247,7 @@
             }
 
             .carousel-inner {
-                min-height:400px !important;
+                /*min-height:400px !important;*/
             }
 
             .display-4 {
@@ -335,7 +348,7 @@ padding:10px 10px;
 
 </head>
 
-<body class="template-page"  style="overflow-x:hidden;position: relative;" >
+<body class="template-page"  style="overflow-x:hidden;position: relative;" ng-controller="hompageController">
     <!-- Navbar -->
     <!--<nav class="navbar navbar-toggleable-md bg-primary fixed-top  navbar-transparent" color-on-scroll="500">
         <div class="container">
@@ -386,14 +399,14 @@ padding:10px 10px;
      <div style="height: 2px" class="bg-success"></div>
 
     <div id="carouselExampleIndicators" class="slide carousel carousel-fade bg-default" role="listbox" data-ride="carousel"
-        style="position: relative;">
+        style="position: relative;" >
         <!--<ol class="carousel-indicators">
     <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
     <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
     <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
      <li data-target="#carouselExampleIndicators" data-slide-to="3"></li>
   </ol>-->
-        <div class="carousel-inner" role="listbox">
+        <div class="carousel-inner" role="listbox" style="box-shadow: none;">
 
             <div class="carousel-item active">
                 <a href="/find-doctors">
@@ -501,22 +514,42 @@ padding:10px 10px;
         <div class="clearfix"></div>
 
 
-        <!--<div class="container offset-md-1 topUp m-top" style="background-color: #fff; position: absolute;bottom:;max-height: 200px;border-top-left-radius:2px;border-top-right-radius: 2px;z-index: 2"
-            >
+<div style="height: 2px;padding-bottom: 2px" class="bg-success"></div>
 
-          
-
-  <div class="card-shado">
-    <ul class="nav nav-tabs " id="myTab" role="tablist">
+<div class="" style="background-color: #fff">
+  <div class="container">
+    <ul class="nav nav-tabs below-banner-text" id="myTab" role="tablist">
         <li class="nav-item">
-            <a class="nav-link active" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false"><b>Search</b></a>
+            <a class="nav-link active" id="profile-tab" data-toggle="tab" href="#search" ng-click="goTo()" role="tab" aria-controls="profile" aria-selected="false"><b>Find Physicians and Special Centers</b></a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true"><b>Diagnostic Report </b></a>
+            <a class="nav-link" id="home-tab" data-toggle="tab" href="#home0" role="tab" aria-controls="home" aria-selected="true"><b>Find Diagnostic Tests &amp; Centers</b></a>
+        </li> 
+
+        <li class="nav-item">
+            <a class="nav-link" id="home-tab" data-toggle="tab" href="#home1" role="tab" aria-controls="home" aria-selected="true"><b>Find Drug &amp; Pharmaceutical Centers</b></a>
+        </li>
+
+
+        <li class="nav-item">
+            <a class="nav-link" id="home-tab" data-toggle="tab" href="#home2" role="tab" aria-controls="home" aria-selected="true"><b>Buy Drugs &amp; Kits</b></a>
+        </li> 
+
+         <li class="nav-item">
+            <a class="nav-link" id="home-tab" data-toggle="tab" href="#home3" role="tab" aria-controls="home" aria-selected="true"><b>Fertility/Sexual Health &amp; Skin Care Kits</b></a>
+        </li> 
+
+        
+        <li class="nav-item">
+            <a class="nav-link" id="home-tab" data-toggle="tab" href="#home4" role="tab" aria-controls="home" aria-selected="true"><b>Covid-19 Screening Test</b></a>
+        </li> 
+
+         <li class="nav-item">
+            <a class="nav-link" id="home-tab" data-toggle="tab" href="#home5" role="tab" aria-controls="home" aria-selected="true"><b>Check Your Symptoms</b></a>
         </li> 
 
     </ul>
-<div class="tab-content p-3" id="myTabContent" ng-controller="investigationSearchCtrl">
+<div class="tab-content p-3" id="myTabContent" >
   <div class="tab-pane fade " id="home" role="tabpanel" aria-labelledby="home-tab">
     <div class="row">
       <div class="col-md-3 ">
@@ -563,47 +596,349 @@ padding:10px 10px;
       
     </div>
   </div>
+
+
+
   
-  
-  <div class="tab-pane fade show active" id="profile" role="tabpanel" aria-labelledby="profile-tab" ng-controller="hompageController">
+  <div class="tab-pane fade show active" id="search" role="tabpanel" aria-labelledby="profile-tab" >
+
+    <h2 class="title text-center" style="margin-top: 10px">Find Physicians and Special Centers</h2>
+
+    <div class="separator separator-primary" style="margin-bottom: 30px"></div>
     
     <div class="row" ng-cloak>
-      <div class="col-md-3">
-        <select class="form-control" style="" ng-model="user.category">
-            <option value="" disabled selected>Select Category</option>
-            <option>Doctor</option>
-            <option>Pharmacy</option>
-            <option>Laboratory</option>
-            <option>Radiology</option>
-            <option>Disease</option>
-            <option>Special Center</option>
-            <option>Skills &amp; Procedures</option>
-        </select>
-      </div>
-      
         <div class="col-md-4">
-         <input type="text" class="form-control" ng-model="user.item" style=""
-         name="" placeholder="{{itemName}}" uib-typeahead="item.name for item in itemList | filter:$viewValue | limitTo:15">
-      </div>
-      
+            <div class="card p-2">
+              <img class="card-img-top" src="assets/images/doc-home2.jpg" alt="Card image cap" style="min-height: 190px">
+              <div class="card-body">
+                <h5 class="card-title">Pediatrician</h5>
+                <p class="card-text">Chat and consult <b>child specialist</b> for your children in all cities. We have over 20+ children doctors registered in all cities in the platform </p>
+                
+                <a href="/find-doctors?s=pediatrics" class="btn btn-success">Find now!</a>
+              </div>
+            </div>
+        </div>
         <div class="col-md-4">
-         <input type="text" class="form-control" style="" name="" type="text"
-         placeholder="City" ng-model="user.city" uib-typeahead="city for city in cities | filter:$viewValue | limitTo:15">
-      </div>
-      <div class="col-md-1 mt-2">
-        <button class="btn btn-danger btn-block" ng-click="search()">
-                            <i class="fa fa-search"></i>
-                        </button>
-      </div>
+            <div class="card p-2">
+              <img class="card-img-top" src="assets/images/doc-home1.jpg" alt="Card image cap">
+              <div class="card-body">
+                <h5 class="card-title">Gynecologist</h5>
+                <p class="card-text">Chat and consult <b> Female / Pregnancy Specialist</b>. We have over 50+ verified gynecologists registered in the all cities in the platform.</p>
+                <a href="/find-doctors?s=gynecologist" class="btn btn-success">Find now!</a>
+              </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card p-2">
+              <img class="card-img-top" src="assets/images/doc-home4.jpg" alt="Card image cap" style="min-height: 190px">
+              <div class="card-body">
+                <h5 class="card-title">Ophthalmologist</h5>
+                <p class="card-text">Chat and consult <b>Eye Specialist</b> for your eye issues. We have over 10+ consultant eye experts registered in the platform.</p>
+                <br>
+                <a href="/find-doctors?s=ophthalmologist" class="btn btn-success">Find now!</a>
+              </div>
+            </div>
+        </div>
+         <div class="col-md-4 pt-2">
+            <div class="card p-2">
+              <img class="card-img-top" src="assets/images/doc-home5.jpg" alt="Card image cap" style="min-height: 190px">
+              <div class="card-body">
+                <h5 class="card-title">Dentist</h5>
+                <p class="card-text">Chat and consult a <b>Teeth Specialist</b> closest to you in the city. We have 10+ dental surgeons registered in the platform.</p>
+                <br>
+                <a href="/find-doctors?s=dentist" class="btn btn-success">Find now!</a>
+              </div>
+            </div>
+        </div>
+         <div class="col-md-4 pt-2">
+            <div class="card p-2">
+              <img class="card-img-top" src="assets/images/doc-home6.jpg" alt="Card image cap" style="min-height: 200px;">
+              <div class="card-body">
+                <h5 class="card-title">Cardiologist</h5>
+                <p class="card-text">Consult a <b>Heart Specialist</b> for your heart issues. We have consultant cardiologists registered in the platform.</p>
+                <a href="/find-doctors?s=cardiologist" class="btn btn-success">Find now!</a>
+              </div>
+            </div>
+        </div>
+         <div class="col-md-4 pt-2">
+            <div class="card p-2">
+                <div style="height: 55px"></div>
+                <p class="text-center" style="font-size: 18px;">
+                   <span>Over</span>
+                   <b style="font-weight: bolder;" class="text-warning">500+</b><br>
+                   <span>Specialists</span><br>
+                   <span>Special Centers</span><br>
+                   <span>Skills &amp; Procedures</span>
+                </p>
+                <a href="/find-doctors" class="btn btn-success btn-block">Find more...</a>
+            </div>
+        </div>
+    </div>
+    
+  </div>
+
+  <div class="tab-pane fade show " id="home0" role="tabpanel" aria-labelledby="profile-tab">
+    <h2 class="title text-center" style="margin-top: 10px">Find Diagnostic Tests &amp; Centers</h2>
+
+    <div class="separator separator-primary" style="margin-bottom: 30px"></div>
+    <div class="row" ng-cloak>
+       <div class="col-md-6 pt-2">
+           <div class="card p-2">
+              <img class="card-img-top" src="assets/images/doc-home13.jpg" alt="Card image cap">
+              <div class="card-body">
+                <h5 class="card-title pt-2">Laboratory</h5>
+                <p class="card-text">Find all kinds of <b>Laboratory Tests and Centers</b> closest to you. We have over 50+ registered and verified laboratory centers in all cities.</p>
+              </div>
+              <ul class="list-group list-group-flush">
+                <li class="list-group-item font_1-4 text-danger">Malaria Tests</li>
+                <li class="list-group-item font_1-4 text-danger">Typhoid Test</li>
+                <li class="list-group-item font_1-4 text-danger">Kidney Function Test</li>
+                <li class="list-group-item font_1-4 text-danger">Liver Function Test</li>
+                <li class="list-group-item font_1-4 text-danger">Hormonal Test</li>
+              </ul>
+              <div class="card-body">
+                <a href="/find-laboratory" class="btn btn-success btn-block">Find more tests!</a>
+                <!--<a href="#" class="card-link">Another link</a>-->
+              </div>
+            </div>
+       </div>
+       <div class="col-md-6 pt-2">
+           <div class="card p-2">
+              <img class="card-img-top" src="assets/images/doc-home8.jpg" alt="Card image cap">
+              <div class="card-body mt-4">
+                <h5 class="card-title">Radiology</h5>
+                <p class="card-text">Find all kinds of <b>Radiology Tests and Centers</b> closest to you. We have over 50+ registered and verified radiology centers in all cities.</p>
+              </div>
+              <ul class="list-group list-group-flush">
+                <li class="list-group-item font_1-4 text-danger">X-ray</li>
+                <li class="list-group-item font_1-4 text-danger">Ultra-Sound</li>
+                <li class="list-group-item font_1-4 text-danger">CT Scan</li>
+                <li class="list-group-item font_1-4 text-danger">MRI</li>
+                <li class="list-group-item font_1-4 text-danger">Mammography</li>
+              </ul>
+              <div class="card-body mt-1">
+                <a href="/find-radiology" class="btn btn-success btn-block">Find more tests!</a>
+               <!-- <a href="#" class="card-link">Another link</a>-->
+            </div>
+       </div>
     </div>
     
   </div>
 
 </div>
-  </div>
+
+<div class="tab-pane fade show " id="home1" role="tabpanel" aria-labelledby="profile-tab">
+     <h2 class="title text-center" style="margin-top: 10px">Find Drug &amp; Pharmaceutical Centers</h2>
+
+    <div class="separator separator-primary" style="margin-bottom: 30px"></div>
+    <div class="row" ng-cloak>
+        <div class="col-md-6 pt-2">
+           <div class="card p-2">
+                <img class="card-img-top" src="assets/images/doc-home14.jpg" alt="Card image cap">
+                <div class="card-body mt-4">
+                    <h5 class="card-title">Pharmacies</h5>
+                    <p class="card-text">Find all kind of <b>Drugs and Pharmaceutical Centers</b> closest to you. We have over 50+ registered and verified Pharmaceutical centers in all cities.</p>
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item font_1-4 text-danger">AUGMENTIN 625MG 2X7TABS</li>
+                    <li class="list-group-item font_1-4 text-danger">PANADOL ACTIFAST 14TABS</li>
+                    <li class="list-group-item font_1-4 text-danger">AZITHROMYCIN 500MG</li>
+                    <li class="list-group-item font_1-4 text-danger">AQUA TEARS EYE DROP ( HYDROXYPROPYLMETHYLCEL )</li>
+                    <li class="list-group-item font_1-4 text-danger">CIPROTAB 14 SOFTGEL</li>
+                </ul>
+                <div class="card-body mt-1">
+                    <a href="/find-drugs" class="btn btn-success btn-block">Find more drugs!</a>
+               <!-- <a href="#" class="card-link">Another link</a>-->
+                </div>
+            </div>        
+        </div>
+        <div class="col-md-6 pt-2">
+            <div class="card p-2">
+                <img class="card-img-top" src="assets/images/doc-home15.jpg" alt="Card image cap" style="width: 100%">
+                <div class="card-body mt-4">
+                    <h5 class="card-title">Buy drugs &amp; Kits</h5>
+                    <p class="card-text">We have over 100+ drug kits compiled by qualified doctors for easy access. We also offer home delivery services for drugs and kits purchased through the platform.</p>
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item font_1-4 text-danger">COVID-19 Self-Protection Kit</li>
+                    <li class="list-group-item font_1-4 text-danger">Anti-Malaria Kit</li>
+                    <li class="list-group-item font_1-4 text-danger">Anti-Typhoid Kit</li>
+                    <li class="list-group-item font_1-4 text-danger">Constipation Kit</li>
+                    <li class="list-group-item font_1-4 text-danger">Catarrh / Blocked Nose Kit</li>
+                </ul>
+                <div class="card-body mt-1">
+                    <a href="/find-drugs" class="btn btn-success btn-block">Find more kits!</a>
+                   <!-- <a href="#" class="card-link">Another link</a>-->
+                </div>
+            </div>    
+        </div>
+    </div>
+</div>
 
 
-        </div>-->
+<div class="tab-pane fade show " id="home2" role="tabpanel" aria-labelledby="profile-tab">
+     <h2 class="title text-center" style="margin-top: 10px">Buy Drugs &amp; Kits</h2>
+
+    <div class="separator separator-primary" style="margin-bottom: 30px"></div>
+    <div class="row" ng-cloak>
+        <div class="col-md-6 pt-2">
+           <div class="card p-2">
+                <img class="card-img-top" src="assets/images/doc-home16.jpg" alt="Card image cap">
+                <div class="card-body mt-4">
+                    <h5 class="card-title">Child Health Kits</h5>
+                    <p class="card-text">We have over 100+ drug kits compiled by qualified doctors for easy access. We also offer home delivery services for drugs and kits purchased through the platform.</p>
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item font_1-4 text-danger">Anti-Malarial Kit (Children)</li>
+                    <li class="list-group-item font_1-4 text-danger">Multivitamins &amp; Immune Booster Kit (Children)</li>
+                    <li class="list-group-item font_1-4 text-danger">Measles Kit (Children)</li>
+                    <li class="list-group-item font_1-4 text-danger">Flu/Catarrh/Blocked Nose Kit (Children 6 Years +)</li>
+                    <li class="list-group-item font_1-4 text-danger">Flu/Catarrh/Blocked Nose Kit (Under 6 Years)</li>
+                    <li class="list-group-item font_1-4 text-danger">Cough Kit (Children)</li>
+                    <li class="list-group-item font_1-4 text-danger">Asthma Care Kit (Children)</li>
+                </ul>
+                <div class="card-body mt-1">
+                    <a href="/find-drugs" class="btn btn-success btn-block">Find more kits!</a>
+               <!-- <a href="#" class="card-link">Another link</a>-->
+                </div>
+            </div>        
+        </div>
+        <div class="col-md-6 pt-2">
+            <div class="card p-2">
+                <img class="card-img-top" src="assets/images/doc-home17.jpg" alt="Card image cap" style="width: 100%">
+                <div class="card-body mt-4">
+                    <h5 class="card-title">Adult Health Kits</h5>
+                    <p class="card-text">We have over 100+ drug kits compiled by qualified doctors for easy access. We also offer home delivery services for drugs and kits purchased through the platform.</p>
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item font_1-4 text-danger">Diabetes Self-Care Kit</li>
+                    <li class="list-group-item font_1-4 text-danger">Anti-Malaria Kit</li>
+                    <li class="list-group-item font_1-4 text-danger">Anti-Typhoid Kit</li>
+                    <li class="list-group-item font_1-4 text-danger">Blood Pressure Self-Care Kit</li>
+                    <li class="list-group-item font_1-4 text-danger">Asthma Care Kit</li>
+                    <li class="list-group-item font_1-4 text-danger">Adult Immune Booster Kit</li>
+                    <li class="list-group-item font_1-4 text-danger">Severe Acne / Pimples Kit</li>
+                </ul>
+                <div class="card-body mt-1">
+                    <a href="/find-drugs" class="btn btn-success btn-block">Find more kits!</a>
+                   <!-- <a href="#" class="card-link">Another link</a>-->
+                </div>
+            </div>    
+        </div>
+    </div>
+</div>
+
+<div class="tab-pane fade show " id="home3" role="tabpanel" aria-labelledby="profile-tab">
+    <h2 class="title text-center" style="margin-top: 10px">Fertility/Sexual Health &amp; Skin Care Kits</h2>
+
+    <div class="separator separator-primary" style="margin-bottom: 30px"></div>
+    <div class="row" ng-cloak>
+        <div class="col-md-6 pt-2">
+           <div class="card p-2">
+                <img class="card-img-top" src="assets/images/doc-home15.jpg" alt="Card image cap" style="width: 100%">
+                <div class="card-body mt-4">
+                    <h5 class="card-title">Fertility &amp; Sexual Health Kits</h5>
+                    <p class="card-text">We have over 100+ drug kits compiled by qualified doctors for easy access. We also offer home delivery services for drugs and kits purchased through the platform.</p>
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item font_1-4 text-danger">Male Sexual Health Kit</li>
+                    <li class="list-group-item font_1-4 text-danger">Erectile Dysfunction Supplement Kit</li>
+                    <li class="list-group-item font_1-4 text-danger">Female Fertility Kit Women</li>
+                    <li class="list-group-item font_1-4 text-danger">General Vaginitis Kit</li>
+                    <li class="list-group-item font_1-4 text-danger">Menopause Care Kit</li>
+                    <li class="list-group-item font_1-4 text-danger">Prostate Care Kit</li>
+                    <li class="list-group-item font_1-4 text-danger">Thrush/Yeast Infection</li>
+                </ul>
+                <div class="card-body mt-1">
+                    <a href="/find-drugs" class="btn btn-success btn-block">Find more kits!</a>
+               <!-- <a href="#" class="card-link">Another link</a>-->
+                </div>
+            </div>        
+        </div>
+        <div class="col-md-6 pt-2">
+            <div class="card p-2">
+                <img class="card-img-top" src="assets/images/doc-home17.jpg" alt="Card image cap" style="width: 100%">
+                <div class="card-body mt-4">
+                    <h5 class="card-title">Skin &amp; Hair Care Kits</h5>
+                    <p class="card-text">We have over 100+ drug kits compiled by qualified doctors for easy access. We also offer home delivery services for drugs and kits purchased through the platform.</p>
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item font_1-4 text-danger">Mild Acne / Pimples</li>
+                    <li class="list-group-item font_1-4 text-danger">Severe Acne / Pimples</li>
+                    <li class="list-group-item font_1-4 text-danger">Measles Kit Adult</li>
+                    <li class="list-group-item font_1-4 text-danger">Severe Acne / Pimples</li>
+                    <li class="list-group-item font_1-4 text-danger">Eczema Kit (Tinea Versicolor)</li>
+                    <li class="list-group-item font_1-4 text-danger">Scabies Skin Infestation</li>
+                    <li class="list-group-item font_1-4 text-danger">Dandruff Kit</li>
+                </ul>
+                <div class="card-body mt-1">
+                    <a href="/find-drugs" class="btn btn-success btn-block">Find more kits!</a>
+                   <!-- <a href="#" class="card-link">Another link</a>-->
+                </div>
+            </div>    
+        </div>
+    </div>
+</div>
+
+
+<div class="tab-pane fade show " id="home4" role="tabpanel" aria-labelledby="profile-tab">
+     <h2 class="title text-center" style="margin-top: 10px">Covid-19 Screening Test</h2>
+
+    <div class="separator separator-primary" style="margin-bottom: 30px"></div>
+    <div ng-cloak>
+        <div class="pt-3">
+            <img src="/assets/images/covid-banner.jpeg">
+        </div>
+        <p class="text-center p-2">Take Covid-19 online risk assessment test. Get more information about your covid-19 exposure risk and find out more information about nearest covid-19 testing centers in the country. It is free!</p>
+        <div class="text-center">
+            <a href="/covid-19" class="btn btn-success ">Go to covid-19 online screening test now!</a>
+        </div>
+    </div>
+</div>
+
+<div class="tab-pane fade show " id="home5" role="tabpanel" aria-labelledby="profile-tab">   
+      <h2 class="title text-center" style="margin-top: 10px">Check Your Symptoms</h2>
+
+    <div class="separator separator-primary" style="margin-bottom: 30px"></div> 
+    <div class="row" ng-cloak>
+        <div class="col-md-4 pt-2">
+            <div class="card p-2">
+              <img class="card-img-top" src="assets/images/symptom-home1.jpg" alt="Card image cap" style="min-height: 200px;">
+              <div class="card-body">
+                <h5 class="card-title">Step 1</h5>
+                <p class="card-text">Select symptoms you're currently having. Enter your gender and date of birth then submit.</p>
+                <!--<a href="#" class="btn btn-success">Try it!</a>-->
+              </div>
+            </div>
+        </div>
+        <div class="col-md-4 pt-2">
+            <div class="card p-2">
+              <img class="card-img-top" src="assets/images/symptom-home.jpg" alt="Card image cap" style="min-height: 200px;">
+              <div class="card-body">
+                <h5 class="card-title">Step 2</h5>
+                <p class="card-text">Based on the selected symptoms, gender and age, the checker will return result of possible health problems you may be having and suggest specialties for the illness.</b></p>
+                <!--<a href="#" class="btn btn-success">Try it!</a>-->
+              </div>
+            </div>
+        </div>
+        <div class="col-md-4 pt-2">
+            <div class="card p-2">
+              <img class="card-img-top" src="assets/images/doc-home3.jpg" alt="Card image cap" style="min-height: 200px;">
+              <div class="card-body">
+                <h5 class="card-title">Step 3</h5>
+                <p class="card-text">System will automatically list out specialists for your health issues who you can chat with or consult.</p>
+                <!--<a href="#" class="btn btn-success">Try it!</a>-->
+              </div>
+            </div>
+        </div>
+    </div>
+    <div class="text-center mt-3">
+        <a href="/symptom-checker" class="btn btn-success btn-block">Try it now!</a>
+    </div>
+</div>
+
+        </div>
     </div>
 
 
@@ -704,16 +1039,19 @@ padding:10px 10px;
         <div class="container">
       
       <div class="row">
-      <div class="col-md-3"></div>
+      <div class="col-md-3" style="height: 20px"></div>
           <div class="col-md-6 mobileAlert text-center hidden-md-up">
 <h6>Download our mobile version </h6>
 <a href="https://play.google.com/store/apps/details?id=com.farelandsnigeria.applinic"><img src="/assets/images/icons/google-play-badge.png" height="70" alt="playstore"></a>
 </div>
       </div>
 
-<div class="clearfix"></div>
+        <div class="clearfix"></div>
 
-            <h2 class="title text-center"> WHAT TO EXPECT</h2>
+          
+
+             <div class="clearfix"></div>
+             <h2 class="title text-center" style="margin-top: 30px"> WHAT TO EXPECT</h2>
             <div class="separator separator-primary"></div>
 
             <div class="col-md-12">
@@ -1287,7 +1625,7 @@ One beauty of Applinic is that all my medical records are now in my account. My 
 
 
     <!--<script type="text/javascript" src="/assets/js/angularclient.js"></script>-->
-    <script type="text/javascript" src="/assets/js/index.angular-client.js"></script>
+    <script type="text/javascript" src="/assets/js/home.angular-client.js"></script>
     <script type="text/javascript" src="/assets/js/ngroute.js"></script>
     <script src="/socket.io/socket.io.js"></script>
     <script src="/assets/js/socket.min.js"></script>
