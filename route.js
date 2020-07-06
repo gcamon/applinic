@@ -12641,6 +12641,15 @@ router.get("/user/getuser",function(req,res){
 });
 
 
+router.get("/find-laboratory",function(req,res){
+  res.render('find-laboratory')
+});
+
+router.get("/find-radiology",function(req,res){
+  res.render('find-radiology')
+});
+
+
 
 
 
