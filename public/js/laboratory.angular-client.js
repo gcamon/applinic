@@ -844,12 +844,11 @@ app.controller("testSearchSelectedCenterController",["$scope","$location","$wind
       headers : {'Content-Type': 'application/json'} 
       })
     .success(function(data) {      
-      if(data.error) {
-        alert(data.message);
-        $scope.isEMP = true;
-      } else if(data.isNewPatient) {
+      if(data.isNewPatient) {
         $scope.isNewPatient = true;
         $scope.isToSomeOne = false
+      } else if(data.isReferReq) {
+        $scope.isReferReq = true;
       } else {
         $scope.isContent = false;
         $scope.isSent = true;
@@ -858,6 +857,18 @@ app.controller("testSearchSelectedCenterController",["$scope","$location","$wind
       }
       $scope.loading = false;
     });
+  }
+
+  $scope.invite = function(){
+    $scope.loading = true;
+    $scope.user.recepient = $scope.user.phone;
+    $http.post("/user/invitation",$scope.user)
+    .success(function(res){
+      console.log(res)
+      $scope.inviteStatus = res.status;
+      $scope.invitationMsg = res.message; 
+      $scope.loading = false;    
+    })
   }
 
  

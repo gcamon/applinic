@@ -1124,7 +1124,7 @@
              
               <div class="modal-body" style="padding: 10px">
               
-<section ng-if="isContent" class="p-1">
+<section ng-if="isContent && !isReferReq" class="p-1">
      <div>    
       <span class="font-1_1 mb-0" style="font-style: italic;">{{data.str}}</span>
     </div>   
@@ -1148,9 +1148,9 @@
     <section ng-show="forwardType == 'another' || forwardType == 'inperson'" class="mt-2">
          <form ng-submit="send()">
                 <div ng-if="forwardType == 'another'" class="mb-2">                 
-                 <label><b>Recipient's phone number</b></label><br> <!--<i class="fa fa-question-circle tip"> <span>The phone number this recipient registered with on applinic</span></i>-->
+                 <label><b>Recepient's phone number</b></label><br> <!--<i class="fa fa-question-circle tip"> <span>The phone number this recipient registered with on applinic</span></i>-->
                  <span class="text-danger">{{phoneMsg}}</span>
-                 <input type="text" Placeholder="Enter receiver phone" ng-model="user.phone" class="form-control" required="required" style="cursor:normal">
+                 <input type="text" Placeholder="Enter patient's phone" ng-model="user.phone" class="form-control" required="required" style="cursor:normal">
                 </div>
                 <div ng-if="typeOfSearch === 'pharmacy'" class="mb-2">
                   <label><b>Instructions / explanations for prescription(s)</b></label><br> 
@@ -1197,6 +1197,14 @@
 	    <div class="font-1-1">Please take note of the center name and 
 	        reference number above. You will use the reference number to find this prescription at the center.
 	    </div>
+		</div>
+
+		<div ng-show="isReferReq">
+			<p>
+				We observed that the patient you compiled this test(s) is not yet registered in the platform. Please invite the patient to register so that you can continue sending test(s).<br><br>
+				<a href="" class="btn btn-info btn-sm" ng-click="invite()" ng-show="!inviteStatus">{{(loading) ? "Sending..." : 'Invite Now!'}}</a><br>
+				<p class="text-success">{{invitationMsg}}</p>
+			</p>
 		</div>
   
               </div>
