@@ -392,8 +392,9 @@ app.controller("hompageController",["$scope","cities","Drugs","$http",
 
   var qStr = window.location.search;
   if(qStr) {
-  	var qVal = qStr.split('=');
-  	$rootScope.user.item = qVal[qVal.length - 1];
+    var qVal = qStr.split('=');
+    var str = qVal[qVal.length - 1] || "";
+    $rootScope.user.item = str.replace(/%20/g, " ");
   }
 
   homePageDynamicService.query($rootScope.user,function(data){
@@ -609,6 +610,7 @@ app.controller("hompageController",["$scope","cities","Drugs","$http",
         $rootScope.user.address = user.address || user.work_place;
 
         $rootScope.checkLogIn = user;
+        $rootScope.checkLogIn.typeOfUser = user.type;
       
         mySocket.emit('join',{userId: user.user_id});      
       } else {

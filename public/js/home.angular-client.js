@@ -497,13 +497,33 @@ app.controller("hompageController",["$scope","cities","$http",
     });  
   }
 
-  var user = localManager.getValue("resolveUser");
+  //var user = localManager.getValue("resolveUser");
 
   /*if(user) {
   	mySocket.emit('join',{userId: user.user_id});
   }*/
 
-  $rootScope.checkLogIn = user;
+  //$rootScope.checkLogIn = user;
+
+   $rootScope.userLoginService = function() {
+    $http.get("/user/getuser")
+    .success(function(user){
+      //user = localManager.getValue("resolveUser");
+      if(user.isLoggedIn){
+        $rootScope.user.phone = user.phone;
+        $rootScope.user.address = user.address || user.work_place;
+
+        $rootScope.checkLogIn = user;
+      
+        mySocket.emit('join',{userId: user.user_id});      
+      } else {
+        $rootScope.checkLogIn = {};
+      }
+    })
+  }
+
+  $rootScope.userLoginService();
+
 
   $scope.loginIntOAcc = function() {
   	ModalService.showModal({

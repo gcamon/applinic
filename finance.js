@@ -2837,7 +2837,7 @@ router.post("/user/dicom-details",function(req,res){
             html: '<table><tr><tr><td style="line-height: 25px">Hello Doc,<br><br>The Investigation ( <b>' + req.body.studyName + '</b> ) ' 
             + 'you requested for the patient - <b>' + req.body.patientName + '</b> with ' 
             +  tp  + " <b>" + (rados || id) + '</b> has been uploaded to Applinic Online PACs Server.<br>' 
-            + 'The written report of this study will be email to you as soon as it has been submitted ' 
+            + 'The written report of this study will be emailed to you as soon as it has been submitted ' 
             + 'by the reporting radiologist(s).<br>'
             + 'Uploaded by ' + req.user.name + '.<br> You can view the study with DICOM viewer using the URLs below.<br>' 
             + "<b> Desktop Dicom Viewer URL:  " 

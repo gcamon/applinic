@@ -474,13 +474,33 @@ app.controller("hompageController",["$scope","scanTests","cities","labTests","Dr
 
 
 
-  var user = localManager.getValue("resolveUser");
+  /*var user = localManager.getValue("resolveUser");
 
   if(user) {
   	mySocket.emit('join',{userId: user.user_id});
   }
 
-  $rootScope.checkLogIn = user;
+  $rootScope.checkLogIn = user;*/
+
+  $rootScope.userLoginService = function() {
+    $http.get("/user/getuser")
+    .success(function(user){
+      //user = localManager.getValue("resolveUser");
+      if(user.isLoggedIn){
+        $rootScope.user.phone = user.phone;
+        $rootScope.user.address = user.address || user.work_place;
+
+        $rootScope.checkLogIn = user;
+        $rootScope.checkLogIn.typeOfUser = user.type;
+      
+        mySocket.emit('join',{userId: user.user_id});      
+      } else {
+        $rootScope.checkLogIn = {};
+      }
+    })
+  }
+
+  $rootScope.userLoginService();
 
   $scope.loginIntOAcc = function() {
   	ModalService.showModal({
@@ -495,7 +515,7 @@ app.controller("hompageController",["$scope","scanTests","cities","labTests","Dr
 
   $scope.consult = function(doc) {
   	$rootScope.holdDoc = doc;
-  	if(!user){  	  	
+  	if(!$rootScope.checkLogIn.isLoggedIn){  	  	
   	  ModalService.showModal({
       	templateUrl: 'auth.html',
       	controller: 'authModalController'
@@ -734,7 +754,8 @@ app.controller("authModalController",["$scope","$rootScope","homepageSearchServi
     		localManager.setValue("resolveUser",data); 
     		var name = data.firstname || data.name;
     		$scope.loginSuccess = "Welcome " + name + "! " + "Close the modal and continue."
-    		mySocket.emit('join',{userId: data.user_id});
+    		//mySocket.emit('join',{userId: data.user_id});
+        $rootScope.userLoginService();
     	} else {
     		$scope.loginMessage = data.message;
     	}

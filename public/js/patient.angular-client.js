@@ -10763,6 +10763,182 @@ app.controller("helpController2",["$scope","$location","$http",function($scope,$
    
 }]);
 
+
+app.controller("testSearchSelectedCenterController",["$scope","$location","$window","$http","templateService","localManager","ModalService",
+  "$rootScope",function($scope,$location,$window,$http,templateService,localManager,ModalService,$rootScope){
+  $scope.data = templateService.holdTheCenterToFowardPrescriptionTo;
+  $scope.user = {};
+  var sendObj = {};
+
+  $scope.someone = function(){
+    $scope.user.someone = true;
+    $scope.isToSomeOne = true;
+  }
+
+  $scope.back = "#/laboratory/test-search/result";
+
+  $scope.cancel = function(){
+    $scope.isToSomeOne = false;
+    $scope.isNewPatient = false;
+    $scope.user.someone = false;
+    if($scope.user.patient_phone)
+      $scope.user.patient_phone = ""
+  }
+
+  $scope.isContent = true;
+
+  if($rootScope.checkLogIn.typeOfUser !== 'Patient') {
+    $scope.user.patient_phone = "";
+    $scope.isToSomeOne = true;
+    $scope.user.someone = true;
+  }
+
+  $scope.send = function (type){ 
+
+    if(type !== 'inperson') {
+
+      var isNumber = testNumber($scope.user.patient_phone);
+
+      if(isNumber) {
+        if($scope.user.patient_phone.indexOf('+') == -1)
+          $scope.user.patient_phone = "+234" + parseInt($scope.user.patient_phone); 
+      } else {
+        $scope.phoneMsg = "Please enter a valid phone number.";
+        return;
+      }
+
+      if(!$scope.user.patient_phone) {
+        $scope.phoneMsg = "Enter patient's phone number";
+        return;
+      }
+
+      if(!$scope.data.clinical_summary) {
+        $scope.summuryMsg = "Enter clinic summary";
+        return;
+      }
+
+      if(!$scope.data.indication) {
+        $scope.indictionMsg = "Enter indication";
+        return;
+      }
+    }
+
+    $scope.summuryMsg = "";
+    $scope.phoneMsg = "";
+    $scope.indictionMsg = ""; 
+
+    var random;
+    var labData = templateService.holdLaboratoryReferralData;
+    if(labData.ref_id){      
+      random = labData.ref_id;
+    } else {      
+      random = $rootScope.genRefId;
+    }    
+
+    var date = new Date();
+    $scope.data.type = type;
+    //$scope.data.ref_id = random;
+    $scope.data.user_id = $scope.data.id;
+    $scope.data.sent_date = date;
+    $scope.data.session_id = labData.session_id;
+
+    var testArr = $scope.data.str.split(",");    
+    for(var i = 0; i < testArr.length; i++){
+      var testObj = {};
+      testObj.name = testArr[i];
+      testObj.sn = i + 1;
+      testObj.select = true;
+      testArr[i] = testObj;
+    }
+
+    $scope.data.test_to_run = testArr;
+
+    for(var i in $scope.data) {
+      if($scope.data.hasOwnProperty(i)){
+        sendObj[i] = $scope.data[i];
+      }
+    }
+    send(sendObj,"/user/test-search/laboratory/referral");
+  }
+
+  $scope.createPatient = function(){
+    $scope.loading = true;
+
+    for(var i in $scope.data) {
+      if($scope.data.hasOwnProperty(i)){
+        sendObj[i] = $scope.data[i];
+      }
+    }
+
+    sendObj.patient_age = calculate_age(new Date($scope.data.dob)) + " years";
+    sendObj.patient_phone = $scope.user.patient_phone;
+
+    $http({
+      method  : 'POST',
+      url     : "/user/out/create-patients",
+      data    : sendObj,
+      headers : {'Content-Type': 'application/json'} 
+     })
+    .success(function(response) {
+      if(response.success){
+        send(sendObj,"/user/test-search/laboratory/referral");
+      } else if(response.retry){
+        $scope.createPatient()
+      } else {
+        alert(response.message)
+        $scope.loading = false;
+      }      
+    });
+  }
+
+  $scope.back = function() {
+    $scope.isNewPatient = false;
+    $scope.isToSomeOne = true
+  }
+
+
+  function send(data,url) {
+    $scope.loading = true;
+    sendObj['phone'] = $scope.user.patient_phone;
+
+     $http({
+      method  : 'PUT',
+      url     : url,
+      data    : data,
+      headers : {'Content-Type': 'application/json'} 
+      })
+    .success(function(data) {      
+      if(data.error) {
+        alert(data.message);
+        $scope.isEMP = true;
+      } else if(data.isNewPatient) {
+        $scope.isNewPatient = true;
+        $scope.isToSomeOne = false
+      } else {
+        $scope.isContent = false;
+        $scope.isSent = true;
+        $scope.result = data.ref_id;
+        $scope.user.patient_names = data.refObj.laboratory.patient_firstname + " " + data.refObj.laboratory.patient_lastname;
+      }
+      $scope.loading = false;
+    });
+  }
+
+  //runs if the patient is not yet registered
+  $scope.emp = function(){
+    ModalService.showModal({
+        templateUrl: 'patient-emergency-form.html',
+        controller: "newPatientModalController"
+      }).then(function(modal) {
+        modal.element.modal();
+        modal.close.then(function(result) {
+          $scope.isEMP = false; 
+      });
+    });
+  }
+
+}]);
+
 app.controller("medHistoryCtrl",["$scope","$rootScope","patientMedHistory",
   function($scope,$rootScope,patientMedHistory){
 

@@ -7393,9 +7393,11 @@ router.put("/user/laboratory/search/find-tests",function(req,res){
 
 router.put("/user/test-search/laboratory/referral",function(req,res){
     if(req.user){  
+    console.log(req.body)
     var phone = req.body.line  || req.body.phone;
     var person = (req.body.type === 'inperson') ? {user_id: req.user.user_id} : {phone: phone};
-    model.user.findOne(person,{firstname:1,lastname:1,title:1,profile_pic_url:1,city:1,country:1,name:1,age:1,user_id:1,medical_records:1,phone:1,type:1,gender:1,address:1})
+    model.user.findOne(person,{firstname:1,lastname:1,title:1,profile_pic_url:1,
+      city:1,country:1,name:1,age:1,user_id:1,medical_records:1,phone:1,type:1,gender:1,address:1})
     .exec(function(err,user){
 
       if(err) throw err;
@@ -7476,7 +7478,7 @@ router.put("/user/test-search/laboratory/referral",function(req,res){
             referral.save(function(err,info){
               if(err) throw err;
               var sender = (req.user.type == "Doctor" || req.user.type == "Patient") ? (req.user.title + " " + req.user.lastname) : req.user.name
-              var msgBody = "Your laboratory test request was sent to " + result.name + " at " +
+              var msgBody = "Your laboratory test was sent to " + result.name + " at " +
                result.address + ", " + result.city + " " + result.country + "\nBy " + sender + "\n" + "Ref No " + req.body.ref_id; 
               var phoneNunber =  user.phone;
               sms.messages.create(
@@ -7626,23 +7628,21 @@ router.put("/user/test-search/laboratory/referral",function(req,res){
             }
 
            } catch(e){
-              console.log(e.message)
+              console.log(e.message);
             }
 
           })
 
           } else {
-            res.json({message:"User not a patient.",error:true});
+            res.json({message:"Oops! The recepient you compiled this test(s) for is not a patient in Applnic. Therefore, the request is canceled.",error:true});
           }// end of if user is a patient
      
         } else {
-
           if(req.user.type !== "Doctor"){
-            res.json({message:"The user with phone number does not exist or not a patient.",error:true});
+            res.json({message:"The user with phone number does not exist or not a patient.",error:true,isReferReq: true});
           } else {
-            res.json({isNewPatient: true})
+            res.json({isNewPatient: true,isReferReq: true})
           }
-
         } // end of if user
       
     });
@@ -10580,117 +10580,133 @@ router.get("/general/homepage-search",function(req,res){
     });*/
 
   } else if(req.query.category === "Laboratory" || req.query.category === "Radiology") {
-  
-  req.query.testList = [{name: req.query.item}];
+    
+    req.query.testList = (typeof req.query.test_to_run === 'string' || !req.query.test_to_run) ?
+     [{name: req.query.item}] : getTestLists();
+    console.log(req.query)
+    if(req.query.city && req.query.item){
+      var criteria = {type:req.query.category,center_city:req.query.city}
+    } else if(req.query.city) {
+      var criteria = {type:req.query.category,city: req.query.city}
+    } else {
+      var criteria = {type:req.query.category}
+    }
 
-  if(req.query.city){
-    var criteria = {type:req.query.category,center_city:req.query.city}
-  } else {
-    var criteria = {type:req.query.category}
-  }
+    if(req.query.item) {
+    model.services.find(criteria,
+      {center_name:1,center_city:1,center_address:1,center_country:1,user_id:1,unavailable_services:1,center_phone:1,_id:0,profile_url:1},function(err,data){
+      if(err) throw err;
+      if(data) {
+        
+        var newListToSend = [];        
+        var sendObj = {};
+        var listOfTests = req.query.testList;         
+        for(var i = 0; i < listOfTests.length; i++){
+          var elements = data.map(function(x){return x.unavailable_services});
+          var count = 0;
+          var foundTest = [];  
 
-  if(req.query.item) {
-  model.services.find(criteria,
-    {center_name:1,center_city:1,center_address:1,center_country:1,user_id:1,unavailable_services:1,center_phone:1,_id:0,profile_url:1},function(err,data){
-    if(err) throw err;
-    if(data) {
-      var newListToSend = [];        
-      var sendObj = {};
-      var listOfTests = req.query.testList;        
-      for(var i = 0; i < listOfTests.length; i++){
-        var elements = data.map(function(x){return x.unavailable_services});
-        var count = 0;
-        var foundTest = [];          
-        while(count < elements.length){
-          var centerInfo = {}                      
-          var elementPos = elements[count].map(function(x){ return x.name}).indexOf(listOfTests[i].name);            
-          centerInfo.notFound = listOfTests[i].name;
-          if(elementPos === -1){  
-            var el = elements[count].map(function(x){return x.center_id}).indexOf(data[count].user_id);                   
-            centerInfo.center_name = data[count].center_name;
-            centerInfo.center_city = data[count].center_city;
-            centerInfo.center_country = data[count].center_country;
-            centerInfo.center_city = data[count].center_city;
-            centerInfo.center_phone = data[count].center_phone;
-            centerInfo.center_id = data[count].user_id;
-            centerInfo.center_address = data[count].center_address;
-            centerInfo.addBy = (elements[count][el]) ? elements[count][el].center_id : undefined;
-            centerInfo.testFound = listOfTests[i].name;              
-            foundTest.push(centerInfo);               
-            sendObj[listOfTests[i].name] = foundTest;
-            newListToSend.push(sendObj)  
-          } 
-          count++;
-        }
-      }
-     
-      var filter = {};
-          
-      for(var i in sendObj){
-        for(var j = 0; j < sendObj[i].length; j++){
-          if(!filter.hasOwnProperty(sendObj[i][j].center_id)){                             
-            filter[sendObj[i][j].center_id] = {};
-            filter[sendObj[i][j].center_id].count = 1;
-            filter[sendObj[i][j].center_id].name = sendObj[i][j].center_name;
-            filter[sendObj[i][j].center_id].address = sendObj[i][j].center_address;
-            filter[sendObj[i][j].center_id].city = sendObj[i][j].center_city;
-            filter[sendObj[i][j].center_id].country = sendObj[i][j].center_country
-            filter[sendObj[i][j].center_id].id = sendObj[i][j].center_id
-            filter[sendObj[i][j].center_id].str = sendObj[i][j].testFound;
-            filter[sendObj[i][j].center_id].phone = sendObj[i][j].center_phone;
-            filter[sendObj[i][j].center_id].addBy = sendObj[i][j].addBy;
-          } else {
-            filter[sendObj[i][j].center_id].str += "," + sendObj[i][j].testFound;
-            filter[sendObj[i][j].center_id].count++;
+          while(count < elements.length){
+            var centerInfo = {}                      
+            var elementPos = elements[count].map(function(x){ return x.name}).indexOf(listOfTests[i].name);            
+            centerInfo.notFound = listOfTests[i].name;
+            if(elementPos === -1){  
+              var el = elements[count].map(function(x){return x.center_id}).indexOf(data[count].user_id);                   
+              centerInfo.center_name = data[count].center_name;
+              centerInfo.center_city = data[count].center_city;
+              centerInfo.center_country = data[count].center_country;
+              centerInfo.center_city = data[count].center_city;
+              centerInfo.center_phone = data[count].center_phone;
+              centerInfo.center_id = data[count].user_id;
+              centerInfo.center_address = data[count].center_address;
+              centerInfo.addBy = (elements[count][el]) ? elements[count][el].center_id : undefined;
+              centerInfo.testFound = listOfTests[i].name;              
+              foundTest.push(centerInfo);               
+              sendObj[listOfTests[i].name] = foundTest;
+              newListToSend.push(sendObj)  
+            } 
+            count++;
           }
         }
-      }
-     
-
-      /*Array.prototype.diff = function(arr2) {
-        var ret = [];
-        this.sort();
-        arr2.sort();
-        for(var i = 0; i < this.length; i += 1) {
-            if(arr2.indexOf( this[i].name ) === -1){
-                ret.push( this[i] );
+       
+        var filter = {};
+            
+        for(var i in sendObj){
+          for(var j = 0; j < sendObj[i].length; j++){
+            if(!filter.hasOwnProperty(sendObj[i][j].center_id)){                             
+              filter[sendObj[i][j].center_id] = {};
+              filter[sendObj[i][j].center_id].count = 1;
+              filter[sendObj[i][j].center_id].name = sendObj[i][j].center_name;
+              filter[sendObj[i][j].center_id].address = sendObj[i][j].center_address;
+              filter[sendObj[i][j].center_id].city = sendObj[i][j].center_city;
+              filter[sendObj[i][j].center_id].country = sendObj[i][j].center_country
+              filter[sendObj[i][j].center_id].id = sendObj[i][j].center_id
+              filter[sendObj[i][j].center_id].str = sendObj[i][j].testFound;
+              filter[sendObj[i][j].center_id].phone = sendObj[i][j].center_phone;
+              filter[sendObj[i][j].center_id].addBy = sendObj[i][j].addBy;
+            } else {
+              filter[sendObj[i][j].center_id].str += "," + sendObj[i][j].testFound;
+              filter[sendObj[i][j].center_id].count++;
             }
+          }
         }
-        return ret;
-      };*/
+       
 
-      var sub = {};
-      sub['full'] = []
-      sub['less'] = [];
-      for(var k in filter){
-        if(filter[k].count === req.query.testList.length) {
-          sub['full'].push(filter[k])
-        } else {
-          var arr1 = req.query.testList;
-          var newFilterArr = filter[k].str.split(",");           
-          var notFoundArr = arr1.diff(newFilterArr);
-          filter[k].notFound = notFoundArr;          
-          sub['less'].push(filter[k]);
+        /*Array.prototype.diff = function(arr2) {
+          var ret = [];
+          this.sort();
+          arr2.sort();
+          for(var i = 0; i < this.length; i += 1) {
+              if(arr2.indexOf( this[i].name ) === -1){
+                  ret.push( this[i] );
+              }
+          }
+          return ret;
+        };*/
+
+        var sub = {};
+        sub['full'] = []
+        sub['less'] = [];
+        for(var k in filter){
+          if(filter[k].count === req.query.testList.length) {
+            sub['full'].push(filter[k])
+          } else {
+            var arr1 = req.query.testList;
+            var newFilterArr = filter[k].str.split(",");           
+            var notFoundArr = arr1.diff(newFilterArr);
+            filter[k].notFound = notFoundArr;          
+            sub['less'].push(filter[k]);
+          }
         }
+        res.send(sub)
+      } else {
+        var sub = {};
+        sub['full'] = []
+        sub['less'] = [];
+        res.send(sub);
       }
-      res.send(sub)
-    } else {
-      var sub = {};
-      sub['full'] = []
-      sub['less'] = [];
-      res.send(sub);
-    }
-  });
-
-  } else {
-    model.user.find(criteria,{address:1,name:1,profile_pic_url:1,city:1,country:1,user_id:1,profile_url:1,title:1},function(err,data){
-      if(err) throw err;
-      console.log(data);
-      var sub = {};
-      sub['full'] = data;
-      res.send(sub)
     });
-  }
+
+    } else {
+      model.user.find(criteria,{address:1,name:1,profile_pic_url:1,city:1,country:1,user_id:1,profile_url:1,title:1,phone:1})
+      .limit(200)
+      .exec(function(err,data){
+        if(err) throw err;
+        var sub = {};
+        sub['full'] = data;
+        res.send(sub)
+      })
+      
+    }
+
+    function getTestLists() {
+      var testArr = [];
+      req.query.test_to_run.forEach(function(item){
+        testArr.push({name: item})
+      })
+
+      return testArr;
+    }
 
   } else if(req.query.category === "Skills & Procedures") {
 
@@ -12642,11 +12658,11 @@ router.get("/user/getuser",function(req,res){
 
 
 router.get("/find-laboratory",function(req,res){
-  res.render('find-laboratory')
+  res.render('find-lab')
 });
 
 router.get("/find-radiology",function(req,res){
-  res.render('find-radiology')
+  res.render('find-radio')
 });
 
 

@@ -1,5 +1,4 @@
 
-
 var app = angular.module('myApp',["angularModalService","ngResource",'ui.bootstrap','btford.socket-io','angular-clipboard']);
 
 app.service("homePageDynamicService",["$resource",function($resource){
@@ -475,7 +474,8 @@ app.controller("hompageController",["$scope","scanTests","cities","labTests","Dr
   var qStr = window.location.search;
   if(qStr) {
   	var qVal = qStr.split('=');
-  	$rootScope.user.item = qVal[qVal.length - 1];
+    var str = qVal[qVal.length - 1] || "";
+  	$rootScope.user.item = str.replace(/%20/g, " ");
   }
 
 
@@ -497,13 +497,34 @@ app.controller("hompageController",["$scope","scanTests","cities","labTests","Dr
 
 
 
-  var user = localManager.getValue("resolveUser");
+  /*var user = localManager.getValue("resolveUser");
 
   if(user) {
   	mySocket.emit('join',{userId: user.user_id});
   }
 
-  $rootScope.checkLogIn = user;
+  $rootScope.checkLogIn = user;*/
+
+  $rootScope.userLoginService = function() {
+    $http.get("/user/getuser")
+    .success(function(user){
+      //user = localManager.getValue("resolveUser");
+      if(user.isLoggedIn){
+        $rootScope.user.phone = user.phone;
+        $rootScope.user.address = user.address || user.work_place;
+
+        $rootScope.checkLogIn = user;
+        $rootScope.checkLogIn.typeOfUser = user.type;
+      
+        mySocket.emit('join',{userId: user.user_id});      
+      } else {
+        $rootScope.checkLogIn = {};
+      }
+    })
+  }
+
+  $rootScope.userLoginService();
+
 
   $scope.loginIntOAcc = function() {
   	ModalService.showModal({
@@ -518,7 +539,7 @@ app.controller("hompageController",["$scope","scanTests","cities","labTests","Dr
 
   $scope.consult = function(doc) {
   	$rootScope.holdDoc = doc;
-  	if(!user){  	  	
+  	if(!$rootScope.checkLogIn.isLoggedIn){  	  	
   	  ModalService.showModal({
       	templateUrl: 'auth.html',
       	controller: 'authModalController'
@@ -543,7 +564,7 @@ app.controller("hompageController",["$scope","scanTests","cities","labTests","Dr
   $rootScope.holdcenter = {};
 
   $scope.chat = function(doc) {
-  	if(user){ 
+  	if($rootScope.checkLogIn.isLoggedIn){ 
 	  	$rootScope.holdcenter = doc;
 	  	//templateService.holdId = doc.user_id;
 	    ModalService.showModal({
@@ -567,7 +588,7 @@ app.controller("hompageController",["$scope","scanTests","cities","labTests","Dr
   }
 
 
-  $scope.itemName = "Drug / Test / Specialty / Disease";
+ /* $scope.itemName = "Drug / Test / Specialty / Disease";
 
   $scope.$watch('user.category',function(newVal,oldVal){
     if(newVal) {
@@ -587,7 +608,7 @@ app.controller("hompageController",["$scope","scanTests","cities","labTests","Dr
             $scope.itemList = labTests.listInfo.concat(labTests.listInfo2,labTests.listInfo3,
             labTests.listInfo4,labTests.listInfo5,labTests.listInfo6,labTests.listInfo7,data);
           });         
-          $scope.itemName = "Enter test name";
+          //$scope.itemName = "Enter test name";
         break;
         case 'Radiology':
           homePageDynamicService.query($rootScope.user,function(data){
@@ -612,7 +633,7 @@ app.controller("hompageController",["$scope","scanTests","cities","labTests","Dr
         break;
       }
     }
-  })
+  })*/
 
 
   $scope.search = function() {    
@@ -725,7 +746,8 @@ app.controller("authModalController",["$scope","$rootScope","homepageSearchServi
     		localManager.setValue("resolveUser",data); 
     		var name = data.firstname || data.name;
     		$scope.loginSuccess = "Welcome " + name + "! " + "Close the modal and continue."
-    		mySocket.emit('join',{userId: data.user_id});
+    		//mySocket.emit('join',{userId: data.user_id});
+        $rootScope.userLoginService();
     	} else {
     		$scope.loginMessage = data.message;
     	}

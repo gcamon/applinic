@@ -16,10 +16,10 @@
 		<label class="pb-0 mb-0">Status:</label>  <span style="font-weight: bold" ng-class="{'text-danger': !courierResponse.attended,'text-info': courierResponse.attended,'text-success':courierResponse.completed,'text-warning':courierResponse.is_paid}">{{(!courierResponse.verified || !courierResponse.attended) ? 'Sent' : (!courierResponse.is_paid && courierResponse.attended) ? 'Ready': (courierResponse.is_paid && !courierResponse.completed) ? 'On Delivery' : (courierResponse.completed) ? "Received" : ""}}</span> 
 	</div>
 	<div ng-if="!courierResponse.verified || !courierResponse.attended">
-		<label class="pb-0 mb-0">Description:</label><br> <article>Waiting for the center to calculate and send the cost of the drug(s) for payment. This usually takes less than 5 minutes.</article>
+		<label class="pb-0 mb-0">Description:</label><br> <article>Please stay logged in because you'll receive bill for the  cost of the drug(s) you requested for payment.</article>
 	</div>
 	<div ng-if="courierResponse.attended && !courierResponse.is_paid">
-		<label class="pb-0 mb-0">Description:</label> <article>The cost of the drug(s) requested is received. Please make payment below to initiate delivery. </article>
+		<label class="pb-0 mb-0">Description:</label> <article>The cost of the drug(s) requested is received. Please make payment below to initiate delivery of the package. </article>
 	</div>
 	<div>
 		<label class="pb-0 mb-0">Order Date:</label> <span>{{courierResponse.date | date: "fullDate"}} ( <span am-time-ago="courierResponse.date"></span> )</span>
