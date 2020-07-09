@@ -14,17 +14,9 @@ var pdf = require('html-pdf');
  
 
 
-var basicPaymentRoute = function(model,sms,io,paystack,client,nodemailer){
+var basicPaymentRoute = function(model,sms,io,paystack,client,transporter){
 
-	var transporter = nodemailer.createTransport({
-	  host: "mail.privateemail.com",
-	  port: 465,
-	  auth: {
-	    user: "info@applinic.com",
-	    pass: process.env.EMAIL_PASSWORD
-	  }
-	});
-
+	
 	//this route creates the token for use ie creating vouchers
 	router.post("/user/token",function(req,res){
 		if(req.user && req.user.admin !== true){
@@ -2245,8 +2237,6 @@ router.put("/user/laboratory/test-result/session-update",function(req,res){
 	//user cashing out some money from wallet.
 	router.post("/user/cashout",function(req,res){
 		if(req.user){
-			console.log(req.body)
-
 			if(!req.body.otp) {
 				res.send({message: "Authentication is required before request can be submitted."});
 				return;
@@ -2316,7 +2306,31 @@ router.put("/user/laboratory/test-result/session-update",function(req,res){
 					account_type: req.body.account_type
 				})
 
-				CashObj.save(function(err,info){});
+				var msgbody = "<div style='font-size:14px;line-height:25px'>Hello, <b>" + req.user.name + "</b> with ID <b>" + req.user.user_id  
+				  + " </b> Phone number " + req.user.phone + "<br>"  
+		          + " has requested to cashout some amount of money"
+		          + " from his wallet <br><br>"
+		          + "<a href='https://applinic.com/login'>Please Attend to the request</a>" 
+		          + "</div>"
+
+
+				CashObj.save(function(err,info){
+					if(err) throw err;
+					var mailOptions = {
+	                  from: 'Applinic info@applinic.com',
+	                  to: ['info@applinic.com','chimarhotex@gmail.com'],
+	                  subject: 'Cashout Request From ' + req.user.name,
+	                  html: msgbody
+	                };
+
+	                transporter.sendMail(mailOptions, function(error, info){
+	                  if (error) {
+	                    console.log(error);
+	                  } else {
+	                    console.log('Email sent: ' + info.response);
+	                  }
+	                });
+				});
 
 				res.send({message: "Request accepted! Transaction may take up to 24hrs to complete.",balance:wallet});
 			}

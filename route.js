@@ -84,16 +84,16 @@ function genHash(count) {
     return text;
 }
 
-var basicRoute = function (model,sms,io,streams,client,nodemailer) { 
+var basicRoute = function (model,sms,io,streams,client,transporter) { 
 
-  var transporter = nodemailer.createTransport({
+  /*var transporter = nodemailer.createTransport({
     host: "mail.privateemail.com",
     port: 465,
     auth: {
       user: "info@applinic.com",
       pass: process.env.EMAIL_PASSWORD
     }
-  })
+  })*/
 
   router.get("/",function(req,res){
     res.render('index',{"message":""});
@@ -7393,7 +7393,6 @@ router.put("/user/laboratory/search/find-tests",function(req,res){
 
 router.put("/user/test-search/laboratory/referral",function(req,res){
     if(req.user){  
-    console.log(req.body)
     var phone = req.body.line  || req.body.phone;
     var person = (req.body.type === 'inperson') ? {user_id: req.user.user_id} : {phone: phone};
     model.user.findOne(person,{firstname:1,lastname:1,title:1,profile_pic_url:1,

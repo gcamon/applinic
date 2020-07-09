@@ -14,6 +14,9 @@ var express = require('express'),
   moment = require('moment'),
   nodemailer = require('nodemailer'),
   topdf = require("./topdf"),
+
+
+
  
   
   //infobip = require('infobip-node'),
@@ -42,6 +45,17 @@ var express = require('express'),
   var geonames = {};
 
   var client = {}; //= new infobip('Farelands', 'icui4cuok');
+
+
+  var transporter = nodemailer.createTransport({
+    host: "mail.privateemail.com",
+    port: 465,
+    auth: {
+      user: "info@applinic.com",
+      pass: process.env.EMAIL_PASSWORD
+    }
+  });
+
 
  
   //client.sender.source = ""; //use numbers only for voice
@@ -198,11 +212,11 @@ transporter.sendMail(mailOptions, function(error, info){
 
 
 config.configuration(app,model);
-signupRoute(model,sms,geonames,paystack,io,nodemailer);
+signupRoute(model,sms,geonames,paystack,io,transporter);
 loginRoute(model,sms);
-route(model,sms,io,streams,client,nodemailer); 
-payments(model,sms,io,paystack,client,nodemailer);
-placement(model,sms,io,nodemailer);
+route(model,sms,io,streams,client,transporter); 
+payments(model,sms,io,paystack,client,transporter);
+placement(model,sms,io,transporter);
 mySocket(model,io,streams,sms);
 
 

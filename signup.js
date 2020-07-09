@@ -23,7 +23,7 @@ function genId(username) {
 	return toStr;					
 }
 
-var signupRoute = function(model,sms,geonames,paystack,io,nodemailer) {
+var signupRoute = function(model,sms,geonames,paystack,io,transporter) {
 	passport.use('signup', new LocalStrategy({
 		usernameField : 'email',
 	    passwordField : 'password',
@@ -180,14 +180,14 @@ var signupRoute = function(model,sms,geonames,paystack,io,nodemailer) {
 										    	}
 											});
 
-											var transporter = nodemailer.createTransport({
+											/*var transporter = nodemailer.createTransport({
 											  host: "mail.privateemail.com",
 											  port: 465,
 											  auth: {
 											    user: "info@applinic.com",
 											    pass: process.env.EMAIL_PASSWORD
 											  }
-											});
+											});*/
 
 											var mailOptions = {
 											  from: 'Applinic info@applinic.com',
@@ -250,14 +250,14 @@ var signupRoute = function(model,sms,geonames,paystack,io,nodemailer) {
 										    }
 											});
 
-											var transporter = nodemailer.createTransport({
+											/*var transporter = nodemailer.createTransport({
 											  host: "mail.privateemail.com",
 											  port: 465,
 											  auth: {
 											    user: "info@applinic.com",
 											    pass: process.env.EMAIL_PASSWORD
 											  }
-											});
+											});*/
 
 											var mailOptions = {
 											  from: 'Applinic info@applinic.com',
@@ -331,14 +331,14 @@ var signupRoute = function(model,sms,geonames,paystack,io,nodemailer) {
 								io.sockets.to(process.env.ADMIN_ID).emit("new user",
 									{city:User.city,phone: User.phone, date:User.date,firstname:User.firstname,name:User.name,title:User.title})
 
-								var transporter = nodemailer.createTransport({
+								/*var transporter = nodemailer.createTransport({
 								  host: "mail.privateemail.com",
 								  port: 465,
 								  auth: {
 								    user: "info@applinic.com",
 								    pass: process.env.EMAIL_PASSWORD
 								  }
-								});
+								});*/
 								var enames = (req.body.title && req.body.title !== "SC") ? (req.body.title + " " + req.body.lastname) : req.body.name;
 								var emsg = '<table><tr><th><h3  style="background-color:#85CE36; color: #fff; padding: 30px"><img src="https://applinic.com/assets/images/applinic1.png" style="width: 250px; height: auto"/><br/><span>Healthcare... anywhere, anytime.</span></h3></th></tr><tr><td style="font-family: Arial, Helvetica, sans-serif; font-size: 14px;"><b>Dear ' + enames 
 								+ "</b><br><br><b>Congratulations and welcome to Applinic Healthcare.</b><br><br>" 
