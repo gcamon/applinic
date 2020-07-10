@@ -10473,7 +10473,7 @@ router.get("/general/homepage-search",function(req,res){
     } else if(req.query.item === "hospitals") {
 
       var criteria = {type: "Doctor",title: "SC"}
-      
+
     } else if(req.query.item) {  
 
       var first4 = (req.query.item.substring(0,2) !== 'Dr' || req.query.item.substring(0,2) !== 'Prof') ?
@@ -10586,7 +10586,7 @@ router.get("/general/homepage-search",function(req,res){
     
     req.query.testList = (typeof req.query.test_to_run === 'string' || !req.query.test_to_run) ?
      [{name: req.query.item}] : getTestLists();
-    console.log(req.query)
+   
     if(req.query.city && req.query.item){
       var criteria = {type:req.query.category,center_city:req.query.city}
     } else if(req.query.city) {
@@ -10636,7 +10636,7 @@ router.get("/general/homepage-search",function(req,res){
             
         for(var i in sendObj){
           for(var j = 0; j < sendObj[i].length; j++){
-            if(!filter.hasOwnProperty(sendObj[i][j].center_id)){                             
+            if(!filter.hasOwnProperty(sendObj[i][j].center_id) && sendObj[i][j].center_id !=='chiomaLab175117'){                             
               filter[sendObj[i][j].center_id] = {};
               filter[sendObj[i][j].center_id].count = 1;
               filter[sendObj[i][j].center_id].name = sendObj[i][j].center_name;
