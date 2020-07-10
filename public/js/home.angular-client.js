@@ -349,14 +349,14 @@ app.controller("hompageController",["$scope","cities","$http",
 
   $http({
     method  : 'GET',
-    url     : "/user/get-specialties?type=sc",
+    url     : "/user/get-specialties",
     headers : {'Content-Type': 'application/json'} 
     })
   .success(function(data) {              
     if(data){
       
       for(var i = 0; i < data.length; i++){
-        if(!filter[data[i].specialty]) {
+        /*if(!filter[data[i].specialty]) {
           filter[data[i].specialty] = 1;
           spArr.push(data[i]);
           $scope.dropDownList.push(data[i].specialty)
@@ -364,9 +364,9 @@ app.controller("hompageController",["$scope","cities","$http",
 
         } else {
           filter[data[i].specialty]++;
-        }
+        }*/
 
-        if(data[i].title == "SC" && $scope.specialCenterArr.length <= 5){
+        if(data[i].title === "SC" && $scope.specialCenterArr.length <= 5){
           $scope.specialCenterArr.push(data[i])
         }
       }

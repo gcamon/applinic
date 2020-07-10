@@ -756,12 +756,12 @@ padding:10px 10px;
     <div class="separator separator-primary" style="margin-bottom: 30px"></div>
     
     <div class="row" ng-cloak>
-        <div class="col-md-4" ng-if="specialCenterArr[0]">
+        <div class="col-md-4">
             <div class="card p-2">
               <img class="card-img-top" src="assets/images/hos-home.jpg" alt="Card image cap" style="min-height: 190px">
               <div class="card-body">
                 <h5 class="card-title ellipsis">{{specialCenterArr[0].name}}</h5>
-                <p class="card-text mb-1 ellipsis" style="width: 100%">{{specialCenterArr[0].address}}</p>
+                <p class="card-text mb-1 ellipsis" style="width: 100%" title="{{specialCenterArr[0].specialty}}">{{specialCenterArr[0].specialty}}</p>
                 <p class="card-text"><b>{{specialCenterArr[0].city}} {{specialCenterArr[0].country}}</b></p>
                 <br>
                 <a href="{{'/find-doctors?s='+ specialCenterArr[0].name}}" class="btn btn-success">Find now!</a>
@@ -773,7 +773,7 @@ padding:10px 10px;
               <img class="card-img-top" src="assets/images/hos-home1.jpg" alt="Card image cap">
               <div class="card-body">
                 <h5 class="card-title ellipsis">{{specialCenterArr[1].name}} </h5>
-                 <p class="card-text mb-1 ellipsis" style="width: 100%">{{specialCenterArr[1].address}}</p>
+                 <p class="card-text mb-1 ellipsis" style="width: 100%" title="{{specialCenterArr[1].specialty}}">{{specialCenterArr[1].specialty}}</p>
                 <p class="card-text"><b>{{specialCenterArr[1].city}} {{specialCenterArr[1].country}}</b></p>
                 <a href="{{'/find-doctors?s='+ specialCenterArr[1].name}}" class="btn btn-success">Find now!</a>
               </div>
@@ -784,9 +784,9 @@ padding:10px 10px;
             <div class="card p-2">
               <img class="card-img-top" src="assets/images/hos-home2.jpg" alt="Card image cap" style="min-height: 190px">
               <div class="card-body">
-                <h5 class="card-title ellipsis">{{specialCenterArr[2].name}}</h5>
-                 <p class="card-text mb-1 ellipsis" style="width: 100%">{{specialCenterArr[2].address}}</p>
-                <p class="card-text"><b>{{specialCenterArr[2].city}} {{specialCenterArr[2].country}}</b></p>
+                <h5 class="card-title ellipsis">{{'MEMFYS HOSPITAL'}} </h5>
+                 <p class="card-text mb-1 ellipsis" style="width: 100%" title="NEUROSURGERY, NEUROLOGY, RADIOLOGY, PEDIATRICS">{{'NEUROSURGERY, NEUROLOGY, RADIOLOGY, PEDIATRICS'}}</p>
+                <p class="card-text"><b>{{'Enugu'}} {{'Nigeria'}}</b></p>
                
                 <a href="{{'/find-doctors?s='+ specialCenterArr[2].name}}" class="btn btn-success">Find now!</a>
               </div>
@@ -797,7 +797,7 @@ padding:10px 10px;
               <img class="card-img-top" src="assets/images/hos-home3.jpg" alt="Card image cap" style="min-height: 190px">
               <div class="card-body">
                 <h5 class="card-title ellipsis">{{specialCenterArr[3].name}}</h5>
-                <p class="card-text mb-1 ellipsis" style="width: 100%">{{specialCenterArr[3].address}}</p>
+                <p class="card-text mb-1 ellipsis" style="width: 100%" title="{{specialCenterArr[3].specialty}}">{{specialCenterArr[3].specialty}}</p>
                 <p class="card-text"><b>{{specialCenterArr[3].city}} {{specialCenterArr[3].country}}</b></p>              
                 <a href="{{'/find-doctors?s='+ specialCenterArr[3].name}}" class="btn btn-success">Find now!</a>
               </div>
@@ -808,7 +808,7 @@ padding:10px 10px;
               <img class="card-img-top" src="assets/images/hos-home4.jpg" alt="Card image cap" style="min-height: 205px;">
               <div class="card-body">
                 <h5 class="card-title ellipsis">{{specialCenterArr[4].name}}</h5>
-                <p class="card-text mb-1 ellipsis" style="width: 100%">{{specialCenterArr[4].address}}</p>
+                <p class="card-text mb-1 ellipsis" style="width: 100%" title="{{specialCenterArr[4].specialty}}">{{specialCenterArr[4].specialty}}</p>
                 <p class="card-text"><b>{{specialCenterArr[4].city}} {{specialCenterArr[4].country}}</b></p>
                 <a href="{{'/find-doctors?s='+ specialCenterArr[4].name}}" class="btn btn-success">Find now!</a>
               </div>
@@ -823,7 +823,7 @@ padding:10px 10px;
                    <span>Hospitals &amp; Clinics</span><br>
                    <span>Special Centers</span>
                 </p>
-                <a href="/find-doctors" class="btn btn-success btn-block">Find more...</a>
+                <a href="/find-doctors?s=hospitals" class="btn btn-success btn-block">Find more...</a>
             </div>
         </div>
     </div>

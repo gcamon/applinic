@@ -10470,6 +10470,10 @@ router.get("/general/homepage-search",function(req,res){
 
       var criteria = {isFirstline:true,type: "Doctor"}
 
+    } else if(req.query.item === "hospitals") {
+
+      var criteria = {type: "Doctor",title: "SC"}
+      
     } else if(req.query.item) {  
 
       var first4 = (req.query.item.substring(0,2) !== 'Dr' || req.query.item.substring(0,2) !== 'Prof') ?
