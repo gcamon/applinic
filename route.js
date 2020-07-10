@@ -10623,8 +10623,10 @@ router.get("/general/homepage-search",function(req,res){
               centerInfo.center_id = data[count].user_id;
               centerInfo.center_address = data[count].center_address;
               centerInfo.addBy = (elements[count][el]) ? elements[count][el].center_id : undefined;
-              centerInfo.testFound = listOfTests[i].name;              
-              foundTest.push(centerInfo);               
+              centerInfo.testFound = listOfTests[i].name; 
+              if(data[count].user_id !== 'chiomaLab175117'){             
+                foundTest.push(centerInfo); 
+              }              
               sendObj[listOfTests[i].name] = foundTest;
               newListToSend.push(sendObj)  
             } 
