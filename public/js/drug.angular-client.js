@@ -886,9 +886,11 @@ app.controller("authModalController",["$scope","$rootScope","homepageSearchServi
 	}
 
 	$scope.create = function() {
-		$rootScope.person.action = "signup";
-	}
-
+    localManager.setValue("landingCurrPageURL",$window.location.href);
+    $window.location.href = '/signup';
+    //$rootScope.person.action = "signup";
+  }
+  
 	$scope.enterAccount = function() {
 		
 		$scope.loginMessage = "";
