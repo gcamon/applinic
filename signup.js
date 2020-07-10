@@ -424,7 +424,7 @@ var signupRoute = function(model,sms,geonames,paystack,io,transporter) {
 
 	router.put("/user/verify-phone-number",function(req,res){
 		var genPin = randos.genRef(6);	
-		console.log(req.body)
+		
 		if(req.body.isCovid19){
 			model.user.findOne({phone: req.body.phone})
 			.exec(function(err,user){
@@ -449,6 +449,7 @@ var signupRoute = function(model,sms,geonames,paystack,io,transporter) {
 		testPhone.save(function(err,info){});
 		var msgBody = "Your Phone Verification Pin for Applinic is: " + genPin;
 		var phoneNunber = (req.body.phone[0] !== "+") ? "+" + req.body.phone : req.body.phone;
+		console.log(genPin)
 		if(!req.body.isPhoneCall) {
 			sms.messages.create(
 			  {

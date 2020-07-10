@@ -813,8 +813,9 @@ app.controller('signupController',["$scope","$http","$location","$window","templ
   //password must be checked lastly. Very important.
 }]);
 
-app.controller("verifyPhoneController",["$rootScope","$scope","$resource","$window","userSignUpService","phoneCallService",
-  function($rootScope,$scope,$resource,$window,userSignUpService,phoneCallService){
+app.controller("verifyPhoneController",["$rootScope","$scope","$resource","$window",
+  "userSignUpService","phoneCallService","localManager",
+  function($rootScope,$scope,$resource,$window,userSignUpService,phoneCallService,localManager){
   $scope.verify = {};
   $scope.success;
   $scope.sendForm = function (){
@@ -825,13 +826,15 @@ app.controller("verifyPhoneController",["$rootScope","$scope","$resource","$wind
 
     $scope.loading = true;
     $rootScope.formData.v_pin = $scope.verify.pin;
-    var signUp = userSignUpService;//$resource("/user/signup",null,{userSignup:{method: "POST"}})    
+    var signUp = userSignUpService;//$resource("/user/signup",null,{userSignup:{method: "POST"}}) 
+       
     signUp.userSignup($rootScope.formData,function(response){ //
-      $scope.loading = false;
-         
+      $scope.loading = false;         
       if(!response.error) {  
-        $scope.success = response.message;            
-        //$window.location.href = '/login';                           
+        $scope.success = response.message;
+        if(localManager.getValue('landingCurrPageURL')) {
+          $window.location.href = localManager.getValue('landingCurrPageURL');
+        }                                   
       } else {       
         $scope.error = response.errorMsg;       
       }

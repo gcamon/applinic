@@ -336,6 +336,10 @@ app.controller("hompageController",["$scope","scanTests","cities","labTests","Dr
 
   $rootScope.user = {};
 
+  if(localManager.getValue('landingCurrPageURL')){
+    localManager.removeItem('landingCurrPageURL');
+  }
+
 
   var dyna = [];
   var filter = {};
@@ -489,7 +493,6 @@ app.controller("hompageController",["$scope","scanTests","cities","labTests","Dr
   	$scope.loading = true;
   	homepageSearchService.get($rootScope.user,function(response){
       $scope.loading = false; 
-      console.log(response)     
       $scope.searchResultFull = response.full;
       $scope.searchResultSub = response.sub;
     });  
@@ -722,7 +725,9 @@ app.controller("authModalController",["$scope","$rootScope","homepageSearchServi
 	}
 
 	$scope.create = function() {
-		$rootScope.person.action = "signup";
+    localManager.setValue("landingCurrPageURL",$window.location.href);
+    $window.location.href = '/signup';
+		//$rootScope.person.action = "signup";
 	}
 
 	$scope.enterAccount = function() {
@@ -745,7 +750,7 @@ app.controller("authModalController",["$scope","$rootScope","homepageSearchServi
     	if(data.isLoggedIn){
     		localManager.setValue("resolveUser",data); 
     		var name = data.firstname || data.name;
-    		$scope.loginSuccess = "Welcome " + name + "! " + "Close the modal and continue."
+    		$scope.loginSuccess = "Welcome " + name + "! " + "Close the modal and continue.";
     		//mySocket.emit('join',{userId: data.user_id});
         $rootScope.userLoginService();
     	} else {
@@ -754,8 +759,9 @@ app.controller("authModalController",["$scope","$rootScope","homepageSearchServi
 		})
 	}
 
-	$scope.verifyPhone = function() {
-
+	$scope.verify = function() {
+    
+    //localManager.setValue("landingCurrPageURL",window.location)
 	}
 
 	$scope.normalUser = function() {
@@ -815,47 +821,6 @@ app.controller("homePageModalController",["$scope","$rootScope","homepageSearchS
 }]);
 
 
-app.controller("investigationSearchCtrl",["$scope","$rootScope","$window","$http","$timeout","deviceCheckService",
-  function($scope,$rootScope,$window,$http,$timeout,deviceCheckService){
-  $scope.invest = {};
-
-  $scope.invest.type = 'radio';
-
-  $scope.findInvestigation = function() {
-    var url = "/investigation/result?type=" + $scope.invest.type + "&id=" + $scope.invest.id;
-    $window.location.href = url;
-  }
-
-  $http({
-    method  : 'GET',
-    url     : "/api/dicom-details",
-    headers : {'Content-Type': 'application/json'} 
-    })
-  .success(function(data) {              
-    $scope.dicomDetails = data;
-    $scope.dcmserver = "http://" + $scope.dicomDetails.ip_address + ":8080";
-  }); 
-
-  $scope.supported = false;
-
-  $scope.copy = "";
-
-  $scope.success = function (id) {
-    $scope.copy = 'Copied!';
-    $timeout(function(){
-      $scope.copy = "";
-    },2000)
-  };
-
-  $scope.isMobileDevice = deviceCheckService.getDeviceType();
- 
-
-  $scope.openjnlp = function(link) {
-    window.location.href = "jnlp://" + link;
-  }
-
-
-}]);
 
 
 app.controller("bookingDocController",["$scope","$http","$rootScope",
