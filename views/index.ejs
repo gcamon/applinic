@@ -588,7 +588,10 @@ padding:10px 10px;
   <div class="container">
     <ul class="nav nav-tabs below-banner-text" id="myTab" role="tablist">
         <li class="nav-item text-center">
-            <a class="nav-link active" id="profile-tab" data-toggle="tab" href="#search" ng-click="goTo()" role="tab" aria-controls="profile" aria-selected="false"><b>Find Physicians and Special Centers</b></a>
+            <a class="nav-link active" id="profile-tab" data-toggle="tab" href="#search"  role="tab" aria-controls="profile" aria-selected="false"><b>Find Physicians and Specialists</b></a>
+        </li>
+        <li class="nav-item text-center">
+            <a class="nav-link" id="home-tab" data-toggle="tab" href="#search1"  role="tab" aria-controls="profile" aria-selected="false"><b>Find Hospitals &amp; Clinics</b></a>
         </li>
         <li class="nav-item text-center">
             <a class="nav-link" id="home-tab" data-toggle="tab" href="#home0" role="tab" aria-controls="home" aria-selected="true"><b>Find Diagnostic Tests &amp; Centers</b></a>
@@ -599,9 +602,9 @@ padding:10px 10px;
         </li>
 
 
-        <li class="nav-item text-center">
+        <!--<li class="nav-item text-center">
             <a class="nav-link" id="home-tab" data-toggle="tab" href="#home2" role="tab" aria-controls="home" aria-selected="true"><b>Child &amp; Adult Health Kits</b></a>
-        </li> 
+        </li> -->
 
          <li class="nav-item">
             <a class="nav-link" id="home-tab" data-toggle="tab" href="#home3" role="tab" aria-controls="home" aria-selected="true"><b>Fertility/Sexual Health &amp; Skin Care Kits</b></a>
@@ -746,6 +749,87 @@ padding:10px 10px;
     
   </div>
 
+  <div class="tab-pane fade show" id="search1" role="tabpanel" aria-labelledby="profile-tab" >
+
+    <h2 class="title text-center" style="margin-top: 10px">Find Hospitals &amp; Clinics</h2>
+
+    <div class="separator separator-primary" style="margin-bottom: 30px"></div>
+    
+    <div class="row" ng-cloak>
+        <div class="col-md-4" ng-if="specialCenterArr[0]">
+            <div class="card p-2">
+              <img class="card-img-top" src="assets/images/hos-home.jpg" alt="Card image cap" style="min-height: 190px">
+              <div class="card-body">
+                <h5 class="card-title ellipsis">{{specialCenterArr[0].name}}</h5>
+                <p class="card-text mb-1 ellipsis" style="width: 100%">{{specialCenterArr[0].address}}</p>
+                <p class="card-text"><b>{{specialCenterArr[0].city}} {{specialCenterArr[0].country}}</b></p>
+                <br>
+                <a href="{{'/find-doctors?s='+ specialCenterArr[0].name}}" class="btn btn-success">Find now!</a>
+              </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card p-2">
+              <img class="card-img-top" src="assets/images/hos-home1.jpg" alt="Card image cap">
+              <div class="card-body">
+                <h5 class="card-title ellipsis">{{specialCenterArr[1].name}} </h5>
+                 <p class="card-text mb-1 ellipsis" style="width: 100%">{{specialCenterArr[1].address}}</p>
+                <p class="card-text"><b>{{specialCenterArr[1].city}} {{specialCenterArr[1].country}}</b></p>
+                <a href="{{'/find-doctors?s='+ specialCenterArr[1].name}}" class="btn btn-success">Find now!</a>
+              </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card p-2">
+              <img class="card-img-top" src="assets/images/hos-home2.jpg" alt="Card image cap" style="min-height: 190px">
+              <div class="card-body">
+                <h5 class="card-title ellipsis">{{specialCenterArr[2].name}}</h5>
+                 <p class="card-text mb-1 ellipsis" style="width: 100%">{{specialCenterArr[2].address}}</p>
+                <p class="card-text"><b>{{specialCenterArr[2].city}} {{specialCenterArr[2].country}}</b></p>
+               
+                <a href="{{'/find-doctors?s='+ specialCenterArr[2].name}}" class="btn btn-success">Find now!</a>
+              </div>
+            </div>
+        </div>
+         <div class="col-md-4 pt-2">
+            <div class="card p-2">
+              <img class="card-img-top" src="assets/images/hos-home3.jpg" alt="Card image cap" style="min-height: 190px">
+              <div class="card-body">
+                <h5 class="card-title ellipsis">{{specialCenterArr[3].name}}</h5>
+                <p class="card-text mb-1 ellipsis" style="width: 100%">{{specialCenterArr[3].address}}</p>
+                <p class="card-text"><b>{{specialCenterArr[3].city}} {{specialCenterArr[3].country}}</b></p>              
+                <a href="{{'/find-doctors?s='+ specialCenterArr[3].name}}" class="btn btn-success">Find now!</a>
+              </div>
+            </div>
+        </div>
+         <div class="col-md-4 pt-2" >
+            <div class="card p-2">
+              <img class="card-img-top" src="assets/images/hos-home4.jpg" alt="Card image cap" style="min-height: 205px;">
+              <div class="card-body">
+                <h5 class="card-title ellipsis">{{specialCenterArr[4].name}}</h5>
+                <p class="card-text mb-1 ellipsis" style="width: 100%">{{specialCenterArr[4].address}}</p>
+                <p class="card-text"><b>{{specialCenterArr[4].city}} {{specialCenterArr[4].country}}</b></p>
+                <a href="{{'/find-doctors?s='+ specialCenterArr[4].name}}" class="btn btn-success">Find now!</a>
+              </div>
+            </div>
+        </div>
+         <div class="col-md-4 pt-2">
+            <div class="card p-2">
+                <div style="height: 55px"></div>
+                <p class="text-center" style="font-size: 18px;">
+                   <span>Over</span>
+                   <b style="font-weight: bolder;" class="text-warning">100+</b><br>
+                   <span>Hospitals &amp; Clinics</span><br>
+                   <span>Special Centers</span>
+                </p>
+                <a href="/find-doctors" class="btn btn-success btn-block">Find more...</a>
+            </div>
+        </div>
+    </div>
+    
+  </div>
+
   <div class="tab-pane fade show " id="home0" role="tabpanel" aria-labelledby="profile-tab">
     <h2 class="title text-center" style="margin-top: 10px">Find Diagnostic Tests &amp; Centers</h2>
 
@@ -805,39 +889,43 @@ padding:10px 10px;
            <div class="card p-2">
                 <img class="card-img-top" src="assets/images/doc-home14.jpg" alt="Card image cap">
                 <div class="card-body mt-4">
-                    <h5 class="card-title">Pharmacies</h5>
-                    <p class="card-text">Find all kind of <b>Drugs and Pharmaceutical Centers</b> closest to you. We have over 50+ registered and verified Pharmaceutical centers in all cities.</p>
+                    <h5 class="card-title">Adult Health Kits</h5>
+                    <p class="card-text">We have over 100+ drug kits compiled by qualified doctors for easy access. We also offer home delivery services for drugs and kits purchased through the platform.</p>
                 </div>
                 <ul class="list-group list-group-flush">
-                    <li class="list-group-item font_1-4 text-danger">AUGMENTIN 625MG 2X7TABS</li>
-                    <li class="list-group-item font_1-4 text-danger">PANADOL ACTIFAST 14TABS</li>
-                    <li class="list-group-item font_1-4 text-danger">AZITHROMYCIN 500MG</li>
-                    <li class="list-group-item font_1-4 text-danger">AQUA TEARS EYE DROP ( HYDROXYPROPYLMETHYLCEL )</li>
-                    <li class="list-group-item font_1-4 text-danger">CIPROTAB 14 SOFTGEL</li>
+                    <li class="list-group-item font_1-4 text-danger">Diabetes Self-Care Kit</li>
+                    <li class="list-group-item font_1-4 text-danger">Anti-Malaria Kit</li>
+                    <li class="list-group-item font_1-4 text-danger">Anti-Typhoid Kit</li>
+                    <li class="list-group-item font_1-4 text-danger">Blood Pressure Self-Care Kit</li>
+                    <li class="list-group-item font_1-4 text-danger">Asthma Care Kit</li>
+                    <li class="list-group-item font_1-4 text-danger">Adult Immune Booster Kit</li>
+                    <li class="list-group-item font_1-4 text-danger">Severe Acne / Pimples Kit</li>
                 </ul>
                 <div class="card-body mt-1">
-                    <a href="/find-drugs" class="btn btn-success btn-block">Find more drugs!</a>
-               <!-- <a href="#" class="card-link">Another link</a>-->
+                    <a href="/find-drugs" class="btn btn-success btn-block">Find more kits!</a>
+                   <!-- <a href="#" class="card-link">Another link</a>-->
                 </div>
             </div>        
         </div>
         <div class="col-md-6 pt-2">
             <div class="card p-2">
                 <img class="card-img-top" src="assets/images/doc-home15.jpg" alt="Card image cap" style="width: 100%">
-                <div class="card-body mt-4">
-                    <h5 class="card-title">Buy drugs &amp; Kits</h5>
+               <div class="card-body mt-4">
+                    <h5 class="card-title">Child Health Kits</h5>
                     <p class="card-text">We have over 100+ drug kits compiled by qualified doctors for easy access. We also offer home delivery services for drugs and kits purchased through the platform.</p>
                 </div>
                 <ul class="list-group list-group-flush">
-                    <li class="list-group-item font_1-4 text-danger">COVID-19 Self-Protection Kit</li>
-                    <li class="list-group-item font_1-4 text-danger">Anti-Malaria Kit</li>
-                    <li class="list-group-item font_1-4 text-danger">Anti-Typhoid Kit</li>
-                    <li class="list-group-item font_1-4 text-danger">Constipation Kit</li>
-                    <li class="list-group-item font_1-4 text-danger">Catarrh / Blocked Nose Kit</li>
+                    <li class="list-group-item font_1-4 text-danger">Anti-Malarial Kit (Children)</li>
+                    <li class="list-group-item font_1-4 text-danger">Multivitamins &amp; Immune Booster Kit (Children)</li>
+                    <li class="list-group-item font_1-4 text-danger">Measles Kit (Children)</li>
+                    <li class="list-group-item font_1-4 text-danger">Flu/Catarrh/Blocked Nose Kit (Children 6 Years +)</li>
+                    <li class="list-group-item font_1-4 text-danger">Flu/Catarrh/Blocked Nose Kit (Under 6 Years)</li>
+                    <li class="list-group-item font_1-4 text-danger">Cough Kit (Children)</li>
+                    <li class="list-group-item font_1-4 text-danger">Asthma Care Kit (Children)</li>
                 </ul>
                 <div class="card-body mt-1">
                     <a href="/find-drugs" class="btn btn-success btn-block">Find more kits!</a>
-                   <!-- <a href="#" class="card-link">Another link</a>-->
+               <!-- <a href="#" class="card-link">Another link</a>-->
                 </div>
             </div>    
         </div>

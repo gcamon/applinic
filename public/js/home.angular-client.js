@@ -343,12 +343,13 @@ app.controller("hompageController",["$scope","cities","$http",
   var spArr = [];
   var skArr = [];
   var diArr = [];
+  $scope.specialCenterArr = [];
 
   $scope.dropDownList = [];
 
   $http({
     method  : 'GET',
-    url     : "/user/get-specialties",
+    url     : "/user/get-specialties?type=sc",
     headers : {'Content-Type': 'application/json'} 
     })
   .success(function(data) {              
@@ -364,11 +365,15 @@ app.controller("hompageController",["$scope","cities","$http",
         } else {
           filter[data[i].specialty]++;
         }
+
+        if(data[i].title == "SC" && $scope.specialCenterArr.length <= 5){
+          $scope.specialCenterArr.push(data[i])
+        }
       }
 
       $scope.specialties = spArr;
 
-      console.log($scope.specialties)
+      console.log($scope.specialCenterArr)
     }
   }); 
 

@@ -2337,7 +2337,7 @@ var basicRoute = function (model,sms,io,streams,client,transporter) {
 
     router.get("/user/get-specialties",function(req,res){      
       model.user.find({type:"Doctor"},
-        {specialty:1,skills:1,_id:1,name:1})
+        {specialty:1,skills:1,_id:1,name:1,title:1,city:1,country:1,address:1})
       .limit(500)
       .sort('specialty')
       .exec(function(err,data){
