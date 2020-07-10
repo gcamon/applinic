@@ -6399,6 +6399,7 @@ var basicRoute = function (model,sms,io,streams,client,transporter) {
             center_name : req.user.name,
             center_address : req.user.address,
             center_city:  req.user.city,
+            center_profile_pic_url: req.user.profile_pic_url,
             center_country: req.user.country,
             user_id : req.user.user_id,
             center_phone: req.user.phone,
@@ -6502,6 +6503,7 @@ var basicRoute = function (model,sms,io,streams,client,transporter) {
           center_name : req.user.name,
           center_address : req.user.address,
           center_city:  req.user.city,
+          center_profile_pic_url: req.user.profile_pic_url,
           center_country: req.user.country,
           center_phone: req.user.phone,
           user_id : req.user.user_id,
@@ -10616,6 +10618,7 @@ router.get("/general/homepage-search",function(req,res){
             if(elementPos === -1){  
               var el = elements[count].map(function(x){return x.center_id}).indexOf(data[count].user_id);                   
               centerInfo.center_name = data[count].center_name;
+              centerInfo.center_profile_pic_url = data[count].center_profile_pic_url;
               centerInfo.center_city = data[count].center_city;
               centerInfo.center_country = data[count].center_country;
               centerInfo.center_city = data[count].center_city;
@@ -10642,6 +10645,7 @@ router.get("/general/homepage-search",function(req,res){
               filter[sendObj[i][j].center_id] = {};
               filter[sendObj[i][j].center_id].count = 1;
               filter[sendObj[i][j].center_id].name = sendObj[i][j].center_name;
+              filter[sendObj[i][j].center_id].profile_pic_url = sendObj[i][j].center_profile_pic_url;
               filter[sendObj[i][j].center_id].address = sendObj[i][j].center_address;
               filter[sendObj[i][j].center_id].city = sendObj[i][j].center_city;
               filter[sendObj[i][j].center_id].country = sendObj[i][j].center_country
