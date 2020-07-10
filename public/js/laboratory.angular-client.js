@@ -485,6 +485,7 @@ app.controller("hompageController",["$scope","cities","labTests","$http",
     $location.hash('searchResultArea');
     $rootScope.user.test_to_run = $scope.pickedTests;
   	homepageSearchService.get($rootScope.user,function(response){
+      console.log(response)
       $scope.loading = false; 
       $scope.searchResultFull = response.full;
       $scope.searchResultSub = response.less;      
