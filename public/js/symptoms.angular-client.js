@@ -540,7 +540,7 @@ app.controller("hompageController",["$scope","scanTests","cities","labTests","Dr
   $rootScope.holdcenter = {};
 
   $scope.chat = function(doc) {
-  	if(user){ 
+  	if($rootScope.checkLogIn.isLoggedIn){ 
 	  	$rootScope.holdcenter = doc;
 	  	//templateService.holdId = doc.user_id;
 	    ModalService.showModal({

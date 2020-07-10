@@ -1,419 +1,1306 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="myApp">
 
-<!doctype html>
-<!--[if lt IE 7]>		<html class="no-js lt-ie9 lt-ie8 lt-ie7" lang=""> <![endif]-->
-<!--[if IE 7]>			<html class="no-js lt-ie9 lt-ie8" lang=""> <![endif]-->
-<!--[if IE 8]>			<html class="no-js lt-ie9" lang=""> <![endif]-->
-<!--[if gt IE 8]><!-->	<html class="no-js" lang=""> <!--<![endif]-->
 <head>
-	<meta charset="utf-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>Doctor Directory</title>
-	<meta name="description" content="">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<link rel="apple-touch-icon" href="apple-touch-icon.png">
-	<link rel="stylesheet" href="/assets/css/bootstrap.min.css">
-	<link rel="stylesheet" href="/assets/css/normalize.css">
-	<link rel="stylesheet" href="/assets/css/font-awesome.min.css">
-	<link rel="stylesheet" href="/assets/css/icomoon.css">
-	<link rel="stylesheet" href="/assets/css/owl.theme.css">
-	<link rel="stylesheet" href="/assets/css/owl.carousel.css">
-	<link rel="stylesheet" href="/assets/css/prettyPhoto.css">
-	<link rel="stylesheet" href="/assets/css/main.css">
-	<link rel="stylesheet" href="/assets/css/transitions.css">
-	<link rel="stylesheet" href="/assets/css/color.css">
-	<link rel="stylesheet" href="/assets/css/responsive.css">
-	<script src="/assets/js/vendor/modernizr-2.8.3-respond-1.4.2.min.js"></script>
-</head>
-<body ng-app = "myApp" class="ng-cloak">
-	<!--[if lt IE 8]>
-		<p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
-	<![endif]-->
-	<!--************************************
-			Wrapper Start
-	*************************************-->
-	<div id="wrapper" class="tg-haslayout" ng-controller ="findRadioTestController">
-		<!--************************************
-				Header Start
-		*************************************-->
-		<header id="header" class="tg-haslayout top-header"  ng-controller="topHeaderController">
-                <div  class="navbar-header top-navbar">
-                    <div style="width: 70%; padding-right: 30px;display:inline-block">
-                        <span data-toggle="modal" data-target=".tg-user-modal" title="login/signup" ng-if="!checkLogIn">Log in / Sign up</span>
-                        <span class="fa fa-sign-out" aria-hidden="true" ng-if="checkLogIn" ng-click="logout()"> Log out</span>
-                        <i class="fa fa-ellipsis-v" aria-hidden="true" style="color:#fff;font-size:23px;font-weight:100; cursor:pointer" title="Menu" ng-click="isClicked()"></i>
-                    </div>
-                    <ul ng-if="drop === true" class="drp-list">
-                        <li><a href="/user/find-specialist">Find A Doctor</a></li>
-                        <li><a href="/user/find-drug">Find Drug</a></li>
-                        <li><a href="/user/find-scan-test">Find Scan</a></li>
-                        <li><a href="/user/find-lab-test">Find Test</a></li>
-                        <li><a href="/help">Get help</a></li>                        
-                    </ul>
 
+    <title>APPLINIC - Find Laboratory Tests &amp; Centers</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
+     <link rel="icon" type="image/png" href="/assets/images/favicon.png">
+
+     <!--<link rel="stylesheet" href="/assets/css/app.css">-->
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js"></script>
+
+    <script src="https://kit.fontawesome.com/5d5c57c2c4.js" crossorigin="anonymous"></script>
+    <!--<link rel="stylesheet " href="/assets/css/vendor.css ">
+    <link rel="stylesheet " href="/assets/css/app.css ">
+    <link rel="stylesheet " href="/assets/css/now-ui-kit2.css ">
+    <link rel="stylesheet " href="/assets/css/chat.css ">
+    <link rel="stylesheet " href="/assets/css/font-awesome.min.css ">
+    <link rel="stylesheet " href="/assets/css/my-edit.css ">
+    <link rel="stylesheet " href="/assets/css/ngPrint.css ">-->
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans " rel="stylesheet ">
+    <style>
+        .rating {
+            background-color: #85CE36;
+            padding: 4px 9px;
+            color: #fff;
+        }
+        
+        .avail {
+            color: #85CE36;
+        }
+
+        .cross-line {
+        	text-decoration:line-through
+        }
+        
+        .card {
+            border: none;
+            border-bottom: 4px solid #85CE36;
+            padding-bottom: 8px;
+        }
+        
+        .thumbnail {
+            margin: 0 auto;
+        }
+        
+        .thumbnail img {
+            padding-top: 16px;
+        }
+        
+        .video-btn button {
+            /* display: inline; */
+        }
+        
+        .p-6 {
+            padding: 6px !important;
+        }
+        
+        .card-body {
+            padding: 0;
+        }
+        
+        .p-10 {
+            padding: 10px;
+        }
+        
+        .badge {
+            position: relative;
+            bottom: 55px;
+            float: right;
+            right: 10px;
+        }
+        
+        #search-wrap {
+            border: 1px solid grey;
+            position: relative;
+            bottom: 13px;
+            z-index: 9999;
+            display: none;
+        }
+        
+        #location:hover #search-wrap {
+            display: block;
+        }
+        
+        body {
+            /* The image used */
+            /*background-image: url("/assets/images/bg3.jpg");*/
+            /* Add the blur effect */
+            /* filter: blur(1px); */
+            /* -webkit-filter: blur(1px); */
+            /* Full height */
+            height: 100%;
+            /* Center and scale the image nicely */
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+        
+        .bg-green {
+            color: #85CE36 !important;
+        }
+        
+        .bg-white {
+            background: #fff;
+        }
+        
+        .side-nav {
+            padding: 10px;
+        }
+        
+        .side-sticky {
+            position: sticky;
+            top: 56px;
+        }
+        
+        .sticky-top {
+            z-index: 10;
+        }
+        
+        #doctors-search label {
+            display: block;
+        }
+        
+        .fas,
+        .fab {
+            color: #85CE36;
+        }
+        
+        .drawer-btn {
+            float: left;
+        }
+        /* drawer */
+        
+        .sidenav {
+            height: 100%;
+            width: 0;
+            position: fixed;
+            z-index: 1;
+            top: 0;
+            left: 0;
+            background-color: #85CE36;
+            overflow-x: hidden;
+            transition: 0.5s;
+            padding-top: 60px;
+        }
+        
+        .sidenav a {
+            padding: 8px 8px 0px 16px;
+            text-decoration: none;
+            font-size: 25px;
+            color: #818181;
+            display: block;
+            transition: 0.3s;
+        }
+        
+        .sidenav a:hover {
+            color: #f1f1f1;
+        }
+        
+        .sidenav .closebtn {
+            position: absolute;
+            top: 0;
+            right: 25px;
+            font-size: 36px;
+            margin-left: 50px;
+        }
+        
+        .sidenav a .fas {
+            color: #fff;
+        }
+
+        .dropdown-menu {
+            width: 93%;
+            padding: 10px;
+            
+        }
+
+        .dropdown-menu a {
+           color: green
+        }
+        
+        #main-wrap {
+            transition: margin-left .5s;
+        }
+
+        .btn-simple {
+            border: 1px solid rgba(0,0,0,0.2)
+        }
+
+        .text-success {
+          color: #28a745;
+        }
+
+        .text-right {
+            text-align: right;
+        }
+
+        .line-height {
+            line-height: 25px
+        }
+
+      .custom-checkbox .custom-control-input:checked ~ .custom-control-indicator {
+            background-image: url(data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3E%3Cpath fill='#fff' d='M6.564.75l-3.59 3.612-1.538-1.55L0 4.26 2.974 7.25 8 2.193z'/%3E%3C/svg%3E);
+        }
+
+        .custom-checkbox .custom-control-indicator {
+            border-radius: 0.25rem;
+        }
+
+        .custom-control-indicator {
+            position: absolute;
+            top: .25rem;
+            left: 0;
+            display: block;
+            width: 1rem;
+            height: 1rem;
+            pointer-events: none;
+           
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            background-color: #ddd;
+            background-repeat: no-repeat;
+            background-position: center center;
+           
+            background-size: 50% 50%;
+        }
+
+        .card {
+            /* Add shadows to create the "card" effect */
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+            transition: 0.3s;
+            margin: auto;
+            /*text-align: center;*/
+            font-family: arial;
+        }
+
+         .card button {
+            text-align: center;
+            cursor: pointer;
+            max-width: 100%;
+            font-size: 12px;
+        }
+        
+        .card button:hover {
+            opacity: 1 !important;
+            font-size: 14px;
+            color: inherit;
+        }
+        /* On mouse-over, add a deeper shadow */
+        
+        .card:hover {
+            /* box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+             */
+            width: 99%;
+        }
+        
+
+        .custom-control {
+                position: relative;
+                display: inline-block;
+                padding-left: 1.5rem;
+                cursor: pointer;
+            }
+
+            .custom-control-input:checked ~ .custom-control-indicator {
+                color: #fff;
+                background-color: #0074d9;
+            }
+
+
+            .mb-2 {
+                margin-bottom: 20px!important
+            }
+
+        
+        @media screen and (max-height: 450px) {
+            .sidenav {
+                padding-top: 15px;
+            }
+            .sidenav a {
+                font-size: 18px;
+            }
+        }
+        /* Extra small devices (portrait phones, less than 576px) */
+        
+        @media (max-width: 575.98px) {}
+        /* Small devices (landscape phones, less than 768px) */
+        
+        @media (max-width: 767.98px) {
+            .col-md-9 {
+                background-color: honeydew;
+            }
+            .thumbnail {
+                width: 45%;
+            }
+            .thumbnail img {
+                padding-top: 2PX;
+            }
+            .doctors-profile {
+                text-align: center;
+                /*border-bottom: 1px solid;*/
+            }
+            .avail {
+                margin-top: 0 !important;
+            }
+            .card-header {
+                padding: 0.4rem 1.25rem;
+            }
+            .card-header h6:first-child {
+                color: red;
+            }
+            .online {
+                position: absolute;
+                left: 162px;
+            }
+            .form-text {
+                display: none;
+            }
+            #doctors-search .form-group,
+            #doctors-search .form-group label {
+                margin-bottom: 0.1rem;
+            }
+            .drawer-btn {
+                display: none;
+            }
+
+            .video {
+                height: 0;
+                width: 0;
+            }
+
+            .capture {
+                width: 100%!important;
+                height: 320px!important;
+            }
+        }
+        /* Medium devices (tablets, less than 992px) */
+        
+        @media (max-width: 991.98px) {}
+        /* Large devices (desktops, less than 1200px) */
+        
+        @media (max-width: 1199.98px) {}
+    </style>
+
+    <!--<link rel="stylesheet" href="/assets/css/main.css">-->
+    <script src="assets/js/core/jquery.3.2.1.min.js" type="text/javascript"></script>
+    <script type="text/javascript" src="/assets/js/source.js"></script>
+
+    <script type="text/javascript">
+        var Opera = (navigator.userAgent.match(/Opera|OPR\//) ? true : false);
+        if(Opera){
+          window.location.href = "/assets/show-error.html";
+        }
+    </script>
+    
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-128083647-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-128083647-1');
+    </script>
+</head>
+
+<body  ng-controller="hompageController">
+     <nav class="navbar navbar-expand-sm bg-white" style="padding-top: 5px">           
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">
+                <img src="/assets/images/Logo.png" alt="Applinic" style="vertical-align: middle;">
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbarSingle">
+             <!--<span class="navbar-toggler-icon"></span>-->
+             <i class="fa fa-bars text-success"></i>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="collapsibleNavbarSingle">
+                <ul class="navbar-nav">
+                   <li class="nav-item" style="margin-right: 10px">  
+                                              
+                        <a href="/find-doctors" class="btn btn-outline-success nav-link btn-sm">
+                          Chat with a live Physician
+                        </a>
+                        
+                                                 
+                    </li>
+                    <li  class="nav-item" style="margin-right: 10px">
+                        <a href="/find-drugs" class="btn btn-outline-success nav-link btn-sm">
+                          Buy Drugs &amp; Kits
+                        </a>
+                    </li>
+                  
+                    <li class="nav-item" style="margin-right: 10px">
+                        <a href="/covid-19" class="btn btn-outline-success nav-link btn-sm">
+                           Covid-19 Screening Test
+                        </a>
+                    </li>
+                    <li class="nav-item" style="margin-right: 10px">
+                        <a href="/symptom-checker" class="btn btn-outline-success nav-link btn-sm">
+                          Symptoms Checker
+                        </a>
+                    </li>
+
+                     <li class="nav-item" style="margin-right: 10px">
+                        <a href="/find-laboratory" class="btn btn-outline-success nav-link btn-sm">
+                          Find Lab Test
+                        </a>
+                    </li>
+
+                    <li class="nav-item" style="margin-right: 10px">
+                        <a href="/find-radiology" class="btn btn-outline-success nav-link active text-white btn-sm">
+                          Find Radio Test
+                        </a>
+                    </li>
+                    <!--<li class="nav-item" style="margin-right: 30px">
+                        <a href="/issue-checker" class="btn btn-outline-success nav-link">
+                            Body Part Issues  Checker
+                        </a>
+                    </li>-->
+                    <li ng-show="!checkLogIn.user_id" class="nav-item" ng-cloak>
+                        <a ng-click="loginIntOAcc()" class="btn nav-link btn-outline-danger btn-sm">
+                            Log In 
+                        </a>
+
+                        
+                    </li>
+                    
+                    <li ng-show="checkLogIn.user_id" class="nav-item" ng-cloak>
+                        <a href="" ng-click="todashboard(checkLogIn.type)" class="btn btn-outline-danger btn-sm"> Go to dashboard</a>
+                    </li>
+                </ul>
+            </div>
+        </div> 
+    </nav>
+    <section id="main-wrap">
+        <!--<div id="mySidenav" class="sidenav">
+            <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+            <a href="#"><span><i class="fas fa-briefcase-medical"></i></span> Book appointment</a>
+            <a href="#"><span><i class="fas fa-clinic-medical"></i></span> Pharmacy</a>
+            <a href="#"><span><i class="fas fa-briefcase-medical"></i></span> Diagnostics</a>
+            <a href="#"><span><i class="fas fa-briefcase-medical"></i></span> Read Health Articles</a>
+            <a href="#"><span><i class="fas fa-briefcase-medical"></i></span> Read Health Articles</a>
+        </div>-->
+       
+        <div  style="background-color: #fff;padding: 15px">
+            <form class="row" id="doctors-search" ng-submit="find()">
+                <div class="col-md-2 pb-3" ng-cloak>
+                    <!--<a class="navbar-brand" href="/">
+                        <img src="/assets/images/Logo.png" alt="Applinic" style="vertical-align: middle;">
+                    </a>
+                    <div ng-show="!checkLogIn.user_id" class="pt-2">
+                        <a href="" ng-click="loginIntOAcc()" class="btn btn-sm btn-simple">Log In </a>&nbsp;&nbsp;
+
+                        <a href="/signup" class="btn btn-sm btn-simple">Sign Up </a>
+                    </div>-->
+                    <!--<div ng-show="checkLogIn.user_id" class="pt-2">
+                        <a href="" ng-click="todashboard(checkLogIn.typeOfUser)" class="btn btn-simple"><i class="fa fa-arrow-left"></i> Go to dashboard</a>
+                    </div>-->
+                    <div class="pt-4 pl-2">
+                        <a href="" class="btn btn-info" clipboard supported="supported" text="'https://applinic.com/find-doctors'" on-copied="success()" on-error="fail(err)" title="{{copy}}"><i class="fa fa-link"></i> {{copy}}</a>
+                        <!--<a href="" clipboard supported="supported" text="share this page" on-copied="success()" on-error="fail(err)" title="Copy link" class="fa fa-copy text-danger"> </a>-->
+                    </div>
                 </div>
-                <div class="container">
-                    <div class="row">
-                        <div class="col-xs-12">
-                            <strong class="logo">
-                                <a href="/"><img src="/assets/images/logo.png" alt="image description"></a>
-                            </strong>
-                            <nav id="tg-nav" class="tg-nav">
-                                <div class="navbar-header">
-                                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#tg-navigation" aria-expanded="false">
-                                        <span class="sr-only">Toggle navigation</span>
-                                        <span class="icon-bar"></span>
-                                        <span class="icon-bar"></span>
-                                        <span class="icon-bar"></span>
-                                    </button>
+                <div class="col-md-4 pb-3">
+                    <div class="form-group">
+                        <label for="location1"><span class="mr-2"><i class="fas fa-map-marker-alt"></i></span>Location </label>
+                        <input type="text" name="" placeholder="All cities" class="selectpicker show-tick form-control" ng-model="user.city" uib-typeahead="city for city in cities | filter:$viewValue | limitTo:15">
+                       
+                        <small class="form-text text-muted">Enter closest location.</small>
+                    </div>
+                </div>
+                <!-- 2nd col -->
+                <div class="col-md-4">
+                    <div class="form-group" style="position: relative;padding-bottom: 15px">
+                        <label for="type"><span class="mr-2"><i class="fa fa-flask text-success"></i></span> Test Name</label>
+                        <input type="text" name="" placeholder="Any" class="selectpicker show-tick form-control" ng-model="user.item" uib-typeahead="item.name for item in dropDownList | filter:$viewValue | limitTo:15">
+                       <!-- <select class="selectpicker show-tick" data-live-search="true" data-width="100%">
+                            <option value ="{{item}}" ng-repeat="item in dropDownList">{{item}}</option>
+                            <option data-divider="true"></option>
+                            <option data-tokens="mustard">Surgeon</option>
+                            <option data-divider="true"></option>
+                            <option data-tokens="frosting">Pediatric Dentist</option>
+                          </select>-->
+                        <small class="form-text text-muted">For multiple tests, add them before clicking search button</small>
+
+                        <i class="fa fa-plus btn btn-simple no-mobile-item-display" ng-show="user.item" style="position: absolute;bottom: 5px; right: 2px" ng-click="add()"></i>
+                        <!--<i class="fa fa-plus btn btn-simple mobile-item-display" ng-show="user.item" style="position: absolute;bottom: -17px; right: 2px" ng-click="add()"></i>-->
+                       
+                    </div>
+                    <div style="padding: 5px;background-color: #eee;margin-top: 15px" ng-show="pickedTests.length > 0" ng-cloak>
+                    	<article ng-repeat="t in pickedTests track by $index">
+                    		<a href="" class="btn btn-neutral btn-sm" ng-click="remove(t)" >{{t}} &nbsp; <i class="fa fa-times"></i></a>
+                    	</article>
+                    </div>
+                </div>
+                <div class="col-md-1">
+                    <div class="form-group" style="padding-top: 30px">
+                        <input type="submit" name="" value="Search" class="btn btn-success btn-block">
+                    </div>
+                </div>
+               
+            </form>
+        </div>
+        <div style="height: 4px" class="bg-success"></div>
+        <p class="text-center pt-2" ng-show="loading"><a href="" class="btn btn-neutral bg-white btn-sm">Loading...</a></p>
+        <!--<nav class="navbar navbar-expand-sm bg-success navbar-dark sticky-top" >
+           
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+             <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class=" container collapse navbar-collapse" id="collapsibleNavbar">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <div class="dropdown">
+                            <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                              Availability
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                <a class="dropdown-item" href="#">Action</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="#">Another action</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="#">Something else here</a>
+                            </div>
+                        </div>
+                    </li
+                    <li class="nav-item">
+                        <div class="dropdown">
+                            <a class="btn btn-warning dropdown-toggle" href="#" role="button" id="dropdownfilter" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                              All Filters
+                            </a>
+
+                            <div class="dropdown-menu mega-dropdown" aria-labelledby="dropdownfilter">
+                                <div class="d-flex bd-highlight">
+                                    <div class="p-2 flex-fill bd-highlight">
+                                        <p>Gender</p>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" value="option1" checked>
+                                            <label class="form-check-label" for="defaultCheck1">
+                                              Male Doctor
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="exampleRadios" id="exampl" value="option1" checked>
+                                            <label class="form-check-label" for="defaultCheck1">
+                                              Female Doctor
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="p-2 flex-fill bd-highlight">
+                                        <p>Consultation Fee</p>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRos1" value="option1" checked>
+                                            <label class="form-check-label" for="defaultCheck1">
+                                              Free
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="exampleRadios" id="examp" value="option1" checked>
+                                            <label class="form-check-label" for="defaultCheck1">
+                                              1-200
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="p-2 flex-fill bd-highlight">Others</div>
                                 </div>
-                                <div class="collapse navbar-collapse top-nav" id="tg-navigation">
-                                    <ul>
-                                        <li>
-                                            <a href="/">Home</a>                                           
-                                        </li>
-                                        <li><a href="/how-it-works">How it works</a></li>
-                                        <li>
-                                            <a href="#">Top Ranking</a>
-                                            <ul> 
-                                                <li><a href="/topview/doctors">Doctors</a></li>                                                     
-                                                <li><a href="/topview/hospitals">Hospitals</a></li>
-                                                <li><a href="/topview/clinics">Clinics</a></li>
-                                                <li><a href="/topview/pharmacy">Pharmacy</a></li>
-                                                <li><a href="/topview/laboratories">Laboratory Centers</a></li>
-                                                <li><a href="/topview/radiology">Radiology Centers</a></li>
-                                                <li><a href="/topview/fitness">fitness Centers</a></li>                                                                           
-                                                <!--<li><a href="doctor-detail2.html">Doctor Detail 2</a></li>-->
-                                            </ul>
-                                        </li>
-                                        <li>
-                                            <a href="#">Blog</a>
-                                            
-                                        </li>
-                                        <li><a href="packages.html">packages</a></li>
-                                        <li><a href="contactus.html">Contact</a></li>                                        
-                                        <!--<li>                                            
-                                            <a href="#" data-toggle="modal" data-target=".tg-user-modal" title="login/signup"><i class="fa fa-user-plus"></i></a>
-                                            <span><a href="#" data-toggle="modal" data-target=".tg-user-modal">login/signup</a></span>
-                                        </li>-->                                                                                                                
-                                    </ul>
-                                </div>                                
-                            </nav>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="#">Another action</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="#">Something else here</a>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="nav-item">
+                        <div class="dropdown">
+                            <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownRelevance" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                              Relevance
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="dropdownRelevance">
+                                <a class="dropdown-item" href="#">Action</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="#">Another action</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="#">Something else here</a>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+        </nav>-->
+        <div class="main" style="width:95%; margin: 0 auto; margin-top:30px">
+        	<a href="" id="searchResultArea"></a>
+            <div class="row">
+                <!-- col 9 -->
+                <div class="col-sm-9" ng-cloak>
+                    <div class="card max-width mb-3 bg-white" ng-repeat="center in searchResultFull">
+                        <div class="row no-gutters">
+                            <div class="col-md-9">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="thumbnail">
+                                            <a href="{{center.profile_url}}" alt="Profile">
+                                                <img src="{{center.profile_pic_url || '/download/profile_pic/nopic'}}" class="card-img rounded-circle" alt="...">
+                                                <div class="online text-center text-muted" ng-show="center.verified">
+                                                    <span><span><i class="fa fa-check-circle"></i></span> Verified </span>
+                                                </div>
+                                                <!--<div class="floating-badge" ng-show="doc.verified">
+                                                    <span class="badge badge-pill badge-secondary" title="Verified"><i class="fas fa-check-circle"></i></span>
+                                                </div>-->
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <div class="doctors-profile p-2">
+                                            <h4 class="pt-2 ellipsis">{{center.name}}</h4>
+                                            <h6>{{center.address}}</h6>
+                                           
+                                            <h6><strong>{{center.city}}, {{center.country}}.</strong></h6>
+                                            <div>
+                                                <span>{{center.email}}</span>
+                                            </div>
+                                            <div>
+                                                <span>{{center.phone}}</span>
+                                            </div>
+
+                                           <div class="text-info">
+                                           		<small>{{getStr(center.str,center.addBy)}}</small>
+                                           </div>
+                                          
+                                            <!--<span class="rating rounded-pill"><span><i class="far fa-thumbs-up"></i></span> 96%</span> <span><a href="#">1352 feedback</a></span>-->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card-body p-6 text-center">
+                                    <!--<p class="avail mt-5"><span><i class="fab fa-line"></i></span> Availability Today</p>-->
+                                    <div class="video-btn mt-3 pt-6">                                   
+                                        <button type="button" class="btn btn-success" style="margin-bottom: 5px" ng-click="forward(center)" ng-show="!center.isSent && user.item"><i class="fa fa-user-md"></i> Forward to center</button>
+                                         <a href="" class="p-2 text-success" ng-show="center.isSent"><i class="fa fa-check"></i> Request sent!</a>
+                                       
+                                        <button type="button" class="btn btn-outline-success" style="margin-bottom: 5px" ng-click="chat(center)"><i class="fa fa-comments"></i> Leave a message</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                   
+                    <div class="card max-width mb-3 bg-white" ng-repeat="center in searchResultSub">
+                        <div class="row no-gutters">
+                            <div class="col-md-9">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="thumbnail">
+                                            <a href="{{center.profile_url}}" alt="Profile">
+                                                <img src="{{center.profile_pic_url || '/download/profile_pic/nopic'}}" class="card-img rounded-circle" alt="">
+                                                <!--<div class="online text-center text-muted" ng-show="doc.verified">
+                                                    <span><span><i class="fa fa-check-circle"></i></span> Verified </span>
+                                                </div>-->
+                                                <!--<div class="floating-badge" ng-show="doc.verified">
+                                                    <span class="badge badge-pill badge-secondary" title="Verified"><i class="fas fa-check-circle"></i></span>
+                                                </div>-->
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <div class="doctors-profile p-2">
+                                            <h4 class="pt-2 ellipsis">{{center.name}}</h4>
+                                            <h6>{{center.address}}</h6>
+                                           
+                                            <h6><strong>{{center.city}}, {{center.country}}.</strong></h6>
+                                             <div>
+                                                <span>{{center.email}}</span>
+                                            </div>
+                                            <div>
+                                                <span>{{center.phone}}</span>
+                                            </div> 
+                                            <div>
+                                            	<small class="text-info">{{getStr(center.str,center.addBy)}}</small>
+                                            	<small class="cross-line">{{notStr(center.notFound)}}</small>
+                                            </div>                                        
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card-body p-6">
+                                    <!--<p class="avail mt-5"><span><i class="fab fa-line"></i></span> Availability Today</p>-->
+                                    <div class="video-btn mt-3 pt-6 text-center">
+                                       
+                                        <button type="button" class="btn btn-success" style="margin-bottom: 5px" ng-click="forward(center)" ng-show="!center.isSent && user.item"><i class="fa fa-user-md"></i> Forward to center</button>
+                                         <a href="" class="p-2 text-success" ng-show="center.isSent"><i class="fa fa-check"></i> Request sent!</a>
+                                       
+                                        <button class="btn btn-outline-success" style="margin-bottom: 5px" ng-click="chat(center)"><i class="fa fa-comments"></i> leave a message</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div ng-show="searchResultFull.length == 0 && searchResultSub.length == 0" class="card max-width mb-3 bg-white">
+                        <article class="text-center text-danger p-5 font-1_3">
+                            No result was found based on the search criteria!
+                        </article>
+                    </div>
+                    <!-- 2nd col -->
+                    <!--<div class="card max-width mb-3">
+                        <div class="row no-gutters">
+                            <div class="col-md-9">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="thumbnail">
+                                            <img src="/assets/images/default-avatar.png" class="card-img rounded-circle" alt="...">
+                                            <div class="online text-center">
+                                                <span><span><i class="fab fa-osi"></i></span> Online</span>
+                                            </div>
+                                            <div class="floating-badge">
+                                                <span class="badge badge-pill badge-secondary"><i class="fas fa-check-circle"></i></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <div class="doctors-profile p-6">
+                                            <h4 class="card-header">Dr. M.R. Pujari</h4>
+                                            <h6>Dentist</h6>
+                                            <h6>14yrs experience overall</h6>
+                                            <h6><strong>Abuja, Nigeria .</strong></h6>
+                                            <div style="border-bottom: 1px dotted grey; margin-bottom: 16px">
+                                                <span>32 Smiles Multispeciality Dental Clinic + 15 more
+                                                    ₹200 Consultation fee at clinic</span>
+                                            </div>
+                                            <span class="rating rounded-pill"><span><i class="far fa-thumbs-up"></i></span> 96%</span> <span><a href="#">1352 feedback</a></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card-body p-6">
+                                    <p class="avail mt-5"><span><i class="fab fa-line"></i></span> Availability Today</p>
+                                    <div class="video-btn mt-3">
+                                        <button type="button" class="btn btn-success">Book Appointment</button>
+                                        <button type="button" class="btn btn-outline-success">Video Consultation</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card max-width mb-3">
+                        <div class="row no-gutters">
+                            <div class="col-md-9">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="thumbnail">
+                                            <img src="/assets/images/default-avatar.png" class="card-img rounded-circle" alt="...">
+                                            <div class="online text-center">
+                                                <span><span><i class="fab fa-osi"></i></span> Online</span>
+                                            </div>
+                                            <div class="floating-badge">
+                                                <span class="badge badge-pill badge-secondary"><i class="fas fa-check-circle"></i></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <div class="doctors-profile p-6">
+                                            <h4 class="card-header">Dr. Obinna</h4>
+                                            <h6>Med lab</h6>
+                                            <h6>7yrs experience overall</h6>
+                                            <h6><strong>Enugu, Nigeria .</strong></h6>
+                                            <div style="border-bottom: 1px dotted grey; margin-bottom: 16px">
+                                                <span>32 Smiles Multispeciality Dental Clinic + 15 more
+                                                    ₹200 Consultation fee at clinic</span>
+                                            </div>
+                                            <span class="rating rounded-pill"><span><i class="far fa-thumbs-up"></i></span> 96%</span> <span><a href="#">1352 feedback</a></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card-body p-6">
+                                    <p class="avail mt-5"><span><i class="fab fa-line"></i></span> Availability Today</p>
+                                    <div class="video-btn mt-3">
+                                        <button type="button" class="btn btn-success">Book Appointment</button>
+                                        <button type="button" class="btn btn-outline-success">Video Consultation</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>-->
+                   
+                    <!-- rd col -->
+                    <!--<div class="card max-width mb-3">
+                        <div class="row no-gutters">
+                            <div class="col-md-9">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="thumbnail">
+                                            <img src="/assets/images/default-avatar.png" class="card-img rounded-circle" alt="...">
+                                            <div class="floating-badge">
+                                                <span class="badge badge-pill badge-secondary"><i class="fas fa-check-circle"></i></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <div class="doctors-profile p-6">
+                                            <h4 class="card-header">Dr. Obinna</h4>
+                                            <h6>Med lab</h6>
+                                            <h6>7yrs experience overall</h6>
+                                            <h6><strong>Enugu, Nigeria .</strong></h6>
+                                            <div style="border-bottom: 1px dotted grey; margin-bottom: 16px">
+                                                <span>32 Smiles Multispeciality Dental Clinic + 15 more
+                                                    ₹200 Consultation fee at clinic</span>
+                                            </div>
+                                            <span class="rating rounded-pill"><span><i class="far fa-thumbs-up"></i></span> 96%</span> <span><a href="#">1352 feedback</a></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card-body p-6">
+                                    <p class="avail mt-5"><span><i class="fab fa-line"></i></span> Availability Today</p>
+                                    <div class="video-btn mt-3">
+                                        <button type="button" class="btn btn-success">Book Appointment</button>
+                                        <button type="button" class="btn btn-outline-success">Video Consultation</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>-->
+                </div>
+                <!-- col 4 -->
+                <div class="col-sm-3">
+                    <div class="container side-sticky">
+                        <div class="row">
+                            <section class="bg-white">
+                                <div class="bg-image">
+                                    <div class="card">
+                                        <div class="side-nav">
+                                            <h4 class="h6"><b>Laboratory tests you may need.</b></h4>  
+                                            <hr>                 
+                                            <section>
+                                                <div class="">
+                                                    <a href="" ng-click="getTest('Malaria')" class="btn btn-outline-success btn-sm mb-2">Malaria Parasite Test</a>
+                                                    <a href="" ng-click="getTest('widal')" class="btn btn-outline-success btn-sm mb-2">Typhoid Fever Test (Widal Test)</a>
+                                                    <a  href="" ng-click="getTest('full blood count')" class="btn btn-outline-success btn-sm mb-2">Full Blood Count Test</a>
+                                                    <a href="" ng-click="getTest('Serum Electrolytes')" class="btn btn-outline-success btn-sm mb-2">Serum Electrolytes Test</a>
+
+                                                    <a href="" ng-click="getTest('Serum Urea')"  class="btn btn-outline-success btn-sm mb-2">Serum Urea Test</a>
+
+                                                    <a  href="" ng-click="getTest('Serum Creatinine')" class="btn btn-outline-success btn-sm mb-2">Serum Creatinine Test</a>
+
+                                                    <a  href="" ng-click="getTest('Kidney Function Test')" class="btn btn-outline-success btn-sm mb-2">Kidney Function Test</a>
+
+                                                    <a href="" ng-click="getTest('Liver Function Test')" class="btn btn-outline-success btn-sm mb-2">Liver Function Test</a>
+
+                                                    <a href="" ng-click="getTest('Microscopy,Culture and Sensitivity (MCS)')" class="btn btn-outline-success btn-sm mb-2">Microscopy,Culture and Sensitivity (MCS) Test</a>
+
+                                                    <a href="" ng-click="getTest('Stool for Occult Blood')" class="btn btn-outline-success btn-sm">Stool for Occult Blood Test</a>
+                                                </div>
+                                            </section>
+                                            <hr>
+                                            <div class="video-btn mt-3">
+                                               <h5 class="h6">Other Services</h5>
+                                               <ul class="pb-3 line-height">
+                                                   <li><a href="/find-laboratory?s=live-doctors" class="text-success"> Chat with live physicians</a></li>
+                                                   <li><a href="/find-drugs" class="text-success">Find Drug / Buy drugs and kits</a></li>
+                                                   <li><a href="/symptom-checker" class="text-success">Symptoms Checker</a></li>
+                                                  
+                                                  <li><a href="/covid-19" class="text-success">Covid-19 Screening Test</a></li>
+                                                  <!-- <li><a href="" class="text-success">Find Laboratory test and centers near you.</a></li>
+                                                   <li><a href="" class="text-success">Find Radiology test and centers near you.</a></li>-->
+                                               </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
                         </div>
                     </div>
                 </div>
-                <div class="arrow-dashboard" ng-if="checkLogIn">
-                    <a ng-href="{{back}}" class="fa fa-long-arrow-right" title="Back to dashboard"></a>
-                <div>
-            </header>
-		<!--************************************
-				Header End
-		*************************************-->
-		<!--************************************
-				Home Slider Start
-		*************************************-->
-		<div id="tg-innerbanner" class="tg-innerbanner tg-bglight tg-haslayout" >
-			<!--<div class="tg-searcharea tg-haslayout">
-				<div class="container">
-					<div class="row">
-						<form class="tg-searchform">
-							<div class="col-md-2 col-sm-2 col-xs-4">
-                                <div class="form-group">
-                                    <a id="search_banner" href="/user/find-specialist" class="tg-btn tg-btn-lg">Find A Doctor</a>
-                                </div>
-                            </div>
-                            <div class="col-md-2 col-sm-2 col-xs-4">
-                                <div class="form-group">
-                                    <a id="search_banner" href="/user/find-drug" class="tg-btn tg-btn-lg" class="active">Find A Drug</a>
-                                </div>
-                            </div>
-                            <div class="col-md-2 col-sm-2 col-xs-4">
-                                <div class="form-group">
-                                    <a id="search_banner" href="/user/find-lab-test" class="tg-btn tg-btn-lg">Find A Lab Test</a>
-                                </div>
-                            </div>
-                            <div class="col-md-2 col-sm-2 col-xs-4">
-                                <div class="form-group">
-                                    <a id="search_banner" href="/user/find-scan-test" class="tg-btn tg-btn-lg">Find A Scan Test</a>
-                                </div>
-                            </div>
-						</form>
-						<span style="cursor: pointer" ng-click="backTo('<%= userInfo.type %>')">Back to dashboard</span>
-					</div>
-				</div>
-			</div>-->
-			<div class="tg-pagebar tg-haslayout">
-				<div class="container">
-					<div class="row">
-						<div class="col-xs-12">
-							<h1>Scan test search</h1>
-							<ol class="tg-breadcrumb">
-								<li><a href="#">Home</a></li>
-								<li class="active">Find scan</li>
-							</ol>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-		<!--************************************
-				Home Slider End
-		*************************************-->
-		<!--************************************
-				Main Start
-		*************************************-->
-		<main id="main" class="tg-main-section tg-haslayout">
-			<div class="container">
-				<div class="row">
-					<div class="tg-404 tg-haslayout">
-						<div class="col-sm-12 col-md-8 col-lg-8">
-							<div class="view-animate-container row" >  
-                                <div class="view-animate" ng-view >
-                                </div>
-                        	</div>									
-						</div>
-						<div class = "col-sm-12 col-md-4 col-lg-4">
-							<aside class="side-services">										
-								<a href="#/help">Need help?</a>
-							</aside>
-						</div>			
-				</div>
-			</div>
-		</main>
-		<!--************************************
-				Main End
-		*************************************-->
-		<!--************************************
-				Footer Start
-		*************************************-->
-		<footer id="footer" class="tg-haslayout">
-			<div class="tg-threecolumn">
-				<div class="container">
-					<div class="row">
-						<div class="col-sm-4">
-							<div class="tg-footercol">
-								<strong class="logo">
-									<a href="#">
-										<img src="/assets/images/logo2.png" alt="image description">
-									</a>
-								</strong>
-								<div class="tg-description">
-									<p>We specialize in offering help to find your best medical solution.</p>
-								</div>
-								<ul class="tg-info">
-									<li>
-										<i class="fa fa-home"></i>
-										<address>1 Nwodo street GRA Enugu, Enugu State</address>
-									</li>
-									<li>
-										<i class="fa fa-envelope"></i>
-										<em><a href="#">info@domain.com</a></em>
-									</li>
-									<li>
-										<i class="fa fa-phone"></i>
-										<em><a href="#">+234 8064245256</a></em>
-									</li>
-								</ul>
-							</div>
-						</div>
-						<div class="col-sm-4">
-							<div class="tg-footercol">
-								<div class="tg-heading-border tg-small">
-									<h4>featured doctors</h4>
-								</div>
-								<div class="tg-widget tg-featured-doctore">
-									<ul>
-										<li>
-											<figure class="tg-imgdoc">
-												<img src="/assets/images/img-02.jpg" alt="image description">
-												<div class="tg-img-hover">
-													<a href="#"><i class="icon-zoom"></i></a>
-												</div>
-											</figure>
-											<div class="tg-docinfo">
-												<span class="tg-docname"><a href="#">Dr. Jennifer Bada-Ellzey, MD, MPH</a></span>
-												<span class="tg-stars">
-													<em>Ranking:</em>
-													<i class="fa fa-star"></i>
-													<i class="fa fa-star"></i>
-													<i class="fa fa-star"></i>
-													<i class="fa fa-star"></i>
-													<i class="fa fa-star"></i>
-												</span>
-												<div class="tg-designation">
-													<p><a href="#">Family &amp; Community Medicine</a></p>
-												</div>
-											</div>
-										</li>
-										<li>
-											<figure class="tg-imgdoc">
-												<img src="/assets/images/img-03.jpg" alt="image description">
-												<div class="tg-img-hover">
-													<a href="#"><i class="icon-zoom"></i></a>
-												</div>
-											</figure>
-											<div class="tg-docinfo">
-												<span class="tg-docname"><a href="#">Dr. Curtis O. Ballard, MD</a></span>
-												<span class="tg-stars">
-													<em>Ranking:</em>
-													<i class="fa fa-star"></i>
-													<i class="fa fa-star"></i>
-													<i class="fa fa-star"></i>
-													<i class="fa fa-star-o"></i>
-													<i class="fa fa-star-o"></i>
-												</span>
-												<div class="tg-designation">
-													<p><a href="#">Orthopaedic Surgery &amp; Sports Medicine</a></p>
-												</div>
-											</div>
-										</li>
-									</ul>
-								</div>
-							</div>
-						</div>
-						<div class="col-sm-4">
-							<div class="tg-footercol">
-								<div class="tg-heading-border tg-small">
-									<h4>Useful links</h4>
-								</div>
-								<div class="tg-widget tg-usefullinks">
-									<ul>
-										<li><a href="#">About Us</a></li>
-										<li><a href="#">Latest Blog</a></li>
-										<li><a href="#">Terms and Conditions</a></li>
-										<li><a href="#">Privacy Policy</a></li>
-										<li><a href="#">Contact Us</a></li>
-									</ul>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="tg-footerbar tg-haslayout">
-				<div class="tg-copyrights">
-					<p>2015 All Rights Reserved © DocDirect</p>
-				</div>
-			</div>
-		</footer>
-		<!--************************************
-				Footer End
-		*************************************-->
-	</div>
-	<!--************************************
-			Wrapper End
-	*************************************-->
-	<!--************************************
-		Sign In Sign Up Light Box Start
-	*************************************-->
-		<div class="modal fade tg-user-modal" tabindex="-1" role="dialog">
-		<div class="tg-modal-content">
-			<ul class="tg-modaltabs-nav" role="tablist">
-				<li role="presentation" class="active"><a href="#tg-signin-formarea" aria-controls="tg-signin-formarea" role="tab" data-toggle="tab">sign in</a></li>
-				<li role="presentation"><a href="#tg-signup-formarea" aria-controls="tg-signup-formarea" role="tab" data-toggle="tab">sign up</a></li>
-			</ul>
-			<div class="tab-content tg-haslayout">
-				<div role="tabpanel" class="tab-pane tg-haslayout active" id="tg-signin-formarea">
-					<form class="tg-form-modal tg-form-signin">
-						<fieldset>
-							<div class="form-group">
-								<input type="email" class="form-control" placeholder="Email Address">
-							</div>
-							<div class="form-group">
-								<input type="password" class="form-control" placeholder="Password">
-							</div>
-							<div class="form-group tg-checkbox">
-								<label>
-									<input type="checkbox" class="form-control">
-									Remember Me
-								</label>
-								<a class="tg-forgot-password" href="#">
-									<i>Forgot Password</i>
-									<i class="fa fa-question-circle"></i>
-								</a>
-							</div>
-							<button class="tg-btn tg-btn-lg">LOGIN now</button>
-						</fieldset>
-					</form>
-				</div>
-				<div role="tabpanel" class="tab-pane tg-haslayout" id="tg-signup-formarea">
-					<form class="tg-form-modal tg-form-signup">
-						<fieldset>
-							<div class="form-group">
-								<span class="select">
-									<select>
-										<option>Doctor one</option>
-										<option>Doctor two</option>
-										<option>Doctor three</option>
-									</select>
-								</span>
-							</div>
-							<div class="form-group">
-								<span class="select">
-									<select>
-										<option>Specialty*</option>
-										<option>Specialty two</option>
-										<option>Specialty three</option>
-									</select>
-								</span>
-							</div>
-							<div class="form-group">
-								<input type="text" class="form-control" placeholder="First Name">
-							</div>
-							<div class="form-group">
-								<input type="text" class="form-control" placeholder="last Name">
-							</div>
-							<div class="form-group">
-								<input type="text" class="form-control" placeholder="Phone Number">
-							</div>
-							<div class="form-group">
-								<input type="email" class="form-control" placeholder="Email">
-							</div>
-							<div class="form-group">
-								<input type="text" class="form-control" placeholder="ZIP Code">
-							</div>
-							<div class="form-group tg-checkbox">
-								<label>
-									<input type="checkbox" class="form-control">
-									I agree with the terms and conditions
-								</label>
-							</div>
-							<button class="tg-btn tg-btn-lg">Create an Account</button>
-						</fieldset>
-					</form>
-				</div>
-			</div>
-		</div>
-	</div>
-	<!--************************************
-		Sign In Sign Up Light Box End
-	*************************************-->
-	 	 <script src="/assets/js/vendor/jquery-library.js"></script>
-        <script src="/assets/js/vendor/bootstrap.min.js"></script>
-        <script type="text/javascript" src="/assets/js/source.js"></script>
-        <script type="text/javascript" src="/assets/js/angularclient.js"></script>
-        <script type="text/javascript" src="/assets/js/ngroute.js"></script>
-        <script src="/assets/js/jquery-ui.js"></script>
-        <script src="http://maps.google.com/maps/api/js?sensor=false"></script>
-        <script src="/assets/js/map/jquery.gomap.js"></script>
-        <script src="/assets/js/map/markerclusterer.min.js"></script>
-        <script src="/assets/js/countdown.js"></script>
-        <script src="/assets/js/jquery.nicescroll.js"></script>
-        <script src="/assets/js/parallax.js"></script>
-        <script src="/assets/js/owl.carousel.js"></script>
-        <script src="/assets/js/prettyPhoto.js"></script>
-        <script src="/assets/js/appear.js"></script>
-        <script src="/assets/js/countTo.js"></script>
-        <script src="/assets/js/map/map.js"></script>
-        <script src="/assets/js/angularAnimate.js"></script>
-        <script src="/assets/js/modalService.js"></script>
-        <script src="/assets/js/main.js"></script>
-        <script src="/assets/js/angular-touch.min.js"></script>
-        <script src="/assets/js/angular-carousel.js"></script>
-        <script src="/assets/js/moment.min.js"></script>
-        <script src="/assets/js/angular-moment.min.js"></script>
-        <script src="/assets/js/ui-bootstrap-tpls.js"></script>
-        <script src="/assets/js/angular-clipboard.js"></script>     
+            </div>
 
+           <!-- <div class="jumbotron text-center" style="margin-bottom:0">
+                <p>Footer</p>
+            </div>-->
+        </div>
+    </section>
+   <div style="height: 200px"></div>
+    <div style="height: 50px;background-color: #fff;position: fixed;bottom: 0;width: 100%;">
+        
+    </div>
+    <script>
+        function openNav() {
+            document.getElementById("mySidenav").style.width = "300px";
+            document.getElementById("main-wrap").style.marginLeft = "300px";
+            document.body.style.backgroundColor = "rgba(0,0,0,0.6)";
+        }
+
+        function closeNav() {
+            document.getElementById("mySidenav").style.width = "0";
+            document.getElementById("main-wrap").style.marginLeft = "0";
+            document.body.style.backgroundColor = "white";
+        }
+    </script>
+
+     <script type="text/ng-template" id="find-doctor-search.html">
+        <div class="modal fade">
+            <div class="modal-dialog">
+                <div class="modal-content" style="position: absolute; top:10;">
+                    <div class="modal-header" style="position: relative;">
+                        <h4>Hello</h4>
+                    </div>
+                    <div class="modal-body">
+                        <p>Something is right</p>
+                    </div>
+            
+                </div>
+            </div>
+        </div>
+    </script>
+
+    <script type="text/ng-template" id="auth.html">
+        <div class="modal fade">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header" style="position: relative;">   
+                    	<h5><b>Tell us who you are!</b></h5>   
+                    	<button type="button" class="close" ng-click="close('Cancel')" data-dismiss="modal" aria-hidden="true" style="color:red;font-size: 32px;z-index: 3;position: absolute;top: 8px;right: 15px">&times;</button>                         
+                    </div>
+                    <div class="modal-body">                       
+                       
+                        <form ng-submit="enterAccount()" class="mt-3" ng-show="person.action == 'login'">   
+                            <p  class="text-danger text-center"><b>{{loginMessage}}</b></p> 
+                            <p class="text-success text-center">{{loginSuccess}}</p>                        
+                            <div>
+                                <label><b>Email or Phone Number</b></label><br>
+                                <input type="text" name="" placeholder="Email or Phone" class="form-control" ng-model="person.username" required>
+                            </div>
+                            
+                            <div class="pt-3" style="position: relative;">
+                                <label><b>Password</b></label><br>
+                                <input type="password" name="" placeholder="Password" class="form-control" ng-model="person.password" id="myPass" required>
+                                 <i class="fa fa-eye" style="font-size:20px;position: absolute;bottom: 10px;right:20px;color: grey;cursor: pointer;" onclick="showPass('a')"></i>
+                            </div>
+                            <div class="pt-3">
+                                <button type="submit" name="" class="btn btn-danger btn-block"> <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i> {{(loading) ? "" : "Continue"}}</button>
+                            </div>
+
+                            <p class="mt-3">Forgot password? <a href="">Change password</a></p>                           
+                            <p class="mt-3">Don't have an account? <a href="" ng-click="create()">Create one for free!</a></p>
+                        </form>
+                        <br>
+                        <form ng-show="person.action == 'signup'" ng-submit="create()">
+                           
+                            <ul class="nav nav-tabs">
+                                <li class="nav-item"><a href="#" class="nav-link" ng-class="{'active': person.type == 'Patient'}" ng-click="chooseType('Patient')">Patient</a></li>
+
+                                <li class="nav-item"><a href="#" class="nav-link" ng-class="{'active': person.type == 'Doctor'}" ng-click="chooseType('Doctor')">Doctor</a></li>
+
+                                <li class="nav-item"><a href="#" class="nav-link" ng-class="{'active': person.type == 'Pharmacy'}" ng-click="chooseType('Pharmacy')">Pharmacy</a></li>
+
+                                <li class="nav-item"><a href="#" class="nav-link" ng-click="chooseType('Diagnostic')" ng-class="{'active': person.type == 'Diagnostic'}">Diagnostic Center</a></li>
+
+                                <li class="nav-item"><a href="#" class="nav-link" ng-click="chooseType('Special Center')" ng-class="{'active': person.type == 'Special Center'}">Special Center</a></li>
+                            </ul>
+
+                            <br>
+                            <fieldset>
+                                <!--<div>
+                                    <label><b>Country</b></label><br>
+                                    <input type="text" name="" placeholder="Country" class="form-control" ng-model="person.country">
+                                </div>-->
+
+                               
+
+                                <div class="col-md-4 pl-0 ml-0" ng-if="person.type == 'Patient' || person.type == 'Doctor'">
+                                    <label><b>Title</b></label><br>
+                                    <!--<input type="text" name="" placeholder="title" class="form-control" ng-model="person.title">-->
+                                    <select placeholder="title" class="form-control" ng-model="person.title" required>
+                                        <option value="" disabled selected>_select title</option>                               
+                                        <option>Dr</option>
+                                        <option>Mr</option>
+                                        <option>Mrs</option>
+                                        <option>Miss</option>
+                                        <option>Master</option>
+                                        <option>Chief</option>
+                                        <option>Rev</option>
+                                        <option>Pastor</option>
+                                        <option>Engr</option>
+                                        <option>Barr</option>
+                                        <option>Surv</option>
+                                        <option>Hon</option>
+                                        <option>Ven</option>
+                                        <option>HRH</option>
+                                        <option>Prof</option>
+                                        <option>Justice</option>
+                                    </select>
+                                </div>
+                                <div class="pt-3" ng-if="person.type == 'Patient' || person.type == 'Doctor'" >
+                                    <label><b>Firstname</b></label><br>
+                                    <input type="text" name="" placeholder="firstname" class="form-control" ng-model="person.firstname" required>
+                                </div>
+
+                                <div class="pt-3" ng-if="person.type == 'Patient' || person.type == 'Doctor'">
+                                    <label><b>Lastname</b></label><br>
+                                    <input type="text" name="" placeholder="lastname" class="form-control" ng-model="person.lastname" required>
+                                </div>
+
+                                <div class="pt-3" ng-if="person.type == 'Patient'">
+                                    <label><b>Date of Birth</b></label><br>
+                                    <input type="date" name="" placeholder="date of birth" class="form-control" ng-model="person.dob" required>
+                                </div>
+
+                                <div class="pt-3" ng-if="person.type == 'Patient'">
+                                    <label><b>Sex</b></label><br>
+                                    <!--<input type="text" name="" placeholder="sex" class="form-control" ng-model="person.gender" required>-->
+                                    <select placeholder="sex" class="form-control" ng-model="person.gender" required>
+                                        <option value="" selected disabled>_select</option>
+                                        <option>Male</option>
+                                        <option>Female</option>
+                                    </select>
+                                </div>
+
+
+
+                                <div class="pt-3" ng-if="person.type == 'Diagnostic'">
+                                    <label><b>Diagnostic Type</b></label><br>
+                                    <!--<input type="text" name="" placeholder="diagnostic type" class="form-control" ng-model="person.diagmosticType" required>-->
+                                    <select class="form-control" ng-model="person.diagmosticType" required>
+                                        <option value="" disabled selected>_select</option>
+                                        <option>Laboratory</option>
+                                        <option>Radiology</option>
+                                    </select>
+                                </div>
+
+                                <div class="pt-3" ng-if="person.type !== 'Patient' && person.type !== 'Doctor'">
+                                    <label><b>Center Name</b></label><br>
+                                    <input type="text" name="" placeholder="center name" class="form-control" ng-model="person.name" required>
+                                </div>
+
+
+                                <div class="pt-5">
+                                    <label><b>Phone Number</b></label><br>
+                                    <input type="text" name="" placeholder="phone number" class="form-control" ng-model="person.phone" required>
+                                </div>
+
+                                <div class="pt-3">
+                                    <label><b>City</b></label><br>
+                                     <input type="text" name="" placeholder="city" class="form-control" ng-model="person.city" required uib-typeahead="city for city in cities | filter:$viewValue | limitTo:15">
+                                </div>
+
+                                <div class="pt-3" ng-if="person.type == 'Doctor'">
+                                    <label><b>Place of Work</b></label><br>
+                                    <input type="text" name="" placeholder="place of work" class="form-control" ng-model="person.work_place" required>
+                                </div>
+
+
+                                <div class="pt-3" ng-if="person.type == 'Patient'" >
+                                    <label><b>Address</b></label><br>
+                                    <input type="text" name="" placeholder="address" class="form-control" ng-model="person.address" required>
+                                </div>
+
+                                <div class="pt-3" ng-if="person.type !== 'Patient'">
+                                    <label><b>Center or Place of Work Address</b></label><br>
+                                    <input type="text" name="" placeholder="address" class="form-control" ng-model="person.address" required>
+                                </div>
+
+                               
+
+                                <div class="pt-3">
+                                    <label><b>Email</b></label><br>
+                                    <input type="text" name="" placeholder="email" class="form-control" ng-model="person.email">
+                                </div>
+                                
+                                <div class="pt-3" style="position: relative;">
+                                    <label><b>Password</b></label><br>
+                                    <input type="password" name="" placeholder="password" class="form-control" ng-model="person.password" id="myPass2" required>
+                                    <i class="fa fa-eye text-muted" style="font-size:20px;position: absolute;bottom: 10px;right:20px;color: grey;cursor: pointer;" onclick="showPass('b')"></i>
+                                </div>
+
+                                <div class="pt-3">
+                                    <label class="custom-control custom-checkbox">
+                                      <input type="checkbox"  ng-model="person.agree" required>
+                                      <span class="custom-control-description" style="font-size: 14px;"> I agree with the <a href="/terms" target="_blank" >Terms of Service</a> and <a href="/privacy" target="_blank"> Privacy Policy.</a></span><br>
+                                      <span class="text-danger"></span> 
+                                    </label>
+                                </div>
+
+                                <div class="pt-3">
+                                    <input type="submit" name="" value="Create" class="btn btn-danger btn-block">
+                                </div>
+                               
+                                <p class="mt-3">I have an account? <a href="" ng-click="normalUser()">Sign In!</a></p>
+                            </fieldset>
+                        </form>
+                        <form ng-if="person.action == 'verify'">
+                            <h6>Verify Phone Number</h6>
+                            <div class="pt-3">
+                                <label>Enter the PIN we sent to {{person.phone}} below</label><br>
+                                <input type="text" name="" placeholder="Enter pin" class="form-control" ng-model="person.pin">
+                            </div>                            
+                            <div class="pt-3">
+                                <input type="submit" name="" value="Verify" class="btn btn-success btn-block">
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="modal-footer text-right pt-2">
+                        <button  class="btn btn-danger" ng-click="close('Cancel')" data-dismiss="modal" aria-hidden="true">Close</button>  
+                    </div>
+            
+                </div>
+            </div>
+        </div>
+    </script>
+
+
+    <script type="text/ng-template" id="search-result.html">
+         <div class="modal fade">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header" style="position: relative;">
+               <h5>Forwarding:</h5>
+               <button type="button" class="close" ng-click="close('Cancel')" data-dismiss="modal" aria-hidden="true" style="color:red;font-size: 32px;z-index: 3;position: absolute;top: 8px;right: 15px">&times;</button>
+              </div>          
+             
+              <div class="modal-body" style="padding: 10px">
+              
+<section ng-if="isContent && !isReferReq" class="p-1">
+     <div>    
+      <span class="font-1_1 mb-0" style="font-style: italic;">{{data.str}}</span>
+    </div>   
+    <div>
+        <b>TO</b>
+    </div>
+    <div>
+        <h6>{{data.name}}</h6>
+        <span>{{data.address}}</span><br>
+        <span>{{data.city}}</span>
+        <span>{{data.country}}</span>
+    </div>
+   
+    <hr>
+    <section>
+        <button class="btn btn-simple" ng-class="{'btn-success': forwardType == 'inperson'}" ng-click="someone('inperson')"><!--<i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i>--> Forward on my behalf</button>
+
+        <button class="btn btn-simple" ng-class="{'btn-success': forwardType == 'another'}"  ng-click="someone('another')"> Forward on behalf of someone else</button>
+    </section>
+    <hr>
+    <section ng-show="forwardType == 'another' || forwardType == 'inperson'" class="mt-2">
+         <form ng-submit="send()">
+                <div ng-if="forwardType == 'another'" class="mb-2">                 
+                 <label><b>Recepient's phone number</b></label><br> <!--<i class="fa fa-question-circle tip"> <span>The phone number this recipient registered with on applinic</span></i>-->
+                 <span class="text-danger">{{phoneMsg}}</span>
+                 <input type="text" Placeholder="Enter patient's phone" ng-model="user.phone" class="form-control" required="required" style="cursor:normal">
+                </div>
+                <div ng-if="typeOfSearch === 'pharmacy'" class="mb-2">
+                  <label><b>Instructions / explanations for prescription(s)</b></label><br> 
+                  <span class="text-danger">{{provisionalMsg}}</span>
+                  <textarea class="form-control pl-1" placeholder="Write..." ng-model="data.provisional_diagnosis" ng-keyup="autoExpand($event)" id="textarea"> </textarea>
+                </div>
+                <div ng-if='typeOfSearch === "diagnostic"' class="mb-2">
+                  <label><b>Clinical Summary </b></label><br>
+                  <span class="text-danger">{{summuryMsg}}</span>
+                   <textarea class="form-control p-1" placeholder="Write..." ng-model="data.clinical_summary"  ng-keyup="autoExpand($event)" id="textarea"></textarea>
+                 </div>
+                 <div ng-if='typeOfSearch === "diagnostic"' class="mb-2">
+                   <label><b>Indication</b> </label><br>
+                   <span class="text-danger">{{indictionMsg}}</span>
+                   <textarea class="form-control p-1" placeholder="Write..." ng-model="data.indication" ng-keyup="autoExpand($event)" id="textarea"></textarea>
+                 </div>
+                 <div ng-if='typeOfSearch === "diagnostic"' class="mb-2">
+                   <label><b>LMP ( female )</b></label><br>
+                   <textarea class="form-control p-1" placeholder="Write..." ng-model="data.lmp" ng-keyup="autoExpand($event)" id="textarea"></textarea>
+                 </div>
+                 <div ng-if='typeOfSearch === "diagnostic"' class="mb-2">
+                   <label><b>Parity ( female )</b></label><br>
+                    <textarea class="form-control p-1" placeholder="Write..." ng-model="data.parity" ng-keyup="autoExpand($event)" id="textarea"></textarea>
+                 </div>
+
+                
+
+                <div class="pt-3 pb-3">                   
+                    
+                    <input type="submit"  class="btn btn-success btn-block" value="Send" ng-if="!loading">
+                    <i class="fa fa-spinner fa-pulse fa-1x fa-fw text-warning" style="font-size: 18px" ng-if="loading"></i>&nbsp;
+                    
+                     <!--<input type="button" value="Cancel" ng-click="cancel()" class="btn btn-outline-danger btn-block" ng-if="checkLogIn.typeOfUser === 'Patient' && !loading">-->
+                    <!--<input type="button" value="New Person Form" ng-click="emp()" class="btn btn-simple" ng-if="isEMP">-->
+                </div>            
+	        </form>
+	    </section>
+		</section>
+		<div ng-if="isSent" class="p-1">
+	    <h5 class=" text-success"  style="text-align:center"> Sent successfully!!!</h5>
+	    <div class="m-0"><strong class="font-1-1"> Center Name: </strong><em>{{data.name}}</em> </div> 
+	    <div class="m-0"><strong class="font-1-1"> Center Location: </strong><em>{{data.address}}, {{data.city}}, {{data.country}}</em> </div> 
+	    <div class="mb-1"><span class="font-1-2" style="color:red"> Ref No:  </span><em>{{result}}</em> </div> 
+	    <div class="font-1-1">Please take note of the center name and 
+	        reference number above. You will use the reference number to find this prescription at the center.
+	    </div>
+		</div>
+
+		<div ng-show="isReferReq">
+			<p>
+				We observed that the patient you compiled this test(s) is not yet registered in the platform. Please invite the patient to register so that you can continue sending test(s).<br><br>
+				<a href="" class="btn btn-info btn-sm" ng-click="invite()" ng-show="!inviteStatus">{{(loading) ? "Sending..." : 'Invite Now!'}}</a><br>
+				<p class="text-success">{{invitationMsg}}</p>
+			</p>
+		</div>
+  
+              </div>
+              
+            </div>
+          </div>
+        </div>
+    </script>
+
+
+  
+
+     <!-- quick chat modal -->
+   <script type="text/ng-template" id='quick-chat.html'>
+       <div class="modal fade">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="p-2">
+            <div>
+                <b class="font-1_3"><i class="fa fa-comments"></i> Messaging</b>
+                <button type="button" class="close" ng-click="close('Yes')" data-dismiss="modal">&times;</button>      
+            </div>
+            <hr>
+           
+            <div class="modal-body">
+                <header>
+                   <b>{{center.name}}</b>
+                   <span style="display: block;">{{center.address}} {{center.city}} {{center.country}}</span>
+                </header>
+              
+                <div class="pt-3">
+                    <textarea class="form-control p-1" ng-model="messageBody" placeholder="write..." style="min-height: 140px" ng-keyup="autoExpand($event)">
+                    </textarea>
+                </div>
+
+                <div class="pt-2">
+                    <button ng-click="sendChatSingle(center.id,center.user_id)" class="btn btn-danger btn-block" style="position: static;margin-left: 2px"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i> {{(isSent) ? "Message sent!" : 'Send'}}</button>
+                </div>
+               
+            </div>
+            <div class="modal-footer">
+               <p class="p-2" ng-show="isSent">This is one-way messaging. If you want to view replies or continue chatting with this center, please go to your dashboard and click <i class="fa fa-comments"></i> icon to use our chat interface for two-way messaging. <a href="" ng-click="todashboard(checkLogIn.type)"><i class="fa fa-arrow-left"></i> Go to dashboard now!</a></p>
+            </div>
+            
+          </div>
+        </div>
+      </div>
+   </script>
+
+    <script type="text/javascript">
+      function showPass(elem) {
+        var x = (elem == 'a') ? document.getElementById("myPass") : document.getElementById("myPass2");
+        if (x.type === "password") {
+          x.type = "text";
+        } else {
+          x.type = "password";
+        }
+      }
+    </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+
+
+    <!--<script type="text/javascript" src="/assets/js/angularclient.js"></script>-->
+    <script type="text/javascript" src="/assets/js/radio.home.angular.js"></script>
+   
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/assets/js/socket.min.js"></script>
+
+    <script src="/assets/js/angular-clipboard.js"></script>
+
+   
+    <script src="/assets/js/modalService.js"></script>
+    <script src="/assets/js/angular-touch.min.js"></script>
+    <!--<script src="/assets/js/angular-carousel.js"></script>-->
     
+   
+    <script src="/assets/js/ui-bootstrap-tpls.js"></script>
+    
+    <script src="/assets/js/ngresource.js"></script>
+   
 </body>
+
 </html>

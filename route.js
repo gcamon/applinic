@@ -7395,6 +7395,7 @@ router.put("/user/laboratory/search/find-tests",function(req,res){
 
 router.put("/user/test-search/laboratory/referral",function(req,res){
     if(req.user){  
+   
     var phone = req.body.line  || req.body.phone;
     var person = (req.body.type === 'inperson') ? {user_id: req.user.user_id} : {phone: phone};
     model.user.findOne(person,{firstname:1,lastname:1,title:1,profile_pic_url:1,
@@ -7405,7 +7406,7 @@ router.put("/user/test-search/laboratory/referral",function(req,res){
 
       if(user) {        
 
-        if(user.type == "Patient"){
+        if(user.type === "Patient"){
 
           req.body.ref_id = randos.genRef(7);
           req.body.session_id = uuid.v1();
@@ -7746,7 +7747,7 @@ router.put("/user/radiology/search/find-tests",function(req,res){
 
 router.put("/user/scan-search/radiology/referral",function(req,res){
   if(req.user){  
-
+   
     var phone = req.body.line  || req.body.phone;
     var recepient;
 
@@ -8166,9 +8167,9 @@ router.put("/user/scan-search/radiology/referral",function(req,res){
       } else {
 
         if(req.user.type !== "Doctor"){
-          res.send({message:"The user with phone number does not exist.",error:true});
+          res.send({message:"The user with phone number does not exist.",error:true,isReferReq: true});
         } else {
-          res.json({isNewPatient: true})
+          res.json({isNewPatient: true,isReferReq: true})
         }
       }
     });
