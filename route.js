@@ -10636,7 +10636,7 @@ router.get("/general/homepage-search",function(req,res){
             
         for(var i in sendObj){
           for(var j = 0; j < sendObj[i].length; j++){
-            if(!filter.hasOwnProperty(sendObj[i][j].center_id) && sendObj[i][j].center_id !== 'chiomaLab175117'){                             
+            if(!filter.hasOwnProperty(sendObj[i][j].center_id)){                             
               filter[sendObj[i][j].center_id] = {};
               filter[sendObj[i][j].center_id].count = 1;
               filter[sendObj[i][j].center_id].name = sendObj[i][j].center_name;
