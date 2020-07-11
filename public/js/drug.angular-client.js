@@ -442,8 +442,6 @@ app.controller("hompageController",["$scope","cities","Drugs","$http",
 
     $rootScope.allKits = Object.keys(filter);
 
-    console.log($rootScope.allKits)
-
     if($rootScope.user.kitItem){
       $scope.getKit("Drug",$rootScope.user.kitItem);
     } else {
