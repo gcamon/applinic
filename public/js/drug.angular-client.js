@@ -392,10 +392,11 @@ app.controller("hompageController",["$scope","cities","Drugs","$http",
   var qStr = window.location.search;
   if(qStr) {
     var qVal = qStr.split('=');
-
     if(qVal.length > 2){
       var str = qVal[1] || "";
-      $rootScope.user.kitItem = str.replace(/%20/g, " ");
+      var qVal2 = str.split('&');
+      var str2 = qVal2[0] || "";
+      $rootScope.user.kitItem = str2.replace(/%20/g, " ");
     } else {
       var str = qVal[qVal.length - 1] || "";
       $rootScope.user.item = str.replace(/%20/g, " ");
