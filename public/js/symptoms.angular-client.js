@@ -564,7 +564,7 @@ app.controller("hompageController",["$scope","scanTests","cities","labTests","Dr
   }
 
 
-  $scope.itemName = "Drug / Test / Specialty / Disease";
+  /*$scope.itemName = "Drug / Test / Specialty / Disease";
 
   $scope.$watch('user.category',function(newVal,oldVal){
     if(newVal) {
@@ -609,7 +609,7 @@ app.controller("hompageController",["$scope","scanTests","cities","labTests","Dr
         break;
       }
     }
-  })
+  })*/
 
 
   $scope.search = function() {   
@@ -857,12 +857,13 @@ app.controller('symptomsCtrl',["$scope","$rootScope","$http","homepageSearchServ
 
    //crypto
 
-	var uri = "https://sandbox-authservice.priaid.ch/login";
-  var secret_key = "m4TZg78KiAo6y2GJj";
+	var uri =  "https://authservice.priaid.ch/login";//"https://sandbox-authservice.priaid.ch/login";
+  var secret_key = "At94NyMo38YrDa2n7";//"m4TZg78KiAo6y2GJj";
   var computedHash = CryptoJS.HmacMD5(uri, secret_key);
   var computedHashString = computedHash.toString(CryptoJS.enc.Base64);   
   
-  var auth = 'Bearer ' + "ede.obinna27@gmail.com:" + computedHashString;
+  //var auth = 'Bearer ' + "ede.obinna27@gmail.com:" + computedHashString; 
+  var auth = 'Bearer ' + "Ez9o7_GMAIL_COM_AUT:" + computedHashString;
   
 
   $http({
@@ -876,8 +877,11 @@ app.controller('symptomsCtrl',["$scope","$rootScope","$http","homepageSearchServ
   });
   
   $scope.getSymptoms = function(token) {
-  	var url = "https://sandbox-healthservice.priaid.ch/symptoms?"
-  	+ "token=" + $scope.token + "&language=en-gb&format=json";
+  	/*var url = "https://sandbox-healthservice.priaid.ch/symptoms?"
+  	+ "token=" + $scope.token + "&language=en-gb&format=json";*/
+    var url = "https://healthservice.priaid.ch/symptoms?"
+    + "token=" + $scope.token + "&language=en-gb&format=json";
+    
 	  $http.get(url)
 	  .success(function(response){
 	  	$rootScope.symptomsList = response;
@@ -912,7 +916,7 @@ app.controller('symptomsCtrl',["$scope","$rootScope","$http","homepageSearchServ
 
   	var year = $scope.user.age.getFullYear();
 
-  	var url = 'https://sandbox-healthservice.priaid.ch/diagnosis?symptoms=' + str + 
+  	var url = 'https://healthservice.priaid.ch/diagnosis?symptoms=' + str + 
   	"&gender=" + $scope.user.gender + "&year_of_birth=" + year + "&token=" + $scope.token
   	+ "&language=en-gb&format=json";
   	$scope.loading = true;
