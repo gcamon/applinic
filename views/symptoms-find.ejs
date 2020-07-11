@@ -864,8 +864,9 @@
                                                     </h5>
                                                 </div>
                                             
-                                            </div>                                         
+                                            </div> 
 
+                                            <p ng-show="sypLoading" class="mt-4 text-info">Loading symptoms list....</p>                                      
                                         </div>
                                         <hr>
                                     </div>
@@ -1661,16 +1662,7 @@
       }
     </script>
 
-    <script type="text/javascript">
-      function showPass(elem) {
-        var x = (elem == 'a') ? document.getElementById("myPass") : document.getElementById("myPass2");
-        if (x.type === "password") {
-          x.type = "text";
-        } else {
-          x.type = "password";
-        }
-      }
-    </script>
+
 
 
     <script src="https://sandbox-authservice.priaid.ch/js/hmac-md5.js"></script>                        

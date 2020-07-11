@@ -881,10 +881,11 @@ app.controller('symptomsCtrl',["$scope","$rootScope","$http","homepageSearchServ
   	+ "token=" + $scope.token + "&language=en-gb&format=json";*/
     var url = "https://healthservice.priaid.ch/symptoms?"
     + "token=" + $scope.token + "&language=en-gb&format=json";
-    
+    $scope.sypLoading = true;
 	  $http.get(url)
 	  .success(function(response){
 	  	$rootScope.symptomsList = response;
+      $scope.sypLoading = false;
 	  });
   }
 
