@@ -389,12 +389,17 @@ app.controller("hompageController",["$scope","cities","Drugs","$http",
     }
   }
 
-
   var qStr = window.location.search;
   if(qStr) {
     var qVal = qStr.split('=');
-    var str = qVal[qVal.length - 1] || "";
-    $rootScope.user.item = str.replace(/%20/g, " ");
+
+    if(qVal.length > 2){
+      var str = qVal[1] || "";
+      $rootScope.user.kitItem = str.replace(/%20/g, " ");
+    } else {
+      var str = qVal[qVal.length - 1] || "";
+      $rootScope.user.item = str.replace(/%20/g, " ");
+    }
   }
 
   homePageDynamicService.query($rootScope.user,function(data){
@@ -435,8 +440,16 @@ app.controller("hompageController",["$scope","cities","Drugs","$http",
       }
     })
 
-    $rootScope.allKits = Object.keys(filter);    
-    $scope.getKit("Drug",'anti-malaria kit');
+    $rootScope.allKits = Object.keys(filter);
+
+    console.log($rootScope.allKits)
+
+    if($rootScope.user.kitItem){
+      $scope.getKit("Drug",$rootScope.user.kitItem);
+    } else {
+      $scope.getKit("Drug",'anti-malaria kit');
+    }
+   
   }) 
 
   $http.get("/home/getAllPharmarcy")
