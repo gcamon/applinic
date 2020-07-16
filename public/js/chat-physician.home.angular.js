@@ -1,5 +1,6 @@
 
-var app = angular.module('myApp',["angularModalService","ngResource",'ui.bootstrap','btford.socket-io','angular-clipboard']);
+var app = angular.module('myApp',["angularModalService","ngResource",
+  'ui.bootstrap','btford.socket-io','angular-clipboard','angularMoment']);
 
 app.service("homePageDynamicService",["$resource",function($resource){
   return $resource("/dynamic-service");
@@ -488,7 +489,8 @@ app.controller("hompageController",["$scope","cities","scanTests","$http",
   });  
 
 
-  $scope.search = function() {   
+  $scope.search = function() {    
+    
     ModalService.showModal({
       templateUrl: 'home-page-search.html',
       controller: 'homePageModalController'
@@ -748,23 +750,102 @@ app.service("profileDataService",["$resource",function($resource){
   return $resource("/user/get-profile-data");
 }]);
 
-app.controller("generalChatCtrl",["$scope","$rootScope","mySocket",function($scope,$rootScope,mySocket){
-	  var user = $rootScope.checkLogIn || {};
-    //templateService.holdId = templateService.holdId || localManager.getValue("holdIdForChat");
-    //$rootScope.chatsList = $rootScope.chatsList || localManager.getValue("holdChatList");
-    //$rootScope.allChats = $rootScope.chatsList; // rootScope can be used instead   
-    $scope.center = $rootScope.holdcenter; //sometimes is not center but individual
-    //$rootScope.sockets = $rootScope.sockets || localManager.getValue('connectedSockets');//connectedSockets
+
+
+//for chats in modal and centers dashboard use for 
+app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatService", "templateService","$filter",
+  "ModalService","$location","deviceCheckService","$compile","$interval","$http","localManager","profileDataService",
+  function($scope, $rootScope, mySocket,chatService,templateService,$filter,ModalService,$location,
+    deviceCheckService,$compile,$interval,$http,localManager,profileDataService){
+    var user = $rootScope.checkLogIn || {};
+    templateService.holdId = templateService.holdId || localManager.getValue("holdIdForChat");
+    $rootScope.chatsList = [];
+    $rootScope.allChats = $rootScope.chatsList; // rootScope can be used instead   
+    $scope.center = ($rootScope.holdcenter || {id : templateService.holdId}); //sometimes is not center but individual
+    $rootScope.sockets = $rootScope.sockets || localManager.getValue('connectedSockets');//connectedSockets
     $scope.isSent = false;
     var elemPos;
 
+    var currView = $location.path();
+
+    $http.get("/user/firstline-doctors")
+    .success(function(data){
+      data.forEach(function(item){
+        $rootScope.chatsList.push({
+          name: item.name,
+          specialty: item.specialty,
+          work_place: item.work_place,
+          education: item.education,
+          city: item.city,
+          country: item.country,
+          partnerId: item.user_id,
+          profilePic: item.profile_pic_url
+        })
+      })
+    })
+
+    if($rootScope.chatsList) {
+      var elemPos = $rootScope.chatsList.map(function(x){return x.partnerId}).indexOf(templateService.holdId)
+      if(elemPos !== -1){
+        $scope.partner = $rootScope.chatsList[elemPos]; 
+      } else {
+        $scope.partner = {};
+      }
+    }
+  
+    function getUsersOnline() {     
+      $rootScope.$broadcast("users presence",{type: 'chatList',data:$rootScope.chatsList,sockets: $rootScope.sockets});         
+    }
+
+
+
     if($rootScope.holdcenter) {
       initChatSingle();
-    } 
-
-    if($rootScope.searchItems){
-      $scope.messageBody = "Requesting for the following " + $rootScope.searchItemType + ":  " + $rootScope.searchItems;
+    } else {
+      initChat();
     }
+
+    mySocket.removeAllListeners("new_msg"); // incase if this listener is registered twice
+
+
+    if(deviceCheckService.getDeviceType()){
+      // switchesm to chat list for mobile views 
+      $('.chat__container').addClass('chat__list--active');
+    }
+
+    
+    $scope.viewChat = function(chat,isMobWebList) {  
+      $scope.partner = chat;
+      var base = document.getElementById('base'); 
+      var msgDiv = document.getElementById("sentmessage");
+      base.removeChild(msgDiv);
+
+      if(!chat.is_read) {
+        chat.is_read = true;
+        mySocket.emit("seen chat",{id: chat._id})
+      }
+
+      if(isMobWebList) {
+        $('.chat__container').removeClass('chat__list--active');
+      } 
+      
+      //use to control different chat data in the general chat body inner div
+      chatBodyCb(function(){
+        initChat()
+      })
+      
+    }
+
+    function chatBodyCb(cb){
+      var base = document.getElementById('base');
+      var msgDiv = document.createElement('div');
+      msgDiv.id = "sentmessage";
+      base.appendChild(msgDiv)
+      cb()
+    }
+
+    if($rootScope.searchItems)
+      $scope.messageBody = "Requesting for the following  " + $rootScope.searchItemType + ":  " + $rootScope.searchItems;
     
     $scope.sendChatSingle = function(partnerId){
       $scope.loading = true;
@@ -776,12 +857,916 @@ app.controller("generalChatCtrl",["$scope","$rootScope","mySocket",function($sco
       })
     }
 
+  
     //for modal sending one-way chat message.
     function initChatSingle() {
       mySocket.emit('init chat single',{userId: user.user_id,partnerId: $scope.center.id},function(data){});
     }
 
+    //for general chats two-way messaging
+    function initChat() {
+      $scope.loading = true;
+      mySocket.emit('init chat',{userId: user.user_id,partnerId: $scope.partner.partnerId},function(data){         
+         for(var i = 0; i < data.messages.length; i++) { 
+            chats(data.messages[i]);
+         }
+         $scope.loading = false;        
+      });
+    }
+
+
+    getUsersOnline();
+
+    $interval(function(){
+      getUsersOnline()
+    },3000) // less 30 secs
+
+
+  //chat logic
+
+  $scope.user = {}
+
+  $scope.getkeys = function (event) {
+    if(!deviceCheckService.getDeviceType())
+      if(event.keyCode === 13) {
+        $scope.sendChat1();
+        event.preventDefault();
+      }
+
+  }
+
+  mySocket.on("isReceived",function(response){
+   
+    var elem = angular.element(document.getElementById(response.id));
+    elem[0].innerHTML = "";
+    elem[0].innerHTML += " &nbsp;&nbsp;&nbsp;seen! ";
+    
+  });
+  
+  $scope.sendChat1 = function(){ 
+   if($scope.user.text1 !== "" && $scope.user.text1 !== undefined) {   
+      $scope.user.isSent = true;
+      mySocket.emit("send message",{to: $scope.partner.partnerId,message:$scope.user.text1,from: user.user_id},function(data){ 
+        var date = + new Date();
+        var msg = {};
+        msg.time = data.date;
+        msg.sent = data.message;
+        msg.isSent = false;
+        msg.isReceived = false;    
+        msg.userId = user.user_id;
+        msg.partnerId = $scope.partner.partnerId; 
+        msg.id = data.date;
+
+
+        var elPos = $rootScope.chatsList.map(function(x){return x.partnerId}).indexOf($scope.partner.partnerId);
+        if(elPos !== -1) {
+          $rootScope.chatsList[elPos].is_read = true;
+          $rootScope.chatsList[elPos].realTime = date;
+          $rootScope.chatsList[elPos].messages.push(msg);
+        }
+
+        chats(msg);
+        
+        mySocket.emit("isSent",msg,function(status){
+          
+          if(status) {
+            var elem = angular.element(document.getElementById(msg.id));
+            elem[0].innerHTML += "";            
+          }
+        });
+      });
+      $scope.user.text1 = "";
+    }
+  }
+
+
+  //for viewing image on chat template
+  var imageArg;
+  $scope.imageClickEvt = function(imgUrl){
+    $rootScope.imgUrl = imgUrl;
+    ModalService.showModal({
+        templateUrl: 'image-modal.html',
+        controller: "imageModalController"
+    }).then(function(modal) {
+        modal.element.modal();
+        modal.close.then(function(result) {
+          
+        });
+    });     
+  }
+
+  function chats(data) {
+
+    if(deviceCheckService.getDeviceType()){
+      mobileWeb(data);
+      return;
+    }
+
+    var base = angular.element(document.getElementById('base')); 
+    var container = angular.element(document.getElementById('sentmessage'));      
+    var item = angular.element(document.createElement('an-item'));
+    var breaker = angular.element(document.createElement('div'));
+    var p = angular.element(document.createElement('p'));
+    var small = angular.element(document.createElement('span'));
+    var fileElem;
+
+    //new implementations as of 24th March changing chat design
+
+    var item1 = angular.element(document.createElement('div'));
+    var item2 = angular.element(document.createElement('div'));
+    var item3 = angular.element(document.createElement('div'));
+    var item4 = angular.element(document.createElement('div'));
+    var img = angular.element(document.createElement('img'));
+
+    // end of new item added
+    
+    switch(data.fileType){
+      case 'image':        
+        fileElem = angular.element(document.createElement('img'));
+        fileElem[0].src = data.url;
+        fileElem[0].alt = "loading image...";
+        fileElem[0].style.maxWidth = "280px";
+        fileElem[0].style.height = "220px";
+        //fileElem[0]["data-ng-click"] = $scope.create;
+        imageArg = "imageClickEvt('" + data.url + "')";
+        fileElem.attr('ng-click', imageArg);
+        $compile(fileElem[0])($scope);
+        
+      break;
+      case 'audio':
+        fileElem = angular.element(document.createElement('audio'));
+        fileElem[0].src = data.url;
+        fileElem[0].controls = true;
+      break;
+      case "video":
+         fileElem = angular.element(document.createElement('video'));
+        var sourceElem = angular.element(document.createElement('source'));
+        sourceElem[0].src = data.url; //"/assets/daddy_home.mp4";
+        //sourceElem[0].type = data.type;
+        fileElem[0].append(sourceElem[0]);
+        fileElem[0].style.maxWidth = "280px";
+        fileElem[0].style.height = "220px";
+        fileElem[0].controls = true;
+      break;
+      case 'application':
+        if(data.mimeType == "application/pdf") {
+          fileElem = angular.element(document.createElement('div'));
+          //var embed = angular.element(document.createElement('embed'));
+          var a = angular.element(document.createElement('a'));
+          a[0].href = "https://drive.google.com/viewerng/viewer?embedded=true&url=" + data.url;
+          a[0].style.cursor = "pointer";
+          a[0].style.display = "block";
+          a[0].style.textAlign = "center";
+          a[0].style.fontSize = "32px";
+          a[0].className = "fa fa-file";
+          a[0].innerHTML += "";
+          a[0].style.color = (data.sent) ? "#eee" : "#05728f";
+          a[0].target = "_blank";
+          a[0].style.margin = "20px 0";
+          a[0].title = "View file";
+          
+          fileElem[0].appendChild(a[0]);
+
+          data.fileType = "pdf";
+          
+        } else {
+          fileElem = angular.element(document.createElement('a'));
+          fileElem[0].href = data.url;
+          fileElem[0].style.display = "block";
+          fileElem[0].style.color = "#fff";
+          fileElem[0].style.fontSize = "18px";
+          fileElem[0].style.padding = "10px 0";
+          fileElem[0].className = "fa fa-download";
+          fileElem[0].innerHTML += " download word document.";
+          data.fileType = "";
+        }
+      break;
+      case 'text':
+           fileElem = angular.element(document.createElement('div'));
+          //var embed = angular.element(document.createElement('embed'));
+          var a = angular.element(document.createElement('a'));
+          a[0].href = "https://drive.google.com/viewerng/viewer?embedded=true&url=" + data.url;
+          a[0].style.cursor = "pointer";
+          a[0].style.display = "block";
+          a[0].style.textAlign = "center";
+          a[0].style.fontSize = "32px";
+          a[0].className = "fa fa-file";
+          a[0].innerHTML += "";
+          a[0].style.color = "#eee";
+          a[0].target = "_blank";
+          a[0].style.margin = "20px 0";
+          a[0].title = "View file";
+         
+          fileElem[0].appendChild(a[0]);
+
+          data.fileType = "txt";
+      break;
+      default:
+      break;
+    }
+
+    p[0].style.display = "block";
+    p[0].style.wordBreak = "break-word";
+    small[0].style.display = "block";
+    small[0].style.marginTop = "5px";
+    small[0].style.color = "#ccc";
+    if(!fileElem) {
+      p[0].innerHTML += (data.sent) ? data.sent : data.received; 
+    } else {
+      p[0].innerHTML += data.fileType;
+    }
+   
+   
+    small[0].id = data.id;
+    small[0].className = "time_date";
+    small[0].style.color = "rgba(0,0,0,0.5)";
+    //var time = ($filter('amTimeAgo')(data.time) === 'a few seconds ago') ? 'Now' : $filter('amTimeAgo')(data.time);
+    small[0].innerHTML += $filter('amCalendar')(data.time);
+    //small[0].innerHTML += (data.sent) ? "&nbsp;&nbsp;" + $filter('amTimeAgo')(data.time) : "&nbsp;&nbsp;" + $filter('amTimeAgo')(data.time);     
+    
+    breaker[0].style.display = "block";
+    //breaker[0].style.textAlign = (data.sent) ? "right" : "left";
+    
+    //item[0].appendChild(p[0]);
+
+    
+
+    //new code 
+    if(data.sent){
+      item1[0].className = "outgoing_msg";
+      item2[0].className = "sent_msg";
+     
+      item1[0].appendChild(item2[0]);
+      if(fileElem){
+        p[0].appendChild(fileElem[0]);
+      }
+
+      item2[0].appendChild(p[0]);
+      item2[0].appendChild(small[0]);
+
+    } else {
+      img[0].src = "https://ptetutorials.com/images/user-profile.png";
+      item1[0].className = "incoming_msg";
+      item2[0].className = "incoming_msg_img";
+      item3[0].className = "received_msg";
+      item4[0].className = "received_withd_msg";
+      item2[0].appendChild(img[0]);
+      
+
+      if(fileElem){
+        p[0].appendChild(fileElem[0]);
+      }
+
+      item4[0].appendChild(p[0]);
+      item4[0].appendChild(small[0]);
+
+      item3[0].appendChild(item4[0])
+      
+      item1[0].style['margin-top'] = "20px";
+      
+      item1[0].appendChild(item2[0]);
+      item1[0].appendChild(item3[0]);
+      //item1[0].appendChild(item4[0]);
+    }
+
+   
+
+  
+    // end of new code
+
+
+    //item1[0].appendChild(small[0]);
+
+
+    breaker[0].appendChild(item1[0]);
+    
+   
+    /*item[0].style.display = "inline-block";
+    item[0].style.maxWidth = (deviceCheckService.getDeviceType()) ? "90%" : "70%";
+    item[0].className = (data.sent) ? "talk-bubble tri-right right-top talktext msg_sent bg-info" : "talk-bubble tri-right left-top talktext";
+    item[0].style.whiteSpace = "pre-line";*/
+    container[0].appendChild(breaker[0]);
+    base[0].scrollTop = sentmessage.scrollHeight;
+  }
+
+  
+
+  function mobileWeb(data) {
+    var base = angular.element(document.getElementById('base')); 
+    var container = angular.element(document.getElementById('sentmessage'));      
+    var breaker = angular.element(document.createElement('div'));
+    var article = angular.element(document.createElement('article'));
+    var p = angular.element(document.createElement('p'));
+    var small = angular.element(document.createElement('span'));
+    var fileElem;
+
+    //new implementations as of 24th March changing chat design
+
+    //var item1 = angular.element(document.createElement('div'));
+    //var item2 = angular.element(document.createElement('div'));
+    
+    var img = angular.element(document.createElement('img'));
+
+    // end of new item added
+    
+    switch(data.fileType){
+      case 'image':        
+        fileElem = angular.element(document.createElement('img'));
+        fileElem[0].src = data.url;
+        fileElem[0].alt = "loading image...";
+        fileElem[0].style.maxWidth = "280px";
+        fileElem[0].style.height = "220px";
+        //fileElem[0]["data-ng-click"] = $scope.create;
+        imageArg = "imageClickEvt('" + data.url + "')";
+        fileElem.attr('ng-click', imageArg);
+        $compile(fileElem[0])($scope);
+        
+      break;
+      case 'audio':
+        fileElem = angular.element(document.createElement('audio'));
+        fileElem[0].src = data.url;
+        fileElem[0].controls = true;
+      break;
+      case "video":
+         fileElem = angular.element(document.createElement('video'));
+        var sourceElem = angular.element(document.createElement('source'));
+        sourceElem[0].src = data.url; //"/assets/daddy_home.mp4";
+        //sourceElem[0].type = data.type;
+        fileElem[0].append(sourceElem[0]);
+        fileElem[0].style.maxWidth = "280px";
+        fileElem[0].style.height = "220px";
+        fileElem[0].controls = true;
+      break;
+      case 'application':
+        if(data.mimeType == "application/pdf") {
+          fileElem = angular.element(document.createElement('div'));
+          //var embed = angular.element(document.createElement('embed'));
+          var a = angular.element(document.createElement('a'));
+          a[0].href = "https://drive.google.com/viewerng/viewer?embedded=true&url=" + data.url;
+          a[0].style.cursor = "pointer";
+          a[0].style.display = "block";
+          a[0].style.textAlign = "center";
+          a[0].style.fontSize = "32px";
+          a[0].className = "fa fa-file";
+          a[0].innerHTML += "";
+          a[0].style.color = (data.sent) ? "#eee" : "#05728f";
+          a[0].target = "_blank";
+          a[0].style.margin = "20px 0";
+          a[0].title = "View file";
+          
+          fileElem[0].appendChild(a[0]);
+
+          data.fileType = "pdf";
+          
+        } else {
+          fileElem = angular.element(document.createElement('a'));
+          fileElem[0].href = data.url;
+          fileElem[0].style.display = "block";
+          fileElem[0].style.color = "#fff";
+          fileElem[0].style.fontSize = "18px";
+          fileElem[0].style.padding = "10px 0";
+          fileElem[0].className = "fa fa-download";
+          fileElem[0].innerHTML += " download word document.";
+          data.fileType = "";
+        }
+      break;
+      case 'text':
+           fileElem = angular.element(document.createElement('div'));
+          //var embed = angular.element(document.createElement('embed'));
+          var a = angular.element(document.createElement('a'));
+          a[0].href = "https://drive.google.com/viewerng/viewer?embedded=true&url=" + data.url;
+          a[0].style.cursor = "pointer";
+          a[0].style.display = "block";
+          a[0].style.textAlign = "center";
+          a[0].style.fontSize = "32px";
+          a[0].className = "fa fa-file";
+          a[0].innerHTML += "";
+          a[0].style.color = "#eee";
+          a[0].target = "_blank";
+          a[0].style.margin = "20px 0";
+          a[0].title = "View file";
+         
+          fileElem[0].appendChild(a[0]);
+
+          data.fileType = "txt";
+      break;
+      default:
+      break;
+    }
+
+
+   
+    //small[0].style.display = "block";
+    p[0].style.fontSize = "16px";
+    p[0].style.wordBreak = "break-word";
+    small[0].style.marginTop = "5px";
+   
+    if(!fileElem) {
+      p[0].innerHTML += (data.sent) ? data.sent : data.received; 
+    } else {
+      p[0].innerHTML += data.fileType;
+    }
+   
+   
+    small[0].id = data.id;
+    small[0].className = "time_date";
+    small[0].style.color = "rgba(0,0,0,0.4)";
+    
+    small[0].innerHTML += $filter('amCalendar')(data.time);
+
+    breaker[0].style.textAlign = "center";
+    breaker[0].style.padding = "2px 0";
+    breaker[0].appendChild(small[0]);
+    article[0].className = "conversation__view__bubbles"; 
+    
+    
+    //breaker[0].style.display = "block";    
+
+    //new code 
+    if(data.sent){
+     
+      if(fileElem){
+        p[0].appendChild(fileElem[0]);
+      }
+
+       
+      p[0].className = "chat__right__bubble";
+   
+      article[0].appendChild(breaker[0]);
+    
+      article[0].appendChild(p[0]);
+      //article[0].appendChild(small[0]);
+      container[0].appendChild(article[0]);
+
+    } else { 
+
+      if(fileElem){
+        p[0].appendChild(fileElem[0]);
+      } 
+
+      p[0].className = "chat__left__bubble";
+      //container[0].className = "conversation__view__bubbles";
+      article[0].appendChild(breaker[0]);
+      article[0].appendChild(p[0]);
+      //container[0].appendChild(breaker[0]);
+      container[0].appendChild(article[0]);
+      //container[0].appendChild(small[0]);
+    }
+
+    base[0].scrollTop = sentmessage.scrollHeight;
+
+  }
+
+  var elPos;
+
+  mySocket.on("new_msg", function(data) {
+    if(currView !== "/general-chat") {
+      $rootScope.$broadcast("unattendedMsg",true);
+      templateService.playAudio(2);   
+    } else {
+      mySocket.emit("chat in-view",data); // use to reset a chat that has been read at the backend as read in db
+    }
+
+    var elemPos = $rootScope.chatsList.map(function(x){return x.partnerId}).indexOf(data.from);
+    if(elemPos !== -1) {
+      $rootScope.chatsList[elemPos].realTime = data.realtime;
+      $rootScope.chatsList[elemPos].messages[$rootScope.chatsList[elemPos].messages.length -1].msg = data.message;
+    }
+
+    var date = + new Date();
+    var msg = {};
+    msg.time = data.date;
+    msg.received = data.message;
+    msg.url = data.url;
+    msg.fileType = data.fileType;
+    msg.mimeType = data.mimeType;  
+
+    if(data.from === $scope.partner.partnerId) {     
+      msg.userId = user.user_id;
+      msg.partnerId = $scope.partner.partnerId; 
+      msg.id = data.date;//genId();
+
+      //msg.url = response.url;
+      //msg.fileType = response.fileType;
+      //msg.mimeType = response.mimeType;           
+      chats(msg);
+      templateService.playAudio(3); 
+    } else {     
+      //$rootScope.$broadcast("unattendedMsg",true);   
+      templateService.playAudio(2);
+      //var elemPos = $rootScope.chatsList.map(function(x){return x.partnerId}).indexOf(data.from);
+      if(elemPos !== -1) {
+        $rootScope.chatsList[elemPos].is_read = false;
+        $rootScope.chatsList[elemPos].messages.push(msg);       
+      } else {
+        $rootScope.loadChats();
+      }
+    }   
+    mySocket.emit("msg received",{to: data.from,id:data.date});
+  });
+
+  //$scope.$watch("chatsList.messages",function(oldVal,newVal){},true)
+
+  $scope.$watch("user.text1",function(newVal,oldVal){
+    if(newVal !== "" && newVal !== undefined){      
+      mySocket.emit("user typing",{to: $scope.partner.partnerId,message:"Typing...",from: user.user_id});
+    } else {
+      mySocket.emit("user typing",{to: $scope.partner.partnerId,message:"",from: user.user_id});
+    }
+  });
+
+  
+
+  mySocket.on("typing", function(data) {
+    var tpPos = $rootScope.chatsList.map(function(x){return x.partnerId}).indexOf(data.from);    
+    if(tpPos !== -1){
+      $rootScope.chatsList[tpPos].typing = data.message;      
+      //$scope.partner.typing = data.message;
+      if(deviceCheckService.getDeviceType()){
+        if(data.message !== "" && data.message !== undefined) {
+          showTypingForMobile(data);
+        } else {
+          $scope.partnerIsTying = false;
+          deleteTypingStatus();
+        }
+      }
+    }
+    //$scope.partner.typing = data.message;
+    //$scope.typing = data;
+  });
+
+  $scope.partnerIsTying = false;
+
+  function showTypingForMobile(data) {
+
+    if(!$scope.partnerIsTying) {
+      var base = angular.element(document.getElementById('base')); 
+      var container = angular.element(document.getElementById('sentmessage'));      
+      var breaker = angular.element(document.createElement('div'));
+      var article = angular.element(document.createElement('article'));
+      var p = angular.element(document.createElement('p'));
+      var small = angular.element(document.createElement('span'));
+
+       //small[0].style.display = "block";
+      p[0].style.fontSize = "16px";
+      p[0].style.fontStyle = "italic";
+      p[0].style.color = "rgba(0,0,0,0.5)";
+      p[0].className = "text-muted";
+      small[0].style.marginTop = "5px";
+     
+   
+      p[0].innerHTML += data.message; 
+
+      var id =  "typing_" + Math.floor(Math.random() * 999999);
+
+      article[0].id = id;
+      $scope.typingStatusId = id;
+    
+     
+     
+      //small[0].id = data.id;
+      //small[0].className = "time_date";
+      //small[0].style.color = "rgba(0,0,0,0.4)";
+      
+      //small[0].innerHTML += $filter('amCalendar')(data.time);
+
+      breaker[0].style.textAlign = "center";
+      breaker[0].style.padding = "2px 0";
+      //breaker[0].appendChild(small[0]);
+      article[0].className = "conversation__view__bubbles"; 
+      
+      
+      //breaker[0].style.display = "block";    
+
+      //new code 
+      
+     
+      p[0].className = "chat__left__bubble";
+      //container[0].className = "conversation__view__bubbles";
+      article[0].appendChild(breaker[0]);
+      article[0].appendChild(p[0]);
+      //container[0].appendChild(breaker[0]);
+      container[0].appendChild(article[0]);
+      //container[0].appendChild(small[0]);
+      
+
+      base[0].scrollTop = sentmessage.scrollHeight;
+
+      $scope.partnerIsTying = true;
+    }
+  }
+
+  var deleteTypingStatus = function() {
+    var ele = document.getElementById($scope.typingStatusId)//document.getElementById(img[file.name]);
+    if(ele)
+      ele.style.display = "none";
+  }
+
+  $scope.videoRequest = function(type,docObj){
+    docObj.type = type;
+    reqModal(docObj);
+  }
+
+  $scope.audioRequest = function(type,docObj){
+    //$window.location.href = "/user/patient/call";
+    docObj.type = type;
+    reqModal(docObj);
+  }
+
+  $scope.inPersonRequest = function(type,docObj){
+    
+    docObj.type = type;
+    reqModal(docObj);
+  }
+
+
+  $scope.chatPrivate = function(chat,isMobileView) {
+
+    if(isMobileView) {
+      var who = (chat.partnerType === "Patient") ? true : false;
+      if(who){
+        var split = chat.chat_id.split("/");
+        var id = split[split.length - 1];
+        var path = "/doctor-patient/treatment/" + id;
+        localManager.setValue("currentPage",path)
+        window.location.href = "/user/doctor";
+      }
+
+      return;
+    }
+
+    if(chat.partnerType === "Doctor") {
+
+      var split = chat.chat_id.split("/");
+      var id = split[split.length - 1];
+      var path = "/patient-doctor/treatment/" + id;
+      $location.path(path);
+
+    } else if(chat.partnerType === "Patient"){
+
+      var split = chat.chat_id.split("/");
+      var id = split[split.length - 1];
+      var path = "/doctor-patient/treatment/" + id;
+      $location.path(path);
+
+    } else {
+      var getUser = (user.typeOfUser === 'Patient') ? "manage a patient" : 'chat private with a doctor';
+      alert("Oops! You can only " + getUser)
+    }
+    
+  }
+
+  function reqModal(docObj) {
+    templateService.holdForSpecificDoc = docObj
+    ModalService.showModal({
+      templateUrl: 'sending-communication-request.html',
+      controller: "videoInitController"
+    }).then(function(modal) {
+      modal.element.modal();
+      modal.close.then(function(result) {
+         
+      });
+    });
+  }
+
+
+
+  var img = {};
+  var progress = {};
+  dlArray = [];
+
+  //for single file upload
+  $rootScope.imageFile = function(file) {   
+    $scope.files = file;
+    if($scope.files.size <= 31457280) { // 30mb max size
+    var file = $scope.files,
+      fileReader = new FileReader(),
+      slice = file.slice(0, 100000);
+
+    fileReader.readAsArrayBuffer(slice); 
+    img[file.name] = file.name;
+
+    //set up a deletable array of ids so that after upload indcator shows it deletes after uploads
+    dlArray.push(Math.floor(Math.random() * 999999));
+
+      //incase listener is registered twice.
+    var evt1 = "request slice upload " + file.name;
+    var evt2 = "end upload " + file.name;
+    var evt3 = "upload error " + file.name;
+
+
+
+    mySocket.removeAllListeners(evt1);
+    mySocket.removeAllListeners(evt2);
+    mySocket.removeAllListeners(evt3);
+
+    var base = angular.element(document.getElementById('base')); 
+    var container = angular.element(document.getElementById('sentmessage'));      
+    var item = angular.element(document.createElement('an-item'));
+    var breaker = angular.element(document.createElement('div'));
+    var p = angular.element(document.createElement('p'));
+    var small = angular.element(document.createElement('small'));
+    var span = angular.element(document.createElement('span'));
+
+    breaker[0].style.display = "block";
+    //breaker[0].style.textAlign =  "right";
+    p[0].style.display = "inline-block";
+
+
+    var item1 = angular.element(document.createElement('div'));
+    var item2 = angular.element(document.createElement('div'));
+    var item3 = angular.element(document.createElement('div'));
+    var item4 = angular.element(document.createElement('div'));
+    var progressBar = angular.element(document.createElement("div"));
+    var innerBar = angular.element(document.createElement("div"));
+
+
+    small[0].style.display = "block";
+    small[0].style.marginTop = "5px";
+
+
+  
+    p[0].innerHTML += file.name;
+    small[0].id = file.name;
+    //p[0].id = file.name;
+    //item[0].appendChild(p[0]);
+
+    //item[0].appendChild(span[0]);
+    
+    //item[0].appendChild(small[0]);
+    item1[0].className = "outgoing_msg";
+    item2[0].className = "sent_msg";
+   
+    item1[0].appendChild(item2[0]);
+   
+
+    item2[0].appendChild(p[0]);
+    item2[0].appendChild(span[0]);
+    item2[0].appendChild(small[0]);
+
+    breaker[0].id = dlArray[0];
+
+
+    breaker[0].appendChild(item1[0]);
+
+
+    /*item[0].style.display = "inline-block";
+    item[0].style.maxWidth = (deviceCheckService.getDeviceType()) ? "90%" : "70%";
+    item[0].className =  "talk-bubble tri-right right-top talktext msg_sent bg-info";
+    item[0].style.whiteSpace = "pre-line";*/
+    container[0].appendChild(breaker[0]);
+  
+    base[0].scrollTop = sentmessage.scrollHeight;
+
+    fileReader.onload = function(evt){
+      var arrayBuffer = fileReader.result;
+      var toArr = file.type.split('/');
+      var theType = toArr[0];
+
+      mySocket.emit('slice upload', { 
+        name: file.name, 
+        type: file.type, 
+        size: file.size, 
+        data: arrayBuffer,
+        fileType: theType
+      }); 
+    }
+
+    var ele2;
+     //keep sending slice
+    mySocket.on(evt1,function(data){ 
+      var place = data.currentSlice * 100000, 
+        slice = file.slice(place, place + Math.min(100000, file.size - place)); 
+      
+      ele2 = document.getElementById(img[data.name]);     
+      ele2.innerHTML = "Uploading... " + Math.round(fnProgress(place)) + "%";
+      fileReader.readAsArrayBuffer(slice); 
+    });
+
+
+    var fnProgress = function(bytes) {
+      var percentage = (bytes / file.size) * 100;
+      return percentage;
+    }
+
+    
+
+    mySocket.on(evt2,function(response){
+      mySocket.emit("send message",{to: $scope.partner.partnerId,message:response.url,url:response.url, from: user.user_id,fileType: response.fileType,mimeType: response.mimeType},function(data){ 
+        var date = + new Date();
+        var msg = {};
+        msg.time = data.date;
+        msg.sent = (response.fileType) ? response.fileType : data.message;
+        msg.isSent = false;
+        msg.isReceived = false;
+        //$rootScope.message1.push(msg);      
+        msg.userId = user.user_id;
+        msg.partnerId = $scope.partner.partnerId; 
+        msg.id = data.date;//genId();
+        msg.url = response.url;
+        msg.fileType = response.fileType;
+        msg.mimeType = response.mimeType;
+
+
+        var elPos = $rootScope.chatsList.map(function(x){return x.partnerId}).indexOf($scope.partner.partnerId);
+        if(elPos !== -1) {
+          $rootScope.chatsList[elPos].is_read = true;
+          $rootScope.chatsList[elPos].realTime = date;
+          $rootScope.chatsList[elPos].messages.push(msg);
+        }
+
+        chats(msg);
+        //var ele = document.getElementById(img[file.name]);
+        //ele.style.display = "none";
+        var ele = document.getElementById(dlArray[0])//document.getElementById(img[file.name]);
+        ele.style.display = "none";
+        dlArray.splice(0,1);
+        delete img[file.name];
+        
+        mySocket.emit("isSent",msg,function(status){          
+          if(status) {
+            var elem = angular.element(document.getElementById(msg.id));
+            elem[0].innerHTML += "";            
+          }
+        });
+        //mySocket.emit("save message",msg);//this saves the message as one mark
+      });
+    })
+
+    mySocket.on(evt3,function(res){
+      var ele = document.getElementById(dlArray[0])//document.getElementById(img[file.name]);
+      ele.style.display = "none";
+      dlArray.splice(0,1);
+      delete img[file.name];
+      alert("Error occured while uploading " + file.name);
+    })
+
+    } else {
+      alert("File size out of range. Max size should be less than 30mb");
+    }
+
+  }
+
+
+  var lessThan24HourAgo = function(date) {
+    return moment(date).isAfter(moment().subtract(24, 'hours'));
+  }
+
+
+
+  //for multiple file upload
+  $rootScope.imageFiles = function() {
+    alert("the file dey come many oooo")
+  }
+
+
+  $scope.videoChat = function(partner) {
+    var source = profileDataService;   
+    source.get({userId: partner.partnerId},function(data) {
+      data.type = 'Video Call';
+      templateService.holdForSpecificPatient = data;
+      ModalService.showModal({
+        templateUrl: 'sending-communication-request.html',
+        controller: "videoInitController"
+      }).then(function(modal) {
+        modal.element.modal();
+        modal.close.then(function(result) {
+           
+        });
+      });
+    });   
+  }
+
+
+  /*
+
+function handleFileSelect(evt) {
+    var files = evt.target.files; // FileList object
+
+    // use the 1st file from the list
+    f = files[0];
+
+    var reader = new FileReader();
+
+    // Closure to capture the file information.
+    reader.onload = (function(theFile) {
+        return function(e) {
+
+          jQuery( '#ms_word_filtered_html' ).val( e.target.result );
+        };
+      })(f);
+
+      // Read in the image file as a data URL.
+      reader.readAsText(f);
+  }
+
+  document.getElementById('upload').addEventListener('change', handleFileSelect, false);
+
+  */
+
 }]);
+
+app.controller("imageModalController",function(){})
 
 
 app.controller("authModalController",["$scope","$rootScope","homepageSearchService",
@@ -895,47 +1880,8 @@ app.controller("homePageModalController",["$scope","$rootScope","homepageSearchS
 }]);
 
 
-/*app.controller("investigationSearchCtrl",["$scope","$rootScope","$window","$http","$timeout","deviceCheckService",
-  function($scope,$rootScope,$window,$http,$timeout,deviceCheckService){
-  $scope.invest = {};
-
-  $scope.invest.type = 'radio';
-
-  $scope.findInvestigation = function() {
-    var url = "/investigation/result?type=" + $scope.invest.type + "&id=" + $scope.invest.id;
-    $window.location.href = url;
-  }
-
-  $http({
-    method  : 'GET',
-    url     : "/api/dicom-details",
-    headers : {'Content-Type': 'application/json'} 
-    })
-  .success(function(data) {              
-    $scope.dicomDetails = data;
-    $scope.dcmserver = "http://" + $scope.dicomDetails.ip_address + ":8080";
-  }); 
-
-  $scope.supported = false;
-
-  $scope.copy = "";
-
-  $scope.success = function (id) {
-    $scope.copy = 'Copied!';
-    $timeout(function(){
-      $scope.copy = "";
-    },2000)
-  };
-
-  $scope.isMobileDevice = deviceCheckService.getDeviceType();
- 
-
-  $scope.openjnlp = function(link) {
-    window.location.href = "jnlp://" + link;
-  }
 
 
-}]);*/
 
 
 function testNumber(str) {

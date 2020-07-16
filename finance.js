@@ -1062,64 +1062,64 @@ router.put("/user/laboratory/test-result/session-update",function(req,res){
 	          theObj.indication = req.body.laboratory.indication;
 	          theObj.center_profile_pic_url =  req.user.profile_pic_url;
 	          theObj.lab_pdf_report.unshift({date: dt,pdf_report:pdfPath});
-       	  }
+       	  
 
-       	  /*var transporter = nodemailer.createTransport({
-            host: "mail.privateemail.com",
-            port: 465,
-            auth: {
-              user: "info@applinic.com",
-              pass: process.env.EMAIL_PASSWORD
-            }
-          });*/
+	          var mailOptions = {
+	            from: 'Applinic info@applinic.com',
+	            to: req.body.laboratory.doctor_email || "info@applinic.com",
+	            subject: 'Laboratory Result Received',
+	            html: '<table><tr><th><h3 style="background-color:#85CE36; color: #fff; padding: 30px"><img src="https://applinic.com/assets/images/applinic1.png" style="width: 250px; height: auto"/><br/><span>Healthcare... anywhere, anytime.</span></h3></th></tr><tr><td style="font-family: Arial, Helvetica, sans-serif; font-size: 14px;"><b>Hello ' 
+	            + data.title + " " + data.lastname + ",</b><br><br>"
+	 						+ "<b>" + req.user.name + "</b>" + "have sent the result of laboratory investigations you requested for the patient:<br><br>"
+	 						+ "<b>Name:</b> " + objectFound.patient_firstname + " " + objectFound.patient_lastname + "<br>"
+	            + "<b>Session ID:</b> " + objectFound.session_id  + "<br><br>" 
+	          	+ "Please <a href='https://applinic.com/login'>log in to your account</a> and continue treatment with the patient<br><br>"
+	          	+ "You can find the treament session in which these tests was referred through the following steps:<br><br>"
+	          	+ " - Inside your account look for the patient by name in 'My Patients' menu.<br>"
+	          	+ " - Click on the patient and select 'Treatment Session' under management then choose session or filter by session ID you wish to continue with.<br><br>"
+	            + "Thank you for using Applinic.<br><br>"
+	            + "For ease of usage, you may download the Applinic mobile application on google play store if you use an android phone. " 
+	            + "<a href='https://play.google.com/store/apps/details?id=com.farelandsnigeria.applinic'>Click here </a> to do so now.<br><br>"
+	            + "For inquiries please call customer support on +2349080045678 or email us at info@applinic.com<br><br>"
+	            + "Thank you for using Applinic.<br></br><br>"
+	            + "<b>Applinic Team</b></td></tr></table>",
+	            attachments:[{
+	              filename: pdfName,
+	              content: buf,
+	              contentType: 'application/pdf'
+	            }]
+	          };
 
-          var mailOptions = {
-            from: 'Applinic info@applinic.com',
-            to: req.body.laboratory.doctor_email || "info@applinic.com",
-            subject: 'Laboratory Result Received',
-            html: '<table><tr><th><h3 style="background-color:#85CE36; color: #fff; padding: 30px"><img src="https://applinic.com/assets/images/applinic1.png" style="width: 250px; height: auto"/><br/><span>Healthcare... anywhere, anytime.</span></h3></th></tr><tr><td style="font-family: Arial, Helvetica, sans-serif; font-size: 14px;"><b>Hello ' + data.title + " " + data.lastname + ",</b><br><br>"
- 						+ "<b>" + req.user.name + "</b>" + "have sent the result of laboratory investigations you requested for the patient:<br><br>"
- 						+ "<b>Name:</b> " + objectFound.patient_firstname + " " + objectFound.patient_lastname + "<br>"
-            + "<b>Session ID:</b> " + objectFound.session_id  + "<br><br>" 
-          	+ "Please <a href='https://applinic.com/login'>log in to your account</a> and continue treatment with the patient<br><br>"
-          	+ "You can find the treament session in which these tests was referred through the following steps:<br><br>"
-          	+ " - Inside your account look for the patient by name in 'My Patients' menu.<br>"
-          	+ " - Click on the patient and select 'Treatment Session' under management then choose session or filter by session ID you wish to continue with.<br><br>"
-            + "Thank you for using Applinic.<br><br>"
-            + "For ease of usage, you may download the Applinic mobile application on google play store if you use an android phone. " 
-            + "<a href='https://play.google.com/store/apps/details?id=com.farelandsnigeria.applinic'>Click here </a> to do so now.<br><br>"
-            + "For inquiries please call customer support on +2349080045678 or email us at info@applinic.com<br><br>"
-            + "Thank you for using Applinic.<br></br><br>"
-            + "<b>Applinic Team</b></td></tr></table>",
-            attachments:[{
-              filename: pdfName,
-              content: buf,
-              contentType: 'application/pdf'
-            }]
-          };
+	          transporter.sendMail(mailOptions, function(error, info){
+	            if (error) {
+	              console.log(error);
+	            } else {
+	              console.log('Email sent: ' + info.response);
+	            }
+	          });
 
-          transporter.sendMail(mailOptions, function(error, info){
-            if (error) {
-              console.log(error);
-            } else {
-              console.log('Email sent: ' + info.response);
-            }
-          });
+	           
+	          
+	          //the doctors session for a patient is updated, and patient dashboard is called for update.
+	          //objectFound.diagnosis.laboratory_test_results.unshift(testResult);          
+	          data.save(function(err,info){
+	            if(err) {
+	              res.send({status: "error"});
+	            } else {  
+	            	updatePatient(); 
+	              //updateTheCenter();  
+	              updateCenter(data);  
+	                       
+	            }
+	          });  
 
-           
-          
-          //the doctors session for a patient is updated, and patient dashboard is called for update.
-          //objectFound.diagnosis.laboratory_test_results.unshift(testResult);          
-          data.save(function(err,info){
-            if(err) {
-              res.send({status: "error"});
-            } else {  
-            	updatePatient(); 
-              //updateTheCenter();  
-              updateCenter(data);  
-                       
-            }
-          });        
+          } else {
+          	updatePatient(); 
+            //updateTheCenter();  
+            updateCenter({phone: req.req.body.laboratory.patient_phone,
+            	firstname: req.body.laboratory.patient_firstname,lastname: req.body.laboratory.patient_lastname,
+            	title: req.body.laboratory.patient_title});  
+          }    
 
         });
       }

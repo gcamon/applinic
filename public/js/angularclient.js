@@ -17144,13 +17144,13 @@ app.controller("labTestControler",["$scope","$location","$http","templateService
 
   $scope.addReport = function(reportInput) {
     reportInput.list.push({
-          r_name: "",
-          r_tum: "",
-          r_result: "",
-          r_range: "",
-          r_unit: "",
-          r_flag: ""
-        })
+      r_name: "",
+      r_tum: "",
+      r_result: "",
+      r_range: "",
+      r_unit: "",
+      r_flag: ""
+    })
   }
 
   $scope.removeReport = function(reportInput) {
@@ -17223,11 +17223,12 @@ app.controller("labTestControler",["$scope","$location","$http","templateService
           $scope.$watch(watch,function(newVal,oldVal){
             if(newVal){
               newVal.forEach(function(item){
-                if(item.r_range){        
+                if(item.r_range && testNumber(item.r_result)){       
                   rangeArr = item.r_range.split("-");
-                  toNum = parseInt(item.r_result) || 0;
-                  rg1 = (rangeArr[0]) ? parseInt(rangeArr[0]) : 0;
-                  rg2 = (rangeArr[rangeArr.length - 1]) ? parseInt(rangeArr[rangeArr.length - 1]) : 0;
+                  toNum = (item.r_result === '0') ? 0 : parseInt(item.r_result);
+                  rg1 = (rangeArr[0]) ? ((rangeArr[0] === '0') ? 0 : parseInt(rangeArr[0])) : 0;
+                  rg2 = (rangeArr[rangeArr.length - 1]) ? ((rangeArr[rangeArr.length - 1] === '0') ? 0 
+                    : parseInt(rangeArr[rangeArr.length - 1])) : 0;
                   if(toNum < rg1){
                     item.r_flag = "Low";
                   } else if(toNum > rg2 && toNum > rg1){
@@ -17331,7 +17332,7 @@ app.controller("labTestControler",["$scope","$location","$http","templateService
             localTests.push({
               r_name: test.list[i].r_name,  
               r_tum: "",
-              r_result: 0,
+              r_result: '-',
               r_range: test.list[i].r_range,
               r_unit: test.list[i].r_unit,
               r_flag: "",
@@ -17839,9 +17840,9 @@ app.service("digitalSigneePathologistService",["$resource",function($resource){
 
 app.controller("labReportTempCtrl",["$scope","$http","localManager",function($scope,$http,localManager){
 
-   var hml = angular.element(document.getElementById('tempField'));
-   var url;
-   $scope.createHtml = function(){
+  var hml = angular.element(document.getElementById('tempField'));
+  var url;
+  $scope.createHtml = function(){
     var temp = hml.html();
 
     var labData = localManager.getValue("holdLabRefData");
@@ -27973,7 +27974,7 @@ app.factory("reportFormFactory",function(){
         {
           r_name: "Sodium",
           r_tum: "",
-          r_result: 0.0,
+          r_result: '-',
           r_range: "",
           r_unit: "mmol/L",
           r_flag: ""
@@ -27981,7 +27982,7 @@ app.factory("reportFormFactory",function(){
         {
           r_name: "Potassium",
           r_tum: "",
-          r_result: 0.0,
+          r_result: '-',
           r_range: "",
           r_unit: "mmol/L",
           r_flag: ""
@@ -27989,7 +27990,7 @@ app.factory("reportFormFactory",function(){
         {
           r_name: "Bicarbonate",
           r_tum: "",
-          r_result: 0.0,
+          r_result: '-',
           r_range: "",
           r_unit: "mmol/L",
           r_flag: ""
@@ -27997,7 +27998,7 @@ app.factory("reportFormFactory",function(){
         {
           r_name: "Chloride",
           r_tum: "",
-          r_result: 0.0,
+          r_result: '-',
           r_range: "",
           r_unit: "mmol/L",
           r_flag: ""
@@ -28005,7 +28006,7 @@ app.factory("reportFormFactory",function(){
         {
           r_name: "Urea",
           r_tum: "",
-          r_result: 0.0,
+          r_result: '-',
           r_range: "",
           r_unit: "mmol/L",
           r_flag: ""
@@ -28013,7 +28014,7 @@ app.factory("reportFormFactory",function(){
         {
           r_name: "Creatinine",
           r_tum: "",
-          r_result: 0.0,
+          r_result: '-',
           r_range: "",
           r_unit: "μmol/L",
           r_flag: ""
@@ -28028,7 +28029,7 @@ app.factory("reportFormFactory",function(){
         {
           r_name: "Total-Cholesterol",
           r_tum: "",
-          r_result: 0.0,
+          r_result: '-',
           r_range: "",
           r_unit: "mmol/L",
           r_flag: ""
@@ -28036,7 +28037,7 @@ app.factory("reportFormFactory",function(){
         {
           r_name: "HDL-Cholesterol",
           r_tum: "",
-          r_result: 0.0,
+          r_result: '-',
           r_range: "",
           r_unit: "mmol/L",
           r_flag: ""
@@ -28044,7 +28045,7 @@ app.factory("reportFormFactory",function(){
         {
           r_name: "LDL-Cholesterol",
           r_tum: "",
-          r_result: 0.0,
+          r_result: '-',
           r_range: "",
           r_unit: "mmol/L",
           r_flag: ""
@@ -28052,7 +28053,7 @@ app.factory("reportFormFactory",function(){
         {
           r_name: "VLDL-Cholesterol",
           r_tum: "",
-          r_result: 0.0,
+          r_result: '-',
           r_range: "",
           r_unit: "mmol/L",
           r_flag: ""
@@ -28060,7 +28061,7 @@ app.factory("reportFormFactory",function(){
         {
           r_name: "Triglycerides",
           r_tum: "",
-          r_result: 0.0,
+          r_result: '-',
           r_range: "",
           r_unit: "mmol/L",
           r_flag: ""
@@ -28075,7 +28076,7 @@ app.factory("reportFormFactory",function(){
         {
           r_name: "Total Bilirubin",
           r_tum: "",
-          r_result: 0.0,
+          r_result: '-',
           r_range: "",
           r_unit: "mmol/L",
           r_flag: ""
@@ -28083,7 +28084,7 @@ app.factory("reportFormFactory",function(){
         {
           r_name: "Conj Bilirubin",
           r_tum: "",
-          r_result: 0.0,
+          r_result: '-',
           r_range: "",
           r_unit: "mmol/L",
           r_flag: ""
@@ -28091,7 +28092,7 @@ app.factory("reportFormFactory",function(){
         {
           r_name: "Alkaline Phos",
           r_tum: "",
-          r_result: 0.0,
+          r_result: '-',
           r_range: "",
           r_unit: "iu/L",
           r_flag: ""
@@ -28099,7 +28100,7 @@ app.factory("reportFormFactory",function(){
         {
           r_name: "Aspartate Trans",
           r_tum: "",
-          r_result: 0.0,
+          r_result: '-',
           r_range: "",
           r_unit: "iu/L",
           r_flag: ""
@@ -28107,7 +28108,7 @@ app.factory("reportFormFactory",function(){
         {
           r_name: "Alanine Trans",
           r_tum: "",
-          r_result: 0.0,
+          r_result: '-',
           r_range: "",
           r_unit: "iu/L",
           r_flag: ""
@@ -28122,7 +28123,7 @@ app.factory("reportFormFactory",function(){
         {
           r_name: "Fasting Blood Sugar",
           r_tum: "",
-          r_result: 0.0,
+          r_result: '-',
           r_range: "",
           r_unit: "mmol/L",
           r_flag: ""
@@ -28130,7 +28131,7 @@ app.factory("reportFormFactory",function(){
         {
           r_name: "Random",
           r_tum: "",
-          r_result: 0.0,
+          r_result: '-',
           r_range: "",
           r_unit: "mmol/L",
           r_flag: ""
@@ -28145,7 +28146,7 @@ app.factory("reportFormFactory",function(){
         {
           r_name: "HB",
           r_tum: "",
-          r_result: 0.0,
+          r_result: '-',
           r_range: "",
           r_unit: "g/dl",
           r_flag: ""
@@ -28153,7 +28154,7 @@ app.factory("reportFormFactory",function(){
         {
           r_name: "PCV",
           r_tum: "",
-          r_result: 0.0,
+          r_result: '-',
           r_range: "",
           r_unit: "%",
           r_flag: ""
@@ -28161,7 +28162,7 @@ app.factory("reportFormFactory",function(){
         {
           r_name: "MCHC",
           r_tum: "",
-          r_result: 0.0,
+          r_result: '-',
           r_range: "",
           r_unit: "",
           r_flag: ""
@@ -28169,7 +28170,7 @@ app.factory("reportFormFactory",function(){
         {
           r_name: "MCV",
           r_tum: "",
-          r_result: 0.0,
+          r_result: '-',
           r_range: "",
           r_unit: "",
           r_flag: ""
@@ -28177,7 +28178,7 @@ app.factory("reportFormFactory",function(){
         {
           r_name: "Red Cell Count",
           r_tum: "",
-          r_result: 0.0,
+          r_result: '-',
           r_range: "",
           r_unit: "x10^12/L",
           r_flag: ""
@@ -28185,7 +28186,7 @@ app.factory("reportFormFactory",function(){
         {
           r_name: "White Cell Count",
           r_tum: "",
-          r_result: 0.0,
+          r_result: '-',
           r_range: "",
           r_unit: "x10^9/L",
           r_flag: ""
@@ -28193,7 +28194,7 @@ app.factory("reportFormFactory",function(){
         {
           r_name: "Genotype",
           r_tum: "",
-          r_result: 0.0,
+          r_result: '-',
           r_range: "",
           r_unit: "",
           r_flag: ""
@@ -28201,7 +28202,7 @@ app.factory("reportFormFactory",function(){
         {
           r_name: "Blood Group",
           r_tum: "",
-          r_result: 0.0,
+          r_result: '-',
           r_range: "",
           r_unit: "",
           r_flag: ""
@@ -28209,7 +28210,7 @@ app.factory("reportFormFactory",function(){
         {
           r_name: "Retics Count",
           r_tum: "",
-          r_result: 0.0,
+          r_result: '-',
           r_range: "",
           r_unit: "",
           r_flag: ""
@@ -28217,7 +28218,7 @@ app.factory("reportFormFactory",function(){
         {
           r_name: "ESR",
           r_tum: "",
-          r_result: 0.0,
+          r_result: '-',
           r_range: "",
           r_unit: "mm/1st Hr (Westergreen)",
           r_flag: ""
@@ -28226,7 +28227,7 @@ app.factory("reportFormFactory",function(){
         {
           r_name: "Platelet Count",
           r_tum: "",
-          r_result: 0.0,
+          r_result: '-',
           r_range: "",
           r_unit: "",
           r_flag: ""
@@ -28235,7 +28236,7 @@ app.factory("reportFormFactory",function(){
         {
           r_name: "WBC-T",
           r_tum: "",
-          r_result: 0.0,
+          r_result: '-',
           r_range: "",
           r_unit: "/mm3",
           r_flag: ""
@@ -28243,7 +28244,7 @@ app.factory("reportFormFactory",function(){
         {
           r_name: "Neut",
           r_tum: "",
-          r_result: 0.0,
+          r_result: '-',
           r_range: "",
           r_unit: "%",
           r_flag: ""
@@ -28251,7 +28252,7 @@ app.factory("reportFormFactory",function(){
         {
           r_name: "Eos",
           r_tum: "",
-          r_result: 0.0,
+          r_result: '-',
           r_range: "",
           r_unit: "%",
           r_flag: ""
@@ -28259,7 +28260,7 @@ app.factory("reportFormFactory",function(){
         {
           r_name: "Baso",
           r_tum: "",
-          r_result: 0.0,
+          r_result: '-',
           r_range: "",
           r_unit: "%",
           r_flag: ""
@@ -28267,7 +28268,7 @@ app.factory("reportFormFactory",function(){
         {
           r_name: "Lymph",
           r_tum: "",
-          r_result: 0.0,
+          r_result: '-',
           r_range: "",
           r_unit: "%",
           r_flag: ""
@@ -28275,7 +28276,7 @@ app.factory("reportFormFactory",function(){
         {
           r_name: "Mono",
           r_tum: "",
-          r_result: 0.0,
+          r_result: '-',
           r_range: "",
           r_unit: "%",
           r_flag: ""
@@ -28290,8 +28291,8 @@ app.factory("reportFormFactory",function(){
         {
           r_name: "Sal. Typhi",
           r_tum: "",
-          r_result_O: "<20",
-          r_result_H: "<20",
+          r_result_O: "-",
+          r_result_H: "-",
           r_range: "",
           r_unit: "",
           r_flag: ""
@@ -28299,8 +28300,8 @@ app.factory("reportFormFactory",function(){
         {
           r_name: "Sal. Paratyphi A",
           r_tum: "",
-          r_result_O: "<20",
-          r_result_H: "<20",
+          r_result_O: "-",
+          r_result_H: "-",
           r_range: "",
           r_unit: "",
           r_flag: ""
@@ -28308,8 +28309,8 @@ app.factory("reportFormFactory",function(){
         {
           r_name: "Sal. Paratyphi B",
           r_tum: "",
-          r_result_O: "<20",
-          r_result_H: "<20",
+          r_result_O: "-",
+          r_result_H: "-",
           r_range: "",
           r_unit: "",
           r_flag: ""
@@ -28317,8 +28318,8 @@ app.factory("reportFormFactory",function(){
         {
           r_name: "Sal. Paratyphi C",
           r_tum: "",
-          r_result_O: "<20",
-          r_result_H: "<20",
+          r_result_O: "-",
+          r_result_H: "-",
           r_range: "",
           r_unit: "",
           r_flag: ""
@@ -28886,6 +28887,21 @@ app.factory("reportFormFactory",function(){
       fields: [
         {
           r_name: "",
+          r_tum: "",
+          r_result: "",
+          r_range: "",
+          r_unit: "",
+          r_flag: ""
+        }
+      ]
+    },
+    {
+      form: 17,
+      name: "Malaria Parasite",
+      type: "Qualitative",
+      fields: [
+        {
+          r_name: "Malaria Parasite",
           r_tum: "",
           r_result: "",
           r_range: "",

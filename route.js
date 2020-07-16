@@ -11333,15 +11333,15 @@ router.put("/user/patient/medical-history",function(req,res){
 
 
 router.get("/user/firstline-doctors",function(req,res){
-  if(req.user){
+  //if(req.user){
     model.user.find({isFirstline: true},{user_id:1,name:1,specialty:1,work_place:1,address:1,
-      city:1,profile_pic_url:1,verified:1,phone:1,email:1})
+      city:1,profile_pic_url:1,verified:1,phone:1,email:1,education:1,country:1})
     .exec(function(err,data){
       res.json(data);
     });
-  } else {
-    res.end("Unauthorized access");
-  }
+  //} else {
+  //  res.end("Unauthorized access");
+  //}
 });
 
 router.post("/user/firstline-doctors",function(req,res){
@@ -12673,6 +12673,11 @@ router.get("/find-laboratory",function(req,res){
 
 router.get("/find-radiology",function(req,res){
   res.render('find-radio')
+});
+
+
+router.get("/chat-physician",function(req,res){
+  res.render('chat-physician')
 });
 
 
