@@ -1,6 +1,6 @@
 
 var app = angular.module('myApp',["angularModalService","ngResource",
-  'ui.bootstrap','btford.socket-io','angular-clipboard','angularMoment']);
+  'ui.bootstrap','btford.socket-io','angular-clipboard','angularMoment','xen3r0.underscorejs']);
 
 app.service("homePageDynamicService",["$resource",function($resource){
   return $resource("/dynamic-service");
@@ -319,10 +319,10 @@ app.factory("localManager",["$window",function($window){
 
 
 
-app.controller("hompageController",["$scope","cities","scanTests","$http",
+app.controller("hompageController",["$scope","cities","$http",
   "ModalService","$rootScope","homePageDynamicService",
   "skillService","homepageSearchService","localManager","$window","templateService","mySocket","$location","$anchorScroll",
-  function($scope,cities,scanTests,$http,
+  function($scope,cities,$http,
   	ModalService,$rootScope,homePageDynamicService,skillService,
   	homepageSearchService,localManager,$window,templateService,mySocket,$location,$anchorScroll){
 
@@ -337,7 +337,7 @@ app.controller("hompageController",["$scope","cities","scanTests","$http",
 
   $rootScope.user = {};
 
-  $rootScope.user.category = "Radiology";
+  
 
 
   var dyna = [];
@@ -397,31 +397,7 @@ app.controller("hompageController",["$scope","cities","scanTests","$http",
     }
   }
 
-  var qStr = window.location.search;
-  if(qStr) {
-    var qVal = qStr.split('=');
-    var str = qVal[qVal.length - 1] || "";
-    $rootScope.user.item = str.replace(/%20/g, " ");
-  }
-
-  $scope.find = function() {
-  	$scope.loading = true;
-    $location.hash('searchResultArea');
-    $rootScope.user.test_to_run = $scope.pickedTests;
-  	homepageSearchService.get($rootScope.user,function(response){
-      console.log(response)
-      $scope.loading = false; 
-      $scope.searchResultFull = response.full;
-      $scope.searchResultSub = response.less;      
-      $rootScope.searchItemType = "radiology test(s)";
-      $anchorScroll()
-      if(response.full[0]){
-        $rootScope.searchItems =  response.full[0].str;
-      } else if(response.less[0]){
-        $rootScope.searchItems = response.less[0].str
-      }
-    });  
-  }
+ 
 
   $rootScope.userLoginService = function() {
     $http.get("/user/getuser")
@@ -434,16 +410,23 @@ app.controller("hompageController",["$scope","cities","scanTests","$http",
         $rootScope.checkLogIn = user;
         $rootScope.checkLogIn.typeOfUser = user.type;
       
-        mySocket.emit('join',{userId: user.user_id});      
+        mySocket.emit('join',{userId: user.user_id});  
+
       } else {
         $rootScope.checkLogIn = {};
+        /*ModalService.showModal({
+          templateUrl: 'chat-auth.html',
+          controller: 'signupController'
+        }).then(function(modal) {
+          modal.element.modal();
+          modal.close.then(function(result) {             
+          });
+        });*/
       }
     })
   }
 
   $rootScope.userLoginService();
-
-
 
   $scope.loginIntOAcc = function() {
   	ModalService.showModal({
@@ -456,10 +439,7 @@ app.controller("hompageController",["$scope","cities","scanTests","$http",
   	});
   }
 
- 
-  $rootScope.holdcenter = {};
-
-  $scope.chat = function(doc) {
+  /*$scope.chat = function(doc) {
   	if($rootScope.checkLogIn.isLoggedIn){ 
 	  	$rootScope.holdcenter = doc;
 	  	//templateService.holdId = doc.user_id;
@@ -481,40 +461,9 @@ app.controller("hompageController",["$scope","cities","scanTests","$http",
     		});
     	});
 	  }
-  }
+  }*/
 
-  homePageDynamicService.query($rootScope.user,function(data){
-    $scope.dropDownList = scanTests.listInfo1.concat(scanTests.listInfo2,scanTests.listInfo3,
-    scanTests.listInfo4,scanTests.listInfo5,scanTests.listInfo6,data);
-  });  
-
-
-  $scope.search = function() {    
-    
-    ModalService.showModal({
-      templateUrl: 'home-page-search.html',
-      controller: 'homePageModalController'
-    }).then(function(modal) {
-      modal.element.modal();
-      modal.close.then(function(result) {             
-      });
-    });
-  }
-
-  $scope.find();
-
-  $scope.pickedTests = [];
-
-  $scope.add = function() {
-    if($rootScope.user.item) {
-      $scope.pickedTests.push($rootScope.user.item);
-    } else {
-      alert("Please enter a test name before adding");
-    }
-  }
-
-
-  $scope.forward = function(center) {
+  /*$scope.forward = function(center) {
     if($rootScope.checkLogIn.isLoggedIn){ 
       $rootScope.holdTheCenterToFowardTestTo = center;
       //$location.path("/test/selected-laboratory");
@@ -536,201 +485,11 @@ app.controller("hompageController",["$scope","cities","scanTests","$http",
         });
       });
     }
-  }
-
-  var elemIndex;
-
-  $scope.remove = function(test) {
-    elemIndex = $scope.pickedTests.map(function(x){return x}).indexOf(test)
-    $scope.pickedTests.splice(elemIndex,1)
-  }
-
-
-  $scope.getStr = function(str){
-    if(str) {
-      var newStr = "";
-      var strArr = str.split(",");
-      for(var i = 0; i < strArr.length; i++){
-        newStr += "@" + strArr[i] + " "
-      }
-
-      return newStr;
-    }
-   
-  }
-
-  $scope.notStr = function(arr) {
-    if(arr) {
-      var newStr = "";
-      for(var i = 0; i < arr.length; i++){
-        newStr += "@" + arr[i].name + " "
-      }
-
-      return newStr;
-    }
-  }
-
-  $scope.getTest = function(test) {
-    $rootScope.user.item = test;
-    $scope.find()
-  }
+  }*/
 
 }]);
 
 
-app.controller("testSearchSelectedCenterController",["$scope","$location","$window","$http","templateService","localManager","ModalService",
-  "$rootScope",function($scope,$location,$window,$http,templateService,localManager,ModalService,$rootScope){
-  $scope.data = $rootScope.holdTheCenterToFowardTestTo;
-  $scope.user = {};
-  var sendObj = {};
-
-  $scope.typeOfSearch = "diagnostic";
-
-
-  $scope.forwardType = "inperson";
-
-  $scope.someone = function(type){
-    $scope.forwardType = type;
-  }
-
-
-  $scope.cancel = function(){
-    $scope.forwardType = null;
-    if($scope.user.patient_phone)
-      $scope.user.patient_phone = ""
-  }
-
-  $scope.isContent = true;
-
-  if($rootScope.checkLogIn.typeOfUser !== 'Patient') {
-    $scope.user.patient_phone = "";
-    $scope.isToSomeOne = true;
-    $scope.user.someone = true;
-  }
-
-  $scope.send = function (){ 
-    if($scope.forwardType !== 'inperson') {
-
-      if(!$scope.user.phone) {
-        $scope.phoneMsg = "Enter patient's phone number";
-        return;
-      }
-
-      var isNumber = testNumber($scope.user.phone);
-
-      if(isNumber) {
-        if($scope.user.phone.indexOf('+') == -1)
-          $scope.user.phone = "+234" + parseInt($scope.user.phone); 
-      } else {
-        $scope.phoneMsg = "Please enter a valid phone number.";
-        return;
-      }
-     
-    } 
-
-    if(!$scope.data.clinical_summary) {
-      //$scope.summuryMsg = "Enter clinic summary";
-      //return;
-      $scope.data.clinical_summary = "N/A";
-    }
-
-    if(!$scope.data.indication) {
-      //$scope.indictionMsg = "Enter indication";
-      //return;
-      $scope.data.indication = "N/A";
-    }
-
-    $scope.summuryMsg = "";
-    $scope.phoneMsg = "";
-    $scope.indictionMsg = ""; 
-
-
-
-    /*var random;
-    var labData = templateService.holdLaboratoryReferralData;
-    if(labData.ref_id){      
-      random = labData.ref_id;
-    } else {      
-      random = $rootScope.genRefId;
-    } */ 
-
-    var date = new Date();
-    $scope.data.type = $scope.forwardType;
-    //$scope.data.ref_id = random;
-    $scope.data.user_id = $scope.data.id;
-    $scope.data.sent_date = date;
-    //$scope.data.session_id = labData.session_id;
-
-    var testArr = $scope.data.str.split(",");    
-    for(var i = 0; i < testArr.length; i++){
-      var testObj = {};
-      testObj.name = testArr[i];
-      testObj.sn = i + 1;
-      testObj.select = true;
-      testArr[i] = testObj;
-    }
-
-    $scope.data.test_to_run = testArr;
-
-    for(var i in $scope.data) {
-      if($scope.data.hasOwnProperty(i)){
-        sendObj[i] = $scope.data[i];
-      }
-    }
-
-    sendObj.isCommonSearch = true;
-
-    sendObj.phone = $scope.user.phone;
-
-    send(sendObj,"/user/scan-search/radiology/referral");
-  }
-
- 
-  $scope.back = function() {
-    $scope.isNewPatient = false;
-    $scope.isToSomeOne = true
-  }
-
-
-  function send(data,url) {
-    $scope.loading = true;
-    $http({
-      method  : 'PUT',
-      url     : url,
-      data    : data,
-      headers : {'Content-Type': 'application/json'} 
-      })
-    .success(function(data) {     
-      if(data.isNewPatient) {
-        $scope.isNewPatient = true;
-        $scope.isToSomeOne = false
-      } else if(data.isReferReq) {
-        $scope.isReferReq = true;
-      } else {
-        $scope.isContent = false;
-        $scope.isSent = true;
-        $scope.result = data.ref_id;
-        $scope.user.patient_names = data.refObj.laboratory.patient_firstname + " " + data.refObj.laboratory.patient_lastname;
-      }
-      $scope.loading = false;
-    });
-  }
-
-  $scope.invite = function(){
-    $scope.loading = true;
-    $scope.user.recepient = $scope.user.phone;
-    $http.post("/user/invitation",$scope.user)
-    .success(function(res){
-      console.log(res)
-      $scope.inviteStatus = res.status;
-      $scope.invitationMsg = res.message; 
-      $scope.loading = false;    
-    })
-  }
-
- 
-
-}]);
 
 app.service("chatService",["$resource",function($resource){
 
@@ -784,26 +543,44 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
       })
     })
 
-    if($rootScope.chatsList) {
+    /*if($rootScope.chatsList) {
       var elemPos = $rootScope.chatsList.map(function(x){return x.partnerId}).indexOf(templateService.holdId)
       if(elemPos !== -1){
         $scope.partner = $rootScope.chatsList[elemPos]; 
       } else {
         $scope.partner = {};
       }
-    }
+    }*/
+
+    $scope.partner = {};
   
-    function getUsersOnline() {     
-      $rootScope.$broadcast("users presence",{type: 'chatList',data:$rootScope.chatsList,sockets: $rootScope.sockets});         
+    function getUsersOnline() {
+      mySocket.emit("check presence",{status: true},function(res){
+        $rootScope.sockets = res;
+        invert = _.invert($rootScope.sockets);
+        if($rootScope.chatsList)
+          $rootScope.chatsList.forEach(function(item){
+            if(invert[item.partnerId])
+              item.presence = on;
+          });        
+      })     
+      //$rootScope.$broadcast("users presence",{type: 'chatList',data:$rootScope.chatsList,sockets: $rootScope.sockets});         
     }
 
 
+    var invert;
+    mySocket.on("ping users",function(sockets){
+      invert = _.invert(sockets);
+      if(!invert[$rootScope.checkLogIn.user_id]){
+        mySocket.emit('join',{userId: $rootScope.checkLogIn.user_id});
+      } 
+    })
 
-    if($rootScope.holdcenter) {
-      initChatSingle();
-    } else {
-      initChat();
-    }
+    //if($rootScope.holdcenter) {
+      //initChatSingle();
+    //} else {
+     // initChat();
+    //}
 
     mySocket.removeAllListeners("new_msg"); // incase if this listener is registered twice
 
@@ -815,24 +592,36 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
 
     
     $scope.viewChat = function(chat,isMobWebList) {  
-      $scope.partner = chat;
-      var base = document.getElementById('base'); 
-      var msgDiv = document.getElementById("sentmessage");
-      base.removeChild(msgDiv);
+      if($rootScope.checkLogIn.isLoggedIn){
+        $scope.partner = chat;
+        var base = document.getElementById('base'); 
+        var msgDiv = document.getElementById("sentmessage");
+        base.removeChild(msgDiv);
 
-      if(!chat.is_read) {
-        chat.is_read = true;
-        mySocket.emit("seen chat",{id: chat._id})
+        if(!chat.is_read) {
+          chat.is_read = true;
+          mySocket.emit("seen chat",{id: chat._id})
+        }
+
+        if(isMobWebList) {
+          $('.chat__container').removeClass('chat__list--active');
+        } 
+        
+        //use to control different chat data in the general chat body inner div
+        chatBodyCb(function(){
+          initChat()
+        })
+      } else {
+        //$rootScope.userLoginService();
+        ModalService.showModal({
+          templateUrl: 'chat-auth.html',
+          controller: 'signupController'
+        }).then(function(modal) {
+          modal.element.modal();
+          modal.close.then(function(result) {             
+          });
+        })
       }
-
-      if(isMobWebList) {
-        $('.chat__container').removeClass('chat__list--active');
-      } 
-      
-      //use to control different chat data in the general chat body inner div
-      chatBodyCb(function(){
-        initChat()
-      })
       
     }
 
@@ -844,7 +633,7 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
       cb()
     }
 
-    if($rootScope.searchItems)
+    /*if($rootScope.searchItems)
       $scope.messageBody = "Requesting for the following  " + $rootScope.searchItemType + ":  " + $rootScope.searchItems;
     
     $scope.sendChatSingle = function(partnerId){
@@ -855,18 +644,18 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
           $scope.isSent = true;
         }
       })
-    }
+    }*/
 
   
     //for modal sending one-way chat message.
-    function initChatSingle() {
+    /*function initChatSingle() {
       mySocket.emit('init chat single',{userId: user.user_id,partnerId: $scope.center.id},function(data){});
-    }
+    }*/
 
     //for general chats two-way messaging
     function initChat() {
       $scope.loading = true;
-      mySocket.emit('init chat',{userId: user.user_id,partnerId: $scope.partner.partnerId},function(data){         
+      mySocket.emit('init chat',{userId: $rootScope.user.user_id,partnerId: $scope.partner.partnerId},function(data){         
          for(var i = 0; i < data.messages.length; i++) { 
             chats(data.messages[i]);
          }
@@ -1129,18 +918,10 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
       //item1[0].appendChild(item4[0]);
     }
 
-   
-
-  
     // end of new code
-
-
     //item1[0].appendChild(small[0]);
-
-
     breaker[0].appendChild(item1[0]);
     
-   
     /*item[0].style.display = "inline-block";
     item[0].style.maxWidth = (deviceCheckService.getDeviceType()) ? "90%" : "70%";
     item[0].className = (data.sent) ? "talk-bubble tri-right right-top talktext msg_sent bg-info" : "talk-bubble tri-right left-top talktext";
@@ -1799,7 +1580,7 @@ app.controller("authModalController",["$scope","$rootScope","homepageSearchServi
 
     if(intRegex.test($rootScope.person.username)){
       $rootScope.person.isPhoneNumber = true;
-      if($rootScope.person.username[0] == '0'){
+      if($rootScope.person.username[0] === '0'){
         var newSlice = $rootScope.person.username.slice(1);
         $rootScope.person.username = "+234" + newSlice;
       }
@@ -1831,56 +1612,456 @@ app.controller("authModalController",["$scope","$rootScope","homepageSearchServi
 
 }]);
 
-/*app.controller("findDocPageModalController",["$scope","$rootScope","homepageSearchService","localManager","$window",
-  function($scope,$rootScope,homepageSearchService,localManager,$window){
-
-}])*/
-
-app.controller("homePageModalController",["$scope","$rootScope","homepageSearchService","localManager","$window",
-  function($scope,$rootScope,homepageSearchService,localManager,$window){
-    $scope.loading = true;
-    homepageSearchService.get($rootScope.user,function(response){
-      $scope.loading = false;
-      
-      $scope.searchResult = response.full;
-    });  
-
-    $scope.account = function(selected,type) {
-      selected.type = type;       
-      localManager.setValue("onreg_held_item",selected);
-      var user = localManager.getValue('resolveUser');
-      if(user) {
-         switch(user.typeOfUser) {
-          case "Patient":
-            $window.location.href = "/user/patient";   
-          break;
-          case "Doctor":
-           $window.location.href = "/user/doctor";   
-          break;
-          case "Pharmacy":
-            $window.location.href = "/user/pharmacy"; 
-          break;
-          case "Laboratory":
-            $window.location.href = "/user/laboratory"; 
-          break;
-          case "Radiology":
-            $window.location.href = "/user/radiology"; 
-          break;          
-          case "admin":
-            $window.location.href = "/user/admin";
-          break;
-          default:
-            $window.location.href = "/user/view"; 
-          break; 
-        }
-      } else {
-        selected.msg = "Please <a href='/signup'> create account </a> or <a href='/login'> log in </a> to have full access!";
-      }
-    }
+app.service("getCountryService",["$resource",function($resource){
+  return $resource("/user/getCountries");
 }]);
 
 
+app.controller('signupController',["$scope","$http","$location","$window","templateService",
+  "$resource","$rootScope","localManager","userSignUpService","phoneVerifyService","getCountryService",
+  'phoneCallService',"$timeout","cities","userLoginService",
+  function($scope,$http,$location,$window,templateService,$resource,$rootScope,localManager,
+    userSignUpService,phoneVerifyService,getCountryService,phoneCallService,$timeout,cities,userLoginService) {
 
+  var signUp = userSignUpService; //$resource('/user/signup',null,{userSignup:{method:"POST"},emailCheck:{method:"PUT"}});
+  $scope.countries = localManager.getValue("countries") || getCountries();
+  $scope.status = "Country";
+  $scope.status1 = "State/Province";
+  $scope.status2 = "City/Town";
+  $scope.status3 = "LGA/Region";
+  
+  $scope.cities = cities;
+
+  var currency = {};
+
+  $scope.user = {};
+
+  $rootScope.user = $scope.user;
+
+
+  $scope.getRoute = function(type){
+    $location.path(type);
+    $rootScope.auser = type;
+  }
+
+  var count = 0;
+
+  var phoneNumber;
+
+  $scope.createAccount = function(type,argTitle){
+ 
+  $scope.user.currencyCode = currency.code;
+  $scope.user.state = currency.state;
+  $scope.user.region = currency.region;
+
+  $scope.user.typeOfUser = "Patient";
+
+  $scope.user.country = '2328926;NG;Nigeria';
+
+  if(type === 'Patient'){
+    $scope.user.age = calculate_age(new Date($scope.user.dob)) + " years";
+  }
+
+  if(!$scope.user.username){
+    if($scope.user.email){
+      var em = $scope.user.email.split('@');
+      $scope.user.username = em[0];
+    } else {
+      var name = $scope.user.firstname || $scope.user.name;
+      var em = name.replace(/\s/g, "");
+      $scope.user.username = em;
+    }
+  }
+
+  //capitalize the first letter in words like two words city names.
+  if($scope.user.city && $scope.user.city !== "") {
+    var capitalize = $scope.user.city.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() 
+      + txt.substr(1).toLowerCase()});
+    $scope.user.city = capitalize;
+  }
+
+
+  if(argTitle) {
+    $scope.user.title = ($scope.user.typeOfUser == "Special Center") ? "SC" : $scope.user.title;
+  } 
+
+  
+
+  if(templateService.singleForm)
+    templateService.singleForm = false;
+
+    //var objLen = Object.keys($scope.user).length;
+    //var msg = "Please fill out empty field"; 
+
+  /*if($scope.user.email) {
+    signUp.get({email: $scope.user.email},function(response){
+      if(!response.success){ 
+        $scope.emailMessage = "User with " + $scope.user.email + " already exists!";
+      } else {
+        checkExistingPhone();
+      }
+    })
+  } */
+
+  function checkExistingPhone() {
+    $scope.phoneMessage = "";
+    if($scope.user.phone) {
+      //phoneNumber = "+" + $scope.user.callingCode.toString() + $scope.user.phone.toString();
+      if($scope.user.phone[0] !== '+'){
+        var newSlice = $scope.user.phone.slice(1);
+        var code = "+234";//('+' + $scope.user.callingCode.toString()) || "+234";
+        $scope.user.phone = code + newSlice;
+      }
+
+      phoneNumber = $scope.user.phone;
+
+      signUp.get({phone:phoneNumber},function(res){
+        if(res.error) {        
+          $scope.phoneMessage = res.errorMsg;
+        } else {
+          $rootScope.holdPhoneForCall = phoneNumber;
+          validate($scope.user); 
+        }
+
+      })
+    }
+  }
+
+  checkExistingPhone();
+    
+ }
+ // this will be to get the type of diagnostic center a user slected as the type of user
+ $scope.center = {}
+
+// $scope.$watch("center.type",function(newVal,oldVal){
+  //if(newVal) {
+    //$scope.userType(newVal);//sets the type of diagnostic center a user selected.
+  //}
+ //})
+ 
+  function validate(data){
+      
+      $scope.nameMessage = ""
+      $scope.typeMessage = ""
+      $scope.passwordMessage = ""
+      $scope.FirstNameMessage = ""
+      $scope.lastNameMessage = ""
+      $scope.typeMessage = ""
+      $scope.countryMessage = ""
+      $scope.cityMessage = ""
+      $scope.phoneMessage = ""
+      $scope.passwordError = ""
+      $scope.termMessage = ""
+      $scope.emailMessage = ""
+      $scope.ageMessage = ""
+      $scope.genderMessage = ""
+      $scope.usernameMessage = ""
+      $scope.addressMessage = ""
+      $scope.titleMessage = ""
+      $scope.specialtyMessage = ""
+      $scope.passwordMessage = ""
+      $scope.numberError = "";
+
+      if(data.typeOfUser !== "Patient" && data.typeOfUser !== "Doctor" && data.typeOfUser !== 'Special Center') {
+        if(data.name === undefined || data.name === "") {
+          $scope.nameMessage = "Enter your center name";
+          return;
+        }
+        
+      } 
+      
+      if(data.typeOfUser === 'Special Center') {
+        if(!data.firstname) {
+          $scope.nameMessage = "Enter your center name";
+          return;
+        }
+        
+      } 
+
+      if(data.typeOfUser !== "Patient" && data.typeOfUser !== "Doctor" && data.typeOfUser !== 'Special Center' && data.typeOfUser !== 'Pharmacy') {
+        if(!$scope.center.type) {
+          $scope.typeMessage = "Select the type of diagnostic center";
+          return;
+        }
+        
+      } 
+
+      if(data.password) {
+        if(data.password.length <= 6) {
+          $scope.passwordMessage = "Incomplete number of characters for password!";
+          return;
+        }
+      }
+
+      if(data.typeOfUser === "Patient" && data.firstname === undefined || data.firstname === "") {
+        $scope.FirstNameMessage = "Enter value for firstname";
+        return;
+      } else if(data.typeOfUser === "Patient" && data.lastname === undefined || data.lastname === "") {
+        $scope.lastNameMessage = "Enter value for lastname";
+        return;
+      } else if(data.typeOfUser === undefined || data.typeOfUser === "" ) {
+        $scope.typeMessage = "Select type of user";
+        return;
+      } else if(data.country === undefined || data.country === "") {
+        $scope.countryMessage = "Select your country of residence";
+        return;
+      } else if(typeof data.city !== 'string' || data.city === "") {
+        $scope.cityMessage = "Enter your city";
+        return;
+     // } else if(typeof data.phone !== 'number') {
+      //  $scope.phoneMessage = "Enter a valid mobile phone number";
+      //  return;
+     // } else if(data.password !== data.password2) {
+      //  $scope.passwordError = "Password does not match!";
+      //  return;
+      } else if(data.agree !== true) {
+        $scope.termMessage = "You have to agree to our terms and privacy policy";
+        return;
+     /* } else if(data.email === undefined || data.email === ""){
+        $scope.emailMessage = "Enter value for email";
+        return;*/
+      } else if(data.typeOfUser === "Patient" && data.age === undefined || data.age === "") {
+        $scope.ageMessage = "Select your age category";
+        return;
+      } else if(data.typeOfUser === "Patient" && data.gender === undefined || data.gender === "") {
+        $scope.genderMessage = "Select your gender";
+        return;
+      } else if(data.username === undefined || data.username === "") {
+        $scope.usernameMessage = "Enter value for username";
+        return;
+      /*} else if(data.typeOfUser === "Doctor" && data.work_place === undefined || data.work_place === "") {
+        $scope.workMessage = "Enter your place of work";
+        return;*/
+     /* } else if(data.address === undefined || data.address === "") {
+        $scope.addressMessage = "Enter place of work address";
+        return;*/
+      } else if(data.typeOfUser === "Doctor" && data.title === undefined || data.title === "") {
+        $scope.titleMessage = "Select title";
+        return;
+      } else if(data.typeOfUser === "Doctor" && data.specialty === undefined || data.specialty === "") {
+        $scope.specialtyMessage = "Select your specialty";
+        return;
+      } else if(data.password === undefined || data.password === ""){
+        $scope.passwordMessage = "Enter value for password";
+        return;
+      } else {
+        finalValidation();
+      }
+
+    function finalValidation() {
+      if(data.agree === true) {        
+        //if($scope.user.callingCode){        
+          data.phone = phoneNumber;
+          data.username = data.username.replace(/\s+/g, '');
+          $rootScope.formData = data;
+          $rootScope.formData.invitationId = $rootScope.invitationId;
+
+          sendDetail();
+        //} else {
+        //  $scope.numberError = "Invalid number format";
+        //  return;
+        
+      } else {
+        $scope.termMessage = "Agree to our terms and conditions";        
+      }
+    } 
+  }
+
+
+   function sendDetail() {
+    $scope.loading = true;
+    var sendPin = phoneVerifyService;//$resource("/user/verify-phone-number",null,{go:{method:"PUT"}});
+    var send = sendPin.go({phone:phoneNumber},function(data){
+      if(data.error) {
+        $scope.phoneMessage = data.message;
+      } else {
+        $rootScope.verifyInfo = data.message; 
+        $scope.isPhoneverify = true;
+        //$location.path("phone-verification");
+      }
+      $scope.loading = false;
+    });   
+  }     
+
+  var reqObj;
+  function getCountries() {
+    $scope.status = "Loading...";
+    reqObj = getCountryService;//$resource("/user/getCountries");
+    reqObj.query(function(data){
+      $scope.countries = data;
+      localManager.setValue("countries",data);
+      $scope.status = "Country";
+    });
+  }
+
+  
+
+  $scope.$watch("user.country",function(newVal,oldVal){
+    if($scope.user.country !== undefined) {
+      $scope.status1 = "Loading...";
+      var arr = $scope.user.country.split(";");
+      var getId = arr[0];
+      var toNum = parseInt(getId);
+      var countryCode = arr[1];
+      $scope.user.countryName = arr[arr.length-1];
+      $scope.user.geonameId = toNum;
+     
+      getCurrency(toNum);
+
+      $.getJSON("/assets/calling_code.json", function(result){
+        $scope.user.callingCode = result[countryCode]; //parseInt(result[countryCode]);
+        $scope.numberError = "";
+      }); 
+    }
+  });
+
+  function getCurrency(id) {
+    var elemPos = $scope.countries.map(function(x){return x.geonameId.toString()}).indexOf(id.toString());
+   
+    currency.code = $scope.countries[elemPos].currencyCode;
+  }
+
+ 
+ /* $scope.isSpeciaty = false;
+  $scope.$watch("user.specialty",function(newVal,oldVal){
+    if($scope.user.specialty === "edit-specialty") {
+      $scope.isSpeciaty = true;
+      $scope.user.specialty = "";
+    }
+  });
+ */
+  var toStr;
+  var count=0;
+  var msg = "Wrong format! Select country above to auto fill the calling code field.";
+
+
+  $scope.$watch("user.phone",function(newVal,oldVal){
+    if(newVal && !$scope.user.callingCode) {
+      $scope.numberError = msg;
+    } 
+    
+  });
+
+  $scope.$watch("user.password",function(newVal,oldVal){
+    str = "" + newVal;
+    if(newVal)
+      $scope.passwordMessage = "Password must be more than six characters. Make sure you used conbinations of letters, special characters and numbers for security purposes."
+    if(str.length > 6){
+      $scope.passwordMessage = "";
+    }
+  });
+
+  /*$scope.$watch('online', function(newStatus) { 
+    $rootScope.onlineStatus = newStatus;
+    $rootScope.acknowledged = false;
+    if(newStatus) {
+      $timeout(function(){
+        $rootScope.acknowledged = true;
+      },3000)
+    }
+  });*/
+  //password must be checked lastly. Very important.
+
+
+  $scope.verify = {};
+  $scope.success;
+  $scope.sendForm = function (){
+    if(!$scope.verify.pin){
+      alert("Please enter the verification pin you received.")
+      return;
+    }
+
+    $scope.loading = true;
+    $rootScope.formData.v_pin = $scope.verify.pin;
+    //var signUp = userSignUpService;//$resource("/user/signup",null,{userSignup:{method: "POST"}})   
+    signUp.userSignup($rootScope.formData,function(response){ 
+      $scope.loading = false;         
+      if(!response.error) {  
+        $scope.success = response.message;       
+        //$window.location.href = "/chat-physician";  
+        $rootScope.person.username = $rootScope.formData.phone;
+        $rootScope.person.password = $rootScope.formData.password;
+        $scope.enterAccount();                               
+      } else {       
+        $scope.error = response.message;       
+      }
+    });
+  }
+
+  $scope.call = function(oldTime){
+    phoneCallService({phone: $rootScope.holdPhoneForCall},"/user/verify-phone-number",'PUT')
+    $scope.showCallingMsg = "You'll receive a phone call in just a moment. Please enter the pin you hear from the voice call below..."
+  }
+
+  var login = userLoginService;
+
+  $scope.enterAccount = function() {
+    
+    $scope.loginMessage = "";
+    $scope.loading = true;
+
+    var intRegex = /[0-9 -()+]+$/;
+
+    if(intRegex.test($rootScope.person.username)){
+      $rootScope.person.isPhoneNumber = true;
+      if($rootScope.person.username[0] === '0'){
+        var newSlice = $rootScope.person.username.slice(1);
+        $rootScope.person.username = "+234" + newSlice;
+      }
+    }
+
+    login.logPerson($rootScope.person,function(data){   
+      $scope.loading = false;
+      if(data.isLoggedIn){
+        localManager.setValue("resolveUser",data); 
+        //var name = data.firstname || data.name;
+        //$scope.loginSuccess = "Welcome " + name + "! " + "Close the modal and continue."
+        //mySocket.emit('join',{userId: data.user_id});
+        $rootScope.userLoginService();
+      } else {
+        $scope.loginMessage = data.message;
+      }
+    })
+  }
+
+
+
+}]);
+
+/*app.controller("verifyPhoneController",["$rootScope","$scope","$resource","$window",
+  "userSignUpService","phoneCallService","localManager",
+  function($rootScope,$scope,$resource,$window,userSignUpService,phoneCallService,localManager){
+  $scope.verify = {};
+  $scope.success;
+  $scope.sendForm = function (){
+    if(!$scope.verify.pin){
+      alert("Please enter the verification pin you received.")
+      return;
+    }
+
+    $scope.loading = true;
+    $rootScope.formData.v_pin = $scope.verify.pin;
+    var signUp = userSignUpService;//$resource("/user/signup",null,{userSignup:{method: "POST"}}) 
+       
+    signUp.userSignup($rootScope.formData,function(response){ //
+      $scope.loading = false;         
+      if(!response.error) {  
+        $scope.success = response.message;
+        if(localManager.getValue('landingCurrPageURL')) {
+          $window.location.href = localManager.getValue('landingCurrPageURL');
+        }                                   
+      } else {       
+        $scope.error = response.errorMsg;       
+      }
+    });
+  }
+
+  $scope.call = function(oldTime){
+    phoneCallService({phone: $rootScope.holdPhoneForCall},"/user/verify-phone-number",'PUT')
+    $scope.showCallingMsg = "You'll receive a phone call in just a moment. Please enter the pin you hear from the voice call below..."
+  }
+
+}]);*/
 
 
 
@@ -1942,180 +2123,6 @@ function destroyStorage(localManager) {
 
 
 
-app.factory("scanTests",function(){
-var scanTestList = {};
-
-scanTestList.listInfo1 = [{name: "Chest X-ray (CXR)  1 view",price: 1000,id:1},{name: "Skull X-ray (FXR)  (2 View)",price:800,id:2},
-{name: "Pelvic  X-ray (1 view)",id:3},
-{name: "Intravenous Urography (IVU)",id:4},{name: "Barium Swallow (BS)",id:5},{name: "Barium Meal & follow through (BM&FT)",id:6},
-{name: "Retrograde Cystourethrogram(Uretrography)",id:7},{name: "Barium Enema",id:8},
-{name: "POST-NASAL SPACE(P.N.S)  Nasopharnyx (1 View)",id:9},{name: "Shoulder X-Ray (1 view)",id:10},
-{name: "Abdomen X-ray",id:11},{name: "Abdominal (Erect & Supine) X-ray",id:12},{name: "Ankle X-ray (2 Views)",id:13},
-{name: "Calcaneum X-ray (2 Views)",id:14},
-{name: "Neck/Cervical X-ray (2 Views)",id:15},{name: "Coccyx X-ray",id:16},{name: "Elbow joint X-ray (2 Views)",id:17},
-{name: "Femur/Thigh X-ray (2 views)",id:18},{name: "Finger X-ray (2 views)",id:19},{name: "Foot/Toe X-ray (2 Views)",id:20},
-{name: "Hand (Carpal/Metacarpal Bones) X-ray (2 Views)",id:21},{name: "Hip Joint X-ray (2 Views)",id:22},
-{name: "Humerus/Upper Arm X-ray (2 Views)",id:23},
-{name: "Knee X-ray (2 views)",id:24},{name: "Lumbo Sacral Spines X-ray (2 views)",id:25},{name: "Mastoid Air Cells",id:26},
-{name: "Micturating Cystourethrogram",id:27},{name: "Scapula X-ray (2 Views)",id:28},{name: "Sternum X-ray (2 Views)",id:29},
-{name: "Thoracic Inlets X-Ray (2 Views)",id:30},
-{name: "Tibia/Fibula (Leg) X-ray (2 Views)",id:31},{name: "Ulna/Radius (Forearm) X-ray",id:32},{name: "Wrist X-ray (2 views)",id:33},
-{name: "Forearm/Ulna/Radius X-ray (2 views)",id:34},{name: "Jaw Maxilla and Mandibles X-ray (2 Views)",id:35},
-{name: "Clavicular X-Ray (1 View)",id:36},{name: "Sternoclavicular Joints (2 views)",id:37},{name: "Thoracic Vertabrae X-Ray (2 Views)",id:38},
-{name: "Temporomandibular Joint (5 Views)",id:39},{name: "X-ray Paranasal sinuses - OM, OF, LAT.",id:40},
-{name: "CHEST X-RAY(PA and LAT.) 2 VIEWS",id:41},{name: "Ankle X-ray(3views)",id:42},{name: "Foot/Toe X-ray (3Views)",id:43},
-{name: "Fistulogram",id:44},
-{name: "Shoulder X-ray(3viiews)",id:45},{name: "Shoulder X-ray(2views)",id:46},{name: "VENOGRAM",id:47},
-{name: "Occipito-mental(OM) X-ray (1 view)",id:48},
-{name: "Hand X-ray (Carpal/Metacarpal:Both Hands)(4views)",id:49},
-{name: "Foot/Toe X-ray (Both Feet)(4views)",id:50},{name: "Knee X-ray (Both knees) (4views)",id:51},{name: "Ankle X-ray (Both Ankles)(4views)",id:52},
-{name: "Wrist X-ray (Both wrists) (4Views)",id:53},
-{name: "Tibia/Fibula X-ray (Both Legs)(4Views)",id:54},{name: "Femur/Thigh X-ray(Both Femoral/Thighs) (4Views)",id:55},
-{name: "X-ray Reporting Only",id:56},{name: "Myelogram",id:57},{name: "Clavicle X-ray (2 views)",id:58},{name: "Pelvimetry X-ray",id:59},
-{name: "Mastoids",id:60},
-{name: "TEMPORO-MANDIBULAR JOINT(TMJ) X-RAY X-ray 2views",id:61},{name: "Digital X-ray",id:62},{name: "LATERAL SOFT TISSUE (NECK)",id:63},
-{name: "Cervical Spine(Flexion and Extension) 2 Views",id:64},{name: "Retrograde Urethrogram",id:65},{name: "X-Ray CD Reprinting",id:66},
-{name: "HYSTEROSALPINOGRAM -HSG (DISPOSABLE)",id:67},{name: "HYSTEROSALPINOGRAM -HSG (NON-DISPOSABLE)",id:68},
-{name: "PROSTRATE USS",id:69},{name: "Lumbo Sacral Spine X-ray (3 Views)",id:70},
-{name: "Hand/Finger - NHIS",id:71},{name: "Wrist - NHIS",id:72},{name: "Foream - NHIS",id:73},{name: "Elbow - NHIS",id:74},
-{name: "Humerus - NHIS",id:75},{name: "Shoulder - NHIS",id:76},{name: "Clavicle - NHIS",id:77},
-{name: "Foot/Toe - NHIS",id:78},{name: "Ancle-NHIS",id:79},
-{name: "Leg (Tibia/Fibula NHIS",id:80},{name: "Knee -NHIS",id:81},{name: "Hip -NHIS",id:82},{name: "Femur or tThigh -NHIS",id:83},
-{name: "Pelvic -NHIS",id:84},{name: "Chest(PA/AP) - NHIS",id:85},{name: "Chest(PA/Latereal) - NHIS",id:86},
-{name: "Chest For Ribs (Oblique) - NHIS",id:87},{name: "Apical/Lordotic - NHIS",id:88},{name: "Stemum - NHIS",id:89},
-{name: "Thoracic Inlet - NHIS",id:90},
-{name: "Cervical Spine - NHIS",id:91},
-{name: "Lateral Neck(Soft Tissue - NHIS",id:92},{name: "Thoracic Spine - NHIS",id:93},{name: "Thoraco Lumba Spine - NHIS",id:94},
-{name: "Lumbar Spine - NHIS",id:95},{name: "Lumbo Sacral Spine - NHIS",id:96},{name: "Scrum - NHIS",id:97},
-{name: "Sacro Illiac Joint (S.I.J) - NHIS",id:98},
-{name: "Cervical Spine (Oblique) - NHIS",id:99},{name: "Sacro-coccxy - NHIS",id:100},
-{name: "Abdomen(Plain) - NHIS",id:101},{name: "Abdomen(Eract/Supine) - NHIS",id:102},{name: "Abdomen (Pregnancy) - NHIS",id:103},
-{name: "Skule(AP/Lat) - NHIS",id:104},{name: "Skulll(Pa/Lat/Townes) - NHIS",id:105},
-{name: "Mastoids - NHIS",id:106},{name: "Sinuses AP/LNT/OM - NHIS",id:107},{name: "Mandibles (Jaw) - NHIS",id:108},
-{name: "Temporo Mandibular Joints (TM) - NHIS",id:109},{name: "Sella Turcica - NHIS",id:111},{name: "Tangental - NHIS",id:112},
-{name: "Occipito-Mental (OM) - NHIS",id:113},
-{name: "Periapical - NHIS",id:114},{name: "Bitewings - NHIS",id:115},{name: "Panoramic View - NHIS",id:116},{name: "Barium Swallow - NHIS",id:117},
-{name: "Barium Meal/Follow through - NHIS",id:118},{name: "Barium enema - NHIS",id:119},{name: "Intravenus Urography (IVU) - NHIS",id:120},
-{name: "Hysterosalpingogram (HSG) - NHIS",id:121},{name: "Cysto-Urethorgram - NHIS",id:122},{name: "Fistulogram - NHIS",id:123},
-{name: "Myelogram - NHIS",id:124},{name: "Skeletal Survey (Adult) - NHIS",id:125},{name: "Electrocadography - NHIS",id:126},
-{name: "Eletro Encephalography",id:127},{name: "Mycturating Cyto-Urethrogram - NHIS",id:128},{name: "Phlebogram-One Leg - NHIS",id:129},
-{name: "Venogram-One Leg - NHIS",id:130},{name: "Arthrogram - NHIS",id:131},{name: "Sialogram - NHIS",id:132},{name: "Sinogram - NHIS",id:133},
-{name: "MRI Scan - NHIS",id:134},{name: "CT Scan - NHIS",id:135},{name: "Mammography - NHIS",id:136}];
-
-/*******Listing of Ultrasonography *************/    
-
-scanTestList.listInfo2 = [{name: "Obstetric/Gynaecology Scan",id:137},{name: "Female Pelvic Scan - With print out",id:138},
-{name: "Female Pelvic Scan - Without print out",id:139},{name: "Abdominal Scan emphasis - Liver (Hepatobillary) Scan",id:140},
-{name: "Ophthalmic Scan Per Eye",id:141},{name: "ECHOCARDIOGRAPHY(Cardiac Echo)",id:142},{name: "SPIROMETRY TEST",id:143},
-{name: "Doppler Ultrasound Per Region",id:144},{name: "Abdominal Scan",id:145},{name: "Abdominal Scan emphasis - Kidney (Renal Scan)",id:146},
-{name: "Abdominal Scan emphasis - Bowels",id:147},
-{name: "Abdominal Scan emphasis - Pancrease",id:148},{name: "Abdominal Scan emphasis - Spleen",id:149},
-{name: "Scrotal/Testicular Scan",id:150},{name: "Soft Tissue (Breast) scan",id:151},{name: "BREAST SCAN",id:152},
-{name: "TRANSVAGINAL SCAN",id:153},{name: "FONTANELLE USS",id:154},{name: "Folliculometry Scan",id:155},
-{name: "Soft Tissue(Neck/Thyroid etc) Scan",id:156},
-{name: "TRANSRECTAL SCAN",id:157},{name: "THYROID SCAN",id:158},{name: "Soft Tissue(Muscles) Ultrasound",id:159},
-{name: "Soft Tissue(Thigh) Scan",id:160},
-{name: "STRESS ECHOCARDIOGRAPHY(Stress Cardiac Echo)",id:161},{name: "Obstetric - 4D",id:162},{name: "Biophysical Profile - Obstetric",id:163},
-{name: "Ultrasound Print Out Per Sheet",id:164},{name: "Ultrasound Guided Biopsy",id:165},{name: "Abdomino-Pelvic Scan",id:166},
-{name: "SONO-HSG",id:167},{name: "HAND/FINGER (NHIS)",id:168},{name: "Obstetric Scan - NHIS",id:169},{name: "Abdominal Scann - NHIS",id:170},
-{name: "Pelvic Scan - NHIS",id:171},{name: "Breast Scan - NHIS",id:172},{name: "Bladder Scan - NHIS",id:173},
-{name: "Abdominal Pelvic Scan - NHIS",id:174},{name: "Prostate Scan - NHIS",id:175},{name: "Thyroid Scan - NHIS",id:176},
-{name: "Testes/scrotal Scan (each) - NHIS",id:177},{name: "Ovulometry/Tv Scan - NHIS",id:178},{name: "Trans-Fontanellar  (Children) - NHIS",id:179}];
-
-/********************Listing of Computerized Tomography Scan (C.T. SCAN)  **********************/   
-
-
-scanTestList.listInfo3 = [{name: "CT Scan Interpreting Only",id:180},{name: "BRAIN/SKULL C.T.SCAN-PLAIN (P)",id:181},
-{name: "Neck CT Scan (Cervical)-PLAIN",id:182},{name: "CT Scan Sinuses/Nasal Cavity",id:183},{name: "Abdominal/Pelvic CT Scan-PLAIN",id:184},
-{name: "CT Scan Pelvic Girdle (Pelvis)",id:185},{name: "Thoracic Spine CT Scan",id:186},{name: "Chest CT Scan-PLAIN",id:187},
-{name: "CT Scan Femur (thigh) and Related Soft Tissues",id:188},{name: "C.T.SCAN-Angiography Whole Body",id:189},
-{name: "C.T.SCAN-Angiography Regional",id:190},{name: "C.T.SCAN-Angiography (Interventional) Including Introduction of Stents",id:200},
-{name: "C.T.SCAN CD Result Recording Per Plate",id:201},{name: "Hand CT Scan (Fingers Included)",id:202},
-
-{name: "CT Scan Upper Arm (Humerus and Related Soft Tissues)",id:203},{name: "CT Scan Lower Arm (Ulna and Redius and Related Soft Tissues)",id:204},
-{name: "CT Scan Tibia and Fibula and Related Soft Tissues",id:205},{name: "Lumbosacral Spine C.T.SCAN",id:206},
-{name: "BRAIN/SKULL C.T.SCAN-SINGLE CONTRAST (P)",id:207},{name: "ABDOMINAL/PELVIC C.T.SCAN-SINGLE CONTRAST",id:208},
-{name: "ABDOMINAL/PELVIC C.T.SCAN-DOUBLE CONTRAST",id:209},{name: "ABDOMINAL/PELVIC C.T.SCAN-TRIPPLE CONTRAST",id:210},
-{name: "CHEST C.T.SCAN-SINGLE CONTRAST",id:211},{name: "CHEST C.T.SCAN-DOUBLE CONTRAST",id:212},{name: "CHEST C.T.SCAN-TRIPPLE CONTRAST",id:213},
-{name: "KNEE JOINT C.T.SCAN",id:214},{name: "NECK C.T. SCAN (SoftTissue) -Single Contrast",id:215},{name: "ELBOW JOINT C.T.SCAN",id:216},
-{name: "ORBITAL C.T.SCAN",id:217},{name: "C.T.SCAN-PELVIMETRY",id:218},{name: "EAR/MASTOIDS C.T.SCAN",id:219},{name: "C.T.SCAN-MYELOGRAM",id:220},
-{name: "MRI",id:221},
-{name: "MRI REPORTING ONLY",id:222},{name: "ANKLE C.T.SCAN",id:223},{name: "C.T.SCAN-Angiography including Tripple Screen/Cardiac Study",id:224},
-{name: "C.T.SCAN- Perfusion(Specify Organ/Tissue)",id:225},{name: "C.T.SCAN-Colonoscopy(Virtual Colonoscopy)",id:226},
-{name: "C.T.SCAN-Pneumography",id:227},{name: "C.T.SCAN-Calcium Scoring (for increased Specificity of FRAMINGHAM SCORE)",id:228},
-{name: "C.T.SCAN-KUB (Kidney,Ureter & Bladder)",id:229},{name: "C.T.SCAN-Bronchoscopy(Virtual Bronchoscopy)",id:230},
-
-{name: "C.T.SCAN-VENOGRAPHY",id:231},{name: "C.T Scan of the jaws (maxilla and mandibles and related soft tissues",id:232},
-  {name: "CT Scan Paranasal Sinusis",id:233},
-{name: "CT Scan Myelography",id:234},{name: "CT Scan IVU",id:235},{name: "CT Scanogram",id:236},
-{name: "CT Scan Abdomen",id:237},{name: "C.T Scan Facial Bones",id:238},
-{name: "C.T Scan Head and Neck",id:239},{name: "CT-Scan-PELVIMETRY",id:240},{name: "CT CD Reprinting",id:241},
-{name: "ANGIOGRAPHY STUDIES",id:242},{name: "ABDOMINAL/PELVIC C.T. SCAN-DOUBLE/TRIPLE CONTRAST (P)",id:243},
-{name: "ABDOMINAL/PELVIC C.T. SCAN-SINGLE CONTRAST (P)",id:244},
-{name: "ABDOMINAL/PELVIC C.T. SCAN-PLAN (P)",id:245},
-{name: "ANKLE C.T. SCAN (P)",id:246},{name: "S",id:247},{name: "BRAIN/SKULL C.T.SCAN-SINGLE CONTAST",id:248},
-{name: "C. T. SCAN FACIAL BONES (P)",id:249},
-{name: "C. T. SCAN HEAD AND NECK (P)",id:250},{name: "C. T. SCAN OF THE JAWS (MAXILLA AND MANDIBLES) (P)",id:251},
-{name: "C. T. SCAN CD RESULT RECORDING PER PLATE (P)",id:252},{name: "C.T. SCAN REPORTING (P) (P)",id:253},
-{name: "C. T. SCAN-ANGIOGRAPHY (CARDIAC STUDY) (P)",id:254},{name: "C. T. SCAN-ANGIOGRAPHY REGIONAL (P)",id:255},
-
-{name: "C. T. SCAN-ANGIOGRAPHY WHOLE BODY (P)",id:256},
-{name: "C. T. SCAN-CALCIUM SCORING (FOR INCREASED SPECDIFICITY OF FRAMINGHAM SCORE) (P)",id:257},
-{name: "C. T. SCAN-COLONOSCOPY (VIRTUAL COLONOSCOPY) (P)",id:258},{name: "C. T. SCAN-KUB (KIDNEY, URETER & BLADDER) (P)",id:259},
-{name: "CHEST C.T. SCAN-SINGLE CONTRAST (P)",id:260},{name: "CHEST C.T. SCAN-PLAIN (P)",id:261},{name: "CHEST C.T. SCAN-DOUBLE CONTRAST (P)",id:262},
-{name: "CHEST C.T. SCAN-TRIPLE CONTRAST (P)",id:263},{name: "CHEST C.T. SCAN REPORTING (P)",id:264},{name: "C.T. SCAN ABDMEN (P)",id:265},
-{name: "CHEST C.T. SCAN FEMUR (THIGH) AND RELATEED SOFT TISSUES (P)",id:266},{name: "C.T. SCAN INTERPRETING ONLY (P)",id:267},
-{name: "C.T. SCAN IVU (P)",id:268},{name: "C.T. SCAN LOWER ARM (ULNA AND RADIUS AND RELATED SOFT TISSUES) (P)",id:269},
-{name: "C.T. SCAN MYELOGRAPHY (P)",id:270},{name: "C.T. SCAN PELVIC GIRDLE (PELVIS) (P)",id:271},{name: "C.T. SCAN SINUSES/NASAL CAVITY (P)",id:272},
-{name: "C.T. SCAN TIBIA AND FIBULA AND RELATEDE SOFT TISSUES (P)",id:273},{name: "C.T. SCAN UPPER ARM (HUMERUS AND RELATED SOFT TISSUES) (P)",id:274},
-{name: "EAR/MASTODIDS C.T. SCAN (P)",id:275},{name: "ELBOW JOINT C.T. SCAN (P)",id:276},
-{name: "HAND C. T. SCAN (FINGERS INCLUDED) (P)",id:277},{name: "KNEE JOINT C.T. SCAN (P)",id:278},{name: "LUMBO-SACRAL SPINE C.T. SCAN (P)",id:279},
-{name: "NECK C. T. SCAN (SOFT TISSUE) - SINGLE CONTRAST (P)",id:280},{name: "NECK C. T. SCAN (CERVICAL) - PLAIN (P)",id:281},
-{name: "ORBITAL C.T. SCAN (P)",id:282},{name: "THORACIC SPINE S.T. SCAN (P)",id:283},{name: "C.T. HEAD AND NECK (P)",id:284},
-{name: "THORACOLUMBAR CT",id:285},
-{name: "C. T. BRAIN",id:286}]
-
-
-/************** Listing of ECG  ****************/
-
-scanTestList.listInfo4 = [{name: "ECG  12 Lead/Analysis NORMAL ECG @ REST)",id:287},{name: "STRESS ECG(ECG @ EXERCISE)",id:288},
-{name: "HOLTER/AMBULATORY ECG",id:289}];
-
-/**************** Listing of MRI  ************/ 
-
-scanTestList.listInfo5 = [{name: "MRI - ABDOMINO-PELVIC SCAN-SINGLE CONTRAST",id:290},{name: "MRI - ABDOMINO-PELVIC SCAN PLAIN",id:291},
-{name: "MRI - ANKLE SCAN",id:292},{name: "MRI - BRAIN SCAN-PLAIN",id:293},{name: "MRI - BRAIN SCAN-CONTRAST",id:294},
-{name: "MRI - RESULT RECORDING PER PLATE(FPR REPLACEMENT)",id:295},
-{name: "FUNCTIONAL MRI (FMRI)",id:296},{name: "MRI -CERVICAL SPINE",id:297},{name: "MRI - THORACIC SPINE",id:298},
-{name: "MRI - LUMBOSACRAL SPINE",id:299},
-{name: "MRI - ABDOMEN",id:300},
-{name: "MRI - PELVIC",id:301},{name: "MRI - CHEST",id:302},{name: "MRI - EXTREMITIES-KNEES, ANKLES, SHOULDER JOINT",id:303},
-{name: "MRI - ANGIOGRAPHY STUDIES",id:304},{name: "MRI Spectroscopy",id:305},{name: "MRI - Screening One Sequence",id:306},
-{name: "MRI CD Reprinting",id:307},
-{name: "MRI - Chol-Pancreatography",id:308},{name: "MRI -ANGIOGRAPHY STUDIES (PEDIATRIC)",id:309},{name: "MRI CHOL-PANCREATOGRAPHY (PEDIATRIC)",id:310},
-{name: "MRI SCREENING ONE SEQUENCE (PEDIATRIC)",id:311},{name: "MRI -ABDOMINO-PELVIC SCAN-SINGLE-CIBTRAST (PEDIATRIC)",id:312},
-{name: "MRI -ABDOMINO-PELVIC SCAN-PLAIN (MRCP) (PEDIATRIC)",id:313},{name: "MRI -ANKLE SCAN (PEDIATRIC)",id:314},
-{name: "MRI -BRAIN SCAN-PLAIN (PEDIATRIC)",id:315},{name: "MRI -BRAIN SCAN-CONTRAST (ANGIO)",id:316},
-{name: "MRI REPORTING ONLY (PEDIATRIC)",id:317},{name: "MRI RESULT RECORDING PER PLATE (FOR A REPLACEMENT) (PEDIATRIC)",id:318},
-{name: "MRI CD REPRINTING (PEDIATRIC)",id:319},{name: "FUNCTIONAL MRI (FMR)(PEDIATRIC)",id:320},
-{name: "MRI -CERVICAL SPINE(PEDIATRIC)",id:321},{name: "THORACIC SPINE(PEDIATRIC)",id:322},{name: "MRI -LUMBOSACRAL SPINE(PEDIATRIC)",id:323},
-{name: "MRI -ABDOMEN(PEDIATRIC)",id:324},
-{name: "PELVIC SCAN SINGLE CONTRAST(PEDIATRIC)",id:325},{name: "MRI -CHEST(PEDIATRIC)",id:326},
-{name: "MRI -EXTREMITIES-KNEES, ANKLES, SHOULDER JOINT(PEDIATRIC)",id:327},
-{name: "MRI Total Spine (CBN)",id:328},{name: "MRI - LEG",id:329},{name: "MRI BRAIN (P) WITH CONTRAST",id:330},
-{name: "MRI PELVIS PAEDIATRICS",id:331}];
-
-
-/***************** Listing of MAMMOGRAM   ********************/
-
-scanTestList.listInfo6 = [{name: "MAMMOGRAPHY - SINGLE BREAST(ADDITIONAL VIEW)",id:332},
-{name: "MAMMOGRAPHY - SINGLE BREAST(PREVIOUS MASTECTOMY)",id:333},
-{name: "MAMMOGRAPHY WITH STEREOTACTIC BIOPSY",id:334},{name: "MAMMOGRAPHY - BOTH BREASTS (TWO VIEWS)",id:335}];
-
-  
-  return scanTestList;
-});
-
 
 
 
@@ -2139,10 +2146,3 @@ app.factory("cities",function(){
   return allCities;
 });
 
-app.factory("symptomsFactory",function(){
-
-  var allSymptoms = ["Headache","Abdominal Pain","Fever","Nausea","Vomiting","Neck Pain","Stiff Neck","Catarrh","Cough","Body Weakness",
-  "Joint Pain","Difficulty breathing"];
-
-  return allSymptoms;
-});

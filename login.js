@@ -17,7 +17,6 @@ var loginRoute = function(model,sms) {
 
     // find a user whose email is the same as the forms email
     // we are checking to see if the user trying to login already exists;
-    console.log(req.body);
 
     var criteria = (req.body.isPhoneNumber) ? {phone: username} : {email: username};
 

@@ -630,8 +630,12 @@
                                           <span  class="hidden-md-down text-danger">Specialists</span>
                                         </a>
                                        
-                                        <a class="btn btn-simple round ml-0"  href="#/drug" ><i class="fa fa-search"></i>
+                                        <a class="btn btn-simple round ml-0 mr-2"  href="#/drug" ><i class="fa fa-search"></i>
                                           <span  class="hidden-md-down text-danger">Drugs</span>
+                                        </a>
+
+                                        <a class="btn btn-simple round ml-0"  href="#/invite" >
+                                          <i class="fa fa-user-plus text-danger"></i>                                          
                                         </a>
                                         
                                         <!-- <a class="btn btn-simple round ml-0"  href="#/search-test" ><i class="fa fa-search"></i>
@@ -643,7 +647,7 @@
 
                                     </div>
 
-                                    <div class="hidden-md-up dropdown p-0" style="position: relative;">
+                                    <div class="hidden-md-up dropdown p-0" style="position: relative;line-height: normal;" ng-cloak>
 
                                           <ul style="list-style: none;display: inline-block;width: 100%;padding:0;text-align: center;margin-top: 12px;margin-bottom: 0" class="ml-0 pl-0">
                                             <li style="float: left;width: 50%;padding: 12px 5px;border-left: none;" class="btn btn-simple font-1_1"><a href="#/my-doctors" class="text-danger" style="display: block;height: 100%"><i class="fa fa-users"></i> My Doctors</a> </li>
@@ -671,17 +675,23 @@
                                            
                                           </ul>-->
 
-                                          <ul style="list-style: none;display: inline-block;width: 100%;padding:0;text-align: center;margin-top: -40px;" class="ml-0 pl-0">
+                                          <ul style="list-style: none;display: inline-block;width: 100%;padding:0;text-align: center;" class="ml-0 pl-0">
 
-                                              <li style="float: left;width: 28%;padding: 10px 5px" class="btn btn-simple text-danger font-1_1 mr-1">
-                                                <a href="" class="text-muted dropdown-toggle"  id="navbarDropdownMenuLink2" data-toggle="dropdown" ng-click="getAccess()" style="display: block;height: 100%">
+                                              <li style="float: left;width: 28%;padding: 10px 5px" class="btn btn-simple  font-1_1 mr-1">
+                                                <a href="" class="text-muted dropdown-toggle text-danger"  id="navbarDropdownMenuLink2" data-toggle="dropdown" ng-click="getAccess()" style="display: block;height: 100%">
                                                    MRA Key
                                                 </a>
                                               </li>
 
-                                              <li style="float: left;width: 28%;padding: 10px 5px" class="btn btn-simple text-danger font-1_1 mr-1">
+                                               <li style="float: left;padding: 10px 5px;width: 28%" class="btn btn-simple font-1_1 mr-1">
+                                                <a href="#/invite" class="text-danger" style="display: block;height: 100%">
+                                                  <i class="fa fa-user-plus"></i>
+                                                </a> 
+                                              </li>         
+
+                                              <!--<li style="float: left;width: 28%;padding: 10px 5px" class="btn btn-simple text-danger font-1_1 mr-1">
                                               <a href="" data-toggle="dropdown" class="dropdown-toggle" id="navbarDropdownMenuLink23" ng-click="getAccess('qs')" style="display: block;height: 100%"><i class="fa fa-search"></i> </a>
-                                              </li>
+                                              </li>-->
 
                                               <li style="float: left;padding: 10px 5px;width: 35%" class="btn btn-info btn-sm">
                                                 <a href="#/transactions" style="color:#fff;display: block;height: 100%">
@@ -689,6 +699,9 @@
                                                 </a> 
                                               </li>                                               
                                           </ul>
+                                          <div class="pt-0 mt-0">
+                                              <a href="" data-toggle="dropdown" class="dropdown-toggle btn btn-simple text-success btn-block" id="navbarDropdownMenuLink23" ng-click="getAccess('qs')" style="display: block;height: 100%"><i class="fa fa-search text-success"></i> </a>
+                                          </div>
 
                                          
                                             <!--<a href="#/my-doctors" class="text-muted text-danger btn btn-simple mt-2 round mob-art"  id="navbarDropdownMenuLink23" style="font-size: 14px;"><i class="fa fa-users"></i>

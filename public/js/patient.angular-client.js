@@ -4182,18 +4182,21 @@ app.controller("bookingDocController",["$scope","templateService","$http","$root
   $scope.searchObj = {};
   $scope.searchObj.city = localManager.getValue('resolveUser').city;
   var fetchDoctors = patientfindDoctorService;
-  $scope.isComplaint = true;
+  //$scope.isComplaint = true;
+  $scope.isSearchToSend = true;
+ 
 
   $scope.back = function() {
-    $scope.isSearchToSend = false;
-    $scope.isComplaint = true;
-  }
-
-  $scope.continue = function() {
     $scope.isSearchToSend = true;
     $scope.isComplaint = false;
-    if(!$rootScope.doctorList)
-      $scope.find();
+  }
+
+  $scope.continue = function(doc) {
+    $scope.docInfo = doc;
+    $scope.isSearchToSend = false;
+    $scope.isComplaint = true;
+   // if(!$rootScope.doctorList)
+   //   $scope.find();
   }
 
   $scope.find = function() {
@@ -4207,6 +4210,9 @@ app.controller("bookingDocController",["$scope","templateService","$http","$root
       $scope.loading = false;
     }); 
   }
+
+  if(!$rootScope.doctorList)
+      $scope.find();
 
   $scope.quickFind = function(specialty) {
     $scope.searchObj.specialty = specialty;
@@ -4307,7 +4313,7 @@ app.controller("bookingDocController",["$scope","templateService","$http","$root
  
   $scope.sendRequest = function(doc) {
       doc.loading = true;
-      $scope.docInfo = doc;
+      //$scope.docInfo = doc;
       $scope.patient.history = "";
       if($scope.patient.sick) {
         $scope.patient.history =  "I am sick. I am having the following symptoms:"
@@ -7946,12 +7952,34 @@ app.controller("familyAccountController",["$scope","$http","$rootScope","localMa
   }
 }]);
 
-app.controller("invitationCtrl",["$scope","$http","$rootScope","ModalService",function($scope,$http,$rootScope,ModalService){
+app.controller("invitationCtrl",["$scope","$http","$rootScope","ModalService","$timeout",
+  function($scope,$http,$rootScope,ModalService,$timeout){
     $scope.invite = {};
 
     $scope.someone = function(type){
       $scope.invite.type = type;
     }
+
+
+    $scope.copyText = "Consult doctors online, buy drugs with home delivery and do diagnostic tests through Applinic. Free treatment"
+    + " for malaria and typhoid fever available while offer lasts. Click link below to register.  https://applinic.com"
+
+    $scope.supported = false;
+
+    $scope.copy = "";
+
+    $scope.success = function (pres) {
+      pres.copy = 'Copied!';
+      $timeout(function(){
+        pres.copy = "";
+      },2000);
+    };
+
+
+    $scope.fail = function (err) {
+      console.error('Error!', err);
+    };
+
 
     $scope.inviteFn = function() {
       $scope.msg = "";
@@ -7976,7 +8004,7 @@ app.controller("invitationCtrl",["$scope","$http","$rootScope","ModalService",fu
         return;
       }
 
-      if($scope.invite.recepient.indexOf('+') == -1 || $scope.invite.recepient.indexOf("234") == -1){
+      if($scope.invite.recepient[0] === '0'){
         var newSlice = $scope.invite.recepient.slice(1);
         $scope.invite.recepient = "+234" + newSlice;
       }
@@ -7984,7 +8012,8 @@ app.controller("invitationCtrl",["$scope","$http","$rootScope","ModalService",fu
 
       $scope.loading = true;
 
-      $http.post("/user/invitation",$scope.invite)
+     
+    $http.post("/user/invitation",$scope.invite)
       .success(function(res){
         $scope.msg = res.message;
         $scope.loading = false;

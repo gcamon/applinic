@@ -25,13 +25,13 @@ function genId(username) {
 
 var signupRoute = function(model,sms,geonames,paystack,io,transporter) {
 	passport.use('signup', new LocalStrategy({
-		usernameField : 'email',
+		usernameField : 'phone',
 	    passwordField : 'password',
 	    passReqToCallback : true 
 	},
-	function(req,email,password,done){
+	function(req,phone,password,done){
 		process.nextTick(function(){	
-			model.user.findOne({$or: [{ phone : req.body.phone},{email: email}]},function(err,user){
+			model.user.findOne({ phone : phone},function(err,user){ //sign up was modified on 7/19/20 email criteria in $or was removed
 			if(err) return done(err);
 			if(user){
 				if(user.email){
@@ -110,7 +110,7 @@ var signupRoute = function(model,sms,geonames,paystack,io,transporter) {
 					});
 
 					User.ewallet = {
-						available_amount: (req.body.typeOfUser === "Patient") ? 1000 : 0,
+						available_amount: (req.body.typeOfUser === "Patient") ? 250 : 0,
 						transaction: []
 					}
 
@@ -365,13 +365,14 @@ var signupRoute = function(model,sms,geonames,paystack,io,transporter) {
 								  html: emsg
 								};
 
-								transporter.sendMail(mailOptions, function(error, info){
-								  if (error) {
-								    console.log(error);
-								  } else {
-								    console.log('Email sent: ' + info.response);
-								  }
-								});
+								if(req.body.email)
+									transporter.sendMail(mailOptions, function(error, info){
+									  if (error) {
+									    console.log(error);
+									  } else {
+									    console.log('Email sent: ' + info.response);
+									  }
+									});
 
 								return done(null,User);
 							});		
@@ -424,7 +425,7 @@ var signupRoute = function(model,sms,geonames,paystack,io,transporter) {
 
 	router.put("/user/verify-phone-number",function(req,res){
 		var genPin = randos.genRef(6);	
-		
+		console.log(req.body)
 		if(req.body.isCovid19){
 			model.user.findOne({phone: req.body.phone})
 			.exec(function(err,user){

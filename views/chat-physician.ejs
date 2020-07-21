@@ -9,14 +9,14 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
      <!--<link rel="stylesheet" href="/assets/css/bootstrap.css">-->
-        <link rel="stylesheet" href="/assets/css/vendor.css">
-         <link rel="stylesheet" href="/assets/css/app.css">
-          <link rel="stylesheet" href="/assets/css/now-ui-kit2.css">
-          <link rel="stylesheet" href="/assets/css/icomoon.css">
+        <!--<link rel="stylesheet" href="/assets/css/vendor.css">
+         <link rel="stylesheet" href="/assets/css/app.css">-->
+        <link rel="stylesheet" href="/assets/css/now-ui-kit2.css">
+         <!-- <link rel="stylesheet" href="/assets/css/icomoon.css">
           <link rel="stylesheet" href="/assets/css/font-awesome.min.css">
           <link rel="stylesheet" href="/assets/css/chat.css">
           <link rel="stylesheet" href="/assets/css/my-edit.css">
-          <link rel="stylesheet" href="/assets/css/ngPrint.css">
+          <link rel="stylesheet" href="/assets/css/ngPrint.css">-->
             <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
 
     <script src="https://kit.fontawesome.com/5d5c57c2c4.js" crossorigin="anonymous"></script>
@@ -247,13 +247,13 @@ img{ max-width:100%;}
 
                      <li class="nav-item" style="margin-right: 10px">
                         <a href="/find-laboratory" class="btn btn-outline-success nav-link btn-sm">
-                          Find Lab Test
+                          Laboratory Test
                         </a>
                     </li>
 
                     <li class="nav-item" style="margin-right: 10px">
                         <a href="/find-radiology" class="btn btn-outline-success nav-link btn-sm">
-                          Find Radio Test
+                          Radiology Test
                         </a>
                     </li>
                     <!--<li class="nav-item" style="margin-right: 30px">
@@ -301,7 +301,7 @@ img{ max-width:100%;}
               <div class="chat_people">             
                 <div class="chat_img"> <img src="{{chat.profilePic}}" alt="image"> </div>
                 <div class="chat_ib" style="position: relative;">
-                  <h5 class="mb-0 pb-0"><b>{{chat.name}}</b> <!--<span class="chat_date" >{{ (chat.messages[chat.messages.length - 1].time  || chat.messages[chat.messages.length - 1].received ) | amCalendar}}</span>--></h5>
+                  <h5 class="mb-0 pb-0"><b>{{chat.name}}</b> <span class="chat_date" >{{ (chat.messages[chat.messages.length - 1].time  || chat.messages[chat.messages.length - 1].received ) | amCalendar}}</span></h5>
                   <p class="ellipsis"><!--{{(!chat.typing) ? (chat.messages[chat.messages.length - 1].msg || chat.messages[chat.messages.length - 1].received || chat.messages[chat.messages.length - 1].sent ) : chat.typing }}-->
                       <span>{{chat.specialty}}</span><br>
                       <span ng-repeat="e in chat.education">{{e.certificate}}</span>
@@ -309,6 +309,7 @@ img{ max-width:100%;}
                   <p class="ellipsis"><b>{{chat.city}} {{chat.country}}</b></p>
                   <span style="position: absolute;right: 0px; bottom: 0px" class="online" ng-show="chat.status" title="Online"></span>
                   <span style="position: absolute;right: 0px; bottom: 0px;background-color: #ccc" title="Offline" class="online" ng-show="!chat.status"></span>
+                   <a href="" ng-show="!chat.status" class="btn btn-sm btn-info" style="position: absolute;right: 0px; bottom: -5px;">invite online</a>
                 </div>
               </div>
             </div>
@@ -321,6 +322,7 @@ img{ max-width:100%;}
                     <em ng-if="partner.typing" style="font-size: 14px;color: green"><small>{{partner.typing}}</small></em> 
                     <em ng-if="partner.status && !partner.typing" style="font-size: 12px;color: green" ng-cloak>Online</em>
                     <em ng-if="!partner.status && !partner.typing" ng-cloak style="color:orange;font-size: 12px"><!--{{lastSeen(partner)}}--> Offline</em>
+
                     </span>
                 </span>
             </div>
@@ -580,147 +582,166 @@ img{ max-width:100%;}
         </div>
     </script>
 
-
-    <script type="text/ng-template" id="search-result.html">
-         <div class="modal fade">
-          <div class="modal-dialog">
-            <div class="modal-content">
-              <div class="modal-header" style="position: relative;">
-               <h5>Forwarding:</h5>
-               <button type="button" class="close" ng-click="close('Cancel')" data-dismiss="modal" aria-hidden="true" style="color:red;font-size: 32px;z-index: 3;position: absolute;top: 8px;right: 15px">&times;</button>
-              </div>          
-             
-              <div class="modal-body" style="padding: 10px">
-              
-<section ng-if="isContent && !isReferReq" class="p-1">
-     <div>    
-      <span class="font-1_1 mb-0" style="font-style: italic;">{{data.str}}</span>
-    </div>   
-    <div>
-        <b>TO</b>
-    </div>
-    <div>
-        <h6>{{data.name}}</h6>
-        <span>{{data.address}}</span><br>
-        <span>{{data.city}}</span>
-        <span>{{data.country}}</span>
-    </div>
-   
-    <hr>
-    <section>
-        <button class="btn btn-simple" ng-class="{'btn-success': forwardType == 'inperson'}" ng-click="someone('inperson')"><!--<i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i>--> Forward on my behalf</button>
-
-        <button class="btn btn-simple" ng-class="{'btn-success': forwardType == 'another'}"  ng-click="someone('another')"> Forward on behalf of someone else</button>
-    </section>
-    <hr>
-    <section ng-show="forwardType == 'another' || forwardType == 'inperson'" class="mt-2">
-         <form ng-submit="send()">
-                <div ng-if="forwardType == 'another'" class="mb-2">                 
-                 <label><b>Recepient's phone number</b></label><br> <!--<i class="fa fa-question-circle tip"> <span>The phone number this recipient registered with on applinic</span></i>-->
-                 <span class="text-danger">{{phoneMsg}}</span>
-                 <input type="text" Placeholder="Enter patient's phone" ng-model="user.phone" class="form-control" required="required" style="cursor:normal">
-                </div>
-                <div ng-if="typeOfSearch === 'pharmacy'" class="mb-2">
-                  <label><b>Instructions / explanations for prescription(s)</b></label><br> 
-                  <span class="text-danger">{{provisionalMsg}}</span>
-                  <textarea class="form-control pl-1" placeholder="Write..." ng-model="data.provisional_diagnosis" ng-keyup="autoExpand($event)" id="textarea"> </textarea>
-                </div>
-                <div ng-if='typeOfSearch === "diagnostic"' class="mb-2">
-                  <label><b>Clinical Summary </b></label><br>
-                  <span class="text-danger">{{summuryMsg}}</span>
-                   <textarea class="form-control p-1" placeholder="Write..." ng-model="data.clinical_summary"  ng-keyup="autoExpand($event)" id="textarea"></textarea>
-                 </div>
-                 <div ng-if='typeOfSearch === "diagnostic"' class="mb-2">
-                   <label><b>Indication</b> </label><br>
-                   <span class="text-danger">{{indictionMsg}}</span>
-                   <textarea class="form-control p-1" placeholder="Write..." ng-model="data.indication" ng-keyup="autoExpand($event)" id="textarea"></textarea>
-                 </div>
-                 <div ng-if='typeOfSearch === "diagnostic"' class="mb-2">
-                   <label><b>LMP ( female )</b></label><br>
-                   <textarea class="form-control p-1" placeholder="Write..." ng-model="data.lmp" ng-keyup="autoExpand($event)" id="textarea"></textarea>
-                 </div>
-                 <div ng-if='typeOfSearch === "diagnostic"' class="mb-2">
-                   <label><b>Parity ( female )</b></label><br>
-                    <textarea class="form-control p-1" placeholder="Write..." ng-model="data.parity" ng-keyup="autoExpand($event)" id="textarea"></textarea>
-                 </div>
-
-                
-
-                <div class="pt-3 pb-3">                   
-                    
-                    <input type="submit"  class="btn btn-success btn-block" value="Send" ng-if="!loading">
-                    <i class="fa fa-spinner fa-pulse fa-1x fa-fw text-warning" style="font-size: 18px" ng-if="loading"></i>&nbsp;
-                    
-                     <!--<input type="button" value="Cancel" ng-click="cancel()" class="btn btn-outline-danger btn-block" ng-if="checkLogIn.typeOfUser === 'Patient' && !loading">-->
-                    <!--<input type="button" value="New Person Form" ng-click="emp()" class="btn btn-simple" ng-if="isEMP">-->
-                </div>            
-	        </form>
-	    </section>
-		</section>
-		<div ng-if="isSent" class="p-1">
-	    <h5 class=" text-success"  style="text-align:center"> Sent successfully!!!</h5>
-	    <div class="m-0"><strong class="font-1-1"> Center Name: </strong><em>{{data.name}}</em> </div> 
-	    <div class="m-0"><strong class="font-1-1"> Center Location: </strong><em>{{data.address}}, {{data.city}}, {{data.country}}</em> </div> 
-	    <div class="mb-1"><span class="font-1-2" style="color:red"> Ref No:  </span><em>{{result}}</em> </div> 
-	    <div class="font-1-1">Please take note of the center name and 
-	        reference number above. You will use the reference number to find this prescription at the center.
-	    </div>
-		</div>
-
-		<div ng-show="isReferReq">
-			<p>
-				We observed that the patient you compiled this test(s) is not yet registered in the platform. Please invite the patient to register so that you can continue sending test(s).<br><br>
-				<a href="" class="btn btn-info btn-sm" ng-click="invite()" ng-show="!inviteStatus">{{(loading) ? "Sending..." : 'Invite Now!'}}</a><br>
-				<p class="text-success">{{invitationMsg}}</p>
-			</p>
-		</div>
-  
-              </div>
-              
+    <!--<form class="p-2">
+            <div  ng-if="!success" style="font-size: 14px">
+                <p class="text-success">{{verifyInfo}}</p>
+                <p class="text-danger">{{error}}</p>
             </div>
-          </div>
-        </div>
-    </script>
+            <br>
+            <div ng-if="!success">
+                <p style="font-size: 14px">
+                    If you did not receive SMS, get the verification pin via phone call. &nbsp;&nbsp;
+                    <a href="" ng-click="call(resend)"><i class="fa fa-phone"></i> Call Now!</a>
+                </p> 
+                <p class="text-center" style="font-size: 14px" ng-if="showCallingMsg">{{showCallingMsg}}</p>
+            </div>
+            <br>
+            <div ng-if="!success" class="col-md-11">
+                <input type="text" placeholder="Enter verification pin" ng-model="verify.pin" class="form-control">
+            </div>
+            <div class="clearfix"></div>
+            <div class="text-center" ng-if="!success">
+                <button class="btn btn-danger" ng-click="sendForm()" ng-if="!loading && !success">
+                <span class="sr-only">Loading...</span> Verify</button> 
+                <span ng-if="loading"><i class="fa fa-spinner fa-pulse fa-1x fa-fw text-info"  ng-if="loading"></i> verifying...</span>
+            </div>
+            <div ng-if="success" class="mt-3" style="text-align: center;">
+                <span class="text-muted">{{success}}</span><br><br>
+                <a href="/login" class="btn btn-success btn-lg">Log In</a>
+            </div>
+        </form>-->
 
 
   
 
      <!-- quick chat modal -->
-   <script type="text/ng-template" id='quick-chat.html'>
+   <script type="text/ng-template" id='chat-auth.html'>
        <div class="modal fade">
         <div class="modal-dialog">
           <div class="modal-content">
-            <div class="p-2">
-            <div>
-                <b class="font-1_3"><i class="fa fa-comments"></i> Messaging</b>
-                <button type="button" class="close" ng-click="close('Yes')" data-dismiss="modal">&times;</button>      
+            <div class="modal-header" style="position: relative;">   
+                <h5><b>Tell us who you are!</b></h5>   
+                <button type="button" class="close" ng-click="close('Cancel')" data-dismiss="modal" aria-hidden="true" style="color:red;font-size: 32px;z-index: 3;position: absolute;top: 8px;right: 15px">&times;</button>                         
             </div>
-            <hr>
-           
+                    
             <div class="modal-body">
-                <header>
-                   <b>{{center.name}}</b>
-                   <span style="display: block;">{{center.address}} {{center.city}} {{center.country}}</span>
-                </header>
-              
-                <div class="pt-3">
-                    <textarea class="form-control p-1" ng-model="messageBody" placeholder="write..." style="min-height: 140px" ng-keyup="autoExpand($event)">
-                    </textarea>
-                </div>
+                <form ng-submit="createAccount('Patient')" ng-show="!isPhoneverify"> 
+                    <p>Please quickly fill this form so as to enable the physician know you.</p>
+                    <div class="pt-3">
+                        <label><b>Title</b></label><br>
+                        <select placeholder="title" class="form-control" ng-model="user.title" required>
+                            <option value="" disabled selected>_select title</option>                               
+                            <option>Dr</option>
+                            <option>Mr</option>
+                            <option>Mrs</option>
+                            <option>Miss</option>
+                            <option>Master</option>
+                            <option>Chief</option>
+                            <option>Rev</option>
+                            <option>Pastor</option>
+                            <option>Engr</option>
+                            <option>Barr</option>
+                            <option>Surv</option>
+                            <option>Hon</option>
+                            <option>Ven</option>
+                            <option>HRH</option>
+                            <option>Prof</option>
+                            <option>Justice</option>
+                        </select>
+                    </div>
+                    <div class="pt-3">
+                        <label><b>Firstname</b></label><br>
+                        <input type="text" name="" placeholder="Enter full name" class="form-control" ng-model="user.firstname" required>
+                    </div>
 
-                <div class="pt-2">
-                    <button ng-click="sendChatSingle(center.id,center.user_id)" class="btn btn-danger btn-block" style="position: static;margin-left: 2px"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i> {{(isSent) ? "Message sent!" : 'Send'}}</button>
-                </div>
-               
+                    <div class="pt-3">
+                        <label><b>Lastname</b></label><br>
+                        <input type="text" name="" placeholder="Enter full name" class="form-control" ng-model="user.lastname" required>
+                    </div>
+
+                    <div class="pt-3">
+                        <label><b>Date of Birth</b></label><br>
+                        <input type="date" name="" placeholder="date of birth" class="form-control" ng-model="user.dob" required>
+                    </div>
+
+                    <div class="pt-3">
+                        <label><b>Sex</b></label><br>
+                        <!--<input type="text" name="" placeholder="sex" class="form-control" ng-model="person.gender" required>-->
+                        <select placeholder="sex" class="form-control" ng-model="user.gender" required>
+                            <option value="" selected disabled>_select</option>
+                            <option>Male</option>
+                            <option>Female</option>
+                        </select>
+                    </div>
+
+                     <div class="pt-3" style="position: relative;">
+                        <label><b>City</b></label><br>
+                         <input type="text" name="" placeholder="City" class="form-control" ng-model="user.city" required uib-typeahead="city for city in cities | filter:$viewValue | limitTo:15">
+                    </div>
+                                       
+                    <div class="pt-3">
+                        <label><b>Phone Number</b></label><br>
+                        <input type="text"  placeholder="Enter phone number" class="form-control" ng-model="user.phone" required>
+                    </div>
+                    
+                   
+                    <div class="pt-3" style="position: relative;">
+                        <label><b>Password</b></label><br>
+                        <input type="password" name="" placeholder="password" class="form-control" ng-model="user.password" id="myPass2" required>
+                        <i class="fa fa-eye text-muted" style="font-size:20px;position: absolute;bottom: 10px;right:20px;color: grey;cursor: pointer;" onclick="showPass('b')"></i>
+                    </div>
+
+                    <div class="pt-3">
+                        <label class="custom-control custom-checkbox ml-0 pl-0">
+                          <input type="checkbox"  ng-model="user.agree" required>
+                          <span class="custom-control-description" style="font-size: 14px;"> I agree with the <a href="/terms" target="_blank" >Terms of Service</a> and <a href="/privacy" target="_blank"> Privacy Policy.</a></span><br>
+                          <span class="text-danger"></span> 
+                        </label>
+                    </div>
+                    <div class="pt-3">
+                        <button type="submit" name="" class="btn btn-danger btn-block"> <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i> {{(loading) ? "" : "Continue"}}</button>
+                    </div>
+
+                </form>   
+                <form class="p-2"  ng-show="isPhoneverify">
+                    <div  ng-if="!success" style="font-size: 14px">
+                        <p class="text-success">{{verifyInfo}}</p>
+
+                        <p class="text-danger p-2" style="border: 1px dashed #ccc">{{error}}</p>
+                    </div>                    
+                    <div ng-if="!success">
+                        <p style="font-size: 14px">
+                            If you did not receive SMS, get the verification pin via phone call. &nbsp;&nbsp;
+                            <a href="" ng-click="call(resend)"><i class="fa fa-phone"></i> Call Now!</a>
+                        </p> 
+                        <p class="text-center" style="font-size: 14px" ng-if="showCallingMsg">{{showCallingMsg}}</p>
+                    </div>
+                   
+                    <div ng-if="!success" class="col-md-11">
+                        <input type="text" placeholder="Enter verification pin" ng-model="verify.pin" class="form-control">
+                    </div>
+                    <div class="clearfix"></div>
+                    <div class="text-center">
+                        <button class="btn btn-danger" ng-click="sendForm()" ng-if="!loading && !success">
+                        <span class="sr-only">Loading...</span> Verify</button> 
+                        <span ng-if="loading"><i class="fa fa-spinner fa-pulse fa-1x fa-fw text-info"  ng-if="loading"></i> verifying...</span>
+                    </div>
+                    <div ng-show="success" class="mt-3" style="text-align: center;">
+                        <i class="fa fa-check text-success"></i>&nbsp;&nbsp;&nbsp;
+                        <span class="text-muted">{{success}}</span><br>
+                        <p class="p-2">Close modal and choose any physician you wish to chat with.</p>
+                        <!--<a href="/login" class="btn btn-success btn-lg">Log In</a>-->
+                    </div>
+                </form>            
             </div>
             <div class="modal-footer">
-               <p class="p-2" ng-show="isSent">This is one-way messaging. If you want to view replies or continue chatting with this center, please go to your dashboard and click <i class="fa fa-comments"></i> icon to use our chat interface for two-way messaging. <a href="" ng-click="todashboard(checkLogIn.type)"><i class="fa fa-arrow-left"></i> Go to dashboard now!</a></p>
+            
             </div>
             
           </div>
         </div>
       </div>
-   </script>
+    </script>
 
     <script type="text/javascript">
       function showPass(elem) {
@@ -748,6 +769,9 @@ img{ max-width:100%;}
 
     <script src="/assets/js/moment.min.js"></script>
     <script src="/assets/js/angular-moment.min.js"></script>
+
+     <script type="text/javascript" src="/assets/js/underscore-min.js"></script>
+    <script type="text/javascript" src="/assets/js/angular-underscore.js"></script>
 
    
     <script src="/assets/js/modalService.js"></script>

@@ -391,6 +391,12 @@
                         
                                                  
                     </li>
+                     <li class="nav-item" style="margin-right: 10px"> 
+                        <a href="/chat-physician" class="btn btn-outline-success nav-link btn-sm">
+                          Chat with a live Physician
+                        </a>                      
+                    </li>
+                 
                     <li  class="nav-item" style="margin-right: 10px">
                         <a href="/find-drugs" class="btn btn-outline-success nav-link  sbtn-sm">
                           Buy Drugs &amp; Kits
@@ -410,13 +416,13 @@
 
                      <li class="nav-item" style="margin-right: 10px">
                         <a href="/find-laboratory" class="btn btn-outline-success nav-link btn-sm">
-                          Find Lab Test
+                          Laboratory Test
                         </a>
                     </li>
 
                     <li class="nav-item" style="margin-right: 10px">
                         <a href="/find-radiology" class="btn btn-outline-success nav-link  btn-sm">
-                          Find Radio Test
+                          Radiology Test
                         </a>
                     </li>
                    
@@ -606,7 +612,7 @@
                                     </div>
                                     <div class="col-md-8">
                                         <div class="doctors-profile p-2">
-                                            <h4 class="pt-2 ellipsis">{{doc.name}}</h4>
+                                            <h4 class="pt-2 ellipsis" style="text-transform: capitalize;">{{doc.name}}</h4>
                                             <h6>{{doc.specialty}}</h6>
                                             <h6>{{(doc.experience) ? (doc.experience + ' years of practice') : ""}}</h6>
                                             <h6><strong>{{doc.city}}, {{doc.country}}.</strong></h6>
@@ -655,7 +661,7 @@
                                     </div>
                                     <div class="col-md-8">
                                         <div class="doctors-profile p-2">
-                                            <h4 class="pt-2 ellipsis">{{doc.name}}</h4>
+                                            <h4 class="pt-2 ellipsis" style="text-transform: capitalize;">{{doc.name}}</h4>
                                             <h6>{{doc.specialty}}</h6>
                                             <h6>{{doc.skill}}</h6>
                                             <h6><strong>{{doc.city}}, {{doc.country}}.</strong></h6>
@@ -829,7 +835,7 @@
                                             <section>
                                                 <div class="">
                                                     <a href="/find-doctors?s=pediatric" class="btn btn-outline-success btn-sm mb-2">Children Specialist</a>
-                                                    <a href="/find-doctors?s=orthopaedic" class="btn btn-outline-success btn-sm mb-2">Bone Specialist</a>
+                                                    <a href="/find-doctors?s=orthopedic" class="btn btn-outline-success btn-sm mb-2">Orthopedics</a>
                                                     <a href="/find-doctors?s=gynecologist" class="btn btn-outline-success btn-sm mb-2">Female/Pregnancy Specialist</a>
                                                     <a href="/find-doctors?s=surgeon" class="btn btn-outline-success btn-sm mb-2">Surgeon</a>
 
@@ -837,7 +843,7 @@
                                                     <a href="/find-doctors?s=Dermatologist" class="btn btn-outline-success btn-sm mb-2">Skin Care</a>
                                                     <a href="/find-doctors?s=Neurosurgeon" class="btn btn-outline-success btn-sm mb-2">Neurosurgeon</a>
                                                     <a href="/find-doctors?s=Cardiologist" class="btn btn-outline-success btn-sm mb-2">Heart Specialist</a>
-                                                     <a href="/find-doctors?s=Nephrologists" class="btn btn-outline-success btn-sm">Ear Specialist</a>
+                                                     <a href="/find-doctors?s=Nephrologists" class="btn btn-outline-success btn-sm">Ear, Nose &amp; Throat Specialists</a>
                                                       <a href="/find-doctors?s=Dental" class="btn btn-outline-success btn-sm">Teeth Specialist</a>
                                                 </div>
                                             </section>
@@ -845,10 +851,14 @@
                                             <div class="video-btn mt-3">
                                                <h5 class="h6">Other Services</h5>
                                                <ul class="pb-3 line-height">
-                                                   <li><a href="/find-doctors?s=live-doctors" class="text-success"> Chat with live physicians</a></li>
+                                                   <li><a href="/chat-physician" class="text-success"> Chat with live physicians</a></li>
                                                    <li><a href="/find-drugs" class="text-success">Find Drug / Buy drugs and kits</a></li>
-                                                   <li><a href="/symptom-checker" class="text-success">Symptoms Checker AI</a></li>
-                                                   <li><a href="/symptom-checker" class="text-success">Body Part Issues Checker AI</a></li>
+                                                   <li><a href="/symptom-checker" class="text-success">Symptoms Checker</a></li>
+
+                                                   <li><a href="/find-radiology" class="text-success">Find Radiology Test</a></li>
+
+                                                    <li><a href="/find-laboratory" class="text-success">Find Laboratory Test</a></li>
+                                                   <!--<li><a href="/symptom-checker" class="text-success">Body Part Issues Checker AI</a></li>-->
                                                   <li><a href="/covid-19" class="text-success">Covid-19 Screening Test</a></li>
                                                   <!-- <li><a href="" class="text-success">Find Laboratory test and centers near you.</a></li>
                                                    <li><a href="" class="text-success">Find Radiology test and centers near you.</a></li>-->

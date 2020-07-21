@@ -10972,16 +10972,18 @@ router.post("/user/invitation",function(req,res){
     }
 
     function sendSMS() {
-      if(req.user.type == "Doctor" || req.user.type == "admin"){
+      if(req.user.type === "Doctor"){
         var title = (req.user.title == 'SC') ? "" : ", a physician at Applinic Telehealth"
         var msgBody = names + title + " is pleased to inform you he now consults patients"
         + " online at Applinic platform." 
         + " Click the link below to register now for free!\n" 
         + "https://applinic.com/signup?ref=" + req.user.user_id + "&id=" + uid + "&type=" + req.body.type;
       } else {
-        var msgBody = names + ", a " + req.user.type 
-        + "\nsent an invitation to join Applinic. click the link below to register now for free!\n" 
-        + "https://applinic.com/signup?ref=" + req.user.user_id + "&id=" + uid + "&type=" + req.body.type;
+        //var msgBody = names + ", a " + req.user.type 
+        //+ "\nsent an invitation to join Applinic. click the link below to register now for free!\n" 
+        //+ "https://applinic.com/signup?ref=" + req.user.user_id + "&id=" + uid + "&type=" + req.body.type;
+        var msgBody = "Consult doctors online, buy drugs with home delivery and do diagnostic tests through Applinic. Free treatment"
+        + "for malaria and typhoid fever available while offer lasts. Click link below to register.  https://applinic.com"
       }
 
       var phoneNunber = req.body.recepient;

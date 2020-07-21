@@ -7,7 +7,7 @@
         <div>
           <div class="col-md-11" ng-show="isComplaint">                      
              <form class="pt-1">
-                 <div class="pb-1">
+                 <!--<div class="pb-1">
                      <label>Why do yo want to consult {{docInfo.title}} {{docInfo.firstname}}?</label>
                      <div class="row">
                          <div class="col-sm-12 col-md-5 col-lg-5">
@@ -99,7 +99,22 @@
                      </div>
                     
                  </div>
-                <br>
+                <br>-->
+
+                <section class="row pb-1">
+                   <div class="col-md-3 col-xs-4">
+                      <a href="{{docInfo.profile_url}}" target="_blank">
+                          <img src="{{docInfo.profile_pic_url}}" style="height: 75px;width: auto;">
+                      </a>
+                  </div>
+                  <div class="col-md-9 col-xs-4">
+                      <h5 class="ellipsis block pb-0 mb-0">{{docInfo.title}} {{docInfo.firstname}} {{docInfo.lastname}}</h5>
+                      <span>{{docInfo.specialty}}</span><br>
+                      <span class="block">{{docInfo.work_place}} {{docInfo.address}} {{docInfo.city}} {{docInfo.country}}</span>
+                  </div>
+                </section>
+                 <a href="" ng-click="back()"><i class="fa fa-arrow-left"></i> choose another specialist</a>
+                <hr>
                  <div ng-if="patient.sick" class="pb-1">
                      <label>What are your complaints?</label>
                      <div class="text-danger">{{sympMsg}}</div>
@@ -133,7 +148,7 @@
                      <br>
                      <label>How do you feel right now?</label>
                      <div class="pb-1">
-                         <textarea class="form-control pl-1" ng-model="patient.how" ng-keyup="autoExpand($event)" id="textarea"></textarea>
+                         <textarea class="form-control pl-1" ng-model="patient.how" placeholder="Write..." ng-keyup="autoExpand($event)" id="textarea"></textarea>
                      </div>
                      <br>
                      <label>Did you use any medication or try self medication before now?</label>
@@ -285,12 +300,14 @@
               <i class="fa fa-check pull-right font-1_4" style="color: #7dbb00" ng-if="statusMsg"> sent!</i>  
               <button class="btn btn-success pull-right" style="background-color: #7dbb00" ng-click="validate()" ng-if="!statusMsg">{{(progress) ? progress + '% sending...'  : 'Send Consultation Request'}}</button>
             </div>-->
-            <button class="btn btn-info pull-right"  ng-click="continue()">Continue</button>
+            <button class="btn btn-success"  ng-click="sendRequest(docInfo)" ng-show="!docInfo.loading && !docInfo.isSent">Send consultation</button>
+            <span ng-show="docInfo.loading && !docInfo.isSent">Sending...</span>
+            <span ng-show="docInfo.isSent"><i class="fa fa-check"></i> Request sent!</span>
             
       </div>
       <div class="p-1" ng-show="isSearchToSend">
-        <a href="" ng-click="back()"><i class="fa fa-arrow-left"> complaint</i></a>
-        <br><br>
+        <!--<a href="" ng-click="back()"><i class="fa fa-arrow-left"> complaint</i></a>
+        <br><br>-->
         <form ng-submit="find()" class="pl-0 ml-0">
             <div class="col-md-3">
                 <input type="text" name="" class="form-control" placeholder="City" ng-model="searchObj.city">
@@ -330,7 +347,7 @@
                 <span>{{doc.specialty}}</span><br>
                 <span class="block">{{doc.work_place}} {{doc.address}} {{doc.city}} {{doc.country}}</span>
                 <div>
-                    <a href="" class="btn btn-info btn-sm" ng-click="sendRequest(doc)" ng-show="!doc.loading && !doc.isSent">Consult me!</a>
+                    <a href="" class="btn btn-info btn-sm" ng-click="continue(doc)" ng-show="!doc.loading && !doc.isSent">Consult me!</a>
                     <i class="fa fa-spinner fa-pulse fa-1x fa-fw" ng-show="doc.loading && !isSent"></i>
                     <span ng-show="doc.isSent" class="text-warning">Sent!</span>&nbsp;&nbsp;&nbsp;&nbsp;
                     <span class="text-primary" ng-show="doc.verified">verified</span>

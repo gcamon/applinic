@@ -175,15 +175,17 @@ io.sockets.on('connection', function(socket){
 	      		});
 	      		model.user.findOne({user_id: data.from},function(err,user){
 	      			if(err) throw err;
-	      			newChat.userId = data.to;
-	      			newChat.partnerId = user.user_id;
-	      			newChat.realTime = date;
-	      			newChat.name = user.name || user.title + " " + user.firstname; // refers tp parner name
-	      			newChat.profilePic = user.profile_pic_url;
-	      			newChat.is_read = (!data.presence) ? false : true; // added to check when a chat is read.
-	      			newChat.partnerType = user.type;
-	      			newChat.messages.push(msg)
-	      			newChat.save(function(err,info){});
+	      			if(user){
+		      			newChat.userId = data.to;
+		      			newChat.partnerId = user.user_id;
+		      			newChat.realTime = date;
+		      			newChat.name = user.name || user.title + " " + user.firstname; // refers tp parner name
+		      			newChat.profilePic = user.profile_pic_url;
+		      			newChat.is_read = (!data.presence) ? false : true; // added to check when a chat is read.
+		      			newChat.partnerType = user.type;
+		      			newChat.messages.push(msg)
+		      			newChat.save(function(err,info){});
+	      			}
 	      		});	      		
 	    		}
 	    	});
