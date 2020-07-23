@@ -11337,7 +11337,7 @@ router.put("/user/patient/medical-history",function(req,res){
 router.get("/user/firstline-doctors",function(req,res){
   //if(req.user){
     model.user.find({isFirstline: true},{user_id:1,name:1,specialty:1,work_place:1,address:1,
-      city:1,profile_pic_url:1,verified:1,phone:1,email:1,education:1,country:1})
+      city:1,profile_pic_url:1,verified:1,phone:1,email:1,education:1,country:1,profile_url:1,type:1})
     .exec(function(err,data){
       res.json(data);
     });
@@ -11348,73 +11348,111 @@ router.get("/user/firstline-doctors",function(req,res){
 
 router.post("/user/firstline-doctors",function(req,res){
   if(req.user){
-    model.user.findOne({user_id: req.body.user_id})
-    .exec(function(err,doc){
-      if(err) throw err;
-      if(doc) {
-        //send a robo call to selected firstline doctor
-        if(doc.email === "applinic@gmail.com"){
-          doc.email = "info@applinic.com";
-          //doc.phone = "+2349080045678";
+    console.log(req.body)
+    if(req.body.phone){
+      sms.calls 
+      .create({
+        url: "https://applinic.com/inviteonlinecall?receiver=" + "doctor" + "&&sender=" 
+        + req.user.lastname + "&&type=" + req.user.type,
+        to: req.body.phone || "",
+        from: '+16467985692',
+      })
+      .then(
+        function(call){
+          console.log(call.sid);
+        },
+        function(err) {
+          console.log(err)
         }
+      );
 
-        sms.calls 
-        .create({
-          url: "https://applinic.com/inviteonlinecall?receiver=" + "doctor" + "&&sender=" 
-          + req.user.lastname + "&&type=" + req.user.type,
-          to: doc.phone || "",
+      //send sms to the firstline doctor
+      var msgBody = "Please attend to this patient via chat on applinic\n" + req.user.title 
+      + " " + req.user.firstname + "\n" + req.user.phone;        
+      sms.messages.create(
+        {
+          to: req.body.phone || "",
           from: '+16467985692',
-        })
-        .then(
-          function(call){
-            console.log(call.sid);
-          },
-          function(err) {
-            console.log(err)
-          }
-        );
+          body: msgBody,
+        },
+        callBack
+      );
 
-        //send sms to the firstline doctor
-        var msgBody = "Please attend to this patient via chat on applinic\n" + req.user.title 
-        + " " + req.user.firstname + "\n" + req.user.phone;        
-        sms.messages.create(
-          {
+      function callBack(err,response){              
+        console.log(response)
+      }
+
+    } else {   
+       
+      model.user.findOne({user_id: req.body.user_id})
+      .exec(function(err,doc){
+        if(err) throw err;
+        if(doc) {
+          //send a robo call to selected firstline doctor
+          if(doc.email === "applinic@gmail.com"){
+            doc.email = "info@applinic.com";
+            //doc.phone = "+2349080045678";
+          }
+
+          sms.calls 
+          .create({
+            url: "https://applinic.com/inviteonlinecall?receiver=" + "doctor" + "&&sender=" 
+            + req.user.lastname + "&&type=" + req.user.type,
             to: doc.phone || "",
             from: '+16467985692',
-            body: msgBody,
-          },
-          callBack
-        );
+          })
+          .then(
+            function(call){
+              console.log(call.sid);
+            },
+            function(err) {
+              console.log(err)
+            }
+          );
 
-        function callBack(err,response){              
-          console.log(response)
-        }
+          //send sms to the firstline doctor
+          var msgBody = "Please attend to this patient via chat on applinic\n" + req.user.title 
+          + " " + req.user.firstname + "\n" + req.user.phone;        
+          sms.messages.create(
+            {
+              to: doc.phone || "",
+              from: '+16467985692',
+              body: msgBody,
+            },
+            callBack
+          );
 
-        /*var transporter = nodemailer.createTransport({
-          host: "mail.privateemail.com",
-          port: 465,
-          auth: {
-            user: "info@applinic.com",
-            pass: process.env.EMAIL_PASSWORD
+          function callBack(err,response){              
+            console.log(response)
           }
-        });*/
 
-        var mailOptions = {
-          from: 'Applinic info@applinic.com',
-          to: doc.email,
-          subject:'Patient Chat Request',
-          html: "<div style='font-size:18px'><b>Hello doctor</b>, <br><br> A patient wants to have a chat with you. <br> Kindly login to attend. <br><br> https://applinic.com/login <br><br> Thank you!</div>"
-        };
+          /*var transporter = nodemailer.createTransport({
+            host: "mail.privateemail.com",
+            port: 465,
+            auth: {
+              user: "info@applinic.com",
+              pass: process.env.EMAIL_PASSWORD
+            }
+          });*/
 
-        transporter.sendMail(mailOptions, function(error, info){
-          if (error) {
-            console.log(err)
-          } else {
-            console.log('Email sent: ' + info.response);
-          }
-        });
-      }       
-    })
+          var mailOptions = {
+            from: 'Applinic info@applinic.com',
+            to: doc.email,
+            subject:'Patient Chat Request',
+            html: "<div style='font-size:18px'><b>Hello doctor</b>, <br><br> A patient wants to have a chat with you. <br> Kindly login to attend. <br><br> https://applinic.com/login <br><br> Thank you!</div>"
+          };
+
+          transporter.sendMail(mailOptions, function(error, info){
+            if (error) {
+              console.log(err)
+            } else {
+              console.log('Email sent: ' + info.response);
+            }
+          });
+        }       
+      })
+    }
+
     res.json({status: true});
 
   } else {
