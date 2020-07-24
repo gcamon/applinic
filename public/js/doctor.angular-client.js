@@ -12748,6 +12748,20 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
     elem[0].innerHTML += " &nbsp;&nbsp;&nbsp;seen! ";
     
   });
+
+
+  $scope.inviteOnline2 = function(doc) {
+    $scope.loading = true;
+    $http.post("/user/firstline-doctors",doc)
+    .success(function(resp){
+      if(resp.status){
+        doc.isSent = resp.status;
+      }
+      $scope.loading = false;
+    })
+
+  }
+
   
   $scope.sendChat1 = function(){ 
    if($scope.user.text1 !== "" && $scope.user.text1 !== undefined) {   

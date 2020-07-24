@@ -11348,7 +11348,6 @@ router.get("/user/firstline-doctors",function(req,res){
 
 router.post("/user/firstline-doctors",function(req,res){
   if(req.user){
-    console.log(req.body)
     if(req.body.phone){
       sms.calls 
       .create({
@@ -11383,8 +11382,9 @@ router.post("/user/firstline-doctors",function(req,res){
       }
 
     } else {   
-       
-      model.user.findOne({user_id: req.body.user_id})
+      console.log(req.body)
+      var id = req.body.user_id || req.body.partnerId;
+      model.user.findOne({user_id: id})
       .exec(function(err,doc){
         if(err) throw err;
         if(doc) {

@@ -5385,6 +5385,20 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
     elem[0].innerHTML += " &nbsp;&nbsp;&nbsp;seen! ";
     
   });
+
+
+  $scope.inviteOnline2 = function(doc) {
+    $scope.loading = true;
+    $http.post("/user/firstline-doctors",doc)
+    .success(function(resp){
+      if(resp.status){
+        doc.isSent = resp.status;
+      }
+      $scope.loading = false;
+    })
+
+  }
+
   
   $scope.sendChat1 = function(){ 
    if($scope.user.text1 !== "" && $scope.user.text1 !== undefined) {   
@@ -8414,9 +8428,10 @@ app.controller('resultController',["$scope","$rootScope","$http","$location","$r
         if(deviceCheckService.getDeviceType()){
           localManager.setValue("holdIdForChat",partnerId);
           localManager.setValue("holdChatList",$rootScope.chatsList);
-          window.location.href = "/user/chat/general";
+          window.location.href = "/mobile/chat-physician";//"/user/chat/general";
         } else if(templateService.holdId) {
-          $location.path("/general-chat");
+          //$location.path("/general-chat");
+          window.location.href = "/chat-physician";
         } else {
           alert("You have no messages yet.");
         }

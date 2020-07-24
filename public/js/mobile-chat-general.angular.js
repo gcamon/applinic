@@ -562,6 +562,7 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
 
     //$rootScope.checkLogIn = localManager.getValue("resolveUser") || {}
     $rootScope.chatsList = localManager.getValue("holdChatList") || [];
+    console.log($rootScope.chatsList)
 
     var user = $rootScope.checkLogIn;
     var person = $rootScope.checkLogIn;
