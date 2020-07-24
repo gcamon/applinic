@@ -339,7 +339,7 @@ input:focus {
                   <p class="ellipsis"><b>{{chat.city}} {{chat.country}}</b></p>
                   <span style="position: absolute;right: 0px; bottom: 0px" class="online" ng-show="chat.presence" title="Online"></span>
                   <span style="position: absolute;right: 0px; bottom: 0px;background-color: #ccc" title="Offline" class="online" ng-show="!chat.presence"></span>
-                   <a href="" ng-show="!chat.presence && !chat.isSent && !loading" class="btn btn-sm btn-info" style="position: absolute;right: 0px; bottom: -5px;" ng-click="inviteOnline(chat)">{{(loading) ? 'Please wait!' : 'Invite online'}}</a>
+                   <a href="" ng-show="!chat.presence && !chat.isSent && !loading" class="btn btn-sm btn-info" style="position: absolute;right: 0px; bottom: -5px;" ng-click="inviteOnline(chat)">{{(chat.loading) ? 'Please wait!' : 'Invite online'}}</a>
                    <span ng-show="!chat.presence && chat.isSent" class="text-success btn btn-neutral btn-sm" style="position: absolute;right: 0px; bottom: -5px;">Inviting...</span>
                 </div>
               </div>

@@ -364,19 +364,11 @@ app.controller('pictureController',["$scope","$http","$location","multiData",fun
 
 app.controller("hompageController",["$scope","cities","$http",
   "ModalService","$rootScope","homePageDynamicService",
-  "skillService","homepageSearchService","localManager","$window",
-  "templateService","mySocket","$location","$anchorScroll","deviceCheckService",
+  "skillService","homepageSearchService","localManager","$window","templateService","mySocket","$location","$anchorScroll",
   function($scope,cities,$http,
   	ModalService,$rootScope,homePageDynamicService,skillService,
-  	homepageSearchService,localManager,$window,
-    templateService,mySocket,$location,$anchorScroll,deviceCheckService){
+  	homepageSearchService,localManager,$window,templateService,mySocket,$location,$anchorScroll){
 
-
- if(deviceCheckService.getDeviceType()){
-    // switchesm to chat list for mobile views 
-    window.location.href = '/mobile/chat-physician';
-    //$('.chat__container').addClass('chat__list--active');
-  }
 
   $rootScope.cities = cities;
 
@@ -435,15 +427,9 @@ app.controller("hompageController",["$scope","cities","$http",
       break;
       case "Radiology":
         $window.location.href = "/user/radiology"; 
-      break;          
-      case "admin":
-        $window.location.href = "/user/admin";
-      break;
-      case "Field Agent":
-        $window.location.href = "/user/field-agent/" + data.user_id;
-      break;
+      break;        
       default:
-        $window.location.href = "/user/view"; 
+        $window.location.href = "/"; 
       break; 
     }
   }
@@ -542,7 +528,11 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
     deviceCheckService,$compile,$interval,$http,localManager,profileDataService){
 
 
-   
+    if(deviceCheckService.getDeviceType()){
+      // switchesm to chat list for mobile views 
+     //window.location.href = '/mobile/chat-physician';
+      $('.chat__container').addClass('chat__list--active');
+    }
 
     $rootScope.userLoginService = function() {
       $http.get("/user/getuser")
@@ -628,8 +618,9 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
         invert = _.invert($rootScope.sockets);
         if($rootScope.chatsList)
           $rootScope.chatsList.forEach(function(item){
-            if(invert[item.partnerId])
-              item.presence = true;
+            if(invert[item.partnerId]){
+              item.status = true;
+            }
           });        
       })     
       //$rootScope.$broadcast("users presence",{type: 'chatList',data:$rootScope.chatsList,sockets: $rootScope.sockets});         

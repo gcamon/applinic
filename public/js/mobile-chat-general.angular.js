@@ -364,19 +364,11 @@ app.controller('pictureController',["$scope","$http","$location","multiData",fun
 
 app.controller("hompageController",["$scope","cities","$http",
   "ModalService","$rootScope","homePageDynamicService",
-  "skillService","homepageSearchService","localManager","$window",
-  "templateService","mySocket","$location","$anchorScroll","deviceCheckService",
+  "skillService","homepageSearchService","localManager","$window","templateService","mySocket","$location","$anchorScroll",
   function($scope,cities,$http,
   	ModalService,$rootScope,homePageDynamicService,skillService,
-  	homepageSearchService,localManager,$window,
-    templateService,mySocket,$location,$anchorScroll,deviceCheckService){
+  	homepageSearchService,localManager,$window,templateService,mySocket,$location,$anchorScroll){
 
-
- if(deviceCheckService.getDeviceType()){
-    // switchesm to chat list for mobile views 
-    window.location.href = '/mobile/chat-physician';
-    //$('.chat__container').addClass('chat__list--active');
-  }
 
   $rootScope.cities = cities;
 
@@ -435,15 +427,9 @@ app.controller("hompageController",["$scope","cities","$http",
       break;
       case "Radiology":
         $window.location.href = "/user/radiology"; 
-      break;          
-      case "admin":
-        $window.location.href = "/user/admin";
-      break;
-      case "Field Agent":
-        $window.location.href = "/user/field-agent/" + data.user_id;
-      break;
+      break;        
       default:
-        $window.location.href = "/user/view"; 
+        $window.location.href = "/"; 
       break; 
     }
   }
@@ -542,15 +528,19 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
     deviceCheckService,$compile,$interval,$http,localManager,profileDataService){
 
 
-   
+    if(deviceCheckService.getDeviceType()){
+      // switchesm to chat list for mobile views 
+     //window.location.href = '/mobile/chat-physician';
+      $('.chat__container').addClass('chat__list--active');
+    }
 
     $rootScope.userLoginService = function() {
       $http.get("/user/getuser")
       .success(function(user){
         //user = localManager.getValue("resolveUser");
         if(user.isLoggedIn){
-          $rootScope.user.phone = user.phone;
-          $rootScope.user.address = user.address || user.work_place;
+          //$rootScope.user.phone = user.phone;
+          //$rootScope.user.address = user.address || user.work_place;
 
           $rootScope.checkLogIn = user;
           $rootScope.checkLogIn.typeOfUser = user.type;
@@ -561,15 +551,7 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
 
         } else {
           $rootScope.checkLogIn = {};
-          landingUserChatPresenceService();
-          /*ModalService.showModal({
-            templateUrl: 'chat-auth.html',
-            controller: 'signupController'
-          }).then(function(modal) {
-            modal.element.modal();
-            modal.close.then(function(result) {             
-            });
-          });*/
+          landingUserChatPresenceService();        
         }
       })
     }
@@ -578,20 +560,22 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
 
     var landingUserChatPresenceService = function() {
 
+    //$rootScope.checkLogIn = localManager.getValue("resolveUser") || {}
+    $rootScope.chatsList = localManager.getValue("holdChatList") || [];
 
     var user = $rootScope.checkLogIn;
     var person = $rootScope.checkLogIn;
-    templateService.holdId = templateService.holdId || localManager.getValue("holdIdForChat");
-    $rootScope.chatsList = [];
+    //templateService.holdId = templateService.holdId || localManager.getValue("holdIdForChat");
+    //$rootScope.chatsList = [];
     $rootScope.allChats = $rootScope.chatsList; // rootScope can be used instead   
-    $scope.center = ($rootScope.holdcenter || {id : templateService.holdId}); //sometimes is not center but individual
+    //$scope.center = ($rootScope.holdcenter || {id : templateService.holdId}); //sometimes is not center but individual
     $rootScope.sockets = $rootScope.sockets || localManager.getValue('connectedSockets');//connectedSockets
     $scope.isSent = false;
     var elemPos;
 
     var currView = $location.path();
 
-    $http.get("/user/firstline-doctors")
+    /*$http.get("/user/firstline-doctors")
     .success(function(data){
       data.forEach(function(item){
         $rootScope.chatsList.push({
@@ -609,7 +593,7 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
           //email: item.email
         })
       })
-    })
+    })*/
 
     /*if($rootScope.chatsList) {
       var elemPos = $rootScope.chatsList.map(function(x){return x.partnerId}).indexOf(templateService.holdId)
@@ -628,8 +612,9 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
         invert = _.invert($rootScope.sockets);
         if($rootScope.chatsList)
           $rootScope.chatsList.forEach(function(item){
-            if(invert[item.partnerId])
-              item.presence = true;
+            if(invert[item.partnerId]){
+              item.status = true;
+            }
           });        
       })     
       //$rootScope.$broadcast("users presence",{type: 'chatList',data:$rootScope.chatsList,sockets: $rootScope.sockets});         

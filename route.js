@@ -12720,6 +12720,10 @@ router.get("/chat-physician",function(req,res){
   res.render('chat-physician')
 });
 
+router.get("/mobile/chat-physician",function(req,res){
+  res.render('chat-physicians-mobile');
+})
+
 
 
 
