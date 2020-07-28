@@ -12222,6 +12222,7 @@ router.put("/user/reporting-radiologist",function(req,res){
 
 router.delete("/user/reporting-radiologist",function(req,res){
   if(req.user) {
+    console.log(req.body)
     model.user.findOne({user_id: req.user.user_id})
     .exec(function(err,data){
       if(err) throw err;

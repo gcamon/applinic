@@ -1,5 +1,5 @@
 <div class="card p-2 card-center-1">
-	<h4 class="pt-0 pl-0 h6">Link DICOM Study <i class="fa fa-question-circle tip text-success">	<span style="font-size: 12px">'Link DICOM Study' enables you connect a study uploaded to Applinic online DICOM PACs server to its web and mobile viewer (If you have not done that already) for remote sharing, viewing and reporting of studies with Applinic default or your center's template. </span></i></h4>
+	<h4 class="pt-0 pl-0 h6">Link DICOM Study <i class="fa fa-question-circle tip text-success">	<span style="font-size: 14px">'Link DICOM Study' enables you connect a study uploaded to Applinic online DICOM PACs server to its web and mobile viewer for remote sharing, viewing and reporting of studies with Applinic default or your center's template. </span></i></h4>
 	<hr>
 
 	<form class="col-md-10" ng-submit="addStudy()" ng-if="!isSuccess">
@@ -62,7 +62,7 @@
 		<label>Referring Physician *</label><br>
 		<input type="text" name="" placeholder="Physician names" required class="form-control" ng-model="station.referringPhysician">
 		<div class="col-md-6 p-0">
-			<input type="text" name="" class="form-control" placeholder="Phone number" ng-model="station.referringPhysicianPhone">
+			<input type="text" name="" class="form-control" placeholder="Phone number (Optional)" ng-model="station.referringPhysicianPhone">
 		</div>
 		<div class="col-md-6 p-0">
 			<input type="email" name="" class="form-control" placeholder="Physician email address" ng-model="station.referringPhysicianEmail">

@@ -25810,7 +25810,7 @@ app.controller("addRadiologistCtrl",["$scope","$http","$location","$rootScope",
       $http({
       method  : 'DELETE',
       url     : "/user/reporting-radiologist",
-      data    : $rootScope.radiologist1, //forms user object
+      data    : {id:radiologist.id}, //forms user object
       headers : {'Content-Type': 'application/json'} 
     })
     .success(function(response) {
