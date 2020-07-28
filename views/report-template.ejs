@@ -336,22 +336,18 @@
         <div class="modal fade">
           <div class="modal-dialog">
             <div class="modal-content">
-              <div class="modal-header">
-                <button type="button" class="close"  data-dismiss="modal" aria-hidden="true" style="float: right;cursor: pointer;">&times;</button>              
-                <h2 style="clear: both;">Where to submit to?</h2>
-               
-                       
+              <div class="modal-header" style="position: relative;border-bottom: none;">
+                 <h2 class="h6">Where to submit to?</h2>
+               <button type="button" class="close"  data-dismiss="modal" aria-hidden="true" style="position: absolute; top: 25px; right: 25px; cursor: pointer;">&times;</button>                    
             </div>
-            <div class="modal-body" style="margin-top: 0;padding-top: 0">               
-               <!--<a href="" ng-click="toEdit()" style="padding: 10px; color: #fff; background-color: green;border: none;text-decoration: none;border-radius: 5px"></a> &nbsp;&nbsp;&nbsp;&nbsp;
-               <a href="" ng-click="toCenter()" style="padding: 10px; color: #fff; background-color: green;border: 
-               none;text-decoration: none;border-radius: 5px"></a>-->
-               <div>
-                   <input type="radio" name="" ng-model="recepient.toEmail" value="center"><b style="color: blue;font-size: 18px">Submit straight to Hospital/Centre</b> &nbsp;&nbsp;&nbsp;&nbsp;
-                   <input type="radio" name="" ng-model="recepient.toEmail" value="expert"><b style="color: blue;font-size: 18px">Submit for Review/Edit</b>
+            <div class="modal-body">               
+            
+               <div class="pl-0 ml-0">
+                   <input type="radio" name="" ng-model="recepient.toEmail" value="center"><b>Submit straight to Hospital/Centre</b> &nbsp;&nbsp;&nbsp;&nbsp;
+                   <input type="radio" name="" ng-model="recepient.toEmail" value="expert"><b>Submit for Review/Edit</b>
                </div>
                <div ng-if="recepient.toEmail == 'center'">
-                   <h3>Submit to your Center</h3>
+                   <h3 class="h6">Submit to your Center</h3>
                    <form ng-submit="toCenter()" ng-hide="reportPDF">
                        <label><b>Email of recepient:</b></label><br><br>
                        <input type="email" name="" style="padding:10px; width: 80%" placeholder="Email" ng-model="recepient.email"><br><br>
@@ -364,7 +360,7 @@
                    </div>
                </div>
                <div ng-if="recepient.toEmail == 'expert'">
-                    <h3>Submit to an expert for Review/Edit</h3>
+                    <h3 class="h6">Submit to an expert for Review/Edit</h3>
                     <form ng-submit="toExpert()">
                        <label><b>Choose a Radiologist:</b></label><br><br>
                        <select style="width: 80%;padding: 10px" ng-model='recepient.radiologistId'>
