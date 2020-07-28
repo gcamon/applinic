@@ -211,7 +211,7 @@
 	   	   <div id="tempfield" ng-hide="isReportPDF" >               
               <%- template.template %>
 	   	   </div>
-         <button style="position: absolute;top:10px; right: 20px" ng-click="otherStudies()" class="btn btn-info">Studies</button>
+         <button style="position: absolute;top:10px; right: 20px" ng-click="otherStudies()" class="btn btn-info">Other Studies</button>
            <!--<div ng-show="isReportPDF">
                <form ng-cloak ng-submit="emailReport()" style="text-align: center;margin-top: 20px">
                    <label><b>Send the report PDF to an email below:</b> </label><br><br>
@@ -227,7 +227,7 @@
 	   	   <hr><br>
           
 	   	   <div style="text-align: right;" ng-hide="isReportPDF">
-	   	   	 <button class="btn btn-danger" id="submit" ng-click="getTempData()">Save</button>
+	   	   	 <button class="btn btn-danger" id="submit" ng-click="getTempData()">Submit</button>
 	   	   </div>
             {{getdata("<%= study.patient_name %>","<%= study.patient_id %>","<%= study.study_date %>","<%= study.patient_age %>","<%= study.patient_sex %>","<%= study.referring_physician %>","<%= study.study_name %>","<%= study.study_date %>","<%= reporter.name %>","<%= reporter.designation %>","<%= reporter.email %>","<%= study.study_link2 %>", "<%= study.summary %>", "<%= study.findings %>", "<%= study.conclusion %>", "<%= study.advise %>","<%= study.center_name %>","<%= study.center_address %>","<%= study.center_city %>","<%= study.center_country %>","<%= study.center_phone %>","<%= study.center_email %>","<%= study.center_profile_pic_url %>","<%= study._id %>","<%= study.center_id %>","<%= template.center_id %>","<%= study.remark %>")}}
 	   </div>
@@ -383,7 +383,7 @@
           <div class="modal-dialog">
             <div class="modal-content">
               <div class="modal-header" style="position: relative;border-bottom: none;">
-                <h2 class="h6">Pending Studies for Reporting</h2>
+                <h2 class="h6">Studies for Reporting</h2>
                 <button type="button" class="close"  data-dismiss="modal" aria-hidden="true" style="position: absolute; top: 25px; right: 25px; cursor: pointer;">&times;</button>                           
             </div>
             <div class="modal-body" style="margin-top: 0;padding-top: 0;">  
