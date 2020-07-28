@@ -2803,7 +2803,7 @@ router.post("/user/dicom-details",function(req,res){
 
 				  var tp = (req.body.studyID) ? "Study Instance ID '" : "PatientID ";
 				  var msgBody = "Your radiology dicom study with '" + tp + "' " + (rados || id) 
-				  + " has been uploaded to Applinic online PACS server.\n" 
+				  + " has been uploaded.\n" 
 				  + "You can share or use the above Patient ID to view the study on your smart phone.\nKindly visit " + redirectLink
 				  + "\nLog in with \nusername: " + centerUser + "\npassword: " + centerPassword;
 					sms.messages.create(
@@ -2833,10 +2833,10 @@ router.post("/user/dicom-details",function(req,res){
 
           var mailOptions = {
             from: 'Applinic Healthcare info@applinic.com',
-            to: req.body.patientEmail || "support@applinic.com",
+            to: req.body.patientEmail || "info@applinic.com",
             subject: 'Radiology DICOM Study Uploaded',
             html: '<table><tr><tr><td style="line-height: 25px">Hello,<br><br>Your study with ' 
-            +  tp  + " <b>" + (rados || id) + '</b> has been uploaded to Applinic Online PACs Server '
+            +  tp  + " <b>" + (rados || id) + '</b> has been uploaded to our Online PACs server '
             + 'by ' + req.user.name + '. You can share or use the ID to view the study.<br>' 
             + 'username: ' + centerUser + "<br>password: " + centerPassword
             + '<br><br><div style="text-align: center">'
@@ -2846,11 +2846,11 @@ router.post("/user/dicom-details",function(req,res){
 
           var mailOptions2 = {
             from: 'Applinic Healthcare info@applinic.com',
-            to: req.body.referringPhysicianEmail || "support@applinic.com",
+            to: req.body.referringPhysicianEmail || "info@applinic.com",
             subject: 'Radiology DICOM Study Uploaded for your patient',
             html: '<table><tr><tr><td style="line-height: 25px">Hello Doc,<br><br>The Investigation ( <b>' + req.body.studyName + '</b> ) ' 
             + 'you requested for the patient - <b>' + req.body.patientName + '</b> with ' 
-            +  tp  + " <b>" + (rados || id) + '</b> has been uploaded to Applinic Online PACs Server.<br>' 
+            +  tp  + " <b>" + (rados || id) + '</b> has been uploaded to our Online PACs Server.<br>' 
             + 'The written report of this study will be emailed to you as soon as it has been submitted ' 
             + 'by the reporting radiologist(s).<br>'
             + 'Uploaded by ' + req.user.name + '.<br> You can view the study with DICOM viewer using the URLs below.<br>' 
@@ -2891,17 +2891,18 @@ router.post("/user/dicom-details",function(req,res){
 
 	          var mailOptions = {
 	            from: 'Applinic Healthcare info@applinic.com',
-	            to: email || "support@applinic.com",
-	            subject: 'Notification to Write Radiology Report' ,
+	            to: email || "info@applinic.com",
+	            subject: 'Write Report For Study - ' + req.body.studyName,
 	            html: '<table><tr><tr><td style="line-height: 25px">Hi, please write report for the study below:<br><br>'
-	            + 'Investigation: ' + req.body.studyName + "<br><br>"
+	            + 'Study: ' + req.body.studyName + "<br><br>"
 	            + 'Ref: ' + study._id + "<br><br>"
 	            + tp + ": " + (rados || id) + '<br><br>'
-	            + "<b>Web viewer DICOM url:</b><br> " + webView + "<br>"
-	            + "<b>Mobile device DICOM viewer url:</b> <br> " + mobileView + "<br>"
-	            + "<b>Report template url:</b> <br>" + tempLink + "<br><br>"
-	            + "Center Name: " + req.user.name + "<br>"
-	            + "Address: " + req.user.address + ", " + req.user.city + ", " + req.user.country + "<br><br>"
+	            + "<b>Request sent from:</b> " + req.user.name + "<br>"
+	            + "<b>Address:</b> " + req.user.address + ", " + req.user.city + ", " + req.user.country + "<br>"
+	            + "<b>Phone:</b> " + req.user.phone + "<br><br>"
+	            + "<b>Web Viewer DICOM URL:</b><br> " + webView + "<br>"
+	            + "<b>Mobile Device DICOM Viewer URL:</b> <br> " + mobileView + "<br>"
+	            + "<b>Report Template URL:</b> <span style='font-style:italic'>( Use this template to enter your findings )</span> <br>" + tempLink + "<br><br>"	          
 	            + "Thank you! <br><br> <b>Applinic Team</b>" 
 	            + '</td></tr></table>'
 	          };
@@ -3003,7 +3004,7 @@ router.post("/user/reassign-study",function(req,res){
 
 	      var mailOptions = {
 	        from: 'Applinic Healthcare info@applinic.com',
-	        to: email || "support@applinic.com",
+	        to: email || "info@applinic.com",
 	        subject: 'Radiology Report ' + study._id,
 	        html: '<table><tr><tr><td style="line-height: 25px">Hi, please write report for the study below:<br><br>'
 	        + 'Investigation: ' + req.body.study_name + "<br><br>"
