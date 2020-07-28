@@ -1,7 +1,7 @@
 <div class="card p-2 card-center-1">
-	<h4 class="pt-0 pl-0">Link DICOM Study</h4>
+	<h4 class="pt-0 pl-0 h6">Link DICOM Study <i class="fa fa-question-circle tip text-success">	<span style="font-size: 12px">'Link DICOM Study' enables you connect a study uploaded to Applinic online DICOM PACs server to its web and mobile viewer (If you have not done that already) for remote sharing, viewing and reporting of studies with Applinic default or your center's template. </span></i></h4>
 	<hr>
-	<p style="background-color: #d7dde4;padding: 10px">'Link DICOM Study' enables you connect a study uploaded to Applinic online DICOM PACs server to its web and mobile viewer (If you have not done that already) for remote sharing, viewing and reporting of studies with Applinic default or your center's template. The Remote PACS details will be shown after you have completed the fields below and clicked the 'Link Study' button.</p>
+
 	<form class="col-md-10" ng-submit="addStudy()" ng-if="!isSuccess">
 		
 		<label>Patient Names *</label><br>
@@ -94,18 +94,18 @@
 	</form>
 
 	<div ng-if="isSuccess">
-		<h5>Success! Study added to applinic</h5>
+		<h5 class="text-success">Success! Study added to {{dicomDetails.dns}}</h5>
 		<!--<p> Please enter the Accession Number below in your work station for the study before capturing.</p>-->
 		<!--<label>{{station.locate}}:</label><br>-->
-		<b style="font-size: 18px">{{studyNum}}</b><br>
-		<p>Enter our remote DICOM details below in your PACs server for transfering.</p>
+		<b style="font-size: 18px">Id: {{studyNum}}</b>
+		<!--<p>Enter our remote DICOM details below in your PACs server for transfering.</p>
 		<label>Logical Name: </label> <span>Applinic</span><br>
 		<label>AE Title: </label> <span>{{dicomDetails.aetitle}}</span><br>
 		<label>IP Address: </label> <span>{{dicomDetails.ip_address}}</span><br>
 		<label>Port: </label> <span>{{dicomDetails.port}}</span><br>
 		<br>
-		<span>For those that have already added these details in their PACs server, please note that IP address of our remote DICOM PACs server can change with time. Please always take note of the above IP Address.</span>
-		<div style="text-align: right;">
+		<span>For those that have already added these details in their PACs server, please note that IP address of our remote DICOM PACs server can change with time. Please always take note of the above IP Address.</span>-->
+		<div style="text-align: right;" class="pt-2">
 			<i class="fa fa-plus btn btn-simple" ng-click="newAcc()"> return</i>
 		</div>
 	</div>	

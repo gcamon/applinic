@@ -13,8 +13,10 @@
 	<link rel="apple-touch-icon" href="apple-touch-icon.png">
      <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
      <link rel="stylesheet" href="/assets/css/font-awesome.min.css">
-	<!--<link rel="stylesheet" href="/assets/css/vendor.css"> -->      
-         
+	<!--<link rel="stylesheet" href="/assets/css/vendor.css"> --> 
+   <link rel="stylesheet" href="/assets/css/now-ui-kit2.css">
+  <link rel="stylesheet" href="/assets/css/app.css">     
+          
 	<script src="/assets/js/vendor/modernizr-2.8.3-respond-1.4.2.min.js"></script>
      <script src="/assets/js/vendor2.js"></script>
         <script type="text/javascript" src="/assets/js/source.js"></script>
@@ -384,21 +386,18 @@
         <div class="modal fade">
           <div class="modal-dialog">
             <div class="modal-content">
-              <div class="modal-header">
-                <button type="button" class="close"  data-dismiss="modal" aria-hidden="true" style="float: right;cursor: pointer;">&times;</button>              
-                <h2 style="clear: both;">Studies</h2>
-                <br>
+              <div class="modal-header" style="position: relative;border-bottom: none;">
+                <h2 class="h6">Pending Studies for Reporting</h2>
+                <button type="button" class="close"  data-dismiss="modal" aria-hidden="true" style="position: absolute; top: 25px; right: 25px; cursor: pointer;">&times;</button>                           
+            </div>
+            <div class="modal-body" style="margin-top: 0;padding-top: 0;">  
                 <div>
                   <input type="radio" name="" ng-model="std.description" value="unattended"><label>Unattended</label>&nbsp;&nbsp;&nbsp;
                   <input type="radio" name="" ng-model="std.description" value="all"><label>All</label>
                   <span style="float: right;">( {{studies.length - 1}} )</span>
-                </div>
-                <div style="clear: both;"></div>
-                  
-            </div>
-            <div class="modal-body" style="margin-top: 0;padding-top: 0;">   
-                <div style="margin-bottom: 20px">
-                  <input type="text" name="" placeholder="filter result" ng-model="filter" style="padding: 5px;">
+                </div>              
+                <div style="margin: 20px 0">
+                  <input type="text" name="" placeholder="Filter list" ng-model="filter" style="padding: 5px;">
                 </div>
                 <table style="width: 100%">
                   <thead style="text-align: left">
@@ -413,7 +412,7 @@
                     <td style="width: 10px;padding-top: 10px"><span>{{j.patient_sex}}</span></td>
                     <td style="width: 20px;padding-top: 10px;word-break: break-all;"><span>{{j.study_name}}</span></td>
                     <td style="width: 20px;padding-top: 10px"><span>{{j.study_date | date : 'mediumDate'}}</td>
-                    <td style="width: 10px;padding-top: 10px;text-align: right;"><a href="{{getLink(j)}}" class="p-1"><i class="fa fa-eye"></i></a></td>
+                    <td style="width: 10px;padding-top: 10px;text-align: right;"><a href="{{getLink(j)}}" class="p-1"><i class="fa fa-pencil btn btn-primary" title="Write report"></i></a></td>
                   </tbody>
                 </table>
                 <!--<ol>
@@ -456,14 +455,9 @@
 	<script src="/assets/js/app.js"></script>
         
         
-    <script type="text/javascript" src="/assets/js/angularclient.js"></script>
-    <script type="text/javascript" src="/assets/js/ngroute.js"></script>
-    <script src="/socket.io/socket.io.js"></script>   
-    <script src="/assets/js/socket.min.js"></script>
-        
-       
-        
-    <script src="/assets/js/angularAnimate.js"></script>
+    <!--<script type="text/javascript" src="/assets/js/angularclient.js"></script>-->
+    <script type="text/javascript" src="/assets/js/radiology-report-template.angular.js"></script>
+  
     <script src="/assets/js/modalService.js"></script>
     <script src="/assets/js/angular-touch.min.js"></script>
     <!--<script src="/assets/js/angular-carousel.js"></script>-->
@@ -471,15 +465,6 @@
     <script src="/assets/js/angular-moment.min.js"></script>
     <script src="/assets/js/ui-bootstrap-tpls.js"></script>
     <script src="/assets/js/angular-clipboard.js"></script>
-    <script src="/assets/js/ngresource.js"></script>
-    <script src="/assets/js/ngPrint.js"></script>
-    <script type="text/javascript" src="/assets/js/angular-paystack/dist/angular-paystack.js"></script>
-    <script type="text/javascript" src="/assets/js/angular-sanitize.min.js"></script>
-    <script src="/assets/js/bower_components/angular-summernote/dist/angular-summernote.js"></script>
-    <script type="text/javascript" src="/assets/js/underscore-min.js"></script>
-    <script type="text/javascript" src="/assets/js/angular-underscore.js"></script>
-  
-
-    
+    <script src="/assets/js/ngresource.js"></script>  
 </body>
 </html>
