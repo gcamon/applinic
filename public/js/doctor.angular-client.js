@@ -3235,7 +3235,7 @@ app.controller("docNotificationController",["$scope","$location","$resource","$i
           if($rootScope.consultation.length > 0){
             $location.path(localManager.getValue("currentPage") || "/consultation-messages");
           } else {
-            $location.path(localManager.getValue("currentPage") || "/welcome");
+            $location.path(localManager.getValue("currentPage") || "/manage-patients");
             //highlits modal to fill in new patient basic information.
           }
         }

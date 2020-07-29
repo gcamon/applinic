@@ -213,11 +213,11 @@
                                 <div class="underline"></div>
                             </div>
                         </form>-->
-                        <div style="text-align: right;width: 250px;" ng-show="accountType">
+                        <!--<div style="text-align: right;width: 250px;" ng-show="accountType">
                           <span>Account Type:</span> 
                           <a href="#{{(checkLogIn.title !== 'SC') ? '/subscriptions': '/subscriptions2' }}" class="btn btn-warning" style="padding: 6px" ng-show="!accountType.type">Standard</a>
                           <a href="#{{(checkLogIn.title !== 'SC') ? '/subscriptions': '/subscriptions2' }}" class="btn btn-primary" style="padding: 6px" ng-show="accountType.type"><i class="fa fa-certificate"></i> Premium</a>
-                        </div>
+                        </div>-->
                     </div>
                    
                     <div class="header-block header-block-nav">
@@ -607,14 +607,17 @@
                         <a class="btn btn-simple round mr-0" style="color:red;margin-left:10px;font-size: 14px" href="#/invite"><i class="fa fa-user-plus"></i>
                                     <span>Invite Someone</span></a>
 
-                         <a class="btn btn-simple round mr-0" style="color:red;margin-left:10px;font-size: 14px" href="#/manage-patients"><i class="fa fa-users"></i>
-                                    <span> My Patients</span></a>
+                         <a class="btn btn-simple round mr-0" style="color:red;margin-left:10px;font-size: 14px" href="#/manage-patients" ng-cloak><i class="fa fa-users"></i>
+                                    <span> My Patients ({{patientList.length}})</span></a>
 
-                        <a class="btn btn-simple round mr-0" style="color:red;margin-left:10px;font-size: 14px" href="#/consultation-messages"><i class="fa fa-envelope"></i>
-                                    <span ng-cloak> Consultation Requests <span ng-show="consultation.length > 0"> ( {{consultation.length}} )</span></span></a>
+                        <a class="btn btn-simple round mr-0" style="color:red;margin-left:10px;font-size: 14px" href="#/consultation-messages" ng-cloak><i class="fa fa-envelope"></i>
+                                    <span ng-cloak> Consultation Requests <span ng-show="consultation.length > 0"> ({{(consultation.length < 100) ? consultation.length : '99+'}})</span></span></a>
+
+                        <a class="btn btn-simple round mr-0" style="color:red;margin-left:10px;font-size: 14px" href="#/prescription-out" ng-cloak><i class="icon-Pills"></i>
+                                    <span> Write Prescription</span></a>
                         
-                        <a class="btn btn-simple round mr-0" style="color:red;margin-left:10px;font-size: 14px" href="#{{(checkLogIn.title !== 'SC') ? '/subscriptions': '/subscriptions2' }}"><i class="fa fa-file"></i>
-                                    <span ng-cloak>Subscriptions Plans</span></span></a>         
+                        <!--<a class="btn btn-simple round mr-0" style="color:red;margin-left:10px;font-size: 14px" href="#{{(checkLogIn.title !== 'SC') ? '/subscriptions': '/subscriptions2' }}"><i class="fa fa-file"></i>
+                                    <span ng-cloak>Subscriptions Plans</span></span></a>  -->       
 
                       
                       
@@ -622,24 +625,27 @@
                             <span ng-cloak>{{balance}}</span>
                         </a>  
                      </div>
-                     <div class="mobile-item-display" style="position: relative;">
+                     <div class="mobile-item-display" style="position: relative;" ng-cloak>
                           <!--<a class="btn btn-simple" style="color:red;margin-left:10px" href="/user/patients/waiting-room" target="_blank" title="Patients' Waiting Room"><i class="fa fa-user"></i>
                           </a>-->
 
-                          <a class="btn btn-simple" style="color:red;margin-left:10px" href="#/invite" title="Invite Someone"><i class="fa fa-user-plus"></i>
+                          <a class="btn btn-simple" style="color:red;margin-left:10px;font-size: 16px" href="#/invite" title="Invite Someone"><i class="fa fa-user-plus text-primary"></i>
                             </a>
 
-                          <a class="btn btn-simple" style="color:red;margin-left:10px" href="#/manage-patients" title="Manage Patients"><i class="fa fa-users"></i>
+                          <a class="btn btn-simple" style="color:red;margin-left:10px;font-size: 16px" href="#/manage-patients" title="Manage Patients"><i class="fa fa-users text-primary"> <span>({{patientList.length}})</span></i>
                             </a>
 
-                          <a class="btn btn-simple" style="color:red;margin-left:10px" href="#/consultation-messages"><i class="fa fa-envelope"></i>
+                          <a class="btn btn-simple" style="color:red;margin-left:10px;font-size: 16px" href="#/consultation-messages" ng-show="consultation" ng-cloak><i class="fa fa-envelope text-primary"> <span ng-show="consultation.length > 0"> ({{(consultation.length < 100) ? consultation.length : '99+'}})</span></i>
                                     <!--<span ng-cloak> <span ng-show="consultation.length > 0"> ( {{consultation.length}} )</span></span>--></a>
-                           <!--<a ng-controller="balanceController" href="#/transactions" class="btn btn-info btn-sm header-btn" style="margin-left: 20px"><i class="fa fa-money"></i>
-                            <span ng-cloak>{{balance}}</span>
-                          </a>-->     
 
-                          <a href="#{{(checkLogIn.title !== 'SC') ? '/subscriptions': '/subscriptions2' }}" class="btn btn-warning" style="padding: 6px;margin-left:10px" ng-show="!accountType.type">Standard</a>
-                          <a href="#{{(checkLogIn.title !== 'SC') ? '/subscriptions': '/subscriptions2' }}" class="btn btn-primary" style="padding: 6px;margin-left:10px" ng-show="accountType.type"><i class="fa fa-certificate"></i> Premium</a>
+                          <a class="btn btn-simple" style="color:red;margin-left:10px;font-size: 16px" title="Write prescription" href="#/prescription-out"><i class="icon-Pills text-primary"></i>
+                                    <!--<span ng-cloak> <span ng-show="consultation.length > 0"> ( {{consultation.length}} )</span></span>--></a>
+                           <a ng-controller="balanceController" href="#/transactions" class="btn btn-info btn-sm header-btn" style="margin-left: 20px"><i class="fa fa-money"></i>
+                            <span ng-cloak>{{balance}}</span>
+                          </a>    
+
+                         <!--<a href="#{{(checkLogIn.title !== 'SC') ? '/subscriptions': '/subscriptions2' }}" class="btn btn-warning" style="padding: 6px;margin-left:10px" ng-show="!accountType.type">Standard</a>
+                          <a href="#{{(checkLogIn.title !== 'SC') ? '/subscriptions': '/subscriptions2' }}" class="btn btn-primary" style="padding: 6px;margin-left:10px" ng-show="accountType.type"><i class="fa fa-certificate"></i> Premium</a>-->
 
                         </div> 
                                    

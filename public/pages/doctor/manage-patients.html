@@ -36,6 +36,7 @@
 <div class="">
 		<section class="col-md-12 pl-0 ml-0">
 			<div class="col-md-8 pl-0 ml-0">
+				<label  class="h6 pl-2">My Patients</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 				<span class="btn btn-neutral"><i class="fa fa-users text-danger"></i> {{patientList.length}}</span>  &nbsp;&nbsp;&nbsp;&nbsp;
 				<i class="fa fa-refresh btn btn-neutral" ng-click="refresh()"></i>
 			</div>
@@ -45,14 +46,14 @@
 		</section>
 		<div class="clearfix"></div>
 		<div class="col-md-4 p-12" ng-repeat="j in patientList | orderBy: 'appDate' | filter : person" ng-if="!j.deleted && j.patient_id !== checkLogIn.user_id" >
-			<div class="card row">				
+			<div class="card">				
 				<div class="col-md-4 col-sm-4 col-xs-4 pl-1 pt-1">
 					<a href="" ng-click="userPatient(j.patient_id,j.presence)">
 						<img src="{{j.patient_profile_pic_url}}" style="width: auto;max-height: 170px"/>
 					</a>
 				</div>
-				<div class="pt-2 pb-1 col-md-8 col-sm-8 col-xs-8 pl-1" style="min-height: 110px;max-height: 140px;">
-					<div class="ellipsis">
+				<div class="pt-2 pb-1 col-md-8 col-sm-8 col-xs-8 pl-1" style="min-height: 110px;max-height: 140px;text-align: center;">
+					<div class="ellipsis h6">
 						<b class="text-muted">{{j.patient_title}} {{j.patient_lastname}} {{j.patient_firstname}}</b>
 					</div>
 					<div class="text-muted">
@@ -67,8 +68,8 @@
 						</a>
 						<a href="" ng-if="!j.isNewAppointment" style="height: 13px">&nbsp;</a><br>
 					</div>	
-					<i class="online" ng-show="j.presence" title="Online" style="position: absolute;top: 3px; right: 5px"></i>
-					<i class="online" ng-show="!j.presence" title="Offline" style="position: absolute;top: 3px; right: 5px;background-color: #eee"></i>						
+					<i class="online" ng-show="j.presence" title="Online" style="position: absolute;top: 3px; right: 10px"></i>
+					<i class="online" ng-show="!j.presence" title="Offline" style="position: absolute;top: 3px; right: 10px;background-color: #eee"></i>						
 				</div>				
 				<div class="clearfix"></div>
 				<div style="position: relative;" class="pl-1 pb-1">

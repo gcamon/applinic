@@ -1,29 +1,27 @@
-<div class="card p-2 card-center-1" >
+<div class="">
         <div>
-            <div class="h6 pt-1 text-center">
+            <div class="h6 pt-1 pl-1">
                 Consultation Requests ( {{consultation.length}} )               
             </div>
             <br>
-            <div class="col-md-6 pl-0 ml-0">
+            <div class="pl-0 ml-0">
                 <input type="text" name="" placeholder=" Search list" ng-model="consults" class="form-control" ng-show="consultation.length > 5"> 
             </div>
-            <div class="clearfix"></div>
-            <div style="border-bottom: 1px solid rgba(0,0,0,0.1);line-height: 30px;padding: 10px 0;margin-bottom: 5px" ng-repeat="j in consultation | orderBy: '-date' | filter : consults"> 
-                <div class="col-md-3 col-xs-4">              
-                    <img src="{{j.sender_profile_pic_url}}" style="height: 75px;width: auto;"> 
-                </div>               
-                <div class="col-md-9 col-xs-8">
-                    <div>
-                        <label  class="ellipsis block pb-0 mb-0">{{j.sender_firstname}} {{j.sender_lastname}}</label>
-                        <span am-time-ago="j.date" class="text-muted"></span><br>
-                        <a href="" class="text-danger" ng-click= "viewConsult(j)">View details</a>&nbsp;&nbsp;
+            
+            <div class="col-md-4"  ng-repeat="j in consultation | orderBy: '-date' | filter : consults"> 
+                <div class="card p-1">               
+                    <div class="p-0 m-0 col-xs-4">              
+                        <img src="{{j.sender_profile_pic_url}}" style="max-height: 170px"> 
+                    </div>             
+                   
+                    <div class="p-0 m-0 col-xs-8" style="text-align: center;">
+                        <h6 class="ellipsis block pl-1 pt-0 pb-1 mb-0">{{j.sender_firstname}} {{j.sender_lastname}}</h6>
+                        <span am-time-ago="j.date" class="text-muted"></span><br><br>
+                        <a href="" class="btn btn-simple btn-sm" ng-click= "viewConsult(j)">Details</a>&nbsp;&nbsp;
                        <button class="btn btn-info btn-sm" ng-click="acceptOnce(j)" ng-show="!j.loading && !j.isSuccess">Accept</button>&nbsp;&nbsp; <button class="btn btn-neutral btn-sm" ng-show="j.loading && !j.isSuccess"><i class="fa fa-spinner fa-pulse fa-1x fa-fw"></i></button>
                        <span ng-show="j.isSuccess" class="text-primary">accepted!</span>
                     </div>
-                  
-
-                </div>
-                <div class="clearfix"></div>         
+                </div>                
             </div>
             <p ng-show="consultation.length == 0" style="text-align: center;padding-top: 30px">You have no pending consultation requests at the moment. Go to <a href="#/manage-patients" class="text-primary">'My Patients'</a> to see all your patients and manage them.</p>            
         </div>	

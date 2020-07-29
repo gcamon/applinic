@@ -94,10 +94,11 @@
 	</form>
 
 	<div ng-if="isSuccess">
-		<h5 class="text-success">Success! Study added to {{dicomDetails.dns}}</h5>
+		<h5 class="text-center">
+			<span>Study uploaded sucessfully!</span></h5>
 		<!--<p> Please enter the Accession Number below in your work station for the study before capturing.</p>-->
 		<!--<label>{{station.locate}}:</label><br>-->
-		<b style="font-size: 18px">Id: {{studyNum}}</b>
+			<b style="font-size: 18px">Study Id: {{studyNum}}</b>
 		<!--<p>Enter our remote DICOM details below in your PACs server for transfering.</p>
 		<label>Logical Name: </label> <span>Applinic</span><br>
 		<label>AE Title: </label> <span>{{dicomDetails.aetitle}}</span><br>

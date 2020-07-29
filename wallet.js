@@ -24,7 +24,7 @@ Wallet.prototype.credit = function(model,receiver,amount,io,cb){
 			  .exec(function(err,plan){
 			  	  if(err) throw err;
 			  	  if(!plan) {
-					  var discount = (data.city_grade) ? (data.city_grade / 100 ) : 0.10;
+					  var discount = 0.0//(data.city_grade) ? (data.city_grade / 100 ) : 0.10;
 					  var consulPer = amount * discount;
 					  amount -= consulPer;
 						model.user.findOne({admin: true,user_id:process.env.ADMIN_ID},{ewallet:1}).exec(function(err,admin){
