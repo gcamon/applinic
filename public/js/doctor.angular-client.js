@@ -14287,11 +14287,13 @@ app.controller("prescriptionOutCtrl",["$scope","$rootScope","$http","localManage
   }
 
   $scope.validatePatient = function() {
+    alert("djhhjds")
     var isNumber = testNumber($scope.patient.patient_phone);
 
     if(isNumber) {
-      if($scope.patient.patient_phone.indexOf('+') == -1)
+      if($scope.patient.patient_phone.indexOf('+') == -1){
         $scope.patient.patient_phone = "+234" + parseInt($scope.patient.patient_phone); 
+      }
     } else {
       $scope.phoneError = "Please enter a valid phone number.";
       return;
