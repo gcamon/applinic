@@ -14287,7 +14287,6 @@ app.controller("prescriptionOutCtrl",["$scope","$rootScope","$http","localManage
   }
 
   $scope.validatePatient = function() {
-    alert("djhhjds")
     var isNumber = testNumber($scope.patient.patient_phone);
 
     if(isNumber) {
