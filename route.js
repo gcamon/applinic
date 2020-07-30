@@ -2802,14 +2802,14 @@ var basicRoute = function (model,sms,io,streams,client,transporter) {
             }
 
             var track_record = {
-                date: date,
-                center_name: pharmacy.name,
-                address: pharmacy.address,
-                ref_id: ref_id,
-                city: pharmacy.city,
-                phone: pharmacy.phone,
-                country: pharmacy.country,
-                prescriptionId: req.body.prescriptionId
+              date: date,
+              center_name: pharmacy.name,
+              address: pharmacy.address,
+              ref_id: ref_id,
+              city: pharmacy.city,
+              phone: pharmacy.phone,
+              country: pharmacy.country,
+              prescriptionId: req.body.prescriptionId
             };
 
             model.user.findOne({user_id: req.user.user_id},{prescription_tracking:1}).exec(function(err,patient){
@@ -2937,6 +2937,8 @@ var basicRoute = function (model,sms,io,streams,client,transporter) {
       //any data sent to a diagnostic center other than to the patient himself is seens a a referral by this application.
       if(req.user){ 
 
+          console.log(req.body)
+
             var date = new Date();
 
             var ref_id;
@@ -2960,6 +2962,7 @@ var basicRoute = function (model,sms,io,streams,client,transporter) {
               var optMsg = (req.body.referral_pays == 'Yes') ? "The doctor chose the option to pay the bill." : "";
               var address = (req.body.courierObj.address) ? req.body.courierObj.address : req.user.address;
               var callPhone = (req.body.courierObj.phone1) ? req.body.courierObj.phone1 : req.user.phone;
+
               var courierData = {
                 request_id: reqId,
                 verified: false,

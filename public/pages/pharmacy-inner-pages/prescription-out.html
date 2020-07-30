@@ -5,8 +5,37 @@
        
         <section ng-show="!isNewPatient && !isSearchToSend">
             <form ng-submit="validatePatient()">
-                <label>Enter Patient's Phone Number </label> &nbsp;<i class="fa fa-question-circle tip text-primary"><span>This should be the number patient used to register in 'Applinic'. But you can proceed if the number is not yet registered by adding few details about the patient to enable system create record for the patient. However, details and reference to the prescription(s) will be sent to the patient via SMS.</span></i> &nbsp;  <span class="text-danger">{{phoneErr}}</span><br>
-                <input type="text" name="mobile" class="form-control" placeholder="Enter patient's phone number" ng-model="patient.patient_phone" uib-typeahead="p.patient_phone for p in patientList | filter:$viewValue | limitTo:15" required>               
+                <div  class="mb-1">
+                    <label class="custom-control custom-radio">
+                       Choose from your patient's list
+                       <input type="radio" class="custom-control-input" value="mine" ng-model="patient.patientType">
+                       <span class="custom-control-indicator"></span>
+                       <span class="custom-control-description" style="opacity:0;"></span>
+                    </label> &nbsp;&nbsp;&nbsp;
+
+
+                    <label class="custom-control custom-radio ml-0">
+                       Phone number of a patient
+                       <input type="radio" class="custom-control-input" value="other" ng-model="patient.patientType">
+                       <span class="custom-control-indicator"></span>
+                       <span class="custom-control-description" style="opacity:0;"></span>
+                    </label> 
+                </div>
+                <div ng-if="patient.patientType === 'other'">
+                    <label>Enter Patient's Phone Number </label> &nbsp;<i class="fa fa-question-circle tip text-primary"><span>This should be the number patient used to register in 'Applinic'. But you can proceed if the number is not yet registered by adding few details about the patient to enable system create record for the patient. However, details and reference to the prescription(s) will be sent to the patient via SMS.</span></i> &nbsp;  <span class="text-danger">{{phoneErr}}</span><br>
+                    <input type="text" class="form-control" placeholder="Enter patient's phone number" ng-model="patient.patient_phone" uib-typeahead="p.patient_phone for p in patientList | filter:$viewValue | limitTo:15" required>
+                </div>
+
+                <div ng-if="patient.patientType == 'mine'">
+                    <select  class="form-control" ng-model="patient.patient_phone" required>
+                       <option disabled value="" selected="">_Select a patient</option> 
+                       <option value="{{p.patient_phone}}" ng-repeat="p in patientList">{{p.patient_firstname}} {{p.patient_lastname}}</option>
+                    </select>
+                </div>     
+
+               
+
+                        
                 <br>
                 <label>Add Prescriptions</label><br>           
                 <table class="table-respnsive table-striped no-mobile-item-display">       
@@ -47,13 +76,34 @@
                     <i class="fa fa-plus btn btn-neutral" style="cursor:pointer; margin-right: 10px" title="Add field" ng-click="addDrug()"></i>
                         <i class="fa fa-minus btn btn-neutral" style="cursor:pointer" title="Remove last field" ng-click="removeDrug()"></i>
                 </div>
-                <div>
+                <div class="mb-1">
                     <!--<textarea class="form-control p-1" placeholder="Complain" ng-model="treatment.complain"></textarea>-->
                     <label>Instructions / explanations for prescription(s) above (optional)</label><!--</span> Diagnosis ( Provisional or Final ) </label>--><br>
                   
                     <textarea class="form-control p-1" name="drug intake guide" placeholder="For eg. Take Ibuprofen only after meals" ng-model="patient.explanation" ng-keyup="autoExpand($event)" id="textarea"></textarea>
                 
                 </div>
+                 <div>
+                    <!--<textarea class="form-control p-1" placeholder="Complain" ng-model="treatment.complain"></textarea>-->
+                    <label>Would you like to pay the bill for the prescription?</label><!--</span> Diagnosis ( Provisional or Final ) </label>--><br>
+                  
+                    <label class="custom-control custom-radio">
+                      Yes
+                     <input type="radio" class="custom-control-input" value="Yes" ng-model="patient.referral_pays">
+                      <span class="custom-control-indicator"></span>
+                      <span class="custom-control-description" style="opacity:0;"></span>
+                    </label> &nbsp;&nbsp;&nbsp;
+
+
+                    <label class="custom-control custom-radio">
+                      No
+                     <input type="radio" class="custom-control-input" value="No" ng-model="patient.referral_pays">
+                      <span class="custom-control-indicator"></span>
+                      <span class="custom-control-description" style="opacity:0;"></span>
+                    </label>  
+                
+                </div>
+               
                 <br>
                 <div>
                     <input type="submit" name="" value="Continue" class="btn btn-info"  ng-if="!loading">
@@ -94,7 +144,22 @@
             <section ng-show="isSearchToSend" class="col-md-10">
                 <div>
                     <a href="" ng-click="goBack()"><i class="fa fa-arrow-left"></i> Back </a>
-                </div><br>
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col-md-3 col-xs-4">
+                        <img src="{{patient.patientDetails.profile_pic_url}}" style="max-height: 120px">
+                    </div>
+                    <div class="col-md-8 col-xs-8 pl-1">
+                        <div class="pt-1">
+                            <h6 class="mb-0 pb-0">{{patient.patient_title}} {{patient.patient_firstname}} {{patient.patient_lastname}}</h6>
+                            <span>{{patient.patientDetails.gender}}</span> <br>
+                            <span>{{patient.patientDetails.age}}</span><br>
+                            <span>{{patient.patientDetails.phone}}</span>
+                        </div>
+                    </div>
+                </div>
+                <br>
                 <form ng-submit="findPharmacy()">
                     <div class="col-md-8 col-sm-8 col-xs-8 pl-0 ml-0">
                         <input type="text" name="" ng-model="city" class="form-control">
@@ -105,21 +170,48 @@
                 </form>
                 <div class="clearfix"></div>
                 <hr>
-                <div>
+                <div>                   
                     <div>
-                        <label>Patient: <span class="text-muted">{{patient.patient_title}} {{patient.patient_firstname}} {{patient.patient_lastname}}</span></label>
+                        <label>Would you like to use our courier service to deliver the drugs to any location?</label>
+                        <div>
+                            <label class="custom-control custom-radio">
+                              Yes
+                             <input type="radio" class="custom-control-input" value="Yes" ng-model="patient.isCourier">
+                              <span class="custom-control-indicator"></span>
+                              <span class="custom-control-description" style="opacity:0;"></span>
+                            </label> &nbsp;&nbsp;&nbsp;
+
+
+                            <label class="custom-control custom-radio">
+                              No
+                             <input type="radio" class="custom-control-input" value="No" ng-model="patient.isCourier">
+                              <span class="custom-control-indicator"></span>
+                              <span class="custom-control-description" style="opacity:0;"></span>
+                            </label> 
+                        </div>
+                        <div ng-show="patient.isCourier == 'Yes'" class="mt-1">
+                            <div>
+                                <label class="block pb-0">We'll delivery the package to this address</label>
+                                <input type="text" name="" class="form-control" ng-model="patient.delivery_address" placeholder="{{patient.patientDetails.address}}">
+                            </div>
+                            <div>
+                                <label class="block pb-0">We'll call this line</label>
+                                <input type="text" name="" class="form-control" ng-model="patient.phone1" placeholder="{{patient.patientDetails.phone}}">
+                            </div>
+                        </div> 
                     </div>
                     <br>
                     <div ng-show="searchResult.length > 2">
-                        <input type="text" name="" placeholder=" Filter list" ng-model="item">
+                        <input type="text" name="" placeholder=" Filter list" ng-model="item" class="simple-border">
                     </div>
                     <br>
-                    <div ng-repeat='j in searchResult | filter: item' style="position: relative;" class="mb-1">
+                    <div ng-repeat='j in searchResult | filter: item' style="position: relative;" class="mb-1" ng-show="patient.isCourier === 'No' || j.courier_access">
                         <label class="pb-0 mb-0">{{j.name}}</label><br>
                         <span>{{j.address}} {{j.city}} {{j.country}}</span><br>
                         <span>{{j.phone}}</span>
+
                         <span style="position: absolute;bottom: 0;right: 5px">
-                            <button class="btn btn-sm btn-simple" ng-click="sendDrug(j)" ng-show="!j.isSent">{{(j.loading) ? 'Sending...' : 'Send'}}</button><i class="fa fa-check btn btn-sm btn-neutral" style="color: #85CE36" ng-show="j.isSent"></i>
+                            <button class="btn btn-sm btn-primary" ng-click="sendDrug(j)" ng-show="!j.isSent">{{(j.loading) ? 'Sending...' : 'Send'}}</button><i class="fa fa-check btn btn-sm btn-neutral" style="color: #85CE36" ng-show="j.isSent"></i>
                         </span><br>
                     </div>
                 </div>

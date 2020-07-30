@@ -7348,7 +7348,10 @@ function($scope,$location,$rootScope,$http,ModalService,$interval,templateServic
     $rootScope.data = {
       sender_firstname: patient.patient_firstname,
       sender_lastname: patient.patient_lastname,
-      sender_id: patient.patient_id
+      sender_id: patient.patient_id,
+      sender_profile_pic_url: patient.patient_profile_pic_url,
+      sender_gender: patient.patient_gender || patient.gender,
+      sender_age: patient.patient_age || patient.age
     };
     //$scope.docName = templateService.getfirstname;
     //$scope.loading2 = true;
@@ -14189,6 +14192,8 @@ app.controller("prescriptionOutCtrl",["$scope","$rootScope","$http","localManage
 
   var user = localManager.getValue("resolveUser");
 
+  $scope.patient.patientType = "mine";
+
   $scope.drugs = Drugs;
     
   var count = {}; 
@@ -14212,6 +14217,10 @@ app.controller("prescriptionOutCtrl",["$scope","$rootScope","$http","localManage
   });
 
 
+  $scope.patient.isCourier = "No";
+  $scope.patient.referral_pays = "No";
+
+
   $scope.addDrug = function(){  
     var newDrug = {};         
     count.num++;
@@ -14228,6 +14237,14 @@ app.controller("prescriptionOutCtrl",["$scope","$rootScope","$http","localManage
 
   $scope.sendDrug = function(center) {
     center.loading = true;
+    var courierObj;
+    if($scope.patient.isCourier === 'Yes'){
+      courierObj = {
+        phone1 : $scope.patient.phone1 || $scope.patient.patientDetails.phone,
+        address: $scope.patient.delivery_address || $scope.patient.patientDetails.address
+      }
+    }
+
     var sendObj = {
       id: $scope.patient.patientDetails.user_id,
       patient_id: $scope.patient.patientDetails.user_id,
@@ -14244,6 +14261,13 @@ app.controller("prescriptionOutCtrl",["$scope","$rootScope","$http","localManage
       prescriptionBody: $scope.drugList,
       prescriptionId: null,
       user_id: center.user_id,
+      referral_pays: $scope.patient.referral_pays,
+      courierObj: courierObj,
+      center_name: center.name,
+      center_address: center.address,
+      center_phone: center.phone,
+      center_email: center.email,
+      center_city:center.city
     }
 
     $http({
@@ -14338,6 +14362,8 @@ app.controller("prescriptionOutCtrl",["$scope","$rootScope","$http","localManage
   $scope.findPharmacy = function() {
     getPharmacy();
   }
+
+
 
 
   var chechIfPrescription = function(data) {
