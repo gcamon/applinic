@@ -64,10 +64,10 @@
                 <div class="mobile-item-display">                            
                     <table class="table" ng-repeat="prescription in drugList">
                         <thead><th>sn: </th> <td>{{prescription.sn}}</td></thead>
-                        <thead><th>Drug name: </th> <td><input  type="text" placeholder="Enter drug name" ng-model="prescription.drug_name" uib-typeahead="drug.name for drug in drugs | filter:$viewValue | limitTo:15" class="form-control"></td></thead>
-                        <thead><th>Dosage: </th> <td><input type="text" name="dose" ng-model="prescription.dosage" placeholder="Enter dosage" class="form-control"></td></thead>
-                        <thead><th>Frequency: </th> <td><input  type="text" placeholder="Enter frequency" ng-model="prescription.frequency" uib-typeahead="f for f in frequencies | filter:$viewValue | limitTo:15" class="form-control"></td></thead>
-                        <thead><th>Duration: </th> <td><input  type="text" placeholder="Enter duration" ng-model="prescription.duration" uib-typeahead="d for d in durations | filter:$viewValue | limitTo:15" class="form-control" style=""></td></thead>
+                        <thead><th class="pb-1">Drug name: </th> <td><input  type="text" placeholder="Enter drug name" ng-model="prescription.drug_name" uib-typeahead="drug.name for drug in drugs | filter:$viewValue | limitTo:15" class="form-control"></td></thead>
+                        <thead><th class="pb-1">Dosage: </th> <td><input type="text" name="dose" ng-model="prescription.dosage" placeholder="Enter dosage" class="form-control"></td></thead>
+                        <thead><th class="pb-1">Frequency: </th> <td><input  type="text" placeholder="Enter frequency" ng-model="prescription.frequency" uib-typeahead="f for f in frequencies | filter:$viewValue | limitTo:15" class="form-control"></td></thead>
+                        <thead><th class="pb-1">Duration: </th> <td><input  type="text" placeholder="Enter duration" ng-model="prescription.duration" uib-typeahead="d for d in durations | filter:$viewValue | limitTo:15" class="form-control" style=""></td></thead>
                         <hr class="bg-warning">
                     </table>
                 </div>
@@ -151,8 +151,8 @@
                     <div class="col-md-3 col-xs-4">
                         <img src="{{patient.patientDetails.profile_pic_url}}" style="max-height: 120px">
                     </div>
-                    <div class="col-md-8 col-xs-8 pl-1">
-                        <div class="pt-1">
+                    <div class="col-md-8 col-xs-8 pl-2">
+                        <div class="pt-1 ml-1">
                             <h6 class="mb-0 pb-0">{{patient.patient_title}} {{patient.patient_firstname}} {{patient.patient_lastname}}</h6>
                             <span>{{patient.patientDetails.gender}}</span> <br>
                             <span>{{patient.patientDetails.age}}</span><br>
@@ -173,7 +173,7 @@
                 <hr>
                 <div>                   
                     <div>
-                        <label>Would you like to use our courier service to deliver the drugs to any location?</label>
+                        <label>Would you like to use our courier service to deliver the drugs to a location?</label>
                         <div>
                             <label class="custom-control custom-radio">
                               Yes
@@ -192,7 +192,7 @@
                         </div>
                         <div ng-show="patient.isCourier == 'Yes'" class="mt-1">
                             <div>
-                                <label class="block pb-0">We'll delivery the package to this address</label>
+                                <label class="block pb-0">We'll deliver the package to this address</label>
                                 <input type="text" name="" class="form-control" ng-model="patient.delivery_address" placeholder="{{patient.patientDetails.address}}">
                             </div>
                             <div>
