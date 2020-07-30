@@ -4,7 +4,7 @@
     <div class="col-md-11">
        
         <section ng-show="!isNewPatient && !isSearchToSend">
-            <form ng-submit="validatePatient()">
+            <form>
                 <div  class="mb-1">
                     <label class="custom-control custom-radio">
                        Choose from your patient's list
@@ -106,8 +106,8 @@
                
                 <br>
                 <div>
-                    <input type="submit" name="" value="Continue" class="btn btn-info"  ng-if="!loading">
-                    <span ng-if="loading">Processing...</span>
+                    <input type="button" name="" value="Continue" class="btn btn-info" ng-click="validatePatient()"  ng-show="!loading">
+                    <span ng-show="loading">Processing...</span>
                 </div>  
                 </form>          
             </section>
