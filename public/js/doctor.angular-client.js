@@ -14286,12 +14286,10 @@ app.controller("prescriptionOutCtrl",["$scope","$rootScope","$http","localManage
     });
   }
 
-  $scope.validatePatient = function() {   
-
-    var intRegex = /[0-9 -()+]+$/;    
-    var isNumber = intRegex.test($scope.patient.patient_phone);
-
-    if(isNumber) {
+  $scope.validatePatient = function() {
+    //var isNumber = testNumber($scope.patient.patient_phone);
+    alert($scope.patient.patient_phone);
+    if(testNumber($scope.patient.patient_phone)) {
       if($scope.patient.patient_phone.indexOf('+') == -1){
         $scope.patient.patient_phone = "+234" + parseInt($scope.patient.patient_phone); 
       }
