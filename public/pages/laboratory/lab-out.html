@@ -1,14 +1,46 @@
 <div class="card p-2 card-center-1">
-	<h4>Laboratory Investigation </h4>
-	
-	<form class="col-md-10" style="line-height: 25px" ng-show="isNewLab" ng-submit="validatePatient()">  
-       	<div>
+	<h4 class="h6">Write Laboratory Test</h4>
+	<br>
+	<form class="col-md-10" style="line-height: 25px" ng-show="isNewLab" ng-submit="validatePatient()"> 
+
+         <div  class="mb-1">
+            <label class="custom-control custom-radio">
+               Choose from your patient's list
+               <input type="radio" class="custom-control-input" value="mine" ng-model="treatment.patientType">
+               <span class="custom-control-indicator"></span>
+               <span class="custom-control-description" style="opacity:0;"></span>
+            </label> &nbsp;&nbsp;&nbsp;
+
+
+            <label class="custom-control custom-radio ml-0">
+               Phone number of a patient
+               <input type="radio" class="custom-control-input" value="other" ng-model="treatment.patientType">
+               <span class="custom-control-indicator"></span>
+               <span class="custom-control-description" style="opacity:0;"></span>
+            </label> 
+        </div>
+        <div ng-if="treatment.patientType === 'other'">
+            <label>Enter Patient's Phone Number </label> &nbsp;<i class="fa fa-question-circle tip text-primary"><span>This should be the number patient used to register in 'Applinic'. But you can proceed if the number is not yet registered by adding few details about the patient to enable system create record for the patient. However, details and reference to the prescription(s) will be sent to the patient via SMS.</span></i> &nbsp;  <span class="text-danger">{{phoneError}}</span><br>
+            <input type="text" class="form-control" placeholder="Enter patient's phone number" ng-model="treatment.patient_phone" uib-typeahead="p.patient_phone for p in patientList | filter:$viewValue | limitTo:15" required>
+        </div>
+
+        <div ng-if="treatment.patientType == 'mine'">
+            <select  class="form-control" ng-model="treatment.patient_phone" required>
+               <option disabled value="" selected="">_Select a patient</option> 
+               <option value="{{p.patient_phone}}" ng-repeat="p in patientList">{{p.patient_firstname}} {{p.patient_lastname}}</option>
+            </select>
+        </div> 
+        <br>    
+
+
+
+       	<!--<div>
         	<label>Patient's Phone Number *</label> &nbsp;<i class="fa fa-question-circle tip text-primary"><span>This should be the number patient used to register in 'Applinic'. But you can proceed if the number is not yet registered by adding few details about the patient to enable system create record for the patient. However, details and reference to the test(s) will be sent to the patient via SMS.</span></i><br>
     		<input type="text" name="" class="form-control" ng-model="treatment.patient_phone" required uib-typeahead="p.patient_phone for p in patientList | filter:$viewValue | limitTo:15">
     		<span class="text-danger">{{phoneError}}</span><br>
-        </div>
+        </div>-->
         <div>
-        	<label>Investigation(s) ( {{TestList.length}} ) *</label>
+        	<label>Add Tests ( {{TestList.length}} ) *</label>
         </div>
         <div ng-repeat="lab in TestList">
              
@@ -35,14 +67,38 @@
             <label>LMP: ( Female )</label>
             <textarea  placeholder="Write.." ng-model="treatment.lmp" class="form-control pl-2" ng-keyup="autoExpand($event)" id="textarea"></textarea>
         </div>
+        <br>
          <div>
             <label>Parity: ( Female ) </label>
             <textarea  placeholder="Write.." ng-model="treatment.parity" class="form-control pl-2" ng-keyup="autoExpand($event)" id="textarea"></textarea>
-        </div>    
+        </div> 
+        <br>
+         <div>
+            <!--<textarea class="form-control p-1" placeholder="Complain" ng-model="treatment.complain"></textarea>-->
+            <label>Would you like to pay the bill for the prescription?</label><!--</span> Diagnosis ( Provisional or Final ) </label>--><br>
+          
+            <label class="custom-control custom-radio">
+              Yes
+             <input type="radio" class="custom-control-input" value="Yes" ng-model="treatment.referral_pays">
+              <span class="custom-control-indicator"></span>
+              <span class="custom-control-description" style="opacity:0;"></span>
+            </label> &nbsp;&nbsp;&nbsp;
+
+
+            <label class="custom-control custom-radio">
+              No
+             <input type="radio" class="custom-control-input" value="No" ng-model="treatment.referral_pays">
+              <span class="custom-control-indicator"></span>
+              <span class="custom-control-description" style="opacity:0;"></span>
+            </label>  
+        
+        </div>   
         <br>
         <div>
             <input type="submit" class="btn btn-success" value="Continue" ng-show="!loading"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange" ng-show="loading"> </i>
         </div>
+        
+       
         
     </form>
     <div class="clearfix"></div>   
@@ -97,11 +153,11 @@
     		<div ng-show="searchResult.length > 2">
     			<input type="text" name="" placeholder=" Filter list" ng-model="item">
     		</div>
-    		<div ng-repeat='j in searchResult | filter: item' style="position: relative;" class="pt-1 pb-1">
-    			<label>{{j.name}}</label><br>
-    			<span>{{j.address}} {{j.city}} {{j.country}}</span><br>
+    		<div ng-repeat='j in searchResult | filter: item' style="position: relative;" class="mb-1">
+    			<label class="pb-0 mb-0">{{j.name}}</label><br>
+    			<span style="display: block;width: 92%">{{j.address}} {{j.city}} {{j.country}}</span>
     			<span>{{j.phone}}</span>
-    			<span style="position: absolute;bottom: 5px;right: 5px">
+    			<span style="position: absolute;bottom: -5px;right: 5px">
     				<button class="btn btn-sm btn-warning" ng-click="sendTest(j)" ng-show="!j.isSent">{{(j.loading) ? 'Sending...' : 'Send'}}</button><i class="fa fa-check btn btn-sm btn-neutral" style="color: #85CE36" ng-show="j.isSent"></i>
     			</span>
     		</div>

@@ -13861,6 +13861,8 @@ app.controller("labOutCtrl",["$scope","$http","labTests","getAllLaboratoryServic
 
   //$scope.treatment.country = "Nigeria";
 
+  $scope.treatment.patientType = "mine";
+  $scope.treatment.referral_pays = "No";
 
   $scope.getTest = function (test) {
     test_name = test;
@@ -13914,12 +13916,13 @@ app.controller("labOutCtrl",["$scope","$http","labTests","getAllLaboratoryServic
 
     $scope.invMsg = "";
 
-    var isNumber = testNumber($scope.treatment.patient_phone);
-    if(isNumber) {
+    //var isNumber = testNumber($scope.treatment.patient_phone);
+    if(testNumber($scope.treatment.patient_phone)) {
       if($scope.treatment.patient_phone.indexOf('+') == -1)
         $scope.treatment.patient_phone = "+234" + parseInt($scope.treatment.patient_phone); 
     } else {
       $scope.phoneError = "Please enter a valid phone number.";
+      alert("Patient phone number not found or invalid")
       return;
     }
 
@@ -13984,6 +13987,8 @@ app.controller("labOutCtrl",["$scope","$http","labTests","getAllLaboratoryServic
     })
   }
 
+
+
   $scope.sendTest = function(center){
     center.loading = true;
     $scope.treatment.isOutPatientReq = true;
@@ -14026,7 +14031,8 @@ app.controller("radioOutCtrl",["$scope","$http","scanTests","getAllRadiologyServ
 
   $scope.treatment = {};
 
- 
+  $scope.treatment.patientType = "mine";
+  $scope.treatment.referral_pays = "No";
 
   $scope.getTest = function (test) {
     test_name = test;
@@ -14075,18 +14081,21 @@ app.controller("radioOutCtrl",["$scope","$http","scanTests","getAllRadiologyServ
 
   $scope.validatePatient = function() {   
     if(!$scope.TestList[0].name){
-      $scope.invMsg = "Please write an investigation you wish to forward to a center.";
+      $scope.invMsg = "Please enter investigation you wish to forward to a center.";
       return;
     }
 
+
+
     $scope.invMsg = "";
 
-    var isNumber = testNumber($scope.treatment.patient_phone);
-    if(isNumber) {
+    //var isNumber = testNumber($scope.treatment.patient_phone);
+    if(testNumber($scope.treatment.patient_phone)) {
       if($scope.treatment.patient_phone.indexOf('+') == -1)
         $scope.treatment.patient_phone = "+234" + parseInt($scope.treatment.patient_phone); 
     } else {
       $scope.phoneError = "Please enter a valid phone number.";
+      alert("Patient phone number not found or invalid")
       return;
     }
 
@@ -14294,6 +14303,7 @@ app.controller("prescriptionOutCtrl",["$scope","$rootScope","$http","localManage
       }
     } else {
       $scope.phoneError = "Please enter a valid phone number.";
+      alert("Patient phone number not found or invalid")
       return;
     }
 

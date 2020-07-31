@@ -208,10 +208,10 @@
                     <br>
                     <div ng-repeat='j in searchResult | filter: item' style="position: relative;" class="mb-1" ng-show="patient.isCourier === 'No' || j.courier_access">
                         <label class="pb-0 mb-0">{{j.name}}</label><br>
-                        <span>{{j.address}} {{j.city}} {{j.country}}</span><br>
+                        <span style="display: block;width: 92%">{{j.address}} {{j.city}} {{j.country}}</span>
                         <span>{{j.phone}}</span>
 
-                        <span style="position: absolute;bottom: 0;right: 5px">
+                        <span style="position: absolute;bottom: -5px;right: 5px">
                             <button class="btn btn-sm btn-primary" ng-click="sendDrug(j)" ng-show="!j.isSent">{{(j.loading) ? 'Sending...' : 'Send'}}</button><i class="fa fa-check btn btn-sm btn-neutral" style="color: #85CE36" ng-show="j.isSent"></i>
                         </span><br>
                     </div>

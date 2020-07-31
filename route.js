@@ -12451,6 +12451,7 @@ router.post("/user/doctor/consultation-fee",function(req,res){
       if(err) throw err;
       if(patient){
         var mail = patient.patient_mail;
+        req.body.patient_phone = patient.phone;
         req.body.service_access = true;
         var random = randos.genRef(8);
         mail.push({

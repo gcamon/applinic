@@ -110,7 +110,7 @@ var signupRoute = function(model,sms,geonames,paystack,io,transporter) {
 					});
 
 					User.ewallet = {
-						available_amount: (req.body.typeOfUser === "Patient") ? 250 : 0,
+						available_amount: (req.body.typeOfUser === "Patient") ? 0 : 0,
 						transaction: []
 					}
 

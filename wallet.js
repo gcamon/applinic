@@ -48,53 +48,59 @@ Wallet.prototype.credit = function(model,receiver,amount,io,cb){
 
 								admin.save(function(err,info){
 									console.log("admin fee paid");
+									makePayment()
 								});
 							}
 						})
 					}
 
 				})
+			} else {
+				makePayment()
 			}
 
-			if(data) {
-				if(self.message !== 'billing')
-					self.beneficiary = data.name || data.firstaname + " " + data.lastname;
+			function makePayment() {
 
-				data.ewallet.available_amount += amount;			
-				var names = (self.lastname) ? (self.firstname + " " + self.lastname) : (self.message == "courier billing") ? self.firstname
-				 : (data.name);
-				var transacObj = {
-					date: self.date,
-					source: names,
-					activity: "Credit",
-					message: self.message,
-					body: {
-						amount: amount,
-						beneficiary: "You"
-					},
-					reference_number: self.reference_number || uuid.v1()
+				if(data) {
+					if(self.message !== 'billing')
+						self.beneficiary = data.name || data.firstaname + " " + data.lastname;
+
+					data.ewallet.available_amount += amount;			
+					var names = (self.lastname) ? (self.firstname + " " + self.lastname) : (self.message == "courier billing") ? self.firstname
+					 : (data.name);
+					var transacObj = {
+						date: self.date,
+						source: names,
+						activity: "Credit",
+						message: self.message,
+						body: {
+							amount: amount,
+							beneficiary: "You"
+						},
+						reference_number: self.reference_number || uuid.v1()
+					}
+
+
+					if(data.presence && !self.reference_number) {
+						io.sockets.to(data.user_id).emit("fund received",{status: true,message: "Payment received from " + names})
+					}
+			  
+
+					if(cb)
+						cb(data.ewallet.available_amount)
+
+					
+					data.ewallet.transaction.push(transacObj);
+
+					if(io) {
+						updateAdminRealTime(data.ewallet.available_amount);
+					}
+
+					data.save(function(err,info){
+						if(err) throw err;
+						console.log("saved");				
+					});
 				}
-
-
-				if(data.presence && !self.reference_number) {
-					io.sockets.to(data.user_id).emit("fund received",{status: true,message: "Payment received from " + names})
-				}
-		  
-
-				if(cb)
-					cb(data.ewallet.available_amount)
-
-				
-				data.ewallet.transaction.push(transacObj);
-
-				if(io) {
-					updateAdminRealTime(data.ewallet.available_amount);
-				}
-
-				data.save(function(err,info){
-					if(err) throw err;
-					console.log("saved");				
-				});
 			}
 		
 		});
