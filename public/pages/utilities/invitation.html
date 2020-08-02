@@ -2,28 +2,34 @@
 <section class="card card-center-1 p-1">
 	<h4>Who do you want to invite?</h4>
 	<div class="invite">
-		<a href="" ng-click="someone('Patient')" class="btn btn-simple btn-round btn-sm">Patient</a>
-		<a href="" ng-click="someone('Doctor')" class="btn btn-simple btn-round btn-sm">Doctor</a>
-		<a href="" ng-click="someone('Pharmacy')" class="btn btn-simple btn-round btn-sm">Pharmacy</a>		
-		<a href="" ng-click="someone('Laboratory')" class="btn btn-simple btn-round btn-sm">Laboratory</a>
-		<a href="" ng-click="someone('Radiology')" class="btn btn-simple btn-round btn-sm">Radiology</a>
-		<a href="" ng-click="someone('Doctor')" class="btn btn-simple btn-round btn-sm">Special Center</a>
+		<a href="" ng-click="someone('Patient')" class="btn btn-simple btn-round btn-sm" ng-class="{'bg-info':invite.type == 'Patient'}">Patient</a>
+		<a href="" ng-click="someone('Doctor')" class="btn btn-simple btn-round btn-sm" ng-class="{'bg-info':invite.type == 'Doctor'}">Doctor / Special Center</a>
+		<a href="" ng-click="someone('Pharmacy')" class="btn btn-simple btn-round btn-sm" ng-class="{'bg-info':invite.type == 'Pharmacy'}">Pharmacy</a>		
+		<a href="" ng-click="someone('Laboratory')" class="btn btn-simple btn-round btn-sm" ng-class="{'bg-info':invite.type == 'Laboratory'}">Laboratory</a>
+		<a href="" ng-click="someone('Radiology')" class="btn btn-simple btn-round btn-sm" ng-class="{'bg-info':invite.type == 'Radiology'}">Radiology</a>
+		<!--<a href="" ng-click="someone('Doctor')" class="btn btn-simple btn-round btn-sm">Special Center</a>-->
 	</div><br>
 	<br>
-	<form ng-submit="inviteFn()" class="col-md-6" ng-if="invite.type">
-		<h6>Invite a {{invite.type}}</h6>
-		<div class="pb-2 pt-1">
-			<a href="" class="text-info" clipboard supported="supported" text="copyText" on-copied="success(invite)" on-error="fail(err)" title="{{copy}}"> {{(invite.copy) ? "Copied!" : 'Copy invite message'}}</a>
-		</div>
-		<label>Enter email or phone number of recepient:</label><br>
-		<input type="text" placeholder="Enter email or phone" ng-model="invite.recepient" class="form-control"><br>
-		<p style="color: green">{{msg}}</p>
-		<section ng-if="existingUser && checkLogIn.typeOfUser == 'Doctor' && invite.type =='Patient'">
-		<a href=""  class="btn btn-success btn-sm" ng-click="addPatient()" ng-if='!loading'> Add to your account</a><span ng-if='loading'>Processing...</span> &nbsp;&nbsp; <a href="" class="btn btn-neutral btn-sm" ng-click="refresh()">No, thanks</a>
-		</section>
-
-		<input type="submit" value="Invite now!" class="btn btn-info" ng-if="!loading && !existingUser"> <span ng-if="loading">Sending invitation...</span>
-	</form>
+	<div ng-if="invite.type">
+		<form ng-submit="inviteFn()" class="col-md-6" >
+			<h6>Invite a {{invite.type}}</h6>
+			<p ng-show="invite.type == 'Patient'" class="text-muted">Your referral link will be send to patient. Once the patient registers with it the patient will be added to your patients list in your account for management.</p>
+			<label>Enter email or phone number of recepient:</label><br>
+			<input type="text" placeholder="Enter email or phone" ng-model="invite.recepient" class="form-control"><br>
+			<p style="color: green">{{msg}}</p>
+			<section ng-if="existingUser && checkLogIn.typeOfUser == 'Doctor' && invite.type =='Patient'">
+			<a href=""  class="btn btn-success btn-sm" ng-click="addPatient()" ng-if='!loading'> Add to your account</a><span ng-if='loading'>Processing...</span> &nbsp;&nbsp; <a href="" class="btn btn-neutral btn-sm" ng-click="refresh()">No, thanks</a>
+			</section>
+			
+			<input type="submit" value="Invite now!" class="btn btn-info" ng-if="!loading && !existingUser"> <span ng-if="loading">Sending invitation...</span>
+		</form>
+		<div class="clearfix"></div>
+		<hr>
+		<p class="p-1">You can copy invite message which you share in social media like WhatsApp and Facebook below. <br>
+		<a href="" class="text-info" clipboard supported="supported" text="copyText" on-copied="success(invite)" on-error="fail(err)" title="{{copy}}"> {{(invite.copy) ? "Copied!" : 'Copy invite message'}}</a>
+		</p>
+		
+	</div>
 </section>
 
 

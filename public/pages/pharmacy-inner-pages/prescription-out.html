@@ -74,7 +74,7 @@
                 
                 <div style="text-align: right;margin: 10px 0">
                     <i class="fa fa-plus btn btn-neutral" style="cursor:pointer; margin-right: 10px" title="Add field" ng-click="addDrug()"></i>
-                        <i class="fa fa-minus btn btn-neutral" style="cursor:pointer" title="Remove last field" ng-click="removeDrug()"></i>
+                        <i class="fa fa-minus btn btn-neutral" style="cursor:pointer" title="Remove last field" ng-click="removeDrug()" ng-show="drugList.length > 1"></i>
                 </div>
                 <div class="mb-1">
                     <!--<textarea class="form-control p-1" placeholder="Complain" ng-model="treatment.complain"></textarea>-->

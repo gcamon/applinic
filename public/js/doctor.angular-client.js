@@ -938,6 +938,11 @@ app.config(['$paystackProvider','$routeProvider',
   controller: "planCtrl"
 })
 
+.when("/appointment-out",{
+  templateUrl: "/assets/pages/utilities/appointment-out.html",
+  controller: "appointmentOutCtrl"
+})
+
 }])
 
 
@@ -13752,6 +13757,27 @@ app.controller("invitationCtrl",["$scope","$http","$rootScope","ModalService",fu
       $scope.invite.type = type;
     }
 
+
+    $scope.copyText = "Consult doctors online, buy drugs with home delivery and do diagnostic tests through Applinic. Free treatment"
+    + " for malaria and typhoid fever available while offer lasts. Click link below to register.  https://applinic.com"
+
+    $scope.supported = false;
+
+    $scope.copy = "";
+
+    $scope.success = function (pres) {
+      pres.copy = 'Copied!';
+      $timeout(function(){
+        pres.copy = "";
+      },2000);
+    };
+
+
+    $scope.fail = function (err) {
+      console.error('Error!', err);
+    };
+
+
     $scope.inviteFn = function() {
       $scope.msg = "";
 
@@ -14404,14 +14430,13 @@ app.controller("prescriptionOutCtrl",["$scope","$rootScope","$http","localManage
 }])
 
 
+app.controller('appointmentOutCtrl',["$scope","$http","$rootScope",
+  function($scope,$http,$rootScope,){
 
 
 
 
-
-
-
-
+}])
 
 
 app.controller('planCtrl',["$scope","$http","$rootScope","$filter",
