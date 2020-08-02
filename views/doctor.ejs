@@ -69,7 +69,6 @@
                 
             }
 
-
             .popup2 {
                 display: inline-block;
                 position: absolute;
@@ -82,6 +81,26 @@
                 padding: 10px;
                 border-radius: 8px;
                 z-index: 9
+            }
+
+            .bottom-nav-container {
+              height: 70px;position: fixed;bottom: 0;background-color: #fff;padding: 5px;width:100%;overflow-x: auto;overflow-y: hidden;
+            }
+
+            .bottom-nav {
+              list-style: none;white-space: nowrap;padding-left: 0px!important;width: 100%;
+            }
+
+            .bottom-nav > li{
+              display:inline-block;font-size: 14px;margin-right: 12px;padding: 5px;text-align: center;
+            }
+
+            .bottom-nav > li > a {
+              color: #000
+            }
+
+            .bottom-nav > li > a > i {
+              font-size: 18px
             }
 
 
@@ -949,71 +968,71 @@
 
                   </div>
 
-                  <div style="height: 70px;position: fixed;bottom: 0;background-color: #fff;padding: 5px;width:100%;overflow-x: auto;overflow-y: hidden;" class="mobile-item-display">
-                    <ul style="list-style: none;white-space: nowrap;padding-left: 0px!important;width: 100%;">
-                      <li style="display:inline-block;font-size: 14px;margin-right: 10px;padding: 5px;text-align: center;">
-                        <a href="" class="block" style="color: #000">
-                          <i class="fa fa-calendar text-primary" style="font-size: 18px"></i><br>
+                  <div class="bottom-nav-container" class="mobile-item-display">
+                    <ul class="bottom-nav">
+                      <li>
+                        <a href="" class="block">
+                          <i class="fa fa-calendar text-primary"></i><br>
                           <span>Appointments</span>
                         </a>
                       </li>
-                       <li style="display:inline-block;font-size: 14px;margin-right: 10px;padding: 5px;text-align: center;">
-                        <a href="#/prescription-out" class="block" style="color: #000">
-                          <i class="icon-Pills text-primary" style="font-size: 18px"></i><br>
+                       <li>
+                        <a href="#/prescription-out" class="block">
+                          <i class="icon-Pills text-primary"></i><br>
                           <span>Prescription</span>
                         </a>
                       </li>
-                      <li style="display:inline-block;font-size: 14px;margin-right: 10px;padding: 5px;text-align: center;">
-                        <a href="#/laboratory-out" class="block" style="color: #000">
-                          <i class="fa fa-flask text-primary" style="font-size: 18px"></i><br>
+                      <li>
+                        <a href="#/laboratory-out" class="block">
+                          <i class="fa fa-flask text-primary"></i><br>
                           <span>Laboratory</span>
                         </a>
                       </li>
-                       <li style="display:inline-block;font-size: 14px;margin-right: 10px;padding: 5px;text-align: center;">
-                        <a href="#/radiology-out" class="block" ng style="color: #000;padding: 2px">
-                          <i class="icon-bodyparts text-primary" style="font-size: 18px"></i><br>
+                       <li>
+                        <a href="#/radiology-out" class="block">
+                          <i class="icon-bodyparts text-primary"></i><br>
                           <span>Radiology</span>
                         </a>
                       </li>
-                      <li style="display:inline-block;font-size: 14px;margin-right: 10px;padding: 5px;text-align: center;">
-                        <a href="#/doc-edit-profile" class="block" ng style="color: #000;padding: 2px">
-                          <i class="icon-stethoscopetwo text-primary" style="font-size: 18px"></i><br>
+                      <li>
+                        <a href="#/doc-edit-profile" class="block">
+                          <i class="icon-stethoscopetwo text-primary"></i><br>
                           <span>Edit Profile</span>
                         </a>
                       </li>
-                       <li style="display:inline-block;font-size: 14px;margin-right: 10px;padding: 5px;text-align: center;">
-                        <a href="#/edit-picture" class="block" ng style="color: #000;padding: 2px">
-                          <i class="fa fa-user-md text-primary" style="font-size: 18px"></i><br>
+                       <li>
+                        <a href="#/edit-picture" class="block">
+                          <i class="fa fa-user-md text-primary"></i><br>
                           <span>Change Profile Picture</span>
                         </a>
                       </li>
-                      <li style="display:inline-block;font-size: 14px;margin-right: 10px;padding: 5px;text-align: center;">
-                        <a href="/find-drugs" class="block" ng style="color: #000;padding: 2px">
-                          <i class="icon-capsules text-primary" style="font-size: 18px"></i><br>
+                      <li>
+                        <a href="/find-drugs" class="block">
+                          <i class="icon-capsules text-primary"></i><br>
                           <span>Buy Drugs</span>
                         </a>
                       </li>
-                      <li style="display:inline-block;font-size: 14px;margin-right: 10px;padding: 5px;text-align: center;">
-                        <a href="#/wallet" class="block" ng style="color: #000;padding: 2px">
-                          <i class="fa fa-plus text-primary" style="font-size: 18px"></i> <i class="fa fa-money text-primary" style="font-size: 18px"></i><br>
+                      <li>
+                        <a href="#/wallet" class="block">
+                          <i class="fa fa-plus text-primary"></i> <i class="fa fa-money text-primary"></i><br>
                           <span>Add Fund</span>
                         </a>
                       </li>
-                      <li style="display:inline-block;font-size: 14px;margin-right: 10px;padding: 5px;text-align: center;">
-                        <a href="#/cash-out" class="block" ng style="color: #000;padding: 2px">
-                          <i class="fa fa-minus text-primary" style="font-size: 18px"></i> <i class="fa fa-money text-primary" style="font-size: 18px"></i><br>
+                      <li>
+                        <a href="#/cash-out" class="block">
+                          <i class="fa fa-minus text-primary"></i> <i class="fa fa-money text-primary"></i><br>
                           <span>Cash Out</span>
                         </a>
                       </li>
-                      <li style="display:inline-block;font-size: 14px;margin-right: 10px;padding: 5px;text-align: center;">
-                        <a href="#/transactions" class="block" ng style="color: #000;padding: 2px">
-                          <i class="fa fa-money text-primary" style="font-size: 18px"></i><br>
+                      <li>
+                        <a href="#/transactions" class="block">
+                          <i class="fa fa-money text-primary"></i><br>
                           <span>Transactions</span>
                         </a>
                       </li>
-                      <li style="display:inline-block;font-size: 14px;margin-right: 10px;padding: 5px;text-align: center;">
-                        <a href="#/manage-patients" class="block" ng style="color: #000;padding: 2px">
-                          <i class="fa fa-users text-primary" style="font-size: 18px"></i><br>
+                      <li>
+                        <a href="#/manage-patients" class="block">
+                          <i class="fa fa-users text-primary"></i><br>
                           <span>My Patients</span>
                         </a>
                       </li>
