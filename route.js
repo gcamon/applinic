@@ -10874,7 +10874,7 @@ router.post("/user/invitation",function(req,res){
     var names = (req.user.lastname) ? (req.user.title + " " + req.user.lastname + " " + req.user.firstname) : req.user.name;
     var work = (req.user.work_place) ? "at " + req.user.work_place : "on Applinic";
     var uid = uuid.v1();
-
+    console.log(req.body)
     model.user.findOne({$or: [{ phone : req.body.recepient},{email: req.body.recepient}]})
     .exec(function(err,user){
       if(err) throw err;
@@ -11030,6 +11030,27 @@ router.post("/user/invitation",function(req,res){
   }
 
 });
+
+router.get("/user/inviteURL",function(req,res){
+  if(req.user){
+    var uid = uuid.v1();
+    var invite = new model.invite({
+      referral_id: req.user.user_id,
+      id: uid,
+      type: req.query.type,
+      date: + new Date()
+    });
+
+    invite.save(function(){});
+
+    var inviteLink = "https://applinic.com/signup?ref=" + req.user.user_id + "&id=" + uid + "&type=" + req.query.type;
+    res.json({inviteURL: inviteLink}) 
+    
+  } else {
+    res.end("Unauthorized access")
+  }
+
+})
 
 router.post("/user/doctor/add-patient",function(req,res){
   if(req.user){

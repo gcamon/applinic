@@ -13758,8 +13758,16 @@ app.controller("invitationCtrl",["$scope","$http","$rootScope","ModalService",fu
     }
 
 
-    $scope.copyText = "Consult doctors online, buy drugs with home delivery and do diagnostic tests through Applinic. Free treatment"
-    + " for malaria and typhoid fever available while offer lasts. Click link below to register.  https://applinic.com"
+
+    if($rootScope.checkLogIn.typeOfUser == 'Doctor'){
+      $http.get('/user/inviteURL',{params:{type:'Patient'}})
+      .success(function(data){
+        $scope.copyURL = data.inviteURL;
+      })
+    } else {
+      $scope.copyText = "Consult doctors online, buy drugs with home delivery and do diagnostic tests through Applinic. Free treatment"
+      + " for malaria and typhoid fever available while offer lasts. Click link below to register.  https://applinic.com"
+    }
 
     $scope.supported = false;
 

@@ -11,9 +11,16 @@
 	</div><br>
 	<br>
 	<div ng-if="invite.type">
-		<form ng-submit="inviteFn()" class="col-md-6" >
-			<h6>Invite a {{invite.type}}</h6>
+		<form ng-submit="inviteFn()" class="col-md-6">
+			<h6>
+				Invite a {{invite.type}} 
+			</h6>
+			
 			<p ng-show="invite.type == 'Patient'" class="text-muted">Your referral link will be sent to the patient. Once the patient registers with it, he or she will be added to your patients' list.</p>
+
+			<p ng-show="checkLogIn.typeOfUser == 'Doctor'"><a href=""  class="text-info" clipboard supported="supported" text="copyURL" on-copied="success(invite)" on-error="fail(err)" title="{{copy}}" > {{(invite.copy) ? "Copied!" : 'Copy referral Link'}}</a> and share on social platform e.g Facebook, WhatsApp. <br> <b>Or</b><br></p>
+
+
 			<label>Enter email or phone number of recipient:</label><br>
 			<input type="text" placeholder="Enter email or phone" ng-model="invite.recepient" class="form-control"><br>
 			<p style="color: green">{{msg}}</p>
@@ -25,7 +32,7 @@
 		</form>
 		<div class="clearfix"></div>
 		<hr>
-		<p class="p-1">You can copy invite message which you share in social media like WhatsApp and Facebook below <br>
+		<p class="p-1" ng-show="checkLogIn.typeOfUser === 'Patient'">You can copy invite message which you share in social media like WhatsApp and Facebook below <br>
 		<a href="" class="text-info" clipboard supported="supported" text="copyText" on-copied="success(invite)" on-error="fail(err)" title="{{copy}}"> {{(invite.copy) ? "Copied!" : 'Copy invite message'}}</a>
 		</p>
 		
