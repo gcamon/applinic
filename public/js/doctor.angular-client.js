@@ -14431,7 +14431,7 @@ app.controller("prescriptionOutCtrl",["$scope","$rootScope","$http","localManage
 
 
 app.controller('appointmentOutCtrl',["$scope","$http","$rootScope",
-  function($scope,$http,$rootScope,){
+  function($scope,$http,$rootScope){
 
 
 
