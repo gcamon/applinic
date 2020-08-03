@@ -13762,6 +13762,7 @@ app.controller("invitationCtrl",["$scope","$http","$rootScope","ModalService",fu
     if($rootScope.checkLogIn.typeOfUser == 'Doctor'){
       $http.get('/user/inviteURL',{params:{type:'Patient'}})
       .success(function(data){
+        console.log(data)
         $scope.copyURL = data.inviteURL;
       })
     } else {
