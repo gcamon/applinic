@@ -11047,7 +11047,8 @@ router.get("/user/inviteURL",function(req,res){
         invite.save(function(){});
       }
 
-      var inviteLink = "https://applinic.com/signup?ref=" + req.user.user_id + "&id=" + uid + "&type=" + req.query.type;
+      var inviteLink = req.user.name + " now consults online on Applinic. Click the link to register on the platform for free!"
+      + "\nhttps://applinic.com/signup?ref=" + req.user.user_id + "&id=" + uid + "&type=" + req.query.type;
       res.json({inviteURL: inviteLink}) 
     })    
   } else {
