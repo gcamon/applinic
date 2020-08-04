@@ -18,7 +18,7 @@
 			
 			<p ng-show="invite.type == 'Patient'" class="text-muted">Your referral link will be sent to the patient. Once the patient registers with it, he or she will be added to your patients' list.</p>
 
-			<p ng-show="checkLogIn.typeOfUser == 'Doctor'"><a href=""  class="text-info" clipboard supported="supported" text="copyURL" on-copied="success(invite)" on-error="fail(err)" title="{{copy}}" > {{(invite.copy) ? "Copied!" : 'Copy referral Link'}}</a> and share on social platform e.g Facebook, WhatsApp. <br> <b>Or</b><br></p>
+			<p ng-show="checkLogIn.typeOfUser == 'Doctor' && invite.type == 'Patient'"><a href=""  class="text-info" clipboard supported="supported" text="copyURL" on-copied="success(invite)" on-error="fail(err)" title="{{copy}}" > {{(invite.copy) ? "Copied!" : 'Copy referral Link'}}</a> and share on social platforms e.g Facebook, WhatsApp. <br> <br><b>Or</b><br></p>
 
 
 			<label>Enter email or phone number of recipient:</label><br>
