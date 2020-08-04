@@ -10982,7 +10982,7 @@ router.post("/user/invitation",function(req,res){
         //+ " Click the link below to register now for free!\n" 
         //+ "https://applinic.com/signup?ref=" + req.user.user_id + "&id=" + uid + "&type=" + req.body.type;
         var msgBody = req.user.name + " now consults online on Applinic. Click the link to register on the platform for free!"
-        + "\nhttps://applinic.com/signup?ref=" + req.user.user_id + "&id=" + uid + "&type=" + req.query.type;
+        + "\nhttps://applinic.com/signup?ref=" + req.user.user_id + "&id=" + uid + "&type=" + req.body.type;
       } else {
         //var msgBody = names + ", a " + req.user.type 
         //+ "\nsent an invitation to join Applinic. click the link below to register now for free!\n" 
