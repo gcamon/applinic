@@ -10976,11 +10976,13 @@ router.post("/user/invitation",function(req,res){
 
     function sendSMS() {
       if(req.user.type === "Doctor"){
-        var title = (req.user.title == 'SC') ? "" : ", a physician at Applinic Telehealth"
-        var msgBody = names + title + " is pleased to inform you he now consults patients"
-        + " online at Applinic platform." 
-        + " Click the link below to register now for free!\n" 
-        + "https://applinic.com/signup?ref=" + req.user.user_id + "&id=" + uid + "&type=" + req.body.type;
+        //var title = (req.user.title == 'SC') ? "" : ", a physician at Applinic Telehealth"
+        //var msgBody = names + title + " is pleased to inform you he now consults patients"
+        //+ " online at Applinic platform." 
+        //+ " Click the link below to register now for free!\n" 
+        //+ "https://applinic.com/signup?ref=" + req.user.user_id + "&id=" + uid + "&type=" + req.body.type;
+        var msgBody = req.user.name + " now consults online on Applinic. Click the link to register on the platform for free!"
+        + "\nhttps://applinic.com/signup?ref=" + req.user.user_id + "&id=" + uid + "&type=" + req.query.type;
       } else {
         //var msgBody = names + ", a " + req.user.type 
         //+ "\nsent an invitation to join Applinic. click the link below to register now for free!\n" 
