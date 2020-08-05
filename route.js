@@ -3920,9 +3920,9 @@ var basicRoute = function (model,sms,io,streams,client,transporter) {
               if(err) throw err;
               console.log("appointment saved!")
               var msgBody = "Hello " + getPatientInfo.firstname + ", " + req.user.title + " " + req.user.firstname
-              + " from Applinic Healthcare has Scheduled an In-Person meeting appointment with you on " 
+              + " from Applinic Healthcare scheduled an In-Person meeting appointment with you on " 
               + req.body.appointment.strDate + "\nTime is " 
-              + req.body.appointment.strTime + "\nVenue is " + req.body.appointment.address + "\nKindly login https://applinic.com/login to find out more from your doctor."
+              + req.body.appointment.strTime + "\nVenue is " + req.body.appointment.address + "\nKindly login https://applinic.com/login for more details."
               var phoneNunber = getPatientInfo.phone || "+2348064245256";             
               sms.messages.create(
                 {
@@ -4096,14 +4096,77 @@ var basicRoute = function (model,sms,io,streams,client,transporter) {
         //var startDate = moment().year(req.query.year).month(req.query.month).startOf("month");
        // var endDate = startDate.clone().endOf('month');
 
-        var criteria = (req.query.patientId) ? {doctorId: req.user.user_id,patient_id: req.query.patientId,attended:false} :
-        {doctorId: req.user.user_id,attended:false};
+
+       /*
+
+        if(req.query.from){           
+          var startDate = moment(req.query.from).startOf('day'); // set to 12:00 am today
+          var endDate = moment(req.query.to).endOf('day'); // set to 23:59 pm off date range
+          criteria['date'] = {$gt: startDate,$lt: endDate};
+        }
+
+
+
+
+
+
+      var startDay = moment().startOf('day');//day week month
+      var endDay = startDay.clone().endOf('day');
+    
+
+    get solution for week and month
+      var startWeek = moment().startOf('week');
+      var endWeek = startWeek.clone().endOf('week');
+
+      var startMonth = moment().startOf('month');
+      var endMonth = startMonth.clone().endOf('month');
+
+      model.user.find({date: {
+        $gt: startDay,
+        $lt: endDay
+      }},{email:1,phone:1,city:1,firstname:1,name:1,type:1,country:1,title:1,date:1},function(err,dayData){
+        resObj.day = dayData;
+
+       */
+
+        if(req.query.isRangeQuery){
+          var criteria;
+           switch(req.query.durationRange){
+            case 'today': 
+              var startDay =  moment(req.query.from).startOf('day');//moment().startOf('day');
+              var endDay = moment(req.query.to).endOf('day');//startDay.clone().endOf('day');
+              criteria = {date: {$gt: startDay,$lt: endDay},doctorId: req.user.user_id,attended:false};
+            break;
+            case 'tomorrow': 
+              var startDate = moment(req.query.from).startOf('day'); 
+              var endDate = moment(req.query.to).endOf('day'); 
+              criteria = {date: {$gt: startDate,$lt: endDate},doctorId: req.user.user_id,attended:false};
+            break;
+            case 'week':
+              var startWeek = moment().startOf('week');
+              var endWeek = startWeek.clone().endOf('week');
+              criteria = {date:{$gt: startWeek, $lt: endWeek},doctorId: req.user.user_id,attended:false};
+            break;
+            case 'month':
+              var startMonth = moment().startOf('month');
+              var endMonth = startMonth.clone().endOf('month');
+              criteria = {date: {$gt: startMonth, $lt: endMonth},doctorId: req.user.user_id,attended:false};
+            break;
+            default:
+             criteria = {doctorId: req.user.user_id,attended:false};
+            break; 
+          }
+        } else {
+          var criteria = (req.query.patientId) ? {doctorId: req.user.user_id,patient_id: req.query.patientId,attended:false} :
+          {doctorId: req.user.user_id,attended:false};
+        }
 
         model.appointment.find(criteria)
          .exec(function(err,data){
           if(err) throw err;
           res.json(data);
         })
+
       } else {
         res.end("unauthorized access!");
       }
@@ -4131,7 +4194,7 @@ var basicRoute = function (model,sms,io,streams,client,transporter) {
       }
     });
 
-     router.patch("/user/doctor/appointment/view",function(req,res){
+    router.patch("/user/doctor/appointment/view",function(req,res){
       if(req.user){
         var appointmentId;
         if(req.body.id) {

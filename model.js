@@ -401,7 +401,7 @@ var myModel = function () {
 	});
 
 	var appointment_schema = Schema({
-		date: String,
+		date: Date,
 		time: String,
 		last_meeting: String,
 		firstname: String,

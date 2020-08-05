@@ -7,18 +7,46 @@ var app = angular.module('myApp',["ngRoute","ngAnimate","angularModalService","a
 
 app.run(['$rootScope',function($rootScope){
 
- $rootScope.$on('$routeChangeStart',function(){
-     $rootScope.stateIsLoading = true;
-     $rootScope.acknowledged = true;
- });
-
+  $rootScope.$on('$routeChangeStart',function(){
+    $rootScope.stateIsLoading = true;
+    $rootScope.acknowledged = true;
+  });
 
   $rootScope.$on('$routeChangeSuccess',function(){
-      $rootScope.stateIsLoading = false;
-      $rootScope.acknowledged = true;
+    $rootScope.stateIsLoading = false;
+    $rootScope.acknowledged = true;
  });
 
 }]);
+
+/*app.filter('myDateFormat', ['$filter',function ($filter) {
+  var dateFormats = {
+    relative: {
+      lastDay : '[Yesterday at] HH:mm',
+      sameDay : '[Today at] HH:mm',
+      nextDay : '[Tomorrow at] HH:mm',
+      lastWeek : '[last] dddd [at] HH:mm',
+      nextWeek : 'dddd [at] HH:mm',
+      sameElse : 'L'
+    } 
+  }
+  return function() {
+    return $filter('amCalendar')(null, dateFormats)
+  }
+}]);*/
+
+app.run(function(){
+  moment.updateLocale('en', {
+    calendar : {
+      lastDay : '[Yesterday at] HH:mm',
+      sameDay : '[Today at] HH:mm',
+      nextDay : '[Tomorrow at] HH:mm',
+      lastWeek : '[last] dddd [at] HH:mm',
+      nextWeek : 'dddd [at] HH:mm',
+      sameElse : 'L'
+    }
+  });
+})
 
 app.run(function($window, $rootScope) {
     $rootScope.online = navigator.onLine;
@@ -7214,6 +7242,18 @@ function($scope,$location,$rootScope,$http,ModalService,$interval,templateServic
   }
 
 
+  moment.updateLocale('en', {
+    calendar : {
+      lastDay : '[Yesterday]',
+      sameDay : '[Today]',
+      nextDay : '[Tomorrow]',
+      lastWeek : '[last] dddd',
+      nextWeek : 'dddd',
+      sameElse : 'L'
+    }
+  });
+
+
   $scope.filter = {}
 
   localManager.setValue("hasChat",true);
@@ -7783,6 +7823,18 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
   */ 
 
   $location.hash("selected");
+
+  //update to human readable time format
+  moment.updateLocale('en', {
+    calendar : {
+      lastDay : '[Yesterday at] HH:mm',
+      sameDay : '[Today at] HH:mm',
+      nextDay : '[Tomorrow at] HH:mm',
+      lastWeek : '[last] dddd [at] HH:mm',
+      nextWeek : 'dddd [at] HH:mm',
+      sameElse : 'L'
+    }
+  });
  
   var path = localManager.getValue("currentPage") || $location.path();
   var arr = path.split("/");  
@@ -9330,8 +9382,8 @@ app.controller("appointmentModalController",["$scope","$rootScope","$http","mome
         $scope.treatment.appointment.profilePic = data.profile_pic_url || data.profilePic;
         sendData($scope.treatment,"/user/doctor/patient-session","POST");
       }
-      
-     
+
+      console.log(data)
     }
 
     function sendData(data,url,method) {
@@ -9355,8 +9407,9 @@ app.controller("appointmentModalController",["$scope","$rootScope","$http","mome
           alert("Appointment booked, patient will be notified.")
           mySocket.emit("realtime appointment notification",{to:data.patient_id})
 
+
           $rootScope.$broadcast("doc new appointment",{data});
-          
+          $rootScope.$broadcast("new appointment",{data});
         }  
       });
     }
@@ -12598,6 +12651,18 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
     $scope.isSent = false;
     var elemPos;
 
+    //upadate human readable time format of moment
+    moment.updateLocale('en', {
+      calendar : {
+        lastDay : '[Yesterday at] HH:mm',
+        sameDay : '[Today at] HH:mm',
+        nextDay : '[Tomorrow at] HH:mm',
+        lastWeek : '[last] dddd [at] HH:mm',
+        nextWeek : 'dddd [at] HH:mm',
+        sameElse : 'L'
+      }
+    });
+
    
     var currView = $location.path();
 
@@ -13762,7 +13827,6 @@ app.controller("invitationCtrl",["$scope","$http","$rootScope","ModalService",fu
     if($rootScope.checkLogIn.typeOfUser == 'Doctor'){
       $http.get('/user/inviteURL',{params:{type:'Patient'}})
       .success(function(data){
-        console.log(data)
         $scope.copyURL = data.inviteURL;
       })
     } else {
@@ -14439,11 +14503,268 @@ app.controller("prescriptionOutCtrl",["$scope","$rootScope","$http","localManage
 }])
 
 
-app.controller('appointmentOutCtrl',["$scope","$http","$rootScope",
-  function($scope,$http,$rootScope){
+app.controller('appointmentOutCtrl',["$scope","$http","$rootScope","docAppointmentViewService","ModalService","templateService",
+  function($scope,$http,$rootScope,docAppointmentViewService,ModalService,templateService){
+
+   var test_name;
+  var index;
+
+  $scope.treatment = {};
+
+  $scope.patient = {}
+
+  $scope.treatment.appoint = "all";
+
+  $scope.treatment.patientType = "mine";
+  
+  $scope.isNewAppointment = true;
+
+  $scope.validatePatient = function() {   
+  
+
+    $scope.invMsg = "";
+
+    //var isNumber = testNumber($scope.treatment.patient_phone);
+    if(testNumber($scope.treatment.patient_phone)) {
+      if($scope.treatment.patient_phone.indexOf('+') == -1)
+        $scope.treatment.patient_phone = "+234" + parseInt($scope.treatment.patient_phone); 
+    } else {
+      $scope.phoneError = "Please enter a valid phone number.";
+      alert("Patient phone number not found or invalid")
+      return;
+    }
+
+    $scope.loading = true;
+
+    $http.get("/user/out/get-patients",{params: {phone: $scope.treatment.patient_phone}})
+    .success(function(resp){
+      $scope.loading = false;
+      if(resp.user_id){
+        $scope.isSearchToSend = true;
+        $scope.city = resp.city;
+        $scope.treatment.patient_title = resp.title;
+        $scope.treatment.patient_firstname = resp.firstname;
+        $scope.treatment.patient_lastname = resp.lastname;
+        $scope.treatment.patientDetails = resp;
+        $scope.isNewAppointment = false;
+        console.log(resp)
+      } else if(resp.error) {
+        alert(resp.message);
+      } else {
+        $scope.isNewPatient = true;
+        $scope.city = $rootScope.checkLogIn.city;
+        $scope.isNewAppointment = false;
+      }
+    })
+  }
+
+  $scope.goBack = function() {
+    $scope.isSearchToSend = false;
+    $scope.isNewPatient = false;
+    $scope.isNewAppointment = true;
+  }
+
+ 
+
+  $scope.createPatient = function() {
+    $scope.loading = true;
+    $scope.treatment.patient_age = calculate_age(new Date($scope.treatment.dob)) + " years";
+    $http({
+      method  : 'POST',
+      url     : "/user/out/create-patients",
+      data    : $scope.treatment,
+      headers : {'Content-Type': 'application/json'} 
+     })
+    .success(function(response) {
+      if(response.success){
+        $scope.isNewPatient = false;
+        $scope.isSearchToSend = true;
+        $scope.loading = false;
+        $scope.treatment.patientDetails = response.patient;
+        getLaboratories();
+      } else if(response.retry) {
+        $scope.createPatient();
+
+      } else {
+        alert(response.message);
+        $scope.loading = false;
+        $scope.goBack()
+      }
+    })
+  }
+
+  moment.updateLocale('en', {
+    calendar : {
+      lastDay : '[Yesterday]',
+      sameDay : '[Today]',
+      nextDay : '[Tomorrow]',
+      lastWeek : '[last] dddd',
+      nextWeek : 'dddd',
+      sameElse : 'L'
+    }
+  });
 
 
+  $scope.patient.isRangeQuery = true;
+  $scope.treatment.duration = "all";
+  
+  $scope.today = function() {
+    var dt = new Date();
+    var days = dt.setDate(dt.getDate() - 1); 
+    $scope.patient.durationRange = 'today';
+    $scope.patient.from = new Date(days);
+    $scope.patient.to = new Date();
+    getAppoint()
+  }
 
+  $scope.tomorrow = function() {
+    var dt = new Date();
+    var days = dt.setDate(dt.getDate() + 0);  
+    $scope.patient.durationRange = 'tomorrow';  
+    $scope.patient.from = new Date(days);
+    var nextDay = dt.setDate(dt.getDate() + 1); 
+    $scope.patient.to = new Date(nextDay);
+    getAppoint()
+  }
+
+
+  $scope.thisWeek = function() {
+    var dt = new Date();
+    var days = dt.setDate(dt.getDate() + 7); 
+    $scope.patient.durationRange = 'week';   
+    $scope.patient.from = new Date(days);
+    $scope.patient.to = new Date();
+    getAppoint()
+  }
+
+  $scope.thisMonth = function() {
+    var dt = new Date();
+    var days = dt.setDate(dt.getDate() - 7); 
+    $scope.patient.durationRange = 'month';   
+    $scope.patient.from = new Date(days);
+    $scope.patient.to = new Date();
+    getAppoint()
+  }
+
+
+  var appointment = docAppointmentViewService;
+  var date = new Date();
+
+  var day = date.getDay();
+  var month = date.getMonth();
+  var year = date.getFullYear();
+
+  var getAppoint = function() {
+    $scope.loading = true;
+    appointment.query($scope.patient,function(list){     
+      $rootScope.appointmentList = list;
+      
+      $rootScope.appointmentList.forEach(function(item){       
+        item.isToday = hasToday(item.date);
+        item.isPassed = hasPassed(item.date);
+        //item.isTime = onTime(item.time);
+      })
+
+      $scope.loading = false;
+    })
+  }
+
+  $scope.refresh = function() {
+    getAppoint()
+  }
+     
+  $scope.getDateTime = function(date,time){    
+    $scope.date = date;
+    $scope.time = time;
+  }
+
+
+  $scope.$watch('treatment.duration',function(newVal,oldVal){
+    switch(newVal){
+      case 'all': 
+        $scope.patient.durationRange = null;
+        getAppoint()
+      break;
+      case 'today': 
+       $scope.today()
+      break;
+      case 'tomorrow':
+       $scope.tomorrow()
+      break;
+      case 'week':
+       $scope.thisWeek()
+      break;
+      case 'month':
+       $scope.thisMonth()
+      break;
+      default:
+       $scope.patient.durationRange = null;
+       getAppoint()
+      break; 
+    }
+  });
+
+  $scope.cancelAppointment = function(item){
+    item.loading = true;
+    var elemPos;
+    $http.patch("/user/doctor/appointment/view",{id: item.session_id})
+    .success(function(response){
+       if(response.status){
+         alert("Appointment canceled successfully!");
+         elemPos = $rootScope.appointmentList.map(function(x){return x.session_id}).indexOf(item.session_id);
+         if(elemPos !== -1){
+           $rootScope.appointmentList.splice(elemPos,1)
+         }
+       }
+    });
+  }
+
+
+  $scope.setAppointment = function(patient){    
+     templateService.holdBriefForSpecificPatient = {
+      patient_age: patient.age,
+      patient_city: patient.city,
+      patient_firstname: patient.firstname,
+      patient_gender: patient.gender,
+      patient_id: patient.user_id,
+      patient_lastname: patient.lastname,
+      patient_profile_pic_url: patient.profile_pic_url
+    }
+
+    ModalService.showModal({
+        templateUrl: 'calender-template.html',
+        controller: 'appointmentModalController'
+    }).then(function(modal) {
+        modal.element.modal();
+        modal.close.then(function(result) {             
+        });
+    });
+  }
+
+  function hasToday(date){
+    return moment(date).isSame(moment(), 'day');//moment(date).isAfter(moment().subtract(24, 'hours'));
+  }
+
+  function hasPassed(date){
+    return moment(date).isBefore(moment(),'day');
+  }
+
+  /*function onTime(time){
+    var dt = new Date(time);
+    return moment(dt).isAfter(moment(),'hours')
+  }*/
+
+   /*var lessThan24HourAgo = function(date) {
+    return moment(date).isAfter(moment().subtract(24, 'hours'));
+  }*/
+
+  /*$rootScope.$on("doc new appointment",function(e,a){
+    getAppoint()
+  })*/
+
+  $rootScope.$on('new appointment',function(res){
+    getAppoint();
+  })
 
 }])
 
