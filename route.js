@@ -11097,8 +11097,9 @@ router.post("/user/invitation",function(req,res){
 
 router.get("/user/inviteURL",function(req,res){
   if(req.user){
-    model.invite.findOne({referral_id:req.user.user_id})
+    model.invite.findOne({referral_id:req.user.user_id,type:req.query.type})
     .exec(function(err,inv){
+      var inviteLink;
       var uid = uuid.v1();
       if(!inv){       
         var invite = new model.invite({
@@ -11109,10 +11110,16 @@ router.get("/user/inviteURL",function(req,res){
         });
 
         invite.save(function(){});
-      }
 
-      var inviteLink = req.user.name + " now consults online on Applinic. Click the link to register on the platform for free!"
-      + "\nhttps://applinic.com/signup?ref=" + req.user.user_id + "&id=" + uid + "&type=" + req.query.type;
+        inviteLink = req.user.name + " now consults online on Applinic. Click the link to register on the platform for free!"
+        + "\nhttps://applinic.com/signup?ref=" + req.user.user_id + "&id=" + uid + "&type=" + req.query.type;
+
+      } else {
+
+        inviteLink = req.user.name + " now consults online on Applinic. Click the link to register on the platform for free!"
+        + "\nhttps://applinic.com/signup?ref=" + inv.referral_id + "&id=" + inv.id + "&type=" + inv.type;
+      }
+     
       res.json({inviteURL: inviteLink}) 
     })    
   } else {

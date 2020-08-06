@@ -13815,14 +13815,13 @@ app.controller("bankDetailsCtrl",["$scope","bankDetailsService",function($scope,
 }]);
 
 
-app.controller("invitationCtrl",["$scope","$http","$rootScope","ModalService",function($scope,$http,$rootScope,ModalService){
+app.controller("invitationCtrl",["$scope","$http","$rootScope","ModalService","$timeout",
+  function($scope,$http,$rootScope,ModalService,$timeout){
     $scope.invite = {};
 
     $scope.someone = function(type){
       $scope.invite.type = type;
     }
-
-
 
     if($rootScope.checkLogIn.typeOfUser == 'Doctor'){
       $http.get('/user/inviteURL',{params:{type:'Patient'}})
@@ -15148,8 +15147,6 @@ app.controller("drugsAndKitsCtrl",["$scope","$rootScope","$http","ModalService",
 
   }
 
-
-
 }])
 
 
@@ -15160,8 +15157,6 @@ app.controller('planCtrl',["$scope","$http","$rootScope","$filter",
 
     var date = new Date()
     var dt;
-
-    console.log($filter('date')(dt, 'fullDate'));
 
   $scope.subscribe = function() {
 

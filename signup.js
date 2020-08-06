@@ -63,6 +63,8 @@ var signupRoute = function(model,sms,geonames,paystack,io,transporter) {
 			}
 
 			function createUser() {
+
+					console.log(req.body)
 					
 					if(req.body.agree === true && userphone.testuserPhone) {
 
