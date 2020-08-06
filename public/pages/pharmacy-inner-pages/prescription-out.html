@@ -64,7 +64,7 @@
                 <div class="mobile-item-display">                            
                     <table class="table" ng-repeat="prescription in drugList">
                         <thead><th>sn: </th> <td>{{prescription.sn}}</td></thead>
-                        <thead><th class="pb-1">Drug name: </th> <td><input  type="text" placeholder="Enter drug name" ng-model="prescription.drug_name" uib-typeahead="drug.name for drug in drugs | filter:$viewValue | limitTo:15" class="form-control"></td></thead>
+                        <thead><th class="pb-1" style="width: 25%">Drug name: </th> <td style="width: 75%"><input  type="text" placeholder="Enter drug name" ng-model="prescription.drug_name" uib-typeahead="drug.name for drug in drugs | filter:$viewValue | limitTo:15" class="form-control"></td></thead>
                         <thead><th class="pb-1">Dosage: </th> <td><input type="text" name="dose" ng-model="prescription.dosage" placeholder="Enter dosage" class="form-control"></td></thead>
                         <thead><th class="pb-1">Frequency: </th> <td><input  type="text" placeholder="Enter frequency" ng-model="prescription.frequency" uib-typeahead="f for f in frequencies | filter:$viewValue | limitTo:15" class="form-control"></td></thead>
                         <thead><th class="pb-1">Duration: </th> <td><input  type="text" placeholder="Enter duration" ng-model="prescription.duration" uib-typeahead="d for d in durations | filter:$viewValue | limitTo:15" class="form-control" style=""></td></thead>

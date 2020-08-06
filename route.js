@@ -2937,8 +2937,6 @@ var basicRoute = function (model,sms,io,streams,client,transporter) {
       //any data sent to a diagnostic center other than to the patient himself is seens a a referral by this application.
       if(req.user){ 
 
-          console.log(req.body)
-
             var date = new Date();
 
             var ref_id;
@@ -2953,6 +2951,8 @@ var basicRoute = function (model,sms,io,streams,client,transporter) {
 
             var courier;
 
+            var courierData;
+
             if(req.body.courierObj){
               var firstname = (req.body.referral_pays == 'Yes') ? req.user.firstname : req.body.firstname;
               var lastname = (req.body.referral_pays == 'Yes') ? req.user.lastname : req.body.lastname;
@@ -2963,7 +2963,7 @@ var basicRoute = function (model,sms,io,streams,client,transporter) {
               var address = (req.body.courierObj.address) ? req.body.courierObj.address : req.user.address;
               var callPhone = (req.body.courierObj.phone1) ? req.body.courierObj.phone1 : req.user.phone;
 
-              var courierData = {
+              courierData = {
                 request_id: reqId,
                 verified: false,
                 firstname: firstname,
@@ -3224,8 +3224,7 @@ var basicRoute = function (model,sms,io,streams,client,transporter) {
               //pharmacy.referral.push(refObj);
 
               refSchema.save(function(err,info){             
-                if(err) throw err;             
-                console.log("prescription saved");
+                if(err) throw err;            
                 io.sockets.to(req.body.user_id).emit("center notification",{status:true,isNewDrug: true});                                         
               });
 
@@ -3267,7 +3266,8 @@ var basicRoute = function (model,sms,io,streams,client,transporter) {
               address:pharmacy.address,
               city:pharmacy.city,
               country:pharmacy.country,
-              by: by
+              by: by,
+              courierData: courierData
             }); 
           }
 

@@ -44,17 +44,19 @@
               <!--<span class="tag tag-info pull-right" ng-if="labLen > 0">{{labLen}}</span>-->
             </a>
 
+          
+            <a href="" class="grayish" ng-click="viewRadioReport()" ng-class="{'btn-info': isToViewLabPrescriptionReq}">
+              <i class="fa fa-file-image-o text-info"  style="position:relative">
+              </i>My Radiology  
+                <!--<span class="tag tag-info pull-right" ng-if="labLen > 0">{{labLen}}</span>-->
+            </a>
+
             <a href="" class="grayish" ng-click="viewLabPrescriptionRequest()" ng-class="{'btn-info': isToViewLabPrescriptionReq}">
               <i class="fa fa-flask text-info"  style="position:relative">
               </i> Other Laboratory  
                 <span class="tag tag-info pull-right" ng-if="labLen > 0">{{labLen}}</span>
             </a>
 
-            <a href="" class="grayish" ng-click="viewRadioReport()" ng-class="{'btn-info': isToViewLabPrescriptionReq}">
-              <i class="fa fa-file-image-o text-info"  style="position:relative">
-              </i>My Radiology  
-                <!--<span class="tag tag-info pull-right" ng-if="labLen > 0">{{labLen}}</span>-->
-            </a>
 
             <a href="" class="grayish" ng-click="viewRadioPrescriptionRequest()" ng-class="{'btn-info': isToViewRadPrescriptionReq}">
             	<i class="fa fa-flask text-warning" style="position:relative" title="Patient recent radiology test for your prescription">
@@ -657,10 +659,10 @@
         <div class="mobile-item-display">                            
             <table class="table" ng-repeat="prescription in drugList">
                 <thead><th>sn: </th> <td>{{prescription.sn}}</td></thead>
-                <thead><th>Drug name: </th> <td><input  type="text" placeholder="Enter drug name" ng-model="prescription.drug_name" uib-typeahead="drug.name for drug in drugs | filter:$viewValue | limitTo:15" class="form-control"></td></thead>
-                <thead><th>Dosage: </th> <td><input type="text" name="dose" ng-model="prescription.dosage" placeholder="Enter dosage" class="form-control"></td></thead>
-                <thead><th>Frequency: </th> <td><input  type="text" placeholder="Enter frequency" ng-model="prescription.frequency" uib-typeahead="f for f in frequencies | filter:$viewValue | limitTo:15" class="form-control"></td></thead>
-                <thead><th>Duration: </th> <td><input  type="text" placeholder="Enter duration" ng-model="prescription.duration" uib-typeahead="d for d in durations | filter:$viewValue | limitTo:15" class="form-control" style=""></td></thead>
+                <thead><th class="pb-1" style="width: 20%">Drug name: </th> <td style="width: 75%"><input  type="text" placeholder="Enter drug name" ng-model="prescription.drug_name" uib-typeahead="drug.name for drug in drugs | filter:$viewValue | limitTo:15" class="form-control"></td></thead>
+                <thead><th class="pb-1">Dosage: </th> <td><input type="text" name="dose" ng-model="prescription.dosage" placeholder="Enter dosage" class="form-control"></td></thead>
+                <thead><th class="pb-1">Frequency: </th> <td><input  type="text" placeholder="Enter frequency" ng-model="prescription.frequency" uib-typeahead="f for f in frequencies | filter:$viewValue | limitTo:15" class="form-control"></td></thead>
+                <thead><th class="pb-1">Duration: </th> <td><input  type="text" placeholder="Enter duration" ng-model="prescription.duration" uib-typeahead="d for d in durations | filter:$viewValue | limitTo:15" class="form-control" style=""></td></thead>
                 <hr class="bg-warning">
             </table>
         </div>
@@ -694,14 +696,19 @@
         <div class="pt-2"> 
             <a href="" ng-click="toPatient()" class="btn btn-primary"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange" ng-if="loading"></i><i class="fa fa-send" ng-if="!loading"></i> {{(loading) ? '' : ' Patient only'}}</a>
             <a href="" ng-click="toPharmacy()" class="btn btn-primary"><i class="fa fa-send"></i> Patient / Phamarcy</a>
-            <a href="" class="btn btn-neutral  dropdown-toggle" data-toggle="dropdown" ng-click="viewPreviousPrescriptionByDoctor()">{{(isToViewOldPrescription !== true) ? 'Previous Prescriptions' : 'Close Previous Prescriptions' }}</a>  
-        </div>                          
+            <br>          
+        </div> 
+        <hr>
+        <div>
+            <a href="" class="btn btn-simple btn-block  dropdown-toggle" data-toggle="dropdown" ng-click="viewPreviousPrescriptionByDoctor()">{{(isToViewOldPrescription !== true) ? 'Previous Prescriptions' : 'Close Previous Prescriptions' }}</a>  
+        </div>                         
         <div class="clearfix">
           
         </div>
     
     <div ng-if="isToViewOldPrescription" >
-    <hr>                   
+    <hr>
+        <p style="text-align: center;" class="p-2"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange" ng-show="!wroteByThisDoctor"></i></p>               
         <div ng-repeat="prescription in wroteByThisDoctor | orderBy: '-date'" class="table" style="margin-bottom: 20px;padding-left: 0">
             <div style="background-color: d7dde4;font-size: 14px;padding: 0">                   
                 <div>
@@ -816,7 +823,7 @@
                    <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange" ng-if="isLoading"></i>
                </div>                              
             </div>-->
-            <section ng-repeat="center in searchResult | filter: filterResult" style="padding:10px;border-bottom: 1px solid rgba(0,0,0,0.1)">
+            <section ng-repeat="center in searchResult | filter: filterResult" style="padding:10px;border-bottom: 1px solid rgba(0,0,0,0.1)" ng-show="treatment.isCourier === 'No' || center.courier_access">
                <a href="" ng-click="selected(center)" style="display: block;height: 100%"><b>{{center.name}}</b><br><span>{{center.address}},{{center.city}},{{center.country}}</span><br><span>{{center.phone}}</span></a>
             </section>
             <section style="text-align: center;">
@@ -843,9 +850,9 @@
             </a>
             <div style="padding: 20px;text-align: center;">
                 <button class="btn btn-danger form-control" ng-click="sendDrug()" ng-if="pickedCenter"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i> {{(message) ? message : (loading) ? '': 'Send'}}</button>
-                <article ng-show="courMsg" class="p-1">
+                <!--<article ng-show="courMsg" class="p-1">
                     <i class="fa fa-motorcycle text-primary"></i> <span>{{courMsg}}</span>
-                </article>
+                </article>-->
             </div>
         </section>                             
        </div>                           

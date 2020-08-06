@@ -255,7 +255,12 @@ app.config(['$paystackProvider','$routeProvider',
 
  .when('/doctor-patient/treatment/:id',{
   templateUrl: '/assets/pages/specific-patient.html',
-  controller: 'myPatientController'
+  controller: 'myPatientController',
+  resolve: {
+    path: function($location,$rootScope){
+      $rootScope.path = $location.path();
+    }
+  }
  })  
 
 
@@ -739,11 +744,11 @@ app.config(['$paystackProvider','$routeProvider',
 .when("/courier-response/:id",{
   templateUrl: "/assets/pages/utilities/courier-response.html",
   controller: "courierResponseCtrl",
-  resolve: {
+  /*resolve: {
     path: function($location,$rootScope){
       $rootScope.path = $location.path();  
     }
-  }
+  }*/
  })
 
  //display
@@ -8848,14 +8853,14 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
         })
       .success(function(data) {
         $scope.loading = false;
-        console.log(data)
         if(data.success) {  
           $scope.message = "Prescription sent !!!" ;  
-          if(patient.courierObj && $scope.treatment.referral_pays === 'Yes'){
-           $scope.courMsg = 'You have requested courier delivery from the pharmacy.'
+          if(data.courierData && $scope.treatment.referral_pays === 'Yes'){
+           /*$scope.courMsg = 'You have requested courier delivery from the pharmacy.'
            +' Please keep checking the "motorcycle" icon for your bill for payment to initiate delivery.' 
-           + ' You will be prompted to fund your account if you don\t have sufficient balance to pay for the order. ';
+           + ' You will be prompted to fund your account if you don\t have sufficient balance to pay for the order. ';*/
             $rootScope.$broadcast("new courier order",{status:true});
+            $rootScope.viewResponse(data.courierData)
           } 
         } else {
           alert("Some errors occured. Please try again.")
