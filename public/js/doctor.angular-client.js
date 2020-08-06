@@ -14416,6 +14416,10 @@ app.controller("prescriptionOutCtrl",["$scope","$rootScope","$http","localManage
       center.loading = false;
       if(data.success){
         center.isSent = true;
+        if(data.courierData && $scope.patient.referral_pays === 'Yes'){
+          $rootScope.$broadcast("new courier order",{status:true});
+          $rootScope.viewResponse(data.courierData)
+        }
       } else {
         alert("Error occured while sending prescription")
       }
