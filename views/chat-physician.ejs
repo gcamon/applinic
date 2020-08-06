@@ -327,18 +327,18 @@ input:focus {
             </div>
           </div>
           <div class="inbox_chat bg-white">
-            <div class="chat_list" ng-class="{'text-success' : !chat.is_read,'active_chat': chat.partnerId == partner.partnerId}" ng-repeat="chat in chatsList | filter: ft" ng-click="viewChat(chat)" ng-if="chat.partnerId !== checkLogIn.user_id">
+            <div class="chat_list" ng-class="{'text-success' : !chat.is_read,'active_chat': chat.partnerId == partner.partnerId}" ng-repeat="chat in chatsList | filter: ft | orderBy: '-realTime'" ng-click="viewChat(chat)" ng-if="chat.partnerId !== checkLogIn.user_id">
               <div class="chat_people">             
                 <div class="chat_img"><a href="{{chat.profile_url}}" target="_blank" ><img src="{{chat.profilePic || '/download/profile_pic/nopic'}}" alt="image"></a> </div>
-                <div class="chat_ib" style="position: relative;">
+                <div class="chat_ib" style="position: relative;height: 80px">
                   <h5 class="mb-0 pb-0" style="text-transform: capitalize;"><b>{{chat.name}}</b> <span class="chat_date" >{{ (chat.messages[chat.messages.length - 1].time  || chat.messages[chat.messages.length - 1].received ) | amCalendar}}</span></h5>
                   <p class="ellipsis"><!--{{(!chat.typing) ? (chat.messages[chat.messages.length - 1].msg || chat.messages[chat.messages.length - 1].received || chat.messages[chat.messages.length - 1].sent ) : chat.typing }}-->
                       <span>{{chat.specialty}}</span><br>
                       <span ng-repeat="e in chat.education">{{e.certificate}}</span>
                   </p>
                   <p class="ellipsis"><b>{{chat.city}} {{chat.country}}</b></p>
-                  <span style="position: absolute;right: 0px; bottom: 0px" class="online" ng-show="chat.presence" title="Online"></span>
-                  <span style="position: absolute;right: 0px; bottom: 0px;background-color: #ccc" title="Offline" class="online" ng-show="!chat.presence"></span>
+                  <span style="position: absolute;right: 15px; bottom: 15px" class="online" ng-show="chat.presence" title="Online"></span>
+                  <span style="position: absolute;right: 15px; bottom: 15px;background-color: #ccc" title="Offline" class="online" ng-show="!chat.presence"></span>
                    <a href="" ng-show="!chat.presence && !chat.isSent && !loading" class="btn btn-sm btn-success" style="position: absolute;right: 0px; bottom: 0;" ng-click="inviteOnline(chat)">{{(chat.loading) ? 'Please wait!' : 'Invite online'}}</a>
                    <span ng-show="!chat.presence && chat.isSent" class="text-success btn btn-neutral btn-sm" style="position: absolute;right: 0px; bottom:0;">Inviting...</span>
                    <div style="height: 20px"></div>

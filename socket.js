@@ -201,6 +201,7 @@ io.sockets.on('connection', function(socket){
 	    	data.date = date.toString();
 	    	data.id = data.date;
 	    	data.chatId = chatId;
+	    	data.realTime = date;
 	    	data.opponentId = otherId;
 
 	      cb(data);

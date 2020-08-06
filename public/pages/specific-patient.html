@@ -102,7 +102,7 @@
 
             <button href="#manageCase" class="grayish collapsed" ng-click="viewRadioReport()" ng-class="{'btn-info': isToViewLabPrescriptionReq}" data-toggle="collapse" data-parent="#accordion" href="#manageCase" aria-expanded="false" aria-controls="collapsefifty" style="width: 100%;text-align: left;padding: 10px 5px;border: none;">
               <i class="fa fa-file-image-o text-info"  style="position:relative">
-              </i>My Radiology  
+              </i> My Radiology  
                 <!--<span class="tag tag-info pull-right" ng-if="labLen > 0">{{labLen}}</span>-->
             </button>
 
@@ -1174,12 +1174,12 @@
                         <label>Clinical Summary:</label>
                         <textarea placeholder="Write.." ng-model="treatment.clinical_summary" class="form-control pl-2" ng-keyup="autoExpand($event)" id="textarea"></textarea>
                     </div>
-                     <div ng-if="patientInfo.gender === 'female'">
-                        <label>LMP:</label>
+                     <div>
+                        <label>LMP (Female):</label>
                         <textarea  placeholder="Write.." ng-model="treatment.lmp" class="form-control pl-2" ng-keyup="autoExpand($event)" id="textarea"></textarea>
                     </div>
-                     <div ng-if="patientInfo.gender === 'female'">
-                        <label>Parity:</label>
+                     <div>
+                        <label>Parity (Female):</label>
                         <textarea  placeholder="Write.." ng-model="treatment.parity" class="form-control pl-2" ng-keyup="autoExpand($event)" id="textarea"></textarea>
                     </div>
                     <br>
