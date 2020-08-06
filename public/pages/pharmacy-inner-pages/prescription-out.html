@@ -27,9 +27,9 @@
                 </div>
 
                 <div ng-if="patient.patientType == 'mine'">
-                    <select  class="form-control" ng-model="patient.patient_phone" required>
+                    <select  class="form-control" ng-model="patient.patient_identifier" required>
                        <option disabled value="" selected="">_Select a patient</option> 
-                       <option value="{{p.patient_phone}}" ng-repeat="p in patientList">{{p.patient_firstname}} {{p.patient_lastname}}</option>
+                       <option value="{{p.patient_phone + '/' + p.patient_id}}" ng-repeat="p in patientList">{{p.patient_firstname}} {{p.patient_lastname}}</option>
                     </select>
                 </div>     
 

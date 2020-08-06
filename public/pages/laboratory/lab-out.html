@@ -24,10 +24,10 @@
             <input type="text" class="form-control" placeholder="Enter patient's phone number" ng-model="treatment.patient_phone" uib-typeahead="p.patient_phone for p in patientList | filter:$viewValue | limitTo:15" required>
         </div>
 
-        <div ng-if="treatment.patientType == 'mine'">
-            <select  class="form-control" ng-model="treatment.patient_phone" required>
+         <div ng-if="treatment.patientType == 'mine'">
+            <select  class="form-control" ng-model="treatment.patient_identifier" required>
                <option disabled value="" selected="">_Select a patient</option> 
-               <option value="{{p.patient_phone}}" ng-repeat="p in patientList">{{p.patient_firstname}} {{p.patient_lastname}}</option>
+               <option value="{{p.patient_phone + '/' + p.patient_id}}" ng-repeat="p in patientList">{{p.patient_firstname}} {{p.patient_lastname}}</option>
             </select>
         </div> 
         <br>    
@@ -147,9 +147,12 @@
     	<div class="clearfix"></div>
     	<hr>
     	<div>
-    		<div>
-    			<label>Patient: <span class="text-muted">{{treatment.patient_title}} {{treatment.patient_firstname}} {{treatment.patient_lastname}}</span></label>
-    		</div>
+    		<div class="mb-2">
+                <label>Patient: <span class="text-muted">{{treatment.patient_title}} {{treatment.patient_firstname}} {{treatment.patient_lastname}}</span></label><br>
+                <label>Gender: <span class="text-muted">{{treatment.patientDetails.gender}}</span></label><br>
+                <label>Age: <span class="text-muted">{{treatment.patientDetails.age}}</span></label><br>
+            </div>
+
     		<div ng-show="searchResult.length > 2">
     			<input type="text" name="" placeholder=" Filter list" ng-model="item">
     		</div>
@@ -158,7 +161,7 @@
     			<span style="display: block;width: 92%">{{j.address}} {{j.city}} {{j.country}}</span>
     			<span>{{j.phone}}</span>
     			<span style="position: absolute;bottom: -5px;right: 5px">
-    				<button class="btn btn-sm btn-warning" ng-click="sendTest(j)" ng-show="!j.isSent">{{(j.loading) ? 'Sending...' : 'Send'}}</button><i class="fa fa-check btn btn-sm btn-neutral" style="color: #85CE36" ng-show="j.isSent"></i>
+    				<button class="btn btn-sm btn-success" ng-click="sendTest(j)" ng-show="!j.isSent">{{(j.loading) ? 'Sending...' : 'Send'}}</button><i class="fa fa-check btn btn-sm btn-neutral" style="color: #85CE36" ng-show="j.isSent"></i>
     			</span>
     		</div>
     	</div>

@@ -25,9 +25,9 @@
         </div>
 
         <div ng-if="treatment.patientType == 'mine'">
-            <select  class="form-control" ng-model="treatment.patient_phone" required>
+            <select  class="form-control" ng-model="treatment.patient_identifier" required>
                <option disabled value="" selected="">_Select a patient</option> 
-               <option value="{{p.patient_phone}}" ng-repeat="p in patientList">{{p.patient_firstname}} {{p.patient_lastname}}</option>
+               <option value="{{p.patient_phone + '/' + p.patient_id}}" ng-repeat="p in patientList">{{p.patient_firstname}} {{p.patient_lastname}}</option>
             </select>
         </div> 
         <br>    
@@ -148,8 +148,10 @@
     	<hr>
     	<div>
     		<div>
-    			<label>Patient: <span class="text-muted">{{treatment.patient_title}} {{treatment.patient_firstname}} {{treatment.patient_lastname}}</span></label>
-    		</div>
+                <label>Patient: <span class="text-muted">{{treatment.patient_title}} {{treatment.patient_firstname}} {{treatment.patient_lastname}}</span></label><br>
+                <label>Gender: <span class="text-muted">{{treatment.patientDetails.gender}}</span></label><br>
+                <label>Age: <span class="text-muted">{{treatment.patientDetails.age}}</span></label><br>
+            </div>
             <br>
     		<div ng-show="searchResult.length > 2">
     			<input type="text" name="" placeholder=" Filter list" ng-model="item" class="simple-border">

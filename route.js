@@ -10915,7 +10915,6 @@ router.get("/dynamic-service",function(req,res){
 
 router.get("/user/doctor/initial-complaint",function(req,res){
   if(req.user){
-    console.log(req.query)
     var list = req.user.doctor_patients_list;
     var complaints = [];
     for(var i = 0; i < list.length; i++){
@@ -12701,6 +12700,7 @@ router.post("/user/import-patient",function(req,res){
                     patient_profile_pic_url: patient.profile_pic_url,
                     patient_address: patient.address,
                     patient_city: patient.city,
+                    patient_phone: patient.phone,
                     Patient_country: patient.country,
                     patient_gender: patient.gender,
                     patient_age: patient.age,

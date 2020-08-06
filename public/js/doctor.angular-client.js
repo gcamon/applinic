@@ -14015,19 +14015,30 @@ app.controller("labOutCtrl",["$scope","$http","labTests","getAllLaboratoryServic
 
     $scope.invMsg = "";
 
-    //var isNumber = testNumber($scope.treatment.patient_phone);
-    if(testNumber($scope.treatment.patient_phone)) {
-      if($scope.treatment.patient_phone.indexOf('+') == -1)
-        $scope.treatment.patient_phone = "+234" + parseInt($scope.treatment.patient_phone); 
-    } else {
-      $scope.phoneError = "Please enter a valid phone number.";
-      alert("Patient phone number not found or invalid")
-      return;
+    if($scope.treatment.patient_identifier){
+
+      var spStr = $scope.treatment.patient_identifier.split('/');
+    
+      $scope.treatment.patient_phone = spStr[0];
+     
+      $scope.treatment.patient_id = spStr[1];
     }
+
+    //var isNumber = testNumber($scope.treatment.patient_phone);
+    if($scope.treatment.patient_phone){
+      if(testNumber($scope.treatment.patient_phone)) {
+        if($scope.treatment.patient_phone.indexOf('+') == -1)
+          $scope.treatment.patient_phone = "+234" + parseInt($scope.treatment.patient_phone); 
+      } else {
+        $scope.phoneError = "Please enter a valid phone number.";
+        alert("Patient phone number not found or invalid")
+        return;
+      }
+    } 
 
     $scope.loading = true;
 
-    $http.get("/user/out/get-patients",{params: {phone: $scope.treatment.patient_phone}})
+    $http.get("/user/out/get-patients",{params: {phone: $scope.treatment.patient_phone,patientId: $scope.treatment.patient_id}})
     .success(function(resp){
       $scope.loading = false;
       if(resp.user_id){
@@ -14036,6 +14047,7 @@ app.controller("labOutCtrl",["$scope","$http","labTests","getAllLaboratoryServic
         $scope.treatment.patient_title = resp.title;
         $scope.treatment.patient_firstname = resp.firstname;
         $scope.treatment.patient_lastname = resp.lastname;
+        $scope.treatment.patient_phone = resp.phone;
         $scope.treatment.patientDetails = resp;
         getLaboratories();
         $scope.isNewLab = false;
@@ -14188,19 +14200,30 @@ app.controller("radioOutCtrl",["$scope","$http","scanTests","getAllRadiologyServ
 
     $scope.invMsg = "";
 
-    //var isNumber = testNumber($scope.treatment.patient_phone);
-    if(testNumber($scope.treatment.patient_phone)) {
-      if($scope.treatment.patient_phone.indexOf('+') == -1)
-        $scope.treatment.patient_phone = "+234" + parseInt($scope.treatment.patient_phone); 
-    } else {
-      $scope.phoneError = "Please enter a valid phone number.";
-      alert("Patient phone number not found or invalid")
-      return;
+    if($scope.treatment.patient_identifier){
+
+      var spStr = $scope.treatment.patient_identifier.split('/');
+    
+      $scope.treatment.patient_phone = spStr[0];
+     
+      $scope.treatment.patient_id = spStr[1];
     }
+
+    //var isNumber = testNumber($scope.treatment.patient_phone);
+    if($scope.treatment.patient_phone){
+      if(testNumber($scope.treatment.patient_phone)) {
+        if($scope.treatment.patient_phone.indexOf('+') == -1)
+          $scope.treatment.patient_phone = "+234" + parseInt($scope.treatment.patient_phone); 
+      } else {
+        $scope.phoneError = "Please enter a valid phone number.";
+        alert("Patient phone number not found or invalid")
+        return;
+      }
+    } 
 
     $scope.loading = true;
 
-    $http.get("/user/out/get-patients",{params: {phone: $scope.treatment.patient_phone}})
+    $http.get("/user/out/get-patients",{params: {phone: $scope.treatment.patient_phone,patientId:$scope.treatment.patient_id}})
     .success(function(resp){
       $scope.loading = false;
       if(resp.user_id){
@@ -14209,6 +14232,7 @@ app.controller("radioOutCtrl",["$scope","$http","scanTests","getAllRadiologyServ
         $scope.treatment.patient_title = resp.title;
         $scope.treatment.patient_firstname = resp.firstname;
         $scope.treatment.patient_lastname = resp.lastname;
+        $scope.treatment.patient_phone = resp.phone;
         $scope.treatment.patientDetails = resp;
         getRadiologies();
         $scope.isNewLab = false;
@@ -14395,15 +14419,27 @@ app.controller("prescriptionOutCtrl",["$scope","$rootScope","$http","localManage
   }
 
   $scope.validatePatient = function() {
-    //var isNumber = testNumber($scope.patient.patient_phone);
-    if(testNumber($scope.patient.patient_phone)) {
-      if($scope.patient.patient_phone.indexOf('+') == -1){
-        $scope.patient.patient_phone = "+234" + parseInt($scope.patient.patient_phone); 
+
+    if($scope.patient.patient_identifier){
+
+      var spStr = $scope.patient.patient_identifier.split('/');
+    
+      $scope.patient.patient_phone = spStr[0];
+     
+      $scope.patient.patient_id = spStr[1];
+    }
+
+    //var isNumber = testNumber($scope.treatment.patient_phone);
+    if($scope.patient.patient_phone){
+      if(testNumber($scope.patient.patient_phone)) {
+        if($scope.patient.patient_phone.indexOf('+') == -1){
+          $scope.patient.patient_phone = "+234" + parseInt($scope.patient.patient_phone); 
+        }
+      } else {
+        $scope.phoneError = "Please enter a valid phone number.";
+        alert("Patient phone number not found or invalid")
+        return;
       }
-    } else {
-      $scope.phoneError = "Please enter a valid phone number.";
-      alert("Patient phone number not found or invalid")
-      return;
     }
 
     if(!$scope.drugList[0].drug_name){
@@ -14413,7 +14449,7 @@ app.controller("prescriptionOutCtrl",["$scope","$rootScope","$http","localManage
 
     $scope.loading = true;
 
-    $http.get("/user/out/get-patients",{params: {phone: $scope.patient.patient_phone}})
+    $http.get("/user/out/get-patients",{params: {phone: $scope.patient.patient_phone,patientId:$scope.patient.patient_id}})
     .success(function(resp){
       $scope.loading = false;
       if(resp.user_id){
@@ -14422,6 +14458,7 @@ app.controller("prescriptionOutCtrl",["$scope","$rootScope","$http","localManage
         $scope.patient.patient_title = resp.title;
         $scope.patient.patient_firstname = resp.firstname;
         $scope.patient.patient_lastname = resp.lastname;
+        $scope.patient.patient_phone = resp.phone;
         $scope.patient.patientDetails = resp;
         $scope.isNewPatient = false;
         getPharmacy();
@@ -14495,7 +14532,6 @@ app.controller("prescriptionOutCtrl",["$scope","$rootScope","$http","localManage
     source.query({city:$scope.city},function(list){
       $scope.isLoading = false;
       $scope.searchResult = list;
-      console.log(list)
     })
   }
 
@@ -14524,19 +14560,31 @@ app.controller('appointmentOutCtrl',["$scope","$http","$rootScope","docAppointme
 
     $scope.invMsg = "";
 
-    //var isNumber = testNumber($scope.treatment.patient_phone);
-    if(testNumber($scope.treatment.patient_phone)) {
-      if($scope.treatment.patient_phone.indexOf('+') == -1)
-        $scope.treatment.patient_phone = "+234" + parseInt($scope.treatment.patient_phone); 
-    } else {
-      $scope.phoneError = "Please enter a valid phone number.";
-      alert("Patient phone number not found or invalid")
-      return;
+    if($scope.treatment.patient_identifier){
+
+      var spStr = $scope.treatment.patient_identifier.split('/');
+    
+      $scope.treatment.patient_phone = spStr[0];
+     
+      $scope.treatment.patient_id = spStr[1];
     }
+
+    //var isNumber = testNumber($scope.treatment.patient_phone);
+    if($scope.treatment.patient_phone){
+      if(testNumber($scope.treatment.patient_phone)) {
+        if($scope.treatment.patient_phone.indexOf('+') == -1)
+          $scope.treatment.patient_phone = "+234" + parseInt($scope.treatment.patient_phone); 
+      } else {
+        $scope.phoneError = "Please enter a valid phone number.";
+        alert("Patient phone number not found or invalid")
+        return;
+      }
+    } 
 
     $scope.loading = true;
 
-    $http.get("/user/out/get-patients",{params: {phone: $scope.treatment.patient_phone}})
+    $http.get("/user/out/get-patients",{params: {phone: $scope.treatment.patient_phone,
+      patientId:$scope.treatment.patient_id}})
     .success(function(resp){
       $scope.loading = false;
       if(resp.user_id){
@@ -14545,9 +14593,9 @@ app.controller('appointmentOutCtrl',["$scope","$http","$rootScope","docAppointme
         $scope.treatment.patient_title = resp.title;
         $scope.treatment.patient_firstname = resp.firstname;
         $scope.treatment.patient_lastname = resp.lastname;
+        $scope.treatment.patient_phone = resp.phone;
         $scope.treatment.patientDetails = resp;
         $scope.isNewAppointment = false;
-        console.log(resp)
       } else if(resp.error) {
         alert(resp.message);
       } else {
@@ -14765,6 +14813,342 @@ app.controller('appointmentOutCtrl',["$scope","$http","$rootScope","docAppointme
   $rootScope.$on('new appointment',function(res){
     getAppoint();
   })
+
+  console.log($rootScope.patientList)
+
+}]);
+
+
+app.controller("drugsAndKitsCtrl",["$scope","$rootScope","$http","ModalService","localManager","dynamicService",
+  function($scope,$rootScope,$http,ModalService,localManager,dynamicService){
+    $scope.drug = {};
+    $scope.drug.address = $rootScope.checkLogIn.address;
+    $scope.drug.phone = $rootScope.checkLogIn.phone;
+    $scope.drug.package = "";
+    $scope.drug.city = $rootScope.checkLogIn.city || "";
+
+    localManager.setValue("currentPageForPatients","/drugs-and-kits");
+
+    $scope.isSelected = "Anti Malaria";
+
+    $scope.dosageList = ["caplets","capsule","packet","bottle","sachet","tablets","vial",
+    "ampoule","suppository","syrup","carton","ointment","pints","pieces","bags"];
+
+
+    var resource = dynamicService; 
+    resource.query({type:"Pharmacy"},function(data){
+      $scope.drugs = data;
+    });
+
+    var filter = {};
+
+    $http.get("/drug-kits/all")
+    .success(function(response){
+      //$scope.allKits = response;
+     
+      response.forEach(function(item){
+        if(!filter.hasOwnProperty(item.disease)){
+          filter[item.disease] = {};
+          filter[item.disease].disease = item.disease;
+          filter[item.disease].name = item.name;
+          filter[item.disease].note = item.note;
+          filter[item.disease].package = item.package || 0;
+          filter[item.disease].type = item.type;
+          filter[item.disease]['content'] = [];//item.content;
+          filter[item.disease]['content'].push({
+            package: item.package,
+            content: item.content 
+          })
+        } else {  
+          //filter[item.disease].name = item.name;
+          //filter[item.disease].package = item.package;
+          //filter[item.disease]['content'] = item.content;
+          filter[item.disease]['content'].push({
+            package: item.package,
+            content: item.content 
+          })    
+         
+        }
+      })
+
+      $scope.allKits = Object.keys(filter);
+      getKit("Drug",'Malaria');
+      //$scope.filteredKits = filter;
+    })
+
+
+
+    
+
+    function getKit(type,name) {
+      //$scope.kitLoading = true;
+      /*$http.get("/drug-kits",{params:{type:type,name:name}})
+      .success(function(data){
+        $scope.kitLoading = false;
+        $scope.selectedPackage = {}; 
+        if($scope.isSelected == 'Other')  
+          $scope.selectedPackage.content = [{sn:1}];   
+
+        $scope.drug.package = (data[0]) ? data[0]._id : "";
+        $scope.kits = data || [];
+      });*/
+
+      if($scope.isSelected == 'Other')  {
+        $scope.selectedPackage2 = {};
+        $scope.selectedPackage2.content = [{sn:1}]; 
+        $scope.isSelfCompile = true;
+      } else {
+        $scope.isSelfCompile = false;
+      }
+
+      $scope.isNewKit = true;
+
+      if($scope.drug.package){
+        $scope.drug.package = null;
+      }
+
+      $scope.kits = filter[name];
+      $scope.isJoined = false;
+    }
+
+
+    $scope.selectedKit = function(type,name){
+      if($scope.isSelected === 'Other'){
+        $scope.isSelected = null;
+      } else {
+        $scope.isSelected = name;
+      }
+
+      getKit(type,name);
+      
+    }
+
+
+
+    var count = {};
+    count.num = 1;
+   
+    $scope.addDrug = function(){  
+      var newDrug = {};         
+      count.num++;
+      newDrug.sn = count.num;
+      $scope.selectedPackage2.content.push(newDrug);
+    }
+
+    $scope.remove = function(id){ 
+      if($scope.selectedPackage2.content.length > 1){
+        /*var elementPos = $scope.selectedPackage.content.map(function(x){return x.sn}).indexOf(id);
+        if($scope.selectedPackage.content[elementPos]){
+          var objfound = $scope.selectedPackage.content.splice(elementPos,1);
+          count.num = 1;
+          $scope.selectedPackage.content.forEach(function(item){
+            item.sn =  count.num;
+            count.num++;
+          })
+        }*/
+        $scope.selectedPackage2.content.pop();
+        count.num--;
+      }
+    }
+
+    $scope.find = function(){
+      $scope.loading =  true;
+      $http.get("/user/patient/getAllPharmacy",{params:{city:$scope.drug.city,type:'Pharmacy'}})
+      .success(function(centers){
+        $scope.centers = centers
+        $scope.loading = false;
+      })
+    }
+
+    $scope.find();
+    //getKit("Drug",'Malaria');
+
+    var elem;
+
+    $scope.$watch("drug.package",function(newVal,oldVal){
+      if(newVal){
+        $scope.isNewKit = false;
+        elem = $scope.kits.content.map(function(x){ if(x) { return x.package.toString()}}).indexOf(newVal);
+        if(elem !== -1){
+          $scope.selectedPackage = $scope.kits.content[elem];
+
+          if($scope.centers){
+            $scope.centers.forEach(function(item){
+              if(item.success == true)
+                item.success = false;
+            })
+          }
+      
+        }
+      }
+    });
+
+    $scope.$watch('drug.kitsList',function(newVal,oldVal){    
+      if(newVal == 'Other'){
+        $scope.isSelected = 'Other';
+        getKit('Drug',newVal);
+      } else {
+        $scope.isSelected = newVal
+        getKit('Drug',newVal);
+      }
+    })
+
+
+  $scope.sendChat = function(center) {
+    var kit = ($scope.isSelfCompile) ? $scope.selectedPackage2 : $scope.selectedPackage;
+    if(kit) {
+      $rootScope.searchItems = "";
+      kit.content.forEach(function(item){
+        $rootScope.searchItems += item.drug_name + ", "
+      })
+     
+      $rootScope.searchItemType = "drug(s)";     
+      $rootScope.holdcenter = center;
+      $rootScope.holdcenter.id = center.user_id;
+      ModalService.showModal({
+            templateUrl: 'quick-chat.html',
+            controller: 'generalChatController'
+        }).then(function(modal) {
+            modal.element.modal();
+            modal.close.then(function(result) {             
+            });
+      });
+
+    } else {
+      alert("No kit or Drug was selected.")
+    }
+
+  }
+
+  var sendObj;
+
+  $scope.forwardDrug = function(center) {
+
+    if($scope.selectedPackage || $scope.selectedPackage2){  
+
+    var content = ($scope.isSelfCompile) ? $scope.selectedPackage2.content : $scope.selectedPackage.content;
+
+      if(content.length == 0){
+        alert("No kit or Drug was selected. Please choose a kit or compile your own drug list.");
+        return;
+      }
+
+      var presId = Math.floor(Math.random() * 99999) + "" + Math.floor(Math.random() * 99999);
+      var url;
+      var method;
+      //var content = ($scope.isSelfCompile) ? $scope.selectedPackage2.content : $scope.selectedPackage.content;
+      var checkFilled;
+      content.forEach(function(item){ 
+        if(item.dosage){   
+          checkFilled = item.dosage.split(" ")
+          item.dosage = (checkFilled.length > 1) ? checkFilled[1] : item.dosage;
+        }
+
+        item.dosage = (item.quantity) ? (item.quantity + " " + item.dosage) : item.dosage;      
+      })
+
+     
+  
+      if($scope.drug.courier){
+
+        var intRegex = /[0-9 -()+]+$/;
+
+        if(intRegex.test($scope.drug.phone)){
+          if($scope.drug.phone.indexOf('+') == -1) {
+            var newSlice = $scope.drug.phone.slice(1);
+            $scope.drug.phone = "+234" + newSlice;
+          }
+        } else {
+          alert("You selected home delivery option. Please check to see if you entered a valid" +
+          " mobile phone number we can use to contact you while delivering the package.")
+          return;
+        }
+
+        sendObj = {
+          city: $rootScope.checkLogIn.city,
+          location: $scope.drug.address,
+          center_id: center.user_id,
+          phone1: $scope.drug.phone,
+          phone2: $rootScope.checkLogIn.phone,
+          address: $scope.drug.address,
+          prescriptionId: presId,
+          refId: null,
+          prescription_body : content,
+          centerInfo: center,
+        }
+
+        url = "/user/courier";
+        method = "POST";
+
+      } else {
+
+        sendObj = {
+          prescription_body : content,    
+          user_id : center.user_id,
+          provisional_diagnosis: ($scope.isSelfCompile) ? $scope.selectedPackage2.disease :  $scope.selectedPackage.disease,
+          explanation: ($scope.isSelfCompile) ? ($scope.selectedPackage2.name + " self medication package") 
+          : ($scope.selectedPackage.name + " self medication package"),
+          date: new Date(),
+          prescriptionId: presId,
+          title: '',
+          doctor_specialty: "",
+          doctor_profile_url: '',
+          doctor_firstname: '',
+          doctor_address: '',
+          doctor_id: '',
+          doctor_city: '',
+          doctor_country: '',
+          doctor_profile_pic_url: '',
+          patient_id: $rootScope.checkLogIn.user_id || "",
+          patient_profile_pic_url: $rootScope.checkLogIn.profile_pic_url,
+          patient_firstname: $rootScope.checkLogIn.firstname,
+          patient_lastname: $rootScope.checkLogIn.lastname,
+          patient_address: $rootScope.checkLogIn.address,
+          patient_gender: $rootScope.checkLogIn.gender,
+          patient_age: $rootScope.checkLogIn.age,
+          patient_city: $rootScope.checkLogIn.city,
+          patient_country: $rootScope.checkLogIn.country,
+          patient_phone: $rootScope.checkLogIn.phone,
+          is_paid: false,
+          sender: "patient"
+        }
+
+        url = "/user/patient/pharmacy/referral-by-patient";
+        method = "PUT";
+      }
+
+      center.loading = true;
+
+      $http({
+        method  : method,
+        url     : url, 
+        data    : sendObj,
+        headers : {'Content-Type': 'application/json'} 
+        })
+      .success(function(data) {
+        if(data.success){   
+          center.success = true;
+
+          if($scope.drug.courier){
+            alert("You have requested home delivery of the selected kit or drugs."
+            + " Please check motorcycle icon for update on the request.");
+            $rootScope.$broadcast("new courier order",{status:true})
+          }
+
+        } else {          
+          alert("Prescription not sent! Some error occured. Please try again shortly.");
+        }
+        center.loading = false;
+      });
+      
+    } else {
+      alert("No kit or Drug was selected. Please choose a kit or compile your own drug list.");
+      return;
+    }
+
+  }
+
+
 
 }])
 

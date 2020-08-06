@@ -1,3 +1,4 @@
+
 <div class="card p-2 card-center-1">
 	<div>
         <label class="custom-control custom-radio">
@@ -15,8 +16,6 @@
            <span class="custom-control-description" style="opacity:0;"></span>
         </label>    
     </div>
-
-	
     <hr>
     <div ng-show="treatment.appoint == 'new'">
     	<form class="col-md-10" style="line-height: 25px" ng-show="isNewAppointment" ng-submit="validatePatient()"> 
@@ -29,10 +28,8 @@
                    <input type="radio" class="custom-control-input" value="mine" ng-model="treatment.patientType">
                    <span class="custom-control-indicator"></span>
                    <span class="custom-control-description" style="opacity:0;"></span>
-                </label> &nbsp;&nbsp;&nbsp;
-
-
-                <!--<label class="custom-control custom-radio ml-0">
+                </label> 
+                <!-- <label class="custom-control custom-radio ml-0">
                    Phone number of a patient
                    <input type="radio" class="custom-control-input" value="other" ng-model="treatment.patientType">
                    <span class="custom-control-indicator"></span>
@@ -43,16 +40,13 @@
                 <label>Enter Patient's Phone Number </label> &nbsp;<i class="fa fa-question-circle tip text-primary"><span>This should be the number patient used to register in 'Applinic'. But you can proceed if the number is not yet registered by adding few details about the patient to enable system create record for the patient. However, details and reference to the prescription(s) will be sent to the patient via SMS.</span></i> &nbsp;  <span class="text-danger">{{phoneError}}</span><br>
                 <input type="text" class="form-control" placeholder="Enter patient's phone number" ng-model="treatment.patient_phone" uib-typeahead="p.patient_phone for p in patientList | filter:$viewValue | limitTo:15" required>
             </div>
-
             <div ng-if="treatment.patientType == 'mine'">
-                <select  class="form-control" ng-model="treatment.patient_phone" required>
+                <select  class="form-control" ng-model="treatment.patient_identifier" required>
                    <option disabled value="" selected="">_Select a patient</option> 
-                   <option value="{{p.patient_phone}}" ng-repeat="p in patientList">{{p.patient_firstname}} {{p.patient_lastname}}</option>
+                   <option value="{{p.patient_phone + '/' + p.patient_id}}" ng-repeat="p in patientList">{{p.patient_firstname}} {{p.patient_lastname}}</option>
                 </select>
             </div> 
             <br>    
-
-          
             <div>
                 <input type="submit" class="btn btn-success" value="Continue" ng-show="!loading"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange" ng-show="loading"> </i>
             </div>

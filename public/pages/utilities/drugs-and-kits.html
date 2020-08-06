@@ -86,7 +86,7 @@
 	 			
 	 			<div style="text-align: right;" class="col-md-12">
 	 				<i class="fa fa-plus btn btn-neutral" ng-click="addDrug()"></i>
-	 				<i class="fa fa-minus btn btn-neutral" ng-show="selectedPackage.content.length > 1" ng-click="remove()"></i>
+	 				<i class="fa fa-minus btn btn-neutral" ng-show="selectedPackage2.content.length > 1" ng-click="remove()"></i>
 	 			</div>
 	 		</section>
 
@@ -95,7 +95,7 @@
 	 		<div>
 	 			<label class="custom-control custom-checkbox">
                    <span>Request home delivery of the above drug(s)</span> <!--&nbsp;<i class="fa fa-question-circle tip text-primary"><span>Checking this option activates the home delivery request. Please note extra charges for delivery do apply. Our field agent will bring the drug to your location after contacting you. You will have to make payment before the delivery is activated. Please do check the icon <i class="fa fa-motorcycle"></i> on top right corner of this page for update on your request.</span></i>--><br>
-                <input type="checkbox" class="custom-control-input" ng-model="drug.courier" >
+                <input type="checkbox" class="custom-control-input" ng-model="drug.courier">
                   <span class="custom-control-indicator"></span>
                   <span class="custom-control-description" style="opacity:0;"></span>
                 </label> 
@@ -111,7 +111,7 @@
 	 		<div class="clearfix"></div>
 	 		<br>
 	 		<div class="pt-1 pb-1">	
-	 			<label>Forward above request to a center in the search result below:</label>
+	 			<label>Forward to any pharmaceutical center below:</label>
 	 			<div class="row">
 	 				<div class="col-md-8 col-xs-9">
 	 					<input type="text" name="" class="form-control" ng-model="drug.city">
@@ -122,13 +122,13 @@
 	 			</div>
 	 			<br> 
 
-	 			<div class="pt-1 mb-2 relate" ng-repeat="c in centers">
+	 			<div class="pt-1 mb-2 relate" ng-repeat="c in centers" ng-show="!drug.courier || c.courier_access">
 	 				<label class="pb-0 mb-0">{{c.name}}</label><br>
 	 				<span>{{c.address}}, {{c.city}} {{c.country}}</span><br>
 	 				<span>{{c.phone}}</span>
 	 				<article class="ab-bottom">
-	 					<i class="fa fa-comments btn btn-neutral" ng-click="sendChat(c)"></i>
-	 					<i class="fa fa-share btn btn-neutral" ng-show="!c.loading && !c.success" ng-click="forwardDrug(c)"></i>
+	 					<i class="fa fa-comments btn btn-sm btn-simple" ng-click="sendChat(c)"></i>
+	 					<i class="fa fa-share btn btn-sm btn-simple" ng-show="!c.loading && !c.success" ng-click="forwardDrug(c)"></i>
 	 					<i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange" ng-if="c.loading"></i>
 	 					<span class="text-primary" ng-show="c.success">Sent!</span>
 	 				</article>
@@ -136,7 +136,7 @@
 	 			<div class="pt-2" ng-show="loading" style="text-align: center;">
 	 			 	<i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange" ng-if="loading"></i>
 	 			</div>
-	 			<p ng-show="centers.length == 0" class="pt-2 text-danger" style="text-align: center;">No center was found based on you search criteria</p>
+	 			<p ng-show="centers.length == 0" class="pt-2 text-danger" style="text-align: center;">No center was found based on the search criteria</p>
 	 		</div>
 	 	</div>
 

@@ -970,7 +970,8 @@ var signupRoute = function(model,sms,geonames,paystack,io,transporter) {
 
 	router.get("/user/out/get-patients",function(req,res){
 		if(req.user){
-			model.user.findOne({phone:req.query.phone},
+			var criteria = (req.query.phone) ? {phone: req.query.phone} : {user_id: req.query.patientId};
+			model.user.findOne(criteria,
 				{user_id:1,firstname:1,lastname:1,title:1,age:1,gender:1,city:1,type:1,profile_pic_url:1,address:1,phone:1})
 			.exec(function(err,result){
 				if(err) throw err;
