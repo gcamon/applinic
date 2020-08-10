@@ -626,6 +626,14 @@ io.sockets.on('connection', function(socket){
 				})
 			})
 
+			socket.on("audio call signaling",function(req,cb){				
+				io.sockets.to(req.partnerId).emit("received audio call request",
+					{status:true, connectURL: req.partnerConnectURL,sender: req.sender});
+				cb({status:true,data:req})
+			})
+
+			
+
 			socket.on("convsersation invitation signaling",function(req,cb){
 				model.user.findOne({user_id:req.to},{set_presence:1,firstname:1,title:1,type:1,presence:1,name:1},function(err,user){
 					if(err) throw err;
@@ -633,7 +641,6 @@ io.sockets.on('connection', function(socket){
 					if(user){
 						var names = user.name || user.title + " " + user.firstname;
 						var senderNames = req.name ||  req.firstname;
-
 						if(user.presence) {
 							//{type:req.type,message:req.message,time:req.time}
 							io.sockets.to(req.to).emit("receive invitation request",

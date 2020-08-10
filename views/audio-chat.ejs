@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="en" ng-app = "tokboxvideo">
+
+<head>
+    <meta charset="utf-8" />
+    <link rel="apple-touch-icon" sizes="76x76" href="assets/img/apple-icon.png">
+    <link rel="icon" type="image/png" href="assets/img/favicon.png">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <title>APPLINIC Audio Chat</title>
+    <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no' name='viewport' />
+    <!--     Fonts and icons     -->
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700,200" rel="stylesheet" />
+    <!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" />-->
+    <link rel="stylesheet" href="/assets/css/vendor.css">
+     <link rel="icon" type="image/png" href="/assets/images/icons/favicon.png">
+    <!-- CSS Files -->
+    <link href="/assets/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="/assets/css/now-ui-kit.css" rel="stylesheet" />
+     <link href="/assets/css/my-edit.css" rel="stylesheet" />
+      <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+    <!-- CSS Just for demo purpose, don't include it in your project -->
+    <link href="/assets/css/demo.css" rel="stylesheet" />
+
+    <script src="/assets/js/vendor/jquery-library.js"></script>
+    <script type="text/javascript" src="/assets/js/angular-source.js"></script>
+    <script src="https://static.opentok.com/v2/js/opentok.min.js"></script>
+
+     <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-128083647-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-128083647-1');
+    </script>
+
+    <style>
+         body {
+            line-height: 30px;
+         }
+
+        .card-title {
+            text-transform: uppercase;
+            text-align: center;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 1em;
+        }
+
+        .bt-border {
+            border-bottom: 1px solid rgba(0,0,0,0.2)
+        }
+
+       .list-group-item, .list-group-item:first-child, .list-group-item:last-child {
+            background: transparent;
+            border:0;
+        }
+
+     .banner {
+        position: relative;
+        z-index: 1
+      }
+
+      .cover {
+        background-color: rgba(0,0,0,0.7);
+        position: absolute;
+        width: 100%;
+        top: 0;
+        left: 0;
+        height: 100%
+      }
+
+      .main {
+        width: 60%;
+        margin: 0 auto;
+        z-index: 2;
+        margin-top: -350px;
+        background-color: transparent;
+      }
+
+      .search {
+        display: inline-block;
+        list-style: none;
+      }
+
+      .search li {
+        float: left;
+      }
+
+
+      .calender-header i {
+        width: 20%;
+        cursor: pointer;
+    }
+
+.calender-header i,.calender-header span {
+    font-size: 24px;
+    display: inline-block;
+}
+
+.calender-header > span {
+    width: 55%;
+}
+
+.week,.indays {
+    text-align: center;
+}
+
+span.day {  
+    display: inline-block;
+    padding: 5px;
+    width: 12.5%;
+    text-align: center;
+    font-size: 16px;
+    margin: 20px 0px 10px;
+}
+
+span.dates {
+    margin-right: 5px;
+    display: inline-block;
+    padding: 5px;
+    width: 13%;
+    text-align: center;
+    font-size: 14px;
+    margin: 20px 0px;
+    border-bottom: 1px solid grey;
+    box-shadow: 1px 2px 3px grey;
+    font-weight: bold;
+}
+
+.different-month {
+    color:#C0C0C0;
+    font-weight: normal!important;
+}
+
+
+
+.today {
+    background:#ccc;
+    color:#fff;
+}
+            
+.different-month {
+    color:#C0C0C0;
+}
+            
+.selected {
+    background:#7dbb00;
+    color:white;
+}
+
+.notAvail {
+    text-decoration: line-through;
+    color:red;
+}
+
+.updateInfo {
+    color: orange;
+    float: right;
+}
+
+.moved {
+  transform: translate(10px); /* Equal to translateX(10px) */
+  background-color: pink;
+}
+
+
+        @media screen and (max-width: 750px) {
+          .card {
+            box-shadow: none!important;
+          }
+
+          .how-responsive {
+            position: static!important;
+          }
+
+          .main {
+            margin-top: -100px;
+          }
+
+          .main h1 {
+            font-size: 32px
+          }
+        }
+    </style>
+
+
+</head>
+
+<!-- this page uses video js file also since both originates from tokbox and shares similar logic while attending to patient -->
+
+<body style="overflow-x:hidden;position: relative;">
+   
+    <!-- End Navbar -->
+    <!--<div id="otEmbedContainer" style="height:660px;">
+        
+    </div>-->
+    <div id="otSubscriber" style="height:660px;">
+        dsds
+    </div>
+   
+    <script>
+        //var key = '<%= apiKey %>';
+        //var sessionId = '<%= sessionId %>';
+        //var token = '<%= token %>';
+
+        // replace these values with those generated in your TokBox Account
+        var apiKey = '<%= apiKey %>';
+        var sessionId = '<%= sessionId %>';
+        var token = '<%= token %>';
+
+        // Handling all of our errors here by alerting them
+        function handleError(error) {
+          if (error) {
+            alert(error.message);
+          }
+        }
+
+        // (optional) add server code here
+        initializeSession();
+
+        function initializeSession() {
+          var session = OT.initSession(apiKey, sessionId);
+
+          // Subscribe to a newly created stream
+          session.on('streamCreated', function(event) {
+            session.subscribe(event.stream, 'otSubscriber', {
+              insertMode: 'append',
+              width: '100%',
+              height: '100%',
+              subscribeToAudio:true,
+              subscribeToVideo:false,
+            }, handleError);
+          });
+
+        
+
+          // Create a publisher
+          var publisher = OT.initPublisher('otEmbedContainer', {
+            insertMode: 'append',
+            width: '100%',
+            height: '100%',
+            videoSource: null
+          }, handleError);
+
+          //publisher.publishAudio(true);
+          publisher.publishVideo(false);
+
+          // Connect to the session
+          session.connect(token, function(error) {
+            // If the connection is successful, initialize a publisher and publish to the session
+            if (error) {
+              handleError(error);
+            } else {
+              session.publish(publisher, handleError);
+            }
+          });
+        }
+
+    </script>  
+
+    <div ng-controller="VideoDiagnosisController2"> 
+      <!-- Navbar -->
+    <% include ./inner/nav3 %>
+
+    <div style="position: absolute;right: 0; top: 70px;width: 420px;padding:10px;overflow-y: auto;max-height: 600px;z-index: 99999" class="card" ng-show="isManage"  ng-cloak>
+      <aside class="p-1" style="position: relative;">
+        <div ng-show="!session">
+        <a class="collapsed dropdown-toggle text-info" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapsefifty" aria-expanded="false" aria-controls="collapsefifty">What is Session?</a>
+        <p  id="collapsefifty" class="panel-collapse collapse p-1 text-muted" role="tabpanel" aria-labelledby="headingfifty">Session will keep records of clerks, diagnostic requests/reports and prescriptions given while holding conversation with a patient. You can view sessions in e-case note of the patient through your dashboard. </p>
+        </div>
+        <a href="" style="position: absolute;top: 5px;right: 5px" ng-click="closeSideBar()"><i  class="fa fa-times"></i></a>
+        <div class="clearfix"></div>
+
+        <!-- section for choosing a treatment session -->
+        <br>
+        <section ng-if="!session">
+            <div>              
+                <div>                       
+                    <!--<label class="custom-control custom-radio"  ng-click="getSession()">
+                       <input type="radio" class="custom-control-input"  value="">
+                        <span class="custom-control-indicator"></span>
+                        <span class="custom-control-description">Create new session</span>
+                    </label>-->
+                    <button class="btn btn-primary" ng-click="getSession()">Create new session</button>
+                </div>
+                <br>
+                <div>
+                    <label><b>Or continue from previous session</b></label>
+                </div>
+                <div ng-repeat="j in sessions | orderBy: '-date'" class="p-1">                            
+                    <label class="custom-control custom-radio">
+                       <input type="radio" class="custom-control-input" ng-model="treatment.session" ng-value="j.session_id">
+                        <span class="custom-control-indicator"></span>
+                        <span class="custom-control-description">{{j.diagnosis.presenting_complain}} <span am-time-ago="j.date"></span> </span>
+                    </label>
+                </div>
+                <p class="text-warning" ng-show="sessions.length == 0"> No previous session was found.</p>
+                 <div style="margin: 20px;text-align: center;" ng-if="loading">
+                    <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange" ></i>
+                </div>
+                <div ng-show="sessions.length > 0">
+                    <button class="btn btn-primary" ng-click="continueSession()">Continue a session</button>
+                </div>
+            </div>          
+        </section>
+
+        <!-- section for clerking -->
+        <section ng-if="action == 'clerking' && session">
+         <div id="accordion">
+              <label style="color: #fff;padding:5px">
+                  <a class="collapsed dropdown-toggle" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTen" aria-expanded="false" aria-controls="collapseTen" style="text-decoration:underline">Presenting Complaint</a>
+              </label>                 
+              <div id="collapseTen" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTen">
+                  <textarea placeholder="write..." ng-model="treatment.complain" class="form-control" required></textarea>
+              </div>
+          </div>
+          <div id="accordion">
+              <label style="color: #fff;padding:5px">
+                  <a class="collapsed dropdown-toggle" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseNine" aria-expanded="false" aria-controls="collapseNine" style="text-decoration:underline">History of Presenting Complaint</a>
+              </label>                 
+              <div id="collapseNine" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingNine">
+                  <textarea placeholder="write..." class="form-control" ng-model="treatment.historyOfComplain"></textarea>
+              </div>
+          </div>
+
+          <div id="accordion">
+              <label style="color: #fff;padding:5px">
+                  <a class="collapsed dropdown-toggle" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseEight" aria-expanded="false" aria-controls="collapseEight" style="text-decoration:underline">Past Medical History</a>
+              </label>                
+              <div id="collapseEight" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingEight">
+                   <textarea placeholder="write..." class="form-control" ng-model="treatment.pastMedicalHistory"></textarea>
+              </div>
+          </div>
+          
+          <div id="accordion">
+              <label style="color: #fff;padding:5px">
+                  <a class="collapsed dropdown-toggle" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseSeven" aria-expanded="false" aria-controls="collapseSeven" style="text-decoration:underline">Family History</a>
+              </label>               
+              <div id="collapseSeven" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingSeven">
+                   <textarea placeholder="write..." class="form-control" ng-model="treatment.familyHistory"></textarea>
+              </div>
+          </div>
+
+          <div id="accordion">
+              <label style="color: #fff;padding:5px">
+                  <a class="collapsed dropdown-toggle" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseSix" aria-expanded="false" aria-controls="collapseSix" style="text-decoration:underline">Social History</a>
+              </label>                 
+              <div  id="collapseSix" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingSix">
+                   <textarea placeholder="write..." class="form-control" ng-model="treatment.socialHistory"></textarea>
+              </div>
+          </div>
+
+          <div id="accordion">
+              <label style="color: #fff;padding:5px">
+                  <a class="collapsed dropdown-toggle" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseFive" aria-expanded="false" aria-controls="collapseFive" style="text-decoration:underline">Drug History</a>
+              </label>                
+              <div id="collapseFive" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFive">
+                    <textarea placeholder="write..." class="form-control" ng-model="treatment.drugHistory"></textarea>
+              </div>
+          </div>
+          
+          <div id="accordion">
+              <label style="color: #fff;padding:5px">
+                  <a class="collapsed dropdown-toggle" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseFour" aria-expanded="false" aria-controls="collapseFour" style="text-decoration:underline">Summary</a>
+              </label>                
+              <div  id="collapseFour" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFour">
+                    <textarea placeholder="write..." class="form-control" ng-model="treatment.summary"></textarea>
+              </div>
+          </div>                       
+          
+           <div id="accordion">
+              <label style="color: #fff;padding:5px">
+                  <a class="collapsed dropdown-toggle" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapsetwelve" aria-expanded="false" aria-controls="collapseTwelve" style="text-decoration:underline">Notes</a>
+              </label>                
+              <div id="collapsetwelve" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwelve">
+                    <textarea placeholder="write..." class="form-control" ng-model="treatment.notes" required></textarea>
+              </div>
+          </div>
+
+          <div id="accordion">
+              <label style="color: #fff;padding:5px">
+                  <a class="collapsed dropdown-toggle" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree" style="text-decoration:underline">Provisional Diagnosis<span style="color: #000">*</span></a>
+              </label>                 
+              <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+                    <textarea placeholder="write..." class="form-control" ng-model="treatment.provisionalDiagnosis" required></textarea>
+              </div>
+          </div> 
+          <div>
+            <button class="btn btn-info btn-sm" ng-click="submitSession()" style="float: right;"> <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading" ></i>{{(loading) ? "" : (message) ? message : "Save Changes"}}</button>
+          </div>
+        </section>
+
+        <!-- Prescription section -->
+        <section ng-if="action == 'prescription' && session" ng-controller="prescriptionController">
+             <h4 class="h6"> Prescription </h4>
+           
+            <br>
+            <ol style="line-height: 30px">
+                <li ng-repeat="prescription in drugList">{{prescription.drug_name}} ( {{prescription.dosage}} ) {{prescription.frequency}} {{prescription.duration}} &nbsp;&nbsp;<i class="fa fa-times text-muted" ng-click="removeDrug(prescription.drug_name)"></i></li>
+            </ol>
+            <br>
+            <form ng-submit="addDrug()" style="margin-bottom: 20px">
+                <div>
+                    <label class="col-md-4">Drug:</label>
+                    <input type="text" name="" class="col-md-8" uib-typeahead="drug.name for drug in drugs | filter:$viewValue | limitTo:15" ng-model="drug.drug_name">
+                </div>
+                <div class="clearfix"></div>
+                <div>
+                    <label class="col-md-4">Dosage:</label>
+                    <input type="text" name="" class="col-md-8" ng-model="drug.dosage">
+                </div>
+                <div class="clearfix"></div>
+                <div>
+                    <label class="col-md-4">Frequency:</label>
+                    <input type="text" name="" class="col-md-8" ng-model="drug.frequency">
+                </div>
+                <div class="clearfix"></div>
+                <div>
+                    <label class="col-md-4">Duration:</label>
+                    <input type="text" name="" class="col-md-8" ng-model="drug.duration">
+                </div>
+                <div class="clearfix"></div>
+                
+                <div style="text-align: right;margin-top: 10px">                    
+                    <button type="submit" name="" class="btn btn-info"><i class="fa fa-plus"></i></button>
+                </div>
+            </form> 
+                  
+            <div ng-if="!isSearchToSend"> 
+                <button ng-click="toPatient()" class="btn btn-success">{{(isLoading1) ? "Sending..." : "To Patient"}} </button>&nbsp;&nbsp;&nbsp;
+                <button ng-click="toPharmacy()" class="btn btn-success">To Pharmacy</button>
+                <br>
+            </div>
+           
+            <div ng-if="isSearchToSend">
+                <div>
+                    <a href="" ng-click="goBack()"><i class="fa fa-arrow-left"></i> Back</a> 
+                </div>
+                <br>
+                <div>
+                   <form>                       
+                       <input type="text" placeholder="Enter city name" ng-model="treatment.city" uib-typeahead="city for city in cities | filter:$viewValue | limitTo:15">                       
+                       <button ng-click="changeOption()" class="btn btn-primary"><i class="fa fa-search"></i></button><br>
+                       <span ng-show="isloading2">Searching...</span>
+                   </form>
+                    
+                    <div style="margin-left:0; margin-top: 10px" ng-show="searchResult.length > 5">
+                        <input type="text" name="" ng-model="filterResult" placeholder="Filter list" style="padding: 2px;border: none;border-bottom: 1px solid grey">
+                    </div>
+                    <br>
+                    <div style="overflow-y: auto; height: 600px;min-height: 300px">
+                       <div ng-repeat="center in searchResult | filter: filterResult" style="padding:10px;position: relative;">
+                           <a href="" ng-click="selected(center)"><span class="h6">{{center.name}}</span><span style="display: block;color: grey">{{center.address}},{{center.city}},{{center.country}}</span></a>
+                           <a href="" class="btn btn-simple btn-sm" ng-click="selected(center)" style="position: absolute;bottom: 0;right: 5px" ng-show="!center.message">{{(center.loading) ? "" : "Send" }}<i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange" ng-show="center.loading"></i></a>
+                           <span ng-show="center.message && !center.loading" style="position: absolute;bottom: 0;right: 5px">{{center.message}}</span>
+                       </div>                               
+                    </div> 
+                </div>
+            </div>
+            <hr>
+            <div>
+                <h5 class="h6">Previous Prescription(s)</h5>
+                <div ng-repeat="item in patientMedicalRecord | orderBy: '-date'" class="pb-1" >
+                    <b>Date: </b> <span>{{item.date | date: "mediumDate"}}</span> ( <span am-time-ago="item.date"></span> )<br>
+                    <!--<label><b>Provisoinal Daignosis: </b> </label> <span>{{item.provisonal_diagnosis}}</span>-->
+                    <div ng-repeat="drug in item.prescription_body">
+                        <label>{{drug.sn}} ) {{drug.drug_name}}</label> <span>{{drug.dosage}}</span> <span>{{drug.frequency}}</span> <span>{{drug.duration}}</span>
+                    </div>
+                    <hr>
+                </div>
+                <p class="text-center p-2" ng-show="patientMedicalRecord.length == 0">You have not prescribed for this patient but you can ask patient for permission to gain access to medical records where you can find other prescriptions.</p>
+            </div> 
+        </section>
+
+        <!-- Laboratory Section -->
+        <section ng-if="action == 'laboratory' && session" ng-controller="labCtrl">
+            <div>
+                <h4 class="h6">Laboratory</h4>
+                <div>
+                     <label>Investigation(s): </label>
+                </div>
+                <ol>
+                    <li ng-repeat="lab in TestList" style="position: relative;">
+                        <span>{{lab.name}}</span>
+                        <a href="" style="position: absolute;right: 0;top: 0" ng-click="removeTest(lab.name)"><i class="fa fa-times text-muted"></i></a>
+                    </li>                 
+                </ol>
+                <br>                
+                <form ng-submit="addTest()">
+                    <div style="margin-left: -10px">
+                        <input  type="text" placeholder="Enter test name" class="form-control" ng-model="inputTests.name" uib-typeahead="test.name for test in tests | filter:$viewValue | limitTo:15" class="form-control">
+                    </div>
+                    <div class="text-right">
+                        <button type="submit" class="btn btn-warning" ><i class="fa fa-plus"></i></button>
+                    </div>
+                </form>
+                <div>
+                    <div>
+                        <label>Indication:</label>
+                        <textarea  style="width: 80%;height: 120px;" placeholder="Write.." ng-model="treatment.indication" class="form-control pl-2"></textarea>
+                    </div>
+                    <div>
+                        <label>Clinical Summary:</label>
+                        <textarea style="width: 80%;height: 120px" placeholder="Write.." ng-model="treatment.clinical_summary" class="form-control pl-2"></textarea>
+                    </div>
+                     <div ng-if="patientInfo.gender === 'female'">
+                        <label>LMP:</label>
+                        <textarea style="width: 80%;height: 120px" placeholder="Write.." ng-model="treatment.lmp" class="form-control pl-2"></textarea>
+                    </div>
+                     <div ng-if="patientInfo.gender === 'female'">
+                        <label>Parity:</label>
+                        <textarea style="width: 80%;height: 120px" placeholder="Write.." ng-model="treatment.parity" class="form-control pl-2"></textarea>
+                    </div>
+                </div>
+                <div ng-show="!isSearchToSend">
+                    <!--<button class="btn btn-success" bg-click="sendToPatient()">To Patient</button>-->
+                    <button class="btn btn-success" ng-click="sendToLab()">To Center</button>
+                </div>
+                <hr>
+                <div ng-show="isSearchToSend">
+                    <div>
+                        <a href="" ng-click="goBack()"><i class="fa fa-arrow-left"></i> Back</a> 
+                    </div>
+                    <br>
+                    <form>                              
+                        <input type="text" type="text" placeholder="Enter city name" ng-model="treatment.city" uib-typeahead="city for city in cities | filter:$viewValue | limitTo:15">           
+                        <button ng-click="changeOption()" class="btn btn-primary"><i class="fa fa-search"></i></button><br>
+                       <span ng-show="isloading2">Searching...</span>
+                    </form>
+                    <br>
+                    <div style="margin-left:0; margin-top: 10px" ng-show="searchResult.length > 5">
+                        <input type="text" name="" ng-model="filterResult" placeholder="Filter centers" class="form-control" style="border: none;border-bottom: 1px solid grey;padding:2px ">
+                    </div>
+                    <div style="overflow-y: auto; max-height: 600px;min-height: 300px">
+                       <div ng-repeat="center in searchResult | filter: filterResult" style="padding:10px; position: relative;">
+                           <a href="" ng-click="selected(center)"><span class="h6">{{center.name}}</span><span style="display: block;color: grey">{{center.address}},{{center.city}},{{center.country}}</span></a>
+                            <a href="" class="btn btn-simple btn-sm" ng-click="selected(center)" style="position: absolute;bottom: 4px;right: 5px" ng-show="!center.message">{{(center.loading) ? "" : "Send" }}<i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange" ng-show="center.loading"></i></a>
+                           <span ng-show="center.message && !center.loading" style="position: absolute;bottom: 4px;right: 5px">{{center.message}}</span>
+                       </div>
+                       <p ng-if="searchResult.length == 0" style="padding:30px 10px">No center was found!</p>                          
+                    </div>
+                </div>
+                <br>
+                <div>
+                    <h5 class="h6">Previous Laboratory Reports</h5>
+                    <div ng-repeat="item in patientMedicalRecord.medical_records.laboratory_test" class="pb-1 pt-1 bt-border">
+                        <b>Date: </b> <span>{{item.sent_date | date: "mediumDate"}}</span><br>
+                        <ol>
+                           <li ng-repeat="test in item.test_to_run">{{test.name}}</li>
+                        </ol>
+                        <div ng-show="!item.lab_pdf_report[0]">Report: <span>Pending</span></div>
+                        <div ng-show="item.lab_pdf_report[0]"><a href="{{'https://drive.google.com/viewerng/viewer?embedded=true&url=https://applinic.com' + item.lab_pdf_report[0].pdf_report}}" target="_blank">View Report (PDF)</a></div>
+                    </div>
+                    <p class="text-center p-2" ng-show="patientMedicalRecord.medical_records.laboratory_test.length == 0">You have not requested for an investigation for this patient but you can ask patient for permission to gain access to medical records where you can find other investigations.</p>
+                </div>
+            </div> 
+        </section>
+
+        <!-- Radiology Section -->
+        <section ng-if="action == 'radiology' && session" ng-controller="radioCtrl">
+            <div>
+                <h4 class="h6">Radiology</h4> 
+                <div>
+                     <label>Investigation(s): </label>
+                </div>
+                <ol>
+                    <li ng-repeat="lab in TestList2" style="position: relative;">
+                        <span>{{lab.name}}</span>
+                        <a href="" style="position: absolute;right: 0;top: 0" ng-click="removeTest(lab.name)"><i class="fa fa-times text-muted"></i></a>
+                    </li>                 
+                </ol>
+                <br>                
+                <form ng-submit="addTest()">
+                    <div style="margin-left: -10px">
+                        <input  type="text" placeholder="Enter test name" class="form-control" ng-model="inputTests.name" uib-typeahead="test.name for test in tests | filter:$viewValue | limitTo:15" class="form-control">
+                    </div>
+                    <div class="text-right">
+                        <button type="submit" class="btn btn-warning" ><i class="fa fa-plus"></i></button>
+                    </div>
+                </form>
+                <div>
+                    <div>
+                        <label>Indication:</label>
+                        <textarea  style="width: 80%;height: 120px;" placeholder="Write.." ng-model="treatment.indication" class="form-control pl-2"></textarea>
+                    </div>
+                    <div>
+                        <label>Clinical Summary:</label>
+                        <textarea style="width: 80%;height: 120px" placeholder="Write.." ng-model="treatment.clinical_summary" class="form-control pl-2"></textarea>
+                    </div>
+                     <div ng-if="patientInfo.gender === 'female'">
+                        <label>LMP:</label>
+                        <textarea style="width: 80%;height: 120px" placeholder="Write.." ng-model="treatment.lmp" class="form-control pl-2"></textarea>
+                    </div>
+                     <div ng-if="patientInfo.gender === 'female'">
+                        <label>Parity:</label>
+                        <textarea style="width: 80%;height: 120px" placeholder="Write.." ng-model="treatment.parity" class="form-control pl-2"></textarea>
+                    </div>
+                </div>
+                <div ng-show="!isSearchToSend">
+                    <!--<button class="btn btn-success" bg-click="sendToPatient()">To Patient</button>-->
+                    <button class="btn btn-success" ng-click="sendToLab()">To Center</button>
+                </div>
+                <hr>
+                <div ng-show="isSearchToSend">
+                    <div>
+                        <a href="" ng-click="goBack()"><i class="fa fa-arrow-left"></i> Back</a> 
+                    </div>
+                    <br>
+                    <form>                              
+                        <input type="text" type="text" placeholder="Enter city name" ng-model="treatment.city" uib-typeahead="city for city in cities | filter:$viewValue | limitTo:15">           
+                        <button ng-click="changeOption()" class="btn btn-primary"><i class="fa fa-search"></i></button><br>
+                       <span ng-show="isloading2">Searching...</span>
+                    </form>
+                    <br>
+                     <div style="margin-left:0; margin-top: 10px" ng-show="searchResult.length >= 5">
+                        <input type="text" name="" ng-model="filterResult" placeholder="Filter centers" class="form-control" style="border: none;border-bottom: 1px solid grey;padding:2px ">
+                    </div>
+                    <div style="overflow-y: auto; max-height: 600px;min-height: 300px">
+                       <div ng-repeat="center in searchResult | filter: filterResult" style="padding:10px; position: relative;">
+                           <a href="" ng-click="selected(center)"><span class="h6">{{center.name}}</span><span style="display: block;color: grey">{{center.address}},{{center.city}},{{center.country}}</span></a>
+                            <a href="" class="btn btn-simple btn-sm" ng-click="selected(center)" style="position: absolute;bottom: 4px;right: 5px" ng-show="!center.message">{{(center.loading) ? "" : "Send" }}<i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange" ng-show="center.loading"></i></a>
+                           <span ng-show="center.message && !center.loading" style="position: absolute;bottom: 4px;right: 5px">{{center.message}}</span>
+                       </div>
+                       <p ng-if="searchResult.length == 0" style="padding:30px 10px">No center was found!</p>                          
+                    </div>
+                </div>
+                <br>
+                <div>
+                    <h5 class="h6">Previous Radiology Reports</h5>
+                    <div ng-repeat="item in patientMedicalRecord.medical_records.radiology_test" class="pb-1 pt-1 bt-border">
+                        <b>Date: </b> <span>{{item.sent_date | date: "mediumDate"}}</span><br>
+                        <ol>
+                           <li ng-repeat="test in item.test_to_run">{{test.name}}</li>
+                        </ol>
+                        <div ng-show="!item.pdf_report[0]">Report: <span>Pending</span></div>
+                        <div ng-show="item.pdf_report[0]"><a href="{{'https://drive.google.com/viewerng/viewer?embedded=true&url=https://applinic.com' + item.pdf_report[0].pathname}}" target="_blank">View Report (PDF)</a></div>
+                    </div>
+                    <p class="text-center p-2" ng-show="patientMedicalRecord.medical_records.radiology_test.length == 0">You have not requested for an investigation for this patient but you can ask patient for permission to gain access to medical records where you can find other investigations.</p>
+                </div>  
+            </div> 
+        </section>
+
+         <!-- Appointment Section -->
+        <section ng-if="action == 'appointment' && session" ng-controller="appointmentModalController">
+            <h4 class="h6">Book In-Person Meeting Appoinment</h4>
+            <br>
+            <div class="calender-header bg-primary text-white" style="text-align: center;">
+                <i class="fa fa-angle-left" ng-click="previous()"></i>
+                <span style="font-size: 24px">{{month.format("MMMM, YYYY")}}</span>
+                <i class="fa fa-angle-right" ng-click="next()"></i>
+            </div>
+            <div class="week" style="line-height: 0.5">
+                <span class="day">Sun</span>
+                <span class="day">Mon</span>
+                <span class="day">Tue</span>
+                <span class="day">Wed</span>
+                <span class="day">Thu</span>
+                <span class="day">Fri</span>
+                <span class="day">Sat</span>
+            </div>
+            
+            <div ng-repeat="week in weeks" class="indays">
+                <span class="dates" ng-class="{ today: day.isToday, 'different-month': !day.isCurrentMonth, selected: day.date.isSame(selected) }" ng-click="select(day)" style="cursor:pointer" ng-repeat="day in week.days">{{day.number}}</span>
+            </div>                        
+            <p class="bg-default" style="font-size:1em; padding:15px;">Picked Date: <em style="color: green">{{dd.format('dddd, MMMM Do YYYY')}}</em><span style="display:block">Picked time: <em style="color: green">{{treatment.appointment.time | date: "mediumTime"}} </em></span>
+                <span>Picked Venue: <em style="color: green">{{treatment.appointment.address}} </em></span>
+            </p>
+
+            <div>
+                <label><b>Time of appointment:</b> <br><input type="time" class="form-control" style="font-size: 14px!important" placeholder="Enter time" ng-model="treatment.appointment.time" style="font-size:.5em;"/></label>
+                <br>
+                <label><b>Venue (If none,defaults to the address in your profile):</b> <br> <input class="form-control" style="font-size: 14px!important" type="address" placeholder="Enter address" ng-model="treatment.appointment.address"></label>
+            </div>
+            <div class="pt-1">
+                  <button  ng-click="book()" class="btn btn-danger" ng-show="!message">{{(loading) ? "booking..." : 'Book'}}</button>
+                  <span>{{message}}</span>
+            </div>
+            </div>
+        </section>
+
+      </aside>
+
+   
+    </div>
+
+
+
+    </div>
+
+   
+
+    <div style="height: 300px"></div>
+
+
+    <!--<div class="clearfix"></div>-->
+   
+    <script type="text/javascript" src="/socket.io/socket.io.js"></script>
+    <!--<script type="text/javascript" src="/assets/js/adapter.js"></script>
+    <script type="text/javascript" src="/assets/js/rtcClient.js"></script>-->
+    <!--<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular.min.js">
+    </script>-->
+     <script src="/assets/js/vendor2.js"></script>
+   
+    <script src="/assets/js/ngresource.js"></script>
+     
+     <script src="/assets/js/moment.min.js"></script>  
+    <script src="/assets/js/angular-moment.min.js"></script>
+    <script type="text/javascript" src="/assets/js/my-tokbox-video.js"></script>
+
+    <script src="/assets/js/ui-bootstrap-tpls.js"></script>
+    <script src="/assets/js/modalService.js"></script>
+
+
+
+    
+</body>
+
+
+</html>

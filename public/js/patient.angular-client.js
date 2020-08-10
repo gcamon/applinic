@@ -2905,6 +2905,13 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
     window.location.href = "jnlp://" + link;
   }
 
+  mySocket.on("received audio call request",function(data){
+    var check = confirm("You have audio conversation request from " + data.sender);
+    if(check){
+      window.location.href = data.connectURL;
+    }
+  })
+
 }]);
 
 

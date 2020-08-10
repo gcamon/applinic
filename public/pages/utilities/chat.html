@@ -265,6 +265,10 @@ img{ max-width:100%;}
 				  <i class="fa fa-paperclip" aria-hidden="true" style="font-size: 18px;cursor: pointer;" title="Attach a file"></i>
 				</label>&nbsp;&nbsp;&nbsp; <input type="file" class="file-input hide" name="file-input" id="file-input" file-model-chat="files">&nbsp;&nbsp;
 
+        <a href="" title="Make audio call" style="font-size: 18px" ng-click="audioChat(partner)">
+                <i class="fa fa-phone"></i>&nbsp;&nbsp;&nbsp;
+              </a>         
+
 				<a href="" title="Make video call" ng-click="videoChat(partner)" ng-show="partner.partnerType == 'Doctor' || partner.partnerType == 'Patient' ">
             		<i class="fa fa-video-camera"></i>&nbsp;&nbsp;&nbsp;
             	</a>           	

@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <link rel="apple-touch-icon" sizes="76x76" href="assets/img/apple-icon.png">
+    <link rel="icon" type="image/png" href="assets/img/favicon.png">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <title>APPLINIC Audio Chat</title>
+    <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no' name='viewport' />
+    <!--     Fonts and icons     -->
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700,200" rel="stylesheet" />
+    <!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" />-->
+    <link rel="stylesheet" href="/assets/css/vendor.css">
+     <link rel="icon" type="image/png" href="/assets/images/icons/favicon.png">
+    <!-- CSS Files -->
+    <link href="/assets/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="/assets/css/now-ui-kit.css" rel="stylesheet" />
+     <link href="/assets/css/my-edit.css" rel="stylesheet" />
+      <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+    <!-- CSS Just for demo purpose, don't include it in your project -->
+    <link href="/assets/css/demo.css" rel="stylesheet" />
+
+    <script src="https://static.opentok.com/v2/js/opentok.min.js"></script>
+
+     <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-128083647-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-128083647-1');
+    </script>
+
+    <style>
+         body {
+            line-height: 30px;
+         }
+
+        .card-title {
+            text-transform: uppercase;
+            text-align: center;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 1em;
+        }
+
+       .list-group-item, .list-group-item:first-child, .list-group-item:last-child {
+            background: transparent;
+            border:0;
+        }
+
+     .banner {
+        position: relative;
+        z-index: 1
+      }
+
+      .cover {
+        background-color: rgba(0,0,0,0.7);
+        position: absolute;
+        width: 100%;
+        top: 0;
+        left: 0;
+        height: 100%
+      }
+
+      .main {
+        width: 60%;
+        margin: 0 auto;
+        z-index: 2;
+        margin-top: -350px;
+        background-color: transparent;
+      }
+
+      .search {
+        display: inline-block;
+        list-style: none;
+      }
+
+      .search li {
+        float: left;
+      }
+
+        @media screen and (max-width: 750px) {
+          .card {
+            box-shadow: none!important;
+          }
+
+          .how-responsive {
+            position: static!important;
+          }
+
+          .main {
+            margin-top: -100px;
+          }
+
+          .main h1 {
+            font-size: 32px
+          }
+        }
+    </style>
+
+
+</head>
+
+<body style="overflow-x:hidden;">
+    <!-- Navbar -->
+    <% include ./inner/nav4 %>
+
+    <!-- End Navbar -->
+    <!--<div id="otEmbedContainer" style="height:660px">
+        
+    </div>-->
+    <div id="otSubscriber" style="height:660px">
+
+    </div>
+  
+     <script>
+        //var key = '<%= apiKey %>';
+        //var sessionId = '<%= sessionId %>';
+        //var token = '<%= token %>';
+
+        // replace these values with those generated in your TokBox Account
+        var apiKey = '<%= apiKey %>';
+        var sessionId = '<%= sessionId %>';
+        var token = '<%= token %>';
+
+        // Handling all of our errors here by alerting them
+        function handleError(error) {
+          if (error) {
+            alert(error.message);
+          }
+        }
+
+        // (optional) add server code here
+        initializeSession();
+
+        function initializeSession() {
+          var session = OT.initSession(apiKey, sessionId);
+
+          // Subscribe to a newly created stream
+          session.on('streamCreated', function(event) {
+            session.subscribe(event.stream, 'otSubscriber', {
+              insertMode: 'append',
+              width: '100%',
+              height: '100%',
+              subscribeToAudio:true,
+              subscribeToVideo:false,
+            }, handleError);
+          });
+
+        
+
+          // Create a publisher
+          var publisher = OT.initPublisher('otEmbedContainer', {
+            insertMode: 'append',
+            width: '100%',
+            height: '100%',
+            videoSource: null
+          }, handleError);
+
+          //publisher.publishAudio(true);
+          publisher.publishVideo(false);
+
+          // Connect to the session
+          session.connect(token, function(error) {
+            // If the connection is successful, initialize a publisher and publish to the session
+            if (error) {
+              handleError(error);
+            } else {
+              session.publish(publisher, handleError);
+            }
+          });
+        }
+
+    </script>   
+
+    <div style="height: 300px"></div>
+
+    <div class="clearfix"></div>
+    <% include ./inner/footer %>
+</body>
+
+
+</html>

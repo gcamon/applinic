@@ -1192,6 +1192,21 @@ var myModel = function () {
 		subscription: String,
 		type: String,
 		deleted: Boolean
+	});
+
+	var opentokSessionsSchema = Schema({
+		expirationDate: {
+			type: Date,
+			expires: Number
+		},		
+		createdAt: {
+			type: Date,
+			expires: Number
+		},
+		init_id: String,
+		opentok_session_id: String,
+		initiator: String,
+		participants: Array
 	})
 
 	/*_id: "njds884943",
@@ -1247,6 +1262,7 @@ var myModel = function () {
 	models.chat_key = mongoose.model("chatKeyinfos",chatKeySchema);
 	models.kits = mongoose.model("kitinfos",kitsSchema); 
 	models.plan = mongoose.model("planinfos",planSchema); 
+	models.opentok_session = mongoose.model('opentokinfos',opentokSessionsSchema);
 	//models.chat_file = mongoose.model("chatFileinfos",chatFileSchema);
 	//models.calling_code = mongoose.model("callingcodeinfos",callingSchema)
 	

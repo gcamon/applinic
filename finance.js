@@ -2841,7 +2841,7 @@ router.post("/user/dicom-details",function(req,res){
             + 'username: ' + centerUser + "<br>password: " + centerPassword
             + '<br><br><div style="text-align: center">'
             + '<br><a href="' 
-            + ovyWeb + '" style="padding:10px;background-color:red;color:#fff">Click to view study</a></div></td></tr></table>'
+            + webView + '" style="padding:10px;background-color:red;color:#fff">Click to view study</a></div></td></tr></table>'
           };
 
           var mailOptions2 = {
@@ -2855,7 +2855,7 @@ router.post("/user/dicom-details",function(req,res){
             + 'by the reporting radiologist(s).<br>'
             + 'Uploaded by ' + req.user.name + '.<br> You can view the study with DICOM viewer using the URLs below.<br>' 
             + "<b> Desktop Dicom Viewer URL:  " 
-            +	webView + "<br> Mobile Device DICOM Viewer URL: " + mobileView + "<br>" 
+            +  webView + "<br> Mobile Device DICOM Viewer URL: " + mobileView + "<br>" 
             + 'username: ' + centerUser + "<br>password: " + centerPassword + '<br>'
             +  tp  + ": <b>" + (rados || id) 
             + '</b><br><br> <p><a href="www.applinic.com/signup">Create an account</a> with us and enjoy easy access to patients and medical records at all time. </p> <b>Applinic Team</b> </td></tr></table>'

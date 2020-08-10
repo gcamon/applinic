@@ -14,6 +14,8 @@ var express = require('express'),
   moment = require('moment'),
   nodemailer = require('nodemailer'),
   topdf = require("./topdf"),
+  OpenTok = require('opentok'),
+    
 
 
 
@@ -39,13 +41,8 @@ var express = require('express'),
   streams = require("./streams")(),
   port = process.env.PORT || 3001;
 
-  /*var ExpressPeerServer = require('peer').ExpressPeerServer;
-  var Geonames = require("geonames.js");
-  var geonames = new Geonames({username: 'gcamon29', lan: 'en', encoding: 'JSON'});*/
-  var geonames = {};
 
-  var client = {}; //= new infobip('Farelands', 'icui4cuok');
-
+  var client = {}; 
 
   var transporter = nodemailer.createTransport({
     host: "mail.privateemail.com",
@@ -134,7 +131,7 @@ http.listen(port,function(){
 //var endDate = startDate.clone().endOf('week');
 
 
-var gee = "gcamoemaster";
+//var gee = "gcamoemaster";
 
 
 //var html = "<div style='padding:20px;background-color:green'><img src='https://applinic.com/assets/images/applinic1.png'><h1 style='text-align:center;color:blue'>Heloo PDF are you working alone?</h1></div>";
@@ -210,11 +207,14 @@ transporter.sendMail(mailOptions, function(error, info){
 })*/
 
 
+//var Geonames = require("geonames.js");
+var geonames = {};//new Geonames({username: 'gcamon29', lan: 'en', encoding: 'JSON'});
+var opentok = new OpenTok(process.env.OPENTOK_API_KEY, process.env.OPENTOK_SECRET_KEY);
 
 config.configuration(app,model);
 signupRoute(model,sms,geonames,paystack,io,transporter);
 loginRoute(model,sms);
-route(model,sms,io,streams,client,transporter); 
+route(model,sms,io,streams,client,transporter,opentok); 
 payments(model,sms,io,paystack,client,transporter);
 placement(model,sms,io,transporter);
 mySocket(model,io,streams,sms);

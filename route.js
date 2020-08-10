@@ -84,7 +84,7 @@ function genHash(count) {
     return text;
 }
 
-var basicRoute = function (model,sms,io,streams,client,transporter) { 
+var basicRoute = function (model,sms,io,streams,client,transporter,opentok) { 
 
   /*var transporter = nodemailer.createTransport({
     host: "mail.privateemail.com",
@@ -12805,32 +12805,116 @@ router.get("/user/getuser",function(req,res){
       profile_pic_url: req.user.profile_pic_url
     })
   } else {
-    res.json({isLoggedIn: false})
+    res.json({isLoggedIn: false});
   }
 });
 
-
 router.get("/find-laboratory",function(req,res){
-  res.render('find-lab')
+  res.render('find-lab');
 });
 
 router.get("/find-radiology",function(req,res){
-  res.render('find-radio')
+  res.render('find-radio');
 });
 
 
 router.get("/chat-physician",function(req,res){
-  res.render('chat-physician')
+  res.render('chat-physician');
 });
 
 router.get("/mobile/chat-physician",function(req,res){
   res.render('chat-physicians-mobile');
+});
+
+router.post('/user/audioCallInit',function(req,res){
+  if(req.user){
+    var createSession = opentok.createSession(function(err, session) {
+      if (err) throw err;
+
+      var id = uuid.v1();
+
+      var tok = new model.opentok_session({
+        init_id: id,
+        opentok_session: session,
+        opentok_session_id: session.sessionId,
+        initiator: req.user.user_id
+      });
+
+      var dt = new Date();
+      tok.expirationDate = new Date(dt.getTime() + 8.64e+7); //1 day
+      tok.expirationDate.expires  = 300;
+      tok.participants.push(req.user.user_id);
+      tok.participants.push(req.body.userId);
+
+      tok.save(function(err,info){
+        if(err) throw err;
+        var connectURL = "/audiocall?id=" + id + "&user=" + req.user.user_id + "&type=" + req.user.type;
+        var partnerConnectURL = "/audiocall?id=" + id + "&user=" + req.body.userId + "&type=" + req.body.type;
+        res.json({message:"Audio call session initiated",id: id,url:connectURL,partnerConnectURL:partnerConnectURL});
+      });
+
+    });
+
+  } else {
+    res.end("Unauthorized access");
+  }
+});
+
+router.get("/audiocall",function(req,res){
+  //query should have type property
+
+  model.opentok_session.findOne({init_id: req.query.id})
+  .exec(function(err,data){
+    if(err) throw err;
+    if(data){
+      var elemPos = data.participants.map(function(x){return x}).indexOf(req.query.user);
+      if(elemPos !== -1){
+        var name = 'name=' + req.query.name;
+        var role = "publisher";//(data.initiator === req.query.user) ? "publisher" : "subscriber";
+
+        var token = opentok.generateToken(data.opentok_session_id,{
+          role: role,
+          expireTime: (new Date().getTime() / 1000)+(24 * 60 * 60),// a day 
+          data : name,
+          initialLayoutClassList: ['focus']
+        });
+
+        switch(req.query.type){
+          case 'Doctor':
+            res.render('audio-chat',{name:"obinna",token: token,
+              sessionId: data.opentok_session_id,apiKey: process.env.OPENTOK_API_KEY});
+          break;
+          case "Patient":
+            res.render('audio-chat-patient',{name:"obinna",
+              token: token,sessionId: data.opentok_session_id,apiKey: process.env.OPENTOK_API_KEY});
+          break;
+          default:
+            res.render('audio-chat-patient',{name:"obinna",token: token,
+              sessionId: data.opentok_session_id,apiKey: process.env.OPENTOK_API_KEY});
+          break;
+        }
+      } else {
+        res.json({Error: true, message: "Permission denied! You're not allowed to join this conversation."})
+      }
+    } else {
+      res.json({Error: true, message: "Audion session parameters are missing thus this conversation cannot be established."})
+    }
+  });
 })
 
+/*
+ var testPhone = new model.authCheck({
+        user_id: req.user.user_id,
+        pin: genPin
+      });
 
+      var date = new Date()
+      testPhone.expirationDate = new Date(date.getTime() + 300000);
+      testPhone.expirationDate.expires  = 60 * 60;
 
+      testPhone.save(function(err,info){});
 
-
+*/
 
 
 /*router.get("/lab/report-template/:_id",function(req,res){
