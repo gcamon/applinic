@@ -49,7 +49,7 @@
     "infobip": "0.0.4",
     "infobip-node": "^1.0.3",
     "moment": "^2.17.1",
-    "mongoose": "^4.5.10",
+    "mongoose": "^5.7.5",
     "mpromise": "^0.5.5",
     "multer": "^1.3.1",
     "multer-s3": "^2.7.0",
