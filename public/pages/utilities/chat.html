@@ -176,7 +176,7 @@ img{ max-width:100%;}
             </div>
           </div>
           <div class="inbox_chat">
-            <div class="chat_list " ng-class="{'text-success' : !chat.is_read,'active_chat': chat.partnerId == partner.partnerId}" ng-repeat="chat in chatsList | orderBy : '-realTime' | filter: ft" ng-click="viewChat(chat)" ng-if="chat.partnerId !== checkLogIn.user_id" style="position: relative;">
+            <div class="chat_list " ng-class="{'text-success' : !chat.is_read,'active_chat': chat.partnerId == partner.partnerId}" ng-repeat="chat in chatsList | orderBy : '-status' | filter: ft" ng-click="viewChat(chat)" ng-if="chat.partnerId !== checkLogIn.user_id" style="position: relative;">
               <div class="chat_people">
              
                 <div class="chat_img"> <img src="{{chat.profilePic}}" alt="image"> </div>

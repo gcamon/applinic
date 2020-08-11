@@ -327,7 +327,7 @@ input:focus {
             </div>
           </div>
           <div class="inbox_chat bg-white">
-            <div class="chat_list" ng-class="{'text-success' : !chat.is_read,'active_chat': chat.partnerId == partner.partnerId}" ng-repeat="chat in chatsList | filter: ft | orderBy: '-realTime'" ng-click="viewChat(chat)" ng-if="chat.partnerId !== checkLogIn.user_id">
+            <div class="chat_list" ng-class="{'text-success' : !chat.is_read,'active_chat': chat.partnerId == partner.partnerId}" ng-repeat="chat in chatsList | filter: ft | orderBy: '-presence'" ng-click="viewChat(chat)" ng-if="chat.partnerId !== checkLogIn.user_id">
               <div class="chat_people">             
                 <div class="chat_img"><a href="{{chat.profile_url}}" target="_blank" ><img src="{{chat.profilePic || '/download/profile_pic/nopic'}}" alt="image"></a> </div>
                 <div class="chat_ib" style="position: relative;height: 80px">
