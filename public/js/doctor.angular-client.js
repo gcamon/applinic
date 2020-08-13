@@ -2419,6 +2419,7 @@ app.controller("docProfileViewController",["$scope","$rootScope","$resource","$l
    
 
    var source = profileDataService;//$resource("/user/get-profile-data",{userId: userId });
+
    source.get({userId: userId },function(data) {
     $rootScope.docInfo = data;
     templateService.holdForSpecificDoc = data;
@@ -7553,6 +7554,24 @@ function($scope,$location,$rootScope,$http,ModalService,$interval,templateServic
   setTimeout(function(){
     ptApp()
   },3000)
+
+  $scope.audioChat = function(partner){
+    $rootScope.holdPartner = {
+      partnerType: "Patient",
+      partnerId: partner.patient_id,
+      name: partner.patient_firstname
+    };
+    ModalService.showModal({
+      templateUrl: 'audio-communication-request.html',
+      controller: "audioInitController"
+    }).then(function(modal) {
+      modal.element.modal();
+      modal.close.then(function(result) {
+         
+      });
+    });
+  }
+
   
 }]);
 
@@ -7617,6 +7636,7 @@ app.controller('audioInitController',["$scope","$window","localManager","mySocke
 
       var invert = _.invert($rootScope.sockets);      
       if(invert[$rootScope.holdPartner.partnerId]){
+
         var sender = $rootScope.checkLogIn.name || $rootScope.checkLogIn.firstname;
         mySocket.emit("audio call signaling",
           {partnerConnectURL: response.partnerConnectURL,
@@ -7624,6 +7644,7 @@ app.controller('audioInitController',["$scope","$window","localManager","mySocke
           function(data){
           //alert(data.message);
           //console.log(data);
+          localManager.setValue("partnerDetails",{patientId: $rootScope.holdPartner.partnerId,type: "Patient"});
           window.location.href = response.url;
         });
 
@@ -7891,7 +7912,7 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
   $rootScope.patientAvailability  = avail.status;
 
   $scope.frequencies = ["OD","BD","TDS","QDS"];
-  $scope.durations = ["1 day","2 days","3 days", "5 days","6 days", "7 days","1 week", "2 weeks", "3 weeks", "1 month", "2 months","3 months","4 months","6 months"]
+  $scope.durations = ["1 day","2 days","3 days", "5 days","6 days", "7 days","1 week", "2 weeks", "3 weeks", "1 month", "2 months","3 months","4 months","6 months"];
 
   var getPatientData = myPatientControllerService //$resource("/user/doctor/specific-patient");
   getPatientData.get(patient,function(data){  
@@ -8404,6 +8425,24 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
     //$window.location.href = "/user/patient/call";
     patientObj.type = type;
     reqModal(patientObj);
+  }
+
+
+  $scope.audioChat = function(partner){
+    $rootScope.holdPartner = {
+      partnerType: "Patient",
+      partnerId: partner.user_id,
+      name: partner.firstname
+    };
+    ModalService.showModal({
+      templateUrl: 'audio-communication-request.html',
+      controller: "audioInitController"
+    }).then(function(modal) {
+      modal.element.modal();
+      modal.close.then(function(result) {
+         
+      });
+    });
   }
 
   

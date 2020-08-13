@@ -51,6 +51,7 @@
 					<a href="" ng-click="userPatient(j.patient_id,j.presence)">
 						<img src="{{j.patient_profile_pic_url}}" style="width: auto;max-height: 170px"/>
 					</a>
+
 				</div>
 				<div class="pt-2 pb-1 col-md-8 col-sm-8 col-xs-8 pl-1" style="min-height: 110px;max-height: 140px;text-align: center;">
 					<div class="ellipsis h6">
@@ -73,6 +74,12 @@
 				</div>				
 				<div class="clearfix"></div>
 				<div style="position: relative;" class="pl-1 pb-1">
+					<div class="">						
+					<a href="" class="text-warning btn btn-simple btn-sm" ng-click="userPatient(j.patient_id,j.presence)"><i class="fa fa-folder-open"></i></a>
+					<a href="" class="text-success btn btn-simple btn-sm" ng-click="viewChat2(j.patient_id)"><i class="fa fa-comments"></i></a>
+					<a href="" class="text-success btn btn-simple btn-sm" ng-click="audioChat(j)"><i class="fa fa-phone"></i></a>
+					<a href="" class="text-success btn btn-simple btn-sm" ng-click="videoChat(j)"><i class="fa fa-video-camera"></i></a>
+					</div>
 					<!--<span class="text-muted" ng-show="j.appointment_date"> <span class="text-info">   In-person meeting </span> <span am-time-ago="j.appointment_date"></span><span> &nbsp;{{j.appointment_time | date : 'shortTime'}}</span><br></span>
 					<span class="text-muted" ng-show="j.activity.labCount > 0"><span class="text-info"> >  1 new </span> Laboratory Result<br></span>
 					<span class="text-muted" ng-show="j.activity.radioCount > 0"><span class="text-info"> >  2 new </span> Radiology Result</span>-->
@@ -86,6 +93,8 @@
 					  <a href=""  ng-click="appointments(j)"><i class="fa fa-calendar text-success"></i> Appointments</a><br>
 
 					  <a href=""  ng-click="viewChat2(j.patient_id)"><i class="fa fa-comments text-success"></i> Chat with Patient <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange" ng-if="loading"></i> </a><br>
+
+					  <a href=""  ng-click="audioChat(j)"><i class="fa fa-phone text-success"></i> Audio Chat</a><br>
 
 					  <a href=""  ng-click="videoChat(j)"><i class="fa fa-video-camera text-success"></i> Video Chat</a><br>
 

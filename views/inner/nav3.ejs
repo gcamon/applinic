@@ -50,51 +50,71 @@ padding:10px 10px;
  }
 </style>
 
-<nav class="navbar navbar-toggleable-md bg-primary fixed-top  navbar-transparent" color-on-scroll="500">
+<nav class="navbar navbar-toggleable-md bg-primary fixed-top  navbar-transparent" color-on-scroll="500"  >
         <div class="container">
-            <div class="navbar-translate"><span class="text-white pull-right mr-5 mt-2 hidden-md-up" style="display:inline-block;">START</span>
-                <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navigation" aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation"> 
-                    <span class="navbar-toggler-bar bar1"></span>
-                    <span class="navbar-toggler-bar bar2"></span>
-                    <span class="navbar-toggler-bar bar3"></span>
-                </button>
+            <div class="navbar-translate"><!--<span class="text-white pull-right mr-5 mt-2 hidden-md-up" style="display:inline-block;">Manage</span>-->
+
                 <a class="navbar-brand" href="/">
-                    <img src="/assets/images/applinic1.png" alt="Applinic" class="logo">
+                    <img src="/assets/images/applinic1.png" alt="Applinic" class="logo no-mobile-item-display">
+                    <img src="/assets/images/logo.png" alt="Applinic" class="logo mobile-item-display">
                 </a>
+
+                <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navigation" aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation" > 
+                    <span class="navbar-toggler-bar bar1" style="background-color:orange!important"></span>
+                    <span class="navbar-toggler-bar bar2" style="background-color:orange!important"></span>
+
+                    <span class="navbar-toggler-bar bar3" style="background-color:orange!important"></span>
+                     <span class="navbar-toggler-bar bar2" style="background-color:orange!important"></span>
+                </button>
+               
+               
             </div>
             <div class="collapse navbar-collapse" id="navigation" data-nav-image="assets/img/blurred-image-1.jpg">
-                <ul class="navbar-nav" style="width: 90%; margin: 0 auto;" ng-cloak>
+                <ul class="navbar-nav no-mobile-item-display" style="width: 90%; margin: 0 auto;" ng-cloak>
                     <li class="nav-item">
                        
-                      <button class="btn btn-simple text-primary btn-round" style="border: 1px solid green"  ng-click="managePatient('appointment')" title="Give patient In-person meeing appointment">In-person</button>
+                      <button class="btn btn-simple text-primary btn-round" style="border: 1px solid green"  ng-click="managePatient('appointment')" title="Give patient In-person meeing appointment">Appointment</button>
                            
                     </li>
                     <li class="nav-item">
                        
-                      <button class="btn btn-simple text-primary btn-round" style="border: 1px solid green"  ng-click="managePatient('laboratory')" title="Request new Laboratory Investigation or view reports">Lab</button>
+                      <button class="btn btn-simple text-primary btn-round" style="border: 1px solid green"  ng-click="managePatient('laboratory')" title="Request new Laboratory Investigation or view reports">Laboratory</button>
                            
                     </li>
 
                      <li class="nav-item">
                         
-                       <button class="btn btn-simple text-primary btn-round" style="border: 1px solid green;"  ng-click="managePatient('radiology')" title="Request new Radiology Investigation or view reports">Radio</button>
+                       <button class="btn btn-simple text-primary btn-round" style="border: 1px solid green;"  ng-click="managePatient('radiology')" title="Request new Radiology Investigation or view reports">Radiology</button>
                            
                     </li>
 
                     <li class="nav-item">
                         
-                       <button class="btn btn-simple text-primary btn-round" style="border: 1px solid green;"  ng-click="managePatient('prescription')" title="Write prescription or view previous ones">Drug</button>
+                       <button class="btn btn-simple text-primary btn-round" style="border: 1px solid green;"  ng-click="managePatient('prescription')" title="Write prescription or view previous ones">Prescription</button>
                            
                     </li>
 
                     <li class="nav-item">
                         
-                       <button class="btn btn-simple text-primary btn-round" style="border: 1px solid green" ng-click="managePatient('clerking')">Clerking</button>
+                       <button class="btn btn-simple text-primary btn-round" style="border: 1px solid green" ng-click="managePatient('clerking')">Clerk</button>
+                           
+                    </li>
+
+                    <!--<li class="nav-item">
+                        
+                       <button class="btn btn-simple text-primary btn-round" style="border: 1px solid green" ng-click="managePatient('someone')">Invite Someone to Chat</button>
+                           
+                    </li>-->
+
+                    <li class="nav-item">
+                        
+                       <button class="btn btn-simple text-primary btn-round" style="border: 1px solid green" ng-click="managePatient('dashboard')">Back To Dashboard</button>
                            
                     </li>
                     
                     
                     </ul>
+
                    
 
 
@@ -121,17 +141,29 @@ padding:10px 10px;
 <div class=" hidden-md-up">
 
    
-<a class="dropdown-item" href="/login">Login</a>
 
-<a class="dropdown-item" href="/signup">Signup</a>
+<!--<a class="dropdown-item" href="">Invite Someone</a>-->
+<a class="dropdown-item" href="" ng-click="managePatient('appointment')" >Appointment</a> <!-- user navbar-toggler to close modal -->
+<a class="dropdown-item" href="" ng-click="managePatient('laboratory')">Laboratory</a>
+<a class="dropdown-item" href="" ng-click="managePatient('radiology')">Radiology</a>
+<a class="dropdown-item" href="" ng-click="managePatient('prescription')">Prescription</a>
+<a class="dropdown-item" href="" ng-click="managePatient('clerking')">Clerking</a>
+<a class="dropdown-item" href="" ng-click="managePatient('switch')">Switch To Video/Audio Chat</a>
+
+<a class="dropdown-item text-warning" href="" ng-click="managePatient('dashboard')">Back To Dashboard</a>
+
+
+
+
+
 
         <!--<a class="dropdown-item" href="/signup">Need Doctor</a>
 
-        <a class="dropdown-item" href="/signup">Need Help</a>-->
+        <a class="dropdown-item" href="/signup">Need Help</a>
 <a class="dropdown-item" href="/how-it-works">How it works</a>
         <a class="dropdown-item" href="/contact">Contact Us</a>
         <a href="" class="dropdown-item" ng-click="logout()" ng-if="checkLogIn"> Log out</a>
-    </div>
+    </div>-->
 
 
 

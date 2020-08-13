@@ -1,5 +1,5 @@
 (function(){
-	var app = angular.module('tokboxvideo', ["ngResource","angularModalService","angularMoment",'ui.bootstrap'],
+	var app = angular.module('tokboxvideo', ["ngResource","angularModalService","angularMoment",'ui.bootstrap','angular-clipboard'],
 		function($locationProvider){$locationProvider.html5Mode(true);}
     );
 
@@ -321,6 +321,11 @@
     $rootScope.isManage = false;
 
     $scope.managePatient = function(name){
+    	if(name == "dashboard") {
+		  	window.location.href = "/user/doctor";
+		  	return
+		  }
+
     	if(!$rootScope.isManage){
 		  	$rootScope.isManage = true; 
 			} else {
@@ -332,6 +337,15 @@
 
     $scope.closeSideBar = function(){
     	$rootScope.isManage = false;
+    }
+
+    $scope.videoChat = function(){
+    	$scope.loading = true;
+    	$http.post("/user/switch-video",{to: patient.id})
+    	.success(function(response){
+    		$scope.loading = false;
+    		window.location.href = response.tokBoxVideoURL;
+    	})
     }
 
 }]);
@@ -363,6 +377,10 @@ app.controller("labCtrl",["$scope","$http","labTests","$rootScope","$resource","
     var count = {};
 
     $scope.addTest = function(){
+    	if(!$scope.inputTests.name){
+    		alert("Please enter test name")
+    		return;
+    	}
 			testObj = {};
 			count.num++;
 			testObj.sn = count.num;
@@ -512,6 +530,10 @@ app.controller("radioCtrl",["$scope","$http","scanTests","$rootScope","$resource
     var count = {};
 
     $scope.addTest = function(){
+    	if(!$scope.inputTests.name){
+    		alert("Please enter study name.")
+    		return;
+    	}
 			testObj = {};
 			count.num++;
 			testObj.sn = count.num;
@@ -627,6 +649,22 @@ app.controller("radioCtrl",["$scope","$http","scanTests","$rootScope","$resource
 	    });
 	  }
 
+
+	  $scope.supported = false;
+
+	  $scope.copy = "";
+
+	  $scope.success = function (id) {
+	    $scope.copy = id + ' Copied!';
+	    $timeout(function(){
+	      $scope.copy = "";
+	    },2000)
+	  };
+
+	  $scope.fail = function (err) {
+	    console.error('Error!', err);
+	  };
+
     function toPatient(testList) {
     	patient.provisional_diagnosis = $rootScope.treatment.provisionalDiagnosis;
     	pattient.prescriptionBody = testList;
@@ -634,6 +672,7 @@ app.controller("radioCtrl",["$scope","$http","scanTests","$rootScope","$resource
 
 		var source = medicalRecordService; 
 		source.get({patientId: patient.id},function(data){
+			console.log(data)
 			$scope.patientMedicalRecord = data;
 		});
 	
@@ -1029,8 +1068,6 @@ app.controller("prescriptionController",["$rootScope","$scope","$window","$http"
   	var patient = $rootScope.holdPatientData;
   	$scope.isHistory = false;
 
-  	
-
   	$scope.cities = cities;
   	 //creates drug object for the ng-repeat on the view.
   	$http({
@@ -1042,6 +1079,9 @@ app.controller("prescriptionController",["$rootScope","$scope","$window","$http"
       $scope.drugs = Drugs.concat(response);
     });
 
+    $scope.frequencies = ["OD","BD","TDS","QDS"];
+    $scope.durations = ["1 day","2 days","3 days", "5 days","6 days", "7 days","1 week", "2 weeks", "3 weeks", "1 month", "2 months","3 months","4 months","6 months"]
+
     //var drug_name;
     //var index;
     /*$scope.getDrug = function(drugName){
@@ -1052,12 +1092,16 @@ app.controller("prescriptionController",["$rootScope","$scope","$window","$http"
         $scope.drugList[index].drug_name = drugName;
     }*/
 
+    $rootScope.treatment.referral_pays = "No";
+
+    $rootScope.treatment.isCourier = "No";
+
     $scope.drug = {};
     var count = {};
     count.num = 1;
    	$rootScope.drugList = ($rootScope.drugList) ? $rootScope.drugList : [];
   	var newDrug = {};
-    $scope.addDrug = function(){ 
+    $scope.addDrug = function(){
     	if($scope.drug.drug_name) {     
 	      newDrug.drug_name = $scope.drug.drug_name;  
 	      newDrug.dosage = $scope.drug.dosage;
@@ -1067,6 +1111,7 @@ app.controller("prescriptionController",["$rootScope","$scope","$window","$http"
 	      $rootScope.drugList.push(newDrug);
 	      count.num++; 
 	      newDrug = {};
+	      $scope.drug = {};
       }  
     }
 
@@ -1154,6 +1199,8 @@ app.controller("prescriptionController",["$rootScope","$scope","$window","$http"
     $scope.selected = function(center) {
     	$scope.pickedCenter = center;
     	patient.user_id = center.user_id;
+    	patient.center_id = center.user_id;
+    	patient.center_phone = center.phone;
     	$scope.sendDrug(center)
     	/*if($scope.message) 
     		$scope.message = null;
@@ -1179,6 +1226,20 @@ app.controller("prescriptionController",["$rootScope","$scope","$window","$http"
     	})*/
     }
 
+    /*
+ patient.referral_pays = $scope.treatment.referral_pays;
+     
+
+      if($scope.treatment.isCourier === 'Yes'){
+        patient.courierObj = {
+          phone1 : $scope.treatment.phone1,
+          address: $scope.treatment.delivery_address
+        }
+
+        $scope.courMsg = "";
+      }
+    */
+
     function getPharmacy() {
     	$scope.isloading2 = true;
     	var source = $resource("/user/patient/getAllPharmacy")
@@ -1194,7 +1255,15 @@ app.controller("prescriptionController",["$rootScope","$scope","$window","$http"
       	return;
       }
 
+      if($rootScope.treatment.isCourier === 'Yes'){
+        patient.courierObj = {
+          phone1 : $rootScope.treatment.phone1 || patient.phone,
+          address: $rootScope.treatment.delivery_address || patient.address
+        }
+      }
+
     	patient.treatment = $rootScope.treatment;
+    	patient.referral_pays = $rootScope.treatment.referral_pays;
     	center.loading = true;
     	$http({
         method  : 'PUT',
@@ -1224,6 +1293,7 @@ app.controller("prescriptionController",["$rootScope","$scope","$window","$http"
 	  if(!$scope.patientMedicalRecord) {
   		var source = medicalRecordService;//$resource("/user/get-medical-record");
   		source.get({patientId: patient.id},function(data){
+  			console.log(data)
 				$scope.patientMedicalRecord = data.prescriptions;
   		});
 		}

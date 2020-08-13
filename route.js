@@ -11951,10 +11951,15 @@ router.put("/report-template",function(req,res){
 
               var pdfPath = '/report/' + pdfName;
               var emailPDFPath = "https://applinic.com" + pdfPath;
-            
+              
+              var mob = "https://applinic.com/dicom-mobile?id=" + study._id;
+              req.body.mobViewer = mob;
+              req.body.webViewer = "https://applinic.com/dcm?" + "id=" + study.patient_id + "&key=" + study._id;
 
               study.pdf_report.unshift({
                 pathname: pdfPath,
+                mobile_viewer_path: mob,
+                web_viewer_path: req.body.webViewer,
                 created: new Date()
               });
 
@@ -11978,7 +11983,7 @@ router.put("/report-template",function(req,res){
                 emailArr.push(study.referring_physician_email);
               }
 
-              var mob = "https://applinic.com/dicom-mobile?id=" + study._id;
+             
 
               var mailOptions = {
                 from: 'Applinic Healthcare info@applinic.com',
@@ -12036,7 +12041,7 @@ router.put("/report-template",function(req,res){
                   theObj.indication = req.body.summary;
                   //theObj.center_profile_pic_url =  req.user.profile_pic_url;
                   theObj.study_ref_id = study._id;
-                  theObj.patient_id_of_study = study.patient_id;
+                  theObj.patient_id_of_study = study.patient_id || study.study_uid;
                 }             
                 
                 data.save(function(err,info){
@@ -12074,7 +12079,7 @@ router.put("/report-template",function(req,res){
                     objectFound.indication = req.body.radiology.radiology.indication;
                     objectFound.acc = req.body.radiology.radiology.acc;
                     objectFound.study_id = study._id;
-                    objectFound.patient_id_of_study = study.patient_id;
+                    //objectFound.patient_id_of_study = study.patient_id;
                     objectFound.pdf_report.unshift({
                       pathname: req.body.pdfPathSave,
                       created: new Date()
@@ -12159,12 +12164,7 @@ router.put("/report-template",function(req,res){
                     res.end("error: 404")
                   }
                 });
-          }
-
-
-
-
-              /////////////
+          }           
 
 
 
@@ -12763,6 +12763,48 @@ router.get('/user/video',function(req,res){
   }
   
 });
+
+router.post("/user/switch-video",function(req,res){
+  console.log(req.body)
+  if(req.user){
+    var controlId = uuid.v1();
+    var tkboxVUrl = "/user/video?roomId=" + controlId //for tokbox room ID
+    io.sockets.to(req.body.to).emit("video call able",{
+      message: req.user.name + " is waiting to have video chat with you!",
+      tokBoxVideoURL: tkboxVUrl,partnerDetails:{name: req.user.name,from: req.user.user_id}});    
+    res.json({tokBoxVideoURL: tkboxVUrl});
+
+  } else {
+    res.render("Unauthorized Access!");
+  }
+
+});
+
+/*
+  switch(details.time){
+          case "now":
+              var controlId = genRemoteId();
+            var createUrl = "/user/cam/" + details.patientId + "/" + controlId;
+            saveControlControl(createUrl,controlId,details);
+
+            var tkboxVUrl = "/user/video?roomId=" + controlId //for tokbox room ID
+
+            io.sockets.to(details.to).emit("video call able",{controlUrl: createUrl,message: details.title +
+            " " + details.name + " is waiting to have video conference with you!",
+            tokBoxVideoURL: tkboxVUrl,partnerDetails:details});
+            cb({controlUrl: createUrl,tokBoxVideoURL: tkboxVUrl});
+          break;
+          default:
+          break;
+        }
+
+      });
+
+      function genRemoteId() {
+        return uuid.v1();
+      }
+
+*/
 
 router.get("/find-doctors",function(req,res){
   res.render('find-doctor')

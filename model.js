@@ -328,6 +328,8 @@ var myModel = function () {
 		study_id: String,
 		pdf_report: Array,
 		lab_pdf_report: Array,
+		mobile_viewer_path: String,
+		web_viewer_path: String,
 		patient_id_of_study: String
 	});
 	
@@ -454,6 +456,8 @@ var myModel = function () {
 		study_link: String,
 		study_ref_id: String,
 		patient_id_of_study: String,
+		mobile_viewer_path: String,
+		web_viewer_path: String,
 		lab_pdf_report: Array
 	});
 

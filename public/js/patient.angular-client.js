@@ -2957,6 +2957,8 @@ app.controller("presenceSocketController",["$rootScope","$scope","$window","mySo
     }
   }
 
+
+
   getUsersOnline();
 
   if(deviceCheckService.getDeviceType())
@@ -3125,6 +3127,44 @@ app.controller("presenceSocketController",["$rootScope","$scope","$window","mySo
   });
 
 }]);
+
+
+app.controller('audioInitController',["$scope","$window","localManager","mySocket","$rootScope","$http",
+  function($scope,$window,localManager,mySocket,$rootScope,$http){
+
+    $http.post('/user/audioCallInit',{type:$rootScope.holdPartner.partnerType, userId: $rootScope.holdPartner.partnerId})
+    .success(function(response){
+      //console.log(response)$rootScope.sockets;
+
+      var invert = _.invert($rootScope.sockets);      
+      if(invert[$rootScope.holdPartner.partnerId]){
+
+        var sender = $rootScope.checkLogIn.name || $rootScope.checkLogIn.firstname;
+        mySocket.emit("audio call signaling",
+          {partnerConnectURL: response.partnerConnectURL,
+            partnerId: $rootScope.holdPartner.partnerId,sender:sender},
+          function(data){
+          //alert(data.message);
+          //console.log(data);
+          localManager.setValue("partnerDetails",{patientId: $rootScope.holdPartner.partnerId,type: "Patient"});
+          window.location.href = response.url;
+        });
+
+      } else {
+        var msg = ($rootScope.holdPartner.name || $rootScope.holdPartner.firstname) 
+        + " is currently offline but we will forward audio call" 
+        + " invitation via SMS and you will be alerted when connection is re-established. Please stay logged in."
+        var check = confirm(msg);
+        if(check){
+
+        }
+      }
+     
+    })
+      
+
+}])
+
 
 //controller passes data from the page to angular. data from the patient notification box to be used within angular.
 app.controller('patientWelcomeController',["$scope",function($scope){

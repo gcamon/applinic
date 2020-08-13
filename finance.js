@@ -2682,6 +2682,7 @@ router.put("/user/outpatient-billing",function(req,res){
 
 router.post("/user/dicom-details",function(req,res){
 	if(req.user) {
+
 		var rados;
 		if(req.body.isAcc) {
 		  rados = "A" + randos.genRef(8);
@@ -2779,6 +2780,8 @@ router.post("/user/dicom-details",function(req,res){
               var theObj = objectFound.diagnosis.radiology_test_results[pos];         
               theObj.study_ref_id = study._id;
               theObj.patient_id_of_study = study.patient_id;
+              theObj.mobile_viewer_path = study.study_link_mobile;
+              theObj.web_viewer_path = study.study_link2;
             } 
 
             objectFound.save(function(err,info){
@@ -2814,6 +2817,28 @@ router.post("/user/dicom-details",function(req,res){
             },
             callBack
           );
+
+		  model.user.findOne({user_id: req.body.patientData.radiology.patient_id},{medical_records:1})
+		  .exec(function(err,patient){
+		  	if(err) throw err;
+		  	if(patient){
+		  	   var elementPos = patient.medical_records.radiology_test.map(function(x) {return x.session_id })
+		  	   .indexOf(req.body.patientData.radiology.session_id);
+               var objectFound = patient.medical_records.radiology_test[elementPos]; 
+               if(objectFound){
+               	  objectFound.mobile_viewer_path = study.study_link_mobile;
+               	  objectFound.web_viewer_path = study.study_link2;
+               	  objectFound.patient_id_of_study = study.patient_id || study.study_uid;
+               }
+
+               patient.save(function(err,info){})
+		  	}
+		  });
+
+		  /*
+ mobile_viewer_path: req.body.mobViewer,
+                      web_viewer_path: req.body.webViewer,
+		  */
 
           /*var transporter = nodemailer.createTransport({
             host: "mail.privateemail.com",

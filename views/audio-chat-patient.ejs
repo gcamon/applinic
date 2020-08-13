@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" ng-app="myApp">
 
 <head>
     <meta charset="utf-8" />
@@ -20,6 +20,9 @@
       <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
     <!-- CSS Just for demo purpose, don't include it in your project -->
     <link href="/assets/css/demo.css" rel="stylesheet" />
+
+     <script src="/assets/js/vendor/jquery-library.js"></script>
+    <script type="text/javascript" src="/assets/js/angular-source.js"></script>
 
     <script src="https://static.opentok.com/v2/js/opentok.min.js"></script>
 
@@ -103,7 +106,7 @@
 
 </head>
 
-<body style="overflow-x:hidden;">
+<body style="overflow-x:hidden;" ng-controller="presenceSocketController">
     <!-- Navbar -->
     <% include ./inner/nav4 %>
 
@@ -180,6 +183,48 @@
 
     <div class="clearfix"></div>
     <% include ./inner/footer %>
+
+
+    <script type="text/ng-template" id="redirect-modal.html">
+      <div class="modal fade">
+        <div class="modal-dialog">
+          <div class="modal-content">
+          <div class="modal-header" style="border-bottom:1px solid #eee;">
+            <div style="width: 80%;margin: 50px auto;text-align: center;font-size: 18px">
+              <p><i class="fa fa-video-camera"></i> &nbsp;&nbsp;Redirecting to video call page... <strong>WAIT!</strong></p>
+            </div>
+        </div>
+      </div>
+   </script>
+
+     <script src="/assets/js/vendor2.js"></script>
+  <script src="/assets/js/app.js"></script>
+    <script src="/assets/js/now-ui-kit.js"></script>
+        
+        
+    <!--<script type="text/javascript" src="/assets/js/angularclient.js"></script>-->
+    <script type="text/javascript" src="/assets/js/patient.angular-client.js"></script>
+    <script type="text/javascript" src="/assets/js/ngroute.js"></script>
+    <script src="/socket.io/socket.io.js"></script>   
+    <script src="/assets/js/socket.min.js"></script>
+   
+       
+        
+    <script src="/assets/js/angularAnimate.js"></script>
+    <script src="/assets/js/modalService.js"></script>
+    <script src="/assets/js/angular-touch.min.js"></script>
+    <!--<script src="/assets/js/angular-carousel.js"></script>-->
+    <script src="/assets/js/moment.min.js"></script>
+    <script src="/assets/js/angular-moment.min.js"></script>
+    <script src="/assets/js/ui-bootstrap-tpls.js"></script>
+    <script src="/assets/js/angular-clipboard.js"></script>
+    <script src="/assets/js/ngresource.js"></script>
+    <script src="/assets/js/ngPrint.js"></script>
+    <script type="text/javascript" src="/assets/js/angular-paystack/dist/angular-paystack.js"></script>
+    <script type="text/javascript" src="/assets/js/angular-sanitize.min.js"></script>
+    <script src="/assets/js/bower_components/angular-summernote/dist/angular-summernote.js"></script>
+    <script type="text/javascript" src="/assets/js/underscore-min.js"></script>
+    <script type="text/javascript" src="/assets/js/angular-underscore.js"></script>
 </body>
 
 
