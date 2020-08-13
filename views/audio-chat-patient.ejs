@@ -84,6 +84,10 @@
         float: left;
       }
 
+      .wrap {
+        width: 250px;
+      }
+
         @media screen and (max-width: 750px) {
           .card {
             box-shadow: none!important;
@@ -114,6 +118,13 @@
     <!--<div id="otEmbedContainer" style="height:660px">
         
     </div>-->
+    <div id="loader" style="height: 120px;position: absolute;left: 50%;top: 110px;text-align: center;" class="wrap p-1">
+       <div style="position: relative; left: -50%;">
+            <h6 class="mt-2 mb-1"> Connecting... </h6>
+            <span>Waiting for partner's audio Stream.</span>
+       </div>
+
+    </div>
     <div id="otSubscriber" style="height:660px">
 
     </div>
