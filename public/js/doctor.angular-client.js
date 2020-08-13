@@ -8445,8 +8445,6 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
     });
   }
 
-  
-
   $scope.writePrescription =function(){ 
     $scope.isToPrescribe = true;
     $scope.isToSeeRecord = false;
