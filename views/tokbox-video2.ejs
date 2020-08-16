@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" ng-app="myApp">
 
 <head>
     <meta charset="utf-8" />
@@ -20,6 +20,9 @@
       <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
     <!-- CSS Just for demo purpose, don't include it in your project -->
     <link href="/assets/css/demo.css" rel="stylesheet" />
+
+       <script src="/assets/js/vendor/jquery-library.js"></script>
+    <script type="text/javascript" src="/assets/js/angular-source.js"></script>
 
      <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-128083647-1"></script>
@@ -101,7 +104,7 @@
 
 </head>
 
-<body style="overflow-x:hidden;">
+<body style="overflow-x:hidden;" ng-controller="presenceSocketController">
     <!-- Navbar -->
     <% include ./inner/nav4 %>
 
@@ -114,6 +117,31 @@
 
     <div class="clearfix"></div>
     <% include ./inner/footer %>
+
+
+
+    <script src="/assets/js/vendor2.js"></script>
+    <script src="/assets/js/app.js"></script>
+    <script src="/assets/js/now-ui-kit.js"></script>
+        
+        
+    <!--<script type="text/javascript" src="/assets/js/angularclient.js"></script>-->
+    <!--<script type="text/javascript" src="/assets/js/patient.angular-client.js"></script>
+    <script type="text/javascript" src="/assets/js/ngroute.js"></script>-->
+    <script src="/socket.io/socket.io.js"></script>   
+    <script src="/assets/js/socket.min.js"></script>
+   
+    <script src="/assets/js/modalService.js"></script>
+
+    <script src="/assets/js/ui-bootstrap-tpls.js"></script>
+   
+    <script src="/assets/js/angular-touch.min.js"></script>
+
+    <script type="text/javascript" src="/assets/js/underscore-min.js"></script>
+    <script type="text/javascript" src="/assets/js/angular-underscore.js"></script>
+
+    <script type="text/javascript" src="/assets/js/media-client.socket.angular-client.js"></script>
+
 </body>
 
 

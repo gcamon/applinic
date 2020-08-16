@@ -12765,7 +12765,6 @@ router.get('/user/video',function(req,res){
 });
 
 router.post("/user/switch-video",function(req,res){
-  console.log(req.body)
   if(req.user){
     var controlId = uuid.v1();
     var tkboxVUrl = "/user/video?roomId=" + controlId //for tokbox room ID

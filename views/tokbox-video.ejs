@@ -209,12 +209,20 @@ span.dates {
    
     <!-- End Navbar -->
     <div id="otEmbedContainer" style="width:100%; height:660px;"></div>
+  
     <!--<script src="https://tokbox.com/embed/embed/ot-embed.js?embedId=1cf8b23e-3a59-4012-a2ac-8fff36468112&room=DEFAULT_ROOM"></script>  -->   
     <script src="<%= tokBox %>"></script>  
 
     <div ng-controller="VideoDiagnosisController2"> 
       <!-- Navbar -->
     <% include ./inner/nav3 %>
+
+    <div style="position: absolute;bottom: 80px;left: 10px;z-index: 9999">
+        <a href="" class="btn btn-simple btn-sm" style="text-align: center;" ng-click="audioChat()" ng-cloak>
+            <i class="fa fa-phone" style="font-size: 28px"></i><br>
+            <span>{{(loading1) ? "Switching..." : "Switch to Audio Chat"}}</span>                
+        </a>
+    </div>
 
     <div style="position: absolute;right: 20px; top: 70px;width: 420px;padding:10px;overflow-y: auto;max-height: 800px;z-index: 99999" class="card no-mobile-item-display" ng-show="isManage"  ng-cloak>
       <div class="pt-2">
@@ -226,8 +234,8 @@ span.dates {
       <hr>
       <aside class="p-1">
         <div ng-show="!session">
-        <a class="collapsed dropdown-toggle text-info" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapsefifty" aria-expanded="false" aria-controls="collapsefifty">What is Session?</a>
-        <p  id="collapsefifty" class="panel-collapse collapse p-1 text-muted" role="tabpanel" aria-labelledby="headingfifty">Session will keep records of clerks, diagnostic requests/reports and prescriptions given while holding conversation with a patient. You can view sessions in e-case note of the patient through your dashboard. </p>
+            <a class="collapsed dropdown-toggle text-info" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapsefifty" aria-expanded="false" aria-controls="collapsefifty">What's Applinic Session?</a>
+            <p  id="collapsefifty" class="panel-collapse collapse p-1 text-muted in" role="tabpanel" aria-labelledby="headingfifty">Session keeps records of clerks, diagnostic requests/reports and prescriptions given while holding Video or Audio conversation with a patient. You can view sessions in e-case note of the patient in your dashboard.</p>
         </div>
        
         <div class="clearfix"></div>
@@ -241,6 +249,8 @@ span.dates {
                         <span class="custom-control-indicator"></span>
                         <span class="custom-control-description">Create new session</span>
                     </label>-->
+                    <p><b>You have to create new session or choose from existing session below before you can proceed with your intended action.</b></p>
+                    <br>
                     <button class="btn btn-primary" ng-click="getSession()">Create new session</button>
                 </div>
                 <br>
@@ -738,18 +748,18 @@ span.dates {
 
             <!-- mobile view -->
         
-        <div style="position: absolute;right: 0px; top: 10px;width: 100%;padding:10px;overflow-y: auto;max-height: 800px;z-index: 99999" class="card mobile-item-display" ng-show="isManage"  ng-cloak>
+        <div style="position: absolute;right: 0px; top: 10px;width: 100%;padding:10px;overflow-y: auto;height: 1200px;z-index: 99999" class="mobile-item-display bg-white" ng-show="isManage"  ng-cloak>
           <div class="pt-2">
             <h6>{{holdPatientData.name || (holdPatientData.title + " " + holdPatientData.firstname + " " + holdPatientData.lastname)}}</h6>
             <span>{{holdPatientData.gender}}</span><br>
             <span>{{holdPatientData.age}}</span>
           </div>
-           <a href="" style="position: absolute;top: 10px;right: 20px" ng-click="closeSideBar()"><i  class="fa fa-times"></i></a>
+           <a href="" style="position: absolute;top: 5px;right: 20px;padding: 20px;font-size: 22px" ng-click="closeSideBar()"><i  class="fa fa-times"></i></a>
           <hr>
           <aside class="p-1">
             <div ng-show="!session">
-            <a class="collapsed dropdown-toggle text-info" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapsefifty" aria-expanded="false" aria-controls="collapsefifty">What is Session?</a>
-            <p  id="collapsefifty" class="panel-collapse collapse p-1 text-muted" role="tabpanel" aria-labelledby="headingfifty">Session will keep records of clerks, diagnostic requests/reports and prescriptions given while holding conversation with a patient. You can view sessions in e-case note of the patient through your dashboard. </p>
+              <a class="collapsed dropdown-toggle text-info" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapsefifty" aria-expanded="false" aria-controls="collapsefifty">What's Applinic Session?</a>
+              <p  id="collapsefifty" class="panel-collapse collapse p-1 text-muted in" role="tabpanel" aria-labelledby="headingfifty">Session keeps records of clerks, diagnostic requests/reports and prescriptions given while holding Video or Audio conversation with a patient. You can view sessions in e-case note of the patient in your dashboard.</p>
             </div>
        
         <div class="clearfix"></div>
@@ -763,6 +773,8 @@ span.dates {
                         <span class="custom-control-indicator"></span>
                         <span class="custom-control-description">Create new session</span>
                     </label>-->
+                    <p><b>You have to create new session or choose from existing session below before you can proceed with your intended action.</b></p>
+                    <br>
                     <button class="btn btn-primary" ng-click="getSession()">Create new session</button>
                 </div>
                 <br>
