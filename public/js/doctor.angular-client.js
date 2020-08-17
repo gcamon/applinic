@@ -6966,6 +6966,7 @@ app.controller("createRoomController",["$scope","localManager","mySocket","$root
   // due to network failure.
   var invert;
   mySocket.on("ping users",function(sockets){
+    $rootScope.sockets = sockets;
     invert = _.invert(sockets);
     if(!invert[user.user_id]){
       mySocket.emit('join',{userId: user.user_id});
