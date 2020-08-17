@@ -231,7 +231,7 @@ span.dates {
     </div>-->
     <div id="otSubscriber" style="height:660px;position: relative;">
 
-       <div style="position: absolute;bottom: 80px;left: 10px;z-index: 1">
+       <div style="position: absolute;bottom: 80px;left: 10px;z-index: 999">
             <a href="" class="btn btn-simple btn-sm" style="text-align: center;" ng-click="videoChat()" ng-cloak>
                 <i class="fa fa-video-camera" style="font-size: 28px"></i><br>
                 <span>{{(loading1) ? "Switching..." : "Switch to Video Chat"}}</span>                
@@ -306,7 +306,7 @@ span.dates {
       <!-- Navbar -->
     <% include ./inner/nav3 %>
 
-    <div style="position: absolute;right: 20px; top: 70px;width: 420px;padding:10px;overflow-y: auto;max-height: 800px;z-index: 99999" class="card no-mobile-item-display" ng-show="isManage"  ng-cloak>
+    <div style="position: absolute;right: 20px; top: 70px;width: 420px;padding:10px;overflow-y: auto;height: 650px;z-index: 99999" class="no-mobile-item-display bg-white" ng-show="isManage"  ng-cloak>
       <div class="pt-2">
         <h6>{{holdPatientData.name || (holdPatientData.title + " " + holdPatientData.firstname + " " + holdPatientData.lastname)}}</h6>
         <span>{{holdPatientData.gender}}</span><br>
