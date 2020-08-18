@@ -1715,7 +1715,69 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
 
   }
 
+  $scope.audioChat = function(partner){
+    $rootScope.holdPartner = {
+      partnerType: partner.partnerType,
+      partnerId: partner.partnerId,
+      name: partner.name
+    };
+    ModalService.showModal({
+      templateUrl: 'audio-communication-request.html',
+      controller: "audioInitController"
+    }).then(function(modal) {
+      modal.element.modal();
+      modal.close.then(function(result) {
+         
+      });
+    });
+  }
+
+  mySocket.on("received audio call request",function(data){
+    var check = confirm("You have audio conversation request from " + data.sender);
+    if(check){
+      window.location.href = data.connectURL;
+    }
+  })
+
 }]);
+
+
+app.controller('audioInitController',["$scope","$window","localManager","mySocket","$rootScope","$http",
+  function($scope,$window,localManager,mySocket,$rootScope,$http){
+
+    $http.post('/user/audioCallInit',{type:$rootScope.holdPartner.partnerType, userId: $rootScope.holdPartner.partnerId})
+    .success(function(response){
+      //console.log(response)$rootScope.sockets;
+
+      var invert = _.invert($rootScope.sockets);      
+      if(invert[$rootScope.holdPartner.partnerId]){
+
+        var sender = $rootScope.checkLogIn.name || $rootScope.checkLogIn.firstname;
+        mySocket.emit("audio call signaling",
+          {partnerConnectURL: response.partnerConnectURL,
+            partnerId: $rootScope.holdPartner.partnerId,sender:sender},
+          function(data){
+          //alert(data.message);
+          //console.log(data);
+          localManager.setValue("partnerDetails",{patientId: $rootScope.holdPartner.partnerId,type: "Patient"});
+          window.location.href = response.url;
+        });
+
+      } else {
+        var msg = ($rootScope.holdPartner.name || $rootScope.holdPartner.firstname) 
+        + " is currently offline but we will forward audio call" 
+        + " invitation via SMS and you will be alerted when connection is re-established. Please stay logged in."
+        var check = confirm(msg);
+        if(check){
+
+        }
+      }
+     
+    })
+      
+
+}])
+
 
 
 

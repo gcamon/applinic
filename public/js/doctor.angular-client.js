@@ -6966,7 +6966,7 @@ app.controller("createRoomController",["$scope","localManager","mySocket","$root
   // due to network failure.
   var invert;
   mySocket.on("ping users",function(sockets){
-    $rootScope.sockets = sockets;
+    //$rootScope.sockets = sockets;
     invert = _.invert(sockets);
     if(!invert[user.user_id]){
       mySocket.emit('join',{userId: user.user_id});
@@ -7437,15 +7437,27 @@ function($scope,$location,$rootScope,$http,ModalService,$interval,templateServic
 
 
   $scope.viewChat2 = function(patientId) { 
-    var messageBody = "Hello!";
+   // var messageBody = "Hello!";
     var partnerId = patientId;
     $scope.loading = true;
 
-    var msgObj = {to: partnerId,message:messageBody,from: $rootScope.checkLogIn.user_id};
+    templateService.holdId = partnerId
+
+    //$rootScope.chatsList = chatService.chats();
+
+    if(deviceCheckService.getDeviceType()){
+      localManager.setValue("holdIdForChat",partnerId);
+      localManager.setValue("holdChatList",$rootScope.chatsList);
+      window.location.href = "/user/chat/general";
+    } else if(templateService.holdId) {
+      $location.path("/general-chat");
+    } 
+
+    /*var msgObj = {to: partnerId,message:messageBody,from: $rootScope.checkLogIn.user_id};
 
     mySocket.emit("send message general",msgObj,
       function(data){ 
-      //var list = $rootScope.chatsList;
+     
 
       $rootScope.chatsList = chatService.chats();
       $rootScope.chatsList.$promise.then(function(result){
@@ -7454,8 +7466,8 @@ function($scope,$location,$rootScope,$http,ModalService,$interval,templateServic
 
         $rootScope.chatsList = result;
 
-        //var byRecent = $filter('orderBy')($rootScope.chatsList,'-realTime');
-        templateService.holdId = partnerId;//byRecent[0].partnerId;   
+       
+        templateService.holdId = partnerId;  
         if(deviceCheckService.getDeviceType()){
           localManager.setValue("holdIdForChat",partnerId);
           localManager.setValue("holdChatList",$rootScope.chatsList);
@@ -7464,7 +7476,7 @@ function($scope,$location,$rootScope,$http,ModalService,$interval,templateServic
           $location.path("/general-chat");
         } 
       });
-    });
+    });*/
   }
 
 
@@ -7560,7 +7572,8 @@ function($scope,$location,$rootScope,$http,ModalService,$interval,templateServic
     $rootScope.holdPartner = {
       partnerType: "Patient",
       partnerId: partner.patient_id,
-      name: partner.patient_firstname
+      name: partner.patient_firstname,
+      presence: partner.presence
     };
     ModalService.showModal({
       templateUrl: 'audio-communication-request.html',
@@ -7635,9 +7648,10 @@ app.controller('audioInitController',["$scope","$window","localManager","mySocke
     .success(function(response){
       //console.log(response)$rootScope.sockets;
 
-      var invert = _.invert($rootScope.sockets);      
-      if(invert[$rootScope.holdPartner.partnerId]){
+      //var invert = _.invert($rootScope.sockets);      
+      //if(invert[$rootScope.holdPartner.partnerId]){
 
+      if($rootScope.holdPartner.presence) {
         var sender = $rootScope.checkLogIn.name || $rootScope.checkLogIn.firstname;
         mySocket.emit("audio call signaling",
           {partnerConnectURL: response.partnerConnectURL,
@@ -12603,6 +12617,13 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
     window.location.href = "jnlp://" + link;
   }
 
+  mySocket.on("received audio call request",function(data){
+    var check = confirm("You have audio conversation request from " + data.sender);
+    if(check){
+      window.location.href = data.connectURL;
+    }
+  })
+
 }]);
 
 app.controller("emailModalCtrl",["$scope","$rootScope","$http",function($scope,$rootScope,$http){
@@ -12743,6 +12764,13 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
    
     var currView = $location.path();
 
+   
+  
+    function getUsersOnline() {     
+      $rootScope.$broadcast("users presence",{type: 'chatList',data:$rootScope.chatsList,sockets: $rootScope.sockets});         
+    }
+
+
     if($rootScope.chatsList) {
       var elemPos = $rootScope.chatsList.map(function(x){return x.partnerId}).indexOf(templateService.holdId)
       if(elemPos !== -1){
@@ -12750,10 +12778,11 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
       } else {
         $scope.partner = {};
       }
-    }
-  
-    function getUsersOnline() {     
-      $rootScope.$broadcast("users presence",{type: 'chatList',data:$rootScope.chatsList,sockets: $rootScope.sockets});         
+
+      if(templateService.holdId){
+        //$scope.viewChat($scope.partner,true);
+        localManager.removeItem('holdIdForChat');
+      } 
     }
 
 
@@ -12772,7 +12801,7 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
       $('.chat__container').addClass('chat__list--active');
     }
 
-    
+
     $scope.viewChat = function(chat,isMobWebList) {   
 
       $scope.partner = chat;

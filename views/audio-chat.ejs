@@ -306,13 +306,13 @@ span.dates {
       <!-- Navbar -->
     <% include ./inner/nav3 %>
 
-    <div style="position: absolute;right: 20px; top: 70px;width: 420px;padding:10px;overflow-y: auto;height: 650px;z-index: 99999" class="no-mobile-item-display bg-white" ng-show="isManage"  ng-cloak>
+    <div style="position: absolute;right: 20px; top: 70px;width: 420px;padding:10px;overflow-y: auto;height: 550px;z-index: 99999" class="no-mobile-item-display bg-white" ng-show="isManage"  ng-cloak>
       <div class="pt-2">
         <h6>{{holdPatientData.name || (holdPatientData.title + " " + holdPatientData.firstname + " " + holdPatientData.lastname)}}</h6>
         <span>{{holdPatientData.gender}}</span><br>
         <span>{{holdPatientData.age}}</span>
       </div>
-       <a href="" style="position: absolute;top: 10px;right: 20px" ng-click="closeSideBar()"><i  class="fa fa-times"></i></a>
+       <a href="" style="position: absolute;top: 5px;right: 20px;padding: 15px" ng-click="closeSideBar()"><i  class="fa fa-times"></i></a>
       <hr>
       <aside class="p-1">
         <div ng-show="!session">
