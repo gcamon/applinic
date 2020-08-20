@@ -12948,7 +12948,7 @@ router.get("/audiocall",function(req,res){
                 .exec(function(err,person){
                   if(err) throw err;
                   if(person){
-                    connectURL = "/audiocall?id=" + data.init_id + "&user=" + data.participants[i] + "&type=" + person.type
+                    connectURL = "/audiocall?id=" + data.init_id + "&user=" + person.user_id + "&type=" + person.type
                     io.sockets.to(person.user_id).emit('audio call reconnect',
                       {partnerId: req.query.user,connectURL:connectURL,sender: senderName});
                   }
