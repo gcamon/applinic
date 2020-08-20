@@ -7641,8 +7641,12 @@ app.controller("videoInitController",["$scope","$window","localManager","mySocke
 
 }]);  
 
-app.controller('audioInitController',["$scope","$window","localManager","mySocket","$rootScope","$http",
-  function($scope,$window,localManager,mySocket,$rootScope,$http){
+app.controller('audioInitController',["$scope","$window","localManager","mySocket","$rootScope","$http","$filter",
+  function($scope,$window,localManager,mySocket,$rootScope,$http,$filter){
+
+    $scope.isConnected = true;
+
+    $scope.offline = {};
 
     $http.post('/user/audioCallInit',{type:$rootScope.holdPartner.partnerType, userId: $rootScope.holdPartner.partnerId})
     .success(function(response){
@@ -7655,7 +7659,7 @@ app.controller('audioInitController',["$scope","$window","localManager","mySocke
         var sender = $rootScope.checkLogIn.name || $rootScope.checkLogIn.firstname;
         mySocket.emit("audio call signaling",
           {partnerConnectURL: response.partnerConnectURL,
-            partnerId: $rootScope.holdPartner.partnerId,sender:sender},
+            partnerId: $rootScope.holdPartner.partnerId,sender:sender,senderId: $rootScope.checkLogIn.user_id},
           function(data){
           //alert(data.message);
           //console.log(data);
@@ -7664,19 +7668,62 @@ app.controller('audioInitController',["$scope","$window","localManager","mySocke
         });
 
       } else {
-        var msg = ($rootScope.holdPartner.name || $rootScope.holdPartner.firstname) 
-        + " is currently offline but we will forward audio call" 
+        $scope.isConnected = false;
+        $scope.msg = ($rootScope.holdPartner.name || $rootScope.holdPartner.firstname) 
+        + " is currently offline but we can forward audio call" 
         + " invitation via SMS and you will be alerted when connection is re-established. Please stay logged in."
-        var check = confirm(msg);
-        if(check){
+      }
 
+      $scope.confirmTime = function() {
+        $scope.offline.type = "Audio Chat";
+        if(!$scope.offline.time){
+          alert("Please choose a suitable time for your conversation.")    
+        } else if($scope.offline.time !== 'now'){
+          var sptArr = $scope.offline.time.split('-');
+          var d = new Date();
+          var toNum = parseInt(sptArr[0]);
+          var timeOffset;
+          var timeFlag;
+
+          if(sptArr[1] == 'm'){
+            var minutes = d.getMinutes() + toNum;
+            d.setHours(d.getHours(),minutes);
+            timeOffset = sptArr[0];
+            timeFlag = "Minutes";
+          } else {
+            var hr = d.getHours() + toNum;
+            d.setHours(hr);
+            timeOffset = sptArr[0];
+            timeFlag = "Hour";
+          }
+
+          var tm = $filter('date')(d, 'shortTime');
+
+          $scope.loading = true;
+
+          $http.post("/user/offline-message",
+            {offset: timeOffset,time:tm,partnerURL: response.partnerConnectURL,
+              timeFlag:timeFlag,type: $scope.offline.type,partnerId:$rootScope.holdPartner.partnerId })
+          .success(function(res){
+            $scope.loading = false;
+            if(res.status){
+              $scope.isSent = res.status;
+              $scope.bookedTimeMsg = res.msg
+            }
+          })
+
+        } else {
+          localManager.setValue("partnerDetails",{patientId: $rootScope.holdPartner.partnerId,type: "Patient"});
+          window.location.href = response.url;
         }
+
       }
      
-    })
-      
+    })  
 
-}])
+}]);
+
+
 
 
 app.controller("newUserDetailsModal",["$scope","$rootScope",function($scope,$rootScope){
@@ -8447,7 +8494,8 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
     $rootScope.holdPartner = {
       partnerType: "Patient",
       partnerId: partner.user_id,
-      name: partner.firstname
+      name: partner.firstname,
+      presence: partner.status || partner.presence
     };
     ModalService.showModal({
       templateUrl: 'audio-communication-request.html',
@@ -12618,8 +12666,20 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
   }
 
   mySocket.on("received audio call request",function(data){
+    templateService.playAudio(4);
     var check = confirm("You have audio conversation request from " + data.sender);
     if(check){
+      localManager.setValue("partnerDetails",{patientId: data.partnerId,type: "Patient"});
+      window.location.href = data.connectURL;
+    }
+  });
+
+  mySocket.on("audio call reconnect",function(data){
+    templateService.playAudio(4);
+    var check = confirm(data.sender 
+      + " is now online and has joined the audio chat session you requested. Join now to start conversation.");
+    if(check) {
+      localManager.setValue("partnerDetails",{patientId: data.partnerId,type: "Patient"});
       window.location.href = data.connectURL;
     }
   })

@@ -1961,18 +1961,118 @@
          <div class="modal fade">
           <div class="modal-dialog">
             <div class="modal-content">
-              <div class="modal-header">
-                  <!--<h5 class="modal-title">Sending {{docInfo.type}} request takes few steps</h5>
-                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <div class="modal-header" style="position: relative;">
+                  <!--<h5 class="modal-title">Sending {{docInfo.type}} request takes few steps</h5>-->
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="position: absolute;right: 20px;top: 10px;padding: 10px">
                     <span aria-hidden="true">&times;</span>
-                  </button>-->
+                  </button>
               </div>
-              <div class="modal-body" style="text-align: center;">               
+              <div class="modal-body" style="text-align: center;" ng-show="isConnected">               
                 <h5 style="padding: 20px 0">Initializing Audio Connections...</h5>
                 <h4 style="margin: 20px 0"><i class="fa fa-phone" style="font-size: 28px;"></i></h4>
                 <p>You will be redirected to audio call interface as soon as connection set up is complete.</p>
               </div>
+
+               <div class="modal-body p-2" ng-show="!isConnected">
+              <h6 class="mb-2" style="line-height: 25px">{{msg}}</h6>
+
+              <div ng-show="!isSent">
+              
+              <div>
+
+                <label>Choose a time suitable for you to reconnect this conversation.</label><br>
+
+                 <label class="custom-control custom-radio">
+                  Immediately
+                 <input type="radio" class="custom-control-input" value="now" ng-model="offline.time">
+                  <span class="custom-control-indicator"></span>
+                  <span class="custom-control-description" style="opacity:0;"></span>
+                </label><br>
+
+                <label class="custom-control custom-radio">
+                  in 5 Minutes
+                 <input type="radio" class="custom-control-input" value="5-m" ng-model="offline.time">
+                  <span class="custom-control-indicator"></span>
+                  <span class="custom-control-description" style="opacity:0;"></span>
+                </label><br>
+
+                 <label class="custom-control custom-radio">
+                  in 10 Minutes
+                 <input type="radio" class="custom-control-input" value="10-m" ng-model="offline.time">
+                  <span class="custom-control-indicator"></span>
+                  <span class="custom-control-description" style="opacity:0;"></span>
+                </label><br>
+
+
+                <label class="custom-control custom-radio">
+                  in 15 Minutes
+                 <input type="radio" class="custom-control-input" value="15-m" ng-model="offline.time">
+                  <span class="custom-control-indicator"></span>
+                  <span class="custom-control-description" style="opacity:0;"></span>
+                </label>  <br>
+
+                 <label class="custom-control custom-radio">
+                  in 30 Minutes
+                 <input type="radio" class="custom-control-input" value="30-m" ng-model="offline.time">
+                  <span class="custom-control-indicator"></span>
+                  <span class="custom-control-description" style="opacity:0;"></span>
+                </label>  <br>
+
+                 <label class="custom-control custom-radio">
+                  in 45 Minutes
+                 <input type="radio" class="custom-control-input" value="45-m" ng-model="offline.time">
+                  <span class="custom-control-indicator"></span>
+                  <span class="custom-control-description" style="opacity:0;"></span>
+                </label>  <br>
+
+                <label class="custom-control custom-radio">
+                  in 1 Hour
+                 <input type="radio" class="custom-control-input" value="1-h" ng-model="offline.time">
+                  <span class="custom-control-indicator"></span>
+                  <span class="custom-control-description" style="opacity:0;"></span>
+                </label> <br>
+
+                <label class="custom-control custom-radio">
+                 in 2 Hours
+                 <input type="radio" class="custom-control-input" value="2-h" ng-model="offline.time">
+                  <span class="custom-control-indicator"></span>
+                  <span class="custom-control-description" style="opacity:0;"></span>
+                </label> <br>
+                <label class="custom-control custom-radio">
+                  in 3 Hours
+                 <input type="radio" class="custom-control-input" value="3-h" ng-model="offline.time">
+                  <span class="custom-control-indicator"></span>
+                  <span class="custom-control-description" style="opacity:0;"></span>
+                </label>
+
+                <label class="custom-control custom-radio">
+                  in 4 Hours
+                 <input type="radio" class="custom-control-input" value="4-h" ng-model="offline.time">
+                  <span class="custom-control-indicator"></span>
+                  <span class="custom-control-description" style="opacity:0;"></span>
+                </label>
+
+                <label class="custom-control custom-radio">
+                  in 6 Hours
+                 <input type="radio" class="custom-control-input" value="6-h" ng-model="offline.time">
+                  <span class="custom-control-indicator"></span>
+                  <span class="custom-control-description" style="opacity:0;"></span>
+                </label>               
+              </div>
+              <div>
+                <button class="btn btn-success btn-lg" ng-click="confirmTime()"><i class="fa fa-spinner fa-pulse fa-1x fa-fw text-white" ng-if="loading"></i> <span ng-show="!loading">Confirm</span></button>
+              </div>
+              </div>
+              <div ng-show="isSent">
+                 <h6 class="text-center font-1_4">
+                    <i class="fa check"></i> Conversation Notification sent!
+                 </h6>
+                 <p class="text-center">{{bookedTimeMsg}}</p>
+              </div>
             </div>
+
+            </div>
+        </div>
         </div>
 
      </script>
@@ -2723,6 +2823,89 @@
           </div>
         </div>
      </script>
+
+
+     <script type="text/ng-template" id="conversation-timer-modal.html">
+      <div class="modal fade">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">    
+               <a href=""   ng-click="close('Cancel')" data-dismiss="modal" aria-hidden="true" style="color:red;font-size: 32px; margin-top:-9px;float:right; top:5px">&times;</a>
+            </div>
+            <div class="modal-body p-2">
+              <h6 class="mb-2">{{msg}}</h6>
+              <div>
+                <a href="{{tokBoxUrl}}" class="btn btn-info">Accept now!</a>&nbsp;&nbsp; 
+                <a href="" class="btn btn-danger" ng-click="later()">Decline</a>
+              </div>
+              <div ng-show="isLater">
+
+                <label>Choose a time suitable for you to join the conversation</label><br>
+
+                <label class="custom-control custom-radio">
+                  5 Minutes
+                 <input type="radio" class="custom-control-input" value="5" ng-model="partner.time">
+                  <span class="custom-control-indicator"></span>
+                  <span class="custom-control-description" style="opacity:0;"></span>
+                </label><br>
+
+                 <label class="custom-control custom-radio">
+                  10 Minutes
+                 <input type="radio" class="custom-control-input" value="10" ng-model="partner.time">
+                  <span class="custom-control-indicator"></span>
+                  <span class="custom-control-description" style="opacity:0;"></span>
+                </label><br>
+
+
+                <label class="custom-control custom-radio">
+                  15 Minutes
+                 <input type="radio" class="custom-control-input" value="15" ng-model="partner.time">
+                  <span class="custom-control-indicator"></span>
+                  <span class="custom-control-description" style="opacity:0;"></span>
+                </label>  
+
+                 <label class="custom-control custom-radio">
+                  30 Minutes
+                 <input type="radio" class="custom-control-input" value="30" ng-model="partner.time">
+                  <span class="custom-control-indicator"></span>
+                  <span class="custom-control-description" style="opacity:0;"></span>
+                </label>  
+
+                 <label class="custom-control custom-radio">
+                  45 Minutes
+                 <input type="radio" class="custom-control-input" value="45" ng-model="partner.time">
+                  <span class="custom-control-indicator"></span>
+                  <span class="custom-control-description" style="opacity:0;"></span>
+                </label>  
+
+                <label class="custom-control custom-radio">
+                  1 Hour
+                 <input type="radio" class="custom-control-input" value="1" ng-model="partner.time">
+                  <span class="custom-control-indicator"></span>
+                  <span class="custom-control-description" style="opacity:0;"></span>
+                </label> 
+
+                <label class="custom-control custom-radio">
+                  2 Hours
+                 <input type="radio" class="custom-control-input" value="2" ng-model="partner.time">
+                  <span class="custom-control-indicator"></span>
+                  <span class="custom-control-description" style="opacity:0;"></span>
+                </label> 
+                <label class="custom-control custom-radio">
+                  3 Hours
+                 <input type="radio" class="custom-control-input" value="3" ng-model="partner.time">
+                  <span class="custom-control-indicator"></span>
+                  <span class="custom-control-description" style="opacity:0;"></span>
+                </label>     
+              </div>
+              <div>
+                <button class="btn btn-success btn-lg" ng-click="sendTime()" data-dismiss="modal">Confirm</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+   </script>
 
    
                  

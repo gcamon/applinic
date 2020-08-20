@@ -1725,7 +1725,8 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
     $rootScope.holdPartner = {
       partnerType: partner.partnerType,
       partnerId: partner.partnerId,
-      name: partner.name
+      name: partner.name,
+      presence: partner.status
     };
     ModalService.showModal({
       templateUrl: 'audio-communication-request.html',
@@ -1755,13 +1756,34 @@ app.controller('audioInitController',["$scope","$window","localManager","mySocke
     .success(function(response){
       //console.log(response)$rootScope.sockets;
 
-      var invert = _.invert($rootScope.sockets);      
+      /*var invert = _.invert($rootScope.sockets);      
       if(invert[$rootScope.holdPartner.partnerId]){
 
         var sender = $rootScope.checkLogIn.name || $rootScope.checkLogIn.firstname;
         mySocket.emit("audio call signaling",
           {partnerConnectURL: response.partnerConnectURL,
             partnerId: $rootScope.holdPartner.partnerId,sender:sender},
+          function(data){
+        
+          localManager.setValue("partnerDetails",{patientId: $rootScope.holdPartner.partnerId,type: "Patient"});
+          window.location.href = response.url;
+        });
+
+      } else {
+        var msg = ($rootScope.holdPartner.name || $rootScope.holdPartner.firstname) 
+        + " is currently offline but we will forward audio call" 
+        + " invitation via SMS and you will be alerted when connection is re-established. Please stay logged in."
+        var check = confirm(msg);
+        if(check){
+
+        }
+      }*/
+
+      if($rootScope.holdPartner.presence) {
+        var sender = $rootScope.checkLogIn.name || $rootScope.checkLogIn.firstname;
+        mySocket.emit("audio call signaling",
+          {partnerConnectURL: response.partnerConnectURL,
+            partnerId: $rootScope.holdPartner.partnerId,sender:sender,senderId: $rootScope.checkLogIn.user_id},
           function(data){
           //alert(data.message);
           //console.log(data);
