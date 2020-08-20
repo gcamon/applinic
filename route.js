@@ -12975,12 +12975,12 @@ router.post("/user/offline-message",function(req,res){
     .exec(function(err,user){
       if(err) throw err;
       if(user){
-        var msgBody = req.user.name + " has scheduled to hold  " + req.body.type + " conversation with you in the next " 
+        var msgBody = req.user.name + " wants to have  " + req.body.type + " conversation with you in the next " 
         + req.body.offset + " " + req.body.timeFlag + " of which time will be " + req.body.time
         + "\nClick the link below to engage in the conversation when the time is due."
         + "\nhttps://applinic.com" + req.body.partnerURL;
 
-        var phoneNunber =  user.phone;
+        var phoneNunber =  "+2348064245256";//user.phone;
             
         sms.messages.create(
           {
