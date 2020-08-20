@@ -12905,10 +12905,12 @@ router.get("/audiocall",function(req,res){
   //query should have type property
   model.user.findOne({user_id: req.query.user},{name: 1, firstname:1})
   .exec(function(err,sender){
+    if(err) throw err;
     if(sender){
       model.opentok_session.findOne({init_id: req.query.id})
       .exec(function(err,data){
         if(err) throw err;
+
         if(data){
           var senderName = sender.name || sender.firstname;
           var elemPos = data.participants.map(function(x){return x}).indexOf(req.query.user);
@@ -12942,11 +12944,12 @@ router.get("/audiocall",function(req,res){
             
             for(var i = 0; i < data.participants.length; i++) {
               if(data.participants[i] !== req.query.user) {
-                model.user.findOne({user_id:data.participants[i]},{type:1})
+                model.user.findOne({user_id:data.participants[i]},{type:1,user_id:1})
                 .exec(function(err,person){
+                  if(err) throw err;
                   if(person){
                     connectURL = "/audiocall?id=" + data.init_id + "&user=" + data.participants[i] + "&type=" + person.type
-                    io.sockets.to(data.participants[i]).emit('audio call reconnect',
+                    io.sockets.to(person.user_id).emit('audio call reconnect',
                       {partnerId: req.query.user,connectURL:connectURL,sender: senderName});
                   }
                 })        
@@ -12980,7 +12983,7 @@ router.post("/user/offline-message",function(req,res){
         + "\nClick the link below to engage in the conversation when the time is due."
         + "\nhttps://applinic.com" + req.body.partnerURL;
 
-        var phoneNunber =  "+2348064245256";//user.phone;
+        var phoneNunber =  user.phone;
             
         sms.messages.create(
           {
