@@ -2817,8 +2817,8 @@ router.post("/user/dicom-details",function(req,res){
             },
             callBack
           );
-
-		  model.user.findOne({user_id: req.body.patientData.radiology.patient_id},{medical_records:1})
+		 console.log(req.body);
+		  /*model.user.findOne({user_id: req.body.patientData.radiology.patient_id},{medical_records:1})
 		  .exec(function(err,patient){
 		  	if(err) throw err;
 		  	if(patient){
@@ -2833,7 +2833,7 @@ router.post("/user/dicom-details",function(req,res){
 
                patient.save(function(err,info){})
 		  	}
-		  });
+		  });*/
 
 		  /*
  mobile_viewer_path: req.body.mobViewer,
