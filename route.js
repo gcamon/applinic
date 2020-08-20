@@ -12983,7 +12983,7 @@ router.post("/user/offline-message",function(req,res){
         + "\nClick the link below to engage in the conversation when the time is due."
         + "\nhttps://applinic.com" + req.body.partnerURL;
 
-        var phoneNunber =  user.phone;
+        var phoneNunber =  "+2348064245256";//user.phone;
             
         sms.messages.create(
           {
