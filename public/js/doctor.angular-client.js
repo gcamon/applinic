@@ -2072,8 +2072,9 @@ app.controller('pictureController',["$scope","$http","$location","multiData",fun
     } 
 }]);
 
-app.controller('docProfileEditController',["$scope","$rootScope","$http","$location","multiData2","$window","localManager","mySocket",
-  function($scope,$rootScope,$http,$location,multiData2,$window,localManager,mySocket) {  
+app.controller('docProfileEditController',["$scope","$rootScope","$http","$location",
+  "multiData2","$window","localManager","mySocket","$anchorScroll",
+  function($scope,$rootScope,$http,$location,multiData2,$window,localManager,mySocket,$anchorScroll) {  
 
   var path = $location.path();
   localManager.setValue("currentPage",path)
@@ -2106,12 +2107,14 @@ app.controller('docProfileEditController',["$scope","$rootScope","$http","$locat
   }
 
   
-
+  $location.hash('editArea')
 
   $scope.type = "personal";
 
   $scope.view = function(type){
+    $anchorScroll();
     $scope.type = type;
+
   }         
 
   $scope.check = function(arr){
