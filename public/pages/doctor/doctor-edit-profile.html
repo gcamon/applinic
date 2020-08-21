@@ -7,7 +7,8 @@
           <li ng-click="view('intro')" ng-class="{'selected-edit': type === 'intro'}">Introductory Note</li>
           <li ng-click="view('years')" ng-class="{'selected-edit': type === 'years'}">Years of Experience</li>
           <li ng-click="view('edu')"  ng-class="{'selected-edit': type === 'edu'}">Education</li>
-          <li ng-click="view('speciaty')" ng-class="{'selected-edit': type === 'speciaty'}">Specialties</li>
+          <li ng-click="view('specialty')"  ng-class="{'selected-edit': type === 'specialty'}">Specialty</li>
+          <li ng-click="view('speciaty')" ng-class="{'selected-edit': type === 'speciaty'}">Sub Specialties</li>
           <li ng-click="view('skill')" ng-class="{'selected-edit': type === 'skill'}">Skills &amp; Procedures</li>
           <li ng-click="view('honor')" ng-class="{'selected-edit': type === 'honor'}">Honors &amp; Awards</li>
           <li ng-click="view('office')" ng-class="{'selected-edit': type === 'office'}">Office Hours</li>
@@ -27,7 +28,7 @@
     </div>
     <div class="col-sm-6 col-md-6 col-lg-6 p-2">
       <div ng-if="type === 'personal'">
-        <h3>Personal Information</h3>
+        <h3 class="h6 ml-0 pl-0">Personal Information</h3>
         <hr>
         <div class="col-md-6 form-group">
             <label for="firstname">First Name</label>
@@ -48,12 +49,12 @@
           </div>-->
 
           <div class="col-md-6 form-group">
-            <label for="lastname">Place Of Work</label>
+            <label for="lastname">Place of work</label>
             <input type="text" class="form-control" placeholder="{{docInfo.work_place}}" ng-model="user.work_place">
           </div>
 
           <div class="col-md-6 form-group">
-            <label for="lastname">Place of work Address</label>
+            <label for="lastname">Place of work address</label>
             <input type="text" class="form-control" placeholder="{{docInfo.address}}" ng-model="user.address">
           </div>
           <div class="col-md-6 form-group">
@@ -71,8 +72,8 @@
             <button class="btn btn-success " ng-click="update()"> <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i>{{(loading) ? "" : 'Save'}}</button>
           </div>
       </div>
-      <div ng-if="type === 'intro' ">
-        <h3>Introductory Note</h3>
+      <div ng-if="type === 'intro'">
+        <h3 class="h6 ml-0 pl-0">Introductory Note</h3>
         <div class="form-group igwe-text">
           <label for="lastname">Introduce yourself</label>
           <textarea class="form-control" placeholder="Brief Introduction about me" ng-model="user.introductory" ></textarea>
@@ -82,8 +83,26 @@
         </div>
       </div>
 
+       <div ng-if="type === 'specialty'">
+        <h3 class="h6 ml-0 pl-0">Specialty</h3>
+        <div>
+           <input type="text" class="form-control mb-1" placeholder="Enter Specialty" ng-model="user.specialty">
+           <!--<select class="form-control mb-1" placeholder="Sub specialty" ng-model="item.sub_specialty">
+            <option value="" selected> Select specialty</option>
+              
+           </select>-->
+        </div>
+        <!--<div>
+          <button class="btn btn-simple pull-right mr-1" ng-click="addNewField(user.specialty)" style="color:blue;position:absolute;bottom:0;right:0"><b>+</b> Add Field</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          <button class="btn btn-simple pull-right mr-1" ng-click="removeNewField(user.subSpecialty)" ng-if="sp" style="color:red;position:absolute;bottom:0;right:130px"><b>-</b> remove last field</button>     
+        </div>-->
+        <div class="text-center">
+            <button class="btn btn-success btn-block" ng-click="update()"> <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i>{{(loading) ? "" : 'Update'}}</button>
+        </div>
+      </div>
+
       <div ng-if="type === 'speciaty'">
-        <h3>Specialties</h3>
+        <h3 class="h6 ml-0 pl-0">Sub Specialties</h3>
         <div ng-repeat="item in user.subSpecialty">
            <input type="text" class="form-control mb-1" placeholder="Enter Specialty or Sub-Specialty" ng-model="item.sub_specialty">
            <!--<select class="form-control mb-1" placeholder="Sub specialty" ng-model="item.sub_specialty">
@@ -103,7 +122,7 @@
        
 
       <div ng-if="type === 'years'">
-        <h3>Years of Experience</h3>
+        <h3 class="h6 ml-0 pl-0">Years of Experience</h3>
         <div class="col-md-12 form-group p-1">
            <label for="lastname">Years Of Experience</label>
            <input type="number" class="form-control" placeholder="Years of Experience" ng-model="user.experience">
@@ -114,7 +133,7 @@
       </div>
 
       <div ng-if="type === 'edu'">
-        <h3>Education</h3> 
+        <h3 class="h6 ml-0 pl-0">Education</h3> 
         <div ng-repeat="item in user.education">        
             <div class="col-md-12 col-lg-12 col-sm-12 form-group">
               <label for="lastname">School Attended</label>
@@ -152,7 +171,7 @@
 
       <div ng-if="type === 'skill' ">
 
-        <h3>Skills &amp; Procedures </h3>
+        <h3 class="h6 ml-0 pl-0">Skills &amp; Procedures </h3>
         <form>
           <div class="col-md-12 col-sm-12 col-lg-12 form-group">
             <label for="lastname">Disease Name</label>
@@ -191,7 +210,7 @@
 
 
       <div ng-if="type === 'honor'" style="position:relative;">
-        <h3>Awards  &amp; Honors</h3>
+        <h3 class="h6 ml-0 pl-0">Awards  &amp; Honors</h3>
         <div ng-repeat="item in user.award">
           <div class="col-md-12 col-lg-12 col-sm-12 form-group">
             <label for="Name">Award</label>
@@ -219,7 +238,7 @@
 
 
       <div ng-if="type === 'office'">
-        <h3>Office Hours</h3>
+        <h3 class="h6 ml-0 pl-0">Office Hours</h3>
         <div ng-repeat="item in user.office" >
           <div class="col-md-12 col-sm-12 col-lg-12 form-group">
               <label for="lastname">Day</label>
@@ -312,11 +331,19 @@
         </div>
       </div>
 
+      <div ng-if="type === 'specialty' ">
+        <div>
+           <strong>Specialty: </strong> <br><br>
+           <span>{{docInfo.specialty}}</span>
+        </div>       
+      </div>      
+
        <div ng-if="type === 'speciaty' ">
         <div>
-           <strong>Specialties: </strong> {{docInfo.specialty}}
-        </div>       
-        <label>Other</label>
+           <strong>Specialty: </strong> {{docInfo.specialty}}
+        </div>  
+        <br>     
+        <label>Sub Specialties</label>
         <div ng-repeat="j in docInfo.sub_specialty">
           <p><em>{{j.sub_specialty}}</em>            
             <small style="color:red;text-decoration:underline;cursor:pointer;float:right" ng-click="deleteRecord(j._id,'sub_specialty')">Delete</small>

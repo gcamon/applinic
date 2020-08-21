@@ -672,7 +672,10 @@ var basicRoute = function (model,sms,io,streams,client,transporter,opentok) {
                     if(req.body.experience)
                         result.experience = req.body.experience;
                     if(req.body.work_place)
-                        result.work_place= req.body.work_place;                         
+                        result.work_place= req.body.work_place;
+                    if(req.body.specialty)
+                      result.specialty = req.body.specialty;    
+                                               
                     for(var i in req.body){                      
                       if(req.body.hasOwnProperty(i) && Object.prototype.toString.call( req.body[i] ) === '[object Array]'){                            
                          switch(i){

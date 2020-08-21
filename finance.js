@@ -2817,23 +2817,25 @@ router.post("/user/dicom-details",function(req,res){
             },
             callBack
           );
-		 console.log(req.body);
-		  /*model.user.findOne({user_id: req.body.patientData.radiology.patient_id},{medical_records:1})
-		  .exec(function(err,patient){
-		  	if(err) throw err;
-		  	if(patient){
-		  	   var elementPos = patient.medical_records.radiology_test.map(function(x) {return x.session_id })
-		  	   .indexOf(req.body.patientData.radiology.session_id);
-               var objectFound = patient.medical_records.radiology_test[elementPos]; 
-               if(objectFound){
-               	  objectFound.mobile_viewer_path = study.study_link_mobile;
-               	  objectFound.web_viewer_path = study.study_link2;
-               	  objectFound.patient_id_of_study = study.patient_id || study.study_uid;
-               }
 
-               patient.save(function(err,info){})
-		  	}
-		  });*/
+          if(req.body.patientData) {		 
+					  model.user.findOne({user_id: req.body.patientData.radiology.patient_id},{medical_records:1})
+					  .exec(function(err,patient){
+					  	if(err) throw err;
+					  	if(patient){
+					  	   var elementPos = patient.medical_records.radiology_test.map(function(x) {return x.session_id })
+					  	   .indexOf(req.body.patientData.radiology.session_id);
+		               var objectFound = patient.medical_records.radiology_test[elementPos]; 
+		               if(objectFound){
+		               	  objectFound.mobile_viewer_path = study.study_link_mobile;
+		               	  objectFound.web_viewer_path = study.study_link2;
+		               	  objectFound.patient_id_of_study = study.patient_id || study.study_uid;
+		               }
+
+		               patient.save(function(err,info){})
+					  	}
+					  });
+					}
 
 		  /*
  mobile_viewer_path: req.body.mobViewer,
