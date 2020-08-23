@@ -7716,8 +7716,17 @@ app.controller('audioInitController',["$scope","$window","localManager","mySocke
           })
 
         } else {
-          localManager.setValue("partnerDetails",{patientId: $rootScope.holdPartner.partnerId,type: "Patient"});
-          window.location.href = response.url;
+          $scope.loading = true;
+          $http.post("/user/offline-message",
+            {partnerURL: response.partnerConnectURL,
+            type: $scope.offline.type,partnerId:$rootScope.holdPartner.partnerId,isNow: true })
+          .success(function(res){
+            $scope.loading = false;
+            if(res.status){
+              $scope.isSent = res.status;
+              $scope.bookedTimeMsg = res.msg
+            }
+          })
         }
 
       }

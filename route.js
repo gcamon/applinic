@@ -675,7 +675,7 @@ var basicRoute = function (model,sms,io,streams,client,transporter,opentok) {
                         result.work_place= req.body.work_place;
                     if(req.body.specialty)
                       result.specialty = req.body.specialty;    
-                                               
+
                     for(var i in req.body){                      
                       if(req.body.hasOwnProperty(i) && Object.prototype.toString.call( req.body[i] ) === '[object Array]'){                            
                          switch(i){
@@ -12775,7 +12775,6 @@ router.post("/user/switch-video",function(req,res){
       message: req.user.name + " is waiting to have video chat with you!",
       tokBoxVideoURL: tkboxVUrl,partnerDetails:{name: req.user.name,from: req.user.user_id}});    
     res.json({tokBoxVideoURL: tkboxVUrl});
-
   } else {
     res.render("Unauthorized Access!");
   }
@@ -12892,8 +12891,8 @@ router.post('/user/audioCallInit',function(req,res){
 
       tok.save(function(err,info){
         if(err) throw err;
-        var connectURL = "/audiocall?id=" + id + "&user=" + req.user.user_id + "&type=" + req.user.type;
-        var partnerConnectURL = "/audiocall?id=" + id + "&user=" + req.body.userId + "&type=" + req.body.type;
+        var connectURL = "/user/audiocall?id=" + id + "&user=" + req.user.user_id + "&type=" + req.user.type;
+        var partnerConnectURL = "/user/audiocall?id=" + id + "&user=" + req.body.userId + "&type=" + req.body.type;
         res.json({message:"Audio call session initiated",id: id,url:connectURL,partnerConnectURL:partnerConnectURL});
       });
 
@@ -12904,74 +12903,80 @@ router.post('/user/audioCallInit',function(req,res){
   }
 });
 
-router.get("/audiocall",function(req,res){
+router.get("/user/audiocall",function(req,res){
   //query should have type property
-  model.user.findOne({user_id: req.query.user},{name: 1, firstname:1})
-  .exec(function(err,sender){
-    if(err) throw err;
-    if(sender){
-      model.opentok_session.findOne({init_id: req.query.id})
-      .exec(function(err,data){
-        if(err) throw err;
+  if(req.user) {
+    model.user.findOne({user_id: req.query.user},{name: 1, firstname:1})
+    .exec(function(err,sender){
+      if(err) throw err;
+      if(sender){
+        model.opentok_session.findOne({init_id: req.query.id})
+        .exec(function(err,data){
+          if(err) throw err;
 
-        if(data){
-          var senderName = sender.name || sender.firstname;
-          var elemPos = data.participants.map(function(x){return x}).indexOf(req.query.user);
-          if(elemPos !== -1){
-            var name = 'name=' + senderName;
-            var role = "publisher";//(data.initiator === req.query.user) ? "publisher" : "subscriber";
+          if(data){
+            var senderName = sender.name || sender.firstname;
+            var elemPos = data.participants.map(function(x){return x}).indexOf(req.query.user);
+            if(elemPos !== -1){
+              var name = 'name=' + senderName;
+              var role = "publisher";//(data.initiator === req.query.user) ? "publisher" : "subscriber";
 
-            var token = opentok.generateToken(data.opentok_session_id,{
-              role: role,
-              expireTime: (new Date().getTime() / 1000)+(24 * 60 * 60),// a day 
-              data : name,
-              initialLayoutClassList: ['focus']
-            });
+              var token = opentok.generateToken(data.opentok_session_id,{
+                role: role,
+                expireTime: (new Date().getTime() / 1000)+(24 * 60 * 60),// a day 
+                data : name,
+                initialLayoutClassList: ['focus']
+              });
 
-            switch(req.query.type){
-              case 'Doctor':
-                res.render('audio-chat',{name:senderName,token: token,
-                  sessionId: data.opentok_session_id,apiKey: process.env.OPENTOK_API_KEY});
-              break;
-              case "Patient":
-                res.render('audio-chat-patient',{name:senderName,
-                  token: token,sessionId: data.opentok_session_id,apiKey: process.env.OPENTOK_API_KEY});
-              break;
-              default:
-                res.render('audio-chat-patient',{name:senderName,token: token,
-                  sessionId: data.opentok_session_id,apiKey: process.env.OPENTOK_API_KEY});
-              break;
-            }
-
-            var connectURL;         
-            
-            for(var i = 0; i < data.participants.length; i++) {
-              if(data.participants[i] !== req.query.user) {
-                model.user.findOne({user_id:data.participants[i]},{type:1,user_id:1})
-                .exec(function(err,person){
-                  if(err) throw err;
-                  if(person){
-                    connectURL = "/audiocall?id=" + data.init_id + "&user=" + person.user_id + "&type=" + person.type
-                    io.sockets.to(person.user_id).emit('audio call reconnect',
-                      {partnerId: req.query.user,connectURL:connectURL,sender: senderName});
-                  }
-                })        
+              switch(req.query.type){
+                case 'Doctor':
+                  res.render('audio-chat',{name:senderName,token: token,
+                    sessionId: data.opentok_session_id,apiKey: process.env.OPENTOK_API_KEY});
+                break;
+                case "Patient":
+                  res.render('audio-chat-patient',{name:senderName,
+                    token: token,sessionId: data.opentok_session_id,apiKey: process.env.OPENTOK_API_KEY});
+                break;
+                default:
+                  res.render('audio-chat-patient',{name:senderName,token: token,
+                    sessionId: data.opentok_session_id,apiKey: process.env.OPENTOK_API_KEY});
+                break;
               }
+
+              var connectURL;         
+              
+              for(var i = 0; i < data.participants.length; i++) {
+                if(data.participants[i] !== req.query.user) {
+                  model.user.findOne({user_id:data.participants[i]},{type:1,user_id:1})
+                  .exec(function(err,person){
+                    if(err) throw err;
+                    if(person){
+                      connectURL = "/user/audiocall?id=" + data.init_id + "&user=" + person.user_id + "&type=" + person.type
+                      io.sockets.to(person.user_id).emit('audio call reconnect',
+                        {partnerId: req.query.user,connectURL:connectURL,sender: senderName});
+                    }
+                  })        
+                }
+              }
+            
+            } else {
+              res.json({Error: true, message: "Permission denied! You're not allowed to join this conversation."})
             }
-          
           } else {
-            res.json({Error: true, message: "Permission denied! You're not allowed to join this conversation."})
+            res.json({Error: true, message: "Audio session parameters are missing thus this conversation cannot be established."})
           }
-        } else {
-          res.json({Error: true, message: "Audio session parameters are missing thus this conversation cannot be established."})
-        }
-      });
+        });
 
-    } else {
-      res.json({Error: true, message: "404, Appears user does not exist in the platform"})
-    }
+      } else {
+        res.json({Error: true, message: "404, Appears user does not exist in the platform"});
+      }
 
-  })
+    })
+
+  } else {
+    console.log(req.query)
+    res.render('login',req.query);
+  }
 
 });
 
@@ -12981,12 +12986,19 @@ router.post("/user/offline-message",function(req,res){
     .exec(function(err,user){
       if(err) throw err;
       if(user){
-        var msgBody = req.user.name + " wants to have  " + req.body.type + " conversation with you in the next " 
-        + req.body.offset + " " + req.body.timeFlag + " of which time will be " + req.body.time
-        + "\nClick the link below to engage in the conversation when the time is due."
-        + "\nhttps://applinic.com" + req.body.partnerURL;
+        var msgBody;
+        if(req.body.isNow){
+          msgBody = req.user.name + " wants to have  " + req.body.type + " conversation with you now." 
+          + "\nClick the link below to engage in the conversation immediately."
+          + "\nhttps://applinic.com" + req.body.partnerURL;
+        } else {
+          msgBody = req.user.name + " wants to have  " + req.body.type + " conversation with you in the next " 
+          + req.body.offset + " " + req.body.timeFlag + " of which time will be " + req.body.time
+          + "\nClick the link below to engage in the conversation when the time is due."
+          + "\nhttps://applinic.com" + req.body.partnerURL;
+        }
 
-        var phoneNunber =  "+2348064245256";//user.phone;
+        var phoneNunber =  user.phone;//"+2348064245256";
             
         sms.messages.create(
           {
