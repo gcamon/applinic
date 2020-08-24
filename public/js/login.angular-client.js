@@ -374,7 +374,7 @@ app.controller('loginController',["$scope","$http","$location","$window","$resou
   if(qStr) {
     var qVal = qStr.split('=');
     if(qVal[qVal.length - 1] === 'audio'){
-      var url = "/user/audio" + window.location.search;
+      var url = "/user/audiocall" + window.location.search;
       $rootScope.landingCurrPageURL = url;
     } else if(qVal[qVal.length - 1] === 'video') {
 
