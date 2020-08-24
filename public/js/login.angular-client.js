@@ -368,7 +368,18 @@ app.controller('loginController',["$scope","$http","$location","$window","$resou
     templateService,localManager,userLoginService,changPasswordService,phoneCallService,$timeout,$rootScope,mySocket) {
   $scope.login = {};
   $scope.error = "";  
-  var count = 0
+  var count = 0;
+
+  var qStr = window.location.search;
+  if(qStr) {
+    var qVal = qStr.split('=');
+    if(qVal[qVal.length - 1] === 'audio'){
+      var url = "/user/audio" + window.location.search;
+      $rootScope.landingCurrPageURL = url;
+    } else if(qVal[qVal.length - 1] === 'video') {
+
+    }
+  }
   
   $scope.send = function(){ 
     if(count <= 10) { 
@@ -402,33 +413,37 @@ app.controller('loginController',["$scope","$http","$location","$window","$resou
             localManager.setValue("mainAccount",data);  */  
 
          //user joins a room in socket.io and intantiayes his own socket
-          switch(data.typeOfUser) {
-            case "Patient":
-              createAwareness(data)
-              $window.location.href = "/user/patient";   
-            break;
-            case "Doctor":
-              createAwareness(data)
-             $window.location.href = "/user/doctor";   
-            break;
-            case "Pharmacy":
-              $window.location.href = "/user/pharmacy"; 
-            break;
-            case "Laboratory":
-              $window.location.href = "/user/laboratory"; 
-            break;
-            case "Radiology":
-              $window.location.href = "/user/radiology"; 
-            break;          
-            case "admin":
-              $window.location.href = "/user/admin";
-            break;
-            case "Field Agent":
-              $window.location.href = "/user/field-agent/" + data.user_id;
-            break;
-            default:
-              $window.location.href = "/user/view"; 
-            break; 
+          if($rootScope.landingCurrPageURL) {
+            $window.location.href = $rootScope.landingCurrPageURL;
+          } else {
+            switch(data.typeOfUser) {
+              case "Patient":
+                createAwareness(data)
+                $window.location.href = "/user/patient";   
+              break;
+              case "Doctor":
+                createAwareness(data)
+               $window.location.href = "/user/doctor";   
+              break;
+              case "Pharmacy":
+                $window.location.href = "/user/pharmacy"; 
+              break;
+              case "Laboratory":
+                $window.location.href = "/user/laboratory"; 
+              break;
+              case "Radiology":
+                $window.location.href = "/user/radiology"; 
+              break;          
+              case "admin":
+                $window.location.href = "/user/admin";
+              break;
+              case "Field Agent":
+                $window.location.href = "/user/field-agent/" + data.user_id;
+              break;
+              default:
+                $window.location.href = "/user/view"; 
+              break; 
+            }
           }
           
         } else {   

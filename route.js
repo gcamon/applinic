@@ -237,6 +237,7 @@ var basicRoute = function (model,sms,io,streams,client,transporter,opentok) {
  
   //user requesting login page.
   router.get('/login',function(req,res){
+    console.log(req.query)
     res.render("login",{"message":""})
   });
 
@@ -12974,8 +12975,8 @@ router.get("/user/audiocall",function(req,res){
     })
 
   } else {
-    console.log(req.query)
-    res.render('login',req.query);
+    var lnk = '/login?id=' + req.query.id + "&user=" + req.query.user + "&type=" + req.query.type + "&mode=audio";
+    res.redirect(lnk);
   }
 
 });
