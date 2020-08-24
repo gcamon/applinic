@@ -202,7 +202,7 @@
             </button>
             <section class="conversation__user__info" ng-cloak>
               <span class="conversation__user__status" ng-if="partner.status && !partner.typing"></span>            
-              <span class="conversation__user__name" style="text-transform: capitalize;">{{partner.name}}</span>
+              <span class="conversation__user__name ellipsis" style="text-transform: capitalize;max-width: 48%">{{partner.name}}</span>
             </section>
             <div class="conversation__view__actions">
               <!--<button class="conversation__actions__close" title="Close conversation">
@@ -211,6 +211,8 @@
               <label for="file-input" class="conversation__actions__close2" title="Close conversation">
                 <i class="fa fa-paperclip" aria-hidden="true" style="font-size: 18px;color:#fff"></i>
               </label>&nbsp;&nbsp;&nbsp; <input type="file" class="file-input hide" name="file-input" id="file-input" file-model-chat="files">
+
+              <a href="" class="conversation__actions__close2" ng-click="audioChat(partner)" ng-show="partner.partnerType === 'Patient' || partner.partnerType === 'Doctor'"><i class="fa fa-phone" aria-hidden="true" style="font-size: 18px;color:#fff"></i></a>&nbsp;&nbsp;&nbsp;
 
 
               <a href="" class="conversation__actions__close2" ng-click="videoChat(partner)" ng-show="partner.partnerType === 'Patient' || partner.partnerType === 'Doctor' "><i class="fa fa-video-camera" aria-hidden="true" style="font-size: 18px;color:#fff"></i></a>&nbsp;&nbsp;&nbsp;
@@ -221,9 +223,9 @@
               </label>&nbsp;&nbsp;&nbsp; <input type="file" class="file-input hide" name="file-input" id="file-input" file-model-chat="files">
 
 
-              <a href="" class="conversation__actions__close2" ng-show="partner.partnerType === 'Patient'"  ng-click="chatPrivate(partner,true)">
+              <!--<a href="" class="conversation__actions__close2" ng-show="partner.partnerType === 'Patient'"  ng-click="chatPrivate(partner,true)">
                 <i class="fa fa-folder-open" aria-hidden="true" style="font-size: 18px;color:#fff"></i>
-              </a>
+              </a>-->
               
               <!--<button class="conversation__actions__videocall" title="Start videocall">
               <svg viewBox="0 0 24 22">

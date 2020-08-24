@@ -360,14 +360,22 @@ input:focus {
                 </span>
             </div>
             <div style="position: absolute;right: 35px;top: 5px" ng-show="partner.partnerId"> 
-                   <a href="" title="Make video call" class="text-success" ng-click="videoChat(partner)" ng-show="partner.partnerType == 'Doctor' || partner.partnerType == 'Patient' ">
-                    <i class="fa fa-video-camera"></i>&nbsp;&nbsp;&nbsp;
-                </a> &nbsp;&nbsp;&nbsp;           
+
+                          
 
 
                 <label for="file-input">
                   <i class="fa fa-paperclip text-success" aria-hidden="true" title="Attach a file"></i>
-                </label>&nbsp;&nbsp;&nbsp; <input type="file" class="file-input hide" name="file-input" id="file-input" file-model-chat="files">&nbsp;&nbsp;
+                </label>&nbsp;&nbsp;&nbsp; <input type="file" class="file-input hide" name="file-input" id="file-input" file-model-chat="files">&nbsp;&nbsp;&nbsp;
+
+                <a href="" title="Make audio call" class="text-success" ng-click="audioChat(partner)" ng-show="partner.partnerType == 'Doctor' || partner.partnerType == 'Patient' ">
+                    <i class="fa fa-video-camera"></i>&nbsp;&nbsp;&nbsp;
+                </a> &nbsp;&nbsp;&nbsp;
+
+
+                <a href="" title="Make video call" class="text-success" ng-click="videoChat(partner)" ng-show="partner.partnerType == 'Doctor' || partner.partnerType == 'Patient' ">
+                    <i class="fa fa-video-camera"></i>&nbsp;&nbsp;&nbsp;
+                </a> &nbsp;&nbsp;&nbsp;
 
              
                   

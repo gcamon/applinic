@@ -12892,8 +12892,12 @@ router.post('/user/audioCallInit',function(req,res){
 
       tok.save(function(err,info){
         if(err) throw err;
-        var connectURL = "/user/audiocall?id=" + id + "&user=" + req.user.user_id + "&type=" + req.user.type;
-        var partnerConnectURL = "/user/audiocall?id=" + id + "&user=" + req.body.userId + "&type=" + req.body.type;
+        var connectURL = "/user/audiocall?peerId=" + req.body.userId + "&id=" + id 
+        + "&user=" + req.user.user_id + "&type=" + req.user.type;
+
+        var partnerConnectURL = "/user/audiocall?peerId=" + req.user.user_id + "&id=" + id 
+        + "&user=" + req.body.userId + "&type=" + req.body.type;
+
         res.json({message:"Audio call session initiated",id: id,url:connectURL,partnerConnectURL:partnerConnectURL});
       });
 
@@ -12907,9 +12911,10 @@ router.post('/user/audioCallInit',function(req,res){
 router.get("/user/audiocall",function(req,res){
   //query should have type property
   if(req.user) {
-    model.user.findOne({user_id: req.query.user},{name: 1, firstname:1})
-    .exec(function(err,sender){
-      if(err) throw err;
+    //model.user.findOne({user_id: req.query.user},{name: 1, firstname:1})
+    //.exec(function(err,sender){
+     //if(err) throw err;
+      var sender = req.user;
       if(sender){
         model.opentok_session.findOne({init_id: req.query.id})
         .exec(function(err,data){
@@ -12952,7 +12957,7 @@ router.get("/user/audiocall",function(req,res){
                   .exec(function(err,person){
                     if(err) throw err;
                     if(person){
-                      connectURL = "/user/audiocall?id=" + data.init_id + "&user=" + person.user_id + "&type=" + person.type
+                      connectURL = "/user/audiocall?peerId=" + req.user.user_id + "&id=" + data.init_id + "&user=" + person.user_id + "&type=" + person.type
                       io.sockets.to(person.user_id).emit('audio call reconnect',
                         {partnerId: req.query.user,connectURL:connectURL,sender: senderName});
                     }
@@ -12972,10 +12977,11 @@ router.get("/user/audiocall",function(req,res){
         res.json({Error: true, message: "404, Appears user does not exist in the platform"});
       }
 
-    })
+    //})
 
   } else {
-    var lnk = '/login?id=' + req.query.id + "&user=" + req.query.user + "&type=" + req.query.type + "&mode=audio";
+    var lnk = '/login?peerId=' + req.query.peerId + '&id=' + req.query.id + "&user=" 
+    + req.query.user + "&type=" + req.query.type + "&mode=audio";
     res.redirect(lnk);
   }
 
@@ -13019,7 +13025,7 @@ router.post("/user/offline-message",function(req,res){
 
         if(info){
           var docMsg = "You have scheduled " + req.body.type + " conversation with " + user.firstname + " in the next " 
-          + req.body.offset + " " + req.body.timeFlag + " Which will be " + req.body.time
+          + req.body.offset + " " + req.body.timeFlag + " which will be " + req.body.time
           + " Please ensure you stay logged in."
           res.json({status: true,msg: docMsg})
         } 

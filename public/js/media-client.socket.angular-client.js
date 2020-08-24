@@ -96,6 +96,51 @@
 			      window.location.href = data.connectURL;
 			    }
 			  })
+
+			  var invert;
+			  var qVal = window.location.search;
+			  var spArr1 = qVal.split('=');
+
+			  mySocket.on("ping users",function(sockets){
+			    invert = _.invert(sockets);
+
+			    if(!invert[user.user_id]){
+			      mySocket.emit('join',{userId: user.user_id});
+			    }
+
+			    if(qVal) {				  	
+				  	if(spArr1[1]){
+				  		var spArr2 = spArr1[1].split('&');				  		
+				  		
+			  			if(!invert[spArr2[0]]){
+					      $rootScope.isOffLineMsg = true;
+					    } else {
+					    	$rootScope.isOffLineMsg = false;
+					    }			      
+					    
+				  	}
+				  }
+			  })
+
+			  $scope.toDashboard = function() {
+			  	switch(user.typeOfUser) {
+			  		case 'Patient': 
+			  			window.location.href = "/user/patient";
+			  		break;
+			  		case 'Doctor':
+			  			window.location.href = "/user/doctor";
+			  		break;
+			  		case 'Pharmacy':
+			  			window.location.href = "/user/pharmacy";
+			  		break;
+			  		case 'Laboratory':
+			  			window.location.href = "/user/laboratory";
+			  		break;
+			  		case 'Radiology':
+			  			window.location.href = "/user/radiology";
+			  		break;
+			  	}
+			  }
 			}			
 	}]);
 

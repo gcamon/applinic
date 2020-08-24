@@ -122,6 +122,10 @@
        <div style="position: relative; left: -50%;">
             <h6 class="mt-2 mb-1"> Connecting... </h6>
             <span>Waiting for partner's audio stream.</span>
+            <p class="mt-2" style="font-style: italic;" ng-show="isOffLineMsg">
+               <b class="text-danger">Oops! It appears your participant for this conversation is currently offline!</b><br>
+               Please try the link again later or <a href="" ng-click="toDashboard()"> click to go to your account's dashboard. </a>
+            </p>
        </div>
     </div>
     <div id="otSubscriber" style="height:660px">

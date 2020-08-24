@@ -3579,6 +3579,7 @@ app.controller("docNotificationController",["$scope","$location","$resource","$i
 
   $scope.viewChat2 = function() {  
     var list = $rootScope.chatsList;
+    localManager.setValue("isChatListViewMobile",true);
     if(list) {
       var byRecent = $filter('orderBy')(list,'-realTime');
       templateService.holdId = byRecent[0].partnerId;   

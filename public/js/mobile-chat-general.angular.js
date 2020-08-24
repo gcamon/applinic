@@ -561,11 +561,17 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
     $rootScope.chatsList = localManager.getValue("holdChatList") || [];
 
     templateService.holdId = templateService.holdId || localManager.getValue("holdIdForChat");
-
+   
     if(deviceCheckService.getDeviceType() && !templateService.holdId){
       // switchesm to chat list for mobile views 
      //window.location.href = '/mobile/chat-physician';
       $('.chat__container').addClass('chat__list--active');
+
+    } else if(localManager.getValue("isChatListViewMobile")){
+
+      $('.chat__container').addClass('chat__list--active');
+
+      localManager.removeItem("isChatListViewMobile");
     }
 
 
@@ -1749,8 +1755,13 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
 }]);
 
 
-app.controller('audioInitController',["$scope","$window","localManager","mySocket","$rootScope","$http",
-  function($scope,$window,localManager,mySocket,$rootScope,$http){
+app.controller('audioInitController',["$scope","$window","localManager","mySocket","$rootScope","$http","$filter",
+  function($scope,$window,localManager,mySocket,$rootScope,$http,$filter){
+
+
+    $scope.isConnected = true;
+
+    $scope.offline = {};
 
     $http.post('/user/audioCallInit',{type:$rootScope.holdPartner.partnerType, userId: $rootScope.holdPartner.partnerId})
     .success(function(response){
@@ -1779,6 +1790,7 @@ app.controller('audioInitController',["$scope","$window","localManager","mySocke
         }
       }*/
 
+
       if($rootScope.holdPartner.presence) {
         var sender = $rootScope.checkLogIn.name || $rootScope.checkLogIn.firstname;
         mySocket.emit("audio call signaling",
@@ -1792,13 +1804,64 @@ app.controller('audioInitController',["$scope","$window","localManager","mySocke
         });
 
       } else {
-        var msg = ($rootScope.holdPartner.name || $rootScope.holdPartner.firstname) 
-        + " is currently offline but we will forward audio call" 
+        $scope.isConnected = false;
+        $scope.msg = ($rootScope.holdPartner.name || $rootScope.holdPartner.firstname) 
+        + " is currently offline but we can forward audio call" 
         + " invitation via SMS and you will be alerted when connection is re-established. Please stay logged in."
-        var check = confirm(msg);
-        if(check){
+      }
 
+      $scope.confirmTime = function() {
+        $scope.offline.type = "Audio Chat";
+        if(!$scope.offline.time){
+          alert("Please choose a suitable time for your conversation.")    
+        } else if($scope.offline.time !== 'now'){
+          var sptArr = $scope.offline.time.split('-');
+          var d = new Date();
+          var toNum = parseInt(sptArr[0]);
+          var timeOffset;
+          var timeFlag;
+
+          if(sptArr[1] == 'm'){
+            var minutes = d.getMinutes() + toNum;
+            d.setHours(d.getHours(),minutes);
+            timeOffset = sptArr[0];
+            timeFlag = "Minutes";
+          } else {
+            var hr = d.getHours() + toNum;
+            d.setHours(hr);
+            timeOffset = sptArr[0];
+            timeFlag = "Hour";
+          }
+
+          var tm = $filter('date')(d, 'shortTime');
+
+          $scope.loading = true;
+
+          $http.post("/user/offline-message",
+            {offset: timeOffset,time:tm,partnerURL: response.partnerConnectURL,
+              timeFlag:timeFlag,type: $scope.offline.type,partnerId:$rootScope.holdPartner.partnerId })
+          .success(function(res){
+            $scope.loading = false;
+            if(res.status){
+              $scope.isSent = res.status;
+              $scope.bookedTimeMsg = res.msg
+            }
+          })
+
+        } else {
+          $scope.loading = true;
+          $http.post("/user/offline-message",
+            {partnerURL: response.partnerConnectURL,
+            type: $scope.offline.type,partnerId:$rootScope.holdPartner.partnerId,isNow: true })
+          .success(function(res){
+            $scope.loading = false;
+            if(res.status){
+              $scope.isSent = res.status;
+              $scope.bookedTimeMsg = res.msg
+            }
+          })
         }
+
       }
      
     })

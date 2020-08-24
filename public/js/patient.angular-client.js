@@ -2222,6 +2222,7 @@ app.controller("patientNotificationController",["$scope","$location","$http","$w
 
    $scope.viewChat2 = function(list) {  
     var list = $rootScope.chatsList; 
+    localManager.setValue("isChatListViewMobile",true);
     if(list) {
       var byRecent = $filter('orderBy')(list,'-realTime');
       templateService.holdId = byRecent[0].partnerId;   
@@ -2241,6 +2242,7 @@ app.controller("patientNotificationController",["$scope","$location","$http","$w
 
   $rootScope.viewChat = function(partnerId) {
     templateService.holdId = partnerId;
+    localManager.setValue("isChatListViewMobile",true);
     $location.path("/general-chat");
     $scope.showIndicator = false;
   }
