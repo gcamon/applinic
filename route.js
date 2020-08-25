@@ -12816,12 +12816,16 @@ router.get('/user/video',function(req,res){
     } else {
       res.render("tokbox-video2",{tokBox: script})
     }
-    var name = (!req.user.name) ? (req.user.title + " " + req.user.firstname + " " + req.user.lastname) : req.user.name;
-    var tkboxVUrl2 = "/user/video?peerId=" + req.query.peerId + "&roomId=" + req.query.roomId;
-    var details = {patientId: req.user.user_id,type: req.user.type};
 
-    io.sockets.to(req.query.peerId).emit("video call able",{message: name + " is waiting to have video chat with you!",
-            tokBoxVideoURL: tkboxVUrl2,partnerDetails:details});
+    if(req.query.isLink){
+      var name = (!req.user.name) ? (req.user.title + " " + req.user.firstname + " " + req.user.lastname) : req.user.name;
+      var tkboxVUrl2 = "/user/video?peerId=" + req.query.peerId + "&roomId=" + req.query.roomId;
+      var details = {to: req.query.peerId,type: req.query.type,from: req.user.user_id,name: name};
+
+      io.sockets.to(req.query.peerId).emit("video call able",{message: name + " is waiting to have video chat with you!",
+              tokBoxVideoURL: tkboxVUrl2,partnerDetails:details});
+    }
+
   } else {
     var lnk = '/login?peerId=' + req.query.peerId + "&roomId=" +  req.query.roomId + "&type=video" + "&mode=video";
     res.redirect(lnk);
@@ -13057,7 +13061,8 @@ router.post("/user/offline-message",function(req,res){
         var msgBody;
         var id = uuid.v1();
         if(req.body.type == "Video Chat"){
-          req.body.partnerURL = "/user/video?peerId=" + req.user.user_id + "&roomId=" + id;
+          req.body.partnerURL = "/user/video?peerId=" + req.user.user_id + "&roomId=" 
+          + id + "&type=" + req.user.type + "&isLink=true";
         }
 
         if(req.body.isNow){
