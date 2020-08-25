@@ -13938,7 +13938,7 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
       //data.type = 'Video Call';
       var online = partner.status || partner.presence;
 
-      templateService.holdForSpecificPatient = {user_id: partner.partnerId, presence: online};
+      templateService.holdForSpecificPatient = {user_id: partner.partnerId, presence: online,name: partner.name};
       ModalService.showModal({
         templateUrl: 'sending-communication-request.html',
         controller: "videoInitController"
