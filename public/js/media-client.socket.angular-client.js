@@ -99,7 +99,7 @@
 
 			 
 
-			  mySocket.emit("check presence",{status: true},function(res){
+			  /*mySocket.emit("check presence",{status: true},function(res){
 				  var qVal = window.location.search;
 				  var spArr1 = qVal.split('=');
 		      var invert = _.invert(res);
@@ -118,7 +118,7 @@
 					    
 				  	}
 				  }
-		    });      
+		    });*/      
 
 			  /*mySocket.on("ping users",function(sockets){
 			    invert = _.invert(sockets);
