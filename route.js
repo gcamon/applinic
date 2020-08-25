@@ -12824,7 +12824,8 @@ router.get('/user/video',function(req,res){
       var details = {to: req.query.peerId,type: req.query.type,from: req.user.user_id,name: name,patientId: patientId};
       var message = name + " is waiting to have video chat with you!"
 
-      io.sockets.to(req.query.peerId).emit("video call able",{message: message,tokBoxVideoURL: tkboxVUrl2,partnerDetails:details});
+      io.sockets.to(req.query.peerId).emit("video call able",
+        {message: message,tokBoxVideoURL: tkboxVUrl2,partnerDetails:details});
     }
 
   } else {
