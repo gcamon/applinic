@@ -97,11 +97,30 @@
 			    }
 			  })
 
-			  var invert;
-			  var qVal = window.location.search;
-			  var spArr1 = qVal.split('=');
+			 
 
-			  mySocket.on("ping users",function(sockets){
+			  mySocket.emit("check presence",{status: true},function(res){
+				  var qVal = window.location.search;
+				  var spArr1 = qVal.split('=');
+		      var invert = _.invert(res);
+		      if(!invert[user.user_id]){
+			      mySocket.emit('join',{userId: user.user_id});
+			    }
+
+			    if(qVal) {				  	
+				  	if(spArr1[1]){
+				  		var spArr2 = spArr1[1].split('&');				  		
+			  			if(!invert[spArr2[0]]){
+					      $rootScope.isOffLineMsg = true;
+					    } else {
+					    	$rootScope.isOffLineMsg = false;
+					    }			      
+					    
+				  	}
+				  }
+		    });      
+
+			  /*mySocket.on("ping users",function(sockets){
 			    invert = _.invert(sockets);
 
 			    if(!invert[user.user_id]){
@@ -111,7 +130,6 @@
 			    if(qVal) {				  	
 				  	if(spArr1[1]){
 				  		var spArr2 = spArr1[1].split('&');				  		
-				  		
 			  			if(!invert[spArr2[0]]){
 					      $rootScope.isOffLineMsg = true;
 					    } else {
@@ -120,7 +138,7 @@
 					    
 				  	}
 				  }
-			  })
+			  })*/
 
 			  $scope.toDashboard = function() {
 			  	switch(user.typeOfUser) {

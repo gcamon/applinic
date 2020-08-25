@@ -9571,7 +9571,7 @@ router.get("/user/patient/get-my-doctors",function(req,res){
 
           patient.save(function(err,info){
             if(err) throw err;
-            console.log("Doctor save in list");
+            console.log("Doctor saved in list");
           })
 
         } else {
@@ -12817,7 +12817,8 @@ router.get('/user/video',function(req,res){
       res.render("tokbox-video2",{tokBox: script})
     }
   } else {
-    res.redirect('login')
+    var lnk = '/login?peerId=' + req.query.peerId + "&roomId=" +  req.query.roomId + "&type=video" + "&mode=video";
+    res.redirect(lnk);
   }
   
 });
@@ -13042,12 +13043,18 @@ router.get("/user/audiocall",function(req,res){
 });
 
 router.post("/user/offline-message",function(req,res){
+  console.log(req.body)
   if(req.user){
     model.user.findOne({user_id: req.body.partnerId},{phone:1,firstname:1})
     .exec(function(err,user){
       if(err) throw err;
       if(user){
         var msgBody;
+        var id = uuid.v1();
+        if(req.body.type == "Video Chat"){
+          req.body.partnerURL = "/user/video?peerId=" + req.body.partnerId + "&roomId=" + id;
+        }
+
         if(req.body.isNow){
           msgBody = req.user.name + " wants to have  " + req.body.type + " conversation with you now." 
           + "\nClick the link below to engage in the conversation immediately."
@@ -13074,7 +13081,7 @@ router.post("/user/offline-message",function(req,res){
       function callBack(err,info) {
 
         if(err){
-          res.json({status: false})
+          res.json({status: false,message: "Error occured. message NOT sent. Please try again later."});
         }
 
         if(info){

@@ -6,7 +6,7 @@
     <link rel="apple-touch-icon" sizes="76x76" href="assets/img/apple-icon.png">
     <link rel="icon" type="image/png" href="assets/img/favicon.png">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-    <title>APPLINIC</title>
+    <title>APPLINIC - Video Chat</title>
     <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no' name='viewport' />
     <!--     Fonts and icons     -->
     <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700,200" rel="stylesheet" />
@@ -82,6 +82,10 @@
         float: left;
       }
 
+       .wrap {
+        width: 250px;
+      }
+
         @media screen and (max-width: 750px) {
           .card {
             box-shadow: none!important;
@@ -109,11 +113,23 @@
     <% include ./inner/nav4 %>
 
     <!-- End Navbar -->
-    <div id="otEmbedContainer" style="width:100%; height:660px; border: 2px solid re"></div>
+    <div id="otEmbedContainer" style="width:100%; height:660px;"></div>
+
+    <div id="loader" style="height: 120px;position: absolute;left: 50%;top: 110px;text-align: center;" class="wrap p-1" ng-cloak>
+      <div style="position: relative; left: -50%;">
+            <h6 class="mt-2 mb-1"> Connecting... </h6>
+            <span>Waiting for partner's video stream.</span>
+            <p class="mt-2" style="font-style: italic;" ng-show="isOffLineMsg">
+               <b class="text-danger">Oops! It appears your participant for this conversation is currently offline!</b><br>
+               Please try the link again later if you didn't see video stream  or <a href="" ng-click="toDashboard()"> click to go to your account's dashboard. </a>
+            </p>
+       </div>
+    </div>
     <!--<script src="https://tokbox.com/embed/embed/ot-embed.js?embedId=1cf8b23e-3a59-4012-a2ac-8fff36468112&room=DEFAULT_ROOM"></script> -->
      <script src="<%= tokBox %>"></script>       
 
     <div style="height: 300px"></div>
+
 
     <div class="clearfix"></div>
     <% include ./inner/footer %>

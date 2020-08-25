@@ -376,8 +376,10 @@ app.controller('loginController',["$scope","$http","$location","$window","$resou
     if(qVal[qVal.length - 1] === 'audio'){
       var url = "/user/audiocall" + window.location.search;
       $rootScope.landingCurrPageURL = url;
-    } else if(qVal[qVal.length - 1] === 'video') {
 
+    } else if(qVal[qVal.length - 1] === 'video') {
+      var url = "/user/video" + window.location.search;
+      $rootScope.landingCurrPageURL = url;
     }
   }
   

@@ -7485,10 +7485,11 @@ function($scope,$location,$rootScope,$http,ModalService,$interval,templateServic
 
 
   $scope.videoChat = function(patientObj) {
-    var source = profileDataService;   
-    source.get({userId: patientObj.patient_id },function(data) {
-      data.type = 'Video Call';
-      templateService.holdForSpecificPatient = data;
+    //var source = profileDataService;   
+    //source.get({userId: patientObj.patient_id },function(data) {
+      //data.type = 'Video Call';
+      templateService.holdForSpecificPatient = {user_id: patientObj.patient_id,
+       presence: patientObj.presence, name: patientObj.patient_firstname};
       ModalService.showModal({
         templateUrl: 'sending-communication-request.html',
         controller: "videoInitController"
@@ -7498,7 +7499,7 @@ function($scope,$location,$rootScope,$http,ModalService,$interval,templateServic
            
         });
       });
-    });   
+    //});   
   }
 
   $scope.referToAnother = function(p){
@@ -7597,19 +7598,24 @@ app.controller("redirectModal",["$rootScope","$window",function($rootScope,$wind
   $window.location.href = $rootScope.tokBoxUrl;//$rootScope.controlUrl //redirects to video call page
 }]);
 
-app.controller("videoInitController",["$scope","$window","localManager","mySocket","templateService",
-  function($scope,$window,localManager,mySocket,templateService){
+app.controller("videoInitController",["$scope","$window","localManager","mySocket","templateService","$filter","$http",
+  function($scope,$window,localManager,mySocket,templateService,$filter,$http){
     /******** Video call Logic *******/
   var user = localManager.getValue("resolveUser");
   user.firstname = user.firstname || user.name;
 
+  $scope.isConnected = true;
 
-  $scope.docInfo = templateService.holdForSpecificDoc || templateService.holdForSpecificPatient; // <== also used for patient signaling by doctor
+  $scope.offline = {};
+
+
+  $scope.docInfo = templateService.holdForSpecificPatient; // <== also used for patient signaling by doctor
 
   $scope.yes = function () {
     $scope.isYes = true;
   }
-  
+
+
   $scope.requestVideoCall = function(userId) {    
     var reqObj = {
       to: userId,
@@ -7620,8 +7626,16 @@ app.controller("videoInitController",["$scope","$window","localManager","mySocke
 
     // takes care of the call initator sending video call request.
     mySocket.emit("convsersation signaling",reqObj,function(data){
-      alert(data.message);
+      $scope.msg = data.message;
     })
+  }
+
+
+  if($scope.docInfo.presence) {
+    $scope.requestVideoCall($scope.docInfo.user_id)
+  } else {
+    $scope.msg = $scope.docInfo.name + " is currently offline."
+    $scope.isConnected = false;
   }
 
   $scope.requestAppointment = function(userId) {
@@ -7641,6 +7655,59 @@ app.controller("videoInitController",["$scope","$window","localManager","mySocke
     mySocket.emit("appointment signaling",reqObj,function(data){
       alert(data.message);
     })
+  }
+
+  $scope.confirmTime = function() {
+    $scope.offline.type = "Video Chat";
+    if(!$scope.offline.time){
+      alert("Please choose a suitable time for your conversation.")    
+    } else if($scope.offline.time !== 'now'){
+      var sptArr = $scope.offline.time.split('-');
+      var d = new Date();
+      var toNum = parseInt(sptArr[0]);
+      var timeOffset;
+      var timeFlag;
+
+      if(sptArr[1] == 'm'){
+        var minutes = d.getMinutes() + toNum;
+        d.setHours(d.getHours(),minutes);
+        timeOffset = sptArr[0];
+        timeFlag = "Minutes";
+      } else {
+        var hr = d.getHours() + toNum;
+        d.setHours(hr);
+        timeOffset = sptArr[0];
+        timeFlag = "Hour";
+      }
+
+      var tm = $filter('date')(d, 'shortTime');
+
+      $scope.loading = true;
+
+      $http.post("/user/offline-message",
+        {offset: timeOffset,time:tm,
+          timeFlag:timeFlag,type: $scope.offline.type,partnerId:$scope.docInfo.user_id})
+      .success(function(res){
+        $scope.loading = false;
+        if(res.status){
+          $scope.isSent = res.status;
+          $scope.bookedTimeMsg = res.msg
+        }
+      })
+
+    } else {
+      $scope.loading = true;
+      $http.post("/user/offline-message",
+        {type: $scope.offline.type,partnerId:$scope.docInfo.user_id,isNow: true })
+      .success(function(res){
+        $scope.loading = false;
+        if(res.status){
+          $scope.isSent = res.status;
+          $scope.bookedTimeMsg = res.msg
+        }
+      })
+    }
+
   }
 
 }]);  
@@ -13625,7 +13692,7 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
 
 
   $scope.openCaseNote = function(chat,isMobileView) {
-    
+
     if(isMobileView) {
       var who = (chat.partnerType === "Patient") ? true : false;
       if(who){
@@ -13865,10 +13932,12 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
 
 
   $scope.videoChat = function(partner) {
-    var source = profileDataService;   
-    source.get({userId: partner.partnerId},function(data) {
-      data.type = 'Video Call';
-      templateService.holdForSpecificPatient = data;
+    //var source = profileDataService;   
+   // source.get({userId: partner.partnerId},function(data) {
+      //data.type = 'Video Call';
+      var online = partner.status || partner.presence;
+
+      templateService.holdForSpecificPatient = {user_id: partner.partnerId, presence: online};
       ModalService.showModal({
         templateUrl: 'sending-communication-request.html',
         controller: "videoInitController"
@@ -13878,7 +13947,7 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
            
         });
       });
-    });   
+    //});   
   }
 
   $scope.audioChat = function(partner){

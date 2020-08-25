@@ -1923,15 +1923,12 @@
          <div class="modal fade">
           <div class="modal-dialog">
             <div class="modal-content">
-              <div class="modal-header">
-                   <h5 class="modal-title">Sending {{docInfo.type}} request takes few steps</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-
-            
+              <div class="modal-header">                       
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
               </div>
-              <div class="modal-body">
+              <!--<div class="modal-body">
                
                 <ul class="nav mb-1">
                     <li style="margin-bottom:10px;"><b>Step 1: </b> Your {{docInfo.type}} request will be sent to {{docInfo.title}} {{docInfo.title.firstname}} {{docInfo.lastname}}</li>
@@ -1940,37 +1937,21 @@
                     <li style="margin-bottom:10px;" ng-if="docInfo.type === 'Meet In-Person'"><b> step 3: </b>If the response includes acceptance to meet you in person, your appointment list will be updated indicating the time and venue of appointment with {{docInfo.title}} {{docInfo.firstname}} {{docInfo.lastname}}.</li>  
                                  
                 </ul>
-                <!--<b>Do you have any complain to back up this request? <b ng-click="yes()" style="cursor:pointer;color:green;text-decoration:underline">YES</b>-->
+                
                 <form ng-if= "isYes === true">
                     <textarea ng-model="user.complain" placeholder="Briefly write your complain" class="form-control" style="height:100px; padding:5px;"></textarea>
                 </form>
 
                 <div>
-                    <!--<button class="btn btn-primary" ng-click="sendCommunictionRequest()" data-dismiss="modal">OK, send {{docInfo.type}} request</button>-->
+                  
                     <button class="btn btn-primary" data-dismiss="modal" ng-click="requestVideoCall(docInfo.user_id)">OK, send {{docInfo.type}} request</button>
                 </div>
-              </div>
-              
-            
-          </div>
-        </div>
+              </div>-->
 
-     </script>
-
-      <script type="text/ng-template" id="audio-communication-request.html">
-         <div class="modal fade">
-          <div class="modal-dialog">
-            <div class="modal-content">
-              <div class="modal-header" style="position: relative;">
-                  <!--<h5 class="modal-title">Sending {{docInfo.type}} request takes few steps</h5>-->
-                  <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="position: absolute;right: 20px;top: 10px;padding: 10px">
-                    <span aria-hidden="true">&times;</span>
-                  </button>
-              </div>
               <div class="modal-body" style="text-align: center;" ng-show="isConnected">               
-                <h5 style="padding: 20px 0">Initializing Audio Connections...</h5>
-                <h4 style="margin: 20px 0"><i class="fa fa-phone" style="font-size: 28px;"></i></h4>
-                <p>You will be redirected to audio call interface as soon as connection set up is complete.</p>
+                <h5 style="padding: 20px 0">Initializing Video Connections...</h5>
+                <h4 style="margin: 20px 0"><i class="fa fa-video-camera" style="font-size: 28px;"></i></h4>
+                <p>You will be redirected to video chat interface as soon as connection set up is complete.</p>
               </div>
 
                <div class="modal-body p-2" ng-show="!isConnected">
@@ -2065,7 +2046,127 @@
               </div>
               <div ng-show="isSent">
                  <h6 class="text-center font-1_4">
-                    <i class="fa check"></i> Conversation Notification sent!
+                    <i class="fa check"></i> Video Chat notification sent!
+                 </h6>
+                 <p class="text-center">{{bookedTimeMsg}}</p>
+              </div>
+            </div>
+              
+            
+          </div>
+        </div>
+
+     </script>
+
+      <script type="text/ng-template" id="audio-communication-request.html">
+         <div class="modal fade">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header" style="position: relative;">
+                  <!--<h5 class="modal-title">Sending {{docInfo.type}} request takes few steps</h5>-->
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="position: absolute;right: 20px;top: 10px;padding: 10px">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+              </div>
+              <div class="modal-body" style="text-align: center;" ng-show="isConnected">               
+                <h5 style="padding: 20px 0">Initializing Audio Connections...</h5>
+                <h4 style="margin: 20px 0"><i class="fa fa-phone" style="font-size: 28px;"></i></h4>
+                <p>You will be redirected to audio chat interface as soon as connection set up is complete.</p>
+              </div>
+
+              <div class="modal-body p-2" ng-show="!isConnected">
+              <h6 class="mb-2" style="line-height: 25px">{{msg}}</h6>
+
+              <div ng-show="!isSent">
+              
+              <div>
+
+                <label>Choose a time suitable for you to reconnect this conversation.</label><br>
+
+                 <label class="custom-control custom-radio">
+                  Immediately
+                 <input type="radio" class="custom-control-input" value="now" ng-model="offline.time">
+                  <span class="custom-control-indicator"></span>
+                  <span class="custom-control-description" style="opacity:0;"></span>
+                </label><br>
+
+                <label class="custom-control custom-radio">
+                  in 5 Minutes
+                 <input type="radio" class="custom-control-input" value="5-m" ng-model="offline.time">
+                  <span class="custom-control-indicator"></span>
+                  <span class="custom-control-description" style="opacity:0;"></span>
+                </label><br>
+
+                 <label class="custom-control custom-radio">
+                  in 10 Minutes
+                 <input type="radio" class="custom-control-input" value="10-m" ng-model="offline.time">
+                  <span class="custom-control-indicator"></span>
+                  <span class="custom-control-description" style="opacity:0;"></span>
+                </label><br>
+
+
+                <label class="custom-control custom-radio">
+                  in 15 Minutes
+                 <input type="radio" class="custom-control-input" value="15-m" ng-model="offline.time">
+                  <span class="custom-control-indicator"></span>
+                  <span class="custom-control-description" style="opacity:0;"></span>
+                </label>  <br>
+
+                 <label class="custom-control custom-radio">
+                  in 30 Minutes
+                 <input type="radio" class="custom-control-input" value="30-m" ng-model="offline.time">
+                  <span class="custom-control-indicator"></span>
+                  <span class="custom-control-description" style="opacity:0;"></span>
+                </label>  <br>
+
+                 <label class="custom-control custom-radio">
+                  in 45 Minutes
+                 <input type="radio" class="custom-control-input" value="45-m" ng-model="offline.time">
+                  <span class="custom-control-indicator"></span>
+                  <span class="custom-control-description" style="opacity:0;"></span>
+                </label>  <br>
+
+                <label class="custom-control custom-radio">
+                  in 1 Hour
+                 <input type="radio" class="custom-control-input" value="1-h" ng-model="offline.time">
+                  <span class="custom-control-indicator"></span>
+                  <span class="custom-control-description" style="opacity:0;"></span>
+                </label> <br>
+
+                <label class="custom-control custom-radio">
+                 in 2 Hours
+                 <input type="radio" class="custom-control-input" value="2-h" ng-model="offline.time">
+                  <span class="custom-control-indicator"></span>
+                  <span class="custom-control-description" style="opacity:0;"></span>
+                </label> <br>
+                <label class="custom-control custom-radio">
+                  in 3 Hours
+                 <input type="radio" class="custom-control-input" value="3-h" ng-model="offline.time">
+                  <span class="custom-control-indicator"></span>
+                  <span class="custom-control-description" style="opacity:0;"></span>
+                </label>
+
+                <label class="custom-control custom-radio">
+                  in 4 Hours
+                 <input type="radio" class="custom-control-input" value="4-h" ng-model="offline.time">
+                  <span class="custom-control-indicator"></span>
+                  <span class="custom-control-description" style="opacity:0;"></span>
+                </label>
+
+                <label class="custom-control custom-radio">
+                  in 6 Hours
+                 <input type="radio" class="custom-control-input" value="6-h" ng-model="offline.time">
+                  <span class="custom-control-indicator"></span>
+                  <span class="custom-control-description" style="opacity:0;"></span>
+                </label>               
+              </div>
+              <div>
+                <button class="btn btn-success btn-lg" ng-click="confirmTime()"><i class="fa fa-spinner fa-pulse fa-1x fa-fw text-white" ng-if="loading"></i> <span ng-show="!loading">Confirm</span></button>
+              </div>
+              </div>
+              <div ng-show="isSent">
+                 <h6 class="text-center font-1_4">
+                    <i class="fa check"></i> Audio Chat Conversation Notification sent!
                  </h6>
                  <p class="text-center">{{bookedTimeMsg}}</p>
               </div>
