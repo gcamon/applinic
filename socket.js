@@ -695,11 +695,12 @@ io.sockets.on('connection', function(socket){
 						var createUrl = "/user/cam/" + details.patientId + "/" + controlId;
 						saveControlControl(createUrl,controlId,details);
 
-						var tkboxVUrl = "/user/video?peerId=" + details.to + "&roomId=" + controlId  //for tokbox room ID
+						var tkboxVUrl = "/user/video?peerId=" + details.to + "&roomId=" + controlId; //for tokbox room ID
+						var tkboxVUrl2 = "/user/video?peerId=" + details.from + "&roomId=" + controlId;
 
 						io.sockets.to(details.to).emit("video call able",{controlUrl: createUrl,message: details.title +
 						" " + details.name + " is waiting to have video conference with you!",
-						tokBoxVideoURL: tkboxVUrl,partnerDetails:details});
+						tokBoxVideoURL: tkboxVUrl2,partnerDetails:details});
 						cb({controlUrl: createUrl,tokBoxVideoURL: tkboxVUrl});
 					break;
 					default:

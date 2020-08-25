@@ -12816,10 +12816,26 @@ router.get('/user/video',function(req,res){
     } else {
       res.render("tokbox-video2",{tokBox: script})
     }
+    var name = (!req.user.name) ? (req.user.title + " " + req.user.firstname + " " + req.user.lastname) : req.user.name;
+    var tkboxVUrl2 = "/user/video?peerId=" + req.query.peerId + "&roomId=" + req.query.roomId;
+    var details = {patientId: req.user.user_id,type: req.user.type};
+
+    io.sockets.to(req.query.peerId).emit("video call able",{message: name + " is waiting to have video chat with you!",
+            tokBoxVideoURL: tkboxVUrl2,partnerDetails:details});
   } else {
     var lnk = '/login?peerId=' + req.query.peerId + "&roomId=" +  req.query.roomId + "&type=video" + "&mode=video";
     res.redirect(lnk);
   }
+
+  /*
+var tkboxVUrl = "/user/video?peerId=" + details.to + "&roomId=" + controlId; //for tokbox room ID
+            var tkboxVUrl2 = "/user/video?peerId=" + details.from + "&roomId=" + controlId;
+
+            io.sockets.to(details.to).emit("video call able",{controlUrl: createUrl,message: details.title +
+            " " + details.name + " is waiting to have video conference with you!",
+            tokBoxVideoURL: tkboxVUrl2,partnerDetails:details});
+            cb({controlUrl: createUrl,tokBoxVideoURL: tkboxVUrl});
+  */
   
 });
 
