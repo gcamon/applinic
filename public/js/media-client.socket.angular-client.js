@@ -120,7 +120,7 @@
 				  }
 		    });*/      
 
-			  /*mySocket.on("ping users",function(sockets){
+			  mySocket.on("ping users",function(sockets){
 			    invert = _.invert(sockets);
 
 			    if(!invert[user.user_id]){
@@ -138,7 +138,7 @@
 					    
 				  	}
 				  }
-			  })*/
+			  })
 
 			  $scope.toDashboard = function() {
 			  	switch(user.typeOfUser) {
