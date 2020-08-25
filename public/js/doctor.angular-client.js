@@ -7185,6 +7185,7 @@ app.controller("presenceSocketController",["$rootScope","$scope","$window","mySo
 
     function display() {
       var decide = confirm(response.message);
+      console.log(response)
       if(decide){
          $rootScope.controlUrl = response.controlUrl;
          $rootScope.tokBoxUrl = response.tokBoxVideoURL;

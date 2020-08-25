@@ -12819,11 +12819,12 @@ router.get('/user/video',function(req,res){
 
     if(req.query.isLink){
       var name = (!req.user.name) ? (req.user.title + " " + req.user.firstname + " " + req.user.lastname) : req.user.name;
-      var tkboxVUrl2 = "/user/video?peerId=" + req.query.peerId + "&roomId=" + req.query.roomId;
-      var details = {to: req.query.peerId,type: req.query.type,from: req.user.user_id,name: name};
+      var tkboxVUrl2 = "/user/video?peerId=" + req.user.user_id + "&roomId=" + req.query.roomId;
+      var patientId = (req.user.type == "Patient") ? req.user.user_id : null;
+      var details = {to: req.query.peerId,type: req.query.type,from: req.user.user_id,name: name,patientId: patientId};
+      var message = name + " is waiting to have video chat with you!"
 
-      io.sockets.to(req.query.peerId).emit("video call able",{message: name + " is waiting to have video chat with you!",
-              tokBoxVideoURL: tkboxVUrl2,partnerDetails:details});
+      io.sockets.to(req.query.peerId).emit("video call able",{message: message,tokBoxVideoURL: tkboxVUrl2,partnerDetails:details});
     }
 
   } else {
