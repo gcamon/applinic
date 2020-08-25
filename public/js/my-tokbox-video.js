@@ -311,6 +311,7 @@
 	        if(data) {  
 	        	$scope.loading = false;
 	          $scope.message = "Entry saved successfully!!!";
+	          addPatient();
 	        }
 	      });
     	} else {    		
@@ -382,6 +383,32 @@
 	     
 	    })
     }
+
+    function addPatient() {
+
+		  if(!$rootScope.patientsList) {
+
+		    $http.get("/user/doctor/my-patients")
+		    .success(function(list){
+
+		    	$rootScope.patientsList = list.doctor_patients_list;
+		     
+		      var elPos = $rootScope.patientsList.map(function(x){return x.patient_id}).indexOf(patient.id);
+
+		      if(elPos === -1){
+		      
+		        $http.put("/user/doctor/my-patients",{patientId: patient.id,date : new Date()})
+		        .success(function(response){
+		          if(response.status){
+		            console.log("Patient added to patients' list.")
+		          } 
+		        })
+		        
+		      }
+		     
+		    });
+	  	}
+  	}
 
 }]);
 
@@ -521,11 +548,40 @@ app.controller("labCtrl",["$scope","$http","labTests","$rootScope","$resource","
 	        	by: data.by,
 	        	type: "Laboratory Test"
 	        });
+
+	        addPatient();
+
 	      } else {
 	      	alert("Error: Investigation not sent!");
 	      }
 	    });
 	  }
+
+	  function addPatient() {
+
+		  if(!$rootScope.patientsList) {
+
+		    $http.get("/user/doctor/my-patients")
+		    .success(function(list){
+
+		    	$rootScope.patientsList = list.doctor_patients_list;
+		     
+		      var elPos = $rootScope.patientsList.map(function(x){return x.patient_id}).indexOf(patient.id);
+
+		      if(elPos === -1){
+		      
+		        $http.put("/user/doctor/my-patients",{patientId: patient.id,date : new Date()})
+		        .success(function(response){
+		          if(response.status){
+		            console.log("Patient added to patients' list.")
+		          } 
+		        })
+		        
+		      }
+		     
+		    });
+	  	}
+  	}
 
     function toPatient() {
     	patient.provisional_diagnosis = $rootScope.treatment.provisionalDiagnosis;
@@ -678,6 +734,8 @@ app.controller("radioCtrl",["$scope","$http","scanTests","$rootScope","$resource
 	        	by: data.by,
 	        	type: "Radiology Test"
 	        });
+
+	        addPatient();
 	      } else {
 	      	alert("Error: Investigation not sent!");
 	      }
@@ -699,6 +757,30 @@ app.controller("radioCtrl",["$scope","$http","scanTests","$rootScope","$resource
 	  $scope.fail = function (err) {
 	    console.error('Error!', err);
 	  };
+
+
+	  function addPatient() {
+		  if(!$rootScope.patientsList) {	  	
+		    $http.get("/user/doctor/my-patients")
+		    .success(function(list){
+
+		    	$rootScope.patientsList = list.doctor_patients_list;
+		     
+		      var elPos = $rootScope.patientsList.map(function(x){return x.patient_id}).indexOf(patient.id);
+
+		      if(elPos === -1){
+		      
+		        $http.put("/user/doctor/my-patients",{patientId: patient.id,date : new Date()})
+		        .success(function(response){
+		          if(response.status){
+		            console.log("Patient added to patients' list.")
+		          } 
+		        })
+		        
+		      }		     
+		    });
+	  	}
+  	}
 
     function toPatient(testList) {
     	patient.provisional_diagnosis = $rootScope.treatment.provisionalDiagnosis;
@@ -1193,7 +1275,8 @@ app.controller("prescriptionController",["$rootScope","$scope","$window","$http"
         	//controlId: control.controlId,
         	by: data.by,
         	type: "Prescriptions"
-        });		     
+        });	
+        addPatient();	     
       });
       
     }
@@ -1318,9 +1401,14 @@ app.controller("prescriptionController",["$rootScope","$scope","$window","$http"
 	        	//controlId: control.controlId,
 	        	by: data.by,
 	        	type: "Prescriptions"
-	        });		
+	        });
 
-        }     
+	        addPatient();
+
+        } else {
+        	alert("Some error occured. Please try again.");
+        	center.loading = false;
+        }    
        
       });
     }
@@ -1332,6 +1420,33 @@ app.controller("prescriptionController",["$rootScope","$scope","$window","$http"
 				$scope.patientMedicalRecord = data.prescriptions;
   		});
 		}
+
+		function addPatient() {
+
+			if(!$rootScope.patientsList) {
+		  	
+		    $http.get("/user/doctor/my-patients")
+		    .success(function(list){
+
+		    	$rootScope.patientsList = list.doctor_patients_list;
+		     
+		      var elPos = $rootScope.patientsList.map(function(x){return x.patient_id}).indexOf(patient.id);
+
+		      if(elPos === -1){
+		      
+		        $http.put("/user/doctor/my-patients",{patientId: patient.id,date : new Date()})
+		        .success(function(response){
+		          if(response.status){
+		            console.log("Patient added to patients' list.")
+		          } 
+		        })
+		        
+		      }
+		     
+		    });
+	  	}
+  	}
+
 }]);
 
 app.controller("treatmentPlanController",["$scope","$http","$rootScope",
@@ -1350,10 +1465,39 @@ app.controller("treatmentPlanController",["$scope","$http","$rootScope",
         headers : {'Content-Type': 'application/json'} 
         })
       .success(function(data) {
-        if(data.success)   
-          $scope.message = "Treatment Plan saved !!";       
+        if(data.success) { 
+          $scope.message = "Treatment Plan saved !!";  
+          addPatient();
+        }     
       });
 		}
+
+
+		function addPatient() {
+
+			if(!$rootScope.patientsList) {
+		  	
+		    $http.get("/user/doctor/my-patients")
+		    .success(function(list){
+
+		    	$rootScope.patientsList = list.doctor_patients_list;
+		     
+		      var elPos = $rootScope.patientsList.map(function(x){return x.patient_id}).indexOf(patient.id);
+
+		      if(elPos === -1){
+		      
+		        $http.put("/user/doctor/my-patients",{patientId: patient.id,date : new Date()})
+		        .success(function(response){
+		          if(response.status){
+		            console.log("Patient added to patients' list.")
+		          } 
+		        })
+		        
+		      }
+		     
+		    });
+	  	}
+  	}
 
 
 }]);
@@ -1426,9 +1570,9 @@ app.controller("appointmentModalController",["$scope","$http","$rootScope","mome
         return days;
     }
 
-		 $scope.treatment = $rootScope.treatment;
-		 $scope.treatment.appointment = {};
-		 var data = $rootScope.holdPatientData;
+		$scope.treatment = $rootScope.treatment;
+		$scope.treatment.appointment = {};
+		var data = $rootScope.holdPatientData;
 
     $scope.book = function(){ 
       var date = + new Date();
@@ -1444,6 +1588,7 @@ app.controller("appointmentModalController",["$scope","$http","$rootScope","mome
       $scope.treatment.appointment.profilePic = data.patient_profile_pic_url;
       sendData($scope.treatment,"/user/doctor/patient-session","POST");  
     }
+
    
     function sendData(data,url,method) {
     	$scope.loading = true;      
@@ -1456,12 +1601,40 @@ app.controller("appointmentModalController",["$scope","$http","$rootScope","mome
       .success(function(response) {   
         if(response) {
           $scope.message = "Appointment booked!!";
+          addPatient()
           //alert("Appointment booked, patient will be notified.");
           //mySocket.emit("realtime appointment notification",{to:data.patient_id});
         } 
         $scope.loading = false;  
       });
     }
+
+    function addPatient() {
+	    if(!$rootScope.patientsList) {
+
+		  	var id = data.patient_id || data.user_id;
+
+		    $http.get("/user/doctor/my-patients")
+		    .success(function(list){
+
+		    	$rootScope.patientsList = list.doctor_patients_list;
+		     
+		      var elPos = $rootScope.patientsList.map(function(x){return x.patient_id}).indexOf(id);
+
+		      if(elPos === -1){
+		      
+		        $http.put("/user/doctor/my-patients",{patientId: id,date : new Date()})
+		        .success(function(response){
+		          if(response.status){
+		            console.log("Patient added to patients' list.")
+		          } 
+		        })
+		        
+		      }
+		     
+		    });
+	  	}
+  	}
 
 }]);
 

@@ -1348,6 +1348,37 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
 
   $scope.chatPrivate = function(chat,isMobileView) {
 
+    var elPos;
+
+    var infer;
+
+    $http.get("/user/doctor/my-patients")
+    .success(function(list){
+     
+      elPos = list.doctor_patients_list.map(function(x){return x.patient_id}).indexOf(chat.partnerId);
+
+      if(elPos !== -1){
+        openCaseNote(chat,isMobileView);
+      } else {
+        infer = confirm("This patient will be added in your patients' list for further management if you proceed");
+        if(infer){
+          $http.put("/user/doctor/my-patients",{patientId: chat.partnerId,date : new Date()})
+          .success(function(response){
+            if(response.status){
+              openCaseNote(chat,isMobileView);
+            } else {
+              alert(response.message);
+            }
+          })
+        }
+      }
+     
+    });
+    
+  }
+
+  function openCaseNote(chat,isMobileView) {
+
     if(isMobileView) {
       var who = (chat.partnerType === "Patient") ? true : false;
       if(who){
@@ -1357,7 +1388,6 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
         localManager.setValue("currentPage",path)
         window.location.href = "/user/doctor";
       }
-
       return;
     }
 
@@ -1379,7 +1409,6 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
       var getUser = (user.typeOfUser === 'Patient') ? "manage a patient" : 'chat private with a doctor';
       alert("Oops! You can only " + getUser)
     }
-    
   }
 
   function reqModal(docObj) {
@@ -1616,11 +1645,6 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
 
   }
 
-
- 
-
-
-
     /***** Video Call Logic ********/
     //takes care of receiver accepting the video call 
     mySocket.on("receive request",function(data){
@@ -1724,7 +1748,6 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
         }
       }
     });
-
   }
 
   $scope.audioChat = function(partner){

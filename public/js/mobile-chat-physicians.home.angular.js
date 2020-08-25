@@ -1327,6 +1327,38 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
 
   $scope.chatPrivate = function(chat,isMobileView) {
 
+    var elPos;
+
+    var infer;
+
+    $http.get("/user/doctor/my-patients")
+    .success(function(list){
+     
+      elPos = list.doctor_patients_list.map(function(x){return x.patient_id}).indexOf(chat.partnerId);
+
+      if(elPos !== -1){
+        openCaseNote(chat,isMobileView);
+      } else {
+        infer = confirm("This patient will be added in your patients' list for further management if you proceed");
+        if(infer){
+          $http.put("/user/doctor/my-patients",{patientId: chat.partnerId,date : new Date()})
+          .success(function(response){
+            if(response.status){
+              openCaseNote(chat,isMobileView);
+            } else {
+              alert(response.message);
+            }
+          })
+        }
+      }
+     
+    });
+    
+  }
+
+
+  $scope.openCaseNote = function(chat,isMobileView) {
+
     if(isMobileView) {
       var who = (chat.partnerType === "Patient") ? true : false;
       if(who){
