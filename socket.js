@@ -690,6 +690,7 @@ io.sockets.on('connection', function(socket){
 			socket.on("conversation acceptance",function(details,cb){
 				//will be modified to accomadate other chosen time							
 				switch(details.time){
+					
 					case "now":
 					    var controlId = genRemoteId();
 						var createUrl = "/user/cam/" + details.patientId + "/" + controlId;
