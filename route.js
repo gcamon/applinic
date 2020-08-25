@@ -12826,16 +12826,6 @@ router.get('/user/video',function(req,res){
     var lnk = '/login?peerId=' + req.query.peerId + "&roomId=" +  req.query.roomId + "&type=video" + "&mode=video";
     res.redirect(lnk);
   }
-
-  /*
-var tkboxVUrl = "/user/video?peerId=" + details.to + "&roomId=" + controlId; //for tokbox room ID
-            var tkboxVUrl2 = "/user/video?peerId=" + details.from + "&roomId=" + controlId;
-
-            io.sockets.to(details.to).emit("video call able",{controlUrl: createUrl,message: details.title +
-            " " + details.name + " is waiting to have video conference with you!",
-            tokBoxVideoURL: tkboxVUrl2,partnerDetails:details});
-            cb({controlUrl: createUrl,tokBoxVideoURL: tkboxVUrl});
-  */
   
 });
 
@@ -13059,7 +13049,6 @@ router.get("/user/audiocall",function(req,res){
 });
 
 router.post("/user/offline-message",function(req,res){
-  console.log(req.body)
   if(req.user){
     model.user.findOne({user_id: req.body.partnerId},{phone:1,firstname:1})
     .exec(function(err,user){
@@ -13068,7 +13057,7 @@ router.post("/user/offline-message",function(req,res){
         var msgBody;
         var id = uuid.v1();
         if(req.body.type == "Video Chat"){
-          req.body.partnerURL = "/user/video?peerId=" + req.body.partnerId + "&roomId=" + id;
+          req.body.partnerURL = "/user/video?peerId=" + req.user.user_id + "&roomId=" + id;
         }
 
         if(req.body.isNow){
