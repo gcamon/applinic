@@ -116,10 +116,10 @@
     <div id="otEmbedContainer" style="width:100%; height:660px;"></div>
 
     <div id="loader" style="height: 120px;position: absolute;left: 50%;top: 110px;text-align: center;z-index: 0" class="wrap p-1" ng-cloak>
-      <div style="position: relative; left: -50%;">
+      <div style="position: relative; left: -50%;" ng-show="isOffLineMsg">
             <h6 class="mt-2 mb-1"> Connecting... </h6>
             <span>Waiting for partner's video stream.</span>
-            <p class="mt-2" style="font-style: italic;" ng-show="isOffLineMsg">
+            <p class="mt-2" style="font-style: italic;" >
                <b class="text-danger">Oops! It appears your participant for this conversation is currently offline!</b><br>
                Please try the link again later if you didn't see video stream  or <a href="" ng-click="toDashboard()"> click to go to your account's dashboard. </a>
             </p>
