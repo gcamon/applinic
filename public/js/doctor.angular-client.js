@@ -7742,8 +7742,8 @@ app.controller('audioInitController',["$scope","$window","localManager","mySocke
       } else {
         $scope.isConnected = false;
         $scope.msg = ($rootScope.holdPartner.name || $rootScope.holdPartner.firstname) 
-        + " is currently offline but we can forward audio call" 
-        + " invitation via SMS and you will be alerted when connection is re-established. Please stay logged in."
+        + " is offline but we can invite him to have audio chat with you at anytime you choose below. You will be notified when she connects. " 
+        + " Please stay logged in."
       }
 
       $scope.confirmTime = function() {
@@ -7780,11 +7780,12 @@ app.controller('audioInitController',["$scope","$window","localManager","mySocke
             $scope.loading = false;
             if(res.status){
               $scope.isSent = res.status;
-              $scope.bookedTimeMsg = res.msg
+              $scope.bookedTimeMsg = res.msg;
             }
-          })
+          });
 
         } else {
+          
           $scope.loading = true;
           $http.post("/user/offline-message",
             {partnerURL: response.partnerConnectURL,

@@ -13067,18 +13067,23 @@ router.post("/user/offline-message",function(req,res){
           + id + "&type=" + req.user.type + "&isLink=true";
         }
 
+
+        /*
+has invited you for an audio consultation in the next 5 minutes which is 9.16pm. Click the link below to join when it's time.   
+        */
+
         if(req.body.isNow){
-          msgBody = req.user.name + " wants to have  " + req.body.type + " conversation with you now." 
-          + "\nClick the link below to engage in the conversation immediately."
+          msgBody = req.user.name + " has invited you for  " + req.body.type + " now." 
+          + "\nClick the link below to join when it is immediately."
           + "\nhttps://applinic.com" + req.body.partnerURL;
         } else {
-          msgBody = req.user.name + " wants to have  " + req.body.type + " conversation with you in the next " 
-          + req.body.offset + " " + req.body.timeFlag + " of which time will be " + req.body.time
-          + "\nClick the link below to engage in the conversation when the time is due."
+          msgBody = req.user.name + " has invited you for  " + req.body.type + "  in the next " 
+          + req.body.offset + " " + req.body.timeFlag + " which is " + req.body.time
+          + "\nClick the link below to join when it is time."
           + "\nhttps://applinic.com" + req.body.partnerURL;
         }
 
-        var phoneNunber =  user.phone;//"+2348064245256";
+        var phoneNunber =  user.phone;
             
         sms.messages.create(
           {
@@ -13097,9 +13102,10 @@ router.post("/user/offline-message",function(req,res){
         }
 
         if(info){
-          var docMsg = "You have scheduled " + req.body.type + " conversation with " + user.firstname + " in the next " 
-          + req.body.offset + " " + req.body.timeFlag + " which will be " + req.body.time
-          + " Please ensure you stay logged in."
+          var docMsg = "You have scheduled " + req.body.type + " with " + user.firstname + " in the next " 
+          + req.body.offset + " " + req.body.timeFlag + " which is " + req.body.time
+          + " Please stay logged in." 
+          
           res.json({status: true,msg: docMsg})
         } 
       }
