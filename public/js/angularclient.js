@@ -16572,7 +16572,8 @@ app.service("toCenterService",["$resource",function($resource){
 
 app.controller("labTestControler",["$scope","$location","$http","templateService","localManager",
   "ModalService","labTests","$resource","$rootScope","cities","paymentVerificationService","billingAuthService",
-  "searchTestService","toCenterService","phoneCallService","reportFormFactory","digitalSigneePathologistService","billingAuthService2",
+  "searchTestService","toCenterService","phoneCallService","reportFormFactory","digitalSigneePathologistService",
+  "billingAuthService2",
   function($scope,$location,$http,templateService,localManager,ModalService,labTests,$resource,$rootScope,
     cities,paymentVerificationService,billingAuthService,searchTestService,
     toCenterService,phoneCallService,reportFormFactory,digitalSigneePathologistService,billingAuthService2) {

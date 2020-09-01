@@ -2960,9 +2960,9 @@ var basicRoute = function (model,sms,io,streams,client,transporter,opentok) {
               var firstname = (req.body.referral_pays == 'Yes') ? req.user.firstname : req.body.firstname;
               var lastname = (req.body.referral_pays == 'Yes') ? req.user.lastname : req.body.lastname;
               var title = (req.body.referral_pays == 'Yes') ? req.user.title : req.body.title;
-              var pic = (req.body.referral_pays == 'Yes') ? req.user.profile_pic_url : req.body.patient_profile_pic_url;
-              var userId = (req.body.referral_pays == 'Yes') ? req.user.user_id : req.body.patient_id;
-              var optMsg = (req.body.referral_pays == 'Yes') ? "The doctor chose the option to pay the bill." : "";
+              var pic = (req.body.referral_pays === 'Yes') ? req.user.profile_pic_url : req.body.patient_profile_pic_url;
+              var userId = (req.body.referral_pays === 'Yes') ? req.user.user_id : req.body.patient_id;
+              var optMsg = (req.body.referral_pays === 'Yes') ? "The doctor chose the option to pay the bill." : "";
               var address = (req.body.courierObj.address) ? req.body.courierObj.address : req.user.address;
               var callPhone = (req.body.courierObj.phone1) ? req.body.courierObj.phone1 : req.user.phone;
 

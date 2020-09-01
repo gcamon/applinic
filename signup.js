@@ -26,8 +26,8 @@ function genId(username) {
 var signupRoute = function(model,sms,geonames,paystack,io,transporter) {
 	passport.use('signup', new LocalStrategy({
 		usernameField : 'phone',
-	    passwordField : 'password',
-	    passReqToCallback : true 
+		passwordField : 'password',
+		passReqToCallback : true 
 	},
 	function(req,phone,password,done){
 		process.nextTick(function(){	
@@ -42,7 +42,7 @@ var signupRoute = function(model,sms,geonames,paystack,io,transporter) {
 						if(err) throw err;
 						if(data){
 							userphone.testuserPhone = true;
-							createUser();
+							updateUser();
 						} else {
 							return done(null, false, req.flash('signupMessage', 'Please you have to agree to our terms and conditions'));
 						}
@@ -62,9 +62,64 @@ var signupRoute = function(model,sms,geonames,paystack,io,transporter) {
 
 			}
 
-			function createUser() {
 
-					console.log(req.body)
+			function updateUser() {
+				user.email = req.body.email || "hjdsd@gmail.com";
+				user.password = salt.createHash(password);
+				user.username = req.body.username;
+				user.address = req.body.address;
+				user.country = req.body.countryName;
+				user.city = req.body.city;
+
+				user.save(function(err,info){
+					if(err) throw err;
+					console.log("User sign up updated!")
+
+					io.sockets.to(process.env.ADMIN_ID).emit("new user",
+						{city:user.city,phone: user.phone, date:user.date,firstname:user.firstname,name:user.name,title:user.title})
+
+				
+					var enames = (req.body.title && req.body.title !== "SC") ? (req.body.title + " " + req.body.lastname) : req.body.name;
+					var emsg = '<table><tr><th><h3  style="background-color:#85CE36; color: #fff; padding: 30px"><img src="https://applinic.com/assets/images/applinic1.png" style="width: 250px; height: auto"/><br/><span>Healthcare... anywhere, anytime.</span></h3></th></tr><tr><td style="font-family: Arial, Helvetica, sans-serif; font-size: 14px;"><b>Dear ' + enames 
+					+ "</b><br><br><b>Congratulations and welcome to Applinic Healthcare.</b><br><br>" 
+					+ "Your registration as an Applinic " + req.body.typeOfUser + " was successful.<br><br>"
+					+ "Your login details are as follows:<br><br>"
+					+ "Email: " + req.body.email + "<br><br>"
+					+ "Password: " + password + "<br><br>"
+					+ "For ease of usage, you may download the Applinic mobile application on google play store if you use an android phone." 
+					+ "<a href='https://play.google.com/store/apps/details?id=com.farelandsnigeria.applinic'>Click here </a> to do so now.<br><br>"
+					+ "To learn how to use Applinic, please read the information palettes on your dashboard after logging in and or " 
+					+ "<a href='https://youtu.be/CctDIyN_QA0'> click here</a> to watch Applinic videos for " +  req.body.typeOfUser + "<br><br>"
+					+ "We will occasionally send you information updates on our services and new packages through this mail and your registered phone no.<br><br>" 
+					+ "For further inquiries please call customer support on +2349080045678 <br><br>"
+					+ "You may log in to your account now by <a href='https://applinic.com/login'>clicking here.</a> <br><br>"
+					+ "Thank you for choosing Applinic.<br><br>"
+					+ "Sincerely,<br><br>"
+					+ "Applinic Team</td></tr></table>"
+
+
+					var mailOptions = {
+					  from: 'Applinic info@applinic.com',
+					  to: req.body.email,//req.body.email || 'ede.obinna27@gmail.com',
+					  subject: 'Your registration as an Applinic ' + req.body.typeOfUser + ' was successful',
+					  html: emsg
+					};
+
+					if(req.body.email)
+						transporter.sendMail(mailOptions, function(error, info){
+						  if (error) {
+							console.log(error);
+						  } else {
+							console.log('Email sent: ' + info.response);
+						  }
+						});
+
+					return done(null,user);
+								
+				})
+			}
+
+			function createUser() {
 					
 					if(req.body.agree === true && userphone.testuserPhone) {
 
@@ -79,17 +134,17 @@ var signupRoute = function(model,sms,geonames,paystack,io,transporter) {
 						var User = new model.user({
 							email: req.body.email,
 							user_id: uid,
-		          password: salt.createHash(password),
-		          phone: phone,
-		          admin: false,
-		          date: date,
-		          dob: req.body.dob || new Date(),
-		          country: req.body.countryName,
-		          type: (req.body.typeOfUser === "Special Center") ? "Doctor" : req.body.typeOfUser,
-		          city: req.body.city,
-		          firstname: req.body.firstname,
-		          lastname: req.body.lastname,
-		          username: req.body.username,
+				  password: salt.createHash(password),
+				  phone: phone,
+				  admin: false,
+				  date: date,
+				  dob: req.body.dob || new Date(),
+				  country: req.body.countryName,
+				  type: (req.body.typeOfUser === "Special Center") ? "Doctor" : req.body.typeOfUser,
+				  city: req.body.city,
+				  firstname: req.body.firstname,
+				  lastname: req.body.lastname,
+				  username: req.body.username,
 							address: req.body.address,
 							gender: req.body.gender,
 							title: (req.body.typeOfUser === "Special Center") ? "SC" : req.body.title,
@@ -112,7 +167,7 @@ var signupRoute = function(model,sms,geonames,paystack,io,transporter) {
 					});
 
 					User.ewallet = {
-						available_amount: (req.body.typeOfUser === "Patient") ? 0 : 0,
+						available_amount: 0,
 						transaction: []
 					}
 
@@ -123,8 +178,8 @@ var signupRoute = function(model,sms,geonames,paystack,io,transporter) {
 					  email: req.body.email,
 					  phone: req.body.phone,
 					  metadata: {
-					    user_id: uid,
-					    createdAt: new Date()
+						user_id: uid,
+						createdAt: new Date()
 					  }
 					});
 
@@ -132,9 +187,9 @@ var signupRoute = function(model,sms,geonames,paystack,io,transporter) {
 						//family account
 						User.family_accounts.unshift({
 							status: true,
-	            memberId: uid,
-	            name: req.body.firstname,
-	            main: true
+				memberId: uid,
+				name: req.body.firstname,
+				main: true
 						});
 						//medical record access key
 						User.mrak = uuid.v1();
@@ -176,18 +231,18 @@ var signupRoute = function(model,sms,geonames,paystack,io,transporter) {
 												patient_age: User.age,
 												presence: false,
 												initial_complaint: {
-										    	complaint: "This patient was added through invitation. No complaint was recorded.",
-										    	complaint_date: + new Date(),
-										    	date_received: + new Date(),
-										    	}
+												complaint: "This patient was added through invitation. No complaint was recorded.",
+												complaint_date: + new Date(),
+												date_received: + new Date(),
+												}
 											});
 
 											/*var transporter = nodemailer.createTransport({
 											  host: "mail.privateemail.com",
 											  port: 465,
 											  auth: {
-											    user: "info@applinic.com",
-											    pass: process.env.EMAIL_PASSWORD
+												user: "info@applinic.com",
+												pass: process.env.EMAIL_PASSWORD
 											  }
 											});*/
 
@@ -201,12 +256,12 @@ var signupRoute = function(model,sms,geonames,paystack,io,transporter) {
 											  + "<br><br> Please <a href='https://applinic.com/login'>log in </a> to manage your patient."
 											  + "<br><br> <b>Applinic Team</b></td></tr></table>"
 											};
-                     
+					 
 											transporter.sendMail(mailOptions, function(error, info){
 											  if (error) {
-											    console.log(error);
+												console.log(error);
 											  } else {
-											    console.log('Email sent: ' + info.response);
+												console.log('Email sent: ' + info.response);
 											  }
 											});
 
@@ -246,18 +301,18 @@ var signupRoute = function(model,sms,geonames,paystack,io,transporter) {
 												patient_age: referral.age,
 												presence: false,
 												initial_complaint: {
-										    	complaint: "This patient was added through invitation. No complaint was recorded.",
-										    	complaint_date: + new Date(),
-										    	date_received: + new Date(),
-										    }
+												complaint: "This patient was added through invitation. No complaint was recorded.",
+												complaint_date: + new Date(),
+												date_received: + new Date(),
+											}
 											});
 
 											/*var transporter = nodemailer.createTransport({
 											  host: "mail.privateemail.com",
 											  port: 465,
 											  auth: {
-											    user: "info@applinic.com",
-											    pass: process.env.EMAIL_PASSWORD
+												user: "info@applinic.com",
+												pass: process.env.EMAIL_PASSWORD
 											  }
 											});*/
 
@@ -274,9 +329,9 @@ var signupRoute = function(model,sms,geonames,paystack,io,transporter) {
 
 											transporter.sendMail(mailOptions, function(error, info){
 											  if (error) {
-											    console.log(error);
+												console.log(error);
 											  } else {
-											    console.log('Email sent: ' + info.response);
+												console.log('Email sent: ' + info.response);
 											  }
 											});
 
@@ -337,8 +392,8 @@ var signupRoute = function(model,sms,geonames,paystack,io,transporter) {
 								  host: "mail.privateemail.com",
 								  port: 465,
 								  auth: {
-								    user: "info@applinic.com",
-								    pass: process.env.EMAIL_PASSWORD
+									user: "info@applinic.com",
+									pass: process.env.EMAIL_PASSWORD
 								  }
 								});*/
 								var enames = (req.body.title && req.body.title !== "SC") ? (req.body.title + " " + req.body.lastname) : req.body.name;
@@ -370,9 +425,9 @@ var signupRoute = function(model,sms,geonames,paystack,io,transporter) {
 								if(req.body.email)
 									transporter.sendMail(mailOptions, function(error, info){
 									  if (error) {
-									    console.log(error);
+										console.log(error);
 									  } else {
-									    console.log('Email sent: ' + info.response);
+										console.log('Email sent: ' + info.response);
 									  }
 									});
 
@@ -397,14 +452,14 @@ var signupRoute = function(model,sms,geonames,paystack,io,transporter) {
 
 	router.post('/user/signup', function(req, res, next) {	
 	  passport.authenticate('signup', function(err, user, info) {   
-	    if (err) {
-	      return next(err); // will generate a 500 error
-	    }
-	    // Generate a JSON response reflecting signup
-	    if (!user) {	
-	      	res.send({error:true,message: "User phone number not active or wrong verification pin!"});
-	    } else {
-    		var msgBody = "Applinic login details Email " + req.body.email + " Password " + req.body.password;
+		if (err) {
+		  return next(err); // will generate a 500 error
+		}
+		// Generate a JSON response reflecting signup
+		if (!user) {	
+			res.send({error:true,message: "User phone number not active or wrong verification pin!"});
+		} else {
+			var msgBody = "Applinic login details Email " + req.body.email + " Password " + req.body.password;
 				var phoneNunber = (req.body.phone[0] !== "+") ? "+" + req.body.phone : req.body.phone;
 			
 				function callBack(err,info){
@@ -413,15 +468,15 @@ var signupRoute = function(model,sms,geonames,paystack,io,transporter) {
 				}
 
 				//sms.message.sendSms('Applinic',phoneNunber,msgBody,callBack); //"2348096461927"	    	
-    		sms.messages.create(
+			sms.messages.create(
 				  {
-				    to: phoneNunber,
-				    from: '+16467985692',
-				    body: msgBody
+					to: phoneNunber,
+					from: '+16467985692',
+					body: msgBody
 				  }
 				) 
 				res.send({error: false,message: "Success! Account created."}); 	
-	    }
+		}
 	  })(req, res, next)
 	});
 
@@ -456,9 +511,9 @@ var signupRoute = function(model,sms,geonames,paystack,io,transporter) {
 		if(!req.body.isPhoneCall) {
 			sms.messages.create(
 			  {
-			    to: phoneNunber,
-			    from: '+16467985692',
-			    body: msgBody,
+				to: phoneNunber,
+				from: '+16467985692',
+				body: msgBody,
 			  },
 			  callBack
 			)	   	
@@ -478,17 +533,17 @@ var signupRoute = function(model,sms,geonames,paystack,io,transporter) {
 		} else {
 			sms.calls 
 		  .create({
-		    url: "https://applinic.com/twiliovoicemsg?pin=" + genPin,
-		    to: req.body.phone,
-		    from: '+16467985692',
+			url: "https://applinic.com/twiliovoicemsg?pin=" + genPin,
+			to: req.body.phone,
+			from: '+16467985692',
 		  })
 		  .then(
-		    function(call){
-		      console.log(call.sid)
-		    },
-		    function(err) {
-		      console.log(err)
-		    }
+			function(call){
+			  console.log(call.sid)
+			},
+			function(err) {
+			  console.log(err)
+			}
 		  );
 		}	
 
@@ -598,75 +653,75 @@ var signupRoute = function(model,sms,geonames,paystack,io,transporter) {
 					}
 
 				 var recordObj = {
-	          center_name: req.user.name,
-	          test_to_run: [],
-	          center_address: req.user.address,
-	          center_city: req.user.city,
-	          center_country: req.user.country,
-	          center_phone: req.user.phone,
-	          center_id: req.user.user_id,
-	          patient_id: data.user_id,
-	          ref_id: refId,
-	          referral_firstname: req.user.name,
-	          referral_lastname: req.user.lastname,
-	          referral_title: req.user.title,
-	          sent_date: date,
-	          report: "Pending",
-	          conclusion: "Pending"
-	        }
+			  center_name: req.user.name,
+			  test_to_run: [],
+			  center_address: req.user.address,
+			  center_city: req.user.city,
+			  center_country: req.user.country,
+			  center_phone: req.user.phone,
+			  center_id: req.user.user_id,
+			  patient_id: data.user_id,
+			  ref_id: refId,
+			  referral_firstname: req.user.name,
+			  referral_lastname: req.user.lastname,
+			  referral_title: req.user.title,
+			  sent_date: date,
+			  report: "Pending",
+			  conclusion: "Pending"
+			}
 
 					var refObj = {};
 					refObj.ref_id = refId;
-		      refObj.referral_firstname = req.user.name;
-		      refObj.referral_id = req.user.user_id;  
+			  refObj.referral_firstname = req.user.name;
+			  refObj.referral_id = req.user.user_id;  
 					refObj.referral_email = req.user.email;
 					refObj.referral_phone = req.user.phone;
-		      refObj.date = date2;
-		      refObj.center_id = req.user.user_id
+			  refObj.date = date2;
+			  refObj.center_id = req.user.user_id
 					refObj.deleted = false
 					
 
-		      if(req.query.type === "laboratory") {
-			      refObj.laboratory = {
-			      	test_to_run : [],
-			        patient_firstname: data.firstname,
-			        patient_lastname: data.lastname,
-			        patient_profile_pic_url: data.profile_pic_url,
-			        patient_title: data.title,
-			        patient_gender: data.gender,
-			        patient_age: data.age,
-			        patient_phone: data.phone,
-			        patient_id: data.user_id,
-			        test_id: ref_id,
-			        attended: false,
-			      }	     
+			  if(req.query.type === "laboratory") {
+				  refObj.laboratory = {
+					test_to_run : [],
+					patient_firstname: data.firstname,
+					patient_lastname: data.lastname,
+					patient_profile_pic_url: data.profile_pic_url,
+					patient_title: data.title,
+					patient_gender: data.gender,
+					patient_age: data.age,
+					patient_phone: data.phone,
+					patient_id: data.user_id,
+					test_id: ref_id,
+					attended: false,
+				  }	     
 
-	          data.medical_records.laboratory_test.unshift(recordObj);
-	     
-		    	} else if(req.query.type === "radiology"){
-		    		refObj.radiology = {
-			      	test_to_run : [],
-			       	patient_firstname: data.firstname,
-			        patient_lastname: data.lastname,
-			        patient_profile_pic_url: data.profile_pic_url,
-			        patient_title: data.title,
-			        patient_gender: data.gender,
-			        patient_age: data.age,
-			        patient_phone: data.phone,
-			        patient_id: data.user_id,
-			        attended: false,
-			      }
-			      
-			      data.medical_records.radiology_test.unshift(recordObj);
-		    	}
+			  data.medical_records.laboratory_test.unshift(recordObj);
+		 
+				} else if(req.query.type === "radiology"){
+					refObj.radiology = {
+					test_to_run : [],
+					patient_firstname: data.firstname,
+					patient_lastname: data.lastname,
+					patient_profile_pic_url: data.profile_pic_url,
+					patient_title: data.title,
+					patient_gender: data.gender,
+					patient_age: data.age,
+					patient_phone: data.phone,
+					patient_id: data.user_id,
+					attended: false,
+				  }
+				  
+				  data.medical_records.radiology_test.unshift(recordObj);
+				}
 
 
-		    	
+				
 					var ref = new referral(refObj); 
 
 					ref.save(function(err,info){
-		        if(err) throw err;
-		      });
+				if(err) throw err;
+			  });
 
 				
 					data.save(function(err,info){});
@@ -682,17 +737,17 @@ var signupRoute = function(model,sms,geonames,paystack,io,transporter) {
 
 	router.post("/referral/:id/signup",function(req,res){
 		passport.authenticate('signup', function(err, user, info) {
-	    if (err) {
-	      return next(err); // will generate a 500 error
-	    }
-	    // Generate a JSON response reflecting signup
-	    if (!user) {	
-	      	res.send({error:true,errorMsg: "User with that email already exist!"});
-	    } else {
-	    	model.user.findOne({user_id: req.params.id},{ewallet:1}).exec(function(err,data){
-	    		if (err) throw err;
-	    		var date = + new Date();	    		
-	    		var transacObj = {
+		if (err) {
+		  return next(err); // will generate a 500 error
+		}
+		// Generate a JSON response reflecting signup
+		if (!user) {	
+			res.send({error:true,errorMsg: "User with that email already exist!"});
+		} else {
+			model.user.findOne({user_id: req.params.id},{ewallet:1}).exec(function(err,data){
+				if (err) throw err;
+				var date = + new Date();	    		
+				var transacObj = {
 						date: date,
 						source: "Admin",
 						actiivity: "Credit",
@@ -704,13 +759,13 @@ var signupRoute = function(model,sms,geonames,paystack,io,transporter) {
 					}
 					data.ewallet.available_amount += 100;
 					data.ewallet.transaction.push(transacObj);
-	    		data.save(function(err,info){
-	    			if(err) throw err;
- 	    		
-	    		});
-	    	})	    	
-	    	res.send({error: false});
-	    }
+				data.save(function(err,info){
+					if(err) throw err;
+				
+				});
+			})	    	
+			res.send({error: false});
+		}
 
 	  })(req, res, next);
 	});
@@ -728,12 +783,12 @@ var signupRoute = function(model,sms,geonames,paystack,io,transporter) {
 				var User = new model.user({
 					email: req.body.email,
 					user_id: uid,
-			    phone: req.body.phone,	                    
-			    type: req.body.typeOfUser,
-			    city: req.body.city,
-			    firstname: req.body.firstname,
-			    lastname: req.body.lastname,
-			    username: req.body.username,
+				phone: req.body.phone,	                    
+				type: req.body.typeOfUser,
+				city: req.body.city,
+				firstname: req.body.firstname,
+				lastname: req.body.lastname,
+				username: req.body.username,
 					address: req.body.address,		
 					profile_pic_url: "/download/profile_pic/nopic",						
 					country: req.body.country,
@@ -754,34 +809,34 @@ var signupRoute = function(model,sms,geonames,paystack,io,transporter) {
 				}
 			  
 			  User.save(function(err,info){			  	
-			  	if(err) throw err;  	
-			  	sendSMS(req.body.phone,profileUrl);
-			  	if(req.body.email)
-			  		sendEMAIL(req.body.email)	
+				if(err) throw err;  	
+				sendSMS(req.body.phone,profileUrl);
+				if(req.body.email)
+					sendEMAIL(req.body.email)	
 
-			  	switch(req.body.type){
-			  		case "doctor":
-			  			tellDoctor(patient);
-			  		break;
+				switch(req.body.type){
+					case "doctor":
+						tellDoctor(patient);
+					break;
 
-			  		case "laboratory":
-			  			patient.ref = ref;
-			  			patient.status = "em";
-			  			tellCenter(patient);
-			  		break;
+					case "laboratory":
+						patient.ref = ref;
+						patient.status = "em";
+						tellCenter(patient);
+					break;
 
-			  		case "radiology":
-			  			patient.ref = ref;
-			  			patient.status = "em";
-			  			tellCenter(patient);
-			  		break;
+					case "radiology":
+						patient.ref = ref;
+						patient.status = "em";
+						tellCenter(patient);
+					break;
 
-			  		default:
-			  		break;
-			  	}
+					default:
+					break;
+				}
 
 			  
-			  	
+				
 			  })
 
 			  
@@ -820,151 +875,151 @@ var signupRoute = function(model,sms,geonames,paystack,io,transporter) {
 				if(err) throw err;
 				try{
 				var centerObj = {
-	        name: req.user.name,
-	        address: req.user.address,
-	        city: req.user.city,
-	        country: req.user.country,
-	        phone: req.user.phone,
-	        id: req.user.user_id
-        }
+			name: req.user.name,
+			address: req.user.address,
+			city: req.user.city,
+			country: req.user.country,
+			phone: req.user.phone,
+			id: req.user.user_id
+		}
 
 				var refObj = {};
 				refObj.ref_id = patientObj.ref,
-	      refObj.referral_firstname = req.user.name;
-	      refObj.referral_lastname = req.user.lastname;
-	      refObj.referral_title = req.user.title;
-	      refObj.referral_id = req.user.user_id;  
-	      refObj.date = req.body.date;
+		  refObj.referral_firstname = req.user.name;
+		  refObj.referral_lastname = req.user.lastname;
+		  refObj.referral_title = req.user.title;
+		  refObj.referral_id = req.user.user_id;  
+		  refObj.date = req.body.date;
 
-	      if(req.body.type === "laboratory") {
-		      refObj.laboratory = {
-		      	test_to_run : [],
-		        patient_firstname: req.body.firstname,
-		        patient_lastname: req.body.lastname,
-		        patient_profile_pic_url: patientObj.patient_profile_pic_url,
-		        patient_title: req.body.title,
-		        patient_gender: req.body.gender,
-		        patient_age: req.body.age,
-		        patient_phone: req.body.phone,
-		        patient_id: patientObj.patient_id,
-		        attended: false,
+		  if(req.body.type === "laboratory") {
+			  refObj.laboratory = {
+				test_to_run : [],
+				patient_firstname: req.body.firstname,
+				patient_lastname: req.body.lastname,
+				patient_profile_pic_url: patientObj.patient_profile_pic_url,
+				patient_title: req.body.title,
+				patient_gender: req.body.gender,
+				patient_age: req.body.age,
+				patient_phone: req.body.phone,
+				patient_id: patientObj.patient_id,
+				attended: false,
 
-		      }
-	    	} else if(req.body.type === "radiology"){
-	    		refObj.radiology = {
-		      	test_to_run : [],
-		        patient_firstname: req.body.firstname,
-		        patient_lastname: req.body.lastname,
-		        patient_profile_pic_url: patientObj.patient_profile_pic_url,
-		        patient_title: req.body.title,
-		        patient_gender: req.body.gender,
-		        patient_age: req.body.age,
-		        patient_phone: req.body.phone,
-		        patient_id: patientObj.patient_id,
-		        attended: false,
-		      }
-	    	}
-	    	
+			  }
+			} else if(req.body.type === "radiology"){
+				refObj.radiology = {
+				test_to_run : [],
+				patient_firstname: req.body.firstname,
+				patient_lastname: req.body.lastname,
+				patient_profile_pic_url: patientObj.patient_profile_pic_url,
+				patient_title: req.body.title,
+				patient_gender: req.body.gender,
+				patient_age: req.body.age,
+				patient_phone: req.body.phone,
+				patient_id: patientObj.patient_id,
+				attended: false,
+			  }
+			}
+			
 
-	      result.referral.push(refObj);          
+		  result.referral.push(refObj);          
 
-        result.save(function(err,info){
-          if(err) throw err;
-          res.send(patientObj)
-        });
+		result.save(function(err,info){
+		  if(err) throw err;
+		  res.send(patientObj)
+		});
 
-        tellPatient(centerObj,patientObj.patient_id,patientObj.ref);
-      } catch(e){
-      	console.log(e.message)
-      }
+		tellPatient(centerObj,patientObj.patient_id,patientObj.ref);
+	  } catch(e){
+		console.log(e.message)
+	  }
 
 			})
 			
 			var tellPatient = function(centerInfo,patient_id,ref){
-        //remember sms will be sent to the patient
-        model.user.findOne({user_id: patient_id},{medical_records: 1,user_id:1}).exec(function(err,record){            
-          if(err) throw err;     
-          var recordObj = {
-            center_name: centerInfo.name,
-            test_to_run: [],
-            center_address: centerInfo.address,
-            center_city: centerInfo.city,
-            center_country: centerInfo.country,
-            center_phone: centerInfo.phone,
-            center_id: centerInfo.id,
-            patient_id: record.user_id,
-            ref_id: ref,
-            referral_firstname: centerInfo.name,
-            referral_lastname: req.user.lastname,
-            referral_title: req.user.title,
-            sent_date: req.body.date,
-            report: "Pending",
-            conclusion: "Pending"
-          }
+		//remember sms will be sent to the patient
+		model.user.findOne({user_id: patient_id},{medical_records: 1,user_id:1}).exec(function(err,record){            
+		  if(err) throw err;     
+		  var recordObj = {
+			center_name: centerInfo.name,
+			test_to_run: [],
+			center_address: centerInfo.address,
+			center_city: centerInfo.city,
+			center_country: centerInfo.country,
+			center_phone: centerInfo.phone,
+			center_id: centerInfo.id,
+			patient_id: record.user_id,
+			ref_id: ref,
+			referral_firstname: centerInfo.name,
+			referral_lastname: req.user.lastname,
+			referral_title: req.user.title,
+			sent_date: req.body.date,
+			report: "Pending",
+			conclusion: "Pending"
+		  }
 
-          switch(req.body.type){
-          	case "laboratory":
-          		record.medical_records.laboratory_test.unshift(recordObj);
-          	break;
-          	case "radiology":
-          		record.medical_records.radiology_test.unshift(recordObj);
-          	break;
-          	default:
-          	break;
-          }
-          
-          record.save(function(err,info){
-            if(err) {
-              throw err;
-            }
-            console.log(recordObj)   
-          });
+		  switch(req.body.type){
+			case "laboratory":
+				record.medical_records.laboratory_test.unshift(recordObj);
+			break;
+			case "radiology":
+				record.medical_records.radiology_test.unshift(recordObj);
+			break;
+			default:
+			break;
+		  }
+		  
+		  record.save(function(err,info){
+			if(err) {
+			  throw err;
+			}
+			console.log(recordObj)   
+		  });
 
-        });
-      }//end of tellpatient function
+		});
+	  }//end of tellpatient function
 		} //end of tellcenter function
 		
 	  function genId() {
 		var text = "";
 		var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz01234567899966600555777222";
 
-	    for( var i=0; i < 12; i++ )
-	        text += possible.charAt(Math.floor(Math.random() * possible.length));
-	    return text;
+		for( var i=0; i < 12; i++ )
+			text += possible.charAt(Math.floor(Math.random() * possible.length));
+		return text;
 	 }
 	  
 	});
 
 	router.get("/user/getCountries",function(req,res){
 	  model.geonames.find({},{_id:0,_v:0},function(err,countries){
-	    if(err) throw err;
-	    console.log(countries)
-	    res.send(countries);
+		if(err) throw err;
+		console.log(countries)
+		res.send(countries);
 	  }).sort({countryName:1})
 	});
 
 	router.get("/user/remote/geo-data",function(req,res){
 	  geonames.countryInfo({}) 
 	  .then(function(countries){
-	    return geonames.children({geonameId: req.query.geonameId})
+		return geonames.children({geonameId: req.query.geonameId})
 	  })
 	  .then(function(states){
-	  	if(!req.query.stateGeonameId) {
-	  		res.send(states.geonames);
-	  	} else {
-	  		return geonames.children({geonameId: req.query.stateGeonameId});
-	  	}
+		if(!req.query.stateGeonameId) {
+			res.send(states.geonames);
+		} else {
+			return geonames.children({geonameId: req.query.stateGeonameId});
+		}
 	  })
 	  .then(function(regions){
-	  	if(!req.query.regionGeonameId) {
-	  		console.log("did")
-	  		res.send(regions.geonames)
-	  	} else {
-	    	return geonames.children({geonameId: req.query.regionGeonameId});
-	  	}
+		if(!req.query.regionGeonameId) {
+			console.log("did")
+			res.send(regions.geonames)
+		} else {
+			return geonames.children({geonameId: req.query.regionGeonameId});
+		}
 	  })
 	  .then(function(cities){		  		
-	  	res.send(cities.geonames);
+		res.send(cities.geonames);
 	  })
 	  .catch(function(err){
 	  })
