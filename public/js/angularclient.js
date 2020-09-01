@@ -26017,7 +26017,6 @@ function($scope,$http,$rootScope){
     headers : {'Content-Type': 'application/json'} 
   })
   .success(function(response) {
-    console.log(response);
     $scope.reporters = response || [];      
   }); 
 
