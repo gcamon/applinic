@@ -46,8 +46,8 @@ app.controller("templatectrl",["$scope","$http","$filter","ModalService","$rootS
       c[0].innerText = conclusion || "";
       //r[0].innerText = remark || "";
       a[0].innerText = advise || "";
-      if(templateId === 'none' || undefined || null)
-        img[0].src = centerProfilePic || "https://applinic.com/download/profile_pic/1595932032387UhqU7.jpeg";
+      if(templateId === 'none')
+        img[0].src = centerProfilePic;
     }
   }
 
