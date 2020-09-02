@@ -2326,18 +2326,21 @@
                         </table>
                     </div>
 
-                    <div style="">
+                    <div class="pl-0 ml-0">
                         <button class="btn btn-info" ng-click="previewBill()">Preview</button>
                         <i class="fa fa-plus btn btn-simple btn-round" ng-click="addBill()" style="float: right;"></i>
                     </div>
                 </div>
-                <div ng-if="isPreviewBill">
-                     <a href="" ng-click="mainBill()" class="btn btn-simple btn-sm" style="float: right;"><i class="fa fa-pencil"></i> edit</a>
-                     <div>
-                         <!--<i class="fa fa-user-md" style="float: left;font-size: 34px;padding-right: 10px"></i> -->
-                         <div style="">
+                <div ng-if="isPreviewBill" id="billHTML"  style="position: relative;">
+                     <a href="" ng-click="mainBill()" class="btn btn-simple btn-sm" style="position: absolute;right: 10px;top: 20px"><i class="fa fa-pencil"></i> edit</a>
+                     <div> 
+                        <div style="display: inline-block;">
+                            <img src="{{checkLogIn.profile_pic_url}}" style="max-width: 120px;height: auto;">
+                        </div>
+                        <div style="display: inline-block;margin-left: 15px">
                              <strong>{{checkLogIn.name}} </strong>
                              <span style="display: block;">{{checkLogIn.specialty}}</span>
+                             <span style="display: block;">{{checkLogIn.email}}</span>
                              <span style="display: block;">{{checkLogIn.work_place}} {{checkLogIn.address}}, {{checkLogIn.city}} {{checkLogIn.country}}</span>
                          </div>
                      </div>
@@ -2355,23 +2358,21 @@
                             <td>{{i.sn}}</td>
                             <td style="width:60%;padding-left: 15px">{{i.description}}</td>
                             <td>{{toCurrency(i.cost)}}</td>
-                            <!--<td><i class="fa fa-times btn btn-neutral btn-sm" ng-if="billList.length > 1" ng-click="removeBill(i.sn)"></i></td>-->
                         </tbody>
-                        <caption><b>Total: </b>  {{toCurrency(totalBilled)}}</caption>
+                        <caption><b>Total: </b>  <span>{{toCurrency(totalBilled)}}</span></caption>
                     </table>
-                    <div class="mobile-item-display">                            
+                    <div class="mobile-item-display" >                            
                         <table class="table" ng-repeat=" i in billList">
                             <thead><th style="width:20%"></th> <td>{{i.sn}}</td></thead>
                             <thead><th style="width:20%"></th> <td>{{i.description}}</td></thead>
-                            <thead><th style="width:20%"></th> <td>{{toCurrency(i.cost)}}</td></thead>
-                            <!--<thead><th style="width:20%"></th> <td><i class="fa fa-times btn btn-neutral btn-sm" ng-if="billList.length > 1" ng-click="removeBill(i.sn)"></i></td></thead> -->                         
+                            <thead><th style="width:20%"></th> <td>{{toCurrency(i.cost)}}</td></thead>                         
                         </table>
                         <div>
-                            <b>Total: </b>  {{toCurrency(totalBilled)}}
+                            <b>Total: </b>  <span>{{toCurrency(totalBilled)}}</span>
                         </div>
                     </div>
-                    <div class="mt-1">
-                        <button class="btn btn-danger" ng-click="sendBill()" ng-if="!isSent"> <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i> {{(loading) ? "" : "Send Bill"}}</button> <i class="fa fa-check" ng-if="isSent"> Bill sent!!</i>
+                    <div class="mt-2 pl-0 ml-0">
+                        <button class="btn btn-danger" ng-click="sendBill()" ng-if="!isSent"> <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i> {{(loading) ? "" : "Send bill"}}</button> <i class="fa fa-check" ng-if="isSent"> Bill sent!!</i>
                     </div>
                 </div>
             </div>

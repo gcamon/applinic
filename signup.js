@@ -70,6 +70,10 @@ var signupRoute = function(model,sms,geonames,paystack,io,transporter) {
 				user.address = req.body.address;
 				user.country = req.body.countryName;
 				user.city = req.body.city;
+				user.ewallet = {
+					transaction: [],
+					available_amount: 0
+				}
 
 				user.save(function(err,info){
 					if(err) throw err;

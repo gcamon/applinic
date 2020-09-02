@@ -47,7 +47,7 @@ app.controller("templatectrl",["$scope","$http","$filter","ModalService","$rootS
       //r[0].innerText = remark || "";
       a[0].innerText = advise || "";
       //if(templateId === 'none' || undefined || null)
-        img[0].src = "https://applinic.com/download/profile_pic/1595932032387UhqU7.jpeg";
+        img[0].src = centerProfilePic || "https://applinic.com/download/profile_pic/1595932032387UhqU7.jpeg";
     }
   }
 
@@ -162,7 +162,7 @@ function($scope,$http,$rootScope){
     $scope.loading = true;
 
     for(var i = 0; i < $rootScope.addForLinux.length; i++) {
-      $rootScope.addForLinux[i].style.zoom = 0.53;
+      $rootScope.addForLinux[i].style.zoom = 0.50;
     }
 
     $rootScope.templateReportDetails.html = $rootScope.hml.html();
