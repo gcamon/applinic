@@ -17166,7 +17166,7 @@ app.controller("labTestControler",["$scope","$location","$http","templateService
   $scope.watchThisList = {};
   $scope.$watch('pickedForm.form',function(newVal,oldVal){
     if(newVal){
-      var sptArr = newVal.split('-');
+      var sptArr = newVal.split('*');
       var elemPos = $scope.testReport.map(function(x){return x.name}).indexOf(sptArr[2]);
       var test = $scope.testReport[elemPos] || {list: []};
       switch(sptArr[0]){
@@ -27467,7 +27467,7 @@ labTestList.listInfo = [{name: "ORAL GLOCOSE TOLERANCE TEST (OGTT)",id:1},{name:
 {name: "URINALYSIS",id:39},{name: "OCCULT  BLOOD  TEST ( OBT)",id:40},
 {name: "KIDNEY FUNCTION TEST",id:41},{name: "GLYCATED HAEMOGLOBIN ( HBA1C)",id:42},{name: "24 HRS URINE FOR CREATININE/CREATININE CLEARANCE",id:43},
 {name: "PROTEIN/CR. RATIO IN URINE",id:44},
-{name: "MICRO ALBUMIN  IN  URINE",id:45},{name: "D -  DIMER",id:46},{name: "CREATINE  KINASE MYOGLOBLIN  ( C K . MB )",id:47},
+{name: "MICRO ALBUMIN  IN  URINE",id:45},{name: "D-DIMER",id:46},{name: "CREATINE  KINASE MYOGLOBLIN  ( C K . MB )",id:47},
 {name: "IRON  FERRITIN",id:48},{name: "PROTEIN IN 24hrs URINE",id:49},
 {name: "PROTEIN  TOTAL IN C S F",id:50},{name: "AMYLASE  ( PANCREATIC )",id:51},{name: "Hs C - REACTIVE  PROTEIN   ( C R P ). QAUNTITATIVE",id:52},
 {name: "CREATININE CLEARANCE",id:53},
@@ -27543,7 +27543,7 @@ labTestList.listInfo4 = [{name: "PSA ( RAPID )",id:181},{name: "B-HCG QUANTITATI
 {name: "17-OH PROGESTERONE",id:211},{name: "INSULIN QUANTITATIVE",id:212},{name: "DHEA-S",id:213},
 
 {name: "PLASMA FREE METNEPHRINES",id:214},
-{name: "ANDROSTENEDIONE ASSAY",id:215},{name: "MINERALOCORTICOID ASSAY",id:216},{name: "B2- MICROGLOBULIN",id:217},
+{name: "ANDROSTENEDIONE ASSAY",id:215},{name: "MINERALOCORTICOID ASSAY",id:216},{name: "B2-MICROGLOBULIN",id:217},
 {name: "PTH (PARATHYROID HORMONE)",id:218},
 {name: "CA19-9",id:219},
 
