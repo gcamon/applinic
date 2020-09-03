@@ -253,7 +253,7 @@ var signupRoute = function(model,sms,geonames,paystack,io,transporter) {
 											var mailOptions = {
 											  from: 'Applinic info@applinic.com',
 											  to: referral.email,//referral.email,
-											  subject: 'New Doctor Added to Your Account',
+											  subject: 'New Patient Added to Your Account',
 											  html: '<table><tr><th><h3  style="background-color:#85CE36; color: #fff; padding: 30px"><img src="https://applinic.com/assets/images/applinic1.png" style="width: 250px; height: auto"/><br/><span>Healthcare... anywhere, anytime.</span></h3></th></tr><tr><td style="font-family: Arial, Helvetica, sans-serif;"><b>Dear ' 
 											  + referral.title + " " + referral.lastname 
 											  + ",<br><br>" + User.title + " " + User.lastname + " " + User.firstname + ", a Patient was added to your account in response to your invitation."
