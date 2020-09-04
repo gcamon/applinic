@@ -208,7 +208,7 @@ io.sockets.on('connection', function(socket){
 
 	      io.sockets.to(data.to).emit('new_msg',data);
 
-	      if(data.phone){
+	      /*if(data.phone){
 		      var phoneNunber =  data.phone || "+2348064245256";	      
 		      sms.messages.create(
 		        {
@@ -236,7 +236,7 @@ io.sockets.on('connection', function(socket){
 	            console.log(err)
 	          }
 	        );
-	    	}	       	
+	    	}	*/      	
 	       
 	      //save chats message
 	    	model.chats.findOne({chat_id: chatId},{messages:1,realTime:1}).exec(function(err,chats){
@@ -827,7 +827,7 @@ io.sockets.on('connection', function(socket){
         );
 
         var msgBody = "Hi, " + data.receiver_name + "," + "\nYour " + data.type + "- " + data.sender 
-        + " wants to have a chat with you on Applinic. Please log in https://applinic.com/login to attend. You can download the app in play store for android"
+        + " wants to have a chat with you on Applinic." + "\nhttps://applinic.com/mobile/chat-physician"
 	    //var phoneNunber =  req.body.phone;	      
 	        sms.messages.create(
 	        {

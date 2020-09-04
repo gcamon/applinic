@@ -11346,8 +11346,7 @@ router.post("/voicenotification",function(req,res){
 
 router.post("/inviteonlinecall",function(req,res){
   var twiml = new Voice();
-  console.log(req.query)
-  var textToSay = "Hi " + req.query.receiver + " , " + req.query.sender + " , a " + req.query.type + " , wants to have a chat with you on app linic .com, Please log in now to attend. Thank you."
+  var textToSay = "Hi " + " , " + " , a " + req.query.type + " , wants to have a chat with you on app linic .com, Please log in now to attend. Thank you."
   twiml.say({ voice: 'man',language: 'en-gb' },textToSay);
   res.type('text/xml');
   res.send(twiml.toString());
@@ -11506,6 +11505,7 @@ router.get("/user/firstline-doctors",function(req,res){
 
 router.post("/user/firstline-doctors",function(req,res){
   if(req.user){
+    console.log(req.body)
     if(req.body.phone){
       sms.calls 
       .create({
@@ -11523,9 +11523,11 @@ router.post("/user/firstline-doctors",function(req,res){
         }
       );
 
+      var lk = (req.user.type === "Doctor") ? "\nhttps://applinic.com/mobile/chat-physician" : "https://applinic.com/login";
+
       //send sms to the firstline doctor
-      var msgBody = "Please attend to this patient via chat on applinic\n" + req.user.title 
-      + " " + req.user.firstname + "\n" + req.user.phone;        
+      var msgBody = "Please attend to this chat request from someone in Applinic - " + req.user.title 
+      + " " + req.user.firstname + " " + req.user.phone + lk;        
       sms.messages.create(
         {
           to: req.body.phone || "",
@@ -11540,7 +11542,6 @@ router.post("/user/firstline-doctors",function(req,res){
       }
 
     } else {   
-      console.log(req.body)
       var id = req.body.user_id || req.body.partnerId;
       model.user.findOne({user_id: id})
       .exec(function(err,doc){
@@ -11567,10 +11568,10 @@ router.post("/user/firstline-doctors",function(req,res){
               console.log(err)
             }
           );
-
+          var lk = (doc.type === "Patient") ? "\nhttps://applinic.com/mobile/chat-physician" : "https://applinic.com/login";
           //send sms to the firstline doctor
-          var msgBody = "Please attend to this patient via chat on applinic\n" + req.user.title 
-          + " " + req.user.firstname + "\n" + req.user.phone;        
+          var msgBody = "Please attend to this chat request from someone in Applinic - " + req.user.title 
+          + " " + req.user.firstname + " " + req.user.phone + lk;        
           sms.messages.create(
             {
               to: doc.phone || "",

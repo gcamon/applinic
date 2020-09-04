@@ -17175,24 +17175,143 @@ app.controller("labTestControler",["$scope","$location","$http","templateService
           test.isAntigen = false;
           test.isQualitative = false;
           test.isOther = false;
+          test.isScreening = false;
+          test.isUrinalysis = false;
+          test.isFaeces = false;
+          test.isUrineSensitivity = false;
+          test.isBloodAnalysis = false;
+          test.isCulture = false;
+          test.isGramStaining = false;
         break;
         case '1':
           test.isAntigen = true;
           test.isRange = false;
           test.isQualitative = false;
           test.isOther = false;
+          test.isScreening = false;
+          test.isUrinalysis = false;
+          test.isFaeces = false;
+          test.isUrineSensitivity = false;
+          test.isBloodAnalysis = false;
+          test.isCulture = false;
+          test.isGramStaining = false;
         break;
         case '2':
           test.isAntigen = false;
           test.isRange = false;
           test.isOther = false;
           test.isQualitative = true;
+          test.isScreening = false;
+          test.isUrinalysis = false;
+          test.isFaeces = false;
+          test.isUrineSensitivity = false;
+          test.isBloodAnalysis = false;
+          test.isCulture = false;
+          test.isGramStaining = false;
+        break;
+        case '3':
+          test.isAntigen = false;
+          test.isRange = false;
+          test.isOther = false;
+          test.isQualitative = false;
+          test.isScreening = true;
+          test.isUrinalysis = false;
+          test.isFaeces = false;
+          test.isUrineSensitivity = false;
+          test.isBloodAnalysis = false;
+          test.isCulture = false;
+          test.isGramStaining = false;
+        break;
+        case '4':
+          test.isAntigen = false;
+          test.isRange = false;
+          test.isOther = false;
+          test.isQualitative = false;
+          test.isScreening = false;
+          test.isUrinalysis = true;
+          test.isFaeces = false;
+          test.isUrineSensitivity = false;
+          test.isBloodAnalysis = false;
+          test.isCulture = false;
+          test.isGramStaining = false;
+        break;
+        case '5':
+          test.isAntigen = false;
+          test.isRange = false;
+          test.isOther = false;
+          test.isQualitative = false;
+          test.isScreening = false;
+          test.isUrinalysis = false;
+          test.isFaeces = true;
+          test.isUrineSensitivity = false;
+          test.isBloodAnalysis = false;
+          test.isCulture = false;
+          test.isGramStaining = false;
+        break;
+        case '6':
+          test.isAntigen = false;
+          test.isRange = false;
+          test.isOther = false;
+          test.isQualitative = false;
+          test.isScreening = false;
+          test.isUrinalysis = false;
+          test.isFaeces = false;
+          test.isUrineSensitivity = true;
+          test.isBloodAnalysis = false;
+          test.isCulture = false;
+          test.isGramStaining = false;
+        break;
+        case '7':
+          test.isAntigen = false;
+          test.isRange = false;
+          test.isOther = false;
+          test.isQualitative = false;
+          test.isScreening = false;
+          test.isUrinalysis = false;
+          test.isFaeces = false;
+          test.isUrineSensitivity = false;
+          test.isBloodAnalysis = true;
+          test.isCulture = false;
+          test.isGramStaining = false;
+        break;
+        case '8':
+          test.isAntigen = false;
+          test.isRange = false;
+          test.isOther = false;
+          test.isQualitative = false;
+          test.isScreening = false;
+          test.isUrinalysis = false;
+          test.isFaeces = false;
+          test.isUrineSensitivity = false;
+          test.isBloodAnalysis = false;
+          test.isCulture = true;
+          test.isGramStaining = false;
+        break;
+        case '9':
+          test.isAntigen = false;
+          test.isRange = false;
+          test.isOther = false;
+          test.isQualitative = false;
+          test.isScreening = false;
+          test.isUrinalysis = false;
+          test.isFaeces = false;
+          test.isUrineSensitivity = false;
+          test.isBloodAnalysis = false;
+          test.isCulture = false;
+          test.isGramStaining = true
         break;
         default:
           test.isAntigen = false;
           test.isRange = false;
           test.isQualitative = false;
-          test.isOther = true
+          test.isOther = true;
+          test.isScreening = false;
+          test.isUrinalysis = false;
+          test.isFaeces = false;
+          test.isUrineSensitivity = false;
+          test.isBloodAnalysis = false;
+          test.isCulture = false;
+          test.isGramStaining = false;
         break;
       }
 
@@ -28902,6 +29021,154 @@ app.factory("reportFormFactory",function(){
       fields: [
         {
           r_name: "Malaria Parasite",
+          r_tum: "",
+          r_result: "",
+          r_range: "",
+          r_unit: "",
+          r_flag: ""
+        }
+      ]
+    },
+    {
+      form: 18,
+      name: "Screening",
+      type: "Screening",
+      fields: [
+        {
+          r_name: "Retroviral screening",
+          r_tum: "",
+          r_result: "",
+          r_range: "",
+          r_unit: "",
+          r_flag: ""
+        },
+        {
+          r_name: "Hepatitis B Virus",
+          r_tum: "",
+          r_result: "",
+          r_range: "",
+          r_unit: "",
+          r_flag: ""
+        },
+        {
+          r_name: "Hepatitis C Virus",
+          r_tum: "",
+          r_result: "",
+          r_range: "",
+          r_unit: "",
+          r_flag: ""
+        },
+        {
+          r_name: "VDRL",
+          r_tum: "",
+          r_result: "",
+          r_range: "",
+          r_unit: "",
+          r_flag: ""
+        }
+      ]
+    },
+    {
+      form: 19,
+      name: "Urine / HVS Microscopy",
+      type: "Sensitivity",
+      fields: [
+        {
+          r_name: "Pus cells",
+          r_tum: "",
+          r_result: "",
+          r_range: "",
+          r_unit: "",
+          r_flag: ""
+        },
+        {
+          r_name: "Epithelia cells",
+          r_tum: "",
+          r_result: "",
+          r_range: "",
+          r_unit: "",
+          r_flag: ""
+        },
+        {
+          r_name: "RBCs",
+          r_tum: "",
+          r_result: "",
+          r_range: "",
+          r_unit: "",
+          r_flag: ""
+        },
+        {
+          r_name: "Yeast cells",
+          r_tum: "",
+          r_result: "",
+          r_range: "",
+          r_unit: "",
+          r_flag: ""
+        },
+        {
+          r_name: "T. vaginalis",
+          r_tum: "",
+          r_result: "",
+          r_range: "",
+          r_unit: "",
+          r_flag: ""
+        }
+
+      ]
+    },
+    {
+      form: 20,
+      name: "Blood Film Analysis",
+      type: "Sensitivity",
+      fields: [
+        {
+          r_name: "RBC",
+          r_tum: "",
+          r_result: "",
+          r_range: "",
+          r_unit: "",
+          r_flag: ""
+        },
+        {
+          r_name: "WBC",
+          r_tum: "",
+          r_result: "",
+          r_range: "",
+          r_unit: "",
+          r_flag: ""
+        },
+        {
+          r_name: "Platelet",
+          r_tum: "",
+          r_result: "",
+          r_range: "",
+          r_unit: "",
+          r_flag: ""
+        }
+      ]
+    },
+    {
+      form: 21,
+      name: "Culture",
+      type: "Culture",
+      fields: [
+        {
+          r_name: "Culture",
+          r_tum: "",
+          r_result: "",
+          r_range: "",
+          r_unit: "",
+          r_flag: ""
+        }
+      ]
+    },
+    {
+      form: 22,
+      name: "Gram Staining",
+      type: "Gram Staining",
+      fields: [
+        {
+          r_name: "Gram Staining",
           r_tum: "",
           r_result: "",
           r_range: "",

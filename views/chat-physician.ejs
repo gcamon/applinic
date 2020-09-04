@@ -439,7 +439,7 @@ input:focus {
                     	<button type="button" class="close" ng-click="close('Cancel')" data-dismiss="modal" aria-hidden="true" style="color:red;font-size: 32px;z-index: 3;position: absolute;top: 8px;right: 15px">&times;</button>                         
                     </div>
                     <div class="modal-body">                       
-                       
+                        
                         <form ng-submit="enterAccount()" class="mt-3" ng-show="person.action == 'login'">   
                             <p  class="text-danger text-center"><b>{{loginMessage}}</b></p> 
                             <p class="text-success text-center">{{loginSuccess}}</p>                        
@@ -669,7 +669,7 @@ input:focus {
                     
             <div class="modal-body">
                 <form ng-submit="createAccount('Patient')" ng-show="!isPhoneverify"> 
-                    <p>Please quickly fill this form  so that the physician can know you.</p>
+                    <p>Please quickly fill this form  so that the physician can know you or <a href="" ng-click="signin()"><b>Log in</b> if you already have an account.</a></p>
                     <div class="pt-3">
                         <label><b>Title</b></label><br>
                         <select placeholder="title" class="form-control" ng-model="user.title" required>
