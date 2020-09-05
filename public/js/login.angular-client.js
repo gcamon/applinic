@@ -384,7 +384,7 @@ app.controller('loginController',["$scope","$http","$location","$window","$resou
     } else if(qVal[qVal.length - 1] === 'chat') {      
       if(qVal[1]){
         var sp = qVal[1].split('&');
-        loclocalManager.setValue("holdIdForChat",sp[0]);
+        localManager.setValue("holdIdForChat",sp[0]);
       }         
       var url = "/user/chat/general";
       $rootScope.landingCurrPageURL = url;
