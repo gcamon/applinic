@@ -11527,7 +11527,7 @@ router.post("/user/firstline-doctors",function(req,res){
 
       //send sms to the firstline doctor
       var msgBody = "Please attend to this chat request from someone in Applinic - " + req.user.title 
-      + " " + req.user.firstname + " " + req.user.phone + lk;        
+      + " " + req.user.firstname + " " + req.user.phone + "\n" + lk;        
       sms.messages.create(
         {
           to: req.body.phone || "",
@@ -11571,7 +11571,7 @@ router.post("/user/firstline-doctors",function(req,res){
           var lk = "/user/chat/general?partnerId=" + req.user.user_id;
           //send sms to the firstline doctor
           var msgBody = "Please attend to this chat request from someone in Applinic - " + req.user.title 
-          + " " + req.user.firstname + " " + req.user.phone + lk;        
+          + " " + req.user.firstname + " " + req.user.phone + "\n" + lk;      
           sms.messages.create(
             {
               to: doc.phone || "",
