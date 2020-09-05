@@ -594,6 +594,7 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
         $scope.partner = $rootScope.chatsList[elemPos]; 
       } else {
         $scope.partner = {};
+        $scope.partner.partnerId = (templateService.holdId) ? templateService.holdId : undefined;
       }
 
       if(templateService.holdId){
