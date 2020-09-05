@@ -11523,7 +11523,7 @@ router.post("/user/firstline-doctors",function(req,res){
         }
       );
 
-      var lk = "/user/chat/general?partnerId=" + req.user.user_id;
+      var lk = "https://applinic.com/user/chat/general?partnerId=" + req.user.user_id;
 
       //send sms to the firstline doctor
       var msgBody = "Please attend to this chat request from someone in Applinic - " + req.user.title 
@@ -11568,7 +11568,7 @@ router.post("/user/firstline-doctors",function(req,res){
               console.log(err)
             }
           );
-          var lk = "/user/chat/general?partnerId=" + req.user.user_id;
+          var lk = "https://applinic.com/user/chat/general?partnerId=" + req.user.user_id;
           //send sms to the firstline doctor
           var msgBody = "Please attend to this chat request from someone in Applinic - " + req.user.title 
           + " " + req.user.firstname + " " + req.user.phone + "\n" + lk;      
