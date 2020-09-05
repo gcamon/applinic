@@ -11347,7 +11347,7 @@ router.post("/voicenotification",function(req,res){
 router.post("/inviteonlinecall",function(req,res){
   var twiml = new Voice();
   var textToSay = "Hi " + " , " + " , a " + req.query.type + " , wants to have a chat with you on app linic .com, Please log in now to attend. Thank you."
-  twiml.say({ voice: 'man',language: 'en-gb' },textToSay);
+  twiml.say({ voice: 'man',language: 'en-us' },textToSay);
   res.type('text/xml');
   res.send(twiml.toString());
 });
