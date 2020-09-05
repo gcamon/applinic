@@ -669,7 +669,7 @@ input:focus {
                     
             <div class="modal-body">
                 <form ng-submit="createAccount('Patient')" ng-show="!isPhoneverify"> 
-                    <p>Please quickly fill this form  so that the physician can know you or <a href="" ng-click="signin()"><b>Log in</b> if you already have an account.</a></p>
+                    <p>Please quickly fill this form  so that the physician can know you <br> or <a href="" ng-click="signin()" class="text-danger" data-dismiss="modal"><b>Log in</b> if you already have an account.</a></p>
                     <div class="pt-3">
                         <label><b>Title</b></label><br>
                         <select placeholder="title" class="form-control" ng-model="user.title" required>

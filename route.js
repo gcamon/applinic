@@ -11324,7 +11324,7 @@ router.post("/twiliovoicemsg",function(req,res){
   var twiml = new Voice();
   var splitTxt = createVoiceText(req.query.pin);
   var textToSay = 'Your, applinic dot com phone verification pin is, '  + splitTxt + ', I repeat, ' + splitTxt + ', again, ' + splitTxt + 'thank you!';
-  twiml.say({ voice: 'man',language: 'en-gb' },textToSay);
+  twiml.say({ voice: 'man',language: 'en-us' },textToSay);
   res.type('text/xml');
   res.send(twiml.toString());
 });
@@ -11339,14 +11339,14 @@ router.post("/voicenotification",function(req,res){
   + ", a doctor just responded to your complaint.Please go to your dashboard on app linic for more details , Thank you."
    :  "Hello " + req.query.title + " , " + req.query.firstname + " , " +  
   " You have new consultation request. Please log on to your app linic dot com account and attend to the patient. Thank you" 
-  twiml.say({ voice: 'man',language: 'en-gb' },textToSay);
+  twiml.say({ voice: 'man',language: 'en-us' },textToSay);
   res.type('text/xml');
   res.send(twiml.toString());
 });
 
 router.post("/inviteonlinecall",function(req,res){
   var twiml = new Voice();
-  var textToSay = "Hi " + " , " + " , a " + req.query.type + " , wants to have a chat with you on app linic .com, Please log in now to attend. Thank you."
+  var textToSay = "Hi " + " , " + " , a " + req.query.type + " , wants to have a chat with you on app linic, Please log in now to attend. Thank you."
   twiml.say({ voice: 'man',language: 'en-us' },textToSay);
   res.type('text/xml');
   res.send(twiml.toString());
@@ -11354,8 +11354,8 @@ router.post("/inviteonlinecall",function(req,res){
 
 router.post("/pwrcall",function(req,res){
   var twiml = new Voice();
-  var textToSay = "Hi doc, a patient, submitted a complaint in patient waiting room , on applinic. Please  log on  and  attend."
-  twiml.say({ voice: 'man',language: 'en-gb' },textToSay);
+  var textToSay = "Hi doc, a patient, submitted a complaint in patient waiting room , on app linic. Please  log on  and  attend."
+  twiml.say({ voice: 'man',language: 'en-us' },textToSay);
   res.type('text/xml');
   res.send(twiml.toString());
 });
