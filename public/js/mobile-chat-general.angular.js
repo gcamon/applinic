@@ -528,6 +528,7 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
     deviceCheckService,$compile,$interval,$http,localManager,profileDataService){
 
 
+
    
     $rootScope.userLoginService = function() {
       $http.get("/user/getuser")
@@ -552,25 +553,26 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
       })
     }
 
+
     $http.get("/user/chats")
     .success(function(data){
       $rootScope.chatsList = data;
+      $rootScope.userLoginService();
     });
-
-
-
-
-    $rootScope.userLoginService();
+   
 
     var landingUserChatPresenceService = function() {
 
-
+    var qStr = window.location.search;
+    if(qStr) {
+      var qVal = qStr.split('=');
+      templateService.holdId = qVal[qVal.length - 1];
+    }
 
     //$rootScope.checkLogIn = localManager.getValue("resolveUser") || {}
     //$rootScope.chatsList = localManager.getValue("holdChatList") || [];
 
     templateService.holdId = templateService.holdId || localManager.getValue("holdIdForChat");
-    alert(templateService.holdId)
    
     if(deviceCheckService.getDeviceType() && !templateService.holdId){
       // switchesm to chat list for mobile views 
@@ -605,12 +607,14 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
       } else {
         $scope.partner = {};
         $scope.partner.partnerId = (templateService.holdId) ? templateService.holdId : undefined;
+
       }
 
       if(templateService.holdId){
         localManager.removeItem('holdIdForChat');
       } 
     }
+
 
     initChat();
 
