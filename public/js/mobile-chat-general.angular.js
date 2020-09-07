@@ -666,7 +666,6 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
         invert = _.invert(sockets);
         if(!invert[$rootScope.checkLogIn.user_id]){
           mySocket.emit('join',{userId: $rootScope.checkLogIn.user_id});
-          getUsersOnline()
         } 
       }
     })
