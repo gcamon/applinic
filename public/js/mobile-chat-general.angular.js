@@ -570,6 +570,7 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
     //$rootScope.chatsList = localManager.getValue("holdChatList") || [];
 
     templateService.holdId = templateService.holdId || localManager.getValue("holdIdForChat");
+    alert(templateService.holdId)
    
     if(deviceCheckService.getDeviceType() && !templateService.holdId){
       // switchesm to chat list for mobile views 
