@@ -796,7 +796,6 @@ io.sockets.on('connection', function(socket){
 
     //doc sent new prescriptions to the room during video chat where all members in the room will see it and ask questions if need be
     socket.on("new drugs",function(data){
-    	console.log("is socket drug:", data)
     	io.sockets.to(data.controlId).emit("new prescription",data);
     });
 
@@ -843,7 +842,6 @@ io.sockets.on('connection', function(socket){
 
     function leave() {
       console.log('-- ' + socket.id + ' left --');
-      console.log(connects);
       delete connects[socket.id];
       //io.sockets.emit("real time presence",connects);     
       //io.sockets.emit("real time presence",{socketId: socket.id,status: false})

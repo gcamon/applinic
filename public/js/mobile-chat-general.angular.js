@@ -548,8 +548,17 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
           $rootScope.checkLogIn = {};
           landingUserChatPresenceService();        
         }
+
       })
     }
+
+    $http.get("/user/chats")
+    .success(function(data){
+      $rootScope.chatsList = data;
+    });
+
+
+
 
     $rootScope.userLoginService();
 
@@ -558,7 +567,7 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
 
 
     //$rootScope.checkLogIn = localManager.getValue("resolveUser") || {}
-    $rootScope.chatsList = localManager.getValue("holdChatList") || [];
+    //$rootScope.chatsList = localManager.getValue("holdChatList") || [];
 
     templateService.holdId = templateService.holdId || localManager.getValue("holdIdForChat");
    
@@ -636,7 +645,7 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
 
     //$scope.partner = {};
   
-    function getUsersOnline() {
+    function getUsersOnline(initiated) {
       mySocket.emit("check presence",{status: true},function(res){
         $rootScope.sockets = res;
         invert = _.invert($rootScope.sockets);
@@ -657,6 +666,7 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
         invert = _.invert(sockets);
         if(!invert[$rootScope.checkLogIn.user_id]){
           mySocket.emit('join',{userId: $rootScope.checkLogIn.user_id});
+          getUsersOnline()
         } 
       }
     })
