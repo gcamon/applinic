@@ -581,6 +581,7 @@
 										<i class="fa fa-minus btn btn-neutral text-muted" ng-show="report.list.length > 1" ng-click="removeReport(report)"></i>
 									</section>
 								</div>
+
 								<div ng-show="report.isSensitivity">
 									<!--<form ng-repeat="i in report.list" class="row p-1">
 										<div class="col-md-2">
@@ -654,8 +655,8 @@
 									</div>
 								</div>
 								
-								<hr>
 								
+
 								<div ng-show="report.isBloodAnalysis">
 									<form ng-repeat="i in report.list" class="row p-1">
 										<div class="col-md-2">
@@ -664,28 +665,28 @@
 										<div class="col-md-8">
 											<!--<textarea ng-model="i.r_result" ng-show="i.r_name === 'Pus cells' || i.r_name === 'Culture'"></textarea>-->
 
-											<select ng-model="i.r_result" ng-show="i.r_name === 'RBC'">						
+											<select ng-model="i.r_result_alt" ng-show="i.r_name === 'RBC'">						
 												<option>Normal</option>
 												<option>Anisocytosis</option>
 												<option>Poikilocytosis</option>
 											</select>
 
-											<select ng-model="i.r_result" ng-show="i.r_name === 'WBC'">						
+											<select ng-model="i.r_result_alt" ng-show="i.r_name === 'WBC'">						
 												<option>Normal</option>
 												<option>Mild toxic granulation of neutrophils</option>
 												<option>Marked toxic granulation of neutrophils</option>
 											</select>
 
-											<select ng-model="i.r_result" ng-show="i.r_name === 'Platelet'">				
+											<select ng-model="i.r_result_alt" ng-show="i.r_name === 'Platelet'">				
 												<option>Normal</option>
 												<option>Giant cells</option>
 											</select>
 
-											<textarea ng-model="i.r_result" ng-show="i.r_name === '' || i.r_name === undefined"></textarea>
+											<textarea ng-model="i.r_result_alt" ng-show="i.r_name === '' || i.r_name === undefined"></textarea>
 										</div>
 										
 										<div class="col-md-2">
-											<select ng-model="i.r_result_alt">
+											<select ng-model="i.r_result_alt1">
 												<option></option>							
 												<option>+</option>
 												<option>++</option>
@@ -767,6 +768,7 @@
 										<i class="fa fa-minus btn btn-neutral text-muted" ng-show="report.list.length > 1" ng-click="removeReport(report)"></i>
 									</section>
 								</div>
+								<hr>
 								<!--<table>
 									<thead>
 										<th></th>

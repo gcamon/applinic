@@ -17215,16 +17215,19 @@ app.controller("labTestControler",["$scope","$location","$http","templateService
         fg = item.flag.split('-');
         switch(fg[1]){
           case '':
-            sensivityForm[1].r_result += fg[0] + ", "
+            sensivityForm[1].r_result += (sensivityForm[1].r_result !== "") ? (', ' + fg[0] ) : ( '' + fg[0]) 
           break;
           case '1':
-            sensivityForm[0].r_result += fg[0] + " + " + ', '
+            sensivityForm[0].r_result += (sensivityForm[0].r_result !== "") ? (', ' + fg[0] + " + " ) :
+             ( '' + fg[0] + ' + ')
           break;
           case '2':
-            sensivityForm[0].r_result += fg[0] + " ++ " + ', '
+            sensivityForm[0].r_result += (sensivityForm[0].r_result !== "") ? (', ' + fg[0] + " ++ " ) :
+             ( '' + fg[0] + ' ++ ')
           break;
           case '3':
-            sensivityForm[0].r_result += fg[0] + " +++ " + ', '
+            sensivityForm[0].r_result += (sensivityForm[0].r_result !== "") ? (', ' + fg[0] + " +++ " ) :
+             ( '' + fg[0] + ' +++ ')
           break;
         }
       }
@@ -17425,7 +17428,7 @@ app.controller("labTestControler",["$scope","$location","$http","templateService
         $scope.watchThisList[strArray[$scope.strCount]] = test.list;    
         var objList = Object.getOwnPropertyNames($scope.watchThisList);
         var str = "watchThisList." + objList[$scope.strCount];  
-        console.log(str)
+       
         $scope.strCount++;
         var rangeArr;
         var rg1;
@@ -17453,7 +17456,7 @@ app.controller("labTestControler",["$scope","$location","$http","templateService
                   } else {
                     item.r_flag = "Range or Value incorrect";
                   }
-                }
+                } 
               })
             }
           },true)
@@ -17557,7 +17560,11 @@ app.controller("labTestControler",["$scope","$location","$http","templateService
             // this could be modified to persist at the backend later
             //localManager.removeItem(originalName)
             localManager.setValue(originalName,localTests)
-          }
+
+          } else if(test.list[i].r_result_alt && test.list[i].r_result_alt !== ""){
+            test.list[i].r_result = (test.list[i].r_result_alt1) ? 
+            (test.list[i].r_result_alt + " " + test.list[i].r_result_alt1) : test.list[i].r_result_alt;
+          } 
         }
       }
     })
