@@ -1201,12 +1201,12 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
   var elPos;
 
   mySocket.on("new_msg", function(data) {
-    if(currView !== "/general-chat") {
+    /*if(currView !== "/general-chat") {
       $rootScope.$broadcast("unattendedMsg",true);
       templateService.playAudio(2);   
     } else {
       mySocket.emit("chat in-view",data); // use to reset a chat that has been read at the backend as read in db
-    }
+    }*/
 
     var elemPos = $rootScope.chatsList.map(function(x){return x.partnerId}).indexOf(data.from);
     if(elemPos !== -1) {

@@ -17164,6 +17164,74 @@ app.controller("labTestControler",["$scope","$location","$http","templateService
   //the numer of test form watch will be limited by the length of this list
   var strArray = ["a","b","c","d","e","f","g","h","i","j","k","l","m","o","p","q","r","s","t","u","v","w","x","z"]
   $scope.watchThisList = {};
+
+
+  if(!localManager.getValue('sensivityDrugs')) {
+    $scope.sensivityDrugs = [{name: "Ciproflox"},{name: "Norfloxacin"},
+    {name: "Gentamycin"},{name: "Amoxil"},
+    {name: "Rifampicin"},{name: "Erythromycin"},{name: "Chloramphenicol"},{name: "Ampiclox"},{name: "Levofloxacin"},
+    {name: "Tarivid"},{name: "Reflacine"},{name: "Augmentin"},{name: "Gentamycin"},{name: "Streptomycin"},
+    {name: "Ceporex"},{name: "Ampicillin"},
+    {name: "Pefloxacin"},{name: "Nalidixic Acid"},{name: "Septrin"}];
+  } else {
+    $scope.sensivityDrugs = localManager.getValue('sensivityDrugs');
+  }
+
+
+  
+
+  function initSensitivity(test) {
+
+    if(test){
+      test.list = (localManager.getValue("Sensitivity")) ?
+      localManager.getValue("Sensitivity") : reportFormList[23].fields;
+
+
+      $scope.$watch('sensivityDrugs',function(newVal,oldVal){
+        if(oldVal) {
+          calculateSensivity(newVal,test.list)
+        }
+      },true);
+    }
+
+  }
+
+  $scope.addDrug = function(){
+    $scope.sensivityDrugs.push({});
+  }
+
+  $scope.removeDrug = function(){
+    $scope.sensivityDrugs.pop();
+  }
+
+ 
+
+  function calculateSensivity(list,sensivityForm) {
+    var fg;
+    sensivityForm[0].r_result = "";
+    sensivityForm[1].r_result = "";
+    list.forEach(function(item){
+      if(item.flag){
+        fg = item.flag.split('-');
+        switch(fg[1]){
+          case '':
+            sensivityForm[1].r_result += fg[0] + ", "
+          break;
+          case '1':
+            sensivityForm[0].r_result += fg[0] + " + " + ', '
+          break;
+          case '2':
+            sensivityForm[0].r_result += fg[0] + " ++ " + ', '
+          break;
+          case '3':
+            sensivityForm[0].r_result += fg[0] + " +++ " + ', '
+          break;
+        }
+      }
+    })
+  }
+
+
   $scope.$watch('pickedForm.form',function(newVal,oldVal){
     if(newVal){
       var sptArr = newVal.split('*');
@@ -17182,6 +17250,7 @@ app.controller("labTestControler",["$scope","$location","$http","templateService
           test.isBloodAnalysis = false;
           test.isCulture = false;
           test.isGramStaining = false;
+          test.isSensitivity = false;
         break;
         case '1':
           test.isAntigen = true;
@@ -17195,6 +17264,7 @@ app.controller("labTestControler",["$scope","$location","$http","templateService
           test.isBloodAnalysis = false;
           test.isCulture = false;
           test.isGramStaining = false;
+          test.isSensitivity = false;
         break;
         case '2':
           test.isAntigen = false;
@@ -17208,6 +17278,7 @@ app.controller("labTestControler",["$scope","$location","$http","templateService
           test.isBloodAnalysis = false;
           test.isCulture = false;
           test.isGramStaining = false;
+          test.isSensitivity = false;
         break;
         case '3':
           test.isAntigen = false;
@@ -17221,6 +17292,7 @@ app.controller("labTestControler",["$scope","$location","$http","templateService
           test.isBloodAnalysis = false;
           test.isCulture = false;
           test.isGramStaining = false;
+          test.isSensitivity = false;
         break;
         case '4':
           test.isAntigen = false;
@@ -17234,6 +17306,7 @@ app.controller("labTestControler",["$scope","$location","$http","templateService
           test.isBloodAnalysis = false;
           test.isCulture = false;
           test.isGramStaining = false;
+          test.isSensitivity = false;
         break;
         case '5':
           test.isAntigen = false;
@@ -17247,6 +17320,7 @@ app.controller("labTestControler",["$scope","$location","$http","templateService
           test.isBloodAnalysis = false;
           test.isCulture = false;
           test.isGramStaining = false;
+          test.isSensitivity = false;
         break;
         case '6':
           test.isAntigen = false;
@@ -17260,6 +17334,7 @@ app.controller("labTestControler",["$scope","$location","$http","templateService
           test.isBloodAnalysis = false;
           test.isCulture = false;
           test.isGramStaining = false;
+          test.isSensitivity = false;
         break;
         case '7':
           test.isAntigen = false;
@@ -17273,6 +17348,7 @@ app.controller("labTestControler",["$scope","$location","$http","templateService
           test.isBloodAnalysis = true;
           test.isCulture = false;
           test.isGramStaining = false;
+          test.isSensitivity = false;
         break;
         case '8':
           test.isAntigen = false;
@@ -17286,6 +17362,7 @@ app.controller("labTestControler",["$scope","$location","$http","templateService
           test.isBloodAnalysis = false;
           test.isCulture = true;
           test.isGramStaining = false;
+          test.isSensitivity = false;
         break;
         case '9':
           test.isAntigen = false;
@@ -17298,7 +17375,23 @@ app.controller("labTestControler",["$scope","$location","$http","templateService
           test.isUrineSensitivity = false;
           test.isBloodAnalysis = false;
           test.isCulture = false;
-          test.isGramStaining = true
+          test.isGramStaining = true;
+          test.isSensitivity = false;
+        break;
+        case '10':
+          test.isAntigen = false;
+          test.isRange = false;
+          test.isOther = false;
+          test.isQualitative = false;
+          test.isScreening = false;
+          test.isUrinalysis = false;
+          test.isFaeces = false;
+          test.isUrineSensitivity = false;
+          test.isBloodAnalysis = false;
+          test.isCulture = false;
+          test.isGramStaining = false;
+          test.isSensitivity = true; 
+          initSensitivity(test)        
         break;
         default:
           test.isAntigen = false;
@@ -17312,6 +17405,7 @@ app.controller("labTestControler",["$scope","$location","$http","templateService
           test.isBloodAnalysis = false;
           test.isCulture = false;
           test.isGramStaining = false;
+          test.isSensitivity = false;
         break;
       }
 
@@ -17331,6 +17425,7 @@ app.controller("labTestControler",["$scope","$location","$http","templateService
         $scope.watchThisList[strArray[$scope.strCount]] = test.list;    
         var objList = Object.getOwnPropertyNames($scope.watchThisList);
         var str = "watchThisList." + objList[$scope.strCount];  
+        console.log(str)
         $scope.strCount++;
         var rangeArr;
         var rg1;
@@ -29169,6 +29264,29 @@ app.factory("reportFormFactory",function(){
       fields: [
         {
           r_name: "Gram Staining",
+          r_tum: "",
+          r_result: "",
+          r_range: "",
+          r_unit: "",
+          r_flag: ""
+        }
+      ]
+    },
+    {
+      form: 23,
+      name: "Sensitivity",
+      type: "Sensitivity Test",
+      fields: [
+        {
+          r_name: "Sensitive to",
+          r_tum: "",
+          r_result: "",
+          r_range: "",
+          r_unit: "",
+          r_flag: ""
+        },
+        {
+          r_name: "Resistant to",
           r_tum: "",
           r_result: "",
           r_range: "",
