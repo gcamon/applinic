@@ -972,7 +972,7 @@ router.post("/user/laboratory/test-result/preview",function(req,res){
 			var tempLink;
 			var date = new Date();
 			if(!data){
-				tempLink = "http://" + req.headers.host + "/lab-template/default";
+				tempLink = "https://" + req.headers.host + "/lab-template/default";
 			} else {
 				tempLink = "https://" + req.headers.host + "/lab-template/" + data.center_id;
 			}
