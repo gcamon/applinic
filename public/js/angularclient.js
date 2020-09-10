@@ -17254,6 +17254,8 @@ app.controller("labTestControler",["$scope","$location","$http","templateService
           test.isCulture = false;
           test.isGramStaining = false;
           test.isSensitivity = false;
+          test.isGenotype = false;
+          test.isBloodGroup = false;
         break;
         case '1':
           test.isAntigen = true;
@@ -17268,6 +17270,8 @@ app.controller("labTestControler",["$scope","$location","$http","templateService
           test.isCulture = false;
           test.isGramStaining = false;
           test.isSensitivity = false;
+          test.isGenotype = false;
+          test.isBloodGroup = false;
         break;
         case '2':
           test.isAntigen = false;
@@ -17282,6 +17286,8 @@ app.controller("labTestControler",["$scope","$location","$http","templateService
           test.isCulture = false;
           test.isGramStaining = false;
           test.isSensitivity = false;
+          test.isGenotype = false;
+          test.isBloodGroup = false;
         break;
         case '3':
           test.isAntigen = false;
@@ -17296,6 +17302,8 @@ app.controller("labTestControler",["$scope","$location","$http","templateService
           test.isCulture = false;
           test.isGramStaining = false;
           test.isSensitivity = false;
+          test.isGenotype = false;
+          test.isBloodGroup = false;
         break;
         case '4':
           test.isAntigen = false;
@@ -17310,6 +17318,8 @@ app.controller("labTestControler",["$scope","$location","$http","templateService
           test.isCulture = false;
           test.isGramStaining = false;
           test.isSensitivity = false;
+          test.isGenotype = false;
+          test.isBloodGroup = false;
         break;
         case '5':
           test.isAntigen = false;
@@ -17324,6 +17334,8 @@ app.controller("labTestControler",["$scope","$location","$http","templateService
           test.isCulture = false;
           test.isGramStaining = false;
           test.isSensitivity = false;
+          test.isGenotype = false;
+          test.isBloodGroup = false;
         break;
         case '6':
           test.isAntigen = false;
@@ -17338,6 +17350,8 @@ app.controller("labTestControler",["$scope","$location","$http","templateService
           test.isCulture = false;
           test.isGramStaining = false;
           test.isSensitivity = false;
+          test.isGenotype = false;
+          test.isBloodGroup = false;
         break;
         case '7':
           test.isAntigen = false;
@@ -17352,6 +17366,8 @@ app.controller("labTestControler",["$scope","$location","$http","templateService
           test.isCulture = false;
           test.isGramStaining = false;
           test.isSensitivity = false;
+          test.isGenotype = false;
+          test.isBloodGroup = false;
         break;
         case '8':
           test.isAntigen = false;
@@ -17366,6 +17382,8 @@ app.controller("labTestControler",["$scope","$location","$http","templateService
           test.isCulture = true;
           test.isGramStaining = false;
           test.isSensitivity = false;
+          test.isGenotype = false;
+          test.isBloodGroup = false;
         break;
         case '9':
           test.isAntigen = false;
@@ -17380,6 +17398,8 @@ app.controller("labTestControler",["$scope","$location","$http","templateService
           test.isCulture = false;
           test.isGramStaining = true;
           test.isSensitivity = false;
+          test.isGenotype = false;
+          test.isBloodGroup = false;
         break;
         case '10':
           test.isAntigen = false;
@@ -17394,7 +17414,41 @@ app.controller("labTestControler",["$scope","$location","$http","templateService
           test.isCulture = false;
           test.isGramStaining = false;
           test.isSensitivity = true; 
+          test.isGenotype = false;
+          test.isBloodGroup = false;
           initSensitivity(test)        
+        break;
+        case '11':
+          test.isAntigen = false;
+          test.isRange = false;
+          test.isOther = false;
+          test.isQualitative = false;
+          test.isScreening = false;
+          test.isUrinalysis = false;
+          test.isFaeces = false;
+          test.isUrineSensitivity = false;
+          test.isBloodAnalysis = false;
+          test.isCulture = false;
+          test.isGramStaining = false;
+          test.isSensitivity = false; 
+          test.isGenotype = true; 
+          test.isBloodGroup = false;  
+        break;
+        case '12':
+          test.isAntigen = false;
+          test.isRange = false;
+          test.isOther = false;
+          test.isQualitative = false;
+          test.isScreening = false;
+          test.isUrinalysis = false;
+          test.isFaeces = false;
+          test.isUrineSensitivity = false;
+          test.isBloodAnalysis = false;
+          test.isCulture = false;
+          test.isGramStaining = false;
+          test.isSensitivity = false; 
+          test.isGenotype = false; 
+          test.isBloodGroup = true;  
         break;
         default:
           test.isAntigen = false;
@@ -17409,6 +17463,8 @@ app.controller("labTestControler",["$scope","$location","$http","templateService
           test.isCulture = false;
           test.isGramStaining = false;
           test.isSensitivity = false;
+          test.isGenotype = false;
+          test.isBloodGroup = false;    
         break;
       }
 
@@ -29294,6 +29350,36 @@ app.factory("reportFormFactory",function(){
         },
         {
           r_name: "Resistant to",
+          r_tum: "",
+          r_result: "",
+          r_range: "",
+          r_unit: "",
+          r_flag: ""
+        }
+      ]
+    },
+    {
+      form: 24,
+      name: "Genotype",
+      type: "Genotype Test",
+      fields: [
+        {
+          r_name: "Genotype",
+          r_tum: "",
+          r_result: "",
+          r_range: "",
+          r_unit: "",
+          r_flag: ""
+        }
+      ]
+    },
+    {
+      form: 25,
+      name: "Blood Group",
+      type: "Blood Group Test",
+      fields: [
+        {
+          r_name: "Blood Group",
           r_tum: "",
           r_result: "",
           r_range: "",
