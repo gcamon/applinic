@@ -5016,9 +5016,7 @@ var basicRoute = function (model,sms,io,streams,client,transporter,opentok) {
               }                         
             }
 
-
-     
-
+            
             //this is notification for the center.
             var refNotification = {
               sender_firstname: req.user.firstname,
@@ -5046,7 +5044,19 @@ var basicRoute = function (model,sms,io,streams,client,transporter,opentok) {
             result.diagnostic_center_notification.unshift(refNotification);
 
             result.save(function(err,info){
-              if(err) throw err;            
+              if(err) throw err;
+
+              var msgBody = "You have new Laboratory test request for patient - " 
+              + req.body.patient_firstname + " " + req.body.patient_lastname + "\nReference No " + random;
+              var phoneNunber =  result.phone;
+              sms.messages.create(
+                {
+                  to: phoneNunber,
+                  from: '+16467985692',
+                  body: msgBody
+                }
+              )
+            
             });
             tellPatient(centerObj);
           })
@@ -5156,6 +5166,9 @@ var basicRoute = function (model,sms,io,streams,client,transporter,opentok) {
             center_email: req.body.center_email,
             center_profile_pic_url: req.body.center_profile_pic_url
           }  
+
+
+        
 
           
           model.session.findOne({session_id: session_id})

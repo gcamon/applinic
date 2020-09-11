@@ -973,7 +973,7 @@ router.post("/user/laboratory/test-result/preview",function(req,res){
 			var tempLink;
 			var date = new Date();
 			if(!data){
-				tempLink = "http://" + req.headers.host + "/lab-template/default";
+				tempLink = "https://" + req.headers.host + "/lab-template/default";
 			} else {
 				tempLink = "https://" + req.headers.host + "/lab-template/" + data.center_id;
 			}
@@ -1024,7 +1024,7 @@ router.put("/user/laboratory/test-result/session-update",function(req,res){
    
     if(req.user) {
       var dt = + new Date();
-      var pdfName = dt + "-" + Math.floor(Math.random() * 999999999999) + '.pdf';
+      var pdfName = dt + "-" + uuid.v1() + '.pdf';
       var filePath = './pdf/' + pdfName;
       var pdfPath;
       var emailPDFPath;
@@ -1251,6 +1251,7 @@ router.put("/user/laboratory/test-result/session-update",function(req,res){
 	      				ref.save(function(err,info){})
       				}
       			})
+
       		} else {
       			res.end("something went wrong!");
       		}
@@ -1268,7 +1269,7 @@ router.put("/user/laboratory/test-result/session-update",function(req,res){
   router.put("/user/laboratory/test-result/patient-test-update",function(req,res){
     if(req.user) {
 
-    	console.log(req.body)
+   
 
     	var dt = + new Date();
       var pdfName = dt + "-" + uuid.v1() + '.pdf';
@@ -1278,7 +1279,7 @@ router.put("/user/laboratory/test-result/session-update",function(req,res){
       var FILE_CONTENT;
       var buf;
 
-      console.log(pdfName);
+    
 
       pdf.create(req.body.htm).toFile(filePath, function(err, file) { //start of toFile
       	if (err) return console.log(err);  
