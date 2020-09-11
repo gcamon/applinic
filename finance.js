@@ -9,6 +9,7 @@ var randos = require("./randos");
 var topdf = require("./topdf");
 var fs = require('fs');
 var pdf = require('html-pdf');
+var uuid = require("uuid");
 
 
  
@@ -972,7 +973,7 @@ router.post("/user/laboratory/test-result/preview",function(req,res){
 			var tempLink;
 			var date = new Date();
 			if(!data){
-				tempLink = "https://" + req.headers.host + "/lab-template/default";
+				tempLink = "http://" + req.headers.host + "/lab-template/default";
 			} else {
 				tempLink = "https://" + req.headers.host + "/lab-template/" + data.center_id;
 			}
@@ -1022,8 +1023,8 @@ router.put("/user/laboratory/test-result/session-update",function(req,res){
     //note that sms will be sent to patient and doctor when a lab test result is available.
    
     if(req.user) {
-    	var dt = + new Date();
-      var pdfName = dt + "-" + Math.floor(Math.random() * 999999) + '.pdf';
+      var dt = + new Date();
+      var pdfName = dt + "-" + Math.floor(Math.random() * 999999999999) + '.pdf';
       var filePath = './pdf/' + pdfName;
       var pdfPath;
       var emailPDFPath;
@@ -1266,15 +1267,36 @@ router.put("/user/laboratory/test-result/session-update",function(req,res){
   //patient who requested test without doctors approval.
   router.put("/user/laboratory/test-result/patient-test-update",function(req,res){
     if(req.user) {
+
+    	console.log(req.body)
+
+    	var dt = + new Date();
+      var pdfName = dt + "-" + uuid.v1() + '.pdf';
+      var filePath = './pdf/' + pdfName;
+      var pdfPath;
+      var emailPDFPath;
+      var FILE_CONTENT;
+      var buf;
+
+      console.log(pdfName);
+
+      pdf.create(req.body.htm).toFile(filePath, function(err, file) { //start of toFile
+      	if (err) return console.log(err);  
+        pdfPath = '/report/' + pdfName;
+      	emailPDFPath = "https://applinic.com" + pdfPath;
+      	FILE_CONTENT = fs.readFileSync(file.filename, 'base64');
+        buf = Buffer.from(FILE_CONTENT, 'base64')                   
+    		updatePatient(); 
+    	})
      
-     updatePatient();
+     
 
       function updatePatient() {
         model.user.findOne({user_id: req.body.laboratory.patient_id},{medical_records:1,patient_notification:1,user_id:1,presence:1,phone:1,firstname:1,lastname:1,title:1,email:1})
         .exec(function(err,data){
           if(err) throw err;
          
-          var elementPos = data.medical_records.laboratory_test.map(function(x) {return x.ref_id; }).indexOf(req.body.ref_id);
+          var elementPos = data.medical_records.laboratory_test.map(function(x) {return x.ref_id }).indexOf(req.body.ref_id);
           var objectFound = data.medical_records.laboratory_test[elementPos];         
           objectFound.report = req.body.laboratory.report || objectFound.report;
           objectFound.conclusion = req.body.laboratory.conclusion || objectFound.conclusion;
@@ -1284,6 +1306,7 @@ router.put("/user/laboratory/test-result/session-update",function(req,res){
           objectFound.payment_acknowledgement = true;
           objectFound.history = req.body.history;
           objectFound.indication = req.body.laboratory.indication;
+          objectFound.lab_pdf_report.unshift({date:dt,pdf_report: pdfPath});
 
 
 
@@ -1329,21 +1352,36 @@ router.put("/user/laboratory/test-result/session-update",function(req,res){
 	            }
           	});*/
 
-	          var mailOptions = {
-	            from: 'Applinic info@applinic.com',
-	            to: data.email,
-	            subject: 'Laboratory Result Received',
-	            html: '<table><tr><th><h3 style="background-color:#85CE36; color: #fff; padding: 30px"><img src="https://applinic.com/assets/images/applinic1.png" style="width: 250px; height: auto"/><br/><span>Healthcare... anywhere, anytime.</span></h3></th></tr><tr><td style="font-family: Arial, Helvetica, sans-serif; font-size: 14px;"><b>Hello ' + data.title + " " + data.lastname + ",</b><br><br>"
-	 						+ "<b>" + req.user.name + "</b>" + " have sent the result of investigations you requested:<br><br>"
-	 						+ "<b>Name:</b> " + data.firstname + " " + data.lastname + "<br><br>"
-	          	+ "<a href='https://applinic.com/login'>log in to your account</a> to view the result. Check in notification bell icon for latest updates<br><br>"
-	            + "Thank you for using Applinic.<br><br>"
-	            + "For ease of usage, you may download the Applinic mobile application on google play store if you use an android phone. " 
-	            + "<a href='https://play.google.com/store/apps/details?id=com.farelandsnigeria.applinic'>Click here </a> to do so now.<br><br>"
-	            + "For inquiries please call customer support on +2349080045678 or email us at support@applinic.com<br><br>"
-	            + "Thank you for using Applinic.<br></br><br>"
-	            + "<b>Applinic Team</b></td></tr></table>"
-          	};
+          	if(data.email) {
+		          var mailOptions = {
+		            from: 'Applinic info@applinic.com',
+		            to: data.email,
+		            subject: 'Laboratory Result Received',
+		            html: '<table><tr><th><h3 style="background-color:#85CE36; color: #fff; padding: 30px"><img src="https://applinic.com/assets/images/applinic1.png" style="width: 250px; height: auto"/><br/><span>Healthcare... anywhere, anytime.</span></h3></th></tr><tr><td style="font-family: Arial, Helvetica, sans-serif; font-size: 14px;"><b>Hello ' + data.title + " " + data.lastname + ",</b><br><br>"
+		 						+ "<b>" + req.user.name + "</b>" + " have sent the result of investigations you requested:<br><br>"
+		 						+ "<b>Name:</b> " + data.firstname + " " + data.lastname + "<br><br>"
+		          	+ "<a href='https://applinic.com/login'>log in to your account</a> to view the result. Check in notification bell icon for latest updates<br><br>"
+		            + "Thank you for using Applinic.<br><br>"
+		            + "For ease of usage, you may download the Applinic mobile application on google play store if you use an android phone. " 
+		            + "<a href='https://play.google.com/store/apps/details?id=com.farelandsnigeria.applinic'>Click here </a> to do so now.<br><br>"
+		            + "For inquiries please call customer support on +2349080045678 or email us at support@applinic.com<br><br>"
+		            + "Thank you for using Applinic.<br></br><br>"
+		            + "<b>Applinic Team</b></td></tr></table>"
+	          	};
+          	} else {
+          		 var mailOptions = {
+		            from: 'Applinic info@applinic.com',
+		            to: 'info@applinic.com',
+		            subject: 'Laboratory Result Received',
+		            html: '<table><tr><th>' + "A dummy account created by " + req.user.name 
+		            + " for the patient - <b>" + data.title + " " + data.lastname + data.firstname 
+		            + " with number " + data.phone + "</b> has received a laboratory report from <b>" + req.user.name 
+		            + "@ " + req.user.address + " " + req.user.city + "- " + req.user.phone
+		            + "</b><br><br>Please contact the patient and guide him on how to regiter properly to enable viewing of the lab result in the account's dashboard."
+		            + "<br><br>"		           
+		            + "</td></tr></table>"
+	          	};
+          	}
 
 	          transporter.sendMail(mailOptions, function(error, info){
 	            if (error) {
@@ -1371,11 +1409,21 @@ router.put("/user/laboratory/test-result/session-update",function(req,res){
       			req.body.service_date = + new Date();
       			req.body.receiver = receiver.title + " " + receiver.firstname + " " + receiver.lastname;
       			req.body.receiver_phone = receiver.phone;
+      			req.body.lab_pdf_report = pdfPath;
       			center.service_details.unshift(req.body);
       			center.save(function(err,info){
       				if(err) throw err;
       				console.log("service details saved!");
       				res.send({status: "success"});
+      			})
+
+      			model.referral.findOne({ref_id: req.body.ref_id,center_id: req.user.user_id})
+      			.exec(function(err,ref){
+      				if(err) throw err;
+      				if(ref){
+	      				ref.laboratory.lab_pdf_report.unshift({date:dt,pdf_report: pdfPath});
+	      				ref.save(function(err,info){})
+      				}
       			})
       		} else {
       			res.end("something went wrong!");

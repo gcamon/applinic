@@ -20,7 +20,7 @@
             </label> 
         </div>
         <div ng-if="treatment.patientType === 'other'">
-            <label>Enter Patient's Phone Number </label> &nbsp;<i class="fa fa-question-circle tip text-primary"><span>This should be the number patient used to register in 'Applinic'. But you can proceed if the number is not yet registered by adding few details about the patient to enable system create record for the patient. However, details and reference to the prescription(s) will be sent to the patient via SMS.</span></i> &nbsp;  <span class="text-danger">{{phoneError}}</span><br>
+            <label>Enter Patient's Phone Number </label> &nbsp;<i class="fa fa-question-circle tip text-primary"><span>This should be the number patient used to register in 'Applinic'. But you can proceed if the number is not yet registered by adding few details about the patient to enable system create record for the patient. However, details and reference to the test(s) will be sent to the patient via SMS.</span></i> &nbsp;  <span class="text-danger">{{phoneError}}</span><br>
             <input type="text" class="form-control" placeholder="Enter patient's phone number" ng-model="treatment.patient_phone" uib-typeahead="p.patient_phone for p in patientList | filter:$viewValue | limitTo:15" required>
         </div>
 
@@ -106,7 +106,7 @@
     	<div>
     		<a href="" ng-click="goBack()"><i class="fa fa-arrow-left"></i> Back </a>
     	</div>
-    	<p class="pt-1 pb-1 text-danger">Patient with the phone number was not found but you can proceed after quickly creating a dummy account for this patient. Details and reference to this investigation(s) will be sent to the patient via SMS.</p>
+    	<p class="pt-1 pb-1 text-danger">Patient with the phone number - {{treatment.patient_phone}} does not exist but you can proceed after quickly creating a dummy account for the patient. Details and reference to this investigation(s) will be sent to the patient via SMS.</p>
     	<form ng-submit="createPatient()">
     		<label>Title</label><br>
     		<select ng-model="treatment.patient_title" required>

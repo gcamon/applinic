@@ -116,7 +116,7 @@
                 <div>
                     <a href="" ng-click="goBack()"><i class="fa fa-arrow-left"></i> Back </a>
                 </div>
-                <p class="pt-1 pb-1 text-danger">Patient with the phone number ( {{patient.patient_phone}} ) was not found but you can proceed after quickly creating a dummy account for this patient. Details and reference to this prescription will be sent to the patient via SMS.</p>
+                <p class="pt-1 pb-1 text-danger">Patient with the phone number - {{patient.patient_phone}}  does not exist but you can proceed after quickly creating a dummy account for the patient. Details and reference to this prescription will be sent to the patient via SMS.</p>
                 <form ng-submit="createPatient()">
                     <label>Title</label><br>
                     <select ng-model="patient.patient_title" required>

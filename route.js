@@ -4975,7 +4975,7 @@ var basicRoute = function (model,sms,io,streams,client,transporter,opentok) {
               id: result.user_id
             }
 
-            console.log(req.body)
+            
             
             var refObj = {
               ref_id: random,
@@ -5244,13 +5244,17 @@ var basicRoute = function (model,sms,io,streams,client,transporter,opentok) {
     //this route takes care of  un ran test which was forwarded to another center by a center.
     router.post("/user/center/send-test",function(req,res){
       if(req.user) { 
-
+        console.log(req.body)
         var originalRef = req.body.ref_id;
         req.body.ref_id = randos.genRef(6);
         req.body.date = new Date();
         var originalTest = req.body.laboratory.test_to_run;
         var referredTest = [];
         var unRefered = [];
+
+        if(!req.body.session_id){
+          req.body.session_id = uuid.v1();
+        }
 
         model.user.findOne({user_id: req.body.user_id,type: "Laboratory"},
         {diagnostic_center_notification:1,referral:1,address:1,name:1,city:1,country:1,phone:1,user_id:1,presence:1})
@@ -5260,7 +5264,7 @@ var basicRoute = function (model,sms,io,streams,client,transporter,opentok) {
           if(result) {          
 
             for(var i = 0; i < originalTest.length; i++){
-              if(originalTest[i].select == true){
+              if(originalTest[i].select === true || req.body.isLabSelfCompose){
                 referredTest.push(originalTest[i]);
               } else {
                 unRefered.push(originalTest[i])
@@ -5286,7 +5290,8 @@ var basicRoute = function (model,sms,io,streams,client,transporter,opentok) {
               referral_email: req.user.email,
               referral_phone: req.user.phone,    
               date: req.body.date,
-              center_id: result.user_id,             
+              center_id: result.user_id,   
+              referral_pays: req.body.referral_pays,   
               laboratory: {              
                 history: req.body.laboratory.history,
                 patient_age: req.body.laboratory.patient_age,
@@ -5305,12 +5310,12 @@ var basicRoute = function (model,sms,io,streams,client,transporter,opentok) {
                 lmp: req.body.laboratory.lmb,
                 parity: req.body.laboratory.parity,
                 attended: false,
-                title: req.body.title,
-                doctor_firstname: req.body.laboratory.doctor_firstname,
-                doctor_lastname: req.body.laboratory.doctor_lastname,
-                doctor_id: req.body.laboratory.doctor_id,
-                doctor_email: req.body.laboratory.doctor_email,
-                doctor_profile_url: req.body.laboratory.doctor_profile_url,
+                title: req.body.title || "",
+                doctor_firstname: req.body.laboratory.doctor_firstname || "",
+                doctor_lastname: req.body.laboratory.doctor_lastname || "",
+                doctor_id: req.body.laboratory.doctor_id || "",
+                doctor_email: req.body.laboratory.doctor_email || "",
+                doctor_profile_url: req.body.laboratory.doctor_profile_url || "",
                 test_id: req.body.laboratory.test_id
               }             
             }
@@ -5332,8 +5337,14 @@ var basicRoute = function (model,sms,io,streams,client,transporter,opentok) {
               io.sockets.to(result.user_id).emit("center notification",refNotification)
             } 
 
+
+
+
             //result.referral.push(refObj);
             var referral = new model.referral(refObj);
+
+            req.body.holdRefData = referral;
+
             referral.save(function(err,info){
               if(err) throw err;
               console.log("referral saved")
@@ -5410,7 +5421,7 @@ var basicRoute = function (model,sms,io,streams,client,transporter,opentok) {
                   ref.save(function(err,info){});
                   res.json({success:true,ref_no:req.body.ref_id,redirect_to: ref.redirect_to});
                 } else {
-                  res.json({success:true,ref_no:req.body.ref_id,redirect_to: []});
+                  res.json({success:true,ref_no:req.body.ref_id,redirect_to: [],refData: req.body.holdRefData});
                 }
               })
 

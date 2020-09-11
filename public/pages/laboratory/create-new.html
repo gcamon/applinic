@@ -1,47 +1,22 @@
 <div class="card p-2 card-center-1">
-	<h4 class="h6">Write Radiology Test </h4>
+	<h4 class="h6">New Test</h4>
 	<br>
-	<form class="col-md-10" style="line-height: 25px" ng-show="isNewLab" ng-submit="validatePatient()"> 
+	<form class="col-md-10" style="line-height: 25px" ng-show="isNewLab" ng-submit="validatePatient('isLabCenter')"> 
 
-         <div  class="mb-1">
-            <label class="custom-control custom-radio">
-               Choose from your patients' list
-               <input type="radio" class="custom-control-input" value="mine" ng-model="treatment.patientType">
-               <span class="custom-control-indicator"></span>
-               <span class="custom-control-description" style="opacity:0;"></span>
-            </label> &nbsp;&nbsp;&nbsp;
-
-
-            <label class="custom-control custom-radio ml-0">
-               Phone number of a patient
-               <input type="radio" class="custom-control-input" value="other" ng-model="treatment.patientType">
-               <span class="custom-control-indicator"></span>
-               <span class="custom-control-description" style="opacity:0;"></span>
-            </label> 
-        </div>
-        <div ng-if="treatment.patientType === 'other'">
-            <label>Enter Patient's Phone Number </label> &nbsp;<i class="fa fa-question-circle tip text-primary"><span>This should be the number patient used to register in 'Applinic'. But you can proceed if the number is not yet registered by adding few details about the patient to enable system create record for the patient. However, details and reference to the investigation(s) will be sent to the patient via SMS.</span></i> &nbsp;  <span class="text-danger">{{phoneError}}</span><br>
+         
+        <div>
+            <label>Enter Patient's Phone Number </label> &nbsp;<i class="fa fa-question-circle tip text-primary"><span>This should be the number patient used to register in 'Applinic'. But you can proceed if the number is not yet registered by adding few details about the patient to enable system create record for the patient. However, details and reference to the test(s) will be sent to the patient via SMS.</span></i> &nbsp;  <span class="text-danger">{{phoneError}}</span><br>
             <input type="text" class="form-control" placeholder="Enter patient's phone number" ng-model="treatment.patient_phone" uib-typeahead="p.patient_phone for p in patientList | filter:$viewValue | limitTo:15" required>
         </div>
 
-        <div ng-if="treatment.patientType == 'mine'">
-            <select  class="form-control" ng-model="treatment.patient_identifier" required>
-               <option disabled value="" selected="">_Select a patient</option> 
-               <option value="{{p.patient_phone + '/' + p.patient_id}}" ng-repeat="p in patientList">{{p.patient_firstname}} {{p.patient_lastname}}</option>
-            </select>
-        </div> 
+       
         <br>    
 
 
-
-        <!--<div>
-            <label>Patient's Phone Number *</label> &nbsp;<i class="fa fa-question-circle tip text-primary"><span>This should be the number patient used to register in 'Applinic'. But you can proceed if the number is not yet registered by adding few details about the patient to enable system create record for the patient. However, details and reference to the test(s) will be sent to the patient via SMS.</span></i><br>
-            <input type="text" name="" class="form-control" ng-model="treatment.patient_phone" required uib-typeahead="p.patient_phone for p in patientList | filter:$viewValue | limitTo:15">
-            <span class="text-danger">{{phoneError}}</span><br>
-        </div>-->
         <div>
-            <label>Add Study ( {{TestList.length}} ) *</label>
+        	<label>Add Tests ( {{TestList.length}} ) *</label>
         </div>
+
         <div ng-repeat="lab in TestList">
              
              <span class="text-danger">{{invMsg}}</span>
@@ -64,18 +39,18 @@
         <br>
        
         <div>
-            <label>LMP: ( Female )</label>
+            <label>LMP (optional):</label>
             <textarea  placeholder="Write.." ng-model="treatment.lmp" class="form-control pl-2" ng-keyup="autoExpand($event)" id="textarea"></textarea>
         </div>
         <br>
          <div>
-            <label>Parity: ( Female ) </label>
+            <label>Parity (optional): </label>
             <textarea  placeholder="Write.." ng-model="treatment.parity" class="form-control pl-2" ng-keyup="autoExpand($event)" id="textarea"></textarea>
         </div> 
         <br>
-         <div>
-            <!--<textarea class="form-control p-1" placeholder="Complain" ng-model="treatment.complain"></textarea>-->
-            <label>Would you like to pay the bill for the investigation(s)?</label><!--</span> Diagnosis ( Provisional or Final ) </label>--><br>
+        <!--<div>
+            
+            <label>Would you like to pay the bill for the test(s)?</label><br>
           
             <label class="custom-control custom-radio">
               Yes
@@ -92,8 +67,8 @@
               <span class="custom-control-description" style="opacity:0;"></span>
             </label>  
         
-        </div>   
-        <br>
+        </div> --> 
+        
         <div>
             <input type="submit" class="btn btn-success" value="Continue" ng-show="!loading"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange" ng-show="loading"> </i>
         </div>
@@ -106,7 +81,7 @@
     	<div>
     		<a href="" ng-click="goBack()"><i class="fa fa-arrow-left"></i> Back </a>
     	</div>
-    	<p class="pt-1 pb-1 text-danger">Patient with the phone number - {{treatment.patient_phone}}  does not but you can proceed after quickly creating a dummy account for the patient. Details and reference to this investigation(s) will be sent to the patient via SMS.</p>
+    	<p class="pt-1 pb-1 text-danger">Patient with the phone number - {{treatment.patient_phone}} does not exist but you can proceed after quickly creating a dummy account for the patient. Details and reference to this investigation(s) will be sent to the patient via SMS.</p>
     	<form ng-submit="createPatient()">
     		<label>Title</label><br>
     		<select ng-model="treatment.patient_title" required>
@@ -147,16 +122,15 @@
     	<div class="clearfix"></div>
     	<hr>
     	<div>
-    		<div>
+    		<div class="mb-2">
                 <label>Patient: <span class="text-muted">{{treatment.patient_title}} {{treatment.patient_firstname}} {{treatment.patient_lastname}}</span></label><br>
                 <label>Gender: <span class="text-muted">{{treatment.patientDetails.gender}}</span></label><br>
                 <label>Age: <span class="text-muted">{{treatment.patientDetails.age}}</span></label><br>
             </div>
-            <br>
+
     		<div ng-show="searchResult.length > 2">
-    			<input type="text" name="" placeholder=" Filter list" ng-model="item" class="simple-border">
+    			<input type="text" name="" placeholder=" Filter list" ng-model="item">
     		</div>
-            <br>
     		<div ng-repeat='j in searchResult | filter: item' style="position: relative;" class="mb-1">
     			<label class="pb-0 mb-0">{{j.name}}</label><br>
     			<span style="display: block;width: 92%">{{j.address}} {{j.city}} {{j.country}}</span>

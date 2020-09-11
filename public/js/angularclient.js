@@ -344,7 +344,22 @@ app.config(['$paystackProvider','$routeProvider',
  //for laboratory
  .when("/referral/laboratory-test",{
   templateUrl:"/assets/pages/laboratory/referral-lab.html",
-  controller: 'labReferredPatientsController'
+  controller: 'labReferredPatientsController',
+  resolve: {
+    path: function($location,$rootScope){
+      $rootScope.path = $location.path();  
+    }
+  }
+ })
+
+ .when("/create-test",{
+  templateUrl:"/assets/pages/laboratory/create-new.html",
+  controller: 'labOutCtrl',
+  resolve: {
+    path: function($location,$rootScope){
+      $rootScope.path = $location.path();  
+    }
+  }
  })
 
  .when("/laboratory-edit-profile",{
@@ -664,7 +679,12 @@ app.config(['$paystackProvider','$routeProvider',
 
  .when("/invite",{
     templateUrl:"/assets/pages/utilities/invitation.html",
-    controller: 'invitationCtrl'
+    controller: 'invitationCtrl',
+    resolve: {
+      path: function($location,$rootScope){
+        $rootScope.path = $location.path();  
+      }
+    }
  })
 
  .when("/help",{
@@ -16573,47 +16593,63 @@ app.service("toCenterService",["$resource",function($resource){
 app.controller("labTestControler",["$scope","$location","$http","templateService","localManager",
   "ModalService","labTests","$resource","$rootScope","cities","paymentVerificationService","billingAuthService",
   "searchTestService","toCenterService","phoneCallService","reportFormFactory","digitalSigneePathologistService",
-  "billingAuthService2",
+  "billingAuthService2","labNoteService",
   function($scope,$location,$http,templateService,localManager,ModalService,labTests,$resource,$rootScope,
     cities,paymentVerificationService,billingAuthService,searchTestService,
-    toCenterService,phoneCallService,reportFormFactory,digitalSigneePathologistService,billingAuthService2) {
+    toCenterService,phoneCallService,reportFormFactory,digitalSigneePathologistService,
+    billingAuthService2,labNoteService) {
    
    
-    var objectFound = localManager.getValue("laboratoryData");
-    var holdInitialTestToRun = objectFound.laboratory.test_to_run;
-    var reDiretedTest = objectFound.redirect_to || [];
-   
+    //var objectFound = localManager.getValue("laboratoryData");
+    var labId = localManager.getValue("laboratoryData");
 
-    if(objectFound !== null && !objectFound.laboratory.session_id) {
-      var testArr = objectFound.laboratory.test_to_run;      
-      var elemPos;
-      for(var i = 0; i < testArr.length; i++){
-        testArr[i].select = true;
-        reDiretedTest.forEach(function(ref){{
-          elemPos = ref.referredTests.map(function(x) {return x.name}).indexOf(testArr[i].name);
-          if(elemPos !== -1){
-            testArr[i].select = false;
-          }
-        }})
-        
+    var labTest = labNoteService; //$resource("/user/laboratory/get-referral");
+
+    labTest.get({refId: labId.ref_id},function(data){
+
+      if(!data) {
+        alert("Laboratory Test not found!")
+        return;
       }
-      var holdInitialTestToRun = testArr;
-      $scope.refInfo = objectFound;
-    } else {
-      objectFound.laboratory.test_to_run.forEach(function(test){
-        test.select = true;
-        reDiretedTest.forEach(function(ref){{
-          elemPos = ref.referredTests.map(function(x) {return x.name}).indexOf(test.name);          
-          if(elemPos !== -1){
-            test.select = false;
-          }
-        }})        
-      })
-      var holdInitialTestToRun = objectFound.laboratory.test_to_run;
-      $scope.refInfo = objectFound;
-    }
+        
+      var objectFound = data;
 
-    fill(objectFound);
+      var holdInitialTestToRun = objectFound.laboratory.test_to_run;
+      var reDiretedTest = objectFound.redirect_to || [];
+     
+
+      if(objectFound !== null && !objectFound.laboratory.session_id) {
+        var testArr = objectFound.laboratory.test_to_run;      
+        var elemPos;
+        for(var i = 0; i < testArr.length; i++){
+          testArr[i].select = true;
+          reDiretedTest.forEach(function(ref){{
+            elemPos = ref.referredTests.map(function(x) {return x.name}).indexOf(testArr[i].name);
+            if(elemPos !== -1){
+              testArr[i].select = false;
+            }
+          }})
+          
+        }
+        var holdInitialTestToRun = testArr;
+        $scope.refInfo = objectFound;
+      } else {
+        objectFound.laboratory.test_to_run.forEach(function(test){
+          test.select = true;
+          reDiretedTest.forEach(function(ref){{
+            elemPos = ref.referredTests.map(function(x) {return x.name}).indexOf(test.name);          
+            if(elemPos !== -1){
+              test.select = false;
+            }
+          }})        
+        })
+        var holdInitialTestToRun = objectFound.laboratory.test_to_run;
+        $scope.refInfo = objectFound;
+      }
+
+      fill(objectFound);
+
+   
 
     function fill(obj) {
 
@@ -17155,8 +17191,9 @@ app.controller("labTestControler",["$scope","$location","$http","templateService
   }
 
   $scope.removeReport = function(reportInput) {
-    if(reportInput.list.length > 1)
+    if(reportInput.list.length > 1) {
       reportInput.list.pop()
+    }
   }
 
  
@@ -17931,6 +17968,8 @@ app.controller("labTestControler",["$scope","$location","$http","templateService
 
   }
 
+}) // end of labNoteService which gets the referred lab test
+
   function toTitleCase(str)
   {
       return str.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
@@ -18127,12 +18166,13 @@ app.controller("labReportTempCtrl",["$scope","$http","localManager",function($sc
 
     if(labData){
       if(labData.laboratory.session_id){
-        url = "/user/laboratory/test-result/session-update";
-        labData.htm = temp;
+        url = "/user/laboratory/test-result/session-update";       
       } else {
         url = "/user/laboratory/test-result/patient-test-update";
       }
-      
+
+      labData.htm = temp;
+
       $scope.loading = true;
       
       $http.put(url,labData)
@@ -26487,8 +26527,8 @@ app.controller("docDirectoryEntryCtrl",["$scope","$http",function($scope,$http){
 }]);
 
 
-app.controller("labOutCtrl",["$scope","$http","labTests","getAllLaboratoryService","$rootScope",
-  function($scope,$http,labTests,getAllLaboratoryService,$rootScope){
+app.controller("labOutCtrl",["$scope","$http","labTests","getAllLaboratoryService","$rootScope","$location","localManager",
+  function($scope,$http,labTests,getAllLaboratoryService,$rootScope,$location,localManager){
 
   var test_name;
   var index;
@@ -26542,7 +26582,7 @@ app.controller("labOutCtrl",["$scope","$http","labTests","getAllLaboratoryServic
 
   $scope.isNewLab = true;
 
-  $scope.validatePatient = function() {   
+  $scope.validatePatient = function(center) {   
     if(!$scope.TestList[0].name){
       $scope.invMsg = "Please write an investigation you wish to forward to a center.";
       return;
@@ -26571,15 +26611,27 @@ app.controller("labOutCtrl",["$scope","$http","labTests","getAllLaboratoryServic
         $scope.treatment.patient_firstname = resp.firstname;
         $scope.treatment.patient_lastname = resp.lastname;
         $scope.treatment.patientDetails = resp;
-        getLaboratories();
+
+        if(center) {
+          createTest()
+        } else {
+          getLaboratories();
+        }
+      
         $scope.isNewLab = false;
       } else if(resp.error) {
         alert(resp.message);
       } else {
+        
         $scope.isNewPatient = true;
         $scope.city = $rootScope.checkLogIn.city;
         $scope.isNewLab = false;
+     
+        $scope.isCenter = true;
+        
+
       }
+
     })
   }
 
@@ -26593,7 +26645,7 @@ app.controller("labOutCtrl",["$scope","$http","labTests","getAllLaboratoryServic
     getLaboratories();
   }
 
-  $scope.createPatient = function() {
+  $scope.createPatient = function(center) {
     $scope.loading = true;
     $scope.treatment.patient_age = calculate_age(new Date($scope.treatment.dob)) + " years";
     $http({
@@ -26608,7 +26660,13 @@ app.controller("labOutCtrl",["$scope","$http","labTests","getAllLaboratoryServic
         $scope.isSearchToSend = true;
         $scope.loading = false;
         $scope.treatment.patientDetails = response.patient;
-        getLaboratories();
+
+        if($scope.isCenter) {
+          createTest();
+        } else {
+          getLaboratories();
+        }
+
       } else if(response.retry) {
         $scope.createPatient();
 
@@ -26640,6 +26698,63 @@ app.controller("labOutCtrl",["$scope","$http","labTests","getAllLaboratoryServic
       }
       center.loading = false;
     })
+  }
+
+
+  function createTest() {
+
+    var sendObj = {
+      referral_firstname: $rootScope.checkLogIn.name,
+      referral_lastname: '',
+      referral_title: '',
+      referral_id: $rootScope.checkLogIn.user_id,
+      referral_email: $rootScope.checkLogIn.email,
+      referral_phone: $rootScope.checkLogIn.phone,
+      date: new Date(),
+      center_id: $rootScope.checkLogIn.user_id,
+      referral_pays: 'No',//$scope.treatment.referral_pays,
+      laboratory: {
+        patient_age: $scope.treatment.patientDetails.age,
+        patient_gender: $scope.treatment.patientDetails.gender,
+        patient_firstname: $scope.treatment.patientDetails.firstname,
+        patient_lastname: $scope.treatment.patientDetails.lastname,
+        patient_title: $scope.treatment.patientDetails.title,
+        patient_phone: $scope.treatment.patientDetails.phone,
+        patient_id: $scope.treatment.patientDetails.user_id,
+        patient_address: $scope.treatment.patientDetails.address,
+        indication: $scope.treatment.indication,
+        clinical_summary: $scope.treatment.clinical_summary,
+        lmp: $scope.treatment.lmp,
+        parity: $scope.treatment.parity,
+        attended: false,
+        doctor_firstname: '',
+        doctor_lastname: '',
+        doctor_id: '',
+        doctor_email: '',
+        test_id: Math.floor(Math.random() * 99999999999),
+        lab_pdf_report: [],
+        test_to_run: $scope.TestList
+      },
+      redirect_to: [],
+      isManage: true,
+      user_id: $rootScope.checkLogIn.user_id,
+      isLabSelfCompose: true // use to indentify test composed by center from their account.
+    }
+
+    $http.post("/user/center/send-test",sendObj)
+    .success(function(response){
+      $scope.loading = false;
+      if(response.success){
+        var path = "/laboratory/view-test/" + response.ref_no;
+        localManager.setValue("currPageForLaboratory",path);   
+        localManager.setValue("laboratoryData",response.refData);
+        $location.path(path);
+      }
+    })
+    .error(function(err){
+      alert("Test not created. Please try again.")
+    })
+
   }
 
   function getLaboratories() {
@@ -27895,7 +28010,8 @@ labTestList.listInfo6 = [{name: "CARBAMAZEPINE-S (TEGRETOL)",id:330},{name: "CAN
 
 labTestList.listInfo7 = [{name: "HBV DNA VIRAL LOAD",id:80},{name: "HCV RNA VIRAL LOAD",id:81},{name: "CELLULAR/GENETIC DNA TEST",id:82},
 {name: "HPV DNA TEST",id:83},
-{name: "HLA B27 STATUS",id:84},{name: "ANGIOTENSIN CONVERTING ENZYME (ACE LEVELS)",id:85},{name: "BCR-FGFR1 QUANTITATION",id:86}];
+{name: "HLA B27 STATUS",id:84},{name: "ANGIOTENSIN CONVERTING ENZYME (ACE LEVELS)",id:85},
+{name: "BCR-FGFR1 QUANTITATION",id:86},{name: "SENSITIVITY",id:100001}];
   
   
   return labTestList;

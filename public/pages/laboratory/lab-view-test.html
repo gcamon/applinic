@@ -32,12 +32,12 @@
 </style>
 <div class="card-center-1">
 	<div>
-	<a href="{{'#/referral/laboratory-test'}}" ><i class="fa fa-arrow-left btn-sm" style="cursor: pointer" ng-if="refInfo.laboratory.test_to_run.length > 0"> &nbsp;Back</i></a>
+	<a href="{{'#/referral/laboratory-test'}}" ><i class="fa fa-arrow-left btn-sm" style="cursor: pointer"> &nbsp;Back</i></a>
 	</div>
 		
 	
 	
-	<div ng-if="refInfo.laboratory.test_to_run.length > 0" class="col-sm-12 col-md-12 clo-lg-12">
+	<div  class="col-sm-12 col-md-12 clo-lg-12">
 		<div class="row">
 			<!--<div class="col-sm-12 col-md-12 col-lg-12  card pt-2" ng-if="hasSent && !isPreview" style="position: relative;">
 				<div style="display: inline-block;float: left">
@@ -109,9 +109,12 @@
 				
 
 		</div>-->
-
+		
 		<div class="card p-2">
 		<h4 class="h6">Investigation Request</h4>
+		<div class="text-center p-2" ng-show="!refInfo.laboratory.test_to_run.length" style="color:orange;text-align: center;font-size: 28px">
+			<i class="fa fa-spinner fa-pulse fa-1x fa-fw" ></i>
+		</div>
 		<div>
 			<table>
 				<tbody class="p-1">

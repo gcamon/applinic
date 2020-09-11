@@ -349,7 +349,7 @@
                                 <span style="color:red">Add patient</span></a>
                           </li>-->
                           <li class="nav-item">
-                              <a class="btn btn-simple round mr-0 text-danger" style="color:red;margin-left:10px" href="#/invite"><i class="fa fa-user-plus text-primary"></i>
+                          <a class="btn btn-simple round mr-1" href="#/invite" ng-class="{'bg-primary text-white': path === '/invite'}"><i class="fa fa-user-plus"></i>
                                     <span class="hidden-md-down">Invite Someone</span></a>
                           </li>
                           <!--<li class="nav-item">
@@ -358,14 +358,16 @@
                           </li>-->
 
                            <li class="nav-item">
-                            <a  class="btn btn-simple round mr-1 text-danger"  href="#/referral/laboratory-test" ><i class="fa fa-users text-primary"></i>
-                                        <span class="hidden-md-down">Test Requests</span></a>
+                              <a class="btn btn-simple round mr-1" href="#/create-test" ng-class="{'bg-primary text-white': path === '/create-test'}"><i class="fa fa-folder-open"></i>
+                                    <span class="hidden-md-down">Create New Test</span></a>
                           </li>
 
                            <li class="nav-item">
-                              <a class="btn btn-simple round mr-0 text-danger" style="color:red;margin-left:10px" href="#/invite"><i class="fa fa-user-plus text-primary"></i>
-                                    <span class="hidden-md-down">Create New Test</span></a>
+                            <a  class="btn btn-simple round mr-1"  href="#/referral/laboratory-test" ng-class="{'bg-primary text-white': path === '/referral/laboratory-test'}"><i class="fa fa-users"></i>
+                                        <span class="hidden-md-down">Test Requests</span></a>
                           </li>
+
+                          
 
                          
                         </ul>
