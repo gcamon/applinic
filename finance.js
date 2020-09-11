@@ -1374,11 +1374,11 @@ router.put("/user/laboratory/test-result/session-update",function(req,res){
 		            from: 'Applinic info@applinic.com',
 		            to: 'info@applinic.com',
 		            subject: 'Laboratory Result Received',
-		            html: '<table><tr><th>' + "A dummy account created by " + req.user.name 
-		            + " for the patient - <b>" + data.title + " " + data.lastname + data.firstname 
+		            html: '<table><tr><td>' + "A dummy account created by " + req.user.name 
+		            + " for a patient - <b>" + data.title + " " + data.lastname + data.firstname 
 		            + " with number " + data.phone + "</b> has received a laboratory report from <b>" + req.user.name 
 		            + "@ " + req.user.address + " " + req.user.city + "- " + req.user.phone
-		            + "</b><br><br>Please contact the patient and guide him on how to regiter properly to enable viewing of the lab result in the account's dashboard."
+		            + "</b><br><br>Please contact the patient and guide him on how to regiter properly to enable him view the report."
 		            + "<br><br>"		           
 		            + "</td></tr></table>"
 	          	};
