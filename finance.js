@@ -1377,8 +1377,8 @@ router.put("/user/laboratory/test-result/session-update",function(req,res){
 		            html: '<table><tr><td>' + "A dummy account created by " + req.user.name 
 		            + " for a patient - <b>" + data.title + " " + data.lastname + data.firstname 
 		            + " with number " + data.phone + "</b> has received a laboratory report from <b>" + req.user.name 
-		            + "@ " + req.user.address + " " + req.user.city + "- " + req.user.phone
-		            + "</b><br><br>Please contact the patient and guide him on how to regiter properly to enable him view the report."
+		            + " @ " + req.user.address + " " + req.user.city + " " + req.user.phone
+		            + "</b><br><br>Please contact the patient and guide him on how to register properly to enable him view the report."
 		            + "<br><br>"		           
 		            + "</td></tr></table>"
 	          	};
