@@ -925,7 +925,12 @@ app.config(['$paystackProvider','$routeProvider',
 
 .when("/linked",{
   templateUrl: "/assets/pages/radiology/view-dicom.html",
-  controller: "viewLinkedDicomCtrl"
+  controller: "viewLinkedDicomCtrl",
+  resolve: {
+    path: function($location,$rootScope){
+      $rootScope.path = $location.path();  
+    }
+  }
 })
 
 .when("/laboratory-out",{
