@@ -14,7 +14,6 @@
 	}
 
 	
-
 	.divider {
 		border-bottom: 1px solid #eee;
 		padding: 20px 0
@@ -53,17 +52,17 @@
 	<div>
 		<ul class="nav nav-tabs divider" role="tablist" ng-repeat="study in linkedStudies | orderBy : '-study_date' | filter : filter"> 
                          
-          	<li class="nav-item text-muted ellipsis" style="width: 25%">
-        		<b>{{study.patient_name}}</b>
+          	<li class="nav-item text-muted" style="width: 25%">
+        		<b style="display: block;" class="ellipsis">{{study.patient_name}}</b>
           	</li>
        
 
            	<li class="nav-item text-muted ellipsis" style="width: 18%">
-           		<span>{{study.study_name}}</span>
+           		<span class="ellipsis" style="display: block;">{{study.study_name}}</span>
           	</li>
 
            	<li class="nav-item text-muted" style="width: 15%">
-           		<span>{{study.patient_id}}</span>
+           		<span class="ellipsis" style="display: block;">{{study.patient_id}}</span>
           	</li>
 
           	<!--<li class="nav-item text-muted" style="width: 13%">
