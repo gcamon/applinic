@@ -25505,13 +25505,17 @@ app.controller("viewLinkedDicomCtrl",["$scope","$http","moment","dicomStudyServi
 
 
 
-  $scope.getStudy = function() {
+  $scope.getStudy = function(arg) {
     $scope.loading = true;
+    if(arg){
+      $scope.clear();
+    }
     dicomStudyService.query($scope.study,function(data){
       $scope.linkedStudies = data;
       $scope.loading = false
     });
   }
+
 
   $scope.clear = function() {
     $scope.study = {}
@@ -25598,6 +25602,8 @@ app.controller("viewLinkedDicomCtrl",["$scope","$http","moment","dicomStudyServi
     $rootScope.clickedAction = 'delete';
     $rootScope.studyLinked = {};
   }
+
+  $scope.getStudy('all');
 
 }])
 

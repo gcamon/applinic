@@ -12,9 +12,97 @@
 		border-radius: 8px;
 		z-index: 9999
 	}
+
+	
+
+	.divider {
+		border-bottom: 1px solid #eee;
+		padding: 20px 0
+	}
+
+	.nav-item span {
+		text-align: center;
+	}
+
+	.nav-item a {
+		display: inline-block!important;
+	}
+
+	@media screen and (max-width: 768px){
+		.nav-tabs {
+		    display: inline-block;
+		    width: 100%;
+		    padding-left: 0; 
+		    padding-right: 0;
+		    text-align: left;
+		}
+	}
 </style>
 
-<div class="card p-2 card-center-1">
+<div class="card p-2">
+	<h4 class="h6">My Studies</h4>
+	<div style="position: absolute;right: 10px;top: 20px">
+		<input type="text" name="" placeholder="Filter list" class="simple-border" ng-model="filter">
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		<a href="#/import" class="btn btn-primary"><i class="fa fa-plus"></i> Add Study</a>
+	</div>
+</div>
+
+<div class="card p-2" style="position: relative;">
+	
+	<div>
+		<ul class="nav nav-tabs divider" role="tablist" ng-repeat="study in linkedStudies | orderBy : '-study_date' | filter : filter"> 
+                         
+          	<li class="nav-item text-muted ellipsis" style="width: 25%">
+        		<b>{{study.patient_name}}</b>
+          	</li>
+       
+
+           	<li class="nav-item text-muted ellipsis" style="width: 18%">
+           		<span>{{study.study_name}}</span>
+          	</li>
+
+           	<li class="nav-item text-muted" style="width: 15%">
+           		<span>{{study.patient_id}}</span>
+          	</li>
+
+          	<!--<li class="nav-item text-muted" style="width: 13%">
+          		<span>{{study.study_date | date: 'mediumDate'}}</span>
+          	</li>-->
+
+          	<li class="nav-item text-muted" style="width: 40%;">
+
+          		<a href="{{'https://drive.google.com/viewerng/viewer?embedded=true&url=https://applinic.com' + study.pdf_report[0].pathname}}" target="_blank" title="Report PDF" class="round btn btn-success  btn-sm" title="Report" ng-show="study.pdf_report.length > 0"><span><i class="fa fa-file-o"></i> </span></a> 
+
+          		<a href="" target="_blank" title="Report PDF" class="round btn btn-simple btn-sm" disabled title="Report" ng-show="study.pdf_report.length == 0"><span><i class="fa fa-file-o"></i> </span></a> &nbsp;&nbsp;&nbsp; 
+          		
+          		<a href=""  ng-click="details(study)" title="View Details" class="round btn btn-simple btn-sm"><i class="fa fa-link"></i>
+          		  </a>  &nbsp;&nbsp;&nbsp;
+
+          		<a href=""  ng-click="edit(study)" title="Edit Study" class="round btn btn-simple btn-sm"><i class="fa fa-pencil"></i> </a> &nbsp;&nbsp;&nbsp;
+
+          		<a href=""  ng-click="reAssign(study)" title="Re-assign Study" class="round btn btn-simple btn-sm"><i class="fa fa-user-md"></i></a> &nbsp;&nbsp;&nbsp;
+
+          		<a href=""  ng-click="share(study)" title="Share Study" class="round btn btn-simple btn-sm"><i class="fa fa-share"></i> </a> &nbsp;&nbsp;&nbsp;
+
+          		<a href="{{'https://applinic.com/dcm?id=' + study.patient_id + '&key=' + study._id}}" target="_blank" title=" View in DICOM Viewer" class="round btn btn-simple btn-sm"><i class="fa fa-eye"></i></a> &nbsp;&nbsp;&nbsp;
+
+          		
+          	</li>
+         
+        </ul>
+
+       	<div style="text-align: center;padding-top: 20px" ng-show="loading">
+			<span class="text-warning">Loading...</span>
+		</div>	
+		<div style="text-align: center;padding-top: 20px" ng-show="linkedStudies.length == 0">
+			<span class="text-muted">Study not found!</span>
+		</div>			
+       
+	</div>
+</div>
+
+<!--<div class="card p-2">
 	<h4 class="h6">Linked Studies</h4>
 	<form class="row" ng-submit="getStudy()">
 		<div class="col-md-4">
@@ -34,9 +122,8 @@
 			<input type="text" name="" class="form-control" placeholder="Patient name" ng-model="study.patientName">
 		</div>
 		<div class="clearfix"></div>
-		<div>
-			<!--<input type="submit" name="" value="Search" class="btn btn-info btn-sm">&nbsp;
-			<input type="button" name="" value="Clear" class="btn btn-simple btn-sm" ng-click="clear()">-->
+		<div class="pl-2">
+			
 			<input type="submit" name="" value="Search" class="btn btn-info btn-sm">&nbsp;
 			<input type="button" name="" value="Clear" class="btn btn-simple btn-sm" ng-class="{'bg-warning text-white': query == 'Clear'}" ng-click="clear()">&nbsp;&nbsp;
 			<input type="button" name="" value="Today" class="btn btn-simple btn-sm" ng-class="{'bg-warning text-white': query == 'Today'}" ng-click="today()">
@@ -44,10 +131,7 @@
 			<input type="button" name="" value="Last 7 days" class="btn btn-simple btn-sm" ng-class="{'bg-warning text-white': query == 'Last7'}" ng-click="days7()">
 		</div>
 	</form>
-	<!--<div class="col-md-4 pl-0 ml-0">
-		<input type="text" name="" placeholder="filter" class="form-control">
-	</div>
-	<div class="clearfix"></div>-->
+	
 	<hr>
 	<div>	
 		<div>
@@ -85,7 +169,7 @@
 		</div>			
 	</div>
 	
-</div>
+</div>-->
 <div style="height: 300px"></div>
 
 <!--<iframe ng-src="https://drive.google.com/viewerng/viewer?embedded=true&url=https://applinic.com' + study.pdf_report[0].pathname" style="position: fixed;top: 5px;left: 5px;width: 700px;height: 650px;display: block;z-index: 999999;border: 2px solid grey"  id="iframeTag">Oops! Your browser does not support iframe. User modern browser like Chrome or Firefox or IE 10 above</iframe>

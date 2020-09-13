@@ -61,12 +61,18 @@
     </div>
 </div>-->
 
-<div class="card p-1 card-center-1">
-	<h4 class="h6">Investigation Requests</h4>
-	<button href="#info" class="collapsed btn-neutral btn dropdown-toggle" role="button"   data-toggle="collapse" data-parent="#accordion" aria-expanded="false" aria-controls="collapsefifty">How do I use this?</button>
+<div class="card p-1" style="position: relative;">
+	<h4 class="h6 mb-2">Investigation Requests</h4>
+	<!--<button href="#info" class="collapsed btn-neutral btn dropdown-toggle" role="button"   data-toggle="collapse" data-parent="#accordion" aria-expanded="false" aria-controls="collapsefifty">How do I use this?</button>
 	<p id="info" class="panel-collapse collapse p-1" role="tabpanel" aria-labelledby="headingfifty">
-	<b>Tips:</b> By default, today's date is used for search criteria. You can choose your desired date range (From - To) for the search or 'Clear' the dates and search with other criteria (Reference or Phone number) singly or in combination with each other. </p>
+	<b>Tips:</b> By default, today's date is used for search criteria. You can choose your desired date range (From - To) for the search or 'Clear' the dates and search with other criteria (Reference or Phone number) singly or in combination with each other. </p>-->
+	
+	<div style="position: absolute;right: 10px;top: 10px">	
+		<a href="#/linked" class="btn btn-primary">My Studies</a>
+	</div>
+	
 	<hr>
+	
 	<form class="row p-1" ng-submit="searchTests()">
 		<div class="col-md-4 col-xs-6">
 			<label> From </label>
@@ -142,7 +148,7 @@
 			<span class="text-warning">Loading...</span>
 		</div>	
 		<div style="text-align: center;margin-top: 20px" ng-show="requestList.length == 0">
-			<span class="text-muted">No study was found based on the search criteria used!</span>
+			<span class="text-muted">No request was found based on the search criteria used!</span>
 		</div>			
 	</div>
 	
