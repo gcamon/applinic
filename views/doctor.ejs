@@ -652,23 +652,23 @@
                           <!--<a class="btn btn-simple" style="color:red;margin-left:10px" href="/user/patients/waiting-room" target="_blank" title="Patients' Waiting Room"><i class="fa fa-user"></i>
                           </a>-->
 
-                          <a class="btn btn-simple te" style="color:red;margin-left:5px;font-size: 16px;color: #000" href="#/invite" title="Invite Someone"><i class="fa fa-user-plus text-primary"></i><br>
+                          <a class="btn btn-simple te" style="margin-left:5px;font-size: 16px;color: #000" href="#/invite" title="Invite Someone"><i class="fa fa-user-plus text-primary"></i><br>
                               <small>Invitation</small>
                             </a>
 
-                          <a class="btn btn-simple" style="color:red;margin-left:5px;font-size: 16px;color: #000" href="#/manage-patients" title="Manage Patients"><i class="fa fa-users text-primary"> <span ng-show="patientList.length > 0">({{(patientList.length < 100) ? patientList.length : '99+'}})</span></i><br>
+                          <a class="btn btn-simple" style="margin-left:5px;font-size: 16px;color: #000" href="#/manage-patients" title="Manage Patients"><i class="fa fa-users text-primary"> <span ng-show="patientList.length > 0">({{(patientList.length < 100) ? patientList.length : '99+'}})</span></i><br>
                             <small>My Patients</small>
                             </a>
 
-                          <a class="btn btn-simple" style="color:red;margin-left:5px;font-size: 16px;color: #000" href="#/consultation-messages" ng-show="consultation" ng-cloak><i class="fa fa-envelope text-primary"> <span ng-show="consultation.length > 0"> ({{(consultation.length < 100) ? consultation.length : '99+'}})</span></i><br>
+                          <a class="btn btn-simple" style="margin-left:5px;font-size: 16px;color: #000" href="#/consultation-messages" ng-show="consultation" ng-cloak><i class="fa fa-envelope text-primary"> <span ng-show="consultation.length > 0"> ({{(consultation.length < 100) ? consultation.length : '99+'}})</span></i><br>
                                     <!--<span ng-cloak> <span ng-show="consultation.length > 0"> ( {{consultation.length}} )</span></span>-->
                           <small>Consultation</small>
-                          </a><br>
+                          </a>
 
                           <!--<a class="btn btn-simple" style="color:red;margin-left:10px;font-size: 16px" title="Search" href=""><i class="icon-magnifier text-primary"></i>
                                    </a>-->
-                           <a ng-controller="balanceController" href="#/transactions" class="text-primary" style="margin-left: 20px; font-size:22px;font-weight: bolder;">
-                            <span ng-cloak>{{balance}}</span>
+                           <a ng-controller="balanceController" href="#/transactions" class="text-primary" style="display: block; text-align: center; font-size:22px;font-weight: bolder;">
+                            <span ng-cloak>{{(balance) ? balance : 'loading balance...'}}</span>
                           </a>    
 
                          <!--<a href="#{{(checkLogIn.title !== 'SC') ? '/subscriptions': '/subscriptions2' }}" class="btn btn-warning" style="padding: 6px;margin-left:10px" ng-show="!accountType.type">Standard</a>

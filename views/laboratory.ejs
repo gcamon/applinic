@@ -336,51 +336,104 @@
      <div class="clearfix"></div>
             <div class="app" id="app">
                 <header class="container text-center" style="background:#fff; border-left:1px solid #f2f2f2; min-height:70px; line-height:70px; padding:5px;" ng-controller="labCenterDashboardController">
-                    <div class="col-md-8 col-lg-8 col-sm-12 line-height">
+                    <!--<div class="col-md-12 col-lg-12 col-sm-12 line-height no-mobile-item-display">
                        <ul class="nav nav-tabs p-sm-0" role="tablist">  
-                          <!--<li class="nav-item">
-                            <a  class="btn btn-simple round mr-1"  href="#/help" ><i class="fa fa-question-circle"></i>
-                                <span style="color:red">Need help</span>
-                            </a>
-                          </li>-->
                          
-                          <!--<li class="nav-item">
-                            <a  class="btn btn-simple round mr-1" href="" ng-click="newPatient()"><i class="fa fa-user-plus"></i>
-                                <span style="color:red">Add patient</span></a>
-                          </li>-->
                           <li class="nav-item">
                           <a class="btn btn-simple round mr-1" href="#/invite" ng-class="{'bg-primary text-white': path === '/invite'}"><i class="fa fa-user-plus"></i>
-                                    <span class="hidden-md-down">Invite Someone</span></a>
+                                    <span class="hidden-md-down">Invite Someone</span>
+                                    <span class="hidden-md-up block">Invite Someone</span>
+                          </a>
                           </li>
-                          <!--<li class="nav-item">
-                            <a class="btn btn-simple round mr-1 text-danger"  href="#/rendered-services"><i class="fa fa-file-text text-primary"></i>
-                                <span class="hidden-md-down">Work History</span></a>
-                          </li>-->
+                       
 
                            <li class="nav-item">
                               <a class="btn btn-simple round mr-1" href="#/create-test" ng-class="{'bg-primary text-white': path === '/create-test'}"><i class="fa fa-folder-open"></i>
-                                    <span class="hidden-md-down">Create New Test</span></a>
+                                    <span class="hidden-md-down">Create New Test</span>
+                                    <span class="hidden-md-up block">Create New Test</span>
+                              </a>
+
                           </li>
 
                            <li class="nav-item">
                             <a  class="btn btn-simple round mr-1"  href="#/referral/laboratory-test" ng-class="{'bg-primary text-white': path === '/referral/laboratory-test'}"><i class="fa fa-users"></i>
-                                        <span class="hidden-md-down">Test Requests</span></a>
+                                        <span class="hidden-md-down">Test Requests</span>
+                                        <span class="hidden-md-up block">Test Requests</span>
+                            </a>
                           </li>
 
                           
 
                          
                         </ul>
-                    </div>
+                    </div>-->
+                    <div class="col-md-12 col-sm-12 col-xs-12">
 
-         
+                        <div class="col-md-12 no-mobile-item-display">
+
+                           <a class="btn btn-simple round mr-1" href="#/invite" ng-class="{'bg-success text-white': path === '/invite'}"><i class="fa fa-user-plus"></i>
+                                    <span class="hidden-md-down">Invite Someone</span>
+                                    
+                           </a>
+
+                         
+                            <a  class="btn btn-simple round mr-1"  href="#/referral/laboratory-test" ng-class="{'bg-success text-white': path === '/referral/laboratory-test'}"><i class="fa fa-users"></i>
+                                        <span class="hidden-md-down">Test Requests</span>
+                                        
+                            </a>
+
+                            <a class="btn btn-simple round mr-1" href="#/create-test" ng-class="{'bg-success text-white': path === '/create-test'}"><i class="fa fa-plus"></i>
+                                    <span class="hidden-md-down">Create New Test</span>
+                                    
+                              </a>
 
 
-                    <div class="col-md-4 col-lg-4 col-sm-12" ng-controller="balanceController">  
-                        <a href="#/transactions" class="btn btn-info btn-sm header-btn">
-                            <i class="fa fa-money"></i>
-                            <span  ng-cloak>Balance |  {{balance}} </span>
-                        </a>  
+
+
+
+                            <a ng-controller="balanceController" href="#/transactions" class="btn btn-info btn-sm header-btn" style="float:right;margin: 20px 10px 20px 0"><i class="fa fa-money"></i>
+                                <span ng-cloak>{{balance}}</span>
+                            </a>  
+                        </div>
+
+                        <div style="height: 5px" class="mobile-item-display"></div>
+                        <div class="mobile-item-display" style="position: relative; line-height: 75px" ng-cloak>
+                           
+
+                            <a class="btn btn-simple" ng-class="{'bg-success text-white': path === '/invite'}" style="margin-left:5px;font-size: 16px;color: #000" href="#/invite" title="Invite Someone"><i class="fa fa-user-plus"></i><br>
+                                <small>Invitation</small>
+                              </a>
+
+                          
+                            <a class="btn btn-simple" style="margin-left:5px;font-size: 16px;color: #000" href="#/referral/laboratory-test" ng-class="{'bg-success text-white': path === '/referral/laboratory-test'}"  ng-cloak><i class="fa fa-users"> </i><br>
+                                    
+                            <small>Test Requests</small>
+                            </a>
+
+                            <a class="btn btn-simple" ng-class="{'bg-success text-white': path === '/create-test'}" style="margin-left:5px;font-size: 16px;color: #000" href="#/create-test" title="Manage Patients"><i class="fa fa-plus"> </i><br>
+                              <small>Add Test</small>
+                            </a>
+
+                            <!--<a class="btn btn-simple" style="color:red;margin-left:10px;font-size: 16px" title="Search" href=""><i class="icon-magnifier text-primary"></i>
+                                     </a>-->
+                             <a ng-controller="balanceController" href="#/transactions" class="text-primary" style="display: block;font-size:22px;font-weight: bolder;text-align: center;">
+                              <span ng-cloak>{{(balance) ? balance : 'loading balance...'}}</span>
+                            </a>    
+
+                           <!--<a href="#{{(checkLogIn.title !== 'SC') ? '/subscriptions': '/subscriptions2' }}" class="btn btn-warning" style="padding: 6px;margin-left:10px" ng-show="!accountType.type">Standard</a>
+                            <a href="#{{(checkLogIn.title !== 'SC') ? '/subscriptions': '/subscriptions2' }}" class="btn btn-primary" style="padding: 6px;margin-left:10px" ng-show="accountType.type"><i class="fa fa-certificate"></i> Premium</a>-->
+
+                          </div> 
+
+           
+
+
+                      <!--<div class="col-md-4 col-lg-4 col-sm-12" ng-controller="balanceController">  
+                          <a href="#/transactions" class="btn btn-info btn-sm header-btn">
+                              <i class="fa fa-money"></i>
+                              <span  ng-cloak>Balance |  {{balance}} </span>
+                          </a>  
+                      </div>-->
                     </div>
                 </header>
 
