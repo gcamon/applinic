@@ -61,7 +61,7 @@
     </div>
 </div>-->
 
-<div class="card p-1" style="position: relative;">
+<div class="card p-1 card-center-1" style="position: relative;">
 	<h4 class="h6 mb-2">Investigation Requests</h4>
 	<!--<button href="#info" class="collapsed btn-neutral btn dropdown-toggle" role="button"   data-toggle="collapse" data-parent="#accordion" aria-expanded="false" aria-controls="collapsefifty">How do I use this?</button>
 	<p id="info" class="panel-collapse collapse p-1" role="tabpanel" aria-labelledby="headingfifty">
@@ -118,7 +118,7 @@
 				<th class="no-mobile-item-display">Study Requested</th>
 				<th>Time</th>
 			</thead>
-			<tbody ng-repeat="test in requestList | date : '-date' | filter : filterList" style="line-height: 25px" ng-show="test.radiology.test_to_run.length > 0">
+			<tbody ng-repeat="test in requestList | orderBy : '-date' | filter : filterList" style="line-height: 25px" ng-show="test.radiology.test_to_run.length > 0">
 				<td>{{test.radiology.patient_firstname}} {{test.radiology.patient_lastname}}</td>
 				<td>{{test.ref_id}}</td>
 				<td>{{test.radiology.patient_phone}}</td>

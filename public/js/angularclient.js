@@ -18601,7 +18601,11 @@ app.controller("radioReferredPatientController",["$scope","$location","$http","t
     $scope.searchTests();
   }
 
-  $scope.searchTests = function() {
+  $scope.searchTests = function(arg) {
+
+    if(arg) {
+      $scope.clear();
+    }
 
     if($scope.patient.patienPhone){
       if(!testNumber($scope.patient.patienPhone)){
@@ -18726,6 +18730,8 @@ app.controller("radioReferredPatientController",["$scope","$location","$http","t
     localManager.setValue("currPageForRadiology",pageUrl);
     $location.path(pageUrl);
   } */
+
+  $scope.searchTests('all')
 
 }]);
 
