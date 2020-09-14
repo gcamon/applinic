@@ -876,7 +876,9 @@ var myModel = function () {
 		delivery_msg: String,
 		delivery_start_date: Date,
 		center_charge: String,
-		agentId: String
+		agentId: String,
+		referral_pays: String,
+        referral_number: String
 	},{
 		collections: "courierinfos"
 	});

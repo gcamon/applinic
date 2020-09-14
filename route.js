@@ -1780,7 +1780,7 @@ var basicRoute = function (model,sms,io,streams,client,transporter,opentok) {
 
         model.user.findOne({user_id:req.body.receiverId},
           {doctor_notification:1,presence:1,set_presence:1,phone:1,firstname:1,title:1,
-            user_id:1,email:1,specialty:1,city:1,country:1})
+            user_id:1,email:1,specialty:1,city:1,country:1,name:1})
         .exec(function(err,data){
           if(err) throw err;
 
@@ -1859,18 +1859,24 @@ var basicRoute = function (model,sms,io,streams,client,transporter,opentok) {
             }
           });*/
 
+          var emailArr = ['info@applinic.com'];
+          emailArr.push(data.email)
+
           var mailOptions = {
             from: 'Applinic info@applinic.com',
-            to: data.email,//'ede.obinna27@gmail.com',//data.email
+            to: emailArr,
             subject: 'Consultation Request from a Patient',
-            html: '<table><tr><th><h3  style="background-color:#85CE36; color: #fff; padding: 30px"><img src="https://applinic.com/assets/images/applinic1.png" style="width: 250px; height: auto"/><br/><span>Healthcare... anywhere, anytime.</span></h3></th></tr><tr><td style="font-family: Arial, Helvetica, sans-serif; font-size: 14px;"><b> Dear ' + data.title + " " + data.firstname + 
-            ",</b><br><br> You received a consultation request from a patient.<br><br>" 
+            html: '<table><tr><th><h3  style="background-color:#85CE36; color: #fff; padding: 30px"><img src="https://applinic.com/assets/images/applinic1.png" style="width: 250px; height: auto"/><br/><span>Healthcare... anywhere, anytime.</span></h3></th></tr><tr><td style="font-family: Arial, Helvetica, sans-serif; font-size: 14px;"><b> Dear ' 
+            + data.title + " " + data.firstname + 
+            ",</b><br><br>" 
             + req.user.title + " " + req.user.firstname + " " + req.user.lastname 
             + " has just submitted a consultation request to you on Applinic<br><br>"
+            + "Patient ID: " + req.user.user_id + "<br>"
+            + "Doctor ID: " + data.user_id + "<br><br>"
             + "Please click the link below to sign in to respond to her request.<br><br>"
             + "URL: https://applinic.com/user/doctor <br><br>"
-            + "When you log in, click the notification message icon on top of your dashboard to see the request.<br>" 
-            + "Select the message to open, review and respond to the request.<br><br>"
+            //+ "When you log in, click the notification message icon on top of your dashboard to see the request.<br>" 
+            //+ "Select the message to open, review and respond to the request.<br><br>"
             + "For ease of usage, you may download the Applinic mobile application on google play store if you use an android phone." 
             + "<a href='https://play.google.com/store/apps/details?id=com.farelandsnigeria.applinic'>Click here </a> to do so now.<br><br>"
             + "For inquiries please call customer support on +2349080045678<br><br>"
@@ -2991,7 +2997,9 @@ var basicRoute = function (model,sms,io,streams,client,transporter,opentok) {
                 deleted: false,
                 prescriptionId: req.body.prescriptionId,
                 is_paid: false,
-                new: 0
+                new: 0,
+                referral_pays: req.body.referral_pays,
+                referral_number: req.user.phone
               }
 
               courier = new model.courier(courierData);
@@ -8587,14 +8595,14 @@ router.put("/user/courier-update",function(req,res){
             + "\nhttps://applinic.com/login";
 
             
-            var phoneNunber = user.phone1 || user.phone2; 
+            var phoneNunber = (user.referral_pays === 'Yes') ? user.referral_number : (user.phone1 || user.phone2); 
 
             sendSMS(phoneNunber,msgBody)
 
             var msgBody2 = "A new home delivery of drug(s) has been initiated by  " + req.user.name + " @ "
             + req.user.address + " " + req.user.city 
             + "\nPlease follow up this transaction and inform the buyer to complete payment before delivery starts."
-            + "\nRef No is " + user.ref_id + "\nSender Phone : " + user.phone1 + " " + user.phone2 + "\nSender Address: " 
+            + "\nRef No is " + user.ref_id + "\nSender Phone : " + phoneNunber + "\nSender Address: " 
             + user.address 
             + " " + req.user.city
             + "\nGo to your service page https://applinic.com/login";
