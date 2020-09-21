@@ -460,7 +460,7 @@
                       <span class="counter btn-danger" ng-if="showIndicator" style="border-radius: 10px;width: 8px;height: 8px;display: inline-block;"  ng-cloak></span>
                     </sup>
                   </a>
-                                <div class="dropdown-menu notifications-dropdown-menu menuFive" style="max-height: 400px;overflow-y: auto;">
+                                <div class="dropdown-menu notifications-dropdown-menu menuFive" style="max-height: 400px;overflow-y: auto;max-width: 450px">
                                     <ul class="notifications-container noti-style">
                                         <li> <h6 style="text-align: center;border-bottom: 1px solid #eee;padding-bottom: 5px">Chats </h6> </li>
                                         <!--<li ng-repeat = "chat in chatsList" ng-click= "viewChat(chat.chat_id)" style="height: 80px;overflow:hidden">
@@ -475,14 +475,14 @@
                                                 </div>
                                             </a>
                                         </li> --> 
-                                         <li ng-repeat = "chat in chatsList | orderBy : '-status' || '-realTime'" ng-click= "viewChat2(chat.partnerId)" style="height: 80px;overflow:hidden" ng-show="checkLogIn.user_id !== chat.partnerId">
+                                         <li ng-repeat = "chat in chatsList | orderBy : '-status' || '-realTime'" ng-click= "viewChat2(chat.partnerId)" style="height: 80px;overflow:hidden;" ng-show="checkLogIn.user_id !== chat.partnerId">
                                             <a href="" class="notification-item" style="height: 100%;position: relative;">
                                                 <div class="img-col">
                                                     <div class="img" style="background-image: url({{chat.profilePic}})"></div>
                                                 </div>
                                                 <div class="body-col">                                                
                                                     <p class="ellipsis"> <span class="accent" ng-cloak>{{chat.name}}</span><br>
-                                                        <span>{{chat.messages[chat.messages.length - 1].received || chat.messages[chat.messages.length - 1].sent}} <small am-time-ago="chat.realTime" style="display:block" ng-cloak></small></span> <!-- chat.messages[chat.messages.length - 1].time -->
+                                                        <span>{{chat.messages[chat.messages.length - 1].received || chat.messages[chat.messages.length - 1].sent}}<small am-time-ago="chat.realTime" style="display:block" ng-cloak></small></span> <!-- chat.messages[chat.messages.length - 1].time -->
                                                     </p>
                                                 </div>
                                                 <div class="clearfix"></div>

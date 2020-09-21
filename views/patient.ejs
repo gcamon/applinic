@@ -444,7 +444,7 @@
                                 <span class="counter btn-danger" ng-if="showIndicator !== false" style="border-radius: 10px;width: 8px;height: 8px;display: inline-block;"  ng-cloak></span>
                               </sup>
                             </a>
-                                <div class="dropdown-menu notifications-dropdown-menu menuThree" style="max-height: 450px;overflow-y: auto;left: -70px">
+                                <div class="dropdown-menu notifications-dropdown-menu menuThree" style="max-height: 450px;overflow-y: auto;left: -70px;max-width: 450px">
                                     <ul class="notifications-container noti-style">
                                         <li> <h6 style="text-align: center;border-bottom: 1px solid #eee;padding-bottom: 5px">Chats</h6> </li>
                                         <li ng-repeat = "chat in chatsList | orderBy : '-status' || '-realTime'" ng-click= "viewChat2(chat.partnerId)" style="height: 80px;overflow:hidden" ng-show="checkLogIn.user_id !== chat.partnerId" class="msg-drp-list">
