@@ -577,33 +577,182 @@ io.sockets.on('connection', function(socket){
 
 	    //
 			//video logic this will be moved to a new server
-			//sending video or audio request
+			//sending video request
 			socket.on("convsersation signaling",function(req,cb){
-
-				model.user.findOne({user_id:req.to},{set_presence:1,firstname:1,title:1,type:1,name:1},function(err,user){
+				model.user.findOne({user_id:req.to},{set_presence:1,firstname:1,title:1,type:1,name:1,doctor_notification:1},
+					function(err,user){
 					if(err) throw err;
 					if(user) {
 						var names = user.name || user.title + " " + user.firstname;
-						var tokId = genRemoteId();
-						if(user.type === "Doctor") {
-							//{type:req.type,message:req.message,time:req.time}
-							io.sockets.to(req.to).emit("receive request",{message: req.title + " " + 
-								req.name + " wants to have video chat with you!",from: req.from});
-							cb({message:"Video call request has been sent to " + names})
-						} else if(user.type === "Patient") {
-							io.sockets.to(req.to).emit("receive request",{message: req.title + " " + 
-								req.name + " wants to have video chat with you!",from: req.from});
-							cb({message:"Video call request has been sent to " + names})
+						if(!req.presence){
+							model.user.findOne({user_id: req.from})
+		    			.exec(function(err,sender){
+		    				if(err) throw err;
+		    				if(sender){
+		    					if(sender.type === "Patient") {
+			    					var message = "Video Chat request from " + sender.firstname + " " + sender.lastname;
+			    					var requestData = {
+				              sender_firstname: sender.firstname,
+				              sender_lastname : sender.lastname,
+				              sender_profile_pic_url : sender.profile_pic_url,
+				              message : message,
+				              sender_id : sender.user_id,
+				              sender_age : sender.age,
+				              sender_gender: sender.gender,
+				              sender_location : sender.city + " " + sender.country,
+				              type: 'video',
+				              message_id: Math.floor(Math.random() * 9999999999),
+				              date: + new Date(),
+				            }
+
+				            user.doctor_notification.push(requestData);
+				            user.save(function(err,info){
+				            	if(err) throw err;
+				            	console.log("Doctor notified for video chat")
+				            });
+
+			          	} else if(sender.type === "Doctor") {
+
+			          		var message = "Video Chat request from " + sender.name;
+			          		var id = Math.floor(Math.random() * 9999999999);
+			          		var requestData = {			          			
+											date: + new Date(),
+											note_id: id,
+											ref_id: id,
+											session_id: id,
+											type: "video",
+											message: message
+			          		}
+
+			          		user.patient_notification.push(requestData)
+			          		user.save(function(err,info){
+				            	if(err) throw err;
+				            	console.log("Patient notified for video chat")
+				            });
+			          	}
+		    				}
+		    			})
+
+		    			var msg = names + " is currently not available.Your request has been qeued for attendance.";
+				    	cb({message: msg});	
+
 						} else {
-							var msg = names + " is currently not available.Your request has been qeued for attendance.";
-			    			cb({message: msg});
+							
+							var tokId = genRemoteId();
+							if(user.type === "Doctor") {
+								//{type:req.type,message:req.message,time:req.time}
+								io.sockets.to(req.to).emit("receive request",{message: req.title + " " + 
+									req.name + " wants to have video chat with you!",from: req.from});
+								cb({message:"Video call request has been sent to " + names})
+							} else if(user.type === "Patient") {
+								io.sockets.to(req.to).emit("receive request",{message: req.title + " " + 
+									req.name + " wants to have video chat with you!",from: req.from});
+								cb({message:"Video call request has been sent to " + names})
+							} 
+
 						}
+
 					} else {
 						var msg = "Partner is not in Applinic";
-			    		cb({message: msg});
+			    	cb({message: msg});
 					}
-				});			
+
+				});		
+
 			});
+
+
+			//sending audio request
+			socket.on("convsersation signaling audio",function(req,cb){
+				model.user.findOne({user_id:req.to},{set_presence:1,firstname:1,title:1,type:1,name:1,doctor_notification:1},
+					function(err,user){
+					if(err) throw err;
+					if(user) {
+						var names = user.name || user.title + " " + user.firstname;
+						if(!req.presence){
+							model.user.findOne({user_id: req.from})
+		    			.exec(function(err,sender){
+		    				if(err) throw err;
+		    				if(sender){
+		    					if(sender.type === "Patient") {
+			    					var message = "Audio Chat request from " + sender.firstname + " " + sender.lastname;
+			    					var requestData = {
+				              sender_firstname: sender.firstname,
+				              sender_lastname : sender.lastname,
+				              sender_profile_pic_url : sender.profile_pic_url,
+				              message : message,
+				              sender_id : sender.user_id,
+				              sender_age : sender.age,
+				              sender_gender: sender.gender,
+				              sender_location : sender.city + " " + sender.country,
+				              type: 'audio',
+				              message_id: Math.floor(Math.random() * 9999999999),
+				              date: + new Date()
+				            }
+
+				            user.doctor_notification.push(requestData);
+				            
+				            user.save(function(err,info){
+				            	if(err) throw err;
+				            	console.log("Doctor notified for audio chat")
+				            });
+
+			          	} /*else if(sender.type === "Doctor") {
+
+			          		var message = "Audio Chat request from " + sender.name;
+			          		var id = Math.floor(Math.random() * 9999999999);
+			          		var requestData = {			          			
+											date: + new Date(),
+											note_id: id,
+											ref_id: id,
+											session_id: id,
+											type: "audio",
+											message: message
+			          		}
+
+			          		user.patient_notification.push(requestData)
+			          		user.save(function(err,info){
+				            	if(err) throw err;
+				            	console.log("Patient notified for audio chat")
+				            });
+			          	}*/
+		    				}
+
+		    			})
+
+		    			var msg = names + " is currently not available.Your request has been qeued for attendance.";
+				    	cb({message: msg});	
+
+						} else {
+							
+							//var tokId = genRemoteId();
+							if(user.type === "Doctor") {
+								//{type:req.type,message:req.message,time:req.time}
+								io.sockets.to(req.to).emit("receive request audio",{message: req.title + " " + 
+									req.name + " wants to have audio chat with you!",from: req.from,type:"audio",name: req.name,
+									presence: req.presence});
+								cb({message:"Audio chat request has been sent to " + names});
+
+							} else if(user.type === "Patient") {
+
+								io.sockets.to(req.to).emit("receive request audio",{message: req.title + " " + 
+								req.name + " wants to have audio chat with you!",from: req.from,type:"audio",
+								name: req.name,presence: req.presence});
+								cb({message:"Audio chat request has been sent to " + names})
+							} 
+
+						}
+
+					} else {
+						var msg = "Partner is not in Applinic";
+			    	cb({message: msg});
+					}
+
+				});		
+
+			});
+
+
 
 			// this refers to appointment signaling from patient to meet in-person with his doctor.
 			socket.on("appointment signaling",function(req,cb){

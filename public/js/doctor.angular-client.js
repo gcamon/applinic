@@ -3285,10 +3285,11 @@ app.controller("docNotificationController",["$scope","$location","$resource","$i
     
 
         $rootScope.docNotification = filter.acceptance; //remember to concat for video and audio requests
-        $rootScope.videoRequest = (!localManager.getValue("videoCallerList")) ? localManager.getValue("videoCallerList") : null;
-        $rootScope.audioRequest = (!localManager.getValue("audioCallerList")) ? localManager.getValue("audioCallerList") : null;
-        $rootScope.inPersonRequest =  filter["Meet In-person"] || [];//(!localManager.getValue("meetInPersonList")) ? localManager.getValue("meetInPersonList") : null;
-        $scope.inPersonRequestLen = $scope.inPersonRequest.length;
+        $rootScope.videoRequest = filter['video'] || [];
+        $rootScope.audioRequest = filter['audio'] || []; //(!localManager.getValue("audioCallerList")) ? localManager.getValue("audioCallerList") : null;
+        $rootScope.inPersonRequest =  filter["Meet In-person"] || [];
+
+        $scope.inPersonRequestLen = $rootScope.inPersonRequest.length;
         
 
         if(filter.hasOwnProperty("consultation")){
@@ -3518,9 +3519,31 @@ app.controller("docNotificationController",["$scope","$location","$resource","$i
     },10000);
   }
  
+ 
+  var invert;
 
   $scope.viewRequest = function(id,type,firstname,lastname,pic){
-    templateService.holdBriefForSpecificPatient = {
+    invert = _.invert($rootScope.sockets);
+
+    if(invert[id]){
+      $scope.presence = true;
+    } else {
+      $scope.presence = false;
+    }
+
+    templateService.holdForSpecificPatient = {user_id: id,
+     presence: $scope.presence, name: firstname};
+
+    ModalService.showModal({
+      templateUrl: 'sending-communication-request.html',
+      controller: "videoInitController"
+    }).then(function(modal) {
+      modal.element.modal();
+      modal.close.then(function(result) {
+         
+      });
+    });
+    /*templateService.holdBriefForSpecificPatient = {
       id: id,
       type: type,
       firstname: firstname,
@@ -3537,10 +3560,37 @@ app.controller("docNotificationController",["$scope","$location","$resource","$i
         modal.close.then(function(result) {
            
         });
-    });
+    });*/
   }
 
+  $scope.viewRequestAudio = function(id,type,firstname,lastname,pic) {
 
+    invert = _.invert($rootScope.sockets);
+
+    if(invert[id]){
+      $scope.presence = true;
+    } else {
+      $scope.presence = false;
+    }
+
+    $rootScope.holdPartner = {
+      partnerType: "Patient",
+      partnerId: id,
+      name: firstname,
+      presence: $scope.presence
+    };
+
+    ModalService.showModal({
+      templateUrl: 'audio-communication-request.html',
+      controller: "audioInitController"
+    }).then(function(modal) {
+      modal.element.modal();
+      modal.close.then(function(result) {
+         
+      });
+    });
+
+  }
 
   $rootScope.viewApp2 = function(id,msgId) {
     var deleteFn = new deleteFactory(msgId,"doctor_notification");
@@ -3577,12 +3627,13 @@ app.controller("docNotificationController",["$scope","$location","$resource","$i
 
   
 
-  $scope.viewChat2 = function() {  
-    var list = $rootScope.chatsList;
+  $scope.viewChat2 = function(partnerId) {  
+    /*var list = $rootScope.chatsList;
     localManager.setValue("isChatListViewMobile",true);
     if(list) {
-      var byRecent = $filter('orderBy')(list,'-realTime');
-      templateService.holdId = byRecent[0].partnerId;   
+      //var byRecent = $filter('orderBy')(list,'-realTime');
+
+      templateService.holdId = (arg !== "all") ? arg : list[0].partnerId;  
       if(deviceCheckService.getDeviceType()){
         localManager.setValue("holdIdForChat",templateService.holdId);
         localManager.setValue("holdChatList",list)
@@ -3594,7 +3645,29 @@ app.controller("docNotificationController",["$scope","$location","$resource","$i
         alert("You have no messages yet.")
       }
       $scope.showIndicator = false;
+    }*/
+
+    //templateService.holdId = partnerId;
+
+    templateService.holdId = (partnerId !== "all") ? partnerId : $rootScope.chatsList[0].partnerId; 
+
+    if(deviceCheckService.getDeviceType()){
+      if(partnerId === 'all'){
+        localManager.setValue("isChatListViewMobile",true);
+      }
+
+      localManager.setValue("holdIdForChat",partnerId);
+      localManager.setValue("holdChatList",$rootScope.chatsList);
+      window.location.target = "_blank";
+      window.location.href = "/user/chat/general";
+
+    } else if(templateService.holdId) {
+      $location.path("/general-chat");
+    } else {
+      alert("You have no messages yet.")
     }
+
+    $scope.showIndicator = false;
     
   }
 
@@ -6989,8 +7062,7 @@ app.controller("presenceSocketController",["$rootScope","$scope","$window","mySo
    JSON.stringify(window.localStorage.setItem("user",person));// just to save person to local storage;
 
 
- 
-   /*if(person.typeOfUser === "Patient"){
+  /*if(person.typeOfUser === "Patient"){
      //patients  see doctors as the log in
      mySocket.on("doctor presence",function(data){
       //var elemPos = $rootScope.patientsDoctorList.map(function(x){return x.doctor_id}).indexOf(data.doctor_id);
@@ -7028,9 +7100,11 @@ app.controller("presenceSocketController",["$rootScope","$scope","$window","mySo
 
   function getUsersOnline() {
     if(person.typeOfUser === "Patient"){
-      $rootScope.$broadcast("users presence",{type: 'doctorList',data: $rootScope.patientsDoctorList ,sockets: $rootScope.sockets});
+      $rootScope.$broadcast("users presence",
+        {type: 'doctorList',data: $rootScope.patientsDoctorList ,sockets: $rootScope.sockets});
     } else if(person.typeOfUser == "Doctor"){
-      $rootScope.$broadcast("users presence",{type: 'patientList',data: $rootScope.patientList ,sockets: $rootScope.sockets});
+      $rootScope.$broadcast("users presence",
+        {type: 'patientList',data: $rootScope.patientList ,sockets: $rootScope.sockets});
     }
   }
 
@@ -7095,80 +7169,107 @@ app.controller("presenceSocketController",["$rootScope","$scope","$window","mySo
     var msg = data.sender 
     + " has successfully paid your consultation fee. You can go ahead with his treatment.";
     alert(msg);
+  });
+
+
+  /* Audio Call Logic **/
+
+  mySocket.on("receive request audio",function(data){ 
+    templateService.playAudio(1);
+    
+    var decide = confirm(data.message);
+    if(decide){
+      $rootScope.holdPartner = {
+        partnerType: "Patient",
+        partnerId: data.from,
+        name: data.name,
+        presence: data.presence
+      };
+      ModalService.showModal({
+        templateUrl: 'audio-communication-request.html',
+        controller: "audioInitController"
+      }).then(function(modal) {
+        modal.element.modal();
+        modal.close.then(function(result) {
+           
+        });
+      });
+    } else {
+      var name = person.name || person.title + " " + person.firstname;
+      mySocket.emit("call reject",{to: data.from,message: name + " rejected your audio chat request."})
+    }
   })
+
+
 
   /***** Video Call Logic ********/
   //takes care of receiver accepting the video call 
   mySocket.on("receive request",function(data){
     templateService.playAudio(1);
-    setTimeout(function(){
-      display()
-    },2000);
-
-    function display() {
-      var decide = confirm(data.message);
-      if(decide) {
-        //time will be include to enable user decide when t have conversation
-
-        var idPatient = (person.typeOfUser === 'Patient') ? person.user_id : data.from; // this will identify which patient was used to initilalze the video caht
-
-        mySocket.emit("conversation acceptance",{status:true,time: "now",to:data.from,title:person.title,
-          name: person.firstname || person.name,type:person.typeOfUser,patientId: idPatient},function(response){
-
-            //localManager.setValue("userId",data.from);
-
-            $rootScope.controlUrl = response.controlUrl;
-            $rootScope.tokBoxUrl = response.tokBoxVideoURL;
-            ModalService.showModal({
-              templateUrl: 'redirect-modal.html',
-                controller: 'redirectModal'
-              }).then(function(modal) {
-                modal.element.modal();
-                modal.close.then(function(result) {                     
-              });
-            });
-        });
-      } else {
-        //when call is rejected by the receiver
-        var name = person.name || person.title + " " + person.firstname;
-        //mySocket.emit("call reject",{to: data.from,message: name + " rejected your video chat request."})
-      }
-    }
+    display(data)
   });
 
+  function display(data) {
+    var decide = confirm(data.message);
+    if(decide) {
+      //time will be include to enable user decide when t have conversation
 
-  //for invitation through the video call page
-  mySocket.on("receive invitation request",function(data){
-    templateService.playAudio(1);
-    setTimeout(function(){
-      display()
-    },2000);
+      var idPatient = (person.typeOfUser === 'Patient') ? person.user_id : data.from; // this will identify which patient was used to initilalze the video caht
 
-    function display() {
-      var decide = confirm(data.message);
-      if(decide) {
-        var names = person.name  ||  person.title + " " + person.firstname
-        //time will be include to enable user decide when t have conversation
-        mySocket.emit("conversation invitation acceptance",{status:true,time: "now",to:data.from,
-          name: names ,type:person.typeOfUser,controlId: data.controlId,userId:person.user_id},function(response){
-          localManager.setValue("userId",data.from);
+      mySocket.emit("conversation acceptance",{status:true,time: "now",to:data.from,title:person.title,
+        name: person.firstname || person.name,type:person.typeOfUser,patientId: idPatient},function(response){
+
+          //localManager.setValue("userId",data.from);
+
           $rootScope.controlUrl = response.controlUrl;
+          $rootScope.tokBoxUrl = response.tokBoxVideoURL;
           ModalService.showModal({
             templateUrl: 'redirect-modal.html',
-            controller: 'redirectModal'
+              controller: 'redirectModal'
             }).then(function(modal) {
               modal.element.modal();
               modal.close.then(function(result) {                     
             });
           });
-        });
-      } else {
-        //when call is rejected by the receiver
-        var name = person.name || person.title + " " + person.firstname;
-        //mySocket.emit("call reject",{to: data.from,message: name + " rejected your video chat request."})
-      }
+      });
+    } else {
+      //when call is rejected by the receiver
+      var name = person.name || person.title + " " + person.firstname;
+      mySocket.emit("call reject",{to: data.from,message: name + " rejected your video chat request."})
     }
+  }
+
+
+  //for invitation through the video call page
+  mySocket.on("receive invitation request",function(data){
+    templateService.playAudio(1);
+    display1(data)
   });
+
+  function display1(data) {
+    var decide = confirm(data.message);
+    if(decide) {
+      var names = person.name  ||  person.title + " " + person.firstname
+      //time will be include to enable user decide when t have conversation
+      mySocket.emit("conversation invitation acceptance",{status:true,time: "now",to:data.from,
+        name: names ,type:person.typeOfUser,controlId: data.controlId,userId:person.user_id},function(response){
+        localManager.setValue("userId",data.from);
+        $rootScope.controlUrl = response.controlUrl;
+        ModalService.showModal({
+          templateUrl: 'redirect-modal.html',
+          controller: 'redirectModal'
+          }).then(function(modal) {
+            modal.element.modal();
+            modal.close.then(function(result) {                     
+          });
+        });
+      });
+    } else {
+      //when call is rejected by the receiver
+      var name = person.name || person.title + " " + person.firstname;
+      mySocket.emit("call reject",{to: data.from,message: name + " rejected your video chat request."})
+    }
+  }
 
   
   mySocket.on("convserstion denied",function(details){
@@ -7179,28 +7280,26 @@ app.controller("presenceSocketController",["$rootScope","$scope","$window","mySo
   mySocket.on("video call able",function(response){
     //localManager.setValue("socket",mySocket);
     templateService.playAudio(4);
-    setTimeout(function(){
-      display();
-    },3000);
-
-    function display() {
-      var decide = confirm(response.message);
-      console.log(response)
-      if(decide){
-         $rootScope.controlUrl = response.controlUrl;
-         $rootScope.tokBoxUrl = response.tokBoxVideoURL;
-         localManager.setValue("partnerDetails",response.partnerDetails);
-         ModalService.showModal({
-          templateUrl: 'redirect-modal.html',
-              controller: 'redirectModal'
-          }).then(function(modal) {
-              modal.element.modal();
-              modal.close.then(function(result) {                 
-          });
-        });
-      }
-    }
+    display2(response)
   });
+
+  function display2(response) {
+    var decide = confirm(response.message);
+    
+    if(decide){
+       $rootScope.controlUrl = response.controlUrl;
+       $rootScope.tokBoxUrl = response.tokBoxVideoURL;
+       localManager.setValue("partnerDetails",response.partnerDetails);
+       ModalService.showModal({
+        templateUrl: 'redirect-modal.html',
+            controller: 'redirectModal'
+        }).then(function(modal) {
+            modal.element.modal();
+            modal.close.then(function(result) {                 
+        });
+      });
+    }
+  }
 
 }]);
 
@@ -7610,7 +7709,7 @@ app.controller("videoInitController",["$scope","$window","localManager","mySocke
   $scope.offline = {};
 
 
-  $scope.docInfo = templateService.holdForSpecificPatient; // <== also used for patient signaling by doctor
+  $scope.docInfo = templateService.holdForSpecificPatient || {}; // <== also used for patient signaling by doctor
 
   $scope.yes = function () {
     $scope.isYes = true;
@@ -7622,7 +7721,8 @@ app.controller("videoInitController",["$scope","$window","localManager","mySocke
       to: userId,
       name: user.firstname,
       title: user.title,
-      from: user.user_id
+      from: user.user_id,
+      presence: $scope.docInfo.presence
     }
 
     // takes care of the call initator sending video call request.
@@ -7720,13 +7820,14 @@ app.controller('audioInitController',["$scope","$window","localManager","mySocke
 
     $scope.offline = {};
 
+
+
     $http.post('/user/audioCallInit',{type:$rootScope.holdPartner.partnerType, userId: $rootScope.holdPartner.partnerId})
     .success(function(response){
       //console.log(response)$rootScope.sockets;
 
       //var invert = _.invert($rootScope.sockets);      
       //if(invert[$rootScope.holdPartner.partnerId]){
-
       if($rootScope.holdPartner.presence) {
         var sender = $rootScope.checkLogIn.name || $rootScope.checkLogIn.firstname;
         mySocket.emit("audio call signaling",
@@ -7746,8 +7847,12 @@ app.controller('audioInitController',["$scope","$window","localManager","mySocke
         + " Please stay logged in."
       }
 
+
+
       $scope.confirmTime = function() {
+
         $scope.offline.type = "Audio Chat";
+
         if(!$scope.offline.time){
           alert("Please choose a suitable time for your conversation.")    
         } else if($scope.offline.time !== 'now'){
@@ -12318,25 +12423,7 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
   $rootScope.complain = {};
 
   $rootScope.logout = function(){
-    /*mySocket.emit("set presence",{status:"offline",userId:$scope.checkLogIn.user_id},function(response){
-      if(response.status === false){
-        if($scope.checkLogIn.typeOfUser === "Doctor"){
-          mySocket.emit("doctor disconnect",{userId:$scope.checkLogIn.user_id});
-        } else if($scope.checkLogIn.typeOfUser === "Patient") {
-          mySocket.emit("patient disconnect",$scope.checkLogIn);
-        }
-      }
-    });*/
-
-    /*if($scope.checkLogIn.typeOfUser === "Patient")
-      mySocket.emit("check presence",{status: true},function(res){
-        $rootScope.$broadcast("users presence",{type: 'doctorList',data: $rootScope.patientsDoctorList,sockets: res});         
-      })
-
-    if($scope.checkLogIn.typeOfUser === "Doctor")
-      mySocket.emit("check presence",{status: true},function(res){
-        $rootScope.$broadcast("users presence",{type: 'patientList',data: $rootScope.patientList,sockets: res});         
-      })*/
+ 
 
     $window.location.href = "/user/logout";
     destroyStorage();
@@ -12591,35 +12678,7 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
      return str;
   }
 
-  function getAllconnectedSockets() {
-    //gets all connected sockets for every 1 min
-    mySocket.emit("check presence",{status: true},function(res){
-      $rootScope.sockets = res;
-      localManager.setValue("connectedSockets",res)
-      //$rootScope.$broadcast("users presence",{type: 'chatList',data:$rootScope.chatsList,sockets: res});         
-    })
-  }
-
-
-
-  $rootScope.loadChats = function() {
-    $scope.loading = true;
-    var date = + new Date();
-    $rootScope.chatsList = chatService.chats();
-    $rootScope.chatsList.$promise.then(function(result){
-      $scope.loading = false;
-      $rootScope.chatsList = result;
-      for(var i = 0; i < result.length; i++) {
-        if(!result[i].is_read) {
-          $scope.showIndicator = true;
-        }
-        //result[i].realTime = date;
-      }
-    });
-  }
-
-  if(localManager.getValue("resolveUser"))
-    $rootScope.loadChats();
+ 
 
   $rootScope.$on("users presence",function(info,response){
     var on = true;
@@ -12734,14 +12793,43 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
     })
   }
 
-  getAllconnectedSockets();
+
+  function getAllconnectedSockets() {
+    //gets all connected sockets for every 1 min
+    mySocket.emit("check presence",{status: true},function(res){
+      $rootScope.sockets = res;
+      localManager.setValue("connectedSockets",res)
+      $rootScope.$broadcast("users presence",{type: 'chatList',data:$rootScope.chatsList,sockets: res}); 
+    })
+  }
+
+  $rootScope.loadChats = function() {
+    $scope.loading = true;
+    var date = + new Date();
+    $rootScope.chatsList = chatService.chats();
+    $rootScope.chatsList.$promise.then(function(result){
+      $scope.loading = false;
+      $rootScope.chatsList = result;
+      for(var i = 0; i < result.length; i++) {
+        if(!result[i].is_read) {
+          $scope.showIndicator = true;
+        }
+      }
+      //$rootScope.$broadcast("users presence",{type: 'chatList',data:$rootScope.chatsList,sockets: $rootScope.sockets});
+      getAllconnectedSockets();
+    });
+  }
+
+  //getAllconnectedSockets();
   //gets connected sockets every 1 min
   $interval(function(){
     getAllconnectedSockets()
   },60000)
 
+  if(localManager.getValue("resolveUser"))
+    $rootScope.loadChats();
 
-
+  
   //for viewing jnlp dicom weasis viewer as java web start launcher
   $rootScope.opnejnlp = function(link) {
     window.location.href = "jnlp://" + link;

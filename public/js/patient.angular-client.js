@@ -1901,13 +1901,28 @@ app.controller("patientNotificationController",["$scope","$location","$http","$w
 
 
  
+  var note = patientNotificationService;
 
-  function getNotification() {
-    var note = patientNotificationService; 
+  function getNotification() {     
     note.query(function(data){
       $rootScope.allNote = data;
       $rootScope.noteLen = data.length; 
-    })
+
+      for(var item = data.length - 1; item >= 0; item--) {
+        if(!filter.hasOwnProperty(data[item].type)){
+          filter[data[item].type] = [];
+          filter[data[item].type].unshift(data[item]);
+        } else {
+          filter[data[item].type].unshift(data[item]);
+        }
+      }
+
+      $rootScope.videoRequest = filter['video'] || [];
+      $rootScope.audioRequest = filter['audio'] || []; 
+      //$rootScope.inPersonRequest =  filter["Meet In-person"] || [];
+
+    });
+
     $rootScope.$broadcast("fetRecord",{status: true});
   }
              
@@ -2085,7 +2100,7 @@ app.controller("patientNotificationController",["$scope","$location","$http","$w
   $scope.holdAudioCallResponse = [];
 
   mySocket.on("conversation status",function(data){
-    alert(data.firstname + "says yes");
+    
     templateService.playAudio(1);
     if(data.type === "Video Call"){
       $scope.holdVideoCallResponse.unshift(data);
@@ -2220,8 +2235,8 @@ app.controller("patientNotificationController",["$scope","$location","$http","$w
 
   $rootScope.loadChats();*/
 
-   $scope.viewChat2 = function(list) {  
-    var list = $rootScope.chatsList; 
+   $scope.viewChat2 = function(partnerId) {  
+    /*var list = $rootScope.chatsList; 
     localManager.setValue("isChatListViewMobile",true);
     if(list) {
       var byRecent = $filter('orderBy')(list,'-realTime');
@@ -2237,7 +2252,27 @@ app.controller("patientNotificationController",["$scope","$location","$http","$w
         alert("You have no messages yet.")
       }
       $scope.showIndicator = false;
+    }*/
+
+    templateService.holdId = (partnerId !== "all") ? partnerId : $rootScope.chatsList[0].partnerId; 
+
+    if(deviceCheckService.getDeviceType()){
+      if(partnerId === 'all'){
+        localManager.setValue("isChatListViewMobile",true);
+      }
+
+      localManager.setValue("holdIdForChat",partnerId);
+      localManager.setValue("holdChatList",$rootScope.chatsList);
+      window.location.target = "_blank";
+      window.location.href = "/user/chat/general";
+
+    } else if(templateService.holdId) {
+      $location.path("/general-chat");
+    } else {
+      alert("You have no messages yet.")
     }
+
+    $scope.showIndicator = false;
   }
 
   $rootScope.viewChat = function(partnerId) {
@@ -2751,35 +2786,7 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
      return str;
   }
 
-  function getAllconnectedSockets() {
-    //gets all connected sockets for every 1 min
-    mySocket.emit("check presence",{status: true},function(res){
-      $rootScope.sockets = res;
-      localManager.setValue("connectedSockets",res)
-      //$rootScope.$broadcast("users presence",{type: 'chatList',data:$rootScope.chatsList,sockets: res});         
-    })
-  }
-
-
-
-  $rootScope.loadChats = function() {
-    $scope.loading = true;
-    var date = + new Date();
-    $rootScope.chatsList = chatService.chats();
-    $rootScope.chatsList.$promise.then(function(result){
-      $scope.loading = false;
-      $rootScope.chatsList = result;
-      for(var i = 0; i < result.length; i++) {
-        if(!result[i].is_read) {
-          $scope.showIndicator = true;
-        }
-        //result[i].realTime = date;
-      }
-    });
-  }
-
-  if(localManager.getValue("resolveUser"))
-    $rootScope.loadChats();
+ 
 
   $rootScope.$on("users presence",function(info,response){
     var on = true;
@@ -2894,11 +2901,44 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
     })
   }
 
-  getAllconnectedSockets();
+
+   function getAllconnectedSockets() {
+    //gets all connected sockets for every 1 min
+    mySocket.emit("check presence",{status: true},function(res){
+      $rootScope.sockets = res;
+      localManager.setValue("connectedSockets",res)
+      $rootScope.$broadcast("users presence",{type: 'chatList',data:$rootScope.chatsList,sockets: res}); 
+    })
+  }
+
+
+
+  $rootScope.loadChats = function() {
+    $scope.loading = true;
+    var date = + new Date();
+    $rootScope.chatsList = chatService.chats();
+    $rootScope.chatsList.$promise.then(function(result){
+      $scope.loading = false;
+      $rootScope.chatsList = result;
+      for(var i = 0; i < result.length; i++) {
+        if(!result[i].is_read) {
+          $scope.showIndicator = true;
+        }
+      }
+      getAllconnectedSockets();
+    });
+  }
+
+  
+  //getAllconnectedSockets();
+  
   //gets connected sockets every 1 min
   $interval(function(){
     getAllconnectedSockets()
   },60000)
+
+  if(localManager.getValue("resolveUser"))
+    $rootScope.loadChats();
 
 
 
@@ -3022,80 +3062,108 @@ app.controller("presenceSocketController",["$rootScope","$scope","$window","mySo
     var msg = data.sender 
     + " demands you pay a consultation fee sent to you. Please check your mail in your account and see details.";
     alert(msg);
+  });
+
+
+  /* Audio Call Logic **/
+
+  mySocket.on("receive request audio",function(data){ 
+    templateService.playAudio(1);
+    
+    var decide = confirm(data.message);
+    if(decide){
+      $rootScope.holdPartner = {
+        partnerType: "Doctor",
+        partnerId: data.from,
+        name: data.name,
+        presence: true //data.presence
+      };
+
+      ModalService.showModal({
+        templateUrl: 'audio-communication-request.html',
+        controller: "audioInitController"
+      }).then(function(modal) {
+        modal.element.modal();
+        modal.close.then(function(result) {
+           
+        });
+      });
+
+    } else {
+      var name = person.name || person.title + " " + person.firstname;
+      mySocket.emit("call reject",{to: data.from,message: name + " rejected your audio chat request."})
+    }
+
   })
 
   /***** Video Call Logic ********/
   //takes care of receiver accepting the video call 
   mySocket.on("receive request",function(data){
     templateService.playAudio(1);
-    setTimeout(function(){
-      display()
-    },2000);
-
-    function display() {
-      var decide = confirm(data.message);
-      if(decide) {
-        //time will be include to enable user decide when t have conversation
-
-        var idPatient = (person.typeOfUser === 'Patient') ? person.user_id : data.from; // this will identify which patient was used to initilalze the video caht
-
-        mySocket.emit("conversation acceptance",{status:true,time: "now",to:data.from,title:person.title,
-          name: person.firstname || person.name,type:person.typeOfUser,patientId: idPatient},function(response){
-
-            //localManager.setValue("userId",data.from);
-
-            $rootScope.controlUrl = response.controlUrl;
-            $rootScope.tokBoxUrl = response.tokBoxVideoURL;
-            ModalService.showModal({
-              templateUrl: 'redirect-modal.html',
-                controller: 'redirectModal'
-              }).then(function(modal) {
-                modal.element.modal();
-                modal.close.then(function(result) {                     
-              });
-            });
-        });
-      } else {
-        //when call is rejected by the receiver
-        var name = person.name || person.title + " " + person.firstname;
-        //mySocket.emit("call reject",{to: data.from,message: name + " rejected your video chat request."})
-      }
-    }
+    display(data)
   });
 
+  function display(data) {
+    var decide = confirm(data.message);
+    if(decide) {
+      //time will be include to enable user decide when t have conversation
 
-  //for invitation through the video call page
-  mySocket.on("receive invitation request",function(data){
-    templateService.playAudio(1);
-    setTimeout(function(){
-      display()
-    },2000);
+      var idPatient = (person.typeOfUser === 'Patient') ? person.user_id : data.from; // this will identify which patient was used to initilalze the video caht
 
-    function display() {
-      var decide = confirm(data.message);
-      if(decide) {
-        var names = person.name  ||  person.title + " " + person.firstname
-        //time will be include to enable user decide when t have conversation
-        mySocket.emit("conversation invitation acceptance",{status:true,time: "now",to:data.from,
-          name: names ,type:person.typeOfUser,controlId: data.controlId,userId:person.user_id},function(response){
-          localManager.setValue("userId",data.from);
+      mySocket.emit("conversation acceptance",{status:true,time: "now",to:data.from,title:person.title,
+        name: person.firstname || person.name,type:person.typeOfUser,patientId: idPatient},function(response){
+
+          //localManager.setValue("userId",data.from);
+
           $rootScope.controlUrl = response.controlUrl;
+          $rootScope.tokBoxUrl = response.tokBoxVideoURL;
           ModalService.showModal({
             templateUrl: 'redirect-modal.html',
-            controller: 'redirectModal'
+              controller: 'redirectModal'
             }).then(function(modal) {
               modal.element.modal();
               modal.close.then(function(result) {                     
             });
           });
-        });
-      } else {
-        //when call is rejected by the receiver
-        var name = person.name || person.title + " " + person.firstname;
-        //mySocket.emit("call reject",{to: data.from,message: name + " rejected your video chat request."})
-      }
+      });
+    } else {
+      //when call is rejected by the receiver
+      var name = person.name || person.title + " " + person.firstname;
+      mySocket.emit("call reject",{to: data.from,message: name + " rejected your video chat request."})
     }
+  }
+
+
+  //for invitation through the video call page
+  mySocket.on("receive invitation request",function(data){
+    templateService.playAudio(1);
+    display1(data)
   });
+
+  function display1(data) {
+    var decide = confirm(data.message);
+    if(decide) {
+      var names = person.name  ||  person.title + " " + person.firstname
+      //time will be include to enable user decide when t have conversation
+      mySocket.emit("conversation invitation acceptance",{status:true,time: "now",to:data.from,
+        name: names ,type:person.typeOfUser,controlId: data.controlId,userId:person.user_id},function(response){
+        localManager.setValue("userId",data.from);
+        $rootScope.controlUrl = response.controlUrl;
+        ModalService.showModal({
+          templateUrl: 'redirect-modal.html',
+          controller: 'redirectModal'
+          }).then(function(modal) {
+            modal.element.modal();
+            modal.close.then(function(result) {                     
+          });
+        });
+      });
+    } else {
+      //when call is rejected by the receiver
+      var name = person.name || person.title + " " + person.firstname;
+      mySocket.emit("call reject",{to: data.from,message: name + " rejected your video chat request."})
+    }
+  }
 
   
   mySocket.on("convserstion denied",function(details){
@@ -3106,38 +3174,62 @@ app.controller("presenceSocketController",["$rootScope","$scope","$window","mySo
   mySocket.on("video call able",function(response){
     //localManager.setValue("socket",mySocket);
     templateService.playAudio(4);
-    setTimeout(function(){
-      display();
-    },3000);
-
-    function display() {
-      var decide = confirm(response.message);
-      if(decide){
-         $rootScope.controlUrl = response.controlUrl;
-         $rootScope.tokBoxUrl = response.tokBoxVideoURL;
-         localManager.setValue("partnerDetails",response.partnerDetails);
-         ModalService.showModal({
-          templateUrl: 'redirect-modal.html',
-              controller: 'redirectModal'
-          }).then(function(modal) {
-              modal.element.modal();
-              modal.close.then(function(result) {                 
-          });
-        });
-      }
-    }
+    display2(response)
   });
+
+  function display2(response) {
+    var decide = confirm(response.message);
+    if(decide){
+       $rootScope.controlUrl = response.controlUrl;
+       $rootScope.tokBoxUrl = response.tokBoxVideoURL;
+       localManager.setValue("partnerDetails",response.partnerDetails);
+       ModalService.showModal({
+        templateUrl: 'redirect-modal.html',
+            controller: 'redirectModal'
+        }).then(function(modal) {
+            modal.element.modal();
+            modal.close.then(function(result) {                 
+        });
+      });
+    }
+  }
 
 }]);
 
 
-app.controller('audioInitController',["$scope","$window","localManager","mySocket","$rootScope","$http",
+app.controller("audioInitController",["$scope","$window","localManager","mySocket","templateService",
+  function($scope,$window,localManager,mySocket,templateService){
+    /******** Audio call Logic *******/
+  var user = localManager.getValue("resolveUser");
+  user.firstname = user.firstname || user.name;
+
+  $scope.docInfo = templateService.holdForSpecificDoc || templateService.holdForSpecificPatient; // <== also used for patient signaling by doctor
+
+  $scope.requestChat = function(userId) {    
+    var reqObj = {
+      to: userId,
+      name: user.firstname,
+      title: user.title,
+      from: user.user_id,
+      presence: $scope.docInfo.presence
+    }
+    // takes care of the call initator sending audio call request.
+    mySocket.emit("convsersation signaling audio",reqObj,function(data){
+      alert(data.message);
+    })
+  }
+
+}]);  
+                                
+
+
+
+/*app.controller('audioInitController',["$scope","$window","localManager","mySocket","$rootScope","$http",
   function($scope,$window,localManager,mySocket,$rootScope,$http){
 
     $http.post('/user/audioCallInit',{type:$rootScope.holdPartner.partnerType, userId: $rootScope.holdPartner.partnerId})
     .success(function(response){
-      //console.log(response)$rootScope.sockets;
-
+      
       var invert = _.invert($rootScope.sockets);      
       if(invert[$rootScope.holdPartner.partnerId]){
 
@@ -3146,8 +3238,7 @@ app.controller('audioInitController',["$scope","$window","localManager","mySocke
           {partnerConnectURL: response.partnerConnectURL,
             partnerId: $rootScope.holdPartner.partnerId,sender:sender},
           function(data){
-          //alert(data.message);
-          //console.log(data);
+        
           localManager.setValue("partnerDetails",{patientId: $rootScope.holdPartner.partnerId,type: "Patient"});
           window.location.href = response.url;
         });
@@ -3165,7 +3256,7 @@ app.controller('audioInitController',["$scope","$window","localManager","mySocke
     })
       
 
-}])
+}])*/
 
 
 //controller passes data from the page to angular. data from the patient notification box to be used within angular.
@@ -3793,8 +3884,10 @@ function($scope,$location,$rootScope,$http,ModalService,$interval,templateServic
 
   $scope.videoChat = function(patientObj) {
     var source = profileDataService;   
-    source.get({userId: patientObj.patient_id },function(data) {
+    var presence = patientObj.presence || patientObj.status;
+    source.get({userId: patientObj.patient_id},function(data) {
       data.type = 'Video Call';
+      data.presence = presence;
       templateService.holdForSpecificPatient = data;
       ModalService.showModal({
         templateUrl: 'sending-communication-request.html',
@@ -6267,9 +6360,11 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
 
 
   $scope.videoChat = function(partner) {
-    var source = profileDataService;   
+    var source = profileDataService; 
+    var presence = partner.presence || partner.status; 
     source.get({userId: partner.partnerId},function(data) {
       data.type = 'Video Call';
+      data.presence = presence;
       templateService.holdForSpecificPatient = data;
       ModalService.showModal({
         templateUrl: 'sending-communication-request.html',
@@ -6504,12 +6599,13 @@ app.controller("videoInitController",["$scope","$window","localManager","mySocke
     $scope.isYes = true;
   }
   
-  $scope.requestVideoCall = function(userId) {    
+  $scope.requestChat = function(userId) {    
     var reqObj = {
       to: userId,
       name: user.firstname,
       title: user.title,
-      from: user.user_id
+      from: user.user_id,
+      presence: $scope.docInfo.presence
     }
 
     // takes care of the call initator sending video call request.
@@ -6538,6 +6634,8 @@ app.controller("videoInitController",["$scope","$window","localManager","mySocke
   }
 
 }]);  
+
+
 
 app.controller("searchSelectedCenterController",["$scope","$location","$window","$http","templateService",
 "localManager","ModalService","$rootScope",
@@ -9815,11 +9913,37 @@ function($scope,$location,$rootScope,$http,ModalService,$interval,templateServic
     var source = profileDataService;    
     source.get({userId: docObj.doctor_id },function(data) {
       data.type = 'Video Call';
+      data.presence = docObj.presence;
       $rootScope.docInfo = data;
       templateService.holdForSpecificDoc = data;
       ModalService.showModal({
         templateUrl: 'sending-communication-request.html',
         controller: "videoInitController"
+      }).then(function(modal) {
+        modal.element.modal();
+        modal.close.then(function(result) {
+           
+        });
+      });
+    });   
+  }
+
+
+  $scope.audioChat = function(docObj){
+    var source = profileDataService;    
+    source.get({userId: docObj.doctor_id },function(data) {
+      data.type = 'Audio Chat';
+      data.presence = docObj.presence || docObj.status;
+      $rootScope.docInfo = data;
+      templateService.holdForSpecificDoc = data;
+      /*$rootScope.holdPartner = {
+        type: data.type,
+        partnerId: data.user_id
+      }*/
+
+      ModalService.showModal({
+        templateUrl: 'sending-communication-request.html',
+        controller: "audioInitController"
       }).then(function(modal) {
         modal.element.modal();
         modal.close.then(function(result) {

@@ -150,7 +150,7 @@
               <input type="text" class="form-control" name="" placeholder="Search" ng-model="ft">
             </div>
             <ul class="list__view__list">
-              <li class="list__item" style="justify-content: flex-start;position: relative;height: 130px" ng-class="{'text-success' : !chat.is_read,'active_chat': chat.partnerId == partner.partnerId}" ng-repeat="chat in chatsList | filter: ft | orderBy: '-status'" ng-click="viewChat(chat,true)">
+              <li class="list__item" style="justify-content: flex-start;position: relative;height: 130px" ng-class="{'text-success' : !chat.is_read,'active_chat': chat.partnerId == partner.partnerId}" ng-repeat="chat in chatsList | filter: ft | orderBy: '-status'" ng-click="viewChat(chat,true)" ng-show="checkLogIn.user_id !== chat.partnerId">
                 <div class="chat_img pt-1"> 
                   <img src="{{chat.profilePic}}" alt="image"> 
                 </div>
@@ -356,7 +356,7 @@
               </div>
 
                <div class="modal-body p-2" ng-show="!isConnected">
-              <p class="mb-2" style="line-height: 25px">{{msg}}</p>
+              <p class="mb-2" style="line-height: 25px">{{(bookedTimeMsg) ? "" : msg}}</p>
 
               <div ng-show="!isSent">
               
@@ -495,7 +495,7 @@
               </div>
 
                <div class="modal-body p-2" ng-show="!isConnected">
-              <p class="mb-2" style="line-height: 25px">{{msg}}</p>
+              <p class="mb-2" style="line-height: 25px">{{(bookedTimeMsg) ? "" : msg}}</p>
 
               <div ng-show="!isSent">
               

@@ -9858,6 +9858,7 @@ router.post("/user/:id/communication-request",function(req,res){
           var resMsg = user.lastname + " is currently attending to a patient. You have joined the queue."
           res.send({status: "Busy",message: resMsg,checkUrl: url});
         }
+
         user.save(function(err,info){
           if(err) throw err;
           console.log("saved")
@@ -13013,7 +13014,7 @@ router.get("/user/audiocall",function(req,res){
   if(req.user) {
     //model.user.findOne({user_id: req.query.user},{name: 1, firstname:1})
     //.exec(function(err,sender){
-     //if(err) throw err;
+    //if(err) throw err;
       var sender = req.user;
       if(sender){
         model.opentok_session.findOne({init_id: req.query.id})
@@ -13089,22 +13090,17 @@ router.get("/user/audiocall",function(req,res){
 
 router.post("/user/offline-message",function(req,res){
   if(req.user){
-    model.user.findOne({user_id: req.body.partnerId},{phone:1,firstname:1})
+    model.user.findOne({user_id: req.body.partnerId},{phone:1,firstname:1,type:1,patient_notification:1})
     .exec(function(err,user){
       if(err) throw err;
       if(user){
         var msgBody;
         var id = uuid.v1();
-        if(req.body.type == "Video Chat"){
+        if(req.body.type === "Video Chat"){
           req.body.partnerURL = "/user/video?peerId=" + req.user.user_id + "&roomId=" 
           + id + "&type=" + req.user.type + "&isLink=true";
         }
-
-
-        /*
-has invited you for an audio consultation in the next 5 minutes which is 9.16pm. Click the link below to join when it's time.   
-        */
-
+  
         if(req.body.isNow){
           msgBody = req.user.name + " has invited you for  " + req.body.type + " now." 
           + "\nClick the link below to join when it is immediately."
@@ -13114,6 +13110,41 @@ has invited you for an audio consultation in the next 5 minutes which is 9.16pm.
           + req.body.offset + " " + req.body.timeFlag + " which is " + req.body.time
           + "\nClick the link below to join when it is time."
           + "\nhttps://applinic.com" + req.body.partnerURL;
+
+          if(user.type === "Patient"){
+
+          if(req.body.type === "Video Chat") {
+            var message = "You have video chat invition from " + req.user.name 
+            + "  in the next " + req.body.offset + " " + req.body.timeFlag + " which will be " + req.body.time;
+            var id = Math.floor(Math.random() * 9999999999);
+            var requestData = {                     
+              date: + new Date(),
+              note_id: id,
+              ref_id: "https://applinic.com" + req.body.partnerURL,
+              session_id: id,
+              type: "video",
+              message: message
+            }
+          } else {
+            var message = "You have audio chat invition from " + req.user.name
+            + "  in the next " + req.body.offset + " " + req.body.timeFlag + " which will be " + req.body.time;
+            var id = Math.floor(Math.random() * 9999999999);
+            var requestData = {                     
+              date: + new Date(),
+              note_id: id,
+              ref_id: "https://applinic.com" + req.body.partnerURL,
+              session_id: id,
+              type: "audio",
+              message: message
+            }
+          }
+
+          user.patient_notification.push(requestData)
+          user.save(function(err,info){
+              if(err) throw err;
+            });
+          }
+
         }
 
         var phoneNunber =  user.phone;
@@ -13128,19 +13159,17 @@ has invited you for an audio consultation in the next 5 minutes which is 9.16pm.
         ) 
       }
 
+      var docMsg = "You have scheduled " + req.body.type + " with this person."
+      + " Please stay logged in." 
+      
+      res.json({status: true,msg: docMsg})
+
       function callBack(err,info) {
 
         if(err){
-          res.json({status: false,message: "Error occured. message NOT sent. Please try again later."});
+          //res.json({status: false,message: "Error occured. message NOT sent. Please try again later."});
         }
 
-        if(info){
-          var docMsg = "You have scheduled " + req.body.type + " with " + user.firstname + " in the next " 
-          + req.body.offset + " " + req.body.timeFlag + " which is " + req.body.time
-          + " Please stay logged in." 
-          
-          res.json({status: true,msg: docMsg})
-        } 
       }
 
     })

@@ -285,7 +285,7 @@
                   </a>
                                 <div class="dropdown-menu notifications-dropdown-menu menuTwo" style="max-height: 400px;overflow-y: auto;">
                                     <ul class="notifications-container noti-style">
-                                        <li> <h6 style="text-align: center">Message(s)</h6> </li>
+                                        <li> <h6 style="text-align: center">Messages</h6> </li>
                                         <!--<li ng-repeat = "msg in allMsg | orderBy: '-date'" ng-click= "viewMessage(msg.user_id,msg)" ng-if="msg.category !== 'need_doctor' && msg.category !== 'outPatientBilling'" style="cursor: pointer;">
                                             <div class="notification-item">
                                                 <div class="img-col">
@@ -366,9 +366,9 @@
                   </a>
                                 <div class="dropdown-menu notifications-dropdown-menu menuThree" style="max-height: 400px;overflow-y: auto;" ng-controller = "createRoomController">
                                     <ul class="notifications-container noti-style">
-                                        <li> <h6 style="text-align: center">Appointment(s)</h6> </li>
+                                        <li> <h6 style="text-align: center">Appointments</h6> </li>
                                         <li ng-repeat = "app in allApp | orderBy: '-date'" class="msg-drp-list" ng-click= "viewAppointment(app.session_id)">
-                                            <a href="" class="notification-item">
+                                            <a href="" class="notification-item">                                               
                                                 <div class="img-col">
                                                   <div class="img" style="background-image: url({{app.profilePic}})"></div>
                                                 </div>
@@ -438,56 +438,145 @@
                                 </div>
                             </li>
                              <!--<li class="notifications new"> <a href="" ng-click = "viewChat2(chatsList)" data-toggle="dropdown">-->
-                             <li class="notifications new"> <a href="" ng-click="viewChat2(chatsList)" title="Messages from doctors, centers, colleagues and others">
+                             <li class="notifications new"> <a href="" data-toggle="dropdown" title="Messages from doctors, centers, colleagues and others">
                               <i class="fa fa-comments" ></i>
                               <sup>
                                 <span class="counter btn-danger" ng-if="showIndicator !== false" style="border-radius: 10px;width: 8px;height: 8px;display: inline-block;"  ng-cloak></span>
                               </sup>
                             </a>
-                                <div class="dropdown-menu notifications-dropdown-menu menuFive" style="max-height: 400px;overflow-y: auto;">
+                                <div class="dropdown-menu notifications-dropdown-menu menuThree" style="max-height: 450px;overflow-y: auto;left: -60px">
                                     <ul class="notifications-container noti-style">
-                                        <li> <h6 style="text-align: center">Chats</h6> </li>
-                                        <li ng-repeat = "chat in chatsList | orderBy : '-realTime'" ng-click= "viewChat(chat.partnerId)" style="height: 80px;overflow:hidden">
-                                            <a href="" class="notification-item">
+                                        <li> <h6 style="text-align: center;border-bottom: 1px solid #eee;padding-bottom: 5px">Chats</h6> </li>
+                                        <li ng-repeat = "chat in chatsList | orderBy : '-status' || '-realTime'" ng-click= "viewChat2(chat.partnerId)" style="height: 80px;overflow:hidden" ng-show="checkLogIn.user_id !== chat.partnerId" class="msg-drp-list">
+                                            <a href="" class="notification-item" style="height: 100%;position: relative;">
                                                 <div class="img-col">
                                                     <div class="img" style="background-image: url({{chat.profilePic}})"></div>
                                                 </div>
                                                 <div class="body-col">                                                
-                                                    <p style=""> <span class="accent" ng-cloak>{{chat.name}}</span>
-                                                        <span style="display:block;width: 400px" class="ellipsis">{{chat.messages[chat.messages.length - 1].received || chat.messages[chat.messages.length - 1].sent}} <small am-time-ago="chat.messages[chat.messages.length - 1].time || chat.messages[chat.messages.length - 1].received" style="display:block" ng-cloak></small></span> 
+                                                    <p class="ellipsis"> <span class="accent" ng-cloak>{{chat.name}}</span><br>
+                                                        <span>{{chat.messages[chat.messages.length - 1].received || chat.messages[chat.messages.length - 1].sent}} <small am-time-ago="chat.realTime" style="display:block" ng-cloak></small></span> <!-- chat.messages[chat.messages.length - 1].time -->
                                                     </p>
+ 
                                                 </div>
+                                                <div class="clearfix"></div>
+                                                  <i class="online" ng-show="chat.status" title="Online" style="position: absolute;bottom: 8px; right: 30px"></i>
+                                                <i class="online" ng-show="!chat.status" title="Offline" style="position: absolute;bottom: 8px; right: 30px;background-color: #eee"></i>  
                                             </a>
+                                           
                                         </li>
                                         <li ng-if="loading" style="text-align: center;height: 120px;padding-top: 50px"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange" ng-if="loading"></i></li>                                       
                                     </ul>
                                     <footer>
                                         <ul>
-                                            <li> <a href="">
-                            <!--View All -->
+                                            <li> <a href="" ng-click= "viewChat2('all')" class="text-success">
+                                        View all
                              </a> </li>
                                         </ul>
                                     </footer>
                                 </div>
-                            </li>                                                 
-                               <!--<li class="notifications new"> <a href="" data-toggle="dropdown">
+                            </li> 
+
+
+                              <li class="notifications new"> <a href="" data-toggle="dropdown">
                     <i class="fa fa-video-camera"></i>
-                    <sup>
-                      <span class="counter" ng-if="videoLen > 0 " ng-cloak>{{videoLen}}</span>
+                  <sup>
+                      <span class="counter btn-danger" ng-show="videoRequest.length > 0" style="border-radius: 10px;width: 8px;height: 8px;display: inline-block;"  ng-cloak></span>
                     </sup>
                   </a>
-                                <div class="dropdown-menu notifications-dropdown-menu" >
+                                <div class="dropdown-menu notifications-dropdown-menu menuThree" style="max-height: 400px;overflow-y: auto;left: -100px">
                                     <ul class="notifications-container noti-style">
-                                        <li> <h6 style="text-align: center">Video Call Notification</h6> </li>
-                                        <li ng-repeat = "call in holdVideoCallResponse" ng-click= "viewVideoAppointment(call.message_id)">
-                                            <a href="" class="notification-item">
+                                        <li> <h6 style="text-align: center">Video Chat Notifications</h6> </li>
+                                        <li ng-repeat = "call in videoRequest | orderBy: '-date'" class="msg-drp-list">
+                                            <a href="{{call.ref_id}}" class="notification-item">
                                                 <div class="img-col">
-                                                    <div class="img" style="background-image: url({{call.profile_pic_url}})"></div>
+                                                  <div class="img" style="background-image: url({{app.profilePic}})">
+                                                     <i class="fa fa-video-camera"></i>
+                                                  </div>
                                                 </div>
                                                 <div class="body-col">
-                                                    <p ng-cloak> <span class="accent"></span> From :  {{call.title}} {{call.firstname}} {{call.lastname}} <span class="accent" style="display:block">Hi, you have {{call.type}} appointment with me by</span><em ng-cloak>{{call.time}} minutes</em> </p>
+                                                    <p> <span class="accent" ng-cloak>{{call.message}}</span>
+                                                        <span style="display:block;text-align: right;" class="text-muted">
+                                                           <span><b>{{call.date | amCalendar}}</b></span>
+                                                        </span>
+                                                       
+                                                    </p>
                                                 </div>
                                             </a>
+                                        </li>                                        
+                                    </ul>
+                                    <footer>
+                                        <ul>
+                                            <li> <a href="">
+                            <!--View All-->
+                          </a> </li>
+                                        </ul>
+                                    </footer>
+                                </div>
+                            </li>
+
+                             <li class="notifications new"> <a href="" data-toggle="dropdown">
+                    <i class="fa fa-phone"></i>
+                  <sup>
+                      <span class="counter btn-danger" ng-show="audioRequest.length > 0" style="border-radius: 10px;width: 8px;height: 8px;display: inline-block;"  ng-cloak></span>
+                    </sup>
+                  </a>
+                                <div class="dropdown-menu notifications-dropdown-menu menuThree" style="max-height: 400px;overflow-y: auto;left: -140px">
+                                    <ul class="notifications-container noti-style">
+                                        <li> <h6 style="text-align: center">Audio Chat Notifications</h6> </li>
+                                        <li ng-repeat = "call in audioRequest | orderBy: '-date'" class="msg-drp-list">
+                                            <a href="{{call.ref_id}}" class="notification-item">
+                                                <div class="img-col">
+                                                  <div class="img">
+                                                     <i class="fa fa-phone"></i>
+                                                  </div>
+                                                </div>
+                                                <div class="body-col">
+                                                    <p> <span class="accent" ng-cloak>{{call.message}}</span>
+                                                        <span style="display:block;text-align: right;" class="text-muted">
+                                                           <span><b>{{call.date | amCalendar}}</b></span>
+                                                        </span>
+                                                       
+                                                    </p>
+                                                </div>
+                                            </a>
+                                        </li>                                        
+                                    </ul>
+                                    <footer>
+                                        <ul>
+                                            <li> <a href="">
+                            <!--View All-->
+                          </a> </li>
+                                        </ul>
+                                    </footer>
+                                </div>
+                            </li>
+
+
+                           <!-- <li class="notifications new"> <a href="" data-toggle="dropdown">
+                    <i class="fa fa-video-camera"></i>
+                    <sup>
+                      <span class="counter btn-danger" ng-show="videoRequest.length > 0" style="border-radius: 10px;width: 8px;height: 8px;display: inline-block;"  ng-cloak></span>
+                    </sup>
+                  </a>
+                                <div class="dropdown-menu notifications-dropdown-menu menuFive" style="max-height: 400px;overflow-y: auto;" >
+                                    <ul class="notifications-container noti-style">
+                                        <li> <h6 style="text-align: center">Video Chat Notification</h6> </li>
+                                        <li ng-repeat = "call in videoRequest">
+                                            <a href="" class="notification-item">
+                                                <div class="img-col" style="display: inline-block;">
+                                                  <div class="img" style="background-image: url({{call.profile_pic_url}})">
+                                                    <i class="fa fa-video-camera"></i>
+                                                  </div>
+                                                </div>
+                                                <div class="body-col" style="display: inline-block;">
+                                                    <p ng-cloak> <span class="accent"></span>{{call.message}}<span class="accent" style="display:block"></span></em> 
+                                                    </p>
+                                                    <a href="{{call.ref_id}}" class="btn btn-success btn-sm" style="margin-top: 2px;float:right;">
+                                                        Respond
+                                                    </a>
+                                                </div>
+                                            </a>
+                                    
                                         </li>                                       
                                     </ul>
                                     <footer>
@@ -499,6 +588,7 @@
                                     </footer>
                                 </div>
                             </li>-->
+
 
                                <!--<li class="notifications new"> <a href="" data-toggle="dropdown">
                     <i class="fa fa-phone"></i>
@@ -2180,7 +2270,7 @@
 
                 <div ng-if="docInfo.type !== 'Meet In-Person'">
                     <!--<button class="btn btn-primary" ng-click="sendCommunictionRequest()" data-dismiss="modal">OK, send {{docInfo.type}} request</button>-->
-                    <button class="btn btn-primary" data-dismiss="modal" ng-click="requestVideoCall(docInfo.user_id)">OK, send {{docInfo.type}} request</button>
+                    <button class="btn btn-primary" data-dismiss="modal" ng-click="requestChat(docInfo.user_id)" ng>OK, send {{docInfo.type}} request</button>
                 </div>
 
                 <div ng-if="docInfo.type === 'Meet In-Person'">
@@ -2193,6 +2283,128 @@
         </div>
 
      </script>
+
+
+     <script type="text/ng-template" id="audio-communication-request.html">
+         <div class="modal fade">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header" style="position: relative;">
+                  <!--<h5 class="modal-title">Sending {{docInfo.type}} request takes few steps</h5>-->
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="position: absolute;right: 20px;top: 10px;padding: 10px">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+              </div>
+              <div class="modal-body" style="text-align: center;" ng-show="isConnected">               
+                <h5 style="padding: 20px 0">Initializing Audio Connections...</h5>
+                <h4 style="margin: 20px 0"><i class="fa fa-phone" style="font-size: 28px;"></i></h4>
+                <p>You will be redirected to audio chat interface as soon as connection set up is complete.</p>
+              </div>
+
+              <div class="modal-body p-2" ng-show="!isConnected">
+              <p class="mb-2" style="line-height: 25px">{{(bookedTimeMsg) ? '' : msg}}</p>
+
+              <div ng-show="!isSent">
+              
+              <div>
+
+                <label>Choose a time suitable for you to reconnect this conversation.</label><br>
+
+                 <label class="custom-control custom-radio">
+                  Immediately
+                 <input type="radio" class="custom-control-input" value="now" ng-model="offline.time">
+                  <span class="custom-control-indicator"></span>
+                  <span class="custom-control-description" style="opacity:0;"></span>
+                </label><br>
+
+                <label class="custom-control custom-radio">
+                  in 5 Minutes
+                 <input type="radio" class="custom-control-input" value="5-m" ng-model="offline.time">
+                  <span class="custom-control-indicator"></span>
+                  <span class="custom-control-description" style="opacity:0;"></span>
+                </label><br>
+
+                 <label class="custom-control custom-radio">
+                  in 10 Minutes
+                 <input type="radio" class="custom-control-input" value="10-m" ng-model="offline.time">
+                  <span class="custom-control-indicator"></span>
+                  <span class="custom-control-description" style="opacity:0;"></span>
+                </label><br>
+
+
+                <label class="custom-control custom-radio">
+                  in 15 Minutes
+                 <input type="radio" class="custom-control-input" value="15-m" ng-model="offline.time">
+                  <span class="custom-control-indicator"></span>
+                  <span class="custom-control-description" style="opacity:0;"></span>
+                </label>  <br>
+
+                 <label class="custom-control custom-radio">
+                  in 30 Minutes
+                 <input type="radio" class="custom-control-input" value="30-m" ng-model="offline.time">
+                  <span class="custom-control-indicator"></span>
+                  <span class="custom-control-description" style="opacity:0;"></span>
+                </label>  <br>
+
+                 <label class="custom-control custom-radio">
+                  in 45 Minutes
+                 <input type="radio" class="custom-control-input" value="45-m" ng-model="offline.time">
+                  <span class="custom-control-indicator"></span>
+                  <span class="custom-control-description" style="opacity:0;"></span>
+                </label>  <br>
+
+                <label class="custom-control custom-radio">
+                  in 1 Hour
+                 <input type="radio" class="custom-control-input" value="1-h" ng-model="offline.time">
+                  <span class="custom-control-indicator"></span>
+                  <span class="custom-control-description" style="opacity:0;"></span>
+                </label> <br>
+
+                <label class="custom-control custom-radio">
+                 in 2 Hours
+                 <input type="radio" class="custom-control-input" value="2-h" ng-model="offline.time">
+                  <span class="custom-control-indicator"></span>
+                  <span class="custom-control-description" style="opacity:0;"></span>
+                </label> <br>
+                <label class="custom-control custom-radio">
+                  in 3 Hours
+                 <input type="radio" class="custom-control-input" value="3-h" ng-model="offline.time">
+                  <span class="custom-control-indicator"></span>
+                  <span class="custom-control-description" style="opacity:0;"></span>
+                </label>
+
+                <label class="custom-control custom-radio">
+                  in 4 Hours
+                 <input type="radio" class="custom-control-input" value="4-h" ng-model="offline.time">
+                  <span class="custom-control-indicator"></span>
+                  <span class="custom-control-description" style="opacity:0;"></span>
+                </label>
+
+                <label class="custom-control custom-radio">
+                  in 6 Hours
+                 <input type="radio" class="custom-control-input" value="6-h" ng-model="offline.time">
+                  <span class="custom-control-indicator"></span>
+                  <span class="custom-control-description" style="opacity:0;"></span>
+                </label>               
+              </div>
+              <div>
+                <button class="btn btn-success btn-lg" ng-click="confirmTime()"><i class="fa fa-spinner fa-pulse fa-1x fa-fw text-white" ng-if="loading"></i> <span ng-show="!loading">Confirm</span></button>
+              </div>
+              </div>
+              <div ng-show="isSent">
+                 <!--<h6 class="text-center font-1_4">
+                    <i class="fa check"></i> Audio chat invitation successfully sent.
+                 </h6>-->
+                 <p class="text-center">{{bookedTimeMsg}}</p>
+              </div>
+            </div>
+
+            </div>
+        </div>
+        </div>
+
+     </script>
+
 
 
 
