@@ -6,7 +6,7 @@
         <meta http-equiv="x-ua-compatible" content="ie=edge">
         <title> Applinic</title>
         <meta name="description" content="">
-        <meta content='width=device-width, initial-scale=0.9, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no' name='viewport'/>
+        <meta content='width=device-width, initial-scale=0.87, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no' name='viewport'/>
         <link rel="apple-touch-icon" href="apple-touch-icon.png">
         <link rel="icon" type="image/png" href="/assets/images/icons/favicon.png">
         <!-- Place favicon.ico in the root directory -->
@@ -231,15 +231,15 @@
                     }
 
                     .menuSix {
-                      left: 120px!important
+                      left: 100px!important
                     }
 
                     .menuSeven {
-                      left:-260px!important
+                      left:-240px!important
                     }
 
                     .menuEight {
-                      left: -300px!important
+                      left: -280px!important
                     }
                 }
           </style>
@@ -272,7 +272,7 @@
                    
                     <div class="header-block header-block-nav">
                         <ul class="nav-profile">
-                            <li class="notifications new mr-2"> <a href="" data-toggle="dropdown">
+                            <li class="notifications new mr-1"> <a href="" data-toggle="dropdown">
                     <i class="fa fa-bell tip"><!--<span><b>Notification</b><br> Here you receive notification <br>for the following activities:<br> > Newly added patient to your <br>account,<br>> The result of an investigation<br> you referred to diagnostic centers<br> on behalf of your patients. <br> > Video call requests <br>from your applinic patients.</span>--></i>
                     <sup>
                       <span class="counter" ng-if="docNotification.length > 0 " ng-cloak>{{docNotification.length}}</span>
@@ -305,7 +305,7 @@
                                 </div>
                             </li>
 
-                               <li class="notifications new mr-2"> <a href="" data-toggle="dropdown">
+                               <li class="notifications new mr-1"> <a href="" data-toggle="dropdown">
                     <i class="fa fa-envelope tip"> <!--<span><b>Consultation Request</b><br> All consultation requests and <br> referrals from patients and<br> physicians respectively comes in here.</span>--></i>
                     <sup>
                       <span class="counter" ng-cloak>{{(consultationLen > 0) ? consultationLen : '' }}</span>
@@ -372,7 +372,7 @@
                                 </div>
                             </li>-->
 
-                               <li class="notifications new"> <a href="" data-toggle="dropdown">
+                               <li class="notifications new mr-1"> <a href="" data-toggle="dropdown">
                     <i class="fa fa-calendar tip"> <!--<span><b>Appointment Requests</b><br> Patients sometimes might want<br> to meet with you in person. <br> Such request comes in here.</span>--></i>
                     <sup>
                       <span class="counter" ng-if="inPersonRequestLen > 0 " ng-cloak>{{inPersonRequestLen}}</span>
@@ -406,7 +406,7 @@
                                     </footer>
                                 </div>
                             </li>
-                            <li class="notifications new"> <a href="" data-toggle="dropdown">
+                            <li class="notifications new mr-1"> <a href="" data-toggle="dropdown">
                     <i class="fa fa-motorcycle tip">  <!--<span><b>Delivery Requests</b><br> Here is your drug delivery requests. <br> When a request status is <b class="text-info">Ready</b><br> it means the bill for the items<br> requested is received. You are<br> <b>REQUIRED</b> to pay the bill <br> before delivery will start.</span>--></i>
                     <sup>
                       <span class="counter" ng-if="courierResponseList.length > 0" ng-cloak>{{courierResponseList.length}}</span>
@@ -453,7 +453,7 @@
 
                               
                              <!--<li class="notifications new"> <a href="" data-toggle="dropdown">-->
-                             <li class="notifications new"> <a href="" data-toggle="dropdown"> <!--ng-click="viewChat2(chatsList)"-->
+                             <li class="notifications new mr-1"> <a href="" data-toggle="dropdown"> <!--ng-click="viewChat2(chatsList)"-->
                     <i class="fa fa-comments tip"> 
                    <!-- <span><b>Chats</b><br>This is where you chat with your <br> online patients, doctors, diagnostic <br>and phamarceutical centers.<br>If you have an unread message,<br> red indicator shows on top <br>of this icon.</span>--></i>
                     <sup>
@@ -502,7 +502,7 @@
                                 </div>
                             </li>
 
-                            <li class="notifications new"> 
+                            <li class="notifications new mr-1"> 
                                     <a href="" data-toggle="dropdown">
                                     <i class="fa fa-video-camera"></i>
                                 <sup>
@@ -538,7 +538,7 @@
                                 </div>
                             </li>
 
-                            <li class="notifications new"> <a href="" data-toggle="dropdown">
+                            <li class="notifications new mr-1"> <a href="" data-toggle="dropdown">
                                 <i class="fa fa-phone"></i>
                                 <sup>
                                   <!--<span class="counter" ng-if="audioRequestLen > 0 " ng-cloak>{{audioRequestLen}}</span>-->

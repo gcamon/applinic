@@ -6,7 +6,7 @@
         <meta http-equiv="x-ua-compatible" content="ie=edge">
         <title> Applinic</title>
         <meta name="description" content="">
-         <meta content='width=device-width, initial-scale=0.9, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no' name='viewport'/>
+         <meta content='width=device-width, initial-scale=0.87, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no' name='viewport'/>
         <link rel="apple-touch-icon" href="apple-touch-icon.png">
         <!-- Place favicon.ico in the root directory -->
         <!--<link rel="stylesheet" href="/assets/css/main.cs">-->
@@ -444,7 +444,7 @@
                                 <span class="counter btn-danger" ng-if="showIndicator !== false" style="border-radius: 10px;width: 8px;height: 8px;display: inline-block;"  ng-cloak></span>
                               </sup>
                             </a>
-                                <div class="dropdown-menu notifications-dropdown-menu menuThree" style="max-height: 450px;overflow-y: auto;left: -70px;max-width: 450px">
+                                <div class="dropdown-menu notifications-dropdown-menu menuThree" style="max-height: 450px;overflow-y: auto;left: -50px;max-width: 450px">
                                     <ul class="notifications-container noti-style">
                                         <li> <h6 style="text-align: center;border-bottom: 1px solid #eee;padding-bottom: 5px">Chats</h6> </li>
                                         <li ng-repeat = "chat in chatsList | orderBy : '-status' || '-realTime'" ng-click= "viewChat2(chat.partnerId)" style="height: 80px;overflow:hidden" ng-show="checkLogIn.user_id !== chat.partnerId" class="msg-drp-list">
@@ -483,7 +483,7 @@
                       <span class="counter btn-danger" ng-show="videoRequest.length > 0" style="border-radius: 10px;width: 8px;height: 8px;display: inline-block;"  ng-cloak></span>
                     </sup>
                   </a>
-                                <div class="dropdown-menu notifications-dropdown-menu menuThree" style="max-height: 400px;overflow-y: auto;left: -110px">
+                                <div class="dropdown-menu notifications-dropdown-menu menuThree" style="max-height: 400px;overflow-y: auto;left: -90px">
                                     <ul class="notifications-container noti-style">
                                         <li> <h6 style="text-align: center">Video Chat Notifications</h6> </li>
                                         <li ng-repeat = "call in videoRequest | orderBy: '-date'" class="msg-drp-list">
@@ -520,7 +520,7 @@
                       <span class="counter btn-danger" ng-show="audioRequest.length > 0" style="border-radius: 10px;width: 8px;height: 8px;display: inline-block;"  ng-cloak></span>
                     </sup>
                   </a>
-                                <div class="dropdown-menu notifications-dropdown-menu menuThree" style="max-height: 400px;overflow-y: auto;left: -170px">
+                                <div class="dropdown-menu notifications-dropdown-menu menuThree" style="max-height: 400px;overflow-y: auto;left: -150px">
                                     <ul class="notifications-container noti-style">
                                         <li> <h6 style="text-align: center">Audio Chat Notifications</h6> </li>
                                         <li ng-repeat = "call in audioRequest | orderBy: '-date'" class="msg-drp-list">

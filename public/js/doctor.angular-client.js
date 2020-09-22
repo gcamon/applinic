@@ -12821,10 +12821,10 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
   }
 
   //getAllconnectedSockets();
-  //gets connected sockets every 1 min
+  //gets connected sockets every 30 sec
   $interval(function(){
     getAllconnectedSockets()
-  },60000)
+  },30000)
 
   if(localManager.getValue("resolveUser"))
     $rootScope.loadChats();
