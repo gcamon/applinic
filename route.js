@@ -11387,7 +11387,7 @@ router.post("/inviteonlinecall",function(req,res){
 
 router.post("/inviteonlinecallAudioVideo",function(req,res){
   var twiml = new Voice();
-  var textToSay = "Hi " + " , " + " , a " + req.query.type + " , wants to have " + req.query.media + ". with you on app linic, Please log in now to attend. Thank you."
+  var textToSay = "Hi " + " , " + " , a " + req.query.type + " , wants to have " + req.query.media + ". chat with you on app linic, Please log in now to attend. Thank you."
   twiml.say({ voice: 'man',language: 'en-us' },textToSay);
   res.type('text/xml');
   res.send(twiml.toString());
@@ -13122,10 +13122,29 @@ router.post("/user/offline-message",function(req,res){
 
         if(user.type === "Patient"){
 
+          var phoneNunber = user.phone;
+
           if(req.body.type === "Video Chat") {
 
             if(req.body.isNow) {
-              var message = req.user.name + " has invited you for  " + req.body.type + " now."
+              var message = req.user.name + " has invited you for  " + req.body.type + " now.";
+
+               sms.calls 
+              .create({
+                url: "https://applinic.com/inviteonlinecallAudioVideo?receiver=" + "Patient" + "&sender=" 
+                + req.user.firstname + "&type=" + req.user.type + "&media=" + video,
+                to: phoneNunber || "+2348064245256",
+                from: '+16467985692',
+              })
+              .then(
+                function(call){
+                  console.log(call.sid);
+                },
+                function(err) {
+                  console.log(err)
+                }
+              );
+
             } else {
               var message = "You have video chat invition from " + req.user.name 
               + "  in the next " + req.body.offset + " " + req.body.timeFlag + " which will be " + req.body.time;              
@@ -13146,6 +13165,23 @@ router.post("/user/offline-message",function(req,res){
 
             if(req.body.isNow) { 
               var message = req.user.name + " has invited you for  " + req.body.type + " now.";
+
+              sms.calls 
+              .create({
+                url: "https://applinic.com/inviteonlinecallAudioVideo?receiver=" + "Patient" + "&sender=" 
+                + req.user.firstname + "&type=" + req.user.type + "&media=" + audio,
+                to: phoneNunber || "+2348064245256",
+                from: '+16467985692',
+              })
+              .then(
+                function(call){
+                  console.log(call.sid);
+                },
+                function(err) {
+                  console.log(err)
+                }
+              );
+
             } else {
               var message = "You have audio chat invition from " + req.user.name
               + "  in the next " + req.body.offset + " " + req.body.timeFlag + " which will be " + req.body.time;
@@ -13162,24 +13198,6 @@ router.post("/user/offline-message",function(req,res){
             }
 
           }
-
-          var phoneNunber = user.phone;
-
-          sms.calls 
-          .create({
-            url: "https://applinic.com/inviteonlinecallAudioVideo?receiver=" + "Patient" + "&sender=" 
-            + req.user.firstname + "&type=" + req.user.type + "&media=" + req.body.type,
-            to: phoneNunber || "+2348064245256",
-            from: '+16467985692',
-          })
-          .then(
-            function(call){
-              console.log(call.sid);
-            },
-            function(err) {
-              console.log(err)
-            }
-          );
 
             
           sms.messages.create(
