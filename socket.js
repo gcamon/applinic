@@ -877,7 +877,7 @@ io.sockets.on('connection', function(socket){
 			}
 
 			socket.on("call reject",function(details){
-				io.sockets.to(datails.to).emit("convserstion denied",details)
+				io.sockets.to(details.to).emit("convserstion denied",details)
 			});
 
 
