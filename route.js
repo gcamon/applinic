@@ -11387,7 +11387,7 @@ router.post("/inviteonlinecall",function(req,res){
 
 router.post("/inviteonlinecallAudioVideo",function(req,res){
   var twiml = new Voice();
-  var textToSay = "Hi " + " , " + " , a " + req.query.type + " , wants to have " + req.query.media + ". chat with you on app linic, Please log in now to attend. Thank you."
+  var textToSay = "Hi " + " , " + " , a " + req.query.type + " , wants to have ." + req.query.media + " chat with you on app linic, Please log in now to attend. Thank you."
   twiml.say({ voice: 'man',language: 'en-us' },textToSay);
   res.type('text/xml');
   res.send(twiml.toString());
@@ -13132,7 +13132,7 @@ router.post("/user/offline-message",function(req,res){
                sms.calls 
               .create({
                 url: "https://applinic.com/inviteonlinecallAudioVideo?receiver=" + "Patient" + "&sender=" 
-                + req.user.firstname + "&type=" + req.user.type + "&media=" + video,
+                + req.user.firstname + "&type=" + req.user.type + "&media=video",
                 to: phoneNunber || "+2348064245256",
                 from: '+16467985692',
               })
@@ -13169,7 +13169,7 @@ router.post("/user/offline-message",function(req,res){
               sms.calls 
               .create({
                 url: "https://applinic.com/inviteonlinecallAudioVideo?receiver=" + "Patient" + "&sender=" 
-                + req.user.firstname + "&type=" + req.user.type + "&media=" + audio,
+                + req.user.firstname + "&type=" + req.user.type + "&media=audio",
                 to: phoneNunber || "+2348064245256",
                 from: '+16467985692',
               })
