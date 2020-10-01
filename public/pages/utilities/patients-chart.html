@@ -1,0 +1,133 @@
+<div class="card p-2 card-center-1">
+	<h4 class="h6">Patients Chart <span style="font-size: 10px">BP, Blood Pressure &amp; Temperature</span></h4>
+	<br>
+	<form class="col-md-10" style="line-height: 25px" ng-show="isNewLab" ng-submit="validatePatient()"> 
+
+         <div  class="mb-1">
+            <label class="custom-control custom-radio" ng-show="checkLogIn.typeOfUser === 'Doctor'">
+               Choose from your patients' list
+               <input type="radio" class="custom-control-input" value="mine" ng-model="treatment.patientType">
+               <span class="custom-control-indicator"></span>
+               <span class="custom-control-description" style="opacity:0;"></span>
+            </label> &nbsp;&nbsp;&nbsp;
+
+
+            <label class="custom-control custom-radio ml-0">
+               Phone number of a patient
+               <input type="radio" class="custom-control-input" value="other" ng-model="treatment.patientType">
+               <span class="custom-control-indicator"></span>
+               <span class="custom-control-description" style="opacity:0;"></span>
+            </label> 
+        </div>
+        <div ng-if="treatment.patientType === 'other'">
+            <label>Enter Patient's Phone Number </label> &nbsp;<i class="fa fa-question-circle tip text-primary"><span>This should be the number patient used to register on Applinic. But you can proceed if the number is not yet registered by adding few details about the patient to enable system create record for the patient. However, details will be sent to the patient via SMS.</span></i> &nbsp;  <span class="text-danger">{{phoneError}}</span><br>
+            <input type="text" class="form-control" placeholder="Enter patient's phone number" ng-model="treatment.patient_phone" uib-typeahead="p.patient_phone for p in patientList | filter:$viewValue | limitTo:15" required>
+            <br>
+            <div>
+                <input type="submit" class="btn btn-success" value="Continue" ng-show="!loading"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange" ng-show="loading"> </i>
+            </div>
+        </div>
+    </form>
+
+    <div ng-if="treatment.patientType == 'mine'">
+        <select  class="form-control hidden-md-up" ng-model="treatment.patient_identifier" required>
+           <option disabled value="" selected="">_Select a patient</option> 
+           <option value="{{p.patient_phone + '/' + p.patient_id}}" ng-repeat="p in patientList">{{p.patient_firstname}} {{p.patient_lastname}}</option>
+        </select>
+        <div class="hidden-md-down">
+            <input type="text" name="" class="form-control" ng-model="filter" placeholder="Search">
+            <br>
+            <ul class="nav nav-tabs divider" role="tablist" ng-repeat="p in patientList | filter: filter"> 
+                         
+                <li class="nav-item text-muted" style="width: 25%">
+                    <b style="display: block;" class="ellipsis">{{p.patient_title}} {{p.patient_firstname}} {{p.patient_lastname}}</b>
+                </li>               
+
+                <li class="nav-item text-muted ellipsis" style="width: 18%">
+                    <span class="ellipsis" style="display: block;">{{p.patient_gender}}</span>
+                </li>
+
+                <li class="nav-item text-muted" style="width: 15%">
+                    <span class="ellipsis" style="display: block;">{{p.patient_age}}</span>
+                </li>
+
+                <!--<li class="nav-item text-muted" style="width: 13%">
+                    <span>{{study.study_date | date: 'mediumDate'}}</span>
+                </li>-->
+
+                <li class="nav-item text-muted" style="width: 40%;padding-left: 30px">
+                    <a href="" ng-click="gotoChart(p)" target="_blank" title="BP,Blood Sugar & Temperature chart" class="round btn btn-success btn-sm" disabled title="Report"><span><i class="fa fa-bar-chart"></i> View Chart</span></a>  
+                </li>             
+            </ul>
+        </div>
+    </div> 
+    <br>
+   
+    <div class="clearfix"></div>   
+    <section class="col-md-10" ng-show="isNewPatient">
+    	<div>
+    		<a href="" ng-click="goBack()"><i class="fa fa-arrow-left"></i> Back </a>
+    	</div>
+    	<p class="pt-1 pb-1 text-danger">Patient with the phone number - {{treatment.patient_phone}} does not exist but you can proceed after creating an account for the patient. Details will be sent to the patient via SMS.</p>
+    	<form ng-submit="createPatient()">
+    		<label>Title</label><br>
+    		<select ng-model="treatment.patient_title" required>
+    			<option>Mr</option>
+    			<option>Mrs</option>
+    			<option>Master</option>
+    			<option>Miss</option>
+    			<option>Dr</option>
+    			<option>Prof</option>
+    		</select><br><br>
+ 
+    		<label>Firstname</label><br>
+    		<input type="text" name="" class="form-control" ng-model="treatment.patient_firstname" required><br>
+    		<label>Lastname</label><br>
+    		<input type="text" name="" class="form-control" ng-model="treatment.patient_lastname" required><br>
+    		<label>Gender</label><br>
+    		<select  class="form-control" ng-model="treatment.patient_gender" required>
+    			<option>Male</option>
+    			<option>Female</option>
+    		</select><br>
+    		<label>Date of Birth</label><br>
+    		<input type="date" name="" class="form-control" ng-model="treatment.dob" required><br>
+
+            <label>City</label><br>
+            <input type="text" name="" class="form-control" ng-model="treatment.patient_city" required><br>
+
+    		<input type="submit" name="" class="btn btn-info" value="Continue" ng-show="!loading"> <span ng-show="loading">Processing...</span>
+    	</form>
+        <!--<div class="mb-2">
+            <label>Patient: <span class="text-muted">{{treatment.patient_title}} {{treatment.patient_firstname}} {{treatment.patient_lastname}}</span></label><br>
+            <label>Gender: <span class="text-muted">{{treatment.patientDetails.gender}}</span></label><br>
+            <label>Age: <span class="text-muted">{{treatment.patientDetails.age}}</span></label><br>
+        </div>-->
+         <ul class="nav nav-tabs divider" role="tablist" ng-show="treatment.patientDetails"> 
+                         
+            <li class="nav-item text-muted" style="width: 25%">
+                <b style="display: block;" class="ellipsis">{{treatment.patient_title}} {{treatment.patient_firstname}} {{treatment.patient_lastname}}</b>
+            </li>
+       
+
+            <li class="nav-item text-muted ellipsis" style="width: 18%">
+                <span class="ellipsis" style="display: block;">{{treatment.patientDetails.gender}}</span>
+            </li>
+
+            <li class="nav-item text-muted" style="width: 15%">
+                <span class="ellipsis" style="display: block;">{{treatment.patientDetails.age}}</span>
+            </li>
+
+            <li class="nav-item text-muted" style="width: 40%;">
+                <a href="" target="_blank" title="BP,Blood Sugar & Temperature chart" class="round btn btn-success btn-sm" disabled title="Report"><span><i class="fa fa-bar-chart"></i> </span></a>
+                
+            </li>
+         
+        </ul>
+    </section>
+
+    <section>
+       
+        
+    </section>
+   
+</div>

@@ -2,7 +2,7 @@
 
 var app = angular.module('myApp',["ngRoute","ngAnimate","angularModalService","angularMoment",'ui.bootstrap',
   'angular-clipboard',"ngResource","btford.socket-io","ngTouch",'ngPrint','paystack','ngSanitize','summernote',
-  'xen3r0.underscorejs']);
+  'xen3r0.underscorejs',"chart.js"]);
 //htmlToPdfSave
 
 app.run(['$rootScope',function($rootScope){
@@ -937,6 +937,22 @@ app.config(['$paystackProvider','$routeProvider',
   templateUrl: "/assets/pages/utilities/plan2.html",
   controller: "planCtrl"
 })
+
+.when("/patients-chart",{
+  templateUrl: "/assets/pages/utilities/patients-chart.html",
+  controller: "patientChartCtrl",
+  resolve: {
+    path: function($location,$rootScope){
+      $rootScope.path = $location.path();  
+    }
+  }
+ })
+
+.when("/charts", {
+  templateUrl: '/assets/pages/utilities/chart.html',
+  controller: 'chartCtrl'
+ })
+
 
 }])
 
@@ -9899,6 +9915,821 @@ app.controller("invitationCtrl",["$scope","$http","$rootScope","ModalService",fu
       $scope.msg = "";
       $scope.existingUser = false;
     }
+}]);
+
+
+app.controller("patientChartCtrl",["$scope","$rootScope","$http","$location",
+  function($scope,$rootScope,$http,$location){
+  
+  var index;
+
+  $scope.treatment = {};
+
+  //$scope.treatment.country = "Nigeria";
+
+  $scope.treatment.patientType = ($rootScope.checkLogIn.typeOfUser === 'Doctor') ? "mine" : "other";
+  $scope.treatment.referral_pays = "No";
+
+  $scope.isNewLab = true;
+
+  $scope.validatePatient = function(isMobileView) {  
+
+    if(isMobileView) {
+      if($scope.treatment.patient_identifier){
+
+        var spStr = $scope.treatment.patient_identifier.split('/');
+      
+        $scope.treatment.patient_phone = spStr[0];
+       
+        $scope.treatment.patient_id = spStr[1];
+      }
+    }
+
+    //var isNumber = testNumber($scope.treatment.patient_phone);
+    if($scope.treatment.patient_phone){
+      if(testNumber($scope.treatment.patient_phone)) {
+        if($scope.treatment.patient_phone.indexOf('+') == -1)
+          $scope.treatment.patient_phone = "+234" + parseInt($scope.treatment.patient_phone); 
+      } else {
+        $scope.phoneError = "Please enter a valid phone number.";
+        alert("Patient phone number not found or invalid")
+        return;
+      }
+    } 
+
+    $scope.loading = true;
+
+    $http.get("/user/out/get-patients",{params: {phone: $scope.treatment.patient_phone,patientId: $scope.treatment.patient_id}})
+    .success(function(resp){
+      $scope.loading = false;
+      if(resp.user_id){
+
+        $rootScope.holdPatientForChart = {
+          userId: resp.user_id,
+          phone: resp.phone,
+          profile_pic_url: resp.profile_pic_url,
+          age: resp.age,
+          gender: resp.gender,
+          name: resp.title + " " + resp.firstname + " " + resp.lastname
+        }
+
+        $location.path('charts');
+
+      } else if(resp.error) {
+        alert(resp.message);
+      } else {
+        $scope.isNewPatient = true;
+        $scope.city = $rootScope.checkLogIn.city;
+        $scope.isNewLab = false;
+      }
+    })
+  }
+
+  $scope.goBack = function() {
+    $scope.isSearchToSend = false;
+    $scope.isNewPatient = false;
+    $scope.isNewLab = true;
+  }
+
+  $scope.createPatient = function() {
+    $scope.loading = true;
+    $scope.treatment.patient_age = calculate_age(new Date($scope.treatment.dob)) + " years";
+    $scope.treatment.isOutPatientForChart = true;
+    $http({
+      method  : 'POST',
+      url     : "/user/out/create-patients",
+      data    : $scope.treatment,
+      headers : {'Content-Type': 'application/json'} 
+    })
+    .success(function(response) {
+      if(response.success){
+        $rootScope.holdPatientForChart = {
+          userId: response.patient.user_id,
+          phone: response.patient.phone,
+          profile_pic_url: response.patient.profile_pic_url,
+          age: response.patient.age,
+          gender: response.patient.gender,
+          name: response.patient.title + " " + response.patient.firstname + " " + response.patient.lastname
+        }
+
+        $location.path('charts');
+       
+      } else if(response.retry) {
+        $scope.createPatient();
+      } else {
+        alert(response.message);
+        $scope.loading = false;
+        $scope.goBack()
+      }
+    })
+  }
+
+  $scope.gotoChart = function(patient){
+     $rootScope.holdPatientForChart = {
+      userId: patient.patient_id,
+      phone: patient.patient_phone,
+      profile_pic_url: patient.patient_profile_pic_url,
+      age: patient.patient_age,
+      gender: patient.patient_gender,
+      name: patient.patient_firstname + " " + patient.patient_lastname,
+    }
+
+    $location.path('charts');
+  }
+
+  
+
+  $scope.$watch("treatment.patient_identifier",function(newVal,oldVal){
+    if(newVal){
+      $scope.validatePatient(true);
+    }
+  })
+
+}]);
+
+app.service('chartReadingService',["$resource",function($resource){
+  return $resource("/user/charts",null,{update: {method: "PUT"},
+    deleteReading:{method: "DELETE"},partialUpdate:{method: "PATCH"}});
+}])
+
+app.controller("chartCtrl",["$scope","$rootScope","chartReadingService","$filter","$http",
+  "$location","templateService","localManager",
+  function($scope,$rootScope,chartReadingService,$filter,$http,$location,templateService,localManager){
+
+  // Remember we have to secure the chart to grant permissions to who enters readings for the patient
+
+  var chartService = chartReadingService;
+
+  $scope.chart = {}
+  $scope.chart.readings = {};
+  $scope.chart.readings1 = {};
+  $scope.chart.readings2 = {};
+
+  var date = new Date();
+
+  $scope.chart.year = date.getFullYear();
+
+ 
+
+  $scope.patient = $rootScope.holdPatientForChart || {};
+  $scope.chart.userId = $scope.patient.userId || $rootScope.checkLogIn.user_id;
+
+  $http.get("/user/charts/all",{params:{userId: $scope.chart.userId}})
+  .success(function(chartYesrs){
+    $scope.yearList = chartYesrs;
+  });
+
+  $scope.getChartData = function() {
+
+    chartService.get({userId: $scope.chart.userId,year: $scope.chart.year},function(chartObj){
+
+      $scope.chartData = chartObj || {};
+
+      if(chartObj["bp_readings"]){
+        $scope.megaArrBP = [];
+        var limit = 10;
+        $scope.arrLen = 0;
+        $scope.bpMarker = -1;
+        var bpLen = chartObj["bp_readings"]["length"];
+
+        function fillArrBP(index){
+          var list = [];
+
+          for(var i = index; list.length < limit; i++) {
+            if(chartObj["bp_readings"][i]) {
+              list.push(chartObj["bp_readings"][i]);
+              $scope.arrLen++;
+            } else {
+              break;
+            }
+          }
+         
+          $scope.megaArrBP.push(list);
+          $scope.bpMarker++;
+
+          if($scope.arrLen < bpLen){
+            fillArrBP($scope.arrLen);
+          }
+        }
+
+        fillArrBP(0);  
+       
+        $scope.series = ['Pulse','Systol','Diastol'];
+        $scope.colors = ['#ff6384','#45b7cd', '#FDB45C'];
+
+        var prevList;
+        var prevData;
+        var newDataList;
+        var allLists;
+        var pulse;
+        var diastol;
+        var selectedChartBPList;
+        var innerList;
+        
+
+        $scope.chartViewBP = function() {
+          allLists = [];
+          pulse = [];
+          systol = [];
+          diastol = [];
+          $scope.labels = [];
+          
+          innerList = $scope.megaArrBP[$scope.bpMarker];
+          
+          if(innerList.length === 1 && $scope.megaArrBP.length > 1) {
+            //this logic helps to fill the line graph when the data left over is single as such line need to be drawn from
+            //the previous value for good presentation
+            prevList = $scope.megaArrBP[$scope.bpMarker - 1];
+            prevData = prevList[prevList.length - 1];
+            newDataList = [prevData,innerList[0]];
+            selectedChartBPList = newDataList;
+
+          } else {
+            selectedChartBPList = innerList;
+          }
+
+          if(selectedChartBPList) {
+            selectedChartBPList.forEach(function(item){
+              $scope.labels.push(item.label)
+              pulse.push(item.pulse);
+              systol.push(item.systol);
+              diastol.push(item.diastol);
+            })
+
+            allLists.push(systol)
+            allLists.push(pulse)
+            allLists.push(diastol);
+
+            $scope.data = allLists;
+          } else {
+            $scope.bpMarker = 0;
+          }
+
+        }
+
+        $scope.chartViewBP();
+
+        $scope.onClick = function (points, evt) {
+          console.log(points, evt);
+        };
+
+      } //end  chart bp_readings
+
+
+      //Blood Sugar chart logic 
+
+      if(chartObj["bs_readings"]){
+        $scope.megaArrBS = [];
+        var limit1 = 10;
+        $scope.arrLen1 = 0;
+        $scope.bsMarker = -1;
+        var bsLen = chartObj["bs_readings"]["length"];
+
+        function fillArrBS(index){
+          var list1 = [];
+
+          for(var i = index; list1.length < limit1; i++) {
+            if(chartObj["bs_readings"][i]) {
+              list1.push(chartObj["bs_readings"][i]);
+              $scope.arrLen1++;
+            } else {
+              break;
+            }
+          }
+         
+          $scope.megaArrBS.push(list1);
+          $scope.bsMarker++;
+
+          if($scope.arrLen1 < bsLen){
+            fillArrBS($scope.arrLen1);
+          }
+        }
+
+        fillArrBS(0);  
+       
+        $scope.series1 = ['FBS','RBS'];
+        $scope.colors1 = ['#45b7cd', '#ff6384'];
+
+        var prevList1;
+        var prevData1;
+        var newDataList1;
+        var allLists1;
+        var fbs;
+        var rbs;
+        var selectedChartBSList;
+        var innerList1;
+        
+
+        $scope.chartViewBS = function() {
+          allLists1 = [];
+          fbs = [];
+          rbs = [];
+         
+          $scope.labels1 = [];
+          
+          innerList1 = $scope.megaArrBS[$scope.bsMarker];
+          
+          if(innerList1.length === 1 && $scope.megaArrBS.length > 1) {
+            //this logic helps to fill the line graph when the data left over is single as such line need to be drawn from
+            //the previous value for good presentation
+            prevList1 = $scope.megaArrBS[$scope.bsMarker - 1];
+            prevData1 = prevList1[prevList1.length - 1];
+            newDataList1 = [prevData1,innerList1[0]];
+            selectedChartBSList = newDataList1;
+
+          } else {
+            selectedChartBSList = innerList1;
+          }
+
+          if(selectedChartBSList) {
+            selectedChartBSList.forEach(function(item){
+              $scope.labels1.push(item.label)
+              fbs.push(item.fasting);
+              rbs.push(item.random);
+            })
+
+          
+            allLists1.push(fbs)
+            allLists1.push(rbs);
+
+            $scope.data1 = allLists1;
+          } else {
+            $scope.bsMarker = 0;
+          }
+
+        }
+
+        $scope.chartViewBS();
+
+        $scope.onClick1 = function (points, evt) {
+          console.log(points, evt);
+        };
+
+      } // end chart bs_sudgar
+
+
+
+      // Temperature Logic
+      if(chartObj["temp_readings"]){
+        $scope.megaArrTemp = [];
+        var limit2 = 10;
+        $scope.arrLen2 = 0;
+        $scope.tempMarker = -1;
+        var tempLen = chartObj["temp_readings"]["length"];
+
+        function fillArrTemp(index){
+          var list2 = [];
+
+          for(var i = index; list2.length < limit2; i++) {
+            if(chartObj["temp_readings"][i]) {
+              list2.push(chartObj["temp_readings"][i]);
+              $scope.arrLen2++;
+            } else {
+              break;
+            }
+          }
+         
+          $scope.megaArrTemp.push(list2);
+          $scope.tempMarker++;
+
+          if($scope.arrLen2 < tempLen){
+            fillArrTemp($scope.arrLen2);
+          }
+        }
+
+        fillArrTemp(0);  
+       
+        $scope.series2 = ['Temperature'];
+        $scope.colors2 = ['#FDB45C'];
+
+        var prevList2;
+        var prevData2;
+        var newDataList2;
+        var allLists2;
+        var temp;       
+        var selectedChartTempList;
+        var innerList2;
+        
+
+        $scope.chartViewTemp = function() {
+          allLists2 = [];
+          temp = [];
+         
+         
+          $scope.labels2 = [];
+          
+          innerList2 = $scope.megaArrTemp[$scope.tempMarker];
+          
+          if(innerList2.length === 1 && $scope.megaArrTemp.length > 1) {
+            //this logic helps to fill the line graph when the data left over is single as such line need to be drawn from
+            //the previous value for good presentation
+            prevList2 = $scope.megaArrTemp[$scope.tempMarker - 1];
+            prevData2 = prevList2[prevList2.length - 1];
+            newDataList2 = [prevData2,innerList2[0]];
+            selectedChartTempList = newDataList2;
+
+          } else {
+            selectedChartTempList = innerList2;
+          }
+
+          if(selectedChartTempList) {
+            selectedChartTempList.forEach(function(item){
+              $scope.labels2.push(item.label)
+              temp.push(item.temperature);
+            })
+
+          
+            allLists2.push(temp)
+            //allLists2.push(rbs);
+
+            $scope.data2 = allLists2;
+          } else {
+            $scope.tempMarker = 0;
+          }
+
+        }
+
+        $scope.chartViewTemp();
+
+        $scope.onClick2 = function (points, evt) {
+          console.log(points, evt);
+        };
+
+      } // end chart bs_sudgar
+
+    })
+
+  } //end of get chart data
+
+  $scope.setChart = function(type) {
+    if(type === 'positive') {
+      $scope.bpMarker++;
+    } else {
+      $scope.bpMarker--;     
+    }
+
+    $scope.chartViewBP()
+  }
+
+
+  $scope.setChart1 = function(type) {
+    if(type === 'positive') {
+      $scope.bsMarker++;
+    } else {
+      $scope.bsMarker--;     
+    }
+
+    $scope.chartViewBS()
+  }
+
+
+  $scope.setChart2 = function(type) {
+    if(type === 'positive') {
+      $scope.tempMarker++;
+    } else {
+      $scope.tempMarker--;     
+    }
+
+    $scope.chartViewTemp()
+  }
+
+  //$scope.getChartData();
+ 
+  $scope.$watch('chart.year',function(newVal,oldVal){
+    if(newVal){
+      $scope.getChartData();
+    }
+  })
+
+ 
+
+  //$scope.labels = ["Jan 20", "February", "Mar 20 2:00pm", "April", "May", "June", "July"];
+
+  //$scope.series = ['Pulse', 'Systol','Diastol'];
+
+  /*$scope.data = [
+    [65, 59, 80, 81, 56, 55, 40],
+    [28, 48, 40, 19, 86, 27, 90],
+    [80, 50, 40, 70, 86, 89, 60]
+  ];*/
+
+  //$scope.colors = ['#45b7cd', '#ff6384', '#FDB45C'];
+
+  /*$scope.onClick = function (points, evt) {
+    console.log(points, evt);
+  };*/
+
+
+  $scope.sendDataBP = function(){
+    $scope.loadingBP = true;
+
+    if(!testNumber($scope.chart.readings.pulse)){
+      alert("Pulse value should be a number only.");
+      return;
+    }
+
+    if(!testNumber($scope.chart.readings.systol)){
+      alert("Systol value should be a number only.");
+      return;
+    }
+
+    if(!testNumber($scope.chart.readings.diastol)){
+      alert("Diastol value should be a number only.");
+      return;
+    }
+
+    $scope.chart.year = date.getFullYear();
+
+    $scope.chart.name = "Blood Pressure";    
+    $scope.chart.date = date;
+    $scope.chart.readings.time = + $scope.time;
+    $scope.chart.readings.day = + new Date();
+    $scope.chart.readings.name = "Blood Pressure";
+    $scope.chart.readings.unit = "mmHg";
+    //$scope.chart.readings.id = Math.floor(Math.random() * 999999) + "" + Math.floor(Math.random() * 999999);
+    
+    var dt = $filter('date')($scope.chart.readings.time,'shortTime');
+    var dt2 = $filter('date')(date,'d MMM');
+
+    $scope.chart.readings.label = dt2 + " " + dt;
+    
+    $scope.chart.userId = $scope.patient.userId || $rootScope.checkLogIn.user_id;
+    $scope.chart.phone = $scope.patient.phone || $rootScope.checkLogIn.phone;
+
+    chartService.update($scope.chart,function(response){
+
+      if(response.status){
+        $scope.getChartData();
+        alert(response.message)
+      } else {
+        alert("Some errors occured. Please try again later.")
+      }
+
+      $scope.loadingBP = false;
+    })
+    
+  }
+
+  var elemPos;
+
+  $scope.deleteChartReadingBP = function(reading) {
+    var check = confirm("You want to delete Blood Pressure result recorded on " + reading.label)
+    if(check){
+      reading.loading = true;
+      chartService.deleteReading({chartId:  $scope.chartData._id,dataId:reading.id,
+        year: $scope.chartData.year,type:"bp_readings"},function(resp){
+        reading.loading = false;
+        if(resp.status){
+          elemPos = $scope.chartData.bp_readings.map(function(item){return item.id}).indexOf(reading.id)
+          if(elemPos !== -1){
+            $scope.chartData.bp_readings.splice(elemPos,1);
+          }
+          $scope.getChartData();
+        } 
+        alert(resp.message);
+      })
+    }
+  }
+
+  // Sending blood sugar data for recording 
+
+  $scope.sendDataBS = function() {
+    
+   
+
+    if($scope.chart.readings1.fasting)
+      if(!testNumber($scope.chart.readings1.fasting)){
+        alert("FBS value should be a number only.");
+        return;
+      }
+
+    if($scope.chart.readings1.random)
+      if(!testNumber($scope.chart.readings1.random)){
+        alert("RBS value should be a number only.");
+        return;
+      }
+   
+
+    $scope.loadingBS = true;
+
+    $scope.chart.year = date.getFullYear();
+
+    $scope.chart.name = "Blood Sugar";    
+    $scope.chart.date = date;
+    $scope.chart.readings1.time = + $scope.time;
+    $scope.chart.readings1.day = + new Date();
+    $scope.chart.readings1.name = "Blood Sugar";
+    $scope.chart.readings1.unit = "mmol/L";
+    //$scope.chart.readings1.id = Math.floor(Math.random() * 999999) + "" + Math.floor(Math.random() * 999999);
+    
+    var dt = $filter('date')($scope.chart.readings1.time,'shortTime');
+    var dt2 = $filter('date')(date,'d MMM');
+
+    $scope.chart.readings1.label = dt2 + " " + dt;
+    
+    $scope.chart.userId = $scope.patient.userId || $rootScope.checkLogIn.user_id;
+    $scope.chart.phone = $scope.patient.phone || $rootScope.checkLogIn.phone;
+
+    chartService.update($scope.chart,function(response){
+
+      if(response.status){
+        $scope.getChartData();
+        alert(response.message)
+      } else {
+        alert("Some errors occured. Please try again later.")
+      }
+
+      $scope.loadingBS = false;
+    })
+  }
+
+
+  $scope.deleteChartReadingBS = function(reading) {
+    var check = confirm("You want to delete Blood Sugar result recorded on " + reading.label)
+    if(check){
+      reading.loading = true;
+      chartService.deleteReading({chartId: $scope.chartData._id,dataId:reading.id,
+        year: $scope.chartData.year,type:"bs_readings"},function(resp){
+        reading.loading = false;
+        if(resp.status){
+          elemPos = $scope.chartData.bs_readings.map(function(item){return item.id}).indexOf(reading.id)
+          if(elemPos !== -1){
+            $scope.chartData.bs_readings.splice(elemPos,1);
+          }
+          $scope.getChartData();
+        } 
+        alert(resp.message);
+      })
+    }
+  }
+
+
+  
+
+  
+  // Sending blood sugar data for recording 
+
+  $scope.sendDataTemp = function() {
+    
+    
+    if(!testNumber($scope.chart.readings2.temperature)){
+      alert("Temperature value should be a number only.");
+      return;
+    }
+
+   
+    $scope.loadingTemp = true;
+
+    $scope.chart.year = date.getFullYear();
+
+    $scope.chart.name = "Temperature";    
+    $scope.chart.date = date;
+    $scope.chart.readings2.time = + $scope.time;
+    $scope.chart.readings2.day = + new Date();
+    $scope.chart.readings2.name = "Temperature";
+    $scope.chart.readings2.unit = "°C";
+    //$scope.chart.readings2.id = Math.floor(Math.random() * 999999) + "" + Math.floor(Math.random() * 999999);
+    
+    var dt = $filter('date')($scope.chart.readings2.time,'shortTime');
+    var dt2 = $filter('date')(date,'d MMM');
+
+    $scope.chart.readings2.label = dt2 + " " + dt;
+    
+    $scope.chart.userId = $scope.patient.userId || $rootScope.checkLogIn.user_id;
+    $scope.chart.phone = $scope.patient.phone || $rootScope.checkLogIn.phone;
+
+    chartService.update($scope.chart,function(response){
+
+      if(response.status){
+        $scope.getChartData();
+        alert(response.message)
+      } else {
+        alert("Some errors occured. Please try again later.")
+      }
+
+      $scope.loadingTemp = false;
+    })
+  }
+
+
+  $scope.deleteChartReadingTemp = function(reading) {
+    var check = confirm("You want to delete Temperature result recorded on " + reading.label)
+    if(check){
+      reading.loading = true;
+      chartService.deleteReading({chartId:  $scope.chartData._id,dataId:reading.id,type:"temp_readings"},function(resp){
+        reading.loading = false;
+        if(resp.status){
+          elemPos = $scope.chartData.temp_readings.map(function(item){return item.id}).indexOf(reading.id)
+          if(elemPos !== -1){
+            $scope.chartData.temp_readings.splice(elemPos,1);
+          }
+          $scope.getChartData();
+        } 
+        alert(resp.message);
+      })
+    }
+  }
+
+  $scope.editReading = function(reading){
+    reading.isEdit = true;
+  }
+
+  $scope.cancelEdit = function(reading){
+    reading.isEdit = false;
+  }
+
+
+  $scope.updateReading = function(reading,type){
+    var sendObj = {
+      type: type,
+      dataId: reading.id,
+      chartId: $scope.chartData._id,
+      readings: reading
+    }
+
+    switch(type){
+      case 'bp_readings':
+        if(!testNumber(reading.pulse)){
+          alert("Pulse value should be a number only.");
+          return;
+        }
+
+        if(!testNumber(reading.systol)){
+          alert("Systol value should be a number only.");
+          return;
+        }
+
+        if(!testNumber(reading.diastol)){
+          alert("Diastol value should be a number only.");
+          return;
+        }
+      break;
+      case "bs_readings":
+        if(reading.fasting)
+          if(!testNumber(reading.fasting)){
+            alert("FBS value should be a number only.");
+            return;
+          }
+
+        if(reading.random)
+          if(!testNumber(reading.random)){
+            alert("RBS value should be a number only.");
+            return;
+          } 
+      break;
+      case 'temp_readings':
+        if(!testNumber(reading.temperature)){
+          alert("Temperature value should be a number only.");
+          return;
+        }
+      break;
+      default:
+      break;
+    }
+
+    reading.isloading = true;
+    chartService.partialUpdate(sendObj,function(response){
+      if(response.status){
+        $scope.getChartData();
+        alert(response.message)
+      } else {
+        alert("Some errors occured. Please try again later.")
+      }
+
+      reading.isloading = false;
+    })
+  }
+
+  $scope.userPatient = function(id,presence) {
+    templateService.holdIdForSpecificPatient = id;
+    var page = "/doctor-patient/treatment/" + id;
+    localManager.setValue("holdPageForHandler",page);
+    localManager.setValue("currentPage",page);
+    $location.path(page);
+    mySocket.removeAllListeners("new_msg");
+  }
+
+  //$scope.datasetOverride = [{ yAxisID: 'y-axis-1' }, { yAxisID: 'y-axis-2' }];
+
+  /*$scope.options = {
+    scales: {
+      yAxes: [
+        {
+          id: 'y-axis-1',
+          type: 'linear',
+          display: true,
+          position: 'left'
+        },
+        {
+          id: 'y-axis-2',
+          type: 'linear',
+          display: true,
+          position: 'right'
+        }
+      ]
+    }
+  };*/
+
 }]);
 
 function testNumber(str) {

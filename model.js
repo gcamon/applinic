@@ -690,7 +690,8 @@ var myModel = function () {
 		patient_history: patientHistorySchema,
 		reporters: Array,
 		dicom_enterprise: Boolean,
-		report_signees: Array
+		report_signees: Array,
+		chart_access: Array
 	},{
 		collections: "userinfos"
 	})
@@ -1213,6 +1214,18 @@ var myModel = function () {
 		opentok_session_id: String,
 		initiator: String,
 		participants: Array
+	});
+
+	var chartSchema = Schema({
+		name: String,
+		date: Date,
+		phone: String,
+		userId: String,
+		year: String,
+		unit: String,
+		bp_readings: Array, // blood pressure
+		bs_readings: Array, //blood sugar
+		temp_readings: Array //temperature
 	})
 
 	/*_id: "njds884943",
@@ -1269,6 +1282,7 @@ var myModel = function () {
 	models.kits = mongoose.model("kitinfos",kitsSchema); 
 	models.plan = mongoose.model("planinfos",planSchema); 
 	models.opentok_session = mongoose.model('opentokinfos',opentokSessionsSchema);
+	models.chart = mongoose.model("chartinfos",chartSchema);
 	//models.chat_file = mongoose.model("chatFileinfos",chatFileSchema);
 	//models.calling_code = mongoose.model("callingcodeinfos",callingSchema)
 	

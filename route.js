@@ -13237,6 +13237,160 @@ router.post("/user/offline-message",function(req,res){
   }
 })
 
+router.get("/user/charts",function(req,res){
+  if(req.user){
+    model.chart.findOne({userId: req.query.userId,year: req.query.year})
+    .exec(function(err,chart){
+      if(err) throw err;
+      res.json(chart)
+    }) 
+  } else {
+    res.json({})
+  }
+});
+
+router.get("/user/charts/all",function(req,res){
+  if(req.user){
+    model.chart.find({userId: req.query.userId},{year:1})
+    .exec(function(err,chart){
+      if(err) throw err;
+      res.json(chart)
+    }) 
+  } else {
+    res.json({})
+  }
+});
+
+
+router.put("/user/charts",function(req,res){
+  if(req.user){
+    console.log(req.body)
+    model.chart.findOne({userId: req.body.userId,year: req.body.year})
+    .exec(function(err,chart){
+      if(err) throw err;  
+      var id = uuid.v1();    
+      if(chart){
+        switch(req.body.name){
+          case 'Blood Pressure':
+            req.body.readings.entered_by = req.user.user_id;
+            req.body.readings.id = id;
+            chart.bp_readings.push(req.body.readings);
+          break;
+          case 'Blood Sugar':
+            req.body.readings1.entered_by = req.user.user_id;
+            req.body.readings1.id = id;
+            chart.bs_readings.push(req.body.readings1);
+          break;
+          case 'Temperature':
+            req.body.readings2.entered_by = req.user.user_id;
+            req.body.readings2.id = id;
+            chart.temp_readings.push(req.body.readings2);
+          break;
+          default:
+          break;
+        }
+
+        chart.save(function(err,info){
+          if(err) throw err;
+          console.log("readings saved!")
+          res.json({status: true,message: "Patient's readings saved successfully!"})
+        });
+
+      } else {
+        var data = new model.chart({
+          date: req.body.date,
+          phone: req.body.phone,
+          userId: req.body.userId,
+          year: req.body.year,
+        })
+
+        switch(req.body.name){
+          case 'Blood Pressure':
+            req.body.readings.entered_by = req.user.user_id;
+            req.body.readings.id = id;
+            data.bp_readings.push(req.body.readings);
+          break;
+          case 'Blood Sugar':
+            req.body.readings1.entered_by = req.user.user_id;
+            req.body.readings1.id = id;
+            data.bs_readings.push(req.body.readings1);
+          break;
+          case 'Temperature':
+            req.body.readings2.entered_by = req.user.user_id;
+            req.body.readings2.id = id;
+            data.temp_readings.push(req.body.readings2);
+          break;
+          default:
+          break;
+        }
+
+        data.save(function(err,info){
+          if(err) throw err;
+          console.log("readings created and saved!")
+          res.json({status: true,message: "Patient's chart created successfully!"})
+        });
+      }
+    }) 
+  } else {
+    res.json({})
+  }
+});
+
+router.delete("/user/charts",function(req,res){
+  if(req.user){
+    model.chart.findById(req.query.chartId)
+    .exec(function(err,data){
+      if(err) throw err;
+      if(data && req.query.type){
+        var elemPos = data[req.query.type].map(function(item){return item.id}).indexOf(req.query.dataId);
+        if(elemPos !== -1){
+          data[req.query.type].splice(elemPos,1)
+        }
+        data.save(function(err,info){
+          if(err) throw err;
+          res.json({status: true,message: "Value successfully deleted!"})
+        })
+      } else {
+        res.json({status: false, message: "Some errors occured! Chart does not exist in the server."})
+      }
+    })
+   
+    
+  } else {
+    res.json({status: false, message: "Permission denied! Please check if you are logged in or refresh the page."})
+  }
+});
+
+router.patch("/user/charts",function(req,res){
+  if(req.user){
+    model.chart.findById(req.body.chartId)
+    .exec(function(err,data){
+      if(err) throw err;
+      if(data && req.body.type){
+        var elemPos = data[req.body.type].map(function(item){return item.id}).indexOf(req.body.dataId);
+        if(elemPos !== -1){
+          req.body.readings.isEdit = false;
+          req.body.readings.isloading = false;
+          req.body.readings.updated_by = req.user.user_id;
+          req.body.readings.updated_on = new Date();
+          data[req.body.type][elemPos] = req.body.readings;
+          data[req.body.type].push({}); // just to trick data persist on db
+          data[req.body.type].pop(); // just to trick data persist on db
+        }
+        data.save(function(err,info){
+          if(err) throw err;
+          res.json({status: true,message: "Value successfully updated!"})
+        })
+      } else {
+        res.json({status: false, message: "Some errors occured! Chart does not exist in the server."})
+      }
+    });
+  } else {
+    res.json({status: false, message: "Permission denied! Please check if you are logged in or refresh the page."})
+  }
+});
+
+
 /*
  var testPhone = new model.authCheck({
         user_id: req.user.user_id,

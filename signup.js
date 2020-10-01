@@ -1059,10 +1059,9 @@ var signupRoute = function(model,sms,geonames,paystack,io,transporter) {
 				if(err) throw err;
 				if(!result){
 					if(req.body.patient_firstname){
-
 						var str = req.body.patient_firstname.replace(/\s/g, "");
 						var uid = genId(str);
-
+						var date = + new Date();
 						// check to see if user_id already existed.
 						model.user.findOne({user_id: uid})
 						.exec(function(err,user){
@@ -1075,6 +1074,7 @@ var signupRoute = function(model,sms,geonames,paystack,io,transporter) {
 									gender: req.body.patient_gender,
 									age: req.body.patient_age,
 									user_id: uid,
+									city: req.body.patient_city,
 									phone: req.body.patient_phone,
 									date: new Date(),
 									type: "Patient",
@@ -1086,6 +1086,24 @@ var signupRoute = function(model,sms,geonames,paystack,io,transporter) {
 									if(err) throw err;
 									res.json({success: true,patient: newPatient});
 								})
+
+								if(req.body.isOutPatientForChart){
+									req.user.doctor_patients_list.unshift({
+						              date: date,
+						              patient_lastname: req.body.patient_lastname,
+						              patient_firstname: req.body.patient_firstname,
+						              patient_id: uid,
+						              patient_profile_pic_url: "/download/profile_pic/nopic",
+						              patient_address: req.body.patient_address || "N/A",
+						              patient_city: req.body.patient_city || "Enugu",
+						              patient_country: "N/A",
+						              patient_gender: req.body.patient_gender,
+						              patient_age: req.body.patient_age,
+						              patient_phone: req.body.patient_phone
+						            })
+
+						            req.user.save(function(err,info){});
+								}
 
 							} else {
 								// if user_id already existed client should resend the request.

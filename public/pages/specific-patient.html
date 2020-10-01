@@ -40,14 +40,14 @@
 
             <a href="" class="grayish" ng-click="viewLabReport()" ng-class="{'btn-info': isToViewLabPrescriptionReq}">
               <i class="fa fa-flask text-info"  style="position:relative">
-              </i>My Laboratory  
+              </i> My Laboratory  
               <!--<span class="tag tag-info pull-right" ng-if="labLen > 0">{{labLen}}</span>-->
             </a>
 
           
             <a href="" class="grayish" ng-click="viewRadioReport()" ng-class="{'btn-info': isToViewLabPrescriptionReq}">
               <i class="fa fa-file-image-o text-info"  style="position:relative">
-              </i>My Radiology  
+              </i> My Radiology  
                 <!--<span class="tag tag-info pull-right" ng-if="labLen > 0">{{labLen}}</span>-->
             </a>
 
@@ -72,6 +72,10 @@
                 <i class="fa fa-user-md text-simple"  style="position:relative" title="Refer this patient to a specialist.">
                 </i> Refer to a Specialist
             </a>
+            <a href="" class="grayish" ng-click="viewPatientChart(patientInfo)" ng-class="{'btn-info': isOutChart}">
+                <i class="fa fa-bar-chart text-simple"  style="position:relative" title="Blood Pressure, Blood Sugar, Temperature etc, Charts">
+                </i> Patient's Chart (BP,BS etc)
+            </a>
             </section>
 
 
@@ -82,37 +86,37 @@
 
             <div id="manageCase" class="panel-collapse collapse p-1" role="tabpanel" aria-labelledby="headingfifty">
 
-             <button href="#manageCase" class="grayish collapsed"  ng-click="viewMedicalHistory()" ng-class="{'btn-info': isToSeeRecord}"  data-toggle="collapse" data-parent="#accordion" href="#manageCase" aria-expanded="false" aria-controls="collapsefifty" style="width: 100%;text-align: left;padding: 10px 5px;border: none;"><i class="fa fa-medkit text-primary"></i> <span>Medical Record</span> </button>
+             <button href="#manageCase" class="grayish collapsed"  ng-click="viewMedicalHistory()" ng-class="{'btn-info': isToSeeRecord}"  data-toggle="collapse" data-parent="#accordion" aria-expanded="false" aria-controls="collapsefifty" style="width: 100%;text-align: left;padding: 10px 5px;border: none;"><i class="fa fa-medkit text-primary"></i> <span>Medical Record</span> </button>
 
-            <button href="#manageCase" class="grayish collapsed"  ng-click="viewSession()" ng-class="{'btn-info': isToViewSession}" data-toggle="collapse" data-parent="#accordion" href="#manageCase" aria-expanded="false" aria-controls="collapsefifty" style="width: 100%;text-align: left;padding: 10px 5px;border: none;"><i class="fa fa-folder-open text-warning"></i> Treatment Sessions</button>
+            <button href="#manageCase" class="grayish collapsed"  ng-click="viewSession()" ng-class="{'btn-info': isToViewSession}" data-toggle="collapse" data-parent="#accordion"  aria-expanded="false" aria-controls="collapsefifty" style="width: 100%;text-align: left;padding: 10px 5px;border: none;"><i class="fa fa-folder-open text-warning"></i> Treatment Sessions</button>
 
-            <button href="#manageCase" class="grayish collapsed" ng-click="writePrescription()" ng-class="{'btn-info': isToPrescribe}" data-toggle="collapse" data-parent="#accordion" href="#manageCase" aria-expanded="false" aria-controls="collapsefifty" style="width: 100%;text-align: left;padding: 10px 5px;border: none;"><i class="icon-Pills" style="color: red"></i> Prescription</button>
+            <button href="#manageCase" class="grayish collapsed" ng-click="writePrescription()" ng-class="{'btn-info': isToPrescribe}" data-toggle="collapse" data-parent="#accordion"  aria-expanded="false" aria-controls="collapsefifty" style="width: 100%;text-align: left;padding: 10px 5px;border: none;"><i class="icon-Pills" style="color: red"></i> Prescription</button>
 
-            <button href="#manageCase" class="grayish collapsed" ng-click="viewLabReport()" ng-class="{'btn-info': isToViewLabPrescriptionReq}" data-toggle="collapse" data-parent="#accordion" href="#manageCase" aria-expanded="false" aria-controls="collapsefifty" style="width: 100%;text-align: left;padding: 10px 5px;border: none;">
+            <button href="#manageCase" class="grayish collapsed" ng-click="viewLabReport()" ng-class="{'btn-info': isToViewLabPrescriptionReq}" data-toggle="collapse" data-parent="#accordion"  aria-expanded="false" aria-controls="collapsefifty" style="width: 100%;text-align: left;padding: 10px 5px;border: none;">
               <i class="fa fa-flask text-info"  style="position:relative">
               </i> My Laboratory  
                 <!--<span class="tag tag-info pull-right" ng-if="labLen > 0">{{labLen}}</span>-->
             </button>
 
-            <button href="#manageCase" class="grayish collapsed" ng-click="viewLabPrescriptionRequest()" ng-class="{'btn-info': isToViewLabPrescriptionReq}" data-toggle="collapse" data-parent="#accordion" href="#manageCase" aria-expanded="false" aria-controls="collapsefifty" style="width: 100%;text-align: left;padding: 10px 5px;border: none;">
+            <button href="#manageCase" class="grayish collapsed" ng-click="viewLabPrescriptionRequest()" ng-class="{'btn-info': isToViewLabPrescriptionReq}" data-toggle="collapse" data-parent="#accordion" aria-expanded="false" aria-controls="collapsefifty" style="width: 100%;text-align: left;padding: 10px 5px;border: none;">
               <i class="fa fa-flask text-info"  style="position:relative">
               </i> Other Laboratory  
                 <span class="tag tag-info pull-right" ng-if="labLen > 0">{{labLen}}</span>
             </button>
 
-            <button href="#manageCase" class="grayish collapsed" ng-click="viewRadioReport()" ng-class="{'btn-info': isToViewLabPrescriptionReq}" data-toggle="collapse" data-parent="#accordion" href="#manageCase" aria-expanded="false" aria-controls="collapsefifty" style="width: 100%;text-align: left;padding: 10px 5px;border: none;">
+            <button href="#manageCase" class="grayish collapsed" ng-click="viewRadioReport()" ng-class="{'btn-info': isToViewLabPrescriptionReq}" data-toggle="collapse" data-parent="#accordion" aria-expanded="false" aria-controls="collapsefifty" style="width: 100%;text-align: left;padding: 10px 5px;border: none;">
               <i class="fa fa-file-image-o text-info"  style="position:relative">
               </i> My Radiology  
                 <!--<span class="tag tag-info pull-right" ng-if="labLen > 0">{{labLen}}</span>-->
             </button>
 
-            <button href="#manageCase" class="grayish collapsed" ng-click="viewRadioPrescriptionRequest()" ng-class="{'btn-info': isToViewRadPrescriptionReq}" data-toggle="collapse" data-parent="#accordion" href="#manageCase" aria-expanded="false" aria-controls="collapsefifty" style="width: 100%;text-align: left;padding: 10px 5px;border: none;">
+            <button href="#manageCase" class="grayish collapsed" ng-click="viewRadioPrescriptionRequest()" ng-class="{'btn-info': isToViewRadPrescriptionReq}" data-toggle="collapse" data-parent="#accordion"  aria-expanded="false" aria-controls="collapsefifty" style="width: 100%;text-align: left;padding: 10px 5px;border: none;">
               <i class="fa fa-flask text-warning" style="position:relative" title="Patient recent radiology test for your prescription">
                 </i> Other Radiology
                 <span class="tag tag-info pull-right" ng-if="radioLen > 0">{{radioLen}}</span>
             </button>
 
-            <button href="#manageCase" class="grayish collapsed" ng-click="outPatientBilling()" ng-class="{'btn-info': isOutPatientBilling}" data-toggle="collapse" data-parent="#accordion" href="#manageCase" aria-expanded="false" aria-controls="collapsefifty" style="width: 100%;text-align: left;padding: 10px 5px;border: none;">
+            <button href="#manageCase" class="grayish collapsed" ng-click="outPatientBilling()" ng-class="{'btn-info': isOutPatientBilling}" data-toggle="collapse" data-parent="#accordion" aria-expanded="false" aria-controls="collapsefifty" style="width: 100%;text-align: left;padding: 10px 5px;border: none;">
                 <i class="fa fa-money text-simple" style="position:relative" title="Bill patient for completed medical care expenses">
                 </i> Generate Bill
             </button>
