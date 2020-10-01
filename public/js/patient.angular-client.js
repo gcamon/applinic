@@ -11458,8 +11458,7 @@ app.controller("chartCtrl",["$scope","$rootScope","chartReadingService","$filter
 
         fillArrBP(0);  
        
-        $scope.series = ['Pulse','Systol','Diastol'];
-        $scope.colors = ['#ff6384','#45b7cd', '#FDB45C'];
+       
 
         var prevList;
         var prevData;
@@ -11500,11 +11499,14 @@ app.controller("chartCtrl",["$scope","$rootScope","chartReadingService","$filter
               diastol.push(item.diastol);
             })
 
-            allLists.push(systol)
             allLists.push(pulse)
+            allLists.push(systol)
             allLists.push(diastol);
 
             $scope.data = allLists;
+
+            $scope.series = ['Pulse','Systol','Diastol'];
+            $scope.colors = ['#45b7cd','#ff6384','#FDB45C'];
           } else {
             $scope.bpMarker = 0;
           }

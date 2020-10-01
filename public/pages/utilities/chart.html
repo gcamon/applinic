@@ -1,12 +1,12 @@
 
 <div class="card-center-1">
-	<h4>Charts <span style="font-size: 14px">BP, Blood Sugar &amp; Temperature</span></h4>
+	<h4>Charts <span style="font-size: 14px">BP/Pulse Rate, Blood Sugar &amp; Temperature</span></h4>
 	<a href="#{{path}}" class="btn btn-neutral" ng-show="checkLogIn.type !== 'Patient' "><i class="fa fa-arrow-left"></i> Back</a>
 </div>
 <div class="card p-2 card-center-1" style="position: relative;">
 	<header>
 		
-		<h4 class="h6">Blood Pressure</h4>
+		<h4 class="h6">Blood Pressure / Pulse Rate</h4>
 		<div style="position: absolute;right: 25px;top:20px">
 			<select ng-model="chart.year">
 				<option value="{{year.year}}" selected ng-repeat="year in yearList">{{year.year}}</option>
@@ -34,30 +34,36 @@
 		
 	    <a href="" style="display: inline-block;width: 30px;background-color:#FDB45C;height: 10px;content: ' '"></a> <span> &nbsp;Diastol</span>
 
+	  
+
 	    <button href="#dataEntry" class="grayish collapsed btn btn-sm btn-success dropdown-toggle" data-toggle="collapse" data-parent="#accordion"  aria-expanded="false" aria-controls="collapsefifty" style="position: absolute;right: 0px;top: -10px;color: #fff">Data</button>
 	</div>
 	<br>
 	<div id="dataEntry" class="panel-collapse collapse p-1" role="tabpanel" aria-labelledby="headingfifty">
 		<div style="text-align: right;">
-			<label>Unit: mmHg</label>
+			<label>Unit: mmHg,BPM</label>
 		</div>
 		<form class="row" ng-submit="sendDataBP()">
-			<div class="col-md-2 pr-1">
-				<label>Pulse</label><br>
-				<input type="text" name="" class="form-control" required ng-model="chart.readings.pulse">
-			</div>
+			
 			<div class="col-md-2 pr-1">
 				<label>Systol</label><br>
-				<input type="text" name="" class="form-control" required ng-model="chart.readings.systol">
+				<input type="text" name="" class="form-control"  ng-model="chart.readings.systol">
 			</div>
 			<div class="col-md-2 pr-1">
 				<label>Diastol</label><br>
-				<input type="text" name="" class="form-control" required ng-model="chart.readings.diastol">
+				<input type="text" name="" class="form-control"  ng-model="chart.readings.diastol">
 			</div>
+
+			<div class="col-md-2 pr-1">
+				<label>Pulse (BPM)</label><br>
+				<input type="text" name="" class="form-control" ng-model="chart.readings.pulse">
+			</div>
+
 			<div class="col-md-3">
 				<label>Time</label><br>
 				<input type="time" name="" class="form-control" required ng-model="time">
 			</div>
+
 			<div class="col-md-3">	
 				<label style="content: ''"></label><br>		
 				<input type="submit" name="" class="btn btn-info" value="Save" style="margin-top: 10px" ng-show="!loadingBP">
@@ -150,7 +156,7 @@
 		</canvas>
 		<div style="text-align: center;padding-top: 10px" class="text-muted">
 			<span>Year: {{chart.year}}</span>&nbsp;&nbsp;&nbsp;
-			<span>Unit: mmHg</span>
+			<span>Unit: mmHg,(Pulse Rate: BPM)</span>
 		</div>
 	</section>
 	<p class="text-muted p-2" style="text-align: center;" ng-if="!chartData.bp_readings">No data to display</p>

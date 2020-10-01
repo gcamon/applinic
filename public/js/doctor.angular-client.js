@@ -15858,8 +15858,7 @@ app.controller("chartCtrl",["$scope","$rootScope","chartReadingService","$filter
 
         fillArrBP(0);  
        
-        $scope.series = ['Pulse','Systol','Diastol'];
-        $scope.colors = ['#ff6384','#45b7cd', '#FDB45C'];
+        
 
         var prevList;
         var prevData;
@@ -15900,11 +15899,15 @@ app.controller("chartCtrl",["$scope","$rootScope","chartReadingService","$filter
               diastol.push(item.diastol);
             })
 
-            allLists.push(systol)
             allLists.push(pulse)
+            allLists.push(systol)
             allLists.push(diastol);
 
             $scope.data = allLists;
+
+            $scope.series = ['Pulse','Systol','Diastol'];
+            $scope.colors = ['#45b7cd','#ff6384','#FDB45C'];
+            
           } else {
             $scope.bpMarker = 0;
           }
@@ -16167,20 +16170,25 @@ app.controller("chartCtrl",["$scope","$rootScope","chartReadingService","$filter
   $scope.sendDataBP = function(){
     $scope.loadingBP = true;
 
-    if(!testNumber($scope.chart.readings.pulse)){
-      alert("Pulse value should be a number only.");
-      return;
-    }
+    if($scope.chart.readings.pulse)
+      if(!testNumber($scope.chart.readings.pulse)){
+        alert("Pulse value should be a number only.");
+        return;
+      }
 
-    if(!testNumber($scope.chart.readings.systol)){
-      alert("Systol value should be a number only.");
-      return;
-    }
 
-    if(!testNumber($scope.chart.readings.diastol)){
-      alert("Diastol value should be a number only.");
-      return;
-    }
+    if($scope.chart.readings.systol)
+      if(!testNumber($scope.chart.readings.systol)){
+        alert("Systol value should be a number only.");
+        return;
+      }
+
+
+    if($scope.chart.readings.diastol)
+      if(!testNumber($scope.chart.readings.diastol)){
+        alert("Diastol value should be a number only.");
+        return;
+      }
 
     $scope.chart.year = date.getFullYear();
 
