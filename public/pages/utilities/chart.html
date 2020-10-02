@@ -41,7 +41,7 @@
 	<br>
 	<div id="dataEntry" class="panel-collapse collapse p-1" role="tabpanel" aria-labelledby="headingfifty">
 		<div style="text-align: right;">
-			<label>Unit: mmHg,BPM</label>
+			<label>Unit: mmHg,bpm</label>
 		</div>
 		<form class="row" ng-submit="sendDataBP()">
 			
@@ -156,7 +156,7 @@
 		</canvas>
 		<div style="text-align: center;padding-top: 10px" class="text-muted">
 			<span>Year: {{chart.year}}</span>&nbsp;&nbsp;&nbsp;
-			<span>Unit: mmHg,(Pulse Rate: BPM)</span>
+			<span>Unit: mmHg,(Pulse Rate: bpm)</span>
 		</div>
 	</section>
 	<p class="text-muted p-2" style="text-align: center;" ng-if="!chartData.bp_readings">No data to display</p>
