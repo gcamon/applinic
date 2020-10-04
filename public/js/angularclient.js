@@ -28332,20 +28332,35 @@ app.controller("chartCtrl",["$scope","$rootScope","chartReadingService","$filter
   $scope.sendDataBP = function(){
     $scope.loadingBP = true;
 
-    if(!testNumber($scope.chart.readings.pulse)){
-      alert("Pulse value should be a number only.");
+    if(!$scope.chart.readings.pulse && !$scope.chart.readings.systol && !$scope.chart.readings.diastol){
+      alert("Please enter result for BP readings")
       return;
     }
 
-    if(!testNumber($scope.chart.readings.systol)){
-      alert("Systol value should be a number only.");
-      return;
+
+    if($scope.chart.readings.pulse) {
+
+      if(!testNumber($scope.chart.readings.pulse)){
+        alert("Pulse value should be a number only.");
+        return;
+      }
+
     }
 
-    if(!testNumber($scope.chart.readings.diastol)){
-      alert("Diastol value should be a number only.");
-      return;
-    }
+    if($scope.chart.readings.systol || $scope.chart.readings.diastol) {
+
+      if(!testNumber($scope.chart.readings.systol)){
+        alert("Systol value should be a number only.");
+        return;
+      }
+
+      if(!testNumber($scope.chart.readings.diastol)){
+        alert("Diastol value should be a number only.");
+        return;
+      }
+
+    } 
+
 
     $scope.chart.year = date.getFullYear();
 
