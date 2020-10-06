@@ -12891,31 +12891,6 @@ router.post("/user/switch-video",function(req,res){
 
 });
 
-/*
-  switch(details.time){
-          case "now":
-              var controlId = genRemoteId();
-            var createUrl = "/user/cam/" + details.patientId + "/" + controlId;
-            saveControlControl(createUrl,controlId,details);
-
-            var tkboxVUrl = "/user/video?roomId=" + controlId //for tokbox room ID
-
-            io.sockets.to(details.to).emit("video call able",{controlUrl: createUrl,message: details.title +
-            " " + details.name + " is waiting to have video conference with you!",
-            tokBoxVideoURL: tkboxVUrl,partnerDetails:details});
-            cb({controlUrl: createUrl,tokBoxVideoURL: tkboxVUrl});
-          break;
-          default:
-          break;
-        }
-
-      });
-
-      function genRemoteId() {
-        return uuid.v1();
-      }
-
-*/
 
 router.get("/find-doctors",function(req,res){
   res.render('find-doctor')

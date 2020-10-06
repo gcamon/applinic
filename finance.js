@@ -965,11 +965,11 @@ var basicPaymentRoute = function(model,sms,io,paystack,client,transporter){
 
  
 router.post("/user/laboratory/test-result/preview",function(req,res){
-	if(req.user){		
+	if(req.user){	
+	  console.log(req.protocol)	
 		model.template.findOne({center_id: req.user.user_id,type: "Laboratory"})
 		.exec(function(err,data){
 			if(err) throw err;
-			//console.log(req.body)
 			var tempLink;
 			var date = new Date();
 			if(!data){
@@ -981,10 +981,12 @@ router.post("/user/laboratory/test-result/preview",function(req,res){
 			.exec(function(err,result){
 				if(err) throw err;
 				if(result){
+
 					tempLink += "/" + result._id + "/" + req.body.count;
 					result.report_date =  date;
 					result.lab_data.unshift(req.body)
 					result.save(function(err,info){});
+
 				} else {
 					
 					var newTemp = new model.lab_store({
@@ -1006,7 +1008,8 @@ router.post("/user/laboratory/test-result/preview",function(req,res){
 					newTemp.lab_data.push(req.body)
 					newTemp.save(function(err,info){
 						if(err) throw err;
-					})
+					});
+
 				}
 
 				res.json({status: "success",reportTemp: tempLink});

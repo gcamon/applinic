@@ -338,7 +338,7 @@
 									<select class="form-control" ng-model="pickedForm.form">
 										<option value="" selected disabled>_Select report format</option>
 										<option value="{{'2*17*' + report.name}}">Malaria Parasite Test</option>
-										<option value="{{'3*18*' + report.name}}">Screening</option>
+										<option value="{{'3*18*' + report.name}}">Viral Screening ( HIV, Hepatitis B Virus, Hepatitis C Virus, VDRL)</option>
 										<option value="{{'6*19*' + report.name}}">Urine / HVS Microscopy</option>
 										<option value="{{'8*21*' + report.name}}">Culture</option>
 										<option value="{{'7*20*' + report.name}}">Blood Film </option>
@@ -435,7 +435,7 @@
 								<div ng-show="report.isQualitative">
 									<form ng-repeat="i in report.list" class="row p-1">
 										<div class="col-md-2">
-											<label contenteditable="true">{{i.r_name || "edit title"}}  </label>
+											 <label contenteditable="true" ng-model="i.r_name"></label>
 										</div>
 										<div class="col-md-8" ng-if="i.r_name !== 'Pregnancy Test' && i.r_name !== 'Malaria Parasite'">
 											<textarea ng-model="i.r_result"></textarea>
@@ -473,10 +473,10 @@
 								<div ng-show="report.isUrinalysis">
 									<form ng-repeat="i in report.list" class="row p-1">
 										<div class="col-md-2">
-											<label contenteditable="true">{{i.r_name || "edit title"}} </label>
+											 <label contenteditable="true" ng-model="i.r_name" ng-show="i.r_name !== 'Others'"></label>
 										</div>
 										<div class="col-md-8">
-											<textarea ng-model="i.r_result" ng-show="i.r_name === 'PH' || i.r_name === 'Appearance' || i.r_name === 'Others'"></textarea>
+											<textarea ng-model="i.r_result" ng-show="i.r_name === 'PH' || i.r_name === 'Appearance'"></textarea>
 
 											<select ng-model="i.r_result" ng-show="i.r_name !== 'Appearance' && i.r_name !== 'PH' && i.r_name !== 'Others' && i.r_name !== undefined">										
 												<option>Nil</option>
@@ -498,21 +498,21 @@
 								<div ng-show="report.isFaeces">
 									<form ng-repeat="i in report.list" class="row p-1">
 										<div class="col-md-2">
-											<label contenteditable="true">{{i.r_name || "edit title"}} </label>
+											<label contenteditable="true" ng-model="i.r_name" ng-show="i.r_name !== 'Others'"></label>
 										</div>
 										<div class="col-md-8">
-											<textarea ng-model="i.r_result" ng-show="i.r_name === 'Appearance' || i.r_name === 'Others'"></textarea>
+											<textarea ng-model="i.r_result" ng-show="i.r_name === 'Appearance' && i.r_name !== 'Others'"></textarea>
 
-											<select ng-model="i.r_result" ng-show="i.r_name !== 'Appearance' && i.r_name !== 'Others' && i.r_name !== undefined">										
+											<select ng-model="i.r_result" ng-show="i.r_name !== 'Appearance' && i.r_name !== 'Others'">										
 												<option>Nil</option>
 												<option>+</option>
 												<option>++</option>
 												<option>+++</option>
 											</select>
 
-											<div  ng-if="i.r_name === undefined">
+											<!--<div  ng-if="i.r_result" ng-show="i.r_name !== 'Appearance' && i.r_name !== 'Others'">
 												<textarea ng-model="i.r_result"></textarea>
-											</div>
+											</div>-->
 										</div>
 									</form>
 									<section style="text-align: right;" class="p-0">
@@ -523,21 +523,20 @@
 								<div ng-show="report.isUrineSensitivity">
 									<form ng-repeat="i in report.list" class="row p-1">
 										<div class="col-md-2">
-											<label contenteditable="true">{{i.r_name || "edit title"}} </label>
+											<label contenteditable="true" ng-model="i.r_name"></label>
 										</div>
 										<div class="col-md-8">
-											<textarea ng-model="i.r_result" ng-show="i.r_name === 'Pus cells'"></textarea>
+											 <!--<textarea ng-model="i.r_result" ng-show="i.r_name === 'Pus cells'"></textarea>-->
+                                            <select ng-model="i.r_result">                           
+                                                <option>Nil</option>
+                                                <option>+</option>
+                                                <option>++</option>
+                                                <option>+++</option>
+                                            </select>
 
-											<select ng-model="i.r_result" ng-show="i.r_name !== 'Pus cells'">							
-												<option>Nil</option>
-												<option>+</option>
-												<option>++</option>
-												<option>+++</option>
-											</select>
-
-											<!--<div ng-if="i.r_name === undefined || i.r_name === ''">
-												<textarea ng-model="i.r_result"></textarea>
-											</div>-->
+                                            <!--<div ng-if="i.r_name === undefined || i.r_name === ''">
+                                                <textarea ng-model="i.r_result"></textarea>
+                                            </div>-->
 										</div>
 									</form>
 									<section style="text-align: right;" class="p-0">
@@ -549,7 +548,7 @@
 								<div ng-show="report.isCulture">
 									<form ng-repeat="i in report.list" class="row p-1">
 										<div class="col-md-2">
-											<label contenteditable="true">{{i.r_name || "edit title"}} </label>
+											<label contenteditable="true" ng-model="i.r_name"></label>
 										</div>
 										<div class="col-md-8">
 											<textarea ng-model="i.r_result" ng-show="i.r_name === 'Culture'" style="width: 350px;height: 75px"></textarea>
@@ -564,7 +563,7 @@
 								<div ng-show="report.isGramStaining">
 									<form ng-repeat="i in report.list" class="row p-1">
 										<div class="col-md-2">
-											<label contenteditable="true">{{i.r_name || "edit title"}} </label>
+											<label contenteditable="true" ng-model="i.r_name"></label>
 										</div>
 										<div class="col-md-8">
 											<!--<textarea ng-model="i.r_result" ng-show="i.r_name === ''"></textarea>-->
@@ -576,7 +575,7 @@
 												<option>Gram Positive Cocci</option>
 											</select>
 
-											<div ng-if="i.r_name === undefined || i.r_name === ''">
+											<div ng-show="i.r_name !== 'Gram Staining'">
 												<textarea ng-model="i.r_result"></textarea>
 											</div>
 										</div>
@@ -590,7 +589,7 @@
 								<div ng-show="report.isGenotype">
 									<form ng-repeat="i in report.list" class="row p-1">
 										<div class="col-md-2">
-											<label contenteditable="true">{{i.r_name || "edit title"}} </label>
+											<label contenteditable ng-model="i.r_name"></label>
 										</div>
 										<div class="col-md-8">
 											<!--<textarea ng-model="i.r_result" ng-show="i.r_name === ''"></textarea>-->
@@ -601,7 +600,7 @@
 												<option>SS</option>
 											</select>
 
-											<div ng-if="i.r_name === undefined || i.r_name === ''">
+											<div ng-show="i.r_name !== 'Genotype'">
 												<textarea ng-model="i.r_result" style="width: 80%"></textarea>
 											</div>
 										</div>
@@ -677,7 +676,7 @@
 									</section>
 									<div ng-repeat="i in report.list" class="row p-1 mt-2">
 										<div class="col-md-2">
-											<label contenteditable="true"><b>{{i.r_name || "edit title"}} </b></label>
+											<label><b>{{i.r_name || "edit title"}} </b></label>
 										</div>
 										<div class="col-md-10">
 											<span>{{i.r_result}}</span>
@@ -689,7 +688,7 @@
 								<div ng-show="report.isBloodGroup">
 									<form ng-repeat="i in report.list" class="row p-1">
 										<div class="col-md-2">
-											<label contenteditable="true">{{i.r_name || "edit title"}} </label>
+											<label contenteditable="true" ng-model="i.r_name"></label>
 										</div>
 										<div class="col-md-8">
 											<!--<textarea ng-model="i.r_result" ng-show="i.r_name === 'Pus cells' || i.r_name === 'Culture'"></textarea>-->
@@ -703,16 +702,18 @@
 
 											
 
-											<textarea ng-model="i.r_result_alt" ng-show="i.r_name === '' || i.r_name === undefined"></textarea>
+											<textarea ng-model="i.r_result_alt" ng-show="i.r_name !== 'Blood Group'"></textarea>
 										</div>
 										
 										<div class="col-md-2">
-											<select ng-model="i.r_result_alt1">
+											<select ng-model="i.r_result_alt1" ng-show="i.r_name === 'Blood Group'">
 												<option></option>							
 												<option>Rh 'D' Positive</option>
 												<option>Rh 'D' Negative</option>
 											</select>
+											<textarea ng-model="i.r_result_alt1" ng-show="i.r_name !== 'Blood Group'"></textarea>
 										</div>
+										
 									</form>
 
 									<section style="text-align: right;" class="p-0">
@@ -726,29 +727,18 @@
 								<div ng-show="report.isBloodAnalysis">
 									<form ng-repeat="i in report.list" class="row p-1">
 										<div class="col-md-2">
-											<label contenteditable="true">{{i.r_name || "edit title"}} </label>
+											<label contenteditable="true" ng-model="i.r_name"></label>
 										</div>
 										<div class="col-md-8">
 											<!--<textarea ng-model="i.r_result" ng-show="i.r_name === 'Pus cells' || i.r_name === 'Culture'"></textarea>-->
+																
+											<textarea ng-model="i.r_result_alt" ng-show="i.r_name === 'RBC'"></textarea>
+											
+											<textarea ng-model="i.r_result_alt" ng-show="i.r_name === 'WBC'"></textarea>
+											
+											<textarea ng-model="i.r_result_alt" ng-show="i.r_name === 'Platelet'"></textarea>
 
-											<select ng-model="i.r_result_alt" ng-show="i.r_name === 'RBC'">						
-												<option>Normal</option>
-												<option>Anisocytosis</option>
-												<option>Poikilocytosis</option>
-											</select>
-
-											<select ng-model="i.r_result_alt" ng-show="i.r_name === 'WBC'">						
-												<option>Normal</option>
-												<option>Mild toxic granulation of neutrophils</option>
-												<option>Marked toxic granulation of neutrophils</option>
-											</select>
-
-											<select ng-model="i.r_result_alt" ng-show="i.r_name === 'Platelet'">			
-												<option>Normal</option>
-												<option>Giant cells</option>
-											</select>
-
-											<textarea ng-model="i.r_result_alt" ng-show="i.r_name === '' || i.r_name === undefined"></textarea>
+											<textarea ng-model="i.r_result_alt" ng-show="i.r_name !== 'RBC' && i.r_name !== 'WBC' && i.r_name !== 'Platelet'"></textarea>
 										</div>
 										
 										<div class="col-md-2">
@@ -769,7 +759,7 @@
 								<div ng-show="report.isScreening">
 									<form ng-repeat="i in report.list" class="row p-1">
 										<div class="col-md-2">
-											<label contenteditable="true">{{i.r_name || "edit title"}}  </label>
+											<label contenteditable="true" ng-model="i.r_name"></label>
 										</div>
 										<div class="col-md-8" ng-if="i.r_name === 'Retroviral screening'">
 											<!--<textarea ng-model="i.r_result"></textarea>-->
@@ -799,7 +789,7 @@
 												<option>Negative</option>
 											</select>
 										</div>
-										<div class="col-md-8" ng-if="i.r_name === undefined || i.r_name === ''">
+										<div class="col-md-8" ng-if="i.r_name !== 'VDRL' && i.r_name !== 'Hepatitis C Virus' && i.r_name !== 'Hepatitis B Virus' && i.r_name !== 'Retroviral screening'">
 											<textarea ng-model="i.r_result"></textarea>
 										</div>
 									</form>
