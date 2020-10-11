@@ -27749,7 +27749,7 @@ app.controller('planCtrl',["$scope","$http","$rootScope","$filter",
     var date = new Date()
     var dt;
 
-    console.log($filter('date')(dt, 'fullDate'));
+   
 
   $scope.subscribe = function() {
 
