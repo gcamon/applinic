@@ -73,7 +73,7 @@ Array.prototype.diff = function(arr2) {
   return ret;
 };
 
-console.log(createVoiceText(2345))
+
 
 function genHash(count) {
   var text = "";
@@ -882,7 +882,6 @@ var basicRoute = function (model,sms,io,streams,client,transporter,opentok) {
 
   router.delete('/user/doctor/delete-record',function(req,res){
     if(req.user){
-        console.log(req.body)
       var delObj = {};
       var field = req.body.field;
       delObj[req.body.field] = 1;
@@ -13365,6 +13364,18 @@ router.patch("/user/charts",function(req,res){
   }
 });
 
+
+router.get("/sitemap.xml",function(req,res){
+  res.sendFile(path.join(__dirname, 'sitemap-applinic.xml'));
+});
+
+router.get("/robots.txt",function(req,res){
+  res.sendFile(path.join(__dirname, 'robots.txt'));
+});
+
+router.get('/404.html',function(req,res){
+  res.render('notfound');
+});
 
 /*
  var testPhone = new model.authCheck({

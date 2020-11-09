@@ -405,24 +405,44 @@
 										<tbody ng-repeat="i in report.list">
 											<tr ng-if="i.r_name !== 'Brucella Abortus' && i.r_name !== 'Comment' && i.r_name !== 'Significant Titre'">
 												<td><label><input type="text"  ng-model="i.r_name"></label></td>
-												<td><input type="text"  ng-model="i.r_result_O"></td>
-												<td><input type="text"  ng-model="i.r_result_H"></td>
+												<!--<td><input type="text"  ng-model="i.r_result_O"></td>
+												<td><input type="text"  ng-model="i.r_result_H"></td>-->
 												<!--<td contenteditable="true">{{i.r_unit}}</td>
 												<td contenteditable="true">{{i.r_flag}}</td>-->
+												<td>
+                                                    <select ng-model="i.r_result_O" class="form-control">            
+                                                        <option value="<20"> Less than 20</option>
+                                                        <option>20</option>
+                                                        <option>40</option>
+                                                        <option>80</option>
+                                                        <option>160</option>
+                                                        <option>320</option>
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <select ng-model="i.r_result_H" class="form-control">            
+                                                        <option value="<20"> Less than 20</option>
+                                                        <option>20</option>
+                                                        <option>40</option>
+                                                        <option>80</option>
+                                                        <option>160</option>
+                                                        <option>320</option>
+                                                    </select>
+                                                </td>
 											</tr>
-											<tr ng-if="i.r_name == 'Brucella Abortus'">
+											<!--<tr ng-if="i.r_name == 'Brucella Abortus'">
 												<td>
 													<labeL>{{i.r_name}}: </labeL><br>
 													<textarea ng-model="i.r_result" style="width: 250px"></textarea>
 												</td>
-												<!--<td contenteditable="true">{{i.r_result}}</td>-->
+												
 											</tr>
 											<tr ng-if="i.r_name == 'Comment'">
 												<td>
 													<labeL>{{i.r_name}}: </labeL><br>
 													<textarea ng-model="i.r_result" style="width: 250px"></textarea>
 												</td>
-											</tr>		
+											</tr>-->	
 											<tr ng-if="i.r_name == 'Significant Titre'">
 												<td>
 													<labeL>{{i.r_name}}: </labeL><br>

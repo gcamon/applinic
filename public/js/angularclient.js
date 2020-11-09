@@ -29627,7 +29627,7 @@ app.factory("reportFormFactory",function(){
         {
           r_name: "Significant Titre",
           r_tum: "",
-          r_result: "",
+          r_result: ">= 80",
           r_titre: "",
           r_range: "",
           r_unit: "",
