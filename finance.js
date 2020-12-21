@@ -2404,7 +2404,7 @@ router.get("/user/cashout",function(req,res){
 					if(err) throw err;
 					res.send(list)
 				})
-		} else if(req.query.id && req.query.type === 'all')
+		} else if(req.query.id && req.query.type === 'all') {
 				model.cashout.find({user_id: req.query.id},function(err,list){
 					if(err) throw err;
 					res.send(list)
