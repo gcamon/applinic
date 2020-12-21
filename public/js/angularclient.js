@@ -11820,11 +11820,18 @@ app.controller("adminCreateRoomController",["$scope","localManager","mySocket","
     }
     $scope.cashedOutTotal = total;
     $rootScope.cashedOut = data;
+  }); 
+
+  // note has update route for reopening
+  $http({
+    method  : "GET",
+    url     :  "/user/cashout?type=all",  
+    headers : {'Content-Type': 'application/json'} 
+    })
+  .success(function(data) {  
+    $scope.cashOutRequests = data;
   });    
-
-
-
-  
+   
 
   $scope.isViewTransaction = true;
 
@@ -11835,24 +11842,35 @@ app.controller("adminCreateRoomController",["$scope","localManager","mySocket","
         $scope.isViewFamily = false;
         $scope.isViewMatter = false;
         $scope.isReferral = false;
+        $scope.isCashOut = false;
         break;
       case 'matters':
         $scope.isViewMatter = true;
         $scope.isViewFamily = false;
         $scope.isViewTransaction = false;
         $scope.isReferral = false;
+        $scope.isCashOut = false;
         break;
       case 'family':
         $scope.isViewFamily = true;
         $scope.isViewTransaction = false;
         $scope.isViewMatter = false;
         $scope.isReferral = false;
+        $scope.isCashOut = false;
         break;
       case 'referral':
         $scope.isViewFamily = false;
         $scope.isViewTransaction = false;
         $scope.isViewMatter = false;
         $scope.isReferral = true;
+        $scope.isCashOut = false;
+        break;
+      case 'cashouts':
+        $scope.isViewFamily = false;
+        $scope.isViewTransaction = false;
+        $scope.isViewMatter = false;
+        $scope.isReferral = false;
+        $scope.isCashOut = true;
         break;
       default:
       break;
@@ -16669,7 +16687,6 @@ app.controller("labTestControler",["$scope","$location","$http","templateService
       }
 
       fill(objectFound);
-
    
 
     function fill(obj) {
@@ -16687,7 +16704,6 @@ app.controller("labTestControler",["$scope","$location","$http","templateService
       $scope.getTest = function(name){
         testName = name;
       }
-
       $scope.patient = {};
       $scope.testList = list;
 
@@ -16796,7 +16812,7 @@ app.controller("labTestControler",["$scope","$location","$http","templateService
         obj.isPatient = true;
       }
 
-    }//end of fill function
+  }//end of fill function
 
   $scope.toList = function(firstname,lastname,profilePicUrl,ref_id,date){
     var listObj = {};
@@ -19452,21 +19468,17 @@ app.controller("radioTestControler",["$scope","$location","$http","templateServi
 
   }
 
-  
-   
-    function uploadProgress(evt) {
-        $scope.progressVisible = true;
-        $scope.$apply(function(){
-            if (evt.lengthComputable) {
-              
-                $scope.progress = Math.round(evt.loaded * 100 / evt.total)
-               
-                
-            } else {
-                $scope.progress = 'unable to compute'
-            }
-        })
-    }
+
+  function uploadProgress(evt) {
+    $scope.progressVisible = true;
+    $scope.$apply(function(){
+        if (evt.lengthComputable) {          
+            $scope.progress = Math.round(evt.loaded * 100 / evt.total)
+        } else {
+            $scope.progress = 'unable to compute'
+        }
+    })
+  }
 
     function uploadComplete(evt) {
       /* This event is raised when the server send back a response */

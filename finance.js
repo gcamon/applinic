@@ -293,7 +293,7 @@ var basicPaymentRoute = function(model,sms,io,paystack,client,transporter){
 
 	router.post("/user/payment/verification",function(req,res){
 		if(req.user) {
-			console.log(req.body)
+			
 			if(req.body.userId !== req.user.user_id || req.body.isCashOutVerify){
 				//generate otp for confirmation. the debitor's id is sent from the request including the amount.
 				//request is obj of the debitor's id, amount to debit ie the person paying for the service.
@@ -344,7 +344,7 @@ var basicPaymentRoute = function(model,sms,io,paystack,client,transporter){
 
 					      otp.save(function(err,info){
 					        if(err) throw err;
-					        console.log("otp saved");
+					       
 					      }); 
 
 					      console.log(otp)
@@ -367,11 +367,11 @@ var basicPaymentRoute = function(model,sms,io,paystack,client,transporter){
 								  })
 								  .then(
 								    function(call){
-								      console.log(call.sid);
+								      
 								      res.send({message:"Phone call initiated",success:true,time_stamp:req.body.time}) 
 								    },
 								    function(err) {
-								      console.log(err)
+								      
 								      res.send({error: true, message:"Error occured while trying to call the destination. Please try again"})
 								    }
 								  );
@@ -2399,8 +2399,13 @@ router.get("/user/cashout",function(req,res){
 			res.send(list)
 		})
 	} else {
-		if(req.query.id) {
+		if(req.query.id && !req.query.type) {
 				model.cashout.find({user_id: req.query.id,verified: false,attended: false},function(err,list){
+					if(err) throw err;
+					res.send(list)
+				})
+		} else if(req.query.id && req.query.type === 'all')
+				model.cashout.find({user_id: req.query.id},function(err,list){
 					if(err) throw err;
 					res.send(list)
 				})

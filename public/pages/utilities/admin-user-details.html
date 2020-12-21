@@ -227,10 +227,64 @@
 						<li style="float: left;padding: 10px" class=""><a href="" class="btn btn-info dropdown-toggle" ng-click="view('transaction')">Transactions ({{user.ewallet.transaction.length}})</a> </li>
 						<li style="float: left;padding: 10px" class=""><a href="" class="btn btn-info dropdown-toggle" ng-click="view('matters')">Services ({{user.service_details.length}})</a></li>
 
-						<li style="float: left;padding: 10px" class=""><a href="" class="btn btn-info dropdown-toggle" ng-click="view('referral')">Referrals({{user.referral.length}})</a></li>
+						<li style="float: left;padding: 10px" class=""><a href="" class="btn btn-info dropdown-toggle" ng-click="view('referral')">Referrals({{user.referral.length}})</a></li> 
+
+						<li style="float: left;padding: 10px" class=""><a href="" class="btn btn-info dropdown-toggle" ng-click="view('cashouts')">Cashouts({{cashOutRequests.length}})</a></li> 
 						<!--<li style="float: left;padding: 10px" class="bg primary"><a href="" class="btn btn-primary">Skills &amp; Procedures</a></li>
-						<li style="float: left;padding: 10px" class="bg primary"><a href="" class="btn btn-primary">Sub Specialties</a></li>-->
+						<li style="float: left;padding: 10px" class="bg primary"><a href="" class="btn btn-primary">Sub Specialties</a></li>
+							<div class="p-2" style="">
+	<h3>Withdrawal Requests ( {{CashOutList.length}} ) <input type="text" placeholder="filter" ng-model="filt" style="float: right;"></h3>
+	
+	<table class="table">
+		<thead>
+			<th>Time</th>
+			<th>Names</th>
+			<th>Bank</th>
+			<th>Acc. No</th>
+			<th>Amount</th>
+			<th>Type</th>
+			<th>user Id</th>
+		</thead>
+		
+	    <tbody ng-repeat="i in CashOutList | filter : filt | orderBy: '-date'" class="cashouts" ng-click="viewDetails(i.id)">
+	    	<td><span am-time-ago="i.date"></span></td>
+	    	<td>{{i.name}}</td>
+	    	<td>{{i.bank}}</td>
+	    	<td>{{i.account_number}}</td>
+	    	<td>{{toCurrency(i.amount)}}</td>
+	    	<td>{{i.account_type}}</td>
+	    	<td>{{i.user_id}}</td>
+	    </tbody>
+		
+	</table>
+</div>
+						-->
 					</ul>
+				</div>
+				<div class="col-sm-12 col-md-12 col-lg-12" ng-if="isCashOut">
+					<h4><b>Cash Out Requests</b></h4>
+					<table class="table">
+						<thead>
+							<th>Time</th>
+							<th>Names</th>
+							<th>Bank</th>
+							<th>Acc. No</th>
+							<th>Amount</th>
+							<th>Type</th>							
+							<th>status</th>
+						</thead>
+						
+					    <tbody ng-repeat="i in cashOutRequests | filter : filt | orderBy: '-date'" class="cashouts" ng-click="viewDetails(i.id)">
+					    	<td><span am-time-ago="i.date"></span></td>
+					    	<td>{{i.name}}</td>
+					    	<td>{{i.bank}}</td>
+					    	<td>{{i.account_number}}</td>
+					    	<td>{{toCurrency(i.amount)}}</td>
+					    	<td>{{i.account_type}}</td>
+					    	<td>{{(i.attended && i.verified) ? 'Paid' : 'Pending'}}</td>
+					    </tbody>
+						
+					</table>
 				</div>
 				<div class="col-sm-12 col-md-12 col-lg-12" ng-if="isViewTransaction">
 					<h4><b>Transactions</b> <a href="" style="float: right;font-size: 14px;margin-right: 20px" class="text-muted">Balance: <b>{{getBance(user)}}</b></a></h4>
