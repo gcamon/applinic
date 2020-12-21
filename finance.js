@@ -2394,18 +2394,20 @@ router.put("/user/laboratory/test-result/session-update",function(req,res){
 
 router.get("/user/cashout",function(req,res){
 	if(req.user && req.user.user_id === process.env.ADMIN_ID){
-		model.cashout.find({verified: false,attended: false},function(err,list){
-			if(err) throw err;
-			res.send(list)
-		})
-	} else {
-		if(req.query.id && !req.query.type) {
-				model.cashout.find({user_id: req.query.id,verified: false,attended: false},function(err,list){
+		if(!req.query.type) {
+			model.cashout.find({verified: false,attended: false},function(err,list){
+				if(err) throw err;
+				res.send(list)
+			})
+		} else if(req.query.id && req.query.type === 'all') {
+				model.cashout.find({user_id: req.query.id},function(err,list){
 					if(err) throw err;
 					res.send(list)
 				})
-		} else if(req.query.id && req.query.type === 'all') {
-				model.cashout.find({user_id: req.query.id},function(err,list){
+		}
+	} else {
+		if(req.query.id) {
+				model.cashout.find({user_id: req.query.id,verified: false,attended: false},function(err,list){
 					if(err) throw err;
 					res.send(list)
 				})
