@@ -11825,7 +11825,7 @@ app.controller("adminCreateRoomController",["$scope","localManager","mySocket","
   // note has update route for reopening
   $http({
     method  : "GET",
-    url     :  "/user/cashout?type=all",  
+    url     :  "/user/cashout?type=all&id=" + user.user_id,  
     headers : {'Content-Type': 'application/json'} 
     })
   .success(function(data) {  
