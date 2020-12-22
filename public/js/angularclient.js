@@ -11878,10 +11878,12 @@ app.controller("adminGetUserCtrl",["$scope","$location","$rootScope","$http","lo
   function($scope,$location,$rootScope,http,localManager,$http){
 
   $scope.userDetails = $rootScope.foundUser || localManager.getValue("adminFoundUser");
-  console.log($rootScope.foundUser)
+  
+  var usr = ($scope.userDetails[0]) ? $scope.userDetails[0].user_id : undefined;
+
   $http({
     method  : "GET",
-    url     :  "/user/cashout?type=all&id=" + $rootScope.foundUser.user_id,  
+    url     :  "/user/cashout?type=all&id=" + usr,  
     headers : {'Content-Type': 'application/json'} 
     })
   .success(function(data) {  
