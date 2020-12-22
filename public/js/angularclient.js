@@ -11793,7 +11793,7 @@ app.controller("adminCreateRoomController",["$scope","localManager","mySocket","
         alert("User not found!");
       }
 
-      
+
     });    
   }
 
@@ -11879,6 +11879,7 @@ app.controller("adminGetUserCtrl",["$scope","$location","$rootScope","$http","lo
 
   $scope.userDetails = $rootScope.foundUser || localManager.getValue("adminFoundUser");
   
+  console.log($scope.userDetails,$rootScope.foundUser)
   $http({
     method  : "GET",
     url     :  "/user/cashout?type=all&id=" + $scope.userDetails.user_id,  
