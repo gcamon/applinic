@@ -2394,7 +2394,7 @@ router.put("/user/laboratory/test-result/session-update",function(req,res){
 
 router.get("/user/cashout",function(req,res){
 	if(req.user && req.user.user_id === process.env.ADMIN_ID){
-		console.log(req.query)
+		
 		if(!req.query.type) {
 			model.cashout.find({verified: false,attended: false},function(err,list){
 				if(err) throw err;
