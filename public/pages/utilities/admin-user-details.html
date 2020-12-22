@@ -275,7 +275,7 @@
 						</thead>
 						
 					    <tbody ng-repeat="i in cashOutRequests | filter : filt | orderBy: '-date'" class="cashouts" ng-click="viewDetails(i.id)">
-					    	<td><span am-time-ago="i.date"></span></td>
+					    	<td>{{i.date | date: 'mediumDate'}}</td>
 					    	<td>{{i.name}}</td>
 					    	<td>{{i.bank}}</td>
 					    	<td>{{i.account_number}}</td>
