@@ -11822,10 +11822,10 @@ app.controller("adminCreateRoomController",["$scope","localManager","mySocket","
     $rootScope.cashedOut = data;
   }); 
 
-  // note has update route for reopening
+  
   $http({
     method  : "GET",
-    url     :  "/user/cashout?type=all&id=" + user.user_id,  
+    url     :  "/user/cashout?type=all&id=" + $rootScope.foundUser.user_id,  
     headers : {'Content-Type': 'application/json'} 
     })
   .success(function(data) {  
