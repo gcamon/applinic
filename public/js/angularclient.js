@@ -11792,6 +11792,8 @@ app.controller("adminCreateRoomController",["$scope","localManager","mySocket","
       } else {
         alert("User not found!");
       }
+
+      
     });    
   }
 
@@ -11823,14 +11825,7 @@ app.controller("adminCreateRoomController",["$scope","localManager","mySocket","
   }); 
 
   
-  $http({
-    method  : "GET",
-    url     :  "/user/cashout?type=all&id=" + $rootScope.foundUser.user_id,  
-    headers : {'Content-Type': 'application/json'} 
-    })
-  .success(function(data) {  
-    $scope.cashOutRequests = data;
-  });    
+  
    
 
   $scope.isViewTransaction = true;
@@ -11884,7 +11879,14 @@ app.controller("adminGetUserCtrl",["$scope","$location","$rootScope","$http","lo
 
   $scope.userDetails = $rootScope.foundUser || localManager.getValue("adminFoundUser");
   
-
+  $http({
+    method  : "GET",
+    url     :  "/user/cashout?type=all&id=" + $scope.userDetails.user_id,  
+    headers : {'Content-Type': 'application/json'} 
+    })
+  .success(function(data) {  
+    $scope.cashOutRequests = data;
+  });    
 
   $scope.verifyUser = function(type,user){
     if(type == 'verify')
