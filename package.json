@@ -63,7 +63,7 @@
     "passport-local": "^1.0.0",
     "paystack": "^2.0.1",
     "peer": "^0.2.8",
-    "socket.io": "^2.0.1",
+    "socket.io": "^2.4.0",
     "twilio": "^3.19.2",
     "underscore": "^1.9.1",
     "uuid": "^3.2.1",
