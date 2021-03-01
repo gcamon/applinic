@@ -25138,7 +25138,7 @@ app.controller("dicomCtrl",["$rootScope","$scope","$location","$resource","$http
 
     $http.post("/user/invitation",$scope.contact)
     .success(function(res){
-      console.log(res)
+      //console.log(res)
       $scope.msg = res.message;
       $scope.loading = false;
       $scope.existingUser = (res.user && res.type == 'Patient') ? true : false;
@@ -25478,15 +25478,19 @@ app.controller("dicomCtrl",["$rootScope","$scope","$location","$resource","$http
   })
 
   $scope.newAcc = function() {
-    $scope.isSuccess = false;
-    $scope.accNo = "";
-    $rootScope.station.patientName = "";
-    $rootScope.station.patientPhone = "";
-    $rootScope.station.patientEmail = "";
-    $rootScope.station.patientSex = "";
-    $rootScope.station.patientAge = "";
-    $rootScope.station.studyName = "";
-    $rootScope.station.clinicalSummaryIndication = "";
+    if($rootScope.station.patientData){
+      $location.path("/referral/radiology-test");
+    } else {
+      $scope.isSuccess = false;
+      $scope.accNo = "";
+      $rootScope.station.patientName = "";
+      $rootScope.station.patientPhone = "";
+      $rootScope.station.patientEmail = "";
+      $rootScope.station.patientSex = "";
+      $rootScope.station.patientAge = "";
+      $rootScope.station.studyName = "";
+      $rootScope.station.clinicalSummaryIndication = "";
+    }
   }
 
   $scope.createService = function() {
@@ -26395,16 +26399,20 @@ function($scope,$http,$rootScope){
     $scope.recepient._id = $rootScope.patient._id;
     $scope.recepient.reporter = $rootScope.patient.reporter;*/
 
+
     $rootScope.templateReportDetails.email = $scope.recepient.email;
     $scope.loading = true;
 
-    for(var i = 0; i < $rootScope.addForLinux.length; i++) {
-      $rootScope.addForLinux[i].style.zoom = 0.50;
-    }
+   //for(var i = 0; i < $rootScope.addForLinux.length; i++) {
+     // $rootScope.addForLinux[i].style.zoom = 0.50;
+    //}
 
-    $rootScope.templateReportDetails.html = $rootScope.hml.html();
+    var htm = $rootScope.hml.html(); 
 
-  
+    var fixZoom = "<div style='zoom:0.67'>" + htm + '</div>';
+
+    $rootScope.templateReportDetails.html = fixZoom;
+
     $http({
       method  : 'PUT',
       url     : "/report-template",

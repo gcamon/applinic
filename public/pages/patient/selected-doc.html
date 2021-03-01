@@ -6,22 +6,25 @@
                   <div class=" col-md-3 col-sm-12">
                       <img alt="image description" height="120" ng-src="{{docInfo.profile_pic_url}}" class="image-fit"> 
                   </div>
-                  <div class="col-md-9 col-sm-12 pl-1 pr-0">
-                      <div class=""><b>{{docInfo.title}} {{docInfo.firstname}} {{docInfo.lastname}}</b></div>
-                       <div class="">{{docInfo.specialty}}</div>
-                       <div>Works at <span class="">{{docInfo.work_place}}</span> <span>{{docInfo.address}} {{docInfo.city}} {{docInfo.country}}</span></div>
-                      <div><span class="">{{docInfo.experience + " years experience"}}</span></div>
-                           
-                      <ul class="nav">        
-                          <li ng-repeat = "i in docInfo.office_hour "><span>{{i.day}}</span>, <span>from {{i.from}}</span> <span>to {{i.to}}</span></li> 
-                      </ul>
+                  <div class="col-md-9 col-sm-12">
+                      <div class="mt-2">
+                        <h5 class="pb-0 mb-0 pl-1"><b>{{docInfo.title}} {{docInfo.firstname}} {{docInfo.lastname}}</b></h5>
+                        <div class="ml-1" style="font-size: 16px">
+                          <span>{{docInfo.specialty}}</span><br>
+                          <span>Works at <span class="">{{docInfo.work_place}}</span> <span>{{docInfo.address}} {{docInfo.city}} {{docInfo.country}}</span></span><br>
+                          <span class="">{{docInfo.experience + " years experience"}}</span>   
+                        </div>                          
+                        <!--<ul class="nav">        
+                            <li ng-repeat = "i in docInfo.office_hour "><span>{{i.day}}</span>, <span>from {{i.from}}</span> <span>to {{i.to}}</span></li> 
+                        </ul>-->
+                      </div>
                   </div>
               </div>
               <hr>
               <div class="col-md-10">
                   <div>                      
-                     <form class="pt-1">
-                         <div class="pb-1">
+                     <form class="">
+                        <!--<div class="pb-1">
                              <label>Why do yo want to consult {{docInfo.title}} {{docInfo.firstname}}?</label>
                              <div class="row">
                                  <div class="col-sm-12 col-md-6 col-lg-6">
@@ -112,10 +115,10 @@
                                  </div>
                              </div>
                             
-                         </div>
+                         </div>-->
                        
                          <div ng-if="patient.sick" class="pb-1">
-                             <label class="text-muted">what are your complaints?</label>
+                             <label>What are your complaints?</label>
                              <div class="text-danger">{{sympMsg}}</div>
                              <div class="pb-1">
                                  <div ng-repeat="i in symptomsList" style="position: relative;padding-bottom: 5px">           
@@ -123,11 +126,11 @@
                                       <i class="fa fa-times text-muted" style="cursor: pointer;position: absolute;bottom: 10px;right: 20px" ng-click="remove(i.sn)" ng-if="i.sn !== 'a'"></i>
                                       {{getSymptom(name)}}
                                   </div>
-                                  <div style="text-align: right;margin: 5px 30px 0"> 
+                                  <div style="text-align: right;margin: 5px 5px 0"> 
                                       <a href="" class="fa fa-plus btn btn-neutral" ng-click="add()"></a> 
                                   </div>
                              </div>
-                             <label class="text-muted">How long have you been experiencing the above symptom(s)?</label>
+                             <label>How long have you been experiencing the above symptom(s)?</label>
                              <div class="pb-1">
                                <select class="form-control" ng-model="patient.period">
                                    <option value="" selected="selected" disabled="disabled">_select</option>
@@ -142,12 +145,12 @@
                                    <option style="font-size: 14px">over two years</option>
                                    <option style="font-size: 14px">many years</option>
                                </select>
-                             </div>
-                             <label class="text-muted">How do you feel right now?</label>
+                             </div><br>
+                             <label>How do you feel right now?</label>
                              <div class="pb-1">
                                  <textarea class="form-control pl-1" ng-model="patient.how" ng-keyup="autoExpand($event)" id="textarea"></textarea>
-                             </div>
-                             <label class="text-muted">Did you use any medication or try self medication before now?</label>
+                             </div><br>
+                             <label>Did you use any medication or try self medication before now?</label>
                              <div class="pb-1">
                                   <label class="custom-control custom-radio">
                                       Yes
@@ -164,7 +167,7 @@
                              </div>
                          </div>
                          <div ng-if="patient.pregnant" class="pb-1">
-                             <label class="text-muted">How long has the pregnancy been?</label>
+                             <label>How long has the pregnancy been?</label>
                              <div class="text-danger">{{pregMsg}}</div>
                              <div>
                                  <select ng-model="patient.duration" class="form-control">
@@ -255,13 +258,13 @@
                         <section>  
                           <div>
                             <br>
-                            <label style="color: grey">Do you have an PDF, image or video associated with the complaint ?</label><br>
+                            <label>Do you have an PDF, image or video associated with the complaint ?</label><br>
                             <span class="text-muted" style="font-size:.85em;">Not more than 6 files is allowed. File size should be less than 8mb.You can upload PDF, image or video. (On desktop, hold ctrl key to select multiple files)</span><br><br>
                             
                              <input type="file" id="file" class=""  file-model = "files" multiple="multiple"> 
                              <b style="display: block;padding: 15px 10px">Or</b> 
 
-                             <button ng-click="takePhoto()" class="btn btn-sm btn-danger">Take Photo</button>
+                             <button ng-click="takePhoto()" class="btn btn-sm btn-warning">Take Photo</button>
                             
                            
                           </div>
@@ -304,7 +307,7 @@
 
                     <div style="margin-top: 20px">
                       <i class="fa fa-check pull-right font-1_4" style="color: #7dbb00" ng-if="statusMsg"> sent!</i>  
-                      <button class="btn btn-success pull-right" style="background-color: #7dbb00" ng-click="validate()" ng-if="!statusMsg">{{(progress) ? progress + '% sending...'  : 'Send Consultation Request'}}</button>
+                      <button class="btn btn-success pull-right" style="background-color: #7dbb00" ng-click="validate()" ng-if="!statusMsg">{{(progress) ? progress + '% sending...'  : 'Submit Request'}}</button>
                     </div>
               </div>
                

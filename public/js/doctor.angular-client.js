@@ -9755,8 +9755,6 @@ app.controller("appointmentModalController",["$scope","$rootScope","$http","mome
         $scope.treatment.appointment.profilePic = data.profile_pic_url || data.profilePic;
         sendData($scope.treatment,"/user/doctor/patient-session","POST");
       }
-
-      console.log(data)
     }
 
     function sendData(data,url,method) {
@@ -15244,7 +15242,6 @@ app.controller('appointmentOutCtrl',["$scope","$http","$rootScope","docAppointme
     getAppoint();
   })
 
-  console.log($rootScope.patientList)
 
 }]);
 

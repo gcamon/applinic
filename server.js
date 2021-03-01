@@ -16,9 +16,6 @@ var express = require('express'),
   topdf = require("./topdf"),
   OpenTok = require('opentok'),
     
-
-
-
  
   
   //infobip = require('infobip-node'),
@@ -218,6 +215,23 @@ route(model,sms,io,streams,client,transporter,opentok);
 payments(model,sms,io,paystack,client,transporter);
 placement(model,sms,io,transporter);
 mySocket(model,io,streams,sms);
+
+
+
+
+/*function getAge(dateString) {
+  var today = new Date();
+  var birthDate = new Date(dateString);
+  var age = today.getFullYear() - birthDate.getFullYear();
+  var m = today.getMonth() - birthDate.getMonth();
+  if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+  }
+  return age;
+}*/
+
+//console.log(getAge("2020/03/02"))
+
 
 
 /*

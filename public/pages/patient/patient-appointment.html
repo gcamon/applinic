@@ -18,29 +18,58 @@
 	<button ng-click="deleteApp()" style="color:#fff" ng-if="notDeleted === true">{{delbtn}}</button>
 </div>-->
 
-<div class="container" style="line-height: 30px" ng-if="notDeleted === true">
-	<div class="card-center-1">
-		<a href="#{{path}}" class="btn btn-simple"><i class="fa fa-arrow-left"></i> Back</a>
-	</div>
-    <div class=" card card-center-1 p-2">
-	<h4 class="font-1_7 mt-0">My appointment</h4> <hr>
-	<div>
-		<span><strong>Appointment with</strong> : {{appointment.title}} {{appointment.firstname}} {{appointment.lastname}} </span>
-	</div>
-	<div>
-		<span><strong>Appointment type </strong> : Meet-In-Person appointment</span>
-	</div>
-	<div>
-		<span><strong>Date of appointment </strong> : {{appointment.date | date : "fullDate"}}</span> ( <span am-time-ago="appointment.date"></span> )
-	</div>
-	<div>
-		<span><strong>Time of appointment </strong> : {{appointment.time | date : "mediumTime"}}</span>
-	</div>
-	<div>
-		<span><strong>Vanue of appointment </strong> : {{appointment.address}}</span>
-	</div>
 
-<div class="mt-3">
-	<button ng-click="deleteApp()" class="btn btn-danger" style="color:#fff" ng-if="notDeleted === true">{{delbtn}}</button>
+<div class="card-center-1">
+	<a href="#{{path || '/my-doctors'}}" class="btn btn-neutral"><i class="fa fa-arrow-left"></i> Back</a>
 </div>
-</div></div>
+<div class="card-center-1">
+	<h4 class="h4">Appointments</h4>
+</div>
+<div class="card-center-1">
+	<input type="text" class="form-control" name="" placeholder="search" ng-model="search">
+</div>
+<br>
+<div class="card-center-1">
+	<h6>Current</h6>
+</div>
+
+<div class="card card-center-1 p-1 mb-2" ng-repeat="app in appFetchedData.active | filter: search">
+	<div style="position: relative;">
+        <a href="">
+            <b style="font-size: 16px" class="text-muted" ng-class="{'text-primary': app.isToday,'text-danger': app.isPassed }"> {{app.date | amCalendar}}</b><br>
+            <span>{{app.title}} {{app.firstname}} {{app.lastname}}</span><br>
+            <span>{{app.date | date : 'mediumDate'}}</span><br>
+            <span>{{app.address}}</span>
+        </a>
+        <time style="position: absolute;top: 2px; right: 5px;font-size: 16px" class="text-muted" ng-class="{'text-primary': app.isToday && !app.isTime,'text-warning': app.isTime }"><b>{{app.time | date: 'shortTime'}}</b></time>
+        <article style="position: absolute;bottom: 0; right: -5px;font-size: 16px">
+            <!--<i class="btn btn-simple btn-sm fa fa-pencil"></i>-->
+            <a href="" ng-click="ask(app)"><i class="btn btn-simple btn-sm fa fa-comment"></i></a>
+            <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange" ng-show="app.loading"> </i>
+        </article>
+    </div>
+</div>
+<br>
+
+<div class="card-center-1">
+	<h6>Elapsed</h6>
+</div>
+<div class="card card-center-1 p-1 mb-2" ng-repeat="app in appFetchedData.passed | orderBy: '-date' | filter: search">
+	<div style="position: relative;">
+        <a href="">
+            <b style="font-size: 16px" class="text-muted" ng-class="{'text-primary': app.isToday,'text-danger': app.isPassed }"> {{app.date | amCalendar}}</b><br>
+            <span>{{app.title}} {{app.firstname}} {{app.lastname}}</span><br>
+            <span>{{app.date | date : 'mediumDate'}}</span><br>
+            <span>{{app.address}}</span>
+        </a>
+        <time style="position: absolute;top: 2px; right: 5px;font-size: 16px" class="text-muted" ng-class="{'text-primary': app.isToday && !app.isTime,'hide': app.isPassed, 'text-warning': app.isTime }"><b>{{app.time | date: 'shortTime'}}</b></time>
+        <article style="position: absolute;bottom: 0; right: -5px;font-size: 16px">
+            <!--<i class="btn btn-simple btn-sm fa fa-pencil"></i>-->
+            <a href="" ng-click="ask(app)"><i class="btn btn-simple btn-sm fa fa-comment"></i></a>
+            <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange" ng-show="app.loading"> </i>
+        </article>
+    </div>
+</div>
+<div style="height: 200px;text-align: center;padding: 20px 0">
+	<i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color: orange;font-size: 18px" ng-show="!appFetchedData"></i>
+</div>

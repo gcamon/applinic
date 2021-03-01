@@ -3,8 +3,7 @@
 
 var app = angular.module('myApp',["ngRoute","ngAnimate","angularModalService","angularMoment",'ui.bootstrap',
   'angular-clipboard',"ngResource","btford.socket-io","ngTouch",'ngPrint','paystack','ngSanitize','summernote',
-  'xen3r0.underscorejs',"chart.js"]);
-
+  'xen3r0.underscorejs',"chart.js",'pdf','templates']);
 
 if (!angular.merge) {
   angular.merge = (function mergePollyfill() {
@@ -119,6 +118,16 @@ app.config(['$paystackProvider','$routeProvider',
     }
   })
 
+  .when("/list2",{
+    templateUrl: '/assets/pages/list-doctors2.html',
+    controller: 'listController',
+    resolve: {
+      path: function($location,$rootScope){
+        $rootScope.path = $location.path();
+      }
+    }
+  })
+
   .when("/list/:num",{
     templateUrl: '/assets/pages/list-doctors.html',
     controller: 'listController',
@@ -130,7 +139,7 @@ app.config(['$paystackProvider','$routeProvider',
   })
 
   .when("/my-doctors",{
-    templateUrl: '/assets/pages/patient/my-doctors.html',
+    templateUrl: 'my-doctors.html',//'/assets/pages/patient/my-doctors.html',
     controller: 'manageDoctorsListCtr',
     resolve: {
       path: function($location,$rootScope){
@@ -343,7 +352,7 @@ app.config(['$paystackProvider','$routeProvider',
  .when("/patient-prescriptions",{
   templateUrl: "/assets/pages/patient-view-prescriptions.html",
   controller: 'prescriptionTemplateController',
-   resolve: {
+  resolve: {
     path: function($location,$rootScope){
       $rootScope.path = $location.path();
     }
@@ -519,7 +528,7 @@ app.config(['$paystackProvider','$routeProvider',
   controller: 'selectedAppointmentController'
  })
 
- .when("/p/selected-appointment/:id",{
+ .when("/p/selected-appointment",{
   templateUrl: "/assets/pages/patient/patient-appointment.html",
   controller: 'selectedAppointmentControllerForPatient'
  })
@@ -719,7 +728,22 @@ app.config(['$paystackProvider','$routeProvider',
 
  .when("/invite",{
     templateUrl:"/assets/pages/utilities/invitation.html",
-    controller: 'invitationCtrl'
+    controller: 'invitationCtrl',
+    resolve: {
+      path: function($location,$rootScope){
+        $rootScope.path = $location.path();  
+      }
+    }
+ })
+
+.when("/invite-doctor",{
+    templateUrl:"/assets/pages/utilities/invitation2.html",
+    controller: 'invitationCtrl',
+    resolve: {
+      path: function($location,$rootScope){
+        $rootScope.path = $location.path();  
+      }
+    }
  })
 
  .when("/help",{
@@ -996,12 +1020,35 @@ app.config(['$paystackProvider','$routeProvider',
 .when('/consultation-fee/:id',{
   templateUrl: "/assets/pages/patient/consultation-fee.html",
   controller: "consultationFeeCtrl",
-  resolve: {
-    path: function($location,$rootScope){
-      $rootScope.path = $location.path();  
-    }
-  }
 })
+
+.when("/messages",{
+  templateUrl: "/assets/pages/utilities/messages.html",
+  controller: "noteCtrl"
+})
+
+.when("/courier-notification",{
+  templateUrl: "/assets/pages/utilities/courier-note.html",
+  controller: "noteCtrl"
+})
+
+.when("/chats-notification",{
+  templateUrl: "/assets/pages/utilities/chats-notification.html",
+  controller: "noteCtrl"
+})
+
+.when("/audioChat-notification",{
+  templateUrl: "/assets/pages/utilities/audio-notification.html",
+  controller: "noteCtrl"
+})
+
+.when("/videoChat-notification",{
+  templateUrl: "/assets/pages/utilities/video-notification.html",
+  controller: "noteCtrl"
+})
+
+
+
 
 }])
 
@@ -2066,7 +2113,7 @@ app.controller("patientNotificationController",["$scope","$location","$http","$w
     }
   }
 
-  $scope.viewConsultationFee = function(id,msgId) {
+  $rootScope.viewConsultationFee = function(id,msgId) {
     templateService.holdId = id;//this is underscore (_id) of the consult model in the back end;
     $location.path('/consultation-fee/' + msgId );
   }
@@ -2106,8 +2153,8 @@ app.controller("patientNotificationController",["$scope","$location","$http","$w
     note.query(function(data){
       var len = data.length;
       if(len > 0) {
-        $rootScope.appLen = templateService.holdAppLen(len);             
-        templateService.holdAppointmentData = data; 
+        //$rootScope.appLen = templateService.holdAppLen(len);             
+        //templateService.holdAppointmentData = data; 
         $rootScope.allApp = data;
       }   
     })
@@ -2116,8 +2163,8 @@ app.controller("patientNotificationController",["$scope","$location","$http","$w
   
 
   $rootScope.viewAppointment = function(sessionId){
-    templateService.holdId = sessionId;
-    $location.path("/p/selected-appointment/" + sessionId); 
+    //templateService.holdId = sessionId;
+    $location.path("/p/selected-appointment"); 
   }
 
 //delete logic function that controls all deleting from notification bar
@@ -2143,6 +2190,14 @@ app.controller("patientNotificationController",["$scope","$location","$http","$w
     del.deleteItem("/user/delete-one/refId","");//deletes notification once it is viewed.
     if($rootScope.noteLen > 0)
       $rootScope.noteLen--;    
+  }
+
+
+  function getIndicatorPerDoctorAction (type) {
+    $http.get('/user/get-unread')
+    .success(function(resp){
+      $rootScope.unreadIndication = resp;
+    })
   }
 
 
@@ -2201,13 +2256,18 @@ app.controller("patientNotificationController",["$scope","$location","$http","$w
 
   mySocket.on("notification",function(data){
     if(data.status){
-      templateService.playAudio(0);
+      if(!data.noSound){
+        templateService.playAudio(1);
+      }
       data.type = "notification";
       $scope.isReceivedRequest = true;
       $timeout(function(){
         $scope.isReceivedRequest = false;
       },10000);
       getNotification();
+
+      //call a function that gets indicator show for a new prescription, lab or radio against any doctor that sents it.
+      getIndicatorPerDoctorAction()
     }
   })
 
@@ -2242,6 +2302,9 @@ app.controller("patientNotificationController",["$scope","$location","$http","$w
 
   //loads up message notification list for patient
   getMessages();
+
+  // loads up values from  back end to show which prescription, lab or radio that has not been read or attended to by patient
+  getIndicatorPerDoctorAction();
 
   //gets chats from the back end and also control the indicator for unattended chat
   $scope.showIndicator = false;
@@ -2285,7 +2348,7 @@ app.controller("patientNotificationController",["$scope","$location","$http","$w
 
   $rootScope.loadChats();*/
 
-   $scope.viewChat2 = function(partnerId) {  
+   $rootScope.viewChat3 = function(partnerId) {  
     /*var list = $rootScope.chatsList; 
     localManager.setValue("isChatListViewMobile",true);
     if(list) {
@@ -2387,6 +2450,7 @@ app.controller("patientNotificationController",["$scope","$location","$http","$w
       $scope.isReady = false;
 
     $rootScope.courierResponse = item;
+    $rootScope.isFromNote = true;
     pt = '/courier-response/' + Math.floor(Math.random() * 99999999);
     $location.path(pt);
   }
@@ -2720,7 +2784,9 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
 
   //sending prescription/lab/radio to an email
   $rootScope.email = function(docInfo,type) {
-    $rootScope.emailData = {}
+    $rootScope.emailData = {};
+    $rootScope.emailData.filePath = (type === 'Laboratory') ? docInfo.lab_pdf_report[0].pdf_report 
+    : (type === 'Radiology') ? docInfo.pdf_report[0].pathname : "";
     $rootScope.emailData.type = type;
     switch (type) {
       case 'Prescription':
@@ -2742,7 +2808,7 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
           + createItemTable(docInfo.prescription_body) + "</table><br><br>" 
           + "<a href='https://applinic.com' style='text-decoration:none'><img src='https://applinic.com/assets/images/icons/favicon.png' style='width:32px;height:auto'> <b>Applinic</b></a><br>"
           + "<div style='font-size: 14px'>The above prescription(s) was written in www.applinic.com (Online Healthcare Application).<br><br><a href='https://applinic.com/signup' style='text-decoration:none'>Create an account for free" +
-           "</a> and enjoy our services for writting, receiving and sharing prescriptions with friends or collegues.<br><br>We keep records of your prescription history and it's safe with us.<br><br> For enquiries please call customer support on +2349080045678</div>"
+           "</a> and enjoy easy access to healthcare services and secure archival and management of your medical records electronically.<br><br>We keep records of your prescription history and it's safe with us.<br><br> For enquiries please call customer support on +2349080045678</div>"
        } else {
            $rootScope.emailData.htmlTemp = "<h3 style='text-align:center'>" 
           + docInfo.patient_firstname + " " + docInfo.patient_lastname + "<br><span style='font-size:14px'>Age: " + docInfo.patient_age 
@@ -2755,7 +2821,7 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
           + createItemTable(docInfo.prescription_body) + "</table><br><br>" 
           + "<a href='https://applinic.com' style='text-decoration:none'><img src='https://applinic.com/assets/images/icons/favicon.png' style='width:32px;height:auto'> <b>Applinic</b></a><br>"
           + "<div style='font-size: 14px'>The above prescription(s) was written in www.applinic.com (Online Healthcare Application)." 
-          + "<br><br><a href='https://applinic.com/signup' style='text-decoration:none'>Create an account for free </a> and enjoy our services for writting, receiving and sharing prescriptions with friends or collegues.<br><br>We keep records of your prescription history and it's safe with us.<br><br> For enquiries please call customer support on +2349080045678</div>"
+          + "<br><br><a href='https://applinic.com/signup' style='text-decoration:none'>Create an account for free </a> and enjoy easy access to healthcare services and secure archival and management of your medical records electronically.<br><br> For enquiries please call customer support on +2349080045678</div>"
       }
       break;
 
@@ -2779,9 +2845,37 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
           + "<b>Result: </b><br>"
           + createReportTests(docInfo.report,'laboratory') + "<br>"
           + "<b>CONCLUSION: </b> <br><span>" + docInfo.conclusion + "<br><br>"
+          + "<p>Please view or download attached report in PDF </p><br>"
           + "<a href='https://applinic.com' style='text-decoration:none'><img src='https://applinic.com/assets/images/icons/favicon.png' style='width:32px;height:auto'> <b>Applinic</b></a><br>"
           + "<div style='font-size: 14px'>The above Investigation(s) was written in www.applinic.com (Online Healthcare Application).<br><br><a href='https://applinic.com/signup' style='text-decoration:none'>Create an account for free" +  
-          "</a> and enjoy our services for writting, receiving and sharing investigation with friends or collegues.<br><br>We keep records of your laboratory history and it's safe with us.<br><br> For enquiries please call customer support on +2349080045678</div>"
+          "</a> and enjoy easy access to healthcare services and secure archival and management of your medical records electronically.<br><br> For enquiries please call customer support on +2349080045678</div>"
+      break;
+      case 'Radiology':
+         $rootScope.emailData.htmlTemp = "<h3 style='text-align:center'>" 
+          + docInfo.center_name + "<br><span style='font-size:14px'>" + docInfo.center_address + ", " 
+          + docInfo.center_city + ", " + docInfo.center_country
+          + "</span><br> <span style='font-size:14px'>" + docInfo.center_phone + "<span><br><span> https://applinic.com/user/profile/view/" + docInfo.center_id
+          + "</span></h3>"  + "<br><b>Patient Name: </b><span>" + $rootScope.checkLogIn.title + " " 
+          + $rootScope.checkLogIn.firstname + " " + $rootScope.checkLogIn.lastname 
+          + "<br></span><b>Patient Age: </b><span>" + $rootScope.checkLogIn.age 
+          + "<br></span><b>Gender: </b><span>" + $rootScope.checkLogIn.gender + "</span>"
+          + "<br><div><br><b>Referring Physician: </b> " + 
+          "<span> " + docInfo.referral_title + " " + docInfo.referral_firstname + " " + docInfo.referral_lastname 
+          + "</span><br><br><b>Date Requested : </b><span>" + $filter('amCalendar')(docInfo.sent_date) + "</span><br><br>"       
+          + "<span>Doctor Profile URL: </span> " + "https://applinic.com/user/profile/view/" + docInfo.referral_id + "<br><br>"
+          + "</span><b>Test Referrence NO: </b><span>" + docInfo.ref_id + "</span><br><br>"
+          + "</span><b>Indication: </b><span>" + ((docInfo.indication) ? docInfo.indication : 'N/A') + "</span><br><br>"
+          + "<b>Investigation(s) requested: </b> <br>" 
+          + "<ol>" + listInvestigations(docInfo.test_to_run) + "</ol><br><br>"
+          + "<b>FINDINGS: </b><br>"
+          + "<span>" + (docInfo.findings || '') + "</span><br><br>"          
+          + "<b>CONCLUSION: </b><br><span>" + (docInfo.conclusion || '') + "<br><br>"
+          + "<b>ADVISE: </b><br>"
+          + "<span>" + (docInfo.advise || "") + "</span><br><br>"
+          + "<p>Please view or download attached report below (PDF). </p><br>"
+          + "<a href='https://applinic.com' style='text-decoration:none'><img src='https://applinic.com/assets/images/icons/favicon.png' style='width:32px;height:auto'> <b>Applinic</b></a><br>"
+          + "<div style='font-size: 14px'>The above Investigation(s) was written in www.applinic.com (Online Healthcare Application).<br><br><a href='https://applinic.com/signup' style='text-decoration:none'>Create an account for free" +  
+          "</a> and enjoy easy access to healthcare services and secure archival and management of your medical records electronically.<br><br>We keep records of your radiology history and it's safe with us.<br><br> For enquiries please call customer support on +2349080045678</div>"
       break;
     }
 
@@ -2795,6 +2889,20 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
         
       });
     });       
+  }
+
+
+  $rootScope.pdfViewer = function(filePath) {
+    $rootScope.pdfFilePath = filePath;
+    ModalService.showModal({
+        templateUrl: 'pdf-viewer.html',
+        controller: "pdfViewerCtrl"
+    }).then(function(modal) {
+        modal.element.modal();
+        modal.close.then(function(result) {
+        })
+           
+    });
   }
 
   function createItemTable(arr) {
@@ -3005,6 +3113,12 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
   })
 
 }]);
+
+app.controller("pdfViewerCtrl",["$scope","$rootScope","pdfDelegate",
+  function($scope,$rootScope,pdfDelegate){
+  //console.log(pdfDelegate,$rootScope.pdfFilePath)
+  pdfDelegate.$getByHandle('my-pdf-container').zoomIn(0.3);
+}])
 
 
 app.controller("createRoomController",["$scope","localManager","mySocket","$rootScope",
@@ -3445,7 +3559,6 @@ app.controller("patientPanelController",["$scope","$location","$http","$rootScop
   templateUrlFactory.setUrl();
   var medical = {};
   
-  
   var records = medicalRecordService; //$resource("/user/get-medical-record");
   function recordFetch() {
     records.get(function(data){   
@@ -3457,7 +3570,7 @@ app.controller("patientPanelController",["$scope","$location","$http","$rootScop
           
       templateService.holdPrescriptions = medical.prescriptions; 
       var concatName;
-      $scope.totalPrescription = 0;
+      //$scope.totalPrescription = 0;
       var filteredPrescriptions = [];
 
       for(var j = 0; j < medical.prescriptions.length; j++){        
@@ -3468,9 +3581,9 @@ app.controller("patientPanelController",["$scope","$location","$http","$rootScop
         } else {       
           filter[medical.prescriptions[j].doctor_id]++;
         }
-
-        $scope.totalPrescription++;
       };
+
+      $scope.totalPrescription = medical.prescriptions.length;
 
       for(var i in filter){
         if(total.hasOwnProperty(i)) {
@@ -3481,7 +3594,7 @@ app.controller("patientPanelController",["$scope","$location","$http","$rootScop
       }
 
      
-      $scope.filteredPrescriptions = filteredPrescriptions;//Object.keys(filter)//filteredPrescriptions;
+      $rootScope.filteredPrescriptions = filteredPrescriptions;//Object.keys(filter)//filteredPrescriptions;
       //localManager.setValue("holdPrescriptionData",medical.prescriptions);
       checkIsLabPending(data.medical_records.laboratory_test);
       checkIsRadioPending(data.medical_records.radiology_test);
@@ -3564,9 +3677,48 @@ app.controller("patientPanelController",["$scope","$location","$http","$rootScop
     $location.path("/patient/radiology-test");
   }
 
+  //view prescription from the doc pallet and from footer slider
+  $rootScope.viewPrescription2 = function(type,docId){
+    $http.get('/user/get-medical-record',{params: {id: docId, type: type,field:'pharmacy'}})
+    .success(function(response){
+      //console.log(response)
+      var url = (docId) ? ("/patient-prescriptions/" + docId) : "/patient-prescriptions";
+      templateService.holdPrescriptions = response;
+      localManager.setValue("holdPrescriptions",response);
+      localManager.setValue("currentPageForPatients",url);   
+      $location.path(url);
+    })
+  }
+
+   //view lab and radio tests from the doc pallet and from footer slider
+  $rootScope.viewLabTest2 = function(type,docId,field){
+    $http.get('/user/get-medical-record',{params: {id: docId, type: type,field:'laboratory'}})
+    .success(function(response){
+      //console.log(response)
+      var url = (docId) ? ("/patient/laboratory-test/" + docId) : "/patient/laboratory-test";
+      //templateService.holdPrescriptions = response;
+      //localManager.setValue("holdPrescriptions",response);
+      //localManager.setValue("currentPageForPatients",url);
+      $rootScope.labTest = response; 
+      $location.path(url);
+    })
+  }
+
+  //view lab and radio tests from the doc pallet and from footer slider
+  $rootScope.viewRadioTest2 = function(type,docId,field){
+    $http.get('/user/get-medical-record',{params: {id: docId, type: type,field:'radiology'}})
+    .success(function(response){
+      //console.log(response)
+      var url = (docId) ? ("/patient/radiology-test/" + docId) : "/patient/radiology-test";
+      //templateService.holdPrescriptions = response;
+      //localManager.setValue("holdPrescriptions",response);
+      //localManager.setValue("currentPageForPatients",url);
+      $rootScope.labTest = response; 
+      $location.path(url);
+    })
+  }
 
   //pending tests
-
   var checkIsLabPending = function (list) {
     var pendingLab = 0;  
     $scope.receivedLab = 0;    
@@ -4029,7 +4181,7 @@ app.controller("inPatientDashboardController",["$scope","$location","templateSer
   function($scope,$location,templateService,localManager,ModalService){
 
  if(localManager.getValue("resolveUser")) {
-    $location.path(localManager.getValue("currentPageForPatients") || "/");
+    $location.path(localManager.getValue("currentPageForPatients") || "/my-doctors");
   } 
 
 }]); 
@@ -5382,29 +5534,7 @@ app.controller("referToMeModalController",["$scope","$rootScope","$http",functio
 
 }]);
 
-app.controller("selectedAppointmentControllerForPatient",["$scope","$location","$rootScope","templateService","localManager","deleteFactory",
-  function($scope,$location,$rootScope,templateService,localManager,deleteFactory){
-    var appData = templateService.holdAppointmentData;
-    var elementPos = appData.map(function(x){return x.session_id}).indexOf(templateService.holdId);
-    var found = appData[elementPos];
 
-    $scope.appointment = found;
-    $scope.notDeleted = true;
-    $scope.delbtn = "Delete appointment";
-
-   
-
-    $scope.deleteApp = function(){
-      var remove = appData.splice(elementPos,1);
-      var len = appData.length;
-      $rootScope.appLen = templateService.holdAppLen(len);           
-      var deleteAppointment = new deleteFactory(found.session_id,"appointment");
-      deleteAppointment.deleteItem("/user/patient/delete-one/appointment","Appointment deleted!");
-      $scope.notDeleted = false;
-      $scope.delbtn = "Appointment deleted!";
-    }
-    
-}]);
 //for chats in modal and centers dashboard use for 
 app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatService", "templateService","$filter",
   "ModalService","$location","deviceCheckService","$compile","$interval","$http","localManager","profileDataService",
@@ -6811,7 +6941,7 @@ function($scope,$location,$window,$http,templateService,localManager,ModalServic
       }
     }
 
-    sendObj.patient_age = calculate_age(new Date($scope.data.dob)) + " years";
+    sendObj.patient_age = calculate_age(new Date($scope.data.dob));
     sendObj.patient_phone = $scope.user.patient_phone;
 
 
@@ -6935,7 +7065,7 @@ app.controller("emailModalCtrl",["$scope","$rootScope","$http",function($scope,$
     .success(function(res){
       $scope.loading = false;
       if(res.status)
-        $scope.msg = "Prescription sent to " + $scope.recepientEmail;
+        $scope.msg = "Sent to " + $scope.recepientEmail;
       else
         $scope.msg = res.message;
     })
@@ -7015,18 +7145,17 @@ app.controller("pendingLabTestController",["$scope","templateService","$window",
     },2000)
   };
 
-
   $scope.fail = function (err) {
     console.error('Error!', err);
   };
-
 
 }]);
 
 
 app.controller("patientLabTestController",["$scope","$location","$http","$window",
   "templateService","localManager","patientMedViewController","$rootScope","$timeout",
-  function($scope,$location,$http,$window,templateService,localManager,patientMedViewController,$rootScope,$timeout){ 
+  function($scope,$location,$http,$window,templateService,
+    localManager,patientMedViewController,$rootScope,$timeout){ 
 
   $scope.labTest = templateService.holdAllLabTest || localManager.getValue("holdLabData") //($rootScope.isViewSingle) ? templateService.singleView : (templateService.holdAllLabTest || localManager.getValue("holdLabData"));
   
@@ -7109,8 +7238,6 @@ app.controller("patientLabTestController",["$scope","$location","$http","$window
     }
   }
 
-
-    
   //copy to clipboard
 
   $scope.supported = false;
@@ -7806,17 +7933,28 @@ app.controller("PatientViewResponseController",["$scope","$rootScope","$resource
   
 }]);
 
-app.controller("selectedAppointmentControllerForPatient",["$scope","$location","$rootScope","templateService","localManager","deleteFactory",
-  function($scope,$location,$rootScope,templateService,localManager,deleteFactory){
-    var appData = templateService.holdAppointmentData;
+app.controller("selectedAppointmentControllerForPatient",
+  ["$scope","$location","$rootScope","templateService","localManager","deleteFactory","$http","ModalService",
+  function($scope,$location,$rootScope,templateService,localManager,deleteFactory,$http,ModalService){
+   /* var appData = templateService.holdAppointmentData;
     var elementPos = appData.map(function(x){return x.session_id}).indexOf(templateService.holdId);
     var found = appData[elementPos];
 
     $scope.appointment = found;
     $scope.notDeleted = true;
     $scope.delbtn = "Delete appointment";
+    */
 
-   
+    moment.updateLocale('en', {
+      calendar : {
+        lastDay : '[Yesterday]',
+        sameDay : '[Today]',
+        nextDay : '[Tomorrow]',
+        lastWeek : '[last] dddd',
+        nextWeek : 'dddd',
+        sameElse : 'L'
+      }
+    });
 
     $scope.deleteApp = function(){
       var remove = appData.splice(elementPos,1);
@@ -7827,6 +7965,64 @@ app.controller("selectedAppointmentControllerForPatient",["$scope","$location","
       $scope.notDeleted = false;
       $scope.delbtn = "Appointment deleted!";
     }
+
+    $scope.loading = true;
+    $http.put("/user/patient/appointment/view")
+    .success(function(resp){
+      $scope.loading = false;
+      $scope.appFetchedData = resp;
+      chackDay(resp.active)
+    });
+
+    var chackDay = function(list){
+       list.forEach(function(item){       
+        item.isToday = hasToday(item.date);
+        item.isPassed = hasPassed(item.date);
+        //item.isTime = onTime(item.time);
+      })
+    }
+
+    function hasToday(date){
+      return moment(date).isSame(moment(), 'day');//moment(date).isAfter(moment().subtract(24, 'hours'));
+    }
+
+    function hasPassed(date){
+      return moment(date).isBefore(moment(),'day');
+    }
+
+    $scope.ask = function(detail){
+      var name = (detail.lastname) 
+      ? (detail.title + " " + detail.firstname + " " + detail.lastname) 
+      : (detail.title + " " + detail.firstname)
+      $rootScope.holdcenter = {
+        firstname: detail.firstname,
+        lastname: detail.lastname,
+        name: name,
+        title: detail.title,
+        id: detail.doctorId,
+        address: detail.address
+      }
+
+      ModalService.showModal({
+        templateUrl: 'quick-chat.html',
+        controller: 'generalChatController'
+      }).then(function(modal) {
+        modal.element.modal();
+        modal.close.then(function(result) {             
+        });
+      })
+    }
+
+
+     /*$rootScope.holdcenter.id = $rootScope.holdcenter.user_id;
+        ModalService.showModal({
+            templateUrl: 'quick-chat.html',
+            controller: 'generalChatController'
+        }).then(function(modal) {
+            modal.element.modal();
+            modal.close.then(function(result) {             
+            });
+        });*/
     
 }]);
 
@@ -7852,6 +8048,8 @@ app.controller("courierResponseCtrl",["$scope","$rootScope","courierResponseServ
       });
     }
   }*/
+
+
 
   $rootScope.getCourierResponse();
 
@@ -8166,6 +8364,12 @@ app.controller("familyAccountController",["$scope","$http","$rootScope","localMa
 app.controller("invitationCtrl",["$scope","$http","$rootScope","ModalService","$timeout",
   function($scope,$http,$rootScope,ModalService,$timeout){
     $scope.invite = {};
+
+    if($rootScope.isDocInvite) {
+      $scope.invite.type = "Doctor";
+    }
+
+    $rootScope.isDocInvite = false;
 
     $scope.someone = function(type){
       $scope.invite.type = type;
@@ -8639,6 +8843,21 @@ app.controller('resultController',["$scope","$rootScope","$http","$location","$r
     });
 
   }
+
+
+  $scope.getSpecialtyCategory = function(url) {
+    $http.get(url)
+    .success(function(result){
+      $rootScope.specialtyCategoryList = result;
+      $location.path('/list2');
+    })
+  }
+
+  $scope.inviteDoc = function() {
+    $rootScope.isDocInvite = true;
+    $location.path('/invite-doctor')
+  }
+
 }]);
 
 //list all the doctors or others
@@ -9918,13 +10137,55 @@ app.controller("manageDoctorsListCtr",["$scope","$location","$rootScope","$http"
   "profileDataService","chatService","$filter",
 function($scope,$location,$rootScope,$http,ModalService,$interval,templateService,
   localManager,mySocket,$interval,deviceCheckService,profileDataService,chatService,$filter){
- 
+
+  $http.get('/user/firstline-doctors')
+  .success(function(data){
+    $rootScope.firstLineDoctors = [];
+    data.forEach(function(item){
+      $rootScope.firstLineDoctors.push({
+        doctor_firstname: item.firstname,
+        doctor_id: item.user_id,
+        doctor_lastname: item.lastname,
+        doctor_profile_pic_url: item.profile_pic_url,
+        doctor_specialty: item.specialty,
+        doctor_city: item.city,
+        doctor_title: item.title,
+        access: item.access,
+        work_place: item.work_place
+      })
+    })
+
+    $scope.hasLoaded = true;
+    
+    $rootScope.$broadcast("users presence",{type: 'firstLine',data: $rootScope.firstLineDoctors,sockets: $rootScope.sockets});
+
+    showUnreadActionIndictor($rootScope.firstLineDoctors)
+    ptApp($rootScope.firstLineDoctors);
+
+  });
+
+  //Attach indicator to pres, lab, radio or appointment that has not been read
+  function showUnreadActionIndictor(list) {
+    //console.log($rootScope.unreadIndication)
+    if(list){
+      var elm;
+      list.forEach(function(doc){
+         doc.indicators = $rootScope.unreadIndication;
+        //elm = $rootScope.unreadIndication.map(function(x){return x}).indexOf(doc.doctor_id)
+        //if(elm !== -1){
+         // doc.indicators = true;
+        //}
+      })
+    }
+  }
+
+  showUnreadActionIndictor($rootScope.patientsDoctorList)
 
   $scope.removePatient = function(doctor){
     var message = "You want to remove "  
-    + doctor.doctor_lastname + " " + doctor.doctor_firstname + " from your management list?";
+    + doctor.doctor_lastname + " " + doctor.doctor_firstname + " from your account?";
 
-    var check = confirm(message)
+    var check = confirm(message);
 
     if(check) {
       doctor.isLoading = true;
@@ -10049,10 +10310,10 @@ function($scope,$location,$rootScope,$http,ModalService,$interval,templateServic
 
   $scope.refresh = function() {
     //ptApp()
-    $http.get("/user/patient/appointment/view")
+    $http.put("/user/patient/appointment/view")
     .success(function(data){
-      $rootScope.allApp = data;
-      ptApp();
+      $scope.allApp = data;
+      ptApp($scope.allApp.active);
     })
   }
 
@@ -10072,9 +10333,11 @@ function($scope,$location,$rootScope,$http,ModalService,$interval,templateServic
     })
   }
   
-  function ptApp() {
-    $rootScope.allApp.forEach(function(p){
-      //if(!checkDueAppointment(p.date,p.time)){
+  function ptApp(list) {
+    var filter = {};
+    list.forEach(function(p){
+      if(!filter[p.doctorId]){       
+        filter[p.doctorId] = 1;
         var ptPos = $rootScope.patientsDoctorList.map(function(x){return x.doctor_id}).indexOf(p.doctorId)
         if($rootScope.patientsDoctorList[ptPos]){
           $rootScope.patientsDoctorList[ptPos].isNewAppointment = true;
@@ -10082,7 +10345,7 @@ function($scope,$location,$rootScope,$http,ModalService,$interval,templateServic
           if(checkDueAppointment(p.date,p.time))
             $rootScope.patientsDoctorList[ptPos].appDate = checkDueAppointment(p.date,p.time);
         }
-      //} 
+      } 
     })
   }
 
@@ -10095,7 +10358,7 @@ function($scope,$location,$rootScope,$http,ModalService,$interval,templateServic
     d = new Date(dt)
     t = new Date(time);    
     hr = d.getHours() + t.getHours();
-    stMin = d.getMinutes() + t.getMinutes();;
+    stMin = d.getMinutes() + t.getMinutes();
     d.setHours(hr);
     d.setMinutes(stMin)
     return checkIsInTime(d);//moment().isBefore(moment(d).subtract(0, 'hours'));
@@ -10106,9 +10369,49 @@ function($scope,$location,$rootScope,$http,ModalService,$interval,templateServic
     return (time) ? d : null;
   }
 
-  setTimeout(function(){
+  /*setTimeout(function(){
     ptApp()
-  },3000)
+  },3000)*/
+
+
+  /*$scope.$watch('firstLineDoctors',function(newVal,oldVal){
+    $scope.hasLoaded
+    if(oldVal && $scope.hasLoaded) {
+      updateAccess({isPermission: true, docList: newVal})
+    }
+  },true)*/
+
+  /*$scope.$watch('patientsDoctorList',function(newVal,oldVal){
+    if(oldVal && $scope.hasLoaded){
+      updateAccess({isPermission: true, docList: newVal})
+    }
+  },true)*/
+
+  $scope.updateAccess = function(doc) {
+    $http.post('/user/manage-access',doc)
+    .success(function(resp){     
+      alert(resp.message)
+    })
+  }
+
+
+  $scope.inviteDoc = function() {
+    $rootScope.isDocInvite = true;
+    $location.path('/invite-doctor')
+  }
+
+  /*moment.updateLocale('en', {
+    calendar : {
+      lastDay : '[Yesterday]',
+      sameDay : '[Today]',
+      nextDay : '[Tomorrow]',
+      lastWeek : '[last] dddd',
+      nextWeek : 'dddd',
+      sameElse : 'L'
+    }
+  });*/
+
+   $scope.refresh();
   
 }]);
 
@@ -11137,7 +11440,7 @@ app.controller("testSearchSelectedCenterController",["$scope","$location","$wind
       }
     }
 
-    sendObj.patient_age = calculate_age(new Date($scope.data.dob)) + " years";
+    sendObj.patient_age = calculate_age(new Date($scope.data.dob));
     sendObj.patient_phone = $scope.user.patient_phone;
 
     $http({
@@ -11416,10 +11719,18 @@ app.controller("chartCtrl",["$scope","$rootScope","chartReadingService","$filter
   $scope.patient = {};
   $scope.chart.userId = $scope.patient.userId || $rootScope.checkLogIn.user_id;
 
-  $http.get("/user/charts/all",{params:{userId: $scope.chart.userId}})
-  .success(function(chartYesrs){
-    $scope.yearList = chartYesrs;
-  });
+
+  var getYealList = function(fromWatch){
+    $http.get("/user/charts/all",{params:{userId: $scope.chart.userId}})
+    .success(function(chartYesrs){
+      $scope.yearList = chartYesrs;
+      if(fromWatch){
+        $scope.getChartData()
+      }
+    });
+  }
+
+  //getYealList();
 
 
   $scope.getChartData = function() {
@@ -11516,7 +11827,7 @@ app.controller("chartCtrl",["$scope","$rootScope","chartReadingService","$filter
         $scope.chartViewBP();
 
         $scope.onClick = function (points, evt) {
-          console.log(points, evt);
+          //console.log(points, evt);
         };
 
       } //end  chart bp_readings
@@ -11608,7 +11919,7 @@ app.controller("chartCtrl",["$scope","$rootScope","chartReadingService","$filter
         $scope.chartViewBS();
 
         $scope.onClick1 = function (points, evt) {
-          console.log(points, evt);
+          //console.log(points, evt);
         };
 
       } // end chart bs_sudgar
@@ -11743,7 +12054,8 @@ app.controller("chartCtrl",["$scope","$rootScope","chartReadingService","$filter
  
   $scope.$watch('chart.year',function(newVal,oldVal){
     if(newVal){
-      $scope.getChartData();
+      //$scope.getChartData();
+      getYealList('isWached')
     }
   })
 
@@ -11840,9 +12152,6 @@ app.controller("chartCtrl",["$scope","$rootScope","chartReadingService","$filter
   // Sending blood sugar data for recording 
 
   $scope.sendDataBS = function() {
-    
-   
-
     if($scope.chart.readings1.fasting)
       if(!testNumber($scope.chart.readings1.fasting)){
         alert("FBS value should be a number only.");
@@ -11865,7 +12174,7 @@ app.controller("chartCtrl",["$scope","$rootScope","chartReadingService","$filter
     $scope.chart.readings1.time = + $scope.time;
     $scope.chart.readings1.day = + new Date();
     $scope.chart.readings1.name = "Blood Sugar";
-    $scope.chart.readings1.unit = "mmol/L";
+    $scope.chart.readings1.unit = "mg/dl";
     //$scope.chart.readings1.id = Math.floor(Math.random() * 999999) + "" + Math.floor(Math.random() * 999999);
     
     var dt = $filter('date')($scope.chart.readings1.time,'shortTime');
@@ -11887,6 +12196,13 @@ app.controller("chartCtrl",["$scope","$rootScope","chartReadingService","$filter
 
       $scope.loadingBS = false;
     })
+  }
+
+
+  $scope.convertToDl = function(){
+    if($scope.mmol){
+      $scope.tomgdl = Math.round(18 * $scope.mmol)
+    }
   }
 
 
@@ -12046,27 +12362,13 @@ app.controller("chartCtrl",["$scope","$rootScope","chartReadingService","$filter
     })
   }
 
-  //$scope.datasetOverride = [{ yAxisID: 'y-axis-1' }, { yAxisID: 'y-axis-2' }];
 
-  /*$scope.options = {
-    scales: {
-      yAxes: [
-        {
-          id: 'y-axis-1',
-          type: 'linear',
-          display: true,
-          position: 'left'
-        },
-        {
-          id: 'y-axis-2',
-          type: 'linear',
-          display: true,
-          position: 'right'
-        }
-      ]
-    }
-  };*/
+}]);
 
+
+app.controller("noteCtrl",["$scope","$location","$rootScope",
+  function($scope,$location,$rootScope){
+  $rootScope.isFromNote = false;
 }]);
 
 
@@ -12075,11 +12377,26 @@ function testNumber(str) {
   return intRegex.test(str)
 }
 
+/*function calculate_age(dob) { 
+  var diff_ms = Date.now() - dob.getTime();
+  var age_dt = new Date(diff_ms); 
+
+  return Math.abs(age_dt.getUTCFullYear() - 1970);
+}*/
+
 function calculate_age(dob) { 
-    var diff_ms = Date.now() - dob.getTime();
-    var age_dt = new Date(diff_ms); 
-  
-    return Math.abs(age_dt.getUTCFullYear() - 1970);
+ 
+  var years = moment().diff(dob, 'years');
+  var months = moment().diff(dob, 'months');
+  var days = moment().diff(dob, 'days');
+
+  if(years){
+    return (years == 1) ? (years + " year") : (years + " years");
+  } else if(months) {
+    return (months == 1) ? (months + " month") : (months + " months");
+  } else {
+    return (days == 1) ? (days + " day") : (days + " days");
+  }
 }
 
 

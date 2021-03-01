@@ -4,10 +4,10 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="x-ua-compatible" content="ie=edge">
-        <title> Applinic</title>
+        <title> Applinic - Patient Dashboard</title>
         <meta name="description" content="">
          <meta content='width=device-width, initial-scale=0.87, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no' name='viewport'/>
-        <link rel="apple-touch-icon" href="apple-touch-icon.png">
+       
         <!-- Place favicon.ico in the root directory -->
         <!--<link rel="stylesheet" href="/assets/css/main.cs">-->
         <link rel="icon" type="image/png" href="/assets/images/icons/favicon.png">
@@ -18,7 +18,11 @@
         <link rel="stylesheet" href="/assets/css/chat.css">
         <link rel="stylesheet" href="/assets/css/my-edit.css">          
         <link rel="stylesheet" href="/assets/css/ngPrint.css">
+        <!--<link rel="stylesheet" href="/assets/css/chart.css">-->
+        <link rel="stylesheet" type="text/css" href="/assets/css/switbuttonstyle.css">
         <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="/assets/css/all.css">
+
         <noscript>
         <META HTTP-EQUIV="Refresh" CONTENT="0;URL=/assets/show-error.html">
       </noscript>
@@ -32,6 +36,7 @@
         <script type="text/javascript" src="/assets/js/source.js"></script>
          <!-- Global site tag (gtag.js) - Google Analytics -->
         <script async src="https://www.googletagmanager.com/gtag/js?id=UA-128083647-1"></script>
+     
         <script>
           window.dataLayer = window.dataLayer || [];
           function gtag(){dataLayer.push(arguments);}
@@ -51,6 +56,14 @@
                 font-style: normal;
                 
             }
+
+            blockquote > label {
+              display: block;
+            }
+
+            blockquote > span {
+              white-space: pre-wrap;
+            }
               .title{
                   font-weight: 300;
               }
@@ -58,15 +71,43 @@
               .popup2 {
                 display: inline-block;
                 position: absolute;
-                right: -40px;
+                right: -15px;
                 bottom: -100px;
-                width: 220px;
-                color: #fff;
-                background-color: #eee;
-                border: 1px solid grey;
+                width: 280px;
+                color: #ccc;
+                background-color: #fff;
+                border: 1px solid #85CE36;
                 padding: 10px;
-                border-radius: 8px;
+                border-radius: 3px;
                 z-index: 9
+            }
+
+            .popup2 > div {
+              position: absolute;top:5px;right: 15px;font-size: 20px
+            }
+
+            .bottom-nav-container {
+              height: 70px;position: fixed;bottom: 0;background-color: #fff;padding: 5px;width:100%;overflow-x: auto;overflow-y: hidden;
+            }
+
+            .bottom-nav {
+              list-style: none;white-space: nowrap;padding-left: 0px!important;width: 100%;
+            }
+
+            .bottom-nav > li{
+              display:inline-block;font-size: 14px;margin-right: 12px;padding: 5px;text-align: center;
+            }
+
+            .bottom-nav > li > a {
+              color: #000
+            }
+
+            .bottom-nav > li > a > i {
+              font-size: 18px
+            }
+
+            .same-width {
+              width: 150px
             }
 
 
@@ -156,6 +197,7 @@
 
                   .header .header-block-nav .notifications a {
                     padding-right: 9px;
+                    margin: 0 7px;
                   }
 
                  .header .header-block-nav>ul>li>a {
@@ -227,7 +269,7 @@
                    
                     <div class="header-block header-block-nav" ng-controller="patientNotificationController">
                         <ul class="nav-profile">
-                            <li class="notifications new"> 
+                            <!--<li class="notifications new"> 
                             <a href="" data-toggle="dropdown" title="This shows a notice when you have received prescription from physician, investigation requests/results from centers and other information">
                                 <i class="fa fa-bell"></i>
                                 <sup>
@@ -270,17 +312,17 @@
                                     <footer>
                                         <ul>
                                             <li> <a href="">
-                                                <!--View All -->
+                                              
                                               </a> </li>
                                         </ul>
                                     </footer>
                                 </div>
-                            </li>
+                            </li>-->
 
-                               <li class="notifications new"> <a href="" data-toggle="dropdown" ng-click="hideLen()" title="Here is the doctors response to your Consultation Requests or Complaint you sent anytime.">
+                               <li class="notifications new"> <a href="#/messages"  ng-click="hideLen()">
                     <i class="fa fa-envelope"></i>
                     <sup>
-                      <span class="counter" ng-if=" msgLen > 0 " ng-cloak>{{(msgLen <= 100) ? msgLen : "99+"}}</span>
+                      <span class="counter" ng-if="msgLen > 0 " ng-cloak>{{(msgLen <= 100) ? msgLen : "99+"}}</span>
                     </sup>
                   </a>
                                 <div class="dropdown-menu notifications-dropdown-menu menuTwo" style="max-height: 400px;overflow-y: auto;">
@@ -358,7 +400,7 @@
                                 </div>
                             </li>
 
-                               <li class="notifications new"> <a href="" data-toggle="dropdown" title="Here is where you see notifications on 'Appointment Schedules' from your doctor to meet in-person at their offices">
+                               <!--<li class="notifications new"> <a href="" data-toggle="dropdown" title="Here is where you see notifications on 'Appointment Schedules' from your doctor to meet in-person at their offices">
                     <i class="fa fa-calendar"></i>
                     <sup>
                       <span class="counter" ng-if="appLen > 0 " ng-cloak>{{(appLen <= 100) ? appLen : "99+"}}</span>
@@ -384,16 +426,16 @@
                                     <footer>
                                         <ul>
                                             <li> <a href="">
-                            <!--View All-->
+                          
                           </a> </li>
                                         </ul>
                                     </footer>
                                 </div>
-                            </li>
-                             <li class="notifications new"> <a href="" data-toggle="dropdown" title="Here is where you receive drug delivery status notifications for courier requests">
+                            </li>-->
+                             <li class="notifications new"> <a href="#/courier-notification">
                     <i class="fa fa-motorcycle"></i>
                     <sup>
-                      <span class="counter btn-danger" ng-if="isReady" style="border-radius: 10px;width: 8px;height: 8px;display: inline-block;"  ng-cloak></span>
+                      <span class="counter btn-danger" ng-show="isReady" style="border-radius: 10px;width: 8px;height: 8px;display: inline-block;"  ng-cloak></span>
                       <!--<span class="counter" ng-if="courierResponseList.length > 0" ng-cloak>{{(courierResponseList.length <= 100) ? courierResponseList.length : "99+"}}</span>-->
                     </sup>
                   </a>
@@ -438,8 +480,8 @@
                                 </div>
                             </li>
                              <!--<li class="notifications new"> <a href="" ng-click = "viewChat2(chatsList)" data-toggle="dropdown">-->
-                             <li class="notifications new"> <a href="" data-toggle="dropdown" title="Messages from doctors, centers, colleagues and others">
-                              <i class="fa fa-comments" ></i>
+                            <li class="notifications new"> <a href="#/chats-notification"  title="Messages from doctors, centers, colleagues and others">
+                              <i class="fa fa-comments"></i>
                               <sup>
                                 <span class="counter btn-danger" ng-if="showIndicator !== false" style="border-radius: 10px;width: 8px;height: 8px;display: inline-block;"  ng-cloak></span>
                               </sup>
@@ -461,8 +503,7 @@
                                                 <div class="clearfix"></div>
                                                   <i class="online" ng-show="chat.status" title="Online" style="position: absolute;bottom: 8px; right: 30px"></i>
                                                 <i class="online" ng-show="!chat.status" title="Offline" style="position: absolute;bottom: 8px; right: 30px;background-color: #eee"></i>  
-                                            </a>
-                                           
+                                            </a>                                           
                                         </li>
                                         <li ng-if="loading" style="text-align: center;height: 120px;padding-top: 50px"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange" ng-if="loading"></i></li>                                       
                                     </ul>
@@ -476,21 +517,20 @@
                                 </div>
                             </li> 
 
-
-                              <li class="notifications new"> <a href="" data-toggle="dropdown">
-                    <i class="fa fa-video-camera"></i>
+                             <li class="notifications new"> <a href="#/audioChat-notification">
+                    <i class="fa fa-phone"></i>
                   <sup>
-                      <span class="counter btn-danger" ng-show="videoRequest.length > 0" style="border-radius: 10px;width: 8px;height: 8px;display: inline-block;"  ng-cloak></span>
+                      <span class="counter btn-danger" ng-show="audioRequest.length > 0" style="border-radius: 10px;width: 8px;height: 8px;display: inline-block;"  ng-cloak></span>
                     </sup>
                   </a>
-                                <div class="dropdown-menu notifications-dropdown-menu menuThree" style="max-height: 400px;overflow-y: auto;left: -90px">
+                                <div class="dropdown-menu notifications-dropdown-menu menuThree" style="max-height: 400px;overflow-y: auto;left: -150px">
                                     <ul class="notifications-container noti-style">
-                                        <li> <h6 style="text-align: center">Video Chat Notifications</h6> </li>
-                                        <li ng-repeat = "call in videoRequest | orderBy: '-date'" class="msg-drp-list">
+                                        <li> <h6 style="text-align: center">Audio Chat Notifications</h6> </li>
+                                        <li ng-repeat = "call in audioRequest | orderBy: '-date'" class="msg-drp-list">
                                             <a href="{{call.ref_id}}" class="notification-item">
                                                 <div class="img-col">
-                                                  <div class="img" style="background-image: url({{app.profilePic}})">
-                                                     <i class="fa fa-video-camera"></i>
+                                                  <div class="img">
+                                                     <i class="fa fa-phone"></i>
                                                   </div>
                                                 </div>
                                                 <div class="body-col">
@@ -514,20 +554,20 @@
                                 </div>
                             </li>
 
-                             <li class="notifications new"> <a href="" data-toggle="dropdown">
-                    <i class="fa fa-phone"></i>
+                              <li class="notifications new"> <a href="#/videoChat-notification">
+                    <i class="fa fa-video-camera"></i>
                   <sup>
-                      <span class="counter btn-danger" ng-show="audioRequest.length > 0" style="border-radius: 10px;width: 8px;height: 8px;display: inline-block;"  ng-cloak></span>
+                      <span class="counter btn-danger" ng-show="videoRequest.length > 0" style="border-radius: 10px;width: 8px;height: 8px;display: inline-block;"  ng-cloak></span>
                     </sup>
                   </a>
-                                <div class="dropdown-menu notifications-dropdown-menu menuThree" style="max-height: 400px;overflow-y: auto;left: -150px">
+                                <div class="dropdown-menu notifications-dropdown-menu menuThree" style="max-height: 400px;overflow-y: auto;left: -90px">
                                     <ul class="notifications-container noti-style">
-                                        <li> <h6 style="text-align: center">Audio Chat Notifications</h6> </li>
-                                        <li ng-repeat = "call in audioRequest | orderBy: '-date'" class="msg-drp-list">
+                                        <li> <h6 style="text-align: center">Video Chat Notifications</h6> </li>
+                                        <li ng-repeat = "call in videoRequest | orderBy: '-date'" class="msg-drp-list">
                                             <a href="{{call.ref_id}}" class="notification-item">
                                                 <div class="img-col">
-                                                  <div class="img">
-                                                     <i class="fa fa-phone"></i>
+                                                  <div class="img" style="background-image: url({{app.profilePic}})">
+                                                     <i class="fa fa-video-camera"></i>
                                                   </div>
                                                 </div>
                                                 <div class="body-col">
@@ -687,7 +727,7 @@
                             <div class="col-md-12 col-sm-12 col-xs-12" ng-controller="balanceController">                                    
   
                                 <div class="row"> 
-                                    <div class="col-sm-12 col-md-8 col-lg-8 hidden-md-down">  
+                                    <div class="col-sm-12 col-md-9 col-lg-9 hidden-md-down">  
                                         <!--<a class="btn btn-simple round"  href="#/help"><i class="fa fa-question-circle"></i>
                                         <span style="color:red">Need Help?</span>
                                         </a>-->
@@ -696,13 +736,13 @@
                                         <span class="hidden-md-down text-danger">Need a Doctor?</span>
                                         </a>-->
 
-                                        <a class="btn btn-simple round"  href="#/my-doctors" ><i class="fa fa-users"></i>
+                                        <a class="btn btn-simple round same-width"  href="#/my-doctors" ><i class="fa fa-users"></i>
                                         <span class="hidden-md-down text-danger">My Doctors</span>
                                         </a>
 
-                                        <a class="btn btn-simple round"  href="#/" ><i class="fa fa-user-md"></i>
+                                        <!--<a class="btn btn-simple round"  href="#/" ><i class="fa fa-user-md"></i>
                                           <span class="hidden-md-down text-danger">Services</span>
-                                        </a>
+                                        </a>-->
 
                                         <!--<a class="btn btn-simple round"  href=""><i class="fa fa-user-md"></i>
                                           <span class="hidden-md-down text-danger">My Doctors</span>
@@ -712,22 +752,23 @@
                                           <span class="hidden-md-down text-danger">BP / Blocod Sugar Chart</span>
                                         </a>-->
 
-                                        <a class="btn btn-simple round ml-0"  href="#/drugs-and-kits" ><i class="icon-Pills"></i>
+                                        <a class="btn btn-simple round ml-0 same-width"  href="#/drugs-and-kits" ><i class="icon-Pills"></i>
                                           <span  class="hidden-md-down text-danger">Buy Drugs or Kits</span>
                                         </a>
 
-                                        <a class="btn btn-simple round ml-0"  href="#/find-specialist" ><i class="fa fa-search"></i>
+                                        <a class="btn btn-simple round ml-0 same-width"  href="#/find-specialist" ><i class="fa fa-search"></i>
                                           <span  class="hidden-md-down text-danger">Specialists</span>
                                         </a>
                                        
-                                        <a class="btn btn-simple round ml-0 mr-2"  href="#/drug" ><i class="fa fa-search"></i>
+                                        <a class="btn btn-simple round ml-0 same-width"  href="#/drug" ><i class="fa fa-search"></i>
                                           <span  class="hidden-md-down text-danger">Drugs</span>
                                         </a>
 
-                                        <a class="btn btn-simple round ml-0"  href="#/invite" >
-                                          <i class="fa fa-user-plus text-danger"></i>                                          
+                                        <a class="btn btn-simple round ml-0 same-width"  href="#/invite" >
+                                          <i class="fa fa-user-plus"></i> <span  class="hidden-md-down text-danger">Invite someone</span>                                        
                                         </a>
 
+                                        
                                        
                                         <!-- <a class="btn btn-simple round ml-0"  href="#/search-test" ><i class="fa fa-search"></i>
                                           <span  class="hidden-md-down text-danger">Laboratory</span>
@@ -741,9 +782,27 @@
                                     <div class="hidden-md-up dropdown p-0" style="position: relative;line-height: normal;" ng-cloak>
 
                                           <ul style="list-style: none;display: inline-block;width: 100%;padding:0;text-align: center;margin-top: 12px;margin-bottom: 0" class="ml-0 pl-0">
-                                            <li style="float: left;width: 50%;padding: 12px 5px;border-left: none;" class="btn btn-simple font-1_1"><a href="#/my-doctors" class="text-danger" style="display: block;height: 100%"><i class="fa fa-users"></i> My Doctors</a> </li>
+                                            <li style="float: left;width: 35%;padding: 12px 5px;"  class="btn btn-neutral font-1_1"><a href="#/my-doctors" class="text-primary" ng-class="{'text-warning': path == '/my-doctors'}" style="display: block;height: 100%"><i class="icon-stethoscopetwo"></i><br><small>My Doctors</small></a> </li>
 
-                                            <li style="float: left;width: 50%;padding: 12px 5px;border-left: none;border-right: none;" class="btn btn-simple font-1_1"><a href="#/" class="text-danger" style="display: block;height: 100%"><i class="fa fa-user-md"></i> Services</a></li>
+                                            <li style="float: left;width: 35%;padding: 12px 5px;" class="btn btn-neutral font-1_1">
+                                                <!--<a href="#/" class="text-danger" style="display: block;height: 100%"><i class="fa fa-user-md"></i> Services
+                                                </a>-->
+                                                <a href="#/invite" style="display: block;height: 100%" ng-class="{'text-warning': path == '/invite'}" class="text-primary">
+                                                   <i class="fa fa-user-plus"></i><br> <small>Invite Someone</small>
+                                                </a>
+                                              
+                                            </li>
+
+                                            <li style="float: left;width: 30%;padding: 12px 5px;" class="btn btn-neutral font-1_1" >
+                                                <!--<a href="#/" class="text-danger" style="display: block;height: 100%"><i class="fa fa-user-md"></i> Services
+                                                </a>-->
+                                                <a href="" data-toggle="dropdown" class="dropdown-toggle" style="height: 100%;display: block;" id="navbarDropdownMenuLink23" ng-click="getAccess('qs')">
+                                                   <i class="fa fa-search text-primary"></i><br> <small>Searches</small>
+                                                </a>
+                                              
+                                            </li>
+
+                                            
                                           </ul>
                                           
                                           <!--<ul style="list-style: none;display: inline-block;width: 100%;padding:0;text-align: center;margin-top: -20px;" class="ml-0 pl-0">
@@ -766,7 +825,7 @@
                                            
                                           </ul>-->
 
-                                          <ul style="list-style: none;display: inline-block;width: 100%;padding:0;text-align: center;" class="ml-0 pl-0">
+                                          <!--<ul style="list-style: none;display: inline-block;width: 100%;padding:0;text-align: center;" class="ml-0 pl-0">
 
                                               <li style="float: left;width: 28%;padding: 10px 5px" class="btn btn-simple  font-1_1 mr-1">
                                                 <a href="" class="text-muted dropdown-toggle text-danger"  id="navbarDropdownMenuLink2" data-toggle="dropdown" ng-click="getAccess()" style="display: block;height: 100%">
@@ -780,29 +839,22 @@
                                                 </a> 
                                               </li>         
 
-                                              <!--<li style="float: left;width: 28%;padding: 10px 5px" class="btn btn-simple text-danger font-1_1 mr-1">
-                                              <a href="" data-toggle="dropdown" class="dropdown-toggle" id="navbarDropdownMenuLink23" ng-click="getAccess('qs')" style="display: block;height: 100%"><i class="fa fa-search"></i> </a>
-                                              </li>-->
+                                            
 
                                               <li style="float: left;padding: 10px 5px;width: 35%" class="btn btn-info btn-sm">
                                                 <a href="#/transactions" style="color:#fff;display: block;height: 100%">
                                                   <span ng-cloak><i class="fa fa-spinner fa-pulse fa-1x fa-fw"  ng-if="loading"></i> {{(loading) ? "" : balance}}</span>
                                                 </a> 
                                               </li>                                               
-                                          </ul>
+                                          </ul>-->
                                           <div class="pt-0 mt-0">
-                                              <a href="" data-toggle="dropdown" class="dropdown-toggle btn btn-simple text-success btn-block" id="navbarDropdownMenuLink23" ng-click="getAccess('qs')" style="display: block;height: 100%"><i class="fa fa-search text-success"></i> </a>
+                                              <!--<a href="" data-toggle="dropdown" class="dropdown-toggle btn btn-simple text-success btn-block" id="navbarDropdownMenuLink23" ng-click="getAccess('qs')" style="display: block;height: 100%"><i class="fa fa-search text-success"></i> </a>-->
+                                              <a ng-controller="balanceController" href="#/transactions" class="text-primary" style="display: block; text-align: center; font-size:22px;font-weight: bolder;">
+                                                <span ng-cloak>{{(balance) ? balance : 'loading balance...'}}</span>
+                                              </a>    
                                           </div>
 
-                                         
-                                            <!--<a href="#/my-doctors" class="text-muted text-danger btn btn-simple mt-2 round mob-art"  id="navbarDropdownMenuLink23" style="font-size: 14px;"><i class="fa fa-users"></i>
-                                            <span  class="text-danger">My Doctors</span>
-                                            </a>-->
-                                       
-                                             <!--<a href="#/need-specialist" class="text-muted text-danger btn btn-simple btn-block mt-2 round mob-art"  id="navbarDropdownMenuLink23" style="font-size: 14px;"> <i class="fa fa-user-md"></i> Need a Doctor</a> -->
-                                             <!--<a href="#/" class="text-muted text-danger btn btn-simple  mt-2 round mob-art"  id="navbarDropdownMenuLink23" style="font-size: 14px;"> <i class="fa fa-user-md"></i> Healthcare Services</a> -->                                                               
-                                       
-                                            <!--<a href="" class="text-muted dropdown-toggle btn btn-simple  mt-2 round mob-art"  id="navbarDropdownMenuLink23" data-toggle="dropdown" ng-click="getAccess('qs')" style="font-size: 14px"> <i class="fa fa-search"></i>  Quick Searches </a>  -->                                                                
+                                                                                                        
                                       
 
                                         <div class="dropdown-menu dropdown-menu-right p-2"  aria-labelledby="navbarDropdownMenuLink23" id="accessBody1" style="line-height: 30px;font-size: 16px">                                       
@@ -841,17 +893,15 @@
                                 <!--<a class="btn btn-simple round ml-1"  href="#/create-family-account" ><i class="fa fa-users"></i>
                                     <span style="color:red">Create Family Account</span>
                                 </a>-->
-                                    <div class="col-sm-12 col-md-2 col-lg-2"> 
-                                        <a href="#/transactions" class="btn btn-info btn-sm header-btn no-mobile-item-display" style=""><i class="fa fa-money"></i>
-                                        <span ng-cloak><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i> {{(loading) ? "" : balance}}</span>
+                                    <div class="col-sm-12 col-md-3 col-lg-3 text-center"> 
+                                        <a href="#/transactions" class="text-primary no-mobile-item-display font-1_4" style="">
+                                        <span ng-cloak>{{(balance) ? balance : 'loading balance...'}}</span>
                                         </a> 
                                     </div> 
 
-                                    <div class="col-sm-12 col-md-2 col-lg-2 dropdown" style="position: relative;"> 
+                                    <!--<div class="col-sm-12 col-md-2 col-lg-2 dropdown" style="position: relative;"> 
                                         <article class="btn btn-neutral mob-art no-mobile-item-display" style="font-size: 14px;" >
-                                            <!--<strong style="float: left;">MRA Key: </strong>
-                                            <span style="width: 110px;float: left;padding-left: 2px" title="Your Medical Record Access Key is {{checkLogIn.mrak}}" class="ellipsis">{{(copy) ? "Copied!" : checkLogIn.mrak}}</span> &nbsp;  
-                                            <span class="fa fa-copy text-warning" text="checkLogIn.mrak" style="padding-left: 5px" clipboard  supported="supported" on-copied="success(checkLogIn.mrak)" title="{{copy}}" on-error="fail(err)"> copy</span>-->
+                                           
 
                                              <a href="" class="text-muted dropdown-toggle"  id="navbarDropdownMenuLink2" data-toggle="dropdown" ng-click="getAccess()" style="margin-left: -15px"> MRA Key</a> 
                                                                             
@@ -869,10 +919,7 @@
                                              <span style="font-size: 14px;"><b>Key:</b> {{(copy) ? "Copied!" : checkLogIn.mrak}}</span> <span text="checkLogIn.mrak" style="padding-left: 5px" clipboard  supported="supported" on-copied="success(checkLogIn.mrak)" title="{{copy}}" on-error="fail(err)" class="fa fa-copy text-warning"></span><br><br>
                                             <small>Decide who should have access to your medical records</small>
                                             <hr>
-                                            <!--<div style="" class="deny-mobile-btn">
-                                                <button class="btn btn-sm btn-warning" ng-click="updateAccess('all',$event)" style="float: right;">
-                                                <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="allLoading"></i> {{ (allLoading) ? "" : (allMsg) ? allMsg :'Deny all' }}</button>
-                                            </div>-->
+                                            
                                             <div class="clearfix"></div>
                                             <div style="max-height: 400px;overflow-y: auto;">
                                                 <div ng-repeat="i in accessList" style="position: relative;padding-top: 5px" ng-if="i.userId">
@@ -888,7 +935,7 @@
                                                 </div>
                                             </div>
                                          </div>
-                                    </div>
+                                    </div>-->
                                 </div>
                                 <!--
                                      <a href="" class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown">
@@ -1022,23 +1069,36 @@
                                         <i class="fa fa-user-md"></i>My Doctors
                                     </a>                                 
                                 </li>
+                                <li> 
+                                    <a href="#/p/selected-appointment" class="h">
+                                        <i class="fa fa-calendar-alt"></i> <span>Appointment</span>
+                                        <sup ng-cloak>
+                                          <span class="counter btn-warning" ng-show="unreadIndication.appointment.length > 0" style="border-radius: 12px;width: 10px;height: 10px;display: inline-block;"></span>           
+                                        </sup>
+                                    </a>                                 
+                                </li>
                                 <li ng-cloak> 
-                                    <a href="">
-                                        <i class="icon-Pills"></i> Prescription ( {{totalPrescription}} )
-                                        <i class="fa arrow"></i>
+                                    <a href="" ng-click="viewPrescription2('all')" class="h">
+                                        <i class="icon-Pills"></i> <span>Prescription ( {{totalPrescription}} )</span>
+                                         <sup ng-cloak>
+                                            <span class="counter btn-warning" ng-show="unreadIndication.pharmacy.length > 0" style="border-radius: 12px;width: 10px;height: 10px;display: inline-block;"></span>           
+                                        </sup>
+                                        <!--<i class="fa arrow"></i>-->
                                     </a>
-                                    <ul>
+                                    <!--<ul>
                                         <li ng-click="viewPrescription(prescription.doctor_id)" ng-repeat="prescription in filteredPrescriptions" >
-                                            <a href="" style="display: block;width: 97%;margin-left: -5px" title="{{(prescription.len > 1) ? prescription.len + ' prescriptions' : prescription.len + ' prescription'}}" class="ellipsis" ng-cloak> {{ prescription.title }} {{ prescription.doctor_firstname }}  ( {{ prescription.len || 0 }} ) 
+                                            <a href="" style="display: block;width: 97%;margin-left: -5px" title="{{(prescription.len > 1) ? prescription.len + ' prescriptions' : prescription.len + ' prescription'}}" class="ellipsis h" ng-cloak> {{ prescription.title }} {{ prescription.doctor_firstname }}  ( {{ prescription.len || 0 }} ) 
                                             </a>
                                         </li>                                      
-                                    </ul>
+                                    </ul>-->
                                 </li>
                                 <li> 
-                                    <a href="" href="" ng-cloak>
-                                        <i class="fa fa-pencil-square-o"></i> Laboratory ( {{labLen}} )<i class="fa arrow"></i>
+                                    <a href="" ng-click="viewLabTest2('all')" class="h" ng-cloak>
+                                        <i class="fa fa-microscope"></i> <span>Laboratory ( {{labLen}} )</span> <sup ng-cloak>
+                                      <span class="counter btn-warning" ng-show="unreadIndication.laboratory.length > 0" style="border-radius: 12px;width: 10px;height: 10px;display: inline-block;"></span>           
+                                      </sup><!--<i class="fa arrow"></i>-->
                                     </a>                        
-                                    <ul>
+                                    <!--<ul>
                                         <li> 
                                             <a href="" ng-cloak ng-click="viewLabTest()">
                                                 Received Results ( {{receivedLab}} )
@@ -1049,13 +1109,17 @@
                                                 Awaiting Results ( {{labLenPending}} )
                                             </a> 
                                         </li>
-                                    </ul> 
+                                    </ul>-->
                                 </li>
-                                <li> <a href="" ng-cloak>
-                            <i class="fa fa-desktop"></i> Radiology ( {{radioLen}} )
-                            <i class="fa arrow"></i>
-                        </a>
-                                    <ul>
+                                <li> 
+                                    <a href="" ng-click="viewRadioTest2('all')" class="h" ng-cloak>
+                                      <i class="fa fa-radiation-alt"></i> <span>Radiology ( {{radioLen}} )</span>
+                            <!--<i class="fa arrow"></i>-->
+                                      <sup ng-cloak>
+                                        <span class="counter btn-warning" ng-show="unreadIndication.radiology.length > 0" style="border-radius: 12px;width: 10px;height: 10px;display: inline-block;"></span>           
+                                      </sup>
+                                    </a>
+                                   <!--<ul>
                                         <li> 
                                             <a href="" ng-cloak ng-click="viewScanTest()">
                                                 Received Results ( {{receivedRadio}} )
@@ -1066,8 +1130,37 @@
                                                 Awaiting Results ( {{scanLenPending}} )
                                             </a> 
                                         </li>
-                                    </ul>
+                                    </ul>-->
                                 </li>
+                                 <li> 
+                                    <a href="#/charts" class="h">
+                                      <i class="fa fa-bar-chart"></i><span>My Charts</span>
+                                      <sup ng-cloak>
+                                        <span class="counter btn-warning" ng-show="unreadIndication.chart" style="border-radius: 12px;width: 10px;height: 10px;display: inline-block;"></span>           
+                                      </sup>
+                                    </a>                                       
+                                </li> 
+                                <li> 
+                                    <a href="#/medical-history" class="h">
+                                      <i class="fa fa-folder"></i> Medical History
+                                    </a>                                       
+                                </li> 
+                                 <li> <a href="">
+                                        <i class="fa fa-users"></i> Family Accounts
+                                        <i class="fa arrow"></i>
+                                    </a> 
+                                    <ul>  
+                                        
+                                        <li ng-repeat="account in checkLogIn.family_accounts" class="ellipsis" ng-if="checkLogIn.family_accounts.length > 1" ng-click="switchAccount(account)"> 
+                                            <a href="" class="h">
+                                                {{account.name}} <span ng-if="account.main">( main )</span> &nbsp;<i class="fa fa-check" style="color:orange;float: right;padding-right: 20px" ng-if="account.status"> active</i>
+                                            </a> 
+                                        </li>                                       
+                                       
+                                    </ul>
+
+                                </li>
+
                                 <li> <a href="">
                             <i class="fa fa-money"></i> Payment & Wallet
                             <i class="fa arrow"></i>
@@ -1093,21 +1186,7 @@
                                        
                                     </ul>
                                 </li>
-                                    <li> <a href="">
-                            <i class="fa fa-users"></i> Family Accounts
-                            <i class="fa arrow"></i>
-                        </a> 
-                                    <ul>  
-                                        
-                                        <li ng-repeat="account in checkLogIn.family_accounts" class="ellipsis" ng-if="checkLogIn.family_accounts.length > 1" ng-click="switchAccount(account)"> 
-                                            <a href="">
-                                                {{account.name}} <span ng-if="account.main">( main )</span> &nbsp;<i class="fa fa-check" style="color:orange;float: right;padding-right: 20px" ng-if="account.status"> active</i>
-                                            </a> 
-                                        </li>                                       
-                                       
-                                    </ul>
-
-                                </li>
+                                   
                                  <li> 
                                     <a href="">
                             <i class="fa fa-question-circle"></i> Help &amp; Support
@@ -1128,23 +1207,11 @@
                                        
                                     </ul>
                                 </li>
-                                <li> 
-                                    <a href="#/charts" class="h">
-                                      <i class="fa fa-bar-chart"></i>My Charts
-                                    </a>                                       
-                                </li> 
-                                 
-                                         
-                                <li> 
-                                    <a href="#/medical-history" class="h">
-                                      <i class="fa fa-folder"></i> Medical History
-                                    </a>                                       
-                                </li> 
                                 <li>
                                   <br>
                                   <a href="#/welcome" class="text-white"><i class="fa fa-info-circle"></i> Getting Started</a>
                                   
-                                  <a href="" ng-click="logout()" class="text-white"> <i class="fa fa-sign-out"></i> Log Out</a>                                  
+                                  <a href="" ng-click="logout()" class="text-white"> <i class="fa fa-sign-out-alt"></i> Log Out</a>                                  
                                 </li>                                                       
                             </ul>
                            
@@ -1193,6 +1260,8 @@
           <textarea class="form-control formm" placeholder="Briefly describe what you need *(e.g I am looking for a center for dialysis.Please I need your help.)"></textarea>
       <button class="btn btn-success">Request Help</button></div>
   </div>
+
+  
   <div class="tab-pane" id="complain" role="tabpanel" >
       <div class="container">
 
@@ -1246,6 +1315,106 @@
 </div>
 
 
+
+                  </div><!-- end of tabpane id="home" -->
+                  <div style="height: 300px"></div>
+
+                  <!-- the footer slider on mobile screens visisble only on patient dashboard -->
+ <div class="bottom-nav-container mobile-item-display">
+                    <ul class="bottom-nav">
+                      <li>
+                        <a href="#/p/selected-appointment" class="block">
+                          <i class="fa fa-calendar-alt text-primary"></i>
+                          <sup ng-cloak>
+                              <span class="counter btn-danger" ng-show="unreadIndication.appointment.length > 0" style="border-radius: 12px;width: 10px;height: 10px;display: inline-block;"></span>           
+                          </sup>
+                          <br>
+                          <span>Appointment</span>
+                        </a>
+                      </li>
+                       <li>
+                        <a href="" ng-click="viewPrescription2('all')" class="block">
+                          <i class="icon-Pills text-primary"></i>
+                          <sup ng-cloak>
+                              <span class="counter btn-danger" ng-show="unreadIndication.pharmacy.length > 0" style="border-radius: 12px;width: 10px;height: 10px;display: inline-block;"></span>           
+                          </sup>
+                          <br>
+                          <span>Prescription</span>                         
+                        </a>
+                      </li>
+                      <li>
+                        <a href="" class="block" ng-click="viewLabTest2('all')">
+                          <i class="fa fa-microscope text-primary"></i>
+                          <sup ng-cloak>
+                            <span class="counter btn-danger" ng-show="unreadIndication.laboratory.length > 0" style="border-radius: 12px;width: 10px;height: 10px;display: inline-block;"></span>           
+                          </sup>
+                          <br>
+                          <span>Laboratory</span>
+                        </a>
+                      </li>
+                       <li>
+                        <a href="" class="block" ng-click="viewRadioTest2('all')">
+                          <i class="fa fa-radiation-alt text-primary"></i>
+                          <sup ng-cloak>
+                            <span class="counter btn-danger" ng-show="unreadIndication.radiology.length > 0" style="border-radius: 12px;width: 10px;height: 10px;display: inline-block;"></span>           
+                          </sup>
+                          <br>
+                          <span>Radiology</span>
+                        </a>
+                      </li>
+                      <li>
+                        <a href="#/charts" class="block">
+                          <i class="fa fa-bar-chart text-primary"></i>
+                          <sup ng-cloak>
+                            <span class="counter btn-danger" ng-show="unreadIndication.chart" style="border-radius: 12px;width: 10px;height: 10px;display: inline-block;"></span>           
+                          </sup>
+                          <br>
+                          <span>My Chart</span>
+                        </a>
+                      </li>
+                      <li>
+                        <a href="#/edit-profile" class="block">
+                          <i class="fa fa-user text-primary" text-primary"></i><br>
+                          <span>Edit Profile</span>
+                        </a>
+                      </li>
+                       <li>
+                        <a href="#/edit-picture" class="block">
+                          <i class="fa fa-user text-primary"></i><br>
+                          <span>Change Profile Picture</span>
+                        </a>
+                      </li>
+                      <li>
+                        <a href="#/drugs-and-kits" class="block">
+                          <i class="icon-Pills text-primary"></i><br>
+                          <span>Buy Drugs</span>
+                        </a>
+                      </li>
+                      <li>
+                        <a href="#/wallet" class="block">
+                          <i class="fa fa-plus text-primary"></i> <i class="fa fa-money text-primary"></i><br>
+                          <span>Add Fund</span>
+                        </a>
+                      </li>
+                      <!--<li>
+                        <a href="#/cash-out" class="block">
+                          <i class="fa fa-minus text-primary"></i> <i class="fa fa-money text-primary"></i><br>
+                          <span>Cash Out</span>
+                        </a>
+                      </li>-->
+                      <li>
+                        <a href="#/transactions" class="block">
+                          <i class="fa fa-money text-primary"></i><br>
+                          <span>Transactions</span>
+                        </a>
+                      </li>
+                      <li>
+                        <a href="#/my-doctors" class="block">
+                          <i class="icon-stethoscopetwo text-primary"></i><br>
+                          <span>My Doctors</span>
+                        </a>
+                      </li>
+                    </ul>
                   </div>
                 
                 <div class="modal fade" id="modal-media">
@@ -1308,6 +1477,8 @@
                 <!-- /.modal -->
             </div>
         </div>
+
+
         <!-- Reference block for JS -->
         <div class="modal fade" id="accessl" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" ng-controller = "loginController">
     <div class="modal-dialog" role="document">
@@ -2771,9 +2942,9 @@
               <div class="modal-body">  
                 <p style="text-align: center;color: green">{{msg}}</p>              
                 <form ng-submit="sendMail()">
-                  <label>Enter Recepient Email Address: </label>  <br>  
+                  <label>Enter Recipient Email Address: </label>  <br>  
                   <input type="email" name="" ng-model="recepientEmail" class="form-control" placeholder="Email"><br>
-                  <input type="submit" value="Send" class="btn btn-info" ng-if="!loading">
+                  <input type="submit" value="Send" class="btn btn-primary" ng-if="!loading">
                   <span ng-if="loading">Sending...</span>
                 </form>
               </div>           
@@ -2781,19 +2952,45 @@
         </div>
      </script>     
 
-     <script type="text/javascript">
+     <!--<script type="text/javascript">
        var xhr = new XMLHttpRequest();
-             xhr.onreadystatechange = function($evt){
-                 if(xhr.readyState == 4 && xhr.status == 200){
-                     var res = JSON.parse(xhr.responseText);
-                     console.log('response: ',res);
-                 }
-             }
+       xhr.onreadystatechange = function($evt){
+           if(xhr.readyState == 4 && xhr.status == 200){
+               var res = JSON.parse(xhr.responseText);
+               console.log('response: ',res);
+           }
+       }
 
-             xhr.open("PUT", "https://global.xirsys.net/_turn/www.applinic.com", true);
-             xhr.setRequestHeader ("Authorization", "Basic " + btoa("gcamon:9b47acd8-899f-11ea-88f9-0242ac150006") );
-             xhr.send();
-     </script>    
+       xhr.open("PUT", "https://global.xirsys.net/_turn/www.applinic.com", true);
+       xhr.setRequestHeader ("Authorization", "Basic " + btoa("gcamon:9b47acd8-899f-11ea-88f9-0242ac150006") );
+       xhr.send();
+     </script> -->
+
+   <script type="text/ng-template" id="pdf-viewer.html">
+       <div class="modal fade">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header pr-1" style="position: relative;"> 
+               
+               <button type="button" class="close" ng-click="close('Cancel')" data-dismiss="modal" aria-hidden="true" style="position: absolute;top: 10px; right: 20px">&times;</button>  
+            </div>
+            <div class="modal-body pl-0 pr-0 pt-2">  
+               <pdf-viewer
+                  delegate-handle="my-pdf-container"
+                  url="pdfFilePath"
+                  scale="1"
+                  show-toolbar="true"
+                  headers="{ 'Content-type': 'application/pdf' }">
+                  
+                </pdf-viewer>
+            </div>   
+            <div class="modal-footer" style="text-align: left;margin-top: 10px">
+               <a href="" class="btn btn-primary btn-sm" data-dismiss="modal" aria-hidden="true">Close</a>
+            </div>        
+        </div>
+      </div>
+   </script>     
+
   
   
 
@@ -2802,8 +2999,10 @@
         
         
     <!--<script type="text/javascript" src="/assets/js/angularclient.js"></script>-->
+     <script type="text/javascript" src="/assets/js/templatescache.angular.js"></script>
     <script type="text/javascript" src="/assets/js/patient.angular-client.js"></script>
     <script type="text/javascript" src="/assets/js/ngroute.js"></script>
+
     <script src="/socket.io/socket.io.js"></script>   
     <script src="/assets/js/socket.min.js"></script>
         
@@ -2827,10 +3026,12 @@
 
     <script type="text/javascript" src="/assets/js/charts.js/dist/Chart.min.js"></script>
     <script type="text/javascript" src="/assets/js/angular-chart.js/dist/angular-chart.min.js"></script>
+    <script type="text/javascript" src="/assets/js/pdfjs-dist/build/pdf.js"></script>
+    <script type="text/javascript" src="/assets/js/angular-pdf-viewer.min.js"></script>
   
 
      <!-- Start of LiveChat (www.livechatinc.com) code -->
-    <script type="text/javascript">
+    <!--<script type="text/javascript">
     window.__lc = window.__lc || {};
     window.__lc.license = 10352687;
     (function() {
@@ -2842,7 +3043,7 @@
     <noscript>
     <a href="https://www.livechatinc.com/chat-with/10352687/">Chat with us</a>,
     powered by <a href="https://www.livechatinc.com/?welcome" rel="noopener" target="_blank">LiveChat</a>
-    </noscript>
+    </noscript>-->
     <!-- End of LiveChat code -->
        
         

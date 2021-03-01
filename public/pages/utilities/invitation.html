@@ -28,7 +28,7 @@
 			<a href=""  class="btn btn-success btn-sm" ng-click="addPatient()" ng-if='!loading'> Add to your account</a><span ng-if='loading'>Processing...</span> &nbsp;&nbsp; <a href="" class="btn btn-neutral btn-sm" ng-click="refresh()">No, thanks</a>
 			</section>
 			
-			<input type="submit" value="Invite now!" class="btn btn-info" ng-if="!loading && !existingUser"> <span ng-if="loading">Sending invitation...</span>
+			<input type="submit" value="Invite now!" class="btn btn-primary btn-block" ng-if="!loading && !existingUser"> <span ng-if="loading">Sending invitation...</span>
 		</form>
 		<div class="clearfix"></div>
 		<hr>
@@ -37,6 +37,9 @@
 		</p>
 		
 	</div>
+	<p class="card p-2">
+		<b>Do Not know who to invite?</b> <a href="#/find-specialist">Click here </a> to find or search for doctors you may need. 
+	</p>
 </section>
 
 

@@ -1,0 +1,26 @@
+
+<div class="card-center-1 pb-2">
+    <h4 class="h4"> Delivery Requests </h4>
+</div>
+
+<div ng-repeat = "j in courierResponseList | orderBy : '-date'" class="card  card-center-1 p-1" style="position: relative;" >
+    <div class="col-md-2 col-sm-2 col-xs-2">
+        <i class="fa fa-motorcycle text-primary" style="font-size: 32px"></i>
+    </div>
+    <div class="col-md-8 col-sm-8 col-xs-8 pr-1">
+        <p> 
+            <b>{{j.request_id}}</b><br>
+            <b>Status: </b> <b ng-class="{'text-danger': !j.attended,'text-info':j.attended,'text-success':j.completed,'text-warning':j.is_paid}">{{(!j.verified || !j.attended) ? 'Sent' : (!j.is_paid && j.attended) ? 'Ready': (j.is_paid && !j.completed) ? 'On Delivery' : (j.completed) ? "Received" : ""}}</b><br>
+            <span class="text-muted">{{(!j.verified || !j.attended) ? 'Waiting for total cost of the items you sent' : (!j.is_paid && j.attended) ? 'Please view the cost of items and make payment to initiate delivery.': (j.is_paid && !j.completed) ? 'Your package is on its way!' : (j.completed) ? "You have received this package" : ""}}</span><br>
+            <span>{{j.date | date: 'fullDate'}} (<span am-time-ago="j.date"></span>)</span>           
+        </p>
+    </div>
+    <div class="col-md-2 col-sm-2 col-xs-2">
+        <a href="" class="btn btn-sm btn-primary round mt-2" ng-click= "viewResponse(j)"><i class="fa fa-arrow-right text-white"></i></a>
+       
+    </div>
+    <div class="clearfix"></div>                                                                            
+   
+ 
+</div>      
+<div style="height: 200px"></div>               

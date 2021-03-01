@@ -1,7 +1,9 @@
+<div class="card-center-1">
+	<a href="#{{path}}" class="btn btn-neutral" ng-show="checkLogIn.type !== 'Patient' "><i class="fa fa-arrow-left"></i> Back</a>
+</div>
 
 <div class="card-center-1">
 	<h4>Charts <span style="font-size: 14px">BP/Pulse Rate, Blood Sugar &amp; Temperature</span></h4>
-	<a href="#{{path}}" class="btn btn-neutral" ng-show="checkLogIn.type !== 'Patient' "><i class="fa fa-arrow-left"></i> Back</a>
 </div>
 <div class="card p-2 card-center-1" style="position: relative;">
 	<header>
@@ -25,14 +27,14 @@
 		</div>
 	</header>
 	<hr>
-	<div style="position: relative;">
+	<div style="position: relative;" class="color-grade">
 
-		<a href="" style="display: inline-block;width: 30px;background-color: #45b7cd;height: 10px;content: ' '"></a> <span> &nbsp;Pulse</span>&nbsp;&nbsp;&nbsp;
+		<a href="" style="background-color: #45b7cd;display: inline-block;width: 30px;height: 10px;content: ' '"></a> <span> &nbsp;Pulse</span>&nbsp;&nbsp;&nbsp;
 
-		<a href="" style="display: inline-block;width: 30px;background-color: #ff6384;height: 10px;content: ' '"></a> <span> &nbsp;Systolic</span>&nbsp;&nbsp;&nbsp;<br clear="hidden-md-up">
+		<a href="" style="background-color: #ff6384;display: inline-block;width: 30px;height: 10px;content: ' '"></a> <span> &nbsp;Systolic</span>&nbsp;&nbsp;&nbsp;<br clear="hidden-md-up">
 
 		
-	    <a href="" style="display: inline-block;width: 30px;background-color:#FDB45C;height: 10px;content: ' '"></a> <span> &nbsp;Diastolic</span>
+	    <a href="" style="background-color:#FDB45C;display: inline-block;width: 30px;height: 10px;content: ' '"></a> <span> &nbsp;Diastolic</span>
 
 	  
 
@@ -41,7 +43,7 @@
 	<br>
 	<div id="dataEntry" class="panel-collapse collapse p-1" role="tabpanel" aria-labelledby="headingfifty">
 		<div style="text-align: right;">
-			<label>Unit: mg/dl,bpm</label>
+			<label>Unit: mmHg, bpm</label>
 		</div>
 		<form class="row" ng-submit="sendDataBP()">
 			
@@ -114,10 +116,10 @@
 						<td>
 							<div ng-if="!i.isEdit">
 								<a href="" class="btn btn-sm btn-simple round mr-1" ng-click="editReading(i)">
-									<i class="fa fa-pencil"></i>
+									<i class="fa fa-pencil-alt"></i>
 								</a>
 								<a class="btn btn-sm btn-simple round" ng-click="deleteChartReadingBP(i)">
-									<i class="fa fa-trash-o" ng-show="!i.loading"></i>
+									<i class="fa fa-trash-alt" ng-show="!i.loading"></i>
 									<span ng-show="i.loading">Deleting...</span>
 								</a>
 							</div>
@@ -149,23 +151,42 @@
 		
 	</div>
 	<hr>
-	<section ng-if="chartData.bp_readings">
+	<section ng-if="chartData.bp_readings.length > 0" class="p-0 m-0">
 	    <canvas id="line" class="chart chart-line" chart-data="data" chart-colors="colors"
 		chart-labels="labels" chart-series="series"
 		chart-dataset-override="datasetOverride" chart-click="onClick">
 		</canvas>
+		
+		<div style="position: relative;height: 50px" ng-show="chartData.bp_readings">
+			<button class="btn btn-sm btn-simple" style="position: absolute;top: 10px; left: 45px" ng-click="setChart('negative')" ng-hide="bpMarker === 0"><i class="fa fa-arrow-left"></i> </button>
+			<button class="btn btn-sm btn-simple" style="position: absolute;top: 10px; right: 45px" ng-click="setChart('positive')" ng-hide ="bpMarker === megaArrBP.length - 1"> <i class="fa fa-arrow-right"></i> </button>
+		</div>
+		
 		<div style="text-align: center;padding-top: 10px" class="text-muted">
 			<span>Year: {{chart.year}}</span>&nbsp;&nbsp;&nbsp;
-			<span>Unit: mg/dl,(Pulse Rate: bpm)</span>
+			<span>Unit: mmHg, (Pulse Rate: bpm)</span>
 		</div>
-	</section>
-	<p class="text-muted p-2" style="text-align: center;" ng-if="!chartData.bp_readings">No data to display</p>
 	
-	<div style="position: relative;" ng-show="chartData.bp_readings">
-		<button class="btn btn-sm btn-simple" style="position: absolute;top: 15px; left: 45px" ng-click="setChart('negative')" ng-hide="bpMarker == 0"><i class="fa fa-arrow-left"></i> previous</button>
-		<button class="btn btn-sm btn-simple" style="position: absolute;top: 15px; right: 45px" ng-click="setChart('positive')" ng-hide ="bpMarker === megaArrBP.length - 1">next <i class="fa fa-arrow-right"></i> </button>
-	</div>
-	<div  style="height: 80px">
+		<br>
+		
+		<div>
+		  <label>Lastly updated by:</label><br>
+		  <b class="block">{{(chartData.bp_readings[chartData.bp_readings.length -1]) ? (chartData.bp_readings[chartData.bp_readings.length -1].entered_by_name) : ""}}</b>
+		  <span class="block">{{(chartData.bp_readings[chartData.bp_readings.length -1]) ? (chartData.bp_readings[chartData.bp_readings.length -1].entered_by_address) : ""}}</span>
+		  <span class="block">{{(chartData.bp_readings[chartData.bp_readings.length -1]) ? (chartData.bp_readings[chartData.bp_readings.length -1].entered_by_email) : ""}}</span>
+		  <span>{{(chartData.bp_readings[chartData.bp_readings.length -1]) ? (chartData.bp_readings[chartData.bp_readings.length -1].label) : ""}}</span><br><br>
+		  <label>Abnormalities detected from last readings:</label><br>
+		  <ul class="pl-1">
+		   	  <li ng-repeat="k in chartData.bp_readings[chartData.bp_readings.length -1].abnormalities" ng-if="k" class="pl-0 ml-0">{{k}}</li>
+		   </ul>
+		   <p class="text-center" ng-if="chartData.bp_readings[chartData.bp_readings.length -1].abnormalities.length == 0">No abnormal BP readings detected.</p>
+		  <!--<label>Date: </label> <span>{{(chartData.bp_readings[chartData.bp_readings.length -1]) ? (chartData.bp_readings[chartData.bp_readings.length -1].day | date : "fullDate") : ""}}</span>-->
+		</div>		
+	</section>
+	<p class="text-muted p-2" style="text-align: center;" ng-if="!chartData.bp_readings || chartData.bp_readings.length === 0">No data to display</p>
+	
+	
+	<div  style="height: 20px">
 		
 	</div>
 </div>
@@ -207,7 +228,7 @@
 	<br>
 	<div id="dataEntry1" class="panel-collapse collapse p-1" role="tabpanel" aria-labelledby="headingfifty">
 		<div style="text-align: right;">
-			<label>Unit: mmol/L</label>
+			<label>Unit: mg/dl</label>
 		</div>
 		<form class="row" ng-submit="sendDataBS()">
 			<div class="col-md-2 pr-1">
@@ -232,7 +253,14 @@
 				<span ng-show="loadingBS" style="margin-top: 20px;display: inline-block;">Saving...</span>
 			</div>
 		</form>
-
+		<hr>		
+		<div class="pl-0">	
+			<p>If your device result is in <b>mmol/l</b> unit please convert it to <b>mg/dl</b> below:</p>	
+			<input type="number" name="" ng-model="mmol" placeholder="Enter mmol/l value"> <button ng-click="convertToDl()">convert to mg/dl</button> 
+			<br><br>
+			<b>mg/dl: {{tomgdl}}</b>
+		</div>
+		<hr>
 		<section class="mt-2" style="margin-left: -15px" ng-if="chartData.bs_readings">
 			<label>Data Entries:</label>
 			<div style="max-height: 550px;overflow: auto;">
@@ -267,10 +295,10 @@
 						<td>
 							<div ng-if="!i.isEdit">
 								<a href="" class="btn btn-sm btn-simple round mr-1" ng-click="editReading(i)">
-									<i class="fa fa-pencil"></i>
+									<i class="fa fa-pencil-alt"></i>
 								</a>
 								<a class="btn btn-sm btn-simple round" ng-click="deleteChartReadingBS(i)">
-									<i class="fa fa-trash-o" ng-show="!i.loading"></i>
+									<i class="fa fa-trash-alt" ng-show="!i.loading"></i>
 									<span ng-show="i.loading">Deleting...</span>
 								</a>
 							</div>
@@ -286,23 +314,41 @@
 		
 	</div>
 	<hr>
-	<section ng-if="chartData.bs_readings">
+	<section ng-if="chartData.bs_readings.length > 0">
 	    <canvas id="line" class="chart chart-line" chart-data="data1" chart-colors="colors1"
 		chart-labels="labels1" chart-series="series1"
 		chart-dataset-override="datasetOverride" chart-click="onClick1">
 		</canvas>
+
+		<div style="position: relative;height: 50px" ng-show="chartData.bs_readings">
+		<button class="btn btn-sm btn-simple" style="position: absolute;top: 15px; left: 45px" ng-click="setChart1('negative')" ng-hide="bsMarker == 0"><i class="fa fa-arrow-left"></i> previous</button>
+		<button class="btn btn-sm btn-simple" style="position: absolute;top: 15px; right: 45px" ng-click="setChart1('positive')" ng-hide ="bsMarker === megaArrBS.length - 1">next <i class="fa fa-arrow-right"></i> </button>
+		</div>
+
 		<div style="text-align: center;padding-top: 10px" class="text-muted">
 			<span>Year: {{chart.year}}</span>&nbsp;&nbsp;&nbsp;
-			<span>Unit: mmol/L</span>
+			<span>Unit: mg/dl</span>
+		</div>
+		<br>
+		<div>
+		  <label>Lastly updated by:</label><br>
+		  <b class="block">{{(chartData.bs_readings[chartData.bs_readings.length -1]) ? (chartData.bs_readings[chartData.bs_readings.length -1].entered_by_name) : ""}}</b>
+		  <span class="block">{{(chartData.bs_readings[chartData.bs_readings.length -1]) ? (chartData.bs_readings[chartData.bs_readings.length -1].entered_by_address) : ""}}</span>
+		  <span class="block">{{(chartData.bs_readings[chartData.bs_readings.length -1]) ? (chartData.bs_readings[chartData.bs_readings.length -1].entered_by_email) : ""}}</span><span>
+		  {{(chartData.bs_readings[chartData.bs_readings.length -1]) ? (chartData.bs_readings[chartData.bs_readings.length -1].label) : ""}}</span><br><br>
+		   <label>Abnormalities detected from last readings:</label><br>
+
+		   <ul class="pl-1">
+		   	  <li ng-repeat="k in chartData.bs_readings[chartData.bs_readings.length -1].abnormalities" ng-if="chartData.bs_readings[chartData.bs_readings.length -1].abnormalities.length > 0" class="pl-0 ml-0">{{k}}</li>
+		   </ul>
+		   <p class="text-center" ng-if="chartData.bs_readings[chartData.bs_readings.length -1].abnormalities.length == 0">No abnormal BP readings detected.</p>
+		  <!--<label>Date: </label> <span>{{(chartData.bp_readings[chartData.bp_readings.length -1]) ? (chartData.bp_readings[chartData.bp_readings.length -1].day | date : "fullDate") : ""}}</span>-->
+		</div>		
+		  <!--<label>Date: </label> <span>{{(chartData.bp_readings[chartData.bp_readings.length -1]) ? (chartData.bp_readings[chartData.bp_readings.length -1].day | date : "fullDate") : ""}}</span>-->
 		</div>
 	</section>
 	<p class="text-muted p-2" style="text-align: center;" ng-if="!chartData.bs_readings || chartData.bs_readings.length == 0">No data to display</p>
-	
-	<div style="position: relative;" ng-show="chartData.bs_readings">
-		<button class="btn btn-sm btn-simple" style="position: absolute;top: 15px; left: 45px" ng-click="setChart1('negative')" ng-hide="bsMarker == 0"><i class="fa fa-arrow-left"></i> previous</button>
-		<button class="btn btn-sm btn-simple" style="position: absolute;top: 15px; right: 45px" ng-click="setChart1('positive')" ng-hide ="bsMarker === megaArrBS.length - 1">next <i class="fa fa-arrow-right"></i> </button>
-	</div>
-	<div  style="height: 80px">
+	<div  style="height: 20px">
 		
 	</div>
 </div>
@@ -410,23 +456,33 @@
 		
 	</div>
 	<hr>
-	<section ng-if="chartData.temp_readings">
+	<section ng-if="chartData.temp_readings.length > 0">
 	    <canvas id="line" class="chart chart-line" chart-data="data2" chart-colors="colors2"
 		chart-labels="labels2" chart-series="series2"
 		chart-dataset-override="datasetOverride" chart-click="onClick2">
 		</canvas>
+		<div style="position: relative;height: 50px" ng-show="chartData.temp_readings">
+			<button class="btn btn-sm btn-simple" style="position: absolute;top: 15px; left: 45px" ng-click="setChart2('negative')" ng-hide="tempMarker == 0 && megaArrTemp.length > 0"><i class="fa fa-arrow-left"></i> previous</button>
+			<button class="btn btn-sm btn-simple" style="position: absolute;top: 15px; right: 45px" ng-click="setChart2('positive')" ng-hide ="tempMarker === megaArrTemp.length - 1">next <i class="fa fa-arrow-right"></i> </button>
+		</div>
 		<div style="text-align: center;padding-top: 10px" class="text-muted">
 			<span>Year: {{chart.year}}</span>&nbsp;&nbsp;&nbsp;
 			<span>Unit: °C</span>
 		</div>
+		<br>
+		<div>
+		  <label>Lastly updated by:</label><br>
+		  <b class="block">{{(chartData.temp_readings[chartData.temp_readings.length -1]) ? (chartData.temp_readings[chartData.temp_readings.length -1].entered_by_name) : ""}}</b>
+		  <span class="block">{{(chartData.temp_readings[chartData.temp_readings.length -1]) ? (chartData.temp_readings[chartData.temp_readings.length -1].entered_by_address) : ""}}</span>
+		  <span class="block">{{(chartData.temp_readings[chartData.temp_readings.length -1]) ? (chartData.temp_readings[chartData.temp_readings.length -1].entered_by_email) : ""}}</span>
+		  {{(chartData.temp_readings[chartData.temp_readings.length -1]) ? (chartData.temp_readings[chartData.temp_readings.length -1].label) : ""}}
+		  <!--<label>Date: </label> <span>{{(chartData.bp_readings[chartData.bp_readings.length -1]) ? (chartData.bp_readings[chartData.bp_readings.length -1].day | date : "fullDate") : ""}}</span>-->
+		</div>
 	</section>
 	<p class="text-muted p-2" style="text-align: center;" ng-if="!chartData.temp_readings || chartData.temp_readings.length == 0">No data to display</p>
 	
-	<div style="position: relative;" ng-show="chartData.temp_readings">
-		<button class="btn btn-sm btn-simple" style="position: absolute;top: 15px; left: 45px" ng-click="setChart2('negative')" ng-hide="tempMarker == 0 && megaArrTemp.length > 0"><i class="fa fa-arrow-left"></i> previous</button>
-		<button class="btn btn-sm btn-simple" style="position: absolute;top: 15px; right: 45px" ng-click="setChart2('positive')" ng-hide ="tempMarker === megaArrTemp.length - 1">next <i class="fa fa-arrow-right"></i> </button>
-	</div>
-	<div  style="height: 80px">
+	
+	<div  style="height: 20px">
 		
 	</div>
 </div>

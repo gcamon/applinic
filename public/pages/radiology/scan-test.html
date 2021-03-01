@@ -5,16 +5,19 @@
 			<input type="text" name="" placeholder="Filter by test name, center name, date sent, date received, etc" ng-model="filterResult" class="form-control">
 	</div>
 </div>-->
-<div class="pl-0 card-center-1 card" style="position: relative;">
+<div class="card-center-1">
+	<a href="#/my-doctors" class="btn btn-neutral"><i class="fa fa-arrow-left"></i> Back</a>
+</div>
+<div class="pl-0 card-center-1">
     <div class="col-md-7">
-    	<h5 style="padding:15px 0" class="h6">Radiology Reports</h5>   
+    	<h4 class="pt-1 h4">Radiology</h4>   
     </div>
-    <div class="col-md-5 p-1">
-       <input type="text" name="" placeholder="Filter by test name, center name, date sent, date received, etc" ng-model="filterResult" class="simple-border">
+    <div class="col-md-5 pl-0">
+       <input type="text" name="" placeholder="Filter by test name, center name, date sent, date received, etc" ng-model="filterResult" class="form-control">
     </div>
 </div>
 <div ng-if="!isViewSingle">
-<section class="card card-center-1 mb-1" ng-repeat="test in labTest | filter : filterResult | orderBy: '-receive_date'" id="{{test.ref_id}}" ng-show="test.pdf_report.length > 0">	
+<section class="card card-center-1 mb-1" ng-repeat="test in labTest | filter : filterResult | orderBy: '-receive_date || -sent_date'" id="{{test.ref_id}}">	
 	
 	<div class="p-1">
 			<!--<div style="text-align: center;">	
@@ -28,8 +31,8 @@
             </div>-->
 
             <div  style="position: relative;padding-top: 10px">
-	            <button class="collapsed dropdown-toggle btn btn-simple" role="button" data-toggle="collapse" data-parent="#accordion" href="#{{'test' + test.ref_id + test.test_id}}" aria-expanded="false" aria-controls="collapsefifty">View Details</button>
-	            <span am-time-Ago="test.receive_date" style="position: absolute;top:20px;right: 20px"></span>
+	            <button class="collapsed dropdown-toggle btn btn-neutral btn-sm" role="button" data-toggle="collapse" data-parent="#accordion" href="#{{'test' + test.ref_id + test.test_id}}" aria-expanded="false" aria-controls="collapsefifty">View details</button>
+	            <span am-time-Ago="test.sent_date" style="position: absolute;top:3px;right: 15px"></span>
 	        </div>
 			<hr>
 			<div style="line-height: 25px;margin-bottom:5px" id="{{'test' + test.ref_id + test.test_id}}" class="panel-collapse collapse p-1" role="tabpanel" aria-labelledby="headingfifty">
@@ -42,7 +45,7 @@
 
 	              <strong>Reference Number:</strong> : <span>{{(test.copy) ? "Copied!" : test.ref_id}}</span> <a href="" clipboard supported="supported" text="test.ref_id" on-copied="success(test)" on-error="fail(err)" title="{{copy}}" class="fa fa-copy text-danger" style="padding: 5px"> Copy</a><br>
 
-	              <strong>Date requested:</strong> <span>{{test.sent_date | date : "mediumDate"}} ( <span am-time-Ago="test.sent_date" ng-if="test.sent_date"></span> )</span>
+	              <strong>Date requested:</strong> <span>{{test.sent_date | date : "mediumDate"}} ( <span am-time-Ago="test.sent_date" ng-if="test.sent_date"></span> )</span><br>
 
 	              <span ng-if="test.conclusion === 'Pending'"><strong>Status: </strong> <span style="color: red">Awaiting test result</span></span><br>
 	            <!--<p><strong>Date sent: </strong>{{test.sent_date | date : "mediumDate"}} &nbsp; <strong>Time: </strong>{{test.sent_date | date : "shortTime"}}</p>-->
@@ -61,29 +64,57 @@
 			<div>
 	            <h6>Study requested:</h6>
 	            <br>
-	            <ol style="line-height: 25px">
+	            <div ng-repeat="ranTest in test.test_to_run">			            	
+            		<label class="custom-control custom-checkbox">
+	                    <input type="checkbox" class="custom-control-input" ng-model= "ranTest.picked" >
+	                    <span class="custom-control-indicator"></span>
+	                    <span class="custom-control-description"> {{ranTest.name}}</span>
+                	</label>         
+	            </div>
+	            <!--<ol style="line-height: 25px">
 	              <li ng-repeat="ranTest in test.test_to_run">
 	                <label class="custom-control custom-checkbox">
 	                    <input type="checkbox" class="custom-control-input" ng-model= "ranTest.picked" >
 	                    <span class="custom-control-indicator"></span>
-	                    <span class="custom-control-description">{{ranTest.name}}</span>
+	                    <span class="custom-control-description">{{ranTest.name}} sddshdhsgsddshjds</span>
 	                </label>               
 	              </li>                     
-	            </ol>
+	            </ol>-->
 
 	        </div> 
 	        <br> 
 	        <div style="line-height: 30px">
 	        	<h6>Report and Radiographic Images: </h6>
 
-	        	<blockquote class="text-center pl-1">
-	        		<span style="display: block;">{{test.findings}}</span>
-	        		<span style="display: block;">{{test.conclusion}}</span>
-	        		<span style="display: block;">{{test.advise}}</span>
+	        	<blockquote>
+	        		<label>Findings:</label>
+	        		<span>{{test.findings || 'Unremarkable'}}</span>        		
 	        	</blockquote>
+	        	<blockquote>
+	        		<label>Conclusion:</label>
+	        		<span>{{test.conclusion || 'Unremarkable'}}</span>
+	        	</blockquote>
+	        	<blockquote>
+	        		<label>Advise:</label>
+	        		<span>{{test.advise}}</span>
+	        	</blockquote>
+
+        		<div>
+					<a href="{{'https://drive.google.com/viewerng/viewer?embedded=true&url=https://applinic.com' + test.pdf_report[0].pathname}}" ng-show="test.receive_date" class="btn btn-simple btn-sm text-primary hidden-md-down" target="_blank"> <i class="fa fa-file-pdf-o"></i> </a><a href="" ng-show="test.receive_date" ng-click="pdfViewer(test.pdf_report[0].pathname)" class="btn btn-simple btn-sm text-primary hidden-md-up" target="_blank"> <i class="fa fa-file-pdf-o"></i> </a><span ng-show="test.receive_date">&nbsp;&nbsp;</span>
+
+					<a href="{{test.pdf_report[0].pathname}}" ng-show="test.receive_date" title="Download report (PDF)" class="btn btn-simple btn-sm text-primary"><i class="fa fa-download"></i></a><span ng-show="test.receive_date">&nbsp;&nbsp;</span>
+
+					<a href="" title="Forward report to someone via email" ng-show="test.receive_date" class="btn btn-sm btn-simple text-primary"><i class="fa fa-share-alt" ng-click="email(test,'Radiology')"></i></a><span ng-show="test.receive_date">&nbsp;&nbsp;</span>
+
+					<a href=""><i class="fa fa-share btn btn-simple btn-sm text-primary" aria-hidden="true"  title="Forward to another center to re-run test" ng-click="forwardTest(test,'Radiology')"></i></a>&nbsp;&nbsp;
+					
+	        		<a href="{{'/dicom-mobile?id=' + test.study_id}}" ng-show="test.patient_id_of_study" class="btn btn-simple btn-sm text-primary hidden-md-up" target="_blank"><i class="fa fa-eye"></i></a><a href="{{'/dcm?id=' + test.patient_id_of_study + '&key=' + test.study_id}}" ng-show="test.patient_id_of_study" class="btn btn-simple btn-sm hidden-md-down text-primary" target="_blank"><i class="fa fa-eye"></i></a>
+	        	</div>
+	        	</div>
+			</div>
+        	
 	        	
-	        	
-	        	<div ng-show="test.pdf_report[0]" class="col-md-5 col-lg-5">
+	        	<!--<div ng-show="test.pdf_report[0]" class="col-md-5 col-lg-5">
 	        		<a href="{{'https://drive.google.com/viewerng/viewer?embedded=true&url=https://applinic.com' + test.pdf_report[0].pathname}}" class="btn btn-simple btn-block" target="_blank">Click to view Report in PDF</a>
 	        	</div>
 	        	<div class="no-mobile-item-display col-md-5 col-lg-5" ng-show="test.patient_id_of_study">
@@ -97,7 +128,7 @@
 	        		<i class="fa fa-share btn btn-neutral" aria-hidden="true" style="font-size:18px;margin-right:20p;cursor:pointer;padding: 5px 15px" title="Forward this investigation to another center" ng-click="forwardTest(test,'Radiology')"></i>
 	        	</div>
 	        	<div class="clearfix"></div>
-	        </div>      	
+	        </div>-->      	
 	</div>		
 
 	<div class="p-1"> 			

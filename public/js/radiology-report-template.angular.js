@@ -158,16 +158,20 @@ function($scope,$http,$rootScope){
     $scope.recepient._id = $rootScope.patient._id;
     $scope.recepient.reporter = $rootScope.patient.reporter;*/
 
+
     $rootScope.templateReportDetails.email = $scope.recepient.email;
     $scope.loading = true;
 
-    for(var i = 0; i < $rootScope.addForLinux.length; i++) {
-      $rootScope.addForLinux[i].style.zoom = 0.50;
-    }
+   //for(var i = 0; i < $rootScope.addForLinux.length; i++) {
+     // $rootScope.addForLinux[i].style.zoom = 0.50;
+    //}
 
-    $rootScope.templateReportDetails.html = $rootScope.hml.html();
+    var htm = $rootScope.hml.html(); 
 
-  
+    var fixZoom = "<div style='zoom:0.68'>" + htm + '</div>';
+
+    $rootScope.templateReportDetails.html = fixZoom;
+
     $http({
       method  : 'PUT',
       url     : "/report-template",
@@ -178,10 +182,7 @@ function($scope,$http,$rootScope){
        $scope.loading = false;
        if(response.status) {
           $scope.msg = response.message;
-          $scope.reportPDF = response.report_pdf
-          for(var i = 0; i < $rootScope.addForLinux.length; i++) {
-            $rootScope.addForLinux[i].style.zoom = 1.0;
-          }   
+          $scope.reportPDF = response.report_pdf     
        } else {
           alert(response.message);
        }

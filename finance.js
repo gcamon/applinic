@@ -666,6 +666,7 @@ var basicPaymentRoute = function(model,sms,io,paystack,client,transporter){
 					doctor_name: req.body.sendObj.name || req.body.sendObj.doctor_name,
 					doctor_profile_pic_url: req.body.sendObj.profile_pic_url || req.body.sendObj.doctor_profile_pic_url,
 					service_access: true,
+					doctor_email: req.body.sendObj.email || req.body.sendObj.doctor_email,
 					doctor_specialty: req.body.sendObj.specialty || req.body.sendObj.doctor_specialty,
 				}
 
@@ -817,9 +818,9 @@ var basicPaymentRoute = function(model,sms,io,paystack,client,transporter){
 
 				                transporter.sendMail(mailOptions, function(error, info){
 				                  if (error) {
-				                    console.log(error);
+				                   // console.log(error);
 				                  } else {
-				                    console.log('Email sent: ' + info.response);
+				                    //console.log('Email sent: ' + info.response);
 				                  }
 				                });
 				                //}
@@ -843,7 +844,7 @@ var basicPaymentRoute = function(model,sms,io,paystack,client,transporter){
                   	model.help.remove({complaint_id:req.body.sendObj.compaintId},function(err,info){
                   	});
                   	res.send({message: msgInfo,balance:debitor.ewallet.available_amount,status:true});
-                    console.log("note deleted");                        		                   
+                    //console.log("note deleted");                        		                   
                   }
 
               }
@@ -918,8 +919,8 @@ var basicPaymentRoute = function(model,sms,io,paystack,client,transporter){
 								
 									center.save(function(err,info){
 										if(err) throw err;
-										console.log(err);
-										console.log("billing is paid and saved!");
+										//console.log(err);
+										//console.log("billing is paid and saved!");
 									});
 
 									var pay = new Wallet(req.body.date,req.body.patient_firstname,req.body.patient_lastname,"billing");
@@ -966,16 +967,15 @@ var basicPaymentRoute = function(model,sms,io,paystack,client,transporter){
  
 router.post("/user/laboratory/test-result/preview",function(req,res){
 	if(req.user){	
-	  console.log(req.protocol)	
 		model.template.findOne({center_id: req.user.user_id,type: "Laboratory"})
 		.exec(function(err,data){
 			if(err) throw err;
 			var tempLink;
 			var date = new Date();
 			if(!data){
-				tempLink = "https://" + req.headers.host + "/lab-template/default";
+				tempLink = req.protocol + "://" + req.headers.host + "/lab-template/default";
 			} else {
-				tempLink = "https://" + req.headers.host + "/lab-template/" + data.center_id;
+				tempLink = req.protocol + "://" + req.headers.host + "/lab-template/" + data.center_id;
 			}
 			model.lab_store.findOne({id_by: req.body.laboratory._id})
 			.exec(function(err,result){
@@ -1096,9 +1096,9 @@ router.put("/user/laboratory/test-result/session-update",function(req,res){
 
 	          transporter.sendMail(mailOptions, function(error, info){
 	            if (error) {
-	              console.log(error);
+	              //console.log(error);
 	            } else {
-	              console.log('Email sent: ' + info.response);
+	              //console.log('Email sent: ' + info.response);
 	            }
 	          });
 
@@ -1131,7 +1131,8 @@ router.put("/user/laboratory/test-result/session-update",function(req,res){
       function updatePatient() {
         //here patient test result is updated.
         model.user.findOne({user_id: req.body.laboratory.patient_id},
-        {medical_records: 1,patient_notification:1,user_id:1,presence:1,phone:1,email:1,title:1,firstname:1,lastname:1})
+        {medical_records: 1,patient_notification:1,user_id:1,presence:1,
+        	phone:1,email:1,title:1,firstname:1,lastname:1,laboratory_new_indicator:1})
         .exec(function(err,data){
 
           if(err) throw err;
@@ -1160,20 +1161,26 @@ router.put("/user/laboratory/test-result/session-update",function(req,res){
 	            session_id: req.body.laboratory.session_id,
 	            message: "Laboratory test result received."
 	          });
+
+	          var usr = (req.body.laboratory.doctor_id) ? req.body.laboratory.doctor_id : req.user.user_id;
+
+	          var elm = data.laboratory_new_indicator.map(function(x){return x}).indexOf(usr);
+            if(elm == -1){
+              data.laboratory_new_indicator.push(usr)
+            }
 	         
-	          if(data.presence === true){
-	            io.sockets.to(data.user_id).emit("notification",{status:true});
-	          } else {
-	            var msgBody = "Laboratory test result received! login http://applinic.com/login";
-	            var phoneNunber =  data.phone;
-	             sms.messages.create(
-	              {
-	                to: phoneNunber,
-	                from: '+16467985692',
-	                body: msgBody
-	              }
-	            ) 
-	          };
+            io.sockets.to(data.user_id).emit("notification",{status:true});
+        
+            var msgBody = "Laboratory test result received! visit http://applinic.com/user/patient";
+            var phoneNunber =  data.phone;
+             sms.messages.create(
+              {
+                to: phoneNunber,
+                from: '+16467985692',
+                body: msgBody
+              }
+            ) 
+	         
 
 	          /*var transporter = nodemailer.createTransport({
 	            host: "mail.privateemail.com",
@@ -1207,15 +1214,15 @@ router.put("/user/laboratory/test-result/session-update",function(req,res){
 
 	          transporter.sendMail(mailOptions, function(error, info){
 	            if (error) {
-	              console.log(error);
+	              //console.log(error);
 	            } else {
-	              console.log('Email sent: ' + info.response);
+	              //console.log('Email sent: ' + info.response);
 	            }
 	          });
 
 	          data.save(function(err,info){
 	            if(err) { 
-	            	console.log(err)
+	            	//console.log(err)
 	            	res.send({status: "error"}); 
 	            } else {
 	            	res.send({status: "success"}); 
@@ -1243,7 +1250,7 @@ router.put("/user/laboratory/test-result/session-update",function(req,res){
       			center.service_details.unshift(req.body);
       			center.save(function(err,info){
       				if(err) throw err;
-      				console.log("service details saved!");
+      				//console.log("service details saved!");
       			});
 
       			model.referral.findOne({ref_id: req.body.ref_id,center_id: req.user.user_id})
@@ -1296,7 +1303,9 @@ router.put("/user/laboratory/test-result/session-update",function(req,res){
      
 
       function updatePatient() {
-        model.user.findOne({user_id: req.body.laboratory.patient_id},{medical_records:1,patient_notification:1,user_id:1,presence:1,phone:1,firstname:1,lastname:1,title:1,email:1})
+        model.user.findOne({user_id: req.body.laboratory.patient_id},
+        	{medical_records:1,patient_notification:1,user_id:1,presence:1,phone:1,
+        		firstname:1,lastname:1,title:1,email:1,laboratory_new_indicator:1})
         .exec(function(err,data){
           if(err) throw err;
          
@@ -1324,19 +1333,25 @@ router.put("/user/laboratory/test-result/session-update",function(req,res){
             message: "Laboratory test result received."
           });
 
-          if(data.presence === true){
-            io.sockets.to(data.user_id).emit("notification",{status:true});
-          } else {
-            var msgBody = "Laboratory test result received! login http://applinic.com/login"
-            var phoneNunber =  data.phone;
-            sms.messages.create(
-              {
-                to: phoneNunber,
-                from: '+16467985692',
-                body: msgBody,
-              }
-            ) 
+
+          var elm = data.laboratory_new_indicator.map(function(x){return x}).indexOf(req.user.user_id);
+          if(elm == -1){
+            data.laboratory_new_indicator.push(req.user.user_id)
           }
+
+         
+          io.sockets.to(data.user_id).emit("notification",{status:true});
+      
+          var msgBody = "Laboratory test result received! login http://applinic.com/login"
+          var phoneNunber =  data.phone;
+          sms.messages.create(
+            {
+              to: phoneNunber,
+              from: '+16467985692',
+              body: msgBody,
+            }
+          ) 
+          
 
           /*var transporter = nodemailer.createTransport({
             host: "mail.privateemail.com",
@@ -2742,7 +2757,7 @@ router.put("/user/outpatient-billing",function(req,res){
 
 router.post("/user/dicom-details",function(req,res){
 	if(req.user) {
-
+	
 		var rados;
 		if(req.body.isAcc) {
 		  rados = "A" + randos.genRef(8);
@@ -2818,7 +2833,8 @@ router.post("/user/dicom-details",function(req,res){
 		    referring_physician_phone: req.body.referringPhysicianPhone || "",
 		    attended: false,
 		    assigned_radiologist_id: req.body.reporters,
-		    remark: req.body.remark || ""
+		    remark: req.body.remark || "",
+		    id_of_ref_dumped: req.body.patientData._id
 		  });
 
 		  study.study_link_mobile = "https://applinic.com/dicom-mobile?id=" + study._id;
@@ -2883,16 +2899,15 @@ router.post("/user/dicom-details",function(req,res){
 					  .exec(function(err,patient){
 					  	if(err) throw err;
 					  	if(patient){
-					  	   var elementPos = patient.medical_records.radiology_test.map(function(x) {return x.session_id })
-					  	   .indexOf(req.body.patientData.radiology.session_id);
-		               var objectFound = patient.medical_records.radiology_test[elementPos]; 
-		               if(objectFound){
-		               	  objectFound.mobile_viewer_path = study.study_link_mobile;
-		               	  objectFound.web_viewer_path = study.study_link2;
-		               	  objectFound.patient_id_of_study = study.patient_id || study.study_uid;
-		               }
-
-		               patient.save(function(err,info){})
+					  	  var elementPos = patient.medical_records.radiology_test.map(function(x) {return x.ref_id })
+					  	  .indexOf(req.body.patientData.ref_id);
+	              var objectFound = patient.medical_records.radiology_test[elementPos]; 
+	              if(objectFound){
+	               	objectFound.mobile_viewer_path = study.study_link_mobile;
+	               	objectFound.web_viewer_path = study.study_link2;
+	               	objectFound.patient_id_of_study = study.patient_id || study.study_uid;
+	              }
+	              patient.save(function(err,info){})
 					  	}
 					  });
 					}

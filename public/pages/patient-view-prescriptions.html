@@ -14,20 +14,24 @@
 	</div>
 </div>
 </div>-->
-<div class="pl-0 card-center-1 card" style="position: relative;">
+<div class="card-center-1">
+	<a href="#/my-doctors" class="btn btn-neutral"><i class="fa fa-arrow-left"></i> Back</a>
+</div>
+<div class="pl-0 card-center-1" style="position: relative;">
 
  <div class="col-md-7">
-    <h4 class="pt-1 h6">Prescriptions</h4>    
+    <h4 class="pt-1 h4">Prescriptions</h4>    
  </div>
- <div class="col-md-5 p-1">
-    <input type="text" name="" placeholder="Filter by test name, center name, date sent, date received, etc" ng-model="filterResult" class="simple-border">
+ <div class="col-md-5 pl-0">
+    <input type="text" name="" placeholder="Filter by test name, center name, date sent, date received, etc" ng-model="filterResult" class="form-control">
   </div>
 </div>
+<div class="clearfix"></div>
 <div style="" class="card card-center-1 mb-1"  ng-repeat="docInfo in prescriptionRecordsResult |filter : filterResult | orderBy: '-date'" id="{{docInfo.prescriptionId}}">	
 <div>
 
-	<div class="p-1" style="position: relative;">
-		<button class="collapsed dropdown-toggle btn btn-simple" role="button" data-toggle="collapse" data-parent="#accordion" href="#{{'pres' + docInfo.ref_id + docInfo.prescriptionId}}" aria-expanded="false" aria-controls="collapsefifty">View Details</button>
+	<div class="pl-1 pt-1" style="position: relative;">
+		<button class="collapsed dropdown-toggle btn btn-neutral btn-sm" role="button" data-toggle="collapse" data-parent="#accordion" href="#{{'pres' + docInfo.ref_id + docInfo.prescriptionId}}" aria-expanded="false" aria-controls="collapsefifty">View details</button>
 		<span am-time-Ago="docInfo.date" style="position: absolute;top:20px;right: 20px"></span>
 	</div>
 
@@ -94,8 +98,8 @@
 		    		
 		    	</div>
 		    	<div class="mobile-item-display">				    		
-		    		<table class="table" ng-repeat="prescription in docInfo.prescription_body">
-		    		    <thead><td><label>sn:</label> {{prescription.sn}}</td></thead>
+		    		<table class="table pb-1" ng-repeat="prescription in docInfo.prescription_body">
+		    		    <!--<thead><td><label>sn:</label> {{prescription.sn}}</td></thead>
 		    			<thead><td><label>Name:</label> {{prescription.drug_name}}</td></thead>
 		    			<thead><td><label>Dosage:</label> {{prescription.dosage}}</td></thead>
 		    			<thead><td><label>Frequency:</label> {{prescription.frequency}}</td></thead>
@@ -104,7 +108,21 @@
 						   <input type="checkbox" class="custom-control-input" ng-model= "prescription.picked" >
 						  	<span class="custom-control-indicator"></span>
 						  	<span class="custom-control-description" style="opacity:0;">.</span>
-						</label></td></thead>
+						</label></td></thead>-->
+						<thead>
+							<td> {{prescription.sn}}) </td>
+							<td> {{prescription.drug_name}}</td>
+							<td> ( {{prescription.dosage}} )</td>
+							<td> {{prescription.frequency}}</td>
+							<td> {{prescription.duration}}</td>
+							<td> 
+								<label class="custom-control custom-checkbox">
+						   		<input type="checkbox" class="custom-control-input" ng-model= "prescription.picked" >
+						  		<span class="custom-control-indicator"></span>
+						  		<span class="custom-control-description" style="opacity:0;">.</span>
+								</label>
+							</td>
+						</thead>
 		    			<hr>
 		    		</table>
 		    	</div>
@@ -115,12 +133,12 @@
 			<div  style="position: relative;">					
 					
 					<!--<i ng-print  print-element-id="{{docInfo.prescriptionId}}" class="fa fa-print btn btn-success" aria-hidden="true" style="font-size: 18px;margin-right:0px;cursor:pointer;padding: 5px 15px" title="Print this prescription"></i>-->
-					<a href="" style="font-size: 18px;margin-right:0px;" ng-click="email(docInfo,'Prescription')"><i  class="fa fa-share-alt btn btn-success btn-sm" aria-hidden="true"  title="send prescription to an email"></i></a>
+					<a href="" style="font-size: 18px;margin-right:0px;" ng-click="email(docInfo,'Prescription')"><i  class="fa fa-share-alt btn btn-simple btn-sm text-primary" aria-hidden="true"  title="send prescription to an email"></i></a>
 					
 
-					<a href="" ng-click="courier(docInfo)" style="font-size: 18px;margin-right:0px;"><i class="fa fa-motorcycle btn btn-warning btn-sm" aria-hidden="true"   title="Use our courier service"></i></a>
+					<a href="" ng-click="courier(docInfo)" style="font-size: 18px;margin-right:0px;"><i class="fa fa-motorcycle btn btn-simple btn-sm text-primary" aria-hidden="true"   title="Use our courier service"></i></a>
 
-					<a href="" style="font-size:18px;margin-right:0px;" ng-click="forwardPrescription(docInfo)"><i class="fa fa-share btn btn-info btn-sm" aria-hidden="true"  title="Forward this prescription to a Phamarcy"></i></a>
+					<a href="" style="font-size:18px;margin-right:0px;" ng-click="forwardPrescription(docInfo)"><i class="fa fa-share btn btn-simple btn-sm text-primary" aria-hidden="true"  title="Forward this prescription to a Phamarcy"></i></a>
 					<!--<span ng-click="deletePrescription(docInfo.prescriptionId)"><i class="fa fa-remove" style="color:green;font-size: 18px;margin-right:20px;cursor:pointer" title="Delete this prescription" ></i></span>-->
 					<a href="" class="btn btn-simple btn-sm" style="float: right;color: green" ng-click="trackedPrescription(docInfo.prescriptionId,docInfo)" title="Look up pharmacies this prescription has been sent to">Track record</a>
 				

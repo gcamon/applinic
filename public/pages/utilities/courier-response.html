@@ -1,6 +1,6 @@
 
 <div class="card-center-1" ng-if="path">
-	<a href="#{{path}}" class="btn btn-neutral" ng-if="path"><i class="fa fa-arrow-left"></i> Back</a>
+	<a href="#{{(isFromNote) ? '/courier-notification' : path}}" class="btn btn-neutral" ng-if="path"><i class="fa fa-arrow-left"></i> Back</a>
 </div>
 <div class="card p-2  card-center-1 line-height" style="position: relative;" >
 	
@@ -69,7 +69,7 @@
 		</tbody>
 	</table>
 	<div ng-if="!courierResponse.attended && !courierResponse.is_paid">
-		<button class="btn btn-danger" ng-click="cancel(courierResponse._id)">{{(canceling) ? 'Canceling...' :'Cancel order'}}</button>
+		<button class="btn btn-primary" ng-click="cancel(courierResponse._id)">{{(canceling) ? 'Canceling...' :'Cancel order'}}</button>
 	</div>
 	<div style="line-height: 35px" ng-if="courierResponse.attended && courierResponse.verified">
 		<h6>Billing</h6>

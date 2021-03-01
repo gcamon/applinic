@@ -155,7 +155,7 @@
         <br>
         <div class="mb-2" style="position: relative;" ng-repeat="app in appointmentList | orderBy: '-date' | filter: ft">
             <a href="{{'#/doctor-patient/treatment/' + app.patient_id}}">
-                <b style="font-size: 16px" class="text-muted" ng-class="{'text-primary': app.isToday,'text-danger': app.isPassed }"> {{app.date | amCalendar}}</b><br>
+                <b style="font-size: 16px" ng-class="{'text-primary': app.isToday,'text-danger': app.isPassed }"> {{app.date | amCalendar}}</b><br>
                 <span>{{app.patient_title}} {{app.patient_firstname}} {{app.patient_lastname}}</span><br>
                 <span>{{app.date | date : 'mediumDate'}}</span><br>
                 <span>{{app.address}}</span>

@@ -1,5 +1,23 @@
+<style>
+	.col-md-6 {
+		padding-right: 5px;
+		padding-left: 5px
+	}
+</style>
+
+<div style="position: relative;">
+	<h4 class="h4">
+		My Doctors
+	</h4>
+	<div style="position: absolute;right: 0;top:5px">
+		<a href="" ng-click="inviteDoc()" class="btn btn-sm btn-primary"><i class="fa fa-user-plus"></i></a>&nbsp;&nbsp;
+		<a href="#/find-specialist" class="btn btn-sm btn-primary"><i class="fa fa-search"></i></a>
+	</div>
+</div>
+
+
 <div>
-		<section class="col-md-12 pl-0 ml-0">
+		<!--<section class="col-md-12 pl-0 ml-0">
 			<div class="col-md-8 pl-0 ml-0">
 				<span class="btn btn-neutral"><i class="fa fa-users text-danger"></i> {{patientsDoctorList.length}}</span>  &nbsp;&nbsp;&nbsp;&nbsp;
 				<i class="fa fa-refresh btn btn-neutral" ng-click="refresh()"></i>
@@ -7,22 +25,22 @@
 			<div class="col-md-4 pl-0 ml-0">				
 				<input type="text" name=""  placeholder=" Search" ng-model="person" class="form-control">
 			</div>
-		</section>
-		<div class="clearfix"></div>
-		<div class="col-md-4 p-12" ng-repeat="j in patientsDoctorList | orderBy: '-presence' | filter : person" ng-if="!j.deleted">
-			<div class="card row">				
+		</section>-->
+		
+		<div class="col-md-6" ng-repeat="j in patientsDoctorList | orderBy: '-presence' | filter : person" ng-if="!j.deleted">
+			<div class="card">				
 				<div class="col-md-4 col-sm-4 col-xs-4 pl-1 pt-1">
 					<a href="{{'/user/profile/view/' + j.doctor_id}}" target="_blank">
 						<img src="{{j.doctor_profile_pic_url}}" style="width: auto;max-height: 170px" alt="Profile Picture" />
 					</a>
 				</div>
 				<div class="pt-2 pb-1 col-md-8 col-sm-8 col-xs-8 pl-1" style="min-height: 110px;max-height: 140px; position: relative;">
-					<div class="ellipsis">
-						<b class="text-muted">{{j.doctor_title}} {{j.doctor_lastname}} {{j.doctor_firstname}}</b>
+					<div>
+						<h5 class="mb-0 pb-0 ellipsis">{{j.doctor_title}} {{j.doctor_lastname}} {{j.doctor_firstname}}</h5>
 					</div>
 					<div class="text-muted">
-						<span style="display: block;" class="ellipsis">{{j.doctor_specialty || 'N/A'}}</span>
-						<span><i class="fa fa-map-marker text-primary" ng-show="j.presence"></i><span> <i class="fa fa-map-marker" ng-show="!j.presence"></i></span> {{j.doctor_city || "Enugu"}}</span><br>
+						<span class="ellipsis block"><i class="icon-stethoscopetwo"></i> {{j.doctor_specialty || 'N/A'}}</span>
+						<span class="block ellipsis"> <i class="fa fa-map-marker text-primary" ng-show="j.presence"></i><i class="fa fa-map-marker" ng-show="!j.presence"></i> {{j.work_place}} {{j.doctor_city || "Enugu"}}</span>
 						
 					</div>	
 					<div>
@@ -37,11 +55,149 @@
 					<i class="online" ng-show="!j.presence" title="Offline" style="position: absolute;top: 3px; right: 5px;background-color: #eee"></i>				
 				</div>				
 				<div class="clearfix"></div>
+				<br>
 				<div style="position: relative;" class="pl-1 pb-1">
 					<!--<span class="text-muted" ng-show="j.appointment_date"> <span class="text-info">   In-person meeting </span> <span am-time-ago="j.appointment_date"></span><span> &nbsp;{{j.appointment_time | date : 'shortTime'}}</span><br></span>
 					<span class="text-muted" ng-show="j.activity.labCount > 0"><span class="text-info"> >  1 new </span> Laboratory Result<br></span>
 					<span class="text-muted" ng-show="j.activity.radioCount > 0"><span class="text-info"> >  2 new </span> Radiology Result</span>-->
-					<i class="fa fa-ellipsis-v text-muted" style="position: absolute;right: 15px;bottom: 5px;cursor: pointer;padding: 5px;font-size: 18px"  ng-click="popup(j)"></i>								
+											
+			        <div>
+						<label class="switch">
+				          <input type="checkbox" class="success" ng-model="j.access" ng-change="updateAccess(j)">
+				          <span class="slider round"></span>
+				        </label>
+				        <div style="display: inline-block;margin-left: 10px;font-size: 22px;float: left;margin-top: -5px">
+					        <a href="" class="btn btn-neutral text-primary" ng-click="viewPrescription2('single',j.doctor_id)">
+					        	<i class="icon-Pills"></i>
+					        	<sup>
+					        		<span class="counter btn-danger" ng-show="j.indicators.pharmacy.indexOf(j.doctor_id) !== -1" style="border-radius: 12px;width: 10px;height: 10px;display: inline-block;"></span>           
+                   				</sup>
+					        </a>
+							<a href="" class="btn btn-neutral text-primary" ng-click="viewLabTest2('single',j.doctor_id)">
+								<i class="fa fa-microscope"></i>
+								<sup>
+					        		<span class="counter btn-danger" ng-show="j.indicators.laboratory.indexOf(j.doctor_id) !== -1" style="border-radius: 12px;width: 10px;height: 10px;display: inline-block;"></span>           
+                   				</sup>
+							</a>
+							<a href="" class="btn btn-neutral text-primary" ng-click="viewRadioTest2('single',j.doctor_id)">
+								<i class="fa fa-radiation-alt"></i>
+								<sup>
+					        		<span class="counter btn-danger" ng-show="j.indicators.radiology.indexOf(j.doctor_id) !== -1" style="border-radius: 12px;width: 10px;height: 10px;display: inline-block;"></span>           
+                   				</sup>
+							</a>
+						</div>
+					</div>
+
+					<!--<div style="position: absolute;left: 20px; bottom: 10px">
+						<label class="switch">
+				          <input type="checkbox" class="success" ng-model="j.access" ng-change="updateAccess(j)">
+				          <span class="slider round"></span>
+				        </label>
+					</div>-->
+					
+					<div class="clearfix"></div>
+					<br>
+					<i class="fa fa-ellipsis-v text-muted" style="position: absolute;right: 15px;bottom: 10px;cursor: pointer;padding: 5px;font-size: 25px"  ng-click="popup(j)"></i>								
+					
+					<div ng-class="{'popup2': j.isManage == true}" ng-if="j.isManage" style="line-height: 35px;padding: 5px">
+					  <div  ng-click="closePop(j)"><i class="fa fa-times text-primary"></i></div>
+					  <a href="{{'/user/profile/view/' + j.doctor_id}}" target="_blank" class="pt-1 pb-1 font-1_1"><i class="fa fa-user-md text-success"></i>  View Profile</a><br>	
+					   <a href=""  ng-click="appointments(j.sessionId)" class="pt-1 pb-1 font-1_1"><i class="fa fa-calendar text-success"></i> In-Person Meeting</a><br>
+					  <a href="" ng-click="consultationFee(j)" class="pt-1 pb-1 font-1_1"><i class="fa fa-money text-success"></i> Consultation Fees</a><br>					 
+					  <a href=""  ng-click="viewChat2(j.doctor_id)" class="pt-1 pb-1 font-1_1"><i class="fa fa-comments text-success"></i> Chat with Doctor <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange" ng-if="loading"></i> </a><br>
+
+					   <a href=""  ng-click="audioChat(j)" class="pt-1 pb-1 font-1_1"><i class="fa fa-phone text-success"></i> Audio Chat</a><br>
+
+					  <a href=""  ng-click="videoChat(j)" class="pt-1 pb-1 font-1_1"><i class="fa fa-video-camera text-success"></i> Video Chat</a><br>
+					 
+					  <!--<a href=""  ng-click=""><i class="fa fa-video-camera text-success"></i> Video Chat</a><br>-->
+					  <!--<a href=""  ng-click=""><i class="fa fa-warning text-muted"></i> Block Patient</a><br>-->
+					  <a href=""  ng-click="removePatient(j)" class="pt-1 pb-1 font-1_1"><i class="fa fa-times text-danger"></i> Remove Doctor</a>
+					  <!--<a href=""  ng-click="share(test)" ng-show="test.laboratory.lab_pdf_report.length > 0"><i class="fa fa-share"></i> Share Test Result <br>	</a>				 					 
+					  <a href="{{'https://drive.google.com/viewerng/viewer?embedded=true&url=https://applinic.com' + test.laboratory.lab_pdf_report[0].pdf_report}}" target="_blank" ng-show="test.laboratory.lab_pdf_report.length > 0"><span><i class="fa fa-file"></i> View Result PDF</span><br></a>-->
+																	
+					</div>
+				</div>
+			</div>			
+		</div>
+		<div class="clearfix"></div>
+		<div class="card">
+			<p ng-show="patientsDoctorList.length === 0" style="text-align: center;padding: 20px;font-weight: bold;">You can <a href="#/invite"> Invite your doctor </a> or <a href="#/find-specialist">Search for a physician</a> who you wish to manage your health issues in Applinic.</p>
+		</div>
+
+		<div>
+			<h4 class="h4 pt-2">
+				Featured Doctors
+			</h4>
+			<div>
+
+				<div class="col-md-6" ng-repeat="j in firstLineDoctors | orderBy: '-presence' | filter : person">
+			<div class="card">				
+				<div class="col-md-4 col-sm-4 col-xs-4 pl-1 pt-1">
+					<a href="{{'/user/profile/view/' + j.doctor_id}}" target="_blank">
+						<img src="{{j.doctor_profile_pic_url}}" style="width: auto;max-height: 170px" alt="Profile Picture" />
+					</a>
+				</div>
+				<div class="pt-2 pb-1 col-md-8 col-sm-8 col-xs-8 pl-1" style="min-height: 110px;max-height: 140px; position: relative;">
+					<div>
+						<h5 class="mb-0 pb-0 ellipsis">{{j.doctor_title}} {{j.doctor_lastname}} {{j.doctor_firstname}}</h5>
+					</div>
+					<div class="text-muted">
+						<span class="ellipsis block"><i class="icon-stethoscopetwo"></i> {{j.doctor_specialty || 'N/A'}}</span>
+						
+						<span class="ellipsis block"><i class="fa fa-map-marker text-primary" ng-show="j.presence"></i> <i class="fa fa-map-marker" ng-show="!j.presence"></i> {{j.work_place}} {{j.doctor_city || "Enugu"}}</span>
+						
+					</div>	
+					<div>
+						<a href="" ng-click="appointments(j.sessionId)" ng-if="j.isNewAppointment" title="In-person meeting appointment with this doctor">
+							<!--<img src="/assets/images/icons/calendar-tear.gif" width = "13" height = "13">&nbsp;-->
+							<i class="fa fa-clock-o text-primary" aria-hidden="true"></i>
+							<span class="text-danger" style="font-size: 14px">{{j.appDate | amCalendar }}</span>
+						</a>
+						<a href="" ng-if="!j.isNewAppointment" style="height: 13px">&nbsp;</a><br>
+					</div>	
+					<i class="online" ng-show="j.presence" title="Online" style="position: absolute;top: 3px; right: 5px"></i>
+					<i class="online" ng-show="!j.presence" title="Offline" style="position: absolute;top: 3px; right: 5px;background-color: #eee"></i>				
+				</div>				
+				<div class="clearfix"></div>
+				<br>
+				<div style="position: relative;" class="pl-1 pb-1">
+					<!--<span class="text-muted" ng-show="j.appointment_date"> <span class="text-info">   In-person meeting </span> <span am-time-ago="j.appointment_date"></span><span> &nbsp;{{j.appointment_time | date : 'shortTime'}}</span><br></span>
+					<span class="text-muted" ng-show="j.activity.labCount > 0"><span class="text-info"> >  1 new </span> Laboratory Result<br></span>
+					<span class="text-muted" ng-show="j.activity.radioCount > 0"><span class="text-info"> >  2 new </span> Radiology Result</span>-->
+					<div>
+						<label class="switch">
+				          <input type="checkbox" class="success" ng-model="j.access" ng-change="updateAccess(j)">
+				          <span class="slider round"></span>
+				        </label>
+				        <div style="display: inline-block;margin-left: 10px;font-size: 22px;float: left;margin-top: -5px">
+					        <a href="" class="btn btn-neutral text-primary" ng-click="viewPrescription2('single',j.doctor_id)">
+					        	<i class="icon-Pills"></i>
+					        	<sup>
+					        		<span class="counter btn-danger" ng-show="j.indicators.pharmacy.indexOf(j.doctor_id) !== -1" style="border-radius: 12px;width: 10px;height: 10px;display: inline-block;"></span>           
+                   				</sup>
+					        </a>
+							<a href="" class="btn btn-neutral text-primary" ng-click="viewLabTest2('single',j.doctor_id)">
+								<i class="fa fa-microscope"></i>
+								<sup>
+					        		<span class="counter btn-danger" ng-show="j.indicators.laboratory.indexOf(j.doctor_id) !== -1" style="border-radius: 12px;width: 10px;height: 10px;display: inline-block;"></span>           
+                   				</sup>
+							</a>
+							<a href="" class="btn btn-neutral text-primary" ng-click="viewRadioTest2('single',j.doctor_id)">
+								<i class="fa fa-radiation-alt"></i>
+								<sup>
+					        		<span class="counter btn-danger" ng-show="j.indicators.radiology.indexOf(j.doctor_id) !== -1" style="border-radius: 12px;width: 10px;height: 10px;display: inline-block;"></span>           
+                   				</sup>
+							</a>
+						</div>
+					</div>
+
+					
+						
+					
+					<div class="clearfix"></div>
+					<br>
+					<i class="fa fa-ellipsis-v text-muted" style="position: absolute;right: 15px;bottom: 10px;cursor: pointer;padding: 5px;font-size: 25px"  ng-click="popup(j)"></i>								
 				
 					<div ng-class="{'popup2': j.isManage == true}" ng-if="j.isManage" style="line-height: 35px;padding: 5px">
 					  <div style="position: absolute;top:4px;right: 10px" ng-click="closePop(j)"><i class="fa fa-times text-info"></i></div>
@@ -56,7 +212,7 @@
 					 
 					  <!--<a href=""  ng-click=""><i class="fa fa-video-camera text-success"></i> Video Chat</a><br>-->
 					  <!--<a href=""  ng-click=""><i class="fa fa-warning text-muted"></i> Block Patient</a><br>-->
-					  <a href=""  ng-click="removePatient(j)"><i class="fa fa-times text-danger"></i> Remove Doctor</a>
+					  <!--<a href=""  ng-click="removePatient(j)"><i class="fa fa-times text-danger"></i> Remove Doctor</a>-->
 					  <!--<a href=""  ng-click="share(test)" ng-show="test.laboratory.lab_pdf_report.length > 0"><i class="fa fa-share"></i> Share Test Result <br>	</a>				 					 
 					  <a href="{{'https://drive.google.com/viewerng/viewer?embedded=true&url=https://applinic.com' + test.laboratory.lab_pdf_report[0].pdf_report}}" target="_blank" ng-show="test.laboratory.lab_pdf_report.length > 0"><span><i class="fa fa-file"></i> View Result PDF</span><br></a>-->
 																	
@@ -64,10 +220,14 @@
 				</div>
 			</div>			
 		</div>
-		<div class="clearfix"></div>
-		<p ng-show="patientsDoctorList.length == 0" style="text-align: center;padding: 20px;font-weight: bold;">You have no doctors in your account yet.</p>
+				
+			</div>
+			&nbsp;
+		</div>
 
 		<div style="height: 300px">
 	
 		</div>
 </div>
+
+

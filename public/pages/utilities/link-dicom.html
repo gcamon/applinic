@@ -1,11 +1,31 @@
 <div class="card-center-1">
-	<a href="#{{path}}" class="btn btn-neutral"><i class="fa fa-arrow-left"></i> Back</a>
+	<a href="#{{'/referral/radiology-test'}}" class="btn btn-neutral"><i class="fa fa-arrow-left"></i> Back</a>
 </div>
 <div class="card p-2 card-center-1">
 	<h4 class="pt-0 pl-0 h6">Link DICOM Study <i class="fa fa-question-circle tip text-success">	<span style="font-size: 14px">'Link DICOM Study' enables you connect a study uploaded to Applinic online DICOM PACs server to its web and mobile viewer for remote sharing, viewing and reporting of studies with Applinic default or your center's template. </span></i></h4>
 	<hr>
 
 	<form class="col-md-10" ng-submit="addStudy()" ng-if="!isSuccess">
+
+		<label>Link study with *</label><br>
+		<label class="custom-control custom-radio">
+			<input type="radio" value="patientID" ng-model="station.locate" class="custom-control-input">
+			<span class="custom-control-indicator"></span>
+			<span class="custom-control-description font-1_1"> <b>Patient ID</b></span>
+		</label>&nbsp;&nbsp;
+		<label class="custom-control custom-radio">
+			<input type="radio" value="studyID" ng-model="station.locate" class="custom-control-input">
+			<span class="custom-control-indicator"></span>
+			<span class="custom-control-description font-1_1"> <b>Study UID</b></span>
+		</label><br><br>
+		<div ng-if="station.locate == 'studyID'">
+			<label>Study UID (Something that looks like 1.2.392.200036.9125.234554....)</label><br>
+			<input type="text" name="" placeholder="Study UID" required class="form-control" ng-model="station.studyID"><br>
+		</div>
+		<div ng-if="station.locate == 'patientID'">
+			<label>Patient ID </label><br>
+			<input type="text" name="" placeholder="Patient ID" required class="form-control" ng-model="station.patientID"><br>
+		</div>
 		
 		<label>Patient Names *</label><br>
 		<input type="text" name="" placeholder="Name" required class="form-control" ng-model="station.patientName"><br>
@@ -42,33 +62,15 @@
 				<option value="SI">Multiple Routine Views, Contrast Studies and Mammography - {{toCurrency(500)}}</option>
 				<option value="CAPEHS">Single AP or Lateral or Other View of Skull/Spine/Chest/Abdomen/Pelvis/Extremeties - {{toCurrency(250)}}</option>
 		</select><br>-->
-		<label>Locate Study With *</label><br>
-		<label class="custom-control custom-radio">
-			<input type="radio" value="patientID" ng-model="station.locate" class="custom-control-input">
-			<span class="custom-control-indicator"></span>
-			<span class="custom-control-description font-1_1"> <b>Patient ID</b></span>
-		</label>&nbsp;&nbsp;
-		<label class="custom-control custom-radio">
-			<input type="radio" value="studyID" ng-model="station.locate" class="custom-control-input">
-			<span class="custom-control-indicator"></span>
-			<span class="custom-control-description font-1_1"> <b>Study UID</b></span>
-		</label><br><br>
-		<div ng-if="station.locate == 'studyID'">
-			<label>Study UID (Something that looks like 1.2.392.200036.9125.234554....)</label><br>
-			<input type="text" name="" placeholder="Study UID" required class="form-control" ng-model="station.studyID"><br>
-		</div>
-		<div ng-if="station.locate == 'patientID'">
-			<label>Patient ID </label><br>
-			<input type="text" name="" placeholder="Patient ID" required class="form-control" ng-model="station.patientID"><br>
-		</div>
+		
 		<hr>
 		<label>Referring Physician *</label><br>
-		<input type="text" name="" placeholder="Physician names" required class="form-control" ng-model="station.referringPhysician">
+		<input type="text" name="referringPhysicianname" placeholder="Physician names" required class="form-control" ng-model="station.referringPhysician">
 		<div class="col-md-6 p-0">
-			<input type="text" name="" class="form-control" placeholder="Phone number (Optional)" ng-model="station.referringPhysicianPhone">
+			<input type="text" name="referringphone" class="form-control" placeholder="Phone number (Optional)" ng-model="station.referringPhysicianPhone">
 		</div>
 		<div class="col-md-6 p-0">
-			<input type="email" name="" class="form-control" placeholder="Physician email address" ng-model="station.referringPhysicianEmail">
+			<input type="email" name="referringPhysicianEmail" class="form-control" placeholder="Physician email address" ng-model="station.referringPhysicianEmail">
 		</div>
 
 

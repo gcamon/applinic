@@ -252,6 +252,7 @@ var myModel = function () {
 		doctor_profile_pic_url: String,
 		service_access: Boolean,
 		doctor_specialty: String,
+		doctor_email: String,
 		work_place: String,
 		office_hour:[periodSchema],
 		presence: Boolean,
@@ -458,7 +459,9 @@ var myModel = function () {
 		patient_id_of_study: String,
 		mobile_viewer_path: String,
 		web_viewer_path: String,
-		lab_pdf_report: Array
+		lab_pdf_report: Array,
+		session_id: String,
+		ref_id: String
 	});
 
 	var subSession = Schema({
@@ -691,7 +694,15 @@ var myModel = function () {
 		reporters: Array,
 		dicom_enterprise: Boolean,
 		report_signees: Array,
-		chart_access: Array
+		chart_access: Array,
+		laboratory_new_indicator: Array,
+		radiology_new_indicator: Array,
+		pharmacy_new_indicator: Array,
+		appointment_new_indicator: Array,
+		chart_new_indicator: Boolean,
+		doctor_laboratory_new_indicator: Array,
+		doctor_radiology_new_indicator: Array,
+		doctor_chart_new_indicator: Array,
 	},{
 		collections: "userinfos"
 	})
@@ -1077,7 +1088,6 @@ var myModel = function () {
 	  ref_id: String,
 	  study_type: String,
 	  pdf_report: Array,
-	  ref_id: String,
 	  type: String,
 	  patient_sex: String,
 	  patient_age: String,
@@ -1089,13 +1099,15 @@ var myModel = function () {
 	  findings: String,
 	  summary: String,
 	  advise: String,
+	  session_id: String,
 	  referring_physician_email: String,
 		referring_physician_phone: String,
 		attended: Boolean,
 		assigned_radiologist_id: Array,
 		remark: String,
 		isUserConnectLinking: Boolean, //this is used to know if linking is from exist patient in the platform
-		referral_detail_dump: Array //dump the patient existing patient referral object
+		referral_detail_dump: Array, //dump the patient existing patient referral object
+		id_of_ref_dumped: String
 	});
 
 	var dicomSchema = Schema({
@@ -1227,20 +1239,6 @@ var myModel = function () {
 		bs_readings: Array, //blood sugar
 		temp_readings: Array //temperature
 	})
-
-	/*_id: "njds884943",
-        package: 1,
-        content: [{drug_name: "Camosunate tabs",dosage:"",frequency: "", duration: ""},
-        {drug_name:"Panadol",dosage:"2 tabs",frequency: "thrice daily", duration: "" },
-        {drug_name:"Vitamin Capsule",dosage:"1",frequency: "daily", duration: "" }],
-        type: "Drug",
-        disease: "Malaria",
-        name: "Anti Malaria",
-        age: "18",
-        created: new Date(),
-        note: "Please eat enough food before taking and drink enough water",
-        doctorId: "sdhjd"   
-	});*/
 
 	//models
 	var models = {};

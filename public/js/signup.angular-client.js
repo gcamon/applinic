@@ -502,7 +502,8 @@ app.controller('signupController',["$scope","$http","$location","$window","templ
   $scope.user.region = currency.region;
 
   if(type === 'Patient'){
-    $scope.user.age = calculate_age(new Date($scope.user.dob)) + " years";
+    $scope.user.age = calculate_age(new Date($scope.user.dob));
+    //console.log($scope.user.age)
   }
 
   if(!$scope.user.username){
@@ -875,15 +876,19 @@ function testNumber(str) {
 }
 
 function calculate_age(dob) { 
-    var diff_ms = Date.now() - dob.getTime();
-    var age_dt = new Date(diff_ms); 
-  
-    return Math.abs(age_dt.getUTCFullYear() - 1970);
+ 
+  var years = moment().diff(dob, 'years');
+  var months = moment().diff(dob, 'months');
+  var days = moment().diff(dob, 'days');
+
+  if(years){
+    return (years == 1) ? (years + " year") : (years + " years");
+  } else if(months) {
+    return (months == 1) ? (months + " month") : (months + " months");
+  } else {
+    return (days == 1) ? (days + " day") : (days + " days");
+  }
 }
-
-
-
-
 
 })() //end of IIFE
 

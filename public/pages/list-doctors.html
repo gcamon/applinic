@@ -1,49 +1,42 @@
 <div class="container">
    <div class="card-center-1">
-         <a href="" ng-click="goBack()"><i class="fa fa-arrow-left btn btn-simple"> &nbsp;Back</i></a>
+         <a href="" ng-click="goBack()"><i class="fa fa-arrow-left btn btn-neutral"> &nbsp;Back</i></a>
+         <h4 class="h4 mb-1 mt-1">Search Result</h4> 
   </div>
-  <div class="card card-center-1 p-2">
-    <section class="col-md-8 p-0 m-0">
-      <h4 class="p-0 h6 mb-1">Search Result</h4>    
-      <input type="text" placeholder="Filter by place of work or doctor's name or specialty" ng-model="list.work_place" class="form-control">
-    </section>
-    <div class="clearfix"></div>
-    <hr>
-    <div>        
-       
-        <section class="pb-1 row" ng-repeat="i in searchResult | filter: list.work_place | orderBy : '-status'">              
-            
-            <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3 p-1">
-                 <a href="{{i.profile_url}}">
-                 <img src="{{i.profile_pic_url}}" style="height: 85px;width: auto;" alt="profile image"></a>
-              
-            </div>
-
-            <section class="col-lg-9 col-md-9 col-sm-9 col-xs-9 pl-2 pt-1">              
-                <label class="p-0 m-0">{{i.title}} {{i.firstname}} {{i.lastname}}</label><br>
-                <span>{{i.specialty}}</span><br>
-                <span>{{i.address}}  {{i.city}}, {{i.country || "N/A"}}</span><br>
-                <i class="fa fa-clock-o"></i> Office Hours | <span ng-repeat="j in i.office_hour">{{j.day}} {{j.from | date : "shortTime"}} - {{j.to | date : "shortTime"}}  </span> <span ng-if="i.office_hour.length == 0">Not specified</span>
-                <br> <br>
-                <!--<a href="{{i.profile_url}}" class="btn btn-simple text-danger btn-sm" title="View {{i.firstname}} profile"><i class="fa fa-folder-o"></i> profile</a>-->
-                 <a href="" class="btn btn-primary btn-sm" ng-click="consultation(i)" ng-if="checkLogIn.typeOfUser === 'Patient'">Consult me!</a> 
-                 <a href="" class="btn btn-simple text-danger btn-sm" ng-click="ask(i)" title="send chat message"><i class="fa fa-comment-o"></i> message</a>  
-
-                <!--<span ng-if="i.status" class="online"></span> <span ng-if="!i.status" style="background-color:#ccc" class="online"></span>-->                          
-                                      
-            </section>            
-                 
-            <div class="clearfix"></div>
-           
-        </section> 
-
-        <div class="tg-btnarea">
-            <div class="info-div" ng-show="isNotFound">
-                <p class="alert alert-warning">Oops! No match found based on your search criteria.<br>
-                Try again..</p>           
-            </div>
+  <section class="card-center-1">         
+    <input type="text" placeholder="Filter by place of work or doctor's name or specialty" ng-model="list.work_place" class="form-control">
+  </section>
+  <div class="card-center-1">        
+    <section class="p-1 card" ng-repeat="i in searchResult | filter: list.work_place | orderBy : '-status'">              
+        <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3 p-1">
+          <a href="{{i.profile_url}}">
+          <img src="{{i.profile_pic_url}}" style="height: 85px;width: auto;" alt="profile image"></a>
         </div>
-    </div>
+        <section class="col-lg-9 col-md-9 col-sm-9 col-xs-9 pl-1">              
+            <h6 class="p-0 m-0">{{i.title}} {{i.firstname}} {{i.lastname}}</h6>
+            <span>{{i.specialty}}</span><br>
+            <span>{{i.address}}  {{i.city}}, {{i.country || "N/A"}}</span><br>
+            <!--<i class="fa fa-clock-o"></i> Office Hours | <span ng-repeat="j in i.office_hour">{{j.day}} {{j.from | date : "shortTime"}} - {{j.to | date : "shortTime"}}  </span> <br> <span ng-if="i.office_hour.length == 0">Not specified</span>-->
+            <span ng-class="{'text-primary': i.verified,'text-danger': !i.verified}">{{(i.verified) ? "Verified" : "Not verified"}}</span>
+
+            <br> <br>
+            <!--<a href="{{i.profile_url}}" class="btn btn-simple text-danger btn-sm" title="View {{i.firstname}} profile"><i class="fa fa-folder-o"></i> profile</a>-->
+              <a href="" class="btn btn-simple text-primary" ng-click="ask(i)" title="send chat message"><i class="fa fa-comment"></i> message</a>  
+
+             <a href="" class="btn btn-simple text-primary" ng-click="consultation(i)" ng-if="checkLogIn.typeOfUser === 'Patient'"><i class="fa fa-envelope"></i> Consult</a> 
+           
+            <!--<span ng-if="i.status" class="online"></span> <span ng-if="!i.status" style="background-color:#ccc" class="online"></span>-->                                                 
+        </section>          
+        <div class="clearfix"></div>           
+      </section> 
+
+      <div class="tg-btnarea">
+          <div class="info-div" ng-show="isNotFound">
+              <p class="alert alert-warning">Oops! No match found based on your search criteria.<br>
+              <a href="" ng-click="goBack()"> Try again</a></p>           
+          </div>
+      </div>
+ 
 
         </div>
             </div>

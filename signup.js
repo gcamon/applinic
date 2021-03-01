@@ -219,6 +219,7 @@ var signupRoute = function(model,sms,geonames,paystack,io,transporter) {
 												doctor_lastname:  referral.lastname,
 												doctor_profile_pic_url: referral.profile_pic_url,
 												service_access: true,
+												doctor_email: referral.email,
 												doctor_specialty: referral.specialty					
 											});
 
@@ -289,6 +290,7 @@ var signupRoute = function(model,sms,geonames,paystack,io,transporter) {
 												doctor_name: User.name,
 												doctor_profile_pic_url: User.profile_pic_url,
 												service_access: true,
+												doctor_email: User.email,
 												doctor_specialty: User.specialty					
 											});
 
