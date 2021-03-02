@@ -108,6 +108,11 @@ function calculate_age(dob) {
   }
 }
 
+function testNumber(str) {
+  var intRegex = /[0-9 -()+]+$/;
+  return intRegex.test(str)
+}
+
 var basicRoute = function (model,sms,io,streams,client,transporter,opentok) { 
 
   /*var transporter = nodemailer.createTransport({
@@ -14203,7 +14208,8 @@ router.get("/about-us",function(req,res){
 
 router.get('/patient/dob',function(req,res){
   if(req.query.id){
-    res.render('dob',{id:req.query.id})
+    var message = req.query.msg || "";
+    res.render('dob',{id:req.query.id,message:message})
   } else {
     res.redirect('/login')
   }
@@ -14211,22 +14217,26 @@ router.get('/patient/dob',function(req,res){
 
 router.post('/patient/dob',function(req,res){
   if(req.body.id){
-   
-    model.user.findById(req.body.id)
-    .exec(function(err,user){
-      if(err) throw err;
-      if(user){
-        var combineVals = req.body.year + "-" + req.body.month + "-" + req.body.day;
-        req.body.dob = combineVals;
-        var age = calculate_age(req.body.dob);
-        user.dob = req.body.dob;
-        user.age = (age.value > 1) ? (age.value + " " + age.type + "s") : (age.value + " " + age.type);
-        user.save(function(err,info){
-          if(err) throw err;
-          res.redirect("/login");
-        })
-      }
-    })
+    if(testNumber(req.body.year) && testNumber(req.body.month) && testNumber(req.body.day)){
+      model.user.findById(req.body.id)
+      .exec(function(err,user){
+        if(err) throw err;
+        if(user){
+          var combineVals = req.body.year + "-" + req.body.month + "-" + req.body.day;
+          req.body.dob = combineVals;
+          var age = calculate_age(req.body.dob);
+          user.dob = req.body.dob;
+          user.age = (age.value > 1) ? (age.value + " " + age.type + "s") : (age.value + " " + age.type);
+          user.save(function(err,info){
+            if(err) throw err;
+            res.redirect("/login");
+          })
+        }
+      })
+    } else {
+      var url = "/patient/dob?id=" + req.body.id + "&msg=Invalid input";
+      res.redirect(url)
+    }
   } else {
     res.redirect('/login')
   }
