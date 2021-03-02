@@ -415,6 +415,11 @@ app.controller('loginController',["$scope","$http","$location","$window","$resou
       }
 
       login.logPerson($scope.login,function(data){   
+        
+      if(data.NO_DOB){
+        $window.location.href = "/patient/dob?id=" + data.id; 
+        return;
+      }
 
       if (data.isLoggedIn) {  
 

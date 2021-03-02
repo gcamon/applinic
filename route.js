@@ -84,6 +84,30 @@ function genHash(count) {
     return text;
 }
 
+
+function calculate_age(dob) {
+  var years = moment().diff(dob, 'years');
+  var months = moment().diff(dob, 'months');
+  var days = moment().diff(dob, 'days');
+
+  if(years){
+    return {
+      value: years,
+      type: "year",          
+    }
+  } else if(months) {
+    return {
+      value: months,
+      type: "month"
+    }
+  } else {
+    return {
+      value: days,
+      type: "day"
+    }
+  }
+}
+
 var basicRoute = function (model,sms,io,streams,client,transporter,opentok) { 
 
   /*var transporter = nodemailer.createTransport({
@@ -14103,30 +14127,6 @@ router.put("/user/charts",function(req,res){
        
     }
 
-
-    function calculate_age(dob) {
-      var years = moment().diff(dob, 'years');
-      var months = moment().diff(dob, 'months');
-      var days = moment().diff(dob, 'days');
-
-      if(years){
-        return {
-          value: years,
-          type: "year",          
-        }
-      } else if(months) {
-        return {
-          value: months,
-          type: "month"
-        }
-      } else {
-        return {
-          value: days,
-          type: "day"
-        }
-      }
-    }
-
   } else {
     res.json({});
   }
@@ -14196,17 +14196,52 @@ router.get("/robots.txt",function(req,res){
   res.sendFile(path.join(__dirname, 'robots.txt'));
 });
 
-router.get('/404.html',function(req,res){
-  res.render('notfound');
-});
+
+router.get("/about-us",function(req,res){
+  res.render("about-us")
+})
+
+router.get('/patient/dob',function(req,res){
+  if(req.query.id){
+    res.render('dob',{id:req.query.id})
+  } else {
+    res.redirect('/login')
+  }
+})
+
+router.post('/patient/dob',function(req,res){
+  if(req.body.id){
+   
+    model.user.findById(req.body.id)
+    .exec(function(err,user){
+      if(err) throw err;
+      if(user){
+        var combineVals = req.body.year + "-" + req.body.month + "-" + req.body.day;
+        req.body.dob = combineVals;
+        var age = calculate_age(req.body.dob);
+        user.dob = req.body.dob;
+        user.age = (age.value > 1) ? (age.value + " " + age.type + "s") : (age.value + " " + age.type);
+        user.save(function(err,info){
+          if(err) throw err;
+          res.redirect("/login");
+        })
+      }
+    })
+  } else {
+    res.redirect('/login')
+  }
+})
 
 router.get('*',function(req,res){
   res.render('notfound');
 });
 
-router.get("/about-us",function(req,res){
-  res.render("about-us")
-})
+router.get('/404.html',function(req,res){
+  res.render('notfound');
+});
+
+
+
 
 /*
  var testPhone = new model.authCheck({

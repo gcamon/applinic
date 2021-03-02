@@ -55,18 +55,17 @@ router.get('/user/dashboard',function(req,res){
     
       if(data.admin && req.user.user_id === process.env.ADMIN_ID && req.user.type == "admin"){
         res.json({typeOfUser:"admin",isLoggedIn: true,balance: req.user.ewallet.available_amount,user_id:req.user.user_id});
+      } else if(req.user.type === "Patient" && !req.user.dob) {
+        res.json({typeOfUser:"Patient",NO_DOB: true,id:req.user._id});
       } else {
         data.presence = true;
         data.set_presence.general = true;
-        data.save(function(err,info){
-          console.log("presence is true");
-        });
+        data.save(function(err,info){});
         normalUser();
       }
     });
 
-    function normalUser() {  
-      //console.log(req.user.stock_update)        
+    function normalUser() {       
       res.json({
         isLoggedIn: true,
         name: req.user.name,
@@ -136,8 +135,6 @@ router.get('/user/change-password',function(req,res){
       return;
     }
 
-    console.log(user)
-
 
     if(user) {
       
@@ -163,7 +160,7 @@ router.get('/user/change-password',function(req,res){
 
       otp.save(function(err,info){
         if(err) throw err;
-        console.log("otp saved!");
+        
       }); 
 
 
@@ -180,10 +177,10 @@ router.get('/user/change-password',function(req,res){
         })
         .then(
           function(call){
-            console.log(call.sid)
+            
           },
           function(err) {
-            console.log(err)
+           
           }
         );
       } else {
@@ -200,8 +197,7 @@ router.get('/user/change-password',function(req,res){
         )
 
         function callBack(err,responseData) {
-          console.log(err);
-          console.log(responseData);
+        
         }
 
       }
