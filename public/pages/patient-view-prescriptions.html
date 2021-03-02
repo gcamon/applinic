@@ -1,19 +1,3 @@
-
-
-		
-<!--<div class="col-sm-12 col-md-12 col-lg-12">
-<div class="row">		
-	<ul class="prescription-options col-sm-12 col-md-7 col-lg-7" style="padding-left: 0">			
-		<li ng-click="recent()" ng-class="{highlight: isRecent === true}">most recent</li>
-		<li ng-click="three()" ng-class="{highlight: isThree === true}">last three months</li>
-		<li ng-click="six()" ng-class="{highlight: isSix === true}">last six months</li>
-		<li ng-click="all()" ng-class="{highlight: isAll === true}">all</li>
-	</ul>
-	<div class="col-sm-12 col-md-5 col-lg-5 prescription-options" style="padding-bottom: 10px">
-		<input type="text" name="" placeholder="Filter by drug name, center name, date sent, date received, etc" ng-model="filterResult" class="form-control" style="width: 90%">
-	</div>
-</div>
-</div>-->
 <div class="card-center-1">
 	<a href="#/my-doctors" class="btn btn-neutral"><i class="fa fa-arrow-left"></i> Back</a>
 </div>
@@ -36,12 +20,6 @@
 	</div>
 
 	<div  style="line-height: 30px;" id="{{'pres' + docInfo.ref_id + docInfo.prescriptionId}}" class="panel-collapse collapse p-1" role="tabpanel" aria-labelledby="headingfifty">
-
-		
-			<!--<img alt="image description" ng-src="{{docInfo.Doctor_profile_pic_url}}" style="max-width: 200px; max-height:200px" class="shadow">-->
-	    
-
-	      
 
 	       <strong style="font-weight: bold;padding: 15px 0px 5px;line-height: 35px" > Prescribed by: </strong> <span>{{docInfo.title}}  {{docInfo.doctor_firstname}} {{docInfo.doctor_lastname}}</span> <br>
 
@@ -98,33 +76,22 @@
 		    		
 		    	</div>
 		    	<div class="mobile-item-display">				    		
-		    		<table class="table pb-1" ng-repeat="prescription in docInfo.prescription_body">
-		    		    <!--<thead><td><label>sn:</label> {{prescription.sn}}</td></thead>
-		    			<thead><td><label>Name:</label> {{prescription.drug_name}}</td></thead>
-		    			<thead><td><label>Dosage:</label> {{prescription.dosage}}</td></thead>
-		    			<thead><td><label>Frequency:</label> {{prescription.frequency}}</td></thead>
-		    			<thead><td><label>Duration:</label> {{prescription.duration}}</td></thead>
-		    			<thead><td><label>Select:</label> <label class="custom-control custom-checkbox">
-						   <input type="checkbox" class="custom-control-input" ng-model= "prescription.picked" >
-						  	<span class="custom-control-indicator"></span>
-						  	<span class="custom-control-description" style="opacity:0;">.</span>
-						</label></td></thead>-->
-						<thead>
-							<td> {{prescription.sn}}) </td>
-							<td> {{prescription.drug_name}}</td>
-							<td> ( {{prescription.dosage}} )</td>
-							<td> {{prescription.frequency}}</td>
-							<td> {{prescription.duration}}</td>
-							<td> 
-								<label class="custom-control custom-checkbox">
-						   		<input type="checkbox" class="custom-control-input" ng-model= "prescription.picked" >
-						  		<span class="custom-control-indicator"></span>
-						  		<span class="custom-control-description" style="opacity:0;">.</span>
-								</label>
-							</td>
-						</thead>
-		    			<hr>
-		    		</table>
+		    		<section  ng-repeat="prescription in docInfo.prescription_body" style="padding: 5px 0;border-bottom: 1px solid #eee;position: relative;width: 100%">
+		    				<div style="width: 98%">   
+								<span> {{prescription.sn}}) </span>&nbsp;
+								<span> {{prescription.drug_name}}</span>&nbsp;
+								<span> ( {{prescription.dosage}} )</span>&nbsp;
+								<span> {{prescription.frequency}}</span>&nbsp;
+								<span> {{prescription.duration}}</span>
+								<div style="position: absolute;right: -12px;bottom: 0px"> 
+									<label class="custom-control custom-checkbox">
+							   		<input type="checkbox" class="custom-control-input" ng-model= "prescription.picked">
+							  		<span class="custom-control-indicator"></span>
+							  		<span class="custom-control-description" style="opacity:0;">.</span>
+									</label>
+								</div>
+							</div>
+		    		</section>
 		    	</div>
 				
 			</div>
@@ -132,14 +99,14 @@
 		<div class="p-1">
 			<div  style="position: relative;">					
 					
-					<!--<i ng-print  print-element-id="{{docInfo.prescriptionId}}" class="fa fa-print btn btn-success" aria-hidden="true" style="font-size: 18px;margin-right:0px;cursor:pointer;padding: 5px 15px" title="Print this prescription"></i>-->
+				
 					<a href="" style="font-size: 18px;margin-right:0px;" ng-click="email(docInfo,'Prescription')"><i  class="fa fa-share-alt btn btn-simple btn-sm text-primary" aria-hidden="true"  title="send prescription to an email"></i></a>
 					
 
 					<a href="" ng-click="courier(docInfo)" style="font-size: 18px;margin-right:0px;"><i class="fa fa-motorcycle btn btn-simple btn-sm text-primary" aria-hidden="true"   title="Use our courier service"></i></a>
 
 					<a href="" style="font-size:18px;margin-right:0px;" ng-click="forwardPrescription(docInfo)"><i class="fa fa-share btn btn-simple btn-sm text-primary" aria-hidden="true"  title="Forward this prescription to a Phamarcy"></i></a>
-					<!--<span ng-click="deletePrescription(docInfo.prescriptionId)"><i class="fa fa-remove" style="color:green;font-size: 18px;margin-right:20px;cursor:pointer" title="Delete this prescription" ></i></span>-->
+					
 					<a href="" class="btn btn-simple btn-sm" style="float: right;color: green" ng-click="trackedPrescription(docInfo.prescriptionId,docInfo)" title="Look up pharmacies this prescription has been sent to">Track record</a>
 				
 			</div>				 

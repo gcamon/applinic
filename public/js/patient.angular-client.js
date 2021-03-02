@@ -529,7 +529,7 @@ app.config(['$paystackProvider','$routeProvider',
  })
 
  .when("/p/selected-appointment",{
-  templateUrl: "/assets/pages/patient/patient-appointment.html",
+  templateUrl: "patient-appointment.html",//"/assets/pages/patient/patient-appointment.html",
   controller: 'selectedAppointmentControllerForPatient'
  })
 
