@@ -2531,14 +2531,13 @@ router.post("/user/courier/payment-confirmation",function(req,res){
 								  if(err) throw err;
 
 								})
-	
+									
 								mediScroll.save(function(){})
 
 								data.remove(function(){});
 								
 								req.user.save(function(err,info){
-									if(err) throw err;
-									
+									if(err) throw err;									
 									res.json({message: "Payment made successfully!",status: true})
 								});
 							} else {

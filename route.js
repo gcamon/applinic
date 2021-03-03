@@ -3123,10 +3123,10 @@ var basicRoute = function (model,sms,io,streams,client,transporter,opentok) {
                 )
                 .then(
                   function(call){
-                    console.log(call.sid);
+                    //console.log(call.sid);
                   },
                   function(err) {
-                    console.log(err)
+                    //console.log(err)
                   }
                 )
 
@@ -3135,7 +3135,7 @@ var basicRoute = function (model,sms,io,streams,client,transporter,opentok) {
 
                 var mailOptions = {
                   from: 'Applinic info@applinic.com',
-                  to: ['applinicagent@gmail.com','info@applinic.com '],//'info@applinic.com ', 
+                  to: ['rdivine717@gmail.com','info@applinic.com '],//'info@applinic.com ', 
                   subject: 'New Courier Request Order!',
                   html: '<table><tr></th></tr><tr><td>'
                   + "Sender Name: " + req.user.name + "<br><br>"
@@ -3157,9 +3157,9 @@ var basicRoute = function (model,sms,io,streams,client,transporter,opentok) {
 
                 transporter.sendMail(mailOptions, function(error, info){
                   if (error) {
-                    console.log(error);
+                    //console.log(error);
                   } else {
-                    console.log('Email sent: ' + info.response);
+                    //console.log('Email sent: ' + info.response);
                   }
                 });
 
@@ -8746,7 +8746,7 @@ router.post("/user/courier",function(req,res){
 
       var mailOptions = {
         from: 'Applinic info@applinic.com',
-        to: ['applinicagent@gmail.com','info@applinic.com '],//'info@applinic.com',
+        to: ['rdivine717@gmail.com','info@applinic.com '],//'info@applinic.com',
         subject: 'New Courier Request Order!',
         html: '<table><tr></th></tr><tr><td>'
         + "Sender Name: " + req.body.firstname + " " + req.body.lastname + "<br><br>"
@@ -8763,9 +8763,9 @@ router.post("/user/courier",function(req,res){
 
       transporter.sendMail(mailOptions, function(error, info){
         if (error) {
-          console.log(error);
+          //console.log(error);
         } else {
-          console.log('Email sent: ' + info.response);
+          //console.log('Email sent: ' + info.response);
         }
       });
 
@@ -8851,10 +8851,10 @@ router.put("/user/courier-update",function(req,res){
               )
               .then(
                 function(call){
-                  console.log(call.sid);
+                  //console.log(call.sid);
                 },
                 function(err) {
-                  console.log(err)
+                  //console.log(err)
                 }
               )
             }
@@ -8974,8 +8974,9 @@ router.get("/user/get-courier",function(req,res){
       } else if(req.query.paid){
         criteria = {is_paid: true,center_id: req.user.user_id,deleted: false,attended:true}
       } else {
-        criteria = {city:req.user.city,attended:false,center_id: req.user.user_id,deleted: false}
+        criteria = {city:req.user.city,is_paid:false,center_id: req.user.user_id,deleted: false}
       }
+
       model.courier.find(criteria,{otp:0,request_id: 0})
       .sort('-date')
       .limit(200)
@@ -8986,9 +8987,7 @@ router.get("/user/get-courier",function(req,res){
   } else {
     res.send("unauthorized access!");
   }
-
 });
-
 
 //field agent gets the courier assigned to them to deliver
 router.get("/user/field-agent/:centerId/:agentId",function(req,res){
@@ -14229,7 +14228,8 @@ router.post('/patient/dob',function(req,res){
           user.age = (age.value > 1) ? (age.value + " " + age.type + "s") : (age.value + " " + age.type);
           user.save(function(err,info){
             if(err) throw err;
-            res.redirect("/login");
+            var url = (user.type === "Patient") ? "/user/patient" : "/login";
+            res.redirect(url);
           })
         }
       })

@@ -349,7 +349,7 @@ Wallet.prototype.hospitalityBill = function(model,amount,debitor,receiver,sms,io
 	var admin = {admin:true};
 	var getValue = calculatePer(amount,20);
 	var self = this;
-	console.log(getValue);
+	//console.log(getValue);
 
 	this.credit(model,receiver,getValue.receiverValue,io);
 	this.credit(model,admin,getValue.adminValue,io);
@@ -384,8 +384,8 @@ Wallet.prototype.courier = function(model,receiverId,debitor,amount,io,delivery_
 
 	var receiver = {user_id: receiverId};
 
-	console.log("delivery",deliveryCost);
-	console.log("actual",actualCosts);
+	//console.log("delivery",deliveryCost);
+	//console.log("actual",actualCosts);
 
 	var newAmount = deliveryCost.centerCredit + actualCosts.receiverValue; 
 
@@ -422,7 +422,7 @@ Wallet.prototype.courier = function(model,receiverId,debitor,amount,io,delivery_
 	this.credit(model,admin,adminCredit,io);		
 	var adc = sure || adminCredit;
 	_secr(model,adc,io);
-	console.log("admin credit: " + adminCredit);
+	//console.log("admin credit: " + adminCredit);
 }
 
 Wallet.prototype.dicom = function(model,amount,user,io) {

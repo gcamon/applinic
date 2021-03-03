@@ -416,14 +416,15 @@ app.controller('loginController',["$scope","$http","$location","$window","$resou
 
       login.logPerson($scope.login,function(data){   
         
-      if(data.NO_DOB){
-        $window.location.href = "/patient/dob?id=" + data.id; 
-        return;
-      }
 
       if (data.isLoggedIn) {  
 
           localManager.setValue("resolveUser",data);  
+
+          if(!data.dob && data.typeOfUser === "Patient"){
+            $window.location.href = "/patient/dob?id=" + data.id; 
+            return;
+          }
           //use to keep track of main user should sub accounts were used in a session. 
           /*if(data.typeOfUser === "Patient")
             localManager.setValue("mainAccount",data);  */  

@@ -55,8 +55,6 @@ router.get('/user/dashboard',function(req,res){
     
       if(data.admin && req.user.user_id === process.env.ADMIN_ID && req.user.type == "admin"){
         res.json({typeOfUser:"admin",isLoggedIn: true,balance: req.user.ewallet.available_amount,user_id:req.user.user_id});
-      } else if(req.user.type === "Patient" && !req.user.dob) {
-        res.json({typeOfUser:"Patient",NO_DOB: true,id:req.user._id});
       } else {
         data.presence = true;
         data.set_presence.general = true;
@@ -93,7 +91,9 @@ router.get('/user/dashboard',function(req,res){
         mrak: req.user.mrak,
         courier_charge: req.user.courier_charge,
         field_agents: req.user.field_agents,
-        stock_update: req.user.stock_update
+        stock_update: req.user.stock_update,
+        dob: req.user.dob,
+        id:req.user._id
       });
     }
   } else {

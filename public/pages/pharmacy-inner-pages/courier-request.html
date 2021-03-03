@@ -136,7 +136,7 @@
 
 			<div style="margin-top:10px" >
 				<hr>		
-				<button ng-click="courierBilling(request)" ng-class="{'btn btn-success' : request.attended == true}" class="btn btn-simple text-danger" ng-if="!request.is_paid">{{(request.verified) ? "Re-send billing" : "Bill patient"}}</button> &nbsp;
+				<button ng-click="courierBilling(request)" ng-class="{'btn btn-success' : request.attended == true}" class="btn btn-primary" ng-if="!request.is_paid">{{(request.verified) ? "Re-send billing" : "Bill patient"}}</button> &nbsp;
 				<button ng-click="decline(request)"  class="btn btn-simple text-danger" ng-if="!request.verified"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff;" ng-if="request.loading"></i>{{(request.loading) ? "" : "Decline"}}</button>
 			</div>		
 		</div>
