@@ -3,6 +3,9 @@ Disallow: /download/
 Disallow: /pdf/
 Disallow: /api/
 Disallow: /report/
+Disallow: /node_modules/
+Disallow: /assets/
+Disallow: /public/
 Disallow: /chat-files/
 
 
