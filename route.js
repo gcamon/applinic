@@ -335,10 +335,10 @@ var basicRoute = function (model,sms,io,streams,client,transporter,opentok) {
 
     transporter.sendMail(mailOptions, function(error, info){
       if (error) {
-        console.log(error);
+        //console.log(error);
         res.json({status: false})
       } else {
-        console.log('Email sent: ' + info.response);
+        //console.log('Email sent: ' + info.response);
         res.json({status: true});
       }
     });
@@ -2495,7 +2495,8 @@ var basicRoute = function (model,sms,io,streams,client,transporter,opentok) {
                       medical_records: data.medical_records,
                       prescriptions: data.medications,
                       reports: data.medical_reports,
-                      status: true
+                      status: true,
+                      access: true
                     }
                   )
                 } else {
@@ -2519,11 +2520,12 @@ var basicRoute = function (model,sms,io,streams,client,transporter,opentok) {
                     }*/
                     
                     res.json(
-                       {                      
+                      {                      
                         prescriptions: presArr,
                         status: false,
                         medical_records: data.medical_records,
-                        reports: []
+                        reports: data.medical_reports,
+                        access: false
                       }
                     );
 
@@ -2705,33 +2707,33 @@ var basicRoute = function (model,sms,io,streams,client,transporter,opentok) {
       if(req.user){   
         var patientId = req.query.id || null;     
         var projection = {
-            firstname: 1,
-            lastname: 1,
-            profile_pic_url: 1,       
-            address: 1,
-            city: 1,
-            country: 1,
-            age: 1,
-            gender: 1,
-            body_weight: 1,
-            medical_records: 1,
-            user_id: 1,
-            type: 1,
-            presence:1,
-            title:1,
-            phone:1,
-            email:1
-
+          firstname: 1,
+          lastname: 1,
+          profile_pic_url: 1,       
+          address: 1,
+          city: 1,
+          country: 1,
+          age: 1,
+          gender: 1,
+          body_weight: 1,
+          medical_records: 1,
+          user_id: 1,
+          type: 1,
+          presence:1,
+          title:1,
+          phone:1,
+          email:1,
+          medications:1,
+          medical_reports:1
         }
 
         model.user.findOne({ user_id: patientId},projection,function(err,data){
-            if(err) throw err;
-            if(data) {
-              res.send(data);
-            } else {
-              res.send({error:"patient Not found"});
-            }
-            
+          if(err) throw err;
+          if(data) {
+            res.send(data);
+          } else {
+            res.send({error:"patient Not found"});
+          }   
         });
 
       } else {
@@ -3180,6 +3182,7 @@ var basicRoute = function (model,sms,io,streams,client,transporter,opentok) {
               doctor_address: req.user.address,
               doctor_verified: req.user.verified,   
               doctor_id: req.user.user_id,
+              type: req.user.type,
               doctor_work_place: req.user.work_place,
               doctor_city: req.user.city,
               doctor_country: req.user.country,
@@ -3524,6 +3527,7 @@ var basicRoute = function (model,sms,io,streams,client,transporter,opentok) {
               doctor_id: req.user.user_id,
               doctor_work_place: req.user.work_place,
               doctor_city: req.user.city,
+              type: req.user.type,
               doctor_country: req.user.country,
               lab_analysis: req.body.lab_analysis,
               scan_analysis: req.body.scan_analysis,
@@ -7429,15 +7433,16 @@ var basicRoute = function (model,sms,io,streams,client,transporter,opentok) {
               prescriptionId: req.body.prescriptionId,
               doctor_firstname: (req.user.firstname || req.user.name),
               title: req.user.title,
+              type: req.user.type,
               doctor_lastname: req.user.lastname,
               doctor_address: req.user.address,   
-              doctor_id: (req.user.type == "Doctor") ? req.user.user_id : "",
-              doctor_work_place: (req.user.type == "Doctor") ?  req.user.work_place : "",
-              doctor_city: (req.user.type == "Doctor") ? req.user.city : "",
-              doctor_country: (req.user.type == "Doctor") ? req.user.country : "",
+              doctor_id: req.user.user_id,
+              doctor_work_place: req.user.work_place,
+              doctor_city: req.user.city,
+              doctor_country: req.user.country,
               lab_analysis: req.body.lab_analysis,
               scan_analysis: req.body.scan_analysis,
-              doctor_profile_pic_url: (req.user.type == "Doctor") ? req.user.profile_pic_url : "",
+              doctor_profile_pic_url: req.user.profile_pic_url,
               patient_id : req.body.patient_id || user.user_id,
               patient_profile_pic_url: req.body.patient_profile_pic_url || user.profile_pic_url,
               patient_firstname: req.body.firstname || user.firstname,
@@ -7465,7 +7470,7 @@ var basicRoute = function (model,sms,io,streams,client,transporter,opentok) {
             };
 
             if(!req.body.ref_id || req.body.initViaCourier){
-              user.medications.push(preObj);
+              user.medications.unshift(preObj);
             }
             
             user.prescription_tracking.unshift(track_record);
@@ -9349,7 +9354,6 @@ router.get("/patient/EM/profile/:id",function(req,res){
 
 router.put("/patient/get-medical-record/em",function(req,res){      
   model.user.findOne({user_id: req.body.patient_id},{medical_records: 1,medications:1},function(err,data){
-    console.log(data.medical_records.laboratory_test)
     res.json({medical_records: data.medical_records,prescriptions: data.medications})
     //Note from model, medications holds all prescriptions while medical_records holds all laboratory and radiology tests
     // though there is prescription property on medical_record obj but not used yet.
@@ -14197,7 +14201,9 @@ router.get("/sitemap.xml",function(req,res){
 });
 
 router.get("/robots.txt",function(req,res){
-  res.sendFile(path.join(__dirname, 'robots.txt'));
+  //res.sendFile(path.join(__dirname, 'robots.txt'));
+  res.type('text/plain');
+  res.send("User-agent: *\nDisallow: /download/\nDisallow: /pdf/\nDisallow: /api/\nDisallow: /report/\nDisallow: /chat-files/");
 });
 
 

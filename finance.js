@@ -867,7 +867,6 @@ var basicPaymentRoute = function(model,sms,io,paystack,client,transporter){
 	// the percentage will be contoled by a percentage setter controlled by the admin.
 	router.post("/user/payment/patient-billing",function(req,res){
 		if(req.user){
-			console.log(req.body);
 			model.otpSchema.findOne({otp:req.body.otp},function(err,data){
 				if(err) throw err;
 				if(!data){
@@ -948,7 +947,7 @@ var basicPaymentRoute = function(model,sms,io,paystack,client,transporter){
 									}
 									patient.save(function(err,info){
 										if(err) throw err;
-										console.log("Patient prescription body updated.")
+										//console.log("Patient prescription body updated.")
 									})
 								})
 							}

@@ -1,8 +1,11 @@
-
 User-agent: *
-Disallow: /uploads/
+Disallow: /download/
 Disallow: /pdf/
-Disallow: /public/
+Disallow: /api/
+Disallow: /report/
+Disallow: /chat-files/
+
+
 
 
 

@@ -1,0 +1,378 @@
+<div class="card-center-1">
+    <a href="#{{'/doctor-patient/treatment/' + patientInfo.user_id}}" class="btn btn-neutral"><i class="fa fa-arrow-left"></i> Back</a>
+</div>
+
+<div style="text-align: center;">
+	<i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange;font-size: 24px" ng-if="loading"></i>
+</div>
+
+<div class="card-center-1 card">
+	<div class="row">	
+		<div class="col-md-3 col-xs-3 pl-2 pt-2 pb-2">
+			<img src="{{patientInfo.profile_pic_url}}" style="max-height: 70px; width: auto;">
+		</div>
+		<div class="col-md-7 col-xs-7 pl-2 pt-2 pb-2">
+	    	<label class="block pb-0 mb-0">{{patientInfo.title}} {{patientInfo.firstname}} {{patientInfo.firstname}}</label>
+	    	<span>{{patientInfo.gender}}</span><br>
+	    	<span>{{patientInfo.age}}</span><br>
+	    	<span>{{patientInfo.city}}</span>
+	    </div>
+    </div>
+    
+</div>
+<div class="card-center-1 card pr-1">
+	<select class="form-control">
+		<option selected>Prescription</option>
+		<option>Laboratory</option>
+		<option>Radiology</option>
+		<option>Ultra-Sound</option>
+		<option>ECG</option>
+		<option>Endoscopy</option>
+		<option>Other Procedures</option>
+		<option>Chart (BP,BS,Temp etc)</option>
+		<option>Medical Reports</option>
+		<option>Treatment Sessions</option>
+		<option>Imported Medical Records</option>
+		<option>Refer to a Specialist</option>
+		<option>Generate Bill</option>
+	</select>
+</div>
+<div class="card-center-1 pr-1 mt-2" style="position: relative;">
+	<h5 class="h4">Prescriptions</h5>
+	<button class="btn btn-primary" ng-click="writePrescription()" style="position: absolute;top: 0px; right: 10px">New</button>
+	<label>
+		<label class="custom-control custom-checkbox">
+	   		<input type="checkbox" class="custom-control-input" ng-model= "prescription.isSorted" >
+	  		<span class="custom-control-indicator"></span>
+	  		<span class="custom-control-description">Sort by who prescribed.</span>
+	   </label>
+	</label>
+</div>
+
+<div style="" class="card card-center-1 mb-1"  ng-repeat="docInfo in prescriptionRecordsResult |filter : filterResult | orderBy: '-date'" id="{{docInfo.prescriptionId}}" ng-if="!prescription.isSorted">	
+<div>
+
+	<div class="pl-1 pt-1" style="position: relative;">
+		<button class="collapsed dropdown-toggle btn btn-neutral btn-sm" role="button" data-toggle="collapse" data-parent="#accordion" href="#{{'pres' + docInfo.ref_id + docInfo.prescriptionId}}" aria-expanded="false" aria-controls="collapsefifty">View details</button>
+		<span am-time-Ago="docInfo.date" style="position: absolute;top:20px;right: 20px"></span>
+	</div>
+
+	<div  style="line-height: 30px;" id="{{'pres' + docInfo.ref_id + docInfo.prescriptionId}}" class="panel-collapse collapse p-1" role="tabpanel" aria-labelledby="headingfifty">
+
+	       <strong style="font-weight: bold;padding: 15px 0px 5px;line-height: 35px" > Prescribed by: </strong> <span>{{docInfo.title}}  {{docInfo.doctor_firstname}} {{docInfo.doctor_lastname}}</span> <br>
+
+	       <span ng-if="docInfo.doctor_work_place"><strong style="" ng-if="docInfo.doctor_specialty" >Specialty: </strong> <span>{{docInfo.doctor_specialty}}</span><br></span>
+
+	       <span ng-if="docInfo.doctor_work_place"><strong > Place of work: </strong> <span>{{docInfo.doctor_work_place}}</span><br></span>
+
+	       <strong> Address:</strong> <span>{{docInfo.doctor_address}} {{docInfo.doctor_city}} {{docInfo.doctor_country}}</span><br>
+	      
+
+	       <strong>Date of prescription</strong> : <span>{{docInfo.date | date: "mediumDate"}} ( <span am-time-Ago="docInfo.date"></span> )</span><br>
+
+	       <strong>Prescription ID :</strong> <span>{{(docInfo.copy) ? "Copied!" : docInfo.prescriptionId}}</span>
+			<a href="" clipboard supported="supported" text="docInfo.prescriptionId" on-copied="success(docInfo)" on-error="fail(err)" title="{{copy}}" class="fa fa-copy text-danger" style="padding: 5px"> Copy</a><br>	
+
+	       <p style="padding-right:10px;word-wrap: break-word;" ng-show="docInfo.explanation"><strong>Description</strong> : <span>{{docInfo.explanation}}</span></p>
+
+	       <p style="color:red;padding: 10px 20px 0 0" ng-if="!docInfo.doctor_work_place"><i class="fa fa-warning"></i> This prescription may have been written by non-professional.</p>
+
+	        <a href="{{docInfo.doctor_profile_url}}" title="view profile" ng-if="docInfo.doctor_work_place" class="text-info">View doctor's profile</a><br>
+	   
+	</div>
+	<div class="p-1" style="margin-top: -15px">      
+	    		
+		    	<div class="no-mobile-item-display">
+		    		
+		    			<table class="table table-striped">
+		    				<tr>
+		    					<thead>
+		    						<th>S/N</th>
+		    						<th>Drug Name</th>
+		    						<th>Dosage</th>
+		    						<th>Frequency</th>
+		    						<th>Duration</th>
+		    						<th class="text-muted">Select</th>		    						
+		    					</thead>        					
+		    				</tr>
+		    				<tr>
+		    					<tbody ng-repeat="prescription in docInfo.prescription_body">	    						
+		    						<td>{{prescription.sn}}</td>
+		    						<td>{{prescription.drug_name}}</td>
+		    						<td>{{prescription.dosage}}</td>
+		    						<td>{{prescription.frequency}}</td>
+		    						<td>{{prescription.duration}}</td>
+		    						<td><label class="custom-control custom-checkbox">
+									   <input type="checkbox" class="custom-control-input" ng-model= "prescription.picked" >
+									  	<span class="custom-control-indicator"></span>
+									  	<span class="custom-control-description" style="opacity:0;">.</span>
+									   </label>
+									</td>				
+		    					</tbody>
+		    				</tr>
+		    			</table>
+		    		
+		    	</div>
+		    	<div class="mobile-item-display">				    		
+		    		<section  ng-repeat="prescription in docInfo.prescription_body" style="padding: 5px 0;border-bottom: 1px solid #eee;position: relative;width: 100%">
+		    				<div style="width: 98%">   
+								<span> {{prescription.sn}}) </span>&nbsp;
+								<span> {{prescription.drug_name}}</span>&nbsp;
+								<span> ( {{prescription.dosage}} )</span>&nbsp;
+								<span> {{prescription.frequency}}</span>&nbsp;
+								<span> {{prescription.duration}}</span>
+								<div style="position: absolute;right: -12px;bottom: 0px"> 
+									<label class="custom-control custom-checkbox">
+							   		<input type="checkbox" class="custom-control-input" ng-model= "prescription.picked">
+							  		<span class="custom-control-indicator"></span>
+							  		<span class="custom-control-description" style="opacity:0;">.</span>
+									</label>
+								</div>
+							</div>
+		    		</section>
+		    	</div>				
+			</div>
+		</div>
+		<div class="p-1">
+			<div  style="position: relative;">					
+					
+				
+					<!--<a href="" style="font-size: 18px;margin-right:0px;" ng-click="email(docInfo,'Prescription')"><i  class="fa fa-share-alt btn btn-simple btn-sm text-primary" aria-hidden="true"  title="send prescription to an email"></i></a>
+					
+
+					<a href="" ng-click="courier(docInfo)" style="font-size: 18px;margin-right:0px;"><i class="fa fa-motorcycle btn btn-simple btn-sm text-primary" aria-hidden="true"   title="Use our courier service"></i></a>
+
+					<a href="" style="font-size:18px;margin-right:0px;" ng-click="forwardPrescription(docInfo)"><i class="fa fa-share btn btn-simple btn-sm text-primary" aria-hidden="true"  title="Forward this prescription to a Phamarcy"></i></a>-->
+					
+					<a href="" class="btn btn-simple btn-sm" style="float: right;color: green" ng-click="trackedPrescription(docInfo.prescriptionId,docInfo)" title="Look up pharmacies this prescription has been sent to">Track record</a>
+				
+			</div>				 
+				 	
+				 		
+		</div>
+	</div>
+
+	<div ng-if="prescription.isSorted">
+		<section>
+			<div class="card-center-1">
+				<h5>You ({{sortedPrescriptions.mine.length}})</h5>
+			</div>
+			<div  class="card card-center-1 mb-1"  ng-repeat="docInfo in sortedPrescriptions.mine |filter : filterResult | orderBy: '-date'" id="{{docInfo.prescriptionId}}">
+				<div>
+					<div class="pl-1 pt-1" style="position: relative;">
+					<button class="collapsed dropdown-toggle btn btn-neutral btn-sm" role="button" data-toggle="collapse" data-parent="#accordion" href="#{{'pres' + docInfo.ref_id + docInfo.prescriptionId}}" aria-expanded="false" aria-controls="collapsefifty">View details</button>
+					<span am-time-Ago="docInfo.date" style="position: absolute;top:20px;right: 20px"></span>
+				</div>
+
+				<div  style="line-height: 30px;" id="{{'pres' + docInfo.ref_id + docInfo.prescriptionId}}" class="panel-collapse collapse p-1" role="tabpanel" aria-labelledby="headingfifty">
+
+				       <strong style="font-weight: bold;padding: 15px 0px 5px;line-height: 35px" > Prescribed by: </strong> <span>{{docInfo.title}}  {{docInfo.doctor_firstname}} {{docInfo.doctor_lastname}}</span> <br>
+
+				       <span ng-if="docInfo.doctor_work_place"><strong style="" ng-if="docInfo.doctor_specialty" >Specialty: </strong> <span>{{docInfo.doctor_specialty}}</span><br></span>
+
+				       <span ng-if="docInfo.doctor_work_place"><strong > Place of work: </strong> <span>{{docInfo.doctor_work_place}}</span><br></span>
+
+				       <strong> Address:</strong> <span>{{docInfo.doctor_address}} {{docInfo.doctor_city}} {{docInfo.doctor_country}}</span><br>
+				      
+
+				       <strong>Date of prescription</strong> : <span>{{docInfo.date | date: "mediumDate"}} ( <span am-time-Ago="docInfo.date"></span> )</span><br>
+
+				       <strong>Prescription ID :</strong> <span>{{(docInfo.copy) ? "Copied!" : docInfo.prescriptionId}}</span>
+						<a href="" clipboard supported="supported" text="docInfo.prescriptionId" on-copied="success(docInfo)" on-error="fail(err)" title="{{copy}}" class="fa fa-copy text-danger" style="padding: 5px"> Copy</a><br>	
+
+				       <p style="padding-right:10px;word-wrap: break-word;" ng-show="docInfo.explanation"><strong>Description</strong> : <span>{{docInfo.explanation}}</span></p>
+
+				       <p style="color:red;padding: 10px 20px 0 0" ng-if="!docInfo.doctor_work_place"><i class="fa fa-warning"></i> This prescription may have been written by non-professional.</p>
+
+				        <a href="{{docInfo.doctor_profile_url}}" title="view profile" ng-if="docInfo.doctor_work_place" class="text-info">View doctor's profile</a><br>
+				   
+				</div>
+				<div class="p-1" style="margin-top: -15px">      
+				    		
+					    	<div class="no-mobile-item-display">
+					    		
+					    			<table class="table table-striped">
+					    				<tr>
+					    					<thead>
+					    						<th>S/N</th>
+					    						<th>Drug Name</th>
+					    						<th>Dosage</th>
+					    						<th>Frequency</th>
+					    						<th>Duration</th>
+					    						<th class="text-muted">Select</th>		    						
+					    					</thead>        					
+					    				</tr>
+					    				<tr>
+					    					<tbody ng-repeat="prescription in docInfo.prescription_body">	    						
+					    						<td>{{prescription.sn}}</td>
+					    						<td>{{prescription.drug_name}}</td>
+					    						<td>{{prescription.dosage}}</td>
+					    						<td>{{prescription.frequency}}</td>
+					    						<td>{{prescription.duration}}</td>
+					    						<td><label class="custom-control custom-checkbox">
+												   <input type="checkbox" class="custom-control-input" ng-model= "prescription.picked" >
+												  	<span class="custom-control-indicator"></span>
+												  	<span class="custom-control-description" style="opacity:0;">.</span>
+												   </label>
+												</td>				
+					    					</tbody>
+					    				</tr>
+					    			</table>
+					    		
+					    	</div>
+					    	<div class="mobile-item-display">				    		
+					    		<section  ng-repeat="prescription in docInfo.prescription_body" style="padding: 5px 0;border-bottom: 1px solid #eee;position: relative;width: 100%">
+					    				<div style="width: 98%">   
+											<span> {{prescription.sn}}) </span>&nbsp;
+											<span> {{prescription.drug_name}}</span>&nbsp;
+											<span> ( {{prescription.dosage}} )</span>&nbsp;
+											<span> {{prescription.frequency}}</span>&nbsp;
+											<span> {{prescription.duration}}</span>
+											<div style="position: absolute;right: -12px;bottom: 0px"> 
+												<label class="custom-control custom-checkbox">
+										   		<input type="checkbox" class="custom-control-input" ng-model= "prescription.picked">
+										  		<span class="custom-control-indicator"></span>
+										  		<span class="custom-control-description" style="opacity:0;">.</span>
+												</label>
+											</div>
+										</div>
+					    		</section>
+					    	</div>				
+						</div>
+					</div>
+					<div class="p-1">
+						<div  style="position: relative;">					
+							<!--<a href="" style="font-size: 18px;margin-right:0px;" ng-click="email(docInfo,'Prescription')"><i  class="fa fa-share-alt btn btn-simple btn-sm text-primary" aria-hidden="true"  title="send prescription to an email"></i></a>
+							
+
+							<a href="" ng-click="courier(docInfo)" style="font-size: 18px;margin-right:0px;"><i class="fa fa-motorcycle btn btn-simple btn-sm text-primary" aria-hidden="true"   title="Use our courier service"></i></a>
+
+							<a href="" style="font-size:18px;margin-right:0px;" ng-click="forwardPrescription(docInfo)"><i class="fa fa-share btn btn-simple btn-sm text-primary" aria-hidden="true"  title="Forward this prescription to a Phamarcy"></i></a>-->
+							
+							<a href="" class="btn btn-simple btn-sm" style="float: right;color: green" ng-click="trackedPrescription(docInfo.prescriptionId,docInfo)" title="Look up pharmacies this prescription has been sent to">Track record</a>
+							
+						</div>				 
+							 	
+							 		
+					</div>
+				</div>
+				
+		</section>
+
+		<section ng-repeat="j in sortedPrescriptions.others |filter : filterResult | orderBy: '-date'" id="{{docInfo.prescriptionId}}">
+			<div class="mb-1 card-center-1 mt-2">
+				<!--<div class="col-md-3 col-xs-3">
+					<a href="{{j.profile}}"><img src="{{j.profilePic}}" style="max-height: 72px; width: auto;"></a>
+				</div>-->
+				<h5>
+					<a href="{{j.profile}}">
+						{{j.title}} {{j.firstname}} {{j.lastname}} ({{j.prescriptions.length}})
+					</a>
+				</h5>
+				
+			</div>
+			<div class="clearfix"></div>
+			<br>
+			<div  class="card card-center-1 mb-1"  ng-repeat="docInfo in j.prescriptions |filter : filterResult | orderBy: '-date'" id="{{docInfo.prescriptionId}}" ng-if="prescription.isSorted">
+				<div>
+					<div class="pl-1 pt-1" style="position: relative;">
+					<button class="collapsed dropdown-toggle btn btn-neutral btn-sm" role="button" data-toggle="collapse" data-parent="#accordion" href="#{{'pres' + docInfo.ref_id + docInfo.prescriptionId}}" aria-expanded="false" aria-controls="collapsefifty">View details</button>
+					<span am-time-Ago="docInfo.date" style="position: absolute;top:20px;right: 20px"></span>
+				</div>
+
+				<div  style="line-height: 30px;" id="{{'pres' + docInfo.ref_id + docInfo.prescriptionId}}" class="panel-collapse collapse p-1" role="tabpanel" aria-labelledby="headingfifty">
+
+				       <strong style="font-weight: bold;padding: 15px 0px 5px;line-height: 35px" > Prescribed by: </strong> <span>{{docInfo.title}}  {{docInfo.doctor_firstname}} {{docInfo.doctor_lastname}}</span> <br>
+
+				       <span ng-if="docInfo.doctor_work_place"><strong style="" ng-if="docInfo.doctor_specialty" >Specialty: </strong> <span>{{docInfo.doctor_specialty}}</span><br></span>
+
+				       <span ng-if="docInfo.doctor_work_place"><strong > Place of work: </strong> <span>{{docInfo.doctor_work_place}}</span><br></span>
+
+				       <strong> Address:</strong> <span>{{docInfo.doctor_address}} {{docInfo.doctor_city}} {{docInfo.doctor_country}}</span><br>
+				      
+
+				       <strong>Date of prescription</strong> : <span>{{docInfo.date | date: "mediumDate"}} ( <span am-time-Ago="docInfo.date"></span> )</span><br>
+
+				       <strong>Prescription ID :</strong> <span>{{(docInfo.copy) ? "Copied!" : docInfo.prescriptionId}}</span>
+						<a href="" clipboard supported="supported" text="docInfo.prescriptionId" on-copied="success(docInfo)" on-error="fail(err)" title="{{copy}}" class="fa fa-copy text-danger" style="padding: 5px"> Copy</a><br>	
+
+				       <p style="padding-right:10px;word-wrap: break-word;" ng-show="docInfo.explanation"><strong>Description</strong> : <span>{{docInfo.explanation}}</span></p>
+
+				       <p style="color:red;padding: 10px 20px 0 0" ng-if="!docInfo.doctor_work_place"><i class="fa fa-warning"></i> This prescription may have been written by non-professional.</p>
+
+				        <a href="{{docInfo.doctor_profile_url}}" title="view profile" ng-if="docInfo.doctor_work_place" class="text-info">View doctor's profile</a><br>
+				   
+				</div>
+				<div class="p-1" style="margin-top: -15px">      
+				    		
+					    	<div class="no-mobile-item-display">
+					    		
+					    			<table class="table table-striped">
+					    				<tr>
+					    					<thead>
+					    						<th>S/N</th>
+					    						<th>Drug Name</th>
+					    						<th>Dosage</th>
+					    						<th>Frequency</th>
+					    						<th>Duration</th>
+					    						<th class="text-muted">Select</th>		    						
+					    					</thead>        					
+					    				</tr>
+					    				<tr>
+					    					<tbody ng-repeat="prescription in docInfo.prescription_body">	    						
+					    						<td>{{prescription.sn}}</td>
+					    						<td>{{prescription.drug_name}}</td>
+					    						<td>{{prescription.dosage}}</td>
+					    						<td>{{prescription.frequency}}</td>
+					    						<td>{{prescription.duration}}</td>
+					    						<td><label class="custom-control custom-checkbox">
+												   <input type="checkbox" class="custom-control-input" ng-model= "prescription.picked" >
+												  	<span class="custom-control-indicator"></span>
+												  	<span class="custom-control-description" style="opacity:0;">.</span>
+												   </label>
+												</td>				
+					    					</tbody>
+					    				</tr>
+					    			</table>
+					    		
+					    	</div>
+					    	<div class="mobile-item-display">				    		
+					    		<section  ng-repeat="prescription in docInfo.prescription_body" style="padding: 5px 0;border-bottom: 1px solid #eee;position: relative;width: 100%">
+					    				<div style="width: 98%">   
+											<span> {{prescription.sn}}) </span>&nbsp;
+											<span> {{prescription.drug_name}}</span>&nbsp;
+											<span> ( {{prescription.dosage}} )</span>&nbsp;
+											<span> {{prescription.frequency}}</span>&nbsp;
+											<span> {{prescription.duration}}</span>
+											<div style="position: absolute;right: -12px;bottom: 0px"> 
+												<label class="custom-control custom-checkbox">
+										   		<input type="checkbox" class="custom-control-input" ng-model= "prescription.picked">
+										  		<span class="custom-control-indicator"></span>
+										  		<span class="custom-control-description" style="opacity:0;">.</span>
+												</label>
+											</div>
+										</div>
+					    		</section>
+					    	</div>				
+						</div>
+					</div>
+					<div class="p-1">
+						<div  style="position: relative;">					
+							<!--<a href="" style="font-size: 18px;margin-right:0px;" ng-click="email(docInfo,'Prescription')"><i  class="fa fa-share-alt btn btn-simple btn-sm text-primary" aria-hidden="true"  title="send prescription to an email"></i></a>
+							
+
+							<a href="" ng-click="courier(docInfo)" style="font-size: 18px;margin-right:0px;"><i class="fa fa-motorcycle btn btn-simple btn-sm text-primary" aria-hidden="true"   title="Use our courier service"></i></a>
+
+							<a href="" style="font-size:18px;margin-right:0px;" ng-click="forwardPrescription(docInfo)"><i class="fa fa-share btn btn-simple btn-sm text-primary" aria-hidden="true"  title="Forward this prescription to a Phamarcy"></i></a>-->
+							
+							<a href="" class="btn btn-simple btn-sm" style="float: right;color: green" ng-click="trackedPrescription(docInfo.prescriptionId,docInfo)" title="Look up pharmacies this prescription has been sent to">Track record</a>
+							
+						</div>				 
+							 	
+							 		
+					</div>
+				</div>
+
+			</section>
+		</div>
+	</div>

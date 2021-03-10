@@ -31,11 +31,7 @@
                        <option disabled value="" selected="">_Select a patient</option> 
                        <option value="{{p.patient_phone + '/' + p.patient_id}}" ng-repeat="p in patientList">{{p.patient_firstname}} {{p.patient_lastname}}</option>
                     </select>
-                </div>     
-
-               
-
-                        
+                </div>            
                 <br>
                 <label>Add Prescriptions</label><br>           
                 <table class="table-respnsive table-striped no-mobile-item-display">       
@@ -107,7 +103,7 @@
                 <br>
 
                 <div>
-                    <input type="submit" value="Continue" class="btn btn-info"  ng-show="!loading">
+                    <input type="submit" value="Continue" class="btn btn-primary"  ng-show="!loading">
                     <span ng-show="loading">Processing...</span>
                 </div>  
                 </form>          

@@ -254,15 +254,24 @@ app.config(['$paystackProvider','$routeProvider',
  })
 
  .when('/doctor-patient/treatment/:id',{
-  templateUrl: '/assets/pages/specific-patient.html',
-  controller: 'myPatientController',
+  templateUrl: '/assets/pages/doctor/e-case.html',//'/assets/pages/specific-patient.html',
+  controller: 'e-CaseCtrl',//'myPatientController',
   resolve: {
     path: function($location,$rootScope){
       $rootScope.path = $location.path();
     }
   }
- })  
+ }) 
 
+ .when('/e-case-prescription/:id',{
+  templateUrl: '/assets/pages/doctor/e-case-prescription.html',
+  controller: 'e-casePrescriptionCtrl',
+  resolve: {
+    path: function($location,$rootScope){
+      $rootScope.path = $location.path();
+    }
+  }
+ })   
 
  //wallet route
  .when("/wallet",{
@@ -7766,7 +7775,7 @@ app.controller("videoInitController",["$scope","$window","localManager","mySocke
   if($scope.docInfo.presence) {
     $scope.requestVideoCall($scope.docInfo.user_id)
   } else {
-    $scope.msg = $scope.docInfo.name + " is currently offline."
+    $scope.msg = $scope.docInfo.firstname + " " + $scope.docInfo.lastname + " is currently offline."
     $scope.isConnected = false;
   }
 
@@ -9639,6 +9648,182 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
 
 
 }]);  
+
+app.controller("e-CaseCtrl",["$scope","$rootScope","$http","localManager",
+  "templateService","mySocket","$interval","myPatientControllerService",
+  "deviceCheckService","$location","ModalService",
+  function($scope,$rootScope,$http,localManager,templateService,
+    mySocket,$interval,myPatientControllerService,deviceCheckService,$location,ModalService){
+
+ 
+  /*
+  * the doctor refreshing the dashboard page will still keep the patient on the current view template
+  * so the data to populate the template will be generate through ajax call.
+  * @localManager.getValue this gets the current url of the current view template from the local storage of the browser.
+  * @writePrescription,@viewMedicalHistory,@writeNew all controls the html element on the template
+  */ 
+
+  
+  //update to human readable time format
+  /*moment.updateLocale('en', {
+    calendar : {
+      lastDay : '[Yesterday at] HH:mm',
+      sameDay : '[Today at] HH:mm',
+      nextDay : '[Tomorrow at] HH:mm',
+      lastWeek : '[last] dddd [at] HH:mm',
+      nextWeek : 'dddd [at] HH:mm',
+      sameElse : 'L'
+    }
+  });*/
+ 
+  var path = localManager.getValue("currentPage") || $location.path();
+  var arr = path.split("/");  
+  var userId = arr[arr.length-1];
+  var patient = {};
+
+
+  
+  $rootScope.holdId = templateService.holdIdForSpecificPatient || userId;
+  patient.id = $rootScope.holdId;
+
+
+  var getPatientData = myPatientControllerService //$resource("/user/doctor/specific-patient");
+  getPatientData.get(patient,function(data){   
+    $scope.patientInfo = data;     
+    patient.patient_id = patient.id;    
+    patient.firstname = $scope.patientInfo.firstname;
+    patient.lastname = $scope.patientInfo.lastname;
+    patient.gender = $scope.patientInfo.gender;
+    patient.phone = $scope.patientInfo.phone;
+    patient.age = $scope.patientInfo.age;
+    patient.address = $scope.patientInfo.address;
+    patient.city = $scope.patientInfo.city;
+    patient.country = $scope.patientInfo.country;
+    patient.patient_profile_pic_url = $scope.patientInfo.profile_pic_url;
+    patient.lab_analysis = $scope.patientInfo.lab_analysis;
+    patient.scan_analysis = $scope.patientInfo.scan_analysis;
+    patient.provisional_diagnosis = $scope.patientInfo.provisional_diagnosis;
+    patient.title = $scope.patientInfo.title;
+    patient.sender = "doctor";
+    var holdData = {
+      profilePic: data.profile_pic_url,
+      firstname: data.firstname,
+      lastname: data.lastname
+    }
+    templateService.holdForSpecificPatient = $scope.patientInfo;
+    localManager.setValue("patientInfoForCommunication", holdData); 
+
+    //use to hold patient info for courier delivery service option
+    //$scope.treatment.phone1 = $rootScope.patientInfo.phone;
+    //$scope.treatment.delivery_address = $rootScope.patientInfo.address;   
+  });
+
+
+  $scope.viewChat2 = function() {   
+    var partnerId = patient.id;
+    $scope.loading = true;
+    templateService.holdId = patient.id
+    if(deviceCheckService.getDeviceType()){
+      localManager.setValue("holdIdForChat",partnerId);
+      localManager.setValue("holdChatList",$rootScope.chatsList);
+      window.location.href = "/user/chat/general";
+    } else if(templateService.holdId) {
+      $location.path("/general-chat");
+    } 
+  }
+
+  $scope.audioChat = function(partner){
+    $rootScope.holdPartner = {
+      partnerType: "Patient",
+      partnerId: partner.user_id,
+      name: partner.firstname,
+      presence: partner.status || partner.presence
+    };
+    ModalService.showModal({
+      templateUrl: 'audio-communication-request.html',
+      controller: "audioInitController"
+    }).then(function(modal) {
+      modal.element.modal();
+      modal.close.then(function(result) {
+         
+      });
+    });
+  }
+
+  $scope.videoRequest = function(type,patientObj){
+    //$window.location.href = "/patient/call";
+    patientObj.type = type;
+    reqModal(patientObj);
+  }
+
+  $scope.appointment = function(patientObj){
+    templateService.holdId = patientObj.user_id; 
+    //sets id of the patient for the appointmentModal controller to use.
+    //make sure templateSevice is always iniatialize elsewhere.
+    ModalService.showModal({
+        templateUrl: 'calender-template.html',
+        controller: 'appointmentModalController'
+    }).then(function(modal) {
+        modal.element.modal();
+        modal.close.then(function(result) {             
+        });
+    });
+  
+  }
+
+   $scope.consultationFee = function(){  
+
+    $rootScope.data = {
+      sender_firstname: $scope.patientInfo.firstname,
+      sender_lastname: $scope.patientInfo.lastname,
+      sender_id: $scope.patientInfo.user_id,
+      sender_profile_pic_url: $scope.patientInfo.profile_pic_url,
+      sender_gender: $scope.patientInfo.gender,
+      sender_age: $scope.patientInfo.age
+    };
+    //$scope.docName = templateService.getfirstname;
+    //$scope.loading2 = true;
+    ModalService.showModal({
+        templateUrl: 'consultation-fee.html',
+        controller: "consultationFeePaymentctrl"
+      }).then(function(modal) {
+          modal.element.modal();
+          modal.close.then(function(result) {
+             
+      });
+    });
+   
+  }
+
+
+  function reqModal(patientObj) {
+    templateService.holdForSpecificPatient = patientObj
+    ModalService.showModal({
+      templateUrl: 'sending-communication-request.html',
+      controller: "videoInitController"
+    }).then(function(modal) {
+      modal.element.modal();
+      modal.close.then(function(result) {
+         
+      });
+    });
+  }
+
+
+  $rootScope.patientOnlineStatus = null;
+
+  function getPatientsRealTime() {
+    mySocket.emit("check presence",{status: true},function(res){
+      $rootScope.$broadcast("users presence",{type: 'patient',data: patient, sockets: res});
+    });      
+    
+  }
+
+  $interval(function(){
+    getPatientsRealTime() 
+  },30000) //less 1 min
+
+}])
   
 app.controller("appointmentModalController",["$scope","$rootScope","$http","moment","templateService","mySocket","$filter",
   function($scope,$rootScope,$http,moment,templateService,mySocket,$filter){
@@ -12532,6 +12717,7 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
 
         mySocket.emit('invite online',data,function(respnse){
           alert(respnse.message);
+          $rootScope.inviteSent = true
         })
       }
     } else {
@@ -16458,27 +16644,392 @@ app.controller("chartCtrl",["$scope","$rootScope","chartReadingService","$filter
     mySocket.removeAllListeners("new_msg");
   }
 
-  //$scope.datasetOverride = [{ yAxisID: 'y-axis-1' }, { yAxisID: 'y-axis-2' }];
+}]);
 
-  /*$scope.options = {
-    scales: {
-      yAxes: [
-        {
-          id: 'y-axis-1',
-          type: 'linear',
-          display: true,
-          position: 'left'
-        },
-        {
-          id: 'y-axis-2',
-          type: 'linear',
-          display: true,
-          position: 'right'
+app.controller("e-casePrescriptionCtrl",["$scope","$http","$rootScope","$location","templateService","ModalService",
+  function($scope,$http,$rootScope,$location,templateService,ModalService){
+
+  var path = $location.path();
+  var arr = path.split("/");  
+  var userId = arr[arr.length-1];
+  $scope.prescription = {};
+  $scope.prescription.isSorted = false;
+
+  function getPatientData() {
+    $scope.loading = true;
+
+    $http.get("/user/doctor/specific-patient",{params: {id: userId}})
+    .success(function(data){
+      $scope.loading = false;
+      $scope.patientInfo = data;
+      $scope.prescriptionRecordsResult = data.medications
+      if($scope.prescription.isSorted){
+        sortByPrescribed()
+      }
+    })
+  }
+
+  getPatientData();
+
+  var hasBeenSentTo = {};
+
+  $http({
+    method  : 'GET',
+    url     : "/user/patient/get-prescription/track-record",        
+    headers : {'Content-Type': 'application/json'} 
+    })
+  .success(function(data) {
+    hasBeenSentTo.trackRecord = data;
+  });
+
+  $scope.trackedPrescription = function(id,prescription){   
+    var holdRecord = [];
+    hasBeenSentTo.trackRecord.forEach(function(record){
+      if(record.prescriptionId) {
+        if(record.prescriptionId.toString() === id) {
+          holdRecord.unshift(record);
         }
-      ]
     }
-  };*/
+    });
+    templateService.holdTrackRecord = holdRecord;
+    templateService.holdPrescriptionForTrackRecord = prescription;
+    $location.path("/patient/view-prescription-history/" + id);
+  }
 
+  $scope.writePrescription = function() {
+    $rootScope.holdPatientDatails = {
+      firstname: $scope.patientInfo.firstname,
+      lastname: $scope.patientInfo.lastname,
+      title: $scope.patientInfo.title,
+      age: $scope.patientInfo.age,
+      gender: $scope.patientInfo.gender,
+      phone: $scope.patientInfo.phone,
+      city: $scope.patientInfo.city,
+      patient_id: $scope.patientInfo.user_id,
+      patient_profile_pic_url: $scope.patientInfo.profile_pic_url,
+      address: $scope.patientInfo.address
+    }
+
+    ModalService.showModal({
+        templateUrl: 'write-prescription-ecase.html',
+        controller: 'prescriptionModalController'
+    }).then(function(modal) {
+        modal.element.modal();
+        modal.close.then(function(result) {             
+        });
+    });
+  }
+
+  $scope.$watch("prescription.isSorted",function(newVal,oldVal){
+    if(newVal){
+      //$scope.prescription.isSorted = true;
+      sortByPrescribed()
+    }
+  })
+
+  function sortByPrescribed() {
+    var filter = {};
+    var mineArr = [];
+    var othersArr = [];   
+    $scope.prescriptionRecordsResult.forEach(function(pres){
+      if(pres.doctor_id === $rootScope.checkLogIn.user_id){
+        mineArr.push(pres)
+      } else {
+
+        if(!pres.doctor_id) {
+          pres.doctor_id = pres.doctor_firstname + "" + pres.doctor_lastname;
+        }
+
+        if(!filter.hasOwnProperty(pres.doctor_id)){
+          filter[pres.doctor_id] = pres.doctor_id;
+          filter["firstname"] = pres.doctor_firstname;
+          filter["lastname"] = pres.doctor_lastname;
+          filter["title"] = pres.title;
+          filter["specialty"] = pres.doctor_specialty;
+          filter["profilePic"] = pres.doctor_profile_pic_url;
+          filter["profile"] = pres.doctor_profile_url;
+          filter["prescriptions"] = [pres];
+        } else {
+          filter["prescriptions"].push(pres)
+        }
+      }
+    })
+
+    othersArr.push(filter)
+
+    $scope.sortedPrescriptions = {
+      mine: mineArr,
+      others: othersArr
+    };
+  }
+
+  $rootScope.$on('new medication',function(e,data){
+    getPatientData()
+  })
+
+}])
+
+app.controller("prescriptionModalController",["$scope","$http","localManager","Drugs","getAllPharmacyService","$rootScope",
+  function($scope,$http,localManager,Drugs,getAllPharmacyService,$rootScope){
+  $scope.patient = {};
+
+  var user = localManager.getValue("resolveUser");
+
+  //$scope.patient.patientType = "mine";
+
+  $scope.drugs = Drugs;
+    
+  var count = {}; 
+  var drug = {};     
+  count.num = 1;
+  drug.sn = count.num;
+ 
+  $scope.drugList = [drug];
+
+  $scope.frequencies = ["OD","BD","TDS","QDS"];
+  $scope.durations = ["1 day","2 days","3 days", "5 days","6 days", "7 days","1 week", "2 weeks",
+   "3 weeks", "1 month", "2 months","3 months","4 months","6 months"]
+
+  $http({
+    method  : "GET",
+    url     : "/user/getDrugs", //gets special drugs from backend     
+    headers : {'Content-Type': 'application/json'} 
+    })
+  .success(function(response) {   
+    $scope.drugs = Drugs.concat(response);
+  });
+
+
+  $scope.patient.isCourier = "No";
+  $scope.patient.referral_pays = "No";
+  $scope.patient.phone1 = $rootScope.holdPatientDatails.phone;
+  $scope.patient.delivery_address = $rootScope.holdPatientDatails.address;
+
+  $scope.addDrug = function(){  
+    var newDrug = {};         
+    count.num++;
+    newDrug.sn = count.num;
+    $scope.drugList.push(newDrug);    
+  }
+
+  $scope.removeDrug = function(){
+    if(count.num > 1){
+      $scope.drugList.pop();
+      count.num--;
+    }
+  }
+
+  $scope.sendDrug = function(center) {
+
+    center.loading = true;
+    var courierObj;
+    if($scope.patient.isCourier === 'Yes'){
+      courierObj = {
+        phone1 : $scope.patient.phone1 || $rootScope.holdPatientDatails.phone,
+        address: $scope.patient.delivery_address || $rootScope.holdPatientDatails.address
+      }
+    }
+
+    var sendObj = {
+      id: $rootScope.holdPatientDatails.patient_id,
+      patient_id: $rootScope.holdPatientDatails.patient_id,
+      firstname: $rootScope.holdPatientDatails.firstname,
+      lastname: $rootScope.holdPatientDatails.lastname,
+      gender: $rootScope.holdPatientDatails.gender,
+      phone: $rootScope.holdPatientDatails.phone,
+      age: $rootScope.holdPatientDatails.age,
+      patient_profile_pic_url: $rootScope.holdPatientDatails.patient_profile_pic_url,
+      explanation: $scope.patient.explanation,
+      title: $rootScope.holdPatientDatails.title,
+      city: $rootScope.holdPatientDatails.city,
+      sender: user.typeOfUser,
+      prescriptionBody: $scope.drugList,
+      prescriptionId: null,
+      user_id: center.user_id,
+      referral_pays: $scope.patient.referral_pays,
+      courierObj: courierObj,
+      center_name: center.name,
+      center_address: center.address,
+      center_phone: center.phone,
+      center_email: center.email,
+      center_city:center.city
+    }
+
+    $http({
+      method  : 'PUT',
+      url     : "/user/patient/pharmacy/referral",
+      data    : sendObj,
+      headers : {'Content-Type': 'application/json'} 
+      })
+    .success(function(data) {
+      center.loading = false;
+      if(data.success){
+        center.isSent = true;
+        $rootScope.$broadcast("new medication",{status:true})
+        if(data.courierData && $scope.patient.referral_pays === 'Yes'){
+          $rootScope.$broadcast("new courier order",{status:true});
+          $rootScope.viewResponse(data.courierData)
+        }
+      } else {
+        alert("Error occured while sending prescription")
+      }
+    });
+  }
+
+  $scope.findPharmacy = function() {
+    getPharmacy();
+  }
+
+  var chechIfPrescription = function(data) {
+      if(!data)
+        data = [];
+       
+    for(var i = 0; i < data.length; i++) {
+      if(!data[i].drug_name || !data[i].dosage ||!data[i].frequency || !data[i].duration) {
+        return false;
+      } 
+    }
+
+    return true;
+  }
+
+
+  function getPharmacy() {
+     $scope.isLoading = true;
+    var source = getAllPharmacyService; // $resource("/user/patient/getAllPharmacy")
+    source.query({city:$scope.city},function(list){
+      $scope.isLoading = false;
+      $scope.searchResult = list;
+    })
+  }
+
+  getPharmacy()
+
+}])
+
+
+app.controller("trackedPrescriptionController",["$scope","$rootScope","$location","templateService","localManager",
+  function($scope,$rootScope,$location,templateService,localManager){
+  $scope.presInfo = templateService.holdPrescriptionForTrackRecord;
+  $scope.trackedPrescription = templateService.holdTrackRecord;
+  //$rootScope.goBack = $rootScope.back;
+ 
+  //$rootScope.path = $location.path() //localManager.setValue('currentPageForPatients',$location.path());
+
+  //this fn is invoked when patient wish to forward prescription by himself to a phamarcy.
+  $scope.forwardPrescription = function (prescription) {       
+    /*templateService.holdPrescriptionToBeForwarded = prescription;
+   
+    templateService.holdPrescriptionToBeForwarded.sender = "patient";          
+    $location.path("/patient/search/pharmacy");*/
+
+    $rootScope.unavailableDrugArr = [];
+
+    for(var i = 0; i < prescription.prescription_body.length; i++) {
+      if(prescription.prescription_body[i].picked) {
+        $rootScope.unavailableDrugArr.push(prescription.prescription_body[i]);
+      } 
+    }
+
+    if($rootScope.unavailableDrugArr.length == 0) {
+      $rootScope.unavailableDrugArr = prescription.prescription_body;
+    }
+
+    $rootScope.refData = prescription;
+    $rootScope.refData.sender = "patient";          
+    $location.path("/patient/search/pharmacy");                  
+  }
+
+}]);
+
+app.controller("patientSearchForPharmacyController",["$scope","$location","$http","templateService","ModalService","$rootScope","cities","localManager",
+  function($scope,$location,$http,templateService,ModalService,$rootScope,cities,localManager){
+    //for phamarcy
+    $scope.pharmacy = {};
+
+    //$scope.unavailableDrugArr = $rootScope.unavailableDrugArr; value is set globally so $scope aspect is not needed.
+
+    $scope.cities = cities;
+
+    $scope.loading = true;
+
+    $http({
+        method  : 'GET',
+        url     : "/user/patient/getAllPharmacy",
+        headers : {'Content-Type': 'application/json'} 
+        })
+      .success(function(data) { 
+        $scope.pharmacyData = data;
+       
+        $scope.pharmacy.city = data[0].city;
+        $scope.loading = false;
+    });
+      
+    
+    $scope.findPharmacy = function () {
+      var searchObj = {};
+      $scope.loading = true
+      for(var i in $scope.pharmacy){
+        if($scope.pharmacy.hasOwnProperty(i) && $scope.pharmacy[i] !== ""){
+          searchObj[i] = $scope.pharmacy[i];
+        }
+      }
+       searchObj.type = "Pharmacy";
+       $http({
+        method  : 'PUT',
+        url     : "/user/patient/pharmacy/refined-search", 
+        data    : searchObj,
+        headers : {'Content-Type': 'application/json'} 
+        })
+      .success(function(data) {
+        $scope.pharmacyData = data;
+        $scope.loading = false;
+      });
+    }
+
+
+
+    //when a desired phamarcy is clicked by the patient this function runs to store that center details to a service which will be use for display
+    //in selectedCenterController.
+    $scope.forwardPrescriptionTo = function (center) {
+      $rootScope.refData.prescription_body = ($rootScope.unavailableDrugArr.length > 0) ? $rootScope.unavailableDrugArr : $rootScope.refData.prescription_body;    
+      $rootScope.refData.user_id = center.user_id;
+      center.loading = true;
+      $http({
+        method  : 'PUT',
+        url     : "/user/patient/pharmacy/referral-by-patient", 
+        data    : $rootScope.refData,
+        headers : {'Content-Type': 'application/json'} 
+        })
+      .success(function(data) {
+        if(data.success){   
+          center.success = true;
+        } else {          
+          alert("Prescription not sent!! Try again.");
+        }
+        center.loading = false;
+      });
+    }
+
+    
+    $scope.goBack = function() {
+      $location.path($rootScope.path);
+    }
+
+    $scope.sendChat = function(center) {
+      center.id = center.user_id // just to set common property for the modal and control using this resource.
+      $rootScope.holdcenter = center;
+      ModalService.showModal({
+            templateUrl: 'quick-chat.html',
+            controller: 'generalChatController'
+        }).then(function(modal) {
+            modal.element.modal();
+            modal.close.then(function(result) {             
+            });
+      });
+    }
+
+    
 }]);
 
 

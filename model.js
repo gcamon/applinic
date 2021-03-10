@@ -159,6 +159,7 @@ var myModel = function () {
 		doctor_firstname: String,
 		doctor_lastname: String,
 		title: String,
+		type: String,
 		doctor_address: String,		
 		doctor_id: String,
 		doctor_verified: Boolean,
@@ -588,6 +589,18 @@ var myModel = function () {
 		bs_chart: Array
 	})
 
+	var patient_ecg = new Schema({
+	   report_pdf: String
+	})
+
+	var patient_ultra_sound = new Schema({
+	   report_pdf: String
+	})
+
+	var patient_procedure = new Schema({
+		report_pdf: String
+	})
+
 
 //end for session
 	var userSchema = Schema({	  
@@ -653,10 +666,14 @@ var myModel = function () {
 		accepted_doctors: [doc_briefSchema],
 		doctor_patients_list : [patient_briefSchema],
 		medical_records: {					
-			diagnosis: [diagnosisSchema],		
+			diagnosis: [diagnosisSchema],// not used but medication field is used instead		
 			prescription: [prescriptionSchema],
 			laboratory_test: [patient_TestSchema],
-			radiology_test: [patient_TestSchema]
+			radiology_test: [patient_TestSchema],
+			ecg_result: [patient_ecg],
+			ultra_sound_result: [patient_ultra_sound],
+			endoscopy_result: [patient_procedure],
+			other_procedures: [patient_procedure]
 		},
 		name: String,
 		diagnostic_center_notification:[ref_notificationSchema],
