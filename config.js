@@ -34,8 +34,6 @@ aws.config.update({
 
 var configuration = function (app,model) {
   //config
-  
-
   var storeDB = "mongodb://127.0.0.1:27017/medicalmull";
   var store = new MongoDBStore(
     {
@@ -114,14 +112,12 @@ var configuration = function (app,model) {
 	var switchUrl;
 	
 
-	
-
 	app.use(function(req,res,next){
 		if (!req.user) {
 	      res.header('Cache-Control', 'private, no-cache, no-store, must-revalidate');
 	      res.header('Expires', '-1');
 	      res.header('Pragma', 'no-cache');
-	      res.header("X-Robots-Tag: noindex", false);
+	      //res.header("X-Robots-Tag: noindex", false);
 	  }
 	 	path = req.url;
 	  console.log("https://" + req.headers.host + req.url);		
