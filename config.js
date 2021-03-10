@@ -117,6 +117,7 @@ var configuration = function (app,model) {
 	      res.header('Cache-Control', 'private, no-cache, no-store, must-revalidate');
 	      res.header('Expires', '-1');
 	      res.header('Pragma', 'no-cache');
+	      res.header('x-robots-tag', 'follow');
 	  }
 	 	path = req.url;
 	  console.log("https://" + req.headers.host + req.url);		
