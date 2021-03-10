@@ -14197,6 +14197,7 @@ router.patch("/user/charts",function(req,res){
 
 
 router.get("/sitemap.xml",function(req,res){
+  res.contentType('application/xml');
   res.sendFile(path.join(__dirname, 'sitemap-applinic.xml'));
 });
 
@@ -14248,9 +14249,9 @@ router.post('/patient/dob',function(req,res){
   }
 })
 
-/*router.get('*',function(req,res){
+router.get('*',function(req,res){
   res.render('notfound');
-});*/
+});
 
 router.get('/404.html',function(req,res){
   res.render('notfound');
