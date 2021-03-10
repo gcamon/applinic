@@ -14201,9 +14201,9 @@ router.get("/sitemap.xml",function(req,res){
 });
 
 router.get("/robots.txt",function(req,res){
-  res.sendFile(path.join(__dirname, 'robots.txt'));
-  //res.type('text/plain');
-  //res.send("User-agent: *\nDisallow: /download/\nDisallow: /pdf/\nDisallow: /api/\nDisallow: /report/\nDisallow: /chat-files/");
+  //res.sendFile(path.join(__dirname, 'robots.txt'));
+  res.type('text/plain');
+  res.send("User-agent: *\nDisallow: /download/\nDisallow: /pdf/\nDisallow: /api/\nDisallow: /report/\nDisallow: /chat-files/");
 });
 
 
