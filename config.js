@@ -112,17 +112,16 @@ var configuration = function (app,model) {
 	var switchUrl;
 	
 
-	app.use(function(req,res,next){
+	/*app.use(function(req,res,next){
 		if (!req.user) {
 	      res.header('Cache-Control', 'private, no-cache, no-store, must-revalidate');
 	      res.header('Expires', '-1');
 	      res.header('Pragma', 'no-cache');
-	      //res.header("X-Robots-Tag: noindex", false);
 	  }
 	 	path = req.url;
 	  console.log("https://" + req.headers.host + req.url);		
 	 next();		
-	});
+	});*/
 
 	passport.serializeUser(function(user, done) {   
     	done(null, user._id);
