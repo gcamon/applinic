@@ -14203,7 +14203,7 @@ router.get("/sitemap.xml",function(req,res){
 router.get("/robots.txt",function(req,res){
   //res.sendFile(path.join(__dirname, 'robots.txt'));
   res.type('text/plain');
-  res.send("User-agent: *\nDisallow: /download/\nDisallow: /pdf/\nDisallow: /api/\nDisallow: /report/\nDisallow: /chat-files/");
+  res.send("User-agent: *\nDisallow: /download/\nDisallow: /pdf/\nDisallow: /api/\nDisallow: /report/\nDisallow: /chat-files/\nAllow: /sitemap.xml");
 });
 
 
@@ -14248,9 +14248,9 @@ router.post('/patient/dob',function(req,res){
   }
 })
 
-router.get('*',function(req,res){
+/*router.get('*',function(req,res){
   res.render('notfound');
-});
+});*/
 
 router.get('/404.html',function(req,res){
   res.render('notfound');
