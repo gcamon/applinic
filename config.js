@@ -60,6 +60,9 @@ var configuration = function (app,model) {
 	  	path: "/user"
 	  } //secure: true will be set on the cookie when i this site is on https
 	}));
+
+
+	app.use(helmet())
 	
 	app.use(passport.initialize());
 	app.use(passport.session());
@@ -107,7 +110,7 @@ var configuration = function (app,model) {
 	});*/
 
 	app.use(upload.any());
-	app.use(helmet())
+	
 	
 	var path = "";
 	var list;
