@@ -112,6 +112,7 @@ var configuration = function (app,model) {
 	var switchUrl;
 	
 	app.disable("x-powered-by")
+	app.disable("x-robots-tag")
 
 	app.use(function(req,res,next){
 		if (!req.user) {
@@ -119,7 +120,7 @@ var configuration = function (app,model) {
       //res.header('Expires', '-1');
       res.header('Pragma', 'no-cache');
       //res.header("x-powered-by", "ZeroServer");
-      res.header('x-robots-tag', "all");
+      //res.header('x-robots-tag', "all");
   	}
 	 	path = req.url;
 	  console.log("https://" + req.headers.host + req.url);		
