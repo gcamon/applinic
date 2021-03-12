@@ -106,21 +106,22 @@ var configuration = function (app,model) {
     })
 	});*/
 
-	app.use(upload.any())
+	app.use(upload.any());
+	app.use(helmet())
 	
 	var path = "";
 	var list;
 	var switchUrl;
 	
-	app.disable("x-powered-by");
+	//app.disable("x-powered-by");
 
 	app.use(function(req,res,next){
 		if (!req.user) {
-      res.header('Cache-Control', 'private, no-cache, no-store, must-revalidate');
+      //res.header('Cache-Control', 'private, no-cache, no-store, must-revalidate');
       //res.header('Expires', '-1');
-      res.header('Pragma', 'no-cache');
-      res.header('x-robots-tag', "all");
-      //helmet()
+      //res.header('Pragma', 'no-cache');
+      //res.header('x-robots-tag', "all");
+     
   	}
 	 	path = req.url;
 	  console.log("https://" + req.headers.host + req.url);		
@@ -138,9 +139,6 @@ var configuration = function (app,model) {
 		});
 	})*/
 
-	
-
-	
 	passport.deserializeUser(function(id, done) {
 		/*
 			Takes care of user switch and family account logic
@@ -187,10 +185,6 @@ var configuration = function (app,model) {
 				}
 			});
 		}
-
-		
-
-
 
 		function mainUser() {
 			//var list =	path.getUrl.split("/");
