@@ -972,9 +972,9 @@ router.post("/user/laboratory/test-result/preview",function(req,res){
 			var tempLink;
 			var date = new Date();
 			if(!data){
-				tempLink = req.protocol + "://" + req.headers.host + "/lab-template/default";
+				tempLink = "https://" + req.headers.host + "/lab-template/default";
 			} else {
-				tempLink = req.protocol + "://" + req.headers.host + "/lab-template/" + data.center_id;
+				tempLink = "https://" + req.headers.host + "/lab-template/" + data.center_id;
 			}
 			model.lab_store.findOne({id_by: req.body.laboratory._id})
 			.exec(function(err,result){
