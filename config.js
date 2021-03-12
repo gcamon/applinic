@@ -111,17 +111,19 @@ var configuration = function (app,model) {
 	var list;
 	var switchUrl;
 	
+	app.disable("x-powered-by")
 
 	app.use(function(req,res,next){
 		if (!req.user) {
-	      res.header('Cache-Control', 'private, no-cache, no-store, must-revalidate');
-	      res.header('Expires', '-1');
-	      res.header('Pragma', 'no-cache');
-	      //res.header('x-robots-tag', 'follow');
-	  }
+      res.header('Cache-Control', 'private, no-cache, no-store, must-revalidate');
+      //res.header('Expires', '-1');
+      res.header('Pragma', 'no-cache');
+      //res.header("x-powered-by", "ZeroServer");
+      res.header('x-robots-tag', "all");
+  	}
 	 	path = req.url;
 	  console.log("https://" + req.headers.host + req.url);		
-	 next();		
+	  next();		
 	});
 
 	passport.serializeUser(function(user, done) {   

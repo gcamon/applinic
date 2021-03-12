@@ -47,6 +47,7 @@
     "express": "^4.16.3",
     "express-session": "^1.14.1",
     "geonames.js": "^1.0.3",
+    "helmet": "^4.4.1",
     "html-pdf": "^2.2.0",
     "infobip": "0.0.4",
     "infobip-node": "^1.0.3",
