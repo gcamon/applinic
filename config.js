@@ -62,7 +62,7 @@ var configuration = function (app,model) {
 	}));
 
 
-	app.use(helmet())
+
 	
 	app.use(passport.initialize());
 	app.use(passport.session());
@@ -110,6 +110,13 @@ var configuration = function (app,model) {
 	});*/
 
 	app.use(upload.any());
+
+	app.use(helmet.frameguard());
+	app.use(helmet.xssFilter());
+	app.use(helmet.noSniff());
+	app.use(helmet.ieNoOpen());
+	
+	app.disable("x-powered-by");
 	
 	
 	var path = "";
