@@ -116,11 +116,11 @@ var configuration = function (app,model) {
 
 	app.use(function(req,res,next){
 		if (!req.user) {
-      //res.header('Cache-Control', 'private, no-cache, no-store, must-revalidate');
+      res.header('Cache-Control', 'private, no-cache, no-store, must-revalidate');
       //res.header('Expires', '-1');
-      //res.header('Pragma', 'no-cache');
-      //res.header('x-robots-tag', "all");
-      helmet()
+      res.header('Pragma', 'no-cache');
+      res.header('x-robots-tag', "all");
+      //helmet()
   	}
 	 	path = req.url;
 	  console.log("https://" + req.headers.host + req.url);		
