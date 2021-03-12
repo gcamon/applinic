@@ -11,8 +11,9 @@ var flash = require('connect-flash');
 var cookieParser = require("cookie-parser");
 var MongoDBStore = require('connect-mongodb-session')(session);
 var ExpressPeerServer = require('peer').ExpressPeerServer;
-var aws = require('aws-sdk');
-var multerS3 = require('multer-s3');
+//var aws = require('aws-sdk');
+//var multerS3 = require('multer-s3');
+var helmet = require('helmet');
 
 
 function genHash(count) {
@@ -25,11 +26,11 @@ function genHash(count) {
 }
 
 
-aws.config.update({
+/*aws.config.update({
     secretAccessKey: process.env.AMAZON_SECRET_KEY,
     accessKeyId: process.env.AMAZON_ACCESS_KEY,
     region: 'us-east-1'
-});
+});*/
  
 
 var configuration = function (app,model) {
@@ -111,16 +112,15 @@ var configuration = function (app,model) {
 	var list;
 	var switchUrl;
 	
-	app.disable("x-powered-by")
-	app.disable("x-robots-tag")
+	app.disable("x-powered-by");
 
 	app.use(function(req,res,next){
 		if (!req.user) {
-      res.header('Cache-Control', 'private, no-cache, no-store, must-revalidate');
+      //res.header('Cache-Control', 'private, no-cache, no-store, must-revalidate');
       //res.header('Expires', '-1');
-      res.header('Pragma', 'no-cache');
-      //res.header("x-powered-by", "ZeroServer");
+      //res.header('Pragma', 'no-cache');
       //res.header('x-robots-tag', "all");
+      helmet()
   	}
 	 	path = req.url;
 	  console.log("https://" + req.headers.host + req.url);		
