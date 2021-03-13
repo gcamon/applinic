@@ -60,9 +60,6 @@ var configuration = function (app,model) {
 	  	path: "/user"
 	  } //secure: true will be set on the cookie when i this site is on https
 	}));
-
-
-
 	
 	app.use(passport.initialize());
 	app.use(passport.session());
@@ -109,29 +106,21 @@ var configuration = function (app,model) {
     })
 	});*/
 
-	app.use(upload.any());
-
-	app.use(helmet.frameguard());
-	app.use(helmet.xssFilter());
-	app.use(helmet.noSniff());
-	app.use(helmet.ieNoOpen());
-	
-	app.disable("x-powered-by");
-	
+	app.use(upload.any())
 	
 	var path = "";
 	var list;
 	var switchUrl;
 	
-	//app.disable("x-powered-by");
+	app.disable("x-powered-by");
 
 	app.use(function(req,res,next){
 		if (!req.user) {
-      //res.header('Cache-Control', 'private, no-cache, no-store, must-revalidate');
+      res.header('Cache-Control', 'private, no-cache, no-store, must-revalidate');
       //res.header('Expires', '-1');
-      //res.header('Pragma', 'no-cache');
+      res.header('Pragma', 'no-cache');
       //res.header('x-robots-tag', "all");
-     
+      //helmet()
   	}
 	 	path = req.url;
 	  console.log("https://" + req.headers.host + req.url);		
@@ -149,6 +138,9 @@ var configuration = function (app,model) {
 		});
 	})*/
 
+	
+
+	
 	passport.deserializeUser(function(id, done) {
 		/*
 			Takes care of user switch and family account logic
