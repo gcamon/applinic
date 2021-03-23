@@ -2,7 +2,7 @@
 
 var app = angular.module('myApp',["ngRoute","ngAnimate","angularModalService","angularMoment",'ui.bootstrap',
   'angular-clipboard',"ngResource","btford.socket-io","ngTouch",'ngPrint','paystack','ngSanitize','summernote',
-  'xen3r0.underscorejs',"chart.js"]);
+  'xen3r0.underscorejs',"chart.js","pdf"]);
 //htmlToPdfSave
 
 app.run(['$rootScope',function($rootScope){
@@ -266,12 +266,36 @@ app.config(['$paystackProvider','$routeProvider',
  .when('/e-case-prescription/:id',{
   templateUrl: '/assets/pages/doctor/e-case-prescription.html',
   controller: 'e-casePrescriptionCtrl',
-  resolve: {
-    path: function($location,$rootScope){
-      $rootScope.path = $location.path();
-    }
-  }
- })   
+ }) 
+
+ .when('/e-case-laboratory/:id',{
+  templateUrl: '/assets/pages/doctor/e-case-laboratory.html',
+  controller: 'e-caseLaboratoryCtrl',
+ })
+
+ .when('/e-case-radiology/:id',{
+  templateUrl: '/assets/pages/doctor/e-case-radiology.html',
+  controller: 'e-caseRadiologyCtrl',
+ })
+
+ .when('/e-case-generate-bill/:id',{
+  templateUrl: '/assets/pages/doctor/e-case-generate-bill.html',
+  controller: 'e-caseGenerateBillCtrl',
+ }) 
+
+ .when('/e-case-refer-specialist/:id',{
+  templateUrl: '/assets/pages/doctor/e-case-refer.html',
+  controller: 'referRequestController',
+ })
+
+.when('/e-case-chart/:id',{
+  templateUrl: '/assets/pages/doctor/e-case-chart.html',
+  controller: 'e-caseChartCtrl',
+ })
+
+ 
+
+ 
 
  //wallet route
  .when("/wallet",{
@@ -1000,7 +1024,7 @@ app.config(['$paystackProvider','$routeProvider',
   controller: 'chartCtrl'
  })
 
-}])
+}]) 
 
 
 app.service('templateService',[function(){
@@ -1239,6 +1263,10 @@ app.service("deviceCheckService",function(){
   }
 })
 
+app.service('patientRedirectTestService',["$resource",function($resource){
+  return $resource("/user/patient/get-centers",null,{sendTest:{method:"PUT"}});
+}]);
+
 
 
 app.service("multiData",["$http","$window","templateService",function($http,$window,templateService){
@@ -1419,7 +1447,7 @@ app.controller("medHistoryCtrl",["$scope","$rootScope","patientMedHistory",
   $scope.healthProblems = {};
 
   patientMedHistory.get({patientId: $rootScope.checkLogIn.user_id},function(data){
-    console.log(data);
+    
   })
 
   $scope.history.lifestyle = [];
@@ -1427,7 +1455,7 @@ app.controller("medHistoryCtrl",["$scope","$rootScope","patientMedHistory",
 
   $scope.save = function() {
     $scope.loading = true;
-    console.log($scope.history,"==>",$scope.lifeStyle,"tttt>>",$scope.healthProblems)
+  
    
     for(var i in $scope.lifeStyle) {
       if($scope.lifeStyle.hasOwnProperty(i)){
@@ -5919,6 +5947,38 @@ app.controller("referRequestController",["$scope","$http","ModalService","reques
   function($scope,$http,ModalService,requestManager,templateService,
     deleteFactory,$rootScope,$location,$resource,findSpecialistService,$filter){
 
+
+    var path = $location.path();
+    var arr = path.split("/");  
+    var userId = arr[arr.length-1];
+
+    function getPatientData() {
+      $scope.loading = true;
+      $http.get("/user/doctor/specific-patient",{params: {id: userId}})
+      .success(function(patient){
+        $scope.loading = false;
+        $rootScope.patientInfo = patient;
+        $rootScope.data = {
+          date: + new Date(),
+          message_id: Math.floor(Math.random() * 99999999),
+          sender_age: patient.age,
+          sender_firstname: patient.firstname,
+          sender_gender: patient.gender,
+          sender_id: patient.user_id,
+          sender_phone: patient.phone,
+          sender_email: patient.email,
+          sender_lastname: patient.lastname,
+          sender_location: patient.city + " " +  patient.country,
+          sender_profile_pic_url: patient.patient_profile_pic_url,
+          sender_title: patient.title,
+          type: "consultation",
+          isLaterRef: "yes"
+        }  
+      })
+    } 
+
+    getPatientData()
+    
     var source = findSpecialistService;//$resource("/user/find-specialist",null,{refer:{method: "PUT"}});
     $scope.search = $rootScope.holdSearchText || {};
     $scope.search.city = $rootScope.checkLogIn.city;
@@ -5995,6 +6055,7 @@ app.controller("referRequestController",["$scope","$http","ModalService","reques
       var age = (patient.age) ? patient.age : patient.sender_age;
       var gender = (patient.gender) ? patient.gender : patient.sender_gender;
       var patientCity = (patient.city) ? patient.city : patient.sender_location;
+      var patientPhone = (patient.phone) ? patient.phone : "";
 
       var msg = "<div><b>" 
       + sender + "</b><br> " 
@@ -6009,8 +6070,9 @@ app.controller("referRequestController",["$scope","$http","ModalService","reques
       + "<br><label>Age: </label> " 
       + age
       + "<br><label>Gender: </label> " 
-      + gender + "<br><label>City: </label> " 
-      + patientCity + "<br><br>" 
+      + gender + "<br><label>City: </label> "       
+      + patientCity + "<br>"
+      + "<label>Phone: " + patientPhone + "</label><br><br>" 
       + "<h6>With the following presenting complaints:</h6><p>" 
       + $scope.search.initial 
       + "</p><br><h6>Management so far:</h6><p>" + $scope.search.howFar 
@@ -6093,6 +6155,135 @@ app.service("getAppointmentServce",["$resource",function($resource){
 }])
 
 
+
+app.controller("e-caseGenerateBillCtrl",["$scope","$http","outPatientBillingService",
+  "$location","ModalService","$rootScope",
+  function($scope,$http,outPatientBillingService,$location,ModalService,$rootScope){
+
+  var path = $location.path();
+  var arr = path.split("/");  
+  var userId = arr[arr.length-1];
+  $rootScope.billList = [];
+  $rootScope.billList.push({sn: $scope.billList.length + 1});
+
+  $scope.writeBill = function() {
+    $rootScope.patientId = userId;
+    ModalService.showModal({
+      templateUrl: "e-caseBilling.html",
+      controller: "e-caseBillingModalCtrl"
+    }).then(function(modal) {
+      modal.element.modal();
+      modal.close.then(function(result) {
+      });
+    });
+  }
+
+  function getPatientData() {
+    $scope.loading = true;
+    $http.get("/user/doctor/specific-patient",{params: {id: userId}})
+    .success(function(data){
+      $scope.loading = false;
+      $scope.patientInfo = data;
+    })
+  }
+
+
+  function getBills() {
+    outPatientBillingService.query({patientId: userId},function(resp){
+      $scope.bills = resp
+    })
+  }
+
+  getPatientData();
+  getBills();
+
+  $rootScope.$on("new bill",function(info){
+    getBills();
+  })
+
+}]);
+
+
+app.controller("e-caseBillingModalCtrl",["$scope","$http","outPatientBillingService","ModalService","$rootScope",
+  function($scope,$http,outPatientBillingService,ModalService,$rootScope){
+
+
+  function getPatientData() {
+    $scope.loading = true;
+    $http.get("/user/doctor/specific-patient",{params: {id: $rootScope.patientId}})
+    .success(function(data){
+      $scope.loading = false;
+      $scope.patientInfo = data;
+    })
+  }
+
+  getPatientData();
+
+ 
+ 
+  $scope.inMainBill = true;
+
+  $scope.addBill = function() {
+    $rootScope.billList.push({
+      sn: $rootScope.billList.length + 1
+    })
+  }
+
+  var billPos;
+  var countBill;
+  $scope.removeBill = function(sn) {
+    billPos = $rootScope.billList.map(function(x){return x.sn}).indexOf(sn);
+    if(billPos != -1) {
+      $rootScope.billList.splice(billPos,1);
+      countBill = 1;
+      for(var i = 0; i < $rootScope.billList.length; i++) {
+        if(i === 0) {
+          $rootScope.billList[i].sn = countBill;
+        } else {
+          $rootScope.billList[i].sn = countBill;
+        }
+        countBill++;
+      }
+    }
+  }
+
+  $scope.mainBill = function() {
+    $scope.inMainBill = true;
+    $scope.isPreviewBill = false
+  }
+
+  $scope.previewBill = function() {
+    $scope.inMainBill = false;
+    $scope.isPreviewBill = true
+
+    $scope.totalBilled = 0;
+
+    for(var j = 0; j < $rootScope.billList.length; j++) {   
+      if($rootScope.billList[j].cost)  
+        $scope.totalBilled += $rootScope.billList[j].cost;
+    }
+  }
+
+  $scope.sendBill = function() {
+    $scope.loading = true;
+    outPatientBillingService.createBill({
+      patientNames: $scope.patientInfo.firstname + " " + $scope.patientInfo.lastname,
+      patientId: $rootScope.patientId,
+      billList: $rootScope.billList,
+      total: $scope.totalBilled
+    },function(res){
+      $scope.loading = false;
+      if(res.status) {
+        $scope.isSent = res.status;
+        $rootScope.$broadcast('new bill',{status: true})
+      } else {
+        alert("Oops,bill not sent! Please try again.");
+      }
+     
+    })
+  }
+
+}]);
 
 app.controller("outPatientBillingCtrl",["$scope","outPatientBillingService","templateService","$http","$rootScope","phoneCallService",
 function($scope,outPatientBillingService,templateService,$http,$rootScope,phoneCallService){
@@ -9629,6 +9820,7 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
         age: patient.age,
         gender: patient.gender,
         name: patient.firstname + " " + patient.lastname,
+        phone: patient.phone
       }
 
       $location.path('charts');
@@ -12518,6 +12710,17 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
     $window.location.href = "/login";
   }
 
+
+  $rootScope.case = {
+    navigate : ""
+  }
+
+  $rootScope.$watch("case.navigate",function(newVal,oldVal){
+    if(newVal){      
+      $location.path(newVal)
+    }
+  })
+
   $rootScope.toCurrency = function(amount) {
     if(amount) {
       var str = ($rootScope.checkLogIn.currencyCode) ? $rootScope.checkLogIn.currencyCode + amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") : "NGN" + amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -12652,11 +12855,9 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
   //use for filter in PWR
   $rootScope.complain = {};
 
-  $rootScope.logout = function(){
- 
-
-    $window.location.href = "/user/logout";
+  $rootScope.logout = function(){ 
     destroyStorage();
+    $window.location.href = "/user/logout";
   }
 
   function destroyStorage() {
@@ -12727,9 +12928,6 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
   }
 
 
-
-  console.log('starting run');
-
   // Timeout timer value
   var TimeOutTimerValue = 60000000; // 15 minutes
 
@@ -12748,7 +12946,9 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
   }
   var count = 0;
   function LogoutByTimer(){
-      console.log("logout");     
+      console.log("logout"); 
+      //destroyStorage(); 
+      //window.location.href = "/login";
       //alert("You have been idle for a while you will be logged out!")      
       //bodyElement.off()
       ///////////////////////////////////////////////////
@@ -12792,9 +12992,12 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
   };
 
   //sending prescription/lab/radio to an email
-  $rootScope.email = function(docInfo,type) {
+  $rootScope.email = function(docInfo,type,firstname,lastname,age,gender) {
+    console.log(docInfo)
     $rootScope.emailData = {}
     $rootScope.emailData.type = type;
+    $rootScope.emailData.filePath = (type === 'Laboratory') ? docInfo.lab_pdf_report[0].pdf_report 
+    : (type === 'Radiology') ? docInfo.pdf_report[0].pathname : "";
     switch (type) {
       case 'Prescription':
         if(docInfo.doctor_work_place) {
@@ -12837,24 +13040,50 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
           + docInfo.center_name + "<br><span style='font-size:14px'>" + docInfo.center_address + ", " 
           + docInfo.center_city + ", " + docInfo.center_country
           + "</span><br> <span style='font-size:14px'>" + docInfo.center_phone + "<span><br><span> https://applinic.com/user/profile/view/" + docInfo.center_id
-          + "</span></h3>"  + "<br><b>Patient Name: </b><span>" + $rootScope.checkLogIn.title + " " 
-          + $rootScope.checkLogIn.firstname + " " + $rootScope.checkLogIn.lastname 
-          + "<br></span><b>Patient Age: </b><span>" + $rootScope.checkLogIn.age 
-          + "<br></span><b>Gender: </b><span>" + $rootScope.checkLogIn.gender + "</span>"
+          + "</span></h3>"  + "<br><b>Patient Name: </b><span>" + firstname + " " 
+          + lastname
+          + "<br></span><b>Patient Age: </b><span>" + age 
+          + "<br></span><b>Gender: </b><span>" + gender + "</span>"
           + "<br><div><br><b>Referring Physician: </b> " + 
-          "<span> " + docInfo.referral_title + " " + docInfo.referral_firstname + " " + docInfo.referral_lastname 
+          "<span> " + docInfo.referral_title + " " + docInfo.referral_firstname
           + "</span><br><br><b>Date Requested : </b><span>" + $filter('amCalendar')(docInfo.sent_date) + "</span><br><br>"       
           + "<span>Doctor Profile URL: </span> " + "https://applinic.com/user/profile/view/" + docInfo.referral_id + "<br><br>"
-          + "</span><b>Test Referrence NO: </b><span>" + docInfo.ref_id + "</span><br><br>"
+          + "</span><b>Ref: </b><span>" + docInfo.ref_id + "</span><br><br>"
           + "</span><b>Indication: </b><span>" + ((docInfo.indication) ? docInfo.indication : 'N/A') + "</span><br><br>"
           + "<b>Investigation(s) Requested: </b> <br>" 
           + "<ol>" + listInvestigations(docInfo.test_to_run) + "</ol><br><br>"
           + "<b>Result: </b><br>"
           + createReportTests(docInfo.report,'laboratory') + "<br>"
           + "<b>CONCLUSION: </b> <br><span>" + docInfo.conclusion + "<br><br>"
-          + "<a href='https://applinic.com' style='text-decoration:none'><img src='https://applinic.com/assets/images/icons/favicon.png' style='width:32px;height:auto'> <b>Applinic</b></a><br>"
+          + "<p>Please find attached report (PDF) below. </p><br>"       
           + "<div style='font-size: 14px'>The above Investigation(s) was written in www.applinic.com (Online Healthcare Application).<br><br><a href='https://applinic.com/signup' style='text-decoration:none'>Create an account for free" +  
-          "</a> and enjoy our services for writting, receiving and sharing investigation with friends or collegues.<br><br>We keep records of your laboratory history and it's safe with us.<br><br> For enquiries please call customer support on +2349080045678</div>"
+          "</a> and enjoy our services for requesting and receiving investigation reports from major laboratory centers in your city.<br>We keep records of your laboratory history and it's safe with us.<br><br> For enquiries please call customer support on +2349080045678</div>"
+      break;
+      case 'Radiology':
+         $rootScope.emailData.htmlTemp = "<h3 style='text-align:center'>" 
+          + docInfo.center_name + "<br><span style='font-size:14px'>" + docInfo.center_address + ", " 
+          + docInfo.center_city + ", " + docInfo.center_country
+          + "</span><br> <span style='font-size:14px'>" + docInfo.center_phone + "<span><br><span> https://applinic.com/user/profile/view/" + docInfo.center_id
+          + "</span></h3>"  + "<br><b>Patient Name: </b><span>" + lastname + " " 
+          + firstname  
+          + "<br></span><b>Patient Age: </b><span>" + age 
+          + "<br></span><b>Gender: </b><span>" + gender + "</span>"
+          + "<br><div><br><b>Referring Physician: </b> " + 
+          "<span> " + docInfo.referral_title + " " + docInfo.referral_firstname + " " + (docInfo.referral_lastname || "")
+          + "</span><br><br><b>Date Requested : </b><span>" + $filter('amCalendar')(docInfo.sent_date) + "</span><br><br>"       
+          + "<span>Doctor Profile URL: </span> " + "https://applinic.com/user/profile/view/" + docInfo.referral_id + "<br><br>"
+          + "</span><b>Ref: </b><span>" + docInfo.ref_id + "</span><br><br>"
+          + "</span><b>Indication: </b><span>" + ((docInfo.indication) ? docInfo.indication : 'N/A') + "</span><br><br>"
+          + "<b>Investigation(s) requested: </b> <br>" 
+          + "<ol>" + listInvestigations(docInfo.test_to_run) + "</ol><br><br>"
+          + "<b>FINDINGS: </b><br>"
+          + "<span>" + (docInfo.findings || '') + "</span><br><br>"          
+          + "<b>CONCLUSION: </b><br><span>" + (docInfo.conclusion || '') + "<br><br>"
+          + "<b>ADVISE: </b><br>"
+          + "<span>" + (docInfo.advise || "") + "</span><br><br>"
+          + "<p>Please view or download attached report below (PDF). </p><br>"
+          + "<div style='font-size: 14px'>The above Investigation(s) was written in www.applinic.com (Online Healthcare Application).<br><br><a href='https://applinic.com/signup' style='text-decoration:none'>Create an account for free" +  
+          "</a> and enjoy easy access to healthcare services and secure archival and management of your medical records electronically.<br><br>We keep records of your radiology history and it's safe with us.<br><br> For enquiries please call customer support on +2349080045678</div>"
       break;
     }
 
@@ -12887,25 +13116,42 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
     return str;
   }
 
-  function createReportTests(arr,type) {
-   
+  function createReportTests(arr,type) {   
     if(type == "laboratory")
       var str = "";
       //arr.forEach(function(itemName){  
       for(var j = 0; j < arr.length; j++) { 
         var itemName = arr[j];
-        str += "<div style='color: red'>" + itemName.name + ": </div>"  
-        + "<table><thead><th style='font-size: 14px;padding:5px'>Name</th><th style='font-size: 14px;padding:5px'>TUM</th><th style='font-size: 14px;padding:5px'>Result</th><th style='font-size: 14px;padding:5px'>Range</th><th style='font-size: 14px;padding:5px'>Units</th><th style='font-size: 14px;padding:5px'>Flag</th></thead>";
-        for(var i = 0; i <  itemName.report_sheet.length; i++) {
-          var test = itemName.report_sheet[i];
-          if(test) {           
-            str += "<tbody><td style='font-size: 14px;padding:5px'>" + ((test.r_name) ? test.r_name : "-") + "</td><td style='font-size: 14px;padding:5px'>" + ((test.r_tum) ? test.r_tum : "-")  + "</td><td style='font-size: 14px;padding:5px'>" 
-            + ((test.r_result) ? test.r_result : "-") + "</td><td style='font-size: 14px;padding:5px'>" + ((test.r_range) ? test.r_range : "-")  + "</td><td style='font-size: 14px;padding:5px'>" + ((test.r_unit) ? test.r_unit : "-")  + "</td><td style='font-size: 14px;padding:5px'>" + ((test.r_flag) ? test.r_flag : "-") + "</td></tbody>";
+        if(itemName.format !== 'antigen'){
+          str += "<div style='color: red'>" + itemName.name + ": </div>"  
+          + "<table><thead><th style='font-size: 14px;padding:5px'>Name</th><th style='font-size: 14px;padding:5px'>TUM</th><th style='font-size: 14px;padding:5px'>Result</th><th style='font-size: 14px;padding:5px'>Range</th><th style='font-size: 14px;padding:5px'>Units</th><th style='font-size: 14px;padding:5px'>Flag</th></thead>";
+          for(var i = 0; i <  itemName.report_sheet.length; i++) {
+            var test = itemName.report_sheet[i];
+            if(test) {           
+              str += "<tbody><td style='font-size: 14px;padding:5px'>" + ((test.r_name) ? test.r_name : "-") + "</td><td style='font-size: 14px;padding:5px'>" + ((test.r_tum) ? test.r_tum : "-")  + "</td><td style='font-size: 14px;padding:5px'>" 
+              + ((test.r_result) ? test.r_result : "-") + "</td><td style='font-size: 14px;padding:5px'>" + ((test.r_range) ? test.r_range : "-")  + "</td><td style='font-size: 14px;padding:5px'>" + ((test.r_unit) ? test.r_unit : "-")  + "</td><td style='font-size: 14px;padding:5px'>" + ((test.r_flag) ? test.r_flag : "-") + "</td></tbody>";
+            }
           }
+          str += "</table><br>"
+        } else if(itemName.format === 'antigen'){
+          str += "<div style='color: red'>" + itemName.name + ": </div>"  
+          + "<table><thead><th style='font-size: 14px;padding:5px'>Name</th><th style='font-size: 14px;padding:5px'>O. (Antigen)</th><th style='font-size: 14px;padding:5px'>H. (Antigen)</th></thead>";
+          for(var i = 0; i <  itemName.report_sheet.length; i++) {
+            var test = itemName.report_sheet[i];
+            if(test) { 
+              if(test.r_result_O){          
+                str += "<tbody><td style='font-size: 14px;padding:5px'>" + ((test.r_name) ? test.r_name : "-") + "</td><td style='font-size: 14px;padding:5px'>" 
+                + ((test.r_result_O) ? test.r_result_O : "-") + "</td><td style='font-size: 14px;padding:5px'>" + ((test.r_result_H) ? test.r_result_H : "-")  + "</td></tbody>";
+              } else if(!test.r_result_O) {
+                  str += "<tbody><td style='font-size: 14px;padding:5px'>" + ((test.r_name) ? test.r_name : "-") + "</td><td style='font-size: 14px;padding:5px'>" 
+                + ((test.r_result_O) ? test.r_result_O : test.r_result) + "</td></tbody>";
+              }
+            }
+          }
+          str += "</table><br>"
         }
-        str += "</table><br>"
       }
-      //})
+      
      return str;
   }
 
@@ -13085,6 +13331,19 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
     }
   })
 
+  $rootScope.pdfViewer = function(filePath) {
+    $rootScope.pdfFilePath = filePath;
+    ModalService.showModal({
+      templateUrl: 'pdf-viewer.html',
+      controller: "pdfViewerCtrl"
+    }).then(function(modal) {
+      modal.element.modal();
+      modal.close.then(function(result) {
+      })
+           
+    });
+  }
+
 }]);
 
 app.controller("emailModalCtrl",["$scope","$rootScope","$http",function($scope,$rootScope,$http){
@@ -13100,7 +13359,7 @@ app.controller("emailModalCtrl",["$scope","$rootScope","$http",function($scope,$
     .success(function(res){
       $scope.loading = false;
       if(res.status)
-        $scope.msg = "Prescription sent to " + $scope.recepientEmail;
+        $scope.msg = "Sent to " + $scope.recepientEmail;
       else
         $scope.msg = res.message;
     })
@@ -14893,11 +15152,42 @@ app.controller("radioOutCtrl",["$scope","$http","scanTests","getAllRadiologyServ
     })
   }
 
+
+  /*
+   $scope.sendTest = function(center){
+    center.loading = true;    
+    var testArr = [];      
+    testArr.push({
+      name: $scope.TestList[count].name,
+      sn: $scope.TestList[count].sn
+    });
+
+    count++;
+    sendIndividualTests(center,testArr,count)
+  }
+
+
+  */
+
+  var count = 0;
+
   $scope.sendTest = function(center){
+    center.loading = true;
+    var testArr = [];      
+    testArr.push({
+      name: $scope.TestList[count].name,
+      sn: $scope.TestList[count].sn
+    });
+
+    count++;
+    sendIndividualTests(center,testArr,count)
+  }
+
+  function sendIndividualTests(center,testArr,count) {
     center.loading = true;
     $scope.treatment.isOutPatientReq = true;
     $scope.treatment.centerDetails = center;
-    $scope.treatment.lab_test_list = $scope.TestList;
+    $scope.treatment.lab_test_list = testArr;
     $scope.treatment.date = new Date();
      $http({
       method  : 'POST',
@@ -14907,11 +15197,17 @@ app.controller("radioOutCtrl",["$scope","$http","scanTests","getAllRadiologyServ
      })
     .success(function(response) {
       if(response.success) {
-        center.isSent = true;
+        if($scope.TestList.length > count){
+          $scope.sendTest(center)
+        } else {
+          center.isSent = true;
+          center.loading = false;
+        }
+       
       } else {
         alert("Oops! Something went wrong. Please try again.");
       }
-      center.loading = false;
+     
     })
   }
 
@@ -15897,6 +16193,7 @@ app.controller("patientChartCtrl",["$scope","$rootScope","$http","$location",
           profile_pic_url: resp.profile_pic_url,
           age: resp.age,
           gender: resp.gender,
+          phone: resp.phone,
           name: resp.title + " " + resp.firstname + " " + resp.lastname
         }
 
@@ -15936,7 +16233,8 @@ app.controller("patientChartCtrl",["$scope","$rootScope","$http","$location",
           profile_pic_url: response.patient.profile_pic_url,
           age: response.patient.age,
           gender: response.patient.gender,
-          name: response.patient.title + " " + response.patient.firstname + " " + response.patient.lastname
+          name: response.patient.title + " " + response.patient.firstname + " " + response.patient.lastname,
+          phone: response.phone
         }
 
         $location.path('charts');
@@ -15996,7 +16294,7 @@ app.controller("chartCtrl",["$scope","$rootScope","chartReadingService","$filter
 
   $scope.chart.year = date.getFullYear();
 
- 
+  
 
   $scope.patient = $rootScope.holdPatientForChart || {};
   $scope.chart.userId = $scope.patient.userId || $rootScope.checkLogIn.user_id;
@@ -16646,6 +16944,699 @@ app.controller("chartCtrl",["$scope","$rootScope","chartReadingService","$filter
 
 }]);
 
+app.controller("e-caseChartCtrl",["$scope","$rootScope","chartReadingService","$filter","$http",
+  "$location","templateService","localManager",
+  function($scope,$rootScope,chartReadingService,$filter,$http,$location,templateService,localManager){
+
+  // Remember we have to secure the chart to grant permissions to who enters readings for the patient
+
+  var chartService = chartReadingService;
+
+  $scope.chart = {}
+  $scope.chart.readings = {};
+  $scope.chart.readings1 = {};
+  $scope.chart.readings2 = {};
+
+  var date = new Date();
+
+  $scope.chart.year = date.getFullYear();
+
+  var path = $location.path();
+  var arr = path.split("/");  
+  var userId = arr[arr.length-1];
+
+  function getPatientData() {
+    $scope.loading = true;
+    $http.get("/user/doctor/specific-patient",{params: {id: userId}})
+    .success(function(patient){
+      $scope.loading = false;
+      //$scope.patientInfo = data;
+      $rootScope.holdPatientForChart = {
+        userId: patient.user_id,
+        phone: patient.phone,
+        profile_pic_url: patient.profile_pic_url,
+        age: patient.age,
+        gender: patient.gender,
+        name: patient.firstname + " " + patient.lastname,
+        phone: patient.phone
+      }
+
+      $scope.patient = $rootScope.holdPatientForChart;
+    })
+  } 
+
+  getPatientData();
+ 
+
+  
+  $scope.chart.userId = userId;
+
+  $http.get("/user/charts/all",{params:{userId: $scope.chart.userId}})
+  .success(function(chartYesrs){
+    $scope.yearList = chartYesrs;
+  });
+
+
+  $scope.getChartData = function() {
+
+    chartService.get({userId: $scope.chart.userId,year: $scope.chart.year},function(chartObj){
+
+      $scope.chartData = chartObj || {};
+
+      if(chartObj["bp_readings"]){
+        $scope.megaArrBP = [];
+        var limit = 10;
+        $scope.arrLen = 0;
+        $scope.bpMarker = -1;
+        var bpLen = chartObj["bp_readings"]["length"];
+
+        function fillArrBP(index){
+          var list = [];
+
+          for(var i = index; list.length < limit; i++) {
+            if(chartObj["bp_readings"][i]) {
+              list.push(chartObj["bp_readings"][i]);
+              $scope.arrLen++;
+            } else {
+              break;
+            }
+          }
+         
+          $scope.megaArrBP.push(list);
+          $scope.bpMarker++;
+
+          if($scope.arrLen < bpLen){
+            fillArrBP($scope.arrLen);
+          }
+        }
+
+        fillArrBP(0);  
+       
+        
+
+        var prevList;
+        var prevData;
+        var newDataList;
+        var allLists;
+        var pulse;
+        var diastol;
+        var selectedChartBPList;
+        var innerList;
+        
+
+        $scope.chartViewBP = function() {
+          allLists = [];
+          pulse = [];
+          systol = [];
+          diastol = [];
+          $scope.labels = [];
+          
+          innerList = $scope.megaArrBP[$scope.bpMarker];
+          
+          if(innerList.length === 1 && $scope.megaArrBP.length > 1) {
+            //this logic helps to fill the line graph when the data left over is single as such line need to be drawn from
+            //the previous value for good presentation
+            prevList = $scope.megaArrBP[$scope.bpMarker - 1];
+            prevData = prevList[prevList.length - 1];
+            newDataList = [prevData,innerList[0]];
+            selectedChartBPList = newDataList;
+
+          } else {
+            selectedChartBPList = innerList;
+          }
+
+          if(selectedChartBPList) {
+            selectedChartBPList.forEach(function(item){
+              $scope.labels.push(item.label)
+              pulse.push(item.pulse);
+              systol.push(item.systol);
+              diastol.push(item.diastol);
+            })
+
+            allLists.push(pulse)
+            allLists.push(systol)
+            allLists.push(diastol);
+
+            $scope.data = allLists;
+
+            $scope.series = ['Pulse','Systol','Diastol'];
+            $scope.colors = ['#45b7cd','#ff6384','#FDB45C'];
+            
+          } else {
+            $scope.bpMarker = 0;
+          }
+
+        }
+
+        $scope.chartViewBP();
+
+        $scope.onClick = function (points, evt) {
+          //console.log(points, evt);
+        };
+
+      } //end  chart bp_readings
+
+
+      //Blood Sugar chart logic 
+
+      if(chartObj["bs_readings"]){
+        $scope.megaArrBS = [];
+        var limit1 = 10;
+        $scope.arrLen1 = 0;
+        $scope.bsMarker = -1;
+        var bsLen = chartObj["bs_readings"]["length"];
+
+        function fillArrBS(index){
+          var list1 = [];
+
+          for(var i = index; list1.length < limit1; i++) {
+            if(chartObj["bs_readings"][i]) {
+              list1.push(chartObj["bs_readings"][i]);
+              $scope.arrLen1++;
+            } else {
+              break;
+            }
+          }
+         
+          $scope.megaArrBS.push(list1);
+          $scope.bsMarker++;
+
+          if($scope.arrLen1 < bsLen){
+            fillArrBS($scope.arrLen1);
+          }
+        }
+
+        fillArrBS(0);  
+       
+        $scope.series1 = ['FBS','RBS'];
+        $scope.colors1 = ['#45b7cd', '#ff6384'];
+
+        var prevList1;
+        var prevData1;
+        var newDataList1;
+        var allLists1;
+        var fbs;
+        var rbs;
+        var selectedChartBSList;
+        var innerList1;
+        
+
+        $scope.chartViewBS = function() {
+          allLists1 = [];
+          fbs = [];
+          rbs = [];
+         
+          $scope.labels1 = [];
+          
+          innerList1 = $scope.megaArrBS[$scope.bsMarker];
+          
+          if(innerList1.length === 1 && $scope.megaArrBS.length > 1) {
+            //this logic helps to fill the line graph when the data left over is single as such line need to be drawn from
+            //the previous value for good presentation
+            prevList1 = $scope.megaArrBS[$scope.bsMarker - 1];
+            prevData1 = prevList1[prevList1.length - 1];
+            newDataList1 = [prevData1,innerList1[0]];
+            selectedChartBSList = newDataList1;
+
+          } else {
+            selectedChartBSList = innerList1;
+          }
+
+          if(selectedChartBSList) {
+            selectedChartBSList.forEach(function(item){
+              $scope.labels1.push(item.label)
+              fbs.push(item.fasting);
+              rbs.push(item.random);
+            })
+
+          
+            allLists1.push(fbs)
+            allLists1.push(rbs);
+
+            $scope.data1 = allLists1;
+          } else {
+            $scope.bsMarker = 0;
+          }
+
+        }
+
+        $scope.chartViewBS();
+
+        $scope.onClick1 = function (points, evt) {
+          console.log(points, evt);
+        };
+
+      } // end chart bs_sudgar
+
+
+
+      // Temperature Logic
+      if(chartObj["temp_readings"]){
+        $scope.megaArrTemp = [];
+        var limit2 = 10;
+        $scope.arrLen2 = 0;
+        $scope.tempMarker = -1;
+        var tempLen = chartObj["temp_readings"]["length"];
+
+        function fillArrTemp(index){
+          var list2 = [];
+
+          for(var i = index; list2.length < limit2; i++) {
+            if(chartObj["temp_readings"][i]) {
+              list2.push(chartObj["temp_readings"][i]);
+              $scope.arrLen2++;
+            } else {
+              break;
+            }
+          }
+         
+          $scope.megaArrTemp.push(list2);
+          $scope.tempMarker++;
+
+          if($scope.arrLen2 < tempLen){
+            fillArrTemp($scope.arrLen2);
+          }
+        }
+
+        fillArrTemp(0);  
+       
+        $scope.series2 = ['Temperature'];
+        $scope.colors2 = ['#FDB45C'];
+
+        var prevList2;
+        var prevData2;
+        var newDataList2;
+        var allLists2;
+        var temp;       
+        var selectedChartTempList;
+        var innerList2;
+        
+
+        $scope.chartViewTemp = function() {
+          allLists2 = [];
+          temp = [];
+         
+         
+          $scope.labels2 = [];
+          
+          innerList2 = $scope.megaArrTemp[$scope.tempMarker];
+          
+          if(innerList2.length === 1 && $scope.megaArrTemp.length > 1) {
+            //this logic helps to fill the line graph when the data left over is single as such line need to be drawn from
+            //the previous value for good presentation
+            prevList2 = $scope.megaArrTemp[$scope.tempMarker - 1];
+            prevData2 = prevList2[prevList2.length - 1];
+            newDataList2 = [prevData2,innerList2[0]];
+            selectedChartTempList = newDataList2;
+
+          } else {
+            selectedChartTempList = innerList2;
+          }
+
+          if(selectedChartTempList) {
+            selectedChartTempList.forEach(function(item){
+              $scope.labels2.push(item.label)
+              temp.push(item.temperature);
+            })
+
+          
+            allLists2.push(temp)
+            //allLists2.push(rbs);
+
+            $scope.data2 = allLists2;
+          } else {
+            $scope.tempMarker = 0;
+          }
+
+        }
+
+        $scope.chartViewTemp();
+
+        $scope.onClick2 = function (points, evt) {
+          console.log(points, evt);
+        };
+
+      } // end chart bs_sudgar
+
+    })
+
+  } //end of get chart data
+
+  $scope.setChart = function(type) {
+    if(type === 'positive') {
+      $scope.bpMarker++;
+    } else {
+      $scope.bpMarker--;     
+    }
+
+    $scope.chartViewBP()
+  }
+
+
+  $scope.setChart1 = function(type) {
+    if(type === 'positive') {
+      $scope.bsMarker++;
+    } else {
+      $scope.bsMarker--;     
+    }
+
+    $scope.chartViewBS()
+  }
+
+
+  $scope.setChart2 = function(type) {
+    if(type === 'positive') {
+      $scope.tempMarker++;
+    } else {
+      $scope.tempMarker--;     
+    }
+
+    $scope.chartViewTemp()
+  }
+
+  //$scope.getChartData();
+ 
+  $scope.$watch('chart.year',function(newVal,oldVal){
+    if(newVal){
+      $scope.getChartData();
+    }
+  })
+
+ 
+
+  //$scope.labels = ["Jan 20", "February", "Mar 20 2:00pm", "April", "May", "June", "July"];
+
+  //$scope.series = ['Pulse', 'Systol','Diastol'];
+
+  /*$scope.data = [
+    [65, 59, 80, 81, 56, 55, 40],
+    [28, 48, 40, 19, 86, 27, 90],
+    [80, 50, 40, 70, 86, 89, 60]
+  ];*/
+
+  //$scope.colors = ['#45b7cd', '#ff6384', '#FDB45C'];
+
+  /*$scope.onClick = function (points, evt) {
+    console.log(points, evt);
+  };*/
+
+
+  $scope.sendDataBP = function(){
+    $scope.loadingBP = true;
+
+    if($scope.chart.readings.pulse)
+      if(!testNumber($scope.chart.readings.pulse)){
+        alert("Pulse value should be a number only.");
+        return;
+      }
+
+
+    if($scope.chart.readings.systol)
+      if(!testNumber($scope.chart.readings.systol)){
+        alert("Systol value should be a number only.");
+        return;
+      }
+
+
+    if($scope.chart.readings.diastol)
+      if(!testNumber($scope.chart.readings.diastol)){
+        alert("Diastol value should be a number only.");
+        return;
+      }
+
+    $scope.chart.year = date.getFullYear();
+
+    $scope.chart.name = "Blood Pressure";    
+    $scope.chart.date = date;
+    $scope.chart.readings.time = + $scope.time;
+    $scope.chart.readings.day = + new Date();
+    $scope.chart.readings.name = "Blood Pressure";
+    $scope.chart.readings.unit = "mmHg";
+    //$scope.chart.readings.id = Math.floor(Math.random() * 999999) + "" + Math.floor(Math.random() * 999999);
+    
+    var dt = $filter('date')($scope.chart.readings.time,'shortTime');
+    var dt2 = $filter('date')(date,'d MMM');
+
+    $scope.chart.readings.label = dt2 + " " + dt;
+    
+    $scope.chart.userId = $scope.patient.userId || $rootScope.checkLogIn.user_id;
+    $scope.chart.phone = $scope.patient.phone || $rootScope.checkLogIn.phone;
+
+    chartService.update($scope.chart,function(response){
+
+      if(response.status){
+        $scope.getChartData();
+        alert(response.message)
+      } else {
+        alert("Some errors occured. Please try again later.")
+      }
+
+      $scope.loadingBP = false;
+    })
+    
+  }
+
+  var elemPos;
+
+  $scope.deleteChartReadingBP = function(reading) {
+    var check = confirm("You want to delete Blood Pressure result recorded on " + reading.label)
+    if(check){
+      reading.loading = true;
+      chartService.deleteReading({chartId:  $scope.chartData._id,dataId:reading.id,
+        year: $scope.chartData.year,type:"bp_readings"},function(resp){
+        reading.loading = false;
+        if(resp.status){
+          elemPos = $scope.chartData.bp_readings.map(function(item){return item.id}).indexOf(reading.id)
+          if(elemPos !== -1){
+            $scope.chartData.bp_readings.splice(elemPos,1);
+          }
+          $scope.getChartData();
+        } 
+        alert(resp.message);
+      })
+    }
+  }
+
+  // Sending blood sugar data for recording 
+
+  $scope.sendDataBS = function() {
+    
+   
+
+    if($scope.chart.readings1.fasting)
+      if(!testNumber($scope.chart.readings1.fasting)){
+        alert("FBS value should be a number only.");
+        return;
+      }
+
+    if($scope.chart.readings1.random)
+      if(!testNumber($scope.chart.readings1.random)){
+        alert("RBS value should be a number only.");
+        return;
+      }
+   
+
+    $scope.loadingBS = true;
+
+    $scope.chart.year = date.getFullYear();
+
+    $scope.chart.name = "Blood Sugar";    
+    $scope.chart.date = date;
+    $scope.chart.readings1.time = + $scope.time;
+    $scope.chart.readings1.day = + new Date();
+    $scope.chart.readings1.name = "Blood Sugar";
+    $scope.chart.readings1.unit = "mmol/L";
+    //$scope.chart.readings1.id = Math.floor(Math.random() * 999999) + "" + Math.floor(Math.random() * 999999);
+    
+    var dt = $filter('date')($scope.chart.readings1.time,'shortTime');
+    var dt2 = $filter('date')(date,'d MMM');
+
+    $scope.chart.readings1.label = dt2 + " " + dt;
+    
+    $scope.chart.userId = $scope.patient.userId || $rootScope.checkLogIn.user_id;
+    $scope.chart.phone = $scope.patient.phone || $rootScope.checkLogIn.phone;
+
+    chartService.update($scope.chart,function(response){
+
+      if(response.status){
+        $scope.getChartData();
+        alert(response.message)
+      } else {
+        alert("Some errors occured. Please try again later.")
+      }
+
+      $scope.loadingBS = false;
+    })
+  }
+
+
+  $scope.deleteChartReadingBS = function(reading) {
+    var check = confirm("You want to delete Blood Sugar result recorded on " + reading.label)
+    if(check){
+      reading.loading = true;
+      chartService.deleteReading({chartId: $scope.chartData._id,dataId:reading.id,
+        year: $scope.chartData.year,type:"bs_readings"},function(resp){
+        reading.loading = false;
+        if(resp.status){
+          elemPos = $scope.chartData.bs_readings.map(function(item){return item.id}).indexOf(reading.id)
+          if(elemPos !== -1){
+            $scope.chartData.bs_readings.splice(elemPos,1);
+          }
+          $scope.getChartData();
+        } 
+        alert(resp.message);
+      })
+    }
+  }
+
+
+  
+
+  
+  // Sending blood sugar data for recording 
+
+  $scope.sendDataTemp = function() {
+    
+    
+    if(!testNumber($scope.chart.readings2.temperature)){
+      alert("Temperature value should be a number only.");
+      return;
+    }
+
+   
+    $scope.loadingTemp = true;
+
+    $scope.chart.year = date.getFullYear();
+
+    $scope.chart.name = "Temperature";    
+    $scope.chart.date = date;
+    $scope.chart.readings2.time = + $scope.time;
+    $scope.chart.readings2.day = + new Date();
+    $scope.chart.readings2.name = "Temperature";
+    $scope.chart.readings2.unit = "°C";
+    //$scope.chart.readings2.id = Math.floor(Math.random() * 999999) + "" + Math.floor(Math.random() * 999999);
+    
+    var dt = $filter('date')($scope.chart.readings2.time,'shortTime');
+    var dt2 = $filter('date')(date,'d MMM');
+
+    $scope.chart.readings2.label = dt2 + " " + dt;
+    
+    $scope.chart.userId = $scope.patient.userId || $rootScope.checkLogIn.user_id;
+    $scope.chart.phone = $scope.patient.phone || $rootScope.checkLogIn.phone;
+
+    chartService.update($scope.chart,function(response){
+
+      if(response.status){
+        $scope.getChartData();
+        alert(response.message)
+      } else {
+        alert("Some errors occured. Please try again later.")
+      }
+
+      $scope.loadingTemp = false;
+    })
+  }
+
+
+  $scope.deleteChartReadingTemp = function(reading) {
+    var check = confirm("You want to delete Temperature result recorded on " + reading.label)
+    if(check){
+      reading.loading = true;
+      chartService.deleteReading({chartId:  $scope.chartData._id,dataId:reading.id,type:"temp_readings"},function(resp){
+        reading.loading = false;
+        if(resp.status){
+          elemPos = $scope.chartData.temp_readings.map(function(item){return item.id}).indexOf(reading.id)
+          if(elemPos !== -1){
+            $scope.chartData.temp_readings.splice(elemPos,1);
+          }
+          $scope.getChartData();
+        } 
+        alert(resp.message);
+      })
+    }
+  }
+
+  $scope.editReading = function(reading){
+    reading.isEdit = true;
+  }
+
+  $scope.cancelEdit = function(reading){
+    reading.isEdit = false;
+  }
+
+
+  $scope.updateReading = function(reading,type){
+    var sendObj = {
+      type: type,
+      dataId: reading.id,
+      chartId: $scope.chartData._id,
+      readings: reading
+    }
+
+    switch(type){
+      case 'bp_readings':
+        if(!testNumber(reading.pulse)){
+          alert("Pulse value should be a number only.");
+          return;
+        }
+
+        if(!testNumber(reading.systol)){
+          alert("Systol value should be a number only.");
+          return;
+        }
+
+        if(!testNumber(reading.diastol)){
+          alert("Diastol value should be a number only.");
+          return;
+        }
+      break;
+      case "bs_readings":
+        if(reading.fasting)
+          if(!testNumber(reading.fasting)){
+            alert("FBS value should be a number only.");
+            return;
+          }
+
+        if(reading.random)
+          if(!testNumber(reading.random)){
+            alert("RBS value should be a number only.");
+            return;
+          } 
+      break;
+      case 'temp_readings':
+        if(!testNumber(reading.temperature)){
+          alert("Temperature value should be a number only.");
+          return;
+        }
+      break;
+      default:
+      break;
+    }
+
+    reading.isloading = true;
+    chartService.partialUpdate(sendObj,function(response){
+      if(response.status){
+        $scope.getChartData();
+        alert(response.message)
+      } else {
+        alert("Some errors occured. Please try again later.")
+      }
+
+      reading.isloading = false;
+    })
+  }
+
+  $scope.userPatient = function(id,presence) {
+    templateService.holdIdForSpecificPatient = id;
+    var page = "/doctor-patient/treatment/" + id;
+    localManager.setValue("holdPageForHandler",page);
+    localManager.setValue("currentPage",page);
+    $location.path(page);
+    mySocket.removeAllListeners("new_msg");
+  }
+
+}]);
+
 app.controller("e-casePrescriptionCtrl",["$scope","$http","$rootScope","$location","templateService","ModalService",
   function($scope,$http,$rootScope,$location,templateService,ModalService){
 
@@ -16653,6 +17644,8 @@ app.controller("e-casePrescriptionCtrl",["$scope","$http","$rootScope","$locatio
   var arr = path.split("/");  
   var userId = arr[arr.length-1];
   $scope.prescription = {};
+  
+
   $scope.prescription.isSorted = false;
 
   function getPatientData() {
@@ -16767,7 +17760,7 @@ app.controller("e-casePrescriptionCtrl",["$scope","$http","$rootScope","$locatio
     getPatientData()
   })
 
-}])
+}]);
 
 app.controller("prescriptionModalController",["$scope","$http","localManager","Drugs","getAllPharmacyService","$rootScope",
   function($scope,$http,localManager,Drugs,getAllPharmacyService,$rootScope){
@@ -17029,8 +18022,624 @@ app.controller("patientSearchForPharmacyController",["$scope","$location","$http
       });
     }
 
-    
 }]);
+
+app.controller("e-caseLaboratoryCtrl",["$scope","$http","$rootScope","$location",
+  "templateService","ModalService","templateService","$timeout",
+  function($scope,$http,$rootScope,$location,templateService,ModalService,templateService,$timeout){
+
+  var path = $location.path();
+  var arr = path.split("/");  
+  var userId = arr[arr.length-1];
+  $scope.laboratory = {};
+  
+
+  $scope.laboratory.isSorted = false;
+
+  $scope.supported = false;
+
+  $scope.copy = "";
+
+  $scope.success = function (test) {
+    test.copy = 'Copied!';
+    $timeout(function(){
+      test.copy = "";
+    },2000)
+  };
+
+
+  $scope.fail = function (err) {
+    console.error('Error!', err);
+  };
+
+  function getPatientData() {
+    $scope.loading = true;
+
+    $http.get("/user/doctor/specific-patient",{params: {id: userId}})
+    .success(function(data){
+      $scope.loading = false;
+      $scope.patientInfo = data;
+      $scope.labTest = data.medical_records.laboratory_test;
+      if($scope.laboratory.isSorted){
+        sortByRefered()
+      }
+    })
+  }
+
+  getPatientData();
+
+  $scope.writeInvestigation = function() {
+    $rootScope.holdPatientDatails = {
+      firstname: $scope.patientInfo.firstname,
+      lastname: $scope.patientInfo.lastname,
+      title: $scope.patientInfo.title,
+      age: $scope.patientInfo.age,
+      gender: $scope.patientInfo.gender,
+      phone: $scope.patientInfo.phone,
+      city: $scope.patientInfo.city,
+      patient_id: $scope.patientInfo.user_id,
+      patient_profile_pic_url: $scope.patientInfo.profile_pic_url,
+      address: $scope.patientInfo.address,
+      type: $scope.patientInfo.type
+    }
+
+    ModalService.showModal({
+        templateUrl: 'write-laboratory-ecase.html',
+        controller: 'laboratoryModalController'
+    }).then(function(modal) {
+        modal.element.modal();
+        modal.close.then(function(result) {             
+        });
+    });
+  }
+
+  $scope.$watch("laboratory.isSorted",function(newVal,oldVal){
+    if(newVal){
+      sortByRefered()
+    }
+  })
+
+  function sortByRefered() {
+    var filter = {};
+    var mineArr = [];
+    var othersArr = [];   
+    $scope.labTest.forEach(function(test){
+      if(test.referral_id === $rootScope.checkLogIn.user_id){
+        mineArr.push(test)
+      } else {
+
+        if(!test.referral_id) {
+          test.referral_id = test.referral_firstname;
+        }
+
+        if(!filter.hasOwnProperty(test.referral_id)){
+          filter[test.referral_id] = test.referral_id;
+          filter["firstname"] = test.referral_firstname;
+          filter["lastname"] = "";
+          filter["title"] = test.referral_title;
+          filter["specialty"] = "";
+          filter["profilePic"] = "";
+          filter["profile"] = "/user/profile/view/" + test.referral_id;
+          filter["tests"] = [test];
+        } else {
+          filter["tests"].push(test)
+        }
+      }
+    })
+
+    othersArr.push(filter)
+
+    $scope.sortedLaboratory = {
+      mine: mineArr,
+      others: othersArr
+    };
+  }
+
+  $rootScope.$on('new medication',function(e,data){
+    getPatientData()
+  });
+
+   //patient forward test to another center.
+  $scope.forwardTest = function(testObj,type) {
+    testObj.type = type;
+    $rootScope.holdTestToRun = testObj.test_to_run;
+    var newArr = [] ;
+    for(var i = 0; i < testObj.test_to_run.length; i++){
+      if(testObj.test_to_run[i].picked) {
+        newArr.push(testObj.test_to_run[i]);
+      }
+    }
+
+    if(newArr.length > 0){
+      testObj.test_to_run = newArr;
+    }
+
+    templateService.holdTestToBeForwarded = testObj;
+    $location.path("/patient/forward-test");
+  } 
+
+}]);
+
+app.controller("e-caseRadiologyCtrl",["$scope","$http","$rootScope","$location",
+  "templateService","ModalService","templateService","$timeout",
+  function($scope,$http,$rootScope,$location,templateService,ModalService,templateService,$timeout){
+
+  var path = $location.path();
+  var arr = path.split("/");  
+  var userId = arr[arr.length-1];
+  $scope.radiology = {};
+  
+
+  $scope.radiology.isSorted = false;
+
+
+  $scope.supported = false;
+
+  $scope.copy = "";
+
+  $scope.success = function (test) {
+    test.copy = 'Copied!';
+    $timeout(function(){
+      test.copy = "";
+    },2000)
+  };
+
+
+  $scope.fail = function (err) {
+    console.error('Error!', err);
+  };
+
+  function getPatientData() {
+    $scope.loading = true;
+
+    $http.get("/user/doctor/specific-patient",{params: {id: userId}})
+    .success(function(data){
+      $scope.loading = false;
+      $scope.patientInfo = data;
+      $scope.labTest = data.medical_records.radiology_test;
+      if($scope.radiology.isSorted){
+        sortByRefered()
+      }
+    })
+  }
+
+  getPatientData();
+
+  $scope.writeInvestigation = function() {
+    $rootScope.holdPatientDatails = {
+      firstname: $scope.patientInfo.firstname,
+      lastname: $scope.patientInfo.lastname,
+      title: $scope.patientInfo.title,
+      age: $scope.patientInfo.age,
+      gender: $scope.patientInfo.gender,
+      phone: $scope.patientInfo.phone,
+      city: $scope.patientInfo.city,
+      patient_id: $scope.patientInfo.user_id,
+      patient_profile_pic_url: $scope.patientInfo.profile_pic_url,
+      address: $scope.patientInfo.address,
+      type: $scope.patientInfo.type
+    }
+
+    ModalService.showModal({
+        templateUrl: 'write-radiology-ecase.html',
+        controller: 'radiologyModalController'
+    }).then(function(modal) {
+        modal.element.modal();
+        modal.close.then(function(result) {             
+        });
+    });
+  }
+
+  $scope.$watch("radiology.isSorted",function(newVal,oldVal){
+    if(newVal){
+      sortByRefered()
+    }
+  })
+
+  function sortByRefered() {
+    var filter = {};
+    var mineArr = [];
+    var othersArr = [];   
+    //remember referral_id field was not initially added in the db data for radiology when doctor refers for investigation. I was later added by me.
+    $scope.labTest.forEach(function(test){
+      if(test.referral_id === $rootScope.checkLogIn.user_id){
+        mineArr.push(test)
+      } else {
+
+        if(!test.referral_id) {
+          test.referral_id = test.referral_firstname;
+        }
+
+        if(!filter.hasOwnProperty(test.referral_id)){
+          filter[test.referral_id] = test.referral_id;
+          filter["firstname"] = test.referral_firstname;
+          filter["lastname"] = "";
+          filter["title"] = test.referral_title;
+          filter["specialty"] = "";
+          filter["profilePic"] = "";
+          filter["profile"] = "/user/profile/view/" + test.referral_id;
+          filter["tests"] = [test];
+        } else {
+          filter["tests"].push(test)
+        }
+      }
+    })
+
+    othersArr.push(filter)
+
+    $scope.sortedRadiology = {
+      mine: mineArr,
+      others: othersArr
+    };
+
+    console.log($scope.sortedRadiology)
+  }
+
+  $rootScope.$on('new medication',function(e,data){
+    getPatientData()
+  });
+
+   //patient forward test to another center.
+  $scope.forwardTest = function(testObj,type) {
+    testObj.type = type;
+    $rootScope.holdTestToRun = testObj.test_to_run;
+    var newArr = [] ;
+    for(var i = 0; i < testObj.test_to_run.length; i++){
+      if(testObj.test_to_run[i].picked) {
+        newArr.push(testObj.test_to_run[i]);
+      }
+    }
+
+    if(newArr.length > 0){
+      testObj.test_to_run = newArr;
+    }
+
+    templateService.holdTestToBeForwarded = testObj;
+    $location.path("/patient/forward-test");
+  } 
+
+}]);
+
+app.controller("laboratoryModalController",["$scope","$http","labTests","getAllLaboratoryService","$rootScope",
+  function($scope,$http,labTests,getAllLaboratoryService,$rootScope){
+
+  var test_name;
+  var index;
+
+  $scope.treatment = {};
+
+  //$scope.treatment.country = "Nigeria";
+
+  $scope.treatment.patientType = "mine";
+  $scope.treatment.referral_pays = "No";
+
+  $scope.getTest = function (test) {
+    test_name = test;
+    if($scope.TestList.length === 1)
+      $scope.TestList[0].name = test;
+    if( $scope.TestList.length > 1)
+      $scope.TestList[index].name = test;
+  }
+
+  $scope.tests = labTests.listInfo.concat(labTests.listInfo2,labTests.listInfo3,labTests.listInfo4,labTests.listInfo5,labTests.listInfo6,labTests.listInfo7);
+
+  $http({
+    method  : "GET",
+    url     : "/user/getSpecialTests", //gets special tests from backend     
+    headers : {'Content-Type': 'application/json'} 
+    })
+  .success(function(response) {   
+    $scope.tests = $scope.tests.concat(response);
+  });
+
+  $scope.TestList = [{
+    sn: 1,
+    name: ""
+  }];
+
+  var count = {};
+  count.num = 1;
+
+  $scope.addTest = function(){
+    var testObj = {};
+    count.num++;
+    testObj.sn = count.num;
+    $scope.TestList.push(testObj);
+    index = $scope.TestList.length - 1;
+  }
+
+  $scope.removeTest = function() {
+    if(count.num > 1){
+      $scope.TestList.pop();
+      count.num--;
+    }
+  }
+
+
+  $scope.findLabs = function() {
+    getLaboratories();
+  }
+
+  getLaboratories();
+
+  $scope.sendTest = function(center){
+    center.loading = true;
+    $scope.treatment.isOutPatientReq = true;
+    $scope.treatment.centerDetails = center;
+    $scope.treatment.lab_test_list = $scope.TestList;
+    $scope.treatment.date = new Date();
+    $scope.treatment.patient_title = $rootScope.holdPatientDatails.title;
+    $scope.treatment.patient_firstname = $rootScope.holdPatientDatails.firstname;
+    $scope.treatment.patient_lastname = $rootScope.holdPatientDatails.lastname;
+    $scope.treatment.patient_phone = $rootScope.holdPatientDatails.phone;
+    $scope.treatment.patientDetails = {
+      address: $rootScope.holdPatientDatails.address,
+      age: $rootScope.holdPatientDatails.age,
+      city: $rootScope.holdPatientDatails.city,
+      firstname: $rootScope.holdPatientDatails.firstname,
+      gender: $rootScope.holdPatientDatails.gender,
+      lastname: $rootScope.holdPatientDatails.lastname,
+      phone: $rootScope.holdPatientDatails.phone,
+      profile_pic_url: $rootScope.holdPatientDatails.profile_pic_url,
+      title: $rootScope.holdPatientDatails.title,
+      type: $rootScope.holdPatientDatails.type,
+      user_id: $rootScope.holdPatientDatails.patient_id
+    }
+
+    $http({
+      method  : 'POST',
+      url     : "/user/doctor/send-test",
+      data    : $scope.treatment,
+      headers : {'Content-Type': 'application/json'} 
+     })
+    .success(function(response) {
+      if(response.success) {
+        center.isSent = true;
+        $rootScope.$broadcast("new medication",{status:true})
+      } else {
+        alert("Oops! Something went wrong. Please try again.");
+      }
+      center.loading = false;
+    })
+  }
+
+  function getLaboratories() {
+    $scope.loading = true;
+    $scope.city = $scope.city || $rootScope.checkLogIn.city;
+    var source = getAllLaboratoryService; 
+    source.query({city:$scope.city},function(list){
+      $scope.loading = false;
+      $scope.searchResult = list;
+    });
+  }
+
+}]);
+
+
+app.controller("radiologyModalController",["$scope","$http","scanTests","getAllRadiologyService","$rootScope",
+  function($scope,$http,scanTests,getAllRadiologyService,$rootScope){
+
+  var test_name;
+  var index;
+
+  $scope.treatment = {};
+
+  //$scope.treatment.country = "Nigeria";
+
+  $scope.treatment.patientType = "mine";
+  $scope.treatment.referral_pays = "No";
+
+  $scope.getTest = function (test) {
+    test_name = test;
+    if($scope.TestList.length === 1)
+      $scope.TestList[0].name = test;
+    if( $scope.TestList.length > 1)
+      $scope.TestList[index].name = test;
+  }
+
+  $scope.tests = scanTests.listInfo1.concat(scanTests.listInfo2,scanTests.listInfo3,scanTests.listInfo4,scanTests.listInfo5,
+    scanTests.listInfo6);
+
+  $http({
+    method  : "GET",
+    url     : "/user/getSpecialTestsRadio", //gets special tests from backend     
+    headers : {'Content-Type': 'application/json'} 
+    })
+  .success(function(response) {   
+    $scope.tests = $scope.tests.concat(response);
+  });
+
+  $scope.TestList = [{
+    sn: 1,
+    name: ""
+  }];
+
+  var count = {};
+  count.num = 1;
+
+  $scope.addTest = function(){
+    var testObj = {};
+    count.num++;
+    testObj.sn = count.num;
+    $scope.TestList.push(testObj);
+    index = $scope.TestList.length - 1;
+  }
+
+  $scope.removeTest = function() {
+    if(count.num > 1){
+      $scope.TestList.pop();
+      count.num--;
+    }
+  }
+
+
+  $scope.findLabs = function() {
+    getRadiologies();
+  }
+
+  getRadiologies();
+  var count = 0;
+
+  $scope.sendTest = function(center){
+    center.loading = true;    
+    var testArr = [];      
+    testArr.push({
+      name: $scope.TestList[count].name,
+      sn: $scope.TestList[count].sn
+    });
+
+    count++;
+    sendIndividualTests(center,testArr,count)
+  }
+
+  function sendIndividualTests(center,testArr,count) {  
+    console.log(testArr)
+    $scope.treatment.isOutPatientReq = true;
+    $scope.treatment.centerDetails = center;
+    $scope.treatment.lab_test_list = testArr;
+    $scope.treatment.date = new Date();
+    $scope.treatment.patient_title = $rootScope.holdPatientDatails.title;
+    $scope.treatment.patient_firstname = $rootScope.holdPatientDatails.firstname;
+    $scope.treatment.patient_lastname = $rootScope.holdPatientDatails.lastname;
+    $scope.treatment.patient_phone = $rootScope.holdPatientDatails.phone;
+    $scope.treatment.patientDetails = {
+      address: $rootScope.holdPatientDatails.address,
+      age: $rootScope.holdPatientDatails.age,
+      city: $rootScope.holdPatientDatails.city,
+      firstname: $rootScope.holdPatientDatails.firstname,
+      gender: $rootScope.holdPatientDatails.gender,
+      lastname: $rootScope.holdPatientDatails.lastname,
+      phone: $rootScope.holdPatientDatails.phone,
+      profile_pic_url: $rootScope.holdPatientDatails.profile_pic_url,
+      title: $rootScope.holdPatientDatails.title,
+      type: $rootScope.holdPatientDatails.type,
+      user_id: $rootScope.holdPatientDatails.patient_id
+    }
+
+    $http({
+      method  : 'POST',
+      url     : "/user/doctor/radiology/send-test",
+      data    : $scope.treatment,
+      headers : {'Content-Type': 'application/json'} 
+     })
+    .success(function(response) {
+      if(response.success) {
+        if($scope.TestList.length > count){
+          $scope.sendTest(center)
+        } else {
+          $rootScope.$broadcast("new medication",{status:true});
+          center.isSent = true;
+          center.loading = false;
+        }
+        
+      } else {
+        alert("Oops! Something went wrong. Please try again.");
+      }
+      
+    })
+  
+  }
+
+  function getRadiologies() {
+    $scope.loading = true;
+    $scope.city = $scope.city || $rootScope.checkLogIn.city;
+    var source = getAllRadiologyService; 
+    source.query({city:$scope.city},function(list){
+      $scope.loading = false;
+      $scope.searchResult = list;
+    });
+  }
+
+
+}]);
+
+//controller for patient who wish to redirect an investigation another center.
+app.controller("patientRedirectTestController",["$scope","$location","$resource","$window",
+  "templateService","patientRedirectTestService","$rootScope","ModalService",
+  function($scope,$location,$resource,$window,templateService,patientRedirectTestService,$rootScope,ModalService){ 
+  $scope.criteria = {};
+
+  $scope.criteria.referral_pays = "No";
+
+  var resource = patientRedirectTestService; //$resource("/user/patient/get-centers",{sendTest:{method:"PUT"}});
+
+  var test = templateService.holdTestToBeForwarded; 
+ 
+
+  $scope.pageId = (test.type === "Laboratory") ? ( '/e-case-laboratory/' + test.patient_id) : ( '/e-case-radiology/' + test.patient_id);
+
+  $scope.testToRun = test.test_to_run;
+
+  $scope.criteria.country = "Nigeria";
+  
+  function getData() {
+    $scope.loading = true; 
+    $scope.criteria.type = test.type;
+    resource.query($scope.criteria,function(data){
+      $scope.loading = false;
+      if(data.length > 0) {
+        $scope.criteria.city = data[0].city;
+        $scope.criteria.country = data[0].country;
+      } else {
+        $scope.message = "No centers found based on the search criteria."
+      }
+      $scope.centerLists = data;
+    });
+  }
+
+  $scope.findCenter = function () {
+    getData();
+  }
+
+  $scope.forwardInvestigtion = function(center) {   
+   // var verify = confirm("Test will be sent to " + test.center_name); 
+    center.loading = true;  
+    var sendObj = {
+      oldCenterId: test.center_id,
+      newCenterId: center.user_id,
+      test_to_run: test.test_to_run,
+      patientId: test.patient_id,
+      type: test.type,
+      refId: test.ref_id,
+      referral_pays: $scope.criteria.referral_pays
+    }
+
+    resource.sendTest(sendObj,function(response){
+      center.loading = false;
+      if(response.status){
+        center.status = response.status;
+      } else {
+        alert(response.message)
+      }
+      
+    })
+    
+  }
+
+  $scope.sendChat = function(center) {
+    
+    center.id = center.user_id // just to set common property for the modal and controller using this resource.
+    $rootScope.holdcenter = center;
+    ModalService.showModal({
+        templateUrl: 'quick-chat.html',
+        controller: 'generalChatController'
+    }).then(function(modal) {
+        modal.element.modal();
+        modal.close.then(function(result) {             
+        });
+    });
+  }
+
+  getData();
+
+}]);
+
+
+app.controller("pdfViewerCtrl",["$scope","$rootScope","pdfDelegate",
+  function($scope,$rootScope,pdfDelegate){
+  //console.log(pdfDelegate,$rootScope.pdfFilePath)
+  pdfDelegate.$getByHandle('my-pdf-container').zoomIn(0.3);
+}])
 
 
 function testNumber(str) {

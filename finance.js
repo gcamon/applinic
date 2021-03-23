@@ -1051,20 +1051,22 @@ router.put("/user/laboratory/test-result/session-update",function(req,res){
           if(data) {
 	          var objectFound = data;    
 	          var pos = objectFound.diagnosis.laboratory_test_results.map(function(x) { return x.test_id;}).indexOf(req.body.laboratory.test_id);
-	          var theObj = objectFound.diagnosis.laboratory_test_results[pos];         
-	          theObj.receive_date = req.body.laboratory.date;
-	          theObj.test_to_run = req.body.laboratory.test_to_run;
-	          theObj.report = req.body.laboratory.report;
-	          theObj.conclusion = req.body.laboratory.conclusion;
-	          theObj.sent_date = req.body.date;
-	          theObj.test_ran_by = req.user.name;
-	          theObj.center_address = req.user.address;
-	          theObj.center_city = req.user.city;
-	          theObj.center_country = req.user.country;
-	          theObj.center_phone = req.user.phone;
-	          theObj.indication = req.body.laboratory.indication;
-	          theObj.center_profile_pic_url =  req.user.profile_pic_url;
-	          theObj.lab_pdf_report.unshift({date: dt,pdf_report:pdfPath});
+	          var theObj = objectFound.diagnosis.laboratory_test_results[pos];   
+	          if(theObj) {      
+		          theObj.receive_date = req.body.laboratory.date;
+		          theObj.test_to_run = req.body.laboratory.test_to_run;
+		          theObj.report = req.body.laboratory.report;
+		          theObj.conclusion = req.body.laboratory.conclusion;
+		          theObj.sent_date = req.body.date;
+		          theObj.test_ran_by = req.user.name;
+		          theObj.center_address = req.user.address;
+		          theObj.center_city = req.user.city;
+		          theObj.center_country = req.user.country;
+		          theObj.center_phone = req.user.phone;
+		          theObj.indication = req.body.laboratory.indication;
+		          theObj.center_profile_pic_url =  req.user.profile_pic_url;
+		          theObj.lab_pdf_report.unshift({date: dt,pdf_report:pdfPath});
+	      	  }
        	  
 
 	          var mailOptions = {
@@ -2495,8 +2497,6 @@ router.put("/user/settled-cashout",function(req,res){
 	}
 })
 
-//for courier matters
-
 router.post("/user/courier/payment-confirmation",function(req,res){
 	if(req.user){
 		if(req.body.otp) {
@@ -2559,11 +2559,9 @@ router.post("/user/courier/payment-confirmation",function(req,res){
 	} else {
 		res.end("Unauthorized access!");
 	}
-});
-
+})
 
 router.put("/user/field-agent",function(req,res){ 
-
 	model.agent.findById(req.body.agentId)
 	.exec(function(err,agent){
 		if(err) throw err;
@@ -2597,7 +2595,7 @@ router.put("/user/field-agent",function(req,res){
 								}
 
 								agent.save(function(err,info){
-									console.log("courier removed from field agent's list");
+									//console.log("courier removed from field agent's list");
 								});
 							}
 						})
@@ -2616,24 +2614,30 @@ router.put("/user/field-agent",function(req,res){
 
 router.get("/user/outpatient-billing",function(req,res){
 	if(req.user){
-	  model.outPatientBilling.findOne({bill_id: req.query.billId},function(err,bill){
-	  	if(err) throw err;
-	  	if(bill) {
-	  		res.json(bill);
-	  	} else {
-	  		res.send({});
-	  	}
-	  })
+	  if(req.query.billId) {
+	    model.outPatientBilling.findOne({bill_id: req.query.billId},function(err,bill){
+		  	if(err) throw err;
+		  	if(bill) {
+		  		res.json(bill);
+		  	} else {
+		  		res.send({});
+		  	}
+	   })
+  	} else if(req.query.patientId){
+  		model.outPatientBilling.find({patient_id: req.query.patientId,sender_id: req.user.user_id})
+  		.exec(function(err,bill){
+		  	if(err) throw err;		  	
+		  	res.json(bill);		  	
+	   })
+  	}
 	} else {
 		res.end("Unauthorized access!!");
 	}
 });
 
-router.post("/user/outpatient-billing",function(req,res){
-	
+router.post("/user/outpatient-billing",function(req,res){	
 	if(req.user) {
 		var id = genId();
-
 		var bill = new model.outPatientBilling({
 			date: + new Date(),
 			sender_names: req.user.name,
@@ -2664,7 +2668,7 @@ router.post("/user/outpatient-billing",function(req,res){
 
 		});
 
-	  
+		console.log(bill)
 
 	  model.user.findOne({user_id: req.body.patientId},{patient_mail:1,presence:1}).exec(function(err,patient){
 	  	if(err) throw err;
@@ -2715,11 +2719,10 @@ router.post("/user/outpatient-billing",function(req,res){
 
 router.put("/user/outpatient-billing",function(req,res){
 	if(req.user) {
-		console.log(req.body);		
+		
 		model.otpSchema.findOne({user_id: req.user.user_id,otp: req.body.otp},function(err,data){
 			if(err) throw err;
 			if(data) {
-				console.log(data)
 				model.outPatientBilling.findOne({_id:req.body._id}).exec(function(err,bill){
 					if(err) throw err;
 					if(bill){

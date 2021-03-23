@@ -1604,6 +1604,115 @@
         </div>
       </div>
     </script>
+
+    <script type="text/ng-template" id="write-laboratory-ecase.html">
+      <div class="modal fade">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header"> 
+              <h6>Write Laboratory Test</h6>
+        
+              <button type="button" class="close" ng-click="close('Cancel')" data-dismiss="modal" aria-hidden="true" style="color:red;font-size: 32px">&times;</button>                                 
+            </div>       
+            <div class="modal-body">                 
+              <section>
+                 <h5 class="pb-0 mb-0">{{holdPatientDatails.title}} {{holdPatientDatails.firstname}} {{holdPatientDatails.lastname}}</h5>
+                 <span class="block pb-0 mb-0 font-1_4">{{holdPatientDatails.gender}}</span>
+                 <span class="block pb-0 mb-0 font-1_4">{{holdPatientDatails.age}}</span>
+              </section>
+             <hr>
+              <section ng-show="!isSearchToSend">                               
+                    <div>
+                        <label>Add Tests ( {{TestList.length}} ) *</label>
+                    </div>
+                    <div ng-repeat="lab in TestList">
+                         
+                         <span class="text-danger">{{invMsg}}</span>
+                        <input  type="text" placeholder="Enter test name"  ng-model="test.name" uib-typeahead="test.name for test in tests | filter:$viewValue | limitTo:15" class="form-control" >
+                        {{getTest(test.name)}} 
+                    </div>
+                    <div style="text-align: right">
+                        <i class="fa fa-plus btn btn-simple btn-sm round" style="font-size:14px;margin-right: 10px;cursor: pointer;" title="Add field" ng-click="addTest()"></i>
+                        <i class="fa fa-minus btn btn-simple btn-sm round" style="font-size: 14px;cursor: pointer;" title="Remove last field" ng-click="removeTest()" ng-show="TestList.length > 1"> </i>
+                    </div>        
+                    <div>
+                        <label>Indication *</label>
+                        <textarea  placeholder="Write.." ng-model="treatment.indication" class="form-control pl-2" ng-keyup="autoExpand($event)" id="textarea" required></textarea>
+                    </div>
+                    <br>
+                    <div>
+                        <label>Clinical Summary *</label>
+                        <textarea placeholder="Write.." ng-model="treatment.clinical_summary" class="form-control pl-2" ng-keyup="autoExpand($event)" id="textarea" required></textarea>
+                    </div>
+                    <br>
+                   
+                    <div>
+                        <label>LMP: ( Female )</label>
+                        <textarea  placeholder="Write.." ng-model="treatment.lmp" class="form-control pl-2" ng-keyup="autoExpand($event)" id="textarea"></textarea>
+                    </div>
+                    <br>
+                     <div>
+                        <label>Parity: ( Female ) </label>
+                        <textarea  placeholder="Write.." ng-model="treatment.parity" class="form-control pl-2" ng-keyup="autoExpand($event)" id="textarea"></textarea>
+                    </div> 
+                    <br>
+                     <div>
+                        <!--<textarea class="form-control p-1" placeholder="Complain" ng-model="treatment.complain"></textarea>-->
+                        <label>Would you like to pay the bill for the test(s)?</label><!--</span> Diagnosis ( Provisional or Final ) </label>--><br>
+                      
+                        <label class="custom-control custom-radio">
+                          Yes
+                         <input type="radio" class="custom-control-input" value="Yes" ng-model="treatment.referral_pays">
+                          <span class="custom-control-indicator"></span>
+                          <span class="custom-control-description" style="opacity:0;"></span>
+                        </label> &nbsp;&nbsp;&nbsp;
+
+
+                        <label class="custom-control custom-radio">
+                          No
+                         <input type="radio" class="custom-control-input" value="No" ng-model="treatment.referral_pays">
+                          <span class="custom-control-indicator"></span>
+                          <span class="custom-control-description" style="opacity:0;"></span>
+                        </label>  
+                    
+                    </div>   
+                    <br>                   
+                  </section>
+
+                  <section>                     
+                        <form ng-submit="findLabs()">
+                            <div class="col-md-10 col-sm-10 col-xs-10 pl-0 ml-0">
+                                <input type="text" name="" ng-model="city" class="form-control">
+                            </div>
+                            <div class="col-md-2 col-sm-2 col-xs-2 pl-0 ml-0" style="padding-top: 3px">
+                              <button type="submit" name=""  class="btn btn-primary"><i class="fa fa-search"></i></button>
+                          </div>
+                        </form>
+                        <div class="clearfix"></div>
+                        <br>
+                        <div>                 
+                            <div ng-show="searchResult.length > 2">
+                                <input type="text" name="" placeholder=" Filter list" ng-model="item">
+                            </div>
+                            <div ng-repeat='j in searchResult | filter: item' style="position: relative;" class="mb-1">
+                                <label class="pb-0 mb-0">{{j.name}}</label><br>
+                                <span style="display: block;width: 92%">{{j.address}} {{j.city}} {{j.country}}</span>
+                                <span>{{j.phone}}</span>
+                                <span style="position: absolute;bottom: -5px;right: 5px">
+                                    <button class="btn btn-sm btn-primary" ng-click="sendTest(j)" ng-show="!j.isSent">{{(j.loading) ? 'Sending...' : 'Send'}}</button><i class="fa fa-check btn btn-sm btn-neutral" style="color: #85CE36" ng-show="j.isSent"></i>
+                                </span>
+                            </div>
+                        </div>
+                        <div ng-show="loading" class="mt-2" style="text-align: center;">
+                            <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange"> </i>
+                        </div>
+                  </section> 
+                  <div style="height: 120px"></div>   
+            </div>        
+          </div> 
+        </div>
+      </div>
+    </script>
     
     <script type="text/ng-template" id="X-ray-view.html">
          <div class="modal fade">
@@ -3154,6 +3263,257 @@
       </div>
    </script>
 
+
+   <script type="text/ng-template" id="pdf-viewer.html">
+       <div class="modal fade">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header pr-1" style="position: relative;"> 
+               
+               <button type="button" class="close" ng-click="close('Cancel')" data-dismiss="modal" aria-hidden="true" style="position: absolute;top: 10px; right: 20px">&times;</button>  
+            </div>
+            <div class="modal-body pl-0 pr-0 pt-2">  
+               <pdf-viewer
+                  delegate-handle="my-pdf-container"
+                  url="pdfFilePath"
+                  scale="1"
+                  show-toolbar="true"
+                  headers="{ 'Content-type': 'application/pdf' }">
+                  
+                </pdf-viewer>
+            </div>   
+            <div class="modal-footer" style="text-align: left;margin-top: 10px">
+               <a href="" class="btn btn-primary btn-sm" data-dismiss="modal" aria-hidden="true">Close</a>
+            </div>        
+        </div>
+      </div>
+   </script>     
+
+   <script type="text/ng-template" id="email-modal.html">
+         <div class="modal fade">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header"> 
+                 <h6>Forward to Email</h6>   
+                 <button type="button" class="close" ng-click="close('Cancel')" data-dismiss="modal" aria-hidden="true">&times;</button>  
+              </div>
+              <div class="modal-body">  
+                <p style="text-align: center;color: green">{{msg}}</p>              
+                <form ng-submit="sendMail()">
+                  <label>Enter Recipient Email Address: </label>  <br>  
+                  <input type="email" name="" ng-model="recepientEmail" class="form-control" placeholder="Email"><br>
+                  <input type="submit" value="Send" class="btn btn-primary" ng-if="!loading">
+                  <span ng-if="loading">Sending...</span>
+                </form>
+              </div>           
+          </div>
+        </div>
+     </script>
+
+
+      <script type="text/ng-template" id="e-caseBilling.html">
+         <div class="modal fade">
+          <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header"> 
+                 <h6>Billing</h6>   
+                 <button type="button" class="close" ng-click="close('Cancel')" data-dismiss="modal" aria-hidden="true">&times;</button>  
+                </div>
+                <div class="modal-body"> 
+                  <div>
+                        <div ng-if="inMainBill">                            
+                            <table class="table table-striped table-responsive no-mobile-item-display">
+                                <thead>
+                                    <th style="width:3%"></th>
+                                    <th style="width:67%;padding-left: 15px">Description</th>
+                                    <th style="width:25%;padding-left: 15px">Cost</th>
+                                    <th style="width:5%"></th>
+                                </thead>
+                                <tbody ng-repeat=" i in billList">
+                                    <td style="padding-top: 22px">{{i.sn}}</td>
+                                    <td><input type="text" name="" ng-model="i.description" class="form-control" style="font-size: 14px!important"></td>
+                                    <td><input type="number" name="" ng-model="i.cost" class="form-control" style="font-size: 14px!important"></td>
+                                    <td style="padding-top: 22px"><i class="fa fa-times btn btn-neutral btn-sm" ng-if="billList.length > 1" ng-click="removeBill(i.sn)"></i></td>
+                                </tbody>
+                            </table>
+                            <div class="mobile-item-display">                            
+                                <table class="table" ng-repeat=" i in billList">
+                                    <thead><th ></th> <td></td></thead>
+                                    <thead><th>Description</th> <td><input type="text" name="" ng-model="i.description" class="form-control" style="font-size: 14px!important"></td></thead>
+                                    <thead><th>Cost</th> <td><input type="number" name="" ng-model="i.cost" class="form-control" style="font-size: 14px!important"></td></thead>
+                                    <thead><th></th> <td><i class="fa fa-times btn btn-neutral btn-sm" ng-if="billList.length > 1" ng-click="removeBill(i.sn)"></i></td></thead>
+                                </table>
+                            </div>
+                            <div class="pull-right">           
+                                <i class="fa fa-plus btn btn-simple btn-round btn-sm" ng-click="addBill()"></i>
+                            </div>
+                            <div class="clearfix"></div>
+                            <div class="mt-2">
+                                 <button class="btn btn-primary" ng-click="previewBill()">Preview</button>
+                            </div>
+                        </div>
+                        <div ng-if="isPreviewBill" id="billHTML"  style="position: relative;">
+                             <a href="" ng-click="mainBill()" class="btn btn-sm btn-simple" style="position: absolute;right: 10px;bottom: 10px"><i class="fa fa-pencil-alt"></i> edit</a>
+                             <div class="row"> 
+                                <div class="col-md-4 col-xs-4 pl-1">
+                                    <img src="{{checkLogIn.profile_pic_url}}" style="max-width: 120px;height: auto;">
+                                </div>
+                                <div class="col-md-8 col-xs-8 pl-1 pt-1">
+                                     <strong>{{checkLogIn.name}} </strong>
+                                     <span style="display: block;">{{checkLogIn.specialty}}</span>
+                                     <span style="display: block;">{{checkLogIn.email}}</span>
+                                     <span style="display: block;">{{checkLogIn.work_place}} {{checkLogIn.address}}, {{checkLogIn.city}} {{checkLogIn.country}}</span>
+                                 </div>
+                             </div>
+                           
+                            <div class="clearfix"></div>
+                            <hr class="bg-simple">
+                             <table class="tabletable-responsive no-mobile-item-display">
+                                <thead>
+                                    <th style="width:3%"></th>
+                                    <th style="width:70%;padding-left: 15px"></th>
+                                    <th style="padding-left: 15px"></th>
+                                    <th style=""></th>
+                                </thead>
+                                <tbody ng-repeat=" i in billList">
+                                    <td>{{i.sn}}</td>
+                                    <td style="width:60%;padding-left: 15px">{{i.description}}</td>
+                                    <td>{{toCurrency(i.cost)}}</td>
+                                </tbody>
+                                <caption><b>Total: </b>  <span>{{toCurrency(totalBilled)}}</span></caption>
+                            </table>
+                            <div class="mobile-item-display" >                            
+                                <table class="table" ng-repeat=" i in billList">
+                                    <thead><th style="width:20%"></th> <td>{{i.sn}}</td></thead>
+                                    <thead><th style="width:20%"></th> <td>{{i.description}}</td></thead>
+                                    <thead><th style="width:20%"></th> <td>{{toCurrency(i.cost)}}</td></thead>                         
+                                </table>
+                                <div>
+                                    <b>Total: </b>  <span>{{toCurrency(totalBilled)}}</span>
+                                </div>
+                            </div>
+                            <div class="mt-2 pl-0 ml-0">
+                                <button class="btn btn-primary" ng-click="sendBill()" ng-if="!isSent"> <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff" ng-if="loading"></i> {{(loading) ? "" : "Send bill"}}</button> <i class="fa fa-check" ng-if="isSent"> Bill sent!!</i>
+                            </div>
+                        </div>
+                    </div> 
+                </div>    
+          </div>
+        </div>
+     </script>
+
+
+      <script type="text/ng-template" id="write-radiology-ecase.html">
+      <div class="modal fade">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header"> 
+              <h6>Write Radiology Test</h6>
+        
+              <button type="button" class="close" ng-click="close('Cancel')" data-dismiss="modal" aria-hidden="true" style="color:red;font-size: 32px">&times;</button>                                 
+            </div>       
+            <div class="modal-body">                 
+              <section>
+                 <h5 class="pb-0 mb-0">{{holdPatientDatails.title}} {{holdPatientDatails.firstname}} {{holdPatientDatails.lastname}}</h5>
+                 <span class="block pb-0 mb-0 font-1_4">{{holdPatientDatails.gender}}</span>
+                 <span class="block pb-0 mb-0 font-1_4">{{holdPatientDatails.age}}</span>
+              </section>
+             <hr>
+              <section ng-show="!isSearchToSend">                               
+                    <div>
+                        <label>Add Tests ( {{TestList.length}} ) *</label>
+                    </div>
+                    <div ng-repeat="lab in TestList">
+                         
+                         <span class="text-danger">{{invMsg}}</span>
+                        <input  type="text" placeholder="Enter test name"  ng-model="test.name" uib-typeahead="test.name for test in tests | filter:$viewValue | limitTo:15" class="form-control" >
+                        {{getTest(test.name)}} 
+                    </div>
+                    <div style="text-align: right">
+                        <i class="fa fa-plus btn btn-simple btn-sm round" style="font-size:14px;margin-right: 10px;cursor: pointer;" title="Add field" ng-click="addTest()"></i>
+                        <i class="fa fa-minus btn btn-simple btn-sm round" style="font-size: 14px;cursor: pointer;" title="Remove last field" ng-click="removeTest()" ng-show="TestList.length > 1"> </i>
+                    </div>        
+                    <div>
+                        <label>Indication *</label>
+                        <textarea  placeholder="Write.." ng-model="treatment.indication" class="form-control pl-2" ng-keyup="autoExpand($event)" id="textarea" required></textarea>
+                    </div>
+                    <br>
+                    <div>
+                        <label>Clinical Summary *</label>
+                        <textarea placeholder="Write.." ng-model="treatment.clinical_summary" class="form-control pl-2" ng-keyup="autoExpand($event)" id="textarea" required></textarea>
+                    </div>
+                    <br>
+                   
+                    <div>
+                        <label>LMP: ( Female )</label>
+                        <textarea  placeholder="Write.." ng-model="treatment.lmp" class="form-control pl-2" ng-keyup="autoExpand($event)" id="textarea"></textarea>
+                    </div>
+                    <br>
+                     <div>
+                        <label>Parity: ( Female ) </label>
+                        <textarea  placeholder="Write.." ng-model="treatment.parity" class="form-control pl-2" ng-keyup="autoExpand($event)" id="textarea"></textarea>
+                    </div> 
+                    <br>
+                     <div>
+                        <!--<textarea class="form-control p-1" placeholder="Complain" ng-model="treatment.complain"></textarea>-->
+                        <label>Would you like to pay the bill for the test(s)?</label><!--</span> Diagnosis ( Provisional or Final ) </label>--><br>
+                      
+                        <label class="custom-control custom-radio">
+                          Yes
+                         <input type="radio" class="custom-control-input" value="Yes" ng-model="treatment.referral_pays">
+                          <span class="custom-control-indicator"></span>
+                          <span class="custom-control-description" style="opacity:0;"></span>
+                        </label> &nbsp;&nbsp;&nbsp;
+
+
+                        <label class="custom-control custom-radio">
+                          No
+                         <input type="radio" class="custom-control-input" value="No" ng-model="treatment.referral_pays">
+                          <span class="custom-control-indicator"></span>
+                          <span class="custom-control-description" style="opacity:0;"></span>
+                        </label>  
+                    
+                    </div>   
+                    <br>                   
+                  </section>
+
+                  <section>                     
+                        <form ng-submit="findLabs()">
+                            <div class="col-md-10 col-sm-10 col-xs-10 pl-0 ml-0">
+                                <input type="text" name="" ng-model="city" class="form-control">
+                            </div>
+                            <div class="col-md-2 col-sm-2 col-xs-2 pl-0 ml-0" style="padding-top: 3px">
+                              <button type="submit" name=""  class="btn btn-primary"><i class="fa fa-search"></i></button>
+                          </div>
+                        </form>
+                        <div class="clearfix"></div>
+                        <br>
+                        <div>                 
+                            <div ng-show="searchResult.length > 2">
+                                <input type="text" name="" placeholder=" Filter list" ng-model="item">
+                            </div>
+                            <div ng-repeat='j in searchResult | filter: item' style="position: relative;" class="mb-1">
+                                <label class="pb-0 mb-0">{{j.name}}</label><br>
+                                <span style="display: block;width: 92%">{{j.address}} {{j.city}} {{j.country}}</span>
+                                <span>{{j.phone}}</span>
+                                <span style="position: absolute;bottom: -5px;right: 5px">
+                                    <button class="btn btn-sm btn-primary" ng-click="sendTest(j)" ng-show="!j.isSent">{{(j.loading) ? 'Sending...' : 'Send'}}</button><i class="fa fa-check btn btn-sm btn-neutral" style="color: #85CE36" ng-show="j.isSent"></i>
+                                </span>
+                            </div>
+                        </div>
+                        <div ng-show="loading" class="mt-2" style="text-align: center;">
+                            <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange"> </i>
+                        </div>
+                  </section> 
+                  <div style="height: 120px"></div>   
+            </div>        
+          </div> 
+        </div>
+      </div>
+    </script>
+    
+
+
    
                  
 
@@ -3195,6 +3555,9 @@
         <script src="/assets/js/angular-moment.min.js"></script>
         <script src="/assets/js/angucomplete-alt.min.js"></script> 
 
+          <script type="text/javascript" src="/assets/js/pdfjs-dist/build/pdf.js"></script>
+    <script type="text/javascript" src="/assets/js/angular-pdf-viewer.min.js"></script>
+
         <script src="/assets/js/ui-bootstrap-tpls.js"></script>
         <script src="/assets/js/angular-clipboard.js"></script>
         <script src="/assets/js/ngresource.js"></script>
@@ -3205,6 +3568,7 @@
         <script type="text/javascript" src="/assets/js/angular-underscore.js"></script>
           <script type="text/javascript" src="/assets/js/charts.js/dist/Chart.min.js"></script>
     <script type="text/javascript" src="/assets/js/angular-chart.js/dist/angular-chart.min.js"></script>
+
 
          <!-- Start of LiveChat (www.livechatinc.com) code -->
         <script type="text/javascript">

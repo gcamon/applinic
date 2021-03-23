@@ -15,30 +15,32 @@
 	    	<label class="block pb-0 mb-0">{{patientInfo.title}} {{patientInfo.firstname}} {{patientInfo.firstname}}</label>
 	    	<span>{{patientInfo.gender}}</span><br>
 	    	<span>{{patientInfo.age}}</span><br>
-	    	<span>{{patientInfo.city}}</span>
+	    	<span>{{patientInfo.city}}</span><br>
+	    	<span>{{patientInfo.phone}}</span>
 	    </div>
     </div>
     
 </div>
 <div class="card-center-1 card pr-1">
-	<select class="form-control">
-		<option selected>Prescription</option>
-		<option>Laboratory</option>
-		<option>Radiology</option>
-		<option>Ultra-Sound</option>
-		<option>ECG</option>
-		<option>Endoscopy</option>
-		<option>Other Procedures</option>
-		<option>Chart (BP,BS,Temp etc)</option>
-		<option>Medical Reports</option>
-		<option>Treatment Sessions</option>
-		<option>Imported Medical Records</option>
-		<option>Refer to a Specialist</option>
-		<option>Generate Bill</option>
+	<select class="form-control" ng-model="case.navigate">
+		<option disabled selected value="">_Go To</option>
+		<option value="{{'/e-case-prescription/' + patientInfo.user_id}}">Prescription</option>
+		<option value="{{'/e-case-laboratory/' + patientInfo.user_id}}">Laboratory</option>
+		<option value="{{'/e-case-radiology/' + patientInfo.user_id}}">Radiology</option>
+		<option value="{{'/e-case-ultra-sound/ + patientInfo.user_id'}}">Ultra-Sound</option>
+		<option value="{{'/e-case-ecg/' + patientInfo.user_id}}">ECG</option>
+		<option value="{{'/e-case-endoscopy/' + patientInfo.user_id}}">Endoscopy</option>
+		<option value="{{'/e-case-other-procedures/' + patientInfo.user_id}}">Other Procedures</option>
+		<option value="{{'/e-case-chart/' + patientInfo.user_id}}">Chart (BP,BS,Temp etc)</option>
+		<option value="{{'/e-case-medical-reports/' + patientInfo.user_id}}">Medical Reports</option>
+		<option value="{{'/e-case-sessions/' + patientInfo.user_id}}">Treatment Sessions</option>
+		<option value="{{'/e-case-imported-records/' + patientInfo.user_id}}">Imported Medical Records</option>
+		<option value="{{'/e-case-refer-specialist/' + patientInfo.user_id}}">Refer to a Specialist</option>
+		<option value="{{'/e-case-generate-bill/' + patientInfo.user_id}}">Generate Bill</option>
 	</select>
 </div>
 <div class="card-center-1 pr-1 mt-2" style="position: relative;">
-	<h5 class="h4">Prescriptions</h5>
+	<h5 class="h4">Prescriptions <span>({{prescriptionRecordsResult.length}})</span></h5>
 	<button class="btn btn-primary" ng-click="writePrescription()" style="position: absolute;top: 0px; right: 10px">New</button>
 	<label>
 		<label class="custom-control custom-checkbox">
@@ -53,7 +55,7 @@
 <div>
 
 	<div class="pl-1 pt-1" style="position: relative;">
-		<button class="collapsed dropdown-toggle btn btn-neutral btn-sm" role="button" data-toggle="collapse" data-parent="#accordion" href="#{{'pres' + docInfo.ref_id + docInfo.prescriptionId}}" aria-expanded="false" aria-controls="collapsefifty">View details</button>
+		<button class="collapsed dropdown-toggle btn btn-neutral btn-sm pl-0" role="button" data-toggle="collapse" data-parent="#accordion" href="#{{'pres' + docInfo.ref_id + docInfo.prescriptionId}}" aria-expanded="false" aria-controls="collapsefifty">View details</button>
 		<span am-time-Ago="docInfo.date" style="position: absolute;top:20px;right: 20px"></span>
 	</div>
 
@@ -261,9 +263,6 @@
 
 		<section ng-repeat="j in sortedPrescriptions.others |filter : filterResult | orderBy: '-date'" id="{{docInfo.prescriptionId}}">
 			<div class="mb-1 card-center-1 mt-2">
-				<!--<div class="col-md-3 col-xs-3">
-					<a href="{{j.profile}}"><img src="{{j.profilePic}}" style="max-height: 72px; width: auto;"></a>
-				</div>-->
 				<h5>
 					<a href="{{j.profile}}">
 						{{j.title}} {{j.firstname}} {{j.lastname}} ({{j.prescriptions.length}})

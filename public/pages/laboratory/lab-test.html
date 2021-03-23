@@ -93,7 +93,8 @@
 			        </div>      	
 			</div>		
 			
-    		<div class="pt-0 pb-1 pl-1 pr-1">    			
+    		<div class="pt-0 pb-1 pl-1 pr-1"> 
+    			<h6 ng-show="test.receive_date">Test Report: </h6>   			
     			<div ng-if="test.receive_date" class="patient-tests" ng-repeat = "testRan in test.report">
     				<!--<article ng-repeat = "testRan in test.report">
     					<div><strong>{{testRan.name}}:</strong></div>
@@ -120,7 +121,7 @@
 	                        <th style="width: 18%">TUM</th>
 	                        <th style="width: 18%">Result</th>
 	                        <th style="width: 18%">Range</th>
-	                        <th style="width: 18%">Units</th>
+	                        <th style="width: 18%">Unit</th>
 	                        <th style="width: 18%">Flag</th>
 	                    </thead>
 	                    <caption style="caption-side: top;color:darkRed">{{testRan.name}}:</caption>
@@ -157,7 +158,7 @@
 
 						<a href="" title="Forward report to someone via email" class="btn btn-sm btn-simple text-primary"><i class="fa fa-share-alt" ng-click="email(test,'Laboratory')"></i></a>&nbsp;&nbsp;
 
-						<a href=""><i class="fa fa-share btn btn-simple btn-sm text-primary" aria-hidden="true"  title="Forward to another center to re-run test" ng-click="forwardTest(test,'Laboratory')"></i></a>
+						<!--<a href=""><i class="fa fa-share btn btn-simple btn-sm text-primary" aria-hidden="true"  title="Forward to another center to re-run test" ng-click="forwardTest(test,'Laboratory')"></i></a>-->
 					</div>
 					
     				<!--<div class="col-sm-7 col-md-7 col-lg-7 col-xs-6" style="padding: 10px 15px 0;position: relative;text-align: right;">
@@ -298,7 +299,7 @@
     						<a href="" style="font-size: 18px;"> <i class="fa fa-user-md btn btn-neutral btn-sm" aria-hidden="true"  title="Send to your doctor for prescription" ng-click="sendDocTest(test)" ng-if="test.conclusion !== 'Pending'"></i></a>
 							<a href="" style="color:#ccc;font-size: 18px"> <i class="fa fa-user-md btn btn-neutral btn-sm" aria-hidden="true"  title="Send to your doctor for prescription"  ng-if="test.conclusion === 'Pending'"></i> </a>-->					
 		    				<!--<i ng-print  print-element-id="{{test.ref_id}}" class="fa fa-print btn btn-danger" aria-hidden="true" style="font-size: 18px;margin-right:15p;cursor:pointer;padding: 5px 15px" title="Print this lab investigation"></i>-->
-		    				<a href="" style="font-size:18px;"><i class="fa fa-share btn btn-neutral btn-sm" aria-hidden="true"  title="Forward to another center to re-run test" ng-click="forwardTest(test,'Laboratory')"></i></a>
+		    				<!--<a href="" style="font-size:18px;"><i class="fa fa-share btn btn-neutral btn-sm" aria-hidden="true"  title="Forward to another center to re-run test" ng-click="forwardTest(test,'Laboratory')"></i></a>-->
 		    				
 	    				</div>
     				</div>
@@ -370,7 +371,7 @@
 						<a href="" style="font-size: 18px;"> <i class="fa fa-user-md btn btn-neutral btn-sm text-muted" aria-hidden="true"  title="Send to your doctor for prescription"  ng-show="test.conclusion !== 'Pending'"></i></a>
 						<a href="" style="color:#ccc;font-size: 18px"> <i class="fa fa-user-md btn btn-neutral btn-sm" aria-hidden="true"  title="Send to your doctor for prescription"  ng-show="test.conclusion === 'Pending'"></i> </a> -->					
 	    				
-	    				<a href="" style="font-size:18px;"><i class="fa fa-share btn btn-neutral btn-sm" aria-hidden="true"  title="Forward to another center to re-run test" ng-click="forwardTest(test,'Laboratory')"></i></a>
+	    				<!--<a href="" style="font-size:18px;"><i class="fa fa-share btn btn-neutral btn-sm" aria-hidden="true"  title="Forward to another center to re-run test" ng-click="forwardTest(test,'Laboratory')"></i></a>-->
 	    				
 					</div>       	
 			</div>		

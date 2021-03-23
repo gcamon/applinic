@@ -1,45 +1,66 @@
 <div class="card-center-1">
-	<a href="" ng-click="goBack()"><i class="fa fa-arrow-left btn btn-simple"> &nbsp;Back</i></a>
+	<a href="#{{pageId}}"><i class="fa fa-arrow-left btn btn-neutral"> &nbsp;Back</i></a>
 </div>
 
 <div class="card card-center-1 p-1">
-	<h4 class="mt-1 h6">Forwarding Investigation</h4>
+	<h4 class="mt-1 h6">Forward Investigation</h4>
 	<ul style="list-style: none;display: inline-block;float: left;font-size: 14px">
-		<li style="float: left; padding: 5px">Investigations: </li>
 		<li style="float: left; padding: 5px" ng-repeat="test in testToRun">@ {{test.name}}</li>
-	</ul>	
-	<div class="clearfix"></div>
-	<hr>
-	<form class="p-12">
-		<div class="col-md-5">
+	</ul>
+	<div class="clearfix"></div>	
+
+	<form  ng-submit="findCenter()">
+		<!--<div class="col-md-5">
 			<label>Country</label>
 			<input type="" name="country" ng-model="criteria.country" class="form-control" >
+		</div>-->
+		<div class="col-md-10 col-xs-10 pl-0 ml-0">
+			<input type="text" name="city" ng-model="criteria.city" placeholder="city" class="form-control">
 		</div>
-		<div class="col-md-5">
-			<label>City</label>
-			<input type="" name="country" ng-model="criteria.city" class="form-control">
-		</div>
-		<div class="col-md-2">	
-			<div style="height: 32px"></div>		
-			<input type="button" ng-click="findCenter()" value="Find" class="btn btn-success">
+		<div class="col-md-2 col-xs-2" style="padding-top: 3px!important">		
+			<button type="submit" class="btn btn-success"><i class="fa fa-search"></i></button>
 		</div>
 	</form>
 	<div class="clearfix"></div>
+	<br>
+	<div ng-show="checkLogIn.typeOfUser === 'Doctor'">
+            <!--<textarea class="form-control p-1" placeholder="Complain" ng-model="treatment.complain"></textarea>-->
+            <label>Would you like to pay the bill for the investigation(s)?</label><!--</span> Diagnosis ( Provisional or Final ) </label>--><br>
+          
+            <label class="custom-control custom-radio">
+              Yes
+             <input type="radio" class="custom-control-input" value="Yes" ng-model="criteria.referral_pays">
+              <span class="custom-control-indicator"></span>
+              <span class="custom-control-description" style="opacity:0;"></span>
+            </label> &nbsp;&nbsp;&nbsp;
+
+
+            <label class="custom-control custom-radio">
+              No
+             <input type="radio" class="custom-control-input" value="No" ng-model="criteria.referral_pays">
+              <span class="custom-control-indicator"></span>
+              <span class="custom-control-description" style="opacity:0;"></span>
+            </label>  
+        
+    </div>   
+    <br>
 	<div>
-		<p style="padding: 5px">Search result ( {{centerLists.length}} ) centers in {{criteria.city}} {{criteria.country}} <span class="text-danger" ng-if="centerLists.length === 0">{{message}}</span> <input type="text" name="address" class="form-control" placeholder="Filter by address or center name" ng-model="criteria.address" style="width: 40%"></p>
-		<div  style="padding:10px 10px;">
+		<p style="padding: 0px 5px">Search result ( {{centerLists.length}} )<span class="text-danger" ng-if="centerLists.length === 0">{{message}}</span> <input type="text" name="result" class="simple-border" placeholder="Filter by address or center name" ng-model="search" style="width: 80%;display: block;"></p>
+		<div>
 			<!--<img src="{{center.profile_pic_url}}" style="max-width: px; max-height: 75px;float: left;">-->
-			<article ng-repeat="center in centerLists | filter : criteria.address" class="p-1" style="position: relative;">
-				<strong style="display: block;">{{center.name}}</strong>
-				<span style="display: block;"><i class="fa fa-globe"></i> {{center.address}} {{center.city}} {{center.country}}</span>
-				<span style="display: block;"><i class="fa fa-phone"></i> {{center.phone}}</span>
-				<a href="" style="position: absolute;right: 55px; bottom: 0;font-size:18px;padding: 5px 15px" ng-click="sendChat(center)">
-					<i class="fa fa-comment btn btn-sm btn-neutral" aria-hidden="true" title="send message to {{center.name}}" ></i>
-				</a>
-				<a href="" style="position: absolute;right: 10px; bottom: 0;font-size:18px;padding: 5px 15px">
-				<i class="fa fa-share btn btn-neutral btn-sm" aria-hidden="true"  title="Forward above investigations to {{center.name}}"  ng-click="forwardInvestigtion(center)" ng-if="!center.loading && !center.status"></i>
-				 <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange" ng-if="center.loading"></i> <span ng-if="center.status">{{ (center.loading) ? '' : 'Sent!' }}</span>
-				</a>
+			<article ng-repeat="center in centerLists | filter : search" style="position: relative;" class="pb-1">
+				<h6>{{center.name}}</h6>
+				<span style="display: block;">{{center.address}} {{center.city}} {{center.country}}</span>
+				<span style="display: block;">{{center.phone}}</span>
+				<div style="position: absolute;right: 10px; bottom: 0;font-size:18px;padding: 5px 15px">
+					<!--<a href="" ng-click="sendChat(center)">
+						<i class="fa fa-comment btn btn-sm btn-simple" aria-hidden="true" title="send message to {{center.name}}" ></i>
+					</a>-->
+					<a href="" class="btn btn-primary btn-sm">
+						<i class="fa fa-share" aria-hidden="true"  title="Forward above investigations to {{center.name}}"  ng-click="forwardInvestigtion(center)" ng-if="!center.loading && !center.status"></i>
+						 <i class="fa fa-spinner fa-pulse fa-1x fa-fw" ng-if="center.loading"></i> <span ng-if="center.status">{{ (center.loading) ? '' : 'Sent!' }}</span>
+					</a>
+				</div>
 				
 				
 			</article>

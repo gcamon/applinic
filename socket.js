@@ -18,7 +18,7 @@ module.exports = function(model,io,streams,sms) {
 
 
 io.sockets.on('connection', function(socket){  	   
-	    console.log('a user connected');
+	    //console.log('a user connected');
 	    var user = {};
 
 	    socket.on('join', function (data) {
@@ -69,7 +69,7 @@ io.sockets.on('connection', function(socket){
 		      			newChat.partnerType = partner.type;
 		      			newChat.save(function(err,info){});
 	      			} else {
-	      				console.log("Partner does not exist");
+	      				//console.log("Partner does not exist");
 	      			}
 	      		});
 	      		cb({messages:[]});	      		
@@ -371,7 +371,7 @@ io.sockets.on('connection', function(socket){
 	    		chats.messages.push(data);
 	    		chats.save(function(err,info){
 	    			if(err) throw err;
-	    			console.log("chat saved!!!");
+	    			//console.log("chat saved!!!");
 	    		});
 	    	});
 
@@ -426,7 +426,7 @@ io.sockets.on('connection', function(socket){
 				// Save with a buffer as content from a base64 image
 				fs.writeFile(filepath, fileBuffer, (err) => {
 				    if (err) {
-				    	console.log(err);
+				    	//console.log(err);
 				    	socket.emit(evt3,{status:false});
 				    	return;
 				    }
@@ -435,7 +435,7 @@ io.sockets.on('connection', function(socket){
 
 		        	socket.emit(evt2,{url: fileUrl,fileType: data.fileType,mimeType: data.type});
 
-				    console.log("The file was succesfully saved!");
+				    //console.log("The file was succesfully saved!");
 				}); 
 
 
@@ -477,7 +477,7 @@ io.sockets.on('connection', function(socket){
 	    		if(err) throw err;
 	    		user.set_presence.particular.push(data.defaulter) // defaulter is the the user-id of the person to be blocked.
 	    		user.save(function(err,info){
-	    			console.log("somebody blocked!")
+	    			//console.log("somebody blocked!")
 	    		})
 	    	})
 	    });
@@ -489,7 +489,7 @@ io.sockets.on('connection', function(socket){
 	    		var index = user.set_presence.particular.indexOf(data.defaulter) // defaulter is the the user-id of the person to be blocked.
 	    		var person = user.set_presence.particular.splice(index,1);
 	    		user.save(function(err,info){
-	    			console.log( person + " unblocked!")
+	    			//console.log( person + " unblocked!")
 	    		})
 	    	})
 	    })
@@ -627,7 +627,7 @@ io.sockets.on('connection', function(socket){
 			          		user.patient_notification.push(requestData)
 			          		user.save(function(err,info){
 				            	if(err) throw err;
-				            	console.log("Patient notified for video chat")
+				            	//console.log("Patient notified for video chat")
 				            });
 			          	}
 		    				}
@@ -895,7 +895,7 @@ io.sockets.on('connection', function(socket){
 		*/
 
 		//webrtc data transfer logic
-		console.log('-- ' + socket.id + ' joined --');
+		//console.log('-- ' + socket.id + ' joined --');
     socket.emit('id', socket.id);
 
 
@@ -921,7 +921,7 @@ io.sockets.on('connection', function(socket){
     });
 
     socket.on('readyToStream', function(options,cb) {
-      console.log('-- ' + socket.id + ' is ready to stream --');
+      //console.log('-- ' + socket.id + ' is ready to stream --');
      
       //search database to see which control this socket belong to.
       streams.addStream(socket.id, options.name, options.controlId,model,options.userId,options.profile_pic_url,options.type,options.specialty);
@@ -966,7 +966,7 @@ io.sockets.on('connection', function(socket){
         })
         .then(
           function(call){
-            console.log(call.sid)
+            //console.log(call.sid)
             cb({status:true,message: "invitation sent! Please wait for " + data.receiver_name + " to come online"})
           },
           function(err) {
@@ -990,7 +990,7 @@ io.sockets.on('connection', function(socket){
     })
 
     function leave() {
-      console.log('-- ' + socket.id + ' left --');
+      //console.log('-- ' + socket.id + ' left --');
       delete connects[socket.id];
       //io.sockets.emit("real time presence",connects);     
       //io.sockets.emit("real time presence",{socketId: socket.id,status: false})

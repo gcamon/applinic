@@ -5340,8 +5340,8 @@ var basicRoute = function (model,sms,io,streams,client,transporter,opentok) {
             io.sockets.to(record.user_id).emit("notification",{status:true,message: "You have new unread test to run.",type: "laboratory"});
             //} else {     
             var name = (req.user.firstname) ?  req.user.title + " " + req.user.firstname : req.user.name   
-            var msgBody = "Your laboratory test was referred to " + centerInfo.name + "\n@ " + centerInfo.address + " " + centerInfo.city + " " +
-            centerInfo.country + "\nBy " + name + "\nRef No " + random + "\nFor more details visit https://applinic.com/user/patient"
+            var msgBody = name + " requests you do laboratory test at" + centerInfo.name + "\n" + centerInfo.address + " " + centerInfo.city + " " +
+            centerInfo.country + "\nphone: " + centerInfo.phone + "\nRef No: " + random + "\nFor more details visit https://applinic.com/user/patient"
             var phoneNunber =  record.phone;             
             sms.messages.create(
               {
@@ -5349,7 +5349,7 @@ var basicRoute = function (model,sms,io,streams,client,transporter,opentok) {
                 from: '+16467985692',
                 body: msgBody,
               }
-            ) 
+            )
             
             record.patient_notification.unshift(noteObj);
             record.medical_records.laboratory_test.unshift(recordObj);
@@ -5634,8 +5634,8 @@ var basicRoute = function (model,sms,io,streams,client,transporter,opentok) {
             io.sockets.to(record.user_id).emit("notification",{status:true,message: "You have new unread test to run."});
             
           
-            var msgBody = "Your test was referred to " + centerInfo.name + "\n@ " + centerInfo.address + " " + centerInfo.city + " " +
-            centerInfo.country + "\nBy " + req.user.name + "\nTest Ref NO is " + req.body.ref_id + "\nFor more details visit https://applinic.com/user/patient"
+            var msgBody = req.user.name + " requests you run a Laboratory Test at " + centerInfo.name + "\n" + centerInfo.address + " " + centerInfo.city + " " +
+            centerInfo.country + "\nRef No: " + req.body.ref_id + "\nFor more details visit https://applinic.com/user/patient"
             var phoneNunber =  record.phone;
             sms.messages.create(
               {
@@ -5976,6 +5976,7 @@ var basicRoute = function (model,sms,io,streams,client,transporter,opentok) {
               referral_firstname: req.user.firstname,
               referral_lastname: req.user.lastname,
               referral_title: req.user.title,
+              referral_id: req.user.user_id,
               acc_no: accNo,
               sent_date: req.body.date,
               session_id: req.body.session_id,
@@ -6000,8 +6001,8 @@ var basicRoute = function (model,sms,io,streams,client,transporter,opentok) {
 
             io.sockets.to(record.user_id).emit("notification",{status:true,message: "You have new unread test to run."});
           
-            var msgBody = "Your radiology test was referred to " + centerInfo.name + "\n@ " + centerInfo.address + " " + centerInfo.city + " " +
-            centerInfo.country + "\nBy " + req.user.name + "\nTest Ref No " + random + "\nFor more details visit https://applinic.com/user/patient"
+            var msgBody = req.user.name + " requests you run a Radiology Test at " + centerInfo.name + "\n" + centerInfo.address + " " + centerInfo.city + " " +
+            centerInfo.country  + "\nRef No: " + random + "\nFor more details visit https://applinic.com/user/patient"
             var phoneNunber =  record.phone;
             sms.messages.create(
               {
@@ -6293,8 +6294,8 @@ var basicRoute = function (model,sms,io,streams,client,transporter,opentok) {
 
             io.sockets.to(record.user_id).emit("notification",{status:true,message: "You have new unread test to run."});
             
-            var msgBody = "Your test was referred to " + centerInfo.name + "\n@ " + centerInfo.address + " " + centerInfo.city + " " +
-            centerInfo.country + "\nBy " + req.user.name + "\nTest Ref NO " + req.body.ref_id + "\nFor more details visit https://applinic.com/user/patient"
+            var msgBody = req.user.name + " requests you run a Radiology Test at " + centerInfo.name + "\n" + centerInfo.address + " " + centerInfo.city + " " +
+            centerInfo.country + "\nRef No: " + req.body.ref_id + "\nFor more details visit https://applinic.com/user/patient"
             var phoneNunber =  record.phone;
             sms.messages.create(
               {
@@ -6386,12 +6387,15 @@ var basicRoute = function (model,sms,io,streams,client,transporter,opentok) {
       if(req.user){
          var type = req.query.type;
          var criteria;
-         if(!req.query.city || !req.query.country){
-          criteria = {type: type,city:req.user.city,country: req.user.country}
+         if(!req.query.city){
+          criteria = {type: type}
          } else {
-          criteria = {type: type, city: req.query.city, country: req.query.country}
+          var str = new RegExp(req.query.city.replace(/\s+/g,"\\s+"), "gi");
+          criteria = {type: type, city:{ $regex: str, $options: 'i' }}
          }         
-         model.user.find(criteria,{_id: 0,address:1,name:1,city:1,country:1,phone:1,user_id:1,profile_pic_url:1},function(err,list){
+         model.user.find(criteria,{_id: 0,address:1,name:1,city:1,country:1,phone:1,user_id:1,profile_pic_url:1})
+         .limit(500)
+         .exec(function(err,list){
           if(err) throw err;
           res.send(list)
          })
@@ -6401,12 +6405,24 @@ var basicRoute = function (model,sms,io,streams,client,transporter,opentok) {
     });
 
     router.put("/user/patient/get-centers",function(req,res){
-      if(req.user) {
-        
+      if(req.user) {        
         var date = new Date();
+        var random = randos.genRef(7);
+        var testList = [];
+
+        req.body.test_to_run.forEach(function(item){
+          testList.push({
+            sn: item.sn,
+            name: item.name,
+            picked: item.picked,
+            select: item.select
+          })
+        })
+
         req.body.refId = req.body.refId.toString();
+
         var refObj = {
-          ref_id: req.body.refId,
+          ref_id: random,
           referral_firstname: req.user.firstname,
           referral_lastname: req.user.lastname,
           referral_title: req.user.title,
@@ -6416,45 +6432,91 @@ var basicRoute = function (model,sms,io,streams,client,transporter,opentok) {
 
         var toLower = req.body.type.toLowerCase(); // the lower case was how it saved in the database.
 
-        model.referral.findOne({ref_id:req.body.refId},function(err,data){
+        model.referral.findOne({ref_id:req.body.refId},function(err,found){
           if(err) throw err;
-          if(data) {
+          if(found) {
+
             //var refList = data;
             //var elemPos = refList.map(function(x){return x.ref_id}).indexOf(req.body.refId);
             //if(elemPos !== -1){
-              var found = data;              
+              //var found = data;              
               /*
-              note: when patient refers his test to another center, the ref no i retained, the session that sent the test will be acknowledged
+              note: when patient refers his test to another center, the ref no is retained, the session that sent the test will be acknowledged
               i.e the doctor session will be updated when the last center that runs test does so. THis is very important. The existing report of a
               test will be oveeritten by a later one if patient redirects a test already done previously by a center and such test was sent from 
               a session cretaed while doctor was treating the patient.
               */
-              refObj[toLower] = {
+              /*refObj[toLower] = {
                 history: found[toLower].history,
                 patient_age: found[toLower].patient_age,
                 patient_gender: found[toLower].patient_gender,
-                test_to_run : found[toLower].test_to_run,
+                test_to_run : testList,
                 patient_firstname: found[toLower].patient_firstname,
                 patient_lastname: found[toLower].patient_lastname,
                 patient_profile_pic_url: found[toLower].patient_profilePic,
                 patient_title: found[toLower].patient_title,
                 patient_phone: found[toLower].phone,
-                session_id: found[toLower].session_id,
+                session_id: found[toLower].session_id || "",
                 patient_id: found[toLower].patient_id,
                 attended: false,
-                doctor_firstname: found[toLower].doctor_firstname,
-                doctor_lastname: found[toLower].doctor_lastname,
-                doctor_id: found[toLower].doctor_id,
-                doctor_profile_url: found[toLower].doctor_profile_url                     
+                doctor_firstname: req.user.firstname,
+                doctor_lastname: req.user.lastname,
+                doctor_id: req.user.user_id,
+                doctor_profile_url: req.user.profile_pic_url                     
+              }*/
+
+              var refObj = {
+                ref_id: random,
+                referral_firstname: req.user.firstname,
+                referral_lastname: req.user.lastname,
+                referral_title: req.user.title,
+                referral_id: req.user.user_id, 
+                referral_email: req.user.email,
+                referral_phone: req.user.phone,
+                referral_pays: req.body.referral_pays,   
+                date: req.body.date || new Date(),  
+                center_id: req.body.newCenterId,      
               }
+
+              refObj[toLower] = {
+                history: found[toLower].history,             
+                patient_age: found[toLower].patient_age,
+                patient_gender: found[toLower].patient_gender,
+                test_to_run : testList,
+                patient_firstname: found[toLower].patient_firstname,
+                patient_lastname: found[toLower].patient_lastname,
+                patient_profile_pic_url: found[toLower].profile_pic_url,
+                patient_title: found[toLower].patient_title,
+                patient_phone: found[toLower].phone,
+                session_id: found[toLower].session_id,
+                patient_id: found[toLower].patient_id,
+                test_id: random,
+                patient_address: found[toLower].patient_address,
+                indication: found[toLower].indication || "",
+                clinical_summary: found[toLower].clinical_summary || "",
+                lmp: found[toLower].lmb || "",
+                parity: found[toLower].parity || "",
+                attended: false,
+                title: req.user.title,
+                doctor_firstname: req.user.firstname,
+                doctor_lastname: req.user.lastname,
+                doctor_id: req.user.user_id,
+                doctor_email: req.user.email,
+                doctor_profile_url: req.user.profile_url
+              }                         
+
+              var referral = new model.referral(refObj);
+              referral.save(function(err,info){
+                if(err) throw err;               
+              });
               newCenter(found);
-              //res.send({message: "Success! Investigation has been referred to another center"})
             } else {
               res.send({message: "Reference number could not be found"});
             }
           })
 
 
+      
         function newCenter(found) {
 
         model.user.findOne({user_id: req.body.newCenterId},{diagnostic_center_notification:1,referral:1,address:1,name:1,city:1,country:1,phone:1,user_id:1})
@@ -6474,19 +6536,19 @@ var basicRoute = function (model,sms,io,streams,client,transporter,opentok) {
           //this is notification for the center.
           var refNotification = {
             sender_firstname: req.user.firstname,
-            sender_lastname: req.user.lastname,
+            sender_lastname: req.user.lastname || "",
             sender_title : req.user.title,
-            sent_date: req.body.date,
-            ref_id: req.body.refId,
-            note_id: req.body.refId,
+            sent_date: date,
+            ref_id: random,
+            note_id: random,
             sender_profile_pic_url: req.user.profile_pic_url,
-            message: "Please run the test for me"
+            message: "Please run the test for my patient"
           }
 
       
           io.sockets.to(result.user_id).emit("notification",{status:true});
        
-          var msgBody = "You have new test request! Visit http://applinic.com/login";
+          /*var msgBody = "You have new test request! Visit http://applinic.com/login";
           var phoneNunber =  result.phone;
           sms.messages.create(
             {
@@ -6494,10 +6556,9 @@ var basicRoute = function (model,sms,io,streams,client,transporter,opentok) {
               from: '+16467985692',
               body: msgBody,
             }
-          ) 
-          
-
-          result.referral.push(refObj);
+          )*/
+        
+          //result.referral.push(refObj);
           result.diagnostic_center_notification.push(refNotification);
 
           result.save(function(err,info){
@@ -6508,10 +6569,11 @@ var basicRoute = function (model,sms,io,streams,client,transporter,opentok) {
 
         var tellPatient = function(centerInfo){
           //remember sms will be sent to the patient
-          model.user.findOne({user_id: req.user.user_id},{medical_records: 1,user_id:1,presence:1}).exec(function(err,record){
+          model.user.findOne({user_id: req.body.patientId},{medical_records: 1,user_id:1,presence:1,phone:1})
+          .exec(function(err,record){
             if(err) throw err;     
             var recordObj = {
-              test_to_run: found[toLower].test_to_run,
+              test_to_run: testList,
               center_address: centerInfo.address,
               center_city: centerInfo.city,
               center_country: centerInfo.country,
@@ -6519,24 +6581,23 @@ var basicRoute = function (model,sms,io,streams,client,transporter,opentok) {
               center_phone: centerInfo.phone,
               center_id: centerInfo.id,
               patient_id: record.user_id,
-              ref_id: found.ref_id,
+              ref_id: random,
               referral_firstname: req.user.firstname,
               referral_lastname: req.user.lastname,
               referral_title: req.user.title,
               sent_date: date,
-              session_id: found[toLower].session_id,
+              session_id: found[toLower].session_id || "",
               report: "Pending",
               conclusion: "Pending",
-              history: found[toLower].history,
+              history: found[toLower].clinical_summary,
+              indication: found[toLower].indication,
               payment_acknowledgement: false //use to check if patient have actually paid for a service.
             }
 
-
-            /*if(record.presence === true)
-              io.sockets.to(record.user_id).emit("notification",{status:true,message: "You have new unread test to run."});
+            io.sockets.to(record.user_id).emit("notification",{status:true,message: "You have new test request."});
           
-            var msgBody = "Your test was referred to " + centerInfo.name + "\n@ " + centerInfo.address + " " + centerInfo.city + " " +
-            centerInfo.country + "\nBy " + req.user.name + "\nTest Ref NO is " + req.body.ref_id + "\nFor more details visit https://applinic.com/user/patient"
+            var msgBody = req.user.name + " requests you do " + toLower + " test at " + centerInfo.name + "\n" + centerInfo.address + " " + centerInfo.city + " " +
+            centerInfo.country + "\nphone: " + centerInfo.phone  + "\nRef No: " + random + "\nFor more details visit https://applinic.com/user/patient"
             var phoneNunber =  record.phone;
             sms.messages.create(
               {
@@ -6544,12 +6605,15 @@ var basicRoute = function (model,sms,io,streams,client,transporter,opentok) {
                 from: '+16467985692',
                 body: msgBody,
               }
-            ) */
+            ) 
         
-            if(toLower === "radiology")
+            if(toLower === "radiology"){
               record.medical_records.radiology_test.unshift(recordObj);
-            if(toLower === "laboratory")
+            }
+
+            if(toLower === "laboratory"){
                record.medical_records.laboratory_test.unshift(recordObj);
+            }
             record.save(function(err,info){
               if(err) {
                 throw err;
@@ -7811,8 +7875,8 @@ router.put("/user/test-search/laboratory/referral",function(req,res){
             referral.save(function(err,info){
               if(err) throw err;
               var sender = (req.user.type == "Doctor" || req.user.type == "Patient") ? (req.user.title + " " + req.user.lastname) : req.user.name
-              var msgBody = "Your laboratory test was sent to " + result.name + " at " +
-               result.address + ", " + result.city + " " + result.country + "\nBy " + sender + "\n" + "Ref No " + req.body.ref_id; 
+              var msgBody =  sender + " requests you do Laboratory Test at "  + result.name + " " +
+               result.address + ", " + result.city + " " + result.country + "\nphone: " + result.phone + "\nRef No " + req.body.ref_id; 
               var phoneNunber =  user.phone;
               sms.messages.create(
                 {
@@ -7826,9 +7890,9 @@ router.put("/user/test-search/laboratory/referral",function(req,res){
 
             var callBack = function(err,info) {
               if(err) {
-                console.log(err);
+                //console.log(err);
               } else {
-                console.log(info);
+                //console.log(info);
               }
             }
            
@@ -14250,9 +14314,9 @@ router.post('/patient/dob',function(req,res){
   }
 })
 
-router.get('*',function(req,res){
+/*router.get('*',function(req,res){
   res.render('notfound');
-});
+});*/
 
 router.get('/404.html',function(req,res){
   res.render('notfound');

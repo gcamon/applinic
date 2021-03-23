@@ -32,13 +32,6 @@
         </div> 
         <br>    
 
-
-
-       	<!--<div>
-        	<label>Patient's Phone Number *</label> &nbsp;<i class="fa fa-question-circle tip text-primary"><span>This should be the number patient used to register in 'Applinic'. But you can proceed if the number is not yet registered by adding few details about the patient to enable system create record for the patient. However, details and reference to the test(s) will be sent to the patient via SMS.</span></i><br>
-    		<input type="text" name="" class="form-control" ng-model="treatment.patient_phone" required uib-typeahead="p.patient_phone for p in patientList | filter:$viewValue | limitTo:15">
-    		<span class="text-danger">{{phoneError}}</span><br>
-        </div>-->
         <div>
         	<label>Add Tests ( {{TestList.length}} ) *</label>
         </div>
@@ -137,12 +130,12 @@
     		<a href="" ng-click="goBack()"><i class="fa fa-arrow-left"></i> Back </a>
     	</div><br>
     	<form ng-submit="findLabs()">
-    		<div class="col-md-8 col-sm-8 col-xs-8 pl-0 ml-0">
+    		<div class="col-md-10 col-sm-10 col-xs-10 pl-0 ml-0">
     			<input type="text" name="" ng-model="city" class="form-control">
     		</div>
-    		<div class="col-md-2 col-sm-3 col-xs-3 pl-0 ml-0">
-    			<input type="submit" name="" value="Search" class="btn btn-info">
-    		</div>
+    	  <div class="col-md-2 col-sm-2 col-xs-2 pl-0 ml-0" style="padding-top: 3px">
+              <button type="submit" name=""  class="btn btn-primary"><i class="fa fa-search"></i></button>
+          </div>
     	</form>
     	<div class="clearfix"></div>
     	<hr>
