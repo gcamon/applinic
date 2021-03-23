@@ -16934,6 +16934,7 @@ app.controller("chartCtrl",["$scope","$rootScope","chartReadingService","$filter
   }
 
   $scope.userPatient = function(id,presence) {
+    alert("dhssd")
     templateService.holdIdForSpecificPatient = id;
     var page = "/doctor-patient/treatment/" + id;
     localManager.setValue("holdPageForHandler",page);

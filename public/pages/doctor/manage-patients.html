@@ -74,11 +74,11 @@
 				<div class="clearfix"></div>
 				<div style="position: relative;" class="pl-1 pb-1">
 					<div class="">						
-					<button class="text-warning btn btn-simple btn-sm" title="Go to e-case note" ng-click="userPatient(j.patient_id,j.presence)"><i class="fa fa-folder-open"></i></button>
-					<button class="text-success btn btn-simple btn-sm" title="Chat with patient" ng-click="viewChat2(j.patient_id)"><i class="fa fa-comments"></i></button>
-					<button class="text-success btn btn-simple btn-sm" title="Hold audio chat chat conversation with patient" ng-click="audioChat(j)"><i class="fa fa-phone"></i></button>
-					<button class="text-success btn btn-simple btn-sm" title="Hold video chat conversation with patient" ng-click="videoChat(j)"><i class="fa fa-video-camera"></i></button>
-					<button class="text-primary btn btn-simple btn-sm" title="View Patient's Blood Pressure, Blood Sugar, Temperature etc" ng-click="viewPatientChart(j)"><i class="fa fa-bar-chart"></i></button>
+					<a href="#{{'/doctor-patient/treatment/' + j.patient_id}}" class="text-warning btn btn-simple font-1_4" title="Go to e-case note"><i class="fa fa-folder-open"></i></a>
+					<a href="" class="text-success btn btn-simple btn-sm" title="Chat with patient" ng-click="viewChat2(j.patient_id)"><i class="fa fa-comments"></i></a>
+					<a href="" class="text-success btn btn-simple btn-sm" title="Hold audio chat chat conversation with patient" ng-click="audioChat(j)"><i class="fa fa-phone"></i></a>
+					<a href="" class="text-success btn btn-simple btn-sm" title="Hold video chat conversation with patient" ng-click="videoChat(j)"><i class="fa fa-video-camera"></i></a>
+					<a href="" class="text-primary btn btn-simple btn-sm" title="View Patient's Blood Pressure, Blood Sugar, Temperature etc" ng-click="viewPatientChart(j)"><i class="fa fa-bar-chart"></i></a>
 					</div>
 					<!--<span class="text-muted" ng-show="j.appointment_date"> <span class="text-info">   In-person meeting </span> <span am-time-ago="j.appointment_date"></span><span> &nbsp;{{j.appointment_time | date : 'shortTime'}}</span><br></span>
 					<span class="text-muted" ng-show="j.activity.labCount > 0"><span class="text-info"> >  1 new </span> Laboratory Result<br></span>
