@@ -219,7 +219,7 @@ app.config(['$paystackProvider','$routeProvider',
   })
 
   .when("/manage-patients",{
-    templateUrl: '/assets/pages/doctor/manage-patients.html',
+    templateUrl: 'manage-patients.html',//'/assets/pages/doctor/manage-patients.html',
     controller: 'checkingOutDoctorPatientController',
     resolve: {
       path: function($location,$rootScope){
@@ -254,7 +254,7 @@ app.config(['$paystackProvider','$routeProvider',
  })
 
  .when('/doctor-patient/treatment/:id',{
-  templateUrl: '/assets/pages/doctor/e-case.html',//'/assets/pages/specific-patient.html',
+  templateUrl: 'e-case.html',//'/assets/pages/doctor/e-case.html',//'/assets/pages/specific-patient.html',
   controller: 'e-CaseCtrl',//'myPatientController',
   resolve: {
     path: function($location,$rootScope){
@@ -264,39 +264,36 @@ app.config(['$paystackProvider','$routeProvider',
  }) 
 
  .when('/e-case-prescription/:id',{
-  templateUrl: '/assets/pages/doctor/e-case-prescription.html',
+  templateUrl: 'e-case-prescription.html',//'/assets/pages/doctor/e-case-prescription.html',
   controller: 'e-casePrescriptionCtrl',
  }) 
 
  .when('/e-case-laboratory/:id',{
-  templateUrl: '/assets/pages/doctor/e-case-laboratory.html',
+  templateUrl: 'e-case-laboratory.html',//'/assets/pages/doctor/e-case-laboratory.html',
   controller: 'e-caseLaboratoryCtrl',
  })
 
  .when('/e-case-radiology/:id',{
-  templateUrl: '/assets/pages/doctor/e-case-radiology.html',
+  templateUrl: 'e-case-radiology.html',//'/assets/pages/doctor/e-case-radiology.html',
   controller: 'e-caseRadiologyCtrl',
  })
 
  .when('/e-case-generate-bill/:id',{
-  templateUrl: '/assets/pages/doctor/e-case-generate-bill.html',
+  templateUrl: 'e-case-generate-bill.html',//'/assets/pages/doctor/e-case-generate-bill.html',
   controller: 'e-caseGenerateBillCtrl',
  }) 
 
  .when('/e-case-refer-specialist/:id',{
-  templateUrl: '/assets/pages/doctor/e-case-refer.html',
+  templateUrl: 'e-case-refer.html',//'/assets/pages/doctor/e-case-refer.html',
   controller: 'referRequestController',
  })
 
 .when('/e-case-chart/:id',{
-  templateUrl: '/assets/pages/doctor/e-case-chart.html',
+  templateUrl: 'e-case-chart.html',//'/assets/pages/doctor/e-case-chart.html',
   controller: 'e-caseChartCtrl',
  })
 
  
-
- 
-
  //wallet route
  .when("/wallet",{
   templateUrl: '/assets/pages/finance/my-wallet.html',
@@ -975,17 +972,17 @@ app.config(['$paystackProvider','$routeProvider',
 })
 
 .when("/laboratory-out",{
-  templateUrl: "/assets/pages/laboratory/lab-out.html",
+  templateUrl: 'lab-out.html',//"/assets/pages/laboratory/lab-out.html",
   controller: "labOutCtrl"
 })
 
 .when("/radiology-out",{
-  templateUrl: "/assets/pages/radiology/radio-out.html",
+  templateUrl: 'radio-out.html',//"/assets/pages/radiology/radio-out.html",
   controller: "radioOutCtrl"
 })
 
 .when("/prescription-out",{
-  templateUrl: "/assets/pages/pharmacy-inner-pages/prescription-out.html",
+  templateUrl: 'prescription-out.html',//"/assets/pages/pharmacy-inner-pages/prescription-out.html",
   controller: "prescriptionOutCtrl"
 })
 
@@ -1005,12 +1002,12 @@ app.config(['$paystackProvider','$routeProvider',
 })
 
 .when("/appointment-out",{
-  templateUrl: "/assets/pages/utilities/appointment-out.html",
+  templateUrl: 'appointment-out.html',//"/assets/pages/utilities/appointment-out.html",
   controller: "appointmentOutCtrl"
 })
 
 .when("/patients-chart",{
-  templateUrl: "/assets/pages/utilities/patients-chart.html",
+  templateUrl: 'patients-chart.html',//"/assets/pages/utilities/patients-chart.html",
   controller: "patientChartCtrl",
   resolve: {
     path: function($location,$rootScope){
@@ -1020,7 +1017,7 @@ app.config(['$paystackProvider','$routeProvider',
  })
 
 .when("/charts", {
-  templateUrl: '/assets/pages/utilities/chart.html',
+  templateUrl: 'chart.html',//'/assets/pages/utilities/chart.html',
   controller: 'chartCtrl'
  })
 
@@ -2128,8 +2125,8 @@ app.controller('docProfileEditController',["$scope","$rootScope","$http","$locat
   "multiData2","$window","localManager","mySocket","$anchorScroll",
   function($scope,$rootScope,$http,$location,multiData2,$window,localManager,mySocket,$anchorScroll) {  
 
-  var path = $location.path();
-  localManager.setValue("currentPage",path)
+  //var path = $location.path();
+  //localManager.setValue("currentPage",path)
 
   function initForm(){
     $scope.user = {};
@@ -16934,7 +16931,6 @@ app.controller("chartCtrl",["$scope","$rootScope","chartReadingService","$filter
   }
 
   $scope.userPatient = function(id,presence) {
-    alert("dhssd")
     templateService.holdIdForSpecificPatient = id;
     var page = "/doctor-patient/treatment/" + id;
     localManager.setValue("holdPageForHandler",page);

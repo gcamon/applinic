@@ -1,0 +1,134 @@
+
+
+<!--<div class="card card-center-1 p-2">
+	<h4 class=" mb-1" style="">Manage Patients</h4>
+	<div>
+		<input type="text" name="" placeholder="filter by name" ng-model="person" class="form-control">
+	</div>
+	<div class="row" ng-repeat="j in patientList | orderBy: '-presence' | filter : person" ng-if="!j.deleted">
+		<div class="col-md-2 col-lg-2 p-1">
+			<a href="" ng-click="userPatient(j.patient_id,j.presence)">
+				<img src="{{j.patient_profile_pic_url}}" style="width: 100%;max-height: 320px"/>
+			</a>
+		</div>
+		<div class="col-md-3 col-lg-3 p-1">
+			<b>{{j.patient_title}} {{j.patient_lastname}} {{j.patient_firstname}}</b><br>
+			<b class="text-primary" ng-if="j.presence">Online</b><span class="text-muted" ng-if="!j.presence">Offline</span>
+		</div>
+		<div class="col-md-3 col-lg-3 p-1">
+			<article ng-if="j.appointment_date">
+				<label><i class="fa fa-calendar text-primary"></i> Appointment</label><br>
+				<span>{{j.appointment_date | date : 'fullDate'}}</span><br>
+				<span>{{j.appointment_time | date : 'shortTime'}} </span><br>
+			</article>
+		</div>
+		<div class="col-md-2 col-lg-2 p-1">	
+		</div>
+		<div class="col-md-2 col-lg-2 p-1 pull-right">
+			<a href="" class="text-primary" ng-click="removePatient(j)"><i class="fa fa-trash font-1_4" title="Remove this patient" ng-if="!j.isLoading"></i><span ng-if="j.isLoading">deleting...</span></a>&nbsp;
+			<button class="btn btn-primary round btn-sm" ng-click="userPatient(j.patient_id,j.presence)"><i class="fa fa-arrow-right font-1_2"  title="view E-treatment"></i></button><br><br>
+		</div>
+		<div class="clearfix"></div>
+		<hr>
+	</div>
+</div>-->
+<script type="text/ng-template" id='manage-patients.html'>
+<div class="">
+		<section class="col-md-12 pl-0 ml-0">
+			<div class="col-md-8 pl-0 ml-0">
+				<label  class="h6 pl-2">My Patients</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				<span class="btn btn-neutral"><i class="fa fa-users text-danger"></i> {{patientList.length}}</span>  &nbsp;&nbsp;&nbsp;&nbsp;
+				<i class="fa fa-refresh btn btn-neutral" ng-click="refresh()"></i>
+			</div>
+			<div class="col-md-4 pl-0 ml-0">				
+				<input type="text" name=""  placeholder=" Search" ng-model="person" class="form-control">
+			</div>
+		</section>
+		<div class="clearfix"></div>
+		<div class="col-md-4 p-12" ng-repeat="j in patientList | orderBy: '-presence' | filter : person" ng-if="!j.deleted && j.patient_id !== checkLogIn.user_id" >
+			<div class="card">				
+				<div class="col-md-4 col-sm-4 col-xs-4 pl-1 pt-1">
+					<a href="" ng-click="userPatient(j.patient_id,j.presence)">
+						<img src="{{j.patient_profile_pic_url}}" style="width: auto;max-height: 170px"/>
+					</a>
+
+				</div>
+				<div class="pt-2 pb-1 col-md-8 col-sm-8 col-xs-8 pl-1" style="min-height: 110px;max-height: 140px;text-align: center;">
+					<div class="ellipsis h6">
+						<b class="text-muted">{{j.patient_title}} {{j.patient_lastname}} {{j.patient_firstname}}</b>
+					</div>
+					<div class="text-muted">
+						<span>{{j.patient_gender || 'Male'}}</span><br>
+						<span><i class="fa fa-map-marker text-info" ng-show="j.presence"></i><span> <i class="fa fa-map-marker" ng-show="!j.presence"></i></span> {{j.patient_city || "Enugu"}}</span><br>						
+					</div>	
+					<div>
+						<a href="" ng-click="appointments(j)" ng-if="j.isNewAppointment" title="In-person meeting appointment with this patient">
+							<!--<img src="/assets/images/icons/calendar-tear.gif" width = "13" height = "13">&nbsp;-->
+							<i class="fa fa-clock-o text-primary" aria-hidden="true"></i>&nbsp;
+							<span class="text-danger" style="font-size: 14px">{{j.appDate | amCalendar }}</span>
+						</a>
+						<a href="" ng-if="!j.isNewAppointment" style="height: 13px">&nbsp;</a><br>
+					</div>	
+					<i class="online" ng-show="j.presence" title="Online" style="position: absolute;top: 3px; right: 10px"></i>
+					<i class="online" ng-show="!j.presence" title="Offline" style="position: absolute;top: 3px; right: 10px;background-color: #eee"></i>						
+				</div>				
+				<div class="clearfix"></div>
+				<div style="position: relative;" class="pl-1 pb-1">
+					<div class="">						
+					<a href="#{{'/doctor-patient/treatment/' + j.patient_id}}" class="text-warning btn btn-simple font-1_4" title="Go to e-case note"><i class="fa fa-folder-open"></i></a>
+					<a href="" class="text-success btn btn-simple btn-sm" title="Chat with patient" ng-click="viewChat2(j.patient_id)"><i class="fa fa-comments"></i></a>
+					<a href="" class="text-success btn btn-simple btn-sm" title="Hold audio chat chat conversation with patient" ng-click="audioChat(j)"><i class="fa fa-phone"></i></a>
+					<a href="" class="text-success btn btn-simple btn-sm" title="Hold video chat conversation with patient" ng-click="videoChat(j)"><i class="fa fa-video-camera"></i></a>
+					<a href="" class="text-primary btn btn-simple btn-sm" title="View Patient's Blood Pressure, Blood Sugar, Temperature etc" ng-click="viewPatientChart(j)"><i class="fa fa-bar-chart"></i></a>
+					</div>
+					<!--<span class="text-muted" ng-show="j.appointment_date"> <span class="text-info">   In-person meeting </span> <span am-time-ago="j.appointment_date"></span><span> &nbsp;{{j.appointment_time | date : 'shortTime'}}</span><br></span>
+					<span class="text-muted" ng-show="j.activity.labCount > 0"><span class="text-info"> >  1 new </span> Laboratory Result<br></span>
+					<span class="text-muted" ng-show="j.activity.radioCount > 0"><span class="text-info"> >  2 new </span> Radiology Result</span>-->
+					<i class="fa fa-ellipsis-v text-muted" style="position: absolute;right: 15px;bottom: 5px;cursor: pointer;padding: 5px;font-size: 18px" title="Manage Patient" ng-click="popup(j)"></i>								
+				
+					<div ng-class="{'popup2': j.isManage == true}" ng-if="j.isManage" style="line-height: 35px;padding: 5px">
+					  <div style="position: absolute;top:4px;right: 10px" ng-click="closePop(j)"><i class="fa fa-times text-info"></i></div>
+					  <a href=""  ng-click="userPatient(j.patient_id,j.presence)"><i class="fa fa-folder-open text-warning"></i> Go to E-Treatment <!--&nbsp;<i class="fa fa-question-circle tip" style="font-size: 14px"><span>Here you can write prescriptions, request diagnostic investigation, view reports and medical records. </span></i>--></a><br>				 
+					  <a href=""  ng-click="consultationFee(j)"><i class="fa fa-money text-success"></i> Consultation Fee <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange" ng-if="loading2"></i> </a><br>
+					  
+					  <a href=""  ng-click="appointments(j)"><i class="fa fa-calendar text-success"></i> Appointments</a><br>
+
+					  <a href=""  ng-click="viewChat2(j.patient_id)"><i class="fa fa-comments text-success"></i> Chat with Patient <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange" ng-if="loading"></i> </a><br>
+
+					  <a href=""  ng-click="audioChat(j)"><i class="fa fa-phone text-success"></i> Audio Chat</a><br>
+
+					  <a href=""  ng-click="videoChat(j)"><i class="fa fa-video-camera text-success"></i> Video Chat</a><br>
+
+					  <a href=""  ng-click="referToAnother(j)"><i class="fa fa-share text-success"></i> Refer Patient <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange" ng-if="isRefloading"></i></a><br>
+
+					  <!--<a href=""  ng-click=""><i class="fa fa-warning text-muted"></i> Block Patient</a><br>-->
+					  <a href=""  ng-click="removePatient(j)"><i class="fa fa-times text-danger"></i> Remove Patient</a>
+					  <!--<a href=""  ng-click="share(test)" ng-show="test.laboratory.lab_pdf_report.length > 0"><i class="fa fa-share"></i> Share Test Result <br>	</a>				 					 
+					  <a href="{{'https://drive.google.com/viewerng/viewer?embedded=true&url=https://applinic.com' + test.laboratory.lab_pdf_report[0].pdf_report}}" target="_blank" ng-show="test.laboratory.lab_pdf_report.length > 0"><span><i class="fa fa-file"></i> View Result PDF</span><br></a>-->
+																	
+					</div>
+				</div>
+			</div>			
+		</div>
+		<div class="clearfix"></div>
+		<article ng-show="patientList.length > 0" class="card p-2">
+
+		<h6 class="text-danger"><i class="fa fa-user-plus"></i> Invite more patients to your account!</h6><br>
+
+		<p style="line-height: 25px">Click <a href='#/invite' class="text-primary"> <b>"Invite Someone"</b> </a> to add patients to your account. You can add your real patients here for your expert and timely management by entering their phone numbers or email. When you invite patients, Applinic shares your referral link via SMS or Email with them. Once they register through the link, they will be added to your account. Registration is free!
+		</p>
+		</article>
+
+		<article ng-show="patientList.length == 0" class="card p-2">
+
+		<h6 class="text-danger">You have no patient in your account.</h6><br>
+
+		<p style="line-height: 25px"> Start inviting your patients to join Applinic. To do this, click <a href='#/invite' class="text-primary"> <b>"Invite Someone"</b> </a> or icon that looks like this <i class="fa fa-user-plus"></i> on top of this page. When you invite patients, Applinic shares your referral link via SMS or Email with them. Once they register through the link, they will be added to your account. Registration is free!</p>
+		</article>
+
+		<div style="height: 300px">
+			
+		</div>
+</div>
+
+</script>

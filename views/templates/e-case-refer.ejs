@@ -1,0 +1,93 @@
+
+
+<script type="text/ng-template" id='e-case-refer.html'>
+
+<div class="card-center-1">
+    <a href="#{{'/doctor-patient/treatment/' + patientInfo.user_id}}" class="btn btn-neutral"><i class="fa fa-arrow-left"></i> Back</a>
+</div>
+<div class="card-center-1 card">
+  <div class="row"> 
+    <div class="col-md-3 col-xs-3 pl-2 pt-2 pb-2">
+      <img src="{{patientInfo.profile_pic_url}}" style="max-height: 70px; width: auto;">
+    </div>
+    <div class="col-md-7 col-xs-7 pl-2 pt-2 pb-2">
+        <label class="block pb-0 mb-0">{{patientInfo.title}} {{patientInfo.firstname}} {{patientInfo.lastname}}</label>
+        <span>{{patientInfo.gender}}</span><br>
+        <span>{{patientInfo.age}}</span><br>
+        <span>{{patientInfo.city}}</span><br>
+        <span>{{patientInfo.phone}}</span>
+      </div>
+    </div>
+    
+</div>
+<div class="card-center-1 pt-1">
+    <h5>Refer to a Specialist</h5>
+</div>
+<div class="card-center-1 card p-1">
+  
+  <div class="p-2" ng-if="isInitial">
+      <p>Please answer these few questions</p>
+      <form ng-submit="continue()">
+        <label>What where the patient's initial complaint?</label><br>
+        <textarea class="form-control pl-1" ng-keyup="autoExpand($event)" id="textarea" ng-model="search.initial"></textarea><br>
+
+        <label>What did you do for the patient so far?</label><br>
+        <textarea class="form-control pl-1" ng-keyup="autoExpand($event)" id="textarea" ng-model="search.howFar"></textarea><br>
+        <input class="btn btn-primary" type="submit" value="Continue">
+      </form>
+  </div>
+
+  <div ng-if="isSearch">
+    <div class="pl-1">   
+      <a href="" ng-click="edit()" class="block mb-2" ><i class="fa fa-arrow-left"></i></a>
+      <h6>Search for specialty</h6>
+    </div>
+    <form class="" ng-submit="findSpecialist()">        
+        <div class="col-md-5">
+        <!--<input type="" name="" placeholder="{{search.city || 'City'}}" ng-model="search.city" class="form-control">--> 
+        <input type="text" class="form-control"  type="text" placeholder="Enter city name" ng-model="search.city" uib-typeahead="city for city in cities | filter:$viewValue | limitTo:15">
+
+        </div>
+        <div class="col-md-5">
+        <!--<input type="" name="" placeholder="{{search.specialty || 'Specialty'}}" ng-model="search.specialty" class="form-control">-->
+            <input type="text" class="form-control" placeholder="Enter specialty"   uib-typeahead="specialty.name for specialty in allSpecialties | filter:$viewValue | limitTo:15" ng-model="search.specialty" style="font-size: 14px!important"> 
+        </div>
+        <div class="col-md-2">
+          <input type="submit" value="Search" class="btn btn-primary" ng-if="!loading">
+        </div>
+    </form>
+    <div class="clearfix"></div>
+    <div ng-if="searchResult.length > 1" class="col-md-6 pt-1">
+        <input type="text" name="" placeholder="Filter by place of work, name or address" class="form-control" ng-model="info">
+    </div>
+    <div class="clearfix"></div>
+    <div  ng-if="!loading" class="mt-2">
+        <div class="pb-1 mb-2" ng-repeat="searchResult in searchResults | filter: info" style="position: relative;" ng-if="searchResult.user_id !== checkLogIn.user_id">
+            <img src="{{searchResult.profile_pic_url}}" style="width: 72px;height: auto;float: left;">
+            <article style="display: inline-block;max-width: 300px;padding-left:  10px">
+                <strong class="ellipsis block mb-0 pb-0">{{searchResult.title}} {{searchResult.firstname}} {{searchResult.lastname}}</strong>
+                <em class="block"><small>{{searchResult.specialty}}</small></em> 
+                <small class="block">{{searchResult.work_place}} {{searchResult.address}} {{searchResult.city}} {{searchResult.country}}</small>                             
+            </article>
+             <button class="btn btn-sn bg-success" style="padding: 5px 10px;position: absolute; right: 20px;bottom: 10px" title="refer to {{searchResult.title}} {{searchResult.firstname}}" ng-click="refer(searchResult)"> <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:#fff;" ng-if="searchResult.loading"></i>{{(searchResult.loading) ? '' : (searchResult.msg || 'refer')}}</button>
+        </div>
+    </div>
+    <div class="clearfix"></div>
+    <p class="pt-2" style="text-align: center" ng-if="!loading && searchResults.length === 0">Oops! No specialist was found based on the search criteria used.</p>
+    <div style="text-align: center;margin-top: 40px" ng-if="loading">
+       <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange;font-size: 18px" ng-if="loading"></i> 
+    </div>
+  </div>
+  <div class="p-2" ng-if="isReview">
+    <a href="" ng-click="back()" ><i class="fa fa-arrow-left"></i></a>
+    <a href="" ng-click="edit()" class="btn btn-simple btn-sm" style="float: right;"><i class="fa fa-pencil"></i> Edit</a>
+    <div class="clearfix"></div>
+    <section ng-bind-html="data.message"></section>
+    <div style="text-align: center;">
+      <span class="text-primary">{{doc.msg}}</span><br>
+      <button class="btn btn-primary btn-block" ng-if="!doc.loading && !doc.isSent" ng-click="send()">Send</button><br> <b ng-if="doc.loading"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange" ></i> Sending...</b>
+    </div>
+  </div>
+</div>
+
+</script>

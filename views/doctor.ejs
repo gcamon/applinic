@@ -1073,14 +1073,14 @@
                       </li>
                       <li>
                         <a href="" class="block">
-                          <i class="fa fa-folder-open text-primary"></i><br>
+                          <i class="icon-stethoscopetwo text-primary"></i><br>
                           <span>Other Procedures</span>
                         </a>
                       </li>
                       
                       <li>
                         <a href="#/doc-edit-profile" class="block">
-                          <i class="icon-stethoscopetwo text-primary"></i><br>
+                          <i class="fa fa-user-md text-primary"></i><br>
                           <span>Edit Profile</span>
                         </a>
                       </li>
@@ -3511,10 +3511,37 @@
         </div>
       </div>
     </script>
+
+    <!-- include ng-temlates for inner views -->
+
+    <% include ./templates/e-case %>
     
+    <% include ./templates/manage-patients %>
 
+    <% include ./templates/e-case-prescription %>
 
-   
+    <% include ./templates/e-case-laboratory %>
+
+    <% include ./templates/e-case-radiology %>
+
+    <% include ./templates/e-case-chart %>
+
+    <% include ./templates/e-case-refer %>
+
+    <% include ./templates/e-case-generate-bill %>
+
+    <% include ./templates/appointment-out %> 
+
+    <% include ./templates/prescription-out %> 
+
+    <% include ./templates/lab-out %> 
+
+    <% include ./templates/radio-out %> 
+
+    <% include ./templates/patients-chart %> 
+
+    <% include ./templates/chart %>
+
                  
 
         <!-- Reference block for JS -->

@@ -303,10 +303,18 @@ var configuration = function (app,model) {
 	    
 	});
 
+	
+	
 	app.set('view engine', 'ejs');
 	app.set('views', __dirname + '/views');
-
 	app.use('/',router);
+
+	/*
+
+	app.engine('.html', require('ejs').renderFile);
+	app.set('view engine', 'html');
+	app.set('views', __dirname + '/views');
+	*/
 
 }
 
