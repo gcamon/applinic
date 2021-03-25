@@ -9865,7 +9865,7 @@ app.controller("e-CaseCtrl",["$scope","$rootScope","$http","localManager",
     }
   });*/
  
-  var path = localManager.getValue("currentPage") || $location.path();
+  var path = $location.path();
   var arr = path.split("/");  
   var userId = arr[arr.length-1];
   var patient = {};
