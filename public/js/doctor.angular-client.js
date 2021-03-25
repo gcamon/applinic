@@ -9872,7 +9872,7 @@ app.controller("e-CaseCtrl",["$scope","$rootScope","$http","localManager",
 
 
   
-  $rootScope.holdId = templateService.holdIdForSpecificPatient || userId;
+  $rootScope.holdId = userId;
   patient.id = $rootScope.holdId;
 
 
