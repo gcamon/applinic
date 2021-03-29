@@ -82,7 +82,7 @@ app.config(['$paystackProvider','$routeProvider',
   })
 
   .when('/consultation-messages',{
-    templateUrl: '/assets/pages/doctor/consultation-messages.html',
+    templateUrl: 'consultation-messages.html',//'/assets/pages/doctor/consultation-messages.html',
     controller: 'resultController',
     resolve: {
       path: function($location,$rootScope){
@@ -746,7 +746,7 @@ app.config(['$paystackProvider','$routeProvider',
 })
 
 .when("/find-specialist",{
-  templateUrl: "/assets/pages/utilities/find-specialist.html",
+  templateUrl: 'find-specialist.html',//"/assets/pages/utilities/find-specialist.html",
   controller: 'resultController'
  })
 
@@ -772,7 +772,7 @@ app.config(['$paystackProvider','$routeProvider',
  })
 
 .when("/courier-response/:id",{
-  templateUrl: "/assets/pages/utilities/courier-response.html",
+  templateUrl: 'courier-response.html',//"/assets/pages/utilities/courier-response.html",
   controller: "courierResponseCtrl",
   /*resolve: {
     path: function($location,$rootScope){
@@ -1020,6 +1020,16 @@ app.config(['$paystackProvider','$routeProvider',
   templateUrl: 'chart.html',//'/assets/pages/utilities/chart.html',
   controller: 'chartCtrl'
  })
+
+.when("/messages",{
+  templateUrl: 'messages.html',//"/assets/pages/utilities/messages.html",
+  controller: "noteCtrl"
+})
+
+.when("/courier-notification",{
+  templateUrl: 'courier-note.html',//"/assets/pages/utilities/courier-note.html",
+  controller: "noteCtrl"
+})
 
 }]) 
 
@@ -3306,7 +3316,7 @@ app.controller("docNotificationController",["$scope","$location","$resource","$i
 
 
 
-     var requests =  getRequestInTime.get(null,function(data){
+      var requests =  getRequestInTime.get(null,function(data){
        
         for(var item = data.doctor_notification.length - 1; item >= 0; item--) {
           if(!filter.hasOwnProperty(data.doctor_notification[item].type)){
@@ -3331,14 +3341,20 @@ app.controller("docNotificationController",["$scope","$location","$resource","$i
           }
         }
 
-    
+        
+       
+        var labNote = filter.laboratory || [];
+        var radioNote = filter.radiology || [];
+        var acceptance = filter.acceptance || [];
 
-        $rootScope.docNotification = filter.acceptance; //remember to concat for video and audio requests
+        $rootScope.commonNotifications = labNote.concat(radioNote.concat(acceptance))
+
+        //$rootScope.docNotification = filter.acceptance; //remember to concat for video and audio requests
         $rootScope.videoRequest = filter['video'] || [];
         $rootScope.audioRequest = filter['audio'] || []; //(!localManager.getValue("audioCallerList")) ? localManager.getValue("audioCallerList") : null;
-        $rootScope.inPersonRequest =  filter["Meet In-person"] || [];
+        //$rootScope.inPersonRequest =  filter["Meet In-person"] || [];
 
-        $scope.inPersonRequestLen = $rootScope.inPersonRequest.length;
+        //$scope.inPersonRequestLen = $rootScope.inPersonRequest.length;
         
 
         if(filter.hasOwnProperty("consultation")){
@@ -18637,6 +18653,11 @@ app.controller("pdfViewerCtrl",["$scope","$rootScope","pdfDelegate",
   //console.log(pdfDelegate,$rootScope.pdfFilePath)
   pdfDelegate.$getByHandle('my-pdf-container').zoomIn(0.3);
 }])
+
+app.controller("noteCtrl",["$scope","$location","$rootScope",
+  function($scope,$location,$rootScope){
+  
+}]);
 
 
 function testNumber(str) {

@@ -221,7 +221,8 @@ var myModel = function () {
 		sender_location: String,
 		sender_profile_pic_url: String,
 		files: Array,
-		isLaterRef: String
+		isLaterRef: String,
+		center_id: String
 	});
 
 	var periodSchema = Schema({

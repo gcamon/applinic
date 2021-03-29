@@ -1,0 +1,49 @@
+ 
+<script type="text/ng-template" id='messages.html'>
+<div class="card-center-1">
+    <a href="#/manage-patients" class="btn btn-neutral"><i class="fa fa-arrow-left"></i> Back</a>
+</div> 
+<div class="card-center-1">
+    <h4 class="h6 pt-1 pb-1"> Notification ({{commonNotifications.length}})</h4>
+</div>
+<div  ng-repeat = "msg in commonNotifications | orderBy: '-date'" class="card-center-1">
+    <div class="notification-item card p-1"  class="msg-drp-list"  style="cursor: pointer;">
+        <div class="col-md-2 col-sm-2 col-xs-2">
+            <i class="{{(msg.type === 'laboratory') ? 'fa fa-microscope text-primary' : (msg.type === 'radiology') ? 'fa fa-radiation text-primary' : 'fa fa-user text-primary' }}" style="font-size: 35px"></i>
+        </div>
+        <div class="col-md-8 col-sm-8 col-xs-8 pr-1">
+            <p> <b class="accent" ng-cloak>{{msg.sender_firstname}}</b> <span style="display:block">{{msg.message}}</span> <small am-time-ago="msg.date" style="display:block" ng-cloak></small> </p>
+        </div>
+        <div class="col-md-2 col-sm-2 col-xs-2">
+            <a href="#{{(msg.type === 'laboratory') ? ('/e-case-laboratory/' + msg.sender_id) : (msg.type === 'radiology') ? ('/e-case-radiology/' + msg.sender_id) : ('/doctor-patient/treatment/' + msg.sender_id)}}" class="btn btn-sm btn-primary round mt-2"><i class="fa fa-arrow-right text-white"></i></a>
+        </div>
+         <div class="clearfix"></div>
+    </div>
+
+    <!--<div class="notification-item card p-1"  class="msg-drp-list" ng-if="msg.message == 'Consultation Fee'" style="cursor: pointer;">
+        <div class="col-md-2 col-sm-2 col-xs-2">
+            <i class="fa fa-user-md text-primary" style="font-size: 35px"></i>
+        </div>
+        <div class="col-md-8 col-sm-8 col-xs-8 pr-1">
+            <p> <span class="accent" ng-cloak>{{msg.title}} {{msg.firstname}} {{msg.lastname}} </span> <span style="display:block">{{msg.message}}</span> <small am-time-ago="msg.date" style="display:block" ng-cloak></small> </p>
+        </div>
+         <div class="col-md-2 col-sm-2 col-xs-2">
+            <a href="" class="btn btn-sm btn-primary round mt-2" ng-click= "viewConsultationFee(msg.consultationFeeId,msg.message_id)"><i class="fa fa-arrow-right text-white"></i></a>
+        </div>
+        <div class="clearfix"></div>
+    </div>
+    <div class="notification-item card p-1"  ng-if="msg.category === 'need_doctor' && msg.category !== 'outPatientBilling' ">
+        <div class="col-md-2 col-sm-2 col-xs-2">
+            <i class="fa fa-user-md text-primary" style="font-size: 35px"></i>
+        </div>
+        <div class="col-md-8 col-sm-8 col-xs-8 pr-1">
+            <p class="font-1_1"> <span class="accent" ng-cloak>{{msg.complaint_id}}</span> <span style="display:block">{{msg.message}}</span> <small am-time-ago="msg.date" style="display:block" ng-cloak></small> </p>
+        </div>
+        <div class="col-md-2 col-sm-2 col-xs-2">
+            <a href="" class="btn btn-sm btn-primary round mt-2" ng-click="viewResponse1(msg.user_id,msg.complaint_id)"><i class="fa fa-arrow-right text-white"></i></a>
+        </div>
+        <div class="clearfix"></div>
+    </div>-->
+</div>
+
+</script>

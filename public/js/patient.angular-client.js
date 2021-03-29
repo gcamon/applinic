@@ -762,7 +762,7 @@ app.config(['$paystackProvider','$routeProvider',
 })
 
 .when("/find-specialist",{
-  templateUrl: "/assets/pages/utilities/find-specialist.html",
+  templateUrl: 'find-specialist.html',//"/assets/pages/utilities/find-specialist.html",
   controller: 'resultController'
  })
 
@@ -788,7 +788,7 @@ app.config(['$paystackProvider','$routeProvider',
  })
 
  .when("/courier-response/:id",{
-  templateUrl: "/assets/pages/utilities/courier-response.html",
+  templateUrl: 'courier-response.html',//"/assets/pages/utilities/courier-response.html",
   controller: "courierResponseCtrl",
   resolve: {
     path: function($location,$rootScope){
@@ -1028,7 +1028,7 @@ app.config(['$paystackProvider','$routeProvider',
 })
 
 .when("/courier-notification",{
-  templateUrl: "/assets/pages/utilities/courier-note.html",
+  templateUrl: 'courier-note.html',//"/assets/pages/utilities/courier-note.html",
   controller: "noteCtrl"
 })
 

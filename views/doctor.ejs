@@ -3,7 +3,7 @@
 
     <head>
         <meta charset="utf-8">
-        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <title> Applinic - Doctor Dashboard</title>
         <meta name="description" content="">
         <meta content='width=device-width, initial-scale=0.87, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no' name='viewport'/>
@@ -279,13 +279,13 @@
                    
                     <div class="header-block header-block-nav">
                         <ul class="nav-profile">
-                            <li class="notifications new mr-1"> <a href="" data-toggle="dropdown">
+                            <li class="notifications new mr-1"> <a href="#{{'/messages'}}">
                     <i class="fa fa-bell tip"><!--<span><b>Notification</b><br> Here you receive notification <br>for the following activities:<br> > Newly added patient to your <br>account,<br>> The result of an investigation<br> you referred to diagnostic centers<br> on behalf of your patients. <br> > Video call requests <br>from your applinic patients.</span>--></i>
                     <sup>
-                      <span class="counter" ng-if="docNotification.length > 0 " ng-cloak>{{docNotification.length}}</span>
+                      <span class="counter" ng-if="commonNotifications.length > 0 " ng-cloak>{{commonNotifications.length}}</span>
                     </sup>
                   </a>
-                                <div class="dropdown-menu notifications-dropdown-menu menuOne" style="max-height: 400px;overflow-y: auto;">
+                                <!--<div class="dropdown-menu notifications-dropdown-menu menuOne" style="max-height: 400px;overflow-y: auto;">
                                     <ul class="notifications-container noti-style">
                                          <li> <h6 style="text-align: center">Notification(s)</h6> </li>
                                         <li ng-repeat = "note in docNotification">
@@ -305,15 +305,15 @@
                                     <footer>
                                         <ul>
                                             <li> <a href="">
-                            <!--View All-->
+                           
                           </a> </li>
                                         </ul>
                                     </footer>
-                                </div>
+                                </div>-->
                             </li>
 
-                               <li class="notifications new mr-1"> <a href="" data-toggle="dropdown">
-                    <i class="fa fa-envelope tip"> <!--<span><b>Consultation Request</b><br> All consultation requests and <br> referrals from patients and<br> physicians respectively comes in here.</span>--></i>
+                        <!--<li class="notifications new mr-1"> <a href="" data-toggle="dropdown">
+                    <i class="fa fa-envelope tip"></i>
                     <sup>
                       <span class="counter" ng-cloak>{{(consultationLen > 0) ? consultationLen : '' }}</span>
                     </sup>
@@ -329,7 +329,7 @@
                                                 <div class="body-col">
                                                     <p>                                                        
                                                         <span class="accent ellipsis" style="display:block;">{{patient.title}} {{patient.sender_firstname}} {{patient.sender_lastname}}</span>
-                                                        <!--<span class="accent ellipsis" style="display:block;width: 70%">{{patient.message}}</span>-->
+                                                       
                                                         <time am-time-ago="patient.date" style="display:block;float: left;"></time>
                                                     </p>                                                  
                                                 </div>
@@ -343,7 +343,7 @@
                                         </ul>
                                     </footer>
                                 </div>
-                            </li>
+                            </li>-->
 
                               <!--<li class="notifications new"> <a href="" data-toggle="dropdown">
                     <i class="icon-Pills tip"> </i>
@@ -413,13 +413,13 @@
                                     </footer>
                                 </div>
                             </li>-->
-                            <li class="notifications new mr-1"> <a href="" data-toggle="dropdown">
+                            <li class="notifications new mr-1"> <a href="#/courier-notification">
                     <i class="fa fa-motorcycle tip">  <!--<span><b>Delivery Requests</b><br> Here is your drug delivery requests. <br> When a request status is <b class="text-info">Ready</b><br> it means the bill for the items<br> requested is received. You are<br> <b>REQUIRED</b> to pay the bill <br> before delivery will start.</span>--></i>
                     <sup>
                       <span class="counter" ng-if="courierResponseList.length > 0" ng-cloak>{{courierResponseList.length}}</span>
                     </sup>
                   </a>
-                                <div class="dropdown-menu notifications-dropdown-menu menuThree" style="max-height: 400px;overflow-y: auto" ng-controller = "createRoomController">
+                                <!--<div class="dropdown-menu notifications-dropdown-menu menuThree" style="max-height: 400px;overflow-y: auto" ng-controller = "createRoomController">
                                     <ul class="notifications-container noti-style">
                                         <li> <h5 style="text-align: center">Courier Notifications</h5> </li>
                                         <li ng-repeat = "j in courierResponseList | orderBy : '-date'" class="msg-drp-list" style="position: relative;" ng-click= "viewResponse(j)">
@@ -434,28 +434,18 @@
                                                                                       
                                             </a>                                            
                                               <span style="position: absolute;top: 3px;right: 5px;font-size: 12px" ng-class="{'text-danger': !j.attended,'text-info':j.attended,'text-success':j.completed,'text-warning':j.is_paid}">{{(!j.verified || !j.attended) ? 'Sent' : (!j.is_paid && j.attended) ? 'Ready': (j.is_paid && !j.completed) ? 'On Delivery' : (j.completed) ? "Received" : ""}}</span>
-                                            <!--<a href="" class="notification-item">
-                                                <div class="img-col">
-                                                    <div class="img" style="background-image: url({{app.profilePic}})"></div>
-                                                </div>
-                                                <div class="body-col">
-                                                    <p> <span class="accent" ng-cloak>{{app.title}} {{app.firstname}} {{app.lastname}}</span>
-                                                        <span style="display:block">Hi, you have an appointment with me.</span>
-                                                        <span>{{app.date | date: 'fullDate'}} (<b am-time-ago="app.date"></b>)</span>
-                                                    </p>
-                                                </div>
-                                            </a>-->
+                                           
 
                                         </li>                                        
                                     </ul>
                                     <footer>
                                         <ul>
                                             <li> <a href="">
-                            <!--View All-->
+                        
                           </a> </li>
                                         </ul>
                                     </footer>
-                                </div>
+                                </div>-->
                             </li>
 
                               
@@ -966,7 +956,7 @@
                                   <br>
                                   <a href="#/welcome" class="text-white"><i class="fa fa-info-circle"></i> Getting Started</a>
                                   
-                                  <a href="" ng-click="logout()" class="text-white"> <i class="fa fa-sign-out"></i> Log Out</a>                                  
+                                  <a href="" ng-click="logout()" class="text-white"> <i class="fa fa-sign-out-alt"></i> Log Out</a>                                  
                                 </li>                                                            
                             </ul>
                             
@@ -3541,6 +3531,18 @@
     <% include ./templates/patients-chart %> 
 
     <% include ./templates/chart %>
+
+    <% include ./templates/consultation-messages %>
+
+    <% include ./templates/messages %>
+
+    <% include ./templates/find-specialist %>
+
+    <% include ./templates/courier-note %>
+
+    <% include ./templates/courier-response %>
+
+    
 
                  
 
