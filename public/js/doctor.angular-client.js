@@ -214,7 +214,7 @@ app.config(['$paystackProvider','$routeProvider',
   })
 
   .when("/patient-request/:num",{
-    templateUrl: '/assets/pages/request-body.html',
+    templateUrl: 'request-body.html',//'/assets/pages/request-body.html',
     controller: 'requestController',
   })
 
@@ -1030,6 +1030,27 @@ app.config(['$paystackProvider','$routeProvider',
   templateUrl: 'courier-note.html',//"/assets/pages/utilities/courier-note.html",
   controller: "noteCtrl"
 })
+
+.when("/invite-doctor",{
+    templateUrl:"/assets/pages/utilities/invitation2.html",
+    controller: 'invitationCtrl',
+    resolve: {
+      path: function($location,$rootScope){
+        $rootScope.path = $location.path();  
+      }
+    }
+ })
+
+ .when("/list2",{
+    templateUrl: '/assets/pages/list-doctors2.html',
+    controller: 'listController',
+    resolve: {
+      path: function($location,$rootScope){
+        $rootScope.path = $location.path();
+      }
+    }
+  })
+
 
 }]) 
 
@@ -3085,6 +3106,20 @@ app.controller('resultController',["$scope","$rootScope","$http","$location","$r
     });
 
   }
+
+  $scope.getSpecialtyCategory = function(url) {
+    $http.get(url)
+    .success(function(result){
+      $rootScope.specialtyCategoryList = result;
+      $location.path('/list2');
+    })
+  }
+
+  $scope.inviteDoc = function() {
+    $rootScope.isDocInvite = true;
+    $location.path('/invite-doctor')
+  }
+
 
 }]);
 
@@ -13357,6 +13392,8 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
     });
   }
 
+
+
 }]);
 
 app.controller("emailModalCtrl",["$scope","$rootScope","$http",function($scope,$rootScope,$http){
@@ -18645,6 +18682,101 @@ app.controller("patientRedirectTestController",["$scope","$location","$resource"
 
   getData();
 
+}]);
+
+
+app.controller("invitationCtrl",["$scope","$http","$rootScope","ModalService","$timeout",
+  function($scope,$http,$rootScope,ModalService,$timeout){
+    $scope.invite = {};
+
+    if($rootScope.isDocInvite) {
+      $scope.invite.type = "Doctor";
+    }
+
+    $rootScope.isDocInvite = false;
+
+    $scope.someone = function(type){
+      $scope.invite.type = type;
+    }
+
+
+    $scope.copyText = "Consult doctors online, buy drugs with home delivery and do diagnostic tests through Applinic. Free treatment"
+    + " for malaria and typhoid fever available while offer lasts. Click link below to register.  https://applinic.com"
+
+    $scope.supported = false;
+
+    $scope.copy = "";
+
+    $scope.success = function (pres) {
+      pres.copy = 'Copied!';
+      $timeout(function(){
+        pres.copy = "";
+      },2000);
+    };
+
+
+    $scope.fail = function (err) {
+      console.error('Error!', err);
+    };
+
+
+    $scope.inviteFn = function() {
+      $scope.msg = "";
+
+      $scope.existingUser = false;
+
+
+
+      if(!$scope.invite.recepient){
+        alert("Please enter email or phone number of the recepient");
+        return;
+      }
+
+      
+      if($rootScope.checkLogIn.email == $scope.invite.recepient){
+        alert("Please you cannot invite yourself.");
+        return;
+      }
+
+       if($rootScope.checkLogIn.phone == $scope.invite.recepient){
+        alert("Please you cannot invite yourself.");
+        return;
+      }
+
+      if($scope.invite.recepient[0] === '0'){
+        var newSlice = $scope.invite.recepient.slice(1);
+        $scope.invite.recepient = "+234" + newSlice;
+      }
+
+
+      $scope.loading = true;
+
+     
+    $http.post("/user/invitation",$scope.invite)
+      .success(function(res){
+        $scope.msg = res.message;
+        $scope.loading = false;
+        $scope.existingUser = (res.user && res.type == 'Patient') ? true : false;
+        $scope.userToAdd = $scope.invite.recepient;
+      })
+    }
+
+    $scope.addPatient = function() {
+      $scope.loading = true;
+      $scope.msg = "";
+      $http.post("/user/doctor/add-patient",{user: $scope.userToAdd})
+      .success(function(res){
+        $scope.msg = res.message;
+        $scope.loading = false;
+        $scope.existingUser = false;
+        $rootScope.patientList.unshift(res.patient)
+      })
+    }
+
+    $scope.refresh = function() {
+      $scope.msg = "";
+      $scope.existingUser = false;
+    }
 }]);
 
 

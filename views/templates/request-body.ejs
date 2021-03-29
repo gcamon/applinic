@@ -1,0 +1,77 @@
+
+
+<script type="text/ng-template" id='request-body.html'>
+
+<div class="card-center-1">
+	<a href="#{{path}}" class="btn btn-neutral btn-sm"><i class="fa fa-arrow-left"></i> Back</a>
+</div>
+
+<div class="card-center-1">
+	<h4 class="h6">Consultation Request</h4>
+</div>
+<div class="card card-center-1 pt-1" ng-if="data">  
+	
+
+	<section ng-if="!data.isLaterRef">
+		<div class="row">
+			<div class="col-md-2 pl-2">
+	        	<img ng-src="{{data.sender_profile_pic_url}}" class="img-responsive" style="height: 120px;object-fit: contain">
+	        </div>
+	        <div class="col-md-9">
+	        	<div class="pl-1">
+	        	<div><label>{{data.sender_firstname}} {{data.sender_lastname}}</label></div>
+	        	<div>{{data.sender_gender}}</div>
+				<div>{{data.sender_age}}</div>			
+				<div>{{data.sender_location}}</div>
+				<div><span style=""><b>Date received:</b> {{data.date | amCalendar}}</span></div>
+				</div>
+	        </div>
+		</div>
+		<div class="p-1">				
+			<p style="display: block;padding: 10px 0">Dear {{checkLogIn.title}} {{checkLogIn.firstname}},<br>
+			<span>{{data.sender_firstname}} {{data.sender_lastname}} requested for your consultation. Below are the details of the request:</span></p>
+			<p style="" ng-bind-html="data.message"></p>		
+		</div>	
+	</section>  
+	<section ng-if="data.isLaterRef" class="p-2">
+		<article ng-bind-html="data.message"></article>
+	</section>
+	<div class="p-1" ng-if="data.files.length > 0">
+		<label>Attached files</label><br>
+		<section href="" class="text-success"  ng-repeat="j in data.files" style="display: inline-block;">
+			<a href="" ng-click="viewFile(j)">
+				<img src="{{j.path}}" style="max-width: 180px;height: auto;padding-right: 15px" ng-if="j.type == 'image/jpg' || j.type == 'image/jpeg' || j.type == 'image/png'">
+			</a>
+			<a href="{{'https://drive.google.com/viewerng/viewer?embedded=true&url=' + j.external_link}}" target="_blank" ng-if="j.type == 'application/pdf'" style="font-size: 18px"><i class="fa fa-file"></i> view PDF</a>
+			<a href="" ng-if="j.type == 'video/ogg' || j.type == 'video/mp4'"><i class="fa fa-video-camera"></i> Watch video</a>
+		</section>
+	</div>
+	<p></p>
+
+	<div class="p-1" ng-if="!data.isLaterRef">Regards, <span style="display:block"><b>Applinic Management</b></span></div>
+
+	<div class="p-1">
+		<!--<button class="btn btn-success btn-sm" ng-click="accept()">Accept</button>-->
+		 <button class="btn btn-primary btn-sm" ng-click="acceptOnce(data)" ng-show="!data.loading && !data.isSuccess">Accept</button> <button class="btn btn-neutral btn-sm" ng-show="data.loading && !data.isSuccess"><i class="fa fa-spinner fa-pulse fa-1x fa-fw"></i></button>
+		 <span ng-show="data.isSuccess" class="text-primary">accepted!</span>&nbsp;&nbsp;
+		
+		<button class="btn btn-simple btn-sm" ng-click="referToAnother()">Refer</button>&nbsp;&nbsp;
+
+		<button class="btn btn-simple btn-sm" ng-click="decline()">Decline</button>
+		
+		
+	</div>
+</div>
+
+</script>
+
+
+
+
+
+
+
+
+
+
+

@@ -1892,11 +1892,31 @@ router.put("/user/laboratory/test-result/session-update",function(req,res){
 
 	          transporter.sendMail(mailOptions, function(error, info){
 	            if (error) {
-	              console.log(error);
+	              //console.log(error);
 	            } else {
-	              console.log('Email sent: ' + info.response);
+	              //console.log('Email sent: ' + info.response);
 	            }
 	          });
+
+
+	          model.user.findOne({user_id: req.body.radiology.doctor_id})
+	          .exec(function(err,doctor){
+	          	doctor.doctor_notification.unshift({
+	            	sender_id: objectFound.patient_id,
+								message_id: parseInt(randos.genRef(6)),
+								type: "radiology",
+								date: + new Date(),
+								message: "radiology test result received!",
+								sender_firstname: objectFound.patient_firstname,
+								sender_lastname: objectFound.patient_lastname,
+								sender_age: "",
+								sender_gender: "",
+								sender_location: "",
+								sender_profile_pic_url: "",
+								center_id: req.user.user_id
+	            });
+	            doctor.save(function(err,info){})
+	          })
 
 	          // save study
 	          //dcm.save(function(err,info){})

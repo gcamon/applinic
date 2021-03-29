@@ -20,7 +20,7 @@
                         <h6 class="ellipsis block pl-1 pt-0 pb-1 mb-0">{{j.sender_firstname}} {{j.sender_lastname}}</h6>
                         <span am-time-ago="j.date" class="text-muted"></span><br><br>
                         <a href="" class="btn btn-simple btn-sm" ng-click= "viewConsult(j)">Details</a>&nbsp;&nbsp;
-                       <button class="btn btn-info btn-sm" ng-click="acceptOnce(j)" ng-show="!j.loading && !j.isSuccess">Accept</button>&nbsp;&nbsp; <button class="btn btn-neutral btn-sm" ng-show="j.loading && !j.isSuccess"><i class="fa fa-spinner fa-pulse fa-1x fa-fw"></i></button>
+                       <button class="btn btn-primary btn-sm" ng-click="acceptOnce(j)" ng-show="!j.loading && !j.isSuccess">Accept</button>&nbsp;&nbsp; <button class="btn btn-neutral btn-sm" ng-show="j.loading && !j.isSuccess"><i class="fa fa-spinner fa-pulse fa-1x fa-fw"></i></button>
                        <span ng-show="j.isSuccess" class="text-primary">accepted!</span>
                     </div>
                 </div>                
