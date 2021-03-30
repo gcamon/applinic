@@ -829,7 +829,7 @@ app.config(['$paystackProvider','$routeProvider',
  //for general chats
 
  .when("/general-chat",{
-  templateUrl: "/assets/pages/utilities/chat.html",
+  templateUrl: 'chat.html',//"/assets/pages/utilities/chat.html",
   controller: 'generalChatController'
  })
 
@@ -1033,22 +1033,19 @@ app.config(['$paystackProvider','$routeProvider',
 })
 
 .when("/chats-notification",{
-  templateUrl: "/assets/pages/utilities/chats-notification.html",
+  templateUrl: 'chats-notification.html',//"/assets/pages/utilities/chats-notification.html",
   controller: "noteCtrl"
 })
 
 .when("/audioChat-notification",{
-  templateUrl: "/assets/pages/utilities/audio-notification.html",
+  templateUrl: 'audio-notification.html',//"/assets/pages/utilities/audio-notification.html",
   controller: "noteCtrl"
 })
 
 .when("/videoChat-notification",{
-  templateUrl: "/assets/pages/utilities/video-notification.html",
+  templateUrl: 'video-notification.html',//"/assets/pages/utilities/video-notification.html",
   controller: "noteCtrl"
 })
-
-
-
 
 }])
 

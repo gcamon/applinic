@@ -11771,7 +11771,7 @@ router.post("/user/share/email",function(req,res){
       }
     });*/
 
-    var title = req.user.firstname + "'s" + " " + req.body.type + " Report";
+    var title = req.body.patientName + "'s" + " " + req.body.type + " Report";
     
     if(req.body.filePath) {
       var spl = req.body.filePath.split('/');

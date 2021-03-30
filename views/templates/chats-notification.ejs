@@ -1,0 +1,34 @@
+
+<script type="text/ng-template" id='chats-notification.html'>
+
+<div class="card-center-1 pb-1">
+    <h4 class="h6"> Chat Notifications</h4>
+</div>
+<div class="card-center-1 mt-0">
+    <input type="text" name="" class="form-control" ng-model="search" placeholder="Filter by name, date or specialty">
+</div>
+<div ng-repeat = "chat in chatsList | orderBy : '-status' || '-realTime' | filter: search"  ng-show="checkLogIn.user_id !== chat.partnerId" class="card-center-1 card" style="position: relative;">
+    <div >
+        <div class="col-md-2 col-sm-2 col-xs-2">
+            <div style="width: 75px;height: auto; overflow: hidden;">
+                <img  src="{{chat.profilePic}}" style="max-width: 100%;max-height: 100%;">
+            </div>
+        </div>
+        <div class="col-md-8 col-sm-8 col-xs-8 pr-1">                                                
+            <p class="ellipsis pt-1 pl-2"> 
+                <b class="accent" ng-cloak>{{chat.name}}</b><br>
+                <span>{{chat.messages[chat.messages.length - 1].received || chat.messages[chat.messages.length - 1].sent}} <small am-time-ago="chat.realTime" style="display:block" ng-cloak></small></span> 
+            </p>
+        </div>
+        <div class="col-md-2 col-sm-2 col-xs-2">
+            <a href="" class="btn btn-sm btn-primary round mt-2" ng-click= "viewChat3(chat.partnerId)"><i class="fa fa-arrow-right text-white"></i></a>       
+        </div>
+        <div style="position: absolute;top: 5px; right: 10px">
+            <i class="online" ng-show="chat.status" title="Online" style=""></i>
+            <i class="online" ng-show="!chat.status" title="Offline" style="background-color: #eee"></i>  
+        </div>
+    </div>  
+</div>
+<div style="height: 200px"></div>
+
+</script>

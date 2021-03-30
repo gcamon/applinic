@@ -68,6 +68,15 @@ option {
 
 }
 
+.simple-border-btn {
+  background-color: #fff;
+  border: 1px solid #85CE36;
+  color: #85CE36!important;
+  padding: 10px 15px;
+  box-shadow: 1px 2px 4px #ccc
+}
+
+
 table {  
     font-family: arial, sans-serif;  
     border-collapse: collapse;  

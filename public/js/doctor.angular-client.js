@@ -813,7 +813,7 @@ app.config(['$paystackProvider','$routeProvider',
  //for general chats
 
  .when("/general-chat",{
-  templateUrl: "/assets/pages/utilities/chat.html",
+  templateUrl: 'chat.html',//"/assets/pages/utilities/chat.html",
   controller: 'generalChatController'
  })
 
@@ -1050,6 +1050,22 @@ app.config(['$paystackProvider','$routeProvider',
       }
     }
   })
+
+ .when("/chats-notification",{
+    templateUrl: 'chats-notification.html',//"/assets/pages/utilities/chats-notification.html",
+    controller: "noteCtrl"
+  })
+
+  .when("/audioChat-notification",{
+    templateUrl: 'audio-notification.html',//"/assets/pages/utilities/audio-notification.html",
+    controller: "noteCtrl"
+  })
+
+  .when("/videoChat-notification",{
+    templateUrl: 'video-notification.html',//"/assets/pages/utilities/video-notification.html",
+    controller: "noteCtrl"
+  })
+
 
 
 }]) 
@@ -3770,6 +3786,50 @@ app.controller("docNotificationController",["$scope","$location","$resource","$i
     $scope.showIndicator = false;
     
   }
+
+
+   $rootScope.viewChat3 = function(partnerId) {  
+    /*var list = $rootScope.chatsList; 
+    localManager.setValue("isChatListViewMobile",true);
+    if(list) {
+      var byRecent = $filter('orderBy')(list,'-realTime');
+      templateService.holdId = byRecent[0].partnerId;   
+      if(deviceCheckService.getDeviceType()){
+        localManager.setValue("holdIdForChat",templateService.holdId);
+        localManager.setValue("holdChatList",list)
+        window.location.targer = "_blank";
+        window.location.href = "/user/chat/general";
+      } else if(templateService.holdId) {
+        $location.path("/general-chat");
+      } else {
+        alert("You have no messages yet.")
+      }
+      $scope.showIndicator = false;
+    }*/
+
+    templateService.holdId = (partnerId !== "all") ? partnerId : $rootScope.chatsList[0].partnerId; 
+
+    if(deviceCheckService.getDeviceType()){
+      if(partnerId === 'all'){
+        localManager.setValue("isChatListViewMobile",true);
+      }
+
+      localManager.setValue("holdIdForChat",partnerId);
+      localManager.setValue("holdChatList",$rootScope.chatsList);
+      window.location.target = "_blank";
+      window.location.href = "/user/chat/general";
+
+    } else if(templateService.holdId) {
+      $location.path("/general-chat");
+    } else {
+      alert("You have no messages yet.")
+    }
+
+    $scope.showIndicator = false;
+  }
+
+
+
 
 
   $rootScope.viewChat = function(partnerId,list) {
@@ -13041,11 +13101,12 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
 
   //sending prescription/lab/radio to an email
   $rootScope.email = function(docInfo,type,firstname,lastname,age,gender) {
-    console.log(docInfo)
+    
     $rootScope.emailData = {}
     $rootScope.emailData.type = type;
     $rootScope.emailData.filePath = (type === 'Laboratory') ? docInfo.lab_pdf_report[0].pdf_report 
     : (type === 'Radiology') ? docInfo.pdf_report[0].pathname : "";
+    $rootScope.emailData.patientName = firstname;
     switch (type) {
       case 'Prescription':
         if(docInfo.doctor_work_place) {
@@ -13111,7 +13172,8 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
          $rootScope.emailData.htmlTemp = "<h3 style='text-align:center'>" 
           + docInfo.center_name + "<br><span style='font-size:14px'>" + docInfo.center_address + ", " 
           + docInfo.center_city + ", " + docInfo.center_country
-          + "</span><br> <span style='font-size:14px'>" + docInfo.center_phone + "<span><br><span> https://applinic.com/user/profile/view/" + docInfo.center_id
+          + "</span><br> <span style='font-size:14px'>" + docInfo.center_phone 
+          + "<span><br><span> https://applinic.com/user/profile/view/" + docInfo.center_id
           + "</span></h3>"  + "<br><b>Patient Name: </b><span>" + lastname + " " 
           + firstname  
           + "<br></span><b>Patient Age: </b><span>" + age 
