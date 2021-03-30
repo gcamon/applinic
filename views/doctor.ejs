@@ -282,7 +282,7 @@
                             <li class="notifications new mr-1"> <a href="#{{'/messages'}}">
                     <i class="fa fa-bell tip"><!--<span><b>Notification</b><br> Here you receive notification <br>for the following activities:<br> > Newly added patient to your <br>account,<br>> The result of an investigation<br> you referred to diagnostic centers<br> on behalf of your patients. <br> > Video call requests <br>from your applinic patients.</span>--></i>
                     <sup>
-                      <span class="counter text-warning" ng-if="commonNotifications.length > 0 " ng-cloak>{{commonNotifications.length}}</span>
+                      <span class="counter text-warning" ng-if="commonNotifications.length > 0 " ng-cloak>{{(commonNotifications.length < 100) ? commonNotifications.length : "99+"}}</span>
                     </sup>
                   </a>
                                 <!--<div class="dropdown-menu notifications-dropdown-menu menuOne" style="max-height: 400px;overflow-y: auto;">
@@ -416,7 +416,7 @@
                             <li class="notifications new mr-1"> <a href="#/courier-notification">
                     <i class="fa fa-motorcycle tip">  <!--<span><b>Delivery Requests</b><br> Here is your drug delivery requests. <br> When a request status is <b class="text-info">Ready</b><br> it means the bill for the items<br> requested is received. You are<br> <b>REQUIRED</b> to pay the bill <br> before delivery will start.</span>--></i>
                     <sup>
-                      <span class="counter text-warning" ng-if="courierResponseList.length > 0" ng-cloak>{{courierResponseList.length}}</span>
+                      <span class="counter text-warning" ng-if="courierResponseList.length > 0" ng-cloak>{{(courierResponseList.length < 100) ? courierResponseList.length : "99+"}}</span>
                     </sup>
                   </a>
                                 <!--<div class="dropdown-menu notifications-dropdown-menu menuThree" style="max-height: 400px;overflow-y: auto" ng-controller = "createRoomController">
@@ -454,7 +454,7 @@
                     <i class="fa fa-comments tip"> 
                    <!-- <span><b>Chats</b><br>This is where you chat with your <br> online patients, doctors, diagnostic <br>and phamarceutical centers.<br>If you have an unread message,<br> red indicator shows on top <br>of this icon.</span>--></i>
                     <sup>
-                      <span class="counter text-warning" ng-cloak>{{chatsList.length}}</span>
+                      <span class="counter text-warning" ng-show="chatsList > 0" ng-cloak>{{(chatsList.length < 100) ? chatsList.length : '99+'}}</span>
                     </sup>
                   </a>
                                 <!--<div class="dropdown-menu notifications-dropdown-menu menuFive" style="max-height: 400px;overflow-y: auto;max-width: 450px">
@@ -521,7 +521,7 @@
                                 <i class="fa fa-phone"></i>
                                 <sup>
                             
-                                  <span class="counter text-warning" ng-show="audioRequest.length > 0"  ng-cloak>{{audioRequest.length}}</span>
+                                  <span class="counter text-warning" ng-show="audioRequest.length > 0"  ng-cloak>{{(audioRequest.length < 100) ? audioRequest.length : "99+"}}</span>
                                 </sup>
                               </a>
                                             <!--<div class="dropdown-menu notifications-dropdown-menu menuEight" style="max-height: 400px;overflow-y: auto;">
@@ -558,7 +558,7 @@
                             <li class="notifications new"> <a href="#/videoChat-notification">
                                 <i class="fa fa-video-camera"></i>
                               <sup>
-                                  <span class="counter text-warning" ng-show="videoRequest.length > 0" ng-cloak>{{videoRequest.length}}</span>
+                                  <span class="counter text-warning" ng-show="videoRequest.length > 0" ng-cloak>{{(videoRequest.length < 100) ? videoRequest.length : "99+"}}</span>
                                 </sup>
                               </a>
                                             <!--<div class="dropdown-menu notifications-dropdown-menu menuThree" style="max-height: 400px;overflow-y: auto;left: -90px">
@@ -3566,6 +3566,8 @@
     <% include ./templates/video-notification %>
 
     <% include ./templates/chat %>
+
+    <% include ./templates/invitation3 %>
 
                  
 

@@ -1031,7 +1031,7 @@ app.config(['$paystackProvider','$routeProvider',
   controller: "noteCtrl"
 })
 
-.when("/invite-doctor",{
+/*.when("/invite-doctor",{
     templateUrl:"/assets/pages/utilities/invitation2.html",
     controller: 'invitationCtrl',
     resolve: {
@@ -1039,17 +1039,27 @@ app.config(['$paystackProvider','$routeProvider',
         $rootScope.path = $location.path();  
       }
     }
- })
+ })*/
 
- .when("/list2",{
-    templateUrl: '/assets/pages/list-doctors2.html',
-    controller: 'listController',
-    resolve: {
-      path: function($location,$rootScope){
-        $rootScope.path = $location.path();
-      }
+.when("/invite-patient",{
+  templateUrl: "invitation3.html",
+  controller: 'invitationCtrl',
+  resolve: {
+    path: function($location,$rootScope){
+      $rootScope.path = $location.path();  
     }
-  })
+  }
+})
+
+.when("/list2",{
+  templateUrl: '/assets/pages/list-doctors2.html',
+  controller: 'listController',
+  resolve: {
+    path: function($location,$rootScope){
+      $rootScope.path = $location.path();
+    }
+  }
+})
 
  .when("/chats-notification",{
     templateUrl: 'chats-notification.html',//"/assets/pages/utilities/chats-notification.html",
@@ -12810,9 +12820,9 @@ app.controller('supportController',["$scope","$http",function($scope,$http){
 
 app.controller("topHeaderController",["$scope","$rootScope","$window","$location","$resource",
   "localManager","mySocket","templateService","$timeout","$document","ModalService",
-   "cities","$filter","_","$interval","dynamicService","chatService",
+   "cities","$filter","_","$interval","dynamicService","chatService","$http",
   function($scope,$rootScope,$window,$location,$resource,localManager,mySocket,templateService,
-   $timeout, $document, ModalService,cities,$filter,_,$interval,dynamicService,chatService){
+   $timeout, $document, ModalService,cities,$filter,_,$interval,dynamicService,chatService,$http){
 
   if(!localManager.getValue("resolveUser")) {
     $window.location.href = "/login";
@@ -13452,6 +13462,17 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
       })
            
     });
+  }
+
+
+  if($rootScope.checkLogIn.typeOfUser == 'Doctor'){
+    $http.get('/user/inviteURL',{params:{type:'Patient'}})
+    .success(function(data){
+      $rootScope.copyURL = data.inviteURL;
+    })
+  } else {
+    $rootScope.copyText = "Consult doctors online, buy drugs with home delivery and do diagnostic tests through Applinic. Free treatment"
+    + " for malaria and typhoid fever available while offer lasts. Click link below to register.  https://applinic.com"
   }
 
 
@@ -14805,15 +14826,7 @@ app.controller("invitationCtrl",["$scope","$http","$rootScope","ModalService","$
       $scope.invite.type = type;
     }
 
-    if($rootScope.checkLogIn.typeOfUser == 'Doctor'){
-      $http.get('/user/inviteURL',{params:{type:'Patient'}})
-      .success(function(data){
-        $scope.copyURL = data.inviteURL;
-      })
-    } else {
-      $scope.copyText = "Consult doctors online, buy drugs with home delivery and do diagnostic tests through Applinic. Free treatment"
-      + " for malaria and typhoid fever available while offer lasts. Click link below to register.  https://applinic.com"
-    }
+   
 
     $scope.supported = false;
 
@@ -14830,6 +14843,7 @@ app.controller("invitationCtrl",["$scope","$http","$rootScope","ModalService","$
     $scope.fail = function (err) {
       console.error('Error!', err);
     };
+
 
 
     $scope.inviteFn = function() {

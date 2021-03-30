@@ -1,0 +1,53 @@
+
+
+<script type="text/ng-template" id='invitation3.html'>
+
+
+<div class="card-center-1">
+  <a href="#/manage-patients" class="btn btn-neutral"><i class="fa fa-arrow-left"></i> Back</a>
+</div>
+<section class="card card-center-1 p-1">
+	<!--<h4>Who do you want to invite?</h4>
+	<div class="invite">
+		<a href="" ng-click="someone('Patient')" class="btn btn-simple btn-round btn-sm" ng-class="{'bg-info':invite.type == 'Patient'}">Patient</a>
+		<a href="" ng-click="someone('Doctor')" class="btn btn-simple btn-round btn-sm" ng-class="{'bg-info':invite.type == 'Doctor'}">Doctor / Special Center</a>
+		<a href="" ng-click="someone('Pharmacy')" class="btn btn-simple btn-round btn-sm" ng-class="{'bg-info':invite.type == 'Pharmacy'}">Pharmacy</a>		
+		<a href="" ng-click="someone('Laboratory')" class="btn btn-simple btn-round btn-sm" ng-class="{'bg-info':invite.type == 'Laboratory'}">Laboratory</a>
+		<a href="" ng-click="someone('Radiology')" class="btn btn-simple btn-round btn-sm" ng-class="{'bg-info':invite.type == 'Radiology'}">Radiology</a>
+		
+	</div><br>-->
+	
+	<div>
+		<form ng-submit="inviteFn()" class="col-md-6">
+			<h6>
+				Invite a Patient 
+			</h6>
+			
+			<p  class="text-muted">You can send your referral link to your patients. When they register via the link, they automatically become visible in your account under "My Patients" for your expert and timely management.</p>
+
+			<p ng-show="checkLogIn.typeOfUser == 'Doctor'"><a href=""  class="text-info" clipboard supported="supported" text="copyURL" on-copied="success(invite)" on-error="fail(err)" title="{{copy}}" > {{(invite.copy) ? "Copied!" : 'Copy referral Link'}}</a> and share on social platforms e.g Facebook, WhatsApp. <br> <br><b>Or</b><br></p>
+
+
+			<label>Send link to email or phone number of recipient:</label><br>
+			<input type="text" placeholder="Enter email or phone number" ng-model="invite.recepient" class="form-control"><br>
+			<p style="color: green">{{msg}}</p>
+			<section ng-if="existingUser && checkLogIn.typeOfUser == 'Doctor' && invite.type =='Patient'">
+			<a href=""  class="btn btn-success btn-sm" ng-click="addPatient()" ng-if='!loading'> Add to your account</a><span ng-if='loading'>Processing...</span> &nbsp;&nbsp; <a href="" class="btn btn-neutral btn-sm" ng-click="refresh()">No, thanks</a>
+			</section>			
+			<input type="submit" value="Send invitation" class="btn btn-primary btn-block" ng-if="!loading && !existingUser"> <span ng-if="loading">Sending invitation...</span>
+		</form>
+		<div class="clearfix"></div>
+		<hr>
+		
+		<!--<p class="p-1" ng-show="checkLogIn.typeOfUser === 'Patient'">You can copy invite message which you share in social media like WhatsApp and Facebook below <br>
+		<a href="" class="text-info" clipboard supported="supported" text="copyText" on-copied="success(invite)" on-error="fail(err)" title="{{copy}}"> {{(invite.copy) ? "Copied!" : 'Copy invite message'}}</a>
+		</p>-->
+		
+	</div>
+	
+</section>
+
+</script>
+
+
+

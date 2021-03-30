@@ -37,8 +37,10 @@
 		<section class="col-md-12 pl-0 ml-0">
 			<div class="col-md-8 pl-0 ml-0">
 				<label  class="h6 pl-2">My Patients</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-				<span class="btn btn-neutral"><i class="fa fa-users text-danger"></i> {{patientList.length}}</span>  &nbsp;&nbsp;&nbsp;&nbsp;
-				<i class="fa fa-refresh btn btn-neutral" ng-click="refresh()"></i>
+				<span class="btn btn-neutral text-primary"><i class="fa fa-users"></i> {{patientList.length}}</span>  &nbsp;&nbsp;&nbsp;&nbsp;
+				<i class="fa fa-refresh btn btn-neutral text-primary" ng-click="refresh()"></i>&nbsp;&nbsp;&nbsp;&nbsp;
+
+				<a href="#/invite-patient" class="btn btn-neutral text-info"><i class="fa fa-plus"> </i> Invite Patients</a>
 			</div>
 			<div class="col-md-4 pl-0 ml-0">				
 				<input type="text" name=""  placeholder=" Search" ng-model="person" class="form-control">
@@ -115,7 +117,7 @@
 
 		<h6 class="text-danger"><i class="fa fa-user-plus"></i> Invite more patients to your account!</h6><br>
 
-		<p style="line-height: 25px">Click <a href='#/invite' class="text-primary"> <b>"Invite Someone"</b> </a> to add patients to your account. You can add your real patients here for your expert and timely management by entering their phone numbers or email. When you invite patients, Applinic shares your referral link via SMS or Email with them. Once they register through the link, they will be added to your account. Registration is free!
+		<p style="line-height: 25px">Click <a href='#/invite-patient' class="text-primary"> <b>"Invite Patient"</b> </a> to add patients to your account. You can add your real patients here for your expert and timely management by entering their phone number or email. When you invite patients, Applinic shares your referral link via SMS or Email with them. Once they register through the link, they're are automatically added to your account. Registration is free!
 		</p>
 		</article>
 
@@ -123,7 +125,7 @@
 
 		<h6 class="text-danger">You have no patient in your account.</h6><br>
 
-		<p style="line-height: 25px"> Start inviting your patients to join Applinic. To do this, click <a href='#/invite' class="text-primary"> <b>"Invite Someone"</b> </a> or icon that looks like this <i class="fa fa-user-plus"></i> on top of this page. When you invite patients, Applinic shares your referral link via SMS or Email with them. Once they register through the link, they will be added to your account. Registration is free!</p>
+		<p style="line-height: 25px"> Start inviting your patients to join Applinic. To do this, click <a href='#/invite-patient' class="text-primary"> <b>"Invite Patient"</b> </a> or icon that looks like this <i class="fa fa-user-plus"></i> on top of this page. When you invite patients, Applinic shares your referral link via SMS or Email with them. Once they register through the link, they will be added to your account. Registration is free!</p>
 		</article>
 
 		<div style="height: 300px">
