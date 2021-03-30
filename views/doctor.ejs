@@ -454,7 +454,7 @@
                     <i class="fa fa-comments tip"> 
                    <!-- <span><b>Chats</b><br>This is where you chat with your <br> online patients, doctors, diagnostic <br>and phamarceutical centers.<br>If you have an unread message,<br> red indicator shows on top <br>of this icon.</span>--></i>
                     <sup>
-                      <span class="counter text-warning" ng-show="chatsList > 0" ng-cloak>{{(chatsList.length < 100) ? chatsList.length : '99+'}}</span>
+                      <span class="counter text-warning" ng-show="chatsList.length > 0" ng-cloak>{{(chatsList.length < 100) ? chatsList.length : "99+"}}</span>
                     </sup>
                   </a>
                                 <!--<div class="dropdown-menu notifications-dropdown-menu menuFive" style="max-height: 400px;overflow-y: auto;max-width: 450px">
