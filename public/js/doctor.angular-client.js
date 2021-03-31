@@ -8090,7 +8090,8 @@ app.controller("videoInitController",["$scope","$window","localManager","mySocke
   if($scope.docInfo.presence) {
     $scope.requestVideoCall($scope.docInfo.user_id)
   } else {
-    $scope.msg = $scope.docInfo.firstname + " " + $scope.docInfo.lastname + " is currently offline."
+    var names = (!$scope.docInfo.name) ? ($scope.docInfo.firstname + " " + $scope.docInfo.lastname) : $scope.docInfo.name;
+    $scope.msg = names + " is currently offline."
     $scope.isConnected = false;
   }
 
