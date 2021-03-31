@@ -28,7 +28,7 @@
 			<p ng-show="checkLogIn.typeOfUser == 'Doctor'"><a href=""  class="text-info" clipboard supported="supported" text="copyURL" on-copied="success(invite)" on-error="fail(err)" title="{{copy}}" > {{(invite.copy) ? "Copied!" : 'Copy referral Link'}}</a> and share on social platforms e.g Facebook, WhatsApp. <br> <br><b>Or</b><br></p>
 
 
-			<label>Send link to email or phone number of recipient:</label><br>
+			<label>Send link to email or phone number of a patient:</label><br>
 			<input type="text" placeholder="Enter email or phone number" ng-model="invite.recepient" class="form-control"><br>
 			<p style="color: green">{{msg}}</p>
 			<section ng-if="existingUser && checkLogIn.typeOfUser == 'Doctor' && invite.type =='Patient'">

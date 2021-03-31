@@ -1124,7 +1124,9 @@ router.put("/user/laboratory/test-result/session-update",function(req,res){
 								center_id: req.user.user_id
 	            });
 
-	            doctor.save(function(err,info){})
+	            doctor.save(function(err,info){
+	            	io.sockets.to(doctor.user_id).emit("get notification",{status:true});
+	            })
 	          })
 
 	         
@@ -1795,8 +1797,6 @@ router.put("/user/laboratory/test-result/session-update",function(req,res){
   router.put("/user/radiology/test-result/session-update",function(req,res){      
     if(req.user) {  	
   
-
-
       //create a dicom Study for viewing.
       var locate = ('patientID=' + req.body.radiology.studyId);
       var ovyWeb = "https://" + req.body.onlinePacs.dns + "/web/viewer.html?" + locate;
@@ -1906,7 +1906,7 @@ router.put("/user/laboratory/test-result/session-update",function(req,res){
 								message_id: parseInt(randos.genRef(6)),
 								type: "radiology",
 								date: + new Date(),
-								message: "radiology test result received!",
+								message: "Radiology investigation report received!",
 								sender_firstname: objectFound.patient_firstname,
 								sender_lastname: objectFound.patient_lastname,
 								sender_age: "",
@@ -1915,7 +1915,9 @@ router.put("/user/laboratory/test-result/session-update",function(req,res){
 								sender_profile_pic_url: "",
 								center_id: req.user.user_id
 	            });
-	            doctor.save(function(err,info){})
+	            doctor.save(function(err,info){
+	            	io.sockets.to(doctor.user_id).emit("get notification",{status:true});
+	            })
 	          })
 
 	          // save study
@@ -1964,14 +1966,14 @@ router.put("/user/laboratory/test-result/session-update",function(req,res){
 	            note_id: req.body.radiology.test_id,
 	            ref_id: req.body.ref_id,
 	            session_id:req.body.radiology.session_id,
-	            message: "Radiology test result received."
+	            message: "Radiology report received."
 	          });
 
 	          if(data.presence === true){
 	            io.sockets.to(data.user_id).emit("notification",{status:true});
 	          } 
 
-            var msgBody = "Radiology test result received! login http://applinic.com/login" 
+            var msgBody = "Radiology report received! login http://applinic.com/login" 
             + "\nPatient ID of study: " + req.body.radiology.studyId
             + "\nStudy Link Mobile: " + "https://applinic.com/dicom-mobile?id=" + dcm._id
             var phoneNunber =  data.phone;
@@ -2881,8 +2883,8 @@ router.post("/user/dicom-details",function(req,res){
 		    attended: false,
 		    assigned_radiologist_id: req.body.reporters,
 		    remark: req.body.remark || "",
-		    id_of_ref_dumped: req.body.patientData._id
-		  });
+		    id_of_ref_dumped: (req.body.patientData) ? req.body.patientData._id : ""
+		  })
 
 		  study.study_link_mobile = "https://applinic.com/dicom-mobile?id=" + study._id;
 		  study.study_link2 += "&key=" + study._id;

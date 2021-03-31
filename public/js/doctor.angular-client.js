@@ -3511,6 +3511,12 @@ app.controller("docNotificationController",["$scope","$location","$resource","$i
   });
 
 
+  mySocket.on('get notification',function(res){
+    templateService.playAudio(0);
+    getRequest();
+  })
+
+
   mySocket.on("received in-person request",function(res){
     if(res.status){
       templateService.playAudio(0);
