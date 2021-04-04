@@ -7,12 +7,11 @@
 </div>
 
 <div class="card-center-1">
-	<h4 class="h6">Charts <span style="font-size: 14px">BP/Pulse Rate, Blood Sugar &amp; Temperature</span></h4>
+	<h4 class="h6">Blood Pressure / Pulse Rate</h4>
 </div>
 <div class="card p-2 card-center-1" style="position: relative;">
 	<header>
 		
-		<h4 class="h6">Blood Pressure / Pulse Rate</h4>
 		<div style="position: absolute;right: 25px;top:20px">
 			<select ng-model="chart.year">
 				<option value="{{year.year}}" selected ng-repeat="year in yearList">{{year.year}}</option>
@@ -200,9 +199,11 @@
 
 
 <!-- blood Sugar Chart Template -->
+<div class="card-center-1">
+	<h4 class="h6">Blood Sugar</h4>
+</div>
 <div class="card p-2 card-center-1" style="position: relative;">
 	<header>
-		<h4 class="h6">Blood Sugar</h4>
 		<div style="position: absolute;right: 25px;top:20px">
 			<select ng-model="chart.year">
 				<option value="{{year.year}}" selected ng-repeat="year in yearList">{{year.year}}</option>
@@ -361,9 +362,11 @@
 <div style="height: 50px"></div>
 
 <!-- Temperature Chart Template -->
+<div class="card-center-1">
+	<h4 class="h6">Temperature</h4>
+</div>
 <div class="card p-2 card-center-1" style="position: relative;">
 	<header>
-		<h4 class="h6">Temperature</h4>
 		<div style="position: absolute;right: 25px;top:20px">
 			<select ng-model="chart.year">
 				<option value="{{year.year}}" selected ng-repeat="year in yearList">{{year.year}}</option>

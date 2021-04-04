@@ -3407,8 +3407,9 @@ app.controller("docNotificationController",["$scope","$location","$resource","$i
         var labNote = filter.laboratory || [];
         var radioNote = filter.radiology || [];
         var acceptance = filter.acceptance || [];
+        var abnormality = filter.abnormality || [];
 
-        $rootScope.commonNotifications = labNote.concat(radioNote.concat(acceptance))
+        $rootScope.commonNotifications = labNote.concat(radioNote.concat(acceptance.concat(abnormality)))
 
         //$rootScope.docNotification = filter.acceptance; //remember to concat for video and audio requests
         $rootScope.videoRequest = filter['video'] || [];
@@ -17111,7 +17112,6 @@ app.controller("e-caseChartCtrl",["$scope","$rootScope","chartReadingService","$
         age: patient.age,
         gender: patient.gender,
         name: patient.firstname + " " + patient.lastname,
-        phone: patient.phone
       }
 
       $scope.patient = $rootScope.holdPatientForChart;

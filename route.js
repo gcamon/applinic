@@ -13758,11 +13758,11 @@ router.put("/user/charts",function(req,res){
       switch(req.body.name) {
         case "Blood Pressure":
           result = abnormalBP(p);
-          sendEmail(result,p);
+          sendEmail(result,p,'Blood Pressure');
         break;
         case "Blood Sugar":
           result = abnormalBS(p);
-          sendEmail(result,p);
+          sendEmail(result,p,'Blood Suger');
         break;
       }
     }
@@ -14096,7 +14096,7 @@ router.put("/user/charts",function(req,res){
       }
     }
 
-    function sendEmail(data,patient) {
+    function sendEmail(data,patient,tp) {
       var types = "";
       var age;
       var result = ""
@@ -14161,7 +14161,9 @@ router.put("/user/charts",function(req,res){
 
       patient.accepted_doctors.forEach(function(item){
         if(item.doctor_email){
-          req.body.emailList.push(item.doctor_email);
+          if(req.body.emailList.length <= 10){
+            req.body.emailList.push(item.doctor_email);
+          }
         } else {
           model.user.findOne({user_id: item.doctor_id},{email:1})
           .exec(function(err,doc){
@@ -14173,7 +14175,35 @@ router.put("/user/charts",function(req,res){
             })
           })
         }
+
+        model.user.findOne({user_id: item.doctor_id},{doctor_notification:1})
+        .exec(function(err,doctor){
+          if(err) throw err;
+          if(doctor) {        
+            doctor.doctor_notification.unshift({
+              sender_id: patient.user_id,
+              message_id: parseInt(randos.genRef(6)),
+              type: "abnormality",
+              date: + new Date(),
+              message: "Abnormal " + tp + " readings detected for your patient",
+              sender_firstname: patient.firstname,
+              sender_lastname: patient.lastname,
+              sender_age: "",
+              sender_gender: "",
+              sender_location: "",
+              sender_profile_pic_url: "",
+              center_id: req.user.user_id
+            });
+
+            doctor.save(function(err,info){})
+          }
+        })
+
       });
+
+
+
+
 
       function forwardMail(firstname,lastname) {
         
