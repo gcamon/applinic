@@ -94,16 +94,16 @@ var myModel = function () {
 		user_id: String,
 		date: Date,
 		consultation_fee: Number,
-    service_access: String,
-    profile_pic_url: String,
-    profile_url: String,
+	service_access: String,
+	profile_pic_url: String,
+	profile_url: String,
 		message: String,
 		category: String,//note categories are admin, decline, redirect,need_doctor.
 		reason: String,
 		complaint_id: String,
 		original_complaint: String,
-    original_complaint_date : String,
-    response: String,
+	original_complaint_date : String,
+	response: String,
 		redirect: {
 			title: String,
 			firstname: String,
@@ -276,19 +276,19 @@ var myModel = function () {
 		patient_body_weight: String,
 		presence: Boolean,
 		initial_complaint: {
-    	complaint: String,
-    	complaint_date: String,
-    	date_received: Date,
-    	files: Array
-    },
-    deleted: Boolean,
-    activity: {
-    	isNew: Boolean,
-    	labCount: Number,
-    	radioCount: Number
-    },
-    isBlocked: Boolean,
-    fee_history: Array
+		complaint: String,
+		complaint_date: String,
+		date_received: Date,
+		files: Array
+	},
+	deleted: Boolean,
+	activity: {
+		isNew: Boolean,
+		labCount: Number,
+		radioCount: Number
+	},
+	isBlocked: Boolean,
+	fee_history: Array
 	});
 	//this holds records for lab,prescription and scan for the patient
 	var diagnosisSchema = Schema({
@@ -354,10 +354,10 @@ var myModel = function () {
 		patient_id: String,
 		test_id: Number,
 		patient_address: String,
-    indication: String,
-    clinical_summary: String,
-    lmp: String,
-    parity: String,
+		indication: String,
+		clinical_summary: String,
+		lmp: String,
+		parity: String,
 		attended: Boolean,
 		title: String,
 		doctor_firstname: String,
@@ -372,15 +372,23 @@ var myModel = function () {
 			amount: String,
 			date: String
 		},
-		lab_pdf_report: Array
+		lab_pdf_report: Array,
+		ray_type: String,
+		findings: String,
+		procedure: String,
+		conclusion: String,
+		advice: String,
+		drugs: String,
+		report_date: Date,
+		sample_files: Array
 	});
 
 	var drug_refSchema = Schema({
 		dosage: String,
-	    drugName: String,
-	    frequency: String,
-	    duration: String,
-	    drugId: Number
+		drugName: String,
+		frequency: String,
+		duration: String,
+		drugId: Number
 	});
 
 	var refSchema = Schema({
@@ -396,13 +404,15 @@ var myModel = function () {
 		isCourierType: Boolean,
 		courierId: String,
 		date: Date,
+		isReported: Boolean,
 		type_of_test: String,		
 		laboratory: center_refSchema,
 		radiology: center_refSchema,
 		pharmacy: prescriptionSchema,
 		center_id: String,
 		deleted: Boolean,
-		redirect_to: Array 
+		redirect_to: Array,
+		ref_uid: String,
 	});
 
 	var appointment_schema = Schema({
@@ -498,7 +508,7 @@ var myModel = function () {
 		files: Array,
 		treatment_plan: String,
 		sub_session: [subSession],
-    study_id: String
+	study_id: String
 	});
 
 	var sessionSchema = Schema({
@@ -525,15 +535,15 @@ var myModel = function () {
 		sender_id: String,
 		conclusion: String,
 		type_of_test: String,
-	    center_name: String,
-	    center_address: String,
-	    cente_city: String,
-	    center_country: String,
-	    center_phone: String,
-	    test_result: Array,
-	    files: Array,
-	    date_sent: String,
-	    ref_id: String
+		center_name: String,
+		center_address: String,
+		cente_city: String,
+		center_country: String,
+		center_phone: String,
+		test_result: Array,
+		files: Array,
+		date_sent: String,
+		ref_id: String
 	});
 
 	
@@ -590,17 +600,7 @@ var myModel = function () {
 		bs_chart: Array
 	})
 
-	var patient_ecg = new Schema({
-	   report_pdf: String
-	})
-
-	var patient_ultra_sound = new Schema({
-	   report_pdf: String
-	})
-
-	var patient_procedure = new Schema({
-		report_pdf: String
-	})
+	
 
 
 //end for session
@@ -671,10 +671,10 @@ var myModel = function () {
 			prescription: [prescriptionSchema],
 			laboratory_test: [patient_TestSchema],
 			radiology_test: [patient_TestSchema],
-			ecg_result: [patient_ecg],
-			ultra_sound_result: [patient_ultra_sound],
-			endoscopy_result: [patient_procedure],
-			other_procedures: [patient_procedure]
+			ecg_test: [patient_TestSchema],
+			ultrasound_test: [patient_TestSchema],
+			endoscopy_test: [patient_TestSchema],
+			other_procedures_test: [patient_TestSchema]
 		},
 		name: String,
 		diagnostic_center_notification:[ref_notificationSchema],
@@ -715,6 +715,7 @@ var myModel = function () {
 		chart_access: Array,
 		laboratory_new_indicator: Array,
 		radiology_new_indicator: Array,
+		ultrasound_new_indicator: Array,
 		pharmacy_new_indicator: Array,
 		appointment_new_indicator: Array,
 		chart_new_indicator: Boolean,
@@ -908,30 +909,30 @@ var myModel = function () {
 		center_charge: String,
 		agentId: String,
 		referral_pays: String,
-        referral_number: String
+		referral_number: String
 	},{
 		collections: "courierinfos"
 	});
 
 	var geonameSchema = Schema({
 	 continent: String,
-     capital: String,
-     languages: String,
-     geonameId: Number,
-     south: Number,
-     isoAlpha3: String,
-     north: Number,
-     fipsCode: String,
-     population: String,
-     east: Number,
-     isoNumeric: String,
-     areaInSqKm: String,
-     countryCode: String,
-     west: Number,
-     countryName: String,
-     continentName: String,
-     currencyCode: String,
-     cities: Array
+	 capital: String,
+	 languages: String,
+	 geonameId: Number,
+	 south: Number,
+	 isoAlpha3: String,
+	 north: Number,
+	 fipsCode: String,
+	 population: String,
+	 east: Number,
+	 isoNumeric: String,
+	 areaInSqKm: String,
+	 countryCode: String,
+	 west: Number,
+	 countryName: String,
+	 continentName: String,
+	 currencyCode: String,
+	 cities: Array
 	},{
 		collections: "geonamesinfo"
 	});
@@ -1173,14 +1174,14 @@ var myModel = function () {
 		lab_data: Array,
 		ref_id: String,
 		center_pic: String,
-    center_name: String,
-    center_address: String,
-    center_email: String,
-    center_phone: String,
-    center_city: String,
-    center_country: String,
-    id_by: String,
-    report_date: Date
+	center_name: String,
+	center_address: String,
+	center_email: String,
+	center_phone: String,
+	center_city: String,
+	center_country: String,
+	id_by: String,
+	report_date: Date
 	});
 
 
@@ -1205,14 +1206,14 @@ var myModel = function () {
 
 	var kitsSchema = Schema({
 		package: Number,
-    content: Array,
-    type: String,
-    disease: String,
-    name: String,
-    age: String,
-    created: Date,
-    note: String
-    //doctorId: String 
+	content: Array,
+	type: String,
+	disease: String,
+	name: String,
+	age: String,
+	created: Date,
+	note: String
+	//doctorId: String 
 	})
 
 	var planSchema = Schema({

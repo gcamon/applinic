@@ -6149,6 +6149,475 @@ var basicRoute = function (model,sms,io,streams,client,transporter,opentok) {
     });
 
 
+    router.post("/user/doctor/ultrasound/send-test",function(req,res){  
+        if(req.user) { 
+          var random = randos.genRef(7);
+          var testId = randos.genRef(8); 
+          var accNo = randos.genRef(8);
+          var date = + new Date();
+
+
+        if(req.body.isOutPatientReq){
+          req.body.treatment = {};
+          //req.body.date = new Date();
+          req.body.user_id = req.body.centerDetails.user_id;
+          req.body.patient_id = req.body.patientDetails.user_id;
+          req.body.patient_firstname = req.body.patientDetails.firstname; 
+          req.body.patient_lastname = req.body.patientDetails.lastname;
+          req.body.patient_title = req.body.patientDetails.title;
+          req.body.phone = req.body.patientDetails.phone;
+          req.body.patient_address = req.body.patientDetails.address;
+          req.body.patient_city = req.body.patientDetails.city
+          req.body.patient_profilePic = req.body.patientDetails.profile_pic_url
+          req.body.radiology = {
+            patient_age: req.body.patientDetails.age,
+            patient_gender: req.body.patientDetails.gender,
+            profile_pic_url: req.body.patientDetails.profile_pic_url,
+            patient_phone: req.body.patientDetails.phone
+          }
+
+          var elemPos = req.user.doctor_patients_list.map(function(x){return x.patient_id}).indexOf(req.body.patient_id);
+
+          if(elemPos == -1){
+            req.user.doctor_patients_list.unshift({
+              date: date,
+              patient_lastname: req.body.patient_lastname,
+              patient_firstname: req.body.patient_firstname,
+              patient_id: req.body.patient_id,
+              patient_profile_pic_url: req.body.patient_profilePic,
+              patient_address: req.body.patient_address || "N/A",
+              patient_city: req.body.patient_city,
+              patient_country: req.body.patientDetails.country || 'Nigeria',
+              patient_gender: req.body.patientDetails.gender,
+              patient_age: req.body.patientDetails.age,
+              patient_phone: req.body.patientDetails.phone
+            })
+
+            req.user.save(function(err,info){
+              if(err) throw err;
+              //console.log("patient save in doctors list")
+            })
+          }
+        }
+
+        if(req.body.isRequestToDoctor) {
+           model.user.findOne({user_id: req.body.user_id},{
+          doctor_notification:1,address:1,name:1,city:1,country:1,phone:1,user_id:1,presence:1,email:1,profile_pic_url:1})        
+          .exec(function(err,result){
+          if(err) throw err;        
+
+            // Always check to see if the request came from a session. All investigations requested from a doc must be in session
+            model.session.find({doctor_id: req.user.user_id,patient_id: req.body.patient_id})
+            .exec(function(err,sessionData){
+              if(err) throw err;
+
+              if(!req.body.session_id && sessionData.length > 0) {
+                req.body.session_id = sessionData[sessionData.length - 1].session_id;
+              } else {
+                req.body.session_id = (req.body.session_id) ? req.body.session_id : uuid.v1();
+              }
+
+              if(req.body._id){
+                delete req.body._id
+              }
+
+              req.body.center_name = result.name;
+              req.body.center_address = result.address;
+              req.body.center_city = result.city;
+              req.body.center_phone = result.phone;
+              req.body.center_email = result.email;
+              req.body.center_profile_pic_url = result.profile_pic_url;
+
+              //center address and name obj to be passed to the patient.
+              var centerObj = {
+                name: result.name,
+                address: result.address,
+                city: result.city,
+                country: result.country,
+                phone: result.phone,
+                id: result.user_id
+              }
+              
+              var refObj = {
+                ref_id: random,
+                referral_firstname: req.user.firstname,
+                referral_lastname: req.user.lastname,
+                referral_title: req.user.title,
+                referral_email: req.user.email,
+                referral_phone: req.user.phone,
+                referral_id: req.user.user_id, 
+                acc_no: accNo,   
+                date: req.body.date || new Date(),  
+                center_id: result.user_id,      
+                radiology: {
+                  history: req.body.history,
+                  patient_age: req.body.radiology.patient_age,              
+                  patient_gender: req.body.radiology.patient_gender,
+                  test_to_run : req.body.lab_test_list,
+                  patient_firstname: req.body.patient_firstname,
+                  patient_lastname: req.body.patient_lastname,
+                  patient_profile_pic_url: req.body.patient_profilePic || req.body.profile_pic_url,
+                  patient_title: req.body.patient_title,
+                  patient_phone: (req.body.patientDetails) ? req.body.patientDetails.phone : req.body.phone,
+                  session_id: req.body.session_id,
+                  patient_id: req.body.patient_id,
+                  test_id: testId,
+                  patient_address: req.body.patient_address,
+                  indication: req.body.treatment.indication || req.body.indication,
+                  clinical_summary: req.body.treatment.clinical_summary || req.body.clinical_summary,
+                  lmp: req.body.treatment.lmb || req.body.lmb,
+                  parity: req.body.treatment.parity || req.body.parity,
+                  attended: false,
+                  acc_no: accNo,
+                  title: req.user.title,
+                  doctor_firstname: req.user.firstname,
+                  doctor_lastname: req.user.lastname,
+                  doctor_id: req.user.user_id,
+                  doctor_profile_url: req.user.profile_url,
+                  ray_type: req.body.ray_type
+                }                         
+              }
+
+              //this is notification for the center.
+              var refNotification = {
+                sender_id: random,
+                message_id: parseInt(testId),
+                type: "investigation",
+                date: + new Date(),
+                message: "Ultrasound investigation request.",
+                sender_firstname: req.body.patient_firstname + " " + req.body.patient_lastname,
+                sender_lastname: req.body.patient_lastname,
+                sender_age: "",
+                sender_gender: "",
+                sender_location: "",
+                sender_profile_pic_url: "",
+                center_id: req.user.user_id
+              }
+
+              io.sockets.to(result.user_id).emit("get notification",refNotification);
+             
+              //result.referral.push(refObj);
+              var referral = new model.referral(refObj);
+              referral.save(function(err,info){
+                if(err) throw err;
+                //console.log("referral saved")
+              });
+
+              result.doctor_notification.unshift(refNotification);
+
+              result.save(function(err,info){
+                if(err) throw err;            
+              });
+              tellPatient(centerObj);
+            })
+          });
+
+        } else {
+           model.user.findOne({user_id: req.body.user_id},{
+          diagnostic_center_notification:1,referral:1,address:1,name:1,city:1,country:1,phone:1,user_id:1,presence:1,email:1,profile_pic_url:1})        
+          .exec(function(err,result){
+          if(err) throw err;        
+
+            // Always check to see if the request came from a session. All investigations requested from a doc must be in session
+            model.session.find({doctor_id: req.user.user_id,patient_id: req.body.patient_id})
+            .exec(function(err,sessionData){
+              if(err) throw err;
+
+              if(!req.body.session_id && sessionData.length > 0) {
+                req.body.session_id = sessionData[sessionData.length - 1].session_id;
+              } else {
+                req.body.session_id = (req.body.session_id) ? req.body.session_id : uuid.v1();
+              }
+
+              if(req.body._id){
+                delete req.body._id
+              }
+
+              req.body.center_name = result.name;
+              req.body.center_address = result.address;
+              req.body.center_city = result.city;
+              req.body.center_phone = result.phone;
+              req.body.center_email = result.email;
+              req.body.center_profile_pic_url = result.profile_pic_url;
+
+              //center address and name obj to be passed to the patient.
+              var centerObj = {
+                name: result.name,
+                address: result.address,
+                city: result.city,
+                country: result.country,
+                phone: result.phone,
+                id: result.user_id
+              }
+              
+              var refObj = {
+                ref_id: random,
+                referral_firstname: req.user.firstname,
+                referral_lastname: req.user.lastname,
+                referral_title: req.user.title,
+                referral_email: req.user.email,
+                referral_phone: req.user.phone,
+                referral_id: req.user.user_id, 
+                acc_no: accNo,   
+                date: req.body.date || new Date(),  
+                center_id: result.user_id,      
+                radiology: {
+                  history: req.body.history,
+                  patient_age: req.body.radiology.patient_age,              
+                  patient_gender: req.body.radiology.patient_gender,
+                  test_to_run : req.body.lab_test_list,
+                  patient_firstname: req.body.patient_firstname,
+                  patient_lastname: req.body.patient_lastname,
+                  patient_profile_pic_url: req.body.patient_profilePic || req.body.profile_pic_url,
+                  patient_title: req.body.patient_title,
+                  patient_phone: req.body.phone,
+                  session_id: req.body.session_id,
+                  patient_id: req.body.patient_id,
+                  test_id: testId,
+                  patient_address: req.body.patient_address,
+                  indication: req.body.treatment.indication || req.body.indication,
+                  clinical_summary: req.body.treatment.clinical_summary || req.body.clinical_summary,
+                  lmp: req.body.treatment.lmb || req.body.lmb,
+                  parity: req.body.treatment.parity || req.body.parity,
+                  attended: false,
+                  acc_no: accNo,
+                  title: req.user.title,
+                  doctor_firstname: req.user.firstname,
+                  doctor_lastname: req.user.lastname,
+                  doctor_id: req.user.user_id,
+                  doctor_profile_url: req.user.profile_url,
+                  ray_type: req.body.ray_type
+                }                         
+              }
+
+              //this is notification for the center.
+              var refNotification = {
+                sender_firstname: req.user.firstname,
+                sender_lastname: req.user.lastname,
+                sender_title : req.user.title,
+                sent_date: req.body.date,
+                ref_id: random,
+                note_id: random,
+                sender_profile_pic_url: req.user.profile_pic_url,
+                message: "Please run the test for my patient",
+                viewed: false
+              }
+
+            
+              io.sockets.to(result.user_id).emit("center notification",refNotification);
+             
+              //result.referral.push(refObj);
+              var referral = new model.referral(refObj);
+              referral.save(function(err,info){
+                if(err) throw err;
+                //console.log("referral saved")
+              });
+
+              result.diagnostic_center_notification.unshift(refNotification);
+
+              result.save(function(err,info){
+                if(err) throw err;            
+              });
+              tellPatient(centerObj);
+            })
+        });
+        }
+
+       
+
+        var tellPatient = function(centerInfo){
+          //remember sms will be sent to the patient
+          model.user.findOne({user_id: req.body.patient_id},
+            {medical_records: 1,user_id:1,patient_notification:1,presence:1,phone:1,
+              accepted_doctors:1,ultrasound_new_indicator:1})
+          .exec(function(err,record){            
+            if(err) throw err;     
+            var recordObj = {
+              test_to_run: req.body.lab_test_list,
+              center_address: centerInfo.address,
+              center_city: centerInfo.city,
+              center_country: centerInfo.country,
+              center_name: centerInfo.name,
+              center_phone: centerInfo.phone,
+              center_id: centerInfo.id,
+              patient_id: record.user_id,
+              ref_id: random,
+              referral_firstname: req.user.firstname,
+              referral_lastname: req.user.lastname,
+              referral_title: req.user.title,
+              referral_id: req.user.user_id,
+              acc_no: accNo,
+              sent_date: req.body.date,
+              session_id: req.body.session_id,
+              test_id: testId,
+              report: "Pending",
+              conclusion: "Pending"
+            }
+
+            var noteObj = {
+              type:"radiology",
+              date: req.body.date,
+              note_id: testId,
+              ref_id: random,
+              session_id:req.body.session_id,
+              message: "You have unread ultrasound test to run"
+            }
+
+            var elm = record.ultrasound_new_indicator.map(function(x){return x}).indexOf(req.user.user_id);
+            if(elm == -1){
+              record.ultrasound_new_indicator.push(req.user.user_id)
+            }
+
+            io.sockets.to(record.user_id).emit("notification",{status:true,message: "You have new unread test to run."});
+          
+            var msgBody = req.user.name + " requests you run an Ultrasound Test at " + centerInfo.name + "\n" + centerInfo.address + " " + centerInfo.city + " " +
+            centerInfo.country  + "\nRef No: " + random + "\nFor more details visit https://applinic.com/user/patient"
+            var phoneNunber =  record.phone;
+            sms.messages.create(
+              {
+                to: phoneNunber,
+                from: '+16467985692',
+                body: msgBody,
+              }
+            ) 
+        
+            record.patient_notification.unshift(noteObj);
+            record.medical_records.ultrasound_test.unshift(recordObj);
+
+            if(req.user.type === "Doctor" && req.body.isOutPatientReq){
+              var docPos = record.accepted_doctors.map(function(x){return x.doctor_id}).indexOf(req.user.user_id);
+              if(docPos === -1){
+                record.accepted_doctors.unshift({
+                  doctor_id: req.user.user_id,
+                  doctor_title: req.user.title,
+                  date_of_acceptance: date,
+                  doctor_firstname: req.user.firstname,
+                  doctor_lastname: req.user.lastname,
+                  doctor_profile_pic_url: req.user.profile_pic_url,                  
+                  doctor_specialty: req.user.specialty,
+                  doctor_email: req.user.email,
+                  work_place: req.user.work_place
+                })
+              }
+            }
+            record.save(function(err,info){
+              if(err) {
+                throw err;
+                res.end('500: Internal server error')
+              }
+              updateSession(req.body.session_id);
+              res.json({success:true,ref_no:random});
+            });
+
+          });
+        }
+
+        var updateSession = function(session_id) {
+          var testResult = {
+            test_to_run: req.body.lab_test_list,
+            receive_date: "Pending",
+            sent_date: req.body.date,
+            report: "Pending",
+            test_id: testId,
+            conclusion: "Pending",
+            sub_session_id: req.body.sub_session_id,
+            indication: req.body.indication,
+            test_ran_by: req.body.center_name,
+            center_address: req.body.center_address,
+            center_city: req.body.center_city,
+            center_phone: req.body.center_phone,
+            center_email: req.body.center_email,
+            center_profile_pic_url: req.body.center_profile_pic_url,
+          }       
+          
+            //var objFound = (sessionData[0]) ? sessionData[0] : null;
+          model.session.findOne({session_id: session_id})
+          .exec(function(err, objFound){
+            if(err) throw err;
+
+            if(req.body._id)
+              delete req.body._id;
+          
+            if(objFound) {
+
+              if(req.body.subSession) {
+                var subList = objFound.diagnosis.sub_session;
+                var subPos = subList.map(function(x){return x.sub_session_id}).indexOf(req.body.sub_session_id);
+                if(subPos === -1) {
+                  subList.push({
+                    date: date,
+                    note: "",
+                    sub_session_id: req.body.sub_session_id
+                  })
+                }
+                                
+              }        
+               
+              objFound.last_modified = + new Date();
+
+              objFound.diagnosis.radiology_test_results.unshift(testResult); 
+
+              objFound.save(function(err,info){
+                if(err) throw err;
+                //console.log("OK! updated")
+              })
+              
+
+          } else {             
+
+              var complainObj = {
+                presenting_complain: req.body.treatment.complain,
+                history_of_presenting_complain: req.body.treatment.historyOfComplain,
+                past_medical_history: req.body.treatment.pastMedicalHistory,
+                social_history: req.body.treatment.socialHistory,
+                family_history: req.body.treatment.familyHistory,
+                drug_history: req.body.treatment.drugHistory,
+                summary: req.body.treatment.summary,
+                notes: req.body.treatment.notes,
+                provisional_diagnosis: req.body.treatment.provisionalDiagnosis,
+              }
+
+              req.body.profilePic = req.body.patient_profilePic;
+              req.body.last_modified = req.body.date;
+              req.body.prescription_id = req.body.prescriptionId;
+              req.body.doctor_id = req.user.user_id;
+
+
+              //session introduced on 12/12/2019 instated of storiing sessions in "doctor_patients_session array"
+          
+              var record = new model.session(req.body)
+              record.diagnosis = complainObj;
+
+
+              if(req.body.subSession) {
+                var subList = record.diagnosis.sub_session;
+                var subPos = subList.map(function(x){return x.sub_session_id}).indexOf(req.body.sub_session_id);
+                if(subPos === -1) {
+                  subList.push({
+                    date: date,
+                    note: "",
+                    sub_session_id: req.body.sub_session_id
+                  })
+                }
+              }               
+              record.diagnosis.radiology_test_results.unshift(testResult);
+
+              record.save(function(err,info){
+                if(err) throw err;
+                //console.log("OK! created")
+              })
+
+          }
+
+         });
+        
+        }
+      } else {
+        res.end("Unauthorized access!")
+      }
+    });
+
+
   
 
 
@@ -10252,9 +10721,20 @@ router.get('/user/getAllPatients',function(req,res){
 
 router.get('/user/getAllDoctor',function(req,res){
   if(req.user){
-    model.user.find({type:"Doctor"},function(err,data){
-      res.send({count:data.length,data: data});
-    })
+    if(req.query.city){
+      var str = (req.query.city) ? (new RegExp(req.query.city.replace(/\s+/g,"\\s+"), "gi")) : ""; 
+      var criteria = (req.query.city) ? {city: { $regex: str, $options: 'i' },type:"Doctor"} : {type:"Doctor"};
+      model.user.find(criteria,{name:1,address:1,user_id:1,city:1,country:1,phone:1,_id:1,email:1,verified:1},
+      function(err,data){
+        if(err) throw err;
+        res.send(data);
+      }).limit(500)
+    } else {
+      model.user.find({type:"Doctor"},function(err,data){
+        res.send({count:data.length,data: data});
+      })
+    }
+   
   } else {
     res.redirect("/login")
   }
@@ -10286,7 +10766,7 @@ router.get('/user/getAllLaboratory',function(req,res){
       } else {
         res.send(data);
       }
-    }).limit(5000)
+    }).limit(500)
   } else {
     res.redirect("/login")
   }
@@ -11346,14 +11826,29 @@ router.post("/user/invitation",function(req,res){
     .exec(function(err,user){
       if(err) throw err;
       if(!user) {
-        if(emailReg.test(req.body.recepient)){
-          sendEmail()
-        } else if(intRegex.test(req.body.recepient)){
-          sendSMS()
-        } else {
-          res.json({status:false,message:"Invalid recepient email address or phone number"})
-          return;
-        }
+        model.invite.findOne({referral_id: req.user.user_id})
+        .exec(function(err,inv){
+          if(!inv){
+            var inv = new model.invite({
+              referral_id: req.user.user_id,
+              id: uid,
+              type: req.body.type,
+              date: + new Date()
+            });
+            inv.save(function(){});
+          }
+         
+          if(emailReg.test(req.body.recepient)){
+            sendEmail(inv)
+          } else if(intRegex.test(req.body.recepient)){
+            sendSMS(inv)
+          } else {
+            res.json({status:false,message:"Invalid recipient email address or phone number"})
+            return;
+          }
+
+        })
+       
       } else {
         var names = user.title + " " + user.lastname + " " + user.firstname;
         res.json({
@@ -11370,17 +11865,15 @@ router.post("/user/invitation",function(req,res){
       }
     })
    
-
-
-    function sendEmail() {
+    function sendEmail(inv) {
       switch(req.body.type) {
         case 'Patient':
           msgBody = '<table><tr><th><h3  style="background-color:#85CE36; color: #fff; padding: 30px"><img src="https://applinic.com/assets/images/applinic1.png" style="width: 250px; height: auto"/><br/><span>Healthcare... anywhere, anytime.</span></h3></th></tr><tr><td style="font-family: Arial, Helvetica, sans-serif; font-size: 16px;">'  
           + "<br><br> <b>Invitation to join Applinic</b><br><br><b>" + names + ",</b> " + "a " + req.user.type + " " + work
           + "<br> invites you to join Applinic for your medical appointments, consultations, investigations and prescriptions.<br><br>" 
           + "This will enable you save your medical records for future use and also get discounts on medical services.<br><br>" 
-          + "Click the button below to register now for free.<br><br> <div style='text-align:center;padding-top:15px'> <a href='https://applinic.com/signup?ref=" + req.user.user_id + "&id=" + uid
-          + "&type=Patient'style='padding: 20px;background-color:green;color:#fff;border-radius:4px'>Join now!</a></div>" 
+          + "Click the button below to register now for free.<br><br> <div style='text-align:center;padding-top:15px'> <a href='https://applinic.com/signup?ref=" +  inv.referral_id + "&id=" + inv.id + "&type=" + inv.type
+          + "'style='padding: 20px;background-color:green;color:#fff;border-radius:4px'>Join now!</a></div>" 
           + "<br><br> <b>Applinic Team</b></td></tr></table>"
         break;
         case 'Doctor':
@@ -11388,7 +11881,7 @@ router.post("/user/invitation",function(req,res){
           + "<br><br> <b>Invitation to join Applinic</b><br><br><b>" + names + ",</b> " + "a " + req.user.type + " " + work
           + "<br> invites you to join Applinic for your medical appointments, consultations, investigations and prescriptions.<br><br>" 
           + "This will enable you save, access and manage patient medical record online and also communicate with your patient anywhere, anytime.<br><br>" 
-          + "Click the button below to register now for free.<br><br> <div style='text-align:center;padding-top:15px'> <a href='https://applinic.com/signup?ref=" + req.user.user_id + "&id=" + uid
+          + "Click the button below to register now for free.<br><br> <div style='text-align:center;padding-top:15px'> <a href='https://applinic.com/signup?ref=" +  inv.referral_id + "&id=" + inv.id 
           + "&type=Doctor'style='padding: 20px;background-color:green;color:#fff;border-radius:4px'>Join now!</a></div>" 
           + "<br><br> <b>Applinic Team</b></td></tr></table>"
         break;
@@ -11397,7 +11890,7 @@ router.post("/user/invitation",function(req,res){
           + "<br><br> <b>Invitation to join Applinic</b><br><br><b>" + names + ",</b> " + "a " + req.user.type + " " + work
           + "<br> invites you to join Applinic so that patients' prescriptions can be referred to your center.<br><br>" 
           + "This will enable you grow your business and receive prescription order online.<br><br>" 
-          + "Click the button below to register now for free.<br><br> <div style='text-align:center;padding-top:15px'> <a href='https://applinic.com/signup?ref=" + req.user.user_id + "&id=" + uid
+          + "Click the button below to register now for free.<br><br> <div style='text-align:center;padding-top:15px'> <a href='https://applinic.com/signup?ref=" + inv.referral_id + "&id=" + inv.id 
           + "&type=Pharmacy'style='padding: 20px;background-color:green;color:#fff;border-radius:4px'>Join now!</a></div>" 
           + "<br><br> <b>Applinic Team</b></td></tr></table>"
         break;
@@ -11428,20 +11921,21 @@ router.post("/user/invitation",function(req,res){
         html: msgBody
       };
 
+
       transporter.sendMail(mailOptions, function(error, info){
         if (error) {
-          console.log(error);
           res.json({status:false,message:"Error occured while sending email. Please check the email is correct and try again."})
 
         } else {
           res.json({status:true,message: "invitation sent!"});
-          if(req.body.type == "Patient" || req.body.type == "Doctor")
-            createInvite()
+          if(req.body.type == "Patient"){
+            //createInvite()
+          }
         }
       });
     }
 
-    function sendSMS() {
+    function sendSMS(inv) {
       if(req.user.type === "Doctor"){
         //var title = (req.user.title == 'SC') ? "" : ", a physician at Applinic Telehealth"
         //var msgBody = names + title + " is pleased to inform you he now consults patients"
@@ -11449,7 +11943,7 @@ router.post("/user/invitation",function(req,res){
         //+ " Click the link below to register now for free!\n" 
         //+ "https://applinic.com/signup?ref=" + req.user.user_id + "&id=" + uid + "&type=" + req.body.type;
         var msgBody = req.user.name + " now consults online on Applinic. Click the link to register on the platform for free!"
-        + "\nhttps://applinic.com/signup?ref=" + req.user.user_id + "&id=" + uid + "&type=" + req.body.type;
+        + "\nhttps://applinic.com/signup?ref=" + inv.referral_id + "&id=" + inv.id + "&type=" + inv.type;
       } else {
         //var msgBody = names + ", a " + req.user.type 
         //+ "\nsent an invitation to join Applinic. click the link below to register now for free!\n" 
@@ -11468,14 +11962,14 @@ router.post("/user/invitation",function(req,res){
         },
         function(err,response){
           if(err) {
-            console.log(err)
             res.json({status: false,message:"Error occured while sending invitation. Please check the phone number and try again."})
           }
 
           if(response){
             res.json({status:true,message: "invitation sent!"});
-            if(req.body.type == "Patient" || req.body.type == "Doctor")
-              createInvite()
+            if(req.body.type == "Patient"){
+              //createInvite()
+            }
           }
       }) 
     }
@@ -14176,28 +14670,30 @@ router.put("/user/charts",function(req,res){
           })
         }
 
-        model.user.findOne({user_id: item.doctor_id},{doctor_notification:1})
-        .exec(function(err,doctor){
-          if(err) throw err;
-          if(doctor) {        
-            doctor.doctor_notification.unshift({
-              sender_id: patient.user_id,
-              message_id: parseInt(randos.genRef(6)),
-              type: "abnormality",
-              date: + new Date(),
-              message: "Abnormal " + tp + " readings detected for your patient",
-              sender_firstname: patient.firstname,
-              sender_lastname: patient.lastname,
-              sender_age: "",
-              sender_gender: "",
-              sender_location: "",
-              sender_profile_pic_url: "",
-              center_id: req.user.user_id
-            });
+        if(req.body.emailList.length <= 20){
+          model.user.findOne({user_id: item.doctor_id},{doctor_notification:1})
+          .exec(function(err,doctor){
+            if(err) throw err;
+            if(doctor) {        
+              doctor.doctor_notification.unshift({
+                sender_id: patient.user_id,
+                message_id: parseInt(randos.genRef(6)),
+                type: "abnormality",
+                date: + new Date(),
+                message: "Abnormal " + tp + " readings detected for your patient",
+                sender_firstname: patient.firstname,
+                sender_lastname: patient.lastname,
+                sender_age: "",
+                sender_gender: "",
+                sender_location: "",
+                sender_profile_pic_url: "",
+                center_id: req.user.user_id
+              });
 
-            doctor.save(function(err,info){})
-          }
-        })
+              doctor.save(function(err,info){})
+            }
+          })  
+        }
 
       });
 
@@ -14353,22 +14849,376 @@ router.get('/404.html',function(req,res){
 });
 
 
+router.post("/user/save-report",function(req,res){
+  if(req.user){
+    if(req.files){
+      var path1;
+      var arr = [];
+      req.files.forEach(function(file){
+        path1 = req.headers.origin + "/download/scan-image/" + file.filename;
+        arr.push({
+          originalname: file.originalname,
+          path: path1
+        });
+      });
+      res.json({isImages: true, arr: arr});
+    }
+
+    if(req.body.radiology){
+      model.referral.findById(req.body._id)
+      .exec(function(err,referral){
+        if(err) throw err;
+        if(referral){
+
+          var uid = uuid.v1();
+          referral.radiology.findings = req.body.radiology.findings;
+          referral.radiology.conclusion = req.body.radiology.conclusion;
+          referral.radiology.advice = req.body.radiology.advice;
+          referral.radiology.drugs = req.body.radiology.drugs;
+          referral.radiology.sample_files = req.body.sample_files;
+          referral.radiology.ray_type = req.body.radiology.ray_type;
+          referral.ref_uid = uid;
+          referral.radiology.report_date = new Date();
+
+          referral.save(function(err,info){
+            if(err) throw err;
+            var previewPath = "/study/" + uid + "/" + req.body._id;
+            res.json({status: true,message: "Data received",path: previewPath});
+          })
+
+        } else {
+          res.json({status: false, message: "Record not found."})
+        }
+      })
+    }
+   
+  } else {
+    res.end("Unauthorized access");
+  }
+
+})
+
+router.get("/study/:uid/:refId",function(req,res){
+  model.referral.findById(req.params.refId)
+  .exec(function(err,referral){
+    if (err) throw err;
+    if(referral){
+      if(referral.ref_uid === req.params.uid){        
+        model.user.findOne({user_id: referral.center_id})
+        .exec(function(err,reporter){
+          if(err) throw err;
+          if(reporter){
+             referral.moment = moment;
+             referral.reporter_name = reporter.name;
+             referral.reporter_work_place = (reporter.work_place) ? reporter.work_place : "";
+             referral.reporter_address = reporter.address;
+             referral.reporter_specialty = (reporter.specialty) ? reporter.specialty : "";
+             referral.reporter_email = reporter.email;
+             referral.reporter_phone = reporter.phone;
+             referral.reporter_city = reporter.city;
+             referral.reporter_country = reporter.country;
+             referral.reporter_profilePic = reporter.profile_pic_url;
+             res.render('preview',referral)
+          } else {
+            res.json({status: 500, message: "Some error occured"})
+          }
+        })
+       
+      } else {
+        res.json({status: 301, message: "Permission denied"})
+      }
+      
+    } else {
+      res.redirect('/404.html');
+    }
+
+  });
+
+})
+
+router.post("/study/:uid/:refId",function(req,res){
+  model.referral.findById(req.params.refId)
+  .exec(function(err,referral){
+    if(err) throw err;
+    if(referral){  
+          model.user.findById({user_id: referral.radiology.doctor_id})  
+           .exec(function(err,doctor){
+            var dt = + new Date();
+            var pdfName = dt + "-" + uuid.v1() + '.pdf';
+            var filePath = './pdf/' + pdfName;
+ 
+            pdf.create(req.body.html).toFile(filePath, function(err, file) { //start of toFile
+              if (err) return console.log(err);                        
+
+              var pdfPath = '/report/' + pdfName;
+              var emailPDFPath = "https://applinic.com" + pdfPath;
+              
+              req.body.pdfPathSave = pdfPath;
+             
+              var FILE_CONTENT = fs.readFileSync(file.filename, 'base64');
+              var buf = Buffer.from(FILE_CONTENT, 'base64')
+
+              var emailArr = [req.body.email];
+
+              
+              emailArr.push(doctor.email);
+              
+
+            var mailOptions = {
+              from: 'Applinic Healthcare info@applinic.com',
+              to: emailArr || "support@applinic.com", //req.body.email
+              subject: 'Complete Radiology Report',
+              html: '<table><tr><tr><td style="line-height: 25px">Hi, please find the <b>Radiology Report</b> PDF for the study below:<br><br>'
+              + 'Patient: ' + referral.patient_title + " " + referral.patient_firstname + " " + referral.patient_lastname + "<br>"
+              + 'Investigation: ' + referral.radiology.test_to_run[0].name + "<br>"
+              + 'Ref: ' + referral.ref_id + "<br>"             
+              + "<b>Applinic Team</b><br>"
+              + '</td></tr></table>',
+              attachments:[{
+                filename: pdfName,
+                content: buf,
+                contentType: 'application/pdf'
+              }]
+            };
+
+            transporter.sendMail(mailOptions, function(error, info){
+              if (error) {
+                res.json({status: false, message: "Oops! Error occured while sending email. Please try again."})
+              } else {
+                //console.log('Email sent: ' + info.response);
+                res.json({status: true, message: "Report sent successfully.",report_pdf: pdfPath});
+              }
+            });
+         
+
+            model.session.findOne({session_id: referral.radiology.session_id}).exec(function(err,data){
+              if(err) throw err;
+
+              var objectFound = data; 
+
+              if(objectFound) {
+                var pos = objectFound.diagnosis.radiology_test_results
+                .map(function(x) { return x.test_id;}).indexOf(req.body.radiology.test_id);
+
+                if(objectFound.diagnosis.radiology_test_results[pos]) {
+                  var theObj = objectFound.diagnosis.radiology_test_results[pos];         
+                  theObj.receive_date = + new Date();
+                  theObj.test_to_run = referral.radiology.test_to_run;
+                  theObj.report = referral.radiology.report;
+                  theObj.conclusion = referral.radiology.conclusion;
+                  theObj.sent_date = referral.radiology.date;
+                  theObj.test_ran_by = referral.reporter_name;
+                  theObj.center_address = referral.reporter_address;
+                  theObj.center_city = referral.reporter_city;
+                  theObj.center_country = referral.reporter_country;
+                  theObj.center_phone = referral.reporter_phone;
+                  theObj.indication = referral.radiology.indication;
+                  theObj.summary = referral.radiology.clinical_summary;
+                  //theObj.center_profile_pic_url =  req.user.profile_pic_url;
+                  theObj.study_ref_id = referral._id;
+                  //theObj.patient_id_of_study = study.patient_id || study.study_uid;
+                }             
+                
+                data.save(function(err,info){
+                  if(err) {
+                    res.send({status: "error"});
+                  } else { 
+                    updatePatient()
+                  }
+                }); 
+
+              }              
+
+            });
+            
+        
+
+          function updatePatient() {         
+                //here patient test result is updated.
+                model.user.findOne({user_id: referral.radiology.patient_id},
+                  {medical_records: 1,patient_notification:1,user_id:1,presence:1,phone:1,
+                    email:1,title:1,firstname:1,lastname:1,radiology_new_indicator:1})
+                .exec(function(err,data){
+                  if(err) throw err;
+                  var elementPos = data.medical_records.radiology_test.map(function(x) {return x.ref_id; })
+                  .indexOf(referral.ref_id);
+                  var objectFound = data.medical_records.radiology_test[elementPos]; 
+
+                  if(objectFound) {         
+                    objectFound.report = referral.radiology.report || "";
+                    objectFound.conclusion = referral.radiology.conclusion || "";
+                    objectFound.findings = referral.radiology.findings || "";
+                    objectFound.advise = referral.radiology.advise || "";
+                    objectFound.test_to_run = referral.radiology.test_to_run || objectFound.test_to_run;
+                    objectFound.sent_date = referral.date || objectFound.sent_date;
+                    objectFound.receive_date = referral.radiology.report_date || (+ new Date());
+                    objectFound.payment_acknowledgement = true;
+                    objectFound.files = referral.radiology.sample_files;
+                    objectFound.indication = referral.radiology.indication;
+                    objectFound.summary = referral.radiology.summary;
+                  
+                    objectFound.study_id = referral._id;
+                    //objectFound.patient_id_of_study = study.patient_id;
+                    objectFound.pdf_report.unshift({
+                      pathname: req.body.pdfPathSave,
+                      created: new Date()
+                    })
+
+                    //var random = Math.floor(Math.random() * 999999);
+                    data.patient_notification.unshift({
+                      type:"radiology",
+                      date: referral.radiology.report_date || (+ new Date()),
+                      note_id: referral.radiology.test_id,
+                      ref_id: referral.ref_id,
+                      session_id:referral.radiology.session_id,
+                      message: "Radiology test result received."
+                    });
+
+
+                    var elm = data.radiology_new_indicator.map(function(x){return x}).indexOf(referral.radiology.doctor_id);
+                    if(elm == -1){
+                      data.radiology_new_indicator.push(referral.radiology.doctor_id);
+                    }
+
+                    
+                    io.sockets.to(data.user_id).emit("notification",{status:true});
+                    
+
+                    /*var msgBody = "Radiology test result received! login http://applinic.com/login" 
+                    + "\nRef No: " + referral.ref_id
+                    var phoneNunber =  data.phone;
+                    sms.messages.create(
+                      {
+                        to: phoneNunber,
+                        from: '+16467985692',
+                        body: msgBody,
+                      }
+                    )*/
+                    
+                    var mailOptions = {
+                      from: 'Applinic info@applinic.com',
+                      to: data.email,
+                      subject: 'Radiology Study Report Received',
+                      html: '<table><tr><th><h3 style="background-color:#85CE36; color: #fff; padding: 30px"><img src="https://applinic.com/assets/images/applinic1.png" style="width: 250px; height: auto"/><br/><span>Healthcare... anywhere, anytime.</span></h3></th></tr><tr><td style="font-family: Arial, Helvetica, sans-serif; font-size: 14px;"><b>Hello ' + data.title + " " + data.lastname + ",</b><br>"
+                      + "<br><br>kindly find attached report of your  <br>" 
+                      + "<b>" + referral.radiology.test_to_run[0].name + "</b> below. <br><br>"
+                     // + "Study Name: " + + "<br><br>"
+                     
+                      //+ "Study Link: " + ovyWeb + "<br><br>"
+                      //+ "Study Link Mobile: " + "https://applinic.com/dicom-mobile?id=" + study._id + "<br><br>"
+                     // + "Kindly <a href='https://applinic.com/login'>log in to your account</a> to view the report. Check in notification bell icon for latest updates<br><br>"
+                      //+ "Thank you for using Applinic.<br><br>"
+                      //+ "For ease of usage, you may download the Applinic mobile application on google play store if you use an android phone. " 
+                      //+ "<a href='https://play.google.com/store/apps/details?id=com.farelandsnigeria.applinic'>Click here </a> to do so now.<br><br>"
+                      + "For inquiries please call customer support on +2349080045678 or email us at support@applinic.com<br><br>"
+                      + "Thank you for using Applinic.<br></br><br>"
+                      + "<b>Applinic Team</b></td></tr></table>",
+                      attachments:[{
+                        filename: pdfName,
+                        content: buf,
+                        contentType: 'application/pdf'
+                      }]
+                    };
+
+                    transporter.sendMail(mailOptions, function(error, info){
+                      if (error) {
+                        //console.log(error);
+                      } else {
+                        //console.log('Email sent: ' + info.response);
+                      }
+                    });
+
+                    
+                    data.save(function(err,info){
+                      if(err) res.send({status: "error"});           
+                      //res.send({status: "success"});
+                    });
+
+                  } else {
+                    res.end("error: 404")
+                  }
+                });
+          }           
+
+
+          referral.isReported = true;
+
+          referral.save(function(err,info){})}) //end of toFil
+      })
+
+    } else {
+      res.json({Error: true, message: "Study does not exist"});
+    }
+
+
+  })
+
+})
+
+
+
+
 
 
 /*
- var testPhone = new model.authCheck({
-        user_id: req.user.user_id,
-        pin: genPin
-      });
 
-      var date = new Date()
-      testPhone.expirationDate = new Date(date.getTime() + 300000);
-      testPhone.expirationDate.expires  = 60 * 60;
 
-      testPhone.save(function(err,info){});
-
+{ _id: '6073df95eac60e0344707568',
+  ref_id: '2903350',
+  referral_firstname: 'Madubuike Dialysis Center',
+  referral_title: 'SC',
+  referral_email: 'madubuike@gmail.com',
+  referral_phone: '+234805363644543',
+  referral_id: 'madubuike8655',
+  acc_no: '19596038',
+  date: '2021-04-18T05:39:34.785Z',
+  center_id: 'madubuike8655',
+  radiology:
+   { patient_age: '-3 month',
+     patient_gender: 'Male',
+     patient_firstname: 'Uche',
+     patient_lastname: 'Awana',
+     patient_profile_pic_url: '/download/profile_pic/nopic',
+     patient_title: 'Mrs',
+     patient_phone: '+2348072536623',
+     session_id: 'a6109030-95d8-11eb-a685-c5381deb8884',
+     patient_id: 'ucheawana1520755',
+     test_id: 44603825,
+     patient_address: '12 chezoka',
+     indication: 'sdds',
+     clinical_summary: 'sddsds',
+     parity: 'dsds',
+     attended: false,
+     acc_no: '19596038',
+     title: 'SC',
+     doctor_firstname: 'Madubuike Dialysis Center',
+     doctor_id: 'madubuike8655',
+     ray_type: 'ultrasound',
+     _id: '6073df95eac60e0344707569',
+     lab_pdf_report: [],
+     test_to_run: [ [Object] ],
+     findings: 'sddsdsdssd',
+     conclusion: 'sddssd',
+     advice: 'sddsds',
+     drugs: 'sddsdsdssd' },
+  __v: 0,
+  redirect_to: [],
+  sample_files: [ null ] }
 */
 
+/*
+ var testPhone = new model.authCheck({
+    user_id: req.user.user_id,
+    pin: genPin
+  });
+
+  var date = new Date()
+  testPhone.expirationDate = new Date(date.getTime() + 300000);
+  testPhone.expirationDate.expires  = 60 * 60;
+
+  testPhone.save(function(err,info){});
+
+*/
 
 /*router.get("/lab/report-template/:_id",function(req,res){
   //params and query strings @reporterId @studyId @refId
@@ -14376,29 +15226,6 @@ router.get('/404.html',function(req,res){
   res.render('report-template');
 });*/
 
-
-
 }
 
 module.exports = basicRoute;
-/*console.log(req.body);
-            console.log(req.files);
-            var ima = req.files[0].path;
-            var readable = fs.createReadStream(__dirname + "/" + ima);
-          var writable = fs.createWriteStream(__dirname + '/public/images/dashboard/profile.jpg');
-            readable.on('data',function(chunk){ 
-            writable.write(chunk);
-          });
-
-            ///uploaded no image file just for it to be in the server.
-            
-            var no_profile_pic = new model.files({
-                filename: req.files[0].filename,
-                path: req.files[0].path,
-                file_id: "nopic"
-            });
-
-            no_profile_pic.save(function(err){
-                if(err) throw err;
-                console.log("file saved");
-            })*/

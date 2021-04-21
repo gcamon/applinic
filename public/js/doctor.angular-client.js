@@ -1076,7 +1076,15 @@ app.config(['$paystackProvider','$routeProvider',
     controller: "noteCtrl"
   })
 
+  .when("/ultra-sound-out",{
+    templateUrl: 'ultra-sound-out.html',//"/assets/pages/utilities/video-notification.html",
+    controller: "ultraSoundOutCtrl"
+  })
 
+  .when("/report-ultrasound/:id",{
+    templateUrl: 'report-ultrasound.html',
+    controller: "ultraSoundReportCtrl"
+  })
 
 }]) 
 
@@ -3408,8 +3416,9 @@ app.controller("docNotificationController",["$scope","$location","$resource","$i
         var radioNote = filter.radiology || [];
         var acceptance = filter.acceptance || [];
         var abnormality = filter.abnormality || [];
+        var investigation = filter.investigation || [];
 
-        $rootScope.commonNotifications = labNote.concat(radioNote.concat(acceptance.concat(abnormality)))
+        $rootScope.commonNotifications = labNote.concat(radioNote.concat(acceptance.concat(abnormality.concat(investigation))))
 
         //$rootScope.docNotification = filter.acceptance; //remember to concat for video and audio requests
         $rootScope.videoRequest = filter['video'] || [];
@@ -13072,7 +13081,7 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
   }
   var count = 0;
   function LogoutByTimer(){
-      console.log("logout"); 
+     
       //destroyStorage(); 
       //window.location.href = "/login";
       //alert("You have been idle for a while you will be logged out!")      
@@ -13479,11 +13488,10 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
       $rootScope.copyURL = data.inviteURL;
     })
   } else {
-    $rootScope.copyText = "Consult doctors online, buy drugs with home delivery and do diagnostic tests through Applinic. Free treatment"
-    + " for malaria and typhoid fever available while offer lasts. Click link below to register.  https://applinic.com"
+    $rootScope.copyText = "";
+    /*$rootScope.copyText = "Consult doctors online, buy drugs with home delivery and do diagnostic tests through Applinic. Free treatment"
+    + " for malaria and typhoid fever available while offer lasts. Click link below to register.  https://applinic.com"*/
   }
-
-
 
 }]);
 
@@ -14966,13 +14974,13 @@ app.controller("labOutCtrl",["$scope","$http","labTests","getAllLaboratoryServic
   $scope.treatment.patientType = "mine";
   $scope.treatment.referral_pays = "No";
 
-  $scope.getTest = function (test) {
+  /*$scope.getTest = function (test) {
     test_name = test;
     if($scope.TestList.length === 1)
       $scope.TestList[0].name = test;
     if( $scope.TestList.length > 1)
       $scope.TestList[index].name = test;
-  }
+  }*/
 
   $scope.tests = labTests.listInfo.concat(labTests.listInfo2,labTests.listInfo3,labTests.listInfo4,labTests.listInfo5,labTests.listInfo6,labTests.listInfo7);
 
@@ -14990,22 +14998,16 @@ app.controller("labOutCtrl",["$scope","$http","labTests","getAllLaboratoryServic
     name: ""
   }];
 
-  var count = {};
-  count.num = 1;
-
-  $scope.addTest = function(){
-    var testObj = {};
-    count.num++;
-    testObj.sn = count.num;
-    $scope.TestList.push(testObj);
-    index = $scope.TestList.length - 1;
+  $scope.addTest = function(){  
+    $scope.TestList.push({
+      sn: $scope.TestList.length + 1,
+      name: ""
+    });
+   
   }
 
-  $scope.removeTest = function() {
-    if(count.num > 1){
-      $scope.TestList.pop();
-      count.num--;
-    }
+  $scope.removeTest = function() {   
+    $scope.TestList.pop();    
   }
 
   $scope.isNewLab = true;
@@ -15104,6 +15106,12 @@ app.controller("labOutCtrl",["$scope","$http","labTests","getAllLaboratoryServic
 
 
   $scope.sendTest = function(center){
+    for(var i = 0; i < $scope.TestList.length; i++){
+      if(!$scope.TestList[i].name){
+        alert('One of the test you requested has no name. Please go back and enter the test name.')
+        return;
+      }
+    }
     center.loading = true;
     $scope.treatment.isOutPatientReq = true;
     $scope.treatment.centerDetails = center;
@@ -15148,13 +15156,13 @@ app.controller("radioOutCtrl",["$scope","$http","scanTests","getAllRadiologyServ
   $scope.treatment.patientType = "mine";
   $scope.treatment.referral_pays = "No";
 
-  $scope.getTest = function (test) {
+  /*$scope.getTest = function (test) {
     test_name = test;
     if($scope.TestList.length === 1)
       $scope.TestList[0].name = test;
     if( $scope.TestList.length > 1)
       $scope.TestList[index].name = test;
-  }
+  }*/
 
   $scope.tests = scanTests.listInfo1.concat(scanTests.listInfo2,scanTests.listInfo3,scanTests.listInfo4,scanTests.listInfo5,
       scanTests.listInfo6);
@@ -15173,22 +15181,17 @@ app.controller("radioOutCtrl",["$scope","$http","scanTests","getAllRadiologyServ
     name: ""
   }];
 
-  var count = {};
-  count.num = 1;
-
-  $scope.addTest = function(){
-    var testObj = {};
-    count.num++;
-    testObj.sn = count.num;
-    $scope.TestList.push(testObj);
-    index = $scope.TestList.length - 1;
+  $scope.addTest = function(){  
+    $scope.TestList.push({
+      sn: $scope.TestList.length + 1,
+      name: ""
+    });
+    //index = $scope.TestList.length - 1;
+   
   }
 
-  $scope.removeTest = function() {
-    if(count.num > 1){
-      $scope.TestList.pop();
-      count.num--;
-    }
+  $scope.removeTest = function() {   
+    $scope.TestList.pop();    
   }
 
   $scope.isNewLab = true;
@@ -15306,6 +15309,12 @@ app.controller("radioOutCtrl",["$scope","$http","scanTests","getAllRadiologyServ
   var count = 0;
 
   $scope.sendTest = function(center){
+    if(!$scope.TestList[count].name){
+      center.loading = false;
+      alert("One of the investigation you requested has no name. Please go back and enter the name.")
+      return;
+    }
+
     center.loading = true;
     var testArr = [];      
     testArr.push({
@@ -18405,7 +18414,6 @@ app.controller("e-caseRadiologyCtrl",["$scope","$http","$rootScope","$location",
       others: othersArr
     };
 
-    console.log($scope.sortedRadiology)
   }
 
   $rootScope.$on('new medication',function(e,data){
@@ -18888,12 +18896,433 @@ function calculate_age(dob) {
 }
 
 
+app.controller("ultraSoundOutCtrl",["$scope","$http","UltraSounds","getAllRadiologyService","$rootScope",
+  function($scope,$http,UltraSounds,getAllRadiologyService,$rootScope){
+
+  var test_name;
+  var index;
+
+  $scope.treatment = {};
+
+  $scope.treatment.patientType = "mine";
+  $scope.treatment.referral_pays = "No";
+
+  /*$scope.getTest = function (test) {
+    test_name = test;
+    if($scope.TestList.length === 1)
+      $scope.TestList[0].name = test;
+    if( $scope.TestList.length > 1)
+      $scope.TestList[index].name = test;
+  }*/
+
+  //$scope.tests = UltraSounds;
+
+  /*$http({
+    method  : "GET",
+    url     : "/user/getSpecialTestsRadio", //gets special tests from backend     
+    headers : {'Content-Type': 'application/json'} 
+    })
+  .success(function(response) {   
+    $scope.tests = $scope.tests.concat(response);
+  });*/
+
+  $scope.TestList = [{
+    sn: 1,
+    name: ""
+  }];
+
+  $scope.addTest = function(){  
+    $scope.TestList.push({
+      sn: $scope.TestList.length + 1,
+      name: ""
+    });
+   
+  }
+
+  $scope.removeTest = function() {   
+    $scope.TestList.pop();    
+  }
+
+  $scope.isNewLab = true;
+
+  $scope.validatePatient = function() {   
+    if(!$scope.TestList[0].name){
+      $scope.invMsg = "Please enter investigation you wish to forward to a center.";
+      return;
+    }
+
+    $scope.invMsg = "";
+
+    if($scope.treatment.patient_identifier){
+
+      var spStr = $scope.treatment.patient_identifier.split('/');
+    
+      $scope.treatment.patient_phone = spStr[0];
+     
+      $scope.treatment.patient_id = spStr[1];
+    }
+
+    //var isNumber = testNumber($scope.treatment.patient_phone);
+    if($scope.treatment.patient_phone){
+      if(testNumber($scope.treatment.patient_phone)) {
+        if($scope.treatment.patient_phone.indexOf('+') == -1)
+          $scope.treatment.patient_phone = "+234" + parseInt($scope.treatment.patient_phone); 
+      } else {
+        $scope.phoneError = "Please enter a valid phone number.";
+        alert("Patient phone number not found or invalid")
+        return;
+      }
+    } 
+
+    $scope.loading = true;
+
+    $http.get("/user/out/get-patients",{params: {phone: $scope.treatment.patient_phone,patientId:$scope.treatment.patient_id}})
+    .success(function(resp){
+      $scope.loading = false;
+      if(resp.user_id){
+        $scope.isSearchToSend = true;
+        $scope.city = resp.city;
+        $scope.treatment.patient_title = resp.title;
+        $scope.treatment.patient_firstname = resp.firstname;
+        $scope.treatment.patient_lastname = resp.lastname;
+        $scope.treatment.patient_phone = resp.phone;
+        $scope.treatment.patientDetails = resp;
+        getRadiologies();
+        $scope.isNewLab = false;
+      } else if(resp.error) {
+        alert(resp.message);
+      } else {
+        $scope.isNewPatient = true;
+        $scope.city = $rootScope.checkLogIn.city;
+        $scope.isNewLab = false;
+      }
+    })
+  }
+
+  $scope.goBack = function() {
+    $scope.isSearchToSend = false;
+    $scope.isNewPatient = false;
+    $scope.isNewLab = true;
+  }
+
+  $scope.findLabs = function() {
+    getRadiologies();
+  }
+
+  $scope.createPatient = function() {
+    $scope.loading = true;
+    $scope.treatment.patient_age = calculate_age(new Date($scope.treatment.dob)) + " years";
+    $http({
+      method  : 'POST',
+      url     : "/user/out/create-patients",
+      data    : $scope.treatment,
+      headers : {'Content-Type': 'application/json'} 
+     })
+    .success(function(response) {
+      if(response.success){
+        $scope.isNewPatient = false;
+        $scope.isSearchToSend = true;
+        $scope.loading = false;
+        $scope.treatment.patientDetails = response.patient;
+        getRadiologies();
+      } else if(response.retry) {
+        $scope.createPatient();
+
+      } else {
+        alert(response.message);
+        $scope.loading = false;
+        $scope.goBack()
+      }
+    })
+  }
+
+  $scope.countIndex = 0;
+  $scope.countIndex2 = 0;
+
+  $scope.sendTest = function(center,isDoctor){
+
+    if(!$scope.TestList[$scope.countIndex].name){
+      center.loading = false;
+      alert("One of the investigations has no name. Please go back and enter the name.")
+      return;
+    }
+
+    center.loading = true;
+    var testArr = [];      
+    testArr.push({
+      name: $scope.TestList[$scope.countIndex].name,
+      sn: $scope.TestList[$scope.countIndex].sn
+    });
+
+    $scope.countIndex++;
+
+    if(isDoctor){
+      $scope.treatment.isRequestToDoctor = true;
+    }
+
+    sendIndividualTests(center,testArr,$scope.countIndex);
+  }
+
+  $scope.sendTest2 = function(center,isDoctor) {
+    if(!$scope.TestList[$scope.countIndex2].name){
+      center.loading = false;
+      alert("One of the investigations has no name. Please go back and enter the name.")
+      return;
+    }
+
+    center.loading = true;
+    var testArr = [];      
+    testArr.push({
+      name: $scope.TestList[$scope.countIndex2].name,
+      sn: $scope.TestList[$scope.countIndex2].sn
+    });
+
+    $scope.countIndex2++;
+
+    if(isDoctor){
+      $scope.treatment.isRequestToDoctor = true;
+    }
+
+    sendIndividualTests(center,testArr,$scope.countIndex2);
+  }
+
+  function sendIndividualTests(center,testArr,count) {
+    center.loading = true;
+    $scope.treatment.isOutPatientReq = true;
+    $scope.treatment.centerDetails = center;
+    $scope.treatment.lab_test_list = testArr;
+    $scope.treatment.ray_type = "ultrasound";
+    $scope.treatment.date = new Date();
+    $http({
+      method  : 'POST',
+      url     : "/user/doctor/ultrasound/send-test",
+      data    : $scope.treatment,
+      headers : {'Content-Type': 'application/json'} 
+    })
+    .success(function(response) {
+      if(response.success) {
+        if($scope.TestList.length > count){
+          $scope.sendTest(center)
+        } else {
+          center.isSent = true;
+          center.loading = false;
+          $scope.countIndex = 0;
+          $scope.countIndex2 = 0;
+        }
+       
+      } else {
+        alert("Oops! Something went wrong. Please try again.");
+      }
+     
+    })
+  }
+
+  
+
+  function getRadiologies() {
+    $scope.loading = true;
+    $scope.city = $scope.city || $rootScope.checkLogIn.city;
+    var source = getAllRadiologyService; 
+    source.query({city:$scope.city},function(list){
+      $scope.loading = false;
+      $scope.searchResult = list;
+    });
+
+    getDoctors($scope.city)
+  }
+
+  function getDoctors() {
+    $http.get("/user/getAllDoctor",{params:{city: $scope.city}})
+    .success(function(docs){
+      $scope.searchResult2 = docs;
+    })
+  }
+
+}])
 
 
+app.controller("ultraSoundReportCtrl",["$scope","$http","$location",
+  function($scope,$http,$location){ 
+    var path = $location.path();
+    var arr = path.split("/");  
+    var refId = arr[arr.length-1];
+
+    $scope.fileList = [];
+
+    $http.get("/user/radiology/get-referral",{params:{refId: refId}})
+    .success(function(data){
+      $scope.ultraRefData = data;
+    })
 
 
+    $scope.preview = function(study) {
+      /*if(!navigator.onLine){      
+        alert('NO INTERNET CONNECTIONS! You have to connect to internet before you can proceed.');
+        return;
+      }*/
+
+      $scope.loading = true;
+
+      study.date = new Date();
+      
+      var fd = new FormData();
+
+      var arr = [];
+
+      var xhr = new XMLHttpRequest();
+      xhr.upload.addEventListener("progress", uploadProgress, false);
+      xhr.addEventListener("load", uploadComplete, false);
+      xhr.addEventListener("error", uploadFailed, false);
+      xhr.addEventListener("abort", uploadCanceled, false);
+
+      function uploadFile(file) {     
+        xhr.open("POST", '/user/save-report')
+        xhr.send(file);
+      }
+
+      if($scope.fileList.length > 0){
+        //$scope.fileList.forEach(function(file){
+          for(var key = 0; key < $scope.fileList.length; key++){
+            fd.append(key,$scope.fileList[key],$scope.fileList[key].name);
+          };
+          uploadFile(fd)
+        //})
+      } else {
+        $scope.progress = 100;
+        postData(study);
+      }
+
+      function uploadProgress(evt) {
+        $scope.progressVisible = true;
+        $scope.$apply(function(){
+          if (evt.lengthComputable) {          
+            $scope.progress = Math.round(evt.loaded * 100 / evt.total);
+          } else {
+            $scope.progress = 'unable to compute';
+          }
+        })
+      }
+
+      function uploadComplete(evt) {
+        $scope.$apply(function(){       
+          $scope.userData = JSON.parse(evt.target.responseText);
+          //$scope.sampleImages = $scope.userData.arr;
+          study.sample_files = $scope.userData.arr;
+          postData(study);
+        })
+         
+      }
+
+      function uploadFailed(evt) {
+        alert("There was an error attempting to upload the file.")
+        $scope.loading = false; 
+      }
+
+      function uploadCanceled(evt) {
+        $scope.$apply(function(){
+          $scope.progressVisible = false;
+        })
+        alert("The upload has been canceled by the user or the browser dropped the connection.");
+      }
 
 
+      function postData(data) {
+        $http.post('/user/save-report',data)
+        .success(function(response){          
+          if(!response.status){
+            alert(response.message);
+            $scope.loading = false;         
+          } else {          
+            window.location.href = response.path;
+          }
+        });
+      }
+
+    }
+
+    /* drag and drop image logic */
+    var drop = $("input");
+    drop.on('dragenter', function (e) {
+      $(".drop").css({
+        "border": "4px dashed #09f",
+        "background": "rgba(0, 153, 255, .05)"
+      });
+      $(".cont").css({
+        "color": "#09f"
+      });
+    }).on('dragleave dragend mouseout drop', function (e) {
+      $(".drop").css({
+        "border": "3px dashed #DADFE3",
+        "background": "transparent"
+      });
+      $(".cont").css({
+        "color": "#8E99A5"
+      });
+    });
+
+    function handleFileSelect(evt) {
+
+      var files = evt.target.files; // FileList object
+
+      var ft = Array.from(files);
+
+      for(var j = 0; j < ft.length; j++){ // helps to accomodate files selected singly 
+        $scope.fileList.push(ft[j])
+      }
+
+      // Loop through the FileList and render image files as thumbnails.
+      for (var i = 0, f; f = files[i]; i++) {
+
+        // Only process image files.
+        if (!f.type.match('image.*')) {
+          continue;
+        }
+
+        var reader = new FileReader();
+
+        // Closure to capture the file information.
+        reader.onload = (function(theFile) {
+          return function(e) {
+            // Render thumbnail.
+            var span = document.createElement('span');
+            span.id = Math.floor(Math.random() * 999999).toString();
+            span.fileName = theFile.name;
+            span.addEventListener('click',delImage,false);
+            span.innerHTML = ['<img class="thumb" src="', e.target.result,
+                              '" title="', escape(theFile.name), '"/>'].join('') + '<span style="font-weight: bold;cursor: pointer;margin-right: 15px">X</span>';
+            document.getElementById('list').insertBefore(span, null);
+          };
+        })(f);
+
+        // Read in the image file as a data URL.
+        reader.readAsDataURL(f);
+      }
+    }
+
+    var elem;
+
+    function delImage(evt){
+      elem = document.getElementById(evt.currentTarget.id);
+      elem.style.display = "none";
+      for(var j = 0; j < $scope.fileList.length; j++){
+        if($scope.fileList[j].name === evt.currentTarget.fileName){
+          $scope.fileList.splice(j,1);
+          break;
+        }
+      }
+    }
+    
+    $('#files').change(handleFileSelect);
+}])
+
+
+app.factory("UltraSounds",function(){
+  var ultraSounds = [{name: "Endoscopic ultrasound" ,id: 1},
+  {name: "Color Doppler", id: 2},{name: "Doppler ultrasound", id: 3},{name: "Duplex ultrasound", id: 4},
+  {name: "Triplex ultrasound",id: 5},{name: "Transvaginal ultrasound",id:6}];
+
+  return ultraSounds;
+})
 
 app.factory("labTests",function(){
   var labTestList = {};

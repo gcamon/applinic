@@ -17,6 +17,10 @@ option {
   text-transform: capitalize!important;
 }
 
+.text-center {
+  text-align: center!important
+}
+
  .block {
         display: block;
     }

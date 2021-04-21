@@ -47,8 +47,7 @@
         <div ng-repeat="lab in TestList">
              
              <span class="text-danger">{{invMsg}}</span>
-            <input  type="text" placeholder="Enter test name"  ng-model="test.name" uib-typeahead="test.name for test in tests | filter:$viewValue | limitTo:15" class="form-control" >
-            {{getTest(test.name)}} 
+            <input  type="text" placeholder="Enter test name"  ng-model="lab.name" uib-typeahead="test.name for test in tests | filter:$viewValue | limitTo:15" class="form-control" >
         </div>
         <div style="text-align: right">
             <i class="fa fa-plus btn btn-neutral" style="font-size:14px;margin-right: 10px;cursor: pointer;" title="Add field" ng-click="addTest()"></i>

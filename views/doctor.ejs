@@ -889,19 +889,19 @@
                                     </li>
 
                                     <li>
-                                      <a href="" class="h"><i class="fa fa-radiation-alt"></i> Ultra-sound</a>
+                                      <a href="#/ultra-sound-out" class="h"><i class="fa fa-radiation-alt"></i> Ultra-sound</a>
                                     </li>
 
                                     <li>
-                                      <a href="" class="h"><i class="fa fa-radiation-alt"></i> ECG</a>
+                                      <a href="#/ecg-out" class="h"><i class="fa fa-radiation-alt"></i> ECG</a>
                                     </li>
 
                                       <li>
-                                      <a href="" class="h"><i class="fa fa-search"></i> Endoscopy</a>
+                                      <a href="#/endoscopy-out" class="h"><i class="fa fa-search"></i> Endoscopy</a>
                                     </li>
 
                                      <li>
-                                      <a href="" class="h"><i class="icon-stethoscopetwo"></i> Other Procedures</a>
+                                      <a href="#/other-procedures-out" class="h"><i class="icon-stethoscopetwo"></i> Other Procedures</a>
                                     </li>
 
                                    
@@ -3574,6 +3574,9 @@
 
     <% include ./templates/invitation3 %>
 
+    <% include ./templates/ultra-sound-out %>
+
+    <% include ./templates/report-ultrasound %>
                  
 
         <!-- Reference block for JS -->
@@ -3585,25 +3588,13 @@
         <script src="/assets/js/now-ui-kit.js"></script>
         <script src="/assets/js/bower_components/summernote/dist/summernote.js"></script>
         <script src="/assets/js/bower_components/angular-summernote/dist/angular-summernote.js"></script>
-       
-
-
-        
-
-       
       
         <!--<script type="text/javascript" src="/assets/js/angularclient.js"></script>-->
         <script type="text/javascript" src="/assets/js/doctor.angular-client.js"></script>
         <script type="text/javascript" src="/assets/js/ngroute.js"></script>
         <script src="/socket.io/socket.io.js"></script>   
         <script src="/assets/js/socket.min.js"></script>
-        <script src="/assets/js/jquery-ui.js"></script>
-
-        
-       
-      
-      
-        
+        <script src="/assets/js/jquery-ui.js"></script> 
         
         <!--<script src="/assets/js/main.js"></script>-->
         <script src="/assets/js/angular-touch.min.js"></script>
@@ -3630,7 +3621,7 @@
 
 
          <!-- Start of LiveChat (www.livechatinc.com) code -->
-        <script type="text/javascript">
+        <!--<script type="text/javascript">
         window.__lc = window.__lc || {};
         window.__lc.license = 10352687;
         (function() {
@@ -3642,7 +3633,7 @@
         <noscript>
         <a href="https://www.livechatinc.com/chat-with/10352687/">Chat with us</a>,
         powered by <a href="https://www.livechatinc.com/?welcome" rel="noopener" target="_blank">LiveChat</a>
-        </noscript>
+        </noscript>-->
         <!-- End of LiveChat code -->
            
 

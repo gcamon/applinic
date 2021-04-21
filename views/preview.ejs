@@ -1,0 +1,392 @@
+<!doctype html>
+<html lang="en">
+
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title> Applinic - Report preview</title>
+        <meta name="description" content="">
+        <meta content='width=device-width, initial-scale=0.87, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no' name='viewport'/>
+        
+        <link rel="icon" type="image/png" href="/assets/images/icons/favicon.png">
+        <!-- Place favicon.ico in the root directory -->
+        <!-- Edu boostrap -->
+       <!--<link rel="stylesheet" href="/assets/css/main.cs">-->
+        <link rel="stylesheet" href="/assets/css/font-awesome.min.css">
+        <link rel="stylesheet" href="/assets/css/vendor.css">
+        <link rel="stylesheet" href="/assets/css/app.css">
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+        <link rel="stylesheet" href="/assets/css/now-ui-kit2.css">
+       <!-- <link rel="stylesheet" href="/assets/css/now-ui-kit.css">-->
+        <link rel="stylesheet" href="/assets/css/icomoon.css">
+        <link rel="stylesheet" href="/assets/css/chat.css">
+        <link rel="stylesheet" href="/assets/css/my-edit.css" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="/assets/css/all.css">
+
+        <link href="/assets/js/bower_components/summernote/dist/summernote.css" rel="stylesheet">
+         <script type="text/javascript">
+        var Opera = (navigator.userAgent.match(/Opera|OPR\//) ? true : false);
+        if(Opera){
+          window.location.href = "/assets/show-error.html";
+        }
+    </script>
+          
+        <!--<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>-->
+
+         <noscript>
+          <META HTTP-EQUIV="Refresh" CONTENT="0;URL=/assets/show-error.html">
+      </noscript>
+       
+          <script src="/assets/js/vendor2.js"></script>
+          <script type="text/javascript" src="/assets/js/source.js"></script>
+           <!-- include summernote css/js -->
+
+            <!-- Global site tag (gtag.js) - Google Analytics -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=UA-128083647-1"></script>
+        <script>
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+
+          gtag('config', 'UA-128083647-1');
+        </script>
+       
+       
+
+        </script>
+         
+          <style>
+
+            body {
+                font-family: 'Open Sans', sans-serif;
+             }
+
+            blockquote {
+                /*text-indent: 20px;*/
+                padding: 15px 5px 5px;
+                background-color: lightYellow;
+                font-style: normal;
+                
+            }
+
+            blockquote > label {
+              display: block;
+            }
+
+            blockquote > span {
+              white-space: pre-wrap;
+            }
+
+            .popup2 {
+                display: inline-block;
+                position: absolute;
+                right: -15px;
+                bottom: -100px;
+                width: 280px;
+                color: #ccc;
+                background-color: #fff;
+                border: 1px solid #85CE36;
+                padding: 10px;
+                border-radius: 3px;
+                z-index: 9
+            }
+
+            .popup2 > div {
+              position: absolute;top:5px;right: 15px;font-size: 20px
+            }
+
+
+            .bottom-nav-container {
+              height: 70px;position: fixed;bottom: 0;background-color: #fff;padding: 5px;width:100%;overflow-x: auto;overflow-y: hidden;
+            }
+
+            .bottom-nav {
+              list-style: none;white-space: nowrap;padding-left: 0px!important;width: 100%;
+            }
+
+            .bottom-nav > li{
+              display:inline-block;font-size: 14px;margin-right: 12px;padding: 5px;text-align: center;
+            }
+
+            .bottom-nav > li > a {
+              color: #000
+            }
+
+            .bottom-nav > li > a > i {
+              font-size: 18px
+            }
+
+
+
+
+
+              .title{
+                  font-weight: 300;
+              }
+
+              .noti-style {
+                    max-height: 300px;
+                    overflow-y:auto;
+                    border-left: 1px solid rgba(0,0,0,0.2);
+                    border-right: 1px solid rgba(0,0,0,0.2);
+                    border-bottom: 1px solid rgba(0,0,0,0.2);
+                }
+
+                .text-center a {
+                    /*margin-left: 50px;*/
+                }
+
+                .notAvail {
+                    text-decoration: line-through;
+                    color:red;
+                }
+
+                .updateInfo {
+                    color: orange!important;
+                    float: right!important;
+                    font-size: 14px
+                }
+
+                .grayish:hover {
+                    background-color: orange;
+                    color: #fff!important;
+                }
+
+                input,select,textarea{
+                    font-size: 14px!important;
+                }
+
+                 .mobile-item-display {
+                    display: none;
+                  }
+
+                  
+
+                 
+
+                @media screen and (max-width: 1024px) {
+                    .text-center a {
+                        margin-left: 20px;
+                    }
+
+
+                    .view-animate-container {
+                   
+                    background: transparent !important;
+                   
+                    width: auto;
+                    margin-left: 0px
+
+                  }
+
+                  /*.brand {
+                    display: none!important;
+                  }*/
+
+                  .header .header-block-nav .notifications a {
+                    padding-right: 9px;
+                  }
+
+                 .header .header-block-nav>ul>li>a {
+                    /*padding: 0 10px;*/
+                    color: #4f5f6f;
+                  }
+                }
+
+                @media screen and (max-width: 767px) {
+                  .brand {
+                    display: none!important;
+                  }
+
+                 .prf {
+                    display: none!important;
+                  }
+
+                  .sarch {
+                    display: none!important;
+                  } 
+
+                   .table th, .table td{
+                      border: none!important;
+                    }
+
+                  .no-mobile-item-display {
+                    display: none;
+                  }
+
+                 .mobile-item-display {
+                    display: block;
+                  }
+
+                  li {
+                    border-right: none;
+                  }
+
+                  .header .header-block-nav .notifications a {
+                     padding-right: 7px;
+                  }
+
+                }
+
+                @media screen and (max-width: 540px) {
+
+                    .menuThree {
+                      left: 15px!important
+                    }
+
+                    .menuFour {
+                      left: 120px!important
+                    }
+
+                    .menuFive {
+                      left: 40px!important
+                    }
+
+                    .menuSix {
+                      left: 100px!important
+                    }
+
+                    .menuSeven {
+                      left:-240px!important
+                    }
+
+                    .menuEight {
+                      left: -280px!important
+                    }
+                }
+          </style>
+</head>
+<body ng-app="myApp">
+    <div  ng-controller="previewCtrl" style="width: 65%;margin: 40px auto">
+        <div>
+            <a href="" class="btn btn-simple"><i class="fa fa-arrow-left"></i> Go back</a>
+        </div>
+        <div>
+            <button class="btn btn-primary btn-block" ng-click="submitReport('<%= _id %>')" ng-show="!loading && !msg">Save &amp; Submit Report</button>
+           <p style="text-align: center;" ng-show="loading">Submitting... Please wait!</p>
+           <p style="text-align: center;" ng-show="msg"><i class="fa fa-check text-success"></i> 
+                <span>{{msg}}</span><br><br>
+                <a href="{{back}}"><i class="fa fa-arrow-left"></i> Go back</a>
+           </p>
+        </div>
+        <div class="card" id="tempField"><table><thead><th style="width: 48%;padding: 0px 20px"> <img src="<%= reporter_profilePic %>" style="width: 120px;height: auto;"></th><th style="width: 52%"><div style="text-align: left;padding:3px 20px;margin-top: 10px"><div><h3 class="h6 p-0 mb-0"><b><%= reporter_name %></b></h3> <span class="block"><%= reporter_specialty%></span> <span class="block"><%= reporter_work_place %></span> <span class="block"><%= reporter_address %></span> <span class="block"><%= reporter_email %></span> <span class="block"><%= reporter_phone %></span></div></div></th></thead></table><h4 style="text-align: center;" class="pt-2 pb-0 mb-0"><b><%= radiology.test_to_run[0].name %> Report</b></h4><p style="text-align: center;"><b><%= moment(date).format("dddd, MMMM Do YYYY, h:mm a")%></b></p><table><tbody><td style="width: 48%"><div style="padding: 20px"> <span><b>Patient Name: </b> <%= radiology.patient_title %> <%= radiology.patient_firstname %> <%= radiology.patient_lastname %></span><br> <span><b>Sex: </b> <%= radiology.patient_gender %></span><br> <span><b>Age: </b> <%= radiology.patient_age %></span><br> <span><b>Phone: </b> <%= radiology.patient_phone %></span><br></div></td><td style="width: 52%"><div style="padding: 20px"> <span><b>Ref No: </b> <%= ref_id %></span><br> <span><b>Study Name: </b> <%= radiology.test_to_run[0].name %></span><br> <span><b>Date Requested: </b> <%= moment(date).format("dddd, MMMM Do YYYY, h:mm a") %></span><br> <span><b>Date Reported: </b> <%= moment(radiology.report_date).format("dddd, MMMM Do YYYY, h:mm a") %></span><br> <span><b>Referring Physician: </b> <%= radiology.doctor_firstname %></span></div></td></tbody></table><div style="padding:20px"><h6><b>Clinical Information:</b></h6><p style="margin-top: 10px"><b>Indication: </b><br> <%= radiology.indication %></p><p style="margin-top: 10px"><b>Summary: </b><br> <%= radiology.clinical_summary %></p> <% if(radiology.parity) { %><p style="margin-top: 10px"><b>Parity: </b><br> <%= radiology.parity || "N/A" %></p> <% } %> <% if(radiology.lmp) { %><p style="margin-top: 10px"><b>LMP: </b><br> <%= radiology.lmp || "N/A" %></p> <% } %></div><div style="padding: 0 20px"><h6><b>Findings:</b></h6><p><%= radiology.findings %></p></div><div style="padding: 0 20px;margin-top: 20px"><h6><b>Conclusion:</b></h6><p><%= radiology.conclusion %></p></div><% if(radiology.drugs) { %><div style="padding: 0 20px;margin-top: 20px"><h6><b>Drugs:</b></h6><p><%= radiology.drugs %></p></div> <% } %><div style="padding: 0 20px;margin-top: 20px"><h6><b>Advice/Further investigations:</b></h6><p><%= radiology.advice %></p></div><div style="padding: 0 20px;margin-top: 70px;margin-bottom: 40px"><div> <label>Digitally signed by:</label><br> <span><b><%= reporter_name %></b></span><br> <span><%= reporter_specialty %></span></div></div><div style="margin-top: 20px;padding: 0 20px"> <% for(var i = 0; i < radiology.sample_files.length; i++) { %><div style="margin-bottom: 20px"> <label><%= radiology.sample_files[i].originalname %></label><div style="text-align: center"> <img src="<%= radiology.sample_files[i].path %>" style="max-width: 72%; height: auto;"></div></div> <% } %></div><div style="text-align: right;padding: 40px"> <img src="https://applinic.com/assets/images/Logo.png" style="width: 120px;height: auto;"><br> <a href="https://applinic.com">www.applinic.com</a></div></div>
+        <!--<div class="card" id="tempField"> 
+                <table> 
+                   <thead>
+                       <th style="width: 48%;padding: 0px 20px">
+                           <img src="<%= reporter_profilePic %>" style="width: 120px;height: auto;">
+                       </th>
+                        <th style="width: 52%">
+                           <div style="text-align: left;padding:20px;margin-top: 10px">
+                              
+                                <div>
+                                    <h3 class="h6 p-0 mb-0"><b><%= reporter_name %></b></h3>
+                                   <span class="block"><%= reporter_specialty%></span>
+                                   <span class="block"><%= reporter_work_place %></span>
+                                   <span class="block"><%= reporter_address %></span>
+                                   <span class="block"><%= reporter_email %></span>
+                                   <span class="block"><%= reporter_phone %></span>
+                                </div>
+                           </div>
+                       </th>
+                   </thead>                              
+                </table>
+                <h4 style="text-align: center;" class="pt-2 pb-0 mb-0"><b><%= radiology.test_to_run[0].name %> Report</b></h4>
+                <p style="text-align: center;"><b><%= moment(date).format("dddd, MMMM Do YYYY, h:mm a")%></b></p>
+                <table>
+                    <tbody>                                        
+                        <td style="width: 48%">
+                             <div style="padding: 20px">
+                                <span><b>Patient Name: </b> <%= radiology.patient_title %> <%= radiology.patient_firstname %> <%= radiology.patient_lastname %></span><br>
+                                <span><b>Sex: </b> <%= radiology.patient_gender %></span><br>
+                                <span><b>Age: </b> <%= radiology.patient_age %></span><br>                      
+                                <span><b>Phone: </b> <%= radiology.patient_phone %></span><br>
+                              
+                            </div>                                 
+                        </td>
+                        <td style="width: 52%">
+                            <div style="padding: 3px 20px">
+                                <span><b>Ref No: </b> <%= ref_id %></span><br>
+                                <span><b>Study Name: </b> <%= radiology.test_to_run[0].name %></span><br>
+                                 <span><b>Date Requested: </b> <%= moment(date).format("dddd, MMMM Do YYYY, h:mm a") %></span><br>     
+                                <span><b>Date Reported: </b> <%= moment(radiology.report_date).format("dddd, MMMM Do YYYY, h:mm a") %></span><br>
+                                <span><b>Referring Physician: </b> <%= radiology.doctor_firstname %></span>
+                            </div>                                            
+                        </td>
+                    </tbody>
+                </table>
+                <div style="padding:20px">
+                    <h6><b>Clinical Information:</b></h6>
+                    <p style="margin-top: 10px"><b>Indication: </b><br> <%= radiology.indication %></p>
+                    <p style="margin-top: 10px"><b>Summary: </b><br> <%= radiology.clinical_summary %></p>
+                    <% if(radiology.parity) { %>
+                    <p style="margin-top: 10px"><b>Parity: </b><br> <%= radiology.parity || "N/A" %></p>
+                    <% } %>
+                    <% if(radiology.lmp) { %>
+                    <p style="margin-top: 10px"><b>LMP: </b><br> <%= radiology.lmp || "N/A" %></p>
+                    <% } %>
+                </div>
+                <div style="padding: 0 20px">
+                    <h6><b>Findings:</b></h6>                   
+                    <p><%= radiology.findings %></p>                        
+                </div>
+                <div style="padding: 0 20px;margin-top: 20px">
+                    <h6><b>Conclusion:</b></h6>
+                    <p><%= radiology.conclusion %></p>
+                </div>
+
+                <% if(radiology.drugs) { %>
+                <div style="padding: 0 20px;margin-top: 20px">
+                    <h6><b>Drugs:</b></h6>
+                    <p><%= radiology.drugs %></p>
+                </div>
+                <% } %>
+
+                <div style="padding: 0 20px;margin-top: 20px">
+                    <h6><b>Advice/Further investigations:</b></h6>
+                    <p><%= radiology.advice %></p>
+                </div>
+
+                <div style="padding: 0 20px;margin-top: 70px;margin-bottom: 40px">
+                    <div>
+                        <label>Digitally signed by:</label><br>
+                        <span><b><%= reporter_name %></b></span><br>
+                        <span><%= reporter_specialty %></span>
+                    </div>
+                </div> 
+
+                <div style="margin-top: 20px;padding: 0 20px">
+                    <% for(var i = 0; i < radiology.sample_files.length; i++) { %>
+                        <div style="margin-bottom: 20px">
+                            <label><%= radiology.sample_files[i].originalname %></label>
+                            <div style="text-align: center">
+                                <img src="<%= radiology.sample_files[i].path %>"  style="max-width: 72%; height: auto;">
+                            </div>
+                        </div>
+                    <% } %>
+                </div>
+                <div style="text-align: right;padding: 40px">
+                    <img src="https://applinic.com/assets/images/Logo.png" style="width: 120px;height: auto;"><br>
+                    <a href="https://applinic.com">www.applinic.com</a>
+                </div>
+            </div>-->
+            <div>
+               <button class="btn btn-primary btn-block" ng-click="submitReport('<%= _id %>','<%= ref_uid %>')" ng-show="!loading && !msg">Save &amp; Submit Report</button>
+               <p style="text-align: center;" ng-show="loading">Submitting... Please wait!</p>
+               <p style="text-align: center;" ng-show="msg"><i class="fa fa-check text-success"></i> 
+                    <span>{{msg}}</span><br><br>
+                    <a href="{{back}}"><i class="fa fa-arrow-left"></i> Go back</a>
+               </p>
+            </div>
+        </div> 
+    </div>
+    <div style="height: 200px">
+        
+    </div>
+
+      
+    <!--<script type="text/javascript" src="/assets/js/angularclient.js"></script>-->
+    <script type="text/javascript" src="/assets/js/preview.angular.js"></script>
+       
+</body>
+</html>
