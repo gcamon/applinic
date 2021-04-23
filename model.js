@@ -323,6 +323,7 @@ var myModel = function () {
 		files: Array,
 		history: String,
 		indication: String,
+		summary: String,
 		acc: String,
 		acc_no: String,
 		study_link: String,
@@ -380,7 +381,9 @@ var myModel = function () {
 		advice: String,
 		drugs: String,
 		report_date: Date,
-		sample_files: Array
+		sample_files: Array,
+		staffname: String,
+		designation: String
 	});
 
 	var drug_refSchema = Schema({

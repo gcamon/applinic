@@ -6157,6 +6157,27 @@ var basicRoute = function (model,sms,io,streams,client,transporter,opentok) {
           var date = + new Date();
 
 
+        if(req.body.isCaseNoteRequest) {
+          req.body.treatment = {};
+          //req.body.date = new Date();
+          req.body.user_id = req.body.centerDetails.user_id;
+          req.body.patient_id = req.body.patientDetails.user_id;
+          req.body.patient_firstname = req.body.patientDetails.firstname; 
+          req.body.patient_lastname = req.body.patientDetails.lastname;
+          req.body.patient_title = req.body.patientDetails.title;
+          req.body.phone = req.body.patientDetails.phone;
+          req.body.patient_address = req.body.patientDetails.address;
+          req.body.patient_city = req.body.patientDetails.city;
+          req.body.patient_profilePic = req.body.patientDetails.profile_pic_url;
+          req.body.radiology = {
+            patient_age: req.body.patientDetails.age,
+            patient_gender: req.body.patientDetails.gender,
+            profile_pic_url: req.body.patientDetails.profile_pic_url,
+            patient_phone: req.body.patientDetails.phone
+          }
+        }
+
+
         if(req.body.isOutPatientReq){
           req.body.treatment = {};
           //req.body.date = new Date();
@@ -6167,8 +6188,8 @@ var basicRoute = function (model,sms,io,streams,client,transporter,opentok) {
           req.body.patient_title = req.body.patientDetails.title;
           req.body.phone = req.body.patientDetails.phone;
           req.body.patient_address = req.body.patientDetails.address;
-          req.body.patient_city = req.body.patientDetails.city
-          req.body.patient_profilePic = req.body.patientDetails.profile_pic_url
+          req.body.patient_city = req.body.patientDetails.city;
+          req.body.patient_profilePic = req.body.patientDetails.profile_pic_url;
           req.body.radiology = {
             patient_age: req.body.patientDetails.age,
             patient_gender: req.body.patientDetails.gender,
@@ -6178,7 +6199,7 @@ var basicRoute = function (model,sms,io,streams,client,transporter,opentok) {
 
           var elemPos = req.user.doctor_patients_list.map(function(x){return x.patient_id}).indexOf(req.body.patient_id);
 
-          if(elemPos == -1){
+          if(elemPos === -1){
             req.user.doctor_patients_list.unshift({
               date: date,
               patient_lastname: req.body.patient_lastname,
@@ -12265,7 +12286,9 @@ router.post("/user/share/email",function(req,res){
       }
     });*/
 
-    var title = req.body.patientName + "'s" + " " + req.body.type + " Report";
+    var type = (req.body.subType) ? req.body.subType : req.body.type;
+
+    var title = req.body.patientName + "'s" + " " + type + " Report";
     
     if(req.body.filePath) {
       var spl = req.body.filePath.split('/');
@@ -14879,6 +14902,8 @@ router.post("/user/save-report",function(req,res){
           referral.radiology.ray_type = req.body.radiology.ray_type;
           referral.ref_uid = uid;
           referral.radiology.report_date = new Date();
+          referral.radiology.staffname = req.body.radiology.staffname;
+          referral.radiology.designation = req.body.radiology.designation;
 
           referral.save(function(err,info){
             if(err) throw err;
@@ -14941,7 +14966,7 @@ router.post("/study/:uid/:refId",function(req,res){
   .exec(function(err,referral){
     if(err) throw err;
     if(referral){  
-          model.user.findById({user_id: referral.radiology.doctor_id})  
+          model.user.findOne({user_id: referral.radiology.doctor_id})  
            .exec(function(err,doctor){
             var dt = + new Date();
             var pdfName = dt + "-" + uuid.v1() + '.pdf';
@@ -14969,7 +14994,7 @@ router.post("/study/:uid/:refId",function(req,res){
               to: emailArr || "support@applinic.com", //req.body.email
               subject: 'Complete Radiology Report',
               html: '<table><tr><tr><td style="line-height: 25px">Hi, please find the <b>Radiology Report</b> PDF for the study below:<br><br>'
-              + 'Patient: ' + referral.patient_title + " " + referral.patient_firstname + " " + referral.patient_lastname + "<br>"
+              + 'Patient: ' + referral.radiology.patient_title + " " + referral.radiology.patient_firstname + " " + referral.radiology.patient_lastname + "<br>"
               + 'Investigation: ' + referral.radiology.test_to_run[0].name + "<br>"
               + 'Ref: ' + referral.ref_id + "<br>"             
               + "<b>Applinic Team</b><br>"
@@ -14998,7 +15023,7 @@ router.post("/study/:uid/:refId",function(req,res){
 
               if(objectFound) {
                 var pos = objectFound.diagnosis.radiology_test_results
-                .map(function(x) { return x.test_id;}).indexOf(req.body.radiology.test_id);
+                .map(function(x) { return x.test_id;}).indexOf(referral.radiology.test_id);
 
                 if(objectFound.diagnosis.radiology_test_results[pos]) {
                   var theObj = objectFound.diagnosis.radiology_test_results[pos];         
@@ -15020,19 +15045,14 @@ router.post("/study/:uid/:refId",function(req,res){
                 }             
                 
                 data.save(function(err,info){
-                  if(err) {
-                    res.send({status: "error"});
-                  } else { 
-                    updatePatient()
-                  }
+                  if(err) throw err;                    
+                  updatePatient();
                 }); 
 
-              }              
+            }              
 
-            });
+          });
             
-        
-
           function updatePatient() {         
                 //here patient test result is updated.
                 model.user.findOne({user_id: referral.radiology.patient_id},
@@ -15040,23 +15060,22 @@ router.post("/study/:uid/:refId",function(req,res){
                     email:1,title:1,firstname:1,lastname:1,radiology_new_indicator:1})
                 .exec(function(err,data){
                   if(err) throw err;
-                  var elementPos = data.medical_records.radiology_test.map(function(x) {return x.ref_id; })
+                  var elementPos = data.medical_records.ultrasound_test.map(function(x) {return x.ref_id; })
                   .indexOf(referral.ref_id);
-                  var objectFound = data.medical_records.radiology_test[elementPos]; 
+                  var objectFound = data.medical_records.ultrasound_test[elementPos]; 
 
                   if(objectFound) {         
                     objectFound.report = referral.radiology.report || "";
                     objectFound.conclusion = referral.radiology.conclusion || "";
                     objectFound.findings = referral.radiology.findings || "";
-                    objectFound.advise = referral.radiology.advise || "";
+                    objectFound.advise = referral.radiology.advice || "";
                     objectFound.test_to_run = referral.radiology.test_to_run || objectFound.test_to_run;
                     objectFound.sent_date = referral.date || objectFound.sent_date;
                     objectFound.receive_date = referral.radiology.report_date || (+ new Date());
                     objectFound.payment_acknowledgement = true;
                     objectFound.files = referral.radiology.sample_files;
                     objectFound.indication = referral.radiology.indication;
-                    objectFound.summary = referral.radiology.summary;
-                  
+                    objectFound.summary = referral.radiology.clinical_summary || "";                  
                     objectFound.study_id = referral._id;
                     //objectFound.patient_id_of_study = study.patient_id;
                     objectFound.pdf_report.unshift({
@@ -15135,7 +15154,7 @@ router.post("/study/:uid/:refId",function(req,res){
                     });
 
                   } else {
-                    res.end("error: 404")
+                    res.json({status: false, message: "Some error occured! Please try again."})
                   }
                 });
           }           

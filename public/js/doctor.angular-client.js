@@ -1086,6 +1086,11 @@ app.config(['$paystackProvider','$routeProvider',
     controller: "ultraSoundReportCtrl"
   })
 
+  .when('/e-case-ultrasound/:id',{
+    templateUrl: 'e-case-ultrasound.html',//'/assets/pages/doctor/e-case-radiology.html',
+    controller: 'e-caseUltrasoundCtrl',
+  })
+
 }]) 
 
 
@@ -9267,7 +9272,6 @@ app.controller("myPatientController",["$scope","$http","$location","$window","$r
     $scope.isLaboratory = true;
     $scope.isRadiology = false;    
     $scope.laboratoryTests = $scope.medicalRecordHistory.medical_records.laboratory_test;
-    console.log($scope.laboratoryTests)
   }
 
    
@@ -10015,7 +10019,8 @@ app.controller("e-CaseCtrl",["$scope","$rootScope","$http","localManager",
 
 
   var getPatientData = myPatientControllerService //$resource("/user/doctor/specific-patient");
-  getPatientData.get(patient,function(data){   
+  getPatientData.get(patient,function(data){ 
+   
     $scope.patientInfo = data;     
     patient.patient_id = patient.id;    
     patient.firstname = $scope.patientInfo.firstname;
@@ -13127,9 +13132,10 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
   };
 
   //sending prescription/lab/radio to an email
-  $rootScope.email = function(docInfo,type,firstname,lastname,age,gender) {
+  $rootScope.email = function(docInfo,type,firstname,lastname,age,gender,name) {
     
     $rootScope.emailData = {}
+    $rootScope.emailData.subType = name;
     $rootScope.emailData.type = type;
     $rootScope.emailData.filePath = (type === 'Laboratory') ? docInfo.lab_pdf_report[0].pdf_report 
     : (type === 'Radiology') ? docInfo.pdf_report[0].pathname : "";
@@ -13216,7 +13222,7 @@ app.controller("topHeaderController",["$scope","$rootScope","$window","$location
           + "<b>FINDINGS: </b><br>"
           + "<span>" + (docInfo.findings || '') + "</span><br><br>"          
           + "<b>CONCLUSION: </b><br><span>" + (docInfo.conclusion || '') + "<br><br>"
-          + "<b>ADVISE: </b><br>"
+          + "<b>ADVISE/Further Investigations: </b><br>"
           + "<span>" + (docInfo.advise || "") + "</span><br><br>"
           + "<p>Please view or download attached report below (PDF). </p><br>"
           + "<div style='font-size: 14px'>The above Investigation(s) was written in www.applinic.com (Online Healthcare Application).<br><br><a href='https://applinic.com/signup' style='text-decoration:none'>Create an account for free" +  
@@ -18907,24 +18913,7 @@ app.controller("ultraSoundOutCtrl",["$scope","$http","UltraSounds","getAllRadiol
   $scope.treatment.patientType = "mine";
   $scope.treatment.referral_pays = "No";
 
-  /*$scope.getTest = function (test) {
-    test_name = test;
-    if($scope.TestList.length === 1)
-      $scope.TestList[0].name = test;
-    if( $scope.TestList.length > 1)
-      $scope.TestList[index].name = test;
-  }*/
-
-  //$scope.tests = UltraSounds;
-
-  /*$http({
-    method  : "GET",
-    url     : "/user/getSpecialTestsRadio", //gets special tests from backend     
-    headers : {'Content-Type': 'application/json'} 
-    })
-  .success(function(response) {   
-    $scope.tests = $scope.tests.concat(response);
-  });*/
+  
 
   $scope.TestList = [{
     sn: 1,
@@ -19138,11 +19127,11 @@ app.controller("ultraSoundOutCtrl",["$scope","$http","UltraSounds","getAllRadiol
     })
   }
 
-}])
+}]);
 
 
-app.controller("ultraSoundReportCtrl",["$scope","$http","$location",
-  function($scope,$http,$location){ 
+app.controller("ultraSoundReportCtrl",["$scope","$http","$location","localManager",
+  function($scope,$http,$location,localManager){ 
     var path = $location.path();
     var arr = path.split("/");  
     var refId = arr[arr.length-1];
@@ -19152,7 +19141,7 @@ app.controller("ultraSoundReportCtrl",["$scope","$http","$location",
     $http.get("/user/radiology/get-referral",{params:{refId: refId}})
     .success(function(data){
       $scope.ultraRefData = data;
-    })
+    });
 
 
     $scope.preview = function(study) {
@@ -19232,7 +19221,10 @@ app.controller("ultraSoundReportCtrl",["$scope","$http","$location",
           if(!response.status){
             alert(response.message);
             $scope.loading = false;         
-          } else {          
+          } else {  
+            localManager.setValue("currentPage",path)
+            localManager.setValue("currPageForRadiology",path)
+            localManager.setValue('templatePath',window.location.href)        
             window.location.href = response.path;
           }
         });
@@ -19314,6 +19306,317 @@ app.controller("ultraSoundReportCtrl",["$scope","$http","$location",
     
     $('#files').change(handleFileSelect);
 }])
+
+app.controller("e-caseUltrasoundCtrl",["$scope","$http","$rootScope","$location",
+  "templateService","ModalService","templateService","$timeout",
+  function($scope,$http,$rootScope,$location,templateService,ModalService,templateService,$timeout){
+
+  var path = $location.path();
+  var arr = path.split("/");  
+  var userId = arr[arr.length-1];
+  $scope.radiology = {};
+  
+
+  $scope.radiology.isSorted = false;
+
+
+  $scope.supported = false;
+
+  $scope.copy = "";
+
+  $scope.success = function (test) {
+    test.copy = 'Copied!';
+    $timeout(function(){
+      test.copy = "";
+    },2000)
+  };
+
+
+  $scope.fail = function (err) {
+    console.error('Error!', err);
+  };
+
+  function getPatientData() {
+    $scope.loading = true;
+    $http.get("/user/doctor/specific-patient",{params: {id: userId}})
+    .success(function(data){
+      console.log(data)
+      $scope.loading = false;
+      $scope.patientInfo = data;
+      $scope.labTest = data.medical_records.ultrasound_test;
+      if($scope.radiology.isSorted){
+        sortByRefered()
+      }
+    })
+  }
+
+  getPatientData();
+
+  $scope.writeInvestigation = function() {
+    $rootScope.holdPatientDatails = {
+      firstname: $scope.patientInfo.firstname,
+      lastname: $scope.patientInfo.lastname,
+      title: $scope.patientInfo.title,
+      age: $scope.patientInfo.age,
+      gender: $scope.patientInfo.gender,
+      phone: $scope.patientInfo.phone,
+      city: $scope.patientInfo.city,
+      patient_id: $scope.patientInfo.user_id,
+      patient_profile_pic_url: $scope.patientInfo.profile_pic_url,
+      address: $scope.patientInfo.address,
+      type: $scope.patientInfo.type
+    }
+
+    ModalService.showModal({
+        templateUrl: 'write-ultrasound-ecase.html',
+        controller: 'ultrasoundModalController'
+    }).then(function(modal) {
+        modal.element.modal();
+        modal.close.then(function(result) {             
+        });
+    });
+  }
+
+  $scope.$watch("radiology.isSorted",function(newVal,oldVal){
+    if(newVal){
+      sortByRefered()
+    }
+  })
+
+  function sortByRefered() {
+    var filter = {};
+    var mineArr = [];
+    var othersArr = [];   
+    //remember referral_id field was not initially added in the db data for radiology when doctor refers for investigation. I was later added by me.
+    $scope.labTest.forEach(function(test){
+      if(test.referral_id === $rootScope.checkLogIn.user_id){
+        mineArr.push(test)
+      } else {
+
+        if(!test.referral_id) {
+          test.referral_id = test.referral_firstname;
+        }
+
+        if(!filter.hasOwnProperty(test.referral_id)){
+          filter[test.referral_id] = test.referral_id;
+          filter["firstname"] = test.referral_firstname;
+          filter["lastname"] = "";
+          filter["title"] = test.referral_title;
+          filter["specialty"] = "";
+          filter["profilePic"] = "";
+          filter["profile"] = "/user/profile/view/" + test.referral_id;
+          filter["tests"] = [test];
+        } else {
+          filter["tests"].push(test)
+        }
+      }
+    })
+
+    othersArr.push(filter)
+
+    $scope.sortedRadiology = {
+      mine: mineArr,
+      others: othersArr
+    };
+
+  }
+
+  $rootScope.$on('new medication',function(e,data){
+    getPatientData()
+  });
+
+   //patient forward test to another center.
+ /* $scope.forwardTest = function(testObj,type) {
+    testObj.type = type;
+    $rootScope.holdTestToRun = testObj.test_to_run;
+    var newArr = [] ;
+    for(var i = 0; i < testObj.test_to_run.length; i++){
+      if(testObj.test_to_run[i].picked) {
+        newArr.push(testObj.test_to_run[i]);
+      }
+    }
+
+    if(newArr.length > 0){
+      testObj.test_to_run = newArr;
+    }
+
+    templateService.holdTestToBeForwarded = testObj;
+    $location.path("/patient/forward-test");
+  } */
+
+  $scope.viewImage = function(arr) {
+    $rootScope.files = arr;
+    ModalService.showModal({
+        templateUrl: 'image-viewer.html',
+        controller: "viewerModalController"
+      }).then(function(modal) {
+        modal.element.modal();
+        modal.close.then(function(result) {             
+      });
+    });
+  }
+
+}]);
+
+
+app.controller("ultrasoundModalController",["$scope","$http","UltraSounds","getAllRadiologyService","$rootScope",
+  function($scope,$http,UltraSounds,getAllRadiologyService,$rootScope){
+
+  var test_name;
+  var index;
+
+  $scope.treatment = {};
+
+  $scope.treatment.patientType = "mine";
+  $scope.treatment.referral_pays = "No";
+
+  $scope.TestList = [{
+    sn: 1,
+    name: ""
+  }];
+
+  $scope.addTest = function(){  
+    $scope.TestList.push({
+      sn: $scope.TestList.length + 1,
+      name: ""
+    });
+   
+  }
+
+  $scope.removeTest = function() {   
+    $scope.TestList.pop();    
+  }
+
+  $scope.treatment.patient_title = $rootScope.holdPatientDatails.title;
+  $scope.treatment.patient_firstname = $rootScope.holdPatientDatails.firstname;
+  $scope.treatment.patient_lastname = $rootScope.holdPatientDatails.lastname;
+  $scope.treatment.patient_gender = $rootScope.holdPatientDatails.gender;
+  $scope.treatment.patient_age = $rootScope.holdPatientDatails.age;
+  $scope.treatment.patient_phone = $rootScope.holdPatientDatails.phone;
+  $scope.treatment.patient_id = $rootScope.holdPatientDatails.patient_id;
+  $rootScope.holdPatientDatails.user_id = $rootScope.holdPatientDatails.patient_id;
+  $rootScope.holdPatientDatails.profile_pic_url = $rootScope.holdPatientDatails.patient_profile_pic_url;
+  $scope.treatment.patientDetails = $rootScope.holdPatientDatails;
+
+
+  $scope.goBack = function() {
+    $scope.isSearchToSend = false;
+    $scope.isNewPatient = false;
+    $scope.isNewLab = true;
+  }
+
+  $scope.findLabs = function() {
+    getRadiologies();
+  }
+
+  getRadiologies();
+
+  
+
+  $scope.countIndex = 0;
+  $scope.countIndex2 = 0;
+
+  $scope.sendTest = function(center,isDoctor){
+
+    if(!$scope.TestList[$scope.countIndex].name){
+      center.loading = false;
+      alert("One of the investigations has no name. Please go back and enter the name.")
+      return;
+    }
+
+    center.loading = true;
+    var testArr = [];      
+    testArr.push({
+      name: $scope.TestList[$scope.countIndex].name,
+      sn: $scope.TestList[$scope.countIndex].sn
+    });
+
+    $scope.countIndex++;
+
+    if(isDoctor){
+      $scope.treatment.isRequestToDoctor = true;
+    }
+
+    sendIndividualTests(center,testArr,$scope.countIndex);
+  }
+
+  $scope.sendTest2 = function(center,isDoctor) {
+    if(!$scope.TestList[$scope.countIndex2].name){
+      center.loading = false;
+      alert("One of the investigations has no name. Please go back and enter the name.")
+      return;
+    }
+
+    center.loading = true;
+    var testArr = [];      
+    testArr.push({
+      name: $scope.TestList[$scope.countIndex2].name,
+      sn: $scope.TestList[$scope.countIndex2].sn
+    });
+
+    $scope.countIndex2++;
+
+    if(isDoctor){
+      $scope.treatment.isRequestToDoctor = true;
+    }
+
+    sendIndividualTests(center,testArr,$scope.countIndex2);
+  }
+
+  function sendIndividualTests(center,testArr,count) {
+    center.loading = true;
+    $scope.treatment.isCaseNoteRequest = true;
+    $scope.treatment.centerDetails = center;
+    $scope.treatment.lab_test_list = testArr;
+    $scope.treatment.ray_type = "ultrasound";
+    $scope.treatment.date = new Date();
+    $http({
+      method  : 'POST',
+      url     : "/user/doctor/ultrasound/send-test",
+      data    : $scope.treatment,
+      headers : {'Content-Type': 'application/json'} 
+    })
+    .success(function(response) {
+      if(response.success) {
+        if($scope.TestList.length > count){
+          $scope.sendTest(center)
+        } else {
+          center.isSent = true;
+          center.loading = false;
+          $scope.countIndex = 0;
+          $scope.countIndex2 = 0;
+          $rootScope.$broadcast("new medication",{status:true})
+        }
+       
+      } else {
+        alert("Oops! Something went wrong. Please try again.");
+      }
+     
+    })
+  }
+
+  function getRadiologies() {
+    $scope.loading = true;
+    $scope.city = $scope.city || $rootScope.checkLogIn.city;
+    var source = getAllRadiologyService; 
+    source.query({city:$scope.city},function(list){
+      $scope.loading = false;
+      $scope.searchResult = list;
+    });
+
+    getDoctors($scope.city)
+  }
+
+  function getDoctors() {
+    $http.get("/user/getAllDoctor",{params:{city: $scope.city}})
+    .success(function(docs){
+      $scope.searchResult2 = docs;
+    })
+  }
+
+}]);
+
+
 
 
 app.factory("UltraSounds",function(){

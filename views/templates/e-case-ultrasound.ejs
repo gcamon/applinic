@@ -1,6 +1,6 @@
 
 
-<script type="text/ng-template" id='e-case-radiology.html'>
+<script type="text/ng-template" id='e-case-ultrasound.html'>
 <div class="card-center-1">
     <a href="#{{'/doctor-patient/treatment/' + patientInfo.user_id}}" class="btn btn-neutral"><i class="fa fa-arrow-left"></i> Back</a>
 </div>
@@ -29,7 +29,7 @@
 		<option value="{{'/e-case-prescription/' + patientInfo.user_id}}">Prescription</option>
 		<option value="{{'/e-case-laboratory/' + patientInfo.user_id}}">Laboratory</option>
 		<option value="{{'/e-case-radiology/' + patientInfo.user_id}}">Radiology</option>
-		<option value="{{'/e-case-ultra-sound/ + patientInfo.user_id'}}">Ultra-Sound</option>
+		<option value="{{'/e-case-ultrasound/ + patientInfo.user_id'}}">Ultra-Sound</option>
 		<option value="{{'/e-case-ecg/' + patientInfo.user_id}}">ECG</option>
 		<option value="{{'/e-case-endoscopy/' + patientInfo.user_id}}">Endoscopy</option>
 		<option value="{{'/e-case-other-procedures/' + patientInfo.user_id}}">Other Procedures</option>
@@ -43,7 +43,7 @@
 </div>
 
 <div class="card-center-1 pr-1 mt-2" style="position: relative;">
-	<h5 class="h6">Radiology <span>({{labTest.length}})</span></h5>
+	<h5 class="h6">Ultrasound <span>({{labTest.length}})</span></h5>
 	<button class="btn btn-primary" ng-click="writeInvestigation()" style="position: absolute;top: 0px; right: 10px">New</button>
 	<label>
 		<label class="custom-control custom-checkbox">
@@ -125,11 +125,13 @@
 
 					<a href="{{test.pdf_report[0].pathname}}" ng-show="test.receive_date" title="Download report (PDF)" class="btn btn-simple btn-sm text-primary"><i class="fa fa-download"></i></a><span ng-show="test.receive_date">&nbsp;&nbsp;</span>
 
-					<a href="" title="Forward report to someone via email" ng-show="test.receive_date" class="btn btn-sm btn-simple text-primary"><i class="fa fa-share-alt" ng-click="email(test,'Radiology',patientInfo.firstname,patientInfo.lastname,patientInfo.age,patientInfo.gender)"></i></a><span ng-show="test.receive_date">&nbsp;&nbsp;</span>				
+					<a href="" title="Forward report to someone via email" ng-show="test.receive_date" class="btn btn-sm btn-simple text-primary"><i class="fa fa-share-alt" ng-click="email(test,'Radiology',patientInfo.firstname,patientInfo.lastname,patientInfo.age,patientInfo.gender,'Ultrasound')"></i></a><span ng-show="test.receive_date">&nbsp;&nbsp;</span>				
 					
-	        		<a href="{{'/dicom-mobile?id=' + test.study_id}}" ng-show="test.patient_id_of_study" class="btn btn-simple btn-sm text-primary hidden-md-up" target="_blank"><i class="fa fa-eye"></i></a><a href="{{'/dcm?id=' + test.patient_id_of_study + '&key=' + test.study_id}}" ng-show="test.patient_id_of_study" class="btn btn-simple btn-sm hidden-md-down text-primary" target="_blank"><i class="fa fa-eye"></i></a>
+	        		<!--<a href="{{'/dicom-mobile?id=' + test.study_id}}" ng-show="test.patient_id_of_study" class="btn btn-simple btn-sm text-primary hidden-md-up" target="_blank"><i class="fa fa-eye"></i></a><a href="{{'/dcm?id=' + test.patient_id_of_study + '&key=' + test.study_id}}" ng-show="test.patient_id_of_study" class="btn btn-simple btn-sm hidden-md-down text-primary" target="_blank"><i class="fa fa-eye"></i></a>-->
 
-	        		<a href="" style="position: absolute;bottom: 0;right: 10px"><i class="fa fa-share btn btn-simple btn-sm text-primary" aria-hidden="true"  title="Forward to another center to re-run test" ng-click="forwardTest(test,'Radiology')"></i></a>
+	        		<!--<a href="" style="position: absolute;bottom: 0;right: 10px"><i class="fa fa-share btn btn-simple btn-sm text-primary" aria-hidden="true"  title="Forward to another center to re-run test" ng-click="forwardTest(test,'Radiology')"></i></a>-->
+
+	        		<a href="" ng-click="viewImage(test.files)" style="position: absolute;bottom: 0;right: 10px" class="text-info" ng-show="test.files.length > 0">See images</a>
 	        	</div>
 	        </div>
 		</div>

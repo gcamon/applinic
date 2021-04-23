@@ -1179,6 +1179,7 @@ router.put("/user/laboratory/test-result/session-update",function(req,res){
 	          objectFound.test_ran_by = req.user.name;
 	          objectFound.receive_date = req.body.laboratory.date;
 	          objectFound.indication = req.body.laboratory.indication;
+	          objectFound.summary = req.body.laboratory.clinical_summary || "";
 	          objectFound.lab_pdf_report.unshift({date:dt,pdf_report: pdfPath});
 	          objectFound.payment_acknowledgement = true;
 

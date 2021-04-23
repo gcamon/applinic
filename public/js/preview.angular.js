@@ -19,7 +19,7 @@
 		var tempField = angular.element(document.getElementById('tempField'))
 
 		$scope.submitReport = function(id,uid) {
-			var url = '/study/' + study.uid + "/" + id;
+			var url = '/study/' + uid + "/" + id;
 		  var htm = tempField.html();
 
 		  $scope.loading = true;
@@ -39,7 +39,7 @@
 		   
 		}
 
-		$scope.back = localManager.getValue('studyPath');
+		$scope.back = localManager.getValue('templatePath');
 		
 	}]);
 

@@ -259,7 +259,7 @@
 <body ng-app="myApp">
     <div  ng-controller="previewCtrl" style="width: 65%;margin: 40px auto">
         <div>
-            <a href="" class="btn btn-simple"><i class="fa fa-arrow-left"></i> Go back</a>
+            <a href="{{back}}" class="btn btn-simple"><i class="fa fa-arrow-left"></i> Go back</a>
         </div>
         <div>
             <button class="btn btn-primary btn-block" ng-click="submitReport('<%= _id %>')" ng-show="!loading && !msg">Save &amp; Submit Report</button>
@@ -269,12 +269,12 @@
                 <a href="{{back}}"><i class="fa fa-arrow-left"></i> Go back</a>
            </p>
         </div>
-        <div class="card" id="tempField"><table><thead><th style="width: 48%;padding: 0px 20px"> <img src="<%= reporter_profilePic %>" style="width: 120px;height: auto;"></th><th style="width: 52%"><div style="text-align: left;padding:3px 20px;margin-top: 10px"><div><h3 class="h6 p-0 mb-0"><b><%= reporter_name %></b></h3> <span class="block"><%= reporter_specialty%></span> <span class="block"><%= reporter_work_place %></span> <span class="block"><%= reporter_address %></span> <span class="block"><%= reporter_email %></span> <span class="block"><%= reporter_phone %></span></div></div></th></thead></table><h4 style="text-align: center;" class="pt-2 pb-0 mb-0"><b><%= radiology.test_to_run[0].name %> Report</b></h4><p style="text-align: center;"><b><%= moment(date).format("dddd, MMMM Do YYYY, h:mm a")%></b></p><table><tbody><td style="width: 48%"><div style="padding: 20px"> <span><b>Patient Name: </b> <%= radiology.patient_title %> <%= radiology.patient_firstname %> <%= radiology.patient_lastname %></span><br> <span><b>Sex: </b> <%= radiology.patient_gender %></span><br> <span><b>Age: </b> <%= radiology.patient_age %></span><br> <span><b>Phone: </b> <%= radiology.patient_phone %></span><br></div></td><td style="width: 52%"><div style="padding: 20px"> <span><b>Ref No: </b> <%= ref_id %></span><br> <span><b>Study Name: </b> <%= radiology.test_to_run[0].name %></span><br> <span><b>Date Requested: </b> <%= moment(date).format("dddd, MMMM Do YYYY, h:mm a") %></span><br> <span><b>Date Reported: </b> <%= moment(radiology.report_date).format("dddd, MMMM Do YYYY, h:mm a") %></span><br> <span><b>Referring Physician: </b> <%= radiology.doctor_firstname %></span></div></td></tbody></table><div style="padding:20px"><h6><b>Clinical Information:</b></h6><p style="margin-top: 10px"><b>Indication: </b><br> <%= radiology.indication %></p><p style="margin-top: 10px"><b>Summary: </b><br> <%= radiology.clinical_summary %></p> <% if(radiology.parity) { %><p style="margin-top: 10px"><b>Parity: </b><br> <%= radiology.parity || "N/A" %></p> <% } %> <% if(radiology.lmp) { %><p style="margin-top: 10px"><b>LMP: </b><br> <%= radiology.lmp || "N/A" %></p> <% } %></div><div style="padding: 0 20px"><h6><b>Findings:</b></h6><p><%= radiology.findings %></p></div><div style="padding: 0 20px;margin-top: 20px"><h6><b>Conclusion:</b></h6><p><%= radiology.conclusion %></p></div><% if(radiology.drugs) { %><div style="padding: 0 20px;margin-top: 20px"><h6><b>Drugs:</b></h6><p><%= radiology.drugs %></p></div> <% } %><div style="padding: 0 20px;margin-top: 20px"><h6><b>Advice/Further investigations:</b></h6><p><%= radiology.advice %></p></div><div style="padding: 0 20px;margin-top: 70px;margin-bottom: 40px"><div> <label>Digitally signed by:</label><br> <span><b><%= reporter_name %></b></span><br> <span><%= reporter_specialty %></span></div></div><div style="margin-top: 20px;padding: 0 20px"> <% for(var i = 0; i < radiology.sample_files.length; i++) { %><div style="margin-bottom: 20px"> <label><%= radiology.sample_files[i].originalname %></label><div style="text-align: center"> <img src="<%= radiology.sample_files[i].path %>" style="max-width: 72%; height: auto;"></div></div> <% } %></div><div style="text-align: right;padding: 40px"> <img src="https://applinic.com/assets/images/Logo.png" style="width: 120px;height: auto;"><br> <a href="https://applinic.com">www.applinic.com</a></div></div>
+        <div class="card" id="tempField"><table><thead><th style="width: 48%;padding: 0px 20px"> <img src="<%= reporter_profilePic %>" style="max-width: 120px;height: auto;"></th><th style="width: 52%"><div style="text-align: left;padding:3px 20px;margin-top: 10px"><div><h3 style="font-size: 18px;padding: 0;margin-bottom: 0"><b><%= reporter_name %></b></h3> <span class="block"><%= reporter_specialty%></span> <span class="block"><%= reporter_work_place %></span> <span class="block"><%= reporter_address %></span> <span class="block"><%= reporter_email %></span> <span class="block"><%= reporter_phone %></span></div></div></th></thead></table><h4 style="text-align: center;padding-top: 20px; padding-bottom: 0; margin-bottom: 0"><b><%= radiology.test_to_run[0].name %> Report</b></h4><p style="text-align: center;"><b><%= moment(date).format("dddd, MMMM Do YYYY, h:mm a")%></b></p><table><tbody><td style="width: 48%"><div style="padding: 20px"> <span><b>Patient Name: </b> <%= radiology.patient_title %> <%= radiology.patient_firstname %> <%= radiology.patient_lastname %></span><br> <span><b>Sex: </b> <%= radiology.patient_gender %></span><br> <span><b>Age: </b> <%= radiology.patient_age %></span><br> <span><b>Phone: </b> <%= radiology.patient_phone %></span><br></div></td><td style="width: 52%"><div style="padding: 20px"> <span><b>Ref No: </b> <%= ref_id %></span><br> <span><b>Study Name: </b> <%= radiology.test_to_run[0].name %></span><br> <span><b>Date Requested: </b> <%= moment(date).format("dddd, MMMM Do YYYY, h:mm a") %></span><br> <span><b>Date Reported: </b> <%= moment(radiology.report_date).format("dddd, MMMM Do YYYY, h:mm a") %></span><br> <span><b>Referring Physician: </b> <%= radiology.doctor_firstname %></span></div></td></tbody></table><div style="padding:20px"><h6><b>Clinical Information:</b></h6><p style="margin-top: 10px"><b>Indication: </b><br> <%= radiology.indication %></p><p style="margin-top: 10px"><b>Summary: </b><br> <%= radiology.clinical_summary %></p> <% if(radiology.parity) { %><p style="margin-top: 10px"><b>Parity: </b><br> <%= radiology.parity || "N/A" %></p> <% } %> <% if(radiology.lmp) { %><p style="margin-top: 10px"><b>LMP: </b><br> <%= radiology.lmp || "N/A" %></p> <% } %></div><div style="padding: 0 20px"><h6><b>Findings:</b></h6><p><%= radiology.findings %></p></div><div style="padding: 0 20px;margin-top: 20px"><h6><b>Conclusion:</b></h6><p><%= radiology.conclusion %></p></div><% if(radiology.drugs) { %><div style="padding: 0 20px;margin-top: 20px"><h6><b>Drugs:</b></h6><p><%= radiology.drugs %></p></div> <% } %><div style="padding: 0 20px;margin-top: 20px"><h6><b>Advice/Further investigations:</b></h6><p><%= radiology.advice %></p></div><div style="padding: 0 20px;margin-top: 70px;margin-bottom: 40px"><div> <label>Digitally signed by:</label><br> <span><b><%= radiology.staffname %></b></span><br> <span><%= radiology.designation %></span></div></div><div style="margin-top: 20px;padding: 0 20px"> <% for(var i = 0; i < radiology.sample_files.length; i++) { %><div style="margin-bottom: 20px"> <label><%= radiology.sample_files[i].originalname %></label><div style="text-align: center"> <img src="<%= radiology.sample_files[i].path %>" style="max-width: 95%; height: auto;"></div></div> <% } %></div><div style="text-align: right;padding: 40px"> <img src="https://applinic.com/assets/images/Logo.png" style="width: 120px;height: auto;"><br> <a href="https://applinic.com">www.applinic.com</a></div></div>
         <!--<div class="card" id="tempField"> 
                 <table> 
                    <thead>
                        <th style="width: 48%;padding: 0px 20px">
-                           <img src="<%= reporter_profilePic %>" style="width: 120px;height: auto;">
+                           <img src="<%= reporter_profilePic %>">
                        </th>
                         <th style="width: 52%">
                            <div style="text-align: left;padding:20px;margin-top: 10px">
@@ -291,7 +291,7 @@
                        </th>
                    </thead>                              
                 </table>
-                <h4 style="text-align: center;" class="pt-2 pb-0 mb-0"><b><%= radiology.test_to_run[0].name %> Report</b></h4>
+                <h4 style="text-align: center; padding-top: 20px; padding-bottom: 0; margin-bottom: 0"><b><%= radiology.test_to_run[0].name %> Report</b></h4>
                 <p style="text-align: center;"><b><%= moment(date).format("dddd, MMMM Do YYYY, h:mm a")%></b></p>
                 <table>
                     <tbody>                                        
@@ -350,8 +350,8 @@
                 <div style="padding: 0 20px;margin-top: 70px;margin-bottom: 40px">
                     <div>
                         <label>Digitally signed by:</label><br>
-                        <span><b><%= reporter_name %></b></span><br>
-                        <span><%= reporter_specialty %></span>
+                        <span><b><%= radiology.staffname %></b></span><br>
+                        <span><%= radiology.designation %></span>
                     </div>
                 </div> 
 
@@ -360,7 +360,7 @@
                         <div style="margin-bottom: 20px">
                             <label><%= radiology.sample_files[i].originalname %></label>
                             <div style="text-align: center">
-                                <img src="<%= radiology.sample_files[i].path %>"  style="max-width: 72%; height: auto;">
+                                <img src="<%= radiology.sample_files[i].path %>"  style="max-width: 95%; height: auto;">
                             </div>
                         </div>
                     <% } %>

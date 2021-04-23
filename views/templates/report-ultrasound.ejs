@@ -145,17 +145,27 @@ button:focus {
         <br>
         <div>
             <label>Findings:</label><br>
-            <textarea class="form-control pl-1" style="height: 120px"  placeholder="Write" ng-model="ultraRefData.radiology.findings" required></textarea>
+            <textarea class="form-control pl-1" style="height: 150px"  placeholder="Write" ng-model="ultraRefData.radiology.findings" required></textarea>
         </div>
         <br>
         <div>
             <label>Conclusion:</label><br>
-            <textarea class="form-control pl-1" style="height: 120px" placeholder="Write" ng-model="ultraRefData.radiology.conclusion" required></textarea>
+            <textarea class="form-control pl-1" style="height: 150px" placeholder="Write" ng-model="ultraRefData.radiology.conclusion" required></textarea>
         </div>
         <br>
         <div>
             <label>Advice/Further Investigations:</label><br>
-            <textarea class="form-control pl-1" style="height: 120px" placeholder="Write" ng-model="ultraRefData.radiology.advice" required></textarea>
+            <textarea class="form-control pl-1" style="height: 150px" placeholder="Write" ng-model="ultraRefData.radiology.advice" required></textarea>
+        </div>
+        <br>
+        <div>
+            <label>Your Full Name:</label><br>
+            <input type="text" name="fullname" class="form-control" ng-model="ultraRefData.radiology.staffname" required>
+        </div>
+        <br>
+        <div>
+            <label>Your Designation or Specialty:</label><br>
+            <input type="text" name="designation" class="form-control" ng-model="ultraRefData.radiology.designation"  required>
         </div>
         <br>
         <!--<div>

@@ -78,9 +78,9 @@
               
             </a>
 
-            <a href="#{{'/e-case-ultra-sound/ + patientInfo.user_id'}}" class="ick grayish"  ng-show="patientInfo.gender == 'Female'" ng-class="{'btn-info': isToViewLabPrescriptionReq}" style="position:relative;padding: 15px 10px">
+            <a href="#{{'/e-case-ultrasound/' + patientInfo.user_id}}" class="ick grayish" ng-class="{'btn-info': isToViewLabPrescriptionReq}" style="position:relative;padding: 15px 10px">
               <i class="fa fa-radiation-alt text-primary">
-              </i> Ultra-Sound   <span>( {{patientInfo.medical_records.ultra_sound_result.length}} )</span> 
+              </i> Ultra-Sound   <span>( {{patientInfo.medical_records.ultrasound_test.length}} )</span> 
                <span class="fa fa-arrow-right text-muted text-primary" style="position: absolute;right: 10px;bottom: auto;"></span>
                 
             </a>
