@@ -6472,7 +6472,9 @@ var basicRoute = function (model,sms,io,streams,client,transporter,opentok) {
               session_id: req.body.session_id,
               test_id: testId,
               report: "Pending",
-              conclusion: "Pending"
+              conclusion: "Pending",
+              indication: req.body.indication,
+              summary: req.body.clinical_summary
             }
 
             var noteObj = {
