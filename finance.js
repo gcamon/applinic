@@ -3054,8 +3054,10 @@ router.post("/user/dicom-details",function(req,res){
 	            + "<b>Phone:</b> " + req.user.phone + "<br><br>"
 	            + "<b>Web Viewer DICOM URL:</b><br> " + webView + "<br>"
 	            + "<b>Mobile Device DICOM Viewer URL:</b> <br> " + mobileView + "<br>"
-	            + "<b>Report Template URL:</b> <span style='font-style:italic'>( Use this template to enter your report )</span> <br>" + tempLink + "<br><br>"	
-	            + "<p><a href=''>Download study folder from PACs Archive</a></p><br><br>"          
+	            + "<b>Report Template URL:</b> <span style='font-style:italic'>( Use this template to enter your report )</span> <br>" + tempLink + "<br>"	
+	            + "<p><a href='http://167.71.149.196:8080/dcm4chee-web3/'>You can the download study folder</a> from PACs archive and open with any dicom viewer installed in your PC</p>" 
+	            + "<b>Username:</b> nauth <br>"
+	            + "<b>Password:</b> nauth1234 <br><br>"        
 	            + "Thank you! <br><br> <b>Applinic Team</b>" 
 	            + '</td></tr></table>'
 	          };
@@ -3070,7 +3072,7 @@ router.post("/user/dicom-details",function(req,res){
 
           }
 
-          console.log(req.body.reporters)
+
           var reporterEmailList = [];
           if(req.body.reporters) {
           	req.body.reporters.forEach(function(reporter){
