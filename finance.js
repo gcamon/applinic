@@ -3054,7 +3054,8 @@ router.post("/user/dicom-details",function(req,res){
 	            + "<b>Phone:</b> " + req.user.phone + "<br><br>"
 	            + "<b>Web Viewer DICOM URL:</b><br> " + webView + "<br>"
 	            + "<b>Mobile Device DICOM Viewer URL:</b> <br> " + mobileView + "<br>"
-	            + "<b>Report Template URL:</b> <span style='font-style:italic'>( Use this template to enter your findings )</span> <br>" + tempLink + "<br><br>"	          
+	            + "<b>Report Template URL:</b> <span style='font-style:italic'>( Use this template to enter your report )</span> <br>" + tempLink + "<br><br>"	
+	            + "<p><a href=''>Download study folder from PACs Archive</a></p><br><br>"          
 	            + "Thank you! <br><br> <b>Applinic Team</b>" 
 	            + '</td></tr></table>'
 	          };
@@ -3069,12 +3070,13 @@ router.post("/user/dicom-details",function(req,res){
 
           }
 
-
+          console.log(req.body.reporters)
+          var reporterEmailList = [];
           if(req.body.reporters) {
           	req.body.reporters.forEach(function(reporter){
           		tempLink = "https://applinic.com/report-template/" + reporter.id + "/" + study._id;
-          		reporterEmail = reporter.email;
-          		radioEmail(tempLink,reporterEmail)
+          		reporterEmailList.push(reporter.email);
+          		radioEmail(tempLink,reporterEmailList)
           	})	          	
           }
 

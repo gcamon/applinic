@@ -13274,10 +13274,13 @@ router.post("/user/reporting-radiologist",function(req,res){
       if(err) throw err;
       if(data) {
         req.body.id = randos.genRef(8);
+        if(req.body.isGroup){
+          req.body.members = [];
+        }
         data.reporters.push(req.body);
         data.save(function(err,inf){
           if(err) throw err;
-          res.json({message: "Radiologist added successfully.",status: true})
+          res.json({message: "Radiologist added successfully.",status: true,details: req.body})
         });
       } else {
         res.end("User not found");
@@ -13290,16 +13293,56 @@ router.post("/user/reporting-radiologist",function(req,res){
 
 router.put("/user/reporting-radiologist",function(req,res){
   if(req.user) {
+    console.log(req.body)
     model.user.findOne({user_id: req.user.user_id})
     .exec(function(err,data){
       if(err) throw err;
       if(data) {
-        var elem = data.reporters.map(function(x){return x.id}).indexOf(req.body.id);
+        var id = (req.body.parentId) ? req.body.parentId : req.body.id;
+        var elem = data.reporters.map(function(x){return x.id}).indexOf(id);
         if(elem !== -1) {
-          data.reporters.splice(elem,1)
-          data.reporters.push(req.body);
+          if(req.body.isMultiple){
+            var elemPos = data.reporters[elem].members.map(function(x){return x.id}).indexOf(req.body.id)
+            if(elemPos !== -1){
+              data.reporters[elem].members[elemPos] = req.body;
+              //data.reporters[elem].members.push(req.body)
+              data.reporters.push({});
+              data.reporters.pop();
+            } 
+          } else {
+            data.reporters[elem] = req.body;
+            data.reporters.push({});
+            data.reporters.pop();
+            //data.reporters.push(req.body);
+          }
         } else if (req.body.id && req.body.name) {
           data.reporters.push(req.body);
+        }
+        data.save(function(err,inf){
+          if(err) throw err;
+          res.json({message: "Radiologist updated successfully.",status: true, radiologist: req.body})
+        });
+      } else {
+        res.end("User not found");
+      }
+    })
+  } else {
+    res.end("unauthorized access");
+  }
+});
+
+router.patch("/user/reporting-radiologist",function(req,res){
+  if(req.user) {
+    model.user.findOne({user_id: req.user.user_id})
+    .exec(function(err,data){
+      if(err) throw err;
+      if(data) {
+        var elemPos = data.reporters.map(function(x){return x.id}).indexOf(req.body.id);
+        if(elemPos !== -1){
+          req.body.id = randos.genRef(8);
+          data.reporters[elemPos].members.push(req.body);
+          data.reporters.push({});
+          data.reporters.pop();
         }
 
         data.save(function(err,inf){

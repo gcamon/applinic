@@ -25426,12 +25426,17 @@ app.controller("dicomCtrl",["$rootScope","$scope","$location","$resource","$http
     $rootScope.station.reporters = [];
 
     for(var k = 0; k < $scope.radiologists.length; k++){
-      if($scope.radiologists[k].selected) {      
-        $rootScope.station.reporters.push($scope.radiologists[k]);
+      if($scope.radiologists[k].selected) {
+        if($scope.radiologists[k].members){     
+          $rootScope.station.reporters = $rootScope.station.reporters.concat($scope.radiologists[k].members)
+        }  else {
+          $rootScope.station.reporters.push($scope.radiologists[k]);
+        }     
+        
       }
     }
 
-    if($rootScope.station.reporters.length == 0) {
+    if($rootScope.station.reporters.length === 0) {
       alert("No reporting radiologist was selected. Please select who writes the study's report.");
       return;
     }
@@ -26111,20 +26116,27 @@ app.controller("tempCtrl",["$scope","$http",function($scope,$http){
 }]);
 
 
-app.controller("addRadiologistCtrl",["$scope","$http","$location","$rootScope",
-  function($scope,$http,$location,$rootScope){
+app.controller("addRadiologistCtrl",["$scope","$http","$location","$rootScope","ModalService",
+  function($scope,$http,$location,$rootScope,ModalService){
   $scope.radiologist = {};
   $scope.loading = true;
-  $http({
-    method  : 'GET',
-    url     : "/user/reporting-radiologist",
-    headers : {'Content-Type': 'application/json'} 
-    })
-  .success(function(data) {   
-     $scope.radiologists = data.reporters;
-     $scope.loading = false;
-     console.log(data)
-  }); 
+  $scope.isSingle = true;
+
+
+  function getRadiologists() {
+    $http({
+      method  : 'GET',
+      url     : "/user/reporting-radiologist",
+      headers : {'Content-Type': 'application/json'} 
+      })
+    .success(function(data) {   
+       $scope.radiologists = data.reporters;
+       $scope.loading = false;
+       console.log(data)
+    }); 
+  }
+
+  getRadiologists();
 
   $scope.addRadiologist = function() {
     $scope.loading = true;
@@ -26146,7 +26158,6 @@ app.controller("addRadiologistCtrl",["$scope","$http","$location","$rootScope",
       headers : {'Content-Type': 'application/json'} 
      })
     .success(function(response) {
-       console.log(response)
        if(response.status) {
          alert(response.message)
        } else {
@@ -26157,13 +26168,13 @@ app.controller("addRadiologistCtrl",["$scope","$http","$location","$rootScope",
     });          
   }
 
-  $scope.edit = function(id) {
-    var ls = $scope.radiologists || [];
-    var elem = ls.map(function(x){return x.id}).indexOf(id);
-    if(elem !== -1) {
-      $rootScope.radiologist1 = $scope.radiologists[elem] || {};
+  $scope.edit = function(radiologist,parentId) {
+      if(parentId){
+        radiologist.parentId = parentId;
+      }
+      $rootScope.radiologist1 = radiologist;
       $location.path('edit-radiologist');
-    }
+    
   }
 
   $scope.delete = function(radiologist) {
@@ -26204,8 +26215,7 @@ app.controller("addRadiologistCtrl",["$scope","$http","$location","$rootScope",
     }
   }
 
-  $scope.sendEdit = function() {
-   
+  $scope.sendEdit = function() {   
     if(!$rootScope.radiologist1.id) {
       alert("Oops! Seems this radiologist has been deleted or does not exist.")
       return;
@@ -26219,8 +26229,7 @@ app.controller("addRadiologistCtrl",["$scope","$http","$location","$rootScope",
       data    : $rootScope.radiologist1, //forms user object
       headers : {'Content-Type': 'application/json'} 
     })
-    .success(function(response) {
-      console.log(response)
+    .success(function(response) {     
       if(response.status) {
         alert(response.message)
         var elem = $scope.radiologists.map(function(x){return x.id}).indexOf($rootScope.radiologist1.id);
@@ -26234,14 +26243,97 @@ app.controller("addRadiologistCtrl",["$scope","$http","$location","$rootScope",
        alert(response.message)
       }
 
-     
       $scope.loading = false;      
     });          
   }
 
+  $scope.changeAddMethod = function() {
+    if($scope.isSingle){
+      $scope.isMultiple = true;
+      $scope.isSingle = false 
+    } else {
+      $scope.isMultiple = false;
+      $scope.isSingle = true
+    }
+  }
+
+  $scope.addGroup = function() {
+    $scope.radiologist.isGroup = true;
+    $scope.loading = true;
+    $http({
+      method  : 'POST',
+      url     : "/user/reporting-radiologist",
+      data    : $scope.radiologist, 
+      headers : {'Content-Type': 'application/json'} 
+     })
+    .success(function(response) {
+       if(response.status) {
+         alert(response.message)
+         $scope.radiologists.push(response.details)
+       } else {
+         alert(response.message)
+       }
+       $scope.radiologist.isGroup = false;
+       $scope.loading = false;      
+    });          
+  }
+
+  $scope.addMemberInGroup = function(groupId) {
+    $rootScope.groupId = groupId
+    ModalService.showModal({
+      templateUrl: 'add-radiology-model.html',
+      controller: 'addRadiologistModalCtrl'
+    }).then(function(modal) {
+      modal.element.modal();
+      modal.close.then(function(result) {             
+      });
+    });
+  }
+
+  $rootScope.$on('new radiologist',function(data){
+    getRadiologists();
+  })
+
 }]);
 
+app.controller('addRadiologistModalCtrl',["$scope","$http","$rootScope",
+  function($scope,$http,$rootScope){
+  $scope.radiologist = {};
+  $scope.addRadiologist = function() {
+    $scope.loading = true;
+    $scope.radiologist.isMultiple = true;
+    $scope.radiologist.id = $rootScope.groupId;
+    if($scope.radiologist.phone){
+      if($scope.radiologist.phone[0] == '0'){
+        var ext = $scope.radiologist.phone.slice(1);
+        $scope.radiologist.phone = "+234" +  ext;
+      }
 
+      if($scope.radiologist.phone[0] == '2') {
+        $scope.radiologist.phone = "+" + $scope.radiologist.phone;
+      }
+    }
+
+    $http({
+      method  : 'PATCH',
+      url     : "/user/reporting-radiologist",
+      data    : $scope.radiologist, //forms user object
+      headers : {'Content-Type': 'application/json'} 
+     })
+    .success(function(response) {
+       if(response.status) {
+         alert(response.message)
+         $rootScope.$broadcast('new radiologist',{status: true})
+         $scope.radiologist = {};
+       } else {
+         alert(response.message)
+       }
+
+       $scope.loading = false;      
+    });          
+  }
+
+}])
 
 
 app.controller("templatectrl",["$scope","$http","$filter","ModalService","$rootScope",

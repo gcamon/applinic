@@ -1633,9 +1633,9 @@
            
           </div>
         </div>
-     </script>
+      </script>
      
-   <script type="text/ng-template" id="stock-modal.html">
+      <script type="text/ng-template" id="stock-modal.html">
         <div class="modal fade">
           <div class="modal-dialog">
             <div class="modal-content">
@@ -1664,7 +1664,7 @@
             </div>
           </div>
         </div>
-     </script>
+      </script>
 
       <script type="text/ng-template" id="manageDICOMModal.html">
         <div class="modal fade">
@@ -1869,6 +1869,38 @@
           </div>
         </div>
      </script>
+
+     <script type="text/ng-template" id="add-radiology-model.html">
+        <div class="modal fade">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">            
+                <h5>Add Radiologist <span style="display: block;font-size: 14px">The radiologist who reports studies for your center.</span></h5>
+                <button type="button" class="close"  data-dismiss="modal" aria-hidden="true">&times;</button>          
+              </div>
+              <div class="modal-body">                
+                <form ng-submit="addRadiologist()">
+                  <label>Names of Radiologist *:</label><br>
+                  <input type="text" name="" placeholder="Full name" ng-model="radiologist.name" class="form-control" required><br>
+                  <label>Email of Radiologist *:</label><br>
+                  <input type="email" name="" placeholder="Email" ng-model="radiologist.email" class="form-control" required><br>
+                  <label>Phone Number of Radiologist:</label><br>
+                  <input type="text" name="" placeholder="Phone number" ng-model="radiologist.phone" class="form-control"><br>
+                  <label>Designation of Radiologist *:</label><br>
+                  <select ng-model="radiologist.designation" class="form-control" required>
+                    <option value="" selected disabled>_Select</option>
+                    <option>Consultant Radiologist</option>
+                    <option>Senior Registrar</option>
+                    <option>Registrar</option>
+                  </select><br>
+                  <input type="submit" name="" value="Add" class="btn btn-primary" ng-if="!loading">
+                  <span ng-if="loading"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange"></i></span>
+                </form>
+              </div>
+          </div>
+        </div>
+        </div>
+      </script>
 
 
 

@@ -5,22 +5,54 @@
 	<div class="row pb-2" ng-repeat="r in radiologists">
 		<div class="col-md-9">
 			<div class="col-md-7">
-				<span>{{r.name}}</span> 
+				<span class="block">{{r.name}}</span> 
+				<span class="text-muted">{{r.designation}}</span>
 			</div>
 			<div class="col-md-5">
 				<span>{{r.phone}}</span>
+				<button href="#{{'radiologists' + r.id}}" ng-show="r.members" class="text-info collapsed dropdown-toggle btn-neutral btn" role="button" data-toggle="collapse" data-parent="#accordion" aria-expanded="false" aria-controls="collapsefifty">{{r.members.length}} members</button>
 			</div>
 		</div>
 		<div class="col-md-3">
-			<i class="fa fa-pencil text-info btn btn-sm btn-neutral" ng-click="edit(r.id)"></i> &nbsp;
+			<i class="fa fa-pencil text-info btn btn-sm btn-neutral" ng-click="edit(r)"></i> &nbsp;
 			<i class="fa fa-trash-o btn btn-sm btn-neutral text-info" ng-click="delete(r)" ng-show="!r.loading"></i>
 			<span ng-show="r.loading">Deleting...</span>
 		</div>
 		<div class="clearfix"></div>
+		<hr>
+		<div ng-if="r.members.length > 0" id="{{'radiologists' + r.id}}" class="panel-collapse collapse p-1" role="tabpanel" aria-labelledby="headingfifty">
+			<div class="row" ng-repeat="i in r.members">
+				<div class="col-md-9">
+					<div class="col-md-7 pl-2">
+						<span class="block">{{i.name}}</span> 
+						<span class="text-muted">{{i.designation}}</span>
+					</div>
+					<div class="col-md-5 pl-2">
+						<span>{{i.phone}}</span>
+					</div>
+				</div>
+				<div class="col-md-3">
+					<i class="fa fa-pencil text-info btn btn-sm btn-neutral" ng-click="edit(i,r.id)"></i> &nbsp;
+					<i class="fa fa-trash-o btn btn-sm btn-neutral text-info" ng-click="delete(i,r.id)" ng-show="!r.loading"></i>
+					<span ng-show="r.loading">Deleting...</span>
+				</div>
+				<div class="clearfix"></div>
+				<hr>
+			</div>
+		</div>
 	</div>
 	<div style="text-align: center;" class="mt-2" ng-show="loading">
 		<span>Loading...</span>
 	</div>
 	
 </div>
+
+<div  style="position: relative;padding-top: 10px">
+	            <button class="collapsed dropdown-toggle btn btn-neutral btn-sm pl-0" role="button" data-toggle="collapse" data-parent="#accordion" href="#{{'test' + test.ref_id + test.test_id}}" aria-expanded="false" aria-controls="collapsefifty">View details</button>
+	            <span am-time-Ago="test.sent_date" style="position: absolute;top:3px;right: 15px"></span>
+	        </div>
+			<hr>
+			<div style="line-height: 25px;margin-bottom:5px" id="{{'test' + test.ref_id + test.test_id}}" class="panel-collapse collapse p-1" role="tabpanel" aria-labelledby="headingfifty">
+	              <strong>Center Name: </strong> <span>{{test.center_name}}</span><br>
+
 

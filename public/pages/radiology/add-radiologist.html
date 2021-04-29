@@ -1,7 +1,14 @@
-
-<div class="card p-2 card-center-1">
-	<a href="{{toImport}}" ng-show="toImport"><i class="fa fa-arrow-left"></i></a><br>
-	<h4>Add Radiologist <span style="display: block;font-size: 14px">The radiologist who reports studies for your centre.</span></h4>
+<div class="card-center-1 mb-2">
+	<div class="col-md-6 pl-0">
+		<a href="" class="btn  btn-block" ng-click="changeAddMethod()" ng-class="{'btn-primary': isSingle}">Add Single Radiologist</a>	
+	</div>
+	<div class="col-md-6 pl-0">
+		<a href="" class="btn btn-block" ng-click="changeAddMethod()" ng-class="{'btn-primary': isMultiple}">Create Group for Radiologists</a>
+	</div>	
+</div>
+<div class="card p-2 card-center-1" ng-if="isSingle">
+	<a href="{{toImport}}" ng-show="toImport"><i class="fa fa-arrow-left"></i></a>
+	<h4>Add Radiologist <span style="display: block;font-size: 14px">The radiologist who reports studies for your center.</span></h4>
 
 	<form ng-submit="addRadiologist()" class="col-md-8">
 		<label>Names of Radiologist *:</label><br>
@@ -17,8 +24,36 @@
 			<option>Senior Registrar</option>
 			<option>Registrar</option>
 		</select><br>
-		<input type="submit" name="" value="Submit" class="btn btn-danger" ng-if="!loading">
-		<span ng-if="loading"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange" ng-if="loading"></i></span>
+		<input type="submit" name="" value="Add" class="btn btn-primary" ng-if="!loading">
+		<span ng-if="loading"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange"></i></span>
 	</form>
 </div>
+
+<div class="card p-2 card-center-1" ng-if="isMultiple">
+	<h5 class="h4">Group of Radiologists</h5>
+	<ul style="line-height: 35px">
+		<li ng-repeat="r in radiologists" ng-if="r.members" style="position: relative;">
+			<b>{{r.name}}</b>
+			<div style="position: absolute;bottom: 5px;right: 5px">
+				<span class="text-primary">{{r.members.length}} <i class="fa fa-user-md"></i></span>&nbsp;&nbsp;&nbsp;
+				<a href="" class="btn btn-neutral btn-sm text-primary" ng-click="edit(r.id)"><i class="fa fa-pencil"></i></a>
+				<a href="" class="btn btn-neutral btn-sm text-primary" ng-click="delete(r)"><i class="fa fa-trash"></i></a>
+				<a href="" class="btn btn-primary btn-sm" ng-click="addMemberInGroup(r.id)"><i class="fa fa-plus"></i> Add</a>
+			</div>
+		</li>
+	</ul>
+	<hr>
+	<form ng-submit="addGroup()" class="col-md-10">
+		<div>
+			<label>Name of Group: </label>
+			<input type="text" name="group" placeholder="Enter group name" class="form-control" ng-model="radiologist.name">
+		</div>
+		<br>
+		<div style="text-align: center;">
+			<input type="submit" value="+ Create group" class="btn btn-primary btn-block" ng-show="!loading">
+			<span ng-show="loading"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange"></i></span>
+		</div>
+	</form>
+</div>
+<div style="height: 200px"></div>
 
