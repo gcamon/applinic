@@ -1,0 +1,61 @@
+// colors
+$scooter: #29BACD;
+$black: #000000;
+$white: #FFFFFF;
+$jaffa: #E68139;
+$del-rio: #B19797;
+
+$border-radius-normal: 1.125rem;
+$border-radius-large: 2.375rem;
+
+$font-size-large: 1.5rem;
+$font-size-medium: 1.125rem;
+$font-size-small: 0.875rem;
+$font-size-tiny: 0.8125rem;
+
+$font-family-base: Poppins;
+
+$font-weight-light: 300;
+$font-weight-normal: 400;
+$font-weight-bold: 700;
+
+$font-line-height-large: 2.25rem;
+
+// button
+$button-font-size: $font-size-large;
+$button-border-radius: $border-radius-normal;
+// primary
+$primary-button-background: $scooter;
+$primary-button-text-color: $white;
+// secondary
+$secondary-button-background: $jaffa;
+$secondary-button-text-color: $white;
+
+// popup
+$popup-background: $del-rio;
+$popup-text-color: $white;
+$popup-font-size: $font-size-small;
+$popup-opacity: 0.83;
+$popup-border-radius: $border-radius-large;
+$popup-font-weight: $font-weight-normal;
+
+// status
+$status-background: $scooter;
+$status-color: $white;
+$status-main-font-size: $font-size-large;
+$status-additional-font-size: $font-size-small;
+$status-border-radius: $border-radius-normal;
+
+// logo
+$logo-font-size: $font-size-large;
+$logo-text-color: $scooter;
+$logo-line-height: $font-line-height-large;
+
+// info
+$info-doc-font-size: $font-size-medium;
+$info-doc-font-weight: $font-weight-bold;
+$info-doc-color: $black;
+$info-value-font-size: $font-size-large;
+$info-name-font-size: $font-size-tiny;
+$info-item-color: $black;
+$info-item-font-weight: $font-weight-normal;

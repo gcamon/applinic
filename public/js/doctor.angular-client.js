@@ -14840,15 +14840,13 @@ app.controller("bankDetailsCtrl",["$scope","bankDetailsService",function($scope,
 }]);
 
 
-app.controller("invitationCtrl",["$scope","$http","$rootScope","ModalService","$timeout",
+/*app.controller("invitationCtrl",["$scope","$http","$rootScope","ModalService","$timeout",
   function($scope,$http,$rootScope,ModalService,$timeout){
     $scope.invite = {};
-
+    
     $scope.someone = function(type){
       $scope.invite.type = type;
     }
-
-   
 
     $scope.supported = false;
 
@@ -14866,14 +14864,10 @@ app.controller("invitationCtrl",["$scope","$http","$rootScope","ModalService","$
       console.error('Error!', err);
     };
 
-
-
     $scope.inviteFn = function() {
       $scope.msg = "";
 
       $scope.existingUser = false;
-
-
 
       if(!$scope.invite.recepient){
         alert("Please enter email or phone number of the recepient");
@@ -14924,7 +14918,7 @@ app.controller("invitationCtrl",["$scope","$http","$rootScope","ModalService","$
       $scope.msg = "";
       $scope.existingUser = false;
     }
-}]);
+}]);*/
 
 app.controller("otherStudiesModalController",["$scope","$http",function($scope,$http){
     var path = window.location.toString();
@@ -19224,7 +19218,8 @@ app.controller("ultraSoundReportCtrl",["$scope","$http","$location","localManage
           } else {  
             localManager.setValue("currentPage",path)
             localManager.setValue("currPageForRadiology",path)
-            localManager.setValue('templatePath',window.location.href)        
+            localManager.setValue('templatePath',window.location.href)
+            localManager.removeItem('speechTextData');        
             window.location.href = response.path;
           }
         });
@@ -19305,6 +19300,13 @@ app.controller("ultraSoundReportCtrl",["$scope","$http","$location","localManage
     }
     
     $('#files').change(handleFileSelect);
+
+   
+    $scope.speech2Text = function(field,study){
+      $scope.ultraRefData.fieldType = field;
+      localManager.setValue('speechTextData',$scope.ultraRefData);
+      window.location.href = "/speech-text/ai";
+    }
 }])
 
 app.controller("e-caseUltrasoundCtrl",["$scope","$http","$rootScope","$location",

@@ -437,11 +437,13 @@ var basicRoute = function (model,sms,io,streams,client,transporter,opentok) {
         break;
       }
 
-      model.user.find(criteria,{name:1,presence:1,firstname:1,lastname:1,specialty:1,work_place:1,_id:0,profile_pic_url:1,address:1,city:1,country:1,user_id:1},
+      model.user.find(criteria,{name:1,presence:1,firstname:1,lastname:1,specialty:1,
+        work_place:1,_id:0,profile_pic_url:1,address:1,city:1,country:1,user_id:1},
         function(err,list){
         if(err) throw err;
         res.json(list);
-      })
+      });
+
     } else {
       res.end("unauthorized access!");
     }
@@ -12048,6 +12050,23 @@ router.get("/user/inviteURL",function(req,res){
     res.end("Unauthorized access")
   }
 
+});
+
+router.post("/user/add/:patientId",function(rea,res){
+  if(req.user){
+
+  } else {
+    res.end("unauthorized access")
+  }
+  
+});
+
+router.post("/user/add/:docId",function(rea,res){
+  if(req.user){
+
+  } else {
+    res.end("unauthorized access")
+  }
 })
 
 router.post("/user/doctor/add-patient",function(req,res){
@@ -12116,17 +12135,9 @@ router.post("/user/doctor/add-patient",function(req,res){
 
           user.save(function(err,info){
             if(err) throw err;
-            console.log("Patient's doctor list updated");
+            //console.log("Patient's doctor list updated");
           });
 
-          /*var transporter = nodemailer.createTransport({
-            host: "mail.privateemail.com",
-            port: 465,
-            auth: {
-              user: "info@applinic.com",
-              pass: process.env.EMAIL_PASSWORD
-            }
-          });*/
 
           var body = "<div style='font-size:18px'><b>Hello" + user.firstname + "</b>, <br><br> " 
           + req.user.title + " " + req.user.firstname + " " + req.user.lastname 
@@ -14917,6 +14928,36 @@ router.get('/404.html',function(req,res){
 });
 
 
+//this path is used by speech to text page for reporting
+router.put("/user/save-report",function(req,res){
+  model.referral.findById(req.body._id)
+  .exec(function(err,referral){
+    if(err) throw err;
+    if(referral){
+      switch(req.body.fieldType){
+        case 'findings':
+          referral.radiology.findings = req.body.radiology.findings || ""; 
+        break;
+        case 'conclusion':
+          referral.radiology.conclusion = req.body.radiology.conclusion || "";
+        break;
+        case 'advice':
+          referral.radiology.advice = req.body.radiology.advice || "";
+        break;
+      }
+
+      referral.save(function(err,info){
+        if(err) throw err;
+        res.json({status: true,message: "Data received"});
+      });
+
+    } else {
+      res.json({status: false, message: "Record not found."})
+    }    
+  })
+})
+
+
 router.post("/user/save-report",function(req,res){
   if(req.user){
     if(req.files){
@@ -14937,7 +14978,6 @@ router.post("/user/save-report",function(req,res){
       .exec(function(err,referral){
         if(err) throw err;
         if(referral){
-
           var uid = uuid.v1();
           referral.radiology.findings = req.body.radiology.findings;
           referral.radiology.conclusion = req.body.radiology.conclusion;
@@ -15217,6 +15257,14 @@ router.post("/study/:uid/:refId",function(req,res){
 
   })
 
+});
+
+router.get("/speech-text/ai",function(req,res){
+  res.render("speech-to-text");
+})
+
+router.get("/vital-check",function(req,res){
+  res.render('vital-ai')
 })
 
 

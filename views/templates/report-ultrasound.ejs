@@ -143,19 +143,22 @@ button:focus {
             </div>
         </div>
         <br>
-        <div>
+        <div class="relative">
+            <a href="" ng-click="speech2Text('findings')" class="text-info" style="position: absolute; top:-10px;right: 5px"><img src="/assets/images/icons/mic.gif" alt="speech to text AI" title="Use speech to text AI"></a>
             <label>Findings:</label><br>
-            <textarea class="form-control pl-1" style="height: 150px"  placeholder="Write" ng-model="ultraRefData.radiology.findings" required></textarea>
+            <textarea class="form-control pl-1" style="height: 150px;white-space: pre-wrap"  placeholder="Write" ng-model="ultraRefData.radiology.findings" required></textarea>
         </div>
         <br>
-        <div>
+        <div class="relative">
+            <a href="" ng-click="speech2Text('conclusion')" class="text-info" style="position: absolute; top:-10px;right: 5px"><img src="/assets/images/icons/mic.gif" alt="speech to text AI" title="Use speech to text AI"></a>
             <label>Conclusion:</label><br>
-            <textarea class="form-control pl-1" style="height: 150px" placeholder="Write" ng-model="ultraRefData.radiology.conclusion" required></textarea>
+            <textarea class="form-control pl-1" style="height: 150px;white-space: pre-wrap" placeholder="Write" ng-model="ultraRefData.radiology.conclusion" required></textarea>
         </div>
         <br>
-        <div>
+        <div class="relative">
+            <a href="" ng-click="speech2Text('advice')" class="text-info" style="position: absolute; top:-10px;right: 5px"><img src="/assets/images/icons/mic.gif" alt="speech to text AI" title="Use speech to text AI"></a>
             <label>Advice/Further Investigations:</label><br>
-            <textarea class="form-control pl-1" style="height: 150px" placeholder="Write" ng-model="ultraRefData.radiology.advice" required></textarea>
+            <textarea class="form-control pl-1" style="height: 150px;white-space: pre-wrap" placeholder="Write" ng-model="ultraRefData.radiology.advice" required></textarea>
         </div>
         <br>
         <div>
