@@ -14198,7 +14198,6 @@ router.get("/user/charts/all",function(req,res){
 
 router.put("/user/charts",function(req,res){
   if(req.user){
-    //console.log(req.body)
     model.chart.findOne({userId: req.body.userId,year: req.body.year})
     .exec(function(err,chart){
       if(err) throw err;  
@@ -14371,7 +14370,6 @@ router.put("/user/charts",function(req,res){
     }
 
   
-
     function abnormalBP(p) {
       var result = {};
       req.body.time = req.body.readings.label;
@@ -14381,24 +14379,30 @@ router.put("/user/charts",function(req,res){
 
       if(p.dob){
         var patientAge = calculate_age(p.dob);
+        var pulseAbCheck = pulseCheck(patientAge);
+        var sysAbCheck = systolCheck(patientAge);
+        var diaAbCheck = diastolCheck(patientAge);
         var msg;
-        if(req.body.readings.pulse){
+        if(req.body.readings.pulse && pulseAbCheck){
+         
           req.body.readings.pulse = parseInt(req.body.readings.pulse) || 0;
-          result["pulse"] = pulseCheck(patientAge);
+          result["pulse"] = pulseAbCheck;//pulseCheck(patientAge);
           msg = result["pulse"]['message'] + " at " + req.body.readings.pulse + "bpm";
           req.body.document.bp_readings[req.body.document.bp_readings.length - 1].abnormalities.push(msg)
         }
 
-        if(req.body.readings.systol){
+        if(req.body.readings.systol && sysAbCheck){
+         
           req.body.readings.systol = parseInt(req.body.readings.systol) || 0;
-          result["systol"] = systolCheck(patientAge);
+          result["systol"] = sysAbCheck;//systolCheck(patientAge);
           msg = result["systol"]['message'] + " at " + req.body.readings.systol + "mmHg";
           req.body.document.bp_readings[req.body.document.bp_readings.length - 1].abnormalities.push(msg)
         }
 
-        if(req.body.readings.diastol){
+        if(req.body.readings.diastol && diaAbCheck){
+
           req.body.readings.diastol = parseInt(req.body.readings.diastol) || 0;
-          result["diastol"] = diastolCheck(patientAge);
+          result["diastol"] = diaAbCheck;//diastolCheck(patientAge);
           msg = result["diastol"]['message'] + " at " + req.body.readings.diastol + "mmHg";
           req.body.document.bp_readings[req.body.document.bp_readings.length - 1].abnormalities.push(msg)
         }  
@@ -14863,6 +14867,242 @@ router.patch("/user/charts",function(req,res){
     res.json({status: false, message: "Permission denied! Please check if you are logged in or refresh the page."})
   }
 });
+
+router.post("/api/vitals/en/hhjhassgaqwywqyersdjhsd",function(req,res){
+ 
+  if(req.body.readings){
+    function abnormalBPCheck(p) {
+      var result = {};
+      if(p.dob){
+        var patientAge = calculate_age(p.dob);
+        var pulseAbCheck = pulseCheck(patientAge);
+        var sysAbCheck = systolCheck(patientAge);
+        var diaAbCheck = diastolCheck(patientAge);
+        var msg;
+        if(req.body.readings.pulse && pulseAbCheck){
+         
+          req.body.readings.pulse = parseInt(req.body.readings.pulse) || 0;
+          result["pulse"] = pulseAbCheck;//pulseCheck(patientAge);
+          //msg = result["pulse"]['message'] + " at " + req.body.readings.pulse + "bpm";
+          //req.body.document.bp_readings[req.body.document.bp_readings.length - 1].abnormalities.push(msg)
+        }
+
+        if(req.body.readings.systol && sysAbCheck){
+         
+          req.body.readings.systol = parseInt(req.body.readings.systol) || 0;
+          result["systol"] = sysAbCheck;//systolCheck(patientAge);
+          //msg = result["systol"]['message'] + " at " + req.body.readings.systol + "mmHg";
+          //req.body.document.bp_readings[req.body.document.bp_readings.length - 1].abnormalities.push(msg)
+        }
+
+        if(req.body.readings.diastol && diaAbCheck){
+
+          req.body.readings.diastol = parseInt(req.body.readings.diastol) || 0;
+          result["diastol"] = diaAbCheck;//diastolCheck(patientAge);
+          //msg = result["diastol"]['message'] + " at " + req.body.readings.diastol + "mmHg";
+          //req.body.document.bp_readings[req.body.document.bp_readings.length - 1].abnormalities.push(msg)
+        }  
+      }
+
+      return result;
+    }
+
+    function systolCheck(ageObj){
+      var ddmmyy = (ageObj.type === 'year') ? " year" : (ageObj.type === 'month') ? ' month' : ' day';
+      if(req.body.readings.systol < 90){
+        return {
+          abnormality: true,
+          type: 'systol',
+          value: req.body.readings.systol,
+          age: (ageObj.value === 1) ? (ageObj.value + ddmmyy) : (ageObj.value + ddmmyy),
+          title: "Low",
+          message: "Systolic low blood pressure",
+          normal: "Normal range = 90 - 120"
+        }
+      }
+
+      if(req.body.readings.systol > 120 && req.body.readings.systol <= 140){
+        return {
+          abnormality: true,
+          type: 'systol',
+          value: req.body.readings.systol,
+          age: (ageObj.value === 1) ? (ageObj.value + ddmmyy) : (ageObj.value + ddmmyy),
+          title: "High",
+          message: "Systolic pre-high blood pressure",
+          normal: "Normal range = 90 - 120"
+        }
+      }
+
+      if(req.body.readings.systol > 140 && req.body.readings.systol <= 160){
+        return {
+          abnormality: true,
+          type: 'systol',
+          value: req.body.readings.systol,
+          age: (ageObj.value === 1) ? (ageObj.value + ddmmyy) : (ageObj.value + ddmmyy),
+          title: "High",
+          message: "Systolic hypertension stage 1",
+          normal: "Normal range = 90 - 120"
+        }
+      }
+
+      if(req.body.readings.systol > 160){
+        return {
+          abnormality: true,
+          type: 'systol',
+          value: req.body.readings.systol,
+          age: (ageObj.value === 1) ? (ageObj.value + ddmmyy) : (ageObj.value + ddmmyy),
+          title: "High",
+          message: "Systolic hypertension stage 2",
+          normal: "Normal range = 90 - 120"
+        }
+      }
+      return null;
+    }
+
+    function diastolCheck(ageObj){
+      var ddmmyy = (ageObj.type === 'year') ? " year" : (ageObj.type === 'month') ? ' month' : ' day';
+      if(req.body.readings.diastol < 60){
+        return {
+          abnormality: true,
+          type: 'diastol',
+          value: req.body.readings.diastol,
+          age: (ageObj.value === 1) ? (ageObj.value + ddmmyy) : (ageObj.value + ddmmyy),
+          title: "Low",
+          message: "Diastolic low blood pressure",
+          normal: "Normal range = 60 - 80"
+        }
+      }
+
+      if(req.body.readings.diastol > 80 && req.body.readings.diastol <= 90){
+        return {
+          abnormality: true,
+          type: 'diastol',
+          value: req.body.readings.diastol,
+          age: (ageObj.value === 1) ? (ageObj.value + ddmmyy) : (ageObj.value + ddmmyy),
+          title: "High",
+          message: "Diastolic pre-high blood pressure",
+          normal: "Normal range = 60 - 80"
+        }
+      }
+
+       if(req.body.readings.diastol > 90 && req.body.readings.diastol <= 100){
+        return {
+          abnormality: true,
+          type: 'diastol',
+          value: req.body.readings.diastol,
+          age: (ageObj.value === 1) ? (ageObj.value + ddmmyy) : (ageObj.value + ddmmyy),
+          title: "High",
+          message: "Diastolic hypertension stage 1",
+          normal: "Normal range = 60 - 80"
+        }
+      }
+
+      if(req.body.readings.diastol > 100){
+        return {
+          abnormality: true,
+          type: 'diastol',
+          value: req.body.readings.diastol,
+          age: (ageObj.value === 1) ? (ageObj.value + ddmmyy) : (ageObj.value + ddmmyy),
+          title: "High",
+          message: "Diastolic hypertension stage 2",
+          normal: "Normal range = 60 - 80"
+        }
+      }
+
+      return null;
+    }
+
+     function pulseCheck(ageObj) {
+      var msg;   
+      switch(ageObj.type){
+        case "year":
+          if(ageObj.value <= 2 && req.body.readings.pulse < 98 || req.body.readings.pulse > 140) {
+            return {
+              abnormality: true,
+              type: 'pulse',
+              value: req.body.readings.pulse,
+              age: (ageObj.value === 1) ? (ageObj.value + " year") : (ageObj.value + " years"),
+              title: "Toddler",
+              message: "Abnormal pulse",
+              normal: "Normal range = 98 - 140"
+            }
+          }
+
+          if(ageObj.value >= 3 && ageObj.value <= 5 && req.body.readings.pulse < 80 || req.body.readings.pulse > 120) {
+            return {
+              abnormality: true,
+              type: 'pulse',
+              value: req.body.readings.pulse,
+              age: (ageObj.value + " years"),
+              title: "Pre-school",
+              message: "Abnormal pulse",
+              normal: "normal range = 80 - 120"
+            }
+          }
+
+          if(ageObj.value >= 6 && ageObj.value <= 11 && req.body.readings.pulse < 75 || req.body.readings.pulse > 118) {
+            return {
+              abnormality: true,
+              type: 'pulse',
+              value: req.body.readings.pulse,
+              age: (ageObj.value + " years"),
+              title: "",
+              message: "Abnormal pulse",
+              normal: "Normal range = 75 - 118"
+            }
+          }
+
+          if(ageObj.value >= 12 && req.body.readings.pulse < 60 || req.body.readings.pulse > 100) {
+            return {
+              abnormality: true,
+              type: 'pulse',
+              value: req.body.readings.pulse,
+              age: (ageObj.value + " years"),
+              title: "",
+              message: "Abnormal pulse",
+              normal: "Normal range = 60 - 100"
+            }
+          }
+        break;
+        case "month":
+          if(ageObj.value < 12 && req.body.readings.pulse < 100 || req.body.readings.pulse > 190) {
+            return {
+              abnormality: true,
+              type: 'pulse',
+              value: req.body.readings.pulse,
+              age: ageObj.value + " months",
+              title: "Infant",
+              message: "Abnormal pulse",
+              normal: "Normal range = 100 - 190"
+            }
+          }
+        break;
+        case "day":
+          if(ageObj.value < 28 && req.body.readings.pulse < 100 || req.body.readings.pulse > 205) {
+            return {
+              abnormality: true,
+              type: 'pulse',
+              value: req.body.readings.pulse,
+              age: ageObj.value + " days",
+              title: "Neonate",
+              message: "Abnormal pulse normal",
+              normal: "Normal range = 100 - 205"
+            }
+          }
+        break;
+      }
+
+      return null;
+    }
+
+    var check = abnormalBPCheck(req.body);
+
+    res.json(check)
+
+  } else {
+    res.json({error:true,message: "Improper value"})
+  }
+})
 
 
 router.get("/sitemap.xml",function(req,res){

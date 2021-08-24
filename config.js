@@ -123,7 +123,10 @@ var configuration = function (app,model) {
       //helmet()
   	}
 	 	path = req.url;
-	  console.log("https://" + req.headers.host + req.url);		
+	  //console.log("https://" + req.headers.host + req.url);		
+	   res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  
 	  next();		
 	});
 
