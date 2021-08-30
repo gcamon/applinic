@@ -48,7 +48,6 @@
 </div>
 
 <div class="card p-2" style="position: relative;">
-	
 	<div>
 		<ul class="nav nav-tabs divider" role="tablist" ng-repeat="study in linkedStudies | orderBy : '-study_date' | filter : filter"> 
                          
@@ -56,29 +55,34 @@
         		<b style="display: block;" class="ellipsis">{{study.patient_name}}</b>
           	</li>
        
+          	<li class="nav-item text-muted" style="width: 5%">
+          		<span>{{study.patient_sex}}</span>
+          	</li>
 
-           	<li class="nav-item text-muted ellipsis" style="width: 18%">
+           	<li class="nav-item text-muted ellipsis" style="width: 15%">
            		<span class="ellipsis" style="display: block;">{{study.study_name}}</span>
           	</li>
 
-           	<li class="nav-item text-muted" style="width: 15%">
-           		<span class="ellipsis" style="display: block;">{{study.patient_id}}</span>
+           	<li class="nav-item text-muted" style="width: 13%">
+           		<span class="ellipsis" style="display: block;" am-time-ago="study.study_date"></span>
           	</li>
 
           	<!--<li class="nav-item text-muted" style="width: 13%">
           		<span>{{study.study_date | date: 'mediumDate'}}</span>
           	</li>-->
 
-          	<li class="nav-item text-muted" style="width: 40%;">
+          	<li class="nav-item text-muted" style="width:40%;">
 
           		<a href="{{'https://drive.google.com/viewerng/viewer?embedded=true&url=https://applinic.com' + study.pdf_report[0].pathname}}" target="_blank" title="Report PDF" class="round btn btn-success  btn-sm" title="Report" ng-show="study.pdf_report.length > 0"><span><i class="fa fa-file-o"></i> </span></a> 
 
           		<a href="" target="_blank" title="Report PDF" class="round btn btn-simple btn-sm" disabled title="Report" ng-show="study.pdf_report.length == 0"><span><i class="fa fa-file-o"></i> </span></a> &nbsp;&nbsp;&nbsp; 
           		
-          		<a href=""  ng-click="details(study)" title="View Details" class="round btn btn-simple btn-sm"><i class="fa fa-link"></i>
+          		<!--<a href=""  ng-click="details(study)" title="View Details" class="round btn btn-simple btn-sm"><i class="fa fa-link"></i>
+          		  </a>  &nbsp;&nbsp;&nbsp;-->
+          		 <a href="{{'/report-template/' + study.assigned_radiologist_id[0].id + '/' + study._id}}" title="Write report" class="round btn btn-simple btn-sm" target="_blank"><i class="fa fa-pencil"></i>
           		  </a>  &nbsp;&nbsp;&nbsp;
 
-          		<a href=""  ng-click="edit(study)" title="Edit Study" class="round btn btn-simple btn-sm"><i class="fa fa-pencil"></i> </a> &nbsp;&nbsp;&nbsp;
+          		<a href=""  ng-click="edit(study)" title="Edit Study" class="round btn btn-simple btn-sm"><i class="fa fa-link"></i> </a> &nbsp;&nbsp;&nbsp;
 
           		<a href=""  ng-click="reAssign(study)" title="Re-assign Study" class="round btn btn-simple btn-sm"><i class="fa fa-user-md"></i></a> &nbsp;&nbsp;&nbsp;
 

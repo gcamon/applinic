@@ -33,6 +33,11 @@
   <priority>0.80</priority>
 </url>
 <url>
+  <loc>https://applinic.com/vital-check</loc>
+  <lastmod>2020-11-09T12:36:44+00:00</lastmod>
+  <priority>0.90</priority>
+</url>
+<url>
   <loc>https://applinic.com/login</loc>
   <lastmod>2020-11-09T12:36:44+00:00</lastmod>
   <priority>0.80</priority>
