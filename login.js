@@ -49,16 +49,16 @@ router.post('/user/login', passport.authenticate('user-login', {
 }));
 
 router.get('/user/dashboard',function(req,res){
+
   if(req.user){ 
     model.user.findOne({user_id: req.user.user_id},{presence:1,set_presence:1,admin:1}).exec(function(err,data){
-      if(err) throw err;
-    
+      if(err) throw err;    
       if(data.admin && req.user.user_id === process.env.ADMIN_ID && req.user.type == "admin"){
         res.json({typeOfUser:"admin",isLoggedIn: true,balance: req.user.ewallet.available_amount,user_id:req.user.user_id});
       } else {
-        data.presence = true;
-        data.set_presence.general = true;
-        data.save(function(err,info){});
+        //data.presence = true;
+        //data.set_presence.general = true;
+        //data.save(function(err,info){});
         normalUser();
       }
     });
@@ -102,7 +102,6 @@ router.get('/user/dashboard',function(req,res){
 });
 
 //for admin loggin
-
 router.get("/user/admin",function(req,res){
   if(req.user) {
     if(req.user.user_id === process.env.ADMIN_ID && req.user.admin === true,req.user.type == 'admin'){
@@ -164,7 +163,7 @@ router.get('/user/change-password',function(req,res){
       }); 
 
 
-      console.log(password,user.phone);
+      
 
 
       if(req.query.isPhoneCall) {
@@ -243,7 +242,7 @@ router.get('/user/change-password',function(req,res){
 });
 
 router.post("/user/change-password",function(req,res){
-  console.log(req.body);
+  
   model.otpSchema.findOne({otp: req.body.pin,user_id: req.body.id},function(err,data){
     if(err) throw err;
     if(data) {
@@ -258,7 +257,7 @@ router.post("/user/change-password",function(req,res){
 });
 
 router.put("/user/change-password/:id",function(req,res){
-  console.log(req.body);
+  
   if(req.body.newPassword && req.body.isVerified) {
     var password = salt.createHash(req.body.newPassword);
     model.user.findOne({user_id: req.body.userId},{password: 1}).exec(function(err,user){
@@ -276,7 +275,6 @@ router.put("/user/change-password/:id",function(req,res){
     res.send({isPasswordChanged: false})
   }
 })
-
 
 }
 

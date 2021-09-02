@@ -14868,7 +14868,7 @@ router.patch("/user/charts",function(req,res){
   }
 });
 
-router.post("/api/vitals/en/hhjhassgaqwywqyersdjhsd",function(req,res){
+router.post("/user/vitals/en/hhjhassgaqwywqyersdjhsd",function(req,res){
  
   if(req.body.readings){
     function abnormalBPCheck(p) {
