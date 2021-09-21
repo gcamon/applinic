@@ -693,6 +693,10 @@
 
                         <a class="simple-border-btn round mr-0" style="margin-left:10px;font-size: 14px" href="#/prescription-out" ng-cloak><i class="icon-Pills"></i>
                                     <span> Write Prescription</span></a>
+
+
+                         <a class="simple-border-btn round mr-0 text-danger" style="margin-left:10px;font-size: 14px" href="/kys-games" ng-cloak><i class="fa fa-calendar-alt"></i>
+                                    <span> KYS Games</span></a>
                         
                         <!--<a class="btn btn-simple round mr-0" style="color:red;margin-left:10px;font-size: 14px" href="#{{(checkLogIn.title !== 'SC') ? '/subscriptions': '/subscriptions2' }}"><i class="fa fa-file"></i>
                                     <span ng-cloak>Subscriptions Plans</span></span></a>  -->       
@@ -852,6 +856,9 @@
 
                                                         
                                     </ul>-->
+                                </li>
+                                <li>
+                                  <a href="/kys-games" class="h text-danger"><i class="fa fa-calendar-alt"></i> KYS Games</a>
                                 </li>
                                 <li ng-controller="docAppointmentController"> 
 
@@ -1029,17 +1036,23 @@
 
 
 
-                  </div>
+                  </div> <!--/kys-games-->
 
                   <div class="bottom-nav-container mobile-item-display">
                     <ul class="bottom-nav">
+                      <li>
+                        <a href="/kys-games" class="block">
+                          <i class="fa fa-calendar-alt text-danger"></i><br>
+                          <span>KYS Games</span>
+                        </a>
+                      </li>
                       <li>
                         <a href="#/appointment-out" class="block">
                           <i class="fa fa-calendar-alt text-primary"></i><br>
                           <span>Appointment</span>
                         </a>
                       </li>
-                       <li>
+                      <li>
                         <a href="#/prescription-out" class="block">
                           <i class="icon-Pills text-primary"></i><br>
                           <span>Prescription</span>

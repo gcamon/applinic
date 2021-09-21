@@ -9,12 +9,15 @@
 	<header>
 		
 		<h4 class="h6">Blood Pressure / Pulse Rate</h4>
+
 		<div style="position: absolute;right: 25px;top:20px">
 			<select ng-model="chart.year">
 				<option value="{{year.year}}" selected ng-repeat="year in yearList">{{year.year}}</option>
 			</select>
 		</div>
-		<div ng-show="checkLogIn.type !== 'Patient' ">
+		<br>
+		<a href="/vital-check" class="text-info" ng-show="checkLogIn.typeOfUser === 'Patient'">Take measurement with vital AI &nbsp;<small class="text-danger">new</small></a> 
+		<div ng-show="checkLogIn.typeOfUser !== 'Patient'">
 			<!--<div class="img-col">                                                    
                 <img class="img" style="background-image: url({{holdPatientForChart.profile_pic_url}})"></div>
             </div>-->

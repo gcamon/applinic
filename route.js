@@ -15505,6 +15505,10 @@ router.get("/speech-text/ai",function(req,res){
 
 router.get("/vital-check",function(req,res){
   res.render('vital-ai')
+});
+
+router.get("/kys-games",function(req,res){
+  res.render('kys-games')
 })
 
 
