@@ -10366,7 +10366,7 @@ router.get("/user/patient/get-my-doctors",function(req,res){
     }
   });
 
-  router.put("/user/doctor/my-patients",function(req,res){
+  router.post("/user/doctor/my-patients",function(req,res){
     if(req.user){
       model.user.findOne({user_id: req.body.patientId})
       .exec(function(err,patient){
@@ -10447,8 +10447,8 @@ router.get("/user/patient/get-my-doctors",function(req,res){
         if(data) {
           var index = data.accepted_doctors.map(function(x){return x.doctor_id}).indexOf(req.user.user_id)
           if(data.accepted_doctors[index]){
-            data.accepted_doctors[index].deleted = true;
-
+            //data.accepted_doctors[index].deleted = true;
+            data.accepted_doctors.splice(index,1)
             var msgBody = req.user.title + " " + req.user.firstname + " " + req.user.lastname 
             + " removed you from the management list.";
 
@@ -10469,7 +10469,8 @@ router.get("/user/patient/get-my-doctors",function(req,res){
             });
 
           }  else {
-             res.json({status: false, message: "Your are not in the patient's list"})
+             //res.json({status: false, message: "You are not in the patient's list"});
+             updateDocList()
           }
         } else {
           res.json({status: false, message: "Patient not found"})
@@ -10479,8 +10480,8 @@ router.get("/user/patient/get-my-doctors",function(req,res){
       function updateDocList() {
         var elemPos = req.user.doctor_patients_list.map(function(x){return x.patient_id}).indexOf(req.body.patientId);
         if(req.user.doctor_patients_list[elemPos]){
-          //req.user.doctor_patients_list.splice(elemPos,1)
-          req.user.doctor_patients_list[elemPos].deleted = true;
+          req.user.doctor_patients_list.splice(elemPos,1)
+          //req.user.doctor_patients_list[elemPos].deleted = true;
           req.user.save(function(err,info){
             if(err) throw err;
             io.sockets.to(req.body.patientId).emit("remove in list",{doctorId: req.user.user_id})

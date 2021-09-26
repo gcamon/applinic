@@ -14410,7 +14410,7 @@ app.controller("generalChatController",["$scope","$rootScope", "mySocket","chatS
       } else {
         infer = confirm("This patient will be added in your patients' list for further management if you proceed");
         if(infer){
-          $http.put("/user/doctor/my-patients",{patientId: chat.partnerId,date : new Date()})
+          $http.post("/user/doctor/my-patients",{patientId: chat.partnerId,date : new Date()})
           .success(function(response){
             if(response.status){
               openCaseNote(chat,isMobileView);

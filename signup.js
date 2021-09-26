@@ -77,7 +77,7 @@ var signupRoute = function(model,sms,geonames,paystack,io,transporter) {
 
 				user.save(function(err,info){
 					if(err) throw err;
-					console.log("User sign up updated!")
+					
 
 					io.sockets.to(process.env.ADMIN_ID).emit("new user",
 						{city:user.city,phone: user.phone, date:user.date,firstname:user.firstname,name:user.name,title:user.title})
@@ -211,7 +211,13 @@ var signupRoute = function(model,sms,geonames,paystack,io,transporter) {
 									if(err) throw err;
 									
 									if(referral){
-										if(req.body.typeOfUser === "Patient" && invite.type === req.body.typeOfUser) {
+										if(req.body.typeOfUser === "Patient")
+										var elemIdexP = referral.doctor_patients_list.map(function(x){return x.patient_phone}).indexOf(User.phone)
+									
+									 	if(req.body.typeOfUser === "Doctor")
+										var elemIdexD = referral.accepted_doctors.map(function(x){return x.doctor_email}).indexOf(User.email)
+
+										if(req.body.typeOfUser === "Patient" && invite.type === req.body.typeOfUser && elemIdexP === -1) {
 											User.accepted_doctors.unshift({
 												doctor_id: referral.user_id,
 												date_of_acceptance: + new Date(),
@@ -222,6 +228,8 @@ var signupRoute = function(model,sms,geonames,paystack,io,transporter) {
 												doctor_email: referral.email,
 												doctor_specialty: referral.specialty					
 											});
+
+
 
 											referral.doctor_patients_list.unshift({
 												patient_firstname: User.firstname,
@@ -234,6 +242,7 @@ var signupRoute = function(model,sms,geonames,paystack,io,transporter) {
 												Patient_country: User.country,
 												patient_gender: User.gender,
 												patient_age: User.age,
+												patient_phone: User.phone,
 												presence: false,
 												initial_complaint: {
 												complaint: "This patient was added through invitation. No complaint was recorded.",
@@ -272,15 +281,14 @@ var signupRoute = function(model,sms,geonames,paystack,io,transporter) {
 
 											invite.remove(function(err,info){
 												console.log(err)
-												console.log("patient added to doctor list")
+												
 											});
 											referral.save(function(err,info){
 												if(err) throw err;
-												console.log("reerral operation saved well")
 											});
 											saveUser();
 
-										} else if(req.body.typeOfUser === "Doctor" && invite.type === req.body.typeOfUser){
+										} else if(req.body.typeOfUser === "Doctor" && invite.type === req.body.typeOfUser && elemIdexD === -1){
 
 											referral.accepted_doctors.unshift({
 												doctor_id: User.user_id,
