@@ -10373,45 +10373,52 @@ router.get("/user/patient/get-my-doctors",function(req,res){
         if(err) throw err;
         if(patient){
           var date = req.body.date || new Date();
-          req.user.doctor_patients_list.push({
-            date: date,
-            patient_address: patient.address,
-            patient_age: patient.age,
-            patient_firstname: patient.firstname,
-            patient_gender: patient.gender,
-            patient_id: patient.user_id,
-            patient_lastname: patient.lastname,
-            patient_phone: patient.phone,
-            patient_profile_pic_url: patient.profile_pic_url
-          });
+          var elemPos = req.user.doctor_patients_list.map(function(x){return x.patient_id}).indexOf(req.body.patientId);
+          if(elemPos === -1){
+            req.user.doctor_patients_list.push({
+              date: date,
+              patient_address: patient.address,
+              patient_age: patient.age,
+              patient_firstname: patient.firstname,
+              patient_gender: patient.gender,
+              patient_id: patient.user_id,
+              patient_lastname: patient.lastname,
+              patient_phone: patient.phone,
+              patient_profile_pic_url: patient.profile_pic_url
+            });
 
+            req.user.save(function(err,info){
+              if(err) throw err;
+              console.log("Patient saved in list.");
+            });
+          }
+          
           res.json({status: true});
 
-          req.user.save(function(err,info){
-            if(err) throw err;
-            console.log("Patient saved in list.");
-          });
+          var elemPos2 = patient.accepted_doctors.map(function(x){return x.doctor_id}).indexOf(req.user.user_id);
+          
+          if(elemPos2 === -1) {
+            patient.accepted_doctors.push({
+              doctor_id: req.user.user_id,
+              doctor_title: req.user.title,
+              date_of_acceptance: date,
+              doctor_firstname: req.user.firstname,
+              doctor_lastname: req.user.lastname,
+              doctor_profile_pic_url: req.user.profile_pic_url,
+              service_access: true,
+              doctor_specialty: req.user.specialty,
+              work_place: req.user.work_place,
+              office_hour:req.user.office_hour,
+              doctor_email: req.user.email,
+              deleted: false
+            });
 
-          patient.accepted_doctors.push({
-            doctor_id: req.user.user_id,
-            doctor_title: req.user.title,
-            date_of_acceptance: date,
-            doctor_firstname: req.user.firstname,
-            doctor_lastname: req.user.lastname,
-            doctor_profile_pic_url: req.user.profile_pic_url,
-            service_access: true,
-            doctor_specialty: req.user.specialty,
-            work_place: req.user.work_place,
-            office_hour:req.user.office_hour,
-            doctor_email: req.user.email,
-            deleted: false
-          });
-
-          patient.save(function(err,info){
-            if(err) throw err;
-            console.log("Doctor saved in list");
-          })
-
+            patient.save(function(err,info){
+              if(err) throw err;
+              console.log("Doctor saved in list");
+            })
+          }
+         
         } else {
           res.json({status: false, message : "404: Patient record not found."})
         }
