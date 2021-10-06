@@ -2535,6 +2535,7 @@ app.controller("docProfileViewController",["$scope","$rootScope","$resource","$l
   })
   **/
 
+
    var path = window.location.pathname;
    var toArr = path.split("/");
    var userId = toArr[toArr.length-1];

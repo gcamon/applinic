@@ -32,12 +32,10 @@
           </style>
     </head>
 
-    <body ng-app="myApp" style="font-size: 14px!important">
-        <nav class="header" style="height:70px; margin-top:-.5em; z-index:1000;" ng-cloak>
+    <body ng-app="myApp">
+        
 
-          <div class="container">
-              <a ng-href="{{back}}" ng-if="back" class="nav-link"><i class="fa fa-arrow-left"> back to dashboard</i></a> &nbsp;&nbsp;&nbsp; <a href="/" style="text-decoration: none;font-size: 14px;color:red"><b>Applinic</b></a>
-          </div>
+        <% include ./inner/profile-nav %>
         <!--<div class="header-block header-block-collapse hidden-lg-up"> <button class="collapse-btn" id="sidebar-collapse-btn">
     <i class="fa fa-bars"></i></button>
              </div>
@@ -51,14 +49,16 @@
               </li>
             </ul>
         </div>-->
-    </nav>
-    <div style="height:70px"></div>
+    
+   
                 
 <div class="container" ng-controller="docProfileViewController">
     
     <div class="row">
-        <div class="pl-2 mt-1">
-          <h4>Profile</h4>
+        
+
+        <div class="mb-2 pl-2 mt-2">
+          
         </div>
         
         
@@ -171,7 +171,7 @@
  </div>
 
 
-<div class="card card-block">
+<div class="col-md-12 card p-1 mb-2">
     <div class="title" style="border-bottom:1px solid #f2f2f2;">Skills &amp; Procedures</div>
 
       <ul class="skill-sects">
@@ -180,7 +180,7 @@
        </li>
      </ul>
             </div>  
-<div class="card card-block">
+<div class="col-md-12 card p-1 mb-2">
     <div class="title" style="border-bottom:1px solid #f2f2f2;">Disease Tags</div>
     <p class="text-muted"><span ng-repeat="j in docInfo.skills">{{j.disease}}, &nbsp;</span> </p>
             </div>                                  
@@ -320,27 +320,40 @@
 
      
 
-<script src="/assets/js/app.js"></script>
-<script type="text/javascript" src="/assets/js/angularclient.js"></script>
-<script type="text/javascript" src="/assets/js/ngroute.js"></script>
-<script src="/socket.io/socket.io.js"></script>   
-<script src="/assets/js/socket.min.js"></script>
+ <script src="/assets/js/app.js"></script>
+        <script src="/assets/js/now-ui-kit.js"></script>
+        <script src="/assets/js/bower_components/summernote/dist/summernote.js"></script>
+        <script src="/assets/js/bower_components/angular-summernote/dist/angular-summernote.js"></script>
+      
+        <script type="text/javascript" src="/assets/js/angularclient.js"></script>
+        <!--<script type="text/javascript" src="/assets/js/doctor.angular-client.js"></script>-->
+        <script type="text/javascript" src="/assets/js/ngroute.js"></script>
+        <script src="/socket.io/socket.io.js"></script>   
+        <script src="/assets/js/socket.min.js"></script>
+        <script src="/assets/js/jquery-ui.js"></script> 
+        
+        <!--<script src="/assets/js/main.js"></script>-->
+        <script src="/assets/js/angular-touch.min.js"></script>
+        <script src="/assets/js/angularAnimate.js"></script>
 
-<script src="/assets/js/angularAnimate.js"></script>
-<script src="/assets/js/modalService.js"></script>
-<script src="/assets/js/angular-touch.min.js"></script>
-<!--<script src="/assets/js/angular-carousel.js"></script>-->
-<script src="/assets/js/moment.min.js"></script>
-<script src="/assets/js/angular-moment.min.js"></script>
-<script src="/assets/js/ui-bootstrap-tpls.js"></script>
-<script src="/assets/js/angular-clipboard.js"></script>
-<script src="/assets/js/ngresource.js"></script>
-<script src="/assets/js/ngPrint.js"></script>
-<script type="text/javascript" src="/assets/js/angular-paystack/dist/angular-paystack.min.js"></script>
- <script type="text/javascript" src="/assets/js/angular-sanitize.min.js"></script>
- <script src="/assets/js/bower_components/angular-summernote/dist/angular-summernote.js"></script>
-   <script type="text/javascript" src="/assets/js/underscore-min.js"></script>
+        <script src="/assets/js/modalService.js"></script>
+        <script src="/assets/js/moment.min.js"></script>     
+        <script src="/assets/js/angular-moment.min.js"></script>
+        <script src="/assets/js/angucomplete-alt.min.js"></script> 
+
+          <script type="text/javascript" src="/assets/js/pdfjs-dist/build/pdf.js"></script>
+    <script type="text/javascript" src="/assets/js/angular-pdf-viewer.min.js"></script>
+
+        <script src="/assets/js/ui-bootstrap-tpls.js"></script>
+        <script src="/assets/js/angular-clipboard.js"></script>
+        <script src="/assets/js/ngresource.js"></script>
+         <script src="/assets/js/ngPrint.js"></script>
+        <script type="text/javascript" src="/assets/js/angular-paystack/dist/angular-paystack.js"></script>
+        <script type="text/javascript" src="/assets/js/angular-sanitize.min.js"></script>
+        <script type="text/javascript" src="/assets/js/underscore-min.js"></script>
         <script type="text/javascript" src="/assets/js/angular-underscore.js"></script>
+          <script type="text/javascript" src="/assets/js/charts.js/dist/Chart.min.js"></script>
+    <script type="text/javascript" src="/assets/js/angular-chart.js/dist/angular-chart.min.js"></script>
        
 
 <!--<script type="text/javascript">

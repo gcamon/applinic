@@ -3282,6 +3282,8 @@ app.controller("docProfileViewController",["$scope","$rootScope","$resource","$l
   })
   **/
 
+  $rootScope.checkLogIn = localManager.getValue("resolveUser");
+
    var path = window.location.pathname;
    var toArr = path.split("/");
    var userId = toArr[toArr.length-1];

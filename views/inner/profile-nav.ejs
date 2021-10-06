@@ -1,0 +1,67 @@
+<style>
+.list-group-item{
+    font-size: .8em;
+    padding: 10px 10px 10px 5px;
+    margin: 0;
+}
+
+ .card-title {
+            text-transform: uppercase;
+            text-align: center;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 1em;
+        }
+
+        .list-group-item{
+            background: transparent;
+            border:0;
+        }
+
+        .list-group-item:first-child, .list-group-item:last-child {
+            background: transparent;
+            border:0;
+        }
+
+        .navbar-transparent{
+            background:rgba(0,0,0,0.4) !important;
+           
+        }
+
+        .dropdown-item{
+text-transform: uppercase;
+padding:10px 10px;
+ border-bottom:1px solid rgba(0,0,0,.5);
+ color:#000;
+ font-size: .8em;
+        }
+
+ .dropdown-item:hover{
+ background: #71BB52;
+     color:#555;
+     text-transform: uppercase;
+ }
+
+ .card{
+     border-radius: 10px;
+ }
+
+ .all .card img{
+     margin-bottom:30px;
+ }
+
+
+</style>
+
+<nav class="navbar navbar-toggleable-md bg-white" color-on-scroll="500" style="margin-bottom: 0">
+    <div class="container">
+        <div class="navbar-translate col-md-10">          
+            <a class="navbar-brand" href="/">
+                <img src="/assets/images/Logo.png" alt="Applinic">
+            </a>
+        </div>
+        <div class="col-md-2 pt-2">
+            <a href="{{'/user/' + checkLogIn.typeOfUser}}" style="">Go to dashboard</a>
+        </div>
+    </div>
+</nav>
+

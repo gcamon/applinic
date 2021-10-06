@@ -10389,7 +10389,7 @@ router.get("/user/patient/get-my-doctors",function(req,res){
 
             req.user.save(function(err,info){
               if(err) throw err;
-              console.log("Patient saved in list.");
+              
             });
           }
           
