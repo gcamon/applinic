@@ -129,7 +129,7 @@
 
                   <div class="col-md-12 card p-1 mb-2">
 
-<div class="title" style="border-bottom:1px solid #f2f2f2;">Sub Specialty</div>
+<div class="title" style="border-bottom:1px solid #f2f2f2;">Subspecialty</div>
     
 
       <ul>
@@ -182,7 +182,7 @@
             </div>  
 <div class="col-md-12 card p-1 mb-2">
     <div class="title" style="border-bottom:1px solid #f2f2f2;">Disease Tags</div>
-    <p class="text-muted"><span ng-repeat="j in docInfo.skills">{{j.disease}}, &nbsp;</span> </p>
+    <p class="text-muted"><span ng-repeat="j in docInfo.skills" ng-cloak>{{j.disease}}, &nbsp;</span> </p>
             </div>                                  
         </div>      
     </div>      
