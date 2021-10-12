@@ -6642,7 +6642,7 @@ var basicRoute = function (model,sms,io,streams,client,transporter,opentok) {
     });
 
     
-     router.post("/user/doctor/ecg/send-test",function(req,res){  
+    router.post("/user/doctor/ecg/send-test",function(req,res){  
         if(req.user) { 
           var random = randos.genRef(7);
           var testId = randos.genRef(8); 
@@ -7130,6 +7130,987 @@ var basicRoute = function (model,sms,io,streams,client,transporter,opentok) {
         res.end("Unauthorized access!")
       }
     });
+
+  
+    router.post("/user/doctor/endoscopy/send-test",function(req,res){  
+        if(req.user) { 
+          var random = randos.genRef(7);
+          var testId = randos.genRef(8); 
+          var accNo = randos.genRef(8);
+          var date = + new Date();
+
+
+        if(req.body.isCaseNoteRequest) {
+          req.body.treatment = {};
+          //req.body.date = new Date();
+          req.body.user_id = req.body.centerDetails.user_id;
+          req.body.patient_id = req.body.patientDetails.user_id;
+          req.body.patient_firstname = req.body.patientDetails.firstname; 
+          req.body.patient_lastname = req.body.patientDetails.lastname;
+          req.body.patient_title = req.body.patientDetails.title;
+          req.body.phone = req.body.patientDetails.phone;
+          req.body.patient_address = req.body.patientDetails.address;
+          req.body.patient_city = req.body.patientDetails.city;
+          req.body.patient_profilePic = req.body.patientDetails.profile_pic_url;
+          req.body.radiology = {
+            patient_age: req.body.patientDetails.age,
+            patient_gender: req.body.patientDetails.gender,
+            profile_pic_url: req.body.patientDetails.profile_pic_url,
+            patient_phone: req.body.patientDetails.phone
+          }
+        }
+
+        if(req.body.isOutPatientReq){
+          req.body.treatment = {};
+          //req.body.date = new Date();
+          req.body.user_id = req.body.centerDetails.user_id;
+          req.body.patient_id = req.body.patientDetails.user_id;
+          req.body.patient_firstname = req.body.patientDetails.firstname; 
+          req.body.patient_lastname = req.body.patientDetails.lastname;
+          req.body.patient_title = req.body.patientDetails.title;
+          req.body.phone = req.body.patientDetails.phone;
+          req.body.patient_address = req.body.patientDetails.address;
+          req.body.patient_city = req.body.patientDetails.city;
+          req.body.patient_profilePic = req.body.patientDetails.profile_pic_url;
+          req.body.radiology = {
+            patient_age: req.body.patientDetails.age,
+            patient_gender: req.body.patientDetails.gender,
+            profile_pic_url: req.body.patientDetails.profile_pic_url,
+            patient_phone: req.body.patientDetails.phone
+          }
+
+          var elemPos = req.user.doctor_patients_list.map(function(x){return x.patient_id}).indexOf(req.body.patient_id);
+
+          if(elemPos === -1){
+            req.user.doctor_patients_list.unshift({
+              date: date,
+              patient_lastname: req.body.patient_lastname,
+              patient_firstname: req.body.patient_firstname,
+              patient_id: req.body.patient_id,
+              patient_profile_pic_url: req.body.patient_profilePic,
+              patient_address: req.body.patient_address || "N/A",
+              patient_city: req.body.patient_city,
+              patient_country: req.body.patientDetails.country || 'Nigeria',
+              patient_gender: req.body.patientDetails.gender,
+              patient_age: req.body.patientDetails.age,
+              patient_phone: req.body.patientDetails.phone
+            })
+
+            req.user.save(function(err,info){
+              if(err) throw err;
+              //console.log("patient save in doctors list")
+            })
+          }
+        }
+
+        if(req.body.isRequestToDoctor) {
+          model.user.findOne({user_id: req.body.user_id},{
+          doctor_notification:1,address:1,name:1,city:1,country:1,phone:1,user_id:1,presence:1,email:1,profile_pic_url:1})        
+          .exec(function(err,result){
+          if(err) throw err;        
+
+            // Always check to see if the request came from a session. All investigations requested from a doc must be in session
+            model.session.find({doctor_id: req.user.user_id,patient_id: req.body.patient_id})
+            .exec(function(err,sessionData){
+              if(err) throw err;
+
+              if(!req.body.session_id && sessionData.length > 0) {
+                req.body.session_id = sessionData[sessionData.length - 1].session_id;
+              } else {
+                req.body.session_id = (req.body.session_id) ? req.body.session_id : uuid.v1();
+              }
+
+              if(req.body._id){
+                delete req.body._id
+              }
+
+              req.body.center_name = result.name;
+              req.body.center_address = result.address;
+              req.body.center_city = result.city;
+              req.body.center_phone = result.phone;
+              req.body.center_email = result.email;
+              req.body.center_profile_pic_url = result.profile_pic_url;
+
+              //center address and name obj to be passed to the patient.
+              var centerObj = {
+                name: result.name,
+                address: result.address,
+                city: result.city,
+                country: result.country,
+                phone: result.phone,
+                id: result.user_id
+              }
+              
+              var refObj = {
+                ref_id: random,
+                referral_firstname: req.user.firstname,
+                referral_lastname: req.user.lastname,
+                referral_title: req.user.title,
+                referral_email: req.user.email,
+                referral_phone: req.user.phone,
+                referral_id: req.user.user_id, 
+                acc_no: accNo,   
+                date: req.body.date || new Date(),  
+                center_id: result.user_id,      
+                radiology: {
+                  history: req.body.history,
+                  patient_age: req.body.radiology.patient_age,              
+                  patient_gender: req.body.radiology.patient_gender,
+                  test_to_run : req.body.lab_test_list,
+                  patient_firstname: req.body.patient_firstname,
+                  patient_lastname: req.body.patient_lastname,
+                  patient_profile_pic_url: req.body.patient_profilePic || req.body.profile_pic_url,
+                  patient_title: req.body.patient_title,
+                  patient_phone: (req.body.patientDetails) ? req.body.patientDetails.phone : req.body.phone,
+                  session_id: req.body.session_id,
+                  patient_id: req.body.patient_id,
+                  test_id: testId,
+                  patient_address: req.body.patient_address,
+                  indication: req.body.treatment.indication || req.body.indication,
+                  clinical_summary: req.body.treatment.clinical_summary || req.body.clinical_summary,
+                  lmp: req.body.treatment.lmb || req.body.lmb,
+                  parity: req.body.treatment.parity || req.body.parity,
+                  attended: false,
+                  acc_no: accNo,
+                  title: req.user.title,
+                  doctor_firstname: req.user.firstname,
+                  doctor_lastname: req.user.lastname,
+                  doctor_id: req.user.user_id,
+                  doctor_profile_url: req.user.profile_url,
+                  ray_type: req.body.ray_type
+                }                         
+              }
+
+              //this is notification for the center.
+              var refNotification = {
+                sender_id: random,
+                message_id: parseInt(testId),
+                type: "investigation",
+                date: + new Date(),
+                message: "Endoscopy investigation request.",
+                sender_firstname: req.body.patient_firstname + " " + req.body.patient_lastname,
+                sender_lastname: req.body.patient_lastname,
+                sender_age: "",
+                sender_gender: "",
+                sender_location: "",
+                sender_profile_pic_url: "",
+                center_id: req.user.user_id,
+                path: '/report-endoscopy/'
+              }
+
+              io.sockets.to(result.user_id).emit("get notification",refNotification);
+             
+              //result.referral.push(refObj);
+              var referral = new model.referral(refObj);
+              referral.save(function(err,info){
+                if(err) throw err;
+                //console.log("referral saved")
+              });
+
+              result.doctor_notification.unshift(refNotification);
+
+              result.save(function(err,info){
+                if(err) throw err;            
+              });
+              tellPatient(centerObj);
+            })
+          });
+
+        } else {
+          model.user.findOne({user_id: req.body.user_id},{
+          diagnostic_center_notification:1,referral:1,address:1,name:1,city:1,country:1,phone:1,user_id:1,presence:1,email:1,profile_pic_url:1})        
+          .exec(function(err,result){
+          if(err) throw err;        
+
+            // Always check to see if the request came from a session. All investigations requested from a doc must be in session
+            model.session.find({doctor_id: req.user.user_id,patient_id: req.body.patient_id})
+            .exec(function(err,sessionData){
+              if(err) throw err;
+
+              if(!req.body.session_id && sessionData.length > 0) {
+                req.body.session_id = sessionData[sessionData.length - 1].session_id;
+              } else {
+                req.body.session_id = (req.body.session_id) ? req.body.session_id : uuid.v1();
+              }
+
+              if(req.body._id){
+                delete req.body._id
+              }
+
+              req.body.center_name = result.name;
+              req.body.center_address = result.address;
+              req.body.center_city = result.city;
+              req.body.center_phone = result.phone;
+              req.body.center_email = result.email;
+              req.body.center_profile_pic_url = result.profile_pic_url;
+
+              //center address and name obj to be passed to the patient.
+              var centerObj = {
+                name: result.name,
+                address: result.address,
+                city: result.city,
+                country: result.country,
+                phone: result.phone,
+                id: result.user_id
+              }
+              
+              var refObj = {
+                ref_id: random,
+                referral_firstname: req.user.firstname,
+                referral_lastname: req.user.lastname,
+                referral_title: req.user.title,
+                referral_email: req.user.email,
+                referral_phone: req.user.phone,
+                referral_id: req.user.user_id, 
+                acc_no: accNo,   
+                date: req.body.date || new Date(),  
+                center_id: result.user_id,      
+                radiology: {
+                  history: req.body.history,
+                  patient_age: req.body.radiology.patient_age,              
+                  patient_gender: req.body.radiology.patient_gender,
+                  test_to_run : req.body.lab_test_list,
+                  patient_firstname: req.body.patient_firstname,
+                  patient_lastname: req.body.patient_lastname,
+                  patient_profile_pic_url: req.body.patient_profilePic || req.body.profile_pic_url,
+                  patient_title: req.body.patient_title,
+                  patient_phone: req.body.phone,
+                  session_id: req.body.session_id,
+                  patient_id: req.body.patient_id,
+                  test_id: testId,
+                  patient_address: req.body.patient_address,
+                  indication: req.body.treatment.indication || req.body.indication,
+                  clinical_summary: req.body.treatment.clinical_summary || req.body.clinical_summary,
+                  lmp: req.body.treatment.lmb || req.body.lmb,
+                  parity: req.body.treatment.parity || req.body.parity,
+                  attended: false,
+                  acc_no: accNo,
+                  title: req.user.title,
+                  doctor_firstname: req.user.firstname,
+                  doctor_lastname: req.user.lastname,
+                  doctor_id: req.user.user_id,
+                  doctor_profile_url: req.user.profile_url,
+                  ray_type: req.body.ray_type
+                }                         
+              }
+
+              //this is notification for the center.
+              var refNotification = {
+                sender_firstname: req.user.firstname,
+                sender_lastname: req.user.lastname,
+                sender_title : req.user.title,
+                sent_date: req.body.date,
+                ref_id: random,
+                note_id: random,
+                sender_profile_pic_url: req.user.profile_pic_url,
+                message: "Please run the test for my patient",
+                viewed: false
+              }
+
+            
+              io.sockets.to(result.user_id).emit("center notification",refNotification);
+             
+              //result.referral.push(refObj);
+              var referral = new model.referral(refObj);
+              referral.save(function(err,info){
+                if(err) throw err;
+                //console.log("referral saved")
+              });
+
+              result.diagnostic_center_notification.unshift(refNotification);
+
+              result.save(function(err,info){
+                if(err) throw err;            
+              });
+              tellPatient(centerObj);
+            })
+        });
+        }
+
+        var tellPatient = function(centerInfo){
+          //remember sms will be sent to the patient
+          model.user.findOne({user_id: req.body.patient_id},
+            {medical_records: 1,user_id:1,patient_notification:1,presence:1,phone:1,
+              accepted_doctors:1,endoscopy_new_indicator:1})
+          .exec(function(err,record){            
+            if(err) throw err;     
+            var recordObj = {
+              test_to_run: req.body.lab_test_list,
+              center_address: centerInfo.address,
+              center_city: centerInfo.city,
+              center_country: centerInfo.country,
+              center_name: centerInfo.name,
+              center_phone: centerInfo.phone,
+              center_id: centerInfo.id,
+              patient_id: record.user_id,
+              ref_id: random,
+              referral_firstname: req.user.firstname,
+              referral_lastname: req.user.lastname,
+              referral_title: req.user.title,
+              referral_id: req.user.user_id,
+              acc_no: accNo,
+              sent_date: req.body.date,
+              session_id: req.body.session_id,
+              test_id: testId,
+              report: "Pending",
+              conclusion: "Pending",
+              indication: req.body.indication,
+              summary: req.body.clinical_summary
+            }
+
+            var noteObj = {
+              type:"radiology",
+              date: req.body.date,
+              note_id: testId,
+              ref_id: random,
+              session_id:req.body.session_id,
+              message: "You have unread endoscopy test to run"
+            }
+
+            var elm = record.endoscopy_new_indicator.map(function(x){return x}).indexOf(req.user.user_id);
+            if(elm == -1){
+              record.endoscopy_new_indicator.push(req.user.user_id)
+            }
+
+            io.sockets.to(record.user_id).emit("notification",{status:true,message: "You have new unread test to run."});
+          
+            var msgBody = req.user.name + " requests you run an Endoscopy Test at " + centerInfo.name + "\n" + centerInfo.address + " " + centerInfo.city + " " +
+            centerInfo.country  + "\nRef No: " + random + "\nFor more details visit https://applinic.com/user/patient"
+            var phoneNunber =  record.phone;
+            sms.messages.create(
+              {
+                to: phoneNunber,
+                from: '+16467985692',
+                body: msgBody,
+              }
+            ) 
+        
+            record.patient_notification.unshift(noteObj);
+            record.medical_records.endoscopy_test.unshift(recordObj);
+
+            if(req.user.type === "Doctor" && req.body.isOutPatientReq){
+              var docPos = record.accepted_doctors.map(function(x){return x.doctor_id}).indexOf(req.user.user_id);
+              if(docPos === -1){
+                record.accepted_doctors.unshift({
+                  doctor_id: req.user.user_id,
+                  doctor_title: req.user.title,
+                  date_of_acceptance: date,
+                  doctor_firstname: req.user.firstname,
+                  doctor_lastname: req.user.lastname,
+                  doctor_profile_pic_url: req.user.profile_pic_url,                  
+                  doctor_specialty: req.user.specialty,
+                  doctor_email: req.user.email,
+                  work_place: req.user.work_place
+                })
+              }
+            }
+            record.save(function(err,info){
+              if(err) {
+                throw err;
+                res.end('500: Internal server error')
+              }
+              updateSession(req.body.session_id);
+              res.json({success:true,ref_no:random});
+            });
+
+          });
+        }
+
+        var updateSession = function(session_id) {
+          var testResult = {
+            test_to_run: req.body.lab_test_list,
+            receive_date: "Pending",
+            sent_date: req.body.date,
+            report: "Pending",
+            test_id: testId,
+            conclusion: "Pending",
+            sub_session_id: req.body.sub_session_id,
+            indication: req.body.indication,
+            test_ran_by: req.body.center_name,
+            center_address: req.body.center_address,
+            center_city: req.body.center_city,
+            center_phone: req.body.center_phone,
+            center_email: req.body.center_email,
+            center_profile_pic_url: req.body.center_profile_pic_url,
+          }       
+          
+            //var objFound = (sessionData[0]) ? sessionData[0] : null;
+          model.session.findOne({session_id: session_id})
+          .exec(function(err, objFound){
+            if(err) throw err;
+
+            if(req.body._id)
+              delete req.body._id;
+          
+            if(objFound) {
+
+              if(req.body.subSession) {
+                var subList = objFound.diagnosis.sub_session;
+                var subPos = subList.map(function(x){return x.sub_session_id}).indexOf(req.body.sub_session_id);
+                if(subPos === -1) {
+                  subList.push({
+                    date: date,
+                    note: "",
+                    sub_session_id: req.body.sub_session_id
+                  })
+                }
+                                
+              }        
+               
+              objFound.last_modified = + new Date();
+
+              objFound.diagnosis.radiology_test_results.unshift(testResult); 
+
+              objFound.save(function(err,info){
+                if(err) throw err;
+                //console.log("OK! updated")
+              })
+              
+
+          } else {             
+
+              var complainObj = {
+                presenting_complain: req.body.treatment.complain,
+                history_of_presenting_complain: req.body.treatment.historyOfComplain,
+                past_medical_history: req.body.treatment.pastMedicalHistory,
+                social_history: req.body.treatment.socialHistory,
+                family_history: req.body.treatment.familyHistory,
+                drug_history: req.body.treatment.drugHistory,
+                summary: req.body.treatment.summary,
+                notes: req.body.treatment.notes,
+                provisional_diagnosis: req.body.treatment.provisionalDiagnosis,
+              }
+
+              req.body.profilePic = req.body.patient_profilePic;
+              req.body.last_modified = req.body.date;
+              req.body.prescription_id = req.body.prescriptionId;
+              req.body.doctor_id = req.user.user_id;
+
+
+              //session introduced on 12/12/2019 instated of storiing sessions in "doctor_patients_session array"
+          
+              var record = new model.session(req.body)
+              record.diagnosis = complainObj;
+
+
+              if(req.body.subSession) {
+                var subList = record.diagnosis.sub_session;
+                var subPos = subList.map(function(x){return x.sub_session_id}).indexOf(req.body.sub_session_id);
+                if(subPos === -1) {
+                  subList.push({
+                    date: date,
+                    note: "",
+                    sub_session_id: req.body.sub_session_id
+                  })
+                }
+              }               
+              record.diagnosis.radiology_test_results.unshift(testResult);
+
+              record.save(function(err,info){
+                if(err) throw err;
+                //console.log("OK! created")
+              })
+
+          }
+
+         });
+        
+        }
+      } else {
+        res.end("Unauthorized access!")
+      }
+    });
+
+    router.post("/user/doctor/other-procedures/send-test",function(req,res){  
+        if(req.user) { 
+          var random = randos.genRef(7);
+          var testId = randos.genRef(8); 
+          var accNo = randos.genRef(8);
+          var date = + new Date();
+
+
+        if(req.body.isCaseNoteRequest) {
+          req.body.treatment = {};
+          //req.body.date = new Date();
+          req.body.user_id = req.body.centerDetails.user_id;
+          req.body.patient_id = req.body.patientDetails.user_id;
+          req.body.patient_firstname = req.body.patientDetails.firstname; 
+          req.body.patient_lastname = req.body.patientDetails.lastname;
+          req.body.patient_title = req.body.patientDetails.title;
+          req.body.phone = req.body.patientDetails.phone;
+          req.body.patient_address = req.body.patientDetails.address;
+          req.body.patient_city = req.body.patientDetails.city;
+          req.body.patient_profilePic = req.body.patientDetails.profile_pic_url;
+          req.body.radiology = {
+            patient_age: req.body.patientDetails.age,
+            patient_gender: req.body.patientDetails.gender,
+            profile_pic_url: req.body.patientDetails.profile_pic_url,
+            patient_phone: req.body.patientDetails.phone
+          }
+        }
+
+        if(req.body.isOutPatientReq){
+          req.body.treatment = {};
+          //req.body.date = new Date();
+          req.body.user_id = req.body.centerDetails.user_id;
+          req.body.patient_id = req.body.patientDetails.user_id;
+          req.body.patient_firstname = req.body.patientDetails.firstname; 
+          req.body.patient_lastname = req.body.patientDetails.lastname;
+          req.body.patient_title = req.body.patientDetails.title;
+          req.body.phone = req.body.patientDetails.phone;
+          req.body.patient_address = req.body.patientDetails.address;
+          req.body.patient_city = req.body.patientDetails.city;
+          req.body.patient_profilePic = req.body.patientDetails.profile_pic_url;
+          req.body.radiology = {
+            patient_age: req.body.patientDetails.age,
+            patient_gender: req.body.patientDetails.gender,
+            profile_pic_url: req.body.patientDetails.profile_pic_url,
+            patient_phone: req.body.patientDetails.phone
+          }
+
+          var elemPos = req.user.doctor_patients_list.map(function(x){return x.patient_id}).indexOf(req.body.patient_id);
+
+          if(elemPos === -1){
+            req.user.doctor_patients_list.unshift({
+              date: date,
+              patient_lastname: req.body.patient_lastname,
+              patient_firstname: req.body.patient_firstname,
+              patient_id: req.body.patient_id,
+              patient_profile_pic_url: req.body.patient_profilePic,
+              patient_address: req.body.patient_address || "N/A",
+              patient_city: req.body.patient_city,
+              patient_country: req.body.patientDetails.country || 'Nigeria',
+              patient_gender: req.body.patientDetails.gender,
+              patient_age: req.body.patientDetails.age,
+              patient_phone: req.body.patientDetails.phone
+            })
+
+            req.user.save(function(err,info){
+              if(err) throw err;
+              //console.log("patient save in doctors list")
+            })
+          }
+        }
+
+        if(req.body.isRequestToDoctor) {
+          model.user.findOne({user_id: req.body.user_id},{
+          doctor_notification:1,address:1,name:1,city:1,country:1,phone:1,user_id:1,presence:1,email:1,profile_pic_url:1})        
+          .exec(function(err,result){
+          if(err) throw err;        
+
+            // Always check to see if the request came from a session. All investigations requested from a doc must be in session
+            model.session.find({doctor_id: req.user.user_id,patient_id: req.body.patient_id})
+            .exec(function(err,sessionData){
+              if(err) throw err;
+
+              if(!req.body.session_id && sessionData.length > 0) {
+                req.body.session_id = sessionData[sessionData.length - 1].session_id;
+              } else {
+                req.body.session_id = (req.body.session_id) ? req.body.session_id : uuid.v1();
+              }
+
+              if(req.body._id){
+                delete req.body._id
+              }
+
+              req.body.center_name = result.name;
+              req.body.center_address = result.address;
+              req.body.center_city = result.city;
+              req.body.center_phone = result.phone;
+              req.body.center_email = result.email;
+              req.body.center_profile_pic_url = result.profile_pic_url;
+
+              //center address and name obj to be passed to the patient.
+              var centerObj = {
+                name: result.name,
+                address: result.address,
+                city: result.city,
+                country: result.country,
+                phone: result.phone,
+                id: result.user_id
+              }
+              
+              var refObj = {
+                ref_id: random,
+                referral_firstname: req.user.firstname,
+                referral_lastname: req.user.lastname,
+                referral_title: req.user.title,
+                referral_email: req.user.email,
+                referral_phone: req.user.phone,
+                referral_id: req.user.user_id, 
+                acc_no: accNo,   
+                date: req.body.date || new Date(),  
+                center_id: result.user_id,      
+                radiology: {
+                  history: req.body.history,
+                  patient_age: req.body.radiology.patient_age,              
+                  patient_gender: req.body.radiology.patient_gender,
+                  test_to_run : req.body.lab_test_list,
+                  patient_firstname: req.body.patient_firstname,
+                  patient_lastname: req.body.patient_lastname,
+                  patient_profile_pic_url: req.body.patient_profilePic || req.body.profile_pic_url,
+                  patient_title: req.body.patient_title,
+                  patient_phone: (req.body.patientDetails) ? req.body.patientDetails.phone : req.body.phone,
+                  session_id: req.body.session_id,
+                  patient_id: req.body.patient_id,
+                  test_id: testId,
+                  patient_address: req.body.patient_address,
+                  indication: req.body.treatment.indication || req.body.indication,
+                  clinical_summary: req.body.treatment.clinical_summary || req.body.clinical_summary,
+                  lmp: req.body.treatment.lmb || req.body.lmb,
+                  parity: req.body.treatment.parity || req.body.parity,
+                  attended: false,
+                  acc_no: accNo,
+                  title: req.user.title,
+                  doctor_firstname: req.user.firstname,
+                  doctor_lastname: req.user.lastname,
+                  doctor_id: req.user.user_id,
+                  doctor_profile_url: req.user.profile_url,
+                  ray_type: req.body.ray_type
+                }                         
+              }
+
+              //this is notification for the center.
+              var refNotification = {
+                sender_id: random,
+                message_id: parseInt(testId),
+                type: "investigation",
+                date: + new Date(),
+                message: `${req.body.lab_test_list[0].name} investigation request.`,
+                sender_firstname: req.body.patient_firstname + " " + req.body.patient_lastname,
+                sender_lastname: req.body.patient_lastname,
+                sender_age: "",
+                sender_gender: "",
+                sender_location: "",
+                sender_profile_pic_url: "",
+                center_id: req.user.user_id,
+                path: '/report-other-procedures/'
+              }
+
+              io.sockets.to(result.user_id).emit("get notification",refNotification);
+             
+              //result.referral.push(refObj);
+              var referral = new model.referral(refObj);
+              referral.save(function(err,info){
+                if(err) throw err;
+                //console.log("referral saved")
+              });
+
+              result.doctor_notification.unshift(refNotification);
+
+              result.save(function(err,info){
+                if(err) throw err;            
+              });
+              tellPatient(centerObj);
+            })
+          });
+
+        } else {
+          model.user.findOne({user_id: req.body.user_id},{
+          diagnostic_center_notification:1,referral:1,address:1,name:1,city:1,country:1,phone:1,user_id:1,presence:1,email:1,profile_pic_url:1})        
+          .exec(function(err,result){
+          if(err) throw err;        
+
+            // Always check to see if the request came from a session. All investigations requested from a doc must be in session
+            model.session.find({doctor_id: req.user.user_id,patient_id: req.body.patient_id})
+            .exec(function(err,sessionData){
+              if(err) throw err;
+
+              if(!req.body.session_id && sessionData.length > 0) {
+                req.body.session_id = sessionData[sessionData.length - 1].session_id;
+              } else {
+                req.body.session_id = (req.body.session_id) ? req.body.session_id : uuid.v1();
+              }
+
+              if(req.body._id){
+                delete req.body._id
+              }
+
+              req.body.center_name = result.name;
+              req.body.center_address = result.address;
+              req.body.center_city = result.city;
+              req.body.center_phone = result.phone;
+              req.body.center_email = result.email;
+              req.body.center_profile_pic_url = result.profile_pic_url;
+
+              //center address and name obj to be passed to the patient.
+              var centerObj = {
+                name: result.name,
+                address: result.address,
+                city: result.city,
+                country: result.country,
+                phone: result.phone,
+                id: result.user_id
+              }
+              
+              var refObj = {
+                ref_id: random,
+                referral_firstname: req.user.firstname,
+                referral_lastname: req.user.lastname,
+                referral_title: req.user.title,
+                referral_email: req.user.email,
+                referral_phone: req.user.phone,
+                referral_id: req.user.user_id, 
+                acc_no: accNo,   
+                date: req.body.date || new Date(),  
+                center_id: result.user_id,      
+                radiology: {
+                  history: req.body.history,
+                  patient_age: req.body.radiology.patient_age,              
+                  patient_gender: req.body.radiology.patient_gender,
+                  test_to_run : req.body.lab_test_list,
+                  patient_firstname: req.body.patient_firstname,
+                  patient_lastname: req.body.patient_lastname,
+                  patient_profile_pic_url: req.body.patient_profilePic || req.body.profile_pic_url,
+                  patient_title: req.body.patient_title,
+                  patient_phone: req.body.phone,
+                  session_id: req.body.session_id,
+                  patient_id: req.body.patient_id,
+                  test_id: testId,
+                  patient_address: req.body.patient_address,
+                  indication: req.body.treatment.indication || req.body.indication,
+                  clinical_summary: req.body.treatment.clinical_summary || req.body.clinical_summary,
+                  lmp: req.body.treatment.lmb || req.body.lmb,
+                  parity: req.body.treatment.parity || req.body.parity,
+                  attended: false,
+                  acc_no: accNo,
+                  title: req.user.title,
+                  doctor_firstname: req.user.firstname,
+                  doctor_lastname: req.user.lastname,
+                  doctor_id: req.user.user_id,
+                  doctor_profile_url: req.user.profile_url,
+                  ray_type: req.body.ray_type
+                }                         
+              }
+
+              //this is notification for the center.
+              var refNotification = {
+                sender_firstname: req.user.firstname,
+                sender_lastname: req.user.lastname,
+                sender_title : req.user.title,
+                sent_date: req.body.date,
+                ref_id: random,
+                note_id: random,
+                sender_profile_pic_url: req.user.profile_pic_url,
+                message: "Please run the test for my patient",
+                viewed: false
+              }
+
+            
+              io.sockets.to(result.user_id).emit("center notification",refNotification);
+             
+              //result.referral.push(refObj);
+              var referral = new model.referral(refObj);
+              referral.save(function(err,info){
+                if(err) throw err;
+                //console.log("referral saved")
+              });
+
+              result.diagnostic_center_notification.unshift(refNotification);
+
+              result.save(function(err,info){
+                if(err) throw err;            
+              });
+              tellPatient(centerObj);
+            })
+        });
+        }
+
+        var tellPatient = function(centerInfo){
+          //remember sms will be sent to the patient
+          model.user.findOne({user_id: req.body.patient_id},
+            {medical_records: 1,user_id:1,patient_notification:1,presence:1,phone:1,
+              accepted_doctors:1,other_procedures_new_indicator:1})
+          .exec(function(err,record){            
+            if(err) throw err;     
+            var recordObj = {
+              test_to_run: req.body.lab_test_list,
+              center_address: centerInfo.address,
+              center_city: centerInfo.city,
+              center_country: centerInfo.country,
+              center_name: centerInfo.name,
+              center_phone: centerInfo.phone,
+              center_id: centerInfo.id,
+              patient_id: record.user_id,
+              ref_id: random,
+              referral_firstname: req.user.firstname,
+              referral_lastname: req.user.lastname,
+              referral_title: req.user.title,
+              referral_id: req.user.user_id,
+              acc_no: accNo,
+              sent_date: req.body.date,
+              session_id: req.body.session_id,
+              test_id: testId,
+              report: "Pending",
+              conclusion: "Pending",
+              indication: req.body.indication,
+              summary: req.body.clinical_summary
+            }
+
+            var noteObj = {
+              type:"radiology",
+              date: req.body.date,
+              note_id: testId,
+              ref_id: random,
+              session_id:req.body.session_id,
+              message: `You have unread ${req.body.lab_test_list[0].name} test to run`
+            }
+
+            var elm = record.other_procedures_new_indicator.map(function(x){return x}).indexOf(req.user.user_id);
+            if(elm == -1){
+              record.other_procedures_new_indicator.push(req.user.user_id)
+            }
+
+            io.sockets.to(record.user_id).emit("notification",{status:true,message: "You have new unread test to run."});
+          
+            var msgBody = req.user.name + " requests you run " +  req.body.lab_test_list[0].name + " Test at "  
+            + centerInfo.name + "\n" + centerInfo.address + " " + centerInfo.city + " " +
+            centerInfo.country  + "\nRef No: " + random + "\nFor more details visit https://applinic.com/user/patient"
+            var phoneNunber =  record.phone;
+            sms.messages.create(
+              {
+                to: phoneNunber,
+                from: '+16467985692',
+                body: msgBody,
+              }
+            ) 
+        
+            record.patient_notification.unshift(noteObj);
+            record.medical_records.other_procedures_test.unshift(recordObj);
+
+            if(req.user.type === "Doctor" && req.body.isOutPatientReq){
+              var docPos = record.accepted_doctors.map(function(x){return x.doctor_id}).indexOf(req.user.user_id);
+              if(docPos === -1){
+                record.accepted_doctors.unshift({
+                  doctor_id: req.user.user_id,
+                  doctor_title: req.user.title,
+                  date_of_acceptance: date,
+                  doctor_firstname: req.user.firstname,
+                  doctor_lastname: req.user.lastname,
+                  doctor_profile_pic_url: req.user.profile_pic_url,                  
+                  doctor_specialty: req.user.specialty,
+                  doctor_email: req.user.email,
+                  work_place: req.user.work_place
+                })
+              }
+            }
+            record.save(function(err,info){
+              if(err) {
+                throw err;
+                res.end('500: Internal server error')
+              }
+              updateSession(req.body.session_id);
+              res.json({success:true,ref_no:random});
+            });
+
+          });
+        }
+
+        var updateSession = function(session_id) {
+          var testResult = {
+            test_to_run: req.body.lab_test_list,
+            receive_date: "Pending",
+            sent_date: req.body.date,
+            report: "Pending",
+            test_id: testId,
+            conclusion: "Pending",
+            sub_session_id: req.body.sub_session_id,
+            indication: req.body.indication,
+            test_ran_by: req.body.center_name,
+            center_address: req.body.center_address,
+            center_city: req.body.center_city,
+            center_phone: req.body.center_phone,
+            center_email: req.body.center_email,
+            center_profile_pic_url: req.body.center_profile_pic_url,
+          }       
+          
+            //var objFound = (sessionData[0]) ? sessionData[0] : null;
+          model.session.findOne({session_id: session_id})
+          .exec(function(err, objFound){
+            if(err) throw err;
+
+            if(req.body._id)
+              delete req.body._id;
+          
+            if(objFound) {
+
+              if(req.body.subSession) {
+                var subList = objFound.diagnosis.sub_session;
+                var subPos = subList.map(function(x){return x.sub_session_id}).indexOf(req.body.sub_session_id);
+                if(subPos === -1) {
+                  subList.push({
+                    date: date,
+                    note: "",
+                    sub_session_id: req.body.sub_session_id
+                  })
+                }
+                                
+              }        
+               
+              objFound.last_modified = + new Date();
+
+              objFound.diagnosis.radiology_test_results.unshift(testResult); 
+
+              objFound.save(function(err,info){
+                if(err) throw err;
+                //console.log("OK! updated")
+              })
+              
+
+          } else {             
+
+              var complainObj = {
+                presenting_complain: req.body.treatment.complain,
+                history_of_presenting_complain: req.body.treatment.historyOfComplain,
+                past_medical_history: req.body.treatment.pastMedicalHistory,
+                social_history: req.body.treatment.socialHistory,
+                family_history: req.body.treatment.familyHistory,
+                drug_history: req.body.treatment.drugHistory,
+                summary: req.body.treatment.summary,
+                notes: req.body.treatment.notes,
+                provisional_diagnosis: req.body.treatment.provisionalDiagnosis,
+              }
+
+              req.body.profilePic = req.body.patient_profilePic;
+              req.body.last_modified = req.body.date;
+              req.body.prescription_id = req.body.prescriptionId;
+              req.body.doctor_id = req.user.user_id;
+
+
+              //session introduced on 12/12/2019 instated of storiing sessions in "doctor_patients_session array"
+          
+              var record = new model.session(req.body)
+              record.diagnosis = complainObj;
+
+
+              if(req.body.subSession) {
+                var subList = record.diagnosis.sub_session;
+                var subPos = subList.map(function(x){return x.sub_session_id}).indexOf(req.body.sub_session_id);
+                if(subPos === -1) {
+                  subList.push({
+                    date: date,
+                    note: "",
+                    sub_session_id: req.body.sub_session_id
+                  })
+                }
+              }               
+              record.diagnosis.radiology_test_results.unshift(testResult);
+
+              record.save(function(err,info){
+                if(err) throw err;
+                //console.log("OK! created")
+              })
+
+          }
+
+         });
+        
+        }
+      } else {
+        res.end("Unauthorized access!")
+      }
+    });
+
 
 
   
@@ -15784,7 +16765,7 @@ router.get("/study/:uid/:refId",function(req,res){
 })
 
 router.post("/study/:uid/:refId",function(req,res){
-  console.log(req.body)
+  
   model.referral.findById(req.params.refId)
   .exec(function(err,referral){
     if(err) throw err;

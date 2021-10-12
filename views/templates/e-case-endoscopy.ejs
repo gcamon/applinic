@@ -1,0 +1,308 @@
+
+
+<script type="text/ng-template" id='e-case-endoscopy.html'>
+<div class="card-center-1">
+    <a href="#{{'/doctor-patient/treatment/' + patientInfo.user_id}}" class="btn btn-neutral"><i class="fa fa-arrow-left"></i> Back</a>
+</div>
+
+<div style="text-align: center;">
+  <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange;font-size: 24px" ng-if="loading"></i>
+</div>
+
+<div class="card-center-1 card">
+  <div class="row"> 
+    <div class="col-md-3 col-xs-3 pl-2 pt-2 pb-2">
+      <img src="{{patientInfo.profile_pic_url}}" style="max-height: 70px; width: auto;">
+    </div>
+    <div class="col-md-7 col-xs-7 pl-2 pt-2 pb-2">
+        <label class="block pb-0 mb-0">{{patientInfo.title}} {{patientInfo.firstname}} {{patientInfo.lastname}}</label>
+        <span>{{patientInfo.gender}}</span><br>
+        <span>{{patientInfo.age}}</span><br>
+        <span>{{patientInfo.city}}</span>
+      </div>
+    </div>
+    
+</div>
+<div class="card-center-1 card pr-1">
+  <select class="form-control" ng-model="case.navigate">
+    <option disabled selected value="">_Go To</option>
+    <option value="{{'/e-case-prescription/' + patientInfo.user_id}}">Prescription</option>
+    <option value="{{'/e-case-laboratory/' + patientInfo.user_id}}">Laboratory</option>
+    <option value="{{'/e-case-radiology/' + patientInfo.user_id}}">Radiology</option>
+    <option value="{{'/e-case-ultrasound/ + patientInfo.user_id'}}">Ultra-Sound</option>
+    <option value="{{'/e-case-ecg/' + patientInfo.user_id}}">ECG</option>
+    <option value="{{'/e-case-endoscopy/' + patientInfo.user_id}}">Endoscopy</option>
+    <option value="{{'/e-case-other-procedures/' + patientInfo.user_id}}">Other Procedures</option>
+    <option value="{{'/e-case-chart/' + patientInfo.user_id}}">Vitals (BP,BS,Temp etc)</option>
+    <option value="{{'/e-case-medical-reports/' + patientInfo.user_id}}">Medical Reports</option>
+    <!--<option value="{{'/e-case-sessions/' + patientInfo.user_id}}">Treatment Sessions</option>
+    <option value="{{'/e-case-imported-records/' + patientInfo.user_id}}">Imported Medical Records</option>-->
+    <option value="{{'/e-case-refer-specialist/' + patientInfo.user_id}}">Refer to a Specialist</option>
+    <option value="{{'/e-case-generate-bill/' + patientInfo.user_id}}">Generate Bill</option>
+  </select>
+</div>
+
+<div class="card-center-1 pr-1 mt-2" style="position: relative;">
+  <h5 class="h4">Endoscopy <span>({{labTest.length}})</span></h5>
+  <button class="btn btn-primary" ng-click="writeInvestigation()" style="position: absolute;top: 0px; right: 10px">New</button>
+  <label>
+    <label class="custom-control custom-checkbox">
+        <input type="checkbox" class="custom-control-input" ng-model= "radiology.isSorted" >
+        <span class="custom-control-indicator"></span>
+        <span class="custom-control-description">Sort by who requested.</span>
+     </label>
+  </label>
+</div>
+<div ng-if="!radiology.isSorted">
+  <section class="card card-center-1 mb-1" ng-repeat="test in labTest | filter : filterResult" id="{{test.ref_id}}">  
+  
+  <div class="p-1">
+            <div  style="position: relative;padding-top: 10px">
+              <button class="collapsed dropdown-toggle btn btn-neutral btn-sm pl-0" role="button" data-toggle="collapse" data-parent="#accordion" href="#{{'test' + test.ref_id + test.test_id}}" aria-expanded="false" aria-controls="collapsefifty">View details</button>
+              <span am-time-Ago="test.sent_date" style="position: absolute;top:3px;right: 15px"></span>
+          </div>
+      <hr>
+      <div style="line-height: 25px;margin-bottom:5px" id="{{'test' + test.ref_id + test.test_id}}" class="panel-collapse collapse p-1" role="tabpanel" aria-labelledby="headingfifty">
+                <strong>Center Name: </strong> <span>{{test.center_name}}</span><br>
+
+                <strong>Center Address: </strong> <span>{{test.center_address}} {{test.center_city}} {{test.center_country}}</span><br>
+                <strong>Center Phone: </strong> <span>{{test.center_phone}}</span><br>
+
+                <strong>Referred by:</strong>  <span>{{test.referral_title}} {{test.referral_lastname}} {{test.referral_firstname || "Not specified"}}</span><br>
+
+                <strong>Reference Number:</strong> : <span>{{(test.copy) ? "Copied!" : test.ref_id}}</span> <a href="" clipboard supported="supported" text="test.ref_id" on-copied="success(test)" on-error="fail(err)" title="{{copy}}" class="fa fa-copy text-danger" style="padding: 5px"> Copy</a><br>
+
+                <strong>Date requested:</strong> <span>{{test.sent_date | date : "mediumDate"}} ( <span am-time-Ago="test.sent_date" ng-if="test.sent_date"></span> )</span><br>
+
+                <span ng-if="test.conclusion === 'Pending'"><strong>Status: </strong> <span style="color: red">Awaiting test result</span></span><br>
+              <!--<p><strong>Date sent: </strong>{{test.sent_date | date : "mediumDate"}} &nbsp; <strong>Time: </strong>{{test.sent_date | date : "shortTime"}}</p>-->
+              <strong>Date received: </strong> {{test.receive_date | date: "mediumDate" || "Pending"}} <span ng-show="test.receive_date">( <span am-time-Ago="test.receive_date" ng-if="test.receive_date"></span> )</span><br>
+
+
+              <strong>Indication: </strong> <span>{{test.indication}}</span><br>
+
+              <div ng-show="test.patient_id_of_study">
+               <strong>Patient ID of Study:</strong> : <span>{{(test.copy) ? "Copied!" : test.patient_id_of_study}}</span> <a href="" clipboard supported="supported" text="test.patient_id_of_study" on-copied="success(test)" on-error="fail(err)" title="{{copy}}" class="fa fa-copy text-danger" style="padding: 5px"> Copy</a>
+              </div>
+                
+              
+          </div>
+          <br>
+      <div>
+              <h6>Study requested:</h6>
+              <br>
+              <div ng-repeat="ranTest in test.test_to_run">                   
+                <label class="custom-control custom-checkbox">
+                      <input type="checkbox" class="custom-control-input" ng-model= "ranTest.picked" >
+                      <span class="custom-control-indicator"></span>
+                      <span class="custom-control-description"> {{ranTest.name}}</span>
+                  </label>         
+              </div>
+            
+
+          </div> 
+          <br> 
+          <div style="line-height: 30px">
+            <h6>Report: </h6>
+            <div ng-show="test.conclusion !== 'Pending' || test.findings">
+              <blockquote>
+                <label>Findings:</label>
+                <span>{{test.findings || ''}}</span>            
+              </blockquote>
+              <blockquote>
+                <label>Conclusion:</label>
+                <span>{{test.conclusion || ''}}</span>
+              </blockquote>
+              <blockquote>
+                <label>Advise/Further investigations:</label>
+                <span>{{test.advise || ''}}</span>
+              </blockquote>
+            </div>
+            <p ng-show="test.conclusion === 'Pending' && !test.findings">No report received at this time.</p>
+
+            <div class="relative">
+          <a href="{{'https://drive.google.com/viewerng/viewer?embedded=true&url=https://applinic.com' + test.pdf_report[0].pathname}}" ng-show="test.receive_date" class="btn btn-simple btn-sm text-primary hidden-md-down" target="_blank"> <i class="fa fa-file-pdf-o"></i> </a><a href="" ng-show="test.receive_date" ng-click="pdfViewer(test.pdf_report[0].pathname)" class="btn btn-simple btn-sm text-primary hidden-md-up" target="_blank"> <i class="fa fa-file-pdf-o"></i> </a><span ng-show="test.receive_date">&nbsp;&nbsp;</span>
+
+          <a href="{{test.pdf_report[0].pathname}}" ng-show="test.receive_date" title="Download report (PDF)" class="btn btn-simple btn-sm text-primary"><i class="fa fa-download"></i></a><span ng-show="test.receive_date">&nbsp;&nbsp;</span>
+
+          <a href="" title="Forward report to someone via email" ng-show="test.receive_date" class="btn btn-sm btn-simple text-primary"><i class="fa fa-share-alt" ng-click="email(test,'Radiology',patientInfo.firstname,patientInfo.lastname,patientInfo.age,patientInfo.gender,'Ultrasound')"></i></a><span ng-show="test.receive_date">&nbsp;&nbsp;</span>        
+          
+              <!--<a href="{{'/dicom-mobile?id=' + test.study_id}}" ng-show="test.patient_id_of_study" class="btn btn-simple btn-sm text-primary hidden-md-up" target="_blank"><i class="fa fa-eye"></i></a><a href="{{'/dcm?id=' + test.patient_id_of_study + '&key=' + test.study_id}}" ng-show="test.patient_id_of_study" class="btn btn-simple btn-sm hidden-md-down text-primary" target="_blank"><i class="fa fa-eye"></i></a>-->
+
+              <!--<a href="" style="position: absolute;bottom: 0;right: 10px"><i class="fa fa-share btn btn-simple btn-sm text-primary" aria-hidden="true"  title="Forward to another center to re-run test" ng-click="forwardTest(test,'Radiology')"></i></a>-->
+
+              <a href="" ng-click="viewImage(test.files)" style="position: absolute;bottom: 0;right: 10px" class="text-info" ng-show="test.files.length > 0">See images</a>
+            </div>
+          </div>
+    </div>
+  </section>
+
+</div>
+
+
+<div ng-if="radiology.isSorted">
+  <div class="card-center-1">
+    <h5>You ({{sortedRadiology.mine.length}})</h5>
+  </div>
+  <section  class="card card-center-1 mb-1 relative p-1" ng-repeat="test in sortedRadiology.mine | filter : filterResult" id="{{test.ref_id}}"> 
+
+    <div>
+              <div  style="position: relative;padding-top: 10px">
+                <button class="collapsed dropdown-toggle btn btn-sm btn-neutral" role="button" data-toggle="collapse" data-parent="#accordion" href="#{{'test' + test.ref_id + test.test_id}}" aria-expanded="false" aria-controls="collapsefifty">View details</button>
+                <span am-time-Ago="test.sent_date" style="position: absolute;top:12px;right: 15px"></span>
+            </div>
+        <hr>
+        <div style="line-height: 25px;margin-bottom:5px" id="{{'test' + test.ref_id + test.test_id}}" class="panel-collapse collapse p-1" role="tabpanel" aria-labelledby="headingfifty">
+                  <strong>Center Name: </strong> <span>{{test.center_name}}</span><br>
+
+                  <strong>Center Address: </strong> <span>{{test.center_address}} {{test.center_city}} {{test.center_country}}</span><br>
+                  <strong>Center Phone: </strong> <span>{{test.center_phone}}</span><br>
+
+                  <strong>Referred by:</strong>  <span>{{test.referral_title}} {{test.referral_lastname}} {{test.referral_firstname || "Not specified"}}</span><br>
+
+                  <strong>Reference Number:</strong> : <span>{{(test.copy) ? "Copied!" : test.ref_id}}</span> <a href="" clipboard supported="supported" text="test.ref_id" on-copied="success(test)" on-error="fail(err)" title="{{copy}}" class="fa fa-copy text-danger" style="padding: 5px"> Copy</a><br>
+
+                  <strong>Date requested:</strong> <span>{{test.sent_date | date : "mediumDate"}} ( <span am-time-Ago="test.sent_date" ng-if="test.sent_date"></span> )</span><br>
+
+                  <span ng-if="test.conclusion === 'Pending'"><strong>Status: </strong> <span style="color: red">Awaiting test result</span></span><br>
+                <!--<p><strong>Date sent: </strong>{{test.sent_date | date : "mediumDate"}} &nbsp; <strong>Time: </strong>{{test.sent_date | date : "shortTime"}}</p>-->
+                <strong>Date received: </strong> {{test.receive_date | date: "mediumDate" || "Pending"}} ( <span am-time-Ago="test.receive_date" ng-if="test.receive_date"></span> )<br>
+
+                <strong>Indication: </strong> <span>{{test.indication}}</span>                  
+                
+            </div>
+           
+        <div class="mb-1">
+               <h6>Study requested:</h6>
+                <br>
+                <div ng-repeat="ranTest in test.test_to_run">                   
+                  <label class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" ng-model= "ranTest.picked" >
+                        <span class="custom-control-indicator"></span>
+                        <span class="custom-control-description"> {{ranTest.name}}</span>
+                    </label>         
+                </div>
+            </div> 
+           
+        
+    </div>    
+    
+      <br> 
+          <div style="line-height: 30px">
+            <h6>Report: </h6>
+            <div ng-show="test.conclusion !== 'Pending' || test.findings">
+              <blockquote>
+                <label>Findings:</label>
+                <span>{{test.findings || ''}}</span>            
+              </blockquote>
+              <blockquote>
+                <label>Conclusion:</label>
+                <span>{{test.conclusion || ''}}</span>
+              </blockquote>
+              <blockquote>
+                <label>Advise:</label>
+                <span>{{test.advise || ''}}</span>
+              </blockquote>
+            </div>
+            <p ng-show="test.conclusion === 'Pending' && !test.findings">No report received at this time.</p>
+
+            <div class="relative">
+          <a href="{{'https://drive.google.com/viewerng/viewer?embedded=true&url=https://applinic.com' + test.pdf_report[0].pathname}}" ng-show="test.receive_date" class="btn btn-simple btn-sm text-primary hidden-md-down" target="_blank"> <i class="fa fa-file-pdf-o"></i> </a><a href="" ng-show="test.receive_date" ng-click="pdfViewer(test.pdf_report[0].pathname)" class="btn btn-simple btn-sm text-primary hidden-md-up" target="_blank"> <i class="fa fa-file-pdf-o"></i> </a><span ng-show="test.receive_date">&nbsp;&nbsp;</span>
+
+          <a href="{{test.pdf_report[0].pathname}}" ng-show="test.receive_date" title="Download report (PDF)" class="btn btn-simple btn-sm text-primary"><i class="fa fa-download"></i></a><span ng-show="test.receive_date">&nbsp;&nbsp;</span>
+
+          <a href="" title="Forward report to someone via email" ng-show="test.receive_date" class="btn btn-sm btn-simple text-primary"><i class="fa fa-share-alt" ng-click="email(test,'Radiology',patientInfo.firstname,patientInfo.lastname,patientInfo.age,patientInfo.gender)"></i></a><span ng-show="test.receive_date">&nbsp;&nbsp;</span>       
+          
+              <a href="{{'/dicom-mobile?id=' + test.study_id}}" ng-show="test.patient_id_of_study" class="btn btn-simple btn-sm text-primary hidden-md-up" target="_blank"><i class="fa fa-eye"></i></a><a href="{{'/dcm?id=' + test.patient_id_of_study + '&key=' + test.study_id}}" ng-show="test.patient_id_of_study" class="btn btn-simple btn-sm hidden-md-down text-primary" target="_blank"><i class="fa fa-eye"></i></a>
+
+              <a href="" style="position: absolute;bottom: 0;right: 10px"><i class="fa fa-share btn btn-simple btn-sm text-primary" aria-hidden="true"  title="Forward to another center to re-run test" ng-click="forwardTest(test,'Radiology')"></i></a>
+            </div>
+          </div>
+  </section>
+   <section  class="card card-center-1 mb-1 relative p-1" ng-repeat="test in sortedRadiology.others | filter : filterResult" id="{{test.ref_id}}">  
+      <div class="mb-1 card-center-1 mt-2">
+      <h5>
+        <a href="{{j.profile}}" ng-show="j.tests.length > 0">
+          {{j.title}} {{j.firstname}} ({{j.tests.length}})
+        </a>
+      </h5>
+      
+    </div>
+    <div class="clearfix"></div>
+    <br>    
+    <div>
+              <div  style="position: relative;padding-top: 10px">
+                <button class="collapsed dropdown-toggle btn btn-sm btn-neutral" role="button" data-toggle="collapse" data-parent="#accordion" href="#{{'test' + test.ref_id + test.test_id}}" aria-expanded="false" aria-controls="collapsefifty">View details</button>
+                <span am-time-Ago="test.sent_date" style="position: absolute;top:12px;right: 15px"></span>
+            </div>
+        <hr>
+        <div style="line-height: 25px;margin-bottom:5px" id="{{'test' + test.ref_id + test.test_id}}" class="panel-collapse collapse p-1" role="tabpanel" aria-labelledby="headingfifty">
+                  <strong>Center Name: </strong> <span>{{test.center_name}}</span><br>
+
+                  <strong>Center Address: </strong> <span>{{test.center_address}} {{test.center_city}} {{test.center_country}}</span><br>
+                  <strong>Center Phone: </strong> <span>{{test.center_phone}}</span><br>
+
+                  <strong>Referred by:</strong>  <span>{{test.referral_title}} {{test.referral_lastname}} {{test.referral_firstname || "Not specified"}}</span><br>
+
+                  <strong>Reference Number:</strong> : <span>{{(test.copy) ? "Copied!" : test.ref_id}}</span> <a href="" clipboard supported="supported" text="test.ref_id" on-copied="success(test)" on-error="fail(err)" title="{{copy}}" class="fa fa-copy text-danger" style="padding: 5px"> Copy</a><br>
+
+                  <strong>Date requested:</strong> <span>{{test.sent_date | date : "mediumDate"}} ( <span am-time-Ago="test.sent_date" ng-if="test.sent_date"></span> )</span><br>
+
+                  <span ng-if="test.conclusion === 'Pending'"><strong>Status: </strong> <span style="color: red">Awaiting test result</span></span><br>
+                <!--<p><strong>Date sent: </strong>{{test.sent_date | date : "mediumDate"}} &nbsp; <strong>Time: </strong>{{test.sent_date | date : "shortTime"}}</p>-->
+                <strong>Date received: </strong> {{test.receive_date | date: "mediumDate" || "Pending"}} ( <span am-time-Ago="test.receive_date" ng-if="test.receive_date"></span> )<br>
+
+                <strong>Indication: </strong> <span>{{test.indication}}</span>                  
+                
+            </div>
+           
+        <div class="mb-1">
+               <h6>Study requested:</h6>
+                <br>
+                <div ng-repeat="ranTest in test.test_to_run">                   
+                  <label class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" ng-model= "ranTest.picked" >
+                        <span class="custom-control-indicator"></span>
+                        <span class="custom-control-description"> {{ranTest.name}}</span>
+                    </label>         
+                </div>
+            </div> 
+           
+        
+    </div>    
+    
+      <br> 
+          <div style="line-height: 30px">
+            <h6>Report: </h6>
+            <div ng-show="test.conclusion !== 'Pending' || test.findings">
+              <blockquote>
+                <label>Findings:</label>
+                <span>{{test.findings || ''}}</span>            
+              </blockquote>
+              <blockquote>
+                <label>Conclusion:</label>
+                <span>{{test.conclusion || ''}}</span>
+              </blockquote>
+              <blockquote>
+                <label>Advise:</label>
+                <span>{{test.advise || ''}}</span>
+              </blockquote>
+            </div>
+            <p ng-show="test.conclusion === 'Pending' && !test.findings">No report received at this time.</p>
+
+            <div class="relative">
+          <a href="{{'https://drive.google.com/viewerng/viewer?embedded=true&url=https://applinic.com' + test.pdf_report[0].pathname}}" ng-show="test.receive_date" class="btn btn-simple btn-sm text-primary hidden-md-down" target="_blank"> <i class="fa fa-file-pdf-o"></i> </a><a href="" ng-show="test.receive_date" ng-click="pdfViewer(test.pdf_report[0].pathname)" class="btn btn-simple btn-sm text-primary hidden-md-up" target="_blank"> <i class="fa fa-file-pdf-o"></i> </a><span ng-show="test.receive_date">&nbsp;&nbsp;</span>
+
+          <a href="{{test.pdf_report[0].pathname}}" ng-show="test.receive_date" title="Download report (PDF)" class="btn btn-simple btn-sm text-primary"><i class="fa fa-download"></i></a><span ng-show="test.receive_date">&nbsp;&nbsp;</span>
+
+          <a href="" title="Forward report to someone via email" ng-show="test.receive_date" class="btn btn-sm btn-simple text-primary"><i class="fa fa-share-alt" ng-click="email(test,'Radiology',patientInfo.firstname,patientInfo.lastname,patientInfo.age,patientInfo.gender)"></i></a><span ng-show="test.receive_date">&nbsp;&nbsp;</span>       
+          
+              <a href="{{'/dicom-mobile?id=' + test.study_id}}" ng-show="test.patient_id_of_study" class="btn btn-simple btn-sm text-primary hidden-md-up" target="_blank"><i class="fa fa-eye"></i></a><a href="{{'/dcm?id=' + test.patient_id_of_study + '&key=' + test.study_id}}" ng-show="test.patient_id_of_study" class="btn btn-simple btn-sm hidden-md-down text-primary" target="_blank"><i class="fa fa-eye"></i></a>
+
+              <a href="" style="position: absolute;bottom: 0;right: 10px"><i class="fa fa-share btn btn-simple btn-sm text-primary" aria-hidden="true"  title="Forward to another center to re-run test" ng-click="forwardTest(test,'Radiology')"></i></a>
+            </div>
+          </div>
+  </section>
+
+</div>
+</script>
