@@ -88,14 +88,14 @@
 
             <a href="#{{'/e-case-ecg/' + patientInfo.user_id}}" class="ick grayish"  ng-class="{'btn-info': isToViewLabPrescriptionReq}" style="position:relative;padding: 15px 10px">
               <i class="fa fa-radiation-alt text-primary">
-              </i> ECG   <span>( {{patientInfo.medical_records.ecg_result.length}} )</span> 
+              </i> ECG   <span>( {{patientInfo.medical_records.ecg_test.length}} )</span> 
                <span class="fa fa-arrow-right text-muted text-primary" style="position: absolute;right: 10px;bottom: auto;"></span>
                 <!--<span class="tag tag-info pull-right" ng-if="labLen > 0">{{labLen}}</span>-->
             </a>
 
             <a href="#{{'/e-case-endoscopy/' + patientInfo.user_id}}" class="ick grayish"  ng-class="{'btn-info': isToViewLabPrescriptionReq}" style="position:relative;padding: 15px 10px">
               <i class="fa fa-search text-primary">
-              </i> Endoscopy  <span>( {{patientInfo.medical_records.endoscopy_result.length}} )</span>  
+              </i> Endoscopy  <span>( {{patientInfo.medical_records.endoscopy_test.length}} )</span>  
                <span class="fa fa-arrow-right text-muted text-primary" style="position: absolute;right: 10px;bottom: auto;"></span>
                 <!--<span class="tag tag-info pull-right" ng-if="labLen > 0">{{labLen}}</span>-->
             </a>
@@ -105,14 +105,14 @@
 
              <a href="#{{'/e-case-other-procedures/' + patientInfo.user_id}}" class="ick grayish"  ng-class="{'btn-info': isToViewLabPrescriptionReq}" style="position:relative;padding: 15px 10px">
               <i class="icon-stethoscopetwo text-primary">
-              </i> Other Procedures  <span>( {{patientInfo.medical_records.other_procedures.length}} )</span>
+              </i> Other Procedures  <span>( {{patientInfo.medical_records.other_procedures_test.length}} )</span>
                <span class="fa fa-arrow-right text-muted text-primary" style="position: absolute;right: 10px;bottom: auto;"></span>
                 <!--<span class="tag tag-info pull-right" ng-if="labLen > 0">{{labLen}}</span>-->
             </a>
 
               <a href="#{{'/e-case-chart/' + patientInfo.user_id}}" class="ick grayish" ng-class="{'btn-info': isOutChart}"  style="position:relative;padding: 15px 10px">
                 <i class="fa fa-bar-chart text-primary" title="Blood Pressure, Blood Sugar, Temperature etc, Charts">
-                </i> Chart (BP,BS,Temp etc)
+                </i> Vitals (BP,BS,Temp etc)
                 <span class="fa fa-arrow-right text-muted text-primary" style="position: absolute;right: 10px;bottom: auto;"></span>
             </a>
 

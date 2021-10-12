@@ -262,7 +262,7 @@
             <a href="{{back}}" class="btn btn-simple"><i class="fa fa-arrow-left"></i> Go back</a>
         </div>
         <div>
-            <button class="btn btn-primary btn-block" ng-click="submitReport('<%= _id %>')" ng-show="!loading && !msg">Save &amp; Submit Report</button>
+            <button class="btn btn-primary btn-block" ng-click="submitReport('<%= _id %>','<%= ref_uid %>')" ng-show="!loading && !msg">Save &amp; Submit Report</button>
            <p style="text-align: center;" ng-show="loading">Submitting... Please wait!</p>
            <p style="text-align: center;" ng-show="msg"><i class="fa fa-check text-success"></i> 
                 <span>{{msg}}</span><br><br>

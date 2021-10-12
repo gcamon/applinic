@@ -24,12 +24,15 @@
 
 		  $scope.loading = true;
 
+		  var type = localManager.getValue('radiology_type') || null;
+
 		  var fixZoom = "<div style='zoom:0.66'>" + htm + '</div>';
 
-		  $http.post(url,{html: fixZoom,_id: id,uid: uid})
+		  $http.post(url,{html: fixZoom,_id: id,uid: uid,type: type})
 		  .success(function(resp){
 		  	if(resp.status){
 		  		$scope.msg = resp.message;
+		  		localManager.removeItem('radiology_type')
 		  	} else {
 		  		alert(resp.message)
 		  	}

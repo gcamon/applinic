@@ -1,24 +1,5 @@
-'use strict';
-var mongoose = require('mongoose');
-mongoose.Promise = global.Promise;
-var dbURL = "mongodb://127.0.0.1:27017/medicalmull"; //"mongodb://127.0.0.1:27017/medicalmull"; 45.55.204.222
-var options = {
-	autoReconnect: true,
-	useMongoClient: true,
-	reconnectTries: Number.MAX_VALUE, // Never stop trying to reconnect
-	reconnectInterval: 500, // Reconnect every 500ms
-	poolSize: 10, // Maintain up to 10 socket connections
-	// If not connected, return errors immediately rather than waiting for reconnect
-	bufferMaxEntries: 0,
-	//useNewUrlParser: true 
-}
 
-mongoose.connect(dbURL,options)
-.then(
-  () => { console.log("db connected!") },
-  err => { console.log(err)}
-)
-
+var mongoose = require("./mongooseODM");
 var Schema = mongoose.Schema;
 var myModel = function () {
 	var fileSchema = Schema({
@@ -222,7 +203,8 @@ var myModel = function () {
 		sender_profile_pic_url: String,
 		files: Array,
 		isLaterRef: String,
-		center_id: String
+		center_id: String,
+		path: String
 	});
 
 	var periodSchema = Schema({
@@ -569,14 +551,17 @@ var myModel = function () {
 		doctor_country: String,
 		patient_id: String,
 		doctor_profile_pic_url: String,
+		indication: String,
+		clinical_summary: String,
 		report: String,
 		date: String,
 		diagnosis: String,
 		report_id: String,
 		session_id: String,
 		doctor_profile_url: String,
-		sub_session_id: String
-	})
+		sub_session_id: String,
+		investigations: Array
+	});
 
 
 	var updateSchema = Schema({
@@ -719,6 +704,7 @@ var myModel = function () {
 		laboratory_new_indicator: Array,
 		radiology_new_indicator: Array,
 		ultrasound_new_indicator: Array,
+		ecg_new_indicator: Array,
 		pharmacy_new_indicator: Array,
 		appointment_new_indicator: Array,
 		chart_new_indicator: Boolean,
