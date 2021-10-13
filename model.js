@@ -365,7 +365,8 @@ var myModel = function () {
 		report_date: Date,
 		sample_files: Array,
 		staffname: String,
-		designation: String
+		designation: String,
+		path: String
 	});
 
 	var drug_refSchema = Schema({
@@ -423,7 +424,8 @@ var myModel = function () {
 		note_id: Number,
 		sender_profile_pic_url: String,
 		message: String,
-		viewed: Boolean 
+		viewed: Boolean,
+		path: String
 	});
 //for session
 	var conversationSchema = Schema({

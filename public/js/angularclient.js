@@ -978,6 +978,26 @@ app.config(['$paystackProvider','$routeProvider',
   controller: 'chartCtrl'
  })
 
+.when("/report-ultrasound/:id",{
+  templateUrl: 'report-ultrasound.html',
+  controller: "ultraSoundReportCtrl"
+})
+
+.when("/report-ecg/:id",{
+  templateUrl: 'report-ecg.html',
+  controller: "ECGReportCtrl"
+})
+
+.when("/report-endoscopy/:id",{
+  templateUrl: 'report-endoscopy.html',
+  controller: "endoscopyReportCtrl"
+})
+
+.when("/report-other-procedures/:id",{
+  templateUrl: 'report-other-procedures.html',
+  controller: "otherProceduresReportCtrl"
+})
+
 
 }])
 
@@ -18432,17 +18452,22 @@ app.controller("radioCenterNotificationController",["$scope","$location","$http"
       var elementPos = list.map(function(x) {return x.ref_id}).indexOf(id);
       localManager.setValue("radiologyData",list[elementPos]);
     } else {
-
-      //view test from notification icon goes to the backend to get patient data;    
-      var labTest = radioTestsService; //$resource("/user/radiology/get-referral");
-      labTest.get({refId: id},function(data){
-       
-        localManager.setValue("radiologyData",data); //pharmacyData refers to patients prescription
-        var pageUrl = "/radiology/view-test/" + id;
+      console.log(note)
+      //view test from notification icon goes to the backend to get patient data; 
+      if(note.path){
+        var pageUrl = note.path + id;
         $location.path(pageUrl);
-        localManager.setValue("currPageForRadiology",pageUrl);
-        deleteByRefId(id,"diagnostic_center_notification")
-      });   
+      } else {
+        var labTest = radioTestsService; 
+        labTest.get({refId: id},function(data){       
+          localManager.setValue("radiologyData",data); 
+          var pageUrl = "/radiology/view-test/" + id;
+          $location.path(pageUrl);
+          localManager.setValue("currPageForRadiology",pageUrl);
+          deleteByRefId(id,"diagnostic_center_notification")
+        });   
+      }
+      
     } 
 
     if(!note.viewed)
@@ -28799,6 +28824,766 @@ app.directive("contenteditable", function() {
     }
   };
 });
+
+
+
+app.controller("ultraSoundReportCtrl",["$scope","$http","$location","localManager","$rootScope",
+  function($scope,$http,$location,localManager,$rootScope){ 
+    var path = $location.path();
+    var arr = path.split("/");  
+    var refId = arr[arr.length-1];
+
+    $scope.fileList = [];
+
+    $http.get("/user/radiology/get-referral",{params:{refId: refId}})
+    .success(function(data){
+      $scope.ultraRefData = data;
+      $scope.ultraRefData.radiology.staffname = $rootScope.checkLogIn.name || "";
+      $scope.ultraRefData.radiology.designation = $rootScope.checkLogIn.specialty || "";
+    });
+
+
+    $scope.preview = function(study) {
+      /*if(!navigator.onLine){      
+        alert('NO INTERNET CONNECTIONS! You have to connect to internet before you can proceed.');
+        return;
+      }*/
+
+      $scope.loading = true;
+
+      study.date = new Date();
+      
+      var fd = new FormData();
+
+      var arr = [];
+
+      var xhr = new XMLHttpRequest();
+      xhr.upload.addEventListener("progress", uploadProgress, false);
+      xhr.addEventListener("load", uploadComplete, false);
+      xhr.addEventListener("error", uploadFailed, false);
+      xhr.addEventListener("abort", uploadCanceled, false);
+
+      function uploadFile(file) {     
+        xhr.open("POST", '/user/save-report')
+        xhr.send(file);
+      }
+
+      if($scope.fileList.length > 0){
+        //$scope.fileList.forEach(function(file){
+          for(var key = 0; key < $scope.fileList.length; key++){
+            fd.append(key,$scope.fileList[key],$scope.fileList[key].name);
+          };
+          uploadFile(fd)
+        //})
+      } else {
+        $scope.progress = 100;
+        postData(study);
+      }
+
+      function uploadProgress(evt) {
+        $scope.progressVisible = true;
+        $scope.$apply(function(){
+          if (evt.lengthComputable) {          
+            $scope.progress = Math.round(evt.loaded * 100 / evt.total);
+          } else {
+            $scope.progress = 'unable to compute';
+          }
+        })
+      }
+
+      function uploadComplete(evt) {
+        $scope.$apply(function(){       
+          $scope.userData = JSON.parse(evt.target.responseText);
+          //$scope.sampleImages = $scope.userData.arr;
+          study.sample_files = $scope.userData.arr;
+          postData(study);
+        })
+         
+      }
+
+      function uploadFailed(evt) {
+        alert("There was an error attempting to upload the file.")
+        $scope.loading = false; 
+      }
+
+      function uploadCanceled(evt) {
+        $scope.$apply(function(){
+          $scope.progressVisible = false;
+        })
+        alert("The upload has been canceled by the user or the browser dropped the connection.");
+      }
+
+
+      function postData(data) {
+        $http.post('/user/save-report',data)
+        .success(function(response){          
+          if(!response.status){
+            alert(response.message);
+            $scope.loading = false;         
+          } else {  
+            localManager.setValue("currentPage",path)
+            localManager.setValue("currPageForRadiology",path)
+            localManager.setValue('templatePath',window.location.href)
+            localManager.removeItem('speechTextData');        
+            window.location.href = response.path;
+          }
+        });
+      }
+
+    }
+
+    /* drag and drop image logic */
+    var drop = $("input");
+    drop.on('dragenter', function (e) {
+      $(".drop").css({
+        "border": "4px dashed #09f",
+        "background": "rgba(0, 153, 255, .05)"
+      });
+      $(".cont").css({
+        "color": "#09f"
+      });
+    }).on('dragleave dragend mouseout drop', function (e) {
+      $(".drop").css({
+        "border": "3px dashed #DADFE3",
+        "background": "transparent"
+      });
+      $(".cont").css({
+        "color": "#8E99A5"
+      });
+    });
+
+    function handleFileSelect(evt) {
+
+      var files = evt.target.files; // FileList object
+
+      var ft = Array.from(files);
+
+      for(var j = 0; j < ft.length; j++){ // helps to accomodate files selected singly 
+        $scope.fileList.push(ft[j])
+      }
+
+      // Loop through the FileList and render image files as thumbnails.
+      for (var i = 0, f; f = files[i]; i++) {
+
+        // Only process image files.
+        if (!f.type.match('image.*')) {
+          continue;
+        }
+
+        var reader = new FileReader();
+
+        // Closure to capture the file information.
+        reader.onload = (function(theFile) {
+          return function(e) {
+            // Render thumbnail.
+            var span = document.createElement('span');
+            span.id = Math.floor(Math.random() * 999999).toString();
+            span.fileName = theFile.name;
+            span.addEventListener('click',delImage,false);
+            span.innerHTML = ['<img class="thumb" src="', e.target.result,
+                              '" title="', escape(theFile.name), '"/>'].join('') + '<span style="font-weight: bold;cursor: pointer;margin-right: 15px">X</span>';
+            document.getElementById('list').insertBefore(span, null);
+          };
+        })(f);
+
+        // Read in the image file as a data URL.
+        reader.readAsDataURL(f);
+      }
+    }
+
+    var elem;
+
+    function delImage(evt){
+      elem = document.getElementById(evt.currentTarget.id);
+      elem.style.display = "none";
+      for(var j = 0; j < $scope.fileList.length; j++){
+        if($scope.fileList[j].name === evt.currentTarget.fileName){
+          $scope.fileList.splice(j,1);
+          break;
+        }
+      }
+    }
+    
+    $('#files').change(handleFileSelect);
+
+   
+    $scope.speech2Text = function(field,study){
+      $scope.ultraRefData.fieldType = field;
+      localManager.setValue('speechTextData',$scope.ultraRefData);
+      window.location.href = "/speech-text/ai";
+    }
+}])
+
+app.controller("ECGReportCtrl",["$scope","$http","$location","localManager","$rootScope",
+  function($scope,$http,$location,localManager,$rootScope){ 
+    var path = $location.path();
+    var arr = path.split("/");  
+    var refId = arr[arr.length-1];
+
+    $scope.fileList = [];
+
+    $http.get("/user/radiology/get-referral",{params:{refId: refId}})
+    .success(function(data){
+      $scope.ECGRefData = data;
+      $scope.ECGRefData.radiology.staffname = $rootScope.checkLogIn.name || "";
+      $scope.ECGRefData.radiology.designation = $rootScope.checkLogIn.specialty || "";
+    });
+
+
+    $scope.preview = function(study) {
+      /*if(!navigator.onLine){      
+        alert('NO INTERNET CONNECTIONS! You have to connect to internet before you can proceed.');
+        return;
+      }*/
+
+      $scope.loading = true;
+
+      study.date = new Date();
+      
+      var fd = new FormData();
+
+      var arr = [];
+
+      localManager.setValue('radiology_type','ecg_test');
+
+      var xhr = new XMLHttpRequest();
+      xhr.upload.addEventListener("progress", uploadProgress, false);
+      xhr.addEventListener("load", uploadComplete, false);
+      xhr.addEventListener("error", uploadFailed, false);
+      xhr.addEventListener("abort", uploadCanceled, false);
+
+      function uploadFile(file) {     
+        xhr.open("POST", '/user/save-report')
+        xhr.send(file);
+      }
+
+      if($scope.fileList.length > 0){
+        //$scope.fileList.forEach(function(file){
+          for(var key = 0; key < $scope.fileList.length; key++){
+            fd.append(key,$scope.fileList[key],$scope.fileList[key].name);
+          };
+          uploadFile(fd)
+        //})
+      } else {
+        $scope.progress = 100;
+        postData(study);
+      }
+
+      function uploadProgress(evt) {
+        $scope.progressVisible = true;
+        $scope.$apply(function(){
+          if (evt.lengthComputable) {          
+            $scope.progress = Math.round(evt.loaded * 100 / evt.total);
+          } else {
+            $scope.progress = 'unable to compute';
+          }
+        })
+      }
+
+      function uploadComplete(evt) {
+        $scope.$apply(function(){       
+          $scope.userData = JSON.parse(evt.target.responseText);
+          //$scope.sampleImages = $scope.userData.arr;
+          study.sample_files = $scope.userData.arr;
+          postData(study);
+        })
+         
+      }
+
+      function uploadFailed(evt) {
+        alert("There was an error attempting to upload the file.")
+        $scope.loading = false; 
+      }
+
+      function uploadCanceled(evt) {
+        $scope.$apply(function(){
+          $scope.progressVisible = false;
+        })
+        alert("The upload has been canceled by the user or the browser dropped the connection.");
+      }
+
+
+      function postData(data) {
+        $http.post('/user/save-report',data)
+        .success(function(response){          
+          if(!response.status){
+            alert(response.message);
+            $scope.loading = false;         
+          } else {  
+            localManager.setValue("currentPage",path)
+            localManager.setValue("currPageForRadiology",path)
+            localManager.setValue('templatePath',window.location.href)
+            localManager.removeItem('speechTextData');        
+            window.location.href = response.path;
+          }
+        });
+      }
+
+    }
+
+    /* drag and drop image logic */
+    var drop = $("input");
+    drop.on('dragenter', function (e) {
+      $(".drop").css({
+        "border": "4px dashed #09f",
+        "background": "rgba(0, 153, 255, .05)"
+      });
+      $(".cont").css({
+        "color": "#09f"
+      });
+    }).on('dragleave dragend mouseout drop', function (e) {
+      $(".drop").css({
+        "border": "3px dashed #DADFE3",
+        "background": "transparent"
+      });
+      $(".cont").css({
+        "color": "#8E99A5"
+      });
+    });
+
+    function handleFileSelect(evt) {
+
+      var files = evt.target.files; // FileList object
+
+      var ft = Array.from(files);
+
+      for(var j = 0; j < ft.length; j++){ // helps to accomodate files selected singly 
+        $scope.fileList.push(ft[j])
+      }
+
+      // Loop through the FileList and render image files as thumbnails.
+      for (var i = 0, f; f = files[i]; i++) {
+
+        // Only process image files.
+        if (!f.type.match('image.*')) {
+          continue;
+        }
+
+        var reader = new FileReader();
+
+        // Closure to capture the file information.
+        reader.onload = (function(theFile) {
+          return function(e) {
+            // Render thumbnail.
+            var span = document.createElement('span');
+            span.id = Math.floor(Math.random() * 999999).toString();
+            span.fileName = theFile.name;
+            span.addEventListener('click',delImage,false);
+            span.innerHTML = ['<img class="thumb" src="', e.target.result,
+                              '" title="', escape(theFile.name), '"/>'].join('') + '<span style="font-weight: bold;cursor: pointer;margin-right: 15px">X</span>';
+            document.getElementById('list').insertBefore(span, null);
+          };
+        })(f);
+
+        // Read in the image file as a data URL.
+        reader.readAsDataURL(f);
+      }
+    }
+
+    var elem;
+
+    function delImage(evt){
+      elem = document.getElementById(evt.currentTarget.id);
+      elem.style.display = "none";
+      for(var j = 0; j < $scope.fileList.length; j++){
+        if($scope.fileList[j].name === evt.currentTarget.fileName){
+          $scope.fileList.splice(j,1);
+          break;
+        }
+      }
+    }
+    
+    $('#files').change(handleFileSelect);
+
+   
+    $scope.speech2Text = function(field,study){
+      $scope.ultraRefData.fieldType = field;
+      localManager.setValue('speechTextData',$scope.ultraRefData);
+      window.location.href = "/speech-text/ai";
+    }
+}])
+
+app.controller("endoscopyReportCtrl",["$scope","$http","$location","localManager","$rootScope",
+  function($scope,$http,$location,localManager,$rootScope){ 
+    var path = $location.path();
+    var arr = path.split("/");  
+    var refId = arr[arr.length-1];
+
+    $scope.fileList = [];
+
+    $http.get("/user/radiology/get-referral",{params:{refId: refId}})
+    .success(function(data){
+      $scope.endoscopyRefData = data;
+      $scope.endoscopyRefData.radiology.staffname = $rootScope.checkLogIn.name || "";
+      $scope.endoscopyRefData.radiology.designation = $rootScope.checkLogIn.specialty || "";
+    });
+
+
+    $scope.preview = function(study) {
+      /*if(!navigator.onLine){      
+        alert('NO INTERNET CONNECTIONS! You have to connect to internet before you can proceed.');
+        return;
+      }*/
+
+      $scope.loading = true;
+
+      study.date = new Date();
+      
+      var fd = new FormData();
+
+      var arr = [];
+
+      localManager.setValue('radiology_type','endoscopy_test');
+
+      var xhr = new XMLHttpRequest();
+      xhr.upload.addEventListener("progress", uploadProgress, false);
+      xhr.addEventListener("load", uploadComplete, false);
+      xhr.addEventListener("error", uploadFailed, false);
+      xhr.addEventListener("abort", uploadCanceled, false);
+
+      function uploadFile(file) {     
+        xhr.open("POST", '/user/save-report')
+        xhr.send(file);
+      }
+
+      if($scope.fileList.length > 0){
+        //$scope.fileList.forEach(function(file){
+          for(var key = 0; key < $scope.fileList.length; key++){
+            fd.append(key,$scope.fileList[key],$scope.fileList[key].name);
+          };
+          uploadFile(fd)
+        //})
+      } else {
+        $scope.progress = 100;
+        postData(study);
+      }
+
+      function uploadProgress(evt) {
+        $scope.progressVisible = true;
+        $scope.$apply(function(){
+          if (evt.lengthComputable) {          
+            $scope.progress = Math.round(evt.loaded * 100 / evt.total);
+          } else {
+            $scope.progress = 'unable to compute';
+          }
+        })
+      }
+
+      function uploadComplete(evt) {
+        $scope.$apply(function(){       
+          $scope.userData = JSON.parse(evt.target.responseText);
+          //$scope.sampleImages = $scope.userData.arr;
+          study.sample_files = $scope.userData.arr;
+          postData(study);
+        })
+         
+      }
+
+      function uploadFailed(evt) {
+        alert("There was an error attempting to upload the file.")
+        $scope.loading = false; 
+      }
+
+      function uploadCanceled(evt) {
+        $scope.$apply(function(){
+          $scope.progressVisible = false;
+        })
+        alert("The upload has been canceled by the user or the browser dropped the connection.");
+      }
+
+
+      function postData(data) {
+        $http.post('/user/save-report',data)
+        .success(function(response){          
+          if(!response.status){
+            alert(response.message);
+            $scope.loading = false;         
+          } else {  
+            localManager.setValue("currentPage",path)
+            localManager.setValue("currPageForRadiology",path)
+            localManager.setValue('templatePath',window.location.href)
+            localManager.removeItem('speechTextData');        
+            window.location.href = response.path;
+          }
+        });
+      }
+
+    }
+
+    /* drag and drop image logic */
+    var drop = $("input");
+    drop.on('dragenter', function (e) {
+      $(".drop").css({
+        "border": "4px dashed #09f",
+        "background": "rgba(0, 153, 255, .05)"
+      });
+      $(".cont").css({
+        "color": "#09f"
+      });
+    }).on('dragleave dragend mouseout drop', function (e) {
+      $(".drop").css({
+        "border": "3px dashed #DADFE3",
+        "background": "transparent"
+      });
+      $(".cont").css({
+        "color": "#8E99A5"
+      });
+    });
+
+    function handleFileSelect(evt) {
+
+      var files = evt.target.files; // FileList object
+
+      var ft = Array.from(files);
+
+      for(var j = 0; j < ft.length; j++){ // helps to accomodate files selected singly 
+        $scope.fileList.push(ft[j])
+      }
+
+      // Loop through the FileList and render image files as thumbnails.
+      for (var i = 0, f; f = files[i]; i++) {
+
+        // Only process image files.
+        if (!f.type.match('image.*')) {
+          continue;
+        }
+
+        var reader = new FileReader();
+
+        // Closure to capture the file information.
+        reader.onload = (function(theFile) {
+          return function(e) {
+            // Render thumbnail.
+            var span = document.createElement('span');
+            span.id = Math.floor(Math.random() * 999999).toString();
+            span.fileName = theFile.name;
+            span.addEventListener('click',delImage,false);
+            span.innerHTML = ['<img class="thumb" src="', e.target.result,
+                              '" title="', escape(theFile.name), '"/>'].join('') + '<span style="font-weight: bold;cursor: pointer;margin-right: 15px">X</span>';
+            document.getElementById('list').insertBefore(span, null);
+          };
+        })(f);
+
+        // Read in the image file as a data URL.
+        reader.readAsDataURL(f);
+      }
+    }
+
+    var elem;
+
+    function delImage(evt){
+      elem = document.getElementById(evt.currentTarget.id);
+      elem.style.display = "none";
+      for(var j = 0; j < $scope.fileList.length; j++){
+        if($scope.fileList[j].name === evt.currentTarget.fileName){
+          $scope.fileList.splice(j,1);
+          break;
+        }
+      }
+    }
+    
+    $('#files').change(handleFileSelect);
+
+   
+    $scope.speech2Text = function(field,study){
+      $scope.ultraRefData.fieldType = field;
+      localManager.setValue('speechTextData',$scope.ultraRefData);
+      window.location.href = "/speech-text/ai";
+    }
+}])
+
+
+app.controller("otherProceduresReportCtrl",["$scope","$http","$location","localManager","$rootScope",
+  function($scope,$http,$location,localManager,$rootScope){ 
+    var path = $location.path();
+    var arr = path.split("/");  
+    var refId = arr[arr.length-1];
+
+    $scope.fileList = [];
+
+    $http.get("/user/radiology/get-referral",{params:{refId: refId}})
+    .success(function(data){
+      $scope.otherProceduresRefData = data;
+      $scope.otherProceduresRefData.radiology.staffname = $rootScope.checkLogIn.name || "";
+      $scope.otherProceduresRefData.radiology.designation = $rootScope.checkLogIn.specialty || "";
+    });
+
+
+    $scope.preview = function(study) {
+      /*if(!navigator.onLine){      
+        alert('NO INTERNET CONNECTIONS! You have to connect to internet before you can proceed.');
+        return;
+      }*/
+
+      $scope.loading = true;
+
+      study.date = new Date();
+      
+      var fd = new FormData();
+
+      var arr = [];
+
+      localManager.setValue('radiology_type','other_procedures_test');
+
+      var xhr = new XMLHttpRequest();
+      xhr.upload.addEventListener("progress", uploadProgress, false);
+      xhr.addEventListener("load", uploadComplete, false);
+      xhr.addEventListener("error", uploadFailed, false);
+      xhr.addEventListener("abort", uploadCanceled, false);
+
+      function uploadFile(file) {     
+        xhr.open("POST", '/user/save-report')
+        xhr.send(file);
+      }
+
+      if($scope.fileList.length > 0){
+        //$scope.fileList.forEach(function(file){
+          for(var key = 0; key < $scope.fileList.length; key++){
+            fd.append(key,$scope.fileList[key],$scope.fileList[key].name);
+          };
+          uploadFile(fd)
+        //})
+      } else {
+        $scope.progress = 100;
+        postData(study);
+      }
+
+      function uploadProgress(evt) {
+        $scope.progressVisible = true;
+        $scope.$apply(function(){
+          if (evt.lengthComputable) {          
+            $scope.progress = Math.round(evt.loaded * 100 / evt.total);
+          } else {
+            $scope.progress = 'unable to compute';
+          }
+        })
+      }
+
+      function uploadComplete(evt) {
+        $scope.$apply(function(){       
+          $scope.userData = JSON.parse(evt.target.responseText);
+          //$scope.sampleImages = $scope.userData.arr;
+          study.sample_files = $scope.userData.arr;
+          postData(study);
+        })
+         
+      }
+
+      function uploadFailed(evt) {
+        alert("There was an error attempting to upload the file.")
+        $scope.loading = false; 
+      }
+
+      function uploadCanceled(evt) {
+        $scope.$apply(function(){
+          $scope.progressVisible = false;
+        })
+        alert("The upload has been canceled by the user or the browser dropped the connection.");
+      }
+
+
+      function postData(data) {
+        $http.post('/user/save-report',data)
+        .success(function(response){          
+          if(!response.status){
+            alert(response.message);
+            $scope.loading = false;         
+          } else {  
+            localManager.setValue("currentPage",path)
+            localManager.setValue("currPageForRadiology",path)
+            localManager.setValue('templatePath',window.location.href)
+            localManager.removeItem('speechTextData');        
+            window.location.href = response.path;
+          }
+        });
+      }
+
+    }
+
+    /* drag and drop image logic */
+    var drop = $("input");
+    drop.on('dragenter', function (e) {
+      $(".drop").css({
+        "border": "4px dashed #09f",
+        "background": "rgba(0, 153, 255, .05)"
+      });
+      $(".cont").css({
+        "color": "#09f"
+      });
+    }).on('dragleave dragend mouseout drop', function (e) {
+      $(".drop").css({
+        "border": "3px dashed #DADFE3",
+        "background": "transparent"
+      });
+      $(".cont").css({
+        "color": "#8E99A5"
+      });
+    });
+
+    function handleFileSelect(evt) {
+
+      var files = evt.target.files; // FileList object
+
+      var ft = Array.from(files);
+
+      for(var j = 0; j < ft.length; j++){ // helps to accomodate files selected singly 
+        $scope.fileList.push(ft[j])
+      }
+
+      // Loop through the FileList and render image files as thumbnails.
+      for (var i = 0, f; f = files[i]; i++) {
+
+        // Only process image files.
+        if (!f.type.match('image.*')) {
+          continue;
+        }
+
+        var reader = new FileReader();
+
+        // Closure to capture the file information.
+        reader.onload = (function(theFile) {
+          return function(e) {
+            // Render thumbnail.
+            var span = document.createElement('span');
+            span.id = Math.floor(Math.random() * 999999).toString();
+            span.fileName = theFile.name;
+            span.addEventListener('click',delImage,false);
+            span.innerHTML = ['<img class="thumb" src="', e.target.result,
+                              '" title="', escape(theFile.name), '"/>'].join('') + '<span style="font-weight: bold;cursor: pointer;margin-right: 15px">X</span>';
+            document.getElementById('list').insertBefore(span, null);
+          };
+        })(f);
+
+        // Read in the image file as a data URL.
+        reader.readAsDataURL(f);
+      }
+    }
+
+    var elem;
+
+    function delImage(evt){
+      elem = document.getElementById(evt.currentTarget.id);
+      elem.style.display = "none";
+      for(var j = 0; j < $scope.fileList.length; j++){
+        if($scope.fileList[j].name === evt.currentTarget.fileName){
+          $scope.fileList.splice(j,1);
+          break;
+        }
+      }
+    }
+    
+    $('#files').change(handleFileSelect);
+
+   
+    $scope.speech2Text = function(field,study){
+      $scope.ultraRefData.fieldType = field;
+      localManager.setValue('speechTextData',$scope.ultraRefData);
+      window.location.href = "/speech-text/ai";
+    }
+}])
+
+
+
 
 
 function testNumber(str) {

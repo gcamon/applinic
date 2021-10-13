@@ -6409,7 +6409,8 @@ var basicRoute = function (model,sms,io,streams,client,transporter,opentok) {
                   doctor_lastname: req.user.lastname,
                   doctor_id: req.user.user_id,
                   doctor_profile_url: req.user.profile_url,
-                  ray_type: req.body.ray_type
+                  ray_type: req.body.ray_type,
+                  path: '/report-ultrasound/'
                 }                         
               }
 
@@ -6423,7 +6424,8 @@ var basicRoute = function (model,sms,io,streams,client,transporter,opentok) {
                 note_id: random,
                 sender_profile_pic_url: req.user.profile_pic_url,
                 message: "Please run the test for my patient",
-                viewed: false
+                viewed: false,
+                path: '/report-ultrasound/'
               }
 
             
@@ -6900,7 +6902,8 @@ var basicRoute = function (model,sms,io,streams,client,transporter,opentok) {
                   doctor_lastname: req.user.lastname,
                   doctor_id: req.user.user_id,
                   doctor_profile_url: req.user.profile_url,
-                  ray_type: req.body.ray_type
+                  ray_type: req.body.ray_type,
+                  path: '/report-ecg/'
                 }                         
               }
 
@@ -6914,7 +6917,8 @@ var basicRoute = function (model,sms,io,streams,client,transporter,opentok) {
                 note_id: random,
                 sender_profile_pic_url: req.user.profile_pic_url,
                 message: "Please run the test for my patient",
-                viewed: false
+                viewed: false,
+                path: '/report-ecg/'
               }
 
             
@@ -7390,7 +7394,8 @@ var basicRoute = function (model,sms,io,streams,client,transporter,opentok) {
                   doctor_lastname: req.user.lastname,
                   doctor_id: req.user.user_id,
                   doctor_profile_url: req.user.profile_url,
-                  ray_type: req.body.ray_type
+                  ray_type: req.body.ray_type,
+                  path: '/report-endoscopy/'
                 }                         
               }
 
@@ -7404,7 +7409,8 @@ var basicRoute = function (model,sms,io,streams,client,transporter,opentok) {
                 note_id: random,
                 sender_profile_pic_url: req.user.profile_pic_url,
                 message: "Please run the test for my patient",
-                viewed: false
+                viewed: false,
+                path: '/report-endoscopy/'
               }
 
             
@@ -7879,7 +7885,8 @@ var basicRoute = function (model,sms,io,streams,client,transporter,opentok) {
                   doctor_lastname: req.user.lastname,
                   doctor_id: req.user.user_id,
                   doctor_profile_url: req.user.profile_url,
-                  ray_type: req.body.ray_type
+                  ray_type: req.body.ray_type,
+                  path: '/report-other-procedures/'
                 }                         
               }
 
@@ -7893,7 +7900,8 @@ var basicRoute = function (model,sms,io,streams,client,transporter,opentok) {
                 note_id: random,
                 sender_profile_pic_url: req.user.profile_pic_url,
                 message: "Please run the test for my patient",
-                viewed: false
+                viewed: false,
+                path: '/report-other-procedures/'
               }
 
             
@@ -8110,10 +8118,6 @@ var basicRoute = function (model,sms,io,streams,client,transporter,opentok) {
         res.end("Unauthorized access!")
       }
     });
-
-
-
-  
 
 
     //this route takes care of  un ran test which was forwarded to another center by a center.
