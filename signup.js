@@ -394,6 +394,71 @@ var signupRoute = function(model,sms,geonames,paystack,io,transporter) {
 							User.courier_access_password = uuid.v1();			
 						}
 
+
+						if(req.body.typeOfUser === "Patient"){
+							
+
+			 				model.study.find({patient_phone: User.phone})
+          		.exec(function(err,studies){ 
+
+              var elemPos;
+              var random;
+                         
+           
+              studies.forEach(function(study){                      
+               
+                elemPos = User.medical_records.radiology_test
+                  .map(function(x){return x.patient_id_of_study}).indexOf(study.study_id)
+
+                 if(elemPos === -1) {
+                  
+                  random = Math.floor(Math.random() * 9999999); 
+
+                  var testToRun = [];
+                  testToRun.push({
+                    sn: 1,
+                    name: study.study_name
+                  })
+
+                  User.medical_records.radiology_test.push({
+                    acc_no: random,
+                    advise: study.advise || "",
+                    center_address: study.center_address || "",
+                    center_city: study.center_city || "",
+                    center_country: study.center_country || "",
+                    center_id: study.center_id || "",
+                    center_name: study.center_name || "",
+                    center_phone: study.center_phone || "",
+                    conclusion: study.conclusion || "",
+                    files: [],
+                    findings: study.findings || "",
+                    indication: study.indication || "",
+                    lab_pdf_report: [],
+                    mobile_viewer_path: study.study_link_mobile || "",
+                    patient_id: User.user_id,
+                    patient_id_of_study: study.study_id || study.study_uid,
+                    payment_acknowledgement: true,
+                    pdf_report: study.pdf_report,
+                    receive_date: + new Date(study.study_date) || "",
+                    ref_id: study.ref_id || "",
+                    referral_firstname: study.referring_physician || "",
+                    referral_title: "",
+                    report: [],
+                    sent_date: study.created,
+                    session_id: study.session_id || "",
+                    study_id: study._id.toString(),
+                    test_to_run: testToRun,
+                    web_viewer_path: study.study_link2 || ""
+                  })
+                }
+                
+              }) 
+
+              User.save(function(err,info){})
+						})
+
+          	}
+
 						function saveUser() {
 							//console.log(User)
 							User.save(function(err){

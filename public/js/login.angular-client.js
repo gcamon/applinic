@@ -681,7 +681,7 @@ app.controller('loginController',["$scope","$http","$location","$window","$resou
     localManager.removeItem('holdId');
     localManager.removeItem("holdIdForChat");
     localManager.removeItem("holdChatList");
-    localManager.removeItem("partnerDetails");
+    //localManager.removeItem("partnerDetails");
   }
   
 }]);

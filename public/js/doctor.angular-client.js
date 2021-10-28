@@ -7619,7 +7619,10 @@ app.controller("presenceSocketController",["$rootScope","$scope","$window","mySo
       var idPatient = (person.typeOfUser === 'Patient') ? person.user_id : data.from; // this will identify which patient was used to initilalze the video caht
 
       mySocket.emit("conversation acceptance",{status:true,time: "now",to:data.from,title:person.title,
-        name: person.firstname || person.name,type:person.typeOfUser,patientId: idPatient},function(response){
+        name: person.firstname || person.name,
+        type:person.typeOfUser,patientId: idPatient,
+        phone: person.phone,patient_lastname: person.lastname,
+        profile_pic_url: person.profile_pic_url},function(response){
 
           //localManager.setValue("userId",data.from);
 
@@ -18214,9 +18217,8 @@ app.controller("patientSearchForPharmacyController",["$scope","$location","$http
 
 }]);
 
-app.controller("e-caseLaboratoryCtrl",["$scope","$http","$rootScope","$location",
-  "templateService","ModalService","templateService","$timeout",
-  function($scope,$http,$rootScope,$location,templateService,ModalService,templateService,$timeout){
+app.controller("e-caseLaboratoryCtrl",["$scope","$http","$rootScope","$location","ModalService","templateService","$timeout",
+  function($scope,$http,$rootScope,$location,ModalService,templateService,$timeout){
 
   var path = $location.path();
   var arr = path.split("/");  
@@ -19068,7 +19070,7 @@ app.controller("ultraSoundOutCtrl",["$scope","$http","UltraSounds","getAllRadiol
   }
 
   $scope.countIndex = 0;
-  $scope.countIndex2 = 0;
+  //$scope.countIndex2 = 0;
 
   $scope.sendTest = function(center,isDoctor){
 
@@ -19087,7 +19089,7 @@ app.controller("ultraSoundOutCtrl",["$scope","$http","UltraSounds","getAllRadiol
 
     $scope.countIndex++;
 
-    if(isDoctor){
+    if(center.type === 'Doctor'){
       $scope.treatment.isRequestToDoctor = true;
     }
 
@@ -19138,7 +19140,7 @@ app.controller("ultraSoundOutCtrl",["$scope","$http","UltraSounds","getAllRadiol
           center.isSent = true;
           center.loading = false;
           $scope.countIndex = 0;
-          $scope.countIndex2 = 0;
+          //$scope.countIndex2 = 0;
         }
        
       } else {
@@ -19295,7 +19297,7 @@ app.controller("ECGOutCtrl",["$scope","$http","getAllRadiologyService","$rootSco
   }
 
   $scope.countIndex = 0;
-  $scope.countIndex2 = 0;
+  //$scope.countIndex2 = 0;
 
   $scope.sendTest = function(center,isDoctor){
 
@@ -19314,7 +19316,7 @@ app.controller("ECGOutCtrl",["$scope","$http","getAllRadiologyService","$rootSco
 
     $scope.countIndex++;
 
-    if(isDoctor){
+    if(center.type === 'Doctor'){
       $scope.treatment.isRequestToDoctor = true;
     }
 
@@ -19365,7 +19367,7 @@ app.controller("ECGOutCtrl",["$scope","$http","getAllRadiologyService","$rootSco
           center.isSent = true;
           center.loading = false;
           $scope.countIndex = 0;
-          $scope.countIndex2 = 0;
+          //$scope.countIndex2 = 0;
         }
        
       } else {
@@ -19520,7 +19522,7 @@ app.controller("endoscopyOutCtrl",["$scope","$http","getAllRadiologyService","$r
   }
 
   $scope.countIndex = 0;
-  $scope.countIndex2 = 0;
+  //$scope.countIndex2 = 0;
 
   $scope.sendTest = function(center,isDoctor){
 
@@ -19539,7 +19541,7 @@ app.controller("endoscopyOutCtrl",["$scope","$http","getAllRadiologyService","$r
 
     $scope.countIndex++;
 
-    if(isDoctor){
+    if(center.type === 'Doctor'){
       $scope.treatment.isRequestToDoctor = true;
     }
 
@@ -19590,7 +19592,7 @@ app.controller("endoscopyOutCtrl",["$scope","$http","getAllRadiologyService","$r
           center.isSent = true;
           center.loading = false;
           $scope.countIndex = 0;
-          $scope.countIndex2 = 0;
+          //$scope.countIndex2 = 0;
         }
        
       } else {
@@ -19745,7 +19747,7 @@ app.controller("otherProceduresOutCtrl",["$scope","$http","getAllRadiologyServic
   }
 
   $scope.countIndex = 0;
-  $scope.countIndex2 = 0;
+  //$scope.countIndex2 = 0;
 
   $scope.sendTest = function(center,isDoctor){
 
@@ -19764,7 +19766,7 @@ app.controller("otherProceduresOutCtrl",["$scope","$http","getAllRadiologyServic
 
     $scope.countIndex++;
 
-    if(isDoctor){
+    if(center.type === 'Doctor'){
       $scope.treatment.isRequestToDoctor = true;
     }
 
@@ -19799,7 +19801,7 @@ app.controller("otherProceduresOutCtrl",["$scope","$http","getAllRadiologyServic
     $scope.treatment.isOutPatientReq = true;
     $scope.treatment.centerDetails = center;
     $scope.treatment.lab_test_list = testArr;
-    $scope.treatment.ray_type = "endoscopy";
+    $scope.treatment.ray_type = "other-procedures";
     $scope.treatment.date = new Date();
     $http({
       method  : 'POST',
@@ -19815,7 +19817,7 @@ app.controller("otherProceduresOutCtrl",["$scope","$http","getAllRadiologyServic
           center.isSent = true;
           center.loading = false;
           $scope.countIndex = 0;
-          $scope.countIndex2 = 0;
+          //$scope.countIndex2 = 0;
         }
        
       } else {
@@ -19879,6 +19881,8 @@ app.controller("ultraSoundReportCtrl",["$scope","$http","$location","localManage
       var fd = new FormData();
 
       var arr = [];
+
+      localManager.setValue('radiology_type','ultrasound_test');
 
       var xhr = new XMLHttpRequest();
       xhr.upload.addEventListener("progress", uploadProgress, false);
@@ -20040,8 +20044,8 @@ app.controller("ultraSoundReportCtrl",["$scope","$http","$location","localManage
 
 
 app.controller("e-caseUltrasoundCtrl",["$scope","$http","$rootScope","$location",
-  "templateService","ModalService","templateService","$timeout",
-  function($scope,$http,$rootScope,$location,templateService,ModalService,templateService,$timeout){
+  "templateService","ModalService","$timeout",
+  function($scope,$http,$rootScope,$location,templateService,ModalService,$timeout){
 
   var path = $location.path();
   var arr = path.split("/");  
@@ -20246,8 +20250,7 @@ app.controller("ultrasoundModalController",["$scope","$http","UltraSounds","getA
   
 
   $scope.countIndex = 0;
-  $scope.countIndex2 = 0;
-
+ 
   $scope.sendTest = function(center,isDoctor){
 
     if(!$scope.TestList[$scope.countIndex].name){
@@ -20257,6 +20260,7 @@ app.controller("ultrasoundModalController",["$scope","$http","UltraSounds","getA
     }
 
     center.loading = true;
+
     var testArr = [];      
     testArr.push({
       name: $scope.TestList[$scope.countIndex].name,
@@ -20265,14 +20269,14 @@ app.controller("ultrasoundModalController",["$scope","$http","UltraSounds","getA
 
     $scope.countIndex++;
 
-    if(isDoctor){
+    if(center.type === 'Doctor'){
       $scope.treatment.isRequestToDoctor = true;
     }
 
     sendIndividualTests(center,testArr,$scope.countIndex);
   }
 
-  $scope.sendTest2 = function(center,isDoctor) {
+  /*$scope.sendTest2 = function(center,isDoctor) {
     if(!$scope.TestList[$scope.countIndex2].name){
       center.loading = false;
       alert("One of the investigations has no name. Please go back and enter the name.")
@@ -20293,7 +20297,7 @@ app.controller("ultrasoundModalController",["$scope","$http","UltraSounds","getA
     }
 
     sendIndividualTests(center,testArr,$scope.countIndex2);
-  }
+  }*/
 
   function sendIndividualTests(center,testArr,count) {
     center.loading = true;
@@ -20316,7 +20320,7 @@ app.controller("ultrasoundModalController",["$scope","$http","UltraSounds","getA
           center.isSent = true;
           center.loading = false;
           $scope.countIndex = 0;
-          $scope.countIndex2 = 0;
+          
           $rootScope.$broadcast("new medication",{status:true})
         }
        
@@ -20538,7 +20542,7 @@ app.controller("ECGModalController",["$scope","$http","UltraSounds","getAllRadio
   
 
   $scope.countIndex = 0;
-  $scope.countIndex2 = 0;
+  //$scope.countIndex2 = 0;
 
   $scope.sendTest = function(center,isDoctor){
 
@@ -20557,7 +20561,7 @@ app.controller("ECGModalController",["$scope","$http","UltraSounds","getAllRadio
 
     $scope.countIndex++;
 
-    if(isDoctor){
+    if(center.type === 'Doctor'){
       $scope.treatment.isRequestToDoctor = true;
     }
 
@@ -20608,7 +20612,7 @@ app.controller("ECGModalController",["$scope","$http","UltraSounds","getAllRadio
           center.isSent = true;
           center.loading = false;
           $scope.countIndex = 0;
-          $scope.countIndex2 = 0;
+          //$scope.countIndex2 = 0;
           $rootScope.$broadcast("new medication",{status:true})
         }
        
@@ -21021,7 +21025,7 @@ app.controller("endoscopyModalController",["$scope","$http","UltraSounds","getAl
   
 
   $scope.countIndex = 0;
-  $scope.countIndex2 = 0;
+  //$scope.countIndex2 = 0;
 
   $scope.sendTest = function(center,isDoctor){
 
@@ -21040,7 +21044,7 @@ app.controller("endoscopyModalController",["$scope","$http","UltraSounds","getAl
 
     $scope.countIndex++;
 
-    if(isDoctor){
+    if(center.type === 'Doctor'){
       $scope.treatment.isRequestToDoctor = true;
     }
 
@@ -21503,7 +21507,7 @@ app.controller("otherProceduresModalController",["$scope","$http","UltraSounds",
   
 
   $scope.countIndex = 0;
-  $scope.countIndex2 = 0;
+  //$scope.countIndex2 = 0;
 
   $scope.sendTest = function(center,isDoctor){
 
@@ -21522,7 +21526,7 @@ app.controller("otherProceduresModalController",["$scope","$http","UltraSounds",
 
     $scope.countIndex++;
 
-    if(isDoctor){
+    if(center.type === 'Doctor'){
       $scope.treatment.isRequestToDoctor = true;
     }
 
@@ -21573,7 +21577,7 @@ app.controller("otherProceduresModalController",["$scope","$http","UltraSounds",
           center.isSent = true;
           center.loading = false;
           $scope.countIndex = 0;
-          $scope.countIndex2 = 0;
+          //$scope.countIndex2 = 0;
           $rootScope.$broadcast("new medication",{status:true})
         }
        

@@ -2962,22 +2962,8 @@ router.post("/user/dicom-details",function(req,res){
 					  });
 					}
 
-		  /*
- mobile_viewer_path: req.body.mobViewer,
-                      web_viewer_path: req.body.webViewer,
-		  */
-
-          /*var transporter = nodemailer.createTransport({
-            host: "mail.privateemail.com",
-            port: 465,
-            auth: {
-              user: "info@applinic.com",
-              pass: process.env.EMAIL_PASSWORD
-            }
-          });*/
-
           var cp = (req.body.isAcc) ? rados  : id;
-          	         	var tempLink;
+          var tempLink;
           var reporterEmail;
 
           var webView = "https://applinic.com/dcm?id=" + id + "&key=" + study._id; //"https://dicom.applinic.com/web/viewer.html?" + locate;

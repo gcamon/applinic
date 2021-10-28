@@ -48,6 +48,17 @@ padding:10px 10px;
  .all .card img{
      margin-bottom:30px;
  }
+
+ .medical-record > span {
+   font-size:13px
+ }
+
+ .medical-record {
+    padding: 5px 5px!important;
+    width: 110px
+ }
+
+
 </style>
 
 <nav class="navbar navbar-toggleable-md bg-primary fixed-top  navbar-transparent" color-on-scroll="500"  >
@@ -71,46 +82,71 @@ padding:10px 10px;
             </div>
             <div class="collapse navbar-collapse" id="navigation" data-nav-image="assets/img/blurred-image-1.jpg">
                 <ul class="navbar-nav no-mobile-item-display" style="width: 90%; margin: 0 auto;" ng-cloak>
+                    <li class="nav-item">                       
+                     <a href="" class="btn btn-simple text-primary btn-round medical-record"  ng-click="appointments()" title="Give patient In-person meeing appointment"><span>Appointment</span></a>                           
+                    </li>
+
                     <li class="nav-item">
-                       
-                      <button class="btn btn-simple text-primary btn-round" style="border: 1px solid green"  ng-click="managePatient('appointment')" title="Give patient In-person meeing appointment">Appointment</button>
+                        
+                       <a href="" class="btn btn-simple text-primary btn-round medical-record" ng-click="chart()">
+                       <span>Vitals BP,BS...</span></a>
                            
                     </li>
+
+                      <li class="nav-item">
+                        
+                       <a href="" class="btn btn-simple text-primary btn-round medical-record" ng-click="prescriptionModal()" title="Write prescription or view previous ones"><span>Prescription</span></a>
+                           
+                    </li>
+
                     <li class="nav-item">
                        
-                      <button class="btn btn-simple text-primary btn-round" style="border: 1px solid green"  ng-click="managePatient('laboratory')" title="Request new Laboratory Investigation or view reports">Laboratory</button>
+                      <a href="" class="btn btn-simple text-primary btn-round medical-record"  ng-click="laboratoryModal()" title="Request new Laboratory Investigation or view reports"><span>Laboratory</span></a>
                            
                     </li>
 
                      <li class="nav-item">
                         
-                       <button class="btn btn-simple text-primary btn-round" style="border: 1px solid green;"  ng-click="managePatient('radiology')" title="Request new Radiology Investigation or view reports">Radiology</button>
+                       <a href="" class="btn btn-simple text-primary btn-round medical-record"  ng-click="radiologyModal()" title="Request new Radiology Investigation or view reports"><span>Radiology</span></a>
+                           
+                    </li>
+
+                  
+
+                    <li class="nav-item">
+                        
+                       <a href="" class="btn btn-simple text-primary btn-round medical-record" ng-click="ultrasoundModal()" title="Write prescription or view previous ones"><span>Ultrasound</span></a>
                            
                     </li>
 
                     <li class="nav-item">
                         
-                       <button class="btn btn-simple text-primary btn-round" style="border: 1px solid green;"  ng-click="managePatient('prescription')" title="Write prescription or view previous ones">Prescription</button>
+                       <a href="" class="btn btn-simple text-primary btn-round medical-record" ng-click="managePatient('ecg')" title="Write prescription or view previous ones"><span>ECG</span></a>
                            
                     </li>
 
                     <li class="nav-item">
                         
-                       <button class="btn btn-simple text-primary btn-round" style="border: 1px solid green" ng-click="managePatient('clerking')">Clerk</button>
+                       <a href="" class="btn btn-simple text-primary btn-round medical-record" ng-click="managePatient('endoscopy')" title="Write prescription or view previous ones"><span>Endoscopy</span></a>
                            
                     </li>
+
+                    <li class="nav-item">
+                        
+                       <a href="" class="btn btn-simple text-primary btn-round medical-record" ng-click="managePatient('other')" title="Write prescription or view previous ones"><span>Other Procedure</span></a>
+                           
+                    </li>
+
+
+                  
+
+                    
 
                     <!--<li class="nav-item">
                         
-                       <button class="btn btn-simple text-primary btn-round" style="border: 1px solid green" ng-click="managePatient('someone')">Invite Someone to Chat</button>
+                       <button class="btn btn-simple text-primary btn-round" ng-click="managePatient('dashboard')">Dashboard</button>
                            
                     </li>-->
-
-                    <li class="nav-item">
-                        
-                       <button class="btn btn-simple text-primary btn-round" style="border: 1px solid green" ng-click="managePatient('dashboard')">Back To Dashboard</button>
-                           
-                    </li>
                     
                     
                     </ul>
@@ -142,15 +178,23 @@ padding:10px 10px;
 
    
 
-<!--<a class="dropdown-item" href="">Invite Someone</a>-->
+<div>
 <a class="dropdown-item" href="" ng-click="managePatient('appointment')" >Appointment</a> <!-- user navbar-toggler to close modal -->
+<a class="dropdown-item" href="" ng-click="managePatient('vitals')">Vitals</a>
+<a class="dropdown-item" href="" ng-click="managePatient('prescription')">Prescription</a>
+
 <a class="dropdown-item" href="" ng-click="managePatient('laboratory')">Laboratory</a>
 <a class="dropdown-item" href="" ng-click="managePatient('radiology')">Radiology</a>
-<a class="dropdown-item" href="" ng-click="managePatient('prescription')">Prescription</a>
-<a class="dropdown-item" href="" ng-click="managePatient('clerking')">Clerking</a>
-<a class="dropdown-item" href="" ng-click="managePatient('switch')">Switch To Video/Audio Chat</a>
+<a class="dropdown-item" href="" ng-click="managePatient('ultrasound')">Ultrasound</a>
+<a class="dropdown-item" href="" ng-click="managePatient('ecg')">ECG</a>
+<a class="dropdown-item" href="" ng-click="managePatient('endoscopy')">Endoscopy</a>
+<a class="dropdown-item" href="" ng-click="managePatient('other')">Other Procedure</a>
 
-<a class="dropdown-item text-warning" href="" ng-click="managePatient('dashboard')">Back To Dashboard</a>
+
+<a class="dropdown-item" href="" ng-click="managePatient('switch')">Switch To Video/Audio </a>
+
+<a class="dropdown-item text-warning" href="" ng-click="managePatient('dashboard')">Go to Dashboard</a>
+</div>
 
 
 

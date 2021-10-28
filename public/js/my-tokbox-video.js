@@ -1,6 +1,7 @@
 (function(){
-	var app = angular.module('tokboxvideo', ["ngResource","angularModalService","angularMoment",'ui.bootstrap','angular-clipboard'],
-		function($locationProvider){$locationProvider.html5Mode(true);}
+	var app = angular.module('tokboxvideo', ["ngResource","angularModalService","angularMoment",
+		'ui.bootstrap','angular-clipboard',"chart.js"],
+		function($locationProvider){$locationProvider.html5Mode(false);}
     );
 
 
@@ -48,7 +49,11 @@
 		      break
 		    }
 		    
-		  }
+		  };
+
+		  this.holdBriefForSpecificPatient;
+
+		  this.holdIdForSpecificPatient;
 
 		  var audio = function(trackurl){
 		    var audio = new Audio(trackurl);
@@ -57,61 +62,13 @@
 
 	}]);
 
-	app.controller("chooseSessionController",["$scope","$http","$rootScope",function($scope,$http,$rootScope){
-		
-		//$rootScope.holdPatientData saved when VideoDiagnosisController initialized
-		$scope.loading = true;
-		$http({
-      method  : 'GET',
-      url     : "/user/doctor/get-patient-sessions?patient_id=" + $rootScope.holdPatientData.id, 
-      headers : {'Content-Type': 'application/json'} 
-      })
-    .success(function(data) {      
-      $scope.loading = false;
-      $scope.sessions = data;
-    });
-
-   	$scope.getSession = function(sess) {
-   		if(sess) {
-   			$rootScope.session = sess.session_id;
-   		} else {
-   			$rootScope.session = genHash(22);
-   		}
-   	}
-
-	}]);
-
-
-	app.service("patientService",["$resource",function($resource){
-		return $resource("/user/doctor/specific-patient");
-	}]);
-
-
-	app.controller("VideoDiagnosisController2",["$rootScope","$scope","$window","$http","localManager","Drugs","$resource",
-		"ModalService","patientService",
-  function($rootScope,$scope,$window,$http,localManager,Drugs,$resource,ModalService,patientService){
-
-  
-  $rootScope.treatment = {};
-
-  var patient = {}; 
-
-
-  $rootScope.userId = user.user_id; 
-
-  var partnerDetails = (localManager.getValue("partnerDetails")) ? localManager.getValue("partnerDetails") : {};
-  patient.id = partnerDetails.patientId;
-
-  var isPatient = (partnerDetails.type == 'Patient') ? true : false;
-
-  
- 
-  var random = parseInt(Math.floor(Math.random() * 99999 ) + "" + Math.floor(Math.random() * 99999))//Math.floor(Math.random() * 9999999999);
-
-  $scope.loading = true;
-  $http({
+/*app.controller("chooseSessionController",["$scope","$http","$rootScope",function($scope,$http,$rootScope){
+	
+	//$rootScope.holdPatientData saved when VideoDiagnosisController initialized
+	$scope.loading = true;
+	$http({
     method  : 'GET',
-    url     : "/user/doctor/get-patient-sessions?patient_id=" + patient.id, 
+    url     : "/user/doctor/get-patient-sessions?patient_id=" + $rootScope.holdPatientData.id, 
     headers : {'Content-Type': 'application/json'} 
     })
   .success(function(data) {      
@@ -119,52 +76,42 @@
     $scope.sessions = data;
   });
 
-
-  $scope.getSession = function() { 
- 		$rootScope.session = genHash(22);	
- 	}
-
- 	$scope.continueSession = function() {
- 		if(!$rootScope.treatment.session){
- 			alert('Please select a session date to continue with.')
- 			return;
+ 	$scope.getSession = function(sess) {
+ 		if(sess) {
+ 			$rootScope.session = sess.session_id;
+ 		} else {
+ 			$rootScope.session = genHash(22);
  		}
- 		$rootScope.session = $rootScope.treatment.session;
- 		
  	}
 
+}]);*/
 
-  var getPatientData = patientService;
 
-  if(isPatient)
-	  getPatientData.get(patient,function(data){
-	    $scope.patientInfo = data;
-	    patient.prescriptionId = random;
-	    patient.patient_id = patient.id;    
-	    patient.firstname = $scope.patientInfo.firstname;
-	    patient.lastname = $scope.patientInfo.lastname;
-	    patient.gender = $scope.patientInfo.gender;
-	    patient.age = $scope.patientInfo.age;
-	    patient.address = $scope.patientInfo.address;
-	    patient.city = $scope.patientInfo.city;
-	    patient.country = $scope.patientInfo.country;
-	    patient.patient_profile_pic_url = $scope.patientInfo.profile_pic_url;
-	    patient.lab_analysis = $scope.patientInfo.lab_analysis;
-	    patient.scan_analysis = $scope.patientInfo.scan_analysis;
-	    patient.allergy = $scope.patientInfo.allergy;
-	    patient.title = $scope.patientInfo.title;
-	    patient.phone = data.phone;
-	    patient.sender = "doctor";
-	    $rootScope.holdPatientData = patient;
-	  });
-   
+app.service("patientService",["$resource",function($resource){
+	return $resource("/user/doctor/specific-patient");
+}]);
 
-  $scope.investigation = function(){
-  	//if($rootScope.treatment.complain && $rootScope.treatment.provisionalDiagnosis) {  
-	  	/*if($scope.patientInfo.error) { // check to see if patient is for the doctor.
-	  		alert("Not allowed: Not your patient.");
-	  		return;
-	  	}*/
+
+app.service("docAppointmentViewService",["$resource",function($resource){
+  return $resource("/user/doctor/appointment/view",null,{view: {method: "PUT"},mark: {method: "PATCH"}})
+}]);
+
+app.service('chartReadingService',["$resource",function($resource){
+  return $resource("/user/charts",null,{update: {method: "PUT"},
+    deleteReading:{method: "DELETE"},partialUpdate:{method: "PATCH"}});
+}])
+
+
+app.controller("VideoDiagnosisController2",["$rootScope","$scope","$window","$http","localManager","Drugs","$resource",
+	"ModalService","patientService",function($rootScope,$scope,$window,$http,localManager,Drugs,$resource,ModalService,patientService){
+
+	var patient = (localManager.getValue("partnerDetails")) ? localManager.getValue("partnerDetails") : {};
+
+
+	$rootScope.session = genHash(22);
+
+	$scope.investigation = function(){
+  
 	  	ModalService.showModal({
 	        templateUrl: 'investigation.html',
 	        controller: "investigationController"
@@ -174,243 +121,2092 @@
 	        	          
 	        });
 	    });
-  	/*} else {
-  		alert("Presenting Complaint and Provisional Diagnosis fields cannot be empty!")
-  	}*/  
+  	
   }
 
+	$scope.appointments = function(){
+     $rootScope.patientForAppointmentDetails = patient;
+     ModalService.showModal({
+        templateUrl: 'appointment-modal.html',
+        controller: "selectedAppointmentModalCtrl"
+      }).then(function(modal) {
+        modal.element.modal();
+        modal.close.then(function(result) {            
+      	});
+    });
+  }
 
-  $scope.treamentPlan = function() {
-  	if($rootScope.treatment.complain && $rootScope.treatment.provisionalDiagnosis) {  
-	  	if($scope.patientInfo.error) { //check to see if patient if for the doctor
-	  		alert("Not allowed: Not your patient.");
-	  		return;
-	  	}
-	  	ModalService.showModal({
-	      templateUrl: 'treatment-plan.html',
-	      controller: "treatmentPlanController"
-	    }).then(function(modal) {
-	      modal.element.modal();
-	      modal.close.then(function(result) { 
-	      	             
-	      });
-	    });
-    } else {
-    	alert("Presenting Complaint and Provisional Diagnosis fields cannot be empty!")
+  $scope.chart = function() {
+  	 ModalService.showModal({
+        templateUrl: 'chart.html',
+        controller: "chartModalCtrl"
+      }).then(function(modal) {
+        modal.element.modal();
+        modal.close.then(function(result) {            
+      	});
+    });
+  }
+
+  $scope.prescriptionModal = function() {
+  	 ModalService.showModal({
+        templateUrl: 'prescription.html',
+        controller: "e-casePrescriptionCtrl"
+      }).then(function(modal) {
+        modal.element.modal();
+        modal.close.then(function(result) {            
+      	});
+    });
+  }
+
+  $scope.laboratoryModal = function(){
+  	ModalService.showModal({
+        templateUrl: 'e-case-laboratory.html',
+        controller: "e-caseLaboratoryCtrl"
+      }).then(function(modal) {
+        modal.element.modal();
+        modal.close.then(function(result) {            
+      	});
+    });
+  }
+
+  $scope.radiologyModal = function(){
+  	ModalService.showModal({
+        templateUrl: 'e-case-radiology.html',
+        controller: "e-caseRadiologyCtrl"
+      }).then(function(modal) {
+        modal.element.modal();
+        modal.close.then(function(result) {            
+      	});
+    });
+  }
+
+  $scope.ultrasoundModal = function() {
+  	ModalService.showModal({
+        templateUrl: 'e-case-ultrasound.html',
+        controller: "e-caseUltrasoundCtrl"
+      }).then(function(modal) {
+        modal.element.modal();
+        modal.close.then(function(result) {            
+      	});
+    });
+  }
+
+}]);
+
+
+app.controller("selectedAppointmentModalCtrl",["$scope","$rootScope","$http",
+	"docAppointmentViewService","$filter","templateService","ModalService",
+  function($scope,$rootScope,$http,docAppointmentViewService,$filter,templateService,ModalService){
+
+    var appointment = docAppointmentViewService;
+    var dt = new Date();  
+    var month = dt.getMonth() + 1;
+    var year = dt.getFullYear();
+
+    //console.log($rootScope.appointmentList)
+    function getAppointments() {
+    	 $scope.loading = true;
+	    $http.get("/user/doctor/appointment/view",{params:
+	      {patientId: $rootScope.patientForAppointmentDetails.patientId,year:year,month: month}})
+	    .success(function(data){
+	      $scope.loading = false;
+	      $scope.patientAppointments = data;
+	    })
     }
    
-  }
+    getAppointments()
+  
 
-  $scope.prescription = function() {
-  	if($rootScope.treatment.complain && $rootScope.treatment.provisionalDiagnosis) {  
-	  	if($scope.patientInfo.error) {
-	  		alert("Not allowed: Not your patient.");
-	  		return;
-	  	}
-	  	ModalService.showModal({
-	      templateUrl: 'prescription.html',
-	      controller: "prescriptionController"
-	    }).then(function(modal) {
-	      modal.element.modal();
-	      modal.close.then(function(result) { 
-	      	             
-	      });
-	    });
-    } else {
-    	alert("Presenting Complaint and Provisional Diagnosis fields cannot be empty!");
-    }
+    $scope.markAttended = function(app){
+      var check = confirm("You want to cancel the appointment");
 
-  }
+      if(!check){
+        return;
+      }
 
-  $scope.appointment = function() {
-  	if($rootScope.treatment.complain && $rootScope.treatment.provisionalDiagnosis) {  
-	  	if($scope.patientInfo.error) {
-	  		alert("Not allowed: Not your patient.");
-	  		return;
-	  	}
-	  	ModalService.showModal({
-	        templateUrl: 'calender-template.html',
-	        controller: 'appointmentModalController'
-	    }).then(function(modal) {
-	        modal.element.modal();
-	        modal.close.then(function(result) { 
-	             
-	        });
-	    });
-    } else {
-    	alert("Presenting Complaint and Provisional Diagnosis fields cannot be empty!");
-    }
-  }
+      app.loading = true;
+      
+      var date = $filter('date')(app.date, 'fullDate');
+      var time = $filter('date')(app.time, 'shortTime')
 
+      var sessionId = app.session_id;
+      var session = {
+        id: sessionId,
+        date: date,
+        time: time,
+        patientName: app.patient_firstname,
+        isFromModal: true,
+        phone: $rootScope.patientForAppointmentDetails.phone
+      }
 
-    $scope.toPatient = function(){
-      //doctor creates the prescription object and sends it the the back end. url is "patient/forwarded-prescription", other informations that
-      //comes with the prescription object added to the prescription object in the backend.
-      $rootScope.holdPrescriptionToBeForwarded = patient;
-      $http({
-        method  : 'PUT',
-        url     : "/user/patient/forwarded-prescription",
-        data    : patient,
-        headers : {'Content-Type': 'application/json'} 
-        })
-      .success(function(data) {      
-        console.log(data);
-        alert(data);
+      appointment.mark(session,function(data){
+        app.loading = false;
+        if(data.status){
+          var list2 = $scope.patientAppointments;
+          var elemPost = list2.map(function(x){return x.session_id}).indexOf(sessionId);
+          if(elemPost !== -1){
+            list2.splice(elemPost,1)
+          }
+        }
+             
       });
+    }
+
+   
+
+    $scope.bookAppointment = function(){
+      //templateService.holdId = $rootScope.patientForAppointmentDetails.patientId;
+      templateService.holdBriefForSpecificPatient = {
+      	patient_id: $rootScope.patientForAppointmentDetails.patientId,
+      	patient_firstname: $rootScope.patientForAppointmentDetails.name,
+      	patient_lastname: $rootScope.patientForAppointmentDetails.patient_lastname,
+      	profile_pic_url: $rootScope.patientForAppointmentDetails.profile_pic_url
+      }
+      //sets id of the patient for the appointmentModal controller to use.
+      //make sure templateSevice is always iniatialize elsewhere.
+      ModalService.showModal({
+          templateUrl: 'calender-template.html',
+          controller: 'appointmentModalController'
+      }).then(function(modal) {
+          modal.element.modal();
+          modal.close.then(function(result) {             
+          });
+      });
+    
+    }
+
+    $rootScope.$on('load appointment',function(resp){
+    	getAppointments()
+    })
+}]);
+
+
+
+app.controller("appointmentModalController",["$scope","$rootScope","$http","moment","templateService","$filter",
+  function($scope,$rootScope,$http,moment,templateService,$filter){
+    
+    $scope.day = moment();
+
+    ///////////
+    $scope.selected = _removeTime($scope.selected || moment());
+    $scope.month = $scope.selected.clone();
+
+    var start = $scope.selected.clone();
+
+    start.date(1);
+    _removeTime(start.day(0));
+
+    _buildMonth($scope, start, $scope.month);
+
+    $scope.select = function(day) {
+        $scope.selected = day.date;
+        $scope.dd = day.date;
+    };
+
+    $scope.next = function() {
+        var next = $scope.month.clone();
+        _removeTime(next.month(next.month()+1).date(1));
+        $scope.month.month($scope.month.month()+1);
+        _buildMonth($scope, next, $scope.month);
+    };
+
+    $scope.previous = function() {
+        var previous = $scope.month.clone();
+        _removeTime(previous.month(previous.month()-1).date(1));
+        $scope.month.month($scope.month.month()-1);
+        _buildMonth($scope, previous, $scope.month);
+    };
+    
+  
+    
+    function _removeTime(date) {
+        return date.day(0).hour(0).minute(0).second(0).millisecond(0);
+    }
+
+    function _buildMonth(scope, start, month) {
+        scope.weeks = [];
+        var done = false, date = start.clone(), monthIndex = date.month(), count = 0;
+        while (!done) {
+            $scope.weeks.push({ days: _buildWeek(date.clone(), month) });
+            date.add(1, "w");
+            done = count++ > 2 && monthIndex !== date.month();
+            monthIndex = date.month();
+        }
+    }
+
+    function _buildWeek(date, month) {
+        var days = [];
+        for (var i = 0; i < 7; i++) {
+            days.push({
+                name: date.format("dd").substring(0, 1),
+                number: date.date(),
+                isCurrentMonth: date.month() === month.month(),
+                isToday: date.isSame(new Date(), "day"),
+                date: date
+            });
+            date = date.clone();
+            date.add(1, "d");
+        }
+        return days;
+    }
+
+    $scope.treatment= {};
+    $scope.treatment.appointment = {};
+
+    $scope.book = function(){
+
+      var data = templateService.holdBriefForSpecificPatient;      
+      var date = + new Date();
+      $scope.treatment.date = date;
+      $scope.treatment.patient_id = data.patient_id || data.user_id;
+      $scope.treatment.typeOfSession = "In-person meeting";
+      $scope.treatment.appointment.title = "";
+      $scope.treatment.appointment.date = $scope.dd._d;
+
+      $scope.treatment.appointment.strDate = $filter('date')($scope.treatment.appointment.date, 'fullDate');
+      $scope.treatment.appointment.strTime = $filter('date')($scope.treatment.appointment.time, 'shortTime')
+
+    
+      $scope.treatment.appointment.firstname = data.firstname || data.patient_firstname; 
+      $scope.treatment.appointment.lastname = data.lastname || data.patient_lastname;       
+      $scope.treatment.appointment.profilePic = data.profile_pic_url || data.profilePic;
+      sendData($scope.treatment,"/user/doctor/patient-session","POST");
       
     }
 
-    $scope.toPharmacy = function(){     
-       $scope.treatment.prescription_id = patient.prescriptionId; // id to identify prescription in a session if one is written.
-       $scope.treatment.patient_id = patient.id;
-       $scope.treatment.typeOfSession = "video chat";
-       $http({
-        method  : 'POST',
-        url     : "/user/doctor/patient-session",
-        data    : $scope.treatment,
+    function sendData(data,url,method) {
+      $scope.loading = true;
+      $http({
+        method  : method,
+        url     : url,
+        data    : data,
         headers : {'Content-Type': 'application/json'} 
         })
-      .success(function(data) {
-        if(data)   
-          alert("session created!!");
+      .success(function(response) {   
+        $scope.loading = false;
+
+        if(response.error) {
+          alert("Error occured while booking appointment.")
+          return;
+        } 
+
+        if(response) {
+         
+          alert("Appointment booked successfully!")
+          //mySocket.emit("realtime appointment notification",{to:data.patient_id})
+          $rootScope.$broadcast("load appointment")
+
+          //$rootScope.$broadcast("doc new appointment",{data});
+          //$rootScope.$broadcast("new appointment",{data});
+        }  
       });
-
-      $rootScope.holdPrescriptionToBeForwarded = patient;
-      $location.path("/search/pharmacy");
     }
-    
-
-     // use to select session where entries would be saved.
-	  /*$scope.chechSession = function() {
-		  if(!$rootScope.session) {
-				ModalService.showModal({
-		        templateUrl: 'sessionsList.html',
-		        controller: "chooseSessionController"
-		    }).then(function(modal) {
-		        modal.element.modal();
-		        modal.close.then(function(result) {});
-		    });
-		  } 
-		}*/
-
-    $rootScope.submitSession = function(){
-    	if($rootScope.treatment.complain && $rootScope.treatment.provisionalDiagnosis) {  
-	      var date = new Date();
-	      $scope.loading = true;
-	      $rootScope.treatment.date = date;      
-	      $rootScope.treatment.patient_id = patient.id;
-	      $rootScope.treatment.session_id = $rootScope.session;
-	      $rootScope.treatment.typeOfSession = "video chat";      
-	      $http({
-	        method  : 'POST',
-	        url     : "/user/doctor/patient-session",
-	        data    : $rootScope.treatment,
-	        headers : {'Content-Type': 'application/json'} 
-	        })
-	      .success(function(data) {	      	
-	        if(data) {  
-	        	$scope.loading = false;
-	          $scope.message = "Entry saved successfully!!!";
-	          addPatient();
-	        }
-	      });
-    	} else {    		
-    		alert("Presenting Complaint and Provisional Diagnosis fields cannot be empty!")
-    	}
-    }
-
-    $rootScope.isManage = false;
-
-    $scope.managePatient = function(name){
-    	if(name == "dashboard") {
-		  	window.location.href = "/user/doctor";
-		  	return
-		  }
-
-    	if(!$rootScope.isManage){
-		  	$rootScope.isManage = true; 
-			} else {
-				$rootScope.isManage = false;
-			}
-
-	    $rootScope.action = name; 
-    }
-
-    $scope.closeSideBar = function(){
-    	$rootScope.isManage = false;
-    }
-
-    $scope.videoChat = function(){
-    	$scope.loading1 = true;
-    	$http.post("/user/switch-video",{to: patient.id})
-    	.success(function(response){
-    		$scope.loading1 = false;
-    		window.location.href = response.tokBoxVideoURL;
-    	})
-    }
-
-    $scope.audioChat = function() {
-    	$scope.loading1 = true;
-    	//$http.post('/user/audioCallInit',{type:$rootScope.holdPartner.partnerType, userId: $rootScope.holdPartner.partnerId})
-    	$http.post('/user/audioCallInit',{type:"Patient", userId: patient.id})
-	    .success(function(response){
-	      //console.log(response)$rootScope.sockets;
-
-	     // var invert = _.invert($rootScope.sockets);      
-	      //if(invert[$rootScope.holdPartner.partnerId]){
-
-	        var sender = names;
-	        socket.emit("audio call signaling",
-	          {partnerConnectURL: response.partnerConnectURL,
-	            partnerId: patient.id,sender:sender},
-	          function(data){
-	          //alert(data.message);
-	          //console.log(data);
-	          $scope.loading1 = false;
-	          localManager.setValue("partnerDetails",{patientId: patient.id,type: "Patient"});
-	          window.location.href = response.url;
-	        });
-
-	     // } else {
-	      //  var msg = ($rootScope.holdPartner.name || $rootScope.holdPartner.firstname) 
-	      //  + " is currently offline but we will forward audio call" 
-	      //  + " invitation via SMS and you will be alerted when connection is re-established. Please stay logged in."
-	      //  var check = confirm(msg);
-	      //  if(check){
-
-	       // }
-	      //}
-	     
-	    })
-    }
-
-    function addPatient() {
-
-		  if(!$rootScope.patientsList) {
-
-		    $http.get("/user/doctor/my-patients")
-		    .success(function(list){
-
-		    	$rootScope.patientsList = list.doctor_patients_list;
-		     
-		      var elPos = $rootScope.patientsList.map(function(x){return x.patient_id}).indexOf(patient.id);
-
-		      if(elPos === -1){
-		      
-		        $http.put("/user/doctor/my-patients",{patientId: patient.id,date : new Date()})
-		        .success(function(response){
-		          if(response.status){
-		            console.log("Patient added to patients' list.")
-		          } 
-		        })
-		        
-		      }
-		     
-		    });
-	  	}
-  	}
 
 }]);
+
+
+app.controller("chartModalCtrl",["$scope","$rootScope","chartReadingService","$filter","$http","templateService","localManager",
+  function($scope,$rootScope,chartReadingService,$filter,$http,templateService,localManager){
+
+  // Remember we have to secure the chart to grant permissions to who enters readings for the patient
+  var patient = (localManager.getValue("partnerDetails")) ? localManager.getValue("partnerDetails") : {};
+
+  var chartService = chartReadingService;
+
+  $scope.chart = {}
+  $scope.chart.readings = {};
+  $scope.chart.readings1 = {};
+  $scope.chart.readings2 = {};
+
+  var date = new Date();
+
+  $scope.chart.year = date.getFullYear();
+
+  
+  var userId = patient.patientId; 
+
+  function getPatientData() {
+    $scope.loading = true;
+    $http.get("/user/doctor/specific-patient",{params: {id: userId}})
+    .success(function(patient){
+      $scope.loading = false;
+      //$scope.patientInfo = data;
+      $rootScope.holdPatientForChart = {
+        userId: patient.user_id,
+        phone: patient.phone,
+        profile_pic_url: patient.profile_pic_url,
+        age: patient.age,
+        gender: patient.gender,
+        name: patient.firstname + " " + patient.lastname,
+      }
+
+      $scope.patient = $rootScope.holdPatientForChart;
+    })
+  } 
+
+  getPatientData();
+ 
+
+  
+  $scope.chart.userId = userId;
+
+  $http.get("/user/charts/all",{params:{userId: $scope.chart.userId}})
+  .success(function(chartYesrs){
+    $scope.yearList = chartYesrs;
+  });
+
+
+  $scope.getChartData = function() {
+
+    chartService.get({userId: $scope.chart.userId,year: $scope.chart.year},function(chartObj){
+
+      $scope.chartData = chartObj || {};
+
+      console.log(chartObj)
+
+      if(chartObj["bp_readings"]){
+        $scope.megaArrBP = [];
+        var limit = 10;
+        $scope.arrLen = 0;
+        $scope.bpMarker = -1;
+        var bpLen = chartObj["bp_readings"]["length"];
+
+        function fillArrBP(index){
+          var list = [];
+
+          for(var i = index; list.length < limit; i++) {
+            if(chartObj["bp_readings"][i]) {
+              list.push(chartObj["bp_readings"][i]);
+              $scope.arrLen++;
+            } else {
+              break;
+            }
+          }
+         
+          $scope.megaArrBP.push(list);
+          $scope.bpMarker++;
+
+          if($scope.arrLen < bpLen){
+            fillArrBP($scope.arrLen);
+          }
+        }
+
+        fillArrBP(0);  
+       
+        
+
+        var prevList;
+        var prevData;
+        var newDataList;
+        var allLists;
+        var pulse;
+        var diastol;
+        var selectedChartBPList;
+        var innerList;
+        
+
+        $scope.chartViewBP = function() {
+          allLists = [];
+          pulse = [];
+          systol = [];
+          diastol = [];
+          $scope.labels = [];
+          
+          innerList = $scope.megaArrBP[$scope.bpMarker];
+          
+          if(innerList.length === 1 && $scope.megaArrBP.length > 1) {
+            //this logic helps to fill the line graph when the data left over is single as such line need to be drawn from
+            //the previous value for good presentation
+            prevList = $scope.megaArrBP[$scope.bpMarker - 1];
+            prevData = prevList[prevList.length - 1];
+            newDataList = [prevData,innerList[0]];
+            selectedChartBPList = newDataList;
+
+          } else {
+            selectedChartBPList = innerList;
+          }
+
+          if(selectedChartBPList) {
+            selectedChartBPList.forEach(function(item){
+              $scope.labels.push(item.label)
+              pulse.push(item.pulse);
+              systol.push(item.systol);
+              diastol.push(item.diastol);
+            })
+
+            allLists.push(pulse)
+            allLists.push(systol)
+            allLists.push(diastol);
+
+            $scope.data = allLists;
+
+            $scope.series = ['Pulse','Systol','Diastol'];
+            $scope.colors = ['#45b7cd','#ff6384','#FDB45C'];
+            
+          } else {
+            $scope.bpMarker = 0;
+          }
+
+        }
+
+        $scope.chartViewBP();
+
+        $scope.onClick = function (points, evt) {
+          //console.log(points, evt);
+        };
+
+      } //end  chart bp_readings
+
+
+      //Blood Sugar chart logic 
+
+      if(chartObj["bs_readings"]){
+        $scope.megaArrBS = [];
+        var limit1 = 10;
+        $scope.arrLen1 = 0;
+        $scope.bsMarker = -1;
+        var bsLen = chartObj["bs_readings"]["length"];
+
+        function fillArrBS(index){
+          var list1 = [];
+
+          for(var i = index; list1.length < limit1; i++) {
+            if(chartObj["bs_readings"][i]) {
+              list1.push(chartObj["bs_readings"][i]);
+              $scope.arrLen1++;
+            } else {
+              break;
+            }
+          }
+         
+          $scope.megaArrBS.push(list1);
+          $scope.bsMarker++;
+
+          if($scope.arrLen1 < bsLen){
+            fillArrBS($scope.arrLen1);
+          }
+        }
+
+        fillArrBS(0);  
+       
+        $scope.series1 = ['FBS','RBS'];
+        $scope.colors1 = ['#45b7cd', '#ff6384'];
+
+        var prevList1;
+        var prevData1;
+        var newDataList1;
+        var allLists1;
+        var fbs;
+        var rbs;
+        var selectedChartBSList;
+        var innerList1;
+        
+
+        $scope.chartViewBS = function() {
+          allLists1 = [];
+          fbs = [];
+          rbs = [];
+         
+          $scope.labels1 = [];
+          
+          innerList1 = $scope.megaArrBS[$scope.bsMarker];
+          
+          if(innerList1.length === 1 && $scope.megaArrBS.length > 1) {
+            //this logic helps to fill the line graph when the data left over is single as such line need to be drawn from
+            //the previous value for good presentation
+            prevList1 = $scope.megaArrBS[$scope.bsMarker - 1];
+            prevData1 = prevList1[prevList1.length - 1];
+            newDataList1 = [prevData1,innerList1[0]];
+            selectedChartBSList = newDataList1;
+
+          } else {
+            selectedChartBSList = innerList1;
+          }
+
+          if(selectedChartBSList) {
+            selectedChartBSList.forEach(function(item){
+              $scope.labels1.push(item.label)
+              fbs.push(item.fasting);
+              rbs.push(item.random);
+            })
+
+          
+            allLists1.push(fbs)
+            allLists1.push(rbs);
+
+            $scope.data1 = allLists1;
+          } else {
+            $scope.bsMarker = 0;
+          }
+
+        }
+
+        $scope.chartViewBS();
+
+        $scope.onClick1 = function (points, evt) {
+       
+        };
+
+      } // end chart bs_sudgar
+
+
+
+      // Temperature Logic
+      if(chartObj["temp_readings"]){
+        $scope.megaArrTemp = [];
+        var limit2 = 10;
+        $scope.arrLen2 = 0;
+        $scope.tempMarker = -1;
+        var tempLen = chartObj["temp_readings"]["length"];
+
+        function fillArrTemp(index){
+          var list2 = [];
+
+          for(var i = index; list2.length < limit2; i++) {
+            if(chartObj["temp_readings"][i]) {
+              list2.push(chartObj["temp_readings"][i]);
+              $scope.arrLen2++;
+            } else {
+              break;
+            }
+          }
+         
+          $scope.megaArrTemp.push(list2);
+          $scope.tempMarker++;
+
+          if($scope.arrLen2 < tempLen){
+            fillArrTemp($scope.arrLen2);
+          }
+        }
+
+        fillArrTemp(0);  
+       
+        $scope.series2 = ['Temperature'];
+        $scope.colors2 = ['#FDB45C'];
+
+        var prevList2;
+        var prevData2;
+        var newDataList2;
+        var allLists2;
+        var temp;       
+        var selectedChartTempList;
+        var innerList2;
+        
+
+        $scope.chartViewTemp = function() {
+          allLists2 = [];
+          temp = [];
+         
+         
+          $scope.labels2 = [];
+          
+          innerList2 = $scope.megaArrTemp[$scope.tempMarker];
+          
+          if(innerList2.length === 1 && $scope.megaArrTemp.length > 1) {
+            //this logic helps to fill the line graph when the data left over is single as such line need to be drawn from
+            //the previous value for good presentation
+            prevList2 = $scope.megaArrTemp[$scope.tempMarker - 1];
+            prevData2 = prevList2[prevList2.length - 1];
+            newDataList2 = [prevData2,innerList2[0]];
+            selectedChartTempList = newDataList2;
+
+          } else {
+            selectedChartTempList = innerList2;
+          }
+
+          if(selectedChartTempList) {
+            selectedChartTempList.forEach(function(item){
+              $scope.labels2.push(item.label)
+              temp.push(item.temperature);
+            })
+
+          
+            allLists2.push(temp)
+            //allLists2.push(rbs);
+
+            $scope.data2 = allLists2;
+          } else {
+            $scope.tempMarker = 0;
+          }
+
+        }
+
+        $scope.chartViewTemp();
+
+        $scope.onClick2 = function (points, evt) {
+          console.log(points, evt);
+        };
+
+      } // end chart bs_sudgar
+
+    })
+
+  } //end of get chart data
+
+  $scope.setChart = function(type) {
+    if(type === 'positive') {
+      $scope.bpMarker++;
+    } else {
+      $scope.bpMarker--;     
+    }
+
+    $scope.chartViewBP()
+  }
+
+
+  $scope.setChart1 = function(type) {
+    if(type === 'positive') {
+      $scope.bsMarker++;
+    } else {
+      $scope.bsMarker--;     
+    }
+
+    $scope.chartViewBS()
+  }
+
+
+  $scope.setChart2 = function(type) {
+    if(type === 'positive') {
+      $scope.tempMarker++;
+    } else {
+      $scope.tempMarker--;     
+    }
+
+    $scope.chartViewTemp()
+  }
+
+  //$scope.getChartData();
+ 
+  $scope.$watch('chart.year',function(newVal,oldVal){
+    if(newVal){
+      $scope.getChartData();
+    }
+  })
+
+ 
+
+  //$scope.labels = ["Jan 20", "February", "Mar 20 2:00pm", "April", "May", "June", "July"];
+
+  //$scope.series = ['Pulse', 'Systol','Diastol'];
+
+  /*$scope.data = [
+    [65, 59, 80, 81, 56, 55, 40],
+    [28, 48, 40, 19, 86, 27, 90],
+    [80, 50, 40, 70, 86, 89, 60]
+  ];*/
+
+  //$scope.colors = ['#45b7cd', '#ff6384', '#FDB45C'];
+
+  /*$scope.onClick = function (points, evt) {
+    console.log(points, evt);
+  };*/
+
+
+  $scope.sendDataBP = function(){
+    $scope.loadingBP = true;
+
+    if($scope.chart.readings.pulse)
+      if(!testNumber($scope.chart.readings.pulse)){
+        alert("Pulse value should be a number only.");
+        return;
+      }
+
+
+    if($scope.chart.readings.systol)
+      if(!testNumber($scope.chart.readings.systol)){
+        alert("Systol value should be a number only.");
+        return;
+      }
+
+
+    if($scope.chart.readings.diastol)
+      if(!testNumber($scope.chart.readings.diastol)){
+        alert("Diastol value should be a number only.");
+        return;
+      }
+
+    $scope.chart.year = date.getFullYear();
+
+    $scope.chart.name = "Blood Pressure";    
+    $scope.chart.date = date;
+    $scope.chart.readings.time = + $scope.time;
+    $scope.chart.readings.day = + new Date();
+    $scope.chart.readings.name = "Blood Pressure";
+    $scope.chart.readings.unit = "mmHg";
+    //$scope.chart.readings.id = Math.floor(Math.random() * 999999) + "" + Math.floor(Math.random() * 999999);
+    
+    var dt = $filter('date')($scope.chart.readings.time,'shortTime');
+    var dt2 = $filter('date')(date,'d MMM');
+
+    $scope.chart.readings.label = dt2 + " " + dt;
+    
+    $scope.chart.userId = $scope.patient.userId || $rootScope.checkLogIn.user_id;
+    $scope.chart.phone = $scope.patient.phone || $rootScope.checkLogIn.phone;
+
+    chartService.update($scope.chart,function(response){
+
+      if(response.status){
+        $scope.getChartData();
+        alert(response.message)
+      } else {
+        alert("Some errors occured. Please try again later.")
+      }
+
+      $scope.loadingBP = false;
+    })
+    
+  }
+
+  var elemPos;
+
+  $scope.deleteChartReadingBP = function(reading) {
+    var check = confirm("You want to delete Blood Pressure result recorded on " + reading.label)
+    if(check){
+      reading.loading = true;
+      chartService.deleteReading({chartId:  $scope.chartData._id,dataId:reading.id,
+        year: $scope.chartData.year,type:"bp_readings"},function(resp){
+        reading.loading = false;
+        if(resp.status){
+          elemPos = $scope.chartData.bp_readings.map(function(item){return item.id}).indexOf(reading.id)
+          if(elemPos !== -1){
+            $scope.chartData.bp_readings.splice(elemPos,1);
+          }
+          $scope.getChartData();
+        } 
+        alert(resp.message);
+      })
+    }
+  }
+
+  // Sending blood sugar data for recording 
+
+  $scope.sendDataBS = function() {
+    
+   
+
+    if($scope.chart.readings1.fasting)
+      if(!testNumber($scope.chart.readings1.fasting)){
+        alert("FBS value should be a number only.");
+        return;
+      }
+
+    if($scope.chart.readings1.random)
+      if(!testNumber($scope.chart.readings1.random)){
+        alert("RBS value should be a number only.");
+        return;
+      }
+   
+
+    $scope.loadingBS = true;
+
+    $scope.chart.year = date.getFullYear();
+
+    $scope.chart.name = "Blood Sugar";    
+    $scope.chart.date = date;
+    $scope.chart.readings1.time = + $scope.time;
+    $scope.chart.readings1.day = + new Date();
+    $scope.chart.readings1.name = "Blood Sugar";
+    $scope.chart.readings1.unit = "mmol/L";
+    //$scope.chart.readings1.id = Math.floor(Math.random() * 999999) + "" + Math.floor(Math.random() * 999999);
+    
+    var dt = $filter('date')($scope.chart.readings1.time,'shortTime');
+    var dt2 = $filter('date')(date,'d MMM');
+
+    $scope.chart.readings1.label = dt2 + " " + dt;
+    
+    $scope.chart.userId = $scope.patient.userId || $rootScope.checkLogIn.user_id;
+    $scope.chart.phone = $scope.patient.phone || $rootScope.checkLogIn.phone;
+
+    chartService.update($scope.chart,function(response){
+
+      if(response.status){
+        $scope.getChartData();
+        alert(response.message)
+      } else {
+        alert("Some errors occured. Please try again later.")
+      }
+
+      $scope.loadingBS = false;
+    })
+  }
+
+
+  $scope.deleteChartReadingBS = function(reading) {
+    var check = confirm("You want to delete Blood Sugar result recorded on " + reading.label)
+    if(check){
+      reading.loading = true;
+      chartService.deleteReading({chartId: $scope.chartData._id,dataId:reading.id,
+        year: $scope.chartData.year,type:"bs_readings"},function(resp){
+        reading.loading = false;
+        if(resp.status){
+          elemPos = $scope.chartData.bs_readings.map(function(item){return item.id}).indexOf(reading.id)
+          if(elemPos !== -1){
+            $scope.chartData.bs_readings.splice(elemPos,1);
+          }
+          $scope.getChartData();
+        } 
+        alert(resp.message);
+      })
+    }
+  }
+
+
+  // Sending blood sugar data for recording 
+
+  $scope.sendDataTemp = function() {
+    
+    
+    if(!testNumber($scope.chart.readings2.temperature)){
+      alert("Temperature value should be a number only.");
+      return;
+    }
+
+   
+    $scope.loadingTemp = true;
+
+    $scope.chart.year = date.getFullYear();
+
+    $scope.chart.name = "Temperature";    
+    $scope.chart.date = date;
+    $scope.chart.readings2.time = + $scope.time;
+    $scope.chart.readings2.day = + new Date();
+    $scope.chart.readings2.name = "Temperature";
+    $scope.chart.readings2.unit = "°C";
+    //$scope.chart.readings2.id = Math.floor(Math.random() * 999999) + "" + Math.floor(Math.random() * 999999);
+    
+    var dt = $filter('date')($scope.chart.readings2.time,'shortTime');
+    var dt2 = $filter('date')(date,'d MMM');
+
+    $scope.chart.readings2.label = dt2 + " " + dt;
+    
+    $scope.chart.userId = $scope.patient.userId || $rootScope.checkLogIn.user_id;
+    $scope.chart.phone = $scope.patient.phone || $rootScope.checkLogIn.phone;
+
+    chartService.update($scope.chart,function(response){
+
+      if(response.status){
+        $scope.getChartData();
+        alert(response.message)
+      } else {
+        alert("Some errors occured. Please try again later.")
+      }
+
+      $scope.loadingTemp = false;
+    })
+  }
+
+
+  $scope.deleteChartReadingTemp = function(reading) {
+    var check = confirm("You want to delete Temperature result recorded on " + reading.label)
+    if(check){
+      reading.loading = true;
+      chartService.deleteReading({chartId:  $scope.chartData._id,dataId:reading.id,type:"temp_readings"},function(resp){
+        reading.loading = false;
+        if(resp.status){
+          elemPos = $scope.chartData.temp_readings.map(function(item){return item.id}).indexOf(reading.id)
+          if(elemPos !== -1){
+            $scope.chartData.temp_readings.splice(elemPos,1);
+          }
+          $scope.getChartData();
+        } 
+        alert(resp.message);
+      })
+    }
+  }
+
+  $scope.editReading = function(reading){
+    reading.isEdit = true;
+  }
+
+  $scope.cancelEdit = function(reading){
+    reading.isEdit = false;
+  }
+
+
+  $scope.updateReading = function(reading,type){
+    var sendObj = {
+      type: type,
+      dataId: reading.id,
+      chartId: $scope.chartData._id,
+      readings: reading
+    }
+
+    switch(type){
+      case 'bp_readings':
+        if(!testNumber(reading.pulse)){
+          alert("Pulse value should be a number only.");
+          return;
+        }
+
+        if(!testNumber(reading.systol)){
+          alert("Systol value should be a number only.");
+          return;
+        }
+
+        if(!testNumber(reading.diastol)){
+          alert("Diastol value should be a number only.");
+          return;
+        }
+      break;
+      case "bs_readings":
+        if(reading.fasting)
+          if(!testNumber(reading.fasting)){
+            alert("FBS value should be a number only.");
+            return;
+          }
+
+        if(reading.random)
+          if(!testNumber(reading.random)){
+            alert("RBS value should be a number only.");
+            return;
+          } 
+      break;
+      case 'temp_readings':
+        if(!testNumber(reading.temperature)){
+          alert("Temperature value should be a number only.");
+          return;
+        }
+      break;
+      default:
+      break;
+    }
+
+    reading.isloading = true;
+    chartService.partialUpdate(sendObj,function(response){
+      if(response.status){
+        $scope.getChartData();
+        alert(response.message)
+      } else {
+        alert("Some errors occured. Please try again later.")
+      }
+
+      reading.isloading = false;
+    })
+  }
+
+  $scope.userPatient = function(id,presence) {
+    templateService.holdIdForSpecificPatient = id;
+    var page = "/doctor-patient/treatment/" + id;
+    localManager.setValue("holdPageForHandler",page);
+    localManager.setValue("currentPage",page);
+    $location.path(page);
+    mySocket.removeAllListeners("new_msg");
+  }
+
+}]);
+
+app.controller("e-casePrescriptionCtrl",["$scope","$http","$rootScope","ModalService","localManager",
+  function($scope,$http,$rootScope,ModalService,localManager){
+
+  var patient = (localManager.getValue("partnerDetails")) ? localManager.getValue("partnerDetails") : {};
+  var userId = patient.patientId;
+  $scope.prescription = {};
+  
+  $scope.prescription.isSorted = false;
+
+  function getPatientData() {
+    $scope.loading = true;
+
+    $http.get("/user/doctor/specific-patient",{params: {id: userId}})
+    .success(function(data){
+      $scope.loading = false;
+      $scope.patientInfo = data;
+      $scope.prescriptionRecordsResult = data.medications
+      if($scope.prescription.isSorted){
+        sortByPrescribed()
+      }
+    })
+  }
+
+  getPatientData();
+
+  var hasBeenSentTo = {};
+
+  $scope.writePrescription = function() {
+    $rootScope.holdPatientDatails = {
+      firstname: $scope.patientInfo.firstname,
+      lastname: $scope.patientInfo.lastname,
+      title: $scope.patientInfo.title,
+      age: $scope.patientInfo.age,
+      gender: $scope.patientInfo.gender,
+      phone: $scope.patientInfo.phone,
+      city: $scope.patientInfo.city,
+      patient_id: $scope.patientInfo.user_id,
+      patient_profile_pic_url: $scope.patientInfo.profile_pic_url,
+      address: $scope.patientInfo.address
+    }
+
+    ModalService.showModal({
+        templateUrl: 'write-prescription-ecase.html',
+        controller: 'prescriptionModalController'
+    }).then(function(modal) {
+        modal.element.modal();
+        modal.close.then(function(result) {             
+        });
+    });
+  }
+
+  $scope.$watch("prescription.isSorted",function(newVal,oldVal){
+    if(newVal){
+      //$scope.prescription.isSorted = true;
+      sortByPrescribed()
+    }
+  })
+
+  function sortByPrescribed() {
+    var filter = {};
+    var mineArr = [];
+    var othersArr = [];   
+    $scope.prescriptionRecordsResult.forEach(function(pres){
+      if(pres.doctor_id === user.user_id){
+        mineArr.push(pres)
+      } else {
+
+        if(!pres.doctor_id) {
+          pres.doctor_id = pres.doctor_firstname + "" + pres.doctor_lastname;
+        }
+
+        if(!filter.hasOwnProperty(pres.doctor_id)){
+          filter[pres.doctor_id] = pres.doctor_id;
+          filter["firstname"] = pres.doctor_firstname;
+          filter["lastname"] = pres.doctor_lastname;
+          filter["title"] = pres.title;
+          filter["specialty"] = pres.doctor_specialty;
+          filter["profilePic"] = pres.doctor_profile_pic_url;
+          filter["profile"] = pres.doctor_profile_url;
+          filter["prescriptions"] = [pres];
+        } else {
+          filter["prescriptions"].push(pres)
+        }
+      }
+    })
+
+    othersArr.push(filter)
+
+    $scope.sortedPrescriptions = {
+      mine: mineArr,
+      others: othersArr
+    };
+  }
+
+  $rootScope.$on('new medication',function(e,data){
+    getPatientData()
+  })
+
+}]);
+
+app.service("getAllPharmacyService",["$resource",function($resource){
+  return $resource("/user/patient/getAllPharmacy");
+}]);
+
+app.controller("prescriptionModalController",["$scope","$http","localManager","Drugs","getAllPharmacyService","$rootScope",
+  function($scope,$http,localManager,Drugs,getAllPharmacyService,$rootScope){
+  $scope.patient = {};
+
+  var user = localManager.getValue("resolveUser");
+
+  //$scope.patient.patientType = "mine";
+
+  $scope.drugs = Drugs;
+    
+  var count = {}; 
+  var drug = {};     
+  count.num = 1;
+  drug.sn = count.num;
+ 
+  $scope.drugList = [drug];
+
+  $scope.frequencies = ["OD","BD","TDS","QDS"];
+  $scope.durations = ["1 day","2 days","3 days", "5 days","6 days", "7 days","1 week", "2 weeks",
+   "3 weeks", "1 month", "2 months","3 months","4 months","6 months"]
+
+  $http({
+    method  : "GET",
+    url     : "/user/getDrugs", //gets special drugs from backend     
+    headers : {'Content-Type': 'application/json'} 
+    })
+  .success(function(response) {   
+    $scope.drugs = Drugs.concat(response);
+  });
+
+
+  $scope.patient.isCourier = "No";
+  $scope.patient.referral_pays = "No";
+  $scope.patient.phone1 = $rootScope.holdPatientDatails.phone;
+  $scope.patient.delivery_address = $rootScope.holdPatientDatails.address;
+
+  $scope.addDrug = function(){  
+    var newDrug = {};         
+    count.num++;
+    newDrug.sn = count.num;
+    $scope.drugList.push(newDrug);    
+  }
+
+  $scope.removeDrug = function(){
+    if(count.num > 1){
+      $scope.drugList.pop();
+      count.num--;
+    }
+  }
+
+  $scope.sendDrug = function(center) {
+
+    center.loading = true;
+    var courierObj;
+    if($scope.patient.isCourier === 'Yes'){
+      courierObj = {
+        phone1 : $scope.patient.phone1 || $rootScope.holdPatientDatails.phone,
+        address: $scope.patient.delivery_address || $rootScope.holdPatientDatails.address
+      }
+    }
+
+    var sendObj = {
+      id: $rootScope.holdPatientDatails.patient_id,
+      patient_id: $rootScope.holdPatientDatails.patient_id,
+      firstname: $rootScope.holdPatientDatails.firstname,
+      lastname: $rootScope.holdPatientDatails.lastname,
+      gender: $rootScope.holdPatientDatails.gender,
+      phone: $rootScope.holdPatientDatails.phone,
+      age: $rootScope.holdPatientDatails.age,
+      patient_profile_pic_url: $rootScope.holdPatientDatails.patient_profile_pic_url,
+      explanation: $scope.patient.explanation,
+      title: $rootScope.holdPatientDatails.title,
+      city: $rootScope.holdPatientDatails.city,
+      sender: user.typeOfUser,
+      prescriptionBody: $scope.drugList,
+      prescriptionId: null,
+      user_id: center.user_id,
+      referral_pays: $scope.patient.referral_pays,
+      courierObj: courierObj,
+      center_name: center.name,
+      center_address: center.address,
+      center_phone: center.phone,
+      center_email: center.email,
+      center_city:center.city
+    }
+
+    $http({
+      method  : 'PUT',
+      url     : "/user/patient/pharmacy/referral",
+      data    : sendObj,
+      headers : {'Content-Type': 'application/json'} 
+      })
+    .success(function(data) {
+      center.loading = false;
+      if(data.success){
+        center.isSent = true;
+        $rootScope.$broadcast("new medication",{status:true})
+        if(data.courierData && $scope.patient.referral_pays === 'Yes'){
+          $rootScope.$broadcast("new courier order",{status:true});
+          $rootScope.viewResponse(data.courierData)
+        }
+      } else {
+        alert("Error occured while sending prescription")
+      }
+    });
+  }
+
+  $scope.findPharmacy = function() {
+    getPharmacy();
+  }
+
+  var chechIfPrescription = function(data) {
+      if(!data)
+        data = [];
+       
+    for(var i = 0; i < data.length; i++) {
+      if(!data[i].drug_name || !data[i].dosage ||!data[i].frequency || !data[i].duration) {
+        return false;
+      } 
+    }
+
+    return true;
+  }
+
+
+  function getPharmacy() {
+     $scope.isLoading = true;
+    var source = getAllPharmacyService; // $resource("/user/patient/getAllPharmacy")
+    source.query({city:$scope.city},function(list){
+      $scope.isLoading = false;
+      $scope.searchResult = list;
+    })
+  }
+
+  getPharmacy()
+
+}])
+
+
+
+app.controller("e-caseLaboratoryCtrl",["$scope","$http","$rootScope","ModalService","$timeout","localManager",
+  function($scope,$http,$rootScope,ModalService,$timeout,localManager){
+
+  var patient = (localManager.getValue("partnerDetails")) ? localManager.getValue("partnerDetails") : {};
+  var userId = patient.patientId;
+  $scope.laboratory = {};
+
+  $rootScope.treatment = {}; //used in write laboratory modal "laboratoryModalController"
+  
+
+  $scope.laboratory.isSorted = false;
+
+  $scope.supported = false;
+
+  $scope.copy = "";
+
+  $scope.success = function (test) {
+    test.copy = 'Copied!';
+    $timeout(function(){
+      test.copy = "";
+    },2000)
+  };
+
+
+  $scope.fail = function (err) {
+    console.error('Error!', err);
+  };
+
+  function getPatientData() {
+    $scope.loading = true;
+
+    $http.get("/user/doctor/specific-patient",{params: {id: userId}})
+    .success(function(data){
+      $scope.loading = false;
+      $scope.patientInfo = data;
+      $scope.labTest = data.medical_records.laboratory_test;
+      if($scope.laboratory.isSorted){
+        sortByRefered()
+      }
+    })
+  }
+
+  getPatientData();
+
+  $scope.writeInvestigation = function() {
+    $rootScope.holdPatientDatails = {
+      firstname: $scope.patientInfo.firstname,
+      lastname: $scope.patientInfo.lastname,
+      title: $scope.patientInfo.title,
+      age: $scope.patientInfo.age,
+      gender: $scope.patientInfo.gender,
+      phone: $scope.patientInfo.phone,
+      city: $scope.patientInfo.city,
+      patient_id: $scope.patientInfo.user_id,
+      patient_profile_pic_url: $scope.patientInfo.profile_pic_url,
+      address: $scope.patientInfo.address,
+      type: $scope.patientInfo.type
+    }
+
+    ModalService.showModal({
+        templateUrl: 'write-laboratory-ecase.html',
+        controller: 'laboratoryModalController'
+    }).then(function(modal) {
+        modal.element.modal();
+        modal.close.then(function(result) {             
+        });
+    });
+  }
+
+  $scope.$watch("laboratory.isSorted",function(newVal,oldVal){
+    if(newVal){
+      sortByRefered()
+    }
+  })
+
+  function sortByRefered() {
+    var filter = {};
+    var mineArr = [];
+    var othersArr = [];   
+    $scope.labTest.forEach(function(test){
+      if(test.referral_id === user.user_id){
+        mineArr.push(test)
+      } else {
+
+        if(!test.referral_id) {
+          test.referral_id = test.referral_firstname;
+        }
+
+        if(!filter.hasOwnProperty(test.referral_id)){
+          filter[test.referral_id] = test.referral_id;
+          filter["firstname"] = test.referral_firstname;
+          filter["lastname"] = "";
+          filter["title"] = test.referral_title;
+          filter["specialty"] = "";
+          filter["profilePic"] = "";
+          filter["profile"] = "/user/profile/view/" + test.referral_id;
+          filter["tests"] = [test];
+        } else {
+          filter["tests"].push(test)
+        }
+      }
+    })
+
+    othersArr.push(filter)
+
+    $scope.sortedLaboratory = {
+      mine: mineArr,
+      others: othersArr
+    };
+  }
+
+  $rootScope.$on('new medication',function(e,data){
+    getPatientData()
+  });
+
+  
+
+}]);
+
+app.service("getAllLaboratoryService",["$resource",function($resource){
+  return $resource("/user/getAllLaboratory")
+}]);
+
+
+
+app.service("getAllRadiologyService",["$resource",function($resource){
+  return $resource("/user/getAllRadiology");
+}]);
+
+
+
+app.controller("laboratoryModalController",["$scope","$http","labTests","getAllLaboratoryService","$rootScope",
+  function($scope,$http,labTests,getAllLaboratoryService,$rootScope){
+
+  var test_name;
+  var index;
+
+  //$rootScope.treatment = {};
+
+  //$scope.treatment.country = "Nigeria";
+
+  $rootScope.treatment.patientType = "mine";
+  $rootScope.treatment.referral_pays = "No";
+
+  $scope.getTest = function (test) {
+    test_name = test;
+    if($rootScope.TestList.length === 1)
+      $rootScope.TestList[0].name = test;
+    if( $rootScope.TestList.length > 1)
+      $rootScope.TestList[index].name = test;
+  }
+
+  $scope.tests = labTests.listInfo.concat(labTests.listInfo2,labTests.listInfo3,labTests.listInfo4,labTests.listInfo5,labTests.listInfo6,labTests.listInfo7);
+
+  $http({
+    method  : "GET",
+    url     : "/user/getSpecialTests", //gets special tests from backend     
+    headers : {'Content-Type': 'application/json'} 
+    })
+  .success(function(response) {   
+    $scope.tests = $scope.tests.concat(response);
+  });
+
+  $rootScope.TestList = [{
+    sn: 1,
+    name: ""
+  }];
+
+  var count = {};
+  count.num = 1;
+
+  $scope.addTest = function(){
+    var testObj = {};
+    count.num++;
+    testObj.sn = count.num;
+    $rootScope.TestList.push(testObj);
+    index = $rootScope.TestList.length - 1;
+  }
+
+  $scope.removeTest = function() {
+    if(count.num > 1){
+      $rootScope.TestList.pop();
+      count.num--;
+    }
+  }
+
+
+  $scope.findLabs = function() {
+    getLaboratories();
+  }
+
+  getLaboratories();
+
+  $scope.sendTest = function(center){
+    center.loading = true;
+    $rootScope.treatment.isOutPatientReq = true;
+    $rootScope.treatment.centerDetails = center;
+    $rootScope.treatment.lab_test_list = $scope.TestList;
+    $rootScope.treatment.date = new Date();
+    $rootScope.treatment.patient_title = $rootScope.holdPatientDatails.title;
+    $rootScope.treatment.patient_firstname = $rootScope.holdPatientDatails.firstname;
+    $rootScope.treatment.patient_lastname = $rootScope.holdPatientDatails.lastname;
+    $rootScope.treatment.patient_phone = $rootScope.holdPatientDatails.phone;
+    $rootScope.treatment.patientDetails = {
+      address: $rootScope.holdPatientDatails.address,
+      age: $rootScope.holdPatientDatails.age,
+      city: $rootScope.holdPatientDatails.city,
+      firstname: $rootScope.holdPatientDatails.firstname,
+      gender: $rootScope.holdPatientDatails.gender,
+      lastname: $rootScope.holdPatientDatails.lastname,
+      phone: $rootScope.holdPatientDatails.phone,
+      profile_pic_url: $rootScope.holdPatientDatails.profile_pic_url,
+      title: $rootScope.holdPatientDatails.title,
+      type: $rootScope.holdPatientDatails.type,
+      user_id: $rootScope.holdPatientDatails.patient_id
+    }
+
+    $http({
+      method  : 'POST',
+      url     : "/user/doctor/send-test",
+      data    : $rootScope.treatment,
+      headers : {'Content-Type': 'application/json'} 
+     })
+    .success(function(response) {
+      if(response.success) {
+        center.isSent = true;
+        $rootScope.$broadcast("new medication",{status:true})
+      } else {
+        alert("Oops! Something went wrong. Please try again.");
+      }
+      center.loading = false;
+    })
+  }
+
+  function getLaboratories() {
+    $scope.loading = true;
+    $scope.city = $scope.city || user.city;
+    var source = getAllLaboratoryService; 
+    source.query({city:$scope.city},function(list){
+      $scope.loading = false;
+      $scope.searchResult = list;
+    });
+  }
+
+}]);
+
+
+app.controller("e-caseRadiologyCtrl",["$scope","$http","$rootScope",
+  "templateService","ModalService","$timeout","localManager",
+  function($scope,$http,$rootScope,templateService,ModalService,$timeout,localManager){
+
+  var patient = (localManager.getValue("partnerDetails")) ? localManager.getValue("partnerDetails") : {};
+  var userId = patient.patientId;
+  $scope.radiology = {};
+
+  $rootScope.treatment = {}; //use in write radiology test modal "radiologyModalController"
+  
+
+  $scope.radiology.isSorted = false;
+
+
+  $scope.supported = false;
+
+  $scope.copy = "";
+
+  $scope.success = function (test) {
+    test.copy = 'Copied!';
+    $timeout(function(){
+      test.copy = "";
+    },2000)
+  };
+
+
+  $scope.fail = function (err) {
+    console.error('Error!', err);
+  };
+
+  function getPatientData() {
+    $scope.loading = true;
+
+    $http.get("/user/doctor/specific-patient",{params: {id: userId}})
+    .success(function(data){
+      $scope.loading = false;
+      $scope.patientInfo = data;
+      $scope.labTest = data.medical_records.radiology_test;
+      if($scope.radiology.isSorted){
+        sortByRefered()
+      }
+    })
+  }
+
+  getPatientData();
+
+  $scope.writeInvestigation = function() {
+    $rootScope.holdPatientDatails = {
+      firstname: $scope.patientInfo.firstname,
+      lastname: $scope.patientInfo.lastname,
+      title: $scope.patientInfo.title,
+      age: $scope.patientInfo.age,
+      gender: $scope.patientInfo.gender,
+      phone: $scope.patientInfo.phone,
+      city: $scope.patientInfo.city,
+      patient_id: $scope.patientInfo.user_id,
+      patient_profile_pic_url: $scope.patientInfo.profile_pic_url,
+      address: $scope.patientInfo.address,
+      type: $scope.patientInfo.type
+    }
+
+    ModalService.showModal({
+        templateUrl: 'write-radiology-ecase.html',
+        controller: 'radiologyModalController'
+    }).then(function(modal) {
+        modal.element.modal();
+        modal.close.then(function(result) {             
+        });
+    });
+  }
+
+  $scope.$watch("radiology.isSorted",function(newVal,oldVal){
+    if(newVal){
+      sortByRefered()
+    }
+  })
+
+  function sortByRefered() {
+    var filter = {};
+    var mineArr = [];
+    var othersArr = [];   
+    //remember referral_id field was not initially added in the db data for radiology when doctor refers for investigation. I was later added by me.
+    $scope.labTest.forEach(function(test){
+      if(test.referral_id === user.user_id){
+        mineArr.push(test)
+      } else {
+
+        if(!test.referral_id) {
+          test.referral_id = test.referral_firstname;
+        }
+
+        if(!filter.hasOwnProperty(test.referral_id)){
+          filter[test.referral_id] = test.referral_id;
+          filter["firstname"] = test.referral_firstname;
+          filter["lastname"] = "";
+          filter["title"] = test.referral_title;
+          filter["specialty"] = "";
+          filter["profilePic"] = "";
+          filter["profile"] = "/user/profile/view/" + test.referral_id;
+          filter["tests"] = [test];
+        } else {
+          filter["tests"].push(test)
+        }
+      }
+    })
+
+    othersArr.push(filter)
+
+    $scope.sortedRadiology = {
+      mine: mineArr,
+      others: othersArr
+    };
+
+  }
+
+  $rootScope.$on('new medication',function(e,data){
+    getPatientData()
+  });
+
+
+
+}]);
+
+app.controller("radiologyModalController",["$scope","$http","scanTests","getAllRadiologyService","$rootScope",
+  function($scope,$http,scanTests,getAllRadiologyService,$rootScope){
+
+  var test_name;
+  var index;
+
+  //$scope.treatment.country = "Nigeria";
+
+  $rootScope.treatment.patientType = "mine";
+  $rootScope.treatment.referral_pays = "No";
+
+  $scope.getTest = function (test) {
+    test_name = test;
+    if($scope.TestList.length === 1)
+      $scope.TestList[0].name = test;
+    if( $scope.TestList.length > 1)
+      $scope.TestList[index].name = test;
+  }
+
+  $scope.tests = scanTests.listInfo1.concat(scanTests.listInfo2,scanTests.listInfo3,scanTests.listInfo4,scanTests.listInfo5,
+    scanTests.listInfo6);
+
+  $http({
+    method  : "GET",
+    url     : "/user/getSpecialTestsRadio", //gets special tests from backend     
+    headers : {'Content-Type': 'application/json'} 
+    })
+  .success(function(response) {   
+    $scope.tests = $scope.tests.concat(response);
+  });
+
+  $scope.TestList = [{
+    sn: 1,
+    name: ""
+  }];
+
+  var count = {};
+  count.num = 1;
+
+  $scope.addTest = function(){
+    var testObj = {};
+    count.num++;
+    testObj.sn = count.num;
+    $scope.TestList.push(testObj);
+    index = $scope.TestList.length - 1;
+  }
+
+  $scope.removeTest = function() {
+    if(count.num > 1){
+      $scope.TestList.pop();
+      count.num--;
+    }
+  }
+
+
+  $scope.findLabs = function() {
+    getRadiologies();
+  }
+
+  getRadiologies();
+  var count = 0;
+
+  $scope.sendTest = function(center){
+    center.loading = true;    
+    var testArr = [];      
+    testArr.push({
+      name: $scope.TestList[count].name,
+      sn: $scope.TestList[count].sn
+    });
+
+    count++;
+    sendIndividualTests(center,testArr,count)
+  }
+
+  function sendIndividualTests(center,testArr,count) {  
+   
+    $rootScope.treatment.isOutPatientReq = true;
+    $rootScope.treatment.centerDetails = center;
+    $rootScope.treatment.lab_test_list = testArr;
+    $rootScope.treatment.date = new Date();
+    $rootScope.treatment.patient_title = $rootScope.holdPatientDatails.title;
+    $rootScope.treatment.patient_firstname = $rootScope.holdPatientDatails.firstname;
+    $rootScope.treatment.patient_lastname = $rootScope.holdPatientDatails.lastname;
+    $rootScope.treatment.patient_phone = $rootScope.holdPatientDatails.phone;
+    $rootScope.treatment.patientDetails = {
+      address: $rootScope.holdPatientDatails.address,
+      age: $rootScope.holdPatientDatails.age,
+      city: $rootScope.holdPatientDatails.city,
+      firstname: $rootScope.holdPatientDatails.firstname,
+      gender: $rootScope.holdPatientDatails.gender,
+      lastname: $rootScope.holdPatientDatails.lastname,
+      phone: $rootScope.holdPatientDatails.phone,
+      profile_pic_url: $rootScope.holdPatientDatails.profile_pic_url,
+      title: $rootScope.holdPatientDatails.title,
+      type: $rootScope.holdPatientDatails.type,
+      user_id: $rootScope.holdPatientDatails.patient_id
+    }
+
+    $http({
+      method  : 'POST',
+      url     : "/user/doctor/radiology/send-test",
+      data    : $rootScope.treatment,
+      headers : {'Content-Type': 'application/json'} 
+     })
+    .success(function(response) {
+      if(response.success) {
+        if($scope.TestList.length > count){
+          $scope.sendTest(center)
+        } else {
+          $rootScope.$broadcast("new medication",{status:true});
+          center.isSent = true;
+          center.loading = false;
+        }
+        
+      } else {
+        alert("Oops! Something went wrong. Please try again.");
+      }
+      
+    })
+  
+  }
+
+  function getRadiologies() {
+    $scope.loading = true;
+    $scope.city = $scope.city || user.city;
+    var source = getAllRadiologyService; 
+    source.query({city:$scope.city},function(list){
+      $scope.loading = false;
+      $scope.searchResult = list;
+    });
+  }
+
+
+}]);
+
+
+app.controller("e-caseUltrasoundCtrl",["$scope","$http","$rootScope",
+  "templateService","ModalService","$timeout","localManager",
+  function($scope,$http,$rootScope,templateService,ModalService,$timeout,localManager){
+
+  var patient = (localManager.getValue("partnerDetails")) ? localManager.getValue("partnerDetails") : {};
+  var userId = patient.patientId;
+  $scope.radiology = {};
+
+  $rootScope.treatment = {};
+  
+
+  $scope.radiology.isSorted = false;
+
+
+  $scope.supported = false;
+
+  $scope.copy = "";
+
+  $scope.success = function (test) {
+    test.copy = 'Copied!';
+    $timeout(function(){
+      test.copy = "";
+    },2000)
+  };
+
+
+  $scope.fail = function (err) {
+    console.error('Error!', err);
+  };
+
+  function getPatientData() {
+    $scope.loading = true;
+    $http.get("/user/doctor/specific-patient",{params: {id: userId}})
+    .success(function(data){
+      
+      $scope.loading = false;
+      $scope.patientInfo = data;
+      $scope.labTest = data.medical_records.ultrasound_test;
+      if($scope.radiology.isSorted){
+        sortByRefered()
+      }
+    })
+  }
+
+  getPatientData();
+
+  $scope.writeInvestigation = function() {
+    $rootScope.holdPatientDatails = {
+      firstname: $scope.patientInfo.firstname,
+      lastname: $scope.patientInfo.lastname,
+      title: $scope.patientInfo.title,
+      age: $scope.patientInfo.age,
+      gender: $scope.patientInfo.gender,
+      phone: $scope.patientInfo.phone,
+      city: $scope.patientInfo.city,
+      patient_id: $scope.patientInfo.user_id,
+      patient_profile_pic_url: $scope.patientInfo.profile_pic_url,
+      address: $scope.patientInfo.address,
+      type: $scope.patientInfo.type
+    }
+
+    ModalService.showModal({
+        templateUrl: 'write-ultrasound-ecase.html',
+        controller: 'ultrasoundModalController'
+    }).then(function(modal) {
+        modal.element.modal();
+        modal.close.then(function(result) {             
+        });
+    });
+  }
+
+  $scope.$watch("radiology.isSorted",function(newVal,oldVal){
+    if(newVal){
+      sortByRefered()
+    }
+  })
+
+  function sortByRefered() {
+    var filter = {};
+    var mineArr = [];
+    var othersArr = [];   
+    //remember referral_id field was not initially added in the db data for radiology when doctor refers for investigation. I was later added by me.
+    $scope.labTest.forEach(function(test){
+      if(test.referral_id === user.user_id){
+        mineArr.push(test)
+      } else {
+
+        if(!test.referral_id) {
+          test.referral_id = test.referral_firstname;
+        }
+
+        if(!filter.hasOwnProperty(test.referral_id)){
+          filter[test.referral_id] = test.referral_id;
+          filter["firstname"] = test.referral_firstname;
+          filter["lastname"] = "";
+          filter["title"] = test.referral_title;
+          filter["specialty"] = "";
+          filter["profilePic"] = "";
+          filter["profile"] = "/user/profile/view/" + test.referral_id;
+          filter["tests"] = [test];
+        } else {
+          filter["tests"].push(test)
+        }
+      }
+    })
+
+    othersArr.push(filter)
+
+    $scope.sortedRadiology = {
+      mine: mineArr,
+      others: othersArr
+    };
+
+  }
+
+  $rootScope.$on('new medication',function(e,data){
+    getPatientData()
+  });
+
+   //patient forward test to another center.
+ /* $scope.forwardTest = function(testObj,type) {
+    testObj.type = type;
+    $rootScope.holdTestToRun = testObj.test_to_run;
+    var newArr = [] ;
+    for(var i = 0; i < testObj.test_to_run.length; i++){
+      if(testObj.test_to_run[i].picked) {
+        newArr.push(testObj.test_to_run[i]);
+      }
+    }
+
+    if(newArr.length > 0){
+      testObj.test_to_run = newArr;
+    }
+
+    templateService.holdTestToBeForwarded = testObj;
+    $location.path("/patient/forward-test");
+  } */
+
+  $scope.viewImage = function(arr) {
+    $rootScope.files = arr;
+    ModalService.showModal({
+        templateUrl: 'image-viewer.html',
+        controller: "viewerModalController"
+      }).then(function(modal) {
+        modal.element.modal();
+        modal.close.then(function(result) {             
+      });
+    });
+  }
+
+}]);
+
+
+app.controller("ultrasoundModalController",["$scope","$http","UltraSounds","getAllRadiologyService","$rootScope",
+  function($scope,$http,UltraSounds,getAllRadiologyService,$rootScope){
+
+  var test_name;
+  var index;
+
+  
+
+  $rootScope.treatment.patientType = "mine";
+  $rootScope.treatment.referral_pays = "No";
+
+  $scope.TestList = [{
+    sn: 1,
+    name: ""
+  }];
+
+  $scope.addTest = function(){  
+    $scope.TestList.push({
+      sn: $scope.TestList.length,
+      name: ""
+    });
+   
+  }
+
+  $scope.removeTest = function() {   
+    $scope.TestList.pop();    
+  }
+
+  $rootScope.treatment.patient_title = $rootScope.holdPatientDatails.title;
+  $rootScope.treatment.patient_firstname = $rootScope.holdPatientDatails.firstname;
+  $rootScope.treatment.patient_lastname = $rootScope.holdPatientDatails.lastname;
+  $rootScope.treatment.patient_gender = $rootScope.holdPatientDatails.gender;
+  $rootScope.treatment.patient_age = $rootScope.holdPatientDatails.age;
+  $rootScope.treatment.patient_phone = $rootScope.holdPatientDatails.phone;
+  $rootScope.treatment.patient_id = $rootScope.holdPatientDatails.patient_id;
+  $rootScope.holdPatientDatails.user_id = $rootScope.holdPatientDatails.patient_id;
+  $rootScope.holdPatientDatails.profile_pic_url = $rootScope.holdPatientDatails.patient_profile_pic_url;
+  $rootScope.treatment.patientDetails = $rootScope.holdPatientDatails;
+
+
+  $scope.goBack = function() {
+    $scope.isSearchToSend = false;
+    $scope.isNewPatient = false;
+    $scope.isNewLab = true;
+  }
+
+  $scope.findLabs = function() {
+    getRadiologies();
+  }
+
+  getRadiologies();
+
+  
+
+  $scope.countIndex = 0;
+ 
+  $scope.sendTest = function(center,isDoctor){
+
+    if(!$scope.TestList[$scope.countIndex].name){
+      center.loading = false;
+      alert("One of the investigations has no name. Please go back and enter the name.")
+      return;
+    }
+
+    center.loading = true;
+
+    var testArr = [];      
+    testArr.push({
+      name: $scope.TestList[$scope.countIndex].name,
+      sn: $scope.TestList[$scope.countIndex].sn
+    });
+
+    $scope.countIndex++;
+
+    if(center.type === 'Doctor'){
+      $rootScope.treatment.isRequestToDoctor = true;
+    }
+
+    sendIndividualTests(center,testArr,$scope.countIndex);
+  }
+
+  
+
+  function sendIndividualTests(center,testArr,count) {
+  	
+    center.loading = true;
+    $rootScope.treatment.isCaseNoteRequest = true;
+    $rootScope.treatment.centerDetails = center;
+    $rootScope.treatment.lab_test_list = testArr;
+    $rootScope.treatment.ray_type = "ultrasound";
+    $rootScope.treatment.date = new Date();
+    $http({
+      method  : 'POST',
+      url     : "/user/doctor/ultrasound/send-test",
+      data    : $rootScope.treatment,
+      headers : {'Content-Type': 'application/json'} 
+    })
+    .success(function(response) {
+      if(response.success) {
+        if($scope.TestList.length > count){
+          $scope.sendTest(center)
+        } else {
+          center.isSent = true;
+          center.loading = false;
+          $scope.countIndex = 0;
+         
+          $rootScope.$broadcast("new medication",{status:true})
+        }
+       
+      } else {
+        alert("Oops! Something went wrong. Please try again.");
+      }
+     
+    })
+  }
+
+  function getRadiologies() {
+    $scope.loading = true;
+    $scope.city = $scope.city || user.city;
+    var source = getAllRadiologyService; 
+    source.query({city:$scope.city},function(list){
+      $scope.loading = false;
+      $scope.searchResult = list;
+    });
+
+    getDoctors($scope.city)
+  }
+
+  function getDoctors() {
+    $http.get("/user/getAllDoctor",{params:{city: $scope.city}})
+    .success(function(docs){
+      $scope.searchResult2 = docs;
+    })
+  }
+
+}]);
+
+
+app.controller("viewerModalController",["$scope",function($scope){}])
+
+
+app.factory("UltraSounds",function(){
+  var ultraSounds = [{name: "Endoscopic ultrasound" ,id: 1},
+  {name: "Color Doppler", id: 2},{name: "Doppler ultrasound", id: 3},{name: "Duplex ultrasound", id: 4},
+  {name: "Triplex ultrasound",id: 5},{name: "Transvaginal ultrasound",id:6}];
+
+  return ultraSounds;
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+app.controller("investigationController",["$scope","$http","labTests","$rootScope","$resource","cities","medicalRecordService",
+  function($scope,$http,labTests,$rootScope,$resource,cities,medicalRecordService){
+ }]);
 
 
 app.controller("labCtrl",["$scope","$http","labTests","$rootScope","$resource","cities","medicalRecordService",
@@ -1502,141 +3298,7 @@ app.controller("treatmentPlanController",["$scope","$http","$rootScope",
 
 }]);
 
-app.controller("appointmentModalController",["$scope","$http","$rootScope","moment","$filter",
-  function($scope,$http,$rootScope,moment,$filter){
-    
-    $scope.day = moment();
 
-    ///////////
-    $scope.selected = _removeTime($scope.selected || moment());
-    $scope.month = $scope.selected.clone();
-
-    var start = $scope.selected.clone();
-
-    start.date(1);
-    _removeTime(start.day(0));
-
-    _buildMonth($scope, start, $scope.month);
-
-    $scope.select = function(day) {
-        $scope.selected = day.date;
-        $scope.dd = day.date;
-    };
-
-    $scope.next = function() {
-        var next = $scope.month.clone();
-        _removeTime(next.month(next.month()+1).date(1));
-        $scope.month.month($scope.month.month()+1);
-        _buildMonth($scope, next, $scope.month);
-    };
-
-    $scope.previous = function() {
-        var previous = $scope.month.clone();
-        _removeTime(previous.month(previous.month()-1).date(1));
-        $scope.month.month($scope.month.month()-1);
-        _buildMonth($scope, previous, $scope.month);
-    };
-    
-  
-    
-    function _removeTime(date) {
-        return date.day(0).hour(0).minute(0).second(0).millisecond(0);
-    }
-
-    function _buildMonth(scope, start, month) {
-        scope.weeks = [];
-        var done = false, date = start.clone(), monthIndex = date.month(), count = 0;
-        while (!done) {
-            $scope.weeks.push({ days: _buildWeek(date.clone(), month) });
-            date.add(1, "w");
-            done = count++ > 2 && monthIndex !== date.month();
-            monthIndex = date.month();
-        }
-    }
-
-    function _buildWeek(date, month) {
-        var days = [];
-        for (var i = 0; i < 7; i++) {
-            days.push({
-                name: date.format("dd").substring(0, 1),
-                number: date.date(),
-                isCurrentMonth: date.month() === month.month(),
-                isToday: date.isSame(new Date(), "day"),
-                date: date
-            });
-            date = date.clone();
-            date.add(1, "d");
-        }
-        return days;
-    }
-
-		$scope.treatment = $rootScope.treatment;
-		$scope.treatment.appointment = {};
-		var data = $rootScope.holdPatientData;
-
-    $scope.book = function(){ 
-      var date = + new Date();
-      $scope.treatment.date = date;
-      $scope.treatment.patient_id = data.patient_id || data.user_id;
-      $scope.treatment.typeOfSession = "Video chat";
-      $scope.treatment.appointment.date = $scope.dd._d;
-      $scope.treatment.appointment.firstname = data.firstname;
-      $scope.treatment.appointment.lastname = data.lastname;
-      $scope.treatment.session_id = $rootScope.session;
-      $scope.treatment.appointment.strDate = $filter('date')($scope.treatment.appointment.date, 'fullDate');
-      $scope.treatment.appointment.strTime = $filter('date')($scope.treatment.appointment.time, 'shortTime')
-      $scope.treatment.appointment.profilePic = data.patient_profile_pic_url;
-      sendData($scope.treatment,"/user/doctor/patient-session","POST");  
-    }
-
-   
-    function sendData(data,url,method) {
-    	$scope.loading = true;      
-      $http({
-        method  : method,
-        url     : url,
-        data    : data,
-        headers : {'Content-Type': 'application/json'} 
-        })
-      .success(function(response) {   
-        if(response) {
-          $scope.message = "Appointment booked!!";
-          addPatient()
-          //alert("Appointment booked, patient will be notified.");
-          //mySocket.emit("realtime appointment notification",{to:data.patient_id});
-        } 
-        $scope.loading = false;  
-      });
-    }
-
-    function addPatient() {
-	    if(!$rootScope.patientsList) {
-
-		  	var id = data.patient_id || data.user_id;
-
-		    $http.get("/user/doctor/my-patients")
-		    .success(function(list){
-
-		    	$rootScope.patientsList = list.doctor_patients_list;
-		     
-		      var elPos = $rootScope.patientsList.map(function(x){return x.patient_id}).indexOf(id);
-
-		      if(elPos === -1){
-		      
-		        $http.put("/user/doctor/my-patients",{patientId: id,date : new Date()})
-		        .success(function(response){
-		          if(response.status){
-		            console.log("Patient added to patients' list.")
-		          } 
-		        })
-		        
-		      }
-		     
-		    });
-	  	}
-  	}
-
-}]);
 
 function computeSN(list){
 	var count = 1;

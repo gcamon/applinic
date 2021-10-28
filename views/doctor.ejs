@@ -2957,51 +2957,51 @@
    </script>
 
     <script type="text/ng-template" id='appointment-modal.html'>
-       <div class="modal fade">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="p-1">
-            <div style="position: relative;">
-                <h5>Appointments</h5>
-                <button type="button" class="close" ng-click="close('Yes')" data-dismiss="modal" style="position: absolute;right: 15px;top: 5px" >&times;</button>      
-            </div>
-            <div class="modal-body">
-              <div class="col-md-4">
-                  <img src="{{patientForAppointmentDetails.patient_profile_pic_url}}" style="width: 170px;">
-              </div>  
-              <div class="col-md-8"> 
-                <div class="mt-1">         
-                  <h5 class="h6 pl-0">{{patientForAppointmentDetails.patient_title}} 
-                    {{patientForAppointmentDetails.patient_firstname}} {{patientForAppointmentDetails.patient_lastname}}
-                  </h5>
-                  <span>{{patientForAppointmentDetails.patient_age}}</span><br>
-                  <span>{{patientForAppointmentDetails.patient_phone}}</span> 
-                </div>
-              </div>  
-              <div class="clearfix"></div>
-             
-              <div  style="text-align: right;">                
-                <a href=""  title="new appointment" ng-click="bookAppointment()" class="btn btn-primary">New</a>
-                <!--<i class="fa fa-calendar btn btn-neutral" style="position: absolute;right: 0;top:-15px;font-size: 18px" title="Give new appointment" ng-click="bookAppointment()"></i>-->
+      <div class="modal fade">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="p-1">
+              <div style="position: relative;">
+                  <h5 class="h6">Appointments</h5>
+                  <button type="button" class="close" ng-click="close('Yes')" data-dismiss="modal" style="position: absolute;right: 15px;top: 5px" >&times;</button>      
               </div>
-              <section style="max-height: 400px;overflow-y: auto;">
-                <div ng-repeat='app in patientAppointments | orderBy : "-created"' class="pl-1" style="margin: 15px 0;border-bottom: 1px solid rgba(0,0,0,0.2);position: relative;">             
-                  <label>Date:</label> <span>{{app.date | date: "fullDate"}}</span> &nbsp;&nbsp;&nbsp;
-                  <label>Time: </label> <span>{{app.time | date: 'shortTime'}}</span> <br>
-                 <!-- <label>Offset: </label> <span am-time-ago="app.date"></span> &nbsp;&nbsp;&nbsp;-->
-                  <span style="display: inline-block;"><label>Venue: </label> <span>{{app.address}}</span></span>
-                  <span style="position: absolute;right: 0;bottom: 5px;cursor: pointer;font-weight: normal;">
-                    <i class="fa fa-trash text-muted btn btn-neutral btn-sm"  title="Delete appointment" ng-click="markAttended(app)" ng-if="!app.loading"></i>
-                    <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange" ng-if="app.loading"></i>
-                  </span>
+              <div class="modal-body">
+                <div class="col-md-3">
+                    <img src="{{patientForAppointmentDetails.patient_profile_pic_url}}" style="width:75px;">
+                </div>  
+                <div class="col-md-8 pl-1"> 
+                  <div>         
+                    <div><b>{{patientForAppointmentDetails.patient_title}} 
+                      {{patientForAppointmentDetails.patient_firstname}} {{patientForAppointmentDetails.patient_lastname}}</b>
+                    </div>
+                    <div>{{patientForAppointmentDetails.patient_age}}</div>
+                    <div>{{patientForAppointmentDetails.patient_phone}}</div>
+                  </div>
+                </div>  
+                <div class="clearfix"></div>
+               
+                <div  style="text-align: right;">                
+                  <a href=""  title="new appointment" ng-click="bookAppointment()" class="btn btn-primary">New</a>
+                  <!--<i class="fa fa-calendar btn btn-neutral" style="position: absolute;right: 0;top:-15px;font-size: 18px" title="Give new appointment" ng-click="bookAppointment()"></i>-->
                 </div>
-              </section>
-              <p style="text-align: center;margin-top: 20px"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange" ng-if="loading"></i></p>
-              <p class="mt-2" style="text-align: center;" ng-show="patientAppointments.length == 0">No appointment history yet.</p>
+                <section style="max-height: 400px;overflow-y: auto;">
+                  <div ng-repeat='app in patientAppointments | orderBy : "-created"' class="pl-1" style="margin: 15px 0;border-bottom: 1px solid rgba(0,0,0,0.2);position: relative;">             
+                    <label>Date:</label> <span>{{app.date | date: "fullDate"}}</span> &nbsp;&nbsp;&nbsp;
+                    <label>Time: </label> <span>{{app.time | date: 'shortTime'}}</span> <br>
+                   <!-- <label>Offset: </label> <span am-time-ago="app.date"></span> &nbsp;&nbsp;&nbsp;-->
+                    <span style="display: inline-block;"><label>Venue: </label> <span>{{app.address}}</span></span>
+                    <span style="position: absolute;right: 0;bottom: 5px;cursor: pointer;font-weight: normal;">
+                      <i class="fa fa-trash text-muted btn btn-neutral btn-sm"  title="Delete appointment" ng-click="markAttended(app)" ng-if="!app.loading"></i>
+                      <i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange" ng-if="app.loading"></i>
+                    </span>
+                  </div>
+                </section>
+                <p style="text-align: center;margin-top: 20px"><i class="fa fa-spinner fa-pulse fa-1x fa-fw" style="color:orange" ng-if="loading"></i></p>
+                <p class="mt-2" style="text-align: center;" ng-show="patientAppointments.length == 0">No appointment history yet.</p>
+            </div>
           </div>
-        </div>
       </div>
-   </script>
+    </script>
 
      <script type="text/ng-template" id="skill-modal.html">
        <div class="modal fade">
@@ -3429,7 +3429,7 @@
      </script>
 
 
-      <script type="text/ng-template" id="write-radiology-ecase.html">
+    <script type="text/ng-template" id="write-radiology-ecase.html">
       <div class="modal fade">
         <div class="modal-dialog">
           <div class="modal-content">
@@ -3644,7 +3644,7 @@
                           <span style="display: block;width: 92%">{{j.address}} {{j.city}} {{j.country}}</span>
                           <span>{{j.phone}}</span>
                           <span style="position: absolute;bottom: -5px;right: 5px">
-                              <button class="btn btn-sm btn-success" ng-click="sendTest2(j,true)" ng-show="!j.isSent">{{(j.loading) ? 'Sending...' : 'Send'}}</button><i class="fa fa-check btn btn-sm btn-neutral" style="color: #85CE36" ng-show="j.isSent"></i>
+                              <button class="btn btn-sm btn-success" ng-click="sendTest(j,true)" ng-show="!j.isSent">{{(j.loading) ? 'Sending...' : 'Send'}}</button><i class="fa fa-check btn btn-sm btn-neutral" style="color: #85CE36" ng-show="j.isSent"></i>
                           </span>
                       </div>
                     </div>
@@ -3765,7 +3765,7 @@
                           <span style="display: block;width: 92%">{{j.address}} {{j.city}} {{j.country}}</span>
                           <span>{{j.phone}}</span>
                           <span style="position: absolute;bottom: -5px;right: 5px">
-                              <button class="btn btn-sm btn-success" ng-click="sendTest2(j,true)" ng-show="!j.isSent">{{(j.loading) ? 'Sending...' : 'Send'}}</button><i class="fa fa-check btn btn-sm btn-neutral" style="color: #85CE36" ng-show="j.isSent"></i>
+                              <button class="btn btn-sm btn-success" ng-click="sendTest(j,true)" ng-show="!j.isSent">{{(j.loading) ? 'Sending...' : 'Send'}}</button><i class="fa fa-check btn btn-sm btn-neutral" style="color: #85CE36" ng-show="j.isSent"></i>
                           </span>
                       </div>
                     </div>
@@ -3885,7 +3885,7 @@
                           <span style="display: block;width: 92%">{{j.address}} {{j.city}} {{j.country}}</span>
                           <span>{{j.phone}}</span>
                           <span style="position: absolute;bottom: -5px;right: 5px">
-                              <button class="btn btn-sm btn-success" ng-click="sendTest2(j,true)" ng-show="!j.isSent">{{(j.loading) ? 'Sending...' : 'Send'}}</button><i class="fa fa-check btn btn-sm btn-neutral" style="color: #85CE36" ng-show="j.isSent"></i>
+                              <button class="btn btn-sm btn-success" ng-click="sendTest(j,true)" ng-show="!j.isSent">{{(j.loading) ? 'Sending...' : 'Send'}}</button><i class="fa fa-check btn btn-sm btn-neutral" style="color: #85CE36" ng-show="j.isSent"></i>
                           </span>
                       </div>
                     </div>
@@ -4006,7 +4006,7 @@
                           <span style="display: block;width: 92%">{{j.address}} {{j.city}} {{j.country}}</span>
                           <span>{{j.phone}}</span>
                           <span style="position: absolute;bottom: -5px;right: 5px">
-                              <button class="btn btn-sm btn-success" ng-click="sendTest2(j,true)" ng-show="!j.isSent">{{(j.loading) ? 'Sending...' : 'Send'}}</button><i class="fa fa-check btn btn-sm btn-neutral" style="color: #85CE36" ng-show="j.isSent"></i>
+                              <button class="btn btn-sm btn-success" ng-click="sendTest(j,true)" ng-show="!j.isSent">{{(j.loading) ? 'Sending...' : 'Send'}}</button><i class="fa fa-check btn btn-sm btn-neutral" style="color: #85CE36" ng-show="j.isSent"></i>
                           </span>
                       </div>
                     </div>

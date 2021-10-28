@@ -1113,6 +1113,7 @@ var myModel = function () {
 	  findings: String,
 	  summary: String,
 	  advise: String,
+	  indication: String,
 	  session_id: String,
 	  referring_physician_email: String,
 		referring_physician_phone: String,
@@ -1121,7 +1122,8 @@ var myModel = function () {
 		remark: String,
 		isUserConnectLinking: Boolean, //this is used to know if linking is from exist patient in the platform
 		referral_detail_dump: Array, //dump the patient existing patient referral object
-		id_of_ref_dumped: String
+		id_of_ref_dumped: String,
+		isPulled: Boolean
 	});
 
 	var dicomSchema = Schema({

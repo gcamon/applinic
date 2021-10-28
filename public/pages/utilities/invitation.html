@@ -25,7 +25,7 @@
 			<input type="text" placeholder="Enter email or phone" ng-model="invite.recepient" class="form-control"><br>
 			<p style="color: green">{{msg}}</p>
 			<section ng-if="existingUser && checkLogIn.typeOfUser == 'Doctor' && invite.type =='Patient'">
-			<a href=""  class="btn btn-success btn-sm" ng-click="addPatient()" ng-if='!loading'> Add to your account</a><span ng-if='loading'>Processing...</span> &nbsp;&nbsp; <a href="" class="btn btn-neutral btn-sm" ng-click="refresh()">No, thanks</a>
+			<a href=""  class="btn btn-success btn-sm" ng-click="addPatient()" ng-if='!loading'> Send request to add to your account</a><span ng-if='loading'>Processing...</span> &nbsp;&nbsp; <a href="" class="btn btn-neutral btn-sm" ng-click="refresh()">No, thanks</a>
 			</section>
 			
 			<input type="submit" value="Invite now!" class="btn btn-primary btn-block" ng-if="!loading && !existingUser"> <span ng-if="loading">Sending invitation...</span>

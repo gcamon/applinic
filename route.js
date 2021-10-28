@@ -2541,15 +2541,84 @@ var basicRoute = function (model,sms,io,streams,client,transporter,opentok) {
                     });
                   }
                 }
-              } else {    
-                res.json(
-                  {
-                    medical_records: data.medical_records,
-                    prescriptions: data.medications,
-                    reports: data.medical_reports,
-                    record_access: data.record_access
-                  }
-                )
+              } else { 
+
+                
+
+                  model.study.find({patient_phone: req.user.phone})
+                  .exec(function(err,studies){ 
+
+                      var elemPos;
+                      var random;
+                                 
+                   
+                      studies.forEach(function(study){                      
+                       
+                        elemPos = data.medical_records.radiology_test
+                          .map(function(x){return x.patient_id_of_study}).indexOf(study.study_id)
+
+                         if(elemPos === -1) {
+                          
+                          random = Math.floor(Math.random() * 9999999); 
+
+                          var testToRun = [];
+                          testToRun.push({
+                            sn: 1,
+                            name: study.study_name
+                          })
+
+                          data.medical_records.radiology_test.push({
+                            acc_no: random,
+                            advise: study.advise || "",
+                            center_address: study.center_address || "",
+                            center_city: study.center_city || "",
+                            center_country: study.center_country || "",
+                            center_id: study.center_id || "",
+                            center_name: study.center_name || "",
+                            center_phone: study.center_phone || "",
+                            conclusion: study.conclusion || "",
+                            files: [],
+                            findings: study.findings || "",
+                            indication: study.indication || "",
+                            lab_pdf_report: [],
+                            mobile_viewer_path: study.study_link_mobile || "",
+                            patient_id: req.user.user_id,
+                            patient_id_of_study: study.study_id || study.study_uid,
+                            payment_acknowledgement: true,
+                            pdf_report: study.pdf_report,
+                            receive_date: + new Date(study.study_date) || "",
+                            ref_id: study.ref_id || "",
+                            referral_firstname: study.referring_physician || "",
+                            referral_title: "",
+                            report: [],
+                            sent_date: study.created,
+                            session_id: study.session_id || "",
+                            study_id: study._id.toString(),
+                            test_to_run: testToRun,
+                            web_viewer_path: study.study_link2 || ""
+                          })
+                        }
+                        
+                      }) 
+
+                      data.save(function(err,info){
+                        if(err) throw err;
+                       
+                      })
+                    
+
+                      res.json(
+                        {
+                          medical_records: data.medical_records,
+                          prescriptions: data.medications,
+                          reports: data.medical_reports,
+                          record_access: data.record_access
+                        }
+                      )
+
+                  }) 
+
+               
               }
             //Note from model, medications holds all prescriptions while medical_records holds all laboratory and radiology tests
             // though there is prescription property on medical_record obj but not used yet. 
@@ -9133,7 +9202,7 @@ var basicRoute = function (model,sms,io,streams,client,transporter,opentok) {
 
               result.test_list.push(test);             
 
-              console.log(test)
+              
               result.save(function(){
                console.log("saved!");
               })
@@ -12231,7 +12300,7 @@ router.get('/user/getAllDoctor',function(req,res){
     if(req.query.city){
       var str = (req.query.city) ? (new RegExp(req.query.city.replace(/\s+/g,"\\s+"), "gi")) : ""; 
       var criteria = (req.query.city) ? {city: { $regex: str, $options: 'i' },type:"Doctor"} : {type:"Doctor"};
-      model.user.find(criteria,{name:1,address:1,user_id:1,city:1,country:1,phone:1,_id:1,email:1,verified:1},
+      model.user.find(criteria,{name:1,address:1,user_id:1,city:1,country:1,phone:1,_id:1,email:1,verified:1,type:1},
       function(err,data){
         if(err) throw err;
         res.send(data);
@@ -16861,7 +16930,8 @@ router.post("/study/:uid/:refId",function(req,res){
 
           });
             
-          function updatePatient() {         
+          function updatePatient() { 
+
                 //here patient test result is updated.
                 model.user.findOne({user_id: referral.radiology.patient_id},
                   {medical_records: 1,patient_notification:1,user_id:1,presence:1,phone:1,
@@ -16910,9 +16980,6 @@ router.post("/study/:uid/:refId",function(req,res){
 
                     
                     io.sockets.to(data.user_id).emit("notification",{status:true});
-                    
-
-                   
                     
                     var mailOptions = {
                       from: 'Applinic info@applinic.com',
