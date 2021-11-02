@@ -191,6 +191,81 @@ app.controller("VideoDiagnosisController2",["$rootScope","$scope","$window","$ht
     });
   }
 
+  $scope.ecgModal = function() {
+    ModalService.showModal({
+        templateUrl: 'e-case-ecg.html',
+        controller: "e-caseECGCtrl"
+      }).then(function(modal) {
+        modal.element.modal();
+        modal.close.then(function(result) {            
+        });
+    });
+  }
+
+   $scope.endoscopyModal = function() {
+    ModalService.showModal({
+        templateUrl: 'e-case-endoscopy.html',
+        controller: "e-caseEndoscopyCtrl"
+      }).then(function(modal) {
+        modal.element.modal();
+        modal.close.then(function(result) {            
+        });
+    });
+  }
+
+   $scope.otherProceduresModal = function() {
+    ModalService.showModal({
+        templateUrl: 'e-case-other-procedures.html',
+        controller: "e-caseOtherProceduresCtrl"
+      }).then(function(modal) {
+        modal.element.modal();
+        modal.close.then(function(result) {            
+        });
+    });
+  }
+
+
+  $scope.dashboard = function() {
+    window.location.href = "/user/doctor";
+    return;
+  }
+
+  $scope.audioChat = function() {
+      $scope.loading1 = true;
+      //$http.post('/user/audioCallInit',{type:$rootScope.holdPartner.partnerType, userId: $rootScope.holdPartner.partnerId})
+      $http.post('/user/audioCallInit',{type:"Patient", userId: patient.id})
+      .success(function(response){
+        //console.log(response)$rootScope.sockets;
+
+       // var invert = _.invert($rootScope.sockets);      
+        //if(invert[$rootScope.holdPartner.partnerId]){
+
+          var sender = names;
+          socket.emit("audio call signaling",
+            {partnerConnectURL: response.partnerConnectURL,
+              partnerId: patient.id,sender:sender},
+            function(data){
+            //alert(data.message);
+            //console.log(data);
+            $scope.loading1 = false;
+            localManager.setValue("partnerDetails",{patientId: patient.id,type: "Patient"});
+            window.location.href = response.url;
+          });
+
+       // } else {
+        //  var msg = ($rootScope.holdPartner.name || $rootScope.holdPartner.firstname) 
+        //  + " is currently offline but we will forward audio call" 
+        //  + " invitation via SMS and you will be alerted when connection is re-established. Please stay logged in."
+        //  var check = confirm(msg);
+        //  if(check){
+
+         // }
+        //}
+       
+      })
+    }
+
+
 }]);
 
 
@@ -2104,6 +2179,883 @@ app.controller("ultrasoundModalController",["$scope","$http","UltraSounds","getA
           center.loading = false;
           $scope.countIndex = 0;
          
+          $rootScope.$broadcast("new medication",{status:true})
+        }
+       
+      } else {
+        alert("Oops! Something went wrong. Please try again.");
+      }
+     
+    })
+  }
+
+  function getRadiologies() {
+    $scope.loading = true;
+    $scope.city = $scope.city || user.city;
+    var source = getAllRadiologyService; 
+    source.query({city:$scope.city},function(list){
+      $scope.loading = false;
+      $scope.searchResult = list;
+    });
+
+    getDoctors($scope.city)
+  }
+
+  function getDoctors() {
+    $http.get("/user/getAllDoctor",{params:{city: $scope.city}})
+    .success(function(docs){
+      $scope.searchResult2 = docs;
+    })
+  }
+
+}]);
+
+app.controller("e-caseECGCtrl",["$scope","$http","$rootScope",
+  "templateService","ModalService","$timeout","localManager",
+  function($scope,$http,$rootScope,templateService,ModalService,$timeout,localManager){
+
+  var patient = (localManager.getValue("partnerDetails")) ? localManager.getValue("partnerDetails") : {};
+  var userId = patient.patientId;
+  $scope.radiology = {};
+
+   $rootScope.treatment = {};
+  
+
+  $scope.radiology.isSorted = false;
+
+
+  $scope.supported = false;
+
+  $scope.copy = "";
+
+  $scope.success = function (test) {
+    test.copy = 'Copied!';
+    $timeout(function(){
+      test.copy = "";
+    },2000)
+  };
+
+
+  $scope.fail = function (err) {
+    console.error('Error!', err);
+  };
+
+  function getPatientData() {
+    $scope.loading = true;
+    $http.get("/user/doctor/specific-patient",{params: {id: userId}})
+    .success(function(data){
+     
+      $scope.loading = false;
+      $scope.patientInfo = data;
+      $scope.labTest = data.medical_records.ecg_test;
+      if($scope.radiology.isSorted){
+        sortByRefered()
+      }
+    })
+  }
+
+  getPatientData();
+
+  $scope.writeInvestigation = function() {
+    $rootScope.holdPatientDatails = {
+      firstname: $scope.patientInfo.firstname,
+      lastname: $scope.patientInfo.lastname,
+      title: $scope.patientInfo.title,
+      age: $scope.patientInfo.age,
+      gender: $scope.patientInfo.gender,
+      phone: $scope.patientInfo.phone,
+      city: $scope.patientInfo.city,
+      patient_id: $scope.patientInfo.user_id,
+      patient_profile_pic_url: $scope.patientInfo.profile_pic_url,
+      address: $scope.patientInfo.address,
+      type: $scope.patientInfo.type
+    }
+
+    ModalService.showModal({
+        templateUrl: 'write-ecg-ecase.html',
+        controller: 'ECGModalController'
+    }).then(function(modal) {
+        modal.element.modal();
+        modal.close.then(function(result) {             
+        });
+    });
+  }
+
+  $scope.$watch("radiology.isSorted",function(newVal,oldVal){
+    if(newVal){
+      sortByRefered()
+    }
+  })
+
+  function sortByRefered() {
+    var filter = {};
+    var mineArr = [];
+    var othersArr = [];   
+    //remember referral_id field was not initially added in the db data for radiology when doctor refers for investigation. I was later added by me.
+    $scope.labTest.forEach(function(test){
+      if(test.referral_id === user.user_id){
+        mineArr.push(test)
+      } else {
+
+        if(!test.referral_id) {
+          test.referral_id = test.referral_firstname;
+        }
+
+        if(!filter.hasOwnProperty(test.referral_id)){
+          filter[test.referral_id] = test.referral_id;
+          filter["firstname"] = test.referral_firstname;
+          filter["lastname"] = "";
+          filter["title"] = test.referral_title;
+          filter["specialty"] = "";
+          filter["profilePic"] = "";
+          filter["profile"] = "/user/profile/view/" + test.referral_id;
+          filter["tests"] = [test];
+        } else {
+          filter["tests"].push(test)
+        }
+      }
+    })
+
+    othersArr.push(filter)
+
+    $scope.sortedRadiology = {
+      mine: mineArr,
+      others: othersArr
+    };
+
+  }
+
+  $rootScope.$on('new medication',function(e,data){
+    getPatientData()
+  });
+
+ 
+
+  $scope.viewImage = function(arr) {
+    $rootScope.files = arr;
+    ModalService.showModal({
+        templateUrl: 'image-viewer.html',
+        controller: "viewerModalController"
+      }).then(function(modal) {
+        modal.element.modal();
+        modal.close.then(function(result) {             
+      });
+    });
+  }
+
+}]);
+
+
+app.controller("ECGModalController",["$scope","$http","getAllRadiologyService","$rootScope",
+  function($scope,$http,getAllRadiologyService,$rootScope){
+
+  var test_name;
+  var index;
+
+ 
+
+  $rootScope.treatment.patientType = "mine";
+  $rootScope.treatment.referral_pays = "No";
+
+  $scope.TestList = [{
+    sn: 1,
+    name: ""
+  }];
+
+  $scope.addTest = function(){  
+    $scope.TestList.push({
+      sn: $scope.TestList.length + 1,
+      name: ""
+    });
+   
+  }
+
+  $scope.removeTest = function() {   
+    $scope.TestList.pop();    
+  }
+
+  $rootScope.treatment.patient_title = $rootScope.holdPatientDatails.title;
+  $rootScope.treatment.patient_firstname = $rootScope.holdPatientDatails.firstname;
+  $scope.treatment.patient_lastname = $rootScope.holdPatientDatails.lastname;
+  $rootScope.treatment.patient_gender = $rootScope.holdPatientDatails.gender;
+  $rootScope.treatment.patient_age = $rootScope.holdPatientDatails.age;
+  $rootScope.treatment.patient_phone = $rootScope.holdPatientDatails.phone;
+  $rootScope.treatment.patient_id = $rootScope.holdPatientDatails.patient_id;
+  $rootScope.holdPatientDatails.user_id = $rootScope.holdPatientDatails.patient_id;
+  $rootScope.holdPatientDatails.profile_pic_url = $rootScope.holdPatientDatails.patient_profile_pic_url;
+  $rootScope.treatment.patientDetails = $rootScope.holdPatientDatails;
+
+
+  $scope.goBack = function() {
+    $scope.isSearchToSend = false;
+    $scope.isNewPatient = false;
+    $scope.isNewLab = true;
+  }
+
+  $scope.findLabs = function() {
+    getRadiologies();
+  }
+
+  getRadiologies();
+
+  
+
+  $scope.countIndex = 0;
+  //$scope.countIndex2 = 0;
+
+  $scope.sendTest = function(center,isDoctor){
+
+    if(!$scope.TestList[$scope.countIndex].name){
+      center.loading = false;
+      alert("One of the investigations has no name. Please go back and enter the name.")
+      return;
+    }
+
+    center.loading = true;
+    var testArr = [];      
+    testArr.push({
+      name: $scope.TestList[$scope.countIndex].name,
+      sn: $scope.TestList[$scope.countIndex].sn
+    });
+
+    $scope.countIndex++;
+
+    if(center.type === 'Doctor'){
+      $rootScope.treatment.isRequestToDoctor = true;
+    }
+
+    sendIndividualTests(center,testArr,$scope.countIndex);
+  }
+
+  /*$scope.sendTest2 = function(center,isDoctor) {
+    if(!$scope.TestList[$scope.countIndex2].name){
+      center.loading = false;
+      alert("One of the investigations has no name. Please enter the name.")
+      return;
+    }
+
+    center.loading = true;
+    var testArr = [];      
+    testArr.push({
+      name: $scope.TestList[$scope.countIndex2].name,
+      sn: $scope.TestList[$scope.countIndex2].sn
+    });
+
+    $scope.countIndex2++;
+
+    if(isDoctor){
+      $rootScope.treatment.isRequestToDoctor = true;
+    }
+
+    sendIndividualTests(center,testArr,$scope.countIndex2);
+  }*/
+
+  function sendIndividualTests(center,testArr,count) {
+    center.loading = true;
+    $rootScope.treatment.isCaseNoteRequest = true;
+    $rootScope.treatment.centerDetails = center;
+    $rootScope.treatment.lab_test_list = testArr;
+    $rootScope.treatment.ray_type = "ecg";
+    $rootScope.treatment.date = new Date();
+    $http({
+      method  : 'POST',
+      url     : "/user/doctor/ecg/send-test",
+      data    : $rootScope.treatment,
+      headers : {'Content-Type': 'application/json'} 
+    })
+    .success(function(response) {
+      if(response.success) {
+        if($scope.TestList.length > count){
+          $scope.sendTest(center)
+        } else {
+          center.isSent = true;
+          center.loading = false;
+          $scope.countIndex = 0;
+          //$scope.countIndex2 = 0;
+          $rootScope.$broadcast("new medication",{status:true})
+        }
+       
+      } else {
+        alert("Oops! Something went wrong. Please try again.");
+      }
+     
+    })
+  }
+
+  function getRadiologies() {
+    $scope.loading = true;
+    $scope.city = $scope.city || user.city;
+    var source = getAllRadiologyService; 
+    source.query({city:$scope.city},function(list){
+      $scope.loading = false;
+      $scope.searchResult = list;
+    });
+
+    getDoctors($scope.city)
+  }
+
+  function getDoctors() {
+    $http.get("/user/getAllDoctor",{params:{city: $scope.city}})
+    .success(function(docs){
+      $scope.searchResult2 = docs;
+    })
+  }
+
+}]);
+
+
+app.controller("e-caseEndoscopyCtrl",["$scope","$http","$rootScope",
+  "templateService","ModalService","$timeout","localManager",
+  function($scope,$http,$rootScope,templateService,ModalService,$timeout,localManager){
+
+  var patient = (localManager.getValue("partnerDetails")) ? localManager.getValue("partnerDetails") : {};
+  var userId = patient.patientId;
+  $scope.radiology = {};
+
+  $rootScope.treatment = {};
+  
+
+  $scope.radiology.isSorted = false;
+
+
+  $scope.supported = false;
+
+  $scope.copy = "";
+
+  $scope.success = function (test) {
+    test.copy = 'Copied!';
+    $timeout(function(){
+      test.copy = "";
+    },2000)
+  };
+
+
+  $scope.fail = function (err) {
+    console.error('Error!', err);
+  };
+
+  function getPatientData() {
+    $scope.loading = true;
+    $http.get("/user/doctor/specific-patient",{params: {id: userId}})
+    .success(function(data){
+     
+      $scope.loading = false;
+      $scope.patientInfo = data;
+      $scope.labTest = data.medical_records.endoscopy_test;
+      if($scope.radiology.isSorted){
+        sortByRefered()
+      }
+    })
+  }
+
+  getPatientData();
+
+  $scope.writeInvestigation = function() {
+    $rootScope.holdPatientDatails = {
+      firstname: $scope.patientInfo.firstname,
+      lastname: $scope.patientInfo.lastname,
+      title: $scope.patientInfo.title,
+      age: $scope.patientInfo.age,
+      gender: $scope.patientInfo.gender,
+      phone: $scope.patientInfo.phone,
+      city: $scope.patientInfo.city,
+      patient_id: $scope.patientInfo.user_id,
+      patient_profile_pic_url: $scope.patientInfo.profile_pic_url,
+      address: $scope.patientInfo.address,
+      type: $scope.patientInfo.type
+    }
+
+    ModalService.showModal({
+        templateUrl: 'write-endoscopy-ecase.html',
+        controller: 'endoscopyModalController'
+    }).then(function(modal) {
+        modal.element.modal();
+        modal.close.then(function(result) {             
+        });
+    });
+  }
+
+  $scope.$watch("radiology.isSorted",function(newVal,oldVal){
+    if(newVal){
+      sortByRefered()
+    }
+  })
+
+  function sortByRefered() {
+    var filter = {};
+    var mineArr = [];
+    var othersArr = [];   
+    //remember referral_id field was not initially added in the db data for radiology when doctor refers for investigation. I was later added by me.
+    $scope.labTest.forEach(function(test){
+      if(test.referral_id === user.user_id){
+        mineArr.push(test)
+      } else {
+
+        if(!test.referral_id) {
+          test.referral_id = test.referral_firstname;
+        }
+
+        if(!filter.hasOwnProperty(test.referral_id)){
+          filter[test.referral_id] = test.referral_id;
+          filter["firstname"] = test.referral_firstname;
+          filter["lastname"] = "";
+          filter["title"] = test.referral_title;
+          filter["specialty"] = "";
+          filter["profilePic"] = "";
+          filter["profile"] = "/user/profile/view/" + test.referral_id;
+          filter["tests"] = [test];
+        } else {
+          filter["tests"].push(test)
+        }
+      }
+    })
+
+    othersArr.push(filter)
+
+    $scope.sortedRadiology = {
+      mine: mineArr,
+      others: othersArr
+    };
+
+  }
+
+  $rootScope.$on('new medication',function(e,data){
+    getPatientData()
+  });
+
+ 
+
+  $scope.viewImage = function(arr) {
+    $rootScope.files = arr;
+    ModalService.showModal({
+        templateUrl: 'image-viewer.html',
+        controller: "viewerModalController"
+      }).then(function(modal) {
+        modal.element.modal();
+        modal.close.then(function(result) {             
+      });
+    });
+  }
+
+}]);
+
+
+app.controller("endoscopyModalController",["$scope","$http","getAllRadiologyService","$rootScope",
+  function($scope,$http,getAllRadiologyService,$rootScope){
+
+  var test_name;
+  var index;
+
+  $rootScope.treatment = {};
+
+  $rootScope.treatment.patientType = "mine";
+  $rootScope.treatment.referral_pays = "No";
+
+  $scope.TestList = [{
+    sn: 1,
+    name: ""
+  }];
+
+  $scope.addTest = function(){  
+    $scope.TestList.push({
+      sn: $scope.TestList.length + 1,
+      name: ""
+    });
+   
+  }
+
+  $scope.removeTest = function() {   
+    $scope.TestList.pop();    
+  }
+
+  $rootScope.treatment.patient_title = $rootScope.holdPatientDatails.title;
+  $rootScope.treatment.patient_firstname = $rootScope.holdPatientDatails.firstname;
+  $rootScope.treatment.patient_lastname = $rootScope.holdPatientDatails.lastname;
+  $rootScope.treatment.patient_gender = $rootScope.holdPatientDatails.gender;
+  $rootScope.treatment.patient_age = $rootScope.holdPatientDatails.age;
+  $rootScope.treatment.patient_phone = $rootScope.holdPatientDatails.phone;
+  $rootScope.treatment.patient_id = $rootScope.holdPatientDatails.patient_id;
+  $rootScope.holdPatientDatails.user_id = $rootScope.holdPatientDatails.patient_id;
+  $rootScope.holdPatientDatails.profile_pic_url = $rootScope.holdPatientDatails.patient_profile_pic_url;
+  $rootScope.treatment.patientDetails = $rootScope.holdPatientDatails;
+
+
+  $scope.goBack = function() {
+    $scope.isSearchToSend = false;
+    $scope.isNewPatient = false;
+    $scope.isNewLab = true;
+  }
+
+  $scope.findLabs = function() {
+    getRadiologies();
+  }
+
+  getRadiologies();
+
+  
+
+  $scope.countIndex = 0;
+  //$scope.countIndex2 = 0;
+
+  $scope.sendTest = function(center,isDoctor){
+
+    if(!$scope.TestList[$scope.countIndex].name){
+      center.loading = false;
+      alert("One of the investigations has no name. Please go back and enter the name.")
+      return;
+    }
+
+    center.loading = true;
+    var testArr = [];      
+    testArr.push({
+      name: $scope.TestList[$scope.countIndex].name,
+      sn: $scope.TestList[$scope.countIndex].sn
+    });
+
+    $scope.countIndex++;
+
+    if(center.type === 'Doctor'){
+      $scope.treatment.isRequestToDoctor = true;
+    }
+
+    sendIndividualTests(center,testArr,$scope.countIndex);
+  }
+
+  /*$scope.sendTest2 = function(center,isDoctor) {
+    if(!$scope.TestList[$scope.countIndex2].name){
+      center.loading = false;
+      alert("One of the investigations has no name. Please enter the name.")
+      return;
+    }
+
+    center.loading = true;
+    var testArr = [];      
+    testArr.push({
+      name: $scope.TestList[$scope.countIndex2].name,
+      sn: $scope.TestList[$scope.countIndex2].sn
+    });
+
+    $scope.countIndex2++;
+
+    if(isDoctor){
+      $scope.treatment.isRequestToDoctor = true;
+    }
+
+    sendIndividualTests(center,testArr,$scope.countIndex2);
+  }*/
+
+  function sendIndividualTests(center,testArr,count) {
+    center.loading = true;
+    $rootScope.treatment.isCaseNoteRequest = true;
+    $rootScope.treatment.centerDetails = center;
+    $rootScope.treatment.lab_test_list = testArr;
+    $rootScope.treatment.ray_type = "endoscopy";
+    $rootScope.treatment.date = new Date();
+    $http({
+      method  : 'POST',
+      url     : "/user/doctor/endoscopy/send-test",
+      data    : $rootScope.treatment,
+      headers : {'Content-Type': 'application/json'} 
+    })
+    .success(function(response) {
+      if(response.success) {
+        if($scope.TestList.length > count){
+          $scope.sendTest(center)
+        } else {
+          center.isSent = true;
+          center.loading = false;
+          $scope.countIndex = 0;
+          $rootScope.$broadcast("new medication",{status:true})
+        }
+       
+      } else {
+        alert("Oops! Something went wrong. Please try again.");
+      }
+     
+    })
+  }
+
+  function getRadiologies() {
+    $scope.loading = true;
+    $scope.city = $scope.city || user.city;
+    var source = getAllRadiologyService; 
+    source.query({city:$scope.city},function(list){
+      $scope.loading = false;
+      $scope.searchResult = list;
+    });
+
+    getDoctors($scope.city)
+  }
+
+  function getDoctors() {
+    $http.get("/user/getAllDoctor",{params:{city: $scope.city}})
+    .success(function(docs){
+      $scope.searchResult2 = docs;
+    })
+  }
+
+}]);
+
+app.controller("e-caseOtherProceduresCtrl",["$scope","$http","$rootScope",
+  "templateService","ModalService","$timeout","localManager",
+  function($scope,$http,$rootScope,templateService,ModalService,$timeout,localManager){
+
+ var patient = (localManager.getValue("partnerDetails")) ? localManager.getValue("partnerDetails") : {};
+  var userId = patient.patientId;
+  $scope.radiology = {};
+
+  $rootScope.treatment = {};
+  
+
+  $scope.radiology.isSorted = false;
+
+
+  $scope.supported = false;
+
+  $scope.copy = "";
+
+  $scope.success = function (test) {
+    test.copy = 'Copied!';
+    $timeout(function(){
+      test.copy = "";
+    },2000)
+  };
+
+
+  $scope.fail = function (err) {
+    console.error('Error!', err);
+  };
+
+  function getPatientData() {
+    $scope.loading = true;
+    $http.get("/user/doctor/specific-patient",{params: {id: userId}})
+    .success(function(data){
+     
+      $scope.loading = false;
+      $scope.patientInfo = data;
+      $scope.labTest = data.medical_records.other_procedures_test;
+      if($scope.radiology.isSorted){
+        sortByRefered()
+      }
+    })
+  }
+
+  getPatientData();
+
+  $scope.writeInvestigation = function() {
+    $rootScope.holdPatientDatails = {
+      firstname: $scope.patientInfo.firstname,
+      lastname: $scope.patientInfo.lastname,
+      title: $scope.patientInfo.title,
+      age: $scope.patientInfo.age,
+      gender: $scope.patientInfo.gender,
+      phone: $scope.patientInfo.phone,
+      city: $scope.patientInfo.city,
+      patient_id: $scope.patientInfo.user_id,
+      patient_profile_pic_url: $scope.patientInfo.profile_pic_url,
+      address: $scope.patientInfo.address,
+      type: $scope.patientInfo.type
+    }
+
+    ModalService.showModal({
+        templateUrl: 'write-other-procedures-ecase.html',
+        controller: 'otherProceduresModalController'
+    }).then(function(modal) {
+        modal.element.modal();
+        modal.close.then(function(result) {             
+        });
+    });
+  }
+
+  $scope.$watch("radiology.isSorted",function(newVal,oldVal){
+    if(newVal){
+      sortByRefered()
+    }
+  })
+
+  function sortByRefered() {
+    var filter = {};
+    var mineArr = [];
+    var othersArr = [];   
+    //remember referral_id field was not initially added in the db data for radiology when doctor refers for investigation. I was later added by me.
+    $scope.labTest.forEach(function(test){
+      if(test.referral_id === user.user_id){
+        mineArr.push(test)
+      } else {
+
+        if(!test.referral_id) {
+          test.referral_id = test.referral_firstname;
+        }
+
+        if(!filter.hasOwnProperty(test.referral_id)){
+          filter[test.referral_id] = test.referral_id;
+          filter["firstname"] = test.referral_firstname;
+          filter["lastname"] = "";
+          filter["title"] = test.referral_title;
+          filter["specialty"] = "";
+          filter["profilePic"] = "";
+          filter["profile"] = "/user/profile/view/" + test.referral_id;
+          filter["tests"] = [test];
+        } else {
+          filter["tests"].push(test)
+        }
+      }
+    })
+
+    othersArr.push(filter)
+
+    $scope.sortedRadiology = {
+      mine: mineArr,
+      others: othersArr
+    };
+
+  }
+
+  $rootScope.$on('new medication',function(e,data){
+    getPatientData()
+  });
+
+ 
+
+  $scope.viewImage = function(arr) {
+    $rootScope.files = arr;
+    ModalService.showModal({
+        templateUrl: 'image-viewer.html',
+        controller: "viewerModalController"
+      }).then(function(modal) {
+        modal.element.modal();
+        modal.close.then(function(result) {             
+      });
+    });
+  }
+
+}]);
+
+
+app.controller("otherProceduresModalController",["$scope","$http","getAllRadiologyService","$rootScope",
+  function($scope,$http,getAllRadiologyService,$rootScope){
+
+  var test_name;
+  var index;
+
+  $rootScope.treatment.patientType = "mine";
+  $rootScope.treatment.referral_pays = "No";
+
+  $scope.TestList = [{
+    sn: 1,
+    name: ""
+  }];
+
+  $scope.addTest = function(){  
+    $scope.TestList.push({
+      sn: $scope.TestList.length + 1,
+      name: ""
+    });
+   
+  }
+
+  $scope.removeTest = function() {   
+    $scope.TestList.pop();    
+  }
+
+  $rootScope.treatment.patient_title = $rootScope.holdPatientDatails.title;
+  $rootScope.treatment.patient_firstname = $rootScope.holdPatientDatails.firstname;
+  $rootScope.treatment.patient_lastname = $rootScope.holdPatientDatails.lastname;
+  $rootScope.treatment.patient_gender = $rootScope.holdPatientDatails.gender;
+  $rootScope.treatment.patient_age = $rootScope.holdPatientDatails.age;
+  $rootScope.treatment.patient_phone = $rootScope.holdPatientDatails.phone;
+  $rootScope.treatment.patient_id = $rootScope.holdPatientDatails.patient_id;
+  $rootScope.holdPatientDatails.user_id = $rootScope.holdPatientDatails.patient_id;
+  $rootScope.holdPatientDatails.profile_pic_url = $rootScope.holdPatientDatails.patient_profile_pic_url;
+  $rootScope.treatment.patientDetails = $rootScope.holdPatientDatails;
+
+
+  $scope.goBack = function() {
+    $scope.isSearchToSend = false;
+    $scope.isNewPatient = false;
+    $scope.isNewLab = true;
+  }
+
+  $scope.findLabs = function() {
+    getRadiologies();
+  }
+
+  getRadiologies();
+
+  
+
+  $scope.countIndex = 0;
+  //$scope.countIndex2 = 0;
+
+  $scope.sendTest = function(center,isDoctor){
+
+    if(!$scope.TestList[$scope.countIndex].name){
+      center.loading = false;
+      alert("One of the investigations has no name. Please go back and enter the name.")
+      return;
+    }
+
+    center.loading = true;
+    var testArr = [];      
+    testArr.push({
+      name: $scope.TestList[$scope.countIndex].name,
+      sn: $scope.TestList[$scope.countIndex].sn
+    });
+
+    $scope.countIndex++;
+
+    if(center.type === 'Doctor'){
+      $rootScope.treatment.isRequestToDoctor = true;
+    }
+
+    sendIndividualTests(center,testArr,$scope.countIndex);
+  }
+
+  /*$scope.sendTest2 = function(center,isDoctor) {
+    if(!$scope.TestList[$scope.countIndex2].name){
+      center.loading = false;
+      alert("One of the investigations has no name. Please enter the name.")
+      return;
+    }
+
+    center.loading = true;
+    var testArr = [];      
+    testArr.push({
+      name: $scope.TestList[$scope.countIndex2].name,
+      sn: $scope.TestList[$scope.countIndex2].sn
+    });
+
+    $scope.countIndex2++;
+
+    if(isDoctor){
+      $scope.treatment.isRequestToDoctor = true;
+    }
+
+    sendIndividualTests(center,testArr,$scope.countIndex2);
+  }*/
+
+  function sendIndividualTests(center,testArr,count) {
+    center.loading = true;
+    $rootScope.treatment.isCaseNoteRequest = true;
+    $rootScope.treatment.centerDetails = center;
+    $rootScope.treatment.lab_test_list = testArr;
+    $rootScope.treatment.ray_type = "other-procedures";
+    $rootScope.treatment.date = new Date();
+    $http({
+      method  : 'POST',
+      url     : "/user/doctor/other-procedures/send-test",
+      data    : $rootScope.treatment,
+      headers : {'Content-Type': 'application/json'} 
+    })
+    .success(function(response) {
+      if(response.success) {
+        if($scope.TestList.length > count){
+          $scope.sendTest(center)
+        } else {
+          center.isSent = true;
+          center.loading = false;
+          $scope.countIndex = 0;
+          //$scope.countIndex2 = 0;
           $rootScope.$broadcast("new medication",{status:true})
         }
        

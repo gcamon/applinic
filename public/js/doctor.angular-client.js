@@ -21307,7 +21307,6 @@ app.controller("endoscopyReportCtrl",["$scope","$http","$location","localManager
     }
     
     $('#files').change(handleFileSelect);
-
    
     $scope.speech2Text = function(field,study){
       $scope.ultraRefData.fieldType = field;
