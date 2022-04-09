@@ -51,7 +51,7 @@
     "html-pdf": "^2.2.0",
     "infobip": "0.0.4",
     "infobip-node": "^1.0.3",
-    "moment": "^2.17.1",
+    "moment": "^2.29.2",
     "mongoose": "^4.5.10",
     "mpromise": "^0.5.5",
     "multer": "^1.3.1",
