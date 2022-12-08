@@ -34,7 +34,7 @@
     "angular-ui-bootstrap": "^2.5.0",
     "angular-underscorejs": "^1.0.1",
     "angularjs-pdf-viewer": "^1.0.4",
-    "aws-sdk": "^2.344.0",
+    "aws-sdk": "^2.814.0",
     "bcryptjs": "^2.3.0",
     "body-parser": "^1.15.2",
     "chance": "^1.0.4",
