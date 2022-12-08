@@ -2807,7 +2807,6 @@ router.put("/user/outpatient-billing",function(req,res){
 
 router.post("/user/dicom-details",function(req,res){
 	if(req.user) {
-	
 		var rados;
 		if(req.body.isAcc) {
 		  rados = "A" + randos.genRef(8);

@@ -1072,7 +1072,7 @@ var signupRoute = function(model,sms,geonames,paystack,io,transporter) {
 	router.get("/user/getCountries",function(req,res){
 	  model.geonames.find({},{_id:0,_v:0},function(err,countries){
 		if(err) throw err;
-		console.log(countries)
+		
 		res.send(countries);
 	  }).sort({countryName:1})
 	});

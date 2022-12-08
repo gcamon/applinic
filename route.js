@@ -3982,7 +3982,7 @@ var basicRoute = function (model,sms,io,streams,client,transporter,opentok) {
         var toNum = req.query.refId;
         model.referral.findOne({ref_id: toNum,center_id: req.user.user_id})
         .exec(function(err,found){
-          if(err) throw err;          
+          if(err) throw err;     
           res.json(found);
         })
         /*model.user.findOne({user_id:req.user.user_id},{referral:1,_id:0},function(err,data){
@@ -14108,7 +14108,7 @@ router.get("/api/dicom-details",function(req,res){
       res.json(data);
     } else {
       res.json({
-        ip_address: "167.71.149.196",
+        ip_address: "134.209.246.129",
         dns: "dicom.applinic.com", 
         // this was changed to this on 13 oct, 2019 since the sub domain nginx connection was having issues
         //dicom.applinic.com
@@ -14341,7 +14341,7 @@ router.get("/dicom-mobile",function(req,res){
       }
     })
   } else {
-    res.redirect('http://167.71.149.196:8080/applinic-dicom/home.html');
+    res.redirect('http://134.209.246.129/:8080/applinic-dicom/home.html');
   }
 });
 
@@ -14373,7 +14373,7 @@ router.get("/dcm",function(req,res){
       }
     })
   } else {
-    var link = 'http://167.71.149.196:8080/web/viewer.html?patientID=' + req.query.id;
+    var link = 'http://134.209.246.129:8080/web/viewer.html?patientID=' + req.query.id;
     res.redirect(link);
   }
 });
@@ -14855,7 +14855,6 @@ router.post("/user/reporting-radiologist",function(req,res){
 
 router.put("/user/reporting-radiologist",function(req,res){
   if(req.user) {
-    console.log(req.body)
     model.user.findOne({user_id: req.user.user_id})
     .exec(function(err,data){
       if(err) throw err;
@@ -17051,72 +17050,227 @@ router.get("/vital-check",function(req,res){
 
 router.get("/kys-games",function(req,res){
   res.render('kys-games')
+});
+
+
+
+
+/* RIS implementation */
+
+
+router.get("/ris/radiology/get-referral", function(req,res){    
+  model.user.findOne({email: req.query.centerEmail,type: "Radiology"},
+    {name:1,user_id:1,reporters:1,_id:1,email:1,phone:1})
+  .exec(function(err,found){
+    if(err) throw err;
+    if(found){
+      model.ris.findOne({ref_uid: req.query.ref_uid,center_id: found.user_id})
+      .exec(function(err,risData){
+        if(err) throw err;
+        if(risData){
+          res.json({center: found, ris: risData})
+        } else {
+          res.json({})
+        }
+      })
+    }     
+  })
+});
+
+//this path is used by speech to text page for reporting
+router.put("/ris/save-report",function(req,res){
+  model.ris.findOne({email: req.body.centerEmail,ref_uid: req.body.ref_uid})
+  .exec(function(err,referral){
+    if(err) throw err;
+    if(ris){
+      switch(req.body.fieldType){
+        case 'findings':
+          ris.radiology.findings = req.body.radiology.findings || ""; 
+        break;
+        case 'conclusion':
+          ris.radiology.conclusion = req.body.radiology.conclusion || "";
+        break;
+        case 'advice':
+          ris.radiology.advice = req.body.radiology.advice || "";
+        break;
+      }
+
+      ris.save(function(err,info){
+        if(err) throw err;
+        res.json({status: true,message: "Data received"});
+      });
+
+    } else {
+      res.json({status: false, message: "Record not found."})
+    }    
+  })
 })
 
 
+router.post("/ris/save-report",function(req,res){
 
+    if(req.files){
+      var path1;
+      var arr = [];
+      req.files.forEach(function(file){
+        path1 = req.headers.origin + "/download/scan-image/" + file.filename;
+        arr.push({
+          originalname: file.originalname,
+          path: path1
+        });
+      });
+      res.json({isImages: true, arr: arr});
+    }
 
+    if(req.body.radiology){
+      model.ris.findOne({center_email: req.body.center_email,ref_uid: req.body.ref_uid})
+      .exec(function(err,referral){
+        if(err) throw err;
+        if(referral){
+          referral.radiology.clinical_summary = req.body.radiology.clinical_summary;
+          referral.radiology.indication = req.body.radiology.indication;
+          referral.radiology.findings = req.body.radiology.findings;
+          referral.radiology.conclusion = req.body.radiology.conclusion;
+          referral.radiology.advice = req.body.radiology.advice;
+          referral.radiology.drugs = req.body.radiology.drugs;
+          referral.radiology.sample_files = req.body.sample_files;
+          referral.radiology.ray_type = req.body.radiology.ray_type;
+          referral.radiology.report_date = new Date();
+          referral.radiology.staffname = req.body.radiology.staffname;
+          referral.radiology.designation = req.body.radiology.designation;
+          referral.save(function(err,info){
+            if(err) throw err;
+            var previewPath = "/ris/" + req.body.ref_uid + "/" + referral.ref_id;
+            res.json({status: true,message: "Data received",path: previewPath});
+          })
 
+        } else {
+          delete req.body._id;
+          req.body.ref_id = randos.genRef(10);
+          var newRis = new model.ris(req.body);
+          var previewPath = "/ris/" + req.body.ref_uid + "/" + req.body.ref_id;             
+          newRis.save(function(err,info){
+            if(err) throw err;
+            res.json({status: true,message: "Data received",path: previewPath});
+          })
+        }
+      })
+    }
 
-/*
+})
 
+router.get("/ris/:uid/:refId",function(req,res){
+  model.ris.findOne({ref_id: req.params.refId,ref_uid: req.params.uid})
+  .exec(function(err,referral){
+    if (err) throw err;
+    if(referral){         
+      model.user.findOne({user_id: referral.center_id})
+      .exec(function(err,reporter){
+        if(err) throw err;
+        if(reporter){
+           referral.moment = moment;
+           referral.reporter_name = reporter.name;
+           referral.reporter_work_place = (reporter.work_place) ? reporter.work_place : "";
+           referral.reporter_address = reporter.address;
+           referral.reporter_specialty = (reporter.specialty) ? reporter.specialty : "";
+           referral.reporter_email = reporter.email;
+           referral.reporter_phone = reporter.phone;
+           referral.reporter_city = reporter.city;
+           referral.reporter_country = reporter.country;
+           referral.reporter_profilePic = reporter.profile_pic_url;
+           res.render('preview2',referral)
+        } else {
+          res.json({status: 500, message: "Some error occured"})
+        }
+      })      
+      
+    } else {
+      res.json({status: 404, message: "Not Found"})
+    }
 
-{ _id: '6073df95eac60e0344707568',
-  ref_id: '2903350',
-  referral_firstname: 'Madubuike Dialysis Center',
-  referral_title: 'SC',
-  referral_email: 'madubuike@gmail.com',
-  referral_phone: '+234805363644543',
-  referral_id: 'madubuike8655',
-  acc_no: '19596038',
-  date: '2021-04-18T05:39:34.785Z',
-  center_id: 'madubuike8655',
-  radiology:
-   { patient_age: '-3 month',
-     patient_gender: 'Male',
-     patient_firstname: 'Uche',
-     patient_lastname: 'Awana',
-     patient_profile_pic_url: '/download/profile_pic/nopic',
-     patient_title: 'Mrs',
-     patient_phone: '+2348072536623',
-     session_id: 'a6109030-95d8-11eb-a685-c5381deb8884',
-     patient_id: 'ucheawana1520755',
-     test_id: 44603825,
-     patient_address: '12 chezoka',
-     indication: 'sdds',
-     clinical_summary: 'sddsds',
-     parity: 'dsds',
-     attended: false,
-     acc_no: '19596038',
-     title: 'SC',
-     doctor_firstname: 'Madubuike Dialysis Center',
-     doctor_id: 'madubuike8655',
-     ray_type: 'ultrasound',
-     _id: '6073df95eac60e0344707569',
-     lab_pdf_report: [],
-     test_to_run: [ [Object] ],
-     findings: 'sddsdsdssd',
-     conclusion: 'sddssd',
-     advice: 'sddsds',
-     drugs: 'sddsdsdssd' },
-  __v: 0,
-  redirect_to: [],
-  sample_files: [ null ] }
-*/
-
-/*
- var testPhone = new model.authCheck({
-    user_id: req.user.user_id,
-    pin: genPin
   });
 
-  var date = new Date()
-  testPhone.expirationDate = new Date(date.getTime() + 300000);
-  testPhone.expirationDate.expires  = 60 * 60;
+})
 
-  testPhone.save(function(err,info){});
+router.post("/ris/:uid/:refId",function(req,res){  
+  model.ris.findById(req.params.refId)
+  .exec(function(err,referral){
+    if(err) throw err;
+    if(referral){  
+      // if ref physician email is supplied
+      var dt = + new Date();
+      var pdfName = dt + "-" + uuid.v1() + '.pdf';
+      var filePath = './pdf/' + pdfName;
 
-*/
+      pdf.create(req.body.html).toFile(filePath, function(err, file) { //start of toFile
+        if (err) return console.log(err);                        
+
+        var pdfPath = '/report/' + pdfName;
+        var emailPDFPath = "http://localhost:3001" + pdfPath //"https://applinic.com" + pdfPath;
+        console.log(emailPDFPath)
+        
+        req.body.pdfPathSave = pdfPath;
+       
+        var FILE_CONTENT = fs.readFileSync(file.filename, 'base64');
+        var buf = Buffer.from(FILE_CONTENT, 'base64')
+
+        var emailArr = [req.body.email,referral.radiology.patient_email];
+
+        
+        emailArr.push(referral.radiology.doctor_email);              
+
+        var mailOptions = {
+          from: 'Applinic Healthcare info@applinic.com',
+          to: emailArr || "support@applinic.com", //req.body.email
+          subject: 'Radiology Report',
+          html: '<table><tr><tr><td style="line-height: 25px"><b>Radiology Report</b><br><br>'
+          + 'Patient: ' + referral.radiology.patient_firstname + "<br>"
+          + 'Investigation: ' + referral.radiology.test_to_run[0].name + "<br>"
+          + 'Ref: ' + referral.ref_id + "<br>"             
+          + "<b>Applinic Team</b><br>"
+          + '</td></tr></table>',
+          attachments:[{
+            filename: pdfName,
+            content: buf,
+            contentType: 'application/pdf'
+          }]
+        };
+
+        transporter.sendMail(mailOptions, function(error, info){
+          if (error) {
+            res.json({status: false, message: "Oops! Error occured while sending email. Please try again."})
+          } else {
+            //console.log('Email sent: ' + info.response);
+            res.json({status: true, message: "Report sent successfully.",report_pdf: pdfPath});
+          }
+        });
+
+        referral.radiology.lab_pdf_report.unshift({date:dt,pdf_report: emailPDFPath})
+       
+        referral.isReported = true;
+
+        referral.save(function(err,info){})
+
+      }) //end of toFil
+
+    }
+
+  })
+    
+
+});
+
+router.get("/ris/get-reports",function(req,res){
+  if(req.query.token === "sdgdfstyyweyt6727637823gdhte6267gsytwJSUWUUWE!FNNV$@SWU"){
+
+    model.ris.find({center_email: req.query.email})
+    .exec(function(err,data){
+      res.json(data);
+    })
+  } else {
+    res.json({error: "Permission denied!"})
+  }
+})
 
 /*router.get("/lab/report-template/:_id",function(req,res){
   //params and query strings @reporterId @studyId @refId

@@ -86,33 +86,6 @@ client.SMS.send(message,function(err, response){
 });*/
 
  
- // add geonames to the database once.
- /* model.geonames.find({},function(err,data){
-    if(err) throw err;
-    if(data.length === 0){ 
-      addCountriesToDatabase();
-    } else {
-      console.log("Countries name already added to the database!")
-    }
-  });
-
-  function addCountriesToDatabase() {
-   geonames.countryInfo({})
-    .then(function(countries){
-      var name;
-      for(var i in countries.geonames){
-        if(countries.geonames.hasOwnProperty(i)) {
-          name = new model.geonames(countries.geonames[i]);
-        }
-
-        name.save(function(err,info){
-          if(err) throw err;
-          console.log("Geonames saved")
-        })
-      }
-      //console.log(countries.geonames)
-    })
-  }*/
 
  
 /*var options = {
@@ -208,6 +181,38 @@ transporter.sendMail(mailOptions, function(error, info){
 
 //var Geonames = require("geonames.js");
 var geonames = {};//new Geonames({username: 'gcamon29', lan: 'en', encoding: 'JSON'});
+ // add geonames to the database once.
+  /*model.geonames.find({},function(err,data){
+    if(err) throw err;
+    if(data.length === 0){ 
+      addCountriesToDatabase();
+    } else {
+      console.log("Countries name already added to the database!")
+    }
+  });
+
+  function addCountriesToDatabase() {
+   geonames.countryInfo({})
+    .then(function(countries){
+      var name;
+      for(var i in countries.geonames){
+        if(countries.geonames.hasOwnProperty(i)) {
+          name = new model.geonames(countries.geonames[i]);
+        }
+
+        name.save(function(err,info){
+          if(err) throw err;
+          console.log("Geonames saved")
+        })
+      }
+      //console.log(countries.geonames)
+    })
+  }*/
+
+
+
+
+
 var opentok = new OpenTok(process.env.OPENTOK_API_KEY, process.env.OPENTOK_SECRET_KEY);
 
 config.configuration(app,model);

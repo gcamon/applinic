@@ -1254,7 +1254,60 @@ var myModel = function () {
 		bp_readings: Array, // blood pressure
 		bs_readings: Array, //blood sugar
 		temp_readings: Array //temperature
-	})
+	});
+
+	var risSchema = Schema({
+		center_id: String,
+		center_email: String,
+		ref_uid: String,
+		ref_id: String,
+		date: String,
+		isReported: Boolean,
+		radiology: {
+			test_to_run: Array,
+			patient_firstname: String,
+			age: String,
+			gender: String,
+			patient_email: String,
+			history: String,
+			patient_lastname: String,
+			patient_profile_pic_url: String,
+			patient_title: String,
+			patient_gender: String,
+			patient_age: String,
+			patient_phone: String,
+			session_id: String,
+			patient_id: String,
+			test_id: String,
+			patient_address: String,
+			indication: String,
+			clinical_summary: String,
+			lmp: String,
+			parity: String,
+			attended: Boolean,
+			title: String,
+			doctor_firstname: String,
+			doctor_lastname: String,
+			doctor_id: String,
+			doctor_email: String,
+			doctor_phone: Number,
+			acc_no: String,
+			study_link: String,
+			is_paid: Boolean,
+			lab_pdf_report: Array,
+			ray_type: String,
+			findings: String,
+			procedure: String,
+			conclusion: String,
+			advice: String,
+			drugs: String,
+			report_date: Date,
+			sample_files: Array,
+			staffname: String,
+			designation: String,
+			path: String
+		}
+	});
 
 	//models
 	var models = {};
@@ -1297,7 +1350,7 @@ var myModel = function () {
 	models.plan = mongoose.model("planinfos",planSchema); 
 	models.opentok_session = mongoose.model('opentokinfos',opentokSessionsSchema);
 	models.chart = mongoose.model("chartinfos",chartSchema);
-	//models.chat_file = mongoose.model("chatFileinfos",chatFileSchema);
+	models.ris = mongoose.model("risinfos",risSchema);
 	//models.calling_code = mongoose.model("callingcodeinfos",callingSchema)
 	
 	return models		

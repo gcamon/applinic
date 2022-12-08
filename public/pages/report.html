@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="myApp">
+
+<head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title> Applinic - Report</title>
+        <meta name="description" content="">
+        <meta content='width=device-width, initial-scale=0.87, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no' name='viewport'/>
+
+        <link rel="icon" type="image/png" href="https://applinic.com/assets/images/icons/favicon.png">
+        <!-- Place favicon.ico in the root directory -->
+        <!-- Edu boostrap -->
+       <!--<link rel="stylesheet" href="https://applinic.com/assets/css/main.cs">-->
+        <link rel="stylesheet" href="https://applinic.com/assets/css/font-awesome.min.css">
+        <link rel="stylesheet" href="https://applinic.com/assets/css/vendor.css">
+        <link rel="stylesheet" href="https://applinic.com/assets/css/app.css">
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+        <link rel="stylesheet" href="https://applinic.com/assets/css/now-ui-kit2.css">
+       <!-- <link rel="stylesheet" href="https://applinic.com/assets/css/now-ui-kit.css">-->
+        <link rel="stylesheet" href="https://applinic.com/assets/css/icomoon.css">
+        <link rel="stylesheet" href="https://applinic.com/assets/css/chat.css">
+        <link rel="stylesheet" href="https://applinic.com/assets/css/my-edit.css" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="https://applinic.com/assets/css/all.css">
+
+         <link href="https://applinic.com/assets/js/bower_components/summernote/dist/summernote.css" rel="stylesheet">
+         <script type="text/javascript">
+        var Opera = (navigator.userAgent.match(/Opera|OPR\//) ? true : false);
+        if(Opera){
+          window.location.href = "/assets/show-error.html";
+        }
+    </script>
+
+
+
+         <noscript>
+          <META HTTP-EQUIV="Refresh" CONTENT="0;URL=/assets/show-error.html">
+      </noscript>
+
+          <script src="https://applinic.com/assets/js/vendor2.js"></script>
+          <script type="text/javascript" src="https://applinic.com/assets/js/source.js"></script>
+    <style type="text/css">
+        input:focus,
+select:focus,
+textarea:focus,
+button:focus {
+  outline: none;
+}
+
+.wrapper {
+  width: 100%;
+  height: 300px;
+  position: relative;
+}
+
+.drop {
+  width: 96%;
+  height: 96%;
+  border: 3px dashed #DADFE3;
+  border-radius: 15px;
+  overflow: hidden;
+  text-align: center;
+  background: white;
+  -webkit-transition: all 0.5s ease-out;
+  -moz-transition: all 0.5s ease-out;
+  transition: all 0.5s ease-out;
+  margin: auto;
+  position: absolute;
+ top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  /*&:hover
+   * cursor: pointer
+   * background: #f5f5f5 */
+}
+.drop .cont {
+  width: 500px;
+  height: 170px;
+  color: #8E99A5;
+  -webkit-transition: all 0.5s ease-out;
+  -moz-transition: all 0.5s ease-out;
+  transition: all 0.5s ease-out;
+  margin: auto;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+}
+.drop .cont i {
+ font-size: 400%;
+  color: #8E99A5;
+  position: relative;
+}
+.drop .cont .tit {
+  font-size: 400%;
+  text-transform: uppercase;
+}
+.drop .cont .desc {
+  color: #A4AEBB;
+}
+.drop .cont .browse {
+  margin: 10px 25%;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 5px;
+  background: #09f;
+}
+.drop input {
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+  background: red;
+ opacity: 0;
+  margin: auto;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+}
+
+
+#list {
+  width: 100%;
+  text-align: left;
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+#list .thumb {
+  height: 75px;
+  border: 1px solid #323a44;
+  margin: 10px 5px 0 0;
+}
+.hide-temp {
+  visibility: hidden;
+}
+</style>
+
+</head>
+
+<body ng-controller="ultraSoundReportCtrl" >
+ 
+
+    <!--<div class="">
+        <a href="pacs" class="btn btn-neutral"><i class="fa fa-arrow-left"></i> Back</a>
+    </div>-->
+    <div class="mt-3 pl-5"  style="width: 70%;margin: 10px auto">
+        <h4>Write Report </h4>
+    </div>
+    <form class="" style="width: 70%;margin: 30px auto">
+        <div class="card p-2">
+        <section class="mt-2 p-2 row" style="border: 1px dotted #eee" ng-cloak>
+            <div class="col-md-6 col-xs-6">
+                <label>Patient Name: </label> <span>{{ultraRefData.radiology.patient_title}} {{ultraRefData.radiology.patient_firstname}}
+           {{ultraRefData.radiology.patient_lastname}}</span><br>
+                <label>Age: </label> <span>{{ultraRefData.radiology.patient_age}}</span><br>
+                <label>Gender: </label> <span>{{ultraRefData.radiology.patient_gender}}</span><br>
+                <label>Phone: </label> <span>{{ultraRefData.radiology.patient_phone}}</span><br>
+   </div>
+            <div class="col-md-6 col-xs-6">
+                <label>Physician: </label> <span>{{ultraRefData.referral_title}} {{ultraRefData.referral_firstname}}</span><br>
+                <label>Phone: </label> <span>{{ultraRefData.referral_phone}}</span><br>
+                <label>Ref No: </label> <span>{{ultraRefData.ref_id}}</span><br>
+                <label>Date requested: </label> <span>{{ultraRefData.date | date: 'fullDate'}} ( <span am-time-Ago="ultraRefData.date"></span> )</span><br>
+            </div>
+        </section>
+        <br>
+        <div class="text-center" ng-cloak>
+            <h4 class="h5 pb-0 mb-0">{{ultraRefData.radiology.test_to_run[0].name}}</h4>
+            <div><span>{{ultraRefData.date | date: 'fullDate'}}</span></div>
+        </div>
+         <div>
+            <label>Referring Physician's Email*:</label><br>
+            <input type="email" name="referringPhysicianEmail" class="form-control" ng-model="ultraRefData.radiology.doctor_email" required>
+        </div>
+        <br>
+        <div>
+            <label>Patient's Email:</label><br>
+            <input type="email" name="patientEmail" class="form-control" ng-model="ultraRefData.radiology.patient_email">
+        </div>
+        <br>
+
+         <div ng-cloak>
+            <label>Indication:</label><br>
+           
+            <input type="text" name="indication" class="form-control" placeholder="Please enter indication if any" ng-model="ultraRefData.radiology.indication">
+            <!--<span>{{ultraRefData.radiology.indication || "N/A"}}</span>-->
+
+            
+        </div>
+  <br>
+        <div ng-cloak>
+            <label>Clinical Summary:</label><br>
+           
+            <input type="text" name="summary" class="form-control" placeholder="Please enter summary if any" ng-model="ultraRefData.radiology.clinical_summary">
+            <!--<span>{{ultraRefData.radiology.clinical_summary || "N/A"}}</span>-->
+            
+        </div>
+        <br>
+        <div class="relative">
+            <a href="" ng-click="speech2Text('findings')" class="text-info" style="position: absolute; top:-10px;right: 5px">
+<img src="https://applinic.com/assets/images/icons/mic.gif" alt="speech to text AI" title="Use speech to text AI"></a>
+            <label>Findings*:</label><br>
+            <textarea class="form-control pl-1" style="height: 150px;white-space: pre-wrap"  placeholder="Write" ng-model="ultraRefData.radiology.findings" required></textarea>
+        </div>
+        <br>
+        <div class="relative">
+            <a href="" ng-click="speech2Text('conclusion')" class="text-info" style="position: absolute; top:-10px;right: 5px">
+<img src="https://applinic.com/assets/images/icons/mic.gif" alt="speech to text AI" title="Use speech to text AI"></a>
+            <label>Conclusion*:</label><br>
+            <textarea class="form-control pl-1" style="height: 150px;white-space: pre-wrap" placeholder="Write" ng-model="ultraRefData.radiology.conclusion" required></textarea>
+        </div>
+        <br>
+ <div class="relative">
+  <a href="" ng-click="speech2Text('advice')" class="text-info" style="position: absolute; top:-10px;right: 5px">
+<img src="https://applinic.com/assets/images/icons/mic.gif" alt="speech to text AI" title="Use speech to text AI"></a>
+            <label>Advice/Further Investigations*:</label><br>
+            <textarea class="form-control pl-1" style="height: 150px;white-space: pre-wrap" placeholder="Write" ng-model="ultraRefData.radiology.advice" required></textarea>
+        </div>
+        <!--<br>
+         <div>
+            <label>Referring Physician's Email*:</label><br>
+            <input type="email" name="referringPhysicianEmail" class="form-control" ng-model="ultraRefData.radiology.doctor_email" required>
+        </div>
+        <br>
+        <div>
+            <label>Patient's Email:</label><br>
+            <input type="email" name="patientEmail" class="form-control" ng-model="ultraRefData.radiology.patient_email">
+        </div>
+        <br>-->
+        <br>
+
+        <!--<div>
+            <label>Your Full Name:</label><br>
+            <input type="text" name="fullname" class="form-control" ng-model="ultraRefData.radiology.staffname" required>
+        </div>
+        <br>
+ <div>
+            <label>Your Designation or Specialty:</label><br>
+            <input type="text" name="designation" class="form-control" ng-model="ultraRefData.radiology.designation"  required>
+        </div>
+        <br>-->
+
+        <div>
+            <label>Attach Images:</label><br>
+            <div class="wrapper">
+              <div class="drop">
+                <div class="cont">
+                  <i class="fa fa-cloud-upload"></i>
+                  <div class="tit">
+                    Drag & Drop
+                  </div>
+                  <div class="desc">
+                    your files here, or
+                  </div>
+                  <div class="browse" style="background-color: orange">
+                    Click here to browse file system
+                  </div>
+                </div>
+                <output id="list" style="z-index: 9999"></output><input id="files" multiple="true" name="files[]" type="file" />
+
+  </div>
+        </div>
+        <br>
+        <button class="btn btn-primary btn-block" ng-click="preview(ultraRefData)">{{ (loading) ? ('Processing... ' + progress + '%') : 'Preview'}}</button>
+        </div>
+      </div>
+    </form>
+
+  
+
+    <iframe id="loadSpeechText" width="300" src="" height="500" style="position:absolute; 
+    top:50px; 
+    left:200px; 
+    width:70% !important; 
+    height:70%!important;
+    border:1px solid gray; overflow-y: hidden;box-shadow: 5px 5px 12px gray;visibility: hidden;" frameBorder="0"></iframe>
+
+    <button style="position: absolute;top:250px;right: 100px;height: 70px;width: 70px;border-radius: 70px;visibility: hidden;" class="btn btn-simple btn-sm" id="flameCloseBtn" ng-click="closeFrame()"><i class="icon-remove-circle"></i> Close</button>
+
+
+
+
+
+    <script src="https://applinic.com/assets/js/app.js"></script>
+    <script src="https://applinic.com/assets/js/now-ui-kit.js"></script>
+    <script src="https://applinic.com/assets/js/bower_components/summernote/dist/summernote.js"></script>
+    <script src="https://applinic.com/assets/js/bower_components/angular-summernote/dist/angular-summernote.js"></script>
+
+    <!--<script type="text/javascript" src="https://applinic.com/assets/js/angularclient.js"></script>-->
+    <!--<script type="text/javascript" src="https://applinic.com/assets/js/doctor.angular-client.js"></script>-->
+    <script type="text/javascript" src="http://localhost:3001/assets/js/report.angular.js"></script>
+    <script type="text/javascript" src="https://applinic.com/assets/js/ngroute.js"></script>
+    <script src="https://applinic.com/socket.io/socket.io.js"></script>
+    <script src="https://applinic.com/assets/js/socket.min.js"></script>
+    <script src="https://applinic.com/assets/js/jquery-ui.js"></script>
+ <!--<script src="https://applinic.com/assets/js/main.js"></script>-->
+    <script src="https://applinic.com/assets/js/angular-touch.min.js"></script>
+    <script src="https://applinic.com/assets/js/angularAnimate.js"></script>
+
+    <script src="https://applinic.com/assets/js/modalService.js"></script>
+    <script src="https://applinic.com/assets/js/moment.min.js"></script>
+    <script src="https://applinic.com/assets/js/angular-moment.min.js"></script>
+    <script src="https://applinic.com/assets/js/angucomplete-alt.min.js"></script>
+
+    <script type="text/javascript" src="https://applinic.com/assets/js/pdfjs-dist/build/pdf.js"></script>
+    <script type="text/javascript" src="https://applinic.com/assets/js/angular-pdf-viewer.min.js"></script>
+
+    <script src="https://applinic.com/assets/js/ui-bootstrap-tpls.js"></script>
+    <script src="https://applinic.com/assets/js/angular-clipboard.js"></script>
+    <script src="https://applinic.com/assets/js/ngresource.js"></script>
+    <script src="https://applinic.com/assets/js/ngPrint.js"></script>
+    <script type="text/javascript" src="https://applinic.com/assets/js/angular-paystack/dist/angular-paystack.js"></script>
+    <script type="text/javascript" src="https://applinic.com/assets/js/angular-sanitize.min.js"></script>
+    <script type="text/javascript" src="https://applinic.com/assets/js/underscore-min.js"></script>
+    <script type="text/javascript" src="https://applinic.com/assets/js/angular-underscore.js"></script>
+    <script type="text/javascript" src="https://applinic.com/assets/js/charts.js/dist/Chart.min.js"></script>
+    <script type="text/javascript" src="https://applinic.com/assets/js/angular-chart.js/dist/angular-chart.min.js"></script>
+</body>
+</html>

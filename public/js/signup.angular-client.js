@@ -2,7 +2,7 @@
 (function() {
 
 var app = angular.module('myApp',["ngRoute","ngAnimate","angularModalService","angularMoment",'ui.bootstrap',
-  'angular-clipboard',"ngResource","btford.socket-io","ngTouch",'ngPrint','paystack','ngSanitize','summernote',
+  'angular-clipboard',"ngResource","btford.socket-io","ngTouch",'ngPrint','paystack','ngSanitize',
   'xen3r0.underscorejs']);
 
 app.run(['$rootScope',function($rootScope){
@@ -416,6 +416,7 @@ app.controller('signupController',["$scope","$http","$location","$window","templ
 
   var signUp = userSignUpService; //$resource('/user/signup',null,{userSignup:{method:"POST"},emailCheck:{method:"PUT"}});
   $scope.countries = localManager.getValue("countries") || getCountries();
+  //localManager.removeItem("countries")
   $scope.status = "Country";
   $scope.status1 = "State/Province";
   $scope.status2 = "City/Town";
