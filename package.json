@@ -67,7 +67,7 @@
     "peer": "^0.2.8",
     "socket.io": "^2.0.1",
     "twilio": "^3.19.2",
-    "underscore": "^1.9.1",
+    "underscore": "^1.12.1",
     "uuid": "^3.2.1",
     "xml": "^1.0.1"
   }
