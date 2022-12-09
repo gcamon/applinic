@@ -17207,7 +17207,7 @@ router.post("/ris/:uid/:refId",function(req,res){
 
         var pdfPath = '/report/' + pdfName;
         var emailPDFPath = "http://localhost:3001" + pdfPath //"https://applinic.com" + pdfPath;
-        console.log(emailPDFPath)
+        
         
         req.body.pdfPathSave = pdfPath;
        
