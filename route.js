@@ -14395,8 +14395,6 @@ router.get("/report-template/:reporterId/:study_id",function(req,res){
           if(elemPos !== -1) {
             details.reporter = study.assigned_radiologist_id[elemPos];
             details.study.center_profile_pic_url = "https://applinic.com" + center.profile_pic_url;
-           
-            model.template.findOne({center_id: study.center_id,type:"Radiology"})
             .exec(function(err,temp){
               if(err) throw err;
               if(temp){
