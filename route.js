@@ -17203,7 +17203,7 @@ router.post("/ris/:uid/:refId",function(req,res){
       var filePath = './pdf/' + pdfName;
 
       pdf.create(req.body.html).toFile(filePath, function(err, file) { //start of toFile
-        if (err) return console.log(err);                        
+        if (err) return res.status(500).json("error occured");                        
 
         var pdfPath = '/report/' + pdfName;
         var emailPDFPath = "http://localhost:3001" + pdfPath //"https://applinic.com" + pdfPath;
