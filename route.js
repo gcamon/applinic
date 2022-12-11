@@ -14105,6 +14105,9 @@ router.get("/api/dicom-details",function(req,res){
   model.dicom.findOne({center_id: req.query.centerId})
   .exec(function(err,data){
     if(data) {
+      if(data.ip_address !== "134.209.246.129"){
+        data.ip_address = "134.209.246.129";
+      }
       res.json(data);
     } else {
       res.json({
