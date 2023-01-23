@@ -191,6 +191,25 @@
   }
 }
 
+@media (max-width: 500px) {
+  #main {
+    width: 90%;
+  }
+
+  .sm {
+    visibility: hidden!important;
+    width: 5%!important;
+    margin-bottom: -50px!important;
+    z-index: 0;
+  }
+
+  .sm-show {
+    width: 100%!important;
+    visibility: visible!important;
+    font-size: 20px;
+  }
+}
+
 
 	</style>
 </head>
@@ -210,6 +229,23 @@
         
 	   	   <div id="tempfield" ng-hide="isReportPDF">               
               <%- template.template %>
+              <div>
+                <div style="display: flex; align-items: center; justify-content: space-between;" class="sm" >
+                  <div style="width: 50%; display: flex; justify-content: space-around;align-items: center;">
+                    <div style="text-align: left; width: 30%; height: auto;" class="ui-linux">
+                      <img src="https://applinic.com/download/profile_pic/nopic" id='img' style="width: 100%; height: 100%; object-fit: cover">
+                    </div>
+
+                    <div style="padding-left: 12px;width: 70%; padding-left: 15px" class="ui-linux"><h2 id="center_name" style="font-size: 20px;margin:10px 0 0;font-weight: bolder;">{{patient.centerName}}</h2> <address style="font-weight: normal;"> <span id="center_address">{{patient.centerAddress}}</span><br> <span>{{patient.centerCity}}, {{patient.centerCountry}}</span><br> <span id="center_phone"><b>Tel:</b> {{patient.centerPhone}} <br><b>Email:</b> {{patient.centerEmail}}</span> </address>
+                    </div>
+                  </div>
+
+                  <div style="vertical-align: bottom;text-align: left;" class="ui-linux sm-show"><h4 style="font-size: 22px;margin: 5px 0"><b>RADIOLOGY REPORT</b></h4>
+                  </div>
+                </div>
+
+                <hr/>
+                <div style="padding-top: 20px;"> <section style="border: 1px solid grey" class="ui-linux"> <b style="display: inline-block;border-right: 1px solid grey;padding: 10px;width: 105px">Name:</b> <span style="display: inline-block;width: 435px;font-size: 14px" contenteditable="true" id="name">{{patient.names}}</span> <b style="display: inline-block;border-left: 1px solid grey; border-right: 1px solid grey; padding: 10px;width: 89px" >Study ID:</b> <span style="display: inline-block;font-size: 14px" contenteditable="true" id="studyId">{{patient.patientId}}</span> </section></div><div> <section style="border: 1px solid grey;border-top: none" class="ui-linux"> <b style="display: inline-block;border-right: 1px solid grey;padding: 10px;width: 105px">Age:</b> <span style="display: inline-block;width: 120px;font-size: 14px" contenteditable="true" id="age">{{patient.age}}</span> <b style="display: inline-block;border-left: 1px solid grey; border-right: 1px solid grey; padding: 10px">Sex:</b> <span style="display: inline-block;width: 105px;font-size: 14px" contenteditable="true" id="gender">{{patient.sex}}</span> <b style="display: inline-block;border-left: 1px solid grey; border-right: 1px solid grey; padding: 10px;width: 64px">Doctor:</b> <span style="display: inline-block;font-size: 14px" contenteditable="true" id="referrer">{{patient.doctor}}</span> </section></div><div> <section style="border: 1px solid grey;border-top: none" class="ui-linux"> <b style="display: inline-block;border-right: 1px solid grey;padding: 10px;width: 105px">Examination:</b> <span style="display: inline-block;font-size: 14px;width: 435px;" contenteditable="true" id="investigation">{{patient.studyName}}</span> <b style="display: inline-block;border-left: 1px solid grey; border-right: 1px solid grey; padding: 10px">Date:</b> <span style="display: inline-block;font-size: 14px" contenteditable="true" id="date">{{patient.studyDate | date: 'mediumDate'}}</span> </section></div><div style="margin-top: 15px" class="ui-linux"><h6 style="font-size: 18px;margin: 10px 0"><b>Clinical Summary</b></h6><div style="border: 1px solid grey; min-height: 70px;padding: 10px 20px;line-height: 20px;white-space: pre-wrap" contenteditable="true" id="summary" ng-bind="patient.summary"></div></div><!--<div style="margin-top: 15px" class="ui-linux"><h6 style="font-size: 18px;margin: 10px 0"><b>Radiographer's Remark</b></h6><div style="border: 1px solid grey; min-height: 70px;padding: 10px 20px;line-height: 20px" contenteditable="true" id="remark" ng-bind="patient.remark"></div></div>--><div style="margin-top: 15px" class="ui-linux"><h6 style="font-size: 18px;margin: 10px 0"><b>Findings</b></h6><div style="border: 1px solid grey; min-height: 70px;padding: 10px 20px;line-height: 20px;white-space: pre-wrap" contenteditable="true" id="findings" ng-bind="patient.findings"></div></div><div style="margin-top: 15px" class="ui-linux"><h6 style="font-size: 18px;margin: 10px 0"><b>Conclusion</b></h6><div style="border: 1px solid grey; min-height: 70px;padding: 10px 20px;line-height: 20px;white-space: pre-wrap" contenteditable="true" id="conclusion" ng-bind="patient.conclusion"></div></div><div style="margin-top: 15px" class="ui-linux"><h6 style="font-size: 18px;margin: 10px 0"><b>Further Advice/Investigation</b></h6><div style="border: 1px solid grey; min-height: 70px;padding: 10px 20px;line-height: 20px;white-space: pre-wrap" contenteditable="true" id="advise" ng-bind="patient.advise"></div></div><table style="margin-top:10px;border-collapse: collapse"><tr><td class="ui-linux"><h6 style="font-size: 18px;margin: 10px 0">Report by:</h6><b id="reporter_name">{{patient.reporter}}</b><br> <span id="reporter_type">{{patient.reporterDesignation}}</span><br> <span id="reporter_email">{{patient.reporterEmail}}</span></td></tr></table> <br><table><tr><td style="width: 950px" class="ui-linux"><h6 style="font-size: 18px;margin: 10px 0">Study's DICOM viewer link:</h6> <a href="{{patient.studyLink}}" target="_blank">{{patient.studyLink}}</a></td><td style="vertical-align: bottom;text-align: right" class="ui-linux"> <img src="https://applinic.com/assets/images/img/applinic.png" style="width: 120px;height: auto;"></td></tr></table>
 	   	   </div>
          <button style="position: absolute;top:10px; right: 20px" ng-click="otherStudies()" class="btn btn-info">Other Studies</button>
            <!--<div ng-show="isReportPDF">

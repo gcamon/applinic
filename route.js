@@ -17274,6 +17274,11 @@ router.get("/ris/get-reports",function(req,res){
   }
 })
 
+
+router.get("/oyoyo-privacy",function(req,res){
+  res.render('oyoyo-privacy');
+});
+
 /*router.get("/lab/report-template/:_id",function(req,res){
   //params and query strings @reporterId @studyId @refId
   // if the study was done in applinic initially it will have a query string of @refId;

@@ -561,7 +561,6 @@ var signupRoute = function(model,sms,geonames,paystack,io,transporter) {
 
 	router.put("/user/verify-phone-number",function(req,res){
 		var genPin = randos.genRef(6);	
-		console.log(req.body)
 		if(req.body.isCovid19){
 			model.user.findOne({phone: req.body.phone})
 			.exec(function(err,user){
@@ -618,7 +617,7 @@ var signupRoute = function(model,sms,geonames,paystack,io,transporter) {
 		  })
 		  .then(
 			function(call){
-			  console.log(call.sid)
+			  //console.log(call.sid)
 			},
 			function(err) {
 			  console.log(err)

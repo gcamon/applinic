@@ -3040,9 +3040,7 @@ router.post("/user/dicom-details",function(req,res){
 	            + "<b>Web Viewer DICOM URL:</b><br> " + webView + "<br>"
 	            + "<b>Mobile Device DICOM Viewer URL:</b> <br> " + mobileView + "<br>"
 	            + "<b>Report Template URL:</b> <span style='font-style:italic'>( Use this template to enter your report )</span> <br>" + tempLink + "<br>"	
-	            + "<p><a href='http://134.209.246.129:8080/dcm4chee-web3/'>You can the download study folder</a> from PACs archive and open with any dicom viewer installed in your PC</p>" 
-	            + "<b>Username:</b> nauth <br>"
-	            + "<b>Password:</b> nauth1234 <br><br>"        
+	            + "<p><a href='http://134.209.246.129:8080/dcm4chee-web3/'><p><br>"
 	            + "Thank you! <br><br> <b>Applinic Team</b>" 
 	            + '</td></tr></table>'
 	          };
