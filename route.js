@@ -17281,7 +17281,7 @@ router.get("/oyoyo-privacy",function(req,res){
 });
 
 router.post('/apiAuth/v1/study',verifyApiKey, async function(req,res){
-  if(!req.body.studyId || req.body.centerId) {
+  if(!req.body.studyId || !req.body.centerId) {
     return res.status(403).json({status: "fail", message: "Missing parameter field"})
   }
 
@@ -17321,9 +17321,9 @@ router.post('/apiAuth/v1/study',verifyApiKey, async function(req,res){
     .exec(function(err,center){
       if(err) return res.status(500).json({status: "fail", message: "Internal server error."});
       res.status(201).json({
-        status: "Success"
-        webURL: `https://applinic.com/dcm?key=${study._id}`
-        mobileURL: `https://applinic.com/dicom-mobile?id=${study._id}`
+        status: "Success",
+        webURL: `https://applinic.com/dcm?key=${study._id}`,
+        mobileURL: `https://applinic.com/dicom-mobile?id=${study._id}`,
         //template: `https://applinic.com/report-template/:${center.reporters[0] ? center.reporters[0].id : ""}/:${study._id}`
       })
     })
