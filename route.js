@@ -17284,49 +17284,61 @@ router.post('/apiAuth/v1/study',verifyApiKey, function(req,res){
   if(!req.body.studyId || !req.body.centerId) {
     return res.status(403).json({status: "fail", message: "Missing parameter field"});
   }
-
   try{
-    const link1 = "/dcm"
-    const link2 = "/dicom-mobile"
-    const study = new model.study({
-      patient_name: req.body.patientName || "",
-      patient_id: req.body.studyId,
-      study_id: req.body.studyId,
-      study_uid: req.body.studyUID || "",
-      center_id: req.body.centerId,
-      age: req.body.age || "",
-      gender: req.body.sex || "",
-      ref_id: randos.genRef(6),
-      patient_sex: req.body.sex || "",
-      patient_age: req.body.age || "" ,
-      study_name: req.body.studyName || "",
-      study_link: link1,
-      study_link2: link1,
-      study_link_mobile: link2,
-      study_date: req.body.studyDate || Date.now(),
-      center_name: req.body.centerName || "",
-      center_address: req.body.centerAddress || "",
-      center_email: req.body.centerEmail || "",
-      center_phone: req.body.centerPhone || "",
-      type: "Radiology",
-      referring_physician_email: req.body.referingPhysicianEmail || "",
-      summary: req.body.summary || "",
-      indication: req.body.indication || "",
-    })
+    model.study.findOne({study_id: req.body.studyId})
+    .exec(function(err,data){
+      if(data){
+        var study = data;
+      } else {
+        var link1 = "/dcm"
+        var link2 = "/dicom-mobile"
+        var study = new model.study({
+          patient_name: req.body.patientName || "",
+          patient_id: req.body.studyId,
+          study_id: req.body.studyId,
+          study_uid: req.body.studyUID || "",
+          center_id: req.body.centerId,
+          age: req.body.age || "",
+          gender: req.body.sex || "",
+          ref_id: randos.genRef(6),
+          patient_sex: req.body.sex || "",
+          patient_age: req.body.age || "" ,
+          study_name: req.body.studyName || "",
+          study_link: link1,
+          study_link2: link1,
+          study_link_mobile: link2,
+          study_date: req.body.studyDate || Date.now(),
+          center_name: req.body.centerName || "",
+          center_address: req.body.centerAddress || "",
+          center_email: req.body.centerEmail || "",
+          center_phone: req.body.centerPhone || "",
+          type: "Radiology",
+          referring_physician_email: req.body.referingPhysicianEmail || "",
+          summary: req.body.summary || "",
+          indication: req.body.indication || "",
+        })
 
-    study.save(function(err,inf0){})
+        study.save(function(err,inf0){})
+      }
 
-
-    model.user.findOne({user_id: req.body.center_id})
-    .exec(function(err,center){
-      if(err) return res.status(500).json({status: "fail", message: "Internal server error."});
       res.status(201).json({
         status: "Success",
         webURL: `https://applinic.com/dcm?key=${study._id}`,
         mobileURL: `https://applinic.com/dicom-mobile?id=${study._id}`,
         //template: `https://applinic.com/report-template/:${center.reporters[0] ? center.reporters[0].id : ""}/:${study._id}`
       })
-    })
+    });
+    
+    // model.user.findOne({user_id: req.body.center_id})
+    // .exec(function(err,center){
+    //   if(err) return res.status(500).json({status: "fail", message: "Internal server error."});
+    //   res.status(201).json({
+    //     status: "Success",
+    //     webURL: `https://applinic.com/dcm?key=${study._id}`,
+    //     mobileURL: `https://applinic.com/dicom-mobile?id=${study._id}`,
+    //     //template: `https://applinic.com/report-template/:${center.reporters[0] ? center.reporters[0].id : ""}/:${study._id}`
+    //   })
+    // })
 
    } catch(e) {
      return res.status(500).json({status: "fail", message: "Internal server error."});
