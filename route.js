@@ -17280,9 +17280,9 @@ router.get("/oyoyo-privacy",function(req,res){
   res.render('oyoyo-privacy');
 });
 
-router.post('/apiAuth/v1/study',verifyApiKey, async function(req,res){
+router.post('/apiAuth/v1/study',verifyApiKey, function(req,res){
   if(!req.body.studyId || !req.body.centerId) {
-    return res.status(403).json({status: "fail", message: "Missing parameter field"})
+    return res.status(403).json({status: "fail", message: "Missing parameter field"});
   }
 
   try{
@@ -17314,7 +17314,7 @@ router.post('/apiAuth/v1/study',verifyApiKey, async function(req,res){
       indication: req.body.indication || "",
     })
 
-    const saveStudy = await study.save()
+    study.save(function(err,inf0){})
 
 
     model.user.findOne({user_id: req.body.center_id})
