@@ -17285,7 +17285,7 @@ router.post('/apiAuth/v1/study',verifyApiKey, function(req,res){
     return res.status(403).json({status: "fail", message: "Missing parameter field"});
   }
   try{
-    model.study.findOne({study_id: req.body.studyId})
+    model.study.findOne({study_id: req.body.studyId, user_id: req.body.centerId})
     .exec(function(err,data){
       if(data){
         var study = data;
