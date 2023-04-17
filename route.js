@@ -14338,7 +14338,7 @@ router.get("/dicom-mobile",function(req,res){
     .exec(function(err,result){
       if(err) throw err;
       if(result){
-        var ovyMob = "http://" + result.ip_address + ":8080/applinic-dicom/home.html";
+        var ovyMob = `http://${result.ip_address ? result.ip_address : "134.209.246.129"}:8080/applinic-dicom/home.html`;
         res.redirect(ovyMob);
       } else {
         res.end("Patient study link not accurate or does not exist.")
@@ -14360,7 +14360,7 @@ router.get("/dcm",function(req,res){
       if(err) throw err;
       if(result){
         var locate = (result.patient_id) ? ("patientID=" + result.patient_id) : ("studyUID=" + result.study_uid);
-        var ovyWeb = "http://" + result.ip_address + ":8080/web/viewer.html?" + locate;
+        var ovyWeb = `http://${result.ip_address ? result.ip_address :"134.209.246.129"}:8080/web/viewer.html?${locate}`;
         res.redirect(ovyWeb);
       } else {
         model.study.findOne({$or:[{patient_id : req.query.id},{study_uid: req.query.id}]})
