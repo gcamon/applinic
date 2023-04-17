@@ -14352,14 +14352,13 @@ router.get("/dicom-mobile",function(req,res){
 router.get("/dcm",function(req,res){
   //IP address of client will vary so study should map on the right client workspace 
   //using query strings Id to create link of study for mobile viewer.
-  if(req.query.id){
-
+  if(!req.query.id){
     //model.study.findOne({$or:[{patient_id : req.query.id},{study_uid: req.query.id}]})
     model.study.findById(req.query.key)
     .exec(function(err,result){
       if(err) throw err;
       if(result){
-        var locate = (result.patient_id) ? ("patientID=" + "0000027826") : ("studyUID=" + result.study_uid);
+        var locate = (result.patient_id) ? ("patientID=" + result.patient_id) : ("studyUID=" + result.study_uid);
         var ovyWeb = `http://${result.ip_address ? result.ip_address :"134.209.246.129"}:8080/web/viewer.html?${locate}`;
         res.redirect(ovyWeb);
       } else {
