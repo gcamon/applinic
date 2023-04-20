@@ -17263,7 +17263,7 @@ router.post("/ris/:uid/:refId",function(req,res){
 });
 
 router.get("/ris/get-reports",function(req,res){
-  if(req.query.token === "sdgdfstyyweyt6727637823gdhte6267gsytwJSUWUUWE!FNNV$@SWU"){
+  if(req.query.token === process.env.RIS_TOKEN){
 
     model.ris.find({center_email: req.query.email})
     .exec(function(err,data){
