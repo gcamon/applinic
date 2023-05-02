@@ -8920,7 +8920,6 @@ var basicRoute = function (model,sms,io,streams,client,transporter,opentok) {
     router.post("/user/radiology/create-services",function(req,res){
      if(req.user && req.body && req.user.type !== "Doctor" || req.user.type !== "Patient") {
       model.services.findOne({user_id:req.user.user_id}).exec(function(err,user){
-        console.log(user)
         if(err) throw err;
         if(!user){
           createUser()
@@ -14833,7 +14832,8 @@ router.get("/user/reporting-radiologist",function(req,res){
 
 router.post("/user/reporting-radiologist",function(req,res){
   if(req.user) {
-    model.user.findOne({user_id: req.user.user_id})
+   
+    model.user.findOne({user_id: req.user.user_id,type: "Radiology"})
     .exec(function(err,data){
       if(err) throw err;
       if(data) {
@@ -14841,11 +14841,46 @@ router.post("/user/reporting-radiologist",function(req,res){
         if(req.body.isGroup){
           req.body.members = [];
         }
-        data.reporters.push(req.body);
-        data.save(function(err,inf){
-          if(err) throw err;
-          res.json({message: "Radiologist added successfully.",status: true,details: req.body})
-        });
+        if(data.reporters.map(function(i){return i.email}).indexOf(req.body.email) === -1){
+          data.reporters.push(req.body);
+          data.save(function(err,inf){
+            if(err) throw err;
+
+            res.json({message: "Radiologist added successfully.",status: true,details: req.body});
+            model.radiologist.findOne({email: req.body.email})
+            .exec(function(err,rad){
+              if(err) throw err;
+              if(!rad){
+                var genPass = randos.genPassword(3,2,1);
+                var newRad = new model.radiologist({
+                  email: req.body.email,
+                  id: req.body.id,
+                  phone: req.body.phone,
+                  name: req.body.name,
+                  designation: req.body.designation,
+                  prefixes: [data.prefix],
+                  passKey: genPass
+                });
+                newRad.save(function(err,info){
+                  if(err) throw err;
+                  sendEmailNotificationToRadiologist(req.body, data, genPass)
+                });
+              } else {
+                if(rad.prefixes.indexOf(data.prefix) === -1){
+                  rad.prefixes.push(data.prefix);
+                  rad.save(function(err,info){
+                    sendEmailNotification(req.body, data, genPass)
+                  });
+                }
+              }
+            })
+
+          });
+        } else {
+          res.json({message: `Radiologist with ${req.body.email} already exist in your center.`,status: true});
+        }
+        
+        
       } else {
         res.end("User not found");
       }
@@ -14923,19 +14958,29 @@ router.patch("/user/reporting-radiologist",function(req,res){
 
 router.delete("/user/reporting-radiologist",function(req,res){
   if(req.user) {
-    console.log(req.body)
-    model.user.findOne({user_id: req.user.user_id})
+    model.user.findOne({user_id: req.user.user_id, type: "Radiology"})
     .exec(function(err,data){
       if(err) throw err;
       if(data) {
         var elem = data.reporters.map(function(x){return x.id}).indexOf(req.body.id);
         if(elem !== -1) {
           data.reporters.splice(elem,1)
-        }
-       
+        }       
         data.save(function(err,inf){
           if(err) throw err;
           res.json({message: "Radiologist deleted successfully.",status: true})
+
+          model.radiologist.findOne({email: data.email})
+          .exec(function(err,rad){
+            if(err) throw err;
+            if(rad){
+              var elemPos = rad.prefixes.indexOf(data.prefix)
+              if( elemPos !== -1){
+                rad.prefixes.splice(elePos, 1);
+                rad.save();
+              }
+            }
+          })
         });
       } else {
         res.end("User not found");
@@ -17274,6 +17319,16 @@ router.get("/ris/get-reports",function(req,res){
   }
 })
 
+router.get("/ris/get-prefix",function(req,res){
+  if(req.query.token === process.env.RIS_TOKEN){
+    model.radiologist.findOne({center_email: req.query.email})
+    .exec(function(err,data){
+      res.json(data);
+    })
+  } else {
+    res.json({error: "Permission denied!"})
+  }
+})
 
 router.get("/oyoyo-privacy",function(req,res){
   res.render('oyoyo-privacy');
@@ -17342,6 +17397,11 @@ router.post('/apiAuth/v1/study',verifyApiKey, function(req,res){
    } catch(e) {
      return res.status(500).json({status: "fail", message: "Internal server error."});
    }
+});
+
+
+router.get("/radiologist/dcm", function(req,res) {
+  res.redirect('http://134.122.82.30:8080/applinic-mdv/home.html');
 })
 
 /*router.get("/lab/report-template/:_id",function(req,res){
@@ -17349,6 +17409,46 @@ router.post('/apiAuth/v1/study',verifyApiKey, function(req,res){
   // if the study was done in applinic initially it will have a query string of @refId;
   res.render('report-template');
 });*/
+
+function sendEmailNotificationToRadiologist(reqBody, centerObj, passKey) {
+    var emailList = ["ede.obinna27@gmail.com","info@applinic.com"];
+    var subject = `${centerObj.name} added you!`
+    var html = `<div style='line-height: 25px'>Dear ${reqBody.designation},<br/> 
+    We are pleased to inform you that you have been profiled on Applinic
+    Teleradiology platform to write report for ${centerObj.name} 
+    ${centerObj.address}, ${centerObj.city}.<br/>
+    Please note that you will be receiving email notifications 
+    when a study is assigned to you in the platform. <br/><br/>
+    Embedded in our platform is an FDA cleared DICOM viewer with 
+    comprehensive tools available for your expert analysis.<br/><br/>
+    We also made available a reporting template prefilled with patient's biodata to relieve 
+    you of the requirement of filling this information so you can proceed to reporting proper.<br/><br/>
+    You will also observe the Speech-To-Text application to make reporting easier by reducing 
+    typing by simply dictating your 
+    findings which will automatically be converted to text if that's more convenient for you.<br/><br/>
+    You can view studies real-time, using link below <br/>
+    https://applinic.com/radiologist/dcm <br/>
+    Please use the following credentials to gain access to the studies that were shared with you.<br/><br/>
+    Username: ${reqBody.email}<br/>
+    Password: ${passKey}<br/><br/>
+    Regards,<br/><br/>
+    <b>Applinic Healthcare Team</b></div>`
+
+    emailList.push(centerObj.email)
+
+    var mailOptions = {
+      from: 'Applinic info@applinic.com',
+      to: emailList,
+      subject: subject,
+      html: html
+    };
+
+    transporter.sendMail(mailOptions, function(error, info){
+      if (error) {
+        console.log(error);
+      } 
+    });
+  }
 
 }
 

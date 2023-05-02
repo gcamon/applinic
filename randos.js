@@ -22,6 +22,8 @@ var LAST_NAMES = [
 ];
 
 var possible = "001122334455667788991122334455667788990012345678936855004492";
+var specialChar = "!@#$%&()?"
+var alphabets = "ABCDEFGHJKLMNPQRSTUVWXYZ"
 
 function randomUsername() {
     function rando(arr) {
@@ -44,7 +46,21 @@ function genRef(count) {
     return val;
 } 
 
+function genPassword(a,b,c){
+    var text = "";
+    for( var i=0; i < a; i++ )
+        text += alphabets.charAt(Math.floor(Math.random() * alphabets.length));
+    for(var j=0; j < b; j++)
+        text += possible.charAt(Math.floor(Math.random() * possible.length));
+    for( var i=0; i < a; i++ )
+        text += alphabets.charAt(Math.floor(Math.random() * alphabets.length));
+    for(var k=0; k < c; k++)
+        text += specialChar.charAt(Math.floor(Math.random() * specialChar.length));
+    return text;
+}
+
 module.exports = {
     username: randomUsername,
-    genRef : genRef
+    genRef : genRef,
+    genPassword: genPassword
 }

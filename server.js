@@ -15,6 +15,7 @@ var express = require('express'),
   nodemailer = require('nodemailer'),
   topdf = require("./topdf"),
   OpenTok = require('opentok'),
+  randos = require("./randos"),
     
  
   
@@ -37,6 +38,8 @@ var express = require('express'),
   mySocket = require("./socket"),
   streams = require("./streams")(),
   port = process.env.PORT || 3001;
+
+  
 
 
   var client = {}; 

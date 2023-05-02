@@ -717,8 +717,10 @@ var myModel = function () {
 		doctor_laboratory_new_indicator: Array,
 		doctor_radiology_new_indicator: Array,
 		doctor_chart_new_indicator: Array,
+		prefix: String
 	},{
-		collections: "userinfos"
+		collections: "userinfos",
+		usePushEach: true
 	})
 
 	var needHelpchema = Schema({
@@ -1126,6 +1128,16 @@ var myModel = function () {
 		isPulled: Boolean
 	});
 
+	var radiologistSchema = Schema({
+		email: String,
+		designation: String,
+		phone: String,
+		name: String,
+		id: String,
+		prefixes: Array,
+		passKey: String
+	})
+
 	var dicomSchema = Schema({
 		ip_address: String,
 		port: Number,
@@ -1351,6 +1363,7 @@ var myModel = function () {
 	models.opentok_session = mongoose.model('opentokinfos',opentokSessionsSchema);
 	models.chart = mongoose.model("chartinfos",chartSchema);
 	models.ris = mongoose.model("risinfos",risSchema);
+	models.radiologist = mongoose.model("radiologists",radiologistSchema)
 	//models.calling_code = mongoose.model("callingcodeinfos",callingSchema)
 	
 	return models		
