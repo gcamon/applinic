@@ -14105,13 +14105,13 @@ router.get("/api/dicom-details",function(req,res){
   model.dicom.findOne({center_id: req.query.centerId})
   .exec(function(err,data){
     if(data) {
-      if(data.ip_address !== "134.209.246.129"){
-        data.ip_address = "134.209.246.129";
+      if(data.ip_address !== "134.122.82.30"){
+        data.ip_address = "134.122.82.30";
       }
       res.json(data);
     } else {
       res.json({
-        ip_address: "134.209.246.129",
+        ip_address: "134.122.82.30",
         dns: "dicom.applinic.com", 
         // this was changed to this on 13 oct, 2019 since the sub domain nginx connection was having issues
         //dicom.applinic.com
@@ -14337,14 +14337,14 @@ router.get("/dicom-mobile",function(req,res){
     .exec(function(err,result){
       if(err) throw err;
       if(result){
-        var ovyMob = `http://${result.ip_address ? result.ip_address : "134.209.246.129"}:8080/applinic-dicom/home.html`;
+        var ovyMob = `http://${result.ip_address ? result.ip_address : "134.122.82.30"}:8080/applinic-dicom/home.html`;
         res.redirect(ovyMob);
       } else {
         res.end("Patient study link not accurate or does not exist.")
       }
     })
   } else {
-    res.redirect('http://134.209.246.129:8080/applinic-dicom/home.html');
+    res.redirect('http://134.122.82.30:8080/applinic-dicom/home.html');
   }
 });
 
@@ -14358,7 +14358,7 @@ router.get("/dcm",function(req,res){
       if(err) throw err;
       if(result){
         var locate = (result.patient_id) ? ("patientID=" + result.patient_id) : ("studyUID=" + result.study_uid);
-        var ovyWeb = `http://${result.ip_address ? result.ip_address :"134.209.246.129"}:8080/web/viewer.html?${locate}`;
+        var ovyWeb = `http://${result.ip_address ? result.ip_address :"134.122.82.30"}:8080/web/viewer.html?${locate}`;
         res.redirect(ovyWeb);
       } else {
         model.study.findOne({$or:[{patient_id : req.query.id},{study_uid: req.query.id}]})
@@ -14375,7 +14375,7 @@ router.get("/dcm",function(req,res){
       }
     })
   } else {
-    var link = 'http://134.209.246.129:8080/web/viewer.html?patientID=' + req.query.id;
+    var link = 'http://134.122.82.30:8080/web/viewer.html?patientID=' + req.query.id;
     res.redirect(link);
   }
 });
