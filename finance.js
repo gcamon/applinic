@@ -10,10 +10,9 @@ var topdf = require("./topdf");
 var fs = require('fs');
 var pdf = require('html-pdf');
 var uuid = require("uuid");
-var axios = require("axios")
+//var axios = require("axios")
 
 // var smsData = new FormData();
-// data.append('token', )
 
 
  
