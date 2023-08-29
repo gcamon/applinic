@@ -37,7 +37,7 @@ app.controller("ultraSoundReportCtrl",["$scope","$http","localManager","$rootSco
     $scope.fileList = [];
     var studyDetails = getParamsToObject(window.location.search); //localManager.getValue("studyProps")
 
-    $http.get("http://localhost:3001/ris/radiology/get-referral",
+    $http.get("http://applinic.com/ris/radiology/get-referral",
       {params:{centerEmail: "ede.obinna27@gmail.com",ref_uid: studyDetails.studyIUID}})
     .success(function(responseData){
       var data = responseData.center || {};
@@ -254,7 +254,7 @@ app.controller("ultraSoundReportCtrl",["$scope","$http","localManager","$rootSco
     $scope.speech2Text = function(field){
       //$scope.ultraRefData.fieldType = field;
       //localManager.setValue('speechTextData',$scope.ultraRefData);
-      src = `http://localhost:3001/assets/pages/speechText.html?field=${field}&name=${$scope.ultraRefData.radiology.patient_firstname}&age=${$scope.ultraRefData.radiology.patient_age}&gender=${$scope.ultraRefData.radiology.patient_gender}&studyname=${studyDetails.studyName}&uid=${studyDetails.studyIUID}`;
+      src = `http://applinic.com/assets/pages/speechText.html?field=${field}&name=${$scope.ultraRefData.radiology.patient_firstname}&age=${$scope.ultraRefData.radiology.patient_age}&gender=${$scope.ultraRefData.radiology.patient_gender}&studyname=${studyDetails.studyName}&uid=${studyDetails.studyIUID}`;
       iframe[0].src = src;
       if(!$scope.isOpen) {
         iframe[0].style.visibility = "visible";
