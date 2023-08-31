@@ -14337,7 +14337,7 @@ router.get("/dicom-mobile",function(req,res){
     .exec(function(err,result){
       if(err) throw err;
       if(result){
-        var ovyMob = `http://${result.ip_address ? result.ip_address : "134.122.82.30"}:8080/applinic-dicom/home.html`;
+        var ovyMob = `http://134.122.82.30:8080/applinic-dicom/home.html`;
         res.redirect(ovyMob);
       } else {
         res.end("Patient study link not accurate or does not exist.")
