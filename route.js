@@ -17410,7 +17410,7 @@ router.get("/radiologist/dcm", function(req,res) {
 });*/
 
 function sendEmailNotificationToRadiologist(reqBody, centerObj, passKey) {
-    var emailList = ["ede.obinna27@gmail.com","info@applinic.com"];
+    var emailList = ["ede.obinna27@gmail.com","info@applinic.com",reqBody.email];
     var subject = `${centerObj.name} added you!`
     var html = `<div style='line-height: 25px'>Dear ${reqBody.designation},<br/> 
     We are pleased to inform you that you have been profiled on Applinic
