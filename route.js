@@ -14841,11 +14841,10 @@ router.post("/user/reporting-radiologist",function(req,res){
         if(req.body.isGroup){
           req.body.members = [];
         }
-        if(data.reporters.map(function(i){return i.email}).indexOf(req.body.email) === -1){
+        //if(data.reporters.map(function(i){return i.email}).indexOf(req.body.email) === -1){
           data.reporters.push(req.body);
           data.save(function(err,inf){
             if(err) throw err;
-
             res.json({message: "Radiologist added successfully.",status: true,details: req.body});
             model.radiologist.findOne({email: req.body.email})
             .exec(function(err,rad){
@@ -14863,22 +14862,22 @@ router.post("/user/reporting-radiologist",function(req,res){
                 });
                 newRad.save(function(err,info){
                   if(err) throw err;
-                  sendEmailNotificationToRadiologist(req.body, data, genPass)
+                  sendEmailNotificationToRadiologist(req.body, data, genPass);
                 });
               } else {
                 if(rad.prefixes.indexOf(data.prefix) === -1){
-                  rad.prefixes.push(data.prefix);
+                  rad.prefixes.push(data.prefix);                      
                   rad.save(function(err,info){
-                    sendEmailNotification(req.body, data, genPass)
+                    sendEmailNotification(req.body, data, rad.passKey);
                   });
                 }
               }
             })
 
           });
-        } else {
-          res.json({message: `Radiologist with ${req.body.email} already exist in your center.`,status: true});
-        }
+       // } else {
+        //  res.json({message: `Radiologist with ${req.body.email} already exist in your center.`,status: true});
+       // }
         
         
       } else {
