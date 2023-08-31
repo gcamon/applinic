@@ -17400,7 +17400,7 @@ router.post('/apiAuth/v1/study',verifyApiKey, function(req,res){
 
 
 router.get("/radiologist/dcm", function(req,res) {
-  res.redirect('http://134.122.82.30:8080/applinic-mdv/home.html');
+  res.redirect('http://134.122.82.30:8080/archive');
 })
 
 /*router.get("/lab/report-template/:_id",function(req,res){
