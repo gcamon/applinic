@@ -3042,7 +3042,7 @@ router.post("/user/dicom-details",function(req,res){
 	            + "<b>Web Viewer DICOM URL:</b><br> " + webView + "<br>"
 	            + "<b>Mobile Device DICOM Viewer URL:</b> <br> " + mobileView + "<br>"
 	            + "<b>Report Template URL:</b> <span style='font-style:italic'>( Use this template to enter your report )</span> <br>" + tempLink + "<br>"	
-	            + "<p><a href='http://134.209.246.129:8080/dcm4chee-web3/'><p><br>"
+	            + "<p><a href='http://134.122.82.30:8080/dcm4chee-web3/'><p><br>"
 	            + "Thank you! <br><br> <b>Applinic Team</b>" 
 	            + '</td></tr></table>'
 	          };
