@@ -14858,7 +14858,8 @@ router.post("/user/reporting-radiologist",function(req,res){
                   name: req.body.name,
                   designation: req.body.designation,
                   prefixes: [data.prefix],
-                  passKey: genPass
+                  passKey: genPass,
+                  center_email: data.email
                 });
                 newRad.save(function(err,info){
                   if(err) throw err;
@@ -14969,7 +14970,7 @@ router.delete("/user/reporting-radiologist",function(req,res){
           if(err) throw err;
           res.json({message: "Radiologist deleted successfully.",status: true})
 
-          model.radiologist.findOne({email: data.email})
+          model.radiologist.findOne({email: req.body.email})
           .exec(function(err,rad){
             if(err) throw err;
             if(rad){
