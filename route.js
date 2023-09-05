@@ -17320,7 +17320,7 @@ router.get("/ris/get-reports",function(req,res){
 
 router.get("/ris/get-prefix",function(req,res){
   if(req.query.token === process.env.RIS_TOKEN){
-    model.radiologist.findOne({center_email: req.query.email})
+    model.radiologist.findOne({email: req.query.email})
     .exec(function(err,data){
       res.json(data);
     })

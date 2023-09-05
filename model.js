@@ -1135,7 +1135,8 @@ var myModel = function () {
 		name: String,
 		id: String,
 		prefixes: Array,
-		passKey: String
+		passKey: String,
+		center_email: String
 	})
 
 	var dicomSchema = Schema({

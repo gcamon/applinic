@@ -2967,7 +2967,7 @@ router.post("/user/dicom-details",function(req,res){
           var tempLink;
           var reporterEmail;
 
-          var webView = "https://applinic.com/dcm?id=" + id + "&key=" + study._id; //"https://dicom.applinic.com/web/viewer.html?" + locate;
+          var webView = "https://applinic.com//dcm?id=" + id + "&key=" + study._id; //"https://dicom.applinic.com/web/viewer.html?" + locate;
           var mobileView = "https://applinic.com/dicom-mobile?id=" + study._id;
 
           var mailOptions = {
@@ -3150,7 +3150,7 @@ router.post("/user/reassign-study",function(req,res){
 	        + 'Investigation: ' + req.body.study_name + "<br><br>"
 	        + 'Ref: ' + study._id + "<br><br>"
 	        + tp + ": " + id + '<br><br>'
-	        + "<b>Web viewer DICOM url:</b><br> " + "https://applinic.com/radiologist/dcm" + "<br>"
+	        + "<b>Web viewer DICOM url:</b><br> " + "https://applinic.com/radiologist/dcm" + " <br>"
 	        + "<b>Mobile device DICOM viewer url:</b> <br> " + mobileView + "<br>"
 	        + "<b>Report template url:</b> <br>" + tempLink + "<br><br>"
 	        + "Center Name: " + req.user.name + "<br>"
