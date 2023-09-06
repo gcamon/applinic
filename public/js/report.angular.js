@@ -45,9 +45,10 @@ app.controller("ultraSoundReportCtrl",["$scope","$http","localManager","$rootSco
       //$scope.ultraRefData.radiology = {};
       //please the reporter credentials are password= ID; username=center email;
       console.log(data.reporters, data)
-      var elemPos = data.reporters.map(function(elem){return elem.email.toString()}).indexOf(studyDetails.radiologistEmail);
+      var elemPos = data.reporters.map(function(elem){return elem.email}).indexOf(studyDetails.radiologistEmail);
       if(elemPos !== -1){
         var reporter = data.reporters[elemPos];
+        $scope.ultraRefData.radiology = reporter;
         $scope.ultraRefData.center_name = data.name;
         $scope.ultraRefData.center_email = data.email;
         $scope.ultraRefData.center_uid = data._id;
