@@ -17105,7 +17105,7 @@ router.get("/kys-games",function(req,res){
 /* RIS implementation */
 
 
-router.get("/ris/radiology/get-referral", function(req,res){    
+router.get("/ris/radiology/get-referral", function(req,res){   
   model.user.findOne({email: req.query.centerEmail,type: "Radiology"},
     {name:1,user_id:1,reporters:1,_id:1,email:1,phone:1})
   .exec(function(err,found){
@@ -17117,7 +17117,7 @@ router.get("/ris/radiology/get-referral", function(req,res){
         if(risData){
           res.json({center: found, ris: risData})
         } else {
-          res.json({})
+          (req.query.studyIUID) ? res.json({center: found, isPacsRoute: true}) : res.json({})
         }
       })
     }     
