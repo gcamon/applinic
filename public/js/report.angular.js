@@ -45,13 +45,14 @@ app.controller("ultraSoundReportCtrl",["$scope","$http","localManager","$rootSco
       //$scope.ultraRefData.radiology = {};
       //please the reporter credentials are password= ID; username=center email;
       console.log(data.reporters, data)
-      var elemPos = (data.reporters) ? data.reporters.map(function(elem){return elem.id.toString()}).indexOf("35984148") : undefined;
-      if(elemPos !== -1){
+      var elemPos = (data.reporters) ? data.reporters.map(function(elem){return elem.id.toString(studyDetails.radiologistEmail)})
+      .indexOf() : undefined;
+      if(elemPos !== -1 && !elemPos){
         var reporter = data.reporters[elemPos];
         $scope.ultraRefData.center_name = data.name;
-         $scope.ultraRefData.center_email = data.email;
-         $scope.ultraRefData.center_uid = data._id;
-         $scope.ultraRefData.center_phone = data.phone;
+        $scope.ultraRefData.center_email = data.email;
+        $scope.ultraRefData.center_uid = data._id;
+        $scope.ultraRefData.center_phone = data.phone;
         $scope.ultraRefData.center_id = data.user_id;
         $scope.ultraRefData.radiology.staffname = reporter.name || "";
         $scope.ultraRefData.radiology.designation = reporter.designation || "";
@@ -70,7 +71,7 @@ app.controller("ultraSoundReportCtrl",["$scope","$http","localManager","$rootSco
         //$scope.ultraRefData.radiology.doctor_email = "";
         $scope.ultraRefData.radiology.report_date = new Date();
        $scope.ultraRefData.radiology.ray_type = "ultrasound";
-  $scope.ultraRefData.radiology.sample_files = [];
+      $scope.ultraRefData.radiology.sample_files = [];
        $scope.ultraRefData.radiology.test_id = studyDetails.studyIUID;
        $scope.ultraRefData.radiology.test_to_run = [{name: studyDetails.studyName,sn:1}];
        $scope.ultraRefData.ref_id = Math.floor(Math.random() * 9999999999);
