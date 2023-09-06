@@ -17116,13 +17116,13 @@ router.get("/ris/radiology/get-referral", function(req,res){
       .exec(function(err,risData){
         if(err) throw err;
         if(risData){
-          res.json({center: found, ris: risData})
+          res.json({center: found, ris: risData});
         } else {
-          res.json({center: found, ris:{}})
+          res.json({center: found, ris:{}});
         }
-      })
+      });
     }     
-  })
+  });
 });
 
 //this path is used by speech to text page for reporting
