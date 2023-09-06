@@ -38,7 +38,7 @@ app.controller("ultraSoundReportCtrl",["$scope","$http","localManager","$rootSco
     var studyDetails = getParamsToObject(window.location.search); //localManager.getValue("studyProps")
 
     $http.get("http://applinic.com/ris/radiology/get-referral",
-      {params:{centerEmail: "ede.obinna27@gmail.com",ref_uid: studyDetails.studyIUID}})
+      {params:{centerEmail: studyDetails.centerEmail,ref_uid: studyDetails.studyIUID}})
     .success(function(responseData){
       var data = responseData.center || {};
       $scope.ultraRefData = responseData.ris || {radiology:{}};
