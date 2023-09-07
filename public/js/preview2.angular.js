@@ -17,12 +17,15 @@
 	function($scope,$rootScope,$http,localManager){
 
 		var tempField = angular.element(document.getElementById('tempField'))
+		var centerEmail = angular.element(document.getElementById('c_email'))
+		var patientPhone = angular.element(document.getElementById('p_phone'))
 
-		alert(localManager.getValue("centerEmail"))
+		alert(centerEmail[0].innerText)
+
 
 		$scope.submitReport = function(id,uid) {
 
-			var url = '/ris/' + uid + "/" + id;
+			var url = '/ris/' + uid + "/" + id + "/?centerEmail=" + centerEmail[0].innerText + "&patientPhone=" + patientPhone[0].innerText;
 		  var htm = tempField.html();
 
 		  $scope.loading = true;
