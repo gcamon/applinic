@@ -17253,7 +17253,7 @@ router.post("/ris/:uid/:refId",function(req,res){
         if (err) return res.status(500).json("error occured");                        
 
         var pdfPath = '/report/' + pdfName;
-        var emailPDFPath = "http://localhost:3001" + pdfPath //"https://applinic.com" + pdfPath;
+        var emailPDFPath = "https://applinic.com" + pdfPath 
         
         
         req.body.pdfPathSave = pdfPath;
@@ -17285,6 +17285,7 @@ router.post("/ris/:uid/:refId",function(req,res){
 
         transporter.sendMail(mailOptions, function(error, info){
           if (error) {
+            console.log(error)
             res.json({status: false, message: "Oops! Error occured while sending email. Please try again."})
           } else {
             //console.log('Email sent: ' + info.response);
