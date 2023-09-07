@@ -41,10 +41,12 @@ app.controller("ultraSoundReportCtrl",["$scope","$http","localManager","$rootSco
       {params:{centerEmail: studyDetails.centerEmail,ref_uid: studyDetails.studyIUID}})
     .success(function(responseData){
       var data = responseData.center || {};
-      $scope.ultraRefData = responseData.ris || {radiology:{}};
+      $scope.ultraRefData = (localManager.getValue("reportEntry")) 
+      ? localManager.getValue("reportEntry") : (responseData.ris || {radiology:{}});
+      localManager.removeItem("reportEntry")
       //$scope.ultraRefData.radiology = {};
       //please the reporter credentials are password= ID; username=center email;
-      console.log(data.reporters, data)
+     
       var elemPos = data.reporters.map(function(elem){return elem.email}).indexOf(studyDetails.radiologistEmail);
       if(elemPos !== -1){
         var reporter = data.reporters[elemPos];
@@ -88,6 +90,9 @@ app.controller("ultraSoundReportCtrl",["$scope","$http","localManager","$rootSco
         alert('NO INTERNET CONNECTIONS! You have to connect to internet before you can proceed.');
         return;
       }*/
+
+    localManager.setValue("reportEntry",$scope.ultraRefData);
+
     $scope.loading = true;
 
       study.date = new Date(studyDetails.studyDate);
