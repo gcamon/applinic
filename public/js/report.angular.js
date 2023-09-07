@@ -50,6 +50,7 @@ app.controller("ultraSoundReportCtrl",["$scope","$http","localManager","$rootSco
       var elemPos = data.reporters.map(function(elem){return elem.email}).indexOf(studyDetails.radiologistEmail);
       if(elemPos !== -1){
         var reporter = data.reporters[elemPos];
+        localManager.removeItem("reportEntry");
         $scope.ultraRefData.radiology = (localManager.getValue("reportEntry")) ? localManager.getValue("reportEntry") : reporter;
 
         $scope.ultraRefData.center_name = data.name;
