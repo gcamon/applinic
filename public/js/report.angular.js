@@ -50,8 +50,8 @@ app.controller("ultraSoundReportCtrl",["$scope","$http","localManager","$rootSco
       var elemPos = data.reporters.map(function(elem){return elem.email}).indexOf(studyDetails.radiologistEmail);
       if(elemPos !== -1){
         var reporter = data.reporters[elemPos];
-        console.log(localManager.getValue("reportEntry"));
-        $scope.ultraRefData.radiology = (localManager.getValue("reportEntry")) ? localManager.getValue("reportEntry") : reporter;
+        var cache = localManager.getValue("reportEntry");
+        $scope.ultraRefData.radiology = cache.radiology || {};
         $scope.ultraRefData.center_name = data.name;
         $scope.ultraRefData.center_email = data.email;
         $scope.ultraRefData.center_uid = data._id;
@@ -83,7 +83,6 @@ app.controller("ultraSoundReportCtrl",["$scope","$http","localManager","$rootSco
        $scope.ultraRefData.ref_uid = studyDetails.studyIUID;
        $scope.ultraRefData.date = studyDetails.studyDate;
 
-       localManager.setValue("reportEntry",$scope.ultraRefData.radiology);
       } else {
         alert("You are not permitted to write report for this study. Please contact the center for permission");
       }
@@ -96,9 +95,9 @@ app.controller("ultraSoundReportCtrl",["$scope","$http","localManager","$rootSco
         return;
       }*/
 
+      localManager.setValue("reportEntry",study);
     
-
-    $scope.loading = true;
+      $scope.loading = true;
 
       study.date = new Date(studyDetails.studyDate);
 
