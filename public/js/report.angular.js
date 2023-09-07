@@ -43,7 +43,7 @@ app.controller("ultraSoundReportCtrl",["$scope","$http","localManager","$rootSco
       var data = responseData.center || {};
       $scope.ultraRefData = (localManager.getValue("reportEntry")) 
       ? localManager.getValue("reportEntry") : (responseData.ris || {radiology:{}});
-      localManager.removeItem("reportEntry");
+      //localManager.removeItem("reportEntry");
       //$scope.ultraRefData.radiology = {};
       //please the reporter credentials are password= ID; username=center email;
      
