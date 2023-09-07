@@ -18,6 +18,8 @@
 
 		var tempField = angular.element(document.getElementById('tempField'))
 
+		alert(localManager.getValue("centerEmail"))
+
 		$scope.submitReport = function(id,uid) {
 
 			var url = '/ris/' + uid + "/" + id;
