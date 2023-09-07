@@ -17311,10 +17311,13 @@ router.post("/ris/:uid/:refId",function(req,res){
 
 router.get("/ris/get-reports",function(req,res){
   if(req.query.token === process.env.RIS_TOKEN){
-
-    model.ris.find({center_email: req.query.email})
-    .exec(function(err,data){
-      res.json(data);
+    model.user.findOne({prefix: req.query.prefix},{email: 1})
+    .exec(function(err,center){
+      if(err) throw err;
+      model.ris.find({center_email: center.email})
+      .exec(function(err,data){
+        res.json(data);
+      })
     })
   } else {
     res.json({error: "Permission denied!"})

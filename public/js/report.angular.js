@@ -70,10 +70,10 @@ app.controller("ultraSoundReportCtrl",["$scope","$http","localManager","$rootSco
        $scope.ultraRefData.radiology.advice = $scope.ultraRefData.radiology.advice || ""
        $scope.ultraRefData.radiology.patient_age = studyDetails.birtDate;
        $scope.ultraRefData.radiology.patient_firstname = studyDetails.patientName;
-       //$scope.ultraRefData.radiology.patient_phone = "";
+       $scope.ultraRefData.radiology.patient_phone = "";
        $scope.ultraRefData.radiology.patient_gender = studyDetails.gender || "";
-       //$scope.ultraRefData.radiology.patient_email = "";
-        //$scope.ultraRefData.radiology.doctor_email = "";
+       $scope.ultraRefData.radiology.patient_email = "";
+       $scope.ultraRefData.radiology.doctor_email = "";
         $scope.ultraRefData.radiology.report_date = new Date();
        $scope.ultraRefData.radiology.ray_type = "ultrasound";
       $scope.ultraRefData.radiology.sample_files = [];
