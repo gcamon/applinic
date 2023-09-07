@@ -51,6 +51,7 @@ app.controller("ultraSoundReportCtrl",["$scope","$http","localManager","$rootSco
       if(elemPos !== -1){
         var reporter = data.reporters[elemPos];
         var cache = localManager.getValue("reportEntry");
+        localManager.removeItem("reportEntry");
         $scope.ultraRefData.radiology = cache.radiology || {};
         $scope.ultraRefData.center_name = data.name;
         $scope.ultraRefData.center_email = data.email;
