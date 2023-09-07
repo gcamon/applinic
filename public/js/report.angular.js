@@ -41,10 +41,8 @@ app.controller("ultraSoundReportCtrl",["$scope","$http","localManager","$rootSco
       {params:{centerEmail: studyDetails.centerEmail,ref_uid: studyDetails.studyIUID}})
     .success(function(responseData){
       var data = responseData.center || {};
-      $scope.ultraRefData = (localManager.getValue("reportEntry")) 
-      ? localManager.getValue("reportEntry") : (responseData.ris || {radiology:{}});
+      $scope.ultraRefData = responseData.ris || {radiology:{}}
 
-      alert($scope.ultraRefData.radiology.advice)
       //localManager.removeItem("reportEntry");
       //$scope.ultraRefData.radiology = {};
       //please the reporter credentials are password= ID; username=center email;
@@ -52,7 +50,8 @@ app.controller("ultraSoundReportCtrl",["$scope","$http","localManager","$rootSco
       var elemPos = data.reporters.map(function(elem){return elem.email}).indexOf(studyDetails.radiologistEmail);
       if(elemPos !== -1){
         var reporter = data.reporters[elemPos];
-        $scope.ultraRefData.radiology = reporter;
+        $scope.ultraRefData.radiology = (localManager.getValue("reportEntry")) ? localManager.getValue("reportEntry") : reporter;
+
         $scope.ultraRefData.center_name = data.name;
         $scope.ultraRefData.center_email = data.email;
         $scope.ultraRefData.center_uid = data._id;
