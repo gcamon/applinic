@@ -50,8 +50,8 @@ app.controller("ultraSoundReportCtrl",["$scope","$http","localManager","$rootSco
       var elemPos = data.reporters.map(function(elem){return elem.email}).indexOf(studyDetails.radiologistEmail);
       if(elemPos !== -1){
         var reporter = data.reporters[elemPos];
+        console.log(localManager.getValue("reportEntry"));
         $scope.ultraRefData.radiology = (localManager.getValue("reportEntry")) ? localManager.getValue("reportEntry") : reporter;
-        $scope.ultraRefData.radiology.clinical_summary = "ahuisauiuiusaas"
         $scope.ultraRefData.center_name = data.name;
         $scope.ultraRefData.center_email = data.email;
         $scope.ultraRefData.center_uid = data._id;
@@ -60,7 +60,7 @@ app.controller("ultraSoundReportCtrl",["$scope","$http","localManager","$rootSco
         $scope.ultraRefData.radiology.staffname = reporter.name || "";
         $scope.ultraRefData.radiology.designation = reporter.designation || "";
         $scope.ultraRefData.radiology.attended = false;
-        //$scope.ultraRefData.radiology.clinical_summary = $scope.ultraRefData.radiology.clinical_summary || "";
+        $scope.ultraRefData.radiology.clinical_summary = $scope.ultraRefData.radiology.clinical_summary || "";
         $scope.ultraRefData.radiology.doctor_firstname = studyDetails.referringPhysician;
        $scope.ultraRefData.radiology.doctor_lastname = "";
        //$scope.ultraRefData.radiology.doctor_id = "";
