@@ -17306,7 +17306,6 @@ router.post("/ris/:uid/:refId",function(req,res){
 
   })
     
-
 });
 
 router.get("/ris/get-reports",function(req,res){
@@ -17322,7 +17321,7 @@ router.get("/ris/get-reports",function(req,res){
   } else {
     res.json({error: "Permission denied!"})
   }
-})
+});
 
 router.get("/ris/get-prefix",function(req,res){
   if(req.query.token === process.env.RIS_TOKEN){
