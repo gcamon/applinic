@@ -51,7 +51,6 @@ app.controller("ultraSoundReportCtrl",["$scope","$http","localManager","$rootSco
       if(elemPos !== -1){
         var reporter = data.reporters[elemPos];
         var cache = localManager.getValue("reportEntry");
-        localManager.removeItem("reportEntry");
         $scope.ultraRefData.radiology = cache.radiology || {};
         $scope.ultraRefData.center_name = data.name;
         $scope.ultraRefData.center_email = data.email;
@@ -84,6 +83,8 @@ app.controller("ultraSoundReportCtrl",["$scope","$http","localManager","$rootSco
        $scope.ultraRefData.ref_uid = studyDetails.studyIUID;
        $scope.ultraRefData.date = studyDetails.studyDate;
 
+       localManager.removeItem("reportEntry");
+       
       } else {
         alert("You are not permitted to write report for this study. Please contact the center for permission");
       }
