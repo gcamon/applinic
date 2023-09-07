@@ -41,11 +41,9 @@ app.controller("ultraSoundReportCtrl",["$scope","$http","localManager","$rootSco
       {params:{centerEmail: studyDetails.centerEmail,ref_uid: studyDetails.studyIUID}})
     .success(function(responseData){
       var data = responseData.center || {};
-      $rootScope.ultraRefData = (localManager.getValue("reportEntry")) 
+      $scope.ultraRefData = (localManager.getValue("reportEntry")) 
       ? localManager.getValue("reportEntry") : (responseData.ris || {radiology:{}});
-
-      $scope.ultraRefData = $rootScope.ultraRefData;
-      //localManager.removeItem("reportEntry");
+      localManager.removeItem("reportEntry");
       //$scope.ultraRefData.radiology = {};
       //please the reporter credentials are password= ID; username=center email;
      
@@ -61,12 +59,14 @@ app.controller("ultraSoundReportCtrl",["$scope","$http","localManager","$rootSco
         $scope.ultraRefData.radiology.staffname = reporter.name || "";
         $scope.ultraRefData.radiology.designation = reporter.designation || "";
         $scope.ultraRefData.radiology.attended = false;
-        //$scope.ultraRefData.radiology.clinical_summary = "";
+        $scope.ultraRefData.radiology.clinical_summary = $scope.ultraRefData.radiology.clinical_summary || "";
         $scope.ultraRefData.radiology.doctor_firstname = studyDetails.referringPhysician;
        $scope.ultraRefData.radiology.doctor_lastname = "";
        //$scope.ultraRefData.radiology.doctor_id = "";
-      // $scope.ultraRefData.radiology.findings =  "";
-       //$scope.ultraRefData.radiology.indication = "";
+       $scope.ultraRefData.radiology.findings =  $scope.ultraRefData.radiology.findings || "";
+       $scope.ultraRefData.radiology.indication = $scope.ultraRefData.radiology.indication || "";
+       $scope.ultraRefData.radiology.conclusion = $scope.ultraRefData.radiology.conclusion || "";
+       $scope.ultraRefData.radiology.advice = $scope.ultraRefData.radiology.advice || ""
        $scope.ultraRefData.radiology.patient_age = studyDetails.birtDate;
        $scope.ultraRefData.radiology.patient_firstname = studyDetails.patientName;
        //$scope.ultraRefData.radiology.patient_phone = "";
