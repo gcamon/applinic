@@ -17264,7 +17264,8 @@ router.post("/ris/:uid/:refId",function(req,res){
         var emailArr = [req.body.email,referral.radiology.patient_email];
 
         
-        emailArr.push(referral.radiology.doctor_email);              
+        emailArr.push(referral.radiology.doctor_email); 
+        emailArr.push(req.query.centerEmail)             
 
         var mailOptions = {
           from: 'Applinic Healthcare info@applinic.com',
