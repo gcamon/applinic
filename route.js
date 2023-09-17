@@ -17315,7 +17315,6 @@ router.get("/ris/get-reports",function(req,res){
       if(err) throw err;
       model.ris.find({center_email: center.email})
       .exec(function(err,data){
-        console.log(data)
         res.json(data);
       })
     })
