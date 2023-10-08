@@ -10250,7 +10250,7 @@ router.put("/user/scan-search/radiology/referral",function(req,res){
               var locate = ('patientID=' + accNo);
               var ovyWeb = "https://applinic.com/dcm?id=" + accNo;//"https://" + req.body.onlinePacs.dns + "/web/viewer.html?" + locate;
 
-              var ovyMob = "http://" + req.body.onlinePacs.ip_address + ":8080/applinic-dicom/home.html?" + locate;
+              var ovyMob = "http://" + req.body.onlinePacs.ip_address + ":8080/applinic-dicom/dcm.html?" + locate;
               var centerUser = req.body.onlinePacs.username;
               var centerPassword = req.body.onlinePacs.password;
 
@@ -14337,14 +14337,14 @@ router.get("/dicom-mobile",function(req,res){
     .exec(function(err,result){
       if(err) throw err;
       if(result){
-        var ovyMob = `http://134.122.82.30:8080/applinic-dicom/home.html`;
+        var ovyMob = `http://134.122.82.30:8080/applinic-dicom/dcm.html?patientId=${result.patient_id}`;
         res.redirect(ovyMob);
       } else {
         res.end("Patient study link not accurate or does not exist.")
       }
     })
   } else {
-    res.redirect('http://134.122.82.30:8080/applinic-dicom/home.html');
+    res.redirect(`http://134.122.82.30:8080/applinic-dicom/dcm.html?patientId=${req.query.patientId}`);
   }
 });
 
@@ -14495,7 +14495,7 @@ router.put("/report-template",function(req,res){
               var pdfPath = '/report/' + pdfName;
               var emailPDFPath = "https://applinic.com" + pdfPath;
               
-              var mob = "https://applinic.com/dicom-mobile?id=" + study._id;
+              var mob = "https://applinic.com/dicom-mobile?id=" + study._id + "&patientId=" + study.patient_id;
               req.body.mobViewer = mob;
               req.body.webViewer = "https://applinic.com/dcm?" + "id=" + study.patient_id + "&key=" + study._id;
 
@@ -14659,7 +14659,7 @@ router.put("/report-template",function(req,res){
 
                     var msgBody = "Radiology test result received! login http://applinic.com/login" 
                     + "\nPatient ID of study: " + study.patient_id
-                    + "\nStudy Link Mobile: " + "https://applinic.com/dicom-mobile?id=" + study._id
+                    + "\nStudy Link Mobile: " + "https://applinic.com/dicom-mobile?id=" + study._id + "&patientId=" + study.patient_id
                     var phoneNunber =  data.phone;
                     sms.messages.create(
                       {
@@ -17382,7 +17382,7 @@ router.post('/apiAuth/v1/study',verifyApiKey, function(req,res){
       res.status(201).json({
         status: "Success",
         webURL: `https://applinic.com/dcm?key=${study._id}`,
-        mobileURL: `https://applinic.com/dicom-mobile?id=${study._id}`,
+        mobileURL: `https://applinic.com/dicom-mobile?id=${study._id}&patientId=${study.patient_id}`,
         //template: `https://applinic.com/report-template/:${center.reporters[0] ? center.reporters[0].id : ""}/:${study._id}`
       })
     });

@@ -1804,7 +1804,7 @@ router.put("/user/laboratory/test-result/session-update",function(req,res){
       var locate = ('patientID=' + req.body.radiology.studyId);
       var ovyWeb = "https://" + req.body.onlinePacs.dns + "/web/viewer.html?" + locate;
 
-			var ovyMob = "http://" + req.body.onlinePacs.ip_address + ":8080/applinic-dicom/home.html?" + locate;
+			var ovyMob = "http://" + req.body.onlinePacs.ip_address + ":8080/applinic-dicom/dcm.html?" + locate;
 			var centerUser = req.body.onlinePacs.username;
 			var centerPassword = req.body.onlinePacs.password;
       var dcm = new model.study({
@@ -2118,7 +2118,7 @@ router.put("/user/laboratory/test-result/session-update",function(req,res){
 		        var locate = ('patientID=' + req.body.radiology.studyId);
 		        var ovyWeb = "https://" + req.body.onlinePacs.dns + "/web/viewer.html?" + locate;
 
-						var ovyMob = "http://" + req.body.onlinePacs.ip_address + ":8080/applinic-dicom/home.html?" + locate;
+						var ovyMob = "http://" + req.body.onlinePacs.ip_address + ":8080/applinic-dicom/dcm.html?" + locate;
 						var centerUser = req.body.onlinePacs.username;
 						var centerPassword = req.body.onlinePacs.password;
 
@@ -2845,7 +2845,7 @@ router.post("/user/dicom-details",function(req,res){
 		function createStudy() {
 			var locate = (req.body.studyID) ? ('studyUID=' + req.body.studyID) : ('patientID=' + req.body.patientID);
 			var ovyWeb = "https://applinic.com/dcm?id=" + id; //"https://" + req.body.onlinePacs.dns + "/web/viewer.html?" + locate;
-			var ovyMob = "http://" + req.body.onlinePacs.ip_address + ":8080/applinic-dicom/home.html?" + locate;
+			var ovyMob = "http://" + req.body.onlinePacs.ip_address + ":8080/applinic-dicom/dcm.html?" + locate;
 			var centerUser = req.body.onlinePacs.username;
 			var centerPassword = req.body.onlinePacs.password;
 
