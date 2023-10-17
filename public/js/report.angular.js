@@ -41,8 +41,8 @@ app.controller("ultraSoundReportCtrl",["$scope","$http","localManager","$rootSco
       {params:{centerEmail: studyDetails.centerEmail,ref_uid: studyDetails.studyIUID}})
     .success(function(responseData){
       var data = responseData.center || {};
-      $scope.ultraRefData = responseData.ris || {radiology:{}}
-      $rootScope.studyData = responseData
+      $scope.ultraRefData = responseData.ris || {radiology:{}};
+      $rootScope.studyData = data;
 
       //localManager.removeItem("reportEntry");
       //$scope.ultraRefData.radiology = {};
@@ -87,7 +87,8 @@ app.controller("ultraSoundReportCtrl",["$scope","$http","localManager","$rootSco
        localManager.removeItem("reportEntry");
 
       } else {
-        alert("You are not permitted to write report for this study. Please contact the center for permission");
+        $scope.isNotPermitted = true;
+        alert("You are not allowed to report on this study. Please contact the center for permission");
       }
     });
 
@@ -284,11 +285,10 @@ app.controller("ultraSoundReportCtrl",["$scope","$http","localManager","$rootSco
 
     $scope.loadHistory = function() {
       var data = $rootScope.studyData;
-      console.log(data)
-      return;
       $http.get("/user/dicom-service",
-      {params:{centerId: data.user_id,patientID: "",isLoadHistory: true}})
+      {params:{centerId: data.user_id,patientID: studyDetails.patientId,isLoadHistory: true}})
       .success(function(responseData){
+          console.log(responseData);
           $scope.ultraRefData.center_name = data.name;
           $scope.ultraRefData.center_email = data.email;
           $scope.ultraRefData.center_uid = data._id;
