@@ -147,9 +147,17 @@ button:focus {
     <!--<div class="">
         <a href="pacs" class="btn btn-neutral"><i class="fa fa-arrow-left"></i> Back</a>
     </div>-->
-    <div class="mt-3 pl-5"  style="width: 70%;margin: 10px auto">
-        <h4>Write Report </h4>
+    <div class="mt-3 pl-5"  style="display: flex; align-items: center; justify-content: space-between; width: 70%;margin: 10px auto;">
+        <div style="width: 30%;height: auto;object-fit: contain;">
+          <img src="https://applinic.com/assets/images/Logo.png" alt="logo" style=""/>
+        </div>
+        <div>
+          <button class="btn btn-primary" ng-click="loadHistory()">Load clinical details</button>
+        </div>
     </div>
+   
+    <h4 style="text-align: center;">Write report</h4>
+  
     <form class="" style="width: 70%;margin: 30px auto">
         <div class="card p-2">
         <section class="mt-2 p-2 row" style="border: 1px dotted #eee" ng-cloak>
@@ -159,7 +167,7 @@ button:focus {
                 <label>Age: </label> <span>{{ultraRefData.radiology.patient_age}}</span><br>
                 <label>Gender: </label> <span>{{ultraRefData.radiology.patient_gender}}</span><br>
                 <label>Phone: </label> <span>{{ultraRefData.radiology.patient_phone}}</span><br>
-   </div>
+            </div>
             <div class="col-md-6 col-xs-6">
                 <label>Physician: </label> <span>{{ultraRefData.referral_title}} {{ultraRefData.referral_firstname}}</span><br>
                 <label>Phone: </label> <span>{{ultraRefData.referral_phone}}</span><br>
@@ -250,7 +258,7 @@ button:focus {
               <div class="drop">
                 <div class="cont">
                   <i class="fa fa-cloud-upload"></i>
-                  <div class="tit">
+                  <div class="tit" style="font-size: 32px;">
                     Drag & Drop
                   </div>
                   <div class="desc">

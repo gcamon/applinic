@@ -42,6 +42,7 @@ app.controller("ultraSoundReportCtrl",["$scope","$http","localManager","$rootSco
     .success(function(responseData){
       var data = responseData.center || {};
       $scope.ultraRefData = responseData.ris || {radiology:{}}
+      $rootScope.studyData = data
 
       //localManager.removeItem("reportEntry");
       //$scope.ultraRefData.radiology = {};
@@ -267,7 +268,7 @@ app.controller("ultraSoundReportCtrl",["$scope","$http","localManager","$rootSco
     $scope.speech2Text = function(field){
       //$scope.ultraRefData.fieldType = field;
       //localManager.setValue('speechTextData',$scope.ultraRefData);
-      src = `http://applinic.com/assets/pages/speechText.html?field=${field}&name=${$scope.ultraRefData.radiology.patient_firstname}&age=${$scope.ultraRefData.radiology.patient_age}&gender=${$scope.ultraRefData.radiology.patient_gender}&studyname=${studyDetails.studyName}&uid=${studyDetails.studyIUID}`;
+      src = `https://applinic.com/assets/pages/speechText.html?field=${field}&name=${$scope.ultraRefData.radiology.patient_firstname}&age=${$scope.ultraRefData.radiology.patient_age}&gender=${$scope.ultraRefData.radiology.patient_gender}&studyname=${studyDetails.studyName}&uid=${studyDetails.studyIUID}`;
       iframe[0].src = src;
       if(!$scope.isOpen) {
         iframe[0].style.visibility = "visible";
@@ -279,6 +280,49 @@ app.controller("ultraSoundReportCtrl",["$scope","$http","localManager","$rootSco
         iframe[0].contentWindow.document.close();
         $scope.isOpen = false;
       }
+    }
+
+    $scope.loadHistory = function() {
+      var data = $rootScope.studyData;
+      console.log(data);
+      return;
+      $http.get("/user/dicom-service",
+      {params:{centerId: data.user_id,patientID: ""}})
+      .success(function(responseData){
+          $scope.ultraRefData.center_name = data.name;
+          $scope.ultraRefData.center_email = data.email;
+          $scope.ultraRefData.center_uid = data._id;
+          $scope.ultraRefData.center_phone = data.phone;
+          $scope.ultraRefData.center_id = data.user_id;
+          $scope.ultraRefData.radiology.staffname = reporter.name || "";
+          $scope.ultraRefData.radiology.designation = reporter.designation || "";
+          $scope.ultraRefData.radiology.attended = false;
+          $scope.ultraRefData.radiology.clinical_summary = $scope.ultraRefData.radiology.clinical_summary || "";
+          $scope.ultraRefData.radiology.doctor_firstname = studyDetails.referringPhysician;
+          $scope.ultraRefData.radiology.doctor_lastname = "";
+          //$scope.ultraRefData.radiology.doctor_id = "";
+          $scope.ultraRefData.radiology.findings =  $scope.ultraRefData.radiology.findings || "";
+          $scope.ultraRefData.radiology.indication = $scope.ultraRefData.radiology.indication || "";
+          $scope.ultraRefData.radiology.conclusion = $scope.ultraRefData.radiology.conclusion || "";
+          $scope.ultraRefData.radiology.advice = $scope.ultraRefData.radiology.advice || ""
+          $scope.ultraRefData.radiology.patient_age = studyDetails.birtDate;
+          $scope.ultraRefData.radiology.patient_firstname = studyDetails.patientName;
+          $scope.ultraRefData.radiology.patient_phone = "";
+          $scope.ultraRefData.radiology.patient_gender = studyDetails.gender || "";
+          $scope.ultraRefData.radiology.patient_email = "";
+          $scope.ultraRefData.radiology.doctor_email = "";
+            $scope.ultraRefData.radiology.report_date = new Date();
+          $scope.ultraRefData.radiology.ray_type = "ultrasound";
+          $scope.ultraRefData.radiology.sample_files = [];
+          $scope.ultraRefData.radiology.test_id = studyDetails.studyIUID;
+          $scope.ultraRefData.radiology.test_to_run = [{name: studyDetails.studyName,sn:1}];
+          $scope.ultraRefData.ref_id = Math.floor(Math.random() * 9999999999);
+          $scope.ultraRefData.ref_uid = studyDetails.studyIUID;
+          $scope.ultraRefData.date = studyDetails.studyDate;
+
+          localManager.removeItem("reportEntry");
+
+        });      
     }
 
     $scope.closeFrame = function() {

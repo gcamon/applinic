@@ -14151,6 +14151,7 @@ router.get("/user/dicom-service",function(req,res){
     var startDate;
     var endDate;
     var criteria = {};
+    
     if(Object.keys(req.query).length > 0) {
 
       if(req.query.from) {
@@ -14179,7 +14180,17 @@ router.get("/user/dicom-service",function(req,res){
     .exec(function(err,data){
       if(err) throw err;
       res.json(data);
-    });    
+    });  
+  
+  } else if(req.query.isLoadHistory) {
+    criteria.patient_id = req.query.patientID;
+    criteria.center_id = req.query.centerId; 
+   
+    model.study.findOne(criteria)
+    .exec(function(err,data){
+      if(err) throw err;
+      res.json(data);
+    });  
 
   } else {
     res.end("Unauthorized access.");
@@ -14346,6 +14357,7 @@ router.get("/dicom-mobile",function(req,res){
   } else {
     res.redirect(`http://134.122.82.30:8080/applinic-dicom/dcm.html?patientId=${req.query.patientId}`);
   }
+  
 });
 
 router.get("/dcm",function(req,res){
