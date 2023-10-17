@@ -282,9 +282,9 @@ app.controller("ultraSoundReportCtrl",["$scope","$http","localManager","$rootSco
       }
     }
 
-    $scope.loadHistory = function() {
+    $scope.loadHistory = function(study) {
       var data = $rootScope.studyData;
-      console.log(data);
+      console.log(study)
       return;
       $http.get("/user/dicom-service",
       {params:{centerId: data.user_id,patientID: ""}})
