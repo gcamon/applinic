@@ -14184,6 +14184,7 @@ router.get("/user/dicom-service",function(req,res){
   
   } else if(req.query.isLoadHistory) {
     var criteria = {};
+    console.log("query ===>",req.query, "params ====>", req.params)
     criteria.patient_id = req.query.patientID;
     criteria.center_id = req.query.centerId; 
    
