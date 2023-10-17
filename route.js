@@ -14184,16 +14184,13 @@ router.get("/user/dicom-service",function(req,res){
   
   } else if(req.query.isLoadHistory) {
     var criteria = {};
-    console.log("query ===>",req.query, "params ====>", req.params)
-    criteria.patient_id = req.query.patientID;
+    criteria.study_id = req.query.patientID;
     criteria.center_id = req.query.centerId; 
-   
     model.study.findOne(criteria)
     .exec(function(err,data){
       if(err) throw err;
       res.json(data);
-    });  
-
+    }); 
   } else {
     res.end("Unauthorized access.");
   }

@@ -283,46 +283,71 @@ app.controller("ultraSoundReportCtrl",["$scope","$http","localManager","$rootSco
       }
     }
 
+
+    /*
+    patient_name: String,
+		patient_id: String,
+		study_id: String,
+		study_uid: String,
+		center_id: String,
+		center_name: String,
+		center_address: String,
+		center_city: String,
+		center_country: String,
+		center_phone: String,
+		center_email: String,
+		age: String,
+		gender: String,
+		created: Date,
+		email: String,
+	  ip_address: String,
+	  port: Number,
+	  aetitle: String,
+	  accession_number: String,
+	  study_link: String,
+	  study_link2: String,
+	  study_link_mobile: String,
+	  deleted: Boolean,
+	  ref_id: String,
+	  study_type: String,
+	  pdf_report: Array,
+	  type: String,
+	  patient_sex: String,
+	  patient_age: String,
+	  study_name: String,
+	  patient_phone: String,
+	  study_date: Date,
+	  referring_physician: String,
+	  conclusion: String,
+	  findings: String,
+	  summary: String,
+	  advise: String,
+	  indication: String,
+	  session_id: String,
+	  referring_physician_email: String,
+		referring_physician_phone: String,
+		attended: Boolean,
+		assigned_radiologist_id: Array,
+		remark: String,
+		isUserConnectLinking: Boolean, //this is used to know if linking is from exist patient in the platform
+		referral_detail_dump: Array, //dump the patient existing patient referral object
+		id_of_ref_dumped: String,
+		isPulled: Boolean
+    */
+
     $scope.loadHistory = function() {
-      var data = $rootScope.studyData;
       $http.get("/user/dicom-service",
-      {params:{centerId: data.user_id,patientID: studyDetails.patientId,isLoadHistory: true}})
-      .success(function(responseData){
-          console.log(responseData);
-          $scope.ultraRefData.center_name = data.name;
-          $scope.ultraRefData.center_email = data.email;
-          $scope.ultraRefData.center_uid = data._id;
-          $scope.ultraRefData.center_phone = data.phone;
-          $scope.ultraRefData.center_id = data.user_id;
-          $scope.ultraRefData.radiology.staffname = reporter.name || "";
-          $scope.ultraRefData.radiology.designation = reporter.designation || "";
-          $scope.ultraRefData.radiology.attended = false;
-          $scope.ultraRefData.radiology.clinical_summary = $scope.ultraRefData.radiology.clinical_summary || "";
-          $scope.ultraRefData.radiology.doctor_firstname = studyDetails.referringPhysician;
-          $scope.ultraRefData.radiology.doctor_lastname = "";
-          //$scope.ultraRefData.radiology.doctor_id = "";
-          $scope.ultraRefData.radiology.findings =  $scope.ultraRefData.radiology.findings || "";
-          $scope.ultraRefData.radiology.indication = $scope.ultraRefData.radiology.indication || "";
-          $scope.ultraRefData.radiology.conclusion = $scope.ultraRefData.radiology.conclusion || "";
-          $scope.ultraRefData.radiology.advice = $scope.ultraRefData.radiology.advice || ""
-          $scope.ultraRefData.radiology.patient_age = studyDetails.birtDate;
-          $scope.ultraRefData.radiology.patient_firstname = studyDetails.patientName;
-          $scope.ultraRefData.radiology.patient_phone = "";
-          $scope.ultraRefData.radiology.patient_gender = studyDetails.gender || "";
-          $scope.ultraRefData.radiology.patient_email = "";
-          $scope.ultraRefData.radiology.doctor_email = "";
-            $scope.ultraRefData.radiology.report_date = new Date();
-          $scope.ultraRefData.radiology.ray_type = "ultrasound";
-          $scope.ultraRefData.radiology.sample_files = [];
-          $scope.ultraRefData.radiology.test_id = studyDetails.studyIUID;
-          $scope.ultraRefData.radiology.test_to_run = [{name: studyDetails.studyName,sn:1}];
-          $scope.ultraRefData.ref_id = Math.floor(Math.random() * 9999999999);
-          $scope.ultraRefData.ref_uid = studyDetails.studyIUID;
-          $scope.ultraRefData.date = studyDetails.studyDate;
-
-          localManager.removeItem("reportEntry");
-
-        });      
+      {params:{centerId: $rootScope.studyData.user_id,patientID: studyDetails.patientId,isLoadHistory: true}})
+      .success(function(responseData){        
+        $scope.ultraRefData.radiology.clinical_summary = responseData.summary;
+        $scope.ultraRefData.radiology.doctor_firstname = responseData.referring_physician;
+        $scope.ultraRefData.radiology.indication = responseData.indication;
+        $scope.ultraRefData.radiology.patient_age = studyDetails.birtDate || responseData.patient_age;
+        $scope.ultraRefData.radiology.patient_phone = responseData.patient_phone || "";
+        $scope.ultraRefData.radiology.patient_gender = studyDetails.gender || responseData.patient_gender;
+        $scope.ultraRefData.radiology.patient_email = responseData.patient_email || "";
+        $scope.ultraRefData.radiology.doctor_email = responseData.referring_physician_email || "";         
+      });      
     }
 
     $scope.closeFrame = function() {
