@@ -42,7 +42,7 @@ app.controller("ultraSoundReportCtrl",["$scope","$http","localManager","$rootSco
     .success(function(responseData){
       var data = responseData.center || {};
       $scope.ultraRefData = responseData.ris || {radiology:{}}
-      $rootScope.studyData = data
+      $rootScope.studyData = responseData
 
       //localManager.removeItem("reportEntry");
       //$scope.ultraRefData.radiology = {};
@@ -282,9 +282,9 @@ app.controller("ultraSoundReportCtrl",["$scope","$http","localManager","$rootSco
       }
     }
 
-    $scope.loadHistory = function(study) {
+    $scope.loadHistory = function() {
       var data = $rootScope.studyData;
-      console.log(study)
+      console.log(data)
       return;
       $http.get("/user/dicom-service",
       {params:{centerId: data.user_id,patientID: "",isLoadHistory: true}})
