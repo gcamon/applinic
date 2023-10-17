@@ -287,7 +287,7 @@ app.controller("ultraSoundReportCtrl",["$scope","$http","localManager","$rootSco
       console.log(study)
       return;
       $http.get("/user/dicom-service",
-      {params:{centerId: data.user_id,patientID: ""}})
+      {params:{centerId: data.user_id,patientID: "",isLoadHistory: true}})
       .success(function(responseData){
           $scope.ultraRefData.center_name = data.name;
           $scope.ultraRefData.center_email = data.email;
