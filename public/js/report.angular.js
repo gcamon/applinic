@@ -41,6 +41,7 @@ app.controller("ultraSoundReportCtrl",["$scope","$http","localManager","$rootSco
       {params:{centerEmail: studyDetails.centerEmail,ref_uid: studyDetails.studyIUID}})
     .success(function(responseData){
       console.log(responseData,studyDetails)
+      alert(studyDetails.patientId)
       var data = responseData.center || {};
       $scope.ultraRefData = (Object.keys(responseData?.ris).length > 0) ? responseData.ris 
       : {referral_firstname: studyDetails.referringPhysician,
