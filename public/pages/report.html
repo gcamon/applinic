@@ -161,34 +161,57 @@ button:focus {
   
     <form class="" style="width: 70%;margin: 30px auto">
         <div class="card p-2">
-        <section class="mt-2 p-2 row" style="border: 1px dotted #eee" ng-cloak>
-            <div class="col-md-6 col-xs-6">
+        <!-- <section class="mt-2 p-2 row" style="border: 1px dotted #eee" ng-cloak>
+          <div class="col-md-12 col-xs-12">
+            <label>Physician: </label> <span>{{ultraRefData.referral_title}} {{ultraRefData.referral_firstname}}</span><br>
+           
+            <label>Ref No: </label> <span>{{ultraRefData.ref_id}}</span><br>
+            <label>Date requested: </label> <span am-time-Ago="ultraRefData.date"></span><br>
+          </div>
+            <div class="col-md-12 col-xs-12">
                 <label>Name: </label> <span>{{ultraRefData.radiology.patient_title}} {{ultraRefData.radiology.patient_firstname}}
            {{ultraRefData.radiology.patient_lastname}}</span><br>
                 <label>Age: </label> <span>{{ultraRefData.radiology.patient_age | date: "mediumDate"}}</span><br>
                 <label>Gender: </label> <span>{{ultraRefData.radiology.patient_gender}}</span><br>
                 <label>Phone: </label> <span>{{ultraRefData.radiology.patient_phone}}</span><br>
             </div>
-            <div class="col-md-6 col-xs-6">
-                <label>Physician: </label> <span>{{ultraRefData.referral_title}} {{ultraRefData.referral_firstname}}</span><br>
-                <!-- <label>Phone: </label> <span>{{ultraRefData.referral_phone}}</span><br>
-                <label>Center Email: </label> <span>{{ultraRefData.center_email}}</span><br> -->
-                <label>Ref No: </label> <span>{{ultraRefData.ref_id}}</span><br>
-                <label>Date requested: </label> <span am-time-Ago="ultraRefData.date"></span><br>
-            </div>
+            
+        </section> -->
+
+        <section class="mt-2 p-2 row" style="border: 1px dotted #eee" ng-cloak>
+          <div>
+            <h4>{{studyData.name}}</h4>
+            <div>{{studyData.email}}</div>
+            <div>{{studyData.phone}}</div>
+          </div>
+          <hr>
+          <div>
+            <label>Name: </label> <span>{{ultraRefData.radiology.patient_title}} {{ultraRefData.radiology.patient_firstname}}
+            {{ultraRefData.radiology.patient_lastname}}</span><br>
+            <label>Age: </label> <span>{{ultraRefData.radiology.patient_age | date: "mediumDate"}}</span><br>
+            <label>Gender: </label> <span>{{ultraRefData.radiology.patient_gender}}</span><br>
+            <label>Phone: </label> <span>{{ultraRefData.radiology.patient_phone}}</span><br>
+            <label>Ref No: </label> <span>{{ultraRefData.ref_id}}</span><br>
+            <label>Date requested: </label> <span am-time-Ago="ultraRefData.date"></span><br>
+          </div>            
         </section>
         <br>
         <div class="text-center" ng-cloak>
             <h4 class="h5 pb-0 mb-0">{{ultraRefData.radiology.test_to_run[0].name}}</h4>
             <div><span>{{ultraRefData.date | date: 'fullDate'}}</span></div>
         </div>
-         <div>
-            <label>Referring Physician's Email*:</label><br>
+        <div>
+          <label>Physician name:</label><br>
+          <div>{{ultraRefData.referral_title}} {{ultraRefData.referral_firstname}}</div>
+        </div>
+        <br>
+        <div>
+            <label>Physician Email*:</label><br>
             <input type="email" name="referringPhysicianEmail" class="form-control" ng-model="ultraRefData.radiology.doctor_email" required>
         </div>
         <br>
         <div>
-            <label>Patient's Email:</label><br>
+            <label>Patient Email:</label><br>
             <input type="email" name="patientEmail" class="form-control" ng-model="ultraRefData.radiology.patient_email">
         </div>
         <br>
