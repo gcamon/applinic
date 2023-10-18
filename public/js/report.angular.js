@@ -348,16 +348,17 @@ app.controller("ultraSoundReportCtrl",["$scope","$http","localManager","$rootSco
       $scope.isLoadHistory = true;
       $http.get("/user/dicom-service",
       {params:{centerId: $rootScope.studyData.user_id,patientID: studyDetails.patientId,isLoadHistory: true}})
-      .success(function(responseData){        
-        $scope.ultraRefData.radiology.clinical_summary = responseData.summary;
-        $scope.ultraRefData.radiology.doctor_firstname = responseData.referring_physician;
-        $scope.ultraRefData.radiology.indication = responseData.indication;
-        $scope.ultraRefData.radiology.patient_age = studyDetails.birtDate || responseData.patient_age;
-        $scope.ultraRefData.radiology.patient_phone = responseData.patient_phone || "";
-        $scope.ultraRefData.radiology.patient_gender = studyDetails.gender || responseData.patient_gender;
-        $scope.ultraRefData.radiology.patient_email = responseData.patient_email || "";
-        $scope.ultraRefData.radiology.doctor_email = responseData.referring_physician_email || "";  
-
+      .success(function(responseData){  
+        if(responseData) {      
+          $scope.ultraRefData.radiology.clinical_summary = responseData.summary;
+          $scope.ultraRefData.radiology.doctor_firstname = responseData.referring_physician;
+          $scope.ultraRefData.radiology.indication = responseData.indication;
+          $scope.ultraRefData.radiology.patient_age = studyDetails.birtDate || responseData.patient_age;
+          $scope.ultraRefData.radiology.patient_phone = responseData.patient_phone || "";
+          $scope.ultraRefData.radiology.patient_gender = studyDetails.gender || responseData.patient_gender;
+          $scope.ultraRefData.radiology.patient_email = responseData.patient_email || "";
+          $scope.ultraRefData.radiology.doctor_email = responseData.referring_physician_email || "";  
+        }
         $scope.isLoadHistory = false;       
       });      
     }
