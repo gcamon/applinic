@@ -46,10 +46,11 @@ app.controller("ultraSoundReportCtrl",["$scope","$http","localManager","$rootSco
       : {referral_firstname: studyDetails.referringPhysician,
         date: studyDetails.studyDate,
         center_email: studyDetails.centerEmail,
-        radiology:{patient_firstname:studyDetails.patientName,
+        radiology:{
+        patient_firstname:studyDetails.patientName,
         patient_age: studyDetails.birthDate,
         patient_gender: studyDetails.gender, 
-        patientId: studyDetails.patientId,
+        patient_id: studyDetails.patientId,
         test_to_run:[{name: studyDetails.studyName}]
       }};
       $rootScope.studyData = data;
