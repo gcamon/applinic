@@ -358,6 +358,8 @@ app.controller("ultraSoundReportCtrl",["$scope","$http","localManager","$rootSco
           $scope.ultraRefData.radiology.patient_gender = studyDetails.gender || responseData.patient_gender;
           $scope.ultraRefData.radiology.patient_email = responseData.patient_email || "";
           $scope.ultraRefData.radiology.doctor_email = responseData.referring_physician_email || "";  
+        } else {
+          alert("No clinical details found! Please contact the center for the details.")
         }
         $scope.isLoadHistory = false;       
       });      
