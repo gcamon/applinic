@@ -40,9 +40,16 @@ app.controller("ultraSoundReportCtrl",["$scope","$http","localManager","$rootSco
     $http.get("https://applinic.com/ris/radiology/get-referral",
       {params:{centerEmail: studyDetails.centerEmail,ref_uid: studyDetails.studyIUID}})
     .success(function(responseData){
-      console.log(responseData)
+      console.log(responseData,studyDetails)
       var data = responseData.center || {};
-      $scope.ultraRefData = responseData.ris || {radiology:{}};
+      $scope.ultraRefData = (Object.keys(responseData?.ris).length > 0) ? responseData.ris 
+      : {referral_firstname: studyDetails.referringPhysician,
+        date: studyDetails.studyDate,
+        radiology:{patient_firstname:studyDetails.patientName,
+        patient_age: studyDetails.birthDate,
+        patient_gender: studyDetails.gender, 
+        test_to_run:[{name: studyDetails.studyName}]
+      }};
       $rootScope.studyData = data;
 
       //localManager.removeItem("reportEntry");
@@ -337,6 +344,7 @@ app.controller("ultraSoundReportCtrl",["$scope","$http","localManager","$rootSco
     */
 
     $scope.loadHistory = function() {
+      $scope.isLoadHistory = true;
       $http.get("/user/dicom-service",
       {params:{centerId: $rootScope.studyData.user_id,patientID: studyDetails.patientId,isLoadHistory: true}})
       .success(function(responseData){        
@@ -347,7 +355,9 @@ app.controller("ultraSoundReportCtrl",["$scope","$http","localManager","$rootSco
         $scope.ultraRefData.radiology.patient_phone = responseData.patient_phone || "";
         $scope.ultraRefData.radiology.patient_gender = studyDetails.gender || responseData.patient_gender;
         $scope.ultraRefData.radiology.patient_email = responseData.patient_email || "";
-        $scope.ultraRefData.radiology.doctor_email = responseData.referring_physician_email || "";         
+        $scope.ultraRefData.radiology.doctor_email = responseData.referring_physician_email || "";  
+        
+        $scope.isLoadHistory = false;       
       });      
     }
 

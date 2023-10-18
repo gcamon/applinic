@@ -143,17 +143,17 @@ button:focus {
 
 <body ng-controller="ultraSoundReportCtrl" >
  
-  <div ng-show="isNotPermitted">
+  <div ng-hide="isNotPermitted">
 
     <!--<div class="">
         <a href="pacs" class="btn btn-neutral"><i class="fa fa-arrow-left"></i> Back</a>
     </div>-->
     <div class="mt-3 pl-5"  style="display: flex; align-items: center; justify-content: space-between; width: 70%;margin: 10px auto;">
         <div style="width: 30%;height: auto;object-fit: contain;">
-          <img src="https://applinic.com/assets/images/Logo.png" alt="logo" style=""/>
+          <img src="https://applinic.com/assets/images/Logo.png" alt="logo"/>
         </div>
         <div>
-          <button class="btn btn-primary" ng-click="loadHistory()">Load clinical details</button>
+          <button class="btn btn-primary" ng-click="loadHistory()">{{(!isLoadHistory) ? "Load clinical details" : "Loading..."}}</button>
         </div>
     </div>
    
@@ -163,7 +163,7 @@ button:focus {
         <div class="card p-2">
         <section class="mt-2 p-2 row" style="border: 1px dotted #eee" ng-cloak>
             <div class="col-md-6 col-xs-6">
-                <label>Patient Name: </label> <span>{{ultraRefData.radiology.patient_title}} {{ultraRefData.radiology.patient_firstname}}
+                <label>Name: </label> <span>{{ultraRefData.radiology.patient_title}} {{ultraRefData.radiology.patient_firstname}}
            {{ultraRefData.radiology.patient_lastname}}</span><br>
                 <label>Age: </label> <span>{{ultraRefData.radiology.patient_age}}</span><br>
                 <label>Gender: </label> <span>{{ultraRefData.radiology.patient_gender}}</span><br>
