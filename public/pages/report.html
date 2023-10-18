@@ -179,7 +179,7 @@ button:focus {
         </section> -->
 
         <section class="mt-2 p-2 row" style="border: 1px dotted #eee" ng-cloak>
-          <div>
+          <div style="padding-bottom: 10px;margin-bottom: 10px;">
             <h4>{{studyData.name}}</h4>
             <div>{{studyData.email}}</div>
             <div>{{studyData.phone}}</div>
@@ -202,7 +202,7 @@ button:focus {
         </div>
         <div>
           <label>Physician name:</label><br>
-          <div>{{ultraRefData.referral_title}} {{ultraRefData.referral_firstname}}</div>
+          <input type="text" name="referringPhysicianEmail" class="form-control" ng-model="ultraRefData.referral_firstname">
         </div>
         <br>
         <div>
