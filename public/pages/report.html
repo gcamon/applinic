@@ -190,7 +190,7 @@ button:focus {
             <label>Age: </label> <span>{{ultraRefData.radiology.patient_age | date: "mediumDate"}}</span><br>
             <label>Gender: </label> <span>{{ultraRefData.radiology.patient_gender}}</span><br>
             <label>Phone: </label> <span>{{ultraRefData.radiology.patient_phone}}</span><br>
-            <label>Study ID: </label> <span>{{ultraRefData.radiology.patient_id}}</span><br>
+            <label>Study ID: </label> <span>{{ultraRefData.radiology.patient_id || "hweewyuweyu"}}</span><br>
             <!-- <label>Ref No: </label> <span>{{ultraRefData.ref_id}}</span><br> -->
             <label>Date requested: </label> {{ultraRefData.date | date: 'fullDate'}} ( <span am-time-Ago="ultraRefData.date"></span> )<br>
           </div>            
