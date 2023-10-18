@@ -152,7 +152,7 @@ button:focus {
         <div style="width: 30%;height: auto;object-fit: contain;">
           <img src="https://applinic.com/assets/images/Logo.png" alt="logo"/>
         </div>
-        <div>
+        <div ng-cloak>
           <button class="btn btn-primary" ng-click="loadHistory()">{{(!isLoadHistory) ? "Load clinical details" : "Loading..."}}</button>
         </div>
     </div>
@@ -165,15 +165,16 @@ button:focus {
             <div class="col-md-6 col-xs-6">
                 <label>Name: </label> <span>{{ultraRefData.radiology.patient_title}} {{ultraRefData.radiology.patient_firstname}}
            {{ultraRefData.radiology.patient_lastname}}</span><br>
-                <label>Age: </label> <span>{{ultraRefData.radiology.patient_age}}</span><br>
+                <label>Age: </label> <span>{{ultraRefData.radiology.patient_age | date: "mediumDate"}}</span><br>
                 <label>Gender: </label> <span>{{ultraRefData.radiology.patient_gender}}</span><br>
                 <label>Phone: </label> <span>{{ultraRefData.radiology.patient_phone}}</span><br>
             </div>
             <div class="col-md-6 col-xs-6">
                 <label>Physician: </label> <span>{{ultraRefData.referral_title}} {{ultraRefData.referral_firstname}}</span><br>
                 <label>Phone: </label> <span>{{ultraRefData.referral_phone}}</span><br>
+                <label>Center Email: </label> <span>{{ultraRefData.center_email}}</span><br>
                 <label>Ref No: </label> <span>{{ultraRefData.ref_id}}</span><br>
-                <label>Date requested: </label> <span>{{ultraRefData.date | date: 'fullDate'}} ( <span am-time-Ago="ultraRefData.date"></span> )</span><br>
+                <label>Date requested: </label><span am-time-Ago="ultraRefData.date"></span><br>
             </div>
         </section>
         <br>

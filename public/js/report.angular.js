@@ -45,6 +45,7 @@ app.controller("ultraSoundReportCtrl",["$scope","$http","localManager","$rootSco
       $scope.ultraRefData = (Object.keys(responseData?.ris).length > 0) ? responseData.ris 
       : {referral_firstname: studyDetails.referringPhysician,
         date: studyDetails.studyDate,
+        center_email: studyDetails.centerEmail,
         radiology:{patient_firstname:studyDetails.patientName,
         patient_age: studyDetails.birthDate,
         patient_gender: studyDetails.gender, 
@@ -356,7 +357,7 @@ app.controller("ultraSoundReportCtrl",["$scope","$http","localManager","$rootSco
         $scope.ultraRefData.radiology.patient_gender = studyDetails.gender || responseData.patient_gender;
         $scope.ultraRefData.radiology.patient_email = responseData.patient_email || "";
         $scope.ultraRefData.radiology.doctor_email = responseData.referring_physician_email || "";  
-        
+
         $scope.isLoadHistory = false;       
       });      
     }
