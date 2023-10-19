@@ -156,10 +156,9 @@ button:focus {
           <button class="btn btn-primary" ng-click="loadHistory()">{{(!isLoadHistory) ? "Load clinical details" : "Loading..."}}</button>
         </div>
     </div>
-   
-    <h4 style="text-align: center;">Write report</h4>
   
     <form class="" style="width: 70%;margin: 30px auto">
+        <h4>Write report</h4>
         <div class="card p-2">
         <!-- <section class="mt-2 p-2 row" style="border: 1px dotted #eee" ng-cloak>
           <div class="col-md-12 col-xs-12">
@@ -179,7 +178,7 @@ button:focus {
         </section> -->
 
         <section class="mt-2 p-2 row" style="border: 1px dotted #eee" ng-cloak>
-          <div>
+          <div style="display: flex; align-items: center;justify-content: center;">
             <h4 style="padding-bottom:0;margin-bottom:0;font-weight: 700;">{{studyData.name}}</h4>
             <b>Email:</b> <span style="font-style: italic;">{{studyData.email}}</span> &nbsp;&nbsp; <b>Phone:</b> <span style="font-style: italic;">{{studyData.phone}}</span>
           </div>
