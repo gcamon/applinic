@@ -17,13 +17,13 @@ const sendSMS = (recipient, message) => {
     // data.append('dlr_timeout', 'dlr-timeout');
     // data.append('schedule', 'time-in-future');
 
+    var headers = data.getHeaders();
+
     var config = {
     method: 'post',
     maxBodyLength: Infinity,
     url: 'https://app.smartsmssolutions.com/io/api/client/v1/sms/',
-    headers: { 
-        ...data.getHeaders()
-    },
+    headers: headers,
     data : data
     };
 
