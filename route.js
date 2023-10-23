@@ -24,7 +24,7 @@ var options = {
   }
 };
 
-sendSMS('+2348064245256',"jiggamore nwanne");
+//sendSMS('+2348064245256',"jiggamore nwanne");
 
 //var token = require("./twilio");
 var randos = require("./randos");
