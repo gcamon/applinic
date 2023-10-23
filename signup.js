@@ -9,6 +9,7 @@ var router = config.router;
 var http = require("http");
 var uuid = require('uuid');
 var randos = require("./randos");
+var sendSMS = require('./smartSMS');
 
 function genId(username) {
 	var getFirstLetter;
@@ -547,13 +548,14 @@ var signupRoute = function(model,sms,geonames,paystack,io,transporter) {
 				}
 
 				//sms.message.sendSms('Applinic',phoneNunber,msgBody,callBack); //"2348096461927"	    	
-			sms.messages.create(
-				  {
-					to: phoneNunber,
-					from: '+16467985692',
-					body: msgBody
-				  }
-				) 
+			// sms.messages.create(
+			// 	  {
+			// 		to: phoneNunber,
+			// 		from: '+16467985692',
+			// 		body: msgBody
+			// 	  }
+			// 	) 
+			sendSMS(phoneNunber,msgBody)
 				res.send({error: false,message: "Success! Account created."}); 	
 		}
 	  })(req, res, next)
@@ -587,14 +589,16 @@ var signupRoute = function(model,sms,geonames,paystack,io,transporter) {
 		var phoneNunber = (req.body.phone[0] !== "+") ? "+" + req.body.phone : req.body.phone;
 		console.log(genPin)
 		if(!req.body.isPhoneCall) {
-			sms.messages.create(
-			  {
-				to: phoneNunber,
-				from: '+16467985692',
-				body: msgBody,
-			  },
-			  callBack
-			)	   	
+			// sms.messages.create(
+			//   {
+			// 	to: phoneNunber,
+			// 	from: '+16467985692',
+			// 	body: msgBody,
+			//   },
+			//   callBack
+			// )	  
+			
+			sendSMS(phoneNunber,msgBody)
 			
 			function callBack(err,response){
 				//res.send({message:"Phone Verification Pin sent to " + req.body.phone + " (use " + genPin + " to complete registration)"});
@@ -888,7 +892,7 @@ var signupRoute = function(model,sms,geonames,paystack,io,transporter) {
 			  
 			  User.save(function(err,info){			  	
 				if(err) throw err;  	
-				sendSMS(req.body.phone,profileUrl);
+				sendSMSFn(req.body.phone,profileUrl);
 				if(req.body.email)
 					sendEMAIL(req.body.email)	
 
@@ -922,14 +926,16 @@ var signupRoute = function(model,sms,geonames,paystack,io,transporter) {
 		})
 
 		//importantly, sms or email if available will be sent to patient including the referrral link for the patiento view his profile.
-		function sendSMS(mobile,profileUrl){
+		function sendSMSFn(mobile,profileUrl){
 			function callBack(err,response){
 				console.log(err);
 			}
 		
 			var msgBody = "Your emergency profile link is \n" + profileUrl;
 			var phoneNunber =  mobile;
-			sms.message.sendSms('Appclinic',phoneNunber,msgBody,callBack); //"2348096461927"
+			//sms.message.sendSms('Appclinic',phoneNunber,msgBody,callBack); //"2348096461927"
+
+			sendSMS(phoneNunber,msgBody)
 			
 		}
 

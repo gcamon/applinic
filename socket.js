@@ -3,6 +3,7 @@
 var uuid = require("uuid");
 var AWS = require('aws-sdk');
 var fs = require('fs');
+var sendSMS = require('./smartSMS');
 
 AWS.config.update({
     accessKeyId: process.env.AMAZON_ACCESS_KEY,
@@ -977,16 +978,18 @@ io.sockets.on('connection', function(socket){
         var msgBody = "Hi, " + data.receiver_name + "," + "\nYour " + data.type + "- " + data.sender 
         + " wants to have a chat with you on Applinic." + "\nhttps://applinic.com/mobile/chat-physician"
 	    //var phoneNunber =  req.body.phone;	      
-	        sms.messages.create(
-	        {
-	          to: data.receiver_phone,
-	          from: '+16467985692',
-	          body: msgBody,
-	        },
-	        function(err,response) {
-	        	if(err) console.log(err);
-	        }
-	    ) 
+	    //     sms.messages.create(
+	    //     {
+	    //       to: data.receiver_phone,
+	    //       from: '+16467985692',
+	    //       body: msgBody,
+	    //     },
+	    //     function(err,response) {
+	    //     	if(err) console.log(err);
+	    //     }
+	    // ) 
+
+		sendSMS(data.receiver_phone,msgBody)
     })
 
     function leave() {

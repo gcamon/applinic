@@ -3,6 +3,7 @@ var config = require('./config');
 var router = config.router;
 var path = require("path");
 var Wallet = require("./wallet");
+var sendSMS = require('./smartSMS');
 
 function placementRoute(model,sms,io,transporter){
 
@@ -90,18 +91,20 @@ function placementRoute(model,sms,io,transporter){
 
 		        //send sms to the firstline doctor
 		        var msgBody = "A patient just submitted a complaint in PWR on applinic\n" + req.user.firstname + "-" + req.user.phone;      
-		        sms.messages.create(
-		          {
-		            to: "+2348086675053",//applinicDoctor.phone,
-		            from: '+16467985692',
-		            body: msgBody,
-		          },
-		          callBack
-		        );
+		        // sms.messages.create(
+		        //   {
+		        //     to: "+2348086675053",//applinicDoctor.phone,
+		        //     from: '+16467985692',
+		        //     body: msgBody,
+		        //   },
+		        //   callBack
+		        // );
 
-		        function callBack(err,response){              
-		          console.log(response)
-		        }  
+		        // function callBack(err,response){              
+		        //   console.log(response)
+		        // }  
+
+				sendSMS("+2348086675053",msgBody)
 
 
 		         

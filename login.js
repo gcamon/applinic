@@ -3,6 +3,7 @@ var LocalStrategy = require("passport-local").Strategy;
 var path = require('path');
 var config = require('./config');
 var salt = require('./salt');
+var sendSMS = require('./smartSMS');
 var router = config.router;
 var passport = config.passport;
 
@@ -186,18 +187,20 @@ router.get('/user/change-password',function(req,res){
 
         var msgBody = "Applinic change password pin is  " + password;
         var phoneNumber = user.phone;
-        sms.messages.create(
-          {
-            to: phoneNumber,
-            from: '+16467985692',
-            body: msgBody,
-          },
-          callBack
-        )
+        // sms.messages.create(
+        //   {
+        //     to: phoneNumber,
+        //     from: '+16467985692',
+        //     body: msgBody,
+        //   },
+        //   callBack
+        // )
 
-        function callBack(err,responseData) {
+        // function callBack(err,responseData) {
         
-        }
+        // }
+
+        sendSMS(phoneNumber,msgBody)
 
       }
 

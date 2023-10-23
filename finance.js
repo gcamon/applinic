@@ -10,6 +10,7 @@ var topdf = require("./topdf");
 var fs = require('fs');
 var pdf = require('html-pdf');
 var uuid = require("uuid");
+var sendSMS = require('./smartSMS');
 //var axios = require("axios")
 
 // var smsData = new FormData();
@@ -380,14 +381,16 @@ var basicPaymentRoute = function(model,sms,io,paystack,client,transporter){
 								} else {
 									var msgBody = "Your payment OTP for applinic.com is " + password + " \nThe amount billed is " + req.user.currencyCode + "" + req.body.amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
 									var phoneNunber = user.phone;
-									sms.messages.create(
-			              {
-			                to: phoneNunber,
-			                from: '+16467985692',
-			                body: msgBody,
-			              },
-			              callBack
-			            );
+						// 			sms.messages.create(
+			            //   {
+			            //     to: phoneNunber,
+			            //     from: '+16467985692',
+			            //     body: msgBody,
+			            //   },
+			            //   callBack
+			            // );
+
+						sendSMS(phoneNunber, msgBody)
 								}
 		            //Set the message
 								/*var message = {from: "InfoSMS", to : phoneNunber, text : "Your payment OTP for applinic.com is " +
@@ -781,13 +784,15 @@ var basicPaymentRoute = function(model,sms,io,paystack,client,transporter){
 
 			                  var msgBody = "Success! " +  result.firstname + " " + result.lastname + " is now your patient. Visit https://applinic.com/login"
 			                  var phoneNunber =  data.phone;
-		                    sms.messages.create(
-						              {
-						                to: phoneNunber,
-						                from: '+16467985692',
-						                body: msgBody,
-						              }
-						            ) 
+		                    // sms.messages.create(
+						    //           {
+						    //             to: phoneNunber,
+						    //             from: '+16467985692',
+						    //             body: msgBody,
+						    //           }
+						    //         ) 
+
+							sendSMS(phoneNunber,msgBody)
 
 						            /*var transporter = nodemailer.createTransport({
 				                  host: "mail.privateemail.com",
@@ -1205,13 +1210,15 @@ router.put("/user/laboratory/test-result/session-update",function(req,res){
         
             var msgBody = "Laboratory test result received! visit http://applinic.com/user/patient";
             var phoneNunber =  data.phone;
-             sms.messages.create(
-              {
-                to: phoneNunber,
-                from: '+16467985692',
-                body: msgBody
-              }
-            ) 
+            //  sms.messages.create(
+            //   {
+            //     to: phoneNunber,
+            //     from: '+16467985692',
+            //     body: msgBody
+            //   }
+            // ) 
+
+			sendSMS(phoneNunber, msgBody)
 	         
 
 	          /*var transporter = nodemailer.createTransport({
@@ -1376,13 +1383,15 @@ router.put("/user/laboratory/test-result/session-update",function(req,res){
       
           var msgBody = "Laboratory test result received! login http://applinic.com/login"
           var phoneNunber =  data.phone;
-          sms.messages.create(
-            {
-              to: phoneNunber,
-              from: '+16467985692',
-              body: msgBody,
-            }
-          ) 
+        //   sms.messages.create(
+        //     {
+        //       to: phoneNunber,
+        //       from: '+16467985692',
+        //       body: msgBody,
+        //     }
+        //   ) 
+
+		sendSMS(phoneNunber,msgBody)
           
 
           /*var transporter = nodemailer.createTransport({
@@ -1980,13 +1989,15 @@ router.put("/user/laboratory/test-result/session-update",function(req,res){
             + "\nPatient ID of study: " + req.body.radiology.studyId
             + "\nStudy Link Mobile: " + "https://applinic.com/dicom-mobile?id=" + dcm._id
             var phoneNunber =  data.phone;
-            sms.messages.create(
-              {
-                to: phoneNunber,
-                from: '+16467985692',
-                body: msgBody,
-              }
-            ) 
+            // sms.messages.create(
+            //   {
+            //     to: phoneNunber,
+            //     from: '+16467985692',
+            //     body: msgBody,
+            //   }
+            // ) 
+
+			sendSMS(phoneNunber, msgBody)
 	          
 
 	          /*var transporter = nodemailer.createTransport({
@@ -2190,13 +2201,15 @@ router.put("/user/laboratory/test-result/session-update",function(req,res){
             + "\nStudy Link Mobile: https://applinic.com/dicom-mobile?id=" + dcm._id;
 
 	          var phoneNunber =  data.phone;
-	          sms.messages.create(
-              {
-                to: phoneNunber,
-                from: '+16467985692',
-                body: msgBody,
-              }
-          	);		        
+	        //   sms.messages.create(
+            //   {
+            //     to: phoneNunber,
+            //     from: '+16467985692',
+            //     body: msgBody,
+            //   }
+          	// );	
+			
+			sendSMS(phoneNunber,msgBody)
 
 		        /*var transporter = nodemailer.createTransport({
 	            host: "mail.privateemail.com",
@@ -2936,14 +2949,16 @@ router.post("/user/dicom-details",function(req,res){
 				  + " has been uploaded.\n" 
 				  + "You can share or use the above Patient ID to view the study on your smart phone.\nKindly visit " + redirectLink
 				  + "\nLog in with \nusername: " + centerUser + "\npassword: " + centerPassword;
-					sms.messages.create(
-            {
-              to: req.body.patientPhone,
-              from: '+16467985692',
-              body: msgBody,
-            },
-            callBack
-          );
+		// 			sms.messages.create(
+        //     {
+        //       to: req.body.patientPhone,
+        //       from: '+16467985692',
+        //       body: msgBody,
+        //     },
+        //     callBack
+        //   );
+
+		  sendSMS(req.body.patientPhone,msgBody)
 
           if(req.body.patientData) {		 
 					  model.user.findOne({user_id: req.body.patientData.radiology.patient_id},{medical_records:1})
