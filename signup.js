@@ -598,7 +598,6 @@ var signupRoute = function(model,sms,geonames,paystack,io,transporter) {
 			//   callBack
 			// )	  
 			
-			sendSMS(phoneNunber,msgBody)
 			
 			function callBack(err,response){
 				//res.send({message:"Phone Verification Pin sent to " + req.body.phone + " (use " + genPin + " to complete registration)"});
@@ -611,7 +610,9 @@ var signupRoute = function(model,sms,geonames,paystack,io,transporter) {
 					res.send({message:err.message,error: true});
 				}
 				
-			}		
+			}
+			
+			sendSMS(phoneNunber,msgBody,callBack)
 		} else {
 			sms.calls 
 		  .create({

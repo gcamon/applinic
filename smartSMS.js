@@ -2,7 +2,7 @@ var axios = require('axios');
 var FormData = require('form-data');
 var uuid = require("uuid");
 
-const sendSMS = (recipient, message) => {
+const sendSMS = (recipient, message, cb) => {
     var data = new FormData();
     var refId = uuid.v1();
 
@@ -29,10 +29,12 @@ const sendSMS = (recipient, message) => {
 
     axios(config)
     .then(function (response) {
-    console.log(JSON.stringify(response.data));
+        console.log(JSON.stringify(response.data));
+        if(cb) cb(null, response)
     })
     .catch(function (error) {
-    console.log(error);
+        console.log(error);
+        if(cb) cb(error, null)
     });
 
 }
