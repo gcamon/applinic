@@ -13614,7 +13614,15 @@ router.post("/user/invitation",function(req,res){
       //     }
       // }) 
 
-      sendSMS(phoneNunber,msgBody)
+      function callback(err,response) {
+        if(err) {
+          res.json({status: false,message:"Error occured while sending invitation. Please check the phone number and try again."})
+        } else {
+          res.json({status:true,message: "invitation sent!"});
+        }
+      }
+
+      sendSMS(phoneNunber,msgBody, callback)
     }
 
     function createInvite() {
