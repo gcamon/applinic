@@ -496,7 +496,7 @@ var basicRoute = function (model,sms,io,streams,client,transporter,opentok) {
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   //handles all change picture 
-  router.put("/user/update/profile-pic",function(req,res){   
+router.put("/user/update/profile-pic",function(req,res){   
     if(req.user && req.files){
      
       var path = req.files[0].location || "/download/profile_pic/" + req.files[0].filename;
@@ -14962,7 +14962,7 @@ router.post("/user/reporting-radiologist",function(req,res){
                 if(rad.prefixes.indexOf(data.prefix) === -1){
                   rad.prefixes.push(data.prefix);                      
                   rad.save(function(err,info){
-                    sendEmailNotification(req.body, data, rad.passKey);
+                    sendEmailNotificationToRadiologist(req.body, data, rad.passKey);
                   });
                 }
               }

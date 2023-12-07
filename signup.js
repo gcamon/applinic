@@ -25,6 +25,7 @@ function genId(username) {
 }
 
 var signupRoute = function(model,sms,geonames,paystack,io,transporter) {
+	
 	passport.use('signup', new LocalStrategy({
 		usernameField : 'phone',
 		passwordField : 'password',
@@ -556,7 +557,7 @@ var signupRoute = function(model,sms,geonames,paystack,io,transporter) {
 			// 	  }
 			// 	) 
 			sendSMS(phoneNunber,msgBody)
-				res.send({error: false,message: "Success! Account created."}); 	
+		    res.send({error: false,message: "Success! Account created."}); 	
 		}
 	  })(req, res, next)
 	});
