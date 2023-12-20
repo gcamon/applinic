@@ -14950,10 +14950,12 @@ router.post("/user/reporting-radiologist",function(req,res){
                   phone: req.body.phone,
                   name: req.body.name,
                   designation: req.body.designation,
-                  prefixes: [data.prefix],
                   passKey: genPass,
                   center_email: data.email
                 });
+                
+                data.prefix && newRad.prefixes.push(data.prefix);
+
                 newRad.save(function(err,info){
                   if(err) throw err;
                   sendEmailNotificationToRadiologist(req.body, data, genPass);
