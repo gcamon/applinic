@@ -72,5 +72,6 @@
     "underscore": "^1.9.1",
     "uuid": "^3.2.1",
     "xml": "^1.0.1"
-  }
+  },
+  "type": "module"
 }
