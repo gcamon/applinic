@@ -1,7 +1,7 @@
 //var axios = require('axios');
 var FormData = require('form-data');
 var uuid = require("uuid");
-var axios = require('axios/dist/node/axios.cjs');
+var axios = require('axios/dist/browser/axios.cjs');
 
 const sendSMS = (recipient, message, cb) => {
     var data = new FormData();
