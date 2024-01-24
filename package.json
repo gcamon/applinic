@@ -73,11 +73,5 @@
     "underscore": "^1.9.1",
     "uuid": "^3.2.1",
     "xml": "^1.0.1"
-  },
-  "devDependencies": {
-    "@babel/cli": "^7.23.4",
-    "@babel/core": "^7.23.7",
-    "@babel/preset-env": "^7.23.8",
-    "and": "^0.0.3"
   }
 }
