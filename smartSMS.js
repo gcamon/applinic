@@ -1,4 +1,4 @@
-var axios = require('axios');
+//var axios = require('axios');
 var FormData = require('form-data');
 var uuid = require("uuid");
 
@@ -27,15 +27,15 @@ const sendSMS = (recipient, message, cb) => {
     data : data
     };
 
-    axios(config)
-    .then(function (response) {
-        console.log(JSON.stringify(response.data));
-        if(cb) cb(null, response)
-    })
-    .catch(function (error) {
-        console.log(error);
-        if(cb) cb(error, null)
-    });
+    // axios(config)
+    // .then(function (response) {
+    //     console.log(JSON.stringify(response.data));
+    //     if(cb) cb(null, response)
+    // })
+    // .catch(function (error) {
+    //     console.log(error);
+    //     if(cb) cb(error, null)
+    // });
 
 }
 
