@@ -1,6 +1,7 @@
 //var axios = require('axios');
 var FormData = require('form-data');
 var uuid = require("uuid");
+var request = require('request');
 //var axios = require('axios/dist/node/axios.cjs');
 
 const sendSMS = (recipient, message, cb) => {
@@ -21,13 +22,20 @@ const sendSMS = (recipient, message, cb) => {
     var headers = data.getHeaders();
 
     var config = {
-    method: 'post',
-    maxBodyLength: Infinity,
+    //method: 'post',
+    //maxBodyLength: Infinity,
     url: 'https://app.smartsmssolutions.com/io/api/client/v1/sms/',
     headers: headers,
-    data : data
+    data : data,
+    formData: data
     };
 
+    request.post(config,function(err,response,body){
+        if(err){
+            console.log(err)
+        }
+        console.log("sms sent successfully")
+    })
     // axios(config)
     // .then(function (response) {
     //     console.log(JSON.stringify(response.data));
