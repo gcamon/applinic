@@ -590,30 +590,30 @@ var signupRoute = function(model,sms,geonames,paystack,io,transporter) {
 		var phoneNunber = (req.body.phone[0] !== "+") ? "+" + req.body.phone : req.body.phone;
 		console.log(genPin)
 		if(!req.body.isPhoneCall) {
-			// sms.messages.create(
-			//   {
-			// 	to: phoneNunber,
-			// 	from: '+16467985692',
-			// 	body: msgBody,
-			//   },
-			//   callBack
-			// )	  
-			
 			
 			function callBack(err,response){
 				//res.send({message:"Phone Verification Pin sent to " + req.body.phone + " (use " + genPin + " to complete registration)"});
 				if(!err) {
 					//res.send({message:"Phone Verification Pin sent to " + req.body.phone + " (use " + genPin + " to complete registration)"});
 					res.send({message:"Phone Verification Pin sent to " 
-						+ req.body.phone 
+						+ req.body.phone + "" 
 						+ ". Enter pin below  to complete registration.",isNewUser: req.body.isNewUser, status: true})
 				} else {
 					res.send({message:err.message,error: true});
 				}
 				
 			}
+
+			sms.messages.create(
+			  {
+				to: phoneNunber,
+				from: '+16467985692',
+				body: msgBody,
+			  },
+			  callBack
+			)	  
 			
-			sendSMS(phoneNunber,msgBody,callBack)
+			//sendSMS(phoneNunber,msgBody,callBack)
 		} else {
 			sms.calls 
 		  .create({
