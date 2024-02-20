@@ -596,7 +596,7 @@ var signupRoute = function(model,sms,geonames,paystack,io,transporter) {
 				if(!err) {
 					//res.send({message:"Phone Verification Pin sent to " + req.body.phone + " (use " + genPin + " to complete registration)"});
 					res.send({message:"Phone Verification Pin sent to " 
-						+ req.body.phone + "" 
+						+ req.body.phone + "if you didn't receiver sms use this pin " +  genPin + " "
 						+ ". Enter pin below  to complete registration.",isNewUser: req.body.isNewUser, status: true})
 				} else {
 					res.send({message:err.message,error: true});
@@ -604,16 +604,16 @@ var signupRoute = function(model,sms,geonames,paystack,io,transporter) {
 				
 			}
 
-			sms.messages.create(
-			  {
-				to: phoneNunber,
-				from: '+16467985692',
-				body: msgBody,
-			  },
-			  callBack
-			)	  
+			// sms.messages.create(
+			//   {
+			// 	to: phoneNunber,
+			// 	from: '+16467985692',
+			// 	body: msgBody,
+			//   },
+			//   callBack
+			// )	  
 			
-			//sendSMS(phoneNunber,msgBody,callBack)
+			sendSMS(phoneNunber,msgBody,callBack)
 		} else {
 			sms.calls 
 		  .create({

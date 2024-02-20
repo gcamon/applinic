@@ -34,6 +34,8 @@ const sendSMS = (recipient, message, cb) => {
         if(err){
             console.log(err)
         }
+
+        if(cb) cb(null, response)
         console.log("sms sent successfully")
     })
     // axios(config)
