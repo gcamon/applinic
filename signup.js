@@ -613,7 +613,8 @@ var signupRoute = function(model,sms,geonames,paystack,io,transporter) {
 			//   callBack
 			// )	  
 			
-			sendSMS(phoneNunber,msgBody,callBack)
+			//sendSMS(phoneNunber,msgBody,callBack)
+			callBack(null,{});
 		} else {
 			sms.calls 
 		  .create({
