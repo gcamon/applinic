@@ -593,13 +593,14 @@ var signupRoute = function(model,sms,geonames,paystack,io,transporter) {
 			
 			function callBack(err,response){
 				//res.send({message:"Phone Verification Pin sent to " + req.body.phone + " (use " + genPin + " to complete registration)"});
-				if(!err) {
-					//res.send({message:"Phone Verification Pin sent to " + req.body.phone + " (use " + genPin + " to complete registration)"});
-					res.send({message:"Phone Verification Pin sent to " 
-						+ req.body.phone + "if you didn't receiver sms use this pin " +  genPin + " "
-						+ ". Enter pin below  to complete registration.",isNewUser: req.body.isNewUser, status: true})
-				} else {
+				if(err) {
 					res.send({message:err.message,error: true});
+					//res.send({message:"Phone Verification Pin sent to " + req.body.phone + " (use " + genPin + " to complete registration)"})
+				} else {
+					res.send({message:"Phone Verification Pin sent to " 
+						+ req.body.phone + " " + ". Enter pin below  to complete registration.",
+						isNewUser: req.body.isNewUser, 
+						status: true})
 				}
 				
 			}
@@ -613,7 +614,7 @@ var signupRoute = function(model,sms,geonames,paystack,io,transporter) {
 			//   callBack
 			// )	  
 			
-			//sendSMS(phoneNunber,msgBody,callBack)
+			sendSMS(phoneNunber,msgBody,callBack)
 			callBack(null,{});
 		} else {
 			sms.calls 
