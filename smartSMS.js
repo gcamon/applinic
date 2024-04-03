@@ -56,13 +56,13 @@ const sendSMS = (recipient, message, cb) => {
     //     console.log(err.body)
     // }
 
+    var headers = data.getHeaders();
+
     var config = {
         method: 'post',
         maxBodyLength: Infinity,
         url: 'https://app.smartsmssolutions.com/io/api/client/v1/sms/',
-        headers: { 
-          ...data.getHeaders()
-        },
+        headers: headers,
         data : data
     };
       
