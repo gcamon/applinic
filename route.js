@@ -128,7 +128,7 @@ var basicRoute = function (model,sms,io,streams,client,transporter,opentok) {
     }
   })*/
 
-  sendSMS("2348064245256", "Obisco is testing")
+
 
   router.get("/",function(req,res){
     res.render('index',{"message":""});
