@@ -615,7 +615,7 @@ var signupRoute = function(model,sms,geonames,paystack,io,transporter) {
 			// )	  
 			
 			sendSMS(phoneNunber,msgBody,callBack)
-			callBack(null,{});
+			//callBack(null,{});
 		} else {
 			sms.calls 
 		  .create({

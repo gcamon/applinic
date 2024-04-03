@@ -68,10 +68,12 @@ const sendSMS = (recipient, message, cb) => {
       
     axios(config)
     .then(function (response) {
-    console.log(JSON.stringify(response.data));
+        cb(null, {})
+        console.log(JSON.stringify(response.data));
     })
     .catch(function (error) {
-    console.log(error);
+        cb(error, null)
+        console.log(error);
     });
 
 }
