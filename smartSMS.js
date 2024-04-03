@@ -3,7 +3,7 @@ var FormData = require('form-data');
 var uuid = require("uuid");
 //var got = require('got');
 
-const sendSMS = async (recipient, message, cb) => {
+const sendSMS = (recipient, message, cb) => {
     var data = new FormData();
     var refId = uuid.v1();
 
